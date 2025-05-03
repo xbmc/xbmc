@@ -188,9 +188,9 @@ CPVRChannelsPath::CPVRChannelsPath(bool bRadio, const std::string& strGroupName,
 }
 
 CPVRChannelsPath::CPVRChannelsPath(bool bRadio,
-                                   const std::string& strGroupName,
+                                   std::string_view strGroupName,
                                    int iGroupClientID,
-                                   const std::string& strAddonID,
+                                   std::string_view strAddonID,
                                    ADDON::AddonInstanceId instanceID,
                                    int iChannelUID)
   : m_bRadio(bRadio)

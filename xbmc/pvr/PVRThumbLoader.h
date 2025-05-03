@@ -32,7 +32,7 @@ protected:
 
 private:
   bool FillThumb(CFileItem& item);
-  std::string CreateChannelGroupThumb(const CFileItem& channelGroupItem);
+  std::string GetChannelGroupThumbURL(const CFileItem& channelGroupItem) const;
 
   bool m_bInvalidated = false;
 };

@@ -56,6 +56,18 @@ using namespace KODI::MESSAGING;
 using namespace PVR;
 using namespace std::chrono_literals;
 
+namespace
+{
+// Numeric values are part of the Skinning API. Do not change.
+constexpr unsigned int CONTROL_BTNVIEWASICONS = 2;
+constexpr unsigned int CONTROL_BTNSORTBY = 3;
+constexpr unsigned int CONTROL_BTNSORTASC = 4;
+constexpr unsigned int CONTROL_LSTCHANNELGROUPS = 11;
+constexpr unsigned int CONTROL_LABEL_HEADER1 = 29;
+constexpr unsigned int CONTROL_LABEL_HEADER2 = 30;
+
+} // unnamed namespace
+
 CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile)
   : CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
@@ -158,14 +170,16 @@ void CGUIWindowPVRGuideBase::StopRefreshTimelineItemsThread()
 
 void CGUIWindowPVRGuideBase::NotifyEvent(const PVREvent& event)
 {
-  if (event == PVREvent::Epg || event == PVREvent::EpgContainer ||
-      event == PVREvent::ChannelGroupInvalidated || event == PVREvent::ChannelGroup)
+  using enum PVREvent;
+
+  if (event == Epg || event == EpgContainer || event == ChannelGroupInvalidated ||
+      event == ChannelGroup)
   {
     m_bRefreshTimelineItems = true;
     // no base class call => do async refresh
     return;
   }
-  else if (event == PVREvent::ChannelPlaybackStopped)
+  else if (event == ChannelPlaybackStopped)
   {
     if (m_guiState && m_guiState->GetSortMethod().sortBy == SortByLastPlayed)
     {
@@ -196,7 +210,7 @@ void CGUIWindowPVRGuideBase::GetContextButtons(int itemNumber, CContextButtons& 
 
 void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
 {
-  CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+  const CGUIEPGGridContainer* epgGridContainer{GetGridControl()};
   if (epgGridContainer)
   {
     const std::shared_ptr<const CPVRChannelGroupMember> groupMember =
@@ -282,7 +296,8 @@ CFileItemPtr CGUIWindowPVRGuideBase::GetCurrentListItem(int offset /*= 0*/)
   return {};
 }
 
-int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(const std::shared_ptr<const CFileItem>& item)
+int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(
+    const std::shared_ptr<const CFileItem>& item) const
 {
   return item ? item->GetProperty("TimelineIndex").asInteger32() : -1;
 }
@@ -290,7 +305,7 @@ int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(const std::shared_ptr<const 
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
 {
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-  CGUIControl* control = GetControl(CONTROL_LSTCHANNELGROUPS);
+  const CGUIControl* control{GetControl(CONTROL_LSTCHANNELGROUPS)};
   if (epgGridContainer && control && GetFocusedControlID() == control->GetID())
   {
     int iNavigationId = control->GetAction(iAction).GetNavigation();
@@ -373,6 +388,9 @@ bool CGUIWindowPVRGuideBase::OnAction(const CAction& action)
     case ACTION_CHANNEL_NUMBER_SEP:
       AppendChannelNumberCharacter(CPVRChannelNumber::SEPARATOR);
       return true;
+
+    default:
+      break;
   }
 
   return CGUIWindowPVRBase::OnAction(action);
@@ -547,6 +565,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   }
                   break;
                 }
+                default:
+                  break;
               }
               break;
             case ACTION_SHOW_INFO:
@@ -570,6 +590,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
             case ACTION_MOUSE_RIGHT_CLICK:
               OnPopupMenu(GetCurrentListItemIndex(pItem));
               bReturn = true;
+              break;
+            default:
               break;
           }
         }
@@ -595,23 +617,25 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
     {
       switch (static_cast<PVREvent>(message.GetParam1()))
       {
-        case PVREvent::ManagerStarted:
+        using enum PVREvent;
+
+        case ManagerStarted:
           if (InitChannelGroup())
             InitEpgGridControl();
           break;
 
-        case PVREvent::ChannelGroup:
-        case PVREvent::ChannelGroupInvalidated:
-        case PVREvent::ClientsInvalidated:
-        case PVREvent::ChannelPlaybackStopped:
-        case PVREvent::Epg:
-        case PVREvent::EpgContainer:
+        case ChannelGroup:
+        case ChannelGroupInvalidated:
+        case ClientsInvalidated:
+        case ChannelPlaybackStopped:
+        case Epg:
+        case EpgContainer:
           if (InitChannelGroup())
             Refresh(true);
           break;
 
-        case PVREvent::Timers:
-        case PVREvent::TimersInvalidated:
+        case Timers:
+        case TimersInvalidated:
           SetInvalid();
           break;
 
@@ -623,6 +647,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
     case GUI_MSG_SYSTEM_WAKE:
       GotoCurrentProgramme();
       bReturn = true;
+      break;
+    default:
       break;
   }
 
@@ -652,7 +678,7 @@ public:
   void Add(bool (A::*function)(), unsigned int resId)
   {
     CContextButtons::Add(static_cast<unsigned int>(size()), resId);
-    m_functions.emplace_back(std::bind(function, m_instance));
+    m_functions.emplace_back(std::bind_front(function, m_instance));
   }
 
   bool Call(int idx)
@@ -737,11 +763,8 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       if (!group)
         return false;
 
-      CPVREpgContainer& epgContainer = CServiceBroker::GetPVRManager().EpgContainer();
-
-      const std::pair<CDateTime, CDateTime> dates = epgContainer.GetFirstAndLastEPGDate();
-      CDateTime startDate = dates.first;
-      CDateTime endDate = dates.second;
+      const CPVREpgContainer& epgContainer{CServiceBroker::GetPVRManager().EpgContainer()};
+      auto [startDate, endDate] = epgContainer.GetFirstAndLastEPGDate();
       const CDateTime currentDate = CDateTime::GetUTCDateTime();
 
       if (!startDate.IsValid())
@@ -762,7 +785,7 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       if (endDate > maxFutureDate)
         endDate = maxFutureDate;
 
-      std::unique_ptr<CFileItemList> channels(new CFileItemList);
+      const auto channels{std::make_unique<CFileItemList>()};
       const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
           group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
 

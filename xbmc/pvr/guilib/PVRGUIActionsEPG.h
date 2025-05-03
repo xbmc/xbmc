@@ -52,42 +52,42 @@ public:
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool ExecuteSavedSearch(const CFileItem& item);
+  bool ExecuteSavedSearch(const CFileItem& item) const;
 
   /*!
    * @brief Edit a saved search. Opens the search dialog.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool EditSavedSearch(const CFileItem& item);
+  bool EditSavedSearch(const CFileItem& item) const;
 
   /*!
    * @brief Rename a saved search. Opens a title input dialog.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool RenameSavedSearch(const CFileItem& item);
+  bool RenameSavedSearch(const CFileItem& item) const;
 
   /*!
    * @brief Choose an icon for a saved search. Opens an art chooser dialog.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool ChooseIconForSavedSearch(const CFileItem& item);
+  bool ChooseIconForSavedSearch(const CFileItem& item) const;
 
   /*!
    * @brief Duplicate a saved search.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool DuplicateSavedSearch(const CFileItem& item);
+  bool DuplicateSavedSearch(const CFileItem& item) const;
 
   /*!
    * @brief Delete a saved search. Opens confirmation dialog before deleting.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool DeleteSavedSearch(const CFileItem& item);
+  bool DeleteSavedSearch(const CFileItem& item) const;
 
   /*!
    * @brief Get the title for the given EPG tag, taking settings and parental controls into account.
@@ -97,7 +97,7 @@ public:
    * SETTING_EPG_HIDENOINFOAVAILABLE is false or tag is nullptr, the real EPG event title as given
    * by the EPG data provider otherwise.
    */
-  std::string GetTitleForEpgTag(const std::shared_ptr<const CPVREpgInfoTag>& tag);
+  std::string GetTitleForEpgTag(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
 
 private:
   CPVRGUIActionsEPG(const CPVRGUIActionsEPG&) = delete;

@@ -9,27 +9,29 @@
 #pragma once
 
 #include "pvr/IPVRComponent.h"
-#include "pvr/settings/PVRSettings.h"
 #include "utils/ContentUtils.h"
 
+#include <memory>
 #include <string>
 
 class CFileItem;
 
 namespace PVR
 {
-enum PlaybackType
+class CPVRSettings;
+
+enum class PlaybackType
 {
-  PlaybackTypeAny = 0,
-  PlaybackTypeTV,
-  PlaybackTypeRadio
+  TYPE_ANY,
+  TYPE_TV,
+  TYPE_RADIO,
 };
 
 class CPVRGUIActionsPlayback : public IPVRComponent
 {
 public:
   CPVRGUIActionsPlayback();
-  ~CPVRGUIActionsPlayback() override = default;
+  ~CPVRGUIActionsPlayback() override;
 
   /*!
    * @brief Play recording.
@@ -81,7 +83,7 @@ public:
    * playing event. If there is no next event, seek to the end of the currently playing event (to
    * the 'live' position).
    */
-  void SeekForward();
+  void SeekForward() const;
 
   /*!
    * @brief Seek to the start of the previous epg event in timeshift buffer, relative to the
@@ -90,7 +92,7 @@ public:
    * @param iThreshold the value in seconds to trigger seek to start of current event instead of
    * start of previous event.
    */
-  void SeekBackward(unsigned int iThreshold);
+  void SeekBackward(unsigned int iThreshold) const;
 
 private:
   CPVRGUIActionsPlayback(const CPVRGUIActionsPlayback&) = delete;
@@ -102,7 +104,7 @@ private:
    */
   void CheckAndSwitchToFullscreen(bool bFullscreen) const;
 
-  CPVRSettings m_settings;
+  std::unique_ptr<CPVRSettings> m_settings;
 };
 
 namespace GUI

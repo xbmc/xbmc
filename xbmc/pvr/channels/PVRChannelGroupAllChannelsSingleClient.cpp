@@ -46,7 +46,7 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroupAllChannelsSingle
   for (int clientId : clientIds)
   {
     const std::shared_ptr<const CPVRClient> client{
-        CServiceBroker().GetPVRManager().GetClient(clientId)};
+        CServiceBroker::GetPVRManager().GetClient(clientId)};
     if (!client)
     {
       CLog::LogFC(LOGERROR, LOGPVR, "Failed to get client instance for client id {}", clientId);
@@ -54,13 +54,13 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroupAllChannelsSingle
     }
 
     // Create a group containing all channels for this client, if not yet existing.
-    const auto it = std::find_if(allChannelGroups.cbegin(), allChannelGroups.cend(),
-                                 [&client](const auto& group)
-                                 {
-                                   return (group->GroupType() ==
-                                           PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT) &&
-                                          (group->GetClientID() == client->GetID());
-                                 });
+    const auto it = std::ranges::find_if(
+        allChannelGroups,
+        [&client](const auto& group)
+        {
+          return (group->GroupType() == PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT) &&
+                 (group->GetClientID() == client->GetID());
+        });
     if (it == allChannelGroups.cend())
     {
       const std::string name{

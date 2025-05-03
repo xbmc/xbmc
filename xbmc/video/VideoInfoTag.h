@@ -55,7 +55,7 @@ class CVideoInfoTag : public IArchivable, public ISerializable, public ISortable
 public:
   CVideoInfoTag() { Reset(); }
   virtual ~CVideoInfoTag() = default;
-  void Reset();
+  virtual void Reset();
   /* \brief Load information to a videoinfotag from an XML element
    There are three types of tags supported:
     1. Single-value tags, such as <title>.  These are set if available, else are left untouched.

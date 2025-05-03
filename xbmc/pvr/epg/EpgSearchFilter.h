@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace PVR
@@ -64,7 +65,7 @@ public:
   bool IsRadio() const { return m_bIsRadio; }
 
   const std::string& GetSearchTerm() const { return m_searchData.m_strSearchTerm; }
-  void SetSearchTerm(const std::string& strSearchTerm);
+  void SetSearchTerm(std::string_view strSearchTerm);
 
   void SetSearchPhrase(const std::string& strSearchPhrase);
 
@@ -129,10 +130,10 @@ public:
   void SetDatabaseId(int iDatabaseId);
 
   const std::string& GetTitle() const { return m_title; }
-  void SetTitle(const std::string& title);
+  void SetTitle(std::string_view title);
 
   const std::string& GetIconPath() const { return m_iconPath; }
-  void SetIconPath(const std::string& iconPath);
+  void SetIconPath(std::string_view iconPath);
 
   const CDateTime& GetLastExecutedDateTime() const { return m_lastExecutedDateTime; }
   void SetLastExecutedDateTime(const CDateTime& lastExecutedDateTime);

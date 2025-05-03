@@ -48,7 +48,6 @@ public:
   virtual ~CPVRChannel();
 
   bool operator==(const CPVRChannel& right) const;
-  bool operator!=(const CPVRChannel& right) const;
 
   void Serialize(CVariant& value) const override;
 

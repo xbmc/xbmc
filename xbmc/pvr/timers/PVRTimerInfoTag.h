@@ -46,7 +46,6 @@ public:
                    unsigned int iClientId);
 
   bool operator==(const CPVRTimerInfoTag& right) const;
-  bool operator!=(const CPVRTimerInfoTag& right) const;
 
   // ISerializable implementation
   void Serialize(CVariant& value) const override;
@@ -194,7 +193,7 @@ public:
    * @brief Gets the type of this timer.
    * @return the timer type or NULL if this tag has no timer type.
    */
-  const std::shared_ptr<CPVRTimerType> GetTimerType() const { return m_timerType; }
+  std::shared_ptr<CPVRTimerType> GetTimerType() const { return m_timerType; }
 
   /*!
    * @brief Sets the type of this timer.
@@ -523,10 +522,7 @@ public:
     PVR_SETTING_TYPE type{PVR_SETTING_TYPE::INTEGER};
     CVariant value;
 
-    bool operator==(const CustomPropDetails& right) const
-    {
-      return type == right.type && value == right.value;
-    }
+    bool operator==(const CustomPropDetails& right) const = default;
   };
 
   /*!
@@ -565,7 +561,7 @@ public:
    * the backend.
    * @return True on success, false otherwise.
    */
-  bool UpdateOnClient();
+  bool UpdateOnClient() const;
 
   /*!
    * @brief Persist this timer in the local database.

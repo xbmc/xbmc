@@ -37,11 +37,6 @@ bool CPVRChannel::operator==(const CPVRChannel& right) const
           m_iClientId == right.m_iClientId);
 }
 
-bool CPVRChannel::operator!=(const CPVRChannel& right) const
-{
-  return !(*this == right);
-}
-
 CPVRChannel::CPVRChannel(bool bRadio)
   : m_bIsRadio(bRadio),
     m_iconPath("", StringUtils::Format(IMAGE_OWNER_PATTERN, bRadio ? "radio" : "tv"))
@@ -125,7 +120,7 @@ bool CPVRChannel::QueueDelete()
   if (epg)
     ResetEPG();
 
-  bReturn = database->QueueDeleteQuery(*this);
+  bReturn = database->QueueChannelDeleteQuery(*this);
   return bReturn;
 }
 

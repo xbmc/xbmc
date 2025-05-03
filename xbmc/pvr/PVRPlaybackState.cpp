@@ -188,7 +188,7 @@ bool ResolveEPG(CFileItem& item,
   return true;
 }
 
-bool ResolveRecording(CFileItem& item,
+bool ResolveRecording(const CFileItem& item,
                       CPVRStreamProperties& props,
                       const std::shared_ptr<const CPVRClient>& client)
 {
@@ -197,7 +197,7 @@ bool ResolveRecording(CFileItem& item,
 }
 } // unnamed namespace
 
-bool CPVRPlaybackState::OnPreparePlayback(CFileItem& item)
+bool CPVRPlaybackState::OnPreparePlayback(CFileItem& item) const
 {
   // Obtain dynamic playback url and properties from the respective pvr client
   const std::shared_ptr<const CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(item);
@@ -225,8 +225,8 @@ bool CPVRPlaybackState::OnPreparePlayback(CFileItem& item)
       item.SetContentLookup(false);
     }
 
-    for (const auto& prop : props)
-      item.SetProperty(prop.first, prop.second);
+    for (const auto& [name, value] : props)
+      item.SetProperty(name, value);
   }
 
   return true;
@@ -708,7 +708,7 @@ CDateTime CPVRPlaybackState::GetChannelPlaybackTime(int iClientID, int iUniqueCh
 }
 
 void CPVRPlaybackState::UpdateLastWatched(const std::shared_ptr<CPVRChannelGroupMember>& channel,
-                                          const CDateTime& time)
+                                          const CDateTime& time) const
 {
   time_t iTime;
   time.GetAsTime(iTime);

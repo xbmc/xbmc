@@ -21,9 +21,28 @@
 #include <algorithm>
 #include <mutex>
 #include <string>
+#include <string_view>
 #include <utility>
 
 using namespace PVR;
+
+namespace
+{
+std::string Trim(std::string_view value)
+{
+  std::string ret{value};
+  StringUtils::TrimLeft(ret);
+  StringUtils::TrimRight(ret, " \n\r");
+  return ret;
+}
+
+std::string TrimAndToUTF8(std::string_view value)
+{
+  std::string ret{Trim(value)};
+  CCharsetConverter::unknownToUTF8(ret);
+  return ret;
+}
+} // unnamed namespace
 
 CPVRRadioRDSInfoTag::CPVRRadioRDSInfoTag()
 {
@@ -142,14 +161,6 @@ bool CPVRRadioRDSInfoTag::operator==(const CPVRRadioRDSInfoTag& right) const
       m_bHaveRadioTextPlus == right.m_bHaveRadioTextPlus);
 }
 
-bool CPVRRadioRDSInfoTag::operator !=(const CPVRRadioRDSInfoTag& right) const
-{
-  if (this == &right)
-    return false;
-
-  return !(*this == right);
-}
-
 void CPVRRadioRDSInfoTag::Clear()
 {
   std::unique_lock lock(m_critSection);
@@ -248,29 +259,25 @@ void CPVRRadioRDSInfoTag::SetArtist(const std::string& strArtist)
 void CPVRRadioRDSInfoTag::SetBand(const std::string& strBand)
 {
   std::unique_lock lock(m_critSection);
-  m_strBand = Trim(strBand);
-  g_charsetConverter.unknownToUTF8(m_strBand);
+  m_strBand = TrimAndToUTF8(strBand);
 }
 
 void CPVRRadioRDSInfoTag::SetComposer(const std::string& strComposer)
 {
   std::unique_lock lock(m_critSection);
-  m_strComposer = Trim(strComposer);
-  g_charsetConverter.unknownToUTF8(m_strComposer);
+  m_strComposer = TrimAndToUTF8(strComposer);
 }
 
 void CPVRRadioRDSInfoTag::SetConductor(const std::string& strConductor)
 {
   std::unique_lock lock(m_critSection);
-  m_strConductor = Trim(strConductor);
-  g_charsetConverter.unknownToUTF8(m_strConductor);
+  m_strConductor = TrimAndToUTF8(strConductor);
 }
 
 void CPVRRadioRDSInfoTag::SetAlbum(const std::string& strAlbum)
 {
   std::unique_lock lock(m_critSection);
-  m_strAlbum = Trim(strAlbum);
-  g_charsetConverter.unknownToUTF8(m_strAlbum);
+  m_strAlbum = TrimAndToUTF8(strAlbum);
 }
 
 void CPVRRadioRDSInfoTag::SetAlbumTrackNumber(int track)
@@ -282,8 +289,7 @@ void CPVRRadioRDSInfoTag::SetAlbumTrackNumber(int track)
 void CPVRRadioRDSInfoTag::SetComment(const std::string& strComment)
 {
   std::unique_lock lock(m_critSection);
-  m_strComment = Trim(strComment);
-  g_charsetConverter.unknownToUTF8(m_strComment);
+  m_strComment = TrimAndToUTF8(strComment);
 }
 
 const std::string& CPVRRadioRDSInfoTag::GetTitle() const
@@ -340,7 +346,7 @@ void CPVRRadioRDSInfoTag::SetInfoNews(const std::string& strNews)
   m_strInfoNews.Add(strNews);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetInfoNews() const
+std::string CPVRRadioRDSInfoTag::GetInfoNews() const
 {
   std::unique_lock lock(m_critSection);
   return m_strInfoNews.GetText();
@@ -352,7 +358,7 @@ void CPVRRadioRDSInfoTag::SetInfoNewsLocal(const std::string& strNews)
   m_strInfoNewsLocal.Add(strNews);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetInfoNewsLocal() const
+std::string CPVRRadioRDSInfoTag::GetInfoNewsLocal() const
 {
   std::unique_lock lock(m_critSection);
   return m_strInfoNewsLocal.GetText();
@@ -364,7 +370,7 @@ void CPVRRadioRDSInfoTag::SetInfoSport(const std::string& strSport)
   m_strInfoSport.Add(strSport);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetInfoSport() const
+std::string CPVRRadioRDSInfoTag::GetInfoSport() const
 {
   std::unique_lock lock(m_critSection);
   return m_strInfoSport.GetText();
@@ -376,7 +382,7 @@ void CPVRRadioRDSInfoTag::SetInfoStock(const std::string& strStock)
   m_strInfoStock.Add(strStock);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetInfoStock() const
+std::string CPVRRadioRDSInfoTag::GetInfoStock() const
 {
   std::unique_lock lock(m_critSection);
   return m_strInfoStock.GetText();
@@ -388,7 +394,7 @@ void CPVRRadioRDSInfoTag::SetInfoWeather(const std::string& strWeather)
   m_strInfoWeather.Add(strWeather);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetInfoWeather() const
+std::string CPVRRadioRDSInfoTag::GetInfoWeather() const
 {
   std::unique_lock lock(m_critSection);
   return m_strInfoWeather.GetText();
@@ -400,7 +406,7 @@ void CPVRRadioRDSInfoTag::SetInfoLottery(const std::string& strLottery)
   m_strInfoLottery.Add(strLottery);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetInfoLottery() const
+std::string CPVRRadioRDSInfoTag::GetInfoLottery() const
 {
   std::unique_lock lock(m_critSection);
   return m_strInfoLottery.GetText();
@@ -412,7 +418,7 @@ void CPVRRadioRDSInfoTag::SetEditorialStaff(const std::string& strEditorialStaff
   m_strEditorialStaff.Add(strEditorialStaff);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetEditorialStaff() const
+std::string CPVRRadioRDSInfoTag::GetEditorialStaff() const
 {
   std::unique_lock lock(m_critSection);
   return m_strEditorialStaff.GetText();
@@ -424,7 +430,7 @@ void CPVRRadioRDSInfoTag::SetInfoHoroscope(const std::string& strHoroscope)
   m_strInfoHoroscope.Add(strHoroscope);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetInfoHoroscope() const
+std::string CPVRRadioRDSInfoTag::GetInfoHoroscope() const
 {
   std::unique_lock lock(m_critSection);
   return m_strInfoHoroscope.GetText();
@@ -436,7 +442,7 @@ void CPVRRadioRDSInfoTag::SetInfoCinema(const std::string& strCinema)
   m_strInfoCinema.Add(strCinema);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetInfoCinema() const
+std::string CPVRRadioRDSInfoTag::GetInfoCinema() const
 {
   std::unique_lock lock(m_critSection);
   return m_strInfoCinema.GetText();
@@ -448,7 +454,7 @@ void CPVRRadioRDSInfoTag::SetInfoOther(const std::string& strOther)
   m_strInfoOther.Add(strOther);
 }
 
-const std::string CPVRRadioRDSInfoTag::GetInfoOther() const
+std::string CPVRRadioRDSInfoTag::GetInfoOther() const
 {
   std::unique_lock lock(m_critSection);
   return m_strInfoOther.GetText();
@@ -457,78 +463,67 @@ const std::string CPVRRadioRDSInfoTag::GetInfoOther() const
 void CPVRRadioRDSInfoTag::SetProgStation(const std::string& strProgStation)
 {
   std::unique_lock lock(m_critSection);
-  m_strProgStation = Trim(strProgStation);
-  g_charsetConverter.unknownToUTF8(m_strProgStation);
+  m_strProgStation = TrimAndToUTF8(strProgStation);
 }
 
 void CPVRRadioRDSInfoTag::SetProgHost(const std::string& strProgHost)
 {
   std::unique_lock lock(m_critSection);
-  m_strProgHost = Trim(strProgHost);
-  g_charsetConverter.unknownToUTF8(m_strProgHost);
+  m_strProgHost = TrimAndToUTF8(strProgHost);
 }
 
 void CPVRRadioRDSInfoTag::SetProgStyle(const std::string& strProgStyle)
 {
   std::unique_lock lock(m_critSection);
-  m_strProgStyle = Trim(strProgStyle);
-  g_charsetConverter.unknownToUTF8(m_strProgStyle);
+  m_strProgStyle = TrimAndToUTF8(strProgStyle);
 }
 
 void CPVRRadioRDSInfoTag::SetProgWebsite(const std::string& strWebsite)
 {
   std::unique_lock lock(m_critSection);
-  m_strProgWebsite = Trim(strWebsite);
-  g_charsetConverter.unknownToUTF8(m_strProgWebsite);
+  m_strProgWebsite = TrimAndToUTF8(strWebsite);
 }
 
 void CPVRRadioRDSInfoTag::SetProgNow(const std::string& strNow)
 {
   std::unique_lock lock(m_critSection);
-  m_strProgNow = Trim(strNow);
-  g_charsetConverter.unknownToUTF8(m_strProgNow);
+  m_strProgNow = TrimAndToUTF8(strNow);
 }
 
 void CPVRRadioRDSInfoTag::SetProgNext(const std::string& strNext)
 {
   std::unique_lock lock(m_critSection);
-  m_strProgNext = Trim(strNext);
-  g_charsetConverter.unknownToUTF8(m_strProgNext);
+  m_strProgNext = TrimAndToUTF8(strNext);
 }
 
 void CPVRRadioRDSInfoTag::SetPhoneHotline(const std::string& strHotline)
 {
   std::unique_lock lock(m_critSection);
-  m_strPhoneHotline = Trim(strHotline);
-  g_charsetConverter.unknownToUTF8(m_strPhoneHotline);
+  m_strPhoneHotline = TrimAndToUTF8(strHotline);
 }
 
 void CPVRRadioRDSInfoTag::SetEMailHotline(const std::string& strHotline)
 {
   std::unique_lock lock(m_critSection);
-  m_strEMailHotline = Trim(strHotline);
-  g_charsetConverter.unknownToUTF8(m_strEMailHotline);
+  m_strEMailHotline = TrimAndToUTF8(strHotline);
 }
 
 void CPVRRadioRDSInfoTag::SetPhoneStudio(const std::string& strPhone)
 {
   std::unique_lock lock(m_critSection);
-  m_strPhoneStudio = Trim(strPhone);
-  g_charsetConverter.unknownToUTF8(m_strPhoneStudio);
+  m_strPhoneStudio = TrimAndToUTF8(strPhone);
 }
 
 void CPVRRadioRDSInfoTag::SetEMailStudio(const std::string& strEMail)
 {
   std::unique_lock lock(m_critSection);
-  m_strEMailStudio = Trim(strEMail);
-  g_charsetConverter.unknownToUTF8(m_strEMailStudio);
+  m_strEMailStudio = TrimAndToUTF8(strEMail);
 }
 
 void CPVRRadioRDSInfoTag::SetSMSStudio(const std::string& strSMS)
 {
   std::unique_lock lock(m_critSection);
-  m_strSMSStudio = Trim(strSMS);
-  g_charsetConverter.unknownToUTF8(m_strSMSStudio);
+  m_strSMSStudio = TrimAndToUTF8(strSMS);
 }
 
 const std::string& CPVRRadioRDSInfoTag::GetProgStyle() const
@@ -603,7 +598,7 @@ void CPVRRadioRDSInfoTag::SetRadioStyle(const std::string& style)
   m_strRadioStyle = style;
 }
 
-const std::string CPVRRadioRDSInfoTag::GetRadioStyle() const
+std::string CPVRRadioRDSInfoTag::GetRadioStyle() const
 {
   std::unique_lock lock(m_critSection);
   return m_strRadioStyle;
@@ -679,14 +674,6 @@ bool CPVRRadioRDSInfoTag::IsPlayingRadioTextPlus() const
   return m_bHaveRadioTextPlus;
 }
 
-std::string CPVRRadioRDSInfoTag::Trim(const std::string& value)
-{
-  std::string trimmedValue(value);
-  StringUtils::TrimLeft(trimmedValue);
-  StringUtils::TrimRight(trimmedValue, " \n\r");
-  return trimmedValue;
-}
-
 bool CPVRRadioRDSInfoTag::Info::operator==(const CPVRRadioRDSInfoTag::Info& right) const
 {
   if (this == &right)
@@ -704,10 +691,8 @@ void CPVRRadioRDSInfoTag::Info::Clear()
 
 void CPVRRadioRDSInfoTag::Info::Add(const std::string& text)
 {
-  std::string tmp = Trim(text);
-  g_charsetConverter.unknownToUTF8(tmp);
-
-  if (std::find(m_data.begin(), m_data.end(), tmp) != m_data.end())
+  const std::string tmp{TrimAndToUTF8(text)};
+  if (std::ranges::find(m_data, tmp) != m_data.cend())
     return;
 
   if (m_data.size() >= m_maxSize)

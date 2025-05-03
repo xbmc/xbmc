@@ -23,7 +23,6 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <iterator>
 #include <memory>
 #include <string>
 #include <utility>
@@ -32,9 +31,13 @@
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
-#define SETTING_RECORDING_NAME "recording.name"
-#define SETTING_RECORDING_PLAYCOUNT "recording.playcount"
-#define SETTING_RECORDING_LIFETIME "recording.lifetime"
+namespace
+{
+constexpr const char* SETTING_RECORDING_NAME = "recording.name";
+constexpr const char* SETTING_RECORDING_PLAYCOUNT = "recording.playcount";
+constexpr const char* SETTING_RECORDING_LIFETIME = "recording.lifetime";
+
+} // unnamed namespace
 
 CGUIDialogPVRRecordingSettings::CGUIDialogPVRRecordingSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_RECORDING_SETTING, "DialogSettings.xml")
@@ -130,19 +133,16 @@ bool CGUIDialogPVRRecordingSettings::OnSettingChanging(
     return false;
   }
 
-  const std::string& settingId = setting->GetId();
-
-  if (settingId == SETTING_RECORDING_LIFETIME)
+  if (setting->GetId() == SETTING_RECORDING_LIFETIME)
   {
     int iNewLifetime = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
-    if (m_recording->WillBeExpiredWithNewLifetime(iNewLifetime))
+    if (m_recording->WillBeExpiredWithNewLifetime(iNewLifetime) &&
+        HELPERS::ShowYesNoDialogText(CVariant{19068}, // "Recording settings"
+                                     StringUtils::Format(g_localizeStrings.Get(19147),
+                                                         iNewLifetime)) // "Setting the lifetime..."
+            != HELPERS::DialogResponse::CHOICE_YES)
     {
-      if (HELPERS::ShowYesNoDialogText(
-              CVariant{19068}, // "Recording settings"
-              StringUtils::Format(g_localizeStrings.Get(19147),
-                                  iNewLifetime)) // "Setting the lifetime..."
-          != HELPERS::DialogResponse::CHOICE_YES)
-        return false;
+      return false;
     }
   }
 
@@ -195,7 +195,7 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& sett
                                                      int& current,
                                                      void* data)
 {
-  CGUIDialogPVRRecordingSettings* pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRRecordingSettings*>(data)};
   if (pThis)
   {
     list.clear();
@@ -206,9 +206,9 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& sett
     {
       std::vector<std::pair<std::string, int>> values;
       client->GetClientCapabilities().GetRecordingsLifetimeValues(values);
-      std::transform(
-          values.cbegin(), values.cend(), std::back_inserter(list),
-          [](const auto& value) { return IntegerSettingOption(value.first, value.second); });
+      std::ranges::transform(values, std::back_inserter(list),
+                             [](const auto& value)
+                             { return IntegerSettingOption(value.first, value.second); });
     }
 
     current = pThis->m_iLifetime;
@@ -225,9 +225,9 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& sett
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, IntegerSettingOption(
-                          StringUtils::Format(g_localizeStrings.Get(17999), current) /* {} days */,
-                          current));
+      list.emplace(it, IntegerSettingOption(
+                           StringUtils::Format(g_localizeStrings.Get(17999), current) /* {} days */,
+                           current));
     }
   }
   else

@@ -13,10 +13,10 @@
 #include "powermanagement/PowerState.h"
 #include "threads/CriticalSection.h"
 
-#include <functional>
 #include <map>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CVariant;
@@ -41,7 +41,7 @@ class CPVRRecordings;
 class CPVRTimerType;
 class CPVRTimersContainer;
 
-typedef std::map<int, std::shared_ptr<CPVRClient>> CPVRClientMap;
+using CPVRClientMap = std::map<int, std::shared_ptr<CPVRClient>>;
 
 /*!
  * @brief Holds generic data about a backend (number of channels etc.)
@@ -220,13 +220,13 @@ public:
    * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
    */
   PVR_ERROR UpdateTimerTypes(const std::vector<std::shared_ptr<CPVRClient>>& clients,
-                             std::vector<int>& failedClients);
+                             std::vector<int>& failedClients) const;
 
   /*!
    * @brief Get all timer types supported by the backends, without updating them from the backends.
    * @return the types.
    */
-  const std::vector<std::shared_ptr<CPVRTimerType>> GetTimerTypes() const;
+  std::vector<std::shared_ptr<CPVRTimerType>> GetTimerTypes() const;
 
   //@}
 
@@ -250,7 +250,7 @@ public:
    * @brief Delete all "soft" deleted recordings permanently on the backend.
    * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
    */
-  PVR_ERROR DeleteAllRecordingsFromTrash();
+  PVR_ERROR DeleteAllRecordingsFromTrash() const;
 
   //@}
 
@@ -270,7 +270,7 @@ public:
    * @return @ref PVR_ERROR_NO_ERROR if the operation succeeded, the respective @ref PVR_ERROR
    *         value otherwise.
    */
-  PVR_ERROR SetEPGMaxPastDays(int iPastDays);
+  PVR_ERROR SetEPGMaxPastDays(int iPastDays) const;
 
   /*!
    * @brief Tell all clients the future time frame to use when notifying epg events back to Kodi.
@@ -285,7 +285,7 @@ public:
    * @return @ref PVR_ERROR_NO_ERROR if the operation succeeded, the respective @ref PVR_ERROR
    *         value otherwise.
    */
-  PVR_ERROR SetEPGMaxFutureDays(int iFutureDays);
+  PVR_ERROR SetEPGMaxFutureDays(int iFutureDays) const;
 
   //@}
 
@@ -395,12 +395,12 @@ public:
   /*!
    * @brief Propagate "power saving activated" event to clients
    */
-  void OnPowerSavingActivated();
+  void OnPowerSavingActivated() const;
 
   /*!
    * @brief Propagate "power saving deactivated" event to clients
    */
-  void OnPowerSavingDeactivated();
+  void OnPowerSavingDeactivated() const;
 
   //@}
 
@@ -411,10 +411,10 @@ public:
    * @param newState The new connection state.
    * @param strMessage A human readable string replacing default state message.
    */
-  void ConnectionStateChange(CPVRClient* client,
-                             const std::string& strConnectionString,
+  void ConnectionStateChange(const CPVRClient* client,
+                             std::string_view strConnectionString,
                              PVR_CONNECTION_STATE newState,
-                             const std::string& strMessage);
+                             std::string_view strMessage) const;
 
 private:
   /*!
@@ -422,10 +422,10 @@ private:
    * @param addonID The addon id.
    * @return The list of known instance ids.
    */
-  std::vector<ADDON::AddonInstanceId> GetKnownInstanceIds(const std::string& addonID) const;
+  std::vector<ADDON::AddonInstanceId> GetKnownInstanceIds(std::string_view addonID) const;
 
   bool GetAddonsWithStatus(
-      const std::string& changedAddonId,
+      std::string_view changedAddonId,
       std::vector<std::pair<std::shared_ptr<ADDON::CAddonInfo>, bool>>& addonsWithStatus) const;
 
   std::vector<std::pair<ADDON::AddonInstanceId, bool>> GetInstanceIdsWithStatus(
@@ -454,8 +454,6 @@ private:
   PVR_ERROR GetCallableClients(CPVRClientMap& clientsReady,
                                std::vector<int>& clientsNotReady) const;
 
-  typedef std::function<PVR_ERROR(const std::shared_ptr<CPVRClient>&)> PVRClientFunction;
-
   /*!
    * @brief Wraps calls to the given clients in order to do common pre and post function invocation actions.
    * @param strFunctionName The function name, for logging purposes.
@@ -464,9 +462,10 @@ private:
    * @param failedClients Contains a list of the ids of clients for that the call failed, if any.
    * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
    */
+  template<typename F>
   PVR_ERROR ForClients(const char* strFunctionName,
                        const std::vector<std::shared_ptr<CPVRClient>>& clients,
-                       const PVRClientFunction& function,
+                       F function,
                        std::vector<int>& failedClients) const;
 
   /*!
@@ -475,7 +474,8 @@ private:
    * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a std::shared_ptr<CPVRClient> as parameter.
    * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
    */
-  PVR_ERROR ForCreatedClients(const char* strFunctionName, const PVRClientFunction& function) const;
+  template<typename F>
+  PVR_ERROR ForCreatedClients(const char* strFunctionName, F function) const;
 
   /*!
    * @brief Wraps calls to all created clients in order to do common pre and post function invocation actions.
@@ -484,8 +484,9 @@ private:
    * @param failedClients Contains a list of the ids of clients for that the call failed, if any.
    * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
    */
+  template<typename F>
   PVR_ERROR ForCreatedClients(const char* strFunctionName,
-                              const PVRClientFunction& function,
+                              F function,
                               std::vector<int>& failedClients) const;
 
   mutable CCriticalSection m_critSection;

@@ -24,8 +24,7 @@ public:
 
   virtual ~CPVRIntSettingDefinition() = default;
 
-  bool operator==(const CPVRIntSettingDefinition& right) const;
-  bool operator!=(const CPVRIntSettingDefinition& right) const;
+  bool operator==(const CPVRIntSettingDefinition& right) const = default;
 
   const std::vector<SettingIntValue>& GetValues() const { return m_values.GetValues(); }
   int GetDefaultValue() const { return m_values.GetDefaultValue(); }

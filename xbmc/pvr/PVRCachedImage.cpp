@@ -30,11 +30,6 @@ bool CPVRCachedImage::operator==(const CPVRCachedImage& right) const
                               m_localImage == right.m_localImage && m_owner == right.m_owner);
 }
 
-bool CPVRCachedImage::operator!=(const CPVRCachedImage& right) const
-{
-  return !(*this == right);
-}
-
 void CPVRCachedImage::SetClientImage(const std::string& image)
 {
   if (StringUtils::StartsWith(image, "image://"))
@@ -53,7 +48,7 @@ void CPVRCachedImage::SetClientImage(const std::string& image)
   UpdateLocalImage();
 }
 
-void CPVRCachedImage::SetOwner(const std::string& owner)
+void CPVRCachedImage::SetOwner(std::string_view owner)
 {
   if (m_owner != owner)
   {

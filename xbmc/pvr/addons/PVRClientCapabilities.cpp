@@ -12,7 +12,6 @@
 #include "utils/StringUtils.h"
 
 #include <algorithm>
-#include <iterator>
 #include <memory>
 
 using namespace PVR;
@@ -82,6 +81,5 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
 void CPVRClientCapabilities::GetRecordingsLifetimeValues(
     std::vector<std::pair<std::string, int>>& list) const
 {
-  std::copy(m_recordingsLifetimeValues.cbegin(), m_recordingsLifetimeValues.cend(),
-            std::back_inserter(list));
+  std::ranges::copy(m_recordingsLifetimeValues, std::back_inserter(list));
 }

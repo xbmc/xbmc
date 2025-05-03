@@ -22,37 +22,42 @@
 #include "pvr/epg/EpgSearchFilter.h"
 #include "utils/StringUtils.h"
 
+#include <cstdio>
 #include <string>
 #include <utility>
 #include <vector>
 
 using namespace PVR;
 
-#define CONTROL_EDIT_SEARCH       9
-#define CONTROL_BTN_INC_DESC      10
-#define CONTROL_BTN_CASE_SENS     11
-#define CONTROL_SPIN_MIN_DURATION 12
-#define CONTROL_SPIN_MAX_DURATION 13
-#define CONTROL_EDIT_START_DATE   14
-#define CONTROL_EDIT_STOP_DATE    15
-#define CONTROL_EDIT_START_TIME   16
-#define CONTROL_EDIT_STOP_TIME    17
-#define CONTROL_SPIN_GENRE        18
-#define CONTROL_SPIN_NO_REPEATS   19
-#define CONTROL_BTN_UNK_GENRE     20
-#define CONTROL_SPIN_GROUPS       21
-#define CONTROL_BTN_FTA_ONLY      22
-#define CONTROL_SPIN_CHANNELS     23
-#define CONTROL_BTN_IGNORE_TMR    24
-#define CONTROL_BTN_CANCEL        25
-#define CONTROL_BTN_SEARCH        26
-#define CONTROL_BTN_IGNORE_REC    27
-#define CONTROL_BTN_DEFAULTS      28
-static constexpr int CONTROL_BTN_SAVE = 29;
-static constexpr int CONTROL_BTN_IGNORE_FINISHED = 30;
-static constexpr int CONTROL_BTN_IGNORE_FUTURE = 31;
-static constexpr int CONTROL_BTN_START_ANY_TIME = 32;
-static constexpr int CONTROL_BTN_END_ANY_TIME = 33;
+namespace
+{
+constexpr unsigned int CONTROL_EDIT_SEARCH = 9;
+constexpr unsigned int CONTROL_BTN_INC_DESC = 10;
+constexpr unsigned int CONTROL_BTN_CASE_SENS = 11;
+constexpr unsigned int CONTROL_SPIN_MIN_DURATION = 12;
+constexpr unsigned int CONTROL_SPIN_MAX_DURATION = 13;
+constexpr unsigned int CONTROL_EDIT_START_DATE = 14;
+constexpr unsigned int CONTROL_EDIT_STOP_DATE = 15;
+constexpr unsigned int CONTROL_EDIT_START_TIME = 16;
+constexpr unsigned int CONTROL_EDIT_STOP_TIME = 17;
+constexpr unsigned int CONTROL_SPIN_GENRE = 18;
+constexpr unsigned int CONTROL_SPIN_NO_REPEATS = 19;
+constexpr unsigned int CONTROL_BTN_UNK_GENRE = 20;
+constexpr unsigned int CONTROL_SPIN_GROUPS = 21;
+constexpr unsigned int CONTROL_BTN_FTA_ONLY = 22;
+constexpr unsigned int CONTROL_SPIN_CHANNELS = 23;
+constexpr unsigned int CONTROL_BTN_IGNORE_TMR = 24;
+constexpr unsigned int CONTROL_BTN_CANCEL = 25;
+constexpr unsigned int CONTROL_BTN_SEARCH = 26;
+constexpr unsigned int CONTROL_BTN_IGNORE_REC = 27;
+constexpr unsigned int CONTROL_BTN_DEFAULTS = 28;
+constexpr unsigned int CONTROL_BTN_SAVE = 29;
+constexpr unsigned int CONTROL_BTN_IGNORE_FINISHED = 30;
+constexpr unsigned int CONTROL_BTN_IGNORE_FUTURE = 31;
+constexpr unsigned int CONTROL_BTN_START_ANY_TIME = 32;
+constexpr unsigned int CONTROL_BTN_END_ANY_TIME = 33;
+
+} // unnamed namespace
 
 CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch()
   : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_SEARCH, "DialogPVRGuideSearch.xml")
@@ -166,12 +171,11 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
 {
   CGUIDialog::OnMessage(message);
 
-  switch (message.GetMessage())
+  if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-    case GUI_MSG_CLICKED:
+    switch (message.GetSenderId())
     {
-      int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTN_SEARCH)
+      case CONTROL_BTN_SEARCH:
       {
         // Read data from controls, update m_searchfilter accordingly
         UpdateSearchFilter();
@@ -180,13 +184,13 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
         Close();
         return true;
       }
-      else if (iControl == CONTROL_BTN_CANCEL)
+      case CONTROL_BTN_CANCEL:
       {
         m_result = Result::CANCEL;
         Close();
         return true;
       }
-      else if (iControl == CONTROL_BTN_DEFAULTS)
+      case CONTROL_BTN_DEFAULTS:
       {
         if (m_searchFilter)
         {
@@ -195,12 +199,12 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
         }
         return true;
       }
-      else if (iControl == CONTROL_BTN_SAVE)
+      case CONTROL_BTN_SAVE:
       {
         // Read data from controls, update m_searchfilter accordingly
         UpdateSearchFilter();
 
-        std::string title = m_searchFilter->GetTitle();
+        std::string title{m_searchFilter->GetTitle()};
         if (title.empty())
         {
           title = m_searchFilter->GetSearchTerm();
@@ -222,21 +226,22 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
         Close();
         return true;
       }
-      else if (iControl == CONTROL_SPIN_GROUPS)
+      case CONTROL_SPIN_GROUPS:
       {
         UpdateChannelSpin();
         return true;
       }
-      else if (iControl == CONTROL_BTN_START_ANY_TIME || iControl == CONTROL_BTN_END_ANY_TIME)
+      case CONTROL_BTN_START_ANY_TIME:
+      case CONTROL_BTN_END_ANY_TIME:
       {
         UpdateSearchFilter();
         Update();
         return true;
       }
+      default:
+        break;
     }
-    break;
   }
-
   return false;
 }
 
@@ -256,8 +261,9 @@ void CGUIDialogPVRGuideSearch::OnWindowLoaded()
 CDateTime CGUIDialogPVRGuideSearch::ReadDateTime(const std::string& strDate, const std::string& strTime) const
 {
   CDateTime dateTime;
-  int iHours, iMinutes;
-  sscanf(strTime.c_str(), "%d:%d", &iHours, &iMinutes);
+  int iHours{0};
+  int iMinutes{0};
+  std::sscanf(strTime.c_str(), "%d:%d", &iHours, &iMinutes);
   dateTime.SetFromDBDate(strDate);
   dateTime.SetDateTime(dateTime.GetYear(), dateTime.GetMonth(), dateTime.GetDay(), iHours, iMinutes, 0);
   return dateTime.GetAsUTCDateTime();
@@ -361,11 +367,12 @@ void CGUIDialogPVRGuideSearch::Update()
   m_endDateTime = m_searchFilter->GetEndDateTime();
   if (!m_startDateTime.IsValid() || !m_endDateTime.IsValid())
   {
-    const auto dates = CServiceBroker::GetPVRManager().EpgContainer().GetFirstAndLastEPGDate();
+    const auto [first, last] =
+        CServiceBroker::GetPVRManager().EpgContainer().GetFirstAndLastEPGDate();
     if (!m_startDateTime.IsValid())
-      m_startDateTime = dates.first;
+      m_startDateTime = first;
     if (!m_endDateTime.IsValid())
-      m_endDateTime = dates.second;
+      m_endDateTime = last;
   }
 
   if (!m_startDateTime.IsValid())

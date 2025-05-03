@@ -21,21 +21,24 @@
 
 using namespace PVR;
 
-#define CONTROL_BTN_OK    10
-#define SPIN_CONTROL_INFO 21
-#define TEXT_INFO         22
-#define CONTROL_NEXT_PAGE 60
-#define CONTROL_INFO_LIST 70
+namespace
+{
+constexpr unsigned int CONTROL_BTN_OK = 10;
+constexpr unsigned int SPIN_CONTROL_INFO = 21;
+constexpr unsigned int TEXT_INFO = 22;
+constexpr unsigned int CONTROL_INFO_LIST = 70;
 
-#define INFO_NEWS         1
-#define INFO_NEWS_LOCAL   2
-#define INFO_SPORT        3
-#define INFO_WEATHER      4
-#define INFO_LOTTERY      5
-#define INFO_STOCK        6
-#define INFO_OTHER        7
-#define INFO_CINEMA       8
-#define INFO_HOROSCOPE    9
+constexpr unsigned int INFO_NEWS = 1;
+constexpr unsigned int INFO_NEWS_LOCAL = 2;
+constexpr unsigned int INFO_SPORT = 3;
+constexpr unsigned int INFO_WEATHER = 4;
+constexpr unsigned int INFO_LOTTERY = 5;
+constexpr unsigned int INFO_STOCK = 6;
+constexpr unsigned int INFO_OTHER = 7;
+constexpr unsigned int INFO_CINEMA = 8;
+constexpr unsigned int INFO_HOROSCOPE = 9;
+
+} // unnamed namespace
 
 CGUIDialogPVRRadioRDSInfo::CGUIDialogPVRRadioRDSInfo()
   : CGUIDialog(WINDOW_DIALOG_PVR_RADIO_RDS_INFO, "DialogPVRRadioRDSInfo.xml")
@@ -73,11 +76,11 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
       if (!currentRDS)
         return false;
 
-      const CGUISpinControl* spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
+      const auto* spin{static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO))};
       if (!spin)
         return false;
 
-      CGUITextBox* textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
+      auto* textbox{static_cast<CGUITextBox*>(GetControl(TEXT_INFO))};
       if (!textbox)
         return false;
 
@@ -111,6 +114,8 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
         case INFO_HOROSCOPE:
           text = currentRDS->GetInfoHoroscope();
           break;
+        default:
+          break;
       }
 
       if (!text.empty())
@@ -141,11 +146,11 @@ void CGUIDialogPVRRadioRDSInfo::InitInfoControls()
 {
   SET_CONTROL_HIDDEN(CONTROL_INFO_LIST);
 
-  CGUISpinControl* spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
+  auto* spin{static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO))};
   if (spin)
     spin->Clear();
 
-  CGUITextBox* textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
+  auto* textbox{static_cast<CGUITextBox*>(GetControl(TEXT_INFO))};
 
   m_InfoNews.Init(spin, textbox);
   m_InfoNewsLocal.Init(spin, textbox);

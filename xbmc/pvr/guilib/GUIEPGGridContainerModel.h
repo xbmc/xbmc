@@ -58,7 +58,7 @@ public:
                   int iBlocksPerPage,
                   int blocksPerRulerItem,
                   float fBlockSize);
-  void SetInvalid();
+  void SetInvalid() const;
 
   static const int INVALID_INDEX = -1;
   void FindChannelAndBlockIndex(int channelUid,
@@ -130,7 +130,7 @@ private:
   using EpgTagsMap = std::unordered_map<int, EpgTags>;
 
   std::shared_ptr<CFileItem> CreateEpgTags(int iChannel, int iBlock) const;
-  std::shared_ptr<CFileItem> GetEpgTags(EpgTagsMap::iterator& itEpg,
+  std::shared_ptr<CFileItem> GetEpgTags(const EpgTagsMap::iterator& itEpg,
                                         int iChannel,
                                         int iBlock) const;
   std::shared_ptr<CFileItem> GetEpgTagsBefore(EpgTags& epgTags, int iChannel, int iBlock) const;
@@ -148,10 +148,7 @@ private:
   {
     GridCoordinates(int _channel, int _block) : channel(_channel), block(_block) {}
 
-    bool operator==(const GridCoordinates& other) const
-    {
-      return (channel == other.channel && block == other.block);
-    }
+    bool operator==(const GridCoordinates& other) const = default;
 
     int channel = 0;
     int block = 0;

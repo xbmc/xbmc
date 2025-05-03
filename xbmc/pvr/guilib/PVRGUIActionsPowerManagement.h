@@ -9,7 +9,6 @@
 #pragma once
 
 #include "pvr/IPVRComponent.h"
-#include "pvr/settings/PVRSettings.h"
 
 #include <memory>
 
@@ -17,13 +16,14 @@ class CFileItem;
 
 namespace PVR
 {
+class CPVRSettings;
 class CPVRTimerInfoTag;
 
 class CPVRGUIActionsPowerManagement : public IPVRComponent
 {
 public:
   CPVRGUIActionsPowerManagement();
-  ~CPVRGUIActionsPowerManagement() override = default;
+  ~CPVRGUIActionsPowerManagement() override;
 
   /*!
    * @brief Check whether the system Kodi is running on can be powered down
@@ -43,7 +43,7 @@ private:
   bool EventOccursOnLocalBackend(const std::shared_ptr<CPVRTimerInfoTag>& event) const;
   bool IsNextEventWithinBackendIdleTime() const;
 
-  CPVRSettings m_settings;
+  std::unique_ptr<CPVRSettings> m_settings;
 };
 
 namespace GUI

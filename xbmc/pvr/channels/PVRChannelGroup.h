@@ -40,7 +40,7 @@ class CPVRChannelGroupMember;
 class CPVRClient;
 class CPVREpgInfoTag;
 
-enum RenumberMode
+enum class RenumberMode
 {
   NORMAL = 0,
   IGNORE_NUMBERING_FROM_ONE = 1
@@ -67,7 +67,6 @@ public:
   ~CPVRChannelGroup() override;
 
   bool operator==(const CPVRChannelGroup& right) const;
-  bool operator!=(const CPVRChannelGroup& right) const;
 
   /*!
    * @brief Query the events available for CEventStream
@@ -244,7 +243,7 @@ public:
    * @param mode the numbering mode to use
    * @return True if something changed, false otherwise.
    */
-  bool Renumber(RenumberMode mode = NORMAL);
+  bool Renumber(RenumberMode mode = RenumberMode::NORMAL);
 
   //@}
 
@@ -610,7 +609,7 @@ private:
    * @param membersToDelete The channel group members.
    */
   void DeleteGroupMembersFromDb(
-      const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& membersToDelete);
+      const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& membersToDelete) const;
 
   /*!
    * @brief Update this group's data with a channel group member provided by a client.

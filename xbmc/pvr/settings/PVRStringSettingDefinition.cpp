@@ -17,14 +17,4 @@ CPVRStringSettingDefinition::CPVRStringSettingDefinition(const PVR_STRING_SETTIN
     m_allowEmptyValue{def.bAllowEmptyValue}
 {
 }
-
-bool CPVRStringSettingDefinition::operator==(const CPVRStringSettingDefinition& right) const
-{
-  return (m_values == right.m_values && m_allowEmptyValue == right.m_allowEmptyValue);
-}
-
-bool CPVRStringSettingDefinition::operator!=(const CPVRStringSettingDefinition& right) const
-{
-  return !(*this == right);
-}
 } // namespace PVR

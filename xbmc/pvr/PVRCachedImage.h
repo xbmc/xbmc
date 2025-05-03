@@ -9,6 +9,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 namespace PVR
 {
@@ -23,14 +24,13 @@ public:
   CPVRCachedImage(const std::string& clientImage, const std::string& owner);
 
   bool operator==(const CPVRCachedImage& right) const;
-  bool operator!=(const CPVRCachedImage& right) const;
 
   const std::string& GetClientImage() const { return m_clientImage; }
   const std::string& GetLocalImage() const { return m_localImage; }
 
   void SetClientImage(const std::string& image);
 
-  void SetOwner(const std::string& owner);
+  void SetOwner(std::string_view owner);
 
 private:
   void UpdateLocalImage();

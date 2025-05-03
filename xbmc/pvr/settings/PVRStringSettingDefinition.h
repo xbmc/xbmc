@@ -24,8 +24,7 @@ public:
 
   virtual ~CPVRStringSettingDefinition() = default;
 
-  bool operator==(const CPVRStringSettingDefinition& right) const;
-  bool operator!=(const CPVRStringSettingDefinition& right) const;
+  bool operator==(const CPVRStringSettingDefinition& right) const = default;
 
   const std::vector<SettingStringValue>& GetValues() const { return m_values.GetValues(); }
   const std::string& GetDefaultValue() const { return m_values.GetDefaultValue(); }

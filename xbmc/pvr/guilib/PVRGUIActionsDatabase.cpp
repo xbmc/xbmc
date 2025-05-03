@@ -58,49 +58,47 @@ public:
 
     CFileItemList options;
 
-    const std::shared_ptr<CFileItem> itemAll =
-        std::make_shared<CFileItem>(StringUtils::Format(g_localizeStrings.Get(593))); // All
+    const auto itemAll{
+        std::make_shared<CFileItem>(StringUtils::Format(g_localizeStrings.Get(593)))}; // All
     itemAll->SetPath("all");
     options.Add(itemAll);
 
     // if channels are cleared, groups, EPG data and providers must also be cleared
-    const std::shared_ptr<CFileItem> itemChannels =
-        std::make_shared<CFileItem>(StringUtils::Format("{}, {}, {}, {}",
-                                                        g_localizeStrings.Get(19019), // Channels
-                                                        g_localizeStrings.Get(19146), // Groups
-                                                        g_localizeStrings.Get(19069), // Guide
-                                                        g_localizeStrings.Get(19334))); // Providers
+    const auto itemChannels{std::make_shared<CFileItem>(
+        StringUtils::Format("{}, {}, {}, {}",
+                            g_localizeStrings.Get(19019), // Channels
+                            g_localizeStrings.Get(19146), // Groups
+                            g_localizeStrings.Get(19069), // Guide
+                            g_localizeStrings.Get(19334)))}; // Providers
     itemChannels->SetPath("channels");
     itemChannels->Select(true); // preselect this item in dialog
     options.Add(itemChannels);
 
-    const std::shared_ptr<CFileItem> itemGroups =
-        std::make_shared<CFileItem>(g_localizeStrings.Get(19146)); // Groups
+    const auto itemGroups{std::make_shared<CFileItem>(g_localizeStrings.Get(19146))}; // Groups
     itemGroups->SetPath("groups");
     options.Add(itemGroups);
 
-    const std::shared_ptr<CFileItem> itemGuide =
-        std::make_shared<CFileItem>(g_localizeStrings.Get(19069)); // Guide
+    const auto itemGuide{std::make_shared<CFileItem>(g_localizeStrings.Get(19069))}; // Guide
     itemGuide->SetPath("guide");
     options.Add(itemGuide);
 
-    const std::shared_ptr<CFileItem> itemProviders =
-        std::make_shared<CFileItem>(g_localizeStrings.Get(19334)); // Providers
+    const auto itemProviders{
+        std::make_shared<CFileItem>(g_localizeStrings.Get(19334))}; // Providers
     itemProviders->SetPath("providers");
     options.Add(itemProviders);
 
-    const std::shared_ptr<CFileItem> itemReminders =
-        std::make_shared<CFileItem>(g_localizeStrings.Get(19215)); // Reminders
+    const auto itemReminders{
+        std::make_shared<CFileItem>(g_localizeStrings.Get(19215))}; // Reminders
     itemReminders->SetPath("reminders");
     options.Add(itemReminders);
 
-    const std::shared_ptr<CFileItem> itemRecordings =
-        std::make_shared<CFileItem>(g_localizeStrings.Get(19017)); // Recordings
+    const auto itemRecordings{
+        std::make_shared<CFileItem>(g_localizeStrings.Get(19017))}; // Recordings
     itemRecordings->SetPath("recordings");
     options.Add(itemRecordings);
 
-    const std::shared_ptr<CFileItem> itemClients =
-        std::make_shared<CFileItem>(g_localizeStrings.Get(24019)); // PVR clients
+    const auto itemClients{
+        std::make_shared<CFileItem>(g_localizeStrings.Get(24019))}; // PVR clients
     itemClients->SetPath("clients");
     options.Add(itemClients);
 
@@ -154,7 +152,7 @@ private:
 
 } // unnamed namespace
 
-bool CPVRGUIActionsDatabase::ResetDatabase(bool bResetEPGOnly)
+bool CPVRGUIActionsDatabase::ResetDatabase(bool bResetEPGOnly) const
 {
   CGUIDialogProgress* pDlgProgress =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
@@ -237,8 +235,9 @@ bool CPVRGUIActionsDatabase::ResetDatabase(bool bResetEPGOnly)
   CServiceBroker::GetPVRManager().Stop();
 
   const int iProgressStepPercentage =
-      100 / ((2 * bResetChannels) + bResetGroups + bResetGuide + bResetProviders + bResetReminders +
-             bResetRecordings + bResetClients + 1);
+      100 / ((2 * bResetChannels) + (bResetGroups ? 1 : 0) + (bResetGuide ? 1 : 0) +
+             (bResetProviders ? 1 : 0) + (bResetReminders ? 1 : 0) + (bResetRecordings ? 1 : 0) +
+             (bResetClients ? 1 : 0) + 1);
   int iProgressStepsDone = 0;
 
   if (bResetProviders)

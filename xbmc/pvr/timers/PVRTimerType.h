@@ -35,14 +35,14 @@ public:
    * @brief Return a list with all known timer types.
    * @return A list of timer types or an empty list if no types available.
    */
-  static const std::vector<std::shared_ptr<CPVRTimerType>> GetAllTypes();
+  static std::vector<std::shared_ptr<CPVRTimerType>> GetAllTypes();
 
   /*!
    * @brief Return the first available timer type from given client.
    * @param client the PVR client.
    * @return A timer type or NULL if none available.
    */
-  static const std::shared_ptr<CPVRTimerType> GetFirstAvailableType(
+  static std::shared_ptr<CPVRTimerType> GetFirstAvailableType(
       const std::shared_ptr<const CPVRClient>& client);
 
   /*!
@@ -73,8 +73,7 @@ public:
   CPVRTimerType(const CPVRTimerType& type) = delete;
   CPVRTimerType& operator=(const CPVRTimerType& orig) = delete;
 
-  bool operator==(const CPVRTimerType& right) const;
-  bool operator!=(const CPVRTimerType& right) const;
+  bool operator==(const CPVRTimerType& right) const = default;
 
   /*!
    * @brief Update the data of this instance with the data given by another type instance.

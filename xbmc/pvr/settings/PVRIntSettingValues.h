@@ -23,7 +23,7 @@ class CPVRIntSettingValues
 public:
   CPVRIntSettingValues() = default;
   explicit CPVRIntSettingValues(int defaultValue);
-  CPVRIntSettingValues(struct PVR_ATTRIBUTE_INT_VALUE* values,
+  CPVRIntSettingValues(const struct PVR_ATTRIBUTE_INT_VALUE* values,
                        unsigned int valuesSize,
                        int defaultValue,
                        int defaultDescriptionResourceId = 0);

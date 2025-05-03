@@ -9,7 +9,6 @@
 #pragma once
 
 #include "pvr/IPVRComponent.h"
-#include "pvr/settings/PVRSettings.h"
 
 #include <memory>
 
@@ -23,12 +22,13 @@ enum class ParentalCheckResult
 };
 
 class CPVRChannel;
+class CPVRSettings;
 
 class CPVRGUIActionsParentalControl : public IPVRComponent
 {
 public:
   CPVRGUIActionsParentalControl();
-  ~CPVRGUIActionsParentalControl() override = default;
+  ~CPVRGUIActionsParentalControl() override;
 
   /*!
    * @brief Check if channel is parental locked. Ask for PIN if necessary.
@@ -47,7 +47,7 @@ private:
   CPVRGUIActionsParentalControl(const CPVRGUIActionsParentalControl&) = delete;
   CPVRGUIActionsParentalControl const& operator=(CPVRGUIActionsParentalControl const&) = delete;
 
-  CPVRSettings m_settings;
+  std::unique_ptr<CPVRSettings> m_settings;
 };
 
 namespace GUI

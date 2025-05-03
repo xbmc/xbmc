@@ -18,6 +18,7 @@
 #include "pvr/epg/EpgDatabase.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
+#include "pvr/settings/PVRSettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -25,10 +26,10 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <iterator>
 #include <memory>
 #include <mutex>
 #include <numeric>
+#include <ranges>
 #include <utility>
 #include <vector>
 
@@ -43,7 +44,7 @@ public:
   CEpgUpdateRequest() : CEpgUpdateRequest(PVR_CLIENT_INVALID_UID, PVR_CHANNEL_INVALID_UID) {}
   CEpgUpdateRequest(int iClientID, int iUniqueChannelID) : m_iClientID(iClientID), m_iUniqueChannelID(iUniqueChannelID) {}
 
-  void Deliver(const std::shared_ptr<CPVREpg>& epg);
+  void Deliver(const std::shared_ptr<CPVREpg>& epg) const;
 
   int GetClientID() const { return m_iClientID; }
   int GetUniqueChannelID() const { return m_iUniqueChannelID; }
@@ -53,7 +54,7 @@ private:
   int m_iUniqueChannelID;
 };
 
-void CEpgUpdateRequest::Deliver(const std::shared_ptr<CPVREpg>& epg)
+void CEpgUpdateRequest::Deliver(const std::shared_ptr<CPVREpg>& epg) const
 {
   epg->ForceUpdate();
 }
@@ -64,7 +65,7 @@ public:
   CEpgTagStateChange() = default;
   CEpgTagStateChange(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE eNewState) : m_epgtag(tag), m_state(eNewState) {}
 
-  void Deliver(const std::shared_ptr<CPVREpg>& epg);
+  void Deliver(const std::shared_ptr<CPVREpg>& epg) const;
 
   std::shared_ptr<CPVREpgInfoTag> GetTag() const { return m_epgtag; }
 
@@ -73,7 +74,7 @@ private:
   EPG_EVENT_STATE m_state = EPG_EVENT_CREATED;
 };
 
-void CEpgTagStateChange::Deliver(const std::shared_ptr<CPVREpg>& epg)
+void CEpgTagStateChange::Deliver(const std::shared_ptr<CPVREpg>& epg) const
 {
   if (m_epgtag->EpgID() < 0)
   {
@@ -87,10 +88,11 @@ void CEpgTagStateChange::Deliver(const std::shared_ptr<CPVREpg>& epg)
 
 CPVREpgContainer::CPVREpgContainer(CEventSource<PVREvent>& eventSource)
   : CThread("EPGUpdater"),
-    m_database(new CPVREpgDatabase),
-    m_settings({CSettings::SETTING_EPG_EPGUPDATE, CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
-                CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
-                CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV}),
+    m_database(std::make_shared<CPVREpgDatabase>()),
+    m_settings(std::make_unique<CPVRSettings>(std::set<std::string>(
+        {CSettings::SETTING_EPG_EPGUPDATE, CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
+         CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
+         CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV}))),
     m_events(eventSource)
 {
   m_bStop = true; // base class member
@@ -150,11 +152,6 @@ void CPVREpgContainer::Stop()
   }
 }
 
-bool CPVREpgContainer::Load()
-{
-  return true;
-}
-
 void CPVREpgContainer::Unload()
 {
   {
@@ -171,9 +168,8 @@ void CPVREpgContainer::Unload()
   {
     std::unique_lock lock(m_critSection);
 
-    /* clear all epg tables and remove pointers to epg tables on channels */
-    std::transform(m_epgIdToEpgMap.cbegin(), m_epgIdToEpgMap.cend(), std::back_inserter(epgs),
-                   [](const auto& epgEntry) { return epgEntry.second; });
+    // clear all epg tables and remove pointers to epg tables on channels
+    std::ranges::copy(std::views::values(m_epgIdToEpgMap), std::back_inserter(epgs));
 
     m_epgIdToEpgMap.clear();
     m_channelUidToEpgMap.clear();
@@ -248,14 +244,14 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
   std::vector<std::shared_ptr<CPVREpg>> changedEpgs;
   {
     std::unique_lock lock(m_critSection);
-    for (const auto& epg : m_epgIdToEpgMap)
+    for (const auto& [_, epg] : m_epgIdToEpgMap)
     {
-      if (epg.second && epg.second->NeedsSave())
+      if (epg && epg->NeedsSave())
       {
         // Note: We need to obtain a lock for every epg instance before we can lock
         //       the epg db. This order is important. Otherwise deadlocks may occur.
-        epg.second->Lock();
-        changedEpgs.emplace_back(epg.second);
+        epg->Lock();
+        changedEpgs.emplace_back(epg);
       }
     }
   }
@@ -450,8 +446,7 @@ std::vector<std::shared_ptr<CPVREpg>> CPVREpgContainer::GetAllEpgs() const
   std::vector<std::shared_ptr<CPVREpg>> epgs;
 
   std::unique_lock lock(m_critSection);
-  std::transform(m_epgIdToEpgMap.cbegin(), m_epgIdToEpgMap.cend(), std::back_inserter(epgs),
-                 [](const auto& epgEntry) { return epgEntry.second; });
+  std::ranges::copy(std::views::values(m_epgIdToEpgMap), std::back_inserter(epgs));
 
   return epgs;
 }
@@ -513,9 +508,9 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagByDatabaseId(int iDataba
   const auto epgs = m_epgIdToEpgMap;
   m_critSection.unlock();
 
-  for (const auto& epgEntry : epgs)
+  for (const auto& [_, epg] : epgs)
   {
-    retval = epgEntry.second->GetTagByDatabaseId(iDatabaseId);
+    retval = epg->GetTagByDatabaseId(iDatabaseId);
     if (retval)
       break;
   }
@@ -607,8 +602,10 @@ bool CPVREpgContainer::RemoveOldEntries()
   const auto epgs = m_epgIdToEpgMap;
   m_critSection.unlock();
 
-  for (const auto& epgEntry : epgs)
-    epgEntry.second->Cleanup(cleanupTime);
+  for (const auto& [_, epg] : epgs)
+  {
+    epg->Cleanup(cleanupTime);
+  }
 
   std::unique_lock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
@@ -685,9 +682,9 @@ bool CPVREpgContainer::QueueDeleteEpg(const std::shared_ptr<const CPVREpg>& epg,
 bool CPVREpgContainer::InterruptUpdate() const
 {
   std::unique_lock lock(m_critSection);
-  return m_bStop ||
-         m_bPreventUpdates ||
-         (m_bPlaying && m_settings.GetBoolValue(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV));
+  return m_bStop || m_bPreventUpdates ||
+         (m_bPlaying &&
+          m_settings->GetBoolValue(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV));
 }
 
 void CPVREpgContainer::WaitForUpdateFinish()
@@ -745,7 +742,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
         g_localizeStrings.Get(19004)); // Loading programme guide
 
   size_t counter = 0;
-  for (const auto& epgEntry : epgsToUpdate)
+  for (const auto& [_, epg] : epgsToUpdate)
   {
     if (InterruptUpdate())
     {
@@ -753,20 +750,19 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       break;
     }
 
-    const std::shared_ptr<CPVREpg> epg = epgEntry.second;
     if (!epg)
       continue;
 
     if (progressHandler)
-      progressHandler->UpdateProgress(epg->GetChannelData()->ChannelName(), ++counter,
+    {
+      counter++;
+      progressHandler->UpdateProgress(epg->GetChannelData()->ChannelName(), counter,
                                       epgsToUpdate.size());
+    }
 
     if ((!bOnlyPending || epg->UpdatePending()) &&
-        epg->Update(start,
-                    end,
-                    m_settings.GetIntValue(CSettings::SETTING_EPG_EPGUPDATE) * 60,
-                    m_settings.GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY),
-                    database,
+        epg->Update(start, end, m_settings->GetIntValue(CSettings::SETTING_EPG_EPGUPDATE) * 60,
+                    m_settings->GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY), database,
                     bOnlyPending))
     {
       iUpdatedTables++;
@@ -825,15 +821,15 @@ std::pair<CDateTime, CDateTime> CPVREpgContainer::GetFirstAndLastEPGDate() const
   CDateTime first(dbDates.first);
   CDateTime last(dbDates.second);
 
-  for (const auto& epgEntry : epgs)
+  for (const auto& [_, epg] : epgs)
   {
-    const auto dates = epgEntry.second->GetFirstAndLastUncommitedEPGDate();
+    const auto [firstUncommitted, lastUncommitted] = epg->GetFirstAndLastUncommittedEPGDate();
 
-    if (dates.first.IsValid() && (!first.IsValid() || dates.first < first))
-      first = dates.first;
+    if (firstUncommitted.IsValid() && (!first.IsValid() || firstUncommitted < first))
+      first = firstUncommitted;
 
-    if (dates.second.IsValid() && (!last.IsValid() || dates.second > last))
-      last = dates.second;
+    if (lastUncommitted.IsValid() && (!last.IsValid() || lastUncommitted > last))
+      last = lastUncommitted;
   }
 
   return {first, last};
@@ -903,12 +899,12 @@ void CPVREpgContainer::UpdateFromClient(const std::shared_ptr<CPVREpgInfoTag>& t
 
 int CPVREpgContainer::GetPastDaysToDisplay() const
 {
-  return m_settings.GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY);
+  return m_settings->GetIntValue(CSettings::SETTING_EPG_PAST_DAYSTODISPLAY);
 }
 
 int CPVREpgContainer::GetFutureDaysToDisplay() const
 {
-  return m_settings.GetIntValue(CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY);
+  return m_settings->GetIntValue(CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY);
 }
 
 void CPVREpgContainer::OnPlaybackStarted()
@@ -986,7 +982,7 @@ bool CPVREpgContainer::PersistSavedSearch(CPVREpgSearchFilter& search)
   return false;
 }
 
-bool CPVREpgContainer::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch)
+bool CPVREpgContainer::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch) const
 {
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)

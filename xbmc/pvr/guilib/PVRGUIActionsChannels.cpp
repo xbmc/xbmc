@@ -31,6 +31,7 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/settings/PVRSettings.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -104,7 +105,7 @@ void TriggerChannelSwitchAction(const CPVRChannelNumber& channelNumber)
 }
 } // unnamed namespace
 
-void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& channelNumber)
+void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& channelNumber) const
 {
   if (channelNumber.IsValid() && CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
   {
@@ -150,7 +151,7 @@ void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& 
   }
 }
 
-void CPVRChannelSwitchingInputHandler::SwitchToPreviousChannel()
+void CPVRChannelSwitchingInputHandler::SwitchToPreviousChannel() const
 {
   const std::shared_ptr<const CPVRPlaybackState> playbackState =
       CServiceBroker::GetPVRManager().PlaybackState();
@@ -171,7 +172,8 @@ void CPVRChannelSwitchingInputHandler::SwitchToPreviousChannel()
 }
 
 CPVRGUIActionsChannels::CPVRGUIActionsChannels()
-  : m_settings({CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL})
+  : m_settings(std::make_unique<CPVRSettings>(
+        std::set<std::string>({CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL})))
 {
   RegisterChannelNumberInputHandler(&m_channelNumberInputHandler);
 }
@@ -240,9 +242,8 @@ bool CPVRGUIActionsChannels::StartChannelScan(int clientId)
 
   if (clientId != PVR_CLIENT_INVALID_UID)
   {
-    const auto it =
-        std::find_if(possibleScanClients.cbegin(), possibleScanClients.cend(),
-                     [clientId](const auto& client) { return client->GetID() == clientId; });
+    const auto it = std::ranges::find_if(possibleScanClients, [clientId](const auto& client)
+                                         { return client->GetID() == clientId; });
 
     if (it != possibleScanClients.cend())
       scanClient = (*it);
@@ -332,7 +333,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIActionsChannels::GetChannelGroupM
       WINDOW_RADIO_RECORDINGS, WINDOW_RADIO_TIMERS, WINDOW_RADIO_TIMER_RULES, WINDOW_RADIO_SEARCH,
   };
 
-  if (std::find(windowIDs.cbegin(), windowIDs.cend(), activeWindowID) == windowIDs.cend())
+  if (std::ranges::find(windowIDs, activeWindowID) == windowIDs.cend())
   {
     const std::shared_ptr<const CPVRChannelGroup> group =
         CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(channel->IsRadio());
@@ -366,9 +367,9 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIActionsChannels::GetChannelGroupM
 CPVRChannelNumberInputHandler& CPVRGUIActionsChannels::GetChannelNumberInputHandler()
 {
   // window/dialog specific input handler
-  CPVRChannelNumberInputHandler* windowInputHandler = dynamic_cast<CPVRChannelNumberInputHandler*>(
+  auto* windowInputHandler{dynamic_cast<CPVRChannelNumberInputHandler*>(
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow(
-          CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog()));
+          CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog()))};
   if (windowInputHandler)
     return *windowInputHandler;
 
@@ -399,7 +400,7 @@ void CPVRGUIActionsChannels::OnPlaybackStopped(const CFileItem& item)
   }
 }
 
-void CPVRGUIActionsChannels::SetSelectedChannelPath(bool bRadio, const std::string& path)
+void CPVRGUIActionsChannels::SetSelectedChannelPath(bool bRadio, std::string_view path)
 {
   std::unique_lock lock(m_critSection);
   if (bRadio)
@@ -410,9 +411,9 @@ void CPVRGUIActionsChannels::SetSelectedChannelPath(bool bRadio, const std::stri
 
 std::string CPVRGUIActionsChannels::GetSelectedChannelPath(bool bRadio) const
 {
-  if (m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL))
+  if (m_settings->GetBoolValue(CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL))
   {
-    CPVRManager& mgr = CServiceBroker::GetPVRManager();
+    const CPVRManager& mgr{CServiceBroker::GetPVRManager()};
 
     // if preselect playing channel is activated, return the path of the playing channel, if any.
     const std::shared_ptr<const CPVRChannelGroupMember> playingChannel =

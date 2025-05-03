@@ -10,6 +10,8 @@
 
 #include "guilib/GUIDialog.h"
 
+#include <memory>
+
 class CFileItem;
 class CGUIMessage;
 
@@ -32,6 +34,6 @@ private:
   bool OnClickButtonOK(const CGUIMessage& message);
   bool OnClickButtonPlay(const CGUIMessage& message);
 
-  CFileItemPtr m_recordItem;
+  std::shared_ptr<CFileItem> m_recordItem;
 };
 } // namespace PVR

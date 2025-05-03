@@ -66,7 +66,8 @@ bool CPVRGUITimerInfo::TimerInfoToggle()
   {
     unsigned int iPrevious = m_iTimerInfoToggleCurrent;
     unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
-    if (++m_iTimerInfoToggleCurrent > iBoundary - 1)
+    m_iTimerInfoToggleCurrent++;
+    if (m_iTimerInfoToggleCurrent > iBoundary - 1)
       m_iTimerInfoToggleCurrent = 0;
 
     if (m_iTimerInfoToggleCurrent != iPrevious)

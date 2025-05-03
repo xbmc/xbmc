@@ -20,7 +20,8 @@
 using namespace PVR;
 
 CPVRChannelGroupsContainer::CPVRChannelGroupsContainer()
-  : m_groupsRadio(new CPVRChannelGroups(true)), m_groupsTV(new CPVRChannelGroups(false))
+  : m_groupsRadio(std::make_shared<CPVRChannelGroups>(true)),
+    m_groupsTV(std::make_shared<CPVRChannelGroups>(false))
 {
 }
 
@@ -35,7 +36,7 @@ bool CPVRChannelGroupsContainer::Update(const std::vector<std::shared_ptr<CPVRCl
 }
 
 bool CPVRChannelGroupsContainer::LoadFromDatabase(
-    const std::vector<std::shared_ptr<CPVRClient>>& clients)
+    const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
   return m_groupsTV->LoadFromDatabase(clients) && m_groupsRadio->LoadFromDatabase(clients);
 }
@@ -60,7 +61,7 @@ bool CPVRChannelGroupsContainer::UpdateFromClients(
   return bReturn;
 }
 
-void CPVRChannelGroupsContainer::Unload()
+void CPVRChannelGroupsContainer::Unload() const
 {
   m_groupsRadio->Unload();
   m_groupsTV->Unload();
@@ -188,7 +189,7 @@ unsigned int CPVRChannelGroupsContainer::GetChannelCountByProvider(bool isRadio,
     return m_groupsTV->GetGroupAll()->GetChannelCountByProvider(clientId, providerId);
 }
 
-int CPVRChannelGroupsContainer::CleanupCachedImages()
+int CPVRChannelGroupsContainer::CleanupCachedImages() const
 {
   return m_groupsTV->CleanupCachedImages() + m_groupsRadio->CleanupCachedImages();
 }

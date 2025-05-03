@@ -46,12 +46,13 @@ CGUIViewStateWindowPVRChannels::CGUIViewStateWindowPVRChannels(const int windowI
   // Default sorting
   SetSortMethod(SortByChannelNumber);
 
-  LoadViewState("pvr://channels/", m_windowId);
+  LoadViewState("pvr://channels/", GetWindowId());
 }
 
 void CGUIViewStateWindowPVRChannels::SaveViewState()
 {
-  SaveViewToDb("pvr://channels/", m_windowId, CViewStateSettings::GetInstance().Get("pvrchannels"));
+  SaveViewToDb("pvr://channels/", GetWindowId(),
+               CViewStateSettings::GetInstance().Get("pvrchannels"));
 }
 
 CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int windowId,
@@ -85,12 +86,12 @@ CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int win
   SetSortMethod(
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_PVRDefaultSortOrder);
 
-  LoadViewState(items.GetPath(), m_windowId);
+  LoadViewState(items.GetPath(), GetWindowId());
 }
 
 void CGUIViewStateWindowPVRRecordings::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), m_windowId,
+  SaveViewToDb(m_items.GetPath(), GetWindowId(),
                CViewStateSettings::GetInstance().Get("pvrrecordings"));
 }
 
@@ -122,12 +123,12 @@ CGUIViewStateWindowPVRGuide::CGUIViewStateWindowPVRGuide(const int windowId,
   // Default sorting
   SetSortMethod(SortByChannelNumber);
 
-  LoadViewState("pvr://guide/", m_windowId);
+  LoadViewState("pvr://guide/", GetWindowId());
 }
 
 void CGUIViewStateWindowPVRGuide::SaveViewState()
 {
-  SaveViewToDb("pvr://guide/", m_windowId, CViewStateSettings::GetInstance().Get("pvrguide"));
+  SaveViewToDb("pvr://guide/", GetWindowId(), CViewStateSettings::GetInstance().Get("pvrguide"));
 }
 
 CGUIViewStateWindowPVRTimers::CGUIViewStateWindowPVRTimers(const int windowId,
@@ -147,12 +148,12 @@ CGUIViewStateWindowPVRTimers::CGUIViewStateWindowPVRTimers(const int windowId,
   // Default sorting
   SetSortMethod(SortByDate);
 
-  LoadViewState("pvr://timers/", m_windowId);
+  LoadViewState("pvr://timers/", GetWindowId());
 }
 
 void CGUIViewStateWindowPVRTimers::SaveViewState()
 {
-  SaveViewToDb("pvr://timers/", m_windowId, CViewStateSettings::GetInstance().Get("pvrtimers"));
+  SaveViewToDb("pvr://timers/", GetWindowId(), CViewStateSettings::GetInstance().Get("pvrtimers"));
 }
 
 bool CGUIViewStateWindowPVRTimers::HideParentDirItems()
@@ -175,12 +176,13 @@ CGUIViewStateWindowPVRSearch::CGUIViewStateWindowPVRSearch(const int windowId,
   else
     SetSortMethod(SortByDate, SortOrderAscending);
 
-  LoadViewState(m_items.GetPath(), m_windowId);
+  LoadViewState(m_items.GetPath(), GetWindowId());
 }
 
 void CGUIViewStateWindowPVRSearch::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), m_windowId, CViewStateSettings::GetInstance().Get("pvrsearch"));
+  SaveViewToDb(m_items.GetPath(), GetWindowId(),
+               CViewStateSettings::GetInstance().Get("pvrsearch"));
 }
 
 bool CGUIViewStateWindowPVRSearch::HideParentDirItems()
@@ -208,12 +210,12 @@ CGUIViewStateWindowPVRProviders::CGUIViewStateWindowPVRProviders(const int windo
     SetSortMethod(SortByLabel, SortOrderAscending);
   }
 
-  LoadViewState(m_items.GetPath(), m_windowId);
+  LoadViewState(m_items.GetPath(), GetWindowId());
 }
 
 void CGUIViewStateWindowPVRProviders::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), m_windowId,
+  SaveViewToDb(m_items.GetPath(), GetWindowId(),
                CViewStateSettings::GetInstance().Get("pvrproviders"));
 }
 

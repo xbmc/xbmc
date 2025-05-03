@@ -30,7 +30,7 @@ public:
    * @param isRadio Whether Radio or TV.
    * @return The new group.
    */
-  std::shared_ptr<CPVRChannelGroup> CreateAllChannelsGroup(bool isRadio);
+  std::shared_ptr<CPVRChannelGroup> CreateAllChannelsGroup(bool isRadio) const;
 
   /*!
    * @brief Create an instance for a group provided by a PVR client add-on.
@@ -42,7 +42,7 @@ public:
   std::shared_ptr<CPVRChannelGroup> CreateClientGroup(
       const PVR_CHANNEL_GROUP& groupData,
       int clientID,
-      const std::shared_ptr<const CPVRChannelGroup>& allChannels);
+      const std::shared_ptr<const CPVRChannelGroup>& allChannels) const;
 
   /*!
    * @brief Create an instance for a group created by the user.
@@ -54,7 +54,7 @@ public:
   std::shared_ptr<CPVRChannelGroup> CreateUserGroup(
       bool isRadio,
       const std::string& name,
-      const std::shared_ptr<const CPVRChannelGroup>& allChannels);
+      const std::shared_ptr<const CPVRChannelGroup>& allChannels) const;
 
   /*!
    * @brief Create a channel group matching the given type.
@@ -66,7 +66,7 @@ public:
   std::shared_ptr<CPVRChannelGroup> CreateGroup(
       int groupType,
       const CPVRChannelsPath& groupPath,
-      const std::shared_ptr<const CPVRChannelGroup>& allChannels);
+      const std::shared_ptr<const CPVRChannelGroup>& allChannels) const;
 
   /*!
    * @brief Get the priority (e.g. for sorting groups) for the type of the given group. Lower number means higher priority.
@@ -83,6 +83,6 @@ public:
    */
   std::vector<std::shared_ptr<CPVRChannelGroup>> CreateMissingGroups(
       const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup,
-      const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups);
+      const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups) const;
 };
 } // namespace PVR

@@ -23,6 +23,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/settings/PVRCustomTimerSettings.h"
+#include "pvr/settings/PVRSettings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "settings/SettingUtils.h"
@@ -35,7 +36,6 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <iterator>
 #include <memory>
 #include <string>
 #include <utility>
@@ -44,34 +44,37 @@
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
-#define SETTING_TMR_TYPE "timer.type"
-#define SETTING_TMR_ACTIVE "timer.active"
-#define SETTING_TMR_NAME "timer.name"
-#define SETTING_TMR_EPGSEARCH "timer.epgsearch"
-#define SETTING_TMR_FULLTEXT "timer.fulltext"
-#define SETTING_TMR_CHANNEL "timer.channel"
-#define SETTING_TMR_START_ANYTIME "timer.startanytime"
-#define SETTING_TMR_END_ANYTIME "timer.endanytime"
-#define SETTING_TMR_START_DAY "timer.startday"
-#define SETTING_TMR_END_DAY "timer.endday"
-#define SETTING_TMR_BEGIN "timer.begin"
-#define SETTING_TMR_END "timer.end"
-#define SETTING_TMR_WEEKDAYS "timer.weekdays"
-#define SETTING_TMR_FIRST_DAY "timer.firstday"
-#define SETTING_TMR_NEW_EPISODES "timer.newepisodes"
-#define SETTING_TMR_BEGIN_PRE "timer.startmargin"
-#define SETTING_TMR_END_POST "timer.endmargin"
-#define SETTING_TMR_PRIORITY "timer.priority"
-#define SETTING_TMR_LIFETIME "timer.lifetime"
-#define SETTING_TMR_MAX_REC "timer.maxrecordings"
-#define SETTING_TMR_DIR "timer.directory"
-#define SETTING_TMR_REC_GROUP "timer.recgroup"
+namespace
+{
+constexpr const char* SETTING_TMR_TYPE = "timer.type";
+constexpr const char* SETTING_TMR_ACTIVE = "timer.active";
+constexpr const char* SETTING_TMR_NAME = "timer.name";
+constexpr const char* SETTING_TMR_EPGSEARCH = "timer.epgsearch";
+constexpr const char* SETTING_TMR_FULLTEXT = "timer.fulltext";
+constexpr const char* SETTING_TMR_CHANNEL = "timer.channel";
+constexpr const char* SETTING_TMR_START_ANYTIME = "timer.startanytime";
+constexpr const char* SETTING_TMR_END_ANYTIME = "timer.endanytime";
+constexpr const char* SETTING_TMR_START_DAY = "timer.startday";
+constexpr const char* SETTING_TMR_END_DAY = "timer.endday";
+constexpr const char* SETTING_TMR_BEGIN = "timer.begin";
+constexpr const char* SETTING_TMR_END = "timer.end";
+constexpr const char* SETTING_TMR_WEEKDAYS = "timer.weekdays";
+constexpr const char* SETTING_TMR_FIRST_DAY = "timer.firstday";
+constexpr const char* SETTING_TMR_NEW_EPISODES = "timer.newepisodes";
+constexpr const char* SETTING_TMR_BEGIN_PRE = "timer.startmargin";
+constexpr const char* SETTING_TMR_END_POST = "timer.endmargin";
+constexpr const char* SETTING_TMR_PRIORITY = "timer.priority";
+constexpr const char* SETTING_TMR_LIFETIME = "timer.lifetime";
+constexpr const char* SETTING_TMR_MAX_REC = "timer.maxrecordings";
+constexpr const char* SETTING_TMR_DIR = "timer.directory";
+constexpr const char* SETTING_TMR_REC_GROUP = "timer.recgroup";
 
-#define TYPE_DEP_VISIBI_COND_ID_POSTFIX "visibi.typedep"
-#define TYPE_DEP_ENABLE_COND_ID_POSTFIX "enable.typedep"
-#define CHANNEL_DEP_VISIBI_COND_ID_POSTFIX "visibi.channeldep"
-#define START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX "visibi.startanytimedep"
-#define END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX "visibi.endanytimedep"
+constexpr const char* TYPE_DEP_VISIBI_COND_ID_POSTFIX = "visibi.typedep";
+constexpr const char* TYPE_DEP_ENABLE_COND_ID_POSTFIX = "enable.typedep";
+constexpr const char* START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX = "visibi.startanytimedep";
+constexpr const char* END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX = "visibi.endanytimedep";
+
+} // unnamed namespace
 
 CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogSettings.xml"),
@@ -160,11 +163,13 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
     if (m_timerType->SupportsAnyChannel())
     {
       // Select first matching "Any channel" entry.
-      const auto it = std::find_if(m_channelEntries.cbegin(), m_channelEntries.cend(),
-                                   [this](const auto& channel) {
-                                     return channel.second.channelUid == PVR_CHANNEL_INVALID_UID &&
-                                            channel.second.clientId == m_timerInfoTag->m_iClientId;
-                                   });
+      const auto it =
+          std::ranges::find_if(m_channelEntries,
+                               [this](const auto& channel)
+                               {
+                                 return channel.second.channelUid == PVR_CHANNEL_INVALID_UID &&
+                                        channel.second.clientId == m_timerInfoTag->m_iClientId;
+                               });
 
       if (it != m_channelEntries.cend())
       {
@@ -178,11 +183,13 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
     else if (m_bIsNewTimer)
     {
       // Select first matching regular (not "Any channel") entry.
-      const auto it = std::find_if(m_channelEntries.cbegin(), m_channelEntries.cend(),
-                                   [this](const auto& channel) {
-                                     return channel.second.channelUid != PVR_CHANNEL_INVALID_UID &&
-                                            channel.second.clientId == m_timerInfoTag->m_iClientId;
-                                   });
+      const auto it =
+          std::ranges::find_if(m_channelEntries,
+                               [this](const auto& channel)
+                               {
+                                 return channel.second.channelUid != PVR_CHANNEL_INVALID_UID &&
+                                        channel.second.clientId == m_timerInfoTag->m_iClientId;
+                               });
 
       if (it != m_channelEntries.cend())
       {
@@ -197,8 +204,10 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
   else
   {
     // Find matching channel entry
-    const auto it = std::find_if(
-        m_channelEntries.cbegin(), m_channelEntries.cend(), [this](const auto& channel) {
+    const auto it = std::ranges::find_if(
+        m_channelEntries,
+        [this](const auto& channel)
+        {
           return channel.second.channelUid == m_timerInfoTag->m_iClientChannelUid &&
                  channel.second.clientId == m_timerInfoTag->m_iClientId;
         });
@@ -229,29 +238,29 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   CGUIDialogSettingsManualBase::InitializeSettings();
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("pvrtimersettings", -1);
-  if (category == NULL)
+  if (!category)
   {
     CLog::LogF(LOGERROR, "Unable to add settings category");
     return;
   }
 
   const std::shared_ptr<CSettingGroup> group = AddGroup(category);
-  if (group == NULL)
+  if (!group)
   {
     CLog::LogF(LOGERROR, "Unable to add settings group");
     return;
   }
 
-  std::shared_ptr<CSetting> setting = NULL;
+  std::shared_ptr<CSetting> setting;
 
   // Timer type
   bool useDetails = false;
   bool foundClientSupportingTimers = false;
 
   const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
-  for (const auto& client : clients)
+  for (const auto& [_, client] : clients)
   {
-    if (client.second->GetClientCapabilities().SupportsTimers())
+    if (client->GetClientCapabilities().SupportsTimers())
     {
       if (foundClientSupportingTimers)
       {
@@ -481,7 +490,7 @@ int CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting(const SettingConstPtr& se
 
 void CGUIDialogPVRTimerSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
   {
     CLog::LogF(LOGERROR, "No setting");
     return;
@@ -625,7 +634,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const std::shared_ptr<const CS
 
 void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
   {
     CLog::LogF(LOGERROR, "No setting");
     return;
@@ -658,7 +667,7 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSe
   }
 }
 
-bool CGUIDialogPVRTimerSettings::Validate()
+bool CGUIDialogPVRTimerSettings::Validate() const
 {
   // @todo: Timer rules may have no date (time-only), so we can't check those for now.
   //        We need to extend the api with additional attributes to properly fix this
@@ -833,14 +842,14 @@ void CGUIDialogPVRTimerSettings::SetButtonLabels()
 {
   // timer start time
   BaseSettingControlPtr settingControl = GetSettingControl(SETTING_TMR_BEGIN);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
   {
     SET_CONTROL_LABEL2(settingControl->GetID(), m_timerStartTimeStr);
   }
 
   // timer end time
   settingControl = GetSettingControl(SETTING_TMR_END);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
   {
     SET_CONTROL_LABEL2(settingControl->GetID(), m_timerEndTimeStr);
   }
@@ -947,11 +956,15 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
     if (!bFoundThisType && *type == *m_timerType)
       bFoundThisType = true;
 
-    m_typeEntries.insert(std::make_pair(idx++, type));
+    m_typeEntries.insert(std::make_pair(idx, type));
+    idx++;
   }
 
   if (!bFoundThisType)
-    m_typeEntries.insert(std::make_pair(idx++, m_timerType));
+  {
+    m_typeEntries.insert(std::make_pair(idx, m_timerType));
+    idx++;
+  }
 }
 
 void CGUIDialogPVRTimerSettings::InitializeChannelsList()
@@ -964,22 +977,25 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   // and for reminder rules another one representing any channel from any client.
   const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
   if (clients.size() > 1)
-    m_channelEntries.insert(
-        {index++, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, PVR_CLIENT_INVALID_UID,
-                                    // Any channel from any client
-                                    g_localizeStrings.Get(854))});
-
-  for (const auto& client : clients)
   {
     m_channelEntries.insert(
-        {index, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, client.second->GetID(),
+        {index, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, PVR_CLIENT_INVALID_UID,
+                                  // Any channel from any client
+                                  g_localizeStrings.Get(854))});
+    index++;
+  }
+
+  for (const auto& [_, client] : clients)
+  {
+    m_channelEntries.insert(
+        {index, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, client->GetID(),
                                   clients.size() == 1
                                       // Any channel
                                       ? g_localizeStrings.Get(809)
                                       // Any channel from client "X"
                                       : StringUtils::Format(g_localizeStrings.Get(853),
-                                                            client.second->GetFullClientName()))});
-    ++index;
+                                                            client->GetFullClientName()))});
+    index++;
   }
 
   // Add regular channels
@@ -1003,7 +1019,7 @@ void CGUIDialogPVRTimerSettings::TypesFiller(const SettingConstPtr& setting,
                                              int& current,
                                              void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
@@ -1017,20 +1033,20 @@ void CGUIDialogPVRTimerSettings::TypesFiller(const SettingConstPtr& setting,
     const auto clients = CServiceBroker::GetPVRManager().Clients();
 
     bool foundCurrent(false);
-    for (const auto& typeEntry : pThis->m_typeEntries)
+    for (const auto& [timerId, timer] : pThis->m_typeEntries)
     {
       std::string clientName;
 
-      const auto client = clients->GetCreatedClient(typeEntry.second->GetClientId());
+      const auto client{clients->GetCreatedClient(timer->GetClientId())};
       if (client)
         clientName = client->GetFullClientName();
 
-      list.emplace_back(typeEntry.second->GetDescription(), clientName, typeEntry.first,
-                        typeEntry.second->IsReminder() ? reminderTimerProps : recordingTimerProps);
+      list.emplace_back(timer->GetDescription(), clientName, timerId,
+                        timer->IsReminder() ? reminderTimerProps : recordingTimerProps);
 
-      if (!foundCurrent && (*(pThis->m_timerType) == *(typeEntry.second)))
+      if (!foundCurrent && (*(pThis->m_timerType) == *timer))
       {
-        current = typeEntry.first;
+        current = timerId;
         foundCurrent = true;
       }
     }
@@ -1044,36 +1060,36 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
                                                 int& current,
                                                 void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
     current = 0;
 
     bool foundCurrent(false);
-    for (const auto& channelEntry : pThis->m_channelEntries)
+    for (const auto& [channelId, channelDescriptor] : pThis->m_channelEntries)
     {
       // Only include channels for the currently selected timer type or all channels if type is client-independent.
       if (pThis->m_timerType->GetClientId() == PVR_CLIENT_INVALID_UID || // client-independent
-          pThis->m_timerType->GetClientId() == channelEntry.second.clientId)
+          pThis->m_timerType->GetClientId() == channelDescriptor.clientId)
       {
         // Do not add "any channel" entry if not supported by selected timer type.
-        if (channelEntry.second.channelUid == PVR_CHANNEL_INVALID_UID &&
+        if (channelDescriptor.channelUid == PVR_CHANNEL_INVALID_UID &&
             !pThis->m_timerType->SupportsAnyChannel())
           continue;
 
         // Do not add "any channel from any client" entry for reminder rules.
-        if (channelEntry.second.channelUid == PVR_CHANNEL_INVALID_UID &&
-            channelEntry.second.clientId == PVR_CLIENT_INVALID_UID &&
+        if (channelDescriptor.channelUid == PVR_CHANNEL_INVALID_UID &&
+            channelDescriptor.clientId == PVR_CLIENT_INVALID_UID &&
             !pThis->m_timerType->IsReminder() && !pThis->m_timerType->IsTimerRule())
           continue;
 
-        list.emplace_back(channelEntry.second.description, channelEntry.first);
+        list.emplace_back(channelDescriptor.description, channelId);
       }
 
-      if (!foundCurrent && (pThis->m_channel == channelEntry.second))
+      if (!foundCurrent && (pThis->m_channel == channelDescriptor))
       {
-        current = channelEntry.first;
+        current = channelId;
         foundCurrent = true;
       }
     }
@@ -1081,15 +1097,11 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
     if (foundCurrent)
     {
       // Verify m_channel is still valid. Update if not.
-      if (std::find_if(list.cbegin(), list.cend(),
-                       [&current](const auto& channel)
-                       { return channel.value == current; }) == list.cend())
+      if (std::ranges::find(list, current, &IntegerSettingOption::value) == list.cend())
       {
         // Set m_channel and current to first valid channel in list
         const int first{list.front().value};
-        const auto it =
-            std::find_if(pThis->m_channelEntries.cbegin(), pThis->m_channelEntries.cend(),
-                         [first](const auto& channel) { return channel.first == first; });
+        const auto it = pThis->m_channelEntries.find(first);
 
         if (it != pThis->m_channelEntries.cend())
         {
@@ -1112,7 +1124,7 @@ void CGUIDialogPVRTimerSettings::DaysFiller(const SettingConstPtr& setting,
                                             int& current,
                                             void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
@@ -1161,16 +1173,16 @@ void CGUIDialogPVRTimerSettings::DupEpisodesFiller(const SettingConstPtr& settin
                                                    int& current,
                                                    void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
 
     const std::vector<SettingIntValue>& values{
         pThis->m_timerType->GetPreventDuplicateEpisodesValues()};
-    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
-      return IntegerSettingOption(value.first, value.second);
-    });
+    std::ranges::transform(values, std::back_inserter(list),
+                           [](const auto& value)
+                           { return IntegerSettingOption(value.first, value.second); });
 
     current = pThis->m_iPreventDupEpisodes;
   }
@@ -1183,7 +1195,7 @@ void CGUIDialogPVRTimerSettings::WeekdaysFiller(const SettingConstPtr& setting,
                                                 int& current,
                                                 void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
@@ -1206,15 +1218,15 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(const SettingConstPtr& setting
                                                   int& current,
                                                   void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
 
     const std::vector<SettingIntValue>& values{pThis->m_timerType->GetPriorityValues()};
-    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
-      return IntegerSettingOption(value.first, value.second);
-    });
+    std::ranges::transform(values, std::back_inserter(list),
+                           [](const auto& value)
+                           { return IntegerSettingOption(value.first, value.second); });
 
     current = pThis->m_iPriority;
 
@@ -1230,7 +1242,7 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(const SettingConstPtr& setting
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, IntegerSettingOption(std::to_string(current), current));
+      list.emplace(it, IntegerSettingOption(std::to_string(current), current));
     }
   }
   else
@@ -1242,15 +1254,15 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(const SettingConstPtr& setting,
                                                  int& current,
                                                  void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
 
     const std::vector<SettingIntValue>& values{pThis->m_timerType->GetLifetimeValues()};
-    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
-      return IntegerSettingOption(value.first, value.second);
-    });
+    std::ranges::transform(values, std::back_inserter(list),
+                           [](const auto& value)
+                           { return IntegerSettingOption(value.first, value.second); });
 
     current = pThis->m_iLifetime;
 
@@ -1266,9 +1278,9 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(const SettingConstPtr& setting,
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, IntegerSettingOption(
-                          StringUtils::Format(g_localizeStrings.Get(17999), current) /* {} days */,
-                          current));
+      list.emplace(it, IntegerSettingOption(
+                           StringUtils::Format(g_localizeStrings.Get(17999), current) /* {} days */,
+                           current));
     }
   }
   else
@@ -1280,15 +1292,15 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(const SettingConstPtr& sett
                                                      int& current,
                                                      void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
 
     const std::vector<SettingIntValue>& values{pThis->m_timerType->GetMaxRecordingsValues()};
-    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
-      return IntegerSettingOption(value.first, value.second);
-    });
+    std::ranges::transform(values, std::back_inserter(list),
+                           [](const auto& value)
+                           { return IntegerSettingOption(value.first, value.second); });
 
     current = pThis->m_iMaxRecordings;
 
@@ -1304,7 +1316,7 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(const SettingConstPtr& sett
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, IntegerSettingOption(std::to_string(current), current));
+      list.emplace(it, IntegerSettingOption(std::to_string(current), current));
     }
   }
   else
@@ -1316,15 +1328,15 @@ void CGUIDialogPVRTimerSettings::RecordingGroupFiller(const SettingConstPtr& set
                                                       int& current,
                                                       void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
 
     const std::vector<SettingIntValue>& values{pThis->m_timerType->GetRecordingGroupValues()};
-    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
-      return IntegerSettingOption(value.first, value.second);
-    });
+    std::ranges::transform(values, std::back_inserter(list),
+                           [](const auto& value)
+                           { return IntegerSettingOption(value.first, value.second); });
 
     current = pThis->m_iRecordingGroup;
   }
@@ -1337,7 +1349,7 @@ void CGUIDialogPVRTimerSettings::MarginTimeFiller(const SettingConstPtr& setting
                                                   int& current,
                                                   void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
@@ -1369,9 +1381,9 @@ void CGUIDialogPVRTimerSettings::MarginTimeFiller(const SettingConstPtr& setting
     if (bInsertValue)
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.insert(it, IntegerSettingOption(
-                          StringUtils::Format(g_localizeStrings.Get(14044), current) /* {} min */,
-                          current));
+      list.emplace(it, IntegerSettingOption(
+                           StringUtils::Format(g_localizeStrings.Get(14044), current) /* {} min */,
+                           current));
     }
   }
   else
@@ -1384,7 +1396,7 @@ void CGUIDialogPVRTimerSettings::CustomIntSettingDefinitionsFiller(
     int& current,
     void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
@@ -1403,7 +1415,7 @@ void CGUIDialogPVRTimerSettings::CustomStringSettingDefinitionsFiller(
     std::string& current,
     void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
   if (pThis)
   {
     list.clear();
@@ -1435,11 +1447,11 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
                                                        const SettingConstPtr& setting,
                                                        void* data)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
+  if (!pThis)
   {
     CLog::LogF(LOGERROR, "No dialog");
     return false;
@@ -1515,11 +1527,11 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condit
                                                        const SettingConstPtr& setting,
                                                        void* data)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
+  if (!pThis)
   {
     CLog::LogF(LOGERROR, "No dialog");
     return false;
@@ -1602,11 +1614,11 @@ bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string& con
                                                           const SettingConstPtr& setting,
                                                           void* data)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
+  if (!pThis)
   {
     CLog::LogF(LOGERROR, "No dialog");
     return false;
@@ -1649,11 +1661,11 @@ bool CGUIDialogPVRTimerSettings::EndAnytimeSetCondition(const std::string& condi
                                                         const SettingConstPtr& setting,
                                                         void* data)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
+  if (!pThis)
   {
     CLog::LogF(LOGERROR, "No dialog");
     return false;

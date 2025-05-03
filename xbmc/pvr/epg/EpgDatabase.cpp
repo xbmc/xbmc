@@ -19,9 +19,11 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace dbiplus;
@@ -437,21 +439,19 @@ std::vector<std::shared_ptr<CPVREpg>> CPVREpgDatabase::GetAll()
   return result;
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
-    const std::unique_ptr<dbiplus::Dataset>& pDS) const
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(dbiplus::Dataset& ds) const
 {
-  if (!pDS->eof())
+  if (!ds.eof())
   {
     std::shared_ptr<CPVREpgInfoTag> newTag(
         new CPVREpgInfoTag(m_pDS->fv("idEpg").get_asInt(), m_pDS->fv("sIconPath").get_asString(),
                            m_pDS->fv("sParentalRatingIcon").get_asString()));
 
-    time_t iStartTime;
-    iStartTime = static_cast<time_t>(m_pDS->fv("iStartTime").get_asInt());
+    auto iStartTime{static_cast<time_t>(m_pDS->fv("iStartTime").get_asInt())};
     const CDateTime startTime(iStartTime);
     newTag->m_startTime = startTime;
 
-    time_t iEndTime = static_cast<time_t>(m_pDS->fv("iEndTime").get_asInt());
+    auto iEndTime{static_cast<time_t>(m_pDS->fv("iEndTime").get_asInt())};
     const CDateTime endTime(iEndTime);
     newTag->m_endTime = endTime;
 
@@ -468,9 +468,9 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_strPlotOutline = m_pDS->fv("sPlotOutline").get_asString();
     newTag->m_strPlot = m_pDS->fv("sPlot").get_asString();
     newTag->m_strOriginalTitle = m_pDS->fv("sOriginalTitle").get_asString();
-    newTag->m_cast = newTag->Tokenize(m_pDS->fv("sCast").get_asString());
-    newTag->m_directors = newTag->Tokenize(m_pDS->fv("sDirector").get_asString());
-    newTag->m_writers = newTag->Tokenize(m_pDS->fv("sWriter").get_asString());
+    newTag->m_cast = CPVREpgInfoTag::Tokenize(m_pDS->fv("sCast").get_asString());
+    newTag->m_directors = CPVREpgInfoTag::Tokenize(m_pDS->fv("sDirector").get_asString());
+    newTag->m_writers = CPVREpgInfoTag::Tokenize(m_pDS->fv("sWriter").get_asString());
     newTag->m_iYear = m_pDS->fv("iYear").get_asInt();
     newTag->m_strIMDBNumber = m_pDS->fv("sIMDBNumber").get_asString();
     newTag->m_parentalRating = m_pDS->fv("iParentalRating").get_asInt();
@@ -582,7 +582,7 @@ public:
 
   bool HasSearchTerm() const { return !m_fragments.empty(); }
 
-  std::string ToSQL(const std::string& strFieldName) const
+  std::string ToSQL(std::string_view strFieldName) const
   {
     std::string result = "(";
 
@@ -762,8 +762,9 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
 
   if (searchData.m_bIgnoreFinishedBroadcasts)
   {
-    const time_t minEnd = std::time(nullptr); // now
-    filter.AppendWhere(PrepareSQL("iEndTime > %u", static_cast<unsigned int>(minEnd)));
+    const auto now{std::chrono::system_clock::now()};
+    filter.AppendWhere(PrepareSQL(
+        "iEndTime > %u", static_cast<unsigned int>(std::chrono::system_clock::to_time_t(now))));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -772,8 +773,9 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
 
   if (searchData.m_bIgnoreFutureBroadcasts)
   {
-    const time_t maxStart = std::time(nullptr); // now
-    filter.AppendWhere(PrepareSQL("iStartTime < %u", static_cast<unsigned int>(maxStart)));
+    const auto now{std::chrono::system_clock::now()};
+    filter.AppendWhere(PrepareSQL(
+        "iStartTime < %u", static_cast<unsigned int>(std::chrono::system_clock::to_time_t(now))));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -829,7 +831,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
         std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
         while (!m_pDS->eof())
         {
-          tags.emplace_back(CreateEpgTag(m_pDS));
+          tags.emplace_back(CreateEpgTag(*m_pDS));
           m_pDS->next();
         }
         m_pDS->close();
@@ -858,7 +860,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByUniqueBroadcastID(
   {
     try
     {
-      std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
+      const std::shared_ptr<CPVREpgInfoTag> tag{CreateEpgTag(*m_pDS)};
       m_pDS->close();
       return tag;
     }
@@ -885,7 +887,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByDatabaseID(int iEpgI
   {
     try
     {
-      std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
+      const std::shared_ptr<CPVREpgInfoTag> tag{CreateEpgTag(*m_pDS)};
       m_pDS->close();
       return tag;
     }
@@ -915,7 +917,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(
   {
     try
     {
-      std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
+      const std::shared_ptr<CPVREpgInfoTag> tag{CreateEpgTag(*m_pDS)};
       m_pDS->close();
       return tag;
     }
@@ -946,7 +948,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMinStartTime(
   {
     try
     {
-      std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
+      const std::shared_ptr<CPVREpgInfoTag> tag{CreateEpgTag(*m_pDS)};
       m_pDS->close();
       return tag;
     }
@@ -977,7 +979,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMaxEndTime(
   {
     try
     {
-      std::shared_ptr<CPVREpgInfoTag> tag = CreateEpgTag(m_pDS);
+      const std::shared_ptr<CPVREpgInfoTag> tag{CreateEpgTag(*m_pDS)};
       m_pDS->close();
       return tag;
     }
@@ -1014,7 +1016,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinSta
       std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
       while (!m_pDS->eof())
       {
-        tags.emplace_back(CreateEpgTag(m_pDS));
+        tags.emplace_back(CreateEpgTag(*m_pDS));
         m_pDS->next();
       }
       m_pDS->close();
@@ -1054,7 +1056,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinEnd
       std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
       while (!m_pDS->eof())
       {
-        tags.emplace_back(CreateEpgTag(m_pDS));
+        tags.emplace_back(CreateEpgTag(*m_pDS));
         m_pDS->next();
       }
       m_pDS->close();
@@ -1107,7 +1109,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int 
       std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
       while (!m_pDS->eof())
       {
-        tags.emplace_back(CreateEpgTag(m_pDS));
+        tags.emplace_back(CreateEpgTag(*m_pDS));
         m_pDS->next();
       }
       m_pDS->close();
@@ -1293,8 +1295,10 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
     return false;
   }
 
-  time_t iStartTime, iEndTime;
+  time_t iStartTime{0};
   tag.StartAsUTC().GetAsTime(iStartTime);
+
+  time_t iEndTime{0};
   tag.EndAsUTC().GetAsTime(iEndTime);
 
   std::string sFirstAired;
@@ -1320,9 +1324,10 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, '%s', '%s', '%s');",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
-        tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
-        tag.DeTokenize(tag.Directors()).c_str(), tag.DeTokenize(tag.Writers()).c_str(), tag.Year(),
-        tag.IMDBNumber().c_str(), tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
+        tag.OriginalTitle().c_str(), CPVREpgInfoTag::DeTokenize(tag.Cast()).c_str(),
+        CPVREpgInfoTag::DeTokenize(tag.Directors()).c_str(),
+        CPVREpgInfoTag::DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
+        tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
         tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
@@ -1343,9 +1348,10 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, %i, '%s', '%s', '%s');",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
-        tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
-        tag.DeTokenize(tag.Directors()).c_str(), tag.DeTokenize(tag.Writers()).c_str(), tag.Year(),
-        tag.IMDBNumber().c_str(), tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
+        tag.OriginalTitle().c_str(), CPVREpgInfoTag::DeTokenize(tag.Cast()).c_str(),
+        CPVREpgInfoTag::DeTokenize(tag.Directors()).c_str(),
+        CPVREpgInfoTag::DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
+        tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
         tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
@@ -1370,9 +1376,9 @@ int CPVREpgDatabase::GetLastEPGId() const
 /********** Saved searches methods **********/
 
 std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::CreateEpgSearchFilter(
-    bool bRadio, const std::unique_ptr<dbiplus::Dataset>& pDS) const
+    bool bRadio, dbiplus::Dataset& ds) const
 {
-  if (!pDS->eof())
+  if (!ds.eof())
   {
     auto newSearch = std::make_shared<CPVREpgSearchFilter>(bRadio);
 
@@ -1433,7 +1439,7 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearc
     {
       while (!m_pDS->eof())
       {
-        result.emplace_back(CreateEpgSearchFilter(bRadio, m_pDS));
+        result.emplace_back(CreateEpgSearchFilter(bRadio, *m_pDS));
         m_pDS->next();
       }
       m_pDS->close();
@@ -1456,7 +1462,7 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::GetSavedSearchById(bool bR
   {
     try
     {
-      std::shared_ptr<CPVREpgSearchFilter> filter = CreateEpgSearchFilter(bRadio, m_pDS);
+      const std::shared_ptr<CPVREpgSearchFilter> filter{CreateEpgSearchFilter(bRadio, *m_pDS)};
       m_pDS->close();
       return filter;
     }

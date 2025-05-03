@@ -36,7 +36,7 @@ CPVREpg::CPVREpg(int iEpgID,
   : m_iEpgID(iEpgID),
     m_strName(strName),
     m_strScraperName(strScraperName),
-    m_channelData(new CPVREpgChannelData),
+    m_channelData(std::make_shared<CPVREpgChannelData>()),
     m_tags(m_iEpgID, m_channelData, database)
 {
 }
@@ -140,8 +140,8 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTim
     time_t e;
     endTime.GetAsTime(e);
 
-    const std::shared_ptr<CPVREpg> tmpEpg = std::make_shared<CPVREpg>(
-        m_iEpgID, m_strName, m_strScraperName, m_channelData, std::shared_ptr<CPVREpgDatabase>());
+    const auto tmpEpg{std::make_shared<CPVREpg>(m_iEpgID, m_strName, m_strScraperName,
+                                                m_channelData, std::shared_ptr<CPVREpgDatabase>())};
     if (tmpEpg->UpdateFromScraper(b, e, true))
       tag = tmpEpg->GetTagBetween(beginTime, endTime, false);
 
@@ -197,8 +197,7 @@ bool CPVREpg::UpdateEntry(const EPG_TAG* data, int iClientId)
   if (!data)
     return false;
 
-  const std::shared_ptr<CPVREpgInfoTag> tag =
-      std::make_shared<CPVREpgInfoTag>(*data, iClientId, m_channelData, m_iEpgID);
+  const auto tag{std::make_shared<CPVREpgInfoTag>(*data, iClientId, m_channelData, m_iEpgID)};
 
   return !IsTagExpired(tag) && m_tags.UpdateEntry(tag);
 }
@@ -379,10 +378,10 @@ bool CPVREpg::QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& databas
   return true;
 }
 
-std::pair<CDateTime, CDateTime> CPVREpg::GetFirstAndLastUncommitedEPGDate() const
+std::pair<CDateTime, CDateTime> CPVREpg::GetFirstAndLastUncommittedEPGDate() const
 {
   std::unique_lock lock(m_critSection);
-  return m_tags.GetFirstAndLastUncommitedEPGDate();
+  return m_tags.GetFirstAndLastUncommittedEPGDate();
 }
 
 bool CPVREpg::UpdateFromScraper(time_t start, time_t end, bool bForceUpdate)

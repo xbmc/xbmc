@@ -22,7 +22,7 @@ public:
    * @brief Select and invoke client-specific settings actions
    * @return true on success, false otherwise.
    */
-  bool ProcessSettingsMenuHooks();
+  bool ProcessSettingsMenuHooks() const;
 
 private:
   CPVRGUIActionsClients(const CPVRGUIActionsClients&) = delete;

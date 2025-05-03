@@ -65,9 +65,9 @@ private:
   int m_iSelectedGroupMember = 0;
   int m_iSelectedChannelGroup = 0;
 
-  CFileItemList* m_ungroupedChannels;
-  CFileItemList* m_groupMembers;
-  CFileItemList* m_channelGroups;
+  std::unique_ptr<CFileItemList> m_ungroupedChannels;
+  std::unique_ptr<CFileItemList> m_groupMembers;
+  std::unique_ptr<CFileItemList> m_channelGroups;
 
   CGUIViewControl m_viewUngroupedChannels;
   CGUIViewControl m_viewGroupMembers;

@@ -33,10 +33,10 @@ CPVRCustomTimerSettings::CPVRCustomTimerSettings(
   : m_customProps(customProps)
 {
   unsigned int idx{0};
-  for (const auto& type : typeEntries)
+  for (const auto& [_, timerType] : typeEntries)
   {
     const std::vector<std::shared_ptr<const CPVRTimerSettingDefinition>>& settingDefs{
-        type.second->GetCustomSettingDefinitions()};
+        timerType->GetCustomSettingDefinitions()};
     for (const auto& settingDef : settingDefs)
     {
       std::string settingIdPrefix;
@@ -55,7 +55,7 @@ CPVRCustomTimerSettings::CPVRCustomTimerSettings(
       }
 
       const std::string settingId{StringUtils::Format("{}-{}", settingIdPrefix, idx)};
-      m_customSettingDefs.emplace_back(std::make_pair(settingId, settingDef));
+      m_customSettingDefs.emplace_back(settingId, settingDef);
       ++idx;
     }
   }
@@ -66,18 +66,17 @@ CPVRCustomTimerSettings::CPVRCustomTimerSettings(
 void CPVRCustomTimerSettings::SetTimerType(const CPVRTimerType& timerType)
 {
   CPVRTimerInfoTag::CustomPropsMap newCustomProps;
-  for (const auto& entry : m_customSettingDefs)
+  for (const auto& [_, def] : m_customSettingDefs)
   {
     // Complete custom props for given type.
-    const CPVRTimerSettingDefinition& def{*entry.second};
-    if (def.GetTimerTypeId() == timerType.GetTypeId() &&
-        def.GetClientId() == timerType.GetClientId())
+    if (def->GetTimerTypeId() == timerType.GetTypeId() &&
+        def->GetClientId() == timerType.GetClientId())
     {
-      const auto it{m_customProps.find(def.GetId())};
+      const auto it{m_customProps.find(def->GetId())};
       if (it == m_customProps.cend())
-        newCustomProps.insert({def.GetId(), {def.GetType(), def.GetDefaultValue()}});
+        newCustomProps.insert({def->GetId(), {def->GetType(), def->GetDefaultValue()}});
       else
-        newCustomProps.insert({def.GetId(), {(*it).second.type, (*it).second.value}});
+        newCustomProps.insert({def->GetId(), {(*it).second.type, (*it).second.value}});
     }
   }
   m_customProps = newCustomProps;
@@ -86,18 +85,16 @@ void CPVRCustomTimerSettings::SetTimerType(const CPVRTimerType& timerType)
 void CPVRCustomTimerSettings::AddSettings(IPVRSettingsContainer& settingsContainer,
                                           const std::shared_ptr<CSettingGroup>& group)
 {
-  for (const auto& settingDef : m_customSettingDefs)
+  for (const auto& [settingName, settingDef] : m_customSettingDefs)
   {
-    const CPVRTimerSettingDefinition& def{*settingDef.second};
-    const auto it{m_customProps.find(def.GetId())};
+    const auto it{m_customProps.find(settingDef->GetId())};
     if (it == m_customProps.cend())
       continue;
 
-    const std::string settingName{settingDef.first};
     if (IsCustomIntSetting(settingName))
     {
       const int intValue{(*it).second.value.asInteger32()};
-      const CPVRIntSettingDefinition& intDef{def.GetIntDefinition()};
+      const CPVRIntSettingDefinition& intDef{settingDef->GetIntDefinition()};
       if (intDef.GetValues().empty())
         settingsContainer.AddSingleIntSetting(group, settingName, intValue, intDef.GetMinValue(),
                                               intDef.GetStepValue(), intDef.GetMaxValue());
@@ -107,7 +104,7 @@ void CPVRCustomTimerSettings::AddSettings(IPVRSettingsContainer& settingsContain
     else if (IsCustomStringSetting(settingName))
     {
       const std::string stringValue{(*it).second.value.asString()};
-      const CPVRStringSettingDefinition& stringDef{def.GetStringDefinition()};
+      const CPVRStringSettingDefinition& stringDef{settingDef->GetStringDefinition()};
       if (stringDef.GetValues().empty())
         settingsContainer.AddSingleStringSetting(group, settingName, stringValue,
                                                  stringDef.IsAllowEmptyValue());
@@ -117,17 +114,17 @@ void CPVRCustomTimerSettings::AddSettings(IPVRSettingsContainer& settingsContain
   }
 }
 
-bool CPVRCustomTimerSettings::IsCustomSetting(const std::string& settingId) const
+bool CPVRCustomTimerSettings::IsCustomSetting(std::string_view settingId) const
 {
   return IsCustomIntSetting(settingId) || IsCustomStringSetting(settingId);
 }
 
-bool CPVRCustomTimerSettings::IsCustomIntSetting(const std::string& settingId) const
+bool CPVRCustomTimerSettings::IsCustomIntSetting(std::string_view settingId) const
 {
   return settingId.starts_with(SETTING_TMR_CUSTOM_INT);
 }
 
-bool CPVRCustomTimerSettings::IsCustomStringSetting(const std::string& settingId) const
+bool CPVRCustomTimerSettings::IsCustomStringSetting(std::string_view settingId) const
 {
   return settingId.starts_with(SETTING_TMR_CUSTOM_STRING);
 }
@@ -181,8 +178,9 @@ bool CPVRCustomTimerSettings::IntSettingDefinitionsFiller(const std::string& set
   }
 
   const std::vector<SettingIntValue>& values{def->GetIntDefinition().GetValues()};
-  std::transform(values.cbegin(), values.cend(), std::back_inserter(list),
-                 [](const auto& value) { return IntegerSettingOption(value.first, value.second); });
+  std::ranges::transform(values, std::back_inserter(list),
+                         [](const auto& value)
+                         { return IntegerSettingOption(value.first, value.second); });
 
   const auto it2{m_customProps.find(def->GetId())};
   if (it2 != m_customProps.cend())
@@ -205,8 +203,9 @@ bool CPVRCustomTimerSettings::StringSettingDefinitionsFiller(const std::string& 
   }
 
   const std::vector<SettingStringValue>& values{def->GetStringDefinition().GetValues()};
-  std::transform(values.cbegin(), values.cend(), std::back_inserter(list),
-                 [](const auto& value) { return StringSettingOption(value.first, value.second); });
+  std::ranges::transform(values, std::back_inserter(list),
+                         [](const auto& value)
+                         { return StringSettingOption(value.first, value.second); });
 
   const auto it2{m_customProps.find(def->GetId())};
   if (it2 != m_customProps.cend())
@@ -247,8 +246,8 @@ bool CPVRCustomTimerSettings::IsSettingSupportedForTimerType(const std::string& 
 std::shared_ptr<const CPVRTimerSettingDefinition> CPVRCustomTimerSettings::GetSettingDefintion(
     const std::string& settingId) const
 {
-  const auto it{std::find_if(m_customSettingDefs.cbegin(), m_customSettingDefs.cend(),
-                             [&settingId](const auto& entry) { return entry.first == settingId; })};
+  const auto it{std::ranges::find_if(m_customSettingDefs, [&settingId](const auto& entry)
+                                     { return entry.first == settingId; })};
   if (it == m_customSettingDefs.cend())
     return {};
 
