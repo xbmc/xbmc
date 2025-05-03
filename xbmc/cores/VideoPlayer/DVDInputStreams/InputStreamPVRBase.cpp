@@ -17,15 +17,15 @@
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
-CInputStreamPVRBase::CInputStreamPVRBase(IVideoPlayer* pPlayer, const CFileItem& fileitem)
+CInputStreamPVRBase::CInputStreamPVRBase(const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_PVRMANAGER, fileitem),
-    m_StreamProps(new PVR_STREAM_PROPERTIES()),
+    m_StreamProps(std::make_shared<PVR_STREAM_PROPERTIES>()),
     m_client(CServiceBroker::GetPVRManager().GetClient(fileitem))
 {
   if (!m_client)
-    CLog::Log(LOGERROR,
-              "CInputStreamPVRBase - {} - unable to obtain pvr addon instance for item '{}'",
-              __FUNCTION__, fileitem.GetPath());
+  {
+    CLog::LogF(LOGERROR, "Unable to obtain pvr addon instance for item '{}'", fileitem.GetPath());
+  }
 }
 
 CInputStreamPVRBase::~CInputStreamPVRBase()
@@ -189,8 +189,8 @@ std::vector<CDemuxStream*> CInputStreamPVRBase::GetStreams() const
   std::vector<CDemuxStream*> streams;
 
   streams.reserve(m_streamMap.size());
-  for (const auto& st : m_streamMap)
-    streams.emplace_back(st.second.get());
+  for (const auto& [_, st] : m_streamMap)
+    streams.emplace_back(st.get());
 
   return streams;
 }

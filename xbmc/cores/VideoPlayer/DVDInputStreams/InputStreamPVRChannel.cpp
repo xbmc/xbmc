@@ -16,11 +16,6 @@
 
 using namespace PVR;
 
-CInputStreamPVRChannel::CInputStreamPVRChannel(IVideoPlayer* pPlayer, const CFileItem& fileitem)
-  : CInputStreamPVRBase(pPlayer, fileitem)
-{
-}
-
 CInputStreamPVRChannel::~CInputStreamPVRChannel()
 {
   Close();
@@ -41,15 +36,12 @@ bool CInputStreamPVRChannel::OpenPVRStream()
     channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByPath(m_item.GetPath());
 
   if (!channel)
-    CLog::Log(LOGERROR,
-              "CInputStreamPVRChannel - {} - unable to obtain channel instance for channel {}",
-              __FUNCTION__, m_item.GetPath());
+    CLog::LogF(LOGERROR, "Unable to obtain channel instance for channel {}", m_item.GetPath());
 
-  if (channel && m_client && (m_client->OpenLiveStream(channel) == PVR_ERROR_NO_ERROR))
+  if (channel && (GetClient().OpenLiveStream(channel) == PVR_ERROR_NO_ERROR))
   {
-    m_bDemuxActive = m_client->GetClientCapabilities().HandlesDemuxing();
-    CLog::Log(LOGDEBUG, "CInputStreamPVRChannel - {} - opened channel stream {}", __FUNCTION__,
-              m_item.GetPath());
+    m_bDemuxActive = GetClient().GetClientCapabilities().HandlesDemuxing();
+    CLog::LogF(LOGDEBUG, "Opened channel stream {}", m_item.GetPath());
     return true;
   }
   return false;
@@ -57,92 +49,69 @@ bool CInputStreamPVRChannel::OpenPVRStream()
 
 void CInputStreamPVRChannel::ClosePVRStream()
 {
-  if (m_client && (m_client->CloseLiveStream() == PVR_ERROR_NO_ERROR))
+  if (GetClient().CloseLiveStream() == PVR_ERROR_NO_ERROR)
   {
     m_bDemuxActive = false;
-    CLog::Log(LOGDEBUG, "CInputStreamPVRChannel - {} - closed channel stream {}", __FUNCTION__,
-              m_item.GetPath());
+    CLog::LogF(LOGDEBUG, "Closed channel stream {}", m_item.GetPath());
   }
 }
 
 int CInputStreamPVRChannel::ReadPVRStream(uint8_t* buf, int buf_size)
 {
   int ret = -1;
-
-  if (m_client)
-    m_client->ReadLiveStream(buf, buf_size, ret);
-
+  GetClient().ReadLiveStream(buf, buf_size, ret);
   return ret;
 }
 
 int64_t CInputStreamPVRChannel::SeekPVRStream(int64_t offset, int whence)
 {
   int64_t ret = -1;
-
-  if (m_client)
-    m_client->SeekLiveStream(offset, whence, ret);
-
+  GetClient().SeekLiveStream(offset, whence, ret);
   return ret;
 }
 
 int64_t CInputStreamPVRChannel::GetPVRStreamLength()
 {
   int64_t ret = -1;
-
-  if (m_client)
-    m_client->GetLiveStreamLength(ret);
-
+  GetClient().GetLiveStreamLength(ret);
   return ret;
 }
 
 CDVDInputStream::ENextStream CInputStreamPVRChannel::NextPVRStream()
 {
-  if (m_eof)
-    return NEXTSTREAM_OPEN;
-
-  return NEXTSTREAM_RETRY;
+  return IsEOF() ? NEXTSTREAM_OPEN : NEXTSTREAM_RETRY;
 }
 
 bool CInputStreamPVRChannel::CanPausePVRStream()
 {
   bool ret = false;
-
-  if (m_client)
-    m_client->CanPauseStream(ret);
-
+  GetClient().CanPauseStream(ret);
   return ret;
 }
 
 bool CInputStreamPVRChannel::CanSeekPVRStream()
 {
   bool ret = false;
-
-  if (m_client)
-    m_client->CanSeekStream(ret);
-
+  GetClient().CanSeekStream(ret);
   return ret;
 }
 
 bool CInputStreamPVRChannel::IsRealtimePVRStream()
 {
   bool ret = false;
-
-  if (m_client)
-    m_client->IsRealTimeStream(ret);
-
+  GetClient().IsRealTimeStream(ret);
   return ret;
 }
 
 void CInputStreamPVRChannel::PausePVRStream(bool paused)
 {
-  if (m_client)
-    m_client->PauseStream(paused);
+  GetClient().PauseStream(paused);
 }
 
 bool CInputStreamPVRChannel::GetPVRStreamTimes(Times& times)
 {
   PVR_STREAM_TIMES streamTimes = {};
-  if (m_client && m_client->GetStreamTimes(&streamTimes) == PVR_ERROR_NO_ERROR)
+  if (GetClient().GetStreamTimes(&streamTimes) == PVR_ERROR_NO_ERROR)
   {
     times.startTime = streamTimes.startTime;
     times.ptsStart = streamTimes.ptsStart;

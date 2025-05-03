@@ -13,7 +13,7 @@
 class CInputStreamPVRChannel : public CInputStreamPVRBase
 {
 public:
-  CInputStreamPVRChannel(IVideoPlayer* pPlayer, const CFileItem& fileitem);
+  using CInputStreamPVRBase::CInputStreamPVRBase;
   ~CInputStreamPVRChannel() override;
 
   CDVDInputStream::IDemux* GetIDemux() override;
