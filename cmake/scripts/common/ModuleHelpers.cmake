@@ -142,6 +142,14 @@ macro(SETUP_BUILD_VARS)
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_MODULE_VERSION ${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
   endif()
 
+  if(NOT DEFINED ${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME)
+    set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC})
+  endif()
+
+  if(NOT DEFINED ${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC)
+    set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+  endif()
+
   # Fall through to target build module dir if not explicitly set
   if(NOT DEFINED ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE)
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE "target")
@@ -657,6 +665,22 @@ macro(ADD_TARGET_COMPILE_DEFINITION)
 
     set_property(TARGET ${LIB_TARGET} APPEND PROPERTY
                                              INTERFACE_COMPILE_DEFINITIONS "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS}")
+  endif()
+endmacro()
+
+macro(SEARCH_EXISTING_PACKAGES)
+  find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
+                                                         HINTS ${DEPENDS_PATH}/share/cmake
+                                                               ${DEPENDS_PATH}/lib/cmake
+                                                         ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # fallback to pkgconfig to cover all bases
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    find_package(PkgConfig ${SEARCH_QUIET})
+
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC}${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+    endif()
   endif()
 endmacro()
 
