@@ -25,7 +25,7 @@ struct Disc
 };
 
 using CacheMapEntry = std::pair<std::string, Disc>;
-using CacheMap = std::map<std::string, Disc>;
+using CacheMap = std::map<std::string, Disc, std::less<>>;
 
 namespace XFILE
 {
@@ -34,6 +34,8 @@ class CBlurayDiscCache
 public:
   CBlurayDiscCache() = default;
   ~CBlurayDiscCache() = default;
+  CBlurayDiscCache(const CBlurayDiscCache&) = delete;
+  CBlurayDiscCache& operator=(const CBlurayDiscCache&) = delete;
   void Clear();
 
   CacheMap::iterator SetDisc(const std::string& path);
@@ -49,7 +51,7 @@ public:
 
   void ClearDisc(const std::string& path);
 
-protected:
+private:
   CacheMap m_cache;
 
   mutable CCriticalSection m_cs;
