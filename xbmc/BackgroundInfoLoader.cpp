@@ -105,7 +105,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   m_bStop = false;
   m_bIsLoading = true;
 
-  m_thread = new CThread(this, "BackgroundLoader");
+  m_thread = std::make_unique<CThread>(this, "BackgroundLoader");
   m_thread->Create();
   m_thread->SetPriority(ThreadPriority::BELOW_NORMAL);
 }
@@ -122,8 +122,7 @@ void CBackgroundInfoLoader::StopThread()
   if (m_thread)
   {
     m_thread->StopThread();
-    delete m_thread;
-    m_thread = NULL;
+    m_thread.reset();
   }
   Reset();
 }
