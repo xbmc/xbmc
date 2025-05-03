@@ -1352,6 +1352,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // add what we found by now
       episodeList.push_back(episode);
 
+      const bool disableEpisodeRanges{m_advancedSettings->m_disableEpisodeRanges};
+
       CRegExp reg2(true, CRegExp::autoUtf8);
       // check the remainder of the string for any further episodes.
       if (!byDate && reg2.RegComp(m_advancedSettings->m_tvshowMultiPartEnumRegExp))
@@ -1372,7 +1374,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
             {
               // Already added SxxEyy now loop (if needed) to SxxEzz
               const int last{episode.iEpisode};
-              const int next{!remainder.starts_with("-") ? last : currentEpisode + 1};
+              const int next{
+                  disableEpisodeRanges || !remainder.starts_with("-") ? last : currentEpisode + 1};
 
               ProcessEpisodeRange(next, last, episode, episodeList,
                                   m_advancedSettings->m_tvshowMultiPartEnumRegExp);
@@ -1418,7 +1421,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                    (regexp2pos >= 0 && regexppos == -1))
           {
             const int last{std::stoi(reg2.GetMatch(1))};
-            const int next{currentEpisode + 1};
+            const int next{remainder.starts_with("-") && !disableEpisodeRanges ? currentEpisode + 1
+                                                                               : last};
 
             ProcessEpisodeRange(next, last, episode, episodeList,
                                 m_advancedSettings->m_tvshowMultiPartEnumRegExp);
