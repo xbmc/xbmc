@@ -62,7 +62,7 @@ private:
   bool m_bOneFilePerTrack = false;
 
   // cuetrack array
-  typedef std::vector<CCueTrack> Tracks;
+  using Tracks = std::vector<CCueTrack>;
   Tracks m_tracks;
 
   std::string ExtractInfo(const std::string &line);
