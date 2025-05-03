@@ -494,7 +494,7 @@ CBitstreamConverter::CBitstreamConverter(CDVDStreamInfo& hints)
   m_convert_3byteTo4byteNALSize = false;
   m_convert_bytestream = false;
   m_sps_pps_context.sps_pps_data = NULL;
-  m_start_decode = true;
+  m_start_decode = false;
   m_convert_dovi = DOVIMode::MODE_NONE;
   m_convert_Hdr10Plus = false;
   m_prefer_Hdr10Plus_conversion = false;
@@ -730,6 +730,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize, double pts)
         {
           m_inputSize = iSize;
           m_inputBuffer = pData;
+          m_start_decode = true; // TODO: should really wait for IDR even though not converting.
           return true;
         }
       }
