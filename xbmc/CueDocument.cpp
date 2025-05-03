@@ -69,15 +69,13 @@ public:
   virtual bool ready() const = 0;
   virtual bool ReadLine(std::string &line) = 0;
   virtual ~CueReader() = default;
-private:
-  std::string m_sourcePath;
 };
 
-class FileReader
-  : public CueReader
+class FileReader : public CueReader
 {
 public:
   explicit FileReader(const std::string& strFile) { m_opened = m_file.Open(strFile); }
+
   bool ReadLine(std::string &line) override
   {
     // Read the next line.
@@ -91,26 +89,28 @@ public:
     }
     return false;
   }
+
   bool ready() const override
   {
     return m_opened;
   }
+
   ~FileReader() override
   {
     if (m_opened)
       m_file.Close();
-
   }
+
 private:
   CFile m_file;
   bool m_opened;
 };
 
-class BufferReader
-  : public CueReader
+class BufferReader : public CueReader
 {
 public:
   explicit BufferReader(const std::string& strContent) : m_data(strContent) {}
+
   bool ReadLine(std::string &line) override
   {
     // Read the next line.
@@ -133,10 +133,12 @@ public:
     StringUtils::Trim(line);
     return !line.empty();
   }
+
   bool ready() const override
   {
     return m_data.size() > 0;
   }
+
 private:
   std::string m_data;
   size_t m_pos = 0;

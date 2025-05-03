@@ -32,8 +32,9 @@ class CCueDocument
     int iEndTime = 0;
     ReplayGain::Info replayGain;
   };
+
 public:
-  ~CCueDocument(void);
+  ~CCueDocument();
   // USED
   bool ParseFile(const std::string &strFilePath);
   bool ParseTag(const std::string &strContent);
