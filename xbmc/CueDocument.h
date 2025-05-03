@@ -13,8 +13,6 @@
 #include <string>
 #include <vector>
 
-#define MAX_PATH_SIZE 1024
-
 class CFileItem;
 class CFileItemList;
 class CueReader;
