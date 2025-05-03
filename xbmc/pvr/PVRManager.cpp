@@ -658,7 +658,7 @@ void CPVRManager::UpdateComponents(ManagerState stateToCheck)
       g_localizeStrings.Get(19235))}; // PVR manager is starting up
 
   // Wait for at least one client to come up and load/update data
-  while (!UpdateComponents(stateToCheck, progressHandler) && m_addons->HasCreatedClients() &&
+  while (!UpdateComponents(stateToCheck, progressHandler.get()) && m_addons->HasCreatedClients() &&
          (stateToCheck == GetState()))
   {
     CThread::Sleep(1000ms);
@@ -669,7 +669,7 @@ void CPVRManager::UpdateComponents(ManagerState stateToCheck)
 }
 
 bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
-                                   const std::unique_ptr<CPVRGUIProgressHandler>& progressHandler)
+                                   CPVRGUIProgressHandler* progressHandler)
 {
   // find clients which appeared since last check and update them
   const CPVRClientMap clientMap = m_addons->GetCreatedClients();
@@ -996,7 +996,7 @@ void CPVRManager::TriggerCleanupCachedImages()
   });
 }
 
-void CPVRManager::ConnectionStateChange(CPVRClient* client,
+void CPVRManager::ConnectionStateChange(const CPVRClient* client,
                                         const std::string& connectString,
                                         PVR_CONNECTION_STATE state,
                                         const std::string& message) const
