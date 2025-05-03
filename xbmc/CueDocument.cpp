@@ -221,10 +221,10 @@ void CCueDocument::GetSongs(VECSONGS &songs)
 
 void CCueDocument::UpdateMediaFile(const std::string& oldMediaFile, const std::string& mediaFile)
 {
-  for (Tracks::iterator it = m_tracks.begin(); it != m_tracks.end(); ++it)
+  for (auto& track : m_tracks)
   {
-    if (it->strFile == oldMediaFile)
-      it->strFile = mediaFile;
+    if (track.strFile == oldMediaFile)
+      track.strFile = mediaFile;
   }
 }
 
