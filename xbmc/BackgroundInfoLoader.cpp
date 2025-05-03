@@ -115,7 +115,6 @@ void CBackgroundInfoLoader::StopAsync()
   m_bStop = true;
 }
 
-
 void CBackgroundInfoLoader::StopThread()
 {
   StopAsync();
@@ -143,4 +142,3 @@ void CBackgroundInfoLoader::SetProgressCallback(IProgressCallback* pCallback)
 {
   m_pProgressCallback = pCallback;
 }
-
