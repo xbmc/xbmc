@@ -74,8 +74,8 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
     set_target_properties(JsonSchemaBuilder::JsonSchemaBuilder PROPERTIES
                                                                IMPORTED_LOCATION "${JSONSCHEMABUILDER_EXECUTABLE}")
 
-    if(TARGET JsonSchemaBuilder)
-      add_dependencies(JsonSchemaBuilder::JsonSchemaBuilder JsonSchemaBuilder)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(JsonSchemaBuilder::JsonSchemaBuilder ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   else()
     if(JSONSCHEMABUILDER_FIND_REQUIRED)

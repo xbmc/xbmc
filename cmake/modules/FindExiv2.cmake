@@ -57,9 +57,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(EXIV2_LINK_LIBRARIES LIBRARY::Brotli LIBRARY::Iconv LIBRARY::Zlib)
 
     # Add dependencies to build target
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Brotli)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Iconv)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Zlib)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Brotli
+                                                                        LIBRARY::Iconv
+                                                                        LIBRARY::Zlib)
   endmacro()
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -150,7 +150,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR EXIV2_VER)
 
   if(EXIV2_FOUND)
-    if((TARGET Exiv2::exiv2lib OR TARGET exiv2lib) AND NOT TARGET exiv2)
+    if((TARGET Exiv2::exiv2lib OR TARGET exiv2lib) AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       # Exiv alias exiv2lib in their latest cmake config. We test for the alias
       # to workout what we need to point OUR alias at.
       get_target_property(_EXIV2_ALIASTARGET exiv2lib ALIASED_TARGET)
@@ -158,7 +158,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         set(_exiv_target_name ${_EXIV2_ALIASTARGET})
       endif()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_exiv_target_name})
-    elseif(TARGET PkgConfig::exiv2 AND NOT TARGET exiv2)
+    elseif(TARGET PkgConfig::exiv2 AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::exiv2)
     else()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
@@ -187,8 +187,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endif()
     endif()
 
-    if(TARGET exiv2)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} exiv2)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -200,11 +200,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # This is mainly targeted for windows who required different runtime libs for different
     # types, and they arent compatible
     if(_multiconfig_generator)
-      if(NOT TARGET exiv2)
+      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
         buildexiv2()
-        set_target_properties(exiv2 PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
-      add_dependencies(build_internal_depends exiv2)
+      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   else()
     if(Exiv2_FIND_REQUIRED)

@@ -45,9 +45,9 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR utf8cpp_VERSION)
 
   if(Utfcpp_FOUND)
-    if(TARGET utf8cpp::utf8cpp AND NOT TARGET utfcpp)
+    if(TARGET utf8cpp::utf8cpp AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS utf8cpp::utf8cpp)
-    elseif(TARGET PkgConfig::utf8cpp AND NOT TARGET utfcpp)
+    elseif(TARGET PkgConfig::utf8cpp AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::utf8cpp)
     else()
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
@@ -55,8 +55,8 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                                                                 INTERFACE_INCLUDE_DIRECTORIES "${UTFCPP_INCLUDE_DIR}")
     endif()
 
-    if(TARGET utfcpp)
-      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} utfcpp)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
 
       # We are building as a requirement, so set LIB_BUILD property to allow calling
       # modules to know we will be building, and they will want to rebuild as well.
@@ -73,11 +73,11 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
     # This is mainly targeted for windows who required different runtime libs for different
     # types, and they arent compatible
     if(_multiconfig_generator)
-      if(NOT TARGET utfcpp)
+      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
         buildutfcpp()
-        set_target_properties(utfcpp PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
-      add_dependencies(build_internal_depends utfcpp)
+      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   else()
     if(Utfcpp_FIND_REQUIRED)

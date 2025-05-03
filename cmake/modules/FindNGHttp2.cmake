@@ -106,7 +106,7 @@ if(NOT TARGET LIBRARY::NGHttp2)
 
   if(NGHTTP2_FOUND)
 
-    if((TARGET nghttp2::nghttp2 OR TARGET nghttp2::nghttp2_static) AND NOT TARGET nghttp2)
+    if((TARGET nghttp2::nghttp2 OR TARGET nghttp2::nghttp2_static) AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       # We have a preference for the static lib when needed, however provide support 
       # for the shared lib as well
       if(TARGET nghttp2::nghttp2_static)
@@ -117,7 +117,7 @@ if(NOT TARGET LIBRARY::NGHttp2)
 
       # This is a kodi target name
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_target})
-    elseif(TARGET PkgConfig::nghttp2 AND NOT TARGET nghttp2)
+    elseif(TARGET PkgConfig::nghttp2 AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::nghttp2)
     else()
 
@@ -140,8 +140,8 @@ if(NOT TARGET LIBRARY::NGHttp2)
       endif()
     endif()
 
-    if(TARGET nghttp2)
-      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} nghttp2)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
 
       # We are building as a requirement, so set LIB_BUILD property to allow calling
       # modules to know we will be building, and they will want to rebuild as well.
@@ -157,11 +157,11 @@ if(NOT TARGET LIBRARY::NGHttp2)
     # This is mainly targeted for windows who required different runtime libs for different
     # types, and they arent compatible
     if(_multiconfig_generator)
-      if(NOT TARGET nghttp2)
+      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
         buildlibnghttp2()
-        set_target_properties(nghttp2 PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
-      add_dependencies(build_internal_depends nghttp2)
+      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   else()
     if(NGHttp2_FIND_REQUIRED)

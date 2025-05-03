@@ -83,7 +83,7 @@ if(NOT TARGET LibDvdCSS::LibDvdCSS)
                                                IMPORTED_LOCATION "${LIBDVDCSS_LIBRARY}"
                                                INTERFACE_COMPILE_DEFINITIONS "HAVE_DVDCSS_DVDCSS_H"
                                                INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDCSS_INCLUDE_DIR}")
-    add_dependencies(LibDvdCSS::LibDvdCSS libdvdcss)
+    add_dependencies(LibDvdCSS::LibDvdCSS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
   else()
     if(LibDvdCSS_FIND_REQUIRED)
       message(FATAL_ERROR "Libdvdcss not found. Possibly remove ENABLE_DVDCSS.")

@@ -155,6 +155,10 @@ macro(SETUP_BUILD_VARS)
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE "target")
   endif()
 
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME build-${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC})
+  endif()
+
   # Location for build type, native or target
   if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE STREQUAL "target")
     set(DEP_LOCATION "${DEPENDS_PATH}")
@@ -185,7 +189,6 @@ macro(CLEAR_BUILD_VARS)
   # unset all generic variables to insure clean state between macro calls
   # Potentially an issue with scope when a macro is used inside a dep that uses a macro
   unset(PROJECTSOURCE)
-  unset(BUILD_NAME)
   unset(INSTALL_DIR)
   unset(CMAKE_ARGS)
   unset(PATCH_COMMAND)
@@ -474,10 +477,6 @@ macro(BUILD_DEP_TARGET)
     endif()
   endif()
 
-  if(NOT BUILD_NAME)
-    set(BUILD_NAME ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC})
-  endif()
-
   if(NOT INSTALL_DIR)
     set(INSTALL_DIR ${DEP_LOCATION})
   endif()
@@ -492,9 +491,9 @@ macro(BUILD_DEP_TARGET)
                              DOWNLOAD_NAME ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE})
   endif()
 
-  externalproject_add(${BUILD_NAME}
+  externalproject_add(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME}
                       ${BUILD_DOWNLOAD_STEPS}
-                      PREFIX ${CORE_BUILD_DIR}/${BUILD_NAME}
+                      PREFIX ${CORE_BUILD_DIR}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME}
                       INSTALL_DIR ${INSTALL_DIR}
                       ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIST_SEPARATOR}
                       ${CMAKE_ARGS}
@@ -507,7 +506,7 @@ macro(BUILD_DEP_TARGET)
                       ${BUILD_BYPRODUCTS}
                       ${BUILD_IN_SOURCE})
 
-  set_target_properties(${BUILD_NAME} PROPERTIES FOLDER "External Projects")
+  set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES FOLDER "External Projects")
 
   CLEAR_BUILD_VARS()
 endmacro()

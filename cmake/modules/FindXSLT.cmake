@@ -48,7 +48,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(XSLT_LIBRARY_DEBUG ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_DEBUG})
     endif()
 
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LibXml2::LibXml2)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LibXml2::LibXml2)
   endmacro()
 
   # If there is a potential this library can be built internally
@@ -136,12 +136,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR XSLT_VERSION)
 
   if(XSLT_FOUND)
-    if(TARGET LibXslt::LibXslt AND NOT TARGET libxslt)
+    if(TARGET LibXslt::LibXslt AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS LibXslt::LibXslt)
-      # We need to append in case the cmake config already has definitions
-      set_property(TARGET LibXslt::LibXslt APPEND PROPERTY
-                                                  INTERFACE_COMPILE_DEFINITIONS HAVE_LIBXSLT)
-    elseif(TARGET PkgConfig::libxslt AND NOT TARGET libxslt)
+    elseif(TARGET PkgConfig::libxslt AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::libxslt)
       set_property(TARGET PkgConfig::libxslt APPEND PROPERTY
                                                     INTERFACE_COMPILE_DEFINITIONS HAVE_LIBXSLT)
@@ -166,8 +163,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE LibXml2::LibXml2)
     endif()
 
-    if(TARGET libxslt)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} libxslt)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -179,11 +176,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # This is mainly targeted for windows who required different runtime libs for different
     # types, and they arent compatible
     if(_multiconfig_generator)
-      if(NOT TARGET libxslt)
+      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
         buildXSLT()
-        set_target_properties(libxslt PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
-      add_dependencies(build_internal_depends libxslt)
+      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   else()
     if(XSLT_FIND_REQUIRED)

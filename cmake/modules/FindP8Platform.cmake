@@ -28,8 +28,6 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
     # install_libdir to generator
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INSTALL_LIBDIR "/lib")
 
-    set(BUILD_NAME build-p8-platform)
-
     BUILD_DEP_TARGET()
 
     set(P8-PLATFORM_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
@@ -81,7 +79,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR P8-PLATFORM_VERSION)
 
   if(P8PLATFORM_FOUND)
-    if(TARGET PkgConfig::p8-platform AND NOT TARGET build-p8-platform)
+    if(TARGET PkgConfig::p8-platform AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::p8-platform)
     else()
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
@@ -95,8 +93,8 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
       endif()
     endif()
 
-    if(TARGET build-p8-platform)
-      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} build-p8-platform)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
 
       # If the build target exists here, set LIB_BUILD property to allow calling modules
       # know that this will be rebuilt, and they will need to rebuild as well
@@ -112,11 +110,11 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
     # This is mainly targeted for windows who required different runtime libs for different
     # types, and they arent compatible
     if(_multiconfig_generator)
-      if(NOT TARGET build-p8-platform)
+      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
         buildlibp8platform()
-        set_target_properties(build-p8-platform PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
-      add_dependencies(build_internal_depends build-p8-platform)
+      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   else()
     if(P8Platform_FIND_REQUIRED)

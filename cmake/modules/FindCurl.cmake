@@ -59,11 +59,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(CURL_LINK_LIBRARIES LIBRARY::Brotli LIBRARY::NGHttp2 OpenSSL::Crypto OpenSSL::SSL LIBRARY::Zlib ${PLATFORM_LINK_LIBS})
 
     # Add dependencies to build target
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Brotli)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::NGHttp2)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::SSL)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::Crypto)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Zlib)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Brotli
+                                                                        LIBRARY::NGHttp2
+                                                                        OpenSSL::SSL
+                                                                        OpenSSL::Crypto
+                                                                        LIBRARY::Zlib)
   endmacro()
 
   # If there is a potential this library can be built internally
@@ -154,7 +154,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   if(CURL_FOUND)
     # cmake target and not building internal
-    if(TARGET CURL::libcurl AND NOT TARGET curl)
+    if(TARGET CURL::libcurl AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       # CURL::libcurl is an alias. We need to get the actual aias target, as we cant make an
       # alias of an alias (ie our ${APP_NAME_LC}::Curl cant be an alias of Curl::libcurl)
       if(NOT _CURL_ALIASTARGET)
@@ -162,7 +162,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endif()
 
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_CURL_ALIASTARGET})
-    elseif(TARGET PkgConfig::CURL AND NOT TARGET curl)
+    elseif(TARGET PkgConfig::CURL AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::CURL)
     else()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
@@ -184,8 +184,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endif()
     endif()
 
-    if(TARGET curl)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} curl)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -197,11 +197,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # This is mainly targeted for windows who required different runtime libs for different
     # types, and they arent compatible
     if(_multiconfig_generator)
-      if(NOT TARGET curl)
+      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
         buildCurl()
-        set_target_properties(curl PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
-      add_dependencies(build_internal_depends curl)
+      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   else()
     if(Curl_FIND_REQUIRED)

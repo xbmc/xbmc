@@ -38,7 +38,7 @@ if(libzip_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   BUILD_DEP_TARGET()
 
   # Todo: Gnutls dependency
-  add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Zlib)
+  add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Zlib)
 else()
   # we only do this because we use find_package_handle_standard_args for config time output
   # and it isnt capable of handling TARGETS, so we have to extract the info
@@ -70,7 +70,7 @@ find_package_handle_standard_args(LibZip
 
 if(LIBZIP_FOUND)
   # cmake target and not building internal
-  if(TARGET libzip::zip AND NOT TARGET libzip)
+  if(TARGET libzip::zip AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
 
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libzip::zip)
 
@@ -86,9 +86,7 @@ if(LIBZIP_FOUND)
                                                                      INTERFACE_INCLUDE_DIRECTORIES "${LIBZIP_INCLUDE_DIR}"
                                                                      IMPORTED_LOCATION "${LIBZIP_LIBRARY}")
 
-    if(TARGET libzip)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} libzip)
-    endif()
+    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
   endif()
 else()
   if(LibZip_FIND_REQUIRED)

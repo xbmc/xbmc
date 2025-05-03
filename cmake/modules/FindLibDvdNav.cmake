@@ -90,7 +90,7 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   BUILD_DEP_TARGET()
 
-  add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LibDvdRead::LibDvdRead)
+  add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LibDvdRead::LibDvdRead)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LibDvdNav
@@ -104,7 +104,7 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
                                                INTERFACE_LINK_LIBRARIES LibDvdRead::LibDvdRead
                                                INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDNAV_INCLUDE_DIR}")
 
-    add_dependencies(LibDvdNav::LibDvdNav libdvdnav)
+    add_dependencies(LibDvdNav::LibDvdNav ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
   else()
     if(LibDvdNav_FIND_REQUIRED)
       message(FATAL_ERROR "Libdvdnav not found")

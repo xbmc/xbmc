@@ -131,9 +131,9 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR BROTLI_VERSION)
 
   if(BROTLI_FOUND)
-    if((TARGET brotli::brotlicommon AND TARGET brotli::brotlidec) AND NOT TARGET brotli)
+    if((TARGET brotli::brotlicommon AND TARGET brotli::brotlidec) AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS brotli::brotlidec)
-    elseif(TARGET PkgConfig::brotlicommon AND TARGET PkgConfig::brotlidec AND NOT TARGET brotli)
+    elseif(TARGET PkgConfig::brotlicommon AND TARGET PkgConfig::brotlidec AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::brotlidec)
     else()
       add_library(LIBRARY::brotlicommon UNKNOWN IMPORTED)
@@ -150,9 +150,9 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS LIBRARY::brotlidec)
     endif()
 
-    if(TARGET brotli)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       get_property(aliased_target TARGET "LIBRARY::${CMAKE_FIND_PACKAGE_NAME}" PROPERTY ALIASED_TARGET)
-      add_dependencies(${aliased_target} brotli)
+      add_dependencies(${aliased_target} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
 
       # We are building as a requirement, so set LIB_BUILD property to allow calling
       # modules to know we will be building, and they will want to rebuild as well.
@@ -169,11 +169,11 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
     # This is mainly targeted for windows who required different runtime libs for different
     # types, and they arent compatible
     if(_multiconfig_generator)
-      if(NOT TARGET brotli)
+      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
         buildbrotli()
-        set_target_properties(brotli PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
-      add_dependencies(build_internal_depends brotli)
+      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
   else()

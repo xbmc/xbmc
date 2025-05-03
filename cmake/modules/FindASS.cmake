@@ -85,7 +85,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                      "-framework CoreFoundation")
     else()
       list(APPEND ASS_LINK_LIBRARIES Fontconfig::Fontconfig)
-      add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} Fontconfig::Fontconfig)
+      add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} Fontconfig::Fontconfig)
     endif()
 
     set(ASS_INCLUDE_DIR ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR})
@@ -95,10 +95,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
 
     # Add dependencies to build target
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::FriBidi)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::Iconv)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::HarfBuzz)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::FreeType)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} ${APP_NAME_LC}::FriBidi
+                                                                        ${APP_NAME_LC}::Iconv
+                                                                        ${APP_NAME_LC}::HarfBuzz
+                                                                        ${APP_NAME_LC}::FreeType)
   endmacro()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libass)
@@ -167,9 +167,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR ASS_VERSION)
 
   if(ASS_FOUND)
-    if(TARGET PkgConfig::libass AND NOT TARGET libass)
+    if(TARGET PkgConfig::libass AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::libass)
-    elseif(TARGET libass::libass AND NOT TARGET libass)
+    elseif(TARGET libass::libass AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       # Kodi custom libass target used for windows platforms
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libass::libass)
     else()
@@ -194,8 +194,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endif()
     endif()
 
-    if(TARGET libass)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} libass)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -207,11 +207,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # This is mainly targeted for windows who required different runtime libs for different
     # types, and they arent compatible
     if(_multiconfig_generator)
-      if(NOT TARGET libass)
+      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
         buildlibASS()
-        set_target_properties(libass PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
-      add_dependencies(build_internal_depends libass)
+      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   else()
     if(ASS_FIND_REQUIRED)
