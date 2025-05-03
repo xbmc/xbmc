@@ -657,9 +657,6 @@ int check_avbuffer_enough(am_private_t *para, am_packet_t& pkt)
 
 int write_av_packet(am_private_t *para, am_packet_t& pkt)
 {
-  //logM(LOGDEBUG, "AMLCodec", "pkt.isvalid({:d}), pkt.data({:p}), pkt.data_size({:d})",
-  //  pkt.isvalid, pkt.data, pkt.data_size);
-
     int write_bytes = 0, len = 0, ret;
     unsigned char *buf;
     int size;
@@ -804,12 +801,7 @@ static int mjpeg_data_prefeeding(am_packet_t& pkt)
 static int mjpeg_write_header(am_private_t *para, am_packet_t& pkt)
 {
     mjpeg_data_prefeeding(pkt);
-    if (1) {
-        pkt.codec = &para->vcodec;
-    } else {
-        logM(LOGDEBUG, "AMLCodec", "invalid codec!");
-        return PLAYER_EMPTY_P;
-    }
+    pkt.codec = &para->vcodec;
     pkt.newflag = 1;
     write_av_packet(para, pkt);
     return PLAYER_SUCCESS;
@@ -841,12 +833,7 @@ static int divx3_write_header(am_private_t *para, am_packet_t& pkt)
 {
     logNoFormatM(LOGDEBUG, "AMLCodec");
     divx3_data_prefeeding(pkt, para->video_width, para->video_height);
-    if (1) {
-        pkt.codec = &para->vcodec;
-    } else {
-        logM(LOGDEBUG, "AMLCodec", "invalid codec!");
-        return PLAYER_EMPTY_P;
-    }
+    pkt.codec = &para->vcodec;
     pkt.newflag = 1;
     write_av_packet(para, pkt);
     return PLAYER_SUCCESS;
@@ -871,12 +858,7 @@ static int h264_write_header(am_private_t *para, am_packet_t& pkt)
 {
     int ret = h264_add_header(para->extradata.GetData(), para->extradata.GetSize(), pkt);
     if (ret == PLAYER_SUCCESS) {
-        if (1) {
-            pkt.codec = &para->vcodec;
-        } else {
-            //logM(LOGDEBUG, "AMLCodec", "invalid video codec!");
-            return PLAYER_EMPTY_P;
-        }
+        pkt.codec = &para->vcodec;
 
         pkt.newflag = 1;
         ret = write_av_packet(para, pkt);
@@ -1394,12 +1376,7 @@ static int wmv3_write_header(am_private_t *para, am_packet_t& pkt)
 
     memcpy(pkt.hdr->data + 26, para->extradata.GetData(), para->extradata.GetSize());
     pkt.hdr->size = para->extrasize + 26;
-    if (1) {
-        pkt.codec = &para->vcodec;
-    } else {
-        logM(LOGDEBUG, "AMLCodec", "invalid codec!");
-        return PLAYER_EMPTY_P;
-    }
+    pkt.codec = &para->vcodec;
     pkt.newflag = 1;
     return write_av_packet(para, pkt);
 }
@@ -1409,12 +1386,7 @@ static int wvc1_write_header(am_private_t *para, am_packet_t& pkt)
     logNoFormatM(LOGDEBUG, "AMLCodec");
     memcpy(pkt.hdr->data, para->extradata.GetData() + 1, para->extradata.GetSize() - 1);
     pkt.hdr->size = para->extrasize - 1;
-    if (1) {
-        pkt.codec = &para->vcodec;
-    } else {
-        logM(LOGDEBUG, "AMLCodec", "invalid codec!");
-        return PLAYER_EMPTY_P;
-    }
+    pkt.codec = &para->vcodec;
     pkt.newflag = 1;
     return write_av_packet(para, pkt);
 }
@@ -1426,10 +1398,10 @@ static int mpeg_add_header(am_private_t *para, am_packet_t& pkt)
     int size;
     unsigned char packet_wrapper[] = {
         0x00, 0x00, 0x01, 0xe0,
-        0x00, 0x00,                                /* pes packet length */
+        0x00, 0x00,                   // pes packet length
         0x81, 0xc0, 0x0d,
-        0x20, 0x00, 0x00, 0x00, 0x00, /* PTS */
-        0x1f, 0xff, 0xff, 0xff, 0xff, /* DTS */
+        0x20, 0x00, 0x00, 0x00, 0x00, // PTS
+        0x1f, 0xff, 0xff, 0xff, 0xff, // DTS
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff
     };
 
@@ -1438,21 +1410,12 @@ static int mpeg_add_header(am_private_t *para, am_packet_t& pkt)
     packet_wrapper[5] = size & 0xff ;
     memcpy(pkt.hdr->data, packet_wrapper, sizeof(packet_wrapper));
     size = sizeof(packet_wrapper);
-    //logM(LOGDEBUG, "AMLCodec", "[{:d}] wrapper size={:d}",__LINE__,size);
     memcpy(pkt.hdr->data + size, para->extradata.GetData(), para->extradata.GetSize());
     size += para->extrasize;
-    //logM(LOGDEBUG, "AMLCodec", "[{:d}] wrapper+seq size={:d}",__LINE__,size);
     memset(pkt.hdr->data + size, 0xff, STUFF_BYTES_LENGTH);
     size += STUFF_BYTES_LENGTH;
     pkt.hdr->size = size;
-    //logM(LOGDEBUG, "AMLCodec", "[{:d}] hdr_size={:d}",__LINE__,size);
-    if (1) {
-        pkt.codec = &para->vcodec;
-    } else {
-        logM(LOGDEBUG, "AMLCodec", "invalid codec!");
-        return PLAYER_EMPTY_P;
-    }
-
+    pkt.codec = &para->vcodec;
     pkt.newflag = 1;
     return write_av_packet(para, pkt);
 }
