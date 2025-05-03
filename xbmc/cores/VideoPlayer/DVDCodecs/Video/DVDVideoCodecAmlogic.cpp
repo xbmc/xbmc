@@ -604,16 +604,17 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
 
 void CDVDVideoCodecAmlogic::Reset(void)
 {
-  if ((m_dataCacheCore.GetSpeed() == 1.0f) || (m_hints.codec == AV_CODEC_ID_H264))
+  if (m_Codec->IsStreamTypeStream())
   {
-    if (m_Codec->IsStreamTypeStream()) // Cannot just do reset, needs fuller open and close to have correct pts.
+    if (m_dataCacheCore.GetSpeed() == 1.0f)
     {
+      // Cannot just do reset, needs fuller open and close to have correct pts.
       m_Codec->CloseDecoder(true);
       m_Codec->OpenDecoder(true);
     }
-    else
-      m_Codec->Reset();
   }
+  else
+    m_Codec->Reset();
 
   ClearBitstreamCommon();
 
