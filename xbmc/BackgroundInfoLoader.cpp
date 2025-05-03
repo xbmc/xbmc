@@ -14,6 +14,7 @@
 #include "threads/Thread.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <mutex>
 
 CBackgroundInfoLoader::CBackgroundInfoLoader() = default;
@@ -102,8 +103,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 
   std::unique_lock<CCriticalSection> lock(m_lock);
 
-  for (int nItem=0; nItem < items.Size(); nItem++)
-    m_vecItems.push_back(items[nItem]);
+  std::ranges::copy(items, std::back_inserter(m_vecItems));
 
   m_pVecItems = &items;
   m_bStop = false;
