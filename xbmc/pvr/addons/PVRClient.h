@@ -17,6 +17,7 @@
 #include <atomic>
 #include <memory>
 #include <optional>
+#include <span>
 #include <string>
 #include <utility>
 #include <vector>
@@ -909,11 +910,9 @@ private:
   /*!
    * @brief Write the given addon properties to the given properties container.
    * @param properties Pointer to an array of addon properties pointers.
-   * @param iPropertyCount The number of properties contained in the addon properties array.
    * @param props The container the addon properties shall be written to.
    */
-  static void WriteStreamProperties(PVR_NAMED_VALUE** properties,
-                                    unsigned int iPropertyCount,
+  static void WriteStreamProperties(std::span<PVR_NAMED_VALUE*> properties,
                                     CPVRStreamProperties& props);
 
   using AddonInstance = AddonInstance_PVR;

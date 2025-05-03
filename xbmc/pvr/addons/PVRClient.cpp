@@ -66,8 +66,6 @@ using namespace PVR;
 
 namespace
 {
-using AddonInstance = AddonInstance_PVR;
-
 constexpr const char* DEFAULT_INFO_STRING_VALUE = "unknown";
 
 class CAddonChannelGroup : public PVR_CHANNEL_GROUP
@@ -998,13 +996,11 @@ PVR_ERROR CPVRClient::IsPlayable(const std::shared_ptr<const CPVREpgInfoTag>& ta
       m_clientCapabilities.SupportsEPG());
 }
 
-void CPVRClient::WriteStreamProperties(PVR_NAMED_VALUE** properties,
-                                       unsigned int iPropertyCount,
+void CPVRClient::WriteStreamProperties(std::span<PVR_NAMED_VALUE*> properties,
                                        CPVRStreamProperties& props)
 {
-  for (unsigned int i = 0; i < iPropertyCount; ++i)
+  for (const auto& prop : properties)
   {
-    const PVR_NAMED_VALUE* prop{properties[i]};
     props.emplace_back(std::make_pair(prop->strName, prop->strValue));
   }
 }
@@ -1022,7 +1018,7 @@ PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<const CPVR
                        const PVR_ERROR error{addon->toAddon->GetEPGTagStreamProperties(
                            addon, &addonTag, &property_array, &size)};
                        if (error == PVR_ERROR_NO_ERROR)
-                         WriteStreamProperties(property_array, size, props);
+                         WriteStreamProperties({property_array, size}, props);
 
                        addon->toAddon->FreeProperties(addon, property_array, size);
                        return error;
@@ -1414,6 +1410,7 @@ PVR_ERROR CPVRClient::GetTimerTypes(const AddonInstance* addon,
       size++;
 
     types_array = new PVR_TIMER_TYPE*[size];
+
     // manual one time
     types_array[0] = new PVR_TIMER_TYPE{};
     types_array[0]->iId = 1;
@@ -1667,7 +1664,7 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPV
         const PVR_ERROR error{addon->toAddon->GetChannelStreamProperties(
             addon, &addonChannel, source, &property_array, &size)};
         if (error == PVR_ERROR_NO_ERROR)
-          WriteStreamProperties(property_array, size, props);
+          WriteStreamProperties({property_array, size}, props);
 
         addon->toAddon->FreeProperties(addon, property_array, size);
         return error;
@@ -1691,7 +1688,7 @@ PVR_ERROR CPVRClient::GetRecordingStreamProperties(
         const PVR_ERROR error{addon->toAddon->GetRecordingStreamProperties(addon, &addonRecording,
                                                                            &property_array, &size)};
         if (error == PVR_ERROR_NO_ERROR)
-          WriteStreamProperties(property_array, size, props);
+          WriteStreamProperties({property_array, size}, props);
 
         addon->toAddon->FreeProperties(addon, property_array, size);
         return error;
@@ -2422,11 +2419,7 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
 
         const std::string strLine1 = StringUtils::Format(
             g_localizeStrings.Get(bOnOff ? 19197 : 19198), client->GetFullClientName());
-        std::string strLine2;
-        if (strName)
-          strLine2 = strName;
-        else
-          strLine2 = strFileName;
+        const std::string strLine2{strName ? strName : strFileName};
 
         // display a notification for 5 seconds
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000,
@@ -2620,27 +2613,27 @@ private:
         std::string strUpperCodecName = codec->name;
         StringUtils::ToUpper(strUpperCodecName);
 
-        m_lookup.insert(std::make_pair(strUpperCodecName, tmp));
+        m_lookup.try_emplace(strUpperCodecName, tmp);
       }
     }
 
     // teletext is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = PVR_CODEC_TYPE_SUBTITLE;
     tmp.codec_id = AV_CODEC_ID_DVB_TELETEXT;
-    m_lookup.insert(std::make_pair("TELETEXT", tmp));
+    m_lookup.try_emplace("TELETEXT", tmp);
 
     // rds is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = PVR_CODEC_TYPE_RDS;
     tmp.codec_id = AV_CODEC_ID_NONE;
-    m_lookup.insert(std::make_pair("RDS", tmp));
+    m_lookup.try_emplace("RDS", tmp);
 
     // ID3 is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = PVR_CODEC_TYPE_ID3;
     tmp.codec_id = AV_CODEC_ID_NONE;
-    m_lookup.insert({"ID3", tmp});
+    m_lookup.try_emplace("ID3", tmp);
   }
 
-  std::map<std::string, PVR_CODEC> m_lookup;
+  std::map<std::string, PVR_CODEC, std::less<>> m_lookup;
 };
 
 PVR_CODEC CPVRClient::cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName)

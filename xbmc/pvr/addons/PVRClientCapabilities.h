@@ -25,9 +25,9 @@ public:
   virtual ~CPVRClientCapabilities() = default;
 
   CPVRClientCapabilities(const CPVRClientCapabilities& other);
-  const CPVRClientCapabilities& operator=(const CPVRClientCapabilities& other);
+  CPVRClientCapabilities& operator=(const CPVRClientCapabilities& other);
 
-  const CPVRClientCapabilities& operator=(const PVR_ADDON_CAPABILITIES& addonCapabilities);
+  CPVRClientCapabilities& operator=(const PVR_ADDON_CAPABILITIES& addonCapabilities);
 
   void clear();
 

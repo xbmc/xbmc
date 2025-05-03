@@ -69,10 +69,8 @@ public:
   /*!
    * @brief Update all clients, sync with Addon Manager state (start, restart, shutdown clients).
    * @param changedAddonId The id of the changed addon, empty string denotes 'any addon'.
-   * @param changedInstanceId The Identifier of the changed add-on instance
    */
-  void UpdateClients(const std::string& changedAddonId = "",
-                     ADDON::AddonInstanceId changedInstanceId = ADDON::ADDON_SINGLETON_INSTANCE_ID);
+  void UpdateClients(const std::string& changedAddonId = "");
 
   /*!
    * @brief Restart a single client add-on.

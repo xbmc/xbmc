@@ -124,9 +124,7 @@ CPVRClients::UpdateClientAction CPVRClients::GetUpdateClientAction(
   return NONE;
 }
 
-void CPVRClients::UpdateClients(
-    const std::string& changedAddonId /* = "" */,
-    ADDON::AddonInstanceId changedInstanceId /* = ADDON::ADDON_SINGLETON_INSTANCE_ID */)
+void CPVRClients::UpdateClients(const std::string& changedAddonId /* = "" */)
 {
   std::vector<std::pair<AddonInfoPtr, bool>> addonsWithStatus;
   if (!GetAddonsWithStatus(changedAddonId, addonsWithStatus))
@@ -205,7 +203,7 @@ void CPVRClients::UpdateClients(
 
       const ADDON_STATUS status = client->Create();
 
-      if (status != ADDON_STATUS_OK && status == ADDON_STATUS_PERMANENT_FAILURE)
+      if (status == ADDON_STATUS_PERMANENT_FAILURE)
       {
         CServiceBroker::GetAddonMgr().DisableAddon(client->ID(),
                                                    AddonDisabledReason::PERMANENT_FAILURE);
@@ -240,10 +238,7 @@ void CPVRClients::UpdateClients(
       std::unique_lock lock(m_critSection);
       for (const auto& client : clientsToCreate)
       {
-        if (!m_clientMap.contains(client->GetID()))
-        {
-          m_clientMap.insert({client->GetID(), client});
-        }
+        m_clientMap.try_emplace(client->GetID(), client);
       }
     }
 
@@ -253,12 +248,14 @@ void CPVRClients::UpdateClients(
 
 bool CPVRClients::RequestRestart(const std::string& addonId,
                                  ADDON::AddonInstanceId instanceId,
-                                 bool bDataChanged)
+                                 bool bDataChanged /* = 0 */)
 {
-  CServiceBroker::GetJobManager()->Submit([this, addonId, instanceId] {
-    UpdateClients(addonId, instanceId);
-    return true;
-  });
+  CServiceBroker::GetJobManager()->Submit(
+      [this, addonId]
+      {
+        UpdateClients(addonId);
+        return true;
+      });
   return true;
 }
 
@@ -302,13 +299,14 @@ void CPVRClients::OnAddonEvent(const AddonEvent& event)
   {
     // update addons
     const std::string addonId = event.addonId;
-    const ADDON::AddonInstanceId instanceId = event.instanceId;
     if (CServiceBroker::GetAddonMgr().HasType(addonId, AddonType::PVRDLL))
     {
-      CServiceBroker::GetJobManager()->Submit([this, addonId, instanceId] {
-        UpdateClients(addonId, instanceId);
-        return true;
-      });
+      CServiceBroker::GetJobManager()->Submit(
+          [this, addonId]
+          {
+            UpdateClients(addonId);
+            return true;
+          });
     }
   }
 }
@@ -376,7 +374,7 @@ CPVRClientMap CPVRClients::GetCreatedClients() const
   {
     if (client->ReadyToUse())
     {
-      clients.insert(std::make_pair(clientId, client));
+      clients.try_emplace(clientId, client);
     }
   }
 
@@ -451,7 +449,7 @@ PVR_ERROR CPVRClients::GetCallableClients(CPVRClientMap& clientsReady,
 
       if (client && client->ReadyToUse() && !client->IgnoreClient())
       {
-        clientsReady.insert(std::make_pair(clientId, client));
+        clientsReady.try_emplace(clientId, client);
       }
       else
       {

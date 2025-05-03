@@ -23,7 +23,7 @@ CPVRClientCapabilities::CPVRClientCapabilities(const CPVRClientCapabilities& oth
   InitRecordingsLifetimeValues();
 }
 
-const CPVRClientCapabilities& CPVRClientCapabilities::operator=(const CPVRClientCapabilities& other)
+CPVRClientCapabilities& CPVRClientCapabilities::operator=(const CPVRClientCapabilities& other)
 {
   if (other.m_addonCapabilities)
     m_addonCapabilities = std::make_unique<PVR_ADDON_CAPABILITIES>(*other.m_addonCapabilities);
@@ -31,7 +31,7 @@ const CPVRClientCapabilities& CPVRClientCapabilities::operator=(const CPVRClient
   return *this;
 }
 
-const CPVRClientCapabilities& CPVRClientCapabilities::operator=(
+CPVRClientCapabilities& CPVRClientCapabilities::operator=(
     const PVR_ADDON_CAPABILITIES& addonCapabilities)
 {
   m_addonCapabilities = std::make_unique<PVR_ADDON_CAPABILITIES>(addonCapabilities);
