@@ -84,7 +84,6 @@ private:
   VideoPicture& operator=(VideoPicture const&) = default;
 
   bool CompareDisplayMetadata(const VideoPicture& pic) const;
-  bool CompareLightMetadata(const VideoPicture& pic) const;
 };
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
