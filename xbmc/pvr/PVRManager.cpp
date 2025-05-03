@@ -104,10 +104,7 @@ public:
   void Clear();
 
   template<typename F>
-  void Append(const std::string& type, F function)
-  {
-    AppendJob(new CPVRLambdaJob<F>(type, function));
-  }
+  void Append(const std::string& type, F function);
 
   void ExecutePendingJobs();
 
@@ -117,11 +114,9 @@ public:
   }
 
 private:
-  void AppendJob(CPVRJob* job);
-
   CCriticalSection m_critSection;
   CEvent m_triggerEvent{false};
-  std::vector<CPVRJob*> m_pendingUpdates;
+  std::vector<std::unique_ptr<CPVRJob>> m_pendingUpdates;
   bool m_bStopped{true};
 };
 
@@ -144,32 +139,31 @@ void CPVRManagerJobQueue::Stop()
 void CPVRManagerJobQueue::Clear()
 {
   std::unique_lock lock(m_critSection);
-  for (CPVRJob* updateJob : m_pendingUpdates)
-    delete updateJob;
-
   m_pendingUpdates.clear();
   m_triggerEvent.Set();
 }
 
-void CPVRManagerJobQueue::AppendJob(CPVRJob* job)
+template<typename F>
+void CPVRManagerJobQueue::Append(const std::string& type, F function)
 {
+  auto job{std::make_unique<CPVRLambdaJob<F>>(type, function)};
+
   std::unique_lock lock(m_critSection);
 
   // check for another pending job of given type...
-  if (std::ranges::any_of(m_pendingUpdates, [job](const CPVRJob* updateJob)
+  if (std::ranges::any_of(m_pendingUpdates, [&job](const auto& updateJob)
                           { return updateJob->GetType() == job->GetType(); }))
   {
-    delete job;
     return;
   }
 
-  m_pendingUpdates.push_back(job);
+  m_pendingUpdates.emplace_back(std::move(job));
   m_triggerEvent.Set();
 }
 
 void CPVRManagerJobQueue::ExecutePendingJobs()
 {
-  std::vector<CPVRJob*> pendingUpdates;
+  std::vector<std::unique_ptr<CPVRJob>> pendingUpdates;
 
   {
     std::unique_lock lock(m_critSection);
@@ -181,14 +175,10 @@ void CPVRManagerJobQueue::ExecutePendingJobs()
     m_triggerEvent.Reset();
   }
 
-  CPVRJob* job = nullptr;
   while (!pendingUpdates.empty())
   {
-    job = pendingUpdates.front();
+    pendingUpdates.front()->DoWork();
     pendingUpdates.erase(pendingUpdates.begin());
-
-    job->DoWork();
-    delete job;
   }
 }
 
