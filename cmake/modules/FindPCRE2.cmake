@@ -37,7 +37,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DENABLE_DOCS=OFF
                    ${EXTRA_ARGS})
 
-    set(${CMAKE_FIND_PACKAGE_NAME}_COMPILEDEFINITIONS PCRE2_STATIC)
+    set(${CMAKE_FIND_PACKAGE_NAME}_COMPILE_DEFINITIONS PCRE2_STATIC)
 
     BUILD_DEP_TARGET()
   endmacro()
@@ -45,6 +45,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC pcre2)
+
+  # PCRE2 cmake config has a hard requirement on the search name being PCRE2 even though
+  # the configs are lowercase pcre2
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME PCRE2)
 
   SETUP_BUILD_VARS()
 
@@ -54,21 +58,20 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(PCRE2_USE_STATIC_LIBS ON)
   endif()
 
-  # Check for existing PCRE2. If version >= PCRE2-VERSION file version, dont build
-  find_package(PCRE2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
-                     COMPONENTS 8BIT)
+  # Check for existing PCRE2. We specifically request a COMPONENT
+  find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
+                                                         COMPONENTS 8BIT)
 
-  # cmake config may not be available (eg Debian libpcre2-dev package)
   # fallback to pkgconfig for non windows platforms
-  if(NOT PCRE2_FOUND)
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     find_package(PkgConfig ${SEARCH_QUIET})
 
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(PCRE2 libpcre2-8${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+      pkg_check_modules(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} libpcre2-8${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
 
-  if((PCRE2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_PCRE2) OR
+  if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_PCRE2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_PCRE2))
     buildPCRE2()
   else()
@@ -82,62 +85,47 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
           string(TOUPPER ${_pcre2_config} _pcre2_config_UPPER)
           if((NOT ${_pcre2_config_UPPER} STREQUAL "RELEASE") AND
              (NOT ${_pcre2_config_UPPER} STREQUAL "DEBUG"))
-            get_target_property(PCRE2_LIBRARY_RELEASE PCRE2::8BIT IMPORTED_LOCATION_${_pcre2_config_UPPER})
+            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE PCRE2::8BIT IMPORTED_LOCATION_${_pcre2_config_UPPER})
           else()
-            get_target_property(PCRE2_LIBRARY_${_pcre2_config_UPPER} PCRE2::8BIT IMPORTED_LOCATION_${_pcre2_config_UPPER})
+            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_${_pcre2_config_UPPER} PCRE2::8BIT IMPORTED_LOCATION_${_pcre2_config_UPPER})
           endif()
         endforeach()
       else()
-        get_target_property(PCRE2_LIBRARY_RELEASE PCRE2::8BIT IMPORTED_LOCATION)
+        get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE PCRE2::8BIT IMPORTED_LOCATION)
       endif()
-      get_target_property(PCRE2_INCLUDE_DIR PCRE2::8BIT INTERFACE_INCLUDE_DIRECTORIES)
-    elseif(TARGET PkgConfig::PCRE2)
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PCRE2::8BIT INTERFACE_INCLUDE_DIRECTORIES)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
       # First item is the full path of the library file found
       # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET PCRE2_LINK_LIBRARIES 0 PCRE2_LIBRARY_RELEASE)
+      list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE)
 
-      get_target_property(PCRE2_INCLUDE_DIR PkgConfig::PCRE2 INTERFACE_INCLUDE_DIRECTORIES)
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
 
       # Some older debian pkgconfig packages for PCRE2 dont include the include dirs data
       # If we cant get that data from the pkgconfig TARGET, fall back to the old *_INCLUDEDIR
       # variable
-      if(NOT PCRE2_INCLUDE_DIR)
-        set(PCRE2_INCLUDE_DIR PCRE2_INCLUDEDIR)
+      if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR)
+        set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_INCLUDEDIR)
       endif()
     endif()
   endif()
 
   include(SelectLibraryConfigurations)
-  select_library_configurations(PCRE2)
+  select_library_configurations(${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(PCRE2
-                                    REQUIRED_VARS PCRE2_LIBRARY PCRE2_INCLUDE_DIR
-                                    VERSION_VAR PCRE2_VERSION)
+                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
+                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
 
   if(PCRE2_FOUND)
     if(TARGET PCRE2::8BIT AND NOT TARGET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PCRE2::8BIT)
-    elseif(TARGET PkgConfig::PCRE2 AND NOT TARGET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::PCRE2)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
     else()
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-      if(PCRE2_LIBRARY_RELEASE)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_CONFIGURATIONS RELEASE
-                                                                         IMPORTED_LOCATION_RELEASE "${PCRE2_LIBRARY_RELEASE}")
-      endif()
-      if(PCRE2_LIBRARY_DEBUG)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_LOCATION_DEBUG "${PCRE2_LIBRARY_DEBUG}")
-        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                              IMPORTED_CONFIGURATIONS DEBUG)
-      endif()
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_COMPILE_DEFINITIONS ${${CMAKE_FIND_PACKAGE_NAME}_COMPILEDEFINITIONS}
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${PCRE2_INCLUDE_DIR}")
-    endif()
-    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      SETUP_BUILD_TARGET()
+      ADD_TARGET_COMPILE_DEFINITION()
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
