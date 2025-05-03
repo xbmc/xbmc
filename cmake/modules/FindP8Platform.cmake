@@ -30,7 +30,11 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
 
-    set(P8-PLATFORM_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+    if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES "-framework CoreVideo")
+    endif()
+
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   endmacro()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC p8-platform)
@@ -38,62 +42,42 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  # Search cmake-config. Suitable all platforms
-  find_package(p8-platform ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
-                           HINTS ${DEPENDS_PATH}/lib/cmake
-                           ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+  SEARCH_EXISTING_PACKAGES()
 
-  # fallback to pkgconfig for non windows platforms
-  if(NOT p8-platform_FOUND)
-    find_package(PkgConfig ${SEARCH_QUIET})
-
-    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(p8-platform p8-platform${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
-    endif()
-  endif()
-
-  if(p8-platform_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     # build p8-platform lib
     buildlibp8platform()
   else()
-    if(TARGET PkgConfig::p8-platform)
+    if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
       # First item is the full path of the library file found
       # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET p8-platform_LINK_LIBRARIES 0 P8-PLATFORM_LIBRARY)
+      list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY)
 
-      get_target_property(P8-PLATFORM_INCLUDE_DIR PkgConfig::p8-platform INTERFACE_INCLUDE_DIRECTORIES)
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
     elseif(TARGET p8-platform)
-
+      # p8platform cmake config is not target ready. specifically use variable names
       # First item is the full path of the library file found
-      # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET p8-platform_LIBRARIES 0 P8-PLATFORM_LIBRARY)
+      list(GET p8-platform_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY)
 
-      set(P8-PLATFORM_INCLUDE_DIR ${p8-platform_INCLUDE_DIRS})
-      set(P8-PLATFORM_VERSION ${p8-platform_VERSION})
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR p8-platform_INCLUDE_DIRS})
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION p8-platform_VERSION})
     endif()
   endif()
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(P8Platform
-                                    REQUIRED_VARS P8-PLATFORM_LIBRARY P8-PLATFORM_INCLUDE_DIR
-                                    VERSION_VAR P8-PLATFORM_VERSION)
+                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
+                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
 
-  if(P8PLATFORM_FOUND)
-    if(TARGET PkgConfig::p8-platform AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::p8-platform)
+  if(P8Platform_FOUND)
+    if(TARGET p8-platform AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS p8-platform)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
     else()
-      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-      set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                IMPORTED_LOCATION "${P8-PLATFORM_LIBRARY}"
-                                                                INTERFACE_INCLUDE_DIRECTORIES "${P8-PLATFORM_INCLUDE_DIR}")
-  
-      if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-        set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                  INTERFACE_LINK_LIBRARIES "-framework CoreVideo")
-      endif()
-    endif()
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_TYPE LIBRARY)
+      SETUP_BUILD_TARGET()
 
-    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
 
       # If the build target exists here, set LIB_BUILD property to allow calling modules
