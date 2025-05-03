@@ -18,9 +18,9 @@ using namespace KODI;
 
 CFileItemListModification::CFileItemListModification()
 {
-  m_modifiers.insert(new PLAYLIST::CSmartPlaylistFileItemListModifier());
-  m_modifiers.insert(new CMusicFileItemListModifier());
-  m_modifiers.insert(new CVideoFileItemListModifier());
+  m_modifiers.push_back(new PLAYLIST::CSmartPlaylistFileItemListModifier());
+  m_modifiers.push_back(new CMusicFileItemListModifier());
+  m_modifiers.push_back(new CVideoFileItemListModifier());
 }
 
 CFileItemListModification::~CFileItemListModification()

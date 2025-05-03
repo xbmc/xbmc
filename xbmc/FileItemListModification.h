@@ -10,7 +10,7 @@
 
 #include "IFileItemListModifier.h"
 
-#include <set>
+#include <vector>
 
 class CFileItemListModification : public IFileItemListModifier
 {
@@ -27,5 +27,5 @@ private:
   CFileItemListModification(const CFileItemListModification&) = delete;
   CFileItemListModification& operator=(CFileItemListModification const&) = delete;
 
-  std::set<IFileItemListModifier*> m_modifiers;
+  std::vector<IFileItemListModifier*> m_modifiers;
 };
