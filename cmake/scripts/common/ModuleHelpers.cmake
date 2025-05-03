@@ -667,6 +667,26 @@ macro(ADD_TARGET_COMPILE_DEFINITION)
   endif()
 endmacro()
 
+# Add internal build target when a Multi Config Generator is used
+# We cant add a dependency based off a generator expression for targeted build types,
+# https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+# therefore if the find heuristics only find the library, we add the internal build
+# target to the project to allow user to manually trigger for any build type they need
+# in case only a specific build type is actually available (eg Release found, Debug Required)
+# This is mainly targeted for windows who required different runtime libs for different
+# types, and they arent compatible
+macro(ADD_MULTICONFIG_BUILDMACRO)
+  if(_multiconfig_generator)
+    if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      cmake_language(EVAL CODE "
+        buildmacro${CMAKE_FIND_PACKAGE_NAME}()
+      ")
+      set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
+    endif()
+    add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+  endif()
+endmacro()
+
 macro(SEARCH_EXISTING_PACKAGES)
   find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                                                          HINTS ${DEPENDS_PATH}/share/cmake
