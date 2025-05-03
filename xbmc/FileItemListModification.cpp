@@ -12,6 +12,8 @@
 #include "playlists/SmartPlaylistFileItemListModifier.h"
 #include "video/windows/VideoFileItemListModifier.h"
 
+#include <algorithm>
+
 using namespace KODI;
 
 CFileItemListModification::CFileItemListModification()
@@ -37,20 +39,14 @@ CFileItemListModification& CFileItemListModification::GetInstance()
 
 bool CFileItemListModification::CanModify(const CFileItemList &items) const
 {
-  for (std::set<IFileItemListModifier*>::const_iterator modifier = m_modifiers.begin(); modifier != m_modifiers.end(); ++modifier)
-  {
-    if ((*modifier)->CanModify(items))
-      return true;
-  }
-
-  return false;
+  return std::ranges::any_of(m_modifiers,
+                             [&items](const auto& mod) { return mod->CanModify(items); });
 }
 
 bool CFileItemListModification::Modify(CFileItemList &items) const
 {
   bool result = false;
-  for (std::set<IFileItemListModifier*>::const_iterator modifier = m_modifiers.begin(); modifier != m_modifiers.end(); ++modifier)
-    result |= (*modifier)->Modify(items);
-
+  std::ranges::for_each(m_modifiers,
+                        [&result, &items](const auto& mod) { result |= mod->Modify(items); });
   return result;
 }
