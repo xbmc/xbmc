@@ -9,7 +9,7 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  macro(buildlibnfs)
+  macro(buildmacroNFS)
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
                    -DENABLE_TESTS=OFF
                    -DENABLE_DOCUMENTATION=OFF
@@ -41,8 +41,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # A corner case, but if a linux/freebsd user WANTS to build internal libnfs, build anyway
   if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_NFS) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_NFS))
-    # Build lib
-    buildlibnfs()
+    cmake_language(EVAL CODE "
+      buildmacro${CMAKE_FIND_PACKAGE_NAME}()
+    ")
   else()
     if(TARGET libnfs::nfs)
       # This is for the case where a distro provides a non standard (Debug/Release) config type
@@ -144,20 +145,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     ADD_TARGET_COMPILE_DEFINITION()
 
-    # Add internal build target when a Multi Config Generator is used
-    # We cant add a dependency based off a generator expression for targeted build types,
-    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-    # therefore if the find heuristics only find the library, we add the internal build
-    # target to the project to allow user to manually trigger for any build type they need
-    # in case only a specific build type is actually available (eg Release found, Debug Required)
-    # This is mainly targeted for windows who required different runtime libs for different
-    # types, and they arent compatible
-    if(_multiconfig_generator)
-      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-        buildlibnfs()
-        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
-      endif()
-      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-    endif()
+    ADD_MULTICONFIG_BUILDMACRO()
   endif()
 endif()
