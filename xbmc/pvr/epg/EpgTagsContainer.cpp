@@ -228,26 +228,21 @@ void CPVREpgTagsContainer::FixOverlappingEvents(
 void CPVREpgTagsContainer::FixOverlappingEvents(
     std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>>& tags) const
 {
-  bool bResetCache = false;
-
   std::shared_ptr<CPVREpgInfoTag> previousTag;
-  for (auto it = tags.begin(); it != tags.end();)
+  if (std::erase_if(tags,
+                    [&previousTag](const auto& entry)
+                    {
+                      const auto& [_, currentTag] = entry;
+                      if (FixOverlap(previousTag, currentTag))
+                      {
+                        previousTag = currentTag;
+                        return false;
+                      }
+                      return true;
+                    }) > 0)
   {
-    const std::shared_ptr<CPVREpgInfoTag> currentTag = (*it).second;
-    if (FixOverlap(previousTag, currentTag))
-    {
-      previousTag = currentTag;
-      ++it;
-    }
-    else
-    {
-      it = tags.erase(it);
-      bResetCache = true;
-    }
-  }
-
-  if (bResetCache)
     m_tagsCache->Reset();
+  }
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::CreateEntry(
@@ -281,14 +276,14 @@ bool CPVREpgTagsContainer::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& ta
     if (existingTag->Update(*tag, false))
     {
       // tag differs from existing tag and must be persisted
-      m_changedTags.insert({existingTag->StartAsUTC(), existingTag});
+      m_changedTags.try_emplace(existingTag->StartAsUTC(), existingTag);
       m_tagsCache->Reset();
     }
   }
   else
   {
     // new tags must always be persisted
-    m_changedTags.insert({tag->StartAsUTC(), tag});
+    m_changedTags.try_emplace(tag->StartAsUTC(), tag);
     m_tagsCache->Reset();
   }
 
@@ -298,33 +293,29 @@ bool CPVREpgTagsContainer::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& ta
 bool CPVREpgTagsContainer::DeleteEntry(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   m_changedTags.erase(tag->StartAsUTC());
-  m_deletedTags.insert({tag->StartAsUTC(), tag});
+  m_deletedTags.try_emplace(tag->StartAsUTC(), tag);
   m_tagsCache->Reset();
   return true;
 }
 
 void CPVREpgTagsContainer::Cleanup(const CDateTime& time)
 {
-  bool bResetCache = false;
-  for (auto it = m_changedTags.begin(); it != m_changedTags.end();)
+  if (std::erase_if(m_changedTags,
+                    [this, &time](const auto& entry)
+                    {
+                      const auto& [tm, currentTag] = entry;
+                      if (currentTag->EndAsUTC() >= time)
+                        return false;
+
+                      const auto it = m_deletedTags.find(tm);
+                      if (it != m_deletedTags.cend())
+                        m_deletedTags.erase(it);
+
+                      return true;
+                    }) > 0)
   {
-    if (it->second->EndAsUTC() < time)
-    {
-      const auto it1 = m_deletedTags.find(it->first);
-      if (it1 != m_deletedTags.end())
-        m_deletedTags.erase(it1);
-
-      it = m_changedTags.erase(it);
-      bResetCache = true;
-    }
-    else
-    {
-      ++it;
-    }
-  }
-
-  if (bResetCache)
     m_tagsCache->Reset();
+  }
 
   if (m_database)
     m_database->DeleteEpgTags(m_iEpgID, time);

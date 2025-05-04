@@ -443,9 +443,9 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(dbiplus::Dataset& 
 {
   if (!ds.eof())
   {
-    std::shared_ptr<CPVREpgInfoTag> newTag(
-        new CPVREpgInfoTag(m_pDS->fv("idEpg").get_asInt(), m_pDS->fv("sIconPath").get_asString(),
-                           m_pDS->fv("sParentalRatingIcon").get_asString()));
+    std::shared_ptr<CPVREpgInfoTag> newTag{std::make_shared<CPVREpgInfoTag>(
+        m_pDS->fv("idEpg").get_asInt(), m_pDS->fv("sIconPath").get_asString(),
+        m_pDS->fv("sParentalRatingIcon").get_asString())};
 
     auto iStartTime{static_cast<time_t>(m_pDS->fv("iStartTime").get_asInt())};
     const CDateTime startTime(iStartTime);

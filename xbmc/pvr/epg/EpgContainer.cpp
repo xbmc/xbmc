@@ -548,7 +548,7 @@ void CPVREpgContainer::InsertFromDB(const std::shared_ptr<CPVREpg>& newEpg)
   {
     // create a new epg table
     epg = newEpg;
-    m_epgIdToEpgMap.insert({epg->EpgID(), epg});
+    m_epgIdToEpgMap.try_emplace(epg->EpgID(), epg);
     epg->Events().Subscribe(this, &CPVREpgContainer::Notify);
   }
 }
@@ -572,14 +572,16 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::CreateChannelEpg(int iEpgId, const st
                                     GetEpgDatabase());
 
     std::unique_lock lock(m_critSection);
-    m_epgIdToEpgMap.insert({iEpgId, epg});
-    m_channelUidToEpgMap.insert({{channelData->ClientId(), channelData->UniqueClientChannelId()}, epg});
+    m_epgIdToEpgMap.try_emplace(iEpgId, epg);
+    m_channelUidToEpgMap.try_emplace(
+        {channelData->ClientId(), channelData->UniqueClientChannelId()}, epg);
     epg->Events().Subscribe(this, &CPVREpgContainer::Notify);
   }
   else if (epg->ChannelID() == -1)
   {
     std::unique_lock lock(m_critSection);
-    m_channelUidToEpgMap.insert({{channelData->ClientId(), channelData->UniqueClientChannelId()}, epg});
+    m_channelUidToEpgMap.try_emplace(
+        {channelData->ClientId(), channelData->UniqueClientChannelId()}, epg);
     epg->SetChannelData(channelData);
   }
 

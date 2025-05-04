@@ -544,7 +544,7 @@ void CPVREpg::RemovedFromContainer()
   m_events.Publish(PVREvent::EpgDeleted);
 }
 
-int CPVREpg::CleanupCachedImages(const std::shared_ptr<const CPVREpgDatabase>& database)
+int CPVREpg::CleanupCachedImages(const std::shared_ptr<const CPVREpgDatabase>& database) const
 {
   std::vector<std::string> urlsToCheck;
   database->GetAllIconPaths(EpgID(), urlsToCheck);
