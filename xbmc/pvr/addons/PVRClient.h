@@ -916,6 +916,16 @@ private:
                                     unsigned int iPropertyCount,
                                     CPVRStreamProperties& props);
 
+  using AddonInstance = AddonInstance_PVR;
+
+  /*!
+   * @brief Get the timer typed for the given addon.
+   * @param timerTypes [out] the timer types.
+   * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
+   */
+  PVR_ERROR GetTimerTypes(const AddonInstance* addon,
+                          std::vector<std::shared_ptr<CPVRTimerType>>& timerTypes);
+
   /*!
    * @brief Whether a channel can be played by this add-on
    * @param channel The channel to check.
