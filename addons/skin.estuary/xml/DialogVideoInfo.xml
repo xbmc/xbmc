@@ -189,7 +189,7 @@
 							<width>437</width>
 							<height>41</height>
 							<aligny>center</aligny>
-							<font>font13</font>
+							<font>font12</font>
 							<label>[COLOR button_focus]$INFO[ListItem.Property(prefix)]: [/COLOR]$INFO[ListItem.Label]</label>
 							<visible>!Control.HasFocus(4001) + !Window.IsVisible(1111)</visible>
 						</control>
@@ -199,7 +199,7 @@
 							<width>437</width>
 							<height>41</height>
 							<aligny>center</aligny>
-							<font>font13</font>
+							<font>font12</font>
 							<label>$INFO[ListItem.Property(prefix)]: $INFO[ListItem.Label]</label>
 							<visible>Control.HasFocus(4001) | Window.IsVisible(1111)</visible>
 						</control>
@@ -211,7 +211,7 @@
 							<width>437</width>
 							<height>41</height>
 							<aligny>center</aligny>
-							<font>font13</font>
+							<font>font12</font>
 							<label>[COLOR button_focus]$INFO[ListItem.Property(prefix)]: [/COLOR]$INFO[ListItem.Label]</label>
 							<visible>!Control.HasFocus(4001) + !Window.IsVisible(1111)</visible>
 						</control>
@@ -221,7 +221,7 @@
 							<width>437</width>
 							<height>41</height>
 							<aligny>center</aligny>
-							<font>font13</font>
+							<font>font12</font>
 							<label>$INFO[ListItem.Property(prefix)]: $INFO[ListItem.Label]</label>
 							<visible>Control.HasFocus(4001) | Window.IsVisible(1111)</visible>
 						</control>

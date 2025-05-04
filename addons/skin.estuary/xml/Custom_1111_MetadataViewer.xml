@@ -41,7 +41,7 @@
 						<width>1311</width>
 						<height>50</height>
 						<aligny>center</aligny>
-						<font>font37</font>
+						<font>font32</font>
 						<label>[COLOR button_focus]$INFO[ListItem.Property(prefix)]: [/COLOR]$INFO[ListItem.Label2]</label>
 					</control>
 				</itemlayout>
@@ -59,7 +59,7 @@
 						<width>1311</width>
 						<height>50</height>
 						<aligny>center</aligny>
-						<font>font37</font>
+						<font>font32</font>
 						<scroll>true</scroll>
 						<label>$INFO[ListItem.Property(prefix)]: $INFO[ListItem.Label2]</label>
 					</control>

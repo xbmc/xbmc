@@ -31,6 +31,7 @@
 		<onunload>ClearProperty(MetadataViewer.DateAdded,home)</onunload>
 		<onunload>ClearProperty(MetadataViewer.PlayCount,home)</onunload>
 		<onunload>ClearProperty(MetadataViewer.LastPlayed,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.DecodedFileNameAndPath,home)</onunload>
 	</include>
 	<include name="MetadataViewerVideoButton">
 		<onclick condition="String.IsEqual(ListItem.DBType,movie)">SetProperty(MetadataViewer.DBType,movie,home)</onclick>
@@ -58,6 +59,7 @@
 		<onclick>SetProperty(MetadataViewer.DateAdded,$INFO[ListItem.DateAdded],home)</onclick>
 		<onclick>SetProperty(MetadataViewer.PlayCount,$INFO[ListItem.PlayCount],home)</onclick>
 		<onclick>SetProperty(MetadataViewer.LastPlayed,$INFO[ListItem.LastPlayed],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.DecodedFileNameAndPath,$INFO[ListItem.DecodedFileNameAndPath],home)</onclick>
 	</include>
 	<include name="MetadataViewerVideoList">
 		<include condition="!String.IsEqual(ListItem.VideoVersionName,$LOCALIZE[40400])" content="MetadataViewerListItem">
@@ -167,6 +169,11 @@
 			<param name="prefix" value="$LOCALIZE[564]"/>
 			<param name="label" value="ListItem.DBType"/>
 			<param name="label2" value="Window(home).Property(MetadataViewer.DBType)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[31049]"/>
+			<param name="label" value="ListItem.DecodedFileNameAndPath"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.DecodedFileNameAndPath)"/>
 		</include>
 	</include>
 </includes>

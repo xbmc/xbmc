@@ -277,7 +277,12 @@ msgctxt "#31048"
 msgid "Available"
 msgstr ""
 
-#empty strings from id 31049 to 31051
+#: /xml/Custom_1111_MetadataViewer.xml
+msgctxt "#31049"
+msgid "Decoded path"
+msgstr ""
+
+#empty strings from id 31050 to 31051
 
 #: /xml/Includes.xml
 msgctxt "#31052"
