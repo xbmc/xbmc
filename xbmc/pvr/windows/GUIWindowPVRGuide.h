@@ -85,7 +85,7 @@ private:
 
   void RefreshView(CGUIMessage& message, bool bInitGridControl);
 
-  int GetCurrentListItemIndex(const std::shared_ptr<const CFileItem>& item);
+  int GetCurrentListItemIndex(const std::shared_ptr<const CFileItem>& item) const;
 
   std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
   std::atomic_bool m_bRefreshTimelineItems{false};

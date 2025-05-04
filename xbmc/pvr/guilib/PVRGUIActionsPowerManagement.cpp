@@ -15,6 +15,7 @@
 #include "network/Network.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
+#include "pvr/settings/PVRSettings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
@@ -29,10 +30,13 @@ using namespace PVR;
 using namespace KODI::MESSAGING;
 
 CPVRGUIActionsPowerManagement::CPVRGUIActionsPowerManagement()
-  : m_settings({CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
-                CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME})
+  : m_settings(std::make_unique<CPVRSettings>(
+        std::set<std::string>({CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
+                               CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME})))
 {
 }
+
+CPVRGUIActionsPowerManagement::~CPVRGUIActionsPowerManagement() = default;
 
 bool CPVRGUIActionsPowerManagement::CanSystemPowerdown(bool bAskUser /*= true*/) const
 {
@@ -91,7 +95,7 @@ bool CPVRGUIActionsPowerManagement::CanSystemPowerdown(bool bAskUser /*= true*/)
 
           CDateTime dailywakeuptime;
           dailywakeuptime.SetFromDBTime(
-              m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
+              m_settings->GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
           dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
           const CDateTimeSpan diff(dailywakeuptime - now);
@@ -182,7 +186,7 @@ bool CPVRGUIActionsPowerManagement::IsNextEventWithinBackendIdleTime() const
   // timers going off soon?
   const CDateTime now(CDateTime::GetUTCDateTime());
   const CDateTimeSpan idle(
-      0, 0, m_settings.GetIntValue(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
+      0, 0, m_settings->GetIntValue(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
   const CDateTime next(CServiceBroker::GetPVRManager().Timers()->GetNextEventTime());
   const CDateTimeSpan delta(next - now);
 

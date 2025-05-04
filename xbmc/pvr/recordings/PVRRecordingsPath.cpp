@@ -105,7 +105,7 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted,
   strTitleN = CURL::Encode(strTitleN);
 
   std::string strSeasonEpisodeN;
-  if ((iSeason > -1 && iEpisode > -1 && (iSeason > 0 || iEpisode > 0)))
+  if (iSeason > -1 && iEpisode > -1 && (iSeason > 0 || iEpisode > 0))
     strSeasonEpisodeN = StringUtils::Format("s{:02}e{:02}", iSeason, iEpisode);
   if (!strSeasonEpisodeN.empty())
     strSeasonEpisodeN = StringUtils::Format(" {}", strSeasonEpisodeN);
@@ -181,7 +181,7 @@ std::string CPVRRecordingsPath::GetUnescapedSubDirectoryPath(const std::string& 
   return strReturn;
 }
 
-const std::string CPVRRecordingsPath::GetTitle() const
+std::string CPVRRecordingsPath::GetTitle() const
 {
   if (m_bValid)
   {

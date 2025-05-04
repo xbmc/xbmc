@@ -23,16 +23,10 @@
 
 class CFileItem;
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 class CGUIInfo;
 }
-} // namespace GUILIB
-} // namespace KODI
 
 namespace PVR
 {
@@ -90,8 +84,8 @@ public:
 
 private:
   void ResetProperties();
-  void ClearQualityInfo(CPVRSignalStatus& qualityInfo);
-  void ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo);
+  void ClearQualityInfo(CPVRSignalStatus& qualityInfo) const;
+  void ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo) const;
 
   void Process() override;
 

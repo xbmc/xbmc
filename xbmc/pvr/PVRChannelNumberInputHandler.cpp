@@ -39,7 +39,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
 {
   if (m_inputBuffer.empty())
   {
-    std::unique_lock<CCriticalSection> lock(m_mutex);
+    std::unique_lock lock(m_mutex);
     SetLabel("");
   }
   else
@@ -47,7 +47,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
     // call the overridden worker method
     OnInputDone();
 
-    std::unique_lock<CCriticalSection> lock(m_mutex);
+    std::unique_lock lock(m_mutex);
 
     // erase input buffer immediately , but...
     m_inputBuffer.erase();
@@ -83,7 +83,7 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
   if (cCharacter != CPVRChannelNumber::SEPARATOR && (cCharacter < '0' || cCharacter > '9'))
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   if (cCharacter == CPVRChannelNumber::SEPARATOR)
   {
@@ -106,7 +106,7 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
     m_sortedChannelNumbers.clear();
     GetChannelNumbers(m_sortedChannelNumbers);
 
-    std::sort(m_sortedChannelNumbers.begin(), m_sortedChannelNumbers.end());
+    std::ranges::sort(m_sortedChannelNumbers);
   }
 
   m_inputBuffer.append(&cCharacter, 1);
@@ -144,7 +144,7 @@ CPVRChannelNumber CPVRChannelNumberInputHandler::GetChannelNumber() const
   int iChannelNumber = 0;
   int iSubChannelNumber = 0;
 
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   size_t pos = m_inputBuffer.find(CPVRChannelNumber::SEPARATOR);
   if (pos != std::string::npos)
@@ -173,13 +173,13 @@ bool CPVRChannelNumberInputHandler::HasChannelNumber() const
 
 std::string CPVRChannelNumberInputHandler::GetChannelNumberLabel() const
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
   return m_label;
 }
 
-void CPVRChannelNumberInputHandler::SetLabel(const std::string& label)
+void CPVRChannelNumberInputHandler::SetLabel(std::string_view label)
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
   if (label != m_label)
   {
     m_label = label;

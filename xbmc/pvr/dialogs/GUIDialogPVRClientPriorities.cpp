@@ -68,10 +68,10 @@ void CGUIDialogPVRClientPriorities::InitializeSettings()
   }
 
   m_clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
-  for (const auto& client : m_clients)
+  for (const auto& [_, client] : m_clients)
   {
-    AddEdit(group, std::to_string(client.second->GetID()), 13205 /* Unknown */, SettingLevel::Basic,
-            client.second->GetPriority());
+    AddEdit(group, std::to_string(client->GetID()), 13205 /* Unknown */, SettingLevel::Basic,
+            client->GetPriority());
   }
 }
 
@@ -90,12 +90,12 @@ void CGUIDialogPVRClientPriorities::OnSettingChanged(const std::shared_ptr<const
 
 bool CGUIDialogPVRClientPriorities::Save()
 {
-  for (const auto& changedClient : m_changedValues)
+  for (const auto& [clientIdString, priority] : m_changedValues)
   {
-    int iClientId = std::atoi(changedClient.first.c_str());
-    auto clientEntry = m_clients.find(iClientId);
-    if (clientEntry != m_clients.end())
-      clientEntry->second->SetPriority(changedClient.second);
+    const int clientId{std::atoi(clientIdString.c_str())};
+    const auto it = m_clients.find(clientId);
+    if (it != m_clients.cend())
+      (*it).second->SetPriority(priority);
   }
 
   return true;

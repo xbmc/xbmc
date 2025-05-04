@@ -9,6 +9,8 @@
 #include "DiscsUtils.h"
 
 #include "FileItem.h"
+#include "URL.h"
+
 //! @todo it's wrong to include videoplayer scoped files, refactor
 // dvd inputstream so they can be used by other components. Or just use libdvdnav directly.
 #include "cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.h"
@@ -17,6 +19,13 @@
 // to use libbluray directly.
 #include "filesystem/BlurayDirectory.h"
 #endif
+
+#include "filesystem/File.h"
+
+#include <algorithm>
+#include <array>
+#include <string>
+#include <string_view>
 
 bool UTILS::DISCS::GetDiscInfo(UTILS::DISCS::DiscInfo& info, const std::string& mediaPath)
 {
@@ -65,4 +74,26 @@ UTILS::DISCS::DiscInfo UTILS::DISCS::ProbeBlurayDiscInfo(const std::string& medi
   info.serial = bdDir.GetBlurayID();
 #endif
   return info;
+}
+
+bool UTILS::DISCS::IsBlurayDiscImage(const CFileItem& item)
+{
+  if (!item.IsDiscImage())
+    return false;
+
+  static constexpr std::array<std::string_view, 4> blurayFiles = {
+      "index.bdmv",
+      "INDEX.BDM",
+      "BDMV/index.bdmv",
+      "BDMV/INDEX.BDM",
+  };
+  CURL url("udf://");
+  url.SetHostName(item.GetDynPath());
+
+  return std::ranges::any_of(blurayFiles,
+                             [&url](std::string_view file)
+                             {
+                               url.SetFileName(std::string(file));
+                               return XFILE::CFile::Exists(url.Get());
+                             });
 }

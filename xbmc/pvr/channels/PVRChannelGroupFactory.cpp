@@ -18,7 +18,8 @@
 
 using namespace PVR;
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateAllChannelsGroup(bool isRadio)
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateAllChannelsGroup(
+    bool isRadio) const
 {
   return std::make_shared<CPVRChannelGroupAllChannels>(isRadio);
 }
@@ -26,7 +27,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateAllChannelsGrou
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateClientGroup(
     const PVR_CHANNEL_GROUP& groupData,
     int clientID,
-    const std::shared_ptr<const CPVRChannelGroup>& allChannels)
+    const std::shared_ptr<const CPVRChannelGroup>& allChannels) const
 {
   return std::make_shared<CPVRChannelGroupFromClient>(groupData, clientID, allChannels);
 }
@@ -34,7 +35,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateClientGroup(
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateUserGroup(
     bool isRadio,
     const std::string& name,
-    const std::shared_ptr<const CPVRChannelGroup>& allChannels)
+    const std::shared_ptr<const CPVRChannelGroup>& allChannels) const
 {
   return std::make_shared<CPVRChannelGroupFromUser>(
       CPVRChannelsPath{isRadio, name, PVR_GROUP_CLIENT_ID_LOCAL}, allChannels);
@@ -43,7 +44,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateUserGroup(
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateGroup(
     int groupType,
     const CPVRChannelsPath& groupPath,
-    const std::shared_ptr<const CPVRChannelGroup>& allChannels)
+    const std::shared_ptr<const CPVRChannelGroup>& allChannels) const
 {
   switch (groupType)
   {
@@ -94,7 +95,7 @@ int CPVRChannelGroupFactory::GetGroupTypePriority(
 
 std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroupFactory::CreateMissingGroups(
     const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup,
-    const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups)
+    const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups) const
 {
   std::vector<std::shared_ptr<CPVRChannelGroup>> newGroups{
       CPVRChannelGroupAllChannelsSingleClient::CreateMissingGroups(allChannelsGroup,

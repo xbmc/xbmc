@@ -22,11 +22,8 @@
 #include "utils/ISortable.h"
 #include "utils/SortUtils.h"
 
-#include <map>
 #include <memory>
 #include <string>
-#include <utility>
-#include <vector>
 
 class CMediaSource;
 enum class VideoDbContentType;
@@ -614,30 +611,3 @@ private:
   \sa CFileItem
   */
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
-
-/*!
-  \brief A vector of pointer to CFileItem
-  \sa CFileItem
-  */
-typedef std::vector< CFileItemPtr > VECFILEITEMS;
-
-/*!
-  \brief Iterator for VECFILEITEMS
-  \sa CFileItemList
-  */
-typedef std::vector< CFileItemPtr >::iterator IVECFILEITEMS;
-
-/*!
-  \brief A map of pointers to CFileItem
-  \sa CFileItem
-  */
-typedef std::map<std::string, CFileItemPtr > MAPFILEITEMS;
-
-/*!
-  \brief Pair for MAPFILEITEMS
-  \sa MAPFILEITEMS
-  */
-typedef std::pair<std::string, CFileItemPtr > MAPFILEITEMSPAIR;
-
-typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CFileItemPtr &pItem2);
-typedef void (*FILEITEMFILLFUNC)(CFileItemPtr& item);

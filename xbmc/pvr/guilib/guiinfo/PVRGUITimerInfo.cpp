@@ -31,7 +31,7 @@ CPVRGUITimerInfo::CPVRGUITimerInfo()
 
 void CPVRGUITimerInfo::ResetProperties()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_strActiveTimerTitle.clear();
   m_strActiveTimerChannelName.clear();
   m_strActiveTimerChannelIcon.clear();
@@ -49,7 +49,7 @@ void CPVRGUITimerInfo::ResetProperties()
 
 bool CPVRGUITimerInfo::TimerInfoToggle()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_iTimerInfoToggleStart.time_since_epoch().count() == 0)
   {
     m_iTimerInfoToggleStart = std::chrono::steady_clock::now();
@@ -66,7 +66,8 @@ bool CPVRGUITimerInfo::TimerInfoToggle()
   {
     unsigned int iPrevious = m_iTimerInfoToggleCurrent;
     unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
-    if (++m_iTimerInfoToggleCurrent > iBoundary - 1)
+    m_iTimerInfoToggleCurrent++;
+    if (m_iTimerInfoToggleCurrent > iBoundary - 1)
       m_iTimerInfoToggleCurrent = 0;
 
     if (m_iTimerInfoToggleCurrent != iPrevious)
@@ -103,7 +104,7 @@ void CPVRGUITimerInfo::UpdateTimersToggle()
     }
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_strActiveTimerTitle = strActiveTimerTitle;
   m_strActiveTimerChannelName = strActiveTimerChannelName;
   m_strActiveTimerChannelIcon = strActiveTimerChannelIcon;
@@ -116,7 +117,7 @@ void CPVRGUITimerInfo::UpdateTimersCache()
   int iRecordingTimerAmount = AmountActiveRecordings();
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     m_iTimerAmount = iTimerAmount;
     m_iRecordingTimerAmount = iRecordingTimerAmount;
     m_iTimerInfoToggleStart = {};
@@ -147,7 +148,7 @@ void CPVRGUITimerInfo::UpdateNextTimer()
                                            timer->StartAsLocalTime().GetAsLocalizedTime("", false));
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_strNextRecordingTitle = strNextRecordingTitle;
   m_strNextRecordingChannelName = strNextRecordingChannelName;
   m_strNextRecordingChannelIcon = strNextRecordingChannelIcon;
@@ -157,55 +158,55 @@ void CPVRGUITimerInfo::UpdateNextTimer()
 
 const std::string& CPVRGUITimerInfo::GetActiveTimerTitle() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strActiveTimerTitle;
 }
 
 const std::string& CPVRGUITimerInfo::GetActiveTimerChannelName() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strActiveTimerChannelName;
 }
 
 const std::string& CPVRGUITimerInfo::GetActiveTimerChannelIcon() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strActiveTimerChannelIcon;
 }
 
 const std::string& CPVRGUITimerInfo::GetActiveTimerDateTime() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strActiveTimerTime;
 }
 
 const std::string& CPVRGUITimerInfo::GetNextTimerTitle() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strNextRecordingTitle;
 }
 
 const std::string& CPVRGUITimerInfo::GetNextTimerChannelName() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strNextRecordingChannelName;
 }
 
 const std::string& CPVRGUITimerInfo::GetNextTimerChannelIcon() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strNextRecordingChannelIcon;
 }
 
 const std::string& CPVRGUITimerInfo::GetNextTimerDateTime() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strNextRecordingTime;
 }
 
 const std::string& CPVRGUITimerInfo::GetNextTimer() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strNextTimerInfo;
 }
 

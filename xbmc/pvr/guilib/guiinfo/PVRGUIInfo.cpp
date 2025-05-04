@@ -67,7 +67,7 @@ CPVRGUIInfo::CPVRGUIInfo() : CThread("PVRGUIInfo")
 
 void CPVRGUIInfo::ResetProperties()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   m_anyTimersInfo.ResetProperties();
   m_tvTimersInfo.ResetProperties();
@@ -108,12 +108,12 @@ void CPVRGUIInfo::ResetProperties()
   m_bRegistered = false;
 }
 
-void CPVRGUIInfo::ClearQualityInfo(CPVRSignalStatus& qualityInfo)
+void CPVRGUIInfo::ClearQualityInfo(CPVRSignalStatus& qualityInfo) const
 {
-  qualityInfo = {g_localizeStrings.Get(13106).c_str(), g_localizeStrings.Get(13106).c_str()};
+  qualityInfo = {g_localizeStrings.Get(13106), g_localizeStrings.Get(13106)};
 }
 
-void CPVRGUIInfo::ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo)
+void CPVRGUIInfo::ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo) const
 {
   descrambleInfo = {};
 }
@@ -151,13 +151,13 @@ void CPVRGUIInfo::Notify(const PVREvent& event)
 
 void CPVRGUIInfo::Notify(const PVRChannelNumberInputChangedEvent& event)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_channelNumberInput = event.m_input;
 }
 
 void CPVRGUIInfo::Notify(const PVRPreviewAndPlayerShowInfoChangedEvent& event)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_previewAndPlayerShowInfo = event.m_previewAndPlayerShowInfo;
 }
 
@@ -252,7 +252,7 @@ void CPVRGUIInfo::UpdateQualityData()
       client->SignalQuality(channelUid, qualityInfo);
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_qualityInfo = qualityInfo;
 }
 
@@ -276,7 +276,7 @@ void CPVRGUIInfo::UpdateDescrambleData()
       client->GetDescrambleInfo(channelUid, descrambleInfo);
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_descrambleInfo = descrambleInfo;
 }
 
@@ -305,7 +305,7 @@ void CPVRGUIInfo::UpdateMisc()
   const std::string strPlayingRadioGroup =
       (bStarted && bIsPlayingRadio) ? state->GetActiveChannelGroup(true)->GroupName() : "";
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_strPlayingClientName = strPlayingClientName;
   m_bHasTVRecordings = bHasTVRecordings;
   m_bHasRadioRecordings = bHasRadioRecordings;
@@ -543,7 +543,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         return false;
       case VIDEOPLAYER_CHANNEL_GROUP:
       {
-        std::unique_lock<CCriticalSection> lock(m_critSection);
+        std::unique_lock lock(m_critSection);
         strValue = recording->IsRadio() ? m_strPlayingRadioGroup : m_strPlayingTVGroup;
         return true;
       }
@@ -627,6 +627,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         StringUtils::Replace(strValue, "\n", ", ");
         return true;
       }
+      default:
+        break;
     }
     return false;
   }
@@ -645,6 +647,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           strValue = g_localizeStrings.Get(10006); // "N/A"
         return true;
       }
+      default:
+        break;
     }
     return false;
   }
@@ -671,10 +675,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
             case CPVRChannelGroup::Origin::USER:
               strValue = g_localizeStrings.Get(858); // User
               return true;
+            default:
+              break;
           }
         }
         break;
       }
+      default:
+        break;
     }
     return false;
   }
@@ -725,6 +733,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         // associated with the epg event of a timer, if any, and not the title of the timer.
         strValue = CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().GetTitleForEpgTag(epgTag);
         return true;
+      default:
+        break;
     }
   }
 
@@ -905,6 +915,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         StringUtils::Replace(strValue, "\n", ", ");
         return true;
       }
+      default:
+        break;
     }
   }
 
@@ -951,7 +963,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case MUSICPLAYER_CHANNEL_GROUP:
       case VIDEOPLAYER_CHANNEL_GROUP:
       {
-        std::unique_lock<CCriticalSection> lock(m_critSection);
+        std::unique_lock lock(m_critSection);
         strValue = channel->IsRadio() ? m_strPlayingRadioGroup : m_strPlayingTVGroup;
         return true;
       }
@@ -982,6 +994,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           }
         }
         break;
+      default:
+        break;
     }
   }
 
@@ -992,7 +1006,7 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item,
                               const CGUIInfo& info,
                               std::string& strValue) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   switch (info.m_info)
   {
@@ -1221,6 +1235,8 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item,
     case PVR_CHANNEL_NUMBER_INPUT:
       strValue = m_channelNumberInput;
       return true;
+    default:
+      break;
   }
 
   return false;
@@ -1363,6 +1379,8 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item,
       case RDS_GET_RADIOTEXT_LINE:
         strValue = tag->GetRadioText(info.GetData1());
         return true;
+      default:
+        break;
     }
   }
   return false;
@@ -1403,7 +1421,7 @@ bool CPVRGUIInfo::GetInt(int& value,
   if (!item->IsFileItem())
     return false;
 
-  const CFileItem* fitem = static_cast<const CFileItem*>(item);
+  const auto* fitem{static_cast<const CFileItem*>(item)};
   return GetListItemAndPlayerInt(fitem, info, value) || GetPVRInt(fitem, info, value);
 }
 
@@ -1421,13 +1439,15 @@ bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem* item,
           iValue = static_cast<int>(epgTag->ProgressPercentage());
       }
       return true;
+    default:
+      break;
   }
   return false;
 }
 
 bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iValue) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   switch (info.m_info)
   {
@@ -1485,6 +1505,8 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iV
     case PVR_CLIENT_COUNT:
       iValue = static_cast<int>(CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount());
       return true;
+    default:
+      break;
   }
   return false;
 }
@@ -1497,7 +1519,7 @@ bool CPVRGUIInfo::GetBool(bool& value,
   if (!item->IsFileItem())
     return false;
 
-  const CFileItem* fitem = static_cast<const CFileItem*>(item);
+  const auto* fitem{static_cast<const CFileItem*>(item)};
   return GetListItemAndPlayerBool(fitem, info, value) || GetPVRBool(fitem, info, value) ||
          GetRadioRDSBool(fitem, info, value);
 }
@@ -1803,13 +1825,15 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item,
         return true;
       }
       break;
+    default:
+      break;
   }
   return false;
 }
 
 bool CPVRGUIInfo::GetPVRBool(const CFileItem* item, const CGUIInfo& info, bool& bValue) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   switch (info.m_info)
   {
@@ -1873,6 +1897,8 @@ bool CPVRGUIInfo::GetPVRBool(const CFileItem* item, const CGUIInfo& info, bool& 
     case PVR_IS_PLAYING_ACTIVE_RECORDING:
       bValue = m_bIsPlayingActiveRecording;
       return true;
+    default:
+      break;
   }
   return false;
 }
@@ -1901,6 +1927,8 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem* item, const CGUIInfo& info, b
         bValue = (!tag->GetEMailStudio().empty() || !tag->GetSMSStudio().empty() ||
                   !tag->GetPhoneStudio().empty());
         return true;
+      default:
+        break;
     }
   }
 
@@ -1913,6 +1941,8 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem* item, const CGUIInfo& info, b
       bValue = appPlayer->IsPlayingRDS();
       return true;
     }
+    default:
+      break;
   }
 
   return false;
@@ -2104,7 +2134,7 @@ void CPVRGUIInfo::CharInfoProvider(std::string& strValue) const
 
 void CPVRGUIInfo::UpdateBackendCache()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   // Update the backend information for all backends if
   // an update has been requested
@@ -2206,7 +2236,7 @@ int CPVRGUIInfo::GetTimeShiftSeekPercent() const
   {
     int total = m_timesInfo.GetTimeshiftProgressDuration();
 
-    const double totalTime = static_cast<double>(total);
+    const auto totalTime{static_cast<double>(total)};
     if (totalTime == 0.0)
       return 0;
 

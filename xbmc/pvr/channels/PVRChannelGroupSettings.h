@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/settings/PVRSettings.h"
 #include "settings/lib/ISettingCallback.h"
 
 #include <memory>
@@ -16,6 +15,8 @@
 
 namespace PVR
 {
+
+class CPVRSettings;
 
 class IChannelGroupSettingsCallback
 {
@@ -51,7 +52,7 @@ private:
   bool m_bUseBackendChannelNumbers = false;
   bool m_bStartGroupChannelNumbersFromOne = false;
 
-  CPVRSettings m_settings;
+  std::unique_ptr<CPVRSettings> m_settings;
   std::set<IChannelGroupSettingsCallback*> m_callbacks;
 };
 

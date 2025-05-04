@@ -1446,29 +1446,29 @@ bool CGUIDialogVideoInfo::ManageMovieSets(const std::shared_ptr<CFileItem>& item
       selectedItems.Size() == 0) // need at least one item selected
     return false;
 
-  VECFILEITEMS original = originalItems.GetList();
+  auto original = originalItems.GetList();
   std::sort(original.begin(), original.end(), compFileItemsByDbId);
-  VECFILEITEMS selected = selectedItems.GetList();
+  auto selected = selectedItems.GetList();
   std::sort(selected.begin(), selected.end(), compFileItemsByDbId);
 
   bool refreshNeeded = false;
   // update the "added" items
-  VECFILEITEMS addedItems;
+  std::vector<std::shared_ptr<CFileItem>> addedItems;
   set_difference(selected.begin(),selected.end(), original.begin(),original.end(), std::back_inserter(addedItems), compFileItemsByDbId);
-  for (VECFILEITEMS::const_iterator it = addedItems.begin();  it != addedItems.end(); ++it)
+  for (const auto& it : addedItems)
   {
-    if (SetMovieSet(it->get(), item.get()))
+    if (SetMovieSet(it.get(), item.get()))
       refreshNeeded = true;
   }
 
   // update the "deleted" items
   CFileItemPtr clearItem(new CFileItem());
   clearItem->GetVideoInfoTag()->m_iDbId = -1; // -1 will be used to clear set
-  VECFILEITEMS deletedItems;
+  std::vector<std::shared_ptr<CFileItem>> deletedItems;
   set_difference(original.begin(),original.end(), selected.begin(),selected.end(), std::back_inserter(deletedItems), compFileItemsByDbId);
-  for (VECFILEITEMS::iterator it = deletedItems.begin();  it != deletedItems.end(); ++it)
+  for (const auto& it : deletedItems)
   {
-    if (SetMovieSet(it->get(), clearItem.get()))
+    if (SetMovieSet(it.get(), clearItem.get()))
       refreshNeeded = true;
   }
 

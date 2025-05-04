@@ -27,14 +27,18 @@
 
 using namespace PVR;
 
-#define CONTROL_BTN_FIND 4
-#define CONTROL_BTN_SWITCH 5
-#define CONTROL_BTN_RECORD 6
-#define CONTROL_BTN_OK 7
-#define CONTROL_BTN_PLAY_RECORDING 8
-#define CONTROL_BTN_ADD_TIMER 9
-#define CONTROL_BTN_PLAY_EPGTAG 10
-#define CONTROL_BTN_SET_REMINDER 11
+namespace
+{
+constexpr unsigned int CONTROL_BTN_FIND = 4;
+constexpr unsigned int CONTROL_BTN_SWITCH = 5;
+constexpr unsigned int CONTROL_BTN_RECORD = 6;
+constexpr unsigned int CONTROL_BTN_OK = 7;
+constexpr unsigned int CONTROL_BTN_PLAY_RECORDING = 8;
+constexpr unsigned int CONTROL_BTN_ADD_TIMER = 9;
+constexpr unsigned int CONTROL_BTN_PLAY_EPGTAG = 10;
+constexpr unsigned int CONTROL_BTN_SET_REMINDER = 11;
+
+} // unnamed namespace
 
 CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo()
   : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_INFO, "DialogPVRInfo.xml")
@@ -179,12 +183,11 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonFind(const CGUIMessage& message)
 
 bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
 {
-  switch (message.GetMessage())
+  if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-    case GUI_MSG_CLICKED:
-      return OnClickButtonOK(message) || OnClickButtonRecord(message) ||
-             OnClickButtonPlay(message) || OnClickButtonFind(message) ||
-             OnClickButtonAddTimer(message) || OnClickButtonSetReminder(message);
+    return OnClickButtonOK(message) || OnClickButtonRecord(message) || OnClickButtonPlay(message) ||
+           OnClickButtonFind(message) || OnClickButtonAddTimer(message) ||
+           OnClickButtonSetReminder(message);
   }
 
   return CGUIDialog::OnMessage(message);
@@ -216,7 +219,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
     return;
   }
 
-  auto& mgr = CServiceBroker::GetPVRManager();
+  const auto& mgr{CServiceBroker::GetPVRManager()};
   const auto epgTag = m_progItem->GetEPGInfoTag();
 
   if (!mgr.Recordings()->GetRecordingForEpgTag(epgTag))

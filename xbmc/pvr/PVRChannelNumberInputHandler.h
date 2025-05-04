@@ -14,6 +14,7 @@
 #include "utils/EventStream.h"
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace PVR
@@ -89,15 +90,14 @@ protected:
    */
   size_t GetCurrentDigitCount() const { return m_inputBuffer.size(); }
 
-  mutable CCriticalSection m_mutex;
-
 private:
   void ExecuteAction();
 
-  void SetLabel(const std::string& label);
+  void SetLabel(std::string_view label);
 
+  mutable CCriticalSection m_mutex;
   std::vector<std::string> m_sortedChannelNumbers;
-  const uint32_t m_delay;
+  const uint32_t m_delay{2000}; // 2 secs
   std::string m_inputBuffer;
   std::string m_label;
   CTimer m_timer;

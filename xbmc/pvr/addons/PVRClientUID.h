@@ -22,8 +22,6 @@ public:
   {
   }
 
-  virtual ~CPVRClientUID() = default;
-
   /*!
    * @brief Return the numeric UID.
    * @return The numeric UID, or PVR_CLIENT_INVALID_UID on error.

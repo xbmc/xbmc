@@ -39,7 +39,6 @@ public:
   virtual ~CPVRTimerSettingDefinition() = default;
 
   bool operator==(const CPVRTimerSettingDefinition& right) const;
-  bool operator!=(const CPVRTimerSettingDefinition& right) const;
 
   int GetClientId() const { return m_clientId; }
   unsigned int GetTimerTypeId() const { return m_timerTypeId; }

@@ -9,12 +9,10 @@
 #pragma once
 
 #include "pvr/channels/PVRChannelGroup.h"
-#include "pvr/settings/PVRSettings.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
-#include <mutex>
 #include <string>
 #include <vector>
 
@@ -25,6 +23,7 @@ enum class PVREvent;
 class CPVRChannel;
 class CPVRChannelGroupFactory;
 class CPVRClient;
+class CPVRsettings;
 
 /** A container class for channel groups */
 
@@ -36,7 +35,7 @@ public:
    * @param bRadio True if this is a container for radio channels, false if it is for tv channels.
    */
   explicit CPVRChannelGroups(bool bRadio);
-  virtual ~CPVRChannelGroups();
+  ~CPVRChannelGroups() override;
 
   // ISettingCallback implementation
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
@@ -62,11 +61,7 @@ public:
   /*!
    * @return Amount of groups in this container
    */
-  size_t Size() const
-  {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-    return m_groups.size();
-  }
+  size_t Size() const;
 
   /*!
    * @brief Update a group or add it if it's not in here yet.
@@ -301,7 +296,7 @@ private:
   mutable CCriticalSection m_critSection;
   std::vector<int> m_failedClientsForChannelGroups;
   bool m_isSubscribed{false};
-  CPVRSettings m_settings;
+  std::unique_ptr<CPVRSettings> m_settings;
   std::shared_ptr<CPVRChannelGroup> m_allChannelsGroup;
   std::shared_ptr<CPVRChannelGroupFactory> m_channelGroupFactory;
 };

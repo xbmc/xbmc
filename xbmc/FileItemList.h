@@ -16,6 +16,10 @@
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 
+#include <map>
+#include <string>
+#include <vector>
+
 /*!
   \brief Represents a list of files
   \sa CFileItemList, CFileItem
@@ -46,7 +50,7 @@ public:
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
   CFileItemPtr Get(int iItem) const;
-  const VECFILEITEMS& GetList() const { return m_items; }
+  const auto& GetList() const { return m_items; }
   CFileItemPtr Get(const std::string& strPath) const;
   int Size() const;
   bool IsEmpty() const;
@@ -164,19 +168,22 @@ public:
 
   void ClearSortState();
 
-  VECFILEITEMS::iterator begin() { return m_items.begin(); }
-  VECFILEITEMS::iterator end() { return m_items.end(); }
-  VECFILEITEMS::iterator erase(VECFILEITEMS::iterator first, VECFILEITEMS::iterator last);
-  VECFILEITEMS::const_iterator begin() const { return m_items.begin(); }
-  VECFILEITEMS::const_iterator end() const { return m_items.end(); }
-  VECFILEITEMS::const_iterator cbegin() const { return m_items.cbegin(); }
-  VECFILEITEMS::const_iterator cend() const { return m_items.cend(); }
-  std::reverse_iterator<VECFILEITEMS::const_iterator> rbegin() const { return m_items.rbegin(); }
-  std::reverse_iterator<VECFILEITEMS::const_iterator> rend() const { return m_items.rend(); }
+  auto begin() { return m_items.begin(); }
+  auto end() { return m_items.end(); }
+
+  auto begin() const { return m_items.begin(); }
+  auto end() const { return m_items.end(); }
+
+  using Iterator = std::vector<std::shared_ptr<CFileItem>>::iterator;
+  Iterator erase(Iterator first, Iterator last);
+
+  auto cbegin() const { return m_items.cbegin(); }
+  auto cend() const { return m_items.cend(); }
+
+  auto rbegin() const { return m_items.rbegin(); }
+  auto rend() const { return m_items.rend(); }
 
 private:
-  void Sort(FILEITEMLISTCOMPARISONFUNC func);
-  void FillSortFields(FILEITEMFILLFUNC func);
   std::string GetDiscFileCache(int windowID) const;
 
   /*!
@@ -191,8 +198,8 @@ private:
    */
   void StackFolders();
 
-  VECFILEITEMS m_items;
-  MAPFILEITEMS m_map;
+  std::vector<std::shared_ptr<CFileItem>> m_items;
+  std::map<std::string, std::shared_ptr<CFileItem>> m_map;
   bool m_ignoreURLOptions = false;
   bool m_fastLookup = false;
   SortDescription m_sortDescription;

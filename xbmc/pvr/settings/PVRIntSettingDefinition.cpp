@@ -19,15 +19,4 @@ CPVRIntSettingDefinition::CPVRIntSettingDefinition(const PVR_INT_SETTING_DEFINIT
     m_maxValue{def.iMaxValue}
 {
 }
-
-bool CPVRIntSettingDefinition::operator==(const CPVRIntSettingDefinition& right) const
-{
-  return (m_values == right.m_values && m_minValue == right.m_minValue && m_step == right.m_step &&
-          m_maxValue == right.m_maxValue);
-}
-
-bool CPVRIntSettingDefinition::operator!=(const CPVRIntSettingDefinition& right) const
-{
-  return !(*this == right);
-}
 } // namespace PVR

@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "XBDateTime.h"
 #include "dbwrappers/Database.h"
 #include "filesystem/File.h"
 #include "filesystem/SmartPlaylistDirectory.h"
@@ -27,8 +28,10 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <charconv>
 #include <cstdlib>
 #include <memory>
+#include <optional>
 #include <set>
 #include <string>
 #include <vector>
@@ -72,16 +75,16 @@ static const translateField fields[] = {
   { "year",              FieldYear,                    CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  562 },
   { "time",              FieldTime,                    CDatabaseQueryRule::SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
   { "playcount",         FieldPlaycount,               CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 567 },
-  { "lastplayed",        FieldLastPlayed,              CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 568 },
+  { "lastplayed",        FieldLastPlayed,              CDatabaseQueryRule::DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 568 },
   { "inprogress",        FieldInProgress,              CDatabaseQueryRule::BOOLEAN_FIELD,  NULL,                                 false, 575 },
   { "rating",            FieldRating,                  CDatabaseQueryRule::REAL_FIELD,     CSmartPlaylistRule::ValidateRating,   false, 563 },
   { "userrating",        FieldUserRating,              CDatabaseQueryRule::REAL_FIELD,     CSmartPlaylistRule::ValidateMyRating, false, 38018 },
   { "votes",             FieldVotes,                   CDatabaseQueryRule::REAL_FIELD,     StringValidation::IsPositiveInteger,  false, 205 },
   { "top250",            FieldTop250,                  CDatabaseQueryRule::NUMERIC_FIELD,  NULL,                                 false, 13409 },
   { "mpaarating",        FieldMPAA,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 20074 },
-  { "dateadded",         FieldDateAdded,               CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 570 },
-  { "datemodified",      FieldDateModified,            CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 39119 },
-  { "datenew",           FieldDateNew,                 CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 21877 },
+  { "dateadded",         FieldDateAdded,               CDatabaseQueryRule::DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 570 },
+  { "datemodified",      FieldDateModified,            CDatabaseQueryRule::DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 39119 },
+  { "datenew",           FieldDateNew,                 CDatabaseQueryRule::DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 21877 },
   { "genre",             FieldGenre,                   CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  515 },
   { "plot",              FieldPlot,                    CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 207 },
   { "plotoutline",       FieldPlotOutline,             CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 203 },
@@ -90,7 +93,7 @@ static const translateField fields[] = {
   { "director",          FieldDirector,                CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  20339 },
   { "actor",             FieldActor,                   CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  20337 },
   { "writers",           FieldWriter,                  CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  20417 },
-  { "airdate",           FieldAirDate,                 CDatabaseQueryRule::DATE_FIELD,     NULL,                                 false, 20416 },
+  { "airdate",           FieldAirDate,                 CDatabaseQueryRule::DATE_FIELD,     CSmartPlaylistRule::ValidateDate,     false, 20416 },
   { "hastrailer",        FieldTrailer,                 CDatabaseQueryRule::BOOLEAN_FIELD,  NULL,                                 false, 20423 },
   { "studio",            FieldStudio,                  CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  572 },
   { "country",           FieldCountry,                 CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  574 },
@@ -261,15 +264,14 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
   if (validator == NULL)
     return true;
 
-  // split the input into multiple values and validate every value separately
-  std::vector<std::string> values = StringUtils::Split(input, RULE_VALUE_SEPARATOR);
-  for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it)
-  {
-    if (!validator(*it, data))
-      return false;
-  }
+  if (input.empty())
+    return validator("", data);
 
-  return true;
+  // Split the input into multiple values and validate every value separately
+  const std::vector<std::string> values{StringUtils::Split(input, RULE_VALUE_SEPARATOR)};
+
+  return (std::all_of(values.begin(), values.end(),
+                      [data, validator](const auto& s) { return validator(s, data); }));
 }
 
 bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
@@ -290,6 +292,60 @@ bool CSmartPlaylistRule::ValidateMyRating(const std::string &input, void *data)
 
   int rating = atoi(strRating.c_str());
   return StringValidation::IsPositiveInteger(input, data) && rating <= 10;
+}
+
+namespace
+{
+template<typename T>
+std::optional<T> ToNumeric(std::string_view str)
+{
+  const char* end{str.data() + str.size()};
+  T result{};
+
+  auto [ptr, ec] = std::from_chars(str.data(), end, result);
+
+  if (ec != std::errc{} || ptr != end || result < 0)
+    return std::nullopt;
+
+  return result;
+}
+} // namespace
+
+bool CSmartPlaylistRule::ValidateDate(const std::string& input, void* data)
+{
+  if (!data)
+    return false;
+
+  CSmartPlaylistRule* rule = static_cast<CSmartPlaylistRule*>(data);
+
+  //! @todo implement a validation for relative dates
+  if (rule->m_operator == CDatabaseQueryRule::OPERATOR_IN_THE_LAST ||
+      rule->m_operator == CDatabaseQueryRule::OPERATOR_NOT_IN_THE_LAST)
+    return true;
+
+  // The date format must be YYYY-MM-DD
+  if (input.size() != 10)
+    return false;
+
+  const std::string_view sv{input};
+
+  if (sv[4] != '-' || sv[7] != '-')
+    return false;
+
+  const auto year{ToNumeric<int>(sv.substr(0, 4))};
+  if (!year.has_value())
+    return false;
+
+  const auto month{ToNumeric<int>(sv.substr(5, 2))};
+  if (!month.has_value())
+    return false;
+
+  const auto day{ToNumeric<int>(sv.substr(8, 2))};
+  if (!day.has_value())
+    return false;
+
+  CDateTime dt;
+  return dt.SetDate(year.value(), month.value(), day.value());
 }
 
 std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)

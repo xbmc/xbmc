@@ -12,6 +12,7 @@
 #include "threads/Thread.h"
 
 #include <string>
+#include <string_view>
 
 namespace PVR
 {
@@ -33,7 +34,7 @@ namespace PVR
      * @param strText The new progress text.
      * @param fProgress The new progress value, in a range from 0.0 to 100.0.
      */
-    void UpdateProgress(const std::string& strText, float fProgress);
+    void UpdateProgress(std::string_view strText, float fProgress);
 
     /*!
      * @brief Update the progress dialogs's content.
@@ -41,7 +42,7 @@ namespace PVR
      * @param currentValue The new current progress value, must be less or equal iMax.
      * @param maxValue The new maximum progress value, must be greater or equal iCurrent.
      */
-    void UpdateProgress(const std::string& text, size_t currentValue, size_t maxValue);
+    void UpdateProgress(std::string_view text, size_t currentValue, size_t maxValue);
 
   protected:
     // CThread implementation

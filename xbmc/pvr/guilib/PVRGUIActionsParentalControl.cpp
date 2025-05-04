@@ -14,6 +14,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/settings/PVRSettings.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -25,9 +26,12 @@ using namespace PVR;
 using namespace KODI::MESSAGING;
 
 CPVRGUIActionsParentalControl::CPVRGUIActionsParentalControl()
-  : m_settings({CSettings::SETTING_PVRPARENTAL_PIN, CSettings::SETTING_PVRPARENTAL_ENABLED})
+  : m_settings(std::make_unique<CPVRSettings>(std::set<std::string>(
+        {CSettings::SETTING_PVRPARENTAL_PIN, CSettings::SETTING_PVRPARENTAL_ENABLED})))
 {
 }
+
+CPVRGUIActionsParentalControl::~CPVRGUIActionsParentalControl() = default;
 
 ParentalCheckResult CPVRGUIActionsParentalControl::CheckParentalLock(
     const std::shared_ptr<const CPVRChannel>& channel) const
@@ -46,10 +50,10 @@ ParentalCheckResult CPVRGUIActionsParentalControl::CheckParentalLock(
 
 ParentalCheckResult CPVRGUIActionsParentalControl::CheckParentalPIN() const
 {
-  if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED))
+  if (!m_settings->GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED))
     return ParentalCheckResult::SUCCESS;
 
-  std::string pinCode = m_settings.GetStringValue(CSettings::SETTING_PVRPARENTAL_PIN);
+  std::string pinCode{m_settings->GetStringValue(CSettings::SETTING_PVRPARENTAL_PIN)};
   if (pinCode.empty())
     return ParentalCheckResult::SUCCESS;
 

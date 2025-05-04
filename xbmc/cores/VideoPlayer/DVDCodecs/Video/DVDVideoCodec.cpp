@@ -95,26 +95,11 @@ bool VideoPicture::CompareDisplayMetadata(const VideoPicture& pic) const
          this->displayMetadata.min_luminance.den == pic.displayMetadata.min_luminance.den;
 }
 
-bool VideoPicture::CompareLightMetadata(const VideoPicture& pic) const
-{
-  if (this->hasLightMetadata != pic.hasLightMetadata)
-    return false;
-
-  // both this and pic not has light metadata (e.g. SDR video)
-  // returns true because it is equal and there is no need to compare
-  if (!pic.hasLightMetadata)
-    return true;
-
-  // both this and pic has light metadata
-  return this->lightMetadata.MaxCLL == pic.lightMetadata.MaxCLL &&
-         this->lightMetadata.MaxFALL == pic.lightMetadata.MaxFALL;
-}
-
 bool VideoPicture::IsSameParams(const VideoPicture& pic) const
 {
   return this->iWidth == pic.iWidth && this->iHeight == pic.iHeight &&
          this->iDisplayWidth == pic.iDisplayWidth && this->iDisplayHeight == pic.iDisplayHeight &&
          this->stereoMode == pic.stereoMode && this->color_primaries == pic.color_primaries &&
          this->color_transfer == pic.color_transfer && this->hdrType == pic.hdrType &&
-         CompareDisplayMetadata(pic) && CompareLightMetadata(pic);
+         CompareDisplayMetadata(pic);
 }

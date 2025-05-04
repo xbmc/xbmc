@@ -353,12 +353,13 @@ void CGUIEditControl::OnClick()
     }
     case INPUT_TYPE_DATE:
     {
-      CDateTime dateTime;
-      dateTime.SetFromDBDate(utf8);
-      if (dateTime < CDateTime(2000,1, 1, 0, 0, 0))
-        dateTime = CDateTime(2000, 1, 1, 0, 0, 0);
       KODI::TIME::SystemTime date;
-      dateTime.GetAsSystemTime(date);
+      CDateTime dateTime;
+      if (dateTime.SetFromDBDate(utf8))
+        dateTime.GetAsSystemTime(date);
+      else
+        KODI::TIME::GetLocalTime(&date);
+
       if (CGUIDialogNumeric::ShowAndGetDate(date, !m_inputHeading.empty() ? m_inputHeading : g_localizeStrings.Get(21420)))
       {
         dateTime = CDateTime(date);
@@ -420,7 +421,7 @@ void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, const CVari
     m_inputHeading = heading.asString();
   else if (heading.isInteger() && heading.asInteger())
     m_inputHeading = g_localizeStrings.Get(static_cast<uint32_t>(heading.asInteger()));
-  //! @todo Verify the current input string?
+  ValidateInput();
 }
 
 void CGUIEditControl::RecalcRightLabelPosition()

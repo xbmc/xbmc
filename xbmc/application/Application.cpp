@@ -56,7 +56,9 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "favourites/FavouritesService.h"
+#ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDiscCache.h"
+#endif
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/DirectoryFactory.h"
@@ -2366,6 +2368,10 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (PLAYLIST::IsPlayList(item))
     return false;
 
+  // Get bluray:// path for resolution
+  if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->GetPath().starts_with("bluray://"))
+    item.SetDynPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+
   // Translate/Resolve the url if needed - recursively, but only limited times.
   std::string lastDynPath{item.GetDynPath()};
   size_t itemResolveAttempt{0};
@@ -2419,10 +2425,15 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CVideoDatabase dbs;
       dbs.Open();
 
-      std::string path = item.GetPath();
-      std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-      if (videoInfoTagPath.starts_with("removable://") || VIDEO::IsVideoDb(item))
-        path = videoInfoTagPath;
+      std::string path{item.GetPath()};
+      if (item.HasVideoInfoTag())
+      {
+        std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+        // removable:// may be embedded in bluray:// path
+        if (CURL::Decode(videoInfoTagPath).find("removable://") != std::string::npos ||
+            VIDEO::IsVideoDb(item))
+          path = videoInfoTagPath;
+      }
 
       // Note that we need to load the tag from database also if the item already has a tag,
       // because for example the (full) video info for strm files will be loaded here.
@@ -2490,10 +2501,10 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   }
 
   // a disc image might be Blu-Ray disc
-  if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-      (VIDEO::IsBDFile(item) || item.IsDiscImage() ||
-       (item.GetProperty("force_playlist_selection").asBoolean(false) &&
-        URIUtils::IsBlurayPath(item.GetDynPath()))))
+  if ((!(options.startpercent > 0.0 || options.starttime > 0.0) &&
+       (VIDEO::IsBDFile(item) || ::UTILS::DISCS::IsBlurayDiscImage(item))) ||
+      (item.GetProperty("force_playlist_selection").asBoolean(false) &&
+       URIUtils::IsBlurayPath(item.GetDynPath())))
   {
     // No video selection when using external or remote players (they handle it if supported)
     const bool isSimpleMenuAllowed = [&]()
@@ -2513,6 +2524,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       // Check if we must show the simplified bd menu.
       if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(item))
         return true;
+
+      // Reset any resume state as new playlist chosen
+      options = {};
     }
   }
 

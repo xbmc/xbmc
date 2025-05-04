@@ -18,6 +18,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <string_view>
 
 using namespace PVR;
 
@@ -48,12 +49,12 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
         StringUtils::Format("{}@{}", pattern.owner, CURL::Encode(pattern.path));
 
     std::string escapedPattern;
-    for (size_t i = 0; i < encodedPattern.size(); ++i)
+    for (const auto& pos : encodedPattern)
     {
-      if (encodedPattern[i] == '%' || encodedPattern[i] == '^')
+      if (pos == '%' || pos == '^')
         escapedPattern += '^';
 
-      escapedPattern += encodedPattern[i];
+      escapedPattern += pos;
     }
 
     const std::string where =
@@ -74,8 +75,8 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
     const std::string textureURL =
         IMAGE_FILES::CImageFileURL(items[i]["url"].asString()).GetTargetFile();
 
-    if (std::none_of(urlsToCheck.cbegin(), urlsToCheck.cend(),
-                     [&textureURL](const std::string& url) { return url == textureURL; }))
+    if (std::ranges::none_of(urlsToCheck,
+                             [&textureURL](std::string_view url) { return url == textureURL; }))
     {
       CLog::LogFC(LOGDEBUG, LOGPVR, "Removing stale cached image: '{}'", textureURL);
       CServiceBroker::GetTextureCache()->ClearCachedImage(items[i]["textureid"].asInteger());

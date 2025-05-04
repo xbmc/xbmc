@@ -7,7 +7,9 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include <cstddef>
 #include <string>
+#include <vector>
 
 class CTVOSNSUserDefaults
 {

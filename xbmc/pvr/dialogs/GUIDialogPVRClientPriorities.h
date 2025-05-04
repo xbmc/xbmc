@@ -11,6 +11,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
+#include <functional>
 #include <map>
 #include <string>
 
@@ -36,6 +37,6 @@ namespace PVR
 
   private:
     CPVRClientMap m_clients;
-    std::map<std::string, int> m_changedValues;
+    std::map<std::string, int, std::less<>> m_changedValues;
   };
 } // namespace PVR

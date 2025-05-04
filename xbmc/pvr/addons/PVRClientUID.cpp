@@ -21,7 +21,7 @@ using namespace PVR;
 namespace
 {
 using ClientUIDParts = std::pair<std::string, ADDON::AddonInstanceId>;
-static std::map<ClientUIDParts, int> s_idMap;
+std::map<ClientUIDParts, int> s_idMap;
 } // unnamed namespace
 
 int CPVRClientUID::GetUID() const

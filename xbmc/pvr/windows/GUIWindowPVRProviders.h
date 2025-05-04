@@ -27,8 +27,8 @@ public:
   void UpdateButtons() override;
 
 private:
-  void ActivateChannelsWindow(const CPVRProvidersPath& selectedPath);
-  void ActivateRecordingsWindow(const CPVRProvidersPath& selectedPath);
+  void ActivateChannelsWindow(const CPVRProvidersPath& selectedPath) const;
+  void ActivateRecordingsWindow(const CPVRProvidersPath& selectedPath) const;
 };
 
 class CGUIWindowPVRTVProviders : public CGUIWindowPVRProvidersBase

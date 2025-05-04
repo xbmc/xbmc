@@ -379,11 +379,10 @@ namespace PVR
 
     int GetMinSchemaVersion() const override { return 4; }
 
-    std::shared_ptr<CPVREpgInfoTag> CreateEpgTag(
-        const std::unique_ptr<dbiplus::Dataset>& pDS) const;
+    std::shared_ptr<CPVREpgInfoTag> CreateEpgTag(dbiplus::Dataset& ds) const;
 
-    std::shared_ptr<CPVREpgSearchFilter> CreateEpgSearchFilter(
-        bool bRadio, const std::unique_ptr<dbiplus::Dataset>& pDS) const;
+    std::shared_ptr<CPVREpgSearchFilter> CreateEpgSearchFilter(bool bRadio,
+                                                               dbiplus::Dataset& ds) const;
 
     mutable CCriticalSection m_critSection;
   };

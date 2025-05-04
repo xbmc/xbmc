@@ -301,7 +301,7 @@ std::vector<AddonInstanceId> CAddonInfo::GetKnownInstanceIds() const
       {
         URIUtils::RemoveExtension(filename);
         const std::string_view uid(filename.data() + startName.length());
-        if (!uid.empty() && StringUtils::IsInteger(uid.data()))
+        if (!uid.empty() && StringUtils::IsInteger(uid))
           ret.emplace_back(std::atoi(uid.data()));
       }
     }

@@ -64,8 +64,8 @@ namespace PVR
     std::vector<CPVRClientMenuHook> GetSettingsHooks() const;
 
   private:
-    std::vector<CPVRClientMenuHook> GetHooks(
-        const std::function<bool(const CPVRClientMenuHook& hook)>& function) const;
+    template<typename F>
+    std::vector<CPVRClientMenuHook> GetHooks(F function) const;
 
     std::string m_addonId;
     std::unique_ptr<std::vector<CPVRClientMenuHook>> m_hooks;

@@ -24,7 +24,7 @@ public:
    * database.
    * @return true on success, false otherwise.
    */
-  bool ResetDatabase(bool bResetEPGOnly);
+  bool ResetDatabase(bool bResetEPGOnly) const;
 
 private:
   CPVRGUIActionsDatabase(const CPVRGUIActionsDatabase&) = delete;

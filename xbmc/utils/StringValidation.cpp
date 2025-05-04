@@ -25,6 +25,9 @@ bool StringValidation::IsTime(const std::string &input, void *data)
   std::string strTime = input;
   StringUtils::Trim(strTime);
 
+  if (strTime.empty())
+    return false;
+
   if (StringUtils::EndsWithNoCase(strTime, " min"))
   {
     strTime = StringUtils::Left(strTime, strTime.size() - 4);

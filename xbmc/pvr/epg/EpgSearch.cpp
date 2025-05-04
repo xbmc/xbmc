@@ -20,7 +20,7 @@ using namespace PVR;
 
 void CPVREpgSearch::Execute()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   std::vector<std::shared_ptr<CPVREpgInfoTag>> tags{
       CServiceBroker::GetPVRManager().EpgContainer().GetTags(m_filter.GetEpgSearchData())};
@@ -46,6 +46,6 @@ void CPVREpgSearch::Execute()
 
 const std::vector<std::shared_ptr<CPVREpgInfoTag>>& CPVREpgSearch::GetResults() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_results;
 }

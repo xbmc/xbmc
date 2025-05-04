@@ -9,7 +9,6 @@
 #pragma once
 
 #include "powermanagement/PowerState.h"
-#include "pvr/settings/PVRSettings.h"
 #include "threads/Thread.h"
 
 #include <map>
@@ -27,6 +26,7 @@ enum class PVREvent;
 class CPVRChannel;
 class CPVRClient;
 class CPVREpgInfoTag;
+class CPVRSettings;
 class CPVRTimerInfoTag;
 class CPVRTimersPath;
 
@@ -49,8 +49,8 @@ public:
    */
   std::shared_ptr<CPVRTimerInfoTag> GetByClient(int iClientId, int iClientIndex) const;
 
-  typedef std::vector<std::shared_ptr<CPVRTimerInfoTag>> VecTimerInfoTag;
-  typedef std::map<CDateTime, VecTimerInfoTag> MapTags;
+  using VecTimerInfoTag = std::vector<std::shared_ptr<CPVRTimerInfoTag>>;
+  using MapTags = std::map<CDateTime, VecTimerInfoTag>;
 
   /*!
    * @brief Get the timertags map.
@@ -324,7 +324,7 @@ private:
                                        bool bDeleted) const;
 
   bool m_bIsUpdating = false;
-  CPVRSettings m_settings;
+  std::unique_ptr<CPVRSettings> m_settings;
   std::queue<std::shared_ptr<CPVRTimerInfoTag>> m_remindersToAnnounce;
   bool m_bReminderRulesUpdatePending = false;
 

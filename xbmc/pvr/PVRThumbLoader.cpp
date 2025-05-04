@@ -17,7 +17,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include <ctime>
+#include <chrono>
 
 namespace PVR
 {
@@ -77,7 +77,7 @@ bool CPVRThumbLoader::FillThumb(CFileItem& item)
   if (thumb.empty())
   {
     if (item.IsPVRChannelGroup())
-      thumb = CreateChannelGroupThumb(item);
+      thumb = GetChannelGroupThumbURL(item);
     else
       CLog::LogF(LOGERROR, "Unsupported PVR item '{}'", item.GetPath());
 
@@ -95,11 +95,12 @@ bool CPVRThumbLoader::FillThumb(CFileItem& item)
   return true;
 }
 
-std::string CPVRThumbLoader::CreateChannelGroupThumb(const CFileItem& channelGroupItem)
+std::string CPVRThumbLoader::GetChannelGroupThumbURL(const CFileItem& channelGroupItem) const
 {
+  const auto now{std::chrono::system_clock::now()};
   return StringUtils::Format("{}?ts={}", // append timestamp to Thumb URL to enforce texture refresh
                              IMAGE_FILES::URLFromFile(channelGroupItem.GetPath(), "pvr"),
-                             std::time(nullptr));
+                             std::chrono::system_clock::to_time_t(now));
 }
 
 } // namespace PVR

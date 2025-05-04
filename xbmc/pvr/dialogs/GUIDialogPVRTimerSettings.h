@@ -75,7 +75,7 @@ protected:
   void InitializeSettings() override;
 
 private:
-  bool Validate();
+  bool Validate() const;
   void InitializeTypesList();
   void InitializeChannelsList();
   void SetButtonLabels();
@@ -170,9 +170,9 @@ private:
                                      const std::shared_ptr<const CSetting>& setting,
                                      void* data);
 
-  typedef std::map<int, std::shared_ptr<CPVRTimerType>> TypeEntriesMap;
+  using TypeEntriesMap = std::map<int, std::shared_ptr<CPVRTimerType>>;
 
-  typedef struct ChannelDescriptor
+  struct ChannelDescriptor
   {
     int channelUid;
     int clientId;
@@ -185,15 +185,10 @@ private:
     {
     }
 
-    inline bool operator==(const ChannelDescriptor& right) const
-    {
-      return (channelUid == right.channelUid && clientId == right.clientId &&
-              description == right.description);
-    }
+    bool operator==(const ChannelDescriptor& right) const = default;
+  };
 
-  } ChannelDescriptor;
-
-  typedef std::map<int, ChannelDescriptor> ChannelEntriesMap;
+  using ChannelEntriesMap = std::map<int, ChannelDescriptor>;
 
   std::unique_ptr<CPVRCustomTimerSettings> m_customTimerSettings;
 
@@ -215,7 +210,7 @@ private:
   CDateTime m_endLocalTime;
   bool m_bStartAnyTime = false;
   bool m_bEndAnyTime = false;
-  unsigned int m_iWeekdays;
+  unsigned int m_iWeekdays{0};
   CDateTime m_firstDayLocalTime;
   unsigned int m_iPreventDupEpisodes = 0;
   unsigned int m_iMarginStart = 0;

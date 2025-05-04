@@ -22,7 +22,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <iterator>
 #include <memory>
 #include <vector>
 
@@ -35,10 +34,10 @@ CGUIEPGGridContainerModel::CGUIEPGGridContainerModel(unsigned int minutesPerBloc
 {
 }
 
-void CGUIEPGGridContainerModel::SetInvalid()
+void CGUIEPGGridContainerModel::SetInvalid() const
 {
-  for (const auto& gridItem : m_gridIndex)
-    gridItem.second.item->SetInvalid();
+  for (const auto& [_, gridItem] : m_gridIndex)
+    gridItem.item->SetInvalid();
   for (const auto& channel : m_channelItems)
     channel->SetInvalid();
   for (const auto& ruler : m_rulerItems)
@@ -90,7 +89,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
 
   ////////////////////////////////////////////////////////////////////////
   // Create channel items
-  std::copy(items->cbegin(), items->cend(), std::back_inserter(m_channelItems));
+  std::ranges::copy(*items, std::back_inserter(m_channelItems));
 
   /* check for invalid start and end time */
   if (gridStart >= gridEnd)
@@ -133,7 +132,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   ruler.SetFromUTCDateTime(m_gridStart);
   CDateTime rulerEnd;
   rulerEnd.SetFromUTCDateTime(m_gridEnd);
-  CFileItemPtr rulerItem(new CFileItem(ruler.GetAsLocalizedDate(true)));
+  auto rulerItem{std::make_shared<CFileItem>(ruler.GetAsLocalizedDate(true))};
   rulerItem->SetProperty("DateLabel", true);
   m_rulerItems.emplace_back(rulerItem);
 
@@ -177,7 +176,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateEpgTags(int iChannel
     if (GetFirstEventBlock(tag) > GetLastEventBlock(tag))
       continue;
 
-    const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(tag);
+    const auto item{std::make_shared<CFileItem>(tag)};
     if (!result && IsEventMemberOfBlock(tag, iBlock))
       result = item;
 
@@ -187,7 +186,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateEpgTags(int iChannel
   return result;
 }
 
-std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTags(EpgTagsMap::iterator& itEpg,
+std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTags(const EpgTagsMap::iterator& itEpg,
                                                                  int iChannel,
                                                                  int iBlock) const
 {
@@ -206,9 +205,8 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTags(EpgTagsMap::ite
   else
   {
     const auto it =
-        std::find_if(epgTags.tags.cbegin(), epgTags.tags.cend(), [this, iBlock](const auto& item) {
-          return IsEventMemberOfBlock(item->GetEPGInfoTag(), iBlock);
-        });
+        std::ranges::find_if(epgTags.tags, [this, iBlock](const auto& item)
+                             { return IsEventMemberOfBlock(item->GetEPGInfoTag(), iBlock); });
     if (it != epgTags.tags.cend())
       result = (*it);
   }
@@ -267,7 +265,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsBefore(EpgTags& 
       if (GetFirstEventBlock(*it) > GetLastEventBlock(*it))
         continue;
 
-      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(*it);
+      const auto item{std::make_shared<CFileItem>(*it)};
       if (!result && IsEventMemberOfBlock(*it, iBlock))
         result = item;
 
@@ -329,7 +327,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsAfter(EpgTags& e
       if (GetFirstEventBlock(*it) > GetLastEventBlock(*it))
         continue;
 
-      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(*it);
+      const auto item{std::make_shared<CFileItem>(*it)};
       if (!result && IsEventMemberOfBlock(*it, iBlock))
         result = item;
 
@@ -701,7 +699,7 @@ std::unique_ptr<CFileItemList> CGUIEPGGridContainerModel::GetCurrentTimeLineItem
   // Note: No need to keep this in a member. Gets generally not called multiple times for the
   //       same timeline, but content must be synced with m_epgItems, which changes quite often.
 
-  std::unique_ptr<CFileItemList> items(new CFileItemList);
+  auto items{std::make_unique<CFileItemList>()};
 
   if (numChannels > ChannelItemsSize())
     numChannels = ChannelItemsSize();

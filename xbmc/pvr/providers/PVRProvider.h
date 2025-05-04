@@ -43,7 +43,6 @@ public:
                const std::string& addonThumbPath);
 
   bool operator==(const CPVRProvider& right) const;
-  bool operator!=(const CPVRProvider& right) const;
 
   void Serialize(CVariant& value) const override;
 

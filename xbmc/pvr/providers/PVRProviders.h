@@ -118,7 +118,7 @@ public:
   /**
      * @brief Persist user changes to the current state of the providers in the DB.
      */
-  bool PersistUserChanges(const std::vector<std::shared_ptr<CPVRProvider>>& providers);
+  bool PersistUserChanges(const std::vector<std::shared_ptr<CPVRProvider>>& providers) const;
 
   /*!
      * @brief Get a provider given it's database ID

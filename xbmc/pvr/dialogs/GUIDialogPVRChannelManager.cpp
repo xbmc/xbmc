@@ -48,24 +48,24 @@
 #include <utility>
 #include <vector>
 
-#define BUTTON_OK 4
-#define BUTTON_APPLY 5
-#define BUTTON_CANCEL 6
-#define RADIOBUTTON_ACTIVE 7
-#define EDIT_NAME 8
-#define BUTTON_CHANNEL_LOGO 9
-#define IMAGE_CHANNEL_LOGO 10
-#define RADIOBUTTON_USEEPG 12
-#define SPIN_EPGSOURCE_SELECTION 13
-#define RADIOBUTTON_PARENTAL_LOCK 14
-#define CONTROL_LIST_CHANNELS 20
-#define BUTTON_GROUP_MANAGER 30
-#define BUTTON_NEW_CHANNEL 31
-#define BUTTON_RADIO_TV 34
-#define BUTTON_REFRESH_LOGOS 35
-
 namespace
 {
+constexpr unsigned int BUTTON_OK = 4;
+constexpr unsigned int BUTTON_APPLY = 5;
+constexpr unsigned int BUTTON_CANCEL = 6;
+constexpr unsigned int RADIOBUTTON_ACTIVE = 7;
+constexpr unsigned int EDIT_NAME = 8;
+constexpr unsigned int BUTTON_CHANNEL_LOGO = 9;
+constexpr unsigned int IMAGE_CHANNEL_LOGO = 10;
+constexpr unsigned int RADIOBUTTON_USEEPG = 12;
+constexpr unsigned int SPIN_EPGSOURCE_SELECTION = 13;
+constexpr unsigned int RADIOBUTTON_PARENTAL_LOCK = 14;
+constexpr unsigned int CONTROL_LIST_CHANNELS = 20;
+constexpr unsigned int BUTTON_GROUP_MANAGER = 30;
+constexpr unsigned int BUTTON_NEW_CHANNEL = 31;
+constexpr unsigned int BUTTON_RADIO_TV = 34;
+constexpr unsigned int BUTTON_REFRESH_LOGOS = 35;
+
 constexpr const char* LABEL_CHANNEL_DISABLED = "0";
 
 // Note: strings must not be changed; they are part of the public skinning API for this dialog.
@@ -90,15 +90,12 @@ using namespace KODI::MESSAGING;
 
 CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager()
   : CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER, "DialogPVRChannelManager.xml"),
-    m_channelItems(new CFileItemList)
+    m_channelItems(std::make_unique<CFileItemList>())
 {
   SetRadio(false);
 }
 
-CGUIDialogPVRChannelManager::~CGUIDialogPVRChannelManager()
-{
-  delete m_channelItems;
-}
+CGUIDialogPVRChannelManager::~CGUIDialogPVRChannelManager() = default;
 
 bool CGUIDialogPVRChannelManager::OnActionMove(const CAction& action)
 {
@@ -400,24 +397,25 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   // add the current thumb, if available
   if (!pItem->GetProperty(PROPERTY_CHANNEL_ICON).asString().empty())
   {
-    CFileItemPtr current(new CFileItem("thumb://Current", false));
+    auto current{std::make_shared<CFileItem>("thumb://Current", false)};
     current->SetArt("thumb", pItem->GetPVRChannelInfoTag()->IconPath());
     current->SetLabel(g_localizeStrings.Get(19282));
-    items.Add(current);
+    items.Add(std::move(current));
   }
   else if (pItem->HasArt("thumb"))
-  { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
-    CFileItemPtr current(new CFileItem("thumb://Current", false));
+  {
+    // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
+    auto current{std::make_shared<CFileItem>("thumb://Current", false)};
     current->SetArt("thumb", pItem->GetArt("thumb"));
     current->SetLabel(g_localizeStrings.Get(19282));
-    items.Add(current);
+    items.Add(std::move(current));
   }
 
   // and add a "no thumb" entry as well
-  CFileItemPtr nothumb(new CFileItem("thumb://None", false));
+  auto nothumb{std::make_shared<CFileItem>("thumb://None", false)};
   nothumb->SetArt("icon", pItem->GetArt("icon"));
   nothumb->SetLabel(g_localizeStrings.Get(19283));
-  items.Add(nothumb);
+  items.Add(std::move(nothumb));
 
   std::string strThumb;
   std::vector<CMediaSource> shares;
@@ -431,7 +429,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   }
   CServiceBroker::GetMediaManager().GetLocalDrives(shares);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(19285), strThumb,
-                                              NULL, 19285))
+                                              nullptr, 19285))
     return false;
 
   if (strThumb == "thumb://Current")
@@ -537,7 +535,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
   {
     int iClientID = m_clientsWithSettingsList[iSelection]->GetID();
 
-    std::shared_ptr<CPVRChannel> channel(new CPVRChannel(m_bIsRadio));
+    const auto channel{std::make_shared<CPVRChannel>(m_bIsRadio)};
     channel->SetChannelName(g_localizeStrings.Get(19204)); // New channel
     channel->SetClientID(iClientID);
 
@@ -639,12 +637,9 @@ bool CGUIDialogPVRChannelManager::OnMessageClick(const CGUIMessage& message)
 
 bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
 {
-  unsigned int iMessage = message.GetMessage();
-
-  switch (iMessage)
+  if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-    case GUI_MSG_CLICKED:
-      return OnMessageClick(message);
+    return OnMessageClick(message);
   }
 
   return CGUIDialog::OnMessage(message);
@@ -933,7 +928,7 @@ void CGUIDialogPVRChannelManager::EnableChannelOptions(bool bEnable)
   }
 }
 
-void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr& pItem)
+void CGUIDialogPVRChannelManager::RenameChannel(const std::shared_ptr<CFileItem>& pItem) const
 {
   std::string strChannelName = pItem->GetProperty(PROPERTY_CHANNEL_NAME).asString();
   if (strChannelName != pItem->GetPVRChannelInfoTag()->ChannelName())
@@ -948,8 +943,8 @@ void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr& pItem)
   }
 }
 
-bool CGUIDialogPVRChannelManager::UpdateChannelData(const std::shared_ptr<CFileItem>& pItem,
-                                                    const std::shared_ptr<CPVRChannelGroup>& group)
+bool CGUIDialogPVRChannelManager::UpdateChannelData(
+    const std::shared_ptr<CFileItem>& pItem, const std::shared_ptr<CPVRChannelGroup>& group) const
 {
   if (!pItem || !group)
     return false;
@@ -1079,9 +1074,10 @@ void CGUIDialogPVRChannelManager::SaveList()
 
 bool CGUIDialogPVRChannelManager::HasChangedItems() const
 {
-  return std::any_of(m_channelItems->cbegin(), m_channelItems->cend(),
-                     [](const auto& item)
-                     { return item && item->GetProperty(PROPERTY_ITEM_CHANGED).asBoolean(); });
+  return std::ranges::any_of(*m_channelItems,
+                             [](const auto& item) {
+                               return item && item->GetProperty(PROPERTY_ITEM_CHANGED).asBoolean();
+                             });
 }
 
 namespace
@@ -1126,11 +1122,11 @@ void CGUIDialogPVRChannelManager::Renumber()
   if (!m_bAllowRenumber)
     return;
 
-  int iNextChannelNumber = 0;
+  int iNextChannelNumber{1};
   for (const auto& item : *m_channelItems)
   {
     const std::string number = item->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean()
-                                   ? std::to_string(++iNextChannelNumber)
+                                   ? std::to_string(iNextChannelNumber)
                                    : LABEL_CHANNEL_DISABLED;
 
     if (item->GetProperty(PROPERTY_CHANNEL_NUMBER).asString() != number)
@@ -1138,5 +1134,7 @@ void CGUIDialogPVRChannelManager::Renumber()
       item->SetProperty(PROPERTY_CHANNEL_NUMBER, number);
       SetItemChanged(item);
     }
+
+    iNextChannelNumber++;
   }
 }

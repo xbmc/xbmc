@@ -56,7 +56,7 @@ public:
    * @param item The item that shall be played.
    * @return True on success, false otherwise.
    */
-  bool OnPreparePlayback(CFileItem& item);
+  bool OnPreparePlayback(CFileItem& item) const;
 
   /*!
    * @brief Inform that playback of an item just started.
@@ -283,7 +283,7 @@ private:
    * @param time The last watched time to set
    */
   void UpdateLastWatched(const std::shared_ptr<CPVRChannelGroupMember>& channel,
-                         const CDateTime& time);
+                         const CDateTime& time) const;
 
   mutable CCriticalSection m_critSection;
 
