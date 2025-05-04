@@ -531,24 +531,22 @@ int CPVRChannelGroup::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRCli
         continue;
       }
 
-      if (member->ChannelClientID() > 0 && member->ChannelUID() > 0 &&
-          member->IsRadio() == IsRadio())
-      {
-        // Ignore data from unknown/disabled clients
-        if (allClients->IsEnabledClient(member->ChannelClientID()))
-        {
-          m_sortedMembers.emplace_back(member);
-          m_members.emplace(std::make_pair(member->ChannelClientID(), member->ChannelUID()),
-                            member);
-        }
-      }
-      else
+      if (member->ChannelClientID() <= 0 || member->ChannelUID() <= 0 ||
+          member->IsRadio() != IsRadio())
       {
         CLog::LogF(LOGWARNING,
                    "Skipping member with channel database id {} of {} channel group '{}'. "
                    "Channel not found in the database or radio flag changed.",
                    member->ChannelDatabaseID(), IsRadio() ? "radio" : "TV", GroupName());
         membersToDelete.emplace_back(member);
+        continue;
+      }
+
+      if (allClients->IsEnabledClient(member->ChannelClientID()))
+      {
+        // Ignore data from unknown/disabled clients
+        m_sortedMembers.emplace_back(member);
+        m_members.emplace(std::make_pair(member->ChannelClientID(), member->ChannelUID()), member);
       }
     }
 
