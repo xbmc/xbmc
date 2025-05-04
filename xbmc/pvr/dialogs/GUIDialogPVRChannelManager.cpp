@@ -1125,16 +1125,16 @@ void CGUIDialogPVRChannelManager::Renumber()
   int iNextChannelNumber{1};
   for (const auto& item : *m_channelItems)
   {
-    const std::string number = item->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean()
-                                   ? std::to_string(iNextChannelNumber)
-                                   : LABEL_CHANNEL_DISABLED;
+    const bool channelIsEnabled{item->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean()};
+    const std::string number{channelIsEnabled ? std::to_string(iNextChannelNumber)
+                                              : LABEL_CHANNEL_DISABLED};
+    if (channelIsEnabled)
+      iNextChannelNumber++;
 
     if (item->GetProperty(PROPERTY_CHANNEL_NUMBER).asString() != number)
     {
       item->SetProperty(PROPERTY_CHANNEL_NUMBER, number);
       SetItemChanged(item);
     }
-
-    iNextChannelNumber++;
   }
 }
