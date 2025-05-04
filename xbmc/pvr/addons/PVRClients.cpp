@@ -78,6 +78,52 @@ void CPVRClients::Continue()
   }
 }
 
+CPVRClients::UpdateClientAction CPVRClients::GetUpdateClientAction(
+    const std::shared_ptr<ADDON::CAddonInfo>& addon,
+    ADDON::AddonInstanceId instanceId,
+    int clientId,
+    bool instanceEnabled) const
+{
+  using enum UpdateClientAction;
+
+  if (instanceEnabled && (!IsKnownClient(clientId) || !IsCreatedClient(clientId)))
+  {
+    const bool isKnownClient{IsKnownClient(clientId)};
+
+    // determine actual enabled state of instance
+    if (instanceId != ADDON_SINGLETON_INSTANCE_ID)
+    {
+      std::shared_ptr<CPVRClient> client;
+      if (isKnownClient)
+        client = GetClient(clientId);
+      else
+        client = std::make_shared<CPVRClient>(addon, instanceId, clientId);
+
+      instanceEnabled = client->IsEnabled();
+    }
+
+    if (instanceEnabled)
+      return CREATE;
+    else if (isKnownClient)
+      return DESTROY;
+  }
+  else if (IsCreatedClient(clientId))
+  {
+    // determine actual enabled state of instance
+    if (instanceEnabled && instanceId != ADDON_SINGLETON_INSTANCE_ID)
+    {
+      const std::shared_ptr<const CPVRClient> client{GetClient(clientId)};
+      instanceEnabled = client ? client->IsEnabled() : false;
+    }
+
+    if (instanceEnabled)
+      return RECREATE;
+    else
+      return DESTROY;
+  }
+  return NONE;
+}
+
 void CPVRClients::UpdateClients(
     const std::string& changedAddonId /* = "" */,
     ADDON::AddonInstanceId changedInstanceId /* = ADDON::ADDON_SINGLETON_INSTANCE_ID */)
@@ -97,63 +143,47 @@ void CPVRClients::UpdateClients(
       const std::vector<std::pair<ADDON::AddonInstanceId, bool>> instanceIdsWithStatus =
           GetInstanceIdsWithStatus(addon, addonStatus);
 
-      for (const auto& [instanceId, instanceIdStatus] : instanceIdsWithStatus)
+      for (const auto& [instanceId, instanceEnabled] : instanceIdsWithStatus)
       {
-        bool instanceEnabled{instanceIdStatus};
         const CPVRClientUID clientUID(addon->ID(), instanceId);
         const int clientId = clientUID.GetUID();
 
-        if (instanceEnabled && (!IsKnownClient(clientId) || !IsCreatedClient(clientId)))
+        const UpdateClientAction action{
+            GetUpdateClientAction(addon, instanceId, clientId, instanceEnabled)};
+        switch (action)
         {
-          std::shared_ptr<CPVRClient> client;
-          const bool isKnownClient = IsKnownClient(clientId);
-          if (isKnownClient)
-          {
-            client = GetClient(clientId);
-          }
-          else
-          {
-            client = std::make_shared<CPVRClient>(addon, instanceId, clientId);
-          }
+          using enum UpdateClientAction;
 
-          // determine actual enabled state of instance
-          if (instanceId != ADDON_SINGLETON_INSTANCE_ID)
-            instanceEnabled = client->IsEnabled();
-
-          if (instanceEnabled)
+          case CREATE:
           {
+            std::shared_ptr<CPVRClient> client;
+            if (IsKnownClient(clientId))
+              client = GetClient(clientId);
+            else
+              client = std::make_shared<CPVRClient>(addon, instanceId, clientId);
+
             CLog::LogF(LOGINFO, "Creating PVR client: addonId={}, instanceId={}, clientId={}",
                        addon->ID(), instanceId, clientId);
             clientsToCreate.emplace_back(client);
+            break;
           }
-          else if (isKnownClient)
-          {
-            CLog::LogF(LOGINFO, "Destroying PVR client: addonId={}, instanceId={}, clientId={}",
-                       addon->ID(), instanceId, clientId);
-            clientsToDestroy.emplace_back(clientId);
-          }
-        }
-        else if (IsCreatedClient(clientId))
-        {
-          // determine actual enabled state of instance
-          if (instanceEnabled && instanceId != ADDON_SINGLETON_INSTANCE_ID)
-          {
-            const std::shared_ptr<const CPVRClient> client = GetClient(clientId);
-            instanceEnabled = client ? client->IsEnabled() : false;
-          }
-
-          if (instanceEnabled)
+          case RECREATE:
           {
             CLog::LogF(LOGINFO, "Recreating PVR client: addonId={}, instanceId={}, clientId={}",
                        addon->ID(), instanceId, clientId);
             clientsToReCreate.emplace_back(clientId, addon->Name());
+            break;
           }
-          else
+          case DESTROY:
           {
             CLog::LogF(LOGINFO, "Destroying PVR client: addonId={}, instanceId={}, clientId={}",
                        addon->ID(), instanceId, clientId);
             clientsToDestroy.emplace_back(clientId);
+            break;
           }
+          case NONE:
+          default:
+            break;
         }
       }
     }

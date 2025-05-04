@@ -413,6 +413,19 @@ private:
   std::vector<std::pair<ADDON::AddonInstanceId, bool>> GetInstanceIdsWithStatus(
       const std::shared_ptr<ADDON::CAddonInfo>& addon, bool addonIsEnabled) const;
 
+  enum class UpdateClientAction
+  {
+    NONE,
+    CREATE,
+    RECREATE,
+    DESTROY,
+  };
+
+  UpdateClientAction GetUpdateClientAction(const std::shared_ptr<ADDON::CAddonInfo>& addon,
+                                           ADDON::AddonInstanceId instanceId,
+                                           int clientId,
+                                           bool instanceEnabled) const;
+
   /*!
    * @brief Get the client instance for a given client id.
    * @param clientId The id of the client to get.
