@@ -271,6 +271,18 @@ spdlog::level::level_enum CLog::MapLogLevel(int level)
   return spdlog::level::info;
 }
 
+void CLog::FormatAndLogInternal(spdlog::level::level_enum level,
+                                fmt::string_view format,
+                                fmt::format_args args)
+{
+  auto message = fmt::vformat(format, args);
+
+  // fixup newline alignment, number of spaces should equal prefix length
+  FormatLineBreaks(message);
+
+  m_defaultLogger->log(level, message);
+}
+
 Logger CLog::CreateLogger(const std::string& loggerName)
 {
   // create the logger
