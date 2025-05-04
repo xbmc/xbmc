@@ -45,11 +45,8 @@ void CPVRChannelGroupAllChannels::CheckGroupName()
   //! @todo major design flaw to fix: channel and group URLs must not contain the group name!
 
   // Ensure the group name is still correct, or channels may fail to load after a locale change
-  if (!IsUserSetName())
-  {
-    if (SetGroupName(g_localizeStrings.Get(19287)))
-      Persist();
-  }
+  if (!IsUserSetName() && SetGroupName(g_localizeStrings.Get(19287)))
+    Persist();
 }
 
 bool CPVRChannelGroupAllChannels::UpdateFromClients(

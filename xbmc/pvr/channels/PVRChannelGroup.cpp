@@ -546,7 +546,7 @@ int CPVRChannelGroup::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRCli
       {
         // Ignore data from unknown/disabled clients
         m_sortedMembers.emplace_back(member);
-        m_members.emplace(std::make_pair(member->ChannelClientID(), member->ChannelUID()), member);
+        m_members.try_emplace({member->ChannelClientID(), member->ChannelUID()}, member);
       }
     }
 
@@ -630,7 +630,7 @@ bool CPVRChannelGroup::UpdateFromClient(const std::shared_ptr<CPVRChannelGroupMe
       channel->SetDateTimeAdded(CDateTime::GetUTCDateTime());
 
     m_sortedMembers.emplace_back(groupMember);
-    m_members.emplace(channel->StorageId(), groupMember);
+    m_members.try_emplace(channel->StorageId(), groupMember);
 
     CLog::LogFC(LOGDEBUG, LOGPVR, "Added {} channel group member '{}' to group '{}'",
                 IsRadio() ? "radio" : "TV", channel->ChannelName(), GroupName());
@@ -670,15 +670,10 @@ bool CPVRChannelGroup::UpdateChannelNumbersFromAllChannelsGroup()
 {
   std::unique_lock lock(m_critSection);
 
-  bool bChanged = false;
-
-  if (!IsChannelsOwner())
-  {
-    // Make sure the channel numbers are set from the all channels group using the non default
-    // renumber call before sorting.
-    if (Renumber(RenumberMode::IGNORE_NUMBERING_FROM_ONE) || SortAndRenumber())
-      bChanged = true;
-  }
+  // Make sure the channel numbers are set from the all channels group using the non default
+  // renumber call before sorting.
+  const bool bChanged{!IsChannelsOwner() &&
+                      (Renumber(RenumberMode::IGNORE_NUMBERING_FROM_ONE) || SortAndRenumber())};
 
   m_events.Publish(IsChannelsOwner() || bChanged ? PVREvent::ChannelGroupInvalidated
                                                  : PVREvent::ChannelGroup);
@@ -827,7 +822,7 @@ bool CPVRChannelGroup::AppendToGroup(
     newMember->SetClientPriority(groupMember->ClientPriority());
 
     m_sortedMembers.emplace_back(newMember);
-    m_members.emplace(channel->StorageId(), newMember);
+    m_members.try_emplace(channel->StorageId(), newMember);
 
     SortAndRenumber();
     bReturn = true;
@@ -883,12 +878,8 @@ void CPVRChannelGroup::Delete()
   }
 
   std::unique_lock lock(m_critSection);
-
-  if (m_iGroupId > 0)
-  {
-    if (database->Delete(*this))
-      m_bDeleted = true;
-  }
+  if (m_iGroupId > 0 && database->Delete(*this))
+    m_bDeleted = true;
 }
 
 bool CPVRChannelGroup::Renumber(RenumberMode mode /* = NORMAL */)
@@ -1057,7 +1048,7 @@ std::string CPVRChannelGroup::ClientGroupName() const
   return m_clientGroupName;
 }
 
-void CPVRChannelGroup::SetClientGroupName(const std::string& groupName)
+void CPVRChannelGroup::SetClientGroupName(std::string_view groupName)
 {
   std::unique_lock lock(m_critSection);
   if (m_clientGroupName != groupName)

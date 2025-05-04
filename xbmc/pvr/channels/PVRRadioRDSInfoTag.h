@@ -114,7 +114,7 @@ public:
   void SetEditorialStaff(const std::string& strEditorialStaff);
   std::string GetEditorialStaff() const;
 
-  void SetRadioStyle(const std::string& style);
+  void SetRadioStyle(std::string_view style);
   std::string GetRadioStyle() const;
 
   void SetPlayingRadioText(bool yesNo);
