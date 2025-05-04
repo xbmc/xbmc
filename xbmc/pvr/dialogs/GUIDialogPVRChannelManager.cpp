@@ -700,7 +700,7 @@ bool CGUIDialogPVRChannelManager::OnPopupMenu(int iItem)
   if (choice < 0)
     return false;
 
-  return OnContextButton(iItem, (CONTEXT_BUTTON)choice);
+  return OnContextButton(iItem, static_cast<CONTEXT_BUTTON>(choice));
 }
 
 bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
