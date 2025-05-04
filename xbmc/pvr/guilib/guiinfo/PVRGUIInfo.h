@@ -196,7 +196,7 @@ private:
 
   CPVRSignalStatus m_qualityInfo; /*!< stream quality information */
   CPVRDescrambleInfo m_descrambleInfo; /*!< stream descramble information */
-  std::vector<SBackend> m_backendProperties;
+  std::vector<SBackendProperties> m_backendProperties;
 
   std::string m_channelNumberInput;
   bool m_previewAndPlayerShowInfo{false};

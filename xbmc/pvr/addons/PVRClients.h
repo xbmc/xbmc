@@ -41,27 +41,9 @@ class CPVRRecordings;
 class CPVRTimerType;
 class CPVRTimersContainer;
 
-using CPVRClientMap = std::map<int, std::shared_ptr<CPVRClient>>;
+struct SBackendProperties;
 
-/*!
- * @brief Holds generic data about a backend (number of channels etc.)
- */
-struct SBackend
-{
-  std::string clientname;
-  std::string instancename;
-  std::string name;
-  std::string version;
-  std::string host;
-  int numTimers = 0;
-  int numRecordings = 0;
-  int numDeletedRecordings = 0;
-  int numProviders = 0;
-  int numChannelGroups = 0;
-  int numChannels = 0;
-  uint64_t diskUsed = 0;
-  uint64_t diskTotal = 0;
-};
+using CPVRClientMap = std::map<int, std::shared_ptr<CPVRClient>>;
 
 class CPVRClients : public ADDON::IAddonMgrCallback, public CPowerState
 {
@@ -195,7 +177,7 @@ public:
    * @brief Returns properties about all created clients
    * @return the properties
    */
-  std::vector<SBackend> GetBackendProperties() const;
+  std::vector<SBackendProperties> GetBackendProperties() const;
 
   //@}
 

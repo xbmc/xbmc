@@ -565,42 +565,15 @@ std::vector<std::pair<ADDON::AddonInstanceId, bool>> CPVRClients::GetInstanceIds
 // client API calls
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<SBackend> CPVRClients::GetBackendProperties() const
+std::vector<SBackendProperties> CPVRClients::GetBackendProperties() const
 {
-  std::vector<SBackend> backendProperties;
+  std::vector<SBackendProperties> backendProperties;
 
   ForCreatedClients(std::source_location::current().function_name(),
                     [&backendProperties](const std::shared_ptr<const CPVRClient>& client)
                     {
-                      SBackend properties;
-
-                      if (client->GetDriveSpace(properties.diskTotal, properties.diskUsed) ==
-                          PVR_ERROR_NO_ERROR)
-                      {
-                        properties.diskTotal *= 1024;
-                        properties.diskUsed *= 1024;
-                      }
-
-                      int iAmount{0};
-                      if (client->GetProvidersAmount(iAmount) == PVR_ERROR_NO_ERROR)
-                        properties.numProviders = iAmount;
-                      if (client->GetChannelGroupsAmount(iAmount) == PVR_ERROR_NO_ERROR)
-                        properties.numChannelGroups = iAmount;
-                      if (client->GetChannelsAmount(iAmount) == PVR_ERROR_NO_ERROR)
-                        properties.numChannels = iAmount;
-                      if (client->GetTimersAmount(iAmount) == PVR_ERROR_NO_ERROR)
-                        properties.numTimers = iAmount;
-                      if (client->GetRecordingsAmount(false, iAmount) == PVR_ERROR_NO_ERROR)
-                        properties.numRecordings = iAmount;
-                      if (client->GetRecordingsAmount(true, iAmount) == PVR_ERROR_NO_ERROR)
-                        properties.numDeletedRecordings = iAmount;
-                      properties.clientname = client->GetClientName();
-                      properties.instancename = client->GetInstanceName();
-                      properties.name = client->GetBackendName();
-                      properties.version = client->GetBackendVersion();
-                      properties.host = client->GetConnectionString();
-
-                      backendProperties.emplace_back(properties);
+                      SBackendProperties properties;
+                      backendProperties.emplace_back(client->GetBackendProperties());
                       return PVR_ERROR_NO_ERROR;
                     });
 

@@ -2140,7 +2140,7 @@ void CPVRGUIInfo::UpdateBackendCache()
   // an update has been requested
   if (m_iCurrentActiveClient == 0 && m_updateBackendCacheRequested)
   {
-    std::vector<SBackend> backendProperties;
+    std::vector<SBackendProperties> backendProperties;
     {
       CSingleExit exit(m_critSection);
       backendProperties = CServiceBroker::GetPVRManager().Clients()->GetBackendProperties();

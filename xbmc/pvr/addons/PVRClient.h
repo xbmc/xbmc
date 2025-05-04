@@ -50,6 +50,26 @@ class CPVRTimerType;
 class CPVRTimersContainer;
 
 /*!
+ * @brief Holds generic data about a backend (number of channels etc.)
+ */
+struct SBackendProperties
+{
+  std::string clientname;
+  std::string instancename;
+  std::string name;
+  std::string version;
+  std::string host;
+  int numTimers{0};
+  int numRecordings{0};
+  int numDeletedRecordings{0};
+  int numProviders{0};
+  int numChannelGroups{0};
+  int numChannels{0};
+  uint64_t diskUsed{0};
+  uint64_t diskTotal{0};
+};
+
+/*!
  * Interface from Kodi to a PVR add-on.
  *
  * Also translates Kodi's C++ structures to the add-on's C structures.
@@ -201,6 +221,12 @@ public:
    * @return PVR_ERROR_NO_ERROR if the drive space has been fetched successfully.
    */
   PVR_ERROR GetDriveSpace(uint64_t& iTotal, uint64_t& iUsed) const;
+
+  /*!
+   * @brief Returns backend properties about this client
+   * @return the properties
+   */
+  SBackendProperties GetBackendProperties() const;
 
   /*!
    * @brief Start a channel scan on the server.

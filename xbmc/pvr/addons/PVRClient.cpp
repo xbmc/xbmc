@@ -795,6 +795,38 @@ const std::string& CPVRClient::GetConnectionString() const
   return m_strConnectionString;
 }
 
+SBackendProperties CPVRClient::GetBackendProperties() const
+{
+  SBackendProperties properties;
+
+  if (GetDriveSpace(properties.diskTotal, properties.diskUsed) == PVR_ERROR_NO_ERROR)
+  {
+    properties.diskTotal *= 1024;
+    properties.diskUsed *= 1024;
+  }
+
+  int iAmount{0};
+  if (GetProvidersAmount(iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numProviders = iAmount;
+  if (GetChannelGroupsAmount(iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numChannelGroups = iAmount;
+  if (GetChannelsAmount(iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numChannels = iAmount;
+  if (GetTimersAmount(iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numTimers = iAmount;
+  if (GetRecordingsAmount(false, iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numRecordings = iAmount;
+  if (GetRecordingsAmount(true, iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numDeletedRecordings = iAmount;
+  properties.clientname = GetClientName();
+  properties.instancename = GetInstanceName();
+  properties.name = GetBackendName();
+  properties.version = GetBackendVersion();
+  properties.host = GetConnectionString();
+
+  return properties;
+}
+
 std::string CPVRClient::GetClientName() const
 {
   return Name();
