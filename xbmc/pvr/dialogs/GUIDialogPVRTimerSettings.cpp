@@ -710,6 +710,39 @@ std::string CGUIDialogPVRTimerSettings::GetSettingsLabel(const std::shared_ptr<I
   return CGUIDialogSettingsManualBase::GetSettingsLabel(setting);
 }
 
+void CGUIDialogPVRTimerSettings::FixupEndLocalTime()
+{
+  if (m_timerType->SupportsStartTime() && // has start clock entry
+      m_timerType->SupportsEndTime() && // and end clock entry
+      m_timerType->IsTimerRule()) // but no associated start/end day spinners
+  {
+    if (m_endLocalTime < m_startLocalTime) // And the end clock is earlier than the start clock
+    {
+      CLog::LogFC(LOGDEBUG, LOGPVR, "End before start, adding a day.");
+      m_endLocalTime += CDateTimeSpan(1, 0, 0, 0);
+      if (m_endLocalTime < m_startLocalTime)
+      {
+        CLog::Log(LOGWARNING,
+                  "Timer settings dialog: End before start. Setting end time to start time.");
+        m_endLocalTime = m_startLocalTime;
+      }
+    }
+    else if (m_endLocalTime >
+             (m_startLocalTime + CDateTimeSpan(1, 0, 0, 0))) // Or the duration is more than a day
+    {
+      CLog::LogFC(LOGDEBUG, LOGPVR, "End > 1 day after start, removing a day.");
+      m_endLocalTime -= CDateTimeSpan(1, 0, 0, 0);
+      if (m_endLocalTime > (m_startLocalTime + CDateTimeSpan(1, 0, 0, 0)))
+      {
+        CLog::Log(
+            LOGWARNING,
+            "Timer settings dialog: End > 1 day after start. Setting end time to start time.");
+        m_endLocalTime = m_startLocalTime;
+      }
+    }
+  }
+}
+
 bool CGUIDialogPVRTimerSettings::Save()
 {
   if (!Validate())
@@ -749,40 +782,9 @@ bool CGUIDialogPVRTimerSettings::Save()
   // Begin and end time
   if (!m_bStartAnyTime && !m_bEndAnyTime)
   {
-    if (m_timerType->SupportsStartTime() && // has start clock entry
-        m_timerType->SupportsEndTime() && // and end clock entry
-        m_timerType->IsTimerRule()) // but no associated start/end day spinners
-    {
-      if (m_endLocalTime < m_startLocalTime) // And the end clock is earlier than the start clock
-      {
-        CLog::LogFC(LOGDEBUG, LOGPVR, "End before start, adding a day.");
-        m_endLocalTime += CDateTimeSpan(1, 0, 0, 0);
-        if (m_endLocalTime < m_startLocalTime)
-        {
-          CLog::Log(LOGWARNING,
-                    "Timer settings dialog: End before start. Setting end time to start time.");
-          m_endLocalTime = m_startLocalTime;
-        }
-      }
-      else if (m_endLocalTime >
-               (m_startLocalTime + CDateTimeSpan(1, 0, 0, 0))) // Or the duration is more than a day
-      {
-        CLog::LogFC(LOGDEBUG, LOGPVR, "End > 1 day after start, removing a day.");
-        m_endLocalTime -= CDateTimeSpan(1, 0, 0, 0);
-        if (m_endLocalTime > (m_startLocalTime + CDateTimeSpan(1, 0, 0, 0)))
-        {
-          CLog::Log(
-              LOGWARNING,
-              "Timer settings dialog: End > 1 day after start. Setting end time to start time.");
-          m_endLocalTime = m_startLocalTime;
-        }
-      }
-    }
-    else if (m_endLocalTime < m_startLocalTime)
-    {
-      // this case will fail validation so this can't be reached.
-    }
     m_timerInfoTag->SetStartFromLocalTime(m_startLocalTime);
+
+    FixupEndLocalTime(); // Add/Remove 1 day if date wraps etc.
     m_timerInfoTag->SetEndFromLocalTime(m_endLocalTime);
   }
   else if (!m_bStartAnyTime)
