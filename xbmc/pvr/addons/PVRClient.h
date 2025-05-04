@@ -361,7 +361,7 @@ public:
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
   PVR_ERROR GetChannelGroupMembers(
-      const CPVRChannelGroup* group,
+      const CPVRChannelGroup& group,
       std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers) const;
 
   //@}

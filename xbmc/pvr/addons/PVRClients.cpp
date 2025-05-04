@@ -686,13 +686,13 @@ PVR_ERROR CPVRClients::GetChannelGroups(const std::vector<std::shared_ptr<CPVRCl
 
 PVR_ERROR CPVRClients::GetChannelGroupMembers(
     const std::vector<std::shared_ptr<CPVRClient>>& clients,
-    CPVRChannelGroup* group,
+    const CPVRChannelGroup& group,
     std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers,
     std::vector<int>& failedClients) const
 {
   return ForClients(
       std::source_location::current().function_name(), clients,
-      [group, &groupMembers](const std::shared_ptr<const CPVRClient>& client)
+      [&group, &groupMembers](const std::shared_ptr<const CPVRClient>& client)
       { return client->GetChannelGroupMembers(group, groupMembers); },
       failedClients);
 }

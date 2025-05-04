@@ -1082,19 +1082,19 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups* groups) const
 }
 
 PVR_ERROR CPVRClient::GetChannelGroupMembers(
-    const CPVRChannelGroup* group,
+    const CPVRChannelGroup& group,
     std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers) const
 {
-  const bool radio{group->IsRadio()};
+  const bool radio{group.IsRadio()};
   return DoAddonCall(
       std::source_location::current().function_name(),
-      [this, group, &groupMembers](const AddonInstance* addon)
+      [this, &group, &groupMembers](const AddonInstance* addon)
       {
         PVR_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = &groupMembers;
 
-        const CAddonChannelGroup addonGroup{*group};
+        const CAddonChannelGroup addonGroup{group};
         return addon->toAddon->GetChannelGroupMembers(addon, &handle, &addonGroup);
       },
       m_clientCapabilities.SupportsChannelGroups() &&

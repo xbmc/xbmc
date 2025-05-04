@@ -319,7 +319,7 @@ public:
    */
   PVR_ERROR GetChannelGroupMembers(
       const std::vector<std::shared_ptr<CPVRClient>>& clients,
-      CPVRChannelGroup* group,
+      const CPVRChannelGroup& group,
       std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers,
       std::vector<int>& failedClients) const;
 
