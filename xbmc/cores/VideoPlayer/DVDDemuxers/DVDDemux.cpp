@@ -137,12 +137,16 @@ std::string CDemuxStreamAudio::GetStreamType()
   if (strInfo.empty())
     strInfo = g_localizeStrings.Get(13205); // "Unknown"
 
+  strInfo.append(" ");
+
   const std::string layout{StreamUtils::GetLayout(iChannelLayout, iChannels)};
+
   if (!layout.empty())
-  {
-    strInfo.append(" ");
     strInfo.append(layout);
-  }
+  else
+    strInfo.append(StringUtils::Format("{:d} {}", iChannels,
+                                       g_localizeStrings.Get(10127))); // "channels"
+
   return strInfo;
 }
 

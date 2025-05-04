@@ -1066,13 +1066,15 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
   const int channels{audio_attributes.channels + 1};
 
   info.channels = channels;
+  info.codecDesc.append(" ");
 
   const std::string layout{StreamUtils::GetLayout(StreamUtils::GetDefaultMask(channels), channels)};
+
   if (!layout.empty())
-  {
-    info.codecDesc.append(" ");
     info.codecDesc.append(layout);
-  }
+  else
+    info.codecDesc.append(StringUtils::Format("{:d} {}", channels,
+                                              g_localizeStrings.Get(10127))); // "channels"
 }
 
 AudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)

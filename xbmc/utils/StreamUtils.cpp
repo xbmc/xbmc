@@ -138,16 +138,7 @@ std::string StreamUtils::GetLayout(uint64_t mask, int channels)
   if (!mask)
     mask = GetDefaultMask(channels);
 
-  std::string layout = GetLayoutXYZ(mask);
-
-  //! @todo return something or nothing in case of unknown layout?
-  if (layout.empty())
-  {
-    layout = std::to_string(channels);
-    layout.append(" ");
-    layout.append(g_localizeStrings.Get(10127)); // "channels"
-  }
-  return layout;
+  return GetLayoutXYZ(mask);
 }
 
 uint64_t StreamUtils::GetDefaultMask(int channels)
