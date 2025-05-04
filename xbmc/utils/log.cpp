@@ -275,6 +275,9 @@ void CLog::FormatAndLogInternal(spdlog::level::level_enum level,
                                 fmt::string_view format,
                                 fmt::format_args args)
 {
+  if (level < m_defaultLogger->level())
+    return;
+
   auto message = fmt::vformat(format, args);
 
   // fixup newline alignment, number of spaces should equal prefix length
