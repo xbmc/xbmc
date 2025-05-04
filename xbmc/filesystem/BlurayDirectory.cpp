@@ -1112,7 +1112,7 @@ std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
     videoInfo.fpsScale = 0; // Not in streamdetails
 
     CVideoInfoTag* info = item->GetVideoInfoTag();
-    info->m_streamDetails.SetStreams(videoInfo, static_cast<int>(title.duration.count() / 90000),
+    info->m_streamDetails.SetStreams(videoInfo, static_cast<int>(title.duration.count() / 1000),
                                      AudioStreamInfo{}, SubtitleStreamInfo{});
 
     for (const auto& audio : title.audioStreams)
