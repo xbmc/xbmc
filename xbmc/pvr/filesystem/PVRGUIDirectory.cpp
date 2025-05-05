@@ -637,13 +637,13 @@ bool CPVRGUIDirectory::GetSavedSearchesDirectory(bool bRadio, CFileItemList& res
 
 bool CPVRGUIDirectory::GetSavedSearchResults(bool isRadio, int id, CFileItemList& results) const
 {
-  auto& epgContainer{CServiceBroker::GetPVRManager().EpgContainer()};
+  const auto& epgContainer{CServiceBroker::GetPVRManager().EpgContainer()};
   const std::shared_ptr<CPVREpgSearchFilter> filter{epgContainer.GetSavedSearchById(isRadio, id)};
   if (filter)
   {
     CPVREpgSearch search(*filter);
     search.Execute();
-    const auto tags{search.GetResults()};
+    const auto& tags{search.GetResults()};
     for (const auto& tag : tags)
     {
       results.Add(std::make_shared<CFileItem>(tag));
@@ -845,7 +845,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
           }
         }
 
-        const auto item{std::make_shared<CFileItem>(groupMember)};
+        auto item{std::make_shared<CFileItem>(groupMember)};
         if (dateAdded)
           item->SetProperty("hideable", true);
 
