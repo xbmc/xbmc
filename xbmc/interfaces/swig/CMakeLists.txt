@@ -54,8 +54,8 @@ function(generate_file file)
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
 
-find_package(Java COMPONENTS Runtime REQUIRED)
-find_package(SWIG REQUIRED)
+find_package(Java COMPONENTS Runtime REQUIRED ${SEARCH_QUIET})
+find_package(SWIG REQUIRED ${SEARCH_QUIET})
 
 # Default URL/Versions/Hashes to use unless *_SOURCE_DIR are set for the relevant binary
 set(GROOVY_VER 4.0.26)
