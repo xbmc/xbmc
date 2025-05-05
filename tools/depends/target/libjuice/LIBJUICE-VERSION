@@ -1,0 +1,9 @@
+LIBNAME=libjuice
+VERSION=1.5.8
+ARCHIVE=v$(VERSION).tar.gz
+SHA512=ae68b0589e4ef822d707ff9d147dcf918eccbb38d73edfcb8665d5c263ad1063c12c828933d6884accf9553d3bbe4bf2e57379c2c8b66ea9a51cfbd11b2217b7
+BYPRODUCT=libjuice-static.a
+BYPRODUCT_WIN=juice-static.lib
+
+# TODO
+BASE_URL=https://github.com/paullouisageneau/libjuice/archive/refs/tags
