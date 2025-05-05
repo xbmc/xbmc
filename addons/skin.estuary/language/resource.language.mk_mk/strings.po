@@ -314,6 +314,10 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "Завршува на"
 
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Додаток за текстови на песни"

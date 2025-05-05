@@ -313,6 +313,10 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "Se termină la"
 
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Supliment versuri"
