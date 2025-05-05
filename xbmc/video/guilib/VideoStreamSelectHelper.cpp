@@ -405,6 +405,7 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectAudioStream()
     fileItem->SetProperty("stream.codec", info.codecName);
     fileItem->SetProperty("stream.codecdesc", info.codecDesc);
     fileItem->SetProperty("stream.channels", info.channels);
+    fileItem->SetProperty("stream.channellayout", info.m_channelLayout);
 
     fileItem->SetProperty("stream.isdefault", info.isDefault);
     fileItem->SetProperty("stream.isforced", info.isForced);
