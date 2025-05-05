@@ -137,7 +137,6 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_XF86Blue, XBMCK_BLUE},
     // Unmapped: XBMCK_ZOOM, XBMCK_TEXT
     {XKB_KEY_XF86Favorites, XBMCK_FAVORITES},
-    {XKB_KEY_XF86HomePage, XBMCK_HOMEPAGE},
     // Unmapped: XBMCK_CONFIG, XBMCK_EPG
 
     // Media keys
