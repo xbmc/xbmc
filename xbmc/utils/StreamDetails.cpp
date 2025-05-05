@@ -88,11 +88,12 @@ CStreamDetailAudio::CStreamDetailAudio() :
 {
 }
 
-CStreamDetailAudio::CStreamDetailAudio(const AudioStreamInfo &info) :
-  CStreamDetail(CStreamDetail::AUDIO),
-  m_iChannels(info.channels),
-  m_strCodec(info.codecName),
-  m_strLanguage(info.language)
+CStreamDetailAudio::CStreamDetailAudio(const AudioStreamInfo& info)
+  : CStreamDetail(CStreamDetail::AUDIO),
+    m_iChannels(info.channels),
+    m_channelLayout(info.m_channelLayout),
+    m_strCodec(info.codecName),
+    m_strLanguage(info.language)
 {
 }
 
