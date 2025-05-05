@@ -39,4 +39,12 @@ public:
    * \return The codec name
    */
   static std::string GetCodecName(int codecId, int profile);
+
+  /*!
+   * \brief Return a channel layout of the form x.y.z (x standard channels, y lfe channels,
+   *  z top channels)
+   * \param[in] mask The channels mask
+   * \return The layout
+   */
+  static std::string GetLayoutXYZ(uint64_t mask);
 };
