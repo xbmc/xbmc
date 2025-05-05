@@ -47,4 +47,11 @@ public:
    * \return The layout
    */
   static std::string GetLayoutXYZ(uint64_t mask);
+
+  /*!
+   * \brief Get a default channel mask for the channel count.
+   * \param[in] channels The count of channels
+   * \return The mask
+   */
+  static uint64_t GetDefaultMask(int channels);
 };

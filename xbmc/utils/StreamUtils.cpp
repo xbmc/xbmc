@@ -130,3 +130,23 @@ std::string StreamUtils::GetLayoutXYZ(uint64_t mask)
   }
   return layout;
 }
+
+uint64_t StreamUtils::GetDefaultMask(int channels)
+{
+  switch (channels)
+  {
+    // Match historical default layouts of Estuary
+    case 5:
+      return AV_CH_LAYOUT_QUAD | AV_CH_LOW_FREQUENCY;
+    case 10:
+      return AV_CH_LAYOUT_7POINT1 | AV_CH_FRONT_LEFT_OF_CENTER | AV_CH_FRONT_RIGHT_OF_CENTER;
+    // Likely atmos, which can't be accurately be described by a channels layout
+    case 16:
+      return 0;
+  }
+
+  AVChannelLayout layout;
+  av_channel_layout_default(&layout, channels);
+
+  return layout.order == AV_CHANNEL_ORDER_NATIVE ? layout.u.mask : 0;
+}
