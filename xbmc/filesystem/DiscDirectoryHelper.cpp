@@ -21,6 +21,7 @@
 #include <array>
 #include <chrono>
 #include <iterator>
+#include <numeric>
 #include <ranges>
 #include <set>
 
@@ -416,6 +417,82 @@ void CDiscDirectoryHelper::UseGroupMethod(unsigned int episodeIndex, const Playl
   }
 }
 
+int CDiscDirectoryHelper::CalculateMultiple(std::chrono::milliseconds duration,
+                                            std::chrono::milliseconds averageShortest,
+                                            double multiplePercent)
+{
+  double multiple{static_cast<double>(duration.count()) /
+                  static_cast<double>(averageShortest.count())};
+  int integerMultiple{static_cast<int>(std::round(multiple))};
+  if (abs(multiple - integerMultiple) < multiplePercent / 100.0)
+    return integerMultiple;
+  return 0;
+}
+
+void CDiscDirectoryHelper::UseGroupsWithMultiplesMethod(
+    unsigned int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc)
+{
+  // No groups of numEpisodes length so see if there could be double episode playlists
+  // Assume more than one playlist
+  CLog::LogF(LOGDEBUG, "Using groups with multiples method");
+  for (auto& group : m_allGroups)
+  {
+    // Calculate multiples
+    // Find shortest playlist in group
+    const std::chrono::milliseconds shortest = std::ranges::min(
+        group | std::views::transform(&CandidatePlaylistInformation::duration), {});
+
+    // Then calculate the average of shortest (within 20% of the shortest) playlists
+    constexpr double SHORTEST_PERCENT{20.0};
+    auto groupDurations{
+        group | std::views::transform(&CandidatePlaylistInformation::duration) |
+        std::views::filter([shortest](const std::chrono::milliseconds i)
+                           { return i < shortest * (1 + (SHORTEST_PERCENT / 100.0)); })};
+    const std::chrono::milliseconds averageShortest{
+        std::accumulate(groupDurations.begin(), groupDurations.end(), 0ms) /
+        std::ranges::distance(groupDurations)};
+
+    // Multiples of average shortest playlists (within 15% of the average)
+    constexpr double MULTIPLE_PERCENT{15.0};
+    for (auto& playlist : group)
+      playlist.multiple = CalculateMultiple(playlist.duration, averageShortest, MULTIPLE_PERCENT);
+
+    // Check there are no playlists that are not a multiple
+    if (std::ranges::any_of(group,
+                            [](const CandidatePlaylistInformation& i) { return i.multiple == 0; }))
+      continue;
+
+    // Check that multiples add up to numEpisodes
+    auto groupMultiples{group | std::views::transform(&CandidatePlaylistInformation::multiple)};
+    if (std::accumulate(groupMultiples.begin(), groupMultiples.end(), 0) !=
+        static_cast<int>(m_numEpisodes))
+      continue;
+
+    // Save candidate episode(s)
+    unsigned int index{
+        m_numSpecials}; // Start at numSpecials as specials (S00) are before episodes in episodesOnDisc
+    for (const auto& playlist : group)
+    {
+      auto playlistInformation{playlist};
+      for (int i = 0; i < playlist.multiple; ++i)
+      {
+        if (m_allEpisodes == AllEpisodes::ALL || index == episodeIndex - m_numSpecials)
+        {
+          playlistInformation.index = index;
+          m_candidatePlaylists.emplace(playlist.playlist, playlistInformation);
+          CLog::LogF(LOGDEBUG, "Candidate playlist {} for episode {}", playlist.playlist,
+                     episodesOnDisc[index].m_iEpisode);
+        }
+        ++index;
+      }
+    }
+    break;
+  }
+
+  if (m_candidatePlaylists.empty())
+    CLog::LogF(LOGDEBUG, "No candidate playlists found");
+}
+
 void CDiscDirectoryHelper::ChooseSingleBestPlaylist(
     const std::vector<CVideoInfoTag>& episodesOnDisc, const PlaylistMap& playlists)
 {
@@ -510,6 +587,9 @@ void CDiscDirectoryHelper::FindCandidatePlaylists(const std::vector<CVideoInfoTa
     UseLongOrCommonMethodForSingleEpisode(episodeIndex, playlists);
   else if (!m_groups.empty())
     UseGroupMethod(episodeIndex, playlists);
+
+  if (m_candidatePlaylists.empty() && !m_allGroups.empty() && m_numEpisodes > 1)
+    UseGroupsWithMultiplesMethod(episodeIndex, episodesOnDisc);
 
   // Now deal with the possibility there may be more than one playlist (per episode)
   // For this, see which is closest in duration to the desired episode duration (from the scraper)

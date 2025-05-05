@@ -190,6 +190,11 @@ private:
   void UseLongOrCommonMethodForSingleEpisode(unsigned int episodeIndex,
                                              const PlaylistMap& playlists);
   void UseGroupMethod(unsigned int episodeIndex, const PlaylistMap& playlists);
+  static int CalculateMultiple(std::chrono::milliseconds duration,
+                               std::chrono::milliseconds averageShortest,
+                               double multiplePercent);
+  void UseGroupsWithMultiplesMethod(unsigned int episodeIndex,
+                                    const std::vector<CVideoInfoTag>& episodesOnDisc);
   void ChooseSingleBestPlaylist(const std::vector<CVideoInfoTag>& episodesOnDisc,
                                 const PlaylistMap& playlists);
   void AddIdenticalPlaylists(const PlaylistMap& playlists);
