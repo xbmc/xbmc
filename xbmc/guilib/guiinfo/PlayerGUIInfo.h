@@ -69,6 +69,9 @@ private:
   std::string GetDuration(TIME_FORMAT format) const;
   std::string GetCurrentSeekTime(TIME_FORMAT format) const;
   std::string GetSeekTime(TIME_FORMAT format) const;
+  std::string GetLiveDuration(TIME_FORMAT format) const;
+  std::string GetCurrentLivePlayTime(TIME_FORMAT format) const;
+  std::string GetCurrentLiveSeekTime(TIME_FORMAT format) const;
 
   std::string GetContentRanges(int iInfo) const;
   std::vector<std::pair<float, float>> GetEditList(const CDataCacheCore& data,

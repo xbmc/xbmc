@@ -857,12 +857,21 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///     @skinning_v21 **[New Boolean Condition]** \link Player_IsRemote `Player.IsRemote`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.IsLive`</b>,
+///                  \anchor Player_IsLive
+///                  _boolean_,
+///     @return **True** if the inputstream of the player is a live stream (a.k.a. real time stream)\, **False** otherwise
+///     <p><hr>
+///     @skinning_v21 **[New Boolean Condition]** \link Player_IsLive `Player.IsLive`\endlink
+///     <p>
+///   }
 const infomap player_labels[] = {{"hasmedia", PLAYER_HAS_MEDIA},
                                  {"hasaudio", PLAYER_HAS_AUDIO},
                                  {"hasvideo", PLAYER_HAS_VIDEO},
                                  {"hasgame", PLAYER_HAS_GAME},
                                  {"isexternal", PLAYER_IS_EXTERNAL},
                                  {"isremote", PLAYER_IS_REMOTE},
+                                 {"islive", PLAYER_IS_LIVE},
                                  {"playing", PLAYER_PLAYING},
                                  {"paused", PLAYER_PAUSED},
                                  {"rewinding", PLAYER_REWINDING},
@@ -1027,6 +1036,27 @@ const infomap player_param[] = {{"art", PLAYER_ITEM_ART},
 ///     See \ref TIME_FORMAT for the list of possible values.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.LiveDuration`</b>,
+///                  \anchor Player_LiveDuration
+///                  _string_,
+///     @return The total duration of the live stream.
+///     @note This is applicable for live streams that provide duration information.
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.LivePlayTime`</b>,
+///                  \anchor Player_LivePlayTime
+///                  _string_,
+///     @return The elapsed playtime of the live stream.
+///     @note This represents the time spent watching the live stream.
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.LiveSeekTime`</b>,
+///                  \anchor Player_LiveSeekTime
+///                  _string_,
+///     @return The seekable time offset within the live stream.
+///     @note This indicates the time range available for seeking in the live stream.
+///     <p>
+///   }
 const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "seekoffset",       PLAYER_SEEKOFFSET },
                                   { "seekstepsize",     PLAYER_SEEKSTEPSIZE },
@@ -1036,7 +1066,10 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "duration",         PLAYER_DURATION },
                                   { "finishtime",       PLAYER_FINISH_TIME },
                                   { "starttime",        PLAYER_START_TIME },
-                                  { "seeknumeric",      PLAYER_SEEKNUMERIC } };
+                                  { "seeknumeric",      PLAYER_SEEKNUMERIC } ,
+                                  { "liveduration",     PLAYER_LIVE_DURATION },
+                                  { "liveplaytime",     PLAYER_LIVE_PLAYTIME },
+                                  { "liveseektime",     PLAYER_LIVE_SEEKTIME }};
 
 
 /// \page modules__infolabels_boolean_conditions

@@ -117,6 +117,33 @@ std::string CPlayerGUIInfo::GetCurrentSeekTime(TIME_FORMAT format) const
       g_application.GetTime() + m_appPlayer->GetSeekHandler().GetSeekSize(), format);
 }
 
+std::string CPlayerGUIInfo::GetLiveDuration(TIME_FORMAT format) const
+{
+  CDateTime currentTime(CDateTime::GetCurrentDateTime());
+  return currentTime.GetAsLocalizedTime(format);
+}
+
+std::string CPlayerGUIInfo::GetCurrentLivePlayTime(TIME_FORMAT format) const
+{
+  CDateTime currentTime(CDateTime::GetCurrentDateTime());
+  int iReverse = GetTotalPlayTime() - std::lrint(g_application.GetTime());
+  currentTime -= CDateTimeSpan(0, 0, 0, iReverse);
+
+  return currentTime.GetAsLocalizedTime(format);
+}
+
+std::string CPlayerGUIInfo::GetCurrentLiveSeekTime(TIME_FORMAT format) const
+{
+  if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
+    format = TIME_FORMAT_HH_MM_SS;
+
+  CDateTime currentTime(CDateTime::GetCurrentDateTime());
+  int seekTimeRemaining = GetPlayTimeRemaining() - m_appPlayer->GetSeekHandler().GetSeekSize();
+  currentTime -= CDateTimeSpan(0, 0, 0, seekTimeRemaining);
+
+  return currentTime.GetAsLocalizedTime(format);
+}
+
 std::string CPlayerGUIInfo::GetSeekTime(TIME_FORMAT format) const
 {
   if (!m_appPlayer->GetSeekHandler().HasTimeCode())
@@ -340,7 +367,16 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioBitsPerSample());
       return true;
-
+    // Live seekbar
+    case PLAYER_LIVE_DURATION:
+      value = GetLiveDuration(static_cast<TIME_FORMAT>(info.GetData1()));
+      return true;
+    case PLAYER_LIVE_PLAYTIME:
+      value = GetCurrentLivePlayTime(static_cast<TIME_FORMAT>(info.GetData1()));
+      return true;
+    case PLAYER_LIVE_SEEKTIME:
+      value = GetCurrentLiveSeekTime(static_cast<TIME_FORMAT>(info.GetData1()));
+      return true;
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYLIST_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -433,6 +469,9 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case PLAYER_IS_EXTERNAL:
       value = m_appPlayer->IsExternalPlaying();
+      return true;
+    case PLAYER_IS_LIVE:
+      value = m_appPlayer->IsLiveStream();
       return true;
     case PLAYER_PLAYING:
       value = m_appPlayer->GetPlaySpeed() == 1.0f;
