@@ -87,8 +87,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       find_package(UUID REQUIRED ${SEARCH_QUIET})
       unset(FPHSA_NAME_MISMATCHED)
 
+      get_target_property(_ALIASTARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIASED_TARGET)
+      if(_ALIASTARGET)
+        set(LIB_TARGET ${_ALIASTARGET})
+      else()
+        set(LIB_TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+      endif()
+
       if(TARGET UUID::UUID)
-        target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE UUID::UUID)
+        target_link_libraries(${LIB_TARGET} INTERFACE UUID::UUID)
       endif()
     endif()
 
