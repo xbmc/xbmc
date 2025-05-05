@@ -42,6 +42,9 @@ public:
     {
       std::sort(m_map.begin(), m_map.end(),
                 [](const auto& a, const auto& b) { return std::less<>{}(a.first, b.first); });
+      if (std::ranges::adjacent_find(m_map.begin(), m_map.end(), {},
+                                     &std::pair<Key, Value>::first) != m_map.end())
+        throw std::runtime_error("Keys are not unique");
     }
   }
 
