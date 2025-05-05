@@ -158,7 +158,6 @@ constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITIC
 
 constexpr auto XkbDeadKeyXBMCMapping =
     make_map<xkb_keycode_t, XBMCKey>({{XKB_KEY_dead_grave, XBMCK_GRAVE},
-                                      {XKB_KEY_dead_tilde, XBMCK_TILDE},
                                       {XKB_KEY_dead_acute, XBMCK_ACUTE},
                                       {XKB_KEY_dead_circumflex, XBMCK_CIRCUMFLEX},
                                       {XKB_KEY_dead_perispomeni, XBMCK_PERISPOMENI},
@@ -179,9 +178,7 @@ constexpr auto XkbDeadKeyXBMCMapping =
                                       {XKB_KEY_dead_horn, XBMCK_HORN},
                                       {XKB_KEY_dead_stroke, XBMCK_STROKE},
                                       {XKB_KEY_dead_abovecomma, XBMCK_ABOVECOMMA},
-                                      {XKB_KEY_dead_psili, XBMCK_ABOVECOMMA},
                                       {XKB_KEY_dead_abovereversedcomma, XBMCK_ABOVEREVERSEDCOMMA},
-                                      {XKB_KEY_dead_dasia, XBMCK_OGONEK},
                                       {XKB_KEY_dead_doublegrave, XBMCK_DOUBLEGRAVE},
                                       {XKB_KEY_dead_belowring, XBMCK_BELOWRING},
                                       {XKB_KEY_dead_belowmacron, XBMCK_BELOWMACRON},
