@@ -10,7 +10,7 @@
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  macro(buildCurl)
+  macro(buildmacroCurl)
     find_package(Brotli REQUIRED ${SEARCH_QUIET})
     find_package(NGHttp2 REQUIRED ${SEARCH_QUIET})
     find_package(OpenSSL REQUIRED ${SEARCH_QUIET})
@@ -31,7 +31,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     if(WIN32 OR WINDOWS_STORE)
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS -DNGHTTP2_STATICLIB)
-      set(PLATFORM_LINK_LIBS crypt32.lib)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES crypt32.lib)
     endif()
 
     set(CMAKE_ARGS -DBUILD_CURL_EXE=OFF
@@ -56,14 +56,18 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
 
     # Link libraries for target interface
-    set(CURL_LINK_LIBRARIES LIBRARY::Brotli LIBRARY::NGHttp2 OpenSSL::Crypto OpenSSL::SSL LIBRARY::Zlib ${PLATFORM_LINK_LIBS})
+    list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES LIBRARY::Brotli
+                                                                    LIBRARY::NGHttp2
+                                                                    OpenSSL::Crypto
+                                                                    OpenSSL::SSL
+                                                                    LIBRARY::Zlib)
 
     # Add dependencies to build target
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Brotli)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::NGHttp2)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::SSL)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::Crypto)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Zlib)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Brotli
+                                                                        LIBRARY::NGHttp2
+                                                                        OpenSSL::SSL
+                                                                        OpenSSL::Crypto
+                                                                        LIBRARY::Zlib)
   endmacro()
 
   # If there is a potential this library can be built internally
@@ -80,34 +84,37 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   endif()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC curl)
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME CURL)
 
   SETUP_BUILD_VARS()
 
   SETUP_FIND_SPECS()
 
-  find_package(CURL ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
-                    HINTS ${DEPENDS_PATH}/lib/cmake
-                    ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+  find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
+                                                         HINTS ${DEPENDS_PATH}/lib/cmake
+                                                         ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # cmake config may not be available (eg Debian libcurl-dev package)
   # fallback to pkgconfig for non windows platforms
-  if(NOT CURL_FOUND)
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     find_package(PkgConfig ${SEARCH_QUIET})
     # We explicitly skip a pkgconfig search for Darwin platforms, as system zlib can not
     # be found by pkg-config, and a search for Curl's Libs field is made during the
     # pkg_check_modules call
     if(PKG_CONFIG_FOUND AND NOT ((WIN32 OR WINDOWSSTORE) OR 
                                  (CMAKE_SYSTEM_NAME MATCHES "Darwin")))
-      pkg_check_modules(CURL libcurl${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+      pkg_check_modules(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} libcurl${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
 
   # Check for existing Curl. If version >= CURL-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal curl, build anyway
-  if((CURL_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CURL) OR
+  if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CURL) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_CURL) OR
      (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
-    buildCurl()
+    cmake_language(EVAL CODE "
+      buildmacro${CMAKE_FIND_PACKAGE_NAME}()
+    ")
   else()
     # Maybe need to look explicitly for CURL::libcurl_static/shared?
     if(TARGET CURL::libcurl)
@@ -121,40 +128,44 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       # we only do this because we use find_package_handle_standard_args for config time output
       # and it isnt capable of handling TARGETS, so we have to extract the info
       get_target_property(_CURL_CONFIGURATIONS ${_CURL_ALIASTARGET} IMPORTED_CONFIGURATIONS)
-      foreach(_curl_config IN LISTS _CURL_CONFIGURATIONS)
-        # Some non standard config (eg None on Debian)
-        # Just set to RELEASE var so select_library_configurations can continue to work its magic
-        string(TOUPPER ${_curl_config} _curl_config_UPPER)
-        if((NOT ${_curl_config_UPPER} STREQUAL "RELEASE") AND
-           (NOT ${_curl_config_UPPER} STREQUAL "DEBUG"))
-          get_target_property(CURL_LIBRARY_RELEASE ${_CURL_ALIASTARGET} IMPORTED_LOCATION_${_curl_config_UPPER})
-        else()
-          get_target_property(CURL_LIBRARY_${_curl_config_UPPER} ${_CURL_ALIASTARGET} IMPORTED_LOCATION_${_curl_config_UPPER})
-        endif()
-      endforeach()
+      if(_CURL_CONFIGURATIONS)
+        foreach(_curl_config IN LISTS _CURL_CONFIGURATIONS)
+          # Some non standard config (eg None on Debian)
+          # Just set to RELEASE var so select_library_configurations can continue to work its magic
+          string(TOUPPER ${_curl_config} _curl_config_UPPER)
+          if((NOT ${_curl_config_UPPER} STREQUAL "RELEASE") AND
+             (NOT ${_curl_config_UPPER} STREQUAL "DEBUG"))
+            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE ${_CURL_ALIASTARGET} IMPORTED_LOCATION_${_curl_config_UPPER})
+          else()
+            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_${_curl_config_UPPER} ${_CURL_ALIASTARGET} IMPORTED_LOCATION_${_curl_config_UPPER})
+          endif()
+        endforeach()
+      else()
+        get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE ${_CURL_ALIASTARGET} IMPORTED_LOCATION)
+      endif()
 
-      get_target_property(CURL_INCLUDE_DIR CURL::libcurl INTERFACE_INCLUDE_DIRECTORIES)
-    elseif(TARGET PkgConfig::CURL)
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR CURL::libcurl INTERFACE_INCLUDE_DIRECTORIES)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
       # First item is the full path of the library file found
       # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET CURL_LINK_LIBRARIES 0 CURL_LIBRARY_RELEASE)
+      list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE)
 
-      get_target_property(CURL_INCLUDE_DIR PkgConfig::CURL INTERFACE_INCLUDE_DIRECTORIES)
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
     endif()
   endif()
 
   include(SelectLibraryConfigurations)
-  select_library_configurations(CURL)
-  unset(CURL_LIBRARIES)
+  select_library_configurations(${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
+  unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Curl
-                                    REQUIRED_VARS CURL_LIBRARY CURL_INCLUDE_DIR
-                                    VERSION_VAR CURL_VERSION)
+                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
+                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
 
-  if(CURL_FOUND)
+  if(Curl_FOUND)
     # cmake target and not building internal
-    if(TARGET CURL::libcurl AND NOT TARGET curl)
+    if(TARGET CURL::libcurl AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       # CURL::libcurl is an alias. We need to get the actual aias target, as we cant make an
       # alias of an alias (ie our ${APP_NAME_LC}::Curl cant be an alias of Curl::libcurl)
       if(NOT _CURL_ALIASTARGET)
@@ -162,47 +173,18 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endif()
 
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_CURL_ALIASTARGET})
-    elseif(TARGET PkgConfig::CURL AND NOT TARGET curl)
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::CURL)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
     else()
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_COMPILE_DEFINITIONS "CURL_STATICLIB"
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${CURL_INCLUDE_DIR}"
-                                                                       INTERFACE_LINK_LIBRARIES "${CURL_LINK_LIBRARIES}")
+      SETUP_BUILD_TARGET()
 
-      if(CURL_LIBRARY_RELEASE)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_CONFIGURATIONS RELEASE
-                                                                         IMPORTED_LOCATION_RELEASE "${CURL_LIBRARY_RELEASE}")
-      endif()
-      if(CURL_LIBRARY_DEBUG)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_LOCATION_DEBUG "${CURL_LIBRARY_DEBUG}")
-        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                              IMPORTED_CONFIGURATIONS DEBUG)
-      endif()
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS CURL_STATICLIB)
+      ADD_TARGET_COMPILE_DEFINITION()
+
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
-    if(TARGET curl)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} curl)
-    endif()
-
-    # Add internal build target when a Multi Config Generator is used
-    # We cant add a dependency based off a generator expression for targeted build types,
-    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-    # therefore if the find heuristics only find the library, we add the internal build
-    # target to the project to allow user to manually trigger for any build type they need
-    # in case only a specific build type is actually available (eg Release found, Debug Required)
-    # This is mainly targeted for windows who required different runtime libs for different
-    # types, and they arent compatible
-    if(_multiconfig_generator)
-      if(NOT TARGET curl)
-        buildCurl()
-        set_target_properties(curl PROPERTIES EXCLUDE_FROM_ALL TRUE)
-      endif()
-      add_dependencies(build_internal_depends curl)
-    endif()
+    ADD_MULTICONFIG_BUILDMACRO()
   else()
     if(Curl_FIND_REQUIRED)
       message(FATAL_ERROR "Curl libraries were not found.")

@@ -63,8 +63,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                                      IMPORTED_LOCATION "${DAV1D_LIBRARY}"
                                                                      INTERFACE_INCLUDE_DIRECTORIES "${DAV1D_INCLUDE_DIR}")
 
-    if(TARGET dav1d)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} dav1d)
+    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   endif()
 endif()

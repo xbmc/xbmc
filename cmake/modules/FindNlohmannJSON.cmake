@@ -11,9 +11,9 @@
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  macro(buildnlohmannjson)
-    set(nlohmann_json_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
-    set(BUILD_NAME nlohmann_json_build)
+  macro(buildmacroNlohmannJSON)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INTERFACE_LIB TRUE)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     set(CMAKE_ARGS -DJSON_BuildTests=OFF)
     set(BUILD_BYPRODUCTS ${DEPENDS_PATH}/include/nlohmann/json.hpp)
@@ -27,56 +27,43 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  find_package(nlohmann_json ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
-                             HINTS ${DEPENDS_PATH}/share/cmake
-                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+  SEARCH_EXISTING_PACKAGES()
 
   # Check for existing NLOHMANNJSON. If version >= NLOHMANNJSON-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal nlohmann json, build anyway
-  if((nlohmann_json_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_NLOHMANNJSON) OR
+  if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_NLOHMANNJSON) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_NLOHMANNJSON))
-    # Build internal nlohmann_json
-    buildnlohmannjson()
+    cmake_language(EVAL CODE "
+      buildmacro${CMAKE_FIND_PACKAGE_NAME}()
+    ")
   else()
     if(TARGET nlohmann_json::nlohmann_json)
-      get_target_property(NLOHMANN_JSON_INCLUDE_DIR nlohmann_json::nlohmann_json INTERFACE_INCLUDE_DIRECTORIES)
-      list(REMOVE_DUPLICATES NLOHMANN_JSON_INCLUDE_DIR)
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR nlohmann_json::nlohmann_json INTERFACE_INCLUDE_DIRECTORIES)
+      list(REMOVE_DUPLICATES ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${nlohmann_json_VERSION})
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
+
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION})
     endif()
   endif()
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(NlohmannJSON
-                                    REQUIRED_VARS NLOHMANN_JSON_INCLUDE_DIR
-                                    VERSION_VAR nlohmann_json_VERSION)
+                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
+                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
 
-  if(NLOHMANNJSON_FOUND)
-    if(TARGET nlohmann_json::nlohmann_json AND NOT TARGET nlohmann_json_build)
+  if(NlohmannJSON_FOUND)
+    if(TARGET nlohmann_json::nlohmann_json AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS nlohmann_json::nlohmann_json)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
     else()
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${NLOHMANN_JSON_INCLUDE_DIR}")
+      SETUP_BUILD_TARGET()
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
-    if(TARGET nlohmann_json_build)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} nlohmann_json_build)
-    endif()
-
-    # Add internal build target when a Multi Config Generator is used
-    # We cant add a dependency based off a generator expression for targeted build types,
-    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-    # therefore if the find heuristics only find the library, we add the internal build
-    # target to the project to allow user to manually trigger for any build type they need
-    # in case only a specific build type is actually available (eg Release found, Debug Required)
-    # This is mainly targeted for windows who required different runtime libs for different
-    # types, and they arent compatible
-    if(_multiconfig_generator)
-      if(NOT TARGET nlohmann_json_build)
-        buildnlohmannjson()
-        set_target_properties(nlohmann_json_build PROPERTIES EXCLUDE_FROM_ALL TRUE)
-      endif()
-      add_dependencies(build_internal_depends nlohmann_json_build)
-    endif()
+    ADD_MULTICONFIG_BUILDMACRO()
   else()
     if(NlohmannJSON_FIND_REQUIRED)
       message(FATAL_ERROR "NlohmannJSON library not found. You may want to try -DENABLE_INTERNAL_NLOHMANNJSON=ON")

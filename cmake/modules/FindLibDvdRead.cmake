@@ -88,7 +88,7 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
   BUILD_DEP_TARGET()
 
   if(TARGET LibDvdCSS::LibDvdCSS)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LibDvdCSS::LibDvdCSS)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LibDvdCSS::LibDvdCSS)
   endif()
 
   include(FindPackageHandleStandardArgs)
@@ -108,7 +108,7 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
       add_dependencies(LibDvdRead::LibDvdRead LibDvdCSS::LibDvdCSS)
     endif()
 
-    add_dependencies(LibDvdRead::LibDvdRead libdvdread)
+    add_dependencies(LibDvdRead::LibDvdRead ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
   else()
     if(LibDvdRead_FIND_REQUIRED)
       message(FATAL_ERROR "Libdvdread not found")

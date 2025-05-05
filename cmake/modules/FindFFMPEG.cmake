@@ -94,7 +94,7 @@ macro(buildFFMPEG)
   BUILD_DEP_TARGET()
 
   if(TARGET ${APP_NAME_LC}::Dav1d)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::Dav1d)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} ${APP_NAME_LC}::Dav1d)
   endif()
 
   find_program(BASH_COMMAND bash)
@@ -321,7 +321,7 @@ if(FFMPEG_FOUND)
   target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libswresample)
   target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libpostproc)
 
-  if(TARGET ffmpeg)
-    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ffmpeg)
+  if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
   endif()
 endif()

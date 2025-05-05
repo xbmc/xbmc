@@ -9,7 +9,7 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  macro(buildexiv2)
+  macro(buildmacroExiv2)
     find_package(Brotli REQUIRED ${SEARCH_QUIET})
     find_package(Iconv REQUIRED ${SEARCH_QUIET})
     find_package(Zlib REQUIRED ${SEARCH_QUIET})
@@ -54,12 +54,20 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
 
     # Link libraries for target interface
-    set(EXIV2_LINK_LIBRARIES LIBRARY::Brotli LIBRARY::Iconv LIBRARY::Zlib)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES LIBRARY::Brotli
+                                                            LIBRARY::Iconv
+                                                            LIBRARY::Zlib)
+
+    if(CORE_SYSTEM_NAME STREQUAL "freebsd")
+      list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES procstat)
+    elseif(CORE_SYSTEM_NAME MATCHES "windows")
+      list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES psapi)
+    endif()
 
     # Add dependencies to build target
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Brotli)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Iconv)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Zlib)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Brotli
+                                                                        LIBRARY::Iconv
+                                                                        LIBRARY::Zlib)
   endmacro()
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -82,25 +90,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  find_package(exiv2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
-                     HINTS ${DEPENDS_PATH}/lib/cmake
-                     ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
-
-  # cmake config may not be available
-  # fallback to pkgconfig for non windows platforms
-  if(NOT exiv2_FOUND)
-    find_package(PkgConfig ${SEARCH_QUIET})
-    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(exiv2 exiv2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
-    endif()
-  endif()
+  SEARCH_EXISTING_PACKAGES()
 
   # Check for existing EXIV2. If version >= EXIV2-VERSION file version, dont build
-  if((exiv2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_EXIV2) OR
+  if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_EXIV2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_EXIV2) OR
      (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
-
-    buildexiv2()
+    cmake_language(EVAL CODE "
+      buildmacro${CMAKE_FIND_PACKAGE_NAME}()
+    ")
   else()
     if(TARGET Exiv2::exiv2lib OR TARGET exiv2lib)
       # We create variables based off TARGET data for use with FPHSA
@@ -118,39 +116,43 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       # we only do this because we use find_package_handle_standard_args for config time output
       # and it isnt capable of handling TARGETS, so we have to extract the info
       get_target_property(_EXIV2_CONFIGURATIONS ${_exiv_target_name} IMPORTED_CONFIGURATIONS)
-      foreach(_exiv2_config IN LISTS _EXIV2_CONFIGURATIONS)
-        # Some non standard config (eg None on Debian)
-        # Just set to RELEASE var so select_library_configurations can continue to work its magic
-        string(TOUPPER ${_exiv2_config} _exiv2_config_UPPER)
-        if((NOT ${_exiv2_config_UPPER} STREQUAL "RELEASE") AND
-          (NOT ${_exiv2_config_UPPER} STREQUAL "DEBUG"))
-          get_target_property(EXIV2_LIBRARY_RELEASE ${_exiv_target_name} IMPORTED_LOCATION_${_exiv2_config_UPPER})
-        else()
-          get_target_property(EXIV2_LIBRARY_${_exiv2_config_UPPER} ${_exiv_target_name} IMPORTED_LOCATION_${_exiv2_config_UPPER})
-        endif()
-      endforeach()
+      if(_EXIV2_CONFIGURATIONS)
+        foreach(_exiv2_config IN LISTS _EXIV2_CONFIGURATIONS)
+          # Some non standard config (eg None on Debian)
+          # Just set to RELEASE var so select_library_configurations can continue to work its magic
+          string(TOUPPER ${_exiv2_config} _exiv2_config_UPPER)
+          if((NOT ${_exiv2_config_UPPER} STREQUAL "RELEASE") AND
+            (NOT ${_exiv2_config_UPPER} STREQUAL "DEBUG"))
+            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE ${_exiv_target_name} IMPORTED_LOCATION_${_exiv2_config_UPPER})
+          else()
+            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_${_exiv2_config_UPPER} ${_exiv_target_name} IMPORTED_LOCATION_${_exiv2_config_UPPER})
+          endif()
+        endforeach()
+      else()
+        get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE ${_exiv_target_name} IMPORTED_LOCATION)
+      endif()
 
-      get_target_property(EXIV2_INCLUDE_DIR ${_exiv_target_name} INTERFACE_INCLUDE_DIRECTORIES)
-    elseif(TARGET PkgConfig::exiv2)
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR ${_exiv_target_name} INTERFACE_INCLUDE_DIRECTORIES)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
       # First item is the full path of the library file found
       # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET exiv2_LINK_LIBRARIES 0 EXIV2_LIBRARY_RELEASE)
+      list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE)
 
-      get_target_property(EXIV2_INCLUDE_DIR PkgConfig::exiv2 INTERFACE_INCLUDE_DIRECTORIES)
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
     endif()
   endif()
 
   include(SelectLibraryConfigurations)
-  select_library_configurations(EXIV2)
-  unset(EXIV2_LIBRARIES)
+  select_library_configurations(${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
+  unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Exiv2
-                                    REQUIRED_VARS EXIV2_LIBRARY EXIV2_INCLUDE_DIR
-                                    VERSION_VAR EXIV2_VER)
+                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
+                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER)
 
   if(EXIV2_FOUND)
-    if((TARGET Exiv2::exiv2lib OR TARGET exiv2lib) AND NOT TARGET exiv2)
+    if((TARGET Exiv2::exiv2lib OR TARGET exiv2lib) AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       # Exiv alias exiv2lib in their latest cmake config. We test for the alias
       # to workout what we need to point OUR alias at.
       get_target_property(_EXIV2_ALIASTARGET exiv2lib ALIASED_TARGET)
@@ -158,54 +160,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         set(_exiv_target_name ${_EXIV2_ALIASTARGET})
       endif()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_exiv_target_name})
-    elseif(TARGET PkgConfig::exiv2 AND NOT TARGET exiv2)
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::exiv2)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
     else()
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${EXIV2_INCLUDE_DIR}"
-                                                                       INTERFACE_LINK_LIBRARIES "${EXIV2_LINK_LIBRARIES}")
+      SETUP_BUILD_TARGET()
 
-      if(EXIV2_LIBRARY_RELEASE)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_CONFIGURATIONS RELEASE
-                                                                         IMPORTED_LOCATION_RELEASE "${EXIV2_LIBRARY_RELEASE}")
-      endif()
-      if(EXIV2_LIBRARY_DEBUG)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_LOCATION_DEBUG "${EXIV2_LIBRARY_DEBUG}")
-        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                              IMPORTED_CONFIGURATIONS DEBUG)
-      endif()
-
-      if(CORE_SYSTEM_NAME STREQUAL "freebsd")
-        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                              INTERFACE_LINK_LIBRARIES procstat)
-      elseif(CORE_SYSTEM_NAME MATCHES "windows")
-        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                              INTERFACE_LINK_LIBRARIES psapi)
-      endif()
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
-    if(TARGET exiv2)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} exiv2)
-    endif()
-
-    # Add internal build target when a Multi Config Generator is used
-    # We cant add a dependency based off a generator expression for targeted build types,
-    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-    # therefore if the find heuristics only find the library, we add the internal build
-    # target to the project to allow user to manually trigger for any build type they need
-    # in case only a specific build type is actually available (eg Release found, Debug Required)
-    # This is mainly targeted for windows who required different runtime libs for different
-    # types, and they arent compatible
-    if(_multiconfig_generator)
-      if(NOT TARGET exiv2)
-        buildexiv2()
-        set_target_properties(exiv2 PROPERTIES EXCLUDE_FROM_ALL TRUE)
-      endif()
-      add_dependencies(build_internal_depends exiv2)
-    endif()
+    ADD_MULTICONFIG_BUILDMACRO()
   else()
     if(Exiv2_FIND_REQUIRED)
       message(FATAL_ERROR "Could NOT find or build Exiv2 library. You may want to try -DENABLE_INTERNAL_EXIV2=ON")
