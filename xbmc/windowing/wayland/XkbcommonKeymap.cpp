@@ -9,6 +9,7 @@
 #include "XkbcommonKeymap.h"
 
 #include "Util.h"
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -24,11 +25,13 @@ using namespace KODI::WINDOWING::WAYLAND;
 
 namespace
 {
-static const std::unordered_map<xkb_log_level, int> logLevelMap = {
-    {XKB_LOG_LEVEL_CRITICAL, LOGERROR},  {XKB_LOG_LEVEL_ERROR, LOGERROR},
-    {XKB_LOG_LEVEL_WARNING, LOGWARNING}, {XKB_LOG_LEVEL_INFO, LOGINFO},
+constexpr auto logLevelMap = make_map<xkb_log_level, int>({
+    {XKB_LOG_LEVEL_CRITICAL, LOGERROR},
+    {XKB_LOG_LEVEL_ERROR, LOGERROR},
+    {XKB_LOG_LEVEL_WARNING, LOGWARNING},
+    {XKB_LOG_LEVEL_INFO, LOGINFO},
     {XKB_LOG_LEVEL_DEBUG, LOGDEBUG},
-};
+});
 
 static void xkbLogger(xkb_context* context,
                       xkb_log_level priority,
@@ -36,8 +39,7 @@ static void xkbLogger(xkb_context* context,
                       va_list args)
 {
   const std::string message = StringUtils::FormatV(format, args);
-  auto logLevel = logLevelMap.find(priority);
-  CLog::Log(logLevel != logLevelMap.end() ? logLevel->second : LOGDEBUG, "[xkb] {}", message);
+  CLog::Log(logLevelMap.get(priority).value_or(LOGDEBUG), "[xkb] {}", message);
 }
 
 struct ModifierNameXBMCMapping
@@ -60,7 +62,7 @@ static const std::vector<ModifierNameXBMCMapping> ModifierNameXBMCMappings = {
     {XKB_LED_NAME_NUM, XBMCKMOD_NUM},
     {XKB_LED_NAME_SCROLL, XBMCKMOD_MODE}};
 
-static const std::map<xkb_keycode_t, XBMCKey> XkbKeycodeXBMCMappings = {
+constexpr auto XkbKeycodeXBMCMappings = make_map<xkb_keycode_t, XBMCKey>({
     // Function keys before start of ASCII printable character range
     {XKB_KEY_BackSpace, XBMCK_BACKSPACE},
     {XKB_KEY_Tab, XBMCK_TAB},
@@ -180,7 +182,6 @@ static const std::map<xkb_keycode_t, XBMCKey> XkbKeycodeXBMCMappings = {
     {XKB_KEY_XF86Blue, XBMCK_BLUE},
     // Unmapped: XBMCK_ZOOM, XBMCK_TEXT
     {XKB_KEY_XF86Favorites, XBMCK_FAVORITES},
-    {XKB_KEY_XF86HomePage, XBMCK_HOMEPAGE},
     // Unmapped: XBMCK_CONFIG, XBMCK_EPG
 
     // Media keys
@@ -215,11 +216,10 @@ static const std::map<xkb_keycode_t, XBMCKey> XkbKeycodeXBMCMappings = {
     {XKB_KEY_WEBOS_CURSOR_SHOW, XBMCK_UNKNOWN},
     {XKB_KEY_WEBOS_INVALID, XBMCK_UNKNOWN},
 #endif
-};
+});
 
-static const std::unordered_map<xkb_keycode_t, XBMCKey> XkbDeadKeyXBMCMapping = {
+constexpr auto XkbDeadKeyXBMCMapping = make_map<xkb_keycode_t, XBMCKey>({
     {XKB_KEY_dead_grave, XBMCK_GRAVE},
-    {XKB_KEY_dead_tilde, XBMCK_TILDE},
     {XKB_KEY_dead_acute, XBMCK_ACUTE},
     {XKB_KEY_dead_circumflex, XBMCK_CIRCUMFLEX},
     {XKB_KEY_dead_perispomeni, XBMCK_PERISPOMENI},
@@ -240,9 +240,7 @@ static const std::unordered_map<xkb_keycode_t, XBMCKey> XkbDeadKeyXBMCMapping = 
     {XKB_KEY_dead_horn, XBMCK_HORN},
     {XKB_KEY_dead_stroke, XBMCK_STROKE},
     {XKB_KEY_dead_abovecomma, XBMCK_ABOVECOMMA},
-    {XKB_KEY_dead_psili, XBMCK_ABOVECOMMA},
     {XKB_KEY_dead_abovereversedcomma, XBMCK_ABOVEREVERSEDCOMMA},
-    {XKB_KEY_dead_dasia, XBMCK_OGONEK},
     {XKB_KEY_dead_doublegrave, XBMCK_DOUBLEGRAVE},
     {XKB_KEY_dead_belowring, XBMCK_BELOWRING},
     {XKB_KEY_dead_belowmacron, XBMCK_BELOWMACRON},
@@ -264,14 +262,7 @@ static const std::unordered_map<xkb_keycode_t, XBMCKey> XkbDeadKeyXBMCMapping = 
     {XKB_KEY_dead_U, XBMCK_DEAD_U},
     {XKB_KEY_dead_small_schwa, XBMCK_SCHWA},
     {XKB_KEY_dead_capital_schwa, XBMCK_SCHWA},
-};
-
-std::optional<XBMCKey> TranslateDeadKey(uint32_t keySym)
-{
-  auto mapping = XkbDeadKeyXBMCMapping.find(keySym);
-  return mapping != XkbDeadKeyXBMCMapping.end() ? std::optional<XBMCKey>(mapping->second)
-                                                : std::nullopt;
-}
+});
 }
 
 CXkbcommonContext::CXkbcommonContext(xkb_context_flags flags)
@@ -429,15 +420,7 @@ XBMCKey CXkbcommonKeymap::XBMCKeyForKeysym(xkb_keysym_t sym)
   }
 
   // Try mapping
-  auto mapping = XkbKeycodeXBMCMappings.find(sym);
-  if (mapping != XkbKeycodeXBMCMappings.end())
-  {
-    return mapping->second;
-  }
-  else
-  {
-    return XBMCK_UNKNOWN;
-  }
+  return XkbKeycodeXBMCMappings.get(sym).value_or(XBMCK_UNKNOWN);
 }
 
 XBMCKey CXkbcommonKeymap::XBMCKeyForKeycode(xkb_keycode_t code) const
@@ -455,7 +438,7 @@ KeyComposerStatus CXkbcommonKeymap::KeyComposerFeed(xkb_keycode_t code)
   KeyComposerStatus composerStatus;
   const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
   // store the pressed deadkey unicode value
-  const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);
+  const std::optional<XBMCKey> xbmcKey = XkbDeadKeyXBMCMapping.get(keysym);
   if (xbmcKey)
   {
     composerStatus.keysym = xbmcKey.value();
@@ -511,7 +494,7 @@ std::uint32_t CXkbcommonKeymap::UnicodeCodepointForKeycode(xkb_keycode_t code) c
   if (unicode == XBMCK_UNKNOWN)
   {
     const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
-    const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);
+    const std::optional<XBMCKey> xbmcKey = XkbDeadKeyXBMCMapping.get(keysym);
     if (xbmcKey)
     {
       unicode = xbmcKey.value();
