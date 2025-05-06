@@ -130,7 +130,7 @@ public:
    * @brief Toggle recording on the currently playing channel, if any.
    * @return True if the recording was started or stopped successfully, false otherwise.
    */
-  bool ToggleRecordingOnPlayingChannel();
+  bool ToggleRecordingOnPlayingChannel() const;
 
   /*!
    * @brief Start or stop recording on a given channel.

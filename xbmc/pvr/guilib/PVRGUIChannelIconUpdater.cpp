@@ -48,13 +48,14 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
   CLog::Log(LOGINFO, "Starting PVR channel icon search");
 
   // create a map for fast lookup of normalized file base name
-  std::map<std::string, std::string> fileItemMap;
+  using FileNamesMap = std::map<std::string, std::string, std::less<>>;
+  FileNamesMap fileItemMap;
   for (const auto& item : fileItemList)
   {
     std::string baseName = URIUtils::GetFileName(item->GetPath());
     URIUtils::RemoveExtension(baseName);
     StringUtils::ToLower(baseName);
-    fileItemMap.insert({baseName, item->GetPath()});
+    fileItemMap.try_emplace(std::move(baseName), item->GetPath());
   }
 
   std::unique_ptr<CPVRGUIProgressHandler> progressHandler;
@@ -87,7 +88,7 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
       std::string strLegalChannelName = CUtil::MakeLegalFileName(channel->ChannelName());
       StringUtils::ToLower(strLegalChannelName);
 
-      std::map<std::string, std::string>::iterator itItem;
+      FileNamesMap::iterator itItem;
       if ((itItem = fileItemMap.find(strLegalClientChannelName)) != fileItemMap.end() ||
           (itItem = fileItemMap.find(strLegalChannelName)) != fileItemMap.end() ||
           (itItem = fileItemMap.find(strChannelUid)) != fileItemMap.end())
