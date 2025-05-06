@@ -19,6 +19,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <array>
 #include <memory>
 #include <mutex>
 #include <set>
@@ -87,7 +88,7 @@ void CPVRSettings::Init(const std::set<std::string>& settingNames)
     }
 
     std::unique_lock lock(m_critSection);
-    m_settings.insert(std::make_pair(settingName, setting->Clone(settingName)));
+    m_settings.try_emplace(settingName, setting->Clone(settingName));
   }
 }
 
@@ -172,7 +173,7 @@ void CPVRSettings::MarginTimeFiller(const SettingConstPtr& /*setting*/,
 {
   list.clear();
 
-  static const int marginTimeValues[] = {
+  static constexpr std::array<int, 13> marginTimeValues = {
       0, 1, 2, 3, 5, 10, 15, 20, 30, 60, 90, 120, 180 // minutes
   };
 

@@ -33,10 +33,10 @@ CPVRCustomTimerSettings::CPVRCustomTimerSettings(
   : m_customProps(customProps)
 {
   unsigned int idx{0};
-  for (const auto& [_, timerType] : typeEntries)
+  for (const auto& [_, type] : typeEntries)
   {
     const std::vector<std::shared_ptr<const CPVRTimerSettingDefinition>>& settingDefs{
-        timerType->GetCustomSettingDefinitions()};
+        type->GetCustomSettingDefinitions()};
     for (const auto& settingDef : settingDefs)
     {
       std::string settingIdPrefix;
@@ -74,9 +74,11 @@ void CPVRCustomTimerSettings::SetTimerType(const CPVRTimerType& timerType)
     {
       const auto it{m_customProps.find(def->GetId())};
       if (it == m_customProps.cend())
-        newCustomProps.insert({def->GetId(), {def->GetType(), def->GetDefaultValue()}});
+        newCustomProps.try_emplace(def->GetId(),
+                                   CustomProperty(def->GetType(), def->GetDefaultValue()));
       else
-        newCustomProps.insert({def->GetId(), {(*it).second.type, (*it).second.value}});
+        newCustomProps.try_emplace(def->GetId(),
+                                   CustomProperty((*it).second.type, (*it).second.value));
     }
   }
   m_customProps = newCustomProps;
