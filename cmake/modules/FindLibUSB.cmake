@@ -20,6 +20,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                               HINTS ${PC_LIBUSB_INCLUDEDIR})
   set(LIBUSB_VERSION ${PC_LIBUSB_VERSION})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LibUSB
                                     REQUIRED_VARS LIBUSB_LIBRARY LIBUSB_INCLUDE_DIR

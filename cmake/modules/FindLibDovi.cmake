@@ -19,6 +19,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_path(LIBDOVI_INCLUDE_DIR NAMES libdovi/rpu_parser.h
                                 HINTS ${PC_LIBDOVI_INCLUDEDIR})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LibDovi
                                     REQUIRED_VARS LIBDOVI_LIBRARY LIBDOVI_INCLUDE_DIR)

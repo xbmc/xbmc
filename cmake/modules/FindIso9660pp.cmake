@@ -40,6 +40,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     set(ISO9660PP_VERSION ${PC_ISO9660PP_VERSION})
 
+    if(NOT VERBOSE_FIND)
+       set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+     endif()
+
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(Iso9660pp
                                       REQUIRED_VARS ISO9660PP_LIBRARY ISO9660PP_INCLUDE_DIR ISO9660_LIBRARY ISO9660_INCLUDE_DIR

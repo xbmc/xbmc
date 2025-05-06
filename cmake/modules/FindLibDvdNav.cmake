@@ -92,6 +92,10 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LibDvdRead::LibDvdRead)
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LibDvdNav
                                     REQUIRED_VARS LIBDVDNAV_LIBRARY LIBDVDNAV_INCLUDE_DIR

@@ -91,6 +91,10 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LibDvdCSS::LibDvdCSS)
   endif()
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LibDvdRead
                                     REQUIRED_VARS LIBDVDREAD_LIBRARY LIBDVDREAD_INCLUDE_DIR

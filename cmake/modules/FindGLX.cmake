@@ -19,6 +19,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_library(GLX_LIBRARY NAMES GL
                            HINTS ${PC_GLX_LIBDIR})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(GLX
                                     REQUIRED_VARS GLX_LIBRARY GLX_INCLUDE_DIR)

@@ -242,6 +242,10 @@ else()
       ffmpeg_find_lib(${_libname})
     endforeach()
 
+    if(NOT VERBOSE_FIND)
+       set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+     endif()
+
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(FFMPEG
                                       VERSION_VAR FFMPEG_VERSION

@@ -20,6 +20,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   set(VDPAU_VERSION ${PC_VDPAU_VERSION})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(VDPAU
                                     REQUIRED_VARS VDPAU_LIBRARY VDPAU_INCLUDE_DIR

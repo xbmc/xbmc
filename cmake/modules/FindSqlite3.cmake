@@ -23,6 +23,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                HINTS ${DEPENDS_PATH}/lib ${PC_SQLITE3_LIBDIR}
                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Sqlite3
                                     REQUIRED_VARS SQLITE3_LIBRARY SQLITE3_INCLUDE_DIR
