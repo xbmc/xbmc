@@ -69,7 +69,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CGUIEPGGridContainerModel::GetEPGTi
                                                                           min, max);
 }
 
-void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>& items,
+void CGUIEPGGridContainerModel::Initialize(const CFileItemList& items,
                                            const CDateTime& gridStart,
                                            const CDateTime& gridEnd,
                                            int iFirstChannel,
@@ -89,7 +89,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
 
   ////////////////////////////////////////////////////////////////////////
   // Create channel items
-  std::ranges::copy(*items, std::back_inserter(m_channelItems));
+  std::ranges::copy(items, std::back_inserter(m_channelItems));
 
   /* check for invalid start and end time */
   if (gridStart >= gridEnd)

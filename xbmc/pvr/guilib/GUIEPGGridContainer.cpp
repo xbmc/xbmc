@@ -1829,7 +1829,7 @@ void CGUIEPGGridContainer::GoToMostRight()
   }
 }
 
-void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>& items,
+void CGUIEPGGridContainer::SetTimelineItems(const CFileItemList& items,
                                             const CDateTime& gridStart,
                                             const CDateTime& gridEnd)
 {

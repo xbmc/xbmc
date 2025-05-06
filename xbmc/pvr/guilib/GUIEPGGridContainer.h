@@ -116,7 +116,7 @@ public:
   void GoToMostLeft();
   void GoToMostRight();
 
-  void SetTimelineItems(const std::unique_ptr<CFileItemList>& items,
+  void SetTimelineItems(const CFileItemList& items,
                         const CDateTime& gridStart,
                         const CDateTime& gridEnd);
 
