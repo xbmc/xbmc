@@ -187,15 +187,18 @@ struct PlaylistInformation
 class CBlurayDirectory : public IDirectory
 {
 public:
-  CBlurayDirectory() = default;
+  CBlurayDirectory();
   ~CBlurayDirectory() override;
+  CBlurayDirectory(const CBlurayDirectory&) = delete;
+  CBlurayDirectory& operator=(const CBlurayDirectory&) = delete;
+
   bool GetDirectory(const CURL& url, CFileItemList& items) override;
   bool Resolve(CFileItem& item) const override;
 
   bool InitializeBluray(const std::string &root);
   static std::string GetBasePath(const CURL& url);
-  std::string GetBlurayTitle();
-  std::string GetBlurayID();
+  std::string GetBlurayTitle() const;
+  std::string GetBlurayID() const;
 
 private:
   enum class DiscInfo : uint8_t
@@ -213,5 +216,7 @@ private:
   BLURAY* m_bd{nullptr};
   bool m_blurayInitialized{false};
   bool m_blurayMenuSupport{false};
+
+  std::map<unsigned int, ClipInformation> m_clipCache;
 };
 } // namespace XFILE

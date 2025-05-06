@@ -16,22 +16,22 @@ using namespace XFILE;
 
 CacheMap::iterator CBlurayDiscCache::SetDisc(const std::string& path)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath{CURL(path).GetWithoutOptions()};
   URIUtils::RemoveSlashAtEnd(storedPath);
 
   Disc disc;
-  const auto it{m_cache.emplace(storedPath, disc)};
-  return it.first;
+  const auto [it, _]{m_cache.try_emplace(storedPath, disc)};
+  return it;
 }
 
 void CBlurayDiscCache::SetPlaylistInfo(const std::string& path,
                                        unsigned int playlist,
                                        const PlaylistInformation& playlistInfo)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath{CURL(path).GetWithoutOptions()};
@@ -48,7 +48,7 @@ void CBlurayDiscCache::SetMaps(const std::string& path,
                                const PlaylistMap& playlistmap,
                                const ClipMap& clipmap)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath{CURL(path).GetWithoutOptions()};
@@ -67,14 +67,13 @@ bool CBlurayDiscCache::GetPlaylistInfo(const std::string& path,
                                        unsigned int playlist,
                                        PlaylistInformation& playlistInfo) const
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath{CURL(path).GetWithoutOptions()};
   URIUtils::RemoveSlashAtEnd(storedPath);
 
-  const auto& i{m_cache.find(storedPath)};
-  if (i != m_cache.end())
+  if (const auto& i{m_cache.find(storedPath)}; i != m_cache.end())
   {
     const auto& [_, disc] = *i;
     const auto& j{disc.m_playlists.find(playlist)};
@@ -92,14 +91,13 @@ bool CBlurayDiscCache::GetMaps(const std::string& path,
                                PlaylistMap& playlistmap,
                                ClipMap& clipmap) const
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath{CURL(path).GetWithoutOptions()};
   URIUtils::RemoveSlashAtEnd(storedPath);
 
-  const auto& i{m_cache.find(storedPath)};
-  if (i != m_cache.end())
+  if (const auto& i{m_cache.find(storedPath)}; i != m_cache.end())
   {
     const auto& [_, disc] = *i;
     if (disc.m_mapsSet)
@@ -114,7 +112,7 @@ bool CBlurayDiscCache::GetMaps(const std::string& path,
 
 void CBlurayDiscCache::ClearDisc(const std::string& path)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath{CURL(path).GetWithoutOptions()};
@@ -125,6 +123,6 @@ void CBlurayDiscCache::ClearDisc(const std::string& path)
 
 void CBlurayDiscCache::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
   m_cache.clear();
 }

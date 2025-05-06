@@ -128,22 +128,27 @@ class CDiscDirectoryHelper
     ALL
   };
 
-  struct CandidatePlaylistsDurationInformation
-  {
-    unsigned int playlist{0};
-    std::chrono::milliseconds durationDelta{0ms};
-    unsigned int chapters{0};
-  };
-
-  struct SortedPlaylistsInformation
+  struct CandidatePlaylistInformation
   {
     unsigned int playlist{0};
     unsigned int index{0};
+    std::chrono::milliseconds duration{0ms};
+    std::chrono::milliseconds durationDelta{0ms};
+    int multiple{0};
+    unsigned int chapters{0};
+    std::vector<unsigned int> clips;
     std::string languages;
+
+    bool operator<(const CandidatePlaylistInformation& rhs) const noexcept
+    {
+      return playlist < rhs.playlist;
+    }
   };
 
 public:
   CDiscDirectoryHelper();
+  CDiscDirectoryHelper(const CDiscDirectoryHelper&) = delete;
+  CDiscDirectoryHelper& operator=(const CDiscDirectoryHelper&) = delete;
 
   /*!
    * \brief Populates a CFileItemList with the playlist(s) corresponding to the given episode.
@@ -181,6 +186,13 @@ private:
   void InitialisePlaylistSearch(int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc);
   void FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists);
   void FindGroups(const PlaylistMap& playlists);
+  void UsePlayAllPlaylistMethod(unsigned int episodeIndex, const PlaylistMap& playlists);
+  void UseLongOrCommonMethodForSingleEpisode(unsigned int episodeIndex,
+                                             const PlaylistMap& playlists);
+  void UseGroupMethod(unsigned int episodeIndex, const PlaylistMap& playlists);
+  void ChooseSingleBestPlaylist(const std::vector<CVideoInfoTag>& episodesOnDisc,
+                                const PlaylistMap& playlists);
+  void AddIdenticalPlaylists(const PlaylistMap& playlists);
   void FindCandidatePlaylists(const std::vector<CVideoInfoTag>& episodesOnDisc,
                               unsigned int episodeIndex,
                               const PlaylistMap& playlists);
@@ -191,22 +203,23 @@ private:
                            const PlaylistMap& playlists,
                            const CVideoInfoTag& tag,
                            IsSpecial isSpecial);
-  void EndPlaylistSearch();
+  void EndPlaylistSearch() const;
   void PopulateFileItems(const CURL& url,
                          CFileItemList& items,
                          int episodeIndex,
                          const std::vector<CVideoInfoTag>& episodesOnDisc,
-                         const PlaylistMap& playlists);
+                         const PlaylistMap& playlists) const;
 
-  AllEpisodes m_allEpisodes;
-  IsSpecial m_isSpecial;
-  unsigned int m_numEpisodes;
-  unsigned int m_numSpecials;
+  AllEpisodes m_allEpisodes{AllEpisodes::SINGLE};
+  IsSpecial m_isSpecial{IsSpecial::EPISODE};
+  unsigned int m_numEpisodes{0};
+  unsigned int m_numSpecials{0};
 
-  std::set<unsigned int> m_playAllPlaylists;
+  std::set<CandidatePlaylistInformation> m_playAllPlaylists;
   std::map<unsigned int, std::map<unsigned int, std::vector<unsigned int>>> m_playAllPlaylistsMap;
   std::vector<std::vector<unsigned int>> m_groups;
-  std::map<unsigned int, unsigned int> m_candidatePlaylists;
+  std::vector<std::vector<CandidatePlaylistInformation>> m_allGroups;
+  std::map<unsigned int, CandidatePlaylistInformation> m_candidatePlaylists;
   std::set<unsigned int> m_candidateSpecials;
 };
 } // namespace XFILE
