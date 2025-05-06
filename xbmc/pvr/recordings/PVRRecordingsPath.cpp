@@ -188,10 +188,10 @@ std::string CPVRRecordingsPath::GetTitle() const
     CRegExp reg(true);
     if (reg.RegComp("pvr://recordings/(.*/)*(.*), TV( \\(.*\\))?, "
                     "(19[0-9][0-9]|20[0-9][0-9])[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9]"
-                    ", (.*).pvr"))
+                    ", (.*).pvr") &&
+        reg.RegFind(m_path.c_str()) >= 0)
     {
-      if (reg.RegFind(m_path.c_str()) >= 0)
-        return reg.GetMatch(2);
+      return reg.GetMatch(2);
     }
   }
   return "";

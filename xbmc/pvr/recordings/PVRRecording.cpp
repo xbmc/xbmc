@@ -38,33 +38,6 @@ using namespace PVR;
 
 using namespace std::chrono_literals;
 
-CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId)
-  : m_iClientId(iClientId), m_strRecordingId(strRecordingId)
-{
-}
-
-bool CPVRRecordingUid::operator>(const CPVRRecordingUid& right) const
-{
-  return (m_iClientId == right.m_iClientId) ? m_strRecordingId > right.m_strRecordingId
-                                            : m_iClientId > right.m_iClientId;
-}
-
-bool CPVRRecordingUid::operator<(const CPVRRecordingUid& right) const
-{
-  return (m_iClientId == right.m_iClientId) ? m_strRecordingId < right.m_strRecordingId
-                                            : m_iClientId < right.m_iClientId;
-}
-
-bool CPVRRecordingUid::operator==(const CPVRRecordingUid& right) const
-{
-  return m_iClientId == right.m_iClientId && m_strRecordingId == right.m_strRecordingId;
-}
-
-bool CPVRRecordingUid::operator!=(const CPVRRecordingUid& right) const
-{
-  return m_iClientId != right.m_iClientId || m_strRecordingId != right.m_strRecordingId;
-}
-
 const std::string CPVRRecording::IMAGE_OWNER_PATTERN = "pvrrecording";
 
 CPVRRecording::CPVRRecording()
