@@ -78,6 +78,18 @@ void CDiscDirectoryHelper::InitialisePlaylistSearch(
   }
 }
 
+bool CDiscDirectoryHelper::IsValidSingleEpisodePlaylist(
+    const PlaylistInfo& singleEpisodePlaylistInformation, unsigned int clip) const
+{
+  // See if potential single episode playlist contains too many clips
+  // If there are 3 clips then expect the middle clip to be the main episode clip
+  // If there are numEpisodes clips this could be another play all playlist
+  return singleEpisodePlaylistInformation.clips.size() < 3 ||
+         (singleEpisodePlaylistInformation.clips.size() == 3 &&
+          singleEpisodePlaylistInformation.clips[1] == clip) ||
+         singleEpisodePlaylistInformation.clips.size() == m_numEpisodes;
+}
+
 void CDiscDirectoryHelper::FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists)
 {
   // Look for a potential play all playlist (gives episode order)
@@ -164,11 +176,8 @@ void CDiscDirectoryHelper::FindPlayAllPlaylists(const ClipMap& clips, const Play
           const auto& singleEpisodePlaylistInformation{
               playlists.find(singleEpisodePlaylist)->second};
 
-          // See if potential single episode playlist contains too many clips
-          // If there are 3 clips then expect the middle clip to be the main episode clip
-          if (singleEpisodePlaylistInformation.clips.size() > 3 ||
-              (singleEpisodePlaylistInformation.clips.size() == 3 &&
-               singleEpisodePlaylistInformation.clips[1] != clip))
+          // Check the playlist could be a single episode
+          if (!IsValidSingleEpisodePlaylist(singleEpisodePlaylistInformation, clip))
           {
             allClipsQualify = false;
             break;
@@ -177,6 +186,9 @@ void CDiscDirectoryHelper::FindPlayAllPlaylists(const ClipMap& clips, const Play
         }
       }
       playAllPlaylistClipMap[clip] = playAllPlaylistMap;
+
+      if (!allClipsQualify)
+        break;
     }
 
     // Found potential play all playlist

@@ -199,6 +199,8 @@ public:
 
 private:
   void InitialisePlaylistSearch(int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc);
+  bool IsValidSingleEpisodePlaylist(const PlaylistInfo& singleEpisodePlaylistInformation,
+                                    unsigned int clip) const;
   void FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists);
   void FindGroups(const PlaylistMap& playlists);
   void UsePlayAllPlaylistMethod(unsigned int episodeIndex, const PlaylistMap& playlists);
