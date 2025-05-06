@@ -139,10 +139,25 @@ class CDiscDirectoryHelper
     std::vector<unsigned int> clips;
     std::string languages;
 
+    // Used for inserting into a set where playlist is the key
     bool operator<(const CandidatePlaylistInformation& rhs) const noexcept
     {
       return playlist < rhs.playlist;
     }
+  };
+
+  // For removing duplicates from a vector of CandidatePlaylistInformation
+  struct CandidatePlaylistInformationNotDuplicate
+  {
+    explicit CandidatePlaylistInformationNotDuplicate(std::set<int64_t>& seen) : m_seen(seen) {}
+
+    bool operator()(const CandidatePlaylistInformation& c) const noexcept
+    {
+      return m_seen.insert(c.duration.count()).second;
+    }
+
+  private:
+    std::set<int64_t>& m_seen;
   };
 
 public:
@@ -189,14 +204,17 @@ private:
   void UsePlayAllPlaylistMethod(unsigned int episodeIndex, const PlaylistMap& playlists);
   void UseLongOrCommonMethodForSingleEpisode(unsigned int episodeIndex,
                                              const PlaylistMap& playlists);
-  void UseGroupMethod(unsigned int episodeIndex, const PlaylistMap& playlists);
+  static std::vector<std::vector<CandidatePlaylistInformation>> GetGroupsWithoutDuplicates(
+      const std::vector<std::vector<CandidatePlaylistInformation>>& groups);
+  void GetPlaylistsFromGroup(unsigned int episodeIndex,
+                             const std::vector<CandidatePlaylistInformation>& group);
+  void UseGroupMethod(unsigned int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc);
   static int CalculateMultiple(std::chrono::milliseconds duration,
                                std::chrono::milliseconds averageShortest,
                                double multiplePercent);
   void UseGroupsWithMultiplesMethod(unsigned int episodeIndex,
                                     const std::vector<CVideoInfoTag>& episodesOnDisc);
-  void ChooseSingleBestPlaylist(const std::vector<CVideoInfoTag>& episodesOnDisc,
-                                const PlaylistMap& playlists);
+  void ChooseSingleBestPlaylist(const std::vector<CVideoInfoTag>& episodesOnDisc);
   void AddIdenticalPlaylists(const PlaylistMap& playlists);
   void FindCandidatePlaylists(const std::vector<CVideoInfoTag>& episodesOnDisc,
                               unsigned int episodeIndex,
@@ -222,7 +240,7 @@ private:
 
   std::set<CandidatePlaylistInformation> m_playAllPlaylists;
   std::map<unsigned int, std::map<unsigned int, std::vector<unsigned int>>> m_playAllPlaylistsMap;
-  std::vector<std::vector<unsigned int>> m_groups;
+  std::vector<std::vector<CandidatePlaylistInformation>> m_groups;
   std::vector<std::vector<CandidatePlaylistInformation>> m_allGroups;
   std::map<unsigned int, CandidatePlaylistInformation> m_candidatePlaylists;
   std::set<unsigned int> m_candidateSpecials;
