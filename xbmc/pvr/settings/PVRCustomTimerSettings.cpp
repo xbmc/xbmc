@@ -28,7 +28,7 @@ static constexpr const char* SETTING_TMR_CUSTOM_STRING{"customsetting.string"};
 
 CPVRCustomTimerSettings::CPVRCustomTimerSettings(
     const CPVRTimerType& timerType,
-    const CPVRTimerInfoTag::CustomPropsMap& customProps,
+    const CustomPropertiesMap& customProps,
     const std::map<int, std::shared_ptr<CPVRTimerType>>& typeEntries)
   : m_customProps(customProps)
 {
@@ -65,7 +65,7 @@ CPVRCustomTimerSettings::CPVRCustomTimerSettings(
 
 void CPVRCustomTimerSettings::SetTimerType(const CPVRTimerType& timerType)
 {
-  CPVRTimerInfoTag::CustomPropsMap newCustomProps;
+  CustomPropertiesMap newCustomProps;
   for (const auto& [_, def] : m_customSettingDefs)
   {
     // Complete custom props for given type.
@@ -138,6 +138,7 @@ bool CPVRCustomTimerSettings::UpdateIntProperty(const std::shared_ptr<const CSet
     return false;
   }
 
+  // Get/create the prop.
   CVariant& prop{m_customProps[def->GetId()].value};
   prop = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
   return true;
@@ -152,6 +153,7 @@ bool CPVRCustomTimerSettings::UpdateStringProperty(const std::shared_ptr<const C
     return false;
   }
 
+  // Get/create the prop.
   CVariant& prop{m_customProps[def->GetId()].value};
   prop = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   return true;

@@ -7,6 +7,7 @@ set(SOURCES PVRCustomTimerSettings.cpp
             PVRTimerSettingDefinition.cpp)
 
 set(HEADERS IPVRSettingsContainer.h
+            PVRCustomProperty.h
             PVRCustomTimerSettings.h
             PVRIntSettingDefinition.h
             PVRIntSettingValues.h
