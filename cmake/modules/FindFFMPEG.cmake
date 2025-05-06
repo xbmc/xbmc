@@ -203,7 +203,8 @@ else()
   if(NOT WIN32)
     find_package(PkgConfig REQUIRED ${SEARCH_QUIET})
 
-    pkg_check_modules(PC_FFMPEG ${FFMPEG_PKGS})
+    # explicitly set quiet, as another search that has output is run anyway
+    pkg_check_modules(PC_FFMPEG ${FFMPEG_PKGS} QUIET)
   endif()
 
   if((PC_FFMPEG_FOUND
