@@ -565,7 +565,7 @@ endif()
 
 # testing
 if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
-  find_package(Gtest 1.10.0 REQUIRED)
+  find_package(Gtest 1.10.0 REQUIRED ${SEARCH_QUIET})
 
   copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/test-reference-data.txt NO_INSTALL)
   add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
@@ -614,7 +614,7 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
 endif()
 
 # Documentation
-find_package(Doxygen)
+find_package(Doxygen ${SEARCH_QUIET})
 if(DOXYGEN_FOUND)
   add_custom_target(doc
                     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/docs/doxygen/Doxyfile.doxy

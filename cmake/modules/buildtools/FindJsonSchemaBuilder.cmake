@@ -29,7 +29,7 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
 
     set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC JsonSchemaBuilder)
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE native)
-    set(JSONSCHEMABUILDER_DISABLE_VERSION ON)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
     SETUP_BUILD_VARS()
 
     # Override build type detection and always build as release
