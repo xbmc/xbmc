@@ -486,8 +486,8 @@ uint64_t CStreamDetails::GetAudioChannelMask(int idx) const
       dynamic_cast<const CStreamDetailAudio*>(GetNthStream(CStreamDetail::AUDIO, idx));
   if (item)
     return item->m_channelMask;
-  else
-    return {};
+
+  return {};
 }
 
 std::string CStreamDetails::GetSubtitleLanguage(int idx) const
