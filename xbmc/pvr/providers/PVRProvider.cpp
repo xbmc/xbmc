@@ -136,7 +136,7 @@ std::string CPVRProvider::GetName() const
   return m_strName;
 }
 
-bool CPVRProvider::SetName(const std::string& strName)
+bool CPVRProvider::SetName(std::string_view strName)
 {
   std::unique_lock lock(m_critSection);
   if (m_strName != strName)
@@ -231,7 +231,7 @@ std::string CPVRProvider::GetCountriesDBString() const
   return m_strCountries;
 }
 
-bool CPVRProvider::SetCountriesFromDBString(const std::string& strCountries)
+bool CPVRProvider::SetCountriesFromDBString(std::string_view strCountries)
 {
   std::unique_lock lock(m_critSection);
   if (m_strCountries != strCountries)
@@ -268,7 +268,7 @@ std::string CPVRProvider::GetLanguagesDBString() const
   return m_strLanguages;
 }
 
-bool CPVRProvider::SetLanguagesFromDBString(const std::string& strLanguages)
+bool CPVRProvider::SetLanguagesFromDBString(std::string_view strLanguages)
 {
   std::unique_lock lock(m_critSection);
   if (m_strLanguages != strLanguages)

@@ -371,13 +371,12 @@ void CPVRProviders::RemoveEntry(const std::shared_ptr<CPVRProvider>& provider)
 {
   std::unique_lock lock(m_critSection);
 
-  m_providers.erase(
-      std::remove_if(m_providers.begin(), m_providers.end(),
-                     [&provider](const std::shared_ptr<const CPVRProvider>& providerToRemove) {
-                       return provider->GetClientId() == providerToRemove->GetClientId() &&
-                              provider->GetUniqueId() == providerToRemove->GetUniqueId();
-                     }),
-      m_providers.end());
+  std::erase_if(m_providers,
+                [&provider](const std::shared_ptr<const CPVRProvider>& providerToRemove)
+                {
+                  return provider->GetClientId() == providerToRemove->GetClientId() &&
+                         provider->GetUniqueId() == providerToRemove->GetUniqueId();
+                });
 }
 
 int CPVRProviders::CleanupCachedImages()
