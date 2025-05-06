@@ -103,6 +103,9 @@ std::string StreamUtils::GetCodecName(int codecId, int profile)
 
 std::string StreamUtils::GetLayoutXYZ(uint64_t mask)
 {
+  if (mask == 0)
+    return {};
+
   constexpr uint64_t standardMask{
       AV_CH_FRONT_LEFT | AV_CH_FRONT_RIGHT | AV_CH_FRONT_CENTER | AV_CH_BACK_LEFT |
       AV_CH_BACK_RIGHT | AV_CH_FRONT_LEFT_OF_CENTER | AV_CH_FRONT_RIGHT_OF_CENTER |
@@ -122,20 +125,12 @@ std::string StreamUtils::GetLayoutXYZ(uint64_t mask)
   std::string layout = std::to_string(standardChannels);
   layout.append(".");
   layout.append(std::to_string(lfeChannels));
-  if (topChannels)
+  if (topChannels > 0)
   {
     layout.append(".");
     layout.append(std::to_string(topChannels));
   }
   return layout;
-}
-
-std::string StreamUtils::GetLayout(uint64_t mask, int channels)
-{
-  if (mask)
-    return GetLayoutXYZ(mask);
-
-  return {};
 }
 
 uint64_t StreamUtils::GetDefaultMask(int channels)

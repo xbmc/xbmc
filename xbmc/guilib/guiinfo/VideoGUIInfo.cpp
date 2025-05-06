@@ -495,8 +495,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       }
       case LISTITEM_AUDIO_CHANNEL_LAYOUT:
       {
-        const auto details{tag->m_streamDetails};
-        value = StreamUtils::GetLayout(details.GetAudioChannelMask(), details.GetAudioChannels());
+        value = StreamUtils::GetLayoutXYZ(tag->m_streamDetails.GetAudioChannelMask());
         return true;
       }
       case LISTITEM_AUDIO_LANGUAGE:
@@ -651,7 +650,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       break;
     }
     case VIDEOPLAYER_AUDIO_CHANNEL_LAYOUT:
-      value = StreamUtils::GetLayout(m_audioInfo.m_channelMask, m_audioInfo.channels);
+      value = StreamUtils::GetLayoutXYZ(m_audioInfo.m_channelMask);
       return true;
     case VIDEOPLAYER_AUDIO_BITRATE:
     {
