@@ -532,7 +532,7 @@ bool CGUIWindowPVRBase::InitChannelGroup()
     if (m_channelGroup != group)
     {
       m_viewControl.SetSelectedItem(0);
-      SetChannelGroup(std::move(group), false);
+      SetChannelGroup(group, false);
     }
     // Path might have changed since last init. Set it always, not just on group change.
     m_vecItems->SetPath(GetDirectoryPath());
@@ -560,7 +560,7 @@ void CGUIWindowPVRBase::SetChannelGroup(const std::shared_ptr<CPVRChannelGroup>&
     {
       if (m_channelGroup)
         m_channelGroup->Events().Unsubscribe(this);
-      m_channelGroup = std::move(group);
+      m_channelGroup = group;
       // we need to register the window to receive changes from the new group
       m_channelGroup->Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
       if (bUpdate)

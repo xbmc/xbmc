@@ -304,7 +304,7 @@ int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(
 
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
 {
-  CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+  const CGUIEPGGridContainer* epgGridContainer{GetGridControl()};
   const CGUIControl* control{GetControl(CONTROL_LSTCHANNELGROUPS)};
   if (epgGridContainer && control && GetFocusedControlID() == control->GetID())
   {
@@ -928,10 +928,7 @@ void CGUIWindowPVRGuideBase::GetChannelNumbers(std::vector<std::string>& channel
 }
 
 CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase* pGuideWindow)
-  : CThread("epg-grid-refresh-timeline-items"),
-    m_pGuideWindow(pGuideWindow),
-    m_ready(true),
-    m_done(false)
+  : CThread("epg-grid-refresh-timeline-items"), m_pGuideWindow(pGuideWindow)
 {
 }
 
