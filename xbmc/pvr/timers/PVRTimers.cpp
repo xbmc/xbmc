@@ -52,7 +52,8 @@ bool CPVRTimersContainer::UpdateFromClient(const std::shared_ptr<CPVRTimerInfoTa
   }
   else
   {
-    timer->SetTimerID(++m_iLastId);
+    m_iLastId++;
+    timer->SetTimerID(m_iLastId);
     InsertEntry(timer);
   }
 
@@ -81,8 +82,7 @@ void CPVRTimersContainer::InsertEntry(const std::shared_ptr<CPVRTimerInfoTag>& n
   if (it == m_tags.end())
   {
     VecTimerInfoTag addEntry({newTimer});
-    m_tags.insert(std::make_pair(newTimer->IsStartAnyTime() ? CDateTime() : newTimer->StartAsUTC(),
-                                 addEntry));
+    m_tags.try_emplace(newTimer->IsStartAnyTime() ? CDateTime() : newTimer->StartAsUTC(), addEntry);
   }
   else
   {
@@ -205,12 +205,11 @@ void CPVRTimers::RemoveEntry(const std::shared_ptr<const CPVRTimerInfoTag>& tag)
   auto it = m_tags.find(tag->IsStartAnyTime() ? CDateTime() : tag->StartAsUTC());
   if (it != m_tags.end())
   {
-    it->second.erase(std::remove_if(it->second.begin(), it->second.end(),
-                                    [&tag](const std::shared_ptr<const CPVRTimerInfoTag>& timer) {
-                                      return tag->ClientID() == timer->ClientID() &&
-                                             tag->ClientIndex() == timer->ClientIndex();
-                                    }),
-                     it->second.end());
+    std::erase_if(it->second,
+                  [&tag](const std::shared_ptr<const CPVRTimerInfoTag>& timer) {
+                    return tag->ClientID() == timer->ClientID() &&
+                           tag->ClientIndex() == timer->ClientIndex();
+                  });
 
     if (it->second.empty())
       m_tags.erase(it);
@@ -1372,7 +1371,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetById(unsigned int iTimerId) con
   return {};
 }
 
-void CPVRTimers::NotifyTimersEvent(bool bAddedOrDeleted /* = true */)
+void CPVRTimers::NotifyTimersEvent(bool bAddedOrDeleted /* = true */) const
 {
   CServiceBroker::GetPVRManager().PublishEvent(bAddedOrDeleted ? PVREvent::TimersInvalidated
                                                                : PVREvent::Timers);

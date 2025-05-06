@@ -156,17 +156,15 @@ bool CPVRTimerRuleMatcher::MatchEnd(const std::shared_ptr<const CPVREpgInfoTag>&
 
 bool CPVRTimerRuleMatcher::MatchDayOfWeek(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
-  if (m_timerRule->GetTimerType()->SupportsWeekdays())
+  if (m_timerRule->GetTimerType()->SupportsWeekdays() &&
+      m_timerRule->WeekDays() != PVR_WEEKDAY_ALLDAYS)
   {
-    if (m_timerRule->WeekDays() != PVR_WEEKDAY_ALLDAYS)
-    {
-      const CDateTime startEpgLocal = CPVRTimerInfoTag::ConvertUTCToLocalTime(epgTag->StartAsUTC());
-      int startWeekday = startEpgLocal.GetDayOfWeek();
-      if (startWeekday == 0)
-        startWeekday = 7;
+    const CDateTime startEpgLocal{CPVRTimerInfoTag::ConvertUTCToLocalTime(epgTag->StartAsUTC())};
+    int startWeekday{startEpgLocal.GetDayOfWeek()};
+    if (startWeekday == 0)
+      startWeekday = 7;
 
-      return ((1 << (startWeekday - 1)) & m_timerRule->WeekDays());
-    }
+    return ((1 << (startWeekday - 1)) & m_timerRule->WeekDays());
   }
   return true;
 }

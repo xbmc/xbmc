@@ -301,7 +301,7 @@ private:
   std::shared_ptr<CPVRTimerInfoTag> PersistAndUpdateLocalTimer(
       const std::shared_ptr<CPVRTimerInfoTag>& timer,
       const std::shared_ptr<CPVRTimerInfoTag>& parentTimer);
-  void NotifyTimersEvent(bool bAddedOrDeleted = true);
+  void NotifyTimersEvent(bool bAddedOrDeleted = true) const;
 
   enum TimerKind
   {
