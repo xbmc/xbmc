@@ -624,7 +624,7 @@ bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
   return false;
 }
 
-bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
+bool CPVRChannel::SetEPGScraper(std::string_view strScraper)
 {
   std::unique_lock lock(m_critSection);
 

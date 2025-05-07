@@ -66,8 +66,6 @@ using namespace PVR;
 
 namespace
 {
-using AddonInstance = AddonInstance_PVR;
-
 constexpr const char* DEFAULT_INFO_STRING_VALUE = "unknown";
 
 class CAddonChannelGroup : public PVR_CHANNEL_GROUP
@@ -795,6 +793,38 @@ const std::string& CPVRClient::GetConnectionString() const
   return m_strConnectionString;
 }
 
+SBackendProperties CPVRClient::GetBackendProperties() const
+{
+  SBackendProperties properties;
+
+  if (GetDriveSpace(properties.diskTotal, properties.diskUsed) == PVR_ERROR_NO_ERROR)
+  {
+    properties.diskTotal *= 1024;
+    properties.diskUsed *= 1024;
+  }
+
+  int iAmount{0};
+  if (GetProvidersAmount(iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numProviders = iAmount;
+  if (GetChannelGroupsAmount(iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numChannelGroups = iAmount;
+  if (GetChannelsAmount(iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numChannels = iAmount;
+  if (GetTimersAmount(iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numTimers = iAmount;
+  if (GetRecordingsAmount(false, iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numRecordings = iAmount;
+  if (GetRecordingsAmount(true, iAmount) == PVR_ERROR_NO_ERROR)
+    properties.numDeletedRecordings = iAmount;
+  properties.clientname = GetClientName();
+  properties.instancename = GetInstanceName();
+  properties.name = GetBackendName();
+  properties.version = GetBackendVersion();
+  properties.host = GetConnectionString();
+
+  return properties;
+}
+
 std::string CPVRClient::GetClientName() const
 {
   return Name();
@@ -966,13 +996,11 @@ PVR_ERROR CPVRClient::IsPlayable(const std::shared_ptr<const CPVREpgInfoTag>& ta
       m_clientCapabilities.SupportsEPG());
 }
 
-void CPVRClient::WriteStreamProperties(PVR_NAMED_VALUE** properties,
-                                       unsigned int iPropertyCount,
+void CPVRClient::WriteStreamProperties(std::span<PVR_NAMED_VALUE*> properties,
                                        CPVRStreamProperties& props)
 {
-  for (unsigned int i = 0; i < iPropertyCount; ++i)
+  for (const auto& prop : properties)
   {
-    const PVR_NAMED_VALUE* prop{properties[i]};
     props.emplace_back(std::make_pair(prop->strName, prop->strValue));
   }
 }
@@ -990,7 +1018,7 @@ PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<const CPVR
                        const PVR_ERROR error{addon->toAddon->GetEPGTagStreamProperties(
                            addon, &addonTag, &property_array, &size)};
                        if (error == PVR_ERROR_NO_ERROR)
-                         WriteStreamProperties(property_array, size, props);
+                         WriteStreamProperties({property_array, size}, props);
 
                        addon->toAddon->FreeProperties(addon, property_array, size);
                        return error;
@@ -1050,19 +1078,19 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups* groups) const
 }
 
 PVR_ERROR CPVRClient::GetChannelGroupMembers(
-    const CPVRChannelGroup* group,
+    const CPVRChannelGroup& group,
     std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers) const
 {
-  const bool radio{group->IsRadio()};
+  const bool radio{group.IsRadio()};
   return DoAddonCall(
       std::source_location::current().function_name(),
-      [this, group, &groupMembers](const AddonInstance* addon)
+      [this, &group, &groupMembers](const AddonInstance* addon)
       {
         PVR_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = &groupMembers;
 
-        const CAddonChannelGroup addonGroup{*group};
+        const CAddonChannelGroup addonGroup{group};
         return addon->toAddon->GetChannelGroupMembers(addon, &handle, &addonGroup);
       },
       m_clientCapabilities.SupportsChannelGroups() &&
@@ -1354,109 +1382,111 @@ const std::vector<std::shared_ptr<CPVRTimerType>>& CPVRClient::GetTimerTypes() c
   return m_timertypes;
 }
 
+PVR_ERROR CPVRClient::GetTimerTypes(const AddonInstance* addon,
+                                    std::vector<std::shared_ptr<CPVRTimerType>>& timerTypes)
+{
+  PVR_TIMER_TYPE** types_array{nullptr};
+  unsigned int size{0};
+  PVR_ERROR retval{addon->toAddon->GetTimerTypes(addon, &types_array, &size)};
+
+  const bool array_owner{retval == PVR_ERROR_NOT_IMPLEMENTED};
+  if (array_owner)
+  {
+    // begin compat section
+    CLog::LogF(LOGWARNING,
+               "Add-on {} does not support timer types. It will work, but not benefit from "
+               "the timer features introduced with PVR Addon API 2.0.0",
+               Name());
+
+    // Create standard timer types (mostly) matching the timer functionality available in Isengard.
+    // This is for migration only and does not make changes to the addons obsolete. Addons should
+    // work and benefit from some UI changes (e.g. some of the timer settings dialog enhancements),
+    // but all old problems/bugs due to static attributes and values will remain the same as in
+    // Isengard. Also, new features (like epg search) are not available to addons automatically.
+    // This code can be removed once all addons actually support the respective PVR Addon API version.
+
+    size = 2;
+    if (m_clientCapabilities.SupportsEPG())
+      size++;
+
+    types_array = new PVR_TIMER_TYPE*[size];
+
+    // manual one time
+    types_array[0] = new PVR_TIMER_TYPE{};
+    types_array[0]->iId = 1;
+    types_array[0]->iAttributes =
+        PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+        PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+        PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+        PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+
+    // manual timer rule
+    types_array[1] = new PVR_TIMER_TYPE{};
+    types_array[1]->iId = 2;
+    types_array[1]->iAttributes =
+        PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REPEATING |
+        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
+        PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
+        PVR_TIMER_TYPE_SUPPORTS_PRIORITY | PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
+        PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS |
+        PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+
+    if (m_clientCapabilities.SupportsEPG())
+    {
+      // One-shot epg-based
+      types_array[2] = new PVR_TIMER_TYPE{};
+      types_array[2]->iId = 3;
+      types_array[2]->iAttributes =
+          PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
+          PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+          PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+          PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+    }
+
+    retval = PVR_ERROR_NO_ERROR;
+    // end compat section
+  }
+
+  if (retval == PVR_ERROR_NO_ERROR)
+  {
+    timerTypes.reserve(size);
+    for (unsigned int i = 0; i < size; ++i)
+    {
+      if (types_array[i]->iId == PVR_TIMER_TYPE_NONE)
+      {
+        CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on {}.", GetID());
+        continue;
+      }
+      timerTypes.emplace_back(std::make_shared<CPVRTimerType>(*(types_array[i]), m_iClientId));
+    }
+  }
+
+  /* free the resources of the timer types array */
+  if (array_owner)
+  {
+    // begin compat section
+    for (unsigned int i = 0; i < size; ++i)
+      delete types_array[i];
+
+    delete[] types_array;
+    // end compat section
+  }
+  else
+  {
+    addon->toAddon->FreeTimerTypes(addon, types_array, size);
+  }
+  types_array = nullptr;
+
+  return retval;
+}
+
 PVR_ERROR CPVRClient::UpdateTimerTypes()
 {
   std::vector<std::shared_ptr<CPVRTimerType>> timerTypes;
 
   PVR_ERROR retVal = DoAddonCall(
       std::source_location::current().function_name(),
-      [this, &timerTypes](const AddonInstance* addon)
-      {
-        PVR_TIMER_TYPE** types_array{nullptr};
-        unsigned int size{0};
-        PVR_ERROR retval{addon->toAddon->GetTimerTypes(addon, &types_array, &size)};
-
-        const bool array_owner{retval == PVR_ERROR_NOT_IMPLEMENTED};
-        if (array_owner)
-        {
-          // begin compat section
-          CLog::LogF(LOGWARNING,
-                     "Add-on {} does not support timer types. It will work, but not benefit from "
-                     "the timer features introduced with PVR Addon API 2.0.0",
-                     Name());
-
-          // Create standard timer types (mostly) matching the timer functionality available in Isengard.
-          // This is for migration only and does not make changes to the addons obsolete. Addons should
-          // work and benefit from some UI changes (e.g. some of the timer settings dialog enhancements),
-          // but all old problems/bugs due to static attributes and values will remain the same as in
-          // Isengard. Also, new features (like epg search) are not available to addons automatically.
-          // This code can be removed once all addons actually support the respective PVR Addon API version.
-
-          size = 2;
-          if (m_clientCapabilities.SupportsEPG())
-            size++;
-
-          types_array = new PVR_TIMER_TYPE*[size];
-
-          // manual one time
-          types_array[0] = new PVR_TIMER_TYPE{};
-          types_array[0]->iId = 1;
-          types_array[0]->iAttributes =
-              PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-              PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-              PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
-              PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-
-          // manual timer rule
-          types_array[1] = new PVR_TIMER_TYPE{};
-          types_array[1]->iId = 2;
-          types_array[1]->iAttributes =
-              PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REPEATING |
-              PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-              PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
-              PVR_TIMER_TYPE_SUPPORTS_PRIORITY | PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
-              PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS |
-              PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-
-          if (m_clientCapabilities.SupportsEPG())
-          {
-            // One-shot epg-based
-            types_array[2] = new PVR_TIMER_TYPE{};
-            types_array[2]->iId = 3;
-            types_array[2]->iAttributes =
-                PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
-                PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
-                PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-          }
-
-          retval = PVR_ERROR_NO_ERROR;
-          // end compat section
-        }
-
-        if (retval == PVR_ERROR_NO_ERROR)
-        {
-          timerTypes.reserve(size);
-          for (unsigned int i = 0; i < size; ++i)
-          {
-            if (types_array[i]->iId == PVR_TIMER_TYPE_NONE)
-            {
-              CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on {}.", GetID());
-              continue;
-            }
-            timerTypes.emplace_back(
-                std::make_shared<CPVRTimerType>(*(types_array[i]), m_iClientId));
-          }
-        }
-
-        /* free the resources of the timer types array */
-        if (array_owner)
-        {
-          // begin compat section
-          for (unsigned int i = 0; i < size; ++i)
-            delete types_array[i];
-
-          delete[] types_array;
-          // end compat section
-        }
-        else
-        {
-          addon->toAddon->FreeTimerTypes(addon, types_array, size);
-        }
-        types_array = nullptr;
-
-        return retval;
-      },
+      [this, &timerTypes](const AddonInstance* addon) { return GetTimerTypes(addon, timerTypes); },
       m_clientCapabilities.SupportsTimers(), false);
 
   if (retVal == PVR_ERROR_NO_ERROR)
@@ -1634,7 +1664,7 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPV
         const PVR_ERROR error{addon->toAddon->GetChannelStreamProperties(
             addon, &addonChannel, source, &property_array, &size)};
         if (error == PVR_ERROR_NO_ERROR)
-          WriteStreamProperties(property_array, size, props);
+          WriteStreamProperties({property_array, size}, props);
 
         addon->toAddon->FreeProperties(addon, property_array, size);
         return error;
@@ -1658,7 +1688,7 @@ PVR_ERROR CPVRClient::GetRecordingStreamProperties(
         const PVR_ERROR error{addon->toAddon->GetRecordingStreamProperties(addon, &addonRecording,
                                                                            &property_array, &size)};
         if (error == PVR_ERROR_NO_ERROR)
-          WriteStreamProperties(property_array, size, props);
+          WriteStreamProperties({property_array, size}, props);
 
         addon->toAddon->FreeProperties(addon, property_array, size);
         return error;
@@ -2389,11 +2419,7 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
 
         const std::string strLine1 = StringUtils::Format(
             g_localizeStrings.Get(bOnOff ? 19197 : 19198), client->GetFullClientName());
-        std::string strLine2;
-        if (strName)
-          strLine2 = strName;
-        else
-          strLine2 = strFileName;
+        const std::string strLine2{strName ? strName : strFileName};
 
         // display a notification for 5 seconds
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000,
@@ -2587,27 +2613,27 @@ private:
         std::string strUpperCodecName = codec->name;
         StringUtils::ToUpper(strUpperCodecName);
 
-        m_lookup.insert(std::make_pair(strUpperCodecName, tmp));
+        m_lookup.try_emplace(strUpperCodecName, tmp);
       }
     }
 
     // teletext is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = PVR_CODEC_TYPE_SUBTITLE;
     tmp.codec_id = AV_CODEC_ID_DVB_TELETEXT;
-    m_lookup.insert(std::make_pair("TELETEXT", tmp));
+    m_lookup.try_emplace("TELETEXT", tmp);
 
     // rds is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = PVR_CODEC_TYPE_RDS;
     tmp.codec_id = AV_CODEC_ID_NONE;
-    m_lookup.insert(std::make_pair("RDS", tmp));
+    m_lookup.try_emplace("RDS", tmp);
 
     // ID3 is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = PVR_CODEC_TYPE_ID3;
     tmp.codec_id = AV_CODEC_ID_NONE;
-    m_lookup.insert({"ID3", tmp});
+    m_lookup.try_emplace("ID3", tmp);
   }
 
-  std::map<std::string, PVR_CODEC> m_lookup;
+  std::map<std::string, PVR_CODEC, std::less<>> m_lookup;
 };
 
 PVR_CODEC CPVRClient::cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName)

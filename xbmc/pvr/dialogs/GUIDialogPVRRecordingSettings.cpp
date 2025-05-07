@@ -225,9 +225,8 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& sett
     if (it == list.end())
     {
       // PVR backend supplied value is not in the list of predefined values. Insert it.
-      list.emplace(it, IntegerSettingOption(
-                           StringUtils::Format(g_localizeStrings.Get(17999), current) /* {} days */,
-                           current));
+      list.emplace(it, StringUtils::Format(g_localizeStrings.Get(17999), current) /* {} days */,
+                   current);
     }
   }
   else

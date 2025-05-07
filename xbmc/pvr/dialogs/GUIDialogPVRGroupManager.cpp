@@ -150,20 +150,18 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(const CGUIMessage& message)
   {
     std::string strGroupName;
     if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, CVariant{g_localizeStrings.Get(19139)},
-                                             false))
+                                             false) &&
+        !strGroupName.empty())
     {
-      if (!strGroupName.empty())
+      // add the group if it doesn't already exist
+      const std::shared_ptr<CPVRChannelGroups> groups{
+          CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)};
+      const std::shared_ptr<CPVRChannelGroup> group{groups->AddGroup(strGroupName)};
+      if (group)
       {
-        // add the group if it doesn't already exist
-        const std::shared_ptr<CPVRChannelGroups> groups{
-            CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)};
-        const auto group = groups->AddGroup(strGroupName);
-        if (group)
-        {
-          m_selectedGroup = group;
-          m_iSelectedChannelGroup = -1; // recalc index in Update()
-          Update();
-        }
+        m_selectedGroup = group;
+        m_iSelectedChannelGroup = -1; // recalc index in Update()
+        Update();
       }
     }
     bReturn = true;

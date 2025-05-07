@@ -65,7 +65,7 @@ bool CPVRChannelGroupFromClient::UpdateFromClients(
 
   // get the channel group members from the backends.
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers;
-  CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers({client}, this, groupMembers,
+  CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers({client}, *this, groupMembers,
                                                                     m_failedClients);
   return UpdateGroupEntries(groupMembers);
 }

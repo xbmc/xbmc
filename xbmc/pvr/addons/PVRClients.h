@@ -41,27 +41,9 @@ class CPVRRecordings;
 class CPVRTimerType;
 class CPVRTimersContainer;
 
-using CPVRClientMap = std::map<int, std::shared_ptr<CPVRClient>>;
+struct SBackendProperties;
 
-/*!
- * @brief Holds generic data about a backend (number of channels etc.)
- */
-struct SBackend
-{
-  std::string clientname;
-  std::string instancename;
-  std::string name;
-  std::string version;
-  std::string host;
-  int numTimers = 0;
-  int numRecordings = 0;
-  int numDeletedRecordings = 0;
-  int numProviders = 0;
-  int numChannelGroups = 0;
-  int numChannels = 0;
-  uint64_t diskUsed = 0;
-  uint64_t diskTotal = 0;
-};
+using CPVRClientMap = std::map<int, std::shared_ptr<CPVRClient>>;
 
 class CPVRClients : public ADDON::IAddonMgrCallback, public CPowerState
 {
@@ -87,10 +69,8 @@ public:
   /*!
    * @brief Update all clients, sync with Addon Manager state (start, restart, shutdown clients).
    * @param changedAddonId The id of the changed addon, empty string denotes 'any addon'.
-   * @param changedInstanceId The Identifier of the changed add-on instance
    */
-  void UpdateClients(const std::string& changedAddonId = "",
-                     ADDON::AddonInstanceId changedInstanceId = ADDON::ADDON_SINGLETON_INSTANCE_ID);
+  void UpdateClients(const std::string& changedAddonId = "");
 
   /*!
    * @brief Restart a single client add-on.
@@ -195,7 +175,7 @@ public:
    * @brief Returns properties about all created clients
    * @return the properties
    */
-  std::vector<SBackend> GetBackendProperties() const;
+  std::vector<SBackendProperties> GetBackendProperties() const;
 
   //@}
 
@@ -337,7 +317,7 @@ public:
    */
   PVR_ERROR GetChannelGroupMembers(
       const std::vector<std::shared_ptr<CPVRClient>>& clients,
-      CPVRChannelGroup* group,
+      const CPVRChannelGroup& group,
       std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers,
       std::vector<int>& failedClients) const;
 
@@ -430,6 +410,19 @@ private:
 
   std::vector<std::pair<ADDON::AddonInstanceId, bool>> GetInstanceIdsWithStatus(
       const std::shared_ptr<ADDON::CAddonInfo>& addon, bool addonIsEnabled) const;
+
+  enum class UpdateClientAction
+  {
+    NONE,
+    CREATE,
+    RECREATE,
+    DESTROY,
+  };
+
+  UpdateClientAction GetUpdateClientAction(const std::shared_ptr<ADDON::CAddonInfo>& addon,
+                                           ADDON::AddonInstanceId instanceId,
+                                           int clientId,
+                                           bool instanceEnabled) const;
 
   /*!
    * @brief Get the client instance for a given client id.

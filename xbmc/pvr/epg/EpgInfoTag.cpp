@@ -410,7 +410,7 @@ int CPVREpgInfoTag::GenreSubType() const
   return m_iGenreSubType;
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Genre() const
+std::vector<std::string> CPVREpgInfoTag::Genre() const
 {
   if (m_genre.empty())
   {

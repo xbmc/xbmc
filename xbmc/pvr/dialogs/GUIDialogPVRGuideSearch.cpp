@@ -95,7 +95,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
   for (const auto& groupMember : groupMembers)
   {
     labels.emplace_back(groupMember->Channel()->ChannelName(), iIndex);
-    m_channelsMap.insert(std::make_pair(iIndex, groupMember));
+    m_channelsMap.try_emplace(iIndex, groupMember);
 
     if (iSelectedChannel == EPG_SEARCH_UNSET &&
         groupMember->ChannelUID() == m_searchFilter->GetChannelUID() &&

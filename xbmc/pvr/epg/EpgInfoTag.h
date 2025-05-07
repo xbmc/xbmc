@@ -64,6 +64,16 @@ public:
                  bool bIsGapTag);
 
   /*!
+   * @brief Create a new EPG infotag.
+   * @param iEpgID The id of the EPG this tag belongs to.
+   * @param iconPath the path for the icon of the channel.
+   * @param parentalRatingIconPath the path for the parental rating icon of the channel.
+   */
+  CPVREpgInfoTag(int iEpgID,
+                 const std::string& iconPath,
+                 const std::string& parentalRatingIconPath);
+
+  /*!
    * @brief Set data for the channel linked to this EPG infotag.
    * @param data The channel data.
    */
@@ -298,7 +308,7 @@ public:
    * @brief Get the genre as human readable string.
    * @return The genre.
    */
-  const std::vector<std::string> Genre() const;
+  std::vector<std::string> Genre() const;
 
   /*!
    * @brief Get the first air date of this event.
@@ -494,10 +504,6 @@ public:
   static std::string DeTokenize(const std::vector<std::string>& tokens);
 
 private:
-  CPVREpgInfoTag(int iEpgID,
-                 const std::string& iconPath,
-                 const std::string& parentalRatingIconPath);
-
   CPVREpgInfoTag() = delete;
   CPVREpgInfoTag(const CPVREpgInfoTag& tag) = delete;
   CPVREpgInfoTag& operator=(const CPVREpgInfoTag& other) = delete;

@@ -28,16 +28,11 @@ void CPVREpgSearch::Execute()
 
   // Tags can still contain false positives, for search criteria that cannot be handled via
   // database. So, run extended search filters on what we got from the database.
-  for (auto it = tags.cbegin(); it != tags.cend();)
-  {
-    it = tags.erase(std::remove_if(tags.begin(), tags.end(),
-                                   [this](const std::shared_ptr<const CPVREpgInfoTag>& entry)
-                                   { return !m_filter.FilterEntry(entry); }),
-                    tags.cend());
-  }
+  std::erase_if(tags, [this](const std::shared_ptr<const CPVREpgInfoTag>& entry)
+                { return !m_filter.FilterEntry(entry); });
 
   if (m_filter.ShouldRemoveDuplicates())
-    m_filter.RemoveDuplicates(tags);
+    CPVREpgSearchFilter::RemoveDuplicates(tags);
 
   m_filter.SetLastExecutedDateTime(CDateTime::GetUTCDateTime());
 

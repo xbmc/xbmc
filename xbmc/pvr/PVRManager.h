@@ -324,7 +324,7 @@ public:
   /*!
    * @brief Signal a connection change of a client
    */
-  void ConnectionStateChange(CPVRClient* client,
+  void ConnectionStateChange(const CPVRClient* client,
                              const std::string& connectString,
                              PVR_CONNECTION_STATE state,
                              const std::string& message) const;
@@ -395,8 +395,7 @@ private:
    * @param progressHandler The progress handler to use for showing the different stages.
    * @return True if at least one client is known and successfully loaded, false otherwise.
    */
-  bool UpdateComponents(ManagerState stateToCheck,
-                        const std::unique_ptr<CPVRGUIProgressHandler>& progressHandler);
+  bool UpdateComponents(ManagerState stateToCheck, CPVRGUIProgressHandler* progressHandler);
 
   /*!
    * @brief Unload all PVR data (recordings, timers, channelgroups).

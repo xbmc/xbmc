@@ -592,7 +592,7 @@ const std::string& CPVRRadioRDSInfoTag::GetSMSStudio() const
   return m_strSMSStudio;
 }
 
-void CPVRRadioRDSInfoTag::SetRadioStyle(const std::string& style)
+void CPVRRadioRDSInfoTag::SetRadioStyle(std::string_view style)
 {
   std::unique_lock lock(m_critSection);
   m_strRadioStyle = style;
@@ -691,7 +691,7 @@ void CPVRRadioRDSInfoTag::Info::Clear()
 
 void CPVRRadioRDSInfoTag::Info::Add(const std::string& text)
 {
-  const std::string tmp{TrimAndToUTF8(text)};
+  std::string tmp{TrimAndToUTF8(text)};
   if (std::ranges::find(m_data, tmp) != m_data.cend())
     return;
 

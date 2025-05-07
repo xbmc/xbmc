@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -432,7 +433,7 @@ public:
    * @param strScraper The new scraper name.
    * @return True if something changed, false otherwise.
    */
-  bool SetEPGScraper(const std::string& strScraper);
+  bool SetEPGScraper(std::string_view strScraper);
 
   bool CanRecord() const;
 

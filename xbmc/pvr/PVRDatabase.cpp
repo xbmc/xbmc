@@ -738,8 +738,8 @@ int CPVRDatabase::Get(bool bRadio,
     {
       while (!m_pDS->eof())
       {
-        const auto channel{std::make_shared<CPVRChannel>(m_pDS->fv("bIsRadio").get_asBool(),
-                                                         m_pDS->fv("sIconPath").get_asString())};
+        auto channel{std::make_shared<CPVRChannel>(m_pDS->fv("bIsRadio").get_asBool(),
+                                                   m_pDS->fv("sIconPath").get_asString())};
 
         channel->m_iChannelId = m_pDS->fv("idChannel").get_asInt();
         channel->m_iUniqueId = m_pDS->fv("iUniqueId").get_asInt();
@@ -763,7 +763,7 @@ int CPVRDatabase::Get(bool bRadio,
 
         channel->UpdateEncryptionName();
 
-        results.insert({channel->StorageId(), channel});
+        results.try_emplace(channel->StorageId(), std::move(channel));
 
         m_pDS->next();
         ++iReturn;
@@ -1021,13 +1021,10 @@ bool CPVRDatabase::PersistChannels(const CPVRChannelGroup& group)
   for (const auto& [_, groupMember] : group.m_members)
   {
     channel = groupMember->Channel();
-    if (channel->IsChanged() || channel->IsNew())
+    if ((channel->IsChanged() || channel->IsNew()) && Persist(*channel, false))
     {
-      if (Persist(*channel, false))
-      {
-        channel->Persisted();
-        bReturn = true;
-      }
+      channel->Persisted();
+      bReturn = true;
     }
   }
 
@@ -1304,7 +1301,7 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
     {
       while (!m_pDS->eof())
       {
-        const auto newTag{std::make_shared<CPVRTimerInfoTag>()};
+        auto newTag{std::make_shared<CPVRTimerInfoTag>()};
 
         newTag->m_iClientIndex = -m_pDS->fv("iClientIndex").get_asInt();
         newTag->m_iParentClientIndex = m_pDS->fv("iParentClientIndex").get_asInt();
@@ -1334,7 +1331,7 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
         newTag->m_iRecordingGroup = m_pDS->fv("iRecordingGroup").get_asInt();
         newTag->UpdateSummary();
 
-        result.emplace_back(newTag);
+        result.emplace_back(std::move(newTag));
 
         m_pDS->next();
       }

@@ -51,7 +51,7 @@ int CPVRClientUID::GetUID() const
         return PVR_CLIENT_INVALID_UID;
       }
 
-      s_idMap.insert({{m_addonID, m_instanceID}, m_uid});
+      s_idMap.try_emplace({m_addonID, m_instanceID}, m_uid);
     }
     m_uidCreated = true;
   }

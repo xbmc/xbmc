@@ -334,9 +334,8 @@ bool CPVRChannelGroups::HasValidDataForClients(
          std::ranges::none_of(clients,
                               [this](const std::shared_ptr<const CPVRClient>& client)
                               {
-                                return std::find(m_failedClientsForChannelGroups.cbegin(),
-                                                 m_failedClientsForChannelGroups.cend(),
-                                                 client->GetID()) !=
+                                return std::ranges::find(m_failedClientsForChannelGroups,
+                                                         client->GetID()) !=
                                        m_failedClientsForChannelGroups.cend();
                               });
 }
@@ -541,14 +540,12 @@ GroupMemberPair CPVRChannelGroups::GetLastAndPreviousToLastPlayedChannelGroupMem
 
   // Previous to last is either 'second' of first group or 'first' of second group.
   if (groups.size() > 1 && groups[0]->LastWatched() && groups[1]->LastWatched() && previousToLast &&
-      previousToLast->Channel()->LastWatched())
+      previousToLast->Channel()->LastWatched() &&
+      groups[1]->LastWatched() >= previousToLast->Channel()->LastWatched())
   {
-    if (groups[1]->LastWatched() >= previousToLast->Channel()->LastWatched())
-    {
-      const auto [membersPreviousToLastPlayedGroup, _] =
-          groups[1]->GetLastAndPreviousToLastPlayedChannelGroupMember();
-      previousToLast = membersPreviousToLastPlayedGroup;
-    }
+    const auto [membersPreviousToLastPlayedGroup, _] =
+        groups[1]->GetLastAndPreviousToLastPlayedChannelGroupMember();
+    previousToLast = membersPreviousToLastPlayedGroup;
   }
 
   return {last, previousToLast};

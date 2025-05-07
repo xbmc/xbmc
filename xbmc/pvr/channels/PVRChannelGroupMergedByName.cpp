@@ -41,16 +41,16 @@ bool CPVRChannelGroupMergedByName::ShouldBeIgnored(
       if (group->GroupName() != mergedGroupName && group->ClientGroupName() != mergedGroupName)
         continue;
 
-      if (group->IsGroupMember(member))
+      if (!group->IsGroupMember(member))
+        continue;
+
+      if (matchingGroup != NO_GROUP_FOUND && matchingGroup != group->GroupID())
       {
-        if (matchingGroup != NO_GROUP_FOUND && matchingGroup != group->GroupID())
-        {
-          // Found a second group containing a member of this group. This group must not be ignored.
-          return false;
-        }
-        // First match or no new group. Continue with next group.
-        matchingGroup = group->GroupID();
+        // Found a second group containing a member of this group. This group must not be ignored.
+        return false;
       }
+      // First match or no new group. Continue with next group.
+      matchingGroup = group->GroupID();
     }
   }
   return true;
@@ -72,14 +72,14 @@ std::vector<std::string> GetGroupNames(const std::vector<std::shared_ptr<CPVRCha
       case CPVRChannelGroup::Origin::SYSTEM:
       {
         // Ignore system-created groups, except merged by name groups
-        if (group->GroupType() == PVR_GROUP_TYPE_SYSTEM_MERGED_BY_NAME)
-        {
-          const auto it = knownNamesCountMap.find(groupName);
-          if (it == knownNamesCountMap.end())
-            knownNamesCountMap.insert({groupName, 0}); // remember we found a merged group
-          else
-            (*it).second = 0; // reset groups counter. we do not need a new merged group
-        }
+        if (group->GroupType() != PVR_GROUP_TYPE_SYSTEM_MERGED_BY_NAME)
+          break;
+
+        const auto it = knownNamesCountMap.find(groupName);
+        if (it == knownNamesCountMap.cend())
+          knownNamesCountMap.try_emplace(groupName, 0); // remember we found a merged group
+        else
+          (*it).second = 0; // reset groups counter. we do not need a new merged group
         break;
       }
 
@@ -87,8 +87,8 @@ std::vector<std::string> GetGroupNames(const std::vector<std::shared_ptr<CPVRCha
       case CPVRChannelGroup::Origin::CLIENT:
       {
         const auto it = knownNamesCountMap.find(groupName);
-        if (it == knownNamesCountMap.end())
-          knownNamesCountMap.insert({groupName, 1}); // first occurrence
+        if (it == knownNamesCountMap.cend())
+          knownNamesCountMap.try_emplace(groupName, 1); // first occurrence
         else if ((*it).second > 0)
           (*it).second++; // second+ occurrence
         break;

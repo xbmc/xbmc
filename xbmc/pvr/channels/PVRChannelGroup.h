@@ -17,6 +17,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -157,7 +158,7 @@ public:
    * @brief Set the name this group has on the client.
    * @param groupName The client group name.
    */
-  void SetClientGroupName(const std::string& groupName);
+  void SetClientGroupName(std::string_view groupName);
 
   /*!
    * @brief Check whether the group name was set by the user.
