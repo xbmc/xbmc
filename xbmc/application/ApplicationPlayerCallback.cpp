@@ -28,6 +28,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/URIUtils.h"
@@ -129,6 +130,7 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
       url.SetFileName(fileUrl.GetFileName());
       fileItem.SetPath(url.Get());
       fileItem.SetDynPath("");
+      CServiceBroker::GetMediaManager().ResetBlurayPlaylistStatus();
     }
   }
 
