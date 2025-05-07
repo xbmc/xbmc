@@ -267,6 +267,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       XMLUtils::SetString(&stream, "codec", m_streamDetails.GetAudioCodec(iStream));
       XMLUtils::SetString(&stream, "language", m_streamDetails.GetAudioLanguage(iStream));
       XMLUtils::SetInt(&stream, "channels", m_streamDetails.GetAudioChannels(iStream));
+      XMLUtils::SetLongLong(&stream, "channelmask",
+                            static_cast<long long>(m_streamDetails.GetAudioChannelMask(iStream)));
       streamdetails.InsertEndChild(stream);
     }
     for (int iStream=1; iStream<=m_streamDetails.GetSubtitleStreamCount(); iStream++)
@@ -1340,6 +1342,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
           p->m_strLanguage = StringUtils::Trim(value);
 
         XMLUtils::GetInt(nodeDetail, "channels", p->m_iChannels);
+        long long mask{};
+        XMLUtils::GetLongLong(nodeDetail, "channelmask", mask);
+        p->m_channelMask = static_cast<uint64_t>(mask);
         StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);

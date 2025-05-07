@@ -26,6 +26,7 @@ public:
 
   static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwHexValue);
   static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue);
+  static bool GetLongLong(const TiXmlNode* pRootNode, const char* tag, long long& value);
   static bool GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
   static bool GetDouble(const TiXmlNode* pRootNode, const char* strTag, double& value);
@@ -34,6 +35,7 @@ public:
 
   static bool GetHex(const tinyxml2::XMLNode* rootNode, const char* tag, uint32_t& value);
   static bool GetUInt(const tinyxml2::XMLNode* rootNode, const char* tag, uint32_t& value);
+  static bool GetLongLong(const tinyxml2::XMLNode* rootNode, const char* tag, long long& value);
   static bool GetLong(const tinyxml2::XMLNode* rootNode, const char* tag, long& value);
   static bool GetFloat(const tinyxml2::XMLNode* rootNode, const char* tag, float& value);
   static bool GetDouble(const tinyxml2::XMLNode* rootNode, const char* tag, double& value);
@@ -126,6 +128,7 @@ public:
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
   static void SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value);
   static void SetPath(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue);
+  static void SetLongLong(TiXmlNode* pRootNode, const char* tag, long long value);
   static void SetLong(TiXmlNode* pRootNode, const char *strTag, long iValue);
   static void SetDate(TiXmlNode* pRootNode, const char *strTag, const CDateTime& date);
   static void SetDateTime(TiXmlNode* pRootNode, const char *strTag, const CDateTime& dateTime);
@@ -146,6 +149,7 @@ public:
   static void SetBoolean(tinyxml2::XMLNode* rootNode, const char* tag, bool value);
   static void SetHex(tinyxml2::XMLNode* rootNode, const char* tag, uint32_t value);
   static void SetPath(tinyxml2::XMLNode* rootNode, const char* tag, const std::string& value);
+  static void SetLongLong(tinyxml2::XMLNode* rootNode, const char* tag, long long value);
   static void SetLong(tinyxml2::XMLNode* rootNode, const char* tag, long value);
   static void SetDate(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& date);
   static void SetDateTime(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& dateTime);
