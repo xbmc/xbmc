@@ -6804,7 +6804,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // ffmpeg default masks for some channel counts, with a few adjustments for Kodi.
     // see StreamUtils::GetDefaultMask
     std::vector<DefaultLayout> mappings{{0, 0},    {1, 4},     {2, 3},       {3, 11},
-                                        {4, 263},  {5, 59},    {6, 63},      {7, 1807},
+                                        {4, 263},  {5, 59},    {6, 1551},    {7, 1807},
                                         {8, 1599}, {10, 1791}, {12, 185919}, {14, 186111}};
 
     for (const auto& mapping : mappings)
