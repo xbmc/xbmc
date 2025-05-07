@@ -74,6 +74,25 @@ bool XMLUtils::GetUInt(const tinyxml2::XMLNode* rootNode,
   return false;
 }
 
+bool XMLUtils::GetLongLong(const TiXmlNode* pRootNode, const char* tag, long long& value)
+{
+  const TiXmlNode* pNode = pRootNode->FirstChild(tag);
+  if (!pNode || !pNode->FirstChild())
+    return false;
+  value = atoll(pNode->FirstChild()->Value());
+  return true;
+}
+
+bool XMLUtils::GetLongLong(const tinyxml2::XMLNode* rootNode, const char* tag, long long& value)
+{
+  auto* node = rootNode->FirstChildElement(tag);
+  if (!node || !node->FirstChild())
+    return false;
+
+  value = atoll(node->FirstChild()->Value());
+  return true;
+}
+
 bool XMLUtils::GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
@@ -623,6 +642,18 @@ tinyxml2::XMLNode* XMLUtils::SetInt(tinyxml2::XMLNode* rootNode, const char* tag
 {
   std::string strValue = std::to_string(value);
   return SetString(rootNode, tag, strValue);
+}
+
+void XMLUtils::SetLongLong(TiXmlNode* pRootNode, const char* tag, long long value)
+{
+  std::string strValue = std::to_string(value);
+  SetString(pRootNode, tag, strValue);
+}
+
+void XMLUtils::SetLongLong(tinyxml2::XMLNode* rootNode, const char* tag, long long value)
+{
+  std::string strValue = std::to_string(value);
+  SetString(rootNode, tag, strValue);
 }
 
 void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)

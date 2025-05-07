@@ -33,6 +33,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -492,6 +493,11 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         break;
       }
+      case LISTITEM_AUDIO_CHANNEL_LAYOUT:
+      {
+        value = StreamUtils::GetLayoutXYZ(tag->m_streamDetails.GetAudioChannelMask());
+        return true;
+      }
       case LISTITEM_AUDIO_LANGUAGE:
         value = tag->m_streamDetails.GetAudioLanguage();
         return true;
@@ -643,6 +649,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       }
       break;
     }
+    case VIDEOPLAYER_AUDIO_CHANNEL_LAYOUT:
+      value = StreamUtils::GetLayoutXYZ(m_audioInfo.m_channelMask);
+      return true;
     case VIDEOPLAYER_AUDIO_BITRATE:
     {
       int iBitrate = m_audioInfo.bitrate;
