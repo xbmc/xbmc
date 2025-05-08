@@ -11,14 +11,10 @@
 #include <stdint.h>
 #include <string>
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
-// class to hold multiple integer data
+// class to hold multiple integer and string data
 // for storage referenced from a single integer
 class CGUIInfo
 {
@@ -63,11 +59,9 @@ public:
   {
   }
 
-  bool operator ==(const CGUIInfo &right) const
-  {
-    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2 &&
-            m_data3 == right.m_data3 && m_data4 == right.m_data4 && m_data5 == right.m_data5);
-  }
+  bool operator==(const CGUIInfo& right) const = default;
+
+  int GetInfo() const { return m_info; }
 
   uint32_t GetInfoFlag() const;
   uint32_t GetData1() const;
@@ -76,10 +70,10 @@ public:
   int GetData4() const { return m_data4; }
   const std::string& GetData5() const { return m_data5; }
 
-  int m_info;
 private:
   void SetInfoFlag(uint32_t flag);
 
+  int m_info{0};
   uint32_t m_data1{0};
   int m_data2{0};
   std::string m_data3;
@@ -87,6 +81,4 @@ private:
   std::string m_data5;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

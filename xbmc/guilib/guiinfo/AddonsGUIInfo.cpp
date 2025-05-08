@@ -30,7 +30,7 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
   const std::shared_ptr<const ADDON::IAddon> addonInfo = item->GetAddonInfo();
   if (addonInfo)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       ///////////////////////////////////////////////////////////////////////////////////////////////
       // LISTITEM_*
@@ -70,15 +70,17 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
         const ADDON::AddonLifecycleState state = addonInfo->LifecycleState();
         switch (state)
         {
-          case ADDON::AddonLifecycleState::BROKEN:
+          using enum ADDON::AddonLifecycleState;
+
+          case BROKEN:
             value = g_localizeStrings.Get(24171); // "Broken"
             break;
-          case ADDON::AddonLifecycleState::DEPRECATED:
-            value = g_localizeStrings.Get(24170); // "Deprecated";
+          case DEPRECATED:
+            value = g_localizeStrings.Get(24170); // "Deprecated"
             break;
-          case ADDON::AddonLifecycleState::NORMAL:
+          case NORMAL:
           default:
-            value = g_localizeStrings.Get(24169); // "Normal";
+            value = g_localizeStrings.Get(24169); // "Normal"
             break;
         }
         return true;
@@ -136,10 +138,12 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
         }
         break;
       }
+      default:
+        break;
     }
   }
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // ADDON_*
@@ -174,17 +178,17 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
         if (!success || !addon)
           break;
 
-        if (info.m_info == SYSTEM_ADDON_TITLE)
+        if (info.GetInfo() == SYSTEM_ADDON_TITLE)
         {
           value = addon->Name();
           return true;
         }
-        if (info.m_info == SYSTEM_ADDON_ICON)
+        if (info.GetInfo() == SYSTEM_ADDON_ICON)
         {
           value = addon->Icon();
           return true;
         }
-        if (info.m_info == SYSTEM_ADDON_VERSION)
+        if (info.GetInfo() == SYSTEM_ADDON_VERSION)
         {
           value = addon->Version().asString();
           return true;
@@ -192,6 +196,8 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       }
       break;
     }
+    default:
+      break;
   }
 
   return false;
@@ -199,7 +205,7 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
 
 bool CAddonsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // ADDON_*
@@ -214,13 +220,15 @@ bool CAddonsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
       }
       return addon->GetSettingInt(info.GetData5(), value);
     }
+    default:
+      break;
   }
   return false;
 }
 
 bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // ADDON_*
@@ -255,20 +263,20 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case LISTITEM_ISAUTOUPDATEABLE:
     {
       value = true;
-      const CFileItem* item = static_cast<const CFileItem*>(gitem);
+      const auto* item{static_cast<const CFileItem*>(gitem)};
       if (item->GetAddonInfo())
         value = CServiceBroker::GetAddonMgr().IsAutoUpdateable(item->GetAddonInfo()->ID()) ||
                 !CServiceBroker::GetAddonMgr().IsAddonInstalled(item->GetAddonInfo()->ID(),
                                                                 item->GetAddonInfo()->Origin());
 
-      //! @Todo: store origin of not-autoupdateable installed addons in table 'update_rules'
-      //         of the addon database. this is needed to pin ambiguous addon-id's that are
-      //         available from multiple origins accordingly.
-      //
-      //         after this is done the above call should be changed to
-      //
-      //         value = CServiceBroker::GetAddonMgr().IsAutoUpdateable(item->GetAddonInfo()->ID(),
-      //                                                                item->GetAddonInfo()->Origin());
+      //! @todo: store origin of not-autoupdateable installed addons in table 'update_rules'
+      //!         of the addon database. this is needed to pin ambiguous addon-id's that are
+      //!         available from multiple origins accordingly.
+      //!
+      //!         after this is done the above call should be changed to
+      //!
+      //!         value = CServiceBroker::GetAddonMgr().IsAutoUpdateable(item->GetAddonInfo()->ID(),
+      //!                                                                item->GetAddonInfo()->Origin());
 
       return true;
     }

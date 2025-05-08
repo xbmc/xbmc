@@ -19,11 +19,7 @@
 
 class CGUIListItem;
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfoBool
@@ -41,6 +37,4 @@ private:
   bool m_value;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

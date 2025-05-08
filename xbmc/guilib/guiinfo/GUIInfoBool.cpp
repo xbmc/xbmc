@@ -14,9 +14,8 @@
 
 using namespace KODI::GUILIB::GUIINFO;
 
-CGUIInfoBool::CGUIInfoBool(bool value)
+CGUIInfoBool::CGUIInfoBool(bool value) : m_value(value)
 {
-  m_value = value;
 }
 
 CGUIInfoBool::~CGUIInfoBool() = default;

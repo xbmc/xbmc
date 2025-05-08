@@ -30,7 +30,7 @@ bool CVisualisationGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CVisualisationGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // VISUALISATION_*
@@ -41,7 +41,7 @@ bool CVisualisationGUIInfo::GetLabel(std::string& value, const CFileItem *item, 
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       if (msg.GetPointer())
       {
-        CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
+        auto* viz{static_cast<CGUIVisualisationControl*>(msg.GetPointer())};
         value = viz->GetActivePresetName();
         URIUtils::RemoveExtension(value);
         return true;
@@ -60,6 +60,8 @@ bool CVisualisationGUIInfo::GetLabel(std::string& value, const CFileItem *item, 
       }
       break;
     }
+    default:
+      break;
   }
 
   return false;
@@ -72,7 +74,7 @@ bool CVisualisationGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int co
 
 bool CVisualisationGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // VISUALISATION_*
@@ -100,12 +102,14 @@ bool CVisualisationGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int 
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       if (msg.GetPointer())
       {
-        CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
+        auto* viz{static_cast<CGUIVisualisationControl*>(msg.GetPointer())};
         value = viz->HasPresets();
         return true;
       }
       break;
     }
+    default:
+      break;
   }
 
   return false;

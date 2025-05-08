@@ -13,11 +13,7 @@
 
 #include <map>
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfo;
@@ -51,6 +47,4 @@ private:
   std::map<int, int> m_containerMoves;  // direction of list moving
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

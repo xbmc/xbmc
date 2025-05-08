@@ -160,7 +160,7 @@ bool CPlayerGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYER_*
@@ -204,7 +204,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_PATH:
     case PLAYER_FILENAME:
     case PLAYER_FILEPATH:
-      value = GUIINFO::GetFileInfoLabelValueFromPath(info.m_info, item->GetPath());
+      value = GUIINFO::GetFileInfoLabelValueFromPath(info.GetInfo(), item->GetPath());
       return true;
     case PLAYER_TITLE:
       // use label or drop down to title from path
@@ -298,7 +298,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_CUTS:
     case PLAYER_SCENE_MARKERS:
     case PLAYER_CHAPTERS:
-      value = GetContentRanges(info.m_info);
+      value = GetContentRanges(info.GetInfo());
       return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -348,9 +348,11 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYLIST_POSITION:
     case PLAYLIST_RANDOM:
     case PLAYLIST_REPEAT:
-      value =
-          GUIINFO::GetPlaylistLabel(info.m_info, PLAYLIST::Id{static_cast<int>(info.GetData1())});
+      value = GUIINFO::GetPlaylistLabel(info.GetInfo(),
+                                        PLAYLIST::Id{static_cast<int>(info.GetData1())});
       return true;
+    default:
+      break;
   }
 
   return false;
@@ -358,7 +360,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
 
 bool CPlayerGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYER_*
@@ -390,6 +392,8 @@ bool CPlayerGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case PLAYER_AUDIO_DELAY:
       value = m_appPlayer->GetAudioDelay();
       return true;
+    default:
+      break;
   }
 
   return false;
@@ -401,7 +405,7 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
   if (gitem->IsFileItem())
     item = static_cast<const CFileItem*>(gitem);
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYER_*
@@ -493,7 +497,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case PLAYER_SEEKBAR:
     {
-      CGUIDialog *seekBar = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_SEEK_BAR);
+      const CGUIDialog* seekBar{
+          CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_SEEK_BAR)};
       value = seekBar ? seekBar->IsDialogRunning() : false;
       return true;
     }
@@ -547,8 +552,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case PLAYLIST_ISRANDOM:
     {
-      PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-      PLAYLIST::Id playlistid = PLAYLIST::Id{static_cast<int>(info.GetData1())};
+      const PLAYLIST::CPlayListPlayer& player{CServiceBroker::GetPlaylistPlayer()};
+      const PLAYLIST::Id playlistid{static_cast<int>(info.GetData1())};
       if (info.GetData2() > 0 && playlistid != PLAYLIST::Id::TYPE_NONE)
         value = player.IsShuffled(playlistid);
       else
@@ -557,8 +562,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     }
     case PLAYLIST_ISREPEAT:
     {
-      PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-      PLAYLIST::Id playlistid = PLAYLIST::Id{static_cast<int>(info.GetData1())};
+      const PLAYLIST::CPlayListPlayer& player{CServiceBroker::GetPlaylistPlayer()};
+      const PLAYLIST::Id playlistid{static_cast<int>(info.GetData1())};
       if (info.GetData2() > 0 && playlistid != PLAYLIST::Id::TYPE_NONE)
         value = (player.GetRepeat(playlistid) == PLAYLIST::RepeatState::ALL);
       else
@@ -567,8 +572,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     }
     case PLAYLIST_ISREPEATONE:
     {
-      PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-      PLAYLIST::Id playlistid = PLAYLIST::Id{static_cast<int>(info.GetData1())};
+      const PLAYLIST::CPlayListPlayer& player{CServiceBroker::GetPlaylistPlayer()};
+      const PLAYLIST::Id playlistid{static_cast<int>(info.GetData1())};
       if (info.GetData2() > 0 && playlistid != PLAYLIST::Id::TYPE_NONE)
         value = (player.GetRepeat(playlistid) == PLAYLIST::RepeatState::ONE);
       else
@@ -614,6 +619,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       }
       break;
     }
+    default:
+      break;
   }
 
   return false;
@@ -655,8 +662,8 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
     }
 
     // create csv string from ranges
-    for (const auto& range : ranges)
-      values += StringUtils::Format("{:.5f},{:.5f},", range.first, range.second);
+    for (const auto& [rangeBegin, rangeEnd] : ranges)
+      values += StringUtils::Format("{:.5f},{:.5f},", rangeBegin, rangeEnd);
 
     if (!values.empty())
       values.pop_back(); // remove trailing comma
@@ -723,9 +730,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(const CDataCach
 
   const std::vector<std::pair<std::string, int64_t>>& chapters = data.GetChapters();
   float lastMarker = 0.0f;
-  for (const auto& chapter : chapters)
+  for (const auto& [_, chapterEnd] : chapters)
   {
-    float marker = chapter.second * 1000 * 100.0f / duration;
+    float marker = chapterEnd * 1000 * 100.0f / duration;
     if (marker != 0)
       ranges.emplace_back(lastMarker, marker);
 

@@ -14,11 +14,7 @@
 
 #include <memory>
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfo;
@@ -54,6 +50,4 @@ private:
   unsigned int m_lastFPSTime = 0;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

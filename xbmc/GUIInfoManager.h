@@ -18,6 +18,7 @@
 #include <memory>
 #include <set>
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CFileItem;
@@ -25,21 +26,15 @@ class CVideoInfoTag;
 
 class CGUIListItem;
 
-namespace KODI
-{
-namespace GAME
+namespace KODI::GAME
 {
 class CGameInfoTag;
 }
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
   class CGUIInfo;
   class IGUIInfoProvider;
-}
-}
-}
+  } // namespace KODI::GUILIB::GUIINFO
 namespace INFO
 {
   class InfoSingle;
@@ -88,7 +83,7 @@ public:
   void UnRegister(const INFO::InfoPtr& expression);
 
   /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
-  bool ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map);
+  bool ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map) const;
 
   /*! \brief Evaluate a boolean expression
    \param expression the expression to evaluate
@@ -165,11 +160,13 @@ private:
   public:
     Property(const std::string &property, const std::string &parameters);
 
-    const std::string &param(unsigned int n = 0) const;
+    const std::string& Name() const { return m_name; }
+
+    const std::string& param(size_t n = 0) const;
     unsigned int num_params() const;
 
-    std::string name;
   private:
+    std::string m_name;
     std::vector<std::string> params;
   };
 
@@ -183,13 +180,13 @@ private:
    \param infoString the original string
    \param info the resulting pairs of info and parameters.
    */
-  void SplitInfoString(const std::string &infoString, std::vector<Property> &info);
+  void SplitInfoString(const std::string& infoString, std::vector<Property>& info) const;
 
   int TranslateSingleString(const std::string &strCondition);
   int TranslateListItem(const Property& cat, const Property& prop, int id, bool container);
-  int TranslateMusicPlayerString(const std::string &info) const;
-  int TranslateVideoPlayerString(const std::string& info) const;
-  int TranslatePlayerString(const std::string& info) const;
+  int TranslateMusicPlayerString(std::string_view info) const;
+  int TranslateVideoPlayerString(std::string_view info) const;
+  int TranslatePlayerString(std::string_view info) const;
   static TIME_FORMAT TranslateTimeFormat(const std::string &format);
 
   std::string GetMultiInfoLabel(const KODI::GUILIB::GUIINFO::CGUIInfo &info, int contextWindow, std::string *fallback = nullptr) const;
@@ -216,9 +213,10 @@ private:
   std::vector<KODI::GUILIB::GUIINFO::CGUIInfo> m_multiInfo;
 
   // Current playing stuff
-  CFileItem* m_currentFile;
+  std::unique_ptr<CFileItem> m_currentFile;
 
-  typedef std::set<INFO::InfoPtr, bool(*)(const INFO::InfoPtr&, const INFO::InfoPtr&)> INFOBOOLTYPE;
+  using INFOBOOLTYPE =
+      std::set<INFO::InfoPtr, bool (*)(const INFO::InfoPtr&, const INFO::InfoPtr&)>;
   INFOBOOLTYPE m_bools;
   unsigned int m_refreshCounter = 0;
   std::vector<INFO::CSkinVariableString> m_skinVariableStrings;

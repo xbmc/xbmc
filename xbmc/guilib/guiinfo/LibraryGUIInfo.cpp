@@ -102,7 +102,7 @@ bool CLibraryGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextW
 
 bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // LIBRARY_*
@@ -230,11 +230,11 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
       std::string strRole = info.GetData3();
       // Find value for role if already stored
       int artistcount = -1;
-      for (const auto &role : m_libraryRoleCounts)
+      for (const auto& [role, artists] : m_libraryRoleCounts)
       {
-        if (StringUtils::EqualsNoCase(strRole, role.first))
+        if (StringUtils::EqualsNoCase(strRole, role))
         {
-          artistcount = role.second;
+          artistcount = artists;
           break;
         }
       }
@@ -285,6 +285,8 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
       value = CMusicLibraryQueue::GetInstance().IsScanningLibrary();
       return true;
     }
+    default:
+      break;
   }
 
   return false;

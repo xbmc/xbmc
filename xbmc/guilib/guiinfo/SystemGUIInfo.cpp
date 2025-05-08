@@ -84,6 +84,8 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
       else
         text = g_localizeStrings.Get(10005); // Not available
       break;
+    default:
+      break;
   }
   return text;
 }
@@ -110,7 +112,7 @@ bool CSystemGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SYSTEM_*
@@ -129,13 +131,13 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_TOTAL_SPACE:
     case SYSTEM_FREE_SPACE_PERCENT:
     case SYSTEM_USED_SPACE_PERCENT:
-      value = g_sysinfo.GetHddSpaceInfo(info.m_info);
+      value = g_sysinfo.GetHddSpaceInfo(info.GetInfo());
       return true;
     case SYSTEM_CPU_TEMPERATURE:
     case SYSTEM_GPU_TEMPERATURE:
     case SYSTEM_FAN_SPEED:
     case SYSTEM_CPU_USAGE:
-      value = GetSystemHeatInfo(info.m_info);
+      value = GetSystemHeatInfo(info.GetInfo());
       return true;
     case SYSTEM_VIDEO_ENCODER_INFO:
     case NETWORK_IP_ADDRESS:
@@ -151,7 +153,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_UPTIME:
     case SYSTEM_TOTALUPTIME:
     case SYSTEM_BATTERY_LEVEL:
-      value = g_sysinfo.GetInfo(info.m_info);
+      value = g_sysinfo.GetInfo(info.GetInfo());
       return true;
     case SYSTEM_PRIVACY_POLICY:
       value = g_sysinfo.GetPrivacyPolicy();
@@ -203,16 +205,16 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       int iMemPercentFree = 100 - static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f);
       int iMemPercentUsed = 100 - iMemPercentFree;
 
-      if (info.m_info == SYSTEM_FREE_MEMORY)
+      if (info.GetInfo() == SYSTEM_FREE_MEMORY)
         value = StringUtils::Format("{}MB", static_cast<unsigned int>(stat.availPhys / MB));
-      else if (info.m_info == SYSTEM_FREE_MEMORY_PERCENT)
+      else if (info.GetInfo() == SYSTEM_FREE_MEMORY_PERCENT)
         value = StringUtils::Format("{}%", iMemPercentFree);
-      else if (info.m_info == SYSTEM_USED_MEMORY)
+      else if (info.GetInfo() == SYSTEM_USED_MEMORY)
         value = StringUtils::Format(
             "{}MB", static_cast<unsigned int>((stat.totalPhys - stat.availPhys) / MB));
-      else if (info.m_info == SYSTEM_USED_MEMORY_PERCENT)
+      else if (info.GetInfo() == SYSTEM_USED_MEMORY_PERCENT)
         value = StringUtils::Format("{}%", iMemPercentUsed);
-      else if (info.m_info == SYSTEM_TOTAL_MEMORY)
+      else if (info.GetInfo() == SYSTEM_TOTAL_MEMORY)
         value = StringUtils::Format("{}MB", static_cast<unsigned int>(stat.totalPhys / MB));
       return true;
     }
@@ -340,13 +342,15 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       value = g_langInfo.GetRegionLocale();
       return true;
     }
+    default:
+      break;
   }
   return false;
 }
 
 bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SYSTEM_*
@@ -357,7 +361,7 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
       KODI::MEMORY::MemoryStatus stat;
       KODI::MEMORY::GetMemoryStatus(&stat);
       int memPercentUsed = static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f);
-      if (info.m_info == SYSTEM_FREE_MEMORY)
+      if (info.GetInfo() == SYSTEM_FREE_MEMORY)
         value = 100 - memPercentUsed;
       else
         value = memPercentUsed;
@@ -366,7 +370,7 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case SYSTEM_FREE_SPACE:
     case SYSTEM_USED_SPACE:
     {
-      g_sysinfo.GetHddSpaceInfo(value, info.m_info, true);
+      g_sysinfo.GetHddSpaceInfo(value, info.GetInfo(), true);
       return true;
     }
     case SYSTEM_CPU_USAGE:
@@ -375,6 +379,8 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case SYSTEM_BATTERY_LEVEL:
       value = CServiceBroker::GetPowerManager().BatteryLevel();
       return true;
+    default:
+      break;
   }
 
   return false;
@@ -382,7 +388,7 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
 
 bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SYSTEM_*
@@ -394,7 +400,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = false;
       return true;
     case SYSTEM_ETHERNET_LINK_ACTIVE:
-      // wtf: not implemented - always returns true?!
+      //! @todo seems this was never implemented!
       value = true;
       return true;
     case SYSTEM_PLATFORM_LINUX:
@@ -516,7 +522,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     {
       auto& components = CServiceBroker::GetAppComponents();
       const auto appPower = components.GetComponent<CApplicationPowerHandling>();
-      switch (info.m_info)
+      switch (info.GetInfo())
       {
         case SYSTEM_SCREENSAVER_ACTIVE:
           value = appPower->IsInScreenSaver();
@@ -583,7 +589,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case SYSTEM_INTERNET_STATE:
     {
-      g_sysinfo.GetInfo(info.m_info);
+      g_sysinfo.GetInfo(info.GetInfo());
       value = g_sysinfo.HasInternet();
       return true;
     }
@@ -640,7 +646,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     {
       if (StringUtils::EqualsNoCase(info.GetData3(), "hidewatched"))
       {
-        CGUIMediaWindow* window = GUIINFO::GetMediaWindow(contextWindow);
+        const CGUIMediaWindow* window{GUIINFO::GetMediaWindow(contextWindow)};
         if (window)
         {
           value = CMediaSettings::GetInstance().GetWatchedMode(window->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
@@ -658,6 +664,8 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       }
       break;
     }
+    default:
+      break;
   }
 
   return false;

@@ -15,11 +15,7 @@
 class CApplicationPlayer;
 class CVideoInfoTag;
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfo;
@@ -48,6 +44,4 @@ private:
   const std::shared_ptr<CApplicationPlayer> m_appPlayer;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

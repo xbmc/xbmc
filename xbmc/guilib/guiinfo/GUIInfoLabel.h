@@ -17,15 +17,12 @@
 
 #include <functional>
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CGUIListItem;
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfoLabel
@@ -47,7 +44,9 @@ public:
    \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
    \return label (or image).
    */
-  const std::string &GetLabel(int contextWindow, bool preferImage = false, std::string *fallback = NULL) const;
+  const std::string& GetLabel(int contextWindow,
+                              bool preferImage = false,
+                              std::string* fallback = nullptr) const;
 
   /*!
    \brief Gets the label and returns it as an int value
@@ -102,7 +101,7 @@ public:
    */
   static std::string ReplaceControllerStrings(std::string&& label);
 
-  typedef std::function<std::string(const std::string&)> StringReplacerFunc;
+  using StringReplacerFunc = std::function<std::string(const std::string&)>;
 
   /*!
    \brief Replaces instances of $strKeyword[value] with the appropriate resolved string
@@ -128,10 +127,12 @@ private:
   {
   public:
     CInfoPortion(int info, const std::string &prefix, const std::string &postfix, bool escaped = false);
-    bool NeedsUpdate(const std::string &label) const;
+    bool NeedsUpdate(std::string_view label) const;
     std::string Get() const;
-    int m_info;
+    int GetInfo() const { return m_info; }
+
   private:
+    int m_info;
     bool m_escaped;
     mutable std::string m_label;
     std::string m_prefix;
@@ -191,7 +192,4 @@ private:
   std::vector<CInfoPortion> m_infoFallback;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
-
+} // namespace KODI::GUILIB::GUIINFO

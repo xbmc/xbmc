@@ -10,11 +10,7 @@
 
 #include "guilib/guiinfo/GUIInfoProvider.h"
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfo;
@@ -41,6 +37,4 @@ private:
   bool GetPlaylistInfo(std::string& value, const CGUIInfo &info) const;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

@@ -22,11 +22,7 @@
 #include "utils/URIUtils.h"
 #include "windows/GUIMediaWindow.h"
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 // conditions for window retrieval
@@ -70,6 +66,8 @@ std::string GetPlaylistLabel(int item, PLAYLIST::Id playlistId /* = TYPE_NONE */
       else
         return g_localizeStrings.Get(594); // 594: Off
     }
+    default:
+      break;
   }
   return std::string();
 }
@@ -77,7 +75,7 @@ std::string GetPlaylistLabel(int item, PLAYLIST::Id playlistId /* = TYPE_NONE */
 namespace
 {
 
-bool CheckWindowCondition(CGUIWindow *window, int condition)
+bool CheckWindowCondition(const CGUIWindow* window, int condition)
 {
   // check if it satisfies our condition
   if (!window)
@@ -203,6 +201,4 @@ std::string GetFileInfoLabelValueFromPath(int info, const std::string& filenameA
   return value;
 }
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

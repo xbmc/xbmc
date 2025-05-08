@@ -370,7 +370,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
   const std::shared_ptr<const CPVRTimerInfoTag> timer = item->GetPVRTimerInfoTag();
   if (timer)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       case LISTITEM_DATE:
         strValue = timer->Summary();
@@ -449,7 +449,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
   {
     // Note: CPVRRecoding is derived from CVideoInfoTag. All base class properties will be handled
     //       by CVideoGUIInfoProvider. Only properties introduced by CPVRRecording need to be handled here.
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       case LISTITEM_DATE:
         strValue = GetAsLocalizedDateTimeString(recording->RecordingTimeAsLocalTime());
@@ -636,7 +636,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
   const std::shared_ptr<const CPVREpgSearchFilter> filter = item->GetEPGSearchFilter();
   if (filter)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       case LISTITEM_DATE:
       {
@@ -655,7 +655,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
 
   if (item->IsPVRChannelGroup())
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       case LISTITEM_PVR_GROUP_ORIGIN:
       {
@@ -694,7 +694,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
     CPVRItem pvrItem(item);
     channel = pvrItem.GetChannel();
 
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       case VIDEOPLAYER_NEXT_TITLE:
       case VIDEOPLAYER_NEXT_GENRE:
@@ -721,7 +721,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         break;
     }
 
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       // special handling for channels without epg or with radio rds data
       case PLAYER_TITLE:
@@ -740,7 +740,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
 
   if (epgTag)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       case VIDEOPLAYER_GENRE:
       case LISTITEM_GENRE:
@@ -922,7 +922,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
 
   if (channel)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       case MUSICPLAYER_CHANNEL_NAME:
       {
@@ -1008,7 +1008,7 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item,
 {
   std::unique_lock lock(m_critSection);
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     case PVR_EPG_EVENT_ICON:
     {
@@ -1253,7 +1253,7 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item,
       item->GetPVRChannelInfoTag()->GetRadioRDSInfoTag();
   if (tag)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       case RDS_CHANNEL_COUNTRY:
         strValue = tag->GetCountry();
@@ -1394,7 +1394,7 @@ bool CPVRGUIInfo::GetFallbackLabel(std::string& value,
 {
   if (item->IsPVRChannel() || item->IsEPG() || item->IsPVRTimer())
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       /////////////////////////////////////////////////////////////////////////////////////////////
       // VIDEOPLAYER_*, MUSICPLAYER_*
@@ -1429,7 +1429,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem* item,
                                           const CGUIInfo& info,
                                           int& iValue) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     case LISTITEM_PROGRESS:
       if (item->IsPVRChannel() || item->IsEPG())
@@ -1449,7 +1449,7 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iV
 {
   std::unique_lock lock(m_critSection);
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     case PVR_EPG_EVENT_DURATION:
     {
@@ -1528,7 +1528,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item,
                                            const CGUIInfo& info,
                                            bool& bValue) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     case LISTITEM_HASARCHIVE:
       if (item->IsPVRChannel())
@@ -1835,7 +1835,7 @@ bool CPVRGUIInfo::GetPVRBool(const CFileItem* item, const CGUIInfo& info, bool& 
 {
   std::unique_lock lock(m_critSection);
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     case PVR_IS_RECORDING:
       bValue = m_anyTimersInfo.HasRecordingTimers();
@@ -1912,7 +1912,7 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem* item, const CGUIInfo& info, b
       item->GetPVRChannelInfoTag()->GetRadioRDSInfoTag();
   if (tag)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       case RDS_HAS_RADIOTEXT:
         bValue = tag->IsPlayingRadioText();
@@ -1932,7 +1932,7 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem* item, const CGUIInfo& info, b
     }
   }
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     case RDS_HAS_RDS:
     {

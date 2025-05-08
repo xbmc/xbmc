@@ -12,11 +12,7 @@
 
 #include <memory>
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfo;
@@ -40,6 +36,4 @@ private:
   std::unique_ptr<CFileItem> m_currentSlide;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

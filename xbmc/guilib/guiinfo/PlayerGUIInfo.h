@@ -22,11 +22,7 @@ class CApplicationPlayer;
 class CApplicationVolumeHandling;
 class CDataCacheCore;
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfo;
@@ -88,6 +84,4 @@ private:
   CEventSource<PlayerShowInfoChangedEvent> m_events;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

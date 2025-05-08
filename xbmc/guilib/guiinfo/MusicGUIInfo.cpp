@@ -81,15 +81,16 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
 bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
   // For musicplayer "offset" and "position" info labels check playlist
-  if (info.GetData1() && ((info.m_info >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
-      info.m_info <= MUSICPLAYER_OFFSET_POSITION_LAST) ||
-      (info.m_info >= PLAYER_OFFSET_POSITION_FIRST && info.m_info <= PLAYER_OFFSET_POSITION_LAST)))
+  if (info.GetData1() && ((info.GetInfo() >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
+                           info.GetInfo() <= MUSICPLAYER_OFFSET_POSITION_LAST) ||
+                          (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
+                           info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST)))
     return GetPlaylistInfo(value, info);
 
   const CMusicInfoTag* tag = item->GetMusicInfoTag();
   if (tag)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       /////////////////////////////////////////////////////////////////////////////////////////////
       // PLAYER_* / MUSICPLAYER_* / LISTITEM_*
@@ -100,11 +101,9 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         value = tag->GetURL();
         if (value.empty())
           value = item->GetPath();
-        value = GUIINFO::GetFileInfoLabelValueFromPath(info.m_info, value);
+        value = GUIINFO::GetFileInfoLabelValueFromPath(info.GetInfo(), value);
         return true;
       case PLAYER_TITLE:
-        value = tag->GetTitle();
-        return !value.empty();
       case MUSICPLAYER_TITLE:
         value = tag->GetTitle();
         return !value.empty();
@@ -271,10 +270,10 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         int iDuration = tag->GetDuration();
         if (iDuration > 0)
         {
-          value = StringUtils::SecondsToTimeString(iDuration,
-                                                   static_cast<TIME_FORMAT>(info.m_info == LISTITEM_DURATION
-                                                                            ? info.GetData4()
-                                                                            : info.GetData1()));
+          value = StringUtils::SecondsToTimeString(
+              iDuration,
+              static_cast<TIME_FORMAT>(info.GetInfo() == LISTITEM_DURATION ? info.GetData4()
+                                                                           : info.GetData1()));
           return true;
         }
         break;
@@ -374,12 +373,12 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         else
           value = URIUtils::GetFileName(item->GetPath());
 
-        if (info.m_info == LISTITEM_FILE_EXTENSION)
+        if (info.GetInfo() == LISTITEM_FILE_EXTENSION)
         {
           std::string strExtension = URIUtils::GetExtension(value);
           value = StringUtils::TrimLeft(strExtension, ".");
         }
-        else if (info.m_info == LISTITEM_FILENAME_NO_EXTENSION)
+        else if (info.GetInfo() == LISTITEM_FILENAME_NO_EXTENSION)
         {
           URIUtils::RemoveExtension(value);
         }
@@ -395,7 +394,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
 
         value = CURL(value).GetWithoutUserDetails();
 
-        if (info.m_info == LISTITEM_FOLDERNAME)
+        if (info.GetInfo() == LISTITEM_FOLDERNAME)
         {
           URIUtils::RemoveSlashAtEnd(value);
           value = URIUtils::GetFileName(value);
@@ -421,10 +420,12 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_SONG_VIDEO_URL:
         value = tag->GetSongVideoURL();
         return true;
+      default:
+        break;
     }
   }
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // MUSICPLAYER_*
@@ -510,6 +511,8 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     case MUSICPLAYER_CODEC:
       value = m_audioInfo.codecName;
       return true;
+    default:
+      break;
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -525,7 +528,7 @@ bool CMusicGUIInfo::GetPartyModeLabel(std::string& value, const CGUIInfo &info) 
 {
   int iSongs = -1;
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     case MUSICPM_SONGSPLAYED:
       iSongs = g_partyModeManager.GetSongsPlayed();
@@ -544,6 +547,8 @@ bool CMusicGUIInfo::GetPartyModeLabel(std::string& value, const CGUIInfo &info) 
       break;
     case MUSICPM_RANDOMSONGSPICKED:
       iSongs = g_partyModeManager.GetRandomSongs();
+      break;
+    default:
       break;
   }
 
@@ -590,18 +595,18 @@ bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo &info) co
     if (!playlistItem->HasArt("thumb"))
       playlistItem->SetArt("thumb", "DefaultAlbumCover.png");
   }
-  if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
+  if (info.GetInfo() == MUSICPLAYER_PLAYLISTPOS)
   {
     value = std::to_string(index + 1);
     return true;
   }
-  else if (info.m_info == MUSICPLAYER_COVER)
+  else if (info.GetInfo() == MUSICPLAYER_COVER)
   {
     value = playlistItem->GetArt("thumb");
     return true;
   }
 
-  return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.m_info), nullptr);
+  return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.GetInfo()), nullptr);
 }
 
 bool CMusicGUIInfo::GetFallbackLabel(std::string& value,
@@ -611,15 +616,16 @@ bool CMusicGUIInfo::GetFallbackLabel(std::string& value,
                                      std::string* fallback)
 {
   // No fallback for musicplayer "offset" and "position" info labels
-  if (info.GetData1() && ((info.m_info >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
-      info.m_info <= MUSICPLAYER_OFFSET_POSITION_LAST) ||
-      (info.m_info >= PLAYER_OFFSET_POSITION_FIRST && info.m_info <= PLAYER_OFFSET_POSITION_LAST)))
+  if (info.GetData1() && ((info.GetInfo() >= MUSICPLAYER_OFFSET_POSITION_FIRST &&
+                           info.GetInfo() <= MUSICPLAYER_OFFSET_POSITION_LAST) ||
+                          (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
+                           info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST)))
     return false;
 
   const CMusicInfoTag* tag = item->GetMusicInfoTag();
   if (tag)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       /////////////////////////////////////////////////////////////////////////////////////////////
       // MUSICPLAYER_*
@@ -643,10 +649,10 @@ bool CMusicGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
 
 bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  const CFileItem* item = static_cast<const CFileItem*>(gitem);
+  const auto* item{static_cast<const CFileItem*>(gitem)};
   const CMusicInfoTag* tag = item->GetMusicInfoTag();
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // MUSICPLAYER_*
