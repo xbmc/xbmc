@@ -362,16 +362,20 @@ bool CPVREpgSearchFilter::FilterEntry(const std::shared_ptr<const CPVREpgInfoTag
 
 void CPVREpgSearchFilter::RemoveDuplicates(std::vector<std::shared_ptr<CPVREpgInfoTag>>& results)
 {
-  for (auto it = results.begin(); it != results.end();)
+  for (auto it = results.begin(); it != results.end(); ++it)
   {
-    it = results.erase(std::remove_if(results.begin(), results.end(),
-                                      [&it](const std::shared_ptr<const CPVREpgInfoTag>& entry)
-                                      {
-                                        return *it != entry && (*it)->Title() == entry->Title() &&
-                                               (*it)->Plot() == entry->Plot() &&
-                                               (*it)->PlotOutline() == entry->PlotOutline();
-                                      }),
-                       results.end());
+    auto next{std::next(it)};
+    if (next != results.end())
+    {
+      results.erase(std::remove_if(next, results.end(),
+                                   [&it](const std::shared_ptr<const CPVREpgInfoTag>& entry)
+                                   {
+                                     return (*it)->Title() == entry->Title() &&
+                                            (*it)->Plot() == entry->Plot() &&
+                                            (*it)->PlotOutline() == entry->PlotOutline();
+                                   }),
+                    results.end());
+    }
   }
 }
 
