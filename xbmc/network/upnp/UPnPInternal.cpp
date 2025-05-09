@@ -294,7 +294,7 @@ NPT_Result PopulateObjectFromTag(CMusicInfoTag& tag,
   if (!tag.GetURL().empty() && file_path)
     *file_path = tag.GetURL().c_str();
 
-  std::vector<std::string> genres = tag.GetGenre();
+  const std::vector<std::string>& genres = tag.GetGenre();
   for (unsigned int index = 0; index < genres.size(); index++)
     object.m_Affiliation.genres.Add(genres.at(index).c_str());
   object.m_Title = tag.GetTitle().c_str();
