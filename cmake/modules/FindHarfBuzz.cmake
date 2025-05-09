@@ -24,6 +24,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   set(HARFBUZZ_VERSION ${PC_HARFBUZZ_VERSION})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(HarfBuzz
                                     REQUIRED_VARS HARFBUZZ_LIBRARY HARFBUZZ_INCLUDE_DIR

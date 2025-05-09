@@ -203,7 +203,8 @@ else()
   if(NOT WIN32)
     find_package(PkgConfig REQUIRED ${SEARCH_QUIET})
 
-    pkg_check_modules(PC_FFMPEG ${FFMPEG_PKGS})
+    # explicitly set quiet, as another search that has output is run anyway
+    pkg_check_modules(PC_FFMPEG ${FFMPEG_PKGS} QUIET)
   endif()
 
   if((PC_FFMPEG_FOUND
@@ -240,6 +241,10 @@ else()
       string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
       ffmpeg_find_lib(${_libname})
     endforeach()
+
+    if(NOT VERBOSE_FIND)
+       set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+     endif()
 
     include(FindPackageHandleStandardArgs)
     find_package_handle_standard_args(FFMPEG
