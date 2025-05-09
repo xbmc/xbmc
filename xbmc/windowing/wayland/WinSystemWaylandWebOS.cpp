@@ -103,7 +103,7 @@ bool CWinSystemWaylandWebOS::HasCursor()
   return false;
 }
 
-std::string CWinSystemWaylandWebOS::GetExportedWindowName()
+const std::string& CWinSystemWaylandWebOS::GetExportedWindowName()
 {
   return m_exportedWindowName;
 }
