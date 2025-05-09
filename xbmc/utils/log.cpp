@@ -15,6 +15,7 @@
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/SettingsContainer.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
@@ -91,10 +92,8 @@ void CLog::Initialize(const std::string& path)
   settingsManager->RegisterSettingOptionsFiller("loggingcomponents",
                                                 SettingOptionsLoggingComponentsFiller);
   settingsManager->RegisterSettingsHandler(this);
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
-  settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
-  settingsManager->RegisterCallback(this, settingSet);
+  settingsManager->RegisterCallback(
+      this, {CSettings::SETTING_DEBUG_EXTRALOGGING, CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL});
 
   if (path.empty())
     return;

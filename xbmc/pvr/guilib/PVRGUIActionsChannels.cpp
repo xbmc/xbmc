@@ -173,7 +173,7 @@ void CPVRChannelSwitchingInputHandler::SwitchToPreviousChannel() const
 
 CPVRGUIActionsChannels::CPVRGUIActionsChannels()
   : m_settings(std::make_unique<CPVRSettings>(
-        std::set<std::string>({CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL})))
+        SettingsContainer({CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL})))
 {
   RegisterChannelNumberInputHandler(&m_channelNumberInputHandler);
 }

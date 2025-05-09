@@ -193,7 +193,7 @@ public:
    \param settingsHandler ISettingsHandler implementation
    \param settingList List of settings to trigger the given ISettingCallback implementation
    */
-  void RegisterCallback(ISettingCallback *callback, const std::set<std::string> &settingList);
+  void RegisterCallback(ISettingCallback* callback, const SettingsContainer& settingList);
   /*!
    \brief Unregisters the given ISettingCallback implementation.
 
@@ -498,7 +498,7 @@ private:
   struct Setting {
     std::shared_ptr<CSetting> setting;
     SettingDependencyMap dependencies;
-    std::set<std::string> children;
+    SettingsContainer children;
     CallbackSet callbacks;
     std::unordered_set<std::string> references;
   };

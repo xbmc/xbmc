@@ -535,11 +535,11 @@ void CGUIDialogSettingsBase::SetupView()
   SetupControls();
 }
 
-std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
+SettingsContainer CGUIDialogSettingsBase::CreateSettings()
 {
   FreeSettingsControls();
 
-  std::set<std::string> settingMap;
+  SettingsContainer settingMap;
 
   if (m_categories.size() <= 0)
     return settingMap;

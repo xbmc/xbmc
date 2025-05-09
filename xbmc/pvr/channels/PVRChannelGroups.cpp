@@ -41,7 +41,7 @@ using namespace PVR;
 CPVRChannelGroups::CPVRChannelGroups(bool bRadio)
   : m_bRadio(bRadio),
     m_settings(std::make_unique<CPVRSettings>(
-        std::set<std::string>({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER}))),
+        SettingsContainer({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER}))),
     m_channelGroupFactory(std::make_shared<CPVRChannelGroupFactory>())
 {
   m_settings->RegisterCallback(this);

@@ -552,90 +552,68 @@ void CSettings::UninitializeISubSettings()
 void CSettings::InitializeISettingCallbacks()
 {
   // register any ISettingCallback implementations
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_MUSICLIBRARY_CLEANUP);
-  settingSet.insert(CSettings::SETTING_MUSICLIBRARY_EXPORT);
-  settingSet.insert(CSettings::SETTING_MUSICLIBRARY_IMPORT);
-  settingSet.insert(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
-  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS);
-  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS);
-  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_CLEANUP);
-  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_IMPORT);
-  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_EXPORT);
-  settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS);
-  settingSet.insert(CSettings::SETTING_MAINTENANCE_CLEANIMAGECACHE);
-  GetSettingsManager()->RegisterCallback(&CMediaSettings::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(
+      &CMediaSettings::GetInstance(),
+      {CSettings::SETTING_MUSICLIBRARY_CLEANUP, CSettings::SETTING_MUSICLIBRARY_EXPORT,
+       CSettings::SETTING_MUSICLIBRARY_IMPORT, CSettings::SETTING_MUSICFILES_TRACKFORMAT,
+       CSettings::SETTING_VIDEOLIBRARY_FLATTENTVSHOWS,
+       CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS, CSettings::SETTING_VIDEOLIBRARY_CLEANUP,
+       CSettings::SETTING_VIDEOLIBRARY_IMPORT, CSettings::SETTING_VIDEOLIBRARY_EXPORT,
+       CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS,
+       CSettings::SETTING_MAINTENANCE_CLEANIMAGECACHE});
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_SCREEN);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_RESOLUTION);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_SCREENMODE);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_MONITOR);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_3DLUT);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_DISPLAYPROFILE);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_10BITSURFACES);
-  GetSettingsManager()->RegisterCallback(&CDisplaySettings::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(
+      &CDisplaySettings::GetInstance(),
+      {CSettings::SETTING_VIDEOSCREEN_SCREEN, CSettings::SETTING_VIDEOSCREEN_RESOLUTION,
+       CSettings::SETTING_VIDEOSCREEN_SCREENMODE, CSettings::SETTING_VIDEOSCREEN_MONITOR,
+       CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE,
+       CSettings::SETTING_VIDEOSCREEN_3DLUT, CSettings::SETTING_VIDEOSCREEN_DISPLAYPROFILE,
+       CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS, CSettings::SETTING_VIDEOSCREEN_WHITELIST,
+       CSettings::SETTING_VIDEOSCREEN_10BITSURFACES});
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_SUBTITLES_CHARSET);
-  settingSet.insert(CSettings::SETTING_LOCALE_CHARSET);
-  GetSettingsManager()->RegisterCallback(&g_charsetConverter, settingSet);
+  GetSettingsManager()->RegisterCallback(&g_charsetConverter, {CSettings::SETTING_SUBTITLES_CHARSET,
+                                                               CSettings::SETTING_LOCALE_CHARSET});
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
-  settingSet.insert(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
-  settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
-  settingSet.insert(CSettings::SETTING_LOCALE_COUNTRY);
-  settingSet.insert(CSettings::SETTING_LOCALE_SHORTDATEFORMAT);
-  settingSet.insert(CSettings::SETTING_LOCALE_LONGDATEFORMAT);
-  settingSet.insert(CSettings::SETTING_LOCALE_TIMEFORMAT);
-  settingSet.insert(CSettings::SETTING_LOCALE_USE24HOURCLOCK);
-  settingSet.insert(CSettings::SETTING_LOCALE_TEMPERATUREUNIT);
-  settingSet.insert(CSettings::SETTING_LOCALE_SPEEDUNIT);
-  GetSettingsManager()->RegisterCallback(&g_langInfo, settingSet);
+  GetSettingsManager()->RegisterCallback(
+      &g_langInfo,
+      {CSettings::SETTING_LOCALE_AUDIOLANGUAGE, CSettings::SETTING_LOCALE_SUBTITLELANGUAGE,
+       CSettings::SETTING_LOCALE_LANGUAGE, CSettings::SETTING_LOCALE_COUNTRY,
+       CSettings::SETTING_LOCALE_SHORTDATEFORMAT, CSettings::SETTING_LOCALE_LONGDATEFORMAT,
+       CSettings::SETTING_LOCALE_TIMEFORMAT, CSettings::SETTING_LOCALE_USE24HOURCLOCK,
+       CSettings::SETTING_LOCALE_TEMPERATUREUNIT, CSettings::SETTING_LOCALE_SPEEDUNIT});
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_MASTERLOCK_LOCKCODE);
-  GetSettingsManager()->RegisterCallback(&g_passwordManager, settingSet);
+  GetSettingsManager()->RegisterCallback(&g_passwordManager,
+                                         {CSettings::SETTING_MASTERLOCK_LOCKCODE});
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_RSSEDIT);
-  GetSettingsManager()->RegisterCallback(&CRssManager::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(&CRssManager::GetInstance(),
+                                         {CSettings::SETTING_LOOKANDFEEL_RSSEDIT});
 
 #if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
-  settingSet.insert(CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON);
-  GetSettingsManager()->RegisterCallback(&XBMCHelper::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(
+      &XBMCHelper::GetInstance(),
+      {CSettings::SETTING_INPUT_APPLEREMOTEMODE, CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON});
 #endif
 
 #if defined(TARGET_DARWIN_TVOS)
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED);
-  settingSet.insert(CSettings::SETTING_INPUT_SIRIREMOTEIDLETIME);
-  settingSet.insert(CSettings::SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY);
-  settingSet.insert(CSettings::SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY);
-  GetSettingsManager()->RegisterCallback(&CTVOSInputSettings::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(&CTVOSInputSettings::GetInstance(),
+                                         {CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED,
+                                          CSettings::SETTING_INPUT_SIRIREMOTEIDLETIME,
+                                          CSettings::SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY,
+                                          CSettings::SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY});
 #endif
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_ADDONS_SHOW_RUNNING);
-  settingSet.insert(CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES);
-  settingSet.insert(CSettings::SETTING_ADDONS_REMOVE_ORPHANED_DEPENDENCIES);
-  settingSet.insert(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES);
-  GetSettingsManager()->RegisterCallback(&ADDON::CAddonSystemSettings::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(&ADDON::CAddonSystemSettings::GetInstance(),
+                                         {CSettings::SETTING_ADDONS_SHOW_RUNNING,
+                                          CSettings::SETTING_ADDONS_MANAGE_DEPENDENCIES,
+                                          CSettings::SETTING_ADDONS_REMOVE_ORPHANED_DEPENDENCIES,
+                                          CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES});
 
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
-  GetSettingsManager()->RegisterCallback(&CWakeOnAccess::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(&CWakeOnAccess::GetInstance(),
+                                         {CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS});
 
 #ifdef HAVE_LIBBLURAY
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_DISC_PLAYBACK);
-  GetSettingsManager()->RegisterCallback(&CDiscSettings::GetInstance(), settingSet);
+  GetSettingsManager()->RegisterCallback(&CDiscSettings::GetInstance(),
+                                         {CSettings::SETTING_DISC_PLAYBACK});
 #endif
 }
 

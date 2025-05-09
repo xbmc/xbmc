@@ -93,11 +93,11 @@ void CPVRTimersContainer::InsertEntry(const std::shared_ptr<CPVRTimerInfoTag>& n
 CPVRTimers::CPVRTimers()
   : CThread("PVRTimers"),
     m_settings(std::make_unique<CPVRSettings>(
-        std::set<std::string>({CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP,
-                               CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP,
-                               CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME,
-                               CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
-                               CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS})))
+        SettingsContainer({CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP,
+                           CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP,
+                           CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME,
+                           CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
+                           CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS})))
 {
 }
 
