@@ -58,15 +58,16 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   std::shared_ptr<CFileItem> itemCurrentFile;
 
   // check if VideoPlayer should set file item stream details from its current streams
-  const bool isBlu_dvd_image_or_stream = URIUtils::IsBlurayPath(file.GetPath()) ||
-                                         VIDEO::IsDVDFile(file) || file.IsDiscImage() ||
-                                         NETWORK::IsInternetStream(file);
+  const bool isBlu_dvd_image_or_stream = VIDEO::IsBDFile(file) || VIDEO::IsDVDFile(file) ||
+                                         file.IsDiscImage() || NETWORK::IsInternetStream(file);
 
   const bool hasNoStreamDetails =
       (!file.HasVideoInfoTag() || !file.GetVideoInfoTag()->HasStreamDetails());
 
+  // Always update streamdetails for bluray:// paths as existing details may be been taken from BLURAY_TITLE_INFO
   if (file.GetProperty("get_stream_details_from_player").asBoolean() ||
-      (hasNoStreamDetails && isBlu_dvd_image_or_stream))
+      (hasNoStreamDetails && isBlu_dvd_image_or_stream) ||
+      URIUtils::IsBlurayPath(file.GetDynPath()))
   {
     auto& components = CServiceBroker::GetAppComponents();
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
