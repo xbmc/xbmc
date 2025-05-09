@@ -235,7 +235,7 @@ bool CPVRGUIActionsDatabase::ResetDatabase(bool bResetEPGOnly) const
   CServiceBroker::GetPVRManager().Stop();
 
   const int iProgressStepPercentage =
-      100 / ((2 * bResetChannels) + (bResetGroups ? 1 : 0) + (bResetGuide ? 1 : 0) +
+      100 / ((bResetChannels ? 2 : 0) + (bResetGroups ? 1 : 0) + (bResetGuide ? 1 : 0) +
              (bResetProviders ? 1 : 0) + (bResetReminders ? 1 : 0) + (bResetRecordings ? 1 : 0) +
              (bResetClients ? 1 : 0) + 1);
   int iProgressStepsDone = 0;

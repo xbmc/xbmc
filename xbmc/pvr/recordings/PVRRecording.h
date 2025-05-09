@@ -44,15 +44,16 @@ class CPVRTimerInfoTag;
 class CPVRRecordingUid final
 {
 public:
-  int m_iClientId; /*!< ID of the backend */
+  CPVRRecordingUid(int iClientId, const std::string& strRecordingId)
+    : m_iClientId(iClientId), m_strRecordingId(strRecordingId)
+  {
+  }
+
+  auto operator<=>(const CPVRRecordingUid& other) const = default;
+
+private:
+  int m_iClientId{0}; /*!< ID of the backend */
   std::string m_strRecordingId; /*!< unique ID of the recording on the client */
-
-  CPVRRecordingUid(int iClientId, const std::string& strRecordingId);
-
-  bool operator>(const CPVRRecordingUid& right) const;
-  bool operator<(const CPVRRecordingUid& right) const;
-  bool operator==(const CPVRRecordingUid& right) const;
-  bool operator!=(const CPVRRecordingUid& right) const;
 };
 
 class CPVRRecording final : public CVideoInfoTag

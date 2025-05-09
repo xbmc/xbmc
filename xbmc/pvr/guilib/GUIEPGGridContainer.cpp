@@ -1361,7 +1361,7 @@ bool CGUIEPGGridContainer::OnClick(int actionID) const
   if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
   {
     // grab the currently focused subitem (if applicable)
-    CGUIListItemLayout* focusedLayout = GetFocusedLayout();
+    const CGUIListItemLayout* focusedLayout = GetFocusedLayout();
 
     if (focusedLayout)
       subItem = focusedLayout->GetFocusedItem();
@@ -1829,7 +1829,7 @@ void CGUIEPGGridContainer::GoToMostRight()
   }
 }
 
-void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>& items,
+void CGUIEPGGridContainer::SetTimelineItems(const CFileItemList& items,
                                             const CDateTime& gridStart,
                                             const CDateTime& gridEnd)
 {
@@ -2104,7 +2104,8 @@ void CGUIEPGGridContainer::HandleChannels(bool bRender,
 
   const int chanOffset{GetChannelScrollOffset(*m_programmeLayout)};
 
-  int cacheBeforeChannel, cacheAfterChannel;
+  int cacheBeforeChannel{0};
+  int cacheAfterChannel{0};
   GetChannelCacheOffsets(cacheBeforeChannel, cacheAfterChannel);
 
   if (bRender)

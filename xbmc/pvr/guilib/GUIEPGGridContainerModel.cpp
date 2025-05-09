@@ -69,7 +69,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CGUIEPGGridContainerModel::GetEPGTi
                                                                           min, max);
 }
 
-void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>& items,
+void CGUIEPGGridContainerModel::Initialize(const CFileItemList& items,
                                            const CDateTime& gridStart,
                                            const CDateTime& gridEnd,
                                            int iFirstChannel,
@@ -89,7 +89,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
 
   ////////////////////////////////////////////////////////////////////////
   // Create channel items
-  std::ranges::copy(*items, std::back_inserter(m_channelItems));
+  std::ranges::copy(items, std::back_inserter(m_channelItems));
 
   /* check for invalid start and end time */
   if (gridStart >= gridEnd)
@@ -165,7 +165,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateEpgTags(int iChannel
   if (firstResultBlock > lastResultBlock)
     return result;
 
-  auto it = m_epgItems.insert({iChannel, EpgTags()}).first;
+  auto it = m_epgItems.try_emplace(iChannel, EpgTags()).first;
   EpgTags& epgTags = (*it).second;
 
   epgTags.firstBlock = firstResultBlock;
@@ -420,7 +420,9 @@ GridItem* CGUIEPGGridContainerModel::GetGridItemPtr(int iChannel, int iBlock) co
     item->SetProperty("GenreType", epgTag->GenreType());
 
     const float fItemWidth = (endBlock - startBlock + 1) * m_fBlockSize;
-    it = m_gridIndex.insert({{iChannel, iBlock}, {item, fItemWidth, startBlock, endBlock}}).first;
+    it = m_gridIndex
+             .try_emplace({iChannel, iBlock}, GridItem{item, fItemWidth, startBlock, endBlock})
+             .first;
   }
 
   return &(*it).second;

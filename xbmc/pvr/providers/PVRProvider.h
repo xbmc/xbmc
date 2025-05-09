@@ -16,6 +16,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace PVR
@@ -91,7 +92,7 @@ public:
    * @param name The new name of the provider.
    * @return True if the something changed, false otherwise.
    */
-  bool SetName(const std::string& iName);
+  bool SetName(std::string_view iName);
 
   /*!
    * @brief Checks whether this provider has a known type
@@ -154,7 +155,7 @@ public:
    * @param strCountries The new ISO 3166 country codes for this provider.
    * @return true if the country codes were updated successfully
    */
-  bool SetCountriesFromDBString(const std::string& strCountries);
+  bool SetCountriesFromDBString(std::string_view strCountries);
 
   /*!
    * @brief Get this provider's language codes (RFC 5646).
@@ -180,7 +181,7 @@ public:
    * @param strLanguages The new RFC 5646 language codes for this provider.
    * @return true if the language codes were updated successfully
    */
-  bool SetLanguagesFromDBString(const std::string& strLanguages);
+  bool SetLanguagesFromDBString(std::string_view strLanguages);
 
   /*!
    * @brief Get if this provider has a thumb image path.

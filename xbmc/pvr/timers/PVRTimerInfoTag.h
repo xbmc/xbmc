@@ -9,13 +9,11 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h" // PVR_SETTING_TYPE
+#include "pvr/settings/PVRCustomProperty.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
-#include "utils/Variant.h"
 
-#include <map>
 #include <memory>
 #include <string>
 
@@ -515,26 +513,10 @@ public:
   int RecordingGroup() const { return m_iRecordingGroup; }
 
   /*!
-   * @brief custom property detail: type, value
-   */
-  struct CustomPropDetails
-  {
-    PVR_SETTING_TYPE type{PVR_SETTING_TYPE::INTEGER};
-    CVariant value;
-
-    bool operator==(const CustomPropDetails& right) const = default;
-  };
-
-  /*!
-   * @brief custom properties map: <prop id, details>
-   */
-  using CustomPropsMap = std::map<unsigned int, CustomPropDetails>;
-
-  /*!
    * @brief Get custom properties for this tag.
    * @return The list of properties or an empty list if none present.
    */
-  const CustomPropsMap& GetCustomProperties() const { return m_customProps; }
+  const CustomPropertiesMap& GetCustomProperties() const { return m_customProps; }
 
   /*!
    * @brief Get the UID of the epg event associated with this timer tag, if any.
@@ -672,7 +654,7 @@ private:
   mutable unsigned int
       m_iEpgUid; /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */
   std::string m_strSeriesLink; /*!< series link */
-  CustomPropsMap m_customProps; /*!< the map with custom properties supplied by the client. */
+  CustomPropertiesMap m_customProps; /*!< the map with custom properties supplied by the client. */
 
   CDateTime m_StartTime; /*!< start time */
   CDateTime m_StopTime; /*!< stop time */

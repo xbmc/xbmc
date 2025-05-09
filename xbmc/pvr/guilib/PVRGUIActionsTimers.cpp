@@ -278,11 +278,8 @@ bool CPVRGUIActionsTimers::AddTimer(const CFileItem& item,
     }
   }
 
-  if (bShowTimerSettings)
-  {
-    if (!ShowTimerSettings(newTimer))
-      return false;
-  }
+  if (bShowTimerSettings && !ShowTimerSettings(newTimer))
+    return false;
 
   return AddTimer(newTimer);
 }
@@ -436,7 +433,7 @@ PVRRECORD_INSTANTRECORDACTION InstantRecordingActionSelector::Select()
 
 } // unnamed namespace
 
-bool CPVRGUIActionsTimers::ToggleRecordingOnPlayingChannel()
+bool CPVRGUIActionsTimers::ToggleRecordingOnPlayingChannel() const
 {
   const std::shared_ptr<CPVRChannel> channel =
       CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();

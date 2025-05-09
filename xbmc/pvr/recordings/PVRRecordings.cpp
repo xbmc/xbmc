@@ -86,18 +86,17 @@ void CPVRRecordings::Unload()
 void CPVRRecordings::UpdateInProgressSize()
 {
   std::unique_lock lock(m_critSection);
+
   if (m_bIsUpdating)
     return;
+
   m_bIsUpdating = true;
 
   bool bHaveUpdatedInProgessRecording = false;
-  for (auto& [_, recording] : m_recordings)
+  for (const auto& [_, recording] : m_recordings)
   {
-    if (recording->IsInProgress())
-    {
-      if (recording->UpdateRecordingSize())
-        bHaveUpdatedInProgessRecording = true;
-    }
+    if (recording->IsInProgress() && recording->UpdateRecordingSize())
+      bHaveUpdatedInProgessRecording = true;
   }
 
   m_bIsUpdating = false;
@@ -177,7 +176,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId,
 {
   std::shared_ptr<CPVRRecording> retVal;
   std::unique_lock lock(m_critSection);
-  const auto it = m_recordings.find(CPVRRecordingUid(iClientId, strRecordingId));
+  const auto it = m_recordings.find({iClientId, strRecordingId});
   if (it != m_recordings.end())
     retVal = it->second;
 
@@ -240,7 +239,7 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
     tag->UpdateMetadata(GetVideoDatabase(), client);
     m_iLastId++;
     tag->SetRecordingID(m_iLastId);
-    m_recordings.insert({CPVRRecordingUid(tag->ClientID(), tag->ClientRecordingID()), tag});
+    m_recordings.try_emplace({tag->ClientID(), tag->ClientRecordingID()}, tag);
     if (tag->IsRadio())
       ++m_iRadioRecordings;
     else

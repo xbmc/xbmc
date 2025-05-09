@@ -28,15 +28,15 @@ static constexpr const char* SETTING_TMR_CUSTOM_STRING{"customsetting.string"};
 
 CPVRCustomTimerSettings::CPVRCustomTimerSettings(
     const CPVRTimerType& timerType,
-    const CPVRTimerInfoTag::CustomPropsMap& customProps,
+    const CustomPropertiesMap& customProps,
     const std::map<int, std::shared_ptr<CPVRTimerType>>& typeEntries)
   : m_customProps(customProps)
 {
   unsigned int idx{0};
-  for (const auto& [_, timerType] : typeEntries)
+  for (const auto& [_, type] : typeEntries)
   {
     const std::vector<std::shared_ptr<const CPVRTimerSettingDefinition>>& settingDefs{
-        timerType->GetCustomSettingDefinitions()};
+        type->GetCustomSettingDefinitions()};
     for (const auto& settingDef : settingDefs)
     {
       std::string settingIdPrefix;
@@ -65,7 +65,7 @@ CPVRCustomTimerSettings::CPVRCustomTimerSettings(
 
 void CPVRCustomTimerSettings::SetTimerType(const CPVRTimerType& timerType)
 {
-  CPVRTimerInfoTag::CustomPropsMap newCustomProps;
+  CustomPropertiesMap newCustomProps;
   for (const auto& [_, def] : m_customSettingDefs)
   {
     // Complete custom props for given type.
@@ -74,9 +74,11 @@ void CPVRCustomTimerSettings::SetTimerType(const CPVRTimerType& timerType)
     {
       const auto it{m_customProps.find(def->GetId())};
       if (it == m_customProps.cend())
-        newCustomProps.insert({def->GetId(), {def->GetType(), def->GetDefaultValue()}});
+        newCustomProps.try_emplace(def->GetId(),
+                                   CustomProperty(def->GetType(), def->GetDefaultValue()));
       else
-        newCustomProps.insert({def->GetId(), {(*it).second.type, (*it).second.value}});
+        newCustomProps.try_emplace(def->GetId(),
+                                   CustomProperty((*it).second.type, (*it).second.value));
     }
   }
   m_customProps = newCustomProps;
@@ -138,6 +140,7 @@ bool CPVRCustomTimerSettings::UpdateIntProperty(const std::shared_ptr<const CSet
     return false;
   }
 
+  // Get/create the prop.
   CVariant& prop{m_customProps[def->GetId()].value};
   prop = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
   return true;
@@ -152,6 +155,7 @@ bool CPVRCustomTimerSettings::UpdateStringProperty(const std::shared_ptr<const C
     return false;
   }
 
+  // Get/create the prop.
   CVariant& prop{m_customProps[def->GetId()].value};
   prop = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   return true;

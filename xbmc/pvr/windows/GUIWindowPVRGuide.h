@@ -122,8 +122,8 @@ public:
   void Stop();
 
 private:
-  CGUIWindowPVRGuideBase* m_pGuideWindow;
-  CEvent m_ready;
-  CEvent m_done;
+  CGUIWindowPVRGuideBase* m_pGuideWindow{nullptr};
+  CEvent m_ready{true};
+  CEvent m_done{false};
 };
 } // namespace PVR

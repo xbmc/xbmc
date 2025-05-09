@@ -304,7 +304,7 @@ int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(
 
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
 {
-  CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+  const CGUIEPGGridContainer* epgGridContainer{GetGridControl()};
   const CGUIControl* control{GetControl(CONTROL_LSTCHANNELGROUPS)};
   if (epgGridContainer && control && GetFocusedControlID() == control->GetID())
   {
@@ -785,17 +785,17 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       if (endDate > maxFutureDate)
         endDate = maxFutureDate;
 
-      const auto channels{std::make_unique<CFileItemList>()};
+      CFileItemList channels;
       const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
           group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
 
       for (const auto& groupMember : groupMembers)
       {
-        channels->Add(std::make_shared<CFileItem>(groupMember));
+        channels.Add(std::make_shared<CFileItem>(groupMember));
       }
 
       if (m_guiState)
-        channels->Sort(m_guiState->GetSortMethod());
+        channels.Sort(m_guiState->GetSortMethod());
 
       epgGridContainer->SetTimelineItems(channels, startDate, endDate);
 
@@ -928,10 +928,7 @@ void CGUIWindowPVRGuideBase::GetChannelNumbers(std::vector<std::string>& channel
 }
 
 CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase* pGuideWindow)
-  : CThread("epg-grid-refresh-timeline-items"),
-    m_pGuideWindow(pGuideWindow),
-    m_ready(true),
-    m_done(false)
+  : CThread("epg-grid-refresh-timeline-items"), m_pGuideWindow(pGuideWindow)
 {
 }
 

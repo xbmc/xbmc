@@ -28,6 +28,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <array>
 #include <ctime>
 #include <memory>
 #include <mutex>
@@ -137,9 +138,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
   {
     const PVR_SETTING_KEY_VALUE_PAIR& prop{timer.customProps[i]};
     if (prop.eType == PVR_SETTING_TYPE::INTEGER)
-      m_customProps.insert({prop.iKey, {prop.eType, CVariant{prop.iValue}}});
+      m_customProps.try_emplace(prop.iKey, CustomProperty(prop.eType, CVariant{prop.iValue}));
     else if (prop.eType == PVR_SETTING_TYPE::STRING)
-      m_customProps.insert({prop.iKey, {prop.eType, CVariant{prop.strValue}}});
+      m_customProps.try_emplace(prop.iKey, CustomProperty(prop.eType, CVariant{prop.strValue}));
     else
       CLog::LogF(LOGERROR, "Unknown setting type for custom property");
   }
@@ -1015,8 +1016,9 @@ int days_from_1970(int32_t year)
 
 int days_from_1jan(int year, int month, int day)
 {
-  static const int days[2][12] = {{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
-                                  {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335}};
+  static constexpr std::array<std::array<int, 12>, 2> days = {
+      {{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
+       {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335}}};
   return days[IsLeapYear(year)][month - 1] + day - 1;
 }
 
@@ -1051,9 +1053,9 @@ CDateTime CPVRTimerInfoTag::ConvertUTCToLocalTime(const CDateTime& utc)
   time_t time = 0;
   utc.GetAsTime(time);
 
-  struct tm* tms;
+  const struct tm* tms{nullptr};
 #ifdef HAVE_LOCALTIME_R
-  struct tm gbuf;
+  struct tm gbuf = {};
   tms = localtime_r(&time, &gbuf);
 #else
   tms = localtime(&time);
@@ -1073,11 +1075,11 @@ CDateTime CPVRTimerInfoTag::ConvertLocalTimeToUTC(const CDateTime& local)
   time_t time = 0;
   local.GetAsTime(time);
 
-  struct tm* tms;
+  struct tm* tms{nullptr};
 
   // obtain dst flag for given datetime
 #ifdef HAVE_LOCALTIME_R
-  struct tm loc_buf;
+  struct tm loc_buf = {};
   tms = localtime_r(&time, &loc_buf);
 #else
   tms = localtime(&time);
@@ -1092,7 +1094,7 @@ CDateTime CPVRTimerInfoTag::ConvertLocalTimeToUTC(const CDateTime& local)
   int isdst = tms->tm_isdst;
 
 #ifdef HAVE_GMTIME_R
-  struct tm gm_buf;
+  struct tm gm_buf = {};
   tms = gmtime_r(&time, &gm_buf);
 #else
   tms = gmtime(&time);

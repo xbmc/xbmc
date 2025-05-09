@@ -116,7 +116,7 @@ public:
   void GoToMostLeft();
   void GoToMostRight();
 
-  void SetTimelineItems(const std::unique_ptr<CFileItemList>& items,
+  void SetTimelineItems(const CFileItemList& items,
                         const CDateTime& gridStart,
                         const CDateTime& gridEnd);
 
@@ -201,30 +201,9 @@ private:
   void RenderProgrammeGrid();
   void RenderProgressIndicator();
 
-  CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
-
-  ORIENTATION m_orientation;
-
-  std::vector<CGUIListItemLayout> m_channelLayouts;
-  std::vector<CGUIListItemLayout> m_focusedChannelLayouts;
-  std::vector<CGUIListItemLayout> m_focusedProgrammeLayouts;
-  std::vector<CGUIListItemLayout> m_programmeLayouts;
-  std::vector<CGUIListItemLayout> m_rulerLayouts;
-  std::vector<CGUIListItemLayout> m_rulerDateLayouts;
-
-  CGUIListItemLayout* m_channelLayout = nullptr;
-  CGUIListItemLayout* m_focusedChannelLayout = nullptr;
-  CGUIListItemLayout* m_programmeLayout = nullptr;
-  CGUIListItemLayout* m_focusedProgrammeLayout = nullptr;
-  CGUIListItemLayout* m_rulerLayout = nullptr;
-  CGUIListItemLayout* m_rulerDateLayout = nullptr;
-
-  int m_pageControl = 0;
-
   void GetChannelCacheOffsets(int& cacheBefore, int& cacheAfter) const;
   void GetProgrammeCacheOffsets(int& cacheBefore, int& cacheAfter) const;
 
-private:
   bool OnMouseClick(int dwButton, const CPoint& point);
   bool OnMouseDoubleClick(int dwButton, const CPoint& point);
   bool OnMouseWheel(char wheel);
@@ -259,20 +238,40 @@ private:
 
   int GetBlockScrollOffset() const;
 
+  CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
+
+  ORIENTATION m_orientation{VERTICAL};
+
+  std::vector<CGUIListItemLayout> m_channelLayouts;
+  std::vector<CGUIListItemLayout> m_focusedChannelLayouts;
+  std::vector<CGUIListItemLayout> m_focusedProgrammeLayouts;
+  std::vector<CGUIListItemLayout> m_programmeLayouts;
+  std::vector<CGUIListItemLayout> m_rulerLayouts;
+  std::vector<CGUIListItemLayout> m_rulerDateLayouts;
+
+  CGUIListItemLayout* m_channelLayout{nullptr};
+  CGUIListItemLayout* m_focusedChannelLayout{nullptr};
+  CGUIListItemLayout* m_programmeLayout{nullptr};
+  CGUIListItemLayout* m_focusedProgrammeLayout{nullptr};
+  CGUIListItemLayout* m_rulerLayout{nullptr};
+  CGUIListItemLayout* m_rulerDateLayout{nullptr};
+
+  int m_pageControl{0};
+
   const int m_blocksPerRulerItem{0}; //! number of blocks that make up one element of the ruler
   const int m_blocksPerPage{0};
   const unsigned int m_minutesPerBlock{DEFAULT_MINUTES_PER_BLOCK};
 
-  int m_channelsPerPage = 0;
-  int m_programmesPerPage = 0;
-  int m_channelCursor = 0;
-  int m_channelOffset = 0;
-  int m_blockCursor = 0;
-  int m_blockOffset = 0;
-  int m_blockTravelAxis = 0;
-  int m_cacheChannelItems;
-  int m_cacheProgrammeItems;
-  int m_cacheRulerItems;
+  int m_channelsPerPage{0};
+  int m_programmesPerPage{0};
+  int m_channelCursor{0};
+  int m_channelOffset{0};
+  int m_blockCursor{0};
+  int m_blockOffset{0};
+  int m_blockTravelAxis{0};
+  int m_cacheChannelItems{0};
+  int m_cacheProgrammeItems{0};
+  int m_cacheRulerItems{0};
 
   float m_rulerDateHeight{0.0f}; //! height of ruler date item
   float m_rulerDateWidth{0.0f}; //! width of ruler date item
@@ -297,10 +296,10 @@ private:
   std::shared_ptr<CFileItem> m_lastItem;
   std::shared_ptr<CFileItem> m_lastChannel;
 
-  bool m_bEnableProgrammeScrolling = true;
-  bool m_bEnableChannelScrolling = true;
+  bool m_bEnableProgrammeScrolling{true};
+  bool m_bEnableChannelScrolling{true};
 
-  int m_scrollTime;
+  int m_scrollTime{0};
 
   unsigned int m_programmeScrollLastTime{0};
   float m_programmeScrollSpeed{0.0f};
@@ -314,6 +313,6 @@ private:
   std::unique_ptr<CGUIEPGGridContainerModel> m_gridModel;
   std::unique_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
 
-  int m_itemStartBlock = 0;
+  int m_itemStartBlock{0};
 };
 } // namespace PVR

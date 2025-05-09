@@ -49,7 +49,7 @@ public:
   explicit CGUIEPGGridContainerModel(unsigned int minutesPerBlock);
   virtual ~CGUIEPGGridContainerModel() = default;
 
-  void Initialize(const std::unique_ptr<CFileItemList>& items,
+  void Initialize(const CFileItemList& items,
                   const CDateTime& gridStart,
                   const CDateTime& gridEnd,
                   int iFirstChannel,
