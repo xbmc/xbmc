@@ -120,6 +120,8 @@ public:
 
   bool playStubFile(const CFileItem& item);
 
+  UTILS::DISCS::DiscInfo GetDiscInfo(const std::string& mediaPath);
+
 protected:
   std::vector<CNetworkLocation> m_locations;
 
@@ -156,7 +158,6 @@ private:
   std::shared_ptr<IDiscDriveHandler> m_platformDiscDriveHander;
 #endif
 
-  UTILS::DISCS::DiscInfo GetDiscInfo(const std::string& mediaPath);
   void RemoveDiscInfo(const std::string& devicePath);
   std::map<std::string, UTILS::DISCS::DiscInfo> m_mapDiscInfo;
 #ifdef HAVE_LIBBLURAY
