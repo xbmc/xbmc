@@ -977,23 +977,19 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
   if (clients.size() > 1)
   {
-    m_channelEntries.try_emplace(index,
-                                 ChannelDescriptor(PVR_CHANNEL_INVALID_UID, PVR_CLIENT_INVALID_UID,
-                                                   // Any channel from any client
-                                                   g_localizeStrings.Get(854)));
+    m_channelEntries.try_emplace(index, PVR_CHANNEL_INVALID_UID, PVR_CLIENT_INVALID_UID,
+                                 g_localizeStrings.Get(854)); // Any channel from any client
     index++;
   }
 
   for (const auto& [_, client] : clients)
   {
     m_channelEntries.try_emplace(
-        index, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, client->GetID(),
-                                 clients.size() == 1
-                                     // Any channel
-                                     ? g_localizeStrings.Get(809)
-                                     // Any channel from client "X"
-                                     : StringUtils::Format(g_localizeStrings.Get(853),
-                                                           client->GetFullClientName())));
+        index, PVR_CHANNEL_INVALID_UID, client->GetID(),
+        clients.size() == 1
+            ? g_localizeStrings.Get(809) // Any channel
+            : StringUtils::Format(g_localizeStrings.Get(853), // Any channel from client "X"
+                                  client->GetFullClientName()));
     index++;
   }
 
@@ -1007,8 +1003,8 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
     const std::shared_ptr<const CPVRChannel> channel = groupMember->Channel();
     const std::string channelDescription = StringUtils::Format(
         "{} {}", groupMember->ChannelNumber().FormattedChannelNumber(), channel->ChannelName());
-    m_channelEntries.try_emplace(
-        index, ChannelDescriptor(channel->UniqueID(), channel->ClientID(), channelDescription));
+    m_channelEntries.try_emplace(index, channel->UniqueID(), channel->ClientID(),
+                                 channelDescription);
     ++index;
   }
 }
@@ -1093,24 +1089,22 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
       }
     }
 
-    if (foundCurrent)
+    // Verify m_channel is still valid. Update if not.
+    if (foundCurrent &&
+        std::ranges::find(list, current, &IntegerSettingOption::value) == list.cend())
     {
-      // Verify m_channel is still valid. Update if not.
-      if (std::ranges::find(list, current, &IntegerSettingOption::value) == list.cend())
-      {
-        // Set m_channel and current to first valid channel in list
-        const int first{list.front().value};
-        const auto it = pThis->m_channelEntries.find(first);
+      // Set m_channel and current to first valid channel in list
+      const int first{list.front().value};
+      const auto it{pThis->m_channelEntries.find(first)};
 
-        if (it != pThis->m_channelEntries.cend())
-        {
-          current = (*it).first;
-          pThis->m_channel = (*it).second;
-        }
-        else
-        {
-          CLog::LogF(LOGERROR, "Unable to find channel to select");
-        }
+      if (it != pThis->m_channelEntries.cend())
+      {
+        current = (*it).first;
+        pThis->m_channel = (*it).second;
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Unable to find channel to select");
       }
     }
   }

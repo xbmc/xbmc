@@ -138,9 +138,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
   {
     const PVR_SETTING_KEY_VALUE_PAIR& prop{timer.customProps[i]};
     if (prop.eType == PVR_SETTING_TYPE::INTEGER)
-      m_customProps.try_emplace(prop.iKey, CustomProperty(prop.eType, CVariant{prop.iValue}));
+      m_customProps.try_emplace(prop.iKey, prop.eType, CVariant{prop.iValue});
     else if (prop.eType == PVR_SETTING_TYPE::STRING)
-      m_customProps.try_emplace(prop.iKey, CustomProperty(prop.eType, CVariant{prop.strValue}));
+      m_customProps.try_emplace(prop.iKey, prop.eType, CVariant{prop.strValue});
     else
       CLog::LogF(LOGERROR, "Unknown setting type for custom property");
   }
