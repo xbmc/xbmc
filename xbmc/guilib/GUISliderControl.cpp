@@ -218,10 +218,19 @@ bool CGUISliderControl::ProcessSelector(CGUITexture* background,
 
 void CGUISliderControl::Render()
 {
-  if (!IsDisabled())
-    m_guiBackground->Render();
-  else
-    m_guiBackgroundDisabled->Render();
+  const bool renderFrontToBack = CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+                                 RENDER_ORDER_FRONT_TO_BACK;
+
+  auto renderBackground = [this]
+  {
+    if (!IsDisabled())
+      m_guiBackground->Render(-1);
+    else
+      m_guiBackgroundDisabled->Render(-1);
+  };
+
+  if (!renderFrontToBack)
+    renderBackground();
 
   CGUITexture* nibLower = nullptr;
   if (IsActive() && m_bHasFocus && !IsDisabled() && m_currentSelector == RangeSelectorLower)
@@ -242,6 +251,10 @@ void CGUISliderControl::Render()
       nibUpper = m_guiSelectorUpperDisabled.get();
     nibUpper->Render();
   }
+
+  if (renderFrontToBack)
+    renderBackground();
+
   CGUIControl::Render();
 }
 
