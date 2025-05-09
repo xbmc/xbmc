@@ -46,10 +46,18 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
 {
   CNfoFile nfoReader;
   CInfoScanner::InfoType result = CInfoScanner::InfoType::NONE;
-  if (m_info && m_info->Content() == CONTENT_TVSHOWS && !m_item.m_bIsFolder)
-    result = nfoReader.Create(m_path, m_info, m_item.GetVideoInfoTag()->m_iEpisode);
-  else if (m_info)
-    result = nfoReader.Create(m_path, m_info);
+  if (m_info)
+  {
+    if (m_info->Content() == CONTENT_TVSHOWS && !m_item.m_bIsFolder)
+      result = nfoReader.Create(m_path, m_info, m_item.GetVideoInfoTag()->m_iEpisode);
+    else if (m_info->Content() == CONTENT_MOVIES && !m_item.m_bIsFolder &&
+             m_item.GetVideoInfoTag()->m_iTrack != -1)
+      result = nfoReader.Create(
+          m_path, m_info,
+          m_item.GetVideoInfoTag()->m_iTrack); // multiple versions (playlists) in nfo
+    else
+      result = nfoReader.Create(m_path, m_info);
+  }
 
   if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED)
     nfoReader.GetDetails(tag, nullptr, prioritise);
