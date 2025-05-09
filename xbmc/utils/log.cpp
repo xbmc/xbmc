@@ -312,10 +312,21 @@ void CLog::FormatAndLogInternal(spdlog::level::level_enum level,
     return;
 
   auto message = fmt::vformat(format, args);
-
-  // fixup newline alignment, number of spaces should equal prefix length
   FormatLineBreaks(message);
   GetLoggerById(component)->log(level, message);
+}
+
+void CLog::FormatAndLogInternal(const std::string& loggerName,
+                                spdlog::level::level_enum level,
+                                fmt::string_view format,
+                                fmt::format_args args)
+{
+  if (level < m_defaultLogger->level())
+    return;
+
+  auto message = fmt::vformat(format, args);
+  FormatLineBreaks(message);
+  GetLogger(loggerName)->log(level, message);
 }
 
 Logger CLog::CreateLogger(const std::string& loggerName)
@@ -343,5 +354,6 @@ void CLog::SetComponentLogLevel(const std::vector<CVariant>& components)
 
 void CLog::FormatLineBreaks(std::string& message) const
 {
+  // fixup newline alignment, number of spaces should equal prefix length
   StringUtils::Replace(message, "\n", "\n                                                   ");
 }
