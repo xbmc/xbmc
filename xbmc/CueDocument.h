@@ -13,8 +13,6 @@
 #include <string>
 #include <vector>
 
-#define MAX_PATH_SIZE 1024
-
 class CFileItem;
 class CFileItemList;
 class CueReader;
@@ -32,8 +30,9 @@ class CCueDocument
     int iEndTime = 0;
     ReplayGain::Info replayGain;
   };
+
 public:
-  ~CCueDocument(void);
+  ~CCueDocument();
   // USED
   bool ParseFile(const std::string &strFilePath);
   bool ParseTag(const std::string &strContent);
@@ -63,7 +62,7 @@ private:
   bool m_bOneFilePerTrack = false;
 
   // cuetrack array
-  typedef std::vector<CCueTrack> Tracks;
+  using Tracks = std::vector<CCueTrack>;
   Tracks m_tracks;
 
   std::string ExtractInfo(const std::string &line);
