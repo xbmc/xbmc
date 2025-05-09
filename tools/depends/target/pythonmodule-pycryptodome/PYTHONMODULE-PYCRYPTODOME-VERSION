@@ -1,4 +1,6 @@
 LIBNAME=pycryptodome
-VERSION=3.21.0
+VERSION=3.22.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-SHA512=a3ba9aba7653711b6b796f589ab0db0f7bacca17b3f4d5af4b43ec344ad37c98b6f625aaac9c521be28836c437c94a499e93e1d078b37f0e730253f2b6ed7e3f
+SHA512=69d6f071ae2397076d047845f4ac664207e9459df4dffa31d349cde95a33b4ac82ea8271e2075a3c3b2edcd91036b22a5fb5563eeafd63ac5923f1ca195cb80c
+
+BASE_URL=https://files.pythonhosted.org/packages/source/p/pycryptodome
