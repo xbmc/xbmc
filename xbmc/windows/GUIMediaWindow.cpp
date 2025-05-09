@@ -731,7 +731,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 {
   CURL pathToUrl(strDirectory);
 
-  std::string strParentPath = m_history.GetParentPath();
+  std::string strParentPath = m_history.GetParentPath(strDirectory);
 
   CLog::Log(LOGDEBUG, "CGUIMediaWindow::GetDirectory ({})", CURL::GetRedacted(strDirectory));
   CLog::Log(LOGDEBUG, "  ParentPath = [{}]", CURL::GetRedacted(strParentPath));
@@ -1283,7 +1283,7 @@ bool CGUIMediaWindow::GoParentFolder()
   CURL filterUrl(m_strFilterPath);
   if (filterUrl.HasOption("filter"))
   {
-    CURL parentUrl(m_history.GetParentPath(true));
+    CURL parentUrl(m_history.GetParentPath("", true));
     if (!parentUrl.HasOption("filter"))
     {
       // we need to overwrite m_strFilterPath because
@@ -1295,7 +1295,7 @@ bool CGUIMediaWindow::GoParentFolder()
   }
 
   // pop directory path from the stack
-  m_strFilterPath = m_history.GetParentPath(true);
+  m_strFilterPath = m_history.GetParentPath("", true);
   m_history.RemoveParentPath();
 
   if (!Update(parentPath, false))
