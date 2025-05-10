@@ -89,7 +89,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(CMAKE_REQUIRED_INCLUDES "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR}")
       set(CMAKE_REQUIRED_LIBRARIES ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY})
 
-      # Check for mount_getexports_timeout
+      if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+        set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} "ws2_32.lib")
+      endif()
+
+      # Check for mount_getexports_timeout libnfs>5.0.0
       check_cxx_source_compiles("
          ${LIBNFS_CXX_INCLUDE}
          #include <nfsc/libnfs.h>
