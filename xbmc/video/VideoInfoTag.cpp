@@ -14,6 +14,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
+#include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
@@ -1344,6 +1345,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 
         if (XMLUtils::GetString(nodeDetail, "layout", value))
           p->m_channelLayout = StringUtils::Trim(value);
+        else
+          p->m_channelLayout =
+              StreamUtils::GetLayoutXYZ(StreamUtils::GetDefaultMask(p->m_iChannels));
 
         StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strLanguage);
