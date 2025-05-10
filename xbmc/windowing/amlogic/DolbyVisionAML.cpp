@@ -55,9 +55,9 @@ static void CalculateVSVDBPayload()
   int dv_type_bits = (dv_type == DV_TYPE_DISPLAY_LED) ? 2 : 0;
 
   const double one_256 = 0.00390625;
-  
+
   unsigned char byte[7];
-  
+
   byte[0] = (2 << 5) |       // Version (2 [010]) in 7-5
             (2 << 2) |       // DM Version (2 [010]) in 4-2
             (0 << 1) |       // Backlight Control (Not Supported [0]) in 1
@@ -98,10 +98,10 @@ static bool support_dv() {
 
 void dv_type_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current, void* data) {
   list.clear();
-  if (aml_display_support_dv_std()) list.emplace_back(g_localizeStrings.Get(50023), DV_TYPE_DISPLAY_LED); 
+  if (aml_display_support_dv_std()) list.emplace_back(g_localizeStrings.Get(50023), DV_TYPE_DISPLAY_LED);
   if (aml_display_support_dv_ll()) list.emplace_back(g_localizeStrings.Get(50024), DV_TYPE_PLAYER_LED_LLDV);
-  if (aml_display_support_hdr_pq()) list.emplace_back(g_localizeStrings.Get(50025), DV_TYPE_PLAYER_LED_HDR); 
-  list.emplace_back(g_localizeStrings.Get(50026), DV_TYPE_VS10_ONLY); 
+  if (aml_display_support_hdr_pq()) list.emplace_back(g_localizeStrings.Get(50025), DV_TYPE_PLAYER_LED_HDR);
+  list.emplace_back(g_localizeStrings.Get(50026), DV_TYPE_VS10_ONLY);
 }
 
 void vsvdb_min_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current, void* data) {
@@ -136,8 +136,8 @@ void vsvdb_min_filler(const SettingConstPtr& setting, std::vector<IntegerSetting
   list.emplace_back("PQ 540 (0.70231800 cd/m^2)", 27);
   list.emplace_back("PQ 560 (0.77906912 cd/m^2)", 28);
   list.emplace_back("PQ 580 (0.86197104 cd/m^2)", 29);
-  list.emplace_back("PQ 600 (0.95138673 cd/m^2)", 30); 
-  list.emplace_back("PQ 620 (1.04769654 cd/m^2)", 31); 
+  list.emplace_back("PQ 600 (0.95138673 cd/m^2)", 30);
+  list.emplace_back("PQ 620 (1.04769654 cd/m^2)", 31);
 }
 
 void vsvdb_max_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current, void* data) {
@@ -188,7 +188,7 @@ void vs10_sdr_filler(const SettingConstPtr& setting, std::vector<IntegerSettingO
   add_vs10_bypass(list);
   add_vs10_sdr(list);
   if (aml_display_support_hdr_pq()) add_vs10_hdr10(list);
-  if (support_dv()) add_vs10_dv(list); 
+  if (support_dv()) add_vs10_dv(list);
 }
 
 void vs10_hdr10_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current, void* data)
@@ -196,7 +196,7 @@ void vs10_hdr10_filler(const SettingConstPtr& setting, std::vector<IntegerSettin
   list.clear();
   if (aml_display_support_hdr_pq()) add_vs10_bypass(list);
   add_vs10_sdr(list);
-  if (support_dv()) add_vs10_dv(list); 
+  if (support_dv()) add_vs10_dv(list);
 }
 
 void vs10_hdr_hlg_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current, void* data)
@@ -205,7 +205,7 @@ void vs10_hdr_hlg_filler(const SettingConstPtr& setting, std::vector<IntegerSett
   if (aml_display_support_hdr_hlg()) add_vs10_bypass(list);
   add_vs10_sdr(list);
   if (aml_display_support_hdr_pq()) add_vs10_hdr10(list);
-  if (support_dv()) add_vs10_dv(list); 
+  if (support_dv()) add_vs10_dv(list);
 }
 
 void vs10_dv_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current, void* data)
@@ -253,7 +253,7 @@ bool CDolbyVisionAML::Setup()
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR_INJECT, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR_PAYLOAD, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_COLORIMETRY_FOR_STD, true);
-  set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVELS_METADATA, true); 
+  set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVELS_METADATA, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_5, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_6, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_RESTRICT_OVERLAYS, true);
@@ -285,7 +285,7 @@ bool CDolbyVisionAML::Setup()
   auto announcer = CServiceBroker::GetAnnouncementManager();
   announcer->AddAnnouncer(this);
 
-  // Turn on dv - if dv mode is on, limit the menu luminance as menu now can be in DV/HDR. 
+  // Turn on dv - if dv mode is on, limit the menu luminance as menu now can be in DV/HDR.
   aml_dv_start();
 
   CLog::Log(LOGDEBUG, "CDolbyVisionAML::Setup - Complete");
@@ -293,18 +293,18 @@ bool CDolbyVisionAML::Setup()
   return true;
 }
 
-void CDolbyVisionAML::OnSettingChanged(const std::shared_ptr<const CSetting>& setting) 
+void CDolbyVisionAML::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (!setting) return;
 
   const std::string& settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE) 
+  if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE)
   {
     // Not working for some cases - needs video playback for mode switch to work correctly everytime.
     // enum DV_MODE dv_mode(static_cast<DV_MODE>(std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue()));
     // if (dv_mode == DV_MODE_ON) ? aml_dv_on(DOLBY_VISION_OUTPUT_MODE_IPT) : aml_dv_off();
-  } 
-  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE_ON_LUMINANCE) 
+  }
+  else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE_ON_LUMINANCE)
   {
     int max(std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue());
     aml_dv_set_osd_max(max);
