@@ -320,7 +320,7 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
   Dispose();
 }
 
-void CDVDVideoCodecFFmpeg::SetProcessInfoVideoDetails() 
+void CDVDVideoCodecFFmpeg::SetProcessInfoVideoDetails()
 {
   m_dataCacheCore.SetVideoHdrType(m_hints.hdrType);
   m_dataCacheCore.SetVideoColorSpace(m_hints.colorSpace);
