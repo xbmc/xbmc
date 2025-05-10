@@ -23,8 +23,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
 
-    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAS_NFS_SET_TIMEOUT
-                                                                 HAS_NFS_MOUNT_GETEXPORTS_TIMEOUT)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAS_NFS_MOUNT_GETEXPORTS_TIMEOUT)
   endmacro()
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -89,20 +88,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       set(CMAKE_REQUIRED_INCLUDES "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR}")
       set(CMAKE_REQUIRED_LIBRARIES ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY})
-
-      # Check for nfs_set_timeout
-      check_cxx_source_compiles("
-         ${LIBNFS_CXX_INCLUDE}
-         #include <nfsc/libnfs.h>
-         int main()
-         {
-           nfs_set_timeout(NULL, 0);
-         }
-      " NFS_SET_TIMEOUT)
-
-      if(NFS_SET_TIMEOUT)
-        list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAS_NFS_SET_TIMEOUT)
-      endif()
 
       # Check for mount_getexports_timeout
       check_cxx_source_compiles("
