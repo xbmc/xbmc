@@ -535,11 +535,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     }
     if (network->FirstChildElement("nfstimeout"))
     {
-#ifdef HAS_NFS_SET_TIMEOUT
       XMLUtils::GetUInt(network, "nfstimeout", m_nfsTimeout, 0, 3600);
-#else
-      CLog::Log(LOGWARNING, "nfstimeout unsupported");
-#endif
     }
     if (network->FirstChildElement("nfsretries"))
     {
