@@ -65,6 +65,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       else()
         get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE libnfs::nfs IMPORTED_LOCATION)
       endif()
+
+      # libnfs cmake config doesnt include INTERFACE_INCLUDE_DIRECTORIES
+      find_path(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR NAMES nfsc/libnfs.h
+                                                                 HINTS ${DEPENDS_PATH}/include
+                                                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
       # First item is the full path of the library file found
       # pkg_check_modules does not populate a variable of the found library explicitly
@@ -127,11 +132,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # cmake target and not building internal
     if(TARGET libnfs::nfs AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libnfs::nfs)
-
-      # libnfs cmake config doesnt include INTERFACE_INCLUDE_DIRECTORIES
-      find_path(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR NAMES nfsc/libnfs.h
-                                                                 HINTS ${DEPENDS_PATH}/include
-                                                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
       # Need to manually set this, as libnfs cmake config does not provide INTERFACE_INCLUDE_DIRECTORIES
       set_target_properties(libnfs::nfs PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR})
