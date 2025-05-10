@@ -30,7 +30,7 @@ CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
   m_sampleRate = 0;
   m_bPaused = true;
   m_playingPts = DVD_NOPTS_VALUE; //silence coverity uninitialized warning, is set elsewhere
-  m_playingFramePts = DVD_NOPTS_VALUE; 
+  m_playingFramePts = DVD_NOPTS_VALUE;
   m_timeOfPts = 0.0; //silence coverity uninitialized warning, is set elsewhere
   m_syncError = 0.0;
   m_syncErrorTime = 0;
@@ -88,7 +88,7 @@ void CAudioSinkAE::Destroy(bool finish)
   m_bPassthrough = false;
   m_bPaused = true;
   m_playingPts = DVD_NOPTS_VALUE;
-  m_playingFramePts = DVD_NOPTS_VALUE; 
+  m_playingFramePts = DVD_NOPTS_VALUE;
 }
 
 unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
