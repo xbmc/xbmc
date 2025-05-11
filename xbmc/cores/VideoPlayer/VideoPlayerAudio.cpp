@@ -71,8 +71,6 @@ CVideoPlayerAudio::CVideoPlayerAudio(
   // allows max bitrate of 18 Mbit/s (TrueHD max peak) during m_messageQueueTimeSize seconds
   m_messageQueue.SetMaxDataSize(18 * messageQueueTimeSize / 8 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(messageQueueTimeSize);
-
-  m_disconAdjustTimeMs = processInfo.GetMaxPassthroughOffSyncDuration();
 }
 
 CVideoPlayerAudio::~CVideoPlayerAudio()
@@ -137,9 +135,6 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAu
 
   m_prevsynctype = -1;
   m_synctype = m_processInfo.IsRealtimeStream() ? SYNC_RESAMPLE : SYNC_DISCON;
-
-  if (m_synctype == SYNC_DISCON)
-    CLog::LogF(LOGINFO, "Allowing max Out-Of-Sync Value of {} ms", m_disconAdjustTimeMs);
 
   m_prevskipped = false;
 
@@ -218,13 +213,9 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
     s << ", chan:" << m_processInfo.GetAudioChannels().c_str();
   s << ", " << m_streaminfo.samplerate/1000 << " kHz";
 
-  // print a/v discontinuity adjustments counter when audio is not resampled (passthrough mode)
-  if (m_synctype == SYNC_DISCON)
-    s << ", a/v corrections (" << m_disconAdjustTimeMs << "ms): " << m_disconAdjustCounter;
-
   //print the inverse of the resample ratio, since that makes more sense
   //if the resample ratio is 0.5, then we're playing twice as fast
-  else if (m_synctype == SYNC_RESAMPLE)
+  if (m_synctype == SYNC_RESAMPLE)
     s << ", rr:" << std::fixed << std::setprecision(5) << 1.0 / m_audioSink.GetResampleRatio();
 
   SInfo info;
@@ -252,7 +243,6 @@ void CVideoPlayerAudio::Process()
   audioframe.nb_frames = 0;
   audioframe.framesOut = 0;
   m_audioStats.Start();
-  m_disconAdjustCounter = 0;
 
   bool onlyPrioMsgs = false;
 
@@ -464,6 +454,48 @@ void CVideoPlayerAudio::Process()
   }
 }
 
+void inline CVideoPlayerAudio::Wait(useconds_t uSeconds) const
+{
+   struct timespec target, now;
+
+   clock_gettime(CLOCK_MONOTONIC, &now);
+
+   target.tv_sec = uSeconds / 1000000;
+   target.tv_nsec = (uSeconds % 1000000) * 1000;
+
+   target.tv_sec += now.tv_sec;
+   target.tv_nsec += now.tv_nsec;
+
+   if (target.tv_nsec >= 1000000000) {
+     target.tv_sec++;
+     target.tv_nsec -= 1000000000;
+   }
+
+   clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &target, NULL);
+}
+
+void CVideoPlayerAudio::ClockAlign(double presentPts)
+{
+  double renderPts = m_pClock->GetClock();
+  double diff = (renderPts - presentPts);
+  double delay = diff;
+
+  if ((diff < 0) && (diff > -1000000))
+  {
+    double wait = -diff;
+    Wait(static_cast<useconds_t>(wait));
+
+    renderPts = m_pClock->GetClock();
+    diff = (renderPts - presentPts);
+  }
+
+  logM(LOGDEBUG, "CVideoPlayerAudio", "render:[{:.3f}] presenting:[{:.3f}] "
+                                      "diff:[{:.3f}] delay:[{:.3f}]",
+                                      (renderPts / DVD_TIME_BASE), (presentPts / DVD_TIME_BASE),
+                                      (diff / DVD_TIME_BASE), (delay / DVD_TIME_BASE));
+}
+
+
 bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 {
   if (audioframe.nb_frames <= audioframe.framesOut)
@@ -552,21 +584,9 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     audioframe.hasDownmix = true;
   }
 
-  if (m_synctype == SYNC_DISCON)
-  {
-    double syncerror = m_audioSink.GetSyncError();
+  if (audioframe.passthrough && audioframe.hasTimestamp)
+    ClockAlign(audioframe.pts);
 
-    if (std::abs(syncerror) > DVD_MSEC_TO_TIME(m_disconAdjustTimeMs))
-    {
-      double correction = m_pClock->ErrorAdjust(syncerror, "CVideoPlayerAudio::OutputPacket");
-      if (correction != 0)
-      {
-        m_audioSink.SetSyncErrorCorrection(-correction);
-        m_disconAdjustCounter++;
-        CLog::Log(LOGDEBUG, LOGAUDIO, "CVideoPlayerAudio:: sync error correctiom:{:.3f}", correction / DVD_TIME_BASE);
-      }
-    }
-  }
   CLog::Log(LOGDEBUG, LOGAUDIO, "CVideoPlayerAudio::OutputPacket: pts:{:.3f} curr_pts:{:.3f} clock:{:.3f} level:{:d}",
     audioframe.pts / DVD_TIME_BASE, m_info.pts / DVD_TIME_BASE, m_pClock->GetClock() / DVD_TIME_BASE, GetLevel());
 

@@ -131,7 +131,9 @@ protected:
   SInfo                    m_info;
 
   bool m_displayReset = false;
-  unsigned int m_disconAdjustTimeMs = 20; // maximum sync-off before adjusting
-  int m_disconAdjustCounter = 0;
+
+private:
+  void inline Wait(useconds_t uSeconds) const;
+  void ClockAlign(double presentPts);
 };
 
