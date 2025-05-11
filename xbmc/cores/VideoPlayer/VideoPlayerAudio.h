@@ -71,7 +71,7 @@ public:
   double GetCurrentFramePts() override
   {
     std::lock_guard lock(m_info_section);
-    
+
     return m_info.fpts;
   }
 
@@ -79,7 +79,6 @@ public:
   bool IsPassthrough() const override;
 
 protected:
-
   void OnStartup() override;
   void OnExit() override;
   void Process() override;
@@ -129,7 +128,7 @@ protected:
   };
 
   mutable CCriticalSection m_info_section;
-  SInfo            m_info;
+  SInfo                    m_info;
 
   bool m_displayReset = false;
   unsigned int m_disconAdjustTimeMs = 20; // maximum sync-off before adjusting
