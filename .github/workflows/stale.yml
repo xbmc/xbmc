@@ -16,12 +16,19 @@ jobs:
       - uses: actions/stale@v9
         with:
           days-before-stale: 365
-          days-before-close: -1
+          days-before-close: 30
           
           stale-issue-message: 'This issue is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state.'
           stale-issue-label: Stale
           stale-pr-message: 'This pull request is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state.'
           stale-pr-label: Stale
+
+          close-issue-label: 'Issue Cleanup: Closed'
+          close-issue-message: 'This issue has been closed because it has been stale for at least 30 days.'
+          close-issue-reason: 'not_planned'
+          
+          close-pr-label: 'PR Cleanup: Abandoned'
+          close-pr-message: 'This pull request has been closed because it has been stale for at least 30 days.'
 
           exempt-issue-labels: Roadmap
           exempt-pr-labels: Roadmap
