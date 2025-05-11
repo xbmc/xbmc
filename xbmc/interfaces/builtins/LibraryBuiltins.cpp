@@ -303,11 +303,12 @@ static int ExportLibrary2(const std::vector<std::string>& params)
   return 0;
 }
 
-
 /*! \brief Update a library.
  *  \param params The parameters.
  *  \details params[0] = "video" or "music".
- *           params[1] = "true" to suppress dialogs (optional).
+ *           params[1] = directory used as scan starting point (optional).
+ *           params[2] = "true" to suppress dialogs (optional).
+ *           params[3] = "true" to force full music tag rescan (optional).
  */
 static int UpdateLibrary(const std::vector<std::string>& params)
 {
@@ -316,12 +317,14 @@ static int UpdateLibrary(const std::vector<std::string>& params)
     userInitiated = StringUtils::EqualsNoCase(params[2], "true");
   if (StringUtils::EqualsNoCase(params[0], "music"))
   {
+    auto musicScanFlag = params.size() > 3 && StringUtils::EqualsNoCase(params[3], "true")
+                             ? MUSIC_INFO::CMusicInfoScanner::SCAN_RESCAN
+                             : MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL;
     if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
       CMusicLibraryQueue::GetInstance().StopLibraryScanning();
     else
       CMusicLibraryQueue::GetInstance().ScanLibrary(params.size() > 1 ? params[1] : "",
-                                                    MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL,
-                                                    userInitiated);
+                                                    musicScanFlag, userInitiated);
   }
   else if (StringUtils::EqualsNoCase(params[0], "video"))
   {
@@ -438,7 +441,9 @@ static int RefreshAlbum(const std::vector<std::string>& params)
 ///     ,
 ///     Update the selected library (music or video)
 ///     @param[in] type                  "video" or "music".
+///     @param[in] directory             Directory used as scan starting point (optional).
 ///     @param[in] suppressDialogs       Add "true" to suppress dialogs (optional).
+///     @param[in] rescan                Add "true" to force full tag rescan (optional).
 ///   }
 ///   \table_row2_l{
 ///     <b>`videolibrary.search`</b>
