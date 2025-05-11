@@ -479,10 +479,6 @@ bool CAdvancedSettings::Load(const CProfileManager &profileManager)
   if (!m_discStubExtensions.empty())
     m_videoExtensions += "|" + m_discStubExtensions;
 
-  // Default the delays.
-  DefaultAudioLatency();
-  DefaultVideoLatency();
-
   return true;
 }
 
@@ -503,15 +499,6 @@ constexpr CAEStreamInfo::DataType passthroughStringToEnum(std::string_view str) 
   if (str == "DTSHD_MA") return CAEStreamInfo::DataType::STREAM_TYPE_DTSHD_MA;
 
   return CAEStreamInfo::DataType::STREAM_TYPE_NULL;
-}
-
-void CAdvancedSettings::DefaultAudioLatency() {
-  // Default any required audio latency settings here.
-}
-
-void CAdvancedSettings::DefaultVideoLatency() {
-  // Default any required video latency settings here.
-  if (!m_hasVideoDefaultLatency) m_videoDefaultLatency = 160;
 }
 
 void CAdvancedSettings::ParseSettingsFile(const std::string &file)

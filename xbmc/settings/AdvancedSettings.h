@@ -356,9 +356,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_settingsFiles;
     void ParseSettingsFile(const std::string &file);
 
-    void DefaultAudioLatency();
-    void DefaultVideoLatency();
-
     int GetVideoLatencyTweak(float refreshrate, unsigned int resolution);
     int GetAudioLatencyTweak(CAEStreamInfo::DataType type);
 
