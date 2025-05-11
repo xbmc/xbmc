@@ -18,9 +18,9 @@ jobs:
           days-before-stale: 365
           days-before-close: 30
           
-          stale-issue-message: 'This issue is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state.'
+          stale-issue-message: 'This issue is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state. This issue will be closed in 30 days if no activity is detected.'
           stale-issue-label: Stale
-          stale-pr-message: 'This pull request is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state.'
+          stale-pr-message: 'This pull request is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state. This pull request will be closed in 30 days if no activity is detected.'
           stale-pr-label: Stale
 
           close-issue-label: 'Issue Cleanup: Closed'
