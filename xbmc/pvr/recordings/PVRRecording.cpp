@@ -151,7 +151,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
 
 bool CPVRRecording::operator==(const CPVRRecording& right) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return (this == &right) ||
          (m_strRecordingId == right.m_strRecordingId && m_iClientId == right.m_iClientId &&
           m_strChannelName == right.m_strChannelName && m_recordingTime == right.m_recordingTime &&
@@ -252,7 +253,8 @@ void CPVRRecording::Serialize(CVariant& value) const
 
 void CPVRRecording::ToSortable(SortItem& sortable, Field field) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (field == FieldSize)
     sortable[FieldSize] = m_sizeInBytes;
   else if (field == FieldProvider)
@@ -281,7 +283,8 @@ void CPVRRecording::Reset()
   m_bRadio = false;
   m_iFlags = PVR_RECORDING_FLAG_UNDEFINED;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
+
     m_sizeInBytes = 0;
   }
   m_strProviderName.clear();
@@ -400,7 +403,8 @@ bool CPVRRecording::UpdateRecordingSize()
     int64_t sizeInBytes = -1;
     client->GetRecordingSize(*this, sizeInBytes);
 
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
+
     if (sizeInBytes >= 0 && sizeInBytes != m_sizeInBytes)
     {
       m_sizeInBytes = sizeInBytes;
@@ -470,7 +474,8 @@ void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
   m_firstAired = tag.m_firstAired;
   m_iFlags = tag.m_iFlags;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
+
     m_sizeInBytes = tag.m_sizeInBytes;
     m_strProviderName = tag.m_strProviderName;
     m_iClientProviderUniqueId = tag.m_iClientProviderUniqueId;
@@ -693,19 +698,22 @@ bool CPVRRecording::IsFinale() const
 
 int64_t CPVRRecording::GetSizeInBytes() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_sizeInBytes;
 }
 
 int CPVRRecording::ClientProviderUniqueId() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_iClientProviderUniqueId;
 }
 
 std::string CPVRRecording::ProviderName() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_strProviderName;
 }
 
@@ -717,7 +725,8 @@ std::shared_ptr<CPVRProvider> CPVRRecording::GetDefaultProvider() const
 
 bool CPVRRecording::HasClientProvider() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+  
   return m_iClientProviderUniqueId != PVR_PROVIDER_INVALID_UID;
 }
 

@@ -86,13 +86,15 @@ public:
 
   NPT_String GetTransportState() const
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
+
     return m_trainfo.cur_transport_state;
   }
 
   NPT_String GetTransportStatus() const
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
+
     return m_trainfo.cur_transport_status;
   }
 
@@ -110,7 +112,7 @@ public:
                                 PLT_TransportInfo* info,
                                 void* userdata) override
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
 
     if (NPT_FAILED(res))
     {
@@ -139,7 +141,7 @@ public:
                                PLT_PositionInfo* info,
                                void* userdata) override
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
 
     if (NPT_FAILED(res) || info == NULL)
     {

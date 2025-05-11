@@ -257,7 +257,8 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   fireJob |= UpdateBrowse();
   fireJob &= !m_currentUrl.empty();
 
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (m_updateState == INVALIDATED)
     fireJob = true;
   else if (m_updateState == DONE)
@@ -294,7 +295,8 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     return;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
+
     // we don't need to refresh anything if there are no fitting
     // items in this list provider for the announcement flag
     if (((flag & ANNOUNCEMENT::VideoLibrary) &&
@@ -331,7 +333,8 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 
 void CDirectoryProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   items.clear();
   for (const auto& i : m_items)
   {
@@ -342,7 +345,8 @@ void CDirectoryProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items
 
 void CDirectoryProvider::OnAddonEvent(const ADDON::AddonEvent& event)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (URIUtils::IsProtocol(m_currentUrl, "addons"))
   {
     if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
@@ -357,7 +361,8 @@ void CDirectoryProvider::OnAddonEvent(const ADDON::AddonEvent& event)
 
 void CDirectoryProvider::OnAddonRepositoryEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (URIUtils::IsProtocol(m_currentUrl, "addons"))
   {
     m_updateState = INVALIDATED;
@@ -366,7 +371,8 @@ void CDirectoryProvider::OnAddonRepositoryEvent(const ADDON::CRepositoryUpdater:
 
 void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (URIUtils::IsProtocol(m_currentUrl, "pvr"))
   {
     if (event == PVR::PVREvent::ManagerStarted || event == PVR::PVREvent::ManagerStopped ||
@@ -383,7 +389,8 @@ void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
 
 void CDirectoryProvider::OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (URIUtils::IsProtocol(m_currentUrl, "favourites"))
     m_updateState = INVALIDATED;
 }
@@ -391,7 +398,8 @@ void CDirectoryProvider::OnFavouritesEvent(const CFavouritesService::FavouritesU
 void CDirectoryProvider::Reset()
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
+
     if (m_jobID)
       CServiceBroker::GetJobManager()->CancelJob(m_jobID);
     m_jobID = 0;
@@ -406,7 +414,8 @@ void CDirectoryProvider::Reset()
     m_updateState = OK;
   }
 
-  std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
+  std::lock_guard subscriptionLock(m_subscriptionSection);
+
   if (m_isSubscribed)
   {
     m_isSubscribed = false;
@@ -420,14 +429,16 @@ void CDirectoryProvider::Reset()
 
 void CDirectoryProvider::FreeResources(bool immediately)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   for (const auto& item : m_items)
     item->FreeMemory(immediately);
 }
 
 void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (success)
   {
     m_items = static_cast<CDirectoryJob*>(job)->GetItems();
@@ -443,7 +454,8 @@ std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
 {
   std::string target = item.GetProperty("node.target").asString();
 
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (target.empty())
     target = m_currentTarget;
   if (target.empty())
@@ -651,14 +663,16 @@ bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CGUIListItem>& item
 
 bool CDirectoryProvider::IsUpdating() const
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   return m_jobID || m_updateState == DONE || m_updateState == INVALIDATED;
 }
 
 bool CDirectoryProvider::UpdateURL()
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
+
     std::string value(m_url.GetLabel(m_parentID, false));
     if (value == m_currentUrl)
       return false;
@@ -666,7 +680,8 @@ bool CDirectoryProvider::UpdateURL()
     m_currentUrl = value;
   }
 
-  std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
+  std::lock_guard subscriptionLock(m_subscriptionSection);
+
   if (!m_isSubscribed)
   {
     m_isSubscribed = true;
@@ -681,7 +696,7 @@ bool CDirectoryProvider::UpdateURL()
 
 bool CDirectoryProvider::UpdateLimit()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
   unsigned int value = m_limit.GetIntValue(m_parentID);
   if (value == m_currentLimit)
     return false;
@@ -693,7 +708,8 @@ bool CDirectoryProvider::UpdateLimit()
 
 bool CDirectoryProvider::UpdateBrowse()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   const std::string stringValue{m_browse.GetLabel(m_parentID, false)};
   BrowseMode value{m_currentBrowse};
   if (StringUtils::EqualsNoCase(stringValue, "always"))
@@ -712,7 +728,8 @@ bool CDirectoryProvider::UpdateBrowse()
 
 bool CDirectoryProvider::UpdateSort()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   SortBy sortMethod(SortUtils::SortMethodFromString(m_sortMethod.GetLabel(m_parentID, false)));
   SortOrder sortOrder(SortUtils::SortOrderFromString(m_sortOrder.GetLabel(m_parentID, false)));
   if (sortOrder == SortOrderNone)

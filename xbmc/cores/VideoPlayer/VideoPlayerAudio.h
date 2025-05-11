@@ -63,13 +63,15 @@ public:
 
   double GetCurrentPts() override
   {
-    std::unique_lock<CCriticalSection> lock(m_info_section);
+    std::lock_guard lock(m_info_section);
+
     return m_info.pts;
   }
 
   double GetCurrentFramePts() override
   {
-    std::unique_lock<CCriticalSection> lock(m_info_section);
+    std::lock_guard lock(m_info_section);
+    
     return m_info.fpts;
   }
 

@@ -78,7 +78,8 @@ namespace XBMCAddon
       bool HasRegisteredAddonClassInstance(AddonClass* obj);
       inline bool HasRegisteredAddonClasses()
       {
-        std::unique_lock<CCriticalSection> l(*this);
+        std::lock_guard l(*this);
+
         return !currentObjects.empty();
       }
 

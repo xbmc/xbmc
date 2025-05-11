@@ -2475,7 +2475,7 @@ int CAMLCodec::m_pollDevice;
 
 int CAMLCodec::PollFrame()
 {
-  std::lock_guard<std::mutex> lock(pollSyncMutex);
+  std::lock_guard lock(pollSyncMutex);
 
   if (m_pollDevice < 0)
     return 0;
@@ -2496,7 +2496,7 @@ int CAMLCodec::PollFrame()
 
 void CAMLCodec::SetPollDevice(int dev)
 {
-  std::lock_guard<std::mutex> lock(pollSyncMutex);
+  std::lock_guard lock(pollSyncMutex);
   m_pollDevice = dev;
 }
 

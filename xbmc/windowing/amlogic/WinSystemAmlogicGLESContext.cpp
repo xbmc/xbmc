@@ -87,9 +87,9 @@ bool CWinSystemAmlogicGLESContext::CreateNewWindow(const std::string& name,
 
   // If changing in or out of Dolby Vision and it is on then make sure we do a mode swtich - TODO: combine with DV InfoFrame?
   StreamHdrType hdrType = CServiceBroker::GetWinSystem()->GetGfxContext().GetHDRType();
-  bool force_mode_switch_by_dv = 
-      ((hdrType != m_hdrType) &&
-       ((hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) || (m_hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)) &&
+  bool force_mode_switch_by_dv =
+         ((hdrType != m_hdrType) &&
+          ((hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) || (m_hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)) &&
        (aml_dv_mode() != DV_MODE_OFF));
 
   // get current used resolution
@@ -167,7 +167,8 @@ bool CWinSystemAmlogicGLESContext::CreateNewWindow(const std::string& name,
 
   if (!m_delayDispReset)
   {
-    std::unique_lock<CCriticalSection> lock(m_resourceSection);
+    std::lock_guard lock(m_resourceSection);
+
     // tell any shared resources
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();
@@ -208,7 +209,9 @@ void CWinSystemAmlogicGLESContext::PresentRenderImpl(bool rendered)
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {
     m_delayDispReset = false;
-    std::unique_lock<CCriticalSection> lock(m_resourceSection);
+
+    std::lock_guard lock(m_resourceSection);
+
     // tell any shared resources
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();

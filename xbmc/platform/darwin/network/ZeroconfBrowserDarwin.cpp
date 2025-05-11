@@ -119,7 +119,8 @@ CZeroconfBrowserDarwin::CZeroconfBrowserDarwin()
 
 CZeroconfBrowserDarwin::~CZeroconfBrowserDarwin()
 {
-  std::unique_lock<CCriticalSection> lock(m_data_guard);
+  std::lock_guard lock(m_data_guard);
+
   //make sure there are no browsers anymore
   for (const auto& it : m_service_browsers)
     doRemoveServiceType(it.first);
@@ -186,7 +187,8 @@ void CZeroconfBrowserDarwin::BrowserCallback(CFNetServiceBrowserRef browser, CFO
 void CZeroconfBrowserDarwin::
 addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZeroconfBrowser::ZeroconfService const &fcr_service)
 {
-  std::unique_lock<CCriticalSection> lock(m_data_guard);
+  std::lock_guard lock(m_data_guard);
+
   tDiscoveredServicesMap::iterator browserIt = m_discovered_services.find(browser);
   if (browserIt == m_discovered_services.end())
   {
@@ -210,7 +212,8 @@ addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZeroc
 void CZeroconfBrowserDarwin::
 removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZeroconfBrowser::ZeroconfService const &fcr_service)
 {
-  std::unique_lock<CCriticalSection> lock(m_data_guard);
+  std::lock_guard lock(m_data_guard);
+
   tDiscoveredServicesMap::iterator browserIt = m_discovered_services.find(browser);
   assert(browserIt != m_discovered_services.end());
   //search this service
@@ -266,7 +269,8 @@ bool CZeroconfBrowserDarwin::doAddServiceType(const std::string& fcr_service_typ
   else
   {
     //store the browser
-    std::unique_lock<CCriticalSection> lock(m_data_guard);
+    std::lock_guard lock(m_data_guard);
+
     m_service_browsers.insert(std::make_pair(fcr_service_type, p_browser));
   }
 
@@ -278,7 +282,8 @@ bool CZeroconfBrowserDarwin::doRemoveServiceType(const std::string &fcr_service_
   //search for this browser and remove it from the map
   CFNetServiceBrowserRef browser = 0;
   {
-    std::unique_lock<CCriticalSection> lock(m_data_guard);
+    std::lock_guard lock(m_data_guard);
+
     tBrowserMap::iterator it = m_service_browsers.find(fcr_service_type);
     if (it == m_service_browsers.end())
       return false;
@@ -295,7 +300,8 @@ bool CZeroconfBrowserDarwin::doRemoveServiceType(const std::string &fcr_service_
   CFNetServiceBrowserInvalidate(browser);
   //remove the services of this browser
   {
-    std::unique_lock<CCriticalSection> lock(m_data_guard);
+    std::lock_guard lock(m_data_guard);
+
     tDiscoveredServicesMap::iterator it = m_discovered_services.find(browser);
     if (it != m_discovered_services.end())
       m_discovered_services.erase(it);
@@ -308,7 +314,9 @@ bool CZeroconfBrowserDarwin::doRemoveServiceType(const std::string &fcr_service_
 std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowserDarwin::doGetFoundServices()
 {
   std::vector<CZeroconfBrowser::ZeroconfService> ret;
-  std::unique_lock<CCriticalSection> lock(m_data_guard);
+
+  std::lock_guard lock(m_data_guard);
+
   for (const auto& it : m_discovered_services)
   {
     const auto& services = it.second;

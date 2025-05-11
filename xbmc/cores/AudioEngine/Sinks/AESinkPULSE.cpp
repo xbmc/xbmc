@@ -258,7 +258,8 @@ static void SinkCallback(pa_context* c,
   if (!p)
     return;
 
-  std::unique_lock<CCriticalSection> lock(p->m_sec);
+  std::lock_guard lock(p->m_sec);
+
   if (p->IsInitialized())
   {
     if ((t & PA_SUBSCRIPTION_EVENT_FACILITY_MASK) == PA_SUBSCRIPTION_EVENT_SINK)
@@ -291,7 +292,8 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
   if(!p)
     return;
 
-  std::unique_lock<CCriticalSection> lock(p->m_sec);
+  std::lock_guard lock(p->m_sec);
+
   if (p->IsInitialized())
   {
     if ((t & PA_SUBSCRIPTION_EVENT_FACILITY_MASK) == PA_SUBSCRIPTION_EVENT_SINK_INPUT)
@@ -712,7 +714,8 @@ bool CDriverMonitor::Start(bool allowPipeWireCompatServer)
 
   m_isInit = true;
 
-  std::unique_lock<CCriticalSection> lock(m_sec);
+  std::lock_guard lock(m_sec);
+
   // Register Callback for Sink changes
   pa_context_set_subscribe_callback(m_pContext, SinkCallback, this);
   const pa_subscription_mask_t mask = pa_subscription_mask_t(PA_SUBSCRIPTION_MASK_SINK);
@@ -800,7 +803,8 @@ CAESinkPULSE::~CAESinkPULSE()
 bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_sec);
+    std::lock_guard lock(m_sec);
+
     m_IsAllocated = false;
   }
   m_passthrough = false;
@@ -1020,7 +1024,8 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   {
-    std::unique_lock<CCriticalSection> lock(m_sec);
+    std::lock_guard lock(m_sec);
+
     // Register Callback for Sink changes
     pa_context_set_subscribe_callback(m_Context, SinkChangedCallback, this);
     const pa_subscription_mask_t mask = pa_subscription_mask_t(PA_SUBSCRIPTION_MASK_SINK_INPUT);
@@ -1044,7 +1049,8 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   // Cork stream will resume when adding first package
   Pause(true);
   {
-    std::unique_lock<CCriticalSection> lock(m_sec);
+    std::lock_guard lock(m_sec);
+
     m_IsAllocated = true;
   }
   return true;
@@ -1052,7 +1058,8 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
 void CAESinkPULSE::Deinitialize()
 {
-  std::unique_lock<CCriticalSection> lock(m_sec);
+  std::lock_guard lock(m_sec);
+
   m_IsAllocated = false;
   m_passthrough = false;
   m_periodSize = 0;
@@ -1304,7 +1311,8 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
 bool CAESinkPULSE::IsInitialized()
 {
-  std::unique_lock<CCriticalSection> lock(m_sec);
+  std::lock_guard lock(m_sec);
+  
   return m_IsAllocated;
 }
 

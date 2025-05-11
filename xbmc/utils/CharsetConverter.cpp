@@ -160,7 +160,8 @@ CConverterType::CConverterType(const CConverterType& other) : CCriticalSection()
 
 CConverterType::~CConverterType()
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
+
   if (m_iconv != NO_ICONV)
     iconv_close(m_iconv);
   lock.unlock(); // ensure unlocking before final destruction
@@ -192,6 +193,7 @@ iconv_t CConverterType::GetConverter(std::unique_lock<CCriticalSection>& convert
 void CConverterType::Reset(void)
 {
   std::unique_lock<CCriticalSection> lock(*this);
+
   if (m_iconv != NO_ICONV)
   {
     iconv_close(m_iconv);
@@ -208,6 +210,7 @@ void CConverterType::Reset(void)
 void CConverterType::ReinitTo(const std::string& sourceCharset, const std::string& targetCharset, unsigned int targetSingleCharMaxLen /*= 1*/)
 {
   std::unique_lock<CCriticalSection> lock(*this);
+
   if (sourceCharset != m_sourceCharset || targetCharset != m_targetCharset)
   {
     if (m_iconv != NO_ICONV)
@@ -327,6 +330,7 @@ bool CCharsetConverter::CInnerConverter::stdConvert(StdConversionType convertTyp
     return false;
 
   CConverterType& convType = m_stdConversion[convertType];
+
   std::unique_lock<CCriticalSection> converterLock(convType);
 
   return convert(convType.GetConverter(converterLock), convType.GetTargetSingleCharMaxLen(), strSource, strDest, failOnInvalidChar);
@@ -489,7 +493,8 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(
   size_t lineStart = 0;
 
   // libfribidi is not threadsafe, so make sure we make it so
-  std::unique_lock<CCriticalSection> lock(m_critSectionFriBiDi);
+  std::lock_guard lock(m_critSectionFriBiDi);
+
   do
   {
     size_t lineEnd = stringSrc.find('\n', lineStart);

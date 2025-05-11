@@ -141,7 +141,7 @@ bool CProfileManager::Load()
   bool ret = true;
   const std::string file = PROFILES_FILE;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
 
   // clear out our profiles
   m_profiles.clear();
@@ -226,7 +226,7 @@ bool CProfileManager::Save() const
 {
   const std::string file = PROFILES_FILE;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
 
   CXBMCTinyXML xmlDoc;
   TiXmlElement xmlRootElement(XML_PROFILES);
@@ -248,7 +248,8 @@ bool CProfileManager::Save() const
 
 void CProfileManager::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   m_usingLoginScreen = false;
   m_profileLoadedForLogin = false;
   m_previousProfileLoadedForLogin = false;
@@ -292,7 +293,8 @@ bool CProfileManager::LoadProfile(unsigned int index)
     return true;
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
+
   // check if the index is valid or not
   if (index >= m_profiles.size())
     return false;
@@ -472,7 +474,8 @@ void CProfileManager::LogOff()
 
 bool CProfileManager::DeleteProfile(unsigned int index)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   const CProfile *profile = GetProfile(index);
   if (profile == NULL)
     return false;
@@ -540,7 +543,8 @@ void CProfileManager::CreateProfileFolders()
 
 const CProfile& CProfileManager::GetMasterProfile() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   if (!m_profiles.empty())
     return m_profiles[0];
 
@@ -550,7 +554,8 @@ const CProfile& CProfileManager::GetMasterProfile() const
 
 const CProfile& CProfileManager::GetCurrentProfile() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   if (m_currentProfile < m_profiles.size())
     return m_profiles[m_currentProfile];
 
@@ -560,7 +565,8 @@ const CProfile& CProfileManager::GetCurrentProfile() const
 
 const CProfile* CProfileManager::GetProfile(unsigned int index) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   if (index < m_profiles.size())
     return &m_profiles[index];
 
@@ -569,7 +575,8 @@ const CProfile* CProfileManager::GetProfile(unsigned int index) const
 
 CProfile* CProfileManager::GetProfile(unsigned int index)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   if (index < m_profiles.size())
     return &m_profiles[index];
 
@@ -578,7 +585,8 @@ CProfile* CProfileManager::GetProfile(unsigned int index)
 
 int CProfileManager::GetProfileIndex(const std::string &name) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   for (int i = 0; i < static_cast<int>(m_profiles.size()); i++)
   {
     if (StringUtils::EqualsNoCase(m_profiles[i].getName(), name))
@@ -591,7 +599,8 @@ int CProfileManager::GetProfileIndex(const std::string &name) const
 void CProfileManager::AddProfile(const CProfile &profile)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_critical);
+    std::lock_guard lock(m_critical);
+
     // data integrity check - covers off migration from old profiles.xml,
     // incrementing of the m_nextIdProfile,and bad data coming in
     m_nextProfileId = std::max(m_nextProfileId, profile.getId() + 1);
@@ -603,7 +612,8 @@ void CProfileManager::AddProfile(const CProfile &profile)
 
 void CProfileManager::UpdateCurrentProfileDate()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   if (m_currentProfile < m_profiles.size())
   {
     m_profiles[m_currentProfile].setDate();
@@ -614,7 +624,8 @@ void CProfileManager::UpdateCurrentProfileDate()
 
 void CProfileManager::LoadMasterProfileForLogin()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   // save the previous user
   m_lastUsedProfile = m_currentProfile;
   if (m_currentProfile != 0)
@@ -631,7 +642,8 @@ void CProfileManager::LoadMasterProfileForLogin()
 
 bool CProfileManager::GetProfileName(const unsigned int profileId, std::string& name) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   const CProfile *profile = GetProfile(profileId);
   if (!profile)
     return false;
@@ -740,7 +752,8 @@ void CProfileManager::OnSettingAction(const std::shared_ptr<const CSetting>& set
 void CProfileManager::SetCurrentProfileId(unsigned int profileId)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_critical);
+    std::lock_guard lock(m_critical);
+    
     m_currentProfile = profileId;
     CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
   }

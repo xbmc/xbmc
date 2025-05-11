@@ -2256,7 +2256,7 @@ void CFileItemList::SetIgnoreURLOptions(bool ignoreURLOptions)
 
 void CFileItemList::SetFastLookup(bool fastLookup)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   if (fastLookup && !m_fastLookup)
   { // generate the map
@@ -2274,7 +2274,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
 
 bool CFileItemList::Contains(const std::string& fileName) const
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   if (m_fastLookup)
     return m_map.find(m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName) != m_map.end();
@@ -2291,7 +2291,7 @@ bool CFileItemList::Contains(const std::string& fileName) const
 
 void CFileItemList::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   ClearItems();
   m_sortDescription.sortBy = SortByNone;
@@ -2306,7 +2306,8 @@ void CFileItemList::Clear()
 
 void CFileItemList::ClearItems()
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   // make sure we free the memory of the items (these are GUIControls which may have allocated resources)
   FreeMemory();
   for (unsigned int i = 0; i < m_items.size(); i++)
@@ -2320,7 +2321,8 @@ void CFileItemList::ClearItems()
 
 void CFileItemList::Add(CFileItemPtr pItem)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   if (m_fastLookup)
     m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
   m_items.emplace_back(std::move(pItem));
@@ -2328,7 +2330,8 @@ void CFileItemList::Add(CFileItemPtr pItem)
 
 void CFileItemList::Add(CFileItem&& item)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   auto ptr = std::make_shared<CFileItem>(std::move(item));
   if (m_fastLookup)
     m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(ptr->GetPath()).GetWithoutOptions() : ptr->GetPath(), ptr));
@@ -2337,7 +2340,7 @@ void CFileItemList::Add(CFileItem&& item)
 
 void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   if (itemPosition >= 0)
   {
@@ -2355,7 +2358,7 @@ void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 
 void CFileItemList::Remove(CFileItem* pItem)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
   {
@@ -2374,13 +2377,14 @@ void CFileItemList::Remove(CFileItem* pItem)
 VECFILEITEMS::iterator CFileItemList::erase(VECFILEITEMS::iterator first,
                                             VECFILEITEMS::iterator last)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   return m_items.erase(first, last);
 }
 
 void CFileItemList::Remove(int iItem)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   if (iItem >= 0 && iItem < Size())
   {
@@ -2395,7 +2399,7 @@ void CFileItemList::Remove(int iItem)
 
 void CFileItemList::Append(const CFileItemList& itemlist)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   for (int i = 0; i < itemlist.Size(); ++i)
     Add(itemlist[i]);
@@ -2403,7 +2407,8 @@ void CFileItemList::Append(const CFileItemList& itemlist)
 
 void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   if (!append)
     Clear();
   Append(itemlist);
@@ -2446,7 +2451,7 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
 
 CFileItemPtr CFileItemList::Get(int iItem) const
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   if (iItem > -1 && iItem < (int)m_items.size())
     return m_items[iItem];
@@ -2456,7 +2461,7 @@ CFileItemPtr CFileItemList::Get(int iItem) const
 
 CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   if (m_fastLookup)
   {
@@ -2480,31 +2485,36 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 
 int CFileItemList::Size() const
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   return (int)m_items.size();
 }
 
 bool CFileItemList::IsEmpty() const
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   return m_items.empty();
 }
 
 void CFileItemList::Reserve(size_t iCount)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   m_items.reserve(iCount);
 }
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   std::stable_sort(m_items.begin(), m_items.end(), func);
 }
 
 void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   std::for_each(m_items.begin(), m_items.end(), func);
 }
 
@@ -2571,13 +2581,15 @@ void CFileItemList::Sort(SortDescription sortDescription)
 
 void CFileItemList::Randomize()
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   KODI::UTILS::RandomShuffle(m_items.begin(), m_items.end());
 }
 
 void CFileItemList::Archive(CArchive& ar)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   if (ar.IsStoring())
   {
     CFileItem::Archive(ar);
@@ -2701,7 +2713,8 @@ void CFileItemList::Archive(CArchive& ar)
 
 void CFileItemList::FillInDefaultIcons()
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
     CFileItemPtr pItem = m_items[i];
@@ -2711,7 +2724,8 @@ void CFileItemList::FillInDefaultIcons()
 
 int CFileItemList::GetFolderCount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   int nFolderCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -2725,7 +2739,7 @@ int CFileItemList::GetFolderCount() const
 
 int CFileItemList::GetObjectCount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   int numObjects = (int)m_items.size();
   if (numObjects && m_items[0]->IsParentFolder())
@@ -2736,7 +2750,8 @@ int CFileItemList::GetObjectCount() const
 
 int CFileItemList::GetFileCount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   int nFileCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -2750,7 +2765,8 @@ int CFileItemList::GetFileCount() const
 
 int CFileItemList::GetSelectedCount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   int count = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -2764,7 +2780,8 @@ int CFileItemList::GetSelectedCount() const
 
 void CFileItemList::FilterCueItems()
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   // Handle .CUE sheet files...
   std::vector<std::string> itemstodelete;
   for (int i = 0; i < (int)m_items.size(); i++)
@@ -2856,14 +2873,15 @@ void CFileItemList::FilterCueItems()
 // Remove the extensions from the filenames
 void CFileItemList::RemoveExtensions()
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   for (int i = 0; i < Size(); ++i)
     m_items[i]->RemoveExtension();
 }
 
 void CFileItemList::Stack(bool stackFiles /* = true */)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   // not allowed here
   if (IsVirtualDirectoryRoot() ||
@@ -3977,7 +3995,8 @@ bool CFileItemList::UpdateItem(const CFileItem *item)
   if (!item)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
+
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];

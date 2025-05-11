@@ -351,13 +351,15 @@ bool CWinSystemIOS::EndRender()
 
 void CWinSystemIOS::Register(IDispResource *resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   m_resources.push_back(resource);
 }
 
 void CWinSystemIOS::Unregister(IDispResource* resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
@@ -365,7 +367,8 @@ void CWinSystemIOS::Unregister(IDispResource* resource)
 
 void CWinSystemIOS::OnAppFocusChange(bool focus)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   m_bIsBackgrounded = !focus;
   CLog::Log(LOGDEBUG, "CWinSystemIOS::OnAppFocusChange: {}", focus ? 1 : 0);
   for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)

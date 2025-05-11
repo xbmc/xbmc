@@ -41,7 +41,7 @@ SettingPtr CSettingPath::Clone(const std::string &id) const
 
 bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  std::unique_lock<CSharedSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
 
   if (!CSettingString::Deserialize(node, update))
     return false;
@@ -137,7 +137,8 @@ void CSettingPath::copy(const CSettingPath& setting)
 {
   CSettingString::Copy(setting);
 
-  std::unique_lock<CSharedSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+  
   m_writable = setting.m_writable;
   m_sources = setting.m_sources;
   m_hideExtension = setting.m_hideExtension;

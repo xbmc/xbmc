@@ -51,7 +51,8 @@ bool CLanguageInvokerThread::execute(const std::string &script, const std::vecto
 
   if (CThread::IsRunning())
   {
-    std::unique_lock<std::mutex> lck(m_mutex);
+    std::lock_guard lck(m_mutex);
+
     m_restart = true;
     m_condition.notify_one();
   }
@@ -104,7 +105,8 @@ void CLanguageInvokerThread::Process()
   if (m_invoker == NULL)
     return;
 
-  std::unique_lock<std::mutex> lckdl(m_mutex);
+  std::unique_lock lckdl(m_mutex);
+  
   do
   {
     m_restart = false;

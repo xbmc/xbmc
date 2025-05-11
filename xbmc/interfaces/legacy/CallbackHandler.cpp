@@ -38,14 +38,15 @@ namespace XBMCAddon
   void RetardedAsyncCallbackHandler::invokeCallback(Callback* cb)
   {
     XBMC_TRACE;
-    std::unique_lock<CCriticalSection> lock(critSection);
+    std::lock_guard lock(critSection);
+
     g_callQueue.push_back(new AsyncCallbackMessage(cb,this));
   }
 
   RetardedAsyncCallbackHandler::~RetardedAsyncCallbackHandler()
   {
     XBMC_TRACE;
-    std::unique_lock<CCriticalSection> lock(critSection);
+    std::lock_guard lock(critSection);
 
     // find any messages that might be there because of me ... and remove them
     CallbackQueue::iterator iter = g_callQueue.begin();
@@ -64,7 +65,8 @@ namespace XBMCAddon
   void RetardedAsyncCallbackHandler::makePendingCalls()
   {
     XBMC_TRACE;
-    std::unique_lock<CCriticalSection> lock(critSection);
+    std::unique_lock lock(critSection);
+
     CallbackQueue::iterator iter = g_callQueue.begin();
     while (iter != g_callQueue.end())
     {
@@ -94,7 +96,9 @@ namespace XBMCAddon
 #endif
           AddonClass* obj = (p->cb->getObject());
           AddonClass::Ref<AddonClass> ref(obj);
-          std::unique_lock<CCriticalSection> lock2(*obj);
+
+          std::lock_guard lock2(*obj);
+
           if (!p->cb->getObject()->isDeallocating())
           {
             try
@@ -125,7 +129,8 @@ namespace XBMCAddon
   void RetardedAsyncCallbackHandler::clearPendingCalls(void* userData)
   {
     XBMC_TRACE;
-    std::unique_lock<CCriticalSection> lock(critSection);
+    std::lock_guard lock(critSection);
+
     CallbackQueue::iterator iter = g_callQueue.begin();
     while (iter != g_callQueue.end())
     {

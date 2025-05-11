@@ -62,7 +62,8 @@ void CBinaryAddonCache::GetDisabledAddons(VECADDONS& addons, AddonType type)
 
 void CBinaryAddonCache::GetInstalledAddons(VECADDONS& addons, AddonType type)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   auto it = m_addons.find(type);
   if (it != m_addons.end())
     addons = it->second;
@@ -72,7 +73,7 @@ AddonPtr CBinaryAddonCache::GetAddonInstance(const std::string& strId, AddonType
 {
   AddonPtr addon;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   auto it = m_addons.find(type);
   if (it != m_addons.end())
@@ -125,7 +126,8 @@ void CBinaryAddonCache::Update()
   }
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
+    
     m_addons = std::move(addonmap);
   }
 }

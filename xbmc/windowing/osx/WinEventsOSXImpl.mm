@@ -54,7 +54,8 @@
 
 - (void)MessagePush:(XBMC_Event*)newEvent
 {
-  std::unique_lock<CCriticalSection> lock(m_inputlock);
+  std::lock_guard lock(m_inputlock);
+
   events.emplace(*newEvent);
 }
 
@@ -71,7 +72,8 @@
     // deeper message loop and call the deeper MessagePump from there.
     XBMC_Event pumpEvent = {};
     {
-      std::unique_lock<CCriticalSection> lock(m_inputlock);
+      std::lock_guard lock(m_inputlock);
+
       if (events.size() == 0)
         return ret;
       pumpEvent = events.front();
@@ -86,7 +88,8 @@
 
 - (size_t)GetQueueSize
 {
-  std::unique_lock<CCriticalSection> lock(m_inputlock);
+  std::lock_guard lock(m_inputlock);
+
   return events.size();
 }
 

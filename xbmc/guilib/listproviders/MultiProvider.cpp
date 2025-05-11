@@ -48,7 +48,8 @@ bool CMultiProvider::Update(bool forceRefresh)
 
 void CMultiProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   std::vector<std::shared_ptr<CGUIListItem>> subItems;
   items.clear();
   m_itemMap.clear();
@@ -76,7 +77,8 @@ bool CMultiProvider::IsUpdating() const
 void CMultiProvider::Reset()
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
+
     m_itemMap.clear();
   }
 
@@ -86,7 +88,8 @@ void CMultiProvider::Reset()
 
 bool CMultiProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   auto key = GetItemKey(item);
   auto it = m_itemMap.find(key);
   if (it != m_itemMap.end())
@@ -97,7 +100,8 @@ bool CMultiProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
 
 bool CMultiProvider::OnInfo(const std::shared_ptr<CGUIListItem>& item)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   auto key = GetItemKey(item);
   auto it = m_itemMap.find(key);
   if (it != m_itemMap.end())
@@ -108,7 +112,8 @@ bool CMultiProvider::OnInfo(const std::shared_ptr<CGUIListItem>& item)
 
 bool CMultiProvider::OnContextMenu(const std::shared_ptr<CGUIListItem>& item)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+  
   auto key = GetItemKey(item);
   auto it = m_itemMap.find(key);
   if (it != m_itemMap.end())

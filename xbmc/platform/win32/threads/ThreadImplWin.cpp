@@ -97,7 +97,8 @@ bool CThreadImplWin::SetPriority(const ThreadPriority& priority)
 {
   bool bReturn = false;
 
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+
   if (m_handle)
     bReturn = SetThreadPriority(m_handle, ThreadPriorityToNativePriority(priority)) == TRUE;
 

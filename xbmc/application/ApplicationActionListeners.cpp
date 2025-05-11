@@ -21,7 +21,8 @@ CApplicationActionListeners::CApplicationActionListeners(CCriticalSection& secti
 
 void CApplicationActionListeners::RegisterActionListener(KODI::ACTION::IActionListener* listener)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   const auto it = std::find(m_actionListeners.begin(), m_actionListeners.end(), listener);
   if (it == m_actionListeners.end())
     m_actionListeners.push_back(listener);
@@ -29,7 +30,8 @@ void CApplicationActionListeners::RegisterActionListener(KODI::ACTION::IActionLi
 
 void CApplicationActionListeners::UnregisterActionListener(KODI::ACTION::IActionListener* listener)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   auto it = std::find(m_actionListeners.begin(), m_actionListeners.end(), listener);
   if (it != m_actionListeners.end())
     m_actionListeners.erase(it);
@@ -37,7 +39,8 @@ void CApplicationActionListeners::UnregisterActionListener(KODI::ACTION::IAction
 
 bool CApplicationActionListeners::NotifyActionListeners(const CAction& action) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   for (const auto& listener : m_actionListeners)
   {
     if (listener->OnAction(action))

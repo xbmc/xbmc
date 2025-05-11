@@ -3175,7 +3175,8 @@ void CVideoPlayer::SetPlaySpeed(int speed)
 
 bool CVideoPlayer::CanPause() const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return m_State.canpause;
 }
 
@@ -3219,7 +3220,8 @@ bool CVideoPlayer::IsPassthrough() const
 
 bool CVideoPlayer::CanSeek() const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return m_State.canseek;
 }
 
@@ -3421,7 +3423,9 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     double dDiffVideoFrameMovingAverage = sumVideoFrame / filled;
 
     std::string strBuf;
-    std::unique_lock<CCriticalSection> lock(m_StateSection);
+
+    std::lock_guard lock(m_StateSection);
+
     if (m_State.cache_bytes >= 0)
     {
       strBuf += StringUtils::Format("fwd: {} / {:2.0f}% / {:6.3f}s / {:.3f}%",
@@ -3482,7 +3486,8 @@ float CVideoPlayer::GetPercentage()
 
 float CVideoPlayer::GetCachePercentage() const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return (float) (m_State.cache_offset * 100); // NOTE: Percentage returned is relative
 }
 
@@ -3621,7 +3626,8 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
 // return the time in milliseconds
 int64_t CVideoPlayer::GetTime()
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return llrint(m_State.time);
 }
 
@@ -4773,19 +4779,22 @@ bool CVideoPlayer::IsInMenuInternal() const
 
 bool CVideoPlayer::IsInMenu() const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return m_State.isInMenu;
 }
 
 MenuType CVideoPlayer::GetSupportedMenuType() const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return m_State.menuType;
 }
 
 std::string CVideoPlayer::GetPlayerState()
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return m_State.player_state;
 }
 
@@ -4797,19 +4806,22 @@ bool CVideoPlayer::SetPlayerState(const std::string& state)
 
 int CVideoPlayer::GetChapterCount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return m_State.chapters.size();
 }
 
 int CVideoPlayer::GetChapter() const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return m_State.chapter;
 }
 
 void CVideoPlayer::GetChapterName(std::string& strChapterName, int chapterIdx) const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   if (chapterIdx == -1 && m_State.chapter > 0 && m_State.chapter <= (int) m_State.chapters.size())
     strChapterName = m_State.chapters[m_State.chapter - 1].first;
   else if (chapterIdx > 0 && chapterIdx <= (int) m_State.chapters.size())
@@ -4835,7 +4847,8 @@ int CVideoPlayer::SeekChapter(int iChapter)
 
 int64_t CVideoPlayer::GetChapterPos(int chapterIdx) const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   if (chapterIdx > 0 && chapterIdx <= (int) m_State.chapters.size())
     return m_State.chapters[chapterIdx - 1].second;
 
@@ -4862,13 +4875,15 @@ void CVideoPlayer::AddSubtitle(const std::string& strSubPath)
 
 bool CVideoPlayer::IsCaching() const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return !m_State.isInMenu && m_State.caching;
 }
 
 int CVideoPlayer::GetCacheLevel() const
 {
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   return (int)(m_State.cache_level * 100);
 }
 
@@ -5171,7 +5186,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   m_processInfo->SetPlayTimes(state.startTime, state.time, state.timeMin, state.timeMax);
 
-  std::unique_lock<CCriticalSection> lock(m_StateSection);
+  std::lock_guard lock(m_StateSection);
+
   m_State = state;
 }
 
@@ -5389,14 +5405,15 @@ void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item)
 
 void CVideoPlayer::UpdateContent()
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
+
   m_content.m_selectionStreams = m_SelectionStreams;
   m_content.m_programs = m_programs;
 }
 
 void CVideoPlayer::UpdateContentState()
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
 
   m_content.m_videoIndex = m_SelectionStreams.TypeIndexOf(STREAM_VIDEO, m_CurrentVideo.source,
                                                       m_CurrentVideo.demuxerId, m_CurrentVideo.id);
@@ -5428,7 +5445,7 @@ void CVideoPlayer::UpdateContentState()
 
 void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
 
   if (streamId == CURRENT_STREAM)
     streamId = m_content.m_videoIndex;
@@ -5461,13 +5478,15 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
 
 int CVideoPlayer::GetVideoStreamCount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
+
   return m_content.m_selectionStreams.CountType(STREAM_VIDEO);
 }
 
 int CVideoPlayer::GetVideoStream() const
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
+
   return m_content.m_videoIndex;
 }
 
@@ -5480,7 +5499,7 @@ void CVideoPlayer::SetVideoStream(int iStream)
 
 void CVideoPlayer::GetAudioStreamInfo(int index, AudioStreamInfo& info) const
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
 
   if (index == CURRENT_STREAM)
     index = m_content.m_audioIndex;
@@ -5507,13 +5526,15 @@ void CVideoPlayer::GetAudioStreamInfo(int index, AudioStreamInfo& info) const
 
 int CVideoPlayer::GetAudioStreamCount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
+
   return m_content.m_selectionStreams.CountType(STREAM_AUDIO);
 }
 
 int CVideoPlayer::GetAudioStream()
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
+
   return m_content.m_audioIndex;
 }
 
@@ -5526,7 +5547,7 @@ void CVideoPlayer::SetAudioStream(int iStream)
 
 void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
 
   if (index == CURRENT_STREAM)
     index = m_content.m_subtitleIndex;
@@ -5557,19 +5578,22 @@ void CVideoPlayer::SetSubtitle(int iStream)
 
 int CVideoPlayer::GetSubtitleCount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
+
   return m_content.m_selectionStreams.CountType(STREAM_SUBTITLE);
 }
 
 int CVideoPlayer::GetSubtitle()
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
+
   return m_content.m_subtitleIndex;
 }
 
 int CVideoPlayer::GetPrograms(std::vector<ProgramInfo>& programs)
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
+
   programs = m_programs;
   return programs.size();
 }
@@ -5581,7 +5605,8 @@ void CVideoPlayer::SetProgram(int progId)
 
 int CVideoPlayer::GetProgramsCount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_content.m_section);
+  std::lock_guard lock(m_content.m_section);
+
   return m_programs.size();
 }
 

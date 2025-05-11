@@ -54,16 +54,18 @@ TEST(TestCritSection, General)
 {
   CCriticalSection sec;
 
-  std::unique_lock<CCriticalSection> l1(sec);
-  std::unique_lock<CCriticalSection> l2(sec);
+  std::lock_guard l1(sec);
+
+  std::lock_guard l2(sec);
 }
 
 TEST(TestSharedSection, General)
 {
   CSharedSection sec;
 
-  std::shared_lock<CSharedSection> l1(sec);
-  std::shared_lock<CSharedSection> l2(sec);
+  std::shared_lock l1(sec);
+
+  std::shared_lock l2(sec);
 }
 
 TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
@@ -73,9 +75,9 @@ TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
 
   CSharedSection sec;
 
-  std::shared_lock<CSharedSection> l1(sec); // get a shared lock
+  std::shared_lock l1(sec); // get a shared lock
 
-  locker<std::unique_lock<CSharedSection>> l2(sec, &mutex);
+  locker<std::lock_guard> l2(sec, &mutex);
   thread waitThread1(l2); // try to get an exclusive lock
 
   EXPECT_TRUE(waitForThread(mutex, 1, 10000ms));
@@ -133,7 +135,8 @@ TEST(TestSharedSection, TwoCase)
 
   locker<std::shared_lock<CSharedSection>> l2(sec, &mutex, &event);
   {
-    std::unique_lock<CSharedSection> lock(sec); // get exclusive lock
+    std::unique_lock lock(sec); // get exclusive lock
+
     thread waitThread2(l2); // thread should block
 
     EXPECT_TRUE(waitForThread(mutex, 1, 10000ms));
@@ -181,7 +184,8 @@ TEST(TestMultipleSharedSection, General)
   locker<std::shared_lock<CSharedSection>> l4(sec, &mutex, &event);
   locker<std::shared_lock<CSharedSection>> l5(sec, &mutex, &event);
   {
-    std::unique_lock<CSharedSection> lock(sec);
+    std::unique_lock lock(sec);
+
     thread waitThread1(l2);
     thread waitThread2(l3);
     thread waitThread3(l4);

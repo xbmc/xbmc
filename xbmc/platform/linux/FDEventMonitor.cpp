@@ -27,7 +27,8 @@ CFDEventMonitor::CFDEventMonitor() :
 
 CFDEventMonitor::~CFDEventMonitor()
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::lock_guard lock(m_mutex);
+
   InterruptPoll();
 
   if (m_wakeupfd >= 0)
@@ -50,7 +51,8 @@ CFDEventMonitor::~CFDEventMonitor()
 
 void CFDEventMonitor::AddFD(const MonitoredFD& monitoredFD, int& id)
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::lock_guard lock(m_mutex);
+
   InterruptPoll();
 
   AddFDLocked(monitoredFD, id);
@@ -61,7 +63,8 @@ void CFDEventMonitor::AddFD(const MonitoredFD& monitoredFD, int& id)
 void CFDEventMonitor::AddFDs(const std::vector<MonitoredFD>& monitoredFDs,
                              std::vector<int>& ids)
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::lock_guard lock(m_mutex);
+
   InterruptPoll();
 
   for (unsigned int i = 0; i < monitoredFDs.size(); ++i)
@@ -76,7 +79,8 @@ void CFDEventMonitor::AddFDs(const std::vector<MonitoredFD>& monitoredFDs,
 
 void CFDEventMonitor::RemoveFD(int id)
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::lock_guard lock(m_mutex);
+
   InterruptPoll();
 
   if (m_monitoredFDs.erase(id) != 1)
@@ -90,7 +94,8 @@ void CFDEventMonitor::RemoveFD(int id)
 
 void CFDEventMonitor::RemoveFDs(const std::vector<int>& ids)
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::lock_guard lock(m_mutex);
+
   InterruptPoll();
 
   for (unsigned int i = 0; i < ids.size(); ++i)
@@ -113,8 +118,9 @@ void CFDEventMonitor::Process()
 
   while (!m_bStop)
   {
-    std::unique_lock<CCriticalSection> lock(m_mutex);
-    std::unique_lock<CCriticalSection> pollLock(m_pollMutex);
+    std::unique_lock lock(m_mutex);
+
+    std::lock_guard pollLock(m_pollMutex);
 
     /*
      * Leave the main mutex here to allow another thread to
@@ -237,7 +243,8 @@ void CFDEventMonitor::InterruptPoll()
   if (m_wakeupfd >= 0)
   {
     eventfd_write(m_wakeupfd, 1);
+
     /* wait for the poll() result handling (if any) to end */
-    std::unique_lock<CCriticalSection> pollLock(m_pollMutex);
+    std::lock_guard pollLock(m_pollMutex);
   }
 }

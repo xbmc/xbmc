@@ -124,7 +124,7 @@ void CPVRGUIChannelNavigator::SubscribeToShowInfoEventStream()
 
 void CPVRGUIChannelNavigator::CheckAndPublishPreviewAndPlayerShowInfoChangedEvent()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   const bool currentValue = IsPreview() && m_playerShowInfo;
   if (m_previewAndPlayerShowInfo != currentValue)
@@ -138,7 +138,7 @@ void CPVRGUIChannelNavigator::CheckAndPublishPreviewAndPlayerShowInfoChangedEven
 
 void CPVRGUIChannelNavigator::Notify(const PlayerShowInfoChangedEvent& event)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   m_playerShowInfo = event.m_showInfo;
   CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
@@ -146,7 +146,7 @@ void CPVRGUIChannelNavigator::Notify(const PlayerShowInfoChangedEvent& event)
 
 void CPVRGUIChannelNavigator::SelectNextChannel(ChannelSwitchMode eSwitchMode)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (!m_playerShowInfo && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
   {
@@ -162,7 +162,7 @@ void CPVRGUIChannelNavigator::SelectNextChannel(ChannelSwitchMode eSwitchMode)
 
 void CPVRGUIChannelNavigator::SelectPreviousChannel(ChannelSwitchMode eSwitchMode)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (!m_playerShowInfo && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
   {
@@ -187,7 +187,8 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevCh
         CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bPlayingRadio);
     if (group)
     {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
+      std::lock_guard lock(m_critSection);
+
       return bNext ? group->GetNextChannelGroupMember(m_currentChannel)
                    : group->GetPreviousChannelGroupMember(m_currentChannel);
     }
@@ -200,7 +201,7 @@ void CPVRGUIChannelNavigator::SelectChannel(
 {
   CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(CFileItem(groupMember));
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   m_currentChannel = groupMember;
   ShowInfo(false);
@@ -235,7 +236,7 @@ void CPVRGUIChannelNavigator::SwitchToCurrentChannel()
   std::unique_ptr<CFileItem> item;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
 
     if (m_iChannelEntryJobId >= 0)
     {
@@ -252,13 +253,15 @@ void CPVRGUIChannelNavigator::SwitchToCurrentChannel()
 
 bool CPVRGUIChannelNavigator::IsPreview() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_currentChannel != m_playingChannel;
 }
 
 bool CPVRGUIChannelNavigator::IsPreviewAndShowInfo() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+  
   return m_previewAndPlayerShowInfo;
 }
 
@@ -280,7 +283,7 @@ void CPVRGUIChannelNavigator::ShowInfo(bool bForce)
         .GetPlayerInfoProvider()
         .SetShowInfo(true);
 
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
 
     if (m_iChannelInfoJobId >= 0)
     {
@@ -305,7 +308,7 @@ void CPVRGUIChannelNavigator::HideInfo()
   CFileItemPtr item;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
 
     if (m_iChannelInfoJobId >= 0)
     {
@@ -329,7 +332,7 @@ void CPVRGUIChannelNavigator::HideInfo()
 
 void CPVRGUIChannelNavigator::ToggleInfo()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (m_playerShowInfo)
     HideInfo();
@@ -344,7 +347,7 @@ void CPVRGUIChannelNavigator::SetPlayingChannel(
 
   if (groupMember)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
 
     m_playingChannel = groupMember;
     if (m_currentChannel != m_playingChannel)
@@ -365,7 +368,7 @@ void CPVRGUIChannelNavigator::SetPlayingChannel(
 
 void CPVRGUIChannelNavigator::ClearPlayingChannel()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   m_playingChannel.reset();
   HideInfo();

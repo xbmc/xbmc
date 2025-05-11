@@ -131,7 +131,8 @@ void CGUIDialogCache::Process()
 
       try
       {
-        std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+        std::lock_guard lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
         m_pDlg->Progress();
         if( bSentCancel )
         {

@@ -52,7 +52,7 @@ CDirectoryCache::~CDirectoryCache(void) = default;
 
 bool CDirectoryCache::GetDirectory(const std::string& strPath, CFileItemList &items, bool retrieveAll)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::lock_guard lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath = CURL(strPath).GetWithoutOptions();
@@ -92,7 +92,7 @@ void CDirectoryCache::SetDirectory(const std::string& strPath, const CFileItemLi
   // IDEALLY, any further processing on the item would actually create a new item
   // instead of altering it, but we can't really enforce that in an easy way, so
   // this is the best solution for now.
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::lock_guard lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath = CURL(strPath).GetWithoutOptions();
@@ -119,7 +119,7 @@ void CDirectoryCache::ClearFile(const std::string& strFile)
 
 void CDirectoryCache::ClearDirectory(const std::string& strPath)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::lock_guard lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath = CURL(strPath).GetWithoutOptions();
@@ -130,7 +130,7 @@ void CDirectoryCache::ClearDirectory(const std::string& strPath)
 
 void CDirectoryCache::ClearSubPaths(const std::string& strPath)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::lock_guard lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath = CURL(strPath).GetWithoutOptions();
@@ -147,7 +147,7 @@ void CDirectoryCache::ClearSubPaths(const std::string& strPath)
 
 void CDirectoryCache::AddFile(const std::string& strFile)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::lock_guard lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
   std::string strPath = URIUtils::GetDirectory(CURL(strFile).GetWithoutOptions());
@@ -165,7 +165,8 @@ void CDirectoryCache::AddFile(const std::string& strFile)
 
 bool CDirectoryCache::FileExists(const std::string& strFile, bool& bInCache)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::lock_guard lock(m_cs);
+
   bInCache = false;
 
   // Get rid of any URL options, else the compare may be wrong
@@ -194,7 +195,8 @@ bool CDirectoryCache::FileExists(const std::string& strFile, bool& bInCache)
 void CDirectoryCache::Clear()
 {
   // this routine clears everything
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::lock_guard lock(m_cs);
+
   m_cache.clear();
 }
 
@@ -222,7 +224,7 @@ void CDirectoryCache::ClearCache(std::set<std::string>& dirs)
 
 void CDirectoryCache::CheckIfFull()
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::lock_guard lock(m_cs);
 
   // find the last accessed folder, and remove if the number of cached folders is too many
   auto lastAccessed = m_cache.end();
@@ -245,7 +247,8 @@ void CDirectoryCache::CheckIfFull()
 #ifdef _DEBUG
 void CDirectoryCache::PrintStats() const
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::lock_guard lock(m_cs);
+  
   CLog::Log(LOGDEBUG, "{} - total of {} cache hits, and {} cache misses", __FUNCTION__, m_cacheHits,
             m_cacheMisses);
   // run through and find the oldest and the number of items cached

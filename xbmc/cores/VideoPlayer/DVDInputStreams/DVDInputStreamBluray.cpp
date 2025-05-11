@@ -728,7 +728,9 @@ int CDVDInputStreamBluray::ReadBlocks(uint8_t* buf, int lba, int num_blocks)
     return -1;
   int result = -1;
   int64_t offset = static_cast<int64_t>(lba) * 2048;
-  std::unique_lock<CCriticalSection> lock(m_readBlocksLock);
+
+  std::lock_guard lock(m_readBlocksLock);
+
   if (lpstream->Seek(offset, SEEK_SET) >= 0)
   {
     int64_t size = static_cast<int64_t>(num_blocks) * 2048;

@@ -39,7 +39,7 @@ SettingPtr CSettingAddon::Clone(const std::string &id) const
 
 bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  std::unique_lock<CSharedSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
 
   if (!CSettingString::Deserialize(node, update))
     return false;
@@ -79,6 +79,7 @@ void CSettingAddon::copyaddontype(const CSettingAddon &setting)
 {
   CSettingString::Copy(setting);
 
-  std::unique_lock<CSharedSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+  
   m_addonType = setting.m_addonType;
 }

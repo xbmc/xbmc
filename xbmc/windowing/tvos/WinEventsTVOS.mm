@@ -37,14 +37,15 @@ CWinEventsTVOS::~CWinEventsTVOS()
 
 void CWinEventsTVOS::MessagePush(XBMC_Event* newEvent)
 {
-  std::unique_lock<CCriticalSection> lock(m_eventsCond);
+  std::lock_guard lock(m_eventsCond);
 
   m_events.push_back(*newEvent);
 }
 
 size_t CWinEventsTVOS::GetQueueSize()
 {
-  std::unique_lock<CCriticalSection> lock(g_inputCond);
+  std::lock_guard lock(g_inputCond);
+
   return events.size();
 }
 
@@ -62,7 +63,8 @@ bool CWinEventsTVOS::MessagePump()
     // deeper message loop and call the deeper MessagePump from there.
     XBMC_Event pumpEvent;
     {
-      std::unique_lock<CCriticalSection> lock(g_inputCond);
+      std::lock_guard lock(g_inputCond);
+
       if (events.empty())
         return ret;
       pumpEvent = events.front();

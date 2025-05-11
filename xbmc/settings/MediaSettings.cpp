@@ -72,7 +72,8 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
   if (settings == NULL)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   const TiXmlElement *pElement = settings->FirstChildElement("defaultvideosettings");
   if (pElement != NULL)
   {
@@ -208,7 +209,8 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   if (settings == NULL)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   // default video settings
   TiXmlElement videoSettingsNode("defaultvideosettings");
   TiXmlNode *pNode = settings->InsertEndChild(videoSettingsNode);
@@ -378,7 +380,8 @@ void CMediaSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& set
 
 int CMediaSettings::GetWatchedMode(const std::string &content) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   WatchedModes::const_iterator it = m_watchedModes.find(GetWatchedContent(content));
   if (it != m_watchedModes.end())
     return it->second;
@@ -388,7 +391,8 @@ int CMediaSettings::GetWatchedMode(const std::string &content) const
 
 void CMediaSettings::SetWatchedMode(const std::string &content, WatchedMode mode)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   WatchedModes::iterator it = m_watchedModes.find(GetWatchedContent(content));
   if (it != m_watchedModes.end())
     it->second = mode;
@@ -396,7 +400,8 @@ void CMediaSettings::SetWatchedMode(const std::string &content, WatchedMode mode
 
 void CMediaSettings::CycleWatchedMode(const std::string &content)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+  
   WatchedModes::iterator it = m_watchedModes.find(GetWatchedContent(content));
   if (it != m_watchedModes.end())
   {

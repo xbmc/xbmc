@@ -74,7 +74,8 @@ static void EnumerateDevices()
   CADeviceList devices;
   EnumerateDevices(devices);
   {
-    std::unique_lock<CCriticalSection> lock(s_devicesLock);
+    std::lock_guard lock(s_devicesLock);
+
     s_devices = devices;
   }
 }
@@ -83,7 +84,8 @@ static CADeviceList GetDevices()
 {
   CADeviceList list;
   {
-    std::unique_lock<CCriticalSection> lock(s_devicesLock);
+    std::lock_guard lock(s_devicesLock);
+
     list = s_devices;
   }
   return list;
@@ -423,7 +425,8 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, u
 {
   if (m_buffer->GetWriteSize() < frames * m_frameSizePerPlane)
   { // no space to write - wait for a bit
-    std::unique_lock<CCriticalSection> lock(mutex);
+    std::lock_guard lock(mutex);
+
     auto timeout = std::chrono::milliseconds(900 * frames / m_framesPerSecond);
     if (!m_started)
       timeout = 4500ms;
@@ -456,7 +459,8 @@ void CAESinkDARWINOSX::Drain()
   auto timeout = std::chrono::milliseconds(900 * bytes / (m_framesPerSecond * m_frameSizePerPlane));
   while (bytes && maxNumTimeouts > 0)
   {
-    std::unique_lock<CCriticalSection> lock(mutex);
+    std::lock_guard lock(mutex);
+    
     XbmcThreads::EndTime<> timer(timeout);
     condVar.wait(mutex, timeout);
 

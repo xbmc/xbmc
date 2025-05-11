@@ -51,7 +51,7 @@ CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
 
 bool CDVDMsgGeneralSynchronize::Wait(std::chrono::milliseconds timeout, unsigned int source)
 {
-  std::unique_lock<CCriticalSection> lock(m_p->section);
+  std::unique_lock lock(m_p->section);
 
   XbmcThreads::EndTime<> timer{timeout};
 

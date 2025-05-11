@@ -32,7 +32,8 @@ CSettingsBase::~CSettingsBase()
 
 bool CSettingsBase::Initialize()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   if (m_initialized)
     return false;
 
@@ -135,7 +136,8 @@ void CSettingsBase::Unload()
 
 void CSettingsBase::Uninitialize()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+  
   if (!m_initialized)
     return;
 

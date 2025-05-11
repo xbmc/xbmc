@@ -142,14 +142,16 @@ CLocalizeStrings::~CLocalizeStrings(void) = default;
 void CLocalizeStrings::ClearSkinStrings()
 {
   // clear the skin strings
-  std::unique_lock<CSharedSection> lock(m_stringsMutex);
+  std::lock_guard lock(m_stringsMutex);
+
   Clear(31000, 31999);
 }
 
 bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::string& language)
 {
   //! @todo shouldn't hold lock while loading file
-  std::unique_lock<CSharedSection> lock(m_stringsMutex);
+  std::lock_guard lock(m_stringsMutex);
+
   ClearSkinStrings();
   // load the skin strings in.
   return LoadWithFallback(path, language, m_strings);
@@ -185,7 +187,8 @@ bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& s
   strings[20210].strTranslated = "yard/s";
   strings[20211].strTranslated = "Furlong/Fortnight";
 
-  std::unique_lock<CSharedSection> lock(m_stringsMutex);
+  std::lock_guard lock(m_stringsMutex);
+
   Clear();
   m_strings = std::move(strings);
   return true;
@@ -204,13 +207,15 @@ const std::string& CLocalizeStrings::Get(uint32_t dwCode) const
 
 void CLocalizeStrings::Clear()
 {
-  std::unique_lock<CSharedSection> lock(m_stringsMutex);
+  std::lock_guard lock(m_stringsMutex);
+
   m_strings.clear();
 }
 
 void CLocalizeStrings::Clear(uint32_t start, uint32_t end)
 {
-  std::unique_lock<CSharedSection> lock(m_stringsMutex);
+  std::lock_guard lock(m_stringsMutex);
+
   iStrings it = m_strings.begin();
   while (it != m_strings.end())
   {
@@ -227,7 +232,8 @@ bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::stri
   if (!LoadWithFallback(path, language, strings))
     return false;
 
-  std::unique_lock<CSharedSection> lock(m_addonStringsMutex);
+  std::lock_guard lock(m_addonStringsMutex);
+  
   auto it = m_addonStrings.find(addonId);
   if (it != m_addonStrings.end())
     m_addonStrings.erase(it);

@@ -39,7 +39,7 @@ CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
 
 CAudioSinkAE::~CAudioSinkAE()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 }
 
 bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler)
@@ -49,7 +49,8 @@ bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool
             audioframe.passthrough ? "pass-through" : "no pass-through");
 
   // if passthrough isset do something else
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   unsigned int options = needresampler && !audioframe.passthrough ? AESTREAM_FORCE_RESAMPLE : 0;
   options |= AESTREAM_PAUSED;
 
@@ -74,7 +75,7 @@ bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool
 
 void CAudioSinkAE::Destroy(bool finish)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (m_pAudioStream)
   {
@@ -95,7 +96,7 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
 {
   m_bAbort = false;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   if (!m_pAudioStream)
     return 0;
@@ -165,28 +166,32 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
 
 void CAudioSinkAE::Drain()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (m_pAudioStream)
     m_pAudioStream->Drain(true);
 }
 
 void CAudioSinkAE::SetVolume(float volume)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (m_pAudioStream)
     m_pAudioStream->SetVolume(volume);
 }
 
 void CAudioSinkAE::SetDynamicRangeCompression(long drc)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (m_pAudioStream)
     m_pAudioStream->SetAmplification(powf(10.0f, (float)drc / 2000.0f));
 }
 
 void CAudioSinkAE::Pause()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (m_pAudioStream)
     m_pAudioStream->Pause();
   CLog::Log(LOGDEBUG,"CDVDAudio::Pause - pausing audio stream");
@@ -196,7 +201,8 @@ void CAudioSinkAE::Pause()
 
 void CAudioSinkAE::Resume()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (m_pAudioStream)
     m_pAudioStream->Resume();
   CLog::Log(LOGDEBUG,"CDVDAudio::Resume - resume audio stream");
@@ -204,7 +210,7 @@ void CAudioSinkAE::Resume()
 
 double CAudioSinkAE::GetDelay()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   double delay = 0.3;
   if(m_pAudioStream)
@@ -217,7 +223,8 @@ void CAudioSinkAE::Flush()
 {
   m_bAbort = true;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (m_pAudioStream)
   {
     m_pAudioStream->Flush();
@@ -257,7 +264,8 @@ bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe)
 
 double CAudioSinkAE::GetCacheTime()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (!m_pAudioStream)
     return 0.0;
 
@@ -266,7 +274,8 @@ double CAudioSinkAE::GetCacheTime()
 
 double CAudioSinkAE::GetCacheTotal()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (!m_pAudioStream)
     return 0.0;
   return m_pAudioStream->GetCacheTotal();
@@ -274,7 +283,8 @@ double CAudioSinkAE::GetCacheTotal()
 
 double CAudioSinkAE::GetMaxDelay()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (!m_pAudioStream)
     return 0.0;
   return m_pAudioStream->GetMaxDelay();
@@ -325,7 +335,8 @@ double CAudioSinkAE::GetResampleRatio()
 
 void CAudioSinkAE::SetResampleMode(int mode)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+  
   if(m_pAudioStream)
   {
     m_pAudioStream->SetResampleMode(mode);

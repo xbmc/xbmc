@@ -68,7 +68,9 @@ static const std::string getListOfAddonClassesAsString(
     XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
 {
   std::string message;
-  std::unique_lock<CCriticalSection> l(*(languageHook.get()));
+
+  std::lock_guard l(*(languageHook.get()));
+
   const std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
   for (const auto& iter : acs)
@@ -249,7 +251,8 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
     }
 
     { // set the m_threadState to this new interp
-      std::unique_lock<CCriticalSection> lockMe(m_critical);
+      std::lock_guard lockMe(m_critical);
+      
       m_threadState = l_threadState;
     }
   }
@@ -371,7 +374,8 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
     onError(exceptionType, exceptionValue, exceptionTraceback);
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
+
   // no need to do anything else because the script has already stopped
   if (failed)
   {
@@ -449,7 +453,8 @@ FILE* CPythonInvoker::PyFile_AsFileWithMode(PyObject* py_file, const char* mode)
 
 bool CPythonInvoker::stop(bool abort)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
+
   m_stop = true;
 
   if (!IsRunning() && !m_threadState)
@@ -545,7 +550,8 @@ bool CPythonInvoker::stop(bool abort)
 // Always called from Invoker thread
 void CPythonInvoker::onExecutionDone()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   if (m_threadState != NULL)
   {
     CLog::Log(LOGDEBUG, "{}({}, {})", __FUNCTION__, GetId(), m_sourceFile);
@@ -611,7 +617,8 @@ void CPythonInvoker::onExecutionFailed()
   CLog::Log(LOGERROR, "CPythonInvoker({}, {}): abnormally terminating python thread", GetId(),
             m_sourceFile);
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   m_threadState = NULL;
 
   ILanguageInvoker::onExecutionFailed();
@@ -663,7 +670,8 @@ void CPythonInvoker::onError(const std::string& exceptionType /* = "" */,
                              const std::string& exceptionTraceback /* = "" */)
 {
   CPyThreadState releaseGil;
-  std::unique_lock<CCriticalSection> gc(CServiceBroker::GetWinSystem()->GetGfxContext());
+
+  std::lock_guard gc(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   CGUIDialogKaiToast* pDlgToast =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKaiToast>(

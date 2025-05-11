@@ -886,7 +886,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture& picture, double pts)
   VecOverlays overlays;
 
   {
-    std::unique_lock<CCriticalSection> lock(*m_pOverlayContainer);
+    std::lock_guard lock(*m_pOverlayContainer);
 
     VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
     auto it = pVecOverlays->begin();

@@ -148,7 +148,8 @@ namespace XBMCAddon
     int WindowXML::lockingGetNextAvailableWindowId()
     {
       XBMC_TRACE;
-      std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+      std::lock_guard lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
       return getNextAvailableWindowId();
     }
 

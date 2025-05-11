@@ -209,7 +209,9 @@ void CThread::StopThread(bool bWait /*= true*/)
 
   m_bStop = true;
   m_StopEvent.Set();
-  std::unique_lock<CCriticalSection> lock(m_CriticalSection);
+
+  std::unique_lock lock(m_CriticalSection);
+
   std::thread* lthread = m_thread;
   if (lthread != nullptr && bWait && !IsCurrentThread())
   {
@@ -242,7 +244,8 @@ CThread* CThread::GetCurrentThread()
 
 bool CThread::Join(std::chrono::milliseconds duration)
 {
-  std::unique_lock<CCriticalSection> l(m_CriticalSection);
+  std::unique_lock l(m_CriticalSection);
+
   std::thread* lthread = m_thread;
   if (lthread != nullptr)
   {

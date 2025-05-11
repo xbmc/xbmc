@@ -247,14 +247,16 @@ CApplication::~CApplication(void)
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
 {
-  std::unique_lock<CCriticalSection> lock(m_portSection);
+  std::lock_guard lock(m_portSection);
+
   m_portEvents.push_back(newEvent);
   return true;
 }
 
 void CApplication::HandlePortEvents()
 {
-  std::unique_lock<CCriticalSection> lock(m_portSection);
+  std::lock_guard lock(m_portSection);
+
   while (!m_portEvents.empty())
   {
     auto newEvent = m_portEvents.front();
@@ -1822,7 +1824,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     if (processGUI && renderGUI)
     {
-      std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+      std::lock_guard lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
       // check if there are notifications to display
       CGUIDialogKaiToast *toast = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
       if (toast && toast->DoWork())

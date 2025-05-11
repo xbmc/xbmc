@@ -102,7 +102,8 @@ bool CNFSDirectory::GetServerList(CFileItemList &items)
 
 bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent *dirent, CURL &resolvedUrl)
 {
-  std::unique_lock<CCriticalSection> lock(gNfsConnection);
+  std::lock_guard lock(gNfsConnection);
+
   int ret = 0;
   bool retVal = true;
   std::string fullpath = dirName;
@@ -203,7 +204,9 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   // We accept nfs://server/path[/file]]]]
   int ret = 0;
   KODI::TIME::FileTime fileTime, localTime;
-  std::unique_lock<CCriticalSection> lock(gNfsConnection);
+
+  std::unique_lock lock(gNfsConnection);
+
   std::string strDirName="";
   std::string myStrPath(url.Get());
   URIUtils::AddSlashAtEnd(myStrPath); //be sure the dir ends with a slash
@@ -316,7 +319,8 @@ bool CNFSDirectory::Create(const CURL& url2)
   int ret = 0;
   bool success=true;
 
-  std::unique_lock<CCriticalSection> lock(gNfsConnection);
+  std::lock_guard lock(gNfsConnection);
+
   std::string folderName(url2.Get());
   URIUtils::RemoveSlashAtEnd(folderName);//mkdir fails if a slash is at the end!!!
   CURL url(folderName);
@@ -338,7 +342,8 @@ bool CNFSDirectory::Remove(const CURL& url2)
 {
   int ret = 0;
 
-  std::unique_lock<CCriticalSection> lock(gNfsConnection);
+  std::lock_guard lock(gNfsConnection);
+
   std::string folderName(url2.Get());
   URIUtils::RemoveSlashAtEnd(folderName);//rmdir fails if a slash is at the end!!!
   CURL url(folderName);
@@ -362,7 +367,8 @@ bool CNFSDirectory::Exists(const CURL& url2)
 {
   int ret = 0;
 
-  std::unique_lock<CCriticalSection> lock(gNfsConnection);
+  std::lock_guard lock(gNfsConnection);
+
   std::string folderName(url2.Get());
   URIUtils::RemoveSlashAtEnd(folderName);//remove slash at end or URIUtils::GetFileName won't return what we want...
   CURL url(folderName);

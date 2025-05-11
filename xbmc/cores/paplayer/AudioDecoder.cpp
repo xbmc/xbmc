@@ -47,7 +47,8 @@ CAudioDecoder::~CAudioDecoder()
 
 void CAudioDecoder::Destroy()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   m_status = STATUS_NO_FILE;
 
   m_pcmBuffer.Destroy();
@@ -63,7 +64,7 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
 {
   Destroy();
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   // reset our playback timing variables
   m_eof = false;
@@ -251,7 +252,7 @@ int CAudioDecoder::ReadSamples(int numsamples)
     m_status = STATUS_PLAYING;
 
   // grab a lock to ensure the codec is created at this point.
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (m_codec->m_format.m_dataFormat != AE_FMT_RAW)
   {

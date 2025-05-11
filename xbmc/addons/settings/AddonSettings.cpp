@@ -283,7 +283,8 @@ bool CAddonSettings::AddInstanceSettings()
 
 bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = false */)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   if (m_initialized)
     return false;
 
@@ -312,7 +313,8 @@ bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = fa
 
 bool CAddonSettings::Load(const CXBMCTinyXML& doc)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+
   if (!m_initialized)
     return false;
 
@@ -417,7 +419,8 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
 
 bool CAddonSettings::Save(CXBMCTinyXML& doc) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+  
   if (!m_initialized)
     return false;
 

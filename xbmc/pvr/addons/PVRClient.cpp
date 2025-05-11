@@ -110,7 +110,7 @@ void CPVRClient::OnPreUnInstall()
 
 void CPVRClient::ResetProperties()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   /* initialise members */
   m_strUserPath = CSpecialProtocol::TranslatePath(Profile());
@@ -238,7 +238,8 @@ bool CPVRClient::ReadyToUse() const
 
 PVR_CONNECTION_STATE CPVRClient::GetConnectionState() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_connectionState;
 }
 
@@ -256,7 +257,7 @@ void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
       CLog::LogF(LOGERROR, "Cannot read PVR client name string properties");
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   m_prevConnectionState = m_connectionState;
   m_connectionState = state;
@@ -270,13 +271,15 @@ void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
 
 PVR_CONNECTION_STATE CPVRClient::GetPreviousConnectionState() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_prevConnectionState;
 }
 
 bool CPVRClient::IgnoreClient() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_ignoreClient;
 }
 
@@ -318,7 +321,8 @@ bool CPVRClient::GetAddonProperties()
   if (retVal != PVR_ERROR_NO_ERROR)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   m_clientCapabilities = addonCapabilities;
 
   return true;
@@ -379,7 +383,8 @@ bool CPVRClient::GetAddonNameStringProperties()
     return false;
 
   /* update the members */
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   m_strBackendName = strBackendName;
   m_strConnectionString = strConnectionString;
   m_strBackendVersion = strBackendVersion;
@@ -1008,7 +1013,8 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag& timer)
 
 const std::vector<std::shared_ptr<CPVRTimerType>>& CPVRClient::GetTimerTypes() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_timertypes;
 }
 
@@ -1102,7 +1108,7 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
     std::vector<std::shared_ptr<CPVRTimerType>> newTimerTypes;
     newTimerTypes.reserve(timerTypes.size());
 
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
 
     for (const auto& type : timerTypes)
     {
@@ -1631,7 +1637,8 @@ PVR_ERROR CPVRClient::CallSettingsMenuHook(const CPVRClientMenuHook& hook)
 
 void CPVRClient::SetPriority(int iPriority)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (m_priority != iPriority)
   {
     m_priority = iPriority;
@@ -1645,7 +1652,8 @@ void CPVRClient::SetPriority(int iPriority)
 
 int CPVRClient::GetPriority() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+  
   if (!m_priority.has_value() && m_iClientId > PVR_INVALID_CLIENT_ID)
   {
     m_priority = CServiceBroker::GetPVRManager().GetTVDatabase()->GetPriority(*this);

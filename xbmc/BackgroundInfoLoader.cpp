@@ -99,7 +99,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (items.IsEmpty())
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::lock_guard lock(m_lock);
 
   for (int nItem=0; nItem < items.Size(); nItem++)
     m_vecItems.push_back(items[nItem]);

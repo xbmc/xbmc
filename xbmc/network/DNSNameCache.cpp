@@ -80,7 +80,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
 bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIpAddress)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_critical);
+    std::lock_guard lock(m_critical);
 
     // loop through all DNSname entries and see if strHostName is cached
     for (const auto& DNSname : g_DNSCache.m_vecDNSNames)
@@ -117,7 +117,8 @@ void CDNSNameCache::Add(const std::string& strHostName, const std::string& strIp
   dnsName.m_strHostName = strHostName;
   dnsName.m_strIpAddress  = strIpAddress;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
+  
   g_DNSCache.m_vecDNSNames.push_back(dnsName);
 }
 

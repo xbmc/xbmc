@@ -27,7 +27,9 @@ public:
   void Subscribe(A* owner, void (A::*fn)(const Event&))
   {
     auto subscription = std::make_shared<detail::CSubscription<Event, A>>(owner, fn);
-    std::unique_lock<CCriticalSection> lock(m_criticalSection);
+
+    std::lock_guard lock(m_criticalSection);
+
     m_subscriptions.emplace_back(std::move(subscription));
   }
 
@@ -36,7 +38,8 @@ public:
   {
     std::vector<std::shared_ptr<detail::ISubscription<Event>>> toCancel;
     {
-      std::unique_lock<CCriticalSection> lock(m_criticalSection);
+      std::lock_guard lock(m_criticalSection);
+      
       auto it = m_subscriptions.begin();
       while (it != m_subscriptions.end())
       {
@@ -70,7 +73,8 @@ public:
   template<typename A>
   void Publish(A event)
   {
-    std::unique_lock<CCriticalSection> lock(this->m_criticalSection);
+    std::unique_lock lock(this->m_criticalSection);
+
     auto& subscriptions = this->m_subscriptions;
     auto task = [subscriptions, event](){
       for (auto& s: subscriptions)
@@ -91,7 +95,8 @@ public:
   template<typename A>
   void HandleEvent(A event)
   {
-    std::unique_lock<CCriticalSection> lock(this->m_criticalSection);
+    std::lock_guard lock(this->m_criticalSection);
+
     for (const auto& subscription : this->m_subscriptions)
     {
       subscription->HandleEvent(event);

@@ -23,7 +23,8 @@ namespace XBMCAddon
     WindowDialog::WindowDialog() :
       Window(true), WindowDialogMixin(this)
     {
-      std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+      std::lock_guard lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
       InterceptorBase* interceptor = new Interceptor<CGUIWindow>("CGUIWindow", this, getNextAvailableWindowId());
       // set the render order to the dialog's default because this dialog is mapped to CGUIWindow instead of CGUIDialog
       interceptor->SetRenderOrder(RENDER_ORDER_DIALOG);

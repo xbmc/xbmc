@@ -27,14 +27,18 @@ namespace XBMCAddon
     long getCurrentWindowId()
     {
       DelayedCallGuard dg;
-      std::unique_lock<CCriticalSection> gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+
+      std::lock_guard gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+
       return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
     }
 
     long getCurrentWindowDialogId()
     {
       DelayedCallGuard dg;
-      std::unique_lock<CCriticalSection> gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+
+      std::lock_guard gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+
       return CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
     }
 

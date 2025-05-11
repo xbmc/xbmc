@@ -31,7 +31,7 @@ CAMLVideoBufferPool::~CAMLVideoBufferPool()
 
 CVideoBuffer* CAMLVideoBufferPool::Get()
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
 
   if (m_freeBuffers.empty())
   {
@@ -48,7 +48,8 @@ CVideoBuffer* CAMLVideoBufferPool::Get()
 
 void CAMLVideoBufferPool::Return(int id)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+
   if (m_videoBuffers[id]->m_amlCodec)
   {
     m_videoBuffers[id]->m_amlCodec->ReleaseFrame(m_videoBuffers[id]->m_bufferIndex, true);

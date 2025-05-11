@@ -50,7 +50,8 @@ public:
    */
   CPointInt GetPosition() const
   {
-    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
+    std::lock_guard lock(m_geometryCriticalSection);
+
     return m_position;
   }
   /**
@@ -59,17 +60,20 @@ public:
    */
   CSizeInt GetPhysicalSize() const
   {
-    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
+    std::lock_guard lock(m_geometryCriticalSection);
+
     return m_physicalSize;
   }
   std::string const& GetMake() const
   {
-    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
+    std::lock_guard lock(m_geometryCriticalSection);
+
     return m_make;
   }
   std::string const& GetModel() const
   {
-    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
+    std::lock_guard lock(m_geometryCriticalSection);
+
     return m_model;
   }
   std::int32_t GetScale() const

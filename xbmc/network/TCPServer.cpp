@@ -245,7 +245,8 @@ void CTCPServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {
     {
-      std::unique_lock<CCriticalSection> lock(m_connections[i]->m_critSection);
+      std::lock_guard lock(m_connections[i]->m_critSection);
+
       if ((m_connections[i]->GetAnnouncementFlags() & flag) == 0)
         continue;
     }
@@ -546,7 +547,8 @@ void CTCPServer::CTCPClient::Send(const char *data, unsigned int size)
   unsigned int sent = 0;
   do
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
+
     sent += send(m_socket, data + sent, size - sent, 0);
   } while (sent < size);
 }
@@ -627,7 +629,8 @@ void CTCPServer::CTCPClient::Disconnect()
 {
   if (m_socket > 0)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
+
     shutdown(m_socket, SHUT_RDWR);
     closesocket(m_socket);
     m_socket = INVALID_SOCKET;

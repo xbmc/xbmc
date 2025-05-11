@@ -277,7 +277,7 @@ bool CCdIoSupport::CloseTray()
 
 HANDLE CCdIoSupport::OpenCDROM()
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   char* source_name = m_cdio->GetDeviceFileName();
   CdIo* cdio = ::cdio_open(source_name, DRIVER_UNKNOWN);
@@ -287,7 +287,7 @@ HANDLE CCdIoSupport::OpenCDROM()
 
 HANDLE CCdIoSupport::OpenIMAGE( std::string& strFilename )
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = ::cdio_open(strFilename.c_str(), DRIVER_UNKNOWN);
 
@@ -296,7 +296,7 @@ HANDLE CCdIoSupport::OpenIMAGE( std::string& strFilename )
 
 int CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
   if ( cdio == NULL )
@@ -310,7 +310,7 @@ int CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 
 int CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
   if ( cdio == NULL )
@@ -324,7 +324,7 @@ int CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuff
 
 int CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
   if ( cdio == NULL )
@@ -338,7 +338,7 @@ int CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffe
 
 void CCdIoSupport::CloseCDROM(HANDLE hDevice)
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
 
@@ -471,7 +471,7 @@ void CCdIoSupport::PrintAnalysis(int fs, int num_audio)
 
 int CCdIoSupport::ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, track_t track_num)
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   unsigned int track_sec_count = ::cdio_get_track_sec_count(cdio, track_num);
   memset(buffer[bufnum], 0, CDIO_CD_FRAMESIZE);
@@ -562,7 +562,7 @@ int CCdIoSupport::GetJolietLevel( void )
 
 int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   int ret = FS_UNKNOWN;
   cdio_iso_analysis_t anal;
@@ -644,7 +644,7 @@ void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
   // cdtext disabled for windows as some setup doesn't like mmc commands
   // and stall for over a minute in cdio_get_cdtext 83
 #if !defined(TARGET_WINDOWS)
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   // Get the CD-Text , if any
 #if defined(LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM >= 84)
@@ -673,7 +673,7 @@ void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
 
 CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   char* source_name;
   if(cDeviceFileName == NULL)
@@ -921,7 +921,7 @@ int CCdIoSupport::CddbDecDigitSum(int n)
 // Return the number of seconds (discarding frame portion) of an MSF
 unsigned int CCdIoSupport::MsfSeconds(msf_t *msf)
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   return ::cdio_from_bcd8(msf->m)*60 + ::cdio_from_bcd8(msf->s);
 }
@@ -935,7 +935,7 @@ unsigned int CCdIoSupport::MsfSeconds(msf_t *msf)
 
 uint32_t CCdIoSupport::CddbDiscId()
 {
-  std::unique_lock<CCriticalSection> lock(*m_cdio);
+  std::lock_guard lock(*m_cdio);
 
   int i, t, n = 0;
   msf_t start_msf;

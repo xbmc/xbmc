@@ -26,13 +26,15 @@ bool CAddonUpdateRules::RefreshRulesMap(const CAddonDatabase& db)
 
 bool CAddonUpdateRules::IsAutoUpdateable(const std::string& id) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_updateRules.find(id) == m_updateRules.end();
 }
 
 bool CAddonUpdateRules::IsUpdateableByRule(const std::string& id, AddonUpdateRule updateRule) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+  
   const auto& updateRulesEntry = m_updateRules.find(id);
   return (updateRulesEntry == m_updateRules.end() ||
           std::none_of(updateRulesEntry->second.begin(), updateRulesEntry->second.end(),
@@ -43,7 +45,7 @@ bool CAddonUpdateRules::AddUpdateRuleToList(CAddonDatabase& db,
                                             const std::string& id,
                                             AddonUpdateRule updateRule)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (!IsUpdateableByRule(id, updateRule))
   {
@@ -74,7 +76,7 @@ bool CAddonUpdateRules::RemoveFromUpdateRuleslist(CAddonDatabase& db,
                                                   const std::string& id,
                                                   AddonUpdateRule updateRule)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   const auto& updateRulesEntry = m_updateRules.find(id);
   if (updateRulesEntry != m_updateRules.end())

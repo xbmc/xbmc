@@ -147,7 +147,7 @@ CFavouritesService::CFavouritesService(std::string userDataFolder) : m_favourite
 
 void CFavouritesService::ReInit(std::string userDataFolder)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
 
   m_userDataFolder = std::move(userDataFolder);
   m_favourites.Clear();
@@ -194,7 +194,8 @@ bool CFavouritesService::Persist()
 bool CFavouritesService::Save(const CFileItemList& items)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_criticalSection);
+    std::lock_guard lock(m_criticalSection);
+
     m_favourites.Clear();
     m_targets.clear();
     m_favourites.Copy(items);
@@ -212,7 +213,7 @@ void CFavouritesService::OnUpdated()
 bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_criticalSection);
+    std::lock_guard lock(m_criticalSection);
 
     const std::shared_ptr<CFileItem> match{GetFavourite(item, contextWindow)};
     if (match)
@@ -244,7 +245,7 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
 std::shared_ptr<CFileItem> CFavouritesService::GetFavourite(const CFileItem& item,
                                                             int contextWindow) const
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
 
   const CFavouritesURL favURL{item, contextWindow};
   const bool isVideoDb{URIUtils::IsVideoDb(favURL.GetTarget())};
@@ -290,7 +291,7 @@ std::shared_ptr<CFileItem> CFavouritesService::ResolveFavourite(const CFileItem&
 {
   if (item.IsFavourite())
   {
-    std::unique_lock<CCriticalSection> lock(m_criticalSection);
+    std::lock_guard lock(m_criticalSection);
 
     const auto it = m_targets.find(item.GetPath());
     if (it != m_targets.end())
@@ -315,13 +316,15 @@ std::shared_ptr<CFileItem> CFavouritesService::ResolveFavourite(const CFileItem&
 
 int CFavouritesService::Size() const
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+
   return m_favourites.Size();
 }
 
 void CFavouritesService::GetAll(CFileItemList& items) const
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+  
   items.Clear();
   if (g_passwordManager.IsMasterLockUnlocked(false)) // don't prompt
   {

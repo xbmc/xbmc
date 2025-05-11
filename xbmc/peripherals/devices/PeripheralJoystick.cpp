@@ -142,7 +142,7 @@ void CPeripheralJoystick::InitializeControllerProfile(IButtonMap& buttonMap)
     CPeripheral::SetControllerProfile(controller);
   else
   {
-    std::unique_lock<CCriticalSection> lock(m_controllerInstallMutex);
+    std::lock_guard lock(m_controllerInstallMutex);
 
     // Deposit controller into queue
     m_controllersToInstall.emplace(controllerId);
@@ -163,7 +163,8 @@ void CPeripheralJoystick::InitializeControllerProfile(IButtonMap& buttonMap)
                      // Withdraw controller from queue
                      std::string controllerToInstall;
                      {
-                       std::unique_lock<CCriticalSection> lock(m_controllerInstallMutex);
+                       std::lock_guard lock(m_controllerInstallMutex);
+                       
                        if (!m_controllersToInstall.empty())
                        {
                          controllerToInstall = m_controllersToInstall.front();
@@ -222,7 +223,7 @@ void CPeripheralJoystick::PowerOff()
 
 void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous)
 {
-  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
+  std::lock_guard lock(m_handlerMutex);
 
   DriverHandler driverHandler = {handler, bPromiscuous};
   m_driverHandlers.insert(m_driverHandlers.begin(), driverHandler);
@@ -230,7 +231,7 @@ void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler,
 
 void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handler)
 {
-  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
+  std::lock_guard lock(m_handlerMutex);
 
   m_driverHandlers.erase(std::remove_if(m_driverHandlers.begin(), m_driverHandlers.end(),
                                         [handler](const DriverHandler& driverHandler)
@@ -301,7 +302,7 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
   if (bPressed && !g_application.IsAppFocused())
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
+  std::lock_guard lock(m_handlerMutex);
 
   // Update state
   SetLastActive(CDateTime::GetCurrentDateTime());
@@ -361,7 +362,7 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   // Update state
   SetLastActive(CDateTime::GetCurrentDateTime());
 
-  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
+  std::lock_guard lock(m_handlerMutex);
 
   // Check GUI setting and send hat unpressed if controllers are disabled
   if (!m_manager.GetInputManager().IsControllerEnabled())
@@ -418,7 +419,7 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
   if (position != static_cast<float>(center) && !g_application.IsAppFocused())
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
+  std::lock_guard lock(m_handlerMutex);
 
   // Check GUI setting and send analog axis centered if controllers are disabled
   if (!m_manager.GetInputManager().IsControllerEnabled())
@@ -465,7 +466,7 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
 
 void CPeripheralJoystick::OnInputFrame(void)
 {
-  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
+  std::lock_guard lock(m_handlerMutex);
 
   for (auto& it : m_driverHandlers)
     it.handler->OnInputFrame();
@@ -518,7 +519,7 @@ GAME::ControllerPtr CPeripheralJoystick::InstallAsync(const std::string& control
 
   // Only 1 install at a time. Remaining installs will wake when this one
   // is done.
-  std::unique_lock<CCriticalSection> lockInstall(m_manager.GetAddonInstallMutex());
+  std::lock_guard lockInstall(m_manager.GetAddonInstallMutex());
 
   CLog::LogF(LOGDEBUG, "Installing {}", controllerId);
 

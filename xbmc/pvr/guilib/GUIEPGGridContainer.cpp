@@ -638,7 +638,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
 
 void CGUIEPGGridContainer::UpdateItems()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (!m_updatedGridModel)
     return;
@@ -1116,7 +1116,7 @@ bool CGUIEPGGridContainer::SetChannel(const CPVRChannelNumber& channelNumber)
 
 void CGUIEPGGridContainer::SetChannel(int channel)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   int channelIndex = channel + m_channelOffset;
   int blockIndex = m_blockCursor + m_blockOffset;
@@ -1134,7 +1134,7 @@ void CGUIEPGGridContainer::SetChannel(int channel)
 
 void CGUIEPGGridContainer::SetBlock(int block, bool bUpdateBlockTravelAxis /* = true */)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (block < 0)
     m_blockCursor = 0;
@@ -1263,7 +1263,7 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint& point,
       m_channelScrollOffset -= event.m_offsetY;
 
       {
-        std::unique_lock<CCriticalSection> lock(m_critSection);
+        std::lock_guard lock(m_critSection);
 
         m_channelOffset = MathUtils::round_int(
             static_cast<double>(m_channelScrollOffset / m_channelLayout->Size(m_orientation)));
@@ -1336,7 +1336,8 @@ std::shared_ptr<CPVRChannelGroupMember> CGUIEPGGridContainer::GetSelectedChannel
 {
   CFileItemPtr fileItem;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
+
     if (m_channelCursor + m_channelOffset < m_gridModel->ChannelItemsSize())
       fileItem = m_gridModel->GetChannelItem(m_channelCursor + m_channelOffset);
   }
@@ -1492,7 +1493,7 @@ void CGUIEPGGridContainer::SetFocus(bool focus)
 
 void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   float size = m_programmeLayout->Size(m_orientation);
   int range = m_channelsPerPage / 4;
@@ -1519,7 +1520,7 @@ void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
 
 void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   // make sure offset is in valid range
   offset = std::max(0, std::min(offset, m_gridModel->GridItemsSize() - m_blocksPerPage));
@@ -1549,7 +1550,7 @@ void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
 
 void CGUIEPGGridContainer::ValidateOffset()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (!m_programmeLayout)
     return;
@@ -1642,7 +1643,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement* layout)
 
 std::string CGUIEPGGridContainer::GetDescription() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   const int channelIndex = m_channelCursor + m_channelOffset;
   const int blockIndex = m_blockCursor + m_blockOffset;
@@ -1789,7 +1790,7 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   int iFirstBlock;
   float fBlockSize;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
 
     iRulerUnit = m_rulerUnit;
     iFirstChannel = m_channelOffset;
@@ -1805,7 +1806,7 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   newUpdatedGridModel->Initialize(items, gridStart, gridEnd, iFirstChannel, iChannelsPerPage,
                                   iFirstBlock, iBlocksPerPage, iRulerUnit, fBlockSize);
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
 
     // grid contains CFileItem instances. CFileItem dtor locks global graphics mutex.
     // by increasing its refcount make sure, old data are not deleted while we're holding own mutex.
@@ -1877,7 +1878,7 @@ void CGUIEPGGridContainer::UpdateLayout()
       oldRulerLayout == m_rulerLayout && oldRulerDateLayout == m_rulerDateLayout)
     return; // nothing has changed, so don't update stuff
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   m_channelHeight = m_channelLayout->Size(VERTICAL);
   m_channelWidth = m_channelLayout->Size(HORIZONTAL);
@@ -2470,7 +2471,8 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
           }
 
           {
-            std::unique_lock<CCriticalSection> lock(m_critSection);
+            std::lock_guard lock(m_critSection);
+            
             // truncate item's width
             m_gridModel->DecreaseGridItemWidth(channel, block, truncateSize);
           }

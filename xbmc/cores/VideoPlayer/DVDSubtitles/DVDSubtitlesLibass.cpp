@@ -158,7 +158,8 @@ void CDVDSubtitlesLibass::Configure()
 
 bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_library || !data)
     return false;
 
@@ -171,7 +172,8 @@ bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
 
 bool CDVDSubtitlesLibass::DecodeDemuxPkt(const char* data, int size, double start, double duration)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_track)
   {
     CLog::Log(LOGERROR, "{} - No SSA header found.", __FUNCTION__);
@@ -186,7 +188,8 @@ bool CDVDSubtitlesLibass::DecodeDemuxPkt(const char* data, int size, double star
 
 bool CDVDSubtitlesLibass::CreateTrack()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_library)
   {
     CLog::Log(LOGERROR, "{} - Failed to create ASS track, library not initialized.", __FUNCTION__);
@@ -217,7 +220,8 @@ bool CDVDSubtitlesLibass::CreateTrack()
 
 bool CDVDSubtitlesLibass::CreateStyle()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_library)
   {
     CLog::Log(LOGERROR, "{} - Failed to create ASS style, library not initialized.", __FUNCTION__);
@@ -236,7 +240,8 @@ bool CDVDSubtitlesLibass::CreateStyle()
 
 bool CDVDSubtitlesLibass::CreateTrack(char* buf, size_t size)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_library)
   {
     CLog::Log(LOGERROR, "{} - No ASS library struct (m_library)", __FUNCTION__);
@@ -258,7 +263,8 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
                                             const std::shared_ptr<struct style>& subStyle,
                                             int* changes)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_renderer || !m_track)
   {
     CLog::Log(LOGERROR, "{} - ASS renderer/ASS track not initialized.", __FUNCTION__);
@@ -564,7 +570,8 @@ int CDVDSubtitlesLibass::GetPlayResY()
 
 bool CDVDSubtitlesLibass::EventActive(double pts)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_library || !m_track)
   {
     CLog::Log(LOGERROR, "{} - Missing ASS structs (m_library or m_track)", __FUNCTION__);
@@ -622,7 +629,8 @@ void CDVDSubtitlesLibass::ConfigureAssOverride(const std::shared_ptr<struct styl
 
 ASS_Event* CDVDSubtitlesLibass::GetEvents()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_track)
   {
     CLog::Log(LOGERROR, "{} -  Missing ASS structs (m_track)", __FUNCTION__);
@@ -633,7 +641,8 @@ ASS_Event* CDVDSubtitlesLibass::GetEvents()
 
 int CDVDSubtitlesLibass::GetNrOfEvents() const
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_track)
     return 0;
   return m_track->n_events;
@@ -657,7 +666,8 @@ int CDVDSubtitlesLibass::AddEvent(const char* text,
     return ASS_NO_ID;
   }
 
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_library || !m_track)
   {
     CLog::Log(LOGERROR, "{} - Missing ASS structs (m_library or m_track)", __FUNCTION__);
@@ -688,7 +698,8 @@ int CDVDSubtitlesLibass::AddEvent(const char* text,
 
 void CDVDSubtitlesLibass::AppendTextToEvent(int eventId, const char* text)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (eventId == ASS_NO_ID || text == NULL || text[0] == '\0')
     return;
   if (!m_track)
@@ -720,7 +731,8 @@ void CDVDSubtitlesLibass::AppendTextToEvent(int eventId, const char* text)
 
 void CDVDSubtitlesLibass::ChangeEventStopTime(int eventId, double stopTime)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (eventId == ASS_NO_ID)
     return;
   if (!m_track)
@@ -744,7 +756,8 @@ void CDVDSubtitlesLibass::ChangeEventStopTime(int eventId, double stopTime)
 
 void CDVDSubtitlesLibass::FlushEvents()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+
   if (!m_library || !m_track)
   {
     CLog::Log(LOGERROR, "{} - Missing ASS structs (m_library or m_track)", __FUNCTION__);
@@ -756,7 +769,8 @@ void CDVDSubtitlesLibass::FlushEvents()
 
 int CDVDSubtitlesLibass::DeleteEvents(int nEvents, int threshold)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::lock_guard lock(m_section);
+  
   if (!m_library || !m_track)
   {
     CLog::Log(LOGERROR, "{} - Missing ASS structs (m_library or m_track)", __FUNCTION__);

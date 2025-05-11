@@ -51,7 +51,7 @@ void CVideoReferenceClock::Start()
 
 void CVideoReferenceClock::UpdateClock(int NrVBlanks, uint64_t time)
 {
-  std::unique_lock<CCriticalSection> lock(m_CritSection);
+  std::lock_guard lock(m_CritSection);
 
   m_VblankTime = time;
   UpdateClockInternal(NrVBlanks, true);
@@ -72,7 +72,8 @@ void CVideoReferenceClock::Process()
       UpdateRefreshrate();
     }
 
-    std::unique_lock<CCriticalSection> SingleLock(m_CritSection);
+    std::unique_lock SingleLock(m_CritSection);
+
     Now = CurrentHostCounter();
     m_CurrTime = Now;
     m_LastIntTime = m_CurrTime;
@@ -160,7 +161,7 @@ double CVideoReferenceClock::UpdateInterval() const
 //called from dvdclock to get the time
 int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
 {
-  std::unique_lock<CCriticalSection> SingleLock(m_CritSection);
+  std::lock_guard SingleLock(m_CritSection);
 
   //when using vblank, get the time from that, otherwise use the systemclock
   if (m_UseVblank)
@@ -204,7 +205,8 @@ int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
 
 void CVideoReferenceClock::SetSpeed(double Speed)
 {
-  std::unique_lock<CCriticalSection> SingleLock(m_CritSection);
+  std::lock_guard SingleLock(m_CritSection);
+
   //VideoPlayer can change the speed to fit the rereshrate
   if (m_UseVblank)
   {
@@ -218,7 +220,7 @@ void CVideoReferenceClock::SetSpeed(double Speed)
 
 double CVideoReferenceClock::GetSpeed()
 {
-  std::unique_lock<CCriticalSection> SingleLock(m_CritSection);
+  std::lock_guard SingleLock(m_CritSection);
 
   //VideoPlayer needs to know the speed for the resampler
   if (m_UseVblank)
@@ -229,7 +231,8 @@ double CVideoReferenceClock::GetSpeed()
 
 void CVideoReferenceClock::UpdateRefreshrate()
 {
-  std::unique_lock<CCriticalSection> SingleLock(m_CritSection);
+  std::lock_guard SingleLock(m_CritSection);
+
   m_RefreshRate = static_cast<double>(m_pVideoSync->GetFps());
   m_ClockSpeed = 1.0;
 
@@ -239,7 +242,7 @@ void CVideoReferenceClock::UpdateRefreshrate()
 //VideoPlayer needs to know the refreshrate for matching the fps of the video playing to it
 double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/)
 {
-  std::unique_lock<CCriticalSection> SingleLock(m_CritSection);
+  std::lock_guard SingleLock(m_CritSection);
 
   if (m_UseVblank)
   {
@@ -264,7 +267,7 @@ int64_t CVideoReferenceClock::TimeOfNextVblank() const
 //for the codec information screen
 bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const
 {
-  std::unique_lock<CCriticalSection> SingleLock(m_CritSection);
+  std::lock_guard SingleLock(m_CritSection);
 
   if (m_UseVblank)
   {

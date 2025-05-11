@@ -297,7 +297,8 @@ void CSpeechRecognitionDarwin::StartSpeechRecognition(
       return;
     }
 
-    std::unique_lock<CCriticalSection> lock(m_impl->m_listenersMutex);
+    std::unique_lock lock(m_impl->m_listenersMutex);
+
     m_impl->m_listeners.emplace_back(
         listener); // we need to ensure the listener lives as long as we do
     lock.unlock();
@@ -317,7 +318,8 @@ CSpeechRecognitionDarwin::~CSpeechRecognitionDarwin()
 
 void CSpeechRecognitionDarwin::OnRecognitionDone(speech::ISpeechRecognitionListener* listener)
 {
-  std::unique_lock<CCriticalSection> lock(m_impl->m_listenersMutex);
+  std::lock_guard lock(m_impl->m_listenersMutex);
+
   for (auto it = m_impl->m_listeners.begin(); it != m_impl->m_listeners.end(); ++it)
   {
     if ((*it).get() == listener)

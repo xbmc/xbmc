@@ -969,7 +969,8 @@ void CLinuxRendererGL::LoadShaders(int field)
 void CLinuxRendererGL::UnInit()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  
+  std::lock_guard lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   glFinish();
 

@@ -179,7 +179,7 @@ float CGameClientInput::GetPortActivation(const std::string& portAddress)
 {
   float activation = 0.0f;
 
-  std::unique_lock<std::recursive_mutex> lock(m_portMutex, std::defer_lock);
+  std::unique_lock lock(m_portMutex, std::defer_lock);
 
   if (lock.try_lock())
   {
@@ -355,7 +355,7 @@ bool CGameClientInput::ConnectController(const std::string& portAddress,
   inputHandlingLock.reset();
 
   {
-    std::unique_lock<CCriticalSection> lock(m_clientAccess);
+    std::lock_guard lock(m_clientAccess);
 
     if (!m_gameClient.Initialized())
       return false;
@@ -431,7 +431,7 @@ bool CGameClientInput::DisconnectControllerRecursive(const std::string& portAddr
   inputHandlingLock.reset();
 
   {
-    std::unique_lock<CCriticalSection> lock(m_clientAccess);
+    std::lock_guard lock(m_clientAccess);
 
     if (!m_gameClient.Initialized())
       return false;
@@ -507,7 +507,7 @@ bool CGameClientInput::OpenKeyboard(const ControllerPtr& controller,
   bool bSuccess = false;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_clientAccess);
+    std::lock_guard lock(m_clientAccess);
 
     if (m_gameClient.Initialized())
     {
@@ -544,7 +544,7 @@ void CGameClientInput::CloseKeyboard()
   {
     m_keyboard.reset();
 
-    std::unique_lock<CCriticalSection> lock(m_clientAccess);
+    std::lock_guard lock(m_clientAccess);
 
     if (m_gameClient.Initialized())
     {
@@ -577,7 +577,7 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller,
   bool bSuccess = false;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_clientAccess);
+    std::lock_guard lock(m_clientAccess);
 
     if (m_gameClient.Initialized())
     {
@@ -613,7 +613,7 @@ void CGameClientInput::CloseMouse()
   {
     m_mouse.reset();
 
-    std::unique_lock<CCriticalSection> lock(m_clientAccess);
+    std::lock_guard lock(m_clientAccess);
 
     if (m_gameClient.Initialized())
     {

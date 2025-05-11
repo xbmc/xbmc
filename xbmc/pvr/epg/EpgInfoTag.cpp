@@ -134,7 +134,8 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
 
 void CPVREpgInfoTag::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   if (data)
     m_channelData = data;
   else
@@ -146,7 +147,8 @@ bool CPVREpgInfoTag::operator==(const CPVREpgInfoTag& right) const
   if (this == &right)
     return true;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return (m_iUniqueBroadcastID == right.m_iUniqueBroadcastID && m_channelData &&
           right.m_channelData &&
           m_channelData->UniqueClientChannelId() == right.m_channelData->UniqueClientChannelId() &&
@@ -163,7 +165,8 @@ bool CPVREpgInfoTag::operator!=(const CPVREpgInfoTag& right) const
 
 void CPVREpgInfoTag::Serialize(CVariant& value) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   value["broadcastid"] = m_iDatabaseID; // Use DB id here as it is unique across PVR clients
   value["channeluid"] = m_channelData->UniqueClientChannelId();
   value["parentalrating"] = m_iParentalRating;
@@ -200,7 +203,8 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
 
 int CPVREpgInfoTag::ClientID() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_channelData->ClientId();
 }
 
@@ -276,13 +280,15 @@ int CPVREpgInfoTag::DatabaseID() const
 
 int CPVREpgInfoTag::UniqueChannelID() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_channelData->UniqueClientChannelId();
 }
 
 std::string CPVREpgInfoTag::ChannelIconPath() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_channelData->ChannelIconPath();
 }
 
@@ -497,7 +503,8 @@ std::string CPVREpgInfoTag::Path() const
 
 bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /* = true */)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   bool bChanged =
       (m_strTitle != tag.m_strTitle || m_strPlotOutline != tag.m_strPlotOutline ||
        m_strPlot != tag.m_strPlot || m_strOriginalTitle != tag.m_strOriginalTitle ||
@@ -572,7 +579,8 @@ std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
 {
   std::vector<PVR_EDL_ENTRY> edls;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
 
@@ -597,7 +605,8 @@ bool CPVREpgInfoTag::IsRecordable() const
 {
   bool bIsRecordable = false;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsRecordable(shared_from_this(), bIsRecordable) != PVR_ERROR_NO_ERROR))
@@ -612,7 +621,8 @@ bool CPVREpgInfoTag::IsPlayable() const
 {
   bool bIsPlayable = false;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR))
@@ -634,19 +644,22 @@ bool CPVREpgInfoTag::IsSeries() const
 
 bool CPVREpgInfoTag::IsRadio() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_channelData->IsRadio();
 }
 
 bool CPVREpgInfoTag::IsParentalLocked() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+
   return m_channelData->IsLocked();
 }
 
 bool CPVREpgInfoTag::IsGapTag() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
+  
   return m_bIsGapTag;
 }
 

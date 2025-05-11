@@ -24,13 +24,15 @@ using namespace std::chrono_literals;
 
 std::shared_ptr<const IPlayer> CApplicationPlayer::GetInternal() const
 {
-  std::unique_lock<CCriticalSection> lock(m_playerLock);
+  std::lock_guard lock(m_playerLock);
+
   return m_pPlayer;
 }
 
 std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal()
 {
-  std::unique_lock<CCriticalSection> lock(m_playerLock);
+  std::lock_guard lock(m_playerLock);
+
   return m_pPlayer;
 }
 
@@ -48,7 +50,8 @@ void CApplicationPlayer::ClosePlayer()
 void CApplicationPlayer::ResetPlayer()
 {
   // we need to do this directly on the member
-  std::unique_lock<CCriticalSection> lock(m_playerLock);
+  std::lock_guard lock(m_playerLock);
+
   m_pPlayer.reset();
 }
 
@@ -63,7 +66,8 @@ void CApplicationPlayer::CloseFile(bool reopen)
 
 void CApplicationPlayer::CreatePlayer(const CPlayerCoreFactory &factory, const std::string &player, IPlayerCallback& callback)
 {
-  std::unique_lock<CCriticalSection> lock(m_playerLock);
+  std::lock_guard lock(m_playerLock);
+
   if (!m_pPlayer)
   {
     CDataCacheCore::GetInstance().Reset();
@@ -118,7 +122,8 @@ bool CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& o
       CloseFile();
       if (player->m_name != newPlayer)
       {
-        std::unique_lock<CCriticalSection> lock(m_playerLock);
+        std::lock_guard lock(m_playerLock);
+
         m_pPlayer.reset();
       }
       return true;
@@ -128,7 +133,8 @@ bool CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& o
   {
     CloseFile();
     {
-      std::unique_lock<CCriticalSection> lock(m_playerLock);
+      std::lock_guard lock(m_playerLock);
+
       m_pPlayer.reset();
       player.reset();
     }

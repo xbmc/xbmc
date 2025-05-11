@@ -322,7 +322,8 @@ bool CWSDiscoveryListenerUDP::DispatchCommand()
 {
   Command sendCommand;
   {
-    std::unique_lock<CCriticalSection> lock(crit_commandqueue);
+    std::lock_guard lock(crit_commandqueue);
+
     if (m_commandbuffer.size() <= 0)
       return false;
 
@@ -355,7 +356,7 @@ void CWSDiscoveryListenerUDP::AddCommand(const std::string& message,
                                          const std::string& extraparameter /* = "" */)
 {
 
-  std::unique_lock<CCriticalSection> lock(crit_commandqueue);
+  std::lock_guard lock(crit_commandqueue);
 
   std::string msg{};
 
@@ -447,7 +448,8 @@ void CWSDiscoveryListenerUDP::ParseBuffer(const std::string& buffer)
   }
 
   {
-    std::unique_lock<CCriticalSection> lock(crit_wsdqueue);
+    std::lock_guard lock(crit_wsdqueue);
+    
     auto searchitem = std::find_if(m_vecWSDInfo.begin(), m_vecWSDInfo.end(),
                                    [info](const wsd_req_info& item) { return item == info; });
 

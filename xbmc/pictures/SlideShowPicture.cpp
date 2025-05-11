@@ -53,7 +53,8 @@ CSlideShowPic::~CSlideShowPic()
 
 void CSlideShowPic::Close()
 {
-  std::unique_lock<CCriticalSection> lock(m_textureAccess);
+  std::lock_guard lock(m_textureAccess);
+
   m_pImage.reset();
   m_bIsLoaded = false;
   m_bIsFinished = false;
@@ -65,7 +66,8 @@ void CSlideShowPic::Close()
 
 void CSlideShowPic::Reset(DISPLAY_EFFECT dispEffect, TRANSITION_EFFECT transEffect)
 {
-  std::unique_lock<CCriticalSection> lock(m_textureAccess);
+  std::lock_guard lock(m_textureAccess);
+
   if (m_pImage)
     SetTexture_Internal(m_iSlideNumber, std::move(m_pImage), dispEffect, transEffect);
   else
@@ -86,7 +88,8 @@ void CSlideShowPic::SetTexture(int iSlideNumber,
                                DISPLAY_EFFECT dispEffect,
                                TRANSITION_EFFECT transEffect)
 {
-  std::unique_lock<CCriticalSection> lock(m_textureAccess);
+  std::lock_guard lock(m_textureAccess);
+
   Close();
   SetTexture_Internal(iSlideNumber, std::move(pTexture), dispEffect, transEffect);
 }
@@ -96,7 +99,8 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
                                         DISPLAY_EFFECT dispEffect,
                                         TRANSITION_EFFECT transEffect)
 {
-  std::unique_lock<CCriticalSection> lock(m_textureAccess);
+  std::lock_guard lock(m_textureAccess);
+  
   m_bPause = false;
   m_bNoEffect = false;
   m_bTransitionImmediately = false;
@@ -239,7 +243,8 @@ int CSlideShowPic::GetOriginalHeight()
 
 void CSlideShowPic::UpdateTexture(std::unique_ptr<CTexture> pTexture)
 {
-  std::unique_lock<CCriticalSection> lock(m_textureAccess);
+  std::lock_guard lock(m_textureAccess);
+
   m_pImage = std::move(pTexture);
   m_fWidth = static_cast<float>(m_pImage->GetWidth());
   m_fHeight = static_cast<float>(m_pImage->GetHeight());
@@ -727,7 +732,7 @@ void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
 
 void CSlideShowPic::Render()
 {
-  std::unique_lock<CCriticalSection> lock(m_textureAccess);
+  std::lock_guard lock(m_textureAccess);
 
   Render(m_ax, m_ay, m_pImage.get(), (m_alpha << 24) | 0xFFFFFF);
 

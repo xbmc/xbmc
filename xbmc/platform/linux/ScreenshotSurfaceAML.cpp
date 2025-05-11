@@ -29,7 +29,8 @@ std::unique_ptr<IScreenshotSurface> CScreenshotSurfaceAML::CreateSurface()
 
 bool CScreenshotSurfaceAML::Capture()
 {
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::lock_guard lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
   CServiceBroker::GetGUI()->GetWindowManager().Render();
 
 #ifndef HAS_GLES

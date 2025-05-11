@@ -115,7 +115,8 @@ void PERIPHERALS::CPeripheralBusGCController::Initialise(void)
 
 bool PERIPHERALS::CPeripheralBusGCController::PerformDeviceScan(PeripheralScanResults& results)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSectionResults);
+  std::lock_guard lock(m_critSectionResults);
+
   results = m_scanResults;
 
   return true;
@@ -124,14 +125,16 @@ bool PERIPHERALS::CPeripheralBusGCController::PerformDeviceScan(PeripheralScanRe
 void PERIPHERALS::CPeripheralBusGCController::SetScanResults(
     const PERIPHERALS::PeripheralScanResults& resScanResults)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSectionResults);
+  std::lock_guard lock(m_critSectionResults);
+
   m_scanResults = resScanResults;
 }
 
 void PERIPHERALS::CPeripheralBusGCController::GetEvents(
     std::vector<kodi::addon::PeripheralEvent>& events)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+  std::lock_guard lock(m_critSectionStates);
+
   std::vector<kodi::addon::PeripheralEvent> digitalEvents;
   digitalEvents = [m_peripheralGCController->callbackClass GetButtonEvents];
 
@@ -163,7 +166,7 @@ void PERIPHERALS::CPeripheralBusGCController::ProcessEvents()
 {
   std::vector<kodi::addon::PeripheralEvent> events;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+    std::lock_guard lock(m_critSectionStates);
 
     //! @todo Multiple controller event processing
     GetEvents(events);
@@ -194,7 +197,8 @@ void PERIPHERALS::CPeripheralBusGCController::ProcessEvents()
     }
   }
   {
-    std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+    std::lock_guard lock(m_critSectionStates);
+    
     //! @todo Multiple controller handling
     PeripheralPtr device = GetPeripheral(GetDeviceLocation(0));
 

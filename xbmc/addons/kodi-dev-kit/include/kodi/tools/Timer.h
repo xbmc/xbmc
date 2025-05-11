@@ -282,7 +282,9 @@ protected:
 
       // wait the necessary time
       std::mutex mutex;
-      std::unique_lock<std::mutex> lock(mutex);
+
+      std::unique_lock lock(mutex);
+
       const auto waitTime = duration_cast<milliseconds>(m_endTime - currentTime.time_since_epoch());
       if (m_eventTimeout.wait_for(lock, waitTime) == std::cv_status::timeout)
       {

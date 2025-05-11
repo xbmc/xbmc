@@ -112,7 +112,7 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   joystick.SetButtonCount(state.GetButtonCount());
   joystick.SetAxisCount(state.GetAxisCount());
 
-  std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+  std::lock_guard lock(m_critSectionStates);
 
   // remember the joystick state
   m_joystickStates.insert(std::make_pair(deviceId, std::move(state)));
@@ -136,7 +136,7 @@ bool CPeripheralBusAndroid::InitializeButtonMap(const CPeripheral& peripheral,
     return false;
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+  std::lock_guard lock(m_critSectionStates);
 
   // get the joystick state
   auto it = m_joystickStates.find(deviceId);
@@ -179,7 +179,8 @@ void CPeripheralBusAndroid::ProcessEvents()
 {
   std::vector<kodi::addon::PeripheralEvent> events;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+    std::lock_guard lock(m_critSectionStates);
+
     for (auto& joystickState : m_joystickStates)
       joystickState.second.GetEvents(events);
   }
@@ -210,7 +211,8 @@ void CPeripheralBusAndroid::ProcessEvents()
   }
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+    std::lock_guard lock(m_critSectionStates);
+
     for (const auto& joystickState : m_joystickStates)
     {
       PeripheralPtr device = GetPeripheral(GetDeviceLocation(joystickState.second.GetDeviceId()));
@@ -226,7 +228,8 @@ void CPeripheralBusAndroid::OnInputDeviceAdded(int deviceId)
 {
   const std::string deviceLocation = GetDeviceLocation(deviceId);
   {
-    std::unique_lock<CCriticalSection> lock(m_critSectionResults);
+    std::lock_guard lock(m_critSectionResults);
+
     // add the device to the cached result list
     const auto& it = std::find_if(m_scanResults.m_results.cbegin(), m_scanResults.m_results.cend(),
                                   [&deviceLocation](const PeripheralScanResult& scanResult)
@@ -269,7 +272,8 @@ void CPeripheralBusAndroid::OnInputDeviceChanged(int deviceId)
   bool changed = false;
   const std::string deviceLocation = GetDeviceLocation(deviceId);
   {
-    std::unique_lock<CCriticalSection> lock(m_critSectionResults);
+    std::lock_guard lock(m_critSectionResults);
+
     // change the device in the cached result list
     for (auto result = m_scanResults.m_results.begin(); result != m_scanResults.m_results.end();
          ++result)
@@ -311,7 +315,8 @@ void CPeripheralBusAndroid::OnInputDeviceRemoved(int deviceId)
   bool removed = false;
   const std::string deviceLocation = GetDeviceLocation(deviceId);
   {
-    std::unique_lock<CCriticalSection> lock(m_critSectionResults);
+    std::lock_guard lock(m_critSectionResults);
+
     // remove the device from the cached result list
     for (auto result = m_scanResults.m_results.begin(); result != m_scanResults.m_results.end();
          ++result)
@@ -330,7 +335,8 @@ void CPeripheralBusAndroid::OnInputDeviceRemoved(int deviceId)
   if (removed)
   {
     {
-      std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+      std::lock_guard lock(m_critSectionStates);
+
       m_joystickStates.erase(deviceId);
     }
 
@@ -348,7 +354,8 @@ bool CPeripheralBusAndroid::OnInputDeviceEvent(const AInputEvent* event)
   if (event == nullptr)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+  std::lock_guard lock(m_critSectionStates);
+  
   // get the id of the input device which generated the event
   int32_t deviceId = AInputEvent_getDeviceId(event);
 
@@ -367,7 +374,8 @@ bool CPeripheralBusAndroid::OnInputDeviceEvent(const AInputEvent* event)
 
 bool CPeripheralBusAndroid::PerformDeviceScan(PeripheralScanResults& results)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSectionResults);
+  std::lock_guard lock(m_critSectionResults);
+
   results = m_scanResults;
 
   return true;

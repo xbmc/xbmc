@@ -160,7 +160,8 @@ void CRepositoryUpdater::OnEvent(const ADDON::AddonEvent& event)
 
 void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+
   m_jobs.erase(std::find(m_jobs.begin(), m_jobs.end(), job));
   if (m_jobs.empty())
   {
@@ -207,7 +208,8 @@ bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
   VECADDONS addons;
   if (m_addonMgr.GetAddons(addons, AddonType::REPOSITORY) && !addons.empty())
   {
-    std::unique_lock<CCriticalSection> lock(m_criticalSection);
+    std::lock_guard lock(m_criticalSection);
+
     for (const auto& addon : addons)
       CheckForUpdates(std::static_pointer_cast<ADDON::CRepository>(addon), showProgress);
 
@@ -226,7 +228,8 @@ static void SetProgressIndicator(CRepositoryUpdateJob* job)
 
 void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool showProgress)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+
   auto job = std::find_if(m_jobs.begin(), m_jobs.end(),
       [&](CRepositoryUpdateJob* job){ return job->GetAddon()->ID() == repo->ID(); });
 
@@ -317,7 +320,8 @@ void CRepositoryUpdater::ScheduleUpdate(UpdateScheduleType scheduleType)
 {
   using namespace std::chrono;
 
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+  
   m_timer.Stop(true);
 
   if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_NEVER)

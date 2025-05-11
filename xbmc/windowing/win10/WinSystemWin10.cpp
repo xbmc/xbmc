@@ -568,13 +568,15 @@ bool CWinSystemWin10::Show(bool raise)
 
 void CWinSystemWin10::Register(IDispResource *resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   m_resources.push_back(resource);
 }
 
 void CWinSystemWin10::Unregister(IDispResource* resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
@@ -585,7 +587,8 @@ void CWinSystemWin10::OnDisplayLost()
   CLog::Log(LOGDEBUG, "{} - notify display lost event", __FUNCTION__);
 
   {
-    std::unique_lock<CCriticalSection> lock(m_resourceSection);
+    std::lock_guard lock(m_resourceSection);
+
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnLostDisplay();
   }
@@ -596,7 +599,9 @@ void CWinSystemWin10::OnDisplayReset()
   if (!m_delayDispReset)
   {
     CLog::Log(LOGDEBUG, "{} - notify display reset event", __FUNCTION__);
-    std::unique_lock<CCriticalSection> lock(m_resourceSection);
+
+    std::lock_guard lock(m_resourceSection);
+
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();
   }

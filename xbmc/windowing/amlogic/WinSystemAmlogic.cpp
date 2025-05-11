@@ -160,7 +160,8 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
   }
 
   {
-    std::unique_lock<CCriticalSection> lock(m_resourceSection);
+    std::lock_guard lock(m_resourceSection);
+
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
     {
       (*i)->OnLostDisplay();
@@ -173,7 +174,8 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
 
   if (!m_delayDispReset)
   {
-    std::unique_lock<CCriticalSection> lock(m_resourceSection);
+    std::lock_guard lock(m_resourceSection);
+
     // tell any shared resources
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
     {
@@ -306,7 +308,7 @@ CHDRCapabilities CWinSystemAmlogic::GetDisplayHDRCapabilities() const
 
 float CWinSystemAmlogic::GetDisplayLatency()
 {
-  return 0.0f; 
+  return 0.0f;
 }
 
 float CWinSystemAmlogic::GetGuiSdrPeakLuminance() const
@@ -330,13 +332,15 @@ bool CWinSystemAmlogic::Show(bool show)
 
 void CWinSystemAmlogic::Register(IDispResource *resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   m_resources.push_back(resource);
 }
 
 void CWinSystemAmlogic::Unregister(IDispResource *resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);

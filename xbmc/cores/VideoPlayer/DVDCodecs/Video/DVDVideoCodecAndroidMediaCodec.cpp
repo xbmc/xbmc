@@ -246,7 +246,7 @@ CMediaCodecVideoBufferPool::~CMediaCodecVideoBufferPool()
 
 CVideoBuffer* CMediaCodecVideoBufferPool::Get()
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
 
   if (m_freeBuffers.empty())
   {
@@ -263,14 +263,16 @@ CVideoBuffer* CMediaCodecVideoBufferPool::Get()
 
 void CMediaCodecVideoBufferPool::Return(int id)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+
   m_videoBuffers[id]->ReleaseOutputBuffer(false, 0, this);
   m_freeBuffers.push_back(id);
 }
 
 std::shared_ptr<CJNIMediaCodec> CMediaCodecVideoBufferPool::GetMediaCodec()
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+
   return m_codec;
 }
 
@@ -278,13 +280,15 @@ void CMediaCodecVideoBufferPool::ResetMediaCodec()
 {
   ReleaseMediaCodecBuffers();
 
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+
   m_codec = nullptr;
 }
 
 void CMediaCodecVideoBufferPool::ReleaseMediaCodecBuffers()
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::lock_guard lock(m_criticalSection);
+  
   for (auto buffer : m_videoBuffers)
     buffer->ReleaseOutputBuffer(false, 0, this);
 }

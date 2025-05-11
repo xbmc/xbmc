@@ -117,6 +117,7 @@ void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
   // and keeps track of the flag
   {
     std::unique_lock<CCriticalSection> lockMe(*this);
+
     if (!m_recentlyAddedRunning)
     {
       getAJob = true;

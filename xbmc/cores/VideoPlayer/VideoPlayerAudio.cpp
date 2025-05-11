@@ -197,7 +197,9 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
   info.fpts        = DVD_NOPTS_VALUE;
   info.passthrough = false;
 
-  { std::unique_lock<CCriticalSection> lock(m_info_section);
+  {
+    std::lock_guard lock(m_info_section);
+
     m_info = info;
   }
 }
@@ -232,7 +234,8 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
   info.passthrough = m_pAudioCodec && m_pAudioCodec->NeedPassthrough();
 
   {
-    std::unique_lock<CCriticalSection> lock(m_info_section);
+    std::lock_guard lock(m_info_section);
+    
     m_info = info;
   }
 
@@ -700,7 +703,8 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
 
 std::string CVideoPlayerAudio::GetPlayerInfo()
 {
-  std::unique_lock<CCriticalSection> lock(m_info_section);
+  std::lock_guard lock(m_info_section);
+
   return m_info.info;
 }
 
@@ -711,6 +715,7 @@ int CVideoPlayerAudio::GetAudioChannels()
 
 bool CVideoPlayerAudio::IsPassthrough() const
 {
-  std::unique_lock<CCriticalSection> lock(m_info_section);
+  std::lock_guard lock(m_info_section);
+
   return m_info.passthrough;
 }

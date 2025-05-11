@@ -140,7 +140,8 @@ CGUILargeTextureManager::~CGUILargeTextureManager() = default;
 
 void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 {
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::lock_guard lock(m_listSection);
+
   // check for items to remove from allocated list, and remove
   listIterator it = m_allocated.begin();
   while (it != m_allocated.end())
@@ -157,7 +158,8 @@ void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 // else, add to the queue list if appropriate.
 bool CGUILargeTextureManager::GetImage(const std::string &path, CTextureArray &texture, bool firstRequest, const bool useCache)
 {
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::lock_guard lock(m_listSection);
+
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
@@ -178,7 +180,8 @@ bool CGUILargeTextureManager::GetImage(const std::string &path, CTextureArray &t
 
 void CGUILargeTextureManager::ReleaseImage(const std::string &path, bool immediately)
 {
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::lock_guard lock(m_listSection);
+
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
@@ -209,7 +212,8 @@ void CGUILargeTextureManager::QueueImage(const std::string &path, bool useCache)
   if (path.empty())
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::lock_guard lock(m_listSection);
+
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
   {
     CLargeTexture *image = it->second;
@@ -230,7 +234,8 @@ void CGUILargeTextureManager::QueueImage(const std::string &path, bool useCache)
 void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   // see if we still have this job id
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::lock_guard lock(m_listSection);
+  
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
   {
     if (it->first == jobID)

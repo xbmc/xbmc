@@ -222,7 +222,8 @@ void CWinSystemAndroid::InitiateModeChange()
 
 void CWinSystemAndroid::SetHdmiState(bool connected)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   CLog::Log(LOGDEBUG, "CWinSystemAndroid::SetHdmiState: state: {}", static_cast<int>(connected));
 
   if (connected)
@@ -283,13 +284,15 @@ bool CWinSystemAndroid::Show(bool raise)
 
 void CWinSystemAndroid::Register(IDispResource *resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   m_resources.push_back(resource);
 }
 
 void CWinSystemAndroid::Unregister(IDispResource *resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::lock_guard lock(m_resourceSection);
+
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);

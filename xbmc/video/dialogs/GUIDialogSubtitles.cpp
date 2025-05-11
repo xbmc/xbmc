@@ -220,7 +220,8 @@ void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &di
     std::string status;
     CFileItemList subs;
     {
-      std::unique_lock<CCriticalSection> lock(m_critsection);
+      std::lock_guard lock(m_critsection);
+
       status = m_status;
       subs.Assign(*m_subtitles);
     }
@@ -405,7 +406,8 @@ void CGUIDialogSubtitles::OnJobComplete(unsigned int jobID, bool success, CJob *
 
 void CGUIDialogSubtitles::OnSearchComplete(const CFileItemList *items)
 {
-  std::unique_lock<CCriticalSection> lock(m_critsection);
+  std::lock_guard lock(m_critsection);
+
   m_subtitles->Assign(*items);
   UpdateStatus(SEARCH_COMPLETE);
   m_updateSubsList = true;
@@ -485,7 +487,8 @@ void CGUIDialogSubtitles::OnSubtitleServiceContextMenu(int itemIdx)
 
 void CGUIDialogSubtitles::UpdateStatus(STATUS status)
 {
-  std::unique_lock<CCriticalSection> lock(m_critsection);
+  std::lock_guard lock(m_critsection);
+
   std::string label;
   switch (status)
   {
@@ -684,7 +687,9 @@ void CGUIDialogSubtitles::ClearSubtitles()
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SUBLIST);
   OnMessage(msg);
-  std::unique_lock<CCriticalSection> lock(m_critsection);
+
+  std::lock_guard lock(m_critsection);
+
   m_subtitles->Clear();
 }
 

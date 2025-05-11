@@ -40,7 +40,8 @@ bool CScreenshotSurfaceGL::Capture()
   if (!gui)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(winsystem->GetGfxContext());
+  std::lock_guard lock(winsystem->GetGfxContext());
+
   gui->GetWindowManager().Render();
 
   glReadBuffer(GL_BACK);

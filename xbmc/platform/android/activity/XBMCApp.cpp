@@ -330,7 +330,8 @@ void CXBMCApp::onResume()
 
   // Clear the applications cache. We could have installed/deinstalled apps
   {
-    std::unique_lock<CCriticalSection> lock(m_applicationsMutex);
+    std::lock_guard lock(m_applicationsMutex);
+
     m_applications.clear();
   }
 
@@ -1011,7 +1012,8 @@ void CXBMCApp::ProcessSlow()
 
 std::vector<androidPackage> CXBMCApp::GetApplications() const
 {
-  std::unique_lock<CCriticalSection> lock(m_applicationsMutex);
+  std::lock_guard lock(m_applicationsMutex);
+
   if (m_applications.empty())
   {
     CJNIList<CJNIApplicationInfo> packageList =

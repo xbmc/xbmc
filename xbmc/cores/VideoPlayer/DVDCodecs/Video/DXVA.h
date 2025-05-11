@@ -246,13 +246,15 @@ protected:
   // ID3DResource overrides
   void OnCreateDevice() override
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
+
     m_state = DXVA_RESET;
     m_event.Set();
   }
   void OnDestroyDevice(bool fatal) override
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::lock_guard lock(m_section);
+
     m_state = DXVA_LOST;
     m_event.Reset();
   }

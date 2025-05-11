@@ -223,7 +223,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
   std::string path = translatedUrl.Get();
   CLog::Log(LOGDEBUG, "GameClient: Loading {}", CURL::GetRedacted(path));
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (!Initialized())
     return false;
@@ -264,7 +264,7 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
 {
   CLog::Log(LOGDEBUG, "GameClient: Loading {} in standalone mode", ID());
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (!Initialized())
     return false;
@@ -447,7 +447,7 @@ std::string CGameClient::GetMissingResource()
 
 void CGameClient::Reset()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (m_bIsPlaying)
   {
@@ -464,7 +464,7 @@ void CGameClient::Reset()
 
 void CGameClient::CloseFile()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (m_bIsPlaying)
   {
@@ -496,14 +496,15 @@ void CGameClient::RunFrame()
   IGameInputCallback* input;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::lock_guard lock(m_critSection);
+
     input = m_input;
   }
 
   if (input)
     input->PollInput();
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   if (m_bIsPlaying)
   {
@@ -523,7 +524,7 @@ bool CGameClient::Serialize(uint8_t* data, size_t size)
   if (data == nullptr || size == 0)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   bool bSuccess = false;
   if (m_bIsPlaying)
@@ -546,7 +547,7 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
   if (data == nullptr || size == 0)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::lock_guard lock(m_critSection);
 
   bool bSuccess = false;
   if (m_bIsPlaying)

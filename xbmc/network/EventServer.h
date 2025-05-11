@@ -44,7 +44,8 @@ namespace EVENTSERVER
 
     void RefreshSettings()
     {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
+      std::lock_guard lock(m_critSection);
+      
       m_bRefreshSettings = true;
     }
 

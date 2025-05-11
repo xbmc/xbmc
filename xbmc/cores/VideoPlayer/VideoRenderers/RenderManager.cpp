@@ -61,7 +61,8 @@ CRenderManager::~CRenderManager()
 
 void CRenderManager::GetVideoRect(CRect& source, CRect& dest, CRect& view) const
 {
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
+
   if (m_pRenderer)
     m_pRenderer->GetVideoRect(source, dest, view);
 }
@@ -77,7 +78,8 @@ float CRenderManager::GetAspectRatio() const
 
 void CRenderManager::SetVideoSettings(const CVideoSettings& settings)
 {
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
+
   if (m_pRenderer)
   {
     m_pRenderer->SetVideoSettings(settings);
@@ -90,7 +92,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
 
   // check if something has changed
   {
-    std::unique_lock<CCriticalSection> lock(m_statelock);
+    std::lock_guard lock(m_statelock);
 
     if (!m_bRenderGUI)
       return true;
@@ -110,7 +112,8 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
 
   // make sure any queued frame was fully presented
   {
-    std::unique_lock<CCriticalSection> lock(m_presentlock);
+    std::unique_lock lock(m_presentlock);
+
     XbmcThreads::EndTime<> endtime(5000ms);
     m_forceNext = true;
     while (m_presentstep != PRESENT_IDLE)
@@ -127,7 +130,8 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
   }
 
   {
-    std::unique_lock<CCriticalSection> lock(m_statelock);
+    std::lock_guard lock(m_statelock);
+
     m_picture.SetParams(picture);
     m_fps = fps;
     m_orientation = orientation;
@@ -139,7 +143,8 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_pConfigPicture = std::make_unique<VideoPicture>();
     m_pConfigPicture->CopyRef(picture);
 
-    std::unique_lock<CCriticalSection> lock2(m_presentlock);
+    std::lock_guard lock2(m_presentlock);
+
     m_presentstep = PRESENT_READY;
     m_presentevent.notifyAll();
   }
@@ -147,11 +152,13 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
   if (!m_stateEvent.Wait(1000ms))
   {
     logM(LOGWARNING, "CRenderManager", "timeout waiting for configure");
-    std::unique_lock<CCriticalSection> lock(m_statelock);
+    std::lock_guard lock(m_statelock);
+
     return false;
   }
 
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
+
   if (m_renderState != STATE_CONFIGURED)
   {
     logM(LOGWARNING, "CRenderManager", "failed to configure");
@@ -164,9 +171,11 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
 bool CRenderManager::Configure()
 {
   // lock all interfaces
-  std::unique_lock<CCriticalSection> lock(m_statelock);
-  std::unique_lock<CCriticalSection> lock2(m_presentlock);
-  std::unique_lock<CCriticalSection> lock3(m_datalock);
+  std::lock_guard lock(m_statelock);
+
+  std::lock_guard lock2(m_presentlock);
+
+  std::lock_guard lock3(m_datalock);
 
   if (m_pRenderer)
   {
@@ -243,7 +252,8 @@ bool CRenderManager::Configure()
 
 bool CRenderManager::IsConfigured() const
 {
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
+
   if (m_renderState == STATE_CONFIGURED)
     return true;
   else
@@ -260,7 +270,9 @@ void CRenderManager::ShowVideo(bool enable)
 void CRenderManager::FrameWait(std::chrono::milliseconds duration)
 {
   XbmcThreads::EndTime<> timeout{duration};
-  std::unique_lock<CCriticalSection> lock(m_presentlock);
+
+  std::unique_lock lock(m_presentlock);
+
   while (m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
     m_presentevent.wait(lock, timeout.GetTimeLeft());
 }
@@ -270,7 +282,8 @@ bool CRenderManager::IsPresenting()
   if (!IsConfigured())
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_presentlock);
+  std::lock_guard lock(m_presentlock);
+
   if (!m_presentTimer.IsTimePast())
     return true;
   else
@@ -283,7 +296,7 @@ void CRenderManager::FrameMove()
   UpdateResolution();
 
   {
-    std::unique_lock<CCriticalSection> lock(m_statelock);
+    std::unique_lock lock(m_statelock);
 
     if (m_renderState == STATE_UNCONFIGURED)
       return;
@@ -301,7 +314,7 @@ void CRenderManager::FrameMove()
   }
 
   {
-    std::unique_lock<CCriticalSection> lock2(m_presentlock);
+    std::lock_guard lock2(m_presentlock);
 
     if (m_queued.empty())
     {
@@ -347,7 +360,8 @@ void CRenderManager::FrameMove()
 void CRenderManager::PreInit()
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_statelock);
+    std::lock_guard lock(m_statelock);
+
     if (m_renderState != STATE_UNCONFIGURED)
       return;
   }
@@ -362,7 +376,7 @@ void CRenderManager::PreInit()
     }
   }
 
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
 
   if (!m_pRenderer)
   {
@@ -391,7 +405,7 @@ void CRenderManager::UnInit()
     }
   }
 
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
 
   m_overlays.UnInit();
   m_debugRenderer.Dispose();
@@ -421,9 +435,11 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
     CSingleExit exitlock(CServiceBroker::GetWinSystem()->GetGfxContext());
 #endif
 
-    std::unique_lock<CCriticalSection> lock(m_statelock);
-    std::unique_lock<CCriticalSection> lock2(m_presentlock);
-    std::unique_lock<CCriticalSection> lock3(m_datalock);
+    std::lock_guard lock(m_statelock);
+
+    std::lock_guard lock2(m_presentlock);
+
+    std::lock_guard lock3(m_datalock);
 
     if (m_pRenderer)
     {
@@ -515,7 +531,7 @@ unsigned int CRenderManager::AllocRenderCapture()
 
 void CRenderManager::ReleaseRenderCapture(unsigned int captureId)
 {
-  std::unique_lock<CCriticalSection> lock(m_captCritSect);
+  std::lock_guard lock(m_captCritSect);
 
   std::map<unsigned int, CRenderCapture*>::iterator it;
   it = m_captures.find(captureId);
@@ -526,7 +542,7 @@ void CRenderManager::ReleaseRenderCapture(unsigned int captureId)
 
 void CRenderManager::StartRenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags)
 {
-  std::unique_lock<CCriticalSection> lock(m_captCritSect);
+  std::lock_guard lock(m_captCritSect);
 
   std::map<unsigned int, CRenderCapture*>::iterator it;
   it = m_captures.find(captureId);
@@ -562,7 +578,7 @@ void CRenderManager::StartRenderCapture(unsigned int captureId, unsigned int wid
 
 bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size)
 {
-  std::unique_lock<CCriticalSection> lock(m_captCritSect);
+  std::lock_guard lock(m_captCritSect);
 
   std::map<unsigned int, CRenderCapture*>::iterator it;
   it = m_captures.find(captureId);
@@ -601,7 +617,7 @@ void CRenderManager::ManageCaptures()
   if (!m_hasCaptures)
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_captCritSect);
+  std::lock_guard lock(m_captCritSect);
 
   std::map<unsigned int, CRenderCapture*>::iterator it = m_captures.begin();
   while (it != m_captures.end())
@@ -654,7 +670,7 @@ void CRenderManager::RenderCapture(CRenderCapture* capture)
 
 void CRenderManager::RemoveCaptures()
 {
-  std::unique_lock<CCriticalSection> lock(m_captCritSect);
+  std::lock_guard lock(m_captCritSect);
 
   while (m_captureWaitCounter > 0)
   {
@@ -675,7 +691,8 @@ void CRenderManager::RemoveCaptures()
 
 void CRenderManager::SetViewMode(int iViewMode)
 {
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
+
   if (m_pRenderer)
     m_pRenderer->SetViewMode(iViewMode);
   m_playerPort->VideoParamsChange();
@@ -685,7 +702,8 @@ RESOLUTION CRenderManager::GetResolution()
 {
   RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
 
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
+
   if (m_renderState == STATE_UNCONFIGURED)
     return res;
 
@@ -754,7 +772,8 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
   CSingleExit exitLock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   {
-    std::unique_lock<CCriticalSection> lock(m_statelock);
+    std::lock_guard lock(m_statelock);
+
     if (!m_presentstarted || (m_renderState != STATE_CONFIGURED))
       return;
   }
@@ -829,7 +848,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
   }
 
   {
-    std::unique_lock<CCriticalSection> lock(m_presentlock);
+    std::lock_guard lock(m_presentlock);
 
     if (m_presentstep == PRESENT_FRAME)
     {
@@ -854,7 +873,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 bool CRenderManager::IsGuiLayer()
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_statelock);
+    std::lock_guard lock(m_statelock);
 
     if (!m_pRenderer)
       return false;
@@ -872,7 +891,7 @@ bool CRenderManager::IsGuiLayer()
 bool CRenderManager::IsVideoLayer()
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_statelock);
+    std::lock_guard lock(m_statelock);
 
     if (!m_pRenderer)
       return false;
@@ -955,7 +974,8 @@ void CRenderManager::UpdateVideoLatencyTweak()
 
 void CRenderManager::UpdateResolution(bool force)
 {
-  std::unique_lock<CCriticalSection> lock(m_resolutionlock);
+  std::lock_guard lock(m_resolutionlock);
+
   if (m_bTriggerUpdateResolution)
   {
     if (force ||
@@ -1054,7 +1074,7 @@ void CRenderManager::SetSubtitleVerticalPosition(int value, bool save)
 
 bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::atomic_bool& bStop, EINTERLACEMETHOD deintMethod, bool wait)
 {
-  std::unique_lock<CCriticalSection> lock(m_presentlock);
+  std::unique_lock lock(m_presentlock);
 
   if (m_free.empty())
     return false;
@@ -1062,7 +1082,8 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
   int index = m_free.front();
 
   {
-    std::unique_lock<CCriticalSection> lock(m_datalock);
+    std::lock_guard lock2(m_datalock);
+
     if (!m_pRenderer)
       return false;
 
@@ -1150,18 +1171,21 @@ void CRenderManager::AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts)
 {
   int idx;
   {
-    std::unique_lock<CCriticalSection> lock(m_presentlock);
+    std::lock_guard lock(m_presentlock);
+
     if (m_free.empty())
       return;
     idx = m_free.front();
   }
-  std::unique_lock<CCriticalSection> lock(m_datalock);
+  std::lock_guard lock(m_datalock);
+
   m_overlays.AddOverlay(std::move(o), pts, idx);
 }
 
 bool CRenderManager::Supports(ERENDERFEATURE feature) const
 {
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
+
   if (m_pRenderer)
     return m_pRenderer->Supports(feature);
   else
@@ -1170,7 +1194,8 @@ bool CRenderManager::Supports(ERENDERFEATURE feature) const
 
 bool CRenderManager::Supports(ESCALINGMETHOD method) const
 {
-  std::unique_lock<CCriticalSection> lock(m_statelock);
+  std::lock_guard lock(m_statelock);
+
   if (m_pRenderer)
     return m_pRenderer->Supports(method);
   else
@@ -1180,7 +1205,7 @@ bool CRenderManager::Supports(ESCALINGMETHOD method) const
 int CRenderManager::WaitForBuffer(volatile std::atomic_bool& bStop,
                                   std::chrono::milliseconds timeout)
 {
-  std::unique_lock<CCriticalSection> lock(m_presentlock);
+  std::unique_lock lock(m_presentlock);
 
   // check if gui is active and discard buffer if not
   // this keeps videoplayer going
@@ -1345,7 +1370,7 @@ void CRenderManager::PrepareNextRender()
 
 void CRenderManager::DiscardBuffer()
 {
-  std::unique_lock<CCriticalSection> lock2(m_presentlock);
+  std::lock_guard lock2(m_presentlock);
 
   while (!m_queued.empty())
   {
@@ -1361,7 +1386,8 @@ void CRenderManager::DiscardBuffer()
 
 bool CRenderManager::GetStats(int &lateframes, double &pts, int &queued, int &discard)
 {
-  std::unique_lock<CCriticalSection> lock(m_presentlock);
+  std::lock_guard lock(m_presentlock);
+
   lateframes = m_lateframes / 10;
   pts = m_presentpts;
   queued = m_queued.size();
@@ -1371,13 +1397,15 @@ bool CRenderManager::GetStats(int &lateframes, double &pts, int &queued, int &di
 
 double CRenderManager::GetRenderPts()
 {
-  std::unique_lock<CCriticalSection> lock(m_presentlock);
+  std::lock_guard lock(m_presentlock);
+
   return m_presentpts;
 }
 
 double CRenderManager::GetFramePts()
 {
-  std::unique_lock<CCriticalSection> lock(m_presentlock);
+  std::lock_guard lock(m_presentlock);
+
   return m_presentpts;
 }
 

@@ -697,7 +697,8 @@ bool CUPnP::UpdateItem(const std::string& path, const CFileItem& item)
 +---------------------------------------------------------------------*/
 void CUPnP::StartClient()
 {
-  std::unique_lock<CCriticalSection> lock(m_lockMediaBrowser);
+  std::lock_guard lock(m_lockMediaBrowser);
+
   if (m_MediaBrowser != NULL)
     return;
 
@@ -712,7 +713,8 @@ void CUPnP::StartClient()
 +---------------------------------------------------------------------*/
 void CUPnP::StopClient()
 {
-  std::unique_lock<CCriticalSection> lock(m_lockMediaBrowser);
+  std::lock_guard lock(m_lockMediaBrowser);
+
   if (m_MediaBrowser == NULL)
     return;
 

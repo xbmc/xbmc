@@ -200,7 +200,8 @@ public:
       //   is fully initialized. Interestingly, using a std::atomic doesn't
       //   have the appropriate memory barrier behavior to accomplish the
       //   same thing so a full system mutex needs to be used.
-      std::unique_lock<std::recursive_mutex> lock(m_threadMutex);
+      std::unique_lock lock(m_threadMutex);
+
       m_thread = new std::thread(
           [](CThread* thread, std::promise<bool> promise)
           {
@@ -212,7 +213,7 @@ public:
                 // lambda's call stack prior to the thread that kicked off this lambda
                 // having it set. Once this lock is released, the CThread::Create function
                 // that kicked this off is done so everything should be set.
-                std::unique_lock<std::recursive_mutex> lock(thread->m_threadMutex);
+                std::unique_lock lock2(thread->m_threadMutex);
               }
 
               thread->m_threadId = std::this_thread::get_id();
@@ -266,7 +267,7 @@ public:
   ///
   void StopThread(bool wait = true)
   {
-    std::unique_lock<std::recursive_mutex> lock(m_threadMutex);
+    std::unique_lock lock(m_threadMutex);
 
     if (m_threadStop)
       return;
@@ -307,7 +308,8 @@ public:
   {
     if (milliseconds > 10 && IsCurrentThread())
     {
-      std::unique_lock<std::recursive_mutex> lock(m_threadMutex);
+      std::unique_lock lock(m_threadMutex);
+
       m_stopEvent.wait_for(lock, std::chrono::milliseconds(milliseconds));
     }
     else
@@ -329,7 +331,8 @@ public:
   ///
   bool Join(unsigned int milliseconds)
   {
-    std::unique_lock<std::recursive_mutex> lock(m_threadMutex);
+    std::unique_lock lock(m_threadMutex);
+
     std::thread* lthread = m_thread;
     if (lthread != nullptr)
     {

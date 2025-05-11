@@ -32,7 +32,8 @@ void CProcessInfoOSX::SetSwDeinterlacingMethods()
   std::list<EINTERLACEMETHOD> methods;
   {
     // get the current methods
-    std::unique_lock<CCriticalSection> lock(m_videoCodecSection);
+    std::lock_guard lock(m_videoCodecSection);
+    
     methods = m_deintMethods;
   }
   // add bob and blend deinterlacer for osx

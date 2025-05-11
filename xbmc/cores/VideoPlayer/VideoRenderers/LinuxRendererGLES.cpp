@@ -708,7 +708,8 @@ void CLinuxRendererGLES::ReleaseShaders()
 void CLinuxRendererGLES::UnInit()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGLES: Cleaning up GLES resources");
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
+  std::lock_guard lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   glFinish();
 

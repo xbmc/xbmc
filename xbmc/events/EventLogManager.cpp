@@ -16,7 +16,7 @@
 
 CEventLog& CEventLogManager::GetEventLog(unsigned int profileId)
 {
-  std::unique_lock<CCriticalSection> lock(m_eventMutex);
+  std::lock_guard lock(m_eventMutex);
 
   auto eventLog = m_eventLogs.find(profileId);
   if (eventLog == m_eventLogs.end())

@@ -46,7 +46,8 @@ bool CPVRChannelGroupsContainer::LoadFromDatabase(
 bool CPVRChannelGroupsContainer::UpdateFromClients(
     const std::vector<std::shared_ptr<CPVRClient>>& clients, bool bChannelsOnly /* = false */)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
+
   if (m_bIsUpdating)
     return false;
   m_bIsUpdating = true;

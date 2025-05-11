@@ -141,7 +141,8 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
       CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::{} - Sending display reset to all clients",
                 __FUNCTION__);
       m_dispReset = false;
-      std::unique_lock<CCriticalSection> lock(m_resourceSection);
+
+      std::lock_guard lock(m_resourceSection);
 
       for (auto resource : m_resources)
         resource->OnResetDisplay();
