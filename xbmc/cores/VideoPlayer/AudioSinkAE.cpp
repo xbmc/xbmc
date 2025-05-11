@@ -336,7 +336,7 @@ double CAudioSinkAE::GetResampleRatio()
 void CAudioSinkAE::SetResampleMode(int mode)
 {
   std::lock_guard lock(m_critSection);
-  
+
   if(m_pAudioStream)
   {
     m_pAudioStream->SetResampleMode(mode);
