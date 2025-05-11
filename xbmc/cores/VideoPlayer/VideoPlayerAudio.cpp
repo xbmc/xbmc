@@ -226,7 +226,7 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
 
   {
     std::lock_guard lock(m_info_section);
-    
+
     m_info = info;
   }
 
