@@ -305,7 +305,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_bitstream->Open(true);
 
       // check for hevc-hvcC and convert to h265-annex-b - and DV is on.
-      if (m_hints.extradata && !m_hints.cryptoSession && m_bitstream && (aml_dv_mode() != DV_MODE_OFF))
+      if (m_hints.extradata && !m_hints.cryptoSession && m_bitstream && (aml_dv_mode() != DV_MODE::OFF))
       {
         auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
@@ -596,8 +596,8 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
   // Make change in luminance as late a possible to try and avoid starting change in luminance in menu.
   if (set_osd_max)
   {
-    // if DV_MODE_ON (i.e. on in Kodi Menu), then set graphics max to 0 (OSD luminance will be handled by amlogic).
-    if (aml_dv_mode() == DV_MODE_ON) aml_dv_set_osd_max(0);
+    // if DV_MODE::ON (i.e. on in Kodi Menu), then set graphics max to 0 (OSD luminance will be handled by amlogic).
+    if (aml_dv_mode() == DV_MODE::ON) aml_dv_set_osd_max(0);
   }
 
   return m_last_added;

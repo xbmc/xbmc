@@ -90,7 +90,7 @@ bool CWinSystemAmlogicGLESContext::CreateNewWindow(const std::string& name,
   bool force_mode_switch_by_dv =
          ((hdrType != m_hdrType) &&
           ((hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) || (m_hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)) &&
-       (aml_dv_mode() != DV_MODE_OFF));
+       (aml_dv_mode() != DV_MODE::OFF));
 
   // get current used resolution
   if (!aml_get_native_resolution(&current_resolution))

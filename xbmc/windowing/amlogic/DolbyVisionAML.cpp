@@ -52,7 +52,7 @@ static void CalculateVSVDBPayload()
   int max_lum(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MAX_LUM));
   int cs(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_CS));
 
-  int dv_type_bits = (dv_type == DV_TYPE_DISPLAY_LED) ? 2 : 0;
+  int dv_type_bits = (dv_type == DV_TYPE::DISPLAY_LED) ? 2 : 0;
 
   const double one_256 = 0.00390625;
 
@@ -93,15 +93,15 @@ static void CalculateVSVDBPayload()
 
 static bool support_dv() {
   enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
-  return ((aml_display_support_dv_std() || aml_display_support_dv_ll() || aml_display_support_hdr_pq()) && (dv_type != DV_TYPE_VS10_ONLY));
+  return ((aml_display_support_dv_std() || aml_display_support_dv_ll() || aml_display_support_hdr_pq()) && (dv_type != DV_TYPE::VS10_ONLY));
 }
 
 void dv_type_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current, void* data) {
   list.clear();
-  if (aml_display_support_dv_std()) list.emplace_back(g_localizeStrings.Get(50023), DV_TYPE_DISPLAY_LED);
-  if (aml_display_support_dv_ll()) list.emplace_back(g_localizeStrings.Get(50024), DV_TYPE_PLAYER_LED_LLDV);
-  if (aml_display_support_hdr_pq()) list.emplace_back(g_localizeStrings.Get(50025), DV_TYPE_PLAYER_LED_HDR);
-  list.emplace_back(g_localizeStrings.Get(50026), DV_TYPE_VS10_ONLY);
+  if (aml_display_support_dv_std()) list.emplace_back(g_localizeStrings.Get(50023), static_cast<int>(DV_TYPE::DISPLAY_LED));
+  if (aml_display_support_dv_ll()) list.emplace_back(g_localizeStrings.Get(50024), static_cast<int>(DV_TYPE::PLAYER_LED_LLDV));
+  if (aml_display_support_hdr_pq()) list.emplace_back(g_localizeStrings.Get(50025), static_cast<int>(DV_TYPE::PLAYER_LED_HDR));
+  list.emplace_back(g_localizeStrings.Get(50026), static_cast<int>(DV_TYPE::VS10_ONLY));
 }
 
 void vsvdb_min_filler(const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current, void* data) {
@@ -226,7 +226,7 @@ bool CDolbyVisionAML::Setup()
   if (!aml_support_dolby_vision())
   {
     set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE, false);
-    settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE, DV_MODE_OFF);
+    settings()->SetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE, static_cast<int>(DV_MODE::OFF));
     CLog::Log(LOGDEBUG, "CDolbyVisionAML::Setup - Device does not support Dolby Vision - exiting setup");
     return false;
   }
@@ -302,7 +302,7 @@ void CDolbyVisionAML::OnSettingChanged(const std::shared_ptr<const CSetting>& se
   {
     // Not working for some cases - needs video playback for mode switch to work correctly everytime.
     // enum DV_MODE dv_mode(static_cast<DV_MODE>(std::dynamic_pointer_cast<const CSettingInt>(setting)->GetValue()));
-    // if (dv_mode == DV_MODE_ON) ? aml_dv_on(DOLBY_VISION_OUTPUT_MODE_IPT) : aml_dv_off();
+    // if (dv_mode == DV_MODE::ON) ? aml_dv_on(DOLBY_VISION_OUTPUT_MODE_IPT) : aml_dv_off();
   }
   else if (settingId == CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE_ON_LUMINANCE)
   {
@@ -333,6 +333,6 @@ void CDolbyVisionAML::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
               const std::string& message,
               const CVariant& data)
 {
-  // When Wake from Suspend re-trigger DV if in DV_MODE_ON
+  // When Wake from Suspend re-trigger DV if in DV_MODE::ON
   if ((flag == ANNOUNCEMENT::System) && (message == "OnWake")) aml_dv_start();
 }

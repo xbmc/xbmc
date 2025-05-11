@@ -407,7 +407,7 @@ bool aml_support_dolby_vision()
 bool aml_dolby_vision_enabled()
 {
   static int dv_enabled = -1;
-  bool dv_user_enabled(aml_dv_mode() != DV_MODE_OFF);
+  bool dv_user_enabled(aml_dv_mode() != DV_MODE::OFF);
 
   if (dv_enabled == -1)
     dv_enabled = (!!aml_support_dolby_vision());
@@ -442,13 +442,13 @@ std::string aml_dv_mode_to_string(enum DV_MODE mode)
 {
   std::string mode_string = "Unkown";
   switch (mode) {
-    case DV_MODE::DV_MODE_ON:
+    case DV_MODE::ON:
       mode_string = "0-On";
       break;
-    case DV_MODE::DV_MODE_ON_DEMAND:
+    case DV_MODE::ON_DEMAND:
       mode_string = "1-On Demand";
       break;
-    case DV_MODE::DV_MODE_OFF:
+    case DV_MODE::OFF:
       mode_string = "2-Off";
       break;
   }
@@ -459,16 +459,16 @@ std::string aml_dv_type_to_string(enum DV_TYPE type)
 {
   std::string type_string = "Unkown";
   switch (type) {
-    case DV_TYPE::DV_TYPE_DISPLAY_LED:
+    case DV_TYPE::DISPLAY_LED:
       type_string = "0-Display Led (DV-Std)";
       break;
-    case DV_TYPE::DV_TYPE_PLAYER_LED_LLDV:
+    case DV_TYPE::PLAYER_LED_LLDV:
       type_string = "1-Player Led (DV-LL)";
       break;
-    case DV_TYPE::DV_TYPE_PLAYER_LED_HDR:
+    case DV_TYPE::PLAYER_LED_HDR:
       type_string = "2-Player Led (HDR)";
       break;
-    case DV_TYPE::DV_TYPE_VS10_ONLY:
+    case DV_TYPE::VS10_ONLY:
       type_string = "3-VS10 Only";
       break;
   }
@@ -505,9 +505,9 @@ unsigned int aml_dv_on(unsigned int mode)
   }
 
   // set the Colorimetery to latest value from user.
-  int colorimetry(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_COLORIMETRY_FOR_STD));
-  CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_bt2020", (colorimetry == DV_COLORIMETRY_BT2020NC) ? 'Y' : 'N');
-  CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_no_colorimetry", (colorimetry == DV_COLORIMETRY_REMOVE) ? 'Y' : 'N');
+  DV_COLORIMETRY colorimetry(static_cast<DV_COLORIMETRY>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_COLORIMETRY_FOR_STD)));
+  CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_bt2020", (colorimetry == DV_COLORIMETRY::REMOVE) ? 'Y' : 'N');
+  CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_no_colorimetry", (colorimetry == DV_COLORIMETRY::REMOVE) ? 'Y' : 'N');
 
   // set source metadata handling
   bool dv_source_levels_metadata(settings()->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVELS_METADATA));
@@ -521,8 +521,8 @@ unsigned int aml_dv_on(unsigned int mode)
 
   enum DV_TYPE dv_type(aml_dv_type());
 
-  // set the HDR for DV-LL if DV_TYPE_PLAYER_LED_HDR.
-  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_hdr_for_dv_ll", (dv_type == DV_TYPE_PLAYER_LED_HDR) ? 'Y' : 'N');
+  // set the HDR for DV-LL if DV_TYPE::PLAYER_LED_HDR.
+  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_hdr_for_dv_ll", (dv_type == DV_TYPE::PLAYER_LED_HDR) ? 'Y' : 'N');
 
   // setup display led or player led
   CSysfsPath dolby_vision_flags{"/sys/module/amdolby_vision/parameters/dolby_vision_flags"};
@@ -530,7 +530,7 @@ unsigned int aml_dv_on(unsigned int mode)
 
   if (dolby_vision_flags.Exists() && dolby_vision_ll_policy.Exists())
   {
-    if (dv_type == DV_TYPE_DISPLAY_LED) // Display Led (DV-Std)
+    if (dv_type == DV_TYPE::DISPLAY_LED) // Display Led (DV-Std)
     {
       dolby_vision_flags.Set(dolby_vision_flags.Get<unsigned int>().value() & ~(FLAG_FORCE_DOVI_LL));
       dolby_vision_ll_policy.Set(DOLBY_VISION_LL_DISABLE);
@@ -542,8 +542,8 @@ unsigned int aml_dv_on(unsigned int mode)
     }
   }
 
-  // switch mode to IPT Tunnel if IPT and type is DV_TYPE_DISPLAY_LED.
-  if ((mode == DOLBY_VISION_OUTPUT_MODE_IPT) && (dv_type == DV_TYPE_DISPLAY_LED))
+  // switch mode to IPT Tunnel if IPT and type is DV_TYPE::DISPLAY_LED.
+  if ((mode == DOLBY_VISION_OUTPUT_MODE_IPT) && (dv_type == DV_TYPE::DISPLAY_LED))
     mode = DOLBY_VISION_OUTPUT_MODE_IPT_TUNNEL;
 
   // change mode and enable.
@@ -565,7 +565,7 @@ unsigned int aml_dv_on(unsigned int mode)
     // Work around CD 12 bit issue for DV-Std shoule be CD 8 bit.
     // Wait for Dolby VSIF being output before trigging the update resolution so logic has correct input to work from.
     // The update resolution will cause the hdmi mode switch logic in the kernel to set the colour bit depth correctly in DV-Std.
-    if ((mode == DOLBY_VISION_OUTPUT_MODE_IPT_TUNNEL) && (dv_type == DV_TYPE_DISPLAY_LED))
+    if ((mode == DOLBY_VISION_OUTPUT_MODE_IPT_TUNNEL) && (dv_type == DV_TYPE::DISPLAY_LED))
       aml_dv_wait_dv_std_vsif_packet();
 
     if ((mode == DOLBY_VISION_OUTPUT_MODE_IPT_TUNNEL) || (mode == DOLBY_VISION_OUTPUT_MODE_IPT)) {
@@ -612,7 +612,7 @@ void aml_dv_open(StreamHdrType hdrType, unsigned int bitDepth)
 {
   enum DV_MODE dv_mode(aml_dv_mode());
   logM(LOGINFO, "AMLUtils", "Checking DV for DV mode: [{}], DV type: [{}]", aml_dv_mode_to_string(dv_mode), aml_dv_type_to_string(aml_dv_type()));
-  if (dv_mode == DV_MODE_ON || dv_mode == DV_MODE_ON_DEMAND) {
+  if (dv_mode == DV_MODE::ON || dv_mode == DV_MODE::ON_DEMAND) {
 
     unsigned int vs10_mode = aml_vs10_by_hdrtype(hdrType, bitDepth);
 
@@ -629,7 +629,7 @@ void aml_dv_open(StreamHdrType hdrType, unsigned int bitDepth)
 
 void aml_dv_close()
 {
-  if (aml_is_dv_enable() && (aml_dv_mode() == DV_MODE_ON_DEMAND)) aml_dv_off();
+  if (aml_is_dv_enable() && (aml_dv_mode() == DV_MODE::ON_DEMAND)) aml_dv_off();
   aml_dv_start(); // If DV Mode ON in Kodi Menu.
 }
 
@@ -662,7 +662,7 @@ void aml_dv_display_auto_now()
 
 void aml_dv_start()
 {
-  if (aml_dv_mode() == DV_MODE_ON) {
+  if (aml_dv_mode() == DV_MODE::ON) {
     aml_dv_reset_osd_max();
     aml_dv_on(DOLBY_VISION_OUTPUT_MODE_IPT);
   }
@@ -715,7 +715,7 @@ void aml_set_transfer_pq(StreamHdrType hdrType, unsigned int bitDepth) {
 
   // Configure GUI/OSD for HDR PQ when display is in HDR PQ mode
   bool hdr_display(CServiceBroker::GetWinSystem()->IsHDRDisplay() || aml_display_support_dv());
-  bool dv_on(aml_dv_mode() != DV_MODE_OFF);
+  bool dv_on(aml_dv_mode() != DV_MODE::OFF);
   bool hdr(false);
 
   if (hdr_display) // Only relevant with an hdr_display
