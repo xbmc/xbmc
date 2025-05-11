@@ -120,27 +120,27 @@ class DllLibamCodecInterface
 public:
   virtual ~DllLibamCodecInterface() {};
 
-  virtual int codec_init(codec_para_t *pcodec)=0;
-  virtual int codec_close(codec_para_t *pcodec)=0;
-  virtual int codec_reset(codec_para_t *pcodec)=0;
-  virtual int codec_pause(codec_para_t *pcodec)=0;
-  virtual int codec_resume(codec_para_t *pcodec)=0;
-  virtual int codec_write(codec_para_t *pcodec, void *buffer, int len)=0;
-  virtual int codec_checkin_pts_us64(codec_para_t *pcodec, unsigned long long pts)=0;
-  virtual int codec_get_vbuf_state(codec_para_t *pcodec, struct buf_status *buf)=0;
-  virtual int codec_get_vdec_state(codec_para_t *pcodec, struct vdec_status *vdec)=0;
+  virtual int codec_init(codec_para_t *pcodec) = 0;
+  virtual int codec_close(codec_para_t *pcodec) = 0;
+  virtual int codec_reset(codec_para_t *pcodec) = 0;
+  virtual int codec_pause(codec_para_t *pcodec) = 0;
+  virtual int codec_resume(codec_para_t *pcodec) = 0;
+  virtual int codec_write(codec_para_t *pcodec, void *buffer, int len) = 0;
+  virtual int codec_checkin_pts_us64(codec_para_t *pcodec, unsigned long long pts) = 0;
+  virtual int codec_get_vbuf_state(codec_para_t *pcodec, struct buf_status *buf) = 0;
+  virtual int codec_get_vdec_state(codec_para_t *pcodec, struct vdec_status *vdec) = 0;
   virtual int codec_get_vdec_info(codec_para_t *pcodec, struct vdec_info *vdec) = 0;
 
-  virtual int codec_init_cntl(codec_para_t *pcodec)=0;
-  virtual int codec_poll_cntl(codec_para_t *pcodec)=0;
-  virtual int codec_set_cntl_mode(codec_para_t *pcodec, unsigned int mode)=0;
-  virtual int codec_set_cntl_avthresh(codec_para_t *pcodec, unsigned int avthresh)=0;
-  virtual int codec_set_cntl_syncthresh(codec_para_t *pcodec, unsigned int syncthresh)=0;
+  virtual int codec_init_cntl(codec_para_t *pcodec) = 0;
+  virtual int codec_poll_cntl(codec_para_t *pcodec) = 0;
+  virtual int codec_set_cntl_mode(codec_para_t *pcodec, unsigned int mode) = 0;
+  virtual int codec_set_cntl_avthresh(codec_para_t *pcodec, unsigned int avthresh) = 0;
+  virtual int codec_set_cntl_syncthresh(codec_para_t *pcodec, unsigned int syncthresh) = 0;
 
-  virtual int codec_set_av_threshold(codec_para_t *pcodec, int threshold)=0;
-  virtual int codec_set_video_delay_limited_ms(codec_para_t *pcodec,int delay_ms)=0;
-  virtual int codec_get_video_delay_limited_ms(codec_para_t *pcodec,int *delay_ms)=0;
-  virtual int codec_get_video_cur_delay_ms(codec_para_t *pcodec,int *delay_ms)=0;
+  virtual int codec_set_av_threshold(codec_para_t *pcodec, int threshold) = 0;
+  virtual int codec_set_video_delay_limited_ms(codec_para_t *pcodec,int delay_ms) = 0;
+  virtual int codec_get_video_delay_limited_ms(codec_para_t *pcodec,int *delay_ms) = 0;
+  virtual int codec_get_video_cur_delay_ms(codec_para_t *pcodec,int *delay_ms) = 0;
 };
 
 class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
