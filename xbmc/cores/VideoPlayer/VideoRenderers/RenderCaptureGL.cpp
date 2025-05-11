@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "cores/IPlayer.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/RenderSystem.h"
 #include "utils/log.h"
 
@@ -58,7 +59,7 @@ void CRenderCaptureGL::BeginRender()
       if (!m_occlusionQuerySupported)
         CLog::Log(LOGWARNING,
                   "CRenderCaptureGL: Occlusion_query not supported, performance might suffer");
-      if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_pixel_buffer_object"))
+      if (!CGLExtensions::IsExtensionSupported(CGLExtensions::ARB_pixel_buffer_object))
         CLog::Log(
             LOGWARNING,
             "CRenderCaptureGL: GL_ARB_pixel_buffer_object not supported, performance might suffer");
