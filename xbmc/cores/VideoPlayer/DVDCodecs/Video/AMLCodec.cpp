@@ -650,11 +650,6 @@ static int write_header(am_private_t *para, am_packet_t& pkt)
     return PLAYER_SUCCESS;
 }
 
-int check_avbuffer_enough(am_private_t *para, am_packet_t& pkt)
-{
-    return 1;
-}
-
 int write_av_packet(am_private_t *para, am_packet_t& pkt)
 {
     int write_bytes = 0, len = 0, ret;
