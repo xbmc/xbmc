@@ -56,6 +56,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <set>
 
@@ -68,15 +69,13 @@ public:
   virtual bool ready() const = 0;
   virtual bool ReadLine(std::string &line) = 0;
   virtual ~CueReader() = default;
-private:
-  std::string m_sourcePath;
 };
 
-class FileReader
-  : public CueReader
+class FileReader : public CueReader
 {
 public:
   explicit FileReader(const std::string& strFile) { m_opened = m_file.Open(strFile); }
+
   bool ReadLine(std::string &line) override
   {
     // Read the next line.
@@ -90,26 +89,28 @@ public:
     }
     return false;
   }
+
   bool ready() const override
   {
     return m_opened;
   }
+
   ~FileReader() override
   {
     if (m_opened)
       m_file.Close();
-
   }
+
 private:
   CFile m_file;
   bool m_opened;
 };
 
-class BufferReader
-  : public CueReader
+class BufferReader : public CueReader
 {
 public:
   explicit BufferReader(const std::string& strContent) : m_data(strContent) {}
+
   bool ReadLine(std::string &line) override
   {
     // Read the next line.
@@ -132,10 +133,12 @@ public:
     StringUtils::Trim(line);
     return !line.empty();
   }
+
   bool ready() const override
   {
     return m_data.size() > 0;
   }
+
 private:
   std::string m_data;
   size_t m_pos = 0;
@@ -169,66 +172,71 @@ bool CCueDocument::ParseTag(const std::string &strContent)
 //////////////////////////////////////////////////////////////////////////////////
 void CCueDocument::GetSongs(VECSONGS &songs)
 {
-  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  const auto separator =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
 
-  for (const auto& track : m_tracks)
-  {
-    CSong aSong;
-    //Pass artist to MusicInfoTag object by setting artist description string only.
-    //Artist credits not used during loading from cue sheet.
-    if (track.strArtist.empty() && !m_strArtist.empty())
-      aSong.strArtistDesc = m_strArtist;
-    else
-      aSong.strArtistDesc = track.strArtist;
-    //Pass album artist to MusicInfoTag object by setting album artist vector.
-    aSong.SetAlbumArtist(StringUtils::Split(m_strArtist, advancedSettings->m_musicItemSeparator));
-    aSong.strAlbum = m_strAlbum;
-    aSong.genre = StringUtils::Split(m_strGenre, advancedSettings->m_musicItemSeparator);
-    aSong.strReleaseDate = StringUtils::Format("{:04}", m_iYear);
-    aSong.iTrack = track.iTrackNumber;
-    if (m_iDiscNumber > 0)
-      aSong.iTrack |= (m_iDiscNumber << 16); // see CMusicInfoTag::GetDiscNumber()
-    if (track.strTitle.length() == 0) // No track information for this track!
-      aSong.strTitle = StringUtils::Format("Track {:2d}", track.iTrackNumber);
-    else
-      aSong.strTitle = track.strTitle;
-    aSong.strFileName = track.strFile;
-    aSong.iStartOffset = track.iStartTime;
-    aSong.iEndOffset = track.iEndTime;
-    if (aSong.iEndOffset)
-      // Convert offset in frames (75 per second) to duration in whole seconds with rounding
-      aSong.iDuration = CUtil::ConvertMilliSecsToSecsIntRounded(aSong.iEndOffset - aSong.iStartOffset);
-    else
-      aSong.iDuration = 0;
+  std::ranges::transform(
+      m_tracks, std::back_inserter(songs),
+      [&artist = m_strArtist, &album = m_strAlbum, &replayGain = m_albumReplayGain,
+       disc = m_iDiscNumber, year = StringUtils::Format("{:04}", m_iYear),
+       artists = StringUtils::Split(m_strArtist, separator),
+       genres = StringUtils::Split(m_strGenre, separator)](const auto& track)
+      {
+        CSong aSong;
+        //Pass artist to MusicInfoTag object by setting artist description string only.
+        //Artist credits not used during loading from cue sheet.
+        if (track.strArtist.empty() && !artist.empty())
+          aSong.strArtistDesc = artist;
+        else
+          aSong.strArtistDesc = track.strArtist;
+        //Pass album artist to MusicInfoTag object by setting album artist vector.
+        aSong.SetAlbumArtist(artists);
+        aSong.strAlbum = album;
+        aSong.genre = genres;
+        aSong.strReleaseDate = year;
+        aSong.iTrack = track.iTrackNumber;
+        if (disc > 0)
+          aSong.iTrack |= disc << 16; // see CMusicInfoTag::GetDiscNumber()
+        if (track.strTitle.length() == 0) // No track information for this track!
+          aSong.strTitle = StringUtils::Format("Track {:2d}", track.iTrackNumber);
+        else
+          aSong.strTitle = track.strTitle;
+        aSong.strFileName = track.strFile;
+        aSong.iStartOffset = track.iStartTime;
+        aSong.iEndOffset = track.iEndTime;
+        if (aSong.iEndOffset)
+          // Convert offset in frames (75 per second) to duration in whole seconds with rounding
+          aSong.iDuration =
+              CUtil::ConvertMilliSecsToSecsIntRounded(aSong.iEndOffset - aSong.iStartOffset);
+        else
+          aSong.iDuration = 0;
 
-    if (m_albumReplayGain.Valid())
-      aSong.replayGain.Set(ReplayGain::ALBUM, m_albumReplayGain);
+        if (replayGain.Valid())
+          aSong.replayGain.Set(ReplayGain::ALBUM, replayGain);
 
-    if (track.replayGain.Valid())
-      aSong.replayGain.Set(ReplayGain::TRACK, track.replayGain);
+        if (track.replayGain.Valid())
+          aSong.replayGain.Set(ReplayGain::TRACK, track.replayGain);
 
-    songs.push_back(aSong);
-  }
+        return aSong;
+      });
 }
 
 void CCueDocument::UpdateMediaFile(const std::string& oldMediaFile, const std::string& mediaFile)
 {
-  for (Tracks::iterator it = m_tracks.begin(); it != m_tracks.end(); ++it)
+  for (auto& track : m_tracks)
   {
-    if (it->strFile == oldMediaFile)
-      it->strFile = mediaFile;
+    if (track.strFile == oldMediaFile)
+      track.strFile = mediaFile;
   }
 }
 
 void CCueDocument::GetMediaFiles(std::vector<std::string>& mediaFiles)
 {
-  typedef std::set<std::string> TSet;
-  TSet uniqueFiles;
-  for (Tracks::const_iterator it = m_tracks.begin(); it != m_tracks.end(); ++it)
-    uniqueFiles.insert(it->strFile);
+  std::set<std::string> uniqueFiles;
+  std::ranges::transform(m_tracks, std::inserter(uniqueFiles, uniqueFiles.end()),
+                         [](const auto& track) { return track.strFile; });
 
-  for (TSet::const_iterator it = uniqueFiles.begin(); it != uniqueFiles.end(); ++it)
-    mediaFiles.push_back(*it);
+  std::ranges::copy(uniqueFiles, std::back_inserter(mediaFiles));
 }
 
 bool CCueDocument::IsLoaded() const
@@ -456,21 +464,16 @@ bool CCueDocument::ResolvePath(std::string &strPath, const std::string &strBase)
 
   strPath = URIUtils::AddFileToFolder(strDirectory, strFilename);
 
-  // i *hate* windows
   if (!CFile::Exists(strPath))
   {
     CFileItemList items;
     CDirectory::GetDirectory(strDirectory, items, "", DIR_FLAG_DEFAULTS);
-    for (int i=0;i<items.Size();++i)
-    {
-      if (items[i]->IsPath(strPath))
-      {
-        strPath = items[i]->GetPath();
-        return true;
-      }
-    }
-    CLog::Log(LOGERROR, "Could not find '{}' referenced in cue, case sensitivity issue?", strPath);
-    return false;
+    const auto it =
+        std::ranges::find_if(items, [&strPath](const auto& item) { return item->IsPath(strPath); });
+    if (it == items.end())
+      CLog::Log(LOGERROR, "Could not find '{}' referenced in cue, case sensitivity issue?",
+                strPath);
+    return it != items.end();
   }
 
   return true;
