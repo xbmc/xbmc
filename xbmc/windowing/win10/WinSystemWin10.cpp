@@ -193,7 +193,7 @@ void CWinSystemWin10::AdjustWindow()
     {
       if (!appView.TryResizeView(winrt::Windows::Foundation::Size(dipsWidth, dipsHeight)))
       {
-        CLog::LogF(LOGDEBUG, __FUNCTION__, "resizing ApplicationView failed.");
+        CLog::LogF(LOGDEBUG, "Resizing ApplicationView failed.");
       }
     }
 

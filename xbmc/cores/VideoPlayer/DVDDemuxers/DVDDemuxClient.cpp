@@ -183,7 +183,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
       st->extraData = std::move(retExtraData);
       stream->m_parser_split = false;
       change = true;
-      CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - split extradata");
+      CLog::LogF(LOGDEBUG, "split extradata");
 
       // Allow ffmpeg to transport codec information to stream->m_context
       if (!avcodec_open2(stream->m_context, stream->m_context->codec, nullptr))

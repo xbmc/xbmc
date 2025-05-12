@@ -745,9 +745,8 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
     if (!addonMgr.IsAddonInstalled(language) ||
         (addonMgr.IsAddonDisabled(language) && !addonMgr.EnableAddon(language)))
     {
-      CLog::Log(LOGWARNING,
-                "CLangInfo::{}: could not find or enable language add-on '{}', loading default...",
-                __func__, language);
+      CLog::LogF(LOGWARNING, "Could not find or enable language add-on '{}', loading default...",
+                 language);
       language = std::static_pointer_cast<const CSettingString>(
                      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
                          CSettings::SETTING_LOCALE_LANGUAGE))
@@ -756,8 +755,7 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
       if (!addonMgr.GetAddon(language, addon, ADDON::AddonType::RESOURCE_LANGUAGE,
                              ADDON::OnlyEnabled::CHOICE_NO))
       {
-        CLog::Log(LOGFATAL, "CLangInfo::{}: could not find default language add-on '{}'", __func__,
-                  language);
+        CLog::LogF(LOGFATAL, "Could not find default language add-on '{}'", language);
         return false;
       }
     }
@@ -766,14 +764,14 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   CLog::Log(LOGINFO, "CLangInfo: loading {} language information...", language);
   if (!Load(language))
   {
-    CLog::LogF(LOGFATAL, "CLangInfo: failed to load {} language information", language);
+    CLog::LogF(LOGFATAL, "Failed to load {} language information", language);
     return false;
   }
 
   CLog::Log(LOGINFO, "CLangInfo: loading {} language strings...", language);
   if (!g_localizeStrings.Load(GetLanguagePath(), language))
   {
-    CLog::LogF(LOGFATAL, "CLangInfo: failed to load {} language strings", language);
+    CLog::LogF(LOGFATAL, "Failed to load {} language strings", language);
     return false;
   }
 

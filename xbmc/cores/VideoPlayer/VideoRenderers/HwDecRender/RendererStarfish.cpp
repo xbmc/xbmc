@@ -20,7 +20,7 @@
 
 CRendererStarfish::CRendererStarfish()
 {
-  CLog::LogF(LOGINFO, "CRendererStarfish: Instanced");
+  CLog::LogF(LOGINFO, "Instanced");
 }
 
 CRendererStarfish::~CRendererStarfish() = default;

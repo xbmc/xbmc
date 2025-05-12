@@ -97,7 +97,7 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
 
   if (m_format.m_dataFormat != AE_FMT_RAW)
   {
-    CLog::LogF(LOGERROR, "CAESinkStarfish: Unsupported format PCM");
+    CLog::LogF(LOGERROR, "Unsupported format PCM");
     return false;
   }
   m_format.m_frameSize = 1;
@@ -157,7 +157,7 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
       break;
     }
     default:
-      CLog::LogF(LOGDEBUG, "CAESinkStarfish: Unsupported format {}", m_format.m_streamInfo.m_type);
+      CLog::LogF(LOGDEBUG, "Unsupported format {}", m_format.m_streamInfo.m_type);
       return false;
   }
   payload["option"]["externalStreamingInfo"]["contents"]["codec"]["audio"] =
@@ -183,10 +183,10 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
   CJSONVariantWriter::Write(payloadArgs, json, true);
 
   m_starfishMediaAPI->notifyForeground();
-  CLog::LogFC(LOGDEBUG, LOGAUDIO, "CAESinkStarfish: Sending Load payload {}", json);
+  CLog::LogFC(LOGDEBUG, LOGAUDIO, "Sending Load payload {}", json);
   if (!m_starfishMediaAPI->Load(json.c_str(), &CAESinkStarfish::PlayerCallback, this))
   {
-    CLog::LogF(LOGERROR, "CAESinkStarfish: Load failed");
+    CLog::LogF(LOGERROR, "Load failed");
     return false;
   }
 
@@ -250,7 +250,7 @@ unsigned int CAESinkStarfish::AddPackets(uint8_t** data, unsigned int frames, un
     return frames;
   }
 
-  CLog::LogF(LOGWARNING, "CAESinkStarfish: Buffer submit returned error: {}", result);
+  CLog::LogF(LOGWARNING, "Buffer submit returned error: {}", result);
   return 0;
 }
 
@@ -283,8 +283,7 @@ void CAESinkStarfish::PlayerCallback(const int32_t type,
       break;
     default:
       std::string logstr = strValue != nullptr ? strValue : "";
-      CLog::LogF(LOGDEBUG, "CAESinkStarfish: type: {}, numValue: {}, strValue: {}", type, numValue,
-                 logstr);
+      CLog::LogF(LOGDEBUG, "type: {}, numValue: {}, strValue: {}", type, numValue, logstr);
   }
 }
 

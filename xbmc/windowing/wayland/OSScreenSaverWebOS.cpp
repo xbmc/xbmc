@@ -30,7 +30,7 @@ COSScreenSaverWebOS::~COSScreenSaverWebOS()
   {
     // Luna helper functions return 0 on success
     if (HUnregisterServiceCallback(m_requestContext.get()))
-      CLog::LogF(LOGWARNING, "COSScreenSaverWebOS: Luna request unregister failed");
+      CLog::LogF(LOGWARNING, "Luna request unregister failed");
     m_requestContext = nullptr;
   }
 }
@@ -49,9 +49,9 @@ void COSScreenSaverWebOS::Inhibit()
   m_requestContext->callback = &OnScreenSaverAboutToStart;
   if (HLunaServiceCall(LUNA_REGISTER_SCREENSAVER, payload.c_str(), m_requestContext.get()))
   {
-    CLog::LogF(LOGWARNING, "COSScreenSaverWebOS: Luna request call failed");
+    CLog::LogF(LOGWARNING, "Luna request call failed");
     if (HUnregisterServiceCallback(m_requestContext.get()))
-      CLog::LogF(LOGWARNING, "COSScreenSaverWebOS: Luna request unregister failed");
+      CLog::LogF(LOGWARNING, "Luna request unregister failed");
     m_requestContext = nullptr;
   }
 }
@@ -61,7 +61,7 @@ void COSScreenSaverWebOS::Uninhibit()
   if (m_requestContext)
   {
     if (HUnregisterServiceCallback(m_requestContext.get()))
-      CLog::LogF(LOGWARNING, "COSScreenSaverWebOS: Luna request unregister failed");
+      CLog::LogF(LOGWARNING, "Luna request unregister failed");
     m_requestContext = nullptr;
   }
 }
@@ -72,7 +72,7 @@ bool COSScreenSaverWebOS::OnScreenSaverAboutToStart(LSHandle* sh, LSMessage* rep
   const char* msg = HLunaServiceMessage(reply);
   CJSONVariantParser::Parse(msg, request);
 
-  CLog::LogF(LOGDEBUG, "COSScreenSaverWebOS: Responded {}", msg);
+  CLog::LogF(LOGDEBUG, "Responded {}", msg);
 
   if (request["state"] != "Active")
     return true;
@@ -90,7 +90,7 @@ bool COSScreenSaverWebOS::OnScreenSaverAboutToStart(LSHandle* sh, LSMessage* rep
   response_ctx.callback = nullptr;
   if (HLunaServiceCall(LUNA_RESPONSE_SCREENSAVER, payload.c_str(), &response_ctx))
   {
-    CLog::LogF(LOGWARNING, "COSScreenSaverWebOS: Luna response call failed");
+    CLog::LogF(LOGWARNING, "Luna response call failed");
     return false;
   }
 

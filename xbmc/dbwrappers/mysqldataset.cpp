@@ -536,7 +536,7 @@ long MysqlDatabase::nextid(const char* sname)
   MYSQL_RES* res;
   char sqlcmd[512];
   snprintf(sqlcmd, sizeof(sqlcmd), "SELECT nextid FROM %s WHERE seq_name = '%s'", seq_table, sname);
-  CLog::LogFC(LOGDEBUG, LOGDATABASE, "MysqlDatabase::nextid will request");
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "will request");
   if ((last_err = query_with_reconnect(sqlcmd)) != 0)
   {
     return DB_UNEXPECTED_RESULT;
@@ -576,7 +576,7 @@ void MysqlDatabase::start_transaction()
   {
     assert(!_in_transaction);
     mysql_autocommit(conn, false);
-    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql Start transaction");
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Start transaction");
 
     if (_in_transaction)
       CLog::LogF(LOGERROR, "error: nested transactions are not supported.");
@@ -592,7 +592,7 @@ void MysqlDatabase::commit_transaction()
     assert(_in_transaction);
     mysql_commit(conn);
     mysql_autocommit(conn, true);
-    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql commit transaction");
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Commit transaction");
     _in_transaction = false;
   }
 }
@@ -604,7 +604,7 @@ void MysqlDatabase::rollback_transaction()
     assert(_in_transaction);
     mysql_rollback(conn);
     mysql_autocommit(conn, true);
-    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql rollback transaction");
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Rollback transaction");
     _in_transaction = false;
   }
 }

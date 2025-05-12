@@ -74,11 +74,10 @@ bool CWinSystemWaylandWebOS::CreateNewWindow(const std::string& name,
     m_exportedSurface = m_webosForeign.export_element(
         GetMainSurface(),
         static_cast<uint32_t>(wayland::webos_foreign_webos_exported_type::video_object));
-    m_exportedSurface.on_window_id_assigned() = [this](std::string window_id,
-                                                       uint32_t exported_type) {
-      CLog::Log(LOGDEBUG,
-                "CreateNewWindow:CDVDVideoCodecStarfish: Foreign video surface exported {}",
-                window_id);
+    m_exportedSurface.on_window_id_assigned() =
+        [this](std::string window_id, uint32_t exported_type)
+    {
+      CLog::LogF(LOGDEBUG, "Foreign video surface exported {}", window_id);
       this->m_exportedWindowName = window_id;
     };
   }
@@ -112,10 +111,9 @@ bool CWinSystemWaylandWebOS::SetExportedWindow(CRect orig, CRect src, CRect dest
 {
   if (m_webosForeign)
   {
-    CLog::LogF(LOGINFO,
-               "CWinSystemWaylandWebOS: orig {} {} {} {} src {} {} {} {} -> dest {} {} {} {}",
-               orig.x1, orig.y1, orig.x2, orig.y2, src.x1, src.y1, src.x2, src.y2, dest.x1, dest.y1,
-               dest.x2, dest.y2);
+    CLog::LogF(LOGINFO, "orig {} {} {} {} src {} {} {} {} -> dest {} {} {} {}", orig.x1, orig.y1,
+               orig.x2, orig.y2, src.x1, src.y1, src.x2, src.y2, dest.x1, dest.y1, dest.x2,
+               dest.y2);
     wayland::region_t origRegion = m_compositor.create_region();
     wayland::region_t srcRegion = m_compositor.create_region();
     wayland::region_t dstRegion = m_compositor.create_region();
