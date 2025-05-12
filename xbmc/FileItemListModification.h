@@ -10,13 +10,12 @@
 
 #include "IFileItemListModifier.h"
 
-#include <set>
+#include <memory>
+#include <vector>
 
 class CFileItemListModification : public IFileItemListModifier
 {
 public:
-  ~CFileItemListModification() override;
-
   static CFileItemListModification& GetInstance();
 
   bool CanModify(const CFileItemList &items) const override;
@@ -27,5 +26,5 @@ private:
   CFileItemListModification(const CFileItemListModification&) = delete;
   CFileItemListModification& operator=(CFileItemListModification const&) = delete;
 
-  std::set<IFileItemListModifier*> m_modifiers;
+  std::vector<std::unique_ptr<IFileItemListModifier>> m_modifiers;
 };
