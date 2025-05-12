@@ -81,6 +81,7 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
                      "-DCMAKE_STRIP=${CMAKE_STRIP}"
                      "-DCMAKE_OBJDUMP=${CMAKE_OBJDUMP}"
                      "-DCMAKE_RANLIB=${CMAKE_RANLIB}"
+                     "-DDEPENDS_PATH=${DEPENDS_PATH}"
                      -DKODI_SOURCE_DIR=${CMAKE_SOURCE_DIR}
                      -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/build)
 
