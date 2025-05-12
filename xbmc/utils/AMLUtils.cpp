@@ -862,13 +862,10 @@ int aml_axis_value(AML_DISPLAY_AXIS_PARAM param)
   return value[param];
 }
 
-bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
+bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO &res)
 {
-  if (!res)
-    return false;
-
-  res->iWidth = 0;
-  res->iHeight= 0;
+  res.iWidth = 0;
+  res.iHeight= 0;
 
   if(!mode)
     return false;
@@ -883,21 +880,21 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
 
   if (StringUtils::EqualsNoCase(fromMode, "panel"))
   {
-    res->iWidth = aml_axis_value(AML_DISPLAY_AXIS_PARAM_WIDTH);
-    res->iHeight= aml_axis_value(AML_DISPLAY_AXIS_PARAM_HEIGHT);
-    res->iScreenWidth = aml_axis_value(AML_DISPLAY_AXIS_PARAM_WIDTH);
-    res->iScreenHeight= aml_axis_value(AML_DISPLAY_AXIS_PARAM_HEIGHT);
-    res->fRefreshRate = 60;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+    res.iWidth = aml_axis_value(AML_DISPLAY_AXIS_PARAM_WIDTH);
+    res.iHeight= aml_axis_value(AML_DISPLAY_AXIS_PARAM_HEIGHT);
+    res.iScreenWidth = aml_axis_value(AML_DISPLAY_AXIS_PARAM_WIDTH);
+    res.iScreenHeight= aml_axis_value(AML_DISPLAY_AXIS_PARAM_HEIGHT);
+    res.fRefreshRate = 60;
+    res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else if (StringUtils::EqualsNoCase(fromMode, "4k2ksmpte") || StringUtils::EqualsNoCase(fromMode, "smpte24hz"))
   {
-    res->iWidth = nativeGui ? 4096 : 1920;
-    res->iHeight= nativeGui ? 2160 : 1080;
-    res->iScreenWidth = 4096;
-    res->iScreenHeight= 2160;
-    res->fRefreshRate = 24;
-    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+    res.iWidth = nativeGui ? 4096 : 1920;
+    res.iHeight= nativeGui ? 2160 : 1080;
+    res.iScreenWidth = 4096;
+    res.iScreenHeight= 2160;
+    res.fRefreshRate = 24;
+    res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
   }
   else
   {
@@ -944,48 +941,49 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
       return false;
     }
 
-    res->iWidth = nativeGui ? width : std::min(width, 1920);
-    res->iHeight= nativeGui ? height : std::min(height, 1080);
-    res->iScreenWidth = width;
-    res->iScreenHeight = height;
-    res->dwFlags = (*smode == 'p') ? D3DPRESENTFLAG_PROGRESSIVE : D3DPRESENTFLAG_INTERLACED;
+    res.iWidth = nativeGui ? width : std::min(width, 1920);
+    res.iHeight= nativeGui ? height : std::min(height, 1080);
+    res.iScreenWidth = width;
+    res.iScreenHeight = height;
+    res.dwFlags = (*smode == 'p') ? D3DPRESENTFLAG_PROGRESSIVE : D3DPRESENTFLAG_INTERLACED;
 
     switch (rrate)
     {
       case 23:
       case 29:
       case 59:
-        res->fRefreshRate = (float)((rrate + 1)/1.001f);
+        res.fRefreshRate = (float)((rrate + 1)/1.001f);
         break;
       default:
-        res->fRefreshRate = (float)rrate;
+        res.fRefreshRate = (float)rrate;
         break;
     }
   }
 
-  res->bFullScreen   = true;
-  res->iSubtitles    = (int)(0.965 * res->iHeight);
-  res->fPixelRatio   = 1.0f;
-  res->strId         = fromMode;
-  res->strMode       = StringUtils::Format("{:d}x{:d} @ {:.2f}{} - Full Screen", res->iScreenWidth, res->iScreenHeight, res->fRefreshRate,
-    res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+  res.bFullScreen   = true;
+  res.iSubtitles    = (int)(0.965 * res.iHeight);
+  res.fPixelRatio   = 1.0f;
+  res.strId         = fromMode;
+  res.strMode       = StringUtils::Format("{:d}x{:d} @ {:.2f}{} - Full Screen",
+                                          res.iScreenWidth, res.iScreenHeight, res.fRefreshRate,
+                                          res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
   if (fromMode.find("FramePacking") != std::string::npos)
   {
-    res->iBlanking = res->iScreenHeight == 1080 ? 45 : 30;
-    res->dwFlags |= D3DPRESENTFLAG_MODE3DFP;
+    res.iBlanking = res.iScreenHeight == 1080 ? 45 : 30;
+    res.dwFlags |= D3DPRESENTFLAG_MODE3DFP;
   }
 
   if (fromMode.find("TopBottom") != std::string::npos)
-    res->dwFlags |= D3DPRESENTFLAG_MODE3DTB;
+    res.dwFlags |= D3DPRESENTFLAG_MODE3DTB;
 
   if (fromMode.find("SidebySide") != std::string::npos)
-    res->dwFlags |= D3DPRESENTFLAG_MODE3DSBS;
+    res.dwFlags |= D3DPRESENTFLAG_MODE3DSBS;
 
-  return res->iWidth > 0 && res->iHeight> 0;
+  return ((res.iWidth > 0) && (res.iHeight > 0));
 }
 
-bool aml_get_native_resolution(RESOLUTION_INFO *res)
+bool aml_get_native_resolution(RESOLUTION_INFO &res)
 {
   std::string mode;
   CSysfsPath display_mode{"/sys/class/display/mode"};
@@ -1000,7 +998,7 @@ bool aml_get_native_resolution(RESOLUTION_INFO *res)
     if (frac_rate_policy.Exists())
       fractional_rate = frac_rate_policy.Get<int>().value();
     if (fractional_rate == 1)
-      res->fRefreshRate /= 1.001f;
+      res.fRefreshRate /= 1.001f;
   }
 
   return result;
@@ -1080,7 +1078,6 @@ bool aml_probe_resolutions(std::vector<RESOLUTION_INFO> &resolutions)
       valstr = user_dcapfile_3d.Get<std::string>().value();
   }
 
-
   std::vector<std::string> probe_str = StringUtils::Split(valstr, "\n");
 
   resolutions.clear();
@@ -1089,7 +1086,7 @@ bool aml_probe_resolutions(std::vector<RESOLUTION_INFO> &resolutions)
   {
     if (((StringUtils::StartsWith(i->c_str(), "4k2k")) && (aml_support_h264_4k2k() > AML_NO_H264_4K2K)) || !(StringUtils::StartsWith(i->c_str(), "4k2k")))
     {
-      if (aml_mode_to_resolution(i->c_str(), &res))
+      if (aml_mode_to_resolution(i->c_str(), res))
         resolutions.push_back(res);
 
       if (aml_has_frac_rate_policy())

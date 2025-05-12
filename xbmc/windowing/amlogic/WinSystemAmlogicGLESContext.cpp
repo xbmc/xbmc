@@ -93,7 +93,7 @@ bool CWinSystemAmlogicGLESContext::CreateNewWindow(const std::string& name,
        (aml_dv_mode() != DV_MODE::OFF));
 
   // get current used resolution
-  if (!aml_get_native_resolution(&current_resolution))
+  if (!aml_get_native_resolution(current_resolution))
   {
     CLog::Log(LOGERROR, "CWinSystemAmlogicGLESContext::{}: failed to receive current resolution", __FUNCTION__);
     return false;

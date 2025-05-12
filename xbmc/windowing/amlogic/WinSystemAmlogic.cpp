@@ -217,7 +217,7 @@ void CWinSystemAmlogic::UpdateResolutions()
   /* ProbeResolutions includes already all resolutions.
    * Only get desktop resolution so we can replace xbmc's desktop res
    */
-  if (aml_get_native_resolution(&curDisplay))
+  if (aml_get_native_resolution(curDisplay))
   {
     resDesktop = curDisplay;
   }
