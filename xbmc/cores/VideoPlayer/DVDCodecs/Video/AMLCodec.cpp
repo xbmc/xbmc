@@ -602,9 +602,9 @@ void am_packet_release(am_packet_t& pkt)
 
 int check_in_pts(am_private_t *para, am_packet_t& pkt)
 {
-  if (para->stream_type == AM_STREAM_ES
-    && UINT64_0 != pkt.avpts
-    && para->m_dll->codec_checkin_pts_us64(pkt.codec, pkt.avpts) != 0)
+  if ((para->stream_type == AM_STREAM_ES) &&
+      (UINT64_0 != pkt.avpts) &&
+      (para->m_dll->codec_checkin_pts_us64(pkt.codec, pkt.avpts) != 0))
   {
     logM(LOGERROR, "AMLCodec", "ERROR check in pts error!");
     return PLAYER_PTS_ERROR;
@@ -959,7 +959,8 @@ int av1_parser_frame(
     uint8_t *dst_data,
     uint32_t *frame_len,
     uint8_t *meta_buf,
-    uint32_t *meta_len) {
+    uint32_t *meta_len)
+{
     int frame_decoding_finished = 0;
     uint32_t obu_size = 0;
     ObuHeader obu_header;
@@ -987,24 +988,18 @@ int av1_parser_frame(
         OBU_METADATA_TYPE meta_type;
         uint64_t type;
 
-        if (bytes_available == 0 && !seen_frame_header) {
-            break;
-        }
+        if ((bytes_available == 0) && !seen_frame_header) break;
 
-        int status =
-            aom_read_obu_header_and_size(data, bytes_available, is_annexb,
-                &obu_header, &payload_size, &bytes_read);
+        int status = aom_read_obu_header_and_size(data, bytes_available, is_annexb,
+                                                  &obu_header, &payload_size, &bytes_read);
 
-        if (status != 0) {
-            return -1;
-        }
+        if (status != 0) return -1;
 
         // Note: aom_read_obu_header_and_size() takes care of checking that this
         // doesn't cause 'data' to advance past 'data_end'.
 
-        if ((size_t)(data_end - data - bytes_read) < payload_size) {
+        if ((size_t)(data_end - data - bytes_read) < payload_size)
             return -1;
-        }
 
         logM(LOGDEBUG, "AMLCodec", "\tobu {} len {:d}+{:d}", obu_type_name[obu_header.type], bytes_read, payload_size);
 
@@ -1035,16 +1030,19 @@ int av1_parser_frame(
         data += bytes_read;
         *frame_len += 20 + bytes_read + payload_size;
 
-        switch (obu_header.type) {
+        switch (obu_header.type)
+        {
         case OBU_TEMPORAL_DELIMITER:
             seen_frame_header = 0;
             break;
+
         case OBU_SEQUENCE_HEADER:
             // The sequence header should not change in the middle of a frame.
             if (seen_frame_header) {
                 return -1;
             }
             break;
+
         case OBU_FRAME_HEADER:
             if (data_end == data + payload_size) {
                 frame_decoding_finished = 1;
@@ -1053,6 +1051,7 @@ int av1_parser_frame(
                 seen_frame_header = 1;
             }
             break;
+
         case OBU_REDUNDANT_FRAME_HEADER:
         case OBU_FRAME:
             if (obu_header.type == OBU_REDUNDANT_FRAME_HEADER) {
@@ -1083,12 +1082,15 @@ int av1_parser_frame(
             if (frame_decoding_finished)
                 seen_frame_header = 0;
             break;
+
         case OBU_METADATA:
             aom_uleb_decode(data, 8, &type, &bytes_read);
+
             if (type < 6)
                 meta_type = static_cast<OBU_METADATA_TYPE>(type);
             else
                 meta_type = OBU_METADATA_TYPE_AOM_RESERVED_0;
+
             p = data + bytes_read;
             logM(LOGDEBUG, "AMLCodec", "\tmeta type {} {:d}+{:d}", meta_type_name[type], bytes_read, payload_size - bytes_read);
 
@@ -1422,10 +1424,8 @@ int pre_header_feeding(am_private_t *para, am_packet_t& pkt)
         if (pkt.hdr == NULL) {
             pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
             pkt.hdr->data = (char *)malloc(HDR_BUF_SIZE);
-            if (!pkt.hdr->data) {
-                //logM(LOGDEBUG, "AMLCodec", "NOMEM!");
+            if (!pkt.hdr->data)
                 return PLAYER_NOMEM;
-            }
         }
 
         if (para->video_format == VFORMAT_H264 ||
@@ -1447,16 +1447,6 @@ int pre_header_feeding(am_private_t *para, am_packet_t& pkt)
             if (ret != PLAYER_SUCCESS) {
                 return ret;
             }
-        /*
-        } else if ((AVI_FILE == para->file_type)
-                && (VIDEO_DEC_FORMAT_MPEG4_3 != para->vstream_info.video_codec_type)
-                && (VFORMAT_H264 != para->vstream_info.video_format)
-                && (VFORMAT_VC1 != para->vstream_info.video_format)) {
-            ret = avi_write_header(para);
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        */
         } else if (CODEC_TAG_WMV3 == para->video_codec_tag) {
             logM(LOGDEBUG, "AMLCodec", "CODEC_TAG_WMV3 == para->video_codec_tag");
             ret = wmv3_write_header(para, pkt);
@@ -1480,15 +1470,6 @@ int pre_header_feeding(am_private_t *para, am_packet_t& pkt)
             if (ret != PLAYER_SUCCESS) {
                 return ret;
             }
-        /*
-        } else if ((MKV_FILE == para->file_type) &&
-                  ((VFORMAT_MPEG4 == para->vstream_info.video_format)
-                || (VFORMAT_MPEG12 == para->vstream_info.video_format))) {
-            ret = mkv_write_header(para, pkt);
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        */
         } else if (VFORMAT_MJPEG == para->video_format) {
             ret = mjpeg_write_header(para, pkt);
             if (ret != PLAYER_SUCCESS) {
@@ -1954,7 +1935,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   // check for SD h264 content incorrectly reported as some form of 30 fsp
   // mp4/avi containers :(
-  if (hints.codec == AV_CODEC_ID_H264 && hints.width <= 720)
+  if ((hints.codec == AV_CODEC_ID_H264) && (hints.width <= 720))
   {
     if (am_private->video_rate >= 3200 && am_private->video_rate <= 3210)
     {
@@ -1971,11 +1952,13 @@ bool CAMLCodec::OpenDecoder(bool restart)
     am_private->video_rotation_degree = 2;
   else if (hints.orientation == 270)
     am_private->video_rotation_degree = 3;
+
   // handle extradata
-  am_private->video_format      = codecid_to_vformat(hints.codec);
-  if ((am_private->video_format == VFORMAT_H264)
-    && (hints.width > 1920 || hints.height > 1088)
-    && (aml_support_h264_4k2k() == AML_HAS_H264_4K2K))
+  am_private->video_format = codecid_to_vformat(hints.codec);
+
+  if ((am_private->video_format == VFORMAT_H264) &&
+      ((hints.width > 1920) || (hints.height > 1088)) &&
+      (aml_support_h264_4k2k() == AML_HAS_H264_4K2K))
   {
     am_private->video_format = VFORMAT_H264_4K2K;
   }
@@ -1985,6 +1968,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   {
     am_private->video_format = VFORMAT_H264MVC;
   }
+
   switch (am_private->video_format)
   {
     default:
@@ -1997,27 +1981,30 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   if (am_private->stream_type == AM_STREAM_ES && am_private->video_codec_tag != 0)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_tag);
+
   if (am_private->video_codec_type == VIDEO_DEC_FORMAT_UNKNOW)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_id);
 
   logM(LOGINFO, "CAMLCodec", "hints.width({:d}), hints.height({:d}), hints.codec({:d}), hints.codec_tag({:d}), hints.bitdepth({:d})",
-        hints.width, hints.height, hints.codec, hints.codec_tag, hints.bitdepth);
-  logM(LOGINFO, "CAMLCodec", "hints.fpsrate({:d}), hints.fpsscale({:d}), video_rate({:d})",
-        hints.fpsrate, hints.fpsscale, am_private->video_rate);
-  logM(LOGINFO, "CAMLCodec", "hints.aspect({:f}), video_ratio.num({:d}), video_ratio.den({:d})",
-        hints.aspect, video_ratio.num, video_ratio.den);
-  logM(LOGINFO, "CAMLCodec", "hints.orientation({:d}), hints.forced_aspect({:d}), hints.extrasize({:d})",
-        hints.orientation, hints.forced_aspect, hints.extradata.GetSize());
+       hints.width, hints.height, hints.codec, hints.codec_tag, hints.bitdepth);
 
-  std::string hdrType = CStreamDetails::HdrTypeToString(hints.hdrType);
-  if (hdrType.size())
-    logM(LOGINFO, "CAMLCodec", "hdr type: {}", hdrType);
+  logM(LOGINFO, "CAMLCodec", "hints.fpsrate({:d}), hints.fpsscale({:d}), video_rate({:d})",
+       hints.fpsrate, hints.fpsscale, am_private->video_rate);
+
+  logM(LOGINFO, "CAMLCodec", "hints.aspect({:f}), video_ratio.num({:d}), video_ratio.den({:d})",
+       hints.aspect, video_ratio.num, video_ratio.den);
+
+  logM(LOGINFO, "CAMLCodec", "hints.orientation({:d}), hints.forced_aspect({:d}), hints.extrasize({:d})",
+       hints.orientation, hints.forced_aspect, hints.extradata.GetSize());
+
+  if (hints.hdrType != StreamHdrType::HDR_TYPE_NONE)
+    logM(LOGINFO, "CAMLCodec", "hdr type: {}", CStreamDetails::HdrTypeToString(hints.hdrType));
+
   if (hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
     logM(LOGINFO, "CAMLCodec", "DOVI: version {:d}.{:d}, profile {:d}, el type {:d}",
-      hints.dovi.dv_version_major, hints.dovi.dv_version_minor, hints.dovi.dv_profile, hints.dovi_el_type);
+         hints.dovi.dv_version_major, hints.dovi.dv_version_minor, hints.dovi.dv_profile, hints.dovi_el_type);
 
   m_processInfo.SetVideoDAR(hints.aspect);
-  logM(LOGINFO, "CAMLCodec", "decoder timeout: {:d}s", m_decoder_timeout);
 
   // default video codec params
   am_private->gcodec.noblock     = 0;
@@ -2157,6 +2144,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   m_dll->codec_set_cntl_avthresh(&am_private->vcodec, AV_SYNC_THRESH);
   m_dll->codec_set_cntl_syncthresh(&am_private->vcodec, 0);
+
   // disable tsync, we are playing video disconnected from audio.
   CSysfsPath("/sys/class/tsync/enable", 0);
 
@@ -2492,6 +2480,7 @@ int CAMLCodec::PollFrame()
 void CAMLCodec::SetPollDevice(int dev)
 {
   std::lock_guard lock(pollSyncMutex);
+
   m_pollDevice = dev;
 }
 
@@ -2724,7 +2713,7 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
 
   // video rate adjustment.
   unsigned int video_rate = GetDecoderVideoRate();
-  if (video_rate > 0 && video_rate != am_private->video_rate)
+  if ((video_rate > 0) && (video_rate != am_private->video_rate))
   {
     logM(LOGDEBUG, "CAMLCodec", "decoder fps has changed, video_rate adjusted from {:d} to {:d}", am_private->video_rate, video_rate);
     am_private->video_rate = video_rate;
@@ -2756,6 +2745,7 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
 
   // dest_rect
   CRect dst_rect = DestRect;
+
   // handle orientation
   switch (am_private->video_rotation_degree)
   {
@@ -2770,7 +2760,6 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
         int diff = (int) ((dst_rect.Height()*scale - dst_rect.Width()) / 2);
         dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
       }
-
   }
 
   if (m_dst_rect != dst_rect)
