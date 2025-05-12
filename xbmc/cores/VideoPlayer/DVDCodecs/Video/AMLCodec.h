@@ -72,7 +72,7 @@ public:
 
   void          SetSpeed(int speed);
   void          SetDrain(bool drain){m_drain = drain;};
-  void          SetVideoRect(const CRect &SrcRect, const CRect &DestRect);
+  void          SetVideoRect(const CRect &DestRect);
   void          SetVideoRate(int videoRate);
   uint64_t      GetOMXPts() const { return m_cur_pts; }
   double        GetPts() const { return static_cast<double>(m_cur_pts); }

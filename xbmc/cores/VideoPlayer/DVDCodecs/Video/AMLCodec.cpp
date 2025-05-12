@@ -2720,7 +2720,7 @@ void CAMLCodec::ShowMainVideo(const bool show)
   saved_disable_video = disable_video;
 }
 
-void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
+void CAMLCodec::SetVideoRect(const CRect &DestRect)
 {
   // this routine gets called every video frame
   // and is in the context of the renderer thread so
