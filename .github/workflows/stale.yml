@@ -34,4 +34,4 @@ jobs:
           exempt-pr-labels: Roadmap
           
           operations-per-run: 1000
-          debug-only: true
+          debug-only: false
