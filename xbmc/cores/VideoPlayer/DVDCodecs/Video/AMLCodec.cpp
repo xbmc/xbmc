@@ -2869,26 +2869,24 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
     }
   }
 
-#if 1
-  std::string s_dst_rect = StringUtils::Format("{:d},{:d},{:d},{:d}",
-    (int)dst_rect.x1, (int)dst_rect.y1,
-    (int)dst_rect.Width(), (int)dst_rect.Height());
-  std::string s_m_dst_rect = StringUtils::Format("{:d},{:d},{:d},{:d}",
-    (int)m_dst_rect.x1, (int)m_dst_rect.y1,
-    (int)m_dst_rect.Width(), (int)m_dst_rect.Height());
-  std::string s_display = StringUtils::Format("{:d},{:d},{:d},{:d}",
-    (int)m_display_rect.x1, (int)m_display_rect.y1,
-    (int)m_display_rect.Width(), (int)m_display_rect.Height());
-  std::string s_gui = StringUtils::Format("{:d},{:d},{:d},{:d}",
-    (int)gui.x1, (int)gui.y1,
-    (int)gui.Width(), (int)gui.Height());
-  logM(LOGDEBUG, "CAMLCodec", "display({})", s_display.c_str());
-  logM(LOGDEBUG, "CAMLCodec", "gui({})", s_gui.c_str());
-  logM(LOGDEBUG, "CAMLCodec", "m_dst_rect({})", s_m_dst_rect.c_str());
-  logM(LOGDEBUG, "CAMLCodec", "dst_rect({})", s_dst_rect.c_str());
+  logM(LOGDEBUG, "CAMLCodec", "display({:d},{:d},{:d},{:d})",
+                               (int)m_display_rect.x1,      (int)m_display_rect.y1,
+                               (int)m_display_rect.Width(), (int)m_display_rect.Height());
+
+  logM(LOGDEBUG, "CAMLCodec", "gui({:d},{:d},{:d},{:d})",
+                               (int)gui.x1,      (int)gui.y1,
+                               (int)gui.Width(), (int)gui.Height());
+
+  logM(LOGDEBUG, "CAMLCodec", "m_dst_rect({:d},{:d},{:d},{:d})",
+                               (int)m_dst_rect.x1,      (int)m_dst_rect.y1,
+                               (int)m_dst_rect.Width(), (int)m_dst_rect.Height());
+
+  logM(LOGDEBUG, "CAMLCodec", "dst_rect({:d},{:d},{:d},{:d})",
+                               (int)dst_rect.x1,      (int)dst_rect.y1,
+                               (int)dst_rect.Width(), (int)dst_rect.Height());
+
   logM(LOGDEBUG, "CAMLCodec", "m_guiStereoMode({:d})", m_guiStereoMode);
   logM(LOGDEBUG, "CAMLCodec", "m_guiStereoView({:d})", m_guiStereoView);
-#endif
 
   // goofy 0/1 based difference in aml axis coordinates.
   // fix them.
