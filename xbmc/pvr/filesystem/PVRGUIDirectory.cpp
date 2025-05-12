@@ -73,8 +73,51 @@ bool CPVRGUIDirectory::SupportsWriteFileOperations() const
   return URIUtils::IsPVRRecording(filename);
 }
 
+namespace
+{
+void ResolveNonPVRItem(CFileItem& item)
+{
+  if (URIUtils::IsPVRChannel(item.GetDynPath()))
+  {
+    const std::shared_ptr<CPVRChannelGroupMember> groupMember{
+        CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelGroupMemberByPath(
+            item.GetDynPath())};
+    if (groupMember)
+      item = CFileItem(groupMember); // Replace original item with a PVR channel item
+  }
+  else if (URIUtils::IsPVRRecording(item.GetDynPath()))
+  {
+    const std::shared_ptr<CPVRRecording> recording{
+        CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetDynPath())};
+    if (recording)
+      item = CFileItem(recording); // Replace original item with a PVR recording item
+  }
+  else if (URIUtils::IsPVRGuideItem(item.GetDynPath()))
+  {
+    const std::shared_ptr<CPVREpgInfoTag> epgTag{
+        CServiceBroker::GetPVRManager().EpgContainer().GetTagByPath(item.GetDynPath())};
+    if (epgTag)
+      item = CFileItem(epgTag); // Replace original item with a PVR EPG tag item
+  }
+  else
+  {
+    CLog::LogF(LOGWARNING, "Unhandled item ({}).", item.GetDynPath());
+  }
+}
+} // unnamed namespace
+
 bool CPVRGUIDirectory::Resolve(CFileItem& item)
 {
+  // Item passed in could be carrying a plugin URL as path and a PVR channel URL as dyn path
+  // for example. We need to resolve those items to PVR items carrying a PVR URL as path before
+  // we can continue.
+  if (!URIUtils::IsPVR(item.GetPath()))
+  {
+    if (URIUtils::IsPVR(item.GetDynPath()))
+      ResolveNonPVRItem(item);
+    else
+      return false; // Neither path nor dyn path contain a PVR URL. Not resolvable here.
+  }
   return CServiceBroker::GetPVRManager().PlaybackState()->OnPreparePlayback(item);
 }
 
