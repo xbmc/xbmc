@@ -6754,6 +6754,7 @@ msgstr ""
 #: xbmc/GUIInfoManager.cpp
 #: xbmc/LangInfo.cpp
 #: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+#: xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemux.cpp
 #: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/peripherals/bus/PeripheralBus.cpp

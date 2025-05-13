@@ -8,6 +8,7 @@
 
 #include "DVDDemux.h"
 
+#include "guilib/LocalizeStrings.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 
@@ -133,11 +134,13 @@ std::string CDemuxStreamAudio::GetStreamType()
   if (codec >= AV_CODEC_ID_PCM_S16LE && codec <= AV_CODEC_ID_PCM_SGA)
     strInfo = "PCM";
 
+  if (strInfo.empty())
+    strInfo = g_localizeStrings.Get(13205); // "Unknown"
+
   const std::string layout{StreamUtils::GetLayout(iChannelLayout, iChannels)};
   if (!layout.empty())
   {
-    if (!strInfo.empty())
-      strInfo.append(" ");
+    strInfo.append(" ");
     strInfo.append(layout);
   }
   return strInfo;
