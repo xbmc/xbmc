@@ -700,7 +700,7 @@ bool CGUIDialogPVRTimerSettings::Validate() const
 std::string CGUIDialogPVRTimerSettings::GetSettingsLabel(const std::shared_ptr<ISetting>& setting)
 {
   // Special handling for add-on supplied custom settings.
-  const std::string label{m_customTimerSettings->GetSettingsLabel(setting->GetId())};
+  std::string label{m_customTimerSettings->GetSettingsLabel(setting->GetId())};
   if (!label.empty())
     return label;
 
