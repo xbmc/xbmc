@@ -9,6 +9,7 @@
 #pragma once
 
 #include <functional>
+#include <utility>
 
 namespace KODI
 {
@@ -28,11 +29,8 @@ class CScopeGuard
 {
 
 public:
-
   CScopeGuard(std::function<Deleter> del, Handle handle = invalid)
-    : m_handle{handle}
-    , m_deleter{del}
-  { };
+    : m_handle{handle}, m_deleter{std::move(del)} {};
 
   ~CScopeGuard() noexcept
   {

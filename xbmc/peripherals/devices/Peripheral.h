@@ -311,7 +311,7 @@ protected:
   // Helper functions
   void InstallController(
       const std::string& controllerId,
-      std::function<void(const KODI::GAME::ControllerPtr& installedController)> callback);
+      const std::function<void(const KODI::GAME::ControllerPtr& installedController)>& callback);
   KODI::GAME::ControllerPtr InstallAsync(const std::string& controllerId);
   static bool InstallSync(const std::string& controllerId);
 
