@@ -559,10 +559,9 @@ void CNfsConnection::setOptions(struct nfs_context* context)
   if (!advancedSettings)
     return;
 
-#ifdef HAS_NFS_SET_TIMEOUT
   uint32_t timeout = advancedSettings->m_nfsTimeout;
   nfs_set_timeout(context, timeout > 0 ? timeout * 1000 : -1);
-#endif
+
   int retries = advancedSettings->m_nfsRetries;
   nfs_set_autoreconnect(context, retries);
 
