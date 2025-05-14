@@ -427,7 +427,7 @@ bool ParseCLPI(std::vector<std::byte>& buffer, ClipInformation& clipInformation,
 
 bool ReadCLPI(const CURL& url, unsigned int clip, ClipInformation& clipInformation)
 {
-  const std::string path{url.GetHostName()};
+  const std::string& path{url.GetHostName()};
   const std::string clipFile{
       URIUtils::AddFileToFolder(path, "BDMV", "CLIPINF", StringUtils::Format("{:05}.clpi", clip))};
   CFile file;
@@ -1178,7 +1178,7 @@ std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
 
 int GetMainPlaylistFromDisc(const CURL& url)
 {
-  const std::string root{url.GetHostName()};
+  const std::string& root{url.GetHostName()};
   const std::string discInfPath{URIUtils::AddFileToFolder(root, "disc.inf")};
   CFile file;
   std::string line;
@@ -1219,7 +1219,7 @@ bool ReadMPLS(const CURL& url,
               PlaylistInformation& playlistInformation,
               std::map<unsigned int, ClipInformation>& clipCache)
 {
-  const std::string path{url.GetHostName()};
+  const std::string& path{url.GetHostName()};
   const std::string playlistFile{URIUtils::AddFileToFolder(
       path, "BDMV", "PLAYLIST", StringUtils::Format("{:05}.mpls", playlist))};
   CFile file;
@@ -1512,7 +1512,7 @@ void GetPlaylistsInformation(const CURL& url,
                              std::map<unsigned int, ClipInformation>& clipCache)
 {
   // Check cache
-  const std::string path{url.GetHostName()};
+  const std::string& path{url.GetHostName()};
   if (CServiceBroker::GetBlurayDiscCache()->GetMaps(path, playlists, clips))
   {
     CLog::LogF(LOGDEBUG, "Playlist information for {} retrieved from cache", path);

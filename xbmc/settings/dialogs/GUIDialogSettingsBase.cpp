@@ -628,7 +628,7 @@ void CGUIDialogSettingsBase::UpdateSettings()
   for (std::vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin();
        it != m_settingControls.end(); ++it)
   {
-    BaseSettingControlPtr pSettingControl = *it;
+    const BaseSettingControlPtr& pSettingControl = *it;
     std::shared_ptr<CSetting> pSetting = pSettingControl->GetSetting();
     CGUIControl* pControl = pSettingControl->GetControl();
     if (pSetting == NULL || pControl == NULL)
