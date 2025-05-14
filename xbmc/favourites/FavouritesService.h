@@ -56,7 +56,7 @@ private:
   CFavouritesService& operator=(CFavouritesService&&) = delete;
 
   void OnUpdated();
-  bool Persist();
+  bool Persist() const;
 
   void CleanupTargetsCache(const CFileItem& item);
 

@@ -30,21 +30,19 @@
 #include "utils/IPlatformLog.h"
 #include "utils/logtypes.h"
 
+#include <source_location>
 #include <string>
 #include <vector>
 
 #include <spdlog/spdlog.h>
 
-namespace spdlog
-{
-namespace sinks
+namespace spdlog::sinks
 {
 class sink;
 
 template<typename Mutex>
 class dist_sink;
-} // namespace sinks
-} // namespace spdlog
+} // namespace spdlog::sinks
 
 #if FMT_VERSION >= 100000
 using fmt::enums::format_as;
@@ -62,7 +60,7 @@ class CLog : public ISettingsHandler, public ISettingCallback
 {
 public:
   CLog();
-  ~CLog();
+  ~CLog() override;
 
   // implementation of ISettingsHandler
   void OnSettingsLoaded() override;
@@ -75,8 +73,8 @@ public:
   void Deinitialize();
 
   void SetLogLevel(int level);
-  int GetLogLevel() { return m_logLevel; }
-  bool IsLogLevelLogged(int loglevel);
+  int GetLogLevel() const { return m_logLevel; }
+  bool IsLogLevelLogged(int loglevel) const;
 
   bool CanLogComponent(uint32_t component) const;
   static void SettingOptionsLoggingComponentsFiller(const std::shared_ptr<const CSetting>& setting,
@@ -121,9 +119,11 @@ public:
     Log(level, format, std::forward<Args>(args)...);
   }
 
-#define LogF(level, format, ...) Log((level), ("{}: " format), __FUNCTION__, ##__VA_ARGS__)
+#define LogF(level, format, ...) \
+  Log((level), ("{}: " format), std::source_location::current().function_name(), ##__VA_ARGS__)
 #define LogFC(level, component, format, ...) \
-  Log((level), (component), ("{}: " format), __FUNCTION__, ##__VA_ARGS__)
+  Log((level), (component), ("{}: " format), std::source_location::current().function_name(), \
+      ##__VA_ARGS__)
 
 private:
   static CLog& GetInstance();
@@ -146,7 +146,7 @@ private:
 
   void SetComponentLogLevel(const std::vector<CVariant>& components);
 
-  void FormatLineBreaks(std::string& message);
+  void FormatLineBreaks(std::string& message) const;
 
   std::unique_ptr<IPlatformLog> m_platform;
   std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> m_sinks;
@@ -154,8 +154,8 @@ private:
 
   std::shared_ptr<spdlog::sinks::sink> m_fileSink;
 
-  int m_logLevel;
+  int m_logLevel{LOG_LEVEL_DEBUG};
 
-  bool m_componentLogEnabled = false;
-  uint32_t m_componentLogLevels = 0;
+  bool m_componentLogEnabled{false};
+  uint32_t m_componentLogLevels{0};
 };

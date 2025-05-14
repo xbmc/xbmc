@@ -137,26 +137,22 @@ bool CGUIWindowFavourites::OnMessage(CGUIMessage& message)
 {
   bool ret = false;
 
-  switch (message.GetMessage())
+  if (message.GetMessage() == GUI_MSG_REFRESH_LIST)
   {
-    case GUI_MSG_REFRESH_LIST:
+    const int size{m_vecItems->Size()};
+    int selected{m_viewControl.GetSelectedItem()};
+    if (!m_vecItems->IsEmpty() && selected == size - 1)
+      --selected; // remove of last item, select the new last item after refresh
+
+    Refresh(true);
+
+    if (m_vecItems->Size() < size)
     {
-      const int size = m_vecItems->Size();
-      int selected = m_viewControl.GetSelectedItem();
-      if (m_vecItems->Size() > 0 && selected == size - 1)
-        --selected; // remove of last item, select the new last item after refresh
-
-      Refresh(true);
-
-      if (m_vecItems->Size() < size)
-      {
-        // item removed. select item after the removed item
-        m_viewControl.SetSelectedItem(selected);
-      }
-
-      ret = true;
-      break;
+      // item removed. select item after the removed item
+      m_viewControl.SetSelectedItem(selected);
     }
+
+    ret = true;
   }
 
   return ret || CGUIMediaWindow::OnMessage(message);

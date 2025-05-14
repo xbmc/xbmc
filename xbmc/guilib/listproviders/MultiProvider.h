@@ -14,8 +14,6 @@
 #include <map>
 #include <vector>
 
-typedef std::unique_ptr<IListProvider> IListProviderPtr;
-
 class TiXmlNode;
 
 /*!
@@ -39,9 +37,9 @@ public:
   bool OnContextMenu(const std::shared_ptr<CGUIListItem>& item) override;
 
 protected:
-  typedef size_t item_key_type;
-  static item_key_type GetItemKey(std::shared_ptr<CGUIListItem> const& item);
-  std::vector<IListProviderPtr> m_providers;
+  using item_key_type = size_t;
+  static size_t GetItemKey(std::shared_ptr<CGUIListItem> const& item);
+  std::vector<std::unique_ptr<IListProvider>> m_providers;
   std::map<item_key_type, IListProvider*> m_itemMap;
   CCriticalSection m_section; // protects m_itemMap
 };

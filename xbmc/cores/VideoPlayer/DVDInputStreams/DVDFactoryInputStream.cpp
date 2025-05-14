@@ -108,9 +108,9 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   if (VIDEO::IsDVDFile(fileitem, false, true))
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
   else if (URIUtils::IsPVRChannel(file))
-    return std::make_shared<CInputStreamPVRChannel>(pPlayer, fileitem);
+    return std::make_shared<CInputStreamPVRChannel>(fileitem);
   else if (URIUtils::IsPVRRecording(file))
-    return std::make_shared<CInputStreamPVRRecording>(pPlayer, fileitem);
+    return std::make_shared<CInputStreamPVRRecording>(fileitem);
 #ifdef HAVE_LIBBLURAY
   else if (fileitem.IsType(".bdmv") || fileitem.IsType(".mpls")
           || fileitem.IsType(".bdm") || fileitem.IsType(".mpl")

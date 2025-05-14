@@ -13,7 +13,7 @@
 class CInputStreamPVRRecording : public CInputStreamPVRBase
 {
 public:
-  CInputStreamPVRRecording(IVideoPlayer* pPlayer, const CFileItem& fileitem);
+  using CInputStreamPVRBase::CInputStreamPVRBase;
   ~CInputStreamPVRRecording() override;
 
 protected:

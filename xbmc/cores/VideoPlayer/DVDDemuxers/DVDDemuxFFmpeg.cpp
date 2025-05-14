@@ -863,8 +863,7 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       if (!transportProp.isNull() &&
           (transportProp == "tcp" || transportProp == "udp" || transportProp == "udp_multicast"))
       {
-        CLog::LogF(LOGDEBUG, "GetFFMpegOptionsFromInput() Forcing rtsp transport protocol to '{}'",
-                   transportProp.asString());
+        CLog::LogF(LOGDEBUG, "Forcing rtsp transport protocol to '{}'", transportProp.asString());
         av_dict_set(&options, "rtsp_transport", transportProp.asString().c_str(), 0);
       }
     }
@@ -1798,8 +1797,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         // if analyzing streams is skipped, unknown streams may become valid later
         if (m_streaminfo && IsTransportStreamReady())
         {
-          CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding unknown stream with id: {}",
-                    pStream->index);
+          CLog::LogF(LOGDEBUG, "Discarding unknown stream with id: {}", pStream->index);
           pStream->discard = AVDISCARD_ALL;
           return nullptr;
         }

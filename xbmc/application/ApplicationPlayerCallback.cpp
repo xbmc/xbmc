@@ -46,7 +46,7 @@ CApplicationPlayerCallback::CApplicationPlayerCallback()
 
 void CApplicationPlayerCallback::OnPlayBackEnded()
 {
-  CLog::LogF(LOGDEBUG, "CApplicationPlayerCallback::OnPlayBackEnded");
+  CLog::LogF(LOGDEBUG, "call");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -54,7 +54,7 @@ void CApplicationPlayerCallback::OnPlayBackEnded()
 
 void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
 {
-  CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStarted");
+  CLog::LogF(LOGDEBUG, "call");
   std::shared_ptr<CFileItem> itemCurrentFile;
 
   // check if VideoPlayer should set file item stream details from its current streams
@@ -218,7 +218,7 @@ void CApplicationPlayerCallback::OnPlayBackResumed()
 
 void CApplicationPlayerCallback::OnPlayBackStopped()
 {
-  CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStopped");
+  CLog::LogF(LOGDEBUG, "call");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -235,7 +235,7 @@ void CApplicationPlayerCallback::OnPlayBackError()
 
 void CApplicationPlayerCallback::OnQueueNextItem()
 {
-  CLog::LogF(LOGDEBUG, "CApplication::OnQueueNextItem");
+  CLog::LogF(LOGDEBUG, "call");
 
   // informs python script currently running that we are requesting the next track
   // (does nothing if python is not loaded)
@@ -277,7 +277,7 @@ void CApplicationPlayerCallback::OnPlayBackSpeedChanged(int iSpeed)
 
 void CApplicationPlayerCallback::OnAVChange()
 {
-  CLog::LogF(LOGDEBUG, "CApplication::OnAVChange");
+  CLog::LogF(LOGDEBUG, "call");
 
   CServiceBroker::GetGUI()->GetStereoscopicsManager().OnStreamChange();
 
@@ -287,7 +287,7 @@ void CApplicationPlayerCallback::OnAVChange()
 
 void CApplicationPlayerCallback::OnAVStarted(const CFileItem& file)
 {
-  CLog::LogF(LOGDEBUG, "CApplication::OnAVStarted");
+  CLog::LogF(LOGDEBUG, "call");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVSTARTED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);

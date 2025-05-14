@@ -21,6 +21,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <string_view>
 #include <vector>
 
 namespace
@@ -29,39 +30,43 @@ std::string GetActionString(CFavouritesURL::Action action)
 {
   switch (action)
   {
-    case CFavouritesURL::Action::ACTIVATE_WINDOW:
+    using enum CFavouritesURL::Action;
+
+    case ACTIVATE_WINDOW:
       return "activatewindow";
-    case CFavouritesURL::Action::PLAY_MEDIA:
+    case PLAY_MEDIA:
       return "playmedia";
-    case CFavouritesURL::Action::SHOW_PICTURE:
+    case SHOW_PICTURE:
       return "showpicture";
-    case CFavouritesURL::Action::RUN_SCRIPT:
+    case RUN_SCRIPT:
       return "runscript";
-    case CFavouritesURL::Action::RUN_ADDON:
+    case RUN_ADDON:
       return "runaddon";
-    case CFavouritesURL::Action::START_ANDROID_ACTIVITY:
+    case START_ANDROID_ACTIVITY:
       return "startandroidactivity";
     default:
       return {};
   }
 }
 
-CFavouritesURL::Action GetActionId(const std::string& actionString)
+CFavouritesURL::Action GetActionId(std::string_view actionString)
 {
+  using enum CFavouritesURL::Action;
+
   if (actionString == "activatewindow")
-    return CFavouritesURL::Action::ACTIVATE_WINDOW;
+    return ACTIVATE_WINDOW;
   else if (actionString == "playmedia")
-    return CFavouritesURL::Action::PLAY_MEDIA;
+    return PLAY_MEDIA;
   else if (actionString == "showpicture")
-    return CFavouritesURL::Action::SHOW_PICTURE;
+    return SHOW_PICTURE;
   else if (actionString == "runscript")
-    return CFavouritesURL::Action::RUN_SCRIPT;
+    return RUN_SCRIPT;
   else if (actionString == "runaddon")
-    return CFavouritesURL::Action::RUN_ADDON;
+    return RUN_ADDON;
   else if (actionString == "startandroidactivity")
-    return CFavouritesURL::Action::START_ANDROID_ACTIVITY;
+    return START_ANDROID_ACTIVITY;
   else
-    return CFavouritesURL::Action::UNKNOWN;
+    return UNKNOWN;
 }
 } // namespace
 

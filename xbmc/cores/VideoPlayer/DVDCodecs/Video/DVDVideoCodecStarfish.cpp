@@ -86,7 +86,7 @@ bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   // allow only 1 instance here
   if (ms_instanceGuard.exchange(true))
   {
-    CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: InstanceGuard locked");
+    CLog::LogF(LOGERROR, "InstanceGuard locked");
     return false;
   }
 
@@ -106,18 +106,18 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
 
   if (hints.cryptoSession)
   {
-    CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: CryptoSessions unsupported");
+    CLog::LogF(LOGERROR, "CryptoSessions unsupported");
     return false;
   }
 
   if (!hints.width || !hints.height)
   {
-    CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: {}", "null size, cannot handle");
+    CLog::LogF(LOGERROR, "{}", "null size, cannot handle");
     return false;
   }
 
   CLog::LogF(LOGDEBUG,
-             "CDVDVideoCodecStarfish: hints: Width {} x Height {}, Fpsrate {} / Fpsscale {}, "
+             "Hints: Width {} x Height {}, Fpsrate {} / Fpsscale {}, "
              "CodecID {}, Level {}, Profile {}, PTS_invalid {}, Tag {}, Extradata-Size: {}",
              hints.width, hints.height, hints.fpsrate, hints.fpsscale, hints.codec, hints.level,
              hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extradata.GetSize());
@@ -125,7 +125,7 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
   if (ms_codecMap.find(hints.codec) == ms_codecMap.cend() ||
       ms_formatInfoMap.find(hints.codec) == ms_formatInfoMap.cend())
   {
-    CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: Unsupported hints.codec({})", hints.codec);
+    CLog::LogF(LOGDEBUG, "Unsupported hints.codec({})", hints.codec);
     return false;
   }
 
@@ -287,10 +287,10 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
   std::string payload;
   CJSONVariantWriter::Write(payloadArgs, payload, true);
 
-  CLog::LogFC(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecStarfish: Sending Load payload {}", payload);
+  CLog::LogFC(LOGDEBUG, LOGVIDEO, "Sending Load payload {}", payload);
   if (!m_starfishMediaAPI->Load(payload.c_str(), &CDVDVideoCodecStarfish::PlayerCallback, this))
   {
-    CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Load failed");
+    CLog::LogF(LOGERROR, "Load failed");
     return false;
   }
 
@@ -298,7 +298,7 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
 
   m_codecControlFlags = 0;
 
-  CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish: Starfish {}", m_codecname);
+  CLog::LogF(LOGINFO, "Starfish {}", m_codecname);
 
   // first make sure all properties are reset.
   m_videobuffer.Reset();
@@ -373,7 +373,7 @@ bool CDVDVideoCodecStarfish::AddData(const DemuxPacket& packet)
 
     if (m_state == StarfishState::FLUSHED && !m_bitstream->CanStartDecode())
     {
-      CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: Waiting for keyframe (bitstream)");
+      CLog::LogF(LOGDEBUG, "Waiting for keyframe (bitstream)");
       return true;
     }
 
@@ -417,7 +417,7 @@ bool CDVDVideoCodecStarfish::AddData(const DemuxPacket& packet)
     if (result.find("BufferFull") != std::string::npos)
       return false;
 
-    CLog::LogF(LOGWARNING, "CDVDVideoCodecStarfish: Buffer submit returned error: {}", result);
+    CLog::LogF(LOGWARNING, "Buffer submit returned error: {}", result);
   }
 
   return true;
@@ -428,7 +428,7 @@ void CDVDVideoCodecStarfish::Reset()
   if (!m_opened)
     return;
 
-  CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: Reset");
+  CLog::LogF(LOGDEBUG, "Reset");
   m_starfishMediaAPI->flush();
 
   m_state = StarfishState::FLUSHED;
@@ -445,11 +445,11 @@ bool CDVDVideoCodecStarfish::Reconfigure(CDVDStreamInfo& hints)
   if (m_hints.Equal(hints, CDVDStreamInfo::COMPARE_ALL &
                                ~(CDVDStreamInfo::COMPARE_ID | CDVDStreamInfo::COMPARE_EXTRADATA)))
   {
-    CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: true");
+    CLog::LogF(LOGDEBUG, "true");
     m_hints = hints;
     return true;
   }
-  CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: false");
+  CLog::LogF(LOGDEBUG, "false");
   return false;
 }
 
@@ -476,7 +476,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecStarfish::GetPicture(VideoPicture* pVideo
       std::chrono::duration_cast<std::chrono::duration<double, dvdTime>>(m_currentPlaytime).count();
   m_newFrame = false;
 
-  CLog::LogFC(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecStarfish: pts:{:0.4f}", pVideoPicture->pts);
+  CLog::LogFC(LOGDEBUG, LOGVIDEO, "pts:{:0.4f}", pVideoPicture->pts);
 
   return VC_PICTURE;
 }
@@ -485,8 +485,7 @@ void CDVDVideoCodecStarfish::SetCodecControl(int flags)
 {
   if (m_codecControlFlags != flags)
   {
-    CLog::LogFC(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecStarfish: {:x}->{:x}", m_codecControlFlags,
-                flags);
+    CLog::LogFC(LOGDEBUG, LOGVIDEO, "{:x}->{:x}", m_codecControlFlags, flags);
     m_codecControlFlags = flags;
   }
 }
@@ -502,7 +501,7 @@ void CDVDVideoCodecStarfish::SetSpeed(int iSpeed)
       m_starfishMediaAPI->Pause();
       break;
     default:
-      CLog::LogF(LOGWARNING, "CDVDVideoCodecStarfish: Unknown playback speed");
+      CLog::LogF(LOGWARNING, "Unknown playback speed");
       break;
   }
 }
@@ -588,8 +587,7 @@ void CDVDVideoCodecStarfish::UpdateFpsDuration()
 {
   m_processInfo.SetVideoFps(static_cast<float>(m_hints.fpsrate) / m_hints.fpsscale);
 
-  CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: fpsRate:{} fpsscale:{}", m_hints.fpsrate,
-             m_hints.fpsscale);
+  CLog::LogF(LOGDEBUG, "fpsRate:{} fpsscale:{}", m_hints.fpsrate, m_hints.fpsscale);
 }
 
 void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
@@ -597,8 +595,7 @@ void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
                                             const char* strValue)
 {
   std::string logstr = strValue != nullptr ? strValue : "";
-  CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: type: {}, numValue: {}, strValue: {}", type,
-             numValue, logstr);
+  CLog::LogF(LOGDEBUG, "type: {}, numValue: {}, strValue: {}", type, numValue, logstr);
 
   switch (type)
   {
@@ -639,13 +636,11 @@ void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
         AcbAPI_setState(m_acbId, APPSTATE_FOREGROUND, PLAYSTATE_UNLOADED, nullptr);
       break;
     case PF_EVENT_TYPE_INT_ERROR:
-      CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Pipeline INT_ERROR numValue: {}, strValue: {}",
-                 numValue, logstr);
+      CLog::LogF(LOGERROR, "Pipeline INT_ERROR numValue: {}, strValue: {}", numValue, logstr);
       m_state = StarfishState::ERROR;
       break;
     case PF_EVENT_TYPE_STR_ERROR:
-      CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Pipeline STR_ERROR numValue: {}, strValue: {}",
-                 numValue, logstr);
+      CLog::LogF(LOGERROR, "Pipeline STR_ERROR numValue: {}, strValue: {}", numValue, logstr);
       m_state = StarfishState::ERROR;
       break;
   }

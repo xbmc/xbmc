@@ -9,11 +9,15 @@
 #pragma once
 
 #include "FileItemHandler.h"
-#include "pvr/channels/PVRChannelGroup.h"
 
 #include <memory>
 
 class CVariant;
+
+namespace PVR
+{
+class CPVRChannelGroup;
+}
 
 namespace JSONRPC
 {

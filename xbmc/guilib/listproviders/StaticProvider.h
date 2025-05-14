@@ -34,8 +34,8 @@ public:
   int GetDefaultItem() const override;
   bool AlwaysFocusDefaultItem() const override;
 private:
-  int m_defaultItem;
-  bool m_defaultAlways;
-  unsigned int m_updateTime;
+  int m_defaultItem{-1};
+  bool m_defaultAlways{false};
+  unsigned int m_updateTime{0};
   std::vector<CGUIStaticItemPtr> m_items;
 };
