@@ -324,7 +324,7 @@ void CGUIDialogAddonInfo::OnUpdate()
   const auto& itemAddonInfo = m_item->GetAddonInfo();
   const std::string& addonId = itemAddonInfo->ID();
   const std::string& origin = m_item->GetProperty("Addon.ValidUpdateOrigin").asString();
-  const CAddonVersion& version =
+  const auto &version =
       static_cast<CAddonVersion>(m_item->GetProperty("Addon.ValidUpdateVersion").asString());
 
   Close();
@@ -649,7 +649,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
       {
         if (entryPoint != EntryPoint::UPDATE || !it.IsInstalledUpToDate())
         {
-          const CFileItemPtr item = std::make_shared<CFileItem>(infoAddon->Name());
+          const auto item = std::make_shared<CFileItem>(infoAddon->Name());
           int messageId = 24180; // minversion only
 
           // dep not installed locally, but it is available from a repo!
@@ -698,7 +698,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
       }
       else
       {
-        const CFileItemPtr item = std::make_shared<CFileItem>(it.m_depInfo.id);
+        const auto item = std::make_shared<CFileItem>(it.m_depInfo.id);
         item->SetLabel2(g_localizeStrings.Get(10005)); // Not available
         items.Add(item);
       }
@@ -770,7 +770,7 @@ void CGUIDialogAddonInfo::ShowSupportList()
     else
       label = entry.m_name;
 
-    const CFileItemPtr item = std::make_shared<CFileItem>(label);
+    const auto item = std::make_shared<CFileItem>(label);
     item->SetLabel2(entry.m_description);
     if (!entry.m_icon.empty())
       item->SetArt("icon", entry.m_icon);

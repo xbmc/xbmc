@@ -26,7 +26,7 @@ bool CUPnPFile::Open(const CURL& url)
   {
     //CLog::Log(LOGDEBUG,"FileUPnP - file redirect to {}.", item_new.GetPath());
     IFile *pNewImp = CFileFactory::CreateLoader(item_new.GetPath());
-    CURL *pNewUrl = new CURL(item_new.GetPath());
+    auto pNewUrl = new CURL(item_new.GetPath());
     if (pNewImp)
     {
       throw new CRedirectException(pNewImp, pNewUrl);
@@ -43,7 +43,7 @@ int CUPnPFile::Stat(const CURL& url, struct __stat64* buffer)
   {
     //CLog::Log(LOGDEBUG,"FileUPnP - file redirect to {}.", item_new.GetPath());
     IFile *pNewImp = CFileFactory::CreateLoader(item_new.GetPath());
-    CURL *pNewUrl = new CURL(item_new.GetPath());
+    auto pNewUrl = new CURL(item_new.GetPath());
     if (pNewImp)
     {
       throw new CRedirectException(pNewImp, pNewUrl);
@@ -60,7 +60,7 @@ bool CUPnPFile::Exists(const CURL& url)
   {
     //CLog::Log(LOGDEBUG,"FileUPnP - file redirect to {}.", item_new.GetPath());
     IFile *pNewImp = CFileFactory::CreateLoader(item_new.GetPath());
-    CURL *pNewUrl = new CURL(item_new.GetPath());
+    auto pNewUrl = new CURL(item_new.GetPath());
     if (pNewImp)
     {
       throw new CRedirectException(pNewImp, pNewUrl);

@@ -42,10 +42,10 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     return false;
   }
 
-  std::map<std::string, std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  auto it = mZipMap.find(strFile);
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
-    std::map<std::string,int64_t>::iterator it2=mZipDate.find(strFile);
+    auto it2=mZipDate.find(strFile);
 
     if (m_StatData.st_mtime == it2->second)
     {
@@ -221,7 +221,7 @@ bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
 {
   const std::string& strFile = url.GetHostName();
 
-  std::map<std::string, std::vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
+  auto it = mZipMap.find(strFile);
   std::vector<SZipEntry> items;
   if (it == mZipMap.end()) // we need to list the zip
   {
@@ -308,10 +308,10 @@ void CZipManager::readCHeader(const char* buffer, SZipEntry& info)
 void CZipManager::release(const std::string& strPath)
 {
   CURL url(strPath);
-  std::map<std::string, std::vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
+  auto it= mZipMap.find(url.GetHostName());
   if (it != mZipMap.end())
   {
-    std::map<std::string,int64_t>::iterator it2=mZipDate.find(url.GetHostName());
+    auto it2=mZipDate.find(url.GetHostName());
     mZipMap.erase(it);
     mZipDate.erase(it2);
   }

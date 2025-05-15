@@ -44,7 +44,7 @@ bool CScreenshotSurfaceAML::Capture()
   m_width  = viewport[2] - viewport[0];
   m_height = viewport[3] - viewport[1];
   m_stride = m_width * 4;
-  unsigned char* surface = new unsigned char[m_stride * m_height];
+  auto surface = new unsigned char[m_stride * m_height];
 
   //read pixels from the backbuffer
 #if HAS_GLES >= 2

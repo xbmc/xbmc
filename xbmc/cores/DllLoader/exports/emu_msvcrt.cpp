@@ -505,7 +505,7 @@ extern "C"
         str[size-1] = '\0';
     }
 
-    CFile* pFile = new CFile();
+    auto pFile = new CFile();
     bool bWrite = false;
     if ((iMode & O_RDWR) || (iMode & O_WRONLY))
       bWrite = true;
@@ -533,7 +533,7 @@ extern "C"
         return -1;
       }
       object->mode = iMode;
-      FILE* f = reinterpret_cast<FILE*>(object);
+      auto f = reinterpret_cast<FILE*>(object);
       return g_emuFileWrapper.GetDescriptorByStream(f);
     }
     delete pFile;
@@ -976,7 +976,7 @@ extern "C"
       return readdir(dirp); // local dir
 
     // dirp is actually a SDirData*
-    SDirData* dirData = reinterpret_cast<SDirData*>(dirp);
+    auto dirData = reinterpret_cast<SDirData*>(dirp);
     if (dirData->last_entry)
       free(dirData->last_entry);
     struct dirent *entry = NULL;
@@ -1014,7 +1014,7 @@ extern "C"
     if (!emulated)
       return closedir(dirp);
 
-    SDirData* dirData = reinterpret_cast<SDirData*>(dirp);
+    auto dirData = reinterpret_cast<SDirData*>(dirp);
     dirData->items.Clear();
     if (dirData->last_entry)
     {
@@ -1041,7 +1041,7 @@ extern "C"
       return;
     }
 
-    SDirData* dirData = reinterpret_cast<SDirData*>(dirp);
+    auto dirData = reinterpret_cast<SDirData*>(dirp);
     if (dirData->last_entry)
     {
       dirData->last_entry = NULL;
@@ -1341,7 +1341,7 @@ extern "C"
 
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream) || !IS_VALID_STREAM(stream))
     {
-      char* buf = (char*)malloc(size * count + 1);
+      auto buf = (char*)malloc(size * count + 1);
       if (buf)
       {
         memcpy(buf, buffer, size * count);
@@ -1819,12 +1819,12 @@ extern "C"
       if (value_start != NULL)
       {
         const size_t varSize = value_start - envstring;
-        char* var = static_cast<char*>(std::malloc(varSize + 1));
+        auto var = static_cast<char*>(std::malloc(varSize + 1));
         if (!var)
           return -1;
 
         int size = strlen(envstring) + 1;
-        char *value = (char*)malloc(size);
+        auto value = (char*)malloc(size);
 
         if (!value)
           return -1;

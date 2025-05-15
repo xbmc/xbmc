@@ -36,7 +36,7 @@ void Interface_GUIDialogTextViewer::open(KODI_HANDLE kodiBase,
                                          const char* heading,
                                          const char* text)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogTextViewer::{} - invalid data", __func__);

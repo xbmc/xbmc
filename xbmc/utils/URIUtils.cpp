@@ -456,7 +456,7 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
 std::string URLEncodePath(const std::string& strPath)
 {
   std::vector<std::string> segments = StringUtils::Split(strPath, "/");
-  for (std::vector<std::string>::iterator i = segments.begin(); i != segments.end(); ++i)
+  for (auto i = segments.begin(); i != segments.end(); ++i)
     *i = CURL::Encode(*i);
 
   return StringUtils::Join(segments, "/");
@@ -465,7 +465,7 @@ std::string URLEncodePath(const std::string& strPath)
 std::string URLDecodePath(const std::string& strPath)
 {
   std::vector<std::string> segments = StringUtils::Split(strPath, "/");
-  for (std::vector<std::string>::iterator i = segments.begin(); i != segments.end(); ++i)
+  for (auto i = segments.begin(); i != segments.end(); ++i)
     *i = CURL::Decode(*i);
 
   return StringUtils::Join(segments, "/");
@@ -1460,7 +1460,7 @@ std::string URIUtils::resolvePath(const std::string &path)
 
   std::string realPath;
   // re-add any / or \ at the beginning
-  for (std::string::const_iterator itPath = path.begin(); itPath != path.end(); ++itPath)
+  for (auto itPath = path.begin(); itPath != path.end(); ++itPath)
   {
     if (*itPath != delim.at(0))
       break;
@@ -1490,7 +1490,7 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
     if (!CStackDirectory::GetPaths(strFilename, files))
       return false;
 
-    for (std::vector<std::string>::iterator file = files.begin(); file != files.end(); ++file)
+    for (auto file = files.begin(); file != files.end(); ++file)
       UpdateUrlEncoding(*file);
 
     std::string stackPath;

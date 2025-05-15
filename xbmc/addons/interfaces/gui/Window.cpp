@@ -114,7 +114,7 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
                                                    bool as_dialog,
                                                    bool is_media)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon || !xml_filename || !default_skin)
   {
     CLog::Log(LOGERROR,
@@ -139,7 +139,7 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
   if (!CFileUtils::Exists(strSkinPath))
   {
     std::string str("none");
-    ADDON::AddonInfoPtr addonInfo =
+    auto addonInfo =
         std::make_shared<ADDON::CAddonInfo>(str, ADDON::AddonType::SKIN);
 
     // Check for the matching folder for the skin in the fallback skins folder
@@ -152,7 +152,7 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
     if (CFileUtils::Exists(basePath))
     {
       addonInfo->SetPath(basePath);
-      const std::shared_ptr<ADDON::CSkinInfo> skinInfo =
+      const auto skinInfo =
           std::make_shared<ADDON::CSkinInfo>(addonInfo, res);
       skinInfo->Start();
       strSkinPath = skinInfo->GetSkinPath(xml_filename, &res);
@@ -162,7 +162,7 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
     {
       // Finally fallback to the DefaultSkin as it didn't exist in either the Kodi Skin folder or the fallback skin folder
       addonInfo->SetPath(URIUtils::AddFileToFolder(fallbackPath, default_skin));
-      const std::shared_ptr<ADDON::CSkinInfo> skinInfo =
+      const auto skinInfo =
           std::make_shared<ADDON::CSkinInfo>(addonInfo, res);
 
       skinInfo->Start();
@@ -207,8 +207,8 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
 
 void Interface_GUIWindow::destroy(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -253,8 +253,8 @@ void Interface_GUIWindow::set_callbacks(
     void (*CBGetContextButtons)(KODI_GUI_CLIENT_HANDLE, int, gui_context_menu_pair*, unsigned int*),
     bool (*CBOnContextButton)(KODI_GUI_CLIENT_HANDLE, int, unsigned int))
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !clienthandle)
   {
     CLog::Log(LOGERROR,
@@ -277,8 +277,8 @@ void Interface_GUIWindow::set_callbacks(
 
 bool Interface_GUIWindow::show(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -303,8 +303,8 @@ bool Interface_GUIWindow::show(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE hand
 
 bool Interface_GUIWindow::close(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -331,8 +331,8 @@ bool Interface_GUIWindow::close(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE han
 
 bool Interface_GUIWindow::do_modal(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -367,8 +367,8 @@ bool Interface_GUIWindow::set_focus_id(KODI_HANDLE kodiBase,
                                        KODI_GUI_WINDOW_HANDLE handle,
                                        int control_id)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -395,8 +395,8 @@ bool Interface_GUIWindow::set_focus_id(KODI_HANDLE kodiBase,
 
 int Interface_GUIWindow::get_focus_id(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -422,8 +422,8 @@ void Interface_GUIWindow::set_control_label(KODI_HANDLE kodiBase,
                                             int control_id,
                                             const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !label)
   {
     CLog::Log(LOGERROR,
@@ -446,8 +446,8 @@ void Interface_GUIWindow::set_control_visible(KODI_HANDLE kodiBase,
                                               int control_id,
                                               bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -468,8 +468,8 @@ void Interface_GUIWindow::set_control_selected(KODI_HANDLE kodiBase,
                                                int control_id,
                                                bool selected)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -496,8 +496,8 @@ void Interface_GUIWindow::set_property(KODI_HANDLE kodiBase,
                                        const char* key,
                                        const char* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key || !value)
   {
     CLog::Log(LOGERROR,
@@ -521,8 +521,8 @@ void Interface_GUIWindow::set_property_int(KODI_HANDLE kodiBase,
                                            const char* key,
                                            int value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
@@ -546,8 +546,8 @@ void Interface_GUIWindow::set_property_bool(KODI_HANDLE kodiBase,
                                             const char* key,
                                             bool value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
@@ -571,8 +571,8 @@ void Interface_GUIWindow::set_property_double(KODI_HANDLE kodiBase,
                                               const char* key,
                                               double value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
@@ -595,8 +595,8 @@ char* Interface_GUIWindow::get_property(KODI_HANDLE kodiBase,
                                         KODI_GUI_WINDOW_HANDLE handle,
                                         const char* key)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
@@ -621,8 +621,8 @@ int Interface_GUIWindow::get_property_int(KODI_HANDLE kodiBase,
                                           KODI_GUI_WINDOW_HANDLE handle,
                                           const char* key)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
@@ -647,8 +647,8 @@ bool Interface_GUIWindow::get_property_bool(KODI_HANDLE kodiBase,
                                             KODI_GUI_WINDOW_HANDLE handle,
                                             const char* key)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
@@ -673,8 +673,8 @@ double Interface_GUIWindow::get_property_double(KODI_HANDLE kodiBase,
                                                 KODI_GUI_WINDOW_HANDLE handle,
                                                 const char* key)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
@@ -697,8 +697,8 @@ double Interface_GUIWindow::get_property_double(KODI_HANDLE kodiBase,
 
 void Interface_GUIWindow::clear_properties(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -717,8 +717,8 @@ void Interface_GUIWindow::clear_property(KODI_HANDLE kodiBase,
                                          KODI_GUI_WINDOW_HANDLE handle,
                                          const char* key)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key)
   {
     CLog::Log(LOGERROR,
@@ -744,8 +744,8 @@ void Interface_GUIWindow::clear_property(KODI_HANDLE kodiBase,
 //@{
 void Interface_GUIWindow::clear_item_list(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -765,8 +765,8 @@ void Interface_GUIWindow::add_list_item(KODI_HANDLE kodiBase,
                                         KODI_GUI_LISTITEM_HANDLE item,
                                         int list_position)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !item)
   {
     CLog::Log(LOGERROR,
@@ -776,7 +776,7 @@ void Interface_GUIWindow::add_list_item(KODI_HANDLE kodiBase,
     return;
   }
 
-  CFileItemPtr* pItem(static_cast<CFileItemPtr*>(item));
+  auto pItem(static_cast<CFileItemPtr*>(item));
   if (pItem->get() == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::{} - empty list item called on addon '{}'", __func__,
@@ -793,8 +793,8 @@ void Interface_GUIWindow::remove_list_item_from_position(KODI_HANDLE kodiBase,
                                                          KODI_GUI_WINDOW_HANDLE handle,
                                                          int list_position)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -813,8 +813,8 @@ void Interface_GUIWindow::remove_list_item(KODI_HANDLE kodiBase,
                                            KODI_GUI_WINDOW_HANDLE handle,
                                            KODI_GUI_LISTITEM_HANDLE item)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !item)
   {
     CLog::Log(LOGERROR,
@@ -824,7 +824,7 @@ void Interface_GUIWindow::remove_list_item(KODI_HANDLE kodiBase,
     return;
   }
 
-  CFileItemPtr* pItem(static_cast<CFileItemPtr*>(item));
+  auto pItem(static_cast<CFileItemPtr*>(item));
   if (pItem->get() == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::{} - empty list item called on addon '{}'", __func__,
@@ -841,8 +841,8 @@ KODI_GUI_LISTITEM_HANDLE Interface_GUIWindow::get_list_item(KODI_HANDLE kodiBase
                                                             KODI_GUI_WINDOW_HANDLE handle,
                                                             int list_position)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -874,8 +874,8 @@ void Interface_GUIWindow::set_current_list_position(KODI_HANDLE kodiBase,
                                                     KODI_GUI_WINDOW_HANDLE handle,
                                                     int list_position)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -893,8 +893,8 @@ void Interface_GUIWindow::set_current_list_position(KODI_HANDLE kodiBase,
 int Interface_GUIWindow::get_current_list_position(KODI_HANDLE kodiBase,
                                                    KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -913,8 +913,8 @@ int Interface_GUIWindow::get_current_list_position(KODI_HANDLE kodiBase,
 
 int Interface_GUIWindow::get_list_size(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -936,8 +936,8 @@ void Interface_GUIWindow::set_container_property(KODI_HANDLE kodiBase,
                                                  const char* key,
                                                  const char* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !key || !value)
   {
     CLog::Log(LOGERROR,
@@ -957,8 +957,8 @@ void Interface_GUIWindow::set_container_content(KODI_HANDLE kodiBase,
                                                 KODI_GUI_WINDOW_HANDLE handle,
                                                 const char* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow || !value)
   {
     CLog::Log(LOGERROR,
@@ -977,8 +977,8 @@ void Interface_GUIWindow::set_container_content(KODI_HANDLE kodiBase,
 int Interface_GUIWindow::get_current_container_id(KODI_HANDLE kodiBase,
                                                   KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -1002,8 +1002,8 @@ int Interface_GUIWindow::get_current_container_id(KODI_HANDLE kodiBase,
 //@{
 void Interface_GUIWindow::mark_dirty_region(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,
@@ -1079,12 +1079,12 @@ KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_render_addon(KODI_HANDL
                                                                       KODI_GUI_WINDOW_HANDLE handle,
                                                                       int control_id)
 {
-  CGUIControl* pGUIControl = static_cast<CGUIControl*>(GetControl(
+  auto pGUIControl = static_cast<CGUIControl*>(GetControl(
       kodiBase, handle, control_id, __func__, CGUIControl::GUICONTROL_RENDERADDON, "renderaddon"));
   if (!pGUIControl)
     return nullptr;
 
-  CGUIAddonRenderingControl* pRenderControl =
+  auto pRenderControl =
       new CGUIAddonRenderingControl(dynamic_cast<CGUIRenderingControl*>(pGUIControl));
   return pRenderControl;
 }
@@ -1127,8 +1127,8 @@ KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::GetControl(KODI_HANDLE kodiBase,
                                                         CGUIControl::GUICONTROLTYPES type,
                                                         const std::string& typeName)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR,

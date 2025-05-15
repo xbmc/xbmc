@@ -58,13 +58,13 @@ void CSeekHandler::Configure()
   seekTypeSettingMap.insert(std::make_pair(SEEK_TYPE_VIDEO, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS));
   seekTypeSettingMap.insert(std::make_pair(SEEK_TYPE_MUSIC, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS));
 
-  for (std::map<SeekType, std::string>::iterator it = seekTypeSettingMap.begin(); it!=seekTypeSettingMap.end(); ++it)
+  for (auto it = seekTypeSettingMap.begin(); it!=seekTypeSettingMap.end(); ++it)
   {
     std::vector<int> forwardSeekSteps;
     std::vector<int> backwardSeekSteps;
 
     std::vector<CVariant> seekSteps = settings->GetList(it->second);
-    for (std::vector<CVariant>::iterator it = seekSteps.begin(); it != seekSteps.end(); ++it)
+    for (auto it = seekSteps.begin(); it != seekSteps.end(); ++it)
     {
       int stepSeconds = static_cast<int>((*it).asInteger());
       if (stepSeconds < 0)

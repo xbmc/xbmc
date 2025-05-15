@@ -202,8 +202,8 @@ void CPipeFile::AddListener(IPipeListener *l)
 void CPipeFile::RemoveListener(IPipeListener *l)
 {
   std::lock_guard lock(m_lock);
-  
-  std::vector<XFILE::IPipeListener *>::iterator i = m_listeners.begin();
+
+  auto i = m_listeners.begin();
   while(i != m_listeners.end())
   {
     if ( (*i) == l)

@@ -174,7 +174,7 @@ namespace XBMCAddon
         }
 
         // and free our list of controls
-        std::vector<AddonClass::Ref<Control> >::iterator it = vecControls.begin();
+        auto it = vecControls.begin();
         while (it != vecControls.end())
         {
           AddonClass::Ref<Control> pControl = *it;
@@ -246,7 +246,7 @@ namespace XBMCAddon
 
       // find in window vector first!!!
       // this saves us from creating a complete new control
-      std::vector<AddonClass::Ref<Control> >::iterator it = vecControls.begin();
+      auto it = vecControls.begin();
       while (it != vecControls.end())
       {
         AddonClass::Ref<Control> control = (*it);
@@ -445,7 +445,7 @@ namespace XBMCAddon
           int iControl=message.GetSenderId();
           AddonClass::Ref<Control> inf;
           // find python control object with same iControl
-          std::vector<AddonClass::Ref<Control> >::iterator it = vecControls.begin();
+          auto it = vecControls.begin();
           while (it != vecControls.end())
           {
             AddonClass::Ref<Control> pControl = (*it);
@@ -499,14 +499,14 @@ namespace XBMCAddon
       if(pControl == NULL)
         throw WindowException("Object should be of type Control");
 
-      CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId);
+      auto msg = CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId);
       CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, pControl->iParentId);
     }
 
     void Window::setFocusId(int iControlId)
     {
       XBMC_TRACE;
-      CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,iWindowId,iControlId);
+      auto msg = CGUIMessage(GUI_MSG_SETFOCUS,iWindowId,iControlId);
       CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iWindowId);
     }
 
@@ -557,7 +557,7 @@ namespace XBMCAddon
       CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, iWindowId, wait);
 
       // delete control from vecControls in window object
-      std::vector<AddonClass::Ref<Control>>::iterator it = vecControls.begin();
+      auto it = vecControls.begin();
       while (it != vecControls.end())
       {
         AddonClass::Ref<Control> control = (*it);
@@ -582,7 +582,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       DelayedCallGuard dg(languageHook);
       int count = 1; int size = pControls.size();
-      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); count++, ++iter)
+      for (auto iter = pControls.begin(); iter != pControls.end(); count++, ++iter)
         doRemoveControl(*iter,NULL, count == size);
     }
 
@@ -745,7 +745,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       SingleLockWithDelayGuard gslock(CServiceBroker::GetWinSystem()->GetGfxContext(),languageHook);
       int count = 1; int size = pControls.size();
-      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); count++, ++iter)
+      for (auto iter = pControls.begin(); iter != pControls.end(); count++, ++iter)
         doAddControl(*iter,NULL, count == size);
     }
 

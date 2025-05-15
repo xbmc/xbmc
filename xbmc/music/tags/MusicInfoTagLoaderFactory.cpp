@@ -50,7 +50,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   {
     if (addonInfo.first == ADDON::AddonType::AUDIODECODER)
     {
-      std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
+      auto result = std::make_unique<CAudioDecoder>(addonInfo.second);
       if (!result->CreateDecoder() && result->SupportsFile(item.GetPath()))
         continue;
 
@@ -67,19 +67,19 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
       strExtension == "wav" || strExtension == "mod" || strExtension == "s3m" ||
       strExtension == "it" || strExtension == "xm" || strExtension == "wv")
   {
-    CTagLoaderTagLib *pTagLoader = new CTagLoaderTagLib();
+    auto pTagLoader = new CTagLoaderTagLib();
     return pTagLoader;
   }
 #ifdef HAS_OPTICAL_DRIVE
   else if (strExtension == "cdda")
   {
-    CMusicInfoTagLoaderCDDA *pTagLoader = new CMusicInfoTagLoaderCDDA();
+    auto pTagLoader = new CMusicInfoTagLoaderCDDA();
     return pTagLoader;
   }
 #endif
   else if (strExtension == "shn")
   {
-    CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
+    auto pTagLoader = new CMusicInfoTagLoaderSHN();
     return pTagLoader;
   }
   else if (strExtension == "mka" || strExtension == "dsf" ||

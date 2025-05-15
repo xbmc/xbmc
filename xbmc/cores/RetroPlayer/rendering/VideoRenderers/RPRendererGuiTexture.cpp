@@ -91,7 +91,7 @@ bool CRPRendererGuiTexture::Supports(RENDERFEATURE feature) const
 
 void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
 {
-  CRenderBufferGuiTexture* renderBuffer = static_cast<CRenderBufferGuiTexture*>(m_renderBuffer);
+  auto renderBuffer = static_cast<CRenderBufferGuiTexture*>(m_renderBuffer);
 
   CRect rect = m_sourceRect;
 

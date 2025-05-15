@@ -277,7 +277,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
 
   if (right.type == STREAM_AUDIO)
   {
-    const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
+    auto stream = static_cast<const CDemuxStreamAudio*>(&right);
     channels      = stream->iChannels;
     samplerate    = stream->iSampleRate;
     blockalign    = stream->iBlockAlign;
@@ -287,7 +287,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   }
   else if (right.type == STREAM_VIDEO)
   {
-    const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
+    auto stream = static_cast<const CDemuxStreamVideo*>(&right);
     if (stream->bInterlaced)
       codecOptions |= CODEC_INTERLACED;
 
@@ -318,7 +318,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   }
   else if (right.type == STREAM_SUBTITLE)
   {
-    const CDemuxStreamSubtitle *stream = static_cast<const CDemuxStreamSubtitle*>(&right);
+    auto stream = static_cast<const CDemuxStreamSubtitle*>(&right);
     m_3dSubtitlePlane = stream->m_3dSubtitlePlane;
   }
 }

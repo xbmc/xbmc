@@ -61,7 +61,7 @@ bool CVideoLibraryRefreshingJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
 
-  const CVideoLibraryRefreshingJob* refreshingJob = dynamic_cast<const CVideoLibraryRefreshingJob*>(job);
+  auto refreshingJob = dynamic_cast<const CVideoLibraryRefreshingJob*>(job);
   if (refreshingJob == nullptr)
     return false;
 
@@ -134,7 +134,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
             // preserve show_id for episode
             tag->m_iIdShow = m_item->GetVideoInfoTag()->m_iIdShow;
           pluginTag = std::move(tag);
-          CVideoTagLoaderPlugin* nfo = dynamic_cast<CVideoTagLoaderPlugin*>(loader.get());
+          auto nfo = dynamic_cast<CVideoTagLoaderPlugin*>(loader.get());
           if (nfo && nfo->GetArt())
             pluginArt = std::move(nfo->GetArt());
         }

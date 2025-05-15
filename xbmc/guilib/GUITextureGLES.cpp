@@ -236,7 +236,7 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
                                CTexture* texture,
                                const CRect* texCoords)
 {
-  CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  auto renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   if (texture)
   {
     texture->LoadToGPU();

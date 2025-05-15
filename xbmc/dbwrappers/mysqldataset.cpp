@@ -513,7 +513,7 @@ long MysqlDatabase::nextid(const char* sname)
   CLog::Log(LOGDEBUG, "MysqlDatabase::nextid for {}", sname);
   if (!active)
     return DB_UNEXPECTED_RESULT;
-  const char* seq_table = "sys_seq";
+  auto seq_table = "sys_seq";
   int id; /*,nrow,ncol;*/
   MYSQL_RES* res;
   char sqlcmd[512];
@@ -1795,7 +1795,7 @@ static bool ci_test(char l, char r)
 
 static size_t ci_find(const std::string& where, const std::string& what)
 {
-  std::string::const_iterator loc =
+  auto loc =
       std::search(where.begin(), where.end(), what.begin(), what.end(), ci_test);
   if (loc == where.end())
     return std::string::npos;
@@ -1899,7 +1899,7 @@ bool MysqlDataset::query(const std::string& query)
   // returned rows
   while ((row = mysql_fetch_row(stmt)))
   { // have a row of data
-    sql_record* res = new sql_record;
+    auto res = new sql_record;
     res->resize(numColumns);
     for (unsigned int i = 0; i < numColumns; i++)
     {

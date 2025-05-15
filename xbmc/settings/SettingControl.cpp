@@ -16,9 +16,9 @@
 
 #include <vector>
 
-const char* SHOW_ADDONS_ALL = "all";
-const char* SHOW_ADDONS_INSTALLED = "installed";
-const char* SHOW_ADDONS_INSTALLABLE = "installable";
+auto SHOW_ADDONS_ALL = "all";
+auto SHOW_ADDONS_INSTALLED = "installed";
+auto SHOW_ADDONS_INSTALLABLE = "installable";
 
 std::shared_ptr<ISettingControl> CSettingControlCreator::CreateControl(const std::string &controlType) const
 {

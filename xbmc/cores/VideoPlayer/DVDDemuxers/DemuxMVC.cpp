@@ -77,7 +77,7 @@ bool CDemuxMVC::Open(CDVDInputStream* pInput)
   int blockSize = m_pInput->GetBlockSize();
   if (blockSize > 1)
     bufferSize = blockSize;
-  unsigned char* buffer = (unsigned char*)av_malloc(bufferSize);
+  auto buffer = (unsigned char*)av_malloc(bufferSize);
   m_ioContext = avio_alloc_context(buffer, bufferSize, 0, this, mvc_file_read, NULL, mvc_file_seek);
 
   m_pFormatContext = avformat_alloc_context();

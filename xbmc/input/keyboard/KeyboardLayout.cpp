@@ -134,7 +134,7 @@ std::string CKeyboardLayout::GetCharAt(unsigned int row,
                                        unsigned int column,
                                        unsigned int modifiers) const
 {
-  Keyboards::const_iterator mod = m_keyboards.find(modifiers);
+  auto mod = m_keyboards.find(modifiers);
   if (modifiers != ModifierKeyNone && mod != m_keyboards.end() && mod->second.empty())
   {
     // fallback to basic keyboard

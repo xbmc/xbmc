@@ -360,7 +360,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     CMusicDatabase database;
     database.Open();
     const std::vector<std::string> &artists = m_movieItem->GetVideoInfoTag()->m_artist;
-    for (std::vector<std::string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
+    for (auto it = artists.begin(); it != artists.end(); ++it)
     {
       int idArtist = database.GetArtistByName(*it);
       std::string thumb = database.GetArtForItem(idArtist, MediaTypeArtist, "thumb");
@@ -538,7 +538,7 @@ void CGUIDialogVideoInfo::Update()
   CGUIControl* pControl = GetControl(CONTROL_IMAGE);
   if (pControl)
   {
-    CGUIImage* pImageControl = static_cast<CGUIImage*>(pControl);
+    auto pImageControl = static_cast<CGUIImage*>(pControl);
     pImageControl->FreeResources();
     pImageControl->SetFileName(m_movieItem->GetArt("thumb"));
   }
@@ -1505,7 +1505,7 @@ bool CGUIDialogVideoInfo::ManageMovieSets(const std::shared_ptr<CFileItem>& item
   clearItem->GetVideoInfoTag()->m_iDbId = -1; // -1 will be used to clear set
   VECFILEITEMS deletedItems;
   set_difference(original.begin(),original.end(), selected.begin(),selected.end(), std::back_inserter(deletedItems), compFileItemsByDbId);
-  for (VECFILEITEMS::iterator it = deletedItems.begin();  it != deletedItems.end(); ++it)
+  for (auto it = deletedItems.begin();  it != deletedItems.end(); ++it)
   {
     if (SetMovieSet(it->get(), clearItem.get()))
       refreshNeeded = true;

@@ -109,7 +109,7 @@ void CEmuFileWrapper::UnRegisterFileObjectByStream(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    EmuFileObject* o = reinterpret_cast<EmuFileObject*>(stream);
+    auto o = reinterpret_cast<EmuFileObject*>(stream);
     return UnRegisterFileObjectByDescriptor(o->fd);
   }
 }
@@ -168,7 +168,7 @@ EmuFileObject* CEmuFileWrapper::GetFileObjectByStream(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    EmuFileObject* o = reinterpret_cast<EmuFileObject*>(stream);
+    auto o = reinterpret_cast<EmuFileObject*>(stream);
     return GetFileObjectByDescriptor(o->fd);
   }
 
@@ -189,7 +189,7 @@ XFILE::CFile* CEmuFileWrapper::GetFileXbmcByStream(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    EmuFileObject* object = reinterpret_cast<EmuFileObject*>(stream);
+    auto object = reinterpret_cast<EmuFileObject*>(stream);
     if (object != nullptr && object->used)
     {
       return object->file_xbmc;
@@ -202,7 +202,7 @@ int CEmuFileWrapper::GetDescriptorByStream(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    EmuFileObject* obj = reinterpret_cast<EmuFileObject*>(stream);
+    auto obj = reinterpret_cast<EmuFileObject*>(stream);
     int i = obj->fd - FILE_WRAPPER_OFFSET;
     if (i >= 0 && i < MAX_EMULATED_FILES)
     {
@@ -226,7 +226,7 @@ bool CEmuFileWrapper::StreamIsEmulatedFile(FILE* stream)
 {
   if (isValidFilePtr(stream))
   {
-    EmuFileObject* obj = reinterpret_cast<EmuFileObject*>(stream);
+    auto obj = reinterpret_cast<EmuFileObject*>(stream);
     return DescriptorIsEmulatedFile(obj->fd);
   }
   return false;

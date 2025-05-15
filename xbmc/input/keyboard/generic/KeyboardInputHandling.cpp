@@ -31,7 +31,7 @@ bool CKeyboardInputHandling::OnKeyPress(const CKey& key)
   KeyName keyName;
   if (m_buttonMap->GetFeature(source, keyName))
   {
-    const Modifier mod = static_cast<Modifier>(key.GetModifiers() | key.GetLockingModifiers());
+    const auto mod = static_cast<Modifier>(key.GetModifiers() | key.GetLockingModifiers());
     bHandled = m_handler->OnKeyPress(keyName, mod, key.GetUnicode());
   }
 
@@ -45,7 +45,7 @@ void CKeyboardInputHandling::OnKeyRelease(const CKey& key)
   KeyName keyName;
   if (m_buttonMap->GetFeature(source, keyName))
   {
-    const Modifier mod = static_cast<Modifier>(key.GetModifiers() | key.GetLockingModifiers());
+    const auto mod = static_cast<Modifier>(key.GetModifiers() | key.GetLockingModifiers());
     m_handler->OnKeyRelease(keyName, mod, key.GetUnicode());
   }
 }

@@ -92,7 +92,7 @@ void IHTTPRequestHandler::AddPostField(const std::string &key, const std::string
   if (key.empty())
     return;
 
-  std::map<std::string, std::string>::iterator field = m_postFields.find(key);
+  auto field = m_postFields.find(key);
   if (field == m_postFields.end())
     m_postFields[key] = value;
   else

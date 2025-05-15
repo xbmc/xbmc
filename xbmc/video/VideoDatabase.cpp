@@ -3405,7 +3405,7 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
     std::string sql = PrepareSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
     m_pDS->exec(sql);
 
-    VideoDbContentType iType = static_cast<VideoDbContentType>(item.GetVideoContentType());
+    auto iType = static_cast<VideoDbContentType>(item.GetVideoContentType());
     std::string content;
     switch (iType)
     {
@@ -4220,12 +4220,12 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
 
     while (!pDS->eof())
     {
-      CStreamDetail::StreamType e = (CStreamDetail::StreamType)pDS->fv(1).get_asInt();
+      auto e = (CStreamDetail::StreamType)pDS->fv(1).get_asInt();
       switch (e)
       {
       case CStreamDetail::VIDEO:
         {
-          CStreamDetailVideo *p = new CStreamDetailVideo();
+          auto p = new CStreamDetailVideo();
           p->m_strCodec = pDS->fv(2).get_asString();
           p->m_fAspect = pDS->fv(3).get_asFloat();
           p->m_iWidth = pDS->fv(4).get_asInt();
@@ -4240,7 +4240,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
         }
       case CStreamDetail::AUDIO:
         {
-          CStreamDetailAudio *p = new CStreamDetailAudio();
+          auto p = new CStreamDetailAudio();
           p->m_strCodec = pDS->fv(6).get_asString();
           if (pDS->fv(7).get_isNull())
             p->m_iChannels = -1;
@@ -4253,7 +4253,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
         }
       case CStreamDetail::SUBTITLE:
         {
-          CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
+          auto p = new CStreamDetailSubtitle();
           p->m_strLanguage = pDS->fv(9).get_asString();
           details.AddStream(p);
           retVal = true;
@@ -5364,7 +5364,7 @@ std::vector<CScraperUrl::SUrlEntry> GetMovieSetAvailableArt(
 
 VideoDbContentType CovertMediaTypeToContentType(const MediaType& mediaType)
 {
-  VideoDbContentType dbType{VideoDbContentType::UNKNOWN};
+  auto dbType{VideoDbContentType::UNKNOWN};
   if (mediaType == MediaTypeTvShow)
     dbType = VideoDbContentType::TVSHOWS;
   else if (mediaType == MediaTypeMovie)
@@ -12043,7 +12043,7 @@ int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
       id = m_pDS->fv("id").get_asInt();
 
       // if user is adding an existing version type, overwrite the existing non-system one
-      VideoAssetTypeOwner oldOwner =
+      auto oldOwner =
           static_cast<VideoAssetTypeOwner>(m_pDS->fv("owner").get_asInt());
       if (oldOwner != VideoAssetTypeOwner::SYSTEM && owner == VideoAssetTypeOwner::USER)
       {

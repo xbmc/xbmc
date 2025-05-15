@@ -83,7 +83,7 @@ namespace XFILE
     playlist.GetVirtualFolders(virtualFolders);
     for (const std::string& virtualFolder : virtualFolders)
     {
-      CFileItemPtr pItem = std::make_shared<CFileItem>(virtualFolder, true);
+      auto pItem = std::make_shared<CFileItem>(virtualFolder, true);
       IFileDirectory *dir = CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get());
 
       if (dir != NULL)

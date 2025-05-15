@@ -385,7 +385,7 @@ CAEChannelInfo CAESinkALSA::ALSAchmapToAEChannelMap(snd_pcm_chmap_t* alsaMap)
 snd_pcm_chmap_t* CAESinkALSA::AEChannelMapToALSAchmap(const CAEChannelInfo& info)
 {
   int AECount = info.Count();
-  snd_pcm_chmap_t* alsaMap = (snd_pcm_chmap_t*)malloc(sizeof(snd_pcm_chmap_t) + AECount * sizeof(int));
+  auto alsaMap = (snd_pcm_chmap_t*)malloc(sizeof(snd_pcm_chmap_t) + AECount * sizeof(int));
 
   alsaMap->channels = AECount;
 
@@ -397,7 +397,7 @@ snd_pcm_chmap_t* CAESinkALSA::AEChannelMapToALSAchmap(const CAEChannelInfo& info
 
 snd_pcm_chmap_t* CAESinkALSA::CopyALSAchmap(snd_pcm_chmap_t* alsaMap)
 {
-  snd_pcm_chmap_t* copyMap = (snd_pcm_chmap_t*)malloc(sizeof(snd_pcm_chmap_t) + alsaMap->channels * sizeof(int));
+  auto copyMap = (snd_pcm_chmap_t*)malloc(sizeof(snd_pcm_chmap_t) + alsaMap->channels * sizeof(int));
 
   copyMap->channels = alsaMap->channels;
   memcpy(copyMap->pos, alsaMap->pos, alsaMap->channels * sizeof(int));
@@ -1409,7 +1409,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     if ((!io || strcmp(io, "Output") == 0) && name
         && strcmp(name, "null") != 0)
     {
-      std::string baseName = std::string(name);
+      auto baseName = std::string(name);
       baseName = baseName.substr(0, baseName.find(':'));
 
       if (strcmp(name, "default") == 0)
@@ -1481,7 +1481,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   /* cards with surround entries where sysdefault should be removed */
   std::set<std::string> cardsWithSurround;
 
-  for (AEDeviceInfoList::iterator it1 = list.begin(); it1 != list.end(); ++it1)
+  for (auto it1 = list.begin(); it1 != list.end(); ++it1)
   {
     std::string baseName = it1->m_deviceName.substr(0, it1->m_deviceName.find(':'));
     std::string card = GetParamFromName(it1->m_deviceName, "CARD");
@@ -1492,7 +1492,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   if (!cardsWithSurround.empty())
   {
     /* remove sysdefault entries where we already have a surround entry */
-    AEDeviceInfoList::iterator iter = list.begin();
+    auto iter = list.begin();
     while (iter != list.end())
     {
       std::string baseName = iter->m_deviceName.substr(0, iter->m_deviceName.find(':'));
@@ -1514,11 +1514,11 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   /* clashing basename + cardname combinations, e.g. ("hdmi","Nvidia") */
   std::set<std::pair<std::string, std::string> > devsToAppend;
 
-  for (AEDeviceInfoList::iterator it1 = list.begin(); it1 != list.end(); ++it1)
+  for (auto it1 = list.begin(); it1 != list.end(); ++it1)
   {
     bool replaceName = false;
 
-    for (AEDeviceInfoList::iterator it2 = it1+1; it2 != list.end(); ++it2)
+    for (auto it2 = it1+1; it2 != list.end(); ++it2)
     {
       if (it1->m_displayName == it2->m_displayName
        && it1->m_displayNameExtra == it2->m_displayNameExtra)
@@ -1556,10 +1556,10 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       it1->m_displayName = it1->m_displayName + " (" + it1->m_deviceName + ")";
   }
 
-  for (std::set<std::string>::iterator it = cardsToAppend.begin();
+  for (auto it = cardsToAppend.begin();
        it != cardsToAppend.end(); ++it)
   {
-    for (AEDeviceInfoList::iterator itl = list.begin(); itl != list.end(); ++itl)
+    for (auto itl = list.begin(); itl != list.end(); ++itl)
     {
       std::string cardString = GetParamFromName(itl->m_deviceName, "CARD");
       if (cardString == *it)
@@ -1568,10 +1568,10 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     }
   }
 
-  for (std::set<std::pair<std::string, std::string> >::iterator it = devsToAppend.begin();
+  for (auto it = devsToAppend.begin();
        it != devsToAppend.end(); ++it)
   {
-    for (AEDeviceInfoList::iterator itl = list.begin(); itl != list.end(); ++itl)
+    for (auto itl = list.begin(); itl != list.end(); ++itl)
     {
       std::string baseName = itl->m_deviceName.substr(0, itl->m_deviceName.find(':'));
       std::string cardString = GetParamFromName(itl->m_deviceName, "CARD");

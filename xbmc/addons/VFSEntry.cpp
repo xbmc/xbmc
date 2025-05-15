@@ -65,7 +65,7 @@ void CVFSAddonCache::Init()
 
   for (const auto& addonInfo : addonInfos)
   {
-    VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
+    auto vfs = std::make_shared<CVFSEntry>(addonInfo);
     vfs->Addon()->RegisterInformer(this);
 
     m_addonsInstances.emplace_back(vfs);
@@ -163,7 +163,7 @@ void CVFSAddonCache::Update(const std::string& id)
   AddonInfoPtr addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(id, AddonType::VFS);
   if (addonInfo && !CServiceBroker::GetAddonMgr().IsAddonDisabled(id))
   {
-    VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
+    auto vfs = std::make_shared<CVFSEntry>(addonInfo);
 
     if (!vfs->GetZeroconfType().empty())
       CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
@@ -396,7 +396,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
       if (!m_ifc.vfs->toAddon->io_control_get_cache_status)
         return -1;
 
-      XFILE::SCacheStatus* kodiData = static_cast<XFILE::SCacheStatus*>(param);
+      auto kodiData = static_cast<XFILE::SCacheStatus*>(param);
       if (!kodiData)
         return -1;
 

@@ -60,7 +60,7 @@ CGUIDialogExtendedProgressBar::CGUIDialogExtendedProgressBar(void)
 
 CGUIDialogProgressBarHandle *CGUIDialogExtendedProgressBar::GetHandle(const std::string &strTitle)
 {
-  CGUIDialogProgressBarHandle *handle = new CGUIDialogProgressBarHandle(strTitle);
+  auto handle = new CGUIDialogProgressBarHandle(strTitle);
   {
     std::lock_guard lock(m_critSection);
     

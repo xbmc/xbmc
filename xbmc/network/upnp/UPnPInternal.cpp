@@ -605,7 +605,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
   }
   else
   {
-    PLT_MediaContainer* container = new PLT_MediaContainer;
+    auto container = new PLT_MediaContainer;
     object = container;
 
     /* Assign a title and id for this container */
@@ -694,7 +694,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
           container->m_ObjectClass.type += ".album.videoAlbum.videoBroadcastSeason";
           if (item.HasVideoInfoTag())
           {
-            CVideoInfoTag* tag = (CVideoInfoTag*)item.GetVideoInfoTag();
+            auto tag = (CVideoInfoTag*)item.GetVideoInfoTag();
             PopulateObjectFromTag(*tag, *container, &file_path, &resource, quirks);
           }
           break;
@@ -702,7 +702,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
           container->m_ObjectClass.type += ".album.videoAlbum.videoBroadcastShow";
           if (item.HasVideoInfoTag())
           {
-            CVideoInfoTag* tag = (CVideoInfoTag*)item.GetVideoInfoTag();
+            auto tag = (CVideoInfoTag*)item.GetVideoInfoTag();
             PopulateObjectFromTag(*tag, *container, &file_path, &resource, quirks);
           }
           break;
@@ -892,7 +892,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       upnp_server->AddSafeResourceUri(object, rooturi, ips, NPT_String(subtitlePath.c_str()),
                                       protocolInfo);
       // add subtitle resource with smi/caption protocol info (some devices)
-      PLT_ProtocolInfo protInfo = PLT_ProtocolInfo(protocolInfo);
+      auto protInfo = PLT_ProtocolInfo(protocolInfo);
       protocolInfo =
           protInfo.GetProtocol() + ":" + protInfo.GetMask() + ":smi/caption:" + protInfo.GetExtra();
       upnp_server->AddSafeResourceUri(object, rooturi, ips, NPT_String(subtitlePath.c_str()),
@@ -1127,7 +1127,7 @@ int PopulateTagFromObject(CVideoInfoTag& tag,
       int width, height;
       if (sscanf(resource->m_Resolution, "%dx%d", &width, &height) == 2)
       {
-        CStreamDetailVideo* detail = new CStreamDetailVideo;
+        auto detail = new CStreamDetailVideo;
         detail->m_iWidth = width;
         detail->m_iHeight = height;
         detail->m_iDuration = tag.GetDuration();
@@ -1136,7 +1136,7 @@ int PopulateTagFromObject(CVideoInfoTag& tag,
     }
     if (resource->m_NbAudioChannels > 0)
     {
-      CStreamDetailAudio* detail = new CStreamDetailAudio;
+      auto detail = new CStreamDetailAudio;
       detail->m_iChannels = resource->m_NbAudioChannels;
       tag.m_streamDetails.AddStream(detail);
     }

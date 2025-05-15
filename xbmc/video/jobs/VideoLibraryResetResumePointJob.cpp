@@ -35,7 +35,7 @@ bool CVideoLibraryResetResumePointJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
 
-  const CVideoLibraryResetResumePointJob* resetJob = dynamic_cast<const CVideoLibraryResetResumePointJob*>(job);
+  auto resetJob = dynamic_cast<const CVideoLibraryResetResumePointJob*>(job);
   if (!resetJob)
     return false;
 

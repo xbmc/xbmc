@@ -365,7 +365,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     case XBMC_KEYCOMPOSING_CANCELLED:
     case XBMC_KEYCOMPOSING_FINISHED:
     {
-      const CAction action = CAction(keyComposeactionEventMap.find(newEvent.type)->second,
+      const auto action = CAction(keyComposeactionEventMap.find(newEvent.type)->second,
                                      static_cast<wchar_t>(newEvent.key.keysym.unicode));
       ExecuteInputAction(action);
       break;

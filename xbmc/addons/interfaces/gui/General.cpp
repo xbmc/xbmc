@@ -149,7 +149,7 @@ void Interface_GUIGeneral::unlock()
 //@{
 int Interface_GUIGeneral::get_screen_height(KODI_HANDLE kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "kodi::gui::{} - invalid data", __func__);
@@ -161,7 +161,7 @@ int Interface_GUIGeneral::get_screen_height(KODI_HANDLE kodiBase)
 
 int Interface_GUIGeneral::get_screen_width(KODI_HANDLE kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "kodi::gui::{} - invalid data", __func__);
@@ -173,7 +173,7 @@ int Interface_GUIGeneral::get_screen_width(KODI_HANDLE kodiBase)
 
 int Interface_GUIGeneral::get_video_resolution(KODI_HANDLE kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "kodi::gui::{} - invalid data", __func__);
@@ -187,7 +187,7 @@ int Interface_GUIGeneral::get_video_resolution(KODI_HANDLE kodiBase)
 //@{
 int Interface_GUIGeneral::get_current_window_dialog_id(KODI_HANDLE kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "kodi::gui::{} - invalid data", __func__);
@@ -201,7 +201,7 @@ int Interface_GUIGeneral::get_current_window_dialog_id(KODI_HANDLE kodiBase)
 
 int Interface_GUIGeneral::get_current_window_id(KODI_HANDLE kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "kodi::gui::{} - invalid data", __func__);
@@ -220,7 +220,7 @@ ADDON_HARDWARE_CONTEXT Interface_GUIGeneral::get_hw_context(KODI_HANDLE kodiBase
 
 AdjustRefreshRateStatus Interface_GUIGeneral::get_adjust_refresh_rate_status(KODI_HANDLE kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "kodi::gui::{} - invalid data", __func__);

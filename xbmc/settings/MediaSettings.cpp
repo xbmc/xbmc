@@ -382,7 +382,7 @@ int CMediaSettings::GetWatchedMode(const std::string &content) const
 {
   std::lock_guard lock(m_critical);
 
-  WatchedModes::const_iterator it = m_watchedModes.find(GetWatchedContent(content));
+  auto it = m_watchedModes.find(GetWatchedContent(content));
   if (it != m_watchedModes.end())
     return it->second;
 
@@ -393,7 +393,7 @@ void CMediaSettings::SetWatchedMode(const std::string &content, WatchedMode mode
 {
   std::lock_guard lock(m_critical);
 
-  WatchedModes::iterator it = m_watchedModes.find(GetWatchedContent(content));
+  auto it = m_watchedModes.find(GetWatchedContent(content));
   if (it != m_watchedModes.end())
     it->second = mode;
 }
@@ -401,8 +401,8 @@ void CMediaSettings::SetWatchedMode(const std::string &content, WatchedMode mode
 void CMediaSettings::CycleWatchedMode(const std::string &content)
 {
   std::lock_guard lock(m_critical);
-  
-  WatchedModes::iterator it = m_watchedModes.find(GetWatchedContent(content));
+
+  auto it = m_watchedModes.find(GetWatchedContent(content));
   if (it != m_watchedModes.end())
   {
     it->second = (WatchedMode)((int)it->second + 1);

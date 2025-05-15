@@ -329,7 +329,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
           if (m_hints.dovi.dv_profile == 7)
           {
-            DOVIMode convertDovi = static_cast<DOVIMode>(settings->GetInt(CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI));
+            auto convertDovi = static_cast<DOVIMode>(settings->GetInt(CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI));
             if (convertDovi)
             {
               logM(LOGINFO, "CDVDVideoCodecAmlogic", "DV HEVC bitstream - user chooses to convert to mode [{:d}]", convertDovi);
@@ -341,7 +341,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         // Potential HDR10+ (Cannot tell at this point)
         if (settings->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_CONVERT))
         {
-          PeakBrightnessSource peakBrightnessSource = static_cast<PeakBrightnessSource>(settings->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_PEAK_BRIGHTNESS_SOURCE));
+          auto peakBrightnessSource = static_cast<PeakBrightnessSource>(settings->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_PEAK_BRIGHTNESS_SOURCE));
           logM(LOGINFO, "CDVDVideoCodecAmlogic", "HEVC bitstream - if also HDR10+ then will be considered for conversion to Dolby Vision P8.1 with brightness source [{:d}]",
                peakBrightnessSource);
           m_bitstream->SetConvertHdr10Plus(true);
@@ -485,7 +485,7 @@ bool CDVDVideoCodecAmlogic::DualLayerConvert(uint8_t *pData, uint32_t iSize, con
 
   if (!dual_layer_converted) // backup package and don't send to decoder yet
   {
-    uint8_t *pDataBackup = static_cast<uint8_t*>(KODI::MEMORY::AlignedMalloc(packet.iSize + AV_INPUT_BUFFER_PADDING_SIZE, 16));
+    auto pDataBackup = static_cast<uint8_t*>(KODI::MEMORY::AlignedMalloc(packet.iSize + AV_INPUT_BUFFER_PADDING_SIZE, 16));
     memcpy(pDataBackup, packet.pData, packet.iSize);
     m_packages.push_back(std::make_tuple(pDataBackup, iSize, packet.isELPackage, packet.dts));
 

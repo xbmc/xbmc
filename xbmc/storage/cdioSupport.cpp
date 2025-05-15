@@ -648,7 +648,7 @@ void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
 
   // Get the CD-Text , if any
 #if defined(LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM >= 84)
-  cdtext_t *pcdtext = static_cast<cdtext_t*>( cdio_get_cdtext(cdio) );
+  auto pcdtext = static_cast<cdtext_t*>( cdio_get_cdtext(cdio) );
 #else
   //! @todo - remove after Ubuntu 16.04 (Xenial) is EOL
   cdtext_t *pcdtext = (cdtext_t *)::cdio_get_cdtext(cdio, trackNum);
@@ -714,7 +714,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
 #endif
   }
 
-  CCdInfo* info = new CCdInfo;
+  auto info = new CCdInfo;
   info->SetFirstTrack( m_nFirstTrackNum );
   info->SetTrackCount( m_nNumTracks );
 

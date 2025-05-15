@@ -27,7 +27,7 @@ bool CMusicLibraryImportJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
 
-  const CMusicLibraryImportJob* importJob = dynamic_cast<const CMusicLibraryImportJob*>(job);
+  auto importJob = dynamic_cast<const CMusicLibraryImportJob*>(job);
   if (importJob == nullptr)
     return false;
 

@@ -442,7 +442,7 @@ void CAgentInput::ProcessAgentControllers(const PERIPHERALS::PeripheralVector& p
     if (it == m_controllers.end())
     {
       // Handle new controller
-      std::shared_ptr<CAgentController> agentController =
+      auto agentController =
           std::make_shared<CAgentController>(peripheral);
       agentController->Initialize();
       m_controllers.emplace_back(std::move(agentController));
@@ -734,7 +734,7 @@ CAgentInput::PortMap CAgentInput::MapJoysticks(
       continue;
     }
 
-    PERIPHERALS::PeripheralVector::iterator itJoystick = availableJoysticks.end();
+    auto itJoystick = availableJoysticks.end();
 
     // Attempt to preserve player numbers
     auto itCurrentPort = currentPorts.find(portAddress);

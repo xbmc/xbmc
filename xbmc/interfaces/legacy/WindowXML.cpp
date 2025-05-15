@@ -105,7 +105,7 @@ namespace XBMCAddon
       if (!CFileUtils::Exists(strSkinPath))
       {
         std::string str("none");
-        ADDON::AddonInfoPtr addonInfo =
+        auto addonInfo =
             std::make_shared<ADDON::CAddonInfo>(str, ADDON::AddonType::SKIN);
         ADDON::CSkinInfo::TranslateResolution(defaultRes, res);
 
@@ -119,7 +119,7 @@ namespace XBMCAddon
         if (CFileUtils::Exists(basePath))
         {
           addonInfo->SetPath(basePath);
-          std::shared_ptr<ADDON::CSkinInfo> skinInfo = std::make_shared<ADDON::CSkinInfo>(addonInfo, res);
+          auto skinInfo = std::make_shared<ADDON::CSkinInfo>(addonInfo, res);
           skinInfo->Start();
           strSkinPath = skinInfo->GetSkinPath(xmlFilename, &res);
         }
@@ -128,7 +128,7 @@ namespace XBMCAddon
         {
           // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
           addonInfo->SetPath(URIUtils::AddFileToFolder(fallbackPath, defaultSkin));
-          std::shared_ptr<ADDON::CSkinInfo> skinInfo = std::make_shared<ADDON::CSkinInfo>(addonInfo, res);
+          auto skinInfo = std::make_shared<ADDON::CSkinInfo>(addonInfo, res);
 
           skinInfo->Start();
           strSkinPath = skinInfo->GetSkinPath(xmlFilename, &res);
@@ -243,7 +243,7 @@ namespace XBMCAddon
         throw WindowException("Index out of range (%i)",position);
       }
 
-      ListItem* sListItem = new ListItem();
+      auto sListItem = new ListItem();
       sListItem->item = fi;
 
       // let's hope someone reference counts this.

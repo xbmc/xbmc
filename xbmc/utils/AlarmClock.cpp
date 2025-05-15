@@ -86,7 +86,7 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
 
   std::string lowerName(strName);
   StringUtils::ToLower(lowerName);          // lookup as lowercase only
-  std::map<std::string,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
+  auto iter = m_event.find(lowerName);
 
   if (iter == m_event.end())
     return;
@@ -147,7 +147,7 @@ void CAlarmClock::Process()
     {
       std::lock_guard lock(m_events);
       
-      for (std::map<std::string,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
+      for (auto iter=m_event.begin();iter != m_event.end(); ++iter)
         if (iter->second.watch.IsRunning() &&
             iter->second.watch.GetElapsedSeconds() >= static_cast<float>(iter->second.m_fSecs))
         {

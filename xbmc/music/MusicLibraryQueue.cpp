@@ -61,7 +61,7 @@ void CMusicLibraryQueue::ExportLibrary(const CLibExportSettings& settings, bool 
     }
   }
 
-  CMusicLibraryExportJob* exportJob = new CMusicLibraryExportJob(settings, progress);
+  auto exportJob = new CMusicLibraryExportJob(settings, progress);
   if (showDialog)
   {
     AddJob(exportJob);
@@ -100,7 +100,7 @@ void CMusicLibraryQueue::ImportLibrary(const std::string& xmlFile, bool showDial
     }
   }
 
-  CMusicLibraryImportJob* importJob = new CMusicLibraryImportJob(xmlFile, progress);
+  auto importJob = new CMusicLibraryImportJob(xmlFile, progress);
   if (showDialog)
   {
     AddJob(importJob);
@@ -162,12 +162,12 @@ bool CMusicLibraryQueue::IsScanningLibrary() const
     return true;
 
   // check if the library is being scanned asynchronously
-  MusicLibraryJobMap::const_iterator scanningJobs = m_jobs.find("MusicLibraryScanningJob");
+  auto scanningJobs = m_jobs.find("MusicLibraryScanningJob");
   if (scanningJobs != m_jobs.end() && !scanningJobs->second.empty())
     return true;
 
   // check if the library is being cleaned asynchronously
-  MusicLibraryJobMap::const_iterator cleaningJobs = m_jobs.find("MusicLibraryCleaningJob");
+  auto cleaningJobs = m_jobs.find("MusicLibraryCleaningJob");
   if (cleaningJobs != m_jobs.end() && !cleaningJobs->second.empty())
     return true;
 
@@ -206,7 +206,7 @@ void CMusicLibraryQueue::CleanLibrary(bool showDialog /* = false */)
     }
   }
 
-  CMusicLibraryCleaningJob* cleaningJob = new CMusicLibraryCleaningJob(progress);
+  auto cleaningJob = new CMusicLibraryCleaningJob(progress);
   AddJob(cleaningJob);
 
   // Wait for cleaning to complete or be canceled, but render every 20ms so that the
@@ -227,7 +227,7 @@ void CMusicLibraryQueue::AddJob(CMusicLibraryJob *job)
 
   // add the job to our list of queued/running jobs
   std::string jobType = job->GetType();
-  MusicLibraryJobMap::iterator jobsIt = m_jobs.find(jobType);
+  auto jobsIt = m_jobs.find(jobType);
   if (jobsIt == m_jobs.end())
   {
     MusicLibraryJobs jobs;
@@ -259,7 +259,7 @@ void CMusicLibraryQueue::CancelJob(CMusicLibraryJob *job)
   CJobQueue::CancelJob(job);
 
   // remove the job from our list of queued/running jobs
-  MusicLibraryJobMap::iterator jobsIt = m_jobs.find(jobType);
+  auto jobsIt = m_jobs.find(jobType);
   if (jobsIt != m_jobs.end())
     jobsIt->second.erase(job);
 }
@@ -298,7 +298,7 @@ void CMusicLibraryQueue::OnJobComplete(unsigned int jobID, bool success, CJob *j
     std::lock_guard lock(m_critical);
     
     // remove the job from our list of queued/running jobs
-    MusicLibraryJobMap::iterator jobsIt = m_jobs.find(job->GetType());
+    auto jobsIt = m_jobs.find(job->GetType());
     if (jobsIt != m_jobs.end())
       jobsIt->second.erase(static_cast<CMusicLibraryJob*>(job));
   }

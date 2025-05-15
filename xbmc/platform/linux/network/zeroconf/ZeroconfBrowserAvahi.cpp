@@ -76,7 +76,7 @@ CZeroconfBrowserAvahi::~CZeroconfBrowserAvahi()
 bool CZeroconfBrowserAvahi::doAddServiceType ( const std::string& fcr_service_type )
 {
   ScopedEventLoopBlock lock ( mp_poll );
-  tBrowserMap::iterator it = m_browsers.find ( fcr_service_type );
+  auto it = m_browsers.find ( fcr_service_type );
   if ( it != m_browsers.end() )
     return false;
   else
@@ -107,7 +107,7 @@ bool CZeroconfBrowserAvahi::doAddServiceType ( const std::string& fcr_service_ty
 bool CZeroconfBrowserAvahi::doRemoveServiceType ( const std::string& fcr_service_type )
 {
   ScopedEventLoopBlock lock ( mp_poll );
-  tBrowserMap::iterator it = m_browsers.find ( fcr_service_type );
+  auto it = m_browsers.find ( fcr_service_type );
   if ( it == m_browsers.end() )
     return false;
   else
@@ -177,7 +177,7 @@ bool CZeroconfBrowserAvahi::doResolveService ( CZeroconfBrowser::ZeroconfService
 
 void CZeroconfBrowserAvahi::clientCallback ( AvahiClient* fp_client, AvahiClientState f_state, void* fp_data )
 {
-  CZeroconfBrowserAvahi* p_instance = static_cast<CZeroconfBrowserAvahi*> ( fp_data );
+  auto p_instance = static_cast<CZeroconfBrowserAvahi*> ( fp_data );
   switch ( f_state )
   {
     case AVAHI_CLIENT_S_RUNNING:
@@ -223,7 +223,7 @@ void CZeroconfBrowserAvahi::browseCallback (
   const char *name, const char *type, const char *domain,
   AvahiLookupResultFlags flags, void* fp_data )
 {
-  CZeroconfBrowserAvahi* p_instance = static_cast<CZeroconfBrowserAvahi*> ( fp_data );
+  auto p_instance = static_cast<CZeroconfBrowserAvahi*> ( fp_data );
   assert ( browser );
   bool update_gui = false;
   /* Called whenever a new services becomes available on the LAN or is removed from the LAN */
@@ -320,7 +320,7 @@ void CZeroconfBrowserAvahi::resolveCallback(
 {
   assert ( r );
   assert ( userdata );
-  CZeroconfBrowserAvahi* p_instance = static_cast<CZeroconfBrowserAvahi*> ( userdata );
+  auto p_instance = static_cast<CZeroconfBrowserAvahi*> ( userdata );
   switch ( event )
   {
     case AVAHI_RESOLVER_FAILURE:

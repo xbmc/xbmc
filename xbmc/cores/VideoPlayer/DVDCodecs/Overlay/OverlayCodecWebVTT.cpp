@@ -62,7 +62,7 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
   if (!pPacket)
     return OverlayMessage::OC_ERROR;
 
-  const char* data = reinterpret_cast<const char*>(pPacket->pData);
+  auto data = reinterpret_cast<const char*>(pPacket->pData);
   std::vector<subtitleData> subtitleList;
 
   m_webvttHandler.Reset();

@@ -65,22 +65,22 @@
 
 namespace
 {
-constexpr const char* LABEL_CHANNEL_DISABLED = "0";
+constexpr auto LABEL_CHANNEL_DISABLED = "0";
 
 // Note: strings must not be changed; they are part of the public skinning API for this dialog.
-constexpr const char* PROPERTY_CHANNEL_NUMBER = "Number";
-constexpr const char* PROPERTY_CHANNEL_ENABLED = "ActiveChannel";
-constexpr const char* PROPERTY_CHANNEL_USER_SET_HIDDEN = "UserSetHidden";
-constexpr const char* PROPERTY_CHANNEL_USER_SET_NAME = "UserSetName";
-constexpr const char* PROPERTY_CHANNEL_LOCKED = "ParentalLocked";
-constexpr const char* PROPERTY_CHANNEL_ICON = "Icon";
-constexpr const char* PROPERTY_CHANNEL_CUSTOM_ICON = "UserSetIcon";
-constexpr const char* PROPERTY_CHANNEL_NAME = "Name";
-constexpr const char* PROPERTY_CHANNEL_EPG_ENABLED = "UseEPG";
-constexpr const char* PROPERTY_CHANNEL_EPG_SOURCE = "EPGSource";
-constexpr const char* PROPERTY_CLIENT_SUPPORTS_SETTINGS = "SupportsSettings";
-constexpr const char* PROPERTY_CLIENT_NAME = "ClientName";
-constexpr const char* PROPERTY_ITEM_CHANGED = "Changed";
+constexpr auto PROPERTY_CHANNEL_NUMBER = "Number";
+constexpr auto PROPERTY_CHANNEL_ENABLED = "ActiveChannel";
+constexpr auto PROPERTY_CHANNEL_USER_SET_HIDDEN = "UserSetHidden";
+constexpr auto PROPERTY_CHANNEL_USER_SET_NAME = "UserSetName";
+constexpr auto PROPERTY_CHANNEL_LOCKED = "ParentalLocked";
+constexpr auto PROPERTY_CHANNEL_ICON = "Icon";
+constexpr auto PROPERTY_CHANNEL_CUSTOM_ICON = "UserSetIcon";
+constexpr auto PROPERTY_CHANNEL_NAME = "Name";
+constexpr auto PROPERTY_CHANNEL_EPG_ENABLED = "UseEPG";
+constexpr auto PROPERTY_CHANNEL_EPG_SOURCE = "EPGSource";
+constexpr auto PROPERTY_CLIENT_SUPPORTS_SETTINGS = "SupportsSettings";
+constexpr auto PROPERTY_CLIENT_NAME = "ClientName";
+constexpr auto PROPERTY_ITEM_CHANGED = "Changed";
 
 } // namespace
 

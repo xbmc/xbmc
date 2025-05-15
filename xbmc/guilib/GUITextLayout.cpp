@@ -301,7 +301,7 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString>& lines, bool forceLTR
     }
 
     // Allocate memory for visual to logical map and call bidi
-    int* visualToLogicalMap = new (std::nothrow) int[lineLength + 1]();
+    auto visualToLogicalMap = new (std::nothrow) int[lineLength + 1]();
     std::wstring visualText = BidiFlip(logicalText, forceLTRReadingOrder, visualToLogicalMap);
 
     vecText styledVisualText;
@@ -580,9 +580,9 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
       continue;
     }
 
-    vecText::const_iterator pos = line.m_text.begin();
-    vecText::const_iterator lastBeginPos = line.m_text.begin();
-    vecText::const_iterator lastSpacePos = line.m_text.end();
+    auto pos = line.m_text.begin();
+    auto lastBeginPos = line.m_text.begin();
+    auto lastSpacePos = line.m_text.end();
     vecText curLine;
 
     while (pos < line.m_text.end())
@@ -646,8 +646,8 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
 void CGUITextLayout::LineBreakText(const vecText &text, std::vector<CGUIString> &lines)
 {
   int nMaxLines = (m_maxHeight > 0 && m_font && m_font->GetLineHeight() > 0)?(int)ceilf(m_maxHeight / m_font->GetLineHeight()):-1;
-  vecText::const_iterator lineStart = text.begin();
-  vecText::const_iterator pos = text.begin();
+  auto lineStart = text.begin();
+  auto pos = text.begin();
   while (pos != text.end() && (nMaxLines <= 0 || lines.size() < (size_t)nMaxLines))
   {
     // Get the current letter in the string

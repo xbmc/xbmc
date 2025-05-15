@@ -162,7 +162,7 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
   {
     std::lock_guard lock(m_resourceSection);
 
-    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+    for (auto i = m_resources.begin(); i != m_resources.end(); ++i)
     {
       (*i)->OnLostDisplay();
     }
@@ -177,7 +177,7 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
     std::lock_guard lock(m_resourceSection);
 
     // tell any shared resources
-    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+    for (auto i = m_resources.begin(); i != m_resources.end(); ++i)
     {
       (*i)->OnResetDisplay();
     }
@@ -341,7 +341,7 @@ void CWinSystemAmlogic::Unregister(IDispResource *resource)
 {
   std::lock_guard lock(m_resourceSection);
 
-  std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  auto i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
 }

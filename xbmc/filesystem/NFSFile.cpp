@@ -94,7 +94,7 @@ std::list<std::string> CNfsConnection::GetExportList(const CURL& url)
 
   for (tmp = exportlist; tmp != NULL; tmp = tmp->ex_next)
   {
-    std::string exportStr = std::string(tmp->ex_dir);
+    auto exportStr = std::string(tmp->ex_dir);
 
     retList.push_back(exportStr);
   }
@@ -135,7 +135,7 @@ void CNfsConnection::destroyContext(const std::string &exportName)
 {
   std::lock_guard lock(openContextLock);
 
-  tOpenContextMap::iterator it = m_openContextMap.find(exportName.c_str());
+  auto it = m_openContextMap.find(exportName.c_str());
   if (it != m_openContextMap.end())
   {
     nfs_destroy_context(it->second.pContext);
@@ -149,7 +149,7 @@ struct nfs_context *CNfsConnection::getContextFromMap(const std::string &exportn
 
   std::lock_guard lock(openContextLock);
 
-  tOpenContextMap::iterator it = m_openContextMap.find(exportname.c_str());
+  auto it = m_openContextMap.find(exportname.c_str());
   if (it != m_openContextMap.end())
   {
     //check if context has timed out already
@@ -182,7 +182,7 @@ struct nfs_context *CNfsConnection::getContextFromMap(const std::string &exportn
 
 CNfsConnection::ContextStatus CNfsConnection::getContextForExport(const std::string& exportname)
 {
-  CNfsConnection::ContextStatus ret = CNfsConnection::ContextStatus::INVALID;
+  auto ret = CNfsConnection::ContextStatus::INVALID;
 
   clearMembers();
 

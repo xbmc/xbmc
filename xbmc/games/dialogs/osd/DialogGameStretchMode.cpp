@@ -77,7 +77,7 @@ void CDialogGameStretchMode::GetItems(CFileItemList& items)
 {
   for (const auto& stretchMode : m_stretchModes)
   {
-    CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(stretchMode.stringIndex));
+    auto item = std::make_shared<CFileItem>(g_localizeStrings.Get(stretchMode.stringIndex));
 
     const std::string stretchModeId =
         RETRO::CRetroPlayerUtils::StretchModeToIdentifier(stretchMode.stretchMode);

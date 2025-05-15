@@ -51,7 +51,7 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
   // in the parent tag
   if (node->FirstChild() == NULL || node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
   {
-    CBooleanLogicValuePtr value = CBooleanLogicValuePtr(newValue());
+    auto value = CBooleanLogicValuePtr(newValue());
     if (value == NULL || !value->Deserialize(node))
     {
       CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize implicit boolean value definition");
@@ -68,7 +68,7 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
     std::string tag = operationNode->ValueStr();
     if (StringUtils::EqualsNoCase(tag, "and") || StringUtils::EqualsNoCase(tag, "or"))
     {
-      CBooleanLogicOperationPtr operation = CBooleanLogicOperationPtr(newOperation());
+      auto operation = CBooleanLogicOperationPtr(newOperation());
       if (operation == NULL)
         return false;
 
@@ -83,7 +83,7 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
     }
     else
     {
-      CBooleanLogicValuePtr value = CBooleanLogicValuePtr(newValue());
+      auto value = CBooleanLogicValuePtr(newValue());
       if (value == NULL)
         return false;
 

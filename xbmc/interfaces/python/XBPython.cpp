@@ -286,7 +286,7 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
   XBMC_TRACE;
   std::lock_guard lock(m_vecPlayerCallbackList);
 
-  PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+  auto it = m_vecPlayerCallbackList.begin();
   while (it != m_vecPlayerCallbackList.end())
   {
     if (*it == pCallback)
@@ -312,7 +312,7 @@ void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallba
   XBMC_TRACE;
   std::lock_guard lock(m_vecMonitorCallbackList);
 
-  MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+  auto it = m_vecMonitorCallbackList.begin();
   while (it != m_vecMonitorCallbackList.end())
   {
     if (*it == pCallback)
@@ -462,7 +462,7 @@ void XBPython::Process()
 
     std::unique_lock lock(m_vecPyList);
 
-    for (PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end();)
+    for (auto it = m_vecPyList.begin(); it != m_vecPyList.end();)
     {
       if (it->bDone)
       {
@@ -616,7 +616,7 @@ void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
 {
   std::lock_guard lock(m_vecPyList);
 
-  PyList::iterator it = m_vecPyList.begin();
+  auto it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
     if (it->id == invoker->GetId())

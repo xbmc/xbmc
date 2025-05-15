@@ -610,7 +610,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       }
       if (containerId != -1)
       {
-        const std::map<int,int>::const_iterator it = m_containerMoves.find(containerId);
+        const auto it = m_containerMoves.find(containerId);
         if (it != m_containerMoves.end())
         {
           if (info.m_info == CONTAINER_SCROLL_PREVIOUS)

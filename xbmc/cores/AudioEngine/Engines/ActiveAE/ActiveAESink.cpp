@@ -77,7 +77,7 @@ AEDeviceType CActiveAESink::GetDeviceType(const std::string &device)
 
   for (auto itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
   {
-    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    for (auto itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
     {
       CAEDeviceInfo& info = *itt2;
       if (info.m_deviceName == dev.name)
@@ -91,7 +91,7 @@ bool CActiveAESink::HasPassthroughDevice()
 {
   for (auto itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
   {
-    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    for (auto itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
     {
       CAEDeviceInfo& info = *itt2;
       if (info.m_deviceType != AE_DEVTYPE_PCM && !info.m_streamTypes.empty())
@@ -845,7 +845,7 @@ void CActiveAESink::EnumerateOutputDevices(AEDeviceList &devices, bool passthrou
   for (auto itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
   {
     AESinkInfo sinkInfo = *itt;
-    for (AEDeviceInfoList::iterator itt2 = sinkInfo.m_deviceInfoList.begin(); itt2 != sinkInfo.m_deviceInfoList.end(); ++itt2)
+    for (auto itt2 = sinkInfo.m_deviceInfoList.begin(); itt2 != sinkInfo.m_deviceInfoList.end(); ++itt2)
     {
       CAEDeviceInfo devInfo = *itt2;
       if (passthrough && devInfo.m_deviceType == AE_DEVTYPE_PCM)
@@ -884,7 +884,7 @@ void CActiveAESink::GetDeviceFriendlyName(const std::string& device)
   for (auto itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
   {
     AESinkInfo sinkInfo = *itt;
-    for (AEDeviceInfoList::iterator itt2 = sinkInfo.m_deviceInfoList.begin(); itt2 != sinkInfo.m_deviceInfoList.end(); ++itt2)
+    for (auto itt2 = sinkInfo.m_deviceInfoList.begin(); itt2 != sinkInfo.m_deviceInfoList.end(); ++itt2)
     {
       CAEDeviceInfo& devInfo = *itt2;
       if (devInfo.m_deviceName == device)
@@ -1151,7 +1151,7 @@ void CActiveAESink::GenerateNoise()
   nb_floats *= m_sampleOfSilence.pkt->config.channels;
   size_t size = nb_floats*sizeof(float);
 
-  float *noise = static_cast<float*>(KODI::MEMORY::AlignedMalloc(size, 32));
+  auto noise = static_cast<float*>(KODI::MEMORY::AlignedMalloc(size, 32));
   if (!noise)
     throw std::bad_alloc();
 

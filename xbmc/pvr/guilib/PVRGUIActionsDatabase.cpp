@@ -57,13 +57,13 @@ public:
 
     CFileItemList options;
 
-    const std::shared_ptr<CFileItem> itemAll =
+    const auto itemAll =
         std::make_shared<CFileItem>(StringUtils::Format(g_localizeStrings.Get(593))); // All
     itemAll->SetPath("all");
     options.Add(itemAll);
 
     // if channels are cleared, groups, EPG data and providers must also be cleared
-    const std::shared_ptr<CFileItem> itemChannels =
+    const auto itemChannels =
         std::make_shared<CFileItem>(StringUtils::Format("{}, {}, {}, {}",
                                                         g_localizeStrings.Get(19019), // Channels
                                                         g_localizeStrings.Get(19146), // Groups
@@ -73,32 +73,32 @@ public:
     itemChannels->Select(true); // preselect this item in dialog
     options.Add(itemChannels);
 
-    const std::shared_ptr<CFileItem> itemGroups =
+    const auto itemGroups =
         std::make_shared<CFileItem>(g_localizeStrings.Get(19146)); // Groups
     itemGroups->SetPath("groups");
     options.Add(itemGroups);
 
-    const std::shared_ptr<CFileItem> itemGuide =
+    const auto itemGuide =
         std::make_shared<CFileItem>(g_localizeStrings.Get(19069)); // Guide
     itemGuide->SetPath("guide");
     options.Add(itemGuide);
 
-    const std::shared_ptr<CFileItem> itemProviders =
+    const auto itemProviders =
         std::make_shared<CFileItem>(g_localizeStrings.Get(19334)); // Providers
     itemProviders->SetPath("providers");
     options.Add(itemProviders);
 
-    const std::shared_ptr<CFileItem> itemReminders =
+    const auto itemReminders =
         std::make_shared<CFileItem>(g_localizeStrings.Get(19215)); // Reminders
     itemReminders->SetPath("reminders");
     options.Add(itemReminders);
 
-    const std::shared_ptr<CFileItem> itemRecordings =
+    const auto itemRecordings =
         std::make_shared<CFileItem>(g_localizeStrings.Get(19017)); // Recordings
     itemRecordings->SetPath("recordings");
     options.Add(itemRecordings);
 
-    const std::shared_ptr<CFileItem> itemClients =
+    const auto itemClients =
         std::make_shared<CFileItem>(g_localizeStrings.Get(24019)); // PVR clients
     itemClients->SetPath("clients");
     options.Add(itemClients);

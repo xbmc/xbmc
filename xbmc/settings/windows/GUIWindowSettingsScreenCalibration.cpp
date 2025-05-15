@@ -331,7 +331,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
       static_cast<float>(info.iHeight) / 100 *
       CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc());
 
-  CGUIMoverControl* pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_TOP_LEFT));
+  auto pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_TOP_LEFT));
   if (pControl)
   {
     pControl->SetLimits(-info.iWidth / 4, -info.iHeight / 4, info.iWidth / 4, info.iHeight / 4);
@@ -385,7 +385,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
     pControl->SetEnabled(m_isSubtitleBarEnabled);
   }
   // The pixel ratio control
-  CGUIResizeControl* pResize = dynamic_cast<CGUIResizeControl*>(GetControl(CONTROL_PIXEL_RATIO));
+  auto pResize = dynamic_cast<CGUIResizeControl*>(GetControl(CONTROL_PIXEL_RATIO));
   if (pResize)
   {
     pResize->SetLimits(info.iWidth * 0.25f, info.iHeight * 0.5f, info.iWidth * 0.75f,
@@ -440,7 +440,7 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   }
   else
   {
-    CGUIMoverControl* pControl = dynamic_cast<CGUIMoverControl*>(GetControl(iControl));
+    auto pControl = dynamic_cast<CGUIMoverControl*>(GetControl(iControl));
     if (pControl)
     {
       switch (iControl)
@@ -455,7 +455,7 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
               StringUtils::Format("{}, {}", pControl->GetXLocation(), pControl->GetYLocation());
           labelValue = StringUtils::Format(g_localizeStrings.Get(20327), labelValue);
           // Update reset control position
-          CGUIMoverControl* pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_RESET));
+          auto pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_RESET));
           if (pControl)
           {
             float posX = info.Overscan.left + info.guiInsets.left;
@@ -543,7 +543,7 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   // Adjust subtitle bar position due to overscan changes
   if (isOverscanChanged)
   {
-    CGUIMoverControl* pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_SUBTITLES));
+    auto pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_SUBTITLES));
     if (pControl)
     {
       // Keep the subtitle bar within the overscan boundary

@@ -89,7 +89,7 @@ void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const 
 
   // we need to copy the new value of the setting from the copy to the
   // original setting
-  std::map<std::string, std::shared_ptr<CSetting>>::iterator itSetting =
+  auto itSetting =
       m_settingsMap.find(settingId);
   if (itSetting == m_settingsMap.end())
     return;
@@ -224,7 +224,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
     {
       case SettingType::Boolean:
       {
-        std::shared_ptr<CSettingBool> settingBool = std::make_shared<CSettingBool>(
+        auto settingBool = std::make_shared<CSettingBool>(
             setting->GetId(), *std::static_pointer_cast<CSettingBool>(setting));
         settingBool->SetControl(GetCheckmarkControl());
 
@@ -234,7 +234,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
 
       case SettingType::Integer:
       {
-        std::shared_ptr<CSettingInt> settingInt = std::make_shared<CSettingInt>(
+        auto settingInt = std::make_shared<CSettingInt>(
             setting->GetId(), *std::static_pointer_cast<CSettingInt>(setting));
         if (settingInt->GetTranslatableOptions().empty())
           settingInt->SetControl(GetSliderControl("integer", false, -1, usePopup, -1, "{:d}"));
@@ -247,7 +247,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
 
       case SettingType::Number:
       {
-        std::shared_ptr<CSettingNumber> settingNumber = std::make_shared<CSettingNumber>(
+        auto settingNumber = std::make_shared<CSettingNumber>(
             setting->GetId(), *std::static_pointer_cast<CSettingNumber>(setting));
         settingNumber->SetControl(GetSliderControl("number", false, -1, usePopup, -1, "{:2.2f}"));
 
@@ -259,7 +259,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
       {
         if (auto settingAsAddon = std::dynamic_pointer_cast<const CSettingAddon>(setting))
         {
-          std::shared_ptr<CSettingAddon> settingAddon =
+          auto settingAddon =
               std::make_shared<CSettingAddon>(setting->GetId(), *settingAsAddon);
 
           // Control properties
@@ -283,7 +283,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
         }
         else
         {
-          std::shared_ptr<CSettingString> settingString = std::make_shared<CSettingString>(
+          auto settingString = std::make_shared<CSettingString>(
               setting->GetId(), *std::static_pointer_cast<CSettingString>(setting));
           settingString->SetControl(GetEditControl("string"));
 

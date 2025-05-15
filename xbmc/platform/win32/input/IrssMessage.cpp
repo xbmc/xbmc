@@ -86,7 +86,7 @@ char* CIrssMessage::ToBytes(int& size)
   }
 
   size = 8 + dataLength;
-  char* byteArray = new char[size];
+  auto byteArray = new char[size];
 
   memcpy(&byteArray[0], &m_type, 4);
   memcpy(&byteArray[4], &m_flags, 4);

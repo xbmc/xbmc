@@ -242,7 +242,7 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
       {
         std::shared_ptr<const CSettingBool> mappedSetting =
             std::static_pointer_cast<const CSettingBool>(setting);
-        std::shared_ptr<CSettingBool> boolSetting =
+        auto boolSetting =
             std::make_shared<CSettingBool>(strKey, *mappedSetting);
         if (boolSetting)
         {
@@ -255,7 +255,7 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
       {
         std::shared_ptr<const CSettingInt> mappedSetting =
             std::static_pointer_cast<const CSettingInt>(setting);
-        std::shared_ptr<CSettingInt> intSetting =
+        auto intSetting =
             std::make_shared<CSettingInt>(strKey, *mappedSetting);
         if (intSetting)
         {
@@ -268,7 +268,7 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
       {
         std::shared_ptr<const CSettingNumber> mappedSetting =
             std::static_pointer_cast<const CSettingNumber>(setting);
-        std::shared_ptr<CSettingNumber> floatSetting =
+        auto floatSetting =
             std::make_shared<CSettingNumber>(strKey, *mappedSetting);
         if (floatSetting)
         {
@@ -283,7 +283,7 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
         {
           std::shared_ptr<const CSettingAddon> mappedSetting =
               std::static_pointer_cast<const CSettingAddon>(setting);
-          std::shared_ptr<CSettingAddon> addonSetting =
+          auto addonSetting =
               std::make_shared<CSettingAddon>(strKey, *mappedSetting);
           addonSetting->SetVisible(mappedSetting->IsVisible());
           deviceSetting.m_setting = addonSetting;
@@ -305,7 +305,7 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
         {
           std::shared_ptr<const CSettingString> mappedSetting =
               std::static_pointer_cast<const CSettingString>(setting);
-          std::shared_ptr<CSettingString> stringSetting =
+          auto stringSetting =
               std::make_shared<CSettingString>(strKey, *mappedSetting);
           stringSetting->SetVisible(mappedSetting->IsVisible());
           deviceSetting.m_setting = stringSetting;
@@ -324,7 +324,7 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
 
 bool CPeripheral::HasSetting(const std::string& strKey) const
 {
-  std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   return it != m_settings.end();
 }
 
@@ -336,7 +336,7 @@ bool CPeripheral::HasSettings(void) const
 bool CPeripheral::HasConfigurableSettings(void) const
 {
   bool bReturn(false);
-  std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.begin();
+  auto it = m_settings.begin();
   while (it != m_settings.end() && !bReturn)
   {
     if ((*it).second.m_setting->IsVisible())
@@ -353,7 +353,7 @@ bool CPeripheral::HasConfigurableSettings(void) const
 
 bool CPeripheral::GetSettingBool(const std::string& strKey) const
 {
-  std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingType::Boolean)
   {
     std::shared_ptr<CSettingBool> boolSetting =
@@ -367,7 +367,7 @@ bool CPeripheral::GetSettingBool(const std::string& strKey) const
 
 int CPeripheral::GetSettingInt(const std::string& strKey) const
 {
-  std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingType::Integer)
   {
     std::shared_ptr<CSettingInt> intSetting =
@@ -381,7 +381,7 @@ int CPeripheral::GetSettingInt(const std::string& strKey) const
 
 float CPeripheral::GetSettingFloat(const std::string& strKey) const
 {
-  std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingType::Number)
   {
     std::shared_ptr<CSettingNumber> floatSetting =
@@ -395,7 +395,7 @@ float CPeripheral::GetSettingFloat(const std::string& strKey) const
 
 const std::string CPeripheral::GetSettingString(const std::string& strKey) const
 {
-  std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingType::String)
   {
     std::shared_ptr<CSettingString> stringSetting =
@@ -410,7 +410,7 @@ const std::string CPeripheral::GetSettingString(const std::string& strKey) const
 bool CPeripheral::SetSetting(const std::string& strKey, bool bValue)
 {
   bool bChanged(false);
-  std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingType::Boolean)
   {
     std::shared_ptr<CSettingBool> boolSetting =
@@ -429,7 +429,7 @@ bool CPeripheral::SetSetting(const std::string& strKey, bool bValue)
 bool CPeripheral::SetSetting(const std::string& strKey, int iValue)
 {
   bool bChanged(false);
-  std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingType::Integer)
   {
     std::shared_ptr<CSettingInt> intSetting =
@@ -448,7 +448,7 @@ bool CPeripheral::SetSetting(const std::string& strKey, int iValue)
 bool CPeripheral::SetSetting(const std::string& strKey, float fValue)
 {
   bool bChanged(false);
-  std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingType::Number)
   {
     std::shared_ptr<CSettingNumber> floatSetting =
@@ -466,14 +466,14 @@ bool CPeripheral::SetSetting(const std::string& strKey, float fValue)
 
 void CPeripheral::SetSettingVisible(const std::string& strKey, bool bSetTo)
 {
-  std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end())
     (*it).second.m_setting->SetVisible(bSetTo);
 }
 
 bool CPeripheral::IsSettingVisible(const std::string& strKey) const
 {
-  std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end())
     return (*it).second.m_setting->IsVisible();
   return false;
@@ -482,7 +482,7 @@ bool CPeripheral::IsSettingVisible(const std::string& strKey) const
 bool CPeripheral::SetSetting(const std::string& strKey, const std::string& strValue)
 {
   bool bChanged(false);
-  std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
+  auto it = m_settings.find(strKey);
   if (it != m_settings.end())
   {
     if ((*it).second.m_setting->GetType() == SettingType::String)
@@ -603,7 +603,7 @@ void CPeripheral::ResetDefaultSettings(void)
   ClearSettings();
   m_manager.GetSettingsFromMapping(*this);
 
-  std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.begin();
+  auto it = m_settings.begin();
   while (it != m_settings.end())
   {
     m_changedSettings.insert((*it).first);
@@ -626,7 +626,7 @@ void CPeripheral::RegisterInputHandler(IInputHandler* handler, bool bPromiscuous
     PeripheralAddonPtr addon = m_manager.GetAddonWithButtonMap(this);
     if (addon)
     {
-      std::unique_ptr<CAddonInputHandling> addonInput = std::make_unique<CAddonInputHandling>(
+      auto addonInput = std::make_unique<CAddonInputHandling>(
           m_manager, this, std::move(addon), handler, GetDriverReceiver());
       if (addonInput->Load())
       {
@@ -667,7 +667,7 @@ void CPeripheral::RegisterKeyboardHandler(KEYBOARD::IKeyboardInputHandler* handl
       PeripheralAddonPtr addon = m_manager.GetAddonWithButtonMap(this);
       if (addon)
       {
-        std::unique_ptr<CAddonInputHandling> addonInput =
+        auto addonInput =
             std::make_unique<CAddonInputHandling>(m_manager, this, std::move(addon), handler);
         if (addonInput->Load())
           keyboardDriverHandler = std::move(addonInput);
@@ -680,7 +680,7 @@ void CPeripheral::RegisterKeyboardHandler(KEYBOARD::IKeyboardInputHandler* handl
 
     if (!keyboardDriverHandler)
     {
-      std::unique_ptr<KODI::KEYBOARD::CDefaultKeyboardHandling> defaultInput =
+      auto defaultInput =
           std::make_unique<KODI::KEYBOARD::CDefaultKeyboardHandling>(this, handler);
       if (defaultInput->Load())
         keyboardDriverHandler = std::move(defaultInput);
@@ -718,7 +718,7 @@ void CPeripheral::RegisterMouseHandler(MOUSE::IMouseInputHandler* handler,
       PeripheralAddonPtr addon = m_manager.GetAddonWithButtonMap(this);
       if (addon)
       {
-        std::unique_ptr<CAddonInputHandling> addonInput =
+        auto addonInput =
             std::make_unique<CAddonInputHandling>(m_manager, this, std::move(addon), handler);
         if (addonInput->Load())
           mouseDriverHandler = std::move(addonInput);
@@ -731,7 +731,7 @@ void CPeripheral::RegisterMouseHandler(MOUSE::IMouseInputHandler* handler,
 
     if (!mouseDriverHandler)
     {
-      std::unique_ptr<KODI::MOUSE::CDefaultMouseHandling> defaultInput =
+      auto defaultInput =
           std::make_unique<KODI::MOUSE::CDefaultMouseHandling>(this, handler);
       if (defaultInput->Load())
         mouseDriverHandler = std::move(defaultInput);
@@ -796,7 +796,7 @@ std::string CPeripheral::GetIcon() const
   // Try add-on
   if (icon.empty() && m_busType == PERIPHERAL_BUS_ADDON)
   {
-    CPeripheralBusAddon* bus = static_cast<CPeripheralBusAddon*>(m_bus);
+    auto bus = static_cast<CPeripheralBusAddon*>(m_bus);
 
     PeripheralAddonPtr addon;
     unsigned int index;

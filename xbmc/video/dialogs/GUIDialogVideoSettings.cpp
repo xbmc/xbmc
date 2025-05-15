@@ -352,7 +352,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.emplace_back(16320, VS_INTERLACEMETHOD_DXVA_AUTO);
 
   /* remove unsupported methods */
-  for (TranslatableIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  for (auto it = entries.begin(); it != entries.end(); )
   {
     if (appPlayer->Supports(static_cast<EINTERLACEMETHOD>(it->value)))
       ++it;
@@ -392,7 +392,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   entries.emplace_back(16316, VS_SCALINGMETHOD_AUTO);
 
   /* remove unsupported methods */
-  for(TranslatableIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  for(auto it = entries.begin(); it != entries.end(); )
   {
     if (appPlayer->Supports(static_cast<ESCALINGMETHOD>(it->value)))
       ++it;

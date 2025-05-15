@@ -643,7 +643,7 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   if (m_addon.get() == NULL || moduleDict == NULL)
     return;
 
-  PyObject* moduleDictionary = (PyObject*)moduleDict;
+  auto moduleDictionary = (PyObject*)moduleDict;
 
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__",
                        PyObjectPtr(PyUnicode_FromString(m_addon->ID().c_str())).get());

@@ -161,9 +161,9 @@ MHD_RESULT CWebServer::AnswerToConnection(void* cls,
     return MHD_NO;
   }
 
-  CWebServer* webServer = reinterpret_cast<CWebServer*>(cls);
+  auto webServer = reinterpret_cast<CWebServer*>(cls);
 
-  ConnectionHandler* connectionHandler = reinterpret_cast<ConnectionHandler*>(*con_cls);
+  auto connectionHandler = reinterpret_cast<ConnectionHandler*>(*con_cls);
   HTTPMethod methodType = GetHTTPMethod(method);
   HTTPRequest request = {webServer, connection, connectionHandler->fullUri, url, methodType,
                          version,   {}};
@@ -307,7 +307,7 @@ MHD_RESULT CWebServer::HandlePostField(void* cls,
                                        uint64_t off,
                                        size_t size)
 {
-  ConnectionHandler* conHandler = (ConnectionHandler*)cls;
+  auto conHandler = (ConnectionHandler*)cls;
 
   if (conHandler == nullptr || conHandler->requestHandler == nullptr || key == nullptr ||
       data == nullptr || size == 0)
@@ -791,7 +791,7 @@ MHD_RESULT CWebServer::CreateFileDownloadResponse(
   const HTTPResponseDetails& responseDetails = handler->GetResponseDetails();
   HttpResponseRanges responseRanges = handler->GetResponseData();
 
-  std::shared_ptr<XFILE::CFile> file = std::make_shared<XFILE::CFile>();
+  auto file = std::make_shared<XFILE::CFile>();
   std::string filePath = handler->GetResponseFile();
 
   // access check
@@ -817,7 +817,7 @@ MHD_RESULT CWebServer::CreateFileDownloadResponse(
   }
 
   uint64_t totalLength = 0;
-  std::unique_ptr<HttpFileDownloadContext> context = std::make_unique<HttpFileDownloadContext>();
+  auto context = std::make_unique<HttpFileDownloadContext>();
   context->file = file;
   context->contentType = mimeType;
   context->boundaryWritten = false;
@@ -867,7 +867,7 @@ MHD_RESULT CWebServer::CreateFileDownloadResponse(
     context->boundaryEnd = HttpRangeUtils::GenerateMultipartBoundaryEnd(context->boundary);
 
     // for every range, we need to add a boundary with header
-    for (HttpRanges::const_iterator range = context->ranges.Begin(); range != context->ranges.End();
+    for (auto range = context->ranges.Begin(); range != context->ranges.End();
          ++range)
     {
       // we need to temporarily add the Content-Range header to the boundary to be able to
@@ -988,7 +988,7 @@ MHD_RESULT CWebServer::SendErrorResponse(const HTTPRequest& request,
 
 void* CWebServer::UriRequestLogger(void* cls, const char* uri)
 {
-  CWebServer* webServer = reinterpret_cast<CWebServer*>(cls);
+  auto webServer = reinterpret_cast<CWebServer*>(cls);
 
   // log the full URI
   if (webServer == nullptr)
@@ -1010,7 +1010,7 @@ void CWebServer::LogRequest(const char* uri) const
 
 ssize_t CWebServer::ContentReaderCallback(void* cls, uint64_t pos, char* buf, size_t max)
 {
-  HttpFileDownloadContext* context = (HttpFileDownloadContext*)cls;
+  auto context = (HttpFileDownloadContext*)cls;
   if (context == nullptr || context->file == nullptr)
     return -1;
 
@@ -1107,7 +1107,7 @@ ssize_t CWebServer::ContentReaderCallback(void* cls, uint64_t pos, char* buf, si
 
 void CWebServer::ContentReaderFreeCallback(void* cls)
 {
-  HttpFileDownloadContext* context = (HttpFileDownloadContext*)cls;
+  auto context = (HttpFileDownloadContext*)cls;
   delete context;
 
   if (CServiceBroker::GetLogging().CanLogComponent(LOGWEBSERVER))
@@ -1156,8 +1156,8 @@ bool CWebServer::LoadCert(std::string& skey, std::string& scert)
 {
   XFILE::CFile file;
   std::vector<uint8_t> buf;
-  const char* keyFile = "special://userdata/server.key";
-  const char* certFile = "special://userdata/server.pem";
+  auto keyFile = "special://userdata/server.key";
+  auto certFile = "special://userdata/server.pem";
 
   if (!file.Exists(keyFile) || !file.Exists(certFile))
     return false;
@@ -1192,7 +1192,7 @@ bool CWebServer::LoadCert(std::string& skey, std::string& scert)
 struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 {
   unsigned int timeout = 60 * 60 * 24;
-  const char* ciphers = "NORMAL:-VERS-TLS1.0";
+  auto ciphers = "NORMAL:-VERS-TLS1.0";
 
   MHD_set_panic_func(&panicHandlerForMHD, nullptr);
 

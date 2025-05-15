@@ -40,7 +40,7 @@ int Interface_GUIDialogSelect::open(KODI_HANDLE kodiBase,
                                     int selected,
                                     unsigned int autoclose)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogSelect::{} - invalid data", __func__);
@@ -84,7 +84,7 @@ bool Interface_GUIDialogSelect::open_multi_select(KODI_HANDLE kodiBase,
                                                   unsigned int size,
                                                   unsigned int autoclose)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogMultiSelect::{} - invalid data", __func__);

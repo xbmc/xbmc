@@ -378,11 +378,11 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
 
   //input buffer for iconv() is the buffer from strSource
   size_t      inBufSize  = (strSource.length() + 1) * sizeof(typename INPUT::value_type);
-  const char* inBuf      = (const char*)strSource.c_str();
+  auto inBuf      = (const char*)strSource.c_str();
 
   //allocate output buffer for iconv()
   size_t      outBufSize = (strSource.length() + 1) * sizeof(typename OUTPUT::value_type) * multiplier;
-  char*       outBuf     = (char*)malloc(outBufSize);
+  auto outBuf     = (char*)malloc(outBufSize);
   if (outBuf == NULL)
   {
     CLog::Log(LOGFATAL, "{}: malloc failed", __FUNCTION__);
@@ -409,7 +409,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
 
         //make buffer twice as big
         outBufSize   *= 2;
-        char* newBuf  = (char*)realloc(outBuf, outBufSize);
+        auto newBuf  = (char*)realloc(outBuf, outBufSize);
         if (!newBuf)
         {
           CLog::Log(LOGFATAL, "{} realloc failed with errno={}({})", __FUNCTION__, errno,
@@ -505,7 +505,7 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(
 
     const size_t lineLen = lineEnd - lineStart;
 
-    FriBidiChar* visual = (FriBidiChar*) malloc((lineLen + 1) * sizeof(FriBidiChar));
+    auto visual = (FriBidiChar*) malloc((lineLen + 1) * sizeof(FriBidiChar));
     if (visual == NULL)
     {
       free(visual);
@@ -549,7 +549,7 @@ bool CCharsetConverter::CInnerConverter::isBidiDirectionRTL(const std::string& s
     return false;
 
   int lineLen = static_cast<int>(str.size());
-  FriBidiCharType* charTypes = new FriBidiCharType[lineLen];
+  auto charTypes = new FriBidiCharType[lineLen];
   fribidi_get_bidi_types(reinterpret_cast<const FriBidiChar*>(converted.c_str()),
                          (FriBidiStrIndex)lineLen, charTypes);
   FriBidiCharType charType = fribidi_get_par_direction(charTypes, (FriBidiStrIndex)lineLen);

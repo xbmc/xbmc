@@ -62,7 +62,7 @@ std::string CGUIWindowPVRChannelsBase::GetRootPath() const
   //! @todo Would it make sense to change GetRootPath() declaration in CGUIMediaWindow
   //! to be non-const to get rid of the const_cast's here?
 
-  CGUIWindowPVRChannelsBase* pThis = const_cast<CGUIWindowPVRChannelsBase*>(this);
+  auto pThis = const_cast<CGUIWindowPVRChannelsBase*>(this);
   if (pThis->InitChannelGroup())
     return pThis->GetDirectoryPath();
 
@@ -109,7 +109,7 @@ bool CGUIWindowPVRChannelsBase::Update(const std::string& strDirectory,
 
 void CGUIWindowPVRChannelsBase::UpdateButtons()
 {
-  CGUIRadioButtonControl* btnShowHidden =
+  auto btnShowHidden =
       static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWHIDDEN));
   if (btnShowHidden)
   {
@@ -226,7 +226,7 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
       }
       else if (message.GetSenderId() == CONTROL_BTNSHOWHIDDEN)
       {
-        CGUIRadioButtonControl* radioButton =
+        auto radioButton =
             static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWHIDDEN));
         if (radioButton)
         {

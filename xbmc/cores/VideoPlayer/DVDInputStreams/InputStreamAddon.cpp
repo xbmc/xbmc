@@ -390,7 +390,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
                                                       int streamId,
                                                       INPUTSTREAM_INFO* stream)
 {
-  CInputStreamAddon* thisClass = static_cast<CInputStreamAddon*>(handle);
+  auto thisClass = static_cast<CInputStreamAddon*>(handle);
   if (!thisClass || !stream)
     return nullptr;
 
@@ -410,7 +410,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
 
   if (stream->m_streamType == INPUTSTREAM_TYPE_AUDIO)
   {
-    CDemuxStreamAudio *audioStream = new CDemuxStreamAudio();
+    auto audioStream = new CDemuxStreamAudio();
 
     audioStream->iChannels = stream->m_Channels;
     audioStream->iSampleRate = stream->m_SampleRate;
@@ -422,7 +422,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   }
   else if (stream->m_streamType == INPUTSTREAM_TYPE_VIDEO)
   {
-    CDemuxStreamVideo *videoStream = new CDemuxStreamVideo();
+    auto videoStream = new CDemuxStreamVideo();
 
     videoStream->iFpsScale = stream->m_FpsScale;
     videoStream->iFpsRate = stream->m_FpsRate;
@@ -495,22 +495,22 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   }
   else if (stream->m_streamType == INPUTSTREAM_TYPE_SUBTITLE)
   {
-    CDemuxStreamSubtitle *subtitleStream = new CDemuxStreamSubtitle();
+    auto subtitleStream = new CDemuxStreamSubtitle();
     demuxStream = subtitleStream;
   }
   else if (stream->m_streamType == INPUTSTREAM_TYPE_TELETEXT)
   {
-    CDemuxStreamTeletext* teletextStream = new CDemuxStreamTeletext();
+    auto teletextStream = new CDemuxStreamTeletext();
     demuxStream = teletextStream;
   }
   else if (stream->m_streamType == INPUTSTREAM_TYPE_RDS)
   {
-    CDemuxStreamRadioRDS* rdsStream = new CDemuxStreamRadioRDS();
+    auto rdsStream = new CDemuxStreamRadioRDS();
     demuxStream = rdsStream;
   }
   else if (stream->m_streamType == INPUTSTREAM_TYPE_ID3)
   {
-    CDemuxStreamAudioID3* id3Stream = new CDemuxStreamAudioID3();
+    auto id3Stream = new CDemuxStreamAudioID3();
     demuxStream = id3Stream;
   }
   else

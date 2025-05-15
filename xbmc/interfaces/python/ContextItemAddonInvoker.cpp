@@ -30,7 +30,7 @@ void CContextItemAddonInvoker::onPythonModuleInitialization(void* moduleDict)
   CAddonPythonInvoker::onPythonModuleInitialization(moduleDict);
   if (m_item)
   {
-    XBMCAddon::xbmcgui::ListItem* arg = new XBMCAddon::xbmcgui::ListItem(m_item);
+    auto arg = new XBMCAddon::xbmcgui::ListItem(m_item);
     PyObject* pyItem = PythonBindings::makePythonInstance(arg, true);
     if (pyItem == Py_None || PySys_SetObject("listitem", pyItem) == -1)
     {

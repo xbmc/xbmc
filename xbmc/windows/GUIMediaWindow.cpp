@@ -653,7 +653,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
     // SortBy.
     if ((sorting.sortBy == SortByPlaylistOrder) && items.HasProperty(PROPERTY_SORT_ORDER))
     {
-      SortBy sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
+      auto sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
       if (sortBy != SortByNone && sortBy != SortByPlaylistOrder && sortBy != SortByProgramCount)
       {
         sorting.sortBy = sortBy;
@@ -2097,7 +2097,7 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
     std::string path = CURL(item->GetPath()).GetWithoutOptions();
     StringUtils::ToLower(path);
 
-    std::map<std::string, CFileItemPtr>::iterator itItem = lookup.find(path);
+    auto itItem = lookup.find(path);
     if (itItem != lookup.end())
     {
       // add the item to the list of filtered items

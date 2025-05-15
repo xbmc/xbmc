@@ -46,7 +46,7 @@ void Interface_Network::DeInit(AddonGlobalInterface* addonInterface)
 
 bool Interface_Network::wake_on_lan(void* kodiBase, const char* mac)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || mac == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}', mac='{}')", __FUNCTION__,
@@ -59,7 +59,7 @@ bool Interface_Network::wake_on_lan(void* kodiBase, const char* mac)
 
 char* Interface_Network::get_ip_address(void* kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}')", __FUNCTION__,
@@ -82,7 +82,7 @@ char* Interface_Network::get_ip_address(void* kodiBase)
 
 char* Interface_Network::get_hostname(void* kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}')", __FUNCTION__,
@@ -102,7 +102,7 @@ char* Interface_Network::get_hostname(void* kodiBase)
 
 char* Interface_Network::get_user_agent(void* kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}')", __FUNCTION__,
@@ -119,7 +119,7 @@ char* Interface_Network::get_user_agent(void* kodiBase)
 
 bool Interface_Network::is_local_host(void* kodiBase, const char* hostname)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || hostname == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}', hostname='{}')",
@@ -132,7 +132,7 @@ bool Interface_Network::is_local_host(void* kodiBase, const char* hostname)
 
 bool Interface_Network::is_host_on_lan(void* kodiBase, const char* hostname, bool offLineCheck)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || hostname == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}', hostname='{}')",
@@ -147,7 +147,7 @@ bool Interface_Network::is_host_on_lan(void* kodiBase, const char* hostname, boo
 
 char* Interface_Network::dns_lookup(void* kodiBase, const char* url, bool* ret)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || url == nullptr || ret == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}', url='{}', ret='{}')",
@@ -165,7 +165,7 @@ char* Interface_Network::dns_lookup(void* kodiBase, const char* url, bool* ret)
 
 char* Interface_Network::url_encode(void* kodiBase, const char* url)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || url == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Network::{} - invalid data (addon='{}', url='{}')", __FUNCTION__,

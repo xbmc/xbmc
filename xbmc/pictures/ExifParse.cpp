@@ -757,7 +757,7 @@ bool CExifParse::Process (const unsigned char* const ExifSection, const unsigned
   const char ExifAlignment1[] = "MM";
   const char ExifExtra        = 0x2a;
 
-  const char* pos = (const char*)(ExifSection + sizeof(short));   // position data pointer after length field
+  auto pos = (const char*)(ExifSection + sizeof(short));   // position data pointer after length field
 
   if (memcmp(pos, ExifHeader,6))
   {

@@ -24,7 +24,7 @@
 
 namespace
 {
-constexpr const char* ASS_SCRIPT_TYPE_RE = "^ScriptType:\\s*v4\\.00\\+?";
+constexpr auto ASS_SCRIPT_TYPE_RE = "^ScriptType:\\s*v4\\.00\\+?";
 }
 
 CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)

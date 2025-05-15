@@ -335,7 +335,7 @@ void CRenderManager::FrameMove()
     }
 
     // release all previous
-    for (std::deque<int>::iterator it = m_discard.begin(); it != m_discard.end(); )
+    for (auto it = m_discard.begin(); it != m_discard.end(); )
     {
       // renderer may want to keep the frame for postprocessing
       if (!m_pRenderer->NeedBuffer(*it) || !m_bRenderGUI)
@@ -619,7 +619,7 @@ void CRenderManager::ManageCaptures()
 
   std::lock_guard lock(m_captCritSect);
 
-  std::map<unsigned int, CRenderCapture*>::iterator it = m_captures.begin();
+  auto it = m_captures.begin();
   while (it != m_captures.end())
   {
     CRenderCapture* capture = it->second;
@@ -984,7 +984,7 @@ void CRenderManager::UpdateResolution(bool force)
     {
       RENDER_STEREO_MODE user_stereo_mode =
         CServiceBroker::GetGUI()->GetStereoscopicsManager().GetStereoModeByUser();
-      STEREOSCOPIC_PLAYBACK_MODE playbackMode =
+      auto playbackMode =
         static_cast<STEREOSCOPIC_PLAYBACK_MODE>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE));
       if (!m_picture.stereoMode.empty() &&
           playbackMode == STEREOSCOPIC_PLAYBACK_MODE_ASK &&

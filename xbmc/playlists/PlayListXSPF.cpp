@@ -21,11 +21,11 @@ using namespace PLAYLIST;
 namespace
 {
 
-constexpr char const* LOCATION_TAGNAME = "location";
-constexpr char const* PLAYLIST_TAGNAME = "playlist";
-constexpr char const* TITLE_TAGNAME = "title";
-constexpr char const* TRACK_TAGNAME = "track";
-constexpr char const* TRACKLIST_TAGNAME = "trackList";
+constexpr auto LOCATION_TAGNAME = "location";
+constexpr auto PLAYLIST_TAGNAME = "playlist";
+constexpr auto TITLE_TAGNAME = "title";
+constexpr auto TRACK_TAGNAME = "track";
+constexpr auto TRACKLIST_TAGNAME = "trackList";
 
 std::string GetXMLText(const TiXmlElement* pXmlElement)
 {

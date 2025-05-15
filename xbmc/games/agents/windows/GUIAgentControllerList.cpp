@@ -115,7 +115,7 @@ int CGUIAgentControllerList::GetCurrentControl() const
 
 void CGUIAgentControllerList::FrameMove()
 {
-  CGUIBaseContainer* thumbs =
+  auto thumbs =
       dynamic_cast<CGUIBaseContainer*>(m_guiWindow.GetControl(CONTROL_AGENT_CONTROLLER_LIST));
   if (thumbs != nullptr)
   {
@@ -146,7 +146,7 @@ void CGUIAgentControllerList::Refresh()
   // Add a "No controllers connected" item if no agents are available
   if (m_vecItems->IsEmpty())
   {
-    CFileItemPtr item =
+    auto item =
         std::make_shared<CFileItem>(g_localizeStrings.Get(35173)); // "No controllers connected"
     m_vecItems->Add(std::move(item));
   }
@@ -215,7 +215,7 @@ void CGUIAgentControllerList::AddItem(const CAgentController& agentController)
   const ControllerPtr controller = agentController.GetController();
   const std::string& path = agentController.GetPeripheralLocation();
 
-  CFileItemPtr item = std::make_shared<CFileItem>(label);
+  auto item = std::make_shared<CFileItem>(label);
   item->SetPath(path);
   if (controller)
   {

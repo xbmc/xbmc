@@ -81,7 +81,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
           strExtension, CExtsMimeSupportList::FilterSelect::hasTracks);
       for (const auto& addonInfo : addonInfos)
       {
-        std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
+        auto result = std::make_unique<CAudioDecoder>(addonInfo.second);
         if (!result->CreateDecoder() || !result->ContainsFiles(url))
         {
           CLog::Log(LOGINFO,
@@ -104,7 +104,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
         auto exts = StringUtils::Split(vfsAddon->GetExtensions(), "|");
         if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
         {
-          CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
+          auto wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
           if (wrap->ContainsFiles(url))
           {
             if (wrap->m_items.Size() == 1)
@@ -144,7 +144,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (pItem->IsDiscImage())
   {
 #if defined(HAS_ISO9660PP)
-    CISO9660Directory* iso = new CISO9660Directory();
+    auto iso = new CISO9660Directory();
     if (iso->Exists(pItem->GetURL()))
       return iso;
 

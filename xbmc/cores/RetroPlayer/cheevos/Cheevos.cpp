@@ -117,7 +117,7 @@ bool CCheevos::LoadData()
   m_richPresenceScript = data[PATCH_DATA][RICH_PRESENCE].asString();
   m_richPresenceLoaded = true;
 
-  std::unique_ptr<CFileItem> file{std::make_unique<CFileItem>()};
+  auto file{std::make_unique<CFileItem>()};
 
   GAME::CGameInfoTag& tag = *file->GetGameInfoTag();
   tag.SetTitle(data[PATCH_DATA][GAME_TITLE].asString());

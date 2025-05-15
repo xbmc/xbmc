@@ -80,7 +80,7 @@ static int mem_file_read(void *h, uint8_t* buf, int size)
   if (size < 0)
     return -1;
 
-  MemBuffer* mbuf = static_cast<MemBuffer*>(h);
+  auto mbuf = static_cast<MemBuffer*>(h);
   int64_t unread = mbuf->size - mbuf->pos;
   if (unread <= 0)
     return AVERROR_EOF;
@@ -93,7 +93,7 @@ static int mem_file_read(void *h, uint8_t* buf, int size)
 
 static int64_t mem_file_seek(void *h, int64_t pos, int whence)
 {
-  MemBuffer* mbuf = static_cast<MemBuffer*>(h);
+  auto mbuf = static_cast<MemBuffer*>(h);
   if (whence == AVSEEK_SIZE)
     return mbuf->size;
 
@@ -158,7 +158,7 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
 bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
 {
   int bufferSize = 4096;
-  uint8_t* fbuffer = (uint8_t*)av_malloc(bufferSize + AV_INPUT_BUFFER_PADDING_SIZE);
+  auto fbuffer = (uint8_t*)av_malloc(bufferSize + AV_INPUT_BUFFER_PADDING_SIZE);
   if (!fbuffer)
   {
     CLog::LogF(LOGERROR, "Could not allocate buffer");

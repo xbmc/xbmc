@@ -53,8 +53,8 @@ void Interface_GUIControlSlider::set_visible(KODI_HANDLE kodiBase,
                                              KODI_GUI_CONTROL_HANDLE handle,
                                              bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -71,8 +71,8 @@ void Interface_GUIControlSlider::set_enabled(KODI_HANDLE kodiBase,
                                              KODI_GUI_CONTROL_HANDLE handle,
                                              bool enabled)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -87,8 +87,8 @@ void Interface_GUIControlSlider::set_enabled(KODI_HANDLE kodiBase,
 
 void Interface_GUIControlSlider::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -105,8 +105,8 @@ void Interface_GUIControlSlider::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HA
 char* Interface_GUIControlSlider::get_description(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -124,8 +124,8 @@ void Interface_GUIControlSlider::set_int_range(KODI_HANDLE kodiBase,
                                                int start,
                                                int end)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -143,8 +143,8 @@ void Interface_GUIControlSlider::set_int_value(KODI_HANDLE kodiBase,
                                                KODI_GUI_CONTROL_HANDLE handle,
                                                int value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -160,8 +160,8 @@ void Interface_GUIControlSlider::set_int_value(KODI_HANDLE kodiBase,
 
 int Interface_GUIControlSlider::get_int_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -178,8 +178,8 @@ void Interface_GUIControlSlider::set_int_interval(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle,
                                                   int interval)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -196,8 +196,8 @@ void Interface_GUIControlSlider::set_percentage(KODI_HANDLE kodiBase,
                                                 KODI_GUI_CONTROL_HANDLE handle,
                                                 float percent)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -214,8 +214,8 @@ void Interface_GUIControlSlider::set_percentage(KODI_HANDLE kodiBase,
 float Interface_GUIControlSlider::get_percentage(KODI_HANDLE kodiBase,
                                                  KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -233,8 +233,8 @@ void Interface_GUIControlSlider::set_float_range(KODI_HANDLE kodiBase,
                                                  float start,
                                                  float end)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -252,8 +252,8 @@ void Interface_GUIControlSlider::set_float_value(KODI_HANDLE kodiBase,
                                                  KODI_GUI_CONTROL_HANDLE handle,
                                                  float value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -270,8 +270,8 @@ void Interface_GUIControlSlider::set_float_value(KODI_HANDLE kodiBase,
 float Interface_GUIControlSlider::get_float_value(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -288,8 +288,8 @@ void Interface_GUIControlSlider::set_float_interval(KODI_HANDLE kodiBase,
                                                     KODI_GUI_CONTROL_HANDLE handle,
                                                     float interval)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISliderControl* control = static_cast<CGUISliderControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISliderControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

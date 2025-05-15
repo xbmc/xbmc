@@ -49,14 +49,14 @@ KODI_GUI_LISTITEM_HANDLE Interface_GUIListItem::create(KODI_HANDLE kodiBase,
                                                        const char* label2,
                                                        const char* path)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "ADDON::Interface_GUIListItem::{} - invalid data", __func__);
     return nullptr;
   }
 
-  CFileItemPtr* item = new CFileItemPtr(new CFileItem());
+  auto item = new CFileItemPtr(new CFileItem());
   if (label)
     item->get()->SetLabel(label);
   if (label2)
@@ -69,22 +69,22 @@ KODI_GUI_LISTITEM_HANDLE Interface_GUIListItem::create(KODI_HANDLE kodiBase,
 
 void Interface_GUIListItem::destroy(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "ADDON::Interface_GUIListItem::{} - invalid data", __func__);
     return;
   }
 
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (item)
     delete item;
 }
 
 char* Interface_GUIListItem::get_label(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item)
   {
     CLog::Log(LOGERROR,
@@ -112,8 +112,8 @@ void Interface_GUIListItem::set_label(KODI_HANDLE kodiBase,
                                       KODI_GUI_LISTITEM_HANDLE handle,
                                       const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item || !label)
   {
     CLog::Log(LOGERROR,
@@ -138,8 +138,8 @@ void Interface_GUIListItem::set_label(KODI_HANDLE kodiBase,
 
 char* Interface_GUIListItem::get_label2(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item)
   {
     CLog::Log(LOGERROR,
@@ -167,8 +167,8 @@ void Interface_GUIListItem::set_label2(KODI_HANDLE kodiBase,
                                        KODI_GUI_LISTITEM_HANDLE handle,
                                        const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item || !label)
   {
     CLog::Log(LOGERROR,
@@ -195,8 +195,8 @@ char* Interface_GUIListItem::get_art(KODI_HANDLE kodiBase,
                                      KODI_GUI_LISTITEM_HANDLE handle,
                                      const char* type)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item || !type)
   {
     CLog::Log(LOGERROR,
@@ -226,8 +226,8 @@ void Interface_GUIListItem::set_art(KODI_HANDLE kodiBase,
                                     const char* type,
                                     const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item || !type || !label)
   {
     CLog::Log(LOGERROR,
@@ -252,8 +252,8 @@ void Interface_GUIListItem::set_art(KODI_HANDLE kodiBase,
 
 char* Interface_GUIListItem::get_path(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item)
   {
     CLog::Log(LOGERROR,
@@ -282,8 +282,8 @@ void Interface_GUIListItem::set_path(KODI_HANDLE kodiBase,
                                      KODI_GUI_LISTITEM_HANDLE handle,
                                      const char* path)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item || !path)
   {
     CLog::Log(LOGERROR,
@@ -311,8 +311,8 @@ void Interface_GUIListItem::set_property(KODI_HANDLE kodiBase,
                                          const char* key,
                                          const char* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item || !key || !value)
   {
     CLog::Log(LOGERROR,
@@ -342,8 +342,8 @@ char* Interface_GUIListItem::get_property(KODI_HANDLE kodiBase,
                                           KODI_GUI_LISTITEM_HANDLE handle,
                                           const char* key)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item || !key)
   {
     CLog::Log(LOGERROR,
@@ -375,8 +375,8 @@ void Interface_GUIListItem::select(KODI_HANDLE kodiBase,
                                    KODI_GUI_LISTITEM_HANDLE handle,
                                    bool select)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item)
   {
     CLog::Log(LOGERROR,
@@ -400,8 +400,8 @@ void Interface_GUIListItem::select(KODI_HANDLE kodiBase,
 
 bool Interface_GUIListItem::is_selected(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto item = static_cast<CFileItemPtr*>(handle);
   if (!addon || !item)
   {
     CLog::Log(LOGERROR,

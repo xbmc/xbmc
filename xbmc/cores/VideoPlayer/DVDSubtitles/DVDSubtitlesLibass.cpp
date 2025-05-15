@@ -720,7 +720,7 @@ void CDVDSubtitlesLibass::AppendTextToEvent(int eventId, const char* text)
   if (assEvent)
   {
     size_t buffSize = strlen(assEvent->Text) + strlen(text) + 1;
-    char* appendedText = new char[buffSize];
+    auto appendedText = new char[buffSize];
     strcpy(appendedText, assEvent->Text);
     strcat(appendedText, text);
     free(assEvent->Text);

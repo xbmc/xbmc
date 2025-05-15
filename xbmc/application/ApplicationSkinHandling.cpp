@@ -329,7 +329,7 @@ bool CApplicationSkinHandling::LoadCustomWindows()
 
           if (StringUtils::EqualsNoCase(strType, "dialog"))
           {
-            DialogModalityType modality = DialogModalityType::MODAL;
+            auto modality = DialogModalityType::MODAL;
             hasVisibleCondition = pRootElement->FirstChildElement("visible") != nullptr;
             // By default dialogs that have visible conditions are considered modeless unless explicitly
             // set to "modal" by the skinner using the "modality" attribute in the root XML element of the window

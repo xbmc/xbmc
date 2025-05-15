@@ -77,7 +77,7 @@ bool GetDirectoryFromTxtRecords(const CZeroconfBrowser::ZeroconfService& zerocon
     std::string password;
 
     //search for a path key entry
-    CZeroconfBrowser::ZeroconfService::tTxtRecordMap::iterator it = txtRecords.find(TXT_RECORD_PATH_KEY);
+    auto it = txtRecords.find(TXT_RECORD_PATH_KEY);
 
     //if we found the key - be sure there is a value there
     if( it != txtRecords.end() && !it->second.empty() )

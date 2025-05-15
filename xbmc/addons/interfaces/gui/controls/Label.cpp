@@ -38,8 +38,8 @@ void Interface_GUIControlLabel::set_visible(KODI_HANDLE kodiBase,
                                             KODI_GUI_CONTROL_HANDLE handle,
                                             bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUILabelControl* control = static_cast<CGUILabelControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUILabelControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -56,8 +56,8 @@ void Interface_GUIControlLabel::set_label(KODI_HANDLE kodiBase,
                                           KODI_GUI_CONTROL_HANDLE handle,
                                           const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUILabelControl* control = static_cast<CGUILabelControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUILabelControl*>(handle);
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR,
@@ -75,8 +75,8 @@ void Interface_GUIControlLabel::set_label(KODI_HANDLE kodiBase,
 
 char* Interface_GUIControlLabel::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUILabelControl* control = static_cast<CGUILabelControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUILabelControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

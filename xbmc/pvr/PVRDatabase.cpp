@@ -647,7 +647,7 @@ bool CPVRDatabase::Get(CPVRProviders& results,
     {
       while (!m_pDS->eof())
       {
-        std::shared_ptr<CPVRProvider> provider = std::make_shared<CPVRProvider>(
+        auto provider = std::make_shared<CPVRProvider>(
             m_pDS->fv("iUniqueId").get_asInt(), m_pDS->fv("iClientId").get_asInt());
 
         provider->SetDatabaseId(m_pDS->fv("idProvider").get_asInt());

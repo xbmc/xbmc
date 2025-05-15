@@ -90,7 +90,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
 
   if (activePlayers & Video)
   {
-    CVariant video = CVariant(CVariant::VariantTypeObject);
+    auto video = CVariant(CVariant::VariantTypeObject);
     video["playerid"] = GetPlaylist(Video);
     video["type"] = "video";
     video["playertype"] = strPlayerType;
@@ -98,7 +98,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   }
   if (activePlayers & Audio)
   {
-    CVariant audio = CVariant(CVariant::VariantTypeObject);
+    auto audio = CVariant(CVariant::VariantTypeObject);
     audio["playerid"] = GetPlaylist(Audio);
     audio["type"] = "audio";
     audio["playertype"] = strPlayerType;
@@ -106,7 +106,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   }
   if (activePlayers & Picture)
   {
-    CVariant picture = CVariant(CVariant::VariantTypeObject);
+    auto picture = CVariant(CVariant::VariantTypeObject);
     picture["playerid"] = GetPlaylist(Picture);
     picture["type"] = "picture";
     picture["playertype"] = "internal";
@@ -155,7 +155,7 @@ JSONRPC_STATUS CPlayerOperations::GetProperties(const std::string &method, ITran
 {
   PlayerType player = GetPlayer(parameterObject["playerid"]);
 
-  CVariant properties = CVariant(CVariant::VariantTypeObject);
+  auto properties = CVariant(CVariant::VariantTypeObject);
   for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
   {
     std::string propertyName = parameterObject["properties"][index].asString();
@@ -1143,7 +1143,7 @@ JSONRPC_STATUS CPlayerOperations::SetRepeat(const std::string &method, ITranspor
       if (IsPVRChannel())
         return FailedToExecute;
 
-      PLAYLIST::RepeatState repeat = PLAYLIST::RepeatState::NONE;
+      auto repeat = PLAYLIST::RepeatState::NONE;
       PLAYLIST::Id playlistid = GetPlaylist(GetPlayer(parameterObject["playerid"]));
       if (parameterObject["repeat"].asString() == "cycle")
       {
@@ -2163,7 +2163,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
 
 PLAYLIST::RepeatState CPlayerOperations::ParseRepeatState(const CVariant& repeat)
 {
-  PLAYLIST::RepeatState state = PLAYLIST::RepeatState::NONE;
+  auto state = PLAYLIST::RepeatState::NONE;
   std::string strState = repeat.asString();
 
   if (strState.compare("one") == 0)

@@ -18,13 +18,13 @@ using namespace XFILE;
 
 static int vfs_file_read(void *h, uint8_t* buf, int size)
 {
-  CFile* pFile = static_cast<CFile*>(h);
+  auto pFile = static_cast<CFile*>(h);
   return pFile->Read(buf, size);
 }
 
 static int64_t vfs_file_seek(void *h, int64_t pos, int whence)
 {
-  CFile* pFile = static_cast<CFile*>(h);
+  auto pFile = static_cast<CFile*>(h);
   if (whence == AVSEEK_SIZE)
     return pFile->GetLength();
   else
@@ -47,7 +47,7 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
   int blockSize = file.GetChunkSize();
   if (blockSize > 1)
     bufferSize = blockSize;
-  uint8_t* buffer = (uint8_t*)av_malloc(bufferSize);
+  auto buffer = (uint8_t*)av_malloc(bufferSize);
   AVIOContext* ioctx = avio_alloc_context(buffer, bufferSize, 0,
                                           &file, vfs_file_read, NULL,
                                           vfs_file_seek);

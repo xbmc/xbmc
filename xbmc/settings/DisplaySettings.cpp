@@ -243,7 +243,7 @@ bool CDisplaySettings::Save(TiXmlNode *settings) const
     return false;
 
   // save calibrations
-  for (ResolutionInfos::const_iterator it = m_calibrations.begin(); it != m_calibrations.end(); ++it)
+  for (auto it = m_calibrations.begin(); it != m_calibrations.end(); ++it)
   {
     // Write the resolution tag
     TiXmlElement resElement("resolution");
@@ -456,7 +456,7 @@ bool CDisplaySettings::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
   {
     std::shared_ptr<CSettingInt> stereomodeSetting = std::static_pointer_cast<CSettingInt>(setting);
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) settings->GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
+    auto playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) settings->GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
     if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_OFF)
     {
       // if preferred playback mode was OFF, update playback mode to ignore
@@ -664,14 +664,14 @@ void CDisplaySettings::UpdateCalibrations()
     return;
 
   // Add new (unique) resolutions
-  for (ResolutionInfos::const_iterator res(m_resolutions.cbegin() + RES_CUSTOM); res != m_resolutions.cend(); ++res)
+  for (auto res(m_resolutions.cbegin() + RES_CUSTOM); res != m_resolutions.cend(); ++res)
     if (std::find_if(m_calibrations.cbegin(), m_calibrations.cend(),
       [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(res->strMode, info.strMode); }) == m_calibrations.cend())
         m_calibrations.push_back(*res);
 
   for (auto &cal : m_calibrations)
   {
-    ResolutionInfos::const_iterator res(std::find_if(m_resolutions.cbegin() + RES_DESKTOP, m_resolutions.cend(),
+    auto res(std::find_if(m_resolutions.cbegin() + RES_DESKTOP, m_resolutions.cend(),
     [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(cal.strMode, info.strMode); }));
 
     if (res != m_resolutions.cend())
@@ -704,7 +704,7 @@ RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTIO
   float bestScore = FLT_MAX;
   flags &= D3DPRESENTFLAG_MODEMASK;
 
-  for (std::map<RESOLUTION, RESOLUTION_INFO>::const_iterator it = resolutionInfos.begin(); it != resolutionInfos.end(); ++it)
+  for (auto it = resolutionInfos.begin(); it != resolutionInfos.end(); ++it)
   {
     const RESOLUTION_INFO &info = it->second;
 
@@ -944,7 +944,7 @@ void CDisplaySettings::SettingOptionsStereoscopicModesFiller(
 
     for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
     {
-      RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
+      auto mode = (RENDER_STEREO_MODE) i;
       if (CServiceBroker::GetRenderSystem()->SupportsStereo(mode))
         list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(mode), mode);
     }
@@ -964,7 +964,7 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(
   // don't add "off" to the list of preferred modes as this doesn't make sense
   for (int i = RENDER_STEREO_MODE_OFF +1; i < RENDER_STEREO_MODE_COUNT; i++)
   {
-    RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
+    auto mode = (RENDER_STEREO_MODE) i;
     // also skip "mono" mode which is no real stereoscopic mode
     if (mode != RENDER_STEREO_MODE_MONO && CServiceBroker::GetRenderSystem()->SupportsStereo(mode))
       list.emplace_back(stereoscopicsManager.GetLabelForStereoMode(mode), mode);
@@ -1013,7 +1013,7 @@ void CDisplaySettings::ClearCustomResolutions()
 {
   if (m_resolutions.size() > RES_CUSTOM)
   {
-    std::vector<RESOLUTION_INFO>::iterator firstCustom = m_resolutions.begin()+RES_CUSTOM;
+    auto firstCustom = m_resolutions.begin()+RES_CUSTOM;
     m_resolutions.erase(firstCustom, m_resolutions.end());
   }
 }

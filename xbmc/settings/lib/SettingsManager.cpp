@@ -967,7 +967,7 @@ void CSettingsManager::OnSettingPropertyChanged(const std::shared_ptr<const CSet
 
   // check the changed property and if it may have an influence on the
   // children of the setting
-  SettingDependencyType dependencyType = SettingDependencyType::Unknown;
+  auto dependencyType = SettingDependencyType::Unknown;
   if (StringUtils::EqualsNoCase(propertyName, "enabled"))
     dependencyType = SettingDependencyType::Enable;
   else if (StringUtils::EqualsNoCase(propertyName, "visible"))

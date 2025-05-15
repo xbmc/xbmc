@@ -129,7 +129,7 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
 
     if (m_fadingTextures.size())  // have some fading images
     { // anything other than the last old texture needs to be faded out as per usual
-      for (std::vector<CFadingTexture *>::iterator i = m_fadingTextures.begin(); i != m_fadingTextures.end() - 1;)
+      for (auto i = m_fadingTextures.begin(); i != m_fadingTextures.end() - 1;)
       {
         if (!ProcessFading(*i, frameTime, currentTime))
           i = m_fadingTextures.erase(i);

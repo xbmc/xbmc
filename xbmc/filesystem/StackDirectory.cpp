@@ -49,7 +49,7 @@ namespace XFILE
     VECCREGEXP  RegExps;
     CRegExp     tempRE(true, CRegExp::autoUtf8);
     const std::vector<std::string>& strRegExps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps;
-    std::vector<std::string>::const_iterator itRegExp = strRegExps.begin();
+    auto itRegExp = strRegExps.begin();
     while (itRegExp != strRegExps.end())
     {
       (void)tempRE.RegComp(*itRegExp);
@@ -86,7 +86,7 @@ namespace XFILE
         File2 = CURL::Decode(File2);
       }
 
-      std::vector<CRegExp>::iterator itRegExp = RegExps.begin();
+      auto itRegExp = RegExps.begin();
       int offset = 0;
 
       while (itRegExp != RegExps.end())

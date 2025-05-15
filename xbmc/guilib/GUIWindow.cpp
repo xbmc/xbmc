@@ -300,7 +300,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, c
     // if the new control is a group, then add it's controls
     if (pGUIControl->IsGroup())
     {
-      CGUIControlGroup *grp = static_cast<CGUIControlGroup*>(pGUIControl);
+      auto grp = static_cast<CGUIControlGroup*>(pGUIControl);
       TiXmlElement *pSubControl = pControl->FirstChildElement("control");
       CRect grpRect(grp->GetXPosition(), grp->GetYPosition(),
                     grp->GetXPosition() + grp->GetWidth(), grp->GetYPosition() + grp->GetHeight());
@@ -469,7 +469,7 @@ bool CGUIWindow::OnAction(const CAction &action)
             focusControlId = m_menuLastFocusedControlID > 0 ? m_menuLastFocusedControlID : m_defaultControl;
           }
 
-          CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS, GetID(), focusControlId);
+          auto msg = CGUIMessage(GUI_MSG_SETFOCUS, GetID(), focusControlId);
           return OnMessage(msg);
         }
       }
@@ -692,7 +692,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     {
       if (message.GetPointer())
       {
-        CGUIControl *control = static_cast<CGUIControl*>(message.GetPointer());
+        auto control = static_cast<CGUIControl*>(message.GetPointer());
         control->AllocResources();
         AddControl(control);
       }
@@ -702,7 +702,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     {
       if (message.GetPointer())
       {
-        CGUIControl *control = static_cast<CGUIControl*>(message.GetPointer());
+        auto control = static_cast<CGUIControl*>(message.GetPointer());
         RemoveControl(control);
         control->FreeResources(true);
         delete control;
@@ -1045,7 +1045,7 @@ void CGUIWindow::SetProperty(const std::string &strKey, const CVariant &value)
 CVariant CGUIWindow::GetProperty(const std::string &strKey) const
 {
   std::unique_lock<CCriticalSection> lock(const_cast<CGUIWindow&>(*this));
-  std::map<std::string, CVariant, icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  auto iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return CVariant(CVariant::VariantTypeNull);
 

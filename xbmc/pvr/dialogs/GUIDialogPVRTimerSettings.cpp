@@ -915,7 +915,7 @@ void CGUIDialogPVRTimerSettings::TypesFiller(const SettingConstPtr& setting,
                                              int& current,
                                              void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -956,7 +956,7 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
                                                 int& current,
                                                 void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -1018,7 +1018,7 @@ void CGUIDialogPVRTimerSettings::DaysFiller(const SettingConstPtr& setting,
                                             int& current,
                                             void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -1067,7 +1067,7 @@ void CGUIDialogPVRTimerSettings::DupEpisodesFiller(const SettingConstPtr& settin
                                                    int& current,
                                                    void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -1089,7 +1089,7 @@ void CGUIDialogPVRTimerSettings::WeekdaysFiller(const SettingConstPtr& setting,
                                                 int& current,
                                                 void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -1112,7 +1112,7 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(const SettingConstPtr& setting
                                                   int& current,
                                                   void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -1149,7 +1149,7 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(const SettingConstPtr& setting,
                                                  int& current,
                                                  void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -1188,7 +1188,7 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(const SettingConstPtr& sett
                                                      int& current,
                                                      void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -1225,7 +1225,7 @@ void CGUIDialogPVRTimerSettings::RecordingGroupFiller(const SettingConstPtr& set
                                                       int& current,
                                                       void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -1247,7 +1247,7 @@ void CGUIDialogPVRTimerSettings::MarginTimeFiller(const SettingConstPtr& setting
                                                   int& current,
                                                   void* data)
 {
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis)
   {
     list.clear();
@@ -1310,7 +1310,7 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
   if (setting == NULL)
     return false;
 
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis == NULL)
   {
     CLog::LogF(LOGERROR, "No dialog");
@@ -1375,7 +1375,7 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condit
   if (setting == NULL)
     return false;
 
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis == NULL)
   {
     CLog::LogF(LOGERROR, "No dialog");
@@ -1460,7 +1460,7 @@ bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string& con
   if (setting == NULL)
     return false;
 
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis == NULL)
   {
     CLog::LogF(LOGERROR, "No dialog");
@@ -1507,7 +1507,7 @@ bool CGUIDialogPVRTimerSettings::EndAnytimeSetCondition(const std::string& condi
   if (setting == NULL)
     return false;
 
-  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
   if (pThis == NULL)
   {
     CLog::LogF(LOGERROR, "No dialog");

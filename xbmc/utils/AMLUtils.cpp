@@ -505,7 +505,7 @@ unsigned int aml_dv_on(unsigned int mode)
   }
 
   // set the Colorimetery to latest value from user.
-  DV_COLORIMETRY colorimetry(static_cast<DV_COLORIMETRY>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_COLORIMETRY_FOR_STD)));
+  auto colorimetry(static_cast<DV_COLORIMETRY>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_COLORIMETRY_FOR_STD)));
   CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_bt2020", (colorimetry == DV_COLORIMETRY::REMOVE) ? 'Y' : 'N');
   CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_no_colorimetry", (colorimetry == DV_COLORIMETRY::REMOVE) ? 'Y' : 'N');
 
@@ -809,7 +809,7 @@ void aml_probe_hdmi_audio()
     {
       if (i->find("Audio") == std::string::npos)
       {
-        for (std::vector<std::string>::const_iterator j = i + 1; j != probe_str.end(); ++j)
+        for (auto j = i + 1; j != probe_str.end(); ++j)
         {
           if      (j->find("{1,")  != std::string::npos)
             printf(" PCM found {1,\n");

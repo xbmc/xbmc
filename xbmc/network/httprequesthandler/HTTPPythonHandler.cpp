@@ -109,7 +109,7 @@ bool CHTTPPythonHandler::CanHandleRequest(const HTTPRequest &request) const
     return false;
 
   // static webinterfaces aren't allowed to run python scripts
-  ADDON::CWebinterface* webinterface = static_cast<ADDON::CWebinterface*>(addon.get());
+  auto webinterface = static_cast<ADDON::CWebinterface*>(addon.get());
   if (webinterface->GetType() != ADDON::WebinterfaceTypeWsgi)
     return false;
 
@@ -126,7 +126,7 @@ MHD_RESULT CHTTPPythonHandler::HandleRequest()
 
   try
   {
-    HTTPPythonRequest* pythonRequest = new HTTPPythonRequest();
+    auto pythonRequest = new HTTPPythonRequest();
     pythonRequest->connection = m_request.connection;
     pythonRequest->file = URIUtils::GetFileName(m_request.pathUrl);
     HTTPRequestHandlerUtils::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, pythonRequest->getValues);

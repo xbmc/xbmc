@@ -221,7 +221,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSettin
 {
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  std::map<std::string, Filter>::iterator it = m_filters.find(setting->GetId());
+  auto it = m_filters.find(setting->GetId());
   if (it == m_filters.end())
     return;
 
@@ -644,7 +644,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
 
   // remove the rule for the field of the filter we want to retrieve items for
   CSmartPlaylist tmpFilter = *m_filter;
-  for (CDatabaseQueryRules::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin();
+  for (auto rule = tmpFilter.m_ruleCombination.m_rules.begin();
        rule != tmpFilter.m_ruleCombination.m_rules.end(); ++rule)
   {
     if ((*rule)->m_field == filter.field)
@@ -664,7 +664,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(videodb, playlists);
 
-    VideoDbContentType type = VideoDbContentType::MOVIES;
+    auto type = VideoDbContentType::MOVIES;
     if (m_mediaType == "tvshows")
       type = VideoDbContentType::TVSHOWS;
     else if (m_mediaType == "episodes")
@@ -741,7 +741,7 @@ CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(Field field, CDatabaseQueryRu
 
 void CGUIDialogMediaFilter::DeleteRule(Field field)
 {
-  for (CDatabaseQueryRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin();
+  for (auto rule = m_filter->m_ruleCombination.m_rules.begin();
        rule != m_filter->m_ruleCombination.m_rules.end(); ++rule)
   {
     if ((*rule)->m_field == field)
@@ -760,7 +760,7 @@ void CGUIDialogMediaFilter::GetStringListOptions(const SettingConstPtr& setting,
   if (setting == NULL || data == NULL)
     return;
 
-  CGUIDialogMediaFilter *mediaFilter = static_cast<CGUIDialogMediaFilter*>(data);
+  auto mediaFilter = static_cast<CGUIDialogMediaFilter*>(data);
 
   std::map<std::string, Filter>::const_iterator itFilter = mediaFilter->m_filters.find(setting->GetId());
   if (itFilter == mediaFilter->m_filters.end())
@@ -885,7 +885,7 @@ bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::strin
   CDbUrl *dbUrl = NULL;
   if (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" || m_mediaType == "musicvideos")
   {
-    CVideoDatabase *videodb = new CVideoDatabase();
+    auto videodb = new CVideoDatabase();
     if (!videodb->Open())
     {
       delete videodb;
@@ -897,7 +897,7 @@ bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::strin
   }
   else if (m_mediaType == "artists" || m_mediaType == "albums" || m_mediaType == "songs")
   {
-    CMusicDatabase *musicdb = new CMusicDatabase();
+    auto musicdb = new CMusicDatabase();
     if (!musicdb->Open())
     {
       delete musicdb;

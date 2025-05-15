@@ -165,7 +165,7 @@ namespace dbiplus
 
 int callback(void* res_ptr, int ncol, char** result, char** cols)
 {
-  result_set* r = static_cast<result_set*>(res_ptr);
+  auto r = static_cast<result_set*>(res_ptr);
 
   if (!r->record_header.size())
   {
@@ -180,7 +180,7 @@ int callback(void* res_ptr, int ncol, char** result, char** cols)
 
   if (result != NULL)
   {
-    sql_record* rec = new sql_record;
+    auto rec = new sql_record;
     rec->resize(ncol);
     for (int i = 0; i < ncol; i++)
     {
@@ -901,7 +901,7 @@ bool SqliteDataset::query(const std::string& query)
   // returned rows
   while (sqlite3_step(stmt) == SQLITE_ROW)
   { // have a row of data
-    sql_record* res = new sql_record;
+    auto res = new sql_record;
     res->resize(numColumns);
     for (unsigned int i = 0; i < numColumns; i++)
     {

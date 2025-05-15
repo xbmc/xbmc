@@ -37,7 +37,7 @@ bool CVideoLibraryMarkWatchedJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
 
-  const CVideoLibraryMarkWatchedJob* markJob = dynamic_cast<const CVideoLibraryMarkWatchedJob*>(job);
+  auto markJob = dynamic_cast<const CVideoLibraryMarkWatchedJob*>(job);
   if (markJob == NULL)
     return false;
 

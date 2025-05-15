@@ -78,7 +78,7 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
     for (int i = 0; i < 16; i++)
     {
       uint8_t* color = m_dvdspus.m_clut[i];
-      uint8_t* t = (uint8_t*)pData->m_data[i];
+      auto t = (uint8_t*)pData->m_data[i];
 
 // pData->m_data[i] points to an uint32_t
 // Byte swapping is needed between big and little endian systems

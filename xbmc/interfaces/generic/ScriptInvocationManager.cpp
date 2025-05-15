@@ -40,7 +40,7 @@ void CScriptInvocationManager::Process()
 
   // go through all active threads and find and remove all which are done
   std::vector<LanguageInvokerThread> tempList;
-  for (LanguageInvokerThreadMap::iterator it = m_scripts.begin(); it != m_scripts.end(); )
+  for (auto it = m_scripts.begin(); it != m_scripts.end(); )
   {
     if (it->second.done)
     {
@@ -157,7 +157,7 @@ void CScriptInvocationManager::UnregisterLanguageInvocationHandler(ILanguageInvo
   std::lock_guard lock(m_critSection);
 
   //  get all extensions of the given language invoker
-  for (std::map<std::string, ILanguageInvocationHandler*>::iterator it = m_invocationHandlers.begin(); it != m_invocationHandlers.end(); )
+  for (auto it = m_invocationHandlers.begin(); it != m_invocationHandlers.end(); )
   {
     if (it->second == invocationHandler)
       m_invocationHandlers.erase(it++);
@@ -176,7 +176,7 @@ bool CScriptInvocationManager::HasLanguageInvoker(const std::string &script) con
 
   std::lock_guard lock(m_critSection);
 
-  std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
+  auto it = m_invocationHandlers.find(extension);
   return it != m_invocationHandlers.end() && it->second != NULL;
 }
 
@@ -414,7 +414,7 @@ void CScriptInvocationManager::OnExecutionDone(int scriptId)
 
   std::lock_guard lock(m_critSection);
 
-  LanguageInvokerThreadMap::iterator script = m_scripts.find(scriptId);
+  auto script = m_scripts.find(scriptId);
   if (script != m_scripts.end())
     script->second.done = true;
 }
@@ -424,7 +424,7 @@ CScriptInvocationManager::LanguageInvokerThread CScriptInvocationManager::getInv
   if (scriptId < 0)
     return LanguageInvokerThread();
 
-  LanguageInvokerThreadMap::const_iterator script = m_scripts.find(scriptId);
+  auto script = m_scripts.find(scriptId);
   if (script == m_scripts.end())
     return LanguageInvokerThread();
 

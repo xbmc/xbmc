@@ -67,7 +67,7 @@ MHD_RESULT HTTPRequestHandlerUtils::FillArgumentMap(void *cls, enum MHD_ValueKin
   if (cls == nullptr || key == nullptr)
     return MHD_NO;
 
-  std::map<std::string, std::string> *arguments = reinterpret_cast<std::map<std::string, std::string>*>(cls);
+  auto arguments = reinterpret_cast<std::map<std::string, std::string>*>(cls);
   arguments->insert(std::make_pair(key, value != nullptr ? value : ""));
 
   return MHD_YES;
@@ -78,7 +78,7 @@ MHD_RESULT HTTPRequestHandlerUtils::FillArgumentMultiMap(void *cls, enum MHD_Val
   if (cls == nullptr || key == nullptr)
     return MHD_NO;
 
-  std::multimap<std::string, std::string> *arguments = reinterpret_cast<std::multimap<std::string, std::string>*>(cls);
+  auto arguments = reinterpret_cast<std::multimap<std::string, std::string>*>(cls);
   arguments->insert(std::make_pair(key, value != nullptr ? value : ""));
 
   return MHD_YES;

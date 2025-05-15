@@ -69,7 +69,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
 
     // start parsing of extra data - create a copy to be safe and make it zero-terminating to avoid access violations!
     unsigned int parse_extrasize = hints.extradata.GetSize();
-    char* parse_extra = new char[parse_extrasize + 1];
+    auto parse_extra = new char[parse_extrasize + 1];
     memcpy(parse_extra, hints.extradata.GetData(), parse_extrasize);
     parse_extra[parse_extrasize] = '\0';
 

@@ -233,7 +233,7 @@ JSONRPC_STATUS CVideoLibrary::GetSeasonDetails(const std::string &method, ITrans
       infos.m_iDbId <= 0 || infos.m_iIdShow <= 0)
     return InvalidParams;
 
-  CFileItemPtr pItem = std::make_shared<CFileItem>(infos);
+  auto pItem = std::make_shared<CFileItem>(infos);
   HandleFileItem("seasonid", false, "seasondetails", pItem, parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
@@ -307,7 +307,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const std::string &method, ITran
   if (!videodatabase.GetEpisodeInfo("", infos, id, RequiresAdditionalDetails(MediaTypeEpisode, parameterObject)) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  CFileItemPtr pItem = std::make_shared<CFileItem>(infos);
+  auto pItem = std::make_shared<CFileItem>(infos);
   // We need to set the correct base path to get the valid fanart
   int tvshowid = infos.m_iIdShow;
   if (tvshowid <= 0)
@@ -441,7 +441,7 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const std::string &method, ITransportLay
 {
   std::string media = parameterObject["type"].asString();
   StringUtils::ToLower(media);
-  VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
+  auto idContent = VideoDbContentType::UNKNOWN;
 
   std::string strPath = "videodb://";
   /* select which video content to get genres from*/
@@ -482,7 +482,7 @@ JSONRPC_STATUS CVideoLibrary::GetTags(const std::string &method, ITransportLayer
 {
   std::string media = parameterObject["type"].asString();
   StringUtils::ToLower(media);
-  VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
+  auto idContent = VideoDbContentType::UNKNOWN;
 
   std::string strPath = "videodb://";
   /* select which video content to get tags from*/
@@ -550,7 +550,7 @@ JSONRPC_STATUS CVideoLibrary::GetAvailableArtTypes(const std::string& method, IT
   if (!videodatabase.Open())
     return InternalError;
 
-  CVariant availablearttypes = CVariant(CVariant::VariantTypeArray);
+  auto availablearttypes = CVariant(CVariant::VariantTypeArray);
   for (const auto& artType : videodatabase.GetAvailableArtTypesForItem(mediaID, mediaType))
   {
     availablearttypes.append(artType);
@@ -583,10 +583,10 @@ JSONRPC_STATUS CVideoLibrary::GetAvailableArt(const std::string& method, ITransp
   if (!videodatabase.Open())
     return InternalError;
 
-  CVariant availableart = CVariant(CVariant::VariantTypeArray);
+  auto availableart = CVariant(CVariant::VariantTypeArray);
   for (const auto& artentry : videodatabase.GetAvailableArtForItem(mediaID, mediaType, artType))
   {
-    CVariant item = CVariant(CVariant::VariantTypeObject);
+    auto item = CVariant(CVariant::VariantTypeObject);
     item["url"] = CTextureUtils::GetWrappedImageURL(artentry.m_url);
     item["arttype"] = artentry.m_aspect;
     if (!artentry.m_preview.empty())
@@ -911,7 +911,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshEpisode(const std::string &method, ITranspo
   if (!videodatabase.GetEpisodeInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  CFileItemPtr item = std::make_shared<CFileItem>(infos);
+  auto item = std::make_shared<CFileItem>(infos);
   // We need to set the correct base path to get the valid fanart
   int tvshowid = infos.m_iIdShow;
   if (tvshowid <= 0)

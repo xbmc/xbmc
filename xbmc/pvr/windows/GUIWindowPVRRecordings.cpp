@@ -202,7 +202,7 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
   bool bGroupRecordings = m_settings.GetBoolValue(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTNGROUPITEMS, bGroupRecordings);
 
-  CGUIRadioButtonControl* btnShowDeleted =
+  auto btnShowDeleted =
       static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWDELETED));
   if (btnShowDeleted)
   {
@@ -394,7 +394,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
       }
       else if (message.GetSenderId() == CONTROL_BTNSHOWDELETED)
       {
-        CGUIRadioButtonControl* radioButton =
+        auto radioButton =
             static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWDELETED));
         if (radioButton)
         {

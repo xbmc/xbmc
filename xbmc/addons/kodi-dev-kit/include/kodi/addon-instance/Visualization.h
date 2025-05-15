@@ -797,14 +797,14 @@ private:
                                  int bitsPerSample,
                                  const char* songName)
   {
-    CInstanceVisualization* thisClass = static_cast<CInstanceVisualization*>(hdl);
+    auto thisClass = static_cast<CInstanceVisualization*>(hdl);
     thisClass->m_renderHelper = kodi::gui::GetRenderHelper();
     return thisClass->Start(channels, samplesPerSec, bitsPerSample, songName);
   }
 
   inline static void ADDON_stop(const KODI_ADDON_VISUALIZATION_HDL hdl)
   {
-    CInstanceVisualization* thisClass = static_cast<CInstanceVisualization*>(hdl);
+    auto thisClass = static_cast<CInstanceVisualization*>(hdl);
     thisClass->Stop();
     thisClass->m_renderHelper = nullptr;
   }
@@ -823,7 +823,7 @@ private:
 
   inline static void ADDON_render(const KODI_ADDON_VISUALIZATION_HDL hdl)
   {
-    CInstanceVisualization* thisClass = static_cast<CInstanceVisualization*>(hdl);
+    auto thisClass = static_cast<CInstanceVisualization*>(hdl);
     if (!thisClass->m_renderHelper)
       return;
     thisClass->m_renderHelper->Begin();
@@ -838,7 +838,7 @@ private:
 
   inline static unsigned int ADDON_get_presets(const KODI_ADDON_VISUALIZATION_HDL hdl)
   {
-    CInstanceVisualization* thisClass = static_cast<CInstanceVisualization*>(hdl);
+    auto thisClass = static_cast<CInstanceVisualization*>(hdl);
     std::vector<std::string> presets;
     if (thisClass->GetPresets(presets))
     {
@@ -878,7 +878,7 @@ private:
 
   inline static bool ADDON_lock_preset(const KODI_ADDON_VISUALIZATION_HDL hdl)
   {
-    CInstanceVisualization* thisClass = static_cast<CInstanceVisualization*>(hdl);
+    auto thisClass = static_cast<CInstanceVisualization*>(hdl);
     thisClass->m_presetLockedByUser = !thisClass->m_presetLockedByUser;
     return thisClass->LockPreset(thisClass->m_presetLockedByUser);
   }

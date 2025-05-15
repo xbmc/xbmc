@@ -28,7 +28,7 @@ bool CMusicLibraryExportJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
 
-  const CMusicLibraryExportJob* exportJob = dynamic_cast<const CMusicLibraryExportJob*>(job);
+  auto exportJob = dynamic_cast<const CMusicLibraryExportJob*>(job);
   if (exportJob == NULL)
     return false;
 

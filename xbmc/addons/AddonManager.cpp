@@ -191,7 +191,7 @@ void CAddonMgr::RemoveFromUpdateableAddons(AddonPtr &pAddon)
 {
   std::lock_guard lock(m_critSection);
 
-  VECADDONS::iterator it = std::find(m_updateableAddons.begin(), m_updateableAddons.end(), pAddon);
+  auto it = std::find(m_updateableAddons.begin(), m_updateableAddons.end(), pAddon);
 
   if(it != m_updateableAddons.end())
   {
@@ -217,7 +217,7 @@ bool CAddonMgr::ReloadSettings(const std::string& addonId, AddonInstanceId insta
 {
   std::lock_guard lock(m_critSection);
 
-  VECADDONS::iterator it =
+  auto it =
       std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(addonId));
 
   if( it != m_updateableAddons.end())

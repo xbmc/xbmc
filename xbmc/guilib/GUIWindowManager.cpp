@@ -1019,7 +1019,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
       static_cast<CGUIDialog*>(pMsg->lpVoid)->Open(pMsg->param2, pMsg->strParam);
     else
     {
-      CGUIDialog* pDialog = static_cast<CGUIDialog*>(GetWindow(pMsg->param1));
+      auto pDialog = static_cast<CGUIDialog*>(GetWindow(pMsg->param1));
       if (pDialog)
         pDialog->Open(pMsg->strParam);
     }
@@ -1028,7 +1028,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
 
   case TMSG_GUI_WINDOW_CLOSE:
   {
-    CGUIWindow *window = static_cast<CGUIWindow *>(pMsg->lpVoid);
+    auto window = static_cast<CGUIWindow *>(pMsg->lpVoid);
     if (window)
       window->Close((pMsg->param1 & 0x1) ? true : false, pMsg->param1, (pMsg->param1 & 0x2) ? true : false);
   }
@@ -1070,7 +1070,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   {
     if (pMsg->lpVoid)
     {
-      CAction *action = static_cast<CAction *>(pMsg->lpVoid);
+      auto action = static_cast<CAction *>(pMsg->lpVoid);
       if (pMsg->param1 == WINDOW_INVALID)
         g_application.OnAction(*action);
       else
@@ -1090,7 +1090,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_GUI_MESSAGE:
     if (pMsg->lpVoid)
     {
-      CGUIMessage *message = static_cast<CGUIMessage *>(pMsg->lpVoid);
+      auto message = static_cast<CGUIMessage *>(pMsg->lpVoid);
       SendMessage(*message, pMsg->param1);
       delete message;
     }
@@ -1557,7 +1557,7 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window /*= 0
 {
   std::lock_guard lock(m_critSection);
 
-  CGUIMessage* msg = new CGUIMessage(message);
+  auto msg = new CGUIMessage(message);
   m_vecThreadMessages.emplace_back(msg, window);
 }
 
@@ -1610,7 +1610,7 @@ int CGUIWindowManager::RemoveThreadMessageByMessageIds(int *pMessageIDList)
   std::lock_guard lock(m_critSection);
 
   int removedMsgCount = 0;
-  for (std::list < std::pair<CGUIMessage*,int> >::iterator it = m_vecThreadMessages.begin();
+  for (auto it = m_vecThreadMessages.begin();
        it != m_vecThreadMessages.end();)
   {
     CGUIMessage *pMsg = it->first;

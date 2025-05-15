@@ -218,7 +218,7 @@ void CGUIListGroup::SetState(bool selected, bool focused)
   {
     if ((*it)->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL)
     {
-      CGUIListLabel *label = (CGUIListLabel *)(*it);
+      auto label = (CGUIListLabel *)(*it);
       label->SetSelected(selected);
     }
     else if ((*it)->GetControlType() == CGUIControl::GUICONTROL_LISTGROUP)

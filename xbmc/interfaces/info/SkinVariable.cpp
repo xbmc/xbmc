@@ -21,7 +21,7 @@ const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node
   const char* name = node.Attribute("name");
   if (name)
   {
-    CSkinVariableString* tmp = new CSkinVariableString;
+    auto tmp = new CSkinVariableString;
     tmp->m_name = name;
     tmp->m_context = context;
     const TiXmlElement* valuenode = node.FirstChildElement("value");

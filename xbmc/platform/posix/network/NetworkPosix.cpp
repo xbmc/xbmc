@@ -114,7 +114,7 @@ CNetworkPosix::~CNetworkPosix()
   if (m_sock != -1)
     close(CNetworkPosix::m_sock);
 
-  std::vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
+  auto it = m_interfaces.begin();
   while (it != m_interfaces.end())
   {
     CNetworkInterface* nInt = *it;

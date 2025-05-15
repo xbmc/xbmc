@@ -320,7 +320,7 @@ inline bool CFileOperationJob::CanBeRenamed(const std::string &strFileA, const s
 
 bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int ipercent, float avgSpeed)
 {
-  DataHolder *data = static_cast<DataHolder*>(pContext);
+  auto data = static_cast<DataHolder*>(pContext);
   double current = data->current + ((double)ipercent * data->opWeight * (double)m_time)/ 100.0;
 
   if (avgSpeed > 1000000.0f)
@@ -340,7 +340,7 @@ bool CFileOperationJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
 
-  const CFileOperationJob* rjob = dynamic_cast<const CFileOperationJob*>(job);
+  auto rjob = dynamic_cast<const CFileOperationJob*>(job);
   if (rjob == NULL)
     return false;
 

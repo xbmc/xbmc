@@ -323,7 +323,7 @@ namespace XBMCAddon
         label);
       pGUIControl->SetVisible(m_visible);
 
-      CGUIButtonControl* pGuiButtonControl =
+      auto pGuiButtonControl =
         static_cast<CGUIButtonControl*>(pGUIControl);
 
       pGuiButtonControl->SetLabel(strText);
@@ -703,7 +703,7 @@ namespace XBMCAddon
         CTextureInfo(strTextureRadioOffDisabled));
       pGUIControl->SetVisible(m_visible);
 
-      CGUIRadioButtonControl* pGuiButtonControl =
+      auto pGuiButtonControl =
         static_cast<CGUIRadioButtonControl*>(pGUIControl);
 
       pGuiButtonControl->SetLabel(strText);

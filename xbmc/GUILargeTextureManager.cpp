@@ -225,7 +225,7 @@ void CGUILargeTextureManager::QueueImage(const std::string &path, bool useCache)
   }
 
   // queue the item
-  CLargeTexture *image = new CLargeTexture(path);
+  auto image = new CLargeTexture(path);
   unsigned int jobID = CServiceBroker::GetJobManager()->AddJob(new CImageLoader(path, useCache),
                                                                this, CJob::PRIORITY_NORMAL);
   m_queued.emplace_back(jobID, image);
@@ -240,7 +240,7 @@ void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJ
   {
     if (it->first == jobID)
     { // found our job
-      CImageLoader *loader = static_cast<CImageLoader*>(job);
+      auto loader = static_cast<CImageLoader*>(job);
       CLargeTexture *image = it->second;
       image->SetTexture(std::move(loader->m_texture));
       loader->m_texture = NULL; // we want to keep the texture, and jobs are auto-deleted.

@@ -127,7 +127,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   auto logger = CServiceBroker::GetLogging().GetLogger(
       StringUtils::Format("CHTTPPythonWsgiInvoker[{}]", script));
 
-  ADDON::CWebinterface* webinterface = static_cast<ADDON::CWebinterface*>(m_addon.get());
+  auto webinterface = static_cast<ADDON::CWebinterface*>(m_addon.get());
   if (webinterface->GetType() != ADDON::WebinterfaceTypeWsgi)
   {
     logger->error("trying to execute a non-WSGI script");
@@ -352,7 +352,7 @@ std::map<std::string, std::string> CHTTPPythonWsgiInvoker::createCgiEnvironment(
 
   // CONTENT_TYPE
   std::string headerValue;
-  std::multimap<std::string, std::string>::const_iterator headerIt = httpRequest->headerValues.find(MHD_HTTP_HEADER_CONTENT_TYPE);
+  auto headerIt = httpRequest->headerValues.find(MHD_HTTP_HEADER_CONTENT_TYPE);
   if (headerIt != httpRequest->headerValues.end())
     headerValue = headerIt->second;
   environment.insert(std::make_pair("CONTENT_TYPE", headerValue));
@@ -389,7 +389,7 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   if (environment == nullptr)
     return;
 
-  PyObject* pyEnviron = reinterpret_cast<PyObject*>(environment);
+  auto pyEnviron = reinterpret_cast<PyObject*>(environment);
   if (pyEnviron == nullptr)
     return;
 
@@ -408,7 +408,7 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   }
   {
     // wsgi.input
-    XBMCAddon::xbmcwsgi::WsgiInputStream* wsgiInputStream = new XBMCAddon::xbmcwsgi::WsgiInputStream();
+    auto wsgiInputStream = new XBMCAddon::xbmcwsgi::WsgiInputStream();
     if (request != NULL)
       wsgiInputStream->SetRequest(request);
 
@@ -419,7 +419,7 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   }
   {
     // wsgi.errors
-    XBMCAddon::xbmcwsgi::WsgiErrorStream* wsgiErrorStream = new XBMCAddon::xbmcwsgi::WsgiErrorStream();
+    auto wsgiErrorStream = new XBMCAddon::xbmcwsgi::WsgiErrorStream();
     if (request != NULL)
       wsgiErrorStream->SetRequest(request);
 

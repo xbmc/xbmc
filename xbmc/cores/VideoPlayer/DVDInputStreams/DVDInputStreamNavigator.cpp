@@ -553,7 +553,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
                   100 * (double)pos / (double)len);
         //Get total segment time
 
-        dvdnav_cell_change_event_t* cell_change_event = reinterpret_cast<dvdnav_cell_change_event_t*>(buf);
+        auto cell_change_event = reinterpret_cast<dvdnav_cell_change_event_t*>(buf);
         m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
         m_iTime      = (int) (m_iCellStart / 90);
         m_iTotalTime = (int) (cell_change_event->pgc_length / 90);
@@ -1441,10 +1441,10 @@ int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)
   if (ch == -1 || ch > GetChapterCount())
     ch = GetChapter();
 
-  std::map<int, std::map<int, int64_t>>::iterator title = m_mapTitleChapters.find(m_iTitle);
+  auto title = m_mapTitleChapters.find(m_iTitle);
   if (title != m_mapTitleChapters.end())
   {
-    std::map<int, int64_t>::iterator chapter = title->second.find(ch);
+    auto chapter = title->second.find(ch);
     if (chapter != title->second.end())
       return chapter->second;
   }
@@ -1491,7 +1491,7 @@ VideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
 
 int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos)
 {
-  CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
+  auto lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
   if (lpstream->Seek(i_pos, SEEK_SET) >= 0)
     return 0;
   else
@@ -1500,7 +1500,7 @@ int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos)
 
 int dvd_inputstreamnavigator_cb_read(void * p_stream, void * buffer, int i_read)
 {
-  CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
+  auto lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
 
   int i_ret = 0;
   while (i_ret < i_read)
@@ -1549,8 +1549,8 @@ int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blo
 {
   // NOTE/TODO: this vectored read callback somehow doesn't seem to be called by libdvdnav.
   // Therefore, the code below isn't really tested, but inspired from the libc_readv code for Win32 in libdvdcss (device.c:713).
-  CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
-  const struct iovec* lpiovec = reinterpret_cast<const struct iovec*>(p_iovec);
+  auto lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
+  auto lpiovec = reinterpret_cast<const struct iovec*>(p_iovec);
 
   int i_index, i_len, i_total = 0;
   unsigned char *p_base;

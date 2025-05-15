@@ -24,31 +24,31 @@ std::array<std::string, 1> availableLogTargets = {"console"};
 std::vector<std::string> availableAudioBackends = CCompileInfo::GetAvailableAudioBackends();
 std::vector<std::string> availableGlInterfaces = CCompileInfo::GetAvailableGlInterfaces();
 
-constexpr const char* windowingText =
+constexpr auto windowingText =
     R"""(
 Selected window system not available: {}
     Available window systems: {}
 )""";
 
-constexpr const char* loggingText =
+constexpr auto loggingText =
     R"""(
 Selected logging target not available: {}
     Available log targest: {}
 )""";
 
-constexpr const char* audioBackendsText =
+constexpr auto audioBackendsText =
     R"""(
 Selected audio backend not available: {}
     Available audio backends: {}
 )""";
 
-constexpr const char* glInterfaceText =
+constexpr auto glInterfaceText =
     R"""(
 Selected GL interface not available: {}
     Available GL interfaces: {}
 )""";
 
-constexpr const char* helpText =
+constexpr auto helpText =
     R"""(
 Linux Specific Arguments:
   --windowing=<system>  Select which windowing method to use.

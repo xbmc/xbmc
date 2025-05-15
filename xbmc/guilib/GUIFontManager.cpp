@@ -48,7 +48,7 @@ using namespace ADDON;
 
 namespace
 {
-constexpr const char* XML_FONTCACHE_FILENAME = "fontcache.xml";
+constexpr auto XML_FONTCACHE_FILENAME = "fontcache.xml";
 
 bool LoadXMLData(const std::string& filepath, CXBMCTinyXML& xmlDoc)
 {
@@ -221,7 +221,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   }
 
   // font file is loaded, create our CGUIFont
-  CGUIFont* pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing,
+  auto pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing,
                                     static_cast<float>(iSize), pFontFile);
   m_vecFonts.emplace_back(pNewFont);
 

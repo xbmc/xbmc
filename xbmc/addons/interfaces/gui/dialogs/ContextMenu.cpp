@@ -37,7 +37,7 @@ int Interface_GUIDialogContextMenu::open(KODI_HANDLE kodiBase,
                                          const char* entries[],
                                          unsigned int size)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogContextMenu::{} - invalid data", __func__);

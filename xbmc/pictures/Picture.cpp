@@ -168,7 +168,7 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   uint32_t dest_width_aligned = ((dest_width + 15) & ~0x0f);
   uint32_t stride = dest_width_aligned * sizeof(uint32_t);
 
-  uint32_t* buffer = new uint32_t[dest_width_aligned * dest_height + 4];
+  auto buffer = new uint32_t[dest_width_aligned * dest_height + 4];
   if (!ScaleImage(pixels, width, height, pitch, AV_PIX_FMT_BGRA, (uint8_t*)buffer, dest_width,
                   dest_height, stride, AV_PIX_FMT_BGRA, scalingAlgorithm))
   {
@@ -286,7 +286,7 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
   bool success = false; // Flag that we at least had one successful image processed
 
   // create a buffer for the resulting thumb
-  std::unique_ptr<uint32_t[]> buffer = std::make_unique<uint32_t[]>(imageRes * imageRes);
+  auto buffer = std::make_unique<uint32_t[]>(imageRes * imageRes);
   for (unsigned int i = 0; i < files.size(); ++i)
   {
     int x = i % num_across;
@@ -299,7 +299,7 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
 
       // scale appropriately
-      std::unique_ptr<uint32_t[]> scaled = std::make_unique<uint32_t[]>(width * height);
+      auto scaled = std::make_unique<uint32_t[]>(width * height);
       if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(),
                      texture->GetPitch(), AV_PIX_FMT_BGRA, reinterpret_cast<uint8_t*>(scaled.get()),
                      width, height, width * 4, AV_PIX_FMT_BGRA))

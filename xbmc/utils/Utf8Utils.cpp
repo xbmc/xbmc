@@ -86,7 +86,7 @@ inline size_t CUtf8Utils::SizeOfUtf8Char(const char* const str)
   if (!str)
     return 0;
 
-  const unsigned char* const strU = (const unsigned char*)str;
+  const auto strU = (const unsigned char*)str;
   const unsigned char chr = strU[0];
 
   /* this is an implementation of http://www.unicode.org/versions/Unicode6.2.0/ch03.pdf#G27506 */

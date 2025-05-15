@@ -54,7 +54,7 @@ void CDialogGameVideoFilter::PreInit()
 
   if (m_items.Size() == 0)
   {
-    CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(231)); // "None"
+    auto item = std::make_shared<CFileItem>(g_localizeStrings.Get(231)); // "None"
     m_items.Add(std::move(item));
   }
 
@@ -72,7 +72,7 @@ void CDialogGameVideoFilter::InitVideoFilters()
         RETRO::CRenderVideoSettings videoSettings;
         videoSettings.SetScalingMethod(scalingMethodProps.scalingMethod);
 
-        CFileItemPtr item =
+        auto item =
             std::make_shared<CFileItem>(g_localizeStrings.Get(scalingMethodProps.nameIndex));
         item->SetLabel2(g_localizeStrings.Get(scalingMethodProps.categoryIndex));
         item->SetProperty("game.videofilter", CVariant{videoSettings.GetVideoFilter()});

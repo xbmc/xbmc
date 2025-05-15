@@ -813,7 +813,7 @@ namespace XBMCAddon
       auto infoTag = GetVideoInfoTag();
       if (StringUtils::CompareNoCase(cType, "video") == 0)
       {
-        CStreamDetailVideo* video = new CStreamDetailVideo;
+        auto video = new CStreamDetailVideo;
         for (const auto& it : dictionary)
         {
           const String& key = it.first;
@@ -838,7 +838,7 @@ namespace XBMCAddon
       }
       else if (StringUtils::CompareNoCase(cType, "audio") == 0)
       {
-        CStreamDetailAudio* audio = new CStreamDetailAudio;
+        auto audio = new CStreamDetailAudio;
         for (const auto& it : dictionary)
         {
           const String& key = it.first;
@@ -855,7 +855,7 @@ namespace XBMCAddon
       }
       else if (StringUtils::CompareNoCase(cType, "subtitle") == 0)
       {
-        CStreamDetailSubtitle* subtitle = new CStreamDetailSubtitle;
+        auto subtitle = new CStreamDetailSubtitle;
         for (const auto& it : dictionary)
         {
           const String& key = it.first;

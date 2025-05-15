@@ -159,7 +159,7 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckRes
     }
     else
     {
-      CFileItem* itemToPlay = new CFileItem(recording);
+      auto itemToPlay = new CFileItem(recording);
       itemToPlay->SetStartOffset(item.GetStartOffset());
       CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay);
     }
@@ -442,7 +442,7 @@ bool CPVRGUIActionsPlayback::PlayChannelOnStartup() const
 
 bool CPVRGUIActionsPlayback::PlayMedia(const CFileItem& item) const
 {
-  std::unique_ptr<CFileItem> pvrItem = std::make_unique<CFileItem>(item);
+  auto pvrItem = std::make_unique<CFileItem>(item);
   if (URIUtils::IsPVRChannel(item.GetPath()) && !item.HasPVRChannelInfoTag())
   {
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =

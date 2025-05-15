@@ -451,10 +451,10 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
   if(maxrate == 0)
     maxrate = INT_MAX;
 
-  SResources::iterator best = resources.end();
+  auto best = resources.end();
   for(const char** type = prio; *type && best == resources.end(); type++)
   {
-    for (SResources::iterator it = resources.begin(); it != resources.end(); ++it)
+    for (auto it = resources.begin(); it != resources.end(); ++it)
     {
       if(!StringUtils::StartsWith(it->mime, mime))
         continue;

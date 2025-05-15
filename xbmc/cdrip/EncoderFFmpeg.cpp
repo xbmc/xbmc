@@ -237,7 +237,7 @@ void CEncoderFFmpeg::SetTag(const std::string& tag, const std::string& value)
 
 int CEncoderFFmpeg::avio_write_callback(void* opaque, uint8_t* buf, int buf_size)
 {
-  CEncoderFFmpeg* enc = static_cast<CEncoderFFmpeg*>(opaque);
+  auto enc = static_cast<CEncoderFFmpeg*>(opaque);
   if (enc->Write(buf, buf_size) != buf_size)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::{} - Error writing FFmpeg buffer to file", __func__);
@@ -248,7 +248,7 @@ int CEncoderFFmpeg::avio_write_callback(void* opaque, uint8_t* buf, int buf_size
 
 int64_t CEncoderFFmpeg::avio_seek_callback(void* opaque, int64_t offset, int whence)
 {
-  CEncoderFFmpeg* enc = static_cast<CEncoderFFmpeg*>(opaque);
+  auto enc = static_cast<CEncoderFFmpeg*>(opaque);
   return enc->Seek(offset, whence);
 }
 

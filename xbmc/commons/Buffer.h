@@ -246,7 +246,8 @@ namespace XbmcCommons
       mposition += length;
       return ret;
     }
-    inline char* getCharPointerDirect() { char* ret = (char*)(buffer + mposition); size_t len = strlen(ret) + 1; check(len); mposition += len; return ret; }
+    inline char* getCharPointerDirect() {
+ auto ret = (char*)(buffer + mposition); size_t len = strlen(ret) + 1; check(len); mposition += len; return ret; }
 
   };
 

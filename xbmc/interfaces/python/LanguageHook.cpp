@@ -79,8 +79,8 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       std::lock_guard lock(hooksMutex);
-      
-      std::map<PyInterpreterState*,AddonClass::Ref<PythonLanguageHook> >::iterator iter = hooks.find(interp);
+
+      auto iter = hooks.find(interp);
       if (iter != hooks.end())
         return iter->second;
 

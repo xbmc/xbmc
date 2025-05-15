@@ -143,7 +143,7 @@ void DllLibCurlGlobal::CheckIdle()
   /* 20 seconds idle time before closing handle */
   const unsigned int idletime = 30000;
 
-  VEC_CURLSESSIONS::iterator it = m_sessions.begin();
+  auto it = m_sessions.begin();
   while (it != m_sessions.end())
   {
     auto now = std::chrono::steady_clock::now();

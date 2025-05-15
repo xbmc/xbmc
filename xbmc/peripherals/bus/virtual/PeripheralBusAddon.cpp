@@ -430,7 +430,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
     auto it = std::find_if(newAddons.begin(), newAddons.end(), GetAddon);
     if (it != newAddons.end())
     {
-      PeripheralAddonPtr newAddon = std::make_shared<CPeripheralAddon>(*it, m_manager);
+      auto newAddon = std::make_shared<CPeripheralAddon>(*it, m_manager);
       if (newAddon)
       {
         bool bCreated;

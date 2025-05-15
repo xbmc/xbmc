@@ -24,7 +24,7 @@ class IGUIRenderSettings;
 // Label to use when disabling rendering via the <pixels> property. A path
 // to pixel data is expected, but instead this constant can be provided to
 // skip a file existence check in the renderer.
-constexpr const char* NO_PIXEL_DATA = "-";
+constexpr auto NO_PIXEL_DATA = "-";
 
 class CGUIGameControl : public CGUIControl
 {

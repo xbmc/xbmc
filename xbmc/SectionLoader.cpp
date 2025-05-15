@@ -120,7 +120,7 @@ void CSectionLoader::UnloadAll()
   // delete the dll's
   std::lock_guard lock(g_sectionLoader.m_critSection);
 
-  std::vector<CDll>::iterator it = g_sectionLoader.m_vecLoadedDLLs.begin();
+  auto it = g_sectionLoader.m_vecLoadedDLLs.begin();
   while (it != g_sectionLoader.m_vecLoadedDLLs.end())
   {
     CDll& dll = *it;

@@ -241,7 +241,7 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
   if (data == NULL)
     return true;
 
-  CSmartPlaylistRule *rule = static_cast<CSmartPlaylistRule*>(data);
+  auto rule = static_cast<CSmartPlaylistRule*>(data);
 
   // check if there's a validator for this rule
   StringValidation::Validator validator = NULL;
@@ -1081,7 +1081,7 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
   std::string rule;
 
   // translate the combinations into SQL
-  for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)
+  for (auto it = m_combinations.begin(); it != m_combinations.end(); ++it)
   {
     if (it != m_combinations.begin())
       rule += m_type == CombinationAnd ? " AND " : " OR ";
@@ -1091,7 +1091,7 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
   }
 
   // translate the rules into SQL
-  for (CDatabaseQueryRules::const_iterator it = m_rules.begin(); it != m_rules.end(); ++it)
+  for (auto it = m_rules.begin(); it != m_rules.end(); ++it)
   {
     // don't include playlists that are meant to be displayed
     // as a virtual folders in the SQL WHERE clause
@@ -1142,14 +1142,14 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
 
 void CSmartPlaylistRuleCombination::GetVirtualFolders(const std::string& strType, std::vector<std::string> &virtualFolders) const
 {
-  for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)
+  for (auto it = m_combinations.begin(); it != m_combinations.end(); ++it)
   {
     std::shared_ptr<CSmartPlaylistRuleCombination> combo = std::static_pointer_cast<CSmartPlaylistRuleCombination>(*it);
     if (combo)
       combo->GetVirtualFolders(strType, virtualFolders);
   }
 
-  for (CDatabaseQueryRules::const_iterator it = m_rules.begin(); it != m_rules.end(); ++it)
+  for (auto it = m_rules.begin(); it != m_rules.end(); ++it)
   {
     if (((*it)->m_field != FieldVirtualFolder && (*it)->m_field != FieldPlaylist) || (*it)->m_operator != CDatabaseQueryRule::OPERATOR_EQUALS)
       continue;
@@ -1462,7 +1462,7 @@ bool CSmartPlaylist::Save(CVariant &obj, bool full /* = true */) const
   obj["type"] = m_playlistType;
 
   // add "rules"
-  CVariant rulesObj = CVariant(CVariant::VariantTypeObject);
+  auto rulesObj = CVariant(CVariant::VariantTypeObject);
   if (m_ruleCombination.Save(rulesObj))
     obj["rules"] = rulesObj;
 

@@ -114,7 +114,7 @@ void CGUIDialogTeletext::Render()
       Close();
   }
 
-  unsigned char* textureBuffer = (unsigned char*)m_TextDecoder.GetTextureBuffer();
+  auto textureBuffer = (unsigned char*)m_TextDecoder.GetTextureBuffer();
   if (!m_bClose && m_TextDecoder.NeedRendering() && textureBuffer)
   {
     m_pTxtTexture->Update(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), m_TextDecoder.GetWidth()*4, XB_FMT_A8R8G8B8, textureBuffer, false);

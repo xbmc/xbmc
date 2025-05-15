@@ -41,8 +41,8 @@ void Interface_GUIControlButton::set_visible(KODI_HANDLE kodiBase,
                                              KODI_GUI_CONTROL_HANDLE handle,
                                              bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -59,8 +59,8 @@ void Interface_GUIControlButton::set_enabled(KODI_HANDLE kodiBase,
                                              KODI_GUI_CONTROL_HANDLE handle,
                                              bool enabled)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -77,8 +77,8 @@ void Interface_GUIControlButton::set_label(KODI_HANDLE kodiBase,
                                            KODI_GUI_CONTROL_HANDLE handle,
                                            const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR,
@@ -94,8 +94,8 @@ void Interface_GUIControlButton::set_label(KODI_HANDLE kodiBase,
 
 char* Interface_GUIControlButton::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -112,8 +112,8 @@ void Interface_GUIControlButton::set_label2(KODI_HANDLE kodiBase,
                                             KODI_GUI_CONTROL_HANDLE handle,
                                             const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR,
@@ -129,8 +129,8 @@ void Interface_GUIControlButton::set_label2(KODI_HANDLE kodiBase,
 
 char* Interface_GUIControlButton::get_label2(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

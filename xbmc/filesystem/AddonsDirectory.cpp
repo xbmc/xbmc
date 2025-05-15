@@ -318,7 +318,7 @@ static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addon
   for (unsigned int i = static_cast<unsigned int>(AddonType::UNKNOWN) + 1;
        i < static_cast<unsigned int>(AddonType::MAX_TYPES) - 1; ++i)
   {
-    const AddonType type = static_cast<AddonType>(i);
+    const auto type = static_cast<AddonType>(i);
     /*
      * Check and prevent insert for this cases:
      * - By a provider, look and feel, dependency and game becomes given to
@@ -494,14 +494,14 @@ static void OutdatedAddons(const CURL& path, CFileItemList &items)
   {
     if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_ON)
     {
-      const CFileItemPtr itemUpdateAllowed(
+      const auto itemUpdateAllowed(
           std::make_shared<CFileItem>("addons://update_allowed/", false));
       itemUpdateAllowed->SetLabel(g_localizeStrings.Get(24137));
       itemUpdateAllowed->SetSpecialSort(SortSpecialOnTop);
       items.Add(itemUpdateAllowed);
     }
 
-    const CFileItemPtr itemUpdateAll(std::make_shared<CFileItem>("addons://update_all/", false));
+    const auto itemUpdateAll(std::make_shared<CFileItem>("addons://update_all/", false));
     itemUpdateAll->SetLabel(g_localizeStrings.Get(24122));
     itemUpdateAll->SetSpecialSort(SortSpecialOnTop);
     items.Add(itemUpdateAll);

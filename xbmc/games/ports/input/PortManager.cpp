@@ -27,15 +27,15 @@ using namespace GAME;
 
 namespace
 {
-constexpr const char* PORT_XML_FILE = "ports.xml";
-constexpr const char* XML_ROOT_PORTS = "ports";
-constexpr const char* XML_ELM_PORT = "port";
-constexpr const char* XML_ELM_CONTROLLER = "controller";
-constexpr const char* XML_ATTR_PORT_ID = "id";
-constexpr const char* XML_ATTR_PORT_ADDRESS = "address";
-constexpr const char* XML_ATTR_PORT_CONNECTED = "connected";
-constexpr const char* XML_ATTR_PORT_CONTROLLER = "controller";
-constexpr const char* XML_ATTR_CONTROLLER_ID = "id";
+constexpr auto PORT_XML_FILE = "ports.xml";
+constexpr auto XML_ROOT_PORTS = "ports";
+constexpr auto XML_ELM_PORT = "port";
+constexpr auto XML_ELM_CONTROLLER = "controller";
+constexpr auto XML_ATTR_PORT_ID = "id";
+constexpr auto XML_ATTR_PORT_ADDRESS = "address";
+constexpr auto XML_ATTR_PORT_CONNECTED = "connected";
+constexpr auto XML_ATTR_PORT_CONTROLLER = "controller";
+constexpr auto XML_ATTR_CONTROLLER_ID = "id";
 } // namespace
 
 CPortManager::CPortManager() = default;

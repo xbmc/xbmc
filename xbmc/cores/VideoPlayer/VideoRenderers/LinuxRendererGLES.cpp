@@ -397,7 +397,7 @@ void CLinuxRendererGLES::DrawBlackBars()
 
   glDisable(GL_BLEND);
 
-  CRenderSystemGLES* renderSystem =
+  auto renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   if (!renderSystem)
     return;
@@ -1241,7 +1241,7 @@ bool CLinuxRendererGLES::RenderCapture(int index, CRenderCapture* capture)
 
   // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order
   // XOR Swap RGBA -> BGRA
-  unsigned char* pixels = static_cast<unsigned char*>(capture->GetRenderBuffer());
+  auto pixels = static_cast<unsigned char*>(capture->GetRenderBuffer());
   for (unsigned int i = 0; i < capture->GetWidth() * capture->GetHeight(); i++, pixels += 4)
   {
     std::swap(pixels[0], pixels[2]);

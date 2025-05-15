@@ -212,7 +212,7 @@ namespace VIDEO
         m_pathsToScan.insert(*it);
         std::vector<std::pair<int, std::string>> subpaths;
         m_database.GetSubPaths(*it, subpaths);
-        for (std::vector<std::pair<int, std::string>>::iterator it = subpaths.begin(); it < subpaths.end(); ++it)
+        for (auto it = subpaths.begin(); it < subpaths.end(); ++it)
           m_pathsToScan.insert(it->second);
       }
     }
@@ -250,7 +250,7 @@ namespace VIDEO
      * the check for file or folder exclusion to prevent an infinite while loop
      * in Process().
      */
-    std::set<std::string>::iterator it = m_pathsToScan.find(strDirectory);
+    auto it = m_pathsToScan.find(strDirectory);
     if (it != m_pathsToScan.end())
       m_pathsToScan.erase(it);
 
@@ -547,7 +547,7 @@ namespace VIDEO
     {
       std::vector<std::pair<int, std::string>> libPaths;
       m_database.GetSubPaths(items.GetPath(), libPaths);
-      for (std::vector<std::pair<int, std::string> >::iterator i = libPaths.begin(); i < libPaths.end(); ++i)
+      for (auto i = libPaths.begin(); i < libPaths.end(); ++i)
       {
         if (find(seenPaths.begin(), seenPaths.end(), i->first) == seenPaths.end())
           m_pathsToClean.insert(i->first);
@@ -962,7 +962,7 @@ namespace VIDEO
        * Remove this path from the list we're processing in order to avoid hitting
        * it twice in the main loop.
        */
-      std::set<std::string>::iterator it = m_pathsToScan.find(item->GetPath());
+      auto it = m_pathsToScan.find(item->GetPath());
       if (it != m_pathsToScan.end())
         m_pathsToScan.erase(it);
 
@@ -1611,7 +1611,7 @@ namespace VIDEO
 
     m_database.Close();
 
-    CFileItemPtr itemCopy = std::make_shared<CFileItem>(*pItem);
+    auto itemCopy = std::make_shared<CFileItem>(*pItem);
     CVariant data;
     data["added"] = true;
     if (m_bRunning)
@@ -1916,7 +1916,7 @@ namespace VIDEO
 
     int iMax = files.size();
     int iCurr = 1;
-    for (EPISODELIST::iterator file = files.begin(); file != files.end(); ++file)
+    for (auto file = files.begin(); file != files.end(); ++file)
     {
       if (pDlgProgress)
       {
@@ -2007,7 +2007,7 @@ namespace VIDEO
       EPISODE key(file->iSeason, file->iEpisode, file->iSubepisode);
       EPISODE backupkey(file->iSeason, file->iEpisode, 0);
       bool bFound = false;
-      EPISODELIST::iterator guide = episodes.begin();
+      auto guide = episodes.begin();
       EPISODELIST matches;
 
       for (; guide != episodes.end(); ++guide )
@@ -2370,7 +2370,7 @@ namespace VIDEO
         CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS |
                                  DIR_FLAG_NO_FILE_INFO);
     }
-    for (std::vector<SActorInfo>::iterator i = actors.begin(); i != actors.end(); ++i)
+    for (auto i = actors.begin(); i != actors.end(); ++i)
     {
       if (i->thumb.empty())
       {

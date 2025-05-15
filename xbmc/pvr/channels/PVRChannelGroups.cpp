@@ -556,7 +556,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(
 
     std::lock_guard lock(m_critSection);
 
-    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_reverse_iterator it =
+    for (auto it =
              m_groups.rbegin();
          it != m_groups.rend(); ++it)
     {
@@ -570,7 +570,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(
     }
 
     // no match return last visible group
-    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_reverse_iterator it =
+    for (auto it =
              m_groups.rbegin();
          it != m_groups.rend(); ++it)
     {
@@ -591,7 +591,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(
 
     std::lock_guard lock(m_critSection);
 
-    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = m_groups.begin();
+    for (auto it = m_groups.begin();
          it != m_groups.end(); ++it)
     {
       // return this entry
@@ -604,7 +604,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(
     }
 
     // no match return first visible group
-    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = m_groups.begin();
+    for (auto it = m_groups.begin();
          it != m_groups.end(); ++it)
     {
       if (!(*it)->IsHidden())

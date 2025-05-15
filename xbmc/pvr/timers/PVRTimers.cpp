@@ -269,7 +269,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers,
       else
       {
         /* new timer */
-        std::shared_ptr<CPVRTimerInfoTag> newTimer = std::make_shared<CPVRTimerInfoTag>();
+        auto newTimer = std::make_shared<CPVRTimerInfoTag>();
         newTimer->UpdateEntry(timersEntry);
         newTimer->SetTimerID(++m_iLastId);
         InsertEntry(newTimer);
@@ -384,7 +384,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers,
 
     if (!timerNotifications.empty())
     {
-      CPVREventLogJob* job = new CPVREventLogJob;
+      auto job = new CPVREventLogJob;
 
       /* queue notifications / fill eventlog */
       for (const auto& entry : timerNotifications)
@@ -454,7 +454,7 @@ void AddTimerRuleToEpgMap(
     const std::shared_ptr<CPVREpg> epg = channel->GetEPG();
     if (epg)
     {
-      const std::shared_ptr<CPVRTimerRuleMatcher> matcher =
+      const auto matcher =
           std::make_shared<CPVRTimerRuleMatcher>(timer, now);
       auto it = epgMap.find(epg);
       if (it == epgMap.end())
@@ -472,7 +472,7 @@ void AddTimerRuleToEpgMap(
           CServiceBroker::GetPVRManager().EpgContainer().GetAllEpgs();
       for (const auto& epg : epgs)
       {
-        const std::shared_ptr<CPVRTimerRuleMatcher> matcher =
+        const auto matcher =
             std::make_shared<CPVRTimerRuleMatcher>(timer, now);
         auto it = epgMap.find(epg);
         if (it == epgMap.end())
@@ -486,7 +486,7 @@ void AddTimerRuleToEpgMap(
     {
       for (auto& epgMapEntry : epgMap)
       {
-        const std::shared_ptr<CPVRTimerRuleMatcher> matcher =
+        const auto matcher =
             std::make_shared<CPVRTimerRuleMatcher>(timer, now);
         epgMapEntry.second.emplace_back(matcher);
       }
@@ -913,7 +913,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const std::shared_ptr<CPVRChannel>& chann
   {
     std::lock_guard lock(m_critSection);
 
-    for (MapTags::reverse_iterator it = m_tags.rbegin(); it != m_tags.rend(); ++it)
+    for (auto it = m_tags.rbegin(); it != m_tags.rend(); ++it)
     {
       for (const auto& timersEntry : (*it).second)
       {
@@ -993,7 +993,7 @@ TimerOperationResult CPVRTimers::DeleteTimer(const std::shared_ptr<CPVRTimerInfo
                                              bool bForce /* = false */,
                                              bool bDeleteRule /* = false */)
 {
-  TimerOperationResult ret = TimerOperationResult::FAILED;
+  auto ret = TimerOperationResult::FAILED;
   if (!tag)
     return ret;
 

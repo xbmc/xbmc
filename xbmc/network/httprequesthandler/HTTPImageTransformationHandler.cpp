@@ -154,7 +154,7 @@ MHD_RESULT CHTTPImageTransformationHandler::HandleRequest()
     return MHD_YES;
   }
 
-  for (HttpRanges::const_iterator range = m_request.ranges.Begin(); range != m_request.ranges.End(); ++range)
+  for (auto range = m_request.ranges.Begin(); range != m_request.ranges.End(); ++range)
     m_responseData.emplace_back(m_buffer + range->GetFirstPosition(), range->GetFirstPosition(),
                                 range->GetLastPosition());
 

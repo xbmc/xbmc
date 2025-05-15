@@ -36,8 +36,8 @@ void Interface_GUIControlProgress::set_visible(KODI_HANDLE kodiBase,
                                                KODI_GUI_CONTROL_HANDLE handle,
                                                bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIProgressControl* control = static_cast<CGUIProgressControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIProgressControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -54,8 +54,8 @@ void Interface_GUIControlProgress::set_percentage(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle,
                                                   float percent)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIProgressControl* control = static_cast<CGUIProgressControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIProgressControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -71,8 +71,8 @@ void Interface_GUIControlProgress::set_percentage(KODI_HANDLE kodiBase,
 float Interface_GUIControlProgress::get_percentage(KODI_HANDLE kodiBase,
                                                    KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIProgressControl* control = static_cast<CGUIProgressControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIProgressControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

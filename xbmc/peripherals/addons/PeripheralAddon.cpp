@@ -955,7 +955,7 @@ void CPeripheralAddon::GetJoystickInfo(const CPeripheral* device,
 
   if (device->Type() == PERIPHERAL_JOYSTICK)
   {
-    const CPeripheralJoystick* joystick = static_cast<const CPeripheralJoystick*>(device);
+    auto joystick = static_cast<const CPeripheralJoystick*>(device);
     joystickInfo.SetProvider(joystick->Provider());
     joystickInfo.SetButtonCount(joystick->ButtonCount());
     joystickInfo.SetHatCount(joystick->HatCount());

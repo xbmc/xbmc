@@ -105,7 +105,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::AddData(uint8_t* data, int iSize, 
   // or allocate some more if 16384 bytes is not enough
   if ((pSPUData->iSize + iSize) > pSPUData->iAllocatedSize)
   {
-    uint8_t* tmpptr = (uint8_t*)realloc(pSPUData->data, ALIGN(pSPUData->iSize + iSize, 0x4000));
+    auto tmpptr = (uint8_t*)realloc(pSPUData->data, ALIGN(pSPUData->iSize + iSize, 0x4000));
     if (!tmpptr)
     {
       free(pSPUData->data);
@@ -359,7 +359,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
   unsigned int i_x, i_y;
 
   // allocate a buffer for the result
-  uint16_t* p_dest = (uint16_t*)pSPU->result;
+  auto p_dest = (uint16_t*)pSPU->result;
 
   /* The subtitles are interlaced, we need two offsets */
   unsigned int i_id = 0;                   /* Start on the even SPU layer */

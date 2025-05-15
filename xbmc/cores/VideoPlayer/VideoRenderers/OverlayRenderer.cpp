@@ -144,7 +144,7 @@ void CRenderer::Render(int idx)
   std::lock_guard lock(m_section);
 
   std::vector<SElement>& list = m_buffers[idx];
-  for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
+  for(auto it = list.begin(); it != list.end(); ++it)
   {
     if (it->overlay_dvd)
     {
@@ -254,7 +254,7 @@ bool CRenderer::HasOverlay(int idx)
   std::lock_guard lock(m_section);
 
   std::vector<SElement>& list = m_buffers[idx];
-  for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
+  for(auto it = list.begin(); it != list.end(); ++it)
   {
     if (it->overlay_dvd)
     {
@@ -534,7 +534,7 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
   {
     if (changes == 0)
     {
-      std::map<unsigned int, std::shared_ptr<COverlay>>::iterator it =
+      auto it =
           m_textureCache.find(o.m_textureid);
       if (it != m_textureCache.end())
         return it->second;
@@ -555,7 +555,7 @@ std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay& o, double pts)
 
   if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
   {
-    CDVDOverlayLibass& ovAss = static_cast<CDVDOverlayLibass&>(o);
+    auto &ovAss = static_cast<CDVDOverlayLibass&>(o);
     if (!ovAss.GetLibassHandler())
       return nullptr;
     bool updateStyle = !m_overlayStyle || m_isSettingsChanged;
@@ -573,7 +573,7 @@ std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay& o, double pts)
   }
   else if (o.m_textureid)
   {
-    std::map<unsigned int, std::shared_ptr<COverlay>>::iterator it =
+    auto it =
         m_textureCache.find(o.m_textureid);
     if (it != m_textureCache.end())
       r = it->second;

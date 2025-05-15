@@ -11368,7 +11368,7 @@ void CGUIInfoManager::Clear()
   } while (swapList.size() != m_bools.size());
 
   // log which ones are used - they should all be gone by now
-  for (INFOBOOLTYPE::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+  for (auto i = m_bools.begin(); i != m_bools.end(); ++i)
     CLog::Log(LOGDEBUG, "Infobool '{}' still used by {} instances", (*i)->GetExpression(),
               (unsigned int)i->use_count());
 }
@@ -11604,7 +11604,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int contextWindow, i
       {
         if (item->IsFileItem())
         {
-          const CFileItem *pItem = static_cast<const CFileItem *>(item);
+            auto pItem = static_cast<const CFileItem *>(item);
           return pItem->IsParentFolder();
         }
         break;
@@ -11696,7 +11696,7 @@ std::string CGUIInfoManager::GetSkinVariableString(int info,
 
 bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map)
 {
-  for (std::map<INFO::InfoPtr, bool>::const_iterator it = map.begin() ; it != map.end() ; ++it)
+  for (auto it = map.begin() ; it != map.end() ; ++it)
   {
     if (it->first->Get(INFO::DEFAULT_CONTEXT) != it->second)
       return true;
@@ -11737,7 +11737,7 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
 
   case TMSG_UPDATE_CURRENT_ITEM:
   {
-    CFileItem* item = static_cast<CFileItem*>(pMsg->lpVoid);
+    auto item = static_cast<CFileItem*>(pMsg->lpVoid);
     if (!item)
       return;
 

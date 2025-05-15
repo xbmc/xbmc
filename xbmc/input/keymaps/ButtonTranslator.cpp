@@ -212,7 +212,7 @@ bool CButtonTranslator::HasLongpressMapping_Internal(int window, const CKey& key
   {
     uint32_t code = key.GetButtonCode();
     code |= CKey::MODIFIER_LONG;
-    buttonMap::const_iterator it2 = (*it).second.find(code);
+    auto it2 = (*it).second.find(code);
 
     if (it2 != (*it).second.end())
       return it2->second.id != ACTION_NOOP;
@@ -250,11 +250,11 @@ unsigned int CButtonTranslator::GetActionCode(int window,
 {
   uint32_t code = key.GetButtonCode();
 
-  std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
+  auto it = m_translatorMap.find(window);
   if (it == m_translatorMap.end())
     return ACTION_NONE;
 
-  buttonMap::const_iterator it2 = (*it).second.find(code);
+  auto it2 = (*it).second.find(code);
   unsigned int action = ACTION_NONE;
   if (it2 == (*it).second.end() &&
       code & CKey::MODIFIER_LONG) // If long action not found, try short one
@@ -295,7 +295,7 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const std::string& szActi
 
   // have a valid action, and a valid button - map it.
   // check to see if we've already got this (button,action) pair defined
-  buttonMap::iterator it = map.find(buttonCode);
+  auto it = map.find(buttonCode);
   if (it == map.end() || (*it).second.id != action || (*it).second.strID != szAction)
   {
     // NOTE: This multimap is only being used as a normal map at this point (no support
@@ -323,7 +323,7 @@ void CButtonTranslator::MapWindowActions(const tinyxml2::XMLNode* pWindow, int w
          pDevice = pDevice->NextSiblingElement(type.c_str()))
     {
       buttonMap map;
-      std::map<int, buttonMap>::iterator it = m_translatorMap.find(windowID);
+      auto it = m_translatorMap.find(windowID);
       if (it != m_translatorMap.end())
       {
         map = std::move(it->second);
@@ -355,7 +355,7 @@ void CButtonTranslator::MapWindowActions(const tinyxml2::XMLNode* pWindow, int w
             MapAction(buttonCode, pButton->FirstChild()->Value(), map);
           else
           {
-            buttonMap::iterator it = map.find(buttonCode);
+            auto it = map.find(buttonCode);
             while (it != map.end())
             {
               map.erase(it);

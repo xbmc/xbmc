@@ -160,7 +160,7 @@ const CWebSocketFrame* CWebSocketV8::close(WebSocketCloseReason reason /* = WebS
 {
   size_t length = 2 + message.size();
 
-  char* data = new char[length + 1];
+  auto data = new char[length + 1];
   memset(data, 0, length + 1);
   uint16_t iReason = Endian_SwapBE16((uint16_t)reason);
   memcpy(data, &iReason, 2);
@@ -171,7 +171,7 @@ const CWebSocketFrame* CWebSocketV8::close(WebSocketCloseReason reason /* = WebS
   else
     m_state = WebSocketStateClosed;
 
-  CWebSocketFrame* frame = new CWebSocketFrame(WebSocketConnectionClose, data, length);
+  auto frame = new CWebSocketFrame(WebSocketConnectionClose, data, length);
   delete[] data;
 
   return frame;

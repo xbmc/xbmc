@@ -57,7 +57,7 @@ using namespace PVR;
 
 namespace
 {
-constexpr const char* PROPERTY_CLIENT_NAME = "ClientName";
+constexpr auto PROPERTY_CLIENT_NAME = "ClientName";
 
 } // namespace
 
@@ -370,7 +370,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonHideGroup(const CGUIMessage& message
 
   if (message.GetSenderId() == BUTTON_HIDE_GROUP && m_selectedGroup)
   {
-    CGUIRadioButtonControl* button = static_cast<CGUIRadioButtonControl*>(GetControl(message.GetSenderId()));
+    auto button = static_cast<CGUIRadioButtonControl*>(GetControl(message.GetSenderId()));
     if (button)
     {
       CServiceBroker::GetPVRManager()

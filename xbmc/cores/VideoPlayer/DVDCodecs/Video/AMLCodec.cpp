@@ -1167,7 +1167,7 @@ int av1_add_frame_dec_info(am_private_t *para)
   am_packet_t& pkt = para->am_pkt;
 
   unsigned int dst_frame_size = 0;
-  uint8_t *dst_data = (uint8_t *)calloc(1, pkt.data_size + 4096);
+  auto dst_data = (uint8_t *)calloc(1, pkt.data_size + 4096);
   av1_parser_frame(0, pkt.data, pkt.data + pkt.data_size, dst_data, &dst_frame_size, NULL, NULL);
 
   if (dst_frame_size - pkt.data_size > 0)
@@ -2176,7 +2176,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
 bool CAMLCodec::OpenAmlVideo(const CDVDStreamInfo &hints)
 {
-  PosixFilePtr amlVideoFile = std::make_shared<PosixFile>();
+  auto amlVideoFile = std::make_shared<PosixFile>();
   if (!amlVideoFile->Open("/dev/video10", O_RDONLY | O_NONBLOCK))
   {
     logM(LOGERROR, "CAMLCodec", "cannot open V4L amlvideo device /dev/video10: {}", strerror(errno));
@@ -2487,7 +2487,7 @@ void CAMLCodec::SetPollDevice(int dev)
 int CAMLCodec::ReleaseFrame(const uint32_t index, bool drop)
 {
   int ret;
-  v4l2_buffer vbuf = v4l2_buffer();
+  auto vbuf = v4l2_buffer();
   vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
   vbuf.index = index;
 
@@ -2533,7 +2533,7 @@ float CAMLCodec::GetBufferLevel(int new_chunk, int &data_len, int &free_len)
 
 int CAMLCodec::DequeueBuffer()
 {
-  v4l2_buffer vbuf = v4l2_buffer();
+  auto vbuf = v4l2_buffer();
   vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
   int ret = (m_amlVideoFile->IOControl(VIDIOC_DQBUF, &vbuf) < 0) ? errno : 0;

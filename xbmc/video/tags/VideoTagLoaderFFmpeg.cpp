@@ -21,13 +21,13 @@ using namespace XFILE;
 
 static int vfs_file_read(void *h, uint8_t* buf, int size)
 {
-  CFile* pFile = static_cast<CFile*>(h);
+  auto pFile = static_cast<CFile*>(h);
   return pFile->Read(buf, size);
 }
 
 static int64_t vfs_file_seek(void *h, int64_t pos, int whence)
 {
-  CFile* pFile = static_cast<CFile*>(h);
+  auto pFile = static_cast<CFile*>(h);
   if (whence == AVSEEK_SIZE)
     return pFile->GetLength();
   else
@@ -54,7 +54,7 @@ CVideoTagLoaderFFmpeg::CVideoTagLoaderFFmpeg(const CFileItem& item,
 
   int blockSize = m_file->GetChunkSize();
   int bufferSize = blockSize > 1 ? blockSize : 4096;
-  uint8_t* buffer = (uint8_t*)av_malloc(bufferSize);
+  auto buffer = (uint8_t*)av_malloc(bufferSize);
   m_ioctx = avio_alloc_context(buffer, bufferSize, 0,
                                m_file, vfs_file_read, nullptr,
                                vfs_file_seek);
@@ -173,7 +173,7 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
   {
     CNfoFile nfo;
     auto* data = m_fctx->streams[m_metadata_stream]->codecpar->extradata;
-    const char* content = reinterpret_cast<const char*>(data);
+    auto content = reinterpret_cast<const char*>(data);
     if (!m_override_data)
     {
       nfo.GetDetails(tag, content);

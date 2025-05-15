@@ -513,7 +513,7 @@ void CGUIControl::SetActions(const ActionMap &actions)
 
 void CGUIControl::SetAction(int actionID, const CGUIAction &action, bool replace /*= true*/)
 {
-  ActionMap::iterator i = m_actions.find(actionID);
+  auto i = m_actions.find(actionID);
   if (i == m_actions.end() || !i->second.HasAnyActions() || replace)
     m_actions[actionID] = action;
 }
@@ -905,7 +905,7 @@ bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
 
 CGUIAction CGUIControl::GetAction(int actionID) const
 {
-  ActionMap::const_iterator i = m_actions.find(actionID);
+  auto i = m_actions.find(actionID);
   if (i != m_actions.end())
     return i->second;
   return CGUIAction();

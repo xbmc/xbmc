@@ -236,7 +236,7 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
   if (Greeted())
     return false;
 
-  unsigned char *payload = (unsigned char *)packet->Payload();
+  auto payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
 
   // parse device name
@@ -314,7 +314,7 @@ bool CEventClient::OnPacketBYE(CEventPacket *packet)
 
 bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 {
-  unsigned char *payload = (unsigned char *)packet->Payload();
+  auto payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
 
   std::string map, button;
@@ -408,7 +408,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       if(!active && it->m_bActive)
       {
         /* since modifying the list invalidates the reverse iterator */
-        std::list<CEventButtonState>::iterator it2 = (++it).base();
+        auto it2 = (++it).base();
 
         /* if last event had an amount, we must resend without amount */
         if (it2->m_bUseAmount && it2->m_fAmount != 0.0f)
@@ -487,7 +487,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 
 bool CEventClient::OnPacketMOUSE(CEventPacket *packet)
 {
-  unsigned char *payload = (unsigned char *)packet->Payload();
+  auto payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
   unsigned char flags;
   unsigned short mx, my;
@@ -520,7 +520,7 @@ bool CEventClient::OnPacketMOUSE(CEventPacket *packet)
 
 bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
 {
-  unsigned char *payload = (unsigned char *)packet->Payload();
+  auto payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
   std::string title, message;
 
@@ -582,7 +582,7 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
 
 bool CEventClient::OnPacketLOG(CEventPacket *packet)
 {
-  unsigned char *payload = (unsigned char *)packet->Payload();
+  auto payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
   std::string logmsg;
   unsigned char ltype;
@@ -598,7 +598,7 @@ bool CEventClient::OnPacketLOG(CEventPacket *packet)
 
 bool CEventClient::OnPacketACTION(CEventPacket *packet)
 {
-  unsigned char *payload = (unsigned char *)packet->Payload();
+  auto payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
   std::string actionString;
   unsigned char actionType;
@@ -632,7 +632,7 @@ bool CEventClient::ParseString(unsigned char* &payload, int &psize, std::string&
   if (psize <= 0)
     return false;
 
-  unsigned char *pos = (unsigned char *)memchr((void*)payload, (int)'\0', psize);
+  auto pos = (unsigned char *)memchr((void*)payload, (int)'\0', psize);
   if (!pos)
     return false;
 

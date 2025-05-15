@@ -636,7 +636,7 @@ private:
                                 AudioEngineDataFormat* format,
                                 enum AudioEngineChannel info[AUDIOENGINE_CH_MAX])
   {
-    CInstanceAudioDecoder* thisClass = static_cast<CInstanceAudioDecoder*>(hdl);
+    auto thisClass = static_cast<CInstanceAudioDecoder*>(hdl);
 
     std::vector<AudioEngineChannel> channelList;
 

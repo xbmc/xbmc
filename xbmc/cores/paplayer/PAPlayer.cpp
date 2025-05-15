@@ -59,7 +59,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
 {
   std::unique_lock lock(m_streamsLock);
 
-  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+  for(auto itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
     if (si->m_fadeOutTriggered)
@@ -80,7 +80,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
     while(wait)
     {
       wait = false;
-      for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+      for(auto itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       {
         StreamInfo* si = *itt;
         if (si->m_stream->IsFading())
@@ -101,7 +101,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
   /* fade all the streams out fast for a nice soft stop */
   std::unique_lock lock(m_streamsLock);
 
-  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+  for(auto itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
     if (si->m_stream)
@@ -130,7 +130,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
     while(wait && !CServiceBroker::GetActiveAE()->IsSuspended() && !timer.IsTimePast())
     {
       wait = false;
-      for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+      for(auto itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       {
         StreamInfo* si = *itt;
         if (si->m_stream && si->m_stream->IsFading())
@@ -147,7 +147,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
     /* if we are not closing the streams, pause them */
     if (!close)
     {
-      for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+      for(auto itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       {
         StreamInfo* si = *itt;
         si->m_stream->Pause();
@@ -312,7 +312,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
     m_currentStream->m_nextFileItem.reset();
   }
 
-  StreamInfo *si = new StreamInfo();
+  auto si = new StreamInfo();
   si->m_fileItem = std::make_unique<CFileItem>(file);
 
   // Start stream at zero offset
@@ -635,7 +635,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
 
   std::lock_guard lock(m_streamsLock);
 
-  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+  for(auto itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
     if (!m_currentStream && !si->m_started)
@@ -883,7 +883,7 @@ bool PAPlayer::QueueData(StreamInfo *si)
     // we want complete frames
     samples -= samples % si->m_audioFormat.m_channelLayout.Count();
 
-    uint8_t* data = (uint8_t*)si->m_decoder.GetData(samples);
+    auto data = (uint8_t*)si->m_decoder.GetData(samples);
     if (!data)
     {
       CLog::Log(LOGERROR, "PAPlayer::QueueData - Failed to get data from the decoder");

@@ -40,8 +40,8 @@ void Interface_GUIControlAddonRendering::set_callbacks(
     void (*stopCB)(KODI_GUI_CLIENT_HANDLE),
     bool (*dirtyCB)(KODI_GUI_CLIENT_HANDLE))
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonRenderingControl* control = static_cast<CGUIAddonRenderingControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIAddonRenderingControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -66,8 +66,8 @@ void Interface_GUIControlAddonRendering::set_callbacks(
 void Interface_GUIControlAddonRendering::destroy(KODI_HANDLE kodiBase,
                                                  KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIAddonRenderingControl* control = static_cast<CGUIAddonRenderingControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIAddonRenderingControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

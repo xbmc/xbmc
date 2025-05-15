@@ -20,7 +20,7 @@ extern "C" {
 static const char *get_mountpoint(const char *devnode)
 {
   static char buf[4096];
-  const char *delim = " ";
+  auto delim = " ";
   const char *mountpoint = nullptr;
   FILE *fp = fopen("/proc/mounts", "r");
   if (!fp)

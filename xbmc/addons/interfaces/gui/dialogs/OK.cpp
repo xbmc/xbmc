@@ -38,7 +38,7 @@ void Interface_GUIDialogOK::show_and_get_input_single_text(KODI_HANDLE kodiBase,
                                                            const char* heading,
                                                            const char* text)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon || !heading || !text)
   {
     CLog::Log(
@@ -56,7 +56,7 @@ void Interface_GUIDialogOK::show_and_get_input_line_text(KODI_HANDLE kodiBase,
                                                          const char* line1,
                                                          const char* line2)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon || !heading || !line0 || !line1 || !line2)
   {
     CLog::Log(LOGERROR,

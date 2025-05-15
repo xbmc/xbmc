@@ -195,7 +195,7 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& sett
                                                      int& current,
                                                      void* data)
 {
-  CGUIDialogPVRRecordingSettings* pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
+  auto pThis = static_cast<CGUIDialogPVRRecordingSettings*>(data);
   if (pThis)
   {
     list.clear();

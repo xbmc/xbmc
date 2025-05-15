@@ -173,7 +173,7 @@ void CWSDiscoveryListenerUDP::Start()
   // Clear existing data. We dont know how long service has been down, so we may not
   // have correct services that may have sent BYE actions
   m_vecWSDInfo.clear();
-  CWSDiscoveryPosix& WSInstance =
+  auto &WSInstance =
       dynamic_cast<CWSDiscoveryPosix&>(CServiceBroker::GetWSDiscovery());
   WSInstance.SetItems(m_vecWSDInfo);
 
@@ -455,7 +455,7 @@ void CWSDiscoveryListenerUDP::ParseBuffer(const std::string& buffer)
 
     if (searchitem == m_vecWSDInfo.end())
     {
-      CWSDiscoveryPosix& WSInstance =
+      auto &WSInstance =
           dynamic_cast<CWSDiscoveryPosix&>(CServiceBroker::GetWSDiscovery());
       if (info.action != WSD_ACT_BYE)
       {
@@ -503,7 +503,7 @@ bool CWSDiscoveryListenerUDP::buildSoapMessage(const std::string& action,
   std::string relatesTo; // Not implemented, may not be needed for our limited usage
   int messagenumber = 1;
 
-  CWSDiscoveryPosix& WSInstance =
+  auto &WSInstance =
       dynamic_cast<CWSDiscoveryPosix&>(CServiceBroker::GetWSDiscovery());
   long long wsd_instance_id = WSInstance.GetInstanceID();
 

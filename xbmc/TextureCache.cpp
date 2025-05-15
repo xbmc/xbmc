@@ -140,7 +140,7 @@ bool CTextureCache::StartCacheImage(const std::string& image)
 {
   std::lock_guard lock(m_processingSection);
 
-  std::set<std::string>::iterator i = m_processinglist.find(image);
+  auto i = m_processinglist.find(image);
   if (i == m_processinglist.end())
   {
     m_processinglist.insert(image);
@@ -321,7 +321,7 @@ void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
   { // remove from our processing list
     std::lock_guard lock(m_processingSection);
 
-    std::set<std::string>::iterator i = m_processinglist.find(job->m_url);
+    auto i = m_processinglist.find(job->m_url);
     if (i != m_processinglist.end())
       m_processinglist.erase(i);
   }

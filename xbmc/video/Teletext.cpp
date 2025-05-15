@@ -35,7 +35,7 @@ static inline void SDL_memset4(uint32_t* dst, uint32_t val, size_t len)
 }
 #define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len) << 2)
 
-static const char *TeletextFont = "special://xbmc/media/Fonts/teletext.ttf";
+static auto TeletextFont = "special://xbmc/media/Fonts/teletext.ttf";
 
 /* spacing attributes */
 #define alpha_black         0x00

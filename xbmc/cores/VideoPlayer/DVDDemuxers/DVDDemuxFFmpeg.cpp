@@ -152,7 +152,7 @@ CDemuxParserFFmpeg::~CDemuxParserFFmpeg()
 
 static int interrupt_cb(void* ctx)
 {
-  CDVDDemuxFFmpeg* demuxer = static_cast<CDVDDemuxFFmpeg*>(ctx);
+  auto demuxer = static_cast<CDVDDemuxFFmpeg*>(ctx);
   if (demuxer && demuxer->Aborted())
     return 1;
   return 0;
@@ -364,7 +364,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
     if (blockSize > 1 && seekable) // non seakable input streams are not supposed to set block size
       bufferSize = blockSize;
 
-    unsigned char* buffer = (unsigned char*)av_malloc(bufferSize);
+    auto buffer = (unsigned char*)av_malloc(bufferSize);
     m_ioContext = avio_alloc_context(buffer, bufferSize, 0, this, dvd_file_read, NULL, dvd_file_seek);
 
     if (blockSize > 1 && seekable)
@@ -1224,7 +1224,7 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
     // we already check for a valid m_streams[pPacket->iStreamId] above
     else if (stream->type == STREAM_AUDIO)
     {
-      CDemuxStreamAudioFFmpeg* audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
+      auto audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
       int codecparChannels =
           m_pFormatContext->streams[pPacket->iStreamId]->codecpar->ch_layout.nb_channels;
       if (audiostream && (audiostream->iChannels != codecparChannels ||
@@ -1669,7 +1669,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
     {
       case AVMEDIA_TYPE_AUDIO:
       {
-        CDemuxStreamAudioFFmpeg* st = new CDemuxStreamAudioFFmpeg(pStream);
+        auto st = new CDemuxStreamAudioFFmpeg(pStream);
         stream = st;
         int codecparChannels = pStream->codecpar->ch_layout.nb_channels;
         int codecparChannelLayout = pStream->codecpar->ch_layout.u.mask;
@@ -1708,7 +1708,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           pStream->codecpar->codec_type = AVMEDIA_TYPE_DATA;
           break;
         }
-        CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(pStream);
+        auto st = new CDemuxStreamVideoFFmpeg(pStream);
         float fps = 0;
         stream = st;
         if (strcmp(m_pFormatContext->iformat->name, "flv") == 0)
@@ -1824,7 +1824,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
             CDemuxStream* bl_stream = GetStream(0);
             if (bl_stream)
             {
-              CDemuxStreamVideo *bl_video_stream = static_cast<CDemuxStreamVideo*>(bl_stream);
+              auto bl_video_stream = static_cast<CDemuxStreamVideo*>(bl_stream);
               bl_video_stream->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
 
               // use dovi side data if available
@@ -1925,7 +1925,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 
               const std::shared_ptr<CDVDInputStream::IMenus> menuInterface =
                   std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInput);
-              CDemuxMVC *extDemux = static_cast<CDemuxMVC*>(pExt->GetExtentionDemux());
+              auto extDemux = static_cast<CDemuxMVC*>(pExt->GetExtentionDemux());
               extDemux->SetStartTime(m_pFormatContext->start_time, menuInterface->GetSupportedMenuType());
               mvcStream = extDemux->GetAVStream();
             }
@@ -1977,14 +1977,14 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       {
         if (pStream->codecpar->codec_id == AV_CODEC_ID_DVB_TELETEXT && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTENABLED))
         {
-          CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
+          auto st = new CDemuxStreamTeletext();
           stream = st;
           stream->type = STREAM_TELETEXT;
           break;
         }
         else
         {
-          CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(pStream);
+          auto st = new CDemuxStreamSubtitleFFmpeg(pStream);
           stream = st;
 
           if (auto tag = av_dict_get(pStream->metadata, "title", NULL, 0))
@@ -2417,7 +2417,7 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
       return true;
     if (m_pFormatContext->streams[idx]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
     {
-      CDemuxStreamAudioFFmpeg* audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
+      auto audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
       int codecparChannels = m_pFormatContext->streams[idx]->codecpar->ch_layout.nb_channels;
       if (audiostream && codecparChannels != audiostream->iChannels)
       {
@@ -2793,7 +2793,7 @@ void CDVDDemuxFFmpeg::GetL16Parameters(int &channels, int &samplerate)
 
 StreamHdrType CDVDDemuxFFmpeg::DetermineHdrType(AVStream* pStream)
 {
-  StreamHdrType hdrType = StreamHdrType::HDR_TYPE_NONE;
+  auto hdrType = StreamHdrType::HDR_TYPE_NONE;
   bool convert_dual_stream((pStream->id == 0x1015) && aml_dolby_vision_enabled());
 
   if (av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, nullptr) || convert_dual_stream) // DoVi

@@ -45,7 +45,7 @@ void CBlurayCallback::dir_close(BD_DIR_H *dir)
 BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
 {
   std::string strRelPath(rel_path);
-  std::string* strBasePath = reinterpret_cast<std::string*>(handle);
+  auto strBasePath = reinterpret_cast<std::string*>(handle);
   if (!strBasePath)
   {
     CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir, null handle!");
@@ -58,7 +58,7 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
 
   CLog::Log(LOGDEBUG, "CBlurayCallback - Opening dir {}", CURL::GetRedacted(strDirname));
 
-  SDirState *st = new SDirState();
+  auto st = new SDirState();
   if (!CDirectory::GetDirectory(strDirname, st->list, "", DIR_FLAG_DEFAULTS))
   {
     if (!CFile::Exists(strDirname))
@@ -68,7 +68,7 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
     return nullptr;
   }
 
-  BD_DIR_H *dir = new BD_DIR_H;
+  auto dir = new BD_DIR_H;
   dir->close = dir_close;
   dir->read = dir_read;
   dir->internal = (void*)st;
@@ -78,7 +78,7 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
 
 int CBlurayCallback::dir_read(BD_DIR_H *dir, BD_DIRENT *entry)
 {
-  SDirState* state = static_cast<SDirState*>(dir->internal);
+  auto state = static_cast<SDirState*>(dir->internal);
 
   if (state->curr >= state->list.Size())
     return 1;
@@ -110,7 +110,7 @@ int CBlurayCallback::file_eof(BD_FILE_H *file)
 BD_FILE_H * CBlurayCallback::file_open(void *handle, const char *rel_path)
 {
   std::string strRelPath(rel_path);
-  std::string* strBasePath = reinterpret_cast<std::string*>(handle);
+  auto strBasePath = reinterpret_cast<std::string*>(handle);
   if (!strBasePath)
   {
     CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir, null handle!");
@@ -119,7 +119,7 @@ BD_FILE_H * CBlurayCallback::file_open(void *handle, const char *rel_path)
 
   std::string strFilename = URIUtils::AddFileToFolder(*strBasePath, strRelPath);
 
-  BD_FILE_H *file = new BD_FILE_H;
+  auto file = new BD_FILE_H;
 
   file->close = file_close;
   file->seek = file_seek;
@@ -128,7 +128,7 @@ BD_FILE_H * CBlurayCallback::file_open(void *handle, const char *rel_path)
   file->tell = file_tell;
   file->eof = file_eof;
 
-  CFile* fp = new CFile();
+  auto fp = new CFile();
   if (fp->Open(strFilename))
   {
     file->internal = (void*)fp;

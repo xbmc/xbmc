@@ -151,7 +151,7 @@ void Interface_Base::addon_log_msg(const KODI_ADDON_BACKEND_HDL hdl,
                                    const int addonLogLevel,
                                    const char* strMessage)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "addon_log_msg(...) called with empty kodi instance pointer");
@@ -191,7 +191,7 @@ char* Interface_Base::get_type_version(const KODI_ADDON_BACKEND_HDL hdl, int typ
 
 char* Interface_Base::get_addon_path(const KODI_ADDON_BACKEND_HDL hdl)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "get_addon_path(...) called with empty kodi instance pointer");
@@ -203,7 +203,7 @@ char* Interface_Base::get_addon_path(const KODI_ADDON_BACKEND_HDL hdl)
 
 char* Interface_Base::get_lib_path(const KODI_ADDON_BACKEND_HDL hdl)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "get_lib_path(...) called with empty kodi instance pointer");
@@ -215,7 +215,7 @@ char* Interface_Base::get_lib_path(const KODI_ADDON_BACKEND_HDL hdl)
 
 char* Interface_Base::get_user_path(const KODI_ADDON_BACKEND_HDL hdl)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "get_user_path(...) called with empty kodi instance pointer");
@@ -227,7 +227,7 @@ char* Interface_Base::get_user_path(const KODI_ADDON_BACKEND_HDL hdl)
 
 char* Interface_Base::get_temp_path(const KODI_ADDON_BACKEND_HDL hdl)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "get_temp_path(...) called with empty kodi instance pointer");
@@ -244,7 +244,7 @@ char* Interface_Base::get_temp_path(const KODI_ADDON_BACKEND_HDL hdl)
 
 char* Interface_Base::get_localized_string(const KODI_ADDON_BACKEND_HDL hdl, long label_id)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (!addon)
   {
     CLog::Log(LOGERROR, "get_localized_string(...) called with empty kodi instance pointer");
@@ -263,7 +263,7 @@ char* Interface_Base::get_localized_string(const KODI_ADDON_BACKEND_HDL hdl, lon
 
 char* Interface_Base::get_addon_info(const KODI_ADDON_BACKEND_HDL hdl, const char* id)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr)
   {
     CLog::Log(LOGERROR, "get_addon_info(...) called with empty pointer");
@@ -310,7 +310,7 @@ char* Interface_Base::get_addon_info(const KODI_ADDON_BACKEND_HDL hdl, const cha
 
 bool Interface_Base::open_settings_dialog(const KODI_ADDON_BACKEND_HDL hdl)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "open_settings_dialog(...) called with empty kodi instance pointer");
@@ -331,7 +331,7 @@ bool Interface_Base::open_settings_dialog(const KODI_ADDON_BACKEND_HDL hdl)
 
 bool Interface_Base::is_setting_using_default(const KODI_ADDON_BACKEND_HDL hdl, const char* id)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__, hdl,
@@ -360,7 +360,7 @@ bool Interface_Base::is_setting_using_default(const KODI_ADDON_BACKEND_HDL hdl, 
 
 bool Interface_Base::get_setting_bool(const KODI_ADDON_BACKEND_HDL hdl, const char* id, bool* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",
@@ -397,7 +397,7 @@ bool Interface_Base::get_setting_bool(const KODI_ADDON_BACKEND_HDL hdl, const ch
 
 bool Interface_Base::get_setting_int(const KODI_ADDON_BACKEND_HDL hdl, const char* id, int* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",
@@ -439,7 +439,7 @@ bool Interface_Base::get_setting_float(const KODI_ADDON_BACKEND_HDL hdl,
                                        const char* id,
                                        float* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",
@@ -478,7 +478,7 @@ bool Interface_Base::get_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
                                         const char* id,
                                         char** value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",
@@ -515,7 +515,7 @@ bool Interface_Base::get_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
 
 bool Interface_Base::set_setting_bool(const KODI_ADDON_BACKEND_HDL hdl, const char* id, bool value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__, hdl,
@@ -541,7 +541,7 @@ bool Interface_Base::set_setting_bool(const KODI_ADDON_BACKEND_HDL hdl, const ch
 
 bool Interface_Base::set_setting_int(const KODI_ADDON_BACKEND_HDL hdl, const char* id, int value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__, hdl,
@@ -569,7 +569,7 @@ bool Interface_Base::set_setting_float(const KODI_ADDON_BACKEND_HDL hdl,
                                        const char* id,
                                        float value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__, hdl,
@@ -597,7 +597,7 @@ bool Interface_Base::set_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
                                         const char* id,
                                         const char* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  auto addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",

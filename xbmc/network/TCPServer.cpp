@@ -160,7 +160,7 @@ void CTCPServer::Process()
               if (websocket != NULL)
               {
                 // Replace the CTCPClient with a CWebSocketClient
-                CWebSocketClient *websocketClient = new CWebSocketClient(websocket, *(m_connections[i]));
+                auto websocketClient = new CWebSocketClient(websocket, *(m_connections[i]));
                 delete m_connections[i];
                 m_connections.erase(m_connections.begin() + i);
                 m_connections.insert(m_connections.begin() + i, websocketClient);
@@ -190,7 +190,7 @@ void CTCPServer::Process()
         if (FD_ISSET(it, &rfds))
         {
           CLog::Log(LOGDEBUG, "JSONRPC Server: New connection detected");
-          CTCPClient *newconnection = new CTCPClient();
+          auto newconnection = new CTCPClient();
           newconnection->m_socket =
               accept(it, (sockaddr*)&newconnection->m_cliaddr, &newconnection->m_addrlen);
 

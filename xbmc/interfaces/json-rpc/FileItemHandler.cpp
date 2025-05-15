@@ -368,7 +368,7 @@ void CFileItemHandler::HandleFileItem(const char* ID,
 
   if (item.get())
   {
-    std::set<std::string>::const_iterator fileField = fields.find("file");
+    auto fileField = fields.find("file");
     if (fileField != fields.end())
     {
       if (allowFile)
@@ -525,7 +525,7 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
 
     if (!added)
     {
-      CFileItemPtr item = std::make_shared<CFileItem>(file, false);
+      auto item = std::make_shared<CFileItem>(file, false);
       if (item->IsPicture())
       {
         CPictureInfoTag picture;

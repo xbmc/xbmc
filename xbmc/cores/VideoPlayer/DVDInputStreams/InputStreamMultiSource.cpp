@@ -103,7 +103,7 @@ bool CInputStreamMultiSource::Open()
 
   for (unsigned int i = 0; i < m_filenames.size(); i++)
   {
-    CFileItem fileitem = CFileItem(m_filenames[i], false);
+    auto fileitem = CFileItem(m_filenames[i], false);
     fileitem.SetMimeTypeForInternetFile();
     InputStreamPtr inputstream(CDVDFactoryInputStream::CreateInputStream(m_pPlayer, fileitem));
     if (!inputstream)

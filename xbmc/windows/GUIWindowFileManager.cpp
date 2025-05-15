@@ -1211,7 +1211,7 @@ void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob
 {
   if(!success)
   {
-    CFileOperationJob* fileJob = static_cast<CFileOperationJob*>(job);
+    auto fileJob = static_cast<CFileOperationJob*>(job);
     HELPERS::ShowOKDialogLines(CVariant{fileJob->GetHeading()},
                                   CVariant{fileJob->GetLine()}, CVariant{16200}, CVariant{0});
   }

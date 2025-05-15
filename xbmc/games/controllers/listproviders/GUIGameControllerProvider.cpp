@@ -136,7 +136,7 @@ void CGUIGameControllerProvider::UpdateItems()
       continue;
     }
 
-    CFileItemPtr fileItem = std::make_shared<CFileItem>();
+    auto fileItem = std::make_shared<CFileItem>();
 
     // Set the item state for the current port index
     if (portIndex++ == m_portIndex && controller)

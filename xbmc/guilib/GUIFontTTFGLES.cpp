@@ -54,7 +54,7 @@ CGUIFontTTFGLES::~CGUIFontTTFGLES(void)
 
 bool CGUIFontTTFGLES::FirstBegin()
 {
-  CRenderSystemGLES* renderSystem =
+  auto renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
   GLenum pixformat = GL_ALPHA; // deprecated
@@ -116,7 +116,7 @@ void CGUIFontTTFGLES::LastEnd()
   if (!winSystem)
     return;
 
-  CRenderSystemGLES* renderSystem =
+  auto renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
   GLint posLoc = renderSystem->GUIShaderGetPos();

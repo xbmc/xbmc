@@ -30,7 +30,7 @@ bool CVideoLibraryCleaningJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
 
-  const CVideoLibraryCleaningJob* cleaningJob = dynamic_cast<const CVideoLibraryCleaningJob*>(job);
+  auto cleaningJob = dynamic_cast<const CVideoLibraryCleaningJob*>(job);
   if (cleaningJob == NULL)
     return false;
 

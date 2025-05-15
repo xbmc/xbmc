@@ -220,7 +220,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice() const
   std::vector<RENDER_STEREO_MODE> selectableModes;
   for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
   {
-    RENDER_STEREO_MODE selectableMode = static_cast<RENDER_STEREO_MODE>(i);
+    auto selectableMode = static_cast<RENDER_STEREO_MODE>(i);
     if (CServiceBroker::GetRenderSystem()->SupportsStereo(selectableMode))
     {
       selectableModes.push_back(selectableMode);
@@ -538,7 +538,7 @@ bool CStereoscopicsManager::IsVideoStereoscopic() const
 
 void CStereoscopicsManager::OnStreamChange()
 {
-  STEREOSCOPIC_PLAYBACK_MODE playbackMode = static_cast<STEREOSCOPIC_PLAYBACK_MODE>(m_settings->GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE));
+  auto playbackMode = static_cast<STEREOSCOPIC_PLAYBACK_MODE>(m_settings->GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE));
   RENDER_STEREO_MODE mode = GetStereoMode();
 
   // early return if playback mode should be ignored and we're in no stereoscopic mode right now

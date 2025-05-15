@@ -71,7 +71,7 @@ T NumberFromSS(std::string_view str, T fallback) noexcept
 }
 } // unnamed namespace
 
-static constexpr const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
+static constexpr auto ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
 
 /* empty string for use in returns by ref */
 const std::string StringUtils::Empty = "";
@@ -248,7 +248,7 @@ std::string StringUtils::FormatV(const char *fmt, va_list args)
 
   while (true)
   {
-    char *cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
+    auto cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
     if (!cstr)
       return "";
 
@@ -292,7 +292,7 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
 
   while (true)
   {
-    wchar_t *cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
+    auto cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
     if (!cstr)
       return L"";
 
@@ -338,7 +338,7 @@ int compareWchar (const void* a, const void* b)
 
 wchar_t tolowerUnicode(const wchar_t& c)
 {
-  wchar_t* p = (wchar_t*) bsearch (&c, unicode_uppers, sizeof(unicode_uppers) / sizeof(wchar_t), sizeof(wchar_t), compareWchar);
+  auto p = (wchar_t*) bsearch (&c, unicode_uppers, sizeof(unicode_uppers) / sizeof(wchar_t), sizeof(wchar_t), compareWchar);
   if (p)
     return *(unicode_lowers + (p - unicode_uppers));
 
@@ -347,7 +347,7 @@ wchar_t tolowerUnicode(const wchar_t& c)
 
 wchar_t toupperUnicode(const wchar_t& c)
 {
-  wchar_t* p = (wchar_t*) bsearch (&c, unicode_lowers, sizeof(unicode_lowers) / sizeof(wchar_t), sizeof(wchar_t), compareWchar);
+  auto p = (wchar_t*) bsearch (&c, unicode_lowers, sizeof(unicode_lowers) / sizeof(wchar_t), sizeof(wchar_t), compareWchar);
   if (p)
     return *(unicode_uppers + (p - unicode_lowers));
 
@@ -420,7 +420,7 @@ void StringUtils::ToCapitalize(std::wstring &str)
 {
   const std::locale& loc = g_langInfo.GetSystemLocale();
   bool isFirstLetter = true;
-  for (std::wstring::iterator it = str.begin(); it < str.end(); ++it)
+  for (auto it = str.begin(); it < str.end(); ++it)
   {
     // capitalize after spaces and punctuation characters (except apostrophes)
     if (std::isspace(*it, loc) || (std::ispunct(*it, loc) && *it != '\''))
@@ -566,7 +566,7 @@ int StringUtils::ReturnDigits(const std::string& str)
 
 std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
 {
-  std::string::iterator it = str.begin();
+  auto it = str.begin();
   bool onSpace = false;
   while(it != str.end())
   {
@@ -627,7 +627,7 @@ std::string StringUtils::ReplaceSpecialCharactersWithSpace(const std::string& st
 int StringUtils::Replace(std::string &str, char oldChar, char newChar)
 {
   int replacedChars = 0;
-  for (std::string::iterator it = str.begin(); it != str.end(); ++it)
+  for (auto it = str.begin(); it != str.end(); ++it)
   {
     if (*it == oldChar)
     {
@@ -1289,8 +1289,8 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
     return nKey1 - nKey2;
 
   //Not a binary match, so process character at a time
-  const unsigned char* zA = static_cast<const unsigned char*>(pKey1);
-  const unsigned char* zB = static_cast<const unsigned char*>(pKey2);
+  auto zA = static_cast<const unsigned char*>(pKey1);
+  auto zB = static_cast<const unsigned char*>(pKey2);
   wchar_t lc, rc;
   unsigned char bytes;
   int64_t lnum, rnum;
@@ -1664,12 +1664,12 @@ int IsUTF8Letter(const unsigned char *str)
 size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
 {
   // NOTE: This assumes word is lowercase!
-  const unsigned char *s = (const unsigned char *)str;
+  auto s = (const unsigned char *)str;
   do
   {
     // start with a compare
     const unsigned char *c = s;
-    const unsigned char *w = (const unsigned char *)wordLowerCase;
+    auto w = (const unsigned char *)wordLowerCase;
     bool same = true;
     while (same && *c && *w)
     {
@@ -1778,7 +1778,7 @@ int StringUtils::FindBestMatch(const std::string &str, const std::vector<std::st
   matchscore = 0;
 
   int i = 0;
-  for (std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end(); ++it, i++)
+  for (auto it = strings.begin(); it != strings.end(); ++it, i++)
   {
     int maxlength = std::max(str.length(), it->length());
     double score = StringUtils::CompareFuzzy(str, *it) / maxlength;
@@ -1793,7 +1793,7 @@ int StringUtils::FindBestMatch(const std::string &str, const std::vector<std::st
 
 bool StringUtils::ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords)
 {
-  for (std::vector<std::string>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
+  for (auto it = keywords.begin(); it != keywords.end(); ++it)
   {
     if (str.find(*it) != str.npos)
       return true;

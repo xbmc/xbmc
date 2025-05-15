@@ -628,7 +628,7 @@ bool CMusicGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
 
 bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  const CFileItem* item = static_cast<const CFileItem*>(gitem);
+  auto item = static_cast<const CFileItem*>(gitem);
   const CMusicInfoTag* tag = item->GetMusicInfoTag();
 
   switch (info.m_info)

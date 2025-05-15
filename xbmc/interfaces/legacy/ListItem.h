@@ -110,7 +110,7 @@ namespace XBMCAddon
 
       static inline AddonClass::Ref<ListItem> fromString(const String& str)
       {
-        AddonClass::Ref<ListItem> ret = AddonClass::Ref<ListItem>(new ListItem());
+        auto ret = AddonClass::Ref<ListItem>(new ListItem());
         ret->item = std::make_shared<CFileItem>(str);
         return ret;
       }

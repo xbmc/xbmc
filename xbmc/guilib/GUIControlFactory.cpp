@@ -1356,7 +1356,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
     {
       control = new CGUIRSSControl(parentID, id, posX, posY, width, height, labelInfo, textColor3,
                                    headlineColor, strRSSTags);
-      RssUrls::const_iterator iter = CRssManager::GetInstance().GetUrls().find(iUrlSet);
+      auto iter = CRssManager::GetInstance().GetUrls().find(iUrlSet);
       if (iter != CRssManager::GetInstance().GetUrls().end())
         static_cast<CGUIRSSControl*>(control)->SetUrlSet(iUrlSet);
 
@@ -1367,7 +1367,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       control = new CGUIButtonControl(parentID, id, posX, posY, width, height, textureFocus,
                                       textureNoFocus, labelInfo, wrapMultiLine);
 
-      CGUIButtonControl* bcontrol = static_cast<CGUIButtonControl*>(control);
+      auto bcontrol = static_cast<CGUIButtonControl*>(control);
       bcontrol->SetLabel(strLabel);
       bcontrol->SetLabel2(strLabel2);
       bcontrol->SetMinWidth(minWidth);
@@ -1383,7 +1383,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
                                             textureNoFocus, textureAltFocus, textureAltNoFocus,
                                             labelInfo, wrapMultiLine);
 
-      CGUIToggleButtonControl* tcontrol = static_cast<CGUIToggleButtonControl*>(control);
+      auto tcontrol = static_cast<CGUIToggleButtonControl*>(control);
       tcontrol->SetLabel(strLabel);
       tcontrol->SetAltLabel(altLabel);
       tcontrol->SetMinWidth(minWidth);
@@ -1402,7 +1402,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
           textureRadioOnFocus, textureRadioOnNoFocus, textureRadioOffFocus, textureRadioOffNoFocus,
           textureRadioOnDisabled, textureRadioOffDisabled);
 
-      CGUIRadioButtonControl* rcontrol = static_cast<CGUIRadioButtonControl*>(control);
+      auto rcontrol = static_cast<CGUIRadioButtonControl*>(control);
       rcontrol->SetLabel(strLabel);
       rcontrol->SetLabel2(strLabel2);
       rcontrol->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
@@ -1419,7 +1419,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
                                     textureUpFocus, textureDownFocus, textureUpDisabled,
                                     textureDownDisabled, labelInfo, iType);
 
-      CGUISpinControl* scontrol = static_cast<CGUISpinControl*>(control);
+      auto scontrol = static_cast<CGUISpinControl*>(control);
       scontrol->SetReverse(bReverse);
 
       if (iType == SPIN_CONTROL_TYPE_INT)
@@ -1496,7 +1496,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       else
         control = new CGUIBorderedImage(parentID, id, posX, posY, width, height, texture,
                                         borderTexture, borderSize);
-      CGUIImage* icontrol = static_cast<CGUIImage*>(control);
+      auto icontrol = static_cast<CGUIImage*>(control);
       icontrol->SetInfo(textureFile);
       icontrol->SetAspectRatio(aspect);
       icontrol->SetCrossFade(fadeTime);
@@ -1519,7 +1519,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
 
       control = new CGUIListContainer(parentID, id, posX, posY, width, height, orientation,
                                       scroller, preloadItems);
-      CGUIListContainer* lcontrol = static_cast<CGUIListContainer*>(control);
+      auto lcontrol = static_cast<CGUIListContainer*>(control);
       lcontrol->LoadLayout(pControlNode);
       lcontrol->LoadListProvider(pControlNode, defaultControl, defaultAlways);
       lcontrol->SetType(viewType, viewLabel);
@@ -1539,7 +1539,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
 
       control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation,
                                               scroller, preloadItems, focusPosition);
-      CGUIWrappingListContainer* wcontrol = static_cast<CGUIWrappingListContainer*>(control);
+      auto wcontrol = static_cast<CGUIWrappingListContainer*>(control);
       wcontrol->LoadLayout(pControlNode);
       wcontrol->LoadListProvider(pControlNode, defaultControl, defaultAlways);
       wcontrol->SetType(viewType, viewLabel);
@@ -1554,7 +1554,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
     }
     case CGUIControl::GUICONTAINER_EPGGRID:
     {
-      CGUIEPGGridContainer* epgGridContainer =
+      auto epgGridContainer =
           new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, orientation, scrollTime,
                                    preloadItems, timeBlocks, rulerUnit, textureProgressIndicator);
       control = epgGridContainer;
@@ -1572,7 +1572,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
 
       control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation,
                                            scroller, preloadItems, focusPosition, iMovementRange);
-      CGUIFixedListContainer* fcontrol = static_cast<CGUIFixedListContainer*>(control);
+      auto fcontrol = static_cast<CGUIFixedListContainer*>(control);
       fcontrol->LoadLayout(pControlNode);
       fcontrol->LoadListProvider(pControlNode, defaultControl, defaultAlways);
       fcontrol->SetType(viewType, viewLabel);
@@ -1592,7 +1592,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
 
       control = new CGUIPanelContainer(parentID, id, posX, posY, width, height, orientation,
                                        scroller, preloadItems);
-      CGUIPanelContainer* pcontrol = static_cast<CGUIPanelContainer*>(control);
+      auto pcontrol = static_cast<CGUIPanelContainer*>(control);
       pcontrol->LoadLayout(pControlNode);
       pcontrol->LoadListProvider(pControlNode, defaultControl, defaultAlways);
       pcontrol->SetType(viewType, viewLabel);
@@ -1615,7 +1615,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       control = new CGUITextBox(parentID, id, posX, posY, width, height, labelInfo, scrollTime,
                                 strMonoFont.empty() ? nullptr : &labelInfoMono);
 
-      CGUITextBox* tcontrol = static_cast<CGUITextBox*>(control);
+      auto tcontrol = static_cast<CGUITextBox*>(control);
 
       tcontrol->SetPageControl(pageControl);
       if (infoLabels.size())
@@ -1644,7 +1644,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
                                       textureUp, textureDown, textureUpFocus, textureDownFocus,
                                       textureUpDisabled, textureDownDisabled, labelInfo, iType);
 
-      CGUISpinControlEx* scontrol = static_cast<CGUISpinControlEx*>(control);
+      auto scontrol = static_cast<CGUISpinControlEx*>(control);
       scontrol->SetSpinPosition(spinPosX);
       scontrol->SetText(strLabel);
       scontrol->SetReverse(bReverse);
@@ -1665,7 +1665,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
     {
       control = new GAME::CGUIGameController(parentID, id, posX, posY, width, height, texture);
 
-      GAME::CGUIGameController* gcontrol = static_cast<GAME::CGUIGameController*>(control);
+      auto gcontrol = static_cast<GAME::CGUIGameController*>(control);
 
       // Set texture
       gcontrol->SetInfo(textureFile);
@@ -1708,7 +1708,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       control = new GAME::CGUIGameControllerList(parentID, id, posX, posY, width, height,
                                                  orientation, labelInfo.align, scroller);
 
-      GAME::CGUIGameControllerList* lcontrol = static_cast<GAME::CGUIGameControllerList*>(control);
+      auto lcontrol = static_cast<GAME::CGUIGameControllerList*>(control);
 
       lcontrol->LoadLayout(pControlNode);
       lcontrol->LoadListProvider(pControlNode, defaultControl, defaultAlways);
@@ -1728,7 +1728,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
                                            textureNoFocus, labelInfo, textureColorMask,
                                            textureColorDisabledMask);
 
-      CGUIColorButtonControl* rcontrol = static_cast<CGUIColorButtonControl*>(control);
+      auto rcontrol = static_cast<CGUIColorButtonControl*>(control);
       rcontrol->SetLabel(strLabel);
       rcontrol->SetImageBoxColor(colorBox);
       rcontrol->SetColorDimensions(colorPosX, colorPosY, colorWidth, colorHeight);

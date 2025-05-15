@@ -310,7 +310,7 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
   // Check GUI setting and send button release if controllers are disabled
   if (!m_manager.GetInputManager().IsControllerEnabled())
   {
-    for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin();
+    for (auto it = m_driverHandlers.begin();
          it != m_driverHandlers.end(); ++it)
       it->handler->OnButtonMotion(buttonIndex, false);
     return true;
@@ -367,7 +367,7 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   // Check GUI setting and send hat unpressed if controllers are disabled
   if (!m_manager.GetInputManager().IsControllerEnabled())
   {
-    for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin();
+    for (auto it = m_driverHandlers.begin();
          it != m_driverHandlers.end(); ++it)
       it->handler->OnHatMotion(hatIndex, HAT_STATE::NONE);
     return true;
@@ -424,7 +424,7 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
   // Check GUI setting and send analog axis centered if controllers are disabled
   if (!m_manager.GetInputManager().IsControllerEnabled())
   {
-    for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin();
+    for (auto it = m_driverHandlers.begin();
          it != m_driverHandlers.end(); ++it)
       it->handler->OnAxisMotion(axisIndex, static_cast<float>(center), center, range);
     return true;
@@ -478,7 +478,7 @@ bool CPeripheralJoystick::SetMotorState(unsigned int motorIndex, float magnitude
 
   if (m_mappedBusType == PERIPHERAL_BUS_ADDON)
   {
-    CPeripheralBusAddon* addonBus = static_cast<CPeripheralBusAddon*>(m_bus);
+    auto addonBus = static_cast<CPeripheralBusAddon*>(m_bus);
     if (addonBus)
     {
       bHandled = addonBus->SendRumbleEvent(m_strLocation, motorIndex, magnitude);

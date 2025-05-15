@@ -37,7 +37,7 @@ namespace
 {
 CFileItemPtr CreateNewSaveItem()
 {
-  CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(15314)); // "Save"
+  auto item = std::make_shared<CFileItem>(g_localizeStrings.Get(15314)); // "Save"
 
   // A nonexistent path ensures a gamewindow control won't render any pixels
   item->SetPath(NO_PIXEL_DATA);
@@ -278,7 +278,7 @@ void CDialogInGameSaves::OnNewSave()
 
   savestate->Finalize();
 
-  CFileItemPtr item = std::make_shared<CFileItem>();
+  auto item = std::make_shared<CFileItem>();
   CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, *item);
 
   m_savestateItems.AddFront(item, 0);

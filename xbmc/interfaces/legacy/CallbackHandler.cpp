@@ -49,7 +49,7 @@ namespace XBMCAddon
     std::lock_guard lock(critSection);
 
     // find any messages that might be there because of me ... and remove them
-    CallbackQueue::iterator iter = g_callQueue.begin();
+    auto iter = g_callQueue.begin();
     while (iter != g_callQueue.end())
     {
       if ((*iter)->handler.get() == this) // then this message is because of me
@@ -67,7 +67,7 @@ namespace XBMCAddon
     XBMC_TRACE;
     std::unique_lock lock(critSection);
 
-    CallbackQueue::iterator iter = g_callQueue.begin();
+    auto iter = g_callQueue.begin();
     while (iter != g_callQueue.end())
     {
       AddonClass::Ref<AsyncCallbackMessage> p(*iter);
@@ -131,7 +131,7 @@ namespace XBMCAddon
     XBMC_TRACE;
     std::lock_guard lock(critSection);
 
-    CallbackQueue::iterator iter = g_callQueue.begin();
+    auto iter = g_callQueue.begin();
     while (iter != g_callQueue.end())
     {
       AddonClass::Ref<AsyncCallbackMessage> p(*iter);

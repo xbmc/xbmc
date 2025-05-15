@@ -372,7 +372,7 @@ bool CNetworkBase::PingHost(unsigned long ipaddr, unsigned short port, unsigned 
 
   SOCKET soc = socket(AF_INET, SOCK_STREAM, 0);
 
-  const char* err_msg = "invalid socket";
+  auto err_msg = "invalid socket";
 
   if (soc != INVALID_SOCKET)
   {

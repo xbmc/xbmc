@@ -106,7 +106,7 @@ namespace XBMCAddon
         }
         else
         {
-          CFileItemList *l = new CFileItemList; //don't delete,
+          auto l = new CFileItemList; //don't delete,
           l->Add(std::make_shared<CFileItem>(item, false));
           CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
                                                      static_cast<void*>(l));
@@ -383,7 +383,7 @@ namespace XBMCAddon
       if (!getAppPlayer()->IsPlaying())
         throw PlayerException("Kodi is not playing any item");
 
-      CFileItemPtr itemPtr = std::make_shared<CFileItem>(g_application.CurrentFileItem());
+      auto itemPtr = std::make_shared<CFileItem>(g_application.CurrentFileItem());
       return new XBMCAddon::xbmcgui::ListItem(itemPtr);
     }
 

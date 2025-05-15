@@ -41,8 +41,8 @@ void Interface_GUIControlEdit::set_visible(KODI_HANDLE kodiBase,
                                            KODI_GUI_CONTROL_HANDLE handle,
                                            bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIEditControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -59,8 +59,8 @@ void Interface_GUIControlEdit::set_enabled(KODI_HANDLE kodiBase,
                                            KODI_GUI_CONTROL_HANDLE handle,
                                            bool enable)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIEditControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -78,8 +78,8 @@ void Interface_GUIControlEdit::set_input_type(KODI_HANDLE kodiBase,
                                               int type,
                                               const char* heading)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIEditControl*>(handle);
   if (!addon || !control || !heading)
   {
     CLog::Log(LOGERROR,
@@ -135,8 +135,8 @@ void Interface_GUIControlEdit::set_label(KODI_HANDLE kodiBase,
                                          KODI_GUI_CONTROL_HANDLE handle,
                                          const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIEditControl*>(handle);
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR,
@@ -152,8 +152,8 @@ void Interface_GUIControlEdit::set_label(KODI_HANDLE kodiBase,
 
 char* Interface_GUIControlEdit::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIEditControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -170,8 +170,8 @@ void Interface_GUIControlEdit::set_text(KODI_HANDLE kodiBase,
                                         KODI_GUI_CONTROL_HANDLE handle,
                                         const char* text)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIEditControl*>(handle);
   if (!addon || !control || !text)
   {
     CLog::Log(LOGERROR,
@@ -187,8 +187,8 @@ void Interface_GUIControlEdit::set_text(KODI_HANDLE kodiBase,
 
 char* Interface_GUIControlEdit::get_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIEditControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -205,8 +205,8 @@ void Interface_GUIControlEdit::set_cursor_position(KODI_HANDLE kodiBase,
                                                    KODI_GUI_CONTROL_HANDLE handle,
                                                    unsigned int position)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIEditControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -222,8 +222,8 @@ void Interface_GUIControlEdit::set_cursor_position(KODI_HANDLE kodiBase,
 unsigned int Interface_GUIControlEdit::get_cursor_position(KODI_HANDLE kodiBase,
                                                            KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIEditControl* control = static_cast<CGUIEditControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIEditControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

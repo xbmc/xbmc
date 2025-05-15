@@ -279,7 +279,7 @@ CStreamDetail *CStreamDetails::NewStream(CStreamDetail::StreamType type)
 
 std::string CStreamDetails::GetVideoLanguage(int idx) const
 {
-  const CStreamDetailVideo* item =
+  auto item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
     return item->m_strLanguage;
@@ -368,7 +368,7 @@ const CStreamDetail* CStreamDetails::GetNthStream(CStreamDetail::StreamType type
 
 std::string CStreamDetails::GetVideoCodec(int idx) const
 {
-  const CStreamDetailVideo* item =
+  auto item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
     return item->m_strCodec;
@@ -378,7 +378,7 @@ std::string CStreamDetails::GetVideoCodec(int idx) const
 
 float CStreamDetails::GetVideoAspect(int idx) const
 {
-  const CStreamDetailVideo* item =
+  auto item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
     return item->m_fAspect;
@@ -388,7 +388,7 @@ float CStreamDetails::GetVideoAspect(int idx) const
 
 int CStreamDetails::GetVideoWidth(int idx) const
 {
-  const CStreamDetailVideo* item =
+  auto item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
     return item->m_iWidth;
@@ -398,7 +398,7 @@ int CStreamDetails::GetVideoWidth(int idx) const
 
 int CStreamDetails::GetVideoHeight(int idx) const
 {
-  const CStreamDetailVideo* item =
+  auto item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
     return item->m_iHeight;
@@ -408,7 +408,7 @@ int CStreamDetails::GetVideoHeight(int idx) const
 
 std::string CStreamDetails::GetVideoHdrType( int idx) const
 {
-  const CStreamDetailVideo* item =
+  auto item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
     return item->m_strHdrType;
@@ -418,7 +418,7 @@ std::string CStreamDetails::GetVideoHdrType( int idx) const
 
 int CStreamDetails::GetVideoDuration(int idx) const
 {
-  const CStreamDetailVideo* item =
+  auto item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
     return item->m_iDuration;
@@ -428,7 +428,7 @@ int CStreamDetails::GetVideoDuration(int idx) const
 
 void CStreamDetails::SetVideoDuration(int idx, const int duration)
 {
-  CStreamDetailVideo* item = const_cast<CStreamDetailVideo*>(
+  auto item = const_cast<CStreamDetailVideo*>(
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx)));
   if (item)
     item->m_iDuration = duration;
@@ -436,7 +436,7 @@ void CStreamDetails::SetVideoDuration(int idx, const int duration)
 
 std::string CStreamDetails::GetStereoMode(int idx) const
 {
-  const CStreamDetailVideo* item =
+  auto item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
     return item->m_strStereoMode;
@@ -446,7 +446,7 @@ std::string CStreamDetails::GetStereoMode(int idx) const
 
 std::string CStreamDetails::GetAudioCodec(int idx) const
 {
-  const CStreamDetailAudio* item =
+  auto item =
       dynamic_cast<const CStreamDetailAudio*>(GetNthStream(CStreamDetail::AUDIO, idx));
   if (item)
     return item->m_strCodec;
@@ -456,7 +456,7 @@ std::string CStreamDetails::GetAudioCodec(int idx) const
 
 std::string CStreamDetails::GetAudioLanguage(int idx) const
 {
-  const CStreamDetailAudio* item =
+  auto item =
       dynamic_cast<const CStreamDetailAudio*>(GetNthStream(CStreamDetail::AUDIO, idx));
   if (item)
     return item->m_strLanguage;
@@ -466,7 +466,7 @@ std::string CStreamDetails::GetAudioLanguage(int idx) const
 
 int CStreamDetails::GetAudioChannels(int idx) const
 {
-  const CStreamDetailAudio* item =
+  auto item =
       dynamic_cast<const CStreamDetailAudio*>(GetNthStream(CStreamDetail::AUDIO, idx));
   if (item)
     return item->m_iChannels;
@@ -476,7 +476,7 @@ int CStreamDetails::GetAudioChannels(int idx) const
 
 std::string CStreamDetails::GetSubtitleLanguage(int idx) const
 {
-  const CStreamDetailSubtitle* item =
+  auto item =
       dynamic_cast<const CStreamDetailSubtitle*>(GetNthStream(CStreamDetail::SUBTITLE, idx));
   if (item)
     return item->m_strLanguage;

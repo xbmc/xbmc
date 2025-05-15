@@ -96,7 +96,7 @@ bool CXBMCTestUtils::SetReferenceFileBasePath()
 
 XFILE::CFile *CXBMCTestUtils::CreateTempFile(std::string const& suffix)
 {
-  CTempFile *f = new CTempFile();
+  auto f = new CTempFile();
   if (f->Create(suffix))
     return f;
   delete f;
@@ -107,7 +107,7 @@ bool CXBMCTestUtils::DeleteTempFile(XFILE::CFile *tempfile)
 {
   if (!tempfile)
     return true;
-  CTempFile *f = static_cast<CTempFile*>(tempfile);
+  auto f = static_cast<CTempFile*>(tempfile);
   bool retval = f->Delete();
   delete f;
   return retval;
@@ -117,7 +117,7 @@ std::string CXBMCTestUtils::TempFilePath(XFILE::CFile const* const tempfile)
 {
   if (!tempfile)
     return "";
-  CTempFile const* const f = static_cast<CTempFile const*>(tempfile);
+  auto const f = static_cast<CTempFile const*>(tempfile);
   return f->getTempFilePath();
 }
 
@@ -125,7 +125,7 @@ std::string CXBMCTestUtils::TempFileDirectory(XFILE::CFile const* const tempfile
 {
   if (!tempfile)
     return "";
-  CTempFile const* const f = static_cast<CTempFile const*>(tempfile);
+  auto const f = static_cast<CTempFile const*>(tempfile);
   return f->getTempFileDirectory();
 }
 

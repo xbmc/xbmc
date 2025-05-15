@@ -23,7 +23,7 @@ CGUIControl *CGUIControlLookup::GetControl(int iControl, std::vector<CGUIControl
   if (first != m_lookup.end())
   {
     LookupMap::const_iterator last = m_lookup.upper_bound(iControl);
-    for (LookupMap::const_iterator i = first; i != last; ++i)
+    for (auto i = first; i != last; ++i)
     {
       CGUIControl *control = i->second;
       if (control->IsVisible())
@@ -52,7 +52,7 @@ bool CGUIControlLookup::IsValidControl(const CGUIControl *control) const
 
 void CGUIControlLookup::AddLookup(CGUIControl *control)
 {
-  CGUIControlLookup *lookupControl(dynamic_cast<CGUIControlLookup*>(control));
+  auto lookupControl(dynamic_cast<CGUIControlLookup*>(control));
 
   if (lookupControl)
   { // first add all the subitems of this group (if they exist)
@@ -69,13 +69,13 @@ void CGUIControlLookup::AddLookup(CGUIControl *control)
 
 void CGUIControlLookup::RemoveLookup(CGUIControl *control)
 {
-  CGUIControlLookup *lookupControl(dynamic_cast<CGUIControlLookup*>(control));
+  auto lookupControl(dynamic_cast<CGUIControlLookup*>(control));
   if (lookupControl)
   { // remove the group's lookup
     const LookupMap &map(lookupControl->GetLookup());
     for (const auto &i : map)
     { // remove this control
-      for (LookupMap::iterator it = m_lookup.begin(); it != m_lookup.end(); ++it)
+      for (auto it = m_lookup.begin(); it != m_lookup.end(); ++it)
       {
         if (i.second == it->second)
         {
@@ -88,7 +88,7 @@ void CGUIControlLookup::RemoveLookup(CGUIControl *control)
   // remove the actual control
   if (control->GetID())
   {
-    for (LookupMap::iterator it = m_lookup.begin(); it != m_lookup.end(); ++it)
+    for (auto it = m_lookup.begin(); it != m_lookup.end(); ++it)
     {
       if (control == it->second)
       {

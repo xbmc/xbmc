@@ -122,7 +122,7 @@ const char** CGameClientProperties::GetResourceDirectories(void)
         std::string resourcePath = resource->GetFullPath("");
         URIUtils::RemoveSlashAtEnd(resourcePath);
 
-        char* resourceDir = new char[resourcePath.length() + 1];
+        auto resourceDir = new char[resourcePath.length() + 1];
         std::strcpy(resourceDir, resourcePath.c_str());
         m_resourceDirectories.push_back(resourceDir);
       }
@@ -147,13 +147,13 @@ const char** CGameClientProperties::GetResourceDirectories(void)
     {
       if (!items.IsEmpty())
       {
-        char* addonProfileDir = new char[addonProfile.length() + 1];
+        auto addonProfileDir = new char[addonProfile.length() + 1];
         std::strcpy(addonProfileDir, addonProfile.c_str());
         m_resourceDirectories.push_back(addonProfileDir);
       }
     }
 
-    char* addonPathDir = new char[addonPath.length() + 1];
+    auto addonPathDir = new char[addonPath.length() + 1];
     std::strcpy(addonPathDir, addonPath.c_str());
     m_resourceDirectories.push_back(addonPathDir);
   }
@@ -184,7 +184,7 @@ const char** CGameClientProperties::GetExtensions(void)
 {
   for (auto& extension : m_parent.GetExtensions())
   {
-    char* ext = new char[extension.length() + 1];
+    auto ext = new char[extension.length() + 1];
     std::strcpy(ext, extension.c_str());
     m_extensions.push_back(ext);
   }
@@ -273,7 +273,7 @@ void CGameClientProperties::AddProxyDll(const GameClientPtr& gameClient)
   // Ignore add-on if it is already added
   if (!HasProxyDll(strLibPath))
   {
-    char* libPath = new char[strLibPath.length() + 1];
+    auto libPath = new char[strLibPath.length() + 1];
     std::strcpy(libPath, strLibPath.c_str());
     m_proxyDllPaths.push_back(libPath);
   }

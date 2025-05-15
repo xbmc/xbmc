@@ -164,7 +164,7 @@ int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
   int result = 0;
   if (msg.GetPointer())
   {
-    int* p = static_cast<int*>(msg.GetPointer());
+    auto p = static_cast<int*>(msg.GetPointer());
     msg.SetPointer(nullptr);
     result = *p;
     delete p;

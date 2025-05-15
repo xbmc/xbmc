@@ -106,7 +106,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
     if (m_pReader == NULL)
     {
 
-      RssUrls::const_iterator iter = CRssManager::GetInstance().GetUrls().find(m_urlset);
+      auto iter = CRssManager::GetInstance().GetUrls().find(m_urlset);
       if (iter != CRssManager::GetInstance().GetUrls().end())
       {
         m_rtl = iter->second.rtl;

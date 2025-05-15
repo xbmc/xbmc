@@ -170,7 +170,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateEpgTags(int iChannel
     if (GetFirstEventBlock(tag) > GetLastEventBlock(tag))
       continue;
 
-    const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(tag);
+    const auto item = std::make_shared<CFileItem>(tag);
     if (!result && IsEventMemberOfBlock(tag, iBlock))
       result = item;
 
@@ -260,7 +260,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsBefore(EpgTags& 
       if (GetFirstEventBlock(*it) > GetLastEventBlock(*it))
         continue;
 
-      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(*it);
+      const auto item = std::make_shared<CFileItem>(*it);
       if (!result && IsEventMemberOfBlock(*it, iBlock))
         result = item;
 
@@ -322,7 +322,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsAfter(EpgTags& e
       if (GetFirstEventBlock(*it) > GetLastEventBlock(*it))
         continue;
 
-      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(*it);
+      const auto item = std::make_shared<CFileItem>(*it);
       if (!result && IsEventMemberOfBlock(*it, iBlock))
         result = item;
 

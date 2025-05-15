@@ -120,7 +120,7 @@ bool CKeyboardLayoutManager::GetLayout(const std::string& name, CKeyboardLayout&
   if (name.empty())
     return false;
 
-  KeyboardLayouts::const_iterator it = m_layouts.find(name);
+  auto it = m_layouts.find(name);
   if (it == m_layouts.end())
     return false;
 

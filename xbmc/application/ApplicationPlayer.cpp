@@ -1044,7 +1044,7 @@ const CSeekHandler& CApplicationPlayer::GetSeekHandler() const
 void CApplicationPlayer::SetUpdateStreamDetails()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
-  CVideoPlayer* vp = dynamic_cast<CVideoPlayer*>(player.get());
+  auto vp = dynamic_cast<CVideoPlayer*>(player.get());
   if (vp)
     vp->SetUpdateStreamDetails();
 }

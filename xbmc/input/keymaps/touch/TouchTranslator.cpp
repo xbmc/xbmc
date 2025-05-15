@@ -70,7 +70,7 @@ void CTouchTranslator::MapActions(int windowID, const tinyxml2::XMLNode* pTouch)
     {
       // check if there already is a mapping for the parsed action
       // and remove it if necessary
-      TouchActionMap::iterator actionIt = map.find(touchActionKey);
+      auto actionIt = map.find(touchActionKey);
       if (actionIt != map.end())
         map.erase(actionIt);
 

@@ -184,7 +184,7 @@ bool CHttpRanges::GetLastPosition(uint64_t& position) const
 uint64_t CHttpRanges::GetLength() const
 {
   uint64_t length = 0;
-  for (HttpRanges::const_iterator range = m_ranges.begin(); range != m_ranges.end(); ++range)
+  for (auto range = m_ranges.begin(); range != m_ranges.end(); ++range)
     length += range->GetLength();
 
   return length;
@@ -322,9 +322,9 @@ void CHttpRanges::SortAndCleanup()
   std::sort(m_ranges.begin(), m_ranges.end());
 
   // check for overlapping ranges
-  for (HttpRanges::iterator range = m_ranges.begin() + 1; range != m_ranges.end();)
+  for (auto range = m_ranges.begin() + 1; range != m_ranges.end();)
   {
-    HttpRanges::iterator previous = range - 1;
+    auto previous = range - 1;
 
     // check if the current and the previous range overlap
     if (previous->GetLastPosition() + 1 >= range->GetFirstPosition())

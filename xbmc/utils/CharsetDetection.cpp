@@ -187,7 +187,7 @@ bool CCharsetDetection::GetXmlEncodingFromDeclaration(const char* const xmlConte
   const std::string xmlDecl(xmlContent + pos, declLength);
   const char* const xmlDeclC = xmlDecl.c_str(); // for faster processing of [] and for null-termination
 
-  static const char* const whiteSpaceChars = " \n\r\t"; // according to W3C Recommendation for XML, any of them can be used as separator
+  static const auto whiteSpaceChars = " \n\r\t"; // according to W3C Recommendation for XML, any of them can be used as separator
   pos = 0;
 
   while (pos + 12 <= declLength) // 12 is minimal length of "encoding='x'"
@@ -514,7 +514,7 @@ size_t CCharsetDetection::GetHtmlAttribute(const std::string& htmlContent, size_
 {
   attrName.clear();
   attrValue.clear();
-  static const char* const htmlWhitespaceSlash = "\x09\x0A\x0C\x0D\x20\x2F"; // tab, LF, FF, CR, space or slash
+  static const auto htmlWhitespaceSlash = "\x09\x0A\x0C\x0D\x20\x2F"; // tab, LF, FF, CR, space or slash
   const char* const htmlC = htmlContent.c_str();
   const size_t len = htmlContent.length();
 

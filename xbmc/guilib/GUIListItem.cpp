@@ -97,7 +97,7 @@ const std::wstring& CGUIListItem::GetSortLabel() const
 
 void CGUIListItem::SetArt(const std::string &type, const std::string &url)
 {
-  ArtMap::iterator i = m_art.find(type);
+  auto i = m_art.find(type);
   if (i == m_art.end() || i->second != url)
   {
     m_art[type] = url;
@@ -131,13 +131,13 @@ void CGUIListItem::AppendArt(const ArtMap &art, const std::string &prefix)
 
 std::string CGUIListItem::GetArt(const std::string &type) const
 {
-  ArtMap::const_iterator i = m_art.find(type);
+  auto i = m_art.find(type);
   if (i != m_art.end())
     return i->second;
   i = m_artFallbacks.find(type);
   if (i != m_artFallbacks.end())
   {
-    ArtMap::const_iterator j = m_art.find(i->second);
+    auto j = m_art.find(i->second);
     if (j != m_art.end())
       return j->second;
   }
@@ -350,7 +350,7 @@ void CGUIListItem::SetInvalid()
 
 void CGUIListItem::SetProperty(const std::string &strKey, const CVariant &value)
 {
-  PropertyMap::iterator iter = m_mapProperties.find(strKey);
+  auto iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
   {
     m_mapProperties.insert(make_pair(strKey, value));
@@ -365,8 +365,8 @@ void CGUIListItem::SetProperty(const std::string &strKey, const CVariant &value)
 
 const CVariant &CGUIListItem::GetProperty(const std::string &strKey) const
 {
-  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
-  static CVariant nullVariant = CVariant(CVariant::VariantTypeNull);
+  auto iter = m_mapProperties.find(strKey);
+  static auto nullVariant = CVariant(CVariant::VariantTypeNull);
 
   if (iter == m_mapProperties.end())
     return nullVariant;
@@ -376,7 +376,7 @@ const CVariant &CGUIListItem::GetProperty(const std::string &strKey) const
 
 bool CGUIListItem::HasProperty(const std::string &strKey) const
 {
-  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
+  auto iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return false;
 
@@ -385,7 +385,7 @@ bool CGUIListItem::HasProperty(const std::string &strKey) const
 
 void CGUIListItem::ClearProperty(const std::string &strKey)
 {
-  PropertyMap::iterator iter = m_mapProperties.find(strKey);
+  auto iter = m_mapProperties.find(strKey);
   if (iter != m_mapProperties.end())
   {
     m_mapProperties.erase(iter);

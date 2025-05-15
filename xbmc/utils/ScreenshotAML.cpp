@@ -35,7 +35,7 @@ void CScreenshotAML::CaptureVideoFrame(unsigned char *buffer, int iWidth, int iH
     int buffSize = stride * iHeight;
     int readSize = 0;
     // videobuffer should be rgb according to docu - but it is bgr ...
-    unsigned char *videoBuffer = new unsigned char[buffSize];
+    auto videoBuffer = new unsigned char[buffSize];
 
     if (videoBuffer != NULL)
     {

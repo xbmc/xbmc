@@ -18,7 +18,7 @@ using namespace GAME;
 bool CGameClientStreamVideo::OpenStream(RETRO::IRetroPlayerStream* stream,
                                         const game_stream_properties& properties)
 {
-  RETRO::CRetroPlayerVideo* videoStream = dynamic_cast<RETRO::CRetroPlayerVideo*>(stream);
+  auto videoStream = dynamic_cast<RETRO::CRetroPlayerVideo*>(stream);
   if (videoStream == nullptr)
   {
     CLog::Log(LOGERROR, "GAME: RetroPlayer stream is not a video stream");

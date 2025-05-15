@@ -135,7 +135,7 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage& message)
 
 void CDialogGameVideoSelect::FrameMove()
 {
-  CGUIBaseContainer* thumbs = dynamic_cast<CGUIBaseContainer*>(GetControl(CONTROL_VIDEO_THUMBS));
+  auto thumbs = dynamic_cast<CGUIBaseContainer*>(GetControl(CONTROL_VIDEO_THUMBS));
   if (thumbs != nullptr)
     OnItemFocus(thumbs->GetSelectedItem());
 

@@ -611,7 +611,7 @@ public:
 
     while (true)
     {
-      char* cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
+      auto cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
       if (!cstr)
         return "";
 
@@ -665,7 +665,7 @@ public:
 
     while (true)
     {
-      wchar_t* cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
+      auto cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
       if (!cstr)
         return L"";
 
@@ -1221,7 +1221,7 @@ public:
   ///
   inline static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str)
   {
-    std::string::iterator it = str.begin();
+    auto it = str.begin();
     bool onSpace = false;
     while (it != str.end())
     {
@@ -1274,7 +1274,7 @@ public:
   inline static int Replace(std::string& str, char oldChar, char newChar)
   {
     int replacedChars = 0;
-    for (std::string::iterator it = str.begin(); it != str.end(); ++it)
+    for (auto it = str.begin(); it != str.end(); ++it)
     {
       if (*it == oldChar)
       {
@@ -2318,12 +2318,12 @@ public:
   inline static size_t FindWords(const char* str, const char* wordLowerCase)
   {
     // NOTE: This assumes word is lowercase!
-    const unsigned char* s = (const unsigned char*)str;
+    auto s = (const unsigned char*)str;
     do
     {
       // start with a compare
       const unsigned char* c = s;
-      const unsigned char* w = (const unsigned char*)wordLowerCase;
+      auto w = (const unsigned char*)wordLowerCase;
       bool same = true;
       while (same && *c && *w)
       {
@@ -3032,7 +3032,7 @@ private:
 
   inline static wchar_t tolowerUnicode(const wchar_t& c)
   {
-    wchar_t* p =
+    auto p =
         static_cast<wchar_t*>(bsearch(&c, unicode_uppers, sizeof(unicode_uppers) / sizeof(wchar_t),
                                       sizeof(wchar_t), compareWchar));
     if (p)
@@ -3043,7 +3043,7 @@ private:
 
   inline static wchar_t toupperUnicode(const wchar_t& c)
   {
-    wchar_t* p =
+    auto p =
         static_cast<wchar_t*>(bsearch(&c, unicode_lowers, sizeof(unicode_lowers) / sizeof(wchar_t),
                                       sizeof(wchar_t), compareWchar));
     if (p)

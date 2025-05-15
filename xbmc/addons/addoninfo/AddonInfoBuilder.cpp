@@ -198,7 +198,7 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& id, AddonType type)
     return nullptr;
   }
 
-  AddonInfoPtr addon = std::make_shared<CAddonInfo>();
+  auto addon = std::make_shared<CAddonInfo>();
   addon->m_id = id;
   addon->m_mainType = type;
   return addon;
@@ -219,7 +219,7 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& addonPath, bool plat
     return nullptr;
   }
 
-  AddonInfoPtr addon = std::make_shared<CAddonInfo>();
+  auto addon = std::make_shared<CAddonInfo>();
   if (!ParseXML(addon, xmlDoc.RootElement(), addonRealPath))
     return nullptr;
 
@@ -236,7 +236,7 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const TiXmlElement* baseElement,
                                          const RepositoryDirInfo& repo,
                                          bool platformCheck /*= true*/)
 {
-  AddonInfoPtr addon = std::make_shared<CAddonInfo>();
+  auto addon = std::make_shared<CAddonInfo>();
   if (!ParseXML(addon, baseElement, repo.datadir, repo))
     return nullptr;
 

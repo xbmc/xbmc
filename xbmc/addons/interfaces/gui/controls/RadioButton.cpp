@@ -40,8 +40,8 @@ void Interface_GUIControlRadioButton::set_visible(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle,
                                                   bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -58,8 +58,8 @@ void Interface_GUIControlRadioButton::set_enabled(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle,
                                                   bool enabled)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -76,8 +76,8 @@ void Interface_GUIControlRadioButton::set_label(KODI_HANDLE kodiBase,
                                                 KODI_GUI_CONTROL_HANDLE handle,
                                                 const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR,
@@ -94,8 +94,8 @@ void Interface_GUIControlRadioButton::set_label(KODI_HANDLE kodiBase,
 char* Interface_GUIControlRadioButton::get_label(KODI_HANDLE kodiBase,
                                                  KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -112,8 +112,8 @@ void Interface_GUIControlRadioButton::set_selected(KODI_HANDLE kodiBase,
                                                    KODI_GUI_CONTROL_HANDLE handle,
                                                    bool selected)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -129,8 +129,8 @@ void Interface_GUIControlRadioButton::set_selected(KODI_HANDLE kodiBase,
 bool Interface_GUIControlRadioButton::is_selected(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

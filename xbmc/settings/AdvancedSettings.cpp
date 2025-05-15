@@ -1192,8 +1192,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     TiXmlElement* pSortDecription = pPVR->FirstChildElement("pvrrecordings");
     if (pSortDecription)
     {
-      const char* XML_SORTMETHOD = "sortmethod";
-      const char* XML_SORTORDER = "sortorder";
+      auto XML_SORTMETHOD = "sortmethod";
+      auto XML_SORTORDER = "sortorder";
       int sortMethod;
       // ignore SortByTime for duration defaults
       if (XMLUtils::GetInt(pSortDecription, XML_SORTMETHOD, sortMethod, SortByLabel, SortByFile))
@@ -1300,7 +1300,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   {
     m_seekSteps.clear();
     std::vector<std::string> steps = StringUtils::Split(seekSteps, ',');
-    for(std::vector<std::string>::iterator it = steps.begin(); it != steps.end(); ++it)
+    for(auto it = steps.begin(); it != steps.end(); ++it)
       m_seekSteps.push_back(atoi((*it).c_str()));
   }
 

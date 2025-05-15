@@ -865,7 +865,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
     return;
 
   int iMsg = -1;
-  EventLevel eLevel = EventLevel::Error;
+  auto eLevel = EventLevel::Error;
   bool bNotify = true;
 
   switch (newState)

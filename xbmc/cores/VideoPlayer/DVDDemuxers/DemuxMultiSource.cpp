@@ -127,7 +127,7 @@ bool CDemuxMultiSource::Open(const std::shared_ptr<CDVDInputStream>& pInput)
   auto iter = m_pInput->m_InputStreams.begin();
   while (iter != m_pInput->m_InputStreams.end())
   {
-    DemuxPtr demuxer = DemuxPtr(CDVDFactoryDemuxer::CreateDemuxer((*iter)));
+    auto demuxer = DemuxPtr(CDVDFactoryDemuxer::CreateDemuxer((*iter)));
     if (!demuxer)
     {
       iter = m_pInput->m_InputStreams.erase(iter);
@@ -197,7 +197,7 @@ DemuxPacket* CDemuxMultiSource::Read()
 
 bool CDemuxMultiSource::SeekTime(double time, bool backwards, double* startpts)
 {
-  DemuxQueue demuxerQueue = DemuxQueue();
+  auto demuxerQueue = DemuxQueue();
   bool ret = false;
   for (auto& iter : m_demuxerMap)
   {

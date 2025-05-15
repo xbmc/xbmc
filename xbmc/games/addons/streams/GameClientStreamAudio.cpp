@@ -22,7 +22,7 @@ CGameClientStreamAudio::CGameClientStreamAudio(double sampleRate) : m_sampleRate
 bool CGameClientStreamAudio::OpenStream(RETRO::IRetroPlayerStream* stream,
                                         const game_stream_properties& properties)
 {
-  RETRO::CRetroPlayerAudio* audioStream = dynamic_cast<RETRO::CRetroPlayerAudio*>(stream);
+  auto audioStream = dynamic_cast<RETRO::CRetroPlayerAudio*>(stream);
   if (audioStream == nullptr)
   {
     CLog::Log(LOGERROR, "GAME: RetroPlayer stream is not an audio stream");

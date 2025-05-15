@@ -270,7 +270,7 @@ std::map< std::string, std::string > CPlayListM3U::ParseStreamLine(const std::st
 
   // separate the parameters
   std::vector<std::string> vecParams = StringUtils::Split(strParams, ",");
-  for (std::vector<std::string>::iterator i = vecParams.begin(); i != vecParams.end(); ++i)
+  for (auto i = vecParams.begin(); i != vecParams.end(); ++i)
   {
     // split the param, ensure there was an =
     StringUtils::Trim(*i);

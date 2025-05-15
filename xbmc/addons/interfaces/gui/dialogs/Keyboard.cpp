@@ -54,7 +54,7 @@ bool Interface_GUIDialogKeyboard::show_and_get_input_with_head(KODI_HANDLE kodiB
                                                                bool hidden_input,
                                                                unsigned int auto_close_ms)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);
@@ -85,7 +85,7 @@ bool Interface_GUIDialogKeyboard::show_and_get_input(KODI_HANDLE kodiBase,
                                                      bool allow_empty_result,
                                                      unsigned int auto_close_ms)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);
@@ -116,7 +116,7 @@ bool Interface_GUIDialogKeyboard::show_and_get_new_password_with_head(KODI_HANDL
                                                                       bool allow_empty_result,
                                                                       unsigned int auto_close_ms)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);
@@ -146,7 +146,7 @@ bool Interface_GUIDialogKeyboard::show_and_get_new_password(KODI_HANDLE kodiBase
                                                             char** password_out,
                                                             unsigned int auto_close_ms)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);
@@ -176,7 +176,7 @@ bool Interface_GUIDialogKeyboard::show_and_verify_new_password_with_head(KODI_HA
                                                                          bool allowEmpty,
                                                                          unsigned int auto_close_ms)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);
@@ -205,7 +205,7 @@ bool Interface_GUIDialogKeyboard::show_and_verify_new_password(KODI_HANDLE kodiB
                                                                char** password_out,
                                                                unsigned int auto_close_ms)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);
@@ -235,7 +235,7 @@ int Interface_GUIDialogKeyboard::show_and_verify_password(KODI_HANDLE kodiBase,
                                                           int retries,
                                                           unsigned int auto_close_ms)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);
@@ -265,7 +265,7 @@ bool Interface_GUIDialogKeyboard::show_and_get_filter(KODI_HANDLE kodiBase,
                                                       bool searching,
                                                       unsigned int auto_close_ms)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);
@@ -294,7 +294,7 @@ bool Interface_GUIDialogKeyboard::send_text_to_active_keyboard(KODI_HANDLE kodiB
                                                                const char* text,
                                                                bool close_keyboard)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);
@@ -306,7 +306,7 @@ bool Interface_GUIDialogKeyboard::send_text_to_active_keyboard(KODI_HANDLE kodiB
 
 bool Interface_GUIDialogKeyboard::is_keyboard_activated(KODI_HANDLE kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogKeyboard::{} - invalid data", __func__);

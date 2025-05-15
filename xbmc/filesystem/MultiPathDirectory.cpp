@@ -218,7 +218,7 @@ std::string CMultiPathDirectory::ConstructMultiPath(const std::vector<std::strin
   //CLog::Log(LOGDEBUG, "Building multipath");
   std::string newPath = "multipath://";
   //CLog::Log(LOGDEBUG, "-- adding path: {}", strPath);
-  for (std::vector<std::string>::const_iterator path = vecPaths.begin(); path != vecPaths.end(); ++path)
+  for (auto path = vecPaths.begin(); path != vecPaths.end(); ++path)
     AddToMultiPath(newPath, *path);
   //CLog::Log(LOGDEBUG, "Final path: {}", newPath);
   return newPath;

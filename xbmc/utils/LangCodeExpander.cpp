@@ -409,7 +409,7 @@ bool CLangCodeExpander::LookupInUserMap(const std::string& code, std::string& de
   StringUtils::ToLower(sCode);
   StringUtils::Trim(sCode);
 
-  STRINGLOOKUPTABLE::iterator it = m_mapUser.find(sCode);
+  auto it = m_mapUser.find(sCode);
   if (it != m_mapUser.end())
   {
     desc = it->second;

@@ -58,7 +58,7 @@ void CALSAHControlMonitor::Clear()
 {
   Stop();
 
-  for (std::map<std::string, CTLHandle>::iterator it = m_ctlHandles.begin();
+  for (auto it = m_ctlHandles.begin();
        it != m_ctlHandles.end(); ++it)
   {
     snd_hctl_close(it->second.handle);
@@ -73,7 +73,7 @@ void CALSAHControlMonitor::Start()
   std::vector<struct pollfd> pollfds;
   std::vector<CFDEventMonitor::MonitoredFD> monitoredFDs;
 
-  for (std::map<std::string, CTLHandle>::iterator it = m_ctlHandles.begin();
+  for (auto it = m_ctlHandles.begin();
        it != m_ctlHandles.end(); ++it)
   {
     pollfds.resize(snd_hctl_poll_descriptors_count(it->second.handle));
@@ -125,7 +125,7 @@ int CALSAHControlMonitor::HCTLCallback(snd_hctl_elem_t *elem, unsigned int mask)
 void CALSAHControlMonitor::FDEventCallback(int id, int fd, short revents, void *data)
 {
   /* Run ALSA event handling when the FD has events */
-  snd_hctl_t *hctl = (snd_hctl_t *)data;
+  auto hctl = (snd_hctl_t *)data;
   snd_hctl_handle_events(hctl);
 }
 

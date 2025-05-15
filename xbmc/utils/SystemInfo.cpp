@@ -89,7 +89,7 @@ auto startTime = std::chrono::steady_clock::now();
 #if defined(TARGET_WEBOS)
 constexpr const char* osReleaseFile = "/usr/lib/os-release";
 #elif defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
-constexpr const char* osReleaseFile = "/etc/os-release";
+constexpr auto osReleaseFile = "/etc/os-release";
 #endif
 }
 
@@ -147,7 +147,7 @@ static std::string getValueFromOs_release(std::string key)
   if (!os_rel)
     return "";
 
-  char* buf = new char[10 * 1024]; // more than enough
+  auto buf = new char[10 * 1024]; // more than enough
   size_t len = fread(buf, 1, 10 * 1024, os_rel);
   fclose(os_rel);
   if (len == 0)

@@ -1611,7 +1611,7 @@ void CActiveAE::ClearDiscardedBuffers()
   auto it = m_discardBufferPools.begin();
   while (it != m_discardBufferPools.end())
   {
-    CActiveAEBufferPoolResample* rbuf = dynamic_cast<CActiveAEBufferPoolResample*>((*it).get());
+    auto rbuf = dynamic_cast<CActiveAEBufferPoolResample*>((*it).get());
     if (rbuf)
     {
       rbuf->Flush();
@@ -1961,7 +1961,7 @@ bool CActiveAE::RunStages()
 
         if ((*it)->m_streamSlave)
         {
-          CActiveAEStream *slave = (CActiveAEStream*)((*it)->m_streamSlave);
+          auto slave = (CActiveAEStream*)((*it)->m_streamSlave);
           slave->m_paused = false;
 
           //! @todo find better solution for this gapless bites audiophile
@@ -2650,7 +2650,7 @@ void CActiveAE::Deamplify(CSoundPacket &dstSample)
 
     for(int j=0; j<dstSample.planes; j++)
     {
-      float* buffer = reinterpret_cast<float*>(dstSample.data[j]);
+      auto buffer = reinterpret_cast<float*>(dstSample.data[j]);
 #if defined(HAVE_SSE) && defined(__SSE__)
       CAEUtil::SSEMulArray(buffer, volume, nb_floats);
 #else
@@ -3114,7 +3114,7 @@ IAE::SoundPtr CActiveAE::MakeSound(const std::string& file)
     bufferSize = blockSize;
 
   fmt_ctx = avformat_alloc_context();
-  unsigned char* buffer = (unsigned char*)av_malloc(bufferSize);
+  auto buffer = (unsigned char*)av_malloc(bufferSize);
   io_ctx = avio_alloc_context(buffer, bufferSize, 0, sound.get(), CActiveAESound::Read, NULL,
                               CActiveAESound::Seek);
 

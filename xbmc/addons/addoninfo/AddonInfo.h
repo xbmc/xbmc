@@ -35,7 +35,7 @@ using AddonInstanceId = uint32_t;
  * Defines the default language code used as fallback in case the requested language is not
  * available. Used, for instance, to handle content from addon.xml.
  */
-constexpr const char* KODI_ADDON_DEFAULT_LANGUAGE_CODE = "en_GB";
+constexpr auto KODI_ADDON_DEFAULT_LANGUAGE_CODE = "en_GB";
 
 enum class AddonDisabledReason
 {

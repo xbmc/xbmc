@@ -26,7 +26,7 @@ bool CMusicLibraryCleaningJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
 
-  const CMusicLibraryCleaningJob* cleaningJob = dynamic_cast<const CMusicLibraryCleaningJob*>(job);
+  auto cleaningJob = dynamic_cast<const CMusicLibraryCleaningJob*>(job);
   if (cleaningJob == nullptr)
     return false;
 

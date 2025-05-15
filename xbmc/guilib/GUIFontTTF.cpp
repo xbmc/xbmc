@@ -395,7 +395,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
           ? m_dynamicCache.Lookup(context, dynamicPos, colors, text, alignment, maxPixelWidth,
                                   scrolling, std::chrono::steady_clock::now(), dirtyCache)
           : unusedVertexBuffer;
-  std::shared_ptr<std::vector<SVertex>> tempVertices = std::make_shared<std::vector<SVertex>>();
+  auto tempVertices = std::make_shared<std::vector<SVertex>>();
   std::shared_ptr<std::vector<SVertex>>& vertices =
       hardwareClipping ? tempVertices
                        : static_cast<std::shared_ptr<std::vector<SVertex>>&>(m_staticCache.Lookup(
@@ -994,7 +994,7 @@ bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* 
     return false;
   }
 
-  FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
+  auto bitGlyph = (FT_BitmapGlyph)glyph;
   FT_Bitmap bitmap = bitGlyph->bitmap;
   bool isEmptyGlyph = (bitmap.width == 0 || bitmap.rows == 0);
 

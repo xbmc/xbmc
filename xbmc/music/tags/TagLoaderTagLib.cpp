@@ -338,7 +338,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
       // Loop through and look for the main (no description) comment
       for (ID3v2::FrameList::ConstIterator ct = it->second.begin(); ct != it->second.end(); ++ct)
       {
-        ID3v2::CommentsFrame *commentsFrame = dynamic_cast<ID3v2::CommentsFrame *> (*ct);
+        auto commentsFrame = dynamic_cast<ID3v2::CommentsFrame *> (*ct);
         if (commentsFrame && commentsFrame->description().isEmpty())
           tag.SetComment(commentsFrame->text().to8Bit(true));
       }
@@ -346,7 +346,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
       // Loop through and process the UserTextIdentificationFrames
       for (ID3v2::FrameList::ConstIterator ut = it->second.begin(); ut != it->second.end(); ++ut)
       {
-        ID3v2::UserTextIdentificationFrame *frame = dynamic_cast<ID3v2::UserTextIdentificationFrame *> (*ut);
+        auto frame = dynamic_cast<ID3v2::UserTextIdentificationFrame *> (*ut);
         if (!frame) continue;
 
         // First field is the same as the description
@@ -1207,7 +1207,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   }
 
   StringUtils::ToLower(strExtension);
-  TagLibVFSStream*           stream = new TagLibVFSStream(strFileName, true);
+  auto stream = new TagLibVFSStream(strFileName, true);
   if (!stream)
   {
     CLog::Log(LOGERROR, "could not create TagLib VFS stream for: {}", strFileName);

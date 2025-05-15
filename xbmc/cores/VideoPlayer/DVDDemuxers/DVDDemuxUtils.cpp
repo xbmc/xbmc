@@ -51,7 +51,7 @@ void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
 
 DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
 {
-  DemuxPacket* pPacket = new DemuxPacket();
+  auto pPacket = new DemuxPacket();
 
   if (iDataSize > 0)
   {

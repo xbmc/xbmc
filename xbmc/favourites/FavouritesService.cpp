@@ -127,7 +127,7 @@ bool LoadFromFile(const std::string& strPath, CFileItemList& items)
           CFavouritesURL(CExecString(favourite->FirstChild()->Value())).GetURL());
       if (!items.Contains(favURL))
       {
-        const CFileItemPtr item(std::make_shared<CFileItem>(name));
+        const auto item(std::make_shared<CFileItem>(name));
         item->SetPath(favURL);
         if (thumb)
           item->SetArt("thumb", thumb);

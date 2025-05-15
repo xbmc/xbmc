@@ -527,7 +527,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       s.channels = 0; // Default to 0. Overwrite if STREAM_AUDIO below.
       if(stream->type == STREAM_VIDEO)
       {
-        CDemuxStreamVideo* vstream = static_cast<CDemuxStreamVideo*>(stream);
+        auto vstream = static_cast<CDemuxStreamVideo*>(stream);
         s.width = vstream->iWidth;
         s.height = vstream->iHeight;
         s.aspect_ratio = vstream->fAspect;
@@ -4258,7 +4258,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
           m_dvd.iDVDStillTime *= 1000;
 
         /* adjust for the output delay in the video queue */
-        std::chrono::milliseconds time = 0ms;
+        auto time = 0ms;
         if (m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0ms)
         {
           time = std::chrono::milliseconds(
@@ -4323,7 +4323,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       {
         //CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME");
 
-        dvdnav_still_event_t *still_event = static_cast<dvdnav_still_event_t*>(pData);
+        auto still_event = static_cast<dvdnav_still_event_t*>(pData);
         // should wait the specified time here while we let the player running
         // after that call dvdnav_still_skip(m_dvdnav);
 
@@ -4339,7 +4339,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
           m_dvd.iDVDStillStartTime = std::chrono::steady_clock::now();
 
           /* adjust for the output delay in the video queue */
-          std::chrono::milliseconds time = 0ms;
+          auto time = 0ms;
           if (m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0ms)
           {
             time = std::chrono::milliseconds(
@@ -4362,7 +4362,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_SPU_STREAM_CHANGE:
       {
-        dvdnav_spu_stream_change_event_t* event = static_cast<dvdnav_spu_stream_change_event_t*>(pData);
+        auto event = static_cast<dvdnav_spu_stream_change_event_t*>(pData);
 
         int iStream = event->physical_wide;
         bool visible = !(iStream & 0x80);
@@ -4379,7 +4379,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_AUDIO_STREAM_CHANGE:
       {
-        dvdnav_audio_stream_change_event_t* event = static_cast<dvdnav_audio_stream_change_event_t*>(pData);
+        auto event = static_cast<dvdnav_audio_stream_change_event_t*>(pData);
         // Tell system what audiostream should be opened by default
         m_dvd.iSelectedAudioStream = event->physical;
         m_CurrentAudio.stream = NULL;

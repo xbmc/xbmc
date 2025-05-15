@@ -45,7 +45,7 @@ bool CTextureCacheJob::operator==(const CJob* job) const
 {
   if (strcmp(job->GetType(),GetType()) == 0)
   {
-    const CTextureCacheJob* cacheJob = dynamic_cast<const CTextureCacheJob*>(job);
+    auto cacheJob = dynamic_cast<const CTextureCacheJob*>(job);
     if (cacheJob && cacheJob->m_cachePath == m_cachePath)
       return true;
   }
@@ -302,7 +302,7 @@ bool CTextureUseCountJob::operator==(const CJob* job) const
 {
   if (strcmp(job->GetType(),GetType()) == 0)
   {
-    const CTextureUseCountJob* useJob = dynamic_cast<const CTextureUseCountJob*>(job);
+    auto useJob = dynamic_cast<const CTextureUseCountJob*>(job);
     if (useJob && useJob->m_textures == m_textures)
       return true;
   }

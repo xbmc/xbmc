@@ -1757,7 +1757,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   {
     if (pMsg->lpVoid)
     {
-      XBMC_Event* event = static_cast<XBMC_Event*>(pMsg->lpVoid);
+      auto event = static_cast<XBMC_Event*>(pMsg->lpVoid);
       OnEvent(*event);
       delete event;
     }
@@ -2278,7 +2278,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   else if (item.IsPlayList() || item.IsInternetStream())
   {
     // Not owner. Dialog auto-deletes itself.
-    CGUIDialogCache* dlgCache =
+    auto dlgCache =
         new CGUIDialogCache(5s, g_localizeStrings.Get(10214), item.GetLabel());
 
     //is or could be a playlist
@@ -2920,7 +2920,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (item->IsPlayList())
       {
-        std::unique_ptr<CFileItemList> fileitemList = std::make_unique<CFileItemList>();
+        auto fileitemList = std::make_unique<CFileItemList>();
         fileitemList->Add(std::move(trailerItem));
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
                                                    static_cast<void*>(fileitemList.release()));
@@ -3499,7 +3499,7 @@ void CApplication::SeekTime( double dTime )
       else
       { // seeking to a new file
         stackHelper->SetStackPartCurrentFileItem(partNumberToPlay);
-        CFileItem* item = new CFileItem(stackHelper->GetCurrentStackPartFileItem());
+        auto item = new CFileItem(stackHelper->GetCurrentStackPartFileItem());
         item->SetStartOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.

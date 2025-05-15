@@ -53,7 +53,7 @@ static void LoadTexture(GLenum target,
   int bytesPerPixel = KODI::UTILS::GL::glFormatElementByteCount(externalFormat);
 
   bool bgraSupported = false;
-  CRenderSystemGLES* renderSystem =
+  auto renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
   if (!alpha)
@@ -79,7 +79,7 @@ static void LoadTexture(GLenum target,
   {
     pixelVector = (char*)malloc(bytesPerLine * height);
 
-    const char* src = (const char*)pixels;
+    auto src = (const char*)pixels;
     char* dst = pixelVector;
     for (int y = 0; y < height; ++y)
     {
@@ -103,7 +103,7 @@ static void LoadTexture(GLenum target,
   {
     pixelVector = (char*)malloc(bytesPerLine * height);
 
-    const char* src = (const char*)pixels;
+    auto src = (const char*)pixels;
     char* dst = pixelVector;
     for (int y = 0; y < height; ++y)
     {
@@ -155,7 +155,7 @@ COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSour
   if (o.palette.empty())
   {
     m_pma = false;
-    const uint32_t* rgba = reinterpret_cast<const uint32_t*>(o.pixels.data());
+    auto rgba = reinterpret_cast<const uint32_t*>(o.pixels.data());
     LoadTexture(GL_TEXTURE_2D, o.width, o.height, o.linesize, &m_u, &m_v, false, rgba);
   }
   else
@@ -346,7 +346,7 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   glMatrixModview->Scalef(state.width, state.height, 1.0f);
   glMatrixModview.Load();
 
-  CRenderSystemGLES* renderSystem =
+  auto renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
   GLint posLoc = renderSystem->GUIShaderGetPos();
@@ -436,7 +436,7 @@ void COverlayTextureGLES::Render(SRenderState& state)
     rd.SetRect(left, top, right, bottom);
   }
 
-  CRenderSystemGLES* renderSystem =
+  auto renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
   GLint posLoc = renderSystem->GUIShaderGetPos();

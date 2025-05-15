@@ -124,7 +124,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
   if (st == nullptr || st->changes < 0 || st->extraData || !CodecHasExtraData(st->codec))
     return change;
 
-  CDemuxStreamClientInternal* stream = dynamic_cast<CDemuxStreamClientInternal*>(st);
+  auto stream = dynamic_cast<CDemuxStreamClientInternal*>(st);
 
   if (stream == nullptr ||
      stream->m_parser == nullptr)
@@ -228,7 +228,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
     {
       case STREAM_AUDIO:
       {
-        CDemuxStreamClientInternalTpl<CDemuxStreamAudio>* sta = static_cast<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>*>(st);
+        auto sta = static_cast<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>*>(st);
         int streamChannels = stream->m_context->ch_layout.nb_channels;
         if (streamChannels != sta->iChannels && streamChannels != 0)
         {
@@ -252,7 +252,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
       }
       case STREAM_VIDEO:
       {
-        CDemuxStreamClientInternalTpl<CDemuxStreamVideo>* stv = static_cast<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>*>(st);
+        auto stv = static_cast<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>*>(st);
         if (stream->m_parser->width != stv->iWidth && stream->m_parser->width != 0)
         {
           CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - ({}) width changed from {} to {}",
@@ -418,7 +418,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
 
   if (stream->type == STREAM_AUDIO)
   {
-    CDemuxStreamAudio *source = dynamic_cast<CDemuxStreamAudio*>(stream);
+    auto source = dynamic_cast<CDemuxStreamAudio*>(stream);
     if (!source)
     {
       CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStream - invalid audio stream with id {}",
@@ -454,7 +454,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   }
   else if (stream->type == STREAM_VIDEO)
   {
-    CDemuxStreamVideo *source = dynamic_cast<CDemuxStreamVideo*>(stream);
+    auto source = dynamic_cast<CDemuxStreamVideo*>(stream);
 
     if (!source)
     {
@@ -500,7 +500,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   }
   else if (stream->type == STREAM_SUBTITLE)
   {
-    CDemuxStreamSubtitle *source = dynamic_cast<CDemuxStreamSubtitle*>(stream);
+    auto source = dynamic_cast<CDemuxStreamSubtitle*>(stream);
 
     if (!source)
     {
@@ -530,7 +530,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   }
   else if (stream->type == STREAM_TELETEXT)
   {
-    CDemuxStreamTeletext *source = dynamic_cast<CDemuxStreamTeletext*>(stream);
+    auto source = dynamic_cast<CDemuxStreamTeletext*>(stream);
 
     if (!source)
     {
@@ -553,7 +553,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   }
   else if (stream->type == STREAM_RADIO_RDS)
   {
-    CDemuxStreamRadioRDS *source = dynamic_cast<CDemuxStreamRadioRDS*>(stream);
+    auto source = dynamic_cast<CDemuxStreamRadioRDS*>(stream);
 
     if (!source)
     {
@@ -576,7 +576,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   }
   else if (stream->type == STREAM_AUDIO_ID3)
   {
-    CDemuxStreamAudioID3* source = dynamic_cast<CDemuxStreamAudioID3*>(stream);
+    auto source = dynamic_cast<CDemuxStreamAudioID3*>(stream);
 
     if (!source)
     {

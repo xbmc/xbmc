@@ -37,8 +37,8 @@ void Interface_GUIControlImage::set_visible(KODI_HANDLE kodiBase,
                                             KODI_GUI_CONTROL_HANDLE handle,
                                             bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIImage* control = static_cast<CGUIImage*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIImage*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -56,8 +56,8 @@ void Interface_GUIControlImage::set_filename(KODI_HANDLE kodiBase,
                                              const char* filename,
                                              bool use_cache)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIImage* control = static_cast<CGUIImage*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIImage*>(handle);
   if (!addon || !control || !filename)
   {
     CLog::Log(LOGERROR,
@@ -75,8 +75,8 @@ void Interface_GUIControlImage::set_color_diffuse(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle,
                                                   uint32_t colorDiffuse)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIImage* control = static_cast<CGUIImage*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIImage*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

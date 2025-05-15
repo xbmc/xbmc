@@ -276,7 +276,7 @@ bool ProfileLockMode(const std::string& condition,
                      void* data)
 {
   char* tmp = nullptr;
-  LockType lock = (LockType)strtol(value.c_str(), &tmp, 0);
+  auto lock = (LockType)strtol(value.c_str(), &tmp, 0);
   if (tmp != NULL && *tmp != '\0')
     return false;
 

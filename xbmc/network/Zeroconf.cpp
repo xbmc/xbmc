@@ -87,7 +87,7 @@ bool CZeroconf::RemoveService(const std::string& fcr_identifier)
 {
   std::lock_guard lock(*mp_crit_sec);
 
-  tServiceMap::iterator it = m_service_map.find(fcr_identifier);
+  auto it = m_service_map.find(fcr_identifier);
   if(it == m_service_map.end())
     return false;
   m_service_map.erase(it);

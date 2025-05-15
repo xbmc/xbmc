@@ -56,11 +56,11 @@ enum class STRETCHMODE
   Zoom,
 };
 
-constexpr const char* STRETCHMODE_NORMAL_ID = "normal";
-constexpr const char* STRETCHMODE_STRETCH_4_3_ID = "4:3";
-constexpr const char* STRETCHMODE_FULLSCREEN_ID = "fullscreen";
-constexpr const char* STRETCHMODE_ORIGINAL_ID = "original";
-constexpr const char* STRETCHMODE_ZOOM_ID = "zoom";
+constexpr auto STRETCHMODE_NORMAL_ID = "normal";
+constexpr auto STRETCHMODE_STRETCH_4_3_ID = "4:3";
+constexpr auto STRETCHMODE_FULLSCREEN_ID = "fullscreen";
+constexpr auto STRETCHMODE_ORIGINAL_ID = "original";
+constexpr auto STRETCHMODE_ZOOM_ID = "zoom";
 
 enum class RENDERFEATURE
 {

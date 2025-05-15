@@ -248,7 +248,7 @@ JOYSTICK_DRIVER_HAT_DIRECTION CPeripheralAddonTranslator::TranslateHatDirection(
 
 HAT_STATE CPeripheralAddonTranslator::TranslateHatState(JOYSTICK_STATE_HAT state)
 {
-  HAT_STATE translatedState = HAT_STATE::NONE;
+  auto translatedState = HAT_STATE::NONE;
 
   if (state & JOYSTICK_STATE_HAT_UP)
     translatedState |= HAT_STATE::UP;

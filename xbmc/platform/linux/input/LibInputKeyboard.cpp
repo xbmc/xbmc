@@ -379,7 +379,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
 
   int mod = XBMCKMOD_NONE;
 
-  xkb_state_component modtype = xkb_state_component(XKB_STATE_MODS_DEPRESSED | XKB_STATE_MODS_LATCHED);
+  auto modtype = xkb_state_component(XKB_STATE_MODS_DEPRESSED | XKB_STATE_MODS_LATCHED);
   if (xkb_state_mod_index_is_active(m_state.get(), m_modindex[0], modtype) &&
       ((keysym != XBMCK_LCTRL) || !pressed))
     mod |= XBMCKMOD_CTRL;

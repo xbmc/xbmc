@@ -383,7 +383,7 @@ CBookmark CPVRRecording::GetResumePoint() const
       CBookmark resumePoint(CVideoInfoTag::GetResumePoint());
       resumePoint.timeInSeconds = pos;
       resumePoint.totalTimeInSeconds = (pos == 0) ? 0 : m_duration;
-      CPVRRecording* pThis = const_cast<CPVRRecording*>(this);
+      auto pThis = const_cast<CPVRRecording*>(this);
       pThis->CVideoInfoTag::SetResumePoint(resumePoint);
     }
   }

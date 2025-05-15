@@ -113,7 +113,7 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
   if (m_bStop)
     return -1;
 
-  ThreadMessage* msg = new ThreadMessage(std::move(message));
+  auto msg = new ThreadMessage(std::move(message));
 
   std::unique_lock lock(m_critSection);
 
@@ -230,7 +230,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   //special case for this that we handle ourselves
   if (pMsg->dwMessage == TMSG_CALLBACK)
   {
-    ThreadMessageCallback *callback = static_cast<ThreadMessageCallback*>(pMsg->lpVoid);
+    auto callback = static_cast<ThreadMessageCallback*>(pMsg->lpVoid);
     callback->callback(callback->userptr);
     return;
   }

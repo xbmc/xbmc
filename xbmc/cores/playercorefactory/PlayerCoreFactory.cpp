@@ -109,7 +109,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     AUDIO_DEFAULT
   };
 
-  ForcedPlayer defaultInputstreamPlayerOverride = ForcedPlayer::NONE;
+  auto defaultInputstreamPlayerOverride = ForcedPlayer::NONE;
 
   // If we are using an inpustream add-on
   if (!item.GetProperty(STREAM_PROPERTY_INPUTSTREAM).empty())

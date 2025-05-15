@@ -1309,7 +1309,7 @@ bool CFileItem::IsBluray() const
   if (URIUtils::IsBluray(m_strPath))
     return true;
 
-  CFileItem item = CFileItem(GetOpticalMediaPath(), false);
+  auto item = CFileItem(GetOpticalMediaPath(), false);
 
   return item.IsBDFile();
 }
@@ -2125,7 +2125,7 @@ void CFileItem::LoadEmbeddedCue()
     {
       std::vector<std::string> MediaFileVec;
       cuesheet->GetMediaFiles(MediaFileVec);
-      for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin();
+      for (auto itMedia = MediaFileVec.begin();
            itMedia != MediaFileVec.end(); ++itMedia)
         cuesheet->UpdateMediaFile(*itMedia, GetPath());
       SetCueDocument(cuesheet);
@@ -2154,7 +2154,7 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
   m_cueDocument.reset();
 
   int tracksFound = 0;
-  for (VECSONGS::iterator it = tracks.begin(); it != tracks.end(); ++it)
+  for (auto it = tracks.begin(); it != tracks.end(); ++it)
   {
     CSong& song = *it;
     if (song.strFileName == GetPath())
@@ -2465,7 +2465,7 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 
   if (m_fastLookup)
   {
-    MAPFILEITEMS::const_iterator it =
+    auto it =
         m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
     if (it != m_map.end())
       return it->second;
@@ -2798,7 +2798,7 @@ void CFileItemList::FilterCueItems()
           cuesheet->GetMediaFiles(MediaFileVec);
 
           // queue the cue sheet and the underlying media file for deletion
-          for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin();
+          for (auto itMedia = MediaFileVec.begin();
                itMedia != MediaFileVec.end(); ++itMedia)
           {
             std::string strMediaFile = *itMedia;
@@ -2908,7 +2908,7 @@ void CFileItemList::StackFolders()
   CRegExp folderRegExp(true, CRegExp::autoUtf8);
   const std::vector<std::string>& strFolderRegExps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_folderStackRegExps;
 
-  std::vector<std::string>::const_iterator strExpression = strFolderRegExps.begin();
+  auto strExpression = strFolderRegExps.begin();
   while (strExpression != strFolderRegExps.end())
   {
     if (!folderRegExp.RegComp(*strExpression))
@@ -2949,7 +2949,7 @@ void CFileItemList::StackFolders()
 
         bool bMatch(false);
 
-        VECCREGEXP::iterator expr = folderRegExps.begin();
+        auto expr = folderRegExps.begin();
         while (!bMatch && expr != folderRegExps.end())
         {
           //CLog::Log(LOGDEBUG,"{}: Running expression {} on {}", __FUNCTION__, expr->GetPattern(), item->GetLabel());
@@ -3008,7 +3008,7 @@ void CFileItemList::StackFiles()
   VECCREGEXP stackRegExps;
   CRegExp tmpRegExp(true, CRegExp::autoUtf8);
   const std::vector<std::string>& strStackRegExps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps;
-  std::vector<std::string>::const_iterator strRegExp = strStackRegExps.begin();
+  auto strRegExp = strStackRegExps.begin();
   while (strRegExp != strStackRegExps.end())
   {
     if (tmpRegExp.RegComp(*strRegExp))
@@ -3045,7 +3045,7 @@ void CFileItemList::StackFiles()
     std::string           file1;
     std::string           filePath;
     std::vector<int>      stack;
-    VECCREGEXP::iterator  expr        = stackRegExps.begin();
+    auto expr        = stackRegExps.begin();
 
     URIUtils::Split(item1->GetPath(), filePath, file1);
     if (URIUtils::HasEncodedFilename(CURL(filePath)))
@@ -4148,7 +4148,7 @@ std::string CFileItem::FindTrailer() const
   CRegExp tmpRegExp(true, CRegExp::autoUtf8);
   const std::vector<std::string>& strMatchRegExps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_trailerMatchRegExps;
 
-  std::vector<std::string>::const_iterator strRegExp = strMatchRegExps.begin();
+  auto strRegExp = strMatchRegExps.begin();
   while (strRegExp != strMatchRegExps.end())
   {
     if (tmpRegExp.RegComp(*strRegExp))
@@ -4172,7 +4172,7 @@ std::string CFileItem::FindTrailer() const
     }
     else
     {
-      VECCREGEXP::iterator expr = matchRegExps.begin();
+      auto expr = matchRegExps.begin();
 
       while (expr != matchRegExps.end())
       {
@@ -4192,7 +4192,7 @@ std::string CFileItem::FindTrailer() const
 
 VideoDbContentType CFileItem::GetVideoContentType() const
 {
-  VideoDbContentType type = VideoDbContentType::MOVIES;
+  auto type = VideoDbContentType::MOVIES;
   if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeTvShow)
     type = VideoDbContentType::TVSHOWS;
   if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeEpisode)

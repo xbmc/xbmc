@@ -88,7 +88,7 @@ public:
   {
     if (strcmp(job->GetType(),GetType()) == 0)
     {
-      const CSubtitlesJob* rjob = dynamic_cast<const CSubtitlesJob*>(job);
+      auto rjob = dynamic_cast<const CSubtitlesJob*>(job);
       if (rjob)
       {
         return m_url.Get() == rjob->m_url.Get() &&
@@ -541,7 +541,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     return;
   }
 
-  SUBTITLE_STORAGEMODE storageMode = (SUBTITLE_STORAGEMODE) CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_STORAGEMODE);
+  auto storageMode = (SUBTITLE_STORAGEMODE) CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_STORAGEMODE);
 
   // Get (unstacked) path
   std::string strCurrentFile = g_application.CurrentUnstackedItem().GetDynPath();

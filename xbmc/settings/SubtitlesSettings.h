@@ -25,7 +25,7 @@ namespace SUBTITLES
 {
 // This is a placeholder to keep the fontname setting valid
 // even if the default app font could be changed
-constexpr const char* FONT_DEFAULT_FAMILYNAME = "DEFAULT";
+constexpr auto FONT_DEFAULT_FAMILYNAME = "DEFAULT";
 
 enum class Align
 {

@@ -364,7 +364,7 @@ bool DatabaseUtils::GetSelectFields(const Fields &fields, const MediaType &media
     sortFields.insert(FieldArtist);
 
   selectFields.clear();
-  for (Fields::const_iterator it = sortFields.begin(); it != sortFields.end(); ++it)
+  for (auto it = sortFields.begin(); it != sortFields.end(); ++it)
   {
     // ignore FieldLabel because it needs special handling (see further up)
     if (*it == FieldLabel)
@@ -455,7 +455,7 @@ bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldLi
 
   std::vector<int> fieldIndexLookup;
   fieldIndexLookup.reserve(fields.size());
-  for (FieldList::const_iterator it = fields.begin(); it != fields.end(); ++it)
+  for (auto it = fields.begin(); it != fields.end(); ++it)
     fieldIndexLookup.push_back(GetFieldIndex(*it, mediaType));
 
   results.reserve(resultSet.records.size() + offset);
@@ -465,7 +465,7 @@ bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldLi
     result[FieldRow] = index + offset;
 
     unsigned int lookupIndex = 0;
-    for (FieldList::const_iterator it = fields.begin(); it != fields.end(); ++it)
+    for (auto it = fields.begin(); it != fields.end(); ++it)
     {
       int fieldIndex = fieldIndexLookup[lookupIndex++];
       if (fieldIndex < 0)

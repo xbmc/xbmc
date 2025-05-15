@@ -38,8 +38,8 @@ void Interface_GUIControlFadeLabel::set_visible(KODI_HANDLE kodiBase,
                                                 KODI_GUI_CONTROL_HANDLE handle,
                                                 bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -56,8 +56,8 @@ void Interface_GUIControlFadeLabel::add_label(KODI_HANDLE kodiBase,
                                               KODI_GUI_CONTROL_HANDLE handle,
                                               const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR,
@@ -75,8 +75,8 @@ void Interface_GUIControlFadeLabel::add_label(KODI_HANDLE kodiBase,
 
 char* Interface_GUIControlFadeLabel::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -96,8 +96,8 @@ void Interface_GUIControlFadeLabel::set_scrolling(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle,
                                                   bool scroll)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -112,8 +112,8 @@ void Interface_GUIControlFadeLabel::set_scrolling(KODI_HANDLE kodiBase,
 
 void Interface_GUIControlFadeLabel::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIFadeLabelControl* control = static_cast<CGUIFadeLabelControl*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUIFadeLabelControl*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

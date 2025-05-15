@@ -248,7 +248,7 @@ void CGUIIncludes::FlattenExpressions()
 {
   for (auto& expression : m_expressions)
   {
-    std::vector<std::string> resolved = std::vector<std::string>();
+    auto resolved = std::vector<std::string>();
     resolved.push_back(expression.first);
     FlattenExpression(expression.second, resolved);
   }
@@ -476,7 +476,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
       while (includeDefinitionChild)
       {
         // insert before <include> element to keep order of occurrence in xml file
-        TiXmlElement *insertedNode = static_cast<TiXmlElement*>(node->InsertBeforeChild(include, *includeDefinitionChild));
+        auto insertedNode = static_cast<TiXmlElement*>(node->InsertBeforeChild(include, *includeDefinitionChild));
 
         // process nested
         InsertNested(node, include, insertedNode);
@@ -653,7 +653,7 @@ public:
   std::string operator()(const std::string &paramName)
   {
     m_numTotalParams++;
-    std::map<std::string, std::string>::const_iterator it = m_params.find(paramName);
+    auto it = m_params.find(paramName);
     if (it != m_params.end())
       return it->second;
     m_numUndefinedParams++;
@@ -675,7 +675,7 @@ std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
   std::vector<std::string> values = StringUtils::Split(constant, ",");
   for (auto& i : values)
   {
-    std::map<std::string, std::string>::const_iterator it = m_constants.find(i);
+    auto it = m_constants.find(i);
     if (it != m_constants.end())
       i = it->second;
   }

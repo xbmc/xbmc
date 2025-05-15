@@ -77,7 +77,7 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
       if (!spin)
         return false;
 
-      CGUITextBox* textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
+      auto textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
       if (!textbox)
         return false;
 
@@ -137,11 +137,11 @@ void CGUIDialogPVRRadioRDSInfo::InitInfoControls()
 {
   SET_CONTROL_HIDDEN(CONTROL_INFO_LIST);
 
-  CGUISpinControl* spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
+  auto spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
   if (spin)
     spin->Clear();
 
-  CGUITextBox* textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
+  auto textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
 
   m_InfoNews.Init(spin, textbox);
   m_InfoNewsLocal.Init(spin, textbox);

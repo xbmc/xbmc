@@ -311,7 +311,7 @@ int CSkinInfo::GetStartWindow() const
 {
   int windowID = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW);
   assert(m_startupWindows.size());
-  for (std::vector<CStartupWindow>::const_iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); ++it)
+  for (auto it = m_startupWindows.begin(); it != m_startupWindows.end(); ++it)
   {
     if (windowID == (*it).m_id)
       return windowID;
@@ -607,7 +607,7 @@ void CSkinInfo::SettingOptionsStartupWindowsFiller(const SettingConstPtr& settin
 
   const std::vector<CStartupWindow> &startupWindows = g_SkinInfo->GetStartupWindows();
 
-  for (std::vector<CStartupWindow>::const_iterator it = startupWindows.begin(); it != startupWindows.end(); ++it)
+  for (auto it = startupWindows.begin(); it != startupWindows.end(); ++it)
   {
     std::string windowName = it->m_name;
     if (StringUtils::IsNaturalNumber(windowName))

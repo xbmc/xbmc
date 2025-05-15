@@ -31,7 +31,7 @@ std::string CJoystickUtils::MakeKeyName(const FeatureName& feature, ANALOG_STICK
 
 std::string CJoystickUtils::MakeKeyName(const FeatureName& feature, WHEEL_DIRECTION dir)
 {
-  ANALOG_STICK_DIRECTION stickDir = ANALOG_STICK_DIRECTION::NONE;
+  auto stickDir = ANALOG_STICK_DIRECTION::NONE;
 
   switch (dir)
   {
@@ -50,7 +50,7 @@ std::string CJoystickUtils::MakeKeyName(const FeatureName& feature, WHEEL_DIRECT
 
 std::string CJoystickUtils::MakeKeyName(const FeatureName& feature, THROTTLE_DIRECTION dir)
 {
-  ANALOG_STICK_DIRECTION stickDir = ANALOG_STICK_DIRECTION::NONE;
+  auto stickDir = ANALOG_STICK_DIRECTION::NONE;
 
   switch (dir)
   {

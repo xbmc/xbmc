@@ -30,7 +30,7 @@ ICodec* CodecFactory::CreateCodec(const CURL& urlFile)
     // Check asked and given extension is supported by only for here allowed audiodecoder addons.
     if (addonInfo.first == ADDON::AddonType::AUDIODECODER)
     {
-      std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
+      auto result = std::make_unique<CAudioDecoder>(addonInfo.second);
       if (!result->CreateDecoder())
         continue;
 
@@ -38,7 +38,7 @@ ICodec* CodecFactory::CreateCodec(const CURL& urlFile)
     }
   }
 
-  VideoPlayerCodec *dvdcodec = new VideoPlayerCodec();
+  auto dvdcodec = new VideoPlayerCodec();
   return dvdcodec;
 }
 
@@ -56,7 +56,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filec
       // Check asked and given mime type is supported by only for here allowed audiodecoder addons.
       if (addonInfo.first == ADDON::AddonType::AUDIODECODER)
       {
-        std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
+        auto result = std::make_unique<CAudioDecoder>(addonInfo.second);
         if (!result->CreateDecoder() && result->SupportsFile(file.GetPath()))
           continue;
 
@@ -81,13 +81,13 @@ ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filec
       content == "application/x-flac"
       )
   {
-    VideoPlayerCodec *dvdcodec = new VideoPlayerCodec();
+    auto dvdcodec = new VideoPlayerCodec();
     dvdcodec->SetContentType(content);
     return dvdcodec;
   }
   else if (urlFile.IsProtocol("shout"))
   {
-    VideoPlayerCodec *dvdcodec = new VideoPlayerCodec();
+    auto dvdcodec = new VideoPlayerCodec();
     dvdcodec->SetContentType("audio/mp3");
     return dvdcodec; // if we got this far with internet radio - content-type was wrong. gamble on mp3.
   }
@@ -95,7 +95,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filec
       content == "audio/wav" ||
       content == "audio/x-wav")
   {
-    VideoPlayerCodec *dvdcodec = new VideoPlayerCodec();
+    auto dvdcodec = new VideoPlayerCodec();
     dvdcodec->SetContentType("audio/x-spdif-compressed");
     if (dvdcodec->Init(file, filecache))
     {

@@ -120,7 +120,7 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
     m_backlogSize -= consumed;
   }
 
-  unsigned char *pData(const_cast<uint8_t*>(packet.pData));
+  auto pData(const_cast<uint8_t*>(packet.pData));
   int iSize(packet.iSize);
 
   if (pData)

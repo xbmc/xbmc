@@ -169,9 +169,9 @@ bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)
   std::string appName = CCompileInfo::GetAppName();
   std::string dotLowerAppName = "." + appName;
   StringUtils::ToLower(dotLowerAppName);
-  const char* envAppHome = "KODI_HOME";
-  const char* envAppBinHome = "KODI_BIN_HOME";
-  const char* envAppTemp = "KODI_TEMP";
+  auto envAppHome = "KODI_HOME";
+  auto envAppBinHome = "KODI_BIN_HOME";
+  auto envAppTemp = "KODI_TEMP";
 
   std::string userHome;
   if (getenv("KODI_DATA"))

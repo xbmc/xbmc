@@ -241,7 +241,7 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
           g_localizeStrings.Get(10020), name,
           g_localizeStrings.Get(enabled ? 305 : 13106)); // Edit "config name" [enabled state]
 
-      const CFileItemPtr item = std::make_shared<CFileItem>(label);
+      const auto item = std::make_shared<CFileItem>(label);
       item->SetProperty("id", id);
       item->SetProperty("name", name);
       itemsInstances.Add(item);
@@ -255,7 +255,7 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
     const ADDON::AddonInstanceId addInstanceId = highestId + 1;
     const ADDON::AddonInstanceId removeInstanceId = highestId + 2;
 
-    CFileItemPtr item =
+    auto item =
         std::make_shared<CFileItem>(g_localizeStrings.Get(10014)); // Add add-on configuration
     item->SetProperty("id", addInstanceId);
     itemsGeneral.Add(item);

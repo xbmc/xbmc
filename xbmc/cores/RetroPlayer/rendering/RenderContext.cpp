@@ -120,7 +120,7 @@ void CRenderContext::EnableGUIShader(GL_SHADER_METHOD method)
   if (rendering != nullptr)
     rendering->EnableShader(TranslateShaderMethodGL(method));
 #elif HAS_GLES >= 2
-  CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
+  auto renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     renderingGLES->EnableGUIShader(TranslateShaderMethodGLES(method));
 #endif
@@ -133,7 +133,7 @@ void CRenderContext::DisableGUIShader()
   if (renderingGL != nullptr)
     renderingGL->DisableShader();
 #elif HAS_GLES >= 2
-  CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
+  auto renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     renderingGLES->DisableGUIShader();
 #endif
@@ -146,7 +146,7 @@ int CRenderContext::GUIShaderGetPos()
   if (renderingGL != nullptr)
     return static_cast<int>(renderingGL->ShaderGetPos());
 #elif HAS_GLES >= 2
-  CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
+  auto renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     return static_cast<int>(renderingGLES->GUIShaderGetPos());
 #endif
@@ -161,7 +161,7 @@ int CRenderContext::GUIShaderGetCoord0()
   if (renderingGL != nullptr)
     return static_cast<int>(renderingGL->ShaderGetCoord0());
 #elif HAS_GLES >= 2
-  CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
+  auto renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     return static_cast<int>(renderingGLES->GUIShaderGetCoord0());
 #endif
@@ -176,7 +176,7 @@ int CRenderContext::GUIShaderGetUniCol()
   if (renderingGL != nullptr)
     return static_cast<int>(renderingGL->ShaderGetUniCol());
 #elif HAS_GLES >= 2
-  CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
+  auto renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     return static_cast<int>(renderingGLES->GUIShaderGetUniCol());
 #endif

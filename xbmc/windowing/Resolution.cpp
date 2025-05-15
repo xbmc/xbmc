@@ -23,9 +23,8 @@
 
 namespace
 {
-
-const char* SETTING_VIDEOSCREEN_WHITELIST_PULLDOWN{"videoscreen.whitelistpulldown"};
-const char* SETTING_VIDEOSCREEN_WHITELIST_DOUBLEREFRESHRATE{
+  auto SETTING_VIDEOSCREEN_WHITELIST_PULLDOWN{"videoscreen.whitelistpulldown"};
+  auto SETTING_VIDEOSCREEN_WHITELIST_DOUBLEREFRESHRATE{
     "videoscreen.whitelistdoublerefreshrate"};
 
 } // namespace

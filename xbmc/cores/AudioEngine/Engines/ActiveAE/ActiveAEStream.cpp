@@ -394,7 +394,7 @@ void CActiveAEStream::Resume()
 void CActiveAEStream::Drain(bool wait)
 {
   Message *msg;
-  CActiveAEStream *stream = this;
+  auto stream = this;
 
   m_streamDraining = true;
   m_streamDrained = false;

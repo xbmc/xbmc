@@ -44,8 +44,8 @@ bool CMediaTypes::IsValidMediaType(const MediaType &mediaType)
 
 bool CMediaTypes::IsMediaType(const std::string &strMediaType, const MediaType &mediaType)
 {
-  std::map<std::string, MediaTypeInfo>::const_iterator strMediaTypeIt = findMediaType(strMediaType);
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
+  auto strMediaTypeIt = findMediaType(strMediaType);
+  auto mediaTypeIt = findMediaType(mediaType);
 
   return strMediaTypeIt != m_mediaTypes.end() && mediaTypeIt != m_mediaTypes.end() &&
          strMediaTypeIt->first.compare(mediaTypeIt->first) == 0;
@@ -53,7 +53,7 @@ bool CMediaTypes::IsMediaType(const std::string &strMediaType, const MediaType &
 
 MediaType CMediaTypes::FromString(const std::string &strMediaType)
 {
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(strMediaType);
+  auto mediaTypeIt = findMediaType(strMediaType);
   if (mediaTypeIt == m_mediaTypes.end())
     return MediaTypeNone;
 
@@ -62,7 +62,7 @@ MediaType CMediaTypes::FromString(const std::string &strMediaType)
 
 MediaType CMediaTypes::ToPlural(const MediaType &mediaType)
 {
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
+  auto mediaTypeIt = findMediaType(mediaType);
   if (mediaTypeIt == m_mediaTypes.end())
     return MediaTypeNone;
 
@@ -71,7 +71,7 @@ MediaType CMediaTypes::ToPlural(const MediaType &mediaType)
 
 bool CMediaTypes::IsContainer(const MediaType &mediaType)
 {
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
+  auto mediaTypeIt = findMediaType(mediaType);
   if (mediaTypeIt == m_mediaTypes.end())
     return false;
 
@@ -98,7 +98,7 @@ std::map<std::string, CMediaTypes::MediaTypeInfo>::const_iterator CMediaTypes::f
 
 std::string CMediaTypes::GetLocalization(const MediaType &mediaType)
 {
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
+  auto mediaTypeIt = findMediaType(mediaType);
   if (mediaTypeIt == m_mediaTypes.end() ||
     mediaTypeIt->second.localizationSingular <= 0)
     return "";
@@ -108,7 +108,7 @@ std::string CMediaTypes::GetLocalization(const MediaType &mediaType)
 
 std::string CMediaTypes::GetPluralLocalization(const MediaType &mediaType)
 {
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
+  auto mediaTypeIt = findMediaType(mediaType);
   if (mediaTypeIt == m_mediaTypes.end() ||
     mediaTypeIt->second.localizationPlural <= 0)
     return "";
@@ -118,7 +118,7 @@ std::string CMediaTypes::GetPluralLocalization(const MediaType &mediaType)
 
 std::string CMediaTypes::GetCapitalLocalization(const MediaType &mediaType)
 {
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
+  auto mediaTypeIt = findMediaType(mediaType);
   if (mediaTypeIt == m_mediaTypes.end() ||
     mediaTypeIt->second.localizationSingular <= 0)
     return "";
@@ -128,7 +128,7 @@ std::string CMediaTypes::GetCapitalLocalization(const MediaType &mediaType)
 
 std::string CMediaTypes::GetCapitalPluralLocalization(const MediaType &mediaType)
 {
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
+  auto mediaTypeIt = findMediaType(mediaType);
   if (mediaTypeIt == m_mediaTypes.end() ||
     mediaTypeIt->second.localizationPlural <= 0)
     return "";

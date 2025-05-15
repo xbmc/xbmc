@@ -126,7 +126,7 @@ void CGUIControllerList::OnFocus(unsigned int controllerIndex)
     m_featureList->Load(controller);
 
     //! @todo Activate controller for all game controller controls
-    CGUIGameController* pController =
+    auto pController =
         dynamic_cast<CGUIGameController*>(m_guiWindow->GetControl(CONTROL_GAME_CONTROLLER));
     if (pController)
       pController->ActivateController(controller);

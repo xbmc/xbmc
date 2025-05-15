@@ -49,7 +49,7 @@ JSONRPC_STATUS CTextureOperations::GetTextures(const std::string &method, ITrans
   }
 
   // fetch textures from the database
-  CVariant items = CVariant(CVariant::VariantTypeArray);
+  auto items = CVariant(CVariant::VariantTypeArray);
   if (!db.GetTextures(items, dbFilter))
     return InternalError;
 

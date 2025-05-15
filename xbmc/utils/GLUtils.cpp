@@ -251,7 +251,7 @@ void LogGraphicsInfo()
   else
 #endif
   {
-    const char* extension = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+    auto extension = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
     if (s)
       extensions += extension;
   }

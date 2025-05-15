@@ -296,7 +296,7 @@ inline std::string ATTR_DLL_LOCAL GetMD5(const std::string& text)
 {
   using namespace kodi::addon;
 
-  char* md5ret = static_cast<char*>(malloc(40 * sizeof(char))); // md5 size normally 32 bytes
+  auto md5ret = static_cast<char*>(malloc(40 * sizeof(char))); // md5 size normally 32 bytes
   CPrivateBase::m_interface->toKodi->kodi->get_md5(CPrivateBase::m_interface->toKodi->kodiBase,
                                                    text.c_str(), md5ret);
   std::string md5 = md5ret;

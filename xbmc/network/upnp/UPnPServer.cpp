@@ -154,7 +154,7 @@ void CUPnPServer::OnScanCompleted(int type)
 +---------------------------------------------------------------------*/
 void CUPnPServer::UpdateContainer(const std::string& id)
 {
-  std::map<std::string, std::pair<bool, unsigned long>>::iterator itr = m_UpdateIDs.find(id);
+  auto itr = m_UpdateIDs.find(id);
   unsigned long count = 0;
   if (itr != m_UpdateIDs.end())
     count = ++itr->second.second;
@@ -999,7 +999,7 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
       "Received Search request for encoded object '{}' (plain value: '{}') with search '{}'",
       object_id, id.GetChars(), search_criteria);
 
-  NPT_String searchClass = NPT_String(search_criteria);
+  auto searchClass = NPT_String(search_criteria);
   if (id.StartsWith("musicdb://"))
   {
     // we browse for all tracks given a genre, artist or album

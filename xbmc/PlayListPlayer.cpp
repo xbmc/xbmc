@@ -849,7 +849,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   case TMSG_PLAYLISTPLAYER_PLAY_ITEM_ID:
     if (pMsg->param1 != -1)
     {
-      bool *result = (bool*)pMsg->lpVoid;
+      auto result = (bool*)pMsg->lpVoid;
       *result = PlayItemIdx(pMsg->param1);
     }
     else
@@ -867,7 +867,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   case TMSG_PLAYLISTPLAYER_ADD:
     if (pMsg->lpVoid)
     {
-      CFileItemList *list = static_cast<CFileItemList*>(pMsg->lpVoid);
+      auto list = static_cast<CFileItemList*>(pMsg->lpVoid);
 
       Add(pMsg->param1, (*list));
       delete list;
@@ -877,7 +877,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   case TMSG_PLAYLISTPLAYER_INSERT:
     if (pMsg->lpVoid)
     {
-      CFileItemList *list = static_cast<CFileItemList*>(pMsg->lpVoid);
+      auto list = static_cast<CFileItemList*>(pMsg->lpVoid);
       Insert(pMsg->param1, (*list), pMsg->param2);
       delete list;
     }
@@ -904,7 +904,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     if (pMsg->lpVoid)
     {
       PLAYLIST::CPlayList playlist = GetPlaylist(pMsg->param1);
-      CFileItemList *list = static_cast<CFileItemList*>(pMsg->lpVoid);
+      auto list = static_cast<CFileItemList*>(pMsg->lpVoid);
 
       for (int i = 0; i < playlist.size(); i++)
         list->Add(std::make_shared<CFileItem>(*playlist[i]));
@@ -932,7 +932,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       // Otherwise items may fail to play, when started while a playlist is playing.
       Reset();
 
-      CFileItem *item = static_cast<CFileItem*>(pMsg->lpVoid);
+      auto item = static_cast<CFileItem*>(pMsg->lpVoid);
       g_application.PlayFile(*item, "", pMsg->param1 != 0);
       delete item;
       return;
@@ -942,7 +942,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     // play file
     if (pMsg->lpVoid)
     {
-      CFileItemList *list = static_cast<CFileItemList*>(pMsg->lpVoid);
+      auto list = static_cast<CFileItemList*>(pMsg->lpVoid);
 
       if (list->Size() > 0)
       {

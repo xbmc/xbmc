@@ -256,7 +256,7 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case LISTITEM_ISAUTOUPDATEABLE:
     {
       value = true;
-      const CFileItem* item = static_cast<const CFileItem*>(gitem);
+      auto item = static_cast<const CFileItem*>(gitem);
       if (item->GetAddonInfo())
         value = CServiceBroker::GetAddonMgr().IsAutoUpdateable(item->GetAddonInfo()->ID()) ||
                 !CServiceBroker::GetAddonMgr().IsAddonInstalled(item->GetAddonInfo()->ID(),

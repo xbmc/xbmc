@@ -98,8 +98,8 @@ bool InfoExpression::InfoAssociativeGroup::Evaluate(int contextWindow, const CGU
    * A AND B == !(!A OR !B)
    * to convert ANDs into ORs
    */
-  std::list<InfoSubexpressionPtr>::iterator last = m_children.end();
-  std::list<InfoSubexpressionPtr>::iterator it = m_children.begin();
+  auto last = m_children.end();
+  auto it = m_children.begin();
   bool use_and = (m_type == NODE_AND);
   bool result = use_and ^ (*it)->Evaluate(contextWindow, item);
   while (!result && ++it != last)

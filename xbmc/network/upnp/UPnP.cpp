@@ -339,7 +339,7 @@ public:
     NPT_CHECK_LABEL(action->SetArgumentValue("ObjectID", url.GetFileName().c_str()), failed);
 
     // put together the current and the new value string
-    for (std::set<std::pair<NPT_String, NPT_String>>::const_iterator value = values.begin();
+    for (auto value = values.begin();
          value != values.end(); ++value)
     {
       if (!curr_value.IsEmpty())
@@ -602,7 +602,7 @@ void CUPnP::ReleaseInstance(bool bWait)
     {
       // since it takes a while to clean up
       // starts a detached thread to do this
-      CUPnPCleaner* cleaner = new CUPnPCleaner(_upnp);
+      auto cleaner = new CUPnPCleaner(_upnp);
       cleaner->Start();
     }
   }
@@ -626,7 +626,7 @@ bool CUPnP::MarkWatched(const CFileItem& item, const bool watched)
   if (upnp && upnp->m_MediaBrowser)
   {
     // dynamic_cast is safe here, avoids polluting CUPnP.h header file
-    CMediaBrowser* browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
+    auto browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
     if (browser)
       return browser->MarkWatched(item, watched);
   }
@@ -643,7 +643,7 @@ bool CUPnP::SaveFileState(const CFileItem& item,
   if (upnp && upnp->m_MediaBrowser)
   {
     // dynamic_cast is safe here, avoids polluting CUPnP.h header file
-    CMediaBrowser* browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
+    auto browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
     if (browser)
       return browser->SaveFileState(item, bookmark, updatePlayCount);
   }
@@ -685,7 +685,7 @@ bool CUPnP::UpdateItem(const std::string& path, const CFileItem& item)
   if (upnp && upnp->m_MediaBrowser)
   {
     // dynamic_cast is safe here, avoids polluting CUPnP.h header file
-    CMediaBrowser* browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
+    auto browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
     if (browser)
       return browser->UpdateItem(path, item);
   }
@@ -758,7 +758,7 @@ void CUPnP::StopController()
 +---------------------------------------------------------------------*/
 CUPnPServer* CUPnP::CreateServer(int port /* = 0 */)
 {
-  CUPnPServer* device = new CUPnPServer(CSysInfo::GetDeviceName().c_str(),
+  auto device = new CUPnPServer(CSysInfo::GetDeviceName().c_str(),
                                         CUPnPSettings::GetInstance().GetServerUUID().length()
                                             ? CUPnPSettings::GetInstance().GetServerUUID().c_str()
                                             : NULL,
@@ -854,7 +854,7 @@ void CUPnP::StopServer()
 +---------------------------------------------------------------------*/
 CUPnPRenderer* CUPnP::CreateRenderer(int port /* = 0 */)
 {
-  CUPnPRenderer* device =
+  auto device =
       new CUPnPRenderer(CSysInfo::GetDeviceName().c_str(), false,
                         (CUPnPSettings::GetInstance().GetRendererUUID().length()
                              ? CUPnPSettings::GetInstance().GetRendererUUID().c_str()

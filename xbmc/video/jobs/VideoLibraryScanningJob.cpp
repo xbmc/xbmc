@@ -33,7 +33,7 @@ bool CVideoLibraryScanningJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
 
-  const CVideoLibraryScanningJob* scanningJob = dynamic_cast<const CVideoLibraryScanningJob*>(job);
+  auto scanningJob = dynamic_cast<const CVideoLibraryScanningJob*>(job);
   if (scanningJob == NULL)
     return false;
 

@@ -152,7 +152,7 @@ void CGUIDialogProgress::OnWindowLoaded()
   if (control && control->GetControlType() == CGUIControl::GUICONTROL_PROGRESS)
   {
     // make sure we have the appropriate info set
-    CGUIProgressControl *progress = static_cast<CGUIProgressControl*>(control);
+    auto progress = static_cast<CGUIProgressControl*>(control);
     if (!progress->GetInfo())
       progress->SetInfo(SYSTEM_PROGRESS_BAR);
   }

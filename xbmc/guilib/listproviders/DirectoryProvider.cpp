@@ -71,7 +71,7 @@ public:
   {
     if (strcmp(job->GetType(),GetType()) == 0)
     {
-      const CDirectoryJob* dirJob = dynamic_cast<const CDirectoryJob*>(job);
+      auto dirJob = dynamic_cast<const CDirectoryJob*>(job);
       if (dirJob && dirJob->m_url == m_url)
         return true;
     }

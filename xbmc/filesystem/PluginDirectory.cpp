@@ -527,7 +527,7 @@ bool CPluginDirectory::IsMediaLibraryScanningAllowed(const std::string& content,
     CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName());
     return false;
   }
-  CPluginSource* plugin = dynamic_cast<CPluginSource*>(addon.get());
+  auto plugin = dynamic_cast<CPluginSource*>(addon.get());
   if (!plugin)
     return false;
 

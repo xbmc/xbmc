@@ -299,12 +299,12 @@ CGUIRenderTarget* CGUIGameRenderManager::CreateRenderTarget(CGUIRenderHandle* ha
   {
     case RENDER_HANDLE::CONTROL:
     {
-      CGUIRenderControlHandle* controlHandle = static_cast<CGUIRenderControlHandle*>(handle);
+      auto controlHandle = static_cast<CGUIRenderControlHandle*>(handle);
       return m_factory->CreateRenderControl(controlHandle->GetControl());
     }
     case RENDER_HANDLE::WINDOW:
     {
-      CGUIRenderFullScreenHandle* fullScreenHandle =
+      auto fullScreenHandle =
           static_cast<CGUIRenderFullScreenHandle*>(handle);
       return m_factory->CreateRenderFullScreen(fullScreenHandle->GetWindow());
     }

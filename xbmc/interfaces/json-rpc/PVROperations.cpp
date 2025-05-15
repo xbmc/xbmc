@@ -38,7 +38,7 @@ JSONRPC_STATUS CPVROperations::GetProperties(const std::string &method, ITranspo
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  CVariant properties = CVariant(CVariant::VariantTypeObject);
+  auto properties = CVariant(CVariant::VariantTypeObject);
   for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
   {
     std::string propertyName = parameterObject["properties"][index].asString();

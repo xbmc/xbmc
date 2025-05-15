@@ -65,7 +65,7 @@ JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const std::string &method,
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   const CProfile& currentProfile = profileManager->GetCurrentProfile();
-  CVariant profileVariant = CVariant(CVariant::VariantTypeObject);
+  auto profileVariant = CVariant(CVariant::VariantTypeObject);
   profileVariant["label"] = currentProfile.getName();
   for (CVariant::const_iterator_array propertyiter = parameterObject["properties"].begin_array(); propertyiter != parameterObject["properties"].end_array(); ++propertyiter)
   {

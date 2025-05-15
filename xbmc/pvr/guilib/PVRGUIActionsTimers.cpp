@@ -840,7 +840,7 @@ void AddEventLogEntry(const std::shared_ptr<const CPVRTimerInfoTag>& timer, int 
     icon = "special://xbmc/media/icon256x256.png";
   }
 
-  CPVREventLogJob* job = new CPVREventLogJob;
+  auto job = new CPVREventLogJob;
   job->AddEvent(false, // do not display a toast, only log event
                 EventLevel::Information, // info, no error
                 name, GetAnnouncerText(timer, idEpg, idNoEpg), icon);

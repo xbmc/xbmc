@@ -281,7 +281,7 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
     m_Mode = mode;
 
     // check for special names
-    const char* name = (const char*)m_Delegator.GetPath();
+    auto name = (const char*)m_Delegator.GetPath();
     if (NPT_StringsEqual(name, NPT_FILE_STANDARD_INPUT)) {
         return NPT_ERROR_FILE_NOT_READABLE;
     } else if (NPT_StringsEqual(name, NPT_FILE_STANDARD_OUTPUT)) {

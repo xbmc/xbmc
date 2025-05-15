@@ -720,7 +720,7 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
     return ;
   }
 
-  CFileItem item = CFileItem(strPath, false);
+  auto item = CFileItem(strPath, false);
 
   if (item.IsBluray())
   {
@@ -1655,7 +1655,7 @@ bool CUtil::RunCommandLine(const std::string& cmdLine, bool waitExit)
   // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
   // But it's still limited, for example quotes inside the strings are not expanded, etc.
   //! @todo Maybe some python library routine can parse this more properly ?
-  for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); ++it)
+  for (auto it = args.begin(); it != args.end(); ++it)
   {
     size_t pos;
     pos = it->find_first_not_of(" \t\n\"'");
@@ -1700,7 +1700,7 @@ bool CUtil::Command(const std::vector<std::string>& arrArgs, bool waitExit)
     close(2);
     if (!arrArgs.empty())
     {
-      char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
+      auto args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
       memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
       for (size_t i=0; i<arrArgs.size(); i++)
         args[i] = const_cast<char *>(arrArgs[i].c_str());
@@ -2169,7 +2169,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
   }
 
   // trim any non-alphanumeric char in the beginning
-  std::string::iterator result = std::find_if(toParse.begin(), toParse.end(), StringUtils::isasciialphanum);
+  auto result = std::find_if(toParse.begin(), toParse.end(), StringUtils::isasciialphanum);
 
   std::string name;
   if (result != toParse.end()) // if we have anything to parse

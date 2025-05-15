@@ -149,7 +149,7 @@ void CDVDOverlayContainer::UpdateOverlayInfo(
   pStream->CheckButtons();
 
   //Update any forced overlays.
-  for(VecOverlays::iterator it = m_overlays.begin(); it != m_overlays.end(); ++it )
+  for(auto it = m_overlays.begin(); it != m_overlays.end(); ++it )
   {
     if ((*it)->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     {

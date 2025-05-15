@@ -248,8 +248,8 @@ void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
 
 enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx, const AVPixelFormat * fmt)
 {
-  ICallbackHWAccel *cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
-  CDVDVideoCodecFFmpeg* ctx  = dynamic_cast<CDVDVideoCodecFFmpeg*>(cb);
+  auto cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  auto ctx  = dynamic_cast<CDVDVideoCodecFFmpeg*>(cb);
 
   const char* pixFmtName = av_get_pix_fmt_name(*fmt);
 
@@ -434,7 +434,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   // set any special options
-  for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
+  for(auto it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
   {
     av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
   }
@@ -931,7 +931,7 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
     pVideoPicture->videoBuffer->Release();
   pVideoPicture->videoBuffer = nullptr;
 
-  CVideoBufferFFmpeg *buffer = dynamic_cast<CVideoBufferFFmpeg*>(m_videoBufferPool->Get());
+  auto buffer = dynamic_cast<CVideoBufferFFmpeg*>(m_videoBufferPool->Get());
   buffer->SetRef(m_pFrame);
   pVideoPicture->videoBuffer = buffer;
 

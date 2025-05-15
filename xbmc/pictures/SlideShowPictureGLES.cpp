@@ -21,7 +21,7 @@ std::unique_ptr<CSlideShowPic> CSlideShowPic::CreateSlideShowPicture()
 
 void CSlideShowPicGLES::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR::Color color)
 {
-  CRenderSystemGLES* renderSystem =
+  auto renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   if (pTexture)
   {

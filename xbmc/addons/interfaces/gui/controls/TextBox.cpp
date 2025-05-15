@@ -41,8 +41,8 @@ void Interface_GUIControlTextBox::set_visible(KODI_HANDLE kodiBase,
                                               KODI_GUI_CONTROL_HANDLE handle,
                                               bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUITextBox* control = static_cast<CGUITextBox*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -57,8 +57,8 @@ void Interface_GUIControlTextBox::set_visible(KODI_HANDLE kodiBase,
 
 void Interface_GUIControlTextBox::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUITextBox* control = static_cast<CGUITextBox*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -76,8 +76,8 @@ void Interface_GUIControlTextBox::set_text(KODI_HANDLE kodiBase,
                                            KODI_GUI_CONTROL_HANDLE handle,
                                            const char* text)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUITextBox* control = static_cast<CGUITextBox*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control || !text)
   {
     CLog::Log(LOGERROR,
@@ -95,8 +95,8 @@ void Interface_GUIControlTextBox::set_text(KODI_HANDLE kodiBase,
 
 char* Interface_GUIControlTextBox::get_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUITextBox* control = static_cast<CGUITextBox*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -113,8 +113,8 @@ void Interface_GUIControlTextBox::scroll(KODI_HANDLE kodiBase,
                                          KODI_GUI_CONTROL_HANDLE handle,
                                          unsigned int position)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUITextBox* control = static_cast<CGUITextBox*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -130,8 +130,8 @@ void Interface_GUIControlTextBox::scroll(KODI_HANDLE kodiBase,
 void Interface_GUIControlTextBox::set_auto_scrolling(
     KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle, int delay, int time, int repeat)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUITextBox* control = static_cast<CGUITextBox*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUITextBox*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

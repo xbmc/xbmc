@@ -26,7 +26,7 @@ using namespace JSONRPC;
 JSONRPC_STATUS CPlaylistOperations::GetPlaylists(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   result = CVariant(CVariant::VariantTypeArray);
-  CVariant playlist = CVariant(CVariant::VariantTypeObject);
+  auto playlist = CVariant(CVariant::VariantTypeObject);
 
   playlist["playlistid"] = PLAYLIST::TYPE_MUSIC;
   playlist["type"] = "audio";
@@ -124,7 +124,7 @@ JSONRPC_STATUS CPlaylistOperations::Add(const std::string &method, ITransportLay
       CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
       for (int index = 0; index < list.Size(); index++)
       {
-        CPictureInfoTag picture = CPictureInfoTag();
+        auto picture = CPictureInfoTag();
         if (!picture.Load(list[index]->GetPath()))
           continue;
 

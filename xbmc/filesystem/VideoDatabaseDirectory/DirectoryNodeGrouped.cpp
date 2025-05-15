@@ -23,7 +23,7 @@ NODE_TYPE CDirectoryNodeGrouped::GetChildType() const
   CQueryParams params;
   CollectQueryParams(params);
 
-  VideoDbContentType type = static_cast<VideoDbContentType>(params.GetContentType());
+  auto type = static_cast<VideoDbContentType>(params.GetContentType());
   if (type == VideoDbContentType::MOVIES)
     return NODE_TYPE_TITLE_MOVIES;
   if (type == VideoDbContentType::MUSICVIDEOS)

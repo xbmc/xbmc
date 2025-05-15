@@ -78,7 +78,7 @@ SettingPtr InitializeFromOldSettingWithoutDefinition<CSettingString>(
     const std::string& settingId,
     const typename CSettingString::Value& defaultValue)
 {
-  std::shared_ptr<CSettingString> setting =
+  auto setting =
       std::make_shared<CSettingString>(settingId, settings.GetSettingsManager());
   setting->SetLevel(SettingLevel::Internal);
   setting->SetVisible(false);
@@ -265,14 +265,14 @@ bool CAddonSettings::AddInstanceSettings()
     category->AddGroupToFront(group);
   }
 
-  const std::shared_ptr<CSettingString> name =
+  const auto name =
       std::make_shared<CSettingString>(ADDON_SETTING_INSTANCE_NAME_VALUE, 551, "", mgr); // Name
   name->SetAllowEmpty(false);
   name->SetControl(std::make_shared<CSettingControlEdit>());
   if (!mgr->AddSetting(name, section, category, group))
     return false;
 
-  const std::shared_ptr<CSettingBool> enabled = std::make_shared<CSettingBool>(
+  const auto enabled = std::make_shared<CSettingBool>(
       ADDON_SETTING_INSTANCE_ENABLED_VALUE, 305, true, mgr); // Enabled
   enabled->SetControl(std::make_shared<CSettingControlCheckmark>());
   if (!mgr->AddSetting(enabled, section, category, group))
@@ -817,7 +817,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
   if (root == nullptr)
     return false;
 
-  std::shared_ptr<CSettingSection> section =
+  auto section =
       std::make_shared<CSettingSection>(m_addonId, GetSettingsManager());
 
   std::shared_ptr<CSettingCategory> category;

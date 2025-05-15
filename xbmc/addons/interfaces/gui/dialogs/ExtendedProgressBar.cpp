@@ -45,7 +45,7 @@ void Interface_GUIDialogExtendedProgress::DeInit(AddonGlobalInterface* addonInte
 KODI_GUI_HANDLE Interface_GUIDialogExtendedProgress::new_dialog(KODI_HANDLE kodiBase,
                                                                 const char* title)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -73,7 +73,7 @@ KODI_GUI_HANDLE Interface_GUIDialogExtendedProgress::new_dialog(KODI_HANDLE kodi
 void Interface_GUIDialogExtendedProgress::delete_dialog(KODI_HANDLE kodiBase,
                                                         KODI_GUI_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -95,7 +95,7 @@ void Interface_GUIDialogExtendedProgress::delete_dialog(KODI_HANDLE kodiBase,
 
 char* Interface_GUIDialogExtendedProgress::get_title(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -119,7 +119,7 @@ void Interface_GUIDialogExtendedProgress::set_title(KODI_HANDLE kodiBase,
                                                     KODI_GUI_HANDLE handle,
                                                     const char* title)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -141,7 +141,7 @@ void Interface_GUIDialogExtendedProgress::set_title(KODI_HANDLE kodiBase,
 
 char* Interface_GUIDialogExtendedProgress::get_text(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -165,7 +165,7 @@ void Interface_GUIDialogExtendedProgress::set_text(KODI_HANDLE kodiBase,
                                                    KODI_GUI_HANDLE handle,
                                                    const char* text)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -187,7 +187,7 @@ void Interface_GUIDialogExtendedProgress::set_text(KODI_HANDLE kodiBase,
 
 bool Interface_GUIDialogExtendedProgress::is_finished(KODI_HANDLE kodiBase, KODI_GUI_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -210,7 +210,7 @@ bool Interface_GUIDialogExtendedProgress::is_finished(KODI_HANDLE kodiBase, KODI
 void Interface_GUIDialogExtendedProgress::mark_finished(KODI_HANDLE kodiBase,
                                                         KODI_GUI_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -233,7 +233,7 @@ void Interface_GUIDialogExtendedProgress::mark_finished(KODI_HANDLE kodiBase,
 float Interface_GUIDialogExtendedProgress::get_percentage(KODI_HANDLE kodiBase,
                                                           KODI_GUI_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -257,7 +257,7 @@ void Interface_GUIDialogExtendedProgress::set_percentage(KODI_HANDLE kodiBase,
                                                          KODI_GUI_HANDLE handle,
                                                          float percentage)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",
@@ -282,7 +282,7 @@ void Interface_GUIDialogExtendedProgress::set_progress(KODI_HANDLE kodiBase,
                                                        int currentItem,
                                                        int itemCount)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogExtendedProgress::{} - invalid kodi base data",

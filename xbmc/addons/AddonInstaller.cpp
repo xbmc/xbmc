@@ -69,8 +69,8 @@ public:
 
   bool DoWork() override;
 
-  static constexpr const char* TYPE_DOWNLOAD = "DOWNLOAD";
-  static constexpr const char* TYPE_INSTALL = "INSTALL";
+  static constexpr auto TYPE_DOWNLOAD = "DOWNLOAD";
+  static constexpr auto TYPE_INSTALL = "INSTALL";
   /*!
    * \brief Returns the current processing type in the installation job
    *
@@ -158,7 +158,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   std::unique_lock lock(m_critSection);
 
-  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
+  auto i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
     return p.second.jobID == jobID;
   });
   if (i != m_downloadJobs.end())
@@ -176,7 +176,7 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
 {
   std::unique_lock lock(m_critSection);
 
-  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
+  auto i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
     return p.second.jobID == jobID;
   });
   if (i != m_downloadJobs.end())
@@ -203,7 +203,7 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
   std::unique_lock lock(m_critSection);
 
   std::vector<std::string> addonIDs;
-  for (JobMap::const_iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
+  for (auto i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
   {
     if (i->second.jobID)
       addonIDs.push_back(i->first);
@@ -223,7 +223,7 @@ bool CAddonInstaller::GetProgress(const std::string& addonID, unsigned int& perc
 {
   std::lock_guard lock(m_critSection);
 
-  JobMap::const_iterator i = m_downloadJobs.find(addonID);
+  auto i = m_downloadJobs.find(addonID);
   if (i != m_downloadJobs.end())
   {
     percent = i->second.progress;
@@ -237,7 +237,7 @@ bool CAddonInstaller::Cancel(const std::string &addonID)
 {
   std::lock_guard lock(m_critSection);
 
-  JobMap::iterator i = m_downloadJobs.find(addonID);
+  auto i = m_downloadJobs.find(addonID);
   if (i != m_downloadJobs.end())
   {
     CServiceBroker::GetJobManager()->CancelJob(i->second.jobID);
@@ -376,7 +376,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
     return false;
 
-  CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, autoUpdate);
+  auto installJob = new CAddonInstallJob(addon, repo, autoUpdate);
   if (background == BackgroundJob::CHOICE_YES)
   {
     // Workaround: because CAddonInstallJob is blocking waiting for other jobs, it needs to be run
@@ -404,7 +404,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
   delete installJob;
 
   lock.lock();
-  JobMap::iterator i = m_downloadJobs.find(addon->ID());
+  auto i = m_downloadJobs.find(addon->ID());
   m_downloadJobs.erase(i);
   if (m_downloadJobs.empty())
     m_idle.Set();

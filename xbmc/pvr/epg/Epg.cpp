@@ -149,7 +149,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTim
     time_t e;
     endTime.GetAsTime(e);
 
-    const std::shared_ptr<CPVREpg> tmpEpg = std::make_shared<CPVREpg>(
+    const auto tmpEpg = std::make_shared<CPVREpg>(
         m_iEpgID, m_strName, m_strScraperName, m_channelData, std::shared_ptr<CPVREpgDatabase>());
     if (tmpEpg->UpdateFromScraper(b, e, true))
       tag = tmpEpg->GetTagBetween(beginTime, endTime, false);
@@ -207,7 +207,7 @@ bool CPVREpg::UpdateEntry(const EPG_TAG* data, int iClientId)
   if (!data)
     return false;
 
-  const std::shared_ptr<CPVREpgInfoTag> tag =
+  const auto tag =
       std::make_shared<CPVREpgInfoTag>(*data, iClientId, m_channelData, m_iEpgID);
 
   return !IsTagExpired(tag) && m_tags.UpdateEntry(tag);

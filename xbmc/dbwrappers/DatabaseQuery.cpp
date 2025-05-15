@@ -394,7 +394,7 @@ std::string CDatabaseQueryRule::GetWhereClause(const CDatabase& db,
 
   // now the query parameter
   std::string wholeQuery;
-  for (std::vector<std::string>::const_iterator it = m_parameter.begin(); it != m_parameter.end();
+  for (auto it = m_parameter.begin(); it != m_parameter.end();
        ++it)
   {
     std::string query = '(' + FormatWhereClause(negate, operatorString, *it, db, strType) + ')';
@@ -456,7 +456,7 @@ std::string CDatabaseQueryRuleCombination::GetWhereClause(const CDatabase& db,
   std::string rule;
 
   // translate the combinations into SQL
-  for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin();
+  for (auto it = m_combinations.begin();
        it != m_combinations.end(); ++it)
   {
     if (it != m_combinations.begin())

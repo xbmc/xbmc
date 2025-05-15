@@ -96,7 +96,7 @@ extern "C" size_t write_callback(char *buffer,
 {
   if(userp == NULL) return 0;
 
-  CCurlFile::CReadState *state = (CCurlFile::CReadState *)userp;
+  auto state = (CCurlFile::CReadState *)userp;
   return state->WriteCallback(buffer, size, nitems);
 }
 
@@ -107,13 +107,13 @@ extern "C" size_t read_callback(char *buffer,
 {
   if(userp == NULL) return 0;
 
-  CCurlFile::CReadState *state = (CCurlFile::CReadState *)userp;
+  auto state = (CCurlFile::CReadState *)userp;
   return state->ReadCallback(buffer, size, nitems);
 }
 
 extern "C" size_t header_callback(void *ptr, size_t size, size_t nmemb, void *stream)
 {
-  CCurlFile::CReadState *state = (CCurlFile::CReadState *)stream;
+  auto state = (CCurlFile::CReadState *)stream;
   return state->HeaderCallback(ptr, size, nmemb);
 }
 
@@ -150,7 +150,7 @@ size_t CCurlFile::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmem
 {
   std::string inString;
   // libcurl doc says that this info is not always \0 terminated
-  const char* strBuf = (const char*)ptr;
+  auto strBuf = (const char*)ptr;
   const size_t iSize = size * nmemb;
   if (strBuf[iSize - 1] == 0)
     inString.assign(strBuf, iSize - 1); // skip last char if it's zero
@@ -793,7 +793,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     //! @todo create a tokenizer that doesn't skip empty's
     StringUtils::Tokenize(filename, array, "/");
     filename.clear();
-    for (std::vector<std::string>::iterator it = array.begin(); it != array.end(); ++it)
+    for (auto it = array.begin(); it != array.end(); ++it)
     {
       if(it != array.begin())
         filename += "/";

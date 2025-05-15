@@ -315,7 +315,7 @@ void GetTextureFromData(D3DTexture* pTex, void* texData, std::unique_ptr<CTextur
   if (*ppTexture)
   {
     BYTE *texDataStart = (BYTE *)texData;
-    COLOR *color = (COLOR *)texData;
+    auto color = (COLOR *)texData;
     texDataStart += offset;
 /* DXMERGE - We should really support DXT1,DXT2 and DXT4 in both renderers
              Perhaps we should extend CTexture::Update() to support a bunch of different texture types

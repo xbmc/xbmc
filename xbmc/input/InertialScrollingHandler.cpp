@@ -127,7 +127,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
         int result = 0;
         if (message.GetPointer())
         {
-          int* p = static_cast<int*>(message.GetPointer());
+          auto p = static_cast<int*>(message.GetPointer());
           message.SetPointer(nullptr);
           result = *p;
           delete p;

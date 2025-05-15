@@ -96,7 +96,7 @@ bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIp
 #if !defined(TARGET_WINDOWS) && defined(HAS_FILESYSTEM_SMB)
   if (WSDiscovery::CWSDiscoveryPosix::IsInitialized())
   {
-    WSDiscovery::CWSDiscoveryPosix& WSInstance =
+    auto &WSInstance =
         dynamic_cast<WSDiscovery::CWSDiscoveryPosix&>(CServiceBroker::GetWSDiscovery());
     if (WSInstance.GetCached(strHostName, strIpAddress))
       return true;

@@ -36,8 +36,8 @@ using namespace KODI::SUBTITLES::STYLE;
 namespace
 {
 // WebVTT signature
-constexpr const char* signatureCharsBOM = "\xEF\xBB\xBF\x57\x45\x42\x56\x54\x54";
-constexpr const char* signatureChars = "\x57\x45\x42\x56\x54\x54";
+constexpr auto signatureCharsBOM = "\xEF\xBB\xBF\x57\x45\x42\x56\x54\x54";
+constexpr auto signatureChars = "\x57\x45\x42\x56\x54\x54";
 constexpr char signatureLastChars[] = {'\x0A', '\x0D', '\x20', '\x09'};
 
 constexpr char tagPattern[] = "<(\\/)?([^a-zA-Z >]+)?([^\\d:. >]+)?(\\.[^ >]+)?(?> ([^>]+))?>";
@@ -216,14 +216,14 @@ bool CWebVTTHandler::Initialize()
     return false;
   for (auto const& item : cuePropsPatterns)
   {
-    CRegExp reg = CRegExp();
+    auto reg = CRegExp();
     if (!reg.RegComp(item.second))
       return false;
     m_cuePropsMapRegex.insert({item.first, reg});
   }
   for (auto const& item : cueCssPatterns)
   {
-    CRegExp reg = CRegExp();
+    auto reg = CRegExp();
     if (!reg.RegComp(item.second))
       return false;
     m_cueCssStyleMapRegex.insert({item.first, reg});

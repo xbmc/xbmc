@@ -607,7 +607,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
 
 bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &result, bool* flip, int label)
 {
-  CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
+  auto browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
   CServiceBroker::GetGUI()->GetWindowManager().AddUniqueInstance(browser);
@@ -677,7 +677,7 @@ bool CGUIDialogFileBrowser::ShowAndGetDirectory(const VECSOURCES &shares, const 
 
 bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSOURCES &shares, const std::string &mask, const std::string &heading, std::string &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */)
 {
-  CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
+  auto browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
   CServiceBroker::GetGUI()->GetWindowManager().AddUniqueInstance(browser);
@@ -714,7 +714,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSOURCES &shares, const std::
 // same as above, starting in a single directory
 bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const std::string &mask, const std::string &heading, std::string &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */, bool singleList /* = false */)
 {
-  CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
+  auto browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
   CServiceBroker::GetGUI()->GetWindowManager().AddUniqueInstance(browser);
@@ -778,7 +778,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const s
 
 bool CGUIDialogFileBrowser::ShowAndGetFileList(const VECSOURCES &shares, const std::string &mask, const std::string &heading, std::vector<std::string> &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */)
 {
-  CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
+  auto browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
   CServiceBroker::GetGUI()->GetWindowManager().AddUniqueInstance(browser);
@@ -828,7 +828,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(std::string &path, bool allowNetwor
   // 5.  On OK, return.
 
   // Create a new filebrowser window
-  CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
+  auto browser = new CGUIDialogFileBrowser();
   if (!browser) return false;
 
   // Add it to our window manager

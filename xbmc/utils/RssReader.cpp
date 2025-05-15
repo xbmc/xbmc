@@ -73,7 +73,7 @@ void CRssReader::Create(IRssObserver* aObserver, const std::vector<std::string>&
   for (unsigned int i = 0; i < m_vecUpdateTimes.size(); ++i)
   {
     AddToQueue(i);
-    KODI::TIME::SystemTime* time = new KODI::TIME::SystemTime;
+    auto time = new KODI::TIME::SystemTime;
     KODI::TIME::GetLocalTime(time);
     m_vecTimeStamps.push_back(time);
   }
@@ -276,7 +276,7 @@ void CRssReader::GetNewsItems(tinyxml2::XMLNode* channelXmlNode, int iFeed)
     int rsscolour = RSS_COLOR_HEADLINE;
     for (i = m_tagSet.begin(); i != m_tagSet.end(); ++i)
     {
-      std::map<std::string, std::wstring>::iterator j = mTagElements.find(*i);
+      auto j = mTagElements.find(*i);
 
       if (j == mTagElements.end())
         continue;

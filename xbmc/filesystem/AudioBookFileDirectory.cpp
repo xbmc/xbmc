@@ -21,13 +21,13 @@ using namespace XFILE;
 
 static int cfile_file_read(void *h, uint8_t* buf, int size)
 {
-  CFile* pFile = static_cast<CFile*>(h);
+  auto pFile = static_cast<CFile*>(h);
   return pFile->Read(buf, size);
 }
 
 static int64_t cfile_file_seek(void *h, int64_t pos, int whence)
 {
-  CFile* pFile = static_cast<CFile*>(h);
+  auto pFile = static_cast<CFile*>(h);
   if(whence == AVSEEK_SIZE)
     return pFile->GetLength();
   else
@@ -147,7 +147,7 @@ bool CAudioBookFileDirectory::ContainsFiles(const CURL& url)
   if (!file.Open(url))
     return false;
 
-  uint8_t* buffer = (uint8_t*)av_malloc(32768);
+  auto buffer = (uint8_t*)av_malloc(32768);
   m_ioctx = avio_alloc_context(buffer, 32768, 0, &file, cfile_file_read,
                                nullptr, cfile_file_seek);
 

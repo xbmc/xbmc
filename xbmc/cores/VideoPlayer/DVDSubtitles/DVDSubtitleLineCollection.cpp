@@ -27,7 +27,7 @@ CDVDSubtitleLineCollection::~CDVDSubtitleLineCollection()
 
 void CDVDSubtitleLineCollection::Add(std::shared_ptr<CDVDOverlay> pOverlay)
 {
-  ListElement* pElement = new ListElement;
+  auto pElement = new ListElement;
   pElement->pOverlay = std::move(pOverlay);
   pElement->pNext = NULL;
 

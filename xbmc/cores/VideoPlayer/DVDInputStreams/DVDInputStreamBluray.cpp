@@ -47,7 +47,7 @@ using namespace std::chrono_literals;
 
 static int read_blocks(void* handle, void* buf, int lba, int num_blocks)
 {
-  CDVDInputStreamBluray* blurayStream = reinterpret_cast<CDVDInputStreamBluray*>(handle);
+  auto blurayStream = reinterpret_cast<CDVDInputStreamBluray*>(handle);
   if (!blurayStream)
     return -1;
   return blurayStream->ReadBlocks(reinterpret_cast<uint8_t*>(buf), lba, num_blocks);
@@ -786,7 +786,7 @@ void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int
           , y + h);
 
   /* fixup existing overlays */
-  for(SOverlays::iterator it = plane.o.begin(); it != plane.o.end();)
+  for(auto it = plane.o.begin(); it != plane.o.end();)
   {
     CRectInt old((*it)->x
             , (*it)->y
@@ -803,9 +803,9 @@ void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int
     }
 
     SOverlays add;
-    for(std::vector<CRectInt>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
+    for(auto itr = rem.begin(); itr != rem.end(); ++itr)
     {
-      SOverlay overlay =
+      auto overlay =
           std::make_shared<CDVDOverlayImage>(*(*it), itr->x1, itr->y1, itr->Width(), itr->Height());
       add.push_back(overlay);
     }
@@ -826,7 +826,7 @@ void CDVDInputStreamBluray::OverlayFlush(int64_t pts)
 
   for(SPlane& plane : m_planes)
   {
-    for(SOverlays::iterator it = plane.o.begin(); it != plane.o.end(); ++it)
+    for(auto it = plane.o.begin(); it != plane.o.end(); ++it)
       group->m_overlays.push_back(*it);
   }
 
@@ -870,7 +870,7 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
   /* uncompress and draw bitmap */
   if (ov->img && ov->cmd == BD_OVERLAY_DRAW)
   {
-    SOverlay overlay = std::make_shared<CDVDOverlayImage>();
+    auto overlay = std::make_shared<CDVDOverlayImage>();
 
     if (ov->palette)
     {
@@ -933,7 +933,7 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
   /* uncompress and draw bitmap */
   if (ov->argb && ov->cmd == BD_ARGB_OVERLAY_DRAW)
   {
-    SOverlay overlay = std::make_shared<CDVDOverlayImage>();
+    auto overlay = std::make_shared<CDVDOverlayImage>();
 
     overlay->palette.clear();
     size_t bytes = static_cast<size_t>(ov->stride * ov->h * 4);
@@ -1314,7 +1314,7 @@ bool CDVDInputStreamBluray::OpenNextStream()
   int clip = m_clipQueue.front();
   m_clipQueue.pop();
 
-  CDemuxMVC *pMVCDemux = dynamic_cast<CDemuxMVC*>(m_pMVCDemux);
+  auto pMVCDemux = dynamic_cast<CDemuxMVC*>(m_pMVCDemux);
   if (!pMVCDemux) {
     // either it's not a CDemuxMVC or it's 2D playback
     CloseMVCDemux();
@@ -1328,10 +1328,10 @@ bool CDVDInputStreamBluray::OpenNextStream()
 
   bool res = OpenMVCDemux(clip);
   if (res) {
-    CDemuxMVC *nextDemux = dynamic_cast<CDemuxMVC*>(m_pMVCDemux);
+    auto nextDemux = dynamic_cast<CDemuxMVC*>(m_pMVCDemux);
     if (nextDemux) {
       // set start time for next clip
-      CDVDInputStream::IMenus *menu = dynamic_cast<CDVDInputStream::IMenus*>(this);
+      auto menu = dynamic_cast<CDVDInputStream::IMenus*>(this);
       nextDemux->SetStartTime(start_time, menu->GetSupportedMenuType());
     }
   }
@@ -1367,7 +1367,7 @@ bool CDVDInputStreamBluray::OpenMVCDemux(int playItem)
   if (m_pMVCDemux)
     delete m_pMVCDemux;
 
-  CDemuxMVC* pMVCDemux = new CDemuxMVC;
+  auto pMVCDemux = new CDemuxMVC;
   m_pMVCDemux = pMVCDemux;
 
   if (!pMVCDemux->Open(m_pMVCInput))

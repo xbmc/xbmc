@@ -157,7 +157,7 @@ public:
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
     if (appPlayer->IsPlayingAudio() && g_application.CurrentFileItem().HasMusicInfoTag())
     {
-      CFileItemPtr songitem = std::make_shared<CFileItem>(g_application.CurrentFileItem());
+      auto songitem = std::make_shared<CFileItem>(g_application.CurrentFileItem());
       if (HasSongExtraArtChanged(songitem, type, itemID, db))
         g_application.UpdateCurrentPlayArt();
     }
@@ -207,7 +207,7 @@ void UpdateArtJob(const std::shared_ptr<CFileItem>& pItem,
                   const std::string& strArt)
 {
   // Asynchronously update that type of art in the database
-  CSetArtJob* job = new CSetArtJob(pItem, strType, strArt);
+  auto job = new CSetArtJob(pItem, strType, strArt);
   CServiceBroker::GetJobManager()->AddJob(job, nullptr);
 }
 

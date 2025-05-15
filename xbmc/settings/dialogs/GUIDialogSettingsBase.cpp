@@ -415,7 +415,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
   if (m_pOriginalCategoryButton != NULL)
   {
     // setup our control groups...
-    CGUIControlGroupList* group =
+    auto group =
         dynamic_cast<CGUIControlGroupList*>(GetControl(CATEGORY_GROUP_ID));
     if (!group)
       return;
@@ -458,7 +458,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
 void CGUIDialogSettingsBase::FreeControls()
 {
   // clear the category group
-  CGUIControlGroupList* control =
+  auto control =
       dynamic_cast<CGUIControlGroupList*>(GetControl(CATEGORY_GROUP_ID));
   if (control)
   {
@@ -487,7 +487,7 @@ void CGUIDialogSettingsBase::DeleteControls()
 void CGUIDialogSettingsBase::FreeSettingsControls()
 {
   // clear the settings group
-  CGUIControlGroupList* control =
+  auto control =
       dynamic_cast<CGUIControlGroupList*>(GetControl(SETTINGS_GROUP_ID));
   if (control)
   {
@@ -495,7 +495,7 @@ void CGUIDialogSettingsBase::FreeSettingsControls()
     control->ClearAll();
   }
 
-  for (std::vector<BaseSettingControlPtr>::iterator control = m_settingControls.begin();
+  for (auto control = m_settingControls.begin();
        control != m_settingControls.end(); ++control)
     (*control)->Clear();
 
@@ -547,7 +547,7 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
   if (m_iCategory < 0 || m_iCategory >= (int)m_categories.size())
     m_iCategory = 0;
 
-  CGUIControlGroupList* group = dynamic_cast<CGUIControlGroupList*>(GetControl(SETTINGS_GROUP_ID));
+  auto group = dynamic_cast<CGUIControlGroupList*>(GetControl(SETTINGS_GROUP_ID));
   if (group == NULL)
     return settingMap;
 
@@ -561,7 +561,7 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
   const SettingGroupList& groups = category->GetGroups((SettingLevel)GetSettingLevel());
   int iControlID = CONTROL_SETTINGS_START_CONTROL;
   bool first = true;
-  for (SettingGroupList::const_iterator groupIt = groups.begin(); groupIt != groups.end();
+  for (auto groupIt = groups.begin(); groupIt != groups.end();
        ++groupIt)
   {
     if (*groupIt == NULL)
@@ -594,7 +594,7 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
     if (separatorBelowGroupLabel && !hideSeparator)
       AddSeparator(group->GetWidth(), iControlID);
 
-    for (SettingList::const_iterator settingIt = settings.begin(); settingIt != settings.end();
+    for (auto settingIt = settings.begin(); settingIt != settings.end();
          ++settingIt)
     {
       const std::shared_ptr<CSetting>& pSetting = *settingIt;
@@ -625,7 +625,7 @@ std::string CGUIDialogSettingsBase::GetSettingsLabel(const std::shared_ptr<ISett
 
 void CGUIDialogSettingsBase::UpdateSettings()
 {
-  for (std::vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin();
+  for (auto it = m_settingControls.begin();
        it != m_settingControls.end(); ++it)
   {
     BaseSettingControlPtr pSettingControl = *it;
@@ -833,7 +833,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSettingControl(CGUIControl* pControl,
   pControl->SetVisible(true);
   pControl->SetWidth(width);
 
-  CGUIControlGroupList* group = dynamic_cast<CGUIControlGroupList*>(GetControl(SETTINGS_GROUP_ID));
+  auto group = dynamic_cast<CGUIControlGroupList*>(GetControl(SETTINGS_GROUP_ID));
   if (group != NULL)
   {
     pControl->AllocResources();
@@ -858,7 +858,7 @@ void CGUIDialogSettingsBase::OnResetSettings()
 {
   if (CGUIDialogYesNo::ShowAndGetInput(CVariant{10041}, CVariant{10042}))
   {
-    for (std::vector<BaseSettingControlPtr>::iterator it = m_settingControls.begin();
+    for (auto it = m_settingControls.begin();
          it != m_settingControls.end(); ++it)
     {
       std::shared_ptr<CSetting> setting = (*it)->GetSetting();
@@ -950,7 +950,7 @@ void CGUIDialogSettingsBase::SetControlLabel(int controlId, const CVariant& labe
 
 BaseSettingControlPtr CGUIDialogSettingsBase::GetSettingControl(const std::string& strSetting)
 {
-  for (std::vector<BaseSettingControlPtr>::iterator control = m_settingControls.begin();
+  for (auto control = m_settingControls.begin();
        control != m_settingControls.end(); ++control)
   {
     if ((*control)->GetSetting() != NULL && (*control)->GetSetting()->GetId() == strSetting)

@@ -117,21 +117,21 @@ void CGUIDialogContextMenu::SetupButtons()
     return;
 
   // disable the template button control
-  CGUIButtonControl *pButtonTemplate = dynamic_cast<CGUIButtonControl *>(GetFirstFocusableControl(BUTTON_TEMPLATE));
+  auto pButtonTemplate = dynamic_cast<CGUIButtonControl *>(GetFirstFocusableControl(BUTTON_TEMPLATE));
   if (!pButtonTemplate)
     pButtonTemplate = dynamic_cast<CGUIButtonControl *>(GetControl(BUTTON_TEMPLATE));
   if (!pButtonTemplate)
     return;
   pButtonTemplate->SetVisible(false);
 
-  CGUIControlGroupList* pGroupList = dynamic_cast<CGUIControlGroupList *>(GetControl(GROUP_LIST));
+  auto pGroupList = dynamic_cast<CGUIControlGroupList *>(GetControl(GROUP_LIST));
 
   // add our buttons
   if (pGroupList)
   {
     for (unsigned int i = 0; i < m_buttons.size(); i++)
     {
-      CGUIButtonControl* pButton = new CGUIButtonControl(*pButtonTemplate);
+      auto pButton = new CGUIButtonControl(*pButtonTemplate);
       if (pButton)
       { // set the button's ID and position
         int id = BUTTON_START + i;
@@ -571,7 +571,7 @@ void CGUIDialogContextMenu::OnWindowLoaded()
   m_coordX = m_posX;
   m_coordY = m_posY;
 
-  const CGUIControlGroupList* pGroupList = dynamic_cast<const CGUIControlGroupList *>(GetControl(GROUP_LIST));
+  auto pGroupList = dynamic_cast<const CGUIControlGroupList *>(GetControl(GROUP_LIST));
   m_backgroundImage = GetControl(BACKGROUND_IMAGE);
   if (m_backgroundImage && pGroupList)
   {

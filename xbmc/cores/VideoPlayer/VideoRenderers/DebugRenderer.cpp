@@ -120,7 +120,7 @@ CDebugRenderer::CRenderer::CRenderer() : OVERLAY::CRenderer()
 void CDebugRenderer::CRenderer::Render(int idx)
 {
   std::vector<SElement>& list = m_buffers[idx];
-  for (std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
+  for (auto it = list.begin(); it != list.end(); ++it)
   {
     if (it->overlay_dvd)
     {

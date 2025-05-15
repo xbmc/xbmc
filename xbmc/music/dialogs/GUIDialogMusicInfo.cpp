@@ -338,7 +338,7 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
         m_hasUpdatedUserrating = true;
 
         // Asynchronously update song userrating in library
-        CSetUserratingJob *job = new CSetUserratingJob(m_item->GetMusicInfoTag()->GetAlbumId(),
+        auto job = new CSetUserratingJob(m_item->GetMusicInfoTag()->GetAlbumId(),
                                                        m_item->GetMusicInfoTag()->GetUserrating());
         CServiceBroker::GetJobManager()->AddJob(job, nullptr);
       }

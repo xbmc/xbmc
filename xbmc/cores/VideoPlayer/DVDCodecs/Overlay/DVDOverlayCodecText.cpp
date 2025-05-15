@@ -51,8 +51,8 @@ OverlayMessage CDVDOverlayCodecText::Decode(DemuxPacket* pPacket)
     return OverlayMessage::OC_ERROR;
 
   uint8_t* data = pPacket->pData;
-  char* start = (char*)data;
-  char* end = (char*)(data + pPacket->iSize);
+  auto start = (char*)data;
+  auto end = (char*)(data + pPacket->iSize);
 
   if (m_codecId == AV_CODEC_ID_SSA)
   {

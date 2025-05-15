@@ -608,7 +608,7 @@ KODI_GAME_STREAM_HANDLE CGameClient::cb_open_stream(KODI_HANDLE kodiInstance,
   if (properties == nullptr)
     return nullptr;
 
-  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  auto gameClient = static_cast<CGameClient*>(kodiInstance);
   if (gameClient == nullptr)
     return nullptr;
 
@@ -624,7 +624,7 @@ bool CGameClient::cb_get_stream_buffer(KODI_HANDLE kodiInstance,
   if (buffer == nullptr)
     return false;
 
-  IGameClientStream* gameClientStream = static_cast<IGameClientStream*>(stream);
+  auto gameClientStream = static_cast<IGameClientStream*>(stream);
   if (gameClientStream == nullptr)
     return false;
 
@@ -638,7 +638,7 @@ void CGameClient::cb_add_stream_data(KODI_HANDLE kodiInstance,
   if (packet == nullptr)
     return;
 
-  IGameClientStream* gameClientStream = static_cast<IGameClientStream*>(stream);
+  auto gameClientStream = static_cast<IGameClientStream*>(stream);
   if (gameClientStream == nullptr)
     return;
 
@@ -652,7 +652,7 @@ void CGameClient::cb_release_stream_buffer(KODI_HANDLE kodiInstance,
   if (buffer == nullptr)
     return;
 
-  IGameClientStream* gameClientStream = static_cast<IGameClientStream*>(stream);
+  auto gameClientStream = static_cast<IGameClientStream*>(stream);
   if (gameClientStream == nullptr)
     return;
 
@@ -661,11 +661,11 @@ void CGameClient::cb_release_stream_buffer(KODI_HANDLE kodiInstance,
 
 void CGameClient::cb_close_stream(KODI_HANDLE kodiInstance, KODI_GAME_STREAM_HANDLE stream)
 {
-  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  auto gameClient = static_cast<CGameClient*>(kodiInstance);
   if (gameClient == nullptr)
     return;
 
-  IGameClientStream* gameClientStream = static_cast<IGameClientStream*>(stream);
+  auto gameClientStream = static_cast<IGameClientStream*>(stream);
   if (gameClientStream == nullptr)
     return;
 
@@ -674,7 +674,7 @@ void CGameClient::cb_close_stream(KODI_HANDLE kodiInstance, KODI_GAME_STREAM_HAN
 
 game_proc_address_t CGameClient::cb_hw_get_proc_address(KODI_HANDLE kodiInstance, const char* sym)
 {
-  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  auto gameClient = static_cast<CGameClient*>(kodiInstance);
   if (!gameClient)
     return nullptr;
 
@@ -684,7 +684,7 @@ game_proc_address_t CGameClient::cb_hw_get_proc_address(KODI_HANDLE kodiInstance
 
 bool CGameClient::cb_input_event(KODI_HANDLE kodiInstance, const game_input_event* event)
 {
-  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  auto gameClient = static_cast<CGameClient*>(kodiInstance);
   if (!gameClient)
     return false;
 

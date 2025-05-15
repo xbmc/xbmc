@@ -201,7 +201,7 @@ void CEventServer::Run()
 void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 {
   // check packet validity
-  std::unique_ptr<CEventPacket> packet =
+  auto packet =
       std::make_unique<CEventPacket>(pSize, m_pPacketBuffer.data());
   if (!packet)
   {

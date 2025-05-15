@@ -525,7 +525,7 @@ std::string CMime::GetMimeType(const std::string &extension)
     ext = extension.substr(posNotPoint);
   transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-  std::map<std::string, std::string>::const_iterator it = m_mimetypes.find(ext);
+  auto it = m_mimetypes.find(ext);
   if (it != m_mimetypes.end())
     return it->second;
 
@@ -638,7 +638,7 @@ CMime::EFileType CMime::GetFileTypeFromContent(const std::string& fileContent)
   if (len < 2)
     return FileTypeUnknown;
 
-  const unsigned char* const b = (const unsigned char*)fileContent.c_str();
+  const auto b = (const unsigned char*)fileContent.c_str();
 
   //! @todo add detection for text types
 
@@ -667,7 +667,7 @@ CMime::EFileType CMime::GetFileTypeFromContent(const std::string& fileContent)
 
 bool CMime::parseMimeType(const std::string& mimeType, std::string& type, std::string& subtype)
 {
-  static const char* const whitespaceChars = "\x09\x0A\x0C\x0D\x20"; // tab, LF, FF, CR and space
+  static const auto whitespaceChars = "\x09\x0A\x0C\x0D\x20"; // tab, LF, FF, CR and space
 
   type.clear();
   subtype.clear();

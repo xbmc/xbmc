@@ -131,7 +131,7 @@ std::string CHttpHeader::GetValue(const std::string& strParam) const
 std::string CHttpHeader::GetValueRaw(const std::string& strParam) const
 {
   // look in reverse to find last parameter (probably most important)
-  for (HeaderParams::const_reverse_iterator iter = m_params.rbegin(); iter != m_params.rend(); ++iter)
+  for (auto iter = m_params.rbegin(); iter != m_params.rend(); ++iter)
   {
     if (iter->first == strParam)
       return iter->second;
@@ -145,7 +145,7 @@ std::vector<std::string> CHttpHeader::GetValues(std::string strParam) const
   StringUtils::ToLower(strParam);
   std::vector<std::string> values;
 
-  for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
+  for (auto iter = m_params.begin(); iter != m_params.end(); ++iter)
   {
     if (iter->first == strParam)
       values.push_back(iter->second);
@@ -161,7 +161,7 @@ std::string CHttpHeader::GetHeader(void) const
 
   std::string strHeader(m_protoLine + "\r\n");
 
-  for (HeaderParams::const_iterator iter = m_params.begin(); iter != m_params.end(); ++iter)
+  for (auto iter = m_params.begin(); iter != m_params.end(); ++iter)
     strHeader += ((*iter).first + ": " + (*iter).second + "\r\n");
 
   strHeader += "\r\n";

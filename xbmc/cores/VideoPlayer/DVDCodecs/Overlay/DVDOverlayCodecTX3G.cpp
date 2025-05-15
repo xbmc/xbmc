@@ -98,7 +98,7 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
 
   CDVDOverlayCodec::GetAbsoluteTimes(PTSStartTime, PTSStopTime, pPacket);
 
-  char* data = reinterpret_cast<char*>(pPacket->pData);
+  auto data = reinterpret_cast<char*>(pPacket->pData);
 
   // Parse the packet as a TX3G TextSample.
   CCharArrayParser sampleData;

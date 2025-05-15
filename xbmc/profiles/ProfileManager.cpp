@@ -509,7 +509,7 @@ bool CProfileManager::DeleteProfile(unsigned int index)
     m_settings->Save();
   }
 
-  CFileItemPtr item =
+  auto item =
       std::make_shared<CFileItem>(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory));
   item->SetPath(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory + "/"));
   item->m_bIsFolder = true;

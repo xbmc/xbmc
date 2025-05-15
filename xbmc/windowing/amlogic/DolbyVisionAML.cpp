@@ -47,7 +47,7 @@ static void CalculateVSVDBPayload()
   bool inject(settings()->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_INJECT));
   if (!inject) return;
 
-  enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
+  auto dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
   int min_lum(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MIN_LUM));
   int max_lum(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_MAX_LUM));
   int cs(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_CS));
@@ -92,7 +92,7 @@ static void CalculateVSVDBPayload()
 }
 
 static bool support_dv() {
-  enum DV_TYPE dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
+  auto dv_type(static_cast<DV_TYPE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_TYPE)));
   return ((aml_display_support_dv_std() || aml_display_support_dv_ll() || aml_display_support_hdr_pq()) && (dv_type != DV_TYPE::VS10_ONLY));
 }
 

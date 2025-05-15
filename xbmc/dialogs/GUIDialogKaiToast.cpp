@@ -102,7 +102,7 @@ bool CGUIDialogKaiToast::DoWork()
   {
     // if we have a fade label control for the text to display, ensure the whole text was shown
     // (scrolled to the end) before we move on to the next message
-    const CGUIFadeLabelControl* notificationText =
+    auto notificationText =
         dynamic_cast<const CGUIFadeLabelControl*>(GetControl(POPUP_NOTIFICATION_BUTTON));
     if (notificationText && !notificationText->AllLabelsShown())
       return false;
@@ -170,7 +170,7 @@ void CGUIDialogKaiToast::FrameMove()
 
     // if we have a fade label control for the text to display, ensure the whole text was shown
     // (scrolled to the end) before we're closing the toast dialog
-    const CGUIFadeLabelControl* notificationText =
+    auto notificationText =
         dynamic_cast<const CGUIFadeLabelControl*>(GetControl(POPUP_NOTIFICATION_BUTTON));
     if (notificationText)
     {

@@ -345,7 +345,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   bool result = DemuxerToStreamDetails(pInputStream, pDemuxer, details);
   for (unsigned int i = 0; i < subs.size(); i++)
   {
-    CStreamDetailSubtitle* sub = new CStreamDetailSubtitle();
+    auto sub = new CStreamDetailSubtitle();
     sub->m_strLanguage = subs[i].m_strLanguage;
     details.AddStream(sub);
     result = true;
@@ -367,8 +367,8 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   {
     if (stream->type == STREAM_VIDEO && !(stream->flags & AV_DISPOSITION_ATTACHED_PIC))
     {
-      CStreamDetailVideo *p = new CStreamDetailVideo();
-      CDemuxStreamVideo* vstream = static_cast<CDemuxStreamVideo*>(stream);
+      auto p = new CStreamDetailVideo();
+      auto vstream = static_cast<CDemuxStreamVideo*>(stream);
       p->m_iWidth = vstream->iWidth;
       p->m_iHeight = vstream->iHeight;
       p->m_fAspect = static_cast<float>(vstream->fAspect);
@@ -406,7 +406,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
 
     else if (stream->type == STREAM_AUDIO)
     {
-      CStreamDetailAudio *p = new CStreamDetailAudio();
+      auto p = new CStreamDetailAudio();
       p->m_iChannels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
       p->m_strLanguage = stream->language;
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
@@ -416,7 +416,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
 
     else if (stream->type == STREAM_SUBTITLE)
     {
-      CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
+      auto p = new CStreamDetailSubtitle();
       p->m_strLanguage = stream->language;
       details.AddStream(p);
       retVal = true;
@@ -430,8 +430,8 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   {
     if (std::static_pointer_cast<CDVDInputStreamBluray>(pInputStream)->GetTotalTime() > 0)
     {
-      const CStreamDetailVideo* dVideo = static_cast<const CStreamDetailVideo*>(details.GetNthStream(CStreamDetail::VIDEO, 0));
-      CStreamDetailVideo* detailVideo = const_cast<CStreamDetailVideo*>(dVideo);
+      auto dVideo = static_cast<const CStreamDetailVideo*>(details.GetNthStream(CStreamDetail::VIDEO, 0));
+      auto detailVideo = const_cast<CStreamDetailVideo*>(dVideo);
       if (detailVideo)
         detailVideo->m_iDuration = std::static_pointer_cast<CDVDInputStreamBluray>(pInputStream)->GetTotalTime() / 1000;
     }
@@ -483,7 +483,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
 
     for(CDemuxStream* stream : v.GetStreams())
     {
-      CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
+      auto dsub = new CStreamDetailSubtitle();
       std::string lang = stream->language;
       dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392B(lang);
       details.AddStream(dsub);
@@ -497,7 +497,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
       return false;
   }
 
-  CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
+  auto dsub = new CStreamDetailSubtitle();
   ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(path, filename);
   dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392B(info.language);
   details.AddStream(dsub);

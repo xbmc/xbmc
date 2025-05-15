@@ -151,7 +151,7 @@ bool PlayEpgTagFromHere::IsVisible(const CFileItem& item) const
 
 bool PlayEpgTagFromHere::Execute(const CFileItemPtr& item) const
 {
-  ContentUtils::PlayMode mode{ContentUtils::PlayMode::PLAY_FROM_HERE};
+  auto mode{ContentUtils::PlayMode::PLAY_FROM_HERE};
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_PVRPLAYBACK_AUTOPLAYNEXTPROGRAMME))
     mode = ContentUtils::PlayMode::PLAY_ONLY_THIS;
@@ -793,7 +793,7 @@ void CPVRContextMenuManager::RemoveMenuHook(const CPVRClientMenuHook& hook)
 
   for (auto it = m_items.begin(); it < m_items.end(); ++it)
   {
-    const CONTEXTMENUITEM::PVRClientMenuHook* cmh =
+    auto cmh =
         dynamic_cast<const CONTEXTMENUITEM::PVRClientMenuHook*>((*it).get());
     if (cmh && cmh->GetHook() == hook)
     {

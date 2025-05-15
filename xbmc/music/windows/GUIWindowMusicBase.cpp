@@ -1057,7 +1057,7 @@ void CGUIWindowMusicBase::OnAssignContent(const std::string& oldName, const CMed
 
   // "Add to library" yes/no dialog with additional "settings" custom button
   // "Do you want to add the media from this source to your library?"
-  DialogResponse rep = DialogResponse::CHOICE_CUSTOM;
+  auto rep = DialogResponse::CHOICE_CUSTOM;
   while (rep == DialogResponse::CHOICE_CUSTOM)
   {
     rep = HELPERS::ShowYesNoCustomDialog(CVariant{20444}, CVariant{20447}, CVariant{106}, CVariant{107}, CVariant{10004});

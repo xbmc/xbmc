@@ -221,7 +221,7 @@ bool CPVRGUIActionsChannels::HideChannel(const CFileItem& item) const
            ->RemoveFromGroup(groupMember))
     return false;
 
-  CGUIWindowPVRBase* pvrWindow =
+  auto pvrWindow =
       dynamic_cast<CGUIWindowPVRBase*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(
           CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()));
   if (pvrWindow)
@@ -377,7 +377,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIActionsChannels::GetChannelGroupM
 CPVRChannelNumberInputHandler& CPVRGUIActionsChannels::GetChannelNumberInputHandler()
 {
   // window/dialog specific input handler
-  CPVRChannelNumberInputHandler* windowInputHandler = dynamic_cast<CPVRChannelNumberInputHandler*>(
+  auto windowInputHandler = dynamic_cast<CPVRChannelNumberInputHandler*>(
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow(
           CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog()));
   if (windowInputHandler)

@@ -185,7 +185,7 @@ std::string CPODocument::UnescapeString(const std::string &strInput)
 
   char oescchar;
   strOutput.reserve(strInput.size());
-  std::string::const_iterator it = strInput.begin();
+  auto it = strInput.begin();
   while (it < strInput.end())
   {
     oescchar = *it++;

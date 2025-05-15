@@ -189,7 +189,7 @@ constexpr std::array<unsigned int, 14> defaultSampleRates = {
 
 static void ContextStateCallback(pa_context *c, void *userdata)
 {
-  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
+  auto m = static_cast<pa_threaded_mainloop*>(userdata);
   switch (pa_context_get_state(c))
   {
     case PA_CONTEXT_READY:
@@ -206,7 +206,7 @@ static void ContextStateCallback(pa_context *c, void *userdata)
 
 static void StreamStateCallback(pa_stream *s, void *userdata)
 {
-  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
+  auto m = static_cast<pa_threaded_mainloop*>(userdata);
   switch (pa_stream_get_state(s))
   {
     case PA_STREAM_UNCONNECTED:
@@ -221,7 +221,7 @@ static void StreamStateCallback(pa_stream *s, void *userdata)
 
 static void StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
-  CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
+  auto p = static_cast<CAESinkPULSE*>(userdata);
   if (!p)
     return;
 
@@ -234,14 +234,14 @@ static void StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 
 static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 {
-  pa_threaded_mainloop* m = static_cast<pa_threaded_mainloop*>(userdata);
+  auto m = static_cast<pa_threaded_mainloop*>(userdata);
   pa_threaded_mainloop_signal(m, 0);
 }
 
 
 static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, int eol, void *userdata)
 {
-  CAESinkPULSE *p = static_cast<CAESinkPULSE*>(userdata);
+  auto p = static_cast<CAESinkPULSE*>(userdata);
   if (!p || !p->IsInitialized())
     return;
 
@@ -254,7 +254,7 @@ static void SinkCallback(pa_context* c,
                          uint32_t idx,
                          void* userdata)
 {
-  CDriverMonitor* p = static_cast<CDriverMonitor*>(userdata);
+  auto p = static_cast<CDriverMonitor*>(userdata);
   if (!p)
     return;
 
@@ -288,7 +288,7 @@ static void SinkCallback(pa_context* c,
 
 static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
 {
-  CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
+  auto p = static_cast<CAESinkPULSE*>(userdata);
   if(!p)
     return;
 
@@ -371,7 +371,7 @@ struct ModuleInfoStruct
 
 static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
-  SinkInfoStruct *sinkStruct = static_cast<SinkInfoStruct*>(userdata);
+  auto sinkStruct = static_cast<SinkInfoStruct*>(userdata);
   if (!sinkStruct)
     return;
 
@@ -487,7 +487,7 @@ static CAEChannelInfo PAChannelToAEChannelMap(const pa_channel_map& channels)
 
 static void ModuleInfoCallback(pa_context* c, const pa_module_info *i, int eol, void *userdata)
 {
-  ModuleInfoStruct *mis = static_cast<ModuleInfoStruct*>(userdata);
+  auto mis = static_cast<ModuleInfoStruct*>(userdata);
   if (!mis)
     return;
 
@@ -502,7 +502,7 @@ static void ModuleInfoCallback(pa_context* c, const pa_module_info *i, int eol, 
 static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
 
-  SinkInfoStruct *sinkStruct = static_cast<SinkInfoStruct*>(userdata);
+  auto sinkStruct = static_cast<SinkInfoStruct*>(userdata);
   if (!sinkStruct)
     return;
 
@@ -718,7 +718,7 @@ bool CDriverMonitor::Start(bool allowPipeWireCompatServer)
 
   // Register Callback for Sink changes
   pa_context_set_subscribe_callback(m_pContext, SinkCallback, this);
-  const pa_subscription_mask_t mask = pa_subscription_mask_t(PA_SUBSCRIPTION_MASK_SINK);
+  const auto mask = pa_subscription_mask_t(PA_SUBSCRIPTION_MASK_SINK);
   pa_operation* op = pa_context_subscribe(m_pContext, mask, nullptr, this);
   if (op != nullptr)
     pa_operation_unref(op);
@@ -1028,7 +1028,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
     // Register Callback for Sink changes
     pa_context_set_subscribe_callback(m_Context, SinkChangedCallback, this);
-    const pa_subscription_mask_t mask = pa_subscription_mask_t(PA_SUBSCRIPTION_MASK_SINK_INPUT);
+    const auto mask = pa_subscription_mask_t(PA_SUBSCRIPTION_MASK_SINK_INPUT);
     pa_operation *op = pa_context_subscribe(m_Context, mask, NULL, this);
     if (op != NULL)
       pa_operation_unref(op);

@@ -200,7 +200,7 @@ void CMusicInfoScanner::Process()
     }
     if (m_scanType == 1) // load album info
     {
-      for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
+      for (auto it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
       {
         CQueryParams params;
         CDirectoryNode::GetDatabaseInfo(*it, params);
@@ -231,7 +231,7 @@ void CMusicInfoScanner::Process()
     }
     if (m_scanType == 2) // load artist info
     {
-      for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
+      for (auto it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
       {
         CQueryParams params;
         CDirectoryNode::GetDatabaseInfo(*it, params);
@@ -473,7 +473,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
     m_handle->SetText(Prettify(strDirectory));
   }
 
-  std::set<std::string>::const_iterator it = m_seenPaths.find(strDirectory);
+  auto it = m_seenPaths.find(strDirectory);
   if (it != m_seenPaths.end())
     return true;
 
@@ -634,7 +634,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     if (songsMap != NULL)
     {
       // Match up item to songs in library previously scanned with this path
-      MAPSONGS::iterator songlist = songsMap->find(items[i]->GetPath());
+      auto songlist = songsMap->find(items[i]->GetPath());
       if (songlist != songsMap->end())
       {
         VECSONGS::iterator foundsong;
@@ -701,7 +701,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     std::string old_DiscSubtitle;
 
     std::map<std::string, std::vector<CSong *> > artists;
-    for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
+    for (auto song = songs.begin(); song != songs.end(); ++song)
     {
       // test for song overlap
       if (song != songs.begin() && song->iTrack == (song - 1)->iTrack)
@@ -805,7 +805,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         common = artistSongs.front()->GetAlbumArtist();
         albumartistsort = artistSongs.front()->GetAlbumArtistSort();
       }
-      for (std::vector<CSong *>::iterator k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
+      for (auto k = artistSongs.begin() + 1; k != artistSongs.end(); ++k)
       {
         unsigned int match = 0;
         std::vector<std::string> compare;

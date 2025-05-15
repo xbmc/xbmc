@@ -42,7 +42,7 @@ void CApplicationStackHelper::OnPlayBackStarted(const CFileItem& item)
   else
   {
     auto stack = GetRegisteredStack(item);
-    Stackmap::iterator itr = m_stackmap.begin();
+    auto itr = m_stackmap.begin();
     while (itr != m_stackmap.end())
     {
       if (itr->second->m_pStack != stack)

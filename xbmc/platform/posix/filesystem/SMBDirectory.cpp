@@ -85,7 +85,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     // Check WS-Discovery daemon enabled, if not return as smb:// cant be handled further
     if (settings->GetBool(CSettings::SETTING_SERVICES_WSDISCOVERY))
     {
-      WSDiscovery::CWSDiscoveryPosix& WSInstance =
+      auto &WSInstance =
           dynamic_cast<WSDiscovery::CWSDiscoveryPosix&>(CServiceBroker::GetWSDiscovery());
       return WSInstance.GetServerList(items);
     }

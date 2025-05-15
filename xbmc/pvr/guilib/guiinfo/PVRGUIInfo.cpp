@@ -1244,7 +1244,7 @@ bool CPVRGUIInfo::GetInt(int& value,
   if (!item->IsFileItem())
     return false;
 
-  const CFileItem* fitem = static_cast<const CFileItem*>(item);
+  auto fitem = static_cast<const CFileItem*>(item);
   return GetListItemAndPlayerInt(fitem, info, value) || GetPVRInt(fitem, info, value);
 }
 
@@ -1334,7 +1334,7 @@ bool CPVRGUIInfo::GetBool(bool& value,
   if (!item->IsFileItem())
     return false;
 
-  const CFileItem* fitem = static_cast<const CFileItem*>(item);
+  auto fitem = static_cast<const CFileItem*>(item);
   return GetListItemAndPlayerBool(fitem, info, value) || GetPVRBool(fitem, info, value) ||
          GetRadioRDSBool(fitem, info, value);
 }

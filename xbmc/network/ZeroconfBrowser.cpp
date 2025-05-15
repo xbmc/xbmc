@@ -106,7 +106,7 @@ bool CZeroconfBrowser::RemoveServiceType(const std::string& fcr_service_type)
 {
   std::lock_guard lock(*mp_crit_sec);
 
-  tServices::iterator ret = m_services.find(fcr_service_type);
+  auto ret = m_services.find(fcr_service_type);
   if(ret == m_services.end())
     return false;
   if(m_started)

@@ -151,7 +151,7 @@ bool CAddonButtonMap::GetFeature(const CDriverPrimitive& primitive, FeatureName&
 
 FEATURE_TYPE CAddonButtonMap::GetFeatureType(const FeatureName& feature)
 {
-  FEATURE_TYPE type = FEATURE_TYPE::UNKNOWN;
+  auto type = FEATURE_TYPE::UNKNOWN;
 
   std::lock_guard lock(m_mutex);
 
@@ -609,7 +609,7 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
           driverMap[translatedPrimitive] = it.first;
 
           // Map opposite semiaxis
-          CDriverPrimitive oppositePrimitive = CDriverPrimitive(
+          auto oppositePrimitive = CDriverPrimitive(
               translatedPrimitive.Index(), 0, translatedPrimitive.SemiAxisDirection() * -1, 1);
           driverMap[oppositePrimitive] = it.first;
         }

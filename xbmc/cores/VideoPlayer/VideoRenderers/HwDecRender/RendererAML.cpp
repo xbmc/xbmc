@@ -102,7 +102,7 @@ void CRendererAML::ReleaseBuffer(int idx)
   BUFFER &buf(m_buffers[idx]);
   if (buf.videoBuffer)
   {
-    CAMLVideoBuffer *amli(dynamic_cast<CAMLVideoBuffer*>(buf.videoBuffer));
+    auto amli(dynamic_cast<CAMLVideoBuffer*>(buf.videoBuffer));
     if (amli)
     {
       if (amli->m_amlCodec)
@@ -174,7 +174,7 @@ void CRendererAML::RenderUpdate(int index, int index2, bool clear, unsigned int 
   CVideoBuffer* videoBuffer = m_buffers[index].videoBuffer;
   if (videoBuffer)
   {
-    CAMLVideoBuffer *amli = dynamic_cast<CAMLVideoBuffer *>(videoBuffer);
+    auto amli = dynamic_cast<CAMLVideoBuffer *>(videoBuffer);
     if (amli->m_amlCodec)
     {
       uint64_t pts = amli->m_omxPts;

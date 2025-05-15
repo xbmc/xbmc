@@ -1667,7 +1667,7 @@ void CPVRClient::HandleAddonCallback(const char* strFunctionName,
                                      bool bForceCall /* = false */)
 {
   // Check preconditions.
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
+  auto client = static_cast<CPVRClient*>(kodiInstance);
   if (!client)
   {
     CLog::Log(LOGERROR, "{}: No instance pointer given!", strFunctionName);
@@ -1703,7 +1703,7 @@ void CPVRClient::cb_transfer_channel_group(void* kodiInstance,
     }
 
     // transfer this entry to the groups container
-    CPVRChannelGroups* kodiGroups = static_cast<CPVRChannelGroups*>(handle->dataAddress);
+    auto kodiGroups = static_cast<CPVRChannelGroups*>(handle->dataAddress);
     const auto transferGroup = std::make_shared<CPVRChannelGroupFromClient>(
         *group, client->GetID(), kodiGroups->GetGroupAll());
     kodiGroups->UpdateFromClient(transferGroup);
@@ -1751,7 +1751,7 @@ void CPVRClient::cb_transfer_epg_entry(void* kodiInstance,
     }
 
     // transfer this entry to the epg
-    CPVREpg* epg = static_cast<CPVREpg*>(handle->dataAddress);
+    auto epg = static_cast<CPVREpg*>(handle->dataAddress);
     epg->UpdateEntry(epgentry, client->GetID());
   });
 }
@@ -1766,8 +1766,8 @@ void CPVRClient::cb_transfer_provider_entry(void* kodiInstance,
     return;
   }
 
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRProvidersContainer* kodiProviders = static_cast<CPVRProvidersContainer*>(handle->dataAddress);
+  auto client = static_cast<CPVRClient*>(kodiInstance);
+  auto kodiProviders = static_cast<CPVRProvidersContainer*>(handle->dataAddress);
   if (!provider || !client || !kodiProviders)
   {
     CLog::LogF(LOGERROR, "Invalid handler data");
@@ -1775,7 +1775,7 @@ void CPVRClient::cb_transfer_provider_entry(void* kodiInstance,
   }
 
   /* transfer this entry to the internal channels group */
-  std::shared_ptr<CPVRProvider> transferProvider(
+  auto transferProvider(
       std::make_shared<CPVRProvider>(*provider, client->GetID()));
   kodiProviders->UpdateFromClient(transferProvider);
 }
@@ -1808,9 +1808,9 @@ void CPVRClient::cb_transfer_recording_entry(void* kodiInstance,
     }
 
     // transfer this entry to the recordings container
-    const std::shared_ptr<CPVRRecording> transferRecording =
+    const auto transferRecording =
         std::make_shared<CPVRRecording>(*recording, client->GetID());
-    CPVRRecordings* recordings = static_cast<CPVRRecordings*>(handle->dataAddress);
+    auto recordings = static_cast<CPVRRecordings*>(handle->dataAddress);
     recordings->UpdateFromClient(transferRecording, *client);
   });
 }
@@ -1833,9 +1833,9 @@ void CPVRClient::cb_transfer_timer_entry(void* kodiInstance,
                                                                        client->GetID());
 
     // transfer this entry to the timers container
-    const std::shared_ptr<CPVRTimerInfoTag> transferTimer =
+    const auto transferTimer =
         std::make_shared<CPVRTimerInfoTag>(*timer, channel, client->GetID());
-    CPVRTimersContainer* timers = static_cast<CPVRTimersContainer*>(handle->dataAddress);
+    auto timers = static_cast<CPVRTimersContainer*>(handle->dataAddress);
     timers->UpdateFromClient(transferTimer);
   });
 }
@@ -1995,7 +1995,7 @@ void CPVRClient::cb_epg_event_state_change(void* kodiInstance,
     }
 
     // Note: channel data and epg id may not yet be available. Tag will be fully initialized later.
-    const std::shared_ptr<CPVREpgInfoTag> epgTag =
+    const auto epgTag =
         std::make_shared<CPVREpgInfoTag>(*tag, client->GetID(), nullptr, -1);
     CServiceBroker::GetPVRManager().EpgContainer().UpdateFromClient(epgTag, newState);
   });

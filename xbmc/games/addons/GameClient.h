@@ -49,7 +49,7 @@ public:
   CGameClientStruct()
   {
     // Create "C" interface structures, used as own parts to prevent API problems on update
-    KODI_ADDON_INSTANCE_INFO* info = new KODI_ADDON_INSTANCE_INFO();
+    auto info = new KODI_ADDON_INSTANCE_INFO();
     info->id = "";
     info->version = kodi::addon::GetTypeVersion(ADDON_INSTANCE_GAME);
     info->type = ADDON_INSTANCE_GAME;

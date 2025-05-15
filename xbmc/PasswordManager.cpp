@@ -191,7 +191,7 @@ void CPasswordManager::Save() const
   if (root == nullptr)
     return;
 
-  for (std::map<std::string, std::string>::const_iterator i = m_permanentCache.begin(); i != m_permanentCache.end(); ++i)
+  for (auto i = m_permanentCache.begin(); i != m_permanentCache.end(); ++i)
   {
     auto* pathElement = doc.NewElement("path");
     if (pathElement == nullptr)

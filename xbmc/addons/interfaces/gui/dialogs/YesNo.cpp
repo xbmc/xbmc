@@ -44,7 +44,7 @@ bool Interface_GUIDialogYesNo::show_and_get_input_single_text(KODI_HANDLE kodiBa
                                                               const char* noLabel,
                                                               const char* yesLabel)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogYesNo::{} - invalid data", __func__);
@@ -75,7 +75,7 @@ bool Interface_GUIDialogYesNo::show_and_get_input_line_text(KODI_HANDLE kodiBase
                                                             const char* noLabel,
                                                             const char* yesLabel)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogYesNo::{} - invalid data", __func__);
@@ -107,7 +107,7 @@ bool Interface_GUIDialogYesNo::show_and_get_input_line_button_text(KODI_HANDLE k
                                                                    const char* noLabel,
                                                                    const char* yesLabel)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
   {
     CLog::Log(LOGERROR, "Interface_GUIDialogYesNo::{} - invalid data", __func__);

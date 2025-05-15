@@ -54,8 +54,8 @@ void Interface_GUIControlSpin::set_visible(KODI_HANDLE kodiBase,
                                            KODI_GUI_CONTROL_HANDLE handle,
                                            bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -72,8 +72,8 @@ void Interface_GUIControlSpin::set_enabled(KODI_HANDLE kodiBase,
                                            KODI_GUI_CONTROL_HANDLE handle,
                                            bool enabled)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -90,8 +90,8 @@ void Interface_GUIControlSpin::set_text(KODI_HANDLE kodiBase,
                                         KODI_GUI_CONTROL_HANDLE handle,
                                         const char* text)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control || !text)
   {
     CLog::Log(LOGERROR,
@@ -109,8 +109,8 @@ void Interface_GUIControlSpin::set_text(KODI_HANDLE kodiBase,
 
 void Interface_GUIControlSpin::reset(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -128,8 +128,8 @@ void Interface_GUIControlSpin::set_type(KODI_HANDLE kodiBase,
                                         KODI_GUI_CONTROL_HANDLE handle,
                                         int type)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -147,8 +147,8 @@ void Interface_GUIControlSpin::add_string_label(KODI_HANDLE kodiBase,
                                                 const char* label,
                                                 const char* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control || !label || !value)
   {
     CLog::Log(LOGERROR,
@@ -166,8 +166,8 @@ void Interface_GUIControlSpin::set_string_value(KODI_HANDLE kodiBase,
                                                 KODI_GUI_CONTROL_HANDLE handle,
                                                 const char* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control || !value)
   {
     CLog::Log(LOGERROR,
@@ -184,8 +184,8 @@ void Interface_GUIControlSpin::set_string_value(KODI_HANDLE kodiBase,
 char* Interface_GUIControlSpin::get_string_value(KODI_HANDLE kodiBase,
                                                  KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -203,8 +203,8 @@ void Interface_GUIControlSpin::add_int_label(KODI_HANDLE kodiBase,
                                              const char* label,
                                              int value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control || !label)
   {
     CLog::Log(LOGERROR,
@@ -223,8 +223,8 @@ void Interface_GUIControlSpin::set_int_range(KODI_HANDLE kodiBase,
                                              int start,
                                              int end)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -241,8 +241,8 @@ void Interface_GUIControlSpin::set_int_value(KODI_HANDLE kodiBase,
                                              KODI_GUI_CONTROL_HANDLE handle,
                                              int value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -257,8 +257,8 @@ void Interface_GUIControlSpin::set_int_value(KODI_HANDLE kodiBase,
 
 int Interface_GUIControlSpin::get_int_value(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -276,8 +276,8 @@ void Interface_GUIControlSpin::set_float_range(KODI_HANDLE kodiBase,
                                                float start,
                                                float end)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -294,8 +294,8 @@ void Interface_GUIControlSpin::set_float_value(KODI_HANDLE kodiBase,
                                                KODI_GUI_CONTROL_HANDLE handle,
                                                float value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -311,8 +311,8 @@ void Interface_GUIControlSpin::set_float_value(KODI_HANDLE kodiBase,
 float Interface_GUIControlSpin::get_float_value(KODI_HANDLE kodiBase,
                                                 KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,
@@ -329,8 +329,8 @@ void Interface_GUIControlSpin::set_float_interval(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle,
                                                   float interval)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUISpinControlEx* control = static_cast<CGUISpinControlEx*>(handle);
+  auto addon = static_cast<CAddonDll*>(kodiBase);
+  auto control = static_cast<CGUISpinControlEx*>(handle);
   if (!addon || !control)
   {
     CLog::Log(LOGERROR,

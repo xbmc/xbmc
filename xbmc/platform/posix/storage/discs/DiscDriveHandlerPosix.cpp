@@ -26,7 +26,7 @@ std::shared_ptr<IDiscDriveHandler> IDiscDriveHandler::CreateInstance()
 
 DriveState CDiscDriveHandlerPosix::GetDriveState(const std::string& devicePath)
 {
-  DriveState driveStatus = DriveState::NOT_READY;
+  auto driveStatus = DriveState::NOT_READY;
   const std::shared_ptr<CLibcdio> libCdio = CLibcdio::GetInstance();
   if (!libCdio)
   {
@@ -68,7 +68,7 @@ DriveState CDiscDriveHandlerPosix::GetDriveState(const std::string& devicePath)
 
 TrayState CDiscDriveHandlerPosix::GetTrayState(const std::string& devicePath)
 {
-  TrayState trayStatus = TrayState::UNDEFINED;
+  auto trayStatus = TrayState::UNDEFINED;
   const std::shared_ptr<CLibcdio> libCdio = CLibcdio::GetInstance();
   if (!libCdio)
   {

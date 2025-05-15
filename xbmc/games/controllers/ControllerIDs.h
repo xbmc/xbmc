@@ -20,7 +20,7 @@ namespace GAME
 {
 
 // Used to set the appearance of PlayStation controllers
-constexpr const char* CONTROLLER_ID_PLAYSTATION = "game.controller.ps.dualanalog";
+constexpr auto CONTROLLER_ID_PLAYSTATION = "game.controller.ps.dualanalog";
 
 } // namespace GAME
 } // namespace KODI

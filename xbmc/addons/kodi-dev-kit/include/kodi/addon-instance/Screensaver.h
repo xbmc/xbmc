@@ -382,21 +382,21 @@ private:
 
   inline static bool ADDON_start(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
-    CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
+    auto thisClass = static_cast<CInstanceScreensaver*>(hdl);
     thisClass->m_renderHelper = kodi::gui::GetRenderHelper();
     return thisClass->Start();
   }
 
   inline static void ADDON_stop(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
-    CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
+    auto thisClass = static_cast<CInstanceScreensaver*>(hdl);
     thisClass->Stop();
     thisClass->m_renderHelper = nullptr;
   }
 
   inline static void ADDON_render(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
-    CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
+    auto thisClass = static_cast<CInstanceScreensaver*>(hdl);
 
     if (!thisClass->m_renderHelper)
       return;

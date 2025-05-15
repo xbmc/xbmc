@@ -130,7 +130,7 @@ void CGUIActivePortList::OnEvent(const ADDON::AddonEvent& event)
 
 void CGUIActivePortList::InitializeGUI()
 {
-  CGUIGameControllerList* activePortList =
+  auto activePortList =
       dynamic_cast<CGUIGameControllerList*>(m_guiWindow.GetControl(m_controlId));
 
   if (activePortList != nullptr)
@@ -146,7 +146,7 @@ void CGUIActivePortList::DeinitializeGUI()
 {
   CleanupItems();
 
-  CGUIGameControllerList* activePortList =
+  auto activePortList =
       dynamic_cast<CGUIGameControllerList*>(m_guiWindow.GetControl(m_controlId));
 
   if (activePortList != nullptr)
@@ -181,7 +181,7 @@ void CGUIActivePortList::AddItem(const ControllerPtr& controller,
   if (controller && controller->Topology().ProvidesInput())
   {
     // Add GUI item
-    CFileItemPtr item = std::make_shared<CFileItem>(controller->Layout().Label());
+    auto item = std::make_shared<CFileItem>(controller->Layout().Label());
     item->SetArt("icon", controller->Layout().ImagePath());
     item->SetPath(controllerAddress);
     m_vecItems->Add(std::move(item));

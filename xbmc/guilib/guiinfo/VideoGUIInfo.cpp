@@ -819,7 +819,7 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
   if (!gitem->IsFileItem())
     return false;
 
-  const CFileItem *item = static_cast<const CFileItem*>(gitem);
+  auto item = static_cast<const CFileItem*>(gitem);
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
   if (tag)
   {
@@ -855,7 +855,7 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
   if (!gitem->IsFileItem())
     return false;
 
-  const CFileItem *item = static_cast<const CFileItem*>(gitem);
+  auto item = static_cast<const CFileItem*>(gitem);
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
   if (tag)
   {

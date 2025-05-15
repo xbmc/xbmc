@@ -275,7 +275,7 @@ int CActiveAEResampleFFMPEG::Resample(uint8_t **dst_buffer, int dst_samples, uin
       int samples = ret * m_dst_channels / planes;
       for (int i=0; i<planes; i++)
       {
-        uint32_t* buf = (uint32_t*)dst_buffer[i];
+        auto buf = (uint32_t*)dst_buffer[i];
         for (int j=0; j<samples; j++)
         {
           *buf = *buf >> (32 - m_dst_bits - m_dst_dither_bits);

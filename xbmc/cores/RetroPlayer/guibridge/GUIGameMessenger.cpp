@@ -39,7 +39,7 @@ void CGUIGameMessenger::RefreshSavestates(const std::string& savestatePath /* = 
     // Add savestate info, if given
     if (savestate != nullptr)
     {
-      CFileItemPtr item = std::make_shared<CFileItem>();
+      auto item = std::make_shared<CFileItem>();
       CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, *item);
       message.SetItem(std::static_pointer_cast<CGUIListItem>(item));
     }

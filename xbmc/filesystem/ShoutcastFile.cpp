@@ -300,7 +300,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
 
       std::lock_guard lock(m_tagSection);
 
-      const std::shared_ptr<CMusicInfoTag> tag = std::make_shared<CMusicInfoTag>(*m_masterTag);
+      const auto tag = std::make_shared<CMusicInfoTag>(*m_masterTag);
       tag->SetArtist(artistInfo);
       tag->SetTitle(title);
       tag->SetStationArt(coverURL);
@@ -355,7 +355,7 @@ void CShoutcastFile::Process()
         }
         else
         {
-          CFileItem* item = new CFileItem(*front.second); // will be deleted by msg receiver
+          auto item = new CFileItem(*front.second); // will be deleted by msg receiver
           m_tags.pop();
           CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
                                                      static_cast<void*>(item));

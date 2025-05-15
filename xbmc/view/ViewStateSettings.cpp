@@ -79,7 +79,7 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
     return false;
   }
 
-  for (std::map<std::string, CViewState*>::iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
+  for (auto viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
   {
     const TiXmlNode* pViewState = pElement->FirstChildElement(viewState->first);
     if (pViewState == NULL)
@@ -150,7 +150,7 @@ bool CViewStateSettings::Save(TiXmlNode *settings) const
     return false;
   }
 
-  for (std::map<std::string, CViewState*>::const_iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
+  for (auto viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
   {
     TiXmlElement newElement(viewState->first);
     TiXmlNode *pNewNode = pViewStateNode->InsertEndChild(newElement);
@@ -198,7 +198,7 @@ const CViewState* CViewStateSettings::Get(const std::string &viewState) const
 {
   std::lock_guard lock(m_critical);
 
-  std::map<std::string, CViewState*>::const_iterator view = m_viewStates.find(viewState);
+  auto view = m_viewStates.find(viewState);
   if (view != m_viewStates.end())
     return view->second;
 
@@ -208,8 +208,8 @@ const CViewState* CViewStateSettings::Get(const std::string &viewState) const
 CViewState* CViewStateSettings::Get(const std::string &viewState)
 {
   std::lock_guard lock(m_critical);
-  
-  std::map<std::string, CViewState*>::iterator view = m_viewStates.find(viewState);
+
+  auto view = m_viewStates.find(viewState);
   if (view != m_viewStates.end())
     return view->second;
 
@@ -233,7 +233,7 @@ void CViewStateSettings::CycleSettingLevel()
 
 SettingLevel CViewStateSettings::GetNextSettingLevel() const
 {
-  SettingLevel level = (SettingLevel)((int)m_settingLevel + 1);
+  auto level = (SettingLevel)((int)m_settingLevel + 1);
   if (level > SettingLevel::Expert)
     level = SettingLevel::Basic;
   return level;
@@ -256,7 +256,7 @@ void CViewStateSettings::CycleEventLevel()
 
 EventLevel CViewStateSettings::GetNextEventLevel() const
 {
-  EventLevel level = (EventLevel)((int)m_eventLevel + 1);
+  auto level = (EventLevel)((int)m_eventLevel + 1);
   if (level > EventLevel::Error)
     level = EventLevel::Basic;
   return level;
@@ -267,7 +267,7 @@ void CViewStateSettings::AddViewState(const std::string& strTagName, int default
   if (strTagName.empty() || m_viewStates.find(strTagName) != m_viewStates.end())
     return;
 
-  CViewState *viewState = new CViewState(defaultView, defaultSort, SortOrderAscending);
+  auto viewState = new CViewState(defaultView, defaultSort, SortOrderAscending);
   if (viewState == NULL)
     return;
 

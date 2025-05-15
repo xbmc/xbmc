@@ -1100,7 +1100,7 @@ private:
                    ->GetDirectory(url, addonEntries, CVFSCallbacks(callbacks));
     if (ret)
     {
-      VFSDirEntry* entries =
+      auto entries =
           static_cast<VFSDirEntry*>(malloc(sizeof(VFSDirEntry) * addonEntries.size()));
       for (unsigned int i = 0; i < addonEntries.size(); ++i)
       {
@@ -1169,7 +1169,7 @@ private:
     {
       strncpy(rootpath, cppRootPath.c_str(), ADDON_STANDARD_STRING_LENGTH);
 
-      VFSDirEntry* entries =
+      auto entries =
           static_cast<VFSDirEntry*>(malloc(sizeof(VFSDirEntry) * addonEntries.size()));
       for (size_t i = 0; i < addonEntries.size(); ++i)
       {

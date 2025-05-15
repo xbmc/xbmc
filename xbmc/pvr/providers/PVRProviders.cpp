@@ -178,7 +178,7 @@ bool CPVRProviders::UpdateDefaultEntries(const CPVRProvidersContainer& newProvid
       });
 
   // check for deleted providers
-  for (std::vector<std::shared_ptr<CPVRProvider>>::iterator it = m_providers.begin();
+  for (auto it = m_providers.begin();
        it != m_providers.end();)
   {
     const std::shared_ptr<const CPVRProvider> provider = *it;

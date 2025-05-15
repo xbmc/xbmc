@@ -64,7 +64,7 @@ void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
   UpdateViewVisibility();
 
   // viewMode is of the form TYPE << 16 | ID
-  VIEW_TYPE type = (VIEW_TYPE)(viewMode >> 16);
+  auto type = (VIEW_TYPE)(viewMode >> 16);
   int id = viewMode & 0xffff;
 
   // first find a view that matches this view, if possible...
@@ -270,7 +270,7 @@ int CGUIViewControl::GetViewModeByID(int id) const
 {
   for (unsigned int i = 0; i < m_visibleViews.size(); ++i)
   {
-    IGUIContainer *view = static_cast<IGUIContainer*>(m_visibleViews[i]);
+    auto view = static_cast<IGUIContainer*>(m_visibleViews[i]);
     if (view->GetID() == id)
       return (view->GetType() << 16) | view->GetID();
   }
@@ -285,7 +285,7 @@ int CGUIViewControl::GetNextViewMode(int direction) const
 
   int viewNumber = (m_currentView + direction) % (int)m_visibleViews.size();
   if (viewNumber < 0) viewNumber += m_visibleViews.size();
-  IGUIContainer *nextView = static_cast<IGUIContainer*>(m_visibleViews[viewNumber]);
+  auto nextView = static_cast<IGUIContainer*>(m_visibleViews[viewNumber]);
   return (nextView->GetType() << 16) | nextView->GetID();
 }
 
@@ -302,7 +302,7 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
 {
   for (int i = 0; i < (int)m_visibleViews.size(); i++)
   {
-    IGUIContainer *view = static_cast<IGUIContainer*>(m_visibleViews[i]);
+    auto view = static_cast<IGUIContainer*>(m_visibleViews[i]);
     if ((type == VIEW_TYPE_NONE || type == view->GetType()) && (!id || view->GetID() == id))
       return i;
   }
@@ -315,7 +315,7 @@ void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel)
   std::vector< std::pair<std::string, int> > labels;
   for (unsigned int i = 0; i < m_visibleViews.size(); i++)
   {
-    IGUIContainer *view = static_cast<IGUIContainer*>(m_visibleViews[i]);
+    auto view = static_cast<IGUIContainer*>(m_visibleViews[i]);
     std::string label = StringUtils::Format(g_localizeStrings.Get(534),
                                             view->GetLabel()); // View: {}
     labels.emplace_back(std::move(label), i);

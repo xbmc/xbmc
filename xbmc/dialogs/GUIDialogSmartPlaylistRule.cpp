@@ -105,7 +105,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   else
     basePath = "videodb://";
 
-  VideoDbContentType type = VideoDbContentType::MOVIES;
+  auto type = VideoDbContentType::MOVIES;
   if (m_type == "movies")
     basePath += "movies/";
   else if (m_type == "tvshows")
@@ -336,7 +336,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldTag)
   {
-    VideoDbContentType type = VideoDbContentType::MOVIES;
+    auto type = VideoDbContentType::MOVIES;
     if (m_type == "tvshows" ||
         m_type == "episodes")
       type = VideoDbContentType::TVSHOWS;
@@ -546,7 +546,7 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
 
   UpdateButtons();
 
-  CGUIEditControl *editControl = dynamic_cast<CGUIEditControl*>(GetControl(CONTROL_VALUE));
+  auto editControl = dynamic_cast<CGUIEditControl*>(GetControl(CONTROL_VALUE));
   if (editControl != NULL)
     editControl->SetInputValidation(CSmartPlaylistRule::Validate, &m_rule);
 }

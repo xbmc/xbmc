@@ -266,7 +266,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
   std::locale current_locale = std::locale::classic(); // C-Locale
   try
   {
-    std::locale lcl = std::locale(strLocale.c_str());
+    auto lcl = std::locale(strLocale.c_str());
     strLocale = lcl.name();
     current_locale = current_locale.combine< std::collate<wchar_t> >(lcl);
     current_locale = current_locale.combine< std::ctype<wchar_t> >(lcl);

@@ -37,7 +37,7 @@ using namespace XFILE;
 
 JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CVariant properties = CVariant(CVariant::VariantTypeObject);
+  auto properties = CVariant(CVariant::VariantTypeObject);
   CMusicDatabase musicdatabase;
   // Make db connection once if one or more properties needs db access
   for (CVariant::const_iterator_array it = parameterObject["properties"].begin_array();
@@ -497,7 +497,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongDetails(const std::string &method, ITranspo
     return InvalidParams;
 
   CFileItemList items;
-  CFileItemPtr item = std::make_shared<CFileItem>(song);
+  auto item = std::make_shared<CFileItem>(song);
   FillItemArtistIDs(song.GetArtistIDArray(), item);
   items.Add(item);
 
@@ -689,7 +689,7 @@ JSONRPC_STATUS CAudioLibrary::GetAvailableArtTypes(const std::string& method, IT
   if (!musicdatabase.Open())
     return InternalError;
 
-  CVariant availablearttypes = CVariant(CVariant::VariantTypeArray);
+  auto availablearttypes = CVariant(CVariant::VariantTypeArray);
   for (const auto& artType : musicdatabase.GetAvailableArtTypesForItem(mediaID, mediaType))
   {
     availablearttypes.append(artType);
@@ -724,10 +724,10 @@ JSONRPC_STATUS CAudioLibrary::GetAvailableArt(const std::string& method, ITransp
   if (!musicdatabase.Open())
     return InternalError;
 
-  CVariant availableart = CVariant(CVariant::VariantTypeArray);
+  auto availableart = CVariant(CVariant::VariantTypeArray);
   for (const auto& artentry : musicdatabase.GetAvailableArtForItem(mediaID, mediaType, artType))
   {
-    CVariant item = CVariant(CVariant::VariantTypeObject);
+    auto item = CVariant(CVariant::VariantTypeObject);
     item["url"] = CTextureUtils::GetWrappedImageURL(artentry.m_url);
     item["arttype"] = artentry.m_aspect;
     if (!artentry.m_preview.empty())

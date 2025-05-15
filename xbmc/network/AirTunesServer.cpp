@@ -375,7 +375,7 @@ char session[]="Kodi-AirTunes";
 
 void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int channels, int samplerate)
 {
-  XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
+  auto pipe=(XFILE::CPipeFile *)cls;
   const CURL pathToUrl(XFILE::PipesManager::GetInstance().GetUniquePipeName());
   pipe->OpenForWrite(pathToUrl);
   pipe->SetOpenThreshold(300);
@@ -393,7 +393,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
 
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_STOP);
 
-  CFileItem *item = new CFileItem();
+  auto item = new CFileItem();
   item->SetPath(pipe->GetName());
   item->SetMimeType("audio/x-xbmc-pcm");
   m_streamStarted = true;
@@ -519,7 +519,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_set_volume(void *cls, void *s
 
 void  CAirTunesServer::AudioOutputFunctions::audio_process(void *cls, void *session, const void *buffer, int buflen)
 {
-  XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
+  auto pipe=(XFILE::CPipeFile *)cls;
   pipe->Write(buffer, buflen);
 
   // in case there are some play times cached that are not yet sent to the player - do it here
@@ -528,7 +528,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_process(void *cls, void *sess
 
 void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *session)
 {
-  XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
+  auto pipe=(XFILE::CPipeFile *)cls;
   pipe->SetEof();
   pipe->Close();
 

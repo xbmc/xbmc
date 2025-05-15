@@ -651,7 +651,7 @@ void CPeripheralCecAdapter::OnTvStandby(void)
 
 void CPeripheralCecAdapter::CecCommand(void* cbParam, const cec_command* command)
 {
-  CPeripheralCecAdapter* adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
+  auto adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
   if (!adapter)
     return;
 
@@ -716,7 +716,7 @@ void CPeripheralCecAdapter::CecCommand(void* cbParam, const cec_command* command
 
 void CPeripheralCecAdapter::CecConfiguration(void* cbParam, const libcec_configuration* config)
 {
-  CPeripheralCecAdapter* adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
+  auto adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
   if (!adapter)
     return;
 
@@ -729,7 +729,7 @@ void CPeripheralCecAdapter::CecAlert(void* cbParam,
                                      const libcec_alert alert,
                                      const libcec_parameter data)
 {
-  CPeripheralCecAdapter* adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
+  auto adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
   if (!adapter)
     return;
 
@@ -778,7 +778,7 @@ void CPeripheralCecAdapter::CecAlert(void* cbParam,
 
 void CPeripheralCecAdapter::CecKeyPress(void* cbParam, const cec_keypress* key)
 {
-  CPeripheralCecAdapter* adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
+  auto adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
   if (!!adapter)
     adapter->PushCecKeypress(*key);
 }
@@ -790,7 +790,7 @@ void CPeripheralCecAdapter::GetNextKey(void)
   m_bHasButton = false;
   if (m_bIsReady)
   {
-    std::vector<CecButtonPress>::iterator it = m_buttonQueue.begin();
+    auto it = m_buttonQueue.begin();
     if (it != m_buttonQueue.end())
     {
       m_currentButton = (*it);
@@ -822,7 +822,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const CecButtonPress& key)
     }
     // if we received a keypress with a duration set, try to find the same one without a duration
     // set, and replace it
-    for (std::vector<CecButtonPress>::reverse_iterator it = m_buttonQueue.rbegin();
+    for (auto it = m_buttonQueue.rbegin();
          it != m_buttonQueue.rend(); ++it)
     {
       if ((*it).iButton == key.iButton)
@@ -1182,13 +1182,13 @@ void CPeripheralCecAdapter::OnSettingChanged(const std::string& strChangedSettin
     m_iCec_func_config &= ~(1 << ACTIVE_SOURCE_MASK);
     m_iCec_func_config |= ((int)GetSettingBool("wakeup_cec_active_route") << ACTIVE_SOURCE_MASK);
 
-    XBMCAddon::xbmcvfs::configini* config_ini = new XBMCAddon::xbmcvfs::configini();
+    auto config_ini = new XBMCAddon::xbmcvfs::configini();
     config_ini->set("cec_func_config", StringUtils::Format("{:x}", m_iCec_func_config));
     delete(config_ini);
   }
   else if (StringUtils::EqualsNoCase(strChangedSetting, "device_name"))
   {
-    XBMCAddon::xbmcvfs::configini* config_ini = new XBMCAddon::xbmcvfs::configini();
+    auto config_ini = new XBMCAddon::xbmcvfs::configini();
     std::string device_name = GetSettingString("device_name");
     if (device_name.length() > 14)
     {
@@ -1219,7 +1219,7 @@ void CPeripheralCecAdapter::CecSourceActivated(void* cbParam,
                                                const CEC::cec_logical_address address,
                                                const uint8_t activated)
 {
-  CPeripheralCecAdapter* adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
+  auto adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
   if (!adapter)
     return;
 
@@ -1277,7 +1277,7 @@ void CPeripheralCecAdapter::CecSourceActivated(void* cbParam,
 
 void CPeripheralCecAdapter::CecLogMessage(void* cbParam, const cec_log_message* message)
 {
-  CPeripheralCecAdapter* adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
+  auto adapter = static_cast<CPeripheralCecAdapter*>(cbParam);
   if (!adapter)
     return;
 
@@ -1443,7 +1443,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     SetSetting("pause_playback_on_deactivate", false);
   }
 
-  XBMCAddon::xbmcvfs::configini* config_ini = new XBMCAddon::xbmcvfs::configini();
+  auto config_ini = new XBMCAddon::xbmcvfs::configini();
   std::string cec_func_config = config_ini->get("cec_func_config", "7f");
   m_iCec_func_config = std::stoul(cec_func_config, nullptr, 16);
 
