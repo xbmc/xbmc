@@ -26,7 +26,7 @@ using namespace PVR;
 using namespace KODI::MESSAGING;
 
 CPVRGUIActionsParentalControl::CPVRGUIActionsParentalControl()
-  : m_settings(std::make_unique<CPVRSettings>(std::set<std::string>(
+  : m_settings(std::make_unique<CPVRSettings>(SettingsContainer(
         {CSettings::SETTING_PVRPARENTAL_PIN, CSettings::SETTING_PVRPARENTAL_ENABLED})))
 {
 }

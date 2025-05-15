@@ -117,7 +117,7 @@ private:
 } // unnamed namespace
 
 CPVRGUIActionsTimers::CPVRGUIActionsTimers()
-  : m_settings(std::make_unique<CPVRSettings>(std::set<std::string>(
+  : m_settings(std::make_unique<CPVRSettings>(SettingsContainer(
         {CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
          CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
          CSettings::SETTING_PVRREMINDERS_AUTOCLOSEDELAY, CSettings::SETTING_PVRREMINDERS_AUTORECORD,

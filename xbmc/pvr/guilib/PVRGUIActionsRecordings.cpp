@@ -201,7 +201,7 @@ private:
 
 CPVRGUIActionsRecordings::CPVRGUIActionsRecordings()
   : m_settings(std::make_unique<CPVRSettings>(
-        std::set<std::string>({CSettings::SETTING_PVRRECORD_DELETEAFTERWATCH})))
+        SettingsContainer({CSettings::SETTING_PVRRECORD_DELETEAFTERWATCH})))
 {
 }
 

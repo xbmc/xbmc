@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "settings/SettingsContainer.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
-#include <set>
 #include <string>
 #include <vector>
 
@@ -91,7 +91,7 @@ public:
    \param callback ISettingCallback implementation
    \param settingList List of setting identifiers for which the given callback shall be triggered
    */
-  void RegisterCallback(ISettingCallback* callback, const std::set<std::string>& settingList);
+  void RegisterCallback(ISettingCallback* callback, const SettingsContainer& settingList);
   /*!
    \brief Unregisters the given ISettingCallback implementation.
 

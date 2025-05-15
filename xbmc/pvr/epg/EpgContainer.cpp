@@ -89,7 +89,7 @@ void CEpgTagStateChange::Deliver(const std::shared_ptr<CPVREpg>& epg) const
 CPVREpgContainer::CPVREpgContainer(CEventSource<PVREvent>& eventSource)
   : CThread("EPGUpdater"),
     m_database(std::make_shared<CPVREpgDatabase>()),
-    m_settings(std::make_unique<CPVRSettings>(std::set<std::string>(
+    m_settings(std::make_unique<CPVRSettings>(SettingsContainer(
         {CSettings::SETTING_EPG_EPGUPDATE, CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
          CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
          CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV}))),

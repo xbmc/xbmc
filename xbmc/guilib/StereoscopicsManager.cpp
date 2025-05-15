@@ -93,10 +93,8 @@ CStereoscopicsManager::CStereoscopicsManager()
   m_lastStereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
 
   //! @todo Move this to Initialize() to avoid potential problems in ctor
-  std::set<std::string> settingSet{
-    CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE
-  };
-  m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
+  m_settings->GetSettingsManager()->RegisterCallback(
+      this, {CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE});
 }
 
 CStereoscopicsManager::~CStereoscopicsManager(void)

@@ -732,6 +732,8 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
         return true;
       }
       break;
+    default:
+      break;
   }
 
   return false;

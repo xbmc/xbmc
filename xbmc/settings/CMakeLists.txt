@@ -39,6 +39,7 @@ set(HEADERS AdvancedSettings.h
             SettingPath.h
             Settings.h
             SettingsBase.h
+            SettingsContainer.h
             SettingsValueFlatJsonSerializer.h
             SettingsValueXmlSerializer.h
             SettingUtils.h

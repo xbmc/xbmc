@@ -76,11 +76,8 @@ CInputManager::CInputManager()
 
   RegisterKeyboardDriverHandler(m_keyboardEasterEgg.get());
 
-  // Register settings
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
-  settingSet.insert(SETTING_INPUT_ENABLE_CONTROLLER);
-  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, settingSet);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(
+      this, {CSettings::SETTING_INPUT_ENABLEMOUSE, SETTING_INPUT_ENABLE_CONTROLLER});
 }
 
 CInputManager::~CInputManager()

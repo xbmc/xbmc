@@ -74,11 +74,9 @@ void CPVRCustomTimerSettings::SetTimerType(const CPVRTimerType& timerType)
     {
       const auto it{m_customProps.find(def->GetId())};
       if (it == m_customProps.cend())
-        newCustomProps.try_emplace(def->GetId(),
-                                   CustomProperty(def->GetType(), def->GetDefaultValue()));
+        newCustomProps.try_emplace(def->GetId(), def->GetType(), def->GetDefaultValue());
       else
-        newCustomProps.try_emplace(def->GetId(),
-                                   CustomProperty((*it).second.type, (*it).second.value));
+        newCustomProps.try_emplace(def->GetId(), (*it).second.type, (*it).second.value);
     }
   }
   m_customProps = newCustomProps;

@@ -36,11 +36,11 @@ bool CGUIDialogSettingsManagerBase::OnOkay()
   return false;
 }
 
-std::set<std::string> CGUIDialogSettingsManagerBase::CreateSettings()
+SettingsContainer CGUIDialogSettingsManagerBase::CreateSettings()
 {
   assert(GetSettingsManager() != nullptr);
 
-  std::set<std::string> settings = CGUIDialogSettingsBase::CreateSettings();
+  const SettingsContainer settings{CGUIDialogSettingsBase::CreateSettings()};
 
   if (!settings.empty())
     GetSettingsManager()->RegisterCallback(this, settings);

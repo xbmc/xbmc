@@ -19,10 +19,10 @@ using namespace PVR;
 
 CPVRChannelGroupSettings::CPVRChannelGroupSettings()
   : m_settings(std::make_unique<CPVRSettings>(
-        std::set<std::string>({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER,
-                               CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS,
-                               CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERSALWAYS,
-                               CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE})))
+        SettingsContainer({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER,
+                           CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS,
+                           CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERSALWAYS,
+                           CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE})))
 {
   UpdateUseBackendChannelOrder();
   UpdateUseBackendChannelNumbers();

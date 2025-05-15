@@ -33,29 +33,28 @@ CActiveAESettings::CActiveAESettings(CActiveAE &ae) : m_audioEngine(ae)
   std::unique_lock<CCriticalSection> lock(m_cs);
   m_instance = this;
 
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_CONFIG);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_MIXSUBLEVEL);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DTSHDCOREFALLBACK);
-  settings->GetSettingsManager()->RegisterCallback(this, settingSet);
+  settings->GetSettingsManager()->RegisterCallback(
+      this, {CSettings::SETTING_AUDIOOUTPUT_CONFIG,
+             CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE,
+             CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH,
+             CSettings::SETTING_AUDIOOUTPUT_CHANNELS,
+             CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY,
+             CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD,
+             CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE,
+             CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX,
+             CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH,
+             CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE,
+             CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH,
+             CSettings::SETTING_AUDIOOUTPUT_DTSPASSTHROUGH,
+             CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH,
+             CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH,
+             CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE,
+             CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE,
+             CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE,
+             CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE,
+             CSettings::SETTING_AUDIOOUTPUT_MIXSUBLEVEL,
+             CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME,
+             CSettings::SETTING_AUDIOOUTPUT_DTSHDCOREFALLBACK});
 
   settings->GetSettingsManager()->RegisterSettingOptionsFiller("aequalitylevels", SettingOptionsAudioQualityLevelsFiller);
   settings->GetSettingsManager()->RegisterSettingOptionsFiller("audiodevices", SettingOptionsAudioDevicesFiller);

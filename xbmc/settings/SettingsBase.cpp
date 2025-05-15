@@ -159,7 +159,8 @@ void CSettingsBase::Uninitialize()
   m_initialized = false;
 }
 
-void CSettingsBase::RegisterCallback(ISettingCallback* callback, const std::set<std::string>& settingList)
+void CSettingsBase::RegisterCallback(ISettingCallback* callback,
+                                     const SettingsContainer& settingList)
 {
   m_settingsManager->RegisterCallback(callback, settingList);
 }

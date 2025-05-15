@@ -54,8 +54,8 @@ using namespace KODI::MESSAGING;
 
 CPVRGUIActionsPlayback::CPVRGUIActionsPlayback()
   : m_settings(std::make_unique<CPVRSettings>(
-        std::set<std::string>({CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
-                               CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES})))
+        SettingsContainer({CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
+                           CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES})))
 {
 }
 

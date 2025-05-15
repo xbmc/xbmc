@@ -129,10 +129,8 @@ CRepositoryUpdater::CRepositoryUpdater(CAddonMgr& addonMgr) :
   m_doneEvent(true),
   m_addonMgr(addonMgr)
 {
-  // Register settings
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_ADDONS_AUTOUPDATES);
-  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, settingSet);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(
+      this, {CSettings::SETTING_ADDONS_AUTOUPDATES});
 }
 
 void CRepositoryUpdater::Start()
