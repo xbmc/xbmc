@@ -309,6 +309,7 @@ namespace XBMCAddon
     /// | xbmc.ISO_639_1    | Two letter code as defined in ISO 639-1
     /// | xbmc.ISO_639_2    | Three letter code as defined in ISO 639-2/T or ISO 639-2/B
     /// | xbmc.ENGLISH_NAME | Full language name in English (default)
+    /// | xbmc.ISO_NAME     | Full language name without qualifiers 'English' not 'English (Australian)'
     /// @param region               [opt] append the region delimited by "-"
     ///                             of the language (setting) to the
     ///                             returned language string
@@ -317,6 +318,7 @@ namespace XBMCAddon
     ///
     /// ------------------------------------------------------------------------
     /// @python_v13 Added new options **format** and **region**.
+    /// @python_v22 Added new format ISO_NAME.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -891,6 +893,7 @@ namespace XBMCAddon
     SWIG_CONSTANT_FROM_GETTER(int, ISO_639_1);
     SWIG_CONSTANT_FROM_GETTER(int, ISO_639_2);
     SWIG_CONSTANT_FROM_GETTER(int, ENGLISH_NAME);
+    SWIG_CONSTANT_FROM_GETTER(int, ISO_NAME);
 #if 0
     void registerMonitor(Monitor* monitor);
     void unregisterMonitor(Monitor* monitor);
