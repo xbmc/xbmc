@@ -476,6 +476,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldLastPlayed);
     fields.push_back(FieldInProgress);
     fields.push_back(FieldTag);
+    fields.push_back(FieldTrailer);
   }
   else if (type == "episodes")
   {
@@ -865,6 +866,8 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
                             "(SELECT 1 FROM episode_view WHERE episode_view.idShow = " + GetField(FieldId, strType) + " AND episode_view.resumeTimeInSeconds > 0)"
                           ")"
                        ")";
+    else if (m_field == FieldTrailer)
+      return negate + GetField(m_field, strType) + "!= ''";
   }
   if (strType == "albums")
   {
