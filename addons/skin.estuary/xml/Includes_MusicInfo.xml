@@ -134,7 +134,7 @@
 			<visible>!String.IsEmpty(ListItem.Userrating)</visible>
 		</item>
 		<item>
-			<label>$LOCALIZE[15311]</label>
+			<label>$LOCALIZE[15311]:</label>
 			<label2>$INFO[ListItem.FilenameAndPath]</label2>
 			<visible>!String.IsEmpty(ListItem.FilenameAndPath)</visible>
 		</item>
@@ -266,7 +266,7 @@
 			<visible>!String.IsEmpty(ListItem.Property(Role.Mixer))</visible>
 		</item>
 		<item>
-			<label>$LOCALIZE[15311]</label>
+			<label>$LOCALIZE[15311]:</label>
 			<label2>$INFO[ListItem.FilenameAndPath]</label2>
 			<visible>!String.IsEmpty(ListItem.FilenameAndPath)</visible>
 		</item>

@@ -9170,8 +9170,10 @@ msgctxt "#15310"
 msgid "Opening multi-path source"
 msgstr ""
 
+#. Label for the path infolabel which shows the location of the media file
+#: xbmc/addons/skin.estuary/xml/Includes_MusicInfo.xml
 msgctxt "#15311"
-msgid "Path:"
+msgid "Path"
 msgstr ""
 
 #. Game settings category name
