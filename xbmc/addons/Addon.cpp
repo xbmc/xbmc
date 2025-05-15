@@ -490,7 +490,7 @@ template<class TSetting>
 bool UpdateSettingValue(CAddon& addon,
                         AddonInstanceId instanceId,
                         const std::string& key,
-                        typename TSetting::Value value)
+                        const typename TSetting::Value& value)
 {
   if (key.empty() || !addon.HasSettings(instanceId))
     return false;

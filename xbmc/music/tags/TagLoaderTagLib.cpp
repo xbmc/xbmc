@@ -499,7 +499,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
     return false;
 
   ReplayGain replayGainInfo;
-  const APE::ItemListMap itemListMap = ape->itemListMap();
+  const APE::ItemListMap& itemListMap = ape->itemListMap();
   for (APE::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
   {
     if (it->first == "ARTIST")
@@ -841,7 +841,7 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
     return false;
 
   ReplayGain replayGainInfo;
-  const MP4::ItemMap itemMap = mp4->itemMap();
+  const MP4::ItemMap& itemMap = mp4->itemMap();
   for (auto it = itemMap.begin(); it != itemMap.end(); ++it)
   {
     if (it->first == "\251nam")
