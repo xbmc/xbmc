@@ -12,6 +12,10 @@ find_path(WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR NAMES webos-shell.xml
                                              HINTS ${DEPENDS_PATH}/share
                                              REQUIRED)
 
+if(NOT VERBOSE_FIND)
+   set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+ endif()
+
 include(FindPackageMessage)
 find_package_message(WaylandProtocolsWebOS "Found WaylandProtocols-WebOS: ${WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR}" "[${WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR}]")
 

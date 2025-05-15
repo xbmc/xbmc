@@ -109,6 +109,10 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
   select_library_configurations(BROTLICOMMON)
   unset(BROTLICOMMON_LIBRARIES)
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Brotli
                                     REQUIRED_VARS BROTLICOMMON_LIBRARY BROTLIDEC_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR

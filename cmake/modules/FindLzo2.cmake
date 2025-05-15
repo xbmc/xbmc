@@ -18,6 +18,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                             HINTS ${DEPENDS_PATH}/lib
                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Lzo2
                                     REQUIRED_VARS LZO2_LIBRARY LZO2_INCLUDE_DIR)

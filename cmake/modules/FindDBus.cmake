@@ -25,6 +25,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   set(DBUS_VERSION ${PC_DBUS_VERSION})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(DBus
                                     REQUIRED_VARS DBUS_LIBRARY DBUS_INCLUDE_DIR DBUS_ARCH_INCLUDE_DIR
