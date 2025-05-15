@@ -104,6 +104,8 @@ void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const 
   if (!peripheral)
     return;
 
+  peripheral->OnSettingChanged(setting->GetId());
+
   if (settingId == SETTING_APPEARANCE)
   {
     // Get the controller profile of the new appearance
