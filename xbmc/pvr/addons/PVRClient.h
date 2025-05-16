@@ -1168,5 +1168,8 @@ private:
   std::string m_strClientPath; /*!< @brief translated path to this add-on */
 
   mutable CCriticalSection m_critSection;
+
+  class CPVRAddonInstanceHolder;
+  std::unique_ptr<CPVRAddonInstanceHolder> m_instance;
 };
 } // namespace PVR

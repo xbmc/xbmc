@@ -418,32 +418,37 @@ EDL::Edit ConvertAddonEdl(const PVR_EDL_ENTRY& entry)
 
 namespace PVR
 {
+class CPVRClient::CPVRAddonInstanceHolder
+{
+public:
+  explicit CPVRAddonInstanceHolder(KODI_ADDON_INSTANCE_STRUCT& instanceStruct)
+  {
+    instanceStruct.pvr = &m_instance;
+    instanceStruct.pvr->props = &m_props;
+    instanceStruct.pvr->toKodi = &m_callbacks;
+    instanceStruct.pvr->toAddon = &m_funcs;
+  }
+
+private:
+  AddonInstance_PVR m_instance{};
+  AddonProperties_PVR m_props{};
+  AddonToKodiFuncTable_PVR m_callbacks{};
+  KodiToAddonFuncTable_PVR m_funcs{};
+};
+
 CPVRClient::CPVRClient(const ADDON::AddonInfoPtr& addonInfo,
                        ADDON::AddonInstanceId instanceId,
                        int clientId)
-  : IAddonInstanceHandler(ADDON_INSTANCE_PVR, addonInfo, instanceId), m_iClientId(clientId)
+  : IAddonInstanceHandler(ADDON_INSTANCE_PVR, addonInfo, instanceId),
+    m_iClientId(clientId),
+    m_instance(std::make_unique<CPVRAddonInstanceHolder>(m_ifc))
 {
-  // Create all interface parts independent to make API changes easier if
-  // something is added
-  m_ifc.pvr = new AddonInstance_PVR;
-  m_ifc.pvr->props = new AddonProperties_PVR();
-  m_ifc.pvr->toKodi = new AddonToKodiFuncTable_PVR();
-  m_ifc.pvr->toAddon = new KodiToAddonFuncTable_PVR();
-
   ResetProperties();
 }
 
 CPVRClient::~CPVRClient()
 {
   Destroy();
-
-  if (m_ifc.pvr)
-  {
-    delete m_ifc.pvr->props;
-    delete m_ifc.pvr->toKodi;
-    delete m_ifc.pvr->toAddon;
-  }
-  delete m_ifc.pvr;
 }
 
 void CPVRClient::StopRunningInstance()
@@ -495,6 +500,7 @@ void CPVRClient::ResetProperties()
   m_ifc.pvr->props->iEpgMaxFutureDays =
       CServiceBroker::GetPVRManager().EpgContainer().GetFutureDaysToDisplay();
 
+  *m_ifc.pvr->toKodi = {};
   m_ifc.pvr->toKodi->kodiInstance = this;
   m_ifc.pvr->toKodi->TransferEpgEntry = cb_transfer_epg_entry;
   m_ifc.pvr->toKodi->TransferChannelEntry = cb_transfer_channel_entry;
@@ -517,8 +523,7 @@ void CPVRClient::ResetProperties()
   m_ifc.pvr->toKodi->EpgEventStateChange = cb_epg_event_state_change;
   m_ifc.pvr->toKodi->GetCodecByName = cb_get_codec_by_name;
 
-  // Clear function addresses to have NULL if not set by addon
-  memset(m_ifc.pvr->toAddon, 0, sizeof(KodiToAddonFuncTable_PVR));
+  *m_ifc.pvr->toAddon = {};
 }
 
 ADDON_STATUS CPVRClient::Create()
@@ -1389,8 +1394,7 @@ PVR_ERROR CPVRClient::GetTimerTypes(const AddonInstance* addon,
   unsigned int size{0};
   PVR_ERROR retval{addon->toAddon->GetTimerTypes(addon, &types_array, &size)};
 
-  const bool array_owner{retval == PVR_ERROR_NOT_IMPLEMENTED};
-  if (array_owner)
+  if (retval == PVR_ERROR_NOT_IMPLEMENTED)
   {
     // begin compat section
     CLog::LogF(LOGWARNING,
@@ -1405,49 +1409,51 @@ PVR_ERROR CPVRClient::GetTimerTypes(const AddonInstance* addon,
     // Isengard. Also, new features (like epg search) are not available to addons automatically.
     // This code can be removed once all addons actually support the respective PVR Addon API version.
 
-    size = 2;
-    if (m_clientCapabilities.SupportsEPG())
-      size++;
-
-    types_array = new PVR_TIMER_TYPE*[size];
-
-    // manual one time
-    types_array[0] = new PVR_TIMER_TYPE{};
-    types_array[0]->iId = 1;
-    types_array[0]->iAttributes =
-        PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-        PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-        PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
-        PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-
-    // manual timer rule
-    types_array[1] = new PVR_TIMER_TYPE{};
-    types_array[1]->iId = 2;
-    types_array[1]->iAttributes =
-        PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REPEATING |
-        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-        PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
-        PVR_TIMER_TYPE_SUPPORTS_PRIORITY | PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
-        PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS |
-        PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-
-    if (m_clientCapabilities.SupportsEPG())
+    static PVR_TIMER_TYPE manualOneTime{};
+    if (manualOneTime.iId == 0)
     {
-      // One-shot epg-based
-      types_array[2] = new PVR_TIMER_TYPE{};
-      types_array[2]->iId = 3;
-      types_array[2]->iAttributes =
-          PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
+      manualOneTime.iId = 1;
+      manualOneTime.iAttributes =
+          PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
           PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
           PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
           PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+    }
+    timerTypes.emplace_back(std::make_shared<CPVRTimerType>(manualOneTime, m_iClientId));
+
+    static PVR_TIMER_TYPE manualTimerRule{};
+    if (manualTimerRule.iId == 0)
+    {
+      manualTimerRule.iId = 2;
+      manualTimerRule.iAttributes =
+          PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REPEATING |
+          PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
+          PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
+          PVR_TIMER_TYPE_SUPPORTS_PRIORITY | PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
+          PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS |
+          PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+    }
+    timerTypes.emplace_back(std::make_shared<CPVRTimerType>(manualTimerRule, m_iClientId));
+
+    if (m_clientCapabilities.SupportsEPG())
+    {
+      static PVR_TIMER_TYPE epgOneTime{};
+      if (epgOneTime.iId == 0)
+      {
+        epgOneTime.iId = 3;
+        epgOneTime.iAttributes =
+            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
+            PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+            PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+            PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+      }
+      timerTypes.emplace_back(std::make_shared<CPVRTimerType>(epgOneTime, m_iClientId));
     }
 
     retval = PVR_ERROR_NO_ERROR;
     // end compat section
   }
-
-  if (retval == PVR_ERROR_NO_ERROR)
+  else if (retval == PVR_ERROR_NO_ERROR)
   {
     timerTypes.reserve(size);
     for (unsigned int i = 0; i < size; ++i)
@@ -1459,24 +1465,9 @@ PVR_ERROR CPVRClient::GetTimerTypes(const AddonInstance* addon,
       }
       timerTypes.emplace_back(std::make_shared<CPVRTimerType>(*(types_array[i]), m_iClientId));
     }
-  }
-
-  /* free the resources of the timer types array */
-  if (array_owner)
-  {
-    // begin compat section
-    for (unsigned int i = 0; i < size; ++i)
-      delete types_array[i];
-
-    delete[] types_array;
-    // end compat section
-  }
-  else
-  {
     addon->toAddon->FreeTimerTypes(addon, types_array, size);
   }
   types_array = nullptr;
-
   return retval;
 }
 
