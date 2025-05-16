@@ -374,7 +374,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
   m_aspect_ratio = m_hints.aspect;
 
-  m_Codec = std::shared_ptr<CAMLCodec>(new CAMLCodec(m_processInfo, m_hints));
+  m_Codec = std::make_shared<CAMLCodec>(m_processInfo, m_hints);
   if (!m_Codec)
   {
     logM(LOGERROR, "CDVDVideoCodecAmlogic", "Failed to create Amlogic Codec");
@@ -580,7 +580,7 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
       if (m_Codec && !m_Codec->OpenDecoder(false))
         logM(LOGERROR, "CDVDVideoCodecAmlogic", "Failed to open Amlogic Codec");
 
-      m_videoBufferPool = std::shared_ptr<CAMLVideoBufferPool>(new CAMLVideoBufferPool());
+      m_videoBufferPool = std::make_shared<CAMLVideoBufferPool>();
 
       m_opened = true;
       set_osd_max = true;
