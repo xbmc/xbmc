@@ -108,11 +108,11 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
                                  vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
 
     m_viewModeChanged = true;
-    GetSettingsManager()->SetNumber(SETTING_VIDEO_ZOOM, static_cast<double>(vs.m_CustomZoomAmount));
+    GetSettingsManager()->SetNumber(SETTING_VIDEO_ZOOM, vs.m_CustomZoomAmount);
     GetSettingsManager()->SetNumber(SETTING_VIDEO_PIXEL_RATIO,
-                                    static_cast<double>(vs.m_CustomPixelRatio));
+                                    vs.m_CustomPixelRatio);
     GetSettingsManager()->SetNumber(SETTING_VIDEO_VERTICAL_SHIFT,
-                                    static_cast<double>(vs.m_CustomVerticalShift));
+                                    vs.m_CustomVerticalShift);
     GetSettingsManager()->SetBool(SETTING_VIDEO_NONLIN_STRETCH, vs.m_CustomNonLinStretch);
     m_viewModeChanged = false;
   }
@@ -367,7 +367,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
     {
       method = appPlayer->GetDeinterlacingMethodDefault();
     }
-    AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, SettingLevel::Basic, static_cast<int>(method), entries);
+    AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, SettingLevel::Basic, method, entries);
   }
 
   entries.clear();
@@ -400,7 +400,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
       it = entries.erase(it);
   }
 
-  AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, SettingLevel::Basic, static_cast<int>(videoSettings.m_ScalingMethod), entries);
+  AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, SettingLevel::Basic, videoSettings.m_ScalingMethod, entries);
 
   AddVideoStreams(groupVideoStream, SETTING_VIDEO_STREAM);
 

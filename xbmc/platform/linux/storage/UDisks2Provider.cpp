@@ -217,7 +217,7 @@ CUDisks2Provider::CUDisks2Provider()
     return;
   }
 
-  dbus_connection_set_exit_on_disconnect(m_connection, static_cast<dbus_bool_t>(false));
+  dbus_connection_set_exit_on_disconnect(m_connection, false);
 
   CDBusError error;
   dbus_bus_add_match(m_connection, UDISKS2_MATCH_RULE, error);

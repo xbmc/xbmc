@@ -205,7 +205,7 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             NPT_String uuid = (*device)->GetUUID();
 
             CFileItemPtr pItem(new CFileItem((const char*)name));
-            pItem->SetPath(std::string((const char*) "upnp://" + uuid + "/"));
+            pItem->SetPath(std::string("upnp://" + uuid + "/"));
             pItem->m_bIsFolder = true;
             pItem->SetArt("thumb", (const char*)(*device)->GetIconUrl("image/png"));
 
@@ -315,13 +315,13 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
             std::string id;
             if ((*entry)->m_ReferenceID.IsEmpty())
-                id = (const char*) (*entry)->m_ObjectID;
+                id = (*entry)->m_ObjectID;
             else
-                id = (const char*) (*entry)->m_ReferenceID;
+                id = (*entry)->m_ReferenceID;
 
             id = CURL::Encode(id);
             URIUtils::AddSlashAtEnd(id);
-            pItem->SetPath(std::string((const char*) "upnp://" + uuid + "/" + id.c_str()));
+            pItem->SetPath(std::string("upnp://" + uuid + "/" + id.c_str()));
 
             items.Add(pItem);
 

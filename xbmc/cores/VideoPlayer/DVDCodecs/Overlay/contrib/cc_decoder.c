@@ -368,7 +368,7 @@ static void ccbuf_apply_attribute(cc_buffer_t *buf, cc_attribute_t *attr)
   rowbuf->attr_chg = 1;
   rowbuf->cells[pos].attributes = *attr;
   /* A midrow attribute always counts as a space */
-  ccbuf_add_char(buf, (unsigned int)' ', CCSET_BASIC_AMERICAN);
+  ccbuf_add_char(buf, ' ', CCSET_BASIC_AMERICAN);
 }
 
 
@@ -500,7 +500,7 @@ void ccmem_tobuf(cc_decoder_t *dec)
         else
         {
           // ascii char
-          dec->text[dec->textlen++] = (unsigned char)buf->rows[i].cells[j].c;
+          dec->text[dec->textlen++] = buf->rows[i].cells[j].c;
         }
       }
       dec->text[dec->textlen++] = '\n';
@@ -878,7 +878,7 @@ void decode_cc(cc_decoder_t *dec, const uint8_t *buffer, uint32_t buf_len)
 
 cc_decoder_t *cc_decoder_open()
 {
-  cc_decoder_t *dec = (cc_decoder_t *) calloc(1, sizeof (cc_decoder_t));
+  cc_decoder_t *dec = calloc(1, sizeof (cc_decoder_t));
   if (!dec)
     return NULL;
 

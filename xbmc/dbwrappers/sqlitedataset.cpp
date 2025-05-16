@@ -795,7 +795,7 @@ bool SqliteDataset::dropIndex(const char* table, const char* index)
 {
   std::string sql;
 
-  sql = static_cast<SqliteDatabase*>(db)->prepare("DROP INDEX IF EXISTS %s", index);
+  sql = db->prepare("DROP INDEX IF EXISTS %s", index);
 
   return (exec(sql) == SQLITE_OK);
 }

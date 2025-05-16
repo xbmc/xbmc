@@ -155,7 +155,7 @@ bool CWinSystemAmlogicGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!m_pGLContext.CreateSurface(static_cast<EGLNativeWindowType>(m_nativeWindow)))
+  if (!m_pGLContext.CreateSurface(m_nativeWindow))
   {
     return false;
   }

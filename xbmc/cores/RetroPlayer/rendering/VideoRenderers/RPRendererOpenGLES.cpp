@@ -293,7 +293,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
 
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+                        offsetof(PackedVertex, x));
   glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
                         reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 

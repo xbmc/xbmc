@@ -93,7 +93,7 @@ std::string CCPUInfo::GetCoresUsageAltString()
     }
     else
     {
-      strCores += StringUtils::Format("{:02d}", static_cast<int>(m_lastUsedPercentage));
+      strCores += StringUtils::Format("{:02d}", m_lastUsedPercentage);
     }
   }
 

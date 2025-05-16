@@ -103,7 +103,7 @@ void CGUIFont::DrawText(float x,
   if (clip && ClippedRegionIsEmpty(context, x, y, maxPixelWidth, alignment))
     return;
 
-  maxPixelWidth = ROUND(static_cast<double>(maxPixelWidth / context.GetGUIScaleX()));
+  maxPixelWidth = ROUND(maxPixelWidth / context.GetGUIScaleX());
   std::vector<UTILS::COLOR::Color> renderColors;
   renderColors.reserve(colors.size());
   for (const auto& color : colors)
@@ -209,9 +209,8 @@ void CGUIFont::DrawScrollingText(float x,
   assert(scrollInfo.m_totalWidth != 0);
 
   float textPixelWidth =
-      ROUND(static_cast<double>(scrollInfo.m_textWidth / context.GetGUIScaleX()));
-  float suffixPixelWidth = ROUND(static_cast<double>(
-      (scrollInfo.m_totalWidth - scrollInfo.m_textWidth) / context.GetGUIScaleX()));
+      ROUND(scrollInfo.m_textWidth / context.GetGUIScaleX());
+  float suffixPixelWidth = ROUND((scrollInfo.m_totalWidth - scrollInfo.m_textWidth) / context.GetGUIScaleX());
 
   float offset;
   if (scrollInfo.m_pixelSpeed >= 0)

@@ -322,7 +322,7 @@ void CRenderSystemGLES::Project(float &x, float &y, float &z)
   if (CMatrixGL::Project(x, y, z, glMatrixModview.Get(), glMatrixProject.Get(), m_viewPort, &coordX, &coordY, &coordZ))
   {
     x = coordX;
-    y = (float)(m_viewPort[1] + m_viewPort[3] - coordY);
+    y = m_viewPort[1] + m_viewPort[3] - coordY;
     z = 0;
   }
 }
@@ -383,10 +383,10 @@ void CRenderSystemGLES::SetScissors(const CRect &rect)
 {
   if (!m_bRenderCreated)
     return;
-  GLint x1 = MathUtils::round_int(static_cast<double>(rect.x1));
-  GLint y1 = MathUtils::round_int(static_cast<double>(rect.y1));
-  GLint x2 = MathUtils::round_int(static_cast<double>(rect.x2));
-  GLint y2 = MathUtils::round_int(static_cast<double>(rect.y2));
+  GLint x1 = MathUtils::round_int(rect.x1);
+  GLint y1 = MathUtils::round_int(rect.y1);
+  GLint x2 = MathUtils::round_int(rect.x2);
+  GLint y2 = MathUtils::round_int(rect.y2);
   glScissor(x1, m_height - y2, x2-x1, y2-y1);
 }
 

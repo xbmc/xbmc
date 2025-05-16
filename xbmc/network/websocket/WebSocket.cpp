@@ -208,7 +208,7 @@ CWebSocketFrame::CWebSocketFrame(WebSocketFrameOpcode opcode, const char* data /
     else
     {
       applicationDataOffset = buffer.size();
-      buffer.append(data, (unsigned int)length);
+      buffer.append(data, length);
     }
   }
 

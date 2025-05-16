@@ -148,7 +148,7 @@ int CRenderContext::GUIShaderGetPos()
 #elif HAS_GLES >= 2
   auto renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    return static_cast<int>(renderingGLES->GUIShaderGetPos());
+    return renderingGLES->GUIShaderGetPos();
 #endif
 
   return -1;
@@ -163,7 +163,7 @@ int CRenderContext::GUIShaderGetCoord0()
 #elif HAS_GLES >= 2
   auto renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    return static_cast<int>(renderingGLES->GUIShaderGetCoord0());
+    return renderingGLES->GUIShaderGetCoord0();
 #endif
 
   return -1;
@@ -178,7 +178,7 @@ int CRenderContext::GUIShaderGetUniCol()
 #elif HAS_GLES >= 2
   auto renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    return static_cast<int>(renderingGLES->GUIShaderGetUniCol());
+    return renderingGLES->GUIShaderGetUniCol();
 #endif
 
   return -1;

@@ -796,7 +796,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
       // are either no more schemas in the "items"
       // array or no more elements in the value's array
       unsigned int arrayIndex;
-      for (arrayIndex = 0; arrayIndex < std::min(items.size(), (size_t)value.size()); arrayIndex++)
+      for (arrayIndex = 0; arrayIndex < std::min(items.size(), value.size()); arrayIndex++)
       {
         JSONRPC_STATUS status = items.at(arrayIndex)->Check(value[arrayIndex], outputValue[arrayIndex], errorData["property"]);
         if (status != OK)
@@ -1279,7 +1279,7 @@ JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator
 
 unsigned int JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::size() const
 {
-  return static_cast<unsigned int>(m_propertiesmap.size());
+  return m_propertiesmap.size();
 }
 
 JsonRpcMethod::JsonRpcMethod()
@@ -1727,7 +1727,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
   }
   definition->enums.insert(definition->enums.begin(), values.begin(), values.end());
 
-  int schemaType = (int)AnyValue;
+  int schemaType = AnyValue;
   for (unsigned int index = 0; index < types.size(); index++)
   {
     JSONSchemaType currentType;

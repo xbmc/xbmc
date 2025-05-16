@@ -688,7 +688,7 @@ private:
                                ->PerformDeviceScan(peripherals);
     if (err == PERIPHERAL_NO_ERROR)
     {
-      *peripheral_count = static_cast<unsigned int>(peripherals.size());
+      *peripheral_count = peripherals.size();
       kodi::addon::Peripherals::ToStructs(peripherals, scan_results);
     }
 
@@ -717,7 +717,7 @@ private:
                                ->GetEvents(peripheralEvents);
     if (err == PERIPHERAL_NO_ERROR)
     {
-      *event_count = static_cast<unsigned int>(peripheralEvents.size());
+      *event_count = peripheralEvents.size();
       kodi::addon::PeripheralEvents::ToStructs(peripheralEvents, events);
     }
 
@@ -821,7 +821,7 @@ private:
                                ->GetFeatures(addonJoystick, controller_id, featuresVector);
     if (err == PERIPHERAL_NO_ERROR)
     {
-      *feature_count = static_cast<unsigned int>(featuresVector.size());
+      *feature_count = featuresVector.size();
       kodi::addon::JoystickFeatures::ToStructs(featuresVector, features);
     }
 
@@ -873,7 +873,7 @@ private:
                                ->GetIgnoredPrimitives(addonJoystick, primitiveVector);
     if (err == PERIPHERAL_NO_ERROR)
     {
-      *primitive_count = static_cast<unsigned int>(primitiveVector.size());
+      *primitive_count = primitiveVector.size();
       kodi::addon::DriverPrimitives::ToStructs(primitiveVector, primitives);
     }
 

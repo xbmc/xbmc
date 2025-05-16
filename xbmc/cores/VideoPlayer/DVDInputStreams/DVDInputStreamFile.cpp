@@ -100,7 +100,7 @@ int CDVDInputStreamFile::Read(uint8_t* buf, int buf_size)
   if (ret == 0)
     m_eof = true;
 
-  return (int)ret;
+  return ret;
 }
 
 int64_t CDVDInputStreamFile::Seek(int64_t offset, int whence)

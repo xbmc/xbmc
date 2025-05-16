@@ -171,7 +171,7 @@ int64_t CPosixFile::Seek(int64_t iFilePosition, int iWhence /* = SEEK_SET*/)
   //! Android special case: Android doesn't substitute off64_t for off_t and similar functions
   m_filePos = lseek64(m_fd, (off64_t)iFilePosition, iWhence);
 #else  // !TARGET_ANDROID
-  const off_t filePosOffT = (off_t) iFilePosition;
+  const off_t filePosOffT = iFilePosition;
   // check for parameter overflow
   if (sizeof(int64_t) != sizeof(off_t) && iFilePosition != filePosOffT)
     return -1;
@@ -187,7 +187,7 @@ int CPosixFile::Truncate(int64_t size)
   if (m_fd < 0)
     return -1;
 
-  const off_t sizeOffT = (off_t) size;
+  const off_t sizeOffT = size;
   // check for parameter overflow
   if (sizeof(int64_t) != sizeof(off_t) && size != sizeOffT)
     return -1;

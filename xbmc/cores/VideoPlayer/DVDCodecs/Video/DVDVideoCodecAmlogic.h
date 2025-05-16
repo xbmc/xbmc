@@ -77,7 +77,7 @@ public:
   virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
   virtual void SetSpeed(int iSpeed) override;
   virtual void SetCodecControl(int flags) override;
-  virtual const char* GetName(void) override { return (const char*)m_pFormatName; }
+  virtual const char* GetName(void) override { return m_pFormatName; }
   virtual bool SupportsExtention() { return true; }
 
 protected:

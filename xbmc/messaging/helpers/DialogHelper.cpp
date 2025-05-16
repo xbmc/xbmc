@@ -37,7 +37,7 @@ DialogResponse ShowYesNoCustomDialog(CVariant heading, CVariant text, CVariant n
   options.autoclose = autoCloseTimeout;
 
   switch (CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1,
-                                                     static_cast<void*>(&options)))
+                                                     &options))
   {
   case -1:
     return DialogResponse::CHOICE_CANCELLED;
@@ -70,7 +70,7 @@ DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant l
   options.autoclose = autoCloseTimeout;
 
   switch (CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1,
-                                                     static_cast<void*>(&options)))
+                                                     &options))
   {
   case -1:
     return DialogResponse::CHOICE_CANCELLED;

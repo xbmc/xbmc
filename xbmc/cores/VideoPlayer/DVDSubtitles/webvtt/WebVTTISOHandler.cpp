@@ -28,7 +28,7 @@
 
 namespace
 {
-constexpr int defaultSubDuration = 20 * static_cast<int>(DVD_TIME_BASE);
+constexpr int defaultSubDuration = 20 * DVD_TIME_BASE;
 // VTTEmptyCueBox
 constexpr uint32_t ISO_BOX_TYPE_VTTE = StreamUtils::MakeFourCC('v', 't', 't', 'e');
 // VTTCueBox

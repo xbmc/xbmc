@@ -154,7 +154,7 @@ void CGUIGameControllerList::UpdatePort(int itemNumber, const std::vector<std::s
 
   std::vector<std::shared_ptr<const CAgentController>> agentControllers =
       agentInput.GetControllers();
-  if (controllerIndex < static_cast<unsigned int>(agentControllers.size()))
+  if (controllerIndex < agentControllers.size())
   {
     const std::shared_ptr<const CAgentController>& agentController =
         agentControllers.at(controllerIndex);

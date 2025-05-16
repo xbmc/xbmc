@@ -89,7 +89,7 @@ CHTTPPythonHandler::CHTTPPythonHandler(const HTTPRequest &request)
   struct tm* time;
 #ifdef HAVE_LOCALTIME_R
   struct tm result = {};
-  time = localtime_r((time_t*)&statBuffer.st_mtime, &result);
+  time = localtime_r(&statBuffer.st_mtime, &result);
 #else
   time = localtime((time_t *)&statBuffer.st_mtime);
 #endif

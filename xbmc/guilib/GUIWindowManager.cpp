@@ -1138,7 +1138,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
       options.text = pMsg->param2;
       dialogOK->ShowAndGetInput(options);
     }
-    pMsg->SetResult(static_cast<int>(dialogOK->IsConfirmed()));
+    pMsg->SetResult(dialogOK->IsConfirmed());
   }
   break;
   }

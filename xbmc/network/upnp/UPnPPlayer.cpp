@@ -281,7 +281,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   timeout.Set(timeout.GetInitialTimeoutValue());
   NPT_CHECK_LABEL_SEVERE(m_control->SetAVTransportURI(m_delegate->m_device, m_delegate->m_instance,
                                                       obj->m_Resources[res_index].m_Uri,
-                                                      (const char*)tmp, m_delegate.get()),
+                                                      tmp, m_delegate.get()),
                          failed_setavtransporturi);
   NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout), failed_setavtransporturi);
   NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed_setavtransporturi);
@@ -434,7 +434,7 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
 
   NPT_CHECK_LABEL_WARNING(
       m_control->SetNextAVTransportURI(m_delegate->m_device, m_delegate->m_instance,
-                                       file.GetPath().c_str(), (const char*)tmp, m_delegate.get()),
+                                       file.GetPath().c_str(), tmp, m_delegate.get()),
       failed);
   if (!m_delegate->m_resevent.Wait(10000ms))
     goto failed;
@@ -521,7 +521,7 @@ void CUPnPPlayer::SeekPercentage(float percent)
 {
   int64_t tot = GetTotalTime();
   if (tot)
-    SeekTime((int64_t)(tot * percent / 100));
+    SeekTime(tot * percent / 100);
 }
 
 void CUPnPPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)

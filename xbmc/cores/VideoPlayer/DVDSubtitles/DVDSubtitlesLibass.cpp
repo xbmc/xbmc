@@ -286,7 +286,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
   // from: >1 tighter pixels, <1 wider pixels
   // to: <1 tighter pixels, >1 wider pixels
   float par = (opts.m_par - 2.0f) * -1;
-  ass_set_pixel_aspect(m_renderer, static_cast<double>(par));
+  ass_set_pixel_aspect(m_renderer, par);
 
   ass_set_frame_size(m_renderer, static_cast<int>(opts.frameWidth),
                      static_cast<int>(opts.frameHeight));
@@ -330,7 +330,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
     fontScale *= std::max(opts.frameHeight / opts.videoHeight, 1.0f);
   }
 
-  ass_set_font_scale(m_renderer, static_cast<double>(fontScale));
+  ass_set_font_scale(m_renderer, fontScale);
 
   ass_set_line_position(m_renderer, opts.position);
 
@@ -375,7 +375,7 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
 
     // PlayResY and PlayResX are mandatory but some out-of-spec files do not specify them
     // if both PlayRes are not specified libass fallback to 288x384
-    double playResY = static_cast<double>(m_track->PlayResY);
+    double playResY = m_track->PlayResY;
     if (m_track->PlayResY == 0 && m_track->PlayResX == 0)
     {
       CLog::LogF(LOGWARNING, "PlayResX and PlayResY are not defined in subtitle file. This may "

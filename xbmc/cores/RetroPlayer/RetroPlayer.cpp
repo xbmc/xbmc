@@ -342,7 +342,7 @@ void CRetroPlayer::SeekPercentage(float fPercent /* = 0 */)
 
   uint64_t totalTime = GetTotalTime();
   if (totalTime != 0)
-    SeekTime(static_cast<int64_t>(totalTime * fPercent / 100.0f));
+    SeekTime(totalTime * fPercent / 100.0f);
 }
 
 float CRetroPlayer::GetCachePercentage() const
@@ -399,7 +399,7 @@ void CRetroPlayer::SetSpeed(float speed)
     else if (speed == 0.0f)
       m_callback.OnPlayBackPaused();
 
-    SetSpeedInternal(static_cast<double>(speed));
+    SetSpeedInternal(speed);
 
     if (speed == 0.0f)
     {

@@ -517,7 +517,7 @@ bool CGUIWindowPVRBase::InitChannelGroup()
 
     if (m_channelGroup != group)
     {
-      m_viewControl.SetSelectedItem(0);
+      m_viewControl.SetSelectedItem(static_cast<int>(0));
       SetChannelGroup(std::move(group), false);
     }
     // Path might have changed since last init. Set it always, not just on group change.

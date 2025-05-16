@@ -328,7 +328,7 @@ void CRenderer::ResetSubtitlePosition()
   {
     // The position must be relative to the screen frame
     m_subtitleVerticalMargin = static_cast<int>(
-        static_cast<float>(m_rv.Height()) / 100 *
+        m_rv.Height() / 100 *
         CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc());
 
     m_subtitlePosResInfo = static_cast<int>(m_rv.Height());
@@ -464,9 +464,9 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
     // match the bar, this calculation compensates for the displacement.
     // Note also that the displacement compensation will cause a different
     // default position of the text, different from the other alignment positions
-    double posPx = static_cast<double>(m_subtitlePosition - resInfo.Overscan.top);
+    double posPx = m_subtitlePosition - resInfo.Overscan.top;
 
-    double frameHeight = static_cast<double>(rOpts.frameHeight);
+    double frameHeight = rOpts.frameHeight;
 
     if (m_stereomode == "top_bottom" || m_stereomode == "bottom_top")
     {
@@ -489,7 +489,7 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
     // To keep consistent the position of text as other alignment positions
     // we avoid apply the displacement compensation
     double posPx =
-        static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin - resInfo.Overscan.top);
+        m_subtitlePosition + m_subtitleVerticalMargin - resInfo.Overscan.top;
     rOpts.position = 100 - posPx / static_cast<double>(rOpts.frameHeight) * 100;
   }
   else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE ||

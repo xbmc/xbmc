@@ -721,8 +721,8 @@ bool CRenderManager::CalcOverlayActiveArea(CRect& src, CRect& dst)
     return false;
 
   // Calculate scaling factors from source to destination
-  float scaleX = static_cast<float>(dst.Width()) / src.Width();
-  float scaleY = static_cast<float>(dst.Height()) / src.Height();
+  float scaleX = dst.Width() / src.Width();
+  float scaleY = dst.Height() / src.Height();
 
   // Create active area rectangle based on scaled offsets
   const auto& doviMeta = m_dataCacheCore.GetVideoDoViFrameMetadata();
@@ -1416,7 +1416,7 @@ void CRenderManager::CheckEnableClockSync()
 
   if (m_fps != 0)
   {
-    double fps = static_cast<double>(m_fps);
+    double fps = m_fps;
     double refreshrate, clockspeed;
     int missedvblanks;
     if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))

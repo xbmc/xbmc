@@ -213,7 +213,7 @@ bool CDVDInputStreamNavigator::Open()
   if (language_subtitle[0] == '\0') strcpy(language_subtitle, "en");
 
   // set default language settings
-  if (m_dll.dvdnav_menu_language_select(m_dvdnav, (char*)language_menu) != DVDNAV_STATUS_OK)
+  if (m_dll.dvdnav_menu_language_select(m_dvdnav, language_menu) != DVDNAV_STATUS_OK)
   {
     CLog::Log(LOGERROR, "Error on setting default menu language: {}",
               m_dll.dvdnav_err_to_string(m_dvdnav));
@@ -222,7 +222,7 @@ bool CDVDInputStreamNavigator::Open()
     m_dll.dvdnav_menu_language_select(m_dvdnav, const_cast<char*>("en"));
   }
 
-  if (m_dll.dvdnav_audio_language_select(m_dvdnav, (char*)language_audio) != DVDNAV_STATUS_OK)
+  if (m_dll.dvdnav_audio_language_select(m_dvdnav, language_audio) != DVDNAV_STATUS_OK)
   {
     CLog::Log(LOGERROR, "Error on setting default audio language: {}",
               m_dll.dvdnav_err_to_string(m_dvdnav));
@@ -231,7 +231,7 @@ bool CDVDInputStreamNavigator::Open()
     m_dll.dvdnav_audio_language_select(m_dvdnav, const_cast<char*>("en"));
   }
 
-  if (m_dll.dvdnav_spu_language_select(m_dvdnav, (char*)language_subtitle) != DVDNAV_STATUS_OK)
+  if (m_dll.dvdnav_spu_language_select(m_dvdnav, language_subtitle) != DVDNAV_STATUS_OK)
   {
     CLog::Log(LOGERROR, "Error on setting default subtitle language: {}",
               m_dll.dvdnav_err_to_string(m_dvdnav));
@@ -620,7 +620,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 
         m_iTime = (int) ( m_dll.dvdnav_get_current_time(m_dvdnav)  / 90 );
 
-        iNavresult = m_pVideoPlayer->OnDiscNavResult((void*)pci, DVDNAV_NAV_PACKET);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult(pci, DVDNAV_NAV_PACKET);
       }
       break;
 
@@ -1307,7 +1307,7 @@ void CDVDInputStreamNavigator::EnableSubtitleStream(bool bEnable)
   if (!m_dvdnav)
     return;
 
-  m_dll.dvdnav_toggle_spu_stream(m_dvdnav, static_cast<uint8_t>(bEnable));
+  m_dll.dvdnav_toggle_spu_stream(m_dvdnav, bEnable);
 }
 
 bool CDVDInputStreamNavigator::IsSubtitleStreamEnabled()

@@ -566,7 +566,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iSpecialSortEpisode;
     ar << m_iBookmarkId;
     ar << m_iTrack;
-    ar << dynamic_cast<IArchivable&>(m_streamDetails);
+    ar << m_streamDetails;
     ar << m_showLink;
     ar << static_cast<int>(m_namedSeasons.size());
     for (const auto& namedSeason : m_namedSeasons)
@@ -686,7 +686,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
-    ar >> dynamic_cast<IArchivable&>(m_streamDetails);
+    ar >> m_streamDetails;
     ar >> m_showLink;
 
     int namedSeasonSize;

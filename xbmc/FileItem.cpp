@@ -2425,7 +2425,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
 bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */)
 {
   // assign all CFileItem parts
-  *static_cast<CFileItem*>(this) = static_cast<const CFileItem&>(items);
+  *static_cast<CFileItem*>(this) = items;
 
   // assign the rest of the CFileItemList properties
   m_replaceListing  = items.m_replaceListing;
@@ -2604,19 +2604,19 @@ void CFileItemList::Archive(CArchive& ar)
 
     ar << m_fastLookup;
 
-    ar << (int)m_sortDescription.sortBy;
-    ar << (int)m_sortDescription.sortOrder;
-    ar << (int)m_sortDescription.sortAttributes;
+    ar << m_sortDescription.sortBy;
+    ar << m_sortDescription.sortOrder;
+    ar << m_sortDescription.sortAttributes;
     ar << m_sortIgnoreFolders;
-    ar << (int)m_cacheToDisc;
+    ar << m_cacheToDisc;
 
     ar << (int)m_sortDetails.size();
     for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
     {
       const GUIViewSortDetails &details = m_sortDetails[j];
-      ar << (int)details.m_sortDescription.sortBy;
-      ar << (int)details.m_sortDescription.sortOrder;
-      ar << (int)details.m_sortDescription.sortAttributes;
+      ar << details.m_sortDescription.sortBy;
+      ar << details.m_sortDescription.sortOrder;
+      ar << details.m_sortDescription.sortAttributes;
       ar << details.m_buttonLabel;
       ar << details.m_labelMasks.m_strLabelFile;
       ar << details.m_labelMasks.m_strLabelFolder;

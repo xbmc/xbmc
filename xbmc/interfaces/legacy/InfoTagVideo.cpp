@@ -270,7 +270,7 @@ namespace XBMCAddon
 
     double InfoTagVideo::getRating(const String& type /* = "" */)
     {
-      return static_cast<double>(infoTag->GetRating(type).rating);
+      return infoTag->GetRating(type).rating;
     }
 
     int InfoTagVideo::getUserRating()

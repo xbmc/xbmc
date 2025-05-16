@@ -387,11 +387,11 @@ short field_value::get_asShort() const
     }
     case ft_Boolean:
     {
-      return (short)bool_value;
+      return bool_value;
     }
     case ft_Char:
     {
-      return (short)char_value;
+      return char_value;
     }
     case ft_Short:
     {
@@ -436,7 +436,7 @@ unsigned short field_value::get_asUShort() const
     }
     case ft_Boolean:
     {
-      return (unsigned short)bool_value;
+      return bool_value;
     }
     case ft_Char:
     {
@@ -485,19 +485,19 @@ int field_value::get_asInt() const
     }
     case ft_Boolean:
     {
-      return (int)bool_value;
+      return bool_value;
     }
     case ft_Char:
     {
-      return (int)char_value;
+      return char_value;
     }
     case ft_Short:
     {
-      return (int)short_value;
+      return short_value;
     }
     case ft_UShort:
     {
-      return (int)ushort_value;
+      return ushort_value;
     }
     case ft_Int:
     {
@@ -534,7 +534,7 @@ unsigned int field_value::get_asUInt() const
     }
     case ft_Boolean:
     {
-      return (unsigned int)bool_value;
+      return bool_value;
     }
     case ft_Char:
     {
@@ -546,7 +546,7 @@ unsigned int field_value::get_asUInt() const
     }
     case ft_UShort:
     {
-      return (unsigned int)ushort_value;
+      return ushort_value;
     }
     case ft_Int:
     {
@@ -583,19 +583,19 @@ float field_value::get_asFloat() const
     }
     case ft_Boolean:
     {
-      return (float)bool_value;
+      return bool_value;
     }
     case ft_Char:
     {
-      return (float)char_value;
+      return char_value;
     }
     case ft_Short:
     {
-      return (float)short_value;
+      return short_value;
     }
     case ft_UShort:
     {
-      return (float)ushort_value;
+      return ushort_value;
     }
     case ft_Int:
     {
@@ -632,35 +632,35 @@ double field_value::get_asDouble() const
     }
     case ft_Boolean:
     {
-      return (double)bool_value;
+      return bool_value;
     }
     case ft_Char:
     {
-      return (double)char_value;
+      return char_value;
     }
     case ft_Short:
     {
-      return (double)short_value;
+      return short_value;
     }
     case ft_UShort:
     {
-      return (double)ushort_value;
+      return ushort_value;
     }
     case ft_Int:
     {
-      return (double)int_value;
+      return int_value;
     }
     case ft_UInt:
     {
-      return (double)uint_value;
+      return uint_value;
     }
     case ft_Float:
     {
-      return (double)float_value;
+      return float_value;
     }
     case ft_Double:
     {
-      return (double)double_value;
+      return double_value;
     }
     case ft_Int64:
     {
@@ -681,31 +681,31 @@ int64_t field_value::get_asInt64() const
     }
     case ft_Boolean:
     {
-      return (int64_t)bool_value;
+      return bool_value;
     }
     case ft_Char:
     {
-      return (int64_t)char_value;
+      return char_value;
     }
     case ft_Short:
     {
-      return (int64_t)short_value;
+      return short_value;
     }
     case ft_UShort:
     {
-      return (int64_t)ushort_value;
+      return ushort_value;
     }
     case ft_Int:
     {
-      return (int64_t)int_value;
+      return int_value;
     }
     case ft_UInt:
     {
-      return (int64_t)uint_value;
+      return uint_value;
     }
     case ft_Float:
     {
-      return (int64_t)float_value;
+      return float_value;
     }
     case ft_Double:
     {

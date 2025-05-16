@@ -33,7 +33,7 @@ bool CGameClientStreamAudio::OpenStream(RETRO::IRetroPlayerStream* stream,
       TranslateProperties(properties.audio, m_sampleRate));
   if (audioProperties)
   {
-    if (audioStream->OpenStream(static_cast<const RETRO::StreamProperties&>(*audioProperties)))
+    if (audioStream->OpenStream(*audioProperties))
       m_stream = stream;
   }
 
@@ -60,7 +60,7 @@ void CGameClientStreamAudio::AddData(const game_stream_packet& packet)
 
     RETRO::AudioStreamPacket audioPacket{audio.data, audio.size};
 
-    m_stream->AddStreamData(static_cast<RETRO::StreamPacket&>(audioPacket));
+    m_stream->AddStreamData(audioPacket);
   }
 }
 

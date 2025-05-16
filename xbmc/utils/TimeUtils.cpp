@@ -52,7 +52,7 @@ int64_t CurrentHostFrequency(void)
   QueryPerformanceFrequency(&Frequency);
   return( (int64_t)Frequency.QuadPart );
 #else
-  return( (int64_t)1000000000L );
+  return 1000000000L;
 #endif
 }
 

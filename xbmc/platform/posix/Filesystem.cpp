@@ -53,9 +53,9 @@ space_info space(const std::string& path, std::error_code& ec)
     sp.free = static_cast<uintmax_t>(-1);
     return sp;
   }
-  sp.available = static_cast<uintmax_t>(fsInfo.f_bavail * fsInfo.f_bsize);
-  sp.capacity = static_cast<uintmax_t>(fsInfo.f_blocks * fsInfo.f_bsize);
-  sp.free = static_cast<uintmax_t>(fsInfo.f_bfree * fsInfo.f_bsize);
+  sp.available = fsInfo.f_bavail * fsInfo.f_bsize;
+  sp.capacity = fsInfo.f_blocks * fsInfo.f_bsize;
+  sp.free = fsInfo.f_bfree * fsInfo.f_bsize;
 
   return sp;
 }

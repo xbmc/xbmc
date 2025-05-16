@@ -952,7 +952,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO &res)
       case 23:
       case 29:
       case 59:
-        res.fRefreshRate = (float)((rrate + 1)/1.001f);
+        res.fRefreshRate = (rrate + 1)/1.001f;
         break;
       default:
         res.fRefreshRate = (float)rrate;
@@ -1484,5 +1484,5 @@ void aml_pin_thread_to_core(unsigned int core_id) {
   int ret_affinity = pthread_setaffinity_np(tid, sizeof(cpu_set_t), &cpuset);
 
   logM(LOGINFO, "AMLUtils", "pin thread:[{}]-[{}] to core id:[{}] ret-affinity:[{}]",
-                            static_cast<unsigned long>(tid), name, core_id, ret_affinity);
+                            tid, name, core_id, ret_affinity);
 }

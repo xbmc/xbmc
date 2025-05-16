@@ -1304,8 +1304,7 @@ void CVideoPlayer::Prepare()
   {
     if (m_playerOptions.startpercent > 0 && m_pDemuxer)
     {
-      int playerStartTime = static_cast<int>((static_cast<double>(
-          m_pDemuxer->GetStreamLength() * (m_playerOptions.startpercent / 100.0))));
+      int playerStartTime = static_cast<int>(m_pDemuxer->GetStreamLength() * (m_playerOptions.startpercent / 100.0));
       starttime = m_Edl.GetTimeAfterRestoringCuts(playerStartTime);
     }
     else
@@ -1768,7 +1767,7 @@ void CVideoPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
   CLog::Log(LOGDEBUG, "CVideoPlayer::ProcessVideoData size:{:d} dts:{:.3f} pts:{:.3f} dur:{:.3f}ms, clock:{:.3f} level:{:d}",
     pPacket->iSize, pPacket->dts/DVD_TIME_BASE, pPacket->pts/DVD_TIME_BASE, pPacket->duration/1000.0,
-    static_cast<double>(m_clock.GetClock()/DVD_TIME_BASE), m_VideoPlayerVideo->GetLevel());
+    m_clock.GetClock()/DVD_TIME_BASE, m_VideoPlayerVideo->GetLevel());
 
   m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgDemuxerPacket>(pPacket, drop));
 
@@ -2212,7 +2211,7 @@ void CVideoPlayer::HandlePlaySpeed()
           error /= errorwin;
         }
         CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoPlayer::Process - ffd/rwd: lastpts:{:.3f} clock:{:.3f} lastseekpts:{:.3f} speed:{:d} error:{:.3f}",
-          m_SpeedState.lastpts / 1000000.0, m_clock.GetClock() / 1000000.0, m_SpeedState.lastseekpts / 1000000.0, (int)m_playSpeed, error / 1000000.0);
+          m_SpeedState.lastpts / 1000000.0, m_clock.GetClock() / 1000000.0, m_SpeedState.lastseekpts / 1000000.0, m_playSpeed, error / 1000000.0);
 
         if (std::abs(error) > DVD_MSEC_TO_TIME(1000))
         {
@@ -3471,7 +3470,7 @@ void CVideoPlayer::SeekPercentage(float iPercent)
   if (!iTotalTime)
     return;
 
-  SeekTime((int64_t)(iTotalTime * iPercent / 100));
+  SeekTime(iTotalTime * iPercent / 100);
 }
 
 float CVideoPlayer::GetPercentage()
@@ -4649,7 +4648,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
             {
               CServiceBroker::GetAppMessenger()->PostMsg(
                   TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                  static_cast<void*>(new CAction(ACTION_TRIGGER_OSD)));
+                  new CAction(ACTION_TRIGGER_OSD));
               return false;
             }
           }

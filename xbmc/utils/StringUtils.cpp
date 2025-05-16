@@ -1107,7 +1107,7 @@ static wchar_t GetCollationWeight(const wchar_t& r)
   auto plane = planemap[index];
   if (plane == nullptr)
     return r;
-  return static_cast<wchar_t>(plane[r & 0xFF]);
+  return plane[r & 0xFF];
 }
 
 // Compares separately the numeric and alphabetic parts of a wide string.

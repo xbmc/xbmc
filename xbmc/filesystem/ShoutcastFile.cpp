@@ -358,7 +358,7 @@ void CShoutcastFile::Process()
           auto item = new CFileItem(*front.second); // will be deleted by msg receiver
           m_tags.pop();
           CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
-                                                     static_cast<void*>(item));
+                                                     item);
         }
       }
     }

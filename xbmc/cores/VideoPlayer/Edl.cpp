@@ -824,7 +824,7 @@ double CEdl::GetTimeAfterRestoringCuts(double seek) const
 
   for (const EDL::Edit& edit : m_vecEdits)
   {
-    double cutDuration = static_cast<double>(edit.end - edit.start);
+    double cutDuration = edit.end - edit.start;
     // add 1 ms to jump over the start boundary
     if (edit.action == Action::CUT && seek > edit.start + 1)
     {
@@ -930,7 +930,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
 
 std::string CEdl::MillisecondsToTimeString(const int iMilliseconds)
 {
-  std::string strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
+  std::string strTimeString = StringUtils::SecondsToTimeString(iMilliseconds / 1000, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
   strTimeString += StringUtils::Format(".{:03}", iMilliseconds % 1000);
   return strTimeString;
 }

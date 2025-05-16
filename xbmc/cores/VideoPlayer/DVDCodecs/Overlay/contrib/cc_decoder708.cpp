@@ -1107,7 +1107,7 @@ void decode_708 (const unsigned char *data, int datalength, cc708_service_decode
     case 0:
       // only use 608 as fallback
       if (!decoders[0].parent->m_seen708)
-        decode_cc(decoders[0].parent->m_cc608decoder, (const uint8_t*)data+i, 3);
+        decode_cc(decoders[0].parent->m_cc608decoder, data+i, 3);
       break;
     case 2:
       if (cc_valid==0) // This ends the previous packet if complete

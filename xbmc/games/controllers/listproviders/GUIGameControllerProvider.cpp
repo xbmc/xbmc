@@ -123,7 +123,7 @@ void CGUIGameControllerProvider::UpdateItems()
   ControllerPtr controller = m_controllerProfile;
 
   int portIndex = -1;
-  for (unsigned int i = 0; i < static_cast<unsigned int>(m_items.size()); ++i)
+  for (unsigned int i = 0; i < m_items.size(); ++i)
   {
     std::shared_ptr<CGUIListItem>& guiItem = m_items.at(i);
 

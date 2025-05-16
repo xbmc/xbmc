@@ -4162,7 +4162,7 @@ UTILS::COLOR::Color CTeletextDecoder::GetColorRGB(enumTeletextColor ttc)
   }
 
  /* Get colors for CLUTs 2+3 */
-  int index = (int)ttc;
+  int index = ttc;
   UTILS::COLOR::Color color = (m_RenderInfo.tr0[index] << 24) | (m_RenderInfo.bl0[index] << 16) |
                               (m_RenderInfo.gn0[index] << 8) | m_RenderInfo.rd0[index];
   return color;

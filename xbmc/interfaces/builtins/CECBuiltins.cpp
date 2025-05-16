@@ -38,7 +38,7 @@ static int ToggleState(const std::vector<std::string>& params)
 {
   bool result;
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_CECTOGGLESTATE, 0, 0,
-                                             static_cast<void*>(&result));
+                                             &result);
 
   return 0;
 }

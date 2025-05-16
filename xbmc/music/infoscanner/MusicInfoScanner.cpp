@@ -1268,9 +1268,9 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, std::string &hash
   {
     const CFileItemPtr pItem = items[i];
     digest.Update(pItem->GetPath());
-    digest.Update((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+    digest.Update(&pItem->m_dwSize, sizeof(pItem->m_dwSize));
     KODI::TIME::FileTime time = pItem->m_dateTime;
-    digest.Update((unsigned char*)&time, sizeof(KODI::TIME::FileTime));
+    digest.Update(&time, sizeof(KODI::TIME::FileTime));
     if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
@@ -1561,7 +1561,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     if (scraper.Succeeded() && scraper.GetAlbumCount() >= 1)
     {
       double bestRelevance = 0;
-      double minRelevance = static_cast<double>(THRESHOLD);
+      double minRelevance = THRESHOLD;
       if (pDialog || scraper.GetAlbumCount() > 1) // score the matches
       {
         //show dialog with all albums found
@@ -1578,7 +1578,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
         for (int i = 0; i < scraper.GetAlbumCount(); ++i)
         {
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
-          double relevance = static_cast<double>(info.GetRelevance());
+          double relevance = info.GetRelevance();
           if (relevance < 0)
             relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum,
                         info.GetAlbum().GetAlbumArtistString(),
@@ -1656,7 +1656,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       else
       {
         CMusicAlbumInfo& info = scraper.GetAlbum(0);
-        double relevance = static_cast<double>(info.GetRelevance());
+        double relevance = info.GetRelevance();
         if (relevance < 0)
           relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum,
                                             album.strAlbum,

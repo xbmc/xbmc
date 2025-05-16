@@ -1615,7 +1615,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_MOVETOSCREEN:
-    CServiceBroker::GetWinSystem()->MoveToScreen(static_cast<int>(pMsg->param1));
+    CServiceBroker::GetWinSystem()->MoveToScreen(pMsg->param1);
     break;
 
   case TMSG_MINIMIZE:
@@ -2923,12 +2923,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
         auto fileitemList = std::make_unique<CFileItemList>();
         fileitemList->Add(std::move(trailerItem));
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
-                                                   static_cast<void*>(fileitemList.release()));
+                                                   fileitemList.release());
       }
       else
       {
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0,
-                                                   static_cast<void*>(trailerItem.release()));
+                                                   trailerItem.release());
       }
       break;
     }
@@ -3503,7 +3503,7 @@ void CApplication::SeekTime( double dTime )
         item->SetStartOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
-        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0, item);
       }
       return;
     }

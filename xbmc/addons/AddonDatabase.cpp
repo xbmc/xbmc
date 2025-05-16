@@ -1023,7 +1023,7 @@ bool CAddonDatabase::DisableAddon(const std::string& addonID, AddonDisabledReaso
 
     const std::string sql =
         PrepareSQL("UPDATE installed SET enabled=0, disabledReason=%d WHERE addonID='%s'",
-                   static_cast<int>(disabledReason), addonID.c_str());
+                   disabledReason, addonID.c_str());
     m_pDS->exec(sql);
     return true;
   }
@@ -1122,7 +1122,7 @@ bool CAddonDatabase::AddUpdateRuleForAddon(const std::string& addonID, AddonUpda
 
     std::string sql =
         PrepareSQL("INSERT INTO update_rules(id, addonID, updateRule) VALUES(NULL, '%s', %d)",
-                   addonID.c_str(), static_cast<int>(updateRule));
+                   addonID.c_str(), updateRule);
     m_pDS->exec(sql);
     return true;
   }
@@ -1152,7 +1152,7 @@ bool CAddonDatabase::RemoveUpdateRuleForAddon(const std::string& addonID,
 
     if (updateRule != AddonUpdateRule::ANY)
     {
-      sql += PrepareSQL(" AND updateRule = %d", static_cast<int>(updateRule));
+      sql += PrepareSQL(" AND updateRule = %d", updateRule);
     }
 
     m_pDS->exec(sql);

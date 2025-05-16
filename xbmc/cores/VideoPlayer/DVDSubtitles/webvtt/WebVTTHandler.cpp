@@ -764,7 +764,7 @@ void CWebVTTHandler::CalculateTextPosition(std::string& subtitleText)
   }
   else if (settings->positionAlign == WebvttAlign::RIGHT) // line-right
   {
-    marginLeft = static_cast<int>(cuePosPixel - cueSizePixel);
+    marginLeft = cuePosPixel - cueSizePixel;
     marginRight = static_cast<int>(VIEWPORT_WIDTH - cuePosPixel);
   }
   else if (settings->positionAlign == WebvttAlign::CENTER)

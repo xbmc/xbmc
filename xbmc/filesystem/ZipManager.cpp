@@ -94,7 +94,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     return false;
   }
   int searchSize = (int) std::min(static_cast<int64_t>(65557), fileSize-ECDREC_SIZE+1);
-  int blockSize = (int) std::min(1024, searchSize);
+  int blockSize = std::min(1024, searchSize);
   int nbBlock = searchSize / blockSize;
   int extraBlockSize = searchSize % blockSize;
   // Signature is on 4 bytes

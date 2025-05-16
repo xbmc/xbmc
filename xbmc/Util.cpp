@@ -850,16 +850,16 @@ void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
   result->st_uid = stat->st_uid;
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
-  result->st_size = (int64_t)stat->st_size;
+  result->st_size = stat->st_size;
 
 #ifndef TARGET_POSIX
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
 #else
-  result->_st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
-  result->_st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
-  result->_st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+  result->_st_atime = stat->st_atime & 0xFFFFFFFF;
+  result->_st_mtime = stat->st_mtime & 0xFFFFFFFF;
+  result->_st_ctime = stat->st_ctime & 0xFFFFFFFF;
 #endif
 }
 
@@ -878,9 +878,9 @@ void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
 #else
-  result->_st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
-  result->_st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
-  result->_st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+  result->_st_atime = stat->st_atime & 0xFFFFFFFF;
+  result->_st_mtime = stat->st_mtime & 0xFFFFFFFF;
+  result->_st_ctime = stat->st_ctime & 0xFFFFFFFF;
 #endif
 }
 
@@ -942,9 +942,9 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
     result->st_size = 0;
     CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
   }
-  result->st_atime = (time_t)(stat->st_atime & 0xFFFFFFFF);
-  result->st_mtime = (time_t)(stat->st_mtime & 0xFFFFFFFF);
-  result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
+  result->st_atime = stat->st_atime & 0xFFFFFFFF;
+  result->st_mtime = stat->st_mtime & 0xFFFFFFFF;
+  result->st_ctime = stat->st_ctime & 0xFFFFFFFF;
 }
 
 #ifdef TARGET_WINDOWS
@@ -1542,7 +1542,7 @@ bool CUtil::MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t
   }
   // replace any additional /../../ with just /../ if necessary
   std::string replaceDots = StringUtils::Format("..{}..", cDelim);
-  while (StrInput.size() > (unsigned int)iTextMaxLength)
+  while (StrInput.size() > iTextMaxLength)
     if (!StringUtils::Replace(StrInput, replaceDots, ".."))
       break;
   // finally, truncate our string to force inside our max text length,
@@ -1550,7 +1550,7 @@ bool CUtil::MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t
 
   // eg end up with:
   // "smb://../Playboy Swimsuit Cal.."
-  if (iTextMaxLength > 2 && StrInput.size() > (unsigned int)iTextMaxLength)
+  if (iTextMaxLength > 2 && StrInput.size() > iTextMaxLength)
   {
     StrInput.erase(iTextMaxLength - 2);
     StrInput += "..";

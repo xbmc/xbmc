@@ -80,9 +80,9 @@ static uint16_t maximum_pq(const Hdr10PlusMetadata& meta, const PeakBrightnessSo
     case PeakBrightnessSource::MaxSclLuminance: {
 
       const auto& max_scl = meta.luminance[0].maxscl;
-      double r = static_cast<double>(max_scl[0]);
-      double g = static_cast<double>(max_scl[1]);
-      double b = static_cast<double>(max_scl[2]);
+      double r = max_scl[0];
+      double g = max_scl[1];
+      double b = max_scl[2];
       double luminance = (0.2627 * r) + (0.678 * g) + (0.0593 * b);
       return cast_pq(luminance / 10.0);
 

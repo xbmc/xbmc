@@ -253,7 +253,7 @@ bool CNetworkBase::WakeOnLan(const char* mac)
   saddr.sin_port = htons(9);
 
   unsigned int value = 1;
-  if (setsockopt (packet, SOL_SOCKET, SO_BROADCAST, (char*) &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
+  if (setsockopt (packet, SOL_SOCKET, SO_BROADCAST, &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
   {
     CLog::Log(LOGERROR, "{} - Unable to set socket options ({})", __FUNCTION__, strerror(errno));
     closesocket(packet);
@@ -270,7 +270,7 @@ bool CNetworkBase::WakeOnLan(const char* mac)
       *ptr++ = ethaddr[i];
 
   // Send the magic packet
-  if (sendto (packet, (char *)buf, 102, 0, (struct sockaddr *)&saddr, sizeof (saddr)) < 0)
+  if (sendto (packet, buf, 102, 0, (struct sockaddr *)&saddr, sizeof (saddr)) < 0)
   {
     CLog::Log(LOGERROR, "{} - Unable to send magic packet ({})", __FUNCTION__, strerror(errno));
     closesocket(packet);
@@ -325,7 +325,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
       int err_code = -1;
       socklen_t code_len = sizeof (err_code);
 
-      result = getsockopt(soc, SOL_SOCKET, SO_ERROR, (char*) &err_code, &code_len);
+      result = getsockopt(soc, SOL_SOCKET, SO_ERROR, &err_code, &code_len);
 
       if (result != 0)
         return "getsockopt fail";
@@ -430,8 +430,8 @@ std::vector<SOCKET> CreateTCPServerSocket(const int port, const bool bindLocal, 
     if (sock == INVALID_SOCKET)
       continue;
 
-    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&yes), sizeof(yes));
-    setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, reinterpret_cast<const char*>(&yes), sizeof(yes));
+    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+    setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, &yes, sizeof(yes));
 
     if (bind(sock, result->ai_addr, result->ai_addrlen) != 0)
     {

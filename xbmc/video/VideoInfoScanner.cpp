@@ -2239,7 +2239,7 @@ namespace VIDEO
         time = buffer.st_ctime;
       if (time)
       {
-        digest.Update((unsigned char *)&time, sizeof(time));
+        digest.Update(&time, sizeof(time));
         return digest.Finalize();
       }
     }
@@ -2277,7 +2277,7 @@ namespace VIDEO
 
     if (time)
     {
-      digest.Update((unsigned char *)&time, sizeof(time));
+      digest.Update(&time, sizeof(time));
       return digest.Finalize();
     }
     return "";

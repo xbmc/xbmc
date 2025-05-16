@@ -225,7 +225,7 @@ std::unique_ptr<CTexture> CTextureBundleXBT::ConvertFrameToTexture(const std::st
   { // unpack
     std::vector<unsigned char> unpacked(static_cast<size_t>(frame.GetUnpackedSize()));
     lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
-    if (lzo1x_decompress_safe(buffer.data(), static_cast<lzo_uint>(buffer.size()), unpacked.data(),
+    if (lzo1x_decompress_safe(buffer.data(), buffer.size(), unpacked.data(),
                               &s, NULL) != LZO_E_OK ||
         s != frame.GetUnpackedSize())
     {
@@ -283,7 +283,7 @@ std::vector<uint8_t> CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader,
 
   lzo_uint size = static_cast<lzo_uint>(frame.GetUnpackedSize());
   std::vector<uint8_t> unpackedBuffer(static_cast<size_t>(frame.GetUnpackedSize()));
-  if (lzo1x_decompress_safe(packedBuffer.data(), static_cast<lzo_uint>(packedBuffer.size()),
+  if (lzo1x_decompress_safe(packedBuffer.data(), packedBuffer.size(),
                             unpackedBuffer.data(), &size, nullptr) != LZO_E_OK ||
       size != frame.GetUnpackedSize())
   {

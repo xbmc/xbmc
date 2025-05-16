@@ -1120,7 +1120,7 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
   size_t backsize = 0;
   if(m_backsize)
   {
-    backsize = (size_t)std::min<ptrdiff_t>((ptrdiff_t)m_backsize, egptr()-eback());
+    backsize = (size_t)std::min<ptrdiff_t>(m_backsize, egptr()-eback());
     memmove(m_buffer, egptr()-backsize, backsize);
   }
 

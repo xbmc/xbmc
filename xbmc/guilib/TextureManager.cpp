@@ -528,7 +528,7 @@ void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
     auto winSystem = dynamic_cast<WIN_SYSTEM_CLASS*>(CServiceBroker::GetWinSystem());
     if (!winSystem->IsBackgrounded() || glIsTexture(m_unusedHwTextures[i]))
 #endif
-      glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);
+      glDeleteTextures(1, &m_unusedHwTextures[i]);
   }
 #endif
   m_unusedHwTextures.clear();

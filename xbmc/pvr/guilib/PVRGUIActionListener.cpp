@@ -84,7 +84,7 @@ void CPVRGUIActionListener::OnPVRManagerEvent(const PVREvent& event)
       // if GUI is ready, dispatch to GUI thread and handle the action there
       CServiceBroker::GetAppMessenger()->PostMsg(
           TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-          static_cast<void*>(new CAction(ACTION_PVR_ANNOUNCE_REMINDERS)));
+          new CAction(ACTION_PVR_ANNOUNCE_REMINDERS));
     }
   }
 }

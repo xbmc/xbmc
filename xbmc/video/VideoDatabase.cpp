@@ -3228,7 +3228,7 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
                              "iVideoHeight, iVideoDuration, strStereoMode, strVideoLanguage,  "
                              "strHdrType)"
                              "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s','%s')",
-                             idFile, (int)CStreamDetail::VIDEO, details.GetVideoCodec(i).c_str(),
+                             idFile, CStreamDetail::VIDEO, details.GetVideoCodec(i).c_str(),
                              static_cast<double>(details.GetVideoAspect(i)),
                              details.GetVideoWidth(i), details.GetVideoHeight(i),
                              details.GetVideoDuration(i), details.GetStereoMode(i).c_str(),
@@ -3240,7 +3240,7 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
         "(idFile, iStreamType, strAudioCodec, iAudioChannels, strAudioLanguage) "
         "VALUES (%i,%i,'%s',%i,'%s')",
-        idFile, (int)CStreamDetail::AUDIO,
+        idFile, CStreamDetail::AUDIO,
         details.GetAudioCodec(i).c_str(), details.GetAudioChannels(i),
         details.GetAudioLanguage(i).c_str()));
     }
@@ -3249,7 +3249,7 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
         "(idFile, iStreamType, strSubtitleLanguage) "
         "VALUES (%i,%i,'%s')",
-        idFile, (int)CStreamDetail::SUBTITLE,
+        idFile, CStreamDetail::SUBTITLE,
         details.GetSubtitleLanguage(i).c_str()));
     }
 
@@ -3342,7 +3342,7 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
       if (nullptr == m_pDS)
         return;
 
-      std::string strSQL=PrepareSQL("select * from bookmark where idFile=%i and type=%i order by timeInSeconds", idFile, (int)type);
+      std::string strSQL=PrepareSQL("select * from bookmark where idFile=%i and type=%i order by timeInSeconds", idFile, type);
       m_pDS->query( strSQL );
       while (!m_pDS->eof())
       {
@@ -3405,7 +3405,7 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
     std::string sql = PrepareSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
     m_pDS->exec(sql);
 
-    auto iType = static_cast<VideoDbContentType>(item.GetVideoContentType());
+    auto iType = item.GetVideoContentType();
     std::string content;
     switch (iType)
     {
@@ -3481,7 +3481,7 @@ void CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath, co
       /* get a bookmark within the same time as previous */
       double mintime = bookmark.timeInSeconds - 0.5;
       double maxtime = bookmark.timeInSeconds + 0.5;
-      strSQL=PrepareSQL("select idBookmark from bookmark where idFile=%i and type=%i and (timeInSeconds between %f and %f) and playerState='%s'", idFile, (int)type, mintime, maxtime, bookmark.playerState.c_str());
+      strSQL=PrepareSQL("select idBookmark from bookmark where idFile=%i and type=%i and (timeInSeconds between %f and %f) and playerState='%s'", idFile, type, mintime, maxtime, bookmark.playerState.c_str());
     }
 
     if (type != CBookmark::EPISODE)
@@ -3496,7 +3496,7 @@ void CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath, co
     if (idBookmark >= 0 )
       strSQL=PrepareSQL("update bookmark set timeInSeconds = %f, totalTimeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
     else
-      strSQL=PrepareSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, totalTimeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,%f,'%s','%s','%s', %i)", idFile, bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
+      strSQL=PrepareSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, totalTimeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,%f,'%s','%s','%s', %i)", idFile, bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), type);
 
     m_pDS->exec(strSQL);
   }
@@ -3566,7 +3566,7 @@ void CVideoDatabase::ClearBookMarksOfFile(int idFile, CBookmark::EType type /*= 
     if (nullptr == m_pDS)
       return;
 
-    std::string strSQL=PrepareSQL("delete from bookmark where idFile=%i and type=%i", idFile, (int)type);
+    std::string strSQL=PrepareSQL("delete from bookmark where idFile=%i and type=%i", idFile, type);
     m_pDS->exec(strSQL);
     if (type == CBookmark::EPISODE)
     {
@@ -6458,7 +6458,7 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
         m_pDS->query(PrepareSQL(sql +
           "INNER JOIN path ON files.idPath = path.idPath "
           "WHERE files.strFilename='%s' AND path.strPath='%s'",
-          (int)CBookmark::RESUME, filename.c_str(), path.c_str()));
+          CBookmark::RESUME, filename.c_str(), path.c_str()));
 
         if (!m_pDS->eof())
         {
@@ -6473,7 +6473,7 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
     else
     {
       //! @todo also test a single query for the above and below
-      sql = PrepareSQL(sql + "WHERE files.idPath=%i", (int)CBookmark::RESUME, pathID);
+      sql = PrepareSQL(sql + "WHERE files.idPath=%i", CBookmark::RESUME, pathID);
 
       if (RunQuery(sql) <= 0)
         return false;

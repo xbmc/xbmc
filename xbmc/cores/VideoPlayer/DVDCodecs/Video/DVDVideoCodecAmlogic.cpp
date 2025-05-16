@@ -24,7 +24,7 @@
 
 CAMLVideoBufferPool::~CAMLVideoBufferPool()
 {
-  logM(LOGDEBUG, "CAMLVideoBufferPool", "Deleting {:d} buffers", static_cast<unsigned int>(m_videoBuffers.size()));
+  logM(LOGDEBUG, "CAMLVideoBufferPool", "Deleting {:d} buffers", m_videoBuffers.size());
   for (auto buffer : m_videoBuffers)
     delete buffer;
 }

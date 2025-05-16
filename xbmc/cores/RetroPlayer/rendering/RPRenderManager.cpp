@@ -726,9 +726,9 @@ void CRPRenderManager::CopyFrame(IRenderBuffer* renderBuffer,
 
   if (target != nullptr)
   {
-    const unsigned int sourceStride = static_cast<unsigned int>(size / height);
+    const unsigned int sourceStride = size / height;
     const unsigned int targetStride =
-        static_cast<unsigned int>(renderBuffer->GetFrameSize() / renderBuffer->GetHeight());
+        renderBuffer->GetFrameSize() / renderBuffer->GetHeight();
 
     if (format == renderBuffer->GetFormat())
     {

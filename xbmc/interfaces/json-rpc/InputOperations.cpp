@@ -48,10 +48,10 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
 
     if (waitResult)
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                 static_cast<void*>(new CAction(actionID)));
+                                                 new CAction(actionID));
     else
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                 static_cast<void*>(new CAction(actionID)));
+                                                 new CAction(actionID));
   }
   return ACK;
 }
@@ -115,7 +115,7 @@ JSONRPC_STATUS CInputOperations::ButtonEvent(const std::string& method,
   newEvent->keybutton.button = keycode;
   newEvent->keybutton.holdtime = holdtime;
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EVENT, -1, -1, static_cast<void*>(newEvent));
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EVENT, -1, -1, newEvent);
 
   return ACK;
 }

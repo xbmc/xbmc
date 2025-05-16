@@ -210,7 +210,7 @@ bool CDemuxMVC::SeekTime(double time, bool backwards, double* startpts)
   int64_t seek_pts = av_rescale(DVD_MSEC_TO_TIME(time), time_base.den, (int64_t)time_base.num * AV_TIME_BASE);
   int64_t starttime = 0;
 
-  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+  if (m_pFormatContext->start_time != AV_NOPTS_VALUE)
     starttime = av_rescale(m_pFormatContext->start_time, time_base.den, (int64_t)time_base.num * AV_TIME_BASE);
   if (starttime != 0)
     seek_pts += starttime;
@@ -253,7 +253,7 @@ void CDemuxMVC::Dispose()
 
 double CDemuxMVC::ConvertTimestamp(int64_t pts, int den, int num)
 {
-  if (pts == (int64_t)AV_NOPTS_VALUE)
+  if (pts == AV_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
 
   // do calculations in floats as they can easily overflow otherwise
@@ -262,7 +262,7 @@ double CDemuxMVC::ConvertTimestamp(int64_t pts, int den, int num)
   double starttime = 0.0;
 
   if (m_menu_type != MenuType::NATIVE &&
-      m_pFormatContext->start_time != static_cast<int64_t>(AV_NOPTS_VALUE))
+      m_pFormatContext->start_time != AV_NOPTS_VALUE)
   {
     starttime = static_cast<double>(m_start_time) / AV_TIME_BASE;
   }

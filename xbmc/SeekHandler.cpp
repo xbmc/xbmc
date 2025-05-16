@@ -183,7 +183,7 @@ void CSeekHandler::SeekSeconds(int seconds)
   // perform relative seek
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  appPlayer->SeekTimeRelative(static_cast<int64_t>(seconds * 1000));
+  appPlayer->SeekTimeRelative(seconds * 1000);
 
   Reset();
 }

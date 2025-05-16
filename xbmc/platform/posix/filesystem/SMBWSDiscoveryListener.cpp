@@ -195,7 +195,7 @@ void CWSDiscoveryListenerUDP::Process()
 
   // set socket reuse
   int enable = 1;
-  if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char*)&enable, sizeof(enable)) < 0)
+  if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) < 0)
   {
     CLog::Log(LOGDEBUG, LOGWSDISCOVERY, "CWSDiscoveryListenerUDP::Process - Reuse Option failed");
     Cleanup(true);
@@ -222,7 +222,7 @@ void CWSDiscoveryListenerUDP::Process()
   struct ip_mreq mreq;
   mreq.imr_multiaddr.s_addr = inet_addr(WDSIPv4MultiGroup);
   mreq.imr_interface.s_addr = htonl(INADDR_ANY);
-  if (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq)) < 0)
+  if (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
   {
     CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
               "CWSDiscoveryListenerUDP::Process - Multicast Option failed");
@@ -233,7 +233,7 @@ void CWSDiscoveryListenerUDP::Process()
   // Disable receiving broadcast messages on loopback
   // So we dont receive messages we send.
   int disable = 0;
-  if (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (char*)&disable, sizeof(disable)) < 0)
+  if (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, &disable, sizeof(disable)) < 0)
   {
     CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
               "CWSDiscoveryListenerUDP::Process - Loopback Disable Option failed");

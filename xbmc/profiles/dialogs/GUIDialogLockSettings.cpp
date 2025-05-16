@@ -281,7 +281,7 @@ void CGUIDialogLockSettings::InitializeSettings()
     settingsLevelOptions.emplace_back(10037, LOCK_LEVEL::STANDARD);
     settingsLevelOptions.emplace_back(10038, LOCK_LEVEL::ADVANCED);
     settingsLevelOptions.emplace_back(10039, LOCK_LEVEL::EXPERT);
-    AddList(groupDetails, SETTING_LOCK_SETTINGS, 20043, SettingLevel::Basic, static_cast<int>(m_locks.settings), settingsLevelOptions, 20043);
+    AddList(groupDetails, SETTING_LOCK_SETTINGS, 20043, SettingLevel::Basic, m_locks.settings, settingsLevelOptions, 20043);
 
     AddToggle(groupDetails, SETTING_LOCK_ADDONMANAGER, 24090, SettingLevel::Basic, m_locks.addonManager);
   }

@@ -155,7 +155,7 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckRes
       }
 
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, pos, -1,
-                                                 static_cast<void*>(queuedItems.release()));
+                                                 queuedItems.release());
     }
     else
     {
@@ -181,7 +181,7 @@ bool CPVRGUIActionsPlayback::PlayRecordingFolder(const CFileItem& item, bool bCh
     VIDEO_UTILS::GetItemsForPlayList(itemToQueue, *queuedItems);
 
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, -1,
-                                               static_cast<void*>(queuedItems.release()));
+                                               queuedItems.release());
     CheckAndSwitchToFullscreen(true);
   }
   return true;

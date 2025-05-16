@@ -206,7 +206,7 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
     if ((*curPos & 0xC0) == 0x80)
     {
       // Is a non-first byte of a multi-byte UTF-8 character
-      strUTF8.append(static_cast<const char*>(curPos), 1);
+      strUTF8.append(curPos, 1);
       continue; // ...without incrementing 'charIndex'
     }
 
@@ -232,7 +232,7 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
 
     // Skip all \r because it causes the line to display empty box "tofu"
     if (!skipChars && *curPos != '\0' && *curPos != '\r')
-      strUTF8.append(static_cast<const char*>(curPos), 1);
+      strUTF8.append(curPos, 1);
 
     if (*curPos == '}')
       skipChars = false;

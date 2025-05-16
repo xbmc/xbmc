@@ -998,7 +998,7 @@ int av1_parser_frame(
         // Note: aom_read_obu_header_and_size() takes care of checking that this
         // doesn't cause 'data' to advance past 'data_end'.
 
-        if ((size_t)(data_end - data - bytes_read) < payload_size)
+        if (data_end - data - bytes_read < payload_size)
             return -1;
 
         logM(LOGDEBUG, "AMLCodec", "\tobu {} len {:d}+{:d}", obu_type_name[obu_header.type], bytes_read, payload_size);
@@ -1905,7 +1905,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   AVRational video_ratio       = av_d2q(1, SHRT_MAX);
   //if (!hints.forced_aspect)
   //  video_ratio = av_d2q(hints.aspect, SHRT_MAX);
-  am_private->video_ratio      = ((int32_t)video_ratio.num << 16) | video_ratio.den;
+  am_private->video_ratio      = (video_ratio.num << 16) | video_ratio.den;
   am_private->video_ratio64    = ((int64_t)video_ratio.num << 32) | video_ratio.den;
 
   // handle video rate
@@ -2337,7 +2337,7 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
     logComponentM(LOGDEBUG, LOGVIDEO, "CAMLCodec", "skip add data dl:{:d} fl:{:d} sz:{:d}({:d}) lv:{:.1f}% dts:{:.3f} pts:{:.3f}",
                   data_len,
                   free_len,
-                  static_cast<unsigned int>(iSize),
+                  iSize,
                   chunk_size,
                   new_buffer_level,
                   dts / DVD_TIME_BASE,
@@ -2445,7 +2445,7 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
     logComponentM(LOGDEBUG, LOGVIDEO, "CAMLCodec", "dl:{:d} fl:{:d} sz:{:d}({:d}) lv:{:.1f}% dts:{:.3f} pts:{:.3f}",
                   data_len + chunk_size,
                   free_len - chunk_size,
-                  static_cast<unsigned int>(iSize),
+                  iSize,
                   chunk_size,
                   new_buffer_level,
                   dts / DVD_TIME_BASE,
@@ -2523,7 +2523,7 @@ float CAMLCodec::GetBufferLevel(int new_chunk, int &data_len, int &free_len)
   if (bs.free_len > 0)
   {
     if (bs.size)
-      level = (float)((100.0f / (float)bs.size) * (bs.data_len + new_chunk));
+      level = 100.0f / (float)bs.size * (bs.data_len + new_chunk);
   }
   else
     level = 100.0f;
@@ -2756,7 +2756,7 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
     case 1:
     case 3:
       {
-        float scale = static_cast<float>(dst_rect.Height()) / dst_rect.Width();
+        float scale = dst_rect.Height() / dst_rect.Width();
         int diff = (int) ((dst_rect.Height()*scale - dst_rect.Width()) / 2);
         dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
       }
@@ -2935,7 +2935,7 @@ std::string CAMLCodec::GetHDRStaticMetadata()
       stream << ";mMaxFALL:" << m_hints.contentLightMetadata->MaxFALL;
     }
     if (m_hints.colorTransferCharacteristic != AVCOL_TRC_UNSPECIFIED)
-      stream << ";mTransfer:" << static_cast<int>(m_hints.colorTransferCharacteristic);
+      stream << ";mTransfer:" << m_hints.colorTransferCharacteristic;
     std::string config_data = stream.str();
     logM(LOGDEBUG, "CAMLCodec", "Created the following config: {}", config_data.c_str());
     return config_data;

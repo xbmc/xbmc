@@ -599,7 +599,7 @@ void CGameClient::LogException(const char* strFunctionName) const
 void CGameClient::cb_close_game(KODI_HANDLE kodiInstance)
 {
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                             static_cast<void*>(new CAction(ACTION_STOP)));
+                                             new CAction(ACTION_STOP));
 }
 
 KODI_GAME_STREAM_HANDLE CGameClient::cb_open_stream(KODI_HANDLE kodiInstance,

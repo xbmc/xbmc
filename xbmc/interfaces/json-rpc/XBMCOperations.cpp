@@ -31,7 +31,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const std::string &method, ITransp
   {
     std::vector<std::string> infoLabels;
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_INFOLABEL, -1, -1,
-                                               static_cast<void*>(&infoLabels), "", info);
+                                               &infoLabels, "", info);
 
     for (unsigned int i = 0; i < info.size(); i++)
     {
@@ -75,7 +75,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const std::string &method, ITran
   {
     std::vector<bool> infoLabels;
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_INFOBOOL, -1, -1,
-                                               static_cast<void*>(&infoLabels), "", info);
+                                               &infoLabels, "", info);
     for (unsigned int i = 0; i < info.size(); i++)
     {
       if (i >= infoLabels.size())

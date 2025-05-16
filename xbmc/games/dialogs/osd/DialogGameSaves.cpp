@@ -211,7 +211,7 @@ void CDialogGameSaves::OnInitWindow()
   CGUIDialog::OnInitWindow();
 
   // Select the first item
-  m_viewControl->SetSelectedItem(0);
+  m_viewControl->SetSelectedItem(static_cast<int>(0));
 
   // There's a race condition where the item's focus sends the update message
   // before the window is fully initialized, so explicitly set the info now.

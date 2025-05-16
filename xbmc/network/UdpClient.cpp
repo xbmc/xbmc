@@ -47,7 +47,7 @@ bool CUdpClient::Create(void)
   CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Setting broadcast socket option...");
 
   unsigned int value = 1;
-  if ( setsockopt( client_socket, SOL_SOCKET, SO_BROADCAST, (char*) &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
+  if ( setsockopt( client_socket, SOL_SOCKET, SO_BROADCAST, &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
   {
     CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Unable to set socket option.");
     return false;
@@ -147,7 +147,7 @@ void CUdpClient::Process()
     FD_ZERO(&readset);    FD_SET(client_socket, &readset);
     FD_ZERO(&exceptset);  FD_SET(client_socket, &exceptset);
 
-    int nfds = (int)(client_socket);
+    int nfds = client_socket;
     timeval tv = { 0, 100000 };
     if (select(nfds, &readset, NULL, &exceptset, &tv) < 0)
     {
@@ -237,7 +237,7 @@ bool CUdpClient::DispatchNextCommand()
 
     do
     {
-      ret = sendto(client_socket, (const char*) command.binary, command.binarySize, 0, (struct sockaddr *) & command.address, sizeof(command.address));
+      ret = sendto(client_socket, command.binary, command.binarySize, 0, (struct sockaddr *) & command.address, sizeof(command.address));
     }
     while (ret == -1);
 

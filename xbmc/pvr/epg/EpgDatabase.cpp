@@ -427,7 +427,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     const CDateTime startTime(iStartTime);
     newTag->m_startTime = startTime;
 
-    time_t iEndTime = static_cast<time_t>(m_pDS->fv("iEndTime").get_asInt());
+    time_t iEndTime = m_pDS->fv("iEndTime").get_asInt();
     const CDateTime endTime(iEndTime);
     newTag->m_endTime = endTime;
 
@@ -485,7 +485,7 @@ CDateTime CPVREpgDatabase::GetLastEndTime(int iEpgID) const
       PrepareSQL("SELECT MAX(iEndTime) FROM epgtags WHERE idEpg = %u;", iEpgID);
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    return CDateTime(std::atoi(strValue.c_str()));
 
   return {};
 }
@@ -502,14 +502,14 @@ std::pair<CDateTime, CDateTime> CPVREpgDatabase::GetFirstAndLastEPGDate() const
 
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    first = CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    first = CDateTime(std::atoi(strValue.c_str()));
 
   // 2nd query: get max end time
   strQuery = PrepareSQL("SELECT MAX(iEndTime) FROM epgtags;");
 
   strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    last = CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    last = CDateTime(std::atoi(strValue.c_str()));
 
   return {first, last};
 }
@@ -527,7 +527,7 @@ CDateTime CPVREpgDatabase::GetMinStartTime(int iEpgID, const CDateTime& minStart
                                           iEpgID, static_cast<unsigned int>(t));
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    return CDateTime(std::atoi(strValue.c_str()));
 
   return {};
 }
@@ -545,7 +545,7 @@ CDateTime CPVREpgDatabase::GetMaxEndTime(int iEpgID, const CDateTime& maxEnd) co
                                           iEpgID, static_cast<unsigned int>(t));
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    return CDateTime(std::atoi(strValue.c_str()));
 
   return {};
 }

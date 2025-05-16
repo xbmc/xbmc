@@ -759,7 +759,7 @@ ssize_t CNFSFile::Read(void *lpBuf, size_t uiBufSize)
 #ifdef LIBNFS_API_V2
   numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, lpBuf, uiBufSize);
 #else
-  numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);
+  numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, lpBuf);
 #endif
 
   lock.unlock(); //no need to keep the connection lock after that

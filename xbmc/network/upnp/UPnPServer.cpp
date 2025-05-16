@@ -182,7 +182,7 @@ void CUPnPServer::PropagateUpdates()
   // broadcast yet
   NPT_CHECK_LABEL(service->PauseEventing(), failed);
   NPT_CHECK_LABEL(service->GetStateVariableValue("ContainerUpdateIDs", current_ids), failed);
-  buffer = (const char*)current_ids;
+  buffer = current_ids;
   if (!buffer.empty())
     buffer.append(",");
 
@@ -683,7 +683,7 @@ NPT_Result CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
     // attempt to determine the parent of this item
     std::string parent;
     if (URIUtils::IsVideoDb((const char*)id) || URIUtils::IsMusicDb((const char*)id) ||
-        StringUtils::StartsWithNoCase((const char*)id, "library://video/"))
+        StringUtils::StartsWithNoCase(id, "library://video/"))
     {
       if (!URIUtils::GetParentPath((const char*)id, parent))
       {
@@ -698,7 +698,7 @@ NPT_Result CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
       // or could handle this in URIUtils::GetParentPath() possibly,
       // however this is quicker to implement and subsequently purge when a
       // better solution presents itself
-      std::string child_id((const char*)id);
+      std::string child_id(id);
       if (StringUtils::StartsWithNoCase(child_id, "special://musicplaylists/"))
         parent = "musicdb://";
       else if (StringUtils::StartsWithNoCase(child_id, "special://videoplaylists/"))

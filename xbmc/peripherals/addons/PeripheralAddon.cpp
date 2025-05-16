@@ -327,7 +327,7 @@ unsigned int CPeripheralAddon::GetNumberOfPeripherals(void) const
 {
   std::lock_guard lock(m_critSection);
 
-  return static_cast<unsigned int>(m_peripherals.size());
+  return m_peripherals.size();
 }
 
 unsigned int CPeripheralAddon::GetNumberOfPeripheralsWithId(const int iVendorId,
@@ -753,7 +753,7 @@ bool CPeripheralAddon::SetIgnoredPrimitives(const CPeripheral* device,
 
   JOYSTICK_DRIVER_PRIMITIVE* addonPrimitives = nullptr;
   kodi::addon::DriverPrimitives::ToStructs(primitives, &addonPrimitives);
-  const unsigned int primitiveCount = static_cast<unsigned int>(primitives.size());
+  const unsigned int primitiveCount = primitives.size();
 
   LogError(retVal = m_ifc.peripheral->toAddon->set_ignored_primitives(
                m_ifc.peripheral, &joystickStruct, primitiveCount, addonPrimitives),

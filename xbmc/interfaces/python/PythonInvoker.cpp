@@ -467,7 +467,7 @@ bool CPythonInvoker::stop(bool abort)
       setState(InvokerStateStopping);
       lock.unlock();
 
-      PyEval_RestoreThread((PyThreadState*)m_threadState);
+      PyEval_RestoreThread(m_threadState);
 
       //tell xbmc.Monitor to call onAbortRequested()
       if (m_addon)
@@ -520,7 +520,7 @@ bool CPythonInvoker::stop(bool abort)
       {
         // grabbing the PyLock while holding the m_critical is asking for a deadlock
         CSingleExit ex2(m_critical);
-        PyEval_RestoreThread((PyThreadState*)m_threadState);
+        PyEval_RestoreThread(m_threadState);
       }
 
 

@@ -889,7 +889,7 @@ private:
     static_cast<CWindow*>(cbhdl)->GetContextButtons(itemNumber, buttonList);
     if (!buttonList.empty())
     {
-      unsigned int presentSize = static_cast<unsigned int>(buttonList.size());
+      unsigned int presentSize = buttonList.size();
       if (presentSize > *size)
         kodi::Log(ADDON_LOG_WARNING, "GetContextButtons: More as allowed '%i' entries present!",
                   *size);

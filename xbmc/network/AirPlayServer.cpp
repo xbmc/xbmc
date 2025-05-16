@@ -357,7 +357,7 @@ void CAirPlayServer::Process()
     for (SOCKET socket : m_ServerSockets)
     {
       FD_SET(socket, &rfds);
-      if ((intptr_t)socket > (intptr_t)max_fd)
+      if (socket > max_fd)
         max_fd = socket;
     }
 
@@ -384,7 +384,7 @@ void CAirPlayServer::Process()
         {
           char buffer[RECEIVEBUFFER] = {};
           int  nread = 0;
-          nread = recv(socket, (char*)&buffer, RECEIVEBUFFER, 0);
+          nread = recv(socket, &buffer, RECEIVEBUFFER, 0);
           if (nread > 0)
           {
             std::string sessionId;
@@ -992,7 +992,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
 
       auto l = new CFileItemList; //don't delete,
       l->Add(std::make_shared<CFileItem>(fileToPlay));
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, l);
 
       // allow starting the player paused in ios8 mode (needed by camera roll app)
       if (!startPlayback)
@@ -1058,7 +1058,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       else //if we are not playing and get the stop request - we just wanna stop picture streaming
       {
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-                                                   static_cast<void*>(new CAction(ACTION_STOP)));
+                                                   new CAction(ACTION_STOP));
       }
     }
     ClearPhotoAssetCache();

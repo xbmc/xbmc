@@ -1025,7 +1025,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   AVDictionaryEntry * entry = av_dict_get(m_pFrame->metadata, "stereo_mode", NULL, 0);
   if(entry && entry->value)
   {
-    pVideoPicture->stereoMode = (const char*)entry->value;
+    pVideoPicture->stereoMode = entry->value;
   }
   else
     pVideoPicture->stereoMode.clear();

@@ -1052,7 +1052,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
   }
 
   SetText(g_localizeStrings.Get(24079));
-  unsigned int totalSteps = static_cast<unsigned int>(deps.size()) + 1;
+  unsigned int totalSteps = deps.size() + 1;
   if (ShouldCancel(0, totalSteps))
     return false;
 

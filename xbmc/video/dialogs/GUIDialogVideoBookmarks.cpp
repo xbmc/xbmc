@@ -160,7 +160,7 @@ bool CGUIDialogVideoBookmarks::OnAction(const CAction &action)
 
 int CGUIDialogVideoBookmarks::ItemToBookmarkIndex(int item) const
 {
-  if (item < 0 || item >= static_cast<int>(m_vecItems->Size()))
+  if (item < 0 || item >= m_vecItems->Size())
     return -1;
 
   const std::shared_ptr<CFileItem> fileItem{m_vecItems->Get(item)};

@@ -118,18 +118,18 @@ void CTCPServer::Process()
     for (auto& it : m_servers)
     {
       FD_SET(it, &rfds);
-      if ((intptr_t)it > (intptr_t)max_fd)
+      if (it > max_fd)
         max_fd = it;
     }
 
     for (unsigned int i = 0; i < m_connections.size(); i++)
     {
       FD_SET(m_connections[i]->m_socket, &rfds);
-      if ((intptr_t)m_connections[i]->m_socket > (intptr_t)max_fd)
+      if (m_connections[i]->m_socket > max_fd)
         max_fd = m_connections[i]->m_socket;
     }
 
-    int res = select((intptr_t)max_fd+1, &rfds, NULL, NULL, &to);
+    int res = select(max_fd+1, &rfds, NULL, NULL, &to);
     if (res < 0)
     {
       CLog::Log(LOGERROR, "JSONRPC Server: Select failed");
@@ -145,7 +145,7 @@ void CTCPServer::Process()
         {
           char buffer[RECEIVEBUFFER] = {};
           int  nread = 0;
-          nread = recv(socket, (char*)&buffer, RECEIVEBUFFER, 0);
+          nread = recv(socket, &buffer, RECEIVEBUFFER, 0);
           bool close = false;
           if (nread > 0)
           {

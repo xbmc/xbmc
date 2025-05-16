@@ -196,10 +196,10 @@ void CBaseRenderer::CalcDestRect(float offsetX,
   else if (verticalShift < -1.0f)
     posY += shiftRange * (verticalShift + 1.0f);
 
-  destRect.x1 = static_cast<float>(MathUtils::round_int(static_cast<double>(posX + offsetX)));
-  destRect.x2 = destRect.x1 + MathUtils::round_int(static_cast<double>(newWidth));
-  destRect.y1 = static_cast<float>(MathUtils::round_int(static_cast<double>(posY + offsetY)));
-  destRect.y2 = destRect.y1 + MathUtils::round_int(static_cast<double>(newHeight));
+  destRect.x1 = static_cast<float>(MathUtils::round_int(posX + offsetX));
+  destRect.x2 = destRect.x1 + MathUtils::round_int(newWidth);
+  destRect.y1 = static_cast<float>(MathUtils::round_int(posY + offsetY));
+  destRect.y2 = destRect.y1 + MathUtils::round_int(newHeight);
 }
 
 void CBaseRenderer::CalcNormalRenderRect(float offsetX,

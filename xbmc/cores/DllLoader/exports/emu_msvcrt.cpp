@@ -667,7 +667,7 @@ extern "C"
       // let the operating system handle it
       // not supported: return lseeki64(fd, lPos, iWhence);
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_lseeki64 called, TODO: add 'int64 -> long' type checking");      //warning
-      return static_cast<long long>(lseek(fd, (long)lPos, iWhence));
+      return lseek(fd, (long)lPos, iWhence);
     }
     CLog::Log(LOGERROR, "{} emulated function failed", __FUNCTION__);
     return -1ll;
@@ -1113,7 +1113,7 @@ extern "C"
       if (dll_fread(&buf, 1, 1, stream) <= 0)
         return EOF;
 
-      return (int)buf;
+      return buf;
     }
     CLog::Log(LOGERROR, "{} emulated function failed", __FUNCTION__);
     return EOF;
@@ -1216,7 +1216,7 @@ extern "C"
       if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
       {
         size_t len = strlen(szLine);
-        return dll_fwrite(static_cast<const void*>(szLine), sizeof(char), len, stream);
+        return dll_fwrite(szLine, sizeof(char), len, stream);
       }
     }
 
@@ -1282,7 +1282,7 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
-       return (off64_t)pFile->GetPosition();
+       return pFile->GetPosition();
     }
     CLog::Log(LOGERROR, "{} emulated function failed", __FUNCTION__);
     return -1;
@@ -1314,7 +1314,7 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-       return static_cast<long long>(pFile->GetPosition());
+       return pFile->GetPosition();
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -1487,7 +1487,7 @@ extern "C"
 #if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
     *pos = (fpos_t)tmpPos;
 #else
-    pos->__pos = (off_t)tmpPos.__pos;
+    pos->__pos = tmpPos.__pos;
 #endif
     return ret;
   }
@@ -1516,7 +1516,7 @@ extern "C"
 #if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
       if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
 #else
-      if (dll_lseeki64(fd, (__off64_t)pos->__pos, SEEK_SET) >= 0)
+      if (dll_lseeki64(fd, pos->__pos, SEEK_SET) >= 0)
 #endif
       {
         return 0;
@@ -1784,7 +1784,7 @@ extern "C"
   {
     static char szError[32];
     snprintf(szError, sizeof(szError), "err:%i", iErr);
-    return (char*)szError;
+    return szError;
   }
 
   int dll_mkdir(const char* dir)

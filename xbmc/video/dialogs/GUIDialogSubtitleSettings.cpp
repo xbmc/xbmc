@@ -69,7 +69,7 @@ void CGUIDialogSubtitleSettings::FrameMove()
     //! @todo m_settingsManager->SetBool(SETTING_SUBTITLE_ENABLE, g_application.GetAppPlayer().GetSubtitleVisible());
     //   \-> Unless subtitle visibility can change on the fly, while Dialog is up, this code should be removed.
     GetSettingsManager()->SetNumber(SETTING_SUBTITLE_DELAY,
-                                    static_cast<double>(videoSettings.m_SubtitleDelay));
+                                    videoSettings.m_SubtitleDelay);
     //! @todo (needs special handling): m_settingsManager->SetInt(SETTING_SUBTITLE_STREAM, g_application.GetAppPlayer().GetSubtitle());
   }
 

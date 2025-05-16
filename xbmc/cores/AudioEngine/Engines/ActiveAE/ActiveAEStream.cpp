@@ -368,17 +368,17 @@ bool CActiveAEStream::IsBuffering()
 
 double CActiveAEStream::GetCacheTime()
 {
-  return static_cast<double>(m_activeAE->GetCacheTime(this));
+  return m_activeAE->GetCacheTime(this);
 }
 
 double CActiveAEStream::GetCacheTotal()
 {
-  return static_cast<double>(m_activeAE->GetCacheTotal());
+  return m_activeAE->GetCacheTotal();
 }
 
 double CActiveAEStream::GetMaxDelay()
 {
-  return static_cast<double>(m_activeAE->GetMaxDelay());
+  return m_activeAE->GetMaxDelay();
 }
 
 void CActiveAEStream::Pause()

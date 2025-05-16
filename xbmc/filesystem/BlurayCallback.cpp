@@ -155,10 +155,10 @@ int64_t CBlurayCallback::file_tell(BD_FILE_H *file)
 
 int64_t CBlurayCallback::file_read(BD_FILE_H *file, uint8_t *buf, int64_t size)
 {
-  return static_cast<int64_t>(static_cast<CFile*>(file->internal)->Read(buf, static_cast<size_t>(size)));
+  return static_cast<CFile*>(file->internal)->Read(buf, static_cast<size_t>(size));
 }
 
 int64_t CBlurayCallback::file_write(BD_FILE_H *file, const uint8_t *buf, int64_t size)
 {
-  return static_cast<int64_t>(static_cast<CFile*>(file->internal)->Write(buf, static_cast<size_t>(size)));
+  return static_cast<CFile*>(file->internal)->Write(buf, static_cast<size_t>(size));
 }

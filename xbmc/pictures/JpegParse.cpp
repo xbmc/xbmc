@@ -109,7 +109,7 @@ bool CJpegParse::GetSection (CFile& infile, const unsigned short sectionLength)
   m_SectionBuffer[0] = (unsigned char)(sectionLength >> 8);
   m_SectionBuffer[1] = (unsigned char)(sectionLength & 0x00FF);
 
-  unsigned int len = (unsigned int)sectionLength;
+  unsigned int len = sectionLength;
 
   size_t bytesRead = infile.Read(m_SectionBuffer+sizeof(sectionLength), len-sizeof(sectionLength));
   if (bytesRead != sectionLength-sizeof(sectionLength))

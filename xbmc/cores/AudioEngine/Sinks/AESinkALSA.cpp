@@ -1166,7 +1166,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsign
 
   void *buffer = data[0]+offset*m_format.m_frameSize;
   unsigned int amount = 0;
-  int64_t data_left = (int64_t) frames;
+  int64_t data_left = frames;
   int frames_written = 0;
 
   while (data_left > 0)
