@@ -29,7 +29,7 @@ public:
   * \brief Initialize the subtitles adapter
   * \return True if success, false if error
   */
-  bool Initialize();
+  bool Initialize() const;
 
   /*!
   * \brief Add a subtitle
@@ -58,7 +58,7 @@ public:
   * \param subtitleId The subtitle ID
   * \param text The text to append
   */
-  void AppendToSubtitle(int subtitleId, const char* text);
+  void AppendToSubtitle(int subtitleId, const char* text) const;
 
   /*!
   * \brief Delete old subtitles only if the total number of subtitles added reaches the threshold
@@ -66,16 +66,16 @@ public:
   * \param threshold Start deleting only when the number of subtitles is reached
   * \return The updated ID of the last subtitle, otherwise NO_SUBTITLE_ID if error or no subtitles
   */
-  int DeleteSubtitles(int nSubtitles, int threshold);
+  int DeleteSubtitles(int nSubtitles, int threshold) const;
 
   /*!
   * \brief Change the stop time of a subtitle ID with the specified time
   * \param subtitleId The subtitle ID
   * \param stopTime The PTS stop time
   */
-  void ChangeSubtitleStopTime(int subtitleId, double stopTime);
+  void ChangeSubtitleStopTime(int subtitleId, double stopTime) const;
 
-  void FlushSubtitles();
+  void FlushSubtitles() const;
 
   std::shared_ptr<CDVDOverlay> CreateOverlay();
 

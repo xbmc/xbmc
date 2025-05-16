@@ -106,14 +106,14 @@ protected:
                     float inputFrameRatio,
                     float zoomAmount,
                     float verticalShift,
-                    CRect& destRect);
+                    CRect& destRect) const;
   void CalcNormalRenderRect(float offsetX, float offsetY, float width, float height,
                             float inputFrameRatio, float zoomAmount, float verticalShift);
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
   virtual void ManageRenderArea();
   virtual void ReorderDrawPoints();
   virtual EShaderFormat GetShaderFormat();
-  void MarkDirty();
+  void MarkDirty() const;
   void EnableAlwaysClip();
 
   //@todo drop those

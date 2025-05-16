@@ -10,8 +10,7 @@
 
 #include <exception>
 
-bool CSysfsPath::Exists()
-{
+bool CSysfsPath::Exists() const {
   return (std::filesystem::exists(m_path));
 }
 

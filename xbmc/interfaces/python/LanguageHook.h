@@ -87,7 +87,7 @@ namespace XBMCAddon
       // going to do anything with the set that gets returned.
       inline std::set<AddonClass*>& GetRegisteredAddonClasses() { return currentObjects; }
 
-      void UnregisterMe();
+      void UnregisterMe() const;
       void RegisterMe();
     };
   }

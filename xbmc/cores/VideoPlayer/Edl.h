@@ -110,7 +110,7 @@ public:
    * @param[in,out] pEdit The edit pointer (or nullptr if iSeek not within an edit)
    * @return true if iSeek is within an edit, false otherwise
   */
-  bool InEdit(int iSeek, EDL::Edit* pEdit = nullptr);
+  bool InEdit(int iSeek, EDL::Edit* pEdit = nullptr) const;
 
   /*!
    * @brief Get the last processed edit time (set during playback when a given

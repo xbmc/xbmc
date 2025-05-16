@@ -473,8 +473,7 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
   }
 }
 
-bool CAddonDatabase::SetLastUpdated(const std::string& addonId, const CDateTime& dateTime)
-{
+bool CAddonDatabase::SetLastUpdated(const std::string& addonId, const CDateTime& dateTime) const {
   try
   {
     if (!m_pDB)
@@ -493,8 +492,7 @@ bool CAddonDatabase::SetLastUpdated(const std::string& addonId, const CDateTime&
   return false;
 }
 
-bool CAddonDatabase::SetOrigin(const std::string& addonId, const std::string& origin)
-{
+bool CAddonDatabase::SetOrigin(const std::string& addonId, const std::string& origin) const {
   try
   {
     if (!m_pDB)
@@ -512,8 +510,7 @@ bool CAddonDatabase::SetOrigin(const std::string& addonId, const std::string& or
   return false;
 }
 
-bool CAddonDatabase::SetLastUsed(const std::string& addonId, const CDateTime& dateTime)
-{
+bool CAddonDatabase::SetLastUsed(const std::string& addonId, const CDateTime& dateTime) const {
   try
   {
     if (!m_pDB)
@@ -624,8 +621,7 @@ bool CAddonDatabase::GetAddon(const std::string& addonID,
 
 }
 
-bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
-{
+bool CAddonDatabase::GetAddon(int id, AddonPtr &addon) const {
   try
   {
     if (!m_pDB)
@@ -816,8 +812,7 @@ void CAddonDatabase::DeleteRepositoryContents(const std::string& id)
   }
 }
 
-int CAddonDatabase::GetRepositoryId(const std::string& addonId)
-{
+int CAddonDatabase::GetRepositoryId(const std::string& addonId) const {
   if (!m_pDB)
     return -1;
   if (!m_pDS)
@@ -883,8 +878,7 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository,
   return false;
 }
 
-int CAddonDatabase::GetRepoChecksum(const std::string& id, std::string& checksum)
-{
+int CAddonDatabase::GetRepoChecksum(const std::string& id, std::string& checksum) const {
   try
   {
     if (!m_pDB)
@@ -908,8 +902,7 @@ int CAddonDatabase::GetRepoChecksum(const std::string& id, std::string& checksum
   return -1;
 }
 
-CAddonDatabase::RepoUpdateData CAddonDatabase::GetRepoUpdateData(const std::string& id)
-{
+CAddonDatabase::RepoUpdateData CAddonDatabase::GetRepoUpdateData(const std::string& id) const {
   RepoUpdateData result{};
   try
   {
@@ -932,8 +925,7 @@ CAddonDatabase::RepoUpdateData CAddonDatabase::GetRepoUpdateData(const std::stri
   return result;
 }
 
-int CAddonDatabase::SetRepoUpdateData(const std::string& id, const RepoUpdateData& updateData)
-{
+int CAddonDatabase::SetRepoUpdateData(const std::string& id, const RepoUpdateData& updateData) const {
   try
   {
     if (!m_pDB)
@@ -1012,8 +1004,7 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
   return false;
 }
 
-bool CAddonDatabase::DisableAddon(const std::string& addonID, AddonDisabledReason disabledReason)
-{
+bool CAddonDatabase::DisableAddon(const std::string& addonID, AddonDisabledReason disabledReason) const {
   try
   {
     if (!m_pDB)
@@ -1034,8 +1025,7 @@ bool CAddonDatabase::DisableAddon(const std::string& addonID, AddonDisabledReaso
   return false;
 }
 
-bool CAddonDatabase::EnableAddon(const std::string& addonID)
-{
+bool CAddonDatabase::EnableAddon(const std::string& addonID) const {
   try
   {
     if (!m_pDB)
@@ -1055,8 +1045,7 @@ bool CAddonDatabase::EnableAddon(const std::string& addonID)
   return false;
 }
 
-bool CAddonDatabase::GetDisabled(std::map<std::string, AddonDisabledReason>& addons)
-{
+bool CAddonDatabase::GetDisabled(std::map<std::string, AddonDisabledReason>& addons) const {
   try
   {
     if (!m_pDB)
@@ -1111,8 +1100,7 @@ bool CAddonDatabase::GetAddonUpdateRules(
   return false;
 }
 
-bool CAddonDatabase::AddUpdateRuleForAddon(const std::string& addonID, AddonUpdateRule updateRule)
-{
+bool CAddonDatabase::AddUpdateRuleForAddon(const std::string& addonID, AddonUpdateRule updateRule) const {
   try
   {
     if (!m_pDB)
@@ -1139,8 +1127,7 @@ bool CAddonDatabase::RemoveAllUpdateRulesForAddon(const std::string& addonID)
 }
 
 bool CAddonDatabase::RemoveUpdateRuleForAddon(const std::string& addonID,
-                                              AddonUpdateRule updateRule)
-{
+                                              AddonUpdateRule updateRule) const {
   try
   {
     if (!m_pDB)
@@ -1177,8 +1164,7 @@ bool CAddonDatabase::AddPackage(const std::string& addonID,
 
 bool CAddonDatabase::GetPackageHash(const std::string& addonID,
                                     const std::string& packageFileName,
-                                    std::string&       hash)
-{
+                                    std::string&       hash) const {
   std::string where = PrepareSQL("addonID='%s' and filename='%s'",
                                 addonID.c_str(), packageFileName.c_str());
   hash = GetSingleValue("package", "hash", where);
@@ -1211,8 +1197,7 @@ void CAddonDatabase::OnPostUnInstall(const std::string& addonId)
   }
 }
 
-void CAddonDatabase::GetInstallData(const AddonInfoPtr& addon)
-{
+void CAddonDatabase::GetInstallData(const AddonInfoPtr& addon) const {
   try
   {
     if (!m_pDB)
@@ -1240,8 +1225,7 @@ void CAddonDatabase::GetInstallData(const AddonInfoPtr& addon)
 }
 
 bool CAddonDatabase::AddInstalledAddon(const std::shared_ptr<CAddonInfo>& addon,
-                                       const std::string& origin)
-{
+                                       const std::string& origin) const {
   try
   {
     if (!m_pDB)

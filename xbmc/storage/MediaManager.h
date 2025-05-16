@@ -44,7 +44,7 @@ public:
 
   void GetLocalDrives(VECSOURCES &localDrives, bool includeQ = true);
   void GetRemovableDrives(VECSOURCES &removableDrives);
-  void GetNetworkLocations(VECSOURCES &locations, bool autolocations = true);
+  void GetNetworkLocations(VECSOURCES &locations, bool autolocations = true) const;
 
   bool AddNetworkLocation(const std::string &path);
   bool HasLocation(const std::string& path) const;
@@ -55,7 +55,7 @@ public:
   void RemoveAutoSource(const CMediaSource &share);
   bool IsDiscInDrive(const std::string& devicePath="");
   bool IsAudio(const std::string& devicePath="");
-  bool HasOpticalDrive();
+  bool HasOpticalDrive() const;
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
   DriveState GetDriveStatus(const std::string& devicePath = "");
 #ifdef HAS_OPTICAL_DRIVE

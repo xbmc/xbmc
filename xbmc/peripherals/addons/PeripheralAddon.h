@@ -109,7 +109,7 @@ private:
   void UnregisterButtonMap(CPeripheral* device);
 
   // Binary add-on callbacks
-  void TriggerDeviceScan();
+  void TriggerDeviceScan() const;
   void RefreshButtonMaps(const std::string& strDeviceName = "");
   unsigned int FeatureCount(const std::string& controllerId, JOYSTICK_FEATURE_TYPE type) const;
   JOYSTICK_FEATURE_TYPE FeatureType(const std::string& controllerId,

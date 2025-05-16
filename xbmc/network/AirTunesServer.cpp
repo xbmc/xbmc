@@ -670,8 +670,7 @@ bool CAirTunesServer::IsRunning()
   return ServerInstance->IsRAOPRunningInternal();
 }
 
-bool CAirTunesServer::IsRAOPRunningInternal()
-{
+bool CAirTunesServer::IsRAOPRunningInternal() const {
   if (m_pRaop)
   {
     return raop_is_running(m_pRaop) != 0;

@@ -49,8 +49,7 @@ void CEGLFence::DestroyFence()
   m_fence = EGL_NO_SYNC_KHR;
 }
 
-bool CEGLFence::IsSignaled()
-{
+bool CEGLFence::IsSignaled() const {
   // fence has been destroyed so return true immediately so buffer can be used
   if (m_fence == EGL_NO_SYNC_KHR)
   {
@@ -73,8 +72,7 @@ bool CEGLFence::IsSignaled()
 }
 
 #if defined(EGL_ANDROID_native_fence_sync) && defined(EGL_KHR_fence_sync)
-EGLSyncKHR CEGLFence::CreateFence(int fd)
-{
+EGLSyncKHR CEGLFence::CreateFence(int fd) const {
   CEGLAttributes<1> attributeList;
   attributeList.Add({{EGL_SYNC_NATIVE_FENCE_FD_ANDROID, fd}});
 
@@ -100,8 +98,7 @@ void CEGLFence::CreateKMSFence(int fd)
   m_kmsFence = CreateFence(fd);
 }
 
-EGLint CEGLFence::FlushFence()
-{
+EGLint CEGLFence::FlushFence() const {
   EGLint fd = m_eglDupNativeFenceFDANDROID(m_display, m_gpuFence);
   if (fd == EGL_NO_NATIVE_FENCE_FD_ANDROID)
     CEGLUtils::Log(LOGERROR, "failed to duplicate EGL fence fd");
@@ -111,8 +108,7 @@ EGLint CEGLFence::FlushFence()
   return fd;
 }
 
-void CEGLFence::WaitSyncGPU()
-{
+void CEGLFence::WaitSyncGPU() const {
   if (!m_kmsFence)
     return;
 
@@ -120,8 +116,7 @@ void CEGLFence::WaitSyncGPU()
     CEGLUtils::Log(LOGERROR, "failed to create EGL sync point");
 }
 
-void CEGLFence::WaitSyncCPU()
-{
+void CEGLFence::WaitSyncCPU() const {
   if (!m_kmsFence)
     return;
 

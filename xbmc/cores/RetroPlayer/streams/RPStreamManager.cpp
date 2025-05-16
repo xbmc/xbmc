@@ -20,8 +20,7 @@ CRPStreamManager::CRPStreamManager(CRPRenderManager& renderManager, CRPProcessIn
 {
 }
 
-void CRPStreamManager::EnableAudio(bool bEnable)
-{
+void CRPStreamManager::EnableAudio(bool bEnable) const {
   if (m_audioStream != nullptr)
     m_audioStream->Enable(bEnable);
 }

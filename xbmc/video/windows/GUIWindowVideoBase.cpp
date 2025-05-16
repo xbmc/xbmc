@@ -1048,8 +1048,7 @@ void CGUIWindowVideoBase::OnDeleteItem(const CFileItemPtr& item)
 }
 
 void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList,
-                                       PLAYLIST::Id playlistId /* = PLAYLIST::TYPE_VIDEO */)
-{
+                                       PLAYLIST::Id playlistId /* = PLAYLIST::TYPE_VIDEO */) const {
   // if partymode is active, we disable it
   if (g_partyModeManager.IsEnabled())
     g_partyModeManager.Disable();
@@ -1493,8 +1492,7 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
   }
 }
 
-void CGUIWindowVideoBase::UpdateVideoVersionItems()
-{
+void CGUIWindowVideoBase::UpdateVideoVersionItems() const {
   if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER))
     return;

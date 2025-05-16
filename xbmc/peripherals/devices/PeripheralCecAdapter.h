@@ -110,7 +110,7 @@ public:
                 const CVariant& data) override;
 
   // audio control
-  bool HasAudioControl(void);
+  bool HasAudioControl(void) const;
   CDateTime m_ScreensaverStandbySent;
   void VolumeUp(void);
   void VolumeDown(void);
@@ -161,8 +161,8 @@ private:
   void GetNextKey(void);
 
   void SetAudioSystemConnected(bool bSetTo);
-  void SetMenuLanguage(const char* strLanguage);
-  void OnTvStandby(void);
+  void SetMenuLanguage(const char* strLanguage) const;
+  void OnTvStandby(void) const;
 
   // callbacks from libCEC
   static void CecLogMessage(void* cbParam, const CEC::cec_log_message* message);
@@ -224,8 +224,8 @@ public:
   bool UpdateConfiguration(CEC::libcec_configuration* configuration);
 
 protected:
-  void UpdateMenuLanguage(void);
-  std::string UpdateAudioSystemStatus(void);
+  void UpdateMenuLanguage(void) const;
+  std::string UpdateAudioSystemStatus(void) const;
   bool WaitReady(void);
   bool SetInitialConfiguration(void);
   void Process(void) override;

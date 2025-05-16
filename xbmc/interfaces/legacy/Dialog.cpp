@@ -74,8 +74,7 @@ namespace XBMCAddon
                                     const String& yeslabel,
                                     const String& customlabel,
                                     int autoclose,
-                                    int defaultbutton)
-    {
+                                    int defaultbutton) const {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogYesNo* pDialog =
           CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(
@@ -88,8 +87,7 @@ namespace XBMCAddon
                                       defaultbutton);
     }
 
-    bool Dialog::info(const ListItem* item)
-    {
+    bool Dialog::info(const ListItem* item) const {
       DelayedCallGuard dcguard(languageHook);
       const AddonClass::Ref<xbmcgui::ListItem> listitem(item);
       if (listitem->item->HasVideoInfoTag())
@@ -105,8 +103,7 @@ namespace XBMCAddon
       return false;
     }
 
-    int Dialog::contextmenu(const std::vector<String>& list)
-    {
+    int Dialog::contextmenu(const std::vector<String>& list) const {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogContextMenu* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogContextMenu>(WINDOW_DIALOG_CONTEXT_MENU);
       if (pDialog == NULL)
@@ -121,8 +118,7 @@ namespace XBMCAddon
     }
 
 
-    int Dialog::select(const String& heading, const std::vector<Alternative<String, const ListItem* > > & list, int autoclose, int preselect, bool useDetails)
-    {
+    int Dialog::select(const String& heading, const std::vector<Alternative<String, const ListItem* > > & list, int autoclose, int preselect, bool useDetails) const {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogSelect* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
       if (pDialog == NULL)
@@ -149,8 +145,7 @@ namespace XBMCAddon
 
 
     std::unique_ptr<std::vector<int>> Dialog::multiselect(const String& heading,
-        const std::vector<Alternative<String, const ListItem* > > & options, int autoclose, const std::vector<int>& preselect, bool useDetails)
-    {
+        const std::vector<Alternative<String, const ListItem* > > & options, int autoclose, const std::vector<int>& preselect, bool useDetails) const {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogSelect* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
       if (pDialog == nullptr)
@@ -178,14 +173,12 @@ namespace XBMCAddon
         return std::unique_ptr<std::vector<int>>();
     }
 
-    bool Dialog::ok(const String& heading, const String& message)
-    {
+    bool Dialog::ok(const String& heading, const String& message) const {
       DelayedCallGuard dcguard(languageHook);
       return HELPERS::ShowOKDialogText(CVariant{heading}, CVariant{message});
     }
 
-    void Dialog::textviewer(const String& heading, const String& text, bool usemono)
-    {
+    void Dialog::textviewer(const String& heading, const String& text, bool usemono) const {
       DelayedCallGuard dcguard(languageHook);
 
       CGUIDialogTextViewer* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
@@ -216,8 +209,7 @@ namespace XBMCAddon
     String Dialog::browseSingle(int type, const String& heading, const String& s_shares,
                                 const String& maskparam, bool useThumbs,
                                 bool useFileDirectories,
-                                const String& defaultt )
-    {
+                                const String& defaultt ) const {
       DelayedCallGuard dcguard(languageHook);
       std::string value;
       std::string mask = maskparam;
@@ -251,8 +243,7 @@ namespace XBMCAddon
 
     std::vector<String> Dialog::browseMultiple(int type, const String& heading, const String& s_shares,
                           const String& mask, bool useThumbs,
-                          bool useFileDirectories, const String& defaultt )
-    {
+                          bool useFileDirectories, const String& defaultt ) const {
       DelayedCallGuard dcguard(languageHook);
       VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(s_shares);
       std::vector<String> valuelist;
@@ -284,8 +275,7 @@ namespace XBMCAddon
       return valuelist;
     }
 
-    String Dialog::numeric(int inputtype, const String& heading, const String& defaultt, bool bHiddenInput)
-    {
+    String Dialog::numeric(int inputtype, const String& heading, const String& defaultt, bool bHiddenInput) const {
       DelayedCallGuard dcguard(languageHook);
       std::string value;
       KODI::TIME::SystemTime timedate;
@@ -343,8 +333,7 @@ namespace XBMCAddon
       return value;
     }
 
-    void Dialog::notification(const String& heading, const String& message, const String& icon, int time, bool sound)
-    {
+    void Dialog::notification(const String& heading, const String& message, const String& icon, int time, bool sound) const {
       DelayedCallGuard dcguard(languageHook);
 
       std::string strIcon = getNOTIFICATION_INFO();
@@ -365,8 +354,7 @@ namespace XBMCAddon
         CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime, sound);
     }
 
-    String Dialog::input(const String& heading, const String& defaultt, int type, int option, int autoclose)
-    {
+    String Dialog::input(const String& heading, const String& defaultt, int type, int option, int autoclose) const {
       DelayedCallGuard dcguard(languageHook);
       std::string value(defaultt);
       KODI::TIME::SystemTime timedate;
@@ -447,8 +435,7 @@ namespace XBMCAddon
     String Dialog::colorpicker(const String& heading,
                                const String& selectedcolor,
                                const String& colorfile,
-                               const std::vector<const ListItem*>& colorlist)
-    {
+                               const std::vector<const ListItem*>& colorlist) const {
       DelayedCallGuard dcguard(languageHook);
       std::string value = emptyString;
       CGUIDialogColorPicker* pDialog =
@@ -517,8 +504,7 @@ namespace XBMCAddon
       pDialog->Open();
     }
 
-    void DialogProgress::update(int percent, const String& message)
-    {
+    void DialogProgress::update(int percent, const String& message) const {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogProgress* pDialog = dlg;
 
@@ -548,8 +534,7 @@ namespace XBMCAddon
       open = false;
     }
 
-    bool DialogProgress::iscanceled()
-    {
+    bool DialogProgress::iscanceled() const {
       if (dlg == NULL)
         throw WindowException("Dialog not created.");
       return dlg->IsCanceled();
@@ -588,8 +573,7 @@ namespace XBMCAddon
         pHandle->SetText(message);
     }
 
-    void DialogProgressBG::update(int percent, const String& heading, const String& message)
-    {
+    void DialogProgressBG::update(int percent, const String& heading, const String& message) const {
       DelayedCallGuard dcguard(languageHook);
       CGUIDialogProgressBarHandle* pHandle = handle;
 
@@ -613,8 +597,7 @@ namespace XBMCAddon
       open = false;
     }
 
-    bool DialogProgressBG::isFinished()
-    {
+    bool DialogProgressBG::isFinished() const {
       if (handle == NULL)
         throw WindowException("Dialog not created.");
       return handle->IsFinished();

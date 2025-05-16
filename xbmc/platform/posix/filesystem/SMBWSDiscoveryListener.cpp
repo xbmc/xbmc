@@ -294,8 +294,7 @@ void CWSDiscoveryListenerUDP::Process()
   return;
 }
 
-void CWSDiscoveryListenerUDP::Cleanup(bool aborted)
-{
+void CWSDiscoveryListenerUDP::Cleanup(bool aborted) const {
   close(fd);
 
   if (aborted)
@@ -496,8 +495,7 @@ void CWSDiscoveryListenerUDP::ParseBuffer(const std::string& buffer)
 
 bool CWSDiscoveryListenerUDP::buildSoapMessage(const std::string& action,
                                                std::string& msg,
-                                               const std::string& extraparameter)
-{
+                                               const std::string& extraparameter) const {
   auto msg_uuid = StringUtils::CreateUUID();
   std::string body;
   std::string relatesTo; // Not implemented, may not be needed for our limited usage

@@ -92,8 +92,7 @@ CDigest::Type CDigest::TypeFromString(std::string const& type)
   }
 }
 
-void CDigest::MdCtxDeleter::operator()(EVP_MD_CTX* context)
-{
+void CDigest::MdCtxDeleter::operator()(EVP_MD_CTX* context) const {
   EVP_MD_CTX_destroy(context);
 }
 
@@ -111,8 +110,7 @@ void CDigest::Update(std::string const& data)
   Update(data.c_str(), data.size());
 }
 
-void CDigest::Update(void const* data, std::size_t size)
-{
+void CDigest::Update(void const* data, std::size_t size) const {
   if (m_finalized)
   {
     throw std::logic_error("Finalized digest cannot be updated any more");

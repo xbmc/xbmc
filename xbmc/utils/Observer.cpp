@@ -63,8 +63,7 @@ void Observable::SetChanged(bool SetTo)
   m_bObservableChanged = SetTo;
 }
 
-void Observable::SendMessage(const ObservableMessage message)
-{
+void Observable::SendMessage(const ObservableMessage message) const {
   std::lock_guard lock(m_obsCritSection);
 
   for (auto& observer : m_observers)

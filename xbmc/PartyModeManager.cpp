@@ -424,8 +424,7 @@ bool CPartyModeManager::ReapSongs()
   return true;
 }
 
-bool CPartyModeManager::MovePlaying()
-{
+bool CPartyModeManager::MovePlaying() const {
   // move current song to the top if its not there
   int iCurrentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
 
@@ -471,43 +470,37 @@ void CPartyModeManager::OnError(int iError, const std::string&  strLogMessage)
   SendUpdateMessage();
 }
 
-int CPartyModeManager::GetSongsPlayed()
-{
+int CPartyModeManager::GetSongsPlayed() const {
   if (!IsEnabled())
     return -1;
   return m_iSongsPlayed;
 }
 
-int CPartyModeManager::GetMatchingSongs()
-{
+int CPartyModeManager::GetMatchingSongs() const {
   if (!IsEnabled())
     return -1;
   return m_iMatchingSongs;
 }
 
-int CPartyModeManager::GetMatchingSongsPicked()
-{
+int CPartyModeManager::GetMatchingSongsPicked() const {
   if (!IsEnabled())
     return -1;
   return m_iMatchingSongsPicked;
 }
 
-int CPartyModeManager::GetMatchingSongsLeft()
-{
+int CPartyModeManager::GetMatchingSongsLeft() const {
   if (!IsEnabled())
     return -1;
   return m_iMatchingSongsLeft;
 }
 
-int CPartyModeManager::GetRelaxedSongs()
-{
+int CPartyModeManager::GetRelaxedSongs() const {
   if (!IsEnabled())
     return -1;
   return m_iRelaxedSongs;
 }
 
-int CPartyModeManager::GetRandomSongs()
-{
+int CPartyModeManager::GetRandomSongs() const {
   if (!IsEnabled())
     return -1;
   return m_iRandomSongs;
@@ -554,8 +547,7 @@ bool CPartyModeManager::IsEnabled(PartyModeContext context /* = PARTYMODECONTEXT
   return true; // unknown, but we're enabled
 }
 
-void CPartyModeManager::Announce()
-{
+void CPartyModeManager::Announce() const {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->IsPlaying())

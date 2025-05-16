@@ -61,7 +61,7 @@ private:
   static const int analogSeekDelay = 500;
 
   void SetSeekSize(double seekSize);
-  int GetSeekStepSize(SeekType type, int step);
+  int GetSeekStepSize(SeekType type, int step) const;
 
   int m_seekDelay = 500;
   std::map<SeekType, int > m_seekDelays;

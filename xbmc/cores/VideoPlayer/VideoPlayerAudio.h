@@ -134,6 +134,6 @@ protected:
 
 private:
   void inline Wait(useconds_t uSeconds) const;
-  void ClockAlign(double presentPts);
+  void ClockAlign(double presentPts) const;
 };
 

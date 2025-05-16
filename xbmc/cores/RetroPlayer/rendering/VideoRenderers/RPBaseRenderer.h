@@ -40,7 +40,7 @@ public:
   /*!
    * \brief Get the buffer pool used by this renderer
    */
-  IRenderBufferPool* GetBufferPool() { return m_bufferPool.get(); }
+  IRenderBufferPool* GetBufferPool() const { return m_bufferPool.get(); }
 
   // Player functions
   bool Configure(AVPixelFormat format);
@@ -48,7 +48,7 @@ public:
   /*!
    * \brief Performs whatever necessary before rendering the frame
    */
-  void PreRender(bool clear);
+  void PreRender(bool clear) const;
   void SetBuffer(IRenderBuffer* buffer);
   void RenderFrame(bool clear, uint8_t alpha);
 
@@ -104,12 +104,12 @@ private:
   /*!
    * \brief Performs whatever necessary after a frame has been rendered
    */
-  void PostRender();
+  void PostRender() const;
 
   void MarkDirty();
 
   // Utility functions
-  void GetScreenDimensions(float& screenWidth, float& screenHeight, float& screenPixelRatio);
+  void GetScreenDimensions(float& screenWidth, float& screenHeight, float& screenPixelRatio) const;
 
   uint64_t m_renderFrameCount = 0;
   uint64_t m_lastRender = 0;

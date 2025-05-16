@@ -126,8 +126,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_radio_button->set_visible(m_interface->kodiBase, m_controlHandle,
                                                              visible);
   }
@@ -139,8 +138,7 @@ public:
   ///
   /// @param[in] enabled If true enabled, otherwise disabled
   ///
-  void SetEnabled(bool enabled)
-  {
+  void SetEnabled(bool enabled) const {
     m_interface->kodi_gui->control_radio_button->set_enabled(m_interface->kodiBase, m_controlHandle,
                                                              enabled);
   }
@@ -152,8 +150,7 @@ public:
   ///
   /// @param[in] label Text to show
   ///
-  void SetLabel(const std::string& label)
-  {
+  void SetLabel(const std::string& label) const {
     m_interface->kodi_gui->control_radio_button->set_label(m_interface->kodiBase, m_controlHandle,
                                                            label.c_str());
   }
@@ -186,8 +183,7 @@ public:
   ///
   /// @param[in] selected true set radio button to selection on, otherwise off
   ///
-  void SetSelected(bool selected)
-  {
+  void SetSelected(bool selected) const {
     m_interface->kodi_gui->control_radio_button->set_selected(m_interface->kodiBase,
                                                               m_controlHandle, selected);
   }

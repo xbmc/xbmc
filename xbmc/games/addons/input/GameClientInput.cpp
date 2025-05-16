@@ -159,8 +159,7 @@ bool CGameClientInput::AcceptsInput() const
   return false;
 }
 
-bool CGameClientInput::InputEvent(const game_input_event& event)
-{
+bool CGameClientInput::InputEvent(const game_input_event& event) const {
   bool bHandled = false;
 
   try
@@ -689,8 +688,7 @@ void CGameClientInput::CloseJoystick(const std::string& portAddress,
   }
 }
 
-void CGameClientInput::HardwareReset()
-{
+void CGameClientInput::HardwareReset() const {
   if (m_hardware)
     m_hardware->OnResetButton();
 }

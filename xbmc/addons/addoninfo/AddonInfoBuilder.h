@@ -72,34 +72,34 @@ class CAddonInfoBuilderFromDB
 public:
   CAddonInfoBuilderFromDB();
 
-  void SetId(std::string id);
-  void SetName(std::string name);
-  void SetLicense(std::string license);
-  void SetSummary(std::string summary);
-  void SetDescription(std::string description);
-  void SetDisclaimer(std::string disclaimer);
-  void SetAuthor(std::string author);
-  void SetSource(std::string source);
-  void SetWebsite(std::string website);
-  void SetForum(std::string forum);
-  void SetEMail(std::string email);
-  void SetIcon(std::string icon);
-  void SetArt(const std::string& type, std::string value);
-  void SetArt(std::map<std::string, std::string> art);
-  void SetScreenshots(std::vector<std::string> screenshots);
-  void SetChangelog(std::string changelog);
-  void SetLifecycleState(AddonLifecycleState state, std::string description);
-  void SetPath(std::string path);
-  void SetLibName(std::string libname);
-  void SetVersion(CAddonVersion version);
-  void SetDependencies(std::vector<DependencyInfo> dependencies);
-  void SetExtrainfo(InfoMap extrainfo);
-  void SetInstallDate(const CDateTime& installDate);
-  void SetLastUpdated(const CDateTime& lastUpdated);
-  void SetLastUsed(const CDateTime& lastUsed);
-  void SetOrigin(std::string origin);
-  void SetPackageSize(uint64_t size);
-  void SetExtensions(CAddonType addonType);
+  void SetId(std::string id) const;
+  void SetName(std::string name) const;
+  void SetLicense(std::string license) const;
+  void SetSummary(std::string summary) const;
+  void SetDescription(std::string description) const;
+  void SetDisclaimer(std::string disclaimer) const;
+  void SetAuthor(std::string author) const;
+  void SetSource(std::string source) const;
+  void SetWebsite(std::string website) const;
+  void SetForum(std::string forum) const;
+  void SetEMail(std::string email) const;
+  void SetIcon(std::string icon) const;
+  void SetArt(const std::string& type, std::string value) const;
+  void SetArt(std::map<std::string, std::string> art) const;
+  void SetScreenshots(std::vector<std::string> screenshots) const;
+  void SetChangelog(std::string changelog) const;
+  void SetLifecycleState(AddonLifecycleState state, std::string description) const;
+  void SetPath(std::string path) const;
+  void SetLibName(std::string libname) const;
+  void SetVersion(CAddonVersion version) const;
+  void SetDependencies(std::vector<DependencyInfo> dependencies) const;
+  void SetExtrainfo(InfoMap extrainfo) const;
+  void SetInstallDate(const CDateTime& installDate) const;
+  void SetLastUpdated(const CDateTime& lastUpdated) const;
+  void SetLastUsed(const CDateTime& lastUsed) const;
+  void SetOrigin(std::string origin) const;
+  void SetPackageSize(uint64_t size) const;
+  void SetExtensions(CAddonType addonType) const;
 
   const AddonInfoPtr& get() { return m_addonInfo; }
 

@@ -372,8 +372,7 @@ void CPVRProviders::RemoveEntry(const std::shared_ptr<CPVRProvider>& provider)
       m_providers.end());
 }
 
-int CPVRProviders::CleanupCachedImages()
-{
+int CPVRProviders::CleanupCachedImages() const {
   std::vector<std::string> urlsToCheck;
   {
     std::lock_guard lock(m_critSection);

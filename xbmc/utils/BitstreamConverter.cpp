@@ -1144,8 +1144,7 @@ bool CBitstreamConverter::BitstreamConvertInitHEVC(void *in_extradata, int in_ex
   return true;
 }
 
-bool CBitstreamConverter::IsIDR(uint8_t unit_type)
-{
+bool CBitstreamConverter::IsIDR(uint8_t unit_type) const {
   switch (m_codec)
   {
     case AV_CODEC_ID_H264:
@@ -1159,8 +1158,7 @@ bool CBitstreamConverter::IsIDR(uint8_t unit_type)
   }
 }
 
-bool CBitstreamConverter::IsSlice(uint8_t unit_type)
-{
+bool CBitstreamConverter::IsSlice(uint8_t unit_type) const {
   switch (m_codec)
   {
     case AV_CODEC_ID_H264:
@@ -1216,7 +1214,7 @@ void CBitstreamConverter::ApplyContentLightLevel(const ContentLightLevel& metada
   }
 }
 
-void CBitstreamConverter::UpdateHdrStaticMetadata() {
+void CBitstreamConverter::UpdateHdrStaticMetadata() const {
 
   HDRStaticMetadataInfo hdrStaticMetadataInfo;
 
@@ -1239,7 +1237,7 @@ void CBitstreamConverter::AddDoViRpuNaluWrap(const Hdr10PlusMetadata& meta, uint
   poutbuf_size = static_cast<uint32_t>(int_poutbuf_size);
 }
 
-void CBitstreamConverter::AddDoViRpuNalu(const Hdr10PlusMetadata& meta, uint8_t **poutbuf, int *poutbuf_size, double pts) {
+void CBitstreamConverter::AddDoViRpuNalu(const Hdr10PlusMetadata& meta, uint8_t **poutbuf, int *poutbuf_size, double pts) const {
 
   auto nalu = create_rpu_nalu_for_hdr10plus(
     meta,
@@ -1337,7 +1335,7 @@ void CBitstreamConverter::ProcessDoViRpuWrap(uint8_t *nal_buf, int32_t nal_size,
   poutbuf_size = static_cast<uint32_t>(int_poutbuf_size);
 }
 
-void CBitstreamConverter::ProcessDoViRpu(uint8_t *nal_buf, int32_t nal_size, uint8_t **poutbuf, int *poutbuf_size, double pts) {
+void CBitstreamConverter::ProcessDoViRpu(uint8_t *nal_buf, int32_t nal_size, uint8_t **poutbuf, int *poutbuf_size, double pts) const {
 
 #ifdef HAVE_LIBDOVI
   const DoviData* rpu_data = NULL;

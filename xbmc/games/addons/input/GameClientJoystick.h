@@ -49,8 +49,8 @@ public:
 
   ~CGameClientJoystick() override;
 
-  void RegisterInput(JOYSTICK::IInputProvider* inputProvider);
-  void UnregisterInput(JOYSTICK::IInputProvider* inputProvider);
+  void RegisterInput(JOYSTICK::IInputProvider* inputProvider) const;
+  void UnregisterInput(JOYSTICK::IInputProvider* inputProvider) const;
 
   // Implementation of IInputHandler
   std::string ControllerID() const override;
@@ -87,7 +87,7 @@ public:
   void ClearSource();
 
   // Input handlers
-  bool SetRumble(const std::string& feature, float magnitude);
+  bool SetRumble(const std::string& feature, float magnitude) const;
 
 private:
   // Construction parameters

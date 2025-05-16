@@ -662,8 +662,7 @@ void CGUIDialogKeyboardGeneric::OnVoiceRecognition()
   }
 }
 
-void CGUIDialogKeyboardGeneric::SetControlLabel(int id, const std::string &label)
-{ // find all controls with this id, and set all their labels
+void CGUIDialogKeyboardGeneric::SetControlLabel(int id, const std::string &label) const { // find all controls with this id, and set all their labels
   CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), id);
   message.SetLabel(label);
   for (unsigned int i = 0; i < m_children.size(); i++)
@@ -720,8 +719,7 @@ bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const
   else return false;
 }
 
-float CGUIDialogKeyboardGeneric::GetStringWidth(const std::wstring & utf16)
-{
+float CGUIDialogKeyboardGeneric::GetStringWidth(const std::wstring & utf16) const {
   vecText utf32;
 
   utf32.resize(utf16.size());

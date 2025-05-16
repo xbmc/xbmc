@@ -132,7 +132,7 @@ protected:
 
   int ScrollCorrectionRange() const;
   inline float Size() const;
-  void FreeMemory(int keepStart, int keepEnd);
+  void FreeMemory(int keepStart, int keepEnd) const;
   void GetCurrentLayouts();
   CGUIListItemLayout *GetFocusedLayout() const;
 
@@ -159,7 +159,7 @@ protected:
   bool m_focusedLayoutCondition = false;
 
   virtual void ScrollToOffset(int offset);
-  void SetContainerMoving(int direction);
+  void SetContainerMoving(int direction) const;
   void UpdateScrollOffset(unsigned int currentTime);
 
   CScroller m_scroller;
@@ -214,7 +214,7 @@ protected:
   unsigned int m_lastRenderTime;
 
 private:
-  bool OnContextMenu();
+  bool OnContextMenu() const;
 
   int m_cursor;
   int m_offset;

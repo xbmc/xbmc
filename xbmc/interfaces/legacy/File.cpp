@@ -12,8 +12,7 @@ namespace XBMCAddon
 {
   namespace xbmcvfs
   {
-    XbmcCommons::Buffer File::readBytes(unsigned long numBytes)
-    {
+    XbmcCommons::Buffer File::readBytes(unsigned long numBytes) const {
       DelayedCallGuard dg(languageHook);
       int64_t size = file->GetLength();
       if ((!numBytes || (((int64_t)numBytes) > size)) && (size >= 0))
@@ -39,8 +38,7 @@ namespace XBMCAddon
       return ret;
     }
 
-    bool File::write(XbmcCommons::Buffer& buffer)
-    {
+    bool File::write(XbmcCommons::Buffer& buffer) const {
       DelayedCallGuard dg(languageHook);
       while (buffer.remaining() > 0)
       {

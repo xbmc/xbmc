@@ -102,51 +102,51 @@ public:
   void DeinitStageTwo();
   void DeinitStageOne();
 
-  ADDON::CAddonMgr& GetAddonMgr();
-  ADDON::CBinaryAddonManager& GetBinaryAddonManager();
-  ADDON::CBinaryAddonCache& GetBinaryAddonCache();
-  KODI::ADDONS::CExtsMimeSupportList& GetExtsMimeSupportList();
-  ADDON::CVFSAddonCache& GetVFSAddonCache();
-  ADDON::CServiceAddonManager& GetServiceAddons();
-  ADDON::CRepositoryUpdater& GetRepositoryUpdater();
-  CNetworkBase& GetNetwork();
+  ADDON::CAddonMgr& GetAddonMgr() const;
+  ADDON::CBinaryAddonManager& GetBinaryAddonManager() const;
+  ADDON::CBinaryAddonCache& GetBinaryAddonCache() const;
+  KODI::ADDONS::CExtsMimeSupportList& GetExtsMimeSupportList() const;
+  ADDON::CVFSAddonCache& GetVFSAddonCache() const;
+  ADDON::CServiceAddonManager& GetServiceAddons() const;
+  ADDON::CRepositoryUpdater& GetRepositoryUpdater() const;
+  CNetworkBase& GetNetwork() const;
 #ifdef HAS_PYTHON
-  XBPython& GetXBPython();
+  XBPython& GetXBPython() const;
 #endif
 #if defined(HAS_FILESYSTEM_SMB)
-  WSDiscovery::IWSDiscovery& GetWSDiscovery();
+  WSDiscovery::IWSDiscovery& GetWSDiscovery() const;
 #endif
-  PVR::CPVRManager& GetPVRManager();
-  CContextMenuManager& GetContextMenuManager();
-  CDataCacheCore& GetDataCacheCore();
+  PVR::CPVRManager& GetPVRManager() const;
+  CContextMenuManager& GetContextMenuManager() const;
+  CDataCacheCore& GetDataCacheCore() const;
   /**\brief Get the platform object. This is save to be called after Init1() was called
    */
-  CPlatform& GetPlatform();
-  KODI::GAME::CControllerManager& GetGameControllerManager();
-  KODI::GAME::CGameServices& GetGameServices();
-  KODI::RETRO::CGUIGameRenderManager& GetGameRenderManager();
-  PERIPHERALS::CPeripherals& GetPeripherals();
+  CPlatform& GetPlatform() const;
+  KODI::GAME::CControllerManager& GetGameControllerManager() const;
+  KODI::GAME::CGameServices& GetGameServices() const;
+  KODI::RETRO::CGUIGameRenderManager& GetGameRenderManager() const;
+  PERIPHERALS::CPeripherals& GetPeripherals() const;
 
-  PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
-  CSlideShowDelegator& GetSlideShowDelegator();
+  PLAYLIST::CPlayListPlayer& GetPlaylistPlayer() const;
+  CSlideShowDelegator& GetSlideShowDelegator() const;
   int init_level = 0;
 
-  CFavouritesService& GetFavouritesService();
-  CInputManager& GetInputManager();
-  CFileExtensionProvider& GetFileExtensionProvider();
+  CFavouritesService& GetFavouritesService() const;
+  CInputManager& GetInputManager() const;
+  CFileExtensionProvider& GetFileExtensionProvider() const;
 
-  CPowerManager& GetPowerManager();
+  CPowerManager& GetPowerManager() const;
 
-  CWeatherManager& GetWeatherManager();
+  CWeatherManager& GetWeatherManager() const;
 
-  CPlayerCoreFactory& GetPlayerCoreFactory();
+  CPlayerCoreFactory& GetPlayerCoreFactory() const;
 
-  CDatabaseManager& GetDatabaseManager();
+  CDatabaseManager& GetDatabaseManager() const;
 
-  CMediaManager& GetMediaManager();
+  CMediaManager& GetMediaManager() const;
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
-  MEDIA_DETECT::CDetectDVDMedia& GetDetectDVDMedia();
+  MEDIA_DETECT::CDetectDVDMedia& GetDetectDVDMedia() const;
 #endif
 
 protected:

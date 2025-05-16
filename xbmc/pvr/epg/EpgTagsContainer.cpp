@@ -432,8 +432,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetTagBetween(const CDateT
   return {};
 }
 
-bool CPVREpgTagsContainer::UpdateActiveTag()
-{
+bool CPVREpgTagsContainer::UpdateActiveTag() const {
   return m_tagsCache->Refresh();
 }
 

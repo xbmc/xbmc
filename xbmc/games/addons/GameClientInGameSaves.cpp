@@ -46,8 +46,7 @@ void CGameClientInGameSaves::Save()
   Save(GAME_MEMORY_RTC);
 }
 
-std::string CGameClientInGameSaves::GetPath(GAME_MEMORY memoryType)
-{
+std::string CGameClientInGameSaves::GetPath(GAME_MEMORY memoryType) const {
   const CGameServices& gameServices = CServiceBroker::GetGameServices();
   std::string path =
       URIUtils::AddFileToFolder(gameServices.GetSavestatesFolder(), INGAME_SAVES_DIRECTORY);

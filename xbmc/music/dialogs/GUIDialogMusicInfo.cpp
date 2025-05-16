@@ -694,8 +694,7 @@ CFileItemPtr CGUIDialogMusicInfo::GetCurrentListItem(int offset)
   return m_item;
 }
 
-std::string CGUIDialogMusicInfo::GetContent()
-{
+std::string CGUIDialogMusicInfo::GetContent() const {
   if (m_item->GetMusicInfoTag()->GetType() == MediaTypeArtist)
     return "artists";
   else
@@ -740,8 +739,7 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
   }
 }
 
-void CGUIDialogMusicInfo::SetArtTypeList(CFileItemList& artlist)
-{
+void CGUIDialogMusicInfo::SetArtTypeList(CFileItemList& artlist) const {
   m_artTypeList->Clear();
   m_artTypeList->Copy(artlist);
 }

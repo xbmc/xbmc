@@ -81,7 +81,7 @@ private:
   bool ShouldNavigateToGridContainer(int iAction);
 
   void StartRefreshTimelineItemsThread();
-  void StopRefreshTimelineItemsThread();
+  void StopRefreshTimelineItemsThread() const;
 
   void RefreshView(CGUIMessage& message, bool bInitGridControl);
 

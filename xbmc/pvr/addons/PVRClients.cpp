@@ -58,8 +58,7 @@ void CPVRClients::Start()
   UpdateClients();
 }
 
-void CPVRClients::Stop()
-{
+void CPVRClients::Stop() const {
   std::lock_guard lock(m_critSection);
 
   for (const auto& client : m_clientMap)
@@ -68,8 +67,7 @@ void CPVRClients::Stop()
   }
 }
 
-void CPVRClients::Continue()
-{
+void CPVRClients::Continue() const {
   std::lock_guard lock(m_critSection);
 
   for (const auto& client : m_clientMap)
@@ -630,8 +628,7 @@ bool CPVRClients::GetTimers(const std::vector<std::shared_ptr<CPVRClient>>& clie
 }
 
 PVR_ERROR CPVRClients::UpdateTimerTypes(const std::vector<std::shared_ptr<CPVRClient>>& clients,
-                                        std::vector<int>& failedClients)
-{
+                                        std::vector<int>& failedClients) const {
   return ForClients(
       __FUNCTION__, clients,
       [](const std::shared_ptr<CPVRClient>& client) { return client->UpdateTimerTypes(); },
@@ -670,22 +667,19 @@ PVR_ERROR CPVRClients::GetRecordings(const std::vector<std::shared_ptr<CPVRClien
       failedClients);
 }
 
-PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
-{
+PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash() const {
   return ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
     return client->DeleteAllRecordingsFromTrash();
   });
 }
 
-PVR_ERROR CPVRClients::SetEPGMaxPastDays(int iPastDays)
-{
+PVR_ERROR CPVRClients::SetEPGMaxPastDays(int iPastDays) const {
   return ForCreatedClients(__FUNCTION__, [iPastDays](const std::shared_ptr<CPVRClient>& client) {
     return client->SetEPGMaxPastDays(iPastDays);
   });
 }
 
-PVR_ERROR CPVRClients::SetEPGMaxFutureDays(int iFutureDays)
-{
+PVR_ERROR CPVRClients::SetEPGMaxFutureDays(int iFutureDays) const {
   return ForCreatedClients(__FUNCTION__, [iFutureDays](const std::shared_ptr<CPVRClient>& client) {
     return client->SetEPGMaxFutureDays(iFutureDays);
   });
@@ -824,32 +818,28 @@ bool CPVRClients::AnyClientSupportingRecordingsDelete() const
   });
 }
 
-void CPVRClients::OnSystemSleep()
-{
+void CPVRClients::OnSystemSleep() const {
   ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
     client->OnSystemSleep();
     return PVR_ERROR_NO_ERROR;
   });
 }
 
-void CPVRClients::OnSystemWake()
-{
+void CPVRClients::OnSystemWake() const {
   ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
     client->OnSystemWake();
     return PVR_ERROR_NO_ERROR;
   });
 }
 
-void CPVRClients::OnPowerSavingActivated()
-{
+void CPVRClients::OnPowerSavingActivated() const {
   ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
     client->OnPowerSavingActivated();
     return PVR_ERROR_NO_ERROR;
   });
 }
 
-void CPVRClients::OnPowerSavingDeactivated()
-{
+void CPVRClients::OnPowerSavingDeactivated() const {
   ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
     client->OnPowerSavingDeactivated();
     return PVR_ERROR_NO_ERROR;

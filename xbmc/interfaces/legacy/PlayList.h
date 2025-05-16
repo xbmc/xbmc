@@ -97,7 +97,7 @@ namespace XBMCAddon
       ///
       add(...);
 #else
-      void add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem = NULL, int index = -1);
+      void add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem = NULL, int index = -1) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -114,7 +114,7 @@ namespace XBMCAddon
       ///
       load(...);
 #else
-      bool load(const char* filename);
+      bool load(const char* filename) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -127,7 +127,7 @@ namespace XBMCAddon
       ///
       remove(...);
 #else
-      void remove(const char* filename);
+      void remove(const char* filename) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -138,7 +138,7 @@ namespace XBMCAddon
       ///
       clear();
 #else
-      void clear();
+      void clear() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -151,7 +151,7 @@ namespace XBMCAddon
       ///
       size();
 #else
-      int size();
+      int size() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -162,7 +162,7 @@ namespace XBMCAddon
       ///
       shuffle();
 #else
-      void shuffle();
+      void shuffle() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -173,7 +173,7 @@ namespace XBMCAddon
       ///
       unshuffle();
 #else
-      void unshuffle();
+      void unshuffle() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

@@ -17,8 +17,8 @@ public:
   uint32_t   ReadBits(int nbits);
   void       SkipBits(int nbits);
   uint32_t   GetBits(int nbits);
-  unsigned int Position() { return m_posBits; }
-  unsigned int AvailableBits() { return length * 8 - m_posBits; }
+  unsigned int Position() const { return m_posBits; }
+  unsigned int AvailableBits() const { return length * 8 - m_posBits; }
 
 private:
   const uint8_t *buffer, *start;

@@ -116,7 +116,7 @@ private:
 
     void AddRef();
     bool DecrRef(bool deleteImmediately);
-    bool DeleteIfRequired(bool deleteImmediately = false);
+    bool DeleteIfRequired(bool deleteImmediately = false) const;
     void SetTexture(std::unique_ptr<CTexture> texture);
 
     const std::string& GetPath() const { return m_path; }

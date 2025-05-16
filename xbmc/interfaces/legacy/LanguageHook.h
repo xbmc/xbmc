@@ -137,7 +137,7 @@ namespace XBMCAddon
       if (languageHook) languageHook->DelayedCallClose();
     }
 
-    inline LanguageHook* getLanguageHook() { return languageHook; }
+    inline LanguageHook* getLanguageHook() const { return languageHook; }
   };
 
   class SetLanguageHookGuard

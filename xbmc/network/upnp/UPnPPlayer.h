@@ -52,12 +52,12 @@ public:
 
   int PlayFile(const CFileItem& file,
                const CPlayerOptions& options,
-               XbmcThreads::EndTime<>& timeout);
+               XbmcThreads::EndTime<>& timeout) const;
 
 private:
   bool IsPaused() const;
-  int64_t GetTime();
-  int64_t GetTotalTime();
+  int64_t GetTime() const;
+  int64_t GetTotalTime() const;
   float GetPercentage();
 
   // implementation of CThread

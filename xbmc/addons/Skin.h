@@ -179,12 +179,12 @@ public:
 
   /*! \brief Starts evaluating timers
    */
-  void ProcessTimers();
+  void ProcessTimers() const;
 
   /*! \brief Called when unloading a skin, allows to cleanup specific
    * skin resources.
    */
-  void Unload();
+  void Unload() const;
 
   void ToggleDebug();
   const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
@@ -229,8 +229,8 @@ public:
   CSkinSettingPtr GetSkinSetting(const std::string& settingId);
   std::shared_ptr<const CSkinSetting> GetSkinSetting(const std::string& settingId) const;
 
-  void Reset(const std::string &setting);
-  void Reset();
+  void Reset(const std::string &setting) const;
+  void Reset() const;
 
   static std::set<CSkinSettingPtr> ParseSettings(const TiXmlElement* rootElement);
 

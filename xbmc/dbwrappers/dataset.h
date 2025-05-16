@@ -88,9 +88,9 @@ public:
   /* Set new name of sequence table */
   void setSequenceTable(const char* new_seq_table) { sequence_table = new_seq_table; }
   /* Get name of sequence table */
-  const char* getSequenceTable(void) { return sequence_table.c_str(); }
+  const char* getSequenceTable(void) const { return sequence_table.c_str(); }
   /* Get the default character set */
-  const char* getDefaultCharset(void) { return default_charset.c_str(); }
+  const char* getDefaultCharset(void) const { return default_charset.c_str(); }
   /* Sets configuration */
   virtual void setConfig(const char* newKey,
                          const char* newCert,
@@ -263,7 +263,7 @@ protected:
   virtual void fill_fields(void) = 0;
 
   /* Parse Sql - replacing fields with prefixes :OLD_ and :NEW_ with current values of OLD or NEW field. */
-  void parse_sql(std::string& sql);
+  void parse_sql(std::string& sql) const;
 
   /* Returns old field value (for :OLD) */
   virtual field_value f_old(const char* f);
@@ -282,12 +282,12 @@ public:
   /* sets a new value of connection to database */
   void setDatabase(Database* newDb) { db = newDb; }
   /* retrieves  a database which connected */
-  Database* getDatabase(void) { return db; }
+  Database* getDatabase(void) const { return db; }
 
   /* sets a new query string to database server */
   void setExecSql(const char* newSql) { sql = newSql; }
   /* retrieves a query string */
-  const char* getExecSql(void) { return sql.c_str(); }
+  const char* getExecSql(void) const { return sql.c_str(); }
 
   /* status active is OK query */
   virtual bool isActive(void) { return active; }
@@ -396,15 +396,15 @@ public:
 
   /* ------------ for transaction ------------------- */
   void set_autocommit(bool v) { autocommit = v; }
-  bool get_autocommit() { return autocommit; }
+  bool get_autocommit() const { return autocommit; }
 
   /* ----------------- for debug -------------------- */
-  Fields* get_fields_object() { return fields_object; }
-  Fields* get_edit_object() { return edit_object; }
+  Fields* get_fields_object() const { return fields_object; }
+  Fields* get_edit_object() const { return edit_object; }
 
   /* --------------- for fast access ---------------- */
   const result_set& get_result_set() { return result; }
-  const sql_record* get_sql_record();
+  const sql_record* get_sql_record() const;
 
 private:
   Dataset(const Dataset&) = delete;
@@ -417,7 +417,7 @@ private:
 
 public:
   /* return ds_state value */
-  dsStates get_state() { return ds_state; }
+  dsStates get_state() const { return ds_state; }
 
   /*add a new value to select_sql*/
   void set_select_sql(const char* sel_sql);
@@ -440,9 +440,9 @@ public:
   void clear_delete_sql();
 
   /* size of insert_sql*/
-  size_t insert_sql_count();
+  size_t insert_sql_count() const;
   /* size of delete_sql*/
-  size_t delete_sql_count();
+  size_t delete_sql_count() const;
 
   /*get value of select_sql*/
   const char* get_select_sql();
@@ -461,7 +461,7 @@ public:
   DbErrors();
   DbErrors(const char* msg, ...);
 
-  const char* getMsg();
+  const char* getMsg() const;
 
 private:
   std::string msg_;

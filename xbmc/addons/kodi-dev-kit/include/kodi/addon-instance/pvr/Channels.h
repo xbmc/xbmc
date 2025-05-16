@@ -74,22 +74,21 @@ public:
 
   /// @brief **required**\n
   /// Unique identifier for this channel.
-  void SetUniqueId(unsigned int uniqueId) { m_cStructure->iUniqueId = uniqueId; }
+  void SetUniqueId(unsigned int uniqueId) const { m_cStructure->iUniqueId = uniqueId; }
 
   /// @brief To get with @ref SetUniqueId changed values.
   unsigned int GetUniqueId() const { return m_cStructure->iUniqueId; }
 
   /// @brief **required**\n
   /// **true** if this is a radio channel, **false** if it's a TV channel.
-  void SetIsRadio(bool isRadio) { m_cStructure->bIsRadio = isRadio; }
+  void SetIsRadio(bool isRadio) const { m_cStructure->bIsRadio = isRadio; }
 
   /// @brief To get with @ref SetIsRadio changed values.
   bool GetIsRadio() const { return m_cStructure->bIsRadio; }
 
   /// @brief **optional**\n
   /// Channel number of this channel on the backend.
-  void SetChannelNumber(unsigned int channelNumber)
-  {
+  void SetChannelNumber(unsigned int channelNumber) const {
     m_cStructure->iChannelNumber = channelNumber;
   }
 
@@ -98,8 +97,7 @@ public:
 
   /// @brief **optional**\n
   /// Sub channel number of this channel on the backend (ATSC).
-  void SetSubChannelNumber(unsigned int subChannelNumber)
-  {
+  void SetSubChannelNumber(unsigned int subChannelNumber) const {
     m_cStructure->iSubChannelNumber = subChannelNumber;
   }
 
@@ -108,8 +106,7 @@ public:
 
   /// @brief **optional**\n
   /// Channel name given to this channel.
-  void SetChannelName(const std::string& channelName)
-  {
+  void SetChannelName(const std::string& channelName) const {
     strncpy(m_cStructure->strChannelName, channelName.c_str(),
             sizeof(m_cStructure->strChannelName) - 1);
   }
@@ -123,8 +120,7 @@ public:
   /// Available types can be found in https://www.iana.org/assignments/media-types/media-types.xhtml
   /// on "application" and "video" or leave empty if unknown.
   ///
-  void SetMimeType(const std::string& inputFormat)
-  {
+  void SetMimeType(const std::string& inputFormat) const {
     strncpy(m_cStructure->strMimeType, inputFormat.c_str(), sizeof(m_cStructure->strMimeType) - 1);
   }
 
@@ -138,8 +134,7 @@ public:
   /// - http://www.dvb.org/index.php?id=174
   /// - http://en.wikipedia.org/wiki/Conditional_access_system
   ///
-  void SetEncryptionSystem(unsigned int encryptionSystem)
-  {
+  void SetEncryptionSystem(unsigned int encryptionSystem) const {
     m_cStructure->iEncryptionSystem = encryptionSystem;
   }
 
@@ -148,8 +143,7 @@ public:
 
   /// @brief **optional**\n
   /// Path to the channel icon (if present).
-  void SetIconPath(const std::string& iconPath)
-  {
+  void SetIconPath(const std::string& iconPath) const {
     strncpy(m_cStructure->strIconPath, iconPath.c_str(), sizeof(m_cStructure->strIconPath) - 1);
   }
 
@@ -158,21 +152,21 @@ public:
 
   /// @brief **optional**\n
   /// **true** if this channel is marked as hidden.
-  void SetIsHidden(bool isHidden) { m_cStructure->bIsHidden = isHidden; }
+  void SetIsHidden(bool isHidden) const { m_cStructure->bIsHidden = isHidden; }
 
   /// @brief To get with @ref GetIsRadio changed values.
   bool GetIsHidden() const { return m_cStructure->bIsHidden; }
 
   /// @brief **optional**\n
   /// **true** if this channel has a server-side back buffer.
-  void SetHasArchive(bool hasArchive) { m_cStructure->bHasArchive = hasArchive; }
+  void SetHasArchive(bool hasArchive) const { m_cStructure->bHasArchive = hasArchive; }
 
   /// @brief To get with @ref GetIsRadio changed values.
   bool GetHasArchive() const { return m_cStructure->bHasArchive; }
 
   /// @brief **optional**\n
   /// The value denoting the order of this channel in the 'All channels' group.
-  void SetOrder(bool order) { m_cStructure->iOrder = order; }
+  void SetOrder(bool order) const { m_cStructure->iOrder = order; }
 
   /// @brief To get with @ref SetOrder changed values.
   bool GetOrder() const { return m_cStructure->iOrder; }
@@ -182,8 +176,7 @@ public:
   /// Unique identifier of the provider this channel belongs to.
   ///
   /// @ref PVR_PROVIDER_INVALID_UID denotes that provider uid is not available.
-  void SetClientProviderUid(int iClientProviderUid)
-  {
+  void SetClientProviderUid(int iClientProviderUid) const {
     m_cStructure->iClientProviderUid = iClientProviderUid;
   }
 
@@ -221,8 +214,7 @@ public:
   /// @brief To add and give content from addon to Kodi on related call.
   ///
   /// @param[in] tag The to transferred data.
-  void Add(const kodi::addon::PVRChannel& tag)
-  {
+  void Add(const kodi::addon::PVRChannel& tag) const {
     m_instance->toKodi->TransferChannelEntry(m_instance->toKodi->kodiInstance, m_handle, tag);
   }
 
@@ -281,8 +273,7 @@ public:
 
   /// @brief **optional**\n
   /// Name of the adapter that's being used.
-  void SetAdapterName(const std::string& adapterName)
-  {
+  void SetAdapterName(const std::string& adapterName) const {
     strncpy(m_cStructure->strAdapterName, adapterName.c_str(),
             sizeof(m_cStructure->strAdapterName) - 1);
   }
@@ -292,8 +283,7 @@ public:
 
   /// @brief **optional**\n
   /// Status of the adapter that's being used.
-  void SetAdapterStatus(const std::string& adapterStatus)
-  {
+  void SetAdapterStatus(const std::string& adapterStatus) const {
     strncpy(m_cStructure->strAdapterStatus, adapterStatus.c_str(),
             sizeof(m_cStructure->strAdapterStatus) - 1);
   }
@@ -303,8 +293,7 @@ public:
 
   /// @brief **optional**\n
   /// Name of the current service.
-  void SetServiceName(const std::string& serviceName)
-  {
+  void SetServiceName(const std::string& serviceName) const {
     strncpy(m_cStructure->strServiceName, serviceName.c_str(),
             sizeof(m_cStructure->strServiceName) - 1);
   }
@@ -314,8 +303,7 @@ public:
 
   /// @brief **optional**\n
   /// Name of the current service's provider.
-  void SetProviderName(const std::string& providerName)
-  {
+  void SetProviderName(const std::string& providerName) const {
     strncpy(m_cStructure->strProviderName, providerName.c_str(),
             sizeof(m_cStructure->strProviderName) - 1);
   }
@@ -325,8 +313,7 @@ public:
 
   /// @brief **optional**\n
   /// Name of the current mux.
-  void SetMuxName(const std::string& muxName)
-  {
+  void SetMuxName(const std::string& muxName) const {
     strncpy(m_cStructure->strMuxName, muxName.c_str(), sizeof(m_cStructure->strMuxName) - 1);
   }
 
@@ -337,7 +324,7 @@ public:
   /// Signal/noise ratio.
   ///
   /// @note 100% is 0xFFFF 65535
-  void SetSNR(int snr) { m_cStructure->iSNR = snr; }
+  void SetSNR(int snr) const { m_cStructure->iSNR = snr; }
 
   /// @brief To get with @ref SetSNR changed values.
   int GetSNR() const { return m_cStructure->iSNR; }
@@ -346,21 +333,21 @@ public:
   /// Signal strength.
   ///
   /// @note 100% is 0xFFFF 65535
-  void SetSignal(int signal) { m_cStructure->iSignal = signal; }
+  void SetSignal(int signal) const { m_cStructure->iSignal = signal; }
 
   /// @brief To get with @ref SetSignal changed values.
   int GetSignal() const { return m_cStructure->iSignal; }
 
   /// @brief **optional**\n
   /// Bit error rate.
-  void SetBER(long ber) { m_cStructure->iBER = ber; }
+  void SetBER(long ber) const { m_cStructure->iBER = ber; }
 
   /// @brief To get with @ref SetBER changed values.
   long GetBER() const { return m_cStructure->iBER; }
 
   /// @brief **optional**\n
   /// Uncorrected blocks:
-  void SetUNC(long unc) { m_cStructure->iUNC = unc; }
+  void SetUNC(long unc) const { m_cStructure->iUNC = unc; }
 
   /// @brief To get with @ref SetBER changed values.
   long GetUNC() const { return m_cStructure->iUNC; }
@@ -432,7 +419,7 @@ public:
   /// a 13-bit packet identifier (PID).
   ///
   /// Is @ref PVR_DESCRAMBLE_INFO_NOT_AVAILABLE as default, if not available
-  void SetPID(int pid) { m_cStructure->iPid = pid; }
+  void SetPID(int pid) const { m_cStructure->iPid = pid; }
 
   /// @brief To get with @ref SetPID changed values
   int GetPID() const { return m_cStructure->iPid; }
@@ -447,7 +434,7 @@ public:
   /// Available CA system ID's listed here https://www.dvbservices.com/identifiers/ca_system_id.
   ///
   /// @ref PVR_DESCRAMBLE_INFO_NOT_AVAILABLE if not available.
-  void SetCAID(int iCaid) { m_cStructure->iCaid = iCaid; }
+  void SetCAID(int iCaid) const { m_cStructure->iCaid = iCaid; }
 
   /// @brief To get with @ref SetCAID changed values.
   int GetCAID() const { return m_cStructure->iCaid; }
@@ -456,7 +443,7 @@ public:
   /// Provider-ID.
   ///
   /// Is @ref PVR_DESCRAMBLE_INFO_NOT_AVAILABLE as default, if not available.
-  void SetProviderID(int provid) { m_cStructure->iProvid = provid; }
+  void SetProviderID(int provid) const { m_cStructure->iProvid = provid; }
 
   /// @brief To get with @ref SetProviderID changed values
   int GetProviderID() const { return m_cStructure->iProvid; }
@@ -465,7 +452,7 @@ public:
   /// ECM time.
   ///
   /// Is @ref PVR_DESCRAMBLE_INFO_NOT_AVAILABLE as default, if not available.
-  void SetECMTime(int ecmTime) { m_cStructure->iEcmTime = ecmTime; }
+  void SetECMTime(int ecmTime) const { m_cStructure->iEcmTime = ecmTime; }
 
   /// @brief To get with @ref SetECMTime changed values.
   int GetECMTime() const { return m_cStructure->iEcmTime; }
@@ -474,15 +461,14 @@ public:
   /// Hops.
   ///
   /// Is @ref PVR_DESCRAMBLE_INFO_NOT_AVAILABLE as default, if not available.
-  void SetHops(int hops) { m_cStructure->iHops = hops; }
+  void SetHops(int hops) const { m_cStructure->iHops = hops; }
 
   /// @brief To get with @ref SetHops changed values.
   int GetHops() const { return m_cStructure->iHops; }
 
   /// @brief **optional**\n
   /// Empty string if not available.
-  void SetCardSystem(const std::string& cardSystem)
-  {
+  void SetCardSystem(const std::string& cardSystem) const {
     strncpy(m_cStructure->strCardSystem, cardSystem.c_str(),
             sizeof(m_cStructure->strCardSystem) - 1);
   }
@@ -492,8 +478,7 @@ public:
 
   /// @brief **optional**\n
   /// Empty string if not available.
-  void SetReader(const std::string& reader)
-  {
+  void SetReader(const std::string& reader) const {
     strncpy(m_cStructure->strReader, reader.c_str(), sizeof(m_cStructure->strReader) - 1);
   }
 
@@ -502,8 +487,7 @@ public:
 
   /// @brief **optional**\n
   /// Empty string if not available.
-  void SetFrom(const std::string& from)
-  {
+  void SetFrom(const std::string& from) const {
     strncpy(m_cStructure->strFrom, from.c_str(), sizeof(m_cStructure->strFrom) - 1);
   }
 
@@ -512,8 +496,7 @@ public:
 
   /// @brief **optional**\n
   /// Empty string if not available.
-  void SetProtocol(const std::string& protocol)
-  {
+  void SetProtocol(const std::string& protocol) const {
     strncpy(m_cStructure->strProtocol, protocol.c_str(), sizeof(m_cStructure->strProtocol) - 1);
   }
 

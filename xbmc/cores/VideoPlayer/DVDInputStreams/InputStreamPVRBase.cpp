@@ -133,8 +133,7 @@ bool CInputStreamPVRBase::CanSeek()
   return CanSeekPVRStream();
 }
 
-void CInputStreamPVRBase::Pause(bool bPaused)
-{
+void CInputStreamPVRBase::Pause(bool bPaused) const {
   if (m_client)
     m_client->PauseStream(bPaused);
 }

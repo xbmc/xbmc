@@ -188,8 +188,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
-bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItem& item)
-{
+bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItem& item) const {
   bool bReturn = false;
 
   /* Check if "Add timer..." entry is selected, if yes

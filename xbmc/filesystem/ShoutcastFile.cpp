@@ -63,8 +63,7 @@ int64_t CShoutcastFile::GetLength()
   return 0;
 }
 
-std::string CShoutcastFile::DecodeToUTF8(const std::string& str)
-{
+std::string CShoutcastFile::DecodeToUTF8(const std::string& str) const {
   std::string ret = str;
 
   if (m_fileCharset.empty())

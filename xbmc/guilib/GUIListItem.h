@@ -125,14 +125,14 @@ public:
   virtual bool IsFileItem() const { return false; }
 
   void SetLayout(std::unique_ptr<CGUIListItemLayout> layout);
-  CGUIListItemLayout *GetLayout();
+  CGUIListItemLayout *GetLayout() const;
 
   void SetFocusedLayout(std::unique_ptr<CGUIListItemLayout> layout);
-  CGUIListItemLayout *GetFocusedLayout();
+  CGUIListItemLayout *GetFocusedLayout() const;
 
   void FreeIcons();
   void FreeMemory(bool immediately = false);
-  void SetInvalid();
+  void SetInvalid() const;
 
   bool m_bIsFolder;     ///< is item a folder or a file
 
@@ -152,7 +152,7 @@ public:
   void AppendProperties(const CGUIListItem &item);
 
   void Archive(CArchive& ar);
-  void Serialize(CVariant& value);
+  void Serialize(CVariant& value) const;
 
   bool       HasProperty(const std::string &strKey) const;
   bool HasProperties() const { return !m_mapProperties.empty(); }

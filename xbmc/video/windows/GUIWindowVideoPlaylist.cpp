@@ -464,8 +464,7 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
 }
 
 /// \brief Save current playlist to playlist folder
-void CGUIWindowVideoPlaylist::SavePlayList()
-{
+void CGUIWindowVideoPlaylist::SavePlayList() const {
   std::string strNewFileName;
   if (CGUIKeyboardFactory::ShowAndGetInput(strNewFileName, CVariant{g_localizeStrings.Get(16012)},
                                            false))

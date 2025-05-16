@@ -77,7 +77,7 @@ public:
   void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
 
   void SetRef(AVFrame *frame);
-  void Unref();
+  void Unref() const;
 
 protected:
   AVFrame* m_pFrame;
@@ -115,8 +115,7 @@ void CVideoBufferFFmpeg::SetRef(AVFrame *frame)
   m_pixFormat = (AVPixelFormat)m_pFrame->format;
 }
 
-void CVideoBufferFFmpeg::Unref()
-{
+void CVideoBufferFFmpeg::Unref() const {
   av_frame_unref(m_pFrame);
 }
 
@@ -320,8 +319,7 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
   Dispose();
 }
 
-void CDVDVideoCodecFFmpeg::SetProcessInfoVideoDetails()
-{
+void CDVDVideoCodecFFmpeg::SetProcessInfoVideoDetails() const {
   m_dataCacheCore.SetVideoHdrType(m_hints.hdrType);
   m_dataCacheCore.SetVideoColorSpace(m_hints.colorSpace);
   m_dataCacheCore.SetVideoColorRange(m_hints.colorRange);

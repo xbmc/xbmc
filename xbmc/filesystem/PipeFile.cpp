@@ -89,22 +89,19 @@ ssize_t CPipeFile::Write(const void* lpBuf, size_t uiBufSize)
   return m_pipe->Write((const char *)lpBuf,uiBufSize) ? uiBufSize : -1;
 }
 
-void CPipeFile::SetEof()
-{
+void CPipeFile::SetEof() const {
   if (!m_pipe)
     return ;
   m_pipe->SetEof();
 }
 
-bool CPipeFile::IsEof()
-{
+bool CPipeFile::IsEof() const {
   if (!m_pipe)
     return true;
   return m_pipe->IsEof();
 }
 
-bool CPipeFile::IsEmpty()
-{
+bool CPipeFile::IsEmpty() const {
   if (!m_pipe)
     return true;
   return m_pipe->IsEmpty();
@@ -125,8 +122,7 @@ void CPipeFile::Close()
   m_pipe = NULL;
 }
 
-bool CPipeFile::IsClosed()
-{
+bool CPipeFile::IsClosed() const {
   return (m_pipe == NULL);
 }
 
@@ -213,8 +209,7 @@ void CPipeFile::RemoveListener(IPipeListener *l)
   }
 }
 
-void CPipeFile::SetOpenThreshold(int threshold)
-{
+void CPipeFile::SetOpenThreshold(int threshold) const {
   m_pipe->SetOpenThreshold(threshold);
 }
 

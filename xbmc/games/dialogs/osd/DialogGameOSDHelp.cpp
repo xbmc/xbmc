@@ -29,8 +29,7 @@ CDialogGameOSDHelp::CDialogGameOSDHelp(CDialogGameOSD& dialog) : m_dialog(dialog
 {
 }
 
-void CDialogGameOSDHelp::OnInitWindow()
-{
+void CDialogGameOSDHelp::OnInitWindow() const {
   // Set help text
   // "Press {0:s} to open the menu."
   std::string helpText = StringUtils::Format(g_localizeStrings.Get(35235), HELP_COMBO);
@@ -45,8 +44,7 @@ bool CDialogGameOSDHelp::IsVisible()
   return IsVisible(CONTROL_ID_HELP_TEXT);
 }
 
-bool CDialogGameOSDHelp::IsVisible(int windowId)
-{
+bool CDialogGameOSDHelp::IsVisible(int windowId) const {
   CGUIControl* control = m_dialog.GetControl(windowId);
   if (control != nullptr)
     return control->IsVisible();

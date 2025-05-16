@@ -203,8 +203,7 @@ CSkinInfo::~CSkinInfo() = default;
 struct closestRes
 {
   explicit closestRes(const RESOLUTION_INFO &target) : m_target(target) { };
-  bool operator()(const RESOLUTION_INFO &i, const RESOLUTION_INFO &j)
-  {
+  bool operator()(const RESOLUTION_INFO &i, const RESOLUTION_INFO &j) const {
     float diff = fabs(i.DisplayRatio() - m_target.DisplayRatio()) - fabs(j.DisplayRatio() - m_target.DisplayRatio());
     if (diff < 0) return true;
     if (diff > 0) return false;
@@ -294,8 +293,7 @@ void CSkinInfo::LoadTimers()
   m_skinTimerManager->LoadTimers(timersPath);
 }
 
-void CSkinInfo::ProcessTimers()
-{
+void CSkinInfo::ProcessTimers() const {
   m_skinTimerManager->Process();
 }
 void CSkinInfo::ResolveIncludes(TiXmlElement* node,
@@ -419,8 +417,7 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
   }
 }
 
-void CSkinInfo::Unload()
-{
+void CSkinInfo::Unload() const {
   m_skinTimerManager->Stop();
 }
 
@@ -756,8 +753,7 @@ std::shared_ptr<const CSkinSetting> CSkinInfo::GetSkinSetting(const std::string&
   return nullptr;
 }
 
-void CSkinInfo::Reset(const std::string &setting)
-{
+void CSkinInfo::Reset(const std::string &setting) const {
   // run through and see if we have this setting as a string
   for (auto& it : m_strings)
   {
@@ -781,8 +777,7 @@ void CSkinInfo::Reset(const std::string &setting)
   }
 }
 
-void CSkinInfo::Reset()
-{
+void CSkinInfo::Reset() const {
   // clear all the settings and strings from this skin.
   for (auto& it : m_bools)
     it.second->value = false;

@@ -195,8 +195,7 @@ void CGUIAgentControllerList::Notify(const Observable& obs, const ObservableMess
   }
 }
 
-void CGUIAgentControllerList::OnEvent(const ADDON::AddonEvent& event)
-{
+void CGUIAgentControllerList::OnEvent(const ADDON::AddonEvent& event) {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // Also called on install
       typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // Not called on uninstall
       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
@@ -208,8 +207,7 @@ void CGUIAgentControllerList::OnEvent(const ADDON::AddonEvent& event)
   }
 }
 
-void CGUIAgentControllerList::AddItem(const CAgentController& agentController)
-{
+void CGUIAgentControllerList::AddItem(const CAgentController& agentController) const {
   // Create the list item from agent properties
   const std::string label = agentController.GetPeripheralName();
   const ControllerPtr controller = agentController.GetController();
@@ -225,8 +223,7 @@ void CGUIAgentControllerList::AddItem(const CAgentController& agentController)
   m_vecItems->Add(std::move(item));
 }
 
-void CGUIAgentControllerList::CleanupItems()
-{
+void CGUIAgentControllerList::CleanupItems() const {
   m_vecItems->Clear();
 }
 

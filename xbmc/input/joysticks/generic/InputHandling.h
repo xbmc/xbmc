@@ -57,7 +57,7 @@ private:
   bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed);
   bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude);
 
-  CJoystickFeature* CreateFeature(const FeatureName& featureName);
+  CJoystickFeature* CreateFeature(const FeatureName& featureName) const;
 
   IInputHandler* const m_handler;
   IButtonMap* const m_buttonMap;

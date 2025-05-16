@@ -188,15 +188,13 @@ void CGUIDialogSelect::Reset()
   m_selectedItems.clear();
 }
 
-int CGUIDialogSelect::Add(const std::string& strLabel)
-{
+int CGUIDialogSelect::Add(const std::string& strLabel) const {
   CFileItemPtr pItem(new CFileItem(strLabel));
   m_vecList->Add(pItem);
   return m_vecList->Size() - 1;
 }
 
-int CGUIDialogSelect::Add(const CFileItem& item)
-{
+int CGUIDialogSelect::Add(const CFileItem& item) const {
   m_vecList->Add(std::make_shared<CFileItem>(item));
   return m_vecList->Size() - 1;
 }
@@ -250,18 +248,15 @@ void CGUIDialogSelect::EnableButton2(bool enable, const std::string& label)
   m_button2Label = label;
 }
 
-bool CGUIDialogSelect::IsButtonPressed()
-{
+bool CGUIDialogSelect::IsButtonPressed() const {
   return m_bButtonPressed;
 }
 
-bool CGUIDialogSelect::IsButton2Pressed()
-{
+bool CGUIDialogSelect::IsButton2Pressed() const {
   return m_bButton2Pressed;
 }
 
-void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
-{
+void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/) const {
   m_vecList->Sort(SortByLabel, bSortOrder ? SortOrderAscending : SortOrderDescending);
 }
 

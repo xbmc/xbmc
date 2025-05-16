@@ -53,7 +53,7 @@ protected:
   bool DoPrompt(const std::string& strPrompt,
                 const std::string& strWarn,
                 const std::string& strFeature,
-                CEvent& waitEvent);
+                CEvent& waitEvent) const;
 
   // FSM helper
   template<typename T>

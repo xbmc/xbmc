@@ -32,7 +32,7 @@ public:
   bool CanSeek() override;
 
   void DeInit();
-  AEAudioFormat GetFormat();
+  AEAudioFormat GetFormat() const;
   void SetContentType(const std::string &strContent);
 
   bool NeedConvert(AEDataFormat fmt);

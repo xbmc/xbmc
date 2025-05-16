@@ -602,8 +602,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   return true;
 }
 
-bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& strPath)
-{
+bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& strPath) const {
   if (!node) return false;
 
   // we start with a <tag> tag

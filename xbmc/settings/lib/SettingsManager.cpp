@@ -609,8 +609,7 @@ bool CSettingsManager::GetBool(const std::string &id) const
   return std::static_pointer_cast<CSettingBool>(setting)->GetValue();
 }
 
-bool CSettingsManager::SetBool(const std::string &id, bool value)
-{
+bool CSettingsManager::SetBool(const std::string &id, bool value) const {
   std::shared_lock<CSharedSection> lock(m_settingsCritical);
   SettingPtr setting = GetSetting(id);
   if (setting == nullptr || setting->GetType() != SettingType::Boolean)
@@ -639,8 +638,7 @@ int CSettingsManager::GetInt(const std::string &id) const
   return std::static_pointer_cast<CSettingInt>(setting)->GetValue();
 }
 
-bool CSettingsManager::SetInt(const std::string &id, int value)
-{
+bool CSettingsManager::SetInt(const std::string &id, int value) const {
   std::shared_lock<CSharedSection> lock(m_settingsCritical);
   SettingPtr setting = GetSetting(id);
   if (setting == nullptr || setting->GetType() != SettingType::Integer)
@@ -659,8 +657,7 @@ double CSettingsManager::GetNumber(const std::string &id) const
   return std::static_pointer_cast<CSettingNumber>(setting)->GetValue();
 }
 
-bool CSettingsManager::SetNumber(const std::string &id, double value)
-{
+bool CSettingsManager::SetNumber(const std::string &id, double value) const {
   std::shared_lock<CSharedSection> lock(m_settingsCritical);
   SettingPtr setting = GetSetting(id);
   if (setting == nullptr || setting->GetType() != SettingType::Number)
@@ -679,8 +676,7 @@ std::string CSettingsManager::GetString(const std::string &id) const
   return std::static_pointer_cast<CSettingString>(setting)->GetValue();
 }
 
-bool CSettingsManager::SetString(const std::string &id, const std::string &value)
-{
+bool CSettingsManager::SetString(const std::string &id, const std::string &value) const {
   std::shared_lock<CSharedSection> lock(m_settingsCritical);
   SettingPtr setting = GetSetting(id);
   if (setting == nullptr || setting->GetType() != SettingType::String)
@@ -699,8 +695,7 @@ std::vector< std::shared_ptr<CSetting> > CSettingsManager::GetList(const std::st
   return std::static_pointer_cast<CSettingList>(setting)->GetValue();
 }
 
-bool CSettingsManager::SetList(const std::string &id, const std::vector< std::shared_ptr<CSetting> > &value)
-{
+bool CSettingsManager::SetList(const std::string &id, const std::vector< std::shared_ptr<CSetting> > &value) const {
   std::shared_lock<CSharedSection> lock(m_settingsCritical);
   SettingPtr setting = GetSetting(id);
   if (setting == nullptr || setting->GetType() != SettingType::List)
@@ -709,8 +704,7 @@ bool CSettingsManager::SetList(const std::string &id, const std::vector< std::sh
   return std::static_pointer_cast<CSettingList>(setting)->SetValue(value);
 }
 
-bool CSettingsManager::SetDefault(const std::string &id)
-{
+bool CSettingsManager::SetDefault(const std::string &id) const {
   std::shared_lock<CSharedSection> lock(m_settingsCritical);
   SettingPtr setting = GetSetting(id);
   if (setting == nullptr)
@@ -720,8 +714,7 @@ bool CSettingsManager::SetDefault(const std::string &id)
   return true;
 }
 
-void CSettingsManager::SetDefaults()
-{
+void CSettingsManager::SetDefaults() const {
   std::shared_lock<CSharedSection> lock(m_settingsCritical);
   for (auto& setting : m_settings)
     setting.second.setting->Reset();

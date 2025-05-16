@@ -81,8 +81,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_edit->set_visible(m_interface->kodiBase, m_controlHandle,
                                                      visible);
   }
@@ -94,8 +93,7 @@ public:
   ///
   /// @param[in] enabled If true enabled, otherwise disabled
   ///
-  void SetEnabled(bool enabled)
-  {
+  void SetEnabled(bool enabled) const {
     m_interface->kodi_gui->control_edit->set_enabled(m_interface->kodiBase, m_controlHandle,
                                                      enabled);
   }
@@ -107,8 +105,7 @@ public:
   ///
   /// @param[in] label Text to show
   ///
-  void SetLabel(const std::string& label)
-  {
+  void SetLabel(const std::string& label) const {
     m_interface->kodi_gui->control_edit->set_label(m_interface->kodiBase, m_controlHandle,
                                                    label.c_str());
   }
@@ -141,8 +138,7 @@ public:
   ///
   /// @param[in] text                 string or unicode - text string.
   ///
-  void SetText(const std::string& text)
-  {
+  void SetText(const std::string& text) const {
     m_interface->kodi_gui->control_edit->set_text(m_interface->kodiBase, m_controlHandle,
                                                   text.c_str());
   }
@@ -175,8 +171,7 @@ public:
   ///
   /// @param[in] position The position to set
   ///
-  void SetCursorPosition(unsigned int position)
-  {
+  void SetCursorPosition(unsigned int position) const {
     m_interface->kodi_gui->control_edit->set_cursor_position(m_interface->kodiBase, m_controlHandle,
                                                              position);
   }
@@ -188,8 +183,7 @@ public:
   ///
   /// @return The current cursor position
   ///
-  unsigned int GetCursorPosition()
-  {
+  unsigned int GetCursorPosition() const {
     return m_interface->kodi_gui->control_edit->get_cursor_position(m_interface->kodiBase,
                                                                     m_controlHandle);
   }
@@ -202,8 +196,7 @@ public:
   /// @param[in] type The @ref AddonGUIInputType "Add-on input type" to use
   /// @param[in] heading The heading text for related keyboard dialog
   ///
-  void SetInputType(AddonGUIInputType type, const std::string& heading)
-  {
+  void SetInputType(AddonGUIInputType type, const std::string& heading) const {
     m_interface->kodi_gui->control_edit->set_input_type(m_interface->kodiBase, m_controlHandle,
                                                         static_cast<int>(type), heading.c_str());
   }

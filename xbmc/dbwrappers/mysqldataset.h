@@ -41,7 +41,7 @@ public:
   Dataset* CreateDataset() const override;
 
   /* func. returns connection handle with MySQL-server */
-  MYSQL* getHandle() { return conn; }
+  MYSQL* getHandle() const { return conn; }
   /* func. returns current status about MySQL-server connection */
   int status() override;
   int setErr(int err_code, const char* qry) override;
@@ -102,7 +102,7 @@ private:
 class MysqlDataset : public Dataset
 {
 protected:
-  MYSQL* handle();
+  MYSQL* handle() const;
 
   /* Makes direct queries to database */
   virtual void make_query(StringList& _sql);

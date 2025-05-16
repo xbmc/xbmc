@@ -839,8 +839,7 @@ bool CEdl::HasSceneMarker() const
   return !m_vecSceneMarkers.empty();
 }
 
-bool CEdl::InEdit(const int iSeek, Edit* pEdit)
-{
+bool CEdl::InEdit(const int iSeek, Edit* pEdit) const {
   for (size_t i = 0; i < m_vecEdits.size(); ++i)
   {
     if (iSeek < m_vecEdits[i].start) // Early exit if not even up to the edit start time.

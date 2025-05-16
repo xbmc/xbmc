@@ -100,8 +100,7 @@ bool CActiveAESound::StoreSound(bool orig, uint8_t **buffer, int samples, int li
   return true;
 }
 
-CSoundPacket *CActiveAESound::GetSound(bool orig)
-{
+CSoundPacket *CActiveAESound::GetSound(bool orig) const {
   if (orig)
     return m_orig_sound;
   else
@@ -130,8 +129,7 @@ void CActiveAESound::Finish()
   m_pFile = NULL;
 }
 
-int CActiveAESound::GetChunkSize()
-{
+int CActiveAESound::GetChunkSize() const {
   return m_pFile->GetChunkSize();
 }
 

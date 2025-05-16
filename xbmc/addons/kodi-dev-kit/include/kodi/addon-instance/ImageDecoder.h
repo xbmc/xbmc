@@ -253,8 +253,7 @@ public:
                   char& longitude_ref,
                   float longitude[3],
                   int& altitude_ref,
-                  float& altitude)
-  {
+                  float& altitude) const {
     if (!latitude || !longitude)
       return;
 

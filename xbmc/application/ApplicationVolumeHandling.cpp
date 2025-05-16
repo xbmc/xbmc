@@ -44,8 +44,7 @@ void CApplicationVolumeHandling::SetHardwareVolume(float hardwareVolume)
     ae->SetVolume(m_volumeLevel);
 }
 
-void CApplicationVolumeHandling::VolumeChanged()
-{
+void CApplicationVolumeHandling::VolumeChanged() const {
   CVariant data(CVariant::VariantTypeObject);
   data["volume"] = static_cast<int>(std::lroundf(GetVolumePercent()));
   data["muted"] = m_muted;

@@ -156,8 +156,7 @@ void CTexture::Update(unsigned int width,
     LoadToGPU();
 }
 
-void CTexture::ClampToEdge()
-{
+void CTexture::ClampToEdge() const {
   if (m_pixels == nullptr)
     return;
 

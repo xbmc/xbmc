@@ -751,8 +751,7 @@ protected:
   }
 
 private:
-  void Play()
-  {
+  void Play() const {
     auto item{m_item};
     if (item->m_bIsFolder && item->HasVideoVersions())
     {
@@ -2118,13 +2117,11 @@ void CGUIDialogVideoInfo::ShowFor(const CFileItem& item)
     window->OnItemInfo(item);
 }
 
-bool CGUIDialogVideoInfo::OnManageVideoVersions()
-{
+bool CGUIDialogVideoInfo::OnManageVideoVersions() const {
   return CGUIDialogVideoManagerVersions::ManageVideoVersions(m_movieItem);
 }
 
-bool CGUIDialogVideoInfo::OnManageVideoExtras()
-{
+bool CGUIDialogVideoInfo::OnManageVideoExtras() const {
   return CGUIDialogVideoManagerExtras::ManageVideoExtras(m_movieItem);
 }
 

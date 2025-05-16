@@ -70,8 +70,7 @@ void CGUIDialogSettingsManualBase::InitializeSettings()
   }
 }
 
-SettingCategoryPtr CGUIDialogSettingsManualBase::AddCategory(const std::string &id, int label, int help /* = -1 */)
-{
+SettingCategoryPtr CGUIDialogSettingsManualBase::AddCategory(const std::string &id, int label, int help /* = -1 */) const {
   if (id.empty())
     return NULL;
 

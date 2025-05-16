@@ -89,58 +89,50 @@ CVideoSettingsLocked::CVideoSettingsLocked(CVideoSettings &vs, CCriticalSection 
 {
 }
 
-void CVideoSettingsLocked::SetSubtitleStream(int stream)
-{
+void CVideoSettingsLocked::SetSubtitleStream(int stream) const {
   std::lock_guard lock(m_critSection);
 
   m_videoSettings.m_SubtitleStream = stream;
 }
 
-void CVideoSettingsLocked::SetSubtitleVisible(bool visible)
-{
+void CVideoSettingsLocked::SetSubtitleVisible(bool visible) const {
   std::lock_guard lock(m_critSection);
 
   m_videoSettings.m_SubtitleOn = visible;
 }
 
-void CVideoSettingsLocked::SetAudioStream(int stream)
-{
+void CVideoSettingsLocked::SetAudioStream(int stream) const {
   std::lock_guard lock(m_critSection);
 
   m_videoSettings.m_AudioStream = stream;
 }
 
-void CVideoSettingsLocked::SetVideoStream(int stream)
-{
+void CVideoSettingsLocked::SetVideoStream(int stream) const {
   std::lock_guard lock(m_critSection);
 
   m_videoSettings.m_VideoStream = stream;
 }
 
-void CVideoSettingsLocked::SetAudioDelay(float delay)
-{
+void CVideoSettingsLocked::SetAudioDelay(float delay) const {
   std::lock_guard lock(m_critSection);
 
   m_videoSettings.m_AudioDelay = delay;
 }
 
-void CVideoSettingsLocked::SetSubtitleDelay(float delay)
-{
+void CVideoSettingsLocked::SetSubtitleDelay(float delay) const {
   std::lock_guard lock(m_critSection);
 
   m_videoSettings.m_SubtitleDelay = delay;
 }
 
-void CVideoSettingsLocked::SetSubtitleVerticalPosition(int value, bool save)
-{
+void CVideoSettingsLocked::SetSubtitleVerticalPosition(int value, bool save) const {
   std::lock_guard lock(m_critSection);
 
   m_videoSettings.m_subtitleVerticalPosition = value;
   m_videoSettings.m_subtitleVerticalPositionSave = save;
 }
 
-void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float shift, bool stretch)
-{
+void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float shift, bool stretch) const {
   std::lock_guard lock(m_critSection);
 
   m_videoSettings.m_ViewMode = mode;
@@ -150,8 +142,7 @@ void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float sh
   m_videoSettings.m_CustomNonLinStretch = stretch;
 }
 
-void CVideoSettingsLocked::SetVolumeAmplification(float amp)
-{
+void CVideoSettingsLocked::SetVolumeAmplification(float amp) const {
   std::lock_guard lock(m_critSection);
 
   m_videoSettings.m_VolumeAmplification = amp;

@@ -69,8 +69,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_image->set_visible(m_interface->kodiBase, m_controlHandle,
                                                       visible);
   }
@@ -84,8 +83,7 @@ public:
   /// @param[in] useCache To define storage of image, default is in cache, if
   ///                     false becomes it loaded always on changes again
   ///
-  void SetFileName(const std::string& filename, bool useCache = true)
-  {
+  void SetFileName(const std::string& filename, bool useCache = true) const {
     m_interface->kodi_gui->control_image->set_filename(m_interface->kodiBase, m_controlHandle,
                                                        filename.c_str(), useCache);
   }
@@ -97,8 +95,7 @@ public:
   ///
   /// @param[in] colorDiffuse Color to use for diffuse
   ///
-  void SetColorDiffuse(uint32_t colorDiffuse)
-  {
+  void SetColorDiffuse(uint32_t colorDiffuse) const {
     m_interface->kodi_gui->control_image->set_color_diffuse(m_interface->kodiBase, m_controlHandle,
                                                             colorDiffuse);
   }

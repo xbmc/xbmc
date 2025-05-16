@@ -130,75 +130,61 @@ namespace XBMCAddon
         delete infoTag;
     }
 
-    int InfoTagVideo::getDbId()
-    {
+    int InfoTagVideo::getDbId() const {
       return infoTag->m_iDbId;
     }
 
-    String InfoTagVideo::getDirector()
-    {
+    String InfoTagVideo::getDirector() const {
       return StringUtils::Join(infoTag->m_director, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
 
-    std::vector<String> InfoTagVideo::getDirectors()
-    {
+    std::vector<String> InfoTagVideo::getDirectors() const {
       return infoTag->m_director;
     }
 
-    String InfoTagVideo::getWritingCredits()
-    {
+    String InfoTagVideo::getWritingCredits() const {
       return StringUtils::Join(infoTag->m_writingCredits, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
 
-    std::vector<String> InfoTagVideo::getWriters()
-    {
+    std::vector<String> InfoTagVideo::getWriters() const {
       return infoTag->m_writingCredits;
     }
 
-    String InfoTagVideo::getGenre()
-    {
+    String InfoTagVideo::getGenre() const {
       return StringUtils::Join(infoTag->m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
 
-    std::vector<String> InfoTagVideo::getGenres()
-    {
+    std::vector<String> InfoTagVideo::getGenres() const {
       return infoTag->m_genre;
     }
 
-    String InfoTagVideo::getTagLine()
-    {
+    String InfoTagVideo::getTagLine() const {
       return infoTag->m_strTagLine;
     }
 
-    String InfoTagVideo::getPlotOutline()
-    {
+    String InfoTagVideo::getPlotOutline() const {
       return infoTag->m_strPlotOutline;
     }
 
-    String InfoTagVideo::getPlot()
-    {
+    String InfoTagVideo::getPlot() const {
       return infoTag->m_strPlot;
     }
 
-    String InfoTagVideo::getPictureURL()
-    {
+    String InfoTagVideo::getPictureURL() const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       infoTag->m_strPictureURL.Parse();
       return infoTag->m_strPictureURL.GetFirstThumbUrl();
     }
 
-    String InfoTagVideo::getTVShowTitle()
-    {
+    String InfoTagVideo::getTVShowTitle() const {
       return infoTag->m_strShowTitle;
     }
 
-    String InfoTagVideo::getTitle()
-    {
+    String InfoTagVideo::getTitle() const {
       return infoTag->m_strTitle;
     }
 
-    String InfoTagVideo::getMediaType()
-    {
+    String InfoTagVideo::getMediaType() const {
       return infoTag->m_type;
     }
 
@@ -212,18 +198,15 @@ namespace XBMCAddon
       return std::to_string(getVotesAsInt());
     }
 
-    int InfoTagVideo::getVotesAsInt(const String& type /* = "" */)
-    {
+    int InfoTagVideo::getVotesAsInt(const String& type /* = "" */) const {
       return infoTag->GetRating(type).votes;
     }
 
-    String InfoTagVideo::getCast()
-    {
+    String InfoTagVideo::getCast() const {
       return infoTag->GetCast(true);
     }
 
-    std::vector<Actor*> InfoTagVideo::getActors()
-    {
+    std::vector<Actor*> InfoTagVideo::getActors() const {
       std::vector<Actor*> actors;
       actors.reserve(infoTag->m_cast.size());
 
@@ -233,211 +216,174 @@ namespace XBMCAddon
       return actors;
     }
 
-    String InfoTagVideo::getFile()
-    {
+    String InfoTagVideo::getFile() const {
       return infoTag->m_strFile;
     }
 
-    String InfoTagVideo::getPath()
-    {
+    String InfoTagVideo::getPath() const {
       return infoTag->m_strPath;
     }
 
-    String InfoTagVideo::getFilenameAndPath()
-    {
+    String InfoTagVideo::getFilenameAndPath() const {
       return infoTag->m_strFileNameAndPath;
     }
 
-    String InfoTagVideo::getIMDBNumber()
-    {
+    String InfoTagVideo::getIMDBNumber() const {
       return infoTag->GetUniqueID();
     }
 
-    int InfoTagVideo::getSeason()
-    {
+    int InfoTagVideo::getSeason() const {
       return infoTag->m_iSeason;
     }
 
-    int InfoTagVideo::getEpisode()
-    {
+    int InfoTagVideo::getEpisode() const {
       return infoTag->m_iEpisode;
     }
 
-    int InfoTagVideo::getYear()
-    {
+    int InfoTagVideo::getYear() const {
       return infoTag->GetYear();
     }
 
-    double InfoTagVideo::getRating(const String& type /* = "" */)
-    {
+    double InfoTagVideo::getRating(const String& type /* = "" */) const {
       return infoTag->GetRating(type).rating;
     }
 
-    int InfoTagVideo::getUserRating()
-    {
+    int InfoTagVideo::getUserRating() const {
       return infoTag->m_iUserRating;
     }
 
-    int InfoTagVideo::getPlayCount()
-    {
+    int InfoTagVideo::getPlayCount() const {
       return infoTag->GetPlayCount();
     }
 
-    String InfoTagVideo::getLastPlayed()
-    {
+    String InfoTagVideo::getLastPlayed() const {
       CLog::Log(LOGWARNING, "InfoTagVideo.getLastPlayed() is deprecated and might be removed in "
                             "future Kodi versions. Please use InfoTagVideo.getLastPlayedAsW3C().");
 
       return infoTag->m_lastPlayed.GetAsLocalizedDateTime();
     }
 
-    String InfoTagVideo::getLastPlayedAsW3C()
-    {
+    String InfoTagVideo::getLastPlayedAsW3C() const {
       return infoTag->m_lastPlayed.GetAsW3CDateTime();
     }
 
-    String InfoTagVideo::getOriginalTitle()
-    {
+    String InfoTagVideo::getOriginalTitle() const {
       return infoTag->m_strOriginalTitle;
     }
 
-    String InfoTagVideo::getPremiered()
-    {
+    String InfoTagVideo::getPremiered() const {
       CLog::Log(LOGWARNING, "InfoTagVideo.getPremiered() is deprecated and might be removed in "
                             "future Kodi versions. Please use InfoTagVideo.getPremieredAsW3C().");
 
       return infoTag->GetPremiered().GetAsLocalizedDate();
     }
 
-    String InfoTagVideo::getPremieredAsW3C()
-    {
+    String InfoTagVideo::getPremieredAsW3C() const {
       return infoTag->GetPremiered().GetAsW3CDate();
     }
 
-    String InfoTagVideo::getFirstAired()
-    {
+    String InfoTagVideo::getFirstAired() const {
       CLog::Log(LOGWARNING, "InfoTagVideo.getFirstAired() is deprecated and might be removed in "
                             "future Kodi versions. Please use InfoTagVideo.getFirstAiredAsW3C().");
 
       return infoTag->m_firstAired.GetAsLocalizedDate();
     }
 
-    String InfoTagVideo::getFirstAiredAsW3C()
-    {
+    String InfoTagVideo::getFirstAiredAsW3C() const {
       return infoTag->m_firstAired.GetAsW3CDate();
     }
 
-    String InfoTagVideo::getTrailer()
-    {
+    String InfoTagVideo::getTrailer() const {
       return infoTag->m_strTrailer;
     }
 
-    std::vector<std::string> InfoTagVideo::getArtist()
-    {
+    std::vector<std::string> InfoTagVideo::getArtist() const {
       return infoTag->m_artist;
     }
 
-    String InfoTagVideo::getAlbum()
-    {
+    String InfoTagVideo::getAlbum() const {
       return infoTag->m_strAlbum;
     }
 
-    int InfoTagVideo::getTrack()
-    {
+    int InfoTagVideo::getTrack() const {
       return infoTag->m_iTrack;
     }
 
-    unsigned int InfoTagVideo::getDuration()
-    {
+    unsigned int InfoTagVideo::getDuration() const {
       return infoTag->GetDuration();
     }
 
-    double InfoTagVideo::getResumeTime()
-    {
+    double InfoTagVideo::getResumeTime() const {
       return infoTag->GetResumePoint().timeInSeconds;
     }
 
-    double InfoTagVideo::getResumeTimeTotal()
-    {
+    double InfoTagVideo::getResumeTimeTotal() const {
       return infoTag->GetResumePoint().totalTimeInSeconds;
     }
 
-    String InfoTagVideo::getUniqueID(const char* key)
-    {
+    String InfoTagVideo::getUniqueID(const char* key) const {
       return infoTag->GetUniqueID(key);
     }
 
     void InfoTagVideo::setUniqueID(const String& uniqueID,
                                    const String& type /* = "" */,
-                                   bool isDefault /* = false */)
-    {
+                                   bool isDefault /* = false */) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setUniqueIDRaw(infoTag, uniqueID, type, isDefault);
     }
 
     void InfoTagVideo::setUniqueIDs(const std::map<String, String>& uniqueIDs,
-                                    const String& defaultUniqueID /* = "" */)
-    {
+                                    const String& defaultUniqueID /* = "" */) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setUniqueIDsRaw(infoTag, uniqueIDs, defaultUniqueID);
     }
 
-    void InfoTagVideo::setDbId(int dbId)
-    {
+    void InfoTagVideo::setDbId(int dbId) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setDbIdRaw(infoTag, dbId);
     }
 
-    void InfoTagVideo::setYear(int year)
-    {
+    void InfoTagVideo::setYear(int year) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setYearRaw(infoTag, year);
     }
 
-    void InfoTagVideo::setEpisode(int episode)
-    {
+    void InfoTagVideo::setEpisode(int episode) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setEpisodeRaw(infoTag, episode);
     }
 
-    void InfoTagVideo::setSeason(int season)
-    {
+    void InfoTagVideo::setSeason(int season) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setSeasonRaw(infoTag, season);
     }
 
-    void InfoTagVideo::setSortEpisode(int sortEpisode)
-    {
+    void InfoTagVideo::setSortEpisode(int sortEpisode) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setSortEpisodeRaw(infoTag, sortEpisode);
     }
 
-    void InfoTagVideo::setSortSeason(int sortSeason)
-    {
+    void InfoTagVideo::setSortSeason(int sortSeason) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setSortSeasonRaw(infoTag, sortSeason);
     }
 
-    void InfoTagVideo::setEpisodeGuide(const String& episodeGuide)
-    {
+    void InfoTagVideo::setEpisodeGuide(const String& episodeGuide) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setEpisodeGuideRaw(infoTag, episodeGuide);
     }
 
-    void InfoTagVideo::setTop250(int top250)
-    {
+    void InfoTagVideo::setTop250(int top250) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setTop250Raw(infoTag, top250);
     }
 
-    void InfoTagVideo::setSetId(int setId)
-    {
+    void InfoTagVideo::setSetId(int setId) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setSetIdRaw(infoTag, setId);
     }
 
-    void InfoTagVideo::setTrackNumber(int trackNumber)
-    {
+    void InfoTagVideo::setTrackNumber(int trackNumber) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setTrackNumberRaw(infoTag, trackNumber);
     }
@@ -445,229 +391,191 @@ namespace XBMCAddon
     void InfoTagVideo::setRating(float rating,
                                  int votes /* = 0 */,
                                  const String& type /* = "" */,
-                                 bool isDefault /* = false */)
-    {
+                                 bool isDefault /* = false */) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setRatingRaw(infoTag, rating, votes, type, isDefault);
     }
 
     void InfoTagVideo::setRatings(const std::map<String, Tuple<float, int>>& ratings,
-                                  const String& defaultRating /* = "" */)
-    {
+                                  const String& defaultRating /* = "" */) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setRatingsRaw(infoTag, ratings, defaultRating);
     }
 
-    void InfoTagVideo::setUserRating(int userRating)
-    {
+    void InfoTagVideo::setUserRating(int userRating) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setUserRatingRaw(infoTag, userRating);
     }
 
-    void InfoTagVideo::setPlaycount(int playcount)
-    {
+    void InfoTagVideo::setPlaycount(int playcount) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setPlaycountRaw(infoTag, playcount);
     }
 
-    void InfoTagVideo::setMpaa(const String& mpaa)
-    {
+    void InfoTagVideo::setMpaa(const String& mpaa) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setMpaaRaw(infoTag, mpaa);
     }
 
-    void InfoTagVideo::setPlot(const String& plot)
-    {
+    void InfoTagVideo::setPlot(const String& plot) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setPlotRaw(infoTag, plot);
     }
 
-    void InfoTagVideo::setPlotOutline(const String& plotOutline)
-    {
+    void InfoTagVideo::setPlotOutline(const String& plotOutline) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setPlotOutlineRaw(infoTag, plotOutline);
     }
 
-    void InfoTagVideo::setTitle(const String& title)
-    {
+    void InfoTagVideo::setTitle(const String& title) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setTitleRaw(infoTag, title);
     }
 
-    void InfoTagVideo::setOriginalTitle(const String& originalTitle)
-    {
+    void InfoTagVideo::setOriginalTitle(const String& originalTitle) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setOriginalTitleRaw(infoTag, originalTitle);
     }
 
-    void InfoTagVideo::setSortTitle(const String& sortTitle)
-    {
+    void InfoTagVideo::setSortTitle(const String& sortTitle) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setSortTitleRaw(infoTag, sortTitle);
     }
 
-    void InfoTagVideo::setTagLine(const String& tagLine)
-    {
+    void InfoTagVideo::setTagLine(const String& tagLine) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setTagLineRaw(infoTag, tagLine);
     }
 
-    void InfoTagVideo::setTvShowTitle(const String& tvshowTitle)
-    {
+    void InfoTagVideo::setTvShowTitle(const String& tvshowTitle) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setTvShowTitleRaw(infoTag, tvshowTitle);
     }
 
-    void InfoTagVideo::setTvShowStatus(const String& tvshowStatus)
-    {
+    void InfoTagVideo::setTvShowStatus(const String& tvshowStatus) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setTvShowStatusRaw(infoTag, tvshowStatus);
     }
 
-    void InfoTagVideo::setGenres(std::vector<String> genre)
-    {
+    void InfoTagVideo::setGenres(std::vector<String> genre) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setGenresRaw(infoTag, std::move(genre));
     }
 
-    void InfoTagVideo::setCountries(std::vector<String> countries)
-    {
+    void InfoTagVideo::setCountries(std::vector<String> countries) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setCountriesRaw(infoTag, std::move(countries));
     }
 
-    void InfoTagVideo::setDirectors(std::vector<String> directors)
-    {
+    void InfoTagVideo::setDirectors(std::vector<String> directors) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setDirectorsRaw(infoTag, std::move(directors));
     }
 
-    void InfoTagVideo::setStudios(std::vector<String> studios)
-    {
+    void InfoTagVideo::setStudios(std::vector<String> studios) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setStudiosRaw(infoTag, std::move(studios));
     }
 
-    void InfoTagVideo::setWriters(std::vector<String> writers)
-    {
+    void InfoTagVideo::setWriters(std::vector<String> writers) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setWritersRaw(infoTag, std::move(writers));
     }
 
-    void InfoTagVideo::setDuration(int duration)
-    {
+    void InfoTagVideo::setDuration(int duration) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setDurationRaw(infoTag, duration);
     }
 
-    void InfoTagVideo::setPremiered(const String& premiered)
-    {
+    void InfoTagVideo::setPremiered(const String& premiered) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setPremieredRaw(infoTag, premiered);
     }
 
-    void InfoTagVideo::setSet(const String& set)
-    {
+    void InfoTagVideo::setSet(const String& set) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setSetRaw(infoTag, set);
     }
 
-    void InfoTagVideo::setSetOverview(const String& setOverview)
-    {
+    void InfoTagVideo::setSetOverview(const String& setOverview) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setSetOverviewRaw(infoTag, setOverview);
     }
 
-    void InfoTagVideo::setTags(std::vector<String> tags)
-    {
+    void InfoTagVideo::setTags(std::vector<String> tags) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setTagsRaw(infoTag, std::move(tags));
     }
 
-    void InfoTagVideo::setVideoAssetTitle(const String& videoAssetTitle)
-    {
+    void InfoTagVideo::setVideoAssetTitle(const String& videoAssetTitle) const {
       setVideoAssetTitleRaw(infoTag, videoAssetTitle);
     }
 
-    void InfoTagVideo::setProductionCode(const String& productionCode)
-    {
+    void InfoTagVideo::setProductionCode(const String& productionCode) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setProductionCodeRaw(infoTag, productionCode);
     }
 
-    void InfoTagVideo::setFirstAired(const String& firstAired)
-    {
+    void InfoTagVideo::setFirstAired(const String& firstAired) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setFirstAiredRaw(infoTag, firstAired);
     }
 
-    void InfoTagVideo::setLastPlayed(const String& lastPlayed)
-    {
+    void InfoTagVideo::setLastPlayed(const String& lastPlayed) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setLastPlayedRaw(infoTag, lastPlayed);
     }
 
-    void InfoTagVideo::setAlbum(const String& album)
-    {
+    void InfoTagVideo::setAlbum(const String& album) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setAlbumRaw(infoTag, album);
     }
 
-    void InfoTagVideo::setVotes(int votes)
-    {
+    void InfoTagVideo::setVotes(int votes) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setVotesRaw(infoTag, votes);
     }
 
-    void InfoTagVideo::setTrailer(const String& trailer)
-    {
+    void InfoTagVideo::setTrailer(const String& trailer) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setTrailerRaw(infoTag, trailer);
     }
 
-    void InfoTagVideo::setPath(const String& path)
-    {
+    void InfoTagVideo::setPath(const String& path) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setPathRaw(infoTag, path);
     }
 
-    void InfoTagVideo::setFilenameAndPath(const String& filenameAndPath)
-    {
+    void InfoTagVideo::setFilenameAndPath(const String& filenameAndPath) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setFilenameAndPathRaw(infoTag, filenameAndPath);
     }
 
-    void InfoTagVideo::setIMDBNumber(const String& imdbNumber)
-    {
+    void InfoTagVideo::setIMDBNumber(const String& imdbNumber) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setIMDBNumberRaw(infoTag, imdbNumber);
     }
 
-    void InfoTagVideo::setDateAdded(const String& dateAdded)
-    {
+    void InfoTagVideo::setDateAdded(const String& dateAdded) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setDateAddedRaw(infoTag, dateAdded);
     }
 
-    void InfoTagVideo::setMediaType(const String& mediaType)
-    {
+    void InfoTagVideo::setMediaType(const String& mediaType) const {
       setMediaTypeRaw(infoTag, mediaType);
     }
 
-    void InfoTagVideo::setShowLinks(std::vector<String> showLinks)
-    {
+    void InfoTagVideo::setShowLinks(std::vector<String> showLinks) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setShowLinksRaw(infoTag, std::move(showLinks));
     }
 
-    void InfoTagVideo::setArtists(std::vector<String> artists)
-    {
+    void InfoTagVideo::setArtists(std::vector<String> artists) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setArtistsRaw(infoTag, std::move(artists));
     }
 
-    void InfoTagVideo::setCast(const std::vector<const Actor*>& actors)
-    {
+    void InfoTagVideo::setCast(const std::vector<const Actor*>& actors) const {
       std::vector<SActorInfo> cast;
       cast.reserve(actors.size());
       for (const auto& actor : actors)
@@ -679,26 +587,22 @@ namespace XBMCAddon
       }
     }
 
-    void InfoTagVideo::setResumePoint(double time, double totalTime /* = 0.0 */)
-    {
+    void InfoTagVideo::setResumePoint(double time, double totalTime /* = 0.0 */) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setResumePointRaw(infoTag, time, totalTime);
     }
 
-    void InfoTagVideo::addSeason(int number, std::string name /* = "" */)
-    {
+    void InfoTagVideo::addSeason(int number, std::string name /* = "" */) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       addSeasonRaw(infoTag, number, std::move(name));
     }
 
-    void InfoTagVideo::addSeasons(const std::vector<Tuple<int, std::string>>& namedSeasons)
-    {
+    void InfoTagVideo::addSeasons(const std::vector<Tuple<int, std::string>>& namedSeasons) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       addSeasonsRaw(infoTag, namedSeasons);
     }
 
-    void InfoTagVideo::addVideoStream(const VideoStreamDetail* stream)
-    {
+    void InfoTagVideo::addVideoStream(const VideoStreamDetail* stream) const {
       if (stream == nullptr)
         return;
 
@@ -709,8 +613,7 @@ namespace XBMCAddon
       }
     }
 
-    void InfoTagVideo::addAudioStream(const AudioStreamDetail* stream)
-    {
+    void InfoTagVideo::addAudioStream(const AudioStreamDetail* stream) const {
       if (stream == nullptr)
         return;
 
@@ -721,8 +624,7 @@ namespace XBMCAddon
       }
     }
 
-    void InfoTagVideo::addSubtitleStream(const SubtitleStreamDetail* stream)
-    {
+    void InfoTagVideo::addSubtitleStream(const SubtitleStreamDetail* stream) const {
       if (stream == nullptr)
         return;
 
@@ -740,8 +642,7 @@ namespace XBMCAddon
                                            const std::string& cache,
                                            bool post,
                                            bool isgz,
-                                           int season)
-    {
+                                           int season) const {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       addAvailableArtworkRaw(infoTag, url, art_type, preview, referrer, cache, post, isgz, season);
     }

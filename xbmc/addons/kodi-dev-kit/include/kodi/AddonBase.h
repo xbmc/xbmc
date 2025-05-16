@@ -397,14 +397,12 @@ public:
     return ADDON_STATUS_UNKNOWN;
   }
 
-  inline bool IsInstanceSettingUsingDefault(const std::string& settingName)
-  {
+  inline bool IsInstanceSettingUsingDefault(const std::string& settingName) const {
     return m_instance->info->functions->is_instance_setting_using_default(m_instance->info->kodi,
                                                                           settingName.c_str());
   }
 
-  inline std::string GetInstanceUserPath(const std::string& append = "")
-  {
+  inline std::string GetInstanceUserPath(const std::string& append = "") const {
     using namespace kodi::addon;
 
     char* str = m_instance->info->functions->get_instance_user_path(
@@ -425,8 +423,7 @@ public:
     return ret;
   }
 
-  inline bool CheckInstanceSettingString(const std::string& settingName, std::string& settingValue)
-  {
+  inline bool CheckInstanceSettingString(const std::string& settingName, std::string& settingValue) const {
     char* buffer = nullptr;
     bool ret = m_instance->info->functions->get_instance_setting_string(
         m_instance->info->kodi, settingName.c_str(), &buffer);
@@ -448,14 +445,12 @@ public:
   }
 
   inline void SetInstanceSettingString(const std::string& settingName,
-                                       const std::string& settingValue)
-  {
+                                       const std::string& settingValue) const {
     m_instance->info->functions->set_instance_setting_string(
         m_instance->info->kodi, settingName.c_str(), settingValue.c_str());
   }
 
-  inline bool CheckInstanceSettingInt(const std::string& settingName, int& settingValue)
-  {
+  inline bool CheckInstanceSettingInt(const std::string& settingName, int& settingValue) const {
     KODI_ADDON_INSTANCE_FUNC_CB* cb = m_instance->info->functions;
     return cb->get_instance_setting_int(m_instance->info->kodi, settingName.c_str(), &settingValue);
   }
@@ -467,14 +462,12 @@ public:
     return settingValue;
   }
 
-  inline void SetInstanceSettingInt(const std::string& settingName, int settingValue)
-  {
+  inline void SetInstanceSettingInt(const std::string& settingName, int settingValue) const {
     m_instance->info->functions->set_instance_setting_int(m_instance->info->kodi,
                                                           settingName.c_str(), settingValue);
   }
 
-  inline bool CheckInstanceSettingBoolean(const std::string& settingName, bool& settingValue)
-  {
+  inline bool CheckInstanceSettingBoolean(const std::string& settingName, bool& settingValue) const {
     return m_instance->info->functions->get_instance_setting_bool(
         m_instance->info->kodi, settingName.c_str(), &settingValue);
   }
@@ -486,14 +479,12 @@ public:
     return settingValue;
   }
 
-  inline void SetInstanceSettingBoolean(const std::string& settingName, bool settingValue)
-  {
+  inline void SetInstanceSettingBoolean(const std::string& settingName, bool settingValue) const {
     m_instance->info->functions->set_instance_setting_bool(m_instance->info->kodi,
                                                            settingName.c_str(), settingValue);
   }
 
-  inline bool CheckInstanceSettingFloat(const std::string& settingName, float& settingValue)
-  {
+  inline bool CheckInstanceSettingFloat(const std::string& settingName, float& settingValue) const {
     return m_instance->info->functions->get_instance_setting_float(
         m_instance->info->kodi, settingName.c_str(), &settingValue);
   }
@@ -505,8 +496,7 @@ public:
     return settingValue;
   }
 
-  inline void SetInstanceSettingFloat(const std::string& settingName, float settingValue)
-  {
+  inline void SetInstanceSettingFloat(const std::string& settingName, float settingValue) const {
     m_instance->info->functions->set_instance_setting_float(m_instance->info->kodi,
                                                             settingName.c_str(), settingValue);
   }

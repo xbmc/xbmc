@@ -86,8 +86,7 @@ CFileCache::~CFileCache()
   Close();
 }
 
-IFile *CFileCache::GetFileImp()
-{
+IFile *CFileCache::GetFileImp() const {
   return m_source.GetImplementation();
 }
 

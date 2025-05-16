@@ -40,11 +40,11 @@ public:
   void Flush();
   void SetH264StreamId(int id) { m_h264StreamId = id; };
   void SetMVCStreamId(int id) { m_mvcStreamId = id; };
-  int GetH264StreamId() { return m_h264StreamId; };
-  int GetMVCStreamId() { return m_mvcStreamId; };
+  int GetH264StreamId() const { return m_h264StreamId; };
+  int GetMVCStreamId() const { return m_mvcStreamId; };
   void AddMVCExtPacket(DemuxPacket* &scrPkt);
   void SetBluRay(const std::shared_ptr<CDVDInputStream::IExtentionStream> &bluRay) { m_bluRay = bluRay; };
-  bool IsBluRay() { return m_bluRay != nullptr; };
+  bool IsBluRay() const { return m_bluRay != nullptr; };
 
 private:
   DemuxPacket* GetMVCPacket();

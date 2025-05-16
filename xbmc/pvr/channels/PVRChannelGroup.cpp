@@ -255,8 +255,7 @@ void CPVRChannelGroup::UpdateClientPriorities()
     SortAndRenumber();
 }
 
-bool CPVRChannelGroup::UpdateMembersClientPriority()
-{
+bool CPVRChannelGroup::UpdateMembersClientPriority() const {
   const std::shared_ptr<const CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
   bool bChanged = false;
 
@@ -1216,8 +1215,7 @@ void CPVRChannelGroup::SetClientPosition(int iPosition)
   }
 }
 
-int CPVRChannelGroup::CleanupCachedImages()
-{
+int CPVRChannelGroup::CleanupCachedImages() const {
   std::vector<std::string> urlsToCheck;
   {
     std::lock_guard lock(m_critSection);

@@ -136,8 +136,7 @@ bool CScraperParser::LoadFromXML()
   return false;
 }
 
-void CScraperParser::ReplaceBuffers(std::string& strDest)
-{
+void CScraperParser::ReplaceBuffers(std::string& strDest) const {
   // insert buffers
   size_t iIndex;
   for (int i=MAX_SCRAPER_BUFFERS-1; i>=0; i--)
@@ -603,8 +602,7 @@ void CScraperParser::InsertToken(std::string& strOutput, int buf, const char* to
   }
 }
 
-void CScraperParser::AddDocument(const CXBMCTinyXML* doc)
-{
+void CScraperParser::AddDocument(const CXBMCTinyXML* doc) const {
   const TiXmlNode* node = doc->RootElement()->FirstChild();
   while (node)
   {

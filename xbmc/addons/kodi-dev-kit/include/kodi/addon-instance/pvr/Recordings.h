@@ -106,8 +106,7 @@ public:
 
   /// @brief **required**\n
   /// Unique identifier of the recording on the client.
-  void SetRecordingId(const std::string& recordingId)
-  {
+  void SetRecordingId(const std::string& recordingId) const {
     strncpy(m_cStructure->strRecordingId, recordingId.c_str(),
             sizeof(m_cStructure->strRecordingId) - 1);
   }
@@ -117,8 +116,7 @@ public:
 
   /// @brief **required**\n
   /// The title of this recording.
-  void SetTitle(const std::string& title)
-  {
+  void SetTitle(const std::string& title) const {
     strncpy(m_cStructure->strTitle, title.c_str(), sizeof(m_cStructure->strTitle) - 1);
   }
 
@@ -127,8 +125,7 @@ public:
 
   /// @brief **optional**\n
   /// Episode name (also known as subtitle).
-  void SetEpisodeName(const std::string& episodeName)
-  {
+  void SetEpisodeName(const std::string& episodeName) const {
     strncpy(m_cStructure->strEpisodeName, episodeName.c_str(),
             sizeof(m_cStructure->strEpisodeName) - 1);
   }
@@ -140,7 +137,7 @@ public:
   /// Series number (usually called season).
   ///
   /// Set to "0" for specials/pilot. For 'invalid' see @ref SetEpisodeNumber or set to -1.
-  void SetSeriesNumber(int seriesNumber) { m_cStructure->iSeriesNumber = seriesNumber; }
+  void SetSeriesNumber(int seriesNumber) const { m_cStructure->iSeriesNumber = seriesNumber; }
 
   /// @brief To get with @ref SetSeriesNumber changed values.
   int GetSeriesNumber() const { return m_cStructure->iSeriesNumber; }
@@ -149,7 +146,7 @@ public:
   /// Eepisode number within the "iSeriesNumber" season.
   ///
   /// For 'invalid' set to -1 or seriesNumber=episodeNumber=0 to show both are invalid.
-  void SetEpisodeNumber(int episodeNumber) { m_cStructure->iEpisodeNumber = episodeNumber; }
+  void SetEpisodeNumber(int episodeNumber) const { m_cStructure->iEpisodeNumber = episodeNumber; }
 
   /// @brief To get with @ref SetEpisodeNumber changed values.
   int GetEpisodeNumber() const { return m_cStructure->iEpisodeNumber; }
@@ -159,7 +156,7 @@ public:
   /// airing for TV shows.
   ///
   /// Set to '0' for invalid.
-  void SetYear(int year) { m_cStructure->iYear = year; }
+  void SetYear(int year) const { m_cStructure->iYear = year; }
 
   /// @brief To get with @ref SetYear changed values.
   int GetYear() const { return m_cStructure->iYear; }
@@ -167,8 +164,7 @@ public:
   /// @brief **optional**\n
   ///
   /// Directory of this recording on the client.
-  void SetDirectory(const std::string& directory)
-  {
+  void SetDirectory(const std::string& directory) const {
     strncpy(m_cStructure->strDirectory, directory.c_str(), sizeof(m_cStructure->strDirectory) - 1);
   }
 
@@ -177,8 +173,7 @@ public:
 
   /// @brief **optional**\n
   /// Plot outline name.
-  void SetPlotOutline(const std::string& plotOutline)
-  {
+  void SetPlotOutline(const std::string& plotOutline) const {
     strncpy(m_cStructure->strPlotOutline, plotOutline.c_str(),
             sizeof(m_cStructure->strPlotOutline) - 1);
   }
@@ -188,8 +183,7 @@ public:
 
   /// @brief **optional**\n
   /// Plot name.
-  void SetPlot(const std::string& plot)
-  {
+  void SetPlot(const std::string& plot) const {
     strncpy(m_cStructure->strPlot, plot.c_str(), sizeof(m_cStructure->strPlot) - 1);
   }
 
@@ -198,8 +192,7 @@ public:
 
   /// @brief **optional**\n
   /// Channel name.
-  void SetChannelName(const std::string& channelName)
-  {
+  void SetChannelName(const std::string& channelName) const {
     strncpy(m_cStructure->strChannelName, channelName.c_str(),
             sizeof(m_cStructure->strChannelName) - 1);
   }
@@ -209,8 +202,7 @@ public:
 
   /// @brief **optional**\n
   /// Channel logo (icon) path.
-  void SetIconPath(const std::string& iconPath)
-  {
+  void SetIconPath(const std::string& iconPath) const {
     strncpy(m_cStructure->strIconPath, iconPath.c_str(), sizeof(m_cStructure->strIconPath) - 1);
   }
 
@@ -219,8 +211,7 @@ public:
 
   /// @brief **optional**\n
   /// Thumbnail path.
-  void SetThumbnailPath(const std::string& thumbnailPath)
-  {
+  void SetThumbnailPath(const std::string& thumbnailPath) const {
     strncpy(m_cStructure->strThumbnailPath, thumbnailPath.c_str(),
             sizeof(m_cStructure->strThumbnailPath) - 1);
   }
@@ -230,8 +221,7 @@ public:
 
   /// @brief **optional**\n
   /// Fanart path.
-  void SetFanartPath(const std::string& fanartPath)
-  {
+  void SetFanartPath(const std::string& fanartPath) const {
     strncpy(m_cStructure->strFanartPath, fanartPath.c_str(),
             sizeof(m_cStructure->strFanartPath) - 1);
   }
@@ -241,28 +231,28 @@ public:
 
   /// @brief **optional**\n
   /// Start time of the recording.
-  void SetRecordingTime(time_t recordingTime) { m_cStructure->recordingTime = recordingTime; }
+  void SetRecordingTime(time_t recordingTime) const { m_cStructure->recordingTime = recordingTime; }
 
   /// @brief To get with @ref SetRecordingTime changed values.
   time_t GetRecordingTime() const { return m_cStructure->recordingTime; }
 
   /// @brief **optional**\n
   /// Duration of the recording in seconds.
-  void SetDuration(int duration) { m_cStructure->iDuration = duration; }
+  void SetDuration(int duration) const { m_cStructure->iDuration = duration; }
 
   /// @brief To get with @ref SetDuration changed values.
   int GetDuration() const { return m_cStructure->iDuration; }
 
   /// @brief **optional**\n
   /// Priority of this recording (from 0 - 100).
-  void SetPriority(int priority) { m_cStructure->iPriority = priority; }
+  void SetPriority(int priority) const { m_cStructure->iPriority = priority; }
 
   /// @brief To get with @ref SetPriority changed values.
   int GetPriority() const { return m_cStructure->iPriority; }
 
   /// @brief **optional**\n
   /// Life time in days of this recording.
-  void SetLifetime(int lifetime) { m_cStructure->iLifetime = lifetime; }
+  void SetLifetime(int lifetime) const { m_cStructure->iLifetime = lifetime; }
 
   /// @brief To get with @ref SetLifetime changed values.
   int GetLifetime() const { return m_cStructure->iLifetime; }
@@ -294,7 +284,7 @@ public:
   /// tag.SetGenreDescription("My special genre name"); // Should use (if possible) kodi::GetLocalizedString(...) to have match user language.
   /// ~~~~~~~~~~~~~
   ///
-  void SetGenreType(int genreType) { m_cStructure->iGenreType = genreType; }
+  void SetGenreType(int genreType) const { m_cStructure->iGenreType = genreType; }
 
   /// @brief To get with @ref SetGenreType changed values.
   int GetGenreType() const { return m_cStructure->iGenreType; }
@@ -329,7 +319,7 @@ public:
   /// tag.SetGenreSubType(EPG_EVENT_CONTENTSUBMASK_MUSICBALLETDANCE_JAZZ);
   /// ~~~~~~~~~~~~~
   ///
-  void SetGenreSubType(int genreSubType) { m_cStructure->iGenreSubType = genreSubType; }
+  void SetGenreSubType(int genreSubType) const { m_cStructure->iGenreSubType = genreSubType; }
 
   /// @brief To get with @ref SetGenreSubType changed values.
   int GetGenreSubType() const { return m_cStructure->iGenreSubType; }
@@ -354,8 +344,7 @@ public:
   /// tag.SetGenreDescription("Action" + EPG_STRING_TOKEN_SEPARATOR + "Thriller");
   /// ~~~~~~~~~~~~~
   ///
-  void SetGenreDescription(const std::string& genreDescription)
-  {
+  void SetGenreDescription(const std::string& genreDescription) const {
     strncpy(m_cStructure->strGenreDescription, genreDescription.c_str(),
             sizeof(m_cStructure->strGenreDescription) - 1);
   }
@@ -365,15 +354,14 @@ public:
 
   /// @brief **optional**\n
   /// Play count of this recording on the client.
-  void SetPlayCount(int playCount) { m_cStructure->iPlayCount = playCount; }
+  void SetPlayCount(int playCount) const { m_cStructure->iPlayCount = playCount; }
 
   /// @brief To get with @ref SetPlayCount changed values.
   int GetPlayCount() const { return m_cStructure->iPlayCount; }
 
   /// @brief **optional**\n
   /// Last played position of this recording on the client.
-  void SetLastPlayedPosition(int lastPlayedPosition)
-  {
+  void SetLastPlayedPosition(int lastPlayedPosition) const {
     m_cStructure->iLastPlayedPosition = lastPlayedPosition;
   }
 
@@ -382,14 +370,14 @@ public:
 
   /// @brief **optional**\n
   /// Shows this recording is deleted and can be undelete.
-  void SetIsDeleted(int isDeleted) { m_cStructure->bIsDeleted = isDeleted; }
+  void SetIsDeleted(int isDeleted) const { m_cStructure->bIsDeleted = isDeleted; }
 
   /// @brief To get with @ref SetIsDeleted changed values.
   int GetIsDeleted() const { return m_cStructure->bIsDeleted; }
 
   /// @brief **optional**\n
   /// EPG event id associated with this recording. Valid ids must be greater than @ref EPG_TAG_INVALID_UID.
-  void SetEPGEventId(unsigned int epgEventId) { m_cStructure->iEpgEventId = epgEventId; }
+  void SetEPGEventId(unsigned int epgEventId) const { m_cStructure->iEpgEventId = epgEventId; }
 
   /// @brief To get with @ref SetEPGEventId changed values.
   unsigned int GetEPGEventId() const { return m_cStructure->iEpgEventId; }
@@ -397,7 +385,7 @@ public:
   /// @brief **optional**\n
   /// Unique identifier of the channel for this recording. @ref PVR_CHANNEL_INVALID_UID
   /// denotes that channel uid is not available.
-  void SetChannelUid(int channelUid) { m_cStructure->iChannelUid = channelUid; }
+  void SetChannelUid(int channelUid) const { m_cStructure->iChannelUid = channelUid; }
 
   /// @brief To get with @ref SetChannelUid changed values
   int GetChannelUid() const { return m_cStructure->iChannelUid; }
@@ -416,8 +404,7 @@ public:
   /// tag.SetChannelType(PVR_RECORDING_CHANNEL_TYPE_TV);
   /// ~~~~~~~~~~~~~
   ///
-  void SetChannelType(PVR_RECORDING_CHANNEL_TYPE channelType)
-  {
+  void SetChannelType(PVR_RECORDING_CHANNEL_TYPE channelType) const {
     m_cStructure->channelType = channelType;
   }
 
@@ -437,8 +424,7 @@ public:
   /// tag.SetFirstAired(1982-10-22);
   /// ~~~~~~~~~~~~~
   ///
-  void SetFirstAired(const std::string& firstAired)
-  {
+  void SetFirstAired(const std::string& firstAired) const {
     strncpy(m_cStructure->strFirstAired, firstAired.c_str(),
             sizeof(m_cStructure->strFirstAired) - 1);
   }
@@ -456,14 +442,14 @@ public:
   ///
   /// @copydetails cpp_kodi_addon_pvr_Defs_Recording_PVR_RECORDING_FLAG
   ///
-  void SetFlags(unsigned int flags) { m_cStructure->iFlags = flags; }
+  void SetFlags(unsigned int flags) const { m_cStructure->iFlags = flags; }
 
   /// @brief To get with @ref SetFlags changed values.
   unsigned int GetFlags() const { return m_cStructure->iFlags; }
 
   /// @brief **optional**\n
   /// Size of the recording in bytes.
-  void SetSizeInBytes(int64_t sizeInBytes) { m_cStructure->sizeInBytes = sizeInBytes; }
+  void SetSizeInBytes(int64_t sizeInBytes) const { m_cStructure->sizeInBytes = sizeInBytes; }
 
   /// @brief To get with @ref SetSizeInBytes changed values.
   int64_t GetSizeInBytes() const { return m_cStructure->sizeInBytes; }
@@ -473,8 +459,7 @@ public:
   /// Unique identifier of the provider this channel belongs to.
   ///
   /// @ref PVR_PROVIDER_INVALID_UID denotes that provider uid is not available.
-  void SetClientProviderUid(int iClientProviderUid)
-  {
+  void SetClientProviderUid(int iClientProviderUid) const {
     m_cStructure->iClientProviderUid = iClientProviderUid;
   }
 
@@ -483,8 +468,7 @@ public:
 
   /// @brief **optional**\n
   /// Name for the provider of this channel.
-  void SetProviderName(const std::string& providerName)
-  {
+  void SetProviderName(const std::string& providerName) const {
     strncpy(m_cStructure->strProviderName, providerName.c_str(),
             sizeof(m_cStructure->strProviderName) - 1);
   }
@@ -525,8 +509,7 @@ public:
   /// @brief To add and give content from addon to Kodi on related call.
   ///
   /// @param[in] tag The to transferred data.
-  void Add(const kodi::addon::PVRRecording& tag)
-  {
+  void Add(const kodi::addon::PVRRecording& tag) const {
     m_instance->toKodi->TransferRecordingEntry(m_instance->toKodi->kodiInstance, m_handle, tag);
   }
 

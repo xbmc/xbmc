@@ -29,13 +29,13 @@ public:
   CCheevos(GAME::CGameClient* gameClient,
            const std::string& userName,
            const std::string& loginToken);
-  void ResetRuntime();
+  void ResetRuntime() const;
   void EnableRichPresence();
-  std::string GetRichPresenceEvaluation();
+  std::string GetRichPresenceEvaluation() const;
 
 private:
   bool LoadData();
-  RConsoleID ConsoleID();
+  RConsoleID ConsoleID() const;
 
   GAME::CGameClient* const m_gameClient;
   std::string m_userName;

@@ -107,7 +107,7 @@ public:
    * \brief Get the list of user fonts as family names from cache
    * \return The list of available fonts family names
    */
-  std::vector<std::string> GetUserFontsFamilyNames();
+  std::vector<std::string> GetUserFontsFamilyNames() const;
 
 protected:
   void ReloadTTFFonts();
@@ -117,7 +117,7 @@ protected:
                                        const RESOLUTION_INFO& sourceRes,
                                        bool preserveAspect);
   void LoadFonts(const TiXmlNode* fontNode);
-  CGUIFontTTF* GetFontFile(const std::string& fontIdent);
+  CGUIFontTTF* GetFontFile(const std::string& fontIdent) const;
   static void GetStyle(const TiXmlNode* fontNode, int& iStyle);
 
   std::vector<std::unique_ptr<CGUIFont>> m_vecFonts;

@@ -29,7 +29,6 @@ void CEventPollHandle::Deactivate()
   m_callback.Deactivate(*this);
 }
 
-void CEventPollHandle::HandleEvents(bool bWait)
-{
+void CEventPollHandle::HandleEvents(bool bWait) const {
   m_callback.HandleEvents(bWait);
 }

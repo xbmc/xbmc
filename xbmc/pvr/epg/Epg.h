@@ -264,12 +264,12 @@ namespace PVR
     /*!
      * @brief Lock the instance. No other thread gets access to this EPG until Unlock was called.
      */
-    void Lock() { m_critSection.lock(); }
+    void Lock() const { m_critSection.lock(); }
 
     /*!
      * @brief Unlock the instance. Other threads may get access to this EPG again.
      */
-    void Unlock() { m_critSection.unlock(); }
+    void Unlock() const { m_critSection.unlock(); }
 
     /*!
      * @brief Called to inform the EPG that it has been removed from the EPG container.
@@ -281,7 +281,7 @@ namespace PVR
      * @param database The EPG database
      * @return number of cleaned up images.
      */
-    int CleanupCachedImages(const std::shared_ptr<const CPVREpgDatabase>& database);
+    int CleanupCachedImages(const std::shared_ptr<const CPVREpgDatabase>& database) const;
 
   private:
     CPVREpg() = delete;

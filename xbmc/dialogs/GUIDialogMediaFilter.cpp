@@ -638,8 +638,7 @@ void CGUIDialogMediaFilter::Reset(bool filtersOnly /* = false */)
   m_filters.clear();
 }
 
-int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::string> &items, bool countOnly /* = false */)
-{
+int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::string> &items, bool countOnly /* = false */) const {
   CFileItemList selectItems;
 
   // remove the rule for the field of the filter we want to retrieve items for
@@ -729,8 +728,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
   return items.size();
 }
 
-CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator /* = CDatabaseQueryRule::OPERATOR_CONTAINS */)
-{
+CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator /* = CDatabaseQueryRule::OPERATOR_CONTAINS */) const {
   CSmartPlaylistRule rule;
   rule.m_field = field;
   rule.m_operator = ruleOperator;
@@ -739,8 +737,7 @@ CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(Field field, CDatabaseQueryRu
   return (CSmartPlaylistRule *)m_filter->m_ruleCombination.m_rules.back().get();
 }
 
-void CGUIDialogMediaFilter::DeleteRule(Field field)
-{
+void CGUIDialogMediaFilter::DeleteRule(Field field) const {
   for (auto rule = m_filter->m_ruleCombination.m_rules.begin();
        rule != m_filter->m_ruleCombination.m_rules.end(); ++rule)
   {
@@ -865,8 +862,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
   }
 }
 
-void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &interval, float &max)
-{
+void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &interval, float &max) const {
   if (filter.field == FieldRating &&
      (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" || m_mediaType == "musicvideos" || m_mediaType == "albums" || m_mediaType == "songs"))
   {
@@ -876,8 +872,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, float &min, float &in
   }
 }
 
-bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::string &field, int &min, int &max, const CDatabase::Filter &filter /* = CDatabase::Filter() */)
-{
+bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::string &field, int &min, int &max, const CDatabase::Filter &filter /* = CDatabase::Filter() */) const {
   if (table.empty() || field.empty())
     return false;
 

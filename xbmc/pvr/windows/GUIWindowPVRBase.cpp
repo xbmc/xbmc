@@ -62,7 +62,7 @@ public:
 
   bool HasFocus() const;
   std::shared_ptr<CPVRChannelGroup> GetSelectedChannelGroup() const;
-  bool SelectChannelGroup(const std::shared_ptr<CPVRChannelGroup>& newGroup);
+  bool SelectChannelGroup(const std::shared_ptr<CPVRChannelGroup>& newGroup) const;
 
 private:
   CGUIControl* m_control = nullptr;
@@ -110,8 +110,7 @@ std::shared_ptr<CPVRChannelGroup> CGUIPVRChannelGroupsSelector::GetSelectedChann
   return std::shared_ptr<CPVRChannelGroup>();
 }
 
-bool CGUIPVRChannelGroupsSelector::SelectChannelGroup(const std::shared_ptr<CPVRChannelGroup>& newGroup)
-{
+bool CGUIPVRChannelGroupsSelector::SelectChannelGroup(const std::shared_ptr<CPVRChannelGroup>& newGroup) const {
   if (m_control && newGroup)
   {
     int iIndex = 0;

@@ -704,8 +704,7 @@ void CDataCacheCore::SetStateSeeking(bool active)
   m_playerStateChanged = true;
 }
 
-bool CDataCacheCore::IsSeeking()
-{
+bool CDataCacheCore::IsSeeking() const {
   std::lock_guard lock(m_stateSection);
 
   return m_stateInfo.m_stateSeeking;
@@ -719,15 +718,13 @@ void CDataCacheCore::SetSpeed(float tempo, float speed)
   m_stateInfo.m_speed = speed;
 }
 
-float CDataCacheCore::GetSpeed()
-{
+float CDataCacheCore::GetSpeed() const {
   std::lock_guard lock(m_stateSection);
 
   return m_stateInfo.m_speed;
 }
 
-float CDataCacheCore::GetTempo()
-{
+float CDataCacheCore::GetTempo() const {
   std::lock_guard lock(m_stateSection);
 
   return m_stateInfo.m_tempo;
@@ -740,8 +737,7 @@ void CDataCacheCore::SetFrameAdvance(bool fa)
   m_stateInfo.m_frameAdvance = fa;
 }
 
-bool CDataCacheCore::IsFrameAdvance()
-{
+bool CDataCacheCore::IsFrameAdvance() const {
   std::lock_guard lock(m_stateSection);
 
   return m_stateInfo.m_frameAdvance;
@@ -765,8 +761,7 @@ void CDataCacheCore::SetGuiRender(bool gui)
   m_playerStateChanged = true;
 }
 
-bool CDataCacheCore::GetGuiRender()
-{
+bool CDataCacheCore::GetGuiRender() const {
   std::lock_guard lock(m_stateSection);
 
   return m_stateInfo.m_renderGuiLayer;
@@ -780,8 +775,7 @@ void CDataCacheCore::SetVideoRender(bool video)
   m_playerStateChanged = true;
 }
 
-bool CDataCacheCore::GetVideoRender()
-{
+bool CDataCacheCore::GetVideoRender() const {
   std::lock_guard lock(m_stateSection);
 
   return m_stateInfo.m_renderVideoLayer;
@@ -797,8 +791,7 @@ void CDataCacheCore::SetPlayTimes(time_t start, int64_t current, int64_t min, in
   m_timeInfo.m_timeMax = max;
 }
 
-void CDataCacheCore::GetPlayTimes(time_t &start, int64_t &current, int64_t &min, int64_t &max)
-{
+void CDataCacheCore::GetPlayTimes(time_t &start, int64_t &current, int64_t &min, int64_t &max) const {
   std::lock_guard lock(m_stateSection);
 
   start = m_timeInfo.m_startTime;
@@ -807,36 +800,31 @@ void CDataCacheCore::GetPlayTimes(time_t &start, int64_t &current, int64_t &min,
   max = m_timeInfo.m_timeMax;
 }
 
-time_t CDataCacheCore::GetStartTime()
-{
+time_t CDataCacheCore::GetStartTime() const {
   std::lock_guard lock(m_stateSection);
 
   return m_timeInfo.m_startTime;
 }
 
-int64_t CDataCacheCore::GetPlayTime()
-{
+int64_t CDataCacheCore::GetPlayTime() const {
   std::lock_guard lock(m_stateSection);
 
   return m_timeInfo.m_time;
 }
 
-int64_t CDataCacheCore::GetMinTime()
-{
+int64_t CDataCacheCore::GetMinTime() const {
   std::lock_guard lock(m_stateSection);
 
   return m_timeInfo.m_timeMin;
 }
 
-int64_t CDataCacheCore::GetMaxTime()
-{
+int64_t CDataCacheCore::GetMaxTime() const {
   std::lock_guard lock(m_stateSection);
 
   return m_timeInfo.m_timeMax;
 }
 
-float CDataCacheCore::GetPlayPercentage()
-{
+float CDataCacheCore::GetPlayPercentage() const {
   std::lock_guard lock(m_stateSection);
 
   // Note: To calculate accurate percentage, all time data must be consistent,

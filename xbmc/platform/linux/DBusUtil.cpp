@@ -208,8 +208,7 @@ bool CDBusConnection::Connect(DBusBusType bus, CDBusError& error, bool openPriva
   return !!m_connection;
 }
 
-CDBusConnection::operator DBusConnection*()
-{
+CDBusConnection::operator DBusConnection*() const {
   return m_connection.get();
 }
 

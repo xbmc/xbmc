@@ -114,7 +114,7 @@ public:
   void SetID(int id) override;
   virtual bool HasID(int controlID) const;
   const std::vector<int>& GetIDRange() const { return m_idRange; }
-  int GetPreviousWindow() { return m_previousWindow; }
+  int GetPreviousWindow() const { return m_previousWindow; }
   CRect GetScaledBounds() const;
   void ClearAll() override;
   using CGUIControlGroup::AllocResources;
@@ -135,8 +135,8 @@ public:
   void SetCoordsRes(const RESOLUTION_INFO& res) { m_coordsRes = res; }
   const RESOLUTION_INFO& GetCoordsRes() const { return m_coordsRes; }
   void SetLoadType(LOAD_TYPE loadType) { m_loadType = loadType; }
-  LOAD_TYPE GetLoadType() { return m_loadType; }
-  int GetRenderOrder() { return m_renderOrder; }
+  LOAD_TYPE GetLoadType() const { return m_loadType; }
+  int GetRenderOrder() const { return m_renderOrder; }
   void SetInitialVisibility() override;
   bool IsVisible() const override { return true; }; // windows are always considered visible as they implement their own
                                                    // versions of UpdateVisibility, and are deemed visible if they're in

@@ -65,7 +65,7 @@ public:
   // Input functions
   bool HasFeature(const std::string& controllerId, const std::string& featureName) const;
   bool AcceptsInput() const;
-  bool InputEvent(const game_input_event& event);
+  bool InputEvent(const game_input_event& event) const;
   float GetPortActivation(const std::string& portAddress);
 
   // Topology functions
@@ -97,7 +97,7 @@ public:
   bool HasAgent() const;
 
   // Hardware input functions
-  void HardwareReset();
+  void HardwareReset() const;
 
   // Input callbacks
   bool ReceiveInputEvent(const game_input_event& eventStruct);

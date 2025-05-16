@@ -1306,8 +1306,7 @@ void CGUIWindowManager::RenderEx() const
   */
 }
 
-bool CGUIWindowManager::Render()
-{
+bool CGUIWindowManager::Render() const {
   assert(CServiceBroker::GetAppMessenger()->IsProcessThread());
   CSingleExit lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
@@ -1705,8 +1704,7 @@ bool CGUIWindowManager::IsWindowVisible(const std::string &xmlFile) const
   return IsWindowActive(xmlFile, false);
 }
 
-void CGUIWindowManager::LoadNotOnDemandWindows()
-{
+void CGUIWindowManager::LoadNotOnDemandWindows() const {
   std::lock_guard lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   for (const auto& entry : m_mapWindows)
@@ -1720,8 +1718,7 @@ void CGUIWindowManager::LoadNotOnDemandWindows()
   }
 }
 
-void CGUIWindowManager::UnloadNotOnDemandWindows()
-{
+void CGUIWindowManager::UnloadNotOnDemandWindows() const {
   std::lock_guard lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   for (const auto& entry : m_mapWindows)
@@ -1804,8 +1801,7 @@ bool CGUIWindowManager::IsDialogTopmost(const std::string &xmlFile, bool modal /
   return false;
 }
 
-bool CGUIWindowManager::HasVisibleControls()
-{
+bool CGUIWindowManager::HasVisibleControls() const {
   CSingleExit lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   if (m_activeDialogs.empty())

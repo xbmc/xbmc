@@ -216,8 +216,7 @@ bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
   return bSuccess;
 }
 
-void CPeripheralJoystick::PowerOff()
-{
+void CPeripheralJoystick::PowerOff() const {
   m_bus->PowerOff(m_strLocation);
 }
 
@@ -509,8 +508,7 @@ void CPeripheralJoystick::SetSupportsPowerOff(bool bSupportsPowerOff)
     m_features.push_back(FEATURE_POWER_OFF);
 }
 
-GAME::ControllerPtr CPeripheralJoystick::InstallAsync(const std::string& controllerId)
-{
+GAME::ControllerPtr CPeripheralJoystick::InstallAsync(const std::string& controllerId) const {
   // Installing controllers calls into the GUI, so wait for it to be ready
   if (!m_manager.WaitForGUI())
     return {};

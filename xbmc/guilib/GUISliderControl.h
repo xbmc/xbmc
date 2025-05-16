@@ -74,7 +74,7 @@ public:
                        CGUITexture* nib,
                        unsigned int currentTime,
                        float fScale,
-                       RangeSelector selector);
+                       RangeSelector selector) const;
   void SetRangeSelection(bool rangeSelection);
   bool GetRangeSelection() const { return m_rangeSelection; }
   void SetRangeSelector(RangeSelector selector);
@@ -109,7 +109,7 @@ protected:
 
   /*! \brief Send a click message (and/or action) to the app in response to a slider move
    */
-  void SendClick();
+  void SendClick() const;
 
   std::unique_ptr<CGUITexture> m_guiBackground;
   std::unique_ptr<CGUITexture> m_guiBackgroundDisabled;

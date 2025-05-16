@@ -46,10 +46,10 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                             AVContentLightMetadata lightMetadata);
     void SetToneMapParam(float param) { m_toneMappingParam = param; }
 
-    GLint GetVertexLoc() { return m_hVertex; }
-    GLint GetYcoordLoc() { return m_hYcoord; }
-    GLint GetUcoordLoc() { return m_hUcoord; }
-    GLint GetVcoordLoc() { return m_hVcoord; }
+    GLint GetVertexLoc() const { return m_hVertex; }
+    GLint GetYcoordLoc() const { return m_hYcoord; }
+    GLint GetUcoordLoc() const { return m_hUcoord; }
+    GLint GetVcoordLoc() const { return m_hVcoord; }
 
     void SetMatrices(const GLfloat *p, const GLfloat *m) { m_proj = p; m_model = m; }
     void SetAlpha(GLfloat alpha) { m_alpha = alpha; }

@@ -127,13 +127,11 @@ void CPVRDatabase::Close()
   CDatabase::Close();
 }
 
-void CPVRDatabase::Lock()
-{
+void CPVRDatabase::Lock() const {
   m_critSection.lock();
 }
 
-void CPVRDatabase::Unlock()
-{
+void CPVRDatabase::Unlock() const {
   m_critSection.unlock();
 }
 

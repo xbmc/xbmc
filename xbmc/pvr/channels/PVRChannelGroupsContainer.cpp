@@ -38,8 +38,7 @@ bool CPVRChannelGroupsContainer::Update(const std::vector<std::shared_ptr<CPVRCl
 }
 
 bool CPVRChannelGroupsContainer::LoadFromDatabase(
-    const std::vector<std::shared_ptr<CPVRClient>>& clients)
-{
+    const std::vector<std::shared_ptr<CPVRClient>>& clients) const {
   return m_groupsTV->LoadFromDatabase(clients) && m_groupsRadio->LoadFromDatabase(clients);
 }
 
@@ -64,8 +63,7 @@ bool CPVRChannelGroupsContainer::UpdateFromClients(
   return bReturn;
 }
 
-void CPVRChannelGroupsContainer::Unload()
-{
+void CPVRChannelGroupsContainer::Unload() const {
   m_groupsRadio->Unload();
   m_groupsTV->Unload();
 }
@@ -157,7 +155,6 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroupsContainer::
   return channelTV;
 }
 
-int CPVRChannelGroupsContainer::CleanupCachedImages()
-{
+int CPVRChannelGroupsContainer::CleanupCachedImages() const {
   return m_groupsTV->CleanupCachedImages() + m_groupsRadio->CleanupCachedImages();
 }

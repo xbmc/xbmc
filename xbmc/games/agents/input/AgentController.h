@@ -37,8 +37,8 @@ public:
   ~CAgentController();
 
   // Lifecycle functions
-  void Initialize();
-  void Deinitialize();
+  void Initialize() const;
+  void Deinitialize() const;
 
   // Input properties
   PERIPHERALS::PeripheralPtr GetPeripheral() const { return m_peripheral; }
@@ -47,7 +47,7 @@ public:
   ControllerPtr GetController() const;
   CDateTime LastActive() const;
   float GetActivation() const;
-  void ClearButtonState();
+  void ClearButtonState() const;
 
 private:
   // Construction parameters

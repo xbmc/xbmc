@@ -27,8 +27,8 @@ public:
   void SetHeader(int nHeader);
   void SetMessage(const std::string& strMessage);
   bool IsCanceled() const;
-  void ShowProgressBar(bool bOnOff);
-  void SetPercentage(int iPercentage);
+  void ShowProgressBar(bool bOnOff) const;
+  void SetPercentage(int iPercentage) const;
 
   void Close(bool bForceClose = false);
 

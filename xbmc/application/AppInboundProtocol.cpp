@@ -18,8 +18,7 @@ CAppInboundProtocol::CAppInboundProtocol(CApplication &app) : m_pApp(app)
 
 }
 
-bool CAppInboundProtocol::OnEvent(XBMC_Event &event)
-{
+bool CAppInboundProtocol::OnEvent(XBMC_Event &event) const {
   return m_pApp.OnEvent(event);
 }
 

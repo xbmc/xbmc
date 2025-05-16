@@ -19,7 +19,7 @@ class IRetroPlayerStream;
 
 struct DeleteStream
 {
-  void operator()(IRetroPlayerStream* stream);
+  void operator()(IRetroPlayerStream* stream) const;
 };
 
 using StreamPtr = std::unique_ptr<IRetroPlayerStream, DeleteStream>;

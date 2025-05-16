@@ -26,7 +26,7 @@ public:
   explicit CSysfsPath(const std::string& path, T value) : m_path(path) { if (Exists()) { Set(value); } }
   ~CSysfsPath() = default;
 
-  bool Exists();
+  bool Exists() const;
 
   template <typename T>
   T GetOrDefault()

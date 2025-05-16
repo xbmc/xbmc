@@ -11290,8 +11290,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const CGUIInfo &constinfo, int co
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
-std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *fallback)
-{
+std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *fallback) const {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
   {
     return GetSkinVariableString(info, contextWindow, true);
@@ -11320,8 +11319,7 @@ void CGUIInfoManager::ResetCurrentItem()
   m_infoProviders.InitCurrentItem(nullptr);
 }
 
-void CGUIInfoManager::UpdateCurrentItem(const CFileItem &item)
-{
+void CGUIInfoManager::UpdateCurrentItem(const CFileItem &item) const {
   m_currentFile->UpdateInfo(item);
 }
 
@@ -11335,8 +11333,7 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Info, "OnChanged");
 }
 
-void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)
-{
+void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName) const {
   if (CFileUtils::Exists(thumbFileName))
     m_currentFile->SetArt("thumb", thumbFileName);
   else
@@ -11623,14 +11620,12 @@ void CGUIInfoManager::ResetCache()
   ++m_refreshCounter;
 }
 
-void CGUIInfoManager::SetCurrentVideoTag(const CVideoInfoTag &tag)
-{
+void CGUIInfoManager::SetCurrentVideoTag(const CVideoInfoTag &tag) const {
   m_currentFile->SetFromVideoInfoTag(tag);
   m_currentFile->SetStartOffset(0);
 }
 
-void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
-{
+void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag) const {
   m_currentFile->SetFromMusicInfoTag(tag);
   m_currentFile->SetStartOffset(0);
 }

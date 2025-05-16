@@ -72,7 +72,7 @@ class Pipe
     void RemoveListener(IPipeListener *l);
 
     void SetEof();
-    bool IsEof();
+    bool IsEof() const;
 
     int	GetAvailableRead();
     void SetOpenThreshold(int threshold);

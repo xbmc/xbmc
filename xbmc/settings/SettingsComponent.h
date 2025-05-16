@@ -69,7 +69,7 @@ public:
   std::shared_ptr<CProfileManager> GetProfileManager();
 
 private:
-  bool InitDirectoriesLinux(bool bPlatformDirectories);
+  bool InitDirectoriesLinux(bool bPlatformDirectories) const;
   bool InitDirectoriesOSX(bool bPlatformDirectories);
   bool InitDirectoriesWin32(bool bPlatformDirectories);
   void CreateUserDirs() const;

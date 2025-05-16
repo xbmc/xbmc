@@ -94,15 +94,14 @@ public:
 
   /// @brief **required**\n
   /// This hook's identifier.
-  void SetHookId(unsigned int hookId) { m_cStructure->iHookId = hookId; }
+  void SetHookId(unsigned int hookId) const { m_cStructure->iHookId = hookId; }
 
   /// @brief To get with @ref SetHookId() changed values.
   unsigned int GetHookId() const { return m_cStructure->iHookId; }
 
   /// @brief **required**\n
   /// The id of the label for this hook in @ref kodi::GetLocalizedString().
-  void SetLocalizedStringId(unsigned int localizedStringId)
-  {
+  void SetLocalizedStringId(unsigned int localizedStringId) const {
     m_cStructure->iLocalizedStringId = localizedStringId;
   }
 
@@ -111,7 +110,7 @@ public:
 
   /// @brief **required**\n
   /// Category of menu hook.
-  void SetCategory(PVR_MENUHOOK_CAT category) { m_cStructure->category = category; }
+  void SetCategory(PVR_MENUHOOK_CAT category) const { m_cStructure->category = category; }
 
   /// @brief To get with @ref SetCategory() changed values.
   PVR_MENUHOOK_CAT GetCategory() const { return m_cStructure->category; }

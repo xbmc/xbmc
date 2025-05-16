@@ -481,8 +481,7 @@ bool CRPRenderManager::SupportsScalingMethod(SCALINGMETHOD method) const
 void CRPRenderManager::RenderInternal(const std::shared_ptr<CRPBaseRenderer>& renderer,
                                       IRenderBuffer* renderBuffer,
                                       bool bClear,
-                                      uint32_t alpha)
-{
+                                      uint32_t alpha) const {
   renderer->PreRender(bClear);
 
   CSingleExit exitLock(m_renderContext.GraphicsMutex());

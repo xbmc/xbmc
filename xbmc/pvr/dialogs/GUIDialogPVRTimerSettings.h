@@ -52,7 +52,7 @@ protected:
   void InitializeSettings() override;
 
 private:
-  bool Validate();
+  bool Validate() const;
   void InitializeTypesList();
   void InitializeChannelsList();
   void SetButtonLabels();

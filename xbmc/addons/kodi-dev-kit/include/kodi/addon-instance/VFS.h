@@ -801,8 +801,7 @@ public:
     /// @param[in] hiddenInput  To show input only as "*" on dialog
     /// @return                 True if input was received, false otherwise
     ///
-    bool GetKeyboardInput(const std::string& heading, std::string& input, bool hiddenInput = false)
-    {
+    bool GetKeyboardInput(const std::string& heading, std::string& input, bool hiddenInput = false) const {
       char* cInput = nullptr;
       bool ret = m_cb->get_keyboard_input(m_cb->ctx, heading.c_str(), &cInput, hiddenInput);
       if (cInput)
@@ -825,8 +824,7 @@ public:
     void SetErrorDialog(const std::string& heading,
                         const std::string& line1,
                         const std::string& line2 = "",
-                        const std::string& line3 = "")
-    {
+                        const std::string& line3 = "") const {
       m_cb->set_error_dialog(m_cb->ctx, heading.c_str(), line1.c_str(), line2.c_str(),
                              line3.c_str());
     }
@@ -835,8 +833,7 @@ public:
     /// @brief Prompt the user for authentication of a URL
     ///
     /// @param[in] url The URL
-    void RequireAuthentication(const std::string& url)
-    {
+    void RequireAuthentication(const std::string& url) const {
       m_cb->require_authentication(m_cb->ctx, url.c_str());
     }
 

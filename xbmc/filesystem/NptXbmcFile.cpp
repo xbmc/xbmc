@@ -44,9 +44,9 @@ public:
   explicit NPT_XbmcFileStream(const NPT_XbmcFileReference& file) : m_FileReference(file) {}
 
     // NPT_FileInterface methods
-    NPT_Result Seek(NPT_Position offset);
-    NPT_Result Tell(NPT_Position& offset);
-    NPT_Result Flush();
+    NPT_Result Seek(NPT_Position offset) const;
+    NPT_Result Tell(NPT_Position& offset) const;
+    NPT_Result Flush() const;
 
 protected:
     // constructors and destructors
@@ -60,8 +60,7 @@ protected:
 |   NPT_XbmcFileStream::Seek
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_XbmcFileStream::Seek(NPT_Position offset)
-{
+NPT_XbmcFileStream::Seek(NPT_Position offset) const {
     int64_t result;
 
     result = m_FileReference->Seek(offset, SEEK_SET)    ;
@@ -76,8 +75,7 @@ NPT_XbmcFileStream::Seek(NPT_Position offset)
 |   NPT_XbmcFileStream::Tell
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_XbmcFileStream::Tell(NPT_Position& offset)
-{
+NPT_XbmcFileStream::Tell(NPT_Position& offset) const {
     int64_t result = m_FileReference->GetPosition();
     if (result >= 0) {
         offset = (NPT_Position)result;
@@ -91,8 +89,7 @@ NPT_XbmcFileStream::Tell(NPT_Position& offset)
 |   NPT_XbmcFileStream::Flush
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_XbmcFileStream::Flush()
-{
+NPT_XbmcFileStream::Flush() const {
     m_FileReference->Flush();
     return NPT_SUCCESS;
 }

@@ -1358,8 +1358,7 @@ void CGUIAddonWindow::RemoveItem(CFileItemPtr* fileItem)
   UpdateButtons();
 }
 
-int CGUIAddonWindow::GetCurrentListPosition()
-{
+int CGUIAddonWindow::GetCurrentListPosition() const {
   return m_viewControl.GetSelectedItem();
 }
 
@@ -1368,13 +1367,11 @@ void CGUIAddonWindow::SetCurrentListPosition(int item)
   m_viewControl.SetSelectedItem(item);
 }
 
-int CGUIAddonWindow::GetListSize()
-{
+int CGUIAddonWindow::GetListSize() const {
   return m_vecItems->Size();
 }
 
-CFileItemPtr* CGUIAddonWindow::GetListItem(int position)
-{
+CFileItemPtr* CGUIAddonWindow::GetListItem(int position) const {
   if (position < 0 || position >= m_vecItems->Size())
     return nullptr;
   return new CFileItemPtr(m_vecItems->Get(position));
@@ -1388,18 +1385,15 @@ void CGUIAddonWindow::ClearList()
   UpdateButtons();
 }
 
-void CGUIAddonWindow::SetContainerProperty(const std::string& key, const std::string& value)
-{
+void CGUIAddonWindow::SetContainerProperty(const std::string& key, const std::string& value) const {
   m_vecItems->SetProperty(key, value);
 }
 
-void CGUIAddonWindow::SetContainerContent(const std::string& value)
-{
+void CGUIAddonWindow::SetContainerContent(const std::string& value) const {
   m_vecItems->SetContent(value);
 }
 
-int CGUIAddonWindow::GetCurrentContainerControlId()
-{
+int CGUIAddonWindow::GetCurrentContainerControlId() const {
   return m_viewControl.GetCurrentControl();
 }
 

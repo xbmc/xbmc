@@ -28,14 +28,14 @@ public:
 
   void CreateFence();
   void DestroyFence();
-  bool IsSignaled();
+  bool IsSignaled() const;
 
 #if defined(EGL_ANDROID_native_fence_sync) && defined(EGL_KHR_fence_sync)
   void CreateKMSFence(int fd);
   void CreateGPUFence();
-  EGLint FlushFence();
-  void WaitSyncGPU();
-  void WaitSyncCPU();
+  EGLint FlushFence() const;
+  void WaitSyncGPU() const;
+  void WaitSyncCPU() const;
 #endif
 
 private:
@@ -47,7 +47,7 @@ private:
   PFNEGLGETSYNCATTRIBKHRPROC m_eglGetSyncAttribKHR{nullptr};
 
 #if defined(EGL_ANDROID_native_fence_sync) && defined(EGL_KHR_fence_sync)
-  EGLSyncKHR CreateFence(int fd);
+  EGLSyncKHR CreateFence(int fd) const;
 
   EGLSyncKHR m_gpuFence{EGL_NO_SYNC_KHR};
   EGLSyncKHR m_kmsFence{EGL_NO_SYNC_KHR};

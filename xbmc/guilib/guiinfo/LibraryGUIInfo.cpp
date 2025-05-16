@@ -38,8 +38,7 @@ bool CLibraryGUIInfo::GetLibraryBool(int condition) const
   return value;
 }
 
-void CLibraryGUIInfo::SetLibraryBool(int condition, bool value)
-{
+void CLibraryGUIInfo::SetLibraryBool(int condition, bool value) const {
   switch (condition)
   {
     case LIBRARY_HAS_MUSIC:
@@ -71,8 +70,7 @@ void CLibraryGUIInfo::SetLibraryBool(int condition, bool value)
   }
 }
 
-void CLibraryGUIInfo::ResetLibraryBools()
-{
+void CLibraryGUIInfo::ResetLibraryBools() const {
   m_libraryHasMusic = -1;
   m_libraryHasMovies = -1;
   m_libraryHasTVShows = -1;

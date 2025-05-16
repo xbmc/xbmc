@@ -218,8 +218,7 @@ bool CRingBuffer::Copy(CRingBuffer &rBuf)
 }
 
 /* Our various 'get' methods */
-char *CRingBuffer::getBuffer()
-{
+char *CRingBuffer::getBuffer() const {
   return m_buffer;
 }
 

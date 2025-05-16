@@ -80,13 +80,13 @@ public:
    * @brief Delete this recording on the client (if supported).
    * @return True if it was deleted successfully, false otherwise.
    */
-  bool Delete();
+  bool Delete() const;
 
   /*!
    * @brief Undelete this recording on the client (if supported).
    * @return True if it was undeleted successfully, false otherwise.
    */
-  bool Undelete();
+  bool Undelete() const;
 
   /*!
    * @brief Rename this recording on the client (if supported).

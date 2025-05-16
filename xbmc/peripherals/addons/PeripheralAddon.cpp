@@ -904,8 +904,7 @@ bool CPeripheralAddon::ProvidesButtonMaps(const ADDON::AddonInfoPtr& addonInfo)
       .asBoolean();
 }
 
-void CPeripheralAddon::TriggerDeviceScan()
-{
+void CPeripheralAddon::TriggerDeviceScan() const {
   m_manager.TriggerDeviceScan(PERIPHERAL_BUS_ADDON);
 }
 

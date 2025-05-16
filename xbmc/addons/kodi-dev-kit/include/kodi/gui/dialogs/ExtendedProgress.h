@@ -118,8 +118,7 @@ public:
   ///
   /// @param[in] title Title string
   ///
-  void SetTitle(const std::string& title)
-  {
+  void SetTitle(const std::string& title) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->set_title(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, title.c_str());
@@ -155,8 +154,7 @@ public:
   ///
   /// @param[in] text Information text to set
   ///
-  void SetText(const std::string& text)
-  {
+  void SetText(const std::string& text) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->set_text(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, text.c_str());
@@ -181,8 +179,7 @@ public:
   /// @ingroup cpp_kodi_gui_dialogs_CExtendedProgress
   /// @brief Mark progress finished.
   ///
-  void MarkFinished()
-  {
+  void MarkFinished() const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->mark_finished(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle);
@@ -209,8 +206,7 @@ public:
   ///
   /// @param[in] percentage Position to use from 0.0 to 100.0
   ///
-  void SetPercentage(float percentage)
-  {
+  void SetPercentage(float percentage) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->set_percentage(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, percentage);
@@ -224,8 +220,7 @@ public:
   /// @param[in] currentItem Place position to use
   /// @param[in] itemCount Amount of used places
   ///
-  void SetProgress(int currentItem, int itemCount)
-  {
+  void SetProgress(int currentItem, int itemCount) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogExtendedProgress->set_progress(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, currentItem, itemCount);

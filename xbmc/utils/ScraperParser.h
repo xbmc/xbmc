@@ -40,13 +40,13 @@ public:
   const std::string Parse(const std::string& strTag,
                          ADDON::CScraper* scraper);
 
-  void AddDocument(const CXBMCTinyXML* doc);
+  void AddDocument(const CXBMCTinyXML* doc) const;
 
   std::string m_param[MAX_SCRAPER_BUFFERS];
 
 private:
   bool LoadFromXML();
-  void ReplaceBuffers(std::string& strDest);
+  void ReplaceBuffers(std::string& strDest) const;
   void ParseExpression(const std::string& input, std::string& dest, TiXmlElement* element, bool bAppend);
 
   /*! \brief Parse an 'XSLT' declaration from the scraper

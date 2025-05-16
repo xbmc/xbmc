@@ -144,8 +144,7 @@ int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
   return written;
 }
 
-int64_t CSimpleFileCache::GetAvailableRead()
-{
+int64_t CSimpleFileCache::GetAvailableRead() const {
   return m_nWritePosition - m_nReadPosition;
 }
 

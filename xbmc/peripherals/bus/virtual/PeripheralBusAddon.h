@@ -55,7 +55,7 @@ public:
    *
    * TODO: Move declaration to parent class
    */
-  bool SendRumbleEvent(const std::string& strLocation, unsigned int motorIndex, float magnitude);
+  bool SendRumbleEvent(const std::string& strLocation, unsigned int motorIndex, float magnitude) const;
 
   // Inherited from CPeripheralBus
   bool InitializeProperties(CPeripheral& peripheral) override;

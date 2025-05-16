@@ -141,8 +141,8 @@ protected:
   static int        avc_parse_nal_units_buf(const uint8_t *buf_in, uint8_t **buf, int *size);
   int               isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len);
   // bitstream to bytestream (Annex B) conversion support.
-  bool              IsIDR(uint8_t unit_type);
-  bool              IsSlice(uint8_t unit_type);
+  bool              IsIDR(uint8_t unit_type) const;
+  bool              IsSlice(uint8_t unit_type) const;
   bool              BitstreamConvertInitAVC(void *in_extradata, int in_extrasize);
   bool              BitstreamConvertInitHEVC(void *in_extradata, int in_extrasize);
   bool              BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size, double pts);
@@ -161,16 +161,16 @@ protected:
 
   void ApplyMasteringDisplayColourVolume(const MasteringDisplayColourVolume& metadata, bool& update);
   void ApplyContentLightLevel(const ContentLightLevel& metadata, bool& update);
-  void UpdateHdrStaticMetadata();
+  void UpdateHdrStaticMetadata() const;
   
   void AddDoViRpuNaluWrap(const Hdr10PlusMetadata& meta, uint8_t **poutbuf, uint32_t& poutbuf_size, double pts);
-  void AddDoViRpuNalu(const Hdr10PlusMetadata& meta, uint8_t **poutbuf, int *poutbuf_size, double pts);
+  void AddDoViRpuNalu(const Hdr10PlusMetadata& meta, uint8_t **poutbuf, int *poutbuf_size, double pts) const;
 
   void ProcessSeiPrefixWrap(uint8_t *buf, int32_t nal_size, uint8_t **poutbuf, uint32_t& poutbuf_size, Hdr10PlusMetadata& meta, bool& convert_hdr10plus_meta);
   void ProcessSeiPrefix(uint8_t *buf, int32_t nal_size, uint8_t **poutbuf, int *poutbuf_size, Hdr10PlusMetadata& meta, bool& convert_hdr10plus_meta);
   
   void ProcessDoViRpuWrap(uint8_t *buf, int32_t nal_size, uint8_t **poutbuf, uint32_t& poutbuf_size, double pts);
-  void ProcessDoViRpu(uint8_t *buf, int32_t nal_size, uint8_t **poutbuf, int *poutbuf_size, double pts);
+  void ProcessDoViRpu(uint8_t *buf, int32_t nal_size, uint8_t **poutbuf, int *poutbuf_size, double pts) const;
   
   typedef struct omx_bitstream_ctx {
       uint8_t  length_size;

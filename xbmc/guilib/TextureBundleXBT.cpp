@@ -57,8 +57,7 @@ CTextureBundleXBT::~CTextureBundleXBT(void)
   CloseBundle();
 }
 
-void CTextureBundleXBT::CloseBundle()
-{
+void CTextureBundleXBT::CloseBundle() const {
   if (m_XBTFReader != nullptr && m_XBTFReader->IsOpen())
   {
     XFILE::CXbtManager::GetInstance().Release(CURL(m_path));
@@ -208,8 +207,7 @@ std::optional<CTextureBundleXBT::Animation> CTextureBundleXBT::LoadAnim(const st
 }
 
 std::unique_ptr<CTexture> CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
-                                                                   const CXBTFFrame& frame)
-{
+                                                                   const CXBTFFrame& frame) const {
   // found texture - allocate the necessary buffers
   std::vector<unsigned char> buffer(static_cast<size_t>(frame.GetPackedSize()));
 

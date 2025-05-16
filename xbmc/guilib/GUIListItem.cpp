@@ -285,8 +285,7 @@ void CGUIListItem::Archive(CArchive &ar)
     SetInvalid();
   }
 }
-void CGUIListItem::Serialize(CVariant &value)
-{
+void CGUIListItem::Serialize(CVariant &value) const {
   value["isFolder"] = m_bIsFolder;
   value["strLabel"] = m_strLabel;
   value["strLabel2"] = m_strLabel2;
@@ -327,8 +326,7 @@ void CGUIListItem::SetLayout(std::unique_ptr<CGUIListItemLayout> layout)
   m_layout = std::move(layout);
 }
 
-CGUIListItemLayout *CGUIListItem::GetLayout()
-{
+CGUIListItemLayout *CGUIListItem::GetLayout() const {
   return m_layout.get();
 }
 
@@ -337,13 +335,11 @@ void CGUIListItem::SetFocusedLayout(std::unique_ptr<CGUIListItemLayout> layout)
   m_focusedLayout = std::move(layout);
 }
 
-CGUIListItemLayout *CGUIListItem::GetFocusedLayout()
-{
+CGUIListItemLayout *CGUIListItem::GetFocusedLayout() const {
   return m_focusedLayout.get();
 }
 
-void CGUIListItem::SetInvalid()
-{
+void CGUIListItem::SetInvalid() const {
   if (m_layout) m_layout->SetInvalid();
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
 }

@@ -157,23 +157,19 @@ void CGUIPortWindow::FrameMove()
   m_portList->FrameMove();
 }
 
-void CGUIPortWindow::UpdatePortList()
-{
+void CGUIPortWindow::UpdatePortList() const {
   m_portList->Refresh();
 }
 
-void CGUIPortWindow::FocusPortList()
-{
+void CGUIPortWindow::FocusPortList() const {
   m_portList->SetFocused();
 }
 
-bool CGUIPortWindow::OnClickAction()
-{
+bool CGUIPortWindow::OnClickAction() const {
   return m_portList->OnSelect();
 }
 
-void CGUIPortWindow::ResetPorts()
-{
+void CGUIPortWindow::ResetPorts() const {
   m_portList->ResetPorts();
 }
 

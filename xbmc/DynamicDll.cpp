@@ -55,8 +55,7 @@ void DllDynamic::Unload()
   m_dll=NULL;
 }
 
-bool DllDynamic::CanLoad()
-{
+bool DllDynamic::CanLoad() const {
   return CFileUtils::Exists(m_strDllName);
 }
 

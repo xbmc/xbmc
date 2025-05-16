@@ -39,8 +39,7 @@ CGUIWindowFavourites::~CGUIWindowFavourites()
   CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
 }
 
-void CGUIWindowFavourites::OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event)
-{
+void CGUIWindowFavourites::OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event) {
   CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 0);
   CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
 }
@@ -271,8 +270,7 @@ bool CGUIWindowFavourites::MoveItem(int item, int amount)
   return false;
 }
 
-bool CGUIWindowFavourites::RemoveItem(int item)
-{
+bool CGUIWindowFavourites::RemoveItem(int item) const {
   if (item < 0 || item >= m_vecItems->Size())
     return false;
 

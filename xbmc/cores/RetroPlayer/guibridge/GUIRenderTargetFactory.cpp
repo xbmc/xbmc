@@ -18,12 +18,10 @@ CGUIRenderTargetFactory::CGUIRenderTargetFactory(IRenderManager* renderManager)
 {
 }
 
-CGUIRenderTarget* CGUIRenderTargetFactory::CreateRenderFullScreen(CGameWindowFullScreen& window)
-{
+CGUIRenderTarget* CGUIRenderTargetFactory::CreateRenderFullScreen(CGameWindowFullScreen& window) const {
   return new CGUIRenderFullScreen(m_renderManager, window);
 }
 
-CGUIRenderTarget* CGUIRenderTargetFactory::CreateRenderControl(CGUIGameControl& gameControl)
-{
+CGUIRenderTarget* CGUIRenderTargetFactory::CreateRenderControl(CGUIGameControl& gameControl) const {
   return new CGUIRenderControl(m_renderManager, gameControl);
 }

@@ -217,14 +217,14 @@ namespace PVR
      * @brief Erase stale texture db entries and image files.
      * @return number of cleaned up images.
      */
-    int CleanupCachedImages();
+    int CleanupCachedImages() const;
 
     /*!
      * @brief Get all saved searches from the database.
      * @param bRadio Whether to fetch saved searches for radio or TV.
      * @return The searches.
      */
-    std::vector<std::shared_ptr<CPVREpgSearchFilter>> GetSavedSearches(bool bRadio);
+    std::vector<std::shared_ptr<CPVREpgSearchFilter>> GetSavedSearches(bool bRadio) const;
 
     /*!
      * @brief Get the saved search matching the given id.
@@ -232,28 +232,28 @@ namespace PVR
      * @param iId The id.
      * @return The saved search or nullptr if not found.
      */
-    std::shared_ptr<CPVREpgSearchFilter> GetSavedSearchById(bool bRadio, int iId);
+    std::shared_ptr<CPVREpgSearchFilter> GetSavedSearchById(bool bRadio, int iId) const;
 
     /*!
      * @brief Persist a saved search in the database.
      * @param search The saved search.
      * @return True on success, false otherwise.
      */
-    bool PersistSavedSearch(CPVREpgSearchFilter& search);
+    bool PersistSavedSearch(CPVREpgSearchFilter& search) const;
 
     /*!
      * @brief Update time last executed for the given search.
      * @param epgSearch The search.
      * @return True on success, false otherwise.
      */
-    bool UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch);
+    bool UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch) const;
 
     /*!
      * @brief Delete a saved search from the database.
      * @param search The saved search.
      * @return True on success, false otherwise.
      */
-    bool DeleteSavedSearch(const CPVREpgSearchFilter& search);
+    bool DeleteSavedSearch(const CPVREpgSearchFilter& search) const;
 
   private:
     /*!

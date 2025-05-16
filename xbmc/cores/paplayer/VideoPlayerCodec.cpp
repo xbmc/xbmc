@@ -32,8 +32,7 @@ VideoPlayerCodec::~VideoPlayerCodec()
   DeInit();
 }
 
-AEAudioFormat VideoPlayerCodec::GetFormat()
-{
+AEAudioFormat VideoPlayerCodec::GetFormat() const {
   AEAudioFormat format;
   if (m_pAudioCodec)
   {

@@ -58,7 +58,7 @@ public:
    * @param path The path of the group.
    * @return The new group.
    */
-  std::shared_ptr<CPVRChannelGroup> CreateChannelGroup(int iType, const CPVRChannelsPath& path);
+  std::shared_ptr<CPVRChannelGroup> CreateChannelGroup(int iType, const CPVRChannelsPath& path) const;
 
   /*!
    * @return Amount of groups in this container
@@ -99,7 +99,7 @@ public:
    * @return The channel group members that could be added to the group
    */
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> GetMembersAvailableForGroup(
-      const std::shared_ptr<const CPVRChannelGroup>& group);
+      const std::shared_ptr<const CPVRChannelGroup>& group) const;
 
   /*!
    * @brief Get a pointer to a channel group given its ID.
@@ -197,7 +197,7 @@ public:
    * @brief Persist all changes in channel groups.
    * @return True if everything was persisted, false otherwise.
    */
-  bool PersistAll();
+  bool PersistAll() const;
 
   /*!
    * @return True when this container contains radio groups, false otherwise
@@ -217,13 +217,13 @@ public:
    * @brief Update the channel numbers across the channel groups from the all channels group
    * @return True if any channel number was changed, false otherwise.
    */
-  bool UpdateChannelNumbersFromAllChannelsGroup();
+  bool UpdateChannelNumbersFromAllChannelsGroup() const;
 
   /*!
    * @brief Erase stale texture db entries and image files.
    * @return number of cleaned up images.
    */
-  int CleanupCachedImages();
+  int CleanupCachedImages() const;
 
   /*!
    * @brief Sort the groups.

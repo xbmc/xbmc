@@ -235,8 +235,7 @@ void CLangInfo::CRegion::SetTimeZone(const std::string& strTimeZone)
   m_strTimeZone = strTimeZone;
 }
 
-void CLangInfo::CRegion::SetGlobalLocale()
-{
+void CLangInfo::CRegion::SetGlobalLocale() const {
   std::string strLocale;
   if (m_strRegionLocaleName.length() > 0)
   {
@@ -1009,8 +1008,7 @@ const std::string& CLangInfo::MeridiemSymbolToString(MeridiemSymbol symbol)
 }
 
 // Fills the array with the region names available for this language
-void CLangInfo::GetRegionNames(std::vector<std::string>& array)
-{
+void CLangInfo::GetRegionNames(std::vector<std::string>& array) const {
   for (const auto &region : m_regions)
   {
     std::string strName=region.first;

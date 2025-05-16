@@ -82,8 +82,7 @@ void CDVDStreamInfo::Clear()
   m_3dSubtitlePlane = 0;
 }
 
-bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare)
-{
+bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare) const {
   if (codec != right.codec || type != right.type ||
       ((compare & COMPARE_ID) && uniqueId != right.uniqueId) ||
       ((compare & COMPARE_ID) && demuxerId != right.demuxerId) || codec_tag != right.codec_tag ||

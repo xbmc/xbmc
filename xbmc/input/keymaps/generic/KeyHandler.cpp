@@ -265,8 +265,7 @@ CAction CKeyHandler::ProcessAction(const KeymapAction& action,
   return dispatchAction;
 }
 
-bool CKeyHandler::SendRepeatAction(unsigned int holdTimeMs)
-{
+bool CKeyHandler::SendRepeatAction(unsigned int holdTimeMs) const {
   bool bSendRepeat = true;
 
   // Don't send a repeat action if the last key has changed

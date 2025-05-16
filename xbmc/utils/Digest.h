@@ -61,7 +61,7 @@ public:
    *
    * Cannot be called after \ref Finalize has been called
    */
-  void Update(void const* data, std::size_t size);
+  void Update(void const* data, std::size_t size) const;
   /**
    * Finalize and return the digest
    *
@@ -93,7 +93,7 @@ public:
 private:
   struct MdCtxDeleter
   {
-    void operator()(EVP_MD_CTX* context);
+    void operator()(EVP_MD_CTX* context) const;
   };
 
   bool m_finalized{false};

@@ -97,7 +97,7 @@ public:
   void SetViewWindow(float left, float top, float right, float bottom);
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
-  void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
+  void ResetOverscan(RESOLUTION res, OVERSCAN &overscan) const;
   void ResetOverscan(RESOLUTION_INFO &resinfo);
   void ResetScreenParameters(RESOLUTION res);
   void CaptureStateBlock();
@@ -112,7 +112,7 @@ public:
    \param scaleY [out] the scaling amount in the Y direction.
    \param matrix [out] if non-NULL, a suitable transformation from res to screen resolution is set.
    */
-  void GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix = NULL);
+  void GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix = NULL) const;
   void SetRenderingResolution(const RESOLUTION_INFO &res, bool needsScaling);  ///< Sets scaling up for rendering
   void SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
@@ -131,11 +131,11 @@ public:
   void RestoreOrigin();
   void SetCameraPosition(const CPoint &camera);
   void SetStereoView(RENDER_STEREO_VIEW view);
-  RENDER_STEREO_VIEW GetStereoView()  { return m_stereoView; }
+  RENDER_STEREO_VIEW GetStereoView() const { return m_stereoView; }
   void SetStereoMode(RENDER_STEREO_MODE mode) { m_stereoMode = mode; }
-  RENDER_STEREO_MODE GetStereoMode()  { return m_stereoMode; }
+  RENDER_STEREO_MODE GetStereoMode() const { return m_stereoMode; }
   void SetHDRType(StreamHdrType hdrType)  { m_hdrType = hdrType; }
-  StreamHdrType GetHDRType()  { return m_hdrType; }
+  StreamHdrType GetHDRType() const { return m_hdrType; }
   void RestoreCameraPosition();
   void SetStereoFactor(float factor);
   void RestoreStereoFactor();
@@ -189,7 +189,7 @@ public:
 
 protected:
 
-  void UpdateCameraPosition(const CPoint &camera, const float &factor);
+  void UpdateCameraPosition(const CPoint &camera, const float &factor) const;
   void SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate);
   void ApplyVideoResolution(RESOLUTION res);
   void UpdateInternalStateWithResolution(RESOLUTION res);

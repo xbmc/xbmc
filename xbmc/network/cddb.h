@@ -71,9 +71,9 @@ public:
   const std::string& getInexactArtist(int select) const;
   const std::string& getInexactTitle(int select) const;
   bool queryCache( uint32_t discid );
-  bool writeCacheFile( const char* pBuffer, uint32_t discid );
+  bool writeCacheFile( const char* pBuffer, uint32_t discid ) const;
   bool isCDCached( int nr_of_tracks, toc cdtoc[] );
-  bool isCDCached( MEDIA_DETECT::CCdInfo* pInfo );
+  bool isCDCached( MEDIA_DETECT::CCdInfo* pInfo ) const;
 
 protected:
   std::string m_strNull;
@@ -102,9 +102,9 @@ protected:
   void addTitle(const char *buffer);
   void addExtended(const char *buffer);
   void parseData(const char *buffer);
-  bool Send( const void *buffer, int bytes );
+  bool Send( const void *buffer, int bytes ) const;
   bool Send( const char *buffer);
-  std::string Recv(bool wait4point);
+  std::string Recv(bool wait4point) const;
   bool openSocket();
   bool closeSocket();
   struct toc cdtoc[100];

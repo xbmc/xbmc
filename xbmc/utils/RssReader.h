@@ -30,7 +30,7 @@ public:
 
   void Create(IRssObserver* aObserver, const std::vector<std::string>& aUrl, const std::vector<int>& times, int spacesBetweenFeeds, bool rtl);
   bool Parse(const std::string& data, int iFeed);
-  void getFeed(vecText &text);
+  void getFeed(vecText &text) const;
   void AddTag(const std::string &addTag);
   void AddToQueue(int iAdd);
   void UpdateObserver();

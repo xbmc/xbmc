@@ -49,8 +49,7 @@ CCheevos::CCheevos(GAME::CGameClient* gameClient,
 {
 }
 
-void CCheevos::ResetRuntime()
-{
+void CCheevos::ResetRuntime() const {
   m_gameClient->Cheevos().RCResetRuntime();
 }
 
@@ -147,8 +146,7 @@ void CCheevos::EnableRichPresence()
   m_richPresenceScript.clear();
 }
 
-std::string CCheevos::GetRichPresenceEvaluation()
-{
+std::string CCheevos::GetRichPresenceEvaluation() const {
   if (!m_richPresenceLoaded)
   {
     CLog::Log(LOGERROR, "Cheevos: Rich Presence script was not found");
@@ -171,8 +169,7 @@ std::string CCheevos::GetRichPresenceEvaluation()
   return evaluation;
 }
 
-RConsoleID CCheevos::ConsoleID()
-{
+RConsoleID CCheevos::ConsoleID() const {
   const std::string extension = URIUtils::GetExtension(m_gameClient->GetGamePath());
   auto it = m_extensionToConsole.find(extension);
 

@@ -36,7 +36,7 @@ public:
   void StopAgentManager();
 
   // Input functions
-  void SetSpeed(double speed);
+  void SetSpeed(double speed) const;
   void EnableInput(bool bEnabled);
 
   // implementation of IGameInputCallback

@@ -164,8 +164,7 @@ public:
     , preferStereo(preferStereo)
   {
   };
-  bool operator()(const SelectionStream& lh, const SelectionStream& rh)
-  {
+  bool operator()(const SelectionStream& lh, const SelectionStream& rh) const {
     PREDICATE_RETURN(lh.type_index == currentAudioStream
                      , rh.type_index == currentAudioStream);
 
@@ -313,8 +312,7 @@ public:
   explicit PredicateVideoFilter(int videoStream) : currentVideoStream(videoStream)
   {
   };
-  bool operator()(const SelectionStream& lh, const SelectionStream& rh)
-  {
+  bool operator()(const SelectionStream& lh, const SelectionStream& rh) const {
     PREDICATE_RETURN(lh.type_index == currentVideoStream,
                      rh.type_index == currentVideoStream);
 
@@ -365,8 +363,7 @@ std::vector<SelectionStream> CSelectionStreams::Get(StreamType type)
   return streams;
 }
 
-bool CSelectionStreams::Get(StreamType type, StreamFlags flag, SelectionStream& out)
-{
+bool CSelectionStreams::Get(StreamType type, StreamFlags flag, SelectionStream& out) const {
   for(size_t i=0;i<m_Streams.size();i++)
   {
     if(m_Streams[i].type != type)
@@ -577,8 +574,7 @@ int CSelectionStreams::CountType(StreamType type) const
 // main class
 //------------------------------------------------------------------------------
 
-void CVideoPlayer::SetAVChange(std::string from)
-{
+void CVideoPlayer::SetAVChange(std::string from) const {
   CLog::Log(LOGINFO, "VideoPlayer::SetAVChange true [{}]", from);
   if (CServiceBroker::GetDataCacheCore().GetAVChange()) return; // already set, do not allow set again until done.
 
@@ -1125,8 +1121,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
   return false;
 }
 
-bool CVideoPlayer::IsValidStream(const CCurrentStream& stream)
-{
+bool CVideoPlayer::IsValidStream(const CCurrentStream& stream) const {
   if(stream.id<0)
     return true; // we consider non selected as valid
 
@@ -1173,8 +1168,7 @@ bool CVideoPlayer::IsValidStream(const CCurrentStream& stream)
   return false;
 }
 
-bool CVideoPlayer::IsBetterStream(const CCurrentStream& current, CDemuxStream* stream)
-{
+bool CVideoPlayer::IsBetterStream(const CCurrentStream& current, CDemuxStream* stream) const {
   // Do not reopen non-video streams if we're in video-only mode
   if (m_playerOptions.videoOnly && current.type != STREAM_VIDEO)
     return false;
@@ -2535,8 +2529,7 @@ void CVideoPlayer::SynchronizeDemuxer()
   message->Wait(m_bStop, 0);
 }
 
-IDVDStreamPlayer* CVideoPlayer::GetStreamPlayer(unsigned int target)
-{
+IDVDStreamPlayer* CVideoPlayer::GetStreamPlayer(unsigned int target) const {
   if(target == VideoPlayer_AUDIO)
     return m_VideoPlayerAudio;
   if(target == VideoPlayer_VIDEO)
@@ -3531,14 +3524,12 @@ void CVideoPlayer::SetSubtitleVisible(bool bVisible)
   aml_dv_set_subtitles(bVisible);
 }
 
-void CVideoPlayer::SetEnableStream(CCurrentStream& current, bool isEnabled)
-{
+void CVideoPlayer::SetEnableStream(CCurrentStream& current, bool isEnabled) const {
   if (m_pDemuxer && STREAM_SOURCE_MASK(current.source) == STREAM_SOURCE_DEMUX)
     m_pDemuxer->EnableStream(current.demuxerId, current.id, isEnabled);
 }
 
-void CVideoPlayer::SetSubtitleVisibleInternal(bool bVisible)
-{
+void CVideoPlayer::SetSubtitleVisibleInternal(bool bVisible) const {
   m_VideoPlayerVideo->EnableSubtitle(bVisible);
 
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -3623,8 +3614,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
 }
 
 // return the time in milliseconds
-int64_t CVideoPlayer::GetTime()
-{
+int64_t CVideoPlayer::GetTime() const {
   std::lock_guard lock(m_StateSection);
 
   return llrint(m_State.time);
@@ -4886,8 +4876,7 @@ int CVideoPlayer::GetCacheLevel() const
   return (int)(m_State.cache_level * 100);
 }
 
-double CVideoPlayer::GetQueueTime()
-{
+double CVideoPlayer::GetQueueTime() const {
   int a = m_VideoPlayerAudio->GetLevel();
   int v = m_VideoPlayerVideo->GetLevel();
   return std::max(a, v) * m_messageQueueTimeSize * 1000.0 / 100;

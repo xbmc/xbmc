@@ -65,15 +65,14 @@ public:
 
   /// @brief **required**\n
   /// Unique identifier for this provider.
-  void SetUniqueId(unsigned int uniqueId) { m_cStructure->iUniqueId = uniqueId; }
+  void SetUniqueId(unsigned int uniqueId) const { m_cStructure->iUniqueId = uniqueId; }
 
   /// @brief To get with @ref SetUniqueId changed values.
   unsigned int GetUniqueId() const { return m_cStructure->iUniqueId; }
 
   /// @brief **required**\n
   /// Name given to this provider.
-  void SetName(const std::string& name)
-  {
+  void SetName(const std::string& name) const {
     strncpy(m_cStructure->strName, name.c_str(), sizeof(m_cStructure->strName) - 1);
   }
 
@@ -94,15 +93,14 @@ public:
   /// tag.SetType(PVR_PROVIDER_TYPE_SATELLITE);
   /// ~~~~~~~~~~~~~
   ///
-  void SetType(PVR_PROVIDER_TYPE type) { m_cStructure->type = type; }
+  void SetType(PVR_PROVIDER_TYPE type) const { m_cStructure->type = type; }
 
   /// @brief To get with @ref SetType changed values
   PVR_PROVIDER_TYPE GetType() const { return m_cStructure->type; }
 
   /// @brief **optional**\n
   /// Path to the provider icon (if present).
-  void SetIconPath(const std::string& iconPath)
-  {
+  void SetIconPath(const std::string& iconPath) const {
     strncpy(m_cStructure->strIconPath, iconPath.c_str(), sizeof(m_cStructure->strIconPath) - 1);
   }
 
@@ -114,8 +112,7 @@ public:
   /// The country codes for the provider.
   ///
   /// @note ISO 3166 country codes required (e.g 'GB,IE,CA').
-  void SetCountries(const std::vector<std::string>& countries)
-  {
+  void SetCountries(const std::vector<std::string>& countries) const {
     const std::string str = tools::StringUtils::Join(countries, PROVIDER_STRING_TOKEN_SEPARATOR);
     strncpy(m_cStructure->strCountries, str.c_str(), sizeof(m_cStructure->strCountries) - 1);
   }
@@ -131,8 +128,7 @@ public:
   /// The language codes for the provider.
   ///
   /// @note RFC 5646 standard codes required (e.g.: 'en_GB,fr_CA').
-  void SetLanguages(const std::vector<std::string>& languages)
-  {
+  void SetLanguages(const std::vector<std::string>& languages) const {
     const std::string str = tools::StringUtils::Join(languages, PROVIDER_STRING_TOKEN_SEPARATOR);
     strncpy(m_cStructure->strLanguages, str.c_str(), sizeof(m_cStructure->strLanguages) - 1);
   }
@@ -175,8 +171,7 @@ public:
   /// @brief To add and give content from addon to Kodi on related call.
   ///
   /// @param[in] provider The to transferred data.
-  void Add(const kodi::addon::PVRProvider& provider)
-  {
+  void Add(const kodi::addon::PVRProvider& provider) const {
     m_instance->toKodi->TransferProviderEntry(m_instance->toKodi->kodiInstance, m_handle, provider);
   }
 

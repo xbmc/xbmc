@@ -56,7 +56,7 @@ public:
   bool StartServer(enum ESERVERS server, bool start);
 
   bool StartWebserver();
-  bool IsWebserverRunning();
+  bool IsWebserverRunning() const;
   bool StopWebserver();
 
   bool StartAirPlayServer();
@@ -83,10 +83,10 @@ public:
   bool StartUPnPController();
   bool IsUPnPControllerRunning();
   bool StopUPnPController();
-  bool StartUPnPRenderer();
+  bool StartUPnPRenderer() const;
   bool IsUPnPRendererRunning();
   bool StopUPnPRenderer();
-  bool StartUPnPServer();
+  bool StartUPnPServer() const;
   bool IsUPnPServerRunning();
   bool StopUPnPServer();
 

@@ -474,8 +474,7 @@ void inline CVideoPlayerAudio::Wait(useconds_t uSeconds) const
    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &target, NULL);
 }
 
-void CVideoPlayerAudio::ClockAlign(double presentPts)
-{
+void CVideoPlayerAudio::ClockAlign(double presentPts) const {
   double renderPts = m_pClock->GetClock();
   double diff = (renderPts - presentPts);
   double delay = diff;

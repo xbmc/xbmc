@@ -214,8 +214,7 @@ static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime<>& timeout)
 
 int CUPnPPlayer::PlayFile(const CFileItem& file,
                           const CPlayerOptions& options,
-                          XbmcThreads::EndTime<>& timeout)
-{
+                          XbmcThreads::EndTime<>& timeout) const {
   CFileItem item(file);
   NPT_Reference<CThumbLoader> thumb_loader;
   NPT_Reference<PLT_MediaObject> obj;
@@ -602,16 +601,14 @@ failed:
   m_logger->error("- unable to set volume");
 }
 
-int64_t CUPnPPlayer::GetTime()
-{
+int64_t CUPnPPlayer::GetTime() const {
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
   return m_delegate->m_posinfo.rel_time.ToMillis();
 failed:
   return 0;
 }
 
-int64_t CUPnPPlayer::GetTotalTime()
-{
+int64_t CUPnPPlayer::GetTotalTime() const {
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
   return m_delegate->m_posinfo.track_duration.ToMillis();
 failed:

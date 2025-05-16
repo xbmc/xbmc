@@ -24,8 +24,7 @@ CSubtitlesAdapter::~CSubtitlesAdapter()
 {
 }
 
-bool CSubtitlesAdapter::Initialize()
-{
+bool CSubtitlesAdapter::Initialize() const {
   m_libass->SetSubtitleType(ADAPTED);
   return m_libass->CreateTrack() && m_libass->CreateStyle();
 }
@@ -47,30 +46,26 @@ int CSubtitlesAdapter::AddSubtitle(std::string& text,
   return ret;
 }
 
-void CSubtitlesAdapter::AppendToSubtitle(int subtitleId, const char* text)
-{
+void CSubtitlesAdapter::AppendToSubtitle(int subtitleId, const char* text) const {
   if (subtitleId == NO_SUBTITLE_ID)
     subtitleId = ASS_NO_ID;
   return m_libass->AppendTextToEvent(subtitleId, text);
 }
 
-int CSubtitlesAdapter::DeleteSubtitles(int nSubtitles, int threshold)
-{
+int CSubtitlesAdapter::DeleteSubtitles(int nSubtitles, int threshold) const {
   int ret = m_libass->DeleteEvents(nSubtitles, threshold);
   if (ret == ASS_NO_ID)
     return NO_SUBTITLE_ID;
   return ret;
 }
 
-void CSubtitlesAdapter::ChangeSubtitleStopTime(int subtitleId, double stopTime)
-{
+void CSubtitlesAdapter::ChangeSubtitleStopTime(int subtitleId, double stopTime) const {
   if (subtitleId == NO_SUBTITLE_ID)
     subtitleId = ASS_NO_ID;
   return m_libass->ChangeEventStopTime(subtitleId, stopTime);
 }
 
-void CSubtitlesAdapter::FlushSubtitles()
-{
+void CSubtitlesAdapter::FlushSubtitles() const {
   // Flush events to avoid display duplicates events e.g. on video seek
   m_libass->FlushEvents();
 }

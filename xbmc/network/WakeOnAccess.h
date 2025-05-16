@@ -75,7 +75,7 @@ private:
   bool m_enabled = false;
 
   bool WakeUpHost(const std::string& hostName, const std::string& customMessage, bool upnpMode);
-  bool WakeUpHost(const WakeUpEntry& server);
+  bool WakeUpHost(const WakeUpEntry& server) const;
 
   std::vector<struct UPnPServer> m_UPnPServers; // list of wakeable upnp servers
 };

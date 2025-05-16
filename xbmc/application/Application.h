@@ -114,8 +114,8 @@ public:
   bool InitWindow(RESOLUTION res = RES_INVALID);
 
   bool Stop(int exitCode);
-  const std::string& CurrentFile();
-  CFileItem& CurrentFileItem();
+  const std::string& CurrentFile() const;
+  CFileItem& CurrentFileItem() const;
   std::shared_ptr<CFileItem> CurrentFileItemPtr();
   const CFileItem& CurrentUnstackedItem();
   bool OnMessage(CGUIMessage& message) override;
@@ -135,11 +135,11 @@ public:
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
   bool IsPlayingFullScreenVideo() const;
-  bool IsFullScreen();
+  bool IsFullScreen() const;
   bool OnAction(const CAction &action);
   void CloseNetworkShares();
 
-  void ConfigureAndEnableAddons();
+  void ConfigureAndEnableAddons() const;
   void ShowAppMigrationMessage();
   void Process() override;
   void ProcessSlow();
@@ -241,8 +241,8 @@ public:
   bool m_AppFocused{true};
 
 private:
-  void PrintStartupLog();
-  void ResetCurrentItem();
+  void PrintStartupLog() const;
+  void ResetCurrentItem() const;
 
   mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
 

@@ -141,8 +141,7 @@ bool CGUIListItemLayout::MoveRight()
   return m_group.MoveRight();
 }
 
-bool CGUIListItemLayout::CheckCondition()
-{
+bool CGUIListItemLayout::CheckCondition() const {
   return !m_condition || m_condition->Get(INFO::DEFAULT_CONTEXT);
 }
 

@@ -149,7 +149,7 @@ private:
    * member.
    * @param return The channel or nullptr if not found.
    */
-  std::shared_ptr<CPVRChannelGroupMember> GetNextOrPrevChannel(bool bNext);
+  std::shared_ptr<CPVRChannelGroupMember> GetNextOrPrevChannel(bool bNext) const;
 
   /*!
    * @brief Select a given channel group member, display channel info OSD, switch according to given

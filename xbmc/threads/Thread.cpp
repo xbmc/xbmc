@@ -193,8 +193,7 @@ bool CThread::IsRunning() const
     return false;
 }
 
-bool CThread::SetPriority(const ThreadPriority& priority)
-{
+bool CThread::SetPriority(const ThreadPriority& priority) const {
   return m_impl->SetPriority(priority);
 }
 

@@ -106,7 +106,7 @@ protected:
   virtual void OnCacheFileItems(CFileItemList &items);
   virtual void GetGroupedItems(CFileItemList &items) { }
 
-  void ClearFileItems();
+  void ClearFileItems() const;
   virtual void SortItems(CFileItemList &items);
 
   /*! \brief Check if the given list can be advance filtered or not

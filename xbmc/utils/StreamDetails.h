@@ -116,7 +116,7 @@ public:
   int GetVideoHeight(int idx = 0) const;
   std::string GetVideoHdrType (int idx = 0) const;
   int GetVideoDuration(int idx = 0) const;
-  void SetVideoDuration(int idx, const int duration);
+  void SetVideoDuration(int idx, const int duration) const;
   std::string GetStereoMode(int idx = 0) const;
   std::string GetVideoLanguage(int idx = 0) const;
 

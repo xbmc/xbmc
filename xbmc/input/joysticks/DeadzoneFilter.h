@@ -65,7 +65,7 @@ private:
   bool GetDeadzone(unsigned int axisIndex,
                    float& result,
                    const char* featureName,
-                   const char* settingName);
+                   const char* settingName) const;
 
   /*!
    * \brief Utility function to calculate the deadzone

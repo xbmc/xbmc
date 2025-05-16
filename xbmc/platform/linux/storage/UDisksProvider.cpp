@@ -401,8 +401,7 @@ std::vector<std::string> CUDisksProvider::EnumerateDisks()
   return devices;
 }
 
-void CUDisksProvider::GetDisks(VECSOURCES& devices, bool EnumerateRemovable)
-{
+void CUDisksProvider::GetDisks(VECSOURCES& devices, bool EnumerateRemovable) const {
   for (auto& itr : m_AvailableDevices)
   {
     CUDiskDevice* device = itr.second;

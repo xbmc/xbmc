@@ -111,8 +111,7 @@ void CBaseRenderer::CalcDestRect(float offsetX,
                                  float inputFrameRatio,
                                  float zoomAmount,
                                  float verticalShift,
-                                 CRect& destRect)
-{
+                                 CRect& destRect) const {
   // if view window is empty, set empty destination
   if (height == 0 || width == 0)
   {
@@ -500,8 +499,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   m_videoSettings.m_CustomVerticalShift = CDisplaySettings::GetInstance().GetVerticalShift();
 }
 
-void CBaseRenderer::MarkDirty()
-{
+void CBaseRenderer::MarkDirty() const {
   CServiceBroker::GetGUI()->GetWindowManager().MarkDirty(m_destRect);
 }
 

@@ -207,7 +207,7 @@ namespace XBMCAddon
       ///
       isConfirmed();
 #else
-      bool isConfirmed();
+      bool isConfirmed() const;
 #endif
     };
     //@}

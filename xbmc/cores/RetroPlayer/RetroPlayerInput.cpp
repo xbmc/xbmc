@@ -54,8 +54,7 @@ void CRetroPlayerInput::StopAgentManager()
   }
 }
 
-void CRetroPlayerInput::SetSpeed(double speed)
-{
+void CRetroPlayerInput::SetSpeed(double speed) const {
   if (speed != 0)
     m_inputPollHandle->Activate();
   else

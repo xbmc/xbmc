@@ -1620,8 +1620,7 @@ void CTeletextDecoder::DoRenderPage(int startrow, int national_subset_bak)
   m_txtCache->NationalSubset = national_subset_bak;
 }
 
-void CTeletextDecoder::Decode_BTT()
-{
+void CTeletextDecoder::Decode_BTT() const {
   /* basic top table */
   int current, b1, b2, b3, b4;
   unsigned char btt[23*40];
@@ -1689,7 +1688,8 @@ void CTeletextDecoder::Decode_BTT()
   m_txtCache->BTTok = true;
 }
 
-void CTeletextDecoder::Decode_ADIP() /* additional information table */
+void CTeletextDecoder::Decode_ADIP() const
+/* additional information table */
 {
   int i, p, j, b1, b2, b3, charfound;
   unsigned char padip[23*40];
@@ -1758,8 +1758,7 @@ void CTeletextDecoder::Decode_ADIP() /* additional information table */
     m_txtCache->ADIP_PgMax--;
 }
 
-int CTeletextDecoder::TopText_GetNext(int startpage, int up, int findgroup)
-{
+int CTeletextDecoder::TopText_GetNext(int startpage, int up, int findgroup) const {
   int current, nextgrp, nextblk;
 
   int stoppage =  (IsDec(startpage) ? startpage : startpage & 0xF00); // avoid endless loop in hexmode
@@ -2005,8 +2004,7 @@ void CTeletextDecoder::SetFontWidth(int newWidth)
   }
 }
 
-int CTeletextDecoder::GetCurFontWidth()
-{
+int CTeletextDecoder::GetCurFontWidth() const {
   int mx  = (m_RenderInfo.Width)%(40-m_RenderInfo.nofirst);                 // # of unused pixels
   int abx = (mx == 0 ? m_RenderInfo.Width+1 : (m_RenderInfo.Width)/(mx+1)); // distance between 'inserted' pixels
   int nx  = abx+1-(m_RenderInfo.PosX % (abx+1));                            // # of pixels to next insert
@@ -2021,13 +2019,11 @@ void CTeletextDecoder::SetPosX(int column)
     m_RenderInfo.PosX += GetCurFontWidth();
 }
 
-void CTeletextDecoder::ClearBB(UTILS::COLOR::Color Color)
-{
+void CTeletextDecoder::ClearBB(UTILS::COLOR::Color Color) const {
   SDL_memset4(m_TextureBuffer + (m_RenderInfo.Height-m_YOffset)*m_RenderInfo.Width, Color, m_RenderInfo.Width*m_RenderInfo.Height);
 }
 
-void CTeletextDecoder::ClearFB(UTILS::COLOR::Color Color)
-{
+void CTeletextDecoder::ClearFB(UTILS::COLOR::Color Color) const {
   SDL_memset4(m_TextureBuffer + m_RenderInfo.Width*m_YOffset, Color, m_RenderInfo.Width*m_RenderInfo.Height);
 }
 
@@ -4068,8 +4064,7 @@ int CTeletextDecoder::iTripletNumber2Data(int iONr, TextCachedPage_t *pstCachedP
   return CDVDTeletextTools::deh24(p);
 }
 
-int CTeletextDecoder::SetNational(unsigned char sec)
-{
+int CTeletextDecoder::SetNational(unsigned char sec) const {
   std::lock_guard lock(m_txtCache->m_critSection);
 
   switch (sec)
@@ -4102,7 +4097,8 @@ int CTeletextDecoder::SetNational(unsigned char sec)
   return CountryConversionTable[sec & 0x07];
 }
 
-int CTeletextDecoder::NextHex(int i) /* return next existing non-decimal page number */
+int CTeletextDecoder::NextHex(int i) const
+/* return next existing non-decimal page number */
 {
   int startpage = i;
   if (startpage < 0x100)
@@ -4145,8 +4141,7 @@ void CTeletextDecoder::SetColors(const unsigned short *pcolormap, int offset, in
   }
 }
 
-UTILS::COLOR::Color CTeletextDecoder::GetColorRGB(enumTeletextColor ttc)
-{
+UTILS::COLOR::Color CTeletextDecoder::GetColorRGB(enumTeletextColor ttc) const {
   switch (ttc)
   {
     case TXT_ColorBlack:       return 0xFF000000;

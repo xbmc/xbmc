@@ -71,8 +71,8 @@ public:
    *         buffer, zero if no bytes are available to read (end of file was reached)
    *         or undetectable error occur, -1 in case of any explicit error
    */
-  ssize_t Read(void* bufPtr, size_t bufSize);
-  bool ReadString(char *szLine, int iLineLength);
+  ssize_t Read(void* bufPtr, size_t bufSize) const;
+  bool ReadString(char *szLine, int iLineLength) const;
   /**
    * Attempt to write bufSize bytes from buffer bufPtr into currently opened file.
    * @param bufPtr  pointer to buffer
@@ -81,14 +81,14 @@ public:
    *         zero if no bytes were written and no detectable error occur,
    *         -1 in case of any explicit error
    */
-  ssize_t Write(const void* bufPtr, size_t bufSize);
-  void Flush();
-  int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-  int Truncate(int64_t iSize);
+  ssize_t Write(const void* bufPtr, size_t bufSize) const;
+  void Flush() const;
+  int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) const;
+  int Truncate(int64_t iSize) const;
   int64_t GetPosition() const;
-  int64_t GetLength();
+  int64_t GetLength() const;
   void Close();
-  int GetChunkSize();
+  int GetChunkSize() const;
   const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const;
   const std::vector<std::string> GetPropertyValues(XFILE::FileProperty type, const std::string &name = "") const;
   ssize_t LoadFile(const std::string& filename, std::vector<uint8_t>& outputBuffer);
@@ -97,7 +97,7 @@ public:
 
   const std::unique_ptr<BitstreamStats>& GetBitstreamStats() const { return m_bitStreamStats; }
 
-  int IoControl(EIoControl request, void* param);
+  int IoControl(EIoControl request, void* param) const;
 
   IFile* GetImplementation() const { return m_pFile.get(); }
 
@@ -147,12 +147,12 @@ public:
   * @param buffer      pointer to __stat64 buffer to receive information about file
   * @return zero of success, -1 otherwise.
   */
-  int Stat(struct __stat64 *buffer);
+  int Stat(struct __stat64 *buffer) const;
   static bool Delete(const std::string& strFileName);
   static bool Rename(const std::string& strFileName, const std::string& strNewFileName);
   static bool Copy(const std::string& strFileName, const std::string& strDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
   static bool SetHidden(const std::string& fileName, bool hidden);
-  double GetDownloadSpeed();
+  double GetDownloadSpeed() const;
 
 private:
   /*!
@@ -170,7 +170,7 @@ private:
    * This improves performance when reads big files through Network.
    * \param url Source file info as CULR class.
    */
-  bool ShouldUseStreamBuffer(const CURL& url);
+  bool ShouldUseStreamBuffer(const CURL& url) const;
 
   unsigned int m_flags = 0;
   CURL                m_curl;
@@ -214,7 +214,7 @@ public:
   bool Open(const CURL& filename);
   void Close();
 
-  int64_t GetLength();
+  int64_t GetLength() const;
 private:
   CFileStreamBuffer m_buffer;
   std::unique_ptr<IFile> m_file;

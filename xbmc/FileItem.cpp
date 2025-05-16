@@ -2711,8 +2711,7 @@ void CFileItemList::Archive(CArchive& ar)
   }
 }
 
-void CFileItemList::FillInDefaultIcons()
-{
+void CFileItemList::FillInDefaultIcons() const {
   std::lock_guard lock(m_lock);
 
   for (int i = 0; i < (int)m_items.size(); ++i)
@@ -2871,8 +2870,7 @@ void CFileItemList::FilterCueItems()
 }
 
 // Remove the extensions from the filenames
-void CFileItemList::RemoveExtensions()
-{
+void CFileItemList::RemoveExtensions() const {
   std::lock_guard lock(m_lock);
 
   for (int i = 0; i < Size(); ++i)
@@ -3990,8 +3988,7 @@ void CFileItemList::Swap(unsigned int item1, unsigned int item2)
     std::swap(m_items[item1], m_items[item2]);
 }
 
-bool CFileItemList::UpdateItem(const CFileItem *item)
-{
+bool CFileItemList::UpdateItem(const CFileItem *item) const {
   if (!item)
     return false;
 

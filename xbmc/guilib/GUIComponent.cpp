@@ -46,45 +46,37 @@ void CGUIComponent::Init()
   CServiceBroker::RegisterGUI(this);
 }
 
-void CGUIComponent::Deinit()
-{
+void CGUIComponent::Deinit() const {
   CServiceBroker::UnregisterGUI();
 
   m_pWindowManager->DeInitialize();
 }
 
-CGUIWindowManager& CGUIComponent::GetWindowManager()
-{
+CGUIWindowManager& CGUIComponent::GetWindowManager() const {
   return *m_pWindowManager;
 }
 
-CGUITextureManager& CGUIComponent::GetTextureManager()
-{
+CGUITextureManager& CGUIComponent::GetTextureManager() const {
   return *m_pTextureManager;
 }
 
-CGUILargeTextureManager& CGUIComponent::GetLargeTextureManager()
-{
+CGUILargeTextureManager& CGUIComponent::GetLargeTextureManager() const {
   return *m_pLargeTextureManager;
 }
 
-CStereoscopicsManager &CGUIComponent::GetStereoscopicsManager()
-{
+CStereoscopicsManager &CGUIComponent::GetStereoscopicsManager() const {
   return *m_stereoscopicsManager;
 }
 
-CGUIInfoManager &CGUIComponent::GetInfoManager()
-{
+CGUIInfoManager &CGUIComponent::GetInfoManager() const {
   return *m_guiInfoManager;
 }
 
-CGUIColorManager &CGUIComponent::GetColorManager()
-{
+CGUIColorManager &CGUIComponent::GetColorManager() const {
   return *m_guiColorManager;
 }
 
-CGUIAudioManager &CGUIComponent::GetAudioManager()
-{
+CGUIAudioManager &CGUIComponent::GetAudioManager() const {
   return *m_guiAudioManager;
 }
 

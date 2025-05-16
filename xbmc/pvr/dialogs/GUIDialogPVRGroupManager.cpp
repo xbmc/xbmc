@@ -84,8 +84,7 @@ void CGUIDialogPVRGroupManager::SetRadio(bool bIsRadio)
   SetProperty("IsRadio", m_bIsRadio ? "true" : "");
 }
 
-bool CGUIDialogPVRGroupManager::PersistChanges()
-{
+bool CGUIDialogPVRGroupManager::PersistChanges() const {
   return CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->PersistAll();
 }
 

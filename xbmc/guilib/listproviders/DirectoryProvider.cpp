@@ -646,8 +646,7 @@ bool CDirectoryProvider::OnInfo(const std::shared_ptr<CGUIListItem>& item)
   return OnInfo(fileItem);
 }
 
-bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CFileItem>& fileItem)
-{
+bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CFileItem>& fileItem) const {
   const std::string target = GetTarget(*fileItem);
   if (!target.empty())
     fileItem->SetProperty("targetwindow", target);

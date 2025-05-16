@@ -126,7 +126,7 @@ public:
    * @brief Associate the given epg tag with this timer.
    * @param tag The epg tag to assign.
    */
-  void SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag);
+  void SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
 
   /*!
    * @brief get the epg info tag associated with this timer, if any
@@ -327,7 +327,7 @@ public:
    * @brief Update the channel associated with this timer, based on current client ID and
    * channel UID.
    */
-  void UpdateChannel();
+  void UpdateChannel() const;
 
   /*!
    * @brief The name of the channel associated with this timer, if any.
@@ -509,7 +509,7 @@ public:
    * the backend.
    * @return True on success, false otherwise.
    */
-  bool UpdateOnClient();
+  bool UpdateOnClient() const;
 
   /*!
    * @brief Persist this timer in the local database.
@@ -521,7 +521,7 @@ public:
    * @brief Delete this timer from the local database.
    * @return True on success, false otherwise.
    */
-  bool DeleteFromDatabase();
+  bool DeleteFromDatabase() const;
 
   /*!
    * @brief GUI support: Get the text for the timer GUI notification.
@@ -576,7 +576,7 @@ private:
   CPVRTimerInfoTag& operator=(const CPVRTimerInfoTag& orig) = delete;
 
   std::string GetWeekdaysString() const;
-  void UpdateEpgInfoTag();
+  void UpdateEpgInfoTag() const;
 
   static std::shared_ptr<CPVRTimerInfoTag> CreateFromDate(
       const std::shared_ptr<CPVRChannel>& channel,

@@ -181,7 +181,7 @@ public:
   void SeekFinished(int64_t offset);
 
   void SetStateSeeking(bool active);
-  bool IsSeeking();
+  bool IsSeeking() const;
 
   /*!
    * @brief Checks if a seek has been performed in the last provided seconds interval
@@ -197,17 +197,17 @@ public:
   int64_t GetSeekOffSet() const;
 
   void SetSpeed(float tempo, float speed);
-  float GetSpeed();
-  float GetTempo();
+  float GetSpeed() const;
+  float GetTempo() const;
   void SetFrameAdvance(bool fa);
-  bool IsFrameAdvance();
+  bool IsFrameAdvance() const;
   bool IsPlayerStateChanged();
   void SetGuiRender(bool gui);
-  bool GetGuiRender();
+  bool GetGuiRender() const;
   void SetVideoRender(bool video);
-  bool GetVideoRender();
+  bool GetVideoRender() const;
   void SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max);
-  void GetPlayTimes(time_t &start, int64_t &current, int64_t &min, int64_t &max);
+  void GetPlayTimes(time_t &start, int64_t &current, int64_t &min, int64_t &max) const;
 
   /*!
    * \brief Get the start time
@@ -216,21 +216,21 @@ public:
    * in units of time_t (UTC) from which time elapsed starts. Ideally this would
    * be the start of the tv show but can be any other time as well.
    */
-  time_t GetStartTime();
+  time_t GetStartTime() const;
 
   /*!
    * \brief Get the current time of playback
    *
    * This is the time elapsed, in ms, since the start time.
    */
-  int64_t GetPlayTime();
+  int64_t GetPlayTime() const;
 
   /*!
    * \brief Get the current percentage of playback if a playback buffer is available.
    *
    *  If there is no playback buffer, percentage will be 0.
    */
-  float GetPlayPercentage();
+  float GetPlayPercentage() const;
 
   /*!
    * \brief Get the minimum time
@@ -238,7 +238,7 @@ public:
    * This will be zero for a typical video. With timeshift, this is the time,
    * in ms, that the player can go back. This can be before the start time.
    */
-  int64_t GetMinTime();
+  int64_t GetMinTime() const;
 
   /*!
    * \brief Get the maximum time
@@ -248,7 +248,7 @@ public:
    * timeshift this is zero, and for live TV with timeshift this will be the
    * buffer ahead.
    */
-  int64_t GetMaxTime();
+  int64_t GetMaxTime() const;
 
 protected:
   std::atomic_bool m_AVChange = false;

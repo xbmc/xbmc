@@ -300,8 +300,7 @@ public:
   IAEStreamDeleter() : m_iae(nullptr), m_finish(true) {}
   explicit IAEStreamDeleter(IAE& iae) : m_iae(&iae), m_finish{true} {}
   void setFinish(bool finish) { m_finish = finish; }
-  void operator()(IAEStream* stream)
-  {
+  void operator()(IAEStream* stream) const {
     assert(m_iae);
     m_iae->FreeStream(stream, m_finish);
   }
@@ -315,8 +314,7 @@ private:
 public:
   IAESoundDeleter() : m_iae(nullptr) {}
   explicit IAESoundDeleter(IAE& iae) : m_iae(&iae) {}
-  void operator()(IAESound* sound)
-  {
+  void operator()(IAESound* sound) const {
     assert(m_iae);
     m_iae->FreeSound(sound);
   }

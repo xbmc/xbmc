@@ -50,8 +50,7 @@ CAgentController::~CAgentController()
   Deinitialize();
 }
 
-void CAgentController::Initialize()
-{
+void CAgentController::Initialize() const {
   if (m_joystick)
     m_joystick->Initialize();
   if (m_keyboard)
@@ -60,8 +59,7 @@ void CAgentController::Initialize()
     m_mouse->Initialize();
 }
 
-void CAgentController::Deinitialize()
-{
+void CAgentController::Deinitialize() const {
   if (m_mouse)
     m_mouse->Deinitialize();
   if (m_keyboard)
@@ -124,8 +122,7 @@ float CAgentController::GetActivation() const
   return activation;
 }
 
-void CAgentController::ClearButtonState()
-{
+void CAgentController::ClearButtonState() const {
   if (m_joystick)
     m_joystick->ClearButtonState();
   if (m_keyboard)

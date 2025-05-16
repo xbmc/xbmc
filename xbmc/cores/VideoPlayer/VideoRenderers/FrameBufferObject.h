@@ -51,7 +51,7 @@ public:
   void Cleanup();
 
   // Set texture filtering
-  void SetFiltering(GLenum target, GLenum mode);
+  void SetFiltering(GLenum target, GLenum mode) const;
 
   // Create a new texture and bind to it
   bool CreateAndBindToTexture(GLenum target, int width, int height, GLenum format, GLenum type=GL_UNSIGNED_BYTE,
@@ -61,7 +61,7 @@ public:
   GLuint Texture() const { return m_texid; }
 
   // Begin rendering to FBO
-  bool BeginRender();
+  bool BeginRender() const;
   // Finish rendering to FBO
   void EndRender() const;
 

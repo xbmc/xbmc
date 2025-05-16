@@ -29,8 +29,7 @@ COSScreenSaverInhibitor COSScreenSaverManager::CreateInhibitor()
   return inhibitor;
 }
 
-bool COSScreenSaverManager::IsInhibited()
-{
+bool COSScreenSaverManager::IsInhibited() const {
   return (m_inhibitionCount > 0);
 }
 

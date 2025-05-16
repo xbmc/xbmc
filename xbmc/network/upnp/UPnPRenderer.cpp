@@ -422,8 +422,7 @@ NPT_Result CUPnPRenderer::SetupIcons()
 /*----------------------------------------------------------------------
 |   CUPnPRenderer::GetMetadata
 +---------------------------------------------------------------------*/
-NPT_Result CUPnPRenderer::GetMetadata(NPT_String& meta)
-{
+NPT_Result CUPnPRenderer::GetMetadata(NPT_String& meta) const {
   NPT_Result res = NPT_FAILURE;
   CFileItem item(g_application.CurrentFileItem());
   NPT_String file_path, tmp;

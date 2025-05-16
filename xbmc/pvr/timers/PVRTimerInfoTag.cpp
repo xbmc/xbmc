@@ -609,8 +609,7 @@ bool CPVRTimerInfoTag::Persist()
   return false;
 }
 
-bool CPVRTimerInfoTag::DeleteFromDatabase()
-{
+bool CPVRTimerInfoTag::DeleteFromDatabase() const {
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
     return database->Delete(*this);
@@ -734,8 +733,7 @@ void CPVRTimerInfoTag::ResetChildState()
   m_iRadioChildTimersErrors = 0;
 }
 
-bool CPVRTimerInfoTag::UpdateOnClient()
-{
+bool CPVRTimerInfoTag::UpdateOnClient() const {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   return client && (client->UpdateTimer(*this) == PVR_ERROR_NO_ERROR);
 }
@@ -1285,16 +1283,14 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
   return StringUtils::Format("{}: '{}'", g_localizeStrings.Get(stringID), m_strTitle);
 }
 
-void CPVRTimerInfoTag::SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)
-{
+void CPVRTimerInfoTag::SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag) const {
   std::lock_guard lock(m_critSection);
 
   m_epgTag = tag;
   m_bProbedEpgTag = true;
 }
 
-void CPVRTimerInfoTag::UpdateEpgInfoTag()
-{
+void CPVRTimerInfoTag::UpdateEpgInfoTag() const {
   std::lock_guard lock(m_critSection);
 
   m_epgTag.reset();
@@ -1367,8 +1363,7 @@ std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::Channel() const
   return m_channel;
 }
 
-void CPVRTimerInfoTag::UpdateChannel()
-{
+void CPVRTimerInfoTag::UpdateChannel() const {
   const std::shared_ptr<CPVRChannel> channel(CServiceBroker::GetPVRManager()
                                                  .ChannelGroups()
                                                  ->Get(m_bIsRadio)

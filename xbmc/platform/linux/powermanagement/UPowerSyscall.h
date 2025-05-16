@@ -21,8 +21,8 @@ public:
   ~CUPowerSource();
 
   void    Update();
-  bool    IsRechargeable();
-  double  BatteryLevel();
+  bool    IsRechargeable() const;
+  double  BatteryLevel() const;
 
 private:
   std::string m_powerSource;

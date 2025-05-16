@@ -86,7 +86,7 @@ public:
     return Init();
   }
   bool Init();
-  void DeInit();
+  void DeInit() const;
 
   CAddonMgr();
   CAddonMgr(const CAddonMgr&) = delete;
@@ -119,11 +119,11 @@ public:
      */
   bool GetAddon(const std::string& id, AddonPtr& addon, OnlyEnabled onlyEnabled) const;
 
-  bool HasType(const std::string& id, AddonType type);
+  bool HasType(const std::string& id, AddonType type) const;
 
-  bool HasAddons(AddonType type);
+  bool HasAddons(AddonType type) const;
 
-  bool HasInstalledAddons(AddonType type);
+  bool HasInstalledAddons(AddonType type) const;
 
   /*! Returns all installed, enabled and incompatible (and disabled) add-ons. */
   bool GetAddonsForUpdate(VECADDONS& addons) const;
@@ -132,13 +132,13 @@ public:
   bool GetAddons(VECADDONS& addons) const;
 
   /*! Returns enabled add-ons with given type. */
-  bool GetAddons(VECADDONS& addons, AddonType type);
+  bool GetAddons(VECADDONS& addons, AddonType type) const;
 
   /*! Returns all installed, including disabled. */
-  bool GetInstalledAddons(VECADDONS& addons);
+  bool GetInstalledAddons(VECADDONS& addons) const;
 
   /*! Returns installed add-ons, including disabled, with given type. */
-  bool GetInstalledAddons(VECADDONS& addons, AddonType type);
+  bool GetInstalledAddons(VECADDONS& addons, AddonType type) const;
 
   bool GetDisabledAddons(VECADDONS& addons);
 
@@ -161,7 +161,7 @@ public:
      * \param addon[out] the retrieved addon pointer - only use if the function returns true.
      * \return true if an addon matching the id is available.
      */
-  bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
+  bool FindInstallableById(const std::string& addonId, AddonPtr& addon) const;
 
   void AddToUpdateableAddons(AddonPtr& pAddon);
   void RemoveFromUpdateableAddons(AddonPtr& pAddon);
@@ -174,7 +174,7 @@ public:
   std::vector<std::shared_ptr<IAddon>> GetOutdatedAddons() const;
 
   /*! Returns true if there is any addon with available updates, otherwise false */
-  bool HasAvailableUpdates();
+  bool HasAvailableUpdates() const;
 
   /*!
      * \brief Checks if the passed in addon is an orphaned dependency
@@ -292,7 +292,7 @@ public:
   /* \brief Checks whether an addon is installed.
      \param ID id of the addon
     */
-  bool IsAddonInstalled(const std::string& ID);
+  bool IsAddonInstalled(const std::string& ID) const;
 
   /* \brief Checks whether an addon is installed from a
      *        particular origin repo
@@ -313,7 +313,7 @@ public:
      */
   bool IsAddonInstalled(const std::string& ID,
                         const std::string& origin,
-                        const CAddonVersion& version);
+                        const CAddonVersion& version) const;
 
   /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
     \param addon addon to be checked
@@ -368,17 +368,17 @@ public:
   /* \brief Add a single update rule to the list for an addon
      * \sa CAddonUpdateRules::AddUpdateRuleToList()
      */
-  bool AddUpdateRuleToList(const std::string& id, AddonUpdateRule updateRule);
+  bool AddUpdateRuleToList(const std::string& id, AddonUpdateRule updateRule) const;
 
   /* \brief Remove all rules from update rules list for an addon
      * \sa CAddonUpdateRules::RemoveAllUpdateRulesFromList()
      */
-  bool RemoveAllUpdateRulesFromList(const std::string& id);
+  bool RemoveAllUpdateRulesFromList(const std::string& id) const;
 
   /* \brief Remove a specific rule from update rules list for an addon
      * \sa CAddonUpdateRules::RemoveUpdateRuleFromList()
      */
-  bool RemoveUpdateRuleFromList(const std::string& id, AddonUpdateRule updateRule);
+  bool RemoveUpdateRuleFromList(const std::string& id, AddonUpdateRule updateRule) const;
 
   /* \brief Check if an addon version is auto-updateable
      * \param id addon id to be checked
@@ -520,7 +520,7 @@ public:
      *
      * @warning the folder and its contents are deleted when Kodi is closed
      */
-  const std::string& GetTempAddonBasePath() { return m_tempAddonBasePath; }
+  const std::string& GetTempAddonBasePath() const { return m_tempAddonBasePath; }
 
   AddonOriginType GetAddonOriginType(const AddonPtr& addon) const;
 
@@ -560,7 +560,7 @@ public:
      * Currently listed call sources:
      * - @ref CAddonInstallJob::DoWork
      */
-  bool SetAddonOrigin(const std::string& addonId, const std::string& repoAddonId, bool isUpdate);
+  bool SetAddonOrigin(const std::string& addonId, const std::string& repoAddonId, bool isUpdate) const;
 
   /*!
      * @brief Parse a repository XML file for addons and load their descriptors.

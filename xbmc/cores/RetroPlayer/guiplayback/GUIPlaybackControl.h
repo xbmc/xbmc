@@ -37,7 +37,7 @@ private:
   };
 
   // Helper functions
-  GuiState NextState(bool bFullscreen, bool bInMenu, bool bInBackground);
+  GuiState NextState(bool bFullscreen, bool bInMenu, bool bInBackground) const;
   static double GetTargetSpeed(GuiState state);
   static bool AcceptsInput(GuiState state);
 

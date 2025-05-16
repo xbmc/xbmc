@@ -118,8 +118,7 @@ void CDatabase::ExistsSubQuery::AppendWhere(const std::string& strWhere,
   }
 }
 
-bool CDatabase::ExistsSubQuery::BuildSQL(std::string& strSQL)
-{
+bool CDatabase::ExistsSubQuery::BuildSQL(std::string& strSQL) const {
   if (tablename.empty())
     return false;
   strSQL = "EXISTS (SELECT 1 FROM " + tablename;
@@ -171,8 +170,7 @@ void CDatabase::DatasetLayout::AdjustRecordNumbers(int offset)
   }
 }
 
-bool CDatabase::DatasetLayout::GetFetch(int fieldno)
-{
+bool CDatabase::DatasetLayout::GetFetch(int fieldno) const {
   if (fieldno >= 0 && fieldno < static_cast<int>(m_fields.size()))
     return m_fields[fieldno].fetch;
   return false;
@@ -184,22 +182,19 @@ void CDatabase::DatasetLayout::SetFetch(int fieldno, bool bFetch /*= true*/)
     m_fields[fieldno].fetch = bFetch;
 }
 
-bool CDatabase::DatasetLayout::GetOutput(int fieldno)
-{
+bool CDatabase::DatasetLayout::GetOutput(int fieldno) const {
   if (fieldno >= 0 && fieldno < static_cast<int>(m_fields.size()))
     return m_fields[fieldno].output;
   return false;
 }
 
-int CDatabase::DatasetLayout::GetRecNo(int fieldno)
-{
+int CDatabase::DatasetLayout::GetRecNo(int fieldno) const {
   if (fieldno >= 0 && fieldno < static_cast<int>(m_fields.size()))
     return m_fields[fieldno].recno;
   return -1;
 }
 
-const std::string CDatabase::DatasetLayout::GetFields()
-{
+const std::string CDatabase::DatasetLayout::GetFields() const {
   std::string strSQL;
   for (const auto& field : m_fields)
   {
@@ -215,8 +210,7 @@ const std::string CDatabase::DatasetLayout::GetFields()
   return strSQL;
 }
 
-bool CDatabase::DatasetLayout::HasFilterFields()
-{
+bool CDatabase::DatasetLayout::HasFilterFields() const {
   for (const auto& field : m_fields)
   {
     if (field.fetch)
@@ -469,8 +463,7 @@ bool CDatabase::CommitInsertQueries()
   return bReturn;
 }
 
-size_t CDatabase::GetInsertQueriesCount()
-{
+size_t CDatabase::GetInsertQueriesCount() const {
   return m_pDS2->insert_sql_count();
 }
 
@@ -507,8 +500,7 @@ bool CDatabase::CommitDeleteQueries()
   return bReturn;
 }
 
-size_t CDatabase::GetDeleteQueriesCount()
-{
+size_t CDatabase::GetDeleteQueriesCount() const {
   return m_pDS->delete_sql_count();
 }
 
@@ -570,13 +562,11 @@ void CDatabase::InitSettings(DatabaseSettings& dbSettings)
     dbSettings.name = GetBaseDBName();
 }
 
-void CDatabase::CopyDB(const std::string& latestDb)
-{
+void CDatabase::CopyDB(const std::string& latestDb) const {
   m_pDB->copy(latestDb.c_str());
 }
 
-void CDatabase::DropAnalytics()
-{
+void CDatabase::DropAnalytics() const {
   m_pDB->drop_analytics();
 }
 
@@ -665,16 +655,14 @@ bool CDatabase::Connect(const std::string& dbName, const DatabaseSettings& dbSet
   return true;
 }
 
-int CDatabase::GetDBVersion()
-{
+int CDatabase::GetDBVersion() const {
   m_pDS->query("SELECT idVersion FROM version\n");
   if (m_pDS->num_rows() > 0)
     return m_pDS->fv("idVersion").get_asInt();
   return 0;
 }
 
-bool CDatabase::IsOpen()
-{
+bool CDatabase::IsOpen() const {
   return m_openCount > 0;
 }
 
@@ -702,8 +690,7 @@ void CDatabase::Close()
   m_pDS2.reset();
 }
 
-bool CDatabase::Compress(bool bForce /* =true */)
-{
+bool CDatabase::Compress(bool bForce /* =true */) const {
   if (!m_sqlite)
     return true;
 
@@ -740,13 +727,11 @@ bool CDatabase::Compress(bool bForce /* =true */)
   return true;
 }
 
-void CDatabase::Interrupt()
-{
+void CDatabase::Interrupt() const {
   m_pDS->interrupt();
 }
 
-void CDatabase::BeginTransaction()
-{
+void CDatabase::BeginTransaction() const {
   try
   {
     if (nullptr != m_pDB)
@@ -773,8 +758,7 @@ bool CDatabase::CommitTransaction()
   return true;
 }
 
-void CDatabase::RollbackTransaction()
-{
+void CDatabase::RollbackTransaction() const {
   try
   {
     if (nullptr != m_pDB)
@@ -810,8 +794,7 @@ bool CDatabase::CreateDatabase()
   return CommitTransaction();
 }
 
-void CDatabase::UpdateVersionNumber()
-{
+void CDatabase::UpdateVersionNumber() const {
   std::string strSQL = PrepareSQL("UPDATE version SET idVersion=%i\n", GetSchemaVersion());
   m_pDS->exec(strSQL);
 }

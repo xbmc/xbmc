@@ -123,7 +123,7 @@ public:
               const unsigned char* pixels,
               bool loadToGPU);
   void Allocate(unsigned int width, unsigned int height, XB_FMT format);
-  void ClampToEdge();
+  void ClampToEdge() const;
 
   static unsigned int PadPow2(unsigned int x);
   static bool SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset=0);

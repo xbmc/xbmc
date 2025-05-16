@@ -54,7 +54,7 @@ namespace PVR
     /*!
      * @brief Unload and destruct all channel groups and all channels in them.
      */
-    void Unload();
+    void Unload() const;
 
     /*!
      * @brief Get the TV channel groups.
@@ -149,7 +149,7 @@ namespace PVR
      * @brief Erase stale texture db entries and image files.
      * @return number of cleaned up images.
      */
-    int CleanupCachedImages();
+    int CleanupCachedImages() const;
 
   private:
     CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&) = delete;
@@ -160,7 +160,7 @@ namespace PVR
      * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
      * @return True on success, false otherwise.
      */
-    bool LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients);
+    bool LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
 
     CPVRChannelGroups* m_groupsRadio; /*!< all radio channel groups */
     CPVRChannelGroups* m_groupsTV; /*!< all TV channel groups */

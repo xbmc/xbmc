@@ -90,7 +90,7 @@ public:
   ~CDVDStreamInfo();
 
   void Clear(); // clears current information
-  bool Equal(const CDVDStreamInfo& right, int compare);
+  bool Equal(const CDVDStreamInfo& right, int compare) const;
   bool Equal(const CDemuxStream &right, bool withextradata);
 
   void Assign(const CDVDStreamInfo &right, bool withextradata);
@@ -162,8 +162,8 @@ public:
   std::shared_ptr<DemuxCryptoSession> cryptoSession;
   std::shared_ptr<ADDON::IAddonProvider> externalInterfaces;
 
-  bool operator==(const CDVDStreamInfo& right) { return Equal(right, COMPARE_ALL); }
-  bool operator!=(const CDVDStreamInfo& right) { return !Equal(right, COMPARE_ALL); }
+  bool operator==(const CDVDStreamInfo& right) const { return Equal(right, COMPARE_ALL); }
+  bool operator!=(const CDVDStreamInfo& right) const { return !Equal(right, COMPARE_ALL); }
 
   CDVDStreamInfo& operator=(const CDVDStreamInfo& right)
   {
@@ -173,12 +173,10 @@ public:
     return *this;
   }
 
-  bool operator==(const CDemuxStream& right)
-  {
+  bool operator==(const CDemuxStream& right) const {
     return Equal(CDVDStreamInfo(right, true), COMPARE_ALL);
   }
-  bool operator!=(const CDemuxStream& right)
-  {
+  bool operator!=(const CDemuxStream& right) const {
     return !Equal(CDVDStreamInfo(right, true), COMPARE_ALL);
   }
 

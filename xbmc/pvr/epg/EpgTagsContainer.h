@@ -113,7 +113,7 @@ public:
    * @brief Update the currently active event.
    * @return True if the active event was updated, false otherwise.
    */
-  bool UpdateActiveTag();
+  bool UpdateActiveTag() const;
 
   /*!
    * @brief Get the event that is occurring now

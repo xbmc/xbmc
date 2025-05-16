@@ -176,7 +176,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       info(...);
 #else
-      bool info(const ListItem* item);
+      bool info(const ListItem* item) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -210,7 +210,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       select(...);
 #else
-      int select(const String& heading, const std::vector<Alternative<String, const ListItem* > > & list, int autoclose=0, int preselect=-1, bool useDetails=false);
+      int select(const String& heading, const std::vector<Alternative<String, const ListItem* > > & list, int autoclose=0, int preselect=-1, bool useDetails=false) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -237,7 +237,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       contextmenu(...);
 #else
-      int contextmenu(const std::vector<String>& list);
+      int contextmenu(const std::vector<String>& list) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -273,7 +273,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       multiselect(...);
 #else
-      std::unique_ptr<std::vector<int> > multiselect(const String& heading, const std::vector<Alternative<String, const ListItem* > > & options, int autoclose=0, const std::vector<int>& preselect = std::vector<int>(), bool useDetails=false);
+      std::unique_ptr<std::vector<int> > multiselect(const String& heading, const std::vector<Alternative<String, const ListItem* > > & options, int autoclose=0, const std::vector<int>& preselect = std::vector<int>(), bool useDetails=false) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -305,7 +305,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       ok(...);
 #else
-      bool ok(const String& heading, const String& message);
+      bool ok(const String& heading, const String& message) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -336,7 +336,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       textviewer(...);
 #else
-      void textviewer(const String& heading, const String& text, bool usemono = false);
+      void textviewer(const String& heading, const String& text, bool usemono = false) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -460,7 +460,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       String browseSingle(int type, const String& heading, const String& shares,
                           const String& mask = emptyString, bool useThumbs = false,
                           bool treatAsFolder = false,
-                          const String& defaultt = emptyString );
+                          const String& defaultt = emptyString ) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -516,7 +516,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       std::vector<String> browseMultiple(int type, const String& heading, const String& shares,
                                          const String& mask = emptyString, bool useThumbs = false,
                                          bool treatAsFolder = false,
-                                         const String& defaultt = emptyString );
+                                         const String& defaultt = emptyString ) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -557,7 +557,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       numeric(...);
 #else
-      String numeric(int type, const String& heading, const String& defaultt = emptyString, bool bHiddenInput = false);
+      String numeric(int type, const String& heading, const String& defaultt = emptyString, bool bHiddenInput = false) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -591,7 +591,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       notification(...);
 #else
-      void notification(const String& heading, const String& message, const String& icon = emptyString, int time = 0, bool sound = true);
+      void notification(const String& heading, const String& message, const String& icon = emptyString, int time = 0, bool sound = true) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -639,7 +639,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
                    const String& defaultt = emptyString,
                    int type = INPUT_ALPHANUM,
                    int option = 0,
-                   int autoclose = 0);
+                   int autoclose = 0) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -693,7 +693,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
           const String& heading,
           const String& selectedcolor = emptyString,
           const String& colorfile = emptyString,
-          const std::vector<const ListItem*>& colorlist = std::vector<const ListItem*>());
+          const std::vector<const ListItem*>& colorlist = std::vector<const ListItem*>()) const;
 #endif
 
     private:
@@ -705,7 +705,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
                               const String& yeslabel,
                               const String& customlabel,
                               int autoclose,
-                              int defaultbutton);
+                              int defaultbutton) const;
 #endif
     };
     //@}
@@ -785,7 +785,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       update(...);
 #else
-      void update(int percent, const String& message = emptyString);
+      void update(int percent, const String& message = emptyString) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -829,7 +829,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       iscanceled(...);
 #else
-      bool iscanceled();
+      bool iscanceled() const;
 #endif
     };
 
@@ -908,7 +908,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       update(...);
 #else
-      void update(int percent = 0, const String& heading = emptyString, const String& message = emptyString);
+      void update(int percent = 0, const String& heading = emptyString, const String& message = emptyString) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -952,7 +952,7 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
       ///
       isFinished(...);
 #else
-      bool isFinished();
+      bool isFinished() const;
 #endif
     };
     //@}

@@ -148,7 +148,7 @@ namespace OVERLAY {
       std::shared_ptr<CDVDOverlay> overlay_dvd;
     };
 
-    void Render(COverlay* o);
+    void Render(COverlay* o) const;
     std::shared_ptr<COverlay> Convert(CDVDOverlay& o, double pts);
     /*!
     * \brief Convert the overlay to a overlay renderer

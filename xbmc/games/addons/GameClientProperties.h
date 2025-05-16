@@ -74,7 +74,7 @@ private:
   unsigned int GetExtensionCount(void) const;
 
   // Helper functions
-  bool GetProxyAddons(ADDON::VECADDONS& addons);
+  bool GetProxyAddons(ADDON::VECADDONS& addons) const;
   void AddProxyDll(const GameClientPtr& gameClient);
   bool HasProxyDll(const std::string& strLibPath) const;
 

@@ -267,8 +267,7 @@ void CDVDMessageQueue::UpdateTimeBack()
   }
 }
 
-unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
-{
+unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type) const {
   std::lock_guard lock(m_section);
 
   if (!m_bInitialized)

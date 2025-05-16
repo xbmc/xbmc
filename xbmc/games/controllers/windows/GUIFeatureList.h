@@ -42,7 +42,7 @@ public:
   void OnSelect(unsigned int buttonIndex) override;
 
 private:
-  IFeatureButton* GetButtonControl(unsigned int buttonIndex);
+  IFeatureButton* GetButtonControl(unsigned int buttonIndex) const;
 
   void CleanupButtons(void);
 
@@ -59,9 +59,9 @@ private:
   };
   std::vector<FeatureGroup> GetFeatureGroups(const std::vector<CPhysicalFeature>& features) const;
   std::vector<CGUIButtonControl*> GetButtons(const std::vector<CPhysicalFeature>& features,
-                                             unsigned int startIndex);
+                                             unsigned int startIndex) const;
   CGUIButtonControl* GetSelectKeyButton(const std::vector<CPhysicalFeature>& features,
-                                        unsigned int buttonIndex);
+                                        unsigned int buttonIndex) const;
 
   // GUI stuff
   CGUIWindow* const m_window;

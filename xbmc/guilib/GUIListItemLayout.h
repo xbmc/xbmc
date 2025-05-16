@@ -48,7 +48,7 @@ public:
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
-  bool CheckCondition();
+  bool CheckCondition() const;
 protected:
   void LoadControl(TiXmlElement *child, CGUIControlGroup *group);
 

@@ -74,8 +74,7 @@ void CSeatInputProcessing::OnKeyboardEvent(XBMC_Event& event)
   m_handler.OnEvent(InputType::KEYBOARD, event);
 }
 
-void CSeatInputProcessing::SetCoordinateScale(std::int32_t scale)
-{
+void CSeatInputProcessing::SetCoordinateScale(std::int32_t scale) const {
   for (auto& seatPair : m_seats)
   {
     seatPair.second.touchProcessor->SetCoordinateScale(scale);

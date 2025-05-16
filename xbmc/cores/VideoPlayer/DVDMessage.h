@@ -79,13 +79,11 @@ public:
   /**
    * checks for message type
    */
-  inline bool IsType(Message msg)
-  {
+  inline bool IsType(Message msg) const {
     return (m_message == msg);
   }
 
-  inline Message GetMessageType()
-  {
+  inline Message GetMessageType() const {
     return m_message;
   }
 
@@ -113,7 +111,7 @@ public:
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
-  bool Wait(std::chrono::milliseconds ms, unsigned int source);
+  bool Wait(std::chrono::milliseconds ms, unsigned int source) const;
   void Wait(std::atomic<bool>& abort, unsigned int source);
 
 private:
@@ -151,7 +149,7 @@ public:
   explicit CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
   ~CDVDMsgPlayerSetAudioStream() override = default;
 
-  int GetStreamId() { return m_streamId; }
+  int GetStreamId() const { return m_streamId; }
 private:
   int m_streamId;
 };
@@ -173,7 +171,7 @@ public:
   explicit CDVDMsgPlayerSetSubtitleStream(int streamId) : CDVDMsg(PLAYER_SET_SUBTITLESTREAM) { m_streamId = streamId; }
   ~CDVDMsgPlayerSetSubtitleStream() override = default;
 
-  int GetStreamId() { return m_streamId; }
+  int GetStreamId() const { return m_streamId; }
 private:
   int m_streamId;
 };
@@ -208,13 +206,13 @@ public:
   {}
   ~CDVDMsgPlayerSeek() override = default;
 
-  double GetTime() { return m_mode.time; }
-  bool GetRelative() { return m_mode.relative; }
-  bool GetBackward() { return m_mode.backward; }
-  bool GetAccurate() { return m_mode.accurate; }
-  bool GetRestore() { return m_mode.restore; }
-  bool GetTrickPlay() { return m_mode.trickplay; }
-  bool GetSync() { return m_mode.sync; }
+  double GetTime() const { return m_mode.time; }
+  bool GetRelative() const { return m_mode.relative; }
+  bool GetBackward() const { return m_mode.backward; }
+  bool GetAccurate() const { return m_mode.accurate; }
+  bool GetRestore() const { return m_mode.restore; }
+  bool GetTrickPlay() const { return m_mode.trickplay; }
+  bool GetSync() const { return m_mode.sync; }
 
 private:
   CMode m_mode;
@@ -294,9 +292,9 @@ class CDVDMsgDemuxerPacket : public CDVDMsg
 public:
   CDVDMsgDemuxerPacket(DemuxPacket* packet, bool drop = false);
   ~CDVDMsgDemuxerPacket() override;
-  DemuxPacket* GetPacket() { return m_packet; }
-  unsigned int GetPacketSize();
-  bool GetPacketDrop() { return m_drop; }
+  DemuxPacket* GetPacket() const { return m_packet; }
+  unsigned int GetPacketSize() const;
+  bool GetPacketDrop() const { return m_drop; }
   DemuxPacket* m_packet;
   bool m_drop;
 };

@@ -70,8 +70,7 @@ bool CSettingsBase::IsInitialized() const
   return m_initialized && m_settingsManager->IsInitialized();
 }
 
-bool CSettingsBase::LoadValuesFromXml(const CXBMCTinyXML& xml, bool& updated)
-{
+bool CSettingsBase::LoadValuesFromXml(const CXBMCTinyXML& xml, bool& updated) const {
   const TiXmlElement* xmlRoot = xml.RootElement();
   if (xmlRoot == nullptr || xmlRoot->ValueStr() != SETTINGS_XML_ROOT)
     return false;
@@ -79,16 +78,14 @@ bool CSettingsBase::LoadValuesFromXml(const CXBMCTinyXML& xml, bool& updated)
   return m_settingsManager->Load(xmlRoot, updated);
 }
 
-bool CSettingsBase::LoadValuesFromXml(const TiXmlElement* root, bool& updated)
-{
+bool CSettingsBase::LoadValuesFromXml(const TiXmlElement* root, bool& updated) const {
   if (root == nullptr)
     return false;
 
   return m_settingsManager->Load(root, updated);
 }
 
-bool CSettingsBase::LoadHiddenValuesFromXml(const TiXmlElement* root)
-{
+bool CSettingsBase::LoadHiddenValuesFromXml(const TiXmlElement* root) const {
   if (root == nullptr)
     return false;
 
@@ -161,13 +158,11 @@ void CSettingsBase::Uninitialize()
   m_initialized = false;
 }
 
-void CSettingsBase::RegisterCallback(ISettingCallback* callback, const std::set<std::string>& settingList)
-{
+void CSettingsBase::RegisterCallback(ISettingCallback* callback, const std::set<std::string>& settingList) const {
   m_settingsManager->RegisterCallback(callback, settingList);
 }
 
-void CSettingsBase::UnregisterCallback(ISettingCallback* callback)
-{
+void CSettingsBase::UnregisterCallback(ISettingCallback* callback) const {
   m_settingsManager->UnregisterCallback(callback);
 }
 
@@ -197,13 +192,11 @@ bool CSettingsBase::GetBool(const std::string& id) const
   return m_settingsManager->GetBool(id);
 }
 
-bool CSettingsBase::SetBool(const std::string& id, bool value)
-{
+bool CSettingsBase::SetBool(const std::string& id, bool value) const {
   return m_settingsManager->SetBool(id, value);
 }
 
-bool CSettingsBase::ToggleBool(const std::string& id)
-{
+bool CSettingsBase::ToggleBool(const std::string& id) const {
   return m_settingsManager->ToggleBool(id);
 }
 
@@ -212,8 +205,7 @@ int CSettingsBase::GetInt(const std::string& id) const
   return m_settingsManager->GetInt(id);
 }
 
-bool CSettingsBase::SetInt(const std::string& id, int value)
-{
+bool CSettingsBase::SetInt(const std::string& id, int value) const {
   return m_settingsManager->SetInt(id, value);
 }
 
@@ -222,8 +214,7 @@ double CSettingsBase::GetNumber(const std::string& id) const
   return m_settingsManager->GetNumber(id);
 }
 
-bool CSettingsBase::SetNumber(const std::string& id, double value)
-{
+bool CSettingsBase::SetNumber(const std::string& id, double value) const {
   return m_settingsManager->SetNumber(id, value);
 }
 
@@ -232,8 +223,7 @@ std::string CSettingsBase::GetString(const std::string& id) const
   return m_settingsManager->GetString(id);
 }
 
-bool CSettingsBase::SetString(const std::string& id, const std::string& value)
-{
+bool CSettingsBase::SetString(const std::string& id, const std::string& value) const {
   return m_settingsManager->SetString(id, value);
 }
 
@@ -246,8 +236,7 @@ std::vector<CVariant> CSettingsBase::GetList(const std::string& id) const
   return CSettingUtils::GetList(std::static_pointer_cast<CSettingList>(setting));
 }
 
-bool CSettingsBase::SetList(const std::string& id, const std::vector<CVariant>& value)
-{
+bool CSettingsBase::SetList(const std::string& id, const std::vector<CVariant>& value) const {
   std::shared_ptr<CSetting> setting = m_settingsManager->GetSetting(id);
   if (setting == nullptr || setting->GetType() != SettingType::List)
     return false;
@@ -255,18 +244,15 @@ bool CSettingsBase::SetList(const std::string& id, const std::vector<CVariant>& 
   return CSettingUtils::SetList(std::static_pointer_cast<CSettingList>(setting), value);
 }
 
-bool CSettingsBase::SetDefault(const std::string &id)
-{
+bool CSettingsBase::SetDefault(const std::string &id) const {
   return m_settingsManager->SetDefault(id);
 }
 
-void CSettingsBase::SetDefaults()
-{
+void CSettingsBase::SetDefaults() const {
   m_settingsManager->SetDefaults();
 }
 
-bool CSettingsBase::InitializeDefinitionsFromXml(const CXBMCTinyXML& xml)
-{
+bool CSettingsBase::InitializeDefinitionsFromXml(const CXBMCTinyXML& xml) const {
   const TiXmlElement* root = xml.RootElement();
   if (root == nullptr)
     return false;

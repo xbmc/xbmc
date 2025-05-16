@@ -38,8 +38,7 @@ CGUIRangesControl::CGUIRange::CGUIRange(const CGUIRange& range)
 {
 }
 
-void CGUIRangesControl::CGUIRange::AllocResources()
-{
+void CGUIRangesControl::CGUIRange::AllocResources() const {
   m_guiFillTexture->AllocResources();
   m_guiUpperTexture->AllocResources();
   m_guiLowerTexture->AllocResources();
@@ -49,29 +48,25 @@ void CGUIRangesControl::CGUIRange::AllocResources()
   m_guiLowerTexture->SetHeight(20);
 }
 
-void CGUIRangesControl::CGUIRange::FreeResources(bool bImmediately)
-{
+void CGUIRangesControl::CGUIRange::FreeResources(bool bImmediately) const {
   m_guiFillTexture->FreeResources(bImmediately);
   m_guiUpperTexture->FreeResources(bImmediately);
   m_guiLowerTexture->FreeResources(bImmediately);
 }
 
-void CGUIRangesControl::CGUIRange::DynamicResourceAlloc(bool bOnOff)
-{
+void CGUIRangesControl::CGUIRange::DynamicResourceAlloc(bool bOnOff) const {
   m_guiFillTexture->DynamicResourceAlloc(bOnOff);
   m_guiUpperTexture->DynamicResourceAlloc(bOnOff);
   m_guiLowerTexture->DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIRangesControl::CGUIRange::SetInvalid()
-{
+void CGUIRangesControl::CGUIRange::SetInvalid() const {
   m_guiFillTexture->SetInvalid();
   m_guiUpperTexture->SetInvalid();
   m_guiLowerTexture->SetInvalid();
 }
 
-bool CGUIRangesControl::CGUIRange::SetDiffuseColor(const KODI::GUILIB::GUIINFO::CGUIInfoColor& color)
-{
+bool CGUIRangesControl::CGUIRange::SetDiffuseColor(const KODI::GUILIB::GUIINFO::CGUIInfoColor& color) const {
   bool bChanged = false;
   bChanged |= m_guiFillTexture->SetDiffuseColor(color);
   bChanged |= m_guiUpperTexture->SetDiffuseColor(color);
@@ -79,8 +74,7 @@ bool CGUIRangesControl::CGUIRange::SetDiffuseColor(const KODI::GUILIB::GUIINFO::
   return bChanged;
 }
 
-bool CGUIRangesControl::CGUIRange::Process(unsigned int currentTime)
-{
+bool CGUIRangesControl::CGUIRange::Process(unsigned int currentTime) const {
   bool bChanged = false;
   bChanged |= m_guiFillTexture->Process(currentTime);
   bChanged |= m_guiUpperTexture->Process(currentTime);
@@ -88,8 +82,7 @@ bool CGUIRangesControl::CGUIRange::Process(unsigned int currentTime)
   return bChanged;
 }
 
-void CGUIRangesControl::CGUIRange::Render()
-{
+void CGUIRangesControl::CGUIRange::Render() const {
   if (m_guiLowerTexture->GetFileName().empty() && m_guiUpperTexture->GetFileName().empty())
   {
     if (m_guiFillTexture->GetWidth() > 0)
@@ -108,8 +101,7 @@ void CGUIRangesControl::CGUIRange::Render()
 
 bool CGUIRangesControl::CGUIRange::UpdateLayout(float fBackgroundTextureHeight,
                                                 float fPosX, float fPosY, float fWidth,
-                                                float fScaleX, float fScaleY)
-{
+                                                float fScaleX, float fScaleY) const {
   bool bChanged = false;
 
   if (m_guiLowerTexture->GetFileName().empty() && m_guiUpperTexture->GetFileName().empty())

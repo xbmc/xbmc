@@ -36,7 +36,7 @@ class CRenderCapture
     void SetState(ECAPTURESTATE state) { m_state = state; }
 
     /* \brief Called by the rendermanager to get the state, should not be called by anything else */
-    ECAPTURESTATE GetState() { return m_state;}
+    ECAPTURESTATE GetState() const { return m_state;}
 
     /* \brief Called by the rendermanager to set the userstate, should not be called by anything else */
     void SetUserState(ECAPTURESTATE state) { m_userState = state; }
@@ -46,7 +46,7 @@ class CRenderCapture
        CAPTURESTATE_DONE when the capture has succeeded,
        CAPTURESTATE_FAILED when the capture has failed
     */
-    ECAPTURESTATE GetUserState() { return m_userState; }
+    ECAPTURESTATE GetUserState() const { return m_userState; }
 
     /* \brief The internal event will be set when the rendermanager has captured and read a videoframe, or when it has failed
        \return A reference to m_event
@@ -57,7 +57,7 @@ class CRenderCapture
     void SetFlags(int flags) { m_flags = flags; }
 
     /* \brief Called by the rendermanager to get the flags, should not be called by anything else */
-    int GetFlags() { return m_flags; }
+    int GetFlags() const { return m_flags; }
 
     /* \brief Called by the rendermanager to set the width, should not be called by anything else */
     void  SetWidth(unsigned int width) { m_width = width; }
@@ -66,10 +66,10 @@ class CRenderCapture
     void SetHeight(unsigned int height) { m_height = height; }
 
     /* \brief Called by the code requesting the capture to get the width */
-    unsigned int GetWidth() { return m_width; }
+    unsigned int GetWidth() const { return m_width; }
 
     /* \brief Called by the code requesting the capture to get the height */
-    unsigned int GetHeight() { return m_height; }
+    unsigned int GetHeight() const { return m_height; }
 
     /* \brief Called by the code requesting the capture to get the buffer where the videoframe is stored,
        the format is BGRA, this buffer is only valid when GetUserState returns CAPTURESTATE_DONE.
@@ -80,10 +80,10 @@ class CRenderCapture
     /* \brief Called by the rendermanager to know if the capture is readout async (using dma for example),
        should not be called by anything else.
     */
-    bool  IsAsync() { return m_asyncSupported; }
+    bool  IsAsync() const { return m_asyncSupported; }
 
   protected:
-    bool UseOcclusionQuery();
+    bool UseOcclusionQuery() const;
 
     ECAPTURESTATE m_state{CAPTURESTATE_FAILED}; //state for the rendermanager
     ECAPTURESTATE m_userState{CAPTURESTATE_FAILED}; //state for the thread that wants the capture

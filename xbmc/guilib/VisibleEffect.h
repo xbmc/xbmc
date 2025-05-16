@@ -178,12 +178,12 @@ public:
   inline ANIMATION_PROCESS GetProcess() const { return m_currentProcess; }
   inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; }
 
-  bool CheckCondition();
+  bool CheckCondition() const;
   void UpdateCondition(const CGUIListItem *item = NULL);
   void SetInitialCondition();
 
 private:
-  void Calculate(const CPoint &point);
+  void Calculate(const CPoint &point) const;
   void AddEffect(const std::string &type, const TiXmlElement *node, const CRect &rect);
 
   enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };
@@ -256,7 +256,7 @@ public:
   unsigned int GetDuration() const { return m_duration; }
 
 private:
-  float Tween(float progress);
+  float Tween(float progress) const;
 
   float        m_scrollValue;
   float        m_delta;                   //!< Brief distance that we have to travel during scroll

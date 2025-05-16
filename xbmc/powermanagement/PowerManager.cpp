@@ -53,8 +53,7 @@ void CPowerManager::Initialize()
   m_instance.reset(IPowerSyscall::CreateInstance());
 }
 
-void CPowerManager::SetDefaults()
-{
+void CPowerManager::SetDefaults() const {
   auto setting = m_settings->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
   if (!setting)
   {
@@ -149,24 +148,19 @@ bool CPowerManager::Reboot()
   return success;
 }
 
-bool CPowerManager::CanPowerdown()
-{
+bool CPowerManager::CanPowerdown() const {
   return m_instance ? m_instance->CanPowerdown() : false;
 }
-bool CPowerManager::CanSuspend()
-{
+bool CPowerManager::CanSuspend() const {
   return m_instance ? m_instance->CanSuspend() : false;
 }
-bool CPowerManager::CanHibernate()
-{
+bool CPowerManager::CanHibernate() const {
   return m_instance ? m_instance->CanHibernate() : false;
 }
-bool CPowerManager::CanReboot()
-{
+bool CPowerManager::CanReboot() const {
   return m_instance ? m_instance->CanReboot() : false;
 }
-int CPowerManager::BatteryLevel()
-{
+int CPowerManager::BatteryLevel() const {
   return m_instance ? m_instance->BatteryLevel() : 0;
 }
 void CPowerManager::ProcessEvents()
@@ -283,8 +277,7 @@ void CPowerManager::StorePlayerState()
   }
 }
 
-void CPowerManager::RestorePlayerState()
-{
+void CPowerManager::RestorePlayerState() const {
   if (!m_lastPlayedFileItem)
     return;
 

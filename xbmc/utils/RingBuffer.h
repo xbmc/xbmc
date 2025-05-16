@@ -31,7 +31,7 @@ public:
   bool SkipBytes(int skipSize);
   bool Append(CRingBuffer &rBuf);
   bool Copy(CRingBuffer &rBuf);
-  char *getBuffer();
+  char *getBuffer() const;
   unsigned int getSize();
   unsigned int getReadPtr() const;
   unsigned int getWritePtr();

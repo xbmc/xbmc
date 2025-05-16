@@ -147,7 +147,7 @@ protected:
   void AddReference();
   void RemoveReference();
 
-  std::vector<Glyph> GetHarfBuzzShapedGlyphs(const vecText& text);
+  std::vector<Glyph> GetHarfBuzzShapedGlyphs(const vecText& text) const;
 
   float GetTextWidthInternal(const vecText& text);
   float GetTextWidthInternal(const vecText& text, const std::vector<Glyph>& glyph);
@@ -189,7 +189,7 @@ protected:
   virtual void DeleteHardwareTexture() = 0;
 
   // modifying glyphs
-  void SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength);
+  void SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength) const;
   static void ObliqueGlyph(FT_GlyphSlot slot);
 
   std::unique_ptr<CTexture>

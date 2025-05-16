@@ -105,7 +105,7 @@ protected:
                                 int& priority);
 
   EOutputState OutputPicture(const VideoPicture& src);
-  void ProcessOverlays(const VideoPicture& source, double pts);
+  void ProcessOverlays(const VideoPicture& source, double pts) const;
   void OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVideoCodec> codec);
 
   void ResetFrameRateCalc();

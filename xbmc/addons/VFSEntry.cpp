@@ -256,8 +256,7 @@ CVFSEntry::~CVFSEntry()
   delete m_ifc.vfs;
 }
 
-void* CVFSEntry::Open(const CURL& url)
-{
+void* CVFSEntry::Open(const CURL& url) const {
   if (!m_ifc.vfs->toAddon->open)
     return nullptr;
 
@@ -265,8 +264,7 @@ void* CVFSEntry::Open(const CURL& url)
   return m_ifc.vfs->toAddon->open(m_ifc.vfs, &url2.url);
 }
 
-void* CVFSEntry::OpenForWrite(const CURL& url, bool bOverWrite)
-{
+void* CVFSEntry::OpenForWrite(const CURL& url, bool bOverWrite) const {
   if (!m_ifc.vfs->toAddon->open_for_write)
     return nullptr;
 
@@ -274,8 +272,7 @@ void* CVFSEntry::OpenForWrite(const CURL& url, bool bOverWrite)
   return m_ifc.vfs->toAddon->open_for_write(m_ifc.vfs, &url2.url, bOverWrite);
 }
 
-bool CVFSEntry::Exists(const CURL& url)
-{
+bool CVFSEntry::Exists(const CURL& url) const {
   if (!m_ifc.vfs->toAddon->exists)
     return false;
 
@@ -283,8 +280,7 @@ bool CVFSEntry::Exists(const CURL& url)
   return m_ifc.vfs->toAddon->exists(m_ifc.vfs, &url2.url);
 }
 
-int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer)
-{
+int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer) const {
   int ret = -1;
   if (!m_ifc.vfs->toAddon->stat)
     return ret;
@@ -319,70 +315,61 @@ int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer)
   return ret;
 }
 
-ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize)
-{
+ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize) const {
   if (!m_ifc.vfs->toAddon->read)
     return 0;
 
   return m_ifc.vfs->toAddon->read(m_ifc.vfs, ctx, static_cast<uint8_t*>(lpBuf), uiBufSize);
 }
 
-ssize_t CVFSEntry::Write(void* ctx, const void* lpBuf, size_t uiBufSize)
-{
+ssize_t CVFSEntry::Write(void* ctx, const void* lpBuf, size_t uiBufSize) const {
   if (!m_ifc.vfs->toAddon->write)
     return 0;
 
   return m_ifc.vfs->toAddon->write(m_ifc.vfs, ctx, static_cast<const uint8_t*>(lpBuf), uiBufSize);
 }
 
-int64_t CVFSEntry::Seek(void* ctx, int64_t position, int whence)
-{
+int64_t CVFSEntry::Seek(void* ctx, int64_t position, int whence) const {
   if (!m_ifc.vfs->toAddon->seek)
     return 0;
 
   return m_ifc.vfs->toAddon->seek(m_ifc.vfs, ctx, position, whence);
 }
 
-int CVFSEntry::Truncate(void* ctx, int64_t size)
-{
+int CVFSEntry::Truncate(void* ctx, int64_t size) const {
   if (!m_ifc.vfs->toAddon->truncate)
     return 0;
 
   return m_ifc.vfs->toAddon->truncate(m_ifc.vfs, ctx, size);
 }
 
-void CVFSEntry::Close(void* ctx)
-{
+void CVFSEntry::Close(void* ctx) const {
   if (m_ifc.vfs->toAddon->close)
     m_ifc.vfs->toAddon->close(m_ifc.vfs, ctx);
 }
 
-int64_t CVFSEntry::GetPosition(void* ctx)
-{
+int64_t CVFSEntry::GetPosition(void* ctx) const {
   if (!m_ifc.vfs->toAddon->get_position)
     return 0;
 
   return m_ifc.vfs->toAddon->get_position(m_ifc.vfs, ctx);
 }
 
-int CVFSEntry::GetChunkSize(void* ctx)
-{
+int CVFSEntry::GetChunkSize(void* ctx) const {
   if (!m_ifc.vfs->toAddon->get_chunk_size)
     return 0;
 
   return m_ifc.vfs->toAddon->get_chunk_size(m_ifc.vfs, ctx);
 }
 
-int64_t CVFSEntry::GetLength(void* ctx)
-{
+int64_t CVFSEntry::GetLength(void* ctx) const {
   if (!m_ifc.vfs->toAddon->get_length)
     return 0;
 
   return m_ifc.vfs->toAddon->get_length(m_ifc.vfs, ctx);
 }
 
-int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
-{
+int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param) const {
   switch (request)
   {
     case XFILE::EIoControl::IOCTRL_SEEK_POSSIBLE:
@@ -438,8 +425,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
   return -1;
 }
 
-bool CVFSEntry::Delete(const CURL& url)
-{
+bool CVFSEntry::Delete(const CURL& url) const {
   if (!m_ifc.vfs->toAddon->delete_it)
     return false;
 
@@ -447,8 +433,7 @@ bool CVFSEntry::Delete(const CURL& url)
   return m_ifc.vfs->toAddon->delete_it(m_ifc.vfs, &url2.url);
 }
 
-bool CVFSEntry::Rename(const CURL& url, const CURL& url2)
-{
+bool CVFSEntry::Rename(const CURL& url, const CURL& url2) const {
   if (!m_ifc.vfs->toAddon->rename)
     return false;
 
@@ -457,20 +442,17 @@ bool CVFSEntry::Rename(const CURL& url, const CURL& url2)
   return m_ifc.vfs->toAddon->rename(m_ifc.vfs, &url3.url, &url4.url);
 }
 
-void CVFSEntry::ClearOutIdle()
-{
+void CVFSEntry::ClearOutIdle() const {
   if (m_ifc.vfs->toAddon->clear_out_idle)
     m_ifc.vfs->toAddon->clear_out_idle(m_ifc.vfs);
 }
 
-void CVFSEntry::DisconnectAll()
-{
+void CVFSEntry::DisconnectAll() const {
   if (m_ifc.vfs->toAddon->disconnect_all)
     m_ifc.vfs->toAddon->disconnect_all(m_ifc.vfs);
 }
 
-bool CVFSEntry::DirectoryExists(const CURL& url)
-{
+bool CVFSEntry::DirectoryExists(const CURL& url) const {
   if (!m_ifc.vfs->toAddon->directory_exists)
     return false;
 
@@ -478,8 +460,7 @@ bool CVFSEntry::DirectoryExists(const CURL& url)
   return m_ifc.vfs->toAddon->directory_exists(m_ifc.vfs, &url2.url);
 }
 
-bool CVFSEntry::RemoveDirectory(const CURL& url)
-{
+bool CVFSEntry::RemoveDirectory(const CURL& url) const {
   if (!m_ifc.vfs->toAddon->remove_directory)
     return false;
 
@@ -487,8 +468,7 @@ bool CVFSEntry::RemoveDirectory(const CURL& url)
   return m_ifc.vfs->toAddon->remove_directory(m_ifc.vfs, &url2.url);
 }
 
-bool CVFSEntry::CreateDirectory(const CURL& url)
-{
+bool CVFSEntry::CreateDirectory(const CURL& url) const {
   if (!m_ifc.vfs->toAddon->create_directory)
     return false;
 
@@ -527,8 +507,7 @@ static void VFSDirEntriesToCFileItemList(int num_entries,
 }
 
 bool CVFSEntry::GetDirectory(const CURL& url, CFileItemList& items,
-                             void* ctx)
-{
+                             void* ctx) const {
   if (!m_ifc.vfs->toAddon->get_directory || !m_ifc.vfs->toAddon->free_directory)
     return false;
 
@@ -552,8 +531,7 @@ bool CVFSEntry::GetDirectory(const CURL& url, CFileItemList& items,
   return ret;
 }
 
-bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items)
-{
+bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items) const {
   if (!m_ifc.vfs->toAddon->contains_files || !m_ifc.vfs->toAddon->free_directory)
     return false;
 

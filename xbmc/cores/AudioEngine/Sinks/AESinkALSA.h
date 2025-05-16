@@ -65,12 +65,12 @@ private:
   static std::string ALSAchmapToString(snd_pcm_chmap_t* alsaMap);
   static unsigned int ALSAchmapActiveCount(const snd_pcm_chmap_t& chmap);
   static CAEChannelInfo GetAlternateLayoutForm(const CAEChannelInfo& info);
-  snd_pcm_chmap_t* SelectALSAChannelMap(const CAEChannelInfo& info);
+  snd_pcm_chmap_t* SelectALSAChannelMap(const CAEChannelInfo& info) const;
 
   void aml_configure_simple_control(std::string &device, const enum IEC958_mode_codec codec);
 
-  void GetAESParams(const AEAudioFormat& format, std::string& params);
-  void HandleError(const char* name, int err);
+  void GetAESParams(const AEAudioFormat& format, std::string& params) const;
+  void HandleError(const char* name, int err) const;
 
   std::string m_initDevice;
   AEAudioFormat m_initFormat;
@@ -97,7 +97,7 @@ private:
   static snd_pcm_format_t AEFormatToALSAFormat(const enum AEDataFormat format);
 
   bool InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig);
-  bool InitializeSW(const ALSAConfig &inconfig);
+  bool InitializeSW(const ALSAConfig &inconfig) const;
 
   static void AppendParams(std::string &device, const std::string &params);
   static bool TryDevice(const std::string &name, snd_pcm_t **pcmp, snd_config_t *lconf);

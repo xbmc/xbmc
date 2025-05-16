@@ -338,8 +338,7 @@ void GUIFontManager::FreeFontFile(CGUIFontTTF* pFont)
   }
 }
 
-CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
-{
+CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent) const {
   for (const auto& it : m_vecFontFiles)
   {
     if (StringUtils::EqualsNoCase(it->GetFontIdent(), fontIdent))
@@ -692,8 +691,7 @@ void GUIFontManager::LoadUserFonts()
   CLog::LogF(LOGDEBUG, "Updating user fonts cache... DONE");
 }
 
-std::vector<std::string> GUIFontManager::GetUserFontsFamilyNames()
-{
+std::vector<std::string> GUIFontManager::GetUserFontsFamilyNames() const {
   // We ensure to have unique font family names and sorted alphabetically
   // Duplicated family names can happens for example when a font have each style
   // on different files

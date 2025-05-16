@@ -39,7 +39,7 @@ protected:
   std::string GetStartFolder(const std::string& dir) override;
 
   bool OnClickMsg(int controlId, int actionId);
-  void OnItemInfo(int itemNumber);
+  void OnItemInfo(int itemNumber) const;
   bool PlayGame(const CFileItem& item);
   bool CanPlay(const CFileItem& item) const;
 

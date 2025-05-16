@@ -157,8 +157,7 @@ CGUIWindowSlideShow::~CGUIWindowSlideShow()
   CServiceBroker::GetSlideShowDelegator().ResetDelegate();
 }
 
-void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
-{
+void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item) const {
   CVariant param;
   param["player"]["speed"] = m_bSlideShow && !m_bPause ? 1 : 0;
   param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
@@ -732,8 +731,7 @@ void CGUIWindowSlideShow::RenderEx()
   CGUIWindow::RenderEx();
 }
 
-int CGUIWindowSlideShow::GetNextSlide()
-{
+int CGUIWindowSlideShow::GetNextSlide() const {
   if (m_slides.size() <= 1)
     return m_iCurrentSlide;
   int step = m_iDirection >= 0 ? 1 : -1;
@@ -1157,8 +1155,7 @@ void CGUIWindowSlideShow::ZoomRelative(float fZoom, bool immediate /* = false */
   m_Image[m_iCurrentPic]->Zoom(m_fZoom, immediate);
 }
 
-void CGUIWindowSlideShow::Move(float fX, float fY)
-{
+void CGUIWindowSlideShow::Move(float fX, float fY) const {
   if (m_Image[m_iCurrentPic]->IsLoaded() && m_Image[m_iCurrentPic]->GetZoom() > 1)
   { // we move in the opposite direction, due to the fact we are moving
     // the viewing window, not the picture.

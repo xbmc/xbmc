@@ -23,7 +23,7 @@ class CInertialScrollingHandler
 public:
   CInertialScrollingHandler();
 
-  bool IsScrolling() { return m_bScrolling; }
+  bool IsScrolling() const { return m_bScrolling; }
 
 private:
   bool CheckForInertialScrolling(const CAction* action);

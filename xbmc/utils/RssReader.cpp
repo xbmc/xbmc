@@ -183,8 +183,7 @@ void CRssReader::Process()
   UpdateObserver();
 }
 
-void CRssReader::getFeed(vecText &text)
-{
+void CRssReader::getFeed(vecText &text) const {
   text.clear();
   // double the spaces at the start of the set
   for (int j = 0; j < m_spacesBetweenFeeds; j++)

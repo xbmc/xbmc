@@ -163,8 +163,7 @@ void Dataset::set_select_sql(const std::string& sel_sql)
   select_sql = sel_sql;
 }
 
-void Dataset::parse_sql(std::string& sql)
-{
+void Dataset::parse_sql(std::string& sql) const {
   std::string fpattern, by_what;
   for (unsigned int i = 0; i < fields_object->size(); i++)
   {
@@ -413,8 +412,7 @@ const field_value& Dataset::get_field_value(int index)
   throw DbErrors("Dataset state is Inactive");
 }
 
-const sql_record* Dataset::get_sql_record()
-{
+const sql_record* Dataset::get_sql_record() const {
   if (result.records.empty() || frecno >= (int)result.records.size())
     return NULL;
 
@@ -548,13 +546,11 @@ void Dataset::clear_delete_sql()
   delete_sql.clear();
 }
 
-size_t Dataset::insert_sql_count()
-{
+size_t Dataset::insert_sql_count() const {
   return insert_sql.size();
 }
 
-size_t Dataset::delete_sql_count()
-{
+size_t Dataset::delete_sql_count() const {
   return delete_sql.size();
 }
 
@@ -616,8 +612,7 @@ DbErrors::DbErrors(const char* msg, ...)
   CLog::Log(LOGERROR, "{}", msg_);
 }
 
-const char* DbErrors::getMsg()
-{
+const char* DbErrors::getMsg() const {
   return msg_.c_str();
 }
 

@@ -200,8 +200,7 @@ bool CActiveAESink::NeedIECPacking()
   return true;
 }
 
-bool CActiveAESink::DeviceExist(std::string driver, const std::string& device)
-{
+bool CActiveAESink::DeviceExist(std::string driver, const std::string& device) const {
   if (driver.empty() && m_sink)
     driver = m_sink->GetName();
 
@@ -1145,8 +1144,7 @@ void CActiveAESink::SwapInit(CSampleBuffer* samples)
 
 #define PI 3.1415926536f
 
-void CActiveAESink::GenerateNoise()
-{
+void CActiveAESink::GenerateNoise() const {
   int nb_floats = m_sampleOfSilence.pkt->max_nb_samples;
   nb_floats *= m_sampleOfSilence.pkt->config.channels;
   size_t size = nb_floats*sizeof(float);

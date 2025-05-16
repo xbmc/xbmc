@@ -27,17 +27,17 @@ public:
   /*! \brief Add a color item (Label property must be the color name, Label2 property must be the color hex)
       \param item The CFileItem
   */
-  void AddItem(const CFileItem& item);
+  void AddItem(const CFileItem& item) const;
   /*! \brief Set a list of color items (Label property must be the color name, Label2 property must be the color hex)
       \param pList The CFileItemList
   */
-  void SetItems(const CFileItemList& pList);
+  void SetItems(const CFileItemList& pList) const;
   /*! \brief Load a list of colors from the default xml */
   void LoadColors();
   /*! \brief Load a list of colors from the specified xml file path
       \param filePath The xml file path
   */
-  void LoadColors(const std::string& filePath);
+  void LoadColors(const std::string& filePath) const;
   /*! \brief Get the hex value of the selected color */
   std::string GetSelectedColor() const;
   /*! \brief Set the selected color by hex value */

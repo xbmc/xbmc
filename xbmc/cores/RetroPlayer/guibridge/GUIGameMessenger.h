@@ -33,7 +33,7 @@ public:
    * \param savestatePath The savestate to refresh, or empty to refresh all savestates
    * \param savestate Optional savestate info to send with the message
    */
-  void RefreshSavestates(const std::string& savestatePath = "", ISavestate* savestate = nullptr);
+  void RefreshSavestates(const std::string& savestatePath = "", ISavestate* savestate = nullptr) const;
 
 private:
   CGUIComponent* const m_guiComponent;

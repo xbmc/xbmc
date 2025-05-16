@@ -138,7 +138,7 @@ public:
    * \return The languages
    */
   std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1,
-                                            LANG_LIST list = LANG_LIST::DEFAULT);
+                                            LANG_LIST list = LANG_LIST::DEFAULT) const;
 
 protected:
   /*

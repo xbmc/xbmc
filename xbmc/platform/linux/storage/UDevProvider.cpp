@@ -91,8 +91,7 @@ void CUDevProvider::Stop()
   udev_unref(m_udev);
 }
 
-void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
-{
+void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable) const {
   // enumerate existing block devices
   struct udev_enumerate *u_enum = udev_enumerate_new(m_udev);
   if (!u_enum)

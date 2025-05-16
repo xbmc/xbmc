@@ -117,10 +117,10 @@ protected:
   void InitializeDeadzoneFiltering(KODI::JOYSTICK::IButtonMap& buttonMap);
   void InitializeControllerProfile(KODI::JOYSTICK::IButtonMap& buttonMap);
 
-  void PowerOff();
+  void PowerOff() const;
 
   // Helper functions
-  KODI::GAME::ControllerPtr InstallAsync(const std::string& controllerId);
+  KODI::GAME::ControllerPtr InstallAsync(const std::string& controllerId) const;
   static bool InstallSync(const std::string& controllerId);
 
   struct DriverHandler

@@ -166,8 +166,7 @@ void CGUIPortList::ResetPorts()
   }
 }
 
-void CGUIPortList::OnEvent(const ADDON::AddonEvent& event)
-{
+void CGUIPortList::OnEvent(const ADDON::AddonEvent& event) {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // Also called on install
       typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // Not called on uninstall
       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
@@ -276,8 +275,7 @@ void CGUIPortList::OnItemSelect(unsigned int itemIndex)
   }
 }
 
-void CGUIPortList::OnControllerSelected(const CPortNode& port, const ControllerPtr& controller)
-{
+void CGUIPortList::OnControllerSelected(const CPortNode& port, const ControllerPtr& controller) const {
   if (m_gameClient)
   {
     // Translate parameter

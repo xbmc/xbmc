@@ -121,7 +121,7 @@ private:
 
   std::vector<std::string> EnumerateDisks();
 
-  void GetDisks(VECSOURCES& devices, bool EnumerateRemovable);
+  void GetDisks(VECSOURCES& devices, bool EnumerateRemovable) const;
 
   int m_DaemonVersion;
 

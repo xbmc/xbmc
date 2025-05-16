@@ -119,8 +119,7 @@ bool IHTTPRequestHandler::GetRequestedRanges(uint64_t totalLength)
   return HTTPRequestHandlerUtils::GetRequestedRanges(m_request.connection, totalLength, m_request.ranges);
 }
 
-bool IHTTPRequestHandler::GetHostnameAndPort(std::string& hostname, uint16_t &port)
-{
+bool IHTTPRequestHandler::GetHostnameAndPort(std::string& hostname, uint16_t &port) const {
   if (m_request.webserver == NULL || m_request.connection == NULL)
     return false;
 

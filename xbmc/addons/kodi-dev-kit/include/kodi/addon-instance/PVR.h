@@ -737,8 +737,7 @@ public:
   /// ...
   /// ~~~~~~~~~~~~~
   ///
-  inline void AddMenuHook(const kodi::addon::PVRMenuhook& hook)
-  {
+  inline void AddMenuHook(const kodi::addon::PVRMenuhook& hook) const {
     m_instanceData->toKodi->AddMenuHook(m_instanceData->toKodi->kodiInstance, hook);
   }
   //----------------------------------------------------------------------------
@@ -773,8 +772,7 @@ public:
   ///
   inline void ConnectionStateChange(const std::string& connectionString,
                                     PVR_CONNECTION_STATE newState,
-                                    const std::string& message)
-  {
+                                    const std::string& message) const {
     m_instanceData->toKodi->ConnectionStateChange(
         m_instanceData->toKodi->kodiInstance, connectionString.c_str(), newState, message.c_str());
   }
@@ -895,8 +893,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  inline void TriggerProvidersUpdate()
-  {
+  inline void TriggerProvidersUpdate() const {
     m_instanceData->toKodi->TriggerProvidersUpdate(m_instanceData->toKodi->kodiInstance);
   }
   //----------------------------------------------------------------------------
@@ -1082,8 +1079,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  inline void TriggerChannelUpdate()
-  {
+  inline void TriggerChannelUpdate() const {
     m_instanceData->toKodi->TriggerChannelUpdate(m_instanceData->toKodi->kodiInstance);
   }
   //----------------------------------------------------------------------------
@@ -1243,8 +1239,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  inline void TriggerChannelGroupsUpdate()
-  {
+  inline void TriggerChannelGroupsUpdate() const {
     m_instanceData->toKodi->TriggerChannelGroupsUpdate(m_instanceData->toKodi->kodiInstance);
   }
   //----------------------------------------------------------------------------
@@ -1642,8 +1637,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  inline void TriggerEpgUpdate(unsigned int channelUid)
-  {
+  inline void TriggerEpgUpdate(unsigned int channelUid) const {
     m_instanceData->toKodi->TriggerEpgUpdate(m_instanceData->toKodi->kodiInstance, channelUid);
   }
   //----------------------------------------------------------------------------
@@ -1680,8 +1674,7 @@ public:
   /// ...
   /// ~~~~~~~~~~~~~
   ///
-  inline void EpgEventStateChange(kodi::addon::PVREPGTag& tag, EPG_EVENT_STATE newState)
-  {
+  inline void EpgEventStateChange(kodi::addon::PVREPGTag& tag, EPG_EVENT_STATE newState) const {
     m_instanceData->toKodi->EpgEventStateChange(m_instanceData->toKodi->kodiInstance, tag.GetTag(),
                                                 newState);
   }
@@ -2017,8 +2010,7 @@ public:
   ///
   inline void RecordingNotification(const std::string& recordingName,
                                     const std::string& fileName,
-                                    bool on)
-  {
+                                    bool on) const {
     m_instanceData->toKodi->RecordingNotification(m_instanceData->toKodi->kodiInstance,
                                                   recordingName.c_str(), fileName.c_str(), on);
   }
@@ -2030,8 +2022,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  inline void TriggerRecordingUpdate()
-  {
+  inline void TriggerRecordingUpdate() const {
     m_instanceData->toKodi->TriggerRecordingUpdate(m_instanceData->toKodi->kodiInstance);
   }
   //----------------------------------------------------------------------------
@@ -2213,8 +2204,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  inline void TriggerTimerUpdate()
-  {
+  inline void TriggerTimerUpdate() const {
     m_instanceData->toKodi->TriggerTimerUpdate(m_instanceData->toKodi->kodiInstance);
   }
   //----------------------------------------------------------------------------
@@ -2518,8 +2508,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  inline DEMUX_PACKET* AllocateDemuxPacket(int iDataSize)
-  {
+  inline DEMUX_PACKET* AllocateDemuxPacket(int iDataSize) const {
     return m_instanceData->toKodi->AllocateDemuxPacket(m_instanceData->toKodi->kodiInstance,
                                                        iDataSize);
   }
@@ -2533,8 +2522,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  inline void FreeDemuxPacket(DEMUX_PACKET* pPacket)
-  {
+  inline void FreeDemuxPacket(DEMUX_PACKET* pPacket) const {
     m_instanceData->toKodi->FreeDemuxPacket(m_instanceData->toKodi->kodiInstance, pPacket);
   }
   //----------------------------------------------------------------------------

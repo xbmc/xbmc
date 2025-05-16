@@ -41,12 +41,10 @@ public:
   }
   OVERSCAN& operator=(const OVERSCAN&) = default;
 
-  bool operator==(const OVERSCAN& other)
-  {
+  bool operator==(const OVERSCAN& other) const {
     return left == other.left && right == other.right && top == other.top && bottom == other.bottom;
   }
-  bool operator!=(const OVERSCAN& other)
-  {
+  bool operator!=(const OVERSCAN& other) const {
     return left != other.left || right != other.right || top != other.top || bottom != other.bottom;
   }
 };

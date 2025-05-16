@@ -222,7 +222,7 @@ public:
    * @brief Delete this provider from the local database.
    * @return True on success, false otherwise.
    */
-  bool DeleteFromDatabase();
+  bool DeleteFromDatabase() const;
 
 private:
   CPVRProvider(const CPVRProvider& provider) = delete;

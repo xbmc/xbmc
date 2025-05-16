@@ -56,7 +56,7 @@ public:
   void Save();
 
 private:
-  std::string GetPath(GAME_MEMORY memoryType);
+  std::string GetPath(GAME_MEMORY memoryType) const;
 
   void Load(GAME_MEMORY memoryType);
   void Save(GAME_MEMORY memoryType);

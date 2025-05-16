@@ -105,8 +105,7 @@ bool CMediaSourceSettings::Load(const std::string& file)
   return true;
 }
 
-bool CMediaSourceSettings::Save()
-{
+bool CMediaSourceSettings::Save() const {
   return Save(GetSourcesFile());
 }
 

@@ -2134,8 +2134,7 @@ namespace VIDEO
                                      CScraperUrl& url,
                                      const ScraperPtr& scraper,
                                      IVideoInfoTagLoader* loader,
-                                     CGUIDialogProgress* pDialog /* = NULL */)
-  {
+                                     CGUIDialogProgress* pDialog /* = NULL */) const {
     CVideoInfoTag movieDetails;
 
     if (m_handle && !url.GetTitle().empty())
@@ -2408,8 +2407,7 @@ namespace VIDEO
            DialogResponse::CHOICE_YES;
   }
 
-  bool CVideoInfoScanner::ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1)
-  {
+  bool CVideoInfoScanner::ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1) const {
     if (progress)
     {
       progress->SetHeading(CVariant{heading});

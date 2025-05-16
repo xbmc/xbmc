@@ -39,8 +39,7 @@ protected:
   }
 
 private:
-  void Play()
-  {
+  void Play() const {
     CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
         *m_item, false /* no resume check */);
   }

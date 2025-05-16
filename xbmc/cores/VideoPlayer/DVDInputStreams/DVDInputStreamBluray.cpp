@@ -90,8 +90,7 @@ bool CDVDInputStreamBluray::IsEOF()
   return false;
 }
 
-BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleLongest()
-{
+BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleLongest() const {
   BLURAY_TITLE_INFO *s = nullptr;
   for(int i=0; i < m_nTitles; i++)
   {
@@ -110,8 +109,7 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleLongest()
   return s;
 }
 
-BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filename)
-{
+BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filename) const {
   unsigned int playlist;
   if(sscanf(filename.c_str(), "%05u.mpls", &playlist) != 1)
   {
@@ -1084,8 +1082,7 @@ static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, std::strin
   return true;
 }
 
-void CDVDInputStreamBluray::GetStreamInfo(int pid, std::string &language)
-{
+void CDVDInputStreamBluray::GetStreamInfo(int pid, std::string &language) const {
   if(!m_titleInfo || !m_clip)
     return;
 
@@ -1140,8 +1137,7 @@ void CDVDInputStreamBluray::UserInput(bd_vk_key_e vk)
   }
 }
 
-bool CDVDInputStreamBluray::MouseMove(const CPoint &point)
-{
+bool CDVDInputStreamBluray::MouseMove(const CPoint &point) const {
   if (m_bd == nullptr || !m_navmode)
     return false;
 
@@ -1158,8 +1154,7 @@ bool CDVDInputStreamBluray::MouseMove(const CPoint &point)
   return true;
 }
 
-bool CDVDInputStreamBluray::MouseClick(const CPoint &point)
-{
+bool CDVDInputStreamBluray::MouseClick(const CPoint &point) const {
   if (m_bd == nullptr || !m_navmode)
     return false;
 
@@ -1285,8 +1280,7 @@ bool CDVDInputStreamBluray::ProcessItem(int playitem)
   return true;
 }
 
-int CDVDInputStreamBluray::Get3dSubtitlePlane(uint16_t pid)
-{
+int CDVDInputStreamBluray::Get3dSubtitlePlane(uint16_t pid) const {
   if (!m_bMVCDisabled)
   {
     MPLS_PL *mpls = bd_get_title_mpls(m_bd);
@@ -1401,8 +1395,7 @@ void CDVDInputStreamBluray::SeekMVCDemux(int64_t time)
     m_pMVCDemux->SeekTime(time, time < GetTime());
 }
 
-void CDVDInputStreamBluray::SetupPlayerSettings()
-{
+void CDVDInputStreamBluray::SetupPlayerSettings() const {
   int region = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_BLURAY_PLAYERREGION);
   if ( region != BLURAY_REGION_A
     && region != BLURAY_REGION_B

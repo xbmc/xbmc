@@ -421,8 +421,7 @@ void CPeripheralCecAdapter::Process(void)
   }
 }
 
-bool CPeripheralCecAdapter::HasAudioControl(void)
-{
+bool CPeripheralCecAdapter::HasAudioControl(void) const {
   std::lock_guard lock(m_critSection);
 
   return m_bHasConnectedAudioSystem;
@@ -546,8 +545,7 @@ bool CPeripheralCecAdapter::IsMuted(void)
   return false;
 }
 
-void CPeripheralCecAdapter::SetMenuLanguage(const char* strLanguage)
-{
+void CPeripheralCecAdapter::SetMenuLanguage(const char* strLanguage) const {
   if (StringUtils::EqualsNoCase(m_strMenuLanguage, strLanguage))
     return;
 
@@ -613,8 +611,7 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char* strLanguage)
               strLanguage);
 }
 
-void CPeripheralCecAdapter::OnTvStandby(void)
-{
+void CPeripheralCecAdapter::OnTvStandby(void) const {
   int iActionOnTvStandby = GetSettingInt("standby_pc_on_tv_standby");
   switch (iActionOnTvStandby)
   {
@@ -1589,8 +1586,7 @@ bool CPeripheralCecAdapterUpdateThread::WaitReady(void)
   return powerStatus == CEC_POWER_STATUS_ON;
 }
 
-void CPeripheralCecAdapterUpdateThread::UpdateMenuLanguage(void)
-{
+void CPeripheralCecAdapterUpdateThread::UpdateMenuLanguage(void) const {
   // request the menu language of the TV
   if (m_adapter->m_bUseTVMenuLanguage == 1)
   {
@@ -1604,8 +1600,7 @@ void CPeripheralCecAdapterUpdateThread::UpdateMenuLanguage(void)
   }
 }
 
-std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
-{
+std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void) const {
   std::string strAmpName;
 
   /* disable the mute setting when an amp is found, because the amp handles the mute setting and

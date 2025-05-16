@@ -40,9 +40,9 @@ public:
 
 protected:
   int GetData(uint8_t** dst);
-  enum AEDataFormat GetDataFormat();
-  int GetSampleRate();
-  int GetChannels();
+  enum AEDataFormat GetDataFormat() const;
+  int GetSampleRate() const;
+  int GetChannels() const;
   CAEChannelInfo GetChannelMap();
   int GetBitRate() override;
   void BuildChannelMap();

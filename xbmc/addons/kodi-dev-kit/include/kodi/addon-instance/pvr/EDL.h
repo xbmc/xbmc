@@ -59,19 +59,19 @@ public:
   ///@{
 
   /// @brief Start time in milliseconds.
-  void SetStart(int64_t start) { m_cStructure->start = start; }
+  void SetStart(int64_t start) const { m_cStructure->start = start; }
 
   /// @brief To get with @ref SetStart() changed values.
   int64_t GetStart() const { return m_cStructure->start; }
 
   /// @brief End time in milliseconds.
-  void SetEnd(int64_t end) { m_cStructure->end = end; }
+  void SetEnd(int64_t end) const { m_cStructure->end = end; }
 
   /// @brief To get with @ref SetEnd() changed values.
   int64_t GetEnd() const { return m_cStructure->end; }
 
   /// @brief The with @ref PVR_EDL_TYPE used definition list type.
-  void SetType(PVR_EDL_TYPE type) { m_cStructure->type = type; }
+  void SetType(PVR_EDL_TYPE type) const { m_cStructure->type = type; }
 
   /// @brief To get with @ref SetType() changed values.
   PVR_EDL_TYPE GetType() const { return m_cStructure->type; }

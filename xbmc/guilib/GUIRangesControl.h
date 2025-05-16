@@ -34,15 +34,15 @@ class CGUIRangesControl : public CGUIControl
 
     CGUIRange(const CGUIRange& range);
 
-    void AllocResources();
-    void FreeResources(bool bImmediately);
-    void DynamicResourceAlloc(bool bOnOff);
-    void SetInvalid();
-    bool SetDiffuseColor(const KODI::GUILIB::GUIINFO::CGUIInfoColor& color);
+    void AllocResources() const;
+    void FreeResources(bool bImmediately) const;
+    void DynamicResourceAlloc(bool bOnOff) const;
+    void SetInvalid() const;
+    bool SetDiffuseColor(const KODI::GUILIB::GUIINFO::CGUIInfoColor& color) const;
 
-    bool Process(unsigned int iCurrentTime);
-    void Render();
-    bool UpdateLayout(float fBackgroundTextureHeight, float fPosX, float fPosY, float fWidth, float fScaleX, float fScaleY);
+    bool Process(unsigned int iCurrentTime) const;
+    void Render() const;
+    bool UpdateLayout(float fBackgroundTextureHeight, float fPosX, float fPosY, float fWidth, float fScaleX, float fScaleY) const;
 
   private:
     std::unique_ptr<CGUITexture> m_guiLowerTexture;

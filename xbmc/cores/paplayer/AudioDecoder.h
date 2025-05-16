@@ -48,22 +48,22 @@ public:
 
   int ReadSamples(int numsamples);
 
-  bool CanSeek();
+  bool CanSeek() const;
   int64_t Seek(int64_t time);
-  int64_t TotalTime();
-  void SetTotalTime(int64_t time);
+  int64_t TotalTime() const;
+  void SetTotalTime(int64_t time) const;
   void Start() { m_canPlay = true;}; // cause a pre-buffered stream to start.
-  int GetStatus() { return m_status; }
+  int GetStatus() const { return m_status; }
   void SetStatus(int status) { m_status = status; }
 
-  AEAudioFormat GetFormat();
+  AEAudioFormat GetFormat() const;
   unsigned int GetChannels();
   // Data management
   unsigned int GetDataSize(bool checkPktSize);
   void *GetData(unsigned int samples);
   uint8_t* GetRawData(int &size);
   ICodec *GetCodec() const { return m_codec; }
-  float GetReplayGain(float &peakVal);
+  float GetReplayGain(float &peakVal) const;
 
 private:
   // pcm buffer

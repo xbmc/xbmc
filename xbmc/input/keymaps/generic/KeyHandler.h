@@ -92,7 +92,7 @@ private:
                         unsigned int holdTimeMs);
 
   // Check criteria for sending a repeat action
-  bool SendRepeatAction(unsigned int holdTimeMs);
+  bool SendRepeatAction(unsigned int holdTimeMs) const;
 
   // Helper function
   static bool IsPressed(float magnitude);

@@ -52,7 +52,7 @@ public:
    \param details the video info tag structure to fill with art.
    \return true on success, false on failure.
    */
-  bool GetArtwork(CVideoInfoTag &details);
+  bool GetArtwork(CVideoInfoTag &details) const;
 
   bool GetDetails(const std::unordered_map<std::string, std::string>& uniqueIDs,
                   const CScraperUrl& url,
@@ -86,6 +86,6 @@ protected:
   void Process() override;
   void CloseThread();
 
-  int InternalFindMovie(const std::string& movieTitle, int movieYear, MOVIELIST& movielist, bool cleanChars = true);
+  int InternalFindMovie(const std::string& movieTitle, int movieYear, MOVIELIST& movielist, bool cleanChars = true) const;
 };
 

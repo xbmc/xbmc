@@ -37,8 +37,7 @@ CJoystickFeature::CJoystickFeature(const FeatureName& name,
 {
 }
 
-bool CJoystickFeature::AcceptsInput(bool bActivation)
-{
+bool CJoystickFeature::AcceptsInput(bool bActivation) const {
   bool bAcceptsInput = false;
 
   if (m_bEnabled)
@@ -198,8 +197,7 @@ void CScalarFeature::ProcessDigitalMotion()
   }
 }
 
-void CScalarFeature::ProcessAnalogMotion()
-{
+void CScalarFeature::ProcessAnalogMotion() const {
   float magnitude = m_analogState;
 
   // Calculate time elapsed since motion began

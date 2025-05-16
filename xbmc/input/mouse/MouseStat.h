@@ -122,7 +122,7 @@ public:
   inline int GetY(void) const { return m_mouseState.y; }
   inline int GetDX(void) const { return m_mouseState.dx; }
   inline int GetDY(void) const { return m_mouseState.dy; }
-  MousePosition GetPosition() { return MousePosition{m_mouseState.x, m_mouseState.y}; }
+  MousePosition GetPosition() const { return MousePosition{m_mouseState.x, m_mouseState.y}; }
 
 private:
   /*! \brief Holds information regarding a particular mouse button state

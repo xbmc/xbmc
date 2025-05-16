@@ -306,95 +306,93 @@ public:
   /// [CIE1931](https://en.wikipedia.org/wiki/CIE_1931_color_space) color space.
   ///
   /// X coordinate. The values are normalized to 50,000.
-  void SetPrimaryR_ChromaticityX(double value) { m_cStructure->primary_r_chromaticity_x = value; }
+  void SetPrimaryR_ChromaticityX(double value) const { m_cStructure->primary_r_chromaticity_x = value; }
 
   /// @brief Get the chromaticity X coordinates of the red value.
-  double GetPrimaryR_ChromaticityX() { return m_cStructure->primary_r_chromaticity_x; }
+  double GetPrimaryR_ChromaticityX() const { return m_cStructure->primary_r_chromaticity_x; }
 
   /// @brief The chromaticity coordinates of the red value in the
   /// [CIE1931](https://en.wikipedia.org/wiki/CIE_1931_color_space) color space.
   ///
   /// Y coordinate. The values are normalized to 50,000.
-  void SetPrimaryR_ChromaticityY(double value) { m_cStructure->primary_r_chromaticity_y = value; }
+  void SetPrimaryR_ChromaticityY(double value) const { m_cStructure->primary_r_chromaticity_y = value; }
 
   /// @brief Get the chromaticity Y coordinates of the red value.
-  double GetPrimaryR_ChromaticityY() { return m_cStructure->primary_r_chromaticity_y; }
+  double GetPrimaryR_ChromaticityY() const { return m_cStructure->primary_r_chromaticity_y; }
 
   /// @brief Set the chromaticity coordinates of the green value in the
   /// [CIE1931](https://en.wikipedia.org/wiki/CIE_1931_color_space) color space.
   ///
   /// X coordinate. The values are normalized to 50,000.
-  void SetPrimaryG_ChromaticityX(double value) { m_cStructure->primary_g_chromaticity_x = value; }
+  void SetPrimaryG_ChromaticityX(double value) const { m_cStructure->primary_g_chromaticity_x = value; }
 
   /// @brief Get the chromaticity X coordinates of the green value.
-  double GetPrimaryG_ChromaticityX() { return m_cStructure->primary_g_chromaticity_x; }
+  double GetPrimaryG_ChromaticityX() const { return m_cStructure->primary_g_chromaticity_x; }
 
   /// @brief Set the chromaticity coordinates of the green value in the
   /// [CIE1931](https://en.wikipedia.org/wiki/CIE_1931_color_space) color space.
   ///
   /// Y coordinate. The values are normalized to 50,000.
-  void SetPrimaryG_ChromaticityY(double value) { m_cStructure->primary_g_chromaticity_y = value; }
+  void SetPrimaryG_ChromaticityY(double value) const { m_cStructure->primary_g_chromaticity_y = value; }
 
   /// @brief Get the chromaticity Y coordinates of the green value.
-  double GetPrimaryG_ChromaticityY() { return m_cStructure->primary_g_chromaticity_y; }
+  double GetPrimaryG_ChromaticityY() const { return m_cStructure->primary_g_chromaticity_y; }
 
   /// @brief The chromaticity coordinates of the blue value in the
   /// [CIE1931](https://en.wikipedia.org/wiki/CIE_1931_color_space) color space.
   ///
   /// X coordinate. The values are normalized to 50,000.
-  void SetPrimaryB_ChromaticityX(double value) { m_cStructure->primary_b_chromaticity_x = value; }
+  void SetPrimaryB_ChromaticityX(double value) const { m_cStructure->primary_b_chromaticity_x = value; }
 
   /// @brief Get the chromaticity X coordinates of the blue value.
-  double GetPrimaryB_ChromaticityX() { return m_cStructure->primary_b_chromaticity_x; }
+  double GetPrimaryB_ChromaticityX() const { return m_cStructure->primary_b_chromaticity_x; }
 
   /// @brief The chromaticity coordinates of the blue value in the
   /// [CIE1931](https://en.wikipedia.org/wiki/CIE_1931_color_space) color space.
   ///
   /// Y coordinate. The values are normalized to 50,000.
-  void SetPrimaryB_ChromaticityY(double value) { m_cStructure->primary_b_chromaticity_y = value; }
+  void SetPrimaryB_ChromaticityY(double value) const { m_cStructure->primary_b_chromaticity_y = value; }
 
   /// @brief Get the chromaticity Y coordinates of the blue value.
-  double GetPrimaryB_ChromaticityY() { return m_cStructure->primary_b_chromaticity_y; }
+  double GetPrimaryB_ChromaticityY() const { return m_cStructure->primary_b_chromaticity_y; }
 
   /// @brief Set the chromaticity coordinates of the white point in the
   /// [CIE1931](https://en.wikipedia.org/wiki/CIE_1931_color_space) color space.
   ///
   /// X coordinate. The values are normalized to 50,000.
-  void SetWhitePoint_ChromaticityX(double value)
-  {
+  void SetWhitePoint_ChromaticityX(double value) const {
     m_cStructure->white_point_chromaticity_x = value;
   }
 
   /// @brief Get the chromaticity X coordinates of the white point
-  double GetWhitePoint_ChromaticityX() { return m_cStructure->white_point_chromaticity_x; }
+  double GetWhitePoint_ChromaticityX() const { return m_cStructure->white_point_chromaticity_x; }
 
   /// @brief Set the chromaticity coordinates of the white point in the
   /// [CIE1931](https://en.wikipedia.org/wiki/CIE_1931_color_space) color space.
   ///
   /// Y coordinate. The values are normalized to 50,000.
-  void SetWhitePoint_ChromaticityY(double value)
-  {
+  void SetWhitePoint_ChromaticityY(double value) const {
     m_cStructure->white_point_chromaticity_y = value;
   }
 
   /// @brief Get the chromaticity Y coordinates of the white point.
-  double GetWhitePoint_ChromaticityY() { return m_cStructure->white_point_chromaticity_y; }
+  double GetWhitePoint_ChromaticityY() const { return m_cStructure->white_point_chromaticity_y; }
 
   /// @brief Set the maximum number of bits of the display used to master the content.
   ///
   /// Values are normalized to 10,000.
-  void SetLuminanceMax(double value) { m_cStructure->luminance_max = value; }
+  void SetLuminanceMax(double value) const { m_cStructure->luminance_max = value; }
 
   /// @brief Get the maximum number of bits of the display.
-  double GetLuminanceMax() { return m_cStructure->luminance_max; }
+  double GetLuminanceMax() const { return m_cStructure->luminance_max; }
 
   /// @brief Set the minimum number of bits of the display used to master the content.
   ///
   /// Values are normalized to 10,000.
-  void SetLuminanceMin(double value) { m_cStructure->luminance_min = value; }
+  void SetLuminanceMin(double value) const { m_cStructure->luminance_min = value; }
 
   /// @brief Get the minimum number of bits of the display.
-  double GetLuminanceMin() { return m_cStructure->luminance_min; }
+  double GetLuminanceMin() const { return m_cStructure->luminance_min; }
 
   ///@}
 
@@ -465,19 +463,19 @@ public:
   ///
   /// This is the bit value corresponding to the brightest pixel used anywhere
   /// in the content.
-  void SetMaxCll(uint64_t value) { m_cStructure->max_cll = value; }
+  void SetMaxCll(uint64_t value) const { m_cStructure->max_cll = value; }
 
   /// @brief Get the maximum content light level (MaxCLL).
-  uint64_t GetMaxCll() { return m_cStructure->max_cll; }
+  uint64_t GetMaxCll() const { return m_cStructure->max_cll; }
 
   /// @brief Set the maximum frame average light level (MaxFALL).
   ///
   /// This is the bit value corresponding to the average luminance of the frame
   /// which has the brightest average luminance anywhere in the content.
-  void SetMaxFall(uint64_t value) { m_cStructure->max_fall = value; }
+  void SetMaxFall(uint64_t value) const { m_cStructure->max_fall = value; }
 
   /// @brief Get the maximum frame average light level (MaxFALL).
-  uint64_t GetMaxFall() { return m_cStructure->max_fall; }
+  uint64_t GetMaxFall() const { return m_cStructure->max_fall; }
 
   ///@}
 
@@ -562,7 +560,7 @@ public:
   /// @brief Set the wanted stream type.
   ///
   /// @param[in] streamType By @ref INPUTSTREAM_TYPE defined type
-  void SetStreamType(INPUTSTREAM_TYPE streamType) { m_cStructure->m_streamType = streamType; }
+  void SetStreamType(INPUTSTREAM_TYPE streamType) const { m_cStructure->m_streamType = streamType; }
 
   /// @brief To get with @ref SetStreamType changed values.
   INPUTSTREAM_TYPE GetStreamType() const { return m_cStructure->m_streamType; }
@@ -570,7 +568,7 @@ public:
   /// @brief Set special supported feature flags of inputstream.
   ///
   /// @param[in] features By @ref INPUTSTREAM_CODEC_FEATURES defined type
-  void SetFeatures(uint32_t features) { m_cStructure->m_features = features; }
+  void SetFeatures(uint32_t features) const { m_cStructure->m_features = features; }
 
   /// @brief To get with @ref SetFeatures changed values.
   uint32_t GetFeatures() const { return m_cStructure->m_features; }
@@ -578,7 +576,7 @@ public:
   /// @brief Set supported flags of inputstream.
   ///
   /// @param[in] flags The on @ref INPUTSTREAM_FLAGS defined flags to set
-  void SetFlags(uint32_t flags) { m_cStructure->m_flags = flags; }
+  void SetFlags(uint32_t flags) const { m_cStructure->m_flags = flags; }
 
   /// @brief To get with @ref SetFeatures changed values.
   uint32_t GetFlags() const { return m_cStructure->m_flags; }
@@ -586,8 +584,7 @@ public:
   /// @brief (optional) Name of the stream, leave empty for default handling.
   ///
   /// @param[in] name Stream name
-  void SetName(const std::string& name)
-  {
+  void SetName(const std::string& name) const {
     strncpy(m_cStructure->m_name, name.c_str(), INPUTSTREAM_MAX_STRING_NAME_SIZE);
   }
 
@@ -603,8 +600,7 @@ public:
   /// @ref INPUTSTREAM_TYPE_ID3 this can be ignored and leaved empty.
   ///
   /// @param[in] codeName Codec name
-  void SetCodecName(const std::string& codecName)
-  {
+  void SetCodecName(const std::string& codecName) const {
     strncpy(m_cStructure->m_codecName, codecName.c_str(), INPUTSTREAM_MAX_STRING_CODEC_SIZE);
   }
 
@@ -614,8 +610,7 @@ public:
   /// @brief (optional) Internal name of codec (selectionstream info).
   ///
   /// @param[in] codecName Internal codec name
-  void SetCodecInternalName(const std::string& codecName)
-  {
+  void SetCodecInternalName(const std::string& codecName) const {
     strncpy(m_cStructure->m_codecInternalName, codecName.c_str(),
             INPUTSTREAM_MAX_STRING_CODEC_SIZE);
   }
@@ -626,8 +621,7 @@ public:
   /// @brief (optional) The profile of the codec.
   ///
   /// @param[in] codecProfile Values with @ref STREAMCODEC_PROFILE to use
-  void SetCodecProfile(STREAMCODEC_PROFILE codecProfile)
-  {
+  void SetCodecProfile(STREAMCODEC_PROFILE codecProfile) const {
     m_cStructure->m_codecProfile = codecProfile;
   }
 
@@ -637,7 +631,7 @@ public:
   /// @brief (required) Physical index.
   ///
   /// @param[in] id Index identifier
-  void SetPhysicalIndex(unsigned int id) { m_cStructure->m_pID = id; }
+  void SetPhysicalIndex(unsigned int id) const { m_cStructure->m_pID = id; }
 
   /// @brief To get with @ref SetPhysicalIndex changed values.
   unsigned int GetPhysicalIndex() const { return m_cStructure->m_pID; }
@@ -673,7 +667,7 @@ public:
   const std::vector<uint8_t>& GetExtraData() { return m_extraData; }
 
   /// @brief To get size with @ref SetExtraData changed values.
-  size_t GetExtraDataSize() { return m_extraData.size(); }
+  size_t GetExtraDataSize() const { return m_extraData.size(); }
 
   /// @brief Compare extra data from outside with class
   ///
@@ -703,8 +697,7 @@ public:
   /// @brief RFC 5646 language code (empty string if undefined).
   ///
   /// @param[in] language The language to set
-  void SetLanguage(const std::string& language)
-  {
+  void SetLanguage(const std::string& language) const {
     strncpy(m_cStructure->m_language, language.c_str(), INPUTSTREAM_MAX_STRING_LANGUAGE_SIZE);
   }
 
@@ -714,7 +707,7 @@ public:
   /// @brief Scale of 1000 and a rate of 29970 will result in 29.97 fps.
   ///
   /// @param[in] fpsScale Scale rate
-  void SetFpsScale(unsigned int fpsScale) { m_cStructure->m_FpsScale = fpsScale; }
+  void SetFpsScale(unsigned int fpsScale) const { m_cStructure->m_FpsScale = fpsScale; }
 
   /// @brief To get with @ref SetFpsScale changed values.
   unsigned int GetFpsScale() const { return m_cStructure->m_FpsScale; }
@@ -722,7 +715,7 @@ public:
   /// @brief Rate to use for stream.
   ///
   /// @param[in] fpsRate Rate to use
-  void SetFpsRate(unsigned int fpsRate) { m_cStructure->m_FpsRate = fpsRate; }
+  void SetFpsRate(unsigned int fpsRate) const { m_cStructure->m_FpsRate = fpsRate; }
 
   /// @brief To get with @ref SetFpsRate changed values.
   unsigned int GetFpsRate() const { return m_cStructure->m_FpsRate; }
@@ -730,7 +723,7 @@ public:
   /// @brief Height of the stream reported by the demuxer.
   ///
   /// @param[in] height Height to use
-  void SetHeight(unsigned int height) { m_cStructure->m_Height = height; }
+  void SetHeight(unsigned int height) const { m_cStructure->m_Height = height; }
 
   /// @brief To get with @ref SetHeight changed values.
   unsigned int GetHeight() const { return m_cStructure->m_Height; }
@@ -738,7 +731,7 @@ public:
   /// @brief Width of the stream reported by the demuxer.
   ///
   /// @param[in] width Width to use
-  void SetWidth(unsigned int width) { m_cStructure->m_Width = width; }
+  void SetWidth(unsigned int width) const { m_cStructure->m_Width = width; }
 
   /// @brief To get with @ref SetWidth changed values.
   unsigned int GetWidth() const { return m_cStructure->m_Width; }
@@ -746,7 +739,7 @@ public:
   /// @brief Display aspect of stream.
   ///
   /// @param[in] aspect Aspect ratio to use
-  void SetAspect(float aspect) { m_cStructure->m_Aspect = aspect; }
+  void SetAspect(float aspect) const { m_cStructure->m_Aspect = aspect; }
 
   /// @brief To get with @ref SetAspect changed values.
   float GetAspect() const { return m_cStructure->m_Aspect; }
@@ -754,7 +747,7 @@ public:
   /// @brief (required) Amount of channels.
   ///
   /// @param[in] sampleRate Channels to use
-  void SetChannels(unsigned int channels) { m_cStructure->m_Channels = channels; }
+  void SetChannels(unsigned int channels) const { m_cStructure->m_Channels = channels; }
 
   /// @brief To get with @ref SetChannels changed values.
   unsigned int GetChannels() const { return m_cStructure->m_Channels; }
@@ -762,7 +755,7 @@ public:
   /// @brief (required) Sample rate.
   ///
   /// @param[in] sampleRate Rate to use
-  void SetSampleRate(unsigned int sampleRate) { m_cStructure->m_SampleRate = sampleRate; }
+  void SetSampleRate(unsigned int sampleRate) const { m_cStructure->m_SampleRate = sampleRate; }
 
   /// @brief To get with @ref SetSampleRate changed values.
   unsigned int GetSampleRate() const { return m_cStructure->m_SampleRate; }
@@ -770,7 +763,7 @@ public:
   /// @brief Bit rate.
   ///
   /// @param[in] bitRate Rate to use
-  void SetBitRate(unsigned int bitRate) { m_cStructure->m_BitRate = bitRate; }
+  void SetBitRate(unsigned int bitRate) const { m_cStructure->m_BitRate = bitRate; }
 
   /// @brief To get with @ref SetBitRate changed values.
   unsigned int GetBitRate() const { return m_cStructure->m_BitRate; }
@@ -778,8 +771,7 @@ public:
   /// @brief (required) Bits per sample.
   ///
   /// @param[in] bitsPerSample Bits per sample to use
-  void SetBitsPerSample(unsigned int bitsPerSample)
-  {
+  void SetBitsPerSample(unsigned int bitsPerSample) const {
     m_cStructure->m_BitsPerSample = bitsPerSample;
   }
 
@@ -789,7 +781,7 @@ public:
   /// @brief To set the necessary stream block alignment size.
   ///
   /// @param[in] blockAlign Block size in byte
-  void SetBlockAlign(unsigned int blockAlign) { m_cStructure->m_BlockAlign = blockAlign; }
+  void SetBlockAlign(unsigned int blockAlign) const { m_cStructure->m_BlockAlign = blockAlign; }
 
   /// @brief To get with @ref SetBlockAlign changed values.
   unsigned int GetBlockAlign() const { return m_cStructure->m_BlockAlign; }
@@ -811,7 +803,7 @@ public:
   /// @brief Codec If available, the fourcc code codec.
   ///
   /// @param[in] codecFourCC Codec four CC code
-  void SetCodecFourCC(unsigned int codecFourCC) { m_cStructure->m_codecFourCC = codecFourCC; }
+  void SetCodecFourCC(unsigned int codecFourCC) const { m_cStructure->m_codecFourCC = codecFourCC; }
 
   /// @brief To get with @ref SetCodecFourCC changed values
   unsigned int GetCodecFourCC() const { return m_cStructure->m_codecFourCC; }
@@ -819,7 +811,7 @@ public:
   /// @brief Definition of colorspace.
   ///
   /// @param[in] colorSpace The with @ref INPUTSTREAM_COLORSPACE setable color space
-  void SetColorSpace(INPUTSTREAM_COLORSPACE colorSpace) { m_cStructure->m_colorSpace = colorSpace; }
+  void SetColorSpace(INPUTSTREAM_COLORSPACE colorSpace) const { m_cStructure->m_colorSpace = colorSpace; }
 
   /// @brief To get with @ref SetColorSpace changed values.
   INPUTSTREAM_COLORSPACE GetColorSpace() const { return m_cStructure->m_colorSpace; }
@@ -827,7 +819,7 @@ public:
   /// @brief Color range if available.
   ///
   /// @param[in] colorRange The with @ref INPUTSTREAM_COLORRANGE setable color space
-  void SetColorRange(INPUTSTREAM_COLORRANGE colorRange) { m_cStructure->m_colorRange = colorRange; }
+  void SetColorRange(INPUTSTREAM_COLORRANGE colorRange) const { m_cStructure->m_colorRange = colorRange; }
 
   /// @brief To get with @ref SetColorRange changed values.
   INPUTSTREAM_COLORRANGE GetColorRange() const { return m_cStructure->m_colorRange; }
@@ -835,8 +827,7 @@ public:
   /// @brief Chromaticity coordinates of the source primaries. These values match the ones defined by ISO/IEC 23001-8_2013 § 7.1.
   ///
   /// @param[in] colorPrimaries The with @ref INPUTSTREAM_COLORPRIMARIES setable values
-  void SetColorPrimaries(INPUTSTREAM_COLORPRIMARIES colorPrimaries)
-  {
+  void SetColorPrimaries(INPUTSTREAM_COLORPRIMARIES colorPrimaries) const {
     m_cStructure->m_colorPrimaries = colorPrimaries;
   }
 
@@ -846,8 +837,7 @@ public:
   /// @brief Color Transfer Characteristic. These values match the ones defined by ISO/IEC 23001-8_2013 § 7.2.
   ///
   /// @param[in] colorTransferCharacteristic The with @ref INPUTSTREAM_COLORTRC setable characteristic
-  void SetColorTransferCharacteristic(INPUTSTREAM_COLORTRC colorTransferCharacteristic)
-  {
+  void SetColorTransferCharacteristic(INPUTSTREAM_COLORTRC colorTransferCharacteristic) const {
     m_cStructure->m_colorTransferCharacteristic = colorTransferCharacteristic;
   }
 
@@ -878,7 +868,7 @@ public:
   }
 
   /// @brief Clear mastering static Metadata.
-  void ClearMasteringMetadata() { m_cStructure->m_masteringMetadata = nullptr; }
+  void ClearMasteringMetadata() const { m_cStructure->m_masteringMetadata = nullptr; }
 
   /// @brief Content light static Metadata.
   ///
@@ -900,7 +890,7 @@ public:
   }
 
   /// @brief Clear content light static Metadata.
-  void ClearContentLightMetadata() { m_cStructure->m_contentLightMetadata = nullptr; }
+  void ClearContentLightMetadata() const { m_cStructure->m_contentLightMetadata = nullptr; }
 
   ///@}
 
@@ -1584,8 +1574,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  DEMUX_PACKET* AllocateDemuxPacket(int dataSize)
-  {
+  DEMUX_PACKET* AllocateDemuxPacket(int dataSize) const {
     return m_instanceData->toKodi->allocate_demux_packet(m_instanceData->toKodi->kodiInstance,
                                                          dataSize);
   }
@@ -1600,8 +1589,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  DEMUX_PACKET* AllocateEncryptedDemuxPacket(int dataSize, unsigned int encryptedSubsampleCount)
-  {
+  DEMUX_PACKET* AllocateEncryptedDemuxPacket(int dataSize, unsigned int encryptedSubsampleCount) const {
     return m_instanceData->toKodi->allocate_encrypted_demux_packet(
         m_instanceData->toKodi->kodiInstance, dataSize, encryptedSubsampleCount);
   }
@@ -1614,8 +1602,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  void FreeDemuxPacket(DEMUX_PACKET* packet)
-  {
+  void FreeDemuxPacket(DEMUX_PACKET* packet) const {
     return m_instanceData->toKodi->free_demux_packet(m_instanceData->toKodi->kodiInstance, packet);
   }
   //----------------------------------------------------------------------------

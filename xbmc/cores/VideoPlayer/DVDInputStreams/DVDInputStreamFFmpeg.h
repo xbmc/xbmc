@@ -25,7 +25,7 @@ public:
   std::string GetFileName() override;
 
   void  Abort() override { m_aborted = true;  }
-  bool Aborted() { return m_aborted;  }
+  bool Aborted() const { return m_aborted;  }
 
   const CFileItem& GetItem() const { return m_item; }
 

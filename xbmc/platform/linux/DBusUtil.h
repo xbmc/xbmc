@@ -42,7 +42,7 @@ public:
   bool Connect(DBusBusType bus, bool openPrivate = false);
   bool Connect(DBusBusType bus, CDBusError& error, bool openPrivate = false);
   void Destroy();
-  operator DBusConnection*();
+  operator DBusConnection*() const;
 
 private:
   CDBusConnection(CDBusConnection const& other) = delete;

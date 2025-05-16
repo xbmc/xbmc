@@ -72,7 +72,7 @@ public:
    fallback window, if exists or from global config as last resort
    \return the action matching the key
    */
-  CAction GetAction(int window, const CKey& key, bool fallback = true);
+  CAction GetAction(int window, const CKey& key, bool fallback = true) const;
 
   void RegisterMapper(const std::string& device, IKeyMapper* mapper);
   void UnregisterMapper(const IKeyMapper* mapper);

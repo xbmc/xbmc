@@ -376,7 +376,7 @@ public:
    * @param database The database.
    * @return True on success, false otherwise.
    */
-  bool QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database);
+  bool QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database) const;
 
   /*!
    * @brief Update the information in this tag with the info in the given tag.

@@ -40,146 +40,118 @@ CAddonInfoBuilderFromDB::CAddonInfoBuilderFromDB() : m_addonInfo(std::make_share
 {
 }
 
-void CAddonInfoBuilderFromDB::SetId(std::string id)
-{
+void CAddonInfoBuilderFromDB::SetId(std::string id) const {
   m_addonInfo->m_id = std::move(id);
 }
 
-void CAddonInfoBuilderFromDB::SetName(std::string name)
-{
+void CAddonInfoBuilderFromDB::SetName(std::string name) const {
   m_addonInfo->m_name = std::move(name);
 }
 
-void CAddonInfoBuilderFromDB::SetLicense(std::string license)
-{
+void CAddonInfoBuilderFromDB::SetLicense(std::string license) const {
   m_addonInfo->m_license = std::move(license);
 }
 
-void CAddonInfoBuilderFromDB::SetSummary(std::string summary)
-{
+void CAddonInfoBuilderFromDB::SetSummary(std::string summary) const {
   m_addonInfo->m_summary.insert(std::pair<std::string, std::string>("unk", std::move(summary)));
 }
 
-void CAddonInfoBuilderFromDB::SetDescription(std::string description)
-{
+void CAddonInfoBuilderFromDB::SetDescription(std::string description) const {
   m_addonInfo->m_description.insert(
       std::pair<std::string, std::string>("unk", std::move(description)));
 }
 
-void CAddonInfoBuilderFromDB::SetDisclaimer(std::string disclaimer)
-{
+void CAddonInfoBuilderFromDB::SetDisclaimer(std::string disclaimer) const {
   m_addonInfo->m_disclaimer.insert(
       std::pair<std::string, std::string>("unk", std::move(disclaimer)));
 }
 
-void CAddonInfoBuilderFromDB::SetAuthor(std::string author)
-{
+void CAddonInfoBuilderFromDB::SetAuthor(std::string author) const {
   m_addonInfo->m_author = std::move(author);
 }
 
-void CAddonInfoBuilderFromDB::SetSource(std::string source)
-{
+void CAddonInfoBuilderFromDB::SetSource(std::string source) const {
   m_addonInfo->m_source = std::move(source);
 }
 
-void CAddonInfoBuilderFromDB::SetWebsite(std::string website)
-{
+void CAddonInfoBuilderFromDB::SetWebsite(std::string website) const {
   m_addonInfo->m_website = std::move(website);
 }
 
-void CAddonInfoBuilderFromDB::SetForum(std::string forum)
-{
+void CAddonInfoBuilderFromDB::SetForum(std::string forum) const {
   m_addonInfo->m_forum = std::move(forum);
 }
 
-void CAddonInfoBuilderFromDB::SetEMail(std::string email)
-{
+void CAddonInfoBuilderFromDB::SetEMail(std::string email) const {
   m_addonInfo->m_email = std::move(email);
 }
 
-void CAddonInfoBuilderFromDB::SetIcon(std::string icon)
-{
+void CAddonInfoBuilderFromDB::SetIcon(std::string icon) const {
   m_addonInfo->m_icon = std::move(icon);
 }
 
-void CAddonInfoBuilderFromDB::SetArt(const std::string& type, std::string value)
-{
+void CAddonInfoBuilderFromDB::SetArt(const std::string& type, std::string value) const {
   m_addonInfo->m_art[type] = std::move(value);
 }
 
-void CAddonInfoBuilderFromDB::SetArt(std::map<std::string, std::string> art)
-{
+void CAddonInfoBuilderFromDB::SetArt(std::map<std::string, std::string> art) const {
   m_addonInfo->m_art = std::move(art);
 }
 
-void CAddonInfoBuilderFromDB::SetScreenshots(std::vector<std::string> screenshots)
-{
+void CAddonInfoBuilderFromDB::SetScreenshots(std::vector<std::string> screenshots) const {
   m_addonInfo->m_screenshots = std::move(screenshots);
 }
 
-void CAddonInfoBuilderFromDB::SetChangelog(std::string changelog)
-{
+void CAddonInfoBuilderFromDB::SetChangelog(std::string changelog) const {
   m_addonInfo->m_changelog.insert(std::pair<std::string, std::string>("unk", std::move(changelog)));
 }
 
-void CAddonInfoBuilderFromDB::SetLifecycleState(AddonLifecycleState state, std::string description)
-{
+void CAddonInfoBuilderFromDB::SetLifecycleState(AddonLifecycleState state, std::string description) const {
   m_addonInfo->m_lifecycleState = state;
   m_addonInfo->m_lifecycleStateDescription.emplace("unk", std::move(description));
 }
 
-void CAddonInfoBuilderFromDB::SetPath(std::string path)
-{
+void CAddonInfoBuilderFromDB::SetPath(std::string path) const {
   m_addonInfo->m_path = std::move(path);
 }
 
-void CAddonInfoBuilderFromDB::SetLibName(std::string libname)
-{
+void CAddonInfoBuilderFromDB::SetLibName(std::string libname) const {
   m_addonInfo->m_libname = std::move(libname);
 }
 
-void CAddonInfoBuilderFromDB::SetVersion(CAddonVersion version)
-{
+void CAddonInfoBuilderFromDB::SetVersion(CAddonVersion version) const {
   m_addonInfo->m_version = std::move(version);
 }
 
-void CAddonInfoBuilderFromDB::SetDependencies(std::vector<DependencyInfo> dependencies)
-{
+void CAddonInfoBuilderFromDB::SetDependencies(std::vector<DependencyInfo> dependencies) const {
   m_addonInfo->m_dependencies = std::move(dependencies);
 }
 
-void CAddonInfoBuilderFromDB::SetExtrainfo(InfoMap extrainfo)
-{
+void CAddonInfoBuilderFromDB::SetExtrainfo(InfoMap extrainfo) const {
   m_addonInfo->m_extrainfo = std::move(extrainfo);
 }
 
-void CAddonInfoBuilderFromDB::SetInstallDate(const CDateTime& installDate)
-{
+void CAddonInfoBuilderFromDB::SetInstallDate(const CDateTime& installDate) const {
   m_addonInfo->m_installDate = installDate;
 }
 
-void CAddonInfoBuilderFromDB::SetLastUpdated(const CDateTime& lastUpdated)
-{
+void CAddonInfoBuilderFromDB::SetLastUpdated(const CDateTime& lastUpdated) const {
   m_addonInfo->m_lastUpdated = lastUpdated;
 }
 
-void CAddonInfoBuilderFromDB::SetLastUsed(const CDateTime& lastUsed)
-{
+void CAddonInfoBuilderFromDB::SetLastUsed(const CDateTime& lastUsed) const {
   m_addonInfo->m_lastUsed = lastUsed;
 }
 
-void CAddonInfoBuilderFromDB::SetOrigin(std::string origin)
-{
+void CAddonInfoBuilderFromDB::SetOrigin(std::string origin) const {
   m_addonInfo->m_origin = std::move(origin);
 }
 
-void CAddonInfoBuilderFromDB::SetPackageSize(uint64_t size)
-{
+void CAddonInfoBuilderFromDB::SetPackageSize(uint64_t size) const {
   m_addonInfo->m_packageSize = size;
 }
 
-void CAddonInfoBuilderFromDB::SetExtensions(CAddonType addonType)
-{
+void CAddonInfoBuilderFromDB::SetExtensions(CAddonType addonType) const {
   if (!addonType.GetValue("provides").empty())
     addonType.SetProvides(addonType.GetValue("provides").asString());
 

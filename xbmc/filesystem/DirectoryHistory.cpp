@@ -100,8 +100,7 @@ void CDirectoryHistory::AddPathFront(const std::string& strPath, const std::stri
   m_vecPathHistory.insert(m_vecPathHistory.begin(), item);
 }
 
-std::string CDirectoryHistory::GetParentPath(bool filter /* = false */)
-{
+std::string CDirectoryHistory::GetParentPath(bool filter /* = false */) const {
   if (m_vecPathHistory.empty())
     return "";
 

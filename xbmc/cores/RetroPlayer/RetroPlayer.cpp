@@ -380,13 +380,11 @@ bool CRetroPlayer::SeekTimeRelative(int64_t iTime)
   return true;
 }
 
-uint64_t CRetroPlayer::GetTime()
-{
+uint64_t CRetroPlayer::GetTime() const {
   return m_playback->GetTimeMs();
 }
 
-uint64_t CRetroPlayer::GetTotalTime()
-{
+uint64_t CRetroPlayer::GetTotalTime() const {
   return m_playback->GetTotalTimeMs();
 }
 
@@ -611,8 +609,7 @@ void CRetroPlayer::SetSpeedInternal(double speed)
     m_playback->SetSpeed(speed);
 }
 
-void CRetroPlayer::OnSpeedChange(double newSpeed)
-{
+void CRetroPlayer::OnSpeedChange(double newSpeed) const {
   m_streamManager->EnableAudio(newSpeed == 1.0);
   m_input->SetSpeed(newSpeed);
   m_renderManager->SetSpeed(newSpeed);
@@ -671,8 +668,7 @@ void CRetroPlayer::RegisterWindowCallbacks()
                                                     m_renderManager.get(), this);
 }
 
-void CRetroPlayer::UnregisterWindowCallbacks()
-{
+void CRetroPlayer::UnregisterWindowCallbacks() const {
   m_gameServices.GameRenderManager().UnregisterPlayer();
 }
 

@@ -55,7 +55,7 @@ protected:
 
 private:
   void Dispose();
-  void SetMissingStreamDetails(const DemuxPtr& demuxer);
+  void SetMissingStreamDetails(const DemuxPtr& demuxer) const;
 
   std::shared_ptr<InputStreamMultiStreams> m_pInput = NULL;
   std::map<DemuxPtr, InputStreamPtr> m_DemuxerToInputStreamMap;

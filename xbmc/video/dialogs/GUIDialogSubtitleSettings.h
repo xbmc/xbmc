@@ -44,7 +44,7 @@ protected:
   void InitializeSettings() override;
 
 private:
-  bool SupportsSubtitleFeature(int feature);
+  bool SupportsSubtitleFeature(int feature) const;
 
   void AddSubtitleStreams(const std::shared_ptr<CSettingGroup>& group,
                           const std::string& settingId);

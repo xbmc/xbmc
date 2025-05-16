@@ -187,8 +187,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
   return true;
 }
 
-bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& strPath)
-{
+bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& strPath) const {
   if (!node) return false;
 
   // we start with a <tag> tag

@@ -53,7 +53,7 @@ public:
   virtual PLAYLIST::Id GetPlaylist() const;
   const std::string& GetPlaylistDirectory();
   void SetPlaylistDirectory(const std::string& strDirectory);
-  bool IsCurrentPlaylistDirectory(const std::string& strDirectory);
+  bool IsCurrentPlaylistDirectory(const std::string& strDirectory) const;
   virtual bool AutoPlayNextItem();
 
   virtual std::string GetLockType();

@@ -94,7 +94,7 @@ private:
    * \brief Called when the speed changes
    * \param newSpeed The new speed, possibly equal to the previous speed
    */
-  void OnSpeedChange(double newSpeed);
+  void OnSpeedChange(double newSpeed) const;
 
   // Playback functions
   void CreatePlayback(const std::string& savestatePath);
@@ -111,15 +111,15 @@ private:
   void CloseOSD();
 
   void RegisterWindowCallbacks();
-  void UnregisterWindowCallbacks();
+  void UnregisterWindowCallbacks() const;
 
   /**
    * \brief Dump game information (if any) to the debug log.
    */
   void PrintGameInfo(const CFileItem& file) const;
 
-  uint64_t GetTime();
-  uint64_t GetTotalTime();
+  uint64_t GetTime() const;
+  uint64_t GetTotalTime() const;
 
   // Construction parameters
   GAME::CGameServices& m_gameServices;

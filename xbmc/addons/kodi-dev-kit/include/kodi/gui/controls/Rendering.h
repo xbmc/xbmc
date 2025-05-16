@@ -162,8 +162,7 @@ public:
                                                 kodi::HardwareContext device),
                                void (*CBRender)(kodi::gui::ClientHandle cbhdl),
                                void (*CBStop)(kodi::gui::ClientHandle cbhdl),
-                               bool (*CBDirty)(kodi::gui::ClientHandle cbhdl))
-  {
+                               bool (*CBDirty)(kodi::gui::ClientHandle cbhdl)) const {
     if (!cbhdl || !CBCreate || !CBRender || !CBStop || !CBDirty)
     {
       kodi::Log(ADDON_LOG_ERROR, "kodi::gui::controls::%s called with nullptr !!!", __FUNCTION__);

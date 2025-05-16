@@ -36,7 +36,7 @@ public:
   int GetModesCount() const { return m_connector->count_modes; }
   drmModeModeInfoPtr GetModeForIndex(int index) const { return &m_connector->modes[index]; }
 
-  bool IsConnected() { return m_connector->connection == DRM_MODE_CONNECTED; }
+  bool IsConnected() const { return m_connector->connection == DRM_MODE_CONNECTED; }
   bool CheckConnector();
 
   std::vector<uint8_t> GetEDID() const;
@@ -44,7 +44,7 @@ public:
 private:
   struct DrmModeConnectorDeleter
   {
-    void operator()(drmModeConnector* p) { drmModeFreeConnector(p); }
+    void operator()(drmModeConnector* p) const { drmModeFreeConnector(p); }
   };
 
   std::unique_ptr<drmModeConnector, DrmModeConnectorDeleter> m_connector;

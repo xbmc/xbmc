@@ -115,8 +115,7 @@ std::string CProcessInfo::GetVideoDecoderName()
   return m_videoDecoderName;
 }
 
-bool CProcessInfo::IsVideoHwDecoder()
-{
+bool CProcessInfo::IsVideoHwDecoder() const {
   std::lock_guard lock(m_videoCodecSection);
 
   return m_videoIsHWDecoder;
@@ -184,8 +183,7 @@ void CProcessInfo::SetVideoDimensions(int width, int height)
     m_dataCache->SetVideoDimensions(m_videoWidth, m_videoHeight);
 }
 
-void CProcessInfo::GetVideoDimensions(int &width, int &height)
-{
+void CProcessInfo::GetVideoDimensions(int &width, int &height) const {
   std::lock_guard lock(m_videoCodecSection);
 
   width = m_videoWidth;
@@ -202,8 +200,7 @@ void CProcessInfo::SetVideoFps(float fps)
     m_dataCache->SetVideoFps(m_videoFPS);
 }
 
-float CProcessInfo::GetVideoFps()
-{
+float CProcessInfo::GetVideoFps() const {
   std::lock_guard lock(m_videoCodecSection);
 
   return m_videoFPS;
@@ -219,8 +216,7 @@ void CProcessInfo::SetVideoDAR(float dar)
     m_dataCache->SetVideoDAR(m_videoDAR);
 }
 
-float CProcessInfo::GetVideoDAR()
-{
+float CProcessInfo::GetVideoDAR() const {
   std::lock_guard lock(m_videoCodecSection);
 
   return m_videoDAR;
@@ -236,8 +232,7 @@ void CProcessInfo::SetVideoInterlaced(bool interlaced)
     m_dataCache->SetVideoInterlaced(interlaced);
 }
 
-bool CProcessInfo::GetVideoInterlaced()
-{
+bool CProcessInfo::GetVideoInterlaced() const {
   std::lock_guard lock(m_videoCodecSection);
 
   return m_videoIsInterlaced;

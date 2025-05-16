@@ -113,8 +113,7 @@ void CPtsTracker::Add(double pts)
 }
 
 //gets a diff diffnr into the past
-inline double CPtsTracker::GetDiff(int diffnr)
-{
+inline double CPtsTracker::GetDiff(int diffnr) const {
   //m_ringpos is the last added diff, so if we want to go in the past we have to move back in the ringbuffer
   int pos = m_ringpos - diffnr;
   if (pos < 0)
@@ -228,8 +227,7 @@ inline bool CPtsTracker::MatchDifftype(int diffs1[], int diffs2[], int nrdiffs)
 }
 
 //check if our current detected pattern is the same as the one we saved
-bool CPtsTracker::CheckPattern(std::vector<double>& pattern)
-{
+bool CPtsTracker::CheckPattern(std::vector<double>& pattern) const {
   //if no pattern was detected or if the size of the patterns differ we don't have a match
   if (pattern.empty() || pattern.size() != m_pattern.size())
     return false;

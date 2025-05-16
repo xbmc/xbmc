@@ -113,8 +113,7 @@ std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info)
 }
 
 std::shared_ptr<CFileItem> CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title,
-                                                      const std::string& label)
-{
+                                                      const std::string& label) const {
   std::string buf;
   std::string chap;
   CFileItemPtr item(new CFileItem("", false));
@@ -297,8 +296,7 @@ std::string CBlurayDirectory::HexToString(const uint8_t *buf, int count)
   return std::string(std::begin(tmp), std::end(tmp));
 }
 
-std::vector<BLURAY_TITLE_INFO*> CBlurayDirectory::GetUserPlaylists()
-{
+std::vector<BLURAY_TITLE_INFO*> CBlurayDirectory::GetUserPlaylists() const {
   std::string root = m_url.GetHostName();
   std::string discInfPath = URIUtils::AddFileToFolder(root, "disc.inf");
   std::vector<BLURAY_TITLE_INFO*> userTitles;

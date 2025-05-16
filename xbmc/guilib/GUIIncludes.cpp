@@ -351,8 +351,7 @@ void CGUIIncludes::SetDefaults(TiXmlElement *node)
   }
 }
 
-void CGUIIncludes::ResolveConstants(TiXmlElement *node)
-{
+void CGUIIncludes::ResolveConstants(TiXmlElement *node) const {
   if (!node)
     return;
 
@@ -374,8 +373,7 @@ void CGUIIncludes::ResolveConstants(TiXmlElement *node)
   }
 }
 
-void CGUIIncludes::ResolveExpressions(TiXmlElement *node)
-{
+void CGUIIncludes::ResolveExpressions(TiXmlElement *node) const {
   if (!node)
     return;
 

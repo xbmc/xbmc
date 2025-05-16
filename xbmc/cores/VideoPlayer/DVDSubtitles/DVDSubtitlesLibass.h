@@ -45,7 +45,7 @@ public:
                          const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
                          int* changes = NULL);
 
-  ASS_Event* GetEvents();
+  ASS_Event* GetEvents() const;
 
   /*!
   * \brief Get the number of events (subtitle entries) in the ASS track
@@ -64,7 +64,7 @@ public:
   * \brief Decode ASS/SSA demux packet (depends from DecodeHeader)
   * \return True if success, false if error
   */
-  bool DecodeDemuxPkt(const char* data, int size, double start, double duration);
+  bool DecodeDemuxPkt(const char* data, int size, double start, double duration) const;
 
   /*!
   * \brief Create a new ASS track based on an SSA buffer
@@ -75,20 +75,20 @@ public:
   /*!
   * \brief Flush buffered events
   */
-  void FlushEvents();
+  void FlushEvents() const;
 
   /*!
   * \brief Get PlayResY value
   * \return The PlayResY value of current track
   */
-  int GetPlayResY();
+  int GetPlayResY() const;
 
   /*!
   * \brief Check if currently an event is active
   * \param pts as double
   * \return True when there is any event active
   */
-  bool EventActive(double pts);
+  bool EventActive(double pts) const;
 
 protected:
   /*!
@@ -130,12 +130,12 @@ protected:
   int AddEvent(const char* text,
                double startTime,
                double stopTime,
-               KODI::SUBTITLES::STYLE::subtitleOpts* opts);
+               KODI::SUBTITLES::STYLE::subtitleOpts* opts) const;
 
   /*!
   * \brief Append text to the specified event
   */
-  void AppendTextToEvent(int eventId, const char* text);
+  void AppendTextToEvent(int eventId, const char* text) const;
 
   /*!
   * \brief Delete old events only if the total number of events reaches the threshold
@@ -143,21 +143,21 @@ protected:
   * \param threshold Start deleting only when the number of events is reached
   * \return The updated ID of the last Event, otherwise ASS_NO_ID if error or no events
   */
-  int DeleteEvents(int nEvents, int threshold);
+  int DeleteEvents(int nEvents, int threshold) const;
 
   /*!
   * \brief Change the stop time of an Event with the specified time
   * \param eventId The ASS Event ID
   * \param stopTime The PTS stop time
   */
-  void ChangeEventStopTime(int eventId, double stopTime);
+  void ChangeEventStopTime(int eventId, double stopTime) const;
 
   friend class CSubtitlesAdapter;
 
 
 private:
   void ConfigureAssOverride(const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
-                            ASS_Style* style);
+                            ASS_Style* style) const;
   void ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
                   KODI::SUBTITLES::STYLE::renderOpts opts);
 

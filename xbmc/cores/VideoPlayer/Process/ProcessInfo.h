@@ -37,7 +37,7 @@ public:
   void ResetVideoCodecInfo();
   void SetVideoDecoderName(const std::string &name, bool isHw);
   std::string GetVideoDecoderName();
-  bool IsVideoHwDecoder();
+  bool IsVideoHwDecoder() const;
   void SetVideoDeintMethod(const std::string &method);
   std::string GetVideoDeintMethod();
   void SetVideoPixelFormat(const std::string &pixFormat);
@@ -45,13 +45,13 @@ public:
   void SetVideoStereoMode(const std::string &mode);
   std::string GetVideoStereoMode();
   void SetVideoDimensions(int width, int height);
-  void GetVideoDimensions(int &width, int &height);
+  void GetVideoDimensions(int &width, int &height) const;
   void SetVideoFps(float fps);
-  float GetVideoFps();
+  float GetVideoFps() const;
   void SetVideoDAR(float dar);
-  float GetVideoDAR();
+  float GetVideoDAR() const;
   void SetVideoInterlaced(bool interlaced);
-  bool GetVideoInterlaced();
+  bool GetVideoInterlaced() const;
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
   virtual void SetSwDeinterlacingMethods();
   void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);

@@ -272,8 +272,7 @@ void CGUIDialogSongInfo::Update()
   OnMessage(message);
 }
 
-void CGUIDialogSongInfo::SetUserrating(int userrating)
-{
+void CGUIDialogSongInfo::SetUserrating(int userrating) const {
   userrating = std::max(userrating, 0);
   userrating = std::min(userrating, 10);
   if (userrating != m_song->GetMusicInfoTag()->GetUserrating())

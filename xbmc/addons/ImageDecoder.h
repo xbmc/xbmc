@@ -55,7 +55,7 @@ public:
 
   /*! From @ref CPictureInfoTag used function to get information from addon */
   ///@{
-  bool LoadInfoTag(const std::string& fileName, CPictureInfoTag* tag);
+  bool LoadInfoTag(const std::string& fileName, CPictureInfoTag* tag) const;
   ///@}
 
   /*! @ref KODI::ADDONS::IAddonSupportCheck related function */

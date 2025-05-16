@@ -83,9 +83,9 @@ private:
   void DecrementOrder(int iOrder);
   void IncrementOrder(int iPosition, int iOrder);
 
-  void AnnounceRemove(int pos);
-  void AnnounceClear();
-  void AnnounceAdd(const std::shared_ptr<CFileItem>& item, int pos);
+  void AnnounceRemove(int pos) const;
+  void AnnounceClear() const;
+  void AnnounceAdd(const std::shared_ptr<CFileItem>& item, int pos) const;
 };
 
 typedef std::shared_ptr<CPlayList> CPlayListPtr;

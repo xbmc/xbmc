@@ -60,7 +60,7 @@ public:
 private:
   bool RefreshControllers(void);
 
-  void CleanupButtons(void);
+  void CleanupButtons(void) const;
   void OnEvent(const ADDON::AddonEvent& event);
 
   // GUI stuff

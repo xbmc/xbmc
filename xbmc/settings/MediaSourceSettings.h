@@ -32,7 +32,7 @@ public:
 
   bool Load();
   bool Load(const std::string &file);
-  bool Save();
+  bool Save() const;
   bool Save(const std::string &file) const;
   void Clear();
 

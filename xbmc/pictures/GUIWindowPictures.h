@@ -23,7 +23,7 @@ public:
 
 protected:
   bool GetDirectory(const std::string &strDirectory, CFileItemList& items) override;
-  void OnItemInfo(int item);
+  void OnItemInfo(int item) const;
   bool OnClick(int iItem, const std::string &player = "") override;
   void UpdateButtons() override;
   void OnPrepareFileItems(CFileItemList& items) override;

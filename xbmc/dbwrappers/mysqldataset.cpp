@@ -1664,8 +1664,7 @@ void MysqlDataset::set_autorefresh(bool val)
 
 //--------- protected functions implementation -----------------//
 
-MYSQL* MysqlDataset::handle()
-{
+MYSQL* MysqlDataset::handle() const {
   if (db != NULL)
   {
     return static_cast<MysqlDatabase*>(db)->getHandle();

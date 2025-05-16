@@ -60,11 +60,11 @@ namespace XBMCAddon
     {
       ADDON::AddonPtr pAddon;
 
-      String getDefaultId();
+      String getDefaultId() const;
 
-      String getAddonVersion();
+      String getAddonVersion() const;
 
-      bool UpdateSettingInActiveDialog(const char* id, const String& value);
+      bool UpdateSettingInActiveDialog(const char* id, const String& value) const;
 
     public:
       explicit Addon(const char* id = NULL);
@@ -94,7 +94,7 @@ namespace XBMCAddon
       ///
       getLocalizedString(...);
 #else
-      String getLocalizedString(int id);
+      String getLocalizedString(int id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -119,7 +119,7 @@ namespace XBMCAddon
       ///
       getSettings(...);
 #else
-      Settings* getSettings();
+      Settings* getSettings() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -147,7 +147,7 @@ namespace XBMCAddon
       ///
       getSetting(...);
 #else
-      String getSetting(const char* id);
+      String getSetting(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -176,7 +176,7 @@ namespace XBMCAddon
       ///
       getSettingBool(...);
 #else
-      bool getSettingBool(const char* id);
+      bool getSettingBool(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -205,7 +205,7 @@ namespace XBMCAddon
       ///
       getSettingInt(...);
 #else
-      int getSettingInt(const char* id);
+      int getSettingInt(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -234,7 +234,7 @@ namespace XBMCAddon
       ///
       getSettingNumber(...);
 #else
-      double getSettingNumber(const char* id);
+      double getSettingNumber(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -263,7 +263,7 @@ namespace XBMCAddon
       ///
       getSettingString(...);
 #else
-      String getSettingString(const char* id);
+      String getSettingString(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -441,7 +441,7 @@ namespace XBMCAddon
       ///
       openSettings();
 #else
-      void openSettings();
+      void openSettings() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -475,7 +475,7 @@ namespace XBMCAddon
       ///
       getAddonInfo(...);
 #else
-      String getAddonInfo(const char* id);
+      String getAddonInfo(const char* id) const;
 #endif
     };
     //@}

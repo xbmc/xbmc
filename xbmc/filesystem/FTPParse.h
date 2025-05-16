@@ -18,10 +18,10 @@ public:
   CFTPParse();
   int FTPParse(const std::string& str);
   std::string getName();
-  int getFlagtrycwd();
-  int getFlagtryretr();
-  uint64_t getSize();
-  time_t getTime();
+  int getFlagtrycwd() const;
+  int getFlagtryretr() const;
+  uint64_t getSize() const;
+  time_t getTime() const;
 private:
   std::string m_name;            // not necessarily 0-terminated
   int m_flagtrycwd;         // 0 if cwd is definitely pointless, 1 otherwise

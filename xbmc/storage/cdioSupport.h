@@ -123,93 +123,93 @@ public:
   trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack -1]; }
   xbmc_cdtext_t GetDiscCDTextInformation() { return m_cdtext; }
 
-  bool HasDataTracks() { return (m_nNumData > 0); }
-  bool HasAudioTracks() { return (m_nNumAudio > 0); }
-  int GetFirstTrack() { return m_nFirstTrack; }
-  int GetTrackCount() { return m_nNumTrack; }
-  int GetFirstAudioTrack() { return m_nFirstAudio; }
-  int GetFirstDataTrack() { return m_nFirstData; }
-  int GetDataTrackCount() { return m_nNumData; }
-  int GetAudioTrackCount() { return m_nNumAudio; }
-  uint32_t GetCddbDiscId() { return m_ulCddbDiscId; }
-  int GetDiscLength() { return m_nLength; }
+  bool HasDataTracks() const { return (m_nNumData > 0); }
+  bool HasAudioTracks() const { return (m_nNumAudio > 0); }
+  int GetFirstTrack() const { return m_nFirstTrack; }
+  int GetTrackCount() const { return m_nNumTrack; }
+  int GetFirstAudioTrack() const { return m_nFirstAudio; }
+  int GetFirstDataTrack() const { return m_nFirstData; }
+  int GetDataTrackCount() const { return m_nNumData; }
+  int GetAudioTrackCount() const { return m_nNumAudio; }
+  uint32_t GetCddbDiscId() const { return m_ulCddbDiscId; }
+  int GetDiscLength() const { return m_nLength; }
   std::string GetDiscLabel(){ return m_strDiscLabel; }
 
   // CD-ROM with ISO 9660 filesystem
-  bool IsIso9660( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_9660); }
+  bool IsIso9660( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_9660); }
   // CD-ROM with joliet extension
-  bool IsJoliet( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & JOLIET) ? false : true; }
+  bool IsJoliet( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & JOLIET) ? false : true; }
   // Joliet extension level
-  int GetJolietLevel( int nTrack ) { return m_ti[nTrack - 1].nJolietLevel; }
+  int GetJolietLevel( int nTrack ) const { return m_ti[nTrack - 1].nJolietLevel; }
   // ISO filesystem size
-  int GetIsoSize( int nTrack ) { return m_ti[nTrack - 1].isofs_size; }
+  int GetIsoSize( int nTrack ) const { return m_ti[nTrack - 1].isofs_size; }
   // CD-ROM with rockridge extensions
-  bool IsRockridge( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & ROCKRIDGE) ? false : true; }
+  bool IsRockridge( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & ROCKRIDGE) ? false : true; }
 
   // CD-ROM with CD-RTOS and ISO 9660 filesystem
-  bool IsIso9660Interactive( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_9660_INTERACTIVE); }
+  bool IsIso9660Interactive( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_9660_INTERACTIVE); }
 
   // CD-ROM with High Sierra filesystem
-  bool IsHighSierra( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_HIGH_SIERRA); }
+  bool IsHighSierra( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_HIGH_SIERRA); }
 
   // CD-Interactive, with audiotracks > 0 CD-Interactive/Ready
-  bool IsCDInteractive( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_INTERACTIVE); }
+  bool IsCDInteractive( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_INTERACTIVE); }
 
   // CD-ROM with Macintosh HFS
-  bool IsHFS( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_HFS); }
+  bool IsHFS( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_HFS); }
 
   // CD-ROM with both Macintosh HFS and ISO 9660 filesystem
-  bool IsISOHFS( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_HFS); }
+  bool IsISOHFS( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_HFS); }
 
   // CD-ROM with both UDF and ISO 9660 filesystem
-  bool IsISOUDF( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_UDF); }
+  bool IsISOUDF( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_UDF); }
 
   // CD-ROM with Unix UFS
-  bool IsUFS( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UFS); }
+  bool IsUFS( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UFS); }
 
   // CD-ROM with Linux second extended filesystem
-  bool IsEXT2( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_EXT2); }
+  bool IsEXT2( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_EXT2); }
 
   // CD-ROM with Panasonic 3DO filesystem
-  bool Is3DO( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_3DO); }
+  bool Is3DO( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_3DO); }
 
   // Mixed Mode CD-ROM
-  bool IsMixedMode( int nTrack ) { return (m_nFirstData == 1 && m_nNumAudio > 0); }
+  bool IsMixedMode( int nTrack ) const { return (m_nFirstData == 1 && m_nNumAudio > 0); }
 
   // CD-ROM with XA sectors
-  bool IsXA( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & XA) ? false : true; }
+  bool IsXA( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & XA) ? false : true; }
 
   // Multisession CD-ROM
-  bool IsMultiSession( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & MULTISESSION) ? false : true; }
+  bool IsMultiSession( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & MULTISESSION) ? false : true; }
   // Gets multisession offset
-  int GetMultisessionOffset( int nTrack ) { return m_ti[nTrack - 1].ms_offset; }
+  int GetMultisessionOffset( int nTrack ) const { return m_ti[nTrack - 1].ms_offset; }
 
   // Hidden Track on Audio CD
-  bool IsHiddenTrack( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & HIDDEN_TRACK) ? false : true; }
+  bool IsHiddenTrack( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & HIDDEN_TRACK) ? false : true; }
 
   // Photo CD, with audiotracks > 0 Portfolio Photo CD
-  bool IsPhotoCd( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & PHOTO_CD) ? false : true; }
+  bool IsPhotoCd( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & PHOTO_CD) ? false : true; }
 
   // CD-ROM with Commodore CDTV
-  bool IsCdTv( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & CDTV) ? false : true; }
+  bool IsCdTv( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & CDTV) ? false : true; }
 
   // CD-Plus/Extra
-  bool IsCDExtra( int nTrack ) { return (m_nFirstData > 1); }
+  bool IsCDExtra( int nTrack ) const { return (m_nFirstData > 1); }
 
   // Bootable CD
-  bool IsBootable( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & BOOTABLE) ? false : true; }
+  bool IsBootable( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & BOOTABLE) ? false : true; }
 
   // Video CD
-  bool IsVideoCd( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & VIDEOCDI && m_nNumAudio == 0); }
+  bool IsVideoCd( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & VIDEOCDI && m_nNumAudio == 0); }
 
   // Chaoji Video CD
-  bool IsChaojiVideoCD( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & CVD) ? false : true; }
+  bool IsChaojiVideoCD( int nTrack ) const { return (m_ti[nTrack - 1].nfsInfo & CVD) ? false : true; }
 
   // Audio Track
-  bool IsAudio( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_NO_DATA); }
+  bool IsAudio( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_NO_DATA); }
 
   // UDF filesystem
-  bool IsUDF( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UDF); }
+  bool IsUDF( int nTrack ) const { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_UDF); }
 
   // Has the cd a filesystem that is readable by the xbox
   bool IsValidFs() { return (IsISOHFS(1) || IsIso9660(1) || IsIso9660Interactive(1) || IsISOUDF(1) || IsUDF(1) || IsAudio(1)); }
@@ -229,7 +229,7 @@ public:
 
   void SetCddbDiscId( uint32_t ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
   void SetDiscLength( int nLength ) { m_nLength = nLength; }
-  bool HasCDDBInfo() { return m_bHasCDDBInfo; }
+  bool HasCDDBInfo() const { return m_bHasCDDBInfo; }
   void SetNoCDDBInfo() { m_bHasCDDBInfo = false; }
 
   void SetDiscLabel(const std::string& strDiscLabel){ m_strDiscLabel = strDiscLabel; }
@@ -290,32 +290,32 @@ public:
   bool EjectTray();
   bool CloseTray();
 
-  HANDLE OpenCDROM();
-  HANDLE OpenIMAGE( std::string& strFilename );
-  int ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
-  int ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
-  int ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer);
-  void CloseCDROM(HANDLE hDevice);
+  HANDLE OpenCDROM() const;
+  HANDLE OpenIMAGE( std::string& strFilename ) const;
+  int ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer) const;
+  int ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer) const;
+  int ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer) const;
+  void CloseCDROM(HANDLE hDevice) const;
 
   void PrintAnalysis(int fs, int num_audio);
 
   CCdInfo* GetCdInfo(char* cDeviceFileName=NULL);
-  void GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum);
+  void GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum) const;
 
 protected:
   int ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, track_t track_num);
-  bool IsIt(int num);
-  int IsHFS(void);
-  int Is3DO(void);
-  int IsJoliet(void);
-  int IsUDF(void);
-  int GetSize(void);
-  int GetJolietLevel( void );
+  bool IsIt(int num) const;
+  int IsHFS(void) const;
+  int Is3DO(void) const;
+  int IsJoliet(void) const;
+  int IsUDF(void) const;
+  int GetSize(void) const;
+  int GetJolietLevel( void ) const;
   int GuessFilesystem(int start_session, track_t track_num);
 
   uint32_t CddbDiscId();
   int CddbDecDigitSum(int n);
-  unsigned int MsfSeconds(msf_t *msf);
+  unsigned int MsfSeconds(msf_t *msf) const;
 
 private:
   char buffer[7][CDIO_CD_FRAMESIZE_RAW];  /* for CD-Data */

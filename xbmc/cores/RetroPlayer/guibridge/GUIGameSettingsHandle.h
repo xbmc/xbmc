@@ -29,14 +29,14 @@ public:
    * \return The ID of the active game client, or empty string if a game is
    * not playing
    */
-  std::string GameClientID();
+  std::string GameClientID() const;
 
   /*!
    * \brief Get the full path of the game being played
    *
    * \return The game's path, or empty string if a game is not playing
    */
-  std::string GetPlayingGame();
+  std::string GetPlayingGame() const;
 
   /*!
    * \brief Create a savestate of the current game being played
@@ -47,7 +47,7 @@ public:
    * \return The path to the created savestate file, or empty string on
    * failure or if a game is not playing
    */
-  std::string CreateSavestate(bool autosave);
+  std::string CreateSavestate(bool autosave) const;
 
   /*!
    * \brief Update a savestate for the current game being played
@@ -57,7 +57,7 @@ public:
    *
    * \return True if the savestate was updated successfully, false otherwise
    */
-  bool UpdateSavestate(const std::string& savestatePath);
+  bool UpdateSavestate(const std::string& savestatePath) const;
 
   /*!
    * \brief Load a savestate for the current game being played
@@ -67,7 +67,7 @@ public:
    *
    * \return True if the savestate was loaded successfully, false otherwise
    */
-  bool LoadSavestate(const std::string& savestatePath);
+  bool LoadSavestate(const std::string& savestatePath) const;
 
   /*!
    * \brief Clear the video frame stored for the given statestate
@@ -76,12 +76,12 @@ public:
    *
    * \param savestatePath The path to the savestate file
    */
-  void FreeSavestateResources(const std::string& savestatePath);
+  void FreeSavestateResources(const std::string& savestatePath) const;
 
   /*!
    * \brief Close the in-game OSD
    */
-  void CloseOSD();
+  void CloseOSD() const;
 
 private:
   // Construction parameters

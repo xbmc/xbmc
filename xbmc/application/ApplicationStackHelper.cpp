@@ -234,8 +234,7 @@ uint64_t CApplicationStackHelper::GetStackTotalTimeMs() const
   return GetStackPartEndTimeMs(m_currentStack->Size() - 1);
 }
 
-int CApplicationStackHelper::GetStackPartNumberAtTimeMs(uint64_t msecs)
-{
+int CApplicationStackHelper::GetStackPartNumberAtTimeMs(uint64_t msecs) const {
   if (msecs > 0)
   {
     // work out where to seek to

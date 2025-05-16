@@ -37,8 +37,8 @@ public:
 private:
   bool OnContextButtonManage(const CFileItemPtr& item, CONTEXT_BUTTON button);
 
-  void ShowChannelManager();
-  void ShowGroupManager();
+  void ShowChannelManager() const;
+  void ShowGroupManager() const;
   void UpdateEpg(const CFileItemPtr& item);
 
 protected:

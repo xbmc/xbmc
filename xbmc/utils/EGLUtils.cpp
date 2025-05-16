@@ -454,8 +454,7 @@ bool CEGLContextUtils::CreateContext(CEGLAttributesVec contextAttribs)
   return true;
 }
 
-bool CEGLContextUtils::BindContext()
-{
+bool CEGLContextUtils::BindContext() const {
   if (m_eglDisplay == EGL_NO_DISPLAY || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT)
   {
     throw std::logic_error("Activating an EGLContext requires display, surface, and context");
@@ -471,8 +470,7 @@ bool CEGLContextUtils::BindContext()
   return true;
 }
 
-void CEGLContextUtils::SurfaceAttrib()
-{
+void CEGLContextUtils::SurfaceAttrib() const {
   if (m_eglDisplay == EGL_NO_DISPLAY || m_eglSurface == EGL_NO_SURFACE)
   {
     throw std::logic_error("Setting surface attributes requires a surface");
@@ -490,8 +488,7 @@ void CEGLContextUtils::SurfaceAttrib()
   }
 }
 
-void CEGLContextUtils::SurfaceAttrib(EGLint attribute, EGLint value)
-{
+void CEGLContextUtils::SurfaceAttrib(EGLint attribute, EGLint value) const {
   if (eglSurfaceAttrib(m_eglDisplay, m_eglSurface, attribute, value) != EGL_TRUE)
   {
     CEGLUtils::Log(LOGERROR, "failed to set EGL_BUFFER_PRESERVED swap behavior");
@@ -601,8 +598,7 @@ void CEGLContextUtils::DestroySurface()
 }
 
 
-bool CEGLContextUtils::SetVSync(bool enable)
-{
+bool CEGLContextUtils::SetVSync(bool enable) const {
   if (m_eglDisplay == EGL_NO_DISPLAY)
   {
     return false;
@@ -611,8 +607,7 @@ bool CEGLContextUtils::SetVSync(bool enable)
   return (eglSwapInterval(m_eglDisplay, enable) == EGL_TRUE);
 }
 
-bool CEGLContextUtils::TrySwapBuffers()
-{
+bool CEGLContextUtils::TrySwapBuffers() const {
   if (m_eglDisplay == EGL_NO_DISPLAY || m_eglSurface == EGL_NO_SURFACE)
   {
     return false;

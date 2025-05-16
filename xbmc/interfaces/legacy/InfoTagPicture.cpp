@@ -42,24 +42,20 @@ InfoTagPicture::~InfoTagPicture()
     delete infoTag;
 }
 
-String InfoTagPicture::getResolution()
-{
+String InfoTagPicture::getResolution() const {
   return infoTag->GetInfo(SLIDESHOW_RESOLUTION);
 }
 
-String InfoTagPicture::getDateTimeTaken()
-{
+String InfoTagPicture::getDateTimeTaken() const {
   return infoTag->GetDateTimeTaken().GetAsW3CDateTime();
 }
 
-void InfoTagPicture::setResolution(int width, int height)
-{
+void InfoTagPicture::setResolution(int width, int height) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setResolutionRaw(infoTag, width, height);
 }
 
-void InfoTagPicture::setDateTimeTaken(const String& datetimetaken)
-{
+void InfoTagPicture::setDateTimeTaken(const String& datetimetaken) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setDateTimeTakenRaw(infoTag, datetimetaken);
 }

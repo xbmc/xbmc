@@ -295,8 +295,7 @@ public:
 
   enum wait_result { TimedOut, Canceled, Success };
 
-  wait_result ShowAndWait (const WaitCondition& waitObj, unsigned timeOutSec, const std::string& line1)
-  {
+  wait_result ShowAndWait (const WaitCondition& waitObj, unsigned timeOutSec, const std::string& line1) const {
     auto timeOutMs = std::chrono::milliseconds(timeOutSec * 1000);
 
     if (m_dialog)
@@ -491,8 +490,7 @@ bool CWakeOnAccess::WakeUpHost(const std::string& hostName, const std::string& c
   return true;
 }
 
-bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
-{
+bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server) const {
   std::string heading = StringUtils::Format(LOCALIZED(13027), server.friendlyName);
 
   ProgressDialogHelper dlg (heading);

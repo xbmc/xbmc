@@ -77,8 +77,8 @@ namespace XBMCAddon
     public:
       inline explicit ref(InterceptorBase* b) : w(b) { w->upcallTls = this; }
       inline ~ref() { w->upcallTls = NULL; }
-      inline CGUIWindow* operator->() { return w->get(); }
-      inline CGUIWindow* get() { return w->get(); }
+      inline CGUIWindow* operator->() const { return w->get(); }
+      inline CGUIWindow* get() const { return w->get(); }
     };
 
     /**

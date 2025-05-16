@@ -21,8 +21,7 @@ bool CCPUInfo::HasCoreId(int coreId) const
   return false;
 }
 
-const CoreInfo CCPUInfo::GetCoreInfo(int coreId)
-{
+const CoreInfo CCPUInfo::GetCoreInfo(int coreId) const {
   CoreInfo coreInfo;
 
   for (auto& core : m_cores)

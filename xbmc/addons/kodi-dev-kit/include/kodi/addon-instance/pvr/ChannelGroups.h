@@ -60,8 +60,7 @@ public:
 
   /// @brief **required**\n
   /// Name of this channel group.
-  void SetGroupName(const std::string& groupName)
-  {
+  void SetGroupName(const std::string& groupName) const {
     strncpy(m_cStructure->strGroupName, groupName.c_str(), sizeof(m_cStructure->strGroupName) - 1);
   }
 
@@ -70,7 +69,7 @@ public:
 
   /// @brief **required**\n
   /// **true** If this is a radio channel group, **false** otherwise.
-  void SetIsRadio(bool isRadio) { m_cStructure->bIsRadio = isRadio; }
+  void SetIsRadio(bool isRadio) const { m_cStructure->bIsRadio = isRadio; }
 
   /// @brief To get with @ref SetIsRadio changed values.
   bool GetIsRadio() const { return m_cStructure->bIsRadio; }
@@ -78,7 +77,7 @@ public:
   /// @brief **optional**\n
   /// Sort position of the group (<b>`0`</b> indicates that the backend doesn't
   /// support sorting of groups).
-  void SetPosition(unsigned int position) { m_cStructure->iPosition = position; }
+  void SetPosition(unsigned int position) const { m_cStructure->iPosition = position; }
 
   /// @brief To get with @ref SetPosition changed values.
   unsigned int GetPosition() const { return m_cStructure->iPosition; }
@@ -116,8 +115,7 @@ public:
   /// @brief To add and give content from addon to Kodi on related call.
   ///
   /// @param[in] tag The to transferred data.
-  void Add(const kodi::addon::PVRChannelGroup& tag)
-  {
+  void Add(const kodi::addon::PVRChannelGroup& tag) const {
     m_instance->toKodi->TransferChannelGroup(m_instance->toKodi->kodiInstance, m_handle, tag);
   }
 
@@ -172,8 +170,7 @@ public:
 
   /// @brief **required**\n
   /// Name of the channel group to add the channel to.
-  void SetGroupName(const std::string& groupName)
-  {
+  void SetGroupName(const std::string& groupName) const {
     strncpy(m_cStructure->strGroupName, groupName.c_str(), sizeof(m_cStructure->strGroupName) - 1);
   }
 
@@ -182,8 +179,7 @@ public:
 
   /// @brief **required**\n
   /// Unique id of the member.
-  void SetChannelUniqueId(unsigned int channelUniqueId)
-  {
+  void SetChannelUniqueId(unsigned int channelUniqueId) const {
     m_cStructure->iChannelUniqueId = channelUniqueId;
   }
 
@@ -192,8 +188,7 @@ public:
 
   /// @brief **optional**\n
   /// Channel number within the group.
-  void SetChannelNumber(unsigned int channelNumber)
-  {
+  void SetChannelNumber(unsigned int channelNumber) const {
     m_cStructure->iChannelNumber = channelNumber;
   }
 
@@ -202,8 +197,7 @@ public:
 
   /// @brief **optional**\n
   /// Sub channel number within the group (ATSC).
-  void SetSubChannelNumber(unsigned int subChannelNumber)
-  {
+  void SetSubChannelNumber(unsigned int subChannelNumber) const {
     m_cStructure->iSubChannelNumber = subChannelNumber;
   }
 
@@ -212,7 +206,7 @@ public:
 
   /// @brief **optional**\n
   /// The value denoting the order of this channel in the <b>'All channels'</b> group.
-  void SetOrder(bool order) { m_cStructure->iOrder = order; }
+  void SetOrder(bool order) const { m_cStructure->iOrder = order; }
 
   /// @brief To get with @ref SetOrder changed values.
   bool GetOrder() const { return m_cStructure->iOrder; }
@@ -250,8 +244,7 @@ public:
   /// @brief To add and give content from addon to Kodi on related call.
   ///
   /// @param[in] tag The to transferred data.
-  void Add(const kodi::addon::PVRChannelGroupMember& tag)
-  {
+  void Add(const kodi::addon::PVRChannelGroupMember& tag) const {
     m_instance->toKodi->TransferChannelGroupMember(m_instance->toKodi->kodiInstance, m_handle, tag);
   }
 

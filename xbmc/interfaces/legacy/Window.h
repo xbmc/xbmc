@@ -88,7 +88,7 @@ namespace XBMCAddon
       ///
       getId();
 #else
-      long getId() { XBMC_TRACE; return id; }
+      long getId() const { XBMC_TRACE; return id; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -101,7 +101,7 @@ namespace XBMCAddon
       ///
       getButtonCode();
 #else
-      long getButtonCode() { XBMC_TRACE; return buttonCode; }
+      long getButtonCode() const { XBMC_TRACE; return buttonCode; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -114,7 +114,7 @@ namespace XBMCAddon
       ///
       getAmount1();
 #else
-      float getAmount1() { XBMC_TRACE; return fAmount1; }
+      float getAmount1() const { XBMC_TRACE; return fAmount1; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -127,7 +127,7 @@ namespace XBMCAddon
       ///
       getAmount2();
 #else
-      float getAmount2() { XBMC_TRACE; return fAmount2; }
+      float getAmount2() const { XBMC_TRACE; return fAmount2; }
 #endif
     };
     ///@}

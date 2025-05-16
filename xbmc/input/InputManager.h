@@ -154,14 +154,14 @@ public:
    * \return the current state of the mouse as a value from MOUSE_STATE
    * \sa MOUSE_STATE
    */
-  MOUSE_STATE GetMouseState();
+  MOUSE_STATE GetMouseState() const;
 
   /*! \brief Get the current mouse positions x and y coordinates
    *
    * \return a struct containing the x and y coordinates
    * \sa MousePosition
    */
-  MousePosition GetMousePosition();
+  MousePosition GetMousePosition() const;
 
   /*! \brief Set the current screen resolution and pointer speed
    *
@@ -210,16 +210,16 @@ public:
    *
    * \return the action matching the key
    */
-  CAction GetAction(int window, const CKey& key, bool fallback = true);
+  CAction GetAction(int window, const CKey& key, bool fallback = true) const;
 
   bool TranslateCustomControllerString(int windowId,
                                        const std::string& controllerName,
                                        int buttonId,
                                        int& action,
-                                       std::string& strAction);
+                                       std::string& strAction) const;
 
   bool TranslateTouchAction(
-      int windowId, int touchAction, int touchPointers, int& action, std::string& actionString);
+      int windowId, int touchAction, int touchPointers, int& action, std::string& actionString) const;
 
   std::vector<std::shared_ptr<const KODI::KEYMAP::IWindowKeymap>> GetJoystickKeymaps() const;
 

@@ -241,8 +241,7 @@ void CAudioSinkAE::AbortAddPackets()
   m_bAbort = true;
 }
 
-bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe)
-{
+bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe) const {
   if (!m_pAudioStream)
     return false;
 
@@ -310,16 +309,14 @@ double CAudioSinkAE::GetPlayingPts()
   return m_playingPts;
 }
 
-double CAudioSinkAE::GetPlayingFramePts()
-{
+double CAudioSinkAE::GetPlayingFramePts() const {
   if (m_playingFramePts == DVD_NOPTS_VALUE)
     return 0.0;
 
   return m_playingFramePts;
 }
 
-double CAudioSinkAE::GetSyncError()
-{
+double CAudioSinkAE::GetSyncError() const {
   return m_syncError;
 }
 
@@ -328,8 +325,7 @@ void CAudioSinkAE::SetSyncErrorCorrection(double correction)
   m_syncError += correction;
 }
 
-double CAudioSinkAE::GetResampleRatio()
-{
+double CAudioSinkAE::GetResampleRatio() const {
   return m_resampleRatio;
 }
 

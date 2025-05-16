@@ -21,9 +21,9 @@ public:
   ~CViewDatabase() override;
   bool Open() override;
 
-  bool GetViewState(const std::string &path, int windowID, CViewState &state, const std::string &skin);
-  bool SetViewState(const std::string &path, int windowID, const CViewState &state, const std::string &skin);
-  bool ClearViewStates(int windowID);
+  bool GetViewState(const std::string &path, int windowID, CViewState &state, const std::string &skin) const;
+  bool SetViewState(const std::string &path, int windowID, const CViewState &state, const std::string &skin) const;
+  bool ClearViewStates(int windowID) const;
 
 protected:
   void CreateTables() override;

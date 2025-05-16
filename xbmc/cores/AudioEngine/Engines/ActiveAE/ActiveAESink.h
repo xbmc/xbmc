@@ -103,7 +103,7 @@ public:
   AEDeviceType GetDeviceType(const std::string &device);
   bool HasPassthroughDevice();
   bool SupportsFormat(const std::string &device, AEAudioFormat &format);
-  bool DeviceExist(std::string driver, const std::string& device);
+  bool DeviceExist(std::string driver, const std::string& device) const;
   bool NeedIecPack() const { return m_needIecPack; }
   CSinkControlProtocol m_controlPort;
   CSinkDataProtocol m_dataPort;
@@ -121,7 +121,7 @@ protected:
   unsigned int OutputSamples(CSampleBuffer* samples);
   void SwapInit(CSampleBuffer* samples);
 
-  void GenerateNoise();
+  void GenerateNoise() const;
 
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;

@@ -60,8 +60,7 @@ public:
   ///
   /// @return JNI env pointer for the calling thread
   ///
-  inline void* GetJNIEnv()
-  {
+  inline void* GetJNIEnv() const {
     if (m_interface)
       return m_interface->get_jni_env();
 
@@ -75,8 +74,7 @@ public:
   ///
   /// @return Android SDK version
   ///
-  inline int GetSDKVersion()
-  {
+  inline int GetSDKVersion() const {
     if (m_interface)
       return m_interface->get_sdk_version();
 
@@ -90,8 +88,7 @@ public:
   ///
   /// @return package class name
   ///
-  inline std::string GetClassName()
-  {
+  inline std::string GetClassName() const {
     if (m_interface)
       return m_interface->get_class_name();
 

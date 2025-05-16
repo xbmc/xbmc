@@ -231,8 +231,8 @@ public:
   void set_asDouble(const double d);
   void set_asInt64(const int64_t i);
 
-  fType get_field_type();
-  std::string gft();
+  fType get_field_type() const;
+  std::string gft() const;
 };
 
 struct field_prop

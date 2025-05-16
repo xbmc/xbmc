@@ -134,8 +134,7 @@ void CGUIViewControl::UpdateContents(const CGUIControl *control, int currentItem
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg, m_parentWindow);
 }
 
-void CGUIViewControl::UpdateView()
-{
+void CGUIViewControl::UpdateView() const {
   //  CLog::Log(LOGDEBUG,"UpdateView: {}", m_currentView);
   if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return; // no valid current view!
@@ -185,8 +184,7 @@ std::string CGUIViewControl::GetSelectedItemPath() const
   return "";
 }
 
-void CGUIViewControl::SetSelectedItem(int item)
-{
+void CGUIViewControl::SetSelectedItem(int item) const {
   if (!m_fileItems || item < 0 || item >= m_fileItems->Size())
     return;
 
@@ -219,8 +217,7 @@ void CGUIViewControl::SetSelectedItem(const std::string &itemPath)
   SetSelectedItem(item);
 }
 
-void CGUIViewControl::SetFocused()
-{
+void CGUIViewControl::SetFocused() const {
   if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return; // no valid current view!
 
@@ -289,8 +286,7 @@ int CGUIViewControl::GetNextViewMode(int direction) const
   return (nextView->GetType() << 16) | nextView->GetID();
 }
 
-void CGUIViewControl::Clear()
-{
+void CGUIViewControl::Clear() const {
   if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return; // no valid current view!
 
@@ -309,8 +305,7 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
   return -1;
 }
 
-void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel)
-{
+void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel) const {
   // the view as control could be a select/spin/dropdown button
   std::vector< std::pair<std::string, int> > labels;
   for (unsigned int i = 0; i < m_visibleViews.size(); i++)

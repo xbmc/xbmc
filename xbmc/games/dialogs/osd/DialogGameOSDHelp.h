@@ -20,14 +20,14 @@ public:
   CDialogGameOSDHelp(CDialogGameOSD& dialog);
 
   // Initialize help controls
-  void OnInitWindow();
+  void OnInitWindow() const;
 
   // Check if any help controls are visible
   bool IsVisible();
 
 private:
   // Utility functions
-  bool IsVisible(int windowId);
+  bool IsVisible(int windowId) const;
 
   // Construction parameters
   CDialogGameOSD& m_dialog;

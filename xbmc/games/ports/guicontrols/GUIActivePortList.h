@@ -51,11 +51,11 @@ private:
   // GUI helpers
   void InitializeGUI();
   void DeinitializeGUI();
-  void AddInputDisabled();
+  void AddInputDisabled() const;
   void AddItems(const PortVec& ports);
-  void AddItem(const ControllerPtr& controller, const std::string& controllerAddress);
-  void AddPadding();
-  void CleanupItems();
+  void AddItem(const ControllerPtr& controller, const std::string& controllerAddress) const;
+  void AddPadding() const;
+  void CleanupItems() const;
 
   // Construction parameters
   CGUIWindow& m_guiWindow;

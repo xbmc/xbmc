@@ -295,26 +295,22 @@ void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)
   m_gameClient.reset();
 }
 
-void CGUIControllerWindow::OnControllerFocused(unsigned int controllerIndex)
-{
+void CGUIControllerWindow::OnControllerFocused(unsigned int controllerIndex) const {
   if (m_controllerList)
     m_controllerList->OnFocus(controllerIndex);
 }
 
-void CGUIControllerWindow::OnControllerSelected(unsigned int controllerIndex)
-{
+void CGUIControllerWindow::OnControllerSelected(unsigned int controllerIndex) const {
   if (m_controllerList)
     m_controllerList->OnSelect(controllerIndex);
 }
 
-void CGUIControllerWindow::OnFeatureFocused(unsigned int buttonIndex)
-{
+void CGUIControllerWindow::OnFeatureFocused(unsigned int buttonIndex) const {
   if (m_featureList)
     m_featureList->OnFocus(buttonIndex);
 }
 
-void CGUIControllerWindow::OnFeatureSelected(unsigned int buttonIndex)
-{
+void CGUIControllerWindow::OnFeatureSelected(unsigned int buttonIndex) const {
   if (m_featureList)
     m_featureList->OnSelect(buttonIndex);
 }
@@ -352,16 +348,14 @@ void CGUIControllerWindow::GetMoreControllers(void)
   }
 }
 
-void CGUIControllerWindow::GetAllControllers()
-{
+void CGUIControllerWindow::GetAllControllers() const {
   if (m_installer->IsRunning())
     return;
 
   m_installer->Create(false);
 }
 
-void CGUIControllerWindow::ResetController(void)
-{
+void CGUIControllerWindow::ResetController(void) const {
   if (m_controllerList)
     m_controllerList->ResetController();
 }

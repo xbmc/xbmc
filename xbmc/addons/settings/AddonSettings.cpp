@@ -220,8 +220,7 @@ void CAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, actionData);
 }
 
-bool CAddonSettings::AddInstanceSettings()
-{
+bool CAddonSettings::AddInstanceSettings() const {
   if (GetSetting(ADDON_SETTING_INSTANCE_NAME_VALUE) ||
       GetSetting(ADDON_SETTING_INSTANCE_ENABLED_VALUE))
   {
@@ -910,8 +909,7 @@ std::shared_ptr<CSetting> CAddonSettings::InitializeFromOldSettingLabel()
 
 SettingPtr CAddonSettings::InitializeFromOldSettingBool(const std::string& settingId,
                                                         const TiXmlElement* settingElement,
-                                                        const std::string& defaultValue)
-{
+                                                        const std::string& defaultValue) const {
   auto setting = std::make_shared<CSettingBool>(settingId, GetSettingsManager());
   if (setting->FromString(defaultValue))
     setting->SetDefault(setting->GetValue());
@@ -925,8 +923,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingTextIpAddress(const std::stri
                                                                  const std::string& settingType,
                                                                  const TiXmlElement* settingElement,
                                                                  const std::string& defaultValue,
-                                                                 const int settingLabel)
-{
+                                                                 const int settingLabel) const {
   std::shared_ptr<CSettingString> setting;
   auto control = std::make_shared<CSettingControlEdit>();
   control->SetHeading(settingLabel);
@@ -965,8 +962,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingTextIpAddress(const std::stri
 SettingPtr CAddonSettings::InitializeFromOldSettingNumber(const std::string& settingId,
                                                           const TiXmlElement* settingElement,
                                                           const std::string& defaultValue,
-                                                          const int settingLabel)
-{
+                                                          const int settingLabel) const {
   auto setting = std::make_shared<CSettingInt>(settingId, GetSettingsManager());
   if (setting->FromString(defaultValue))
     setting->SetDefault(setting->GetValue());
@@ -983,8 +979,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& setti
                                                         const std::string& settingType,
                                                         const TiXmlElement* settingElement,
                                                         const std::string& defaultValue,
-                                                        const int settingLabel)
-{
+                                                        const int settingLabel) const {
   auto setting = std::make_shared<CSettingPath>(settingId, GetSettingsManager());
   setting->SetDefault(defaultValue);
 
@@ -1053,8 +1048,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& setti
 SettingPtr CAddonSettings::InitializeFromOldSettingDate(const std::string& settingId,
                                                         const TiXmlElement* settingElement,
                                                         const std::string& defaultValue,
-                                                        const int settingLabel)
-{
+                                                        const int settingLabel) const {
   auto setting = std::make_shared<CSettingDate>(settingId, GetSettingsManager());
   if (setting->FromString(defaultValue))
     setting->SetDefault(setting->GetValue());
@@ -1070,8 +1064,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingDate(const std::string& setti
 SettingPtr CAddonSettings::InitializeFromOldSettingTime(const std::string& settingId,
                                                         const TiXmlElement* settingElement,
                                                         const std::string& defaultValue,
-                                                        const int settingLabel)
-{
+                                                        const int settingLabel) const {
   auto setting = std::make_shared<CSettingTime>(settingId, GetSettingsManager());
   if (setting->FromString(defaultValue))
     setting->SetDefault(setting->GetValue());
@@ -1154,8 +1147,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSelect(
 SettingPtr CAddonSettings::InitializeFromOldSettingAddon(const std::string& settingId,
                                                          const TiXmlElement* settingElement,
                                                          const std::string& defaultValue,
-                                                         const int settingLabel)
-{
+                                                         const int settingLabel) const {
   // get addon types
   std::string addonTypeStr = XMLUtils::GetAttribute(settingElement, "addontype");
   const auto addonTypesStr = StringUtils::Split(addonTypeStr, ",");
@@ -1225,8 +1217,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
     const TiXmlElement* settingElement,
     const std::string& defaultValue,
     const std::string& settingValues,
-    const std::vector<std::string>& settingLValues)
-{
+    const std::vector<std::string>& settingLValues) const {
   // process values and lvalues
   std::vector<std::string> values;
   if (!settingLValues.empty())
@@ -1362,8 +1353,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingFileEnum(const std::string& s
 
 SettingPtr CAddonSettings::InitializeFromOldSettingRangeOfNum(const std::string& settingId,
                                                               const TiXmlElement* settingElement,
-                                                              const std::string& defaultValue)
-{
+                                                              const std::string& defaultValue) const {
   auto setting = std::make_shared<CSettingNumber>(settingId, GetSettingsManager());
   if (setting->FromString(defaultValue))
     setting->SetDefault(setting->GetValue());
@@ -1395,8 +1385,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingRangeOfNum(const std::string&
 
 SettingPtr CAddonSettings::InitializeFromOldSettingSlider(const std::string& settingId,
                                                           const TiXmlElement* settingElement,
-                                                          const std::string& defaultValue)
-{
+                                                          const std::string& defaultValue) const {
   // parse range
   double min = 0.0, max = 100.0, step = 1.0;
   const auto range = StringUtils::Split(XMLUtils::GetAttribute(settingElement, "range"), ',');
@@ -1463,8 +1452,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingFileWithSource(
     const std::string& settingId,
     const TiXmlElement* settingElement,
     const std::string& defaultValue,
-    std::string source)
-{
+    std::string source) const {
   auto setting = std::make_shared<CSettingPath>(settingId, GetSettingsManager());
   setting->SetDefault(defaultValue);
 

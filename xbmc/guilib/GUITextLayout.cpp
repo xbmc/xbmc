@@ -94,8 +94,7 @@ void CGUITextLayout::Render(float x,
     CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
 }
 
-bool CGUITextLayout::UpdateScrollinfo(CScrollInfo &scrollInfo)
-{
+bool CGUITextLayout::UpdateScrollinfo(CScrollInfo &scrollInfo) const {
   if (!m_font)
     return false;
   if (m_lines.empty())
@@ -643,8 +642,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
   }
 }
 
-void CGUITextLayout::LineBreakText(const vecText &text, std::vector<CGUIString> &lines)
-{
+void CGUITextLayout::LineBreakText(const vecText &text, std::vector<CGUIString> &lines) const {
   int nMaxLines = (m_maxHeight > 0 && m_font && m_font->GetLineHeight() > 0)?(int)ceilf(m_maxHeight / m_font->GetLineHeight()):-1;
   auto lineStart = text.begin();
   auto pos = text.begin();

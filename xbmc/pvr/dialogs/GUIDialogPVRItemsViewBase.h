@@ -41,7 +41,7 @@ protected:
 
 private:
   void Clear();
-  void ShowInfo(int itemIdx);
+  void ShowInfo(int itemIdx) const;
   bool ContextMenu(int iItemIdx);
 };
 } // namespace PVR

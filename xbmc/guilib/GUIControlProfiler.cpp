@@ -73,8 +73,7 @@ void CGUIControlProfilerItem::EndRender(void)
   m_renderTime += (unsigned int)(m_pProfiler->m_fPerfScale * (CurrentHostCounter() - m_i64RenderStart));
 }
 
-void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
-{
+void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent) const {
   auto xmlControl = new TiXmlElement("control");
   parent->LinkEndChild(xmlControl);
 

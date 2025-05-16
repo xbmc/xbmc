@@ -49,8 +49,7 @@ CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
   delete m_p;
 }
 
-bool CDVDMsgGeneralSynchronize::Wait(std::chrono::milliseconds timeout, unsigned int source)
-{
+bool CDVDMsgGeneralSynchronize::Wait(std::chrono::milliseconds timeout, unsigned int source) const {
   std::unique_lock lock(m_p->section);
 
   XbmcThreads::EndTime<> timer{timeout};
@@ -101,8 +100,7 @@ CDVDMsgDemuxerPacket::~CDVDMsgDemuxerPacket()
     CDVDDemuxUtils::FreeDemuxPacket(m_packet);
 }
 
-unsigned int CDVDMsgDemuxerPacket::GetPacketSize()
-{
+unsigned int CDVDMsgDemuxerPacket::GetPacketSize() const {
   if (m_packet)
     return m_packet->iSize;
   else

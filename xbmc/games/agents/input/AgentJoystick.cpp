@@ -49,8 +49,7 @@ void CAgentJoystick::Deinitialize()
   m_controllerAppearance.reset();
 }
 
-void CAgentJoystick::ClearButtonState()
-{
+void CAgentJoystick::ClearButtonState() const {
   return m_controllerActivity->ClearButtonState();
 }
 

@@ -52,7 +52,7 @@ public:
   bool IsEnabled() const;
   void Enable();
   void Disable();
-  void HandleAutorun();
+  void HandleAutorun() const;
 
   /*! \brief Execute the autorun. Used for example to automatically rip cds or play optical discs
     * @param path the path for the item (e.g. the disc path)

@@ -145,7 +145,7 @@ private:
    \param infoPortion [in, out]  the list of info portions that may have been parsed from the string
    \param context the context where the info expressions need to be evaluated (currently window ids)
   */
-  void Parse(const std::string& label, std::vector<CInfoPortion>& infoPortion, int context);
+  void Parse(const std::string& label, std::vector<CInfoPortion>& infoPortion, int context) const;
 
   /*! \brief return (and cache) built label from info portions.
    \param rebuild whether we need to rebuild the label

@@ -57,8 +57,7 @@ namespace XBMCAddon
       return strText;
     }
 
-    bool Keyboard::isConfirmed()
-    {
+    bool Keyboard::isConfirmed() const {
       return bConfirmed;
     }
   }

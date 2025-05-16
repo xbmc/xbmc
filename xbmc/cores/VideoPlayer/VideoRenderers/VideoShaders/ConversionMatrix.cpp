@@ -599,13 +599,11 @@ Matrix3 CConvertMatrix::GetPrimMat()
   return dst;
 }
 
-float CConvertMatrix::GetGammaSrc()
-{
+float CConvertMatrix::GetGammaSrc() const {
   return m_gammaSrc;
 }
 
-float CConvertMatrix::GetGammaDst()
-{
+float CConvertMatrix::GetGammaDst() const {
   return m_gammaDst;
 }
 

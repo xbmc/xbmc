@@ -114,7 +114,7 @@ private:
    */
   void ReportInstallError(const std::string& addonID,
                           const std::string& fileName,
-                          const std::string& message = "");
+                          const std::string& message = "") const;
 
   ADDON::AddonPtr m_addon;
   ADDON::RepositoryPtr m_repo;
@@ -134,7 +134,7 @@ public:
   void SetRecurseOrphaned(RecurseOrphaned recurseOrphaned) { m_recurseOrphaned = recurseOrphaned; };
 
 private:
-  void ClearFavourites();
+  void ClearFavourites() const;
 
   ADDON::AddonPtr m_addon;
   bool m_removeData;
@@ -1176,8 +1176,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
   return true;
 }
 
-void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message /* = "" */)
-{
+void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message /* = "" */) const {
   AddonPtr addon;
   CServiceBroker::GetAddonMgr().FindInstallableById(addonID, addon);
 
@@ -1277,8 +1276,7 @@ bool CAddonUnInstallJob::DoWork()
   return true;
 }
 
-void CAddonUnInstallJob::ClearFavourites()
-{
+void CAddonUnInstallJob::ClearFavourites() const {
   bool bSave = false;
   CFileItemList items;
   CServiceBroker::GetFavouritesService().GetAll(items);

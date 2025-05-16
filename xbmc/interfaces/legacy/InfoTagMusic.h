@@ -108,7 +108,7 @@ namespace XBMCAddon
       ///
       getDbId();
 #else
-      int getDbId();
+      int getDbId() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -125,7 +125,7 @@ namespace XBMCAddon
       ///
       getURL();
 #else
-      String getURL();
+      String getURL() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -142,7 +142,7 @@ namespace XBMCAddon
       ///
       getTitle();
 #else
-      String getTitle();
+      String getTitle() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -165,7 +165,7 @@ namespace XBMCAddon
       ///
       getMediaType();
 #else
-      String getMediaType();
+      String getMediaType() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -182,7 +182,7 @@ namespace XBMCAddon
       ///
       getArtist();
 #else
-      String getArtist();
+      String getArtist() const;
 #endif
 
 
@@ -200,7 +200,7 @@ namespace XBMCAddon
       ///
       getAlbum();
 #else
-      String getAlbum();
+      String getAlbum() const;
 #endif
 
 
@@ -218,7 +218,7 @@ namespace XBMCAddon
       ///
       getAlbumArtist();
 #else
-      String getAlbumArtist();
+      String getAlbumArtist() const;
 #endif
 
 
@@ -236,7 +236,7 @@ namespace XBMCAddon
       ///
       getGenre();
 #else
-      String getGenre();
+      String getGenre() const;
 #endif
 
 
@@ -254,7 +254,7 @@ namespace XBMCAddon
       ///
       getGenres();
 #else
-      std::vector<String> getGenres();
+      std::vector<String> getGenres() const;
 #endif
 
 
@@ -272,7 +272,7 @@ namespace XBMCAddon
       ///
       getDuration();
 #else
-      int getDuration();
+      int getDuration() const;
 #endif
 
 
@@ -291,7 +291,7 @@ namespace XBMCAddon
       ///
       getYear();
 #else
-      int getYear();
+      int getYear() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -308,7 +308,7 @@ namespace XBMCAddon
       ///
       getRating();
 #else
-      int getRating();
+      int getRating() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -325,7 +325,7 @@ namespace XBMCAddon
       ///
       getUserRating();
 #else
-      int getUserRating();
+      int getUserRating() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -342,7 +342,7 @@ namespace XBMCAddon
       ///
       getTrack();
 #else
-      int getTrack();
+      int getTrack() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -362,7 +362,7 @@ namespace XBMCAddon
       /**
        * getDisc() -- returns an integer.\n
        */
-      int getDisc();
+      int getDisc() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -379,7 +379,7 @@ namespace XBMCAddon
       ///
       getReleaseDate();
 #else
-      String getReleaseDate();
+      String getReleaseDate() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -396,7 +396,7 @@ namespace XBMCAddon
       ///
       getListeners();
 #else
-      int getListeners();
+      int getListeners() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -413,7 +413,7 @@ namespace XBMCAddon
       ///
       getPlayCount();
 #else
-      int getPlayCount();
+      int getPlayCount() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -430,7 +430,7 @@ namespace XBMCAddon
       ///
       getLastPlayed();
 #else
-      String getLastPlayed();
+      String getLastPlayed() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -447,7 +447,7 @@ namespace XBMCAddon
       ///
       getLastPlayedAsW3C();
 #else
-      String getLastPlayedAsW3C();
+      String getLastPlayedAsW3C() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -464,7 +464,7 @@ namespace XBMCAddon
       ///
       getComment();
 #else
-      String getComment();
+      String getComment() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -481,7 +481,7 @@ namespace XBMCAddon
       ///
       getLyrics();
 #else
-      String getLyrics();
+      String getLyrics() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -498,7 +498,7 @@ namespace XBMCAddon
       ///
       getMusicBrainzTrackID();
 #else
-      String getMusicBrainzTrackID();
+      String getMusicBrainzTrackID() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -515,7 +515,7 @@ namespace XBMCAddon
       ///
       getMusicBrainzArtistID();
 #else
-      std::vector<String> getMusicBrainzArtistID();
+      std::vector<String> getMusicBrainzArtistID() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -532,7 +532,7 @@ namespace XBMCAddon
       ///
       getMusicBrainzAlbumID();
 #else
-      String getMusicBrainzAlbumID();
+      String getMusicBrainzAlbumID() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -549,7 +549,7 @@ namespace XBMCAddon
       ///
       getMusicBrainzReleaseGroupID();
 #else
-      String getMusicBrainzReleaseGroupID();
+      String getMusicBrainzReleaseGroupID() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -566,7 +566,7 @@ namespace XBMCAddon
       ///
       getMusicBrainzAlbumArtistID();
 #else
-      std::vector<String> getMusicBrainzAlbumArtistID();
+      std::vector<String> getMusicBrainzAlbumArtistID() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -583,7 +583,7 @@ namespace XBMCAddon
       ///
       getSongVideoURL();
 #else
-      String getSongVideoURL();
+      String getSongVideoURL() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -601,7 +601,7 @@ namespace XBMCAddon
       ///
       setDbId(...);
 #else
-      void setDbId(int dbId, const String& type);
+      void setDbId(int dbId, const String& type) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -618,7 +618,7 @@ namespace XBMCAddon
       ///
       setURL(...);
 #else
-      void setURL(const String& url);
+      void setURL(const String& url) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -635,7 +635,7 @@ namespace XBMCAddon
       ///
       setMediaType(...);
 #else
-      void setMediaType(const String& mediaType);
+      void setMediaType(const String& mediaType) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -652,7 +652,7 @@ namespace XBMCAddon
       ///
       setTrack(...);
 #else
-      void setTrack(int track);
+      void setTrack(int track) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -669,7 +669,7 @@ namespace XBMCAddon
       ///
       setDisc(...);
 #else
-      void setDisc(int disc);
+      void setDisc(int disc) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -686,7 +686,7 @@ namespace XBMCAddon
       ///
       setDuration(...);
 #else
-      void setDuration(int duration);
+      void setDuration(int duration) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -703,7 +703,7 @@ namespace XBMCAddon
       ///
       setYear(...);
 #else
-      void setYear(int year);
+      void setYear(int year) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -720,7 +720,7 @@ namespace XBMCAddon
       ///
       setReleaseDate(...);
 #else
-      void setReleaseDate(const String& releaseDate);
+      void setReleaseDate(const String& releaseDate) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -737,7 +737,7 @@ namespace XBMCAddon
       ///
       setListeners(...);
 #else
-      void setListeners(int listeners);
+      void setListeners(int listeners) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -754,7 +754,7 @@ namespace XBMCAddon
       ///
       setPlayCount(...);
 #else
-      void setPlayCount(int playcount);
+      void setPlayCount(int playcount) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -771,7 +771,7 @@ namespace XBMCAddon
       ///
       setGenres(...);
 #else
-      void setGenres(const std::vector<String>& genres);
+      void setGenres(const std::vector<String>& genres) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -788,7 +788,7 @@ namespace XBMCAddon
       ///
       setAlbum(...);
 #else
-      void setAlbum(const String& album);
+      void setAlbum(const String& album) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -805,7 +805,7 @@ namespace XBMCAddon
       ///
       setArtist(...);
 #else
-      void setArtist(const String& artist);
+      void setArtist(const String& artist) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -822,7 +822,7 @@ namespace XBMCAddon
       ///
       setAlbumArtist(...);
 #else
-      void setAlbumArtist(const String& albumArtist);
+      void setAlbumArtist(const String& albumArtist) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -839,7 +839,7 @@ namespace XBMCAddon
       ///
       setTitle(...);
 #else
-      void setTitle(const String& title);
+      void setTitle(const String& title) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -856,7 +856,7 @@ namespace XBMCAddon
       ///
       setRating(...);
 #else
-      void setRating(float rating);
+      void setRating(float rating) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -873,7 +873,7 @@ namespace XBMCAddon
       ///
       setUserRating(...);
 #else
-      void setUserRating(int userrating);
+      void setUserRating(int userrating) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -890,7 +890,7 @@ namespace XBMCAddon
       ///
       setLyrics(...);
 #else
-      void setLyrics(const String& lyrics);
+      void setLyrics(const String& lyrics) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -907,7 +907,7 @@ namespace XBMCAddon
       ///
       setLastPlayed(...);
 #else
-      void setLastPlayed(const String& lastPlayed);
+      void setLastPlayed(const String& lastPlayed) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -924,7 +924,7 @@ namespace XBMCAddon
       ///
       setMusicBrainzTrackID(...);
 #else
-      void setMusicBrainzTrackID(const String& musicBrainzTrackID);
+      void setMusicBrainzTrackID(const String& musicBrainzTrackID) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -941,7 +941,7 @@ namespace XBMCAddon
       ///
       setMusicBrainzArtistID(...);
 #else
-      void setMusicBrainzArtistID(const std::vector<String>& musicBrainzArtistID);
+      void setMusicBrainzArtistID(const std::vector<String>& musicBrainzArtistID) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -958,7 +958,7 @@ namespace XBMCAddon
       ///
       setMusicBrainzAlbumID(...);
 #else
-      void setMusicBrainzAlbumID(const String& musicBrainzAlbumID);
+      void setMusicBrainzAlbumID(const String& musicBrainzAlbumID) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -975,7 +975,7 @@ namespace XBMCAddon
       ///
       setMusicBrainzReleaseGroupID(...);
 #else
-      void setMusicBrainzReleaseGroupID(const String& musicBrainzReleaseGroupID);
+      void setMusicBrainzReleaseGroupID(const String& musicBrainzReleaseGroupID) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -992,7 +992,7 @@ namespace XBMCAddon
       ///
       setMusicBrainzAlbumArtistID(...);
 #else
-      void setMusicBrainzAlbumArtistID(const std::vector<String>& musicBrainzAlbumArtistID);
+      void setMusicBrainzAlbumArtistID(const std::vector<String>& musicBrainzAlbumArtistID) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -1009,7 +1009,7 @@ namespace XBMCAddon
       ///
       setComment(...);
 #else
-      void setComment(const String& comment);
+      void setComment(const String& comment) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -1026,7 +1026,7 @@ namespace XBMCAddon
       ///
       setSongVideoURL(...);
 #else
-      void setSongVideoURL(const String& songVideoURL);
+      void setSongVideoURL(const String& songVideoURL) const;
 #endif
 
 #ifndef SWIG

@@ -39,8 +39,7 @@ struct IcmpPacket
   icmphdr header;
   uint8_t data[ICMP_PACKET_SIZE - sizeof(icmphdr)];
 
-  uint16_t Checksum()
-  {
+  uint16_t Checksum() const {
     auto data = reinterpret_cast<const uint16_t*>(&header);
     unsigned int length = sizeof(header) + sizeof(data);
 

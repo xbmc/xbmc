@@ -1151,8 +1151,7 @@ static void logFromMHD(void* unused, const char* fmt, va_list ap)
   }
 }
 
-bool CWebServer::LoadCert(std::string& skey, std::string& scert)
-{
+bool CWebServer::LoadCert(std::string& skey, std::string& scert) const {
   XFILE::CFile file;
   std::vector<uint8_t> buf;
   auto keyFile = "special://userdata/server.key";
@@ -1288,8 +1287,7 @@ bool CWebServer::Stop()
   return true;
 }
 
-bool CWebServer::IsStarted()
-{
+bool CWebServer::IsStarted() const {
   return m_running;
 }
 

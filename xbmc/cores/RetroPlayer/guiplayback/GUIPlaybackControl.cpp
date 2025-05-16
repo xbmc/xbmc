@@ -58,8 +58,7 @@ void CGUIPlaybackControl::FrameMove()
 
 CGUIPlaybackControl::GuiState CGUIPlaybackControl::NextState(bool bFullscreen,
                                                              bool bInMenu,
-                                                             bool bInBackground)
-{
+                                                             bool bInBackground) const {
   GuiState newState = m_state;
 
   switch (m_state)

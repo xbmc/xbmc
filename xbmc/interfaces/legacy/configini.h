@@ -36,8 +36,7 @@ namespace XBMCAddon
       const std::string configini_path = "/flash/config.ini";
 
       // open config.ini for read
-      inline bool read(std::vector<std::string> &lines)
-      {
+      inline bool read(std::vector<std::string> &lines) const {
         // does config.ini exist
         if (XFILE::CFile::Exists(configini_path.c_str(), true))
         {
@@ -56,8 +55,7 @@ namespace XBMCAddon
       }
 
       // open config.ini for write
-      inline bool write(std::vector<std::string> lines)
-      {
+      inline bool write(std::vector<std::string> lines) const {
         system("mount -o remount,rw /flash");
 
         std::ofstream config_ini(configini_path.c_str());

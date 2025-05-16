@@ -109,8 +109,7 @@ public:
 
   /// @brief **required**\n
   /// Identifier for this event. Event uids must be unique for a channel. Valid uids must be greater than @ref EPG_TAG_INVALID_UID.
-  void SetUniqueBroadcastId(unsigned int uniqueBroadcastId)
-  {
+  void SetUniqueBroadcastId(unsigned int uniqueBroadcastId) const {
     m_cStructure->iUniqueBroadcastId = uniqueBroadcastId;
   }
 
@@ -119,8 +118,7 @@ public:
 
   /// @brief **required**\n
   /// Unique identifier of the channel this event belongs to.
-  void SetUniqueChannelId(unsigned int uniqueChannelId)
-  {
+  void SetUniqueChannelId(unsigned int uniqueChannelId) const {
     m_cStructure->iUniqueChannelId = uniqueChannelId;
   }
 
@@ -138,7 +136,7 @@ public:
   /// Start time in UTC.
   ///
   /// Seconds elapsed since 00:00 hours, Jan 1, 1970 UTC.
-  void SetStartTime(time_t startTime) { m_cStructure->startTime = startTime; }
+  void SetStartTime(time_t startTime) const { m_cStructure->startTime = startTime; }
 
   /// @brief To get with @ref SetStartTime changed values.
   time_t GetStartTime() const { return m_cStructure->startTime; }
@@ -147,7 +145,7 @@ public:
   /// End time in UTC.
   ///
   /// Seconds elapsed since 00:00 hours, Jan 1, 1970 UTC.
-  void SetEndTime(time_t endTime) { m_cStructure->endTime = endTime; }
+  void SetEndTime(time_t endTime) const { m_cStructure->endTime = endTime; }
 
   /// @brief To get with @ref SetEndTime changed values.
   time_t GetEndTime() const { return m_cStructure->endTime; }
@@ -202,7 +200,7 @@ public:
 
   /// @brief **optional**\n
   /// Year.
-  void SetYear(int year) { m_cStructure->iYear = year; }
+  void SetYear(int year) const { m_cStructure->iYear = year; }
 
   /// @brief To get with @ref SetYear changed values.
   int GetYear() const { return m_cStructure->iYear; }
@@ -252,7 +250,7 @@ public:
   /// tag.SetGenreDescription("My special genre name"); // Should use (if possible) kodi::GetLocalizedString(...) to have match user language.
   /// ~~~~~~~~~~~~~
   ///
-  void SetGenreType(int genreType) { m_cStructure->iGenreType = genreType; }
+  void SetGenreType(int genreType) const { m_cStructure->iGenreType = genreType; }
 
   /// @brief To get with @ref SetGenreType changed values
   int GetGenreType() const { return m_cStructure->iGenreType; }
@@ -289,7 +287,7 @@ public:
   /// tag.SetGenreSubType(EPG_EVENT_CONTENTSUBMASK_MUSICBALLETDANCE_JAZZ);
   /// ~~~~~~~~~~~~~
   ///
-  void SetGenreSubType(int genreSubType) { m_cStructure->iGenreSubType = genreSubType; }
+  void SetGenreSubType(int genreSubType) const { m_cStructure->iGenreSubType = genreSubType; }
 
   /// @brief To get with @ref SetGenreSubType changed values.
   int GetGenreSubType() const { return m_cStructure->iGenreSubType; }
@@ -328,7 +326,7 @@ public:
 
   /// @brief **optional**\n
   /// Parental rating.
-  void SetParentalRating(int parentalRating) { m_cStructure->iParentalRating = parentalRating; }
+  void SetParentalRating(int parentalRating) const { m_cStructure->iParentalRating = parentalRating; }
 
   /// @brief To get with @ref SetParentalRatinge changed values.
   int GetParentalRating() const { return m_cStructure->iParentalRating; }
@@ -345,29 +343,28 @@ public:
 
   /// @brief **optional**\n
   /// Star rating.
-  void SetStarRating(int starRating) { m_cStructure->iStarRating = starRating; }
+  void SetStarRating(int starRating) const { m_cStructure->iStarRating = starRating; }
 
   /// @brief To get with @ref SetStarRating changed values.
   int GetStarRating() const { return m_cStructure->iStarRating; }
 
   /// @brief **optional**\n
   /// Series number.
-  void SetSeriesNumber(int seriesNumber) { m_cStructure->iSeriesNumber = seriesNumber; }
+  void SetSeriesNumber(int seriesNumber) const { m_cStructure->iSeriesNumber = seriesNumber; }
 
   /// @brief To get with @ref SetSeriesNumber changed values.
   int GetSeriesNumber() const { return m_cStructure->iSeriesNumber; }
 
   /// @brief **optional**\n
   /// Episode number.
-  void SetEpisodeNumber(int episodeNumber) { m_cStructure->iEpisodeNumber = episodeNumber; }
+  void SetEpisodeNumber(int episodeNumber) const { m_cStructure->iEpisodeNumber = episodeNumber; }
 
   /// @brief To get with @ref SetEpisodeNumber changed values.
   int GetEpisodeNumber() const { return m_cStructure->iEpisodeNumber; }
 
   /// @brief **optional**\n
   /// Episode part number.
-  void SetEpisodePartNumber(int episodePartNumber)
-  {
+  void SetEpisodePartNumber(int episodePartNumber) const {
     m_cStructure->iEpisodePartNumber = episodePartNumber;
   }
 
@@ -390,7 +387,7 @@ public:
   ///
   /// @copydetails cpp_kodi_addon_pvr_Defs_epg_EPG_TAG_FLAG
   ///
-  void SetFlags(unsigned int flags) { m_cStructure->iFlags = flags; }
+  void SetFlags(unsigned int flags) const { m_cStructure->iFlags = flags; }
 
   /// @brief To get with @ref SetFlags changed values.
   unsigned int GetFlags() const { return m_cStructure->iFlags; }
@@ -495,8 +492,7 @@ public:
   /// @brief To add and give content from addon to Kodi on related call.
   ///
   /// @param[in] tag The to transferred data.
-  void Add(const kodi::addon::PVREPGTag& tag)
-  {
+  void Add(const kodi::addon::PVREPGTag& tag) const {
     m_instance->toKodi->TransferEpgEntry(m_instance->toKodi->kodiInstance, m_handle, tag.GetTag());
   }
 

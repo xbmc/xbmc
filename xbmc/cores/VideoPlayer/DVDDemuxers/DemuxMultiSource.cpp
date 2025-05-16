@@ -216,8 +216,7 @@ bool CDemuxMultiSource::SeekTime(double time, bool backwards, double* startpts)
   return ret;
 }
 
-void CDemuxMultiSource::SetMissingStreamDetails(const DemuxPtr& demuxer)
-{
+void CDemuxMultiSource::SetMissingStreamDetails(const DemuxPtr& demuxer) const {
   std::string baseFileName = m_pInput->GetFileName();
   std::string fileName = demuxer->GetFileName();
   for (auto& stream : demuxer->GetStreams())

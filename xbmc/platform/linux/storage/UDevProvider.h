@@ -35,7 +35,7 @@ public:
   bool PumpDriveChangeEvents(IStorageEventsCallback *callback) override;
 
 private:
-  void GetDisks(VECSOURCES& devices, bool removable);
+  void GetDisks(VECSOURCES& devices, bool removable) const;
 
   struct udev         *m_udev;
   struct udev_monitor *m_udevMon;

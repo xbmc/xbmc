@@ -55,7 +55,7 @@ public:
 protected:
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool UpdateColors(const CGUIListItem* item) override;
-  bool SetAlpha(unsigned char alpha);
+  bool SetAlpha(unsigned char alpha) const;
   void Resize(float x, float y);
   std::unique_ptr<CGUITexture> m_imgFocus;
   std::unique_ptr<CGUITexture> m_imgNoFocus;

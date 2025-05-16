@@ -48,21 +48,18 @@ CScreenSaver::~CScreenSaver()
   delete m_ifc.screensaver;
 }
 
-bool CScreenSaver::Start()
-{
+bool CScreenSaver::Start() const {
   if (m_ifc.screensaver->toAddon->start)
     return m_ifc.screensaver->toAddon->start(m_ifc.hdl);
   return false;
 }
 
-void CScreenSaver::Stop()
-{
+void CScreenSaver::Stop() const {
   if (m_ifc.screensaver->toAddon->stop)
     m_ifc.screensaver->toAddon->stop(m_ifc.hdl);
 }
 
-void CScreenSaver::Render()
-{
+void CScreenSaver::Render() const {
   if (m_ifc.screensaver->toAddon->render)
     m_ifc.screensaver->toAddon->render(m_ifc.hdl);
 }

@@ -160,8 +160,7 @@ public:
     return face;
   };
 
-  FT_Stroker GetStroker()
-  {
+  FT_Stroker GetStroker() const {
     if (!m_library)
       return nullptr;
 
@@ -770,8 +769,7 @@ unsigned int CGUIFontTTF::GetMaxFontHeight() const
   return m_maxFontHeight + SPACING_BETWEEN_CHARACTERS_IN_TEXTURE;
 }
 
-std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecText& text)
-{
+std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecText& text) const {
   std::vector<Glyph> glyphs;
   if (text.empty())
   {
@@ -1257,8 +1255,7 @@ void CGUIFontTTF::ObliqueGlyph(FT_GlyphSlot slot)
 }
 
 // Embolden code - original taken from freetype2 (ftsynth.c)
-void CGUIFontTTF::SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength)
-{
+void CGUIFontTTF::SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength) const {
   if (slot->format != FT_GLYPH_FORMAT_OUTLINE)
     return;
 

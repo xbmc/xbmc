@@ -36,8 +36,8 @@ public:
   bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
 
   bool GetLibraryBool(int condition) const;
-  void SetLibraryBool(int condition, bool value);
-  void ResetLibraryBools();
+  void SetLibraryBool(int condition, bool value) const;
+  void ResetLibraryBools() const;
 
 private:
   mutable int m_libraryHasMusic;

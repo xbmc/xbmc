@@ -142,13 +142,11 @@ void CGUIDialogColorPicker::Reset()
   m_vecList->Clear();
 }
 
-void CGUIDialogColorPicker::AddItem(const CFileItem& item)
-{
+void CGUIDialogColorPicker::AddItem(const CFileItem& item) const {
   m_vecList->Add(std::make_shared<CFileItem>(item));
 }
 
-void CGUIDialogColorPicker::SetItems(const CFileItemList& pList)
-{
+void CGUIDialogColorPicker::SetItems(const CFileItemList& pList) const {
   // need to make internal copy of list to be sure dialog is owner of it
   m_vecList->Clear();
   m_vecList->Copy(pList);
@@ -159,8 +157,7 @@ void CGUIDialogColorPicker::LoadColors()
   LoadColors(CSpecialProtocol::TranslatePathConvertCase("special://xbmc/system/dialogcolors.xml"));
 }
 
-void CGUIDialogColorPicker::LoadColors(const std::string& filePath)
-{
+void CGUIDialogColorPicker::LoadColors(const std::string& filePath) const {
   CGUIColorManager colorManager;
   std::vector<std::pair<std::string, UTILS::COLOR::ColorInfo>> colors;
   if (colorManager.LoadColorsListFromXML(filePath, colors, true))

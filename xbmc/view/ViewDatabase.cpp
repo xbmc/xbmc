@@ -112,8 +112,7 @@ void CViewDatabase::UpdateTables(int version)
   }
 }
 
-bool CViewDatabase::GetViewState(const std::string &path, int window, CViewState &state, const std::string &skin)
-{
+bool CViewDatabase::GetViewState(const std::string &path, int window, CViewState &state, const std::string &skin) const {
   try
   {
     if (nullptr == m_pDB)
@@ -150,8 +149,7 @@ bool CViewDatabase::GetViewState(const std::string &path, int window, CViewState
   return false;
 }
 
-bool CViewDatabase::SetViewState(const std::string &path, int window, const CViewState &state, const std::string &skin)
-{
+bool CViewDatabase::SetViewState(const std::string &path, int window, const CViewState &state, const std::string &skin) const {
   try
   {
     if (nullptr == m_pDB)
@@ -188,8 +186,7 @@ bool CViewDatabase::SetViewState(const std::string &path, int window, const CVie
   return true;
 }
 
-bool CViewDatabase::ClearViewStates(int windowID)
-{
+bool CViewDatabase::ClearViewStates(int windowID) const {
   try
   {
     if (nullptr == m_pDB)

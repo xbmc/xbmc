@@ -31,12 +31,12 @@ public:
 
   void SetItems(CFileItemList &items);
 
-  void SetSelectedItem(int item);
+  void SetSelectedItem(int item) const;
   void SetSelectedItem(const std::string &itemPath);
 
   int GetSelectedItem() const;
   std::string GetSelectedItemPath() const;
-  void SetFocused();
+  void SetFocused() const;
 
   bool HasControl(int controlID) const;
   int GetNextViewMode(int direction = 1) const;
@@ -46,13 +46,13 @@ public:
 
   int GetCurrentControl() const;
 
-  void Clear();
+  void Clear() const;
 
 protected:
   int GetSelectedItem(const CGUIControl *control) const;
   void UpdateContents(const CGUIControl *control, int currentItem) const;
-  void UpdateView();
-  void UpdateViewAsControl(const std::string &viewLabel);
+  void UpdateView() const;
+  void UpdateViewAsControl(const std::string &viewLabel) const;
   void UpdateViewVisibility();
   int GetView(VIEW_TYPE type, int id) const;
 

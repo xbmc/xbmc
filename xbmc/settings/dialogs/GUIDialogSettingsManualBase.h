@@ -50,7 +50,7 @@ protected:
 
   virtual void InitializeSettings();
 
-  std::shared_ptr<CSettingCategory> AddCategory(const std::string &id, int label, int help = -1);
+  std::shared_ptr<CSettingCategory> AddCategory(const std::string &id, int label, int help = -1) const;
   std::shared_ptr<CSettingGroup> AddGroup(const std::shared_ptr<CSettingCategory>& category,
                                           int label = -1,
                                           int help = -1,

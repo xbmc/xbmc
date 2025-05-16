@@ -48,11 +48,11 @@ public:
                 CInputManager& inputManager);
   ~CGameServices();
 
-  ControllerPtr GetController(const std::string& controllerId);
-  ControllerPtr GetDefaultController();
-  ControllerPtr GetDefaultKeyboard();
-  ControllerPtr GetDefaultMouse();
-  ControllerVector GetControllers();
+  ControllerPtr GetController(const std::string& controllerId) const;
+  ControllerPtr GetDefaultController() const;
+  ControllerPtr GetDefaultKeyboard() const;
+  ControllerPtr GetDefaultMouse() const;
+  ControllerVector GetControllers() const;
 
   /*!
    * \brief Translate a feature on a controller into its localized name
@@ -63,15 +63,15 @@ public:
    * \return The localized feature name, or empty if the controller or feature
    *         doesn't exist
    */
-  std::string TranslateFeature(const std::string& controllerId, const std::string& featureName);
+  std::string TranslateFeature(const std::string& controllerId, const std::string& featureName) const;
 
   std::string GetSavestatesFolder() const;
 
-  CGameSettings& GameSettings() { return *m_gameSettings; }
+  CGameSettings& GameSettings() const { return *m_gameSettings; }
 
-  RETRO::CGUIGameRenderManager& GameRenderManager() { return m_gameRenderManager; }
+  RETRO::CGUIGameRenderManager& GameRenderManager() const { return m_gameRenderManager; }
 
-  CAgentInput& AgentInput() { return *m_agentInput; }
+  CAgentInput& AgentInput() const { return *m_agentInput; }
 
   /*!
    * \brief Called when an add-on repo is installed

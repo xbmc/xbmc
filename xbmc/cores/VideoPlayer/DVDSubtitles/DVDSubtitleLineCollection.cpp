@@ -45,8 +45,7 @@ void CDVDSubtitleLineCollection::Add(std::shared_ptr<CDVDOverlay> pOverlay)
   m_iSize++;
 }
 
-void CDVDSubtitleLineCollection::Sort()
-{
+void CDVDSubtitleLineCollection::Sort() const {
   if (!m_pHead || !m_pHead->pNext)
     return;
 

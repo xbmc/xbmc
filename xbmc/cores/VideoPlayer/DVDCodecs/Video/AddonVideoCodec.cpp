@@ -415,8 +415,7 @@ void CAddonVideoCodec::Reset()
     m_ifc.videocodec->toAddon->reset(m_ifc.videocodec);
 }
 
-bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
-{
+bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture) const {
   CVideoBuffer *videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, picture.decodedDataSize, nullptr);
   if (!videoBuffer)
   {

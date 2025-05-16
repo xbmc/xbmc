@@ -173,22 +173,18 @@ void CGUIAgentWindow::CloseDialog()
   Close();
 }
 
-void CGUIAgentWindow::UpdateActivePortList()
-{
+void CGUIAgentWindow::UpdateActivePortList() const {
   m_portList->Refresh();
 }
 
-void CGUIAgentWindow::UpdateControllerList()
-{
+void CGUIAgentWindow::UpdateControllerList() const {
   m_controllerList->Refresh();
 }
 
-void CGUIAgentWindow::FocusControllerList()
-{
+void CGUIAgentWindow::FocusControllerList() const {
   m_controllerList->SetFocused();
 }
 
-void CGUIAgentWindow::OnControllerClick()
-{
+void CGUIAgentWindow::OnControllerClick() const {
   m_controllerList->OnSelect();
 }

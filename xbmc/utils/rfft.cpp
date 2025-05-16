@@ -28,8 +28,7 @@ RFFT::~RFFT()
   KISS_FFT_FREE(m_cfg);
 }
 
-void RFFT::calc(const float* input, float* output)
-{
+void RFFT::calc(const float* input, float* output) const {
   // temporary buffers
   std::vector<kiss_fft_scalar> linput(m_size), rinput(m_size);
   std::vector<kiss_fft_cpx> loutput(m_size), routput(m_size);

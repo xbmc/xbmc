@@ -34,7 +34,7 @@ protected:
   void Update();
   void SetLabel(int iControl, const std::string& strLabel);
 
-  bool OnPopupMenu(int iItem);
+  bool OnPopupMenu(int iItem) const;
   CGUIViewControl m_viewControl;
   CFileItemList* m_vecItems;
 

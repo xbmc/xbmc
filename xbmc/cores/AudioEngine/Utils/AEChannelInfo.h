@@ -41,7 +41,7 @@ public:
   inline unsigned int Count() const { return m_channelCount; }
   static const char* GetChName(const enum AEChannel ch);
   bool HasChannel(const enum AEChannel ch) const;
-  bool IsChannelValid(const unsigned int pos);
+  bool IsChannelValid(const unsigned int pos) const;
   bool IsLayoutValid();
   bool ContainsChannels(const CAEChannelInfo& rhs) const;
   void ReplaceChannel(const enum AEChannel from, const enum AEChannel to);

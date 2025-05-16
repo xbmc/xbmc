@@ -41,7 +41,7 @@ private:
    * GetFrameBuffer has to set decodedData to a valid memory address and return true.
    * In case buffer allocation fails, return false.
    */
-  bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture);
+  bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture) const;
   void ReleaseFrameBuffer(KODI_HANDLE videoBufferHandle);
 
   static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *picture);

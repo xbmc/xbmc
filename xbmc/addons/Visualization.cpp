@@ -78,115 +78,98 @@ CVisualization::~CVisualization()
 bool CVisualization::Start(int channels,
                            int samplesPerSec,
                            int bitsPerSample,
-                           const std::string& songName)
-{
+                           const std::string& songName) const {
   if (m_ifc.visualization->toAddon->start)
     return m_ifc.visualization->toAddon->start(m_ifc.hdl, channels, samplesPerSec, bitsPerSample,
                                                songName.c_str());
   return false;
 }
 
-void CVisualization::Stop()
-{
+void CVisualization::Stop() const {
   if (m_ifc.visualization->toAddon->stop)
     m_ifc.visualization->toAddon->stop(m_ifc.hdl);
 }
 
-void CVisualization::AudioData(const float* audioData, int audioDataLength)
-{
+void CVisualization::AudioData(const float* audioData, int audioDataLength) const {
   if (m_ifc.visualization->toAddon->audio_data)
     m_ifc.visualization->toAddon->audio_data(m_ifc.hdl, audioData, audioDataLength);
 }
 
-bool CVisualization::IsDirty()
-{
+bool CVisualization::IsDirty() const {
   if (m_ifc.visualization->toAddon->is_dirty)
     return m_ifc.visualization->toAddon->is_dirty(m_ifc.hdl);
   return false;
 }
 
-void CVisualization::Render()
-{
+void CVisualization::Render() const {
   if (m_ifc.visualization->toAddon->render)
     m_ifc.visualization->toAddon->render(m_ifc.hdl);
 }
 
-int CVisualization::GetSyncDelay()
-{
+int CVisualization::GetSyncDelay() const {
   if (m_ifc.visualization->toAddon->get_sync_delay)
     m_ifc.visualization->toAddon->get_sync_delay(m_ifc.hdl);
   return 0;
 }
 
-bool CVisualization::NextPreset()
-{
+bool CVisualization::NextPreset() const {
   if (m_ifc.visualization->toAddon->next_preset)
     return m_ifc.visualization->toAddon->next_preset(m_ifc.hdl);
   return false;
 }
 
-bool CVisualization::PrevPreset()
-{
+bool CVisualization::PrevPreset() const {
   if (m_ifc.visualization->toAddon->prev_preset)
     return m_ifc.visualization->toAddon->prev_preset(m_ifc.hdl);
   return false;
 }
 
-bool CVisualization::LoadPreset(int select)
-{
+bool CVisualization::LoadPreset(int select) const {
   if (m_ifc.visualization->toAddon->load_preset)
     return m_ifc.visualization->toAddon->load_preset(m_ifc.hdl, select);
   return false;
 }
 
-bool CVisualization::RandomPreset()
-{
+bool CVisualization::RandomPreset() const {
   if (m_ifc.visualization->toAddon->random_preset)
     return m_ifc.visualization->toAddon->random_preset(m_ifc.hdl);
   return false;
 }
 
-bool CVisualization::LockPreset()
-{
+bool CVisualization::LockPreset() const {
   if (m_ifc.visualization->toAddon->lock_preset)
     return m_ifc.visualization->toAddon->lock_preset(m_ifc.hdl);
   return false;
 }
 
-bool CVisualization::RatePreset(bool plus_minus)
-{
+bool CVisualization::RatePreset(bool plus_minus) const {
   if (m_ifc.visualization->toAddon->rate_preset)
     return m_ifc.visualization->toAddon->rate_preset(m_ifc.hdl, plus_minus);
   return false;
 }
 
-bool CVisualization::UpdateAlbumart(const char* albumart)
-{
+bool CVisualization::UpdateAlbumart(const char* albumart) const {
   if (m_ifc.visualization->toAddon->update_albumart)
     return m_ifc.visualization->toAddon->update_albumart(m_ifc.hdl, albumart);
   return false;
 }
 
-bool CVisualization::UpdateTrack(const KODI_ADDON_VISUALIZATION_TRACK* track)
-{
+bool CVisualization::UpdateTrack(const KODI_ADDON_VISUALIZATION_TRACK* track) const {
   if (m_ifc.visualization->toAddon->update_track)
     return m_ifc.visualization->toAddon->update_track(m_ifc.hdl, track);
   return false;
 }
 
-bool CVisualization::HasPresets()
-{
+bool CVisualization::HasPresets() const {
   return !m_presets.empty();
 }
 
-bool CVisualization::GetPresetList(std::vector<std::string>& vecpresets)
-{
+bool CVisualization::GetPresetList(std::vector<std::string>& vecpresets) const {
   vecpresets = m_presets;
   return !m_presets.empty();
 }
 
-int CVisualization::GetActivePreset()
-{
+int CVisualization::GetActivePreset() const {
   if (m_ifc.visualization->toAddon->get_active_preset)
     return m_ifc.visualization->toAddon->get_active_preset(m_ifc.hdl);
   return -1;
@@ -199,8 +182,7 @@ std::string CVisualization::GetActivePresetName()
   return "";
 }
 
-bool CVisualization::IsLocked()
-{
+bool CVisualization::IsLocked() const {
   if (m_ifc.visualization->toAddon->is_locked)
     return m_ifc.visualization->toAddon->is_locked(m_ifc.hdl);
   return false;
@@ -216,8 +198,7 @@ void CVisualization::ClearPresets()
   m_presets.clear();
 }
 
-void CVisualization::GetProperties(struct KODI_ADDON_VISUALIZATION_PROPS* props)
-{
+void CVisualization::GetProperties(struct KODI_ADDON_VISUALIZATION_PROPS* props) const {
   if (!props)
     return;
 

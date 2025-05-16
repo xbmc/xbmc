@@ -74,7 +74,7 @@ public:
   bool OnClick(const std::shared_ptr<CGUIListItem>& item) override;
   bool OnPlay(const std::shared_ptr<CGUIListItem>& item) override;
   bool OnInfo(const std::shared_ptr<CFileItem>& item);
-  bool OnContextMenu(const std::shared_ptr<CFileItem>& item);
+  bool OnContextMenu(const std::shared_ptr<CFileItem>& item) const;
   bool OnInfo(const std::shared_ptr<CGUIListItem>& item) override;
   bool OnContextMenu(const std::shared_ptr<CGUIListItem>& item) override;
   bool IsUpdating() const override;

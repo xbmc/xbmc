@@ -129,7 +129,7 @@ namespace PVR
     bool SetChannel(const CPVRChannelNumber& channelNumber);
 
   private:
-    bool OnClick(int actionID);
+    bool OnClick(int actionID) const;
     bool SelectItemFromPoint(const CPoint& point, bool justGrid = true);
 
     void SetChannel(int channel);
@@ -159,19 +159,19 @@ namespace PVR
     void GoToChannel(int channelIndex);
     void UpdateScrollOffset(unsigned int currentTime);
     void ProcessItem(float posX, float posY, const std::shared_ptr<CFileItem>& item, std::shared_ptr<CFileItem>& lastitem, bool focused, CGUIListItemLayout* normallayout, CGUIListItemLayout* focusedlayout, unsigned int currentTime, CDirtyRegionList& dirtyregions, float resize = -1.0f);
-    void RenderItem(float posX, float posY, CGUIListItem* item, bool focused);
+    void RenderItem(float posX, float posY, CGUIListItem* item, bool focused) const;
     void GetCurrentLayouts();
 
     void ProcessChannels(unsigned int currentTime, CDirtyRegionList& dirtyregions);
     void ProcessRuler(unsigned int currentTime, CDirtyRegionList& dirtyregions);
     void ProcessRulerDate(unsigned int currentTime, CDirtyRegionList& dirtyregions);
     void ProcessProgrammeGrid(unsigned int currentTime, CDirtyRegionList& dirtyregions);
-    void ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList& dirtyregions);
+    void ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList& dirtyregions) const;
     void RenderChannels();
     void RenderRulerDate();
     void RenderRuler();
     void RenderProgrammeGrid();
-    void RenderProgressIndicator();
+    void RenderProgressIndicator() const;
 
     CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
 
@@ -193,8 +193,8 @@ namespace PVR
 
     int m_pageControl = 0;
 
-    void GetChannelCacheOffsets(int& cacheBefore, int& cacheAfter);
-    void GetProgrammeCacheOffsets(int& cacheBefore, int& cacheAfter);
+    void GetChannelCacheOffsets(int& cacheBefore, int& cacheAfter) const;
+    void GetProgrammeCacheOffsets(int& cacheBefore, int& cacheAfter) const;
 
   private:
     bool OnMouseClick(int dwButton, const CPoint& point);

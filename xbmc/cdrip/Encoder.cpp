@@ -81,8 +81,7 @@ bool CEncoder::FileClose()
 }
 
 // return total bytes written, or -1 on error
-ssize_t CEncoder::FileWrite(const uint8_t* pBuffer, size_t iBytes)
-{
+ssize_t CEncoder::FileWrite(const uint8_t* pBuffer, size_t iBytes) const {
   if (!m_file)
     return -1;
 

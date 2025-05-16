@@ -69,8 +69,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_label->set_visible(m_interface->kodiBase, m_controlHandle,
                                                       visible);
   }
@@ -82,8 +81,7 @@ public:
   ///
   /// @param[in] text Text to show
   ///
-  void SetLabel(const std::string& text)
-  {
+  void SetLabel(const std::string& text) const {
     m_interface->kodi_gui->control_label->set_label(m_interface->kodiBase, m_controlHandle,
                                                     text.c_str());
   }

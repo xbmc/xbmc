@@ -2398,8 +2398,7 @@ bool CActiveAE::HasWork()
   return false;
 }
 
-CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
-{
+CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream) const {
   CSampleBuffer *ret = NULL;
 
   if (!stream->m_pClock)
@@ -2641,8 +2640,7 @@ void CActiveAE::MixSounds(CSoundPacket &dstSample)
   }
 }
 
-void CActiveAE::Deamplify(CSoundPacket &dstSample)
-{
+void CActiveAE::Deamplify(CSoundPacket &dstSample) const {
   if (m_volumeScaled < 1.0f || m_muted)
   {
     int nb_floats = dstSample.nb_samples * dstSample.config.channels / dstSample.planes;
@@ -3302,8 +3300,7 @@ void CActiveAE::ResampleSounds()
   }
 }
 
-bool CActiveAE::ResampleSound(CActiveAESound *sound)
-{
+bool CActiveAE::ResampleSound(CActiveAESound *sound) const {
   SampleConfig orig_config, dst_config;
   uint8_t **dst_buffer;
   int dst_samples;

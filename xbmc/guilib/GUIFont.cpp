@@ -91,8 +91,7 @@ void CGUIFont::DrawText(float x,
                         UTILS::COLOR::Color shadowColor,
                         const vecText& text,
                         uint32_t alignment,
-                        float maxPixelWidth)
-{
+                        float maxPixelWidth) const {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!m_font || !winSystem)
     return;
@@ -261,8 +260,7 @@ bool CGUIFont::ClippedRegionIsEmpty(
   return !context.SetClipRegion(x, y, width, m_font->GetTextHeight(1, 2) * context.GetGUIScaleY());
 }
 
-float CGUIFont::GetTextWidth(const vecText& text)
-{
+float CGUIFont::GetTextWidth(const vecText& text) const {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!m_font || !winSystem)
     return 0;
@@ -274,8 +272,7 @@ float CGUIFont::GetTextWidth(const vecText& text)
   return m_font->GetTextWidthInternal(text) * context.GetGUIScaleX();
 }
 
-float CGUIFont::GetCharWidth(character_t ch)
-{
+float CGUIFont::GetCharWidth(character_t ch) const {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!m_font || !winSystem)
     return 0;
@@ -322,16 +319,14 @@ float CGUIFont::GetScaleFactor() const
   return m_font->GetFontHeight() / m_origHeight;
 }
 
-void CGUIFont::Begin()
-{
+void CGUIFont::Begin() const {
   if (!m_font)
     return;
 
   m_font->Begin();
 }
 
-void CGUIFont::End()
-{
+void CGUIFont::End() const {
   if (!m_font)
     return;
 

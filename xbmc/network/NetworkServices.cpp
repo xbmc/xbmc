@@ -721,8 +721,7 @@ bool CNetworkServices::StartWebserver()
   return false;
 }
 
-bool CNetworkServices::IsWebserverRunning()
-{
+bool CNetworkServices::IsWebserverRunning() const {
 #ifdef HAS_WEB_SERVER
   return m_webserver.IsStarted();
 #endif // HAS_WEB_SERVER
@@ -1088,8 +1087,7 @@ bool CNetworkServices::StopUPnPController()
   return false;
 }
 
-bool CNetworkServices::StartUPnPRenderer()
-{
+bool CNetworkServices::StartUPnPRenderer() const {
 #ifdef HAS_UPNP
   if (!m_settings->GetBool(CSettings::SETTING_SERVICES_UPNPRENDERER) ||
       !m_settings->GetBool(CSettings::SETTING_SERVICES_UPNP))
@@ -1123,8 +1121,7 @@ bool CNetworkServices::StopUPnPRenderer()
   return false;
 }
 
-bool CNetworkServices::StartUPnPServer()
-{
+bool CNetworkServices::StartUPnPServer() const {
 #ifdef HAS_UPNP
   if (!m_settings->GetBool(CSettings::SETTING_SERVICES_UPNPSERVER) ||
       !m_settings->GetBool(CSettings::SETTING_SERVICES_UPNP))

@@ -116,8 +116,7 @@ namespace XBMCAddon
         playCurrent(windowed);
     }
 
-    void Player::playCurrent(bool windowed)
-    {
+    void Player::playCurrent(bool windowed) const {
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
       // set fullscreen or windowed
@@ -162,24 +161,21 @@ namespace XBMCAddon
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
     }
 
-    void Player::playnext()
-    {
+    void Player::playnext() const {
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
 
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_NEXT);
     }
 
-    void Player::playprevious()
-    {
+    void Player::playprevious() const {
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
 
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_PREV);
     }
 
-    void Player::playselected(int selected)
-    {
+    void Player::playselected(int selected) const {
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
 

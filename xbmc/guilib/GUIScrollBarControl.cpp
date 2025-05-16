@@ -234,8 +234,7 @@ void GUIScrollBarControl::SetInvalid()
   m_guiNibFocus->SetInvalid();
 }
 
-bool GUIScrollBarControl::UpdateBarSize()
-{
+bool GUIScrollBarControl::UpdateBarSize() const {
   bool changed = false;
 
   // scale our textures to suit

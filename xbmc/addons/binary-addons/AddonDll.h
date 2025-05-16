@@ -140,7 +140,7 @@ private:
    */
   void Destroy();
 
-  bool CheckAPIVersion(int type);
+  bool CheckAPIVersion(int type) const;
 
   BinaryAddonBasePtr m_binaryAddonBase = nullptr;
   DllAddon* m_pDll = nullptr;

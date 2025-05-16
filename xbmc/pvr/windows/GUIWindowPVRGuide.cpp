@@ -149,8 +149,7 @@ void CGUIWindowPVRGuideBase::StartRefreshTimelineItemsThread()
   m_refreshTimelineItemsThread->Create();
 }
 
-void CGUIWindowPVRGuideBase::StopRefreshTimelineItemsThread()
-{
+void CGUIWindowPVRGuideBase::StopRefreshTimelineItemsThread() const {
   if (m_refreshTimelineItemsThread)
     m_refreshTimelineItemsThread->Stop();
 }
@@ -634,8 +633,7 @@ public:
     m_functions.emplace_back(std::bind(function, m_instance));
   }
 
-  bool Call(int idx)
-  {
+  bool Call(int idx) const {
     if (idx < 0 || idx >= static_cast<int>(m_functions.size()))
       return false;
 

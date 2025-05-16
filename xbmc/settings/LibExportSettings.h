@@ -48,9 +48,9 @@ public:
   std::vector<int> GetLimitedItems(int items) const;
   void ClearItems() { m_itemstoexport = 0; }
   void AddItem(ELIBEXPORTOPTIONS item) { m_itemstoexport += item; }
-  unsigned int GetItemsToExport() { return m_itemstoexport; }
+  unsigned int GetItemsToExport() const { return m_itemstoexport; }
   void SetItemsToExport(int itemstoexport) { m_itemstoexport = static_cast<unsigned int>(itemstoexport); }
-  unsigned int GetExportType() { return m_exporttype; }
+  unsigned int GetExportType() const { return m_exporttype; }
   void SetExportType(int exporttype) { m_exporttype = static_cast<unsigned int>(exporttype); }
   bool IsSingleFile() const;
   bool IsSeparateFiles() const;

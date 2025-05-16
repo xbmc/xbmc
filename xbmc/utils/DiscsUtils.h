@@ -38,7 +38,7 @@ struct DiscInfo
   /*! \brief Check if the info is empty (e.g. after probing)
     \return true if the info is empty, false otherwise
   */
-  bool empty() { return (type == DiscType::UNKNOWN && name.empty() && serial.empty()); }
+  bool empty() const { return (type == DiscType::UNKNOWN && name.empty() && serial.empty()); }
 
   /*! \brief Clears all the DiscInfo members
   */

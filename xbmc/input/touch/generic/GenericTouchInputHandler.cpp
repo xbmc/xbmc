@@ -36,8 +36,7 @@ CGenericTouchInputHandler& CGenericTouchInputHandler::GetInstance()
   return sTouchInput;
 }
 
-float CGenericTouchInputHandler::AdjustPointerSize(float size)
-{
+float CGenericTouchInputHandler::AdjustPointerSize(float size) const {
   if (size > 0.0f)
     return size;
   else

@@ -110,8 +110,7 @@ std::string CRPProcessInfo::GetRenderSystemName(IRenderBufferPool* renderBufferP
 }
 
 CRPBaseRenderer* CRPProcessInfo::CreateRenderer(IRenderBufferPool* renderBufferPool,
-                                                const CRenderSettings& renderSettings)
-{
+                                                const CRenderSettings& renderSettings) const {
   std::lock_guard lock(m_createSection);
 
   for (auto& rendererFactory : m_rendererFactories)
@@ -136,8 +135,7 @@ void CRPProcessInfo::SetDataCache(CDataCacheCore* cache)
   ;
 }
 
-void CRPProcessInfo::ResetInfo()
-{
+void CRPProcessInfo::ResetInfo() const {
   if (m_dataCache != nullptr)
   {
     m_dataCache->Reset();
@@ -160,22 +158,19 @@ std::vector<SCALINGMETHOD> CRPProcessInfo::GetScalingMethods()
 //******************************************************************************
 // video codec
 //******************************************************************************
-void CRPProcessInfo::SetVideoPixelFormat(AVPixelFormat pixFormat)
-{
+void CRPProcessInfo::SetVideoPixelFormat(AVPixelFormat pixFormat) const {
   const char* videoPixelFormat = av_get_pix_fmt_name(pixFormat);
 
   if (m_dataCache != nullptr)
     m_dataCache->SetVideoPixelFormat(videoPixelFormat != nullptr ? videoPixelFormat : "");
 }
 
-void CRPProcessInfo::SetVideoDimensions(int width, int height)
-{
+void CRPProcessInfo::SetVideoDimensions(int width, int height) const {
   if (m_dataCache != nullptr)
     m_dataCache->SetVideoDimensions(width, height);
 }
 
-void CRPProcessInfo::SetVideoFps(float fps)
-{
+void CRPProcessInfo::SetVideoFps(float fps) const {
   if (m_dataCache != nullptr)
     m_dataCache->SetVideoFps(fps);
 }
@@ -183,20 +178,17 @@ void CRPProcessInfo::SetVideoFps(float fps)
 //******************************************************************************
 // player audio info
 //******************************************************************************
-void CRPProcessInfo::SetAudioChannels(const std::string& channels)
-{
+void CRPProcessInfo::SetAudioChannels(const std::string& channels) const {
   if (m_dataCache != nullptr)
     m_dataCache->SetAudioChannels(channels);
 }
 
-void CRPProcessInfo::SetAudioSampleRate(int sampleRate)
-{
+void CRPProcessInfo::SetAudioSampleRate(int sampleRate) const {
   if (m_dataCache != nullptr)
     m_dataCache->SetAudioSampleRate(sampleRate);
 }
 
-void CRPProcessInfo::SetAudioBitsPerSample(int bitsPerSample)
-{
+void CRPProcessInfo::SetAudioBitsPerSample(int bitsPerSample) const {
   if (m_dataCache != nullptr)
     m_dataCache->SetAudioBitsPerSample(bitsPerSample);
 }
@@ -204,14 +196,12 @@ void CRPProcessInfo::SetAudioBitsPerSample(int bitsPerSample)
 //******************************************************************************
 // player states
 //******************************************************************************
-void CRPProcessInfo::SetSpeed(float speed)
-{
+void CRPProcessInfo::SetSpeed(float speed) const {
   if (m_dataCache != nullptr)
     m_dataCache->SetSpeed(1.0f, speed);
 }
 
-void CRPProcessInfo::SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max)
-{
+void CRPProcessInfo::SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max) const {
   if (m_dataCache != nullptr)
     m_dataCache->SetPlayTimes(start, current, min, max);
 }

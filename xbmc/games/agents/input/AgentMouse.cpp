@@ -48,8 +48,7 @@ void CAgentMouse::Deinitialize()
   m_controllerAppearance.reset();
 }
 
-void CAgentMouse::ClearButtonState()
-{
+void CAgentMouse::ClearButtonState() const {
   return m_mouseActivity->ClearButtonState();
 }
 

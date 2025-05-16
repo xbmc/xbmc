@@ -485,8 +485,7 @@ const CPlayList& CPlayListPlayer::GetPlaylist(Id playlistId) const
   }
 }
 
-int CPlayListPlayer::RemoveDVDItems()
-{
+int CPlayListPlayer::RemoveDVDItems() const {
   int nRemovedM = m_PlaylistMusic->RemoveDVDItems();
   int nRemovedV = m_PlaylistVideo->RemoveDVDItems();
 
@@ -772,8 +771,7 @@ void CPlayListPlayer::Remove(Id playlistId, int iPosition)
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
-void CPlayListPlayer::Clear()
-{
+void CPlayListPlayer::Clear() const {
   if (m_PlaylistMusic)
     m_PlaylistMusic->Clear();
   if (m_PlaylistVideo)

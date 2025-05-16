@@ -875,8 +875,7 @@ void CVideoPlayerVideo::Flush(bool sync)
   m_bAbortOutput = true;
 }
 
-void CVideoPlayerVideo::ProcessOverlays(const VideoPicture& picture, double pts)
-{
+void CVideoPlayerVideo::ProcessOverlays(const VideoPicture& picture, double pts) const {
   double subsPts = pts - m_iSubtitleDelay;
 
   // remove any overlays that are out of time

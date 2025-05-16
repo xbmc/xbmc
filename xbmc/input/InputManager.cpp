@@ -775,13 +775,11 @@ bool CInputManager::IsMouseActive()
   return m_Mouse.IsActive();
 }
 
-MOUSE_STATE CInputManager::GetMouseState()
-{
+MOUSE_STATE CInputManager::GetMouseState() const {
   return m_Mouse.GetState();
 }
 
-MousePosition CInputManager::GetMousePosition()
-{
+MousePosition CInputManager::GetMousePosition() const {
   return m_Mouse.GetPosition();
 }
 
@@ -910,8 +908,7 @@ const KEYMAP::IKeymapEnvironment* CInputManager::KeymapEnvironment() const
   return m_keymapEnvironment.get();
 }
 
-CAction CInputManager::GetAction(int window, const CKey& key, bool fallback /* = true */)
-{
+CAction CInputManager::GetAction(int window, const CKey& key, bool fallback /* = true */) const {
   return m_buttonTranslator->GetAction(window, key, fallback);
 }
 
@@ -919,15 +916,13 @@ bool CInputManager::TranslateCustomControllerString(int windowId,
                                                     const std::string& controllerName,
                                                     int buttonId,
                                                     int& action,
-                                                    std::string& strAction)
-{
+                                                    std::string& strAction) const {
   return m_customControllerTranslator->TranslateCustomControllerString(windowId, controllerName,
                                                                        buttonId, action, strAction);
 }
 
 bool CInputManager::TranslateTouchAction(
-    int windowId, int touchAction, int touchPointers, int& action, std::string& actionString)
-{
+    int windowId, int touchAction, int touchPointers, int& action, std::string& actionString) const {
   return m_touchTranslator->TranslateTouchAction(windowId, touchAction, touchPointers, action,
                                                  actionString);
 }

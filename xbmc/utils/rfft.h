@@ -27,7 +27,7 @@ public:
   //! \brief Calculate FFTs
   //! \param input Input data of size 2*m_size
   //! \param output Output data of size m_size.
-  void calc(const float* input, float* output);
+  void calc(const float* input, float* output) const;
 protected:
   //! \brief Apply a Hann window to a buffer.
   //! \param data Vector with data to apply window to.

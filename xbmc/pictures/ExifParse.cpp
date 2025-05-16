@@ -241,8 +241,7 @@ int CExifParse::Get32(const void* const Long, const bool motorolaOrder)
 //--------------------------------------------------------------------------
 // Evaluate number, be it int, rational, or float from directory.
 //--------------------------------------------------------------------------
-double CExifParse::ConvertAnyFormat(const void* const ValuePtr, int Format)
-{
+double CExifParse::ConvertAnyFormat(const void* const ValuePtr, int Format) const {
   double Value;
   Value = 0;
 

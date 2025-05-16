@@ -74,7 +74,7 @@ namespace XBMCAddon
       WsgiInputStreamIterator(const String& data, bool end = false);
 
       WsgiInputStreamIterator& operator++();
-      bool operator==(const WsgiInputStreamIterator& rhs);
+      bool operator==(const WsgiInputStreamIterator& rhs) const;
       bool operator!=(const WsgiInputStreamIterator& rhs);
       String& operator*();
       inline bool end() const { return m_remaining <= 0; }
@@ -105,8 +105,8 @@ namespace XBMCAddon
       ~WsgiInputStream() override;
 
 #if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
-      WsgiInputStreamIterator* begin();
-      WsgiInputStreamIterator* end();
+      WsgiInputStreamIterator* begin() const;
+      WsgiInputStreamIterator* end() const;
 
       /**
        * Sets the given request.

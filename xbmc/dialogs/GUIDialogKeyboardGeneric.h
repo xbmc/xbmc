@@ -40,7 +40,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void SetHeading(const std::string& heading);
     void SetText(const std::string& text);
     const std::string &GetText() const;
-    bool IsConfirmed() { return m_bIsConfirmed; }
+    bool IsConfirmed() const { return m_bIsConfirmed; }
     void SetHiddenInput(bool hiddenInput) { m_hiddenInput = hiddenInput; }
     bool IsInputHidden() const { return m_hiddenInput; }
 
@@ -50,7 +50,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     bool OnAction(const CAction &action) override;
     bool OnMessage(CGUIMessage& message) override;
     void OnDeinitWindow(int nextWindowID) override;
-    void SetControlLabel(int id, const std::string &label);
+    void SetControlLabel(int id, const std::string &label) const;
     void OnShift();
     void MoveCursor(int iAmount);
     void OnLayout();
@@ -66,7 +66,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void Character(const std::string &ch);
     void Backspace();
     void SetEditText(const std::string& text);
-    float GetStringWidth(const std::wstring& utf16);
+    float GetStringWidth(const std::wstring& utf16) const;
     void ChangeWordList(int direct);  // direct: 0 - first page, 1 - next page, -1 - prev page
     void ShowWordList(int which); // which: 0 - current page, 1 - next page, -1 -prev page
     bool CodingCharacter(const std::string &ch);

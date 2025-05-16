@@ -60,7 +60,7 @@ public:
                   int iBlocksPerPage,
                   int iRulerUnit,
                   float fBlockSize);
-  void SetInvalid();
+  void SetInvalid() const;
 
   static const int INVALID_INDEX = -1;
   void FindChannelAndBlockIndex(int channelUid,
@@ -69,9 +69,9 @@ public:
                                 int& newChannelIndex,
                                 int& newBlockIndex) const;
 
-  void FreeChannelMemory(int keepStart, int keepEnd);
+  void FreeChannelMemory(int keepStart, int keepEnd) const;
   bool FreeProgrammeMemory(int firstChannel, int lastChannel, int firstBlock, int lastBlock);
-  void FreeRulerMemory(int keepStart, int keepEnd);
+  void FreeRulerMemory(int keepStart, int keepEnd) const;
 
   std::shared_ptr<CFileItem> GetChannelItem(int iIndex) const { return m_channelItems[iIndex]; }
   bool HasChannelItems() const { return !m_channelItems.empty(); }
@@ -92,7 +92,7 @@ public:
   CDateTime GetGridItemEndTime(int iChannel, int iBlock) const;
   float GetGridItemWidth(int iChannel, int iBlock) const;
   float GetGridItemOriginWidth(int iChannel, int iBlock) const;
-  void DecreaseGridItemWidth(int iChannel, int iBlock, float fSize);
+  void DecreaseGridItemWidth(int iChannel, int iBlock, float fSize) const;
 
   bool IsZeroGridDuration() const { return (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0); }
   const CDateTime& GetGridStart() const { return m_gridStart; }

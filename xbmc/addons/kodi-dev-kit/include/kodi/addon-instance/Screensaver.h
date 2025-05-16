@@ -318,7 +318,7 @@ public:
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  inline kodi::HardwareContext Device() { return m_props.device; }
+  inline kodi::HardwareContext Device() const { return m_props.device; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -327,7 +327,7 @@ public:
   ///
   /// @return The X position, in pixels
   ///
-  inline int X() { return m_props.x; }
+  inline int X() const { return m_props.x; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -336,7 +336,7 @@ public:
   ///
   /// @return The Y position, in pixels
   ///
-  inline int Y() { return m_props.y; }
+  inline int Y() const { return m_props.y; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -345,7 +345,7 @@ public:
   ///
   /// @return The width, in pixels
   ///
-  inline int Width() { return m_props.width; }
+  inline int Width() const { return m_props.width; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -354,7 +354,7 @@ public:
   ///
   /// @return The height, in pixels
   ///
-  inline int Height() { return m_props.height; }
+  inline int Height() const { return m_props.height; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -364,7 +364,7 @@ public:
   ///
   /// @return The pixel aspect ratio used by the display
   ///
-  inline float PixelRatio() { return m_props.pixelRatio; }
+  inline float PixelRatio() const { return m_props.pixelRatio; }
   //----------------------------------------------------------------------------
 
   ///@}

@@ -64,7 +64,7 @@ public:
   CEpgTagStateChange() = default;
   CEpgTagStateChange(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE eNewState) : m_epgtag(tag), m_state(eNewState) {}
 
-  void Deliver(const std::shared_ptr<CPVREpg>& epg);
+  void Deliver(const std::shared_ptr<CPVREpg>& epg) const;
 
   std::shared_ptr<CPVREpgInfoTag> GetTag() const { return m_epgtag; }
 
@@ -73,8 +73,7 @@ private:
   EPG_EVENT_STATE m_state = EPG_EVENT_CREATED;
 };
 
-void CEpgTagStateChange::Deliver(const std::shared_ptr<CPVREpg>& epg)
-{
+void CEpgTagStateChange::Deliver(const std::shared_ptr<CPVREpg>& epg) const {
   if (m_epgtag->EpgID() < 0)
   {
     // now that we have the epg instance, fully initialize the tag
@@ -962,8 +961,7 @@ void CPVREpgContainer::OnSystemWake()
   m_bSuspended = false;
 }
 
-int CPVREpgContainer::CleanupCachedImages()
-{
+int CPVREpgContainer::CleanupCachedImages() const {
   const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
@@ -982,8 +980,7 @@ int CPVREpgContainer::CleanupCachedImages()
                          });
 }
 
-std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSearches(bool bRadio)
-{
+std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSearches(bool bRadio) const {
   const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
@@ -994,8 +991,7 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSear
   return database->GetSavedSearches(bRadio);
 }
 
-std::shared_ptr<CPVREpgSearchFilter> CPVREpgContainer::GetSavedSearchById(bool bRadio, int iId)
-{
+std::shared_ptr<CPVREpgSearchFilter> CPVREpgContainer::GetSavedSearchById(bool bRadio, int iId) const {
   const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
@@ -1006,8 +1002,7 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgContainer::GetSavedSearchById(bool b
   return database->GetSavedSearchById(bRadio, iId);
 }
 
-bool CPVREpgContainer::PersistSavedSearch(CPVREpgSearchFilter& search)
-{
+bool CPVREpgContainer::PersistSavedSearch(CPVREpgSearchFilter& search) const {
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
@@ -1023,8 +1018,7 @@ bool CPVREpgContainer::PersistSavedSearch(CPVREpgSearchFilter& search)
   return false;
 }
 
-bool CPVREpgContainer::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch)
-{
+bool CPVREpgContainer::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch) const {
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
@@ -1035,8 +1029,7 @@ bool CPVREpgContainer::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& 
   return database->UpdateSavedSearchLastExecuted(epgSearch);
 }
 
-bool CPVREpgContainer::DeleteSavedSearch(const CPVREpgSearchFilter& search)
-{
+bool CPVREpgContainer::DeleteSavedSearch(const CPVREpgSearchFilter& search) const {
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {

@@ -180,9 +180,9 @@ public:
   char* ToBytes(int& size);
   void SetType(IRSS_MessageType type);
   void SetFlags(uint32_t flags);
-  IRSS_MessageType GetType() {return m_type;}
+  IRSS_MessageType GetType() const {return m_type;}
   uint32_t GetFlags() {return m_flags;}
-  char* GetData() {return m_data;}
+  char* GetData() const {return m_data;}
   uint32_t GetDataSize() {return m_dataSize;}
   static bool FromBytes(char* from, int size, CIrssMessage& message);
 

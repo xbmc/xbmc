@@ -27,7 +27,7 @@ public:
   //void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   void Add(std::shared_ptr<CDVDOverlay> pSubtitle);
-  void Sort();
+  void Sort() const;
 
   std::shared_ptr<CDVDOverlay> Get(double iPts = 0LL); // get the first overlay in this fifo
 
@@ -35,7 +35,7 @@ public:
 
   void Remove();
   void Clear();
-  int GetSize() { return m_iSize; }
+  int GetSize() const { return m_iSize; }
 
 private:
   ListElement* m_pHead;

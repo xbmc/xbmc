@@ -142,7 +142,7 @@ public:
   static std::string GetVersionGit();
   static std::string GetBuildDate();
 
-  bool HasInternet();
+  bool HasInternet() const;
   bool IsAeroDisabled();
   static bool IsWindowsVersion(WindowsVersion ver);
   static bool IsWindowsVersionAtLeast(WindowsVersion ver);

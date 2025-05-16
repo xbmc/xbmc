@@ -72,8 +72,7 @@ private:
 
   struct sorter
   {
-    bool operator()(const STimestamp &p1, const STimestamp &p2)
-    {
+    bool operator()(const STimestamp &p1, const STimestamp &p2) const {
       return p1.pts < p2.pts || (p1.pts == p2.pts && p1.id < p2.id);
     }
   };

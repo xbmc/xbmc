@@ -104,7 +104,7 @@ public:
   ///
   getResolution();
 #else
-  String getResolution();
+  String getResolution() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -121,7 +121,7 @@ public:
   ///
   getDirector();
 #else
-  String getDateTimeTaken();
+  String getDateTimeTaken() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -139,7 +139,7 @@ public:
   ///
   setResolution(...);
 #else
-  void setResolution(int width, int height);
+  void setResolution(int width, int height) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -166,7 +166,7 @@ public:
   ///
   setDateTimeTaken(...);
 #else
-  void setDateTimeTaken(const String& datetimetaken);
+  void setDateTimeTaken(const String& datetimetaken) const;
 #endif
 
 #ifndef SWIG

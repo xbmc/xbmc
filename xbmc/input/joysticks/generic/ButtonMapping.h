@@ -54,7 +54,7 @@ protected:
    *
    * \return True if the primitive was mapped, false otherwise
    */
-  bool MapPrimitive(const CDriverPrimitive& primitive);
+  bool MapPrimitive(const CDriverPrimitive& primitive) const;
 
 private:
   CButtonMapping* const m_buttonMapping;
@@ -383,7 +383,7 @@ public:
 private:
   bool IsMapping() const;
 
-  void OnLateDiscovery(unsigned int axisIndex);
+  void OnLateDiscovery(unsigned int axisIndex) const;
 
   CButtonDetector& GetButton(unsigned int buttonIndex);
   CHatDetector& GetHat(unsigned int hatIndex);

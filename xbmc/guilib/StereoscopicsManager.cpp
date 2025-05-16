@@ -126,8 +126,7 @@ void CStereoscopicsManager::SetStereoModeByUser(const RENDER_STEREO_MODE &mode)
   SetStereoMode(mode);
 }
 
-void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode)
-{
+void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode) const {
   RENDER_STEREO_MODE currentMode = GetStereoMode();
   RENDER_STEREO_MODE applyMode = mode;
 
@@ -499,8 +498,7 @@ void CStereoscopicsManager::Notify()
   appPlayer->TriggerUpdateResolution();
 }
 
-void CStereoscopicsManager::ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify)
-{
+void CStereoscopicsManager::ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify) const {
   RENDER_STEREO_MODE currentMode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   CLog::Log(LOGDEBUG,
             "StereoscopicsManager::ApplyStereoMode: trying to apply stereo mode. Current: {} | "

@@ -24,10 +24,10 @@ public:
   virtual ~CDebugRenderer();
   void Initialize();
   void Dispose();
-  void SetInfo(DEBUG_INFO_PLAYER& info);
-  void SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render);
+  void SetInfo(DEBUG_INFO_PLAYER& info) const;
+  void SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render) const;
   void Render(CRect& src, CRect& dst, CRect& view);
-  void Flush();
+  void Flush() const;
 
 protected:
   class CRenderer : public OVERLAY::CRenderer

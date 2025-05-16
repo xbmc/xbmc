@@ -45,12 +45,12 @@ private:
   void CloseDialog();
 
   // Actions for port list
-  void UpdateActivePortList();
+  void UpdateActivePortList() const;
 
   // Actions for controller list
-  void UpdateControllerList();
-  void FocusControllerList();
-  void OnControllerClick();
+  void UpdateControllerList() const;
+  void FocusControllerList() const;
+  void OnControllerClick() const;
 
   // GUI parameters
   std::unique_ptr<IActivePortList> m_portList;

@@ -40,8 +40,7 @@ CPlayList::CPlayList(Id id /* = PLAYLIST::TYPE_NONE */) : m_id(id)
   m_bWasPlayed = false;
 }
 
-void CPlayList::AnnounceRemove(int pos)
-{
+void CPlayList::AnnounceRemove(int pos) const {
   if (m_id == TYPE_NONE)
     return;
 
@@ -51,8 +50,7 @@ void CPlayList::AnnounceRemove(int pos)
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnRemove", data);
 }
 
-void CPlayList::AnnounceClear()
-{
+void CPlayList::AnnounceClear() const {
   if (m_id == TYPE_NONE)
     return;
 
@@ -61,8 +59,7 @@ void CPlayList::AnnounceClear()
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnClear", data);
 }
 
-void CPlayList::AnnounceAdd(const std::shared_ptr<CFileItem>& item, int pos)
-{
+void CPlayList::AnnounceAdd(const std::shared_ptr<CFileItem>& item, int pos) const {
   if (m_id == TYPE_NONE)
     return;
 

@@ -191,7 +191,7 @@ public:
 
   ~CDemuxStreamAudio() override = default;
 
-  std::string GetStreamType();
+  std::string GetStreamType() const;
 
   int iChannels;
   int iSampleRate;
@@ -385,7 +385,7 @@ public:
   /*
   * return the id of the demuxer
   */
-  int64_t GetDemuxerId() { return m_demuxerId; }
+  int64_t GetDemuxerId() const { return m_demuxerId; }
 
 protected:
   virtual void EnableStream(int id, bool enable) {}
@@ -393,7 +393,7 @@ protected:
   virtual CDemuxStream* GetStream(int iStreamId) const = 0;
   virtual std::string GetStreamCodecName(int iStreamId) { return ""; }
 
-  int GetNrOfStreams(StreamType streamType);
+  int GetNrOfStreams(StreamType streamType) const;
 
   int64_t m_demuxerId;
 

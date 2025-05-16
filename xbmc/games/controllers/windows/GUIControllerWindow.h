@@ -41,10 +41,10 @@ protected:
   void OnDeinitWindow(int nextWindowID) override;
 
 private:
-  void OnControllerFocused(unsigned int controllerIndex);
-  void OnControllerSelected(unsigned int controllerIndex);
-  void OnFeatureFocused(unsigned int featureIndex);
-  void OnFeatureSelected(unsigned int featureIndex);
+  void OnControllerFocused(unsigned int controllerIndex) const;
+  void OnControllerSelected(unsigned int controllerIndex) const;
+  void OnFeatureFocused(unsigned int featureIndex) const;
+  void OnFeatureSelected(unsigned int featureIndex) const;
   void UpdateButtons(void);
 
   // Callbacks for events
@@ -53,8 +53,8 @@ private:
 
   // Action for the available button
   void GetMoreControllers(void);
-  void GetAllControllers();
-  void ResetController(void);
+  void GetAllControllers() const;
+  void ResetController(void) const;
   void ShowHelp(void);
   void ShowButtonCaptureDialog(void);
 

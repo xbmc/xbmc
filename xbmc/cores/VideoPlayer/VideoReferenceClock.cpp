@@ -218,8 +218,7 @@ void CVideoReferenceClock::SetSpeed(double Speed)
   }
 }
 
-double CVideoReferenceClock::GetSpeed()
-{
+double CVideoReferenceClock::GetSpeed() const {
   std::lock_guard SingleLock(m_CritSection);
 
   //VideoPlayer needs to know the speed for the resampler
@@ -240,8 +239,7 @@ void CVideoReferenceClock::UpdateRefreshrate()
 }
 
 //VideoPlayer needs to know the refreshrate for matching the fps of the video playing to it
-double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/)
-{
+double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/) const {
   std::lock_guard SingleLock(m_CritSection);
 
   if (m_UseVblank)

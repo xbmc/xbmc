@@ -315,8 +315,7 @@ void CGUITextBox::SetMinHeight(float minHeight)
   m_minHeight = minHeight;
 }
 
-void CGUITextBox::UpdatePageControl()
-{
+void CGUITextBox::UpdatePageControl() const {
   if (m_pageControl)
   {
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_lines.size());

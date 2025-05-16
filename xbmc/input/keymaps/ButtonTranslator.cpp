@@ -175,8 +175,7 @@ bool CButtonTranslator::LoadKeymap(const std::string& keymapPath)
   return true;
 }
 
-CAction CButtonTranslator::GetAction(int window, const CKey& key, bool fallback)
-{
+CAction CButtonTranslator::GetAction(int window, const CKey& key, bool fallback) const {
   std::string strAction;
 
   // handle virtual windows

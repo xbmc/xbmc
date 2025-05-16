@@ -116,10 +116,10 @@ namespace Shaders {
     bool OK() const { return m_ok; }
 
     // return the vertex shader object
-    CVertexShader* VertexShader() { return m_pVP; }
+    CVertexShader* VertexShader() const { return m_pVP; }
 
     // return the pixel shader object
-    CPixelShader* PixelShader() { return m_pFP; }
+    CPixelShader* PixelShader() const { return m_pFP; }
 
     // compile and link the shaders
     virtual bool CompileAndLink() = 0;

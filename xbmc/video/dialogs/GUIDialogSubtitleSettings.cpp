@@ -317,8 +317,7 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   AddButton(groupSaveAsDefault, SETTING_MAKE_DEFAULT, 12376, SettingLevel::Basic);
 }
 
-bool CGUIDialogSubtitleSettings::SupportsSubtitleFeature(int feature)
-{
+bool CGUIDialogSubtitleSettings::SupportsSubtitleFeature(int feature) const {
   for (auto item : m_subtitleCapabilities)
   {
     if (item == feature || item == IPC_SUBS_ALL)

@@ -56,7 +56,7 @@ private:
    */
   bool AddVideoVersion();
   void SetDefault();
-  void UpdateDefaultVideoVersionSelection();
+  void UpdateDefaultVideoVersionSelection() const;
 
   /*!
    * \brief Ask the user to choose an item from the list of items, the version type of the item,
@@ -102,7 +102,7 @@ private:
    * \param itemMovie Movie to convert
    * \return True for success, false otherwse
    */
-  bool AddSimilarMovieAsVersion(const std::shared_ptr<CFileItem>& itemMovie);
+  bool AddSimilarMovieAsVersion(const std::shared_ptr<CFileItem>& itemMovie) const;
 
   /*!
    * \brief Populates a list with all movies of the libray, excluding the item provided as parameter.

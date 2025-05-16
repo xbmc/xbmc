@@ -111,7 +111,7 @@ public:
   int64_t GetChapterPos(int chapterIdx = -1) override;
   std::string GetStreamCodecName(int iStreamId) override;
 
-  bool Aborted();
+  bool Aborted() const;
 
   AVFormatContext* m_pFormatContext;
   std::shared_ptr<CDVDInputStream> m_pInput;
@@ -129,17 +129,17 @@ protected:
   TRANSPORT_STREAM_STATE TransportStreamAudioState();
   TRANSPORT_STREAM_STATE TransportStreamVideoState();
   bool IsTransportStreamReady();
-  void ResetVideoStreams();
-  AVDictionary* GetFFMpegOptionsFromInput();
-  double ConvertTimestamp(int64_t pts, int den, int num);
+  void ResetVideoStreams() const;
+  AVDictionary* GetFFMpegOptionsFromInput() const;
+  double ConvertTimestamp(int64_t pts, int den, int num) const;
   bool IsProgramChange();
-  unsigned int HLSSelectProgram();
+  unsigned int HLSSelectProgram() const;
 
   std::string GetStereoModeFromMetadata(AVDictionary* pMetadata);
   std::string ConvertCodecToInternalStereoMode(const std::string& mode, const StereoModeConversionMap* conversionMap);
 
-  void GetL16Parameters(int& channels, int& samplerate);
-  double SelectAspect(AVStream* st, bool& forced);
+  void GetL16Parameters(int& channels, int& samplerate) const;
+  double SelectAspect(AVStream* st, bool& forced) const;
 
   StreamHdrType DetermineHdrType(AVStream* pStream);
 

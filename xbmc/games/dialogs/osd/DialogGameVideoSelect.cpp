@@ -201,8 +201,7 @@ void CDialogGameVideoSelect::Update()
   // CServiceBroker::GetWinSystem()->GetGfxContext().Unlock();
 }
 
-void CDialogGameVideoSelect::Clear()
-{
+void CDialogGameVideoSelect::Clear() const {
   m_viewControl->Clear();
   m_vecItems->Clear();
 }
@@ -236,8 +235,7 @@ void CDialogGameVideoSelect::SaveSettings()
   }
 }
 
-void CDialogGameVideoSelect::OnDescriptionChange(const std::string& description)
-{
+void CDialogGameVideoSelect::OnDescriptionChange(const std::string& description) const {
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_VIDEO_THUMBS);
   msg.SetLabel(description);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, GetID());

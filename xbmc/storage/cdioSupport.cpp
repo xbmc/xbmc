@@ -275,8 +275,7 @@ bool CCdIoSupport::CloseTray()
   return false;
 }
 
-HANDLE CCdIoSupport::OpenCDROM()
-{
+HANDLE CCdIoSupport::OpenCDROM() const {
   std::lock_guard lock(*m_cdio);
 
   char* source_name = m_cdio->GetDeviceFileName();
@@ -285,8 +284,7 @@ HANDLE CCdIoSupport::OpenCDROM()
   return reinterpret_cast<HANDLE>(cdio);
 }
 
-HANDLE CCdIoSupport::OpenIMAGE( std::string& strFilename )
-{
+HANDLE CCdIoSupport::OpenIMAGE( std::string& strFilename ) const {
   std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = ::cdio_open(strFilename.c_str(), DRIVER_UNKNOWN);
@@ -294,8 +292,7 @@ HANDLE CCdIoSupport::OpenIMAGE( std::string& strFilename )
   return reinterpret_cast<HANDLE>(cdio);
 }
 
-int CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
-{
+int CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer) const {
   std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
@@ -308,8 +305,7 @@ int CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
   return -1;
 }
 
-int CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
-{
+int CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer) const {
   std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
@@ -322,8 +318,7 @@ int CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuff
   return -1;
 }
 
-int CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
-{
+int CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffer) const {
   std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
@@ -336,8 +331,7 @@ int CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffe
   return -1;
 }
 
-void CCdIoSupport::CloseCDROM(HANDLE hDevice)
-{
+void CCdIoSupport::CloseCDROM(HANDLE hDevice) const {
   std::lock_guard lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
@@ -502,8 +496,7 @@ int CCdIoSupport::ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, tra
   return 0;
 }
 
-bool CCdIoSupport::IsIt(int num)
-{
+bool CCdIoSupport::IsIt(int num) const {
   signature_t *sigp = &sigs[num];
   int len = strlen(sigp->sig_str);
 
@@ -511,40 +504,34 @@ bool CCdIoSupport::IsIt(int num)
   return 0 == memcmp(&buffer[sigp->buf_num][sigp->offset], sigp->sig_str, len);
 }
 
-int CCdIoSupport::IsHFS(void)
-{
+int CCdIoSupport::IsHFS(void) const {
   return (0 == memcmp(&buffer[1][512], "PM", 2)) ||
          (0 == memcmp(&buffer[1][512], "TS", 2)) ||
          (0 == memcmp(&buffer[1][1024], "BD", 2));
 }
 
-int CCdIoSupport::Is3DO(void)
-{
+int CCdIoSupport::Is3DO(void) const {
   return (0 == memcmp(&buffer[1][0], "\x01\x5a\x5a\x5a\x5a\x5a\x01", 7)) &&
          (0 == memcmp(&buffer[1][40], "CD-ROM", 6));
 }
 
-int CCdIoSupport::IsJoliet(void)
-{
+int CCdIoSupport::IsJoliet(void) const {
   return 2 == buffer[3][0] && buffer[3][88] == 0x25 && buffer[3][89] == 0x2f;
 }
 
-int CCdIoSupport::IsUDF(void)
-{
+int CCdIoSupport::IsUDF(void) const {
   return 2 == ((uint16_t)buffer[5][0] | ((uint16_t)buffer[5][1] << 8));
 }
 
 /* ISO 9660 volume space in M2F1_SECTOR_SIZE byte units */
-int CCdIoSupport::GetSize(void)
-{
+int CCdIoSupport::GetSize(void) const {
   return ((buffer[0][80] & 0xff) |
           ((buffer[0][81] & 0xff) << 8) |
           ((buffer[0][82] & 0xff) << 16) |
           ((buffer[0][83] & 0xff) << 24));
 }
 
-int CCdIoSupport::GetJolietLevel( void )
-{
+int CCdIoSupport::GetJolietLevel( void ) const {
   switch (buffer[3][90])
   {
   case 0x40:
@@ -639,8 +626,7 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
   return ret;
 }
 
-void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
-{
+void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum) const {
   // cdtext disabled for windows as some setup doesn't like mmc commands
   // and stall for over a minute in cdio_get_cdtext 83
 #if !defined(TARGET_WINDOWS)
@@ -919,8 +905,7 @@ int CCdIoSupport::CddbDecDigitSum(int n)
 }
 
 // Return the number of seconds (discarding frame portion) of an MSF
-unsigned int CCdIoSupport::MsfSeconds(msf_t *msf)
-{
+unsigned int CCdIoSupport::MsfSeconds(msf_t *msf) const {
   std::lock_guard lock(*m_cdio);
 
   return ::cdio_from_bcd8(msf->m)*60 + ::cdio_from_bcd8(msf->s);

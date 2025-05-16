@@ -904,8 +904,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
   return SendWindowMessage(msg);
 }
 
-bool CGUIBaseContainer::OnContextMenu()
-{
+bool CGUIBaseContainer::OnContextMenu() const {
   if (m_listProvider)
   {
     int selected = GetSelectedItem();
@@ -1233,8 +1232,7 @@ void CGUIBaseContainer::UpdateAutoScrolling(unsigned int currentTime)
     ResetAutoScrolling();
 }
 
-void CGUIBaseContainer::SetContainerMoving(int direction)
-{
+void CGUIBaseContainer::SetContainerMoving(int direction) const {
   if (direction)
     CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetContainerMoving(GetID(), direction > 0, m_scroller.IsScrolling());
 }
@@ -1302,8 +1300,7 @@ void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)
   m_renderOffset = offset;
 }
 
-void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
-{
+void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd) const {
   if (keepStart < keepEnd)
   { // remove before keepStart and after keepEnd
     for (int i = 0; i < keepStart && i < (int)m_items.size(); ++i)

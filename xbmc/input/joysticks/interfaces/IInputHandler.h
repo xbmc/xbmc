@@ -161,7 +161,7 @@ public:
   // Input receiver interface
   void SetInputReceiver(IInputReceiver* receiver) { m_receiver = receiver; }
   void ResetInputReceiver(void) { m_receiver = nullptr; }
-  IInputReceiver* InputReceiver(void) { return m_receiver; }
+  IInputReceiver* InputReceiver(void) const { return m_receiver; }
 
 private:
   IInputReceiver* m_receiver = nullptr;

@@ -21,7 +21,7 @@ class CExifParse
 
 //    void    LocaliseDate        (void);
 //    void    GetExposureTime     (const float exposureTime);
-    double ConvertAnyFormat(const void* const ValuePtr, int Format);
+    double ConvertAnyFormat(const void* const ValuePtr, int Format) const;
     void ProcessDir(const unsigned char* const DirStart,
                     const unsigned char* const OffsetBase,
                     const unsigned ExifLength, int NestingLevel);

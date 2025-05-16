@@ -32,7 +32,7 @@ public:
 
   void Initialize();
   void Deinitialize();
-  void ClearButtonState();
+  void ClearButtonState() const;
 
   // Input parameters
   float GetActivation() const;

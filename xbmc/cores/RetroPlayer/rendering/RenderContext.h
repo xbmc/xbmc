@@ -51,62 +51,62 @@ public:
                  GAME::CGameServices& gameServices,
                  CGUIComponent* guiComponent);
 
-  CRenderSystemBase* Rendering() { return m_rendering; }
-  CWinSystemBase* Windowing() { return m_windowing; }
-  CGraphicContext& GraphicsContext() { return m_graphicsContext; }
-  CGUIComponent* GUI() { return m_guiComponent; }
+  CRenderSystemBase* Rendering() const { return m_rendering; }
+  CWinSystemBase* Windowing() const { return m_windowing; }
+  CGraphicContext& GraphicsContext() const { return m_graphicsContext; }
+  CGUIComponent* GUI() const { return m_guiComponent; }
 
   // Rendering functions
-  void SetViewPort(const CRect& viewPort);
-  void GetViewPort(CRect& viewPort);
-  void SetScissors(const CRect& rect);
-  void ApplyStateBlock();
-  bool IsExtSupported(const char* extension);
+  void SetViewPort(const CRect& viewPort) const;
+  void GetViewPort(CRect& viewPort) const;
+  void SetScissors(const CRect& rect) const;
+  void ApplyStateBlock() const;
+  bool IsExtSupported(const char* extension) const;
 
   // OpenGL(ES) rendering functions
-  void EnableGUIShader(GL_SHADER_METHOD method);
-  void DisableGUIShader();
-  int GUIShaderGetPos();
-  int GUIShaderGetCoord0();
-  int GUIShaderGetUniCol();
+  void EnableGUIShader(GL_SHADER_METHOD method) const;
+  void DisableGUIShader() const;
+  int GUIShaderGetPos() const;
+  int GUIShaderGetCoord0() const;
+  int GUIShaderGetUniCol() const;
 
   // DirectX rendering functions
   CGUIShaderDX* GetGUIShader();
 
   // Windowing functions
-  bool UseLimitedColor();
-  bool DisplayHardwareScalingEnabled();
-  void UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo);
+  bool UseLimitedColor() const;
+  bool DisplayHardwareScalingEnabled() const;
+  void UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo) const;
 
   // Graphics functions
-  int GetScreenWidth();
-  int GetScreenHeight();
-  const CRect& GetScissors();
-  CRect GetViewWindow();
-  void SetViewWindow(float left, float top, float right, float bottom);
-  void SetFullScreenVideo(bool bOnOff);
-  bool IsFullScreenVideo();
-  bool IsCalibrating();
-  RESOLUTION GetVideoResolution();
-  void Clear(UTILS::COLOR::Color color);
-  RESOLUTION_INFO GetResInfo();
-  void SetRenderingResolution(const RESOLUTION_INFO& res, bool needsScaling);
-  UTILS::COLOR::Color MergeAlpha(UTILS::COLOR::Color color);
-  void SetTransform(const TransformMatrix& matrix, float scaleX, float scaleY);
-  void RemoveTransform();
-  CRect StereoCorrection(const CRect& rect);
-  CCriticalSection& GraphicsMutex();
+  int GetScreenWidth() const;
+  int GetScreenHeight() const;
+  const CRect& GetScissors() const;
+  CRect GetViewWindow() const;
+  void SetViewWindow(float left, float top, float right, float bottom) const;
+  void SetFullScreenVideo(bool bOnOff) const;
+  bool IsFullScreenVideo() const;
+  bool IsCalibrating() const;
+  RESOLUTION GetVideoResolution() const;
+  void Clear(UTILS::COLOR::Color color) const;
+  RESOLUTION_INFO GetResInfo() const;
+  void SetRenderingResolution(const RESOLUTION_INFO& res, bool needsScaling) const;
+  UTILS::COLOR::Color MergeAlpha(UTILS::COLOR::Color color) const;
+  void SetTransform(const TransformMatrix& matrix, float scaleX, float scaleY) const;
+  void RemoveTransform() const;
+  CRect StereoCorrection(const CRect& rect) const;
+  CCriticalSection& GraphicsMutex() const;
 
   // Display settings
-  RESOLUTION_INFO& GetResolutionInfo(RESOLUTION resolution);
+  RESOLUTION_INFO& GetResolutionInfo(RESOLUTION resolution) const;
 
   // Media settings
-  ::CGameSettings& GetGameSettings();
-  ::CGameSettings& GetDefaultGameSettings();
+  ::CGameSettings& GetGameSettings() const;
+  ::CGameSettings& GetDefaultGameSettings() const;
 
   // Agent functions
-  void StartAgentInput(GAME::GameClientPtr gameClient);
-  void StopAgentInput();
+  void StartAgentInput(GAME::GameClientPtr gameClient) const;
+  void StopAgentInput() const;
 
 private:
   // Construction parameters

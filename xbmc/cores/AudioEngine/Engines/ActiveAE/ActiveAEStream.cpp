@@ -207,8 +207,7 @@ double CActiveAEStream::CalcResampleRatio(double error)
   return ret;
 }
 
-std::chrono::milliseconds CActiveAEStream::GetErrorInterval()
-{
+std::chrono::milliseconds CActiveAEStream::GetErrorInterval() const {
   std::chrono::milliseconds ret = m_errorInterval;
   double rr = m_processingBuffers->GetRR();
   if (rr > 1.02 || rr < 0.98)
@@ -603,8 +602,7 @@ CActiveAEStreamBuffers::~CActiveAEStreamBuffers()
 {
 }
 
-bool CActiveAEStreamBuffers::HasInputLevel(int level)
-{
+bool CActiveAEStreamBuffers::HasInputLevel(int level) const {
   if ((m_inputSamples.size() + m_resampleBuffers->m_inputSamples.size()) >
       (m_resampleBuffers->m_allSamples.size() * level / 100))
     return true;
@@ -612,8 +610,7 @@ bool CActiveAEStreamBuffers::HasInputLevel(int level)
     return false;
 }
 
-bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize)
-{
+bool CActiveAEStreamBuffers::Create(unsigned int totaltime, bool remap, bool upmix, bool normalize) const {
   if (!m_resampleBuffers->Create(totaltime, remap, upmix, normalize))
     return false;
 
@@ -664,13 +661,11 @@ bool CActiveAEStreamBuffers::ProcessBuffers()
   return busy;
 }
 
-void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality)
-{
+void CActiveAEStreamBuffers::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality) const {
   m_resampleBuffers->ConfigureResampler(normalizelevels, stereoupmix, quality);
 }
 
-float CActiveAEStreamBuffers::GetDelay()
-{
+float CActiveAEStreamBuffers::GetDelay() const {
   float delay = 0;
 
   for (auto &buf : m_inputSamples)
@@ -706,14 +701,12 @@ void CActiveAEStreamBuffers::Flush()
   }
 }
 
-void CActiveAEStreamBuffers::SetDrain(bool drain)
-{
+void CActiveAEStreamBuffers::SetDrain(bool drain) const {
   m_resampleBuffers->SetDrain(drain);
   m_atempoBuffers->SetDrain(drain);
 }
 
-bool CActiveAEStreamBuffers::IsDrained()
-{
+bool CActiveAEStreamBuffers::IsDrained() const {
   if (m_resampleBuffers->m_inputSamples.empty() &&
       m_resampleBuffers->m_outputSamples.empty() &&
       m_atempoBuffers->m_inputSamples.empty() &&
@@ -725,8 +718,7 @@ bool CActiveAEStreamBuffers::IsDrained()
     return false;
 }
 
-void CActiveAEStreamBuffers::SetRR(double rr, double atempoThreshold)
-{
+void CActiveAEStreamBuffers::SetRR(double rr, double atempoThreshold) const {
   if (fabs(rr - 1.0) < atempoThreshold)
   {
     m_resampleBuffers->SetRR(rr);
@@ -739,26 +731,22 @@ void CActiveAEStreamBuffers::SetRR(double rr, double atempoThreshold)
   }
 }
 
-double CActiveAEStreamBuffers::GetRR()
-{
+double CActiveAEStreamBuffers::GetRR() const {
   double tempo = m_resampleBuffers->GetRR();
   tempo /= static_cast<double>(m_atempoBuffers->GetTempo());
   return tempo;
 }
 
-void CActiveAEStreamBuffers::FillBuffer()
-{
+void CActiveAEStreamBuffers::FillBuffer() const {
   m_resampleBuffers->FillBuffer();
   m_atempoBuffers->FillBuffer();
 }
 
-bool CActiveAEStreamBuffers::DoesNormalize()
-{
+bool CActiveAEStreamBuffers::DoesNormalize() const {
   return m_resampleBuffers->DoesNormalize();
 }
 
-void CActiveAEStreamBuffers::ForceResampler(bool force)
-{
+void CActiveAEStreamBuffers::ForceResampler(bool force) const {
   m_resampleBuffers->ForceResampler(force);
 }
 
@@ -772,8 +760,7 @@ std::unique_ptr<CActiveAEBufferPool> CActiveAEStreamBuffers::GetAtempoBuffers()
   return std::move(m_atempoBuffers);
 }
 
-bool CActiveAEStreamBuffers::HasWork()
-{
+bool CActiveAEStreamBuffers::HasWork() const {
   if (!m_inputSamples.empty())
     return true;
   if (!m_outputSamples.empty())

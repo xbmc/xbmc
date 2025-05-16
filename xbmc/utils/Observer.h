@@ -87,7 +87,7 @@ protected:
    * @param obs The observer that sends the message.
    * @param message The message to send.
    */
-  void SendMessage(const ObservableMessage message);
+  void SendMessage(const ObservableMessage message) const;
 
   std::atomic<bool>       m_bObservableChanged{false}; /*!< true when the observable is marked as changed, false otherwise */
   std::vector<Observer *> m_observers;                 /*!< all observers */

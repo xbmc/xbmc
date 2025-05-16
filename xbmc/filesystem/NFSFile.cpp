@@ -79,8 +79,7 @@ void CNfsConnection::resolveHost(const CURL& url)
   CDNSNameCache::Lookup(url.GetHostName(), m_resolvedHostName);
 }
 
-std::list<std::string> CNfsConnection::GetExportList(const CURL& url)
-{
+std::list<std::string> CNfsConnection::GetExportList(const CURL& url) const {
   std::list<std::string> retList;
 
   struct exportnode *exportlist, *tmp;

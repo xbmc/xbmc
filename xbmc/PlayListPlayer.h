@@ -112,7 +112,7 @@ public:
   /*! \brief Removes any item from all playlists located on a removable share
    \return Number of items removed from PLAYLIST::TYPE_MUSIC and PLAYLIST::TYPE_VIDEO
    */
-  int RemoveDVDItems();
+  int RemoveDVDItems() const;
 
   /*! \brief Resets the current song and unplayable counts.
    Does not alter the active playlist.
@@ -120,7 +120,7 @@ public:
   void Reset();
 
   void ClearPlaylist(PLAYLIST::Id playlistId);
-  void Clear();
+  void Clear() const;
 
   /*! \brief Set shuffle state of a playlist.
    If the shuffle state changes, the playlist is shuffled or unshuffled.

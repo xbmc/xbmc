@@ -42,7 +42,7 @@ public:
   Dataset* CreateDataset() const override;
 
   /* func. returns connection handle with SQLite-server */
-  sqlite3* getHandle() { return conn; }
+  sqlite3* getHandle() const { return conn; }
   /* func. returns current status about SQLite-server connection */
   int status() override;
   int setErr(int err_code, const char* qry) override;
@@ -94,7 +94,7 @@ public:
 class SqliteDataset : public Dataset
 {
 protected:
-  sqlite3* handle();
+  sqlite3* handle() const;
 
   /* Makes direct queries to database */
   virtual void make_query(StringList& _sql);

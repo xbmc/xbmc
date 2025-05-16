@@ -50,9 +50,9 @@ public:
   EmuFileObject* RegisterFileObject(XFILE::CFile* pFile);
   void UnRegisterFileObjectByDescriptor(int fd);
   void UnRegisterFileObjectByStream(FILE* stream);
-  void LockFileObjectByDescriptor(int fd);
-  bool TryLockFileObjectByDescriptor(int fd);
-  void UnlockFileObjectByDescriptor(int fd);
+  void LockFileObjectByDescriptor(int fd) const;
+  bool TryLockFileObjectByDescriptor(int fd) const;
+  void UnlockFileObjectByDescriptor(int fd) const;
   EmuFileObject* GetFileObjectByDescriptor(int fd);
   EmuFileObject* GetFileObjectByStream(FILE* stream);
   XFILE::CFile* GetFileXbmcByDescriptor(int fd);

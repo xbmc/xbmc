@@ -113,7 +113,7 @@ public:
   /// first time to the client. A valid index must be greater than
   /// @ref PVR_TIMER_NO_CLIENT_INDEX.
   ///
-  void SetClientIndex(unsigned int clientIndex) { m_cStructure->iClientIndex = clientIndex; }
+  void SetClientIndex(unsigned int clientIndex) const { m_cStructure->iClientIndex = clientIndex; }
 
   /// @brief To get with @ref SetClientIndex changed values.
   unsigned int GetClientIndex() const { return m_cStructure->iClientIndex; }
@@ -132,7 +132,7 @@ public:
   /// tag.SetState(PVR_TIMER_STATE_RECORDING);
   /// ~~~~~~~~~~~~~
   ///
-  void SetState(PVR_TIMER_STATE state) { m_cStructure->state = state; }
+  void SetState(PVR_TIMER_STATE state) const { m_cStructure->state = state; }
 
   /// @brief To get with @ref SetState changed values.
   PVR_TIMER_STATE GetState() const { return m_cStructure->state; }
@@ -158,15 +158,14 @@ public:
   /// tag.SetTimerType(123);
   /// ~~~~~~~~~~~~~
   ///
-  void SetTimerType(unsigned int timerType) { m_cStructure->iTimerType = timerType; }
+  void SetTimerType(unsigned int timerType) const { m_cStructure->iTimerType = timerType; }
 
   /// @brief To get with @ref SetTimerType changed values.
   unsigned int GetTimerType() const { return m_cStructure->iTimerType; }
 
   /// @brief **required**\n
   /// A title for this timer.
-  void SetTitle(const std::string& title)
-  {
+  void SetTitle(const std::string& title) const {
     strncpy(m_cStructure->strTitle, title.c_str(), sizeof(m_cStructure->strTitle) - 1);
   }
 
@@ -179,8 +178,7 @@ public:
   /// The index of the repeating timer that scheduled this timer (it's
   /// @ref clientIndex value). Use @ref PVR_TIMER_NO_PARENT to indicate that
   /// this timer was no scheduled by a repeating timer.
-  void SetParentClientIndex(unsigned int parentClientIndex)
-  {
+  void SetParentClientIndex(unsigned int parentClientIndex) const {
     m_cStructure->iParentClientIndex = parentClientIndex;
   }
 
@@ -192,8 +190,7 @@ public:
   ///
   /// @ref PVR_TIMER_ANY_CHANNEL will denote "any channel", not a specific one.
   /// @ref PVR_CHANNEL_INVALID_UID denotes that channel uid is not available.
-  void SetClientChannelUid(int clientChannelUid)
-  {
+  void SetClientChannelUid(int clientChannelUid) const {
     m_cStructure->iClientChannelUid = clientChannelUid;
   }
 
@@ -205,14 +202,14 @@ public:
   ///
   /// Instant timers that are sent to the add-on by Kodi will have this value
   /// set to 0.
-  void SetStartTime(time_t startTime) { m_cStructure->startTime = startTime; }
+  void SetStartTime(time_t startTime) const { m_cStructure->startTime = startTime; }
 
   /// @brief To get with @ref SetStartTime changed values.
   time_t GetStartTime() const { return m_cStructure->startTime; }
 
   /// @brief **optional**\n
   /// End time of the recording in UTC.
-  void SetEndTime(time_t endTime) { m_cStructure->endTime = endTime; }
+  void SetEndTime(time_t endTime) const { m_cStructure->endTime = endTime; }
 
   /// @brief To get with @ref SetEndTime changed values.
   time_t GetEndTime() const { return m_cStructure->endTime; }
@@ -221,7 +218,7 @@ public:
   /// For EPG based (not Manual) timers indicates startTime does not apply.
   ///
   /// Default = false.
-  void SetStartAnyTime(bool startAnyTime) { m_cStructure->bStartAnyTime = startAnyTime; }
+  void SetStartAnyTime(bool startAnyTime) const { m_cStructure->bStartAnyTime = startAnyTime; }
 
   /// @brief To get with @ref SetStartAnyTime changed values.
   bool GetStartAnyTime() const { return m_cStructure->bStartAnyTime; }
@@ -230,7 +227,7 @@ public:
   /// For EPG based (not Manual) timers indicates endTime does not apply.
   ///
   /// Default = false
-  void SetEndAnyTime(bool endAnyTime) { m_cStructure->bEndAnyTime = endAnyTime; }
+  void SetEndAnyTime(bool endAnyTime) const { m_cStructure->bEndAnyTime = endAnyTime; }
 
   /// @brief To get with @ref SetEndAnyTime changed values.
   bool GetEndAnyTime() const { return m_cStructure->bEndAnyTime; }
@@ -239,8 +236,7 @@ public:
   /// A string used to search epg data for repeating epg-based timers.
   ///
   /// Format is backend-dependent, for example regexp.
-  void SetEPGSearchString(const std::string& epgSearchString)
-  {
+  void SetEPGSearchString(const std::string& epgSearchString) const {
     strncpy(m_cStructure->strEpgSearchString, epgSearchString.c_str(),
             sizeof(m_cStructure->strEpgSearchString) - 1);
   }
@@ -251,8 +247,7 @@ public:
   /// @brief **optional**\n
   /// Indicates, whether @ref SetEPGSearchString() is to match against the epg
   /// episode title only or also against "other" epg data (backend-dependent).
-  void SetFullTextEpgSearch(bool fullTextEpgSearch)
-  {
+  void SetFullTextEpgSearch(bool fullTextEpgSearch) const {
     m_cStructure->bFullTextEpgSearch = fullTextEpgSearch;
   }
 
@@ -261,8 +256,7 @@ public:
 
   /// @brief **optional**\n
   /// The (relative) directory where the recording will be stored in.
-  void SetDirectory(const std::string& directory)
-  {
+  void SetDirectory(const std::string& directory) const {
     strncpy(m_cStructure->strDirectory, directory.c_str(), sizeof(m_cStructure->strDirectory) - 1);
   }
 
@@ -271,8 +265,7 @@ public:
 
   /// @brief **optional**\n
   /// The summary for this timer.
-  void SetSummary(const std::string& summary)
-  {
+  void SetSummary(const std::string& summary) const {
     strncpy(m_cStructure->strSummary, summary.c_str(), sizeof(m_cStructure->strSummary) - 1);
   }
 
@@ -281,7 +274,7 @@ public:
 
   /// @brief **optional**\n
   /// The priority of this timer.
-  void SetPriority(int priority) { m_cStructure->iPriority = priority; }
+  void SetPriority(int priority) const { m_cStructure->iPriority = priority; }
 
   /// @brief To get with @ref SetPriority changed values.
   int GetPriority() const { return m_cStructure->iPriority; }
@@ -291,7 +284,7 @@ public:
   ///
   /// Value > 0 days after which recordings will be deleted by the backend, < 0
   /// addon defined integer list reference, == 0 disabled.
-  void SetLifetime(int priority) { m_cStructure->iLifetime = priority; }
+  void SetLifetime(int priority) const { m_cStructure->iLifetime = priority; }
 
   /// @brief To get with @ref SetLifetime changed values.
   int GetLifetime() const { return m_cStructure->iLifetime; }
@@ -300,15 +293,14 @@ public:
   /// Maximum number of recordings this timer shall create.
   ///
   /// Value > 0 number of recordings, < 0 addon defined integer list reference, == 0 disabled.
-  void SetMaxRecordings(int maxRecordings) { m_cStructure->iMaxRecordings = maxRecordings; }
+  void SetMaxRecordings(int maxRecordings) const { m_cStructure->iMaxRecordings = maxRecordings; }
 
   /// @brief To get with @ref SetMaxRecordings changed values.
   int GetMaxRecordings() const { return m_cStructure->iMaxRecordings; }
 
   /// @brief **optional**\n
   /// Integer ref to addon/backend defined list of recording groups.
-  void SetRecordingGroup(unsigned int recordingGroup)
-  {
+  void SetRecordingGroup(unsigned int recordingGroup) const {
     m_cStructure->iRecordingGroup = recordingGroup;
   }
 
@@ -317,7 +309,7 @@ public:
 
   /// @brief **optional**\n
   /// The first day this timer is active, for repeating timers.
-  void SetFirstDay(time_t firstDay) { m_cStructure->firstDay = firstDay; }
+  void SetFirstDay(time_t firstDay) const { m_cStructure->firstDay = firstDay; }
 
   /// @brief To get with @ref SetFirstDay changed values.
   time_t GetFirstDay() const { return m_cStructure->firstDay; }
@@ -338,7 +330,7 @@ public:
   /// tag.SetWeekdays(PVR_WEEKDAY_MONDAY | PVR_WEEKDAY_SATURDAY);
   /// ...
   /// ~~~~~~~~~~~~~
-  void SetWeekdays(unsigned int weekdays) { m_cStructure->iWeekdays = weekdays; }
+  void SetWeekdays(unsigned int weekdays) const { m_cStructure->iWeekdays = weekdays; }
 
   /// @brief To get with @ref SetFirstDay changed values.
   unsigned int GetWeekdays() const { return m_cStructure->iWeekdays; }
@@ -352,8 +344,7 @@ public:
   /// Actual algorithm for duplicate detection is defined by the backend.
   /// Addons may define own values for different duplicate detection
   /// algorithms, thus this is not just a bool.
-  void SetPreventDuplicateEpisodes(unsigned int preventDuplicateEpisodes)
-  {
+  void SetPreventDuplicateEpisodes(unsigned int preventDuplicateEpisodes) const {
     m_cStructure->iPreventDuplicateEpisodes = preventDuplicateEpisodes;
   }
 
@@ -368,7 +359,7 @@ public:
   /// channel.
   ///
   /// Valid ids must be greater than @ref EPG_TAG_INVALID_UID.
-  void SetEPGUid(unsigned int epgUid) { m_cStructure->iEpgUid = epgUid; }
+  void SetEPGUid(unsigned int epgUid) const { m_cStructure->iEpgUid = epgUid; }
 
   /// @brief To get with @ref SetEPGUid changed values.
   unsigned int GetEPGUid() const { return m_cStructure->iEpgUid; }
@@ -376,7 +367,7 @@ public:
   /// @brief **optional**\n
   /// If set, the backend starts the recording selected minutes before
   /// @ref SetStartTime.
-  void SetMarginStart(unsigned int marginStart) { m_cStructure->iMarginStart = marginStart; }
+  void SetMarginStart(unsigned int marginStart) const { m_cStructure->iMarginStart = marginStart; }
 
   /// @brief To get with @ref SetMarginStart changed values.
   unsigned int GetMarginStart() const { return m_cStructure->iMarginStart; }
@@ -384,7 +375,7 @@ public:
   /// @brief **optional**\n
   /// If set, the backend ends the recording selected minutes after
   /// @ref SetEndTime.
-  void SetMarginEnd(unsigned int marginEnd) { m_cStructure->iMarginEnd = marginEnd; }
+  void SetMarginEnd(unsigned int marginEnd) const { m_cStructure->iMarginEnd = marginEnd; }
 
   /// @brief To get with @ref SetMarginEnd changed values.
   unsigned int GetMarginEnd() const { return m_cStructure->iMarginEnd; }
@@ -408,7 +399,7 @@ public:
   /// conform values, can be @ref EPG_EVENT_CONTENTMASK ignored and to set here
   /// with backend value.
   ///
-  void SetGenreType(int genreType) { m_cStructure->iGenreType = genreType; }
+  void SetGenreType(int genreType) const { m_cStructure->iGenreType = genreType; }
 
   /// @brief To get with @ref SetGenreType changed values.
   int GetGenreType() const { return m_cStructure->iGenreType; }
@@ -446,7 +437,7 @@ public:
   /// ...
   /// ~~~~~~~~~~~~~
   ///
-  void SetGenreSubType(int genreSubType) { m_cStructure->iGenreSubType = genreSubType; }
+  void SetGenreSubType(int genreSubType) const { m_cStructure->iGenreSubType = genreSubType; }
 
   /// @brief To get with @ref SetGenreType changed values.
   int GetGenreSubType() const { return m_cStructure->iGenreSubType; }
@@ -456,8 +447,7 @@ public:
   ///
   /// If set for an epg-based timer rule, matching events will be found by
   /// checking with here, instead of @ref SetTitle() (and @ref SetFullTextEpgSearch()).
-  void SetSeriesLink(const std::string& seriesLink)
-  {
+  void SetSeriesLink(const std::string& seriesLink) const {
     strncpy(m_cStructure->strSeriesLink, seriesLink.c_str(),
             sizeof(m_cStructure->strSeriesLink) - 1);
   }
@@ -500,8 +490,7 @@ public:
   /// @brief To add and give content from addon to Kodi on related call.
   ///
   /// @param[in] tag The to transferred data.
-  void Add(const kodi::addon::PVRTimer& tag)
-  {
+  void Add(const kodi::addon::PVRTimer& tag) const {
     m_instance->toKodi->TransferTimerEntry(m_instance->toKodi->kodiInstance, m_handle, tag);
   }
 
@@ -576,7 +565,7 @@ public:
 
   /// @brief **required**\n
   /// This type's identifier. Ids must be > @ref PVR_TIMER_TYPE_NONE.
-  void SetId(unsigned int id) { m_cStructure->iId = id; }
+  void SetId(unsigned int id) const { m_cStructure->iId = id; }
 
   /// @brief To get with @ref SetAttributes changed values.
   unsigned int GetId() const { return m_cStructure->iId; }
@@ -595,7 +584,7 @@ public:
   /// tag.SetAttributes(PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REPEATING);
   /// ~~~~~~~~~~~~~
   ///
-  void SetAttributes(uint64_t attributes) { m_cStructure->iAttributes = attributes; }
+  void SetAttributes(uint64_t attributes) const { m_cStructure->iAttributes = attributes; }
 
   /// @brief To get with @ref SetAttributes changed values.
   uint64_t GetAttributes() const { return m_cStructure->iAttributes; }
@@ -606,8 +595,7 @@ public:
   ///
   /// If left blank, Kodi will generate a description based on the attributes
   /// REPEATING and MANUAL. (e.g. "Repeating EPG-based.")
-  void SetDescription(const std::string& description)
-  {
+  void SetDescription(const std::string& description) const {
     strncpy(m_cStructure->strDescription, description.c_str(),
             sizeof(m_cStructure->strDescription) - 1);
   }
@@ -629,8 +617,7 @@ public:
   /// --------------------------------------------------------------------------
   ///
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
-  void SetPriorities(const std::vector<PVRTypeIntValue>& priorities, int prioritiesDefault = -1)
-  {
+  void SetPriorities(const std::vector<PVRTypeIntValue>& priorities, int prioritiesDefault = -1) const {
     m_cStructure->iPrioritiesSize = priorities.size();
     for (unsigned int i = 0;
          i < m_cStructure->iPrioritiesSize && i < sizeof(m_cStructure->priorities); ++i)
@@ -659,8 +646,7 @@ public:
   ///
   /// @note Must be filled if @ref SetPriorities contain values and not
   /// defined there on second function value.
-  void SetPrioritiesDefault(int prioritiesDefault)
-  {
+  void SetPrioritiesDefault(int prioritiesDefault) const {
     m_cStructure->iPrioritiesDefault = prioritiesDefault;
   }
 
@@ -681,8 +667,7 @@ public:
   /// --------------------------------------------------------------------------
   ///
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
-  void SetLifetimes(const std::vector<PVRTypeIntValue>& lifetimes, int lifetimesDefault = -1)
-  {
+  void SetLifetimes(const std::vector<PVRTypeIntValue>& lifetimes, int lifetimesDefault = -1) const {
     m_cStructure->iLifetimesSize = lifetimes.size();
     for (unsigned int i = 0;
          i < m_cStructure->iLifetimesSize && i < sizeof(m_cStructure->lifetimes); ++i)
@@ -711,8 +696,7 @@ public:
   ///
   /// @note Must be filled if @ref SetLifetimes contain values and not
   /// defined there on second function value.
-  void SetLifetimesDefault(int lifetimesDefault)
-  {
+  void SetLifetimesDefault(int lifetimesDefault) const {
     m_cStructure->iLifetimesDefault = lifetimesDefault;
   }
 
@@ -736,8 +720,7 @@ public:
   ///
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetPreventDuplicateEpisodes(const std::vector<PVRTypeIntValue>& preventDuplicateEpisodes,
-                                   int preventDuplicateEpisodesDefault = -1)
-  {
+                                   int preventDuplicateEpisodesDefault = -1) const {
     m_cStructure->iPreventDuplicateEpisodesSize =
         preventDuplicateEpisodes.size();
     for (unsigned int i = 0; i < m_cStructure->iPreventDuplicateEpisodesSize &&
@@ -769,8 +752,7 @@ public:
   ///
   /// @note Must be filled if @ref SetPreventDuplicateEpisodes contain values and not
   /// defined there on second function value.
-  void SetPreventDuplicateEpisodesDefault(int preventDuplicateEpisodesDefault)
-  {
+  void SetPreventDuplicateEpisodesDefault(int preventDuplicateEpisodesDefault) const {
     m_cStructure->iPreventDuplicateEpisodesDefault = preventDuplicateEpisodesDefault;
   }
 
@@ -793,8 +775,7 @@ public:
   ///
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetRecordingGroups(const std::vector<PVRTypeIntValue>& recordingGroup,
-                          int recordingGroupDefault = -1)
-  {
+                          int recordingGroupDefault = -1) const {
     m_cStructure->iRecordingGroupSize = recordingGroup.size();
     for (unsigned int i = 0;
          i < m_cStructure->iRecordingGroupSize && i < sizeof(m_cStructure->recordingGroup); ++i)
@@ -823,8 +804,7 @@ public:
   ///
   /// @note Must be filled if @ref SetRecordingGroups contain values and not
   /// defined there on second function value.
-  void SetRecordingGroupDefault(int recordingGroupDefault)
-  {
+  void SetRecordingGroupDefault(int recordingGroupDefault) const {
     m_cStructure->iRecordingGroupDefault = recordingGroupDefault;
   }
 
@@ -844,8 +824,7 @@ public:
   ///
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetMaxRecordings(const std::vector<PVRTypeIntValue>& maxRecordings,
-                        int maxRecordingsDefault = -1)
-  {
+                        int maxRecordingsDefault = -1) const {
     m_cStructure->iMaxRecordingsSize = maxRecordings.size();
     for (unsigned int i = 0;
          i < m_cStructure->iMaxRecordingsSize && i < sizeof(m_cStructure->maxRecordings); ++i)
@@ -873,8 +852,7 @@ public:
   /// The default value for @ref SetMaxRecordings().
   ///
   /// Can be set with here if on @ref SetMaxRecordings not given as second value.
-  void SetMaxRecordingsDefault(int maxRecordingsDefault)
-  {
+  void SetMaxRecordingsDefault(int maxRecordingsDefault) const {
     m_cStructure->iMaxRecordingsDefault = maxRecordingsDefault;
   }
 

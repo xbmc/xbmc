@@ -63,7 +63,7 @@ protected:
 
   void SetHardwareVolume(float hardwareVolume);
 
-  void VolumeChanged();
+  void VolumeChanged() const;
 
   bool m_muted = false;
   float m_volumeLevel = VOLUME_MAXIMUM;

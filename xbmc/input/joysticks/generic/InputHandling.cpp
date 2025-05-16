@@ -150,8 +150,7 @@ bool CInputHandling::OnAnalogMotion(const CDriverPrimitive& source, float magnit
   return bHandled;
 }
 
-CJoystickFeature* CInputHandling::CreateFeature(const FeatureName& featureName)
-{
+CJoystickFeature* CInputHandling::CreateFeature(const FeatureName& featureName) const {
   CJoystickFeature* feature = nullptr;
 
   switch (m_buttonMap->GetFeatureType(featureName))

@@ -46,8 +46,7 @@ constexpr std::string_view SETTING_LAST_ACTIVE = "last_active";
 
 struct SortBySettingsOrder
 {
-  bool operator()(const PeripheralDeviceSetting& left, const PeripheralDeviceSetting& right)
-  {
+  bool operator()(const PeripheralDeviceSetting& left, const PeripheralDeviceSetting& right) const {
     return left.m_order < right.m_order;
   }
 };

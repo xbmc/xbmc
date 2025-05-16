@@ -189,8 +189,7 @@ std::string CScraper::GetPathSettings()
   return stream.str();
 }
 
-void CScraper::ClearCache()
-{
+void CScraper::ClearCache() const {
   std::string strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers");
 
   // create scraper cache dir if needed

@@ -48,14 +48,14 @@ protected:
 
   struct DrmModeObjectPropertiesDeleter
   {
-    void operator()(drmModeObjectProperties* p) { drmModeFreeObjectProperties(p); }
+    void operator()(drmModeObjectProperties* p) const { drmModeFreeObjectProperties(p); }
   };
 
   std::unique_ptr<drmModeObjectProperties, DrmModeObjectPropertiesDeleter> m_props;
 
   struct DrmModePropertyResDeleter
   {
-    void operator()(drmModePropertyRes* p) { drmModeFreeProperty(p); }
+    void operator()(drmModePropertyRes* p) const { drmModeFreeProperty(p); }
   };
 
   std::vector<std::unique_ptr<drmModePropertyRes, DrmModePropertyResDeleter>> m_propsInfo;

@@ -82,7 +82,7 @@ public:
   ///
   getBool(...);
 #else
-  bool getBool(const char* id);
+  bool getBool(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -107,7 +107,7 @@ public:
   ///
   getInt(...);
 #else
-  int getInt(const char* id);
+  int getInt(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -132,7 +132,7 @@ public:
   ///
   getNumber(...);
 #else
-  double getNumber(const char* id);
+  double getNumber(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -157,7 +157,7 @@ public:
   ///
   getString(...);
 #else
-  String getString(const char* id);
+  String getString(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -182,7 +182,7 @@ public:
   ///
   getBoolList(...);
 #else
-  std::vector<bool> getBoolList(const char* id);
+  std::vector<bool> getBoolList(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -207,7 +207,7 @@ public:
   ///
   getIntList(...);
 #else
-  std::vector<int> getIntList(const char* id);
+  std::vector<int> getIntList(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -232,7 +232,7 @@ public:
   ///
   getNumberList(...);
 #else
-  std::vector<double> getNumberList(const char* id);
+  std::vector<double> getNumberList(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -257,7 +257,7 @@ public:
   ///
   getStringList(...);
 #else
-  std::vector<String> getStringList(const char* id);
+  std::vector<String> getStringList(const char* id) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -285,7 +285,7 @@ public:
   ///
   setBool(...);
 #else
-  void setBool(const char* id, bool value);
+  void setBool(const char* id, bool value) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -313,7 +313,7 @@ public:
   ///
   setInt(...);
 #else
-  void setInt(const char* id, int value);
+  void setInt(const char* id, int value) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -341,7 +341,7 @@ public:
   ///
   setNumber(...);
 #else
-  void setNumber(const char* id, double value);
+  void setNumber(const char* id, double value) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -369,7 +369,7 @@ public:
   ///
   setString(...);
 #else
-  void setString(const char* id, const String& value);
+  void setString(const char* id, const String& value) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -397,7 +397,7 @@ public:
   ///
   setBoolList(...);
 #else
-  void setBoolList(const char* id, const std::vector<bool>& values);
+  void setBoolList(const char* id, const std::vector<bool>& values) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -425,7 +425,7 @@ public:
   ///
   setIntList(...);
 #else
-  void setIntList(const char* id, const std::vector<int>& values);
+  void setIntList(const char* id, const std::vector<int>& values) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -453,7 +453,7 @@ public:
   ///
   setNumberList(...);
 #else
-  void setNumberList(const char* id, const std::vector<double>& values);
+  void setNumberList(const char* id, const std::vector<double>& values) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -481,7 +481,7 @@ public:
   ///
   setStringList(...);
 #else
-  void setStringList(const char* id, const std::vector<String>& values);
+  void setStringList(const char* id, const std::vector<String>& values) const;
 #endif
 };
 //@}

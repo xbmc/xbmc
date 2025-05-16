@@ -59,7 +59,7 @@ protected:
   /*!
    * \brief Set the entire backbuffer to black
    */
-  void ClearBackBuffer();
+  void ClearBackBuffer() const;
 
   /*!
    * \brief Draw black bars around the video quad
@@ -67,7 +67,7 @@ protected:
    * This is more efficient than glClear() since it only sets pixels to
    * black that aren't going to be overwritten by the game.
    */
-  void DrawBlackBars();
+  void DrawBlackBars() const;
 
   virtual void Render(uint8_t alpha);
 

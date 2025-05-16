@@ -112,8 +112,8 @@ public:
 
 
   void UserInput(bd_vk_key_e vk);
-  bool MouseMove(const CPoint &point);
-  bool MouseClick(const CPoint &point);
+  bool MouseMove(const CPoint &point) const;
+  bool MouseClick(const CPoint &point) const;
 
   int GetChapter() override;
   int GetChapterCount() override;
@@ -128,17 +128,17 @@ public:
   CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
   bool PosTime(int ms) override;
 
-  void GetStreamInfo(int pid, std::string &language);
+  void GetStreamInfo(int pid, std::string &language) const;
 
-  int Get3dSubtitlePlane(uint16_t pid);
+  int Get3dSubtitlePlane(uint16_t pid) const;
 
   void OverlayCallback(const BD_OVERLAY * const);
 #ifdef HAVE_LIBBLURAY_BDJ
   void OverlayCallbackARGB(const struct bd_argb_overlay_s * const);
 #endif
 
-  BLURAY_TITLE_INFO* GetTitleLongest();
-  BLURAY_TITLE_INFO* GetTitleFile(const std::string& name);
+  BLURAY_TITLE_INFO* GetTitleLongest() const;
+  BLURAY_TITLE_INFO* GetTitleFile(const std::string& name) const;
 
   void ProcessEvent();
   CDVDDemux* GetExtentionDemux() override { return m_pMVCDemux; };
@@ -212,7 +212,7 @@ protected:
 
   private:
     bool OpenStream(CFileItem &item);
-    void SetupPlayerSettings();
+    void SetupPlayerSettings() const;
     void FreeTitleInfo();
     std::unique_ptr<CDVDInputStreamFile> m_pstream;
     std::string m_rootPath;

@@ -677,8 +677,7 @@ void SqliteDataset::set_autorefresh(bool val)
 
 //--------- protected functions implementation -----------------//
 
-sqlite3* SqliteDataset::handle()
-{
+sqlite3* SqliteDataset::handle() const {
   if (db != NULL)
   {
     return static_cast<SqliteDatabase*>(db)->getHandle();

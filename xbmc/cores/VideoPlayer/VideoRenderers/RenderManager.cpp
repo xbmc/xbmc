@@ -76,8 +76,7 @@ float CRenderManager::GetAspectRatio() const
     return 1.0f;
 }
 
-void CRenderManager::SetVideoSettings(const CVideoSettings& settings)
-{
+void CRenderManager::SetVideoSettings(const CVideoSettings& settings) const {
   std::lock_guard lock(m_statelock);
 
   if (m_pRenderer)
@@ -662,8 +661,7 @@ void CRenderManager::ManageCaptures()
     m_hasCaptures = false;
 }
 
-void CRenderManager::RenderCapture(CRenderCapture* capture)
-{
+void CRenderManager::RenderCapture(CRenderCapture* capture) const {
   if (!m_pRenderer || !m_pRenderer->RenderCapture(m_presentsource, capture))
     capture->SetState(CAPTURESTATE_FAILED);
 }
@@ -689,8 +687,7 @@ void CRenderManager::RemoveCaptures()
   m_captures.clear();
 }
 
-void CRenderManager::SetViewMode(int iViewMode)
-{
+void CRenderManager::SetViewMode(int iViewMode) const {
   std::lock_guard lock(m_statelock);
 
   if (m_pRenderer)
@@ -698,8 +695,7 @@ void CRenderManager::SetViewMode(int iViewMode)
   m_playerPort->VideoParamsChange();
 }
 
-RESOLUTION CRenderManager::GetResolution()
-{
+RESOLUTION CRenderManager::GetResolution() const {
   RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
 
   std::lock_guard lock(m_statelock);
@@ -714,8 +710,7 @@ RESOLUTION CRenderManager::GetResolution()
   return res;
 }
 
-bool CRenderManager::CalcOverlayActiveArea(CRect& src, CRect& dst)
-{
+bool CRenderManager::CalcOverlayActiveArea(CRect& src, CRect& dst) const {
   // Setup - DV Active Area (L5) Overlay handling.
   if ((m_picture.hdrType != StreamHdrType::HDR_TYPE_DOLBYVISION) || !aml_dv_use_active_area())
     return false;
@@ -888,8 +883,7 @@ bool CRenderManager::IsGuiLayer()
   return false;
 }
 
-bool CRenderManager::IsVideoLayer()
-{
+bool CRenderManager::IsVideoLayer() const {
   {
     std::lock_guard lock(m_statelock);
 

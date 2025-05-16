@@ -1112,8 +1112,7 @@ int CSysInfo::GetXbmcBitness(void)
   return sizeof(void*) * 8;
 }
 
-bool CSysInfo::HasInternet()
-{
+bool CSysInfo::HasInternet() const {
   return m_info.internetState == CSysData::UNKNOWN;
 }
 

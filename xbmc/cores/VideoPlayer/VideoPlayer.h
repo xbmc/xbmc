@@ -161,8 +161,7 @@ public:
     avsync = AV_SYNC_FORCE;
   }
 
-  double dts_end()
-  {
+  double dts_end() const {
     if(dts == DVD_NOPTS_VALUE)
       return DVD_NOPTS_VALUE;
     if(dur == DVD_NOPTS_VALUE)
@@ -209,7 +208,7 @@ public:
   int CountType(StreamType type) const;
   SelectionStream& Get(StreamType type, int index);
   const SelectionStream& Get(StreamType type, int index) const;
-  bool Get(StreamType type, StreamFlags flag, SelectionStream& out);
+  bool Get(StreamType type, StreamFlags flag, SelectionStream& out) const;
   void Clear(StreamType type, StreamSource source);
   int Source(StreamSource source, const std::string& filename);
   void Update(SelectionStream& s);
@@ -251,7 +250,7 @@ class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer,
                      public IDispResource, public IRenderLoop, public IRenderMsg
 {
 private:
-  void SetAVChange(std::string from);
+  void SetAVChange(std::string from) const;
 
 public:
   explicit CVideoPlayer(IPlayerCallback& callback);
@@ -419,9 +418,9 @@ protected:
    * \param current The current stream
    * \param isEnabled Set to true to enable the stream, otherwise false
    */
-  void SetEnableStream(CCurrentStream& current, bool isEnabled);
+  void SetEnableStream(CCurrentStream& current, bool isEnabled) const;
 
-  void SetSubtitleVisibleInternal(bool bVisible);
+  void SetSubtitleVisibleInternal(bool bVisible) const;
 
   /**
    * one of the DVD_PLAYSPEED defines
@@ -439,7 +438,7 @@ protected:
 
   void SetCaching(ECacheState state);
 
-  double GetQueueTime();
+  double GetQueueTime() const;
   CacheInfo GetCachingTimes();
 
   void FlushBuffers(double pts, bool accurate, bool sync);
@@ -454,12 +453,12 @@ protected:
   bool CheckPlayerInit(CCurrentStream& current);
   void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket);
-  IDVDStreamPlayer* GetStreamPlayer(unsigned int player);
+  IDVDStreamPlayer* GetStreamPlayer(unsigned int player) const;
   void SendPlayerMessage(std::shared_ptr<CDVDMsg> pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
-  bool IsValidStream(const CCurrentStream& stream);
-  bool IsBetterStream(const CCurrentStream& current, CDemuxStream* stream);
+  bool IsValidStream(const CCurrentStream& stream) const;
+  bool IsBetterStream(const CCurrentStream& current, CDemuxStream* stream) const;
   void CheckBetterStream(CCurrentStream& current, CDemuxStream* stream);
   void CheckStreamChanges(CCurrentStream& current, CDemuxStream* stream);
 
@@ -471,7 +470,7 @@ protected:
   void UpdatePlayState(double timeout);
   void GetGeneralInfo(std::string& strVideoInfo);
   int64_t GetUpdatedTime();
-  int64_t GetTime();
+  int64_t GetTime() const;
   float GetPercentage();
 
   void UpdateContent();

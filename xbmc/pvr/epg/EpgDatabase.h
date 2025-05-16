@@ -55,12 +55,12 @@ namespace PVR
     /*!
      * @brief Lock the database.
      */
-    void Lock();
+    void Lock() const;
 
     /*!
      * @brief Unlock the database.
      */
-    void Unlock();
+    void Unlock() const;
 
     /*!
      * @brief Get the minimal database version that is required to operate correctly.

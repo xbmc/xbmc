@@ -348,8 +348,7 @@ int CScriptInvocationManager::ExecuteSync(
   return 0;
 }
 
-bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
-{
+bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */) const {
   if (scriptId < 0)
     return false;
 

@@ -52,7 +52,7 @@ public:
   virtual ~CNetworkBase();
 
   // Get network services
-  CNetworkServices& GetServices() { return *m_services; }
+  CNetworkServices& GetServices() const { return *m_services; }
 
   // Return our hostname
   virtual bool GetHostName(std::string& hostname);
@@ -86,7 +86,7 @@ public:
   virtual std::vector<std::string> GetNameServers(void) = 0;
 
   // callback from application controlled thread to handle any setup
-  void NetworkMessage(EMESSAGE message, int param);
+  void NetworkMessage(EMESSAGE message, int param) const;
 
   static int ParseHex(char* str, unsigned char* addr);
 

@@ -146,8 +146,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_spin->set_visible(m_interface->kodiBase, m_controlHandle,
                                                      visible);
   }
@@ -159,8 +158,7 @@ public:
   ///
   /// @param[in] enabled If true enabled, otherwise disabled
   ///
-  void SetEnabled(bool enabled)
-  {
+  void SetEnabled(bool enabled) const {
     m_interface->kodi_gui->control_spin->set_enabled(m_interface->kodiBase, m_controlHandle,
                                                      enabled);
   }
@@ -172,8 +170,7 @@ public:
   ///
   /// @param[in] text Text to show as name for spin
   ///
-  void SetText(const std::string& text)
-  {
+  void SetText(const std::string& text) const {
     m_interface->kodi_gui->control_spin->set_text(m_interface->kodiBase, m_controlHandle,
                                                   text.c_str());
   }
@@ -183,8 +180,7 @@ public:
   /// @ingroup cpp_kodi_gui_windows_controls_CSpin
   /// @brief To reset spin control to defaults.
   ///
-  void Reset()
-  {
+  void Reset() const {
     m_interface->kodi_gui->control_spin->reset(m_interface->kodiBase, m_controlHandle);
   }
   //----------------------------------------------------------------------------
@@ -197,8 +193,7 @@ public:
   ///
   /// @note See description of @ref AddonGUISpinControlType for available types.
   ///
-  void SetType(AddonGUISpinControlType type)
-  {
+  void SetType(AddonGUISpinControlType type) const {
     m_interface->kodi_gui->control_spin->set_type(m_interface->kodiBase, m_controlHandle,
                                                   (int)type);
   }
@@ -213,8 +208,7 @@ public:
   /// @param[in] label Label string to view on skin
   /// @param[in] value String value to use for selection of them
   ///
-  void AddLabel(const std::string& label, const std::string& value)
-  {
+  void AddLabel(const std::string& label, const std::string& value) const {
     m_interface->kodi_gui->control_spin->add_string_label(m_interface->kodiBase, m_controlHandle,
                                                           label.c_str(), value.c_str());
   }
@@ -229,8 +223,7 @@ public:
   /// @param[in] label Label string to view on skin
   /// @param[in] value Integer value to use for selection of them.
   ///
-  void AddLabel(const std::string& label, int value)
-  {
+  void AddLabel(const std::string& label, int value) const {
     m_interface->kodi_gui->control_spin->add_int_label(m_interface->kodiBase, m_controlHandle,
                                                        label.c_str(), value);
   }
@@ -244,8 +237,7 @@ public:
   ///
   /// @param[in] value String value to change to
   ///
-  void SetStringValue(const std::string& value)
-  {
+  void SetStringValue(const std::string& value) const {
     m_interface->kodi_gui->control_spin->set_string_value(m_interface->kodiBase, m_controlHandle,
                                                           value.c_str());
   }
@@ -289,8 +281,7 @@ public:
   /// these different values can be not together and can, therefore, only
   /// one each can be used and must be defined with @ref SetType before.
   ///
-  void SetIntRange(int start, int end)
-  {
+  void SetIntRange(int start, int end) const {
     m_interface->kodi_gui->control_spin->set_int_range(m_interface->kodiBase, m_controlHandle,
                                                        start, end);
   }
@@ -307,8 +298,7 @@ public:
   /// these different values can be not together and can, therefore, only
   /// one each can be used and must be defined with @ref SetType before.
   ///
-  void SetIntValue(int value)
-  {
+  void SetIntValue(int value) const {
     m_interface->kodi_gui->control_spin->set_int_value(m_interface->kodiBase, m_controlHandle,
                                                        value);
   }
@@ -349,8 +339,7 @@ public:
   /// these different values can be not together and can, therefore, only
   /// one each can be used and must be defined with @ref SetType before.
   ///
-  void SetFloatRange(float start, float end)
-  {
+  void SetFloatRange(float start, float end) const {
     m_interface->kodi_gui->control_spin->set_float_range(m_interface->kodiBase, m_controlHandle,
                                                          start, end);
   }
@@ -368,8 +357,7 @@ public:
   /// these different values can be not together and can, therefore, only
   /// one each can be used and must be defined with @ref SetType before.
   ///
-  void SetFloatValue(float value)
-  {
+  void SetFloatValue(float value) const {
     m_interface->kodi_gui->control_spin->set_float_value(m_interface->kodiBase, m_controlHandle,
                                                          value);
   }
@@ -400,8 +388,7 @@ public:
   /// these different values can be not together and can, therefore, only
   /// one each can be used and must be defined with @ref SetType before.
   ///
-  void SetFloatInterval(float interval)
-  {
+  void SetFloatInterval(float interval) const {
     m_interface->kodi_gui->control_spin->set_float_interval(m_interface->kodiBase, m_controlHandle,
                                                             interval);
   }

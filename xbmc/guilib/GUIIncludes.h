@@ -106,8 +106,8 @@ private:
 
   void SetDefaults(TiXmlElement *node);
   void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
-  void ResolveConstants(TiXmlElement *node);
-  void ResolveExpressions(TiXmlElement *node);
+  void ResolveConstants(TiXmlElement *node) const;
+  void ResolveExpressions(TiXmlElement *node) const;
 
   typedef std::map<std::string, std::string> Params;
   static void InsertNested(TiXmlElement* controls, TiXmlElement* include, TiXmlElement* node);

@@ -104,7 +104,7 @@ public:
    * @brief Erase stale texture db entries and image files.
    * @return number of cleaned up images.
    */
-  int CleanupCachedImages();
+  int CleanupCachedImages() const;
 
 private:
   /*!

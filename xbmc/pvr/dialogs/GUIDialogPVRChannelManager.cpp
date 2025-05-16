@@ -934,8 +934,7 @@ void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr& pItem)
 }
 
 bool CGUIDialogPVRChannelManager::UpdateChannelData(const std::shared_ptr<CFileItem>& pItem,
-                                                    const std::shared_ptr<CPVRChannelGroup>& group)
-{
+                                                    const std::shared_ptr<CPVRChannelGroup>& group) const {
   if (!pItem || !group)
     return false;
 

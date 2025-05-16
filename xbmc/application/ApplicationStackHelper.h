@@ -112,7 +112,7 @@ public:
   \brief Returns the stack part number corresponding to the given timestamp in a (non-ISO) stack playback
   \param msecs the requested timestamp in the stack (in milliseconds)
   */
-  int GetStackPartNumberAtTimeMs(uint64_t msecs);
+  int GetStackPartNumberAtTimeMs(uint64_t msecs) const;
 
   // Stack information registration methods
 

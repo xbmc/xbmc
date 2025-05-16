@@ -508,8 +508,7 @@ bool CLangCodeExpander::CompareFullLanguageNames(const std::string& lang1, const
 
 std::vector<std::string> CLangCodeExpander::GetLanguageNames(
     LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */,
-    LANG_LIST list /* = LANG_LIST::DEFAULT */)
-{
+    LANG_LIST list /* = LANG_LIST::DEFAULT */) const {
   std::map<std::string, std::string> langMap;
 
   if (format == CLangCodeExpander::ISO_639_2)

@@ -595,8 +595,7 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSe
   }
 }
 
-bool CGUIDialogPVRTimerSettings::Validate()
-{
+bool CGUIDialogPVRTimerSettings::Validate() const {
   // @todo: Timer rules may have no date (time-only), so we can't check those for now.
   //        We need to extend the api with additional attributes to properly fix this
   if (m_timerType->IsTimerRule())

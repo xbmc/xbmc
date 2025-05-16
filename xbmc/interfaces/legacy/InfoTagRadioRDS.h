@@ -71,7 +71,7 @@ namespace XBMCAddon
       ///
       getTitle();
 #else
-      String getTitle();
+      String getTitle() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -84,7 +84,7 @@ namespace XBMCAddon
       ///
       getBand();
 #else
-      String getBand();
+      String getBand() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -97,7 +97,7 @@ namespace XBMCAddon
       ///
       getArtist();
 #else
-      String getArtist();
+      String getArtist() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -110,7 +110,7 @@ namespace XBMCAddon
       ///
       getComposer();
 #else
-      String getComposer();
+      String getComposer() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -123,7 +123,7 @@ namespace XBMCAddon
       ///
       getConductor();
 #else
-      String getConductor();
+      String getConductor() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -136,7 +136,7 @@ namespace XBMCAddon
       ///
       getAlbum();
 #else
-      String getAlbum();
+      String getAlbum() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -149,7 +149,7 @@ namespace XBMCAddon
       ///
       getComment();
 #else
-      String getComment();
+      String getComment() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -162,7 +162,7 @@ namespace XBMCAddon
       ///
       getAlbumTrackNumber();
 #else
-      int getAlbumTrackNumber();
+      int getAlbumTrackNumber() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -175,7 +175,7 @@ namespace XBMCAddon
       ///
       getInfoNews();
 #else
-      String getInfoNews();
+      String getInfoNews() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -188,7 +188,7 @@ namespace XBMCAddon
       ///
       getInfoNewsLocal();
 #else
-      String getInfoNewsLocal();
+      String getInfoNewsLocal() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -201,7 +201,7 @@ namespace XBMCAddon
       ///
       getInfoSport();
 #else
-      String getInfoSport();
+      String getInfoSport() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -214,7 +214,7 @@ namespace XBMCAddon
       ///
       getInfoStock();
 #else
-      String getInfoStock();
+      String getInfoStock() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -227,7 +227,7 @@ namespace XBMCAddon
       ///
       getInfoWeather();
 #else
-      String getInfoWeather();
+      String getInfoWeather() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -240,7 +240,7 @@ namespace XBMCAddon
       ///
       getInfoHoroscope();
 #else
-      String getInfoHoroscope();
+      String getInfoHoroscope() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -253,7 +253,7 @@ namespace XBMCAddon
       ///
       getInfoCinema();
 #else
-      String getInfoCinema();
+      String getInfoCinema() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -266,7 +266,7 @@ namespace XBMCAddon
       ///
       getInfoLottery();
 #else
-      String getInfoLottery();
+      String getInfoLottery() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -279,7 +279,7 @@ namespace XBMCAddon
       ///
       getInfoOther();
 #else
-      String getInfoOther();
+      String getInfoOther() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -292,7 +292,7 @@ namespace XBMCAddon
       ///
       getEditorialStaff();
 #else
-      String getEditorialStaff();
+      String getEditorialStaff() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -305,7 +305,7 @@ namespace XBMCAddon
       ///
       getProgStation();
 #else
-      String getProgStation();
+      String getProgStation() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -318,7 +318,7 @@ namespace XBMCAddon
       ///
       getProgStyle();
 #else
-      String getProgStyle();
+      String getProgStyle() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -331,7 +331,7 @@ namespace XBMCAddon
       ///
       getProgHost();
 #else
-      String getProgHost();
+      String getProgHost() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -344,7 +344,7 @@ namespace XBMCAddon
       ///
       getProgWebsite();
 #else
-      String getProgWebsite();
+      String getProgWebsite() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -357,7 +357,7 @@ namespace XBMCAddon
       ///
       getProgNow();
 #else
-      String getProgNow();
+      String getProgNow() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -370,7 +370,7 @@ namespace XBMCAddon
       ///
       getProgNext();
 #else
-      String getProgNext();
+      String getProgNext() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -383,7 +383,7 @@ namespace XBMCAddon
       ///
       getPhoneHotline();
 #else
-      String getPhoneHotline();
+      String getPhoneHotline() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -396,7 +396,7 @@ namespace XBMCAddon
       ///
       getEMailHotline();
 #else
-      String getEMailHotline();
+      String getEMailHotline() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -409,7 +409,7 @@ namespace XBMCAddon
       ///
       getPhoneStudio();
 #else
-      String getPhoneStudio();
+      String getPhoneStudio() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -422,7 +422,7 @@ namespace XBMCAddon
       ///
       getEMailStudio();
 #else
-      String getEMailStudio();
+      String getEMailStudio() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -435,7 +435,7 @@ namespace XBMCAddon
       ///
       getSMSStudio();
 #else
-      String getSMSStudio();
+      String getSMSStudio() const;
 #endif
     };
     //@}

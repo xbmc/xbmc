@@ -35,7 +35,7 @@ public:
 private:
   struct DrmModeCrtcDeleter
   {
-    void operator()(drmModeCrtc* p) { drmModeFreeCrtc(p); }
+    void operator()(drmModeCrtc* p) const { drmModeFreeCrtc(p); }
   };
 
   std::unique_ptr<drmModeCrtc, DrmModeCrtcDeleter> m_crtc;

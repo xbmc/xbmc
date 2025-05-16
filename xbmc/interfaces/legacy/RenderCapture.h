@@ -71,7 +71,7 @@ namespace XBMCAddon
       ///
       getWidth();
 #else
-      inline int getWidth() { return m_width; }
+      inline int getWidth() const { return m_width; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -86,7 +86,7 @@ namespace XBMCAddon
       /// @return                        height or 0 prior to calling capture
       getHeight();
 #else
-      inline int getHeight() { return m_height; }
+      inline int getHeight() const { return m_height; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -191,8 +191,7 @@ namespace XBMCAddon
 
 // hide these from swig
 #ifndef SWIG
-      inline bool GetPixels(unsigned int msec)
-      {
+      inline bool GetPixels(unsigned int msec) const {
         auto& components = CServiceBroker::GetAppComponents();
         const auto appPlayer = components.GetComponent<CApplicationPlayer>();
         return appPlayer->RenderCaptureGetPixels(m_captureId, msec, m_buffer,

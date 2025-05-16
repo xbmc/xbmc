@@ -112,11 +112,11 @@ public:
   DBusMessage *Send(DBusConnection *con, CDBusError& error);
 private:
   void AppendWithType(int type, const void* value);
-  bool SendAsync(DBusBusType type);
+  bool SendAsync(DBusBusType type) const;
 
   void PrepareArgument();
 
-  bool InitializeReplyIter(DBusMessageIter* iter);
+  bool InitializeReplyIter(DBusMessageIter* iter) const;
   bool CheckTypeAndGetValue(DBusMessageIter* iter, int expectType, void* dest);
   template<typename TFirst>
   bool GetReplyArgumentsWithIter(DBusMessageIter* iter, TFirst* first)

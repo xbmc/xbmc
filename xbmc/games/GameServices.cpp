@@ -36,34 +36,28 @@ CGameServices::CGameServices(CControllerManager& controllerManager,
 
 CGameServices::~CGameServices() = default;
 
-ControllerPtr CGameServices::GetController(const std::string& controllerId)
-{
+ControllerPtr CGameServices::GetController(const std::string& controllerId) const {
   return m_controllerManager.GetController(controllerId);
 }
 
-ControllerPtr CGameServices::GetDefaultController()
-{
+ControllerPtr CGameServices::GetDefaultController() const {
   return m_controllerManager.GetDefaultController();
 }
 
-ControllerPtr CGameServices::GetDefaultKeyboard()
-{
+ControllerPtr CGameServices::GetDefaultKeyboard() const {
   return m_controllerManager.GetDefaultKeyboard();
 }
 
-ControllerPtr CGameServices::GetDefaultMouse()
-{
+ControllerPtr CGameServices::GetDefaultMouse() const {
   return m_controllerManager.GetDefaultMouse();
 }
 
-ControllerVector CGameServices::GetControllers()
-{
+ControllerVector CGameServices::GetControllers() const {
   return m_controllerManager.GetControllers();
 }
 
 std::string CGameServices::TranslateFeature(const std::string& controllerId,
-                                            const std::string& featureName)
-{
+                                            const std::string& featureName) const {
   return m_controllerManager.TranslateFeature(controllerId, featureName);
 }
 

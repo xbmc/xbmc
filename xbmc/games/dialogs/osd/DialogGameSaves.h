@@ -42,7 +42,7 @@ public:
   bool Open(const std::string& gamePath);
   bool IsConfirmed() const { return m_bConfirmed; }
   bool IsNewPressed() const { return m_bNewPressed; }
-  std::string GetSelectedItemPath();
+  std::string GetSelectedItemPath() const;
 
 protected:
   // implementation of CGUIWIndow via CGUIDialog
@@ -57,7 +57,7 @@ private:
   /*!
    * \breif Called when opening to set the item list
    */
-  void SetItems(const CFileItemList& itemList);
+  void SetItems(const CFileItemList& itemList) const;
 
   /*!
    * \brief Called when an item has been selected
@@ -82,12 +82,12 @@ private:
   /*!
   * \brief Called when "Rename" is selected from the context menu
   */
-  void OnRename(CFileItem& item);
+  void OnRename(CFileItem& item) const;
 
   /*!
   * \brief Called when "Delete" is selected from the context menu
   */
-  void OnDelete(CFileItem& item);
+  void OnDelete(CFileItem& item) const;
 
   /*!
    * \brief Called every frame with the caption to set

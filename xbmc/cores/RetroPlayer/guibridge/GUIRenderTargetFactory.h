@@ -25,12 +25,12 @@ public:
   /*!
    * \brief Create a render target for the fullscreen window
    */
-  CGUIRenderTarget* CreateRenderFullScreen(CGameWindowFullScreen& window);
+  CGUIRenderTarget* CreateRenderFullScreen(CGameWindowFullScreen& window) const;
 
   /*!
    * \brief Create a render target for a game control
    */
-  CGUIRenderTarget* CreateRenderControl(CGUIGameControl& gameControl);
+  CGUIRenderTarget* CreateRenderControl(CGUIGameControl& gameControl) const;
 
 private:
   // Construction parameters

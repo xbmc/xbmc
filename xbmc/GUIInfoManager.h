@@ -104,7 +104,7 @@ public:
   int TranslateSingleString(const std::string &strCondition, bool &listItemDependent);
 
   std::string GetLabel(int info, int contextWindow, std::string* fallback = nullptr) const;
-  std::string GetImage(int info, int contextWindow, std::string *fallback = nullptr);
+  std::string GetImage(int info, int contextWindow, std::string *fallback = nullptr) const;
   bool GetInt(int& value, int info, int contextWindow, const CGUIListItem* item = nullptr) const;
   bool GetBool(int condition, int contextWindow, const CGUIListItem* item = nullptr);
 
@@ -125,10 +125,10 @@ public:
    */
   void SetCurrentItem(const CFileItem &item);
   void ResetCurrentItem();
-  void UpdateCurrentItem(const CFileItem &item);
+  void UpdateCurrentItem(const CFileItem &item) const;
 
   // Current song stuff
-  void SetCurrentAlbumThumb(const std::string &thumbFileName);
+  void SetCurrentAlbumThumb(const std::string &thumbFileName) const;
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
 
   // Current video stuff
@@ -209,8 +209,8 @@ private:
   int ResolveMultiInfo(int info) const;
   bool IsListItemInfo(int info) const;
 
-  void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
-  void SetCurrentVideoTag(const CVideoInfoTag &tag);
+  void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag) const;
+  void SetCurrentVideoTag(const CVideoInfoTag &tag) const;
 
   // Vector of multiple information mapped to a single integer lookup
   std::vector<KODI::GUILIB::GUIINFO::CGUIInfo> m_multiInfo;

@@ -166,7 +166,7 @@ private:
    *
    * \return A target to receive rendering commands
    */
-  CGUIRenderTarget* CreateRenderTarget(CGUIRenderHandle* handle);
+  CGUIRenderTarget* CreateRenderTarget(CGUIRenderHandle* handle) const;
 
   // Render events
   CGUIRenderTargetFactory* m_factory = nullptr;

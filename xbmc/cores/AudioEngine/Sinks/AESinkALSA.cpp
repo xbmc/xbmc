@@ -146,7 +146,7 @@ namespace
 {
 struct SndConfigDeleter
 {
-  void operator()(snd_config_t* p) { snd_config_delete(p); }
+  void operator()(snd_config_t* p) const { snd_config_delete(p); }
 };
 
 inline std::unique_ptr<snd_config_t, SndConfigDeleter> SndConfigCopy(snd_config_t* original)
@@ -473,8 +473,7 @@ CAEChannelInfo CAESinkALSA::GetAlternateLayoutForm(const CAEChannelInfo& info)
   return altLayout;
 }
 
-snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info)
-{
+snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info) const {
   snd_pcm_chmap_t* chmap = NULL;
   snd_pcm_chmap_query_t** supportedMaps;
 
@@ -560,8 +559,7 @@ snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info)
   return chmap;
 }
 
-void CAESinkALSA::GetAESParams(const AEAudioFormat& format, std::string& params)
-{
+void CAESinkALSA::GetAESParams(const AEAudioFormat& format, std::string& params) const {
   if (m_passthrough)
     params = "AES0=0x06";
   else
@@ -1091,8 +1089,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   return true;
 }
 
-bool CAESinkALSA::InitializeSW(const ALSAConfig &inconfig)
-{
+bool CAESinkALSA::InitializeSW(const ALSAConfig &inconfig) const {
   snd_pcm_sw_params_t *sw_params;
   snd_pcm_uframes_t boundary;
 
@@ -1207,8 +1204,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsign
   return frames_written;
 }
 
-void CAESinkALSA::HandleError(const char* name, int err)
-{
+void CAESinkALSA::HandleError(const char* name, int err) const {
   switch(err)
   {
     case -EPIPE:

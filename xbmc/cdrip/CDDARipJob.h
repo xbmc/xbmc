@@ -58,7 +58,7 @@ protected:
   /*!
    * \brief Setup the audio encoder
    */
-  std::unique_ptr<CEncoder> SetupEncoder(XFILE::CFile& reader);
+  std::unique_ptr<CEncoder> SetupEncoder(XFILE::CFile& reader) const;
 
   /*!
    * \brief Helper used if output is a remote url

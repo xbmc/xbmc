@@ -33,8 +33,8 @@ private:
   TouchInput GetEvent(int slot);
   void SetEvent(int slot, TouchInput event);
   void SetPosition(int slot, CPoint point);
-  int GetX(int slot) { return m_points.at(slot).second.x; }
-  int GetY(int slot) { return m_points.at(slot).second.y; }
+  int GetX(int slot) const { return m_points.at(slot).second.x; }
+  int GetY(int slot) const { return m_points.at(slot).second.y; }
 
   std::vector<std::pair<TouchInput, CPoint>> m_points{std::make_pair(TouchInputUnchanged, CPoint(0, 0))};
 };

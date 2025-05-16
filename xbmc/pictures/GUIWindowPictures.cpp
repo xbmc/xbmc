@@ -567,8 +567,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
   }
 }
 
-void CGUIWindowPictures::OnItemInfo(int itemNumber)
-{
+void CGUIWindowPictures::OnItemInfo(int itemNumber) const {
   CFileItemPtr item = m_vecItems->Get(itemNumber);
   if (!item)
     return;

@@ -48,12 +48,12 @@ public:
   void SetStartTime(int64_t start_time, MenuType menu_type) { m_start_time = start_time; m_menu_type = menu_type; }
   int64_t GetStartTime() const { return m_start_time; }
 
-  AVStream* GetAVStream();
+  AVStream* GetAVStream() const;
   CDVDInputStream*    m_pInput;
 
 private:
   void Dispose();
-  double ConvertTimestamp(int64_t pts, int den, int num);
+  double ConvertTimestamp(int64_t pts, int den, int num) const;
 
   AVIOContext        *m_ioContext = nullptr;
   AVFormatContext    *m_pFormatContext = nullptr;

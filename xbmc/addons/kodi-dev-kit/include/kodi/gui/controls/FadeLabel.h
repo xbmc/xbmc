@@ -76,8 +76,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_fade_label->set_visible(m_interface->kodiBase, m_controlHandle,
                                                            visible);
   }
@@ -89,8 +88,7 @@ public:
   ///
   /// @param[in] label Text to show
   ///
-  void AddLabel(const std::string& label)
-  {
+  void AddLabel(const std::string& label) const {
     m_interface->kodi_gui->control_fade_label->add_label(m_interface->kodiBase, m_controlHandle,
                                                          label.c_str());
   }
@@ -123,8 +121,7 @@ public:
   ///
   /// @param[in] scroll To enable scrolling set to true, otherwise is disabled
   ///
-  void SetScrolling(bool scroll)
-  {
+  void SetScrolling(bool scroll) const {
     m_interface->kodi_gui->control_fade_label->set_scrolling(m_interface->kodiBase, m_controlHandle,
                                                              scroll);
   }
@@ -134,8 +131,7 @@ public:
   /// @ingroup cpp_kodi_gui_windows_controls_CFadeLabel
   /// @brief To reset al inserted labels.
   ///
-  void Reset()
-  {
+  void Reset() const {
     m_interface->kodi_gui->control_fade_label->reset(m_interface->kodiBase, m_controlHandle);
   }
   //----------------------------------------------------------------------------

@@ -78,7 +78,7 @@ public:
    *
    * \return True if input should be sent to the input handler, false otherwise
    */
-  bool AcceptsInput(bool bActivation);
+  bool AcceptsInput(bool bActivation) const;
 
 protected:
   /*!
@@ -129,7 +129,7 @@ private:
   bool OnAnalogMotion(float magnitude);
 
   void ProcessDigitalMotion();
-  void ProcessAnalogMotion();
+  void ProcessAnalogMotion() const;
 
   // State variables
   INPUT_TYPE m_inputType = INPUT_TYPE::UNKNOWN;

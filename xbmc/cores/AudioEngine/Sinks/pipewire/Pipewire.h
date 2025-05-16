@@ -29,10 +29,10 @@ public:
 
   bool Start();
 
-  CPipewireThreadLoop& GetThreadLoop() { return *m_loop; }
-  CPipewireContext& GetContext() { return *m_context; }
-  CPipewireCore& GetCore() { return *m_core; }
-  CPipewireRegistry& GetRegistry() { return *m_registry; }
+  CPipewireThreadLoop& GetThreadLoop() const { return *m_loop; }
+  CPipewireContext& GetContext() const { return *m_context; }
+  CPipewireCore& GetCore() const { return *m_core; }
+  CPipewireRegistry& GetRegistry() const { return *m_registry; }
 
 private:
   CPipewire();

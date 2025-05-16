@@ -688,8 +688,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
     g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, caCert.c_str());
 }
 
-void CCurlFile::SetRequestHeaders(CReadState* state)
-{
+void CCurlFile::SetRequestHeaders(CReadState* state) const {
   if(state->m_curlHeaderList)
   {
     g_curlInterface.slist_free_all(state->m_curlHeaderList);
@@ -1033,15 +1032,13 @@ bool CCurlFile::IsInternet()
   return found;
 }
 
-void CCurlFile::Cancel()
-{
+void CCurlFile::Cancel() const {
   m_state->m_cancelled = true;
   while (m_opened)
     KODI::TIME::Sleep(1ms);
 }
 
-void CCurlFile::Reset()
-{
+void CCurlFile::Reset() const {
   m_state->m_cancelled = false;
 }
 
@@ -1940,8 +1937,7 @@ std::string CCurlFile::GetRedirectURL()
   return GetInfoString(CURLINFO_REDIRECT_URL);
 }
 
-std::string CCurlFile::GetInfoString(int infoType)
-{
+std::string CCurlFile::GetInfoString(int infoType) const {
   char* info{};
   CURLcode result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, static_cast<CURLINFO> (infoType), &info);
   if (result != CURLE_OK)

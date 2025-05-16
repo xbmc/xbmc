@@ -289,8 +289,7 @@ float CGUIEPGGridContainer::GetProgressIndicatorHeight() const
   return (m_orientation == VERTICAL) ? m_rulerHeight + m_gridHeight : GetCurrentTimePositionOnPage();
 }
 
-void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList& dirtyregions)
-{
+void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList& dirtyregions) const {
   float width = GetProgressIndicatorWidth();
   float height = GetProgressIndicatorHeight();
 
@@ -310,8 +309,7 @@ void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CD
   m_guiProgressIndicatorTexture->Process(currentTime);
 }
 
-void CGUIEPGGridContainer::RenderProgressIndicator()
-{
+void CGUIEPGGridContainer::RenderProgressIndicator() const {
   if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_rulerPosX, m_rulerPosY, GetProgressIndicatorWidth(), GetProgressIndicatorHeight()))
   {
     m_guiProgressIndicatorTexture->SetDiffuseColor(m_diffuseColor);
@@ -391,8 +389,7 @@ void CGUIEPGGridContainer::ProcessItem(float posX, float posY, const CFileItemPt
   CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
 }
 
-void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem* item, bool focused)
-{
+void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem* item, bool focused) const {
   // set the origin
   CServiceBroker::GetWinSystem()->GetGfxContext().SetOrigin(posX, posY);
 
@@ -1307,8 +1304,7 @@ bool CGUIEPGGridContainer::OnMouseDoubleClick(int dwButton, const CPoint& point)
   return false;
 }
 
-bool CGUIEPGGridContainer::OnClick(int actionID)
-{
+bool CGUIEPGGridContainer::OnClick(int actionID) const {
   int subItem = 0;
 
   if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
@@ -2052,8 +2048,7 @@ void CGUIEPGGridContainer::SetRenderOffset(const CPoint& offset)
   m_renderOffset = offset;
 }
 
-void CGUIEPGGridContainer::GetChannelCacheOffsets(int& cacheBefore, int& cacheAfter)
-{
+void CGUIEPGGridContainer::GetChannelCacheOffsets(int& cacheBefore, int& cacheAfter) const {
   if (m_channelScrollSpeed > 0)
   {
     cacheBefore = 0;
@@ -2071,8 +2066,7 @@ void CGUIEPGGridContainer::GetChannelCacheOffsets(int& cacheBefore, int& cacheAf
   }
 }
 
-void CGUIEPGGridContainer::GetProgrammeCacheOffsets(int& cacheBefore, int& cacheAfter)
-{
+void CGUIEPGGridContainer::GetProgrammeCacheOffsets(int& cacheBefore, int& cacheAfter) const {
   if (m_programmeScrollSpeed > 0)
   {
     cacheBefore = 0;

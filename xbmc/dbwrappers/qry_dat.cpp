@@ -890,13 +890,11 @@ void field_value::set_asInt64(const int64_t i)
   field_type = ft_Int64;
 }
 
-fType field_value::get_field_type()
-{
+fType field_value::get_field_type() const {
   return field_type;
 }
 
-std::string field_value::gft()
-{
+std::string field_value::gft() const {
   std::string tmp;
   switch (field_type)
   {

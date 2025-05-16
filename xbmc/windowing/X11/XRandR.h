@@ -40,8 +40,7 @@ public:
       return false;
     return true;
   }
-  bool IsInterlaced()
-  {
+  bool IsInterlaced() const {
     return name.back() == 'i';
   }
   std::string id;

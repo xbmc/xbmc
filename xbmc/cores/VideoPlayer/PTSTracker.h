@@ -23,19 +23,19 @@ class CPtsTracker
     void   Flush(); //flush the saved pattern and the ringbuffer
     void   ResetVFRDetection(void);
 
-    int    GetPatternLength() { return m_patternlength;            }
-    double GetFrameDuration() { return m_frameduration;            }
-    double GetMaxFrameDuration(void) { return m_maxframeduration;  }
-    double GetMinFrameDuration(void) { return m_minframeduration;  }
-    bool   HasFullBuffer()    { return m_ringfill == DIFFRINGSIZE; }
-    bool   VFRDetection(void) { return ((m_VFRCounter >= VFR_DETECTION_THRESHOLD) && (m_patternCounter >= VFR_PATTERN_THRESHOLD)); }
+    int    GetPatternLength() const { return m_patternlength;            }
+    double GetFrameDuration() const { return m_frameduration;            }
+    double GetMaxFrameDuration(void) const { return m_maxframeduration;  }
+    double GetMinFrameDuration(void) const { return m_minframeduration;  }
+    bool   HasFullBuffer() const { return m_ringfill == DIFFRINGSIZE; }
+    bool   VFRDetection(void) const { return ((m_VFRCounter >= VFR_DETECTION_THRESHOLD) && (m_patternCounter >= VFR_PATTERN_THRESHOLD)); }
 
   private:
     double m_prevpts;                //last pts added
     double m_diffring[DIFFRINGSIZE]; //ringbuffer of differences between pts'
     int    m_ringpos;                //position of last diff added to ringbuffer
     int    m_ringfill;               //how many diffs we have in the ringbuffer
-    double GetDiff(int diffnr);      //gets diffs from now to the past
+    double GetDiff(int diffnr) const;      //gets diffs from now to the past
 
     void GetPattern(std::vector<double>& pattern);     //gets the current pattern
 
@@ -43,7 +43,7 @@ class CPtsTracker
     static bool MatchDifftype(int diffs1[], int diffs2[], int nrdiffs); //checks if the difftypes match
 
     //checks if the current pattern matches with the saved m_pattern with offset m_patternpos
-    bool CheckPattern(std::vector<double>& pattern);
+    bool CheckPattern(std::vector<double>& pattern) const;
 
     double CalcFrameDuration(); //calculates the frame duration from m_pattern
 

@@ -231,7 +231,7 @@ std::string CPosixDirectory::ResolveMountPoint(const std::string& file) const
 
     struct FileDeleter
     {
-      void operator()(FILE* f) { endmntent(f); }
+      void operator()(FILE* f) const { endmntent(f); }
     };
     std::unique_ptr<FILE, FileDeleter> mtab(setmntent("/proc/self/mounts", "r"));
 

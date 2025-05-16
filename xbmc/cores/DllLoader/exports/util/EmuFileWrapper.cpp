@@ -114,8 +114,7 @@ void CEmuFileWrapper::UnRegisterFileObjectByStream(FILE* stream)
   }
 }
 
-void CEmuFileWrapper::LockFileObjectByDescriptor(int fd)
-{
+void CEmuFileWrapper::LockFileObjectByDescriptor(int fd) const {
   int i = fd - FILE_WRAPPER_OFFSET;
   if (i >= 0 && i < MAX_EMULATED_FILES)
   {
@@ -126,8 +125,7 @@ void CEmuFileWrapper::LockFileObjectByDescriptor(int fd)
   }
 }
 
-bool CEmuFileWrapper::TryLockFileObjectByDescriptor(int fd)
-{
+bool CEmuFileWrapper::TryLockFileObjectByDescriptor(int fd) const {
   int i = fd - FILE_WRAPPER_OFFSET;
   if (i >= 0 && i < MAX_EMULATED_FILES)
   {
@@ -139,8 +137,7 @@ bool CEmuFileWrapper::TryLockFileObjectByDescriptor(int fd)
   return false;
 }
 
-void CEmuFileWrapper::UnlockFileObjectByDescriptor(int fd)
-{
+void CEmuFileWrapper::UnlockFileObjectByDescriptor(int fd) const {
   int i = fd - FILE_WRAPPER_OFFSET;
   if (i >= 0 && i < MAX_EMULATED_FILES)
   {

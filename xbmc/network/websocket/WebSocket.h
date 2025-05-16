@@ -114,8 +114,8 @@ public:
       delete m_message;
   }
 
-  int GetVersion() { return m_version; }
-  WebSocketState GetState() { return m_state; }
+  int GetVersion() const { return m_version; }
+  WebSocketState GetState() const { return m_state; }
 
   virtual bool Handshake(const char* data, size_t length, std::string &response) = 0;
   virtual const CWebSocketMessage* Handle(const char* &buffer, size_t &length, bool &send);

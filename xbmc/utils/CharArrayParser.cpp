@@ -26,13 +26,11 @@ void CCharArrayParser::Reset(const char* data, int limit)
   m_position = 0;
 }
 
-int CCharArrayParser::CharsLeft()
-{
+int CCharArrayParser::CharsLeft() const {
   return m_limit - m_position;
 }
 
-int CCharArrayParser::GetPosition()
-{
+int CCharArrayParser::GetPosition() const {
   return m_position;
 }
 
@@ -110,8 +108,7 @@ std::string CCharArrayParser::ReadNextString(int length)
   return str;
 }
 
-bool CCharArrayParser::ReadNextArray(int length, char* data)
-{
+bool CCharArrayParser::ReadNextArray(int length, char* data) const {
   if (!m_data)
   {
     CLog::Log(LOGERROR, "{} - No data to read", __FUNCTION__);

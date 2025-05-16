@@ -84,8 +84,7 @@ public:
   /// @ingroup cpp_kodi_gui_dialogs_CProgress
   /// @brief To open the dialog
   ///
-  void Open()
-  {
+  void Open() const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogProgress->open(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle);
@@ -98,8 +97,7 @@ public:
   ///
   /// @param[in] heading Title string to use
   ///
-  void SetHeading(const std::string& heading)
-  {
+  void SetHeading(const std::string& heading) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogProgress->set_heading(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, heading.c_str());
@@ -113,8 +111,7 @@ public:
   /// @param[in] iLine Line number
   /// @param[in] line Text string
   ///
-  void SetLine(unsigned int iLine, const std::string& line)
-  {
+  void SetLine(unsigned int iLine, const std::string& line) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogProgress->set_line(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, iLine, line.c_str());
@@ -127,8 +124,7 @@ public:
   ///
   /// @param[in] canCancel if true becomes it shown
   ///
-  void SetCanCancel(bool canCancel)
-  {
+  void SetCanCancel(bool canCancel) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogProgress->set_can_cancel(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, canCancel);
@@ -155,8 +151,7 @@ public:
   ///
   /// @param[in] percentage Position to use from 0 to 100
   ///
-  void SetPercentage(int percentage)
-  {
+  void SetPercentage(int percentage) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogProgress->set_percentage(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, percentage);
@@ -183,8 +178,7 @@ public:
   ///
   /// @param[in] onOff If true becomes it shown
   ///
-  void ShowProgressBar(bool onOff)
-  {
+  void ShowProgressBar(bool onOff) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogProgress->show_progress_bar(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, onOff);
@@ -197,8 +191,7 @@ public:
   ///
   /// @param[in] max Biggest usable position to use
   ///
-  void SetProgressMax(int max)
-  {
+  void SetProgressMax(int max) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogProgress->set_progress_max(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, max);
@@ -211,8 +204,7 @@ public:
   ///
   /// @param[in] steps Step size to increase, default is 1
   ///
-  void SetProgressAdvance(int steps = 1)
-  {
+  void SetProgressAdvance(int steps = 1) const {
     using namespace ::kodi::addon;
     CPrivateBase::m_interface->toKodi->kodi_gui->dialogProgress->set_progress_advance(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle, steps);
@@ -225,8 +217,7 @@ public:
   ///
   /// @return True if aborted
   ///
-  bool Abort()
-  {
+  bool Abort() const {
     using namespace ::kodi::addon;
     return CPrivateBase::m_interface->toKodi->kodi_gui->dialogProgress->abort(
         CPrivateBase::m_interface->toKodi->kodiBase, m_DialogHandle);

@@ -44,8 +44,8 @@ private:
   std::string  GetDiscInfoString(DiscInfo info);
   void         GetRoot  (CFileItemList &items);
   void         GetTitles(bool main, CFileItemList &items);
-  std::vector<BLURAY_TITLE_INFO*> GetUserPlaylists();
-  std::shared_ptr<CFileItem> GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label);
+  std::vector<BLURAY_TITLE_INFO*> GetUserPlaylists() const;
+  std::shared_ptr<CFileItem> GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label) const;
   CURL         GetUnderlyingCURL(const CURL& url);
   std::string  HexToString(const uint8_t * buf, int count);
   CURL          m_url;

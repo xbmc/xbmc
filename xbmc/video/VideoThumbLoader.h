@@ -81,7 +81,7 @@ protected:
    \param item The CFileItem to process
    \return void
    */
-  void DetectAndAddMissingItemData(CFileItem &item);
+  void DetectAndAddMissingItemData(CFileItem &item) const;
 
   const ArtMap& GetArtFromCache(const std::string &mediaType, const int id);
 };

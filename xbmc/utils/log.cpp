@@ -178,8 +178,7 @@ void CLog::SetLogLevel(int level)
                        spdlog::level::to_string_view(spdLevel));
 }
 
-bool CLog::IsLogLevelLogged(int loglevel)
-{
+bool CLog::IsLogLevelLogged(int loglevel) const {
   if (m_logLevel >= LOG_LEVEL_DEBUG)
     return true;
   if (m_logLevel <= LOG_LEVEL_NONE)

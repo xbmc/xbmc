@@ -244,8 +244,7 @@ CAEChannelInfo::operator std::string() const
   return s;
 }
 
-bool CAEChannelInfo::IsChannelValid(const unsigned int pos)
-{
+bool CAEChannelInfo::IsChannelValid(const unsigned int pos) const {
   assert(pos < m_channelCount);
   bool isValid = false;
   if (m_channels[pos] > AE_CH_NULL && m_channels[pos] < AE_CH_UNKNOWN1)

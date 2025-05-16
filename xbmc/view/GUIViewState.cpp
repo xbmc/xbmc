@@ -429,8 +429,7 @@ void CGUIViewState::SetPlaylistDirectory(const std::string& strDirectory)
   URIUtils::RemoveSlashAtEnd(m_strPlaylistDirectory);
 }
 
-bool CGUIViewState::IsCurrentPlaylistDirectory(const std::string& strDirectory)
-{
+bool CGUIViewState::IsCurrentPlaylistDirectory(const std::string& strDirectory) const {
   if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()!=GetPlaylist())
     return false;
 

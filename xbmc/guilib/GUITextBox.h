@@ -60,7 +60,7 @@ protected:
   void UpdateVisibility(const CGUIListItem *item = NULL) override;
   bool UpdateColors(const CGUIListItem* item) override;
   void UpdateInfo(const CGUIListItem *item = NULL) override;
-  void UpdatePageControl();
+  void UpdatePageControl() const;
   void ScrollToOffset(int offset, bool autoScroll = false);
   unsigned int GetRows() const;
   int GetCurrentPage() const;

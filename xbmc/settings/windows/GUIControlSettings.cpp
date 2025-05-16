@@ -560,8 +560,7 @@ void CGUIControlSpinExSetting::FillControl(bool updateValues)
   }
 }
 
-void CGUIControlSpinExSetting::FillIntegerSettingControl(bool updateValues)
-{
+void CGUIControlSpinExSetting::FillIntegerSettingControl(bool updateValues) const {
   IntegerSettingOptions options;
   std::set<int> selectedValues;
   // get the integer options
@@ -580,8 +579,7 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl(bool updateValues)
   m_pSpin->SetValue(*selectedValues.begin());
 }
 
-void CGUIControlSpinExSetting::FillFloatSettingControl()
-{
+void CGUIControlSpinExSetting::FillFloatSettingControl() const {
   std::shared_ptr<CSettingNumber> pSettingNumber =
       std::static_pointer_cast<CSettingNumber>(m_pSetting);
   std::shared_ptr<const CSettingControlFormattedRange> control =
@@ -601,8 +599,7 @@ void CGUIControlSpinExSetting::FillFloatSettingControl()
   m_pSpin->SetValue(currentIndex);
 }
 
-void CGUIControlSpinExSetting::FillStringSettingControl(bool updateValues)
-{
+void CGUIControlSpinExSetting::FillStringSettingControl(bool updateValues) const {
   StringSettingOptions options;
   std::set<std::string> selectedValues;
   // get the string options

@@ -520,7 +520,7 @@ public:
   virtual bool Load();
   virtual void Unload();
   virtual bool IsLoaded() const { return m_dll!=NULL; }
-  bool CanLoad();
+  bool CanLoad() const;
   bool EnableDelayedUnload(bool bOnOff);
   bool SetFile(const std::string& strDllName);
   const std::string &GetFile() const { return m_strDllName; }

@@ -39,7 +39,7 @@ protected:
   void OnInitWindow() override;
   void Update();
   void OnGetArt();
-  void SetUserrating(int userrating);
+  void SetUserrating(int userrating) const;
   void OnSetUserrating();
   void OnPlaySong(const std::shared_ptr<CFileItem>& item);
 

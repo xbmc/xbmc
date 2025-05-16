@@ -27,8 +27,8 @@ public:
   bool OnBack(int actionID) override;
 
   void Reset();
-  int  Add(const std::string& strLabel);
-  int  Add(const CFileItem& item);
+  int  Add(const std::string& strLabel) const;
+  int  Add(const CFileItem& item) const;
   void SetItems(const CFileItemList& items);
   const CFileItemPtr GetSelectedFileItem() const;
   int GetSelectedItem() const;
@@ -37,9 +37,9 @@ public:
   void EnableButton(bool enable, const std::string& label);
   void EnableButton2(bool enable, int label);
   void EnableButton2(bool enable, const std::string& label);
-  bool IsButtonPressed();
-  bool IsButton2Pressed();
-  void Sort(bool bSortOrder = true);
+  bool IsButtonPressed() const;
+  bool IsButton2Pressed() const;
+  void Sort(bool bSortOrder = true) const;
   void SetSelected(int iSelected);
   void SetSelected(const std::string &strSelectedLabel);
   void SetSelected(const std::vector<int>& selectedIndexes);

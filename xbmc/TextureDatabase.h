@@ -62,11 +62,11 @@ public:
   ~CTextureDatabase() override;
   bool Open() override;
 
-  bool GetCachedTexture(const std::string &originalURL, CTextureDetails &details);
+  bool GetCachedTexture(const std::string &originalURL, CTextureDetails &details) const;
   bool AddCachedTexture(const std::string &originalURL, const CTextureDetails &details);
   bool SetCachedTextureValid(const std::string &originalURL, bool updateable);
   bool ClearCachedTexture(const std::string &originalURL, std::string &cacheFile);
-  bool ClearCachedTexture(int textureID, std::string &cacheFile);
+  bool ClearCachedTexture(int textureID, std::string &cacheFile) const;
   bool IncrementUseCount(const CTextureDetails &details);
 
   /*! \brief Invalidate a previously cached texture
@@ -83,7 +83,7 @@ public:
    \param type type of image to look for
    \return URL of the texture associated with the given path
    */
-  std::string GetTextureForPath(const std::string &url, const std::string &type);
+  std::string GetTextureForPath(const std::string &url, const std::string &type) const;
 
   /*! \brief Set a texture associated with the given path
    Used for setting of previously discovered images to save
@@ -94,7 +94,7 @@ public:
    \param type type of image to associate
    \param texture URL of the texture to associate with the path
    */
-  void SetTextureForPath(const std::string &url, const std::string &type, const std::string &texture);
+  void SetTextureForPath(const std::string &url, const std::string &type, const std::string &texture) const;
 
   /*! \brief Clear a texture associated with the given path
    \param url path that was used to find the texture
@@ -102,9 +102,9 @@ public:
    \param texture URL of the texture to associate with the path
    \sa GetTextureForPath, SetTextureForPath
    */
-  void ClearTextureForPath(const std::string &url, const std::string &type);
+  void ClearTextureForPath(const std::string &url, const std::string &type) const;
 
-  bool GetTextures(CVariant &items, const Filter &filter);
+  bool GetTextures(CVariant &items, const Filter &filter) const;
 
   // rule creation
   CDatabaseQueryRule *CreateRule() const override;

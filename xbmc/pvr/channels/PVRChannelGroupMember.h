@@ -81,7 +81,7 @@ public:
    * @brief Delete this group member from the database.
    * @return True if it was deleted successfully, false otherwise.
    */
-  bool QueueDelete();
+  bool QueueDelete() const;
 
 private:
   int m_iGroupID = -1;

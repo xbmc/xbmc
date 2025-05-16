@@ -104,7 +104,7 @@ public:
    It should only be called from the application thread.
    Returns true only if it has rendered something.
    */
-  bool Render();
+  bool Render() const;
 
   void RenderEx() const;
 
@@ -226,7 +226,7 @@ public:
     return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END);
   }
 
-  bool HasVisibleControls();
+  bool HasVisibleControls() const;
 
 #ifdef _DEBUG
   void DumpTextureUse();
@@ -234,8 +234,8 @@ public:
 private:
   void RenderPass() const;
 
-  void LoadNotOnDemandWindows();
-  void UnloadNotOnDemandWindows();
+  void LoadNotOnDemandWindows() const;
+  void UnloadNotOnDemandWindows() const;
   void AddToWindowHistory(int newWindowID);
 
   /*!

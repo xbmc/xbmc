@@ -550,7 +550,7 @@ public:
   \brief Some sources do not support HTTP HEAD request to determine i.e. mime type
   \return false if HEAD requests have to be avoided
   */
-  bool ContentLookup() { return m_doContentLookup; }
+  bool ContentLookup() const { return m_doContentLookup; }
 
   /*!
    \brief (Re)set the mime-type for internet files if allowed (m_doContentLookup)
@@ -761,13 +761,13 @@ public:
   */
   void Sort(SortDescription sortDescription);
   void Randomize();
-  void FillInDefaultIcons();
+  void FillInDefaultIcons() const;
   int GetFolderCount() const;
   int GetFileCount() const;
   int GetSelectedCount() const;
   int GetObjectCount() const;
   void FilterCueItems();
-  void RemoveExtensions();
+  void RemoveExtensions() const;
   void SetIgnoreURLOptions(bool ignoreURLOptions);
   void SetFastLookup(bool fastLookup);
   bool Contains(const std::string& fileName) const;
@@ -831,7 +831,7 @@ public:
    \param item the new item, which we match based on path to an existing item in the list
    \return true if the item exists in the list (and was thus updated), false otherwise.
    */
-  bool UpdateItem(const CFileItem *item);
+  bool UpdateItem(const CFileItem *item) const;
 
   void AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes = SortAttributeNone);
   void AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, int buttonLabel, const LABEL_MASKS &labelMasks);

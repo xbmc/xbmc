@@ -240,12 +240,12 @@ public:
   CVideoSettingsLocked(CVideoSettingsLocked const &) = delete;
   void operator=(CVideoSettingsLocked const &x) = delete;
 
-  void SetSubtitleStream(int stream);
-  void SetSubtitleVisible(bool visible);
-  void SetAudioStream(int stream);
-  void SetVideoStream(int stream);
-  void SetAudioDelay(float delay);
-  void SetSubtitleDelay(float delay);
+  void SetSubtitleStream(int stream) const;
+  void SetSubtitleVisible(bool visible) const;
+  void SetAudioStream(int stream) const;
+  void SetVideoStream(int stream) const;
+  void SetAudioDelay(float delay) const;
+  void SetSubtitleDelay(float delay) const;
 
   /*!
    * \brief Set the subtitle vertical position,
@@ -253,10 +253,10 @@ public:
    * \param value The subtitle position in pixels
    * \param save If true, the value will be saved to resolution info
    */
-  void SetSubtitleVerticalPosition(int value, bool save);
+  void SetSubtitleVerticalPosition(int value, bool save) const;
 
-  void SetViewMode(int mode, float zoom, float par, float shift, bool stretch);
-  void SetVolumeAmplification(float amp);
+  void SetViewMode(int mode, float zoom, float par, float shift, bool stretch) const;
+  void SetVolumeAmplification(float amp) const;
 
 protected:
   CVideoSettings &m_videoSettings;

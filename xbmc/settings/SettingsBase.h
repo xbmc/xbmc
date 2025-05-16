@@ -91,13 +91,13 @@ public:
    \param callback ISettingCallback implementation
    \param settingList List of setting identifiers for which the given callback shall be triggered
    */
-  void RegisterCallback(ISettingCallback* callback, const std::set<std::string>& settingList);
+  void RegisterCallback(ISettingCallback* callback, const std::set<std::string>& settingList) const;
   /*!
    \brief Unregisters the given ISettingCallback implementation.
 
    \param callback ISettingCallback implementation
    */
-  void UnregisterCallback(ISettingCallback* callback);
+  void UnregisterCallback(ISettingCallback* callback) const;
 
   /*!
    \brief Gets the setting with the given identifier.
@@ -163,14 +163,14 @@ public:
    \param value Boolean value to set
    \return True if setting the value was successful, false otherwise
    */
-  bool SetBool(const std::string& id, bool value);
+  bool SetBool(const std::string& id, bool value) const;
   /*!
    \brief Toggles the boolean value of the setting with the given identifier.
 
    \param id Setting identifier
    \return True if toggling the boolean value was successful, false otherwise
    */
-  bool ToggleBool(const std::string& id);
+  bool ToggleBool(const std::string& id) const;
   /*!
    \brief Sets the integer value of the setting with the given identifier.
 
@@ -178,7 +178,7 @@ public:
    \param value Integer value to set
    \return True if setting the value was successful, false otherwise
    */
-  bool SetInt(const std::string& id, int value);
+  bool SetInt(const std::string& id, int value) const;
   /*!
    \brief Sets the real number value of the setting with the given identifier.
 
@@ -186,7 +186,7 @@ public:
    \param value Real number value to set
    \return True if setting the value was successful, false otherwise
    */
-  bool SetNumber(const std::string& id, double value);
+  bool SetNumber(const std::string& id, double value) const;
   /*!
    \brief Sets the string value of the setting with the given identifier.
 
@@ -194,7 +194,7 @@ public:
    \param value String value to set
    \return True if setting the value was successful, false otherwise
    */
-  bool SetString(const std::string& id, const std::string& value);
+  bool SetString(const std::string& id, const std::string& value) const;
   /*!
    \brief Sets the values of the list setting with the given identifier.
 
@@ -202,7 +202,7 @@ public:
    \param value Values to set
    \return True if setting the values was successful, false otherwise
    */
-  bool SetList(const std::string& id, const std::vector<CVariant>& value);
+  bool SetList(const std::string& id, const std::vector<CVariant>& value) const;
 
   /*!
   \brief Sets the value of the setting with the given identifier to its default.
@@ -210,11 +210,11 @@ public:
   \param id Setting identifier
   \return True if setting the value to its default was successful, false otherwise
   */
-  bool SetDefault(const std::string &id);
+  bool SetDefault(const std::string &id) const;
   /*!
   \brief Sets the value of all settings to their default.
   */
-  void SetDefaults();
+  void SetDefaults() const;
 
 protected:
   CSettingsBase();
@@ -235,7 +235,7 @@ protected:
   virtual void InitializeISettingCallbacks() { }
   virtual void UninitializeISettingCallbacks() { }
 
-  bool InitializeDefinitionsFromXml(const CXBMCTinyXML& xml);
+  bool InitializeDefinitionsFromXml(const CXBMCTinyXML& xml) const;
 
   /*!
   \brief Loads setting values from the given document in XML format
@@ -244,7 +244,7 @@ protected:
   \param updated Output parameter indicating whether setting values had to be updated
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool LoadValuesFromXml(const CXBMCTinyXML& xml, bool& updated);
+  bool LoadValuesFromXml(const CXBMCTinyXML& xml, bool& updated) const;
   /*!
   \brief Saves the setting values in XML format to the given document.
 
@@ -260,7 +260,7 @@ protected:
   \param updated Output parameter indicating whether setting values had to be updated
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool LoadValuesFromXml(const TiXmlElement* root, bool& updated);
+  bool LoadValuesFromXml(const TiXmlElement* root, bool& updated) const;
 
   /*!
   \brief Loads hidden setting values from the given XML element.
@@ -268,7 +268,7 @@ protected:
   \param root XML element containing setting values
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool LoadHiddenValuesFromXml(const TiXmlElement* root);
+  bool LoadHiddenValuesFromXml(const TiXmlElement* root) const;
 
   bool m_initialized = false;
   CSettingsManager* m_settingsManager;

@@ -384,8 +384,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
   return false;
 }
 
-bool CFile::ShouldUseStreamBuffer(const CURL& url)
-{
+bool CFile::ShouldUseStreamBuffer(const CURL& url) const {
   if (m_flags & READ_NO_BUFFER)
     return false;
 
@@ -512,8 +511,7 @@ bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
   return false;
 }
 
-int CFile::Stat(struct __stat64 *buffer)
-{
+int CFile::Stat(struct __stat64 *buffer) const {
   if (!buffer)
     return -1;
 
@@ -590,8 +588,7 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
   return -1;
 }
 
-ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
-{
+ssize_t CFile::Read(void *lpBuf, size_t uiBufSize) const {
   if (!m_pFile)
     return -1;
   if (lpBuf == NULL && uiBufSize != 0)
@@ -682,8 +679,7 @@ void CFile::Close()
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
 }
 
-void CFile::Flush()
-{
+void CFile::Flush() const {
   try
   {
     if (m_pFile)
@@ -694,8 +690,7 @@ void CFile::Flush()
 }
 
 //*********************************************************************************************
-int64_t CFile::Seek(int64_t iFilePosition, int iWhence)
-{
+int64_t CFile::Seek(int64_t iFilePosition, int iWhence) const {
   if (!m_pFile)
     return -1;
 
@@ -719,8 +714,7 @@ int64_t CFile::Seek(int64_t iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-int CFile::Truncate(int64_t iSize)
-{
+int CFile::Truncate(int64_t iSize) const {
   if (!m_pFile)
     return -1;
 
@@ -734,8 +728,7 @@ int CFile::Truncate(int64_t iSize)
 }
 
 //*********************************************************************************************
-int64_t CFile::GetLength()
-{
+int64_t CFile::GetLength() const {
   try
   {
     if (m_pFile)
@@ -767,8 +760,7 @@ int64_t CFile::GetPosition() const
 
 
 //*********************************************************************************************
-bool CFile::ReadString(char *szLine, int iLineLength)
-{
+bool CFile::ReadString(char *szLine, int iLineLength) const {
   if (!m_pFile || !szLine)
     return false;
 
@@ -824,8 +816,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   return false;
 }
 
-ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize)
-{
+ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize) const {
   if (!m_pFile)
     return -1;
   if (lpBuf == NULL && uiBufSize != 0)
@@ -946,8 +937,7 @@ bool CFile::SetHidden(const CURL& file, bool hidden)
   return false;
 }
 
-int CFile::IoControl(EIoControl request, void* param)
-{
+int CFile::IoControl(EIoControl request, void* param) const {
   int result = -1;
   if (!m_pFile)
     return -1;
@@ -964,8 +954,7 @@ int CFile::IoControl(EIoControl request, void* param)
   return result;
 }
 
-int CFile::GetChunkSize()
-{
+int CFile::GetChunkSize() const {
   if (m_pFile)
     return m_pFile->GetChunkSize();
   return 0;
@@ -1066,8 +1055,7 @@ catch (const std::bad_alloc&)
   return -1;
 }
 
-double CFile::GetDownloadSpeed()
-{
+double CFile::GetDownloadSpeed() const {
   if (m_pFile)
     return m_pFile->GetDownloadSpeed();
   return 0.0;
@@ -1230,8 +1218,7 @@ bool CFileStream::Open(const CURL& filename)
   return false;
 }
 
-int64_t CFileStream::GetLength()
-{
+int64_t CFileStream::GetLength() const {
   return m_file->GetLength();
 }
 

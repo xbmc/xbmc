@@ -39,8 +39,7 @@ struct ButtonStateFinder
     , m_button(state.m_buttonName)
   {}
 
-  bool operator()(const CEventButtonState& state)
-  {
+  bool operator()(const CEventButtonState& state) const {
     return state.m_mapName    == m_map
         && state.m_iKeyCode   == m_keycode
         && state.m_buttonName == m_button;
@@ -769,8 +768,7 @@ bool CEventClient::GetMousePos(float& x, float& y)
   return false;
 }
 
-bool CEventClient::CheckButtonRepeat(std::chrono::time_point<std::chrono::steady_clock>& next)
-{
+bool CEventClient::CheckButtonRepeat(std::chrono::time_point<std::chrono::steady_clock>& next) const {
   auto now = std::chrono::steady_clock::now();
 
   if (next.time_since_epoch().count() == 0)

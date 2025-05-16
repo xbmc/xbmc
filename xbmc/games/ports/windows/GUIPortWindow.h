@@ -41,12 +41,12 @@ protected:
 
 private:
   // Actions for port list
-  void UpdatePortList();
-  void FocusPortList();
-  bool OnClickAction();
+  void UpdatePortList() const;
+  void FocusPortList() const;
+  bool OnClickAction() const;
 
   // Actions for the available buttons
-  void ResetPorts();
+  void ResetPorts() const;
   void CloseDialog();
 
   // GUI parameters

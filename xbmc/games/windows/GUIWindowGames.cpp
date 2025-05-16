@@ -346,8 +346,7 @@ std::string CGUIWindowGames::GetStartFolder(const std::string& dir)
   return CGUIMediaWindow::GetStartFolder(dir);
 }
 
-void CGUIWindowGames::OnItemInfo(int itemNumber)
-{
+void CGUIWindowGames::OnItemInfo(int itemNumber) const {
   CFileItemPtr item = m_vecItems->Get(itemNumber);
   if (!item)
     return;

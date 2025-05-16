@@ -54,9 +54,9 @@ protected:
   CInfoScanner::INFO_TYPE LoadMKV(CVideoInfoTag& tag, std::vector<EmbeddedArt>* art);
 
   //! \brief Load tags from MP4 file.
-  CInfoScanner::INFO_TYPE LoadMP4(CVideoInfoTag& tag, std::vector<EmbeddedArt>* art);
+  CInfoScanner::INFO_TYPE LoadMP4(CVideoInfoTag& tag, std::vector<EmbeddedArt>* art) const;
 
   //! \brief Load tags from AVI file.
-  CInfoScanner::INFO_TYPE LoadAVI(CVideoInfoTag& tag, std::vector<EmbeddedArt>* art);
+  CInfoScanner::INFO_TYPE LoadAVI(CVideoInfoTag& tag, std::vector<EmbeddedArt>* art) const;
 };
 

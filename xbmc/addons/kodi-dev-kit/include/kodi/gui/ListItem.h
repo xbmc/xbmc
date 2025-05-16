@@ -108,8 +108,7 @@ public:
   ///
   /// @return Label of item
   ///
-  std::string GetLabel()
-  {
+  std::string GetLabel() const {
     std::string label;
     char* ret = m_interface->kodi_gui->listItem->get_label(m_interface->kodiBase, m_controlHandle);
     if (ret != nullptr)
@@ -128,8 +127,7 @@ public:
   ///
   /// @param[in] label              string or unicode - text string.
   ///
-  void SetLabel(const std::string& label)
-  {
+  void SetLabel(const std::string& label) const {
     m_interface->kodi_gui->listItem->set_label(m_interface->kodiBase, m_controlHandle,
                                                label.c_str());
   }
@@ -141,8 +139,7 @@ public:
   ///
   /// @return Second label of item
   ///
-  std::string GetLabel2()
-  {
+  std::string GetLabel2() const {
     std::string label;
     char* ret = m_interface->kodi_gui->listItem->get_label2(m_interface->kodiBase, m_controlHandle);
     if (ret != nullptr)
@@ -161,8 +158,7 @@ public:
   ///
   /// @param[in] label              string or unicode - text string.
   ///
-  void SetLabel2(const std::string& label)
-  {
+  void SetLabel2(const std::string& label) const {
     m_interface->kodi_gui->listItem->set_label2(m_interface->kodiBase, m_controlHandle,
                                                 label.c_str());
   }
@@ -186,8 +182,7 @@ public:
   ///  | icon          | string - image filename
   /// @return   The url to use for Art
   ///
-  std::string GetArt(const std::string& type)
-  {
+  std::string GetArt(const std::string& type) const {
     std::string strReturn;
     char* ret = m_interface->kodi_gui->listItem->get_art(m_interface->kodiBase, m_controlHandle,
                                                          type.c_str());
@@ -219,8 +214,7 @@ public:
   ///  | landscape     | string - image filename
   ///  | icon          | string - image filename
   ///
-  void SetArt(const std::string& type, const std::string& url)
-  {
+  void SetArt(const std::string& type, const std::string& url) const {
     m_interface->kodi_gui->listItem->set_art(m_interface->kodiBase, m_controlHandle, type.c_str(),
                                              url.c_str());
   }
@@ -232,8 +226,7 @@ public:
   ///
   /// @return Path string
   ///
-  std::string GetPath()
-  {
+  std::string GetPath() const {
     std::string strReturn;
     char* ret = m_interface->kodi_gui->listItem->get_path(m_interface->kodiBase, m_controlHandle);
     if (ret != nullptr)
@@ -254,8 +247,7 @@ public:
   ///
   /// @note You can use the above as keywords for arguments.
   ///
-  void SetPath(const std::string& path)
-  {
+  void SetPath(const std::string& path) const {
     m_interface->kodi_gui->listItem->set_path(m_interface->kodiBase, m_controlHandle, path.c_str());
   }
   //----------------------------------------------------------------------------
@@ -278,8 +270,7 @@ public:
   /// start playback of an item.  Others may be used in the skin to add
   /// extra information, such as <b>'WatchedCount'</b> for tvshow items
   ///
-  void SetProperty(const std::string& key, const std::string& value)
-  {
+  void SetProperty(const std::string& key, const std::string& value) const {
     m_interface->kodi_gui->listItem->set_property(m_interface->kodiBase, m_controlHandle,
                                                   key.c_str(), value.c_str());
   }
@@ -298,8 +289,7 @@ public:
   ///       Once you use a keyword, all following arguments require the
   ///       keyword.
   ///
-  std::string GetProperty(const std::string& key)
-  {
+  std::string GetProperty(const std::string& key) const {
     std::string label;
     char* ret = m_interface->kodi_gui->listItem->get_property(m_interface->kodiBase,
                                                               m_controlHandle, key.c_str());
@@ -320,8 +310,7 @@ public:
   ///
   /// @param[in] selected if true becomes set as selected
   ///
-  void Select(bool selected)
-  {
+  void Select(bool selected) const {
     m_interface->kodi_gui->listItem->select(m_interface->kodiBase, m_controlHandle, selected);
   }
   //----------------------------------------------------------------------------
@@ -332,8 +321,7 @@ public:
   ///
   /// @return true if selected, otherwise false
   ///
-  bool IsSelected()
-  {
+  bool IsSelected() const {
     return m_interface->kodi_gui->listItem->is_selected(m_interface->kodiBase, m_controlHandle);
   }
   //----------------------------------------------------------------------------

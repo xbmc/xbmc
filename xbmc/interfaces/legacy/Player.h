@@ -65,7 +65,7 @@ namespace XBMCAddon
       void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
       void playPlaylist(const PlayList* playlist = NULL,
       bool windowed = false, int startpos=-1);
-      void playCurrent(bool windowed = false);
+      void playCurrent(bool windowed = false) const;
 
     public:
 #if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
@@ -157,7 +157,7 @@ namespace XBMCAddon
       ///
       playnext();
 #else
-      void playnext();
+      void playnext() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -168,7 +168,7 @@ namespace XBMCAddon
       ///
       playprevious();
 #else
-      void playprevious();
+      void playprevious() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -181,7 +181,7 @@ namespace XBMCAddon
       ///
       playselected(...);
 #else
-      void playselected(int selected);
+      void playselected(int selected) const;
 #endif
 
       //

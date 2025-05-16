@@ -42,8 +42,7 @@ void CGUIFeatureButton::OnUnFocus(void)
 bool CGUIFeatureButton::DoPrompt(const std::string& strPrompt,
                                  const std::string& strWarn,
                                  const std::string& strFeature,
-                                 CEvent& waitEvent)
-{
+                                 CEvent& waitEvent) const {
   bool bInterrupted = false;
 
   if (!HasFocus())

@@ -817,8 +817,7 @@ unsigned int CDVDRadioRDSData::DecodePI(const uint8_t* msgElement)
   return 5;
 }
 
-unsigned int CDVDRadioRDSData::DecodePS(uint8_t *msgElement)
-{
+unsigned int CDVDRadioRDSData::DecodePS(uint8_t *msgElement) const {
   uint8_t *text = msgElement+3;
 
   char decodedText[9] = {};

@@ -32,7 +32,7 @@ public:
   void AddSetting(const std::string& strKey,
                   const std::shared_ptr<const CSetting>& setting,
                   int order) override;
-  inline bool IsImonConflictsWithDInput() { return m_bImonConflictsWithDInput; }
+  inline bool IsImonConflictsWithDInput() const { return m_bImonConflictsWithDInput; }
   static inline long GetCountOfImonsConflictWithDInput()
   {
     return m_lCountOfImonsConflictWithDInput;

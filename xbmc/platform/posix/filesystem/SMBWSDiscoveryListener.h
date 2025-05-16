@@ -73,10 +73,10 @@ private:
    */
   bool buildSoapMessage(const std::string& action,
                         std::string& msg,
-                        const std::string& extraparameter);
+                        const std::string& extraparameter) const;
 
   // Closes socket and handles setting state for WS-Discovery
-  void Cleanup(bool aborted);
+  void Cleanup(bool aborted) const;
 
   /*
    * Use unicast Get to request computer name

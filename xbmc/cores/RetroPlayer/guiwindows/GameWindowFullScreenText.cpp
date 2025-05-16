@@ -105,8 +105,7 @@ int CGameWindowFullScreenText::GetID() const
   return m_fullscreenWindow.GetID();
 }
 
-bool CGameWindowFullScreenText::OnMessage(CGUIMessage& message)
-{
+bool CGameWindowFullScreenText::OnMessage(CGUIMessage& message) const {
   return m_fullscreenWindow.OnMessage(message);
 }
 

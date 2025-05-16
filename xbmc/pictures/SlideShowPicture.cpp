@@ -223,8 +223,7 @@ void CSlideShowPic::SetOriginalSize(int iOriginalWidth, int iOriginalHeight, boo
   m_bFullSize = bFullSize;
 }
 
-int CSlideShowPic::GetOriginalWidth()
-{
+int CSlideShowPic::GetOriginalWidth() const {
   int iAngle = (int)(m_fAngle / 90.0f + 0.4f);
   if (iAngle % 2)
     return m_iOriginalHeight;
@@ -232,8 +231,7 @@ int CSlideShowPic::GetOriginalWidth()
     return m_iOriginalWidth;
 }
 
-int CSlideShowPic::GetOriginalHeight()
-{
+int CSlideShowPic::GetOriginalHeight() const {
   int iAngle = (int)(m_fAngle / 90.0f + 0.4f);
   if (iAngle % 2)
     return m_iOriginalWidth;
@@ -261,8 +259,7 @@ static CRect GetRectangle(const float x[4], const float y[4])
   return rect;
 }
 
-void CSlideShowPic::UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions)
-{
+void CSlideShowPic::UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions) const {
   const size_t count = sizeof(float)*4;
   if(memcmp(cur_x, new_x, count)
   || memcmp(cur_y, new_y, count)

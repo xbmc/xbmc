@@ -29,8 +29,7 @@ using namespace PVR;
 
 static const unsigned int GRID_START_PADDING = 30; // minutes
 
-void CGUIEPGGridContainerModel::SetInvalid()
-{
+void CGUIEPGGridContainerModel::SetInvalid() const {
   for (const auto& gridItem : m_gridIndex)
     gridItem.second.item->SetInvalid();
   for (const auto& channel : m_channelItems)
@@ -463,8 +462,7 @@ float CGUIEPGGridContainerModel::GetGridItemOriginWidth(int iChannel, int iBlock
   return GetGridItemPtr(iChannel, iBlock)->originWidth;
 }
 
-void CGUIEPGGridContainerModel::DecreaseGridItemWidth(int iChannel, int iBlock, float fSize)
-{
+void CGUIEPGGridContainerModel::DecreaseGridItemWidth(int iChannel, int iBlock, float fSize) const {
   auto it = m_gridIndex.find({iChannel, iBlock});
   if (it != m_gridIndex.end() && (*it).second.width != ((*it).second.originWidth - fSize))
     (*it).second.width = (*it).second.originWidth - fSize;
@@ -481,8 +479,7 @@ unsigned int CGUIEPGGridContainerModel::GetGridStartPadding() const
   return GRID_START_PADDING; // minutes
 }
 
-void CGUIEPGGridContainerModel::FreeChannelMemory(int keepStart, int keepEnd)
-{
+void CGUIEPGGridContainerModel::FreeChannelMemory(int keepStart, int keepEnd) const {
   if (keepStart < keepEnd)
   {
     // remove before keepStart and after keepEnd
@@ -577,8 +574,7 @@ bool CGUIEPGGridContainerModel::FreeProgrammeMemory(int firstChannel,
   return true;
 }
 
-void CGUIEPGGridContainerModel::FreeRulerMemory(int keepStart, int keepEnd)
-{
+void CGUIEPGGridContainerModel::FreeRulerMemory(int keepStart, int keepEnd) const {
   if (keepStart < keepEnd)
   {
     // remove before keepStart and after keepEnd

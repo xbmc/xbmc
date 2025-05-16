@@ -30,7 +30,7 @@ public:
   virtual ~CAudioBuffer();
   const float* Get() const;
   int Size() const;
-  void Set(const float* psBuffer, int iSize);
+  void Set(const float* psBuffer, int iSize) const;
 
 private:
   CAudioBuffer(const CAudioBuffer&) = delete;
@@ -65,14 +65,14 @@ public:
   bool CanFocus() const override { return false; }
   bool CanFocusFromPoint(const CPoint& point) const override;
 
-  std::string Name();
+  std::string Name() const;
   void UpdateTrack();
-  bool HasPresets();
-  void SetPreset(int idx);
-  bool IsLocked();
-  int GetActivePreset();
-  std::string GetActivePresetName();
-  bool GetPresetList(std::vector<std::string>& vecpresets);
+  bool HasPresets() const;
+  void SetPreset(int idx) const;
+  bool IsLocked() const;
+  int GetActivePreset() const;
+  std::string GetActivePresetName() const;
+  bool GetPresetList(std::vector<std::string>& vecpresets) const;
 
 private:
   bool InitVisualization();

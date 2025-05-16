@@ -86,7 +86,7 @@ public:
 
   CCacheStrategy *CreateNew() override;
 
-  int64_t  GetAvailableRead();
+  int64_t  GetAvailableRead() const;
 
 protected:
   std::string m_filename;

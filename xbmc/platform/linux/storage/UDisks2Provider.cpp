@@ -56,8 +56,7 @@ CUDisks2Provider::Block::Block(const char *object) : m_object(object)
 {
 }
 
-bool CUDisks2Provider::Block::IsReady()
-{
+bool CUDisks2Provider::Block::IsReady() const {
   return m_drive != nullptr;
 }
 
@@ -135,8 +134,7 @@ bool CUDisks2Provider::Filesystem::IsMounted() const
   return m_isMounted;
 }
 
-bool CUDisks2Provider::Filesystem::Mount()
-{
+bool CUDisks2Provider::Filesystem::Mount() const {
   if (m_block->m_isSystem) {
     CLog::Log(LOGDEBUG, "UDisks2: Skip mount of system device {}", ToString());
     return false;
@@ -156,8 +154,7 @@ bool CUDisks2Provider::Filesystem::Mount()
   }
 }
 
-bool CUDisks2Provider::Filesystem::Unmount()
-{
+bool CUDisks2Provider::Filesystem::Unmount() const {
   if (m_block->m_isSystem) {
     CLog::Log(LOGDEBUG, "UDisks2: Skip unmount of system device {}", ToString());
     return false;
@@ -328,8 +325,7 @@ std::vector<std::string> CUDisks2Provider::GetDiskUsage()
   return legacy.GetDiskUsage();
 }
 
-void CUDisks2Provider::GetDisks(VECSOURCES &devices, bool enumerateRemovable)
-{
+void CUDisks2Provider::GetDisks(VECSOURCES &devices, bool enumerateRemovable) const {
   for (const auto &elt: m_filesystems)
   {
     Filesystem *fs = elt.second;

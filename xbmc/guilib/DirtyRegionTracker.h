@@ -25,7 +25,7 @@ public:
   void MarkDirtyRegion(const CDirtyRegion &region);
 
   const CDirtyRegionList &GetMarkedRegions() const;
-  CDirtyRegionList GetDirtyRegions();
+  CDirtyRegionList GetDirtyRegions() const;
   void CleanMarkedRegions();
 
 private:

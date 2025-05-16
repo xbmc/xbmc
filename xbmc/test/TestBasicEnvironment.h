@@ -18,7 +18,7 @@ public:
   TestBasicEnvironment();
 
   void SetUp() override;
-  void TearDown() override;
+  void TearDown() const override;
 private:
   void SetUpError();
   std::string m_tempPath;

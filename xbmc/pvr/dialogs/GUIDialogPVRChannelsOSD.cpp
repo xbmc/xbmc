@@ -255,8 +255,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int iItem)
       *item, true /* bCheckResume */);
 }
 
-void CGUIDialogPVRChannelsOSD::Notify(const PVREvent& event)
-{
+void CGUIDialogPVRChannelsOSD::Notify(const PVREvent& event) {
   const CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, static_cast<int>(event));
   CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
 }

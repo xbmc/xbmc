@@ -32,8 +32,7 @@ namespace XBMCAddon
 
     PlayList::~PlayList() = default;
 
-    void PlayList::add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem, int index)
-    {
+    void PlayList::add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem, int index) const {
       CFileItemList items;
 
       if (listitem != NULL)
@@ -55,8 +54,7 @@ namespace XBMCAddon
       pPlayList->Insert(items, index);
     }
 
-    bool PlayList::load(const char* cFileName)
-    {
+    bool PlayList::load(const char* cFileName) const {
       CFileItem item(cFileName);
       item.SetPath(cFileName);
 
@@ -95,28 +93,23 @@ namespace XBMCAddon
       return true;
     }
 
-    void PlayList::remove(const char* filename)
-    {
+    void PlayList::remove(const char* filename) const {
       pPlayList->Remove(filename);
     }
 
-    void PlayList::clear()
-    {
+    void PlayList::clear() const {
       pPlayList->Clear();
     }
 
-    int PlayList::size()
-    {
+    int PlayList::size() const {
       return pPlayList->size();
     }
 
-    void PlayList::shuffle()
-    {
+    void PlayList::shuffle() const {
       pPlayList->Shuffle();
     }
 
-    void PlayList::unshuffle()
-    {
+    void PlayList::unshuffle() const {
       pPlayList->UnShuffle();
     }
 

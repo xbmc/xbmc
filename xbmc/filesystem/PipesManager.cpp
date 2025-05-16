@@ -67,8 +67,7 @@ void Pipe::SetEof()
   m_bEof = true;
 }
 
-bool Pipe::IsEof()
-{
+bool Pipe::IsEof() const {
   return m_bEof;
 }
 

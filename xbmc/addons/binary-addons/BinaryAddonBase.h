@@ -38,10 +38,10 @@ namespace ADDON
 
     AddonDllPtr GetActiveAddon();
 
-    void OnPreInstall();
-    void OnPostInstall(bool update, bool modal);
-    void OnPreUnInstall();
-    void OnPostUnInstall();
+    void OnPreInstall() const;
+    void OnPostInstall(bool update, bool modal) const;
+    void OnPreUnInstall() const;
+    void OnPostUnInstall() const;
 
   private:
     AddonInfoPtr m_addonInfo;

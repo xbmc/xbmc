@@ -32,7 +32,7 @@ public:
 private:
   struct DrmModeEncoderDeleter
   {
-    void operator()(drmModeEncoder* p) { drmModeFreeEncoder(p); }
+    void operator()(drmModeEncoder* p) const { drmModeFreeEncoder(p); }
   };
 
   std::unique_ptr<drmModeEncoder, DrmModeEncoderDeleter> m_encoder;

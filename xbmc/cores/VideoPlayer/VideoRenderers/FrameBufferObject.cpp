@@ -101,16 +101,14 @@ bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int he
   return true;
 }
 
-void CFrameBufferObject::SetFiltering(GLenum target, GLenum mode)
-{
+void CFrameBufferObject::SetFiltering(GLenum target, GLenum mode) const {
   glBindTexture(target, m_texid);
   glTexParameteri(target, GL_TEXTURE_MAG_FILTER, mode);
   glTexParameteri(target, GL_TEXTURE_MIN_FILTER, mode);
 }
 
 // Begin rendering to FBO
-bool CFrameBufferObject::BeginRender()
-{
+bool CFrameBufferObject::BeginRender() const {
   if (IsValid() && IsBound())
   {
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);

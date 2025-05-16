@@ -117,8 +117,7 @@ void CDVDOverlayContainer::Clear()
   m_overlays.clear();
 }
 
-size_t CDVDOverlayContainer::GetSize()
-{
+size_t CDVDOverlayContainer::GetSize() const {
   return m_overlays.size();
 }
 

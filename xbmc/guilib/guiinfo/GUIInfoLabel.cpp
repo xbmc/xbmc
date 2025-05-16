@@ -282,8 +282,7 @@ const static infoformat infoformatmap[] = {{ "$INFO[",    FORMATINFO},
 
 void CGUIInfoLabel::Parse(const std::string& label,
                           std::vector<CInfoPortion>& infoPortion,
-                          int context)
-{
+                          int context) const {
   infoPortion.clear();
   m_dirty = true;
   // Step 1: Replace all $LOCALIZE[number] with the real string

@@ -105,15 +105,13 @@ bool CRPRendererOpenGLES::SupportsScalingMethod(SCALINGMETHOD method)
   return method == SCALINGMETHOD::NEAREST || method == SCALINGMETHOD::LINEAR;
 }
 
-void CRPRendererOpenGLES::ClearBackBuffer()
-{
+void CRPRendererOpenGLES::ClearBackBuffer() const {
   glClearColor(m_clearColour, m_clearColour, m_clearColour, 0.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
-void CRPRendererOpenGLES::DrawBlackBars()
-{
+void CRPRendererOpenGLES::DrawBlackBars() const {
   glDisable(GL_BLEND);
 
   struct Svertex

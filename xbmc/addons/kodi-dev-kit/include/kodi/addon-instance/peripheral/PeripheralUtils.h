@@ -164,8 +164,7 @@ public:
   ///@{
 
   /// @brief Set true if the add-on provides joysticks.
-  void SetProvidesJoysticks(bool providesJoysticks)
-  {
+  void SetProvidesJoysticks(bool providesJoysticks) const {
     m_cStructure->provides_joysticks = providesJoysticks;
   }
 
@@ -173,8 +172,7 @@ public:
   bool GetProvidesJoysticks() const { return m_cStructure->provides_joysticks; }
 
   /// @brief Set true if the add-on provides joystick rumble.
-  void SetProvidesJoystickRumble(bool providesJoystickRumble)
-  {
+  void SetProvidesJoystickRumble(bool providesJoystickRumble) const {
     m_cStructure->provides_joystick_rumble = providesJoystickRumble;
   }
 
@@ -182,8 +180,7 @@ public:
   bool GetProvidesJoystickRumble() const { return m_cStructure->provides_joystick_rumble; }
 
   /// @brief Set true if the add-on provides power off about joystick.
-  void SetProvidesJoystickPowerOff(bool providesJoystickPowerOff)
-  {
+  void SetProvidesJoystickPowerOff(bool providesJoystickPowerOff) const {
     m_cStructure->provides_joystick_power_off = providesJoystickPowerOff;
   }
 
@@ -191,8 +188,7 @@ public:
   bool GetProvidesJoystickPowerOff() const { return m_cStructure->provides_joystick_power_off; }
 
   /// @brief Set true if the add-on provides button maps.
-  void SetProvidesButtonmaps(bool providesButtonmaps)
-  {
+  void SetProvidesButtonmaps(bool providesButtonmaps) const {
     m_cStructure->provides_buttonmaps = providesButtonmaps;
   }
 

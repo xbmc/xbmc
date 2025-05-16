@@ -64,7 +64,7 @@ private:
   void ProcessUECP(const unsigned char *Data, unsigned int Length);
 
   inline unsigned int DecodePI(const uint8_t* msgElement);
-  inline unsigned int DecodePS(uint8_t *msgElement);
+  inline unsigned int DecodePS(uint8_t *msgElement) const;
   inline unsigned int DecodeDI(const uint8_t* msgElement);
   inline unsigned int DecodeTA_TP(const uint8_t* msgElement);
   inline unsigned int DecodeMS(const uint8_t* msgElement);

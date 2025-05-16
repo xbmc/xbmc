@@ -139,7 +139,7 @@ public:
    \sa CVideoInfoTag::Load
    */
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
-  bool Save(TiXmlNode *node, const std::string &tag, const std::string& strPath);
+  bool Save(TiXmlNode *node, const std::string &tag, const std::string& strPath) const;
 
   int idAlbum = -1;
   std::string strAlbum;

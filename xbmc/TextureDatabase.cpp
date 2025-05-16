@@ -234,8 +234,7 @@ bool CTextureDatabase::IncrementUseCount(const CTextureDetails &details)
   return ExecuteQuery(sql);
 }
 
-bool CTextureDatabase::GetCachedTexture(const std::string &url, CTextureDetails &details)
-{
+bool CTextureDatabase::GetCachedTexture(const std::string &url, CTextureDetails &details) const {
   try
   {
     if (!m_pDB)
@@ -267,8 +266,7 @@ bool CTextureDatabase::GetCachedTexture(const std::string &url, CTextureDetails 
   return false;
 }
 
-bool CTextureDatabase::GetTextures(CVariant &items, const Filter &filter)
-{
+bool CTextureDatabase::GetTextures(CVariant &items, const Filter &filter) const {
   try
   {
     if (!m_pDB)
@@ -361,8 +359,7 @@ bool CTextureDatabase::ClearCachedTexture(const std::string &url, std::string &c
   return !id.empty() ? ClearCachedTexture(strtol(id.c_str(), NULL, 10), cacheFile) : false;
 }
 
-bool CTextureDatabase::ClearCachedTexture(int id, std::string &cacheFile)
-{
+bool CTextureDatabase::ClearCachedTexture(int id, std::string &cacheFile) const {
   try
   {
     if (!m_pDB)
@@ -398,8 +395,7 @@ bool CTextureDatabase::InvalidateCachedTexture(const std::string &url)
   return ExecuteQuery(sql);
 }
 
-std::string CTextureDatabase::GetTextureForPath(const std::string &url, const std::string &type)
-{
+std::string CTextureDatabase::GetTextureForPath(const std::string &url, const std::string &type) const {
   try
   {
     if (!m_pDB)
@@ -428,8 +424,7 @@ std::string CTextureDatabase::GetTextureForPath(const std::string &url, const st
   return "";
 }
 
-void CTextureDatabase::SetTextureForPath(const std::string &url, const std::string &type, const std::string &texture)
-{
+void CTextureDatabase::SetTextureForPath(const std::string &url, const std::string &type, const std::string &texture) const {
   try
   {
     if (!m_pDB)
@@ -462,8 +457,7 @@ void CTextureDatabase::SetTextureForPath(const std::string &url, const std::stri
   }
 }
 
-void CTextureDatabase::ClearTextureForPath(const std::string &url, const std::string &type)
-{
+void CTextureDatabase::ClearTextureForPath(const std::string &url, const std::string &type) const {
   try
   {
     if (!m_pDB)

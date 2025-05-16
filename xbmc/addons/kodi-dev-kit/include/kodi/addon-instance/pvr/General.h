@@ -70,14 +70,13 @@ public:
   }
 
   /// @brief To set with the identification value.
-  void SetValue(int value) { m_cStructure->iValue = value; }
+  void SetValue(int value) const { m_cStructure->iValue = value; }
 
   /// @brief To get with the identification value.
   int GetValue() const { return m_cStructure->iValue; }
 
   /// @brief To set with the description text of the value.
-  void SetDescription(const std::string& description)
-  {
+  void SetDescription(const std::string& description) const {
     strncpy(m_cStructure->strDescription, description.c_str(),
             sizeof(m_cStructure->strDescription) - 1);
   }
@@ -159,34 +158,33 @@ public:
   ///@{
 
   /// @brief Set **true** if the add-on provides EPG information.
-  void SetSupportsEPG(bool supportsEPG) { m_capabilities->bSupportsEPG = supportsEPG; }
+  void SetSupportsEPG(bool supportsEPG) const { m_capabilities->bSupportsEPG = supportsEPG; }
 
   /// @brief To get with @ref SetSupportsEPG changed values.
   bool GetSupportsEPG() const { return m_capabilities->bSupportsEPG; }
 
   /// @brief Set **true** if the backend supports retrieving an edit decision
   /// list for an EPG tag.
-  void SetSupportsEPGEdl(bool supportsEPGEdl) { m_capabilities->bSupportsEPGEdl = supportsEPGEdl; }
+  void SetSupportsEPGEdl(bool supportsEPGEdl) const { m_capabilities->bSupportsEPGEdl = supportsEPGEdl; }
 
   /// @brief To get with @ref SetSupportsEPGEdl changed values.
   bool GetSupportsEPGEdl() const { return m_capabilities->bSupportsEPGEdl; }
 
   /// @brief Set **true** if this add-on provides TV channels.
-  void SetSupportsTV(bool supportsTV) { m_capabilities->bSupportsTV = supportsTV; }
+  void SetSupportsTV(bool supportsTV) const { m_capabilities->bSupportsTV = supportsTV; }
 
   /// @brief To get with @ref SetSupportsTV changed values.
   bool GetSupportsTV() const { return m_capabilities->bSupportsTV; }
 
   /// @brief Set **true** if this add-on provides TV channels.
-  void SetSupportsRadio(bool supportsRadio) { m_capabilities->bSupportsRadio = supportsRadio; }
+  void SetSupportsRadio(bool supportsRadio) const { m_capabilities->bSupportsRadio = supportsRadio; }
 
   /// @brief To get with @ref SetSupportsRadio changed values.
   bool GetSupportsRadio() const { return m_capabilities->bSupportsRadio; }
 
   /// @brief **true** if this add-on supports playback of recordings stored on
   /// the backend.
-  void SetSupportsRecordings(bool supportsRecordings)
-  {
+  void SetSupportsRecordings(bool supportsRecordings) const {
     m_capabilities->bSupportsRecordings = supportsRecordings;
   }
 
@@ -195,8 +193,7 @@ public:
 
   /// @brief Set **true** if this add-on supports undelete of recordings stored
   /// on the backend.
-  void SetSupportsRecordingsUndelete(bool supportsRecordingsUndelete)
-  {
+  void SetSupportsRecordingsUndelete(bool supportsRecordingsUndelete) const {
     m_capabilities->bSupportsRecordingsUndelete = supportsRecordingsUndelete;
   }
 
@@ -205,7 +202,7 @@ public:
 
   /// @brief Set **true** if this add-on supports the creation and editing of
   /// timers.
-  void SetSupportsTimers(bool supportsTimers) { m_capabilities->bSupportsTimers = supportsTimers; }
+  void SetSupportsTimers(bool supportsTimers) const { m_capabilities->bSupportsTimers = supportsTimers; }
 
   /// @brief To get with @ref SetSupportsTimers changed values.
   bool GetSupportsTimers() const { return m_capabilities->bSupportsTimers; }
@@ -215,8 +212,7 @@ public:
   /// It uses the following functions:
   /// - @ref kodi::addon::CInstancePVRClient::GetProvidersAmount()
   /// - @ref kodi::addon::CInstancePVRClient::GetProviders()
-  void SetSupportsProviders(bool supportsProviders)
-  {
+  void SetSupportsProviders(bool supportsProviders) const {
     m_capabilities->bSupportsProviders = supportsProviders;
   }
 
@@ -229,8 +225,7 @@ public:
   /// - @ref kodi::addon::CInstancePVRClient::GetChannelGroupsAmount()
   /// - @ref kodi::addon::CInstancePVRClient::GetChannelGroups()
   /// - @ref kodi::addon::CInstancePVRClient::GetChannelGroupMembers()
-  void SetSupportsChannelGroups(bool supportsChannelGroups)
-  {
+  void SetSupportsChannelGroups(bool supportsChannelGroups) const {
     m_capabilities->bSupportsChannelGroups = supportsChannelGroups;
   }
 
@@ -242,8 +237,7 @@ public:
   ///
   /// It use the following function:
   /// - @ref kodi::addon::CInstancePVRClient::OpenDialogChannelScan()
-  void SetSupportsChannelScan(bool supportsChannelScan)
-  {
+  void SetSupportsChannelScan(bool supportsChannelScan) const {
     m_capabilities->bSupportsChannelScan = supportsChannelScan;
   }
 
@@ -257,8 +251,7 @@ public:
   /// - @ref kodi::addon::CInstancePVRClient::RenameChannel()
   /// - @ref kodi::addon::CInstancePVRClient::OpenDialogChannelSettings()
   /// - @ref kodi::addon::CInstancePVRClient::OpenDialogChannelAdd()
-  void SetSupportsChannelSettings(bool supportsChannelSettings)
-  {
+  void SetSupportsChannelSettings(bool supportsChannelSettings) const {
     m_capabilities->bSupportsChannelSettings = supportsChannelSettings;
   }
 
@@ -267,8 +260,7 @@ public:
 
   /// @brief Set **true** if this add-on provides an input stream. false if Kodi
   /// handles the stream.
-  void SetHandlesInputStream(bool handlesInputStream)
-  {
+  void SetHandlesInputStream(bool handlesInputStream) const {
     m_capabilities->bHandlesInputStream = handlesInputStream;
   }
 
@@ -276,8 +268,7 @@ public:
   bool GetHandlesInputStream() const { return m_capabilities->bHandlesInputStream; }
 
   /// @brief Set **true** if this add-on demultiplexes packets.
-  void SetHandlesDemuxing(bool handlesDemuxing)
-  {
+  void SetHandlesDemuxing(bool handlesDemuxing) const {
     m_capabilities->bHandlesDemuxing = handlesDemuxing;
   }
 
@@ -285,8 +276,7 @@ public:
   bool GetHandlesDemuxing() const { return m_capabilities->bHandlesDemuxing; }
 
   /// @brief Set **true** if the backend supports play count for recordings.
-  void SetSupportsRecordingPlayCount(bool supportsRecordingPlayCount)
-  {
+  void SetSupportsRecordingPlayCount(bool supportsRecordingPlayCount) const {
     m_capabilities->bSupportsRecordingPlayCount = supportsRecordingPlayCount;
   }
 
@@ -295,8 +285,7 @@ public:
 
   /// @brief Set **true** if the backend supports store/retrieve of last played
   /// position for recordings.
-  void SetSupportsLastPlayedPosition(bool supportsLastPlayedPosition)
-  {
+  void SetSupportsLastPlayedPosition(bool supportsLastPlayedPosition) const {
     m_capabilities->bSupportsLastPlayedPosition = supportsLastPlayedPosition;
   }
 
@@ -305,8 +294,7 @@ public:
 
   /// @brief Set **true** if the backend supports retrieving an edit decision
   /// list for recordings.
-  void SetSupportsRecordingEdl(bool supportsRecordingEdl)
-  {
+  void SetSupportsRecordingEdl(bool supportsRecordingEdl) const {
     m_capabilities->bSupportsRecordingEdl = supportsRecordingEdl;
   }
 
@@ -314,8 +302,7 @@ public:
   bool GetSupportsRecordingEdl() const { return m_capabilities->bSupportsRecordingEdl; }
 
   /// @brief Set **true** if the backend supports renaming recordings.
-  void SetSupportsRecordingsRename(bool supportsRecordingsRename)
-  {
+  void SetSupportsRecordingsRename(bool supportsRecordingsRename) const {
     m_capabilities->bSupportsRecordingsRename = supportsRecordingsRename;
   }
 
@@ -324,8 +311,7 @@ public:
 
   /// @brief Set **true** if the backend supports changing lifetime for
   /// recordings.
-  void SetSupportsRecordingsLifetimeChange(bool supportsRecordingsLifetimeChange)
-  {
+  void SetSupportsRecordingsLifetimeChange(bool supportsRecordingsLifetimeChange) const {
     m_capabilities->bSupportsRecordingsLifetimeChange = supportsRecordingsLifetimeChange;
   }
 
@@ -338,8 +324,7 @@ public:
 
   /// @brief Set **true** if the backend supports descramble information for
   /// playing channels.
-  void SetSupportsDescrambleInfo(bool supportsDescrambleInfo)
-  {
+  void SetSupportsDescrambleInfo(bool supportsDescrambleInfo) const {
     m_capabilities->bSupportsDescrambleInfo = supportsDescrambleInfo;
   }
 
@@ -349,8 +334,7 @@ public:
   /// @brief Set **true** if this addon-on supports asynchronous transfer of epg
   /// events to Kodi using the callback function
   /// @ref kodi::addon::CInstancePVRClient::EpgEventStateChange().
-  void SetSupportsAsyncEPGTransfer(bool supportsAsyncEPGTransfer)
-  {
+  void SetSupportsAsyncEPGTransfer(bool supportsAsyncEPGTransfer) const {
     m_capabilities->bSupportsAsyncEPGTransfer = supportsAsyncEPGTransfer;
   }
 
@@ -358,8 +342,7 @@ public:
   bool GetSupportsAsyncEPGTransfer() const { return m_capabilities->bSupportsAsyncEPGTransfer; }
 
   /// @brief Set **true** if this addon-on supports retrieving size of recordings.
-  void SetSupportsRecordingSize(bool supportsRecordingSize)
-  {
+  void SetSupportsRecordingSize(bool supportsRecordingSize) const {
     m_capabilities->bSupportsRecordingSize = supportsRecordingSize;
   }
 
@@ -368,8 +351,7 @@ public:
 
   /// @brief Set **true** if this add-on supports delete of recordings stored
   /// on the backend.
-  void SetSupportsRecordingsDelete(bool supportsRecordingsDelete)
-  {
+  void SetSupportsRecordingsDelete(bool supportsRecordingsDelete) const {
     m_capabilities->bSupportsRecordingsDelete = supportsRecordingsDelete;
   }
 
@@ -382,8 +364,7 @@ public:
   /// --------------------------------------------------------------------------
   ///
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
-  void SetRecordingsLifetimeValues(const std::vector<PVRTypeIntValue>& recordingsLifetimeValues)
-  {
+  void SetRecordingsLifetimeValues(const std::vector<PVRTypeIntValue>& recordingsLifetimeValues) const {
     m_capabilities->iRecordingsLifetimesSize = 0;
     for (unsigned int i = 0; i < recordingsLifetimeValues.size() &&
                              i < sizeof(m_capabilities->recordingsLifetimeValues);
@@ -504,8 +485,7 @@ public:
   }
 
   /// @brief To set with the identification name.
-  void SetName(const std::string& name)
-  {
+  void SetName(const std::string& name) const {
     strncpy(m_cStructure->strName, name.c_str(), sizeof(m_cStructure->strName) - 1);
   }
 
@@ -513,8 +493,7 @@ public:
   std::string GetName() const { return m_cStructure->strName; }
 
   /// @brief To set with the used property value.
-  void SetValue(const std::string& value)
-  {
+  void SetValue(const std::string& value) const {
     strncpy(m_cStructure->strValue, value.c_str(), sizeof(m_cStructure->strValue) - 1);
   }
 

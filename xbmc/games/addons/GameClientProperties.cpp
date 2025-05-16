@@ -197,8 +197,7 @@ unsigned int CGameClientProperties::GetExtensionCount(void) const
   return m_extensions.size();
 }
 
-bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons)
-{
+bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons) const {
   ADDON::VECADDONS ret;
   std::vector<std::string> missingDependencies; // ID or name of missing dependencies
 

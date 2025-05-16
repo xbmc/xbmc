@@ -318,14 +318,12 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogFileBrowser::ClearFileItems()
-{
+void CGUIDialogFileBrowser::ClearFileItems() const {
   m_viewControl.Clear();
   m_vecItems->Clear(); // will clean up everything
 }
 
-void CGUIDialogFileBrowser::OnSort()
-{
+void CGUIDialogFileBrowser::OnSort() const {
   if (!m_singleList)
     m_vecItems->Sort(SortByLabel, SortOrderAscending);
 }

@@ -36,8 +36,7 @@ CVideoInfoDownloader::~CVideoInfoDownloader()
 // return value: 0 = we failed, -1 = we failed and reported an error, 1 = success
 int CVideoInfoDownloader::InternalFindMovie(const std::string &movieTitle, int movieYear,
                                             MOVIELIST& movielist,
-                                            bool cleanChars /* = true */)
-{
+                                            bool cleanChars /* = true */) const {
   try
   {
     movielist = m_info->FindMovie(*m_http, movieTitle, movieYear, cleanChars);
@@ -142,8 +141,7 @@ int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear
   return success;
 }
 
-bool CVideoInfoDownloader::GetArtwork(CVideoInfoTag &details)
-{
+bool CVideoInfoDownloader::GetArtwork(CVideoInfoTag &details) const {
   return m_info->GetArtwork(*m_http, details);
 }
 

@@ -122,8 +122,7 @@ bool Xcddb::closeSocket()
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-bool Xcddb::Send( const void *buffer, int bytes )
-{
+bool Xcddb::Send( const void *buffer, int bytes ) const {
   std::unique_ptr<char[]> tmp_buffer(new char[bytes + 10]);
   strcpy(tmp_buffer.get(), (const char*)buffer);
   tmp_buffer.get()[bytes] = 0x0d;
@@ -149,8 +148,7 @@ bool Xcddb::Send( const char *buffer)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-std::string Xcddb::Recv(bool wait4point)
-{
+std::string Xcddb::Recv(bool wait4point) const {
   char tmpbuffer[1];
   char prevChar;
   int counter = 0;
@@ -762,8 +760,7 @@ bool Xcddb::queryCache( uint32_t discid )
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-bool Xcddb::writeCacheFile( const char* pBuffer, uint32_t discid )
-{
+bool Xcddb::writeCacheFile( const char* pBuffer, uint32_t discid ) const {
   if (cCacheDir.empty())
     return false;
 
@@ -1055,8 +1052,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-bool Xcddb::isCDCached( CCdInfo* pInfo )
-{
+bool Xcddb::isCDCached( CCdInfo* pInfo ) const {
   if (cCacheDir.empty())
     return false;
   if ( pInfo == NULL )

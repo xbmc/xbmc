@@ -36,11 +36,11 @@ public:
 
   bool HasListItems() const override { return true; }
   CFileItemPtr GetCurrentListItem(int offset = 0) override;
-  std::string GetContent();
+  std::string GetContent() const;
   static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
   void SetDiscography(CMusicDatabase& database) const;
   void SetSongs(const VECSONGS &songs) const;
-  void SetArtTypeList(CFileItemList& artlist);
+  void SetArtTypeList(CFileItemList& artlist) const;
   void SetScrapedInfo(bool bScraped) { m_scraperAddInfo = bScraped;  }
   CArtist& GetArtist() { return m_artist; }
   CAlbum& GetAlbum() { return m_album; }

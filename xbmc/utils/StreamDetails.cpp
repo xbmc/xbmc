@@ -426,8 +426,7 @@ int CStreamDetails::GetVideoDuration(int idx) const
     return 0;
 }
 
-void CStreamDetails::SetVideoDuration(int idx, const int duration)
-{
+void CStreamDetails::SetVideoDuration(int idx, const int duration) const {
   auto item = const_cast<CStreamDetailVideo*>(
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx)));
   if (item)

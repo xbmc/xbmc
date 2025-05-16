@@ -46,8 +46,7 @@ CPrimitiveDetector::CPrimitiveDetector(CButtonMapping* buttonMapping)
 {
 }
 
-bool CPrimitiveDetector::MapPrimitive(const CDriverPrimitive& primitive)
-{
+bool CPrimitiveDetector::MapPrimitive(const CDriverPrimitive& primitive) const {
   if (primitive.IsValid())
     return m_buttonMapping->MapPrimitive(primitive);
 
@@ -604,7 +603,6 @@ CPointerDetector& CButtonMapping::GetPointer()
   return *m_pointer;
 }
 
-void CButtonMapping::OnLateDiscovery(unsigned int axisIndex)
-{
+void CButtonMapping::OnLateDiscovery(unsigned int axisIndex) const {
   m_buttonMapper->OnLateAxis(m_buttonMap, axisIndex);
 }

@@ -45,8 +45,7 @@ CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)
   delete m_listItems;
 }
 
-int CGUIWindowSettingsProfile::GetSelectedItem()
-{
+int CGUIWindowSettingsProfile::GetSelectedItem() const {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 
@@ -211,8 +210,7 @@ void CGUIWindowSettingsProfile::LoadList()
   }
 }
 
-void CGUIWindowSettingsProfile::ClearListItems()
-{
+void CGUIWindowSettingsProfile::ClearListItems() const {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 

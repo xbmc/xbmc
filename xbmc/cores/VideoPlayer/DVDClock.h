@@ -46,7 +46,7 @@ public:
   void SetMaxSpeedAdjust(double speed);
 
   double GetAbsoluteClock(bool interpolated = true);
-  double GetFrequency() { return (double)m_systemFrequency ; }
+  double GetFrequency() const { return (double)m_systemFrequency ; }
 
   bool GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const;
   void SetVsyncAdjust(double adjustment);
@@ -56,8 +56,8 @@ public:
   void Advance(double time);
 
 protected:
-  double SystemToAbsolute(int64_t system);
-  int64_t AbsoluteToSystem(double absolute);
+  double SystemToAbsolute(int64_t system) const;
+  int64_t AbsoluteToSystem(double absolute) const;
   double SystemToPlaying(int64_t system);
 
   CCriticalSection m_critSection;

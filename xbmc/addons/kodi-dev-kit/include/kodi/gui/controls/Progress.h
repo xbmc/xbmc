@@ -71,8 +71,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_progress->set_visible(m_interface->kodiBase, m_controlHandle,
                                                          visible);
   }
@@ -84,8 +83,7 @@ public:
   ///
   /// @param[in] percent The percent position to use
   ///
-  void SetPercentage(float percent)
-  {
+  void SetPercentage(float percent) const {
     m_interface->kodi_gui->control_progress->set_percentage(m_interface->kodiBase, m_controlHandle,
                                                             percent);
   }

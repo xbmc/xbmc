@@ -35,12 +35,12 @@ public:
   /*!
    * \brief Return the number of chars yet to be read
    */
-  int CharsLeft();
+  int CharsLeft() const;
 
   /*!
    * \brief Returns the current offset in the array
    */
-  int GetPosition();
+  int GetPosition() const;
 
   /*!
    * \brief Set the reading offset in the array
@@ -92,7 +92,7 @@ public:
    * \param data[OUT] The data read
    * \return True if success, otherwise false
    */
-  bool ReadNextArray(int length, char* data);
+  bool ReadNextArray(int length, char* data) const;
 
   /*!
    * \brief Reads a line of text.
@@ -109,7 +109,7 @@ public:
    * \brief Get the current data
    * \return The char pointer to the current data
    */
-  const char* GetData() { return m_data; };
+  const char* GetData() const { return m_data; };
 
 private:
   const char* m_data{nullptr};

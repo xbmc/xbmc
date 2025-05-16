@@ -72,13 +72,13 @@ protected:
   void TriggerFilter() const;
   void Reset(bool filtersOnly = false);
 
-  int GetItems(const Filter &filter, std::vector<std::string> &items, bool countOnly = false);
+  int GetItems(const Filter &filter, std::vector<std::string> &items, bool countOnly = false) const;
   void GetRange(const Filter &filter, int &min, int &interval, int &max);
-  void GetRange(const Filter &filter, float &min, float &interval, float &max);
-  bool GetMinMax(const std::string &table, const std::string &field, int &min, int &max, const CDatabase::Filter &filter = CDatabase::Filter());
+  void GetRange(const Filter &filter, float &min, float &interval, float &max) const;
+  bool GetMinMax(const std::string &table, const std::string &field, int &min, int &max, const CDatabase::Filter &filter = CDatabase::Filter()) const;
 
-  CSmartPlaylistRule* AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
-  void DeleteRule(Field field);
+  CSmartPlaylistRule* AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS) const;
+  void DeleteRule(Field field) const;
 
   static void GetStringListOptions(const std::shared_ptr<const CSetting>& setting,
                                    std::vector<StringSettingOption>& list,

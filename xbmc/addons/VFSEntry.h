@@ -69,30 +69,30 @@ protected:
     ~CVFSEntry() override;
 
     // Things that MUST be supplied by the child classes
-    void* Open(const CURL& url);
-    void* OpenForWrite(const CURL& url, bool bOverWrite);
-    bool Exists(const CURL& url);
-    int Stat(const CURL& url, struct __stat64* buffer);
-    ssize_t Read(void* ctx, void* lpBuf, size_t uiBufSize);
-    ssize_t Write(void* ctx, const void* lpBuf, size_t uiBufSize);
-    int64_t Seek(void* ctx, int64_t iFilePosition, int iWhence = SEEK_SET);
-    int Truncate(void* ctx, int64_t size);
-    void Close(void* ctx);
-    int64_t GetPosition(void* ctx);
-    int64_t GetLength(void* ctx);
-    int GetChunkSize(void* ctx);
-    int IoControl(void* ctx, XFILE::EIoControl request, void* param);
-    bool Delete(const CURL& url);
-    bool Rename(const CURL& url, const CURL& url2);
+    void* Open(const CURL& url) const;
+    void* OpenForWrite(const CURL& url, bool bOverWrite) const;
+    bool Exists(const CURL& url) const;
+    int Stat(const CURL& url, struct __stat64* buffer) const;
+    ssize_t Read(void* ctx, void* lpBuf, size_t uiBufSize) const;
+    ssize_t Write(void* ctx, const void* lpBuf, size_t uiBufSize) const;
+    int64_t Seek(void* ctx, int64_t iFilePosition, int iWhence = SEEK_SET) const;
+    int Truncate(void* ctx, int64_t size) const;
+    void Close(void* ctx) const;
+    int64_t GetPosition(void* ctx) const;
+    int64_t GetLength(void* ctx) const;
+    int GetChunkSize(void* ctx) const;
+    int IoControl(void* ctx, XFILE::EIoControl request, void* param) const;
+    bool Delete(const CURL& url) const;
+    bool Rename(const CURL& url, const CURL& url2) const;
 
-    bool GetDirectory(const CURL& url, CFileItemList& items, void* ctx);
-    bool DirectoryExists(const CURL& url);
-    bool RemoveDirectory(const CURL& url);
-    bool CreateDirectory(const CURL& url);
-    void ClearOutIdle();
-    void DisconnectAll();
+    bool GetDirectory(const CURL& url, CFileItemList& items, void* ctx) const;
+    bool DirectoryExists(const CURL& url) const;
+    bool RemoveDirectory(const CURL& url) const;
+    bool CreateDirectory(const CURL& url) const;
+    void ClearOutIdle() const;
+    void DisconnectAll() const;
 
-    bool ContainsFiles(const CURL& url, CFileItemList& items);
+    bool ContainsFiles(const CURL& url, CFileItemList& items) const;
 
     const std::string& GetProtocols() const { return m_protocols; }
     const std::string& GetExtensions() const { return m_extensions; }

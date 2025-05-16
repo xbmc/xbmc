@@ -129,8 +129,7 @@ bool CBuiltins::IsSystemPowerdownCommand(const std::string& execString)
   return false;
 }
 
-void CBuiltins::GetHelp(std::string &help)
-{
+void CBuiltins::GetHelp(std::string &help) const {
   help.clear();
 
   for (const auto& it : m_command)

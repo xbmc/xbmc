@@ -339,8 +339,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIWindowFileManager::OnSort(int iList)
-{
+void CGUIWindowFileManager::OnSort(int iList) const {
   using namespace KODI::PLATFORM::FILESYSTEM;
   // always sort the list by label in ascending order
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
@@ -381,8 +380,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   m_vecItems[iList]->Sort(SortByLabel, SortOrderAscending);
 }
 
-void CGUIWindowFileManager::ClearFileItems(int iList)
-{
+void CGUIWindowFileManager::ClearFileItems(int iList) const {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), iList + CONTROL_LEFT_LIST);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 
@@ -719,8 +717,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( std::string& strPath, int iDri
   return true;
 }
 
-void CGUIWindowFileManager::UpdateControl(int iList, int item)
-{
+void CGUIWindowFileManager::UpdateControl(int iList, int item) const {
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), iList + CONTROL_LEFT_LIST, item, 0, m_vecItems[iList]);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
@@ -793,8 +790,7 @@ void CGUIWindowFileManager::OnRename(int iList)
   Refresh(iList);
 }
 
-void CGUIWindowFileManager::OnSelectAll(int iList)
-{
+void CGUIWindowFileManager::OnSelectAll(int iList) const {
   for (int i = 0; i < m_vecItems[iList]->Size();++i)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
@@ -939,8 +935,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const std::string &strDirect
   return getItems.m_result;
 }
 
-bool CGUIWindowFileManager::CanRename(int iList)
-{
+bool CGUIWindowFileManager::CanRename(int iList) const {
   //! @todo Renaming of shares (requires writing to sources.xml)
   //! this might be able to be done via the webserver code stuff...
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
@@ -949,8 +944,7 @@ bool CGUIWindowFileManager::CanRename(int iList)
   return true;
 }
 
-bool CGUIWindowFileManager::CanCopy(int iList)
-{
+bool CGUIWindowFileManager::CanCopy(int iList) const {
   // can't copy if the destination is not writeable, or if the source is a share!
   //! @todo Perhaps if the source is removeable media (DVD/CD etc.) we could
   //! put ripping/backup in here.
@@ -962,30 +956,26 @@ bool CGUIWindowFileManager::CanCopy(int iList)
   return true;
 }
 
-bool CGUIWindowFileManager::CanMove(int iList)
-{
+bool CGUIWindowFileManager::CanMove(int iList) const {
   // can't move if the destination is not writeable, or if the source is a share or not writeable!
   if (m_Directory[0]->IsVirtualDirectoryRoot() || m_Directory[0]->IsReadOnly()) return false;
   if (m_Directory[1]->IsVirtualDirectoryRoot() || m_Directory[1]->IsReadOnly()) return false;
   return true;
 }
 
-bool CGUIWindowFileManager::CanDelete(int iList)
-{
+bool CGUIWindowFileManager::CanDelete(int iList) const {
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[iList]->IsReadOnly()) return false;
   return true;
 }
 
-bool CGUIWindowFileManager::CanNewFolder(int iList)
-{
+bool CGUIWindowFileManager::CanNewFolder(int iList) const {
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[iList]->IsReadOnly()) return false;
   return true;
 }
 
-int CGUIWindowFileManager::NumSelected(int iList)
-{
+int CGUIWindowFileManager::NumSelected(int iList) const {
   int iSelectedItems = 0;
   for (int iItem = 0; iItem < m_vecItems[iList]->Size(); ++iItem)
   {

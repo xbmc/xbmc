@@ -99,7 +99,7 @@ public:
    Any previously cached files are cleared if they have been cached for longer than the specified
    cachepersistence.
    */
-  void ClearCache();
+  void ClearCache() const;
 
   CONTENT_TYPE Content() const { return m_pathContent; }
   bool RequiresSettings() const { return m_requiressettings; }

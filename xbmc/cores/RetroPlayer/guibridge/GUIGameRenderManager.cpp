@@ -293,8 +293,7 @@ void CGUIGameRenderManager::UpdateRenderTargets()
   }
 }
 
-CGUIRenderTarget* CGUIGameRenderManager::CreateRenderTarget(CGUIRenderHandle* handle)
-{
+CGUIRenderTarget* CGUIGameRenderManager::CreateRenderTarget(CGUIRenderHandle* handle) const {
   switch (handle->Type())
   {
     case RENDER_HANDLE::CONTROL:

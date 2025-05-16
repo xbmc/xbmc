@@ -134,7 +134,7 @@ namespace XBMCAddon
       ///
       GetKeyRequest(...);
 #else
-      XbmcCommons::Buffer GetKeyRequest(const XbmcCommons::Buffer &init, const String &mimeType, bool offlineKey, const std::map<String, String> &optionalParameters);
+      XbmcCommons::Buffer GetKeyRequest(const XbmcCommons::Buffer &init, const String &mimeType, bool offlineKey, const std::map<String, String> &optionalParameters) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -154,7 +154,7 @@ namespace XBMCAddon
       ///
       GetPropertyString(...);
 #else
-      String GetPropertyString(const String &name);
+      String GetPropertyString(const String &name) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -181,7 +181,7 @@ namespace XBMCAddon
       ///
       ProvideKeyResponse(...);
 #else
-      String ProvideKeyResponse(const XbmcCommons::Buffer &response);
+      String ProvideKeyResponse(const XbmcCommons::Buffer &response) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -196,7 +196,7 @@ namespace XBMCAddon
       ///
       RemoveKeys(...);
 #else
-      void RemoveKeys();
+      void RemoveKeys() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -216,7 +216,7 @@ namespace XBMCAddon
       ///
       RestoreKeys(...);
 #else
-      void RestoreKeys(const String& keySetId);
+      void RestoreKeys(const String& keySetId) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -236,7 +236,7 @@ namespace XBMCAddon
       ///
       SetPropertyString(...);
 #else
-      void SetPropertyString(const String &name, const String &value);
+      void SetPropertyString(const String &name, const String &value) const;
 #endif
 
 /*******************Crypto section *****************/
@@ -262,7 +262,7 @@ namespace XBMCAddon
       ///
       Decrypt(...);
 #else
-      XbmcCommons::Buffer Decrypt(const XbmcCommons::Buffer &cipherKeyId, const XbmcCommons::Buffer &input, const XbmcCommons::Buffer &iv);
+      XbmcCommons::Buffer Decrypt(const XbmcCommons::Buffer &cipherKeyId, const XbmcCommons::Buffer &input, const XbmcCommons::Buffer &iv) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -286,7 +286,7 @@ namespace XBMCAddon
       ///
       Encrypt(...);
 #else
-      XbmcCommons::Buffer Encrypt(const XbmcCommons::Buffer &cipherKeyId, const XbmcCommons::Buffer &input, const XbmcCommons::Buffer &iv);
+      XbmcCommons::Buffer Encrypt(const XbmcCommons::Buffer &cipherKeyId, const XbmcCommons::Buffer &input, const XbmcCommons::Buffer &iv) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -309,7 +309,7 @@ namespace XBMCAddon
       ///
       Sign(...);
 #else
-      XbmcCommons::Buffer Sign(const XbmcCommons::Buffer &macKeyId, const XbmcCommons::Buffer &message);
+      XbmcCommons::Buffer Sign(const XbmcCommons::Buffer &macKeyId, const XbmcCommons::Buffer &message) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -333,7 +333,7 @@ namespace XBMCAddon
       ///
       Verify(...);
 #else
-      bool Verify(const XbmcCommons::Buffer &macKeyId, const XbmcCommons::Buffer &message, const XbmcCommons::Buffer &signature);
+      bool Verify(const XbmcCommons::Buffer &macKeyId, const XbmcCommons::Buffer &message, const XbmcCommons::Buffer &signature) const;
 #endif
 
     };

@@ -157,8 +157,7 @@ bool CLinuxRendererGLES::ConfigChanged(const VideoPicture &picture)
   return false;
 }
 
-int CLinuxRendererGLES::NextYV12Texture()
-{
+int CLinuxRendererGLES::NextYV12Texture() const {
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
 }
 
@@ -363,8 +362,7 @@ void CLinuxRendererGLES::Update()
   ValidateRenderTarget();
 }
 
-void CLinuxRendererGLES::DrawBlackBars()
-{
+void CLinuxRendererGLES::DrawBlackBars() const {
   CRect windowRect(0, 0, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(),
                    CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
 
@@ -1126,8 +1124,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   VerifyGLState();
 }
 
-void CLinuxRendererGLES::RenderFromFBO()
-{
+void CLinuxRendererGLES::RenderFromFBO() const {
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_fbo.fbo.Texture());
   VerifyGLState();

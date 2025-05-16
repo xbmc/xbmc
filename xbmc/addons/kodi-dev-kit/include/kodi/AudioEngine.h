@@ -142,26 +142,25 @@ public:
   ///@{
 
   /// @brief The stream's data format (eg, AUDIOENGINE_FMT_S16LE)
-  void SetDataFormat(enum AudioEngineDataFormat format) { m_cStructure->m_dataFormat = format; }
+  void SetDataFormat(enum AudioEngineDataFormat format) const { m_cStructure->m_dataFormat = format; }
 
   /// @brief To get with @ref SetDataFormat changed values.
   enum AudioEngineDataFormat GetDataFormat() const { return m_cStructure->m_dataFormat; }
 
   /// @brief The stream's sample rate (eg, 48000)
-  void SetSampleRate(unsigned int rate) { m_cStructure->m_sampleRate = rate; }
+  void SetSampleRate(unsigned int rate) const { m_cStructure->m_sampleRate = rate; }
 
   /// @brief To get with @ref SetSampleRate changed values.
   unsigned int GetSampleRate() const { return m_cStructure->m_sampleRate; }
 
   /// @brief The encoded streams sample rate if a bitstream, otherwise undefined
-  void SetEncodedRate(unsigned int rate) { m_cStructure->m_encodedRate = rate; }
+  void SetEncodedRate(unsigned int rate) const { m_cStructure->m_encodedRate = rate; }
 
   /// @brief To get with @ref SetEncodedRate changed values.
   unsigned int GetEncodedRate() const { return m_cStructure->m_encodedRate; }
 
   /// @brief The stream's channel layout
-  void SetChannelLayout(const std::vector<enum AudioEngineChannel>& layout)
-  {
+  void SetChannelLayout(const std::vector<enum AudioEngineChannel>& layout) const {
     // Reset first all to empty values to AUDIOENGINE_CH_NULL, in case given list is empty
     m_cStructure->m_channelCount = 0;
     for (size_t ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
@@ -189,20 +188,19 @@ public:
   }
 
   /// @brief The number of frames per period
-  void SetFramesAmount(unsigned int frames) { m_cStructure->m_frames = frames; }
+  void SetFramesAmount(unsigned int frames) const { m_cStructure->m_frames = frames; }
 
   /// @brief To get with @ref SetFramesAmount changed values.
   unsigned int GetFramesAmount() const { return m_cStructure->m_frames; }
 
   /// @brief The size of one frame in bytes
-  void SetFrameSize(unsigned int frameSize) { m_cStructure->m_frameSize = frameSize; }
+  void SetFrameSize(unsigned int frameSize) const { m_cStructure->m_frameSize = frameSize; }
 
   /// @brief To get with @ref SetFrameSize changed values.
   unsigned int GetFrameSize() const { return m_cStructure->m_frameSize; }
 
   /// @brief Function to compare the format structure with another
-  bool CompareFormat(const AudioEngineFormat* fmt)
-  {
+  bool CompareFormat(const AudioEngineFormat* fmt) const {
     if (!fmt)
     {
       return false;
@@ -334,7 +332,7 @@ public:
   ///
   /// @return The number of bytes AddData will consume
   ///
-  unsigned int GetSpace() { return m_cb->aestream_get_space(m_kodiBase, m_StreamHandle); }
+  unsigned int GetSpace() const { return m_cb->aestream_get_space(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -354,8 +352,7 @@ public:
                        unsigned int frames,
                        double pts = 0,
                        bool hasDownmix = false,
-                       double centerMixLevel = 1.0)
-  {
+                       double centerMixLevel = 1.0) const {
     return m_cb->aestream_add_data(m_kodiBase, m_StreamHandle, data, offset, frames, pts,
                                    hasDownmix, centerMixLevel);
   }
@@ -368,7 +365,7 @@ public:
   ///
   /// @return seconds
   ///
-  double GetDelay() { return m_cb->aestream_get_delay(m_kodiBase, m_StreamHandle); }
+  double GetDelay() const { return m_cb->aestream_get_delay(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -377,7 +374,7 @@ public:
   ///
   /// @return True if the stream is buffering
   ///
-  bool IsBuffering() { return m_cb->aestream_is_buffering(m_kodiBase, m_StreamHandle); }
+  bool IsBuffering() const { return m_cb->aestream_is_buffering(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -387,7 +384,7 @@ public:
   ///
   /// @return seconds
   ///
-  double GetCacheTime() { return m_cb->aestream_get_cache_time(m_kodiBase, m_StreamHandle); }
+  double GetCacheTime() const { return m_cb->aestream_get_cache_time(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -396,21 +393,21 @@ public:
   ///
   /// @return seconds
   ///
-  double GetCacheTotal() { return m_cb->aestream_get_cache_total(m_kodiBase, m_StreamHandle); }
+  double GetCacheTotal() const { return m_cb->aestream_get_cache_total(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
   /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Pauses the stream playback.
   ///
-  void Pause() { return m_cb->aestream_pause(m_kodiBase, m_StreamHandle); }
+  void Pause() const { return m_cb->aestream_pause(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
   /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Resumes the stream after pausing
   ///
-  void Resume() { return m_cb->aestream_resume(m_kodiBase, m_StreamHandle); }
+  void Resume() const { return m_cb->aestream_resume(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -422,28 +419,28 @@ public:
   ///
   /// @note Once called AddData will not consume more data.
   ///
-  void Drain(bool wait = true) { return m_cb->aestream_drain(m_kodiBase, m_StreamHandle, wait); }
+  void Drain(bool wait = true) const { return m_cb->aestream_drain(m_kodiBase, m_StreamHandle, wait); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
   /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns true if the is stream draining.
   ///
-  bool IsDraining() { return m_cb->aestream_is_draining(m_kodiBase, m_StreamHandle); }
+  bool IsDraining() const { return m_cb->aestream_is_draining(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
   /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Returns true if the is stream has finished draining.
   ///
-  bool IsDrained() { return m_cb->aestream_is_drained(m_kodiBase, m_StreamHandle); }
+  bool IsDrained() const { return m_cb->aestream_is_drained(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
   /// @ingroup cpp_kodi_audioengine_CAEStream
   /// @brief Flush all buffers dropping the audio data.
   ///
-  void Flush() { return m_cb->aestream_flush(m_kodiBase, m_StreamHandle); }
+  void Flush() const { return m_cb->aestream_flush(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -452,7 +449,7 @@ public:
   ///
   /// @return The volume level between 0.0 and 1.0
   ///
-  float GetVolume() { return m_cb->aestream_get_volume(m_kodiBase, m_StreamHandle); }
+  float GetVolume() const { return m_cb->aestream_get_volume(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -461,8 +458,7 @@ public:
   ///
   /// @param[in] volume               The new volume level between 0.0 and 1.0
   ///
-  void SetVolume(float volume)
-  {
+  void SetVolume(float volume) const {
     return m_cb->aestream_set_volume(m_kodiBase, m_StreamHandle, volume);
   }
   //--------------------------------------------------------------------------
@@ -473,7 +469,7 @@ public:
   ///
   /// @return The volume amplification factor between 1.0 and 1000.0
   ///
-  float GetAmplification() { return m_cb->aestream_get_amplification(m_kodiBase, m_StreamHandle); }
+  float GetAmplification() const { return m_cb->aestream_get_amplification(m_kodiBase, m_StreamHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -482,8 +478,7 @@ public:
   ///
   /// @param[in] amplify The volume amplification factor between 1.0 and 1000.0
   ///
-  void SetAmplification(float amplify)
-  {
+  void SetAmplification(float amplify) const {
     return m_cb->aestream_set_amplification(m_kodiBase, m_StreamHandle, amplify);
   }
   //--------------------------------------------------------------------------
@@ -546,8 +541,7 @@ public:
   ///
   /// @return the current resample ratio or undefined if the stream is not resampling
   ///
-  double GetResampleRatio()
-  {
+  double GetResampleRatio() const {
     return m_cb->aestream_get_resample_ratio(m_kodiBase, m_StreamHandle);
   }
   //--------------------------------------------------------------------------
@@ -562,8 +556,7 @@ public:
   /// @param[in] ratio the new sample rate ratio, calculated by
   ///                  ((double)desiredRate / (double)GetSampleRate())
   ///
-  void SetResampleRatio(double ratio)
-  {
+  void SetResampleRatio(double ratio) const {
     m_cb->aestream_set_resample_ratio(m_kodiBase, m_StreamHandle, ratio);
   }
   //--------------------------------------------------------------------------

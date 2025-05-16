@@ -76,7 +76,7 @@ protected:
   void OnStartup() override {}
   void Process() override;
   void OnExit() override;
-  float GetPercentage();
+  float GetPercentage() const;
 
 private:
   struct StreamInfo

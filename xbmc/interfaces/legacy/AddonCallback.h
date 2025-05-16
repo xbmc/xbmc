@@ -25,7 +25,7 @@ namespace XBMCAddon
   protected:
     AddonClass::Ref<CallbackHandler> handler;
 
-    bool hasHandler() { return handler.isNotNull(); }
+    bool hasHandler() const { return handler.isNotNull(); }
 
     inline AddonCallback() : handler(NULL)
     {

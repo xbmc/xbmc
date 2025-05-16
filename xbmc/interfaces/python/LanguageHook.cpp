@@ -60,8 +60,7 @@ namespace XBMCAddon
       hooks[m_interp] = AddonClass::Ref<PythonLanguageHook>(this);
     }
 
-    void PythonLanguageHook::UnregisterMe()
-    {
+    void PythonLanguageHook::UnregisterMe() const {
       XBMC_TRACE;
       std::lock_guard lock(hooksMutex);
 

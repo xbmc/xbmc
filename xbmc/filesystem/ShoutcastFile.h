@@ -55,7 +55,7 @@ protected:
   void ReadTruncated(char* buf2, int size);
 
 private:
-  std::string DecodeToUTF8(const std::string& str);
+  std::string DecodeToUTF8(const std::string& str) const;
 
   CCurlFile m_file;
   std::string m_fileCharset;

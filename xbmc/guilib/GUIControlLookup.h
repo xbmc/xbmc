@@ -39,7 +39,7 @@ protected:
   // fast lookup by id
   void AddLookup(CGUIControl *control);
   void RemoveLookup(CGUIControl *control);
-  void RemoveLookup();
+  void RemoveLookup() const;
   const LookupMap &GetLookup() const { return m_lookup; }
   void ClearLookup() { m_lookup.clear(); }
 private:

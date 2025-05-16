@@ -218,8 +218,7 @@ void CGUIWindowLoginScreen::Update()
   m_viewControl.SetSelectedItem(m_iSelectedItem);
 }
 
-bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
-{
+bool CGUIWindowLoginScreen::OnPopupMenu(int iItem) const {
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return false;
 

@@ -58,8 +58,7 @@ CConvolutionKernel::~CConvolutionKernel()
 
 //generate a lanczos2 kernel which can be loaded with RGBA format
 //each value of RGBA has one tap, so a shader can load 4 taps with a single pixel lookup
-void CConvolutionKernel::Lanczos2()
-{
+void CConvolutionKernel::Lanczos2() const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;
@@ -85,8 +84,7 @@ void CConvolutionKernel::Lanczos2()
 //the two outer lobes of the lanczos3 kernel are added to the two lobes one step to the middle
 //this basically looks the same as lanczos3, but the kernel only has 4 taps,
 //so it can use the 4x4 convolution shader which is twice as fast as the 6x6 one
-void CConvolutionKernel::Lanczos3Fast()
-{
+void CConvolutionKernel::Lanczos3Fast() const {
   for (int i = 0; i < m_size; i++)
   {
     double a = 3.0;
@@ -112,8 +110,7 @@ void CConvolutionKernel::Lanczos3Fast()
 
 //generate a lanczos3 kernel which can be loaded with RGBA format
 //each value of RGB has one tap, so a shader can load 3 taps with a single pixel lookup
-void CConvolutionKernel::Lanczos3()
-{
+void CConvolutionKernel::Lanczos3() const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;
@@ -144,8 +141,7 @@ void CConvolutionKernel::Lanczos3()
   }
 }
 
-void CConvolutionKernel::Spline36Fast()
-{
+void CConvolutionKernel::Spline36Fast() const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;
@@ -165,8 +161,7 @@ void CConvolutionKernel::Spline36Fast()
   }
 }
 
-void CConvolutionKernel::Spline36()
-{
+void CConvolutionKernel::Spline36() const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;
@@ -196,8 +191,7 @@ void CConvolutionKernel::Spline36()
 
 //generate a bicubic kernel which can be loaded with RGBA format
 //each value of RGBA has one tap, so a shader can load 4 taps with a single pixel lookup
-void CConvolutionKernel::Bicubic(double B, double C)
-{
+void CConvolutionKernel::Bicubic(double B, double C) const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;

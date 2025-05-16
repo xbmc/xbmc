@@ -104,8 +104,7 @@ void TestBasicEnvironment::SetUp()
     exit(1);
 }
 
-void TestBasicEnvironment::TearDown()
-{
+void TestBasicEnvironment::TearDown() const {
   XFILE::CDirectory::RemoveRecursive(m_tempPath);
 
   g_application.m_ServiceManager->DeinitTesting();

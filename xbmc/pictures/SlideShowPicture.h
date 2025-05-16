@@ -69,8 +69,8 @@ public:
   void SetInSlideshow(bool slideshow);
   void SetOriginalSize(int iOriginalWidth, int iOriginalHeight, bool bFullSize);
   bool FullSize() const { return m_bFullSize; }
-  int GetOriginalWidth();
-  int GetOriginalHeight();
+  int GetOriginalWidth() const;
+  int GetOriginalHeight() const;
 
   void Move(float dX, float dY);
   float GetZoom() const { return m_fZoomAmount; }
@@ -87,7 +87,7 @@ private:
                            std::unique_ptr<CTexture> pTexture,
                            DISPLAY_EFFECT dispEffect = EFFECT_RANDOM,
                            TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
-  void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions);
+  void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions) const;
 
   std::unique_ptr<CTexture> m_pImage;
 

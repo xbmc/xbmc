@@ -22,23 +22,19 @@ std::string CFTPParse::getName()
   return m_name;
 }
 
-int CFTPParse::getFlagtrycwd()
-{
+int CFTPParse::getFlagtrycwd() const {
   return m_flagtrycwd;
 }
 
-int CFTPParse::getFlagtryretr()
-{
+int CFTPParse::getFlagtryretr() const {
   return m_flagtryretr;
 }
 
-uint64_t CFTPParse::getSize()
-{
+uint64_t CFTPParse::getSize() const {
   return m_size;
 }
 
-time_t CFTPParse::getTime()
-{
+time_t CFTPParse::getTime() const {
   return m_time;
 }
 

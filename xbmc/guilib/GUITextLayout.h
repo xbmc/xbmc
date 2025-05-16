@@ -58,7 +58,7 @@ class CGUITextLayout
 public:
   CGUITextLayout(CGUIFont *font, bool wrap, float fHeight=0.0f, CGUIFont *borderFont = NULL);  // this may need changing - we may just use this class to replace CLabelInfo completely
 
-  bool UpdateScrollinfo(CScrollInfo &scrollInfo);
+  bool UpdateScrollinfo(CScrollInfo &scrollInfo) const;
 
   // main function to render strings
   void Render(float x,
@@ -139,7 +139,7 @@ public:
   static void Filter(std::string &text);
 
 protected:
-  void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
+  void LineBreakText(const vecText &text, std::vector<CGUIString> &lines) const;
   void WrapText(const vecText &text, float maxWidth);
   static void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
   static std::wstring BidiFlip(const std::wstring& text,

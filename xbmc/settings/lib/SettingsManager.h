@@ -365,7 +365,7 @@ public:
    \param value Boolean value to set
    \return True if setting the value was successful, false otherwise
    */
-  bool SetBool(const std::string &id, bool value);
+  bool SetBool(const std::string &id, bool value) const;
   /*!
    \brief Toggles the boolean value of the setting with the given identifier.
 
@@ -380,7 +380,7 @@ public:
    \param value Integer value to set
    \return True if setting the value was successful, false otherwise
    */
-  bool SetInt(const std::string &id, int value);
+  bool SetInt(const std::string &id, int value) const;
   /*!
    \brief Sets the real number value of the setting with the given identifier.
 
@@ -388,7 +388,7 @@ public:
    \param value Real number value to set
    \return True if setting the value was successful, false otherwise
    */
-  bool SetNumber(const std::string &id, double value);
+  bool SetNumber(const std::string &id, double value) const;
   /*!
    \brief Sets the string value of the setting with the given identifier.
 
@@ -396,7 +396,7 @@ public:
    \param value String value to set
    \return True if setting the value was successful, false otherwise
    */
-  bool SetString(const std::string &id, const std::string &value);
+  bool SetString(const std::string &id, const std::string &value) const;
   /*!
    \brief Sets the values of the list setting with the given identifier.
 
@@ -404,7 +404,7 @@ public:
    \param value Values to set
    \return True if setting the values was successful, false otherwise
    */
-  bool SetList(const std::string &id, const std::vector< std::shared_ptr<CSetting> > &value);
+  bool SetList(const std::string &id, const std::vector< std::shared_ptr<CSetting> > &value) const;
 
   /*!
    \brief Sets the value of the setting to its default.
@@ -412,11 +412,11 @@ public:
    \param id Setting identifier
    \return True if setting the value to its default was successful, false otherwise
    */
-  bool SetDefault(const std::string &id);
+  bool SetDefault(const std::string &id) const;
   /*!
   \brief Sets the value of all settings to their default.
   */
-  void SetDefaults();
+  void SetDefaults() const;
 
   /*!
    \brief Gets the setting conditions manager used by the settings manager.

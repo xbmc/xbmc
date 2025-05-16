@@ -57,8 +57,7 @@ namespace XBMCAddon
       item.reset();
     }
 
-    String ListItem::getLabel()
-    {
+    String ListItem::getLabel() const {
       if (!item) return "";
 
       String ret;
@@ -70,8 +69,7 @@ namespace XBMCAddon
       return ret;
     }
 
-    String ListItem::getLabel2()
-    {
+    String ListItem::getLabel2() const {
       if (!item) return "";
 
       String ret;
@@ -83,8 +81,7 @@ namespace XBMCAddon
       return ret;
     }
 
-    void ListItem::setLabel(const String& label)
-    {
+    void ListItem::setLabel(const String& label) const {
       if (!item) return;
       // set label
       {
@@ -93,8 +90,7 @@ namespace XBMCAddon
       }
     }
 
-    void ListItem::setLabel2(const String& label)
-    {
+    void ListItem::setLabel2(const String& label) const {
       if (!item) return;
       // set label
       {
@@ -103,8 +99,7 @@ namespace XBMCAddon
       }
     }
 
-    String ListItem::getDateTime()
-    {
+    String ListItem::getDateTime() const {
       if (!item)
         return "";
 
@@ -197,8 +192,7 @@ namespace XBMCAddon
       xbmc::InfoTagVideo::addSeasonRaw(GetVideoInfoTag(), number, std::move(name));
     }
 
-    void ListItem::select(bool selected)
-    {
+    void ListItem::select(bool selected) const {
       if (!item) return;
       {
         XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
@@ -207,8 +201,7 @@ namespace XBMCAddon
     }
 
 
-    bool ListItem::isSelected()
-    {
+    bool ListItem::isSelected() const {
       if (!item) return false;
 
       bool ret;
@@ -304,8 +297,7 @@ namespace XBMCAddon
       return value;
     }
 
-    String ListItem::getArt(const char* key)
-    {
+    String ListItem::getArt(const char* key) const {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return item->GetArt(key);
     }
@@ -365,8 +357,7 @@ namespace XBMCAddon
       setContentLookupRaw(enable);
     }
 
-    String ListItem::getPath()
-    {
+    String ListItem::getPath() const {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return item->GetPath();
     }
@@ -869,8 +860,7 @@ namespace XBMCAddon
       xbmc::InfoTagVideo::finalizeStreamsRaw(infoTag);
     } // end ListItem::addStreamInfo
 
-    void ListItem::addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems /* = false */)
-    {
+    void ListItem::addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems /* = false */) const {
       for (size_t i = 0; i < items.size(); ++i)
       {
         auto& tuple = items[i];
@@ -901,14 +891,12 @@ namespace XBMCAddon
       return new xbmc::InfoTagMusic(GetMusicInfoTag(), m_offscreen);
     }
 
-    xbmc::InfoTagPicture* ListItem::getPictureInfoTag()
-    {
+    xbmc::InfoTagPicture* ListItem::getPictureInfoTag() const {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return new xbmc::InfoTagPicture(item->GetPictureInfoTag(), m_offscreen);
     }
 
-    xbmc::InfoTagGame* ListItem::getGameInfoTag()
-    {
+    xbmc::InfoTagGame* ListItem::getGameInfoTag() const {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return new xbmc::InfoTagGame(item->GetGameInfoTag(), m_offscreen);
     }
@@ -973,28 +961,23 @@ namespace XBMCAddon
       return item->GetMusicInfoTag();
     }
 
-    void ListItem::setTitleRaw(std::string title)
-    {
+    void ListItem::setTitleRaw(std::string title) const {
       item->m_strTitle = std::move(title);
     }
 
-    void ListItem::setPathRaw(const std::string& path)
-    {
+    void ListItem::setPathRaw(const std::string& path) const {
       item->SetPath(path);
     }
 
-    void ListItem::setCountRaw(int count)
-    {
+    void ListItem::setCountRaw(int count) const {
       item->m_iprogramCount = count;
     }
 
-    void ListItem::setSizeRaw(int64_t size)
-    {
+    void ListItem::setSizeRaw(int64_t size) const {
       item->m_dwSize = size;
     }
 
-    void ListItem::setDateTimeRaw(const std::string& dateTime)
-    {
+    void ListItem::setDateTimeRaw(const std::string& dateTime) const {
       if (dateTime.length() == 10)
       {
         int year = strtol(dateTime.substr(dateTime.size() - 4).c_str(), nullptr, 10);
@@ -1006,24 +989,20 @@ namespace XBMCAddon
         item->m_dateTime.SetFromW3CDateTime(dateTime);
     }
 
-    void ListItem::setIsFolderRaw(bool isFolder)
-    {
+    void ListItem::setIsFolderRaw(bool isFolder) const {
       item->m_bIsFolder = isFolder;
     }
 
-    void ListItem::setStartOffsetRaw(double startOffset)
-    {
+    void ListItem::setStartOffsetRaw(double startOffset) const {
       // we store the offset in frames, or 1/75th of a second
       item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(startOffset));
     }
 
-    void ListItem::setMimeTypeRaw(const std::string& mimetype)
-    {
+    void ListItem::setMimeTypeRaw(const std::string& mimetype) const {
       item->SetMimeType(mimetype);
     }
 
-    void ListItem::setSpecialSortRaw(std::string specialSort)
-    {
+    void ListItem::setSpecialSortRaw(std::string specialSort) const {
       StringUtils::ToLower(specialSort);
 
       if (specialSort == "bottom")
@@ -1032,19 +1011,16 @@ namespace XBMCAddon
         item->SetSpecialSort(SortSpecialOnTop);
     }
 
-    void ListItem::setContentLookupRaw(bool enable)
-    {
+    void ListItem::setContentLookupRaw(bool enable) const {
       item->SetContentLookup(enable);
     }
 
-    void ListItem::addArtRaw(std::string type, const std::string& url)
-    {
+    void ListItem::addArtRaw(std::string type, const std::string& url) const {
       StringUtils::ToLower(type);
       item->SetArt(type, url);
     }
 
-    void ListItem::addPropertyRaw(std::string type, const CVariant& value)
-    {
+    void ListItem::addPropertyRaw(std::string type, const CVariant& value) const {
       StringUtils::ToLower(type);
       item->SetProperty(type, value);
     }

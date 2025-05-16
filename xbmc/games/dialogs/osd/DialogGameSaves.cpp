@@ -333,16 +333,14 @@ bool CDialogGameSaves::Open(const std::string& gamePath)
   return true;
 }
 
-std::string CDialogGameSaves::GetSelectedItemPath()
-{
+std::string CDialogGameSaves::GetSelectedItemPath() const {
   if (m_selectedItem)
     return m_selectedItem->GetPath();
 
   return "";
 }
 
-void CDialogGameSaves::SetItems(const CFileItemList& itemList)
-{
+void CDialogGameSaves::SetItems(const CFileItemList& itemList) const {
   m_vecList->Clear();
 
   // Need to make internal copy of list to be sure dialog is owner of it
@@ -387,8 +385,7 @@ void CDialogGameSaves::OnContextMenu(CFileItem& item)
     OnDelete(item);
 }
 
-void CDialogGameSaves::OnRename(CFileItem& item)
-{
+void CDialogGameSaves::OnRename(CFileItem& item) const {
   const std::string& savestatePath = item.GetPath();
 
   // Get savestate properties
@@ -419,8 +416,7 @@ void CDialogGameSaves::OnRename(CFileItem& item)
   }
 }
 
-void CDialogGameSaves::OnDelete(CFileItem& item)
-{
+void CDialogGameSaves::OnDelete(CFileItem& item) const {
   // "Confirm delete"
   // "Would you like to delete the selected file(s)?[CR]Warning - this action can't be undone!"
   if (CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, CVariant{125}))

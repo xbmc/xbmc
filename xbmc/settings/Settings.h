@@ -592,7 +592,7 @@ public:
    \param hide Whether to hide the loaded settings or not
    \return True if the setting values were successfully loaded, false otherwise
    */
-  bool LoadHidden(const TiXmlElement *root) { return CSettingsBase::LoadHiddenValuesFromXml(root); }
+  bool LoadHidden(const TiXmlElement *root) const { return CSettingsBase::LoadHiddenValuesFromXml(root); }
 
   /*!
    \brief Saves the setting values to the given (XML) file.
@@ -600,7 +600,7 @@ public:
    \param file Path to an XML file
    \return True if the setting values were successfully saved, false otherwise
    */
-  bool Save(const std::string &file);
+  bool Save(const std::string &file) const;
   /*!
    \brief Saves the setting values to the given XML node.
 
@@ -617,7 +617,7 @@ public:
    \param settingId Setting identifier
    \return True if the setting was successfully loaded from the given XML node, false otherwise
    */
-  bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
+  bool LoadSetting(const TiXmlNode *node, const std::string &settingId) const;
 
   // overwrite (not override) from CSettingsBase
   bool GetBool(const std::string& id) const;
@@ -660,7 +660,7 @@ private:
   // implementation of ISubSettings
   bool Load(const TiXmlNode* settings) override;
 
-  bool Initialize(const std::string &file);
+  bool Initialize(const std::string &file) const;
   bool Reset();
 
   std::set<ISubSettings*> m_subSettings;

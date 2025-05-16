@@ -94,7 +94,7 @@ protected:
   virtual void Render(unsigned int flags, int index);
   virtual void RenderUpdateVideo(bool clear, unsigned int flags = 0, unsigned int alpha = 255);
 
-  int NextYV12Texture();
+  int NextYV12Texture() const;
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
   virtual void ReleaseShaders();
@@ -121,7 +121,7 @@ protected:
 
   // renderers
   void RenderToFBO(int index, int field);
-  void RenderFromFBO();
+  void RenderFromFBO() const;
   void RenderSinglePass(int index, int field); // single pass glsl renderer
 
   // hooks for HwDec Renderered
@@ -215,5 +215,5 @@ protected:
   CRect m_viewRect;
 
 private:
-  void DrawBlackBars();
+  void DrawBlackBars() const;
 };

@@ -62,7 +62,7 @@ public:
 private:
     NPT_Result SetupServices() override;
     NPT_Result SetupIcons() override;
-    NPT_Result GetMetadata(NPT_String& meta);
+    NPT_Result GetMetadata(NPT_String& meta) const;
     NPT_Result PlayMedia(const NPT_String& uri,
                          const NPT_String& meta,
                          PLT_Action* action = NULL);

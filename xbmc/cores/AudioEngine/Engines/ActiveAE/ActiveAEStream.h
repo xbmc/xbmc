@@ -66,8 +66,7 @@ public:
     }
   }
 
-  double GetLastError(unsigned int &time)
-  {
+  double GetLastError(unsigned int &time) const {
     time = m_timer.GetStartTime().time_since_epoch().count();
     return m_lastError;
   }
@@ -96,21 +95,21 @@ class CActiveAEStreamBuffers
 public:
   CActiveAEStreamBuffers(const AEAudioFormat& inputFormat, const AEAudioFormat& outputFormat, AEQuality quality);
   virtual ~CActiveAEStreamBuffers();
-  bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true);
+  bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true) const;
   void SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type);
   bool ProcessBuffers();
-  void ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality);
-  bool HasInputLevel(int level);
-  float GetDelay();
+  void ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality) const;
+  bool HasInputLevel(int level) const;
+  float GetDelay() const;
   void Flush();
-  void SetDrain(bool drain);
-  bool IsDrained();
-  void SetRR(double rr, double atempoThreshold);
-  double GetRR();
-  void FillBuffer();
-  bool DoesNormalize();
-  void ForceResampler(bool force);
-  bool HasWork();
+  void SetDrain(bool drain) const;
+  bool IsDrained() const;
+  void SetRR(double rr, double atempoThreshold) const;
+  double GetRR() const;
+  void FillBuffer() const;
+  bool DoesNormalize() const;
+  void ForceResampler(bool force) const;
+  bool HasWork() const;
   std::unique_ptr<CActiveAEBufferPool> GetResampleBuffers();
   std::unique_ptr<CActiveAEBufferPool> GetAtempoBuffers();
 
@@ -141,7 +140,7 @@ protected:
   void InitRemapper();
   void RemapBuffer();
   double CalcResampleRatio(double error);
-  std::chrono::milliseconds GetErrorInterval();
+  std::chrono::milliseconds GetErrorInterval() const;
 
 public:
   unsigned int GetSpace() override;

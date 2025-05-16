@@ -67,12 +67,12 @@ public:
   void FrameMove();
   void FrameWait(std::chrono::milliseconds duration);
   void Render(bool clear, DWORD flags = 0, DWORD alpha = 255, bool gui = true);
-  bool IsVideoLayer();
-  RESOLUTION GetResolution();
+  bool IsVideoLayer() const;
+  RESOLUTION GetResolution() const;
   void UpdateResolution(bool force = false);
   void TriggerUpdateResolution(float fps, int width, int height, std::string &stereomode);
   void TriggerUpdateResolutionHdr(StreamHdrType m_hdrType);
-  void SetViewMode(int iViewMode);
+  void SetViewMode(int iViewMode) const;
   void PreInit();
   void UnInit();
   bool Flush(bool wait, bool saveBuffers);
@@ -97,7 +97,7 @@ public:
   bool Supports(ERENDERFEATURE feature) const;
   bool Supports(ESCALINGMETHOD method) const;
 
-  int GetSkippedFrames()  { return m_QueueSkip; }
+  int GetSkippedFrames() const { return m_QueueSkip; }
 
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation, StreamHdrType hdrType, int buffers = 0);
   bool AddVideoPicture(const VideoPicture& picture, volatile std::atomic_bool& bStop, EINTERLACEMETHOD deintMethod, bool wait);
@@ -135,7 +135,7 @@ public:
   void SetAudioLatencyTweak(int tweak) { m_audioLatencyTweak = tweak; }
   int GetAudioLatencyTweak() { return m_audioLatencyTweak; }
 
-  void SetVideoSettings(const CVideoSettings& settings);
+  void SetVideoSettings(const CVideoSettings& settings) const;
 
 protected:
 
@@ -255,7 +255,7 @@ protected:
   };
   CClockSync m_clockSync;
 
-  void RenderCapture(CRenderCapture* capture);
+  void RenderCapture(CRenderCapture* capture) const;
   void RemoveCaptures();
   CCriticalSection m_captCritSect;
   std::map<unsigned int, CRenderCapture*> m_captures;
@@ -266,7 +266,7 @@ protected:
   bool m_hasCaptures = false;
 
 private:
-  bool CalcOverlayActiveArea(CRect& src, CRect& dst);
+  bool CalcOverlayActiveArea(CRect& src, CRect& dst) const;
   void ClockAlign();
   void RenderUpdate(bool clear, unsigned int flags, unsigned int alpha);
 

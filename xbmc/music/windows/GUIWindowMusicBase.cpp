@@ -271,8 +271,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh)
-{
+void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh) const {
   if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
   {
     if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
@@ -289,8 +288,7 @@ void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh
   }
 }
 
-void CGUIWindowMusicBase::OnItemInfo(int iItem)
-{
+void CGUIWindowMusicBase::OnItemInfo(int iItem) const {
   if ( iItem < 0 || iItem >= m_vecItems->Size() )
     return;
 
@@ -572,8 +570,7 @@ void CGUIWindowMusicBase::OnRipCD()
   }
 }
 
-void CGUIWindowMusicBase::OnRipTrack(int iItem)
-{
+void CGUIWindowMusicBase::OnRipTrack(int iItem) const {
   if (CServiceBroker::GetMediaManager().IsAudio())
   {
     if (!g_application.CurrentFileItem().IsCDDA())

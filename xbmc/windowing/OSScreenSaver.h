@@ -104,7 +104,7 @@ public:
   /**
    * Check whether the OS screen saver is currently inhibited
    */
-  bool IsInhibited();
+  bool IsInhibited() const;
 
 private:
   friend class COSScreenSaverInhibitor;

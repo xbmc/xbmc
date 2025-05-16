@@ -48,7 +48,7 @@ public:
 
   bool CanSeek() override; //! @todo drop this
   bool CanPause() override;
-  void Pause(bool bPaused);
+  void Pause(bool bPaused) const;
 
   // Demux interface
   CDVDInputStream::IDemux* GetIDemux() override { return nullptr; }

@@ -31,7 +31,7 @@ public:
   void FrameMove() override;
   void OnWindowLoaded() override;
   void OnWindowUnload() override;
-  bool IsConfirmed() { return m_bConfirmed; }
+  bool IsConfirmed() const { return m_bConfirmed; }
   void SetHeading(const std::string &heading);
 
   static bool ShowAndGetDirectory(const VECSOURCES &shares, const std::string &heading, std::string &path, bool bWriteOnly=false);
@@ -54,8 +54,8 @@ public:
 protected:
   void GoParentFolder();
   void OnClick(int iItem);
-  void OnSort();
-  void ClearFileItems();
+  void OnSort() const;
+  void ClearFileItems() const;
   void Update(const std::string &strDirectory);
   bool HaveDiscOrConnection( int iDriveType );
   bool OnPopupMenu(int iItem);

@@ -68,21 +68,20 @@ public:
   /// unencrypted media.
   ///
   /// See @ref STREAM_CRYPTO_KEY_SYSTEM for available options.
-  void SetKeySystem(STREAM_CRYPTO_KEY_SYSTEM keySystem) { m_cStructure->keySystem = keySystem; }
+  void SetKeySystem(STREAM_CRYPTO_KEY_SYSTEM keySystem) const { m_cStructure->keySystem = keySystem; }
 
   /// @brief Get keysystem for encrypted media.
   STREAM_CRYPTO_KEY_SYSTEM GetKeySystem() const { return m_cStructure->keySystem; }
 
   /// @brief Set bit flags to use special conditions, see @ref STREAM_CRYPTO_FLAGS
   /// for available flags.
-  void SetFlags(uint8_t flags) { m_cStructure->flags = flags; }
+  void SetFlags(uint8_t flags) const { m_cStructure->flags = flags; }
 
   /// @brief Get flags for special conditions.
   uint8_t GetFlags() const { return m_cStructure->flags; }
 
   /// @brief To set the crypto session key identifier.
-  void SetSessionId(const std::string& sessionId)
-  {
+  void SetSessionId(const std::string& sessionId) const {
     strncpy(m_cStructure->sessionId, sessionId.c_str(), sizeof(m_cStructure->sessionId) - 1);
   }
 

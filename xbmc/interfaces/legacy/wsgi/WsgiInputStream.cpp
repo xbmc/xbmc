@@ -111,8 +111,7 @@ namespace XBMCAddon
       return *this;
     }
 
-    bool WsgiInputStreamIterator::operator==(const WsgiInputStreamIterator& rhs)
-    {
+    bool WsgiInputStreamIterator::operator==(const WsgiInputStreamIterator& rhs) const {
       return m_data == rhs.m_data &&
              m_offset == rhs.m_offset &&
              m_remaining == rhs.m_remaining;
@@ -139,13 +138,11 @@ namespace XBMCAddon
     }
 
 #ifndef SWIG
-    WsgiInputStreamIterator* WsgiInputStream::begin()
-    {
+    WsgiInputStreamIterator* WsgiInputStream::begin() const {
       return new WsgiInputStreamIterator(m_data, false);
     }
 
-    WsgiInputStreamIterator* WsgiInputStream::end()
-    {
+    WsgiInputStreamIterator* WsgiInputStream::end() const {
       return new WsgiInputStreamIterator(m_data, true);
     }
 

@@ -187,18 +187,18 @@ public:
    */
   bool CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy);
 
-  void SurfaceAttrib(EGLint attribute, EGLint value);
+  void SurfaceAttrib(EGLint attribute, EGLint value) const;
   bool CreateSurface(EGLNativeWindowType nativeWindow, EGLint HDRcolorSpace = EGL_NONE);
   bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
   bool InitializeDisplay(EGLint renderingApi);
   bool ChooseConfig(EGLint renderableType, EGLint visualId = 0, bool hdr = false);
   bool CreateContext(CEGLAttributesVec contextAttribs);
-  bool BindContext();
+  bool BindContext() const;
   void Destroy();
   void DestroySurface();
   void DestroyContext();
-  bool SetVSync(bool enable);
-  bool TrySwapBuffers();
+  bool SetVSync(bool enable) const;
+  bool TrySwapBuffers() const;
   bool IsPlatformSupported() const;
   EGLint GetConfigAttrib(EGLint attribute) const;
 
@@ -220,7 +220,7 @@ public:
   }
 
 private:
-  void SurfaceAttrib();
+  void SurfaceAttrib() const;
 
   EGLenum m_platform{EGL_NONE};
   bool m_platformSupported{false};

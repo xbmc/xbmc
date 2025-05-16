@@ -72,7 +72,7 @@ namespace XBMCAddon
       }
 
       inline const String& GetId() { return Id; }
-      inline long GetInvokerId() { return invokerId; }
+      inline long GetInvokerId() const { return invokerId; }
 
       /**
        * Called from XBPython to notify registered monitors that a script is aborting/ending.

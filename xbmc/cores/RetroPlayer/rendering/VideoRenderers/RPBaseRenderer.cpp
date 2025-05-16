@@ -210,8 +210,7 @@ void CRPBaseRenderer::MarkDirty()
   // CServiceBroker::GetGUI()->GetWindowManager().MarkDirty(m_dimensions); //! @todo
 }
 
-void CRPBaseRenderer::PreRender(bool clear)
-{
+void CRPBaseRenderer::PreRender(bool clear) const {
   if (!m_bConfigured)
     return;
 
@@ -221,15 +220,13 @@ void CRPBaseRenderer::PreRender(bool clear)
                                                 : UTILS::COLOR::BLACK);
 }
 
-void CRPBaseRenderer::PostRender()
-{
+void CRPBaseRenderer::PostRender() const {
   m_context.ApplyStateBlock();
 }
 
 void CRPBaseRenderer::GetScreenDimensions(float& screenWidth,
                                           float& screenHeight,
-                                          float& screenPixelRatio)
-{
+                                          float& screenPixelRatio) const {
   // Get our calibrated full screen resolution
   RESOLUTION_INFO info = m_context.GetResInfo();
 

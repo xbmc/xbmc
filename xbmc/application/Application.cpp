@@ -1907,8 +1907,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 }
 
 
-void CApplication::ResetCurrentItem()
-{
+void CApplication::ResetCurrentItem() const {
   m_itemCurrentFile->Reset();
   if (m_pGUI)
     m_pGUI->GetInfoManager().ResetCurrentItem();
@@ -2682,8 +2681,7 @@ bool CApplication::IsPlayingFullScreenVideo() const
          CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo();
 }
 
-bool CApplication::IsFullScreen()
-{
+bool CApplication::IsFullScreen() const {
   return IsPlayingFullScreenVideo() ||
         (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION) ||
          CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW;
@@ -3155,8 +3153,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr,
   return true;
 }
 
-void CApplication::ConfigureAndEnableAddons()
-{
+void CApplication::ConfigureAndEnableAddons() const {
   std::vector<std::shared_ptr<IAddon>>
       disabledAddons; /*!< Installed addons, but not auto-enabled via manifest */
 
@@ -3399,8 +3396,7 @@ void CApplication::Restart(bool bSamePosition)
     appPlayer->SetPlayerState(state);
 }
 
-const std::string& CApplication::CurrentFile()
-{
+const std::string& CApplication::CurrentFile() const {
   return m_itemCurrentFile->GetPath();
 }
 
@@ -3409,8 +3405,7 @@ std::shared_ptr<CFileItem> CApplication::CurrentFileItemPtr()
   return m_itemCurrentFile;
 }
 
-CFileItem& CApplication::CurrentFileItem()
-{
+CFileItem& CApplication::CurrentFileItem() const {
   return *m_itemCurrentFile;
 }
 
@@ -3691,8 +3686,7 @@ void CApplication::SetLoggingIn(bool switchingProfiles)
   GetComponent<CApplicationSkinHandling>()->m_saveSkinOnUnloading = !switchingProfiles;
 }
 
-void CApplication::PrintStartupLog()
-{
+void CApplication::PrintStartupLog() const {
   CLog::Log(LOGINFO, "-----------------------------------------------------------------------");
   CLog::Log(LOGINFO, "Starting {} ({}). Platform: {} {} {}-bit", CSysInfo::GetAppName(),
             CSysInfo::GetVersion(), g_sysinfo.GetBuildTargetPlatformName(),

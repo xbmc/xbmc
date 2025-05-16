@@ -150,7 +150,7 @@ protected:
 
   void UpdateSettingControl(const std::string& settingId, bool updateDisplayOnly = false);
   void UpdateSettingControl(const BaseSettingControlPtr& pSettingControl,
-                            bool updateDisplayOnly = false);
+                            bool updateDisplayOnly = false) const;
   void SetControlLabel(int controlId, const CVariant& label);
 
   BaseSettingControlPtr GetSettingControl(const std::string& setting);

@@ -1334,8 +1334,7 @@ CDateTime CPVRTimers::GetNextEventTime() const
   return retVal;
 }
 
-void CPVRTimers::UpdateChannels()
-{
+void CPVRTimers::UpdateChannels() const {
   std::lock_guard lock(m_critSection);
 
   for (const auto& tagsEntry : m_tags)

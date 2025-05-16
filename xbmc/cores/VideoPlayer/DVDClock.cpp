@@ -272,13 +272,11 @@ bool CDVDClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& Ref
   return m_videoRefClock->GetClockInfo(MissedVblanks, ClockSpeed, RefreshRate);
 }
 
-double CDVDClock::SystemToAbsolute(int64_t system)
-{
+double CDVDClock::SystemToAbsolute(int64_t system) const {
   return DVD_TIME_BASE * (double)(system - m_systemOffset) / m_systemFrequency;
 }
 
-int64_t CDVDClock::AbsoluteToSystem(double absolute)
-{
+int64_t CDVDClock::AbsoluteToSystem(double absolute) const {
   return (int64_t)(absolute / DVD_TIME_BASE * m_systemFrequency) + m_systemOffset;
 }
 

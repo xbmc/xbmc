@@ -38,14 +38,13 @@ public:
   CTeletextDecoder();
   virtual ~CTeletextDecoder(void);
 
-  bool NeedRendering() { return m_updateTexture; }
+  bool NeedRendering() const { return m_updateTexture; }
   void RenderingDone() { m_updateTexture = false; }
-  UTILS::COLOR::Color* GetTextureBuffer()
-  {
+  UTILS::COLOR::Color* GetTextureBuffer() const {
     return m_TextureBuffer + (m_RenderInfo.Width * m_YOffset);
   }
-  int GetHeight() { return m_RenderInfo.Height; }
-  int GetWidth() { return m_RenderInfo.Width; }
+  int GetHeight() const { return m_RenderInfo.Height; }
+  int GetWidth() const { return m_RenderInfo.Width; }
 
   /*!
    \brief Checks if the data in the decoder has changed
@@ -73,19 +72,19 @@ private:
   void RenderCatchedPage();
   void DoFlashing(int startrow);
   void DoRenderPage(int startrow, int national_subset_bak);
-  void Decode_BTT();
-  void Decode_ADIP();
-  int TopText_GetNext(int startpage, int up, int findgroup);
+  void Decode_BTT() const;
+  void Decode_ADIP() const;
+  int TopText_GetNext(int startpage, int up, int findgroup) const;
   void Showlink(int column, int linkpage);
   void CreateLine25();
   void RenderCharFB(int Char, TextPageAttr_t *Attribute);
   void RenderCharBB(int Char, TextPageAttr_t *Attribute);
   void CopyBB2FB();
   void SetFontWidth(int newWidth);
-  int GetCurFontWidth();
+  int GetCurFontWidth() const;
   void SetPosX(int column);
-  void ClearBB(UTILS::COLOR::Color Color);
-  void ClearFB(UTILS::COLOR::Color Color);
+  void ClearBB(UTILS::COLOR::Color Color) const;
+  void ClearFB(UTILS::COLOR::Color Color) const;
   void FillBorder(UTILS::COLOR::Color Color);
   void FillRect(
       UTILS::COLOR::Color* buffer, int xres, int x, int y, int w, int h, UTILS::COLOR::Color Color);
@@ -167,10 +166,10 @@ private:
                    unsigned char *drcssubp, unsigned char *gdrcssubp,
                    signed char *endcol, TextPageAttr_t *attrPassive, unsigned char* pagedata, unsigned char* page_char, TextPageAttr_t* PageAtrb);
   int iTripletNumber2Data(int iONr, TextCachedPage_t *pstCachedPage, unsigned char* pagedata);
-  int SetNational(unsigned char sec);
-  int NextHex(int i);
+  int SetNational(unsigned char sec) const;
+  int NextHex(int i) const;
   void SetColors(const unsigned short *pcolormap, int offset, int number);
-  UTILS::COLOR::Color GetColorRGB(enumTeletextColor ttc);
+  UTILS::COLOR::Color GetColorRGB(enumTeletextColor ttc) const;
 
   static FT_Error MyFaceRequester(FTC_FaceID face_id, FT_Library library, FT_Pointer request_data, FT_Face *aface);
 

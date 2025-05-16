@@ -77,7 +77,7 @@ public:
    *        native threading library to do so.
    *
    */
-  bool SetPriority(const ThreadPriority& priority);
+  bool SetPriority(const ThreadPriority& priority) const;
 
   static CThread* GetCurrentThread();
 

@@ -159,8 +159,7 @@ void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
     m_platformStorage->GetRemovableDrives(removableDrives);
 }
 
-void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocations)
-{
+void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocations) const {
   for (unsigned int i = 0; i < m_locations.size(); i++)
   {
     CMediaSource share;
@@ -441,8 +440,7 @@ bool CMediaManager::IsAudio(const std::string& devicePath)
   return false;
 }
 
-bool CMediaManager::HasOpticalDrive()
-{
+bool CMediaManager::HasOpticalDrive() const {
 #ifdef HAS_OPTICAL_DRIVE
   if (!m_strFirstAvailDrive.empty())
     return true;

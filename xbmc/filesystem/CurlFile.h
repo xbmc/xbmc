@@ -59,8 +59,8 @@ namespace XFILE
       bool ReadData(std::string& strHTML);
       bool Download(const std::string& strURL, const std::string& strFileName, unsigned int* pdwSize = NULL);
       bool IsInternet();
-      void Cancel();
-      void Reset();
+      void Cancel() const;
+      void Reset() const;
       void SetUserAgent(const std::string& sUserAgent) { m_userAgent = sUserAgent; }
       void SetProxy(const std::string &type, const std::string &host, uint16_t port,
                     const std::string &user, const std::string &password);
@@ -118,7 +118,7 @@ namespace XFILE
 
           /* returned http header */
           CHttpHeader m_httpheader;
-          bool IsHeaderDone(void) { return m_httpheader.IsHeaderDone(); }
+          bool IsHeaderDone(void) const { return m_httpheader.IsHeaderDone(); }
 
           curl_slist* m_curlHeaderList;
           curl_slist* m_curlAliasList;
@@ -141,10 +141,10 @@ namespace XFILE
     protected:
       void ParseAndCorrectUrl(CURL &url);
       void SetCommonOptions(CReadState* state, bool failOnError = true);
-      void SetRequestHeaders(CReadState* state);
+      void SetRequestHeaders(CReadState* state) const;
       void SetCorrectHeaders(CReadState* state);
       bool Service(const std::string& strURL, std::string& strHTML);
-      std::string GetInfoString(int infoType);
+      std::string GetInfoString(int infoType) const;
 
     protected:
       CReadState* m_state;

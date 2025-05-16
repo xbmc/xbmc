@@ -73,16 +73,16 @@ public:
   void          SetSpeed(int speed);
   void          SetDrain(bool drain){m_drain = drain;};
   void          SetVideoRect(const CRect &DestRect);
-  void          SetVideoRate(int videoRate);
+  void          SetVideoRate(int videoRate) const;
   uint64_t      GetOMXPts() const { return m_cur_pts; }
   double        GetPts() const { return static_cast<double>(m_cur_pts); }
   uint32_t      GetBufferIndex() const { return m_bufferIndex; };
   static float  OMXPtsToSeconds(int omxpts);
   static int    OMXDurationToNs(int duration);
   int           GetAmlDuration() const;
-  int           ReleaseFrame(const uint32_t index, bool bDrop = false);
+  int           ReleaseFrame(const uint32_t index, bool bDrop = false) const;
 
-  bool          IsStreamTypeStream();
+  bool          IsStreamTypeStream() const;
 
   static int    PollFrame();
   static void   SetPollDevice(int device);
@@ -94,10 +94,10 @@ private:
   std::string   GetVfmMap(const std::string &name);
   void          SetVfmMap(const std::string &name, const std::string &map);
   float         GetBufferLevel();
-  float         GetBufferLevel(int new_chunk, int &data_len, int &free_len);
+  float         GetBufferLevel(int new_chunk, int &data_len, int &free_len) const;
   int           DequeueBuffer();
-  unsigned int  GetDecoderVideoRate();
-  std::string   GetHDRStaticMetadata();
+  unsigned int  GetDecoderVideoRate() const;
+  std::string   GetHDRStaticMetadata() const;
 
   std::string   intToFourCCString(unsigned int value);
   std::string   GetDoViCodecFourCC(unsigned int codec_tag);

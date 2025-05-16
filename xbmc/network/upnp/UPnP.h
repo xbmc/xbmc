@@ -42,22 +42,22 @@ public:
 
     // server
     bool StartServer();
-    void StopServer();
+    void StopServer() const;
 
     // client
     void StartClient();
     void StopClient();
-    bool IsClientStarted() { return (m_MediaBrowser != NULL); }
+    bool IsClientStarted() const { return (m_MediaBrowser != NULL); }
 
     // controller
     void StartController();
     void StopController();
-    bool IsControllerStarted() { return (m_MediaController != NULL); }
+    bool IsControllerStarted() const { return (m_MediaController != NULL); }
 
     // renderer
     bool StartRenderer();
-    void StopRenderer();
-    void UpdateState();
+    void StopRenderer() const;
+    void UpdateState() const;
 
     // class methods
     static CUPnP* GetInstance();
@@ -80,12 +80,12 @@ private:
     CUPnP(const CUPnP&) = delete;
     CUPnP& operator=(const CUPnP&) = delete;
 
-    void CreateControlPoint();
-    void DestroyControlPoint();
+    void CreateControlPoint() const;
+    void DestroyControlPoint() const;
 
     // methods
-    CUPnPRenderer* CreateRenderer(int port = 0);
-    CUPnPServer*   CreateServer(int port = 0);
+    CUPnPRenderer* CreateRenderer(int port = 0) const;
+    CUPnPServer*   CreateServer(int port = 0) const;
 
     CCriticalSection m_lockMediaBrowser;
 

@@ -35,22 +35,22 @@ public:
 
   bool RCGenerateHashFromFile(std::string& hash,
                               RETRO::RConsoleID consoleID,
-                              const std::string& filePath);
-  bool RCGetGameIDUrl(std::string& url, const std::string& hash);
+                              const std::string& filePath) const;
+  bool RCGetGameIDUrl(std::string& url, const std::string& hash) const;
   bool RCGetPatchFileUrl(std::string& url,
                          const std::string& username,
                          const std::string& token,
-                         unsigned int gameID);
+                         unsigned int gameID) const;
   bool RCPostRichPresenceUrl(std::string& url,
                              std::string& postData,
                              const std::string& username,
                              const std::string& token,
                              unsigned gameID,
-                             const std::string& richPresence);
-  void RCEnableRichPresence(const std::string& script);
-  void RCGetRichPresenceEvaluation(std::string& evaluation, RETRO::RConsoleID consoleID);
+                             const std::string& richPresence) const;
+  void RCEnableRichPresence(const std::string& script) const;
+  void RCGetRichPresenceEvaluation(std::string& evaluation, RETRO::RConsoleID consoleID) const;
   // When the game is reset, the runtime should also be reset
-  void RCResetRuntime();
+  void RCResetRuntime() const;
 
 private:
   CGameClient& m_gameClient;

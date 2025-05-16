@@ -37,7 +37,7 @@ protected:
   bool MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate = true);
   void MoveItem(int iStart, int iDest);
 
-  void SavePlayList();
+  void SavePlayList() const;
 
   int m_movingFrom;
   VECSOURCES m_shares;

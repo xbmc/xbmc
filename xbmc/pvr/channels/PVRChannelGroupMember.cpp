@@ -133,8 +133,7 @@ void CPVRChannelGroupMember::SetOrder(int iOrder)
   }
 }
 
-bool CPVRChannelGroupMember::QueueDelete()
-{
+bool CPVRChannelGroupMember::QueueDelete() const {
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (!database)
     return false;

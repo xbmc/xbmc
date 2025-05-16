@@ -364,8 +364,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  bool GetFrameBuffer(VIDEOCODEC_PICTURE& picture)
-  {
+  bool GetFrameBuffer(VIDEOCODEC_PICTURE& picture) const {
     return m_instanceData->toKodi->get_frame_buffer(m_instanceData->toKodi->kodiInstance, &picture);
   }
   //----------------------------------------------------------------------------
@@ -379,8 +378,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  void ReleaseFrameBuffer(void* buffer)
-  {
+  void ReleaseFrameBuffer(void* buffer) const {
     return m_instanceData->toKodi->release_frame_buffer(m_instanceData->toKodi->kodiInstance,
                                                         buffer);
   }

@@ -66,12 +66,12 @@ public:
     DatasetLayout(size_t totalfields);
     void SetField(int fieldNo, const std::string& strField, bool bOutput = false);
     void AdjustRecordNumbers(int offset);
-    bool GetFetch(int fieldno);
+    bool GetFetch(int fieldno) const;
     void SetFetch(int fieldno, bool bFetch = true);
-    bool GetOutput(int fieldno);
-    int GetRecNo(int fieldno);
-    const std::string GetFields();
-    bool HasFilterFields();
+    bool GetOutput(int fieldno) const;
+    int GetRecNo(int fieldno) const;
+    const std::string GetFields() const;
+    bool HasFilterFields() const;
 
   private:
     std::vector<DatasetFieldInfo> m_fields;
@@ -87,7 +87,7 @@ public:
     }
     void AppendJoin(const std::string& strJoin);
     void AppendWhere(const std::string& strWhere, bool combineWithAnd = true);
-    bool BuildSQL(std::string& strSQL);
+    bool BuildSQL(std::string& strSQL) const;
 
     std::string tablename;
     std::string param;
@@ -97,18 +97,18 @@ public:
 
   CDatabase();
   virtual ~CDatabase(void);
-  bool IsOpen();
+  bool IsOpen() const;
   virtual void Close();
-  bool Compress(bool bForce = true);
-  void Interrupt();
+  bool Compress(bool bForce = true) const;
+  void Interrupt() const;
 
   bool Open(const DatabaseSettings& db);
 
-  void BeginTransaction();
+  void BeginTransaction() const;
   virtual bool CommitTransaction();
-  void RollbackTransaction();
-  void CopyDB(const std::string& latestDb);
-  void DropAnalytics();
+  void RollbackTransaction() const;
+  void CopyDB(const std::string& latestDb) const;
+  void DropAnalytics() const;
 
   std::string PrepareSQL(std::string strStmt, ...) const;
 
@@ -221,7 +221,7 @@ public:
    * @brief Get the number of INSERT queries in the queue.
    * @return The number of queries.
    */
-  size_t GetInsertQueriesCount();
+  size_t GetInsertQueriesCount() const;
 
   /*!
    * @brief Put a DELETE query in the queue.
@@ -240,7 +240,7 @@ public:
    * @brief Get the number of DELETE queries in the queue.
    * @return The number of queries.
    */
-  size_t GetDeleteQueriesCount();
+  size_t GetDeleteQueriesCount() const;
 
   virtual bool GetFilter(CDbUrl& dbUrl, Filter& filter, SortDescription& sorting) { return true; }
   virtual bool BuildSQL(const std::string& strBaseDir,
@@ -294,7 +294,7 @@ protected:
   virtual int GetSchemaVersion() const = 0;
   virtual const char* GetBaseDBName() const = 0;
 
-  int GetDBVersion();
+  int GetDBVersion() const;
 
   bool BuildSQL(const std::string& strQuery, const Filter& filter, std::string& strSQL) const;
 
@@ -310,7 +310,7 @@ protected:
 
 private:
   void InitSettings(DatabaseSettings& dbSettings);
-  void UpdateVersionNumber();
+  void UpdateVersionNumber() const;
 
   bool m_bMultiInsert =
       false; /*!< True if there are any queries in the insert queue, false otherwise */

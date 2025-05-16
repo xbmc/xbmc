@@ -509,8 +509,7 @@ ADDON_STATUS CAddonDll::TransferSettings(AddonInstanceId instanceId)
   return ADDON_STATUS_OK;
 }
 
-bool CAddonDll::CheckAPIVersion(int type)
-{
+bool CAddonDll::CheckAPIVersion(int type) const {
   /* check the API version */
   CAddonVersion kodiMinVersion(kodi::addon::GetTypeMinVersion(type));
   CAddonVersion addonVersion(m_pDll->GetAddonTypeVersion(type));

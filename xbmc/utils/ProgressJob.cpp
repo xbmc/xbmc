@@ -92,8 +92,7 @@ void CProgressJob::ShowProgressDialog() const
   m_progressDialog->ShowProgressBar(true);
 }
 
-void CProgressJob::SetTitle(const std::string &title)
-{
+void CProgressJob::SetTitle(const std::string &title) const {
   if (!m_updateInformation)
     return;
 
@@ -109,8 +108,7 @@ void CProgressJob::SetTitle(const std::string &title)
   }
 }
 
-void CProgressJob::SetText(const std::string &text)
-{
+void CProgressJob::SetText(const std::string &text) const {
   if (!m_updateInformation)
     return;
 
@@ -159,8 +157,7 @@ void CProgressJob::SetProgress(int currentStep, int totalSteps) const
     SetProgress((static_cast<float>(currentStep) * 100.0f) / totalSteps);
 }
 
-void CProgressJob::MarkFinished()
-{
+void CProgressJob::MarkFinished() const {
   if (m_progress != NULL)
   {
     if (m_updateProgress)

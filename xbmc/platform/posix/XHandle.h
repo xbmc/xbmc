@@ -29,7 +29,7 @@ public:
 
   virtual ~CXHandle();
   void Init();
-  inline HandleType GetType() { return m_type; }
+  inline HandleType GetType() const { return m_type; }
   void ChangeType(HandleType newType);
 
   XbmcThreads::ConditionVariable     *m_hCond;

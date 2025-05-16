@@ -653,8 +653,7 @@ bool CUPnP::SaveFileState(const CFileItem& item,
 /*----------------------------------------------------------------------
 |   CUPnP::CreateControlPoint
 +---------------------------------------------------------------------*/
-void CUPnP::CreateControlPoint()
-{
+void CUPnP::CreateControlPoint() const {
   if (!m_CtrlPointHolder->m_CtrlPoint.IsNull())
     return;
 
@@ -668,8 +667,7 @@ void CUPnP::CreateControlPoint()
 /*----------------------------------------------------------------------
 |   CUPnP::DestroyControlPoint
 +---------------------------------------------------------------------*/
-void CUPnP::DestroyControlPoint()
-{
+void CUPnP::DestroyControlPoint() const {
   if (m_CtrlPointHolder->m_CtrlPoint.IsNull())
     return;
 
@@ -756,8 +754,7 @@ void CUPnP::StopController()
 /*----------------------------------------------------------------------
 |   CUPnP::CreateServer
 +---------------------------------------------------------------------*/
-CUPnPServer* CUPnP::CreateServer(int port /* = 0 */)
-{
+CUPnPServer* CUPnP::CreateServer(int port /* = 0 */) const {
   auto device = new CUPnPServer(CSysInfo::GetDeviceName().c_str(),
                                         CUPnPSettings::GetInstance().GetServerUUID().length()
                                             ? CUPnPSettings::GetInstance().GetServerUUID().c_str()
@@ -840,8 +837,7 @@ bool CUPnP::StartServer()
 /*----------------------------------------------------------------------
 |   CUPnP::StopServer
 +---------------------------------------------------------------------*/
-void CUPnP::StopServer()
-{
+void CUPnP::StopServer() const {
   if (m_ServerHolder->m_Device.IsNull())
     return;
 
@@ -852,8 +848,7 @@ void CUPnP::StopServer()
 /*----------------------------------------------------------------------
 |   CUPnP::CreateRenderer
 +---------------------------------------------------------------------*/
-CUPnPRenderer* CUPnP::CreateRenderer(int port /* = 0 */)
-{
+CUPnPRenderer* CUPnP::CreateRenderer(int port /* = 0 */) const {
   auto device =
       new CUPnPRenderer(CSysInfo::GetDeviceName().c_str(), false,
                         (CUPnPSettings::GetInstance().GetRendererUUID().length()
@@ -918,8 +913,7 @@ bool CUPnP::StartRenderer()
 /*----------------------------------------------------------------------
 |   CUPnP::StopRenderer
 +---------------------------------------------------------------------*/
-void CUPnP::StopRenderer()
-{
+void CUPnP::StopRenderer() const {
   if (m_RendererHolder->m_Device.IsNull())
     return;
 
@@ -930,8 +924,7 @@ void CUPnP::StopRenderer()
 /*----------------------------------------------------------------------
 |   CUPnP::UpdateState
 +---------------------------------------------------------------------*/
-void CUPnP::UpdateState()
-{
+void CUPnP::UpdateState() const {
   if (!m_RendererHolder->m_Device.IsNull())
     static_cast<CUPnPRenderer*>(m_RendererHolder->m_Device.AsPointer())->UpdateState();
 }

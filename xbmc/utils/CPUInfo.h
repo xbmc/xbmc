@@ -83,7 +83,7 @@ public:
   virtual bool GetTemperature(CTemperature& temperature) = 0;
 
   bool HasCoreId(int coreId) const;
-  const CoreInfo GetCoreInfo(int coreId);
+  const CoreInfo GetCoreInfo(int coreId) const;
   std::string GetCoresUsageString();
   std::string GetCoresUsageAltString();
 

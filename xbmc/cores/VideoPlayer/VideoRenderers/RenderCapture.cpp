@@ -13,8 +13,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
-bool CRenderCapture::UseOcclusionQuery()
-{
+bool CRenderCapture::UseOcclusionQuery() const {
   if (m_flags & CAPTUREFLAG_IMMEDIATELY)
     return false;
   else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoCaptureUseOcclusionQuery == 0)

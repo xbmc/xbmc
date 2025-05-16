@@ -106,7 +106,7 @@ protected:
 
 private:
   bool DualLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet);
-  bool SingleLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet);
+  bool SingleLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet) const;
   void ClearBitstreamCommon(void);
 
   std::shared_ptr<CAMLVideoBufferPool> m_videoBufferPool;

@@ -30,8 +30,7 @@ namespace XFILE
     void CancelDirectory() override;
     bool GetDirectory(const CURL& url, CFileItemList &items, bool bUseFileDirectories, bool keepImpl);
     void SetSources(const VECSOURCES& vecSources);
-    inline unsigned int GetNumberOfSources()
-    {
+    inline unsigned int GetNumberOfSources() const {
       return m_vecSources.size();
     }
 

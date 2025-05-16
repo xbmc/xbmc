@@ -31,13 +31,13 @@ public:
   ~CGameSettings() override;
 
   // General settings
-  bool GamesEnabled();
-  bool ShowOSDHelp();
-  void SetShowOSDHelp(bool bShow);
-  void ToggleGames();
-  bool AutosaveEnabled();
-  bool RewindEnabled();
-  unsigned int MaxRewindTimeSec();
+  bool GamesEnabled() const;
+  bool ShowOSDHelp() const;
+  void SetShowOSDHelp(bool bShow) const;
+  void ToggleGames() const;
+  bool AutosaveEnabled() const;
+  bool RewindEnabled() const;
+  unsigned int MaxRewindTimeSec() const;
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
 

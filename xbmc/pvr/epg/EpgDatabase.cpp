@@ -41,13 +41,11 @@ void CPVREpgDatabase::Close()
   CDatabase::Close();
 }
 
-void CPVREpgDatabase::Lock()
-{
+void CPVREpgDatabase::Lock() const {
   m_critSection.lock();
 }
 
-void CPVREpgDatabase::Unlock()
-{
+void CPVREpgDatabase::Unlock() const {
   m_critSection.unlock();
 }
 

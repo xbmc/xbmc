@@ -196,8 +196,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  bool ProxyDllPaths(std::vector<std::string>& paths)
-  {
+  bool ProxyDllPaths(std::vector<std::string>& paths) const {
     for (unsigned int i = 0; i < m_instanceData->props->proxy_dll_count; ++i)
     {
       if (m_instanceData->props->proxy_dll_paths[i] != nullptr)
@@ -218,8 +217,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  bool ResourceDirectories(std::vector<std::string>& dirs)
-  {
+  bool ResourceDirectories(std::vector<std::string>& dirs) const {
     for (unsigned int i = 0; i < m_instanceData->props->resource_directory_count; ++i)
     {
       if (m_instanceData->props->resource_directories[i] != nullptr)
@@ -264,8 +262,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  bool Extensions(std::vector<std::string>& extensions)
-  {
+  bool Extensions(std::vector<std::string>& extensions) const {
     for (unsigned int i = 0; i < m_instanceData->props->extension_count; ++i)
     {
       if (m_instanceData->props->extensions[i] != nullptr)
@@ -399,7 +396,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  void CloseGame(void) { m_instanceData->toKodi->CloseGame(m_instanceData->toKodi->kodiInstance); }
+  void CloseGame(void) const { m_instanceData->toKodi->CloseGame(m_instanceData->toKodi->kodiInstance); }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -483,8 +480,7 @@ public:
     ///
     /// @remarks Only called from addon itself
     ///
-    bool GetBuffer(unsigned int width, unsigned int height, game_stream_buffer& buffer)
-    {
+    bool GetBuffer(unsigned int width, unsigned int height, game_stream_buffer& buffer) const {
       if (!m_handle || !CPrivateBase::m_interface->globalSingleInstance)
         return false;
 
@@ -503,8 +499,7 @@ public:
     ///
     /// @remarks Only called from addon itself
     ///
-    void AddData(const game_stream_packet& packet)
-    {
+    void AddData(const game_stream_packet& packet) const {
       if (!m_handle || !CPrivateBase::m_interface->globalSingleInstance)
         return;
 
@@ -523,8 +518,7 @@ public:
     ///
     /// @remarks Only called from addon itself
     ///
-    void ReleaseBuffer(game_stream_buffer& buffer)
-    {
+    void ReleaseBuffer(game_stream_buffer& buffer) const {
       if (!m_handle || !CPrivateBase::m_interface->globalSingleInstance)
         return;
 
@@ -601,8 +595,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  game_proc_address_t HwGetProcAddress(const char* sym)
-  {
+  game_proc_address_t HwGetProcAddress(const char* sym) const {
     return m_instanceData->toKodi->HwGetProcAddress(m_instanceData->toKodi->kodiInstance, sym);
   }
   //----------------------------------------------------------------------------
@@ -776,8 +769,7 @@ public:
   ///
   /// @remarks Only called from addon itself
   ///
-  bool KodiInputEvent(const game_input_event& event)
-  {
+  bool KodiInputEvent(const game_input_event& event) const {
     return m_instanceData->toKodi->InputEvent(m_instanceData->toKodi->kodiInstance, &event);
   }
   //----------------------------------------------------------------------------

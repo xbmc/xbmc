@@ -30,7 +30,7 @@ public:
 
   void Create(CGUIWindowSlideShow *pCallback);
   void LoadPic(int iPic, int iSlideNumber, const std::string &strFileName, const int maxWidth, const int maxHeight);
-  bool IsLoading() { return m_isLoading; }
+  bool IsLoading() const { return m_isLoading; }
   int SlideNumber() const { return m_iSlideNumber; }
   int Pic() const { return m_iPic; }
 
@@ -120,12 +120,12 @@ private:
   void Rotate(float fAngle, bool immediate = false);
   void Zoom(int iZoom);
   void ZoomRelative(float fZoom, bool immediate = false);
-  void Move(float fX, float fY);
+  void Move(float fX, float fY) const;
   void GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight);
   std::string GetPicturePath(CFileItem *item);
-  int  GetNextSlide();
+  int  GetNextSlide() const;
 
-  void AnnouncePlayerPlay(const CFileItemPtr& item);
+  void AnnouncePlayerPlay(const CFileItemPtr& item) const;
   void AnnouncePlayerPause(const CFileItemPtr& item);
   void AnnouncePlayerStop(const CFileItemPtr& item);
   void AnnouncePlaylistClear();

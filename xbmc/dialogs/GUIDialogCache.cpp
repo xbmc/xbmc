@@ -158,14 +158,12 @@ void CGUIDialogCache::Process()
   }
 }
 
-void CGUIDialogCache::ShowProgressBar(bool bOnOff)
-{
+void CGUIDialogCache::ShowProgressBar(bool bOnOff) const {
   if (m_pDlg)
     m_pDlg->ShowProgressBar(bOnOff);
 }
 
-void CGUIDialogCache::SetPercentage(int iPercentage)
-{
+void CGUIDialogCache::SetPercentage(int iPercentage) const {
   if (m_pDlg)
     m_pDlg->SetPercentage(iPercentage);
 }

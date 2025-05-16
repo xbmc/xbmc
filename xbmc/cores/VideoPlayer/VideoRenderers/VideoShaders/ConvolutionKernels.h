@@ -18,20 +18,20 @@ class CConvolutionKernel
     CConvolutionKernel(ESCALINGMETHOD method, int size);
     ~CConvolutionKernel();
 
-    int      GetSize()           { return m_size; }
-    float*   GetFloatPixels()    { return m_floatpixels; }
-    uint8_t* GetIntFractPixels() { return m_intfractpixels; }
-    uint8_t* GetUint8Pixels()    { return m_uint8pixels; }
+    int      GetSize() const { return m_size; }
+    float*   GetFloatPixels() const { return m_floatpixels; }
+    uint8_t* GetIntFractPixels() const { return m_intfractpixels; }
+    uint8_t* GetUint8Pixels() const { return m_uint8pixels; }
 
   private:
     CConvolutionKernel(const CConvolutionKernel&) = delete;
     CConvolutionKernel& operator=(const CConvolutionKernel&) = delete;
-    void Lanczos2();
-    void Lanczos3Fast();
-    void Lanczos3();
-    void Spline36Fast();
-    void Spline36();
-    void Bicubic(double B, double C);
+    void Lanczos2() const;
+    void Lanczos3Fast() const;
+    void Lanczos3() const;
+    void Spline36Fast() const;
+    void Spline36() const;
+    void Bicubic(double B, double C) const;
 
     static double LanczosWeight(double x, double radius);
     static double Spline36Weight(double x);

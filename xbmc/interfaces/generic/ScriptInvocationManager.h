@@ -112,7 +112,7 @@ public:
                   const std::vector<std::string>& arguments = std::vector<std::string>(),
                   uint32_t timeoutMs = 0,
                   bool waitShutdown = false);
-  bool Stop(int scriptId, bool wait = false);
+  bool Stop(int scriptId, bool wait = false) const;
   bool Stop(const std::string &scriptPath, bool wait = false);
 
   /*!

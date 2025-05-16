@@ -175,7 +175,7 @@ public:
    * @todo This function becomes removed after old callback library system
    * is removed.
    */
-  AddonInstance_Game* GetInstanceInterface() { return m_ifc.game; }
+  AddonInstance_Game* GetInstanceInterface() const { return m_ifc.game; }
 
   // Helper functions
   bool LogError(GAME_ERROR error, const char* strMethod) const;
@@ -188,7 +188,7 @@ private:
                           IGameInputCallback* input);
   bool LoadGameInfo();
   void NotifyError(GAME_ERROR error);
-  std::string GetMissingResource();
+  std::string GetMissingResource() const;
 
   // Helper functions
   void LogAddonProperties(void) const;

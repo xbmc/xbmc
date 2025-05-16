@@ -85,8 +85,7 @@ CGUIControl* CGUIDialogPVRItemsViewBase::GetFirstFocusableControl(int id)
   return CGUIDialog::GetFirstFocusableControl(id);
 }
 
-void CGUIDialogPVRItemsViewBase::ShowInfo(int itemIdx)
-{
+void CGUIDialogPVRItemsViewBase::ShowInfo(int itemIdx) const {
   if (itemIdx < 0 || itemIdx >= m_vecItems->Size())
     return;
 

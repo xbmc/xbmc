@@ -22,10 +22,10 @@ public:
   CLibInputPointer() = default;
   ~CLibInputPointer() = default;
 
-  void ProcessButton(libinput_event_pointer *e);
+  void ProcessButton(libinput_event_pointer *e) const;
   void ProcessMotion(libinput_event_pointer *e);
   void ProcessMotionAbsolute(libinput_event_pointer *e);
-  void ProcessAxis(libinput_event_pointer *e);
+  void ProcessAxis(libinput_event_pointer *e) const;
 
 private:
   struct pos m_pos = { 0, 0 };

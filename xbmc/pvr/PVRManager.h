@@ -175,12 +175,12 @@ public:
    * @brief Get access to the epg container.
    * @return The epg container.
    */
-  CPVREpgContainer& EpgContainer();
+  CPVREpgContainer& EpgContainer() const;
 
   /*!
    * @brief Init PVRManager.
    */
-  void Init();
+  void Init() const;
 
   /*!
    * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
@@ -246,46 +246,46 @@ public:
    * @brief Let the background thread update the recordings list.
    * @param clientId The id of the PVR client to update.
    */
-  void TriggerRecordingsUpdate(int clientId);
-  void TriggerRecordingsUpdate();
+  void TriggerRecordingsUpdate(int clientId) const;
+  void TriggerRecordingsUpdate() const;
 
   /*!
    * @brief Let the background thread update the size for any in progress recordings.
    */
-  void TriggerRecordingsSizeInProgressUpdate();
+  void TriggerRecordingsSizeInProgressUpdate() const;
 
   /*!
    * @brief Let the background thread update the timer list.
    * @param clientId The id of the PVR client to update.
    */
-  void TriggerTimersUpdate(int clientId);
-  void TriggerTimersUpdate();
+  void TriggerTimersUpdate(int clientId) const;
+  void TriggerTimersUpdate() const;
 
   /*!
    * @brief Let the background thread update the channel list.
    * @param clientId The id of the PVR client to update.
    */
-  void TriggerChannelsUpdate(int clientId);
-  void TriggerChannelsUpdate();
+  void TriggerChannelsUpdate(int clientId) const;
+  void TriggerChannelsUpdate() const;
 
   /*!
    * @brief Let the background thread update the provider list.
    * @param clientId The id of the PVR client to update.
    */
-  void TriggerProvidersUpdate(int clientId);
-  void TriggerProvidersUpdate();
+  void TriggerProvidersUpdate(int clientId) const;
+  void TriggerProvidersUpdate() const;
 
   /*!
    * @brief Let the background thread update the channel groups list.
    * @param clientId The id of the PVR client to update.
    */
-  void TriggerChannelGroupsUpdate(int clientId);
-  void TriggerChannelGroupsUpdate();
+  void TriggerChannelGroupsUpdate(int clientId) const;
+  void TriggerChannelGroupsUpdate() const;
 
   /*!
    * @brief Let the background thread search for all missing channel icons.
    */
-  void TriggerSearchMissingChannelIcons();
+  void TriggerSearchMissingChannelIcons() const;
 
   /*!
    * @brief Let the background thread erase stale texture db entries and image files.
@@ -296,12 +296,12 @@ public:
    * @brief Let the background thread search for missing channel icons for channels contained in the given group.
    * @param group The channel group.
    */
-  void TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRChannelGroup>& group);
+  void TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRChannelGroup>& group) const;
 
   /*!
    * @brief Check whether names are still correct after the language settings changed.
    */
-  void LocalizationChanged();
+  void LocalizationChanged() const;
 
   /*!
    * @brief Check if parental lock is overridden at the given moment.
@@ -320,7 +320,7 @@ public:
   /*!
    * @brief Restart the parental timer.
    */
-  void RestartParentalTimer();
+  void RestartParentalTimer() const;
 
   /*!
    * @brief Signal a connection change of a client
@@ -328,7 +328,7 @@ public:
   void ConnectionStateChange(CPVRClient* client,
                              const std::string& connectString,
                              PVR_CONNECTION_STATE state,
-                             const std::string& message);
+                             const std::string& message) const;
 
   /*!
    * @brief Query the events available for CEventStream
@@ -351,7 +351,7 @@ private:
   /*!
    * @brief Executes "pvrpowermanagement.setwakeupcmd"
    */
-  bool SetWakeupCommand();
+  bool SetWakeupCommand() const;
 
   enum class ManagerState
   {
@@ -404,7 +404,7 @@ private:
   /*!
    * @brief Unload all PVR data (recordings, timers, channelgroups).
    */
-  void UnloadComponents();
+  void UnloadComponents() const;
 
   /*!
    * @brief Check whether the given client id belongs to a known client.

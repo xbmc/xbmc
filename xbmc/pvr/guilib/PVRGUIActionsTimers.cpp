@@ -252,7 +252,7 @@ public:
 
   void AddAction(PVRRECORD_INSTANTRECORDACTION eAction, const std::string& title);
   void PreSelectAction(PVRRECORD_INSTANTRECORDACTION eAction);
-  PVRRECORD_INSTANTRECORDACTION Select();
+  PVRRECORD_INSTANTRECORDACTION Select() const;
 
 private:
   int m_iInstantRecordTime;
@@ -326,8 +326,7 @@ void InstantRecordingActionSelector::PreSelectAction(PVRRECORD_INSTANTRECORDACTI
     m_pDlgSelect->SetSelected(it->second);
 }
 
-PVRRECORD_INSTANTRECORDACTION InstantRecordingActionSelector::Select()
-{
+PVRRECORD_INSTANTRECORDACTION InstantRecordingActionSelector::Select() const {
   PVRRECORD_INSTANTRECORDACTION eAction = NONE;
 
   m_pDlgSelect->Open();
@@ -360,8 +359,7 @@ bool CPVRGUIActionsTimers::ToggleRecordingOnPlayingChannel()
 }
 
 bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChannel>& channel,
-                                                 bool bOnOff)
-{
+                                                 bool bOnOff) const {
   bool bReturn = false;
 
   if (!channel)

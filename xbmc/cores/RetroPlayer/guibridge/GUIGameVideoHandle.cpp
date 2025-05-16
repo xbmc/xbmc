@@ -23,17 +23,14 @@ CGUIGameVideoHandle::~CGUIGameVideoHandle()
   m_renderManager.UnregisterHandle(this);
 }
 
-bool CGUIGameVideoHandle::IsPlayingGame()
-{
+bool CGUIGameVideoHandle::IsPlayingGame() const {
   return m_renderManager.IsPlayingGame();
 }
 
-bool CGUIGameVideoHandle::SupportsRenderFeature(RENDERFEATURE feature)
-{
+bool CGUIGameVideoHandle::SupportsRenderFeature(RENDERFEATURE feature) const {
   return m_renderManager.SupportsRenderFeature(feature);
 }
 
-bool CGUIGameVideoHandle::SupportsScalingMethod(SCALINGMETHOD method)
-{
+bool CGUIGameVideoHandle::SupportsScalingMethod(SCALINGMETHOD method) const {
   return m_renderManager.SupportsScalingMethod(method);
 }

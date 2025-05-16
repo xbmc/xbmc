@@ -22,9 +22,9 @@ public:
   CGUIGameVideoHandle(CGUIGameRenderManager& renderManager);
   virtual ~CGUIGameVideoHandle();
 
-  bool IsPlayingGame();
-  bool SupportsRenderFeature(RENDERFEATURE feature);
-  bool SupportsScalingMethod(SCALINGMETHOD method);
+  bool IsPlayingGame() const;
+  bool SupportsRenderFeature(RENDERFEATURE feature) const;
+  bool SupportsScalingMethod(SCALINGMETHOD method) const;
 
 private:
   // Construction parameters

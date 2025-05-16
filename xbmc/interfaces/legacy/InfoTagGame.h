@@ -109,7 +109,7 @@ public:
   ///
   getTitle();
 #else
-  String getTitle();
+  String getTitle() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -126,7 +126,7 @@ public:
   ///
   getPlatform();
 #else
-  String getPlatform();
+  String getPlatform() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -143,7 +143,7 @@ public:
   ///
   getGenres();
 #else
-  std::vector<String> getGenres();
+  std::vector<String> getGenres() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -160,7 +160,7 @@ public:
   ///
   getPublisher();
 #else
-  String getPublisher();
+  String getPublisher() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -177,7 +177,7 @@ public:
   ///
   getDeveloper();
 #else
-  String getDeveloper();
+  String getDeveloper() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -194,7 +194,7 @@ public:
   ///
   getOverview();
 #else
-  String getOverview();
+  String getOverview() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -211,7 +211,7 @@ public:
   ///
   getYear();
 #else
-  unsigned int getYear();
+  unsigned int getYear() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -228,7 +228,7 @@ public:
   ///
   getGameClient();
 #else
-  String getGameClient();
+  String getGameClient() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -245,7 +245,7 @@ public:
   ///
   setTitle(...);
 #else
-  void setTitle(const String& title);
+  void setTitle(const String& title) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -262,7 +262,7 @@ public:
   ///
   setPlatform(...);
 #else
-  void setPlatform(const String& platform);
+  void setPlatform(const String& platform) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -279,7 +279,7 @@ public:
   ///
   setGenres(...);
 #else
-  void setGenres(const std::vector<String>& genres);
+  void setGenres(const std::vector<String>& genres) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -296,7 +296,7 @@ public:
   ///
   setPublisher(...);
 #else
-  void setPublisher(const String& publisher);
+  void setPublisher(const String& publisher) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -313,7 +313,7 @@ public:
   ///
   setDeveloper(...);
 #else
-  void setDeveloper(const String& developer);
+  void setDeveloper(const String& developer) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -330,7 +330,7 @@ public:
   ///
   setOverview(...);
 #else
-  void setOverview(const String& overview);
+  void setOverview(const String& overview) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -347,7 +347,7 @@ public:
   ///
   setYear(...);
 #else
-  void setYear(unsigned int year);
+  void setYear(unsigned int year) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -364,7 +364,7 @@ public:
   ///
   setGameClient(...);
 #else
-  void setGameClient(const String& gameClient);
+  void setGameClient(const String& gameClient) const;
 #endif
 
 #ifndef SWIG

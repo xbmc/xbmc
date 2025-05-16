@@ -74,8 +74,8 @@ class CVideoBufferDRMPRIMEFFmpeg : public CVideoBufferDRMPRIME
 public:
   CVideoBufferDRMPRIMEFFmpeg(IVideoBufferPool& pool, int id);
   ~CVideoBufferDRMPRIMEFFmpeg() override;
-  void SetRef(AVFrame* frame);
-  void Unref();
+  void SetRef(AVFrame* frame) const;
+  void Unref() const;
 
   AVDRMFrameDescriptor* GetDescriptor() const override
   {

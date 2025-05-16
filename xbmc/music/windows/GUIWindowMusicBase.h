@@ -87,12 +87,12 @@ protected:
   bool OnPlayMedia(int iItem, const std::string &player = "") override;
 
   void RetrieveMusicInfo();
-  void OnItemInfo(int iItem);
-  void OnItemInfoAll(const std::string& strPath, bool refresh = false);
+  void OnItemInfo(int iItem) const;
+  void OnItemInfoAll(const std::string& strPath, bool refresh = false) const;
   virtual void OnQueueItem(int iItem, bool first = false);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
 
-  void OnRipTrack(int iItem);
+  void OnRipTrack(int iItem) const;
   void LoadPlayList(const std::string& strPlayList) override;
   virtual void OnRemoveSource(int iItem);
 

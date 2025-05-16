@@ -30,7 +30,7 @@ public:
 
   bool HasCommand(const std::string& execString);
   bool IsSystemPowerdownCommand(const std::string& execString);
-  void GetHelp(std::string &help);
+  void GetHelp(std::string &help) const;
   int Execute(const std::string& execString);
 
 protected:

@@ -72,7 +72,7 @@ public:
                 ADDON::AddonPtr& addon);
 
   /*! Get the addon IDs that have been set to disabled */
-  bool GetDisabled(std::map<std::string, ADDON::AddonDisabledReason>& addons);
+  bool GetDisabled(std::map<std::string, ADDON::AddonDisabledReason>& addons) const;
 
   /*! Returns all addons in the repositories with id `addonId`. */
   bool FindByAddonId(const std::string& addonId, ADDON::VECADDONS& addons) const;
@@ -82,7 +82,7 @@ public:
                                const std::string& checksum,
                                const std::vector<AddonInfoPtr>& addons);
 
-  int GetRepoChecksum(const std::string& id, std::string& checksum);
+  int GetRepoChecksum(const std::string& id, std::string& checksum) const;
 
   /*!
    \brief Get addons in repository `id`
@@ -121,14 +121,14 @@ public:
    \param updateData update data to set
    \returns id of the repository, or -1 on error.
    */
-  int SetRepoUpdateData(const std::string& id, const RepoUpdateData& updateData);
+  int SetRepoUpdateData(const std::string& id, const RepoUpdateData& updateData) const;
 
   /*!
    \brief Retrieve repository update data (last/next date etc.)
    \param id add-on id of the repo
    \return update data of the repository
    */
-  RepoUpdateData GetRepoUpdateData(const std::string& id);
+  RepoUpdateData GetRepoUpdateData(const std::string& id) const;
 
   bool Search(const std::string& search, ADDON::VECADDONS& items);
 
@@ -141,7 +141,7 @@ public:
    * \return true on success, false on failure
    * \sa IsAddonDisabled, HasDisabledAddons, EnableAddon
    */
-  bool DisableAddon(const std::string& addonID, ADDON::AddonDisabledReason disabledReason);
+  bool DisableAddon(const std::string& addonID, ADDON::AddonDisabledReason disabledReason) const;
 
   /*! \brief Enable an addon.
    * Enables an addon that has previously been disabled
@@ -149,7 +149,7 @@ public:
    * \return true on success, false on failure
    * \sa DisableAddon, IsAddonDisabled, HasDisabledAddons
    */
-  bool EnableAddon(const std::string& addonID);
+  bool EnableAddon(const std::string& addonID) const;
 
   /*!
    * \brief Write dataset with addon-id and rule to the db
@@ -157,7 +157,7 @@ public:
    * \param updateRule the rule value to be written
    * \return true on success, false otherwise
    */
-  bool AddUpdateRuleForAddon(const std::string& addonID, ADDON::AddonUpdateRule updateRule);
+  bool AddUpdateRuleForAddon(const std::string& addonID, ADDON::AddonUpdateRule updateRule) const;
 
   /*!
    * \brief Remove all rule datasets for an addon-id from the db
@@ -174,7 +174,7 @@ public:
    * \param updateRule the rule to remove
    * \return true on success, false otherwise
    */
-  bool RemoveUpdateRuleForAddon(const std::string& addonID, AddonUpdateRule updateRule);
+  bool RemoveUpdateRuleForAddon(const std::string& addonID, AddonUpdateRule updateRule) const;
 
   /*!
    * \brief Retrieve all rule datasets from db and store them into map
@@ -202,7 +202,7 @@ public:
   */
   bool GetPackageHash(const std::string& addonID,
                       const std::string& packageFileName,
-                      std::string&       hash);
+                      std::string&       hash) const;
   /*! \brief Remove a package's info from the database
       \param  packageFileName filename of the package
       \return Whether or not we succeeded in removing the package
@@ -217,18 +217,18 @@ public:
                      const std::set<std::string>& system,
                      const std::set<std::string>& optional);
 
-  bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime);
-  bool SetOrigin(const std::string& addonId, const std::string& origin);
-  bool SetLastUsed(const std::string& addonId, const CDateTime& dateTime);
+  bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime) const;
+  bool SetOrigin(const std::string& addonId, const std::string& origin) const;
+  bool SetLastUsed(const std::string& addonId, const CDateTime& dateTime) const;
 
-  void GetInstallData(const ADDON::AddonInfoPtr& addon);
+  void GetInstallData(const ADDON::AddonInfoPtr& addon) const;
 
   /*! \brief Add dataset for a new installed addon to the database
    *  \param addon the addon to insert
    *  \param origin the origin it was installed from
    *  \return true on success, false otherwise
    */
-  bool AddInstalledAddon(const std::shared_ptr<CAddonInfo>& addon, const std::string& origin);
+  bool AddInstalledAddon(const std::shared_ptr<CAddonInfo>& addon, const std::string& origin) const;
 
 protected:
   void CreateTables() override;
@@ -238,10 +238,10 @@ protected:
   int GetSchemaVersion() const override;
   const char *GetBaseDBName() const override { return "Addons"; }
 
-  bool GetAddon(int id, ADDON::AddonPtr& addon);
+  bool GetAddon(int id, ADDON::AddonPtr& addon) const;
   void DeleteRepository(const std::string& id);
   void DeleteRepositoryContents(const std::string& id);
-  int GetRepositoryId(const std::string& addonId);
+  int GetRepositoryId(const std::string& addonId) const;
 };
 
 }; // namespace ADDON

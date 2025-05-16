@@ -492,8 +492,7 @@ void CPlayerCoreFactory::OnPlayerDiscovered(const std::string& id, const std::st
   m_vecPlayerConfigs.emplace_back(std::move(player));
 }
 
-void CPlayerCoreFactory::OnPlayerRemoved(const std::string& id)
-{
+void CPlayerCoreFactory::OnPlayerRemoved(const std::string& id) const {
   std::lock_guard lock(m_section);
 
   for (auto& playerConfig : m_vecPlayerConfigs)

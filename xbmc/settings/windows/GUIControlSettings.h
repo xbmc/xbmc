@@ -160,9 +160,9 @@ protected:
 
 private:
   void FillControl(bool updateDisplayOnly);
-  void FillIntegerSettingControl(bool updateValues);
-  void FillFloatSettingControl();
-  void FillStringSettingControl(bool updateValues);
+  void FillIntegerSettingControl(bool updateValues) const;
+  void FillFloatSettingControl() const;
+  void FillStringSettingControl(bool updateValues) const;
   CGUISpinControlEx* m_pSpin;
 };
 

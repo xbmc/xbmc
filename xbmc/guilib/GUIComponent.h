@@ -25,15 +25,15 @@ public:
   CGUIComponent();
   virtual ~CGUIComponent();
   void Init();
-  void Deinit();
+  void Deinit() const;
 
-  CGUIWindowManager& GetWindowManager();
-  CGUITextureManager& GetTextureManager();
-  CGUILargeTextureManager& GetLargeTextureManager();
-  CStereoscopicsManager &GetStereoscopicsManager();
-  CGUIInfoManager &GetInfoManager();
-  CGUIColorManager &GetColorManager();
-  CGUIAudioManager &GetAudioManager();
+  CGUIWindowManager& GetWindowManager() const;
+  CGUITextureManager& GetTextureManager() const;
+  CGUILargeTextureManager& GetLargeTextureManager() const;
+  CStereoscopicsManager &GetStereoscopicsManager() const;
+  CGUIInfoManager &GetInfoManager() const;
+  CGUIColorManager &GetColorManager() const;
+  CGUIAudioManager &GetAudioManager() const;
 
   bool ConfirmDelete(const std::string& path);
 

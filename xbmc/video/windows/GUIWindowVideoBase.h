@@ -104,7 +104,7 @@ protected:
   bool OnPlayMedia(const std::shared_ptr<CFileItem>& item, const std::string& player);
   bool OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player = "") override;
   using CGUIMediaWindow::LoadPlayList;
-  void LoadPlayList(const std::string& strPlayList, PLAYLIST::Id playlistId = PLAYLIST::TYPE_VIDEO);
+  void LoadPlayList(const std::string& strPlayList, PLAYLIST::Id playlistId = PLAYLIST::TYPE_VIDEO) const;
   bool PlayItem(const std::shared_ptr<CFileItem>& item, const std::string& player);
 
   /*!
@@ -126,7 +126,7 @@ protected:
 
   bool OnPlayStackPart(const std::shared_ptr<CFileItem>& item, unsigned int partNumber);
 
-  void UpdateVideoVersionItems();
+  void UpdateVideoVersionItems() const;
   void UpdateVideoVersionItemsLabel(const std::string& directory);
 
   CGUIDialogProgress* m_dlgProgress;

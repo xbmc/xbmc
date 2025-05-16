@@ -157,8 +157,7 @@ bool CSettings::Save()
   return Save(profileManager->GetSettingsFile());
 }
 
-bool CSettings::Save(const std::string &file)
-{
+bool CSettings::Save(const std::string &file) const {
   CXBMCTinyXML xmlDoc;
   if (!SaveValuesToXml(xmlDoc))
     return false;
@@ -187,8 +186,7 @@ bool CSettings::Save(TiXmlNode* root) const
   return true;
 }
 
-bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
-{
+bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId) const {
   return GetSettingsManager()->LoadSetting(node, settingId);
 }
 
@@ -239,8 +237,7 @@ bool CSettings::Load(const TiXmlNode* settings)
   return ok;
 }
 
-bool CSettings::Initialize(const std::string &file)
-{
+bool CSettings::Initialize(const std::string &file) const {
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(file.c_str()))
   {

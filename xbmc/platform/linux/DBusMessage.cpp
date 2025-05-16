@@ -147,8 +147,7 @@ DBusMessage *CDBusMessage::Send(DBusBusType type, CDBusError& error)
   return returnMessage;
 }
 
-bool CDBusMessage::SendAsync(DBusBusType type)
-{
+bool CDBusMessage::SendAsync(DBusBusType type) const {
   CDBusConnection con;
   if (!con.Connect(type))
     return false;
@@ -170,8 +169,7 @@ void CDBusMessage::PrepareArgument()
   m_haveArgs = true;
 }
 
-bool CDBusMessage::InitializeReplyIter(DBusMessageIter* iter)
-{
+bool CDBusMessage::InitializeReplyIter(DBusMessageIter* iter) const {
   if (!m_reply)
   {
     throw std::logic_error("Cannot get reply arguments of message that does not have reply");

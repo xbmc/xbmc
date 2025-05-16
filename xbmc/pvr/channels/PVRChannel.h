@@ -452,12 +452,12 @@ public:
   /*!
    * @brief Lock the instance. No other thread gets access to this channel until Unlock was called.
    */
-  void Lock() { m_critSection.lock(); }
+  void Lock() const { m_critSection.lock(); }
 
   /*!
    * @brief Unlock the instance. Other threads may get access to this channel again.
    */
-  void Unlock() { m_critSection.unlock(); }
+  void Unlock() const { m_critSection.unlock(); }
 
   /*!
    * @brief Get the default provider of this channel. The default

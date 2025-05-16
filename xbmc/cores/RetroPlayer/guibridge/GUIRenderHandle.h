@@ -51,7 +51,7 @@ public:
   CGUIRenderControlHandle(CGUIGameRenderManager& renderManager, CGUIGameControl& control);
   ~CGUIRenderControlHandle() override = default;
 
-  CGUIGameControl& GetControl() { return m_control; }
+  CGUIGameControl& GetControl() const { return m_control; }
 
 private:
   // Construction parameters
@@ -66,7 +66,7 @@ public:
   CGUIRenderFullScreenHandle(CGUIGameRenderManager& renderManager, CGameWindowFullScreen& window);
   ~CGUIRenderFullScreenHandle() override = default;
 
-  CGameWindowFullScreen& GetWindow() { return m_window; }
+  CGameWindowFullScreen& GetWindow() const { return m_window; }
 
 private:
   // Construction parameters

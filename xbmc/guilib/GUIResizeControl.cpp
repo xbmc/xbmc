@@ -205,8 +205,7 @@ void CGUIResizeControl::SetPosition(float posX, float posY)
   m_imgNoFocus->SetPosition(posX, posY);
 }
 
-bool CGUIResizeControl::SetAlpha(unsigned char alpha)
-{
+bool CGUIResizeControl::SetAlpha(unsigned char alpha) const {
   bool changed = m_imgFocus->SetAlpha(alpha);
   changed |= m_imgNoFocus->SetAlpha(alpha);
   return changed;

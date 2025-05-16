@@ -113,8 +113,7 @@ bool CGUILargeTextureManager::CLargeTexture::DecrRef(bool deleteImmediately)
   return false;
 }
 
-bool CGUILargeTextureManager::CLargeTexture::DeleteIfRequired(bool deleteImmediately)
-{
+bool CGUILargeTextureManager::CLargeTexture::DeleteIfRequired(bool deleteImmediately) const {
   if (m_refCount == 0 && (deleteImmediately || m_timeToDelete < CTimeUtils::GetFrameTime()))
   {
     delete this;

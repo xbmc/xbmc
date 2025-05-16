@@ -41,20 +41,20 @@ protected:
   void OnInitWindow() override;
   void SetInitialPath(const std::string &path);
   void GoParentFolder(int iList);
-  void UpdateControl(int iList, int item);
+  void UpdateControl(int iList, int item) const;
   bool Update(int iList, const std::string &strDirectory); //???
   void OnStart(CFileItem *pItem, const std::string &player);
   bool SelectItem(int iList, int &item);
-  void ClearFileItems(int iList);
+  void ClearFileItems(int iList) const;
   void OnClick(int iList, int iItem);
   void OnMark(int iList, int iItem);
-  void OnSort(int iList);
+  void OnSort(int iList) const;
   void UpdateButtons();
   void OnCopy(int iList);
   void OnMove(int iList);
   void OnDelete(int iList);
   void OnRename(int iList);
-  void OnSelectAll(int iList);
+  void OnSelectAll(int iList) const;
   void OnNewFolder(int iList);
   void Refresh();
   void Refresh(int iList);
@@ -62,14 +62,14 @@ protected:
   bool HaveDiscOrConnection( std::string& strPath, int iDriveType );
   void GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString);
   bool GetDirectory(int iList, const std::string &strDirectory, CFileItemList &items);
-  int NumSelected(int iList);
+  int NumSelected(int iList) const;
   int GetFocusedList() const;
   // functions to check for actions that we can perform
-  bool CanRename(int iList);
-  bool CanCopy(int iList);
-  bool CanMove(int iList);
-  bool CanDelete(int iList);
-  bool CanNewFolder(int iList);
+  bool CanRename(int iList) const;
+  bool CanCopy(int iList) const;
+  bool CanMove(int iList) const;
+  bool CanDelete(int iList) const;
+  bool CanNewFolder(int iList) const;
   void OnPopupMenu(int iList, int iItem, bool bContextDriven = true);
   void ShowShareErrorMessage(CFileItem* pItem);
   void UpdateItemCounts();

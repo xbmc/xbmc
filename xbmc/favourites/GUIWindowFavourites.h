@@ -29,5 +29,5 @@ protected:
 private:
   void OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event);
   bool MoveItem(int item, int amount);
-  bool RemoveItem(int item);
+  bool RemoveItem(int item) const;
 };

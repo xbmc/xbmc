@@ -22,28 +22,28 @@ public:
   CVisualization(const ADDON::AddonInfoPtr& addonInfo, float x, float y, float w, float h);
   ~CVisualization() override;
 
-  bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName);
-  void Stop();
-  void AudioData(const float* audioData, int audioDataLength);
-  bool IsDirty();
-  void Render();
-  int GetSyncDelay();
-  bool NextPreset();
-  bool PrevPreset();
-  bool LoadPreset(int select);
-  bool RandomPreset();
-  bool LockPreset();
-  bool RatePreset(bool plus_minus);
-  bool UpdateAlbumart(const char* albumart);
-  bool UpdateTrack(const KODI_ADDON_VISUALIZATION_TRACK* track);
-  bool HasPresets();
-  bool GetPresetList(std::vector<std::string>& vecpresets);
-  int GetActivePreset();
+  bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName) const;
+  void Stop() const;
+  void AudioData(const float* audioData, int audioDataLength) const;
+  bool IsDirty() const;
+  void Render() const;
+  int GetSyncDelay() const;
+  bool NextPreset() const;
+  bool PrevPreset() const;
+  bool LoadPreset(int select) const;
+  bool RandomPreset() const;
+  bool LockPreset() const;
+  bool RatePreset(bool plus_minus) const;
+  bool UpdateAlbumart(const char* albumart) const;
+  bool UpdateTrack(const KODI_ADDON_VISUALIZATION_TRACK* track) const;
+  bool HasPresets() const;
+  bool GetPresetList(std::vector<std::string>& vecpresets) const;
+  int GetActivePreset() const;
   std::string GetActivePresetName();
-  bool IsLocked();
+  bool IsLocked() const;
 
   // Addon callback functions
-  void GetProperties(struct KODI_ADDON_VISUALIZATION_PROPS* props);
+  void GetProperties(struct KODI_ADDON_VISUALIZATION_PROPS* props) const;
   void TransferPreset(const std::string& preset);
   void ClearPresets();
 

@@ -47,10 +47,10 @@ public:
   std::string DetectStereoModeByString(const std::string &needle) const;
   std::string GetLabelForStereoMode(const RENDER_STEREO_MODE &mode) const;
 
-  void SetStereoMode(const RENDER_STEREO_MODE &mode);
+  void SetStereoMode(const RENDER_STEREO_MODE &mode) const;
 
   static const char* ConvertGuiStereoModeToString(const RENDER_STEREO_MODE &mode);
-  RENDER_STEREO_MODE GetStereoModeByUser() { return m_stereoModeSetByUser; };
+  RENDER_STEREO_MODE GetStereoModeByUser() const { return m_stereoModeSetByUser; };
   /**
    * @brief Converts a stereoscopics related action/command from Builtins and JsonRPC into the according cAction ID.
    * @param command The command/action
@@ -82,7 +82,7 @@ private:
   void SetStereoModeByUser(const RENDER_STEREO_MODE &mode);
 
   void Notify();
-  void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true);
+  void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true) const;
   void OnPlaybackStopped(void);
 
   /**

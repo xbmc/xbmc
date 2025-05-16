@@ -54,7 +54,7 @@ protected:
 private:
   bool FileCreate(const std::string& filename);
   bool FileClose();
-  ssize_t FileWrite(const uint8_t* pBuffer, size_t iBytes);
+  ssize_t FileWrite(const uint8_t* pBuffer, size_t iBytes) const;
   ssize_t FlushStream();
 
   std::unique_ptr<XFILE::CFile> m_file;

@@ -31,7 +31,7 @@ public:
   CDriverMonitor() = default;
   virtual ~CDriverMonitor();
   bool Start(bool allowPipeWireCompatServer);
-  bool IsInitialized();
+  bool IsInitialized() const;
 
   CCriticalSection m_sec;
 
@@ -673,8 +673,7 @@ CDriverMonitor::~CDriverMonitor()
   }
 }
 
-bool CDriverMonitor::IsInitialized()
-{
+bool CDriverMonitor::IsInitialized() const {
   return m_isInit;
 }
 
@@ -1196,15 +1195,13 @@ void CAESinkPULSE::Drain()
 
 // This is a helper to get stream info during the PA callbacks
 // it shall never be called from real outside
-pa_stream* CAESinkPULSE::GetInternalStream()
-{
+pa_stream* CAESinkPULSE::GetInternalStream() const {
   return m_Stream;
 }
 
 // This is a helper to use the internal mainloop from another thread, e.g. a RequestCallback
 // it is shipped via the userdata. Don't use it for other purposes than signalling
-pa_threaded_mainloop* CAESinkPULSE::GetInternalMainLoop()
-{
+pa_threaded_mainloop* CAESinkPULSE::GetInternalMainLoop() const {
   return m_MainLoop;
 }
 

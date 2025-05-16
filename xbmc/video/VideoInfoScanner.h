@@ -120,7 +120,7 @@ namespace VIDEO
      \param line1   string to set for the first line
      \return true if the user has cancelled the scanner, false otherwise
      */
-    bool ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1);
+    bool ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1) const;
 
     /*! \brief Find a url for the given video using the given scraper
      \param title title of the video to lookup
@@ -156,7 +156,7 @@ namespace VIDEO
                     CScraperUrl& url,
                     const ADDON::ScraperPtr& scraper,
                     VIDEO::IVideoInfoTagLoader* nfoFile = nullptr,
-                    CGUIDialogProgress* pDialog = nullptr);
+                    CGUIDialogProgress* pDialog = nullptr) const;
 
     /*! \brief Extract episode and season numbers from a processed regexp
      \param reg Regular expression object with at least 2 matches

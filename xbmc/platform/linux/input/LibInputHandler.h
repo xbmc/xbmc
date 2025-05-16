@@ -35,7 +35,7 @@ public:
 
   void Start();
 
-  bool SetKeymap(const std::string& layout);
+  bool SetKeymap(const std::string& layout) const;
 
 private:
   void Process() override;

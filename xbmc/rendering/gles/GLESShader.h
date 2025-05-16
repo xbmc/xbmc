@@ -21,22 +21,22 @@ public:
   bool OnEnabled() override;
   void Free();
 
-  GLint GetPosLoc()   { return m_hPos;   }
-  GLint GetColLoc()   { return m_hCol;   }
-  GLint GetCord0Loc() { return m_hCord0; }
-  GLint GetCord1Loc() { return m_hCord1; }
-  GLint GetUniColLoc() { return m_hUniCol; }
-  GLint GetCoord0MatrixLoc() { return m_hCoord0Matrix; }
-  GLint GetFieldLoc() { return m_hField; }
-  GLint GetStepLoc() { return m_hStep; }
-  GLint GetContrastLoc() { return m_hContrast; }
-  GLint GetBrightnessLoc() { return m_hBrightness; }
-  GLint GetModelLoc() { return m_hModel; }
-  bool HardwareClipIsPossible() { return m_clipPossible; }
-  GLfloat GetClipXFactor() { return m_clipXFactor; }
-  GLfloat GetClipXOffset() { return m_clipXOffset; }
-  GLfloat GetClipYFactor() { return m_clipYFactor; }
-  GLfloat GetClipYOffset() { return m_clipYOffset; }
+  GLint GetPosLoc() const { return m_hPos;   }
+  GLint GetColLoc() const { return m_hCol;   }
+  GLint GetCord0Loc() const { return m_hCord0; }
+  GLint GetCord1Loc() const { return m_hCord1; }
+  GLint GetUniColLoc() const { return m_hUniCol; }
+  GLint GetCoord0MatrixLoc() const { return m_hCoord0Matrix; }
+  GLint GetFieldLoc() const { return m_hField; }
+  GLint GetStepLoc() const { return m_hStep; }
+  GLint GetContrastLoc() const { return m_hContrast; }
+  GLint GetBrightnessLoc() const { return m_hBrightness; }
+  GLint GetModelLoc() const { return m_hModel; }
+  bool HardwareClipIsPossible() const { return m_clipPossible; }
+  GLfloat GetClipXFactor() const { return m_clipXFactor; }
+  GLfloat GetClipXOffset() const { return m_clipXOffset; }
+  GLfloat GetClipYFactor() const { return m_clipYFactor; }
+  GLfloat GetClipYOffset() const { return m_clipYOffset; }
 
 protected:
   GLint m_hTex0 = 0;

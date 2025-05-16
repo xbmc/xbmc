@@ -178,8 +178,7 @@ int CCDDARipJob::RipChunk(CFile& reader, const std::unique_ptr<CEncoder>& encode
   return -(1 - encres);
 }
 
-std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
-{
+std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader) const {
   std::unique_ptr<CEncoder> encoder;
   const std::string audioEncoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_AUDIOCDS_ENCODER);

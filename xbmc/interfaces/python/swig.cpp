@@ -91,7 +91,7 @@ namespace PythonBindings
     inline explicit PyObjectDecrementor(PyObject* pyobj) : obj(pyobj) {}
     inline ~PyObjectDecrementor() { Py_XDECREF(obj); }
 
-    inline PyObject* get() { return obj; }
+    inline PyObject* get() const { return obj; }
   };
 
   void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString,

@@ -73,12 +73,12 @@ struct SBackend
     /*!
      * @brief Stop all clients.
      */
-    void Stop();
+    void Stop() const;
 
     /*!
      * @brief Continue all clients.
      */
-    void Continue();
+    void Continue() const;
 
     /*!
      * @brief Update all clients, sync with Addon Manager state (start, restart, shutdown clients).
@@ -217,7 +217,7 @@ struct SBackend
      * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
      */
     PVR_ERROR UpdateTimerTypes(const std::vector<std::shared_ptr<CPVRClient>>& clients,
-                               std::vector<int>& failedClients);
+                               std::vector<int>& failedClients) const;
 
     /*!
      * @brief Get all timer types supported by the backends, without updating them from the backends.
@@ -247,7 +247,7 @@ struct SBackend
      * @brief Delete all "soft" deleted recordings permanently on the backend.
      * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
      */
-    PVR_ERROR DeleteAllRecordingsFromTrash();
+    PVR_ERROR DeleteAllRecordingsFromTrash() const;
 
     //@}
 
@@ -267,7 +267,7 @@ struct SBackend
      * @return @ref PVR_ERROR_NO_ERROR if the operation succeeded, the respective @ref PVR_ERROR
      *         value otherwise.
      */
-    PVR_ERROR SetEPGMaxPastDays(int iPastDays);
+    PVR_ERROR SetEPGMaxPastDays(int iPastDays) const;
 
     /*!
      * @brief Tell all clients the future time frame to use when notifying epg events back to Kodi.
@@ -282,7 +282,7 @@ struct SBackend
      * @return @ref PVR_ERROR_NO_ERROR if the operation succeeded, the respective @ref PVR_ERROR
      *         value otherwise.
      */
-    PVR_ERROR SetEPGMaxFutureDays(int iFutureDays);
+    PVR_ERROR SetEPGMaxFutureDays(int iFutureDays) const;
 
     //@}
 
@@ -382,22 +382,22 @@ struct SBackend
     /*!
      * @brief Propagate "system sleep" event to clients
      */
-    void OnSystemSleep();
+    void OnSystemSleep() const;
 
     /*!
      * @brief Propagate "system wakeup" event to clients
      */
-    void OnSystemWake();
+    void OnSystemWake() const;
 
     /*!
      * @brief Propagate "power saving activated" event to clients
      */
-    void OnPowerSavingActivated();
+    void OnPowerSavingActivated() const;
 
     /*!
      * @brief Propagate "power saving deactivated" event to clients
      */
-    void OnPowerSavingDeactivated();
+    void OnPowerSavingDeactivated() const;
 
     //@}
 

@@ -67,8 +67,7 @@ void CGUIInfoProviders::UnregisterProvider(IGUIInfoProvider *provider)
     m_providers.erase(it);
 }
 
-bool CGUIInfoProviders::InitCurrentItem(CFileItem *item)
-{
+bool CGUIInfoProviders::InitCurrentItem(CFileItem *item) const {
   bool bReturn = false;
 
   for (const auto& provider : m_providers)
@@ -113,8 +112,7 @@ bool CGUIInfoProviders::GetBool(bool& value, const CGUIListItem *item, int conte
   return false;
 }
 
-void CGUIInfoProviders::UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo, const SubtitleStreamInfo& subtitleInfo)
-{
+void CGUIInfoProviders::UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo, const SubtitleStreamInfo& subtitleInfo) const {
   for (const auto& provider : m_providers)
   {
     provider->UpdateAVInfo(audioInfo, videoInfo, subtitleInfo);

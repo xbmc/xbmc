@@ -349,8 +349,7 @@ CVideoDatabase& CPVRRecordings::GetVideoDatabase()
   return *m_database;
 }
 
-int CPVRRecordings::CleanupCachedImages()
-{
+int CPVRRecordings::CleanupCachedImages() const {
   std::vector<std::string> urlsToCheck;
   {
     std::lock_guard lock(m_critSection);

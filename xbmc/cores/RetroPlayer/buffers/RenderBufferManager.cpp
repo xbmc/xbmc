@@ -46,8 +46,7 @@ RenderBufferPoolVector CRenderBufferManager::GetPools(IRendererFactory* factory)
   return bufferPools;
 }
 
-std::vector<IRenderBufferPool*> CRenderBufferManager::GetBufferPools()
-{
+std::vector<IRenderBufferPool*> CRenderBufferManager::GetBufferPools() const {
   std::vector<IRenderBufferPool*> bufferPools;
 
   std::lock_guard lock(m_critSection);
@@ -61,8 +60,7 @@ std::vector<IRenderBufferPool*> CRenderBufferManager::GetBufferPools()
   return bufferPools;
 }
 
-void CRenderBufferManager::FlushPools()
-{
+void CRenderBufferManager::FlushPools() const {
   std::lock_guard lock(m_critSection);
 
   for (const auto& pools : m_pools)

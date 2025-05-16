@@ -48,7 +48,7 @@ namespace XFILE
 
     int IoControl(EIoControl request, void* param) override;
 
-    IFile *GetFileImp();
+    IFile *GetFileImp() const;
 
     const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const override;
 

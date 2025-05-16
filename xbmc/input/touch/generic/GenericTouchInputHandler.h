@@ -86,7 +86,7 @@ private:
     m_gestureState = gestureState;
   }
   void triggerDetectors(TouchInput event, int32_t pointer);
-  float AdjustPointerSize(float size);
+  float AdjustPointerSize(float size) const;
 
   CCriticalSection m_critical;
   std::unique_ptr<CTimer> m_holdTimer;

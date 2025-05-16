@@ -289,8 +289,7 @@ void CGUIDialogLockSettings::InitializeSettings()
   m_changed = false;
 }
 
-std::string CGUIDialogLockSettings::GetLockModeLabel()
-{
+std::string CGUIDialogLockSettings::GetLockModeLabel() const {
   return g_localizeStrings.Get(m_locks.mode == LOCK_MODE_EVERYONE ? 1223 : 12336 + m_locks.mode);
 }
 

@@ -63,7 +63,7 @@ public:
   ///@{
 
   /// @brief Codec type.
-  void SetCodecType(PVR_CODEC_TYPE codecType) { m_cStructure->codec_type = codecType; }
+  void SetCodecType(PVR_CODEC_TYPE codecType) const { m_cStructure->codec_type = codecType; }
 
   /// @brief To get with @ref SetCodecType() changed values.
   PVR_CODEC_TYPE GetCodecType() const { return m_cStructure->codec_type; }
@@ -71,7 +71,7 @@ public:
   /// @brief Codec id.
   ///
   /// Related codec identifier, normally match the ffmpeg id's.
-  void SetCodecId(unsigned int codecId) { m_cStructure->codec_id = codecId; }
+  void SetCodecId(unsigned int codecId) const { m_cStructure->codec_id = codecId; }
 
   /// @brief To get with @ref SetCodecId() changed values.
   unsigned int GetCodecId() const { return m_cStructure->codec_id; }
@@ -136,26 +136,25 @@ public:
   ///@{
 
   /// @brief PID.
-  void SetPID(unsigned int pid) { m_cStructure->iPID = pid; }
+  void SetPID(unsigned int pid) const { m_cStructure->iPID = pid; }
 
   /// @brief To get with @ref SetPID() changed values.
   unsigned int GetPID() const { return m_cStructure->iPID; }
 
   /// @brief Codec type this stream.
-  void SetCodecType(PVR_CODEC_TYPE codecType) { m_cStructure->iCodecType = codecType; }
+  void SetCodecType(PVR_CODEC_TYPE codecType) const { m_cStructure->iCodecType = codecType; }
 
   /// @brief To get with @ref SetCodecType() changed values.
   PVR_CODEC_TYPE GetCodecType() const { return m_cStructure->iCodecType; }
 
   /// @brief Codec id of this stream.
-  void SetCodecId(unsigned int codecId) { m_cStructure->iCodecId = codecId; }
+  void SetCodecId(unsigned int codecId) const { m_cStructure->iCodecId = codecId; }
 
   /// @brief To get with @ref SetCodecId() changed values.
   unsigned int GetCodecId() const { return m_cStructure->iCodecId; }
 
   /// @brief 3 letter language id.
-  void SetLanguage(const std::string& language)
-  {
+  void SetLanguage(const std::string& language) const {
     if (language.size() > 3)
     {
       kodi::Log(ADDON_LOG_ERROR,
@@ -173,67 +172,67 @@ public:
   std::string GetLanguage() const { return m_cStructure->strLanguage; }
 
   /// @brief Subtitle Info
-  void SetSubtitleInfo(int subtitleInfo) { m_cStructure->iSubtitleInfo = subtitleInfo; }
+  void SetSubtitleInfo(int subtitleInfo) const { m_cStructure->iSubtitleInfo = subtitleInfo; }
 
   /// @brief To get with @ref SetSubtitleInfo() changed values.
   int GetSubtitleInfo() const { return m_cStructure->iSubtitleInfo; }
 
   /// @brief To set scale of 1000 and a rate of 29970 will result in 29.97 fps.
-  void SetFPSScale(int fpsScale) { m_cStructure->iFPSScale = fpsScale; }
+  void SetFPSScale(int fpsScale) const { m_cStructure->iFPSScale = fpsScale; }
 
   /// @brief To get with @ref SetFPSScale() changed values.
   int GetFPSScale() const { return m_cStructure->iFPSScale; }
 
   /// @brief FPS rate
-  void SetFPSRate(int fpsRate) { m_cStructure->iFPSRate = fpsRate; }
+  void SetFPSRate(int fpsRate) const { m_cStructure->iFPSRate = fpsRate; }
 
   /// @brief To get with @ref SetFPSRate() changed values.
   int GetFPSRate() const { return m_cStructure->iFPSRate; }
 
   /// @brief Height of the stream reported by the demuxer
-  void SetHeight(int height) { m_cStructure->iHeight = height; }
+  void SetHeight(int height) const { m_cStructure->iHeight = height; }
 
   /// @brief To get with @ref SetHeight() changed values.
   int GetHeight() const { return m_cStructure->iHeight; }
 
   /// @brief Width of the stream reported by the demuxer.
-  void SetWidth(int width) { m_cStructure->iWidth = width; }
+  void SetWidth(int width) const { m_cStructure->iWidth = width; }
 
   /// @brief To get with @ref SetWidth() changed values.
   int GetWidth() const { return m_cStructure->iWidth; }
 
   /// @brief Display aspect ratio of the stream.
-  void SetAspect(float aspect) { m_cStructure->fAspect = aspect; }
+  void SetAspect(float aspect) const { m_cStructure->fAspect = aspect; }
 
   /// @brief To get with @ref SetAspect() changed values.
   float GetAspect() const { return m_cStructure->fAspect; }
 
   /// @brief Amount of channels.
-  void SetChannels(int channels) { m_cStructure->iChannels = channels; }
+  void SetChannels(int channels) const { m_cStructure->iChannels = channels; }
 
   /// @brief To get with @ref SetChannels() changed values.
   int GetChannels() const { return m_cStructure->iChannels; }
 
   /// @brief Sample rate.
-  void SetSampleRate(int sampleRate) { m_cStructure->iSampleRate = sampleRate; }
+  void SetSampleRate(int sampleRate) const { m_cStructure->iSampleRate = sampleRate; }
 
   /// @brief To get with @ref SetSampleRate() changed values.
   int GetSampleRate() const { return m_cStructure->iSampleRate; }
 
   /// @brief Block alignment
-  void SetBlockAlign(int blockAlign) { m_cStructure->iBlockAlign = blockAlign; }
+  void SetBlockAlign(int blockAlign) const { m_cStructure->iBlockAlign = blockAlign; }
 
   /// @brief To get with @ref SetBlockAlign() changed values.
   int GetBlockAlign() const { return m_cStructure->iBlockAlign; }
 
   /// @brief Bit rate.
-  void SetBitRate(int bitRate) { m_cStructure->iBitRate = bitRate; }
+  void SetBitRate(int bitRate) const { m_cStructure->iBitRate = bitRate; }
 
   /// @brief To get with @ref SetBitRate() changed values.
   int GetBitRate() const { return m_cStructure->iBitRate; }
 
   /// @brief Bits per sample.
-  void SetBitsPerSample(int bitsPerSample) { m_cStructure->iBitsPerSample = bitsPerSample; }
+  void SetBitsPerSample(int bitsPerSample) const { m_cStructure->iBitsPerSample = bitsPerSample; }
 
   /// @brief To get with @ref SetBitsPerSample() changed values.
   int GetBitsPerSample() const { return m_cStructure->iBitsPerSample; }
@@ -287,13 +286,13 @@ public:
   /// @brief For recordings, this must be zero. For Live TV, this is a reference
   /// time in units of time_t (UTC) from which time elapsed starts. Ideally start
   /// of tv show, but can be any other value.
-  void SetStartTime(time_t startTime) { m_cStructure->startTime = startTime; }
+  void SetStartTime(time_t startTime) const { m_cStructure->startTime = startTime; }
 
   /// @brief To get with @ref SetStartTime() changed values.
   time_t GetStartTime() const { return m_cStructure->startTime; }
 
   /// @brief The pts of startTime.
-  void SetPTSStart(int64_t ptsStart) { m_cStructure->ptsStart = ptsStart; }
+  void SetPTSStart(int64_t ptsStart) const { m_cStructure->ptsStart = ptsStart; }
 
   /// @brief To get with @ref SetPTSStart() changed values.
   int64_t GetPTSStart() const { return m_cStructure->ptsStart; }
@@ -302,7 +301,7 @@ public:
   /// relative to PTS start. For recordings, this must be zero. For Live TV, this
   /// must be zero if not timeshifting and must point to begin of the timeshift
   /// buffer, otherwise.
-  void SetPTSBegin(int64_t ptsBegin) { m_cStructure->ptsBegin = ptsBegin; }
+  void SetPTSBegin(int64_t ptsBegin) const { m_cStructure->ptsBegin = ptsBegin; }
 
   /// @brief To get with @ref SetPTSBegin() changed values.
   int64_t GetPTSBegin() const { return m_cStructure->ptsBegin; }
@@ -311,7 +310,7 @@ public:
   /// relative to PTS start. For recordings, this must be the total length. For
   /// Live TV, this must be zero if not timeshifting and must point to end of
   /// the timeshift buffer, otherwise.
-  void SetPTSEnd(int64_t ptsEnd) { m_cStructure->ptsEnd = ptsEnd; }
+  void SetPTSEnd(int64_t ptsEnd) const { m_cStructure->ptsEnd = ptsEnd; }
 
   /// @brief To get with @ref SetPTSEnd() changed values.
   int64_t GetPTSEnd() const { return m_cStructure->ptsEnd; }

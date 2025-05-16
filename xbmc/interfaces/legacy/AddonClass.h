@@ -96,14 +96,14 @@ namespace XBMCAddon
     virtual ~AddonClass();
 
     inline const char* GetClassname() const { return typeid(*this).name(); }
-    inline LanguageHook* GetLanguageHook() { return languageHook; }
+    inline LanguageHook* GetLanguageHook() const { return languageHook; }
 
     /**
      * This method should be called while holding a Synchronize
      *  on the object. It will prevent the deallocation during
      *  the time it's held.
      */
-    bool isDeallocating() { XBMC_TRACE; return m_isDeallocating; }
+    bool isDeallocating() const { XBMC_TRACE; return m_isDeallocating; }
 
     static short getNumAddonClasses();
 

@@ -207,8 +207,7 @@ bool CNetworkBase::IsConnected()
    return GetFirstConnectedInterface() != NULL;
 }
 
-void CNetworkBase::NetworkMessage(EMESSAGE message, int param)
-{
+void CNetworkBase::NetworkMessage(EMESSAGE message, int param) const {
   switch( message )
   {
     case SERVICES_UP:

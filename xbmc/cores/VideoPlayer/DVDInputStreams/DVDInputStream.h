@@ -202,7 +202,7 @@ public:
   virtual bool IsEOF() = 0;
   virtual BitstreamStats GetBitstreamStats() const { return m_stats; }
 
-  bool ContentLookup() { return m_contentLookup; }
+  bool ContentLookup() const { return m_contentLookup; }
 
   virtual bool IsRealtime() { return m_realtime; }
 
@@ -215,7 +215,7 @@ public:
   virtual ITimes* GetITimes() { return nullptr; }
   virtual IChapter* GetIChapter() { return nullptr; }
 
-  const CVariant& GetProperty(const std::string& key) { return m_item.GetProperty(key); }
+  const CVariant& GetProperty(const std::string& key) const { return m_item.GetProperty(key); }
 
 protected:
   DVDStreamType m_streamType;

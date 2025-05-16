@@ -230,8 +230,7 @@ bool CEncoderFFmpeg::Init()
   return true;
 }
 
-void CEncoderFFmpeg::SetTag(const std::string& tag, const std::string& value)
-{
+void CEncoderFFmpeg::SetTag(const std::string& tag, const std::string& value) const {
   av_dict_set(&m_formatCtx->metadata, tag.c_str(), value.c_str(), 0);
 }
 

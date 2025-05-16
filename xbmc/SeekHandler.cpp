@@ -87,8 +87,7 @@ void CSeekHandler::Reset()
   m_timeCodePosition = 0;
 }
 
-int CSeekHandler::GetSeekStepSize(SeekType type, int step)
-{
+int CSeekHandler::GetSeekStepSize(SeekType type, int step) const {
   if (step == 0)
     return 0;
 

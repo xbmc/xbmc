@@ -446,7 +446,7 @@ public:
    * @brief Erase stale texture db entries and image files.
    * @return number of cleaned up images.
    */
-  int CleanupCachedImages();
+  int CleanupCachedImages() const;
 
   /*!
    * @brief Get the priority of the client that provides this group.
@@ -512,7 +512,7 @@ protected:
   /*!
    * @brief Update the client priority for all members of this group.
    */
-  bool UpdateMembersClientPriority();
+  bool UpdateMembersClientPriority() const;
 
   std::shared_ptr<CPVRChannelGroupSettings> GetSettings() const;
 

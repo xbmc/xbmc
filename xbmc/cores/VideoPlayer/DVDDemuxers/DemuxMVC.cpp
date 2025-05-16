@@ -229,8 +229,7 @@ std::string CDemuxMVC::GetFileName()
   return m_pInput->GetFileName();
 }
 
-AVStream* CDemuxMVC::GetAVStream()
-{
+AVStream* CDemuxMVC::GetAVStream() const {
   return m_pFormatContext ? m_pFormatContext->streams[m_nStreamIndex] : nullptr;
 }
 
@@ -251,8 +250,7 @@ void CDemuxMVC::Dispose()
   m_nStreamIndex = -1;
 }
 
-double CDemuxMVC::ConvertTimestamp(int64_t pts, int den, int num)
-{
+double CDemuxMVC::ConvertTimestamp(int64_t pts, int den, int num) const {
   if (pts == AV_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
 

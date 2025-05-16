@@ -216,8 +216,7 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
 
 // https://wiki.multimedia.cx/index.php/FFmpeg_Metadata
 CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
-                                                       std::vector<EmbeddedArt>* art)
-{
+                                                       std::vector<EmbeddedArt>* art) const {
   bool hasfull = false;
   AVDictionaryEntry* avtag = nullptr;
   // If either description or synopsis is found, assume user wants to use the tag info only
@@ -267,8 +266,7 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
 
 // https://wiki.multimedia.cx/index.php/FFmpeg_Metadata#AVI
 CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadAVI(CVideoInfoTag& tag,
-                                                       std::vector<EmbeddedArt>* art)
-{
+                                                       std::vector<EmbeddedArt>* art) const {
   AVDictionaryEntry* avtag = nullptr;
   while ((avtag = av_dict_get(m_fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
   {

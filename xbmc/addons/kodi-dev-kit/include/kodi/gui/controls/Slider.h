@@ -71,8 +71,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_slider->set_visible(m_interface->kodiBase, m_controlHandle,
                                                        visible);
   }
@@ -84,8 +83,7 @@ public:
   ///
   /// @param[in] enabled If true enabled, otherwise disabled
   ///
-  void SetEnabled(bool enabled)
-  {
+  void SetEnabled(bool enabled) const {
     m_interface->kodi_gui->control_slider->set_enabled(m_interface->kodiBase, m_controlHandle,
                                                        enabled);
   }
@@ -95,8 +93,7 @@ public:
   /// @ingroup cpp_kodi_gui_windows_controls_CSlider
   /// @brief To reset slider on defaults.
   ///
-  void Reset()
-  {
+  void Reset() const {
     m_interface->kodi_gui->control_slider->reset(m_interface->kodiBase, m_controlHandle);
   }
   //----------------------------------------------------------------------------
@@ -147,8 +144,7 @@ public:
   /// these different values can be not together and can, therefore, only one
   /// each can be used.
   ///
-  void SetIntRange(int start, int end)
-  {
+  void SetIntRange(int start, int end) const {
     m_interface->kodi_gui->control_slider->set_int_range(m_interface->kodiBase, m_controlHandle,
                                                          start, end);
   }
@@ -165,8 +161,7 @@ public:
   /// these different values can be not together and can, therefore, only one
   /// each can be used.
   ///
-  void SetIntValue(int value)
-  {
+  void SetIntValue(int value) const {
     m_interface->kodi_gui->control_slider->set_int_value(m_interface->kodiBase, m_controlHandle,
                                                          value);
   }
@@ -201,8 +196,7 @@ public:
   /// these different values can be not together and can, therefore, only one
   /// each can be used.
   ///
-  void SetIntInterval(int interval)
-  {
+  void SetIntInterval(int interval) const {
     m_interface->kodi_gui->control_slider->set_int_interval(m_interface->kodiBase, m_controlHandle,
                                                             interval);
   }
@@ -218,8 +212,7 @@ public:
   /// these different values can be not together and can, therefore, only one
   /// each can be used.
   ///
-  void SetPercentage(float percent)
-  {
+  void SetPercentage(float percent) const {
     m_interface->kodi_gui->control_slider->set_percentage(m_interface->kodiBase, m_controlHandle,
                                                           percent);
   }
@@ -260,8 +253,7 @@ public:
   /// these different values can be not together and can, therefore, only
   /// one each can be used.
   ///
-  void SetFloatRange(float start, float end)
-  {
+  void SetFloatRange(float start, float end) const {
     m_interface->kodi_gui->control_slider->set_float_range(m_interface->kodiBase, m_controlHandle,
                                                            start, end);
   }
@@ -279,8 +271,7 @@ public:
   /// these different values can be not together and can, therefore, only one
   /// each can be used.
   ///
-  void SetFloatValue(float value)
-  {
+  void SetFloatValue(float value) const {
     m_interface->kodi_gui->control_slider->set_float_value(m_interface->kodiBase, m_controlHandle,
                                                            value);
   }
@@ -311,8 +302,7 @@ public:
   /// these different values can be not together and can, therefore, only
   /// one each can be used.
   ///
-  void SetFloatInterval(float interval)
-  {
+  void SetFloatInterval(float interval) const {
     m_interface->kodi_gui->control_slider->set_float_interval(m_interface->kodiBase,
                                                               m_controlHandle, interval);
   }

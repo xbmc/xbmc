@@ -30,7 +30,7 @@ public:
 
   bool Start(uint16_t port, const std::string &username, const std::string &password);
   bool Stop();
-  bool IsStarted();
+  bool IsStarted() const;
   static bool WebServerSupportsSSL();
   void SetCredentials(const std::string &username, const std::string &password);
 
@@ -104,7 +104,7 @@ private:
                              const char *transfer_encoding, const char *data, uint64_t off,
                              size_t size);
 
-  bool LoadCert(std::string &skey, std::string &scert);
+  bool LoadCert(std::string &skey, std::string &scert) const;
 
   static Logger GetLogger();
 

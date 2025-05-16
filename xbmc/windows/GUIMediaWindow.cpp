@@ -625,8 +625,7 @@ void CGUIMediaWindow::UpdateButtons()
   SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter").asString());
 }
 
-void CGUIMediaWindow::ClearFileItems()
-{
+void CGUIMediaWindow::ClearFileItems() const {
   m_viewControl.Clear();
   m_vecItems->Clear();
   m_unfilteredItems->Clear();

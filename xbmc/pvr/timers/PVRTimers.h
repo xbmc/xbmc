@@ -263,7 +263,7 @@ public:
   /*!
      * @brief Update the channel pointers.
      */
-  void UpdateChannels();
+  void UpdateChannels() const;
 
   /*!
      * @brief CEventStream callback for PVR events.

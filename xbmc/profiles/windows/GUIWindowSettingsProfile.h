@@ -27,9 +27,9 @@ protected:
   void OnPopupMenu(int iItem);
   void DoRename(int iItem);
   void DoOverwrite(int iItem);
-  int GetSelectedItem();
+  int GetSelectedItem() const;
   void LoadList();
   void SetLastLoaded();
-  void ClearListItems();
+  void ClearListItems() const;
   bool GetAutoLoginProfileChoice(int &iProfile);
 };

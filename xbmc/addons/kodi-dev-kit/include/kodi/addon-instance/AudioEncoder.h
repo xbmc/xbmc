@@ -444,8 +444,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  ssize_t Write(const uint8_t* data, size_t length)
-  {
+  ssize_t Write(const uint8_t* data, size_t length) const {
     return m_kodi->write(m_kodi->kodiInstance, data, length);
   }
   //----------------------------------------------------------------------------
@@ -471,8 +470,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  ssize_t Seek(ssize_t position, int whence = SEEK_SET)
-  {
+  ssize_t Seek(ssize_t position, int whence = SEEK_SET) const {
     return m_kodi->seek(m_kodi->kodiInstance, position, whence);
   }
   //----------------------------------------------------------------------------

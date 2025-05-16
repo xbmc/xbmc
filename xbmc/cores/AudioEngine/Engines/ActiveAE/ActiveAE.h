@@ -288,7 +288,7 @@ protected:
   void GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream) { m_stats.GetSyncInfo(info, stream); }
   float GetCacheTime(CActiveAEStream *stream) { return m_stats.GetCacheTime(stream); }
   float GetCacheTotal() { return m_stats.GetCacheTotal(); }
-  float GetMaxDelay() { return m_stats.GetMaxDelay(); }
+  float GetMaxDelay() const { return m_stats.GetMaxDelay(); }
   void FlushStream(CActiveAEStream *stream);
   void PauseStream(CActiveAEStream *stream, bool pause);
   void StopSound(CActiveAESound *sound);
@@ -327,12 +327,12 @@ protected:
 
   bool RunStages();
   bool HasWork();
-  CSampleBuffer* SyncStream(CActiveAEStream *stream);
+  CSampleBuffer* SyncStream(CActiveAEStream *stream) const;
 
   void ResampleSounds();
-  bool ResampleSound(CActiveAESound *sound);
+  bool ResampleSound(CActiveAESound *sound) const;
   void MixSounds(CSoundPacket &dstSample);
-  void Deamplify(CSoundPacket &dstSample);
+  void Deamplify(CSoundPacket &dstSample) const;
 
   bool CompareFormat(const AEAudioFormat& lhs, const AEAudioFormat& rhs);
 

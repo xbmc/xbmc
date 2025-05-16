@@ -106,13 +106,11 @@ CVideoBufferDRMPRIMEFFmpeg::~CVideoBufferDRMPRIMEFFmpeg()
   av_frame_free(&m_pFrame);
 }
 
-void CVideoBufferDRMPRIMEFFmpeg::SetRef(AVFrame* frame)
-{
+void CVideoBufferDRMPRIMEFFmpeg::SetRef(AVFrame* frame) const {
   av_frame_move_ref(m_pFrame, frame);
 }
 
-void CVideoBufferDRMPRIMEFFmpeg::Unref()
-{
+void CVideoBufferDRMPRIMEFFmpeg::Unref() const {
   av_frame_unref(m_pFrame);
 }
 

@@ -295,20 +295,17 @@ void CDVDAudioCodecFFmpeg::Reset()
   m_eof = false;
 }
 
-int CDVDAudioCodecFFmpeg::GetChannels()
-{
+int CDVDAudioCodecFFmpeg::GetChannels() const {
   return m_pCodecContext->ch_layout.nb_channels;
 }
 
-int CDVDAudioCodecFFmpeg::GetSampleRate()
-{
+int CDVDAudioCodecFFmpeg::GetSampleRate() const {
   if (m_pCodecContext)
     return m_pCodecContext->sample_rate;
   return 0;
 }
 
-enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
-{
+enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat() const {
   switch(m_pCodecContext->sample_fmt)
   {
     case AV_SAMPLE_FMT_U8 : return AE_FMT_U8;

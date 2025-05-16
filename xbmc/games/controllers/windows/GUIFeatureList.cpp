@@ -159,8 +159,7 @@ void CGUIFeatureList::OnSelect(unsigned int buttonIndex)
   m_wizard->Run(m_controller->ID(), buttons);
 }
 
-IFeatureButton* CGUIFeatureList::GetButtonControl(unsigned int buttonIndex)
-{
+IFeatureButton* CGUIFeatureList::GetButtonControl(unsigned int buttonIndex) const {
   CGUIControl* control = m_guiList->GetControl(CONTROL_FEATURE_BUTTONS_START + buttonIndex);
 
   return dynamic_cast<CGUIFeatureButton*>(control);
@@ -252,8 +251,7 @@ bool CGUIFeatureList::HasButton(JOYSTICK::FEATURE_TYPE type) const
 }
 
 std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(
-    const std::vector<CPhysicalFeature>& features, unsigned int startIndex)
-{
+    const std::vector<CPhysicalFeature>& features, unsigned int startIndex) const {
   std::vector<CGUIButtonControl*> buttons;
 
   // Create buttons
@@ -277,8 +275,7 @@ std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(
 }
 
 CGUIButtonControl* CGUIFeatureList::GetSelectKeyButton(
-    const std::vector<CPhysicalFeature>& features, unsigned int buttonIndex)
-{
+    const std::vector<CPhysicalFeature>& features, unsigned int buttonIndex) const {
   // Expose keycodes to the wizard
   for (const CPhysicalFeature& feature : features)
   {

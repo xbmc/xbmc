@@ -107,8 +107,7 @@ namespace XBMCAddon
       ///
       read(...);
 #else
-      inline String read(unsigned long numBytes = 0)
-      {
+      inline String read(unsigned long numBytes = 0) const {
         XbmcCommons::Buffer b = readBytes(numBytes);
         return b.getString(numBytes == 0 ? b.remaining() : std::min((unsigned long)b.remaining(),numBytes));
       }
@@ -146,7 +145,7 @@ namespace XBMCAddon
       ///
       readBytes(...);
 #else
-      XbmcCommons::Buffer readBytes(unsigned long numBytes = 0);
+      XbmcCommons::Buffer readBytes(unsigned long numBytes = 0) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -180,7 +179,7 @@ namespace XBMCAddon
       ///
       write(...);
 #else
-      bool write(XbmcCommons::Buffer& buffer);
+      bool write(XbmcCommons::Buffer& buffer) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -213,7 +212,7 @@ namespace XBMCAddon
       ///
       size();
 #else
-      inline long long size() { DelayedCallGuard dg(languageHook); return file->GetLength(); }
+      inline long long size() const { DelayedCallGuard dg(languageHook); return file->GetLength(); }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -249,7 +248,7 @@ namespace XBMCAddon
       ///
       seek(...);
 #else
-      inline long long seek(long long seekBytes, int iWhence = SEEK_SET) { DelayedCallGuard dg(languageHook); return file->Seek(seekBytes,iWhence); }
+      inline long long seek(long long seekBytes, int iWhence = SEEK_SET) const { DelayedCallGuard dg(languageHook); return file->Seek(seekBytes,iWhence); }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -283,7 +282,7 @@ namespace XBMCAddon
       ///
       tell();
 #else
-      inline long long tell() { DelayedCallGuard dg(languageHook); return file->GetPosition(); }
+      inline long long tell() const { DelayedCallGuard dg(languageHook); return file->GetPosition(); }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -313,7 +312,7 @@ namespace XBMCAddon
       ///
       close();
 #else
-      inline void close() { DelayedCallGuard dg(languageHook); file->Close(); }
+      inline void close() const { DelayedCallGuard dg(languageHook); file->Close(); }
 #endif
 
 #ifndef SWIG

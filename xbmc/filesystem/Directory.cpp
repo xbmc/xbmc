@@ -81,18 +81,15 @@ public:
   }
   ~CGetDirectory() { CServiceBroker::GetJobManager()->CancelJob(m_id); }
 
-  CEvent& GetEvent()
-  {
+  CEvent& GetEvent() const {
     return m_result->m_event;
   }
 
-  bool Wait(unsigned int timeout)
-  {
+  bool Wait(unsigned int timeout) const {
     return m_result->m_event.Wait(std::chrono::milliseconds(timeout));
   }
 
-  bool GetDirectory(CFileItemList& list)
-  {
+  bool GetDirectory(CFileItemList& list) const {
     /* if it was not finished or failed, return failure */
     if (!m_result->m_event.Wait(0ms) || !m_result->m_result)
     {

@@ -75,7 +75,7 @@ public:
 
   int GetDataSize() const { return m_iDataSize; }
   int GetTimeSize() const;
-  unsigned GetPacketCount(CDVDMsg::Message type);
+  unsigned GetPacketCount(CDVDMsg::Message type) const;
   bool ReceivedAbortRequest() { return m_bAbortRequest; }
   void WaitUntilEmpty();
 

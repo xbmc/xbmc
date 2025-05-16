@@ -39,17 +39,17 @@ public:
   bool IsStalled() const override { return true; }
 
   std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return m_TXTCache; }
-  void LoadPage(int p, int sp, unsigned char* buffer);
+  void LoadPage(int p, int sp, unsigned char* buffer) const;
 
 protected:
   void OnExit() override;
   void Process() override;
 
 private:
-  void ResetTeletextCache();
+  void ResetTeletextCache() const;
   void Decode_p2829(unsigned char *vtxt_row, TextExtData_t **ptExtData);
-  void SavePage(int p, int sp, unsigned char* buffer);
-  void ErasePage(int magazine);
+  void SavePage(int p, int sp, unsigned char* buffer) const;
+  void ErasePage(int magazine) const;
   void AllocateCache(int magazine);
 
   int m_speed;

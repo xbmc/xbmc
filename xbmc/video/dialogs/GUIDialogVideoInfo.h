@@ -91,8 +91,8 @@ protected:
    * \param pItem Search result item
    */
   void OnSearchItemFound(const CFileItem* pItem);
-  bool OnManageVideoVersions();
-  bool OnManageVideoExtras();
+  bool OnManageVideoVersions() const;
+  bool OnManageVideoExtras() const;
   void Play(bool resume = false);
   void OnGetArt();
   void OnGetFanart();

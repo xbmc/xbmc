@@ -75,7 +75,7 @@ namespace PVR
     bool OnClickButtonRefreshChannelLogos();
 
     bool UpdateChannelData(const std::shared_ptr<CFileItem>& pItem,
-                           const std::shared_ptr<CPVRChannelGroup>& group);
+                           const std::shared_ptr<CPVRChannelGroup>& group) const;
 
     bool HasChangedItems() const;
     void SetItemChanged(const CFileItemPtr& pItem);

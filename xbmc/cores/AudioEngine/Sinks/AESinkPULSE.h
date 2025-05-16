@@ -50,8 +50,8 @@ public:
 
   bool IsInitialized();
   void UpdateInternalVolume(const pa_cvolume* nVol);
-  pa_stream* GetInternalStream();
-  pa_threaded_mainloop* GetInternalMainLoop();
+  pa_stream* GetInternalStream() const;
+  pa_threaded_mainloop* GetInternalMainLoop() const;
   CCriticalSection m_sec;
   std::atomic<int> m_requestedBytes = 0;
 

@@ -578,8 +578,7 @@ public:
   ///
   /// The add-on calls this if a change in hardware is detected.
   ///
-  void TriggerScan(void)
-  {
+  void TriggerScan(void) const {
     return m_instanceData->toKodi->trigger_scan(m_instanceData->toKodi->kodiInstance);
   }
   //----------------------------------------------------------------------------
@@ -592,8 +591,7 @@ public:
   /// @param[in] controllerId [optional] The controller ID to refresh, or
   ///                         empty/null for all controllers
   ///
-  void RefreshButtonMaps(const std::string& deviceName = "", const std::string& controllerId = "")
-  {
+  void RefreshButtonMaps(const std::string& deviceName = "", const std::string& controllerId = "") const {
     return m_instanceData->toKodi->refresh_button_maps(m_instanceData->toKodi->kodiInstance,
                                                        deviceName.c_str(), controllerId.c_str());
   }
@@ -609,8 +607,7 @@ public:
   /// @return The number of features matching the request parameters
   ///
   unsigned int FeatureCount(const std::string& controllerId,
-                            JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN)
-  {
+                            JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN) const {
     return m_instanceData->toKodi->feature_count(m_instanceData->toKodi->kodiInstance,
                                                  controllerId.c_str(), type);
   }
@@ -624,8 +621,7 @@ public:
   /// @return The type of the specified feature, or @ref JOYSTICK_FEATURE_TYPE_UNKNOWN
   /// if unknown
   ///
-  JOYSTICK_FEATURE_TYPE FeatureType(const std::string& controllerId, const std::string& featureName)
-  {
+  JOYSTICK_FEATURE_TYPE FeatureType(const std::string& controllerId, const std::string& featureName) const {
     return m_instanceData->toKodi->feature_type(m_instanceData->toKodi->kodiInstance,
                                                 controllerId.c_str(), featureName.c_str());
   }

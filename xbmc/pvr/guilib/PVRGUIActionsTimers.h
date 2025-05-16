@@ -124,7 +124,7 @@ public:
    * @param bOnOff True to start recording, false to stop.
    * @return True if the recording was started or stopped successfully, false otherwise.
    */
-  bool SetRecordingOnChannel(const std::shared_ptr<CPVRChannel>& channel, bool bOnOff);
+  bool SetRecordingOnChannel(const std::shared_ptr<CPVRChannel>& channel, bool bOnOff) const;
 
   /*!
    * @brief Stop a currently active recording, always showing a confirmation dialog.

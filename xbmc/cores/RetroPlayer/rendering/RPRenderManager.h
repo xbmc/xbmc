@@ -76,7 +76,7 @@ public:
   /*!
    * \brief Access the factory for creating GUI render targets
    */
-  CGUIRenderTargetFactory* GetGUIRenderTargetFactory() { return m_renderControlFactory.get(); }
+  CGUIRenderTargetFactory* GetGUIRenderTargetFactory() const { return m_renderControlFactory.get(); }
 
   // Stream properties, set upon configuration
   AVPixelFormat GetPixelFormat() const { return m_format; }
@@ -145,7 +145,7 @@ private:
   void RenderInternal(const std::shared_ptr<CRPBaseRenderer>& renderer,
                       IRenderBuffer* renderBuffer,
                       bool bClear,
-                      uint32_t alpha);
+                      uint32_t alpha) const;
 
   /*!
    * \brief Return true if we have a render buffer belonging to the specified pool

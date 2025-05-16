@@ -483,8 +483,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
   return bPlaying;
 }
 
-void CAutorun::HandleAutorun()
-{
+void CAutorun::HandleAutorun() const {
 #if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   const CDetectDVDMedia& mediadetect = CServiceBroker::GetDetectDVDMedia();
 

@@ -55,8 +55,7 @@ bool CXbtManager::GetReader(const CURL& path, CXBTFReaderPtr& reader) const
   return true;
 }
 
-void CXbtManager::Release(const CURL& path)
-{
+void CXbtManager::Release(const CURL& path) const {
   std::lock_guard l(m_lock);
   const auto& it = GetReader(path);
   if (it == m_readers.end())

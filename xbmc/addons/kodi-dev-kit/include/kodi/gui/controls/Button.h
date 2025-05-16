@@ -70,8 +70,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_button->set_visible(m_interface->kodiBase, m_controlHandle,
                                                        visible);
   }
@@ -83,8 +82,7 @@ public:
   ///
   /// @param[in] enabled If true enabled, otherwise disabled
   ///
-  void SetEnabled(bool enabled)
-  {
+  void SetEnabled(bool enabled) const {
     m_interface->kodi_gui->control_button->set_enabled(m_interface->kodiBase, m_controlHandle,
                                                        enabled);
   }
@@ -96,8 +94,7 @@ public:
   ///
   /// @param[in] label Text to show
   ///
-  void SetLabel(const std::string& label)
-  {
+  void SetLabel(const std::string& label) const {
     m_interface->kodi_gui->control_button->set_label(m_interface->kodiBase, m_controlHandle,
                                                      label.c_str());
   }
@@ -130,8 +127,7 @@ public:
   ///
   /// @param[in] label Text for second label
   ///
-  void SetLabel2(const std::string& label)
-  {
+  void SetLabel2(const std::string& label) const {
     m_interface->kodi_gui->control_button->set_label2(m_interface->kodiBase, m_controlHandle,
                                                       label.c_str());
   }

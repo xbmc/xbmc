@@ -30,19 +30,19 @@ public:
   ~CPowerManager() override;
 
   void Initialize();
-  void SetDefaults();
+  void SetDefaults() const;
 
   bool Powerdown();
   bool Suspend();
   bool Hibernate();
   bool Reboot();
 
-  bool CanPowerdown();
-  bool CanSuspend();
-  bool CanHibernate();
-  bool CanReboot();
+  bool CanPowerdown() const;
+  bool CanSuspend() const;
+  bool CanHibernate() const;
+  bool CanReboot() const;
 
-  int  BatteryLevel();
+  int  BatteryLevel() const;
 
   void ProcessEvents();
 
@@ -57,7 +57,7 @@ private:
   void OnSleep() override;
   void OnWake() override;
   void OnLowBattery() override;
-  void RestorePlayerState();
+  void RestorePlayerState() const;
   void StorePlayerState();
 
   // Construction parameters

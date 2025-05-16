@@ -13,7 +13,6 @@
 using namespace KODI;
 using namespace RETRO;
 
-void DeleteStream::operator()(IRetroPlayerStream* stream)
-{
+void DeleteStream::operator()(IRetroPlayerStream* stream) const {
   delete stream;
 }

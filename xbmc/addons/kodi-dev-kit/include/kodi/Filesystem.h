@@ -129,14 +129,13 @@ public:
   ///@{
 
   /// @brief Set ID of device containing file.
-  void SetDeviceId(uint32_t deviceId) { m_cStructure->deviceId = deviceId; }
+  void SetDeviceId(uint32_t deviceId) const { m_cStructure->deviceId = deviceId; }
 
   /// @brief Get ID of device containing file.
   uint32_t GetDeviceId() const { return m_cStructure->deviceId; }
 
   /// @brief Set the file serial number, which distinguishes this file from all other files on the same device.
-  void SetFileSerialNumber(uint64_t fileSerialNumber)
-  {
+  void SetFileSerialNumber(uint64_t fileSerialNumber) const {
     m_cStructure->fileSerialNumber = fileSerialNumber;
   }
 
@@ -144,20 +143,19 @@ public:
   uint64_t GetFileSerialNumber() const { return m_cStructure->fileSerialNumber; }
 
   /// @brief Set total size, in bytes.
-  void SetSize(uint64_t size) { m_cStructure->size = size; }
+  void SetSize(uint64_t size) const { m_cStructure->size = size; }
 
   /// @brief Get total size, in bytes.
   uint64_t GetSize() const { return m_cStructure->size; }
 
   /// @brief Set time of last access.
-  void SetAccessTime(time_t accessTime) { m_cStructure->accessTime = accessTime; }
+  void SetAccessTime(time_t accessTime) const { m_cStructure->accessTime = accessTime; }
 
   /// @brief Get time of last access.
   time_t GetAccessTime() const { return m_cStructure->accessTime; }
 
   /// @brief Set time of last modification.
-  void SetModificationTime(time_t modificationTime)
-  {
+  void SetModificationTime(time_t modificationTime) const {
     m_cStructure->modificationTime = modificationTime;
   }
 
@@ -165,49 +163,49 @@ public:
   time_t GetModificationTime() const { return m_cStructure->modificationTime; }
 
   /// @brief Set time of last status change.
-  void SetStatusTime(time_t statusTime) { m_cStructure->statusTime = statusTime; }
+  void SetStatusTime(time_t statusTime) const { m_cStructure->statusTime = statusTime; }
 
   /// @brief Get time of last status change.
   time_t GetStatusTime() const { return m_cStructure->statusTime; }
 
   /// @brief Set the stat url is a directory.
-  void SetIsDirectory(bool isDirectory) { m_cStructure->isDirectory = isDirectory; }
+  void SetIsDirectory(bool isDirectory) const { m_cStructure->isDirectory = isDirectory; }
 
   /// @brief The stat url is a directory if returns true.
   bool GetIsDirectory() const { return m_cStructure->isDirectory; }
 
   /// @brief Set stat url as a symbolic link.
-  void SetIsSymLink(bool isSymLink) { m_cStructure->isSymLink = isSymLink; }
+  void SetIsSymLink(bool isSymLink) const { m_cStructure->isSymLink = isSymLink; }
 
   /// @brief Get stat url is a symbolic link.
   bool GetIsSymLink() const { return m_cStructure->isSymLink; }
 
   /// @brief Set stat url as a block special.
-  void SetIsBlock(bool isBlock) { m_cStructure->isBlock = isBlock; }
+  void SetIsBlock(bool isBlock) const { m_cStructure->isBlock = isBlock; }
 
   /// @brief Get stat url is a block special.
   bool GetIsBlock() const { return m_cStructure->isBlock; }
 
   /// @brief Set stat url as a character special.
-  void SetIsCharacter(bool isCharacter) { m_cStructure->isCharacter = isCharacter; }
+  void SetIsCharacter(bool isCharacter) const { m_cStructure->isCharacter = isCharacter; }
 
   /// @brief Get stat url is a character special.
   bool GetIsCharacter() const { return m_cStructure->isCharacter; }
 
   /// @brief Set stat url as a FIFO special.
-  void SetIsFifo(bool isFifo) { m_cStructure->isFifo = isFifo; }
+  void SetIsFifo(bool isFifo) const { m_cStructure->isFifo = isFifo; }
 
   /// @brief Get stat url is a FIFO special.
   bool GetIsFifo() const { return m_cStructure->isFifo; }
 
   /// @brief Set stat url as a regular.
-  void SetIsRegular(bool isRegular) { m_cStructure->isRegular = isRegular; }
+  void SetIsRegular(bool isRegular) const { m_cStructure->isRegular = isRegular; }
 
   /// @brief Get stat url is a regular.
   bool GetIsRegular() const { return m_cStructure->isRegular; }
 
   /// @brief Set stat url is a socket.
-  void SetIsSocket(bool isSocket) { m_cStructure->isSocket = isSocket; }
+  void SetIsSocket(bool isSocket) const { m_cStructure->isSocket = isSocket; }
 
   /// @brief Get stat url is a regular.
   bool GetIsSocket() const { return m_cStructure->isSocket; }
@@ -253,28 +251,28 @@ public:
   ///@{
 
   /// @brief Set number of bytes cached forward of current position.
-  void SetForward(uint64_t forward) { m_cStructure->forward = forward; }
+  void SetForward(uint64_t forward) const { m_cStructure->forward = forward; }
 
   /// @brief Get number of bytes cached forward of current position.
-  uint64_t GetForward() { return m_cStructure->forward; }
+  uint64_t GetForward() const { return m_cStructure->forward; }
 
   /// @brief Set maximum number of bytes per second cache is allowed to fill.
-  void SetMaxRate(uint32_t maxrate) { m_cStructure->maxrate = maxrate; }
+  void SetMaxRate(uint32_t maxrate) const { m_cStructure->maxrate = maxrate; }
 
   /// @brief Set maximum number of bytes per second cache is allowed to fill.
-  uint32_t GetMaxRate() { return m_cStructure->maxrate; }
+  uint32_t GetMaxRate() const { return m_cStructure->maxrate; }
 
   /// @brief Set number of bytes per second for average read rate from source file since last position change.
-  void SetCurrentRate(uint32_t currate) { m_cStructure->currate = currate; }
+  void SetCurrentRate(uint32_t currate) const { m_cStructure->currate = currate; }
 
   /// @brief Get number of bytes per second for average read rate from source file since last position change.
-  uint32_t GetCurrentRate() { return m_cStructure->currate; }
+  uint32_t GetCurrentRate() const { return m_cStructure->currate; }
 
   /// @brief Set number of bytes per second for low speed rate.
-  void SetLowRate(uint32_t lowrate) { m_cStructure->lowrate = lowrate; }
+  void SetLowRate(uint32_t lowrate) const { m_cStructure->lowrate = lowrate; }
 
   /// @brief Get number of bytes per second for low speed rate.
-  uint32_t GetLowRate() { return m_cStructure->lowrate; }
+  uint32_t GetLowRate() const { return m_cStructure->lowrate; }
 
   ///@}
 };
@@ -651,7 +649,7 @@ public:
   ///
   /// @return The with time_t defined date and time of file
   ///
-  time_t DateTime() { return m_dateTime; }
+  time_t DateTime() const { return m_dateTime; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -1956,8 +1954,7 @@ public:
   /// @param[in] value Value of the option
   /// @return True on success or false on failure
   ///
-  bool CURLAddOption(CURLOptiontype type, const std::string& name, const std::string& value)
-  {
+  bool CURLAddOption(CURLOptiontype type, const std::string& name, const std::string& value) const {
     using namespace kodi::addon;
 
     if (!m_file)
@@ -1977,8 +1974,7 @@ public:
   /// @param[in] flags [opt] The flags to pass, see @ref OpenFileFlags
   /// @return True on success or false on failure
   ///
-  bool CURLOpen(unsigned int flags = 0)
-  {
+  bool CURLOpen(unsigned int flags = 0) const {
     using namespace kodi::addon;
 
     if (!m_file)
@@ -2002,8 +1998,7 @@ public:
   ///         file was reached) or undetectable error occur, -1 in case of any
   ///         explicit error
   ///
-  ssize_t Read(void* ptr, size_t size)
-  {
+  ssize_t Read(void* ptr, size_t size) const {
     using namespace kodi::addon;
 
     if (!m_file)
@@ -2046,8 +2041,7 @@ public:
   ///
   /// ~~~~~~~~~~~~~
   ///
-  bool ReadLine(std::string& line)
-  {
+  bool ReadLine(std::string& line) const {
     using namespace kodi::addon;
 
     line.clear();
@@ -2084,8 +2078,7 @@ public:
   ///         zero if no bytes were written and no detectable error occur,-1
   ///         in case of any explicit error
   ///
-  ssize_t Write(const void* ptr, size_t size)
-  {
+  ssize_t Write(const void* ptr, size_t size) const {
     using namespace kodi::addon;
 
     if (!m_file)
@@ -2109,8 +2102,7 @@ public:
   /// class is destructed, all the buffers associated with it are
   /// automatically flushed.
   ///
-  void Flush()
-  {
+  void Flush() const {
     using namespace kodi::addon;
 
     if (!m_file)
@@ -2138,8 +2130,7 @@ public:
   /// @return Returns the resulting offset location as measured in bytes from
   ///         the beginning of the file. On error, the value -1 is returned.
   ///
-  int64_t Seek(int64_t position, int whence = SEEK_SET)
-  {
+  int64_t Seek(int64_t position, int whence = SEEK_SET) const {
     using namespace kodi::addon;
 
     if (!m_file)
@@ -2156,8 +2147,7 @@ public:
   /// @param[in] size The new max size.
   /// @return New size? On error, the value -1 is returned.
   ///
-  int Truncate(int64_t size)
-  {
+  int Truncate(int64_t size) const {
     using namespace kodi::addon;
 
     if (!m_file)
@@ -2283,8 +2273,7 @@ public:
   /// @param[in] rate Cache rate size to use
   /// @return true if successfully done, false otherwise
   ///
-  bool IoControlSetCacheRate(uint32_t rate)
-  {
+  bool IoControlSetCacheRate(uint32_t rate) const {
     using namespace kodi::addon;
 
     if (!m_file)
@@ -2301,8 +2290,7 @@ public:
   /// @param[in] retry To set the retry, true for use, false for not
   /// @return true if successfully done, false otherwise
   ///
-  bool IoControlSetRetry(bool retry)
-  {
+  bool IoControlSetRetry(bool retry) const {
     using namespace kodi::addon;
 
     if (!m_file)

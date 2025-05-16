@@ -48,8 +48,7 @@ void CAgentKeyboard::Deinitialize()
   m_controllerAppearance.reset();
 }
 
-void CAgentKeyboard::ClearButtonState()
-{
+void CAgentKeyboard::ClearButtonState() const {
   return m_keyboardActivity->ClearButtonState();
 }
 

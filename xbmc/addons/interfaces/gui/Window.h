@@ -218,13 +218,13 @@ extern "C"
     void RemoveItem(int itemPosition);
     void RemoveItem(CFileItemPtr* fileItem);
     void ClearList();
-    CFileItemPtr* GetListItem(int position);
-    int GetListSize();
-    int GetCurrentListPosition();
+    CFileItemPtr* GetListItem(int position) const;
+    int GetListSize() const;
+    int GetCurrentListPosition() const;
     void SetCurrentListPosition(int item);
-    void SetContainerProperty(const std::string& key, const std::string& value);
-    void SetContainerContent(const std::string& value);
-    int GetCurrentContainerControlId();
+    void SetContainerProperty(const std::string& key, const std::string& value) const;
+    void SetContainerContent(const std::string& value) const;
+    int GetCurrentContainerControlId() const;
     CGUIControl* GetAddonControl(int controlId,
                                  CGUIControl::GUICONTROLTYPES type,
                                  const std::string& typeName);

@@ -354,8 +354,7 @@ void CGUIWindowPVRChannelsBase::UpdateEpg(const CFileItemPtr& item)
   }
 }
 
-void CGUIWindowPVRChannelsBase::ShowChannelManager()
-{
+void CGUIWindowPVRChannelsBase::ShowChannelManager() const {
   CGUIDialogPVRChannelManager* dialog =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRChannelManager>(
           WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
@@ -368,8 +367,7 @@ void CGUIWindowPVRChannelsBase::ShowChannelManager()
   dialog->Open(iItem >= 0 && iItem < m_vecItems->Size() ? m_vecItems->Get(iItem) : nullptr);
 }
 
-void CGUIWindowPVRChannelsBase::ShowGroupManager()
-{
+void CGUIWindowPVRChannelsBase::ShowGroupManager() const {
   /* Load group manager dialog */
   CGUIDialogPVRGroupManager* pDlgInfo =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRGroupManager>(

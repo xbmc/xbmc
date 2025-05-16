@@ -158,8 +158,7 @@ void CRenderer::Render(int idx)
   ReleaseUnused();
 }
 
-void CRenderer::Render(COverlay* o)
-{
+void CRenderer::Render(COverlay* o) const {
   SRenderState state;
   state.x = o->m_x;
   state.y = o->m_y;

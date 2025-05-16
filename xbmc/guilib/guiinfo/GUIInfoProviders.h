@@ -64,7 +64,7 @@ public:
    * @param item The new item.
    * @return True if the item was inited by one of the providers, false otherwise.
    */
-  bool InitCurrentItem(CFileItem *item);
+  bool InitCurrentItem(CFileItem *item) const;
 
   /*!
    * @brief Get a GUIInfoManager label string from one of the registered providers.
@@ -103,7 +103,7 @@ public:
    * @param videoInfo New video stream info.
    * @param subtitleInfo New subtitle stream info.
    */
-  void UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo, const SubtitleStreamInfo& subtitleInfo);
+  void UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo, const SubtitleStreamInfo& subtitleInfo) const;
 
   /*!
    * @brief Get the player guiinfo provider.

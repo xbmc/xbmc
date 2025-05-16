@@ -177,8 +177,7 @@ struct CGUIFontCacheStaticPosition
 
 struct CGUIFontCacheStaticValue : public std::shared_ptr<std::vector<SVertex>>
 {
-  void clear()
-  {
+  void clear() const {
     if (*this)
       (*this)->clear();
   }

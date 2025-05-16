@@ -101,8 +101,7 @@ void CGUIControlLookup::RemoveLookup(CGUIControl *control)
     lookupControl->RemoveLookup(control);
 }
 
-void CGUIControlLookup::RemoveLookup()
-{
+void CGUIControlLookup::RemoveLookup() const {
   CGUIControlLookup *lookupControl;
   if (m_parentControl && (lookupControl = dynamic_cast<CGUIControlLookup*>(m_parentControl)))
   {

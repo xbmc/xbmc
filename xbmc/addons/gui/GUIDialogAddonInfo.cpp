@@ -284,8 +284,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
 static const std::string LOCAL_CACHE =
     "\\0_local_cache"; // \0 to give it the lowest priority when sorting
 
-int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<CAddonVersion, std::string>>& versions)
-{
+int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<CAddonVersion, std::string>>& versions) const {
   auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
       WINDOW_DIALOG_SELECT);
   dialog->Reset();
@@ -543,8 +542,7 @@ bool CGUIDialogAddonInfo::CanShowSupportList() const
                           m_localAddon->Type() == AddonType::IMAGEDECODER);
 }
 
-bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
-{
+bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2) const {
   if (!m_localAddon)
     return false;
 
@@ -623,8 +621,7 @@ void CGUIDialogAddonInfo::OnEnableDisable()
   UpdateControls(PerformButtonFocus::CHOICE_NO);
 }
 
-void CGUIDialogAddonInfo::OnSettings()
-{
+void CGUIDialogAddonInfo::OnSettings() const {
   CGUIDialogAddonSettings::ShowForAddon(m_localAddon);
 }
 
@@ -746,8 +743,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
   return true;
 }
 
-void CGUIDialogAddonInfo::ShowSupportList()
-{
+void CGUIDialogAddonInfo::ShowSupportList() const {
   std::vector<KODI::ADDONS::AddonSupportEntry> list;
   if (CanShowSupportList())
     list =

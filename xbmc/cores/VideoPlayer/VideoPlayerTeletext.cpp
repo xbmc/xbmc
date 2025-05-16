@@ -140,8 +140,7 @@ void CDVDTeletextData::CloseStream(bool bWaitForBuffers)
 }
 
 
-void CDVDTeletextData::ResetTeletextCache()
-{
+void CDVDTeletextData::ResetTeletextCache() const {
   std::lock_guard lock(m_TXTCache->m_critSection);
 
   /* Reset Data structures */
@@ -714,8 +713,7 @@ void CDVDTeletextData::Decode_p2829(unsigned char *vtxt_row, TextExtData_t **ptE
   (*ptExtData)->ColorTableRemapping = t2 & 0x07;
 }
 
-void CDVDTeletextData::SavePage(int p, int sp, unsigned char* buffer)
-{
+void CDVDTeletextData::SavePage(int p, int sp, unsigned char* buffer) const {
   std::lock_guard lock(m_TXTCache->m_critSection);
 
   TextCachedPage_t* pg = m_TXTCache->astCachetable[p][sp];
@@ -728,8 +726,7 @@ void CDVDTeletextData::SavePage(int p, int sp, unsigned char* buffer)
   memcpy(pg->data, buffer, 23*40);
 }
 
-void CDVDTeletextData::LoadPage(int p, int sp, unsigned char* buffer)
-{
+void CDVDTeletextData::LoadPage(int p, int sp, unsigned char* buffer) const {
   std::lock_guard lock(m_TXTCache->m_critSection);
 
   TextCachedPage_t* pg = m_TXTCache->astCachetable[p][sp];
@@ -742,8 +739,7 @@ void CDVDTeletextData::LoadPage(int p, int sp, unsigned char* buffer)
   memcpy(buffer, pg->data, 23*40);
 }
 
-void CDVDTeletextData::ErasePage(int magazine)
-{
+void CDVDTeletextData::ErasePage(int magazine) const {
   std::lock_guard lock(m_TXTCache->m_critSection);
 
   TextCachedPage_t* pg = m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]];

@@ -24,8 +24,7 @@ CFilesystemInstaller::CFilesystemInstaller()
 {
 }
 
-bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const std::string& addonId)
-{
+bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const std::string& addonId) const {
   auto addonFolder = URIUtils::AddFileToFolder(m_addonFolder, addonId);
   auto newAddonData = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
   auto oldAddonData = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
@@ -67,8 +66,7 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const
   return true;
 }
 
-bool CFilesystemInstaller::UnInstallFromFilesystem(const std::string& addonFolder)
-{
+bool CFilesystemInstaller::UnInstallFromFilesystem(const std::string& addonFolder) const {
   auto tempFolder = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
   if (!CFile::Rename(addonFolder, tempFolder))
   {

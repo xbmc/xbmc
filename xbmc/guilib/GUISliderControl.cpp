@@ -169,8 +169,7 @@ bool CGUISliderControl::ProcessSelector(CGUITexture* background,
                                         CGUITexture* nib,
                                         unsigned int currentTime,
                                         float fScale,
-                                        RangeSelector selector)
-{
+                                        RangeSelector selector) const {
   bool dirty = false;
   // we render the nib centered at the appropriate percentage, except where the nib
   // would overflow the background image
@@ -377,8 +376,7 @@ void CGUISliderControl::Move(int iNumSteps)
   SendClick();
 }
 
-void CGUISliderControl::SendClick()
-{
+void CGUISliderControl::SendClick() const {
   float percent = 100*GetProportion();
   SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(percent));
   if (m_action && (!m_dragging || m_action->fireOnDrag))

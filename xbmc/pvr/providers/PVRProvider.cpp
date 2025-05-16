@@ -315,8 +315,7 @@ bool CPVRProvider::Persist(bool updateRecord /* = false */)
   return false;
 }
 
-bool CPVRProvider::DeleteFromDatabase()
-{
+bool CPVRProvider::DeleteFromDatabase() const {
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
   {

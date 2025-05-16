@@ -147,8 +147,7 @@ bool CPeripheralBusAddon::InitializeProperties(CPeripheral& peripheral)
 
 bool CPeripheralBusAddon::SendRumbleEvent(const std::string& strLocation,
                                           unsigned int motorIndex,
-                                          float magnitude)
-{
+                                          float magnitude) const {
   bool bHandled = false;
 
   PeripheralAddonPtr addon;

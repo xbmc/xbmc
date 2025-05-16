@@ -176,8 +176,7 @@ void CPVRGUIChannelNavigator::SelectPreviousChannel(ChannelSwitchMode eSwitchMod
     SelectChannel(prevMember, eSwitchMode);
 }
 
-std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevChannel(bool bNext)
-{
+std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevChannel(bool bNext) const {
   const bool bPlayingRadio = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio();
   const bool bPlayingTV = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV();
 

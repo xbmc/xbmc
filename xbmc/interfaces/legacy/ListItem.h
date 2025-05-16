@@ -141,7 +141,7 @@ namespace XBMCAddon
       ///
       getLabel();
 #else
-      String getLabel();
+      String getLabel() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -165,7 +165,7 @@ namespace XBMCAddon
       ///
       getLabel2();
 #else
-      String getLabel2();
+      String getLabel2() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -189,7 +189,7 @@ namespace XBMCAddon
       ///
       setLabel(...);
 #else
-      void setLabel(const String& label);
+      void setLabel(const String& label) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -213,7 +213,7 @@ namespace XBMCAddon
       ///
       setLabel2(...);
 #else
-      void setLabel2(const String& label);
+      void setLabel2(const String& label) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -238,7 +238,7 @@ namespace XBMCAddon
       ///
       getDateTime();
 #else
-      String getDateTime();
+      String getDateTime() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -471,7 +471,7 @@ namespace XBMCAddon
       ///
       getArt(key);
 #else
-      String getArt(const char* key);
+      String getArt(const char* key) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -613,7 +613,7 @@ namespace XBMCAddon
       ///
       select(...);
 #else
-      void select(bool selected);
+      void select(bool selected) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -638,7 +638,7 @@ namespace XBMCAddon
       ///
       isSelected();
 #else
-      bool isSelected();
+      bool isSelected() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -975,7 +975,7 @@ namespace XBMCAddon
       ///
       addContextMenuItems(...);
 #else
-      void addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems = false);
+      void addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems = false) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -1183,7 +1183,7 @@ namespace XBMCAddon
       ///
       getPath();
 #else
-      String getPath();
+      String getPath() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -1234,7 +1234,7 @@ namespace XBMCAddon
       ///
       getPictureInfoTag();
 #else
-      xbmc::InfoTagPicture* getPictureInfoTag();
+      xbmc::InfoTagPicture* getPictureInfoTag() const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -1251,7 +1251,7 @@ namespace XBMCAddon
       ///
       getGameInfoTag();
 #else
-      xbmc::InfoTagGame* getGameInfoTag();
+      xbmc::InfoTagGame* getGameInfoTag() const;
 #endif
 
 private:
@@ -1272,18 +1272,18 @@ private:
       MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
       const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const;
 
-      void setTitleRaw(std::string title);
-      void setPathRaw(const std::string& path);
-      void setCountRaw(int count);
-      void setSizeRaw(int64_t size);
-      void setDateTimeRaw(const std::string& dateTime);
-      void setIsFolderRaw(bool isFolder);
-      void setStartOffsetRaw(double startOffset);
-      void setMimeTypeRaw(const std::string& mimetype);
-      void setSpecialSortRaw(std::string specialSort);
-      void setContentLookupRaw(bool enable);
-      void addArtRaw(std::string type, const std::string& url);
-      void addPropertyRaw(std::string type, const CVariant& value);
+      void setTitleRaw(std::string title) const;
+      void setPathRaw(const std::string& path) const;
+      void setCountRaw(int count) const;
+      void setSizeRaw(int64_t size) const;
+      void setDateTimeRaw(const std::string& dateTime) const;
+      void setIsFolderRaw(bool isFolder) const;
+      void setStartOffsetRaw(double startOffset) const;
+      void setMimeTypeRaw(const std::string& mimetype) const;
+      void setSpecialSortRaw(std::string specialSort) const;
+      void setContentLookupRaw(bool enable) const;
+      void addArtRaw(std::string type, const std::string& url) const;
+      void addPropertyRaw(std::string type, const CVariant& value) const;
       void addSubtitlesRaw(const std::vector<std::string>& subtitles);
     };
 

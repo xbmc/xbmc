@@ -154,10 +154,10 @@ public:
   KODI::WINDOWING::COSScreenSaverManager* GetOSScreenSaver();
 
   // resolution interfaces
-  unsigned int GetWidth() { return m_nWidth; }
-  unsigned int GetHeight() { return m_nHeight; }
+  unsigned int GetWidth() const { return m_nWidth; }
+  unsigned int GetHeight() const { return m_nHeight; }
   virtual bool CanDoWindowed() { return true; }
-  bool IsFullScreen() { return m_bFullScreen; }
+  bool IsFullScreen() const { return m_bFullScreen; }
 
   /*!
    * \brief Check if the windowing system supports moving windows across screens

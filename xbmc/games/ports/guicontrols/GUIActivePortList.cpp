@@ -115,8 +115,7 @@ void CGUIActivePortList::Notify(const Observable& obs, const ObservableMessage m
   }
 }
 
-void CGUIActivePortList::OnEvent(const ADDON::AddonEvent& event)
-{
+void CGUIActivePortList::OnEvent(const ADDON::AddonEvent& event) {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // Also called on install
       typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // Not called on uninstall
       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
@@ -153,8 +152,7 @@ void CGUIActivePortList::DeinitializeGUI()
     activePortList->ClearGameClient();
 }
 
-void CGUIActivePortList::AddInputDisabled()
-{
+void CGUIActivePortList::AddInputDisabled() const {
   CFileItem item;
   item.SetArt("icon", "DefaultAddonNone.png");
   m_vecItems->Add(std::move(item));
@@ -175,8 +173,7 @@ void CGUIActivePortList::AddItems(const PortVec& ports)
 }
 
 void CGUIActivePortList::AddItem(const ControllerPtr& controller,
-                                 const std::string& controllerAddress)
-{
+                                 const std::string& controllerAddress) const {
   // Check if a controller is connected that provides input
   if (controller && controller->Topology().ProvidesInput())
   {
@@ -188,8 +185,7 @@ void CGUIActivePortList::AddItem(const ControllerPtr& controller,
   }
 }
 
-void CGUIActivePortList::AddPadding()
-{
+void CGUIActivePortList::AddPadding() const {
   unsigned int itemCount = MAX_PORT_COUNT;
   if (m_showInputDisabled)
     itemCount++;
@@ -198,7 +194,6 @@ void CGUIActivePortList::AddPadding()
     m_vecItems->AddFront(std::make_shared<CFileItem>(), 0);
 }
 
-void CGUIActivePortList::CleanupItems()
-{
+void CGUIActivePortList::CleanupItems() const {
   m_vecItems->Clear();
 }

@@ -136,8 +136,7 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   return true;
 }
 
-AEAudioFormat CAudioDecoder::GetFormat()
-{
+AEAudioFormat CAudioDecoder::GetFormat() const {
   AEAudioFormat format;
   if (!m_codec)
     return format;
@@ -160,14 +159,12 @@ int64_t CAudioDecoder::Seek(int64_t time)
   return m_codec->Seek(time);
 }
 
-void CAudioDecoder::SetTotalTime(int64_t time)
-{
+void CAudioDecoder::SetTotalTime(int64_t time) const {
   if (m_codec)
     m_codec->m_TotalTime = time;
 }
 
-int64_t CAudioDecoder::TotalTime()
-{
+int64_t CAudioDecoder::TotalTime() const {
   if (m_codec)
     return m_codec->m_TotalTime;
   return 0;
@@ -336,16 +333,14 @@ int CAudioDecoder::ReadSamples(int numsamples)
   return RET_SLEEP; // nothing to do
 }
 
-bool CAudioDecoder::CanSeek()
-{
+bool CAudioDecoder::CanSeek() const {
   if (m_codec)
     return m_codec->CanSeek();
   else
     return false;
 }
 
-float CAudioDecoder::GetReplayGain(float &peakVal)
-{
+float CAudioDecoder::GetReplayGain(float &peakVal) const {
 #define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
   auto& components = CServiceBroker::GetAppComponents();
   const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();

@@ -116,8 +116,7 @@ void CDVDDemuxClient::Flush()
   m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
 }
 
-bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
-{
+bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt) const {
   bool change = false;
 
   CDemuxStream* st = GetStream(pkt->iStreamId);
@@ -644,8 +643,7 @@ int CDVDDemuxClient::GetNrOfStreams() const
   return m_streams.size();
 }
 
-bool CDVDDemuxClient::IsVideoReady()
-{
+bool CDVDDemuxClient::IsVideoReady() const {
   for (const auto& stream : m_streams)
   {
     if (stream.first == m_videoStreamPlaying && stream.second->type == STREAM_VIDEO &&

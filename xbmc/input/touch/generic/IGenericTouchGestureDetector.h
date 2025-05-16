@@ -32,7 +32,7 @@ public:
    *
    * \return True if the gesture recognition is finished otherwise false
    */
-  bool IsDone() { return m_done; }
+  bool IsDone() const { return m_done; }
 
   /*!
    * \brief A new touch pointer has been recognised.

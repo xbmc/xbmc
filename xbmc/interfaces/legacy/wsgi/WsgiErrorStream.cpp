@@ -25,8 +25,7 @@ namespace XBMCAddon
       m_request = NULL;
     }
 
-    void WsgiErrorStream::write(const String& str)
-    {
+    void WsgiErrorStream::write(const String& str) const {
       if (str.empty())
         return;
 

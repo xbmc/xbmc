@@ -51,7 +51,7 @@ class CUDisks2Provider : public IStorageProvider
     explicit Block(const char *object);
     ~Block() = default;
 
-    bool IsReady();
+    bool IsReady() const;
 
     /*! \brief Get a representation of the block as a readable string
       * @return block as a string
@@ -67,8 +67,8 @@ class CUDisks2Provider : public IStorageProvider
     explicit Filesystem(const char *object);
     ~Filesystem() = default;
 
-    bool Mount();
-    bool Unmount();
+    bool Mount() const;
+    bool Unmount() const;
 
     /*! \brief Get the device display name/label
      * @return the device display name/label
@@ -177,7 +177,7 @@ private:
 
   std::string m_daemonVersion;
 
-  void GetDisks(VECSOURCES &devices, bool enumerateRemovable);
+  void GetDisks(VECSOURCES &devices, bool enumerateRemovable) const;
 
   void DriveAdded(Drive *drive);
   bool DriveRemoved(const std::string& object);

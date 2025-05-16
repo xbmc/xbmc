@@ -573,8 +573,7 @@ void CGraphicContext::ResetOverscan(RESOLUTION_INFO &res)
   res.Overscan.bottom = res.iHeight;
 }
 
-void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
-{
+void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan) const {
   overscan.left = 0;
   overscan.top = 0;
 
@@ -684,8 +683,7 @@ const RESOLUTION_INFO CGraphicContext::GetResInfo() const
   return GetResInfo(m_Resolution);
 }
 
-void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix /* = NULL */)
-{
+void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, float &scaleY, TransformMatrix *matrix /* = NULL */) const {
   if (m_Resolution != RES_INVALID)
   {
     // calculate necessary scalings
@@ -883,8 +881,7 @@ CRect CGraphicContext::GenerateAABB(const CRect &rect) const
 //       the camera has changed, and if so, changes it.  Similarly, it could set
 //       the world transform at that point as well (or even combine world + view
 //       to cut down on one setting)
-void CGraphicContext::UpdateCameraPosition(const CPoint &camera, const float &factor)
-{
+void CGraphicContext::UpdateCameraPosition(const CPoint &camera, const float &factor) const {
   float stereoFactor = 0.f;
   if ( m_stereoMode != RENDER_STEREO_MODE_OFF
     && m_stereoMode != RENDER_STEREO_MODE_MONO

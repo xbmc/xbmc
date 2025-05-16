@@ -62,18 +62,15 @@ CGameSettings::~CGameSettings()
   m_settings->UnregisterCallback(this);
 }
 
-bool CGameSettings::GamesEnabled()
-{
+bool CGameSettings::GamesEnabled() const {
   return m_settings->GetBool(SETTING_GAMES_ENABLE);
 }
 
-bool CGameSettings::ShowOSDHelp()
-{
+bool CGameSettings::ShowOSDHelp() const {
   return m_settings->GetBool(SETTING_GAMES_SHOW_OSD_HELP);
 }
 
-void CGameSettings::SetShowOSDHelp(bool bShow)
-{
+void CGameSettings::SetShowOSDHelp(bool bShow) const {
   if (m_settings->GetBool(SETTING_GAMES_SHOW_OSD_HELP) != bShow)
   {
     m_settings->SetBool(SETTING_GAMES_SHOW_OSD_HELP, bShow);
@@ -83,23 +80,19 @@ void CGameSettings::SetShowOSDHelp(bool bShow)
   }
 }
 
-void CGameSettings::ToggleGames()
-{
+void CGameSettings::ToggleGames() const {
   m_settings->ToggleBool(SETTING_GAMES_ENABLE);
 }
 
-bool CGameSettings::AutosaveEnabled()
-{
+bool CGameSettings::AutosaveEnabled() const {
   return m_settings->GetBool(SETTING_GAMES_ENABLEAUTOSAVE);
 }
 
-bool CGameSettings::RewindEnabled()
-{
+bool CGameSettings::RewindEnabled() const {
   return m_settings->GetBool(SETTING_GAMES_ENABLEREWIND);
 }
 
-unsigned int CGameSettings::MaxRewindTimeSec()
-{
+unsigned int CGameSettings::MaxRewindTimeSec() const {
   int rewindTimeSec = m_settings->GetInt(SETTING_GAMES_REWINDTIME);
 
   return static_cast<unsigned int>(std::max(rewindTimeSec, 0));

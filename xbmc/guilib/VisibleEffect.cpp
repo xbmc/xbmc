@@ -565,8 +565,7 @@ void CAnimation::ApplyAnimation()
   Calculate(CPoint());
 }
 
-void CAnimation::Calculate(const CPoint &center)
-{
+void CAnimation::Calculate(const CPoint &center) const {
   for (unsigned int i = 0; i < m_effects.size(); i++)
   {
     CAnimEffect *effect = m_effects[i];
@@ -617,8 +616,7 @@ CAnimation CAnimation::CreateFader(float start, float end, unsigned int delay, u
   return anim;
 }
 
-bool CAnimation::CheckCondition()
-{
+bool CAnimation::CheckCondition() const {
   return !m_condition || m_condition->Get(INFO::DEFAULT_CONTEXT);
 }
 
@@ -786,8 +784,7 @@ void CScroller::ScrollTo(float endPos)
   m_startTime = 0;
 }
 
-float CScroller::Tween(float progress)
-{
+float CScroller::Tween(float progress) const {
   if (m_pTweener)
   {
     if (m_hasResumePoint) // tweener with in_and_out easing

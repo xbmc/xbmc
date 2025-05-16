@@ -62,7 +62,7 @@ public:
    *
    * \param bWait If true, this blocks until all events are handled
    */
-  void HandleEvents(bool bWait);
+  void HandleEvents(bool bWait) const;
 
 private:
   IEventPollCallback& m_callback;

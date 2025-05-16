@@ -118,8 +118,7 @@ void CGUIDialogVideoManagerVersions::UpdateButtons()
   }
 }
 
-void CGUIDialogVideoManagerVersions::UpdateDefaultVideoVersionSelection()
-{
+void CGUIDialogVideoManagerVersions::UpdateDefaultVideoVersionSelection() const {
   // find new item in list and select it
   const int defaultDbId{m_defaultVideoVersion->GetVideoInfoTag()->m_iDbId};
   for (const auto& item : *m_videoAssetsList)
@@ -627,8 +626,7 @@ bool CGUIDialogVideoManagerVersions::GetSimilarMovies(const std::shared_ptr<CFil
 }
 
 bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
-    const std::shared_ptr<CFileItem>& itemMovie)
-{
+    const std::shared_ptr<CFileItem>& itemMovie) const {
   // A movie with versions cannot be turned into a version
   if (itemMovie->GetVideoInfoTag()->HasVideoVersions())
   {

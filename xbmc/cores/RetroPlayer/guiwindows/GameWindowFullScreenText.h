@@ -67,7 +67,7 @@ private:
   // Window functions required by GUIMessage macros
   //! @todo Change macros into functions
   int GetID() const;
-  bool OnMessage(CGUIMessage& message);
+  bool OnMessage(CGUIMessage& message) const;
 
   // Construction parameters
   CGUIWindow& m_fullscreenWindow;

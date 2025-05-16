@@ -16,7 +16,7 @@ class CAppInboundProtocol
 {
 public:
   CAppInboundProtocol(CApplication &app);
-  bool OnEvent(XBMC_Event &event);
+  bool OnEvent(XBMC_Event &event) const;
   void SetRenderGUI(bool renderGUI);
 
 protected:

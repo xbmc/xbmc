@@ -259,8 +259,7 @@ void CProfileManager::Clear()
   m_profiles.clear();
 }
 
-void CProfileManager::PrepareLoadProfile(unsigned int profileIndex)
-{
+void CProfileManager::PrepareLoadProfile(unsigned int profileIndex) const {
   CContextMenuManager &contextMenuManager = CServiceBroker::GetContextMenuManager();
   ADDON::CServiceAddonManager &serviceAddons = CServiceBroker::GetServiceAddons();
   PVR::CPVRManager &pvrManager = CServiceBroker::GetPVRManager();
@@ -376,8 +375,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
   return true;
 }
 
-void CProfileManager::FinalizeLoadProfile()
-{
+void CProfileManager::FinalizeLoadProfile() const {
   CContextMenuManager &contextMenuManager = CServiceBroker::GetContextMenuManager();
   ADDON::CServiceAddonManager &serviceAddons = CServiceBroker::GetServiceAddons();
   PVR::CPVRManager &pvrManager = CServiceBroker::GetPVRManager();
@@ -522,8 +520,7 @@ bool CProfileManager::DeleteProfile(unsigned int index)
   return Save();
 }
 
-void CProfileManager::CreateProfileFolders()
-{
+void CProfileManager::CreateProfileFolders() const {
   CDirectory::Create(GetDatabaseFolder());
   CDirectory::Create(GetCDDBFolder());
   CDirectory::Create(GetLibraryFolder());
@@ -734,8 +731,7 @@ std::string CProfileManager::GetUserDataItem(const std::string& strFile) const
   return path;
 }
 
-CEventLog& CProfileManager::GetEventLog()
-{
+CEventLog& CProfileManager::GetEventLog() const {
   return m_eventLogs->GetEventLog(GetCurrentProfileId());
 }
 

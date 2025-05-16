@@ -125,8 +125,7 @@ bool CMusicInfoScraper::Completed()
   return Join(10ms);
 }
 
-bool CMusicInfoScraper::Succeeded()
-{
+bool CMusicInfoScraper::Succeeded() const {
   return !m_bCanceled && m_bSucceeded;
 }
 
@@ -137,8 +136,7 @@ void CMusicInfoScraper::Cancel()
   m_http->Reset();
 }
 
-bool CMusicInfoScraper::IsCanceled()
-{
+bool CMusicInfoScraper::IsCanceled() const {
   return m_bCanceled;
 }
 

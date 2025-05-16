@@ -642,8 +642,7 @@ void CActiveAEBufferPoolAtempo::Flush()
     ChangeFilter();
 }
 
-float CActiveAEBufferPoolAtempo::GetDelay()
-{
+float CActiveAEBufferPoolAtempo::GetDelay() const {
   float delay = 0;
 
   if (m_procSample)

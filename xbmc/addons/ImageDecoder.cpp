@@ -58,8 +58,7 @@ bool CImageDecoder::SupportsFile(const std::string& filename)
   return m_ifc.imagedecoder->toAddon->supports_file(m_ifc.hdl, filename.c_str());
 }
 
-bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* tag)
-{
+bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* tag) const {
   if (!m_created || !m_ifc.imagedecoder->toAddon->read_tag || !tag)
     return false;
 

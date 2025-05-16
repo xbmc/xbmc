@@ -40,90 +40,74 @@ InfoTagGame::~InfoTagGame()
     delete infoTag;
 }
 
-String InfoTagGame::getTitle()
-{
+String InfoTagGame::getTitle() const {
   return infoTag->GetTitle();
 }
 
-String InfoTagGame::getPlatform()
-{
+String InfoTagGame::getPlatform() const {
   return infoTag->GetPlatform();
 }
 
-std::vector<String> InfoTagGame::getGenres()
-{
+std::vector<String> InfoTagGame::getGenres() const {
   return infoTag->GetGenres();
 }
 
-String InfoTagGame::getPublisher()
-{
+String InfoTagGame::getPublisher() const {
   return infoTag->GetPublisher();
 }
 
-String InfoTagGame::getDeveloper()
-{
+String InfoTagGame::getDeveloper() const {
   return infoTag->GetDeveloper();
 }
 
-String InfoTagGame::getOverview()
-{
+String InfoTagGame::getOverview() const {
   return infoTag->GetOverview();
 }
 
-unsigned int InfoTagGame::getYear()
-{
+unsigned int InfoTagGame::getYear() const {
   return infoTag->GetYear();
 }
 
-String InfoTagGame::getGameClient()
-{
+String InfoTagGame::getGameClient() const {
   return infoTag->GetGameClient();
 }
 
-void InfoTagGame::setTitle(const String& title)
-{
+void InfoTagGame::setTitle(const String& title) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setTitleRaw(infoTag, title);
 }
 
-void InfoTagGame::setPlatform(const String& platform)
-{
+void InfoTagGame::setPlatform(const String& platform) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setPlatformRaw(infoTag, platform);
 }
 
-void InfoTagGame::setGenres(const std::vector<String>& genres)
-{
+void InfoTagGame::setGenres(const std::vector<String>& genres) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setGenresRaw(infoTag, genres);
 }
 
-void InfoTagGame::setPublisher(const String& publisher)
-{
+void InfoTagGame::setPublisher(const String& publisher) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setPublisherRaw(infoTag, publisher);
 }
 
-void InfoTagGame::setDeveloper(const String& developer)
-{
+void InfoTagGame::setDeveloper(const String& developer) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setDeveloperRaw(infoTag, developer);
 }
 
-void InfoTagGame::setOverview(const String& overview)
-{
+void InfoTagGame::setOverview(const String& overview) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setOverviewRaw(infoTag, overview);
 }
 
-void InfoTagGame::setYear(unsigned int year)
-{
+void InfoTagGame::setYear(unsigned int year) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setYearRaw(infoTag, year);
 }
 
-void InfoTagGame::setGameClient(const String& gameClient)
-{
+void InfoTagGame::setGameClient(const String& gameClient) const {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setGameClientRaw(infoTag, gameClient);
 }

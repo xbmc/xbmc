@@ -30,8 +30,8 @@ public:
 
   void RegisterPools(IRendererFactory* factory, RenderBufferPoolVector pools);
   RenderBufferPoolVector GetPools(IRendererFactory* factory);
-  std::vector<IRenderBufferPool*> GetBufferPools();
-  void FlushPools();
+  std::vector<IRenderBufferPool*> GetBufferPools() const;
+  void FlushPools() const;
 
   std::string GetRenderSystemName(IRenderBufferPool* renderBufferPool) const;
 

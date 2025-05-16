@@ -181,35 +181,35 @@ public:
    * @brief Start a channel scan on the server.
    * @return PVR_ERROR_NO_ERROR if the channel scan has been started successfully.
    */
-  PVR_ERROR StartChannelScan();
+  PVR_ERROR StartChannelScan() const;
 
   /*!
    * @brief Request the client to open dialog about given channel to add
    * @param channel The channel to add
    * @return PVR_ERROR_NO_ERROR if the add has been fetched successfully.
    */
-  PVR_ERROR OpenDialogChannelAdd(const std::shared_ptr<const CPVRChannel>& channel);
+  PVR_ERROR OpenDialogChannelAdd(const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Request the client to open dialog about given channel settings
    * @param channel The channel to edit
    * @return PVR_ERROR_NO_ERROR if the edit has been fetched successfully.
    */
-  PVR_ERROR OpenDialogChannelSettings(const std::shared_ptr<const CPVRChannel>& channel);
+  PVR_ERROR OpenDialogChannelSettings(const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Request the client to delete given channel
    * @param channel The channel to delete
    * @return PVR_ERROR_NO_ERROR if the delete has been fetched successfully.
    */
-  PVR_ERROR DeleteChannel(const std::shared_ptr<const CPVRChannel>& channel);
+  PVR_ERROR DeleteChannel(const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Request the client to rename given channel
    * @param channel The channel to rename
    * @return PVR_ERROR_NO_ERROR if the rename has been fetched successfully.
    */
-  PVR_ERROR RenameChannel(const std::shared_ptr<const CPVRChannel>& channel);
+  PVR_ERROR RenameChannel(const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*
    * @brief Check if an epg tag can be recorded
@@ -267,7 +267,7 @@ public:
                 regardless of event times.
    * @return PVR_ERROR_NO_ERROR if new value was successfully set.
    */
-  PVR_ERROR SetEPGMaxPastDays(int iPastDays);
+  PVR_ERROR SetEPGMaxPastDays(int iPastDays) const;
 
   /*!
    * @brief Tell the client the future time frame to use when notifying epg events back
@@ -283,7 +283,7 @@ public:
                 regardless of event times.
    * @return PVR_ERROR_NO_ERROR if new value was successfully set.
    */
-  PVR_ERROR SetEPGMaxFutureDays(int iFutureDays);
+  PVR_ERROR SetEPGMaxFutureDays(int iFutureDays) const;
 
   //@}
   /** @name PVR channel group methods */
@@ -371,34 +371,34 @@ public:
    * @param recording The recording to delete.
    * @return PVR_ERROR_NO_ERROR if the recording has been deleted successfully.
    */
-  PVR_ERROR DeleteRecording(const CPVRRecording& recording);
+  PVR_ERROR DeleteRecording(const CPVRRecording& recording) const;
 
   /*!
    * @brief Undelete a recording on the backend.
    * @param recording The recording to undelete.
    * @return PVR_ERROR_NO_ERROR if the recording has been undeleted successfully.
    */
-  PVR_ERROR UndeleteRecording(const CPVRRecording& recording);
+  PVR_ERROR UndeleteRecording(const CPVRRecording& recording) const;
 
   /*!
    * @brief Delete all recordings permanent which in the deleted folder on the backend.
    * @return PVR_ERROR_NO_ERROR if the recordings has been deleted successfully.
    */
-  PVR_ERROR DeleteAllRecordingsFromTrash();
+  PVR_ERROR DeleteAllRecordingsFromTrash() const;
 
   /*!
    * @brief Rename a recording on the backend.
    * @param recording The recording to rename.
    * @return PVR_ERROR_NO_ERROR if the recording has been renamed successfully.
    */
-  PVR_ERROR RenameRecording(const CPVRRecording& recording);
+  PVR_ERROR RenameRecording(const CPVRRecording& recording) const;
 
   /*!
    * @brief Set the lifetime of a recording on the backend.
    * @param recording The recording to set the lifetime for. recording.m_iLifetime contains the new lifetime value.
    * @return PVR_ERROR_NO_ERROR if the recording's lifetime has been set successfully.
    */
-  PVR_ERROR SetRecordingLifetime(const CPVRRecording& recording);
+  PVR_ERROR SetRecordingLifetime(const CPVRRecording& recording) const;
 
   /*!
    * @brief Set the play count of a recording on the backend.
@@ -406,7 +406,7 @@ public:
    * @param count Play count.
    * @return PVR_ERROR_NO_ERROR if the recording's play count has been set successfully.
    */
-  PVR_ERROR SetRecordingPlayCount(const CPVRRecording& recording, int count);
+  PVR_ERROR SetRecordingPlayCount(const CPVRRecording& recording, int count) const;
 
   /*!
    * @brief Set the last watched position of a recording on the backend.
@@ -414,7 +414,7 @@ public:
    * @param lastplayedposition The last watched position in seconds
    * @return PVR_ERROR_NO_ERROR if the position has been stored successfully.
    */
-  PVR_ERROR SetRecordingLastPlayedPosition(const CPVRRecording& recording, int lastplayedposition);
+  PVR_ERROR SetRecordingLastPlayedPosition(const CPVRRecording& recording, int lastplayedposition) const;
 
   /*!
    * @brief Retrieve the last watched position of a recording on the backend.
@@ -472,7 +472,7 @@ public:
    * @param timer The timer to add.
    * @return PVR_ERROR_NO_ERROR if the timer has been added successfully.
    */
-  PVR_ERROR AddTimer(const CPVRTimerInfoTag& timer);
+  PVR_ERROR AddTimer(const CPVRTimerInfoTag& timer) const;
 
   /*!
    * @brief Delete a timer on the backend.
@@ -480,14 +480,14 @@ public:
    * @param bForce Set to true to delete a timer that is currently recording a program.
    * @return PVR_ERROR_NO_ERROR if the timer has been deleted successfully.
    */
-  PVR_ERROR DeleteTimer(const CPVRTimerInfoTag& timer, bool bForce = false);
+  PVR_ERROR DeleteTimer(const CPVRTimerInfoTag& timer, bool bForce = false) const;
 
   /*!
    * @brief Update the timer information on the server.
    * @param timer The timer to update.
    * @return PVR_ERROR_NO_ERROR if the timer has been updated successfully.
    */
-  PVR_ERROR UpdateTimer(const CPVRTimerInfoTag& timer);
+  PVR_ERROR UpdateTimer(const CPVRTimerInfoTag& timer) const;
 
   /*!
    * @brief Update all timer types supported by the backend.
@@ -516,7 +516,7 @@ public:
    * @brief Close an open live stream.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR CloseLiveStream();
+  PVR_ERROR CloseLiveStream() const;
 
   /*!
    * @brief Read from an open live stream.
@@ -525,7 +525,7 @@ public:
    * @param iRead The amount of bytes that were actually read from the stream.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR ReadLiveStream(void* lpBuf, int64_t uiBufSize, int& iRead);
+  PVR_ERROR ReadLiveStream(void* lpBuf, int64_t uiBufSize, int& iRead) const;
 
   /*!
    * @brief Seek in a live stream on a backend.
@@ -534,7 +534,7 @@ public:
    * @param iPosition The new position or -1 on error.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR SeekLiveStream(int64_t iFilePosition, int iWhence, int64_t& iPosition);
+  PVR_ERROR SeekLiveStream(int64_t iFilePosition, int iWhence, int64_t& iPosition) const;
 
   /*!
    * @brief Get the length of the currently playing live stream, if any.
@@ -548,7 +548,7 @@ public:
    * @param bPaused True to pause the stream, false to unpause.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR PauseStream(bool bPaused);
+  PVR_ERROR PauseStream(bool bPaused) const;
 
   /*!
    * @brief Get the signal quality of the stream that's currently open.
@@ -597,7 +597,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    * @remarks Optional, and only used if addon has its own demuxer.
    */
-  PVR_ERROR SeekTime(double time, bool backwards, double* startpts);
+  PVR_ERROR SeekTime(double time, bool backwards, double* startpts) const;
 
   /*!
    * @brief Notify the pvr addon/demuxer that Kodi wishes to change playback speed
@@ -605,7 +605,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    * @remarks Optional, and only used if addon has its own demuxer.
    */
-  PVR_ERROR SetSpeed(int speed);
+  PVR_ERROR SetSpeed(int speed) const;
 
   /*!
    * @brief Notify the pvr addon/demuxer that Kodi wishes to fill demux queue
@@ -613,7 +613,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    * @remarks Optional, and only used if addon has its own demuxer.
    */
-  PVR_ERROR FillBuffer(bool mode);
+  PVR_ERROR FillBuffer(bool mode) const;
 
   //@}
   /** @name PVR recording stream methods */
@@ -630,7 +630,7 @@ public:
    * @brief Close an open recording stream.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR CloseRecordedStream();
+  PVR_ERROR CloseRecordedStream() const;
 
   /*!
    * @brief Read from an open recording stream.
@@ -639,7 +639,7 @@ public:
    * @param iRead The amount of bytes that were actually read from the stream.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR ReadRecordedStream(void* lpBuf, int64_t uiBufSize, int& iRead);
+  PVR_ERROR ReadRecordedStream(void* lpBuf, int64_t uiBufSize, int& iRead) const;
 
   /*!
    * @brief Seek in a recording stream on a backend.
@@ -648,7 +648,7 @@ public:
    * @param iPosition The new position or -1 on error.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR SeekRecordedStream(int64_t iFilePosition, int iWhence, int64_t& iPosition);
+  PVR_ERROR SeekRecordedStream(int64_t iFilePosition, int iWhence, int64_t& iPosition) const;
 
   /*!
    * @brief Get the length of the currently playing recording stream, if any.
@@ -674,26 +674,26 @@ public:
    * @brief Reset the demultiplexer in the add-on.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR DemuxReset();
+  PVR_ERROR DemuxReset() const;
 
   /*!
    * @brief Abort the demultiplexer thread in the add-on.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR DemuxAbort();
+  PVR_ERROR DemuxAbort() const;
 
   /*!
    * @brief Flush all data that's currently in the demultiplexer buffer in the add-on.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR DemuxFlush();
+  PVR_ERROR DemuxFlush() const;
 
   /*!
    * @brief Read a packet from the demultiplexer.
    * @param packet The packet read.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR DemuxRead(DemuxPacket*& packet);
+  PVR_ERROR DemuxRead(DemuxPacket*& packet) const;
 
   static const char* ToString(const PVR_ERROR error);
 
@@ -724,7 +724,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR CallEpgTagMenuHook(const CPVRClientMenuHook& hook,
-                               const std::shared_ptr<const CPVREpgInfoTag>& tag);
+                               const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
 
   /*!
    * @brief Call one of the channel menu hooks of the client.
@@ -733,7 +733,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR CallChannelMenuHook(const CPVRClientMenuHook& hook,
-                                const std::shared_ptr<const CPVRChannel>& channel);
+                                const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Call one of the recording menu hooks of the client.
@@ -744,7 +744,7 @@ public:
    */
   PVR_ERROR CallRecordingMenuHook(const CPVRClientMenuHook& hook,
                                   const std::shared_ptr<const CPVRRecording>& recording,
-                                  bool bDeleted);
+                                  bool bDeleted) const;
 
   /*!
    * @brief Call one of the timer menu hooks of the client.
@@ -753,23 +753,23 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR CallTimerMenuHook(const CPVRClientMenuHook& hook,
-                              const std::shared_ptr<const CPVRTimerInfoTag>& timer);
+                              const std::shared_ptr<const CPVRTimerInfoTag>& timer) const;
 
   /*!
    * @brief Call one of the settings menu hooks of the client.
    * @param hook The hook to call.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR CallSettingsMenuHook(const CPVRClientMenuHook& hook);
+  PVR_ERROR CallSettingsMenuHook(const CPVRClientMenuHook& hook) const;
 
   /*!
    * @brief Propagate power management events to this add-on
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR OnSystemSleep();
-  PVR_ERROR OnSystemWake();
-  PVR_ERROR OnPowerSavingActivated();
-  PVR_ERROR OnPowerSavingDeactivated();
+  PVR_ERROR OnSystemSleep() const;
+  PVR_ERROR OnSystemWake() const;
+  PVR_ERROR OnPowerSavingActivated() const;
+  PVR_ERROR OnPowerSavingDeactivated() const;
 
   /*!
    * @brief Get the priority of this client. Larger value means higher priority.
@@ -781,7 +781,7 @@ public:
    * @brief Set a new priority for this client.
    * @param iPriority The new priority.
    */
-  void SetPriority(int iPriority);
+  void SetPriority(int iPriority) const;
 
   /*!
    * @brief Obtain the chunk size to use when reading streams.
@@ -794,7 +794,7 @@ public:
    * @brief Get the interface table used between addon and Kodi.
    * @todo This function will be removed after old callback library system is removed.
    */
-  AddonInstance_PVR* GetInstanceInterface() { return m_ifc.pvr; }
+  AddonInstance_PVR* GetInstanceInterface() const { return m_ifc.pvr; }
 
 private:
   /*!
@@ -834,7 +834,7 @@ private:
   /*!
    * @brief Stop this instance, if it is currently running.
    */
-  void StopRunningInstance();
+  void StopRunningInstance() const;
 
   /*!
    * @brief Wraps an addon function call in order to do common pre and post function invocation actions.

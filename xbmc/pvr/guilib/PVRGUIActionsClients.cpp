@@ -31,8 +31,7 @@ using namespace KODI::MESSAGING;
 
 using namespace PVR;
 
-bool CPVRGUIActionsClients::ProcessSettingsMenuHooks()
-{
+bool CPVRGUIActionsClients::ProcessSettingsMenuHooks() const {
   const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
 
   std::vector<std::pair<std::shared_ptr<CPVRClient>, CPVRClientMenuHook>> settingsHooks;

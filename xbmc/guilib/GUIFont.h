@@ -127,8 +127,7 @@ public:
                 UTILS::COLOR::Color shadowColor,
                 const vecText& text,
                 uint32_t alignment,
-                float maxPixelWidth)
-  {
+                float maxPixelWidth) const {
     std::vector<UTILS::COLOR::Color> colors;
     colors.push_back(color);
     DrawText(x, y, colors, shadowColor, text, alignment, maxPixelWidth);
@@ -140,7 +139,7 @@ public:
                 UTILS::COLOR::Color shadowColor,
                 const vecText& text,
                 uint32_t alignment,
-                float maxPixelWidth);
+                float maxPixelWidth) const;
 
   void DrawScrollingText(float x,
                          float y,
@@ -153,8 +152,8 @@ public:
 
   bool UpdateScrollInfo(const vecText& text, CScrollInfo& scrollInfo);
 
-  float GetTextWidth(const vecText& text);
-  float GetCharWidth(character_t ch);
+  float GetTextWidth(const vecText& text) const;
+  float GetCharWidth(character_t ch) const;
   float GetTextHeight(int numLines) const;
   float GetTextBaseLine() const;
   float GetLineHeight() const;
@@ -162,8 +161,8 @@ public:
   //! get font scale factor (rendered height / original height)
   float GetScaleFactor() const;
 
-  void Begin();
-  void End();
+  void Begin() const;
+  void End() const;
 
   uint32_t GetStyle() const { return m_style; }
 

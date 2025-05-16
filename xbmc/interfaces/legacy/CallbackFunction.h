@@ -32,7 +32,7 @@ namespace XBMCAddon
     virtual void executeCallback() = 0;
     ~Callback() override;
 
-    AddonClass* getObject() { XBMC_TRACE; return addonClassObject; }
+    AddonClass* getObject() const { XBMC_TRACE; return addonClassObject; }
   };
 
   struct cb_null_type {};

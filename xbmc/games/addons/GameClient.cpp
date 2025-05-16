@@ -419,8 +419,7 @@ void CGameClient::NotifyError(GAME_ERROR error)
   }
 }
 
-std::string CGameClient::GetMissingResource()
-{
+std::string CGameClient::GetMissingResource() const {
   using namespace ADDON;
 
   std::string strAddonId;

@@ -129,8 +129,7 @@ void CLibInputHandler::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
   }
 }
 
-bool CLibInputHandler::SetKeymap(const std::string& layout)
-{
+bool CLibInputHandler::SetKeymap(const std::string& layout) const {
   return m_keyboard->SetKeymap(layout);
 }
 

@@ -139,8 +139,7 @@ void IAddonInstanceHandler::DestroyInstance()
     m_addon->DestroyInstance(&m_ifc);
 }
 
-std::shared_ptr<CSetting> IAddonInstanceHandler::GetSetting(const std::string& setting)
-{
+std::shared_ptr<CSetting> IAddonInstanceHandler::GetSetting(const std::string& setting) const {
   if (!m_addon->HasSettings(m_instanceId))
   {
     CLog::Log(LOGERROR, "IAddonInstanceHandler::{} - couldn't get settings for add-on '{}'",

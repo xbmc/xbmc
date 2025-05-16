@@ -72,8 +72,7 @@ public:
   ///
   /// @param[in] visible If true visible, otherwise hidden
   ///
-  void SetVisible(bool visible)
-  {
+  void SetVisible(bool visible) const {
     m_interface->kodi_gui->control_text_box->set_visible(m_interface->kodiBase, m_controlHandle,
                                                          visible);
   }
@@ -83,7 +82,7 @@ public:
   /// @ingroup cpp_kodi_gui_windows_controls_CTextBox
   /// @brief To reset box an remove all the text.
   ///
-  void Reset() { m_interface->kodi_gui->control_text_box->reset(m_controlHandle, m_controlHandle); }
+  void Reset() const { m_interface->kodi_gui->control_text_box->reset(m_controlHandle, m_controlHandle); }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -92,8 +91,7 @@ public:
   ///
   /// @param[in] text Text to show
   ///
-  void SetText(const std::string& text)
-  {
+  void SetText(const std::string& text) const {
     m_interface->kodi_gui->control_text_box->set_text(m_interface->kodiBase, m_controlHandle,
                                                       text.c_str());
   }
@@ -126,8 +124,7 @@ public:
   ///
   /// @param[in] position The line position to scroll to
   ///
-  void Scroll(unsigned int position)
-  {
+  void Scroll(unsigned int position) const {
     m_interface->kodi_gui->control_text_box->scroll(m_interface->kodiBase, m_controlHandle,
                                                     position);
   }
@@ -149,8 +146,7 @@ public:
   /// @param[in] repeat Delays with given time, fades out over 1 second, and
   ///                   repeats
   ///
-  void SetAutoScrolling(int delay, int time, int repeat)
-  {
+  void SetAutoScrolling(int delay, int time, int repeat) const {
     m_interface->kodi_gui->control_text_box->set_auto_scrolling(
         m_interface->kodiBase, m_controlHandle, delay, time, repeat);
   }

@@ -32,9 +32,9 @@ public:
   void FindArtistInfo(const std::string& strArtist);
   void LoadArtistInfo(int iArtist, const std::string &strSearch);
   bool Completed();
-  bool Succeeded();
+  bool Succeeded() const;
   void Cancel();
-  bool IsCanceled();
+  bool IsCanceled() const;
   int GetAlbumCount() const;
   int GetArtistCount() const;
   CMusicAlbumInfo& GetAlbum(int iAlbum);

@@ -251,8 +251,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMember
 }
 
 std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroups::GetMembersAvailableForGroup(
-    const std::shared_ptr<const CPVRChannelGroup>& group)
-{
+    const std::shared_ptr<const CPVRChannelGroup>& group) const {
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> result;
 
   if (group->SupportsMemberAdd())
@@ -373,8 +372,7 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
   return PersistAll() && bReturn;
 }
 
-bool CPVRChannelGroups::UpdateChannelNumbersFromAllChannelsGroup()
-{
+bool CPVRChannelGroups::UpdateChannelNumbersFromAllChannelsGroup() const {
   std::lock_guard lock(m_critSection);
 
   return std::accumulate(
@@ -384,8 +382,7 @@ bool CPVRChannelGroups::UpdateChannelNumbersFromAllChannelsGroup()
 }
 
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::CreateChannelGroup(
-    int iType, const CPVRChannelsPath& path)
-{
+    int iType, const CPVRChannelsPath& path) const {
   if (iType == PVR_GROUP_TYPE_ALL_CHANNELS)
     return std::make_shared<CPVRChannelGroupAllChannels>(path);
   else if (iType == PVR_GROUP_TYPE_LOCAL)
@@ -460,8 +457,7 @@ bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRC
   return true;
 }
 
-bool CPVRChannelGroups::PersistAll()
-{
+bool CPVRChannelGroups::PersistAll() const {
   CLog::LogFC(LOGDEBUG, LOGPVR, "Persisting all channel group changes");
 
   std::lock_guard lock(m_critSection);
@@ -697,8 +693,7 @@ bool CPVRChannelGroups::HideGroup(const std::shared_ptr<CPVRChannelGroup>& group
   return bReturn;
 }
 
-int CPVRChannelGroups::CleanupCachedImages()
-{
+int CPVRChannelGroups::CleanupCachedImages() const {
   int iCleanedImages = 0;
 
   // cleanup channels

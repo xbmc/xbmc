@@ -144,8 +144,7 @@ std::shared_ptr<CProfileManager> CSettingsComponent::GetProfileManager()
   return m_profileManager;
 }
 
-bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)
-{
+bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories) const {
   /*
    The following is the directory mapping for Platform Specific Mode:
 
