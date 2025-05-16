@@ -176,14 +176,14 @@ bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags)
         if (existingTag->Update(*tag, false))
         {
           // tag differs from existing tag and must be persisted
-          m_changedTags.insert({existingTag->StartAsUTC(), existingTag});
+          m_changedTags.try_emplace(existingTag->StartAsUTC(), existingTag);
           bResetCache = true;
         }
       }
       else
       {
         // new tags must always be persisted
-        m_changedTags.insert({tag->StartAsUTC(), tag});
+        m_changedTags.try_emplace(tag->StartAsUTC(), tag);
         bResetCache = true;
       }
     }

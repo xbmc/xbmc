@@ -2581,7 +2581,7 @@ public:
     std::string strUpperCodecName = strCodecName;
     StringUtils::ToUpper(strUpperCodecName);
 
-    std::map<std::string, PVR_CODEC>::const_iterator it = m_lookup.find(strUpperCodecName);
+    const auto it{m_lookup.find(strUpperCodecName)};
     if (it != m_lookup.end())
       retVal = it->second;
 

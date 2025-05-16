@@ -666,13 +666,15 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           const CPVRChannelGroup::Origin origin{group->GetOrigin()};
           switch (origin)
           {
-            case CPVRChannelGroup::Origin::CLIENT:
+            using enum CPVRChannelGroup::Origin;
+
+            case CLIENT:
               strValue = g_localizeStrings.Get(856); // Client
               return true;
-            case CPVRChannelGroup::Origin::SYSTEM:
+            case SYSTEM:
               strValue = g_localizeStrings.Get(857); // System
               return true;
-            case CPVRChannelGroup::Origin::USER:
+            case USER:
               strValue = g_localizeStrings.Get(858); // User
               return true;
             default:
@@ -1520,7 +1522,7 @@ bool CPVRGUIInfo::GetBool(bool& value,
     return false;
 
   const auto* fitem{static_cast<const CFileItem*>(item)};
-  return GetListItemAndPlayerBool(fitem, info, value) || GetPVRBool(fitem, info, value) ||
+  return GetListItemAndPlayerBool(fitem, info, value) || GetPVRBool(info, value) ||
          GetRadioRDSBool(fitem, info, value);
 }
 
@@ -1831,7 +1833,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item,
   return false;
 }
 
-bool CPVRGUIInfo::GetPVRBool(const CFileItem* item, const CGUIInfo& info, bool& bValue) const
+bool CPVRGUIInfo::GetPVRBool(const CGUIInfo& info, bool& bValue) const
 {
   std::unique_lock lock(m_critSection);
 
