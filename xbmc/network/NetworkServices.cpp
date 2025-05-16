@@ -116,37 +116,35 @@ CNetworkServices::CNetworkServices()
   m_webserver.RegisterRequestHandler(&m_httpWebinterfaceHandler);
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
-  std::set<std::string> settingSet{
-      CSettings::SETTING_SERVICES_WEBSERVER,
-      CSettings::SETTING_SERVICES_WEBSERVERPORT,
-      CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION,
-      CSettings::SETTING_SERVICES_WEBSERVERUSERNAME,
-      CSettings::SETTING_SERVICES_WEBSERVERPASSWORD,
-      CSettings::SETTING_SERVICES_WEBSERVERSSL,
-      CSettings::SETTING_SERVICES_ZEROCONF,
-      CSettings::SETTING_SERVICES_AIRPLAY,
-      CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL,
-      CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT,
-      CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD,
-      CSettings::SETTING_SERVICES_AIRPLAYPASSWORD,
-      CSettings::SETTING_SERVICES_UPNP,
-      CSettings::SETTING_SERVICES_UPNPSERVER,
-      CSettings::SETTING_SERVICES_UPNPRENDERER,
-      CSettings::SETTING_SERVICES_UPNPCONTROLLER,
-      CSettings::SETTING_SERVICES_ESENABLED,
-      CSettings::SETTING_SERVICES_ESPORT,
-      CSettings::SETTING_SERVICES_ESALLINTERFACES,
-      CSettings::SETTING_SERVICES_ESINITIALDELAY,
-      CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY,
-      CSettings::SETTING_SMB_WINSSERVER,
-      CSettings::SETTING_SMB_WORKGROUP,
-      CSettings::SETTING_SMB_MINPROTOCOL,
-      CSettings::SETTING_SMB_MAXPROTOCOL,
-      CSettings::SETTING_SMB_LEGACYSECURITY,
-      CSettings::SETTING_SERVICES_WSDISCOVERY,
-  };
   m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
+  m_settings->GetSettingsManager()->RegisterCallback(
+      this, {CSettings::SETTING_SERVICES_WEBSERVER,
+             CSettings::SETTING_SERVICES_WEBSERVERPORT,
+             CSettings::SETTING_SERVICES_WEBSERVERAUTHENTICATION,
+             CSettings::SETTING_SERVICES_WEBSERVERUSERNAME,
+             CSettings::SETTING_SERVICES_WEBSERVERPASSWORD,
+             CSettings::SETTING_SERVICES_WEBSERVERSSL,
+             CSettings::SETTING_SERVICES_ZEROCONF,
+             CSettings::SETTING_SERVICES_AIRPLAY,
+             CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL,
+             CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT,
+             CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD,
+             CSettings::SETTING_SERVICES_AIRPLAYPASSWORD,
+             CSettings::SETTING_SERVICES_UPNP,
+             CSettings::SETTING_SERVICES_UPNPSERVER,
+             CSettings::SETTING_SERVICES_UPNPRENDERER,
+             CSettings::SETTING_SERVICES_UPNPCONTROLLER,
+             CSettings::SETTING_SERVICES_ESENABLED,
+             CSettings::SETTING_SERVICES_ESPORT,
+             CSettings::SETTING_SERVICES_ESALLINTERFACES,
+             CSettings::SETTING_SERVICES_ESINITIALDELAY,
+             CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY,
+             CSettings::SETTING_SMB_WINSSERVER,
+             CSettings::SETTING_SMB_WORKGROUP,
+             CSettings::SETTING_SMB_MINPROTOCOL,
+             CSettings::SETTING_SMB_MAXPROTOCOL,
+             CSettings::SETTING_SMB_LEGACYSECURITY,
+             CSettings::SETTING_SERVICES_WSDISCOVERY});
 }
 
 CNetworkServices::~CNetworkServices()

@@ -165,7 +165,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateEpgTags(int iChannel
   if (firstResultBlock > lastResultBlock)
     return result;
 
-  auto it = m_epgItems.try_emplace(iChannel, EpgTags()).first;
+  auto it = m_epgItems.try_emplace(iChannel).first;
   EpgTags& epgTags = (*it).second;
 
   epgTags.firstBlock = firstResultBlock;
@@ -420,9 +420,7 @@ GridItem* CGUIEPGGridContainerModel::GetGridItemPtr(int iChannel, int iBlock) co
     item->SetProperty("GenreType", epgTag->GenreType());
 
     const float fItemWidth = (endBlock - startBlock + 1) * m_fBlockSize;
-    it = m_gridIndex
-             .try_emplace({iChannel, iBlock}, GridItem{item, fItemWidth, startBlock, endBlock})
-             .first;
+    it = m_gridIndex.try_emplace({iChannel, iBlock}, item, fItemWidth, startBlock, endBlock).first;
   }
 
   return &(*it).second;

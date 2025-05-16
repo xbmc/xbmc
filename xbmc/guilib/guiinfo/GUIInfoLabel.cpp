@@ -19,6 +19,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <array>
 #include <stdexcept>
 #include <string>
 
@@ -38,11 +39,11 @@ int CGUIInfoLabel::GetIntValue(int contextWindow) const
     {
       return std::stoi(label);
     }
-    catch (std::invalid_argument const& ex)
+    catch (std::invalid_argument const&)
     {
       CLog::LogF(LOGERROR, "Error converting label value '{}' to int. Invalid argument.", label);
     }
-    catch (std::out_of_range const& ex)
+    catch (std::out_of_range const&)
     {
       CLog::LogF(LOGERROR, "Error converting label value '{}' to int. Value out of range.", label);
     }
@@ -299,10 +300,10 @@ struct InfoFormatData
   InfoFormat val{0};
 };
 
-const InfoFormatData infoformatmap[] = {{"$INFO[", InfoFormat::INFO},
-                                        {"$ESCINFO[", InfoFormat::ESC_INFO},
-                                        {"$VAR[", InfoFormat::VAR},
-                                        {"$ESCVAR[", InfoFormat::ESC_VAR}};
+constexpr std::array<InfoFormatData, 4> infoformatmap = {{{"$INFO[", InfoFormat::INFO},
+                                                          {"$ESCINFO[", InfoFormat::ESC_INFO},
+                                                          {"$VAR[", InfoFormat::VAR},
+                                                          {"$ESCVAR[", InfoFormat::ESC_VAR}}};
 
 } // unnamed namespace
 

@@ -58,7 +58,7 @@ CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio,
                                                          const std::string& xmlFile)
   : CGUIWindowPVRBase(bRadio, id, xmlFile),
     m_settings(std::make_unique<CPVRSettings>(
-        std::set<std::string>({CSettings::SETTING_PVRRECORD_GROUPRECORDINGS})))
+        SettingsContainer({CSettings::SETTING_PVRRECORD_GROUPRECORDINGS})))
 {
 }
 

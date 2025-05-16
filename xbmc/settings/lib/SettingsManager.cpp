@@ -363,7 +363,8 @@ bool CSettingsManager::AddSetting(const std::shared_ptr<CSetting>& setting,
   return true;
 }
 
-void CSettingsManager::RegisterCallback(ISettingCallback *callback, const std::set<std::string> &settingList)
+void CSettingsManager::RegisterCallback(ISettingCallback* callback,
+                                        const SettingsContainer& settingList)
 {
   std::unique_lock<CSharedSection> lock(m_settingsCritical);
   if (callback == nullptr)

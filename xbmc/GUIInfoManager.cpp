@@ -11725,7 +11725,7 @@ void CGUIInfoManager::Clear()
               infoBool.use_count());
 }
 
-void CGUIInfoManager::UpdateAVInfo()
+void CGUIInfoManager::UpdateAVInfo() const
 {
   if (CServiceBroker::GetDataCacheCore().HasAVInfoChanges())
   {
@@ -12052,12 +12052,12 @@ std::string CGUIInfoManager::GetSkinVariableString(int info,
 
 bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map) const
 {
-  for (const auto& [info, value] : map)
-  {
-    if (info->Get(INFO::DEFAULT_CONTEXT) != value)
-      return true;
-  }
-  return false;
+  return std::ranges::any_of(map,
+                             [](const auto& entry)
+                             {
+                               const auto& [info, value] = entry;
+                               return info->Get(INFO::DEFAULT_CONTEXT) != value;
+                             });
 }
 
 int CGUIInfoManager::GetMessageMask()

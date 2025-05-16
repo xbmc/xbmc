@@ -107,9 +107,7 @@ void CAdvancedSettings::Initialize(CSettingsManager& settingsMgr)
     m_handleMounting = true;
 
   settingsMgr.RegisterSettingsHandler(this, true);
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
-  settingsMgr.RegisterCallback(this, settingSet);
+  settingsMgr.RegisterCallback(this, {CSettings::SETTING_DEBUG_SHOWLOGINFO});
 }
 
 void CAdvancedSettings::Uninitialize(CSettingsManager& settingsMgr)

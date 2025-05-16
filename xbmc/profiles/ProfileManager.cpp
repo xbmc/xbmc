@@ -96,12 +96,7 @@ void CProfileManager::Initialize(const std::shared_ptr<CSettings>& settings)
     OnSettingsLoaded();
 
   m_settings->GetSettingsManager()->RegisterSettingsHandler(this);
-
-  std::set<std::string> settingSet = {
-    CSettings::SETTING_EVENTLOG_SHOW
-  };
-
-  m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
+  m_settings->GetSettingsManager()->RegisterCallback(this, {CSettings::SETTING_EVENTLOG_SHOW});
 }
 
 void CProfileManager::Uninitialize()

@@ -132,7 +132,7 @@ public:
   // Current game stuff
   const KODI::GAME::CGameInfoTag* GetCurrentGameTag() const;
 
-  void UpdateAVInfo();
+  void UpdateAVInfo() const;
 
   int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
   int TranslateSkinVariableString(const std::string& name, int context);

@@ -67,7 +67,7 @@ public:
   DebugLogSharingPresenter() : ISettingCallback()
   {
     CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(
-        this, std::set<std::string>{CSettings::SETTING_DEBUG_SHARE_LOG});
+        this, {CSettings::SETTING_DEBUG_SHARE_LOG});
   }
   virtual ~DebugLogSharingPresenter()
   {

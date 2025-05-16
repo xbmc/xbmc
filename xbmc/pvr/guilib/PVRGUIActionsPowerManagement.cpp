@@ -31,8 +31,8 @@ using namespace KODI::MESSAGING;
 
 CPVRGUIActionsPowerManagement::CPVRGUIActionsPowerManagement()
   : m_settings(std::make_unique<CPVRSettings>(
-        std::set<std::string>({CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
-                               CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME})))
+        SettingsContainer({CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
+                           CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME})))
 {
 }
 

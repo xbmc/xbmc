@@ -284,7 +284,7 @@ bool CSettingDependencyConditionCombination::Deserialize(const TiXmlNode *node)
       if (combination == nullptr)
         continue;
 
-      const std::set<std::string>& settings = combination->GetSettings();
+      const SettingsContainer& settings = combination->GetSettings();
       m_settings.insert(settings.begin(), settings.end());
     }
   }
@@ -374,14 +374,14 @@ bool CSettingDependency::Deserialize(const TiXmlNode *node)
   return CSettingCondition::Deserialize(node);
 }
 
-std::set<std::string> CSettingDependency::GetSettings() const
+SettingsContainer CSettingDependency::GetSettings() const
 {
   if (m_operation == nullptr)
-    return std::set<std::string>();
+    return {};
 
   auto combination = static_cast<CSettingDependencyConditionCombination*>(m_operation.get());
   if (combination == nullptr)
-    return std::set<std::string>();
+    return {};
 
   return combination->GetSettings();
 }

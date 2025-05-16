@@ -30,7 +30,7 @@ using namespace PVR;
 
 unsigned int CPVRSettings::m_iInstances = 0;
 
-CPVRSettings::CPVRSettings(const std::set<std::string>& settingNames)
+CPVRSettings::CPVRSettings(const SettingsContainer& settingNames)
 {
   Init(settingNames);
 
@@ -76,7 +76,7 @@ void CPVRSettings::UnregisterCallback(ISettingCallback* callback)
   m_callbacks.erase(callback);
 }
 
-void CPVRSettings::Init(const std::set<std::string>& settingNames)
+void CPVRSettings::Init(const SettingsContainer& settingNames)
 {
   for (const auto& settingName : settingNames)
   {
@@ -94,7 +94,7 @@ void CPVRSettings::Init(const std::set<std::string>& settingNames)
 
 void CPVRSettings::OnSettingsLoaded()
 {
-  std::set<std::string> settingNames;
+  SettingsContainer settingNames;
 
   {
     std::unique_lock lock(m_critSection);

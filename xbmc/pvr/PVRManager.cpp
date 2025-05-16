@@ -196,7 +196,7 @@ CPVRManager::CPVRManager()
     m_database(std::make_shared<CPVRDatabase>()),
     m_parentalTimer(std::make_unique<CStopWatch>()),
     m_playbackState(std::make_shared<CPVRPlaybackState>()),
-    m_settings(std::make_unique<CPVRSettings>(std::set<std::string>(
+    m_settings(std::make_unique<CPVRSettings>(SettingsContainer(
         {CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
          CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD, CSettings::SETTING_PVRPARENTAL_ENABLED,
          CSettings::SETTING_PVRPARENTAL_DURATION})))

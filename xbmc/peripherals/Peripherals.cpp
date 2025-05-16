@@ -82,14 +82,10 @@ CPeripherals::CPeripherals(CInputManager& inputManager,
     m_eventScanner(new CEventScanner(*this)),
     m_guiReadyEvent(std::make_unique<CEvent>())
 {
-  // Register settings
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALS);
-  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALLIBRARIES);
-  settingSet.insert(CSettings::SETTING_INPUT_CONTROLLERCONFIG);
-  settingSet.insert(CSettings::SETTING_INPUT_TESTRUMBLE);
-  settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
-  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, settingSet);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(
+      this, {CSettings::SETTING_INPUT_PERIPHERALS, CSettings::SETTING_INPUT_PERIPHERALLIBRARIES,
+             CSettings::SETTING_INPUT_CONTROLLERCONFIG, CSettings::SETTING_INPUT_TESTRUMBLE,
+             CSettings::SETTING_LOCALE_LANGUAGE});
 }
 
 CPeripherals::~CPeripherals()

@@ -26,7 +26,7 @@ protected:
   std::shared_ptr<CSetting> GetSetting(const std::string &settingId) override;
   bool OnOkay() override;
 
-  std::set<std::string> CreateSettings() override;
+  SettingsContainer CreateSettings() override;
   void FreeSettingsControls() override;
 
   // implementation of ISettingControlCreator

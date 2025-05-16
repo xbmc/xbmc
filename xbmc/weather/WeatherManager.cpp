@@ -30,10 +30,8 @@ using namespace ADDON;
 
 CWeatherManager::CWeatherManager(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
 {
-  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(this, {
-    CSettings::SETTING_WEATHER_ADDON,
-    CSettings::SETTING_WEATHER_ADDONSETTINGS
-  });
+  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(
+      this, {CSettings::SETTING_WEATHER_ADDON, CSettings::SETTING_WEATHER_ADDONSETTINGS});
 
   Reset();
 }

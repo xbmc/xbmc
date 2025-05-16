@@ -55,9 +55,7 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
 
   setting->SetVisible(true);
 
-  std::set<std::string> settingSet;
-  settingSet.insert(SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
-  settingsManager->RegisterCallback(this, settingSet);
+  settingsManager->RegisterCallback(this, {SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT});
   settingsManager->RegisterSettingOptionsFiller("libinputkeyboardlayout",
                                                 SettingOptionsKeyboardLayoutsFiller);
 

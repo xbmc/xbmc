@@ -280,6 +280,8 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
 
       return true;
     }
+    default:
+      break;
   }
 
   return false;

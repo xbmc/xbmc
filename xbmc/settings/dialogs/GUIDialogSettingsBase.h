@@ -10,11 +10,11 @@
 
 #include "guilib/GUIDialog.h"
 #include "settings/SettingControl.h"
+#include "settings/SettingsContainer.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Timer.h"
 #include "utils/ILocalizer.h"
 
-#include <set>
 #include <vector>
 
 #define CONTROL_SETTINGS_LABEL 2
@@ -102,7 +102,7 @@ protected:
   virtual void OnCancel() {}
 
   virtual void SetupView();
-  virtual std::set<std::string> CreateSettings();
+  virtual SettingsContainer CreateSettings();
   virtual void UpdateSettings();
 
   /*!

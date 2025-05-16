@@ -15,6 +15,7 @@
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/SettingsContainer.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
@@ -91,10 +92,8 @@ void CLog::Initialize(const std::string& path)
   settingsManager->RegisterSettingOptionsFiller("loggingcomponents",
                                                 SettingOptionsLoggingComponentsFiller);
   settingsManager->RegisterSettingsHandler(this);
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
-  settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
-  settingsManager->RegisterCallback(this, settingSet);
+  settingsManager->RegisterCallback(
+      this, {CSettings::SETTING_DEBUG_EXTRALOGGING, CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL});
 
   if (path.empty())
     return;
@@ -269,6 +268,21 @@ spdlog::level::level_enum CLog::MapLogLevel(int level)
   }
 
   return spdlog::level::info;
+}
+
+void CLog::FormatAndLogInternal(spdlog::level::level_enum level,
+                                fmt::string_view format,
+                                fmt::format_args args)
+{
+  if (level < m_defaultLogger->level())
+    return;
+
+  auto message = fmt::vformat(format, args);
+
+  // fixup newline alignment, number of spaces should equal prefix length
+  FormatLineBreaks(message);
+
+  m_defaultLogger->log(level, message);
 }
 
 Logger CLog::CreateLogger(const std::string& loggerName)
