@@ -685,9 +685,8 @@ PVR_ERROR CPVRClients::GetChannels(const std::vector<std::shared_ptr<CPVRClient>
 {
   return ForClients(
       std::source_location::current().function_name(), clients,
-      [bRadio, &channels](const std::shared_ptr<const CPVRClient>& client)
-      { return client->GetChannels(bRadio, channels); },
-      failedClients);
+      [bRadio, &channels](const std::shared_ptr<CPVRClient>& client)
+      { return client->GetChannels(bRadio, channels); }, failedClients);
 }
 
 PVR_ERROR CPVRClients::GetProviders(const std::vector<std::shared_ptr<CPVRClient>>& clients,

@@ -54,6 +54,7 @@
 #include <mutex>
 #include <source_location>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 extern "C"
@@ -1133,8 +1134,7 @@ PVR_ERROR CPVRClient::GetChannelsAmount(int& iChannels) const
                      { return addon->toAddon->GetChannelsAmount(addon, &iChannels); });
 }
 
-PVR_ERROR CPVRClient::GetChannels(bool radio,
-                                  std::vector<std::shared_ptr<CPVRChannel>>& channels) const
+PVR_ERROR CPVRClient::GetChannels(bool radio, std::vector<std::shared_ptr<CPVRChannel>>& channels)
 {
   return DoAddonCall(
       std::source_location::current().function_name(),
@@ -1151,8 +1151,7 @@ PVR_ERROR CPVRClient::GetChannels(bool radio,
           if (!dateTime.IsValid())
           {
             // Remember when first channels were added for this client.
-            const_cast<CPVRClient*>(this)->SetDateTimeFirstChannelsAdded(
-                CDateTime::GetUTCDateTime());
+            SetDateTimeFirstChannelsAdded(CDateTime::GetUTCDateTime());
           }
         }
 
@@ -2186,14 +2185,16 @@ void CPVRClient::SetDateTimeFirstChannelsAdded(const CDateTime& dateTime)
   }
 }
 
-template<typename F>
+template<typename F, typename KodiInstance>
 void CPVRClient::HandleAddonCallback(const char* strFunctionName,
-                                     void* kodiInstance,
+                                     KodiInstance* kodiInstance,
                                      F function,
                                      bool bForceCall /* = false */)
 {
+  using Client = std::conditional_t<std::is_const_v<KodiInstance>, const CPVRClient, CPVRClient>;
+
   // Check preconditions.
-  auto* client{static_cast<CPVRClient*>(kodiInstance)};
+  auto* client{static_cast<Client*>(kodiInstance)};
   if (!client)
   {
     CLog::Log(LOGERROR, "{}: No instance pointer given!", strFunctionName);
@@ -2632,10 +2633,9 @@ PVR_CODEC CPVRClient::cb_get_codec_by_name(const void* kodiInstance, const char*
   PVR_CODEC result = PVR_INVALID_CODEC;
 
   HandleAddonCallback(
-      std::source_location::current().function_name(), const_cast<void*>(kodiInstance),
+      std::source_location::current().function_name(), kodiInstance,
       [&result, strCodecName](const CPVRClient* client)
-      { result = CCodecIds::GetInstance().GetCodecByName(strCodecName); },
-      true);
+      { result = CCodecIds::GetInstance().GetCodecByName(strCodecName); }, true);
 
   return result;
 }

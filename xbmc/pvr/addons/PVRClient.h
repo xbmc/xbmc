@@ -382,7 +382,7 @@ public:
    * @param channels The container for the channels.
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
-  PVR_ERROR GetChannels(bool bRadio, std::vector<std::shared_ptr<CPVRChannel>>& channels) const;
+  PVR_ERROR GetChannels(bool bRadio, std::vector<std::shared_ptr<CPVRChannel>>& channels);
 
   /*!
    * @brief Get the total amount of providers from the backend.
@@ -958,9 +958,9 @@ private:
    * @param function The function to wrap. It must take one parameter of type CPVRClient*.
    * @param bForceCall If true, make the call, ignoring client's state.
    */
-  template<typename F>
+  template<typename F, typename KodiInstance>
   static void HandleAddonCallback(const char* strFunctionName,
-                                  void* kodiInstance,
+                                  KodiInstance* kodiInstance,
                                   F function,
                                   bool bForceCall = false);
 
