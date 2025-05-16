@@ -10,6 +10,7 @@
 
 #include "guilib/LocalizeStrings.h"
 
+#include <array>
 #include <bit>
 
 extern "C"
@@ -141,22 +142,34 @@ std::string StreamUtils::GetLayout(uint64_t mask, int channels)
   return GetLayoutXYZ(mask);
 }
 
+namespace
+{
+constexpr uint64_t UNKNOWN_MASK{0};
+
+constexpr std::array<uint64_t, 15> DEFAULT_MASKS{
+    UNKNOWN_MASK, // 0 > no default
+    AV_CH_LAYOUT_MONO, // 1 > 1.0
+    AV_CH_LAYOUT_STEREO, // 2 > 2.0
+    AV_CH_LAYOUT_2POINT1, // 3 > 2.1
+    AV_CH_LAYOUT_4POINT0, // 4 > 4.0, historical default of Estuary
+    AV_CH_LAYOUT_QUAD | AV_CH_LOW_FREQUENCY, // 5 > 5.0, historical default of Estuary
+    AV_CH_LAYOUT_5POINT1, // 6 > 5.1
+    AV_CH_LAYOUT_6POINT1, // 7 > 6.1
+    AV_CH_LAYOUT_7POINT1, // 8 > 7.1
+    UNKNOWN_MASK, // 9 > no default
+    AV_CH_LAYOUT_7POINT1 | AV_CH_FRONT_LEFT_OF_CENTER |
+        AV_CH_FRONT_RIGHT_OF_CENTER, // 10 > 5.1.4, historical default of Estuary
+    UNKNOWN_MASK, // 11 > no default
+    AV_CH_LAYOUT_7POINT1POINT4_BACK, // 12 > 7.1.4
+    UNKNOWN_MASK, // 13 > no default
+    AV_CH_LAYOUT_9POINT1POINT4_BACK, // 14 > 9.1.4
+};
+} // namespace
+
 uint64_t StreamUtils::GetDefaultMask(int channels)
 {
-  switch (channels)
-  {
-    // Match historical default layouts of Estuary
-    case 5:
-      return AV_CH_LAYOUT_QUAD | AV_CH_LOW_FREQUENCY;
-    case 10:
-      return AV_CH_LAYOUT_7POINT1 | AV_CH_FRONT_LEFT_OF_CENTER | AV_CH_FRONT_RIGHT_OF_CENTER;
-    // Likely atmos, which can't be accurately be described by a channels layout
-    case 16:
-      return 0;
-  }
-
-  AVChannelLayout layout;
-  av_channel_layout_default(&layout, channels);
-
-  return layout.order == AV_CHANNEL_ORDER_NATIVE ? layout.u.mask : 0;
+  if (channels < DEFAULT_MASKS.size())
+    return DEFAULT_MASKS[channels];
+  
+  return UNKNOWN_MASK;
 }
