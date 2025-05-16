@@ -16,6 +16,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DENABLE_UTILS=OFF
                    -DENABLE_EXAMPLES=OFF)
 
+    # Revert commit 8902b1b introduced in libnfs 6.0.0
+    # Causes windows to fail to mount nfs3 volume
+    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-all-revert-8902b1b.patch")
+
+    generate_patchcommand("${patches}")
+
     if(WIN32 OR WINDOWS_STORE)
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS "/sdl-")
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CXX_FLAGS "/sdl-")
