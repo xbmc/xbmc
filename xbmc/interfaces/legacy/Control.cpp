@@ -1265,7 +1265,7 @@ namespace XBMCAddon
 
     void ControlList::sendLabelBind(int tail) const {
       // construct a CFileItemList to pass 'em on to the list
-      std::shared_ptr<CGUIListItem> items(new CFileItemList());
+      auto items = std::make_shared<CFileItemList>();
       for (unsigned int i = vecItems.size() - tail; i < vecItems.size(); i++)
         static_cast<CFileItemList*>(items.get())->Add(vecItems[i]->item);
 

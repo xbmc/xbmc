@@ -113,7 +113,7 @@ bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   if (ptStreamType != CAEStreamInfo::STREAM_TYPE_NULL)
   {
     //Look if the PT decoder can be opened
-    m_decryptCodec = std::shared_ptr<CDVDAudioCodec>(new CDVDAudioCodecPassthrough(m_processInfo, ptStreamType));
+    m_decryptCodec = std::make_shared<CDVDAudioCodecPassthrough>(m_processInfo, ptStreamType);
     if (m_decryptCodec->Open(hints, options))
       goto PROCESSDECODER;
   }
@@ -208,7 +208,7 @@ bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       mimeTypes = codec_info.getSupportedTypes();
       if (std::find(mimeTypes.begin(), mimeTypes.end(), m_mime) != mimeTypes.end())
       {
-        m_codec = std::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createByCodecName(codecName)));
+        m_codec = std::make_shared<CJNIMediaCodec>(CJNIMediaCodec::createByCodecName(codecName));
         if (xbmc_jnienv()->ExceptionCheck())
         {
           xbmc_jnienv()->ExceptionDescribe();
@@ -311,7 +311,7 @@ PROCESSDECODER:
         CDVDStreamInfo ffhints = hints;
         ffhints.cryptoSession = nullptr;
 
-        m_decryptCodec = std::shared_ptr<CDVDAudioCodec>(new CDVDAudioCodecFFmpeg(m_processInfo));
+        m_decryptCodec = std::make_shared<CDVDAudioCodecFFmpeg>(m_processInfo);
         if (!m_decryptCodec->Open(ffhints, options))
         {
           CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::Open() Failed opening FFmpeg decoder");

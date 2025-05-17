@@ -187,7 +187,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
         for (const auto &addon : updates)
         {
           if (eventLog)
-            eventLog->Add(EventPtr(new CAddonManagementEvent(addon, 24068)));
+            eventLog->Add(std::make_shared<const CAddonManagementEvent>(addon, 24068));
         }
       }
     }

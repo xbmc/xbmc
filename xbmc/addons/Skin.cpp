@@ -815,9 +815,9 @@ CSkinSettingPtr CSkinInfo::ParseSetting(const TiXmlElement* element)
   std::string settingType = XMLUtils::GetAttribute(element, XML_ATTR_TYPE);
   CSkinSettingPtr setting;
   if (settingType == "string")
-    setting = CSkinSettingPtr(new CSkinSettingString());
+    setting = std::make_shared<CSkinSettingString>();
   else if (settingType == "bool")
-    setting = CSkinSettingPtr(new CSkinSettingBool());
+    setting = std::make_shared<CSkinSettingBool>();
   else
     return CSkinSettingPtr();
 

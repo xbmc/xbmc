@@ -706,8 +706,9 @@ int CPVRDatabase::Get(bool bRadio,
     {
       while (!m_pDS->eof())
       {
-        const std::shared_ptr<CPVRChannel> channel(new CPVRChannel(
-            m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("sIconPath").get_asString()));
+        const auto channel = std::make_shared<CPVRChannel>(
+            m_pDS->fv("bIsRadio").get_asBool(),
+            m_pDS->fv("sIconPath").get_asString());
 
         channel->m_iChannelId = m_pDS->fv("idChannel").get_asInt();
         channel->m_iUniqueId = m_pDS->fv("iUniqueId").get_asInt();
@@ -1272,7 +1273,7 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
     {
       while (!m_pDS->eof())
       {
-        std::shared_ptr<CPVRTimerInfoTag> newTag(new CPVRTimerInfoTag());
+        auto newTag = std::make_shared<CPVRTimerInfoTag>();
 
         newTag->m_iClientIndex = -m_pDS->fv("iClientIndex").get_asInt();
         newTag->m_iParentClientIndex = m_pDS->fv("iParentClientIndex").get_asInt();

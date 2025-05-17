@@ -794,8 +794,8 @@ CGUIControl* CGUIDialogSettingsBase::AddSeparator(float width, int& iControlID)
     return NULL;
 
   return AddSettingControl(pControl,
-                           BaseSettingControlPtr(new CGUIControlSeparatorSetting(
-                               static_cast<CGUIImage*>(pControl), iControlID, this)),
+                           std::make_shared<CGUIControlSeparatorSetting>(
+                             static_cast<CGUIImage *>(pControl), iControlID, this),
                            width, iControlID);
 }
 
@@ -813,8 +813,8 @@ CGUIControl* CGUIDialogSettingsBase::AddGroupLabel(const std::shared_ptr<CSettin
   static_cast<CGUILabelControl*>(pControl)->SetLabel(GetSettingsLabel(group));
 
   return AddSettingControl(pControl,
-                           BaseSettingControlPtr(new CGUIControlGroupTitleSetting(
-                               static_cast<CGUILabelControl*>(pControl), iControlID, this)),
+                           std::make_shared<CGUIControlGroupTitleSetting>(
+                             static_cast<CGUILabelControl *>(pControl), iControlID, this),
                            width, iControlID);
 }
 

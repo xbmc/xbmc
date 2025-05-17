@@ -529,10 +529,10 @@ namespace VIDEO
                                               ? CURL::GetRedacted(pItem->GetPath())
                                               : URIUtils::GetFileName(pItem->GetPath());
 
-          eventLog->Add(EventPtr(new CMediaLibraryEvent(
-              mediaType, pItem->GetPath(), 24145,
-              StringUtils::Format(g_localizeStrings.Get(24147), mediaType, itemlogpath),
-              EventLevel::Warning)));
+          eventLog->Add(std::make_shared<const CMediaLibraryEvent>(
+            mediaType, pItem->GetPath(), 24145,
+            StringUtils::Format(g_localizeStrings.Get(24147), mediaType, itemlogpath),
+            EventLevel::Warning));
         }
       }
 

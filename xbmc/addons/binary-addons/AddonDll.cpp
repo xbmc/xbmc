@@ -542,7 +542,7 @@ bool CAddonDll::CheckAPIVersion(int type) const {
       CEventLog* eventLog = CServiceBroker::GetEventLog();
       if (eventLog)
         eventLog->AddWithNotification(
-            EventPtr(new CNotificationEvent(Name(), 24152, EventLevel::Error)));
+          std::make_shared<const CNotificationEvent>(Name(), 24152, EventLevel::Error));
     }
 
     return false;

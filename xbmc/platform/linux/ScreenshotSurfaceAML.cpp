@@ -24,7 +24,7 @@ void CScreenshotSurfaceAML::Register()
 
 std::unique_ptr<IScreenshotSurface> CScreenshotSurfaceAML::CreateSurface()
 {
-  return std::unique_ptr<CScreenshotSurfaceAML>(new CScreenshotSurfaceAML());
+  return std::make_unique<CScreenshotSurfaceAML>();
 }
 
 bool CScreenshotSurfaceAML::Capture()

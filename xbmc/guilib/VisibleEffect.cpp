@@ -38,7 +38,7 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 }
 
 CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE effect)
-  : m_pTweener(std::shared_ptr<Tweener>(new LinearTweener()))
+  : m_pTweener(std::make_shared<LinearTweener>())
 {
   m_delay = delay;
   m_length = length;
@@ -94,21 +94,21 @@ std::shared_ptr<Tweener> CAnimEffect::GetTweener(const TiXmlElement *pAnimationN
   if (tween)
   {
     if (StringUtils::CompareNoCase(tween, "linear") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new LinearTweener());
+      m_pTweener = std::make_shared<LinearTweener>();
     else if (StringUtils::CompareNoCase(tween, "quadratic") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new QuadTweener());
+      m_pTweener = std::make_shared<QuadTweener>();
     else if (StringUtils::CompareNoCase(tween, "cubic") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new CubicTweener());
+      m_pTweener = std::make_shared<CubicTweener>();
     else if (StringUtils::CompareNoCase(tween, "sine") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new SineTweener());
+      m_pTweener = std::make_shared<SineTweener>();
     else if (StringUtils::CompareNoCase(tween, "back") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new BackTweener());
+      m_pTweener = std::make_shared<BackTweener>();
     else if (StringUtils::CompareNoCase(tween, "circle") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new CircleTweener());
+      m_pTweener = std::make_shared<CircleTweener>();
     else if (StringUtils::CompareNoCase(tween, "bounce") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new BounceTweener());
+      m_pTweener = std::make_shared<BounceTweener>();
     else if (StringUtils::CompareNoCase(tween, "elastic") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new ElasticTweener());
+      m_pTweener = std::make_shared<ElasticTweener>();
 
     const char *easing = pAnimationNode->Attribute("easing");
     if (m_pTweener && easing)
@@ -130,11 +130,11 @@ std::shared_ptr<Tweener> CAnimEffect::GetTweener(const TiXmlElement *pAnimationN
     // or quadratic if we have acceleration
     if (accel)
     {
-      m_pTweener = std::shared_ptr<Tweener>(new QuadTweener(accel));
+      m_pTweener = std::make_shared<QuadTweener>(accel);
       m_pTweener->SetEasing(EASE_IN);
     }
     else
-      m_pTweener = std::shared_ptr<Tweener>(new LinearTweener());
+      m_pTweener = std::make_shared<LinearTweener>();
   }
 
   return m_pTweener;

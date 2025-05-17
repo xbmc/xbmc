@@ -37,5 +37,5 @@ bool CSettingCategoryAccessConditionCombination::Check() const
 CSettingCategoryAccess::CSettingCategoryAccess(CSettingsManager *settingsManager /* = nullptr */)
   : CSettingCondition(settingsManager)
 {
-  m_operation = CBooleanLogicOperationPtr(new CSettingCategoryAccessConditionCombination(m_settingsManager));
+  m_operation = std::make_shared<CSettingCategoryAccessConditionCombination>(m_settingsManager);
 }

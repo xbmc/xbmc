@@ -941,7 +941,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
     bool bCreateReminder,
     bool bReadOnly /* = false */)
 {
-  std::shared_ptr<CPVRTimerInfoTag> newTag(new CPVRTimerInfoTag());
+  auto newTag = std::make_shared<CPVRTimerInfoTag>();
 
   /* check if a valid channel is set */
   const std::shared_ptr<CPVRChannel> channel =

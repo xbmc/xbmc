@@ -933,7 +933,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_processInfo.SetVideoDeintMethod("hardware");
   m_processInfo.SetVideoDAR(m_hints.aspect);
 
-  m_videoBufferPool = std::shared_ptr<CMediaCodecVideoBufferPool>(new CMediaCodecVideoBufferPool(m_codec));
+  m_videoBufferPool = std::make_shared<CMediaCodecVideoBufferPool>(m_codec);
 
   UpdateFpsDuration();
 
@@ -1842,9 +1842,9 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
     glBindTexture(  GL_TEXTURE_EXTERNAL_OES, 0);
     m_textureId = texture_id;
 
-    m_surfaceTexture = std::shared_ptr<CJNISurfaceTexture>(new CJNISurfaceTexture(m_textureId));
+    m_surfaceTexture = std::make_shared<CJNISurfaceTexture>(m_textureId);
     // hook the surfaceTexture OnFrameAvailable callback
-    m_frameAvailable = std::shared_ptr<CDVDMediaCodecOnFrameAvailable>(new CDVDMediaCodecOnFrameAvailable(m_surfaceTexture));
+    m_frameAvailable = std::make_shared<CDVDMediaCodecOnFrameAvailable>(m_surfaceTexture);
     m_jnivideosurface = CJNISurface(*m_surfaceTexture);
   }
   else

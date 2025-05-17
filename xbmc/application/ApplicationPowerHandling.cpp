@@ -418,7 +418,7 @@ void CApplicationPowerHandling::ActivateScreenSaver(bool forceType /*= false */)
       if (!CScriptInvocationManager::GetInstance().Stop(libPath))
         CScriptInvocationManager::GetInstance().ExecuteAsync(
             libPath,
-            ADDON::AddonPtr(new ADDON::CAddon(dynamic_cast<ADDON::CAddon&>(*m_pythonScreenSaver))));
+            std::make_shared<ADDON::CAddon>(dynamic_cast<ADDON::CAddon &>(*m_pythonScreenSaver)));
       return;
     }
     m_pythonScreenSaver.reset();

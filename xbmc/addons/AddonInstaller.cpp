@@ -429,9 +429,9 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
       items.Size() != 1 || !items[0]->m_bIsFolder)
   {
     if (eventLog)
-      eventLog->AddWithNotification(EventPtr(
-          new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
-                                 "special://xbmc/media/icon256x256.png", EventLevel::Error)));
+      eventLog->AddWithNotification(std::make_shared<const CNotificationEvent>(
+        24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
+        "special://xbmc/media/icon256x256.png", EventLevel::Error));
 
     CLog::Log(
         LOGERROR,
@@ -447,9 +447,9 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
                      AllowCheckForUpdates::CHOICE_YES);
 
   if (eventLog)
-    eventLog->AddWithNotification(EventPtr(
-        new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
-                               "special://xbmc/media/icon256x256.png", EventLevel::Error)));
+    eventLog->AddWithNotification(std::make_shared<const CNotificationEvent>(
+      24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
+      "special://xbmc/media/icon256x256.png", EventLevel::Error));
   return false;
 }
 
@@ -953,7 +953,7 @@ bool CAddonInstallJob::DoWork()
                 !IsModal() && m_dependsInstall == DependencyJob::CHOICE_NO;
   auto eventLog = CServiceBroker::GetEventLog();
   if (eventLog)
-    eventLog->Add(EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)), notify,
+    eventLog->Add(std::make_shared<const CAddonManagementEvent>(m_addon, m_isUpdate ? 24065 : 24084), notify,
                   false);
 
   if (m_isAutoUpdate == AutoUpdateJob::CHOICE_YES &&
@@ -963,7 +963,7 @@ bool CAddonInstallJob::DoWork()
               m_addon->ID());
     CServiceBroker::GetAddonMgr().DisableAddon(m_addon->ID(), AddonDisabledReason::USER);
     if (eventLog)
-      eventLog->Add(EventPtr(new CAddonManagementEvent(m_addon, 24094)), true, false);
+      eventLog->Add(std::make_shared<const CAddonManagementEvent>(m_addon, 24094), true, false);
   }
   else if (m_addon->LifecycleState() == AddonLifecycleState::DEPRECATED)
   {
@@ -972,7 +972,7 @@ bool CAddonInstallJob::DoWork()
     std::string text =
         StringUtils::Format(g_localizeStrings.Get(24168), m_addon->LifecycleStateDescription());
     if (eventLog)
-      eventLog->Add(EventPtr(new CAddonManagementEvent(m_addon, text)), true, false);
+      eventLog->Add(std::make_shared<const CAddonManagementEvent>(m_addon, text), true, false);
   }
 
   // and we're done!
@@ -1193,15 +1193,15 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
       msg = g_localizeStrings.Get(addon2 != nullptr && success ? 113 : 114);
     }
 
-    activity = EventPtr(new CAddonManagementEvent(addon, EventLevel::Error, msg));
+    activity = std::make_shared<const CAddonManagementEvent>(addon, EventLevel::Error, msg);
     if (IsModal())
       HELPERS::ShowOKDialogText(CVariant{m_addon->Name()}, CVariant{msg});
   }
   else
   {
-    activity = EventPtr(new CNotificationEvent(
-        24045, !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143), fileName),
-        EventLevel::Error));
+    activity = std::make_shared<const CNotificationEvent>(
+      24045, !msg.empty() ? msg : StringUtils::Format(g_localizeStrings.Get(24143), fileName),
+      EventLevel::Error);
 
     if (IsModal())
       HELPERS::ShowOKDialogText(CVariant{fileName}, CVariant{msg});
@@ -1252,7 +1252,7 @@ bool CAddonUnInstallJob::DoWork()
 
   auto eventLog = CServiceBroker::GetEventLog();
   if (eventLog)
-    eventLog->Add(EventPtr(new CAddonManagementEvent(addon, 24144))); // Add-on uninstalled
+    eventLog->Add(std::make_shared<const CAddonManagementEvent>(addon, 24144)); // Add-on uninstalled
 
   CServiceBroker::GetAddonMgr().OnPostUnInstall(m_addon->ID());
 

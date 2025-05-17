@@ -106,7 +106,7 @@ bool CPVRGUIActionsTimers::AddReminder(const CFileItem& item) const
 
 bool CPVRGUIActionsTimers::AddTimer(bool bRadio) const
 {
-  const std::shared_ptr<CPVRTimerInfoTag> newTimer(new CPVRTimerInfoTag(bRadio));
+  const auto newTimer = std::make_shared<CPVRTimerInfoTag>(bRadio);
   if (ShowTimerSettings(newTimer))
   {
     return AddTimer(newTimer);
@@ -575,7 +575,7 @@ bool CPVRGUIActionsTimers::EditTimer(const CFileItem& item) const
   }
 
   // clone the timer.
-  const std::shared_ptr<CPVRTimerInfoTag> newTimer(new CPVRTimerInfoTag);
+  const auto newTimer = std::make_shared<CPVRTimerInfoTag>();
   newTimer->UpdateEntry(timer);
 
   if (ShowTimerSettings(newTimer) &&

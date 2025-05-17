@@ -212,7 +212,7 @@ bool CPVRGUIActionsRecordings::EditRecording(const CFileItem& item) const
     return false;
   }
 
-  std::shared_ptr<CPVRRecording> origRecording(new CPVRRecording);
+  auto origRecording = std::make_shared<CPVRRecording>();
   origRecording->Update(*recording,
                         *CServiceBroker::GetPVRManager().GetClient(recording->ClientID()));
 

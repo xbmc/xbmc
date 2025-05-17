@@ -332,33 +332,33 @@ void CPeripherals::CreatePeripheral(CPeripheralBus& bus, const PeripheralScanRes
   switch (mappedResult.m_mappedType)
   {
     case PERIPHERAL_HID:
-      peripheral = PeripheralPtr(new CPeripheralHID(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralHID>(*this, mappedResult, &bus);
       break;
 
     case PERIPHERAL_NIC:
-      peripheral = PeripheralPtr(new CPeripheralNIC(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralNIC>(*this, mappedResult, &bus);
       break;
 
     case PERIPHERAL_DISK:
-      peripheral = PeripheralPtr(new CPeripheralDisk(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralDisk>(*this, mappedResult, &bus);
       break;
 
     case PERIPHERAL_NYXBOARD:
-      peripheral = PeripheralPtr(new CPeripheralNyxboard(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralNyxboard>(*this, mappedResult, &bus);
       break;
 
     case PERIPHERAL_TUNER:
-      peripheral = PeripheralPtr(new CPeripheralTuner(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralTuner>(*this, mappedResult, &bus);
       break;
 
     case PERIPHERAL_BLUETOOTH:
-      peripheral = PeripheralPtr(new CPeripheralBluetooth(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralBluetooth>(*this, mappedResult, &bus);
       break;
 
     case PERIPHERAL_CEC:
 #if defined(HAVE_LIBCEC)
       if (bus.Type() == PERIPHERAL_BUS_CEC)
-        peripheral = PeripheralPtr(new CPeripheralCecAdapter(*this, mappedResult, &bus));
+        peripheral = std::make_shared<CPeripheralCecAdapter>(*this, mappedResult, &bus);
 #else
       if (!m_bMissingLibCecWarningDisplayed)
       {
@@ -375,19 +375,19 @@ void CPeripherals::CreatePeripheral(CPeripheralBus& bus, const PeripheralScanRes
       break;
 
     case PERIPHERAL_IMON:
-      peripheral = PeripheralPtr(new CPeripheralImon(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralImon>(*this, mappedResult, &bus);
       break;
 
     case PERIPHERAL_JOYSTICK:
-      peripheral = PeripheralPtr(new CPeripheralJoystick(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralJoystick>(*this, mappedResult, &bus);
       break;
 
     case PERIPHERAL_KEYBOARD:
-      peripheral = PeripheralPtr(new CPeripheralKeyboard(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralKeyboard>(*this, mappedResult, &bus);
       break;
 
     case PERIPHERAL_MOUSE:
-      peripheral = PeripheralPtr(new CPeripheralMouse(*this, mappedResult, &bus));
+      peripheral = std::make_shared<CPeripheralMouse>(*this, mappedResult, &bus);
       break;
 
     default:

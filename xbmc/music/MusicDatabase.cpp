@@ -12653,7 +12653,7 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
 
     auto eventLog = CServiceBroker::GetEventLog();
     if (eventLog)
-      eventLog->Add(EventPtr(new CNotificationEvent(20197, strLine, EventLevel::Information)));
+      eventLog->Add(std::make_shared<const CNotificationEvent>(20197, strLine, EventLevel::Information));
 
     return true;
   }

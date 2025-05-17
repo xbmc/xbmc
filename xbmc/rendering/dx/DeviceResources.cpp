@@ -76,7 +76,7 @@ bool DX::DeviceResources::CBackBuffer::Acquire(ID3D11Texture2D* pTexture)
 
 std::shared_ptr<DX::DeviceResources> DX::DeviceResources::Get()
 {
-  static std::shared_ptr<DeviceResources> sDeviceResources(new DeviceResources);
+  static auto sDeviceResources = std::make_shared<DeviceResources>();
   return sDeviceResources;
 }
 

@@ -1836,8 +1836,8 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
                                           false);
     auto eventLog = CServiceBroker::GetEventLog();
     if (eventLog)
-      eventLog->Add(EventPtr(
-          new CNotificationEvent(client->GetFriendlyName(), strLine1, client->Icon(), strLine2)));
+      eventLog->Add(
+        std::make_shared<const CNotificationEvent>(client->GetFriendlyName(), strLine1, client->Icon(), strLine2));
 
     CLog::LogFC(LOGDEBUG, LOGPVR, "Recording {} on client {}. name='{}' filename='{}'",
                 bOnOff ? "started" : "finished", client->GetID(), strName, strFileName);

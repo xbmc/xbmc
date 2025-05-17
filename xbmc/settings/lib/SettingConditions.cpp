@@ -82,7 +82,7 @@ bool CSettingConditionCombination::Check() const
 CSettingCondition::CSettingCondition(CSettingsManager *settingsManager /* = nullptr */)
   : ISettingCondition(settingsManager)
 {
-  m_operation = CBooleanLogicOperationPtr(new CSettingConditionCombination(settingsManager));
+  m_operation = std::make_shared<CSettingConditionCombination>(settingsManager);
 }
 
 bool CSettingCondition::Check() const

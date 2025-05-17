@@ -67,7 +67,7 @@ inline std::shared_ptr<IRenderHelper> ATTR_DLL_LOCAL GetRenderHelper()
   if (static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase)->m_renderHelper)
     return static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase)->m_renderHelper;
 
-  std::shared_ptr<kodi::gui::IRenderHelper> renderHelper(new CRenderHelper());
+  auto renderHelper = std::make_shared<CRenderHelper>();
   if (!renderHelper->Init())
     return nullptr;
 

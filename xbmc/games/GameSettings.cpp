@@ -185,7 +185,7 @@ std::string CGameSettings::LoginToRA(const std::string& username,
           token.clear();
           // "RetroAchievements", "Your account is not verified, please check your emails to complete your sign up"
           CServiceBroker::GetEventLog()->AddWithNotification(
-              EventPtr(new CNotificationEvent(35264, 35270, EventLevel::Error)));
+            std::make_shared<const CNotificationEvent>(35264, 35270, EventLevel::Error));
         }
       }
       else
@@ -194,14 +194,14 @@ std::string CGameSettings::LoginToRA(const std::string& username,
 
         // "RetroAchievements", "Incorrect User/Password!"
         CServiceBroker::GetEventLog()->AddWithNotification(
-            EventPtr(new CNotificationEvent(35264, 35265, EventLevel::Error)));
+          std::make_shared<const CNotificationEvent>(35264, 35265, EventLevel::Error));
       }
     }
     else
     {
       // "RetroAchievements", "Invalid response from server"
       CServiceBroker::GetEventLog()->AddWithNotification(
-          EventPtr(new CNotificationEvent(35264, 35267, EventLevel::Error)));
+        std::make_shared<const CNotificationEvent>(35264, 35267, EventLevel::Error));
 
       CLog::Log(LOGERROR, "Invalid server response: {}", strResponse);
     }
@@ -210,7 +210,7 @@ std::string CGameSettings::LoginToRA(const std::string& username,
   {
     // "RetroAchievements", "Failed to contact server"
     CServiceBroker::GetEventLog()->AddWithNotification(
-        EventPtr(new CNotificationEvent(35264, 35266, EventLevel::Error)));
+      std::make_shared<const CNotificationEvent>(35264, 35266, EventLevel::Error));
   }
   return token;
 }

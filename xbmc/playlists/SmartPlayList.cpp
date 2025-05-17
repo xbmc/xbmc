@@ -1175,7 +1175,7 @@ void CSmartPlaylistRuleCombination::GetVirtualFolders(const std::string& strType
 
 void CSmartPlaylistRuleCombination::AddRule(const CSmartPlaylistRule &rule)
 {
-  std::shared_ptr<CSmartPlaylistRule> ptr(new CSmartPlaylistRule(rule));
+  auto ptr = std::make_shared<CSmartPlaylistRule>(rule);
   m_rules.push_back(ptr);
 }
 

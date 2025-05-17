@@ -125,7 +125,7 @@ std::shared_ptr<CNativeWindow> CNativeWindow::CreateFromSurface(CJNISurfaceHolde
 {
   ANativeWindow* window = ANativeWindow_fromSurface(xbmc_jnienv(), holder.getSurface().get_raw());
   if (window)
-    return std::shared_ptr<CNativeWindow>(new CNativeWindow(window));
+    return std::make_shared<CNativeWindow>(window);
 
   return {};
 }

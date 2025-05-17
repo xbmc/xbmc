@@ -533,7 +533,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
   {
     int iClientID = m_clientsWithSettingsList[iSelection]->GetID();
 
-    std::shared_ptr<CPVRChannel> channel(new CPVRChannel(m_bIsRadio));
+    auto channel = std::make_shared<CPVRChannel>(m_bIsRadio);
     channel->SetChannelName(g_localizeStrings.Get(19204)); // New channel
     channel->SetClientID(iClientID);
 

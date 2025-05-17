@@ -352,7 +352,7 @@ CSettingDependency::CSettingDependency(SettingDependencyType type,
   if (s_logger == nullptr)
     s_logger = CServiceBroker::GetLogging().GetLogger("CSettingDependency");
 
-  m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
+  m_operation = std::make_shared<CSettingDependencyConditionCombination>(m_settingsManager);
 }
 
 bool CSettingDependency::Deserialize(const TiXmlNode *node)
@@ -389,7 +389,7 @@ std::set<std::string> CSettingDependency::GetSettings() const
 CSettingDependencyConditionCombinationPtr CSettingDependency::And()
 {
   if (m_operation == nullptr)
-    m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
+    m_operation = std::make_shared<CSettingDependencyConditionCombination>(m_settingsManager);
 
   m_operation->SetOperation(BooleanLogicOperationAnd);
 
@@ -399,7 +399,7 @@ CSettingDependencyConditionCombinationPtr CSettingDependency::And()
 CSettingDependencyConditionCombinationPtr CSettingDependency::Or()
 {
   if (m_operation == nullptr)
-    m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
+    m_operation = std::make_shared<CSettingDependencyConditionCombination>(m_settingsManager);
 
   m_operation->SetOperation(BooleanLogicOperationOr);
 

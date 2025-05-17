@@ -80,7 +80,7 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterControl(CGUIGam
   std::lock_guard lock(m_targetMutex);
 
   // Create handle for game control
-  std::shared_ptr<CGUIRenderHandle> renderHandle(new CGUIRenderControlHandle(*this, control));
+  auto renderHandle = std::make_shared<CGUIRenderControlHandle>(*this, control);
 
   std::shared_ptr<CGUIRenderTarget> renderTarget;
   if (m_factory != nullptr)
@@ -97,7 +97,7 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterWindow(
   std::lock_guard lock(m_targetMutex);
 
   // Create handle for game window
-  std::shared_ptr<CGUIRenderHandle> renderHandle(new CGUIRenderFullScreenHandle(*this, window));
+  std::shared_ptr<CGUIRenderHandle> renderHandle(std::make_shared<CGUIRenderFullScreenHandle>(*this, window));
 
   std::shared_ptr<CGUIRenderTarget> renderTarget;
   if (m_factory != nullptr)

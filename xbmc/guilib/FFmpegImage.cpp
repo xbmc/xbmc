@@ -761,7 +761,7 @@ std::shared_ptr<Frame> CFFmpegImage::ReadFrame()
   AVFrame* avframe = ExtractFrame();
   if (avframe == nullptr)
     return nullptr;
-  std::shared_ptr<Frame> frame(new Frame());
+  auto frame = std::make_shared<Frame>();
 
 #if LIBAVCODEC_VERSION_MAJOR < 60
   frame->m_delay = (unsigned int)avframe->pkt_duration;
