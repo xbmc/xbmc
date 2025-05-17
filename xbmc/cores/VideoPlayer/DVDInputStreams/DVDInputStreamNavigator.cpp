@@ -76,7 +76,7 @@ static void dvd_logger(void* priv, dvdnav_logger_level_t level, const char* fmt,
 CDVDInputStreamNavigator::CDVDInputStreamNavigator(IVideoPlayer* player, const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_DVD, fileitem), m_pstream(nullptr)
 {
-  m_dvdnav = 0;
+  m_dvdnav = nullptr;
   m_pVideoPlayer = player;
   m_bCheckButtons = false;
   m_iCellStart = 0;
@@ -309,7 +309,7 @@ void CDVDInputStreamNavigator::Close()
   }
 
   CDVDInputStream::Close();
-  m_dvdnav = NULL;
+  m_dvdnav = nullptr;
   m_bEOF = true;
 
   if (m_pstream != nullptr)
@@ -526,7 +526,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         // get chapters' timestamps if we have not cached them yet
         if (m_mapTitleChapters.find(m_iTitle) == m_mapTitleChapters.end())
         {
-          uint64_t* times = NULL;
+          uint64_t* times = nullptr;
           uint64_t duration;
           //dvdnav_describe_title_chapters returns 0 on failure and NULL for times
           int entries = m_dll.dvdnav_describe_title_chapters(m_dvdnav, m_iTitle, &times, &duration);
@@ -628,7 +628,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
       // This event is issued whenever a non-seamless operation has been executed.
       // Applications with fifos should drop the fifos content to speed up responsiveness.
       {
-        iNavresult = m_pVideoPlayer->OnDiscNavResult(NULL, DVDNAV_HOP_CHANNEL);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult(nullptr, DVDNAV_HOP_CHANNEL);
       }
       break;
 
@@ -640,7 +640,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         // the disc. reading further results in a crash
         m_bEOF = true;
 
-        m_pVideoPlayer->OnDiscNavResult(NULL, DVDNAV_STOP);
+        m_pVideoPlayer->OnDiscNavResult(nullptr, DVDNAV_STOP);
         iNavresult = NAVRESULT_ERROR;
       }
       break;
@@ -1402,7 +1402,7 @@ std::string CDVDInputStreamNavigator::GetDVDTitleString()
   if (!m_dvdnav)
     return "";
 
-  const char* str = NULL;
+  const char* str = nullptr;
   if (m_dll.dvdnav_get_title_string(m_dvdnav, &str) == DVDNAV_STATUS_OK)
     return str;
   else
@@ -1414,7 +1414,7 @@ std::string CDVDInputStreamNavigator::GetDVDSerialString()
   if (!m_dvdnav)
     return "";
 
-  const char* str = NULL;
+  const char* str = nullptr;
   if (m_dll.dvdnav_get_serial_string(m_dvdnav, &str) == DVDNAV_STATUS_OK)
     return str;
   else

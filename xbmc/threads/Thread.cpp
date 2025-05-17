@@ -156,7 +156,7 @@ void CThread::Create(bool bAutoDelete)
           CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", pThread->m_ThreadName,
                     std::this_thread::get_id());
           delete pThread;
-          pThread = NULL;
+          pThread = nullptr;
         }
         else
           CLog::Log(LOGDEBUG, "Thread {} {} terminating", pThread->m_ThreadName,

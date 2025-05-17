@@ -74,7 +74,7 @@ public:
   // release the singleton; (save to call multiple times)
   static void   ReleaseInstance();
   // returns false if ReleaseInstance() was called before
-  static bool   IsInstantiated() { return  smp_instance != 0; }
+  static bool   IsInstantiated() { return  smp_instance != nullptr; }
   // win32: process results from the bonjour daemon
   virtual void  ProcessResults() {}
   // returns if the service is started and services are announced

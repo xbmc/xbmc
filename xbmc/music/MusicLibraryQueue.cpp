@@ -47,7 +47,7 @@ CMusicLibraryQueue& CMusicLibraryQueue::GetInstance()
 
 void CMusicLibraryQueue::ExportLibrary(const CLibExportSettings& settings, bool showDialog /* = false */)
 {
-  CGUIDialogProgress* progress = NULL;
+  CGUIDialogProgress* progress = nullptr;
   if (showDialog)
   {
     progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
@@ -193,7 +193,7 @@ void CMusicLibraryQueue::StopLibraryScanning()
 
 void CMusicLibraryQueue::CleanLibrary(bool showDialog /* = false */)
 {
-  CGUIDialogProgress* progress = NULL;
+  CGUIDialogProgress* progress = nullptr;
   if (showDialog)
   {
     progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
@@ -217,7 +217,7 @@ void CMusicLibraryQueue::CleanLibrary(bool showDialog /* = false */)
 
 void CMusicLibraryQueue::AddJob(CMusicLibraryJob *job)
 {
-  if (job == NULL)
+  if (job == nullptr)
     return;
 
   std::lock_guard lock(m_critical);
@@ -240,7 +240,7 @@ void CMusicLibraryQueue::AddJob(CMusicLibraryJob *job)
 
 void CMusicLibraryQueue::CancelJob(CMusicLibraryJob *job)
 {
-  if (job == NULL)
+  if (job == nullptr)
     return;
 
   std::lock_guard lock(m_critical);
@@ -248,7 +248,7 @@ void CMusicLibraryQueue::CancelJob(CMusicLibraryJob *job)
   // remember the job type needed later because the job might be deleted
   // in the call to CJobQueue::CancelJob()
   std::string jobType;
-  if (job->GetType() != NULL)
+  if (job->GetType() != nullptr)
     jobType = job->GetType();
 
   // check if the job supports cancellation and cancel it

@@ -14,14 +14,14 @@
 
 DllDynamic::DllDynamic()
 {
-  m_dll=NULL;
+  m_dll= nullptr;
   m_DelayUnload=true;
 }
 
 DllDynamic::DllDynamic(const std::string& strDllName):
   m_strDllName(strDllName)
 {
-  m_dll=NULL;
+  m_dll= nullptr;
   m_DelayUnload=true;
 }
 
@@ -52,7 +52,7 @@ void DllDynamic::Unload()
 {
   if(m_dll)
     CSectionLoader::UnloadDLL(m_strDllName);
-  m_dll=NULL;
+  m_dll= nullptr;
 }
 
 bool DllDynamic::CanLoad() const {

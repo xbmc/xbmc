@@ -97,7 +97,7 @@ namespace XBMCAddon
       ///
       add(...);
 #else
-      void add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem = NULL, int index = -1) const;
+      void add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem = nullptr, int index = -1) const;
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

@@ -257,7 +257,7 @@ bool CStreamDetails::operator !=(const CStreamDetails &right) const
 
 CStreamDetail *CStreamDetails::NewStream(CStreamDetail::StreamType type)
 {
-  CStreamDetail *retVal = NULL;
+  CStreamDetail *retVal = nullptr;
   switch (type)
   {
   case CStreamDetail::VIDEO:
@@ -350,7 +350,7 @@ const CStreamDetail* CStreamDetails::GetNthStream(CStreamDetail::StreamType type
       return m_pBestSubtitle;
       break;
     default:
-      return NULL;
+      return nullptr;
       break;
     }
   }
@@ -363,7 +363,7 @@ const CStreamDetail* CStreamDetails::GetNthStream(CStreamDetail::StreamType type
         return iter.get();
     }
 
-  return NULL;
+  return nullptr;
 }
 
 std::string CStreamDetails::GetVideoCodec(int idx) const
@@ -506,7 +506,7 @@ void CStreamDetails::Archive(CArchive& ar)
     for (int i=0; i<count; i++)
     {
       int type;
-      CStreamDetail *p = NULL;
+      CStreamDetail *p = nullptr;
 
       ar >> type;
       p = NewStream(CStreamDetail::StreamType(type));
@@ -546,9 +546,9 @@ void CStreamDetails::Serialize(CVariant& value) const
 
 void CStreamDetails::DetermineBestStreams(void)
 {
-  m_pBestVideo = NULL;
-  m_pBestAudio = NULL;
-  m_pBestSubtitle = NULL;
+  m_pBestVideo = nullptr;
+  m_pBestAudio = nullptr;
+  m_pBestSubtitle = nullptr;
 
   for (const auto &iter : m_vecItems)
   {
@@ -565,13 +565,13 @@ void CStreamDetails::DetermineBestStreams(void)
       champion = (const CStreamDetail **)&m_pBestSubtitle;
       break;
     default:
-      champion = NULL;
+      champion = nullptr;
     }  /* switch type */
 
     if (!champion)
       continue;
 
-    if ((*champion == NULL) || (*champion)->IsWorseThan(*iter))
+    if ((*champion == nullptr) || (*champion)->IsWorseThan(*iter))
       *champion = iter.get();
   }  /* for each */
 }

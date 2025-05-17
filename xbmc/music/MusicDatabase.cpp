@@ -2161,7 +2161,7 @@ int CMusicDatabase::GetLastArtist() const {
   if (lastArtist.empty())
     return -1;
 
-  return static_cast<int>(strtol(lastArtist.c_str(), NULL, 10));
+  return static_cast<int>(strtol(lastArtist.c_str(), nullptr, 10));
 }
 
 int CMusicDatabase::GetArtistFromMBID(const std::string& strMusicBrainzArtistID,
@@ -4713,7 +4713,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/) const {
 
   // Get information for the inserted disc
   CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-  if (pCdInfo == NULL)
+  if (pCdInfo == nullptr)
     return false;
 
   // If the disc has no tracks, we are finished here.
@@ -4846,7 +4846,7 @@ void CMusicDatabase::DeleteCDDBInfo() const {
 
       std::string strFile = URIUtils::GetFileName(items[i]->GetPath());
       strFile.erase(strFile.size() - 5, 5);
-      uint32_t lDiscId = strtoul(strFile.c_str(), NULL, 16);
+      uint32_t lDiscId = strtoul(strFile.c_str(), nullptr, 16);
       Xcddb cddb;
       cddb.setCacheDir(m_profileManager.GetCDDBFolder());
 
@@ -9745,7 +9745,7 @@ bool CMusicDatabase::GetOldArtistPath(int idArtist, std::string& basePath) const
       std::string strValue = GetSingleValue(strSQL, m_pDS2);
       if (!strValue.empty())
       {
-        int countartists = static_cast<int>(strtol(strValue.c_str(), NULL, 10));
+        int countartists = static_cast<int>(strtol(strValue.c_str(), nullptr, 10));
         if (countartists == 0)
           return true;
       }
@@ -9833,7 +9833,7 @@ bool CMusicDatabase::GetAlbumFolder(const CAlbum& album,
   std::string strValue = GetSingleValue(strSQL, m_pDS2);
   if (strValue.empty())
     return false;
-  int countalbum = static_cast<int>(strtol(strValue.c_str(), NULL, 10));
+  int countalbum = static_cast<int>(strtol(strValue.c_str(), nullptr, 10));
   if (countalbum > 1 && !album.strMusicBrainzAlbumID.empty())
   { // Only one of the duplicate albums can be without mbid
     strFolder += "_" + album.strMusicBrainzAlbumID.substr(0, 4);
@@ -9864,7 +9864,7 @@ bool CMusicDatabase::GetArtistFolderName(const std::string& strArtist,
   std::string strValue = GetSingleValue(strSQL, m_pDS2);
   if (strValue.empty())
     return false;
-  int countartist = static_cast<int>(strtol(strValue.c_str(), NULL, 10));
+  int countartist = static_cast<int>(strtol(strValue.c_str(), nullptr, 10));
   if (countartist > 1)
     strFolder += "_" + strMusicBrainzArtistID.substr(0, 4);
   return !strFolder.empty();
@@ -11655,7 +11655,7 @@ bool CMusicDatabase::GetScraper(int id, const CONTENT_TYPE& content, ADDON::Scra
               ADDON::ScraperTypeFromContent(content), addon))
       {
         scraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
-        return scraper != NULL;
+        return scraper != nullptr;
       }
       else
         return false;
@@ -11815,7 +11815,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
     CXBMCTinyXML xmlDoc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     xmlDoc.InsertEndChild(decl);
-    TiXmlNode* pMain = NULL;
+    TiXmlNode* pMain = nullptr;
     if ((settings.IsToLibFolders() || settings.IsSeparateFiles()) && !artistfoldersonly)
       pMain = &xmlDoc;
     else if (settings.IsSingleFile())

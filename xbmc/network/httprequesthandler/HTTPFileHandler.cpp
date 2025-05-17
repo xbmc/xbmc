@@ -98,6 +98,6 @@ void CHTTPFileHandler::SetLastModifiedDate(const struct __stat64 *statBuffer)
 #else
   time = localtime((time_t *)&statBuffer->st_mtime);
 #endif
-  if (time != NULL)
+  if (time != nullptr)
     m_lastModified = *time;
 }

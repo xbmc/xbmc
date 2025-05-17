@@ -156,7 +156,7 @@ VECSOURCES* CMediaSourceSettings::GetSources(const std::string& type)
   else if (type == "games")
     return &m_gameSources;
 
-  return NULL;
+  return nullptr;
 }
 
 const std::string& CMediaSourceSettings::GetDefaultSource(const std::string& type) const
@@ -192,7 +192,7 @@ bool CMediaSourceSettings::UpdateSource(const std::string& strType,
                                         const std::string& strUpdateValue)
 {
   VECSOURCES* pShares = GetSources(strType);
-  if (pShares == NULL)
+  if (pShares == nullptr)
     return false;
 
   for (IVECSOURCES it = pShares->begin(); it != pShares->end(); ++it)
@@ -202,11 +202,11 @@ bool CMediaSourceSettings::UpdateSource(const std::string& strType,
       if (strUpdateChild == "name")
         it->strName = strUpdateValue;
       else if (strUpdateChild == "lockmode")
-        it->m_iLockMode = (LockType)std::strtol(strUpdateValue.c_str(), NULL, 10);
+        it->m_iLockMode = (LockType)std::strtol(strUpdateValue.c_str(), nullptr, 10);
       else if (strUpdateChild == "lockcode")
         it->m_strLockCode = strUpdateValue;
       else if (strUpdateChild == "badpwdcount")
-        it->m_iBadPwdCount = (int)std::strtol(strUpdateValue.c_str(), NULL, 10);
+        it->m_iBadPwdCount = (int)std::strtol(strUpdateValue.c_str(), nullptr, 10);
       else if (strUpdateChild == "thumbnail")
         it->m_strThumbnailImage = strUpdateValue;
       else if (strUpdateChild == "path")
@@ -231,7 +231,7 @@ bool CMediaSourceSettings::DeleteSource(const std::string& strType,
                                         bool virtualSource /* = false */)
 {
   VECSOURCES* pShares = GetSources(strType);
-  if (pShares == NULL)
+  if (pShares == nullptr)
     return false;
 
   bool found = false;
@@ -256,7 +256,7 @@ bool CMediaSourceSettings::DeleteSource(const std::string& strType,
 bool CMediaSourceSettings::AddShare(const std::string& type, const CMediaSource& share)
 {
   VECSOURCES* pShares = GetSources(type);
-  if (pShares == NULL)
+  if (pShares == nullptr)
     return false;
 
   // translate dir and add to our current shares
@@ -295,11 +295,11 @@ bool CMediaSourceSettings::UpdateShare(const std::string& type,
                                        const CMediaSource& share)
 {
   VECSOURCES* pShares = GetSources(type);
-  if (pShares == NULL)
+  if (pShares == nullptr)
     return false;
 
   // update our current share list
-  CMediaSource* pShare = NULL;
+  CMediaSource* pShare = nullptr;
   for (IVECSOURCES it = pShares->begin(); it != pShares->end(); ++it)
   {
     if (it->strName == oldName)
@@ -312,7 +312,7 @@ bool CMediaSourceSettings::UpdateShare(const std::string& type,
     }
   }
 
-  if (pShare == NULL)
+  if (pShare == nullptr)
     return false;
 
   // Update our XML file as well

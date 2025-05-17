@@ -57,7 +57,7 @@ void CRssManager::OnSettingsUnloaded()
 
 void CRssManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string &settingId = setting->GetId();

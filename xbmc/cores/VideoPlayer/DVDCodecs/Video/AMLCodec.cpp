@@ -577,26 +577,26 @@ static void am_packet_init(am_packet_t& pkt)
   pkt.isvalid    = 0;
   pkt.newflag    = 0;
   pkt.lastpts    = UINT64_0;
-  pkt.data       = NULL;
-  pkt.buf        = NULL;
+  pkt.data       = nullptr;
+  pkt.buf        = nullptr;
   pkt.data_size  = 0;
   pkt.buf_size   = 0;
-  pkt.hdr        = NULL;
-  pkt.codec      = NULL;
+  pkt.hdr        = nullptr;
+  pkt.codec      = nullptr;
 }
 
 void am_packet_release(am_packet_t& pkt)
 {
-  if (pkt.buf != NULL)
-    free(pkt.buf), pkt.buf= NULL;
-  if (pkt.hdr != NULL)
+  if (pkt.buf != nullptr)
+    free(pkt.buf), pkt.buf= nullptr;
+  if (pkt.hdr != nullptr)
   {
-    if (pkt.hdr->data != NULL)
-      free(pkt.hdr->data), pkt.hdr->data = NULL;
-    free(pkt.hdr), pkt.hdr = NULL;
+    if (pkt.hdr->data != nullptr)
+      free(pkt.hdr->data), pkt.hdr->data = nullptr;
+    free(pkt.hdr), pkt.hdr = nullptr;
   }
   av_buffer_unref(&pkt.avpkt.buf);
-  pkt.codec = NULL;
+  pkt.codec = nullptr;
 }
 
 int check_in_pts(am_private_t *para, am_packet_t& pkt)
@@ -616,7 +616,7 @@ static int write_header(am_private_t *para, am_packet_t& pkt)
     int write_bytes = 0, len = 0;
 
     if (pkt.hdr && pkt.hdr->size > 0) {
-        if ((NULL == pkt.codec) || (NULL == pkt.hdr->data)) {
+        if ((nullptr == pkt.codec) || (nullptr == pkt.hdr->data)) {
             logM(LOGDEBUG, "AMLCodec", "codec null!");
             return PLAYER_EMPTY_P;
         }
@@ -723,7 +723,7 @@ static int m4s2_dx50_mp4v_add_header(am_private_t *para, unsigned char *buf, int
   hdr_buf_t *hdr = &para->hdr_buf;
 
   if (size > hdr->size) {
-      free(hdr->data), hdr->data = NULL;
+      free(hdr->data), hdr->data = nullptr;
       hdr->size = 0;
 
       hdr->data = (char*)malloc(size);
@@ -972,7 +972,7 @@ int av1_parser_frame(
         0x41, 0x4D, 0x4C, 0x56,
         0xD0, 0x82, 0x80, 0x00
     };
-    uint8_t *p = NULL;
+    uint8_t *p = nullptr;
     uint32_t rpu_size = 0;
 
     // decode frame as a series of OBUs
@@ -1093,7 +1093,7 @@ int av1_parser_frame(
             p = data + bytes_read;
             logM(LOGDEBUG, "AMLCodec", "\tmeta type {} {:d}+{:d}", meta_type_name[type], bytes_read, payload_size - bytes_read);
 
-            if (meta_type == OBU_METADATA_TYPE_ITUT_T35 && meta_buf != NULL) {
+            if (meta_type == OBU_METADATA_TYPE_ITUT_T35 && meta_buf != nullptr) {
                 if ((p[0] == 0xb5) /* country code */
                     && ((p[1] == 0x00) && (p[2] == 0x3b)) /* terminal_provider_code */
                     && ((p[3] == 0x00) && (p[4] == 0x00) && (p[5] == 0x08) && (p[6] == 0x00))) { /* terminal_provider_oriented_code */
@@ -1167,7 +1167,7 @@ int av1_add_frame_dec_info(am_private_t *para)
 
   unsigned int dst_frame_size = 0;
   auto dst_data = (uint8_t *)calloc(1, pkt.data_size + 4096);
-  av1_parser_frame(0, pkt.data, pkt.data + pkt.data_size, dst_data, &dst_frame_size, NULL, NULL);
+  av1_parser_frame(0, pkt.data, pkt.data + pkt.data_size, dst_data, &dst_frame_size, nullptr, nullptr);
 
   if (dst_frame_size - pkt.data_size > 0)
   {
@@ -1200,13 +1200,13 @@ int vp9_update_frame_header(am_packet_t& pkt)
   int cur_frame, cur_mag, mag, index_sz, offset[9], size[8], tframesize[9];
   int mag_ptr;
   int ret;
-  unsigned char *old_header = NULL;
+  unsigned char *old_header = nullptr;
   int total_datasize = 0;
 
   pkt.avpkt.data = pkt.data;
   pkt.avpkt.size = pkt.data_size;
 
-  if (buf == NULL)
+  if (buf == nullptr)
     return PLAYER_SUCCESS; /*something error. skip add header*/
 
   marker = buf[dsize - 1];
@@ -1420,7 +1420,7 @@ int pre_header_feeding(am_private_t *para, am_packet_t& pkt)
 {
     int ret;
     if (para->stream_type == AM_STREAM_ES) {
-        if (pkt.hdr == NULL) {
+        if (pkt.hdr == nullptr) {
             pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
             pkt.hdr->data = (char *)malloc(HDR_BUF_SIZE);
             if (!pkt.hdr->data)
@@ -1484,14 +1484,14 @@ int pre_header_feeding(am_private_t *para, am_packet_t& pkt)
         if (pkt.hdr) {
             if (pkt.hdr->data) {
                 free(pkt.hdr->data);
-                pkt.hdr->data = NULL;
+                pkt.hdr->data = nullptr;
             }
             free(pkt.hdr);
-            pkt.hdr = NULL;
+            pkt.hdr = nullptr;
         }
     }
     else if (para->stream_type == AM_STREAM_PS) {
-        if (pkt.hdr == NULL) {
+        if (pkt.hdr == nullptr) {
             pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
             pkt.hdr->data = (char*)malloc(HDR_BUF_SIZE);
             if (!pkt.hdr->data) {
@@ -1509,10 +1509,10 @@ int pre_header_feeding(am_private_t *para, am_packet_t& pkt)
         if (pkt.hdr) {
             if (pkt.hdr->data) {
                 free(pkt.hdr->data);
-                pkt.hdr->data = NULL;
+                pkt.hdr->data = nullptr;
             }
             free(pkt.hdr);
-            pkt.hdr = NULL;
+            pkt.hdr = nullptr;
         }
     }
     return PLAYER_SUCCESS;
@@ -1524,24 +1524,24 @@ int divx3_prefix(am_packet_t& pkt)
     const unsigned char divx311_chunk_prefix[DIVX311_CHUNK_HEAD_SIZE] = {
         0x00, 0x00, 0x00, 0x01, 0xb6, 'D', 'I', 'V', 'X', '3', '.', '1', '1'
     };
-    if ((pkt.hdr != NULL) && (pkt.hdr->data != NULL)) {
+    if ((pkt.hdr != nullptr) && (pkt.hdr->data != nullptr)) {
         free(pkt.hdr->data);
-        pkt.hdr->data = NULL;
+        pkt.hdr->data = nullptr;
     }
 
-    if (pkt.hdr == NULL) {
+    if (pkt.hdr == nullptr) {
         pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
         if (!pkt.hdr) {
             logM(LOGDEBUG, "AMLCodec", "[hdr] NOMEM!");
             return PLAYER_FAILED;
         }
 
-        pkt.hdr->data = NULL;
+        pkt.hdr->data = nullptr;
         pkt.hdr->size = 0;
     }
 
     pkt.hdr->data = (char*)malloc(DIVX311_CHUNK_HEAD_SIZE + 4);
-    if (pkt.hdr->data == NULL) {
+    if (pkt.hdr->data == nullptr) {
         logM(LOGDEBUG, "AMLCodec", "[data] NOMEM!");
         return PLAYER_FAILED;
     }
@@ -1579,24 +1579,24 @@ int set_header_info(am_private_t *para)
       if (para->video_codec_type == VIDEO_DEC_FORMAT_WMV3) {
           unsigned i, check_sum = 0, data_len = 0;
 
-          if ((pkt.hdr != NULL) && (pkt.hdr->data != NULL)) {
+          if ((pkt.hdr != nullptr) && (pkt.hdr->data != nullptr)) {
               free(pkt.hdr->data);
-              pkt.hdr->data = NULL;
+              pkt.hdr->data = nullptr;
           }
 
-          if (pkt.hdr == NULL) {
+          if (pkt.hdr == nullptr) {
               pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
               if (!pkt.hdr) {
                   return PLAYER_FAILED;
               }
 
-              pkt.hdr->data = NULL;
+              pkt.hdr->data = nullptr;
               pkt.hdr->size = 0;
           }
 
           if (pkt.avpkt.flags) {
               pkt.hdr->data = (char*)malloc(para->extrasize + 26 + 22);
-              if (pkt.hdr->data == NULL) {
+              if (pkt.hdr->data == nullptr) {
                   return PLAYER_FAILED;
               }
 
@@ -1642,7 +1642,7 @@ int set_header_info(am_private_t *para)
               data_len = para->extrasize + 26;
           } else {
               pkt.hdr->data = (char*)malloc(22);
-              if (pkt.hdr->data == NULL) {
+              if (pkt.hdr->data == nullptr) {
                   return PLAYER_FAILED;
               }
           }
@@ -1682,24 +1682,24 @@ int set_header_info(am_private_t *para)
       }
       else if (para->video_codec_type == VIDEO_DEC_FORMAT_WVC1)
       {
-          if ((pkt.hdr != NULL) && (pkt.hdr->data != NULL)) {
+          if ((pkt.hdr != nullptr) && (pkt.hdr->data != nullptr)) {
               free(pkt.hdr->data);
-              pkt.hdr->data = NULL;
+              pkt.hdr->data = nullptr;
           }
 
-          if (pkt.hdr == NULL) {
+          if (pkt.hdr == nullptr) {
               pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
               if (!pkt.hdr) {
                   logM(LOGDEBUG, "AMLCodec", "[wvc1] NOMEM!");
                   return PLAYER_FAILED;
               }
 
-              pkt.hdr->data = NULL;
+              pkt.hdr->data = nullptr;
               pkt.hdr->size = 0;
           }
 
           pkt.hdr->data = (char*)malloc(4);
-          if (pkt.hdr->data == NULL) {
+          if (pkt.hdr->data == nullptr) {
               logM(LOGDEBUG, "AMLCodec", "[wvc1] NOMEM!");
               return PLAYER_FAILED;
           }
@@ -1773,8 +1773,8 @@ CAMLCodec::CAMLCodec(CProcessInfo &processInfo, CDVDStreamInfo &hints)
 CAMLCodec::~CAMLCodec()
 {
   delete am_private;
-  am_private = NULL;
-  delete m_dll, m_dll = NULL;
+  am_private = nullptr;
+  delete m_dll, m_dll = nullptr;
 }
 
 float CAMLCodec::OMXPtsToSeconds(int omxpts)
@@ -2016,7 +2016,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   am_private->gcodec.rate        = am_private->video_rate;
   am_private->gcodec.ratio       = am_private->video_ratio;
   am_private->gcodec.ratio64     = am_private->video_ratio64;
-  am_private->gcodec.param       = NULL;
+  am_private->gcodec.param       = nullptr;
   am_private->gcodec.dec_mode    = STREAM_TYPE_FRAME;
   am_private->gcodec.video_path  = FRAME_BASE_PATH_AMLVIDEO_AMVIDEO;
 
@@ -2150,7 +2150,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   am_private->am_pkt.codec = &am_private->vcodec;
   am_private->hdr_buf.size = 0;
   free(am_private->hdr_buf.data);
-  am_private->hdr_buf.data = NULL;
+  am_private->hdr_buf.data = nullptr;
   pre_header_feeding(am_private, am_private->am_pkt);
 
   m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
@@ -2269,7 +2269,7 @@ void CAMLCodec::CloseAmlVideo()
   if (am_private->vcodec.dec_mode == STREAM_TYPE_SINGLE)
     SetVfmMap("default", m_defaultVfmMap);
 
-  m_amlVideoFile = NULL;
+  m_amlVideoFile = nullptr;
 }
 
 void CAMLCodec::Reset()
@@ -2370,7 +2370,7 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
     iSize += am_private->hdr_buf.size;
     am_private->hdr_buf.size = 0;
     free(am_private->hdr_buf.data);
-    am_private->hdr_buf.data = NULL;
+    am_private->hdr_buf.data = nullptr;
   }
   else
   {

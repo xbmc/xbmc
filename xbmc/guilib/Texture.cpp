@@ -39,7 +39,7 @@
 /************************************************************************/
 CTexture::CTexture(unsigned int width, unsigned int height, XB_FMT format)
 {
-  m_pixels = NULL;
+  m_pixels = nullptr;
   m_loadedToGPU = false;
   Allocate(width, height, format);
 }
@@ -47,7 +47,7 @@ CTexture::CTexture(unsigned int width, unsigned int height, XB_FMT format)
 CTexture::~CTexture()
 {
   KODI::MEMORY::AlignedFree(m_pixels);
-  m_pixels = NULL;
+  m_pixels = nullptr;
 }
 
 void CTexture::Allocate(unsigned int width, unsigned int height, XB_FMT format)
@@ -101,7 +101,7 @@ void CTexture::Allocate(unsigned int width, unsigned int height, XB_FMT format)
   CLAMP(m_imageHeight, m_textureHeight);
 
   KODI::MEMORY::AlignedFree(m_pixels);
-  m_pixels = NULL;
+  m_pixels = nullptr;
   if (GetPitch() * GetRows() > 0)
   {
     size_t size = GetPitch() * GetRows();
@@ -121,7 +121,7 @@ void CTexture::Update(unsigned int width,
                       const unsigned char* pixels,
                       bool loadToGPU)
 {
-  if (pixels == NULL)
+  if (pixels == nullptr)
     return;
 
   if (format & XB_FMT_DXT_MASK)
@@ -331,7 +331,7 @@ bool CTexture::LoadIImage(IImage* pImage,
                           unsigned int width,
                           unsigned int height)
 {
-  if(pImage != NULL && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
+  if(pImage != nullptr && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
   {
     if (pImage->Width() > 0 && pImage->Height() > 0)
     {
@@ -375,7 +375,7 @@ bool CTexture::LoadPaletted(unsigned int width,
                             const unsigned char* pixels,
                             const COLOR* palette)
 {
-  if (pixels == NULL || palette == NULL)
+  if (pixels == nullptr || palette == nullptr)
     return false;
 
   Allocate(width, height, format);

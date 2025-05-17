@@ -591,7 +591,7 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
 ssize_t CFile::Read(void *lpBuf, size_t uiBufSize) const {
   if (!m_pFile)
     return -1;
-  if (lpBuf == NULL && uiBufSize != 0)
+  if (lpBuf == nullptr && uiBufSize != 0)
     return -1;
 
   if (uiBufSize > SSIZE_MAX)
@@ -819,12 +819,12 @@ bool CFile::ReadString(char *szLine, int iLineLength) const {
 ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize) const {
   if (!m_pFile)
     return -1;
-  if (lpBuf == NULL && uiBufSize != 0)
+  if (lpBuf == nullptr && uiBufSize != 0)
     return -1;
 
   try
   {
-    if (uiBufSize == 0 && lpBuf == NULL)
+    if (uiBufSize == 0 && lpBuf == nullptr)
     { // "test" write with zero size
       // some VFSs don't handle correctly null buffer pointer
       // provide valid buffer pointer for them
@@ -1072,8 +1072,8 @@ CFileStreamBuffer::~CFileStreamBuffer()
 
 CFileStreamBuffer::CFileStreamBuffer(int backsize)
   : std::streambuf()
-  , m_file(NULL)
-  , m_buffer(NULL)
+  , m_file(nullptr)
+  , m_buffer(nullptr)
   , m_backsize(backsize)
 {
 }
@@ -1085,16 +1085,16 @@ void CFileStreamBuffer::Attach(IFile *file)
   m_frontsize = CFile::DetermineChunkSize(m_file->GetChunkSize(), 64 * 1024);
 
   m_buffer = new char[m_frontsize+m_backsize];
-  setg(0,0,0);
-  setp(0,0);
+  setg(nullptr,nullptr,nullptr);
+  setp(nullptr,nullptr);
 }
 
 void CFileStreamBuffer::Detach()
 {
-  setg(0,0,0);
-  setp(0,0);
+  setg(nullptr,nullptr,nullptr);
+  setp(nullptr,nullptr);
   delete[] m_buffer;
-  m_buffer = NULL;
+  m_buffer = nullptr;
 }
 
 CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
@@ -1157,8 +1157,8 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
 
   // reset our buffer pointer, will
   // start buffering on next read
-  setg(0,0,0);
-  setp(0,0);
+  setg(nullptr,nullptr,nullptr);
+  setp(nullptr,nullptr);
 
   int64_t position = -1;
   if(way == std::ios_base::cur)

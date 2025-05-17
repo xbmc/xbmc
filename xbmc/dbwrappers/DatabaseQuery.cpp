@@ -48,11 +48,11 @@ CDatabaseQueryRule::CDatabaseQueryRule()
 
 bool CDatabaseQueryRule::Load(const TiXmlNode* node, const std::string& encoding /* = "UTF-8" */)
 {
-  if (node == NULL)
+  if (node == nullptr)
     return false;
 
   const TiXmlElement* element = node->ToElement();
-  if (element == NULL)
+  if (element == nullptr)
     return false;
 
   // format is:
@@ -61,7 +61,7 @@ bool CDatabaseQueryRule::Load(const TiXmlNode* node, const std::string& encoding
   // <value> tags containing a string
   const char* field = element->Attribute("field");
   const char* oper = element->Attribute("operator");
-  if (field == NULL || oper == NULL)
+  if (field == nullptr || oper == nullptr)
     return false;
 
   m_field = TranslateField(field);
@@ -71,7 +71,7 @@ bool CDatabaseQueryRule::Load(const TiXmlNode* node, const std::string& encoding
     return true;
 
   const TiXmlNode* parameter = element->FirstChild();
-  if (parameter == NULL)
+  if (parameter == nullptr)
     return false;
 
   if (parameter->Type() == TiXmlNode::TINYXML_TEXT)
@@ -88,10 +88,10 @@ bool CDatabaseQueryRule::Load(const TiXmlNode* node, const std::string& encoding
   else if (parameter->Type() == TiXmlNode::TINYXML_ELEMENT)
   {
     const TiXmlNode* valueNode = element->FirstChild("value");
-    while (valueNode != NULL)
+    while (valueNode != nullptr)
     {
       const TiXmlNode* value = valueNode->FirstChild();
-      if (value != NULL && value->Type() == TiXmlNode::TINYXML_TEXT)
+      if (value != nullptr && value->Type() == TiXmlNode::TINYXML_TEXT)
       {
         std::string utf8Parameter;
         if (encoding.empty()) // utf8
@@ -148,7 +148,7 @@ bool CDatabaseQueryRule::Load(const CVariant& obj)
 
 bool CDatabaseQueryRule::Save(TiXmlNode* parent) const
 {
-  if (parent == NULL ||
+  if (parent == nullptr ||
       (m_parameter.empty() && m_operator != OPERATOR_TRUE && m_operator != OPERATOR_FALSE))
     return false;
 

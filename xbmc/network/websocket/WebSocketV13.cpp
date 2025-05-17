@@ -47,7 +47,7 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
 
   // The request must be GET
   value = header.getMethod();
-  if (value == NULL ||
+  if (value == nullptr ||
       StringUtils::CompareNoCase(value, WS_HTTP_METHOD, strlen(WS_HTTP_METHOD)) != 0)
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: invalid HTTP method received (GET expected)");
@@ -77,7 +77,7 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
   std::string websocketKey, websocketProtocol;
   // There must be a "Host" header
   value = header.getValue("host");
-  if (value == NULL || strlen(value) == 0)
+  if (value == nullptr || strlen(value) == 0)
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: \"Host\" header missing");
     return true;
@@ -85,8 +85,8 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
 
   // There must be a "Upgrade" header with the value "websocket"
   value = header.getValue(WS_HEADER_UPGRADE_LC);
-  if (value == NULL || StringUtils::CompareNoCase(value, WS_HEADER_UPGRADE_VALUE,
-                                                  strlen(WS_HEADER_UPGRADE_VALUE)) != 0)
+  if (value == nullptr || StringUtils::CompareNoCase(value, WS_HEADER_UPGRADE_VALUE,
+                                              strlen(WS_HEADER_UPGRADE_VALUE)) != 0)
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: invalid \"{}\" received", WS_HEADER_UPGRADE);
     return true;
@@ -105,7 +105,7 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
 
   // There must be a base64 encoded 16 byte (=> 24 byte as base62) "Sec-WebSocket-Key" header
   value = header.getValue(WS_HEADER_KEY_LC);
-  if (value == NULL || (websocketKey = value).size() != 24)
+  if (value == nullptr || (websocketKey = value).size() != 24)
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: invalid \"Sec-WebSocket-Key\" received");
     return true;
@@ -147,7 +147,7 @@ const CWebSocketFrame* CWebSocketV13::Close(WebSocketCloseReason reason /* = Web
   if (m_state == WebSocketStateNotConnected || m_state == WebSocketStateHandshaking || m_state == WebSocketStateClosed)
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: Cannot send a closing handshake if no connection has been established");
-    return NULL;
+    return nullptr;
   }
 
   return close(reason, message);

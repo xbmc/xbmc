@@ -29,7 +29,7 @@ public:
 
   static bool Check(const std::string& condition,
                     const std::string& value = "",
-                    const std::shared_ptr<const CSetting>& setting = NULL);
+                    const std::shared_ptr<const CSetting>& setting = nullptr);
 
 private:
   // Initialization parameters

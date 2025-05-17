@@ -58,7 +58,7 @@ namespace XBMCAddon
       if (_textColor)
         sscanf(_textColor, "%x", &textColor);
 
-      pGUIControl = NULL;
+      pGUIControl = nullptr;
     }
 
     void ControlFadeLabel::addLabel(const String& label)
@@ -1335,7 +1335,7 @@ namespace XBMCAddon
 
       // create message
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, iParentId, iControlId);
-      AddonClass::Ref<ListItem> pListItem = NULL;
+      AddonClass::Ref<ListItem> pListItem = nullptr;
 
       // send message
       if (!vecItems.empty() && pGUIControl)

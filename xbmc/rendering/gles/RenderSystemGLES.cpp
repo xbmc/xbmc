@@ -47,7 +47,7 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_RenderVersionMinor = 0;
 
   auto ver = (const char*)glGetString(GL_VERSION);
-  if (ver != NULL)
+  if (ver != nullptr)
   {
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
     if (!m_RenderVersionMajor)
@@ -58,18 +58,18 @@ bool CRenderSystemGLES::InitRenderSystem()
   // Get our driver vendor and renderer
   auto tmpVendor = (const char*) glGetString(GL_VENDOR);
   m_RenderVendor.clear();
-  if (tmpVendor != NULL)
+  if (tmpVendor != nullptr)
     m_RenderVendor = tmpVendor;
 
   auto tmpRenderer = (const char*) glGetString(GL_RENDERER);
   m_RenderRenderer.clear();
-  if (tmpRenderer != NULL)
+  if (tmpRenderer != nullptr)
     m_RenderRenderer = tmpRenderer;
 
   m_RenderExtensions = "";
 
   auto tmpExtensions = (const char*) glGetString(GL_EXTENSIONS);
-  if (tmpExtensions != NULL)
+  if (tmpExtensions != nullptr)
   {
     m_RenderExtensions += tmpExtensions;
     m_RenderExtensions += " ";

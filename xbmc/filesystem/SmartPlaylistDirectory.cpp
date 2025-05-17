@@ -86,7 +86,7 @@ namespace XFILE
       auto pItem = std::make_shared<CFileItem>(virtualFolder, true);
       IFileDirectory *dir = CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get());
 
-      if (dir != NULL)
+      if (dir != nullptr)
       {
         pItem->SetSpecialSort(SortSpecialOnTop);
         items.Add(pItem);

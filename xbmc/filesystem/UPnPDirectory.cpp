@@ -54,7 +54,7 @@ static std::string GetContentMapping(NPT_String& objectClass)
         , { "object.container.album.photoAlbum"                     , "photos"       }
         , { "object.container.album"                                , "albums"       }
         , { "object.container.person"                               , "artists"      }
-        , { NULL                                                    , NULL           }
+        , {nullptr, nullptr}
     };
     for(const SClassMapping* map = mapping; map->ObjectClass; map++)
     {

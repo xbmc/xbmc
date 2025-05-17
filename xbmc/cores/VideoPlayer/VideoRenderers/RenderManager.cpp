@@ -509,7 +509,7 @@ void CRenderManager::DeleteRenderer()
     logM(LOGDEBUG, "CRenderManager", "deleting renderer");
 
     delete m_pRenderer;
-    m_pRenderer = NULL;
+    m_pRenderer = nullptr;
   }
 }
 
@@ -1271,7 +1271,7 @@ void inline CRenderManager::Wait(useconds_t uSeconds)
      target.tv_nsec -= 1000000000;
    }
 
-   clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &target, NULL);
+   clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &target, nullptr);
 }
 
 bool inline CRenderManager::Paused(bool paused, double clock)

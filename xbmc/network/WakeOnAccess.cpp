@@ -291,7 +291,7 @@ public:
       m_dialog->Close();
   }
 
-  bool HasDialog() const { return m_dialog != 0; }
+  bool HasDialog() const { return m_dialog != nullptr; }
 
   enum wait_result { TimedOut, Canceled, Success };
 
@@ -335,7 +335,7 @@ public:
   }
 
 private:
-  CGUIDialogProgress* m_dialog = 0;
+  CGUIDialogProgress* m_dialog = nullptr;
 };
 
 class NetworkStartWaiter : public WaitCondition

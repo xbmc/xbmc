@@ -131,7 +131,7 @@ NPT_XbmcFileInputStream::Read(void*     buffer,
     unsigned int nb_read;
 
     // check the parameters
-    if (buffer == NULL) {
+    if (buffer == nullptr) {
         return NPT_ERROR_INVALID_PARAMETERS;
     }
 
@@ -320,7 +320,7 @@ NPT_Result
 NPT_XbmcFile::Close()
 {
     // release the file reference
-    m_FileReference = NULL;
+    m_FileReference = nullptr;
 
     // reset the mode
     m_Mode = 0;
@@ -335,7 +335,7 @@ NPT_Result
 NPT_XbmcFile::GetInputStream(NPT_InputStreamReference& stream)
 {
     // default value
-    stream = NULL;
+    stream = nullptr;
 
     // check that the file is open
     if (m_FileReference.IsNull()) return NPT_ERROR_FILE_NOT_OPEN;
@@ -358,7 +358,7 @@ NPT_Result
 NPT_XbmcFile::GetOutputStream(NPT_OutputStreamReference& stream)
 {
     // default value
-    stream = NULL;
+    stream = nullptr;
 
     // check that the file is open
     if (m_FileReference.IsNull()) return NPT_ERROR_FILE_NOT_OPEN;

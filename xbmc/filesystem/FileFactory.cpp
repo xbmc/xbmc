@@ -84,7 +84,7 @@ IFile* CFileFactory::CreateLoader(const std::string& strFileName)
 IFile* CFileFactory::CreateLoader(const CURL& url)
 {
   if (!CWakeOnAccess::GetInstance().WakeUpHost(url))
-    return NULL;
+    return nullptr;
 
   if (!url.GetProtocol().empty() && CServiceBroker::IsAddonInterfaceUp())
   {
@@ -176,5 +176,5 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 
   CLog::Log(LOGWARNING, "{} - unsupported protocol({}) in {}", __FUNCTION__, url.GetProtocol(),
             url.GetRedacted());
-  return NULL;
+  return nullptr;
 }

@@ -51,8 +51,8 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_orientation = orientation;
   m_analogScrollCount = 0;
   m_wasReset = false;
-  m_layout = NULL;
-  m_focusedLayout = NULL;
+  m_layout = nullptr;
+  m_focusedLayout = nullptr;
   m_cacheItems = preloadItems;
   m_scrollItemsPerFrame = 0.0f;
   m_type = VIEW_TYPE_NONE;
@@ -765,7 +765,7 @@ CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
 {
   std::shared_ptr<CGUIListItem> item = GetListItem(0);
   if (item.get()) return item->GetFocusedLayout();
-  return NULL;
+  return nullptr;
 }
 
 bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
@@ -1051,7 +1051,7 @@ void CGUIBaseContainer::UpdateListProvider(bool forceRefresh /* = false */)
     {
       // save the current item
       int currentItem = GetSelectedItem();
-      CGUIListItem *current = (currentItem >= 0 && currentItem < (int)m_items.size()) ? m_items[currentItem].get() : NULL;
+      CGUIListItem *current = (currentItem >= 0 && currentItem < (int)m_items.size()) ? m_items[currentItem].get() : nullptr;
       const std::string prevSelectedPath((current && current->IsFileItem()) ? static_cast<CFileItem *>(current)->GetPath() : "");
 
       Reset();
@@ -1369,7 +1369,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
 
 void CGUIBaseContainer::GetCurrentLayouts()
 {
-  m_layout = NULL;
+  m_layout = nullptr;
   for (auto &layout : m_layouts)
   {
     if (layout.CheckCondition())
@@ -1381,7 +1381,7 @@ void CGUIBaseContainer::GetCurrentLayouts()
   if (!m_layout && !m_layouts.empty())
     m_layout = &m_layouts.front(); // failsafe
 
-  m_focusedLayout = NULL;
+  m_focusedLayout = nullptr;
   for (auto &layout : m_focusedLayouts)
   {
     if (layout.CheckCondition())

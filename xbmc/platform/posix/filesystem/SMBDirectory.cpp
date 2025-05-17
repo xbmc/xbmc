@@ -176,7 +176,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             // Checking for >= 0 should work both for the old erroneous and the correct behaviour.
             if (smbc_getxattr(strFullName.c_str(), "system.dos_attr.mode", value, sizeof(value)) >= 0)
             {
-              long longvalue = strtol(value, NULL, 16);
+              long longvalue = strtol(value, nullptr, 16);
               if (longvalue & SMBC_DOS_MODE_HIDDEN)
                 hidden = true;
             }

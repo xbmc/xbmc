@@ -613,7 +613,7 @@ bool CGUIPassword::IsMediaFileUnlocked(const std::string& type, const std::strin
 
 void CGUIPassword::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string &settingId = setting->GetId();

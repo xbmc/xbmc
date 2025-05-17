@@ -47,7 +47,7 @@ public:
    \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
    \return label (or image).
    */
-  const std::string &GetLabel(int contextWindow, bool preferImage = false, std::string *fallback = NULL) const;
+  const std::string &GetLabel(int contextWindow, bool preferImage = false, std::string *fallback = nullptr) const;
 
   /*!
    \brief Gets the label and returns it as an int value

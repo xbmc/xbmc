@@ -59,14 +59,14 @@ bool CKeyboardLayout::Load(const tinyxml2::XMLElement* element)
     m_codingtable = IInputCodingTablePtr(
         CInputCodingTableFactory::CreateCodingTable(element->Attribute("codingtable")));
   else
-    m_codingtable = NULL;
+    m_codingtable = nullptr;
   while (keyboard != nullptr)
   {
     // parse modifiers keys
     std::set<unsigned int> modifierKeysSet;
 
     const char* strModifiers = keyboard->Attribute("modifiers");
-    if (strModifiers != NULL)
+    if (strModifiers != nullptr)
     {
       std::string modifiers = strModifiers;
       StringUtils::ToLower(modifiers);

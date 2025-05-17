@@ -127,7 +127,7 @@ void CBackgroundInfoLoader::StopThread()
   {
     m_thread->StopThread();
     delete m_thread;
-    m_thread = NULL;
+    m_thread = nullptr;
   }
   Reset();
 }

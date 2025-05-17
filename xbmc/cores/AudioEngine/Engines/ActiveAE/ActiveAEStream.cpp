@@ -24,7 +24,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat* format, unsigned int streamid, C
   m_activeAE = ae;
   m_id = streamid;
   m_bufferedTime = 0;
-  m_currentBuffer = NULL;
+  m_currentBuffer = nullptr;
   m_drain = false;
   m_paused = false;
   m_rgain = 1.0;
@@ -38,7 +38,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat* format, unsigned int streamid, C
   m_streamFreeBuffers = 0;
   m_streamIsBuffering = false;
   m_streamIsFlushed = false;
-  m_streamSlave = NULL;
+  m_streamSlave = nullptr;
   m_leftoverBytes = 0;
   m_forceResampler = false;
   m_streamResampleRatio = 1.0;
@@ -46,7 +46,7 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat* format, unsigned int streamid, C
   m_profile = 0;
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   m_audioServiceType = AV_AUDIO_SERVICE_TYPE_MAIN;
-  m_pClock = NULL;
+  m_pClock = nullptr;
   m_lastPts = 0;
   m_lastPtsJump = 0;
   m_clockSpeed = 1.0;
@@ -417,7 +417,7 @@ void CActiveAEStream::Drain(bool wait)
     msgData.stream = this;
     RemapBuffer();
     m_streamPort->SendOutMessage(CActiveAEDataProtocol::STREAMSAMPLE, &msgData, sizeof(MsgStreamSample));
-    m_currentBuffer = NULL;
+    m_currentBuffer = nullptr;
   }
 
   if (wait)
@@ -469,7 +469,7 @@ void CActiveAEStream::Flush()
 {
   if (!m_streamIsFlushed)
   {
-    m_currentBuffer = NULL;
+    m_currentBuffer = nullptr;
     m_leftoverBytes = 0;
     m_activeAE->FlushStream(this);
     m_streamIsFlushed = true;

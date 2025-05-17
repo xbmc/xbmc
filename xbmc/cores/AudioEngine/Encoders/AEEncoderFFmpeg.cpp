@@ -29,7 +29,7 @@ extern "C"
 using FFMPEG_HELP_TOOLS::FFMpegErrorToString;
 using FFMPEG_HELP_TOOLS::FFMpegException;
 
-CAEEncoderFFmpeg::CAEEncoderFFmpeg() : m_CodecCtx(NULL), m_SwrCtx(NULL)
+CAEEncoderFFmpeg::CAEEncoderFFmpeg() : m_CodecCtx(nullptr), m_SwrCtx(nullptr)
 {
 }
 
@@ -204,7 +204,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
   m_CodecCtx->ch_layout.nb_channels = BuildChannelLayout(mask, m_Layout);
 
   /* open the codec */
-  if (avcodec_open2(m_CodecCtx, codec, NULL))
+  if (avcodec_open2(m_CodecCtx, codec, nullptr))
   {
     av_channel_layout_uninit(&m_CodecCtx->ch_layout);
     avcodec_free_context(&m_CodecCtx);
@@ -225,7 +225,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
   {
     int ret = swr_alloc_set_opts2(&m_SwrCtx, &m_CodecCtx->ch_layout, m_CodecCtx->sample_fmt,
                                   m_CodecCtx->sample_rate, &m_CodecCtx->ch_layout,
-                                  AV_SAMPLE_FMT_FLT, m_CodecCtx->sample_rate, 0, NULL);
+                                  AV_SAMPLE_FMT_FLT, m_CodecCtx->sample_rate, 0, nullptr);
     if (ret || swr_init(m_SwrCtx) < 0)
     {
       CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Failed to initialise resampler.");

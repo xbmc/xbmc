@@ -30,7 +30,7 @@ int CGUIInfoLabel::GetIntValue(int contextWindow) const
 {
   const std::string label = GetLabel(contextWindow);
   if (!label.empty())
-    return strtol(label.c_str(), NULL, 10);
+    return strtol(label.c_str(), nullptr, 10);
 
   return 0;
 }

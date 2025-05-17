@@ -78,7 +78,7 @@ namespace XbmcCommons
   public:
     virtual ~Exception();
 
-    virtual void LogThrowMessage(const char* prefix = NULL) const;
+    virtual void LogThrowMessage(const char* prefix = nullptr) const;
 
     inline virtual const char* GetExMessage() const { return message.c_str(); }
   };

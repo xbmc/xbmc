@@ -96,7 +96,7 @@ void CDVDAudioCodecPassthrough::Dispose()
   if (m_buffer)
   {
     delete[] m_buffer;
-    m_buffer = NULL;
+    m_buffer = nullptr;
   }
 
   free(m_backlogBuffer);

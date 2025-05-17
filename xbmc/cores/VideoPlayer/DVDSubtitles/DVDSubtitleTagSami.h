@@ -27,8 +27,8 @@ class CDVDSubtitleTagSami
 public:
   CDVDSubtitleTagSami()
   {
-    m_tags = NULL;
-    m_tagOptions = NULL;
+    m_tags = nullptr;
+    m_tagOptions = nullptr;
     m_flag[FLAG_BOLD] = false;
     m_flag[FLAG_ITALIC] = false;
     m_flag[FLAG_UNDERLINE] = false;
@@ -44,7 +44,7 @@ public:
    \param len The line length
    \param langClassID The SAMI Class ID language (keep the language lines with this ID and ignore all others)
   */
-  void ConvertLine(std::string& strUTF8, const char* langClassID = NULL);
+  void ConvertLine(std::string& strUTF8, const char* langClassID = nullptr);
   void CloseTag(std::string& text);
   void LoadHead(CDVDSubtitleStream* samiStream);
 

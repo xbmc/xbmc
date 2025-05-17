@@ -22,7 +22,7 @@ namespace XBMCAddon
   {
     m_isDeallocating= true;
 
-    if (languageHook != NULL)
+    if (languageHook != nullptr)
       languageHook->Release();
 
 #ifdef XBMC_ADDON_DEBUG_MEMORY
@@ -31,7 +31,7 @@ namespace XBMCAddon
   }
 
   AddonClass::AddonClass() : refs(0L),
-                             languageHook(NULL)
+                             languageHook(nullptr)
   {
 #ifdef XBMC_ADDON_DEBUG_MEMORY
     isDeleted = false;
@@ -39,7 +39,7 @@ namespace XBMCAddon
 
     // check to see if we have a language hook that was prepared for this instantiation
     languageHook = LanguageHook::GetLanguageHook();
-    if (languageHook != NULL)
+    if (languageHook != nullptr)
     {
       languageHook->Acquire();
 

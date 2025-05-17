@@ -30,7 +30,7 @@
 using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
 
-CGUIKeyboard *CGUIKeyboardFactory::g_activeKeyboard = NULL;
+CGUIKeyboard *CGUIKeyboardFactory::g_activeKeyboard = nullptr;
 FILTERING CGUIKeyboardFactory::m_filtering = FILTERING_NONE;
 
 CGUIKeyboardFactory::CGUIKeyboardFactory(void) = default;
@@ -112,7 +112,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString,
     g_activeKeyboard = kb;
     kb->startAutoCloseTimer(autoCloseMs);
     confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, headingStr, hiddenInput);
-    g_activeKeyboard = NULL;
+    g_activeKeyboard = nullptr;
   }
 
   if (confirmed)

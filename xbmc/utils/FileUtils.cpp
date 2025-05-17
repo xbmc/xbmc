@@ -196,7 +196,7 @@ CDateTime CFileUtils::GetModificationDate(const int& code, const std::string& st
     struct __stat64 buffer;
     if (CFile::Stat(file, &buffer) == 0 && (buffer.st_mtime != 0 || buffer.st_ctime != 0))
     {
-      time_t now = time(NULL);
+      time_t now = time(nullptr);
       time_t addedTime;
       // Prefer the modification time if it's valid, fallback to ctime
       if (code == 0)

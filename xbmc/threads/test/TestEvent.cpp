@@ -71,10 +71,10 @@ public:
   CEvent* result;
   bool waiting;
 
-  group_wait(CEventGroup& o) : event(o), timeout(-1ms), result(NULL), waiting(false) {}
+  group_wait(CEventGroup& o) : event(o), timeout(-1ms), result(nullptr), waiting(false) {}
 
   group_wait(CEventGroup& o, std::chrono::milliseconds timeout_)
-    : event(o), timeout(timeout_), result(NULL), waiting(false)
+    : event(o), timeout(timeout_), result(nullptr), waiting(false)
   {
   }
 
@@ -194,7 +194,7 @@ TEST(TestEvent, Group)
   EXPECT_TRUE(!result2);
 
   EXPECT_TRUE(w3.waiting);
-  EXPECT_TRUE(w3.result == NULL);
+  EXPECT_TRUE(w3.result == nullptr);
 
   event1.Set();
 
@@ -293,9 +293,9 @@ TEST(TestEvent, TwoGroups)
   EXPECT_TRUE(!result2);
 
   EXPECT_TRUE(w3.waiting);
-  EXPECT_EQ(w3.result,(void*)NULL);
+  EXPECT_EQ(w3.result,(void*) nullptr);
   EXPECT_TRUE(w4.waiting);
-  EXPECT_EQ(w4.result,(void*)NULL);
+  EXPECT_EQ(w4.result,(void*) nullptr);
 
   event1.Set();
 
@@ -449,7 +449,7 @@ TEST(TestEvent, GroupWaitResetsChild)
   EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
 
   EXPECT_TRUE(w3.waiting);
-  EXPECT_TRUE(w3.result == NULL);
+  EXPECT_TRUE(w3.result == nullptr);
 
   event2.Set();
 
@@ -479,7 +479,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(waitForWaiters(event1, 1, 10000ms));
   EXPECT_TRUE(waitForWaiters(event2, 1, 10000ms));
 
-  EXPECT_TRUE(group.wait(20ms) == NULL); // waited ... got nothing
+  EXPECT_TRUE(group.wait(20ms) == nullptr); // waited ... got nothing
 
   group_wait w3(group, 50ms);
   thread waitThread3(w3);
@@ -490,13 +490,13 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(!result2);
 
   EXPECT_TRUE(w3.waiting);
-  EXPECT_TRUE(w3.result == NULL);
+  EXPECT_TRUE(w3.result == nullptr);
 
   // this should end given the wait is for only 50 millis
   EXPECT_TRUE(waitThread3.timed_join(200ms));
 
   EXPECT_TRUE(!w3.waiting);
-  EXPECT_TRUE(w3.result == NULL);
+  EXPECT_TRUE(w3.result == nullptr);
 
   group_wait w4(group, 50ms);
   thread waitThread4(w4);
@@ -504,7 +504,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
 
   EXPECT_TRUE(w4.waiting);
-  EXPECT_TRUE(w4.result == NULL);
+  EXPECT_TRUE(w4.result == nullptr);
 
   event1.Set();
 
@@ -526,7 +526,7 @@ TEST(TestEvent, GroupTimedWait)
 #define TESTNUM 100000l
 #define NUMTHREADS 100l
 
-CEvent* g_event = NULL;
+CEvent* g_event = nullptr;
 std::atomic<long> g_mutex;
 
 class mass_waiter : public IRunnable

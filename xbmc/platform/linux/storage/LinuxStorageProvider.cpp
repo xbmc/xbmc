@@ -22,7 +22,7 @@ std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 
 CLinuxStorageProvider::CLinuxStorageProvider()
 {
-  m_instance = NULL;
+  m_instance = nullptr;
 
 #ifdef HAS_DBUS
   if (CUDisks2Provider::HasUDisks2())
@@ -31,11 +31,11 @@ CLinuxStorageProvider::CLinuxStorageProvider()
     m_instance = new CUDisksProvider();
 #endif
 #ifdef HAVE_LIBUDEV
-  if (m_instance == NULL)
+  if (m_instance == nullptr)
     m_instance = new CUDevProvider();
 #endif
 
-  if (m_instance == NULL)
+  if (m_instance == nullptr)
     m_instance = new CPosixMountProvider();
 }
 

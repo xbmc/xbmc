@@ -81,7 +81,7 @@ bool CGUIFontTTFGLES::FirstBegin()
 
     // Set the texture image -- THIS WORKS, so the pixels must be wrong.
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_texture->GetWidth(), m_texture->GetHeight(), 0,
-                 pixformat, GL_UNSIGNED_BYTE, 0);
+                 pixformat, GL_UNSIGNED_BYTE, nullptr);
 
     VerifyGLState();
     m_textureStatus = TEXTURE_UPDATED;
@@ -218,7 +218,7 @@ void CGUIFontTTFGLES::LastEnd()
             tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
             reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, u)));
 
-        glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
+        glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, nullptr);
       }
 
       glMatrixModview.Pop();

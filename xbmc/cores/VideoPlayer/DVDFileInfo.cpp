@@ -54,7 +54,7 @@ bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
   std::unique_ptr<CDVDDemux> demux;
 
   CFileItem item(path, false);
-  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  auto input = CDVDFactoryInputStream::CreateInputStream(nullptr, item);
   if (!input)
     return false;
 
@@ -98,7 +98,7 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
 
   CFileItem item(fileItem);
   item.SetMimeTypeForInternetFile();
-  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(nullptr, item);
   if (!pInputStream)
   {
     CLog::Log(LOGERROR, "InputStream: Error creating stream for {}", redactPath);
@@ -219,7 +219,7 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
           result->SetAlpha(false);
           struct SwsContext* context =
               sws_getContext(picture.iWidth, picture.iHeight, AV_PIX_FMT_YUV420P, nWidth, nHeight,
-                             AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                             AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 
           if (context)
           {
@@ -227,9 +227,9 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
             int stride[YuvImage::MAX_PLANES];
             picture.videoBuffer->GetPlanes(planes);
             picture.videoBuffer->GetStrides(stride);
-            uint8_t* src[4] = {planes[0], planes[1], planes[2], 0};
+            uint8_t* src[4] = {planes[0], planes[1], planes[2], nullptr};
             int srcStride[] = {stride[0], stride[1], stride[2], 0};
-            uint8_t* dst[] = {result->GetPixels(), 0, 0, 0};
+            uint8_t* dst[] = {result->GetPixels(), nullptr, nullptr, nullptr};
             int dstStride[] = {static_cast<int>(result->GetPitch()), 0, 0, 0};
             result->SetOrientation(DegreeToOrientation(hint.orientation));
             sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
@@ -309,7 +309,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
 
   CFileItem item(playablePath, false);
   item.SetMimeTypeForInternetFile();
-  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(nullptr, item);
   if (!pInputStream)
     return false;
 

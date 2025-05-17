@@ -12,7 +12,7 @@ CIrssMessage::CIrssMessage()
 {
   m_type = IRSSMT_Unknown;
   m_flags = 0;
-  m_data = NULL;
+  m_data = nullptr;
   m_dataSize = 0;
 }
 
@@ -20,7 +20,7 @@ CIrssMessage::CIrssMessage(IRSS_MessageType type, uint32_t flags)
 {
   m_type     = type;
   m_flags    = flags;
-  m_data     = NULL;
+  m_data     = nullptr;
   m_dataSize = 0;
 }
 
@@ -73,7 +73,7 @@ void CIrssMessage::SetDataAsString(const std::string& data)
 void CIrssMessage::FreeData()
 {
   free(m_data);
-  m_data = NULL;
+  m_data = nullptr;
   m_dataSize = 0;
 }
 

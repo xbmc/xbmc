@@ -70,7 +70,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   CFileItem fileitem(file);
   fileitem.SetMimeType(m_strContentType);
   fileitem.SetMimeTypeForInternetFile();
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, fileitem);
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(nullptr, fileitem);
   if (!m_pInputStream)
   {
     CLog::Log(LOGERROR, "{}: Error creating input stream for {}", __FUNCTION__, file.GetDynPath());
@@ -88,7 +88,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     return false;
   }
 
-  m_pDemuxer = NULL;
+  m_pDemuxer = nullptr;
 
   try
   {
@@ -108,12 +108,12 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     if (m_pDemuxer)
     {
       delete m_pDemuxer;
-      m_pDemuxer = NULL;
+      m_pDemuxer = nullptr;
     }
     return false;
   }
 
-  CDemuxStream* pStream = NULL;
+  CDemuxStream* pStream = nullptr;
   m_nAudioStream = -1;
   int64_t demuxerId = -1;
   for (auto stream : m_pDemuxer->GetStreams())
@@ -131,7 +131,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   {
     CLog::Log(LOGERROR, "{}: Could not find audio stream", __FUNCTION__);
     delete m_pDemuxer;
-    m_pDemuxer = NULL;
+    m_pDemuxer = nullptr;
     if (m_pInputStream.use_count() > 1)
       throw std::runtime_error("m_pInputStream reference count is greater than 1");
     m_pInputStream.reset();
@@ -147,7 +147,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   {
     CLog::Log(LOGERROR, "{}: Could not create audio codec", __FUNCTION__);
     delete m_pDemuxer;
-    m_pDemuxer = NULL;
+    m_pDemuxer = nullptr;
     if (m_pInputStream.use_count() > 1)
       throw std::runtime_error("m_pInputStream reference count is greater than 1");
     m_pInputStream.reset();
@@ -256,7 +256,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
                        false,
                        false,
                        M_SQRT1_2,
-                       NULL,
+                       nullptr,
                        AE_QUALITY_UNKNOWN,
                        false);
 
@@ -274,10 +274,10 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
 void VideoPlayerCodec::DeInit()
 {
-  if (m_pDemuxer != NULL)
+  if (m_pDemuxer != nullptr)
   {
     delete m_pDemuxer;
-    m_pDemuxer = NULL;
+    m_pDemuxer = nullptr;
   }
 
   if (m_pInputStream.use_count() > 1)

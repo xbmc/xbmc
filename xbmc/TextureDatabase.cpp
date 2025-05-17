@@ -356,7 +356,7 @@ bool CTextureDatabase::AddCachedTexture(const std::string &url, const CTextureDe
 bool CTextureDatabase::ClearCachedTexture(const std::string &url, std::string &cacheFile)
 {
   std::string id = GetSingleValue(PrepareSQL("select id from texture where url='%s'", url.c_str()));
-  return !id.empty() ? ClearCachedTexture(strtol(id.c_str(), NULL, 10), cacheFile) : false;
+  return !id.empty() ? ClearCachedTexture(strtol(id.c_str(), nullptr, 10), cacheFile) : false;
 }
 
 bool CTextureDatabase::ClearCachedTexture(int id, std::string &cacheFile) const {

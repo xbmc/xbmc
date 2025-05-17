@@ -65,7 +65,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroups(const std::string &method, ITran
     return FailedToExecute;
 
   CPVRChannelGroups *channelGroups = channelGroupContainer->Get(parameterObject["channeltype"].asString().compare("radio") == 0);
-  if (channelGroups == NULL)
+  if (channelGroups == nullptr)
     return FailedToExecute;
 
   int start, end;
@@ -94,7 +94,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroupDetails(const std::string &method,
   else if (id.isString())
     channelGroup = channelGroupContainer->GetGroupAll(id.asString() == "allradio");
 
-  if (channelGroup == NULL)
+  if (channelGroup == nullptr)
     return InvalidParams;
 
   FillChannelGroupDetails(channelGroup, parameterObject, result["channelgroupdetails"], false);
@@ -118,7 +118,7 @@ JSONRPC_STATUS CPVROperations::GetChannels(const std::string &method, ITransport
   else if (id.isString())
     channelGroup = channelGroupContainer->GetGroupAll(id.asString() == "allradio");
 
-  if (channelGroup == NULL)
+  if (channelGroup == nullptr)
     return InvalidParams;
 
   CFileItemList channels;
@@ -144,7 +144,7 @@ JSONRPC_STATUS CPVROperations::GetChannelDetails(const std::string &method, ITra
 
   std::shared_ptr<CPVRChannel> channel = channelGroupContainer->GetChannelById(
       static_cast<int>(parameterObject["channelid"].asInteger()));
-  if (channel == NULL)
+  if (channel == nullptr)
     return InvalidParams;
 
   const std::shared_ptr<CPVRChannelGroupMember> groupMember =
@@ -187,7 +187,7 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
     return FailedToExecute;
 
   std::shared_ptr<CPVRChannel> channel = channelGroupContainer->GetChannelById((int)parameterObject["channelid"].asInteger());
-  if (channel == NULL)
+  if (channel == nullptr)
     return InvalidParams;
 
   std::shared_ptr<CPVREpg> channelEpg = channel->GetEPG();
@@ -270,7 +270,7 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
   else
     return InvalidParams;
 
-  if (pChannel == NULL)
+  if (pChannel == nullptr)
     return InvalidParams;
   else if (!pChannel->CanRecord())
     return FailedToExecute;
@@ -343,7 +343,7 @@ void CPVROperations::FillChannelGroupDetails(
     CVariant& result,
     bool append /* = false */)
 {
-  if (channelGroup == NULL)
+  if (channelGroup == nullptr)
     return;
 
   CVariant object(CVariant::VariantTypeObject);

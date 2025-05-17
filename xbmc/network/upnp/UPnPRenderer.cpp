@@ -69,7 +69,7 @@ NPT_Result CUPnPRenderer::SetupServices()
   NPT_CHECK(PLT_MediaRenderer::SetupServices());
 
   // update what we can play
-  PLT_Service* service = NULL;
+  PLT_Service* service = nullptr;
   NPT_CHECK_FATAL(FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", service));
   service->SetStateVariable("SinkProtocolInfo", "http-get:*:*:*"
                                                 ",xbmc-get:*:*:*"
@@ -193,7 +193,7 @@ NPT_Result CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest& request,
     if (!filepath.IsEmpty())
     {
       NPT_HttpEntity* entity = response.GetEntity();
-      if (entity == NULL)
+      if (entity == nullptr)
         return NPT_ERROR_INVALID_STATE;
 
       // check the method
@@ -431,7 +431,7 @@ NPT_Result CUPnPRenderer::GetMetadata(NPT_String& meta) const {
   // without CUPnPServer enabled
   NPT_Reference<CThumbLoader> thumb_loader;
   PLT_MediaObject* object =
-      BuildObject(item, file_path, false, thumb_loader, NULL, NULL, UPnPRenderer);
+      BuildObject(item, file_path, false, thumb_loader, nullptr, nullptr, UPnPRenderer);
   if (object)
   {
     // fetch the item's artwork

@@ -143,7 +143,7 @@ bool CGLSLVertexShader::Compile()
 
   m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
   const char *ptr = m_source.c_str();
-  glShaderSource(m_vertexShader, 1, &ptr, 0);
+  glShaderSource(m_vertexShader, 1, &ptr, nullptr);
   glCompileShader(m_vertexShader);
   glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, params);
   VerifyGLState();
@@ -202,7 +202,7 @@ bool CGLSLPixelShader::Compile()
 
   m_pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
   const char *ptr = m_source.c_str();
-  glShaderSource(m_pixelShader, 1, &ptr, 0);
+  glShaderSource(m_pixelShader, 1, &ptr, nullptr);
   glCompileShader(m_pixelShader);
   glGetShaderiv(m_pixelShader, GL_COMPILE_STATUS, params);
   if (params[0] != GL_TRUE)
@@ -330,7 +330,7 @@ bool CGLSLShaderProgram::CompileAndLink()
   {
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error linking shader");
-    glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
+    glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, nullptr, log);
     CLog::Log(LOGERROR, "{}", log);
     goto error;
   }
@@ -365,7 +365,7 @@ bool CGLSLShaderProgram::Enable()
         {
           GLchar log[LOG_SIZE];
           CLog::Log(LOGERROR, "GL: Error validating shader");
-          glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
+          glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, nullptr, log);
           CLog::Log(LOGERROR, "{}", log);
         }
         m_validated = true;

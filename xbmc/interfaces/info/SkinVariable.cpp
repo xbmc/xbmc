@@ -44,7 +44,7 @@ const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node
       return tmp;
     delete tmp;
   }
-  return NULL;
+  return nullptr;
 }
 
 CSkinVariableString::CSkinVariableString() = default;

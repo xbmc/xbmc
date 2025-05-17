@@ -134,7 +134,7 @@ void CWeatherJob::LoadLocalizedToken()
   // We load the english strings in to get our tokens
   std::string language = LANGUAGE_DEFAULT;
   std::shared_ptr<CSettingString> languageSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
-  if (languageSetting != NULL)
+  if (languageSetting != nullptr)
     language = languageSetting->GetDefault();
 
   // Load the strings.po file
@@ -200,7 +200,7 @@ void CWeatherJob::SetFromProperties()
                       strtod(window->GetProperty("Current.FeelsLike").asString().c_str(), nullptr));
     m_info.currentUVIndex = window->GetProperty("Current.UVIndex").asString();
     LocalizeOverview(m_info.currentUVIndex);
-    CSpeed speed = CSpeed::CreateFromKilometresPerHour(strtol(window->GetProperty("Current.Wind").asString().c_str(),0,10));
+    CSpeed speed = CSpeed::CreateFromKilometresPerHour(strtol(window->GetProperty("Current.Wind").asString().c_str(),nullptr,10));
     std::string direction = window->GetProperty("Current.WindDirection").asString();
     if (direction == "CALM")
       m_info.currentWind = g_localizeStrings.Get(1410);

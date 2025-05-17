@@ -43,7 +43,7 @@ using namespace std::chrono_literals;
 // First one being nullsoft's nsv audio decoder format
 
 PAPlayer::PAPlayer(IPlayerCallback& callback)
-  : IPlayer(callback), CThread("PAPlayer"), m_playbackSpeed(1), m_audioCallback(NULL)
+  : IPlayer(callback), CThread("PAPlayer"), m_playbackSpeed(1), m_audioCallback(nullptr)
 {
   memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
   m_processInfo.reset(CProcessInfo::CreateInstance());
@@ -199,7 +199,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 
     std::lock_guard lock(m_streamsLock);
 
-    m_currentStream = NULL;
+    m_currentStream = nullptr;
   }
 }
 
@@ -379,7 +379,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   si->m_framesSent = 0;
   si->m_seekNextAtFrame = 0;
   si->m_seekFrame = -1;
-  si->m_stream = NULL;
+  si->m_stream = nullptr;
   si->m_volume = (fadeIn && m_upcomingCrossfadeMS) ? 0.0f : 1.0f;
   si->m_fadeOutTriggered = false;
   si->m_isSlaved = false;
@@ -675,7 +675,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
             m_callback.OnQueueNextItem();
             si->m_prepareTriggered = true;
           }
-          m_currentStream = NULL;
+          m_currentStream = nullptr;
         }
         else
         {
@@ -718,7 +718,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
           si->m_stream->FadeVolume(1.0f, 0.0f, m_upcomingCrossfadeMS);
           si->m_fadeOutTriggered = true;
         }
-        m_currentStream = NULL;
+        m_currentStream = nullptr;
 
         /* unregister the audio callback */
         si->m_stream->UnRegisterAudioCallback();

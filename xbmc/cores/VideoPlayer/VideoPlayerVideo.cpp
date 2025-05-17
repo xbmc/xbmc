@@ -549,7 +549,7 @@ void CVideoPlayerVideo::Process()
       }
 
       OpenStream(msg->m_hints, std::move(msg->m_codec));
-      msg->m_codec = NULL;
+      msg->m_codec = nullptr;
       if (m_picture.videoBuffer)
       {
         m_picture.videoBuffer->Release();

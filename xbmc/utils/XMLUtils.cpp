@@ -251,7 +251,7 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, std::st
 
   const char* encoded = pElement->Attribute("urlencoded");
   const TiXmlNode* pNode = pElement->FirstChild();
-  if (pNode != NULL)
+  if (pNode != nullptr)
   {
     strStringValue = pNode->ValueStr();
     if (encoded && StringUtils::CompareNoCase(encoded, "yes") == 0)
@@ -300,7 +300,7 @@ bool XMLUtils::HasChild(const TiXmlNode* pRootNode, const char* strTag)
   const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
   if (!pElement) return false;
   const TiXmlNode* pNode = pElement->FirstChild();
-  return (pNode != NULL);
+  return (pNode != nullptr);
 }
 
 bool XMLUtils::HasChild(const tinyxml2::XMLNode* rootNode, const char* tag)
@@ -458,7 +458,7 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, std::stri
 
   const char* encoded = pElement->Attribute("urlencoded");
   const TiXmlNode* pNode = pElement->FirstChild();
-  if (pNode != NULL)
+  if (pNode != nullptr)
   {
     strStringValue = pNode->Value();
     if (encoded && StringUtils::CompareNoCase(encoded, "yes") == 0)

@@ -1291,7 +1291,7 @@ bool aml_read_reg(const std::string &reg, uint32_t &reg_val)
           {
             try
             {
-              reg_val = std::stoul(match, 0, 16);
+              reg_val = std::stoul(match, nullptr, 16);
               return true;
             }
             catch (...) {}

@@ -50,7 +50,7 @@ protected:
   void GotoBookmark(int iItem);
   void ClearBookmarks();
   static bool AddEpisodeBookmark();
-  static bool AddBookmark(CVideoInfoTag *tag=NULL);
+  static bool AddBookmark(CVideoInfoTag *tag= nullptr);
   void Delete(int item);
   void Clear();
   void OnRefreshList();

@@ -33,7 +33,7 @@ class CUPnPServer : public PLT_MediaConnect,
                     public ANNOUNCEMENT::IAnnouncer
 {
 public:
-    CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0);
+    CUPnPServer(const char* friendly_name, const char* uuid = nullptr, int port = 0);
     ~CUPnPServer() override;
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                   const std::string& sender,
@@ -117,7 +117,7 @@ public:
                            bool with_count,
                            const PLT_HttpRequestContext& context,
                            NPT_Reference<CThumbLoader>& thumbLoader,
-                           const char* parent_id = NULL);
+                           const char* parent_id = nullptr);
     NPT_Result BuildResponse(PLT_ActionReference&          action,
                              CFileItemList&                items,
                              const char*                   filter,

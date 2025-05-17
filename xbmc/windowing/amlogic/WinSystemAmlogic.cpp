@@ -41,7 +41,7 @@
 using namespace KODI;
 
 CWinSystemAmlogic::CWinSystemAmlogic()
-:  m_nativeWindow(NULL)
+:  m_nativeWindow(nullptr)
 ,  m_libinput(new CLibInputHandler)
 ,  m_force_mode_switch(false)
 {
@@ -146,7 +146,7 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
   m_nHeight       = res.iHeight;
   m_fRefreshRate  = res.fRefreshRate;
 
-  if (m_nativeWindow == NULL)
+  if (m_nativeWindow == nullptr)
     m_nativeWindow = new fbdev_window;
 
   m_nativeWindow->width = res.iWidth;
@@ -192,10 +192,10 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAmlogic::DestroyWindow()
 {
-  if (m_nativeWindow != NULL)
+  if (m_nativeWindow != nullptr)
   {
     delete(m_nativeWindow);
-    m_nativeWindow = NULL;
+    m_nativeWindow = nullptr;
   }
 
   m_bWindowCreated = false;

@@ -202,7 +202,7 @@ bool CFileItemHandler::GetField(const std::string& field,
 
     if (field == "thumbnail")
     {
-      if (thumbLoader != NULL && !item->HasArt("thumb") && !fetchedArt &&
+      if (thumbLoader != nullptr && !item->HasArt("thumb") && !fetchedArt &&
         ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
       {
         thumbLoader->FillLibraryArt(*item);
@@ -221,7 +221,7 @@ bool CFileItemHandler::GetField(const std::string& field,
 
     if (field == "fanart")
     {
-      if (thumbLoader != NULL && !item->HasArt("fanart") && !fetchedArt &&
+      if (thumbLoader != nullptr && !item->HasArt("fanart") && !fetchedArt &&
         ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
       {
         thumbLoader->FillLibraryArt(*item);
@@ -266,7 +266,7 @@ void CFileItemHandler::FillDetails(const ISerializable* info,
                                    CVariant& result,
                                    CThumbLoader* thumbLoader /* = NULL */)
 {
-  if (info == NULL || fields.empty())
+  if (info == nullptr || fields.empty())
     return;
 
   CVariant serialization;
@@ -302,7 +302,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
     end = items.Size();
   }
 
-  CThumbLoader *thumbLoader = NULL;
+  CThumbLoader *thumbLoader = nullptr;
   if (end - start > 0)
   {
     if (items.Get(start)->HasVideoInfoTag())
@@ -310,7 +310,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
     else if (items.Get(start)->HasMusicInfoTag())
       thumbLoader = new CMusicThumbLoader();
 
-    if (thumbLoader != NULL)
+    if (thumbLoader != nullptr)
       thumbLoader->OnLoaderStart();
   }
 
@@ -452,14 +452,14 @@ void CFileItemHandler::HandleFileItem(const char* ID,
     }
 
     bool deleteThumbloader = false;
-    if (thumbLoader == NULL)
+    if (thumbLoader == nullptr)
     {
       if (item->HasVideoInfoTag())
         thumbLoader = new CVideoThumbLoader();
       else if (item->HasMusicInfoTag())
         thumbLoader = new CMusicThumbLoader();
 
-      if (thumbLoader != NULL)
+      if (thumbLoader != nullptr)
       {
         deleteThumbloader = true;
         thumbLoader->OnLoaderStart();

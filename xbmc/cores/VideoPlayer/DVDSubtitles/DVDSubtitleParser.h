@@ -37,7 +37,7 @@ public:
   std::shared_ptr<CDVDOverlay> Parse(double iPts) override
   {
     std::shared_ptr<CDVDOverlay> o = m_collection.Get(iPts);
-    if(o == NULL)
+    if(o == nullptr)
       return o;
     return o->Clone();
   }

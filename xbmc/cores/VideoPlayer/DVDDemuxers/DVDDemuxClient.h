@@ -32,7 +32,7 @@ public:
   void Abort() override;
   void Flush() override;
   DemuxPacket* Read() override;
-  bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
+  bool SeekTime(double time, bool backwards = false, double* startpts = nullptr) override;
   void SetSpeed(int iSpeed) override;
   void FillBuffer(bool mode) override;
   CDemuxStream* GetStream(int iStreamId) const override;

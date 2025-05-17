@@ -19,7 +19,7 @@
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {
-  m_pCodecContext = NULL;
+  m_pCodecContext = nullptr;
   m_SubtitleIndex = -1;
   m_width         = 0;
   m_height        = 0;
@@ -98,14 +98,14 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
       */
       // if tried all possibilities, then read newline char and move to next line
       ptr = strchr(ptr, '\n');
-      if (ptr != NULL) ptr++;
+      if (ptr != nullptr) ptr++;
     }
-    while (ptr != NULL && ptr <= parse_extra + parse_extrasize);
+    while (ptr != nullptr && ptr <= parse_extra + parse_extrasize);
 
     delete[] parse_extra;
   }
 
-  if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
+  if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     avcodec_free_context(&m_pCodecContext);
@@ -220,11 +220,11 @@ std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
     if(m_SubtitleIndex >= (int)m_Subtitle.num_rects)
       return nullptr;
 
-    if(m_Subtitle.rects[m_SubtitleIndex] == NULL)
+    if(m_Subtitle.rects[m_SubtitleIndex] == nullptr)
       return nullptr;
 
     AVSubtitleRect rect = *m_Subtitle.rects[m_SubtitleIndex];
-    if (rect.data[0] == NULL)
+    if (rect.data[0] == nullptr)
       return nullptr;
 
     m_height = m_pCodecContext->height;

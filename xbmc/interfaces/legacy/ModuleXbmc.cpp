@@ -146,7 +146,7 @@ namespace XBMCAddon
       XbmcThreads::EndTime<> endTime{std::chrono::milliseconds(timemillis)};
       while (!endTime.IsTimePast())
       {
-        LanguageHook* lh = NULL;
+        LanguageHook* lh = nullptr;
         {
           DelayedCallGuard dcguard;
           lh = dcguard.getLanguageHook(); // borrow this
@@ -155,7 +155,7 @@ namespace XBMCAddon
             nextSleep = 100; // only sleep for 100 millis
           KODI::TIME::Sleep(std::chrono::milliseconds(nextSleep));
         }
-        if (lh != NULL)
+        if (lh != nullptr)
           lh->MakePendingCalls();
       }
     }

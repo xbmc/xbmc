@@ -168,7 +168,7 @@ public:
    */
   virtual StreamPtr MakeStream(AEAudioFormat& audioFormat,
                                unsigned int options = 0,
-                               IAEClockCallback* clock = NULL) = 0;
+                               IAEClockCallback* clock = nullptr) = 0;
 
   /*!
    * \brief Creates a new IAESound that is ready to play the specified file

@@ -59,7 +59,7 @@ public:
   int GetNrOfStreams() const override;
   void SetSpeed(int iSpeed) override;
   void FillBuffer(bool mode) override;
-  bool SeekTime(double time, bool backward = false, double* startpts = NULL) override;
+  bool SeekTime(double time, bool backward = false, double* startpts = nullptr) override;
   void AbortDemux() override;
   void FlushDemux() override;
 

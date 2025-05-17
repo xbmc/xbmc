@@ -38,7 +38,7 @@ void CRenderBufferOpenGLES::CreateTexture()
   glBindTexture(m_textureTarget, m_textureId);
 
   glTexImage2D(m_textureTarget, 0, m_internalformat, m_width, m_height, 0, m_pixelformat,
-               m_pixeltype, NULL);
+               m_pixeltype, nullptr);
 
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

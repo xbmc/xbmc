@@ -88,7 +88,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   const CThread* threadId = CThread::GetCurrentThread();
   std::string &buffer = g_logbuffer[threadId];
 
-  AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
+  AVClass* avc= ptr ? *(AVClass**)ptr : nullptr;
 
   int maxLevel = AV_LOG_WARNING;
   if (CFFmpegLog::GetLogLevel() > 0)

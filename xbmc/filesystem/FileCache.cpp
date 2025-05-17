@@ -123,7 +123,7 @@ bool CFileCache::Open(const CURL& url)
   m_source.IoControl(IOCTRL_SET_RETRY, &retry); // We already handle retrying ourselves
 
   // check if source can seek
-  m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+  m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, nullptr);
 
   // Determine the best chunk size we can use
   m_chunkSize = CFile::DetermineChunkSize(m_source.GetChunkSize(),
@@ -265,7 +265,7 @@ void CFileCache::Process()
         {
           CLog::Log(LOGERROR, "CFileCache::{} - <{}> error {} seeking. Seek returned {}",
                     __FUNCTION__, m_sourcePath, GetLastError(), m_nSeekResult);
-          m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+          m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, nullptr);
           sourceSeekFailed = true;
         }
       }

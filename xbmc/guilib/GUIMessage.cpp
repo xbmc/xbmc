@@ -19,7 +19,7 @@ CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int64_t param1, i
   m_controlID = controlID;
   m_param1 = param1;
   m_param2 = param2;
-  m_pointer = NULL;
+  m_pointer = nullptr;
 }
 
 CGUIMessage::CGUIMessage(
@@ -46,7 +46,7 @@ CGUIMessage::CGUIMessage(int msg,
   m_controlID = controlID;
   m_param1 = param1;
   m_param2 = param2;
-  m_pointer = NULL;
+  m_pointer = nullptr;
 }
 
 CGUIMessage::CGUIMessage(const CGUIMessage& msg) = default;

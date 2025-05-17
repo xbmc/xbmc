@@ -49,7 +49,7 @@ public:
                         PLT_DeviceDataReference& device,
                         IPlayerCallback& callback)
     : m_control(control),
-      m_transport(NULL),
+      m_transport(nullptr),
       m_device(device),
       m_callback(callback),
       m_posinfo({}),
@@ -103,7 +103,7 @@ public:
                             PLT_MediaInfo* info,
                             void* userdata) override
   {
-    if (NPT_FAILED(res) || info == NULL)
+    if (NPT_FAILED(res) || info == nullptr)
       m_logger->error("OnGetMediaInfoResult failed");
   }
 
@@ -143,7 +143,7 @@ public:
   {
     std::lock_guard lock(m_section);
 
-    if (NPT_FAILED(res) || info == NULL)
+    if (NPT_FAILED(res) || info == nullptr)
     {
       m_logger->error("OnGetMediaInfoResult failed");
       m_posinfo = PLT_PositionInfo();
@@ -229,7 +229,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   else if (item.IsMusicDb())
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
-  obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer);
+  obj = BuildObject(item, path, false, thumb_loader, nullptr, CUPnP::GetServer(), UPnPPlayer);
   if (obj.IsNull())
     goto failed;
 
@@ -423,7 +423,7 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
   else if (item.IsMusicDb())
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
-  obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer);
+  obj = BuildObject(item, path, false, thumb_loader, nullptr, CUPnP::GetServer(), UPnPPlayer);
   if (!obj.IsNull())
   {
     NPT_CHECK_LABEL_SEVERE(PLT_Didl::ToDidl(*obj, "", tmp), failed);

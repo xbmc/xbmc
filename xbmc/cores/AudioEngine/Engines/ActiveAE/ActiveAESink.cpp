@@ -659,7 +659,7 @@ void CActiveAESink::Process()
     {
       msg = m_controlPort.GetMessage();
       msg->signal = CSinkControlProtocol::TIMEOUT;
-      port = 0;
+      port = nullptr;
       // signal timeout to state machine
       StateMachine(msg->signal, port, msg);
       if (!m_bStateMachineSelfTrigger)

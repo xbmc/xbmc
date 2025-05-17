@@ -63,7 +63,7 @@ void CGUIDialogSettingsManualBase::InitializeSettings()
   if (GetSettingsManager() != nullptr)
   {
     GetSettingsManager()->Clear();
-    m_section = NULL;
+    m_section = nullptr;
 
     // create a std::make_shared<section
     m_section = std::make_shared<CSettingSection>(GetProperty("xmlfile").asString(), GetSettingsManager());
@@ -72,11 +72,11 @@ void CGUIDialogSettingsManualBase::InitializeSettings()
 
 SettingCategoryPtr CGUIDialogSettingsManualBase::AddCategory(const std::string &id, int label, int help /* = -1 */) const {
   if (id.empty())
-    return NULL;
+    return nullptr;
 
   auto category = std::make_shared<CSettingCategory>(id, GetSettingsManager());
-  if (category == NULL)
-    return NULL;
+  if (category == nullptr)
+    return nullptr;
 
   category->SetLabel(label);
   if (help >= 0)
@@ -92,14 +92,14 @@ SettingGroupPtr CGUIDialogSettingsManualBase::AddGroup(const SettingCategoryPtr&
                                                        bool separatorBelowLabel /* = true */,
                                                        bool hideSeparator /* = false */)
 {
-  if (category == NULL)
-    return NULL;
+  if (category == nullptr)
+    return nullptr;
 
   size_t groups = category->GetGroups().size();
 
   auto group = std::make_shared<CSettingGroup>(StringUtils::Format("{0}", groups + 1), GetSettingsManager());
-  if (group == NULL)
-    return NULL;
+  if (group == nullptr)
+    return nullptr;
 
   if (label >= 0)
     group->SetLabel(label);
@@ -120,13 +120,13 @@ std::shared_ptr<CSettingBool> CGUIDialogSettingsManualBase::AddToggle(const Sett
                                                                       bool visible /* = true */,
                                                                       int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingBool>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetCheckmarkControl(delayed));
   setSettingDetails(setting, level, visible, help);
@@ -150,13 +150,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddEdit(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, minimum, step, maximum, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetEditControl("integer", delayed, false, verifyNewValue, heading));
   setSettingDetails(setting, level, visible, help);
@@ -180,13 +180,13 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddEdit(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingNumber>(id, label, value, minimum, step, maximum, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetEditControl("number", delayed, false, verifyNewValue, heading));
   setSettingDetails(setting, level, visible, help);
@@ -207,13 +207,13 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddEdit(const Sett
                                                                       bool visible /* = true */,
                                                                       int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetEditControl("string", delayed, hidden, false, heading));
   setting->SetAllowEmpty(allowEmpty);
@@ -234,13 +234,13 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddIp(const Settin
                                                                     bool visible /* = true */,
                                                                     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetEditControl("ip", delayed, false, false, heading));
   setting->SetAllowEmpty(allowEmpty);
@@ -262,13 +262,13 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddPasswordMd5(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetEditControl("md5", delayed, false, false, heading));
   setting->SetAllowEmpty(allowEmpty);
@@ -288,13 +288,13 @@ std::shared_ptr<CSettingAction> CGUIDialogSettingsManualBase::AddButton(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingAction>(id, label, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetButtonControl("action", delayed));
   setting->SetData(data);
@@ -313,13 +313,13 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddInfoLabelButton
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingString>(id, label, info, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetButtonControl("infolabel", false));
   setSettingDetails(setting, level, visible, help);
@@ -345,13 +345,13 @@ std::shared_ptr<CSettingAddon> CGUIDialogSettingsManualBase::AddAddon(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingAddon>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetButtonControl("addon", delayed, heading, hideValue, showInstalledAddons, showInstallableAddons, showMoreAddons));
   setting->SetAddonType(addonType);
@@ -377,13 +377,13 @@ std::shared_ptr<CSettingPath> CGUIDialogSettingsManualBase::AddPath(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingPath>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetButtonControl("path", delayed, heading, hideValue));
   setting->SetWritable(writable);
@@ -406,12 +406,12 @@ std::shared_ptr<CSettingDate> CGUIDialogSettingsManualBase::AddDate(const Settin
                                                                     bool visible /* = true */,
                                                                     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingDate>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetButtonControl("date", delayed, heading));
   setting->SetAllowEmpty(allowEmpty);
@@ -432,12 +432,12 @@ std::shared_ptr<CSettingTime> CGUIDialogSettingsManualBase::AddTime(const Settin
                                                                     bool visible /* = true */,
                                                                     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingTime>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetButtonControl("time", delayed, heading));
   setting->SetAllowEmpty(allowEmpty);
@@ -458,13 +458,13 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || filler == nullptr ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSpinnerControl("string", delayed));
   setting->SetOptionsFiller(filler, this);
@@ -488,13 +488,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(const Sett
                                                                       bool visible /* = true */,
                                                                       int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSpinnerControl("string", delayed, minimumLabel, formatLabel));
   setting->SetMinimum(minimum);
@@ -521,13 +521,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSpinnerControl("string", delayed, minimumLabel, -1, formatString));
   setting->SetMinimum(minimum);
@@ -550,13 +550,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || entries.empty() ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSpinnerControl("string", delayed));
   setting->SetTranslatableOptions(entries);
@@ -577,13 +577,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || entries.empty() ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSpinnerControl("string", delayed));
   setting->SetOptions(entries);
@@ -604,13 +604,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || filler == nullptr ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSpinnerControl("string", delayed));
   setting->SetOptionsFiller(filler, this);
@@ -635,13 +635,13 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingNumber>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSpinnerControl("number", delayed, minimumLabel, formatLabel));
   setting->SetMinimum(minimum);
@@ -668,13 +668,13 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingNumber>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSpinnerControl("number", delayed, minimumLabel, -1, formatString));
   setting->SetMinimum(minimum);
@@ -698,13 +698,13 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(
     int help /* = -1 */,
     bool details /* = false */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || filler == nullptr ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetListControl("string", false, heading, false, nullptr, details));
   setting->SetOptionsFiller(filler, this);
@@ -726,13 +726,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     int help /* = -1 */,
     bool details /* = false */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || entries.empty() ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetListControl("integer", false, heading, false, nullptr, details));
   setting->SetTranslatableOptions(entries);
@@ -754,13 +754,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     int help /* = -1 */,
     bool details /* = false */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || entries.empty() ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetListControl("integer", false, heading, false, nullptr, details));
   setting->SetOptions(entries);
@@ -782,13 +782,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     int help /* = -1 */,
     bool details /* = false */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || filler == nullptr ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetListControl("integer", false, heading, false, nullptr, details));
   setting->SetOptionsFiller(filler, this);
@@ -812,26 +812,26 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int help /* = -1 */,
     bool details /* = false */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || filler == nullptr ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto settingDefinition = std::make_shared<CSettingString>(id, GetSettingsManager());
-  if (settingDefinition == NULL)
-    return NULL;
+  if (settingDefinition == nullptr)
+    return nullptr;
 
   settingDefinition->SetOptionsFiller(filler, this);
 
   auto setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   std::vector<CVariant> valueList;
   for (std::vector<std::string>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
     valueList.emplace_back(*itValue);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
-    return NULL;
+    return nullptr;
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
@@ -858,26 +858,26 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int help /* = -1 */,
     bool details /* = false */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || entries.empty() ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
-  if (settingDefinition == NULL)
-    return NULL;
+  if (settingDefinition == nullptr)
+    return nullptr;
 
   settingDefinition->SetTranslatableOptions(entries);
 
   auto setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   std::vector<CVariant> valueList;
   for (std::vector<int>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
     valueList.emplace_back(*itValue);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
-    return NULL;
+    return nullptr;
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
@@ -904,26 +904,26 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int help /* = -1 */,
     bool details /* = false */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || entries.empty() ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
-  if (settingDefinition == NULL)
-    return NULL;
+  if (settingDefinition == nullptr)
+    return nullptr;
 
   settingDefinition->SetOptions(entries);
 
   auto setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   std::vector<CVariant> valueList;
   for (std::vector<int>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
     valueList.emplace_back(*itValue);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
-    return NULL;
+    return nullptr;
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
@@ -951,26 +951,26 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     SettingControlListValueFormatter formatter /* = NULL */,
     bool details /* = false */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 || filler == nullptr ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
-  if (settingDefinition == NULL)
-    return NULL;
+  if (settingDefinition == nullptr)
+    return nullptr;
 
   settingDefinition->SetOptionsFiller(filler, this);
 
   auto setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   std::vector<CVariant> valueList;
   for (std::vector<int>::const_iterator itValue = values.begin(); itValue != values.end(); ++itValue)
     valueList.emplace_back(*itValue);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
-    return NULL;
+    return nullptr;
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
@@ -997,13 +997,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSliderControl("percentage", delayed, heading, usePopup, formatLabel));
   setting->SetMinimum(0);
@@ -1029,13 +1029,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSliderControl("percentage", delayed, heading, usePopup, -1, formatString));
   setting->SetMinimum(0);
@@ -1062,13 +1062,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(const Setti
                                                                      bool visible /* = true */,
                                                                      int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSliderControl("integer", delayed, heading, usePopup, formatLabel));
   setting->SetMinimum(minimum);
@@ -1096,13 +1096,13 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSliderControl("integer", delayed, heading, usePopup, -1, formatString));
   setting->SetMinimum(minimum);
@@ -1130,13 +1130,13 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingNumber>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSliderControl("number", delayed, heading, usePopup, formatLabel));
   setting->SetMinimum(minimum);
@@ -1164,13 +1164,13 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto setting = std::make_shared<CSettingNumber>(id, label, value, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   setting->SetControl(GetSliderControl("number", delayed, heading, usePopup, -1, formatString));
   setting->SetMinimum(minimum);
@@ -1384,28 +1384,28 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(
     bool visible,
     int help)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
-  if (settingDefinition == NULL)
-    return NULL;
+  if (settingDefinition == nullptr)
+    return nullptr;
 
   settingDefinition->SetMinimum(minimum);
   settingDefinition->SetStep(step);
   settingDefinition->SetMaximum(maximum);
 
   auto setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   std::vector<CVariant> valueList;
   valueList.emplace_back(valueLower);
   valueList.emplace_back(valueUpper);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
-    return NULL;
+    return nullptr;
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
@@ -1437,28 +1437,28 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(
     bool visible,
     int help)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
-    return NULL;
+  if (group == nullptr || id.empty() || label < 0 ||
+      GetSetting(id) != nullptr)
+    return nullptr;
 
   auto settingDefinition = std::make_shared<CSettingNumber>(id, GetSettingsManager());
-  if (settingDefinition == NULL)
-    return NULL;
+  if (settingDefinition == nullptr)
+    return nullptr;
 
   settingDefinition->SetMinimum(minimum);
   settingDefinition->SetStep(step);
   settingDefinition->SetMaximum(maximum);
 
   auto setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
-  if (setting == NULL)
-    return NULL;
+  if (setting == nullptr)
+    return nullptr;
 
   std::vector<CVariant> valueList;
   valueList.emplace_back(valueLower);
   valueList.emplace_back(valueUpper);
   SettingList settingValues;
   if (!CSettingUtils::ValuesToList(setting, valueList, settingValues))
-    return NULL;
+    return nullptr;
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
@@ -1477,7 +1477,7 @@ void CGUIDialogSettingsManualBase::setSettingDetails(const std::shared_ptr<CSett
                                                      bool visible,
                                                      int help)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   if (level < SettingLevel::Basic)
@@ -1512,7 +1512,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetEditControl(co
 {
   auto control = std::make_shared<CSettingControlEdit>();
   if (!control->SetFormat(format))
-    return NULL;
+    return nullptr;
 
   control->SetDelayed(delayed);
   control->SetHidden(hidden);
@@ -1527,7 +1527,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetButtonControl(
 {
   auto control = std::make_shared<CSettingControlButton>();
   if (!control->SetFormat(format))
-    return NULL;
+    return nullptr;
 
   control->SetDelayed(delayed);
   control->SetHeading(heading);
@@ -1543,7 +1543,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetSpinnerControl
 {
   auto control = std::make_shared<CSettingControlSpinner>();
   if (!control->SetFormat(format))
-    return NULL;
+    return nullptr;
 
   control->SetDelayed(delayed);
   if (formatLabel >= 0)
@@ -1566,7 +1566,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetListControl(
 {
   auto control = std::make_shared<CSettingControlList>();
   if (!control->SetFormat(format))
-    return NULL;
+    return nullptr;
 
   control->SetDelayed(delayed);
   control->SetHeading(heading);
@@ -1582,7 +1582,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetSliderControl(
 {
   auto control = std::make_shared<CSettingControlSlider>();
   if (!control->SetFormat(format))
-    return NULL;
+    return nullptr;
 
   control->SetDelayed(delayed);
   if (heading >= 0)
@@ -1601,7 +1601,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetRangeControl(c
 {
   auto control = std::make_shared<CSettingControlRange>();
   if (!control->SetFormat(format))
-    return NULL;
+    return nullptr;
 
   control->SetDelayed(delayed);
   if (formatLabel >= 0)

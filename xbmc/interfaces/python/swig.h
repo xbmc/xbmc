@@ -65,8 +65,8 @@ namespace PythonBindings
                                    const char* methodNameForErrorString,
                                    const char* typenameForErrorString)
   {
-    if (pythonObj == NULL || pythonObj == Py_None)
-      return NULL;
+    if (pythonObj == nullptr || pythonObj == Py_None)
+      return nullptr;
     if (reinterpret_cast<PyHolder*>(pythonObj)->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER || !PyObject_TypeCheck(pythonObj, const_cast<PyTypeObject*>((&(typeToCheck->pythonType)))))
       throw XBMCAddon::WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\".",methodNameForErrorString,typenameForErrorString);
     return reinterpret_cast<PyHolder*>(pythonObj)->pSelf;
@@ -89,7 +89,8 @@ namespace PythonBindings
   inline XBMCAddon::AddonClass* retrieveApiInstance(const PyObject* pythonObj, const char* expectedType, const char* methodNamespacePrefix,
                                    const char* methodNameForErrorString)
   {
-    return (pythonObj == NULL || pythonObj == Py_None) ? NULL :
+    return (pythonObj == nullptr || pythonObj == Py_None) ? nullptr
+             :
       doretrieveApiInstance(reinterpret_cast<const PyHolder*>(pythonObj),reinterpret_cast<const PyHolder*>(pythonObj)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
   }
 
@@ -140,7 +141,7 @@ namespace PythonBindings
    */
   inline PyObject* makePythonInstance(XBMCAddon::AddonClass* api, bool incrementRefCount)
   {
-    return makePythonInstance(api,NULL,incrementRefCount);
+    return makePythonInstance(api, nullptr,incrementRefCount);
   }
 
   void registerAddonClassTypeInformation(const TypeInfo* classInfo);
@@ -153,7 +154,7 @@ namespace PythonBindings
   protected:
     PyObject* self;
   public:
-    inline Director() : self(NULL) {}
+    inline Director() : self(nullptr) {}
     inline void setPyObjectForDirector(PyObject* pyargself) { self = pyargself; }
   };
 

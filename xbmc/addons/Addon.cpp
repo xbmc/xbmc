@@ -709,9 +709,9 @@ void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
   int statRet;
 
   addonDirPath = "/storage/.kodi/addons/" + addon->ID() + "/bin/";
-  if ((addonsDir = opendir(addonDirPath.c_str())) != NULL)
+  if ((addonsDir = opendir(addonDirPath.c_str())) != nullptr)
   {
-    while ((fileDirent = readdir(addonsDir)) != NULL)
+    while ((fileDirent = readdir(addonsDir)) != nullptr)
     {
       chmodFilePath = addonDirPath + fileDirent->d_name;
       statRet = stat(chmodFilePath.c_str(), &fileStat);

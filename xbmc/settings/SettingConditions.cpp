@@ -37,18 +37,18 @@ bool AddonHasSettings(const std::string& condition,
                       const SettingConstPtr& setting,
                       void* data)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   std::shared_ptr<const CSettingAddon> settingAddon = std::dynamic_pointer_cast<const CSettingAddon>(setting);
-  if (settingAddon == NULL)
+  if (settingAddon == nullptr)
     return false;
 
   ADDON::AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(settingAddon->GetValue(), addon,
                                               settingAddon->GetAddonType(),
                                               ADDON::OnlyEnabled::CHOICE_YES) ||
-      addon == NULL)
+      addon == nullptr)
     return false;
 
   if (addon->Type() == ADDON::AddonType::SKIN)
@@ -277,7 +277,7 @@ bool ProfileLockMode(const std::string& condition,
 {
   char* tmp = nullptr;
   auto lock = (LockType)strtol(value.c_str(), &tmp, 0);
-  if (tmp != NULL && *tmp != '\0')
+  if (tmp != nullptr && *tmp != '\0')
     return false;
 
   return CSettingConditions::GetCurrentProfile().getLockMode() == lock;
@@ -288,11 +288,11 @@ bool GreaterThan(const std::string& condition,
                  const SettingConstPtr& setting,
                  void* data)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   std::shared_ptr<const CSettingInt> settingInt = std::dynamic_pointer_cast<const CSettingInt>(setting);
-  if (settingInt == NULL)
+  if (settingInt == nullptr)
     return false;
 
   char* tmp = nullptr;
@@ -308,11 +308,11 @@ bool GreaterThanOrEqual(const std::string& condition,
                         const SettingConstPtr& setting,
                         void* data)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   std::shared_ptr<const CSettingInt> settingInt = std::dynamic_pointer_cast<const CSettingInt>(setting);
-  if (settingInt == NULL)
+  if (settingInt == nullptr)
     return false;
 
   char* tmp = nullptr;
@@ -328,11 +328,11 @@ bool LessThan(const std::string& condition,
               const SettingConstPtr& setting,
               void* data)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   std::shared_ptr<const CSettingInt> settingInt = std::dynamic_pointer_cast<const CSettingInt>(setting);
-  if (settingInt == NULL)
+  if (settingInt == nullptr)
     return false;
 
   char* tmp = nullptr;
@@ -348,11 +348,11 @@ bool LessThanOrEqual(const std::string& condition,
                      const SettingConstPtr& setting,
                      void* data)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return false;
 
   std::shared_ptr<const CSettingInt> settingInt = std::dynamic_pointer_cast<const CSettingInt>(setting);
-  if (settingInt == NULL)
+  if (settingInt == nullptr)
     return false;
 
   char* tmp = nullptr;
@@ -540,7 +540,7 @@ bool CSettingConditions::Check(const std::string& condition,
 
   std::map<std::string, SettingConditionCheck>::const_iterator itCondition = m_complexConditions.find(condition);
   if (itCondition != m_complexConditions.end())
-    return itCondition->second(condition, value, setting, NULL);
+    return itCondition->second(condition, value, setting, nullptr);
 
   return Check(condition);
 }

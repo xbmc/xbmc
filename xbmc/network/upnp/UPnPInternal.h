@@ -40,7 +40,7 @@ namespace UPNP
 
   class CResourceFinder {
   public:
-    CResourceFinder(const char* protocol, const char* content = NULL);
+    CResourceFinder(const char* protocol, const char* content = nullptr);
     bool operator()(const PLT_MediaItemResource& resource) const;
   private:
     NPT_String m_Protocol;
@@ -73,22 +73,22 @@ namespace UPNP
 
   EMediaControllerQuirks GetMediaControllerQuirks(const PLT_DeviceData *device);
 
-  const char* GetMimeTypeFromExtension(const char* extension, const PLT_HttpRequestContext* context = NULL);
-  NPT_String  GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* context = NULL);
-  NPT_String  GetMimeType(const char* filename, const PLT_HttpRequestContext* context = NULL);
-  const NPT_String GetProtocolInfo(const CFileItem& item, const char* protocol, const PLT_HttpRequestContext* context = NULL);
+  const char* GetMimeTypeFromExtension(const char* extension, const PLT_HttpRequestContext* context = nullptr);
+  NPT_String  GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* context = nullptr);
+  NPT_String  GetMimeType(const char* filename, const PLT_HttpRequestContext* context = nullptr);
+  const NPT_String GetProtocolInfo(const CFileItem& item, const char* protocol, const PLT_HttpRequestContext* context = nullptr);
 
 
   const std::string& CorrectAllItemsSortHack(const std::string &item);
 
   NPT_Result PopulateTagFromObject(MUSIC_INFO::CMusicInfoTag& tag,
                                    PLT_MediaObject&           object,
-                                   PLT_MediaItemResource*     resource = NULL,
+                                   PLT_MediaItemResource*     resource = nullptr,
                                    UPnPService                service = UPnPServiceNone);
 
   NPT_Result PopulateTagFromObject(CVideoInfoTag&             tag,
                                    PLT_MediaObject&           object,
-                                   PLT_MediaItemResource*     resource = NULL,
+                                   PLT_MediaItemResource*     resource = nullptr,
                                    UPnPService                service = UPnPServiceNone);
 
   NPT_Result PopulateObjectFromTag(MUSIC_INFO::CMusicInfoTag& tag,
@@ -109,8 +109,8 @@ namespace UPNP
                                NPT_String&                    file_path,
                                bool                           with_count,
                                NPT_Reference<CThumbLoader>&   thumb_loader,
-                               const PLT_HttpRequestContext*  context = NULL,
-                               CUPnPServer*                   upnp_server = NULL,
+                               const PLT_HttpRequestContext*  context = nullptr,
+                               CUPnPServer*                   upnp_server = nullptr,
                                UPnPService                    upnp_service = UPnPServiceNone);
 
   std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,

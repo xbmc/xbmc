@@ -43,7 +43,7 @@ public:
                          KODI::SUBTITLES::STYLE::renderOpts opts,
                          bool updateStyle,
                          const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
-                         int* changes = NULL);
+                         int* changes = nullptr);
 
   ASS_Event* GetEvents() const;
 

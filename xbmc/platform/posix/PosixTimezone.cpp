@@ -28,7 +28,7 @@
 
 CPosixTimezone::CPosixTimezone()
 {
-   char* line = NULL;
+   char* line = nullptr;
    size_t linelen = 0;
    int nameonfourthfield = 0;
    std::string s;
@@ -80,7 +80,7 @@ CPosixTimezone::CPosixTimezone()
    if (line)
    {
      free(line);
-     line = NULL;
+     line = nullptr;
      linelen = 0;
    }
 
@@ -137,7 +137,7 @@ CPosixTimezone::CPosixTimezone()
 
 void CPosixTimezone::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string &settingId = setting->GetId();

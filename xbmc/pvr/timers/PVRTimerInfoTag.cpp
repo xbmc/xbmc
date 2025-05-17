@@ -272,7 +272,7 @@ void CPVRTimerInfoTag::FillAddonData(PVR_TIMER& timer) const
 
 void CPVRTimerInfoTag::Serialize(CVariant& value) const
 {
-  value["channelid"] = m_channel != NULL ? m_channel->ChannelID() : -1;
+  value["channelid"] = m_channel != nullptr ? m_channel->ChannelID() : -1;
   value["summary"] = m_strSummary;
   value["isradio"] = m_bIsRadio;
   value["preventduplicateepisodes"] = m_iPreventDupEpisodes;

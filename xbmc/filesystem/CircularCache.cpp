@@ -20,7 +20,7 @@ using namespace std::chrono_literals;
 
 CCircularCache::CCircularCache(size_t front, size_t back)
   : CCacheStrategy(),
-    m_buf(NULL),
+    m_buf(nullptr),
     m_size(front + back),
     m_size_back(back)
 #ifdef TARGET_WINDOWS
@@ -45,7 +45,7 @@ int CCircularCache::Open()
 #else
   m_buf = new uint8_t[m_size];
 #endif
-  if (m_buf == NULL)
+  if (m_buf == nullptr)
     return CACHE_RC_ERROR;
   m_beg = 0;
   m_end = 0;
@@ -64,7 +64,7 @@ void CCircularCache::Close()
 #else
   delete[] m_buf;
 #endif
-  m_buf = NULL;
+  m_buf = nullptr;
 }
 
 size_t CCircularCache::GetMaxWriteSize(const size_t& iRequestSize)
@@ -121,7 +121,7 @@ int CCircularCache::WriteToCache(const char *buf, size_t len)
   if(len == 0)
     return 0;
 
-  if (m_buf == NULL)
+  if (m_buf == nullptr)
     return 0;
 
   // write the data
@@ -164,7 +164,7 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
   if(len == 0)
     return 0;
 
-  if (m_buf == NULL)
+  if (m_buf == nullptr)
     return 0;
 
   memcpy(buf, m_buf + pos, len);

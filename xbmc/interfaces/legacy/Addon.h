@@ -67,7 +67,7 @@ namespace XBMCAddon
       bool UpdateSettingInActiveDialog(const char* id, const String& value) const;
 
     public:
-      explicit Addon(const char* id = NULL);
+      explicit Addon(const char* id = nullptr);
       ~Addon() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

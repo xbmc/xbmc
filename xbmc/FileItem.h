@@ -279,7 +279,7 @@ public:
 
   inline bool HasMusicInfoTag() const
   {
-    return m_musicInfoTag != NULL;
+    return m_musicInfoTag != nullptr;
   }
 
   MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
@@ -297,7 +297,7 @@ public:
 
   inline bool HasEPGInfoTag() const
   {
-    return m_epgInfoTag.get() != NULL;
+    return m_epgInfoTag.get() != nullptr;
   }
 
   inline const std::shared_ptr<PVR::CPVREpgInfoTag> GetEPGInfoTag() const
@@ -327,7 +327,7 @@ public:
 
   inline bool HasPVRRecordingInfoTag() const
   {
-    return m_pvrRecordingInfoTag.get() != NULL;
+    return m_pvrRecordingInfoTag.get() != nullptr;
   }
 
   inline const std::shared_ptr<PVR::CPVRRecording> GetPVRRecordingInfoTag() const
@@ -337,7 +337,7 @@ public:
 
   inline bool HasPVRTimerInfoTag() const
   {
-    return m_pvrTimerInfoTag != NULL;
+    return m_pvrTimerInfoTag != nullptr;
   }
 
   inline const std::shared_ptr<PVR::CPVRTimerInfoTag> GetPVRTimerInfoTag() const
@@ -407,7 +407,7 @@ public:
 
   inline bool HasPictureInfoTag() const
   {
-    return m_pictureInfoTag != NULL;
+    return m_pictureInfoTag != nullptr;
   }
 
   inline const CPictureInfoTag* GetPictureInfoTag() const
@@ -420,7 +420,7 @@ public:
 
   inline bool HasGameInfoTag() const
   {
-    return m_gameInfoTag != NULL;
+    return m_gameInfoTag != nullptr;
   }
 
   KODI::GAME::CGameInfoTag* GetGameInfoTag();

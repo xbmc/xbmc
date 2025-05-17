@@ -251,7 +251,7 @@ public:
   /* returns a new stream for data in the specified format */
   IAE::StreamPtr MakeStream(AEAudioFormat& audioFormat,
                             unsigned int options = 0,
-                            IAEClockCallback* clock = NULL) override;
+                            IAEClockCallback* clock = nullptr) override;
 
   /* returns a new sound object */
   IAE::SoundPtr MakeSound(const std::string& file) override;
@@ -313,9 +313,9 @@ protected:
   bool NeedReconfigureSink();
   void ApplySettingsToFormat(AEAudioFormat& format,
                              const AudioSettings& settings,
-                             int* mode = NULL);
-  void Configure(AEAudioFormat *desiredFmt = NULL);
-  AEAudioFormat GetInputFormat(AEAudioFormat *desiredFmt = NULL);
+                             int* mode = nullptr);
+  void Configure(AEAudioFormat *desiredFmt = nullptr);
+  AEAudioFormat GetInputFormat(AEAudioFormat *desiredFmt = nullptr);
   CActiveAEStream* CreateStream(MsgStreamNew *streamMsg);
   void DiscardStream(CActiveAEStream *stream);
   void SFlushStream(CActiveAEStream *stream);

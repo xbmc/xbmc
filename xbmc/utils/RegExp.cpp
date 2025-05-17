@@ -50,8 +50,8 @@ CRegExp::CRegExp(bool caseless /*= false*/, CRegExp::utf8Mode utf8 /*= asciiOnly
 void CRegExp::InitValues(bool caseless /*= false*/, CRegExp::utf8Mode utf8 /*= asciiOnly*/)
 {
   m_utf8Mode    = utf8;
-  m_re          = NULL;
-  m_sd          = NULL;
+  m_re          = nullptr;
+  m_sd          = nullptr;
   m_iOptions    = PCRE_DOTALL | PCRE_NEWLINE_ANY;
   if(caseless)
     m_iOptions |= PCRE_CASELESS;
@@ -67,7 +67,7 @@ void CRegExp::InitValues(bool caseless /*= false*/, CRegExp::utf8Mode utf8 /*= a
   m_jitCompiled = false;
   m_bMatched    = false;
   m_iMatchCount = 0;
-  m_jitStack    = NULL;
+  m_jitStack    = nullptr;
 
   memset(m_iOvector, 0, sizeof(m_iOvector));
 }
@@ -224,9 +224,9 @@ bool CRegExp::isCharClassWithUnicode(const std::string& regexp, size_t& pos)
 
 CRegExp::CRegExp(const CRegExp& re)
 {
-  m_re = NULL;
-  m_sd = NULL;
-  m_jitStack = NULL;
+  m_re = nullptr;
+  m_sd = nullptr;
+  m_jitStack = nullptr;
   m_utf8Mode = re.m_utf8Mode;
   m_iOptions = re.m_iOptions;
   *this = re;
@@ -240,7 +240,7 @@ CRegExp& CRegExp::operator=(const CRegExp& re)
   m_pattern = re.m_pattern;
   if (re.m_re)
   {
-    if (pcre_fullinfo(re.m_re, NULL, PCRE_INFO_SIZE, &size) >= 0)
+    if (pcre_fullinfo(re.m_re, nullptr, PCRE_INFO_SIZE, &size) >= 0)
     {
       if ((m_re = (pcre*)malloc(size)))
       {
@@ -273,7 +273,7 @@ bool CRegExp::RegComp(const char *re, studyMode study /*= NoStudy*/)
   m_jitCompiled      = false;
   m_bMatched         = false;
   m_iMatchCount      = 0;
-  const char *errMsg = NULL;
+  const char *errMsg = nullptr;
   int errOffset      = 0;
   int options        = m_iOptions;
   if (m_utf8Mode == autoUtf8 && requireUtf8(re))
@@ -281,7 +281,7 @@ bool CRegExp::RegComp(const char *re, studyMode study /*= NoStudy*/)
 
   Cleanup();
 
-  m_re = pcre_compile(re, options, &errMsg, &errOffset, NULL);
+  m_re = pcre_compile(re, options, &errMsg, &errOffset, nullptr);
   if (!m_re)
   {
     m_pattern.clear();
@@ -298,14 +298,14 @@ bool CRegExp::RegComp(const char *re, studyMode study /*= NoStudy*/)
     const int studyOptions = jitCompile ? PCRE_STUDY_JIT_COMPILE : 0;
 
     m_sd = pcre_study(m_re, studyOptions, &errMsg);
-    if (errMsg != NULL)
+    if (errMsg != nullptr)
     {
       CLog::Log(LOGWARNING, "{}: PCRE error \"{}\" while studying expression", __FUNCTION__,
                 errMsg);
-      if (m_sd != NULL)
+      if (m_sd != nullptr)
       {
         pcre_free_study(m_sd);
-        m_sd = NULL;
+        m_sd = nullptr;
       }
     }
     else if (jitCompile)
@@ -351,10 +351,10 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
   if (m_jitCompiled && !m_jitStack)
   {
     m_jitStack = pcre_jit_stack_alloc(32*1024, 512*1024);
-    if (m_jitStack == NULL)
+    if (m_jitStack == nullptr)
       CLog::Log(LOGWARNING, "{}: can't allocate address space for JIT stack", __FUNCTION__);
 
-    pcre_assign_jit_stack(m_sd, NULL, m_jitStack);
+    pcre_assign_jit_stack(m_sd, nullptr, m_jitStack);
   }
 #endif
 
@@ -362,7 +362,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
     bufferLen = std::min<size_t>(bufferLen, startoffset + maxNumberOfCharsToTest);
 
   m_subject.assign(str + startoffset, bufferLen - startoffset);
-  int rc = pcre_exec(m_re, NULL, m_subject.c_str(), m_subject.length(), 0, 0, m_iOvector, OVECCOUNT);
+  int rc = pcre_exec(m_re, nullptr, m_subject.c_str(), m_subject.length(), 0, 0, m_iOvector, OVECCOUNT);
 
   if (rc<1)
   {
@@ -423,7 +423,7 @@ int CRegExp::GetCaptureTotal() const
 {
   int c = -1;
   if (m_re)
-    pcre_fullinfo(m_re, NULL, PCRE_INFO_CAPTURECOUNT, &c);
+    pcre_fullinfo(m_re, nullptr, PCRE_INFO_CAPTURECOUNT, &c);
   return c;
 }
 
@@ -559,20 +559,20 @@ void CRegExp::Cleanup()
   if (m_re)
   {
     pcre_free(m_re);
-    m_re = NULL;
+    m_re = nullptr;
   }
 
   if (m_sd)
   {
     pcre_free_study(m_sd);
-    m_sd = NULL;
+    m_sd = nullptr;
   }
 
 #ifdef PCRE_HAS_JIT_CODE
   if (m_jitStack)
   {
     pcre_jit_stack_free(m_jitStack);
-    m_jitStack = NULL;
+    m_jitStack = nullptr;
   }
 #endif
 }

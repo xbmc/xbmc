@@ -287,7 +287,7 @@ namespace XBMCAddon
       inline void interceptorClear()
       {
         std::unique_lock<CCriticalSection> lock(*this);
-        window = NULL;
+        window = nullptr;
       }
 #endif
 

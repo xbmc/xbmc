@@ -38,7 +38,7 @@ using namespace std::chrono_literals;
 
 CRssReader::CRssReader() : CThread("RSSReader")
 {
-  m_pObserver = NULL;
+  m_pObserver = nullptr;
   m_spacesBetweenFeeds = 0;
   m_bIsRunning = false;
   m_savedScrollPixelPos = 0;

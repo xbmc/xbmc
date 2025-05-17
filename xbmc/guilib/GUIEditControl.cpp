@@ -87,8 +87,8 @@ void CGUIEditControl::DefaultConstructor()
   m_label2.GetLabelInfo().offsetX = 0;
   m_isMD5 = false;
   m_invalidInput = false;
-  m_inputValidator = NULL;
-  m_inputValidatorData = NULL;
+  m_inputValidator = nullptr;
+  m_inputValidatorData = nullptr;
   m_editLength = 0;
   m_editOffset = 0;
 }
@@ -764,10 +764,10 @@ void CGUIEditControl::SetInputValidation(StringValidation::Validator inputValida
 
 bool CGUIEditControl::ValidateInput(const std::wstring &data) const
 {
-  if (m_inputValidator == NULL)
+  if (m_inputValidator == nullptr)
     return true;
 
-  return m_inputValidator(GetLabel2(), m_inputValidatorData != NULL ? m_inputValidatorData : const_cast<void*>((const void*)this));
+  return m_inputValidator(GetLabel2(), m_inputValidatorData != nullptr ? m_inputValidatorData : const_cast<void*>((const void*)this));
 }
 
 void CGUIEditControl::ValidateInput()

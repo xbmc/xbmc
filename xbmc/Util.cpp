@@ -94,7 +94,7 @@ using namespace PLAYLIST;
 using KODI::UTILITY::CDigest;
 
 #if !defined(TARGET_WINDOWS)
-unsigned int CUtil::s_randomSeed = time(NULL);
+unsigned int CUtil::s_randomSeed = time(nullptr);
 #endif
 
 namespace
@@ -738,7 +738,7 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
   {
 #ifdef HAS_OPTICAL_DRIVE
     CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-    if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
+    if ( pInfo != nullptr && pInfo->IsVideoCd( 1 ) )
     {
       strIcon = "DefaultVCD.png";
       return ;

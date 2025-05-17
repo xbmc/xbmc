@@ -394,7 +394,7 @@ void CVideoPlayerAudio::Process()
     {
       auto msg = std::static_pointer_cast<CDVDMsgAudioCodecChange>(pMsg);
       OpenStream(msg->m_hints, std::move(msg->m_codec));
-      msg->m_codec = NULL;
+      msg->m_codec = nullptr;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_PAUSE))
     {
@@ -471,7 +471,7 @@ void inline CVideoPlayerAudio::Wait(useconds_t uSeconds) const
      target.tv_nsec -= 1000000000;
    }
 
-   clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &target, NULL);
+   clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &target, nullptr);
 }
 
 void CVideoPlayerAudio::ClockAlign(double presentPts) const {

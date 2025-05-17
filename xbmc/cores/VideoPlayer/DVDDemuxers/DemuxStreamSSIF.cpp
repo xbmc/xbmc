@@ -66,7 +66,7 @@ void CDemuxStreamSSIF::Flush()
 
 DemuxPacket* CDemuxStreamSSIF::MergePacket(DemuxPacket* &srcPkt, DemuxPacket* &appendPkt)
 {
-  DemuxPacket* newpkt = NULL;
+  DemuxPacket* newpkt = nullptr;
   newpkt = CDVDDemuxUtils::AllocateDemuxPacket(srcPkt->iSize + appendPkt->iSize);
   newpkt->iSize = srcPkt->iSize + appendPkt->iSize;
 
@@ -79,9 +79,9 @@ DemuxPacket* CDemuxStreamSSIF::MergePacket(DemuxPacket* &srcPkt, DemuxPacket* &a
   memcpy(newpkt->pData + srcPkt->iSize, appendPkt->pData, appendPkt->iSize);
 
   CDVDDemuxUtils::FreeDemuxPacket(srcPkt);
-  srcPkt = NULL;
+  srcPkt = nullptr;
   CDVDDemuxUtils::FreeDemuxPacket(appendPkt);
-  appendPkt = NULL;
+  appendPkt = nullptr;
 
   return newpkt;
 }

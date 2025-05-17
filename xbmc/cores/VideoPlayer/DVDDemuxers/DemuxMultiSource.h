@@ -48,7 +48,7 @@ public:
   int GetStreamLength() override;
   DemuxPacket* Read() override;
   bool Reset() override;
-  bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
+  bool SeekTime(double time, bool backwards = false, double* startpts = nullptr) override;
 
 protected:
   CDemuxStream* GetStream(int iStreamId) const override { return nullptr; }
@@ -57,7 +57,7 @@ private:
   void Dispose();
   void SetMissingStreamDetails(const DemuxPtr& demuxer) const;
 
-  std::shared_ptr<InputStreamMultiStreams> m_pInput = NULL;
+  std::shared_ptr<InputStreamMultiStreams> m_pInput = nullptr;
   std::map<DemuxPtr, InputStreamPtr> m_DemuxerToInputStreamMap;
   DemuxQueue m_demuxerQueue;
   std::map<int64_t, DemuxPtr> m_demuxerMap;

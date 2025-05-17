@@ -45,7 +45,7 @@ private:
     int useCount = 0;
 
     explicit CTLHandle(snd_hctl_t *handle_) : handle(handle_) {}
-    CTLHandle() : handle(NULL) {}
+    CTLHandle() : handle(nullptr) {}
   };
 
   std::map<std::string, CTLHandle> m_ctlHandles;

@@ -195,7 +195,7 @@ SettingSectionPtr CGUIWindowSettingsCategory::GetSection()
       return m_settings->GetSection(settingGroup.name);
   }
 
-  return NULL;
+  return nullptr;
 }
 
 bool CGUIWindowSettingsCategory::Save()

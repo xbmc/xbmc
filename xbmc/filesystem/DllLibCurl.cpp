@@ -234,19 +234,19 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
 {
   std::lock_guard lock(m_critSection);
 
-  CURL_HANDLE* easy = NULL;
-  CURLM* multi = NULL;
+  CURL_HANDLE* easy = nullptr;
+  CURLM* multi = nullptr;
 
   if (easy_handle)
   {
     easy = *easy_handle;
-    *easy_handle = NULL;
+    *easy_handle = nullptr;
   }
 
   if (multi_handle)
   {
     multi = *multi_handle;
-    *multi_handle = NULL;
+    *multi_handle = nullptr;
   }
 
   for (auto& it : m_sessions)
@@ -301,12 +301,12 @@ void DllLibCurlGlobal::easy_duplicate(CURL_HANDLE* easy,
       if (easy_out && easy)
         session.m_easy = *easy_out;
       else
-        session.m_easy = NULL;
+        session.m_easy = nullptr;
 
       if (multi_out && multi)
         session.m_multi = *multi_out;
       else
-        session.m_multi = NULL;
+        session.m_multi = nullptr;
 
       m_sessions.push_back(session);
       return;

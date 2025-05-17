@@ -34,7 +34,7 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
 
   // Check if we have UPower. If not, we avoid any battery related operations.
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
-  m_hasUPower = message.SendSystem() != NULL;
+  m_hasUPower = message.SendSystem() != nullptr;
 
   if (!m_hasUPower)
     CLog::Log(LOGINFO, "LogindUPowerSyscall - UPower not found, battery information will not be available");
@@ -164,7 +164,7 @@ bool CLogindUPowerSyscall::LogindSetPowerState(const char *state)
   // whether PolicyKit should interactively ask the user for authentication
   // credentials if it needs to.
   message.AppendArgument(false);
-  return message.SendSystem() != NULL;
+  return message.SendSystem() != nullptr;
 }
 
 bool CLogindUPowerSyscall::LogindCheckCapability(const char *capability)
@@ -172,7 +172,7 @@ bool CLogindUPowerSyscall::LogindCheckCapability(const char *capability)
   char *arg;
   CDBusMessage message(LOGIND_DEST, LOGIND_PATH, LOGIND_IFACE, capability);
   DBusMessage *reply = message.SendSystem();
-  if(reply && dbus_message_get_args(reply, NULL, DBUS_TYPE_STRING, &arg, DBUS_TYPE_INVALID))
+  if(reply && dbus_message_get_args(reply, nullptr, DBUS_TYPE_STRING, &arg, DBUS_TYPE_INVALID))
   {
     // Returns one of "yes", "no" or "challenge". If "challenge" is
     // returned the operation is available, but only after authorization.
@@ -188,7 +188,7 @@ int CLogindUPowerSyscall::BatteryLevel()
 
 void CLogindUPowerSyscall::UpdateBatteryLevel()
 {
-  char** source  = NULL;
+  char** source  = nullptr;
   int    length = 0;
   double batteryLevelSum = 0;
   int    batteryCount = 0;
@@ -199,7 +199,7 @@ void CLogindUPowerSyscall::UpdateBatteryLevel()
   if (!reply)
     return;
 
-  if (!dbus_message_get_args(reply, NULL, DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &source, &length, DBUS_TYPE_INVALID))
+  if (!dbus_message_get_args(reply, nullptr, DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &source, &length, DBUS_TYPE_INVALID))
   {
     CLog::Log(LOGWARNING, "LogindUPowerSyscall: failed to enumerate devices");
     return;
@@ -242,7 +242,7 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
       {
         dbus_bool_t arg;
         // the boolean argument defines whether we are going to sleep (true) or just woke up (false)
-        dbus_message_get_args(msg.get(), NULL, DBUS_TYPE_BOOLEAN, &arg, DBUS_TYPE_INVALID);
+        dbus_message_get_args(msg.get(), nullptr, DBUS_TYPE_BOOLEAN, &arg, DBUS_TYPE_INVALID);
         CLog::Log(LOGDEBUG, "LogindUPowerSyscall: Received PrepareForSleep with arg {}", (int)arg);
         if (arg)
         {
@@ -306,7 +306,7 @@ int CLogindUPowerSyscall::InhibitDelayLock(const char *what)
   }
 
   int delayLockFd;
-  if (!dbus_message_get_args(reply, NULL, DBUS_TYPE_UNIX_FD, &delayLockFd, DBUS_TYPE_INVALID))
+  if (!dbus_message_get_args(reply, nullptr, DBUS_TYPE_UNIX_FD, &delayLockFd, DBUS_TYPE_INVALID))
   {
     CLog::Log(LOGWARNING, "LogindUPowerSyscall - failed to get inhibit file descriptor");
     return -1;

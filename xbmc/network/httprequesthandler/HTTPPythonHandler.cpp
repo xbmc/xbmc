@@ -52,7 +52,7 @@ CHTTPPythonHandler::CHTTPPythonHandler(const HTTPRequest &request)
   // get the real path of the script and check if it actually exists
   m_response.status = CHTTPWebinterfaceHandler::ResolveUrl(m_request.pathUrl, m_scriptPath, m_addon);
   // only allow requests to a non-static webinterface addon
-  if (m_addon == NULL || m_addon->Type() != ADDON::AddonType::WEB_INTERFACE ||
+  if (m_addon == nullptr || m_addon->Type() != ADDON::AddonType::WEB_INTERFACE ||
       std::dynamic_pointer_cast<ADDON::CWebinterface>(m_addon)->GetType() ==
           ADDON::WebinterfaceTypeStatic)
   {
@@ -93,7 +93,7 @@ CHTTPPythonHandler::CHTTPPythonHandler(const HTTPRequest &request)
 #else
   time = localtime((time_t *)&statBuffer.st_mtime);
 #endif
-  if (time == NULL)
+  if (time == nullptr)
     return;
 
   m_lastModified = *time;
@@ -104,7 +104,7 @@ bool CHTTPPythonHandler::CanHandleRequest(const HTTPRequest &request) const
   ADDON::AddonPtr addon;
   std::string path;
   // try to resolve the addon as any python script must be part of a webinterface
-  if (!CHTTPWebinterfaceHandler::ResolveAddon(request.pathUrl, addon, path) || addon == NULL ||
+  if (!CHTTPWebinterfaceHandler::ResolveAddon(request.pathUrl, addon, path) || addon == nullptr ||
       addon->Type() != ADDON::AddonType::WEB_INTERFACE)
     return false;
 
@@ -178,7 +178,7 @@ MHD_RESULT CHTTPPythonHandler::HandleRequest()
     }
 
     HTTPPythonRequest* pythonFinalizedRequest = pythonInvoker->GetRequest();
-    if (pythonFinalizedRequest == NULL)
+    if (pythonFinalizedRequest == nullptr)
     {
       m_response.type = HTTPError;
       m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;

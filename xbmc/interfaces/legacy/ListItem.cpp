@@ -562,11 +562,11 @@ namespace XBMCAddon
             hasDeprecatedInfoLabel = true;
 
             if (key == "dbid")
-              dbId = static_cast<int>(strtol(value.c_str(), NULL, 10));
+              dbId = static_cast<int>(strtol(value.c_str(), nullptr, 10));
             else if (key == "mediatype")
               mediaType = value;
             else if (key == "tracknumber")
-              InfoTagMusic::setTrackRaw(musictag, strtol(value.c_str(), NULL, 10));
+              InfoTagMusic::setTrackRaw(musictag, strtol(value.c_str(), nullptr, 10));
             else if (key == "discnumber")
               InfoTagMusic::setDiscRaw(musictag, strtol(value.c_str(), nullptr, 10));
             else if (key == "duration")

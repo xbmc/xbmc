@@ -69,7 +69,7 @@ bool CAutorun::ExecuteAutorun(const std::string& path)
 
   CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(path);
 
-  if ( pInfo == NULL )
+  if ( pInfo == nullptr)
     return false;
 
   auto& components = CServiceBroker::GetAppComponents();

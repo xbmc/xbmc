@@ -63,7 +63,7 @@ private:
   ~CAirTunesServer() override;
   bool Initialize(const std::string &password);
   void Deinitialize();
-  static void RefreshCoverArt(const char *outputFilename = NULL);
+  static void RefreshCoverArt(const char *outputFilename = nullptr);
   static void RefreshMetadata();
   static void ResetMetadata();
   static void InformPlayerAboutPlayTimes();

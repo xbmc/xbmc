@@ -86,7 +86,7 @@ static const std::string getListOfAddonClassesAsString(
 }
 
 CPythonInvoker::CPythonInvoker(ILanguageInvocationHandler* invocationHandler)
-  : ILanguageInvoker(invocationHandler), m_threadState(NULL)
+  : ILanguageInvoker(invocationHandler), m_threadState(nullptr)
 {
 }
 
@@ -167,7 +167,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
 #endif
       l_threadState = Py_NewInterpreter();
       PyEval_ReleaseThread(l_threadState);
-      if (l_threadState == NULL)
+      if (l_threadState == nullptr)
       {
         CLog::Log(LOGERROR, "CPythonInvoker({}, {}): FAILED to get thread m_threadState!", GetId(),
                   m_sourceFile);
@@ -306,7 +306,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
       FILE* fp = _Py_fopen_obj(pyRealFilename, "rb");
       Py_DECREF(pyRealFilename);
 
-      if (fp != NULL)
+      if (fp != nullptr)
       {
         PyObject* f = PyUnicode_FromString(realFilename.c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
@@ -359,7 +359,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
     // if it failed with an exception we already logged the details
     if (!failed)
     {
-      PythonBindings::PythonToCppException* e = NULL;
+      PythonBindings::PythonToCppException* e = nullptr;
       if (PythonBindings::PythonToCppException::ParsePythonException(exceptionType, exceptionValue,
                                                                      exceptionTraceback))
         e = new PythonBindings::PythonToCppException(exceptionType, exceptionValue,
@@ -423,29 +423,29 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
 
 void CPythonInvoker::executeScript(FILE* fp, const std::string& script, PyObject* moduleDict)
 {
-  if (fp == NULL || script.empty() || moduleDict == NULL)
+  if (fp == nullptr || script.empty() || moduleDict == nullptr)
     return;
 
   int m_Py_file_input = Py_file_input;
-  PyRun_FileExFlags(fp, script.c_str(), m_Py_file_input, moduleDict, moduleDict, 1, NULL);
+  PyRun_FileExFlags(fp, script.c_str(), m_Py_file_input, moduleDict, moduleDict, 1, nullptr);
 }
 
 FILE* CPythonInvoker::PyFile_AsFileWithMode(PyObject* py_file, const char* mode)
 {
   PyObject* ret = PyObject_CallMethod(py_file, "flush", "");
-  if (ret == NULL)
-    return NULL;
+  if (ret == nullptr)
+    return nullptr;
   Py_DECREF(ret);
 
   int fd = PyObject_AsFileDescriptor(py_file);
   if (fd == -1)
-    return NULL;
+    return nullptr;
 
   FILE* f = fdopen(fd, mode);
-  if (f == NULL)
+  if (f == nullptr)
   {
     PyErr_SetFromErrno(PyExc_OSError);
-    return NULL;
+    return nullptr;
   }
 
   return f;
@@ -460,7 +460,7 @@ bool CPythonInvoker::stop(bool abort)
   if (!IsRunning() && !m_threadState)
     return false;
 
-  if (m_threadState != NULL)
+  if (m_threadState != nullptr)
   {
     if (IsRunning())
     {
@@ -515,7 +515,7 @@ bool CPythonInvoker::stop(bool abort)
 
     // Since we released the m_critical it's possible that the state is cleaned up
     // so we need to recheck for m_threadState == NULL
-    if (m_threadState != NULL)
+    if (m_threadState != nullptr)
     {
       {
         // grabbing the PyLock while holding the m_critical is asking for a deadlock
@@ -552,7 +552,7 @@ void CPythonInvoker::onExecutionDone()
 {
   std::lock_guard lock(m_critical);
 
-  if (m_threadState != NULL)
+  if (m_threadState != nullptr)
   {
     CLog::Log(LOGDEBUG, "{}({}, {})", __FUNCTION__, GetId(), m_sourceFile);
 
@@ -619,7 +619,7 @@ void CPythonInvoker::onExecutionFailed()
 
   std::lock_guard lock(m_critical);
 
-  m_threadState = NULL;
+  m_threadState = nullptr;
 
   ILanguageInvoker::onExecutionFailed();
 }
@@ -630,7 +630,7 @@ void CPythonInvoker::onInitialization()
 
   // get a possible initialization script
   const char* runscript = getInitializationScript();
-  if (runscript != NULL && strlen(runscript) > 0)
+  if (runscript != nullptr && strlen(runscript) > 0)
   {
     // redirecting default output to debug console
     if (PyRun_SimpleString(runscript) == -1)
@@ -640,7 +640,7 @@ void CPythonInvoker::onInitialization()
 
 void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 {
-  if (m_addon.get() == NULL || moduleDict == NULL)
+  if (m_addon.get() == nullptr || moduleDict == nullptr)
     return;
 
   auto moduleDictionary = (PyObject*)moduleDict;
@@ -676,7 +676,7 @@ void CPythonInvoker::onError(const std::string& exceptionType /* = "" */,
   CGUIDialogKaiToast* pDlgToast =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKaiToast>(
           WINDOW_DIALOG_KAI_TOAST);
-  if (pDlgToast != NULL)
+  if (pDlgToast != nullptr)
   {
     std::string message;
     if (m_addon && !m_addon->Name().empty())

@@ -23,7 +23,7 @@
 class ITouchInputHandling : protected ITouchActionHandler
 {
 public:
-  ITouchInputHandling() : m_handler(NULL) {}
+  ITouchInputHandling() : m_handler(nullptr) {}
   ~ITouchInputHandling() override = default;
 
   /*!

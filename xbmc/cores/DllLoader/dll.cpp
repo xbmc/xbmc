@@ -41,7 +41,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(const char* lib_file, const 
 {
   char libname[MAX_PATH + 1] = {};
   char libpath[MAX_PATH + 1] = {};
-  LibraryLoader* dll = NULL;
+  LibraryLoader* dll = nullptr;
 
   /* extract name */
   const char* p = strrchr(lib_file, PATH_SEPARATOR_CHAR);
@@ -52,7 +52,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(const char* lib_file, const 
   libname[sizeof(libname) - 1] = '\0';
 
   if( libname[0] == '\0' )
-    return NULL;
+    return nullptr;
 
   /* extract path */
   getpath(libpath, lib_file);
@@ -78,7 +78,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(const char* lib_file, const 
   /* msdn docs state */
   /* "If no file name extension is specified in the lpFileName parameter, the default library extension .dll is appended.  */
   /* However, the file name string can include a trailing point character (.) to indicate that the module name has no extension." */
-  if( strrchr(libname, '.') == NULL )
+  if( strrchr(libname, '.') == nullptr)
     strcat(libname, ".dll");
   else if( libname[strlen(libname)-1] == '.' )
     libname[strlen(libname)-1] = '\0';
@@ -89,12 +89,12 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(const char* lib_file, const 
     return dll->GetHModule();
 
   CLog::Log(LOGERROR, "LoadLibrary('{}') failed", libname);
-  return NULL;
+  return nullptr;
 }
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(const char* file)
 {
-  return dllLoadLibraryExtended(file, NULL);
+  return dllLoadLibraryExtended(file, nullptr);
 }
 
 #define DONT_RESOLVE_DLL_REFERENCES   0x00000001
@@ -119,7 +119,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExExtended(const char* lpLibFileName,
 
 extern "C" HMODULE __stdcall dllLoadLibraryExA(const char* lpLibFileName, HANDLE hFile, DWORD dwFlags)
 {
-  return dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, NULL);
+  return dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, nullptr);
 }
 
 extern "C" int __stdcall dllFreeLibrary(HINSTANCE hLibModule)
@@ -150,13 +150,13 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(const char* lpModuleName)
   If this parameter is NULL, GetModuleHandle returns a handle to the file used to create the calling process (.exe file).
   */
 
-  if( lpModuleName == NULL )
-    return NULL;
+  if( lpModuleName == nullptr)
+    return nullptr;
 
   auto strModuleName = new char[strlen(lpModuleName) + 5];
   strcpy(strModuleName, lpModuleName);
 
-  if (strrchr(strModuleName, '.') == 0) strcat(strModuleName, ".dll");
+  if (strrchr(strModuleName, '.') == nullptr) strcat(strModuleName, ".dll");
 
   //CLog::Log(LOGDEBUG, "GetModuleHandleA({}) .. looking up", lpModuleName);
 
@@ -170,5 +170,5 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(const char* lpModuleName)
   }
 
   CLog::Log(LOGDEBUG, "GetModuleHandleA('{}') failed", lpModuleName);
-  return NULL;
+  return nullptr;
 }

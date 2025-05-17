@@ -381,7 +381,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   //allocate output buffer for iconv()
   size_t      outBufSize = (strSource.length() + 1) * sizeof(typename OUTPUT::value_type) * multiplier;
   auto outBuf     = (char*)malloc(outBufSize);
-  if (outBuf == NULL)
+  if (outBuf == nullptr)
   {
     CLog::Log(LOGFATAL, "{}: malloc failed", __FUNCTION__);
     return false;
@@ -451,7 +451,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   }
 
   //complete the conversion (reset buffers), otherwise the current data will prefix the data on the next call
-  if (iconv(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1)
+  if (iconv(type, nullptr, nullptr, &outBufStart, &outBytesAvail) == (size_t)-1)
     CLog::Log(LOGERROR, "{} failed cleanup errno={}({})", __FUNCTION__, errno, strerror(errno));
 
   if (returnV == (size_t)-1)
@@ -504,7 +504,7 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(
     const size_t lineLen = lineEnd - lineStart;
 
     auto visual = (FriBidiChar*) malloc((lineLen + 1) * sizeof(FriBidiChar));
-    if (visual == NULL)
+    if (visual == nullptr)
     {
       free(visual);
       CLog::Log(LOGFATAL, "{}: can't allocate memory", __FUNCTION__);
@@ -584,14 +584,14 @@ static struct SCharsetMapping
   , { "SHIFT_JIS", "Japanese (Shift-JIS)" }
   , { "CP949", "Korean" }
   , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)" }
-  , { NULL, NULL }
+  , {nullptr, nullptr}
 };
 
 CCharsetConverter::CCharsetConverter() = default;
 
 void CCharsetConverter::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string& settingId = setting->GetId();

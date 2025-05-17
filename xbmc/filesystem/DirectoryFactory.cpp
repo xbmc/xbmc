@@ -116,7 +116,7 @@ IDirectory* CDirectoryFactory::Create(const CFileItem& item)
 IDirectory* CDirectoryFactory::Create(const CURL& url)
 {
   if (!CWakeOnAccess::GetInstance().WakeUpHost(url))
-    return NULL;
+    return nullptr;
 
   CFileItem item(url.Get(), true);
   IFileDirectory* pDir = CFileDirectoryFactory::Create(url, &item);
@@ -217,6 +217,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 
   CLog::Log(LOGWARNING, "{} - unsupported protocol({}) in {}", __FUNCTION__, url.GetProtocol(),
             url.GetRedacted());
-  return NULL;
+  return nullptr;
 }
 

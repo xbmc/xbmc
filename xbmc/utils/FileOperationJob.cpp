@@ -68,7 +68,7 @@ bool CFileOperationJob::DoWork()
   FileOperationList ops;
   double totalTime = 0.0;
 
-  if (m_displayProgress && GetProgressDialog() == NULL)
+  if (m_displayProgress && GetProgressDialog() == nullptr)
   {
     CGUIDialogExtendedProgressBar* dialog =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
@@ -341,7 +341,7 @@ bool CFileOperationJob::operator==(const CJob* job) const
     return false;
 
   auto rjob = dynamic_cast<const CFileOperationJob*>(job);
-  if (rjob == NULL)
+  if (rjob == nullptr)
     return false;
 
   if (GetAction() != rjob->GetAction() ||

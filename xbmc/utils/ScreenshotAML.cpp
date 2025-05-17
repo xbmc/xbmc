@@ -37,7 +37,7 @@ void CScreenshotAML::CaptureVideoFrame(unsigned char *buffer, int iWidth, int iH
     // videobuffer should be rgb according to docu - but it is bgr ...
     auto videoBuffer = new unsigned char[buffSize];
 
-    if (videoBuffer != NULL)
+    if (videoBuffer != nullptr)
     {
       // configure destination
       ioctl(captureFd, AMVIDEOCAP_IOW_SET_WANTFRAME_WIDTH, stride / 3);

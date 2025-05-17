@@ -15,7 +15,7 @@ class DllLoaderContainer
 public:
   static LibraryLoader* GetModule(const char* sName);
   static LibraryLoader* GetModule(const HMODULE hModule);
-  static LibraryLoader* LoadModule(const char* sName, const char* sCurrentDir=NULL, bool bLoadSymbols=false);
+  static LibraryLoader* LoadModule(const char* sName, const char* sCurrentDir= nullptr, bool bLoadSymbols=false);
   static void       ReleaseModule(LibraryLoader*& pDll);
 
   static void RegisterDll(LibraryLoader* pDll);

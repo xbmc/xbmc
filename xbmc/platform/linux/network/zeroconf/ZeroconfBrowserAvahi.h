@@ -70,8 +70,8 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
     static AvahiServiceBrowser* createServiceBrowser(const std::string& fcr_service_type, AvahiClient* fp_client, void* fp_userdata);
 
     //shared variables between avahi thread and interface
-    AvahiClient* mp_client =  0 ;
-    AvahiThreadedPoll* mp_poll =  0 ;
+    AvahiClient* mp_client =  nullptr ;
+    AvahiThreadedPoll* mp_poll =  nullptr ;
     // tBrowserMap maps service types the corresponding browser
     typedef std::map<std::string, AvahiServiceBrowser*> tBrowserMap;
     tBrowserMap m_browsers;

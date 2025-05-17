@@ -167,7 +167,7 @@ void CDVDTeletextData::ResetTeletextCache() const {
           free(p->ext);
         }
         delete page;
-        page = 0;
+        page = nullptr;
       }
     }
   }
@@ -185,7 +185,7 @@ void CDVDTeletextData::ResetTeletextCache() const {
           free(d26);
       }
       free(m_TXTCache->astP29[i]);
-      m_TXTCache->astP29[i] = 0;
+      m_TXTCache->astP29[i] = nullptr;
     }
     m_TXTCache->CurrentPage[i]    = -1;
     m_TXTCache->CurrentSubPage[i] = -1;
@@ -415,7 +415,7 @@ void CDVDTeletextData::Process()
               /* pointer to current info struct */
               if (packet_number <= 25)
               {
-                unsigned char *p = NULL;
+                unsigned char *p = nullptr;
                 if (packet_number < 24)
                 {
                   p = pagedata[magazine] + 40*(packet_number-1);
@@ -754,7 +754,7 @@ void CDVDTeletextData::ErasePage(int magazine) const {
 void CDVDTeletextData::AllocateCache(int magazine)
 {
   /* check cachetable and allocate memory if needed */
-  if (m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]] == 0)
+  if (m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]] == nullptr)
   {
     m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]] = new TextCachedPage_t;
     if (m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]] )

@@ -787,7 +787,7 @@ bool CEventClient::CheckButtonRepeat(std::chrono::time_point<std::chrono::steady
 bool CEventClient::Alive() const
 {
   // 60 seconds timeout
-  if ( (time(NULL) - m_lastPing) > 60 )
+  if ( (time(nullptr) - m_lastPing) > 60 )
     return false;
   return true;
 }

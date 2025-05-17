@@ -51,7 +51,7 @@ CFileDirectoryFactory::~CFileDirectoryFactory(void) = default;
 IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem, const std::string& strMask)
 {
   if (url.IsProtocol("stack")) // disqualify stack as we need to work with each of the parts instead
-    return NULL;
+    return nullptr;
 
   /**
    * Check available binary addons which can contain files with underlaid
@@ -198,7 +198,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
       pItem->SetURL(zipURL);
       return new CZipDirectory;
     }
-    return NULL;
+    return nullptr;
   }
   if (url.IsFileType("xbt"))
   {
@@ -232,7 +232,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
         return pDir;
     }
     delete pDir;
-    return NULL;
+    return nullptr;
   }
 
   if (pItem->IsAudioBook())
@@ -243,8 +243,8 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
       if (pDir->ContainsFiles(url))
         return pDir.release();
     }
-    return NULL;
+    return nullptr;
   }
-  return NULL;
+  return nullptr;
 }
 

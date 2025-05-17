@@ -57,7 +57,7 @@ public:
   CAEStreamParser();
   ~CAEStreamParser() = default;
 
-  int AddData(uint8_t *data, unsigned int size, uint8_t **buffer = NULL, unsigned int *bufferSize = 0);
+  int AddData(uint8_t *data, unsigned int size, uint8_t **buffer = nullptr, unsigned int *bufferSize = nullptr);
 
   void SetCoreOnly(bool value) { m_coreOnly = value; }
   unsigned int IsValid() const { return m_hasSync; }

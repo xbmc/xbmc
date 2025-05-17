@@ -45,7 +45,7 @@ class CZeroconfBrowserDummy : public CZeroconfBrowser
 };
 #endif
 
-CZeroconfBrowser* CZeroconfBrowser::smp_instance = 0;
+CZeroconfBrowser* CZeroconfBrowser::smp_instance = nullptr;
 
 CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection)
 {
@@ -170,7 +170,7 @@ void CZeroconfBrowser::ReleaseInstance()
   std::lock_guard<std::mutex> lock(singletonMutex);
 
   delete smp_instance;
-  smp_instance = 0;
+  smp_instance = nullptr;
 }
 
 

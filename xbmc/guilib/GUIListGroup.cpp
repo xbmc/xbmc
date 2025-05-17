@@ -35,14 +35,14 @@ const std::set<CGUIControl::GUICONTROLTYPES> supportedTypes = {
 CGUIListGroup::CGUIListGroup(int parentID, int controlID, float posX, float posY, float width, float height)
 : CGUIControlGroup(parentID, controlID, posX, posY, width, height)
 {
-  m_item = NULL;
+  m_item = nullptr;
   ControlType = GUICONTROL_LISTGROUP;
 }
 
 CGUIListGroup::CGUIListGroup(const CGUIListGroup &right)
 : CGUIControlGroup(right)
 {
-  m_item = NULL;
+  m_item = nullptr;
   ControlType = GUICONTROL_LISTGROUP;
 }
 
@@ -79,7 +79,7 @@ void CGUIListGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
   CGUIControl::Process(currentTime, dirtyregions);
   m_renderRegion = rect;
-  m_item = NULL;
+  m_item = nullptr;
 }
 
 void CGUIListGroup::ResetAnimation(ANIMATION_TYPE type)

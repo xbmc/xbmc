@@ -79,7 +79,7 @@ void CFTPParse::setTime(const std::string& str)
     /* set the day of the month */
     time_struct.tm_mday = std::stol(day);
 
-    time_t t = time(NULL);
+    time_t t = time(nullptr);
     struct tm *current_time;
 #ifdef LOCALTIME_R
     struct tm result = {};

@@ -78,7 +78,7 @@ bool CDemuxMVC::Open(CDVDInputStream* pInput)
   if (blockSize > 1)
     bufferSize = blockSize;
   auto buffer = (unsigned char*)av_malloc(bufferSize);
-  m_ioContext = avio_alloc_context(buffer, bufferSize, 0, this, mvc_file_read, NULL, mvc_file_seek);
+  m_ioContext = avio_alloc_context(buffer, bufferSize, 0, this, mvc_file_read, nullptr, mvc_file_seek);
 
   m_pFormatContext = avformat_alloc_context();
   m_pFormatContext->pb = m_ioContext;
@@ -157,7 +157,7 @@ void CDemuxMVC::Flush()
 DemuxPacket* CDemuxMVC::Read()
 {
   int ret;
-  DemuxPacket* newPkt = NULL;
+  DemuxPacket* newPkt = nullptr;
   AVPacket* pkt = av_packet_alloc();
   if (!pkt)
   {

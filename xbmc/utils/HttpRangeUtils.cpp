@@ -69,12 +69,12 @@ bool CHttpRange::IsValid() const
 
 CHttpResponseRange::CHttpResponseRange()
   : CHttpRange(),
-    m_data(NULL)
+    m_data(nullptr)
 { }
 
 CHttpResponseRange::CHttpResponseRange(uint64_t firstPosition, uint64_t lastPosition)
   : CHttpRange(firstPosition, lastPosition),
-    m_data(NULL)
+    m_data(nullptr)
 { }
 
 CHttpResponseRange::CHttpResponseRange(const void* data, uint64_t firstPosition, uint64_t lastPosition)
@@ -123,7 +123,7 @@ bool CHttpResponseRange::IsValid() const
   if (!CHttpRange::IsValid())
     return false;
 
-  return m_data != NULL;
+  return m_data != nullptr;
 }
 
 CHttpRanges::CHttpRanges()
@@ -343,7 +343,7 @@ void CHttpRanges::SortAndCleanup()
 
 std::string HttpRangeUtils::GenerateContentRangeHeaderValue(const CHttpRange* range)
 {
-  if (range == NULL)
+  if (range == nullptr)
     return "";
 
   return StringUtils::Format(CONTENT_RANGE_FORMAT_TOTAL, range->GetFirstPosition(), range->GetLastPosition(), range->GetLength());
@@ -395,7 +395,7 @@ std::string HttpRangeUtils::GenerateMultipartBoundaryWithHeader(const std::strin
 
 std::string HttpRangeUtils::GenerateMultipartBoundaryWithHeader(const std::string& multipartBoundary, const std::string& contentType, const CHttpRange* range)
 {
-  if (multipartBoundary.empty() || range == NULL)
+  if (multipartBoundary.empty() || range == nullptr)
     return "";
 
   return GenerateMultipartBoundaryWithHeader(GenerateMultipartBoundaryWithHeader(multipartBoundary, contentType), range);
@@ -403,7 +403,7 @@ std::string HttpRangeUtils::GenerateMultipartBoundaryWithHeader(const std::strin
 
 std::string HttpRangeUtils::GenerateMultipartBoundaryWithHeader(const std::string& multipartBoundaryWithContentType, const CHttpRange* range)
 {
-  if (multipartBoundaryWithContentType.empty() || range == NULL)
+  if (multipartBoundaryWithContentType.empty() || range == nullptr)
     return "";
 
   std::string boundaryWithHeader = multipartBoundaryWithContentType;

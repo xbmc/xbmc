@@ -53,7 +53,7 @@ class CZeroconfDummy : public CZeroconf
 };
 #endif
 
-CZeroconf* CZeroconf::smp_instance = 0;
+CZeroconf* CZeroconf::smp_instance = nullptr;
 
 CZeroconf::CZeroconf():mp_crit_sec(new CCriticalSection)
 {
@@ -168,7 +168,7 @@ void CZeroconf::ReleaseInstance()
 {
   std::lock_guard<std::mutex> lock(singletonMutex);
   delete smp_instance;
-  smp_instance = 0;
+  smp_instance = nullptr;
 }
 
 CZeroconf::CPublish::CPublish(const std::string& fcr_identifier, const PublishInfo& pubinfo)

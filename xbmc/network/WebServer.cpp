@@ -1211,7 +1211,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 #endif
             | MHD_USE_DEBUG /* Print MHD error messages to log */
             | MHD_USE_SSL,
-        port, 0, 0, &CWebServer::AnswerToConnection, this,
+        port, nullptr, nullptr, &CWebServer::AnswerToConnection, this,
 
         MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, 0, MHD_OPTION_CONNECTION_LIMIT, 512,
         MHD_OPTION_CONNECTION_TIMEOUT, timeout, MHD_OPTION_URI_LOG_CALLBACK,
@@ -1232,7 +1232,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 #endif
           | MHD_USE_DEBUG /* Print MHD error messages to log */
       ,
-      port, 0, 0, &CWebServer::AnswerToConnection, this,
+      port, nullptr, nullptr, &CWebServer::AnswerToConnection, this,
 
       MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, 0, MHD_OPTION_CONNECTION_LIMIT, 512,
       MHD_OPTION_CONNECTION_TIMEOUT, timeout, MHD_OPTION_URI_LOG_CALLBACK,

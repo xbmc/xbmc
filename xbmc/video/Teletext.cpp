@@ -406,10 +406,10 @@ CTeletextDecoder::CTeletextDecoder()
   memset(&m_RenderInfo, 0, sizeof(TextRenderInfo_t));
 
   m_teletextFont                 = CSpecialProtocol::TranslatePath(TeletextFont);
-  m_TextureBuffer                = NULL;
-  m_txtCache                     = NULL;
-  m_Manager                      = NULL;
-  m_Library                      = NULL;
+  m_TextureBuffer                = nullptr;
+  m_txtCache                     = nullptr;
+  m_Manager                      = nullptr;
+  m_Library                      = nullptr;
   m_RenderInfo.ShowFlof          = true;
   m_RenderInfo.Show39            = false;
   m_RenderInfo.Showl25           = true;
@@ -471,7 +471,7 @@ bool CTeletextDecoder::Changed()
 
 bool CTeletextDecoder::HandleAction(const CAction &action)
 {
-  if (m_txtCache == NULL)
+  if (m_txtCache == nullptr)
   {
     CLog::Log(LOGERROR, "CTeletextDecoder::HandleAction called without teletext cache");
     return false;
@@ -632,15 +632,15 @@ bool CTeletextDecoder::InitDecoder()
   if ((error = FT_Init_FreeType(&m_Library)))
   {
     CLog::Log(LOGERROR, "{}: <FT_Init_FreeType: {:#2X}>", __FUNCTION__, error);
-    m_Library = NULL;
+    m_Library = nullptr;
     return false;
   }
 
-  if ((error = FTC_Manager_New(m_Library, 7, 2, 0, &MyFaceRequester, NULL, &m_Manager)))
+  if ((error = FTC_Manager_New(m_Library, 7, 2, 0, &MyFaceRequester, nullptr, &m_Manager)))
   {
     FT_Done_FreeType(m_Library);
-    m_Library = NULL;
-    m_Manager = NULL;
+    m_Library = nullptr;
+    m_Manager = nullptr;
     CLog::Log(LOGERROR, "{}: <FTC_Manager_New: {:#2X}>", __FUNCTION__, error);
     return false;
   }
@@ -649,8 +649,8 @@ bool CTeletextDecoder::InitDecoder()
   {
     FTC_Manager_Done(m_Manager);
     FT_Done_FreeType(m_Library);
-    m_Manager = NULL;
-    m_Library = NULL;
+    m_Manager = nullptr;
+    m_Library = nullptr;
     CLog::Log(LOGERROR, "{}: <FTC_SBit_Cache_New: {:#2X}>", __FUNCTION__, error);
     return false;
   }
@@ -677,8 +677,8 @@ bool CTeletextDecoder::InitDecoder()
                 __FUNCTION__, error);
       FTC_Manager_Done(m_Manager);
       FT_Done_FreeType(m_Library);
-      m_Manager = NULL;
-      m_Library = NULL;
+      m_Manager = nullptr;
+      m_Library = nullptr;
       return false;
     }
   }
@@ -715,17 +715,17 @@ void CTeletextDecoder::EndDecoder()
   /* clear SubtitleCache */
   for (TextSubtitleCache_t*& subtitleCache : m_RenderInfo.SubtitleCache)
   {
-    if (subtitleCache != NULL)
+    if (subtitleCache != nullptr)
     {
       delete subtitleCache;
-      subtitleCache = NULL;
+      subtitleCache = nullptr;
     }
   }
 
   if (m_TextureBuffer)
   {
     delete[] m_TextureBuffer;
-    m_TextureBuffer = NULL;
+    m_TextureBuffer = nullptr;
   }
 
   /* close freetype */
@@ -739,8 +739,8 @@ void CTeletextDecoder::EndDecoder()
     FT_Done_FreeType(m_Library);
   }
 
-  m_Manager               = NULL;
-  m_Library               = NULL;
+  m_Manager               = nullptr;
+  m_Library               = nullptr;
 
   if (!m_txtCache)
   {
@@ -1195,7 +1195,7 @@ void CTeletextDecoder::RenderPage()
     m_txtCache->PageUpdate = false;
     if (m_RenderInfo.Boxed && m_RenderInfo.SubtitleDelay)
     {
-      TextSubtitleCache_t* c = NULL;
+      TextSubtitleCache_t* c = nullptr;
       int j = -1;
       for (int i = 0; i < SUBTITLE_CACHESIZE; i++)
       {
@@ -1207,13 +1207,13 @@ void CTeletextDecoder::RenderPage()
           break;
         }
       }
-      if (c == NULL)
+      if (c == nullptr)
       {
         if (j == -1) // no more space in SubtitleCache
           return;
 
         c = new TextSubtitleCache_t;
-        if (c == NULL)
+        if (c == nullptr)
           return;
 
         *c = {};
@@ -1627,7 +1627,7 @@ void CTeletextDecoder::Decode_BTT() const {
 
   std::lock_guard lock(m_txtCache->m_critSection);
 
-  if (m_txtCache->SubPageTable[0x1f0] == 0xff || 0 == m_txtCache->astCachetable[0x1f0][m_txtCache->SubPageTable[0x1f0]]) /* not yet received */
+  if (m_txtCache->SubPageTable[0x1f0] == 0xff || nullptr == m_txtCache->astCachetable[0x1f0][m_txtCache->SubPageTable[0x1f0]]) /* not yet received */
     return;
 
   auto& components = CServiceBroker::GetAppComponents();
@@ -1702,7 +1702,7 @@ void CTeletextDecoder::Decode_ADIP() const
   for (i = 0; i <= m_txtCache->ADIP_PgMax; i++)
   {
     p = m_txtCache->ADIP_Pg[i];
-    if (!p || m_txtCache->SubPageTable[p] == 0xff || 0 == m_txtCache->astCachetable[p][m_txtCache->SubPageTable[p]]) /* not cached (avoid segfault) */
+    if (!p || m_txtCache->SubPageTable[p] == 0xff || nullptr == m_txtCache->astCachetable[p][m_txtCache->SubPageTable[p]]) /* not cached (avoid segfault) */
       continue;
 
     appPlayer->LoadPage(p, m_txtCache->SubPageTable[p], padip);
@@ -2079,7 +2079,7 @@ void CTeletextDecoder::RenderDRCS(
     UTILS::COLOR::Color fgcolor,
     UTILS::COLOR::Color bgcolor)
 {
-  if (d == NULL) return;
+  if (d == nullptr) return;
 
   unsigned char *ay = ax + 13; /* array[0..10] of y-offsets for each pixel */
 
@@ -2879,7 +2879,7 @@ TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=deco
 
   /* copy page to decode buffer */
   if (m_txtCache->SubPageTable[m_txtCache->Page] == 0xff) /* not cached: do nothing */
-    return NULL;
+    return nullptr;
 
   if (m_txtCache->ZapSubpageManual)
     pCachedPage = m_txtCache->astCachetable[m_txtCache->Page][m_txtCache->SubPage];
@@ -3023,7 +3023,7 @@ TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=deco
     IgnoreAtBlackBgSubst = 0;
     mosaic_pending = esc_pending = 0; // we need to render at least one mosaic char if 'esc' is received immediately after mosaic charset switch on
 
-    if (boxed && memchr(&PageChar[row*40], start_box, 40) == 0)
+    if (boxed && memchr(&PageChar[row*40], start_box, 40) == nullptr)
     {
       foreground = TXT_ColorTransp;
       background = TXT_ColorTransp;
@@ -3325,7 +3325,7 @@ void CTeletextDecoder::Eval_l25(unsigned char* PageChar, TextPageAttr_t *PageAtr
 
   memset(m_txtCache->FullRowColor, 0, sizeof(m_txtCache->FullRowColor));
   m_txtCache->FullScrColor = TXT_ColorBlack;
-  m_txtCache->ColorTable   = NULL;
+  m_txtCache->ColorTable   = nullptr;
 
   if (!m_txtCache->astCachetable[m_txtCache->Page][m_txtCache->SubPage])
     return;
@@ -3606,7 +3606,7 @@ void CTeletextDecoder::Eval_NumberedObject(int p, int s, int packet, int triplet
 {
   std::lock_guard lock(m_txtCache->m_critSection);
 
-  if (!packet || 0 == m_txtCache->astCachetable[p][s])
+  if (!packet || nullptr == m_txtCache->astCachetable[p][s])
     return;
 
   unsigned char pagedata[23*40];
@@ -4037,7 +4037,7 @@ int CTeletextDecoder::Eval_Triplet(int iOData, TextCachedPage_t *pstCachedPage,
 /* out: 18 bit triplet data, <0 if invalid number, not cached, or hamming error */
 int CTeletextDecoder::iTripletNumber2Data(int iONr, TextCachedPage_t *pstCachedPage, unsigned char* pagedata)
 {
-  if (iONr > 506 || 0 == pstCachedPage)
+  if (iONr > 506 || nullptr == pstCachedPage)
     return -1;
 
   unsigned char *p;
@@ -4048,16 +4048,16 @@ int CTeletextDecoder::iTripletNumber2Data(int iONr, TextCachedPage_t *pstCachedP
     p = pagedata + 40*(packet-1) + packetoffset + 1;
   else if (packet <= 25)
   {
-    if (0 == pstCachedPage->pageinfo.p24)
+    if (nullptr == pstCachedPage->pageinfo.p24)
       return -1;
     p = pstCachedPage->pageinfo.p24 + 40*(packet-24) + packetoffset + 1;
   }
   else
   {
     int descode = packet - 26;
-    if (0 == pstCachedPage->pageinfo.ext)
+    if (nullptr == pstCachedPage->pageinfo.ext)
       return -1;
-    if (0 == pstCachedPage->pageinfo.ext->p26[descode])
+    if (nullptr == pstCachedPage->pageinfo.ext->p26[descode])
       return -1;
     p = pstCachedPage->pageinfo.ext->p26[descode] + packetoffset;  /* first byte (=designation code) is not cached */
   }

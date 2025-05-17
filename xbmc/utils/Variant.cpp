@@ -70,10 +70,10 @@ int64_t str2int64(std::string_view str, int64_t fallback /* = 0 */)
 
 int64_t str2int64(std::wstring_view str, int64_t fallback /* = 0 */)
 {
-  wchar_t *end = NULL;
+  wchar_t *end = nullptr;
   std::wstring tmp(trim(str));
   int64_t result = wcstoll(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   return fallback;
@@ -92,10 +92,10 @@ uint64_t str2uint64(std::string_view str, uint64_t fallback /* = 0 */)
 
 uint64_t str2uint64(std::wstring_view str, uint64_t fallback /* = 0 */)
 {
-  wchar_t *end = NULL;
+  wchar_t *end = nullptr;
   std::wstring tmp(trim(str));
   uint64_t result = wcstoull(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   return fallback;
@@ -110,7 +110,7 @@ double str2double(std::string_view str, double fallback /* = 0.0 */)
   cStr[copySize] = '\0';
   char* end = nullptr;
   double result = strtod(cStr, &end);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   // Use this once std::from_char with double is supported on all platform
@@ -132,7 +132,7 @@ double str2double(std::wstring_view str, double fallback /* = 0.0 */)
   wcStr[copySize] = '\0';
   wchar_t* end = nullptr;
   double result = wcstod(wcStr, &end);
-  if (end == NULL || *end == '\0')
+  if (end == nullptr || *end == '\0')
     return result;
 
   return fallback;

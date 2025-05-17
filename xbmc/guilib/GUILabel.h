@@ -25,7 +25,7 @@ public:
   CLabelInfo():
     scrollSuffix(" | ")
   {
-    font = NULL;
+    font = nullptr;
     align = XBFONT_LEFT;
     offsetX = offsetY = 0;
     width = 0;

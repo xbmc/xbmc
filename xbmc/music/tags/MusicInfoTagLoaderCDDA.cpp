@@ -44,7 +44,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
 
     // Get information for the inserted disc
     CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-    if (pCdInfo == NULL)
+    if (pCdInfo == nullptr)
       return bResult;
 
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();

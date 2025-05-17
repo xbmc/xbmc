@@ -57,7 +57,7 @@ namespace XFILE
       bool Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML);
       bool Get(const std::string& strURL, std::string& strHTML);
       bool ReadData(std::string& strHTML);
-      bool Download(const std::string& strURL, const std::string& strFileName, unsigned int* pdwSize = NULL);
+      bool Download(const std::string& strURL, const std::string& strFileName, unsigned int* pdwSize = nullptr);
       bool IsInternet();
       void Cancel() const;
       void Reset() const;

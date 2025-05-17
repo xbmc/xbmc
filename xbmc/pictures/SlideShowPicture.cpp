@@ -736,7 +736,7 @@ void CSlideShowPic::Render()
   // now render the image in the top right corner if we're zooming
   if (m_fZoomAmount == 1.0f || m_bIsComic) return ;
 
-  Render(m_bx, m_by, NULL, PICTURE_VIEW_BOX_BACKGROUND);
+  Render(m_bx, m_by, nullptr, PICTURE_VIEW_BOX_BACKGROUND);
   Render(m_sx, m_sy, m_pImage.get(), 0xFFFFFFFF);
-  Render(m_ox, m_oy, NULL, PICTURE_VIEW_BOX_COLOR);
+  Render(m_ox, m_oy, nullptr, PICTURE_VIEW_BOX_COLOR);
 }

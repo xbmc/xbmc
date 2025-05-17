@@ -267,7 +267,7 @@ bool CGUIFontTTF::Load(
   if (!m_face)
     return false;
 
-  m_hbFont = hb_ft_font_create(m_face, 0);
+  m_hbFont = hb_ft_font_create(m_face, nullptr);
   if (!m_hbFont)
     return false;
   /*

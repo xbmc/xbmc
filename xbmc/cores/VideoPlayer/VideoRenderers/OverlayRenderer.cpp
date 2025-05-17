@@ -550,7 +550,7 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
 
 std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay& o, double pts)
 {
-  std::shared_ptr<COverlay> r = NULL;
+  std::shared_ptr<COverlay> r = nullptr;
 
   if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
   {

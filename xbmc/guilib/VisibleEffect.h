@@ -179,7 +179,7 @@ public:
   inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; }
 
   bool CheckCondition() const;
-  void UpdateCondition(const CGUIListItem *item = NULL);
+  void UpdateCondition(const CGUIListItem *item = nullptr);
   void SetInitialCondition();
 
 private:

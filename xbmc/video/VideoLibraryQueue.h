@@ -66,7 +66,7 @@ public:
    */
   bool CleanLibrary(const std::set<int>& paths = std::set<int>(),
                     bool asynchronous = true,
-                    CGUIDialogProgressBarHandle* progressBar = NULL);
+                    CGUIDialogProgressBarHandle* progressBar = nullptr);
 
   /*!
   \brief Executes a library cleaning with a modal dialog.

@@ -332,7 +332,7 @@ int CDatabase::GetSingleValueInt(const std::string& strTable,
                                  const std::string& strOrderBy /* = std::string() */) const
 {
   std::string strResult = GetSingleValue(strTable, strColumn, strWhereClause, strOrderBy);
-  return static_cast<int>(strtol(strResult.c_str(), NULL, 10));
+  return static_cast<int>(strtol(strResult.c_str(), nullptr, 10));
 }
 
 int CDatabase::GetSingleValueInt(const std::string& query) const

@@ -58,7 +58,7 @@ int DllLoaderContainer::m_iNrOfDlls = 0;
 
 LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
 {
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; i++)
   {
     if (StringUtils::CompareNoCase(m_dlls[i]->GetName(), sName) == 0)
       return m_dlls[i];
@@ -67,21 +67,21 @@ LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
       return m_dlls[i];
   }
 
-  return NULL;
+  return nullptr;
 }
 
 LibraryLoader* DllLoaderContainer::GetModule(const HMODULE hModule)
 {
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; i++)
   {
     if (m_dlls[i]->GetHModule() == hModule) return m_dlls[i];
   }
-  return NULL;
+  return nullptr;
 }
 
 LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCurrentDir/*=NULL*/, bool bLoadSymbols/*=false*/)
 {
-  LibraryLoader* pDll=NULL;
+  LibraryLoader* pDll= nullptr;
 
   if (IsSystemDll(sName))
   {
@@ -155,7 +155,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
 #else
   vecEnv = StringUtils::Split(ENV_PATH, ';');
 #endif
-  LibraryLoader* pDll = NULL;
+  LibraryLoader* pDll = nullptr;
 
   for (std::vector<std::string>::const_iterator i = vecEnv.begin(); i != vecEnv.end(); ++i)
   {
@@ -169,7 +169,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
     strPath+=sName;
 
     // Have we already loaded this dll
-    if ((pDll = GetModule(strPath.c_str())) != NULL)
+    if ((pDll = GetModule(strPath.c_str())) != nullptr)
       return pDll;
 
     if (CFile::Exists(strPath))
@@ -177,11 +177,11 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   }
 
   // can't find it in any of our paths - could be a system dll
-  if ((pDll = LoadDll(sName, bLoadSymbols)) != NULL)
+  if ((pDll = LoadDll(sName, bLoadSymbols)) != nullptr)
     return pDll;
 
   CLog::Log(LOGDEBUG, "Dll {} was not found in path", sName);
-  return NULL;
+  return nullptr;
 }
 
 void DllLoaderContainer::ReleaseModule(LibraryLoader*& pDll)
@@ -206,7 +206,7 @@ void DllLoaderContainer::ReleaseModule(LibraryLoader*& pDll)
     {
       pDll->Unload();
       delete pDll;
-      pDll=NULL;
+      pDll= nullptr;
     }
     else
       CLog::Log(LOGINFO, "{} has symbols loaded and can never be unloaded", pDll->GetName());
@@ -237,13 +237,13 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   if (!pLoader)
   {
     CLog::Log(LOGERROR, "Unable to create dll {}", sName);
-    return NULL;
+    return nullptr;
   }
 
   if (!pLoader->Load())
   {
     delete pLoader;
-    return NULL;
+    return nullptr;
   }
 
   return pLoader;
@@ -251,7 +251,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 
 bool DllLoaderContainer::IsSystemDll(const char* sName)
 {
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; i++)
   {
     if (m_dlls[i]->IsSystemDll() && StringUtils::CompareNoCase(m_dlls[i]->GetName(), sName) == 0)
       return true;
@@ -264,7 +264,7 @@ void DllLoaderContainer::RegisterDll(LibraryLoader* pDll)
 {
   for (LibraryLoader*& dll : m_dlls)
   {
-    if (dll == NULL)
+    if (dll == nullptr)
     {
       dll = pDll;
       m_iNrOfDlls++;
@@ -296,7 +296,7 @@ void DllLoaderContainer::UnRegisterDll(LibraryLoader* pDll)
       if (bRemoved)
       {
         m_iNrOfDlls--;
-        m_dlls[m_iNrOfDlls] = NULL;
+        m_dlls[m_iNrOfDlls] = nullptr;
       }
     }
   }

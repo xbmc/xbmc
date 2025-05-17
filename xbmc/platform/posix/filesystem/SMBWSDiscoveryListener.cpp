@@ -260,7 +260,7 @@ void CWSDiscoveryListenerUDP::Process()
     FD_SET(fd, &rset);
     timeout.tv_sec = 3;
     timeout.tv_usec = 0;
-    nready = select((fd + 1), &rset, NULL, NULL, &timeout);
+    nready = select((fd + 1), &rset, nullptr, nullptr, &timeout);
 
     if (nready < 0)
       break;

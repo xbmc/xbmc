@@ -105,7 +105,7 @@ NPT_Result CUPnPServer::ProcessGetSCPD(PLT_Service* service,
 NPT_Result CUPnPServer::SetupServices()
 {
   PLT_MediaConnect::SetupServices();
-  PLT_Service* service = NULL;
+  PLT_Service* service = nullptr;
   NPT_Result result = FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service);
   if (service)
   {
@@ -167,7 +167,7 @@ void CUPnPServer::UpdateContainer(const std::string& id)
 +---------------------------------------------------------------------*/
 void CUPnPServer::PropagateUpdates()
 {
-  PLT_Service* service = NULL;
+  PLT_Service* service = nullptr;
   NPT_String current_ids;
   std::string buffer;
   std::map<std::string, std::pair<bool, unsigned long>>::iterator itr;
@@ -268,7 +268,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
                                     NPT_Reference<CThumbLoader>& thumb_loader,
                                     const char* parent_id /* = NULL */)
 {
-  PLT_MediaObject* object = NULL;
+  PLT_MediaObject* object = nullptr;
   NPT_String path = item->GetPath().c_str();
 
   //HACK: temporary disabling count as it thrashes HDD
@@ -326,7 +326,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
 
           CMusicDatabase db;
           if (!db.Open())
-            return NULL;
+            return nullptr;
 
           if (params.GetSongId() >= 0)
           {
@@ -385,7 +385,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
 
           CVideoDatabase db;
           if (!db.Open())
-            return NULL;
+            return nullptr;
 
           if (params.GetMovieId() >= 0)
             db.GetMovieInfo(static_cast<const char*>(path), *item->GetVideoInfoTag(),
@@ -485,7 +485,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
 
 failure:
   delete object;
-  return NULL;
+  return nullptr;
 }
 
 /*----------------------------------------------------------------------
@@ -725,7 +725,7 @@ NPT_Result CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
     {
       thumb_loader->OnLoaderStart();
     }
-    object = Build(item, true, context, thumb_loader, parent.empty() ? NULL : parent.c_str());
+    object = Build(item, true, context, thumb_loader, parent.empty() ? nullptr : parent.c_str());
   }
 
   if (object.IsNull())
@@ -860,7 +860,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
   NPT_String action_name = action->GetActionDesc().GetName();
   return BuildResponse(action, items, filter, starting_index, requested_count, sort_criteria,
                        context,
-                       (action_name.Compare("Search", true) == 0) ? NULL : parent_id.GetChars());
+                       (action_name.Compare("Search", true) == 0) ? nullptr : parent_id.GetChars());
 }
 
 /*----------------------------------------------------------------------
@@ -1177,7 +1177,7 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
 
     items.SetPath("videodb://tvshows/titles/");
     return BuildResponse(action, items, filter, starting_index, requested_count, sort_criteria,
-                         context, NULL);
+                         context, nullptr);
   }
   else if (searchClass.Find("object.container.album.videoAlbum.videoBroadcastSeason") >= 0)
   {
@@ -1198,7 +1198,7 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
 
     items.SetPath("videodb://tvshows/titles/-1/");
     return BuildResponse(action, items, filter, starting_index, requested_count, sort_criteria,
-                         context, NULL);
+                         context, nullptr);
   }
   else if (searchClass.Find("object.item.videoItem") >= 0)
   {
@@ -1269,13 +1269,13 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
       allItems.SetPath("videodb://movies/titles/");
 
     return BuildResponse(action, allItems, filter, starting_index, requested_count, sort_criteria,
-                         context, NULL);
+                         context, nullptr);
   }
   else if (searchClass.Find("object.item.imageItem") >= 0)
   {
     CFileItemList items;
     return BuildResponse(action, items, filter, starting_index, requested_count, sort_criteria,
-                         context, NULL);
+                         context, nullptr);
   }
 
   return NPT_FAILURE;
@@ -1298,11 +1298,11 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
 
   NPT_String playCount, position, lastPlayed;
   int err;
-  const char* msg = NULL;
+  const char* msg = nullptr;
   bool updatelisting(false);
 
   // we pause eventing as multiple announces may happen in this operation
-  PLT_Service* service = NULL;
+  PLT_Service* service = nullptr;
   NPT_CHECK_LABEL(FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service), error);
   NPT_CHECK_LABEL(service->PauseEventing(), error);
 

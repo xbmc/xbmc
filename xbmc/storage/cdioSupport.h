@@ -299,7 +299,7 @@ public:
 
   void PrintAnalysis(int fs, int num_audio);
 
-  CCdInfo* GetCdInfo(char* cDeviceFileName=NULL);
+  CCdInfo* GetCdInfo(char* cDeviceFileName= nullptr);
   void GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum) const;
 
 protected:

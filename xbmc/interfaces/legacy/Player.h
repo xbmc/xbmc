@@ -62,8 +62,8 @@ namespace XBMCAddon
     private:
       int iPlayList;
 
-      void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false);
-      void playPlaylist(const PlayList* playlist = NULL,
+      void playStream(const String& item = emptyString, const XBMCAddon::xbmcgui::ListItem* listitem = nullptr, bool windowed = false);
+      void playPlaylist(const PlayList* playlist = nullptr,
       bool windowed = false, int startpos=-1);
       void playCurrent(bool windowed = false) const;
 
@@ -124,7 +124,7 @@ namespace XBMCAddon
       play(...);
 #else
       void play(const PlayParameter& item = Player::defaultPlayParameter,
-                const XBMCAddon::xbmcgui::ListItem* listitem = NULL, bool windowed = false, int startpos = -1);
+                const XBMCAddon::xbmcgui::ListItem* listitem = nullptr, bool windowed = false, int startpos = -1);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

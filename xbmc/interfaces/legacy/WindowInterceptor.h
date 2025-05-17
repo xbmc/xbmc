@@ -31,7 +31,7 @@ namespace XBMCAddon
       // This instance is in Window.cpp
       static thread_local ref* upcallTls;
 
-      InterceptorBase() : window(NULL) { upcallTls = NULL; }
+      InterceptorBase() : window(nullptr) { upcallTls = nullptr; }
 
       /**
        * Calling up ONCE resets the upcall to to false. The reason is that when
@@ -46,7 +46,7 @@ namespace XBMCAddon
        *  the call will wrongly proceed back to the xbmc core side rather than
        *  to the Addon API side.
        */
-      static bool up() { bool ret = ((upcallTls) != NULL); upcallTls = NULL; return ret; }
+      static bool up() { bool ret = ((upcallTls) != nullptr); upcallTls = nullptr; return ret; }
     public:
 
       virtual ~InterceptorBase() { if (window.isNotNull()) { window->interceptorClear(); } }
@@ -76,7 +76,7 @@ namespace XBMCAddon
       InterceptorBase* w;
     public:
       inline explicit ref(InterceptorBase* b) : w(b) { w->upcallTls = this; }
-      inline ~ref() { w->upcallTls = NULL; }
+      inline ~ref() { w->upcallTls = nullptr; }
       inline CGUIWindow* operator->() const { return w->get(); }
       inline CGUIWindow* get() const { return w->get(); }
     };

@@ -31,7 +31,7 @@ public:
     SUBTITLE
   };
 
-  explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {}
+  explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(nullptr) {}
   virtual ~CStreamDetail() = default;
   virtual bool IsWorseThan(const CStreamDetail &that) const = 0;
 

@@ -13,9 +13,9 @@
 
 CDVDSubtitleLineCollection::CDVDSubtitleLineCollection()
 {
-  m_pHead = NULL;
-  m_pCurrent = NULL;
-  m_pTail = NULL;
+  m_pHead = nullptr;
+  m_pCurrent = nullptr;
+  m_pTail = nullptr;
 
   m_iSize = 0;
 }
@@ -29,7 +29,7 @@ void CDVDSubtitleLineCollection::Add(std::shared_ptr<CDVDOverlay> pOverlay)
 {
   auto pElement = new ListElement;
   pElement->pOverlay = std::move(pOverlay);
-  pElement->pNext = NULL;
+  pElement->pNext = nullptr;
 
   if (!m_pHead)
   {
@@ -49,9 +49,9 @@ void CDVDSubtitleLineCollection::Sort() const {
   if (!m_pHead || !m_pHead->pNext)
     return;
 
-  for (ListElement* p1 = m_pHead; p1->pNext != NULL; p1 = p1->pNext)
+  for (ListElement* p1 = m_pHead; p1->pNext != nullptr; p1 = p1->pNext)
   {
-    for (ListElement* p2 = p1->pNext; p2 != NULL; p2 = p2->pNext)
+    for (ListElement* p2 = p1->pNext; p2 != nullptr; p2 = p2->pNext)
     {
       if (p1->pOverlay->iPTSStartTime > p2->pOverlay->iPTSStartTime)
       {
@@ -90,7 +90,7 @@ void CDVDSubtitleLineCollection::Reset()
 
 void CDVDSubtitleLineCollection::Clear()
 {
-  ListElement* pElement = NULL;
+  ListElement* pElement = nullptr;
 
   while (m_pHead)
   {
@@ -100,8 +100,8 @@ void CDVDSubtitleLineCollection::Clear()
     delete pElement;
   }
 
-  m_pTail    = NULL;
-  m_pHead    = NULL;
-  m_pCurrent = NULL;
+  m_pTail    = nullptr;
+  m_pHead    = nullptr;
+  m_pCurrent = nullptr;
   m_iSize    = 0;
 }

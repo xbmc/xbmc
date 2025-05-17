@@ -182,7 +182,7 @@ bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode,
 
 float CGUIControlFactory::ParsePosition(const char* pos, const float parentSize)
 {
-  char* end = NULL;
+  char* end = nullptr;
   float value = pos ? (float)strtod(pos, &end) : 0;
   if (end)
   {
@@ -1243,7 +1243,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   // Instantiate a new control using the properties gathered above
   //
 
-  CGUIControl* control = NULL;
+  CGUIControl* control = nullptr;
   switch (type)
   {
     case CGUIControl::GUICONTROL_GROUP:

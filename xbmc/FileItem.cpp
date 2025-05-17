@@ -334,10 +334,10 @@ CFileItem::CFileItem(const CGenre& genre)
 
 CFileItem::CFileItem(const CFileItem& item)
   : CGUIListItem(item),
-    m_musicInfoTag(NULL),
-    m_videoInfoTag(NULL),
-    m_pictureInfoTag(NULL),
-    m_gameInfoTag(NULL)
+    m_musicInfoTag(nullptr),
+    m_videoInfoTag(nullptr),
+    m_pictureInfoTag(nullptr),
+    m_gameInfoTag(nullptr)
 {
   *this = item;
 }
@@ -436,10 +436,10 @@ CFileItem::~CFileItem(void)
   delete m_pictureInfoTag;
   delete m_gameInfoTag;
 
-  m_musicInfoTag = NULL;
-  m_videoInfoTag = NULL;
-  m_pictureInfoTag = NULL;
-  m_gameInfoTag = NULL;
+  m_musicInfoTag = nullptr;
+  m_videoInfoTag = nullptr;
+  m_pictureInfoTag = nullptr;
+  m_gameInfoTag = nullptr;
 }
 
 CFileItem& CFileItem::operator=(const CFileItem& item)
@@ -468,7 +468,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   else
   {
     delete m_musicInfoTag;
-    m_musicInfoTag = NULL;
+    m_musicInfoTag = nullptr;
   }
 
   if (item.m_videoInfoTag)
@@ -481,7 +481,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   else
   {
     delete m_videoInfoTag;
-    m_videoInfoTag = NULL;
+    m_videoInfoTag = nullptr;
   }
 
   if (item.m_pictureInfoTag)
@@ -494,7 +494,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   else
   {
     delete m_pictureInfoTag;
-    m_pictureInfoTag = NULL;
+    m_pictureInfoTag = nullptr;
   }
 
   if (item.m_gameInfoTag)
@@ -507,7 +507,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   else
   {
     delete m_gameInfoTag;
-    m_gameInfoTag = NULL;
+    m_gameInfoTag = nullptr;
   }
 
   m_epgInfoTag = item.m_epgInfoTag;
@@ -540,10 +540,10 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
 
 void CFileItem::Initialize()
 {
-  m_musicInfoTag = NULL;
-  m_videoInfoTag = NULL;
-  m_pictureInfoTag = NULL;
-  m_gameInfoTag = NULL;
+  m_musicInfoTag = nullptr;
+  m_videoInfoTag = nullptr;
+  m_pictureInfoTag = nullptr;
+  m_gameInfoTag = nullptr;
   m_bLabelPreformatted = false;
   m_bIsAlbum = false;
   m_dwSize = 0;
@@ -581,18 +581,18 @@ void CFileItem::Reset()
   m_strLockCode.clear();
   m_mimetype.clear();
   delete m_musicInfoTag;
-  m_musicInfoTag=NULL;
+  m_musicInfoTag= nullptr;
   delete m_videoInfoTag;
-  m_videoInfoTag=NULL;
+  m_videoInfoTag= nullptr;
   m_epgInfoTag.reset();
   m_epgSearchFilter.reset();
   m_pvrChannelGroupMemberInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
   m_pvrTimerInfoTag.reset();
   delete m_pictureInfoTag;
-  m_pictureInfoTag=NULL;
+  m_pictureInfoTag= nullptr;
   delete m_gameInfoTag;
-  m_gameInfoTag = NULL;
+  m_gameInfoTag = nullptr;
   m_extrainfo.clear();
   ClearProperties();
   m_eventLogEntry.reset();

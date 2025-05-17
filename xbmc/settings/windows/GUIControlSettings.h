@@ -77,7 +77,7 @@ public:
 
   void SetValid(bool valid) { m_valid = valid; }
 
-  virtual CGUIControl* GetControl() { return NULL; }
+  virtual CGUIControl* GetControl() { return nullptr; }
   virtual bool OnClick() { return false; }
   void UpdateFromControl();
   void UpdateFromSetting(bool updateDisplayOnly = false);
@@ -108,7 +108,7 @@ public:
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pRadioButton); }
   bool OnClick() override;
-  void Clear() override { m_pRadioButton = NULL; }
+  void Clear() override { m_pRadioButton = nullptr; }
 
 protected:
   // specialization of CGUIControlBaseSetting
@@ -152,7 +152,7 @@ public:
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pSpin); }
   bool OnClick() override;
-  void Clear() override { m_pSpin = NULL; }
+  void Clear() override { m_pSpin = nullptr; }
 
 protected:
   // specialization of CGUIControlBaseSetting
@@ -177,7 +177,7 @@ public:
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pButton); }
   bool OnClick() override;
-  void Clear() override { m_pButton = NULL; }
+  void Clear() override { m_pButton = nullptr; }
 
 protected:
   // specialization of CGUIControlBaseSetting
@@ -229,7 +229,7 @@ public:
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pButton); }
   bool OnClick() override;
-  void Clear() override { m_pButton = NULL; }
+  void Clear() override { m_pButton = nullptr; }
 
   static bool GetPath(const std::shared_ptr<CSettingPath>& pathSetting, ILocalizer* localizer);
 
@@ -255,7 +255,7 @@ public:
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pEdit); }
   bool OnClick() override;
-  void Clear() override { m_pEdit = NULL; }
+  void Clear() override { m_pEdit = nullptr; }
 
 protected:
   // specialization of CGUIControlBaseSetting
@@ -278,7 +278,7 @@ public:
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pSlider); }
   bool OnClick() override;
-  void Clear() override { m_pSlider = NULL; }
+  void Clear() override { m_pSlider = nullptr; }
 
   static std::string GetText(const std::shared_ptr<CSetting>& setting,
                              const CVariant& value,
@@ -311,7 +311,7 @@ public:
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pSlider); }
   bool OnClick() override;
-  void Clear() override { m_pSlider = NULL; }
+  void Clear() override { m_pSlider = nullptr; }
 
 protected:
   // specialization of CGUIControlBaseSetting
@@ -329,7 +329,7 @@ public:
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pImage); }
   bool OnClick() override { return false; }
-  void Clear() override { m_pImage = NULL; }
+  void Clear() override { m_pImage = nullptr; }
 
 private:
   CGUIImage* m_pImage;
@@ -343,7 +343,7 @@ public:
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pLabel); }
   bool OnClick() override { return false; }
-  void Clear() override { m_pLabel = NULL; }
+  void Clear() override { m_pLabel = nullptr; }
 
 private:
   CGUILabelControl* m_pLabel;
@@ -359,7 +359,7 @@ public:
   ~CGUIControlLabelSetting() override = default;
 
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pButton); }
-  void Clear() override { m_pButton = NULL; }
+  void Clear() override { m_pButton = nullptr; }
 
 private:
   CGUIButtonControl* m_pButton;

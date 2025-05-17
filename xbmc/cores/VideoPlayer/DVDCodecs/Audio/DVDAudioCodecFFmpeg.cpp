@@ -24,7 +24,7 @@ extern "C" {
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg(CProcessInfo &processInfo) : CDVDAudioCodec(processInfo)
 {
-  m_pCodecContext = NULL;
+  m_pCodecContext = nullptr;
 
   m_channels = 0;
   m_layout = 0;
@@ -119,7 +119,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     av_opt_set_double(m_pCodecContext, "drc_scale", applyDrc,
                       AV_OPT_SEARCH_CHILDREN);
 
-  if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
+  if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to open codec");
     Dispose();

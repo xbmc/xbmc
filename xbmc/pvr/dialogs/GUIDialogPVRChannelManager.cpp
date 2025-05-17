@@ -431,7 +431,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
     shares.push_back(share1);
   }
   CServiceBroker::GetMediaManager().GetLocalDrives(shares);
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(19285), strThumb, NULL, 19285))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(19285), strThumb, nullptr, 19285))
     return false;
 
   if (strThumb == "thumb://Current")

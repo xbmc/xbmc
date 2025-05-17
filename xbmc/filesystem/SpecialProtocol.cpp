@@ -238,7 +238,7 @@ std::string CSpecialProtocol::TranslatePathConvertCase(const std::string& path)
       dir = opendir(result.c_str());
       if (dir)
       {
-        while ((de = readdir(dir)) != NULL)
+        while ((de = readdir(dir)) != nullptr)
         {
           // check if there's a file with same name but different case
           if (StringUtils::CompareNoCase(de->d_name, tokens[i]) == 0)
@@ -251,7 +251,7 @@ std::string CSpecialProtocol::TranslatePathConvertCase(const std::string& path)
 
         // if we did not find any file that somewhat matches, just
         // fallback but we know it's not gonna be a good ending
-        if (de == NULL)
+        if (de == nullptr)
           result += "/" + tokens[i];
 
         closedir(dir);

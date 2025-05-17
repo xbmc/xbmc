@@ -257,11 +257,11 @@ static std::string getValueFromLsb_release(enum lsb_rel_info_type infoType)
   }
   command += " 2>/dev/null";
   FILE* lsb_rel = popen(command.c_str(), "r");
-  if (lsb_rel == NULL)
+  if (lsb_rel == nullptr)
     return "";
 
   char buf[300]; // more than enough
-  if (fgets(buf, 300, lsb_rel) == NULL)
+  if (fgets(buf, 300, lsb_rel) == nullptr)
   {
     pclose(lsb_rel);
     return "";
@@ -487,7 +487,7 @@ CSysInfo::~CSysInfo() = default;
 
 bool CSysInfo::Load(const TiXmlNode *settings)
 {
-  if (settings == NULL)
+  if (settings == nullptr)
     return false;
 
   const TiXmlElement *pElement = settings->FirstChildElement("general");
@@ -499,15 +499,15 @@ bool CSysInfo::Load(const TiXmlNode *settings)
 
 bool CSysInfo::Save(TiXmlNode *settings) const
 {
-  if (settings == NULL)
+  if (settings == nullptr)
     return false;
 
   TiXmlNode *generalNode = settings->FirstChild("general");
-  if (generalNode == NULL)
+  if (generalNode == nullptr)
   {
     TiXmlElement generalNodeNew("general");
     generalNode = settings->InsertEndChild(generalNodeNew);
-    if (generalNode == NULL)
+    if (generalNode == nullptr)
       return false;
   }
   XMLUtils::SetInt(generalNode, "systemtotaluptime", m_iSystemTimeTotalUp);

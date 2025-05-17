@@ -68,7 +68,7 @@ CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
   m_playCountMinTime = DEFAULT_PLAYCOUNT_MIN_TIME;
   m_playOneStackItem = false;
 
-  m_dialog = NULL;
+  m_dialog = nullptr;
 #if defined(TARGET_WINDOWS_DESKTOP)
   m_xPos = 0;
   m_yPos = 0;

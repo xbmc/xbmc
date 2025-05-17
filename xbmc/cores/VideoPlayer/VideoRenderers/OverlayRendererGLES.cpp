@@ -44,7 +44,7 @@ static void LoadTexture(GLenum target,
 {
   int width2 = width;
   int height2 = height;
-  char* pixelVector = NULL;
+  char* pixelVector = nullptr;
   const GLvoid* pixelData = pixels;
 
   GLenum internalFormat = alpha ? GL_ALPHA : GL_RGBA;
@@ -119,7 +119,7 @@ static void LoadTexture(GLenum target,
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   glTexImage2D(target, 0, internalFormat, width2, height2, 0, externalFormat, GL_UNSIGNED_BYTE,
-               NULL);
+  nullptr);
 
   glTexSubImage2D(target, 0, 0, 0, width, height, externalFormat, GL_UNSIGNED_BYTE, pixelData);
 

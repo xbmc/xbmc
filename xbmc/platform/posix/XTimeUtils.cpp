@@ -39,7 +39,7 @@ uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
     return KODI_TIME_ZONE_ID_INVALID;
 
   struct tm t;
-  time_t tt = time(NULL);
+  time_t tt = time(nullptr);
   if (localtime_r(&tt, &t))
     timeZoneInformation->bias = -t.tm_gmtoff / 60;
 
@@ -51,7 +51,7 @@ uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
 
 void GetLocalTime(SystemTime* systemTime)
 {
-  const time_t t = time(NULL);
+  const time_t t = time(nullptr);
   struct tm now;
 
   localtime_r(&t, &now);

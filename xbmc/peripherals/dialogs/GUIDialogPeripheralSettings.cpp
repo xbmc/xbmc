@@ -33,13 +33,13 @@ constexpr std::string_view SETTING_APPEARANCE = "appearance";
 
 CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PERIPHERAL_SETTINGS, "DialogSettings.xml"),
-    m_item(NULL)
+    m_item(nullptr)
 {
 }
 
 CGUIDialogPeripheralSettings::~CGUIDialogPeripheralSettings()
 {
-  if (m_item != NULL)
+  if (m_item != nullptr)
     delete m_item;
 
   m_settingsMap.clear();
@@ -69,10 +69,10 @@ void CGUIDialogPeripheralSettings::UnregisterPeripheralManager()
 
 void CGUIDialogPeripheralSettings::SetFileItem(const CFileItem* item)
 {
-  if (item == NULL)
+  if (item == nullptr)
     return;
 
-  if (m_item != NULL)
+  if (m_item != nullptr)
     delete m_item;
 
   m_item = new CFileItem(*item);
@@ -80,7 +80,7 @@ void CGUIDialogPeripheralSettings::SetFileItem(const CFileItem* item)
 
 void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
@@ -128,7 +128,7 @@ void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const 
 
 bool CGUIDialogPeripheralSettings::Save()
 {
-  if (m_item == NULL || m_initialising)
+  if (m_item == nullptr || m_initialising)
     return true;
 
   PeripheralPtr peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
@@ -142,7 +142,7 @@ bool CGUIDialogPeripheralSettings::Save()
 
 void CGUIDialogPeripheralSettings::OnResetSettings()
 {
-  if (m_item == NULL)
+  if (m_item == nullptr)
     return;
 
   PeripheralPtr peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
@@ -171,7 +171,7 @@ void CGUIDialogPeripheralSettings::SetupView()
 
 void CGUIDialogPeripheralSettings::InitializeSettings()
 {
-  if (m_item == NULL)
+  if (m_item == nullptr)
   {
     m_initialising = false;
     return;
@@ -192,14 +192,14 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
   CGUIDialogSettingsManualBase::InitializeSettings();
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("peripheralsettings", -1);
-  if (category == NULL)
+  if (category == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPeripheralSettings: unable to setup settings");
     return;
   }
 
   const std::shared_ptr<CSettingGroup> group = AddGroup(category);
-  if (group == NULL)
+  if (group == nullptr)
   {
     CLog::Log(LOGERROR, "CGUIDialogPeripheralSettings: unable to setup settings");
     return;
@@ -208,7 +208,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
   std::vector<SettingPtr> settings = peripheral->GetSettings();
   for (auto& setting : settings)
   {
-    if (setting == NULL)
+    if (setting == nullptr)
       continue;
 
     if (!setting->IsVisible())
@@ -298,7 +298,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
         break;
     }
 
-    if (settingCopy != NULL && settingCopy->GetControl() != NULL)
+    if (settingCopy != nullptr && settingCopy->GetControl() != nullptr)
     {
       settingCopy->SetLevel(SettingLevel::Basic);
       group->AddSetting(settingCopy);

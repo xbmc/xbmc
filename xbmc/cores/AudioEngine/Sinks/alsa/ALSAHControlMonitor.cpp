@@ -139,14 +139,14 @@ snd_hctl_t* CALSAHControlMonitor::GetHandle(const std::string& ctlHandleName)
     {
       CLog::Log(LOGWARNING, "CALSAHControlMonitor::GetHandle - snd_hctl_open() failed for \"{}\"",
                 ctlHandleName);
-      return NULL;
+      return nullptr;
     }
     if (snd_hctl_load(hctl) != 0)
     {
       CLog::Log(LOGERROR, "CALSAHControlMonitor::GetHandle - snd_hctl_load() failed for \"{}\"",
                 ctlHandleName);
       snd_hctl_close(hctl);
-      return NULL;
+      return nullptr;
     }
 
     snd_hctl_nonblock(hctl, 1);

@@ -18,6 +18,6 @@ namespace MUSIC_INFO
     CMusicInfoTagLoaderCDDA(void);
     ~CMusicInfoTagLoaderCDDA() override;
 
-    bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = NULL) override;
+    bool Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art = nullptr) override;
   };
 }
