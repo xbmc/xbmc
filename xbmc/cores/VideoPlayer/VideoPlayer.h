@@ -179,7 +179,7 @@ struct SelectionStream
   StreamType type = STREAM_NONE;
   int type_index = 0;
   std::string filename;
-  std::string filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)
+  std::string filename2; // for vobsub subtitles, 2 files are necessary (idx/sub)
   std::string language;
   std::string name;
   StreamFlags flags = StreamFlags::FLAG_NONE;
@@ -189,6 +189,7 @@ struct SelectionStream
   std::string codec;
   std::string codecDesc;
   int channels = 0;
+  uint64_t m_channelMask{0};
   int bitrate = 0;
   int width = 0;
   int height = 0;

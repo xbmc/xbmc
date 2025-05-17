@@ -57,6 +57,7 @@ protected:
 struct AudioStreamInfo : StreamInfo
 {
   int channels = 0;
+  uint64_t m_channelMask{0};
   int samplerate = 0;
   int bitspersample = 0;
 };

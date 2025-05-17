@@ -183,10 +183,11 @@ void CVideoDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create streaminfo table");
   m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
-    "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
-    "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
-    "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, strVideoLanguage text, "
-    "strHdrType text)");
+              "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
+              "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
+              "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
+              "strVideoLanguage text, "
+              "strHdrType text, iAudioChannelMask bigint)");
 
   CLog::Log(LOGINFO, "create sets table");
   m_pDS->exec("CREATE TABLE sets ( idSet integer primary key, strSet text, strOverview text)");
@@ -3435,12 +3436,14 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     }
     for (int i=1; i<=details.GetAudioStreamCount(); i++)
     {
-      m_pDS->exec(PrepareSQL(
-          "INSERT INTO streamdetails "
-          "(idFile, iStreamType, strAudioCodec, iAudioChannels, strAudioLanguage) "
-          "VALUES (%i,%i,'%s',%i,'%s')",
-          idFile, static_cast<int>(CStreamDetail::AUDIO), details.GetAudioCodec(i).c_str(),
-          details.GetAudioChannels(i), details.GetAudioLanguage(i).c_str()));
+      m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
+                             "(idFile, iStreamType, strAudioCodec, iAudioChannels, "
+                             "strAudioLanguage, iAudioChannelMask) "
+                             "VALUES (%i,%i,'%s',%i,'%s',%lli)",
+                             idFile, static_cast<int>(CStreamDetail::AUDIO),
+                             details.GetAudioCodec(i).c_str(), details.GetAudioChannels(i),
+                             details.GetAudioLanguage(i).c_str(),
+                             static_cast<int64_t>(details.GetAudioChannelMask(i))));
     }
     for (int i=1; i<=details.GetSubtitleStreamCount(); i++)
     {
@@ -4617,6 +4620,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
           else
             p->m_iChannels = pDS->fv(7).get_asInt();
           p->m_strLanguage = pDS->fv(8).get_asString();
+          p->m_channelMask = static_cast<uint64_t>(pDS->fv(14).get_asInt64());
           details.AddStream(p);
           retVal = true;
           break;
@@ -6844,11 +6848,16 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
   }
+
+  if (iVersion < 136)
+  {
+    m_pDS->exec(PrepareSQL("ALTER TABLE streamdetails ADD iAudioChannelMask bigint"));
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 135;
+  return 136;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
