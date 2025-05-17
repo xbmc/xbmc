@@ -401,6 +401,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
     {
       CStreamDetailAudio *p = new CStreamDetailAudio();
       p->m_iChannels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
+      p->m_channelLayout = static_cast<CDemuxStreamAudio*>(stream)->m_channelLayoutName;
       p->m_strLanguage = stream->language;
       p->m_strCodec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
       details.AddStream(p);
