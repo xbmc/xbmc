@@ -365,12 +365,13 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
   {
     m_database.Open(); // since we can be called from the music library
 
-    int dbId = item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_iDbId : -1;
+    const int dbId{item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_iDbId : -1};
     if (info->Content() == CONTENT_MOVIES)
     {
       const int versionId{item->HasVideoInfoTag() ? item->GetVideoInfoTag()->GetAssetInfo().GetId()
                                                   : -1};
-      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails, dbId, versionId);
+      const int fileId{item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_iFileId : -1};
+      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails, dbId, versionId, fileId);
     }
     if (info->Content() == CONTENT_TVSHOWS)
     {
