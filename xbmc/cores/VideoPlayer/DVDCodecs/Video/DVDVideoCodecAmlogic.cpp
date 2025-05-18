@@ -445,6 +445,8 @@ void CDVDVideoCodecAmlogic::ClearBitstreamCommon(void)
   m_last_added = true;
   m_last_pData = nullptr;
   m_last_iSize = 0;
+
+  if (m_bitstream) m_bitstream->ResetStartDecode();
 }
 
 bool CDVDVideoCodecAmlogic::DualLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet)
@@ -601,7 +603,7 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
 
 void CDVDVideoCodecAmlogic::Reset(void)
 {
-  if (m_Codec->IsStreamTypeStream())
+  if (m_Codec->IsDecStreamTypeStream())
   {
     if (m_dataCacheCore.GetSpeed() == 1.0f)
     {
@@ -617,9 +619,6 @@ void CDVDVideoCodecAmlogic::Reset(void)
 
   m_mpeg2_sequence_pts = 0;
   m_has_keyframe = false;
-
-  if (m_bitstream)
-    m_bitstream->ResetStartDecode();
 }
 
 CDVDVideoCodec::VCReturn CDVDVideoCodecAmlogic::GetPicture(VideoPicture* pVideoPicture)

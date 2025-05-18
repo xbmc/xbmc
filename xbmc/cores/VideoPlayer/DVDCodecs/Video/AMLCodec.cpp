@@ -6,9 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "AMLCodec.h"
-#include "DynamicDll.h"
 
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
@@ -48,15 +46,8 @@
 
 namespace
 {
-
 std::mutex pollSyncMutex;
-
 }
-
-// amcodec include
-extern "C" {
-#include <amcodec/codec.h>
-}  // extern "C"
 
 CEvent g_aml_sync_event;
 
@@ -93,135 +84,6 @@ public:
 
 private:
   int m_fd;
-};
-
-typedef struct {
-  bool          noblock;
-  int           video_pid;
-  int           video_type;
-  stream_type_t stream_type;
-  unsigned int  format;
-  unsigned int  width;
-  unsigned int  height;
-  unsigned int  rate;
-  unsigned int  extra;
-  unsigned int  status;
-  unsigned int  ratio;
-  unsigned long long ratio64;
-  void          *param;
-  dec_mode_t    dec_mode;
-  enum FRAME_BASE_VIDEO_PATH video_path;
-  unsigned int  dv_enable;
-} aml_generic_param;
-
-class DllLibamCodecInterface
-{
-public:
-  virtual ~DllLibamCodecInterface() {};
-
-  virtual int codec_init(codec_para_t *pcodec) = 0;
-  virtual int codec_close(codec_para_t *pcodec) = 0;
-  virtual int codec_reset(codec_para_t *pcodec) = 0;
-  virtual int codec_pause(codec_para_t *pcodec) = 0;
-  virtual int codec_resume(codec_para_t *pcodec) = 0;
-  virtual int codec_write(codec_para_t *pcodec, void *buffer, int len) = 0;
-  virtual int codec_checkin_pts_us64(codec_para_t *pcodec, unsigned long long pts) = 0;
-  virtual int codec_get_vbuf_state(codec_para_t *pcodec, struct buf_status *buf) = 0;
-  virtual int codec_get_vdec_state(codec_para_t *pcodec, struct vdec_status *vdec) = 0;
-  virtual int codec_get_vdec_info(codec_para_t *pcodec, struct vdec_info *vdec) = 0;
-
-  virtual int codec_init_cntl(codec_para_t *pcodec) = 0;
-  virtual int codec_poll_cntl(codec_para_t *pcodec) = 0;
-  virtual int codec_set_cntl_mode(codec_para_t *pcodec, unsigned int mode) = 0;
-  virtual int codec_set_cntl_avthresh(codec_para_t *pcodec, unsigned int avthresh) = 0;
-  virtual int codec_set_cntl_syncthresh(codec_para_t *pcodec, unsigned int syncthresh) = 0;
-
-  virtual int codec_set_av_threshold(codec_para_t *pcodec, int threshold) = 0;
-  virtual int codec_set_video_delay_limited_ms(codec_para_t *pcodec,int delay_ms) = 0;
-  virtual int codec_get_video_delay_limited_ms(codec_para_t *pcodec,int *delay_ms) = 0;
-  virtual int codec_get_video_cur_delay_ms(codec_para_t *pcodec,int *delay_ms) = 0;
-};
-
-class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
-{
-  // libamcodec is static linked into libamcodec.so
-  DECLARE_DLL_WRAPPER(DllLibAmCodec, "libamcodec.so")
-
-  DEFINE_METHOD1(int, codec_init,               (codec_para_t *p1))
-  DEFINE_METHOD1(int, codec_close,              (codec_para_t *p1))
-  DEFINE_METHOD1(int, codec_reset,              (codec_para_t *p1))
-  DEFINE_METHOD1(int, codec_pause,              (codec_para_t *p1))
-  DEFINE_METHOD1(int, codec_resume,             (codec_para_t *p1))
-  DEFINE_METHOD3(int, codec_write,              (codec_para_t *p1, void *p2, int p3))
-  DEFINE_METHOD2(int, codec_checkin_pts_us64,   (codec_para_t *p1, unsigned long long p2))
-  DEFINE_METHOD2(int, codec_get_vbuf_state,     (codec_para_t *p1, struct buf_status * p2))
-  DEFINE_METHOD2(int, codec_get_vdec_state,     (codec_para_t *p1, struct vdec_status * p2))
-  DEFINE_METHOD2(int, codec_get_vdec_info,      (codec_para_t *p1, struct vdec_info * p2))
-
-  DEFINE_METHOD1(int, codec_init_cntl,          (codec_para_t *p1))
-  DEFINE_METHOD1(int, codec_poll_cntl,          (codec_para_t *p1))
-  DEFINE_METHOD2(int, codec_set_cntl_mode,      (codec_para_t *p1, unsigned int p2))
-  DEFINE_METHOD2(int, codec_set_cntl_avthresh,  (codec_para_t *p1, unsigned int p2))
-  DEFINE_METHOD2(int, codec_set_cntl_syncthresh,(codec_para_t *p1, unsigned int p2))
-
-  DEFINE_METHOD2(int, codec_set_av_threshold,   (codec_para_t *p1, int p2))
-  DEFINE_METHOD2(int, codec_set_video_delay_limited_ms, (codec_para_t *p1, int p2))
-  DEFINE_METHOD2(int, codec_get_video_delay_limited_ms, (codec_para_t *p1, int *p2))
-  DEFINE_METHOD2(int, codec_get_video_cur_delay_ms, (codec_para_t *p1, int *p2))
-
-  BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD(codec_init)
-    RESOLVE_METHOD(codec_close)
-    RESOLVE_METHOD(codec_reset)
-    RESOLVE_METHOD(codec_pause)
-    RESOLVE_METHOD(codec_resume)
-    RESOLVE_METHOD(codec_write)
-    RESOLVE_METHOD(codec_checkin_pts_us64)
-    RESOLVE_METHOD(codec_get_vbuf_state)
-    RESOLVE_METHOD(codec_get_vdec_state)
-    RESOLVE_METHOD(codec_get_vdec_info)
-
-    RESOLVE_METHOD(codec_init_cntl)
-    RESOLVE_METHOD(codec_poll_cntl)
-    RESOLVE_METHOD(codec_set_cntl_mode)
-    RESOLVE_METHOD(codec_set_cntl_avthresh)
-    RESOLVE_METHOD(codec_set_cntl_syncthresh)
-
-    RESOLVE_METHOD(codec_set_av_threshold)
-    RESOLVE_METHOD(codec_set_video_delay_limited_ms)
-    RESOLVE_METHOD(codec_get_video_delay_limited_ms)
-    RESOLVE_METHOD(codec_get_video_cur_delay_ms)
-  END_METHOD_RESOLVE()
-
-public:
-  void codec_init_para(aml_generic_param *p_in, codec_para_t *p_out)
-  {
-    memset(p_out, 0x00, sizeof(codec_para_t));
-
-    // direct struct usage, we do not know which flavor
-    // so just use what we get from headers and pray.
-    p_out->handle             = -1; //init to invalid
-    p_out->cntl_handle        = -1;
-    p_out->sub_handle         = -1;
-    p_out->audio_utils_handle = -1;
-    p_out->has_video          = 1;
-    p_out->noblock            = p_in->noblock;
-    p_out->video_pid          = p_in->video_pid;
-    p_out->video_type         = p_in->video_type;
-    p_out->stream_type        = p_in->stream_type;
-    p_out->am_sysinfo.format  = p_in->format;
-    p_out->am_sysinfo.width   = p_in->width;
-    p_out->am_sysinfo.height  = p_in->height;
-    p_out->am_sysinfo.rate    = p_in->rate;
-    p_out->am_sysinfo.extra   = p_in->extra;
-    p_out->am_sysinfo.status  = p_in->status;
-    p_out->am_sysinfo.ratio   = p_in->ratio;
-    p_out->am_sysinfo.ratio64 = p_in->ratio64;
-    p_out->am_sysinfo.param   = p_in->param;
-    p_out->dec_mode           = p_in->dec_mode;
-    p_out->video_path         = p_in->video_path;
-    p_out->dv_enable          = p_in->dv_enable;
-  }
 };
 
 //-----------------------------------------------------------------------------------
@@ -290,65 +152,6 @@ static const uint64_t UINT64_0 = 0x8000000000000000ULL;
 #define PLAYER_CHECK_CODEC_ERROR  (-(P_PRE|0x39))
 
 #define HDR_BUF_SIZE 1024
-typedef struct hdr_buf {
-    char *data;
-    int size;
-} hdr_buf_t;
-
-typedef struct am_packet {
-    AVPacket      avpkt;
-    uint64_t      avpts;
-    uint64_t      avdts;
-    int           avduration;
-    int           isvalid;
-    int           newflag;
-    uint64_t      lastpts;
-    unsigned char *data;
-    unsigned char *buf;
-    int           data_size;
-    int           buf_size;
-    hdr_buf_t     *hdr;
-    codec_para_t  *codec;
-} am_packet_t;
-
-typedef enum {
-    AM_STREAM_UNKNOWN = 0,
-    AM_STREAM_TS,
-    AM_STREAM_PS,
-    AM_STREAM_ES,
-    AM_STREAM_RM,
-    AM_STREAM_AUDIO,
-    AM_STREAM_VIDEO,
-} pstream_type;
-
-typedef struct am_private_t
-{
-  am_packet_t       am_pkt;
-  hdr_buf_t         hdr_buf;
-  aml_generic_param gcodec;
-  codec_para_t      vcodec;
-
-  pstream_type      stream_type;
-  int               check_first_pts;
-
-  vformat_t         video_format;
-  int               video_pid;
-  unsigned int      video_codec_id;
-  unsigned int      video_codec_tag;
-  vdec_type_t       video_codec_type;
-  unsigned int      video_width;
-  unsigned int      video_height;
-  unsigned int      video_ratio;
-  unsigned int      video_ratio64;
-  unsigned int      video_rate;
-  unsigned int      video_rotation_degree;
-  int               extrasize;
-  FFmpegExtraData   extradata;
-  DllLibAmCodec     *m_dll;
-
-  int               dumpfile;
-  bool              dumpdemux;
-} am_private_t;
 
 typedef struct vframe_states
 {
@@ -1559,7 +1362,7 @@ int divx3_prefix(am_packet_t& pkt)
     return PLAYER_SUCCESS;
 }
 
-int set_header_info(am_private_t *para)
+int set_header_info(am_private_t *para, bool decStreamTypeFrame)
 {
   am_packet_t& pkt = para->am_pkt;
 
@@ -1712,13 +1515,11 @@ int set_header_info(am_private_t *para)
           pkt.newflag = 1;
       }
   }
-  else if (para->video_format == VFORMAT_VP9) {
+  else if (para->video_format == VFORMAT_VP9)
     vp9_update_frame_header(pkt);
-  }
-  else if (para->vcodec.dec_mode == STREAM_TYPE_FRAME && para->video_format == VFORMAT_AV1) {
+  else if (decStreamTypeFrame && (para->video_format == VFORMAT_AV1))
     av1_add_frame_dec_info(para);
-  }
-  else if (para->vcodec.dec_mode == STREAM_TYPE_FRAME && para->video_format == VFORMAT_MPEG12)
+  else if (decStreamTypeFrame && (para->video_format == VFORMAT_MPEG12))
     mpeg12_add_frame_dec_info(para);
 
   return PLAYER_SUCCESS;
@@ -1769,22 +1570,11 @@ CAMLCodec::CAMLCodec(CProcessInfo &processInfo, CDVDStreamInfo &hints)
   am_private->vcodec.audio_utils_handle = -1;
 }
 
-
 CAMLCodec::~CAMLCodec()
 {
   delete am_private;
   am_private = nullptr;
   delete m_dll, m_dll = nullptr;
-}
-
-float CAMLCodec::OMXPtsToSeconds(int omxpts)
-{
-  return static_cast<float>(omxpts) / PTS_FREQ;
-}
-
-int CAMLCodec::OMXDurationToNs(int duration)
-{
-  return static_cast<int>(static_cast<float>(duration) / PTS_FREQ * 1000000 );
 }
 
 int CAMLCodec::GetAmlDuration() const
@@ -2114,6 +1904,8 @@ bool CAMLCodec::OpenDecoder(bool restart)
   // translate from generic to firmware version dependent
   m_dll->codec_init_para(&am_private->gcodec, &am_private->vcodec);
 
+  logM(LOGINFO, "CAMLCodec", "dec mode stream type [{}]", GetDecStreamTypeName());
+
   std::string config_data = GetHDRStaticMetadata();
   if (!config_data.empty())
   {
@@ -2123,7 +1915,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
     am_private->vcodec.config[am_private->vcodec.config_len] = '\0';
   }
 
-  if (am_private->vcodec.dec_mode == STREAM_TYPE_SINGLE)
+  if (IsDecStreamTypeSingle())
     SetVfmMap("default", "decoder ppmgr deinterlace amlvideo amvideo");
 
   int ret = m_dll->codec_init(&am_private->vcodec);
@@ -2222,10 +2014,6 @@ void CAMLCodec::SetVfmMap(const std::string &name, const std::string &map)
   }
 }
 
-bool CAMLCodec::IsStreamTypeStream() const {
-  return (am_private->gcodec.dec_mode == STREAM_TYPE_STREAM);
-}
-
 void CAMLCodec::CloseDecoder(bool restart)
 {
   logNoFormatM(LOGINFO, "CAMLCodec");
@@ -2266,7 +2054,7 @@ void CAMLCodec::CloseAmlVideo()
 {
   m_amlVideoFile.reset();
 
-  if (am_private->vcodec.dec_mode == STREAM_TYPE_SINGLE)
+  if (IsDecStreamTypeSingle())
     SetVfmMap("default", m_defaultVfmMap);
 
   m_amlVideoFile = nullptr;
@@ -2317,15 +2105,14 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
   int data_len, free_len;
   int chunk_size = calc_chunk_size(iSize);
   float new_buffer_level = GetBufferLevel(chunk_size, data_len, free_len);
-  bool streambuffer(am_private->gcodec.dec_mode == STREAM_TYPE_STREAM);
 
   if (!m_buffer_level_ready) {
     m_buffer_level_ready = m_decoder_bypass_buffer_ready ||
-                           (streambuffer
+                           (IsDecStreamTypeStream()
                               ? new_buffer_level > m_decoder_stream_buffer
                               : new_buffer_level > m_decoder_buffer);
 
-    m_minimum_buffer_level = streambuffer
+    m_minimum_buffer_level = IsDecStreamTypeStream()
                                ? m_decoder_minimum_stream_buffer
                                : m_decoder_minimum_buffer;
   }
@@ -2414,7 +2201,7 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
   // some formats need header/data tweaks.
   // the actual write occurs once in write_av_packet
   // and is controlled by am_pkt.newflag.
-  set_header_info(am_private);
+  set_header_info(am_private, IsDecStreamTypeFrame());
 
   // loop until we write all into codec, am_pkt.isvalid
   // will get set to zero once everything is consumed.
@@ -2541,7 +2328,7 @@ int CAMLCodec::DequeueBuffer()
     m_cur_pts =  static_cast<uint64_t>(static_cast<uint32_t>(vbuf.timestamp.tv_sec)) << 32;
     m_cur_pts += static_cast<uint32_t>(vbuf.timestamp.tv_usec);
 
-    if (am_private->vcodec.dec_mode == STREAM_TYPE_STREAM) // Offset for STREAM_TYPE_STREAM (Used for FEL)
+    if (IsDecStreamTypeStream()) // Offset for type STREAM (Used for FEL)
       m_cur_pts -= std::min(m_cur_pts, m_decoder_stream_type_stream_offset);
 
     logComponentM(LOGDEBUG, LOGAVTIMING, "CAMLCodec", "pts:{:.3f} idx:{:d}",
@@ -2606,7 +2393,6 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
   float buffer_level = GetBufferLevel();
   std::chrono::milliseconds elapsed_since_last_frame(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()
     - m_tp_last_frame).count());
-  bool streambuffer(am_private->gcodec.dec_mode == STREAM_TYPE_STREAM);
 
   if (!m_opened)
     return CDVDVideoCodec::VC_ERROR;
@@ -2615,7 +2401,7 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
   {
     videoPicture.iFlags = 0;
 
-    m_minimum_buffer_level = (streambuffer ? m_minimum_buffer_level : 0.0f);
+    m_minimum_buffer_level = (IsDecStreamTypeStream() ? m_minimum_buffer_level : 0.0f);
 
     m_tp_last_frame = std::chrono::system_clock::now();
 
@@ -2643,7 +2429,7 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
   }
   else if (m_drain)
     return CDVDVideoCodec::VC_EOF;
-  else if (buffer_level > (streambuffer ? 100.0f : 10.0f))
+  else if (buffer_level > (IsDecStreamTypeStream() ? 100.0f : 10.0f))
     return CDVDVideoCodec::VC_NONE;
   else if (ret != EAGAIN || elapsed_since_last_frame > std::chrono::seconds(m_decoder_timeout))
   {
