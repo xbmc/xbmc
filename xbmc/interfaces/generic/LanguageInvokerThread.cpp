@@ -12,7 +12,7 @@
 
 #include <utility>
 
-CLanguageInvokerThread::CLanguageInvokerThread(LanguageInvokerPtr invoker,
+CLanguageInvokerThread::CLanguageInvokerThread(std::shared_ptr<ILanguageInvoker> invoker,
                                                CScriptInvocationManager* invocationManager,
                                                bool reuseable)
   : ILanguageInvoker(NULL),

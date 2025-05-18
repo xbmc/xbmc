@@ -190,7 +190,8 @@ int CScriptInvocationManager::GetReusablePluginHandle(const std::string& script)
   return -1;
 }
 
-LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::string& script)
+std::shared_ptr<ILanguageInvoker> CScriptInvocationManager::GetLanguageInvoker(
+    const std::string& script)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -212,9 +213,9 @@ LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::strin
 
   std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
   if (it != m_invocationHandlers.end() && it->second != NULL)
-    return LanguageInvokerPtr(it->second->CreateInvoker());
+    return std::shared_ptr<ILanguageInvoker>(it->second->CreateInvoker());
 
-  return LanguageInvokerPtr();
+  return {};
 }
 
 int CScriptInvocationManager::ExecuteAsync(
@@ -233,13 +234,13 @@ int CScriptInvocationManager::ExecuteAsync(
     return -1;
   }
 
-  LanguageInvokerPtr invoker = GetLanguageInvoker(script);
+  auto invoker = GetLanguageInvoker(script);
   return ExecuteAsync(script, invoker, addon, arguments, reuseable, pluginHandle);
 }
 
 int CScriptInvocationManager::ExecuteAsync(
     const std::string& script,
-    const LanguageInvokerPtr& languageInvoker,
+    const std::shared_ptr<ILanguageInvoker>& languageInvoker,
     const ADDON::AddonPtr& addon /* = ADDON::AddonPtr() */,
     const std::vector<std::string>& arguments /* = std::vector<std::string>() */,
     bool reuseable /* = false */,
@@ -306,13 +307,13 @@ int CScriptInvocationManager::ExecuteSync(
     return -1;
   }
 
-  LanguageInvokerPtr invoker = GetLanguageInvoker(script);
+  auto invoker = GetLanguageInvoker(script);
   return ExecuteSync(script, invoker, addon, arguments, timeoutMs, waitShutdown);
 }
 
 int CScriptInvocationManager::ExecuteSync(
     const std::string& script,
-    const LanguageInvokerPtr& languageInvoker,
+    const std::shared_ptr<ILanguageInvoker>& languageInvoker,
     const ADDON::AddonPtr& addon /* = ADDON::AddonPtr() */,
     const std::vector<std::string>& arguments /* = std::vector<std::string>() */,
     uint32_t timeoutMs /* = 0 */,
