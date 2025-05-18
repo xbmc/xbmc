@@ -16,8 +16,9 @@
 #include <utility>
 #include <vector>
 
+#include <tinyxml.h>
+
 // forward definitions
-class TiXmlElement;
 namespace INFO
 {
   class CSkinVariableString;
