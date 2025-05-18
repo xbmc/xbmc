@@ -194,7 +194,7 @@ int Interface_GUIGeneral::get_current_window_dialog_id(KODI_HANDLE kodiBase)
     return -1;
   }
 
-  std::unique_lock<CCriticalSection> gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock gl(CServiceBroker::GetWinSystem()->GetGfxContext());
   return CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
 }
 
@@ -207,7 +207,7 @@ int Interface_GUIGeneral::get_current_window_id(KODI_HANDLE kodiBase)
     return -1;
   }
 
-  std::unique_lock<CCriticalSection> gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock gl(CServiceBroker::GetWinSystem()->GetGfxContext());
   return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
 }
 

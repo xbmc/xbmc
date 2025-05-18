@@ -589,7 +589,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   URIUtils::RemoveSlashAtEnd(strPath);
   std::map<std::string,CDateTime>::iterator it;
   items.SetPath(strPath);
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if ((it=m_cache.find(strPath)) != m_cache.end())
   {
     if (it->second > CDateTime::GetCurrentDateTime() &&
@@ -648,7 +648,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   time += CDateTimeSpan(0,0,mins,0);
   items.SetPath(strPath);
   items.Save();
-  std::unique_lock<CCriticalSection> lock2(m_section);
+  std::unique_lock lock2(m_section);
   m_cache.insert(make_pair(strPath,time));
 
   return true;

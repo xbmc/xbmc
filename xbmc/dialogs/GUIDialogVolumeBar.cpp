@@ -61,21 +61,21 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
 
 void CGUIDialogVolumeBar::RegisterCallback(IGUIVolumeBarCallback *callback)
 {
-  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
+  std::unique_lock lock(m_callbackMutex);
 
   m_callbacks.insert(callback);
 }
 
 void CGUIDialogVolumeBar::UnregisterCallback(IGUIVolumeBarCallback *callback)
 {
-  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
+  std::unique_lock lock(m_callbackMutex);
 
   m_callbacks.erase(callback);
 }
 
 bool CGUIDialogVolumeBar::IsVolumeBarEnabled() const
 {
-  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
+  std::unique_lock lock(m_callbackMutex);
 
   // Hide volume bar if any callbacks are shown
   for (const auto &callback : m_callbacks)

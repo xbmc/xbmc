@@ -71,7 +71,7 @@ void CGUIDialogKaiToast::QueueNotification(const std::string& aImageFile, const 
 
 void CGUIDialogKaiToast::AddToQueue(const std::string& aImageFile, const eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   if (!m_notifications.empty())
   {
@@ -95,7 +95,7 @@ void CGUIDialogKaiToast::AddToQueue(const std::string& aImageFile, const eMessag
 
 bool CGUIDialogKaiToast::DoWork()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   if (!m_notifications.empty() &&
       CTimeUtils::GetFrameTime() - m_timer > m_toastMessageTime)
@@ -114,7 +114,7 @@ bool CGUIDialogKaiToast::DoWork()
     m_toastDisplayTime = toast.displayTime;
     m_toastMessageTime = toast.messageTime;
 
-    std::unique_lock<CCriticalSection> lock2(CServiceBroker::GetWinSystem()->GetGfxContext());
+    std::unique_lock lock2(CServiceBroker::GetWinSystem()->GetGfxContext());
 
     if(!Initialize())
       return false;
@@ -174,7 +174,7 @@ void CGUIDialogKaiToast::FrameMove()
         dynamic_cast<const CGUIFadeLabelControl*>(GetControl(POPUP_NOTIFICATION_BUTTON));
     if (notificationText)
     {
-      std::unique_lock<CCriticalSection> lock(m_critical);
+      std::unique_lock lock(m_critical);
       bClose = notificationText->AllLabelsShown() && m_notifications.empty();
     }
 

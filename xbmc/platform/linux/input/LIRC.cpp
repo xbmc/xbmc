@@ -38,7 +38,7 @@ CLirc::CLirc() : CThread("Lirc"), m_irTranslator(std::make_unique<KEYMAP::CIRTra
 CLirc::~CLirc()
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     if (m_fd > 0)
       shutdown(m_fd, SHUT_RDWR);
   }
@@ -75,7 +75,7 @@ void CLirc::Process()
   while (!m_bStop)
   {
     {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
+      std::unique_lock lock(m_critSection);
 
       // lirc_client is buggy because it does not close socket, if connect fails
       // work around by checking if daemon is running before calling lirc_init

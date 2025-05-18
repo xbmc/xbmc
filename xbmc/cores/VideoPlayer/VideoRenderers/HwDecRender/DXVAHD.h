@@ -50,7 +50,7 @@ public:
   void OnCreateDevice() override  {}
   void OnDestroyDevice(bool) override
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::unique_lock lock(m_section);
     UnInit();
   }
 

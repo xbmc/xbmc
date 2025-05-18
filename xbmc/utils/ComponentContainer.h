@@ -37,7 +37,7 @@ public:
   template<class T>
   std::shared_ptr<const T> GetComponent() const
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     const auto it = m_components.find(std::type_index(typeid(T)));
     if (it != m_components.end())
       return std::static_pointer_cast<const T>((*it).second);
@@ -60,14 +60,14 @@ protected:
     // https://stackoverflow.com/questions/46494928/clang-warning-on-expression-side-effects
     const auto& componentRef = *component;
 
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     m_components.insert({std::type_index(typeid(componentRef)), component});
   }
 
   //! \brief Deregister a component.
   void DeregisterComponent(const std::type_info& typeInfo)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     m_components.erase(typeInfo);
   }
 

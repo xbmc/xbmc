@@ -103,7 +103,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   m_guiMessenger = std::make_unique<CGUIGameMessenger>(*m_processInfo);
   m_renderManager = std::make_unique<CRPRenderManager>(*m_processInfo);
 
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   if (IsPlaying())
     CloseFile();
@@ -228,7 +228,7 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   m_playbackControl.reset();
 
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   if (m_gameClient && m_gameServices.GameSettings().AutosaveEnabled())
   {

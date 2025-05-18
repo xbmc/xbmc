@@ -102,7 +102,7 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   auto& components = CServiceBroker::GetAppComponents();
   const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
 
-  std::unique_lock<CCriticalSection> lock(stackHelper->m_critSection);
+  std::unique_lock lock(stackHelper->m_critSection);
 
   CFileItem fileItem(file);
   CBookmark bookmark = bookmarkParam;

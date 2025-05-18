@@ -124,7 +124,7 @@ MHD_RESULT CWebServer::AskForAuthentication(const HTTPRequest& request) const
 
 bool CWebServer::IsAuthenticated(const HTTPRequest& request) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   if (!m_authenticationRequired)
     return true;
@@ -1301,7 +1301,7 @@ bool CWebServer::WebServerSupportsSSL()
 
 void CWebServer::SetCredentials(const std::string& username, const std::string& password)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   m_authenticationUsername = username;
   m_authenticationPassword = password;

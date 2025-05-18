@@ -74,7 +74,7 @@ bool CWSDiscoveryPosix::IsRunning()
 bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_critWSD);
+    std::unique_lock lock(m_critWSD);
 
     for (const auto& item : m_vecWSDInfo)
     {
@@ -102,7 +102,7 @@ bool CWSDiscoveryPosix::GetCached(const std::string& strHostName, std::string& s
 {
   const std::string match = strHostName + "/";
 
-  std::unique_lock<CCriticalSection> lock(m_critWSD);
+  std::unique_lock lock(m_critWSD);
   for (const auto& item : m_vecWSDInfo)
   {
     if (!item.computer.empty() && StringUtils::StartsWithNoCase(item.computer, match))
@@ -120,7 +120,7 @@ bool CWSDiscoveryPosix::GetCached(const std::string& strHostName, std::string& s
 void CWSDiscoveryPosix::SetItems(std::vector<wsd_req_info> entries)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_critWSD);
+    std::unique_lock lock(m_critWSD);
     m_vecWSDInfo = std::move(entries);
   }
 }

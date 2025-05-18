@@ -124,7 +124,7 @@ bool CloseHandle(HANDLE hObject) {
 
   bool bDelete = false;
   {
-    std::unique_lock<CCriticalSection> lock((*hObject->m_internalLock));
+    std::unique_lock lock((*hObject->m_internalLock));
     if (--hObject->m_nRefCount == 0)
       bDelete = true;
   }

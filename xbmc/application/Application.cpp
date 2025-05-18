@@ -1790,7 +1790,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     if (processGUI && renderGUI)
     {
-      std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+      std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
       // check if there are notifications to display
       CGUIDialogKaiToast *toast = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
       if (toast && toast->DoWork())

@@ -116,7 +116,7 @@ bool CRPRenderManager::Configure(AVPixelFormat format,
   m_maxHeight = maxHeight;
   m_pixelAspectRatio = pixelAspectRatio;
 
-  std::unique_lock<CCriticalSection> lock(m_stateMutex);
+  std::unique_lock lock(m_stateMutex);
 
   m_state = RENDER_STATE::CONFIGURING;
 
@@ -223,7 +223,7 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
   }
 
   {
-    std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+    std::unique_lock lock(m_bufferMutex);
 
     // Set render buffers
     for (auto renderBuffer : m_renderBuffers)
@@ -306,7 +306,7 @@ void CRPRenderManager::FrameMove()
   bool bIsConfigured = false;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_stateMutex);
+    std::unique_lock lock(m_stateMutex);
 
     if (m_state == RENDER_STATE::CONFIGURING)
     {
@@ -331,7 +331,7 @@ void CRPRenderManager::CheckFlush()
   if (m_bFlush)
   {
     {
-      std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+      std::unique_lock lock(m_bufferMutex);
       for (auto renderBuffer : m_renderBuffers)
         renderBuffer->Release();
       m_renderBuffers.clear();
@@ -535,7 +535,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForSettings(
   std::shared_ptr<CRPBaseRenderer> renderer;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_stateMutex);
+    std::unique_lock lock(m_stateMutex);
     if (m_state == RENDER_STATE::UNCONFIGURED)
       return renderer;
   }
@@ -611,7 +611,7 @@ bool CRPRenderManager::HasRenderBuffer(IRenderBufferPool* bufferPool)
 {
   bool bHasRenderBuffer = false;
 
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   auto it = std::find_if(m_renderBuffers.begin(), m_renderBuffers.end(),
                          [bufferPool](IRenderBuffer* renderBuffer)
@@ -630,7 +630,7 @@ IRenderBuffer* CRPRenderManager::GetRenderBuffer(IRenderBufferPool* bufferPool)
 
   IRenderBuffer* renderBuffer = nullptr;
 
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   auto getRenderBuffer = [bufferPool](IRenderBuffer* renderBuffer)
   { return renderBuffer->GetPool() == bufferPool; };
@@ -658,7 +658,7 @@ IRenderBuffer* CRPRenderManager::GetRenderBufferForSavestate(const std::string& 
 {
   IRenderBuffer* renderBuffer = nullptr;
 
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   // Check to see if we have a buffers for the specified path
   auto it = m_savestateBuffers.find(savestatePath);
@@ -692,7 +692,7 @@ void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool* bufferPool)
   if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   if (!HasRenderBuffer(bufferPool) && m_bHasCachedFrame)
   {
@@ -892,7 +892,7 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
 
 void CRPRenderManager::CacheVideoFrame(const std::string& savestatePath)
 {
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   // Get the render buffers for this savestate path
   std::vector<IRenderBuffer*>& savestateBuffers = m_savestateBuffers[savestatePath];
@@ -972,7 +972,7 @@ void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath, ISavesta
 
 void CRPRenderManager::ClearVideoFrame(const std::string& savestatePath)
 {
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   auto it = m_savestateBuffers.find(savestatePath);
   if (it != m_savestateBuffers.end())
@@ -986,7 +986,7 @@ void CRPRenderManager::ClearVideoFrame(const std::string& savestatePath)
 void CRPRenderManager::GetVideoFrame(IRenderBuffer*& readableBuffer,
                                      std::vector<uint8_t>& cachedFrame)
 {
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   // Get a readable render buffer
   auto it = std::find_if(m_renderBuffers.begin(), m_renderBuffers.end(),
@@ -1010,7 +1010,7 @@ void CRPRenderManager::GetVideoFrame(IRenderBuffer*& readableBuffer,
 void CRPRenderManager::FreeVideoFrame(IRenderBuffer* readableBuffer,
                                       std::vector<uint8_t> cachedFrame)
 {
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   // Free resources
   if (readableBuffer != nullptr)
@@ -1089,6 +1089,6 @@ void CRPRenderManager::LoadVideoFrameSync(const std::string& savestatePath)
   }
 
   // Save render buffers
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
   m_savestateBuffers[savestatePath] = std::move(renderBuffers);
 }

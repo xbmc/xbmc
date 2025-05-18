@@ -57,7 +57,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
   if (!service)
     return E_INVALIDARG;
 
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
 
   WSD_NAME_LIST* list = nullptr;
   service->GetTypes(&list);
@@ -109,7 +109,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Remove(IWSDiscoveredService* 
   if (!service)
     return E_INVALIDARG;
 
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
 
   LPCWSTR address = nullptr;
   service->GetRemoteTransportAddress(&address);
@@ -138,7 +138,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Remove(IWSDiscoveredService* 
 
 HRESULT STDMETHODCALLTYPE CClientNotificationSink::SearchFailed(HRESULT hr, LPCWSTR tag)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
 
   // This must not happen. At least localhost (127.0.0.1) has to be found
   CLog::Log(LOGWARNING,
@@ -149,7 +149,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::SearchFailed(HRESULT hr, LPCW
 
 HRESULT STDMETHODCALLTYPE CClientNotificationSink::SearchComplete(LPCWSTR tag)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
 
   std::string list;
 

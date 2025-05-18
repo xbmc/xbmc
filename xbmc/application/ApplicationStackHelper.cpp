@@ -35,7 +35,7 @@ void CApplicationStackHelper::Clear()
 
 void CApplicationStackHelper::OnPlayBackStarted(const CFileItem& item)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   // time to clean up stack map
   if (!HasRegisteredStack(item))

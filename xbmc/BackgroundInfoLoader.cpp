@@ -97,7 +97,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (items.IsEmpty())
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::unique_lock lock(m_lock);
 
   std::ranges::copy(items, std::back_inserter(m_vecItems));
 

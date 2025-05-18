@@ -37,7 +37,7 @@ CDatabaseManager::~CDatabaseManager() = default;
 
 bool CDatabaseManager::Initialize()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   m_dbStatus.clear();
 
@@ -69,7 +69,7 @@ bool CDatabaseManager::Initialize()
 
 bool CDatabaseManager::CanOpen(const std::string &name)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   const auto i = m_dbStatus.find(name);
   if (i != m_dbStatus.end())
     return i->second == DBStatus::READY;
@@ -240,13 +240,13 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
 
 void CDatabaseManager::UpdateStatus(const std::string& name, DBStatus status)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_dbStatus[name] = status;
 }
 
 void CDatabaseManager::LocalizationChanged()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // update video version type table after language changed
   CVideoDatabase videodb;

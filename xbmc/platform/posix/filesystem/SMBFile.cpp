@@ -91,7 +91,7 @@ CSMB::~CSMB()
 
 void CSMB::Deinit()
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   /* samba goes loco if deinited while it has some files opened */
   if (m_context)
@@ -104,7 +104,7 @@ void CSMB::Deinit()
 
 void CSMB::Init()
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   if (!m_context)
   {
@@ -329,7 +329,7 @@ void CSMB::CheckIfIdle()
    worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if which will lead to another check, which is locked.  */
   if (m_OpenConnections == 0)
   { /* I've set the the maximum IDLE time to be 1 min and 30 sec. */
-    std::unique_lock<CCriticalSection> lock(*this);
+    std::unique_lock lock(*this);
     if (m_OpenConnections == 0 /* check again - when locked */ && m_context != NULL)
     {
       if (m_IdleTimeout > 0)
@@ -356,12 +356,12 @@ void CSMB::SetActivityTime()
    This makes the idle timer not count if a movie is paused for example */
 void CSMB::AddActiveConnection()
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
   m_OpenConnections++;
 }
 void CSMB::AddIdleConnection()
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
   m_OpenConnections--;
   /* If we close a file we reset the idle timer so that we don't have any weird behaviours if a user
      leaves the movie paused for a long while and then press stop */
@@ -399,7 +399,7 @@ int64_t CSMBFile::GetPosition()
 {
   if (m_fd == -1)
     return -1;
-  std::unique_lock<CCriticalSection> lock(smb);
+  std::unique_lock lock(smb);
   if (!smb.IsSmbValid())
     return -1;
   return smbc_lseek(m_fd, 0, SEEK_CUR);
@@ -441,7 +441,7 @@ bool CSMBFile::Open(const CURL& url)
     return false;
   }
 
-  std::unique_lock<CCriticalSection> lock(smb);
+  std::unique_lock lock(smb);
   if (!smb.IsSmbValid())
     return false;
   struct stat tmpBuffer;
@@ -500,7 +500,7 @@ int CSMBFile::OpenFile(const CURL &url, std::string& strAuth)
   std::string strPath = strAuth;
 
   {
-    std::unique_lock<CCriticalSection> lock(smb);
+    std::unique_lock lock(smb);
     if (smb.IsSmbValid())
       fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
   }
@@ -522,7 +522,7 @@ bool CSMBFile::Exists(const CURL& url)
 
   struct stat info;
 
-  std::unique_lock<CCriticalSection> lock(smb);
+  std::unique_lock lock(smb);
   if (!smb.IsSmbValid())
     return false;
   int iResult = smbc_stat(strFileName.c_str(), &info);
@@ -538,7 +538,7 @@ int CSMBFile::Stat(struct __stat64* buffer)
 
   struct stat tmpBuffer = {};
 
-  std::unique_lock<CCriticalSection> lock(smb);
+  std::unique_lock lock(smb);
   if (!smb.IsSmbValid())
     return -1;
   int iResult = smbc_fstat(m_fd, &tmpBuffer);
@@ -550,7 +550,7 @@ int CSMBFile::Stat(const CURL& url, struct __stat64* buffer)
 {
   smb.Init();
   std::string strFileName = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
-  std::unique_lock<CCriticalSection> lock(smb);
+  std::unique_lock lock(smb);
 
   if (!smb.IsSmbValid())
     return -1;
@@ -567,7 +567,7 @@ int CSMBFile::Truncate(int64_t size)
  * This would force us to be dependant on SMBv3.2 which is GPLv3
  * This is only used by the TagLib writers, which are not currently in use
  * So log and warn until we implement TagLib writing & can re-implement this better.
-  std::unique_lock<CCriticalSection> lock(smb); // Init not called since it has to be "inited" by now
+  std::unique_lock lock(smb); // Init not called since it has to be "inited" by now
 
 #if defined(TARGET_ANDROID)
   int iResult = 0;
@@ -595,8 +595,7 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   if (uiBufSize == 0 && lpBuf == NULL)
     return 0;
 
-  std::unique_lock<CCriticalSection> lock(
-      smb); // Init not called since it has to be "inited" by now
+  std::unique_lock lock(smb); // Init not called since it has to be "inited" by now
   if (!smb.IsSmbValid())
     return -1;
   smb.SetActivityTime();
@@ -621,8 +620,7 @@ int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
 {
   if (m_fd == -1) return -1;
 
-  std::unique_lock<CCriticalSection> lock(
-      smb); // Init not called since it has to be "inited" by now
+  std::unique_lock lock(smb); // Init not called since it has to be "inited" by now
   if (!smb.IsSmbValid())
     return -1;
   smb.SetActivityTime();
@@ -642,7 +640,7 @@ void CSMBFile::Close()
   if (m_fd != -1)
   {
     CLog::Log(LOGDEBUG, "CSMBFile::Close closing fd {}", m_fd);
-    std::unique_lock<CCriticalSection> lock(smb);
+    std::unique_lock lock(smb);
     if (!smb.IsSmbValid())
       return;
     smbc_close(m_fd);
@@ -655,7 +653,7 @@ ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
   if (m_fd == -1) return -1;
 
   // lpBuf can be safely casted to void* since xbmc_write will only read from it.
-  std::unique_lock<CCriticalSection> lock(smb);
+  std::unique_lock lock(smb);
   if (!smb.IsSmbValid())
     return -1;
 
@@ -667,7 +665,7 @@ bool CSMBFile::Delete(const CURL& url)
   smb.Init();
   std::string strFile = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
 
-  std::unique_lock<CCriticalSection> lock(smb);
+  std::unique_lock lock(smb);
   if (!smb.IsSmbValid())
     return false;
 
@@ -684,7 +682,7 @@ bool CSMBFile::Rename(const CURL& url, const CURL& urlnew)
   smb.Init();
   std::string strFile = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
   std::string strFileNew = GetAuthenticatedPath(CSMB::GetResolvedUrl(urlnew));
-  std::unique_lock<CCriticalSection> lock(smb);
+  std::unique_lock lock(smb);
   if (!smb.IsSmbValid())
     return false;
 
@@ -707,7 +705,7 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
   if (!IsValidFile(url.GetFileName())) return false;
 
   std::string strFileName = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
-  std::unique_lock<CCriticalSection> lock(smb);
+  std::unique_lock lock(smb);
   if (!smb.IsSmbValid())
     return false;
 

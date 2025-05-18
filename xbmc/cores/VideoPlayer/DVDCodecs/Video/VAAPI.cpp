@@ -93,7 +93,7 @@ CVAAPIContext::CVAAPIContext()
 
 void CVAAPIContext::Release(CDecoder *decoder)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   auto it = find(m_decoders.begin(), m_decoders.end(), decoder);
   if (it != m_decoders.end())
@@ -121,7 +121,7 @@ void CVAAPIContext::Close()
 
 bool CVAAPIContext::EnsureContext(CVAAPIContext **ctx, CDecoder *decoder)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (m_context)
   {
@@ -135,7 +135,7 @@ bool CVAAPIContext::EnsureContext(CVAAPIContext **ctx, CDecoder *decoder)
   m_context = new CVAAPIContext();
   *ctx = m_context;
   {
-    std::unique_lock<CCriticalSection> gLock(CServiceBroker::GetWinSystem()->GetGfxContext());
+    std::unique_lock gLock(CServiceBroker::GetWinSystem()->GetGfxContext());
     if (!m_context->CreateContext())
     {
       delete m_context;
@@ -271,7 +271,7 @@ void CVAAPIContext::QueryCaps()
 
 VAConfigAttrib CVAAPIContext::GetAttrib(VAProfile profile)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   VAConfigAttrib attrib;
   attrib.type = VAConfigAttribRTFormat;
@@ -282,7 +282,7 @@ VAConfigAttrib CVAAPIContext::GetAttrib(VAProfile profile)
 
 bool CVAAPIContext::SupportsProfile(VAProfile profile)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   for (int i=0; i<m_profileCount; i++)
   {
@@ -294,7 +294,7 @@ bool CVAAPIContext::SupportsProfile(VAProfile profile)
 
 VAConfigID CVAAPIContext::CreateConfig(VAProfile profile, VAConfigAttrib attrib)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   VAConfigID config = VA_INVALID_ID;
   CheckSuccess(vaCreateConfig(m_display, profile, VAEntrypointVLD, &attrib, 1, &config), "vaCreateConfig");
@@ -344,14 +344,14 @@ void CVAAPIContext::FFReleaseBuffer(void *opaque, uint8_t *data)
 
 void CVideoSurfaces::AddSurface(VASurfaceID surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_state[surf] = 0;
   m_freeSurfaces.push_back(surf);
 }
 
 void CVideoSurfaces::ClearReference(VASurfaceID surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) == m_state.end())
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::ClearReference - surface invalid");
@@ -366,7 +366,7 @@ void CVideoSurfaces::ClearReference(VASurfaceID surf)
 
 bool CVideoSurfaces::MarkRender(VASurfaceID surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) == m_state.end())
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::MarkRender - surface invalid");
@@ -383,7 +383,7 @@ bool CVideoSurfaces::MarkRender(VASurfaceID surf)
 
 void CVideoSurfaces::ClearRender(VASurfaceID surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) == m_state.end())
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::ClearRender - surface invalid");
@@ -398,7 +398,7 @@ void CVideoSurfaces::ClearRender(VASurfaceID surf)
 
 bool CVideoSurfaces::IsValid(VASurfaceID surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) != m_state.end())
     return true;
   else
@@ -407,7 +407,7 @@ bool CVideoSurfaces::IsValid(VASurfaceID surf)
 
 VASurfaceID CVideoSurfaces::GetFree(VASurfaceID surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) != m_state.end())
   {
     auto it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
@@ -447,7 +447,7 @@ VASurfaceID CVideoSurfaces::GetAtIndex(int idx)
 
 VASurfaceID CVideoSurfaces::RemoveNext(bool skiprender)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   VASurfaceID surf;
   for(auto it = m_state.begin(); it != m_state.end(); ++it)
   {
@@ -466,32 +466,32 @@ VASurfaceID CVideoSurfaces::RemoveNext(bool skiprender)
 
 void CVideoSurfaces::Reset()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_freeSurfaces.clear();
   m_state.clear();
 }
 
 int CVideoSurfaces::Size()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return m_state.size();
 }
 
 bool CVideoSurfaces::HasFree()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return !m_freeSurfaces.empty();
 }
 
 int CVideoSurfaces::NumFree()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return m_freeSurfaces.size();
 }
 
 bool CVideoSurfaces::HasRefs()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   for (const auto &i : m_state)
   {
     if (i.second & SURFACE_USED_FOR_REFERENCE)
@@ -761,7 +761,7 @@ void CDecoder::Close()
 {
   CLog::Log(LOGINFO, "VAAPI::{}", __FUNCTION__);
 
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
 
   FiniVAAPIOutput();
 
@@ -783,10 +783,10 @@ long CDecoder::Release()
   // a second decoder might need resources
   if (m_vaapiConfigured == true)
   {
-    std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+    std::unique_lock lock(m_DecoderSection);
     CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::Release pre-cleanup");
 
-    std::unique_lock<CCriticalSection> lock1(CServiceBroker::GetWinSystem()->GetGfxContext());
+    std::unique_lock lock1(CServiceBroker::GetWinSystem()->GetGfxContext());
     Message *reply;
     if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP, &reply,
                                                        2s))
@@ -825,7 +825,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   CDecoder* va = static_cast<CDecoder*>(cb->GetHWAccel());
 
   // while we are waiting to recover we can't do anything
-  std::unique_lock<CCriticalSection> lock(va->m_DecoderSection);
+  std::unique_lock lock(va->m_DecoderSection);
 
   if(va->m_DisplayState != VAAPI_OPEN)
   {
@@ -874,7 +874,7 @@ void CDecoder::FFReleaseBuffer(uint8_t *data)
   {
     VASurfaceID surf;
 
-    std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+    std::unique_lock lock(m_DecoderSection);
 
     surf = (VASurfaceID)(uintptr_t)data;
     m_videoSurfaces.ClearReference(surf);
@@ -894,7 +894,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
   if (result != CDVDVideoCodec::VC_NOBUFFER && result != CDVDVideoCodec::VC_NONE)
     return result;
 
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
 
   if (!m_vaapiConfigured)
     return CDVDVideoCodec::VC_ERROR;
@@ -1004,7 +1004,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   EDisplayState state;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+    std::unique_lock lock(m_DecoderSection);
     state = m_DisplayState;
   }
 
@@ -1018,13 +1018,13 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
     }
     else
     {
-      std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+      std::unique_lock lock(m_DecoderSection);
       state = m_DisplayState;
     }
   }
   if (state == VAAPI_RESET || state == VAAPI_ERROR)
   {
-    std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+    std::unique_lock lock(m_DecoderSection);
 
     avcodec_flush_buffers(avctx);
     FiniVAAPIOutput();
@@ -1063,7 +1063,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
     picture->videoBuffer = nullptr;
   }
 
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
 
   if (m_DisplayState != VAAPI_OPEN)
     return false;
@@ -1077,7 +1077,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 
 void CDecoder::Reset()
 {
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
 
   if (m_presentPicture)
   {
@@ -1186,7 +1186,7 @@ bool CDecoder::ConfigVAAPI()
   }
 
   // initialize output
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_vaapiConfig.stats = &m_bufferStats;
   m_bufferStats.Reset();
   m_vaapiOutput.Start();
@@ -1516,7 +1516,7 @@ COutput::~COutput()
 
 void COutput::Dispose()
 {
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_bStop = true;
   m_outMsgEvent.Set();
   StopThread();

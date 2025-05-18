@@ -226,7 +226,7 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
 {
   if (m_buffer->GetWriteSize() < frames * m_frameSize)
   { // no space to write - wait for a bit
-    std::unique_lock<CCriticalSection> lock(mutex);
+    std::unique_lock lock(mutex);
     auto timeout = std::chrono::milliseconds(900 * frames / m_sampleRate);
     if (!m_started)
       timeout = 4500ms;
@@ -257,7 +257,7 @@ void CAAudioUnitSink::drain()
   auto timeout = std::chrono::milliseconds(900 * bytes / (m_sampleRate * m_frameSize));
   while (bytes && maxNumTimeouts > 0)
   {
-    std::unique_lock<CCriticalSection> lock(mutex);
+    std::unique_lock lock(mutex);
     XbmcThreads::EndTime<> timer(timeout);
     condVar.wait(mutex, timeout);
 

@@ -100,21 +100,21 @@ bool CDecoderFilter::Save(tinyxml2::XMLNode* node) const
 
 bool CDecoderFilterManager::isValid(const std::string& name, const CDVDStreamInfo& streamInfo)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   std::set<CDecoderFilter>::const_iterator filter(m_filters.find(name));
   return filter != m_filters.end() ? filter->isValid(streamInfo) : m_filters.empty();
 }
 
 void CDecoderFilterManager::add(const CDecoderFilter& filter)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   std::pair<std::set<CDecoderFilter>::iterator, bool> res = m_filters.insert(filter);
   m_dirty = m_dirty || res.second;
 }
 
 bool CDecoderFilterManager::Load()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   m_filters.clear();
 
@@ -151,7 +151,7 @@ bool CDecoderFilterManager::Load()
 
 bool CDecoderFilterManager::Save() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   if (!m_dirty || m_filters.empty())
     return true;
 

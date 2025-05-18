@@ -54,8 +54,8 @@ TEST(TestCritSection, General)
 {
   CCriticalSection sec;
 
-  std::unique_lock<CCriticalSection> l1(sec);
-  std::unique_lock<CCriticalSection> l2(sec);
+  std::unique_lock l1(sec);
+  std::unique_lock l2(sec);
 }
 
 TEST(TestSharedSection, General)

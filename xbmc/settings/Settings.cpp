@@ -63,7 +63,7 @@ using namespace XFILE;
 
 bool CSettings::Initialize()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   if (m_initialized)
     return false;
 
@@ -97,7 +97,7 @@ void CSettings::RegisterSubSettings(ISubSettings* subSettings)
   if (subSettings == nullptr)
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_subSettings.insert(subSettings);
 }
 
@@ -106,7 +106,7 @@ void CSettings::UnregisterSubSettings(ISubSettings* subSettings)
   if (subSettings == nullptr)
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_subSettings.erase(subSettings);
 }
 
@@ -170,7 +170,7 @@ bool CSettings::Save(const std::string &file)
 
 bool CSettings::Save(TiXmlNode* root) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   // save any ISubSettings implementations
   for (const auto& subSetting : m_subSettings)
   {
@@ -197,7 +197,7 @@ bool CSettings::GetBool(const std::string& id) const
 
 void CSettings::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   if (!m_initialized)
     return;
 
@@ -223,7 +223,7 @@ bool CSettings::Load(const TiXmlElement* root, bool& updated)
 bool CSettings::Load(const TiXmlNode* settings)
 {
   bool ok = true;
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   for (const auto& subSetting : m_subSettings)
     ok &= subSetting->Load(settings);
 

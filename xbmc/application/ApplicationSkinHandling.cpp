@@ -98,7 +98,7 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
     }
   }
 
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   // store current active window with its focused control
   int currentWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();

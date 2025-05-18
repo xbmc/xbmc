@@ -124,7 +124,7 @@ bool CRenderSystemDX::IsFormatSupport(DXGI_FORMAT format, unsigned int usage) co
 
 bool CRenderSystemDX::DestroyRenderSystem()
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
 
   if (m_pGUIShader)
   {
@@ -281,7 +281,7 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
 
   // time for decoder that may require the context
   {
-    std::unique_lock<CCriticalSection> lock(m_decoderSection);
+    std::unique_lock lock(m_decoderSection);
     XbmcThreads::EndTime<> timer;
     timer.Set(5ms);
     while (!m_decodingTimer.IsTimePast() && !timer.IsTimePast())
@@ -295,13 +295,13 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
 
 void CRenderSystemDX::RequestDecodingTime()
 {
-  std::unique_lock<CCriticalSection> lock(m_decoderSection);
+  std::unique_lock lock(m_decoderSection);
   m_decodingTimer.Set(3ms);
 }
 
 void CRenderSystemDX::ReleaseDecodingTime()
 {
-  std::unique_lock<CCriticalSection> lock(m_decoderSection);
+  std::unique_lock lock(m_decoderSection);
   m_decodingTimer.SetExpired();
   m_decodingEvent.notify();
 }

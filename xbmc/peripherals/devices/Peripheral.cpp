@@ -991,7 +991,7 @@ GAME::ControllerPtr CPeripheral::InstallAsync(const std::string& controllerId)
 
   // Only 1 install at a time. Remaining installs will wake when this one
   // is done.
-  std::unique_lock<CCriticalSection> lockInstall(m_manager.GetAddonInstallMutex());
+  std::unique_lock lockInstall(m_manager.GetAddonInstallMutex());
 
   CLog::LogF(LOGDEBUG, "Installing {}", controllerId);
 

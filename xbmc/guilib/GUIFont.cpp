@@ -270,7 +270,7 @@ float CGUIFont::GetTextWidth(const vecText& text)
 
   CGraphicContext& context = winSystem->GetGfxContext();
 
-  std::unique_lock<CCriticalSection> lock(context);
+  std::unique_lock lock(context);
   return m_font->GetTextWidthInternal(text) * context.GetGUIScaleX();
 }
 
@@ -282,7 +282,7 @@ float CGUIFont::GetCharWidth(character_t ch)
 
   CGraphicContext& context = winSystem->GetGfxContext();
 
-  std::unique_lock<CCriticalSection> lock(context);
+  std::unique_lock lock(context);
   return m_font->GetCharWidthInternal(ch) * context.GetGUIScaleX();
 }
 

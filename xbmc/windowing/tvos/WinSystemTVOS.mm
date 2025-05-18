@@ -98,7 +98,7 @@ size_t CWinSystemTVOS::GetQueueSize()
 
 void CWinSystemTVOS::AnnounceOnLostDevice()
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   // tell any shared resources
   CLog::Log(LOGDEBUG, "CWinSystemTVOS::AnnounceOnLostDevice");
   for (auto dispResource : m_resources)
@@ -107,7 +107,7 @@ void CWinSystemTVOS::AnnounceOnLostDevice()
 
 void CWinSystemTVOS::AnnounceOnResetDevice()
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   // tell any shared resources
   CLog::Log(LOGDEBUG, "CWinSystemTVOS::AnnounceOnResetDevice");
   for (auto dispResource : m_resources)
@@ -329,13 +329,13 @@ bool CWinSystemTVOS::EndRender()
 
 void CWinSystemTVOS::Register(IDispResource* resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   m_resources.push_back(resource);
 }
 
 void CWinSystemTVOS::Unregister(IDispResource* resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
@@ -343,7 +343,7 @@ void CWinSystemTVOS::Unregister(IDispResource* resource)
 
 void CWinSystemTVOS::OnAppFocusChange(bool focus)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   m_bIsBackgrounded = !focus;
   CLog::Log(LOGDEBUG, "CWinSystemTVOS::OnAppFocusChange: {}", focus ? 1 : 0);
   for (auto dispResource : m_resources)

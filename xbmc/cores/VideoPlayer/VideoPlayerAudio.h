@@ -61,7 +61,7 @@ public:
 
   double GetCurrentPts() override
   {
-    std::unique_lock<CCriticalSection> lock(m_info_section);
+    std::unique_lock lock(m_info_section);
     return m_info.pts;
   }
 

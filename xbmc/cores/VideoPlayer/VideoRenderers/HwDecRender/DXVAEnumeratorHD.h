@@ -195,14 +195,14 @@ public:
   // ID3DResource overrides
   void OnCreateDevice() override
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::unique_lock lock(m_section);
     if (m_width > 0 && m_height > 0)
       OpenEnumerator();
   }
 
   void OnDestroyDevice(bool) override
   {
-    std::unique_lock<CCriticalSection> lock(m_section);
+    std::unique_lock lock(m_section);
     UnInit();
   }
 

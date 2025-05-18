@@ -156,7 +156,7 @@ CAddonInstaller &CAddonInstaller::GetInstance()
 
 void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
     return p.second.jobID == jobID;
   });
@@ -173,7 +173,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 
 void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
     return p.second.jobID == jobID;
   });
@@ -191,13 +191,13 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
 
 bool CAddonInstaller::IsDownloading() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return !m_downloadJobs.empty();
 }
 
 void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   std::vector<std::string> addonIDs;
   for (JobMap::const_iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
   {
@@ -217,7 +217,7 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 
 bool CAddonInstaller::GetProgress(const std::string& addonID, unsigned int& percent, bool& downloadFinshed) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   JobMap::const_iterator i = m_downloadJobs.find(addonID);
   if (i != m_downloadJobs.end())
   {
@@ -230,7 +230,7 @@ bool CAddonInstaller::GetProgress(const std::string& addonID, unsigned int& perc
 
 bool CAddonInstaller::Cancel(const std::string &addonID)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   JobMap::iterator i = m_downloadJobs.find(addonID);
   if (i != m_downloadJobs.end())
   {
@@ -365,7 +365,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
                                 AllowCheckForUpdates allowCheckForUpdates)
 {
   // check whether we already have the addon installing
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
     return false;
 
@@ -533,7 +533,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
 
 bool CAddonInstaller::HasJob(const std::string& ID) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_downloadJobs.find(ID) != m_downloadJobs.end();
 }
 
@@ -601,7 +601,7 @@ void CAddonInstaller::InstallAddons(const VECADDONS& addons,
   }
   if (wait)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     if (!m_downloadJobs.empty())
     {
       m_idle.Reset();

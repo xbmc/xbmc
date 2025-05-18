@@ -242,7 +242,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   videoDatabase.GetBookMarksForFile(m_filePath, m_bookmarks, CBookmark::EPISODE, true);
   videoDatabase.Close();
 
-  std::unique_lock<CCriticalSection> lock(m_refreshSection);
+  std::unique_lock lock(m_refreshSection);
   m_vecItems->Clear();
 
   // cycle through each stored bookmark and add it to our list control

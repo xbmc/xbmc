@@ -47,7 +47,7 @@ void CUPnPSettings::OnSettingsUnloaded()
 
 bool CUPnPSettings::Load(const std::string &file)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   Clear();
 
@@ -80,7 +80,7 @@ bool CUPnPSettings::Load(const std::string &file)
 
 bool CUPnPSettings::Save(const std::string &file) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   CXBMCTinyXML2 doc;
   auto* element = doc.NewElement(XML_UPNP);
@@ -100,7 +100,7 @@ bool CUPnPSettings::Save(const std::string &file) const
 
 void CUPnPSettings::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   m_serverUUID.clear();
   m_serverPort = 0;

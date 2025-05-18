@@ -371,7 +371,7 @@ void CGUIWindow::AfterRender()
 
 void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   if (!m_active)
     return;
@@ -743,7 +743,7 @@ bool CGUIWindow::NeedLoad() const
 
 void CGUIWindow::AllocResources(bool forceLoad /*= false */)
 {
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
 #ifdef _DEBUG
   const auto start = std::chrono::steady_clock::now();
@@ -1005,7 +1005,7 @@ void CGUIWindow::SetDefaults()
 
 CRect CGUIWindow::GetScaledBounds() const
 {
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   CServiceBroker::GetWinSystem()->GetGfxContext().SetScalingResolution(m_coordsRes, m_needsScaling);
   CPoint pos(GetPosition());
   CRect rect(pos.x, pos.y, pos.x + m_width, pos.y + m_height);

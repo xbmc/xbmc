@@ -258,7 +258,7 @@ CContext::~CContext()
 
 void CContext::Release(CDecoder* decoder)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   const auto it = std::find(m_decoders.begin(), m_decoders.end(), decoder);
   if (it != m_decoders.end())
@@ -273,7 +273,7 @@ void CContext::Close()
 
 CContext::shared_ptr CContext::EnsureContext(CDecoder* decoder)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   auto context = m_context.lock();
   if (context)
@@ -656,7 +656,7 @@ bool CContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format, uint32_t c
 bool CContext::CreateDecoder(const D3D11_VIDEO_DECODER_DESC &format, const D3D11_VIDEO_DECODER_CONFIG &config
                                , ID3D11VideoDecoder **decoder, ID3D11VideoContext **context)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   int retry = 0;
   while (retry < 2)
@@ -1020,7 +1020,7 @@ CVideoBufferPool::~CVideoBufferPool()
 
 ::CVideoBuffer* CVideoBufferPool::Get()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   CVideoBuffer* retPic;
   if (!m_freeOut.empty())
@@ -1042,7 +1042,7 @@ CVideoBufferPool::~CVideoBufferPool()
 
 void CVideoBufferPool::Return(int id)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   auto buf = m_out[id];
   buf->Unref();
@@ -1052,7 +1052,7 @@ void CVideoBufferPool::Return(int id)
 
 void CVideoBufferPool::AddView(ID3D11View* view)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   const size_t idx = m_views.size();
   m_views.push_back(view);
   m_freeViews.push_back(idx);
@@ -1060,13 +1060,13 @@ void CVideoBufferPool::AddView(ID3D11View* view)
 
 bool CVideoBufferPool::IsValid(ID3D11View* view)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return std::find(m_views.begin(), m_views.end(), view) != m_views.end();
 }
 
 bool CVideoBufferPool::ReturnView(ID3D11View* view)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   const auto it = std::find(m_views.begin(), m_views.end(), view);
   if (it == m_views.end())
@@ -1079,7 +1079,7 @@ bool CVideoBufferPool::ReturnView(ID3D11View* view)
 
 ID3D11View* CVideoBufferPool::GetView()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (!m_freeViews.empty())
   {
@@ -1093,7 +1093,7 @@ ID3D11View* CVideoBufferPool::GetView()
 
 void CVideoBufferPool::Reset()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   for (auto v : m_views)
     if (v)
@@ -1110,13 +1110,13 @@ void CVideoBufferPool::Reset()
 
 size_t CVideoBufferPool::Size()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return m_views.size();
 }
 
 bool CVideoBufferPool::HasFree()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return !m_freeViews.empty();
 }
 
@@ -1165,7 +1165,7 @@ CDecoder::~CDecoder()
 
 void CDecoder::Close()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_pD3D11Decoder = nullptr;
   m_pD3D11Context = nullptr;
 
@@ -1309,7 +1309,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && avctx->height <= 576)
     m_DVDWorkaround = true;
 
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   Close();
 
   if (m_state == DXVA_LOST)
@@ -1463,7 +1463,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
 
 CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   const CDVDVideoCodec::VCReturn result = Check(avctx);
   if (result != CDVDVideoCodec::VC_NONE)
     return result;
@@ -1494,7 +1494,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
   static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(picture);
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (picture->videoBuffer)
     picture->videoBuffer->Release();
@@ -1528,7 +1528,7 @@ void CDecoder::Reset()
 
 CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // we may not have a hw decoder on systems (AMD HD2xxx, HD3xxx) which are only capable
   // of opening a single decoder and VideoPlayer opened a new stream without having flushed
@@ -1736,6 +1736,6 @@ unsigned CDecoder::GetAllowedReferences()
 
 void CDecoder::CloseDXVADecoder()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_pD3D11Decoder = nullptr;
 }

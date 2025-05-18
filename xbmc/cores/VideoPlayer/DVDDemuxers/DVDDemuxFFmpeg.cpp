@@ -968,7 +968,7 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
   // would consider this the end of stream and stop.
   bool bReturnEmpty = false;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection); // open lock scope
+    std::unique_lock lock(m_critSection); // open lock scope
     if (m_pFormatContext)
     {
       // assume we are not eof
@@ -1259,7 +1259,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
 
   int ret;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     ret = av_seek_frame(m_pFormatContext, m_seekStream, seek_pts, backwards ? AVSEEK_FLAG_BACKWARD : 0);
 
     if (ret < 0)
@@ -1336,7 +1336,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
 
 bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   int ret = av_seek_frame(m_pFormatContext, -1, pos, AVSEEK_FLAG_BYTE);
 
   if (ret >= 0)

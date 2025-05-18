@@ -90,7 +90,7 @@ void CJobQueue::OnJobAbort(unsigned int jobID, CJob* job)
 
 void CJobQueue::CancelJob(const CJob *job)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
   if (i != m_processing.end())
   {
@@ -108,7 +108,7 @@ void CJobQueue::CancelJob(const CJob *job)
 
 bool CJobQueue::AddJob(CJob *job)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   // check if we have this job already.  If so, we're done.
   if (find(m_jobQueue.begin(), m_jobQueue.end(), job) != m_jobQueue.end() ||
       find(m_processing.begin(), m_processing.end(), job) != m_processing.end())
@@ -128,7 +128,7 @@ bool CJobQueue::AddJob(CJob *job)
 
 void CJobQueue::OnJobNotify(CJob* job)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // check if this job is in our processing list
   const auto it = std::find(m_processing.begin(), m_processing.end(), job);
@@ -140,7 +140,7 @@ void CJobQueue::OnJobNotify(CJob* job)
 
 void CJobQueue::QueueNextJob()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   while (m_jobQueue.size() && m_processing.size() < m_jobsAtOnce)
   {
     CJobPointer &job = m_jobQueue.back();
@@ -157,7 +157,7 @@ void CJobQueue::QueueNextJob()
 
 void CJobQueue::CancelJobs()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   for_each(m_processing.begin(), m_processing.end(), [](CJobPointer& jp) { jp.CancelJob(); });
   for_each(m_jobQueue.begin(), m_jobQueue.end(), [](CJobPointer& jp) { jp.FreeJob(); });
   m_jobQueue.clear();
@@ -172,7 +172,7 @@ bool CJobQueue::IsProcessing() const
 
 bool CJobQueue::QueueEmpty() const
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return m_jobQueue.empty();
 }
 
@@ -185,7 +185,7 @@ CJobManager::CJobManager()
 
 void CJobManager::Restart()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (m_running)
     throw std::logic_error("CJobManager already running");
@@ -194,7 +194,7 @@ void CJobManager::Restart()
 
 void CJobManager::CancelJobs()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_running = false;
 
   // clear any pending jobs
@@ -227,7 +227,7 @@ void CJobManager::CancelJobs()
 
 unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (!m_running)
   {
@@ -250,7 +250,7 @@ unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORI
 
 void CJobManager::CancelJob(unsigned int jobID)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // check whether we have this job in the queue
   for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_DEDICATED; ++priority)
@@ -271,7 +271,7 @@ void CJobManager::CancelJob(unsigned int jobID)
 
 void CJobManager::StartWorkers(CJob::PRIORITY priority)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // check how many free threads we have
   if (m_processing.size() >= GetMaxWorkers(priority))
@@ -290,7 +290,7 @@ void CJobManager::StartWorkers(CJob::PRIORITY priority)
 
 CJob *CJobManager::PopJob()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   for (int priority = CJob::PRIORITY_DEDICATED; priority >= CJob::PRIORITY_LOW_PAUSABLE; --priority)
   {
     // Check whether we're pausing pausable jobs
@@ -314,19 +314,19 @@ CJob *CJobManager::PopJob()
 
 void CJobManager::PauseJobs()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_pauseJobs = true;
 }
 
 void CJobManager::UnPauseJobs()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_pauseJobs = false;
 }
 
 bool CJobManager::IsProcessing(const CJob::PRIORITY &priority) const
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (m_pauseJobs)
     return false;
@@ -342,7 +342,7 @@ bool CJobManager::IsProcessing(const CJob::PRIORITY &priority) const
 int CJobManager::IsProcessing(const std::string &type) const
 {
   int jobsMatched = 0;
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (m_pauseJobs)
     return 0;
@@ -357,7 +357,7 @@ int CJobManager::IsProcessing(const std::string &type) const
 
 CJob* CJobManager::GetNextJob()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   while (m_running)
   {
     // grab a job off the queue if we have one
@@ -378,7 +378,7 @@ CJob* CJobManager::GetNextJob()
 
 bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const CJob *job) const
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   // find the job in the processing queue, and check whether it's cancelled (no callback)
   Processing::const_iterator i = find(m_processing.begin(), m_processing.end(), job);
   if (i != m_processing.end())
@@ -396,7 +396,7 @@ bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const
 
 void CJobManager::OnJobComplete(bool success, CJob *job)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   // remove the job from the processing queue
   Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
   if (i != m_processing.end())
@@ -424,7 +424,7 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
 
 void CJobManager::RemoveWorker(const CJobWorker *worker)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   // remove our worker
   Workers::iterator i = find(m_workers.begin(), m_workers.end(), worker);
   if (i != m_workers.end())

@@ -66,7 +66,7 @@ CZeroconfBrowser::~CZeroconfBrowser()
 
 void CZeroconfBrowser::Start()
 {
-  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
+  std::unique_lock lock(*mp_crit_sec);
   if(m_started)
     return;
   m_started = true;
@@ -76,7 +76,7 @@ void CZeroconfBrowser::Start()
 
 void CZeroconfBrowser::Stop()
 {
-  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
+  std::unique_lock lock(*mp_crit_sec);
   if(!m_started)
     return;
   for (const auto& it : m_services)
@@ -86,7 +86,7 @@ void CZeroconfBrowser::Stop()
 
 bool CZeroconfBrowser::AddServiceType(const std::string& fcr_service_type /*const std::string& domain*/ )
 {
-  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
+  std::unique_lock lock(*mp_crit_sec);
   std::pair<tServices::iterator, bool> ret = m_services.insert(fcr_service_type);
   if(!ret.second)
   {
@@ -101,7 +101,7 @@ bool CZeroconfBrowser::AddServiceType(const std::string& fcr_service_type /*cons
 
 bool CZeroconfBrowser::RemoveServiceType(const std::string& fcr_service_type)
 {
-  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
+  std::unique_lock lock(*mp_crit_sec);
   tServices::iterator ret = m_services.find(fcr_service_type);
   if(ret == m_services.end())
     return false;
@@ -113,7 +113,7 @@ bool CZeroconfBrowser::RemoveServiceType(const std::string& fcr_service_type)
 
 std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowser::GetFoundServices()
 {
-  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
+  std::unique_lock lock(*mp_crit_sec);
   if(m_started)
     return doGetFoundServices();
   else
@@ -125,7 +125,7 @@ std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowser::GetFoundService
 
 bool CZeroconfBrowser::ResolveService(ZeroconfService& fr_service, double f_timeout)
 {
-  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
+  std::unique_lock lock(*mp_crit_sec);
   if(m_started)
   {
     return doResolveService(fr_service, f_timeout);

@@ -167,7 +167,7 @@ void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                               const std::string& message,
                               const CVariant& data)
 {
-  std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
+  std::unique_lock lock(ServerInstanceLock);
 
   if (sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER && ServerInstance)
   {
@@ -198,7 +198,7 @@ bool CAirPlayServer::StartServer(int port, bool nonlocal)
 {
   StopServer(true);
 
-  std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
+  std::unique_lock lock(ServerInstanceLock);
 
   ServerInstance = new CAirPlayServer(port, nonlocal);
   if (ServerInstance->Initialize())
@@ -212,7 +212,7 @@ bool CAirPlayServer::StartServer(int port, bool nonlocal)
 
 bool CAirPlayServer::SetCredentials(bool usePassword, const std::string& password)
 {
-  std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
+  std::unique_lock lock(ServerInstanceLock);
   bool ret = false;
 
   if (ServerInstance)
@@ -253,7 +253,7 @@ void ClearPhotoAssetCache()
 
 void CAirPlayServer::StopServer(bool bWait)
 {
-  std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
+  std::unique_lock lock(ServerInstanceLock);
   //clean up the photo cache temp folder
   ClearPhotoAssetCache();
 
@@ -278,7 +278,7 @@ bool CAirPlayServer::IsRunning()
 
 void CAirPlayServer::AnnounceToClients(int state)
 {
-  std::unique_lock<CCriticalSection> lock(m_connectionLock);
+  std::unique_lock lock(m_connectionLock);
 
   for (auto& it : m_connections)
   {
@@ -389,7 +389,7 @@ void CAirPlayServer::Process()
           }
           if (nread <= 0)
           {
-            std::unique_lock<CCriticalSection> lock(m_connectionLock);
+            std::unique_lock lock(m_connectionLock);
             CLog::Log(LOGINFO, "AIRPLAY Server: Disconnection detected");
             m_connections[i].Disconnect();
             m_connections.erase(m_connections.begin() + i);
@@ -419,7 +419,7 @@ void CAirPlayServer::Process()
           }
           else
           {
-            std::unique_lock<CCriticalSection> lock(m_connectionLock);
+            std::unique_lock lock(m_connectionLock);
             CLog::Log(LOGINFO, "AIRPLAY Server: New connection added");
             m_connections.push_back(newconnection);
           }
@@ -451,7 +451,7 @@ bool CAirPlayServer::Initialize()
 
 void CAirPlayServer::Deinitialize()
 {
-  std::unique_lock<CCriticalSection> lock(m_connectionLock);
+  std::unique_lock lock(m_connectionLock);
   for (unsigned int i = 0; i < m_connections.size(); i++)
     m_connections[i].Disconnect();
 
@@ -568,7 +568,7 @@ void CAirPlayServer::CTCPClient::Disconnect()
 {
   if (m_socket != INVALID_SOCKET)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     shutdown(m_socket, SHUT_RDWR);
     close(m_socket);
     m_socket = INVALID_SOCKET;
@@ -731,7 +731,7 @@ bool CAirPlayServer::CTCPClient::checkAuthorization(const std::string& authStr,
 
 void CAirPlayServer::backupVolume()
 {
-  std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
+  std::unique_lock lock(ServerInstanceLock);
 
   if (ServerInstance && ServerInstance->m_origVolume == -1)
   {
@@ -743,7 +743,7 @@ void CAirPlayServer::backupVolume()
 
 void CAirPlayServer::restoreVolume()
 {
-  std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
+  std::unique_lock lock(ServerInstanceLock);
 
   const auto& settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (ServerInstance && ServerInstance->m_origVolume != -1 &&

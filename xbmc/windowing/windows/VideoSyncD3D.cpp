@@ -50,7 +50,7 @@ void CVideoSyncD3D::RefreshChanged()
 bool CVideoSyncD3D::Setup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Setting up Direct3d");
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   DX::Windowing()->Register(this);
   m_displayLost = false;
   m_displayReset = false;

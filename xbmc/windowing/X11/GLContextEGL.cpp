@@ -514,7 +514,7 @@ void CGLContextEGL::SwapBuffers()
     msc2++;
   }
   {
-    std::unique_lock<CCriticalSection> lock(m_syncLock);
+    std::unique_lock lock(m_syncLock);
     m_sync.ust1 = ust1;
     m_sync.ust2 = ust2;
     m_sync.msc1 = msc1;
@@ -532,7 +532,7 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
   now = static_cast<uint64_t>(nowTs.tv_sec) * 1000000000ULL + nowTs.tv_nsec;
   now /= 1000;
 
-  std::unique_lock<CCriticalSection> lock(m_syncLock);
+  std::unique_lock lock(m_syncLock);
   msc = m_sync.msc2;
 
   interval = (m_sync.cont >= 5) ? m_sync.interval : m_sync.ust2 - m_sync.ust1;

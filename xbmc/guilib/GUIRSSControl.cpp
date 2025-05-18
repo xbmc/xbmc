@@ -64,7 +64,7 @@ CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl& from)
 
 CGUIRSSControl::~CGUIRSSControl(void)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
   if (m_pReader)
     m_pReader->SetObserver(NULL);
   m_pReader = NULL;
@@ -99,7 +99,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
   bool dirty = false;
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_LOOKANDFEEL_ENABLERSSFEEDS) && CRssManager::GetInstance().IsActive())
   {
-    std::unique_lock<CCriticalSection> lock(m_criticalSection);
+    std::unique_lock lock(m_criticalSection);
     // Create RSS background/worker thread if needed
     if (m_pReader == NULL)
     {
@@ -188,7 +188,7 @@ CRect CGUIRSSControl::CalcRenderRegion() const
 
 void CGUIRSSControl::OnFeedUpdate(const vecText &feed)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
   m_feed = feed;
   m_dirty = true;
 }

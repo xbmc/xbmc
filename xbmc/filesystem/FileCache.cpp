@@ -95,7 +95,7 @@ bool CFileCache::Open(const CURL& url)
 {
   Close();
 
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
 
   m_sourcePath = url.GetRedacted();
 
@@ -468,7 +468,7 @@ int CFileCache::Stat(const CURL& url, struct __stat64* buffer)
 
 ssize_t CFileCache::Read(void* lpBuf, size_t uiBufSize)
 {
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
   if (!m_pCache)
   {
     CLog::Log(LOGERROR, "CFileCache::{} - <{}> sanity failed. no cache strategy!", __FUNCTION__,
@@ -515,7 +515,7 @@ retry:
 
 int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
 {
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
 
   if (!m_pCache)
   {
@@ -579,7 +579,7 @@ void CFileCache::Close()
 {
   StopThread();
 
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
   if (m_pCache)
     m_pCache->Close();
 

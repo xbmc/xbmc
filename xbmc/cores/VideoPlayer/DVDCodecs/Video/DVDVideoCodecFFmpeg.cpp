@@ -144,7 +144,7 @@ CVideoBufferPoolFFmpeg::~CVideoBufferPoolFFmpeg()
 
 CVideoBuffer* CVideoBufferPoolFFmpeg::Get()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   CVideoBufferFFmpeg *buf = nullptr;
   if (!m_free.empty())
@@ -168,7 +168,7 @@ CVideoBuffer* CVideoBufferPoolFFmpeg::Get()
 
 void CVideoBufferPoolFFmpeg::Return(int id)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   m_all[id]->Unref();
   auto it = m_used.begin();

@@ -99,7 +99,7 @@ CDisplaySettings& CDisplaySettings::GetInstance()
 
 bool CDisplaySettings::Load(const TiXmlNode *settings)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_calibrations.clear();
 
   if (settings == NULL)
@@ -166,7 +166,7 @@ bool CDisplaySettings::Save(TiXmlNode *settings) const
   if (settings == NULL)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   TiXmlElement xmlRootElement("resolutions");
   TiXmlNode *pRoot = settings->InsertEndChild(xmlRootElement);
   if (pRoot == NULL)
@@ -208,7 +208,7 @@ bool CDisplaySettings::Save(TiXmlNode *settings) const
 
 void CDisplaySettings::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_calibrations.clear();
   m_resolutions.clear();
   m_resolutions.resize(RES_CUSTOM);
@@ -454,7 +454,7 @@ RESOLUTION CDisplaySettings::GetDisplayResolution() const
 
 const RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(size_t index) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   if (index >= m_resolutions.size())
     return EmptyResolution;
 
@@ -471,7 +471,7 @@ const RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(RESOLUTION resolution
 
 RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(size_t index)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   if (index >= m_resolutions.size())
   {
     EmptyModifiableResolution = RESOLUTION_INFO();
@@ -494,7 +494,7 @@ RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(RESOLUTION resolution)
 
 void CDisplaySettings::AddResolutionInfo(const RESOLUTION_INFO &resolution)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   RESOLUTION_INFO res(resolution);
 
   if((res.dwFlags & D3DPRESENTFLAG_MODE3DTB) == 0)
@@ -520,7 +520,7 @@ void CDisplaySettings::AddResolutionInfo(const RESOLUTION_INFO &resolution)
 
 void CDisplaySettings::ApplyCalibrations()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   // apply all calibrations to the resolutions
   for (ResolutionInfos::const_iterator itCal = m_calibrations.begin(); itCal != m_calibrations.end(); ++itCal)
   {
@@ -573,7 +573,7 @@ void CDisplaySettings::ApplyCalibrations()
 
 void CDisplaySettings::UpdateCalibrations()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   if (m_resolutions.size() <= RES_DESKTOP)
     return;
@@ -599,7 +599,7 @@ void CDisplaySettings::UpdateCalibrations()
 
 void CDisplaySettings::ClearCalibrations()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_calibrations.clear();
 }
 

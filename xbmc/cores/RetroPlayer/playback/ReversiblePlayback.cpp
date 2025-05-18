@@ -145,7 +145,7 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave,
   // Get the savestate path
   std::string savePath(savestatePath);
   {
-    std::unique_lock<CCriticalSection> lock(m_savestateMutex);
+    std::unique_lock lock(m_savestateMutex);
 
     if (autosave && savePath.empty())
       savePath = m_autosavePath;
@@ -168,7 +168,7 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave,
   m_renderManager.CacheVideoFrame(savePath);
 
   {
-    std::unique_lock<CCriticalSection> lock(m_savestateMutex);
+    std::unique_lock lock(m_savestateMutex);
 
     // Prune any finished autosave threads
     m_savestateThreads.erase(std::remove_if(m_savestateThreads.begin(), m_savestateThreads.end(),
@@ -202,7 +202,7 @@ void CReversiblePlayback::CommitSavestate(bool autosave,
 
   // Copy the savestate memory
   {
-    std::unique_lock<CCriticalSection> lock(m_mutex);
+    std::unique_lock lock(m_mutex);
     if (m_memoryStream && m_memoryStream->CurrentFrame() != nullptr)
     {
       std::memcpy(memoryData, m_memoryStream->CurrentFrame(), memorySize);
@@ -217,7 +217,7 @@ void CReversiblePlayback::CommitSavestate(bool autosave,
 
   // Attempt to get existing properties
   {
-    std::unique_lock<CCriticalSection> lock(m_savestateMutex);
+    std::unique_lock lock(m_savestateMutex);
     if (!savePath.empty() && XFILE::CFile::Exists(savePath))
     {
       loadedSavestate = CSavestateDatabase::AllocateSavestate();
@@ -250,7 +250,7 @@ void CReversiblePlayback::CommitSavestate(bool autosave,
 
   bool success;
   {
-    std::unique_lock<CCriticalSection> lock(m_savestateMutex);
+    std::unique_lock lock(m_savestateMutex);
     success = m_savestateDatabase->AddSavestate(savePath, m_gameClient->GetGamePath(), *savestate);
   }
 
@@ -285,7 +285,7 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
     else
     {
       {
-        std::unique_lock<CCriticalSection> lock(m_mutex);
+        std::unique_lock lock(m_mutex);
         if (m_memoryStream)
         {
           m_memoryStream->SetFrameCounter(savestate->TimestampFrames());
@@ -325,7 +325,7 @@ void CReversiblePlayback::RewindEvent()
 
 void CReversiblePlayback::AddFrame()
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   if (m_memoryStream)
   {
@@ -341,7 +341,7 @@ void CReversiblePlayback::AddFrame()
 
 void CReversiblePlayback::RewindFrames(uint64_t frames)
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   if (m_memoryStream)
   {
@@ -355,7 +355,7 @@ void CReversiblePlayback::RewindFrames(uint64_t frames)
 
 void CReversiblePlayback::AdvanceFrames(uint64_t frames)
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   if (m_memoryStream)
   {
@@ -395,7 +395,7 @@ void CReversiblePlayback::Notify(const Observable& obs, const ObservableMessage 
 
 void CReversiblePlayback::UpdateMemoryStream()
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   bool bRewindEnabled = false;
 

@@ -117,7 +117,7 @@ bool CSkinSettings::Load(const TiXmlNode *settings)
     return true;
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_settings.clear();
   m_settings = ADDON::CSkinInfo::ParseSettings(rootElement);
 
@@ -136,7 +136,7 @@ bool CSkinSettings::Save(TiXmlNode *settings) const
 
 void CSkinSettings::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_settings.clear();
 }
 
@@ -145,7 +145,7 @@ void CSkinSettings::MigrateSettings(const std::shared_ptr<ADDON::CSkinInfo>& ski
   if (skin == nullptr)
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   bool settingsMigrated = false;
   const std::string& skinId = skin->ID();

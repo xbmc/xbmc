@@ -30,7 +30,7 @@ CActiveAESettings::CActiveAESettings(CActiveAE &ae) : m_audioEngine(ae)
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
   m_instance = this;
 
   settings->GetSettingsManager()->RegisterCallback(
@@ -66,7 +66,7 @@ CActiveAESettings::~CActiveAESettings()
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
   settings->GetSettingsManager()->UnregisterSettingOptionsFiller("aequalitylevels");
   settings->GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevices");
   settings->GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevicespassthrough");
@@ -77,7 +77,7 @@ CActiveAESettings::~CActiveAESettings()
 
 void CActiveAESettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
   m_instance->m_audioEngine.OnSettingsChange();
 }
 
@@ -104,7 +104,7 @@ void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(
     int& current,
     void* data)
 {
-  std::unique_lock<CCriticalSection> lock(m_instance->m_cs);
+  std::unique_lock lock(m_instance->m_cs);
 
   if (m_instance->m_audioEngine.SupportsQualityLevel(AE_QUALITY_LOW))
     list.emplace_back(g_localizeStrings.Get(13506), AE_QUALITY_LOW);
@@ -124,7 +124,7 @@ void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(
     int& current,
     void* data)
 {
-  std::unique_lock<CCriticalSection> lock(m_instance->m_cs);
+  std::unique_lock lock(m_instance->m_cs);
 
   list.emplace_back(g_localizeStrings.Get(20422),
                     XbmcThreads::EndTime<std::chrono::minutes>::Max().count());
@@ -148,7 +148,7 @@ bool CActiveAESettings::IsSettingVisible(const std::string& condition,
   if (setting == NULL || value.empty())
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_instance->m_cs);
+  std::unique_lock lock(m_instance->m_cs);
   if (!m_instance)
     return false;
 
@@ -164,7 +164,7 @@ void CActiveAESettings::SettingOptionsAudioDevicesFillerGeneral(
   current = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   std::string firstDevice;
 
-  std::unique_lock<CCriticalSection> lock(m_instance->m_cs);
+  std::unique_lock lock(m_instance->m_cs);
 
   bool foundValue = false;
   AEDeviceList sinkList;

@@ -411,7 +411,7 @@ void CAndroidJoystickState::GetEvents(std::vector<kodi::addon::PeripheralEvent>&
 
 void CAndroidJoystickState::GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events)
 {
-  std::unique_lock<CCriticalSection> lock(m_eventMutex);
+  std::unique_lock lock(m_eventMutex);
 
   // Only report a single event per button (avoids dropping rapid presses)
   std::vector<kodi::addon::PeripheralEvent> repeatButtons;
@@ -446,7 +446,7 @@ bool CAndroidJoystickState::SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON but
   if (!GetAxesIndex({axisId}, m_buttons, buttonIndex) || buttonIndex >= GetButtonCount())
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_eventMutex);
+  std::unique_lock lock(m_eventMutex);
 
   m_digitalEvents.emplace_back(m_deviceId, buttonIndex, buttonValue);
 

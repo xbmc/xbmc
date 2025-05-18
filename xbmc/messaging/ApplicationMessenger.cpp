@@ -58,7 +58,7 @@ CApplicationMessenger::~CApplicationMessenger()
 
 void CApplicationMessenger::Cleanup()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   while (!m_vecMessages.empty())
   {
@@ -115,7 +115,7 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
 
   ThreadMessage* msg = new ThreadMessage(std::move(message));
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   if (msg->dwMessage == TMSG_GUI_MESSAGE)
     m_vecWindowMessages.push(msg);
@@ -201,7 +201,7 @@ void CApplicationMessenger::PostMsg(uint32_t messageId, int param1, int param2, 
 void CApplicationMessenger::ProcessMessages()
 {
   // process threadmessages
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   while (!m_vecMessages.empty())
   {
     ThreadMessage* pMsg = m_vecMessages.front();
@@ -234,7 +234,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     return;
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   int mask = pMsg->dwMessage & TMSG_MASK_MESSAGE;
 
   const auto it = m_mapTargets.find(mask);
@@ -249,7 +249,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
 void CApplicationMessenger::ProcessWindowMessages()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   //message type is window, process window messages
   while (!m_vecWindowMessages.empty())
   {
@@ -281,7 +281,7 @@ void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windo
 
 void CApplicationMessenger::RegisterReceiver(IMessageTarget* target)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_mapTargets.insert(std::make_pair(target->GetMessageMask(), target));
 }
 

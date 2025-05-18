@@ -48,7 +48,7 @@ void CSpeechRecognitionAndroid::StartSpeechRecognition(
     if (CJNIContext::checkCallingOrSelfPermission("android.permission.RECORD_AUDIO") ==
         CJNIPackageManager::PERMISSION_GRANTED)
     {
-      std::unique_lock<CCriticalSection> lock(m_speechRecognitionListenersMutex);
+      std::unique_lock lock(m_speechRecognitionListenersMutex);
       m_speechRecognitionListeners.emplace_back(
           std::make_unique<CSpeechRecognitionListenerAndroid>(listener, *this));
       lock.unlock();
@@ -77,7 +77,7 @@ void CSpeechRecognitionAndroid::RegisterSpeechRecognitionListener(void* thiz)
   CJNISpeechRecognizer speechRecognizer =
       CJNISpeechRecognizer::createSpeechRecognizer(sra->m_context);
 
-  std::unique_lock<CCriticalSection> lock(sra->m_speechRecognitionListenersMutex);
+  std::unique_lock lock(sra->m_speechRecognitionListenersMutex);
   speechRecognizer.setRecognitionListener(*(sra->m_speechRecognitionListeners.back()));
   lock.unlock();
 
@@ -91,7 +91,7 @@ void CSpeechRecognitionAndroid::RegisterSpeechRecognitionListener(void* thiz)
 void CSpeechRecognitionAndroid::SpeechRecognitionDone(
     jni::CJNIXBMCSpeechRecognitionListener* listener)
 {
-  std::unique_lock<CCriticalSection> lock(m_speechRecognitionListenersMutex);
+  std::unique_lock lock(m_speechRecognitionListenersMutex);
   for (auto it = m_speechRecognitionListeners.begin(); it != m_speechRecognitionListeners.end();
        ++it)
   {

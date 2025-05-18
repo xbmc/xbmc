@@ -490,7 +490,7 @@ void CAESinkDirectSound::CheckPlayStatus()
 
 bool CAESinkDirectSound::UpdateCacheStatus()
 {
-  std::unique_lock<CCriticalSection> lock(m_runLock);
+  std::unique_lock lock(m_runLock);
 
   DWORD playCursor = 0, writeCursor = 0;
   HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
@@ -550,7 +550,7 @@ bool CAESinkDirectSound::UpdateCacheStatus()
 
 unsigned int CAESinkDirectSound::GetSpace()
 {
-  std::unique_lock<CCriticalSection> lock(m_runLock);
+  std::unique_lock lock(m_runLock);
   if (!UpdateCacheStatus())
     m_isDirtyDS = true;
   unsigned int space = m_dwBufferLen - m_CacheLen;

@@ -58,7 +58,7 @@ CFileItemPtr CGUIDialogPeripherals::GetItem(unsigned int pos) const
 {
   CFileItemPtr item;
 
-  std::unique_lock<CCriticalSection> lock(m_peripheralsMutex);
+  std::unique_lock lock(m_peripheralsMutex);
 
   if (static_cast<int>(pos) < m_peripherals.Size())
     item = m_peripherals[pos];
@@ -177,7 +177,7 @@ void CGUIDialogPeripherals::UpdatePeripheralsSync()
 {
   int iPos = GetSelectedItem();
 
-  std::unique_lock<CCriticalSection> lock(m_peripheralsMutex);
+  std::unique_lock lock(m_peripheralsMutex);
 
   CFileItemPtr selectedItem;
   if (iPos > 0)
