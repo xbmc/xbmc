@@ -256,6 +256,6 @@ void CGUIGameController::SetActivation(float activation)
   const UTILS::COLOR::Color activationColor =
       (newAlpha << 24) | (newRed << 16) | (newGreen << 8) | newBlue;
 
-  if (CGUIImage::SetColorDiffuse(activationColor))
+  if (CGUIImage::SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(activationColor)))
     CGUIImage::UpdateDiffuseColor(nullptr);
 }
