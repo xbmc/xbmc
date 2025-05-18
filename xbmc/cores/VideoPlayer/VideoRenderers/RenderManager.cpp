@@ -745,10 +745,10 @@ void CRenderManager::ClockAlign()
       double maxWait = (wait > 1000000)
         ? (m_presentframetime * 4)
         : (m_presentframetime * (((wait / m_presentframetime) / 10) + 1));
-      Wait(maxWait);
+      aml_wait(maxWait);
     }
     else
-      Wait(wait);
+      aml_wait(wait);
 
     renderPts = m_dvdClock.GetClock();
     diff = (renderPts - m_presentpts);
@@ -1252,26 +1252,6 @@ void inline CRenderManager::SetPresentSource()
   m_presentsource = m_queued.front();
   m_presentpts = m_Queue[m_presentsource].pts;
   m_presentframetime = m_Queue[m_presentsource].duration;
-}
-
-void inline CRenderManager::Wait(useconds_t uSeconds)
-{
-   struct timespec target, now;
-
-   clock_gettime(CLOCK_MONOTONIC, &now);
-
-   target.tv_sec = uSeconds / 1000000;
-   target.tv_nsec = (uSeconds % 1000000) * 1000;
-
-   target.tv_sec += now.tv_sec;
-   target.tv_nsec += now.tv_nsec;
-
-   if (target.tv_nsec >= 1000000000) {
-     target.tv_sec++;
-     target.tv_nsec -= 1000000000;
-   }
-
-   clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &target, nullptr);
 }
 
 bool inline CRenderManager::Paused(bool paused, double clock)

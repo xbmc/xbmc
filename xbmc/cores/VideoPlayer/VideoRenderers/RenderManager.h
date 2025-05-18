@@ -144,7 +144,6 @@ protected:
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
   void SetPresentSource();
-  void Wait(useconds_t uSeconds);
   bool Paused(bool paused, double clock);
   void PrepareNextRender();
   bool IsPresenting();

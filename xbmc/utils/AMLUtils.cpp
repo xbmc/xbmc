@@ -1486,3 +1486,23 @@ void aml_pin_thread_to_core(unsigned int core_id) {
   logM(LOGINFO, "AMLUtils", "pin thread:[{}]-[{}] to core id:[{}] ret-affinity:[{}]",
                             tid, name, core_id, ret_affinity);
 }
+
+void aml_wait(useconds_t uSeconds)
+{
+   struct timespec target, now;
+
+   clock_gettime(CLOCK_MONOTONIC, &now);
+
+   target.tv_sec = uSeconds / 1000000;
+   target.tv_nsec = (uSeconds % 1000000) * 1000;
+
+   target.tv_sec += now.tv_sec;
+   target.tv_nsec += now.tv_nsec;
+
+   if (target.tv_nsec >= 1000000000) {
+     target.tv_sec++;
+     target.tv_nsec -= 1000000000;
+   }
+
+   clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &target, nullptr);
+}

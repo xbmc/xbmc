@@ -148,3 +148,4 @@ bool aml_unset_reg_ignore_alpha();
 std::string aml_video_fps_info();
 std::string aml_video_fps_drop();
 void aml_pin_thread_to_core(unsigned int core_id);
+void aml_wait(useconds_t uSeconds);

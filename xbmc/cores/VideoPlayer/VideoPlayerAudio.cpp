@@ -17,6 +17,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/AMLUtils.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 
@@ -454,27 +455,8 @@ void CVideoPlayerAudio::Process()
   }
 }
 
-void inline CVideoPlayerAudio::Wait(useconds_t uSeconds) const
+void CVideoPlayerAudio::ClockAlign(double presentPts) const
 {
-   struct timespec target, now;
-
-   clock_gettime(CLOCK_MONOTONIC, &now);
-
-   target.tv_sec = uSeconds / 1000000;
-   target.tv_nsec = (uSeconds % 1000000) * 1000;
-
-   target.tv_sec += now.tv_sec;
-   target.tv_nsec += now.tv_nsec;
-
-   if (target.tv_nsec >= 1000000000) {
-     target.tv_sec++;
-     target.tv_nsec -= 1000000000;
-   }
-
-   clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &target, nullptr);
-}
-
-void CVideoPlayerAudio::ClockAlign(double presentPts) const {
   double renderPts = m_pClock->GetClock();
   double diff = (renderPts - presentPts);
   double delay = diff;
@@ -482,7 +464,7 @@ void CVideoPlayerAudio::ClockAlign(double presentPts) const {
   if ((diff < 0) && (diff > -1000000))
   {
     double wait = -diff;
-    Wait(static_cast<useconds_t>(wait));
+    aml_wait(static_cast<useconds_t>(wait));
 
     renderPts = m_pClock->GetClock();
     diff = (renderPts - presentPts);

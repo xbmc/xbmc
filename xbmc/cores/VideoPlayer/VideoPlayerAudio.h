@@ -133,7 +133,6 @@ protected:
   bool m_displayReset = false;
 
 private:
-  void inline Wait(useconds_t uSeconds) const;
   void ClockAlign(double presentPts) const;
 };
 
