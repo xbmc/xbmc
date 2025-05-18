@@ -180,7 +180,7 @@ void CAdvancedSettings::Initialize()
   m_videoDecoderMinimumBuffer = 5.0f;
   m_videoDecoderMinimumStreamBuffer = 10.0f;  // Alt SoC 17.5f
 
-  m_videoDecoderStreamTypeStreamOffset = 290; // 290 msec
+  m_videoDecoderStreamTypeStreamOffset = 390; // 390 msec
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
