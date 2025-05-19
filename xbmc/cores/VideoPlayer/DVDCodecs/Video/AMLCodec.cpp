@@ -1582,7 +1582,7 @@ int CAMLCodec::GetAmlDuration() const
   return am_private ? (am_private->video_rate * PTS_FREQ) / UNIT_FREQ : 0;
 };
 
-std::string CAMLCodec::intToFourCCString(unsigned int value)
+std::string CAMLCodec::IntToFourCCString(unsigned int value)
 {
   char bytes[4];
   bytes[0] = value & 0xFF;
@@ -1603,7 +1603,7 @@ std::string CAMLCodec::GetDoViCodecFourCC(unsigned int codec_tag)
 {
   if (codec_tag == 0) return "----";
 
-  std::string fourCC = intToFourCCString(codec_tag);
+  std::string fourCC = IntToFourCCString(codec_tag);
 
   // some files don't have dvhe or dvh1 tag set up but have Dolby Vision side data
   // page 10, table 2 from https://professional.dolby.com/siteassets/content-creation/dolby-vision-for-content-creators/dolby-vision-streams-within-the-http-live-streaming-format-v2.0-13-november-2018.pdf
@@ -2670,11 +2670,6 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
   // we only get called once gui has changed to something
   // that would show video playback, so show it.
   ShowMainVideo(true);
-}
-
-void CAMLCodec::SetVideoRate(int videoRate) const {
-  if (am_private)
-    am_private->video_rate = videoRate;
 }
 
 unsigned int CAMLCodec::GetDecoderVideoRate() const {

@@ -261,11 +261,9 @@ public:
   CDVDVideoCodec::VCReturn GetPicture(VideoPicture& videoPicture);
 
   void          SetSpeed(int speed);
-  void          SetDrain(bool drain){m_drain = drain;};
+  void          SetDrain(bool drain) { m_drain = drain; };
   void          SetVideoRect(const CRect &DestRect);
-  void          SetVideoRate(int videoRate) const;
   uint64_t      GetOMXPts() const { return m_cur_pts; }
-  double        GetPts() const { return static_cast<double>(m_cur_pts); }
   uint32_t      GetBufferIndex() const { return m_bufferIndex; };
   int           GetAmlDuration() const;
   int           ReleaseFrame(const uint32_t index, bool bDrop = false) const;
@@ -297,7 +295,7 @@ private:
   unsigned int  GetDecoderVideoRate() const;
   std::string   GetHDRStaticMetadata() const;
 
-  std::string   intToFourCCString(unsigned int value);
+  std::string   IntToFourCCString(unsigned int value);
   std::string   GetDoViCodecFourCC(unsigned int codec_tag);
   void          SetProcessInfoVideoDetails();
 
