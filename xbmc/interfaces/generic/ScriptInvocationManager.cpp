@@ -212,8 +212,8 @@ std::shared_ptr<ILanguageInvoker> CScriptInvocationManager::GetLanguageInvoker(
   StringUtils::ToLower(extension);
 
   std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
-  if (it != m_invocationHandlers.end() && it->second != NULL)
-    return std::shared_ptr<ILanguageInvoker>(it->second->CreateInvoker());
+  if (it != m_invocationHandlers.end() && it->second != nullptr)
+    return it->second->CreateInvoker();
 
   return {};
 }
