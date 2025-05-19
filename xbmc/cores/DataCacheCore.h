@@ -80,7 +80,7 @@ public:
   DOVIStreamInfo GetVideoDoViStreamInfo();
   void SetVideoSourceDoViStreamInfo(DOVIStreamInfo value);
   DOVIStreamInfo GetVideoSourceDoViStreamInfo();
-  void SetVideoDoViCodecFourCC(std::string);
+  void SetVideoDoViCodecFourCC(std::string value);
   std::string GetVideoDoViCodecFourCC();
   void SetVideoHDRStaticMetadataInfo(HDRStaticMetadataInfo value);
   HDRStaticMetadataInfo GetVideoHDRStaticMetadataInfo();

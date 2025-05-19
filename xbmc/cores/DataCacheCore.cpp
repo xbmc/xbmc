@@ -312,7 +312,7 @@ void CDataCacheCore::SetVideoDoViFrameMetadata(DOVIFrameMetadata value)
 
   uint64_t pts = value.pts;
   logM(LOGDEBUG, "CDataCacheCore", "Set meta for pts [{}] [{}]", pts, value.level1_max_pq);
-  m_playerVideoInfo.doviFrameMetadataMap.insert(pts, value);
+  m_playerVideoInfo.doviFrameMetadataMap.insert(pts, std::move(value));
 }
 
 DOVIFrameMetadata CDataCacheCore::GetVideoDoViFrameMetadata()
@@ -334,7 +334,7 @@ void CDataCacheCore::SetVideoDoViStreamMetadata(DOVIStreamMetadata value)
 {
   std::lock_guard lock(m_videoPlayerSection);
 
-  m_playerVideoInfo.doviStreamMetadata = value;
+  m_playerVideoInfo.doviStreamMetadata = std::move(value);
 }
 
 DOVIStreamMetadata CDataCacheCore::GetVideoDoViStreamMetadata()
@@ -348,7 +348,7 @@ void CDataCacheCore::SetVideoDoViStreamInfo(DOVIStreamInfo value)
 {
   std::lock_guard lock(m_videoPlayerSection);
 
-  m_playerVideoInfo.doviStreamInfo = value;
+  m_playerVideoInfo.doviStreamInfo = std::move(value);
 }
 
 DOVIStreamInfo CDataCacheCore::GetVideoDoViStreamInfo()
@@ -362,7 +362,7 @@ void CDataCacheCore::SetVideoSourceDoViStreamInfo(DOVIStreamInfo value)
 {
   std::lock_guard lock(m_videoPlayerSection);
 
-  m_playerVideoInfo.sourceDoViStreamInfo = value;
+  m_playerVideoInfo.sourceDoViStreamInfo = std::move(value);
 }
 
 DOVIStreamInfo CDataCacheCore::GetVideoSourceDoViStreamInfo()
@@ -376,7 +376,7 @@ void CDataCacheCore::SetVideoDoViCodecFourCC(std::string codecFourCC)
 {
   std::lock_guard lock(m_videoPlayerSection);
 
-  m_playerVideoInfo.doviCodecFourCC = codecFourCC;
+  m_playerVideoInfo.doviCodecFourCC = std::move(codecFourCC);
 }
 
 std::string CDataCacheCore::GetVideoDoViCodecFourCC()
@@ -390,7 +390,7 @@ void CDataCacheCore::SetVideoHDRStaticMetadataInfo(HDRStaticMetadataInfo value)
 {
   std::lock_guard lock(m_videoPlayerSection);
 
-  m_playerVideoInfo.hdrStaticMetadataInfo = value;
+  m_playerVideoInfo.hdrStaticMetadataInfo = std::move(value);
 }
 
 HDRStaticMetadataInfo CDataCacheCore::GetVideoHDRStaticMetadataInfo()
