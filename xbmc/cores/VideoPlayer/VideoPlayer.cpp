@@ -1343,25 +1343,24 @@ void CVideoPlayer::Prepare()
 
   if (starttime > 0)
   {
+    m_clock.Discontinuity(DVD_MSEC_TO_TIME(starttime));
+
     double startpts = DVD_NOPTS_VALUE;
     if (m_pDemuxer)
     {
       if (m_pDemuxer->SeekTime(starttime, true, &startpts))
-        CLog::Log(LOGDEBUG, "{} - starting demuxer from: {}", __FUNCTION__, starttime);
+        logM(LOGDEBUG, "CVideoPlayer", "starting demuxer from: {}", starttime);
       else
-        CLog::Log(LOGDEBUG, "{} - failed to start demuxing from: {}", __FUNCTION__, starttime);
+        logM(LOGDEBUG, "CVideoPlayer", "failed to start demuxing from: {}", starttime);
     }
 
     if (m_pSubtitleDemuxer)
     {
       if (m_pSubtitleDemuxer->SeekTime(starttime, false, &startpts))
-        CLog::Log(LOGDEBUG, "{} - starting subtitle demuxer from: {}", __FUNCTION__, starttime);
+        logM(LOGDEBUG, "CVideoPlayer", "starting subtitle demuxer from: {}", starttime);
       else
-        CLog::Log(LOGDEBUG, "{} - failed to start subtitle demuxing from: {}", __FUNCTION__,
-                  starttime);
+        logM(LOGDEBUG, "CVideoPlayer", "failed to start subtitle demuxing from: {}", starttime);
     }
-
-    m_clock.Discontinuity(DVD_MSEC_TO_TIME(starttime));
   }
 
   UpdatePlayState(0);
