@@ -561,7 +561,8 @@ std::string CMime::GetMimeType(const CURL &url, bool lookup)
 
   std::string strMimeType;
 
-  if( url.IsProtocol("shout") || url.IsProtocol("http") || url.IsProtocol("https"))
+  if (url.IsProtocol("shout") || url.IsProtocol("http") || url.IsProtocol("https") ||
+      url.IsProtocol("dav") || url.IsProtocol("davs"))
   {
     // If lookup is false, bail out early to leave mime type empty
     if (!lookup)
