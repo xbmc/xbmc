@@ -151,10 +151,10 @@ MHD_RESULT CHTTPPythonHandler::HandleRequest()
       pythonRequest->port = port;
     }
 
-    CHTTPPythonInvoker* pythonInvoker =
-        new CHTTPPythonWsgiInvoker(&CServiceBroker::GetXBPython(), pythonRequest);
-    LanguageInvokerPtr languageInvokerPtr(pythonInvoker);
-    int result = CScriptInvocationManager::GetInstance().ExecuteSync(m_scriptPath, languageInvokerPtr, m_addon, args, 30000, false);
+    auto languageInvokerPtr =
+        std::make_shared<CHTTPPythonWsgiInvoker>(&CServiceBroker::GetXBPython(), pythonRequest);
+    int result = CScriptInvocationManager::GetInstance().ExecuteSync(
+        m_scriptPath, languageInvokerPtr, m_addon, args, 30000, false);
 
     // check if the script couldn't be started
     if (result < 0)
@@ -177,7 +177,7 @@ MHD_RESULT CHTTPPythonHandler::HandleRequest()
       return MHD_YES;
     }
 
-    HTTPPythonRequest* pythonFinalizedRequest = pythonInvoker->GetRequest();
+    HTTPPythonRequest* pythonFinalizedRequest = languageInvokerPtr->GetRequest();
     if (pythonFinalizedRequest == NULL)
     {
       m_response.type = HTTPError;

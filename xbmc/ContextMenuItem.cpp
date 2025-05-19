@@ -66,7 +66,7 @@ bool CContextMenuItem::Execute(const std::shared_ptr<CFileItem>& item) const
     reuseLanguageInvoker = addon->ExtraInfo().at("reuselanguageinvoker") == "true";
 
 #ifdef HAS_PYTHON
-  LanguageInvokerPtr invoker(new CContextItemAddonInvoker(&CServiceBroker::GetXBPython(), item));
+  auto invoker = std::make_shared<CContextItemAddonInvoker>(&CServiceBroker::GetXBPython(), item);
   return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, addon, m_args, reuseLanguageInvoker) != -1);
 #else
   return false;

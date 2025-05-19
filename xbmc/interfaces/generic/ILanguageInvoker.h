@@ -73,5 +73,3 @@ private:
   InvokerState m_state = InvokerStateUninitialized;
   ILanguageInvocationHandler *m_invocationHandler;
 };
-
-typedef std::shared_ptr<ILanguageInvoker> LanguageInvokerPtr;
