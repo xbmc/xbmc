@@ -16,6 +16,7 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgDatabase.h"
+#include "pvr/epg/EpgGuidePath.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -474,7 +475,7 @@ std::string CPVREpgInfoTag::ClientIconPath() const
 
 std::string CPVREpgInfoTag::Path() const
 {
-  return StringUtils::Format("pvr://guide/{:04}/{}.epg", EpgID(), m_startTime.GetAsDBDateTime());
+  return CPVREpgGuidePath(EpgID(), m_startTime).GetPath();
 }
 
 bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /* = true */)
