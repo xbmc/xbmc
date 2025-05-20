@@ -164,6 +164,7 @@ public:
   void SeekTime( double dTime = 0.0 );
 
   void UpdateLibraries();
+  void CancelUpdateLibraries();
 
   void UpdateCurrentPlayArt();
 

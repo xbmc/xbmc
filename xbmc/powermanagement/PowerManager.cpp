@@ -196,6 +196,7 @@ void CPowerManager::OnSleep()
   const auto appPower = components.GetComponent<CApplicationPowerHandling>();
   appPower->StopShutdownTimer();
   appPower->StopScreenSaverTimer();
+  g_application.CancelUpdateLibraries();
   g_application.CloseNetworkShares();
   CServiceBroker::GetActiveAE()->Suspend();
 }

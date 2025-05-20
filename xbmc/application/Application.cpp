@@ -2156,11 +2156,7 @@ bool CApplication::Stop(int exitCode)
     CServiceBroker::GetJobManager()->CancelJobs();
 
     // stop scanning before we kill the network and so on
-    if (CMusicLibraryQueue::GetInstance().IsRunning())
-      CMusicLibraryQueue::GetInstance().CancelAllJobs();
-
-    if (CVideoLibraryQueue::GetInstance().IsRunning())
-      CVideoLibraryQueue::GetInstance().CancelAllJobs();
+    CancelUpdateLibraries();
 
     CServiceBroker::GetAppMessenger()->Cleanup();
 
@@ -3595,6 +3591,21 @@ void CApplication::UpdateLibraries()
     CMusicLibraryQueue::GetInstance().ScanLibrary(
         "", MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL,
         !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
+  }
+}
+
+void CApplication::CancelUpdateLibraries()
+{
+  if (CMusicLibraryQueue::GetInstance().IsRunning())
+  {
+    logM(LOGINFO, "CApplication", "Cancel music library scan");
+    CMusicLibraryQueue::GetInstance().CancelAllJobs();
+  }
+
+  if (CVideoLibraryQueue::GetInstance().IsRunning())
+  {
+    logM(LOGINFO, "CApplication", "Cancel video library scan");
+    CVideoLibraryQueue::GetInstance().CancelAllJobs();
   }
 }
 
