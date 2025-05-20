@@ -508,6 +508,8 @@ macro(BUILD_DEP_TARGET)
 
   set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES FOLDER "External Projects")
 
+  set(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND TRUE)
+
   CLEAR_BUILD_VARS()
 endmacro()
 
