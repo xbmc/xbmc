@@ -121,8 +121,9 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       break;
       case NodeType::SEASONS:
       {
-        AddSortMethod(SortBySortTitle, 556, LABEL_MASKS("%L", "","%L",""));  // Label, empty | Label, empty
-        SetSortMethod(SortBySortTitle);
+        AddSortMethod(SortBySeason, 20373,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        SetSortMethod(SortBySeason);
 
         const CViewState *viewState = CViewStateSettings::GetInstance().Get("videonavseasons");
         SetViewAsControl(viewState->m_viewMode);
