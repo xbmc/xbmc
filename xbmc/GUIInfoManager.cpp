@@ -10370,15 +10370,9 @@ constexpr std::array<InfoMap, 63> slideshow = {{
 /// \page modules__infolabels_boolean_conditions
 /// \tableofcontents
 
-bool InfoBoolComparator(const InfoPtr& right, const InfoPtr& left)
-{
-  return *right < *left;
-}
-
 } // unnamed namespace
 
-CGUIInfoManager::CGUIInfoManager()
-  : m_currentFile(std::make_unique<CFileItem>()), m_bools(&InfoBoolComparator)
+CGUIInfoManager::CGUIInfoManager() : m_currentFile(std::make_unique<CFileItem>())
 {
 }
 
