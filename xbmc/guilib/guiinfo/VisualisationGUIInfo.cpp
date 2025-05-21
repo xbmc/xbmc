@@ -85,7 +85,7 @@ bool CVisualisationGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int 
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       if (msg.GetPointer())
       {
-        CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
+        auto* viz{static_cast<CGUIVisualisationControl*>(msg.GetPointer())};
         value = viz->IsLocked();
         return true;
       }

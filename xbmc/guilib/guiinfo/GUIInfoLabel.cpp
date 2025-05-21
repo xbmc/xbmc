@@ -347,7 +347,8 @@ void CGUIInfoLabel::Parse(const std::string& label,
       if (pos2 != std::string::npos)
       {
         // decipher the block
-        std::vector<std::string> params = StringUtils::Split(work.substr(pos1 + len, pos2 - pos1 - len), ",");
+        const std::vector<std::string> params =
+            StringUtils::Split(std::string_view(work).substr(pos1 + len, pos2 - pos1 - len), ",");
         if (!params.empty())
         {
           CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();

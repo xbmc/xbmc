@@ -18,7 +18,7 @@
 namespace KODI::UTILS::COLOR
 {
 
-typedef uint32_t Color;
+using Color = uint32_t;
 
 // Custom colors
 

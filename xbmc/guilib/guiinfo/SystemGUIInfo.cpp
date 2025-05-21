@@ -95,7 +95,7 @@ void CSystemGUIInfo::UpdateFPS()
   m_frameCounter++;
   unsigned int curTime = CTimeUtils::GetFrameTime();
 
-  float fTimeSpan = static_cast<float>(curTime - m_lastFPSTime);
+  auto fTimeSpan{static_cast<float>(curTime - m_lastFPSTime)};
   if (fTimeSpan >= 1000.0f)
   {
     fTimeSpan /= 1000.0f;
@@ -360,7 +360,8 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     {
       KODI::MEMORY::MemoryStatus stat;
       KODI::MEMORY::GetMemoryStatus(&stat);
-      int memPercentUsed = static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f);
+      const auto memPercentUsed{
+          static_cast<int>(100.0f * (stat.totalPhys - stat.availPhys) / stat.totalPhys + 0.5f)};
       if (info.GetInfo() == SYSTEM_FREE_MEMORY)
         value = 100 - memPercentUsed;
       else

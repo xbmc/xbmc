@@ -30,7 +30,7 @@ class CInputStreamPVRBase
   , public CDVDInputStream::IDemux
 {
 public:
-  CInputStreamPVRBase(const CFileItem& fileitem);
+  explicit CInputStreamPVRBase(const CFileItem& fileitem);
   ~CInputStreamPVRBase() override;
   bool Open() override;
   void Close() override;

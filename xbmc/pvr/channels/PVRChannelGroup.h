@@ -576,26 +576,10 @@ protected:
 
   std::shared_ptr<CPVRChannelGroupSettings> GetSettings() const;
 
-  int m_iGroupId = INVALID_GROUP_ID; /*!< The ID of this group in the database */
-  bool m_bLoaded = false; /*!< True if this container is loaded, false otherwise */
-  bool m_bChanged =
-      false; /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
-  time_t m_iLastWatched = 0; /*!< last time group has been watched */
-  uint64_t m_iLastOpened = 0; /*!< time in milliseconds from epoch this group was last opened */
-  bool m_bHidden = false; /*!< true if this group is hidden, false otherwise */
-  int m_iPosition = 0; /*!< the local position of this group within the group list */
-  std::vector<std::shared_ptr<CPVRChannelGroupMember>>
-      m_sortedMembers; /*!< members sorted by channel number */
   std::map<std::pair<int, int>, std::shared_ptr<CPVRChannelGroupMember>>
       m_members; /*!< members with key clientid+uniqueid */
   mutable CCriticalSection m_critSection;
   std::vector<int> m_failedClients;
-  CEventSource<PVREvent> m_events;
-  mutable std::shared_ptr<CPVRChannelGroupSettings> m_settings;
-
-  // the settings singleton shared between all group instances
-  static CCriticalSection m_settingsSingletonCritSection;
-  static std::weak_ptr<CPVRChannelGroupSettings> m_settingsSingleton;
 
 private:
   /*!
@@ -636,5 +620,22 @@ private:
   bool m_isUserSetName{false};
   std::string m_clientGroupName;
   int m_iClientPosition{0};
+
+  int m_iGroupId{INVALID_GROUP_ID}; /*!< The ID of this group in the database */
+  bool m_bLoaded{false}; /*!< True if this container is loaded, false otherwise */
+  bool m_bChanged{
+      false}; /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
+  time_t m_iLastWatched{0}; /*!< last time group has been watched */
+  uint64_t m_iLastOpened{0}; /*!< time in milliseconds from epoch this group was last opened */
+  bool m_bHidden{false}; /*!< true if this group is hidden, false otherwise */
+  int m_iPosition{0}; /*!< the local position of this group within the group list */
+  std::vector<std::shared_ptr<CPVRChannelGroupMember>>
+      m_sortedMembers; /*!< members sorted by channel number */
+  CEventSource<PVREvent> m_events;
+  mutable std::shared_ptr<CPVRChannelGroupSettings> m_settings;
+
+  // the settings singleton shared between all group instances
+  static CCriticalSection m_settingsSingletonCritSection;
+  static std::weak_ptr<CPVRChannelGroupSettings> m_settingsSingleton;
 };
 } // namespace PVR

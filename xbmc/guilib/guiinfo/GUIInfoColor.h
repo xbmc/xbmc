@@ -26,9 +26,16 @@ namespace KODI::GUILIB::GUIINFO
 class CGUIInfoColor
 {
 public:
-  constexpr CGUIInfoColor(UTILS::COLOR::Color color = 0) : m_color(color) {}
-  constexpr CGUIInfoColor(UTILS::COLOR::Color color, int info) : m_info(info), m_color(color) {}
+  explicit constexpr CGUIInfoColor(KODI::UTILS::COLOR::Color color = 0) : m_color(color) {}
+  constexpr CGUIInfoColor(KODI::UTILS::COLOR::Color color, int info) : m_info(info), m_color(color)
+  {
+  }
 
+  constexpr CGUIInfoColor& operator=(int color)
+  {
+    m_color = color;
+    return *this;
+  }
   constexpr operator KODI::UTILS::COLOR::Color() const { return m_color; }
 
   bool Update(const CGUIListItem* item = nullptr);

@@ -121,9 +121,7 @@ private:
   bool GetListItemAndPlayerBool(const CFileItem* item,
                                 const KODI::GUILIB::GUIINFO::CGUIInfo& info,
                                 bool& bValue) const;
-  bool GetPVRBool(const CFileItem* item,
-                  const KODI::GUILIB::GUIINFO::CGUIInfo& info,
-                  bool& bValue) const;
+  bool GetPVRBool(const KODI::GUILIB::GUIINFO::CGUIInfo& info, bool& bValue) const;
   bool GetRadioRDSBool(const CFileItem* item,
                        const KODI::GUILIB::GUIINFO::CGUIInfo& info,
                        bool& bValue) const;

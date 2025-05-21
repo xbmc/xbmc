@@ -261,7 +261,7 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
 
       std::string libDir = profileManager->GetLibraryFolder();
       XFILE::CDirectory::GetDirectory(libDir, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
-      if (items.Size() == 0)
+      if (items.IsEmpty())
         libDir = "special://xbmc/system/library/";
 
       std::string nodePath = URIUtils::AddFileToFolder(libDir, url.GetHostName() + "/");
