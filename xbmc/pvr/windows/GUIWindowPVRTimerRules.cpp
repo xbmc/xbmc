@@ -20,7 +20,7 @@ CGUIWindowPVRTVTimerRules::CGUIWindowPVRTVTimerRules()
 {
 }
 
-std::string CGUIWindowPVRTVTimerRules::GetRootPath() const
+std::string CGUIWindowPVRTVTimerRules::GetRootPath()
 {
   return CPVRTimersPath::PATH_TV_TIMER_RULES;
 }
@@ -36,7 +36,7 @@ CGUIWindowPVRRadioTimerRules::CGUIWindowPVRRadioTimerRules()
 {
 }
 
-std::string CGUIWindowPVRRadioTimerRules::GetRootPath() const
+std::string CGUIWindowPVRRadioTimerRules::GetRootPath()
 {
   return CPVRTimersPath::PATH_RADIO_TIMER_RULES;
 }

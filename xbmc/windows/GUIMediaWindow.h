@@ -54,7 +54,7 @@ public:
   virtual bool IsFiltered();
   virtual bool IsSameStartFolder(const std::string &dir);
 
-  virtual std::string GetRootPath() const { return ""; }
+  virtual std::string GetRootPath() { return ""; }
 
   const CFileItemList &CurrentDirectory() const;
   const CGUIViewState *GetViewState() const;

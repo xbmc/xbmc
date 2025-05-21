@@ -70,7 +70,7 @@ public:
   CGUIWindowPVRTVSearch() : CGUIWindowPVRSearchBase(false, WINDOW_TV_SEARCH, "MyPVRSearch.xml") {}
 
 protected:
-  std::string GetRootPath() const override;
+  std::string GetRootPath() override;
   std::string GetStartFolder(const std::string& dir) override;
   std::string GetDirectoryPath() override;
 };
@@ -83,7 +83,7 @@ public:
   }
 
 protected:
-  std::string GetRootPath() const override;
+  std::string GetRootPath() override;
   std::string GetStartFolder(const std::string& dir) override;
   std::string GetDirectoryPath() override;
 };

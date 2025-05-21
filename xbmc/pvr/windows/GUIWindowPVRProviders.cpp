@@ -179,7 +179,7 @@ void CGUIWindowPVRProvidersBase::ActivateRecordingsWindow(
       selectedPath.IsRadio() ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS, targetPath);
 }
 
-std::string CGUIWindowPVRTVProviders::GetRootPath() const
+std::string CGUIWindowPVRTVProviders::GetRootPath()
 {
   return CPVRProvidersPath::PATH_TV_PROVIDERS;
 }
@@ -191,7 +191,7 @@ std::string CGUIWindowPVRTVProviders::GetDirectoryPath()
              : CPVRProvidersPath::PATH_TV_PROVIDERS;
 }
 
-std::string CGUIWindowPVRRadioProviders::GetRootPath() const
+std::string CGUIWindowPVRRadioProviders::GetRootPath()
 {
   return CPVRProvidersPath::PATH_RADIO_PROVIDERS;
 }
