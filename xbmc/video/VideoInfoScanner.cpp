@@ -66,6 +66,35 @@ using namespace KODI;
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using KODI::UTILITY::CDigest;
 
+namespace
+{
+void ProcessEpisodeRange(int first,
+                         int last,
+                         VIDEO::EPISODE& episode,
+                         VIDEO::EPISODELIST& episodeList,
+                         const std::string& regex)
+{
+  if (first <= last)
+  {
+    for (int e = first; e <= last; ++e)
+    {
+      episode.iEpisode = e;
+      CLog::LogF(LOGDEBUG, "VideoInfoScanner: Adding multipart episode {} [{}]", episode.iEpisode,
+                 regex);
+      episodeList.push_back(episode);
+    }
+  }
+  else if (!episodeList.empty())
+  {
+    // SxxEaa-SxxEbb or Eaa-Ebb is backwards - bb<aa
+    CLog::LogF(LOGDEBUG,
+               "VideoInfoScanner: Removing season {}, episode {} as range {}-{} is backwards",
+               episode.iSeason, episode.iEpisode, episodeList.back().iEpisode, last);
+    episodeList.pop_back();
+  }
+}
+} // namespace
+
 namespace KODI::VIDEO
 {
 
@@ -1323,36 +1352,82 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // add what we found by now
       episodeList.push_back(episode);
 
+      const bool disableEpisodeRanges{m_advancedSettings->m_disableEpisodeRanges};
+
       CRegExp reg2(true, CRegExp::autoUtf8);
       // check the remainder of the string for any further episodes.
       if (!byDate && reg2.RegComp(m_advancedSettings->m_tvshowMultiPartEnumRegExp))
       {
-        int offset = 0;
+        int offset{0};
+        int currentSeason{episode.iSeason};
+        int currentEpisode{episode.iEpisode};
 
         // we want "long circuit" OR below so that both offsets are evaluated
         while (static_cast<int>((regexp2pos = reg2.RegFind(remainder.c_str() + offset)) > -1) |
                static_cast<int>((regexppos = reg.RegFind(remainder.c_str() + offset)) > -1))
         {
-          if (((regexppos <= regexp2pos) && regexppos != -1) ||
-             (regexppos >= 0 && regexp2pos == -1))
+          if ((regexppos <= regexp2pos && regexppos != -1) || // season (or 'ep') match
+              (regexppos >= 0 && regexp2pos == -1))
           {
             GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason);
+            if (currentSeason == episode.iSeason)
+            {
+              // Already added SxxEyy now loop (if needed) to SxxEzz
+              const int last{episode.iEpisode};
+              const int next{
+                  disableEpisodeRanges || !remainder.starts_with("-") ? last : currentEpisode + 1};
 
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season {}, multipart episode {} [{}]",
-                      episode.iSeason, episode.iEpisode,
-                      m_advancedSettings->m_tvshowMultiPartEnumRegExp);
+              ProcessEpisodeRange(next, last, episode, episodeList,
+                                  m_advancedSettings->m_tvshowMultiPartEnumRegExp);
 
-            episodeList.push_back(episode);
-            remainder = reg.GetMatch(3);
+              currentEpisode = episode.iEpisode;
+              remainder = reg.GetMatch(3);
+            }
+            else
+            {
+              // Two possible scenarios here:
+              if (remainder.substr(offset, 1) != "-" || disableEpisodeRanges)
+              {
+                // (Sxx)Eyy has already been added and we now in a new range (eg. S00E01S01E01....)
+                // Add first episode here
+                currentSeason = episode.iSeason;
+                currentEpisode = episode.iEpisode;
+                episodeList.push_back(episode);
+                remainder = reg.GetMatch(3);
+              }
+              else
+              {
+                // (Sxx)Eyy has already been added as start of range and we now have SaaEbb (eg. S01E01-S02E05)
+                //   this is not allowed as scanner cannot determine how many episodes in a season
+                if (offset == 0)
+                {
+                  // Already added first episode of invalid range so remove it
+                  episodeList.pop_back();
+                  remainder = reg.GetMatch(3);
+                  CLog::LogF(
+                      LOGDEBUG,
+                      "VideoInfoScanner: Removing season {}, episode {} as part of invalid range",
+                      episode.iSeason, episode.iEpisode);
+                }
+                else
+                {
+                  remainder = remainder.substr(offset);
+                }
+              }
+            }
             offset = 0;
           }
-          else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
+          else if ((regexp2pos < regexppos && regexp2pos != -1) || // episode match
                    (regexp2pos >= 0 && regexppos == -1))
           {
-            episode.iEpisode = atoi(reg2.GetMatch(1).c_str());
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode {} [{}]",
-                      episode.iEpisode, m_advancedSettings->m_tvshowMultiPartEnumRegExp);
-            episodeList.push_back(episode);
+            const int last{std::stoi(reg2.GetMatch(1))};
+            const int next{remainder.starts_with("-") && !disableEpisodeRanges ? currentEpisode + 1
+                                                                               : last};
+
+            ProcessEpisodeRange(next, last, episode, episodeList,
+                                m_advancedSettings->m_tvshowMultiPartEnumRegExp);
+
+            currentEpisode = episode.iEpisode;
             offset += regexp2pos + reg2.GetFindLen();
           }
         }
