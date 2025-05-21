@@ -157,6 +157,9 @@ public:
     : CDirectoryProvider::CSubscriber(invalidate)
   {
     CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRSubscriber::OnPVRManagerEvent);
+
+    if (CServiceBroker::GetPVRManager().IsStarted())
+      m_pvrStarted.test_and_set();
   }
   ~CPVRSubscriber() override { CServiceBroker::GetPVRManager().Events().Unsubscribe(this); }
 
