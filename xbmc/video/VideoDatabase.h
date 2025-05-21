@@ -633,10 +633,10 @@ public:
                            const std::map<std::string, std::string>& artwork,
                            int idShow,
                            int idEpisode = -1);
-  bool SetFileForMedia(const std::string& fileAndPath,
-                       VideoDbContentType type,
-                       int mediaId,
-                       int oldIdFile);
+  int SetFileForMedia(const std::string& fileAndPath,
+                      VideoDbContentType type,
+                      int mediaId,
+                      int oldIdFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
@@ -1175,6 +1175,11 @@ public:
                              int dbIdTarget,
                              int idVideoVersion,
                              VideoAssetType assetType);
+  bool AddVideoVersion(VideoDbContentType itemType,
+                       int dbIdSource,
+                       int idFile,
+                       int idVideoVersion,
+                       VideoAssetType assetType);
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
@@ -1324,9 +1329,9 @@ protected:
   void GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   std::string GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
 
-  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
-  bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
-  bool SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
+  int SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
+  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
+  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
 
 private:
   void CreateTables() override;
@@ -1353,6 +1358,7 @@ private:
    \return the number of rows, -1 for an error.
    */
   int RunQuery(const std::string &sql);
+  int RunQuery2(const std::string& sql);
 
   void AppendIdLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter);
   void AppendLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter);
