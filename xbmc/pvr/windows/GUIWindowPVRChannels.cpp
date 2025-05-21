@@ -72,7 +72,7 @@ CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase()
 
 std::string CGUIWindowPVRChannelsBase::GetDirectoryPath()
 {
-  const std::string basePath{CPVRChannelsPath(m_bRadio, m_bShowHiddenChannels,
+  const std::string basePath{CPVRChannelsPath(IsRadio(), m_bShowHiddenChannels,
                                               GetChannelGroup()->GroupName(),
                                               GetChannelGroup()->GetClientID())
                                  .AsString()};
@@ -132,7 +132,7 @@ void CGUIWindowPVRChannelsBase::UpdateButtons()
   {
     btnShowHidden->SetVisible(CServiceBroker::GetPVRManager()
                                   .ChannelGroups()
-                                  ->GetGroupAll(m_bRadio)
+                                  ->GetGroupAll(IsRadio())
                                   ->HasHiddenChannels());
     btnShowHidden->SetSelected(m_bShowHiddenChannels);
   }
@@ -391,7 +391,7 @@ void CGUIWindowPVRChannelsBase::ShowChannelManager() const
   if (!dialog)
     return;
 
-  dialog->SetRadio(m_bRadio);
+  dialog->SetRadio(IsRadio());
 
   const int iItem = m_viewControl.GetSelectedItem();
   dialog->Open(iItem >= 0 && iItem < m_vecItems->Size() ? m_vecItems->Get(iItem) : nullptr);
@@ -406,7 +406,7 @@ void CGUIWindowPVRChannelsBase::ShowGroupManager() const
   if (!pDlgInfo)
     return;
 
-  pDlgInfo->SetRadio(m_bRadio);
+  pDlgInfo->SetRadio(IsRadio());
   pDlgInfo->Open();
 }
 

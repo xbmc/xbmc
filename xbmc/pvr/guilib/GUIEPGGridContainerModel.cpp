@@ -546,7 +546,7 @@ bool CGUIEPGGridContainerModel::FreeProgrammeMemory(int firstChannel,
     {
       auto it = m_epgItems.find(i);
       if (it == m_epgItems.end())
-        it = m_epgItems.insert({i, EpgTags()}).first;
+        it = m_epgItems.try_emplace(i).first;
 
       if (blocksChanged || i < m_firstActiveChannel || i > m_lastActiveChannel)
       {
