@@ -273,9 +273,6 @@ protected:
   /* Returns old field value (for :OLD) */
   virtual field_value f_old(const char* f);
 
-  /* fast string tolower helper */
-  char* str_toLower(char* s);
-
 public:
   /* constructor */
   Dataset();

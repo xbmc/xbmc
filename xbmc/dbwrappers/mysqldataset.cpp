@@ -1752,7 +1752,8 @@ void MysqlDataset::fill_fields()
     {
       (*fields_object)[i].props = result.record_header[i];
       std::string name = result.record_header[i].name;
-      name2indexMap.try_emplace(str_toLower(name.data()), static_cast<unsigned int>(i));
+      StringUtils::ToLower(name);
+      name2indexMap.try_emplace(std::move(name), static_cast<unsigned int>(i));
     }
   }
 
