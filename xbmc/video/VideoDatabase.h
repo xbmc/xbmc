@@ -476,6 +476,14 @@ enum class DeleteMovieHashAction
 
 class CVideoDatabase : public CDatabase
 {
+  struct FileInformation
+  {
+    std::string path;
+    int fileId{0};
+    int vvId{0};
+    std::string hash;
+  };
+
 public:
 
   class CActor    // used for actor retrieval for non-master users
@@ -1057,6 +1065,7 @@ public:
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
   void ExportActorThumbs(const std::string& path,
+                         const std::string& singlePath,
                          const CVideoInfoTag& tag,
                          bool singleFiles,
                          bool overwrite = false,

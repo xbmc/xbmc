@@ -138,11 +138,18 @@ public:
    */
   static std::string GetBlurayAllEpisodesPath(const std::string& path);
 
+  /*! \brief Given a path to bluray playlist (bluray://.../xxxxx.mpls), returns the playlist number.
+   \param path the bluray:// path
+   \return the playlist number
+   */
+  static int GetBlurayPlaylistFromPath(const std::string& path);
+
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
    \param path the ISO/index.BDMV path.
-   \return the bluray:// playlist path - BDMV/PLAYLIST
+   \param playlist (optional) the .mpls playlist
+   \return the bluray:// playlist path - BDMV/PLAYLIST(/xxxxx.mpls)
    */
-  static std::string GetBlurayPlaylistPath(const std::string& path);
+  static std::string GetBlurayPlaylistPath(const std::string& path, int playlist = -1);
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path.
    \param path the ISO/index.BDMV path.
