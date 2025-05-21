@@ -55,7 +55,7 @@ public:
 
   void AddPath(const std::string& strPath, const std::string &m_strFilterPath = "");
   void AddPathFront(const std::string& strPath, const std::string &m_strFilterPath = "");
-  std::string GetParentPath(bool filter = false);
+  std::string GetParentPath(const std::string& currentPath = "", bool filter = false);
   std::string RemoveParentPath(bool filter = false);
   void ClearPathHistory();
   void ClearSearchHistory();
