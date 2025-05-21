@@ -9,6 +9,7 @@
 #include "IRTranslator.h"
 
 #include "ServiceBroker.h"
+#include "input/keyboard/Key.h"
 #include "input/remote/IRRemote.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
@@ -137,6 +138,16 @@ void CIRTranslator::MapRemote(tinyxml2::XMLNode* pRemote, const std::string& szD
 void CIRTranslator::Clear()
 {
   m_irRemotesMap.clear();
+}
+
+uint32_t CIRTranslator::TranslateButton(const tinyxml2::XMLElement* pButton)
+{
+  return ApplyModifiersToButton(pButton, TranslateString(pButton->Value()));
+}
+
+uint32_t CIRTranslator::TranslateUniversalRemoteButton(const tinyxml2::XMLElement* pButton)
+{
+  return ApplyModifiersToButton(pButton, TranslateUniversalRemoteString(pButton->Value()));
 }
 
 unsigned int CIRTranslator::TranslateButton(const std::string& szDevice,
@@ -321,4 +332,29 @@ uint32_t CIRTranslator::TranslateUniversalRemoteString(const std::string& szButt
     buttonCode = 0;
 
   return buttonCode;
+}
+
+uint32_t CIRTranslator::ApplyModifiersToButton(const tinyxml2::XMLElement* pButton,
+                                               uint32_t iButtonCode)
+{
+  // Process the longpress modifier
+  std::string strMod;
+  if (pButton->Attribute("mod"))
+  {
+    strMod = pButton->Attribute("mod");
+    StringUtils::ToLower(strMod);
+
+    std::vector<std::string> modArray = StringUtils::Split(strMod, ",");
+    for (auto substr : modArray)
+    {
+      StringUtils::Trim(substr);
+
+      if (substr == "longpress")
+        iButtonCode |= CKey::MODIFIER_LONG;
+      else
+        CLog::Log(LOGERROR, "Remote Translator: Unknown key modifier {} in {}", substr, strMod);
+    }
+  }
+
+  return iButtonCode;
 }
