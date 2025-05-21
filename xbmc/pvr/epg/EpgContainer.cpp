@@ -16,6 +16,7 @@
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgDatabase.h"
+#include "pvr/epg/EpgGuidePath.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "pvr/settings/PVRSettings.h"
@@ -516,6 +517,18 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagByDatabaseId(int iDataba
   }
 
   return retval;
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagByPath(const std::string& path) const
+{
+  const CPVREpgGuidePath guidePath{path};
+  if (guidePath.IsValid())
+  {
+    const std::shared_ptr<const CPVREpg> epg{GetById(guidePath.GetEpgId())};
+    if (epg)
+      return epg->GetTagByStartDateTime(guidePath.GetStartDateTime());
+  }
+  return {};
 }
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetTags(

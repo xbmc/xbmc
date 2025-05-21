@@ -152,6 +152,13 @@ public:
   std::shared_ptr<CPVREpgInfoTag> GetTagByDatabaseId(int iDatabaseId) const;
 
   /*!
+   * @brief Get the EPG event with the given path
+   * @param path The path
+   * @return The requested event, or an empty tag when not found
+   */
+  std::shared_ptr<CPVREpgInfoTag> GetTagByPath(const std::string& path) const;
+
+  /*!
    * @brief Get all EPG tags matching the given search criteria.
    * @param searchData The search criteria.
    * @return The matching tags.

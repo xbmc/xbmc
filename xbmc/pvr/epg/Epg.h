@@ -164,6 +164,13 @@ namespace PVR
     std::shared_ptr<CPVREpgInfoTag> GetTagByDatabaseId(int iDatabaseId) const;
 
     /*!
+     * @brief Get the event matching the given start date and time
+     * @param start The start date and time to look up
+     * @return The matching event or empty ptr if it wasn't found.
+     */
+    std::shared_ptr<CPVREpgInfoTag> GetTagByStartDateTime(const CDateTime& start) const;
+
+    /*!
      * @brief Update an entry in this EPG.
      * @param data The tag to update.
      * @param iClientId The id of the pvr client this event belongs to.
