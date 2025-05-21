@@ -138,9 +138,13 @@ def _parse_media_id(title):
     return None
 
 def _get_movie(mid, language=None, search=False):
-    details = None if search else \
-        'trailers,images,releases,casts,keywords' if language is not None else \
-        'trailers'
+    if search:
+        details = None
+    elif language is not None:
+        details = 'trailers,images,releases,casts,keywords'
+    else:
+        details = 'trailers'
+    
     response = tmdbapi.get_movie(mid, language=language, append_to_response=details)
     theerror = response.get('error')
     if theerror:
