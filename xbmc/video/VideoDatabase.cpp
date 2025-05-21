@@ -11195,9 +11195,15 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
     progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     // find all movies
-    std::string sql = "select * from movie_view";
 
-    m_pDS->query(sql);
+    // need this due to query clashes in GetFile/GetPath
+    std::unique_ptr<Dataset> pDS3;
+    pDS3.reset(m_pDB->CreateDataset());
+    if (nullptr == pDS3)
+      return;
+    std::string sql = "select * from movie_view order by idFile";
+
+    pDS3->query(sql);
 
     if (progress)
     {
@@ -11210,7 +11216,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       progress->ShowProgressBar(true);
     }
 
-    int total = m_pDS->num_rows();
+    int total = pDS3->num_rows();
     int current = 0;
 
     // create our xml document
@@ -11227,72 +11233,162 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       XMLUtils::SetInt(pMain,"version", GetExportVersion());
     }
 
-    while (!m_pDS->eof())
+    std::map<unsigned int, unsigned int> fileIdMap;
+    std::map<unsigned int, bool> multiMovieMap;
+    if (!singleFile)
     {
-      CVideoInfoTag movie = GetDetailsForMovie(m_pDS, VideoDbDetailsAll);
-      // strip paths to make them relative
-      if (StringUtils::StartsWith(movie.m_strTrailer, movie.m_strPath))
-        movie.m_strTrailer = movie.m_strTrailer.substr(movie.m_strPath.size());
-      std::map<std::string, std::string> artwork;
-      if (GetArtForItem(movie.m_iDbId, movie.m_type, artwork) && !artwork.empty() && singleFile)
+      // Generate map of fileIds (to identify multi-version files)
+      std::multimap<unsigned int, FileInformation> fileMap;
+      while (!pDS3->eof())
       {
-        TiXmlElement additionalNode("art");
-        for (const auto &i : artwork)
-          XMLUtils::SetString(&additionalNode, i.first.c_str(), i.second);
-        movie.Save(pMain, "movie", true, &additionalNode);
+        const std::string fileName{pDS3->fv("strFileName").get_asString()};
+        const std::string path{pDS3->fv("strPath").get_asString()};
+        std::string fullPath;
+        ConstructPath(fullPath, path, fileName);
+        fileMap.emplace(
+            pDS3->fv("idFile").get_asInt(),
+            FileInformation{.path = fullPath, .vvId = pDS3->fv("videoVersionIdFile").get_asInt()});
+        pDS3->next();
       }
-      else
-        movie.Save(pMain, "movie", singleFile);
+      pDS3->first();
 
+      // Now look at multiple versions with same fileId
+      // If they are NOT blurays then we need to export them as separate file
+      for (unsigned int fileId : std::views::keys(fileMap))
+        fileIdMap[fileId]++;
+
+      for (unsigned int fileId :
+           fileIdMap | std::views::filter([](const auto& p) { return p.second > 1; }) |
+               std::views::keys)
+      {
+        for (const auto range{fileMap.equal_range(fileId)};
+             const auto& fileInformation :
+             std::ranges::subrange(range.first, range.second) | std::views::values)
+        {
+          multiMovieMap[fileInformation.vvId] =
+              URIUtils::IsBlurayPath(fileInformation.path) ||
+              URIUtils::IsBDFile(fileInformation.path) ||
+              ::UTILS::DISCS::IsBlurayDiscImage(fileInformation.path);
+        }
+      }
+    }
+
+    while (!pDS3->eof())
+    {
       // reset old skip state
       bool bSkip = false;
 
-      if (progress)
+      std::string nfoFile;
+
+      // All versions in movie_view have the idFile of the movie in the movie table
+      // Get idFile of the movie that is in the movie table
+      // For blurays (where there is one physical file - ie. ISO or index.bdmv) this is ok
+      // For other files we need the videoversion idFile
+      const int currentIdFile{pDS3->fv("idFile").get_asInt()};
+      const int currentVvIdFile{pDS3->fv("idFile").get_asInt()};
+      const bool isDisc{multiMovieMap.contains(currentVvIdFile) && multiMovieMap[currentVvIdFile]};
+
+      // To be XML compliant multiple <movie> tags need to be enclosed in a <movies> tag
+      if (!singleFile && isDisc && fileIdMap[currentIdFile] > 1)
       {
-        progress->SetLine(1, CVariant{movie.m_strTitle});
-        progress->SetPercentage(current * 100 / total);
-        progress->Progress();
-        if (progress->IsCanceled())
-        {
-          progress->Close();
-          m_pDS->close();
-          return;
-        }
+        TiXmlElement xmlMainElement("movies");
+        pMain = xmlDoc.InsertEndChild(xmlMainElement);
       }
 
-      CFileItem item(movie.m_strFileNameAndPath,false);
-      std::string singlePath;
-      if (!singleFile && CUtil::SupportsWriteFileOperations(movie.m_strFileNameAndPath))
+      do
       {
-        if (!item.Exists(false))
+        CVideoInfoTag movie = GetDetailsForMovie(pDS3, VideoDbDetailsAll);
+        // strip paths to make them relative
+        if (StringUtils::StartsWith(movie.m_strTrailer, movie.m_strPath))
+          movie.m_strTrailer = movie.m_strTrailer.substr(movie.m_strPath.size());
+        std::map<std::string, std::string> artwork;
+        if (GetArtForItem(movie.m_iDbId, movie.m_type, artwork) && !artwork.empty() && singleFile)
         {
-          CLog::Log(LOGINFO, "{} - Not exporting item {} as it does not exist", __FUNCTION__,
-                    movie.m_strFileNameAndPath);
-          bSkip = true;
+          TiXmlElement additionalNode("art");
+          for (const auto& i : artwork)
+            XMLUtils::SetString(&additionalNode, i.first.c_str(), i.second);
+          movie.Save(pMain, "movie", true, &additionalNode);
         }
         else
+          movie.Save(pMain, "movie", singleFile);
+
+        if (progress)
         {
-          std::string nfoFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo"));
-
-          if (item.IsOpticalMediaFile())
-            nfoFile = URIUtils::AddFileToFolder(URIUtils::GetParentPath(nfoFile),
-                                                URIUtils::GetFileName(nfoFile));
-          else if (URIUtils::IsBlurayPath(item.GetDynPath()))
-            nfoFile =
-                URIUtils::ReplaceExtension(URIUtils::GetBlurayFile(item.GetDynPath()), ".nfo");
-
-          if (overwrite || !CFile::Exists(nfoFile, false))
+          progress->SetLine(1, CVariant{movie.m_strTitle});
+          progress->SetPercentage(current * 100 / total);
+          progress->Progress();
+          if (progress->IsCanceled())
           {
-            if(!xmlDoc.SaveFile(nfoFile))
+            progress->Close();
+            pDS3->close();
+            return;
+          }
+        }
+
+        CFileItem item(movie.m_strFileNameAndPath, false);
+        std::string singlePath;
+        if (!singleFile && CUtil::SupportsWriteFileOperations(movie.m_strFileNameAndPath))
+        {
+          if (!item.Exists(false))
+          {
+            CLog::LogF(LOGINFO, "Not exporting item {} as it does not exist",
+                       movie.m_strFileNameAndPath);
+            bSkip = true;
+          }
+          else
+          {
+            nfoFile = URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo");
+            if (item.IsOpticalMediaFile())
+              nfoFile = URIUtils::AddFileToFolder(URIUtils::GetParentPath(nfoFile),
+                                                  URIUtils::GetFileName(nfoFile));
+            else if (URIUtils::IsBlurayPath(item.GetDynPath()))
+              nfoFile =
+                  URIUtils::ReplaceExtension(URIUtils::GetBlurayFile(item.GetDynPath()), ".nfo");
+            singlePath = URIUtils::GetDirectory(nfoFile);
+          }
+        }
+
+        if (images && !bSkip)
+        {
+          if (singleFile)
+          {
+            std::string strFileName(movie.m_strTitle);
+            if (movie.HasYear())
+              strFileName += StringUtils::Format("_{}", movie.GetYear());
+            item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
+          }
+          else if (fileIdMap[currentIdFile] > 1)
+          {
+            // If multi-movie file then art files are specific to version (ie. playlist for blurays)
+            if (URIUtils::IsBlurayPath(item.GetDynPath()))
             {
-              CLog::Log(LOGERROR, "{}: Movie nfo export failed! ('{}')", __FUNCTION__, nfoFile);
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                    g_localizeStrings.Get(20302),
-                                                    CURL::GetRedacted(nfoFile));
-              iFailCount++;
+              std::string file{URIUtils::GetBlurayFile(item.GetDynPath())};
+              URIUtils::RemoveExtension(file);
+              item.SetPath(fmt::format("{}-{:05}.avi", file,
+                                       URIUtils::GetBlurayPlaylistFromPath(item.GetPath())));
             }
           }
-          singlePath = URIUtils::GetDirectory(nfoFile);
+          for (const auto& i : artwork)
+          {
+            std::string savedThumb = ART::GetLocalArt(item, i.first, false);
+            CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
+          }
+          if (actorThumbs)
+            ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
+        }
+        pDS3->next();
+        current++;
+      } while (!pDS3->eof() && isDisc && currentIdFile == pDS3->fv("idFile").get_asInt());
+
+      if (!singleFile && CUtil::SupportsWriteFileOperations(nfoFile) &&
+          (overwrite || !CFile::Exists(nfoFile, false)))
+      {
+        if (!xmlDoc.SaveFile(nfoFile))
+        {
+          CLog::LogF(LOGERROR, "Movie nfo export failed! ('{}')", nfoFile);
+          CGUIDialogKaiToast::QueueNotification(
+              CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), CURL::GetRedacted(nfoFile));
+          iFailCount++;
         }
       }
       if (!singleFile)
@@ -11300,29 +11396,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         xmlDoc.Clear();
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
+        pMain = &xmlDoc;
       }
-
-      if (images && !bSkip)
-      {
-        if (singleFile)
-        {
-          std::string strFileName(movie.m_strTitle);
-          if (movie.HasYear())
-            strFileName += StringUtils::Format("_{}", movie.GetYear());
-          item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
-        }
-        for (const auto &i : artwork)
-        {
-          std::string savedThumb = ART::GetLocalArt(item, i.first, false);
-          CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
-        }
-        if (actorThumbs)
-          ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
-      }
-      m_pDS->next();
-      current++;
     }
-    m_pDS->close();
+    pDS3->close();
 
     if (!singleFile)
       movieSetsDir = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
@@ -11887,7 +11964,6 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
             item.AppendArt(setArt, "set");
           }
         }
-        scanner.AddVideo(&item, CONTENT_MOVIES, useFolders, true, NULL, true);
         current++;
       }
       else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeMusicVideo, 10) == 0)
