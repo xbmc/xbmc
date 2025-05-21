@@ -140,8 +140,8 @@ private:
     std::string script;
     bool done;
   };
-  typedef std::map<int, LanguageInvokerThread> LanguageInvokerThreadMap;
-  typedef std::map<std::string, ILanguageInvocationHandler*> LanguageInvocationHandlerMap;
+  using LanguageInvokerThreadMap = std::map<int, LanguageInvokerThread>;
+  using LanguageInvocationHandlerMap = std::map<std::string, ILanguageInvocationHandler*>;
 
   LanguageInvokerThread getInvokerThread(int scriptId) const;
 
