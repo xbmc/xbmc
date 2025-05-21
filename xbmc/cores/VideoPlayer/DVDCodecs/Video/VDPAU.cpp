@@ -92,7 +92,7 @@ CVDPAUContext::CVDPAUContext()
 
 void CVDPAUContext::Release()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   m_refCount--;
   if (m_refCount <= 0)
@@ -111,7 +111,7 @@ void CVDPAUContext::Close()
 
 bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (m_context)
   {
@@ -123,7 +123,7 @@ bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
   m_context = new CVDPAUContext();
   *ctx = m_context;
   {
-    std::unique_lock<CCriticalSection> gLock(CServiceBroker::GetWinSystem()->GetGfxContext());
+    std::unique_lock gLock(CServiceBroker::GetWinSystem()->GetGfxContext());
     if (!m_context->LoadSymbols() || !m_context->CreateContext())
     {
       delete m_context;
@@ -189,7 +189,7 @@ bool CVDPAUContext::CreateContext()
 
   int screen;
   {
-    std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+    std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
     if (!m_display)
       m_display = XOpenDisplay(NULL);
@@ -346,13 +346,13 @@ bool CVDPAUContext::Supports(VdpVideoMixerFeature feature)
 
 void CVideoSurfaces::AddSurface(VdpVideoSurface surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_state[surf] = SURFACE_USED_FOR_REFERENCE;
 }
 
 void CVideoSurfaces::ClearReference(VdpVideoSurface surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) == m_state.end())
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::ClearReference - surface invalid");
@@ -367,7 +367,7 @@ void CVideoSurfaces::ClearReference(VdpVideoSurface surf)
 
 bool CVideoSurfaces::MarkRender(VdpVideoSurface surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) == m_state.end())
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::MarkRender - surface invalid");
@@ -385,7 +385,7 @@ bool CVideoSurfaces::MarkRender(VdpVideoSurface surf)
 
 void CVideoSurfaces::ClearRender(VdpVideoSurface surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) == m_state.end())
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::ClearRender - surface invalid");
@@ -400,7 +400,7 @@ void CVideoSurfaces::ClearRender(VdpVideoSurface surf)
 
 bool CVideoSurfaces::IsValid(VdpVideoSurface surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) != m_state.end())
     return true;
   else
@@ -409,7 +409,7 @@ bool CVideoSurfaces::IsValid(VdpVideoSurface surf)
 
 VdpVideoSurface CVideoSurfaces::GetFree(VdpVideoSurface surf)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   if (m_state.find(surf) != m_state.end())
   {
     std::list<VdpVideoSurface>::iterator it;
@@ -439,7 +439,7 @@ VdpVideoSurface CVideoSurfaces::GetFree(VdpVideoSurface surf)
 
 VdpVideoSurface CVideoSurfaces::RemoveNext(bool skiprender)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   VdpVideoSurface surf;
   std::map<VdpVideoSurface, int>::iterator it;
   for(it = m_state.begin(); it != m_state.end(); ++it)
@@ -460,14 +460,14 @@ VdpVideoSurface CVideoSurfaces::RemoveNext(bool skiprender)
 
 void CVideoSurfaces::Reset()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_freeSurfaces.clear();
   m_state.clear();
 }
 
 int CVideoSurfaces::Size()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return m_state.size();
 }
 
@@ -632,7 +632,7 @@ void CDecoder::Close()
 
   CServiceBroker::GetWinSystem()->Unregister(this);
 
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
 
   FiniVDPAUOutput();
   m_vdpauOutput.Dispose();
@@ -648,7 +648,7 @@ long CDecoder::Release()
   // a second decoder might need resources
   if (m_vdpauConfigured == true)
   {
-    std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+    std::unique_lock lock(m_DecoderSection);
     CLog::Log(LOGINFO, "CVDPAU::Release pre-cleanup");
 
     Message *reply;
@@ -718,7 +718,7 @@ void CDecoder::OnLostDisplay()
 
   int count = CServiceBroker::GetWinSystem()->GetGfxContext().exit();
 
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
   FiniVDPAUOutput();
   if (m_vdpauConfig.context)
     m_vdpauConfig.context->Release();
@@ -737,7 +737,7 @@ void CDecoder::OnResetDisplay()
 
   int count = CServiceBroker::GetWinSystem()->GetGfxContext().exit();
 
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
   if (m_DisplayState == VDPAU_LOST)
   {
     m_DisplayState = VDPAU_RESET;
@@ -753,7 +753,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   EDisplayState state;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+    std::unique_lock lock(m_DecoderSection);
     state = m_DisplayState;
   }
 
@@ -767,13 +767,13 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
     }
     else
     {
-      std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+      std::unique_lock lock(m_DecoderSection);
       state = m_DisplayState;
     }
   }
   if (state == VDPAU_RESET || state == VDPAU_ERROR)
   {
-    std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+    std::unique_lock lock(m_DecoderSection);
 
     FiniVDPAUOutput();
     if (m_vdpauConfig.context)
@@ -940,7 +940,7 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
     return false;
 
   // initialize output
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_vdpauConfig.stats = &m_bufferStats;
   m_vdpauConfig.vdpau = this;
   m_bufferStats.Reset();
@@ -978,7 +978,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   CDecoder* vdp = static_cast<CDecoder*>(cb->GetHWAccel());
 
   // while we are waiting to recover we can't do anything
-  std::unique_lock<CCriticalSection> lock(vdp->m_DecoderSection);
+  std::unique_lock lock(vdp->m_DecoderSection);
 
   if(vdp->m_DisplayState != VDPAU_OPEN)
   {
@@ -1035,7 +1035,7 @@ void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
 
   VdpVideoSurface surf;
 
-  std::unique_lock<CCriticalSection> lock(vdp->m_DecoderSection);
+  std::unique_lock lock(vdp->m_DecoderSection);
 
   surf = (VdpVideoSurface)(uintptr_t)data;
 
@@ -1050,7 +1050,7 @@ int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
   CDecoder* vdp = static_cast<CDecoder*>(ctx->GetHWAccel());
 
   // while we are waiting to recover we can't do anything
-  std::unique_lock<CCriticalSection> lock(vdp->m_DecoderSection);
+  std::unique_lock lock(vdp->m_DecoderSection);
 
   if(vdp->m_DisplayState != VDPAU_OPEN)
     return -1;
@@ -1116,7 +1116,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame
   if (result != CDVDVideoCodec::VC_NONE)
     return result;
 
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
 
   if (!m_vdpauConfigured)
     return CDVDVideoCodec::VC_ERROR;
@@ -1230,7 +1230,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
     picture->videoBuffer = nullptr;
   }
 
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
 
   if (m_DisplayState != VDPAU_OPEN)
     return false;
@@ -1244,7 +1244,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 
 void CDecoder::Reset()
 {
-  std::unique_lock<CCriticalSection> lock(m_DecoderSection);
+  std::unique_lock lock(m_DecoderSection);
 
   if (m_presentPicture)
   {
@@ -2831,7 +2831,7 @@ COutput::~COutput()
 
 void COutput::Dispose()
 {
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_bStop = true;
   m_outMsgEvent.Set();
   StopThread();

@@ -323,13 +323,13 @@ bool CWinSystemGbm::Show(bool raise)
 
 void CWinSystemGbm::Register(IDispResource *resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   m_resources.push_back(resource);
 }
 
 void CWinSystemGbm::Unregister(IDispResource *resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
   {
@@ -342,7 +342,7 @@ void CWinSystemGbm::OnLostDevice()
   CLog::Log(LOGDEBUG, "{} - notify display change event", __FUNCTION__);
   m_dispReset = true;
 
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   for (auto resource : m_resources)
     resource->OnLostDisplay();
 }

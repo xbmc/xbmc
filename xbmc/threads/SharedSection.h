@@ -28,7 +28,7 @@ public:
 
   inline void lock()
   {
-    std::unique_lock<CCriticalSection> l(sec);
+    std::unique_lock l(sec);
     while (sharedCount)
       actualCv.wait(l, [this]() { return sharedCount == 0; });
     sec.lock();
@@ -38,13 +38,13 @@ public:
 
   inline void lock_shared()
   {
-    std::unique_lock<CCriticalSection> l(sec);
+    std::unique_lock l(sec);
     sharedCount++;
   }
   inline bool try_lock_shared() { return (sec.try_lock() ? sharedCount++, sec.unlock(), true : false); }
   inline void unlock_shared()
   {
-    std::unique_lock<CCriticalSection> l(sec);
+    std::unique_lock l(sec);
     sharedCount--;
     if (!sharedCount)
     {

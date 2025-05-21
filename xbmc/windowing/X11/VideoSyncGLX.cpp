@@ -42,7 +42,7 @@ void CVideoSyncGLX::OnResetDisplay()
 
 bool CVideoSyncGLX::Setup()
 {
-  std::unique_lock<CCriticalSection> lock(m_winSystem.GetGfxContext());
+  std::unique_lock lock(m_winSystem.GetGfxContext());
 
   m_glXWaitVideoSyncSGI = NULL;
   m_glXGetVideoSyncSGI = NULL;
@@ -246,7 +246,7 @@ void CVideoSyncGLX::Cleanup()
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
 
   {
-    std::unique_lock<CCriticalSection> lock(m_winSystem.GetGfxContext());
+    std::unique_lock lock(m_winSystem.GetGfxContext());
 
     if (m_vInfo)
     {

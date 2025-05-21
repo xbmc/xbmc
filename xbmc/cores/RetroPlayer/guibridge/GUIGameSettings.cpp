@@ -35,7 +35,7 @@ CGUIGameSettings::~CGUIGameSettings()
 
 CRenderSettings CGUIGameSettings::GetSettings() const
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   return m_renderSettings;
 }
@@ -56,7 +56,7 @@ void CGUIGameSettings::Notify(const Observable& obs, const ObservableMessage msg
 
 void CGUIGameSettings::UpdateSettings()
 {
-  std::unique_lock<CCriticalSection> lock(m_mutex);
+  std::unique_lock lock(m_mutex);
 
   // Get settings from GUI
   std::string videoFilter = m_guiSettings.VideoFilter();

@@ -72,14 +72,14 @@ CProcessorHD::~CProcessorHD()
 
 void CProcessorHD::UnInit()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_enumerator = nullptr;
   Close();
 }
 
 void CProcessorHD::Close()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_pVideoProcessor = nullptr;
   m_pVideoContext = nullptr;
   m_pVideoDevice = nullptr;
@@ -133,7 +133,7 @@ bool CProcessorHD::Open(const VideoPicture& picture,
 {
   Close();
 
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   m_color_primaries = picture.color_primaries;
   m_color_transfer = picture.color_transfer;
@@ -147,7 +147,7 @@ bool CProcessorHD::Open(const VideoPicture& picture,
 
 bool CProcessorHD::ReInit()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   Close();
 
   if (!InitProcessor())
@@ -161,7 +161,7 @@ bool CProcessorHD::ReInit()
 
 bool CProcessorHD::OpenProcessor()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if ((!m_pVideoDevice || !m_pVideoContext || !m_enumerator || !m_procCaps.m_valid) && !ReInit())
   {
@@ -388,7 +388,7 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
 
 bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // restore processor if it was lost
   if (!m_pVideoProcessor && !OpenProcessor())
@@ -643,7 +643,7 @@ void CProcessorHD::EnableNvidiaRTXVideoSuperResolution()
 
 bool CProcessorHD::SetConversion(const ProcessorConversion& conversion)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (!m_enumerator)
     return false;

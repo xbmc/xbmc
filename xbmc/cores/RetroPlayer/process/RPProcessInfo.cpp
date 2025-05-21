@@ -69,7 +69,7 @@ std::unique_ptr<CRPProcessInfo> CRPProcessInfo::CreateInstance()
 {
   std::unique_ptr<CRPProcessInfo> processInfo;
 
-  std::unique_lock<CCriticalSection> lock(m_createSection);
+  std::unique_lock lock(m_createSection);
 
   if (m_processControl != nullptr)
   {
@@ -96,7 +96,7 @@ void CRPProcessInfo::RegisterProcessControl(const CreateRPProcessControl& create
 
 void CRPProcessInfo::RegisterRendererFactory(IRendererFactory* factory)
 {
-  std::unique_lock<CCriticalSection> lock(m_createSection);
+  std::unique_lock lock(m_createSection);
 
   CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Registering renderer factory for {}",
             factory->RenderSystemName());
@@ -112,7 +112,7 @@ std::string CRPProcessInfo::GetRenderSystemName(IRenderBufferPool* renderBufferP
 CRPBaseRenderer* CRPProcessInfo::CreateRenderer(IRenderBufferPool* renderBufferPool,
                                                 const CRenderSettings& renderSettings)
 {
-  std::unique_lock<CCriticalSection> lock(m_createSection);
+  std::unique_lock lock(m_createSection);
 
   for (auto& rendererFactory : m_rendererFactories)
   {

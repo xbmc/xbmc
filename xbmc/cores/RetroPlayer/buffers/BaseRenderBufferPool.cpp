@@ -24,14 +24,14 @@ CBaseRenderBufferPool::~CBaseRenderBufferPool()
 
 void CBaseRenderBufferPool::RegisterRenderer(CRPBaseRenderer* renderer)
 {
-  std::unique_lock<CCriticalSection> lock(m_rendererMutex);
+  std::unique_lock lock(m_rendererMutex);
 
   m_renderers.push_back(renderer);
 }
 
 void CBaseRenderBufferPool::UnregisterRenderer(CRPBaseRenderer* renderer)
 {
-  std::unique_lock<CCriticalSection> lock(m_rendererMutex);
+  std::unique_lock lock(m_rendererMutex);
 
   m_renderers.erase(std::remove(m_renderers.begin(), m_renderers.end(), renderer),
                     m_renderers.end());
@@ -39,7 +39,7 @@ void CBaseRenderBufferPool::UnregisterRenderer(CRPBaseRenderer* renderer)
 
 bool CBaseRenderBufferPool::HasVisibleRenderer() const
 {
-  std::unique_lock<CCriticalSection> lock(m_rendererMutex);
+  std::unique_lock lock(m_rendererMutex);
 
   for (auto renderer : m_renderers)
   {
@@ -71,7 +71,7 @@ IRenderBuffer* CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int
 
   if (GetHeaderWithTimeout(header))
   {
-    std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+    std::unique_lock lock(m_bufferMutex);
 
     for (auto it = m_free.begin(); it != m_free.end(); ++it)
     {
@@ -115,7 +115,7 @@ IRenderBuffer* CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int
 
 void CBaseRenderBufferPool::Return(IRenderBuffer* buffer)
 {
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   buffer->SetLoaded(false);
   buffer->SetRendered(false);
@@ -126,7 +126,7 @@ void CBaseRenderBufferPool::Return(IRenderBuffer* buffer)
 
 void CBaseRenderBufferPool::Prime(unsigned int width, unsigned int height)
 {
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   // Allocate two buffers for double buffering
   unsigned int bufferCount = 2;
@@ -149,7 +149,7 @@ void CBaseRenderBufferPool::Prime(unsigned int width, unsigned int height)
 
 void CBaseRenderBufferPool::Flush()
 {
-  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  std::unique_lock lock(m_bufferMutex);
 
   m_free.clear();
   m_bConfigured = false;

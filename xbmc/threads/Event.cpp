@@ -19,7 +19,7 @@ using namespace std::chrono_literals;
 
 void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 {
-  std::unique_lock<CCriticalSection> lock(groupListMutex);
+  std::unique_lock lock(groupListMutex);
   if (!groups)
     groups = std::make_unique<std::vector<XbmcThreads::CEventGroup*>>();
 
@@ -28,7 +28,7 @@ void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 
 void CEvent::removeGroup(XbmcThreads::CEventGroup* group)
 {
-  std::unique_lock<CCriticalSection> lock(groupListMutex);
+  std::unique_lock lock(groupListMutex);
   if (groups)
   {
     groups->erase(std::remove(groups->begin(), groups->end(), group), groups->end());
@@ -49,13 +49,13 @@ void CEvent::Set()
   // CEvent class. This now perfectly matches the boost example here:
   // http://www.boost.org/doc/libs/1_41_0/doc/html/thread/synchronization.html#thread.synchronization.condvar_ref
   {
-    std::unique_lock<CCriticalSection> slock(mutex);
+    std::unique_lock slock(mutex);
     signaled = true;
   }
 
   actualCv.notifyAll();
 
-  std::unique_lock<CCriticalSection> l(groupListMutex);
+  std::unique_lock l(groupListMutex);
   if (groups)
   {
     for (auto* group : *groups)

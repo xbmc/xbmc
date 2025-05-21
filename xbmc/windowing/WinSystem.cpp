@@ -268,13 +268,13 @@ KODI::WINDOWING::COSScreenSaverManager* CWinSystemBase::GetOSScreenSaver()
 
 void CWinSystemBase::RegisterRenderLoop(IRenderLoop *client)
 {
-  std::unique_lock<CCriticalSection> lock(m_renderLoopSection);
+  std::unique_lock lock(m_renderLoopSection);
   m_renderLoopClients.push_back(client);
 }
 
 void CWinSystemBase::UnregisterRenderLoop(IRenderLoop *client)
 {
-  std::unique_lock<CCriticalSection> lock(m_renderLoopSection);
+  std::unique_lock lock(m_renderLoopSection);
   auto i = find(m_renderLoopClients.begin(), m_renderLoopClients.end(), client);
   if (i != m_renderLoopClients.end())
     m_renderLoopClients.erase(i);
@@ -285,7 +285,7 @@ void CWinSystemBase::DriveRenderLoop()
   MessagePump();
 
   {
-    std::unique_lock<CCriticalSection> lock(m_renderLoopSection);
+    std::unique_lock lock(m_renderLoopSection);
     for (auto i = m_renderLoopClients.begin(); i != m_renderLoopClients.end(); ++i)
       (*i)->FrameMove();
   }

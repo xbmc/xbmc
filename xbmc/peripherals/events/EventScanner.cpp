@@ -45,7 +45,7 @@ EventPollHandlePtr CEventScanner::RegisterPollHandle()
   EventPollHandlePtr handle(new CEventPollHandle(*this));
 
   {
-    std::unique_lock<CCriticalSection> lock(m_handleMutex);
+    std::unique_lock lock(m_handleMutex);
     m_activeHandles.insert(handle.get());
   }
 
@@ -57,7 +57,7 @@ EventPollHandlePtr CEventScanner::RegisterPollHandle()
 void CEventScanner::Activate(CEventPollHandle& handle)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_handleMutex);
+    std::unique_lock lock(m_handleMutex);
     m_activeHandles.insert(&handle);
   }
 
@@ -67,7 +67,7 @@ void CEventScanner::Activate(CEventPollHandle& handle)
 void CEventScanner::Deactivate(CEventPollHandle& handle)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_handleMutex);
+    std::unique_lock lock(m_handleMutex);
     m_activeHandles.erase(&handle);
   }
 
@@ -78,7 +78,7 @@ void CEventScanner::HandleEvents(bool bWait)
 {
   if (bWait)
   {
-    std::unique_lock<CCriticalSection> lock(m_pollMutex);
+    std::unique_lock lock(m_pollMutex);
 
     m_scanFinishedEvent.Reset();
     m_scanEvent.Set();
@@ -93,7 +93,7 @@ void CEventScanner::HandleEvents(bool bWait)
 void CEventScanner::Release(CEventPollHandle& handle)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_handleMutex);
+    std::unique_lock lock(m_handleMutex);
     m_activeHandles.erase(&handle);
   }
 
@@ -105,7 +105,7 @@ EventLockHandlePtr CEventScanner::RegisterLock()
   EventLockHandlePtr handle(new CEventLockHandle(*this));
 
   {
-    std::unique_lock<CCriticalSection> lock(m_lockMutex);
+    std::unique_lock lock(m_lockMutex);
     m_activeLocks.insert(handle.get());
   }
 
@@ -117,7 +117,7 @@ EventLockHandlePtr CEventScanner::RegisterLock()
 void CEventScanner::ReleaseLock(CEventLockHandle& handle)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_lockMutex);
+    std::unique_lock lock(m_lockMutex);
     m_activeLocks.erase(&handle);
   }
 
@@ -131,7 +131,7 @@ void CEventScanner::Process()
   while (!m_bStop)
   {
     {
-      std::unique_lock<CCriticalSection> lock(m_lockMutex);
+      std::unique_lock lock(m_lockMutex);
       if (m_activeLocks.empty())
         m_callback.ProcessEvents();
     }
@@ -160,7 +160,7 @@ std::chrono::milliseconds CEventScanner::GetScanIntervalMs() const
   bool bHasActiveHandle;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_handleMutex);
+    std::unique_lock lock(m_handleMutex);
     bHasActiveHandle = !m_activeHandles.empty();
   }
 

@@ -166,7 +166,7 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
 
 bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems)
 {
-  std::unique_lock<CCriticalSection> lock(GetScriptsLock());
+  std::unique_lock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return false;
@@ -180,7 +180,7 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
 
 bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int totalItems)
 {
-  std::unique_lock<CCriticalSection> lock(GetScriptsLock());
+  std::unique_lock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return false;
@@ -195,7 +195,7 @@ bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int tota
 
 void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc)
 {
-  std::unique_lock<CCriticalSection> lock(GetScriptsLock());
+  std::unique_lock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return;
@@ -219,7 +219,7 @@ void CPluginDirectory::AddSortMethod(int handle,
                                      const std::string& labelMask,
                                      const std::string& label2Mask)
 {
-  std::unique_lock<CCriticalSection> lock(GetScriptsLock());
+  std::unique_lock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return;
@@ -498,7 +498,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
 
 void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)
 {
-  std::unique_lock<CCriticalSection> lock(GetScriptsLock());
+  std::unique_lock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return;
@@ -512,7 +512,7 @@ void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem 
 
 std::string CPluginDirectory::GetSetting(int handle, const std::string &strID)
 {
-  std::unique_lock<CCriticalSection> lock(GetScriptsLock());
+  std::unique_lock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (dir && dir->GetAddon())
     return dir->GetAddon()->GetSetting(strID);
@@ -522,7 +522,7 @@ std::string CPluginDirectory::GetSetting(int handle, const std::string &strID)
 
 void CPluginDirectory::SetSetting(int handle, const std::string &strID, const std::string &value)
 {
-  std::unique_lock<CCriticalSection> lock(GetScriptsLock());
+  std::unique_lock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (dir && dir->GetAddon())
     dir->GetAddon()->UpdateSetting(strID, value);
@@ -530,7 +530,7 @@ void CPluginDirectory::SetSetting(int handle, const std::string &strID, const st
 
 void CPluginDirectory::SetContent(int handle, const std::string &strContent)
 {
-  std::unique_lock<CCriticalSection> lock(GetScriptsLock());
+  std::unique_lock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (dir)
     dir->m_listItems->SetContent(strContent);
@@ -538,7 +538,7 @@ void CPluginDirectory::SetContent(int handle, const std::string &strContent)
 
 void CPluginDirectory::SetProperty(int handle, const std::string &strProperty, const std::string &strValue)
 {
-  std::unique_lock<CCriticalSection> lock(GetScriptsLock());
+  std::unique_lock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return;

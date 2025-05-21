@@ -58,7 +58,7 @@ public:
    */
   bool NeedsPolling(void) const
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     return m_bNeedsPolling;
   }
 

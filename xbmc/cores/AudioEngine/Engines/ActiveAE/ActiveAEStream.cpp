@@ -54,19 +54,19 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat* format, unsigned int streamid, C
 
 void CActiveAEStream::IncFreeBuffers()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamLock);
+  std::unique_lock lock(m_streamLock);
   m_streamFreeBuffers++;
 }
 
 void CActiveAEStream::DecFreeBuffers()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamLock);
+  std::unique_lock lock(m_streamLock);
   m_streamFreeBuffers--;
 }
 
 void CActiveAEStream::ResetFreeBuffers()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamLock);
+  std::unique_lock lock(m_streamLock);
   m_streamFreeBuffers = 0;
 }
 
@@ -211,7 +211,7 @@ std::chrono::milliseconds CActiveAEStream::GetErrorInterval()
 
 unsigned int CActiveAEStream::GetSpace()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamLock);
+  std::unique_lock lock(m_streamLock);
   if (m_format.m_dataFormat == AE_FMT_RAW)
     return m_streamFreeBuffers;
   else
@@ -285,7 +285,7 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
 
       bool rawPktComplete = false;
       {
-        std::unique_lock<CCriticalSection> lock(m_statsLock);
+        std::unique_lock lock(m_statsLock);
         if (m_format.m_dataFormat != AE_FMT_RAW)
         {
           m_currentBuffer->pkt->nb_samples += minFrames;
@@ -352,7 +352,7 @@ CAESyncInfo CActiveAEStream::GetSyncInfo()
 
 bool CActiveAEStream::IsBuffering()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamLock);
+  std::unique_lock lock(m_streamLock);
   return m_streamIsBuffering;
 }
 
@@ -444,13 +444,13 @@ void CActiveAEStream::Drain(bool wait)
 
 bool CActiveAEStream::IsDraining()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamLock);
+  std::unique_lock lock(m_streamLock);
   return m_streamDraining;
 }
 
 bool CActiveAEStream::IsDrained()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamLock);
+  std::unique_lock lock(m_streamLock);
   return m_streamDrained;
 }
 
@@ -533,7 +533,7 @@ void CActiveAEStream::FadeVolume(float from, float target, unsigned int time)
 
 bool CActiveAEStream::IsFading()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamLock);
+  std::unique_lock lock(m_streamLock);
   return m_streamFading;
 }
 
@@ -567,7 +567,7 @@ void CActiveAEStream::UnRegisterAudioCallback()
 
 void CActiveAEStream::RegisterSlave(IAEStream *slave)
 {
-  std::unique_lock<CCriticalSection> lock(m_streamLock);
+  std::unique_lock lock(m_streamLock);
   m_streamSlave = slave;
 }
 

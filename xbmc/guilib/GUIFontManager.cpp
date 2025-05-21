@@ -572,7 +572,7 @@ void GUIFontManager::SettingOptionsFontsFiller(const SettingConstPtr& setting,
 
 void GUIFontManager::Initialize()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   LoadUserFonts();
 }
 

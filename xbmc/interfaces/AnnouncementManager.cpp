@@ -49,7 +49,7 @@ void CAnnouncementManager::Deinitialize()
   m_bStop = true;
   m_queueEvent.Set();
   StopThread();
-  std::unique_lock<CCriticalSection> lock(m_announcersCritSection);
+  std::unique_lock lock(m_announcersCritSection);
   m_announcers.clear();
 }
 
@@ -63,7 +63,7 @@ void CAnnouncementManager::AddAnnouncer(IAnnouncer* listener, int flagMask)
   if (!listener)
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_announcersCritSection);
+  std::unique_lock lock(m_announcersCritSection);
   m_announcers.emplace(listener, flagMask);
 }
 
@@ -72,7 +72,7 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
   if (!listener)
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_announcersCritSection);
+  std::unique_lock lock(m_announcersCritSection);
   m_announcers.erase(listener);
 }
 
@@ -138,7 +138,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag,
     announcement.item = std::make_shared<CFileItem>(*item);
 
   {
-    std::unique_lock<CCriticalSection> lock(m_queueCritSection);
+    std::unique_lock lock(m_queueCritSection);
     m_announcementQueue.push_back(announcement);
   }
   m_queueEvent.Set();
@@ -151,7 +151,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
 {
   CLog::Log(LOGDEBUG, LOGANNOUNCE, "CAnnouncementManager - Announcement: {} from {}", message, sender);
 
-  std::unique_lock<CCriticalSection> lock(m_announcersCritSection);
+  std::unique_lock lock(m_announcersCritSection);
 
   // Make a copy of announcers. They may be removed or even remove themselves during execution of IAnnouncer::Announce()!
   std::unordered_map<IAnnouncer*, int> announcers{m_announcers};
@@ -327,7 +327,7 @@ void CAnnouncementManager::Process()
 
   while (!m_bStop)
   {
-    std::unique_lock<CCriticalSection> lock(m_queueCritSection);
+    std::unique_lock lock(m_queueCritSection);
     if (!m_announcementQueue.empty())
     {
       auto announcement = m_announcementQueue.front();

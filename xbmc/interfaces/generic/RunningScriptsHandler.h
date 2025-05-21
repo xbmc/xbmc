@@ -57,7 +57,7 @@ protected:
 
   static HandleType GetNewScriptHandle(TScript* script)
   {
-    std::unique_lock<CCriticalSection> lock(s_critical);
+    std::unique_lock lock(s_critical);
     uint32_t handle = ++s_scriptHandleCounter;
     s_scriptHandles[handle] = script;
 
@@ -66,19 +66,19 @@ protected:
 
   static void ReuseScriptHandle(HandleType handle, TScript* script)
   {
-    std::unique_lock<CCriticalSection> lock(s_critical);
+    std::unique_lock lock(s_critical);
     s_scriptHandles[handle] = script;
   }
 
   static void RemoveScriptHandle(HandleType handle)
   {
-    std::unique_lock<CCriticalSection> lock(s_critical);
+    std::unique_lock lock(s_critical);
     s_scriptHandles.erase(handle);
   }
 
   static TScript* GetScriptFromHandle(HandleType handle)
   {
-    std::unique_lock<CCriticalSection> lock(s_critical);
+    std::unique_lock lock(s_critical);
     auto scriptHandle = s_scriptHandles.find(handle);
     if (scriptHandle == s_scriptHandles.end())
       return nullptr;

@@ -56,7 +56,7 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event,
   if (time < 0 || pointer < 0 || pointer >= MAX_POINTERS)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   bool result = true;
 
@@ -291,7 +291,7 @@ bool CGenericTouchInputHandler::UpdateTouchPointer(
   if (pointer < 0 || pointer >= MAX_POINTERS)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   m_pointers[pointer].last.copy(m_pointers[pointer].current);
 
@@ -325,7 +325,7 @@ void CGenericTouchInputHandler::saveLastTouch()
 
 void CGenericTouchInputHandler::OnTimeout()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   switch (m_gestureState)
   {

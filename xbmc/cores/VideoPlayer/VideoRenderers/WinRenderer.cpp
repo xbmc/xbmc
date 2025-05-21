@@ -249,14 +249,14 @@ void CWinRenderer::SetBufferSize(int numBuffers)
 
 void CWinRenderer::PreInit()
 {
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_bConfigured = false;
   UnInit();
 }
 
 void CWinRenderer::UnInit()
 {
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   m_renderer.reset();
   m_bConfigured = false;

@@ -14,7 +14,7 @@
 
 Observable &Observable::operator=(const Observable &observable)
 {
-  std::unique_lock<CCriticalSection> lock(m_obsCritSection);
+  std::unique_lock lock(m_obsCritSection);
 
   m_bObservableChanged = static_cast<bool>(observable.m_bObservableChanged);
   m_observers = observable.m_observers;
@@ -24,13 +24,13 @@ Observable &Observable::operator=(const Observable &observable)
 
 bool Observable::IsObserving(const Observer &obs) const
 {
-  std::unique_lock<CCriticalSection> lock(m_obsCritSection);
+  std::unique_lock lock(m_obsCritSection);
   return std::find(m_observers.begin(), m_observers.end(), &obs) != m_observers.end();
 }
 
 void Observable::RegisterObserver(Observer *obs)
 {
-  std::unique_lock<CCriticalSection> lock(m_obsCritSection);
+  std::unique_lock lock(m_obsCritSection);
   if (!IsObserving(*obs))
   {
     m_observers.push_back(obs);
@@ -39,7 +39,7 @@ void Observable::RegisterObserver(Observer *obs)
 
 void Observable::UnregisterObserver(Observer *obs)
 {
-  std::unique_lock<CCriticalSection> lock(m_obsCritSection);
+  std::unique_lock lock(m_obsCritSection);
   auto iter = std::remove(m_observers.begin(), m_observers.end(), obs);
   if (iter != m_observers.end())
     m_observers.erase(iter);
@@ -62,7 +62,7 @@ void Observable::SetChanged(bool SetTo)
 
 void Observable::SendMessage(const ObservableMessage message)
 {
-  std::unique_lock<CCriticalSection> lock(m_obsCritSection);
+  std::unique_lock lock(m_obsCritSection);
 
   for (auto& observer : m_observers)
   {

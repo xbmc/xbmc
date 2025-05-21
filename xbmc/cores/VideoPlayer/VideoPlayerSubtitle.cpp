@@ -39,7 +39,7 @@ void CVideoPlayerSubtitle::Flush()
 
 void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
   {
@@ -115,7 +115,7 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
 
 bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filename)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   CloseStream(false);
   m_streaminfo = hints;
@@ -160,7 +160,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
 
 void CVideoPlayerSubtitle::CloseStream(bool bWaitForBuffers)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   m_pSubtitleFileParser.reset();
   m_pOverlayCodec.reset();
@@ -173,7 +173,7 @@ void CVideoPlayerSubtitle::CloseStream(bool bWaitForBuffers)
 
 void CVideoPlayerSubtitle::Process(double pts, double offset)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (m_pSubtitleFileParser)
   {

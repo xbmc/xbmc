@@ -161,7 +161,7 @@ void CEventClient::ProcessEvents()
 
 bool CEventClient::GetNextAction(CEventAction &action)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (!m_actionQueue.empty())
   {
     // grab the next action in line
@@ -376,7 +376,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   if(flags & PTB_QUEUE)
   {
     /* find the last queued item of this type */
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
 
     CEventButtonState state( keycode,
                              map,
@@ -447,7 +447,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
   }
   else
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     if ( flags & PTB_DOWN )
     {
       m_currentButton.m_iKeyCode   = keycode;
@@ -503,7 +503,7 @@ bool CEventClient::OnPacketMOUSE(CEventPacket *packet)
     return false;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     if ( flags & PTM_ABSOLUTE )
     {
       m_iMouseX = mx;
@@ -610,7 +610,7 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
   case AT_EXEC_BUILTIN:
   case AT_BUTTON:
     {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
+      std::unique_lock lock(m_critSection);
       m_actionQueue.emplace(actionString.c_str(), actionType);
     }
     break;
@@ -673,7 +673,7 @@ bool CEventClient::ParseUInt16(unsigned char* &payload, int &psize, unsigned sho
 
 void CEventClient::FreePacketQueues()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   while ( ! m_readyPackets.empty() )
     m_readyPackets.pop();
@@ -683,7 +683,7 @@ void CEventClient::FreePacketQueues()
 
 unsigned int CEventClient::GetButtonCode(std::string& strMapName, bool& isAxis, float& amount, bool &isJoystick)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   unsigned int bcode = 0;
 
   if ( m_currentButton.Active() )
@@ -752,7 +752,7 @@ unsigned int CEventClient::GetButtonCode(std::string& strMapName, bool& isAxis, 
 
 bool CEventClient::GetMousePos(float& x, float& y)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_bMouseMoved)
   {
     x = (m_iMouseX / 65535.0f) * CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();

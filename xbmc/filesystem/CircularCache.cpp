@@ -69,7 +69,7 @@ void CCircularCache::Close()
 
 size_t CCircularCache::GetMaxWriteSize(const size_t& iRequestSize)
 {
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
 
   size_t back  = (size_t)(m_cur - m_beg); // Backbuffer size
   size_t front = (size_t)(m_end - m_cur); // Frontbuffer size
@@ -100,7 +100,7 @@ size_t CCircularCache::GetMaxWriteSize(const size_t& iRequestSize)
  */
 int CCircularCache::WriteToCache(const char *buf, size_t len)
 {
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
 
   // where are we in the buffer
   size_t pos   = m_end % m_size;
@@ -144,7 +144,7 @@ int CCircularCache::WriteToCache(const char *buf, size_t len)
  */
 int CCircularCache::ReadFromCache(char *buf, size_t len)
 {
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
 
   size_t pos   = m_cur % m_size;
   size_t front = (size_t)(m_end - m_cur);
@@ -181,7 +181,7 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
  */
 int64_t CCircularCache::WaitForData(uint32_t minimum, std::chrono::milliseconds timeout)
 {
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
   int64_t avail = m_end - m_cur;
 
   if (timeout == 0ms || IsEndOfInput())
@@ -204,7 +204,7 @@ int64_t CCircularCache::WaitForData(uint32_t minimum, std::chrono::milliseconds 
 
 int64_t CCircularCache::Seek(int64_t pos)
 {
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.
   // we try to avoid a (heavy) seek on the source
@@ -237,7 +237,7 @@ int64_t CCircularCache::Seek(int64_t pos)
 
 bool CCircularCache::Reset(int64_t pos)
 {
-  std::unique_lock<CCriticalSection> lock(m_sync);
+  std::unique_lock lock(m_sync);
   if (IsCachedPosition(pos))
   {
     m_cur = pos;

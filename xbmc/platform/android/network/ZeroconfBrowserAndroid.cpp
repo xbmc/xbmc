@@ -25,7 +25,7 @@ CZeroconfBrowserAndroid::CZeroconfBrowserAndroid()
 
 CZeroconfBrowserAndroid::~CZeroconfBrowserAndroid()
 {
-  std::unique_lock<CCriticalSection> lock(m_data_guard);
+  std::unique_lock lock(m_data_guard);
   //make sure there are no browsers anymore
   for (const auto& it : m_service_browsers)
     doRemoveServiceType(it.first);
@@ -45,7 +45,7 @@ bool CZeroconfBrowserAndroid::doAddServiceType(const std::string& fcr_service_ty
 
   //store the browser
   {
-    std::unique_lock<CCriticalSection> lock(m_data_guard);
+    std::unique_lock lock(m_data_guard);
     m_service_browsers.insert(std::make_pair(fcr_service_type, discover));
   }
   return true;
@@ -58,7 +58,7 @@ bool CZeroconfBrowserAndroid::doRemoveServiceType(const std::string& fcr_service
   CZeroconfBrowserAndroidDiscover* discover;
   //search for this browser and remove it from the map
   {
-    std::unique_lock<CCriticalSection> lock(m_data_guard);
+    std::unique_lock lock(m_data_guard);
     tBrowserMap::iterator it = m_service_browsers.find(fcr_service_type);
     if(it == m_service_browsers.end())
     {
@@ -73,7 +73,7 @@ bool CZeroconfBrowserAndroid::doRemoveServiceType(const std::string& fcr_service
 
   //remove the services of this browser
   {
-    std::unique_lock<CCriticalSection> lock(m_data_guard);
+    std::unique_lock lock(m_data_guard);
     tDiscoveredServicesMap::iterator it = m_discovered_services.find(discover);
     if(it != m_discovered_services.end())
       m_discovered_services.erase(it);
@@ -86,7 +86,7 @@ bool CZeroconfBrowserAndroid::doRemoveServiceType(const std::string& fcr_service
 std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowserAndroid::doGetFoundServices()
 {
   std::vector<CZeroconfBrowser::ZeroconfService> ret;
-  std::unique_lock<CCriticalSection> lock(m_data_guard);
+  std::unique_lock lock(m_data_guard);
   for (const auto& it : m_discovered_services)
   {
     const auto& services = it.second;
@@ -147,7 +147,7 @@ bool CZeroconfBrowserAndroid::doResolveService(CZeroconfBrowser::ZeroconfService
 /// adds the service to list of found services
 void CZeroconfBrowserAndroid::addDiscoveredService(CZeroconfBrowserAndroidDiscover* browser, CZeroconfBrowser::ZeroconfService const& fcr_service)
 {
-  std::unique_lock<CCriticalSection> lock(m_data_guard);
+  std::unique_lock lock(m_data_guard);
   tDiscoveredServicesMap::iterator browserIt = m_discovered_services.find(browser);
   if(browserIt == m_discovered_services.end())
   {
@@ -170,7 +170,7 @@ void CZeroconfBrowserAndroid::addDiscoveredService(CZeroconfBrowserAndroidDiscov
 
 void CZeroconfBrowserAndroid::removeDiscoveredService(CZeroconfBrowserAndroidDiscover* browser, CZeroconfBrowser::ZeroconfService const& fcr_service)
 {
-  std::unique_lock<CCriticalSection> lock(m_data_guard);
+  std::unique_lock lock(m_data_guard);
   tDiscoveredServicesMap::iterator browserIt = m_discovered_services.find(browser);
   //search this service
   std::vector<std::pair<ZeroconfService, unsigned int> >& services = browserIt->second;

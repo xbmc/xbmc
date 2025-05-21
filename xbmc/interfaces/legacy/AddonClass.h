@@ -81,7 +81,7 @@ namespace XBMCAddon
      */
     virtual void deallocating()
     {
-      std::unique_lock<CCriticalSection> lock(*this);
+      std::unique_lock lock(*this);
       m_isDeallocating = true;
     }
 

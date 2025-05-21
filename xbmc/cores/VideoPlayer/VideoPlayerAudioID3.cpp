@@ -141,7 +141,7 @@ void CVideoPlayerAudioID3::Process()
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
+      std::unique_lock lock(m_critSection);
       DemuxPacket* pPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacket();
       if (pPacket)
         ProcessID3(pPacket->pData, pPacket->iSize);

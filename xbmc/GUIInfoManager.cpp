@@ -12118,7 +12118,7 @@ void CGUIInfoManager::RegisterInfoProvider(IGUIInfoProvider *provider)
   if (!CServiceBroker::GetWinSystem())
     return;
 
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   m_infoProviders.RegisterProvider(provider, false);
 }
@@ -12128,7 +12128,7 @@ void CGUIInfoManager::UnregisterInfoProvider(IGUIInfoProvider *provider)
   if (!CServiceBroker::GetWinSystem())
     return;
 
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   m_infoProviders.UnregisterProvider(provider);
 }

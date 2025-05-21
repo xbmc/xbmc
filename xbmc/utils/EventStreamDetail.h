@@ -49,21 +49,21 @@ CSubscription<Event, Owner>::CSubscription(Owner* owner, Fn fn)
 template<typename Event, typename Owner>
 bool CSubscription<Event, Owner>::IsOwnedBy(void* obj)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
   return obj != nullptr && obj == m_owner;
 }
 
 template<typename Event, typename Owner>
 void CSubscription<Event, Owner>::Cancel()
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
   m_owner = nullptr;
 }
 
 template<typename Event, typename Owner>
 void CSubscription<Event, Owner>::HandleEvent(const Event& event)
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
   if (m_owner)
     (m_owner->*m_eventHandler)(event);
 }

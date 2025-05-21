@@ -37,7 +37,7 @@ CEnumeratorHD::CEnumeratorHD()
 
 CEnumeratorHD::~CEnumeratorHD()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   DX::Windowing()->Unregister(this);
   UnInit();
 }
@@ -49,7 +49,7 @@ void CEnumeratorHD::UnInit()
 
 void CEnumeratorHD::Close()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_pEnumerator1 = nullptr;
   m_pEnumerator = nullptr;
   m_pVideoDevice = nullptr;
@@ -59,7 +59,7 @@ bool CEnumeratorHD::Open(unsigned int width, unsigned int height, DXGI_FORMAT in
 {
   Close();
 
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_width = width;
   m_height = height;
   m_input_dxgi_format = input_dxgi_format;
@@ -108,7 +108,7 @@ bool CEnumeratorHD::OpenEnumerator()
 
 ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (!m_pEnumerator)
     return {};
@@ -307,7 +307,7 @@ bool CEnumeratorHD::CheckConversion(DXGI_FORMAT inputFormat,
                                     DXGI_FORMAT outputFormat,
                                     DXGI_COLOR_SPACE_TYPE outputCS)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return CheckConversionInternal(inputFormat, inputCS, outputFormat, outputCS);
 }
 
@@ -367,7 +367,7 @@ ProcessorConversions CEnumeratorHD::ListConversions(
 void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT inputFormat,
                                             const DXGI_COLOR_SPACE_TYPE inputNativeCS)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   if (!m_pEnumerator)
     return;
@@ -456,12 +456,12 @@ void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT inputFormat,
 
 bool CEnumeratorHD::IsFormatSupportedInput(DXGI_FORMAT format)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return IsFormatSupportedInternal(format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT);
 }
 bool CEnumeratorHD::IsFormatSupportedOutput(DXGI_FORMAT format)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   return IsFormatSupportedInternal(format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT);
 }
 
@@ -486,7 +486,7 @@ bool CEnumeratorHD::IsFormatSupportedInternal(DXGI_FORMAT format,
 
 ComPtr<ID3D11VideoProcessor> CEnumeratorHD::CreateVideoProcessor(UINT RateConversionIndex)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // Not initialized yet
   if (!m_pEnumerator)
@@ -510,7 +510,7 @@ ComPtr<ID3D11VideoProcessor> CEnumeratorHD::CreateVideoProcessor(UINT RateConver
 ComPtr<ID3D11VideoProcessorInputView> CEnumeratorHD::CreateVideoProcessorInputView(
     ID3D11Resource* pResource, const D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC* pDesc)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // Not initialized yet
   if (!m_pEnumerator)
@@ -531,7 +531,7 @@ ComPtr<ID3D11VideoProcessorInputView> CEnumeratorHD::CreateVideoProcessorInputVi
 ComPtr<ID3D11VideoProcessorOutputView> CEnumeratorHD::CreateVideoProcessorOutputView(
     ID3D11Resource* pResource, const D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC* pDesc)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // Not initialized yet
   if (!m_pEnumerator)
@@ -550,7 +550,7 @@ ComPtr<ID3D11VideoProcessorOutputView> CEnumeratorHD::CreateVideoProcessorOutput
 
 ProcessorConversions CEnumeratorHD::SupportedConversions(const SupportedConversionsArgs& args)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   // Not initialized yet
   if (!m_pEnumerator)

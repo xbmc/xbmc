@@ -59,7 +59,7 @@ PAPlayer::~PAPlayer()
 
 void PAPlayer::SoftStart(bool wait/* = false */)
 {
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
@@ -100,7 +100,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
 void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
 {
   /* fade all the streams out fast for a nice soft stop */
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
@@ -160,7 +160,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 {
   if (!fade)
   {
-    std::unique_lock<CCriticalSection> lock(m_streamsLock);
+    std::unique_lock lock(m_streamsLock);
     while (!m_streams.empty())
     {
       StreamInfo* si = m_streams.front();
@@ -195,7 +195,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
   else
   {
     SoftStop(false, true);
-    std::unique_lock<CCriticalSection> lock(m_streamsLock);
+    std::unique_lock lock(m_streamsLock);
     m_currentStream = NULL;
   }
 }
@@ -213,13 +213,13 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   }
 
   {
-    std::unique_lock<CCriticalSection> lock(m_streamsLock);
+    std::unique_lock lock(m_streamsLock);
     m_jobCounter++;
   }
   CServiceBroker::GetJobManager()->Submit([=, this]() { QueueNextFileEx(file, false); }, this,
                                           CJob::PRIORITY_NORMAL);
 
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   if (m_streams.size() == 2)
   {
     //do a short crossfade on trackskip, set to max 2 seconds for these prev/next transitions
@@ -278,7 +278,7 @@ void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 bool PAPlayer::QueueNextFile(const CFileItem &file)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_streamsLock);
+    std::unique_lock lock(m_streamsLock);
     m_jobCounter++;
   }
   CServiceBroker::GetJobManager()->Submit([this, file]() { QueueNextFileEx(file, true); }, this,
@@ -436,7 +436,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   }
 
   /* add the stream to the list */
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   m_streams.push_back(si);
   //update the current stream to start playing the next track at the correct frame.
   UpdateStreamInfoPlayNextAtFrame(m_currentStream, m_upcomingCrossfadeMS);
@@ -537,7 +537,7 @@ bool PAPlayer::CloseFile(bool reopen)
 
   // wait for any pending jobs to complete
   {
-    std::unique_lock<CCriticalSection> lock(m_streamsLock);
+    std::unique_lock lock(m_streamsLock);
     while (m_jobCounter > 0)
     {
       lock.unlock();
@@ -599,7 +599,7 @@ void PAPlayer::Process()
 
 inline void PAPlayer::ProcessStreams(double &freeBufferTime)
 {
-  std::unique_lock<CCriticalSection> sharedLock(m_streamsLock);
+  std::unique_lock sharedLock(m_streamsLock);
   if (m_isFinished && m_streams.empty() && m_finishing.empty())
   {
     m_isPlaying = false;
@@ -623,7 +623,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
   }
 
   sharedLock.unlock();
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
 
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
@@ -973,7 +973,7 @@ void PAPlayer::SetSpeed(float speed)
 
 int64_t PAPlayer::GetTimeInternal()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   if (!m_currentStream)
     return 0;
 
@@ -990,7 +990,7 @@ int64_t PAPlayer::GetTimeInternal()
 
 bool PAPlayer::SetTotalTimeInternal(int64_t time)
 {
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   if (!m_currentStream)
   {
     return false;
@@ -1004,7 +1004,7 @@ bool PAPlayer::SetTotalTimeInternal(int64_t time)
 
 bool PAPlayer::SetTimeInternal(int64_t time)
 {
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   if (!m_currentStream)
     return false;
 
@@ -1023,7 +1023,7 @@ void PAPlayer::SetTime(int64_t time)
 
 int64_t PAPlayer::GetTotalTime64()
 {
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   if (!m_currentStream)
     return 0;
 
@@ -1090,7 +1090,7 @@ void PAPlayer::SeekTime(int64_t iTime /*=0*/)
 {
   if (!CanSeek()) return;
 
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   if (!m_currentStream)
     return;
 
@@ -1124,7 +1124,7 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
    * structure to prevent locking conflicts when
    * data required by GUI and main application
    */
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
 
   m_playerGUIData.m_sampleRate    = si->m_audioFormat.m_sampleRate;
   m_playerGUIData.m_channelCount  = si->m_audioFormat.m_channelLayout.Count();
@@ -1148,7 +1148,7 @@ void PAPlayer::UpdateGUIData(StreamInfo *si)
 
 void PAPlayer::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  std::unique_lock<CCriticalSection> lock(m_streamsLock);
+  std::unique_lock lock(m_streamsLock);
   m_jobCounter--;
   m_jobEvent.Set();
 }

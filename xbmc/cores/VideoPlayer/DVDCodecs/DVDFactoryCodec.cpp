@@ -44,7 +44,7 @@ CCriticalSection videoCodecSection, audioCodecSection;
 std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo& hint,
                                                                    CProcessInfo& processInfo)
 {
-  std::unique_lock<CCriticalSection> lock(videoCodecSection);
+  std::unique_lock lock(videoCodecSection);
 
   std::unique_ptr<CDVDVideoCodec> pCodec;
   CDVDCodecOptions options;
@@ -95,7 +95,7 @@ std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInf
 std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodecHW(const std::string& id,
                                                                      CProcessInfo& processInfo)
 {
-  std::unique_lock<CCriticalSection> lock(videoCodecSection);
+  std::unique_lock lock(videoCodecSection);
 
   auto it = m_hwVideoCodecs.find(id);
   if (it != m_hwVideoCodecs.end())
@@ -111,7 +111,7 @@ IHardwareDecoder* CDVDFactoryCodec::CreateVideoCodecHWAccel(const std::string& i
                                                             CProcessInfo& processInfo,
                                                             AVPixelFormat fmt)
 {
-  std::unique_lock<CCriticalSection> lock(videoCodecSection);
+  std::unique_lock lock(videoCodecSection);
 
   auto it = m_hwAccels.find(id);
   if (it != m_hwAccels.end())
@@ -125,21 +125,21 @@ IHardwareDecoder* CDVDFactoryCodec::CreateVideoCodecHWAccel(const std::string& i
 
 void CDVDFactoryCodec::RegisterHWVideoCodec(const std::string& id, CreateHWVideoCodec createFunc)
 {
-  std::unique_lock<CCriticalSection> lock(videoCodecSection);
+  std::unique_lock lock(videoCodecSection);
 
   m_hwVideoCodecs[id] = std::move(createFunc);
 }
 
 void CDVDFactoryCodec::ClearHWVideoCodecs()
 {
-  std::unique_lock<CCriticalSection> lock(videoCodecSection);
+  std::unique_lock lock(videoCodecSection);
 
   m_hwVideoCodecs.clear();
 }
 
 std::vector<std::string> CDVDFactoryCodec::GetHWAccels()
 {
-  std::unique_lock<CCriticalSection> lock(videoCodecSection);
+  std::unique_lock lock(videoCodecSection);
 
   std::vector<std::string> ret;
   ret.reserve(m_hwAccels.size());
@@ -152,14 +152,14 @@ std::vector<std::string> CDVDFactoryCodec::GetHWAccels()
 
 void CDVDFactoryCodec::RegisterHWAccel(const std::string& id, CreateHWAccel createFunc)
 {
-  std::unique_lock<CCriticalSection> lock(videoCodecSection);
+  std::unique_lock lock(videoCodecSection);
 
   m_hwAccels[id] = std::move(createFunc);
 }
 
 void CDVDFactoryCodec::ClearHWAccels()
 {
-  std::unique_lock<CCriticalSection> lock(videoCodecSection);
+  std::unique_lock lock(videoCodecSection);
 
   m_hwAccels.clear();
 }
@@ -215,14 +215,14 @@ std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodec(
 
 void CDVDFactoryCodec::RegisterHWAudioCodec(const std::string& id, CreateHWAudioCodec createFunc)
 {
-  std::unique_lock<CCriticalSection> lock(audioCodecSection);
+  std::unique_lock lock(audioCodecSection);
 
   m_hwAudioCodecs[id] = std::move(createFunc);
 }
 
 void CDVDFactoryCodec::ClearHWAudioCodecs()
 {
-  std::unique_lock<CCriticalSection> lock(audioCodecSection);
+  std::unique_lock lock(audioCodecSection);
 
   m_hwAudioCodecs.clear();
 }
@@ -230,7 +230,7 @@ void CDVDFactoryCodec::ClearHWAudioCodecs()
 std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodecHW(const std::string& id,
                                                                      CProcessInfo& processInfo)
 {
-  std::unique_lock<CCriticalSection> lock(audioCodecSection);
+  std::unique_lock lock(audioCodecSection);
 
   auto it = m_hwAudioCodecs.find(id);
   if (it != m_hwAudioCodecs.end())

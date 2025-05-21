@@ -42,7 +42,7 @@ bool CScreenshotSurfaceWindows::Capture()
   if (!gui)
     return false;
 
-  std::unique_lock<CCriticalSection> lock(winsystem->GetGfxContext());
+  std::unique_lock lock(winsystem->GetGfxContext());
   gui->GetWindowManager().Render();
 
   auto deviceResources = DX::DeviceResources::Get();

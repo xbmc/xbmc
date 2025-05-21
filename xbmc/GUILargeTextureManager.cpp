@@ -165,7 +165,7 @@ CGUILargeTextureManager::~CGUILargeTextureManager() = default;
 
 void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 {
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::unique_lock lock(m_listSection);
   // check for items to remove from allocated list, and remove
   listIterator it = m_allocated.begin();
   while (it != m_allocated.end())
@@ -188,7 +188,7 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
                                        bool firstRequest,
                                        const bool useCache)
 {
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::unique_lock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
@@ -214,7 +214,7 @@ void CGUILargeTextureManager::ReleaseImage(const std::string& path,
                                            CAspectRatio::AspectRatio aspectRatio,
                                            bool immediately)
 {
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::unique_lock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
@@ -252,7 +252,7 @@ void CGUILargeTextureManager::QueueImage(const std::string& path,
   if (path.empty())
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::unique_lock lock(m_listSection);
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
   {
     CLargeTexture *image = it->second;
@@ -274,7 +274,7 @@ void CGUILargeTextureManager::QueueImage(const std::string& path,
 void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   // see if we still have this job id
-  std::unique_lock<CCriticalSection> lock(m_listSection);
+  std::unique_lock lock(m_listSection);
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
   {
     if (it->first == jobID)

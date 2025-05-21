@@ -562,7 +562,7 @@ void CWinSystemX11::NotifyXRREvent()
 {
   CLog::Log(LOGDEBUG, "{} - notify display reset event", __FUNCTION__);
 
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   if (!g_xrandr.Query(true))
   {
@@ -583,7 +583,7 @@ void CWinSystemX11::RecreateWindow()
 {
   m_windowDirty = true;
 
-  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   XMode   mode = g_xrandr.GetCurrentMode(m_userOutput);
@@ -624,7 +624,7 @@ void CWinSystemX11::OnLostDevice()
   CLog::Log(LOGDEBUG, "{} - notify display change event", __FUNCTION__);
 
   {
-    std::unique_lock<CCriticalSection> lock(m_resourceSection);
+    std::unique_lock lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnLostDisplay();
   }
@@ -634,13 +634,13 @@ void CWinSystemX11::OnLostDevice()
 
 void CWinSystemX11::Register(IDispResource *resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   m_resources.push_back(resource);
 }
 
 void CWinSystemX11::Unregister(IDispResource* resource)
 {
-  std::unique_lock<CCriticalSection> lock(m_resourceSection);
+  std::unique_lock lock(m_resourceSection);
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);

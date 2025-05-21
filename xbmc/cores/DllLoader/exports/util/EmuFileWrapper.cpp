@@ -41,7 +41,7 @@ CEmuFileWrapper::~CEmuFileWrapper()
 
 void CEmuFileWrapper::CleanUp()
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
   for (EmuFileObject& file : m_files)
   {
     if (file.used)
@@ -64,7 +64,7 @@ EmuFileObject* CEmuFileWrapper::RegisterFileObject(XFILE::CFile* pFile)
 {
   EmuFileObject* object = nullptr;
 
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
 
   for (int i = 0; i < MAX_EMULATED_FILES; i++)
   {
@@ -92,7 +92,7 @@ void CEmuFileWrapper::UnRegisterFileObjectByDescriptor(int fd)
   if (!m_files[i].used)
     return;
 
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  std::unique_lock lock(m_criticalSection);
 
   // we assume the emulated function already deleted the CFile object
   if (m_files[i].file_lock)

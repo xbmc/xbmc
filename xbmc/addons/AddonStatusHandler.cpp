@@ -85,7 +85,7 @@ void CAddonStatusHandler::OnExit()
 
 void CAddonStatusHandler::Process()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   std::string heading = StringUtils::Format(
       "{}: {}", CAddonInfo::TranslateType(m_addon->Type(), true), m_addon->Name());

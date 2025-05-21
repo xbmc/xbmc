@@ -82,7 +82,7 @@ void CRssManager::Start()
 
 void CRssManager::Stop()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_bActive = false;
   for (unsigned int i = 0; i < m_readers.size(); i++)
   {
@@ -96,7 +96,7 @@ bool CRssManager::Load()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   std::string rssXML = profileManager->GetUserDataItem("RssFeeds.xml");
   if (!CFileUtils::Exists(rssXML))
@@ -170,14 +170,14 @@ bool CRssManager::Reload()
 
 void CRssManager::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_mapRssUrls.clear();
 }
 
 // returns true if the reader doesn't need creating, false otherwise
 bool CRssManager::GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader)
 {
-  std::unique_lock<CCriticalSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   // check to see if we've already created this reader
   for (unsigned int i = 0; i < m_readers.size(); i++)
   {

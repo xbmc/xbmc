@@ -305,7 +305,7 @@ void CInputManager::ProcessQueuedActions()
 {
   std::vector<CAction> queuedActions;
   {
-    std::unique_lock<CCriticalSection> lock(m_actionMutex);
+    std::unique_lock lock(m_actionMutex);
     queuedActions.swap(m_queuedActions);
   }
 
@@ -315,7 +315,7 @@ void CInputManager::ProcessQueuedActions()
 
 void CInputManager::QueueAction(const CAction& action)
 {
-  std::unique_lock<CCriticalSection> lock(m_actionMutex);
+  std::unique_lock lock(m_actionMutex);
 
   // Avoid dispatching multiple analog actions per frame with the same ID
   if (action.IsAnalog())

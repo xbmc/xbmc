@@ -29,7 +29,7 @@ COutput::COutput(std::uint32_t globalName,
                                   std::string const& make, std::string const& model,
                                   const wayland::output_transform&)
   {
-    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
+    std::unique_lock lock(m_geometryCriticalSection);
     m_position = {x, y};
     // Some monitors report invalid (non-positive) values that would cause an exception
     // with CSizeInt and/or lead to nonsensical DPI values.
@@ -46,7 +46,7 @@ COutput::COutput(std::uint32_t globalName,
     // element and boolean information whether the element was actually added
     // which we do not need
     auto modeIterator = m_modes.emplace(CSizeInt{width, height}, refresh).first;
-    std::unique_lock<CCriticalSection> lock(m_iteratorCriticalSection);
+    std::unique_lock lock(m_iteratorCriticalSection);
     // Remember current and preferred mode
     // Current mode is the last one that was sent with current flag set
     if (flags & wayland::output_mode::current)
@@ -87,7 +87,7 @@ COutput::~COutput() noexcept
 
 const COutput::Mode& COutput::GetCurrentMode() const
 {
-  std::unique_lock<CCriticalSection> lock(m_iteratorCriticalSection);
+  std::unique_lock lock(m_iteratorCriticalSection);
   if (m_currentMode == m_modes.end())
   {
     throw std::runtime_error("Current mode not set");
@@ -97,7 +97,7 @@ const COutput::Mode& COutput::GetCurrentMode() const
 
 const COutput::Mode& COutput::GetPreferredMode() const
 {
-  std::unique_lock<CCriticalSection> lock(m_iteratorCriticalSection);
+  std::unique_lock lock(m_iteratorCriticalSection);
   if (m_preferredMode == m_modes.end())
   {
     throw std::runtime_error("Preferred mode not set");
@@ -107,7 +107,7 @@ const COutput::Mode& COutput::GetPreferredMode() const
 
 float COutput::GetPixelRatioForMode(const Mode& mode) const
 {
-  std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
+  std::unique_lock lock(m_geometryCriticalSection);
   if (m_physicalSize.IsZero() || mode.size.IsZero())
   {
     return 1.0f;
@@ -124,7 +124,7 @@ float COutput::GetPixelRatioForMode(const Mode& mode) const
 
 float COutput::GetDpiForMode(const Mode& mode) const
 {
-  std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
+  std::unique_lock lock(m_geometryCriticalSection);
   if (m_physicalSize.IsZero())
   {
     // We really have no idea, so use a "sane" default

@@ -91,50 +91,50 @@ CVideoSettingsLocked::CVideoSettingsLocked(CVideoSettings &vs, CCriticalSection 
 
 void CVideoSettingsLocked::SetSubtitleStream(int stream)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_videoSettings.m_SubtitleStream = stream;
 }
 
 void CVideoSettingsLocked::SetSubtitleVisible(bool visible)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_videoSettings.m_SubtitleOn = visible;
 }
 
 void CVideoSettingsLocked::SetAudioStream(int stream)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_videoSettings.m_AudioStream = stream;
 }
 
 void CVideoSettingsLocked::SetVideoStream(int stream)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_videoSettings.m_VideoStream = stream;
 }
 
 void CVideoSettingsLocked::SetAudioDelay(float delay)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_videoSettings.m_AudioDelay = delay;
 }
 
 void CVideoSettingsLocked::SetSubtitleDelay(float delay)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_videoSettings.m_SubtitleDelay = delay;
 }
 
 void CVideoSettingsLocked::SetSubtitleVerticalPosition(int value, bool save)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_videoSettings.m_subtitleVerticalPosition = value;
   m_videoSettings.m_subtitleVerticalPositionSave = save;
 }
 
 void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float shift, bool stretch)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_videoSettings.m_ViewMode = mode;
   m_videoSettings.m_CustomZoomAmount = zoom;
   m_videoSettings.m_CustomPixelRatio = par;
@@ -144,6 +144,6 @@ void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float sh
 
 void CVideoSettingsLocked::SetVolumeAmplification(float amp)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_videoSettings.m_VolumeAmplification = amp;
 }

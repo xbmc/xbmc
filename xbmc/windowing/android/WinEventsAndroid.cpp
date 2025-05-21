@@ -53,14 +53,14 @@ CWinEventsAndroid::~CWinEventsAndroid()
 
 void CWinEventsAndroid::MessagePush(XBMC_Event *newEvent)
 {
-  std::unique_lock<CCriticalSection> lock(m_eventsCond);
+  std::unique_lock lock(m_eventsCond);
 
   m_events.push_back(*newEvent);
 }
 
 void CWinEventsAndroid::MessagePushRepeat(XBMC_Event *repeatEvent)
 {
-  std::unique_lock<CCriticalSection> lock(m_eventsCond);
+  std::unique_lock lock(m_eventsCond);
 
   std::list<XBMC_Event>::iterator itt;
   for (itt = m_events.begin(); itt != m_events.end(); ++itt)
@@ -89,7 +89,7 @@ bool CWinEventsAndroid::MessagePump()
     // deeper message loop and call the deeper MessagePump from there.
     XBMC_Event pumpEvent;
     {
-      std::unique_lock<CCriticalSection> lock(m_eventsCond);
+      std::unique_lock lock(m_eventsCond);
       if (m_events.empty())
         return ret;
       pumpEvent = m_events.front();
@@ -109,7 +109,7 @@ bool CWinEventsAndroid::MessagePump()
 
 size_t CWinEventsAndroid::GetQueueSize()
 {
-  std::unique_lock<CCriticalSection> lock(m_eventsCond);
+  std::unique_lock lock(m_eventsCond);
   return m_events.size();
 }
 
@@ -127,7 +127,7 @@ void CWinEventsAndroid::Process()
     // run a 10ms (timeout) wait cycle
     CThread::Sleep(std::chrono::milliseconds(timeout));
 
-    std::unique_lock<CCriticalSection> lock(m_lasteventCond);
+    std::unique_lock lock(m_lasteventCond);
 
     switch(state)
     {

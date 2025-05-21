@@ -52,7 +52,7 @@ void CWinSystemX11GLESContext::PresentRenderImpl(bool rendered)
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {
     m_delayDispReset = false;
-    std::unique_lock<CCriticalSection> lock(m_resourceSection);
+    std::unique_lock lock(m_resourceSection);
     // tell any shared resources
     for (std::vector<IDispResource*>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();
@@ -134,7 +134,7 @@ bool CWinSystemX11GLESContext::SetWindow(int width, int height, bool fullscreen,
 
     if (!m_delayDispReset)
     {
-      std::unique_lock<CCriticalSection> lock(m_resourceSection);
+      std::unique_lock lock(m_resourceSection);
       // tell any shared resources
       for (std::vector<IDispResource*>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
         (*i)->OnResetDisplay();

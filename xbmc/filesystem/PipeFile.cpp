@@ -170,7 +170,7 @@ std::string CPipeFile::GetName() const
 
 void CPipeFile::OnPipeOverFlow()
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::unique_lock lock(m_lock);
   for (size_t l=0; l<m_listeners.size(); l++)
     m_listeners[l]->OnPipeOverFlow();
 }
@@ -188,7 +188,7 @@ void CPipeFile::OnPipeUnderFlow()
 
 void CPipeFile::AddListener(IPipeListener *l)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::unique_lock lock(m_lock);
   for (size_t i=0; i<m_listeners.size(); i++)
   {
     if (m_listeners[i] == l)
@@ -199,7 +199,7 @@ void CPipeFile::AddListener(IPipeListener *l)
 
 void CPipeFile::RemoveListener(IPipeListener *l)
 {
-  std::unique_lock<CCriticalSection> lock(m_lock);
+  std::unique_lock lock(m_lock);
   std::vector<XFILE::IPipeListener *>::iterator i = m_listeners.begin();
   while(i != m_listeners.end())
   {

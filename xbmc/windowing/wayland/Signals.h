@@ -91,7 +91,7 @@ class CSignalHandlerList
 
     void Unregister(RegistrationIdentifierType id) override
     {
-      std::unique_lock<CCriticalSection> lock(m_handlerCriticalSection);
+      std::unique_lock lock(m_handlerCriticalSection);
       m_handlers.erase(id);
     }
   };
@@ -109,7 +109,7 @@ public:
 
   CSignalRegistration Register(ManagedT const& handler)
   {
-    std::unique_lock<CCriticalSection> lock(m_data->m_handlerCriticalSection);
+    std::unique_lock lock(m_data->m_handlerCriticalSection);
     bool inserted{false};
     while(!inserted)
     {
@@ -126,7 +126,7 @@ public:
   template<typename... ArgsT>
   void Invoke(ArgsT&&... args)
   {
-    std::unique_lock<CCriticalSection> lock(m_data->m_handlerCriticalSection);
+    std::unique_lock lock(m_data->m_handlerCriticalSection);
     for (auto const& handler : *this)
     {
       handler.second(std::forward<ArgsT>(args)...);

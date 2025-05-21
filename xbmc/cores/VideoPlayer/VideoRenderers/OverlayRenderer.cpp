@@ -57,7 +57,7 @@ CRenderer::~CRenderer()
 
 void CRenderer::AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts, int index)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   SElement   e;
   e.pts = pts;
@@ -84,7 +84,7 @@ void CRenderer::UnInit()
 
 void CRenderer::Flush()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   for(std::vector<SElement>& buffer : m_buffers)
     Release(buffer);
@@ -101,7 +101,7 @@ void CRenderer::Reset()
 
 void CRenderer::Release(int idx)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   Release(m_buffers[idx]);
 }
 
@@ -140,7 +140,7 @@ void CRenderer::ReleaseUnused()
 
 void CRenderer::Render(int idx, float depth)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   std::vector<SElement>& list = m_buffers[idx];
   for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
@@ -250,7 +250,7 @@ bool CRenderer::HasOverlay(int idx)
 {
   bool hasOverlay = false;
 
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
 
   std::vector<SElement>& list = m_buffers[idx];
   for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
@@ -287,7 +287,7 @@ void CRenderer::SetStereoMode(const std::string &stereomode)
 
 void CRenderer::SetSubtitleVerticalPosition(const int value, bool save)
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
+  std::unique_lock lock(m_section);
   m_subtitlePosition = value;
 
   if (save && m_subtitleAlign == SUBTITLES::Align::MANUAL)
@@ -594,7 +594,7 @@ void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)
     }
     case ObservableMessagePositionChanged:
     {
-      std::unique_lock<CCriticalSection> lock(m_section);
+      std::unique_lock lock(m_section);
       m_subtitlePosResInfo = POSRESINFO_UNSET;
       break;
     }

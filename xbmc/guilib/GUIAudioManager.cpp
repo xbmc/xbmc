@@ -86,13 +86,13 @@ void CGUIAudioManager::Initialize()
 
 void CGUIAudioManager::DeInitialize()
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
   UnLoad();
 }
 
 void CGUIAudioManager::Stop()
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
   for (const auto& windowSound : m_windowSoundMap)
   {
     if (windowSound.second.initSound)
@@ -110,7 +110,7 @@ void CGUIAudioManager::Stop()
 // \brief Play a sound associated with a CAction
 void CGUIAudioManager::PlayActionSound(const CAction& action)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   // it's not possible to play gui sounds when passthrough is active
   if (!m_bEnabled)
@@ -132,7 +132,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 // Events: SOUND_INIT, SOUND_DEINIT
 void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   // it's not possible to play gui sounds when passthrough is active
   if (!m_bEnabled)
@@ -164,7 +164,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 // \brief Play a sound given by filename
 void CGUIAudioManager::PlayPythonSound(const std::string& strFileName, bool useCached /*= true*/)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   // it's not possible to play gui sounds when passthrough is active
   if (!m_bEnabled)
@@ -226,7 +226,7 @@ std::string GetSoundSkinPath()
 // \brief Load the config file (sounds.xml) for nav sounds
 bool CGUIAudioManager::Load()
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
   UnLoad();
 
   m_strMediaDir = GetSoundSkinPath();
@@ -321,7 +321,7 @@ bool CGUIAudioManager::Load()
 
 std::shared_ptr<IAESound> CGUIAudioManager::LoadSound(const std::string& filename)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
   const auto it = m_soundCache.find(filename);
   if (it != m_soundCache.end())
   {
@@ -366,14 +366,14 @@ void CGUIAudioManager::Enable(bool bEnable)
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN).empty())
     bEnable = false;
 
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
   m_bEnabled = bEnable;
 }
 
 // \brief Sets the volume of all playing sounds
 void CGUIAudioManager::SetVolume(float level)
 {
-  std::unique_lock<CCriticalSection> lock(m_cs);
+  std::unique_lock lock(m_cs);
 
   {
     for (const auto& actionSound : m_actionSoundMap)

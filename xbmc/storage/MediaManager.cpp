@@ -152,13 +152,13 @@ bool CMediaManager::SaveSources()
 
 void CMediaManager::GetLocalDrives(std::vector<CMediaSource>& localDrives, bool includeQ)
 {
-  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
+  std::unique_lock lock(m_CritSecStorageProvider);
   m_platformStorage->GetLocalDrives(localDrives);
 }
 
 void CMediaManager::GetRemovableDrives(std::vector<CMediaSource>& removableDrives)
 {
-  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
+  std::unique_lock lock(m_CritSecStorageProvider);
   if (m_platformStorage)
     m_platformStorage->GetRemovableDrives(removableDrives);
 }
@@ -372,7 +372,7 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 
 std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice)
 {
-  std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
+  std::unique_lock waitLock(m_muAutoSource);
   std::string strDevice = devicePath;
   // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_OPTICAL_DRIVE
@@ -403,7 +403,7 @@ bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 
   std::string strDevice = TranslateDevicePath(devicePath, false);
   std::map<std::string,CCdInfo*>::iterator it;
-  std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
+  std::unique_lock waitLock(m_muAutoSource);
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
     return true;
@@ -478,7 +478,7 @@ CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
   std::string strDevice = TranslateDevicePath(devicePath, false);
   std::map<std::string,CCdInfo*>::iterator it;
   {
-    std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
+    std::unique_lock waitLock(m_muAutoSource);
     it = m_mapCdInfo.find(strDevice);
     if(it != m_mapCdInfo.end())
       return it->second;
@@ -489,7 +489,7 @@ CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
   pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
   if(pCdInfo!=NULL)
   {
-    std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
+    std::unique_lock waitLock(m_muAutoSource);
     m_mapCdInfo.insert(std::pair<std::string,CCdInfo*>(strDevice,pCdInfo));
   }
 
@@ -507,7 +507,7 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
   std::string strDevice = TranslateDevicePath(devicePath, false);
 
   std::map<std::string,CCdInfo*>::iterator it;
-  std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
+  std::unique_lock waitLock(m_muAutoSource);
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
   {
@@ -639,7 +639,7 @@ std::string CMediaManager::GetDiscPath()
   return CServiceBroker::GetMediaManager().TranslateDevicePath("");
 #else
 
-  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
+  std::unique_lock lock(m_CritSecStorageProvider);
   std::vector<CMediaSource> drives;
   m_platformStorage->GetRemovableDrives(drives);
   for(unsigned i = 0; i < drives.size(); ++i)
@@ -661,13 +661,13 @@ std::shared_ptr<IDiscDriveHandler> CMediaManager::GetDiscDriveHandler()
 
 void CMediaManager::SetHasOpticalDrive(bool bstatus)
 {
-  std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
+  std::unique_lock waitLock(m_muAutoSource);
   m_bhasoptical = bstatus;
 }
 
 bool CMediaManager::Eject(const std::string& mountpath)
 {
-  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
+  std::unique_lock lock(m_CritSecStorageProvider);
   return m_platformStorage->Eject(mountpath);
 }
 
@@ -703,7 +703,7 @@ void CMediaManager::ToggleTray(const char cDriveLetter)
 
 void CMediaManager::ProcessEvents()
 {
-  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
+  std::unique_lock lock(m_CritSecStorageProvider);
   if (m_platformStorage->PumpDriveChangeEvents(this))
   {
 #if defined(HAS_OPTICAL_DRIVE) && defined(TARGET_DARWIN_OSX)
@@ -722,7 +722,7 @@ void CMediaManager::ProcessEvents()
 
 std::vector<std::string> CMediaManager::GetDiskUsage()
 {
-  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
+  std::unique_lock lock(m_CritSecStorageProvider);
   return m_platformStorage->GetDiskUsage();
 }
 

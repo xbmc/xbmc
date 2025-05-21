@@ -320,7 +320,7 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   m_bFullScreenVideo = bOnOff;
 
@@ -424,7 +424,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
     m_bFullScreenRoot = false;
   }
 
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   // FIXME Wayland windowing needs some way to "deny" resolution updates since what Kodi
   // requests might not get actually set by the compositor.
@@ -510,7 +510,7 @@ void CGraphicContext::ApplyVideoResolution(RESOLUTION res)
     m_bFullScreenRoot = false;
   }
 
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   UpdateInternalStateWithResolution(res);
 
@@ -739,7 +739,7 @@ void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool need
 
 void CGraphicContext::SetRenderingResolution(const RESOLUTION_INFO &res, bool needsScaling)
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   SetScalingResolution(res, needsScaling);
   UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());

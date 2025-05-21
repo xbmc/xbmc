@@ -40,7 +40,7 @@ inline static bool waitForThread(std::atomic<long>& mutex,
       return true;
 
     {
-      std::unique_lock<CCriticalSection> tmplock(sec); // kick any memory syncs
+      std::unique_lock tmplock(sec); // kick any memory syncs
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1));

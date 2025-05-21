@@ -21,7 +21,7 @@ CDVDOverlayContainer::~CDVDOverlayContainer()
 
 void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(const std::shared_ptr<CDVDOverlay>& pOverlay)
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   // markup any non ending overlays, to finish
   // when this new one starts, there can be
@@ -53,13 +53,13 @@ VecOverlays* CDVDOverlayContainer::GetOverlays()
 
 VecOverlays::iterator CDVDOverlayContainer::Remove(VecOverlays::iterator itOverlay)
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
   return m_overlays.erase(itOverlay);
 }
 
 void CDVDOverlayContainer::CleanUp(double pts)
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   auto it = m_overlays.begin();
   while (it != m_overlays.end())
@@ -101,7 +101,7 @@ void CDVDOverlayContainer::CleanUp(double pts)
 
 void CDVDOverlayContainer::Flush()
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   // Flush only the overlays marked as flushable
   m_overlays.erase(std::remove_if(m_overlays.begin(), m_overlays.end(),
@@ -113,7 +113,7 @@ void CDVDOverlayContainer::Flush()
 
 void CDVDOverlayContainer::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
   m_overlays.clear();
 }
 
@@ -126,7 +126,7 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
 {
   bool result = false;
 
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   auto it = m_overlays.begin();
   while (!result && it != m_overlays.end())
@@ -144,7 +144,7 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
 void CDVDOverlayContainer::UpdateOverlayInfo(
     const std::shared_ptr<CDVDInputStreamNavigator>& pStream, CDVDDemuxSPU* pSpu, int iAction)
 {
-  std::unique_lock<CCriticalSection> lock(*this);
+  std::unique_lock lock(*this);
 
   pStream->CheckButtons();
 

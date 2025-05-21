@@ -100,7 +100,7 @@ void CDetectDVDMedia::UpdateDvdrom()
   // that we are busy detecting the
   // newly inserted media.
   {
-    std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
+    std::unique_lock waitLock(m_muReadingMedia);
     switch (PollDriveState())
     {
       case DriveState::NONE:
@@ -378,7 +378,7 @@ DriveState CDetectDVDMedia::PollDriveState()
 
 void CDetectDVDMedia::UpdateState()
 {
-  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
+  std::unique_lock waitLock(m_muReadingMedia);
   m_pInstance->DetectMediaType();
 }
 
@@ -386,7 +386,7 @@ void CDetectDVDMedia::UpdateState()
 // Wait for drive, to finish media detection.
 void CDetectDVDMedia::WaitMediaReady()
 {
-  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
+  std::unique_lock waitLock(m_muReadingMedia);
 }
 
 DriveState CDetectDVDMedia::GetDriveState()
@@ -407,7 +407,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
 // Can be NULL
 CCdInfo* CDetectDVDMedia::GetCdInfo()
 {
-  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
+  std::unique_lock waitLock(m_muReadingMedia);
   CCdInfo* pCdInfo = m_pCdInfo;
   return pCdInfo;
 }

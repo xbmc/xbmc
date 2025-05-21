@@ -263,13 +263,13 @@ bool CNetworkAndroid::GetHostName(std::string& hostname)
 
 std::vector<CNetworkInterface*>& CNetworkAndroid::GetInterfaceList()
 {
-  std::unique_lock<CCriticalSection> lock(m_refreshMutex);
+  std::unique_lock lock(m_refreshMutex);
   return m_interfaces;
 }
 
 CNetworkInterface* CNetworkAndroid::GetFirstConnectedInterface()
 {
-  std::unique_lock<CCriticalSection> lock(m_refreshMutex);
+  std::unique_lock lock(m_refreshMutex);
 
   if (m_defaultInterface)
     return m_defaultInterface.get();
@@ -321,7 +321,7 @@ bool CNetworkAndroid::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 
 void CNetworkAndroid::RetrieveInterfaces()
 {
-  std::unique_lock<CCriticalSection> lock(m_refreshMutex);
+  std::unique_lock lock(m_refreshMutex);
 
   // Cannot delete interfaces here, as there still might have references to it
   for (auto intf : m_oldInterfaces)
