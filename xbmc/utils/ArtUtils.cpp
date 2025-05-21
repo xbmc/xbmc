@@ -182,7 +182,7 @@ std::string GetFolderThumb(const CFileItem& item, const std::string& folderJPG /
 std::string GetLocalArt(const CFileItem& item,
                         const std::string& artFile,
                         bool useFolder,
-                        UseSeasonAndEpisode useSeasonAndEpisode)
+                        AdditionalIdentifiers useSeasonAndEpisode)
 {
   // no retrieving of empty art files from folders
   if (useFolder && artFile.empty())
@@ -209,7 +209,7 @@ std::string GetLocalArt(const CFileItem& item,
 
 std::string GetLocalArtBaseFilename(const CFileItem& item,
                                     bool& useFolder,
-                                    UseSeasonAndEpisode useSeasonAndEpisode /* = no */)
+                                    AdditionalIdentifiers additionalIdentifiers /* = none */)
 {
   std::string strFile;
   if (item.IsStack())
@@ -242,23 +242,46 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
     strFile = URIUtils::GetBasePath(file);
   }
 
-  if (useSeasonAndEpisode == UseSeasonAndEpisode::YES && !URIUtils::GetFileName(file).empty() &&
-      item.HasVideoInfoTag())
-  {
-    // Note this is an exception to the optical media rule above - episode art files will be stored alongside the episode .nfo
-    const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-    if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
-    {
-      std::string baseFile{file};
-      URIUtils::RemoveExtension(baseFile);
-      strFile = fmt::format("{}-S{:02}E{:02}{}", baseFile, tag->m_iSeason, tag->m_iEpisode,
-                            URIUtils::GetExtension(file));
-      useFolder = false;
-    }
-  }
-  else if (URIUtils::IsBlurayPath(file))
-  {
+  if (URIUtils::IsBlurayPath(file))
     strFile = URIUtils::GetDiscFile(file);
+
+  if (!URIUtils::GetFileName(file).empty() && item.HasVideoInfoTag() &&
+      additionalIdentifiers != AdditionalIdentifiers::NONE)
+  {
+    using enum AdditionalIdentifiers;
+    switch (additionalIdentifiers)
+    {
+      case SEASON_AND_EPISODE:
+      {
+        // Note this is an exception to the optical media rule above - episode art files will be stored alongside the episode .nfo
+        const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+        if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
+        {
+          std::string baseFile{file};
+          URIUtils::RemoveExtension(baseFile);
+          strFile = fmt::format("{}-S{:02}E{:02}{}", baseFile, tag->m_iSeason, tag->m_iEpisode,
+                                URIUtils::GetExtension(file));
+          useFolder = false;
+        }
+        break;
+      }
+      case PLAYLIST:
+      {
+        const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+        if (tag->m_iTrack > -1)
+        {
+          std::string baseFile{file};
+          URIUtils::RemoveExtension(baseFile);
+          strFile =
+              fmt::format("{}-{:05}{}", baseFile, tag->m_iTrack, URIUtils::GetExtension(file));
+          useFolder = false;
+        }
+        break;
+      }
+      case NONE:
+      default:
+        break;
+    }
   }
   else if (useFolder && !(item.IsFolder() && !item.IsFileFolder()))
   {
