@@ -67,8 +67,8 @@ void CScriptInvocationManager::Uninitialize()
 
   // make sure all scripts are done
   std::vector<LanguageInvokerThread> tempList;
-  for (const auto& script : m_scripts)
-    tempList.push_back(script.second);
+  std::ranges::transform(m_scripts, std::back_inserter(tempList),
+                         [](const auto& script) { return script.second; });
 
   m_scripts.clear();
   m_scriptPaths.clear();
