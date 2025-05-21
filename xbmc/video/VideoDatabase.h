@@ -473,6 +473,12 @@ using EpisodeFileMapEntry = std::pair<std::string, EpisodeInformation>;
 
 class CVideoDatabase : public CDatabase
 {
+  struct FileInformation
+  {
+    std::string path;
+    int vvId{0};
+  };
+
 public:
 
   class CActor    // used for actor retrieval for non-master users
