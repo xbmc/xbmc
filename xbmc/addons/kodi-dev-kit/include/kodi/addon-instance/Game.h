@@ -1179,6 +1179,7 @@ private:
       return;
 
     std::vector<GameControllerLayout> controllerList;
+    controllerList.reserve(controller_count);
     for (unsigned int i = 0; i < controller_count; ++i)
       controllerList.emplace_back(controllers[i]);
 

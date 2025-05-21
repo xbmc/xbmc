@@ -1776,7 +1776,7 @@ const char* CPVRClient::ToString(const PVR_ERROR error)
 
 template<typename F>
 PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
-                                  F function,
+                                  const F& function,
                                   bool bIsImplemented /* = true */,
                                   bool bCheckReadyToUse /* = true */) const
 {
