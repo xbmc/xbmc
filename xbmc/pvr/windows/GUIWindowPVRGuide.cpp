@@ -97,7 +97,7 @@ void CGUIWindowPVRGuideBase::InitEpgGridControl()
     CPVRManager& mgr = CServiceBroker::GetPVRManager();
 
     const std::shared_ptr<CPVRChannel> channel = mgr.ChannelGroups()->GetByPath(
-        mgr.Get<PVR::GUI::Channels>().GetSelectedChannelPath(m_bRadio));
+        mgr.Get<PVR::GUI::Channels>().GetSelectedChannelPath(IsRadio()));
 
     if (channel)
     {
@@ -217,7 +217,7 @@ void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
         epgGridContainer->GetSelectedChannelGroupMember();
     if (groupMember)
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().SetSelectedChannelPath(
-          m_bRadio, groupMember->Path());
+          IsRadio(), groupMember->Path());
   }
 }
 
@@ -234,7 +234,7 @@ void CGUIWindowPVRGuideBase::UpdateButtons()
 bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory,
                                     bool updateFilterPath /* = true */)
 {
-  if (m_bUpdating)
+  if (IsUpdating())
   {
     // Prevent concurrent updates. Instead, let the timeline items refresh thread pick it up later.
     m_bRefreshTimelineItems = true;
@@ -249,7 +249,7 @@ bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory,
     if (epgGridContainer)
       m_bChannelSelectionRestored = epgGridContainer->SetChannel(
           CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetSelectedChannelPath(
-              m_bRadio));
+              IsRadio()));
   }
 
   return bReturn;

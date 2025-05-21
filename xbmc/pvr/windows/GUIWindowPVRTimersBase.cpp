@@ -209,7 +209,7 @@ bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItem& item) const
      create a new timer and open settings dialog, otherwise
      open settings for selected timer entry */
   if (URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-    bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(m_bRadio);
+    bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(IsRadio());
   else
     bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(item);
 

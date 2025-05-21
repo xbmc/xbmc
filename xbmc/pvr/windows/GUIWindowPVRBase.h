@@ -92,9 +92,11 @@ protected:
 
   virtual void UpdateSelectedItemPath();
 
+  bool IsRadio() const { return m_bRadio; }
+
+  bool IsUpdating() const { return m_bUpdating; }
+
   CCriticalSection m_critSection;
-  bool m_bRadio;
-  std::atomic_bool m_bUpdating = {false};
 
 private:
   /*!
@@ -108,6 +110,9 @@ private:
    * @brief Hide the progress dialog if it's visible.
    */
   void HideProgressDialog();
+
+  bool m_bRadio{false};
+  std::atomic_bool m_bUpdating{false};
 
   std::unique_ptr<CGUIPVRChannelGroupsSelector> m_channelGroupsSelector;
   std::shared_ptr<CPVRChannelGroup> m_channelGroup;
