@@ -206,7 +206,7 @@ std::string GetLocalArt(const CFileItem& item, const std::string& artFile, bool 
 
 std::string GetLocalArtBaseFilename(const CFileItem& item,
                                     bool& useFolder,
-                                    UseSeasonAndEpisode useSeasonAndEpisode /* = no */)
+                                    AdditionalIdentifiers additionalIdentifiers /* = none */)
 {
   std::string strFile;
   if (item.IsStack())
@@ -236,17 +236,39 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
     strFile = item.GetLocalMetadataPath();
   }
 
-  if (useSeasonAndEpisode == UseSeasonAndEpisode::YES && !URIUtils::GetFileName(file).empty() &&
-      item.HasVideoInfoTag())
+  if (!URIUtils::GetFileName(file).empty() && item.HasVideoInfoTag())
   {
-    // Note this is an exception to the optical media rule above - episode art files will be stored alongside the episode .nfo
-    const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-    if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
+    using enum AdditionalIdentifiers;
+    switch (additionalIdentifiers)
     {
-      std::string baseFile{file};
-      URIUtils::RemoveExtension(baseFile);
-      strFile = fmt::format("{}-S{:02}E{:02}{}", baseFile, tag->m_iSeason, tag->m_iEpisode,
-                            URIUtils::GetExtension(file));
+      case SEASON_AND_EPISODE:
+      {
+        // Note this is an exception to the optical media rule above - episode art files will be stored alongside the episode .nfo
+        const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+        if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
+        {
+          std::string baseFile{file};
+          URIUtils::RemoveExtension(baseFile);
+          strFile = fmt::format("{}-S{:02}E{:02}{}", baseFile, tag->m_iSeason, tag->m_iEpisode,
+                                URIUtils::GetExtension(file));
+        }
+        break;
+      }
+      case PLAYLIST:
+      {
+        const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+        if (tag->m_iTrack > -1)
+        {
+          std::string baseFile{file};
+          URIUtils::RemoveExtension(baseFile);
+          strFile =
+              fmt::format("{}-{:05}{}", baseFile, tag->m_iTrack, URIUtils::GetExtension(file));
+        }
+        break;
+      }
+      case NONE:
+      default:
+        break;
     }
   }
   else if (URIUtils::IsBlurayPath(file))
