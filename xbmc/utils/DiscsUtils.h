@@ -77,5 +77,11 @@ DiscInfo ProbeBlurayDiscInfo(const std::string& mediaPath);
 */
 bool IsBlurayDiscImage(const CFileItem& item);
 
+/*! \brief Probe a FileItem to see it is a bluray disc image
+    \param path The path to probe
+    \return true if the item is a bluray disc image, false otherwise
+*/
+bool IsBlurayDiscImage(const std::string& path);
+
 } // namespace DISCS
 } // namespace UTILS
