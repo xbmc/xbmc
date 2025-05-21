@@ -489,7 +489,8 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
   }
 
   return videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, idVideoVersion,
-                                       VideoAssetType::VERSION);
+                                       VideoAssetType::VERSION,
+                                       DeleteMovieCascadeAction::ALL_ASSETS);
 }
 
 bool CGUIDialogVideoManagerVersions::GetAllOtherMovies(const std::shared_ptr<CFileItem>& item,
@@ -672,7 +673,8 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         if (idNewVideoVersion != -1)
         {
           return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
-                                                  idNewVideoVersion, VideoAssetType::VERSION);
+                                                  idNewVideoVersion, VideoAssetType::VERSION,
+                                                  DeleteMovieCascadeAction::ALL_ASSETS);
         }
         else
         {

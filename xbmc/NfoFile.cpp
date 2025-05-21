@@ -29,7 +29,7 @@ using namespace ADDON;
 
 CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
                                         const ScraperPtr& info,
-                                        int episode)
+                                        int index)
 {
   m_info = info; // assume we can use these settings
   m_type = ScraperTypeFromContent(info->Content());
@@ -37,7 +37,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
     return CInfoScanner::InfoType::NONE;
 
   CFileItemList items;
-  bool bNfo=false;
+  bool bNfo{false};
 
   if (m_type == AddonType::SCRAPER_ALBUMS)
   {
@@ -54,36 +54,20 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
   {
     // first check if it's an XML file with the info we need
     CVideoInfoTag details;
-    bNfo = GetDetails(details);
-    if (episode > -1 && bNfo && m_type == AddonType::SCRAPER_TVSHOWS)
-    {
-      int infos=0;
-      while (m_headPos != std::string::npos && details.m_iEpisode != episode)
-      {
-        m_headPos = m_doc.find("<episodedetails", m_headPos + 1);
-        if (m_headPos == std::string::npos)
-          break;
-
-        bNfo  = GetDetails(details);
-        infos++;
-      }
-      if (details.m_iEpisode != episode)
-      {
-        bNfo = false;
-        details.Reset();
-        m_headPos = 0;
-        if (infos == 1) // still allow differing nfo/file numbers for single ep nfo's
-          bNfo = GetDetails(details);
-      }
-    }
+    // Find nth <movie> tag (index is 1 based)
+    // If it doesn't exist then set bNfo to false
+    if (m_type == AddonType::SCRAPER_MOVIES)
+      while (index-- > 0 && (m_headPos = m_doc.find("<movie>", m_headPos + 1)) != std::string::npos)
+        ;
+    bNfo = m_headPos != std::string::npos ? GetDetails(details) : false;
   }
 
   std::vector<ScraperPtr> vecScrapers = GetScrapers(m_type, m_info);
 
   // search ..
   int res = -1;
-  for (unsigned int i=0; i<vecScrapers.size(); ++i)
-    if ((res = Scrape(vecScrapers[i], m_scurl, m_doc)) == 0 || res == 2)
+  for (auto& scraper : vecScrapers)
+    if ((res = Scrape(scraper, m_scurl, m_doc)) == 0 || res == 2)
       break;
 
   if (res == 2)
@@ -104,8 +88,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
 }
 
 // return value: 0 - success; 1 - no result; skip; 2 - error
-int CNfoFile::Scrape(ScraperPtr& scraper, CScraperUrl& url,
-                     const std::string& content)
+int CNfoFile::Scrape(const ScraperPtr& scraper, CScraperUrl& url, const std::string& content)
 {
   if (scraper->IsNoop())
   {
