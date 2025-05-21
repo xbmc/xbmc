@@ -109,7 +109,7 @@ void CScriptInvocationManager::Uninitialize()
 
 void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::string &extension)
 {
-  if (invocationHandler == NULL || extension.empty())
+  if (invocationHandler == nullptr || extension.empty())
     return;
 
   std::string ext = extension;
@@ -140,7 +140,7 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
 
 void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::set<std::string> &extensions)
 {
-  if (invocationHandler == NULL || extensions.empty())
+  if (invocationHandler == nullptr || extensions.empty())
     return;
 
   for (const auto& extension : extensions)
@@ -149,7 +149,7 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
 
 void CScriptInvocationManager::UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler)
 {
-  if (invocationHandler == NULL)
+  if (invocationHandler == nullptr)
     return;
 
   std::unique_lock lock(m_critSection);
@@ -173,7 +173,7 @@ bool CScriptInvocationManager::HasLanguageInvoker(const std::string &script) con
 
   std::unique_lock lock(m_critSection);
   std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
-  return it != m_invocationHandlers.end() && it->second != NULL;
+  return it != m_invocationHandlers.end() && it->second != nullptr;
 }
 
 int CScriptInvocationManager::GetReusablePluginHandle(const std::string& script)
@@ -246,7 +246,7 @@ int CScriptInvocationManager::ExecuteAsync(
     bool reuseable /* = false */,
     int pluginHandle /* = -1 */)
 {
-  if (script.empty() || languageInvoker == NULL)
+  if (script.empty() || languageInvoker == nullptr)
     return -1;
 
   if (!CFileUtils::Exists(script, false))
@@ -259,7 +259,7 @@ int CScriptInvocationManager::ExecuteAsync(
 
   if (m_lastInvokerThread && m_lastInvokerThread->GetInvoker() == languageInvoker)
   {
-    if (addon != NULL)
+    if (addon != nullptr)
       m_lastInvokerThread->SetAddon(addon);
 
     // After we leave the lock, m_lastInvokerThread can be released -> copy!
@@ -271,10 +271,10 @@ int CScriptInvocationManager::ExecuteAsync(
   }
 
   m_lastInvokerThread = std::make_shared<CLanguageInvokerThread>(languageInvoker, this, reuseable);
-  if (m_lastInvokerThread == NULL)
+  if (m_lastInvokerThread == nullptr)
     return -1;
 
-  if (addon != NULL)
+  if (addon != nullptr)
     m_lastInvokerThread->SetAddon(addon);
 
   m_lastInvokerThread->SetId(m_nextId++);
@@ -352,7 +352,7 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
 
   std::unique_lock lock(m_critSection);
   auto invokerThread = getInvokerThread(scriptId).thread;
-  if (invokerThread == NULL)
+  if (invokerThread == nullptr)
     return false;
 
   return invokerThread->Stop(wait);
@@ -384,7 +384,7 @@ bool CScriptInvocationManager::IsRunning(int scriptId) const
 {
   std::unique_lock lock(m_critSection);
   LanguageInvokerThread invokerThread = getInvokerThread(scriptId);
-  if (invokerThread.thread == NULL)
+  if (invokerThread.thread == nullptr)
     return false;
 
   return !invokerThread.done;
