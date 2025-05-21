@@ -12,6 +12,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_path(SHAIRPLAY_INCLUDE_DIR shairplay/raop.h)
   find_library(SHAIRPLAY_LIBRARY NAMES shairplay libshairplay)
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Shairplay
                                     REQUIRED_VARS SHAIRPLAY_LIBRARY SHAIRPLAY_INCLUDE_DIR)

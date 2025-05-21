@@ -102,29 +102,55 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
    endif()
 endif()
 
+if(NOT VERBOSE_FIND)
+   set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+ endif()
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SSE
                                   REQUIRED_VARS _SSE_TRUE _SSE_OK
                                   FAIL_MESSAGE "Could not find hardware support for SSE")
 set(FPHSA_NAME_MISMATCHED ON)
+if(NOT VERBOSE_FIND)
+   set(SSE2_FIND_QUIETLY TRUE)
+ endif()
 find_package_handle_standard_args(SSE2
                                   REQUIRED_VARS _SSE2_TRUE _SSE2_OK
                                   FAIL_MESSAGE "Could not find hardware support for SSE2")
+
+if(NOT VERBOSE_FIND)
+   set(SSE3_FIND_QUIETLY TRUE)
+ endif()
 find_package_handle_standard_args(SSE3
                                   REQUIRED_VARS _SSE3_TRUE _SSE3_OK
                                   FAIL_MESSAGE "Could not find hardware support for SSE3")
+if(NOT VERBOSE_FIND)
+   set(SSSE3_FIND_QUIETLY TRUE)
+ endif()
 find_package_handle_standard_args(SSSE3
                                   REQUIRED_VARS _SSSE3_TRUE _SSSE3_OK
                                   FAIL_MESSAGE "Could not find hardware support for SSSE3")
+if(NOT VERBOSE_FIND)
+   set(SSE4_1_FIND_QUIETLY TRUE)
+ endif()
 find_package_handle_standard_args(SSE4_1
                                   REQUIRED_VARS _SSE41_TRUE _SSE41_OK
                                   FAIL_MESSAGE "Could not find hardware support for SSE4.1")
+if(NOT VERBOSE_FIND)
+   set(SSE4_2_FIND_QUIETLY TRUE)
+ endif()
 find_package_handle_standard_args(SSE4_2
                                   REQUIRED_VARS _SSE42_TRUE _SSE42_OK
                                   FAIL_MESSAGE "Could not find hardware support for SSE4.2")
+if(NOT VERBOSE_FIND)
+   set(AVX_FIND_QUIETLY TRUE)
+ endif()
 find_package_handle_standard_args(AVX
                                   REQUIRED_VARS _AVX_TRUE _AVX_OK
                                   FAIL_MESSAGE "Could not find hardware support for AVX")
+if(NOT VERBOSE_FIND)
+   set(AVX2_FIND_QUIETLY TRUE)
+ endif()
 find_package_handle_standard_args(AVX2
                                   REQUIRED_VARS _AVX2_TRUE _AVX2_OK
                                   FAIL_MESSAGE "Could not find hardware support for AVX2")
