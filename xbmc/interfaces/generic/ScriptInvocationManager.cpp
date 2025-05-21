@@ -51,13 +51,8 @@ void CScriptInvocationManager::Process()
   // we can leave the lock now
   lock.unlock();
 
-  // finally remove the finished threads but we do it outside of any locks in
-  // case of any callbacks from the destruction of the CLanguageInvokerThread
-  tempList.clear();
-
   // let the invocation handlers do their processing
-  for (auto& it : m_invocationHandlers)
-    it.second->Process();
+  std::ranges::for_each(m_invocationHandlers, [](auto& handler) { handler.second->Process(); });
 }
 
 void CScriptInvocationManager::Uninitialize()
@@ -84,19 +79,20 @@ void CScriptInvocationManager::Uninitialize()
   // finally stop and remove the finished threads but we do it outside of any
   // locks in case of any callbacks from the stop or destruction logic of
   // CLanguageInvokerThread or the ILanguageInvoker implementation
-  for (auto& it : tempList)
-  {
-    if (!it.done)
-      it.thread->Stop(true);
-  }
+  std::ranges::for_each(tempList,
+                        [](auto& val)
+                        {
+                          if (!val.done)
+                            val.thread->Stop(true);
+                        });
 
   lock.lock();
 
   tempList.clear();
 
   // uninitialize all invocation handlers and then remove them
-  for (auto& it : m_invocationHandlers)
-    it.second->Uninitialize();
+  std::ranges::for_each(m_invocationHandlers,
+                        [](auto& handler) { handler.second->Uninitialize(); });
 
   m_invocationHandlers.clear();
 }
@@ -132,13 +128,14 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
     invocationHandler->Initialize();
 }
 
-void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::set<std::string> &extensions)
+void CScriptInvocationManager::RegisterLanguageInvocationHandler(
+    ILanguageInvocationHandler* invocationHandler, const std::set<std::string>& extensions)
 {
   if (invocationHandler == nullptr || extensions.empty())
     return;
 
-  for (const auto& extension : extensions)
-    RegisterLanguageInvocationHandler(invocationHandler, extension);
+  std::ranges::for_each(extensions, [&invocationHandler, this](const auto& extension)
+                        { RegisterLanguageInvocationHandler(invocationHandler, extension); });
 }
 
 void CScriptInvocationManager::UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler)
@@ -349,11 +346,12 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
 
 void CScriptInvocationManager::StopRunningScripts(bool wait /* = false */)
 {
-  for (auto& it : m_scripts)
-  {
-    if (!it.second.done)
-      Stop(it.second.script, wait);
-  }
+  std::ranges::for_each(m_scripts,
+                        [wait, this](auto& script)
+                        {
+                          if (!script.second.done)
+                            Stop(script.second.script, wait);
+                        });
 }
 
 bool CScriptInvocationManager::Stop(const std::string &scriptPath, bool wait /* = false */)
