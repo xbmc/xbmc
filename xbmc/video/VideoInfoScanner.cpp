@@ -734,27 +734,91 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (ProgressCancelled(pDlgProgress, 198, pItem->GetLabel()))
       return InfoRet::CANCELLED;
 
-    if (m_database.HasMovieInfo(pItem->GetDynPath()))
-      return InfoRet::HAVE_ALREADY;
-
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
     InfoType result = InfoType::NONE;
     CScraperUrl scrUrl;
+
     // handle .nfo files
     std::unique_ptr<IVideoInfoTagLoader> loader;
+    CFileItem item{*pItem};
     if (useLocal)
-      std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
+      std::tie(result, loader) = ReadInfoTag(item, info2, bDirNames, true);
     if (result == InfoType::FULL)
     {
-      const int dbId = AddVideo(pItem, info2->Content(), bDirNames, true);
-      if (dbId < 0)
-        return InfoRet::INFO_ERROR;
-      if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
-        return InfoRet::HAVE_ALREADY;
+      // Add the movie entry
+      // If there is an existing idMovie then this must be a version is a separate nfo file
+      // Try with title first
+      int existingMovieId{-1};
+      const std::string title{item.GetVideoInfoTag()->GetTitle()};
+      if (!title.empty())
+        existingMovieId = m_database.GetMovieIdByTitle(title);
+      if (existingMovieId < 0)
+        existingMovieId =
+            m_database.GetMovieId(pItem->GetDynPath(), AllowNonFileNameMatch::YES_MATCH);
+
+      int movieId{-1};
+      if (existingMovieId > -1)
+      {
+        // Add as version
+        movieId = existingMovieId;
+        item.SetProperty("idMovie", movieId);
+        const int versionId{
+            static_cast<int>(AddVideo(&item, CONTENT_MOVIEVERSIONS, bDirNames, true, NULL, false))};
+        if (versionId < 0)
+          return InfoRet::INFO_ERROR;
+      }
+      else
+      {
+        movieId = static_cast<int>(AddVideo(&item, info2->Content(), bDirNames, true));
+        if (movieId < 0)
+          return InfoRet::INFO_ERROR;
+        item.SetProperty("idMovie", movieId);
+      }
+
+      // Set version (AddVideo() ultimately uses CVideoDatabase::AddNewMovie() which defaults to standard version)
+      CVideoInfoTag* tag{item.GetVideoInfoTag()};
+      m_database.SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
+
+      // Look for default version
+      int defaultVersionFileId{-1};
+      if (tag->IsDefaultVideoVersion())
+        defaultVersionFileId = tag->m_iFileId; // Updated in AddMovie()
+
+      // Look for versions (ie. subsequent <movie> entries in the .nfo file)
+      int index{1};
+      do
+      {
+        index++;
+        item.SetProperty("nfo_index", index); // Attempt to read next movie version
+        std::tie(result, loader) = ReadInfoTag(item, info2, bDirNames, true);
+        if (result == InfoType::FULL)
+        {
+          // Add the version entry
+          const int versionId{
+              static_cast<int>(AddVideo(&item, CONTENT_MOVIEVERSIONS, bDirNames, true))};
+          if (versionId < 0)
+            return InfoRet::INFO_ERROR;
+
+          // Look for default version
+          if (tag->IsDefaultVideoVersion())
+            defaultVersionFileId = tag->m_iFileId; // Updated in AddPlaylistMovieVersion()
+        }
+      } while (result == InfoType::FULL);
+
+      // Set default version
+      if (defaultVersionFileId > -1)
+        m_database.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId,
+                                          defaultVersionFileId);
+
       return InfoRet::ADDED;
     }
+
+    // If no nfo then return here if movie already in library
+    if (m_database.HasMovieInfo(pItem->GetDynPath()))
+      return InfoRet::HAVE_ALREADY;
+
     if (result == InfoType::URL || result == InfoType::COMBINED)
     {
       scrUrl = loader->ScraperUrl();
@@ -1558,6 +1622,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
                     movieDetails.m_strTitle, movieDetails.m_showLink[i]);
       }
     }
+    else if (content == CONTENT_MOVIEVERSIONS)
+    {
+      const int idMovie{pItem->HasProperty("idMovie") ? pItem->GetProperty("idMovie").asInteger32()
+                                                      : -1};
+      if (idMovie != -1)
+      {
+        lResult = m_database.AddMovieVersion(*pItem, idMovie, art);
+        movieDetails.m_iDbId = lResult;
+        movieDetails.m_type = MediaTypeMovie;
+      }
+    }
     else if (content == CONTENT_TVSHOWS)
     {
       if (pItem->m_bIsFolder)
@@ -1824,10 +1899,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // the previous call.
         useFolder = false;
 
-        AddLocalItemArtwork(
-            art, artTypes,
-            ART::GetLocalArtBaseFilename(*pItem, useFolder, ART::UseSeasonAndEpisode::YES), addAll,
-            exactName);
+        std::string path;
+        if (content == CONTENT_TVSHOWS)
+          path = ART::GetLocalArtBaseFilename(*pItem, useFolder,
+                                              ART::AdditionalIdentifiers::SEASON_AND_EPISODE);
+        else if (content == CONTENT_MOVIEVERSIONS || pItem->GetVideoInfoTag()->m_iTrack > -1)
+          path =
+              ART::GetLocalArtBaseFilename(*pItem, useFolder, ART::AdditionalIdentifiers::PLAYLIST);
+        else
+          path = ART::GetLocalArtBaseFilename(*pItem, useFolder);
+        AddLocalItemArtwork(art, artTypes, path, addAll, exactName);
       }
 
       if (moviePartOfSet)
