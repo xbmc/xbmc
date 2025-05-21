@@ -66,6 +66,7 @@
 #include <map>
 #include <memory>
 #include <ranges>
+#include <set>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -1298,7 +1299,8 @@ std::string CVideoDatabase::GetRemovableBlurayPath(std::string originalPath)
 }
 
 //********************************************************************************************************************************
-int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
+int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath,
+                               AllowNonFileNameMatch allowNonFileNameMatch)
 {
   try
   {
@@ -1327,7 +1329,8 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
       strSQL = PrepareSQL("SELECT idMovie FROM movie "
                           "WHERE c%02d='%s'",
                           VIDEODB_ID_BASEPATH, strPath.c_str());
-    else if (idFile == -1 && strPath != strFilenameAndPath)
+    else if (idFile == -1 && strPath != strFilenameAndPath &&
+             allowNonFileNameMatch == AllowNonFileNameMatch::NO_MATCH)
       return -1;
     else if (idFile == -1)
       strSQL = PrepareSQL("SELECT idMovie FROM movie "
@@ -2923,6 +2926,36 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details, const st
   }
   RollbackTransaction();
   return -1;
+}
+
+int CVideoDatabase::AddMovieVersion(CFileItem& item, int idMovie, const ArtMap& art)
+{
+  CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+
+  // Generate bluray path
+  std::string path{item.GetPath()};
+  if (tag.m_iTrack > -1)
+    path = URIUtils::GetBlurayPlaylistPath(path, tag.m_iTrack);
+
+  const int idFile{AddFile(path)};
+  if (idFile < 0)
+    return -1;
+  item.GetVideoInfoTag()->m_iFileId = idFile;
+
+  if (tag.HasStreamDetails())
+    if (!SetStreamDetailsForFileId(tag.m_streamDetails, idFile))
+      return -1;
+
+  const int idVersion{AddVideoVersion(item.GetVideoContentType(), idMovie, idFile,
+                                      tag.GetAssetInfo().GetId(), VideoAssetType::VERSION)};
+  if (idVersion == -1)
+    return -1;
+
+  for (const auto& [type, url] : art)
+    if (!SetArtForItem(idVersion, MediaTypeVideoVersion, type, url))
+      return -1;
+
+  return idVersion;
 }
 
 int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag &details)
@@ -11929,6 +11962,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
       path = path->NextSiblingElement();
     }
     movie = root->FirstChildElement();
+    std::string lastPath;
+    int lastMovieId{-1};
     while (movie)
     {
       CVideoInfoTag info;
@@ -11963,6 +11998,27 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
             }
             item.AppendArt(setArt, "set");
           }
+        }
+        if (URIUtils::GetDirectory(lastPath) == URIUtils::GetDirectory(item.GetPath()) &&
+            item.HasVideoVersions())
+        {
+          item.SetProperty("idMovie", lastMovieId);
+          scanner.AddVideo(&item, CONTENT_MOVIEVERSIONS, useFolders, true, NULL, true);
+        }
+        else
+        {
+          lastMovieId = scanner.AddVideo(&item, CONTENT_MOVIES, useFolders, true, NULL, true);
+          lastPath = item.GetPath();
+        }
+        if (item.HasVideoVersions())
+        {
+          // Set version (AddVideo() ultimately uses AddNewMovie() which defaults to standard version)
+          CVideoInfoTag* tag{item.GetVideoInfoTag()};
+          SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
+
+          // Set default version
+          if (tag->IsDefaultVideoVersion())
+            SetDefaultVideoVersion(VideoDbContentType::MOVIES, lastMovieId, tag->m_iFileId);
         }
         current++;
       }
@@ -13032,6 +13088,36 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
   CommitTransaction();
 
   return true;
+}
+
+int CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
+                                    int dbIdSource,
+                                    int idFile,
+                                    int idVideoVersion,
+                                    VideoAssetType assetType)
+{
+  if (!m_pDB || !m_pDS)
+    return -1;
+
+  MediaType mediaType;
+  VideoContentTypeToString(itemType, mediaType);
+
+  const std::string sql{
+      PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                 "VALUES(%i, %i, '%s', %i, %i)",
+                 idFile, dbIdSource, mediaType.c_str(), assetType, idVideoVersion)};
+
+  try
+  {
+    m_pDS->exec(sql);
+
+    return static_cast<int>(m_pDS->lastinsertid());
+  }
+  catch (const std::exception& e)
+  {
+    CLog::LogF(LOGERROR, "Unable to add version ({}) - error {}", sql, e.what());
+  }
+  return -1;
 }
 
 void CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile)
