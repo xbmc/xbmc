@@ -462,6 +462,12 @@ enum class DeleteMovieHashAction
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
+enum class AllowNonFileNameMatch : bool
+{
+  NO_MATCH,
+  YES_MATCH
+};
+
 struct EpisodeInformation
 {
   int index{0};
@@ -661,6 +667,13 @@ public:
                               int idMVideo = -1);
   bool SetStreamDetailsForFile(const CStreamDetails& details,
                                const std::string& strFileNameAndPath);
+
+  int AddMovieVersion(CFileItem& item, int idMovie, const ADDON::ArtMap& art);
+  int AddVideoVersion(VideoDbContentType itemType,
+                      int dbIdSource,
+                      int idFile,
+                      int idVideoVersion,
+                      VideoAssetType assetType);
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
    * \param[in] details New stream details
@@ -1231,7 +1244,8 @@ public:
   VideoAssetInfo GetVideoVersionInfo(const std::string& filenameAndPath);
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
-  int GetMovieId(const std::string& strFilenameAndPath);
+  int GetMovieId(const std::string& strFilenameAndPath,
+                 AllowNonFileNameMatch allowNonFileNameMatch = AllowNonFileNameMatch::NO_MATCH);
   std::string GetMovieTitle(int idMovie);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
   int GetFileIdByMovie(int idMovie);
