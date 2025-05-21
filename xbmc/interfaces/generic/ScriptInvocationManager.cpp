@@ -17,6 +17,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <cerrno>
 #include <memory>
 #include <mutex>
@@ -38,21 +39,14 @@ void CScriptInvocationManager::Process()
 {
   std::unique_lock lock(m_critSection);
   // go through all active threads and find and remove all which are done
-  std::vector<LanguageInvokerThread> tempList;
-  for (LanguageInvokerThreadMap::iterator it = m_scripts.begin(); it != m_scripts.end(); )
-  {
-    if (it->second.done)
-    {
-      tempList.push_back(it->second);
-      m_scripts.erase(it++);
-    }
-    else
-      ++it;
-  }
-
-  // remove the finished scripts from the script path map as well
-  for (const auto& it : tempList)
-    m_scriptPaths.erase(it.script);
+  std::erase_if(m_scripts,
+                [&paths = m_scriptPaths](const auto& it)
+                {
+                  const auto& [key, script] = it;
+                  if (script.done)
+                    paths.erase(script.script);
+                  return script.done;
+                });
 
   // we can leave the lock now
   lock.unlock();
@@ -154,13 +148,8 @@ void CScriptInvocationManager::UnregisterLanguageInvocationHandler(ILanguageInvo
 
   std::unique_lock lock(m_critSection);
   //  get all extensions of the given language invoker
-  for (std::map<std::string, ILanguageInvocationHandler*>::iterator it = m_invocationHandlers.begin(); it != m_invocationHandlers.end(); )
-  {
-    if (it->second == invocationHandler)
-      m_invocationHandlers.erase(it++);
-    else
-      ++it;
-  }
+  std::erase_if(m_invocationHandlers, [&invocationHandler](const auto& handler)
+                { return handler.second == invocationHandler; });
 
   // automatically uninitialize the invocation handler
   invocationHandler->Uninitialize();
