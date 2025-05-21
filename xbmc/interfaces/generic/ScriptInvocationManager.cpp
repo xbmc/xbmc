@@ -21,6 +21,7 @@
 #include <cerrno>
 #include <memory>
 #include <mutex>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -97,7 +98,8 @@ void CScriptInvocationManager::Uninitialize()
   m_invocationHandlers.clear();
 }
 
-void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::string &extension)
+void CScriptInvocationManager::RegisterLanguageInvocationHandler(
+    ILanguageInvocationHandler* invocationHandler, const std::string& extension)
 {
   if (invocationHandler == nullptr || extension.empty())
     return;
@@ -108,23 +110,16 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
     ext = "." + ext;
 
   std::unique_lock lock(m_critSection);
-  if (m_invocationHandlers.find(ext) != m_invocationHandlers.end())
-    return;
 
-  m_invocationHandlers.insert(std::make_pair(extension, invocationHandler));
+  const bool known =
+      std::ranges::any_of(m_invocationHandlers, [invocationHandler](const auto& handler)
+                          { return handler.second == invocationHandler; });
 
-  bool known = false;
-  for (const auto& it : m_invocationHandlers)
-  {
-    if (it.second == invocationHandler)
-    {
-      known = true;
-      break;
-    }
-  }
+  bool inserted;
+  std::tie(std::ignore, inserted) = m_invocationHandlers.emplace(ext, invocationHandler);
 
   // automatically initialize the invocation handler if it's a new one
-  if (!known)
+  if (inserted && !known)
     invocationHandler->Initialize();
 }
 
