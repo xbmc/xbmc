@@ -104,7 +104,7 @@ public:
   void Clear();
 
   template<typename F>
-  void Append(const std::string& type, F function);
+  void Append(const std::string& type, const F& function);
 
   void ExecutePendingJobs();
 
@@ -144,7 +144,7 @@ void CPVRManagerJobQueue::Clear()
 }
 
 template<typename F>
-void CPVRManagerJobQueue::Append(const std::string& type, F function)
+void CPVRManagerJobQueue::Append(const std::string& type, const F& function)
 {
   auto job{std::make_unique<CPVRLambdaJob<F>>(type, function)};
 

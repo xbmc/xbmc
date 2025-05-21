@@ -92,7 +92,7 @@ SettingPtr InitializeFromOldSettingWithoutDefinition<CSettingString>(
 template<class TSetting>
 SettingPtr AddSettingWithoutDefinition(ADDON::CAddonSettings& settings,
                                        const std::string& settingId,
-                                       typename TSetting::Value defaultValue,
+                                       const typename TSetting::Value& defaultValue,
                                        const Logger& logger)
 {
   if (settingId.empty())

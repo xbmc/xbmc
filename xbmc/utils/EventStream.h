@@ -68,7 +68,7 @@ public:
   explicit CEventSource() : m_queue(false, 1, CJob::PRIORITY_HIGH) {}
 
   template<typename A>
-  void Publish(A event)
+  void Publish(const A& event)
   {
     std::unique_lock lock(this->m_criticalSection);
     auto& subscriptions = this->m_subscriptions;
@@ -89,7 +89,7 @@ class CBlockingEventSource : public CEventStream<Event>
 {
 public:
   template<typename A>
-  void HandleEvent(A event)
+  void HandleEvent(const A& event)
   {
     std::unique_lock lock(this->m_criticalSection);
     for (const auto& subscription : this->m_subscriptions)
