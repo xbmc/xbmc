@@ -100,14 +100,14 @@ class CGUIWindowPVRTVGuide : public CGUIWindowPVRGuideBase
 {
 public:
   CGUIWindowPVRTVGuide() : CGUIWindowPVRGuideBase(false, WINDOW_TV_GUIDE, "MyPVRGuide.xml") {}
-  std::string GetRootPath() const override;
+  std::string GetRootPath() override;
 };
 
 class CGUIWindowPVRRadioGuide : public CGUIWindowPVRGuideBase
 {
 public:
   CGUIWindowPVRRadioGuide() : CGUIWindowPVRGuideBase(true, WINDOW_RADIO_GUIDE, "MyPVRGuide.xml") {}
-  std::string GetRootPath() const override;
+  std::string GetRootPath() override;
 };
 
 class CPVRRefreshTimelineItemsThread : public CThread

@@ -1010,12 +1010,12 @@ void CPVRRefreshTimelineItemsThread::Process()
   m_done.Set();
 }
 
-std::string CGUIWindowPVRTVGuide::GetRootPath() const
+std::string CGUIWindowPVRTVGuide::GetRootPath()
 {
   return "pvr://guide/tv/";
 }
 
-std::string CGUIWindowPVRRadioGuide::GetRootPath() const
+std::string CGUIWindowPVRRadioGuide::GetRootPath()
 {
   return "pvr://guide/radio/";
 }

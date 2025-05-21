@@ -77,7 +77,7 @@ void CGUIWindowPVRRecordingsBase::OnDeinitWindow(int nextWindowID)
   CGUIWindowPVRBase::OnDeinitWindow(nextWindowID);
 }
 
-std::string CGUIWindowPVRRecordingsBase::GetRootPath() const
+std::string CGUIWindowPVRRecordingsBase::GetRootPath()
 {
   const CURL url{m_vecItems->GetPath()};
   std::string rootPath{CPVRRecordingsPath(m_bShowDeletedRecordings, m_bRadio)};
