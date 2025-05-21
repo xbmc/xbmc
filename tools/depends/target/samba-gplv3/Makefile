@@ -35,6 +35,10 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
           --without-regedit \
           --without-lttng
 
+ifeq ($(NEED_LIBICONV), 1)
+  CONFIGURE += --with-libiconv=$(PREFIX)/lib
+endif
+
 LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.a
 
 ifeq ($(OS), darwin_embedded)
