@@ -413,6 +413,10 @@ bool CGUITexture::AllocResources()
 
   CalculateSize();
 
+  // Set scaling method of the loaded textures
+  m_texture.SetScalingMethod(m_scalingMethod);
+  m_diffuse.SetScalingMethod(m_diffuseScalingMethod);
+
   // call our implementation
   Allocate();
 
@@ -752,6 +756,20 @@ bool CGUITexture::SetFileName(const std::string& filename)
 void CGUITexture::SetUseCache(const bool useCache)
 {
   m_use_cache = useCache;
+}
+
+void CGUITexture::SetScalingMethod(TEXTURE_SCALING scalingMethod)
+{
+  m_scalingMethod = scalingMethod;
+
+  m_texture.SetScalingMethod(m_scalingMethod);
+}
+
+void CGUITexture::SetDiffuseScalingMethod(TEXTURE_SCALING scalingMethod)
+{
+  m_diffuseScalingMethod = scalingMethod;
+
+  m_diffuse.SetScalingMethod(m_diffuseScalingMethod);
 }
 
 int CGUITexture::GetOrientation() const
