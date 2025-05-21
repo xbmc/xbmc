@@ -263,7 +263,7 @@ int CScriptInvocationManager::ExecuteAsync(
       m_lastInvokerThread->SetAddon(addon);
 
     // After we leave the lock, m_lastInvokerThread can be released -> copy!
-    CLanguageInvokerThreadPtr invokerThread = m_lastInvokerThread;
+    auto invokerThread = m_lastInvokerThread;
     lock.unlock();
     invokerThread->Execute(script, arguments);
 
@@ -284,7 +284,7 @@ int CScriptInvocationManager::ExecuteAsync(
   m_scripts.insert(std::make_pair(m_lastInvokerThread->GetId(), thread));
   m_scriptPaths.insert(std::make_pair(script, m_lastInvokerThread->GetId()));
   // After we leave the lock, m_lastInvokerThread can be released -> copy!
-  CLanguageInvokerThreadPtr invokerThread = m_lastInvokerThread;
+  auto invokerThread = m_lastInvokerThread;
   lock.unlock();
   invokerThread->Execute(script, arguments);
 
@@ -351,7 +351,7 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
     return false;
 
   std::unique_lock lock(m_critSection);
-  CLanguageInvokerThreadPtr invokerThread = getInvokerThread(scriptId).thread;
+  auto invokerThread = getInvokerThread(scriptId).thread;
   if (invokerThread == NULL)
     return false;
 
