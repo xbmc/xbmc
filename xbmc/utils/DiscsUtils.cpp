@@ -9,6 +9,7 @@
 #include "DiscsUtils.h"
 
 #include "FileItem.h"
+#include "URIUtils.h"
 #include "URL.h"
 
 //! @todo it's wrong to include videoplayer scoped files, refactor
@@ -78,7 +79,12 @@ UTILS::DISCS::DiscInfo UTILS::DISCS::ProbeBlurayDiscInfo(const std::string& medi
 
 bool UTILS::DISCS::IsBlurayDiscImage(const CFileItem& item)
 {
-  if (!item.IsDiscImage())
+  return IsBlurayDiscImage(item.GetDynPath());
+}
+
+bool UTILS::DISCS::IsBlurayDiscImage(const std::string& path)
+{
+  if (!URIUtils::IsDiscImage(path))
     return false;
 
   static constexpr std::array<std::string_view, 4> blurayFiles = {
@@ -88,7 +94,7 @@ bool UTILS::DISCS::IsBlurayDiscImage(const CFileItem& item)
       "BDMV/INDEX.BDM",
   };
   CURL url("udf://");
-  url.SetHostName(item.GetDynPath());
+  url.SetHostName(path);
 
   return std::ranges::any_of(blurayFiles,
                              [&url](std::string_view file)
