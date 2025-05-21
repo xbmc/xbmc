@@ -27,7 +27,7 @@ std::string CGUIWindowPVRTVTimerRules::GetRootPath()
 
 std::string CGUIWindowPVRTVTimerRules::GetDirectoryPath()
 {
-  const std::string basePath(CPVRTimersPath(false, true).GetPath());
+  const std::string basePath{CPVRTimersPath(false, true).AsString()};
   return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }
 
@@ -43,6 +43,6 @@ std::string CGUIWindowPVRRadioTimerRules::GetRootPath()
 
 std::string CGUIWindowPVRRadioTimerRules::GetDirectoryPath()
 {
-  const std::string basePath(CPVRTimersPath(true, true).GetPath());
+  const std::string basePath{CPVRTimersPath(true, true).AsString()};
   return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
 }

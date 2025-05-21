@@ -91,7 +91,8 @@ void CPVRChannelGroupMember::SetGroupName(const std::string& groupName)
       CServiceBroker::GetPVRManager().GetClient(m_iChannelClientID);
   if (client)
     m_path = CPVRChannelsPath(m_bIsRadio, groupName, m_iGroupClientID, client->ID(),
-                              client->InstanceId(), m_iChannelUID);
+                              client->InstanceId(), m_iChannelUID)
+                 .AsString();
   else
     CLog::LogF(LOGERROR, "Unable to obtain instance for client id: {}", m_iChannelClientID);
 }

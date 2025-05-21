@@ -74,7 +74,8 @@ std::string CGUIWindowPVRChannelsBase::GetDirectoryPath()
 {
   const std::string basePath{CPVRChannelsPath(m_bRadio, m_bShowHiddenChannels,
                                               GetChannelGroup()->GroupName(),
-                                              GetChannelGroup()->GetClientID())};
+                                              GetChannelGroup()->GetClientID())
+                                 .AsString()};
   return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath()
                                                                   : basePath;
 }
@@ -190,7 +191,7 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
           // Replace wildcard with real group name
           const auto group =
               CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio());
-          SetChannelGroupPath(group->GetPath());
+          SetChannelGroupPath(group->GetPath().AsString());
         }
         else
         {
