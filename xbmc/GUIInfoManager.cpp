@@ -3859,6 +3859,16 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     (they used to return 0)
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.AudioChannelLayout`</b>,
+///                  \anchor VideoPlayer_AudioChannelLayout
+///                  _string_,
+///     @return The layout of the audio channels\, extracted from the currently playing video or
+///     guessed when only a number of audio channels is available.
+///     (possible values: see \ref ListItem_AudioChannelLayout "ListItem.AudioChannelLayout").
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_AudioChannelLayout `VideoPlayer.AudioChannelLayout`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioLanguage`</b>,
 ///                  \anchor VideoPlayer_AudioLanguage
 ///                  _string_,
@@ -4116,7 +4126,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 82> videoplayer = {{
+constexpr std::array<InfoMap, 83> videoplayer = {{
     {"title",                 VIDEOPLAYER_TITLE},
     {"genre",                 VIDEOPLAYER_GENRE},
     {"country",               VIDEOPLAYER_COUNTRY},
@@ -4156,6 +4166,7 @@ constexpr std::array<InfoMap, 82> videoplayer = {{
     {"videobitrate",          VIDEOPLAYER_VIDEO_BITRATE},
     {"audiocodec",            VIDEOPLAYER_AUDIO_CODEC},
     {"audiochannels",         VIDEOPLAYER_AUDIO_CHANNELS},
+    {"audiochannellayout",    VIDEOPLAYER_AUDIO_CHANNEL_LAYOUT},
     {"audiobitrate",          VIDEOPLAYER_AUDIO_BITRATE},
     {"audiolanguage",         VIDEOPLAYER_AUDIO_LANG},
     {"hasteletext",           VIDEOPLAYER_HASTELETEXT},
@@ -6365,6 +6376,21 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     (they used to return 0)
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.AudioChannelLayout`</b>,
+///                  \anchor ListItem_AudioChanneLayout
+///                  _string_,
+///     @return The layout of the audio channels of the currently selected video\, extracted from
+///     the video or guessed when only a number of audio channels is available.
+///     The string is formatted as X.Y.Z\, with:
+///       - X the number of speakers at the listener's level
+///       - Y the number of low frequency channels
+///       - Z the number of overhead channels.
+///     For example\, 1.0\, 5.1\, 5.1.4
+///       - <b>x channels</b> with x number of channels of the unknown layout
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_AudioChannelLayout `ListItem.AudioChannelLayout`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.AudioLanguage`</b>,
 ///                  \anchor ListItem_AudioLanguage
 ///                  _string_,
@@ -7326,7 +7352,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 227> listitem_labels = {{
+constexpr std::array<InfoMap, 228> listitem_labels = {{
     {"thumb",                         LISTITEM_THUMB},
     {"icon",                          LISTITEM_ICON},
     {"actualicon",                    LISTITEM_ACTUAL_ICON},
@@ -7446,6 +7472,7 @@ constexpr std::array<InfoMap, 227> listitem_labels = {{
     {"videoaspect",                   LISTITEM_VIDEO_ASPECT},
     {"audiocodec",                    LISTITEM_AUDIO_CODEC},
     {"audiochannels",                 LISTITEM_AUDIO_CHANNELS},
+    {"audiochannellayout",            LISTITEM_AUDIO_CHANNEL_LAYOUT},
     {"audiolanguage",                 LISTITEM_AUDIO_LANGUAGE},
     {"subtitlelanguage",              LISTITEM_SUBTITLE_LANGUAGE},
     {"isresumable",                   LISTITEM_IS_RESUMABLE},
