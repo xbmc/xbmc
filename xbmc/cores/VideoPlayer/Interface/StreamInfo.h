@@ -57,6 +57,7 @@ protected:
 struct AudioStreamInfo : StreamInfo
 {
   int channels = 0;
+  std::string m_channelLayout;
   int samplerate = 0;
   int bitspersample = 0;
 };
