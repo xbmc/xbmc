@@ -505,6 +505,14 @@ using EpisodeFileMapEntry = std::pair<std::string, EpisodeInformation>;
 
 class CVideoDatabase : public CDatabase
 {
+  struct FileInformation
+  {
+    std::string path;
+    int fileId{0};
+    int vvId{0};
+    std::string hash;
+  };
+
 public:
 
   class CActor    // used for actor retrieval for non-master users
