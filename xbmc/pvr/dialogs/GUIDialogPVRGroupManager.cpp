@@ -613,7 +613,7 @@ void CGUIDialogPVRGroupManager::Update()
   }
   else if (m_selectedGroup)
   {
-    m_viewChannelGroups.SetSelectedItem(m_selectedGroup->GetPath());
+    m_viewChannelGroups.SetSelectedItem(m_selectedGroup->GetPath().AsString());
     m_iSelectedChannelGroup = m_viewChannelGroups.GetSelectedItem();
   }
 

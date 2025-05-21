@@ -58,7 +58,7 @@ void CPVREpgSearchFilter::Reset()
 
 std::string CPVREpgSearchFilter::GetPath() const
 {
-  return CPVREpgSearchPath(*this).GetPath();
+  return CPVREpgSearchPath(*this).AsString();
 }
 
 void CPVREpgSearchFilter::SetSearchTerm(std::string_view strSearchTerm)

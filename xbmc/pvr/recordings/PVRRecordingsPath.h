@@ -37,11 +37,11 @@ public:
                      const CDateTime& recordingTime,
                      const std::string& strId);
 
-  operator std::string() const { return m_path; }
-
   bool IsValid() const { return m_bValid; }
 
-  const std::string& GetPath() const { return m_path; }
+  const std::string& AsString() const& { return m_path; }
+  std::string AsString() && { return std::move(m_path); }
+
   bool IsRecordingsRoot() const { return m_bRoot; }
   bool IsActive() const { return m_bActive; }
   bool IsDeleted() const { return !IsActive(); }

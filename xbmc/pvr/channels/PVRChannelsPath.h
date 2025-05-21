@@ -36,10 +36,12 @@ namespace PVR
                      ADDON::AddonInstanceId instanceID,
                      int iChannelUID);
 
-    operator std::string() const { return m_path; }
     bool operator==(const CPVRChannelsPath& right) const { return m_path == right.m_path; }
 
     bool IsValid() const { return m_kind > Kind::PROTO; }
+
+    const std::string& AsString() const& { return m_path; }
+    std::string AsString() && { return std::move(m_path); }
 
     bool IsEmpty() const { return m_kind == Kind::EMPTY; }
     bool IsChannelsRoot() const { return m_kind == Kind::ROOT; }
