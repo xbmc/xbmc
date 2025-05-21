@@ -172,7 +172,7 @@ bool CScriptInvocationManager::HasLanguageInvoker(const std::string &script) con
   StringUtils::ToLower(extension);
 
   std::unique_lock lock(m_critSection);
-  std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
+  const auto it = m_invocationHandlers.find(extension);
   return it != m_invocationHandlers.end() && it->second != nullptr;
 }
 
@@ -211,7 +211,7 @@ std::shared_ptr<ILanguageInvoker> CScriptInvocationManager::GetLanguageInvoker(
   std::string extension = URIUtils::GetExtension(script);
   StringUtils::ToLower(extension);
 
-  std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
+  const auto it = m_invocationHandlers.find(extension);
   if (it != m_invocationHandlers.end() && it->second != nullptr)
     return it->second->CreateInvoker();
 
@@ -373,7 +373,7 @@ bool CScriptInvocationManager::Stop(const std::string &scriptPath, bool wait /* 
     return false;
 
   std::unique_lock lock(m_critSection);
-  std::map<std::string, int>::const_iterator script = m_scriptPaths.find(scriptPath);
+  const auto script = m_scriptPaths.find(scriptPath);
   if (script == m_scriptPaths.end())
     return false;
 
@@ -393,7 +393,7 @@ bool CScriptInvocationManager::IsRunning(int scriptId) const
 bool CScriptInvocationManager::IsRunning(const std::string& scriptPath) const
 {
   std::unique_lock lock(m_critSection);
-  auto it = m_scriptPaths.find(scriptPath);
+  const auto it = m_scriptPaths.find(scriptPath);
   if (it == m_scriptPaths.end())
     return false;
 
@@ -406,7 +406,7 @@ void CScriptInvocationManager::OnExecutionDone(int scriptId)
     return;
 
   std::unique_lock lock(m_critSection);
-  LanguageInvokerThreadMap::iterator script = m_scripts.find(scriptId);
+  const auto script = m_scripts.find(scriptId);
   if (script != m_scripts.end())
     script->second.done = true;
 }
@@ -416,7 +416,7 @@ CScriptInvocationManager::LanguageInvokerThread CScriptInvocationManager::getInv
   if (scriptId < 0)
     return LanguageInvokerThread();
 
-  LanguageInvokerThreadMap::const_iterator script = m_scripts.find(scriptId);
+  const auto script = m_scripts.find(scriptId);
   if (script == m_scripts.end())
     return LanguageInvokerThread();
 
