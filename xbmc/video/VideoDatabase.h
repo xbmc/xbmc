@@ -494,6 +494,12 @@ enum class DeleteMovieHashAction
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
+enum class AllowNonFileNameMatch : bool
+{
+  NO_MATCH,
+  YES_MATCH
+};
+
 struct EpisodeInformation
 {
   int index{0};
@@ -715,6 +721,9 @@ public:
                               int idMVideo = -1);
   bool SetStreamDetailsForFile(const CStreamDetails& details,
                                const std::string& strFileNameAndPath);
+
+  int AddMovieVersion(CFileItem& item, int idMovie, const KODI::ART::Artwork& art);
+
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
    * \param[in] details New stream details
@@ -1259,13 +1268,12 @@ public:
    *        (used to preserve streamdetails for bluray playlists)
    * \return true for success, false otherwise
    */
-  bool ConvertVideoToVersion(
-      VideoDbContentType itemType,
-      int dbIdSource,
-      int dbIdTarget,
-      int idVideoVersion,
-      VideoAssetType assetType,
-      DeleteMovieCascadeAction cascadeAction = DeleteMovieCascadeAction::ALL_ASSETS);
+  bool ConvertVideoToVersion(VideoDbContentType itemType,
+                             int dbIdSource,
+                             int dbIdTarget,
+                             int idVideoVersion,
+                             VideoAssetType assetType,
+                             DeleteMovieCascadeAction cascadeAction);
 
   /*!
    * \brief Adds a version of an existing movie to the database
@@ -1316,8 +1324,10 @@ public:
   VideoAssetInfo GetVideoVersionInfo(const std::string& filenameAndPath);
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
-  int GetMovieId(const std::string& strFilenameAndPath);
+  int GetMovieId(const std::string& strFilenameAndPath,
+                 AllowNonFileNameMatch allowNonFileNameMatch = AllowNonFileNameMatch::NO_MATCH);
   std::string GetMovieTitle(int idMovie);
+  int GetMovieIdByTitle(const std::string& title);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
   int GetFileIdByMovie(int idMovie);
   int GetFileIdByFile(const std::string& fullpath);
