@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <cmath>
 #include <mutex>
+#include <numeric>
 #include <stdlib.h>
 
 using namespace KODI;
@@ -418,9 +419,9 @@ int CSeekHandler::GetTimeCodeSeconds() const
   if (m_timeCodePosition > 0)
   {
     // Convert the timestamp into an integer
-    int tot = 0;
-    for (int i = 0; i < m_timeCodePosition; i++)
-      tot = tot * 10 + m_timeCodeStamp[i];
+    int tot =
+        std::accumulate(m_timeCodeStamp.begin(), m_timeCodeStamp.begin() + m_timeCodePosition, 0,
+                        [](const int acc, const int timeCode) { return acc * 10 + timeCode; });
 
     // Interpret result as HHMMSS
     int s = tot % 100; tot /= 100;
