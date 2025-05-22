@@ -143,7 +143,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
     if (totalTime < 0)
       totalTime = 0;
 
-    double seekSize = static_cast<double>(amount * amount * speed) * totalTime / 100.0;
+    const double seekSize = static_cast<double>(amount * amount * speed) * totalTime / 100.0;
     if (forward)
       SetSeekSize(m_seekSize + seekSize);
     else
@@ -152,7 +152,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
   else
   {
     m_seekStep += forward ? 1 : -1;
-    int seekSeconds = GetSeekStepSize(type, m_seekStep);
+    const int seekSeconds = GetSeekStepSize(type, m_seekStep);
     if (seekSeconds != 0)
     {
       SetSeekSize(seekSeconds);
@@ -193,9 +193,9 @@ void CSeekHandler::SetSeekSize(double seekSize)
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  int64_t playTime = appPlayer->GetTime();
-  double minSeekSize = (appPlayer->GetMinTime() - playTime) / 1000.0;
-  double maxSeekSize = (appPlayer->GetMaxTime() - playTime) / 1000.0;
+  const int64_t playTime = appPlayer->GetTime();
+  const double minSeekSize = (appPlayer->GetMinTime() - playTime) / 1000.0;
+  const double maxSeekSize = (appPlayer->GetMaxTime() - playTime) / 1000.0;
 
   m_seekSize = seekSize > 0
     ? std::min(seekSize, maxSeekSize)
@@ -272,7 +272,7 @@ bool CSeekHandler::OnAction(const CAction &action)
   if (!appPlayer->IsPlaying() || !appPlayer->CanSeek())
     return false;
 
-  SeekType type =
+  const SeekType type =
       MUSIC::IsAudio(g_application.CurrentFileItem()) ? SeekType::MUSIC : SeekType::VIDEO;
 
   if (SeekTimeCode(action))
