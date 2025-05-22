@@ -13,6 +13,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/Stopwatch.h"
 
+#include <array>
 #include <map>
 #include <utility>
 #include <vector>
@@ -77,7 +78,7 @@ private:
   std::map<SeekType, std::vector<int> > m_backwardSeekSteps;
   CStopWatch m_timer;
   CStopWatch m_timerTimeCode;
-  int m_timeCodeStamp[6];
+  std::array<int, 6> m_timeCodeStamp{};
   int m_timeCodePosition;
 
   CCriticalSection m_critSection;
