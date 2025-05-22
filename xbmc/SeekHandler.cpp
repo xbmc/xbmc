@@ -38,13 +38,6 @@
 
 using namespace KODI;
 
-CSeekHandler::~CSeekHandler()
-{
-  m_seekDelays.clear();
-  m_forwardSeekSteps.clear();
-  m_backwardSeekSteps.clear();
-}
-
 void CSeekHandler::Configure()
 {
   Reset();

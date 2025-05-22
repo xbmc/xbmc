@@ -29,7 +29,6 @@ class CSeekHandler : public ISettingCallback, public KODI::ACTION::IActionListen
 {
 public:
   CSeekHandler() = default;
-  ~CSeekHandler() override;
 
   static void SettingOptionsSeekStepsFiller(const std::shared_ptr<const CSetting>& setting,
                                             std::vector<IntegerSettingOption>& list,
