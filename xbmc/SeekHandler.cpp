@@ -407,8 +407,7 @@ void CSeekHandler::ChangeTimeCode(int remote)
     else
     {
       // rotate around
-      for (int i = 0; i < 5; i++)
-        m_timeCodeStamp[i] = m_timeCodeStamp[i + 1];
+      std::shift_left(m_timeCodeStamp.begin(), m_timeCodeStamp.end(), 1);
       m_timeCodeStamp[5] = remote - REMOTE_0;
     }
    }
