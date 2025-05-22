@@ -89,7 +89,8 @@ int CSeekHandler::GetSeekStepSize(SeekType type, int step)
   if (step == 0)
     return 0;
 
-  std::vector<int> seekSteps(step > 0 ? m_forwardSeekSteps.at(type) : m_backwardSeekSteps.at(type));
+  const std::vector<int>& seekSteps(step > 0 ? m_forwardSeekSteps.at(type)
+                                             : m_backwardSeekSteps.at(type));
 
   if (seekSteps.empty())
   {
