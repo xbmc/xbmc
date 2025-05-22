@@ -78,7 +78,7 @@ private:
   CStopWatch m_timer;
   CStopWatch m_timerTimeCode;
   std::array<int, 6> m_timeCodeStamp{};
-  int m_timeCodePosition;
+  int m_timeCodePosition = 0;
 
   CCriticalSection m_critSection;
 };
