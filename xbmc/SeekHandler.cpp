@@ -51,19 +51,14 @@ void CSeekHandler::Configure()
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
   m_seekDelays.clear();
-  m_seekDelays.insert(
-      std::make_pair(SeekType::VIDEO, settings->GetInt(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY)));
-  m_seekDelays.insert(
-      std::make_pair(SeekType::MUSIC, settings->GetInt(CSettings::SETTING_MUSICPLAYER_SEEKDELAY)));
-
+  m_seekDelays.emplace(SeekType::VIDEO, settings->GetInt(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY));
+  m_seekDelays.emplace(SeekType::MUSIC, settings->GetInt(CSettings::SETTING_MUSICPLAYER_SEEKDELAY));
   m_forwardSeekSteps.clear();
   m_backwardSeekSteps.clear();
 
   std::map<SeekType, std::string> seekTypeSettingMap;
-  seekTypeSettingMap.insert(
-      std::make_pair(SeekType::VIDEO, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS));
-  seekTypeSettingMap.insert(
-      std::make_pair(SeekType::MUSIC, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS));
+  seekTypeSettingMap.emplace(SeekType::VIDEO, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
+  seekTypeSettingMap.emplace(SeekType::MUSIC, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS);
 
   for (std::map<SeekType, std::string>::iterator it = seekTypeSettingMap.begin(); it!=seekTypeSettingMap.end(); ++it)
   {
