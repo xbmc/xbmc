@@ -15,7 +15,6 @@
 
 #include <array>
 #include <map>
-#include <utility>
 #include <vector>
 
 struct IntegerSettingOption;
