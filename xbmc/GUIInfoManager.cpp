@@ -51,7 +51,7 @@ namespace
 {
 struct InfoMap
 {
-  const char* str{nullptr};
+  std::string_view str{};
   int val{0};
 };
 
