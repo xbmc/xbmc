@@ -31,6 +31,7 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <algorithm>
 #include <cmath>
 #include <mutex>
 #include <stdlib.h>
@@ -60,24 +61,24 @@ void CSeekHandler::Configure()
   seekTypeSettingMap.emplace(SeekType::VIDEO, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
   seekTypeSettingMap.emplace(SeekType::MUSIC, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS);
 
-  for (std::map<SeekType, std::string>::iterator it = seekTypeSettingMap.begin(); it!=seekTypeSettingMap.end(); ++it)
-  {
-    std::vector<int> forwardSeekSteps;
-    std::vector<int> backwardSeekSteps;
+  std::ranges::for_each(seekTypeSettingMap,
+                        [&settings, &forwardSteps = m_forwardSeekSteps,
+                         &backwardSteps = m_backwardSeekSteps](const auto& seekDef)
+                        {
+                          auto& forward = forwardSteps[seekDef.first];
+                          auto& backward = backwardSteps[seekDef.first];
 
-    std::vector<CVariant> seekSteps = settings->GetList(it->second);
-    for (std::vector<CVariant>::iterator it = seekSteps.begin(); it != seekSteps.end(); ++it)
-    {
-      int stepSeconds = static_cast<int>((*it).asInteger());
-      if (stepSeconds < 0)
-        backwardSeekSteps.insert(backwardSeekSteps.begin(), stepSeconds);
-      else
-        forwardSeekSteps.push_back(stepSeconds);
-    }
-
-    m_forwardSeekSteps.insert(std::make_pair(it->first, forwardSeekSteps));
-    m_backwardSeekSteps.insert(std::make_pair(it->first, backwardSeekSteps));
-  }
+                          std::ranges::for_each(settings->GetList(seekDef.second),
+                                                [&backward, &forward](const auto& seekStep)
+                                                {
+                                                  const int stepSeconds =
+                                                      static_cast<int>(seekStep.asInteger());
+                                                  if (stepSeconds < 0)
+                                                    backward.insert(backward.begin(), stepSeconds);
+                                                  else
+                                                    forward.push_back(stepSeconds);
+                                                });
+                        });
 }
 
 void CSeekHandler::Reset()
