@@ -46,10 +46,16 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
 {
   CNfoFile nfoReader;
   CInfoScanner::InfoType result = CInfoScanner::InfoType::NONE;
-  if (m_info && m_info->Content() == CONTENT_TVSHOWS && !m_item.m_bIsFolder)
-    result = nfoReader.Create(m_path, m_info, m_item.GetVideoInfoTag()->m_iEpisode);
-  else if (m_info)
-    result = nfoReader.Create(m_path, m_info);
+  if (m_info)
+  {
+    if (m_info->Content() == CONTENT_MOVIES && !m_item.m_bIsFolder &&
+        m_item.HasProperty("nfo_index"))
+      result = nfoReader.Create(
+          m_path, m_info,
+          m_item.GetProperty("nfo_index").asInteger32(1)); // multiple versions (playlists) in nfo
+    else
+      result = nfoReader.Create(m_path, m_info);
+  }
 
   if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED)
     nfoReader.GetDetails(tag, nullptr, prioritise);
@@ -142,7 +148,23 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
         nfoFile = item.GetPath();
       // no, create .nfo file
       else
+      {
         nfoFile = URIUtils::ReplaceExtension(item.GetPath(), ".nfo");
+
+        // Look for specific SxxEyy nfo and use this if present
+        if (item.HasVideoInfoTag())
+        {
+          const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+          if (tag->m_iSeason >= 0 && tag->m_iEpisode >= 0)
+          {
+            std::string file{item.GetPath()};
+            URIUtils::RemoveExtension(file);
+            file = fmt::format("{}-S{:02}E{:02}.nfo", file, tag->m_iSeason, tag->m_iEpisode);
+            if (CFileUtils::Exists(file))
+              nfoFile = file;
+          }
+        }
+      }
     }
 
     // test file existence
