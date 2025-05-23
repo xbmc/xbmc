@@ -16,11 +16,6 @@
 #include <set>
 #include <string>
 
-namespace ADDON
-{
-struct AddonEvent;
-} // namespace ADDON
-
 namespace KODI
 {
 namespace GAME
@@ -87,9 +82,6 @@ public:
   std::string TranslateFeature(const std::string& controllerId, const std::string& featureName);
 
 private:
-  // Add-on event handler
-  void OnEvent(const ADDON::AddonEvent& event);
-
   // Utility functions
   ControllerPtr LoadController(const ADDON::AddonPtr& addon);
 

@@ -154,19 +154,16 @@ bool CPVRChannel::CreateEPG()
       }
 
       // Subscribe for EPG delete event
-      m_epg->Events().Subscribe(this, &CPVRChannel::Notify);
+      m_epg->Events().Subscribe(this,
+                                [this](const PVREvent& event)
+                                {
+                                  if (event == PVREvent::EpgDeleted)
+                                    ResetEPG();
+                                });
       return true;
     }
   }
   return false;
-}
-
-void CPVRChannel::Notify(const PVREvent& event)
-{
-  if (event == PVREvent::EpgDeleted)
-  {
-    ResetEPG();
-  }
 }
 
 void CPVRChannel::ResetEPG()

@@ -24,7 +24,23 @@ using namespace KODI::ADDONS;
 
 CExtsMimeSupportList::CExtsMimeSupportList(CAddonMgr& addonMgr) : m_addonMgr(addonMgr)
 {
-  m_addonMgr.Events().Subscribe(this, &CExtsMimeSupportList::OnEvent);
+  m_addonMgr.Events().Subscribe(
+      this,
+      [this](const AddonEvent& event)
+      {
+        if (typeid(event) == typeid(AddonEvents::Enabled) ||
+            typeid(event) == typeid(AddonEvents::Disabled) ||
+            typeid(event) == typeid(AddonEvents::ReInstalled))
+        {
+          if (m_addonMgr.HasType(event.addonId, AddonType::AUDIODECODER) ||
+              m_addonMgr.HasType(event.addonId, AddonType::IMAGEDECODER))
+            Update(event.addonId);
+        }
+        else if (typeid(event) == typeid(AddonEvents::UnInstalled))
+        {
+          Update(event.addonId);
+        }
+      });
 
   // Load all available audio decoder addons during Kodi start
   const std::vector<AddonType> types = {AddonType::AUDIODECODER, AddonType::IMAGEDECODER};
@@ -36,22 +52,6 @@ CExtsMimeSupportList::CExtsMimeSupportList(CAddonMgr& addonMgr) : m_addonMgr(add
 CExtsMimeSupportList::~CExtsMimeSupportList()
 {
   m_addonMgr.Events().Unsubscribe(this);
-}
-
-void CExtsMimeSupportList::OnEvent(const AddonEvent& event)
-{
-  if (typeid(event) == typeid(AddonEvents::Enabled) ||
-      typeid(event) == typeid(AddonEvents::Disabled) ||
-      typeid(event) == typeid(AddonEvents::ReInstalled))
-  {
-    if (m_addonMgr.HasType(event.addonId, AddonType::AUDIODECODER) ||
-        m_addonMgr.HasType(event.addonId, AddonType::IMAGEDECODER))
-      Update(event.addonId);
-  }
-  else if (typeid(event) == typeid(AddonEvents::UnInstalled))
-  {
-    Update(event.addonId);
-  }
 }
 
 void CExtsMimeSupportList::Update(const std::string& id)

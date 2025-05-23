@@ -30,10 +30,6 @@ class CGUIInfo;
 
 namespace PVR
 {
-enum class PVREvent;
-struct PVRChannelNumberInputChangedEvent;
-struct PVRPreviewAndPlayerShowInfoChangedEvent;
-
 class CPVRGUIInfo : public KODI::GUILIB::GUIINFO::CGUIInfoProvider, private CThread
 {
 public:
@@ -42,24 +38,6 @@ public:
 
   void Start();
   void Stop();
-
-  /*!
-   * @brief CEventStream callback for PVR events.
-   * @param event The event.
-   */
-  void Notify(const PVREvent& event);
-
-  /*!
-   * @brief CEventStream callback for channel number input changes.
-   * @param event The event.
-   */
-  void Notify(const PVRChannelNumberInputChangedEvent& event);
-
-  /*!
-   * @brief CEventStream callback for channel preview and player show info changes.
-   * @param event The event.
-   */
-  void Notify(const PVRPreviewAndPlayerShowInfoChangedEvent& event);
 
   // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
   bool InitCurrentItem(CFileItem* item) override;

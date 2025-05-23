@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "favourites/FavouritesService.h"
 #include "windows/GUIMediaWindow.h"
 
 class CGUIWindowFavourites : public CGUIMediaWindow
@@ -27,7 +26,6 @@ protected:
   bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
 
 private:
-  void OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event);
   bool MoveItem(int item, int amount);
   bool RemoveItem(int item);
 };

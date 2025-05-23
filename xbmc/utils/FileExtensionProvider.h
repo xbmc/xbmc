@@ -17,7 +17,6 @@ namespace ADDON
 {
 enum class AddonType;
 class CAddonMgr;
-struct AddonEvent;
 }
 
 class CAdvancedSettings;
@@ -75,8 +74,6 @@ private:
   std::string GetAddonFileFolderExtensions(ADDON::AddonType type) const;
   void SetAddonExtensions();
   void SetAddonExtensions(ADDON::AddonType type);
-
-  void OnAddonEvent(const ADDON::AddonEvent& event);
 
   // Construction properties
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;

@@ -13,11 +13,6 @@
 
 #include <memory>
 
-namespace KODI::GUILIB::GUIINFO
-{
-struct PlayerShowInfoChangedEvent;
-}
-
 namespace PVR
 {
 enum class ChannelSwitchMode
@@ -45,13 +40,15 @@ public:
   CPVRGUIChannelNavigator();
   virtual ~CPVRGUIChannelNavigator();
 
+  using Callback = std::function<void(const PVRPreviewAndPlayerShowInfoChangedEvent&)>;
+
   /*!
    * @brief Subscribe to the event stream for changes of channel preview and player show info.
    * @param owner The subscriber.
    * @param fn The callback function of the subscriber for the events.
    */
   template<typename A>
-  void Subscribe(A* owner, void (A::*fn)(const PVRPreviewAndPlayerShowInfoChangedEvent&))
+  void Subscribe(A* owner, const Callback& fn)
   {
     SubscribeToShowInfoEventStream();
     m_events.Subscribe(owner, fn);
@@ -66,12 +63,6 @@ public:
   {
     m_events.Unsubscribe(obj);
   }
-
-  /*!
-   * @brief CEventStream callback for player show info flag changes.
-   * @param event The event.
-   */
-  void Notify(const KODI::GUILIB::GUIINFO::PlayerShowInfoChangedEvent& event);
 
   /*!
    * @brief Select the next channel in currently playing channel group, relative to the currently

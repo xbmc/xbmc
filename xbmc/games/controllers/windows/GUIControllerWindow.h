@@ -47,10 +47,6 @@ private:
   void OnFeatureSelected(unsigned int featureIndex);
   void UpdateButtons(void);
 
-  // Callbacks for events
-  void OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event);
-  void OnEvent(const ADDON::AddonEvent& event);
-
   // Action for the available button
   void GetMoreControllers(void);
   void GetAllControllers();

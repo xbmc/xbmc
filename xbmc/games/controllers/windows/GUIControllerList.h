@@ -9,7 +9,6 @@
 #pragma once
 
 #include "IConfigurationWindow.h"
-#include "addons/AddonEvents.h"
 #include "games/GameTypes.h"
 #include "games/controllers/ControllerTypes.h"
 
@@ -61,7 +60,6 @@ private:
   bool RefreshControllers(void);
 
   void CleanupButtons(void);
-  void OnEvent(const ADDON::AddonEvent& event);
 
   // GUI stuff
   CGUIWindow* const m_guiWindow;

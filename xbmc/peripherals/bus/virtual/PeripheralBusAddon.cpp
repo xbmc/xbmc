@@ -32,8 +32,26 @@ CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals& manager)
 {
   using namespace ADDON;
 
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CPeripheralBusAddon::OnEvent);
-
+  CServiceBroker::GetAddonMgr().Events().Subscribe(
+      this,
+      [this](const ADDON::AddonEvent& event)
+      {
+        if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+            typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
+        {
+          if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::PERIPHERALDLL))
+            UpdateAddons();
+        }
+        else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled))
+        {
+          if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::PERIPHERALDLL))
+            UnRegisterAddon(event.addonId);
+        }
+        else if (typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
+        {
+          UnRegisterAddon(event.addonId);
+        }
+      });
   UpdateAddons();
 }
 
@@ -320,25 +338,6 @@ void CPeripheralBusAddon::GetDirectory(const std::string& strPath, CFileItemList
   std::unique_lock lock(m_critSection);
   for (const auto& addon : m_addons)
     addon->GetDirectory(strPath, items);
-}
-
-void CPeripheralBusAddon::OnEvent(const ADDON::AddonEvent& event)
-{
-  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
-      typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
-  {
-    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::PERIPHERALDLL))
-      UpdateAddons();
-  }
-  else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled))
-  {
-    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::PERIPHERALDLL))
-      UnRegisterAddon(event.addonId);
-  }
-  else if (typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
-  {
-    UnRegisterAddon(event.addonId);
-  }
 }
 
 bool CPeripheralBusAddon::SplitLocation(const std::string& strLocation,
