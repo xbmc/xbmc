@@ -319,7 +319,10 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr ""
 
-# empty string with id 31081
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Երգի բառերի ավելացումներ"

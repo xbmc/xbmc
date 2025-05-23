@@ -73,17 +73,18 @@
 #define PLAYER_FRAMEADVANCE          65
 #define PLAYER_ICON                  66
 #define PLAYER_CHAPTERS              68
-#define PLAYER_EDITLIST 69
-#define PLAYER_CUTS 70
-#define PLAYER_SCENE_MARKERS 71
-#define PLAYER_HAS_SCENE_MARKERS 72
+#define PLAYER_EDITLIST              69
+#define PLAYER_CUTS                  70
+#define PLAYER_SCENE_MARKERS         71
+#define PLAYER_HAS_SCENE_MARKERS     72
 // Keep player infolabels that work with offset and position together
 #define PLAYER_PATH                  81
 #define PLAYER_FILEPATH              82
 #define PLAYER_TITLE                 83
 #define PLAYER_FILENAME              84
-#define PLAYER_IS_REMOTE      85
-#define PLAYER_IS_EXTERNAL    86
+#define PLAYER_IS_REMOTE             85
+#define PLAYER_IS_EXTERNAL           86
+#define PLAYER_IS_LIVE               87
 
 // Range of player infolabels that work with offset and position
 #define PLAYER_OFFSET_POSITION_FIRST PLAYER_PATH

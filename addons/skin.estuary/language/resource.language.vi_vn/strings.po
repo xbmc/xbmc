@@ -313,6 +313,10 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "Kết thúc vào"
 
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Tiện ích lời bài hát"
