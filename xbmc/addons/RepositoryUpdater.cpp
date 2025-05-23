@@ -132,7 +132,15 @@ CRepositoryUpdater::CRepositoryUpdater(CAddonMgr& addonMgr) : m_timer(this), m_a
 
 void CRepositoryUpdater::Start()
 {
-  m_addonMgr.Events().Subscribe(this, &CRepositoryUpdater::OnEvent);
+  m_addonMgr.Events().Subscribe(this,
+                                [this](const ADDON::AddonEvent& event)
+                                {
+                                  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled))
+                                  {
+                                    if (m_addonMgr.HasType(event.addonId, AddonType::REPOSITORY))
+                                      ScheduleUpdate(UpdateScheduleType::First);
+                                  }
+                                });
   ScheduleUpdate(UpdateScheduleType::First);
 }
 
@@ -142,15 +150,6 @@ CRepositoryUpdater::~CRepositoryUpdater()
   CServiceBroker::GetSettingsComponent()->GetSettings()->UnregisterCallback(this);
 
   m_addonMgr.Events().Unsubscribe(this);
-}
-
-void CRepositoryUpdater::OnEvent(const ADDON::AddonEvent& event)
-{
-  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled))
-  {
-    if (m_addonMgr.HasType(event.addonId, AddonType::REPOSITORY))
-      ScheduleUpdate(UpdateScheduleType::First);
-  }
 }
 
 void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* job)

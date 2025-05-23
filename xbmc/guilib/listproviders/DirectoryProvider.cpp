@@ -120,33 +120,29 @@ public:
   explicit CAddonsSubscriber(ISubscriberCallback& invalidate)
     : CDirectoryProvider::CSubscriber(invalidate)
   {
-    CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CAddonsSubscriber::OnAddonEvent);
+    CServiceBroker::GetAddonMgr().Events().Subscribe(
+        this,
+        [this](const ADDON::AddonEvent& event)
+        {
+          if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+              typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
+              typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+              typeid(event) == typeid(ADDON::AddonEvents::UnInstalled) ||
+              typeid(event) == typeid(ADDON::AddonEvents::MetadataChanged) ||
+              typeid(event) == typeid(ADDON::AddonEvents::AutoUpdateStateChanged))
+          {
+            OnEventPublished();
+          }
+        });
+
     CServiceBroker::GetRepositoryUpdater().Events().Subscribe(
-        this, &CAddonsSubscriber::OnAddonRepositoryEvent);
+        this, [this](const ADDON::CRepositoryUpdater::RepositoryUpdated& /*event*/)
+        { OnEventPublished(); });
   }
   ~CAddonsSubscriber() override
   {
     CServiceBroker::GetRepositoryUpdater().Events().Unsubscribe(this);
     CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
-  }
-
-private:
-  void OnAddonEvent(const ADDON::AddonEvent& event)
-  {
-    if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
-        typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
-        typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
-        typeid(event) == typeid(ADDON::AddonEvents::UnInstalled) ||
-        typeid(event) == typeid(ADDON::AddonEvents::MetadataChanged) ||
-        typeid(event) == typeid(ADDON::AddonEvents::AutoUpdateStateChanged))
-    {
-      OnEventPublished();
-    }
-  }
-
-  void OnAddonRepositoryEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
-  {
-    OnEventPublished();
   }
 };
 
@@ -156,7 +152,29 @@ public:
   explicit CPVRSubscriber(ISubscriberCallback& invalidate)
     : CDirectoryProvider::CSubscriber(invalidate)
   {
-    CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRSubscriber::OnPVRManagerEvent);
+    CServiceBroker::GetPVRManager().Events().Subscribe(
+        this,
+        [this](const PVR::PVREvent& event)
+        {
+          if (event == PVR::PVREvent::ManagerStarted)
+            m_pvrStarted.test_and_set();
+          else if (event == PVR::PVREvent::ManagerStarting ||
+                   event == PVR::PVREvent::ManagerStopping ||
+                   event == PVR::PVREvent::ManagerStopped)
+            m_pvrStarted.clear();
+
+          if (!m_pvrStarted.test())
+            return;
+
+          using enum PVR::PVREvent;
+          if (event == ManagerStarted || event == ManagerStopped ||
+              event == RecordingsInvalidated || event == TimersInvalidated ||
+              event == ChannelGroupsInvalidated || event == SavedSearchesInvalidated ||
+              event == ClientsInvalidated || event == ClientsPrioritiesInvalidated)
+          {
+            OnEventPublished();
+          }
+        });
 
     if (CServiceBroker::GetPVRManager().IsStarted())
       m_pvrStarted.test_and_set();
@@ -166,27 +184,6 @@ public:
   bool IsReadyToUse() const override { return m_pvrStarted.test(); }
 
 private:
-  void OnPVRManagerEvent(const PVR::PVREvent& event)
-  {
-    if (event == PVR::PVREvent::ManagerStarted)
-      m_pvrStarted.test_and_set();
-    else if (event == PVR::PVREvent::ManagerStarting || event == PVR::PVREvent::ManagerStopping ||
-             event == PVR::PVREvent::ManagerStopped)
-      m_pvrStarted.clear();
-
-    if (!m_pvrStarted.test())
-      return;
-
-    using enum PVR::PVREvent;
-    if (event == ManagerStarted || event == ManagerStopped || event == RecordingsInvalidated ||
-        event == TimersInvalidated || event == ChannelGroupsInvalidated ||
-        event == SavedSearchesInvalidated || event == ClientsInvalidated ||
-        event == ClientsPrioritiesInvalidated)
-    {
-      OnEventPublished();
-    }
-  }
-
   std::atomic_flag m_pvrStarted{};
 };
 
@@ -197,15 +194,13 @@ public:
     : CDirectoryProvider::CSubscriber(invalidate)
   {
     CServiceBroker::GetFavouritesService().Events().Subscribe(
-        this, &CFavouritesSubscriber::OnFavouritesEvent);
+        this,
+        [this](const CFavouritesService::FavouritesUpdated& /*event*/) { OnEventPublished(); });
   }
   ~CFavouritesSubscriber() override
   {
     CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
   }
-
-private:
-  void OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event) { OnEventPublished(); }
 };
 
 std::unique_ptr<CDirectoryProvider::CSubscriber> GetSubscriber(const std::string& url,

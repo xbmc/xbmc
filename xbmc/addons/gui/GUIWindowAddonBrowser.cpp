@@ -73,9 +73,20 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
     break;
     case GUI_MSG_WINDOW_INIT:
     {
-      CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this,
-                                                                &CGUIWindowAddonBrowser::OnEvent);
-      CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIWindowAddonBrowser::OnEvent);
+      CServiceBroker::GetRepositoryUpdater().Events().Subscribe(
+          this,
+          [](const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
+          {
+            CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+            CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+          });
+      CServiceBroker::GetAddonMgr().Events().Subscribe(
+          this,
+          [](const ADDON::AddonEvent& event)
+          {
+            CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+            CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+          });
 
       SetProperties();
     }
@@ -181,18 +192,6 @@ class UpdateAllowedAddons : public IRunnable
                                                        ModalJob::CHOICE_NO);
   }
 };
-
-void CGUIWindowAddonBrowser::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
-{
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-}
-
-void CGUIWindowAddonBrowser::OnEvent(const ADDON::AddonEvent& event)
-{
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-}
 
 void CGUIWindowAddonBrowser::InstallFromZip()
 {

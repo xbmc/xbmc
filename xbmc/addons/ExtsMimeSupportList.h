@@ -22,8 +22,6 @@ namespace ADDON
 enum class AddonType;
 class CAddonMgr;
 class CAddonInfo;
-
-struct AddonEvent;
 }
 
 namespace KODI::ADDONS
@@ -170,7 +168,6 @@ public:
 
 private:
   void Update(const std::string& id);
-  void OnEvent(const ADDON::AddonEvent& event);
 
   static SupportValues ScanAddonProperties(ADDON::AddonType type,
                                            const std::shared_ptr<ADDON::CAddonInfo>& addonInfo);

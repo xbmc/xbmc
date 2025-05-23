@@ -41,7 +41,30 @@ using namespace PVR;
 CPVRClients::CPVRClients()
 {
   CServiceBroker::GetAddonMgr().RegisterAddonMgrCallback(AddonType::PVRDLL, this);
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CPVRClients::OnAddonEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(
+      this,
+      [this](const AddonEvent& event)
+      {
+        if (typeid(event) == typeid(AddonEvents::Enabled) || // also called on install,
+            typeid(event) == typeid(AddonEvents::Disabled) || // not called on uninstall
+            typeid(event) == typeid(AddonEvents::UnInstalled) ||
+            typeid(event) == typeid(AddonEvents::ReInstalled) ||
+            typeid(event) == typeid(AddonEvents::InstanceAdded) ||
+            typeid(event) == typeid(AddonEvents::InstanceRemoved))
+        {
+          // update addons
+          const std::string addonId = event.addonId;
+          if (CServiceBroker::GetAddonMgr().HasType(addonId, AddonType::PVRDLL))
+          {
+            CServiceBroker::GetJobManager()->Submit(
+                [this, addonId]
+                {
+                  UpdateClients(addonId);
+                  return true;
+                });
+          }
+        }
+      });
 }
 
 CPVRClients::~CPVRClients()
@@ -288,29 +311,6 @@ bool CPVRClients::StopClient(int clientId, bool restart)
   }
 
   return false;
-}
-
-void CPVRClients::OnAddonEvent(const AddonEvent& event)
-{
-  if (typeid(event) == typeid(AddonEvents::Enabled) || // also called on install,
-      typeid(event) == typeid(AddonEvents::Disabled) || // not called on uninstall
-      typeid(event) == typeid(AddonEvents::UnInstalled) ||
-      typeid(event) == typeid(AddonEvents::ReInstalled) ||
-      typeid(event) == typeid(AddonEvents::InstanceAdded) ||
-      typeid(event) == typeid(AddonEvents::InstanceRemoved))
-  {
-    // update addons
-    const std::string addonId = event.addonId;
-    if (CServiceBroker::GetAddonMgr().HasType(addonId, AddonType::PVRDLL))
-    {
-      CServiceBroker::GetJobManager()->Submit(
-          [this, addonId]
-          {
-            UpdateClients(addonId);
-            return true;
-          });
-    }
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

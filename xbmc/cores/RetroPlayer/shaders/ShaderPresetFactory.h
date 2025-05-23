@@ -16,7 +16,6 @@
 
 namespace ADDON
 {
-struct AddonEvent;
 class CAddonMgr;
 class CBinaryAddonManager;
 class CShaderPresetAddon;
@@ -81,7 +80,6 @@ public:
   bool CanLoadPreset(const std::string& presetPath);
 
 private:
-  void OnEvent(const ADDON::AddonEvent& event);
   void UpdateAddons();
 
   // Construction parameters

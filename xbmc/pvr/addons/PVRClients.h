@@ -23,7 +23,6 @@ class CVariant;
 
 namespace ADDON
 {
-struct AddonEvent;
 class CAddonInfo;
 
 } // namespace ADDON
@@ -90,12 +89,6 @@ public:
    * @return True if the client was found, false otherwise.
    */
   bool StopClient(int clientId, bool restart);
-
-  /*!
-   * @brief Handle addon events (enable, disable, ...).
-   * @param event The addon event.
-   */
-  void OnAddonEvent(const ADDON::AddonEvent& event);
 
   /*!
    * @brief Get the number of created clients.

@@ -13,6 +13,7 @@
 #include "GUIPortDefines.h"
 #include "GUIPortWindow.h"
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "games/GameServices.h"
 #include "games/addons/GameClient.h"
@@ -72,7 +73,20 @@ bool CGUIPortList::Initialize(GameClientPtr gameClient)
   // Initialize GUI
   Refresh();
 
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIPortList::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(
+      this,
+      [this](const ADDON::AddonEvent& event)
+      {
+        if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // Also called on install
+            typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // Not called on uninstall
+            typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+            typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
+        {
+          CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
+          msg.SetStringParam(event.addonId);
+          CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
+        }
+      });
 
   return true;
 }
@@ -163,19 +177,6 @@ void CGUIPortList::ResetPorts()
 
     // Refresh the GUI
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
-    CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
-  }
-}
-
-void CGUIPortList::OnEvent(const ADDON::AddonEvent& event)
-{
-  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // Also called on install
-      typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // Not called on uninstall
-      typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
-      typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
-  {
-    CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
-    msg.SetStringParam(event.addonId);
     CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
   }
 }

@@ -35,7 +35,27 @@ CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr& addonManager)
 {
   SetAddonExtensions();
 
-  m_addonManager.Events().Subscribe(this, &CFileExtensionProvider::OnAddonEvent);
+  m_addonManager.Events().Subscribe(this,
+                                    [this](const AddonEvent& event)
+                                    {
+                                      if (typeid(event) == typeid(AddonEvents::Enabled) ||
+                                          typeid(event) == typeid(AddonEvents::Disabled) ||
+                                          typeid(event) == typeid(AddonEvents::ReInstalled))
+                                      {
+                                        for (auto& type : ADDON_TYPES)
+                                        {
+                                          if (m_addonManager.HasType(event.addonId, type))
+                                          {
+                                            SetAddonExtensions(type);
+                                            break;
+                                          }
+                                        }
+                                      }
+                                      else if (typeid(event) == typeid(AddonEvents::UnInstalled))
+                                      {
+                                        SetAddonExtensions();
+                                      }
+                                    });
 }
 
 CFileExtensionProvider::~CFileExtensionProvider()
@@ -234,27 +254,6 @@ void CFileExtensionProvider::SetAddonExtensions(AddonType type)
 
   m_addonExtensions[type] = StringUtils::Join(extensions, "|");
   m_addonFileFolderExtensions[type] = StringUtils::Join(fileFolderExtensions, "|");
-}
-
-void CFileExtensionProvider::OnAddonEvent(const AddonEvent& event)
-{
-  if (typeid(event) == typeid(AddonEvents::Enabled) ||
-      typeid(event) == typeid(AddonEvents::Disabled) ||
-      typeid(event) == typeid(AddonEvents::ReInstalled))
-  {
-    for (auto &type : ADDON_TYPES)
-    {
-      if (m_addonManager.HasType(event.addonId, type))
-      {
-        SetAddonExtensions(type);
-        break;
-      }
-    }
-  }
-  else if (typeid(event) == typeid(AddonEvents::UnInstalled))
-  {
-    SetAddonExtensions();
-  }
 }
 
 bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const

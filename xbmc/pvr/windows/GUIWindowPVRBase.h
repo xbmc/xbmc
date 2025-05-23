@@ -55,7 +55,6 @@ public:
    * @brief CEventStream callback for PVR events.
    * @param event The event.
    */
-  void Notify(const PVREvent& event);
   virtual void NotifyEvent(const PVREvent& event);
 
   bool ActivatePreviousChannelGroup();
