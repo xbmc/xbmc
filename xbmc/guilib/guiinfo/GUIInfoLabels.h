@@ -84,7 +84,6 @@
 #define PLAYER_FILENAME              84
 #define PLAYER_IS_REMOTE             85
 #define PLAYER_IS_EXTERNAL           86
-// Live seekbar infolabels
 #define PLAYER_IS_LIVE               87
 
 // Range of player infolabels that work with offset and position
