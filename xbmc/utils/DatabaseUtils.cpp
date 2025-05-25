@@ -264,6 +264,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
       result = StringUtils::Format("tvshow_view.c{:02}", VIDEODB_ID_TV_MPAA);
     else if (field == FieldStudio)
       result = StringUtils::Format("tvshow_view.c{:02}", VIDEODB_ID_TV_STUDIOS);
+    else if (field == FieldTrailer)
+      result = StringUtils::Format("tvshow_view.c{:02}", VIDEODB_ID_TV_TRAILER);
     else if (field == FieldSortTitle)
       result = StringUtils::Format("tvshow_view.c{:02}", VIDEODB_ID_TV_SORTTITLE);
     else if (field == FieldOriginalTitle)
@@ -729,6 +731,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
   }
   else if (mediaType == MediaTypeTvShow)
   {
+    // clang-format off
     if (field == FieldId) return 0;
     else if (field == FieldTitle) index = VIDEODB_ID_TV_TITLE;
     else if (field == FieldSortTitle) index = VIDEODB_ID_TV_SORTTITLE;
@@ -741,6 +744,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldGenre) index = VIDEODB_ID_TV_GENRE;
     else if (field == FieldMPAA) index = VIDEODB_ID_TV_MPAA;
     else if (field == FieldStudio) index = VIDEODB_ID_TV_STUDIOS;
+    else if (field == FieldTrailer) index = VIDEODB_ID_TV_TRAILER;
     else if (field == FieldPath) return VIDEODB_DETAILS_TVSHOW_PATH;
     else if (field == FieldDateAdded) return VIDEODB_DETAILS_TVSHOW_DATEADDED;
     else if (field == FieldLastPlayed) return VIDEODB_DETAILS_TVSHOW_LASTPLAYED;
@@ -748,7 +752,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == FieldNumberOfWatchedEpisodes) return VIDEODB_DETAILS_TVSHOW_NUM_WATCHED;
     else if (field == FieldSeason) return VIDEODB_DETAILS_TVSHOW_NUM_SEASONS;
     else if (field == FieldUserRating) return VIDEODB_DETAILS_TVSHOW_USER_RATING;
-
+    // clang-format on
     if (index < 0)
       return index;
 
