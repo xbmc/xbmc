@@ -168,8 +168,7 @@ std::string CPVRSettings::GetStringValue(const std::string& settingName) const
 
 void CPVRSettings::MarginTimeFiller(const SettingConstPtr& /*setting*/,
                                     std::vector<IntegerSettingOption>& list,
-                                    int& current,
-                                    void* /*data*/)
+                                    int& current)
 {
   list.clear();
 

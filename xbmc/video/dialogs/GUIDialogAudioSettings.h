@@ -56,8 +56,7 @@ protected:
 
   static void AudioStreamsOptionFiller(const std::shared_ptr<const CSetting>& setting,
                                        std::vector<IntegerSettingOption>& list,
-                                       int& current,
-                                       void* data);
+                                       int& current);
 
   static std::string SettingFormatterDelay(
       const std::shared_ptr<const CSettingControlSlider>& control,

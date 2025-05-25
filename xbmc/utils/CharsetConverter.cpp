@@ -898,8 +898,7 @@ bool CCharsetConverter::utf8IsRTLBidiDirection(const std::string& utf8String)
 
 void CCharsetConverter::SettingOptionsCharsetsFiller(const SettingConstPtr& setting,
                                                      std::vector<StringSettingOption>& list,
-                                                     std::string& current,
-                                                     void* data)
+                                                     std::string& current)
 {
   std::vector<std::string> vecCharsets = g_charsetConverter.getCharsetLabels();
   sort(vecCharsets.begin(), vecCharsets.end(), sortstringbyname());

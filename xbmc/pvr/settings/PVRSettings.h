@@ -47,8 +47,7 @@ namespace PVR
     // settings value filler for start/end recording margin time for PVR timers.
     static void MarginTimeFiller(const std::shared_ptr<const CSetting>& setting,
                                  std::vector<IntegerSettingOption>& list,
-                                 int& current,
-                                 void* data);
+                                 int& current);
 
     // Dynamically hide or show settings.
     static bool IsSettingVisible(const std::string& condition,

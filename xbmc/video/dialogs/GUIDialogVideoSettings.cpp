@@ -484,8 +484,7 @@ void CGUIDialogVideoSettings::AddVideoStreams(const std::shared_ptr<CSettingGrou
 void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
     const std::shared_ptr<const CSetting>& setting,
     std::vector<IntegerSettingOption>& list,
-    int& current,
-    void* data)
+    int& current)
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -538,8 +537,7 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
 
 void CGUIDialogVideoSettings::VideoOrientationFiller(const std::shared_ptr<const CSetting>& setting,
                                                      std::vector<IntegerSettingOption>& list,
-                                                     int& current,
-                                                     void* data)
+                                                     int& current)
 {
   list.emplace_back(g_localizeStrings.Get(687), 0);
   list.emplace_back(g_localizeStrings.Get(35229), 90);

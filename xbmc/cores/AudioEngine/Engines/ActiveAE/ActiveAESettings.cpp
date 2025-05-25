@@ -83,26 +83,19 @@ void CActiveAESettings::OnSettingChanged(const std::shared_ptr<const CSetting>& 
 
 void CActiveAESettings::SettingOptionsAudioDevicesFiller(const SettingConstPtr& setting,
                                                          std::vector<StringSettingOption>& list,
-                                                         std::string& current,
-                                                         void* data)
+                                                         std::string& current)
 {
   SettingOptionsAudioDevicesFillerGeneral(setting, list, current, false);
 }
 
 void CActiveAESettings::SettingOptionsAudioDevicesPassthroughFiller(
-    const SettingConstPtr& setting,
-    std::vector<StringSettingOption>& list,
-    std::string& current,
-    void* data)
+    const SettingConstPtr& setting, std::vector<StringSettingOption>& list, std::string& current)
 {
   SettingOptionsAudioDevicesFillerGeneral(setting, list, current, true);
 }
 
 void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(
-    const SettingConstPtr& setting,
-    std::vector<IntegerSettingOption>& list,
-    int& current,
-    void* data)
+    const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
 {
   std::unique_lock lock(m_instance->m_cs);
 
@@ -119,10 +112,7 @@ void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(
 }
 
 void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(
-    const SettingConstPtr& setting,
-    std::vector<IntegerSettingOption>& list,
-    int& current,
-    void* data)
+    const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
 {
   std::unique_lock lock(m_instance->m_cs);
 

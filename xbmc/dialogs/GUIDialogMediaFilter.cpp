@@ -457,7 +457,12 @@ void CGUIDialogMediaFilter::InitializeSettings()
           values.erase(values.begin());
       }
 
-      filter.setting = AddList(group, settingId, filter.label, SettingLevel::Basic, values, GetStringListOptions, filter.label);
+      filter.setting = AddList(
+          group, settingId, filter.label, SettingLevel::Basic, values,
+          [this](const std::shared_ptr<const CSetting>& setting,
+                 std::vector<StringSettingOption>& list, std::string& current)
+          { GetStringListOptions(setting, list, current); },
+          filter.label);
     }
     else if (filter.controlType == "range")
     {
@@ -761,20 +766,17 @@ void CGUIDialogMediaFilter::DeleteRule(Field field)
 
 void CGUIDialogMediaFilter::GetStringListOptions(const SettingConstPtr& setting,
                                                  std::vector<StringSettingOption>& list,
-                                                 std::string& current,
-                                                 void* data)
+                                                 std::string& current)
 {
-  if (setting == NULL || data == NULL)
+  if (setting == NULL)
     return;
 
-  CGUIDialogMediaFilter *mediaFilter = static_cast<CGUIDialogMediaFilter*>(data);
-
-  std::map<std::string, Filter>::const_iterator itFilter = mediaFilter->m_filters.find(setting->GetId());
-  if (itFilter == mediaFilter->m_filters.end())
+  auto itFilter = m_filters.find(setting->GetId());
+  if (itFilter == m_filters.end())
     return;
 
   std::vector<std::string> items;
-  if (mediaFilter->GetItems(itFilter->second, items, false) <= 0)
+  if (GetItems(itFilter->second, items, false) <= 0)
     return;
 
   for (const auto& item : items)

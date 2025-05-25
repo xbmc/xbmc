@@ -708,8 +708,7 @@ static inline bool ModeSort(const StringSettingOption& i, const StringSettingOpt
 
 void CDisplaySettings::SettingOptionsModesFiller(const std::shared_ptr<const CSetting>& setting,
                                                  std::vector<StringSettingOption>& list,
-                                                 std::string& current,
-                                                 void* data)
+                                                 std::string& current)
 {
   for (auto index = (unsigned int)RES_CUSTOM; index < CDisplaySettings::GetInstance().ResolutionInfoSize(); ++index)
   {
@@ -730,10 +729,7 @@ void CDisplaySettings::SettingOptionsModesFiller(const std::shared_ptr<const CSe
 }
 
 void CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller(
-    const SettingConstPtr& setting,
-    std::vector<IntegerSettingOption>& list,
-    int& current,
-    void* data)
+    const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
 {
   list.emplace_back(g_localizeStrings.Get(13551), 0);
 
@@ -744,8 +740,7 @@ void CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller(
 
 void CDisplaySettings::SettingOptionsRefreshRatesFiller(const SettingConstPtr& setting,
                                                         std::vector<StringSettingOption>& list,
-                                                        std::string& current,
-                                                        void* data)
+                                                        std::string& current)
 {
   // get the proper resolution
   RESOLUTION res = CDisplaySettings::GetInstance().GetDisplayResolution();
@@ -779,8 +774,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(const SettingConstPtr& s
 
 void CDisplaySettings::SettingOptionsResolutionsFiller(const SettingConstPtr& setting,
                                                        std::vector<IntegerSettingOption>& list,
-                                                       int& current,
-                                                       void* data)
+                                                       int& current)
 {
   RESOLUTION res = CDisplaySettings::GetInstance().GetDisplayResolution();
   RESOLUTION_INFO info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
@@ -830,8 +824,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const SettingConstPtr& se
 
 void CDisplaySettings::SettingOptionsDispModeFiller(const SettingConstPtr& setting,
                                                     std::vector<IntegerSettingOption>& list,
-                                                    int& current,
-                                                    void* data)
+                                                    int& current)
 {
   // The user should only be able to disable windowed modes with the canwindowed
   // setting. When the user sets canwindowed to true but the windowing system
@@ -844,10 +837,7 @@ void CDisplaySettings::SettingOptionsDispModeFiller(const SettingConstPtr& setti
 }
 
 void CDisplaySettings::SettingOptionsStereoscopicModesFiller(
-    const SettingConstPtr& setting,
-    std::vector<IntegerSettingOption>& list,
-    int& current,
-    void* data)
+    const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
 {
   CGUIComponent *gui = CServiceBroker::GetGUI();
   if (gui != nullptr)
@@ -864,10 +854,7 @@ void CDisplaySettings::SettingOptionsStereoscopicModesFiller(
 }
 
 void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(
-    const SettingConstPtr& setting,
-    std::vector<IntegerSettingOption>& list,
-    int& current,
-    void* data)
+    const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
 {
   const CStereoscopicsManager &stereoscopicsManager = CServiceBroker::GetGUI()->GetStereoscopicsManager();
 
@@ -885,8 +872,7 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(
 
 void CDisplaySettings::SettingOptionsMonitorsFiller(const SettingConstPtr& setting,
                                                     std::vector<StringSettingOption>& list,
-                                                    std::string& current,
-                                                    void* data)
+                                                    std::string& current)
 {
   auto winSystem = CServiceBroker::GetWinSystem();
   if (!winSystem)
@@ -932,8 +918,7 @@ void CDisplaySettings::ClearCustomResolutions()
 
 void CDisplaySettings::SettingOptionsCmsModesFiller(const SettingConstPtr& setting,
                                                     std::vector<IntegerSettingOption>& list,
-                                                    int& current,
-                                                    void* data)
+                                                    int& current)
 {
   list.emplace_back(g_localizeStrings.Get(36580), CMS_MODE_3DLUT);
 #ifdef HAVE_LCMS2
@@ -943,8 +928,7 @@ void CDisplaySettings::SettingOptionsCmsModesFiller(const SettingConstPtr& setti
 
 void CDisplaySettings::SettingOptionsCmsWhitepointsFiller(const SettingConstPtr& setting,
                                                           std::vector<IntegerSettingOption>& list,
-                                                          int& current,
-                                                          void* data)
+                                                          int& current)
 {
   list.emplace_back(g_localizeStrings.Get(36586), CMS_WHITEPOINT_D65);
   list.emplace_back(g_localizeStrings.Get(36587), CMS_WHITEPOINT_D93);
@@ -952,8 +936,7 @@ void CDisplaySettings::SettingOptionsCmsWhitepointsFiller(const SettingConstPtr&
 
 void CDisplaySettings::SettingOptionsCmsPrimariesFiller(const SettingConstPtr& setting,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current,
-                                                        void* data)
+                                                        int& current)
 {
   list.emplace_back(g_localizeStrings.Get(36588), CMS_PRIMARIES_AUTO);
   list.emplace_back(g_localizeStrings.Get(36589), CMS_PRIMARIES_BT709);
@@ -966,8 +949,7 @@ void CDisplaySettings::SettingOptionsCmsPrimariesFiller(const SettingConstPtr& s
 
 void CDisplaySettings::SettingOptionsCmsGammaModesFiller(const SettingConstPtr& setting,
                                                          std::vector<IntegerSettingOption>& list,
-                                                         int& current,
-                                                         void* data)
+                                                         int& current)
 {
   list.emplace_back(g_localizeStrings.Get(36582), CMS_TRC_BT1886);
   list.emplace_back(g_localizeStrings.Get(36583), CMS_TRC_INPUT_OFFSET);

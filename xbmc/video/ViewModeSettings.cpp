@@ -90,8 +90,7 @@ int CViewModeSettings::GetViewModeStringIndex(int viewMode)
  */
 void CViewModeSettings::ViewModesFiller(const std::shared_ptr<const CSetting>& setting,
                                         std::vector<IntegerSettingOption>& list,
-                                        int& current,
-                                        void* data)
+                                        int& current)
 {
   // Add all appropriate view modes to the list control
   for (const auto &item : viewModes)

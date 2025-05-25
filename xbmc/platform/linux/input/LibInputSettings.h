@@ -24,8 +24,7 @@ public:
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   static void SettingOptionsKeyboardLayoutsFiller(const std::shared_ptr<const CSetting>& setting,
                                                   std::vector<StringSettingOption>& list,
-                                                  std::string& current,
-                                                  void* data);
+                                                  std::string& current);
 
   CLibInputSettings(CLibInputHandler *handler);
   ~CLibInputSettings() override;

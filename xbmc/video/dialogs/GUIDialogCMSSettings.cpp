@@ -220,8 +220,7 @@ bool CGUIDialogCMSSettings::Save()
 
 void CGUIDialogCMSSettings::Cms3dLutsFiller(const SettingConstPtr& setting,
                                             std::vector<StringSettingOption>& list,
-                                            std::string& current,
-                                            void* data)
+                                            std::string& current)
 {
   // get 3dLut directory from settings
   CFileItemList items;

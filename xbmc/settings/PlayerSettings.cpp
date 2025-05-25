@@ -13,8 +13,7 @@
 
 void CPlayerSettings::SettingOptionsQueueTimeSizesFiller(const SettingConstPtr& setting,
                                                          std::vector<IntegerSettingOption>& list,
-                                                         int& current,
-                                                         void* data)
+                                                         int& current)
 {
   const auto& secFloat = g_localizeStrings.Get(13553);
   const auto& seconds = g_localizeStrings.Get(37129);
@@ -30,8 +29,7 @@ void CPlayerSettings::SettingOptionsQueueTimeSizesFiller(const SettingConstPtr& 
 
 void CPlayerSettings::SettingOptionsQueueDataSizesFiller(const SettingConstPtr& setting,
                                                          std::vector<IntegerSettingOption>& list,
-                                                         int& current,
-                                                         void* data)
+                                                         int& current)
 {
   const auto& mb = g_localizeStrings.Get(37122);
   const auto& gb = g_localizeStrings.Get(37123);
