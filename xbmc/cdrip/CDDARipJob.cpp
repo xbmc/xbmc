@@ -210,7 +210,7 @@ std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
   const std::string& itemSeparator =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
 
-  encoder->SetComment(std::string("Ripped with ") + CSysInfo::GetAppName());
+  encoder->SetComment(StringUtils::Format("Ripped with {}", CSysInfo::GetAppName()));
   encoder->SetArtist(StringUtils::Join(m_tag.GetArtist(), itemSeparator));
   encoder->SetTitle(m_tag.GetTitle());
   encoder->SetAlbum(m_tag.GetAlbum());
