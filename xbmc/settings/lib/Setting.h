@@ -321,7 +321,7 @@ public:
     m_optionsFillerName = optionsFillerName;
     m_optionsFillerData = data;
   }
-  void SetOptionsFiller(IntegerSettingOptionsFiller optionsFiller, void *data = nullptr)
+  void SetOptionsFiller(const IntegerSettingOptionsFiller& optionsFiller, void* data = nullptr)
   {
     m_optionsFiller = optionsFiller;
     m_optionsFillerData = data;
@@ -348,7 +348,7 @@ private:
   TranslatableIntegerSettingOptions m_translatableOptions;
   IntegerSettingOptions m_options;
   std::string m_optionsFillerName;
-  IntegerSettingOptionsFiller m_optionsFiller = nullptr;
+  IntegerSettingOptionsFiller m_optionsFiller{};
   void *m_optionsFillerData = nullptr;
   IntegerSettingOptions m_dynamicOptions;
   SettingOptionsSort m_optionsSort = SettingOptionsSort::NoSorting;
@@ -465,7 +465,7 @@ public:
     m_optionsFillerName = optionsFillerName;
     m_optionsFillerData = data;
   }
-  void SetOptionsFiller(StringSettingOptionsFiller optionsFiller, void *data = nullptr)
+  void SetOptionsFiller(const StringSettingOptionsFiller& optionsFiller, void* data = nullptr)
   {
     m_optionsFiller = optionsFiller;
     m_optionsFillerData = data;
@@ -487,7 +487,7 @@ protected:
   TranslatableStringSettingOptions m_translatableOptions;
   StringSettingOptions m_options;
   std::string m_optionsFillerName;
-  StringSettingOptionsFiller m_optionsFiller = nullptr;
+  StringSettingOptionsFiller m_optionsFiller{};
   void *m_optionsFillerData = nullptr;
   StringSettingOptions m_dynamicOptions;
   SettingOptionsSort m_optionsSort = SettingOptionsSort::NoSorting;
