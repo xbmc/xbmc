@@ -1642,6 +1642,8 @@ void CAMLCodec::SetProcessInfoVideoDetails()
 
 bool CAMLCodec::OpenDecoder(bool restart)
 {
+  logNoFormatM(LOGINFO, "CAMLCodec");
+
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_drain = false;
   m_cur_pts = DVD_NOPTS_VALUE;
