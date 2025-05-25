@@ -44,6 +44,7 @@ if(NOT TARGET LibDvdCSS::LibDvdCSS)
 
   if(CORE_SYSTEM_NAME MATCHES windows)
     set(CMAKE_ARGS -DDUMMY_DEFINE=ON
+                   -DCMAKE_POLICY_VERSION_MINIMUM=3.5
                    ${LIBDVD_ADDITIONAL_ARGS})
   else()
     find_program(AUTORECONF autoreconf REQUIRED)
