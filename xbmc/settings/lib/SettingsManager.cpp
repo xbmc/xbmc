@@ -719,7 +719,9 @@ void CSettingsManager::AddCondition(const std::string &condition)
   m_conditions.AddCondition(condition);
 }
 
-void CSettingsManager::AddDynamicCondition(const std::string &identifier, SettingConditionCheck condition, void *data /*= nullptr*/)
+void CSettingsManager::AddDynamicCondition(const std::string& identifier,
+                                           const SettingConditionCheck& condition,
+                                           void* data /*= nullptr*/)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
   if (identifier.empty() || condition == nullptr)

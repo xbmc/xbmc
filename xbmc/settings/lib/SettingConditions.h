@@ -11,6 +11,7 @@
 #include "SettingDefinitions.h"
 #include "utils/BooleanLogic.h"
 
+#include <functional>
 #include <map>
 #include <set>
 #include <string>
@@ -20,10 +21,10 @@ class CSettingsManager;
 class CSetting;
 class TiXmlNode;
 
-using SettingConditionCheck = bool (*)(const std::string& condition,
-                                       const std::string& value,
-                                       const std::shared_ptr<const CSetting>& setting,
-                                       void* data);
+using SettingConditionCheck = std::function<bool(const std::string& condition,
+                                                 const std::string& value,
+                                                 const std::shared_ptr<const CSetting>& setting,
+                                                 void* data)>;
 
 class ISettingCondition
 {
@@ -89,7 +90,9 @@ public:
   virtual ~CSettingConditionsManager() = default;
 
   void AddCondition(std::string condition);
-  void AddDynamicCondition(std::string identifier, SettingConditionCheck condition, void *data = nullptr);
+  void AddDynamicCondition(std::string identifier,
+                           const SettingConditionCheck& condition,
+                           void* data = nullptr);
   void RemoveDynamicCondition(std::string identifier);
 
   bool Check(

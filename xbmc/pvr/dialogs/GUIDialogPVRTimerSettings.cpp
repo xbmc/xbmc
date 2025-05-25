@@ -856,7 +856,7 @@ void CGUIDialogPVRTimerSettings::SetButtonLabels()
 
 void CGUIDialogPVRTimerSettings::AddCondition(const std::shared_ptr<CSetting>& setting,
                                               const std::string& identifier,
-                                              SettingConditionCheck condition,
+                                              const SettingConditionCheck& condition,
                                               SettingDependencyType depType,
                                               const std::string& settingId)
 {
