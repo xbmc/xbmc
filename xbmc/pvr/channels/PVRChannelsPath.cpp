@@ -75,7 +75,7 @@ CPVRChannelsPath::CPVRChannelsPath(const std::string& strPath)
         {
           m_groupName = CURL::Decode(tokens[0]);
 
-          std::string groupClientID = tokens[1];
+          const std::string& groupClientID = tokens[1];
           if (groupClientID.find_first_not_of("-0123456789") == std::string::npos)
           {
             m_groupClientID = std::atoi(groupClientID.c_str());
@@ -113,7 +113,7 @@ CPVRChannelsPath::CPVRChannelsPath(const std::string& strPath)
           tokens = StringUtils::Split(tokens[1], ".");
           if (tokens.size() == 2 && tokens[1] == "pvr")
           {
-            std::string channelUID = tokens[0];
+            const std::string& channelUID = tokens[0];
             if (!channelUID.empty() && channelUID.find_first_not_of("0123456789") == std::string::npos)
               m_iChannelUID = std::atoi(channelUID.c_str());
           }

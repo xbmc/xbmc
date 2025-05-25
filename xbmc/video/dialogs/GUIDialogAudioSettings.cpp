@@ -348,7 +348,7 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& se
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   const int audioStreamCount = appPlayer->GetAudioStreamCount();
 
-  std::string channelsLabel = g_localizeStrings.Get(10127);
+  const std::string& channelsLabel = g_localizeStrings.Get(10127);
   std::string strUnknown = "[" + g_localizeStrings.Get(13205) + "]";
 
   // cycle through each audio stream and add it to our list control

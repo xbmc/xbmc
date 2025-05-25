@@ -176,7 +176,7 @@ void CFavouritesService::CleanupTargetsCache(const CFileItem& item)
   // Cleanup cache. Resume info etc. of cached target items might need refresh.
   std::unique_lock lock(m_criticalSection);
 
-  const std::string dynPath{item.GetDynPath()};
+  const std::string& dynPath{item.GetDynPath()};
   std::erase_if(m_targets,
                 [&dynPath](const auto& entry)
                 {

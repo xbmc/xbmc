@@ -638,7 +638,7 @@ MHD_RESULT CWebServer::CreateMemoryDownloadResponse(
   // we MUST NOT send a multipart response
   if (request.ranges.Size() <= 1)
   {
-    CHttpResponseRange responseRange = responseRanges.front();
+    const CHttpResponseRange& responseRange = responseRanges.front();
     // check if the range is valid
     if (!responseRange.IsValid())
     {
