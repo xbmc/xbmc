@@ -11,6 +11,10 @@
 #include "settings/lib/ISettingControl.h"
 #include "settings/lib/ISettingControlCreator.h"
 
+#include <functional>
+#include <memory>
+#include <string>
+
 #define SETTING_XML_ELM_CONTROL_FORMATLABEL "formatlabel"
 #define SETTING_XML_ELM_CONTROL_HIDDEN "hidden"
 #define SETTING_XML_ELM_CONTROL_VERIFYNEW "verifynew"
@@ -169,8 +173,9 @@ protected:
 };
 
 class CSetting;
+
 using SettingControlListValueFormatter =
-    std::string (*)(const std::shared_ptr<const CSetting>& setting);
+    std::function<std::string(const std::shared_ptr<const CSetting>& setting)>;
 
 class CSettingControlList : public CSettingControlFormattedRange
 {
@@ -195,7 +200,7 @@ public:
   void SetAddButtonLabel(int label) { m_addButtonLabel = label; }
 
   const SettingControlListValueFormatter& GetFormatter() const { return m_formatter; }
-  void SetFormatter(SettingControlListValueFormatter formatter) { m_formatter = formatter; }
+  void SetFormatter(const SettingControlListValueFormatter& formatter) { m_formatter = formatter; }
 
   bool UseDetails() const { return m_useDetails; }
   void SetUseDetails(bool useDetails) { m_useDetails = useDetails; }
@@ -205,7 +210,7 @@ protected:
   bool m_multiselect = false;
   bool m_hideValue = false;
   int m_addButtonLabel = -1;
-  SettingControlListValueFormatter m_formatter = nullptr;
+  SettingControlListValueFormatter m_formatter;
   bool m_useDetails{false};
 };
 

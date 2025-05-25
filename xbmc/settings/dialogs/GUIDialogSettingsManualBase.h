@@ -367,7 +367,7 @@ protected:
                                         int maximumItems = -1,
                                         bool visible = true,
                                         int help = -1,
-                                        SettingControlListValueFormatter formatter = nullptr,
+                                        const SettingControlListValueFormatter& formatter = {},
                                         bool details = false);
 
   // slider controls
@@ -601,7 +601,7 @@ protected:
       bool delayed = false,
       int heading = -1,
       bool multiselect = false,
-      SettingControlListValueFormatter formatter = nullptr,
+      const SettingControlListValueFormatter& formatter = {},
       bool details = false);
   std::shared_ptr<ISettingControl> GetSliderControl(const std::string &format, bool delayed = false, int heading = -1, bool usePopup = false, int formatLabel = -1, const std::string &formatString = "");
   std::shared_ptr<ISettingControl> GetRangeControl(const std::string &format, bool delayed = false, int formatLabel = -1, int valueFormatLabel = -1, const std::string &valueFormatString = "");

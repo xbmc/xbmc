@@ -949,7 +949,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int maximumItems /* = -1 */,
     bool visible /* = true */,
     int help /* = -1 */,
-    SettingControlListValueFormatter formatter /* = NULL */,
+    const SettingControlListValueFormatter& formatter /* = {} */,
     bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
@@ -1562,7 +1562,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetListControl(
     bool delayed /* = false */,
     int heading /* = -1 */,
     bool multiselect /* = false */,
-    SettingControlListValueFormatter formatter /* = NULL */,
+    const SettingControlListValueFormatter& formatter /* = {} */,
     bool details /* = false */)
 {
   std::shared_ptr<CSettingControlList> control = std::make_shared<CSettingControlList>();
