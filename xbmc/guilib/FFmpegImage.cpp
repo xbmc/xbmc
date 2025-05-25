@@ -197,10 +197,13 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
   // this is poor man's fallback to at least identify the most important formats
   constexpr uint8_t jpegHeader[] = {0xFF, 0xD8, 0xFF};
   constexpr uint8_t pngHeader[] = {0x89, 'P', 'N', 'G'};
-  constexpr uint8_t tiffHeader[] = {'I', 'I', '*'};
+  constexpr uint8_t tiffLEHeader[] = {'I', 'I', '*', '\0'};
+  constexpr uint8_t tiffBEHeader[] = {'M', 'M', '\0', '*'};
   const bool is_jpeg = (bufSize > 2 && std::memcmp(buffer, jpegHeader, sizeof(jpegHeader)) == 0);
   const bool is_png = (bufSize > 3 && std::memcmp(buffer, pngHeader, sizeof(pngHeader)) == 0);
-  const bool is_tiff = (bufSize > 2 && std::memcmp(buffer, tiffHeader, sizeof(tiffHeader)) == 0);
+  const bool is_tiff =
+      (bufSize > 3 && (std::memcmp(buffer, tiffLEHeader, sizeof(tiffLEHeader)) == 0 ||
+                       std::memcmp(buffer, tiffBEHeader, sizeof(tiffBEHeader)) == 0));
 
   // See Github #19113
 #if LIBAVCODEC_VERSION_MAJOR < 60
