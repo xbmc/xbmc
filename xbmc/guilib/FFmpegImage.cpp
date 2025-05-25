@@ -199,11 +199,16 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
   constexpr uint8_t pngHeader[] = {0x89, 'P', 'N', 'G'};
   constexpr uint8_t tiffLEHeader[] = {'I', 'I', '*', '\0'};
   constexpr uint8_t tiffBEHeader[] = {'M', 'M', '\0', '*'};
+  constexpr uint8_t webpHeader1[] = {'R', 'I', 'F', 'F'};
+  constexpr uint8_t webpHeader2[] = {'W', 'E', 'B', 'P'};
   const bool is_jpeg = (bufSize > 2 && std::memcmp(buffer, jpegHeader, sizeof(jpegHeader)) == 0);
   const bool is_png = (bufSize > 3 && std::memcmp(buffer, pngHeader, sizeof(pngHeader)) == 0);
   const bool is_tiff =
       (bufSize > 3 && (std::memcmp(buffer, tiffLEHeader, sizeof(tiffLEHeader)) == 0 ||
                        std::memcmp(buffer, tiffBEHeader, sizeof(tiffBEHeader)) == 0));
+  const bool is_webp =
+      (bufSize > 11 && std::memcmp(buffer, webpHeader1, sizeof(webpHeader1)) == 0 &&
+       std::memcmp(buffer + 8, webpHeader2, sizeof(webpHeader2)) == 0);
 
   // See Github #19113
 #if LIBAVCODEC_VERSION_MAJOR < 60
@@ -221,11 +226,13 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
     inp = av_find_input_format("png_pipe");
   else if (is_tiff)
     inp = av_find_input_format("tiff_pipe");
+  else if (is_webp)
+    inp = av_find_input_format("webp_pipe");
   else if (m_strMimeType == "image/jp2")
     inp = av_find_input_format("j2k_pipe");
+  // brute force parse if above check already failed
   else if (m_strMimeType == "image/webp")
     inp = av_find_input_format("webp_pipe");
-  // brute force parse if above check already failed
   else if (m_strMimeType == "image/jpeg" || m_strMimeType == "image/jpg")
     inp = av_find_input_format(jpegFormat);
   else if (m_strMimeType == "image/png")
