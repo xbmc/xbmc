@@ -393,6 +393,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_videoDecoderMinimumBuffer;
     float m_videoDecoderMinimumStreamBuffer;
     int m_videoDecoderStreamTypeStreamOffset;
+    int m_videoDecoderH264Offset;
 
   private:
     void Initialize();

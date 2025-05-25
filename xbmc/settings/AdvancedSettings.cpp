@@ -180,7 +180,8 @@ void CAdvancedSettings::Initialize()
   m_videoDecoderMinimumBuffer = 5.0f;
   m_videoDecoderMinimumStreamBuffer = 10.0f;  // Alt SoC 17.5f
 
-  m_videoDecoderStreamTypeStreamOffset = 390; // 390 msec
+  m_videoDecoderStreamTypeStreamOffset = 750; // 750 msec
+  m_videoDecoderH264Offset = 750; // 750 msec
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -848,6 +849,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "decoderminimumbuffer", m_videoDecoderMinimumBuffer, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "decoderminimumstreambuffer", m_videoDecoderMinimumStreamBuffer, 0.0f, 100.0f);
     XMLUtils::GetInt(pElement, "decoderstreamtypestreamoffset", m_videoDecoderStreamTypeStreamOffset, -2000, 2000);
+    XMLUtils::GetInt(pElement, "decoderh264offset", m_videoDecoderH264Offset, -2000, 2000);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
