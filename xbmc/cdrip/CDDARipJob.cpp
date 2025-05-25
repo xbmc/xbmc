@@ -201,7 +201,7 @@ std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
     }
   }
   if (!encoder)
-    return std::unique_ptr<CEncoder>{};
+    return {};
 
   // we have to set the tags before we init the Encoder
   const std::string strTrack = StringUtils::Format(
