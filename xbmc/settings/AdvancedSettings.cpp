@@ -847,7 +847,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "decoderstreambuffer", m_videoDecoderStreamBuffer, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "decoderminimumbuffer", m_videoDecoderMinimumBuffer, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "decoderminimumstreambuffer", m_videoDecoderMinimumStreamBuffer, 0.0f, 100.0f);
-    XMLUtils::GetUInt(pElement, "decoderstreamtypestreamoffset", m_videoDecoderStreamTypeStreamOffset, 0, 800);
+    XMLUtils::GetInt(pElement, "decoderstreamtypestreamoffset", m_videoDecoderStreamTypeStreamOffset, -2000, 2000);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
