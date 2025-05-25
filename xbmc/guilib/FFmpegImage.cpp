@@ -15,6 +15,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstdint>
 
 extern "C"
 {
@@ -193,10 +194,13 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
 
   // Some clients have pngs saved as jpeg or ask us for png but are jpeg
   // mythv throws all mimetypes away and asks us with application/octet-stream
-  // this is poor man's fallback to at least identify png / jpeg
-  bool is_jpeg = (bufSize > 2 && buffer[0] == 0xFF && buffer[1] == 0xD8 && buffer[2] == 0xFF);
-  bool is_png = (bufSize > 3 && buffer[1] == 'P' && buffer[2] == 'N' && buffer[3] == 'G');
-  bool is_tiff = (bufSize > 2 && buffer[0] == 'I' && buffer[1] == 'I' && buffer[2] == '*');
+  // this is poor man's fallback to at least identify the most important formats
+  constexpr uint8_t jpegHeader[] = {0xFF, 0xD8, 0xFF};
+  constexpr uint8_t pngHeader[] = {'P', 'N', 'G'};
+  constexpr uint8_t tiffHeader[] = {'I', 'I', '*'};
+  const bool is_jpeg = (bufSize > 2 && std::memcmp(buffer, jpegHeader, sizeof(jpegHeader)) == 0);
+  const bool is_png = (bufSize > 3 && std::memcmp(buffer + 1, pngHeader, sizeof(pngHeader)) == 0);
+  const bool is_tiff = (bufSize > 2 && std::memcmp(buffer, tiffHeader, sizeof(tiffHeader)) == 0);
 
   // See Github #19113
 #if LIBAVCODEC_VERSION_MAJOR < 60
