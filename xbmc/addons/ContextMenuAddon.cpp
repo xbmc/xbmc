@@ -46,12 +46,13 @@ CContextMenuAddon::CContextMenuAddon(const AddonInfoPtr& addonInfo)
       if (StringUtils::IsNaturalNumber(label))
         label = g_localizeStrings.GetAddonString(ID(), atoi(label.c_str()));
 
-      CContextMenuItem menuItem = CContextMenuItem::CreateItem(
-          label, parent,
-          URIUtils::AddFileToFolder(Path(), Type(AddonType::CONTEXTMENU_ITEM)->LibName()),
-          visCondition, ID());
-
-      m_items.push_back(std::move(menuItem));
+      m_items.emplace_back(CContextMenuItem::CItem{
+          .label = std::move(label),
+          .parent = std::move(parent),
+          .library =
+              URIUtils::AddFileToFolder(Path(), Type(AddonType::CONTEXTMENU_ITEM)->LibName()),
+          .condition = std::move(visCondition),
+          .addonId = ID()});
     }
   }
 }
@@ -77,15 +78,16 @@ void CContextMenuAddon::ParseMenu(
     menuId = ss.str();
   }
 
-  m_items.emplace_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId, ID()));
+  m_items.emplace_back(CContextMenuItem::CGroup{
+      .label = std::move(menuLabel), .parent = parent, .groupId = menuId, .addonId = ID()});
 
   for (const auto& [_, addonExtensions] : elem->GetElements("menu"))
     ParseMenu(&addonExtensions, menuId, anonGroupCount);
 
   for (const auto& [_, addonExtensions] : elem->GetElements("item"))
   {
-    const std::string visCondition = addonExtensions.GetValue("visible").asString();
-    const std::string library = addonExtensions.GetValue("@library").asString();
+    std::string visCondition = addonExtensions.GetValue("visible").asString();
+    std::string library = addonExtensions.GetValue("@library").asString();
     std::string label = addonExtensions.GetValue("label").asString();
     if (StringUtils::IsNaturalNumber(label))
       label = g_localizeStrings.GetAddonString(ID(), std::atoi(label.c_str()));
@@ -99,9 +101,13 @@ void CContextMenuAddon::ParseMenu(
 
     if (!label.empty() && !library.empty() && !visCondition.empty())
     {
-      CContextMenuItem menu = CContextMenuItem::CreateItem(
-          label, menuId, URIUtils::AddFileToFolder(Path(), library), visCondition, ID(), args);
-      m_items.emplace_back(std::move(menu));
+      m_items.emplace_back(
+          CContextMenuItem::CItem{.label = std::move(label),
+                                  .parent = menuId,
+                                  .library = URIUtils::AddFileToFolder(Path(), library),
+                                  .condition = std::move(visCondition),
+                                  .addonId = ID(),
+                                  .args = std::move(args)});
     }
   }
 }

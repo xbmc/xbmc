@@ -27,6 +27,24 @@ std::string CStaticContextMenuAction::GetLabel(const CFileItem& item) const
   return g_localizeStrings.Get(m_label);
 }
 
+CContextMenuItem::CContextMenuItem(CGroup groupData)
+  : m_label(std::move(groupData.label)),
+    m_parent(std::move(groupData.parent)),
+    m_groupId(std::move(groupData.groupId)),
+    m_addonId(std::move(groupData.addonId))
+{
+}
+
+CContextMenuItem::CContextMenuItem(CItem itemData)
+  : m_label(std::move(itemData.label)),
+    m_parent(std::move(itemData.parent)),
+    m_library(std::move(itemData.library)),
+    m_addonId(std::move(itemData.addonId)),
+    m_args(std::move(itemData.args)),
+    m_visibilityCondition(std::move(itemData.condition))
+{
+}
+
 bool CContextMenuItem::IsVisible(const CFileItem& item) const
 {
   if (!m_infoBoolRegistered)
@@ -93,28 +111,4 @@ std::string CContextMenuItem::ToString() const
   else
     return StringUtils::Format("CContextMenuItem[item, parent={}, library={}, addon={}]", m_parent,
                                m_library, m_addonId);
-}
-
-CContextMenuItem CContextMenuItem::CreateGroup(const std::string& label, const std::string& parent,
-    const std::string& groupId, const std::string& addonId)
-{
-  CContextMenuItem menuItem;
-  menuItem.m_label = label;
-  menuItem.m_parent = parent;
-  menuItem.m_groupId = groupId;
-  menuItem.m_addonId = addonId;
-  return menuItem;
-}
-
-CContextMenuItem CContextMenuItem::CreateItem(const std::string& label, const std::string& parent,
-    const std::string& library, const std::string& condition, const std::string& addonId, const std::vector<std::string>& args)
-{
-  CContextMenuItem menuItem;
-  menuItem.m_label = label;
-  menuItem.m_parent = parent;
-  menuItem.m_library = library;
-  menuItem.m_visibilityCondition = condition;
-  menuItem.m_addonId = addonId;
-  menuItem.m_args = args;
-  return menuItem;
 }

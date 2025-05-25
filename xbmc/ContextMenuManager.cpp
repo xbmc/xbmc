@@ -35,9 +35,12 @@
 using namespace ADDON;
 using namespace PVR;
 
-const CContextMenuItem CContextMenuManager::MAIN = CContextMenuItem::CreateGroup("", "", "kodi.core.main", "");
-const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGroup("", "", "kodi.core.manage", "");
-
+const CContextMenuItem CContextMenuManager::MAIN(CContextMenuItem::CGroup{
+    .groupId = "kodi.core.main",
+});
+const CContextMenuItem CContextMenuManager::MANAGE(CContextMenuItem::CGroup{
+    .groupId = "kodi.core.manage",
+});
 
 CContextMenuManager::CContextMenuManager(CAddonMgr& addonMgr)
   : m_addonMgr(addonMgr) {}
