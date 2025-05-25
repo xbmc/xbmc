@@ -672,16 +672,14 @@ bool CGUIWindowPVRGuideBase::OnContextButton(int itemNumber, CONTEXT_BUTTON butt
 namespace
 {
 
-template<typename A>
 class CContextMenuFunctions : public CContextButtons
 {
 public:
-  explicit CContextMenuFunctions(A* instance) : m_instance(instance) {}
-
-  void Add(bool (A::*function)(), unsigned int resId)
+  using ContextMenuFunction = std::function<bool()>;
+  void Add(auto&& function, unsigned int resId)
   {
     CContextButtons::Add(static_cast<unsigned int>(size()), resId);
-    m_functions.emplace_back(std::bind_front(function, m_instance));
+    m_functions.emplace_back(std::forward<decltype(function)>(function));
   }
 
   bool Call(int idx)
@@ -693,8 +691,7 @@ public:
   }
 
 private:
-  A* m_instance = nullptr;
-  std::vector<std::function<bool()>> m_functions;
+  std::vector<ContextMenuFunction> m_functions;
 };
 
 } // unnamed namespace
@@ -718,22 +715,22 @@ bool CGUIWindowPVRGuideBase::OnContextButtonNavigate(CONTEXT_BUTTON button)
     else
     {
       // use context menu
-      CContextMenuFunctions<CGUIWindowPVRGuideBase> buttons(this);
-      buttons.Add(&CGUIWindowPVRGuideBase::GotoBegin, 19063); // First programme
-      buttons.Add(&CGUIWindowPVRGuideBase::Go12HoursBack, 19317); // 12 hours back
-      buttons.Add(&CGUIWindowPVRGuideBase::GotoCurrentProgramme, 19070); // Current programme
-      buttons.Add(&CGUIWindowPVRGuideBase::Go12HoursForward, 19318); // 12 hours forward
-      buttons.Add(&CGUIWindowPVRGuideBase::GotoEnd, 19064); // Last programme
-      buttons.Add(&CGUIWindowPVRGuideBase::OpenDateSelectionDialog, 19288); // Date selector
-      buttons.Add(&CGUIWindowPVRGuideBase::GotoFirstChannel, 19322); // First channel
+      CContextMenuFunctions buttons;
+      buttons.Add([this]() { return GotoBegin(); }, 19063); // First programme
+      buttons.Add([this]() { return Go12HoursBack(); }, 19317); // 12 hours back
+      buttons.Add([this]() { return GotoCurrentProgramme(); }, 19070); // Current programme
+      buttons.Add([this]() { return Go12HoursForward(); }, 19318); // 12 hours forward
+      buttons.Add([this]() { return GotoEnd(); }, 19064); // Last programme
+      buttons.Add([this]() { return OpenDateSelectionDialog(); }, 19288); // Date selector
+      buttons.Add([this]() { return GotoFirstChannel(); }, 19322); // First channel
       if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() ||
           CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio() ||
           CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingEpgTag())
-        buttons.Add(&CGUIWindowPVRGuideBase::GotoPlayingChannel, 19323); // Playing channel
-      buttons.Add(&CGUIWindowPVRGuideBase::GotoLastChannel, 19324); // Last channel
-      buttons.Add(&CGUIWindowPVRBase::ActivatePreviousChannelGroup, 19319); // Previous group
-      buttons.Add(&CGUIWindowPVRBase::ActivateNextChannelGroup, 19320); // Next group
-      buttons.Add(&CGUIWindowPVRBase::OpenChannelGroupSelectionDialog, 19321); // Group selector
+        buttons.Add([this]() { return GotoPlayingChannel(); }, 19323); // Playing channel
+      buttons.Add([this]() { return GotoLastChannel(); }, 19324); // Last channel
+      buttons.Add([this]() { return ActivatePreviousChannelGroup(); }, 19319); // Previous group
+      buttons.Add([this]() { return ActivateNextChannelGroup(); }, 19320); // Next group
+      buttons.Add([this]() { return OpenChannelGroupSelectionDialog(); }, 19321); // Group selector
 
       int buttonIdx = 0;
       int lastButtonIdx = 2; // initially select "Current programme"
