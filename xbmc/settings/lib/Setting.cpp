@@ -929,7 +929,8 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
         m_optionsFillerName = options->FirstChild()->ValueStr();
         if (!m_optionsFillerName.empty())
         {
-          m_optionsFiller = reinterpret_cast<IntegerSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()));
+          m_optionsFiller =
+              m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()).intFiller;
         }
       }
       else
@@ -1086,7 +1087,9 @@ IntegerSettingOptions CSettingInt::UpdateDynamicOptions()
 
   if (m_optionsFiller == nullptr)
   {
-    m_optionsFiller = reinterpret_cast<IntegerSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()));
+    m_optionsFiller =
+        m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()).intFiller;
+
     if (m_optionsFiller == nullptr)
     {
       s_logger->warn("unknown options filler \"{}\" of \"{}\"", m_optionsFillerName, m_id);
@@ -1448,7 +1451,9 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
         m_optionsFillerName = options->FirstChild()->ValueStr();
         if (!m_optionsFillerName.empty())
         {
-          m_optionsFiller = reinterpret_cast<StringSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>()));
+          m_optionsFiller =
+              m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>())
+                  .stringFiller;
         }
       }
       else
@@ -1575,7 +1580,9 @@ StringSettingOptions CSettingString::UpdateDynamicOptions()
 
   if (m_optionsFiller == nullptr)
   {
-    m_optionsFiller = reinterpret_cast<StringSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>()));
+    m_optionsFiller =
+        m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>()).stringFiller;
+
     if (m_optionsFiller == nullptr)
     {
       s_logger->error("unknown options filler \"{}\" of \"{}\"", m_optionsFillerName, m_id);
