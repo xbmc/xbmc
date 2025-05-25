@@ -104,7 +104,9 @@ void CSettingConditionsManager::AddCondition(std::string condition)
   m_defines.insert(condition);
 }
 
-void CSettingConditionsManager::AddDynamicCondition(std::string identifier, SettingConditionCheck condition, void *data /*= nullptr*/)
+void CSettingConditionsManager::AddDynamicCondition(std::string identifier,
+                                                    const SettingConditionCheck& condition,
+                                                    void* data /*= nullptr*/)
 {
   if (identifier.empty() || condition == nullptr)
     return;
