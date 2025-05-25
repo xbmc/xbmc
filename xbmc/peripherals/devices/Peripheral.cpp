@@ -937,7 +937,7 @@ void CPeripheral::SetControllerProfile(const GAME::ControllerPtr& controller)
 
 void CPeripheral::InstallController(
     const std::string& controllerId,
-    std::function<void(const KODI::GAME::ControllerPtr& installedController)> callback)
+    const std::function<void(const KODI::GAME::ControllerPtr& installedController)>& callback)
 {
   std::unique_lock<std::mutex> lock(m_controllerInstallMutex);
 

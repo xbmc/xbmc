@@ -225,7 +225,7 @@ public:
   template<typename Compare> std::vector<SelectionStream> Get(StreamType type, Compare compare)
   {
     std::vector<SelectionStream> streams = Get(type);
-    std::stable_sort(streams.begin(), streams.end(), compare);
+    std::stable_sort(streams.begin(), streams.end(), std::move(compare));
     return streams;
   }
 

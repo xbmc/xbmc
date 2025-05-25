@@ -947,7 +947,7 @@ private:
    */
   template<typename F>
   PVR_ERROR DoAddonCall(const char* strFunctionName,
-                        F function,
+                        const F& function,
                         bool bIsImplemented = true,
                         bool bCheckReadyToUse = true) const;
 
