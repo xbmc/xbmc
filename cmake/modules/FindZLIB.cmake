@@ -6,7 +6,7 @@
 #
 #   ${APP_NAME_LC}::ZLIB - Alias to ZLIB::ZLIB target
 #   LIBRARY::ZLIB - Alias to ZLIB::ZLIB target
-#   ZLIB::ZLIB - standard Zlib target from system find package
+#   ZLIB::ZLIB - standard ZLIB target from system find package
 #
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
@@ -46,7 +46,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     mark_as_advanced(ZLIB_FOUND)
   else()
     if(ZLIB_FIND_REQUIRED)
-      message(FATAL_ERROR "Zlib libraries were not found.")
+      message(FATAL_ERROR "ZLIB libraries were not found.")
     endif()
   endif()
 endif()
