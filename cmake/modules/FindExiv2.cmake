@@ -12,7 +12,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   macro(buildmacroExiv2)
     find_package(Brotli REQUIRED ${SEARCH_QUIET})
     find_package(Iconv REQUIRED ${SEARCH_QUIET})
-    find_package(Zlib REQUIRED ${SEARCH_QUIET})
+    find_package(ZLIB REQUIRED ${SEARCH_QUIET})
 
     # Patch pending review upstream (https://github.com/Exiv2/exiv2/pull/3004)
     set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/0001-WIN-lib-postfix.patch")
@@ -56,7 +56,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # Link libraries for target interface
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES LIBRARY::Brotli
                                                             LIBRARY::Iconv
-                                                            LIBRARY::Zlib)
+                                                            LIBRARY::ZLIB)
 
     if(CORE_SYSTEM_NAME STREQUAL "freebsd")
       list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES procstat)
@@ -67,7 +67,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # Add dependencies to build target
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Brotli
                                                                         LIBRARY::Iconv
-                                                                        LIBRARY::Zlib)
+                                                                        LIBRARY::ZLIB)
   endmacro()
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -79,7 +79,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # Dependency list of this find module for an INTERNAL build
     set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST Brotli
                                            Iconv
-                                           Zlib)
+                                           ZLIB)
 
     check_dependency_build(${CMAKE_FIND_PACKAGE_NAME} "${${CMAKE_FIND_PACKAGE_NAME}_DEPLIST}")
   endif()
