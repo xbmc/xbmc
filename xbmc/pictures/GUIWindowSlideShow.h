@@ -166,6 +166,6 @@ private:
   std::unique_ptr<CBackgroundPicLoader> m_pBackgroundLoader;
   int m_iLastFailedNextSlide;
   bool m_bLoadNextPic;
-  RESOLUTION m_Resolution;
+  RESOLUTION m_Resolution = RES_INVALID;
   CPoint m_firstGesturePoint;
 };
