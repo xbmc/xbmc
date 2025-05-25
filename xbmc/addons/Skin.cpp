@@ -447,8 +447,7 @@ void CSkinInfo::TimerStop(const std::string& timer) const
 
 void CSkinInfo::SettingOptionsSkinColorsFiller(const SettingConstPtr& setting,
                                                std::vector<StringSettingOption>& list,
-                                               std::string& current,
-                                               void* data)
+                                               std::string& current)
 {
   if (!g_SkinInfo)
     return;
@@ -530,8 +529,7 @@ void GetFontsetsFromFile(const std::string& fontsetFilePath,
 
 void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
                                               std::vector<StringSettingOption>& list,
-                                              std::string& current,
-                                              void* data)
+                                              std::string& current)
 {
   if (!g_SkinInfo)
     return;
@@ -565,8 +563,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
 
 void CSkinInfo::SettingOptionsSkinThemesFiller(const SettingConstPtr& setting,
                                                std::vector<StringSettingOption>& list,
-                                               std::string& current,
-                                               void* data)
+                                               std::string& current)
 {
   // get the chosen theme and remove the extension from the current theme (backward compat)
   std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
@@ -597,8 +594,7 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const SettingConstPtr& setting,
 
 void CSkinInfo::SettingOptionsStartupWindowsFiller(const SettingConstPtr& setting,
                                                    std::vector<IntegerSettingOption>& list,
-                                                   int& current,
-                                                   void* data)
+                                                   int& current)
 {
   if (!g_SkinInfo)
     return;

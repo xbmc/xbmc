@@ -88,54 +88,42 @@ private:
 
   static int GetWeekdaysFromSetting(const std::shared_ptr<const CSetting>& setting);
 
-  static void TypesFiller(const std::shared_ptr<const CSetting>& setting,
-                          std::vector<IntegerSettingOption>& list,
-                          int& current,
-                          void* data);
-  static void ChannelsFiller(const std::shared_ptr<const CSetting>& setting,
-                             std::vector<IntegerSettingOption>& list,
-                             int& current,
-                             void* data);
-  static void DaysFiller(const std::shared_ptr<const CSetting>& setting,
+  void TypesFiller(const std::shared_ptr<const CSetting>& setting,
+                   std::vector<IntegerSettingOption>& list,
+                   int& current);
+  void ChannelsFiller(const std::shared_ptr<const CSetting>& setting,
+                      std::vector<IntegerSettingOption>& list,
+                      int& current);
+  void DaysFiller(const std::shared_ptr<const CSetting>& setting,
+                  std::vector<IntegerSettingOption>& list,
+                  int& current);
+  void DupEpisodesFiller(const std::shared_ptr<const CSetting>& setting,
                          std::vector<IntegerSettingOption>& list,
-                         int& current,
-                         void* data);
-  static void DupEpisodesFiller(const std::shared_ptr<const CSetting>& setting,
-                                std::vector<IntegerSettingOption>& list,
-                                int& current,
-                                void* data);
-  static void WeekdaysFiller(const std::shared_ptr<const CSetting>& setting,
-                             std::vector<IntegerSettingOption>& list,
-                             int& current,
-                             void* data);
-  static void PrioritiesFiller(const std::shared_ptr<const CSetting>& setting,
-                               std::vector<IntegerSettingOption>& list,
-                               int& current,
-                               void* data);
-  static void LifetimesFiller(const std::shared_ptr<const CSetting>& setting,
-                              std::vector<IntegerSettingOption>& list,
-                              int& current,
-                              void* data);
-  static void MaxRecordingsFiller(const std::shared_ptr<const CSetting>& setting,
-                                  std::vector<IntegerSettingOption>& list,
-                                  int& current,
-                                  void* data);
-  static void RecordingGroupFiller(const std::shared_ptr<const CSetting>& setting,
-                                   std::vector<IntegerSettingOption>& list,
-                                   int& current,
-                                   void* data);
-  static void MarginTimeFiller(const std::shared_ptr<const CSetting>& setting,
-                               std::vector<IntegerSettingOption>& list,
-                               int& current,
-                               void* data);
-  static void CustomIntSettingDefinitionsFiller(const std::shared_ptr<const CSetting>& setting,
-                                                std::vector<IntegerSettingOption>& list,
-                                                int& current,
-                                                void* data);
-  static void CustomStringSettingDefinitionsFiller(const std::shared_ptr<const CSetting>& setting,
-                                                   std::vector<StringSettingOption>& list,
-                                                   std::string& current,
-                                                   void* data);
+                         int& current);
+  void WeekdaysFiller(const std::shared_ptr<const CSetting>& setting,
+                      std::vector<IntegerSettingOption>& list,
+                      int& current);
+  void PrioritiesFiller(const std::shared_ptr<const CSetting>& setting,
+                        std::vector<IntegerSettingOption>& list,
+                        int& current);
+  void LifetimesFiller(const std::shared_ptr<const CSetting>& setting,
+                       std::vector<IntegerSettingOption>& list,
+                       int& current);
+  void MaxRecordingsFiller(const std::shared_ptr<const CSetting>& setting,
+                           std::vector<IntegerSettingOption>& list,
+                           int& current);
+  void RecordingGroupFiller(const std::shared_ptr<const CSetting>& setting,
+                            std::vector<IntegerSettingOption>& list,
+                            int& current);
+  void MarginTimeFiller(const std::shared_ptr<const CSetting>& setting,
+                        std::vector<IntegerSettingOption>& list,
+                        int& current);
+  void CustomIntSettingDefinitionsFiller(const std::shared_ptr<const CSetting>& setting,
+                                         std::vector<IntegerSettingOption>& list,
+                                         int& current);
+  void CustomStringSettingDefinitionsFiller(const std::shared_ptr<const CSetting>& setting,
+                                            std::vector<StringSettingOption>& list,
+                                            std::string& current);
 
   static std::string WeekdaysValueFormatter(const std::shared_ptr<const CSetting>& setting);
 

@@ -18,26 +18,20 @@ class CServicesSettings : public ISubSettings
 public:
   static void SettingOptionsChunkSizesFiller(const SettingConstPtr& setting,
                                              std::vector<IntegerSettingOption>& list,
-                                             int& current,
-                                             void* data);
+                                             int& current);
   static void SettingOptionsBufferModesFiller(const SettingConstPtr& setting,
                                               std::vector<IntegerSettingOption>& list,
-                                              int& current,
-                                              void* data);
+                                              int& current);
   static void SettingOptionsMemorySizesFiller(const SettingConstPtr& setting,
                                               std::vector<IntegerSettingOption>& list,
-                                              int& current,
-                                              void* data);
+                                              int& current);
   static void SettingOptionsReadFactorsFiller(const SettingConstPtr& setting,
                                               std::vector<IntegerSettingOption>& list,
-                                              int& current,
-                                              void* data);
+                                              int& current);
   static void SettingOptionsCacheChunkSizesFiller(const SettingConstPtr& setting,
                                                   std::vector<IntegerSettingOption>& list,
-                                                  int& current,
-                                                  void* data);
+                                                  int& current);
   static void SettingOptionsSmbVersionsFiller(const SettingConstPtr& setting,
                                               std::vector<IntegerSettingOption>& list,
-                                              int& current,
-                                              void* data);
+                                              int& current);
 };

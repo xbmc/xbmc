@@ -45,10 +45,9 @@ protected:
   void InitializeSettings() override;
 
 private:
-  static void LifetimesFiller(const std::shared_ptr<const CSetting>& setting,
-                              std::vector<IntegerSettingOption>& list,
-                              int& current,
-                              void* data);
+  void LifetimesFiller(const std::shared_ptr<const CSetting>& setting,
+                       std::vector<IntegerSettingOption>& list,
+                       int& current);
 
   std::shared_ptr<CPVRRecording> m_recording;
   std::string m_strTitle;

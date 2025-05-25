@@ -86,10 +86,9 @@ protected:
       CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
   void DeleteRule(Field field);
 
-  static void GetStringListOptions(const std::shared_ptr<const CSetting>& setting,
-                                   std::vector<StringSettingOption>& list,
-                                   std::string& current,
-                                   void* data);
+  void GetStringListOptions(const std::shared_ptr<const CSetting>& setting,
+                            std::vector<StringSettingOption>& list,
+                            std::string& current);
 
   CDbUrl* m_dbUrl;
   std::string m_mediaType;

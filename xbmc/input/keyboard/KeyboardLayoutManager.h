@@ -44,8 +44,7 @@ public:
 
   static void SettingOptionsKeyboardLayoutsFiller(const std::shared_ptr<const CSetting>& setting,
                                                   std::vector<StringSettingOption>& list,
-                                                  std::string& current,
-                                                  void* data);
+                                                  std::string& current);
 
 private:
   CKeyboardLayoutManager(const CKeyboardLayoutManager&) = delete;

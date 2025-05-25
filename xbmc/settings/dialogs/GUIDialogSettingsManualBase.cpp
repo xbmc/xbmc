@@ -468,7 +468,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddSpinner(
     return NULL;
 
   setting->SetControl(GetSpinnerControl("string", delayed));
-  setting->SetOptionsFiller(filler, this);
+  setting->SetOptionsFiller(filler);
   setSettingDetails(setting, level, visible, help);
 
   group->AddSetting(setting);
@@ -614,7 +614,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     return NULL;
 
   setting->SetControl(GetSpinnerControl("string", delayed));
-  setting->SetOptionsFiller(filler, this);
+  setting->SetOptionsFiller(filler);
   setSettingDetails(setting, level, visible, help);
 
   group->AddSetting(setting);
@@ -708,7 +708,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(
     return NULL;
 
   setting->SetControl(GetListControl("string", false, heading, false, nullptr, details));
-  setting->SetOptionsFiller(filler, this);
+  setting->SetOptionsFiller(filler);
   setSettingDetails(setting, level, visible, help);
 
   group->AddSetting(setting);
@@ -792,7 +792,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     return NULL;
 
   setting->SetControl(GetListControl("integer", false, heading, false, nullptr, details));
-  setting->SetOptionsFiller(filler, this);
+  setting->SetOptionsFiller(filler);
   setSettingDetails(setting, level, visible, help);
 
   group->AddSetting(setting);
@@ -821,7 +821,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
   if (settingDefinition == NULL)
     return NULL;
 
-  settingDefinition->SetOptionsFiller(filler, this);
+  settingDefinition->SetOptionsFiller(filler);
 
   std::shared_ptr<CSettingList> setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
   if (setting == NULL)
@@ -960,7 +960,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
   if (settingDefinition == NULL)
     return NULL;
 
-  settingDefinition->SetOptionsFiller(filler, this);
+  settingDefinition->SetOptionsFiller(filler);
 
   std::shared_ptr<CSettingList> setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
   if (setting == NULL)
