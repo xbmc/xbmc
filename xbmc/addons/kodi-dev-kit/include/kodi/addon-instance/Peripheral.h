@@ -850,6 +850,7 @@ private:
     kodi::addon::Joystick addonJoystick(*joystick);
     std::vector<kodi::addon::JoystickFeature> primitiveVector;
 
+    primitiveVector.reserve(feature_count);
     for (unsigned int i = 0; i < feature_count; i++)
       primitiveVector.emplace_back(*(features + i));
 
@@ -902,6 +903,7 @@ private:
     kodi::addon::Joystick addonJoystick(*joystick);
     std::vector<kodi::addon::DriverPrimitive> primitiveVector;
 
+    primitiveVector.reserve(primitive_count);
     for (unsigned int i = 0; i < primitive_count; i++)
       primitiveVector.emplace_back(*(primitives + i));
 
