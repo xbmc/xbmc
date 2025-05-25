@@ -35,6 +35,8 @@
 #include "platform/win32/CharsetConverter.h"
 #endif
 
+#include <array>
+
 using namespace ADDON;
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -158,17 +160,17 @@ int CCDDARipJob::RipChunk(CFile& reader, const std::unique_ptr<CEncoder>& encode
 {
   percent = 0;
 
-  uint8_t stream[1024];
+  std::array<uint8_t, 1024> stream;
 
   // get data
-  ssize_t result = reader.Read(stream, 1024);
+  const ssize_t result = reader.Read(stream.data(), 1024);
 
   // return if rip is done or on some kind of error
   if (result <= 0)
     return 1;
 
   // encode data
-  ssize_t encres = encoder->EncoderEncode(stream, result);
+  const ssize_t encres = encoder->EncoderEncode(stream.data(), result);
 
   // Get progress indication
   percent = static_cast<int>(reader.GetPosition() * 100 / reader.GetLength());
@@ -227,23 +229,24 @@ std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
 
 std::string CCDDARipJob::SetupTempFile()
 {
-  char tmp[MAX_PATH + 1];
+  std::array<char, MAX_PATH + 1> tmp{};
 #if defined(TARGET_WINDOWS)
   using namespace KODI::PLATFORM::WINDOWS;
-  wchar_t tmpW[MAX_PATH];
+  std::array<wchar_t, MAX_PATH + 1> tmpW;
   GetTempFileName(ToW(CSpecialProtocol::TranslatePath("special://temp/")).c_str(), L"riptrack", 0,
-                  tmpW);
-  auto tmpString = FromW(tmpW);
-  strncpy_s(tmp, tmpString.length(), tmpString.c_str(), MAX_PATH);
+                  tmpW.data());
+  auto tmpString = FromW(tmpW.data());
+  strncpy_s(tmp.data(), tmp.size(), tmpString.c_str(), MAX_PATH);
 #else
   int fd;
-  strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(), MAX_PATH);
-  if ((fd = mkstemp(tmp)) == -1)
+  strncpy(tmp.data(), CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(),
+          MAX_PATH);
+  if ((fd = mkstemp(tmp.data())) == -1)
     tmp[0] = '\0';
   if (fd != -1)
     close(fd);
 #endif
-  return tmp;
+  return std::string(tmp.data());
 }
 
 bool CCDDARipJob::Equals(const CJob* job) const
