@@ -331,8 +331,7 @@ void CGUIDialogAudioSettings::AddAudioStreams(const std::shared_ptr<CSettingGrou
 
 bool CGUIDialogAudioSettings::IsPlayingPassthrough(const std::string& condition,
                                                    const std::string& value,
-                                                   const SettingConstPtr& setting,
-                                                   void* data)
+                                                   const SettingConstPtr& setting)
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();

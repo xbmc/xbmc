@@ -736,14 +736,13 @@ void CSettingsManager::AddCondition(const std::string &condition)
 }
 
 void CSettingsManager::AddDynamicCondition(const std::string& identifier,
-                                           const SettingConditionCheck& condition,
-                                           void* data /*= nullptr*/)
+                                           const SettingConditionCheck& condition)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
   if (identifier.empty() || condition == nullptr)
     return;
 
-  m_conditions.AddDynamicCondition(identifier, condition, data);
+  m_conditions.AddDynamicCondition(identifier, condition);
 }
 
 void CSettingsManager::RemoveDynamicCondition(const std::string &identifier)

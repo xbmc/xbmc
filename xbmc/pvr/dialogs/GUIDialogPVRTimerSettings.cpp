@@ -915,7 +915,7 @@ void CGUIDialogPVRTimerSettings::AddCondition(const std::shared_ptr<CSetting>& s
                                               SettingDependencyType depType,
                                               const std::string& settingId)
 {
-  GetSettingsManager()->AddDynamicCondition(identifier, condition, this);
+  GetSettingsManager()->AddDynamicCondition(identifier, condition);
   CSettingDependency dep(depType, GetSettingsManager());
   dep.And()->Add(std::make_shared<CSettingDependencyCondition>(identifier, "true", settingId, false,
                                                                GetSettingsManager()));
@@ -1391,23 +1391,19 @@ void CGUIDialogPVRTimerSettings::AddTypeDependentEnableCondition(
   // Enable setting depending on read-only attribute of the selected timer type
   std::string id(identifier);
   id.append(TYPE_DEP_ENABLE_COND_ID_POSTFIX);
-  AddCondition(setting, id, TypeReadOnlyCondition, SettingDependencyType::Enable, SETTING_TMR_TYPE);
+  AddCondition(
+      setting, id,
+      [this](const std::string& condition, const std::string& value, const SettingConstPtr& setting)
+      { return TypeReadOnlyCondition(condition, value, setting); }, SettingDependencyType::Enable,
+      SETTING_TMR_TYPE);
 }
 
 bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condition,
                                                        const std::string& value,
-                                                       const SettingConstPtr& setting,
-                                                       void* data)
+                                                       const SettingConstPtr& setting)
 {
   if (!setting)
     return false;
-
-  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
-  if (!pThis)
-  {
-    CLog::LogF(LOGERROR, "No dialog");
-    return false;
-  }
 
   if (!StringUtils::EqualsNoCase(value, "true"))
     return false;
@@ -1416,14 +1412,14 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
   cond.erase(cond.find(TYPE_DEP_ENABLE_COND_ID_POSTFIX));
 
   // If only one type is available, disable type selector.
-  if (pThis->m_typeEntries.size() == 1)
+  if (m_typeEntries.size() == 1)
   {
     if (cond == SETTING_TMR_TYPE)
       return false;
   }
 
   // For existing one time epg-based timers, disable editing of epg-filled data.
-  if (!pThis->m_bIsNewTimer && pThis->m_timerType->IsEpgBasedOnetime())
+  if (!m_bIsNewTimer && m_timerType->IsEpgBasedOnetime())
   {
     if ((cond == SETTING_TMR_NAME) || (cond == SETTING_TMR_CHANNEL) ||
         (cond == SETTING_TMR_START_DAY) || (cond == SETTING_TMR_END_DAY) ||
@@ -1432,14 +1428,14 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
   }
 
   /* Always enable enable/disable, if supported by the timer type. */
-  if (pThis->m_timerType->SupportsEnableDisable() && !pThis->m_timerInfoTag->IsBroken())
+  if (m_timerType->SupportsEnableDisable() && !m_timerInfoTag->IsBroken())
   {
     if (cond == SETTING_TMR_ACTIVE)
       return true;
   }
 
   /* Handle recordings in progress. */
-  if (pThis->m_timerInfoTag->State() == PVR_TIMER_STATE_RECORDING)
+  if (m_timerInfoTag->State() == PVR_TIMER_STATE_RECORDING)
   {
     if (cond == SETTING_TMR_TYPE || cond == SETTING_TMR_CHANNEL || cond == SETTING_TMR_BEGIN_PRE ||
         cond == SETTING_TMR_START_DAY || cond == SETTING_TMR_BEGIN ||
@@ -1447,16 +1443,15 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
       return false;
   }
 
-  if (pThis->m_customTimerSettings->IsCustomSetting(cond))
+  if (m_customTimerSettings->IsCustomSetting(cond))
   {
-    return !pThis->m_customTimerSettings->IsSettingReadonlyForTimerState(
-        cond, pThis->m_timerInfoTag->State());
+    return !m_customTimerSettings->IsSettingReadonlyForTimerState(cond, m_timerInfoTag->State());
   }
 
   // Let the PVR client decide...
   int idx = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
-  const auto entry = pThis->m_typeEntries.find(idx);
-  if (entry != pThis->m_typeEntries.end())
+  const auto entry = m_typeEntries.find(idx);
+  if (entry != m_typeEntries.end())
     return !entry->second->IsReadOnly();
   else
     CLog::LogF(LOGERROR, "No type entry");
@@ -1470,31 +1465,26 @@ void CGUIDialogPVRTimerSettings::AddTypeDependentVisibilityCondition(
   // Show or hide setting depending on attributes of the selected timer type
   std::string id(identifier);
   id.append(TYPE_DEP_VISIBI_COND_ID_POSTFIX);
-  AddCondition(setting, id, TypeSupportsCondition, SettingDependencyType::Visible,
-               SETTING_TMR_TYPE);
+  AddCondition(
+      setting, id,
+      [this](const std::string& condition, const std::string& value, const SettingConstPtr& setting)
+      { return TypeSupportsCondition(condition, value, setting); }, SettingDependencyType::Visible,
+      SETTING_TMR_TYPE);
 }
 
 bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condition,
                                                        const std::string& value,
-                                                       const SettingConstPtr& setting,
-                                                       void* data)
+                                                       const SettingConstPtr& setting)
 {
   if (!setting)
     return false;
-
-  auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
-  if (!pThis)
-  {
-    CLog::LogF(LOGERROR, "No dialog");
-    return false;
-  }
 
   if (!StringUtils::EqualsNoCase(value, "true"))
     return false;
 
   int idx = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
-  const auto entry = pThis->m_typeEntries.find(idx);
-  if (entry != pThis->m_typeEntries.end())
+  const auto entry = m_typeEntries.find(idx);
+  if (entry != m_typeEntries.end())
   {
     std::string cond(condition);
     cond.erase(cond.find(TYPE_DEP_VISIBI_COND_ID_POSTFIX));
@@ -1539,8 +1529,8 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condit
       return entry->second->SupportsRecordingFolders();
     else if (cond == SETTING_TMR_REC_GROUP)
       return entry->second->SupportsRecordingGroup();
-    else if (pThis->m_customTimerSettings->IsCustomSetting(cond))
-      return pThis->m_customTimerSettings->IsSettingSupportedForTimerType(cond, *entry->second);
+    else if (m_customTimerSettings->IsCustomSetting(cond))
+      return m_customTimerSettings->IsSettingSupportedForTimerType(cond, *entry->second);
     else
       CLog::LogF(LOGERROR, "Unknown condition");
   }
@@ -1557,34 +1547,29 @@ void CGUIDialogPVRTimerSettings::AddStartAnytimeDependentVisibilityCondition(
   // Show or hide setting depending on value of setting "any time"
   std::string id(identifier);
   id.append(START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX);
-  AddCondition(setting, id, StartAnytimeSetCondition, SettingDependencyType::Visible,
-               SETTING_TMR_START_ANYTIME);
+  AddCondition(
+      setting, id,
+      [this](const std::string& condition, const std::string& value, const SettingConstPtr& setting)
+      { return StartAnytimeSetCondition(condition, value, setting); },
+      SettingDependencyType::Visible, SETTING_TMR_START_ANYTIME);
 }
 
 bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string& condition,
                                                           const std::string& value,
-                                                          const SettingConstPtr& setting,
-                                                          void* data)
+                                                          const SettingConstPtr& setting)
 {
   if (!setting)
     return false;
-
-  const auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
-  if (!pThis)
-  {
-    CLog::LogF(LOGERROR, "No dialog");
-    return false;
-  }
 
   if (!StringUtils::EqualsNoCase(value, "true"))
     return false;
 
   // "any time" setting is only relevant for epg-based timers.
-  if (!pThis->m_timerType->IsEpgBased())
+  if (!m_timerType->IsEpgBased())
     return true;
 
   // If 'Start anytime' option isn't supported, don't hide start time
-  if (!pThis->m_timerType->SupportsStartAnyTime())
+  if (!m_timerType->SupportsStartAnyTime())
     return true;
 
   std::string cond(condition);
@@ -1604,34 +1589,29 @@ void CGUIDialogPVRTimerSettings::AddEndAnytimeDependentVisibilityCondition(
   // Show or hide setting depending on value of setting "any time"
   std::string id(identifier);
   id.append(END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX);
-  AddCondition(setting, id, EndAnytimeSetCondition, SettingDependencyType::Visible,
-               SETTING_TMR_END_ANYTIME);
+  AddCondition(
+      setting, id,
+      [this](const std::string& condition, const std::string& value, const SettingConstPtr& setting)
+      { return EndAnytimeSetCondition(condition, value, setting); }, SettingDependencyType::Visible,
+      SETTING_TMR_END_ANYTIME);
 }
 
 bool CGUIDialogPVRTimerSettings::EndAnytimeSetCondition(const std::string& condition,
                                                         const std::string& value,
-                                                        const SettingConstPtr& setting,
-                                                        void* data)
+                                                        const SettingConstPtr& setting)
 {
   if (!setting)
     return false;
-
-  const auto* pThis{static_cast<CGUIDialogPVRTimerSettings*>(data)};
-  if (!pThis)
-  {
-    CLog::LogF(LOGERROR, "No dialog");
-    return false;
-  }
 
   if (!StringUtils::EqualsNoCase(value, "true"))
     return false;
 
   // "any time" setting is only relevant for epg-based timers.
-  if (!pThis->m_timerType->IsEpgBased())
+  if (!m_timerType->IsEpgBased())
     return true;
 
   // If 'End anytime' option isn't supported, don't hide end time
-  if (!pThis->m_timerType->SupportsEndAnyTime())
+  if (!m_timerType->SupportsEndAnyTime())
     return true;
 
   std::string cond(condition);

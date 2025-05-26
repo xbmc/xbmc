@@ -469,11 +469,8 @@ public:
 
    \param identifier Identifier of the dynamic condition
    \param condition Implementation of the dynamic condition
-   \param data Opaque data pointer, will be passed back to SettingConditionCheck function
    */
-  void AddDynamicCondition(const std::string& identifier,
-                           const SettingConditionCheck& condition,
-                           void* data = nullptr);
+  void AddDynamicCondition(const std::string& identifier, const SettingConditionCheck& condition);
 
   /*!
    \brief Removes the given dynamic condition.
