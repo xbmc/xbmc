@@ -296,6 +296,10 @@ void CGUIDialogVideoManager::Remove()
 
   m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
 
+  // If a version of a bluray then remove the idFile as well
+  if (URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath()))
+    m_database.DeleteFile(m_selectedVideoAsset->GetVideoInfoTag()->m_iFileId);
+
   // refresh data and controls
   Refresh();
   RefreshSelectedVideoAsset();
