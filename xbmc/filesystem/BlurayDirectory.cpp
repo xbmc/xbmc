@@ -1670,7 +1670,7 @@ std::string CBlurayDirectory::GetBasePath(const CURL& url)
 
   const CURL url2(url.GetHostName()); // strip bluray://
   if (url2.IsProtocol("udf")) // ISO
-    return url2.GetHostName(); // strip udf://
+    return URIUtils::GetDirectory(url2.GetHostName()); // strip udf://
   return url2.Get(); // BDMV
 }
 

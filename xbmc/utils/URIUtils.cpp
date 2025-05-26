@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URL.h"
+#include "filesystem/BlurayDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
@@ -450,16 +451,24 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
 
 std::string URIUtils::GetBasePath(const std::string& strPath)
 {
-  std::string strCheck(strPath);
+  std::string strCheck{strPath};
   if (IsStack(strPath))
     strCheck = CStackDirectory::GetFirstStackedFile(strPath);
 
   std::string strDirectory = GetDirectory(strCheck);
+
   if (IsInRAR(strCheck))
   {
-    std::string strPath=strDirectory;
-    GetParentPath(strPath, strDirectory);
+    std::string path{strDirectory};
+    GetParentPath(path, strDirectory);
   }
+
+  if (IsBDFile(strCheck))
+    strDirectory = GetDiscBasePath(strCheck);
+
+  if (IsBlurayPath(strCheck))
+    strDirectory = CBlurayDirectory::GetBasePath(CURL(strCheck));
+
   if (IsStack(strPath))
   {
     strCheck = strDirectory;
@@ -467,6 +476,7 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
     if (GetFileName(strCheck).size() == 3 && StringUtils::StartsWithNoCase(GetFileName(strCheck), "cd"))
       strDirectory = GetDirectory(strCheck);
   }
+
   return strDirectory;
 }
 
