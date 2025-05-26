@@ -11957,8 +11957,12 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
 {
   SScanSettings settings;
   bool foundDirectly;
-  ScraperPtr info = GetScraperForPath(strPath,settings,foundDirectly);
-  SetPathHash(strPath,"");
+
+  const std::string path{URIUtils::IsBlurayPath(strPath) ? URIUtils::GetDiscBasePath(strPath)
+                                                         : strPath};
+
+  ScraperPtr info = GetScraperForPath(path, settings, foundDirectly);
+  SetPathHash(path, "");
   if (!info)
     return;
   if (info->Content() == CONTENT_TVSHOWS || (info->Content() == CONTENT_MOVIES && !foundDirectly)) // if we scan by folder name we need to invalidate parent as well
@@ -11966,7 +11970,8 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
     if (info->Content() == CONTENT_TVSHOWS || settings.parent_name_root)
     {
       std::string strParent;
-      if (URIUtils::GetParentPath(strPath, strParent) && (!URIUtils::IsPlugin(strPath) || !CURL(strParent).GetHostName().empty()))
+      if (URIUtils::GetParentPath(path, strParent) &&
+          (!URIUtils::IsPlugin(path) || !CURL(strParent).GetHostName().empty()))
         SetPathHash(strParent, "");
     }
   }
@@ -12892,6 +12897,36 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
   CommitTransaction();
 
   return true;
+}
+
+int CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
+                                    int dbIdSource,
+                                    int idFile,
+                                    int idVideoVersion,
+                                    VideoAssetType assetType)
+{
+  if (!m_pDB || !m_pDS)
+    return -1;
+
+  MediaType mediaType;
+  VideoContentTypeToString(itemType, mediaType);
+
+  const std::string sql{
+      PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                 "VALUES(%i, %i, '%s', %i, %i)",
+                 idFile, dbIdSource, mediaType.c_str(), assetType, idVideoVersion)};
+
+  try
+  {
+    m_pDS->exec(sql);
+
+    return static_cast<int>(m_pDS->lastinsertid());
+  }
+  catch (const std::exception& e)
+  {
+    CLog::LogF(LOGERROR, "Unable to add version ({}) - error {}", sql, e.what());
+  }
+  return -1;
 }
 
 void CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile)

@@ -1175,6 +1175,21 @@ public:
                              int dbIdTarget,
                              int idVideoVersion,
                              VideoAssetType assetType);
+
+  /*!
+   * \brief Adds a version of an existing movie to the database
+   * \param itemType type of the video being converted
+   * \param dbIdSource id of the video being converted
+   * \param idVideoVersion new versiontype of the default version of the video
+   * \param assetType new asset type of the default version of the video
+   * \return dbId in the videoversion table, -1 if failure
+   */
+  int AddVideoVersion(VideoDbContentType itemType,
+                      int dbIdSource,
+                      int idFile,
+                      int idVideoVersion,
+                      VideoAssetType assetType);
+
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
