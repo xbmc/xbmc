@@ -481,7 +481,8 @@ enum class ArtFallbackOptions
 enum class DeleteMovieCascadeAction
 {
   DEFAULT_VERSION,
-  ALL_ASSETS
+  ALL_ASSETS,
+  ALL_ASSETS_NOT_STREAMDETAILS
 };
 
 enum class DeleteMovieHashAction
@@ -1246,13 +1247,32 @@ public:
    * \param dbIdTarget id that the video will be attached to
    * \param idVideoVersion new versiontype of the default version of the video
    * \param assetType new asset type of the default version of the video
+   * \param cascadeAction action to take on the assets of the video being converted
+   *        (used to preserve streamdetails for bluray playlists)
    * \return true for success, false otherwise
    */
-  bool ConvertVideoToVersion(VideoDbContentType itemType,
-                             int dbIdSource,
-                             int dbIdTarget,
-                             int idVideoVersion,
-                             VideoAssetType assetType);
+  bool ConvertVideoToVersion(
+      VideoDbContentType itemType,
+      int dbIdSource,
+      int dbIdTarget,
+      int idVideoVersion,
+      VideoAssetType assetType,
+      DeleteMovieCascadeAction cascadeAction = DeleteMovieCascadeAction::ALL_ASSETS);
+
+  /*!
+   * \brief Adds a version of an existing movie to the database
+   * \param itemType type of the video being converted
+   * \param dbIdSource id of the video being converted
+   * \param idVideoVersion new versiontype of the default version of the video
+   * \param assetType new asset type of the default version of the video
+   * \return dbId in the videoversion table, -1 if failure
+   */
+  int AddVideoVersion(VideoDbContentType itemType,
+                      int dbIdSource,
+                      int idFile,
+                      int idVideoVersion,
+                      VideoAssetType assetType);
+
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
