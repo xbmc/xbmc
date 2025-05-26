@@ -52,14 +52,12 @@ namespace PVR
     // Dynamically hide or show settings.
     static bool IsSettingVisible(const std::string& condition,
                                  const std::string& value,
-                                 const std::shared_ptr<const CSetting>& setting,
-                                 void* data);
+                                 const std::shared_ptr<const CSetting>& setting);
 
     // Do parental PIN check.
     static bool CheckParentalPin(const std::string& condition,
                                  const std::string& value,
-                                 const std::shared_ptr<const CSetting>& setting,
-                                 void* data);
+                                 const std::shared_ptr<const CSetting>& setting);
 
   private:
     CPVRSettings(const CPVRSettings&) = delete;

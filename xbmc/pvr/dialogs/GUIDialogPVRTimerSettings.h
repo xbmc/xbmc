@@ -135,30 +135,26 @@ private:
 
   void AddTypeDependentEnableCondition(const std::shared_ptr<CSetting>& setting,
                                        const std::string& identifier);
-  static bool TypeReadOnlyCondition(const std::string& condition,
-                                    const std::string& value,
-                                    const std::shared_ptr<const CSetting>& setting,
-                                    void* data);
+  bool TypeReadOnlyCondition(const std::string& condition,
+                             const std::string& value,
+                             const std::shared_ptr<const CSetting>& setting);
 
   void AddTypeDependentVisibilityCondition(const std::shared_ptr<CSetting>& setting,
                                            const std::string& identifier);
-  static bool TypeSupportsCondition(const std::string& condition,
-                                    const std::string& value,
-                                    const std::shared_ptr<const CSetting>& setting,
-                                    void* data);
+  bool TypeSupportsCondition(const std::string& condition,
+                             const std::string& value,
+                             const std::shared_ptr<const CSetting>& setting);
 
   void AddStartAnytimeDependentVisibilityCondition(const std::shared_ptr<CSetting>& setting,
                                                    const std::string& identifier);
-  static bool StartAnytimeSetCondition(const std::string& condition,
-                                       const std::string& value,
-                                       const std::shared_ptr<const CSetting>& setting,
-                                       void* data);
+  bool StartAnytimeSetCondition(const std::string& condition,
+                                const std::string& value,
+                                const std::shared_ptr<const CSetting>& setting);
   void AddEndAnytimeDependentVisibilityCondition(const std::shared_ptr<CSetting>& setting,
                                                  const std::string& identifier);
-  static bool EndAnytimeSetCondition(const std::string& condition,
-                                     const std::string& value,
-                                     const std::shared_ptr<const CSetting>& setting,
-                                     void* data);
+  bool EndAnytimeSetCondition(const std::string& condition,
+                              const std::string& value,
+                              const std::shared_ptr<const CSetting>& setting);
 
   using TypeEntriesMap = std::map<int, std::shared_ptr<CPVRTimerType>>;
 

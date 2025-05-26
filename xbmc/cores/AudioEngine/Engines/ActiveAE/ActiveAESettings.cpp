@@ -132,8 +132,7 @@ void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(
 
 bool CActiveAESettings::IsSettingVisible(const std::string& condition,
                                          const std::string& value,
-                                         const SettingConstPtr& setting,
-                                         void* data)
+                                         const SettingConstPtr& setting)
 {
   if (setting == NULL || value.empty())
     return false;

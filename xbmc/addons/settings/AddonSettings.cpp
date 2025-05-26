@@ -53,8 +53,7 @@ constexpr int UnknownSettingLabelIdStart = 100000;
 
 bool InfoBool(const std::string& condition,
               const std::string& value,
-              const SettingConstPtr& setting,
-              void* data)
+              const SettingConstPtr& setting)
 {
   return CServiceBroker::GetGUI()->GetInfoManager().EvaluateBool(value, INFO::DEFAULT_CONTEXT);
 }
