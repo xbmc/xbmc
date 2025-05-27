@@ -1966,6 +1966,10 @@ bool CAMLCodec::OpenDecoder(bool restart)
   SetSpeed(m_speed);
   SetPollDevice(am_private->vcodec.cntl_handle);
 
+  m_minOrderedBufferQueueCount = IsDecStreamTypeStream() ? m_decoder_stream_type_stream_min_ordered_buffer_queue_count : 1;
+
+  StartDequeueToOrderedBufferQueue();
+
   return true;
 }
 
@@ -2021,6 +2025,8 @@ void CAMLCodec::SetVfmMap(const std::string &name, const std::string &map)
 void CAMLCodec::CloseDecoder(bool restart)
 {
   logNoFormatM(LOGINFO, "CAMLCodec");
+
+  StopDequeueToOrderedBufferQueue();
 
   SetPollDevice(-1);
 
@@ -2098,6 +2104,8 @@ void CAMLCodec::Reset()
   m_last_pts = DVD_NOPTS_VALUE;
   m_state = 0;
   m_buffer_level_ready = false;
+
+  ClearOrderedBufferQueue();
 
   SetSpeed(m_speed);
 
@@ -2277,22 +2285,26 @@ void CAMLCodec::SetPollDevice(int dev)
   m_pollDevice = dev;
 }
 
-int CAMLCodec::ReleaseFrame(const uint32_t index, bool drop) const {
+int CAMLCodec::ReleaseFrame(const uint32_t index, bool drop)
+{
+  if (!m_amlVideoFile) return 0;
+
   int ret;
   auto vbuf = v4l2_buffer();
   vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
   vbuf.index = index;
 
-  if (!m_amlVideoFile)
-    return 0;
-
   if (drop)
     vbuf.flags |= V4L2_BUF_FLAG_DONE;
 
-  logComponentM(LOGDEBUG, LOGVIDEO, "CAMLCodec", "idx:{:d}, drop:{:d}", index, static_cast<int>(drop));
+  logM(LOGINFO, "CAMLCodec", "index:[{:d}], drop:[{:d}]", index, static_cast<int>(drop));
 
-  if ((ret = m_amlVideoFile->IOControl(VIDIOC_QBUF, &vbuf)) < 0)
-    logM(LOGERROR, "CAMLCodec", "VIDIOC_QBUF failed: {}", strerror(errno));
+  {
+    std::scoped_lock lock(m_ioControlMutex);
+    ret = (m_amlVideoFile->IOControl(VIDIOC_QBUF, &vbuf) < 0) ? errno : 0;
+  }
+
+  if (ret < 0) logM(LOGERROR, "CAMLCodec", "VIDIOC_QBUF failed: [{}] [{}]", ret, strerror(ret));
 
   return ret;
 }
@@ -2303,7 +2315,8 @@ float CAMLCodec::GetBufferLevel()
   return GetBufferLevel(new_chunk, data_len, free_len);
 }
 
-float CAMLCodec::GetBufferLevel(int new_chunk, int &data_len, int &free_len) const {
+float CAMLCodec::GetBufferLevel(int new_chunk, int &data_len, int &free_len) const
+{
   struct buf_status bs;
   float level = 0.0f;
   m_dll->codec_get_vbuf_state(&am_private->vcodec, &bs);
@@ -2322,127 +2335,187 @@ float CAMLCodec::GetBufferLevel(int new_chunk, int &data_len, int &free_len) con
   return level;
 }
 
-int CAMLCodec::DequeueBuffer()
+void CAMLCodec::StartDequeueToOrderedBufferQueue()
 {
-  auto vbuf = v4l2_buffer();
-  vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+  logNoFormatM(LOGINFO, "CAMLCodec");
 
-  int ret = (m_amlVideoFile->IOControl(VIDIOC_DQBUF, &vbuf) < 0) ? errno : 0;
+  ClearOrderedBufferQueue();
 
-  if (ret == 0)
-  {
-    m_last_pts = m_cur_pts;
-
-    m_cur_pts =  static_cast<uint64_t>(static_cast<uint32_t>(vbuf.timestamp.tv_sec)) << 32;
-    m_cur_pts += static_cast<uint32_t>(vbuf.timestamp.tv_usec);
-
-    if (IsDecStreamTypeStream()) // Offset for type STREAM (Used for FEL)
-      m_cur_pts -= std::min(m_cur_pts, m_decoder_stream_type_stream_offset);
-
-    logComponentM(LOGDEBUG, LOGAVTIMING, "CAMLCodec", "pts:{:.3f} idx:{:d}",
-                  static_cast<double>(m_cur_pts) /  DVD_TIME_BASE, vbuf.index);
-
-    m_bufferIndex = vbuf.index;
-  }
-  else if (ret != EAGAIN)
-  {
-    logM(LOGERROR, "CAMLCodec", "VIDIOC_DQBUF failed: {}", strerror(ret));
-  }
-
-  return ret;
+  m_orderedBufferQueueRunning = true;
+  m_dequeueToOrderedBufferQueueThread = std::thread(&CAMLCodec::DequeueToOrderedBufferQueue, this);
 }
 
-inline double CAMLCodec::CalculatePictureDuration()
+void CAMLCodec::DequeueToOrderedBufferQueue()
 {
-  double rate_duration = static_cast<double>(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
-
-  if (m_last_pts == DVD_NOPTS_VALUE) return rate_duration;
-
-  if (m_cur_pts < m_last_pts)
+  while (m_orderedBufferQueueRunning)
   {
-    logM(LOGDEBUG, "CAMLCodec", "behind :: cur pts:[{:.3f}] < last pts:[{:.3f}] dur:[{:.3f}ms]",
-         static_cast<double>(m_cur_pts) / DVD_TIME_BASE,
-         static_cast<double>(m_last_pts) / DVD_TIME_BASE,
-         rate_duration / 1000);
+    if (!m_amlVideoFile)
+    {
+      std::this_thread::sleep_for(std::chrono::milliseconds(2));
+      continue;
+    }
 
-    m_cur_pts = m_last_pts + rate_duration;
-    return rate_duration;
+    bool full = false;
+    {
+      std::scoped_lock lock(m_orderedBufferQueueMutex);
+      full = (m_orderedBufferQueue.size() >= m_minOrderedBufferQueueCount);
+    }
+    if (full)
+    {
+      std::this_thread::sleep_for(std::chrono::milliseconds(2));
+      continue;
+    }
+
+    auto vbuf = v4l2_buffer();
+    vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+    int ret = 0;
+    {
+      std::scoped_lock lock(m_ioControlMutex);
+      ret = (m_amlVideoFile->IOControl(VIDIOC_DQBUF, &vbuf) < 0) ? errno : 0;
+    }
+
+    if (ret == 0)
+    {
+      auto pts = static_cast<uint64_t>(static_cast<uint32_t>(vbuf.timestamp.tv_sec)) << 32;
+      pts += static_cast<uint32_t>(vbuf.timestamp.tv_usec);
+
+      // Both below use the pts server data offset to obtain pts values and both look to need the same additional time offset to the pts value.
+      if (IsDecStreamTypeStream())
+        pts += m_decoder_stream_type_stream_offset; // Offset for type STREAM (Used for FEL)
+      else if (IsH264())
+        pts += m_decoder_h264_offset;               // Offset for H264
+
+      {
+        std::scoped_lock lock(m_orderedBufferQueueMutex);
+        m_orderedBufferQueue.push({vbuf, pts});
+      }
+
+      logM(LOGINFO, "CAMLCodec", "Queued buffer index:[{}] pts:[{}]", vbuf.index, pts);
+
+      std::this_thread::sleep_for(std::chrono::milliseconds(2));
+      continue;
+    }
+
+    if (ret == EAGAIN)
+    {
+      std::this_thread::sleep_for(std::chrono::milliseconds(2));
+      continue;
+    }
+
+    if (ret != EAGAIN)
+    {
+      logM(LOGERROR, "CAMLCodec", "VIDIOC_DQBUF failed: [{}] [{}]", ret, strerror(ret));
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      continue;
+    }
+  }
+}
+
+void CAMLCodec::StopDequeueToOrderedBufferQueue()
+{
+  logNoFormatM(LOGINFO, "CAMLCodec");
+
+  m_orderedBufferQueueRunning = false;
+  if (m_dequeueToOrderedBufferQueueThread.joinable()) m_dequeueToOrderedBufferQueueThread.join();
+
+  ClearOrderedBufferQueue();
+}
+
+void CAMLCodec::ClearOrderedBufferQueue()
+{
+  std::scoped_lock lock(m_orderedBufferQueueMutex);
+  m_orderedBufferQueue = {};
+}
+
+bool CAMLCodec::GetNextOrderedBuffer()
+{
+  OrderedBuffer orderedBuffer;
+  std::size_t size;
+
+  {
+    std::scoped_lock lock(m_orderedBufferQueueMutex);
+    size = m_orderedBufferQueue.size();
   }
 
-  double picture_duration = static_cast<double>(m_cur_pts - m_last_pts);
-  double duration_ratio = picture_duration / rate_duration;
-
-  if ((m_speed == DVD_PLAYSPEED_NORMAL) &&
-      (duration_ratio < 0.2 || (duration_ratio > 1.5 && duration_ratio < 4.0))) {
-
-    logM(LOGDEBUG, "CAMLCodec", "drift :: cur pts:[{:.3f}] last pts:[{:.3f}] calc dur:[{:.3f}ms] ratio:[{:.3f}]",
-         static_cast<double>(m_cur_pts) / DVD_TIME_BASE,
-         static_cast<double>(m_last_pts) / DVD_TIME_BASE,
-         picture_duration / 1000,
-         duration_ratio);
-
-    m_cur_pts = m_last_pts + rate_duration;
-    return rate_duration;
+  if (size < m_minOrderedBufferQueueCount) // wait until have at least min buffers
+  {
+    logM(LOGINFO, "CAMLCodec", "buffer size:[{}]", size);
+    return false;
   }
 
-  logM(LOGDEBUG, "CAMLCodec", "in-sync :: cur pts:[{:.3f}] last pts:[{:.3f}] dur:[{:.3f}ms] ratio:[{:.3f}]",
-       static_cast<double>(m_cur_pts) / DVD_TIME_BASE,
-       static_cast<double>(m_last_pts) / DVD_TIME_BASE,
-       rate_duration / 1000,
-       duration_ratio);
+  {
+    std::scoped_lock lock(m_orderedBufferQueueMutex);
+    orderedBuffer = m_orderedBufferQueue.top();
+    m_orderedBufferQueue.pop();
+  }
 
-  return picture_duration;
+  m_last_pts = m_cur_pts;
+  m_cur_pts = orderedBuffer.pts;
+  m_bufferIndex = orderedBuffer.buffer.index;
+
+  if (m_cur_pts <= m_last_pts)
+    logM(LOGWARNING, "CAMLCodec", "current pts:[{}] <= last pts:[{}]", m_cur_pts, m_last_pts);
+
+  m_last_pts = m_cur_pts;
+  m_cur_pts = orderedBuffer.pts;
+  m_bufferIndex = orderedBuffer.buffer.index;
+
+  logM(LOGINFO, "CAMLCodec", "buffer size:[{}] index:[{}] pts:[{}]", size, m_bufferIndex, m_cur_pts);
+
+  return true;
 }
 
 CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
 {
-  struct vdec_info vi;
-  int ret = EAGAIN;
-  float buffer_level = GetBufferLevel();
-  std::chrono::milliseconds elapsed_since_last_frame(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()
-    - m_tp_last_frame).count());
-
   if (!m_opened)
     return CDVDVideoCodec::VC_ERROR;
 
-  if (!m_drain && m_buffer_level_ready && (buffer_level > m_minimum_buffer_level) && ((ret = DequeueBuffer()) == 0))
+  if (m_drain)
+    return CDVDVideoCodec::VC_EOF;
+
+  auto elapsed_since_last_frame = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() -
+                                                                                        m_tp_last_frame);
+  float buffer_level = GetBufferLevel();
+
+  if (m_buffer_level_ready && (buffer_level > m_minimum_buffer_level) && GetNextOrderedBuffer())
   {
+     m_tp_last_frame = std::chrono::system_clock::now();
+
     videoPicture.iFlags = 0;
 
     m_minimum_buffer_level = (IsDecStreamTypeStream() ? m_minimum_buffer_level : 0.0f);
 
-    m_tp_last_frame = std::chrono::system_clock::now();
-
-    videoPicture.iDuration = CalculatePictureDuration();
+    videoPicture.iDuration = static_cast<double>(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
     videoPicture.dts = DVD_NOPTS_VALUE;
     videoPicture.pts = static_cast<double>(m_cur_pts);
 
+    struct vdec_info vi;
     m_dll->codec_get_vdec_info(&am_private->vcodec, &vi);
     if (vi.ratio_control) {
       m_hints.aspect = 65536.0 / vi.ratio_control;
       m_processInfo.SetVideoDAR(m_hints.aspect);
     }
 
-    logComponentM(LOGDEBUG, LOGVIDEO, "CAMLCodec", "index: {:d}, pts: {:.3f}, dur:{:.3f}ms ar:{:.2f} elf:{:d}ms",
-                  m_bufferIndex, videoPicture.pts / DVD_TIME_BASE, videoPicture.iDuration / 1000, m_hints.aspect,
-                  elapsed_since_last_frame.count());
+    logM(LOGINFO, "CAMLCodec", "index:[{:d}] pts:[{:.3f}] dur:[{:.3f}ms] ar:[{:.2f}] elf:[{:d}ms] buffer level:[{:.1f}%]",
+                  m_bufferIndex, (videoPicture.pts / DVD_TIME_BASE), (videoPicture.iDuration / 1000), m_hints.aspect,
+                  elapsed_since_last_frame.count(), buffer_level);
 
     videoPicture.stereoMode = m_hints.stereo_mode;
-    if (videoPicture.stereoMode == "block_lr" && m_processInfo.GetVideoSettings().m_StereoInvert)
+    if ((videoPicture.stereoMode == "block_lr") && m_processInfo.GetVideoSettings().m_StereoInvert)
       videoPicture.stereoMode = "block_rl";
-    else if (videoPicture.stereoMode == "block_rl" && m_processInfo.GetVideoSettings().m_StereoInvert)
+    else if ((videoPicture.stereoMode == "block_rl") && m_processInfo.GetVideoSettings().m_StereoInvert)
       videoPicture.stereoMode = "block_lr";
 
     return CDVDVideoCodec::VC_PICTURE;
   }
-  else if (m_drain)
-    return CDVDVideoCodec::VC_EOF;
-  else if (buffer_level > (IsDecStreamTypeStream() ? 100.0f : 10.0f))
+
+  if (buffer_level > (IsDecStreamTypeStream() ? 100.0f : 10.0f))
     return CDVDVideoCodec::VC_NONE;
-  else if (ret != EAGAIN || elapsed_since_last_frame > std::chrono::seconds(m_decoder_timeout))
+
+  if (elapsed_since_last_frame > std::chrono::seconds(m_decoder_timeout))
   {
-    logM(LOGERROR, "CAMLCodec", "time elapsed since last frame: {:d}ms ({:d}:{})",
-          elapsed_since_last_frame.count(), ret, strerror(ret));
+    logM(LOGERROR, "CAMLCodec", "decoder timeout - elf:[{:d}ms]", elapsed_since_last_frame.count());
     m_tp_last_frame = std::chrono::system_clock::now();
     return CDVDVideoCodec::VC_FLUSHED;
   }

@@ -17,6 +17,8 @@
 #include "utils/BitstreamConverter.h"
 #include "utils/Geometry.h"
 
+#include <queue>
+#include <linux/videodev2.h>
 #include <deque>
 #include <atomic>
 
@@ -243,7 +245,17 @@ struct pq_ctrl_s {
 	unsigned char reserved;
 };
 
-#define _VE_CM  'C'
+struct OrderedBuffer
+{
+  v4l2_buffer buffer;
+  uint64_t pts;
+
+  friend bool operator>(const OrderedBuffer& lhs, const OrderedBuffer& rhs) {
+    return lhs.pts > rhs.pts;
+  }
+};
+
+#define VE_CM  'C'
 #define AMVECM_IOC_S_PQ_CTRL  _IOW(_VE_CM, 0x69, struct vpp_pq_ctrl_s)
 #define AMVECM_IOC_G_PQ_CTRL  _IOR(_VE_CM, 0x6a, struct vpp_pq_ctrl_s)
 
@@ -266,7 +278,7 @@ public:
   uint64_t      GetOMXPts() const { return m_cur_pts; }
   uint32_t      GetBufferIndex() const { return m_bufferIndex; };
   int           GetAmlDuration() const;
-  int           ReleaseFrame(const uint32_t index, bool bDrop = false) const;
+  int           ReleaseFrame(const uint32_t index, bool bDrop = false);
 
   bool          IsDecStreamTypeFrame() const { return (am_private->gcodec.dec_mode == STREAM_TYPE_FRAME); }
   bool          IsDecStreamTypeStream() const { return (am_private->gcodec.dec_mode == STREAM_TYPE_STREAM); }
@@ -293,7 +305,14 @@ private:
   void          SetVfmMap(const std::string &name, const std::string &map);
   float         GetBufferLevel();
   float         GetBufferLevel(int new_chunk, int &data_len, int &free_len) const;
-  int           DequeueBuffer();
+
+  void          StartDequeueToOrderedBufferQueue();
+  void          StopDequeueToOrderedBufferQueue();
+  void          DequeueToOrderedBufferQueue();
+
+  bool          GetNextOrderedBuffer();
+  void          ClearOrderedBufferQueue();
+
   unsigned int  GetDecoderVideoRate() const;
   std::string   GetHDRStaticMetadata() const;
 
@@ -301,7 +320,6 @@ private:
   std::string   GetDoViCodecFourCC(unsigned int codec_tag);
   void          SetProcessInfoVideoDetails();
 
-  double        CalculatePictureDuration();
 
   DllLibAmCodec   *m_dll;
   bool             m_opened;
@@ -350,4 +368,12 @@ private:
 
   bool            m_buffer_level_ready;
   float           m_minimum_buffer_level;
+
+  std::mutex m_ioControlMutex;
+  std::mutex m_orderedBufferQueueMutex;
+
+  uint m_minOrderedBufferQueueCount = 1;
+  std::priority_queue<OrderedBuffer, std::vector<OrderedBuffer>, std::greater<OrderedBuffer>> m_orderedBufferQueue;
+  std::atomic<bool> m_orderedBufferQueueRunning{false};
+  std::thread m_dequeueToOrderedBufferQueueThread;
 };
