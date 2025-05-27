@@ -2256,12 +2256,16 @@ int CAMLCodec::PollFrame()
   codec_poll_fd[0].fd = m_pollDevice;
   codec_poll_fd[0].events = POLLOUT;
 
-  std::chrono::time_point<std::chrono::system_clock> now(std::chrono::system_clock::now());
+  auto now = std::chrono::system_clock::now();
   int events = poll(codec_poll_fd, 1, 0);
   g_aml_sync_event.Set();
-  int elapsed = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - now).count();
+
   if (events > 0)
-    logComponentM(LOGDEBUG, LOGAVTIMING, "CAMLCodec", "elapsed:[{:.3f}] events:[{:d}]", (elapsed / 1000.0), events);
+  {
+    logComponentM(LOGDEBUG, LOGAVTIMING, "CAMLCodec", "elapsed:[{:.3f}] events:[{:d}]",
+                                         std::chrono::duration<double, std::milli>(std::chrono::system_clock::now() - now).count(),
+                                         events);
+  }
 
   return 1;
 }
