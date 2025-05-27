@@ -1648,9 +1648,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   m_drain = false;
   m_cur_pts = DVD_NOPTS_VALUE;
   m_dst_rect.SetRect(0, 0, 0, 0);
-  CDVDStreamInfo &hints = m_hints;  // Fudge to avoid large chnage delta renaming hints to m_hints.
   m_state = 0;
-  m_hints.pClock = hints.pClock;
   m_tp_last_frame = std::chrono::system_clock::now();
 
   auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
@@ -1689,10 +1687,10 @@ bool CAMLCodec::OpenDecoder(bool restart)
   // default stream type
   am_private->stream_type      = AM_STREAM_ES;
   // handle hints.
-  am_private->video_width      = hints.width;
-  am_private->video_height     = hints.height;
-  am_private->video_codec_id   = hints.codec;
-  am_private->video_codec_tag  = hints.codec_tag;
+  am_private->video_width      = m_hints.width;
+  am_private->video_height     = m_hints.height;
+  am_private->video_codec_id   = m_hints.codec;
+  am_private->video_codec_tag  = m_hints.codec_tag;
 
   am_private->video_pid        = -1;
 
@@ -1704,17 +1702,17 @@ bool CAMLCodec::OpenDecoder(bool restart)
   am_private->video_ratio64    = ((int64_t)video_ratio.num << 32) | video_ratio.den;
 
   // handle video rate
-  if (hints.fpsrate > 0 && hints.fpsscale != 0)
+  if (m_hints.fpsrate > 0 && m_hints.fpsscale != 0)
   {
     // then ffmpeg avg_frame_rate next
-    am_private->video_rate = 0.5f + (float)UNIT_FREQ * hints.fpsscale / hints.fpsrate;
+    am_private->video_rate = 0.5f + (float)UNIT_FREQ * m_hints.fpsscale / m_hints.fpsrate;
   }
   else
     am_private->video_rate = 0.5f + (float)UNIT_FREQ * 1001 / 30000;
 
   // check for 1920x1080, interlaced, 25 fps
   // incorrectly reported as 50 fps (yes, video_rate == 1920)
-  if (hints.width == 1920 && am_private->video_rate == 1920)
+  if (m_hints.width == 1920 && am_private->video_rate == 1920)
   {
     logM(LOGDEBUG, "CAMLCodec", "video_rate exception");
     am_private->video_rate = 0.5f + (float)UNIT_FREQ * 1001 / 25000;
@@ -1722,7 +1720,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   // check for SD h264 content incorrectly reported as 60 fsp
   // mp4/avi containers :(
-  if (hints.codec == AV_CODEC_ID_H264 && hints.width <= 720 && am_private->video_rate == 1602)
+  if (m_hints.codec == AV_CODEC_ID_H264 && m_hints.width <= 720 && am_private->video_rate == 1602)
   {
     logM(LOGDEBUG, "CAMLCodec", "video_rate exception");
     am_private->video_rate = 0.5f + (float)UNIT_FREQ * 1001 / 24000;
@@ -1730,7 +1728,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   // check for SD h264 content incorrectly reported as some form of 30 fsp
   // mp4/avi containers :(
-  if ((hints.codec == AV_CODEC_ID_H264) && (hints.width <= 720))
+  if ((m_hints.codec == AV_CODEC_ID_H264) && (m_hints.width <= 720))
   {
     if (am_private->video_rate >= 3200 && am_private->video_rate <= 3210)
     {
@@ -1741,18 +1739,18 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   // handle orientation
   am_private->video_rotation_degree = 0;
-  if (hints.orientation == 90)
+  if (m_hints.orientation == 90)
     am_private->video_rotation_degree = 1;
-  else if (hints.orientation == 180)
+  else if (m_hints.orientation == 180)
     am_private->video_rotation_degree = 2;
-  else if (hints.orientation == 270)
+  else if (m_hints.orientation == 270)
     am_private->video_rotation_degree = 3;
 
   // handle extradata
-  am_private->video_format = codecid_to_vformat(hints.codec);
+  am_private->video_format = codecid_to_vformat(m_hints.codec);
 
   if ((am_private->video_format == VFORMAT_H264) &&
-      ((hints.width > 1920) || (hints.height > 1088)) &&
+      ((m_hints.width > 1920) || (m_hints.height > 1088)) &&
       (aml_support_h264_4k2k() == AML_HAS_H264_4K2K))
   {
     am_private->video_format = VFORMAT_H264_4K2K;
@@ -1767,7 +1765,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   switch (am_private->video_format)
   {
     default:
-      am_private->extradata = hints.extradata;
+      am_private->extradata = m_hints.extradata;
       break;
     case VFORMAT_REAL:
     case VFORMAT_MPEG12:
@@ -1780,26 +1778,26 @@ bool CAMLCodec::OpenDecoder(bool restart)
   if (am_private->video_codec_type == VIDEO_DEC_FORMAT_UNKNOW)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_id);
 
-  logM(LOGINFO, "CAMLCodec", "hints.width({:d}), hints.height({:d}), hints.codec({:d}), hints.codec_tag({:d}), hints.bitdepth({:d})",
-       hints.width, hints.height, hints.codec, hints.codec_tag, hints.bitdepth);
+  logM(LOGINFO, "CAMLCodec", "width({:d}), height({:d}), codec({:d}), codec_tag({:d}), bitdepth({:d})",
+       m_hints.width, m_hints.height, m_hints.codec, m_hints.codec_tag, m_hints.bitdepth);
 
-  logM(LOGINFO, "CAMLCodec", "hints.fpsrate({:d}), hints.fpsscale({:d}), video_rate({:d})",
-       hints.fpsrate, hints.fpsscale, am_private->video_rate);
+  logM(LOGINFO, "CAMLCodec", "fpsrate({:d}), fpsscale({:d}), video_rate({:d})",
+       m_hints.fpsrate, m_hints.fpsscale, am_private->video_rate);
 
-  logM(LOGINFO, "CAMLCodec", "hints.aspect({:f}), video_ratio.num({:d}), video_ratio.den({:d})",
-       hints.aspect, video_ratio.num, video_ratio.den);
+  logM(LOGINFO, "CAMLCodec", "aspect({:f}), video_ratio.num({:d}), video_ratio.den({:d})",
+       m_hints.aspect, video_ratio.num, video_ratio.den);
 
-  logM(LOGINFO, "CAMLCodec", "hints.orientation({:d}), hints.forced_aspect({:d}), hints.extrasize({:d})",
-       hints.orientation, hints.forced_aspect, hints.extradata.GetSize());
+  logM(LOGINFO, "CAMLCodec", "orientation({:d}), forced_aspect({:d}), extrasize({:d})",
+       m_hints.orientation, m_hints.forced_aspect, m_hints.extradata.GetSize());
 
-  if (hints.hdrType != StreamHdrType::HDR_TYPE_NONE)
-    logM(LOGINFO, "CAMLCodec", "hdr type: {}", CStreamDetails::HdrTypeToString(hints.hdrType));
+  if (m_hints.hdrType != StreamHdrType::HDR_TYPE_NONE)
+    logM(LOGINFO, "CAMLCodec", "hdr type:[{}]", CStreamDetails::HdrTypeToString(m_hints.hdrType));
 
-  if (hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
-    logM(LOGINFO, "CAMLCodec", "DOVI: version {:d}.{:d}, profile {:d}, el type {:d}",
-         hints.dovi.dv_version_major, hints.dovi.dv_version_minor, hints.dovi.dv_profile, hints.dovi_el_type);
+  if (m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+    logM(LOGINFO, "CAMLCodec", "DOVI: version[{:d}.{:d}] profile[{:d}], el type[{:d}]",
+         m_hints.dovi.dv_version_major, m_hints.dovi.dv_version_minor, m_hints.dovi.dv_profile, m_hints.dovi_el_type);
 
-  m_processInfo.SetVideoDAR(hints.aspect);
+  m_processInfo.SetVideoDAR(m_hints.aspect);
 
   // default video codec params
   am_private->gcodec.noblock     = 0;
@@ -1816,18 +1814,18 @@ bool CAMLCodec::OpenDecoder(bool restart)
   am_private->gcodec.dec_mode    = STREAM_TYPE_FRAME;
   am_private->gcodec.video_path  = FRAME_BASE_PATH_AMLVIDEO_AMVIDEO;
 
-  if (!restart) aml_dv_open(hints.hdrType, hints.bitdepth);
+  if (!restart) aml_dv_open(m_hints.hdrType, m_hints.bitdepth);
 
   // Now have the HDRType resolved, ok to set the transfer pq - so renderer can set the shaders as needed.
-  aml_set_transfer_pq(hints.hdrType, hints.bitdepth);
+  aml_set_transfer_pq(m_hints.hdrType, m_hints.bitdepth);
 
   SetProcessInfoVideoDetails();
 
   // Setup Codec for DV Content
-  if ((hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) && aml_is_dv_enable())
+  if ((m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) && aml_is_dv_enable())
   {
     am_private->gcodec.dv_enable = 1;
-    if (((hints.dovi.dv_profile == 4) || (hints.dovi.dv_profile == 7)) && (hints.dovi_el_type == DOVIELType::TYPE_FEL))
+    if (((m_hints.dovi.dv_profile == 4) || (m_hints.dovi.dv_profile == 7)) && (m_hints.dovi_el_type == DOVIELType::TYPE_FEL))
     {
       aml_dv_enable_fel();                              // Make sure enable fel is set.
       am_private->gcodec.dec_mode = STREAM_TYPE_STREAM; // Use stream path if FEL
