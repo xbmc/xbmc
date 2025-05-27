@@ -29,16 +29,6 @@ CGUIAction::CExecutableAction::CExecutableAction(const std::string& condition,
 {
 }
 
-std::string CGUIAction::CExecutableAction::GetCondition() const
-{
-  return m_condition;
-}
-
-std::string CGUIAction::CExecutableAction::GetAction() const
-{
-  return m_action;
-}
-
 bool CGUIAction::CExecutableAction::HasCondition() const
 {
   return !m_condition.empty();
