@@ -1652,26 +1652,30 @@ bool CAMLCodec::OpenDecoder(bool restart)
   m_state = 0;
   m_hints.pClock = hints.pClock;
   m_tp_last_frame = std::chrono::system_clock::now();
-  m_decoder_timeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderTimeout;
-  m_decoder_bypass_buffer_ready = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderBypassBufferReady;
-  m_decoder_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderBuffer;
-  m_decoder_stream_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderStreamBuffer;
-  m_decoder_minimum_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderMinimumBuffer;
-  m_decoder_minimum_stream_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderMinimumStreamBuffer;
-  m_decoder_stream_type_stream_offset = static_cast<uint64_t>(CServiceBroker::GetSettingsComponent()
-                                                              ->GetAdvancedSettings()->m_videoDecoderStreamTypeStreamOffset * 1000);
+
+  auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
+  m_decoder_timeout = advancedSettings->m_videoDecoderTimeout;
+  m_decoder_bypass_buffer_ready = advancedSettings->m_videoDecoderBypassBufferReady;
+  m_decoder_buffer = advancedSettings->m_videoDecoderBuffer;
+  m_decoder_stream_buffer = advancedSettings->m_videoDecoderStreamBuffer;
+  m_decoder_minimum_buffer = advancedSettings->m_videoDecoderMinimumBuffer;
+  m_decoder_minimum_stream_buffer = advancedSettings->m_videoDecoderMinimumStreamBuffer;
+  m_decoder_stream_type_stream_offset = static_cast<uint64_t>(advancedSettings->m_videoDecoderStreamTypeStreamOffset * 1000);
+  m_decoder_h264_offset = static_cast<uint64_t>(advancedSettings->m_videoDecoderH264Offset * 1000);
   m_buffer_level_ready = false;
 
   logM(LOGINFO, "CAMLCodec", "Decoder settings: timeout: [{:d}s], bypass buffer ready: [{:d}], buffer: [{:.1f}%], "
                              "stream buffer: [{:.1f}%], minimum buffer: [{:.1f}%], minimum stream buffer: [{:.1f}%] "
-                             "stream type stream offset: [{:d}usec]",
+                             "stream type stream offset: [{:d}usec] h264 offset: [{:d}usec]",
     m_decoder_timeout,
     m_decoder_bypass_buffer_ready,
     m_decoder_buffer,
     m_decoder_stream_buffer,
     m_decoder_minimum_buffer,
     m_decoder_minimum_stream_buffer,
-    m_decoder_stream_type_stream_offset);
+    m_decoder_stream_type_stream_offset,
+    m_decoder_h264_offset);
 
   if (!OpenAmlVideo(hints))
   {
