@@ -2091,7 +2091,7 @@ void CAMLCodec::Reset()
   am_private->am_pkt.codec = &am_private->vcodec;
   pre_header_feeding(am_private, am_private->am_pkt);
 
-  // reset some interal vars
+  // reset some internal vars
   m_cur_pts = DVD_NOPTS_VALUE;
   m_last_pts = DVD_NOPTS_VALUE;
   m_state = 0;
