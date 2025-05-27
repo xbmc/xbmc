@@ -35,9 +35,9 @@ using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 //  Constructor is protected use ParseURL()
 CDirectoryNode::CDirectoryNode(NodeType Type, const std::string& strName, CDirectoryNode* pParent)
+  : m_strName(strName)
 {
   m_Type=Type;
-  m_strName=strName;
   m_pParent=pParent;
 }
 
