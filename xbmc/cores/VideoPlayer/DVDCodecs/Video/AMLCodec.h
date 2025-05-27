@@ -285,7 +285,7 @@ public:
 
 private:
   void          ShowMainVideo(const bool show);
-  bool          OpenAmlVideo(const CDVDStreamInfo &hints);
+  bool          OpenAmlVideo();
   void          CloseAmlVideo();
   std::string   GetVfmMap(const std::string &name);
   void          SetVfmMap(const std::string &name, const std::string &map);

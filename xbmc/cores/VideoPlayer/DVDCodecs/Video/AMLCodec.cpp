@@ -1677,7 +1677,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
     m_decoder_stream_type_stream_offset,
     m_decoder_h264_offset);
 
-  if (!OpenAmlVideo(hints))
+  if (!OpenAmlVideo())
   {
     logM(LOGERROR, "CAMLCodec", "cannot open amlvideo device");
     return false;
@@ -1971,7 +1971,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   return true;
 }
 
-bool CAMLCodec::OpenAmlVideo(const CDVDStreamInfo &hints)
+bool CAMLCodec::OpenAmlVideo()
 {
   auto amlVideoFile = std::make_shared<PosixFile>();
   if (!amlVideoFile->Open("/dev/video10", O_RDONLY | O_NONBLOCK))
