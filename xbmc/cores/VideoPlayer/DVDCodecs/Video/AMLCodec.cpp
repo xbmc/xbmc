@@ -1749,13 +1749,13 @@ bool CAMLCodec::OpenDecoder(bool restart)
   // handle extradata
   am_private->video_format = codecid_to_vformat(m_hints.codec);
 
-  if ((am_private->video_format == VFORMAT_H264) &&
+  if (IsH264() &&
       ((m_hints.width > 1920) || (m_hints.height > 1088)) &&
       (aml_support_h264_4k2k() == AML_HAS_H264_4K2K))
   {
     am_private->video_format = VFORMAT_H264_4K2K;
   }
-  else if ((am_private->video_format == VFORMAT_H264) &&
+  else if (IsH264() &&
           ((am_private->video_codec_tag == CODEC_TAG_AMVC) ||
            (am_private->video_codec_tag == CODEC_TAG_MVC1)))
   {
@@ -2474,7 +2474,7 @@ void CAMLCodec::SetSpeed(int speed)
       m_tp_last_frame = std::chrono::system_clock::now();
       break;
     default:
-      if ((am_private->video_format == VFORMAT_H264) || (am_private->video_format == VFORMAT_H264_4K2K))
+      if (IsH264() || (am_private->video_format == VFORMAT_H264_4K2K))
         m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
       else
         m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_I);

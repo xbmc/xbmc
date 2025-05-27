@@ -272,6 +272,8 @@ public:
   bool          IsDecStreamTypeStream() const { return (am_private->gcodec.dec_mode == STREAM_TYPE_STREAM); }
   bool          IsDecStreamTypeSingle() const { return (am_private->gcodec.dec_mode == STREAM_TYPE_SINGLE); }
 
+  bool          IsH264() const { return (am_private->video_format == VFORMAT_H264); }
+
   std::string   GetDecStreamTypeName() const
   {
 		if      (am_private->gcodec.dec_mode == STREAM_TYPE_FRAME)  return "Frame";
