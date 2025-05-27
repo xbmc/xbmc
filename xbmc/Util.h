@@ -129,7 +129,8 @@ public:
 
   static std::string MakeLegalFileName(std::string strFile,
                                        LegalPath LegalType = LegalPath::DEFAULT);
-  static std::string MakeLegalPath(std::string strPath, LegalPath LegalType = LegalPath::DEFAULT);
+  static std::string MakeLegalPath(const std::string& strPath,
+                                   LegalPath LegalType = LegalPath::DEFAULT);
   static std::string ValidatePath(
       std::string path,
       bool bFixDoubleSlashes =

@@ -334,7 +334,8 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
   return ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), changes);
 }
 
-void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subStyle, renderOpts opts)
+void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subStyle,
+                                     const renderOpts& opts)
 {
   CLog::Log(LOGDEBUG, "{} - Start setting up the LibAss style", __FUNCTION__);
 
