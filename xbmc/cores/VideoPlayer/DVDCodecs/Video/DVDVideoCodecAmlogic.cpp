@@ -603,7 +603,7 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
 
 void CDVDVideoCodecAmlogic::Reset(void)
 {
-  if (m_Codec->IsDecStreamTypeStream())
+  if (m_Codec->IsDecStreamTypeStream() || m_Codec->IsH264())
   {
     if (m_dataCacheCore.GetSpeed() == 1.0f)
     {
