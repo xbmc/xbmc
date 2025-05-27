@@ -142,7 +142,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
       // any whitespace around the genre(s)
       else if (key == "GENRE")
       {
-        separators.push_back(",");
+        separators.emplace_back(",");
         albumtag.SetGenre(StringUtils::Split(tag->value, separators), true);
         separators.pop_back();
       }
@@ -231,7 +231,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
           item->GetMusicInfoTag()->SetMood(tag->value);
         else if (key == "GENRE")
         {
-          separators.push_back(",");
+          separators.emplace_back(",");
           item->GetMusicInfoTag()->SetGenre(StringUtils::Split(tag->value, separators), true);
           separators.pop_back();
         }

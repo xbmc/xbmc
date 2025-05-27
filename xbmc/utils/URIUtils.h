@@ -282,8 +282,10 @@ public:
                                 const std::string& password = "");
 
   static std::string AddFileToFolder(const std::string& strFolder, const std::string& strFile);
-  template <typename... T>
-  static std::string AddFileToFolder(const std::string& strFolder, const std::string& strFile, T... args)
+  template<typename... T>
+  static std::string AddFileToFolder(const std::string& strFolder,
+                                     const std::string& strFile,
+                                     const T&... args)
   {
     auto newPath = AddFileToFolder(strFolder, strFile);
     return AddFileToFolder(newPath, args...);

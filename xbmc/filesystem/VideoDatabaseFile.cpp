@@ -58,7 +58,7 @@ VideoDbContentType CVideoDatabaseFile::GetType(const CURL& url)
   if (pathElem.size() == 0)
     return VideoDbContentType::UNKNOWN;
 
-  std::string itemType = pathElem.at(2);
+  const std::string& itemType = pathElem.at(2);
   VideoDbContentType type;
   if (itemType == "movies" || itemType == "recentlyaddedmovies")
     type = VideoDbContentType::MOVIES;

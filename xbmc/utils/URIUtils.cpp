@@ -497,7 +497,7 @@ std::string URIUtils::GetDiscBasePath(const std::string& file)
 
 std::string URIUtils::GetDiscUnderlyingFile(const CURL& url)
 {
-  std::string host = url.GetHostName();
+  const std::string& host = url.GetHostName();
   const std::string& filename = url.GetFileName();
   if (host.empty() || filename.empty())
     return {};

@@ -29,7 +29,7 @@ public:
     LockMode mode;
     std::string code;
     bool addonManager;
-    SettingsLock settings;
+    SettingsLock settings = SettingsLock::NONE;
     bool music;
     bool video;
     bool files;

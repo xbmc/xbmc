@@ -847,7 +847,7 @@ void CActiveAESink::EnumerateOutputDevices(AEDeviceList &devices, bool passthrou
     AESinkInfo sinkInfo = *itt;
     for (AEDeviceInfoList::iterator itt2 = sinkInfo.m_deviceInfoList.begin(); itt2 != sinkInfo.m_deviceInfoList.end(); ++itt2)
     {
-      CAEDeviceInfo devInfo = *itt2;
+      const CAEDeviceInfo& devInfo = *itt2;
       if (passthrough && devInfo.m_deviceType == AE_DEVTYPE_PCM)
         continue;
 

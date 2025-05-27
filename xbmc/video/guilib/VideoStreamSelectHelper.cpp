@@ -69,7 +69,7 @@ std::string ConvertFpsToString(float value)
 
   std::string str{StringUtils::Format("{:.3f}", value)};
   // Keep numbers after the comma only if they are not 0
-  const size_t zeroPos = str.find_last_not_of("0");
+  const size_t zeroPos = str.find_last_not_of('0');
   if (zeroPos != std::string::npos)
     str.erase(zeroPos + 1);
 
