@@ -272,7 +272,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   const std::string uniqueId = m_movieItem->GetProperty("xxuniqueid").asString();
-  if (uniqueId.empty() || !StringUtils::StartsWithNoCase(uniqueId.c_str(), "xx"))
+  if (uniqueId.empty() || !StringUtils::StartsWithNoCase(uniqueId, "xx"))
     CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH,
         (profileManager->GetCurrentProfile().canWriteDatabases() ||
         g_passwordManager.bMasterUser));

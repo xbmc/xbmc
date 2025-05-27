@@ -478,7 +478,7 @@ std::string CCharsetDetection::GetHtmlEncodingFromHead(const std::string& htmlCo
           contentCharset = ExtractEncodingFromHtmlMeta(attrValue);
         else if (attrName == "CHARSET")
         {
-          StringUtils::Trim(attrValue, m_HtmlWhitespaceChars.c_str()); // tab, LF, FF, CR, space
+          StringUtils::Trim(attrValue, m_HtmlWhitespaceChars); // tab, LF, FF, CR, space
           if (!attrValue.empty())
             return attrValue;
         }
