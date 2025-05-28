@@ -133,6 +133,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     unsigned int m_threadVideoPlayerVideoCore; 
     unsigned int m_threadActiveAECore;
 
+    unsigned int m_threadApplicationMaxOtherTaskTime;
+
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
     bool m_VideoPlayerIgnoreDTSinWAV;

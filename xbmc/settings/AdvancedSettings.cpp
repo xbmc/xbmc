@@ -134,6 +134,8 @@ void CAdvancedSettings::Initialize()
   m_threadVideoPlayerVideoCore = 3; // Cortex A73 Core
   m_threadActiveAECore = 2;         // Cortex A73 Core
 
+  m_threadApplicationMaxOtherTaskTime = 6; // Max time for other tasks on main thread when video running (ms)
+
   m_audioApplyDrc = -1.0f;
   m_VideoPlayerIgnoreDTSinWAV = false;
 
@@ -596,6 +598,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetUInt(pElement, "applicationcore", m_threadApplicationCore, 0, 16);
     XMLUtils::GetUInt(pElement, "videoplayervideocore", m_threadVideoPlayerVideoCore, 0, 16);
     XMLUtils::GetUInt(pElement, "activeaecore", m_threadActiveAECore, 0, 16);  
+    XMLUtils::GetUInt(pElement, "applicationmaxothertasktime", m_threadApplicationMaxOtherTaskTime, 6, 12);
   }
 
   pElement = pRootElement->FirstChildElement("audio");
