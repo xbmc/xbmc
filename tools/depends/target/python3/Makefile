@@ -26,17 +26,11 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   EXTRA_CONFIGURE+= ac_cv_lib_intl_textdomain=yes
 endif
 
-ifeq ($(OS),android)
-  LIBS=-liconv
-endif
-
 ifeq ($(OS), linux)
   EXTRA_CONFIGURE=ac_cv_pthread=yes
   ifeq ($(TARGET_PLATFORM),webos)
     # Force intl check to succeed
     EXTRA_CONFIGURE+=ac_cv_lib_intl_textdomain=yes
-    # Export iconv as LIBS for link ordering (After -lintl from configure search)
-    LIBS=-liconv
   endif
 endif
 
@@ -91,8 +85,9 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
                       $(PY_MODULES) \
                       $(EXTRA_CONFIGURE)
 
-export LDFLAGS
-export LIBS
+# Use LIBS as some platforms (webos) require iconv to be late on the linker line
+# appending to LDFLAGS puts the iconv link argument too early, causing link failures
+export LIBS=$(LINK_ICONV)
 
 LIBDYLIB=$(PLATFORM)/libpython$(PYTHON_VERSION).a
 

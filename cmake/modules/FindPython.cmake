@@ -53,6 +53,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       find_library(EXPAT_LIBRARY expat REQUIRED)
       find_library(FFI_LIBRARY ffi REQUIRED)
       find_library(GMP_LIBRARY gmp REQUIRED)
+      find_package(Iconv REQUIRED)
       find_library(INTL_LIBRARY intl REQUIRED)
       find_library(LZMA_LIBRARY lzma REQUIRED)
 
@@ -64,7 +65,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         endif()
       endif()
 
-      set(Py_LINK_LIBRARIES ${EXPAT_LIBRARY} ${FFI_LIBRARY} ${GMP_LIBRARY} ${INTL_LIBRARY} ${LZMA_LIBRARY} ${PYTHON_DEP_LIBRARIES})
+      set(Py_LINK_LIBRARIES ${EXPAT_LIBRARY} ${FFI_LIBRARY} ${GMP_LIBRARY} LIBRARY::Iconv ${INTL_LIBRARY} ${LZMA_LIBRARY} ${PYTHON_DEP_LIBRARIES})
     endif()
 
     # We use this all over the place. Maybe it would be nice to keep it as a TARGET property

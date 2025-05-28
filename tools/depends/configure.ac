@@ -531,10 +531,13 @@ case $build in
     fi
 esac
 
+# Android NDK < 28 has issues with iconv when built with newer SDK
+# unsure why webos requires special handling
 if test "$platform_os" = "android" || test "$target_platform" = "webos"; then
   need_libiconv=1
+  ac_cv_search_iconv_open=-liconv
 else
-  AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
+  AC_SEARCH_LIBS([iconv_open],iconv,, AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1; ac_cv_search_iconv_open=-liconv)
 fi
 
 case $build in
@@ -542,8 +545,8 @@ case $build in
     LDFLAGS=$(echo "$LDFLAGS" | sed "s|$platform_includes||")
 esac
 
-if test "$link_iconv" = "none required"; then
-  link_iconv=
+if test "$ac_cv_search_iconv_open" != "none required"; then
+  link_iconv=$ac_cv_search_iconv_open
 fi
 
 if test "x$prefix" = "xNONE"; then
@@ -664,7 +667,7 @@ platform_cflags_release="$tmp_cflags $release_cflags $optimize_flags $target_cfl
 platform_cxxflags_release="$tmp_cxxflags $release_cflags $optimize_flags $target_cxxflags"
 platform_cflags_debug="$tmp_cflags $debug_cflags $target_cflags"
 platform_cxxflags_debug="$tmp_cxxflags $debug_cflags $target_cxxflags"
-platform_ldflags="${platform_ldflags} $target_ldflags $LIBS"
+platform_ldflags="${platform_ldflags} $target_ldflags"
 
 if test "$use_debug" = "yes"; then
   platform_cflags="$platform_cflags_debug"
