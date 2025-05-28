@@ -65,8 +65,7 @@ public:
                    const std::shared_ptr<ILanguageInvoker>& languageInvoker,
                    const ADDON::AddonPtr& addon = ADDON::AddonPtr(),
                    const std::vector<std::string>& arguments = std::vector<std::string>(),
-                   bool reuseable = false,
-                   int pluginHandle = -1);
+                   bool reuseable = false);
 
   /*!
   * \brief Executes the given script synchronously.
@@ -140,6 +139,7 @@ private:
     std::string script;
     bool done;
   } LanguageInvokerThread;
+
   typedef std::map<int, LanguageInvokerThread> LanguageInvokerThreadMap;
   typedef std::map<std::string, ILanguageInvocationHandler*> LanguageInvocationHandlerMap;
 
@@ -147,10 +147,7 @@ private:
 
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
-  CLanguageInvokerThreadPtr m_lastInvokerThread;
-  int m_lastPluginHandle = -1;
 
-  std::map<std::string, int> m_scriptPaths;
   int m_nextId = 0;
   mutable CCriticalSection m_critSection;
 };

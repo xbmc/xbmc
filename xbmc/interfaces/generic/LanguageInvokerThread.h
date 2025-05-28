@@ -28,6 +28,11 @@ public:
 
   const std::string& GetScript() const { return m_script; }
   std::shared_ptr<ILanguageInvoker> GetInvoker() const { return m_invoker; }
+  bool Reuseable() const
+  { 
+      return !m_bStop && m_reusable;
+  };
+
   bool Reuseable(const std::string& script) const
   {
     return !m_bStop && m_reusable && GetState() == InvokerStateScriptDone && m_script == script;
