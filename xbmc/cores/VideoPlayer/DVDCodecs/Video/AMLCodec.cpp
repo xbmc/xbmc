@@ -1661,11 +1661,14 @@ bool CAMLCodec::OpenDecoder(bool restart)
   m_decoder_minimum_stream_buffer = advancedSettings->m_videoDecoderMinimumStreamBuffer;
   m_decoder_stream_type_stream_offset = static_cast<uint64_t>(advancedSettings->m_videoDecoderStreamTypeStreamOffset * 1000);
   m_decoder_h264_offset = static_cast<uint64_t>(advancedSettings->m_videoDecoderH264Offset * 1000);
+  m_decoder_stream_type_stream_min_queue_count = advancedSettings->m_videoDecoderStreamTypeStreamMinOrderedBufferQueueCount;
+
   m_buffer_level_ready = false;
 
   logM(LOGINFO, "CAMLCodec", "Decoder settings: timeout: [{:d}s], bypass buffer ready: [{:d}], buffer: [{:.1f}%], "
                              "stream buffer: [{:.1f}%], minimum buffer: [{:.1f}%], minimum stream buffer: [{:.1f}%] "
-                             "stream type stream offset: [{:d}usec] h264 offset: [{:d}usec]",
+                             "stream type stream offset: [{:d}usec] h264 offset: [{:d}usec] "
+                             "stream type stream min queue count: [{:d}]",
     m_decoder_timeout,
     m_decoder_bypass_buffer_ready,
     m_decoder_buffer,
@@ -1673,7 +1676,8 @@ bool CAMLCodec::OpenDecoder(bool restart)
     m_decoder_minimum_buffer,
     m_decoder_minimum_stream_buffer,
     m_decoder_stream_type_stream_offset,
-    m_decoder_h264_offset);
+    m_decoder_h264_offset,
+    m_decoder_stream_type_stream_min_queue_count);
 
   if (!OpenAmlVideo())
   {
@@ -1966,7 +1970,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   SetSpeed(m_speed);
   SetPollDevice(am_private->vcodec.cntl_handle);
 
-  m_minOrderedBufferQueueCount = IsDecStreamTypeStream() ? m_decoder_stream_type_stream_min_ordered_buffer_queue_count : 1;
+  m_minOrderedBufferQueueCount = IsDecStreamTypeStream() ? m_decoder_stream_type_stream_min_queue_count : 1;
 
   StartDequeueToOrderedBufferQueue();
 
