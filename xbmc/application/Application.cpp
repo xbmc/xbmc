@@ -1929,8 +1929,8 @@ int CApplication::Run()
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
 
-  // pin the main thread (Process/FrameMove/Render) to A73 core 5
-  aml_pin_thread_to_core(5);
+  // pin the main thread (Process/FrameMove/Render) to core
+  aml_pin_thread_to_core(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_threadApplicationCore);
 
   // Run the app
   while (!m_bStop)
