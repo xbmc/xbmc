@@ -336,8 +336,8 @@ inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(std::shared_ptr<CDVDMsg>
 }
 
 void CVideoPlayerVideo::Process()
-{
-  aml_pin_thread_to_core(3);
+{  
+  aml_pin_thread_to_core(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_threadVideoPlayerVideoCore); 
 
   CLog::Log(LOGINFO, "running thread: video_thread");
 
