@@ -129,6 +129,11 @@ void CAdvancedSettings::Initialize()
   if (m_initialized)
     return;
 
+  // Defaults for S922X
+  m_threadApplicationCore = 5;      // Cortex A73 Core
+  m_threadVideoPlayerVideoCore = 3; // Cortex A73 Core
+  m_threadActiveAECore = 2;         // Cortex A73 Core
+
   m_audioApplyDrc = -1.0f;
   m_VideoPlayerIgnoreDTSinWAV = false;
 
@@ -585,7 +590,15 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   CLog::Log(LOGINFO, "Contents of {} are...\n{}", file,
             std::regex_replace(printer.CStr(), redactRe, "$1USERNAME:PASSWORD@"));
 
-  TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
+  TiXmlElement *pElement = pRootElement->FirstChildElement("thread");
+  if (pElement)
+  {
+    XMLUtils::GetUInt(pElement, "applicationcore", m_threadApplicationCore, 0, 16);
+    XMLUtils::GetUInt(pElement, "videoplayervideocore", m_threadVideoPlayerVideoCore, 0, 16);
+    XMLUtils::GetUInt(pElement, "activeaecore", m_threadActiveAECore, 0, 16);  
+  }
+
+  pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
