@@ -1847,20 +1847,23 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
 
     // Open the door for external calls e.g python exactly here.
-    // Window size can be between 2 and 6ms and depends on number of continuous requests
+    // Window size can be between 2 and max configured ms and depends on number of continuous requests
     if (m_WaitingExternalCalls)
     {
       CSingleExit ex(CServiceBroker::GetWinSystem()->GetGfxContext());
+
       m_frameMoveGuard.unlock();
 
-      // Calculate a window size between 2 and 6ms, 4 continuous requests let the window grow by 1ms
+      // Calculate a window size between 2 and max configured ms, 4 continuous requests let the window grow by 1ms
       // When not playing video we allow it to increase to 80ms
-      unsigned int max_sleep = 6;
+      unsigned int max_sleep = m_maxOtherTaskTime;
       if (!appPlayer->IsPlayingVideo() || appPlayer->IsPausedPlayback())
         max_sleep = 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
       KODI::TIME::Sleep(std::chrono::milliseconds(sleepTime));
+
       m_frameMoveGuard.lock();
+
       m_ProcessedExternalDecay = 5;
     }
     if (m_ProcessedExternalDecay && --m_ProcessedExternalDecay == 0)
@@ -1931,6 +1934,9 @@ int CApplication::Run()
 
   // pin the main thread (Process/FrameMove/Render) to core
   aml_pin_thread_to_core(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_threadApplicationCore);
+
+  // max time for other tasks on main thread
+  m_maxOtherTaskTime = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_threadApplicationMaxOtherTaskTime;
 
   // Run the app
   while (!m_bStop)
