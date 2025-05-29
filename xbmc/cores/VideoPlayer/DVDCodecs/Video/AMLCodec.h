@@ -342,7 +342,7 @@ private:
   static const unsigned int STATE_PREFILLED  = 1;
   static const unsigned int STATE_HASPTS     = 2;
 
-  unsigned int m_state;
+  unsigned int     m_state;
 
   PosixFilePtr     m_amlVideoFile;
   std::string      m_defaultVfmMap;
@@ -355,26 +355,26 @@ private:
   CProcessInfo    &m_processInfo;
   CDataCacheCore  &m_dataCacheCore;
 
-  int m_decoder_timeout;
-  bool m_decoder_bypass_buffer_ready;
-  float m_decoder_buffer;
-  float m_decoder_stream_buffer;
-  float m_decoder_minimum_buffer;
-  float m_decoder_minimum_stream_buffer;
-  int64_t m_decoder_stream_type_stream_offset;
-  int64_t m_decoder_h264_offset;
-  unsigned int m_decoder_stream_type_stream_min_queue_count;
+  int              m_decoder_timeout;
+  bool             m_decoder_bypass_buffer_ready;
+  float            m_decoder_buffer;
+  float            m_decoder_stream_buffer;
+  float            m_decoder_minimum_buffer;
+  float            m_decoder_minimum_stream_buffer;
+  int64_t          m_decoder_stream_type_stream_offset;
+  int64_t          m_decoder_h264_offset;
+  unsigned int     m_decoder_stream_type_stream_min_queue_count;
 
   std::chrono::time_point<std::chrono::system_clock> m_tp_last_frame;
 
-  bool            m_buffer_level_ready;
-  float           m_minimum_buffer_level;
+  bool             m_buffer_level_ready;
+  float            m_minimum_buffer_level;
 
-  std::mutex m_ioControlMutex;
-  std::mutex m_orderedBufferQueueMutex;
+  std::mutex       m_ioControlMutex;
+  std::mutex       m_orderedBufferQueueMutex;
 
-  uint m_minOrderedBufferQueueCount = 1;
+  uint             m_minOrderedBufferQueueCount = 1;
   std::priority_queue<OrderedBuffer, std::vector<OrderedBuffer>, std::greater<OrderedBuffer>> m_orderedBufferQueue;
   std::atomic<bool> m_orderedBufferQueueRunning{false};
-  std::thread m_dequeueToOrderedBufferQueueThread;
+  std::thread      m_dequeueToOrderedBufferQueueThread;
 };

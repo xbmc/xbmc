@@ -218,12 +218,6 @@ static vformat_t codecid_to_vformat(enum AVCodecID id)
     case AV_CODEC_ID_H264:
       format = VFORMAT_H264;
       break;
-    /*
-    case AV_CODEC_ID_H264MVC:
-      // H264 Multiview Video Coding (3d blurays)
-      format = VFORMAT_H264MVC;
-      break;
-    */
     case AV_CODEC_ID_MJPEG:
       format = VFORMAT_MJPEG;
       break;
@@ -320,11 +314,6 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
       // h264
       dec_type = VIDEO_DEC_FORMAT_H264;
       break;
-    /*
-    case AV_CODEC_ID_H264MVC:
-      dec_type = VIDEO_DEC_FORMAT_H264;
-      break;
-    */
     case AV_CODEC_ID_RV30:
     case CODEC_TAG_RV30:
       // realmedia 3
@@ -1183,6 +1172,7 @@ static int wmv3_write_header(am_private_t *para, am_packet_t& pkt)
 static int wvc1_write_header(am_private_t *para, am_packet_t& pkt)
 {
     logNoFormatM(LOGDEBUG, "AMLCodec");
+
     memcpy(pkt.hdr->data, para->extradata.GetData() + 1, para->extradata.GetSize() - 1);
     pkt.hdr->size = para->extrasize - 1;
     pkt.codec = &para->vcodec;
@@ -1193,6 +1183,7 @@ static int wvc1_write_header(am_private_t *para, am_packet_t& pkt)
 static int mpeg_add_header(am_private_t *para, am_packet_t& pkt)
 {
     logNoFormatM(LOGDEBUG, "AMLCodec");
+
 #define STUFF_BYTES_LENGTH     (256)
     int size;
     unsigned char packet_wrapper[] = {
@@ -1688,8 +1679,10 @@ bool CAMLCodec::OpenDecoder(bool restart)
   ShowMainVideo(false);
 
   am_packet_init(am_private->am_pkt);
+
   // default stream type
   am_private->stream_type      = AM_STREAM_ES;
+
   // handle hints.
   am_private->video_width      = m_hints.width;
   am_private->video_height     = m_hints.height;
@@ -1700,8 +1693,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   // handle video ratio
   AVRational video_ratio       = av_d2q(1, SHRT_MAX);
-  //if (!hints.forced_aspect)
-  //  video_ratio = av_d2q(hints.aspect, SHRT_MAX);
+
   am_private->video_ratio      = (video_ratio.num << 16) | video_ratio.den;
   am_private->video_ratio64    = ((int64_t)video_ratio.num << 32) | video_ratio.den;
 
