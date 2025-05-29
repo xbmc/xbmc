@@ -301,8 +301,8 @@ private:
   void          ShowMainVideo(const bool show);
   bool          OpenAmlVideo();
   void          CloseAmlVideo();
-  std::string   GetVfmMap(const std::string &name);
-  void          SetVfmMap(const std::string &name, const std::string &map);
+  std::string   GetVfmMap(const std::string &name) const;
+  void          SetVfmMap(const std::string &name, const std::string &map) const;
   float         GetBufferLevel();
   float         GetBufferLevel(int new_chunk, int &data_len, int &free_len) const;
 
@@ -316,8 +316,8 @@ private:
   unsigned int  GetDecoderVideoRate() const;
   std::string   GetHDRStaticMetadata() const;
 
-  std::string   IntToFourCCString(unsigned int value);
-  std::string   GetDoViCodecFourCC(unsigned int codec_tag);
+  std::string   IntToFourCCString(unsigned int value) const;
+  std::string   GetDoViCodecFourCC(unsigned int codec_tag) const;
   void          SetProcessInfoVideoDetails();
 
 

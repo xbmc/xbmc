@@ -1574,7 +1574,7 @@ int CAMLCodec::GetAmlDuration() const
   return am_private ? (am_private->video_rate * PTS_FREQ) / UNIT_FREQ : 0;
 };
 
-std::string CAMLCodec::IntToFourCCString(unsigned int value)
+std::string CAMLCodec::IntToFourCCString(unsigned int value) const
 {
   char bytes[4];
   bytes[0] = value & 0xFF;
@@ -1591,7 +1591,7 @@ std::string CAMLCodec::IntToFourCCString(unsigned int value)
   return fourCCString;
 }
 
-std::string CAMLCodec::GetDoViCodecFourCC(unsigned int codec_tag)
+std::string CAMLCodec::GetDoViCodecFourCC(unsigned int codec_tag) const
 {
   if (codec_tag == 0) return "----";
 
@@ -1985,12 +1985,7 @@ bool CAMLCodec::OpenAmlVideo()
   return true;
 }
 
-std::string CAMLCodec::GetVfmMap(const std::string &name)
-{
-  std::string vfmMap;
-  CSysfsPath map{"/sys/class/vfm/map"};
-  if (map.Exists())
-    vfmMap = map.Get<std::string>().value();
+std::string CAMLCodec::GetVfmMap(const std::string &name) const
   std::vector<std::string> sections = StringUtils::Split(vfmMap, '\n');
   std::string sectionMap;
   for (size_t i = 0; i < sections.size(); ++i)
@@ -2009,7 +2004,7 @@ std::string CAMLCodec::GetVfmMap(const std::string &name)
   return sectionMap;
 }
 
-void CAMLCodec::SetVfmMap(const std::string &name, const std::string &map)
+void CAMLCodec::SetVfmMap(const std::string &name, const std::string &map) const
 {
   CSysfsPath vfm_map{"/sys/class/vfm/map"};
   if (vfm_map.Exists())
