@@ -1948,10 +1948,8 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
 
-  std::string strScaler;
-  CSysfsPath ppscaler{"/sys/class/ppmgr/ppscaler"};
-  if (ppscaler.Exists())
-    strScaler = ppscaler.Get<std::string>().value();
+  auto strScaler = CSysfsPath("/sys/class/ppmgr/ppscaler").GetOrDefault<std::string>();
+
   if (strScaler.find("enabled") == std::string::npos)     // Scaler not enabled, use screen size
     m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight);
 
@@ -1986,6 +1984,9 @@ bool CAMLCodec::OpenAmlVideo()
 }
 
 std::string CAMLCodec::GetVfmMap(const std::string &name) const
+{
+  auto vfmMap = CSysfsPath("/sys/class/vfm/map").GetOrDefault<std::string>();
+
   std::vector<std::string> sections = StringUtils::Split(vfmMap, '\n');
   std::string sectionMap;
   for (size_t i = 0; i < sections.size(); ++i)
