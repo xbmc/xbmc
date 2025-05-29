@@ -989,7 +989,7 @@ int vp9_update_frame_header(am_packet_t& pkt)
   unsigned char *buf = pkt.data;
   unsigned char marker;
   int frame_number;
-  int cur_frame, cur_mag, mag, index_sz, offset[9], size[8], tframesize[9];
+  int mag, index_sz, offset[9], size[8], tframesize[9];
   int mag_ptr;
   int ret;
   unsigned char *old_header = nullptr;
@@ -1019,11 +1019,11 @@ int vp9_update_frame_header(am_packet_t& pkt)
 
     mag_ptr++;
 
-    for (cur_frame = 0; cur_frame < frame_number; cur_frame++)
+    for (int cur_frame = 0; cur_frame < frame_number; cur_frame++)
     {
       size[cur_frame] = 0; // or size[0] = bytes_in_buffer - 1; both OK
 
-      for (cur_mag = 0; cur_mag < mag; cur_mag++)
+      for (int cur_mag = 0; cur_mag < mag; cur_mag++)
       {
         size[cur_frame] = size[cur_frame]|(buf[mag_ptr] << (cur_mag*8));
         mag_ptr++;
@@ -1073,7 +1073,7 @@ int vp9_update_frame_header(am_packet_t& pkt)
     pkt.data_size = pkt.avpkt.size;
   }
 
-  for (cur_frame = frame_number - 1; cur_frame >= 0; cur_frame--)
+  for (int cur_frame = frame_number - 1; cur_frame >= 0; cur_frame--)
   {
     AVPacket *avpkt = &(pkt.avpkt);
     int framesize = size[cur_frame];
@@ -1124,7 +1124,8 @@ int vp9_update_frame_header(am_packet_t& pkt)
 static int wmv3_write_header(am_private_t *para, am_packet_t& pkt)
 {
     logNoFormatM(LOGDEBUG, "AMLCodec");
-    unsigned i, check_sum = 0;
+
+    unsigned check_sum = 0;
     unsigned data_len = para->extrasize + 4;
 
     pkt.hdr->data[0] = 0;
@@ -1146,7 +1147,7 @@ static int wmv3_write_header(am_private_t *para, am_packet_t& pkt)
     pkt.hdr->data[14] = 0xff;
     pkt.hdr->data[15] = 0x88;
 
-    for (i = 4 ; i < 16 ; i++) {
+    for (unsigned i = 4 ; i < 16 ; i++) {
         check_sum += pkt.hdr->data[i];
     }
 
@@ -1906,8 +1907,8 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   logM(LOGINFO, "CAMLCodec", "dec mode stream type [{}]", GetDecStreamTypeName());
 
-  std::string config_data = GetHDRStaticMetadata();
-  if (!config_data.empty())
+  if (std::string config_data = GetHDRStaticMetadata();
+      !config_data.empty())
   {
     am_private->vcodec.config_len = static_cast<int>(config_data.size());
     am_private->vcodec.config = (char*)malloc(config_data.size() + 1);
@@ -1918,8 +1919,8 @@ bool CAMLCodec::OpenDecoder(bool restart)
   if (IsDecStreamTypeSingle())
     SetVfmMap("default", "decoder ppmgr deinterlace amlvideo amvideo");
 
-  int ret = m_dll->codec_init(&am_private->vcodec);
-  if (ret != CODEC_ERROR_NONE)
+  if (int ret = m_dll->codec_init(&am_private->vcodec);
+      ret != CODEC_ERROR_NONE)
   {
     logM(LOGDEBUG, "CAMLCodec", "codec init failed, ret=0x{:x}", -ret);
     return false;
@@ -2149,8 +2150,9 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
     pkt.avpkt.size = pkt.data_size;
 
     av_buffer_unref(&pkt.avpkt.buf);
-    int ret = av_grow_packet(&(pkt.avpkt), am_private->hdr_buf.size);
-    if (ret < 0)
+
+    if (int ret = av_grow_packet(&(pkt.avpkt), am_private->hdr_buf.size);
+        ret < 0)
     {
       logM(LOGDEBUG, "CAMLCodec", "ERROR!!! grow_packet for apk failed.!!!");
       return ret;
@@ -2571,30 +2573,32 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
   bool update = false;
 
   // video rate adjustment.
-  unsigned int video_rate = GetDecoderVideoRate();
-  if ((video_rate > 0) && (video_rate != am_private->video_rate))
+  if (unsigned int video_rate = GetDecoderVideoRate();
+      (video_rate > 0) && (video_rate != am_private->video_rate))
   {
     logM(LOGDEBUG, "CAMLCodec", "decoder fps has changed, video_rate adjusted from {:d} to {:d}", am_private->video_rate, video_rate);
     am_private->video_rate = video_rate;
   }
 
   // video view mode
-  int view_mode = m_processInfo.GetVideoSettings().m_ViewMode;
-  if (m_view_mode != view_mode)
+  if (int view_mode = m_processInfo.GetVideoSettings().m_ViewMode;
+      m_view_mode != view_mode)
   {
     m_view_mode = view_mode;
     update = true;
   }
 
-  // GUI stereo mode/view.
-  RENDER_STEREO_MODE guiStereoMode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
-  if (m_guiStereoMode != guiStereoMode)
+  // GUI stereo mode
+  if (RENDER_STEREO_MODE guiStereoMode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
+      m_guiStereoMode != guiStereoMode)
   {
     m_guiStereoMode = guiStereoMode;
     update = true;
   }
-  RENDER_STEREO_VIEW guiStereoView = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView();
-  if (m_guiStereoView != guiStereoView)
+
+  // GUI stereo view
+  if (RENDER_STEREO_VIEW guiStereoView = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView();
+      m_guiStereoView != guiStereoView)
   {
     // left/right/top/bottom eye,
     // this might change every other frame.
