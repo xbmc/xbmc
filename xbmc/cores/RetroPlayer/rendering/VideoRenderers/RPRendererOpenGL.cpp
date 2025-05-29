@@ -262,9 +262,10 @@ void CRPRendererOpenGL::DrawBlackBars()
 
   glDrawArrays(GL_TRIANGLES, 0, count);
 
-  // Unbind VAO/VBO just to be safe
+  // Unbind VAO/VBO/EBO just to be safe
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();
 }
@@ -390,9 +391,10 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-  // Unbind VAO/VBO just to be safe
+  // Unbind VAO/VBO/EBO just to be safe
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();
 }
