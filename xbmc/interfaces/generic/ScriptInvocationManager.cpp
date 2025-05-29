@@ -202,36 +202,64 @@ int CScriptInvocationManager::ExecuteAsync(
     return -1;
   }
 
-  int countAlreadyReusableForThisScript = 0;
-
+  // We're going to try to find a thread to reuse.
+  // If we can't find a suitable one, we'll kill another ready reusable thread off so we can replace it for this script.
   if (reuseable)
   {
     std::unique_lock lock(m_critSection);
 
+    int reusableThreadId = -1;
+    int countResumableThreads = 0;
     for (auto& it : m_scripts)
     {
-      if (it.second.script == script && it.second.thread->Reuseable())
+      if (!it.second.thread->Reuseable())
       {
-        countAlreadyReusableForThisScript++;
-        if (it.second.thread->GetState() == InvokerStateScriptDone)
-        {
-          CLanguageInvokerThreadPtr reusedThread = it.second.thread;
-          it.second.done = false;
-          if (addon != NULL)
-            reusedThread->SetAddon(addon);
+        continue;
+      }
 
-          reusedThread->GetInvoker()->Reset();
-          lock.unlock();
-          reusedThread->Execute(script, arguments);
+      countResumableThreads++;
 
-          return reusedThread->GetId();
-        }
+      if (it.second.thread->GetState() != InvokerStateScriptDone)
+      {
+        continue;
+      }
+
+      if (it.second.script == script)
+      {
+        CLanguageInvokerThreadPtr reusedThread = it.second.thread;
+        it.second.done = false;
+        if (addon != NULL) reusedThread->SetAddon(addon);
+
+        reusedThread->GetInvoker()->Reset();
+        lock.unlock();
+        reusedThread->Execute(script, arguments);
+
+        return reusedThread->GetId();
+      }
+      else if (reusableThreadId == -1)
+      {
+        reusableThreadId = it.first;
+      }
+    }
+
+    // If we've run out of resumable threads.
+    if (countResumableThreads >= m_maxReusableThreads)
+    {
+      // And there are no threads we can close down.
+      if (reusableThreadId == -1)
+      {
+        // We can't create a reusable thread.
+        reuseable = false;
+      }
+      else
+      {
+        // Otherwise close down an existing reusable thread and make a new one.
+        m_scripts[reusableThreadId].thread->Stop();
       }
     }
   }
 
-  return ExecuteAsync(script, GetLanguageInvoker(script), addon, arguments,
-                      reuseable && countAlreadyReusableForThisScript <= 2);
+  return ExecuteAsync(script, GetLanguageInvoker(script), addon, arguments, reuseable);
 }
 
 int CScriptInvocationManager::ExecuteAsync(
