@@ -216,7 +216,7 @@ int CScriptInvocationManager::ExecuteAsync(
         if (it.second.thread->GetState() == InvokerStateScriptDone)
         {
           CLanguageInvokerThreadPtr reusedThread = it.second.thread;
-
+          it.second.done = false;
           if (addon != NULL)
             reusedThread->SetAddon(addon);
 

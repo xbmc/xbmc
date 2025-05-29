@@ -16,6 +16,7 @@
 #include "addons/RepositoryUpdater.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
+#include "filesystem/PluginDirectory.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/IAnnouncer.h"
@@ -631,6 +632,12 @@ bool CDirectoryProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
     targetItem = CServiceBroker::GetFavouritesService().ResolveFavourite(*targetItem);
     if (!targetItem)
       return false;
+  }
+
+  if (targetItem->HasProperty("runAsPlugin"))
+  {
+    XFILE::CPluginDirectory::RunScriptWithParams(targetItem->GetPath(), false);
+    return true;
   }
 
   const CExecString exec{*targetItem, GetTarget(*targetItem)};
