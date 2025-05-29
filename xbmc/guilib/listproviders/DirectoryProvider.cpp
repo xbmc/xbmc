@@ -634,12 +634,6 @@ bool CDirectoryProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
       return false;
   }
 
-  if (targetItem->HasProperty("runAsPlugin"))
-  {
-    XFILE::CPluginDirectory::RunScriptWithParams(targetItem->GetPath(), false);
-    return true;
-  }
-
   const CExecString exec{*targetItem, GetTarget(*targetItem)};
   const bool isPlayMedia{exec.GetFunction() == "playmedia"};
 

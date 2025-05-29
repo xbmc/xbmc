@@ -15,6 +15,7 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/Directory.h"
+#include "filesystem/PluginDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -61,6 +62,12 @@ bool CVideoPlayActionProcessor::Process(Action action)
       m_userCancelled = true;
       return true; // User cancelled the select menu. We're done.
     }
+  }
+
+  if (action != ACTION_PLAY_OR_RESUME && m_item->IsPlugin() && m_item->HasProperty("runAsPlugin"))
+  {
+    XFILE::CPluginDirectory::RunScriptWithParams(m_item->GetPath(), action == ACTION_RESUME);
+    return true;
   }
 
   switch (action)
