@@ -1989,11 +1989,11 @@ std::string CAMLCodec::GetVfmMap(const std::string &name) const
 
   std::vector<std::string> sections = StringUtils::Split(vfmMap, '\n');
   std::string sectionMap;
-  for (size_t i = 0; i < sections.size(); ++i)
+  for (const auto& section : sections)
   {
-    if (StringUtils::StartsWith(sections[i], name + " {"))
+    if (StringUtils::StartsWith(section, name + " {"))
     {
-      sectionMap = sections[i];
+      sectionMap = section;
       break;
     }
   }
