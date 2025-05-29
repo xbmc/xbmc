@@ -1528,7 +1528,7 @@ static inline int calc_chunk_size(int size)
 //drivers/frame_provider/decoder/utils/vdec_input.c
 #define MIN_FRAME_PADDING_SIZE ((int)(L1_CACHE_BYTES))
 
-  int need_padding_size = MIN_FRAME_PADDING_SIZE;
+  auto need_padding_size = MIN_FRAME_PADDING_SIZE;
   if (size < PAGE_SIZE) {
     need_padding_size += PAGE_SIZE - ((size + need_padding_size) & (PAGE_SIZE - 1));
   } else {
@@ -2620,7 +2620,7 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
     case 3:
       {
         float scale = dst_rect.Height() / dst_rect.Width();
-        int diff = (int) ((dst_rect.Height()*scale - dst_rect.Width()) / 2);
+        auto diff = (int) ((dst_rect.Height()*scale - dst_rect.Width()) / 2);
         dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
       }
   }
