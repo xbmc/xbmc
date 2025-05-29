@@ -11,7 +11,7 @@ VERSION_MINOR 0
 VERSION_TAG ALPHA1
 VERSION_CODE 21.90.700
 ADDON_API 21.90.700
-ADDON_REPOS repository.xbmc.org|https://mirrors.kodi.tv
+ADDON_REPOS repository.xbmc.org|https://mirrors.kodi.tv,repository.jellykoda|https://felizk.dk
 APP_PACKAGE org.felizk.kodi
 PACKAGE_IDENTITY XBMCFoundation.Kodi
 PACKAGE_PUBLISHER C62BD90A-CDD8-477F-96C3-B25992247B97

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.jellykoda" name="Koda Jellyfin Addons" version="1.0.0" provider-name="felizk">
+  <requires>
+    <import addon="xbmc.addon" version="12.0.0"/>
+  </requires>
+  <extension point="xbmc.addon.repository" name="Koda Jellyfin Repository">
+    <dir>
+      <info compressed="false">https://felizk.dk/kodi/addons.xml</info>
+      <checksum>https://felizk.dk/kodi/addons.md5</checksum>
+      <datadir zip="true">https://felizk.dk/kodi</datadir>
+      <hashes>false</hashes>
+    </dir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Koda Jellyfin Addon Repository</summary>
+    <description>This repo has some plugins I wrote for Jellyfin</description>
+    <disclaimer></disclaimer>
+    <platform>all</platform>
+    <assets>
+      <icon>resources/icon.png</icon>
+      <fanart>resources/fanart.png</fanart>
+    </assets>
+  </extension>
+</addon>
