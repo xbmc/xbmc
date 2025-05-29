@@ -23,6 +23,7 @@ addons/metadata.generic.artists/*
 addons/metadata.local/*
 addons/metadata.themoviedb.org.python/*
 addons/metadata.tvshows.themoviedb.org.python/*
+addons/repository.jellykoda/*
 addons/repository.xbmc.org/*
 addons/resource.images.weathericons.default/*
 addons/resource.language.en_gb/*
