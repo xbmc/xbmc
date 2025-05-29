@@ -380,13 +380,17 @@ bool CScriptInvocationManager::Stop(const std::string &scriptPath, bool wait /* 
   if (scriptPath.empty())
     return false;
 
+  bool stopped = false;
   for (auto& it : m_scripts)
   {
     if (!it.second.done && it.second.script == scriptPath)
     {
       Stop(it.first, wait);
+      stopped = true;
     }
   }
+
+  return stopped;
 }
 
 bool CScriptInvocationManager::IsRunning(int scriptId) const
