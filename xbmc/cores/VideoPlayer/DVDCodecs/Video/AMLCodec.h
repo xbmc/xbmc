@@ -288,10 +288,10 @@ public:
 
   std::string   GetDecStreamTypeName() const
   {
-		if      (am_private->gcodec.dec_mode == STREAM_TYPE_FRAME)  return "Frame";
-		else if (am_private->gcodec.dec_mode == STREAM_TYPE_STREAM) return "Stream";
-		else if (am_private->gcodec.dec_mode == STREAM_TYPE_SINGLE) return "Single";
-	  else                                                        return "Unknown";
+		if      (IsDecStreamTypeFrame())  return "Frame";
+		else if (IsDecStreamTypeStream()) return "Stream";
+		else if (IsDecStreamTypeSingle()) return "Single";
+	  else                              return "Unknown";
   }
 
   static int    PollFrame();
@@ -339,17 +339,14 @@ private:
   RENDER_STEREO_VIEW m_guiStereoView = RENDER_STEREO_VIEW_OFF;
   RESOLUTION       m_video_res = RES_INVALID;
 
-  static const unsigned int STATE_PREFILLED  = 1;
-  static const unsigned int STATE_HASPTS     = 2;
+  static const unsigned int STATE_HASPTS = 2;
 
   unsigned int     m_state;
 
   PosixFilePtr     m_amlVideoFile;
   std::string      m_defaultVfmMap;
 
-  static std::atomic_flag  m_pollSync;
-  static int m_pollDevice;
-  static double m_ttd;
+  static int       m_pollDevice;
 
   CDVDStreamInfo  &m_hints;         // Reference as values can change.
   CProcessInfo    &m_processInfo;
