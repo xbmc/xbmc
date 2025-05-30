@@ -11,6 +11,10 @@
 #include "cores/RetroPlayer/buffers/RenderBufferOpenGL.h"
 #include "cores/RetroPlayer/buffers/RenderBufferPoolOpenGL.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
+#include "cores/RetroPlayer/shaders/gl/ShaderPresetGL.h"
+#include "cores/RetroPlayer/shaders/gl/ShaderTextureGL.h"
+#include "guilib/TextureFormats.h"
+#include "guilib/TextureGL.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
@@ -46,6 +50,9 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings& renderSettings,
                                      std::shared_ptr<IRenderBufferPool> bufferPool)
   : CRPBaseRenderer(renderSettings, context, std::move(bufferPool))
 {
+  // Initialize CRPBaseRenderer
+  m_shaderPreset = std::make_unique<SHADER::CShaderPresetGL>(m_context);
+
   // Initialize CRPRendererOpenGL
   m_clearColour = m_context.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
@@ -255,9 +262,10 @@ void CRPRendererOpenGL::DrawBlackBars()
 
   glDrawArrays(GL_TRIANGLES, 0, count);
 
-  // Unbind VAO/VBO just to be safe
+  // Unbind VAO/VBO/EBO just to be safe
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();
 }
@@ -269,6 +277,58 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   if (renderBuffer == nullptr)
     return;
 
+  RenderBufferTextures* rbTextures;
+  const auto it = m_RBTexturesMap.find(renderBuffer);
+  if (it != m_RBTexturesMap.end())
+  {
+    rbTextures = it->second.get();
+  }
+  else
+  {
+    // We can't copy or move CGLTexture, so construct source/target in-place
+    rbTextures = new RenderBufferTextures{
+        // Source texture
+        std::make_shared<CGLTexture>(static_cast<unsigned int>(renderBuffer->GetWidth()),
+                                     static_cast<unsigned int>(renderBuffer->GetHeight()),
+                                     XB_FMT_RGB8, renderBuffer->TextureID()),
+        // Target texture
+        std::make_shared<CGLTexture>(static_cast<unsigned int>(m_context.GetScreenWidth()),
+                                     static_cast<unsigned int>(m_context.GetScreenHeight())),
+    };
+    m_RBTexturesMap.emplace(renderBuffer, rbTextures);
+  }
+
+  std::shared_ptr<CGLTexture> sourceTexture = rbTextures->source;
+  std::shared_ptr<CGLTexture> targetTexture = rbTextures->target;
+
+  Updateshaders();
+
+  if (m_bUseShaderPreset)
+  {
+    GLint filter = GL_NEAREST;
+    if (m_shaderPreset->GetPasses()[0].filterType == SHADER::FilterType::LINEAR)
+      filter = GL_LINEAR;
+
+    glBindTexture(m_textureTarget, sourceTexture->GetTextureID());
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    const CPoint destPoints[4] = {m_rotatedDestCoords[0], m_rotatedDestCoords[1],
+                                  m_rotatedDestCoords[2], m_rotatedDestCoords[3]};
+
+    SHADER::CShaderTextureGL source(sourceTexture, false);
+    SHADER::CShaderTextureGL target(targetTexture, false);
+    if (!m_shaderPreset->RenderUpdate(destPoints, source, target))
+    {
+      m_bShadersNeedUpdate = false;
+      m_bUseShaderPreset = false;
+    }
+
+    return;
+  }
+
   CRect rect = m_sourceRect;
 
   rect.x1 /= renderBuffer->GetWidth();
@@ -278,11 +338,11 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
 
   const uint32_t color = (alpha << 24) | 0xFFFFFF;
 
-  glBindTexture(m_textureTarget, renderBuffer->TextureID());
-
   GLint filter = GL_NEAREST;
   if (GetRenderSettings().VideoSettings().GetScalingMethod() == SCALINGMETHOD::LINEAR)
     filter = GL_LINEAR;
+
+  glBindTexture(m_textureTarget, sourceTexture->GetTextureID());
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -331,9 +391,10 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-  // Unbind VAO/VBO just to be safe
+  // Unbind VAO/VBO/EBO just to be safe
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();
 }

@@ -1,3 +1,5 @@
+xbmc/cores/RetroPlayer/shaders/gl   cores/RetroPlayer/shaders/gl
+xbmc/cores/RetroPlayer/shaders/gles cores/RetroPlayer/shaders/gles
 xbmc/input/touch                    input/touch
 xbmc/input/touch/generic            input/touch/generic
 xbmc/platform/common/speech         platform/common/speech

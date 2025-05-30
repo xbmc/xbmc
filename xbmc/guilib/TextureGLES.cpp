@@ -177,8 +177,8 @@ std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
   return std::make_unique<CGLESTexture>(width, height, format);
 }
 
-CGLESTexture::CGLESTexture(unsigned int width, unsigned int height, XB_FMT format)
-  : CTexture(width, height, format)
+CGLESTexture::CGLESTexture(unsigned int width, unsigned int height, XB_FMT format, GLuint texture)
+  : CTexture(width, height, format), m_texture(texture)
 {
   unsigned int major, minor;
   CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
@@ -479,4 +479,9 @@ TextureFormat CGLESTexture::GetFormatGLES30(KD_TEX_FMT textureFormat)
   }
 
   return glFormat;
+}
+
+GLuint CGLESTexture::GetTextureID() const
+{
+  return m_texture;
 }
