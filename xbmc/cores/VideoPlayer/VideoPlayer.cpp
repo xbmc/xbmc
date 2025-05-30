@@ -558,12 +558,14 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       {
         s.codecDesc = aStream->GetStreamType();
         s.channels = aStream->iChannels;
+        s.m_channelMask = aStream->iChannelLayout;
         s.bitrate = aStream->iBitRate;
       }
       else
       {
         s.codecDesc = info.codecDesc;
         s.channels = info.channels;
+        s.m_channelMask = info.m_channelMask;
       }
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       s.flags = info.flags;
@@ -651,9 +653,11 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       }
       if(stream->type == STREAM_AUDIO)
       {
-        s.codecDesc = static_cast<CDemuxStreamAudio*>(stream)->GetStreamType();
-        s.channels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
-        s.bitrate = static_cast<CDemuxStreamAudio*>(stream)->iBitRate;
+        CDemuxStreamAudio* aStream = static_cast<CDemuxStreamAudio*>(stream);
+        s.codecDesc = aStream->GetStreamType();
+        s.channels = aStream->iChannels;
+        s.m_channelMask = aStream->iChannelLayout;
+        s.bitrate = aStream->iBitRate;
       }
       Update(s);
     }
@@ -5471,6 +5475,7 @@ void CVideoPlayer::GetAudioStreamInfo(int index, AudioStreamInfo& info) const
   info.valid = true;
   info.bitrate = s.bitrate;
   info.channels = s.channels;
+  info.m_channelMask = s.m_channelMask;
   info.codecName = s.codec;
   info.codecDesc = s.codecDesc;
   info.flags = s.flags;
