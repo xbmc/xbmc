@@ -113,9 +113,8 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
 
 bool CLanguageResource::IsAllowed(const std::string &file) const
 {
-  return file.empty() ||
-         StringUtils::EqualsNoCase(file.c_str(), "langinfo.xml") ||
-         StringUtils::EqualsNoCase(file.c_str(), "strings.po");
+  return file.empty() || StringUtils::EqualsNoCase(file, "langinfo.xml") ||
+         StringUtils::EqualsNoCase(file, "strings.po");
 }
 
 std::string CLanguageResource::GetAddonId(const std::string& locale)

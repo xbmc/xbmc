@@ -916,9 +916,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   if (!ConfigureMediaCodec())
     goto FAIL;
 
-  if (m_codecname.find("OMX.Nvidia", 0, 10) == 0)
+  if (m_codecname.starts_with("OMX.Nvidia"))
     m_invalidPTSValue = AV_NOPTS_VALUE;
-  else if (m_codecname.find("OMX.MTK", 0, 7) == 0)
+  else if (m_codecname.starts_with("OMX.MTK"))
     m_invalidPTSValue = -1; //Use DTS
   else
     m_invalidPTSValue = 0;

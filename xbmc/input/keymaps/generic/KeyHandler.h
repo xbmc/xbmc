@@ -74,7 +74,7 @@ private:
    *
    * \return The action to dispatch, or action with ID ACTION_NONE if no action should be dispatched
    */
-  CAction ProcessRelease(std::vector<const KeymapAction*> actions, int windowId);
+  CAction ProcessRelease(const std::vector<const KeymapAction*>& actions, int windowId);
 
   /*!
    * \brief Process an action to see if it should be dispatched

@@ -988,7 +988,7 @@ const std::string CVideoInfoTag::GetCast(const std::string& separator,
                                       it->strRole, sep);
     strLabel += character;
   }
-  return StringUtils::TrimRight(strLabel, sep.c_str());
+  return StringUtils::TrimRight(strLabel, sep);
 }
 
 void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)

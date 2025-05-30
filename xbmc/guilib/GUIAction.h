@@ -43,7 +43,7 @@ public:
     * Get the condition of this executable action (may be empty)
     * @return condition - The condition that dictates the action execution (or an empty string)
     */
-    std::string GetCondition() const;
+    const std::string& GetCondition() const { return m_condition; }
 
     /**
     * Checks if the executable action has any condition
@@ -55,7 +55,7 @@ public:
     * Get the action string of this executable action
     * @return action - The action string
     */
-    std::string GetAction() const;
+    const std::string& GetAction() const { return m_action; }
 
     /**
     * Sets/Replaces the action string of this executable action

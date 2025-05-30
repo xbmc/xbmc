@@ -26,10 +26,9 @@ std::optional<IMAGE_FILES::CImageCacheCleaner> CImageCacheCleaner::Create()
   return {};
 }
 
-CImageCacheCleaner::CImageCacheCleaner()
+CImageCacheCleaner::CImageCacheCleaner() : m_textureDB(std::make_unique<CTextureDatabase>())
 {
   bool valid = true;
-  m_textureDB = std::make_unique<CTextureDatabase>();
   if (!m_textureDB->Open())
   {
     valid = false;

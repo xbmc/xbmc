@@ -1041,7 +1041,7 @@ std::string CUtil::MakeLegalFileName(std::string strFile, LegalPath LegalType)
 }
 
 // legalize entire path
-std::string CUtil::MakeLegalPath(std::string strPathAndFile, LegalPath LegalType)
+std::string CUtil::MakeLegalPath(const std::string& strPathAndFile, LegalPath LegalType)
 {
   if (URIUtils::IsStack(strPathAndFile))
     return MakeLegalPath(CStackDirectory::GetFirstStackedFile(strPathAndFile));

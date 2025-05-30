@@ -1837,7 +1837,10 @@ extern "C"
         char *value = (char*)malloc(size);
 
         if (!value)
+        {
+          std::free(var);
           return -1;
+        }
         value[0] = 0;
 
         memcpy(var, envstring, value_start - envstring);
