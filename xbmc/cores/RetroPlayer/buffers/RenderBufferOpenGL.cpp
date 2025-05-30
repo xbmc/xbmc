@@ -52,8 +52,12 @@ bool CRenderBufferOpenGL::UploadTexture()
 
   const int stride = GetFrameSize() / m_height;
 
+  GLint oldAlignment = 0;
+  glGetIntegerv(GL_UNPACK_ALIGNMENT, &oldAlignment);
   glPixelStorei(GL_UNPACK_ALIGNMENT, m_bpp);
 
+  GLint oldRowLength = 0;
+  glGetIntegerv(GL_UNPACK_ROW_LENGTH, &oldRowLength);
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / m_bpp);
 
   //! @todo This is subject to change:
@@ -62,7 +66,9 @@ bool CRenderBufferOpenGL::UploadTexture()
   //! to remove GL dependencies on GLES.
   glTexSubImage2D(m_textureTarget, 0, 0, 0, m_width, m_height, m_pixelformat, m_pixeltype,
                   m_data.data());
-  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, oldRowLength);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, oldAlignment);
 
   return true;
 }
