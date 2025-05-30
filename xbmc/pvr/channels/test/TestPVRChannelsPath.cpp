@@ -22,7 +22,7 @@ TEST(TestPVRChannelsPath, Parse_Component_1)
 {
   PVR::CPVRChannelsPath path("pvr://channels");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_TRUE(path.IsEmpty());
 }
@@ -31,7 +31,7 @@ TEST(TestPVRChannelsPath, Parse_Component_2)
 {
   PVR::CPVRChannelsPath path("pvr://channels/");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_TRUE(path.IsEmpty());
 }
@@ -47,7 +47,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Root_1)
 {
   PVR::CPVRChannelsPath path("pvr://channels/tv");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -64,7 +64,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Root_2)
 {
   PVR::CPVRChannelsPath path("pvr://channels/tv/");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -81,7 +81,7 @@ TEST(TestPVRChannelsPath, Parse_Radio_Root_1)
 {
   PVR::CPVRChannelsPath path("pvr://channels/radio");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/radio/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/radio/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_TRUE(path.IsRadio());
@@ -98,7 +98,7 @@ TEST(TestPVRChannelsPath, Parse_Radio_Root_2)
 {
   PVR::CPVRChannelsPath path("pvr://channels/radio/");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/radio/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/radio/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_TRUE(path.IsRadio());
@@ -122,7 +122,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Group_1)
 {
   PVR::CPVRChannelsPath path("pvr://channels/tv/Group1@11");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/Group1@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/Group1@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -140,7 +140,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Group_2)
 {
   PVR::CPVRChannelsPath path("pvr://channels/tv/Group1@11/");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/Group1@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/Group1@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -158,7 +158,7 @@ TEST(TestPVRChannelsPath, Parse_Hidden_TV_Group)
 {
   PVR::CPVRChannelsPath path("pvr://channels/tv/.hidden@11");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/.hidden@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/.hidden@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -176,7 +176,7 @@ TEST(TestPVRChannelsPath, Parse_Special_TV_Group)
 {
   PVR::CPVRChannelsPath path("pvr://channels/tv/foo%2Fbar%20baz@11");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/foo%2Fbar%20baz@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/foo%2Fbar%20baz@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -194,7 +194,7 @@ TEST(TestPVRChannelsPath, Parse_Special_TV_Group1)
 {
   PVR::CPVRChannelsPath path("pvr://channels/tv/foo%40bar%20baz@11");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/foo%40bar%20baz@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/foo%40bar%20baz@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -220,7 +220,7 @@ TEST(TestPVRChannelsPath, Parse_Radio_Group)
 {
   PVR::CPVRChannelsPath path("pvr://channels/radio/Group1@11");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/radio/Group1@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/radio/Group1@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_TRUE(path.IsRadio());
@@ -238,7 +238,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Channel)
 {
   PVR::CPVRChannelsPath path("pvr://channels/tv/Group1@11/5@pvr.demo_4711.pvr");
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/Group1@11/5@pvr.demo_4711.pvr");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/Group1@11/5@pvr.demo_4711.pvr");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -329,7 +329,7 @@ TEST(TestPVRChannelsPath, TV_Channelgroup)
 {
   PVR::CPVRChannelsPath path(false, "Group1", 11);
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/Group1@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/Group1@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -347,7 +347,7 @@ TEST(TestPVRChannelsPath, Radio_Channelgroup)
 {
   PVR::CPVRChannelsPath path(true, "Group1", 11);
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/radio/Group1@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/radio/Group1@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_TRUE(path.IsRadio());
@@ -365,7 +365,7 @@ TEST(TestPVRChannelsPath, Hidden_TV_Channelgroup)
 {
   PVR::CPVRChannelsPath path(false, true, "Group1", 11);
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/.hidden@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/.hidden@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -383,7 +383,7 @@ TEST(TestPVRChannelsPath, Hidden_Radio_Channelgroup)
 {
   PVR::CPVRChannelsPath path(true, true, "Group1", 11);
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/radio/.hidden@11/");
+  EXPECT_EQ(path.AsString(), "pvr://channels/radio/.hidden@11/");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_TRUE(path.IsRadio());
@@ -402,7 +402,7 @@ TEST(TestPVRChannelsPath, TV_Channel)
   PVR::CPVRChannelsPath path(false, "Group1", 11, "pvr.demo", ADDON::ADDON_SINGLETON_INSTANCE_ID,
                              4711);
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/tv/Group1@11/0@pvr.demo_4711.pvr");
+  EXPECT_EQ(path.AsString(), "pvr://channels/tv/Group1@11/0@pvr.demo_4711.pvr");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_FALSE(path.IsRadio());
@@ -421,7 +421,7 @@ TEST(TestPVRChannelsPath, Radio_Channel)
   PVR::CPVRChannelsPath path(true, "Group1", 11, "pvr.demo", ADDON::ADDON_SINGLETON_INSTANCE_ID,
                              4711);
 
-  EXPECT_EQ(static_cast<std::string>(path), "pvr://channels/radio/Group1@11/0@pvr.demo_4711.pvr");
+  EXPECT_EQ(path.AsString(), "pvr://channels/radio/Group1@11/0@pvr.demo_4711.pvr");
   EXPECT_TRUE(path.IsValid());
   EXPECT_FALSE(path.IsEmpty());
   EXPECT_TRUE(path.IsRadio());
@@ -438,7 +438,7 @@ TEST(TestPVRChannelsPath, Radio_Channel)
 TEST(TestPVRChannelsPath, Operator_Equals)
 {
   PVR::CPVRChannelsPath path2(true, "Group1", 11);
-  PVR::CPVRChannelsPath path(static_cast<std::string>(path2));
+  PVR::CPVRChannelsPath path(path2.AsString());
 
   EXPECT_EQ(path, path2);
 }

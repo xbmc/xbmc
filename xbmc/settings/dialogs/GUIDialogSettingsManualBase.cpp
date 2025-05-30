@@ -454,7 +454,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddSpinner(
     int label,
     SettingLevel level,
     const std::string& value,
-    StringSettingOptionsFiller filler,
+    const StringSettingOptionsFiller& filler,
     bool delayed /* = false */,
     bool visible /* = true */,
     int help /* = -1 */)
@@ -468,7 +468,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddSpinner(
     return NULL;
 
   setting->SetControl(GetSpinnerControl("string", delayed));
-  setting->SetOptionsFiller(filler, this);
+  setting->SetOptionsFiller(filler);
   setSettingDetails(setting, level, visible, help);
 
   group->AddSetting(setting);
@@ -600,7 +600,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     int label,
     SettingLevel level,
     int value,
-    IntegerSettingOptionsFiller filler,
+    const IntegerSettingOptionsFiller& filler,
     bool delayed /* = false */,
     bool visible /* = true */,
     int help /* = -1 */)
@@ -614,7 +614,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     return NULL;
 
   setting->SetControl(GetSpinnerControl("string", delayed));
-  setting->SetOptionsFiller(filler, this);
+  setting->SetOptionsFiller(filler);
   setSettingDetails(setting, level, visible, help);
 
   group->AddSetting(setting);
@@ -693,7 +693,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(
     int label,
     SettingLevel level,
     const std::string& value,
-    StringSettingOptionsFiller filler,
+    const StringSettingOptionsFiller& filler,
     int heading,
     bool visible /* = true */,
     int help /* = -1 */,
@@ -708,7 +708,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(
     return NULL;
 
   setting->SetControl(GetListControl("string", false, heading, false, nullptr, details));
-  setting->SetOptionsFiller(filler, this);
+  setting->SetOptionsFiller(filler);
   setSettingDetails(setting, level, visible, help);
 
   group->AddSetting(setting);
@@ -777,7 +777,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     int label,
     SettingLevel level,
     int value,
-    IntegerSettingOptionsFiller filler,
+    const IntegerSettingOptionsFiller& filler,
     int heading,
     bool visible /* = true */,
     int help /* = -1 */,
@@ -792,7 +792,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     return NULL;
 
   setting->SetControl(GetListControl("integer", false, heading, false, nullptr, details));
-  setting->SetOptionsFiller(filler, this);
+  setting->SetOptionsFiller(filler);
   setSettingDetails(setting, level, visible, help);
 
   group->AddSetting(setting);
@@ -805,7 +805,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int label,
     SettingLevel level,
     std::vector<std::string> values,
-    StringSettingOptionsFiller filler,
+    const StringSettingOptionsFiller& filler,
     int heading,
     int minimumItems /* = 0 */,
     int maximumItems /* = -1 */,
@@ -821,7 +821,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
   if (settingDefinition == NULL)
     return NULL;
 
-  settingDefinition->SetOptionsFiller(filler, this);
+  settingDefinition->SetOptionsFiller(filler);
 
   std::shared_ptr<CSettingList> setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
   if (setting == NULL)
@@ -943,13 +943,13 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int label,
     SettingLevel level,
     std::vector<int> values,
-    IntegerSettingOptionsFiller filler,
+    const IntegerSettingOptionsFiller& filler,
     int heading,
     int minimumItems /* = 0 */,
     int maximumItems /* = -1 */,
     bool visible /* = true */,
     int help /* = -1 */,
-    SettingControlListValueFormatter formatter /* = NULL */,
+    const SettingControlListValueFormatter& formatter /* = {} */,
     bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
@@ -960,7 +960,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
   if (settingDefinition == NULL)
     return NULL;
 
-  settingDefinition->SetOptionsFiller(filler, this);
+  settingDefinition->SetOptionsFiller(filler);
 
   std::shared_ptr<CSettingList> setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
   if (setting == NULL)
@@ -1562,7 +1562,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetListControl(
     bool delayed /* = false */,
     int heading /* = -1 */,
     bool multiselect /* = false */,
-    SettingControlListValueFormatter formatter /* = NULL */,
+    const SettingControlListValueFormatter& formatter /* = {} */,
     bool details /* = false */)
 {
   std::shared_ptr<CSettingControlList> control = std::make_shared<CSettingControlList>();

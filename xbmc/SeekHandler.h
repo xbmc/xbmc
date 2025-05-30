@@ -33,8 +33,7 @@ public:
 
   static void SettingOptionsSeekStepsFiller(const std::shared_ptr<const CSetting>& setting,
                                             std::vector<IntegerSettingOption>& list,
-                                            int& current,
-                                            void* data);
+                                            int& current);
 
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   bool OnAction(const CAction &action) override;

@@ -9,7 +9,6 @@
 #pragma once
 
 #include "ThumbLoader.h"
-#include "addons/RepositoryUpdater.h"
 #include "windows/GUIMediaWindow.h"
 
 #include <string>
@@ -20,7 +19,6 @@ class CFileItemList;
 namespace ADDON
 {
 enum class AddonType;
-struct AddonEvent;
 }
 
 class CGUIWindowAddonBrowser : public CGUIMediaWindow
@@ -104,12 +102,10 @@ protected:
   bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
   std::string GetStartFolder(const std::string& dir) override;
 
-  std::string GetRootPath() const override { return "addons://"; }
+  std::string GetRootPath() override { return "addons://"; }
 
 private:
   void SetProperties();
   void UpdateStatus(const CFileItemPtr& item);
-  void OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event);
-  void OnEvent(const ADDON::AddonEvent& event);
   CProgramThumbLoader m_thumbLoader;
 };

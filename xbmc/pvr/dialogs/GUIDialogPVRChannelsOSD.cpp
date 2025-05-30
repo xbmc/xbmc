@@ -182,7 +182,13 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
 void CGUIDialogPVRChannelsOSD::Update()
 {
   CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
-  pvrMgr.Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
+  pvrMgr.Events().Subscribe(this,
+                            [this](const PVREvent& event)
+                            {
+                              const CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0,
+                                                  static_cast<int>(event));
+                              CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
+                            });
 
   const std::shared_ptr<const CPVRChannel> channel = pvrMgr.PlaybackState()->GetPlayingChannel();
   if (channel)
@@ -258,12 +264,6 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int iItem)
     Close();
 
   CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(*item);
-}
-
-void CGUIDialogPVRChannelsOSD::Notify(const PVREvent& event)
-{
-  const CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, static_cast<int>(event));
-  CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
 }
 
 void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)

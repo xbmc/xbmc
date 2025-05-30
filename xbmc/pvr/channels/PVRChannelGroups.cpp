@@ -482,7 +482,27 @@ bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRC
   // Register for client priority changes
   if (!m_isSubscribed)
   {
-    CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRChannelGroups::OnPVRManagerEvent);
+    CServiceBroker::GetPVRManager().Events().Subscribe(
+        this,
+        [this](const PVR::PVREvent& event)
+        {
+          if (event == PVREvent::ClientsPrioritiesInvalidated)
+          {
+            // Update group client priorities
+            std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
+            {
+              std::unique_lock lock(m_critSection);
+              groups = m_groups;
+            }
+
+            for (const auto& group : groups)
+            {
+              group->UpdateClientPriorities();
+            }
+
+            SortGroups();
+          }
+        });
     m_isSubscribed = true;
   }
 
@@ -836,7 +856,7 @@ int CPVRChannelGroups::CleanupCachedImages()
   {
     std::unique_lock lock(m_critSection);
     std::ranges::transform(m_groups, std::back_inserter(urlsToCheck),
-                           [](const auto& group) { return group->GetPath(); });
+                           [](const auto& group) { return group->GetPath().AsString(); });
   }
 
   // kodi-generated thumbnail (see CPVRThumbLoader)
@@ -844,24 +864,4 @@ int CPVRChannelGroups::CleanupCachedImages()
   iCleanedImages += CPVRCachedImages::Cleanup({{"pvr", path}}, urlsToCheck, true);
 
   return iCleanedImages;
-}
-
-void CPVRChannelGroups::OnPVRManagerEvent(const PVR::PVREvent& event)
-{
-  if (event == PVREvent::ClientsPrioritiesInvalidated)
-  {
-    // Update group client priorities
-    std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
-    {
-      std::unique_lock lock(m_critSection);
-      groups = m_groups;
-    }
-
-    for (const auto& group : groups)
-    {
-      group->UpdateClientPriorities();
-    }
-
-    SortGroups();
-  }
 }

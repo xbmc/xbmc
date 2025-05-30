@@ -9,7 +9,6 @@
 #pragma once
 
 #include "IActivePortList.h"
-#include "addons/AddonEvents.h"
 #include "games/GameTypes.h"
 #include "games/controllers/ControllerTypes.h"
 #include "games/ports/types/PortNode.h"
@@ -45,9 +44,6 @@ public:
   void Notify(const Observable& obs, const ObservableMessage msg) override;
 
 private:
-  // Add-on API
-  void OnEvent(const ADDON::AddonEvent& event);
-
   // GUI helpers
   void InitializeGUI();
   void DeinitializeGUI();

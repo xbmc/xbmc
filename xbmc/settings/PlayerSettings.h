@@ -18,10 +18,8 @@ class CPlayerSettings : public ISubSettings
 public:
   static void SettingOptionsQueueTimeSizesFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
-                                                 int& current,
-                                                 void* data);
+                                                 int& current);
   static void SettingOptionsQueueDataSizesFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
-                                                 int& current,
-                                                 void* data);
+                                                 int& current);
 };

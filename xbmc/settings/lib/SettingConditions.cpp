@@ -104,14 +104,15 @@ void CSettingConditionsManager::AddCondition(std::string condition)
   m_defines.insert(condition);
 }
 
-void CSettingConditionsManager::AddDynamicCondition(std::string identifier, SettingConditionCheck condition, void *data /*= nullptr*/)
+void CSettingConditionsManager::AddDynamicCondition(std::string identifier,
+                                                    const SettingConditionCheck& condition)
 {
   if (identifier.empty() || condition == nullptr)
     return;
 
   StringUtils::ToLower(identifier);
 
-  m_conditions.emplace(identifier, std::make_pair(condition, data));
+  m_conditions.emplace(identifier, condition);
 }
 
 void CSettingConditionsManager::RemoveDynamicCondition(std::string identifier)
@@ -149,5 +150,5 @@ bool CSettingConditionsManager::Check(
   if (conditionIt == m_conditions.end())
     return false;
 
-  return conditionIt->second.first(condition, value, setting, conditionIt->second.second);
+  return conditionIt->second(condition, value, setting);
 }

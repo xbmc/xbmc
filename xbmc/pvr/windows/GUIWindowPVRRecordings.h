@@ -39,7 +39,7 @@ public:
   void UpdateButtons() override;
 
 protected:
-  std::string GetRootPath() const override;
+  std::string GetRootPath() override;
   std::string GetDirectoryPath() override;
   void OnPrepareFileItems(CFileItemList& items) override;
   bool GetFilteredItems(const std::string& filter, CFileItemList& items) override;

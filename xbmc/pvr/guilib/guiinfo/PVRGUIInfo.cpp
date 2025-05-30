@@ -143,24 +143,6 @@ void CPVRGUIInfo::Stop()
   }
 }
 
-void CPVRGUIInfo::Notify(const PVREvent& event)
-{
-  if (event == PVREvent::Timers || event == PVREvent::TimersInvalidated)
-    UpdateTimersCache();
-}
-
-void CPVRGUIInfo::Notify(const PVRChannelNumberInputChangedEvent& event)
-{
-  std::unique_lock lock(m_critSection);
-  m_channelNumberInput = event.m_input;
-}
-
-void CPVRGUIInfo::Notify(const PVRPreviewAndPlayerShowInfoChangedEvent& event)
-{
-  std::unique_lock lock(m_critSection);
-  m_previewAndPlayerShowInfo = event.m_previewAndPlayerShowInfo;
-}
-
 void CPVRGUIInfo::Process()
 {
   auto toggleIntervalMs = std::chrono::milliseconds(
@@ -168,11 +150,27 @@ void CPVRGUIInfo::Process()
   XbmcThreads::EndTime<> cacheTimer(toggleIntervalMs);
 
   auto& mgr = CServiceBroker::GetPVRManager();
-  mgr.Events().Subscribe(this, &CPVRGUIInfo::Notify);
+  mgr.Events().Subscribe(this,
+                         [this](const PVREvent& event)
+                         {
+                           if (event == PVREvent::Timers || event == PVREvent::TimersInvalidated)
+                             UpdateTimersCache();
+                         });
 
   auto& channels = mgr.Get<PVR::GUI::Channels>();
-  channels.Events().Subscribe(this, &CPVRGUIInfo::Notify);
-  channels.GetChannelNavigator().Subscribe(this, &CPVRGUIInfo::Notify);
+  channels.Events().Subscribe(this,
+                              [this](const PVRChannelNumberInputChangedEvent& event)
+                              {
+                                std::unique_lock lock(m_critSection);
+                                m_channelNumberInput = event.m_input;
+                              });
+  channels.GetChannelNavigator().Subscribe(
+      this,
+      [this](const PVRPreviewAndPlayerShowInfoChangedEvent& event)
+      {
+        std::unique_lock lock(m_critSection);
+        m_previewAndPlayerShowInfo = event.m_previewAndPlayerShowInfo;
+      });
 
   /* updated on request */
   UpdateTimersCache();

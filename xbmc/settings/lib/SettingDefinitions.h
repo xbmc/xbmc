@@ -10,6 +10,7 @@
 
 #include "utils/Variant.h"
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <utility>
@@ -121,14 +122,12 @@ using TranslatableStringSettingOptions = std::vector<TranslatableStringSettingOp
 using StringSettingOptions = std::vector<StringSettingOption>;
 
 class CSetting;
-using IntegerSettingOptionsFiller = void (*)(const std::shared_ptr<const CSetting>& setting,
-                                             IntegerSettingOptions& list,
-                                             int& current,
-                                             void* data);
-using StringSettingOptionsFiller = void (*)(const std::shared_ptr<const CSetting>& setting,
-                                            StringSettingOptions& list,
-                                            std::string& current,
-                                            void* data);
+using IntegerSettingOptionsFiller = std::function<void(
+    const std::shared_ptr<const CSetting>& setting, IntegerSettingOptions& list, int& current)>;
+using StringSettingOptionsFiller =
+    std::function<void(const std::shared_ptr<const CSetting>& setting,
+                       StringSettingOptions& list,
+                       std::string& current)>;
 
 enum class SettingOptionsSort
 {

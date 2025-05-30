@@ -202,55 +202,43 @@ public:
 
   static void SettingOptionsLanguageNamesFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<StringSettingOption>& list,
-                                                std::string& current,
-                                                void* data);
+                                                std::string& current);
   static void SettingOptionsAudioStreamLanguagesFiller(
       const std::shared_ptr<const CSetting>& setting,
       std::vector<StringSettingOption>& list,
-      std::string& current,
-      void* data);
+      std::string& current);
   static void SettingOptionsSubtitleStreamLanguagesFiller(
       const std::shared_ptr<const CSetting>& setting,
       std::vector<StringSettingOption>& list,
-      std::string& current,
-      void* data);
+      std::string& current);
   static void SettingOptionsSubtitleDownloadlanguagesFiller(
       const std::shared_ptr<const CSetting>& setting,
       std::vector<StringSettingOption>& list,
-      std::string& current,
-      void* data);
+      std::string& current);
   static void SettingOptionsISO6391LanguagesFiller(const std::shared_ptr<const CSetting>& setting,
                                                    std::vector<StringSettingOption>& list,
-                                                   std::string& current,
-                                                   void* data);
+                                                   std::string& current);
   static void SettingOptionsRegionsFiller(const std::shared_ptr<const CSetting>& setting,
                                           std::vector<StringSettingOption>& list,
-                                          std::string& current,
-                                          void* data);
+                                          std::string& current);
   static void SettingOptionsShortDateFormatsFiller(const std::shared_ptr<const CSetting>& setting,
                                                    std::vector<StringSettingOption>& list,
-                                                   std::string& current,
-                                                   void* data);
+                                                   std::string& current);
   static void SettingOptionsLongDateFormatsFiller(const std::shared_ptr<const CSetting>& setting,
                                                   std::vector<StringSettingOption>& list,
-                                                  std::string& current,
-                                                  void* data);
+                                                  std::string& current);
   static void SettingOptionsTimeFormatsFiller(const std::shared_ptr<const CSetting>& setting,
                                               std::vector<StringSettingOption>& list,
-                                              std::string& current,
-                                              void* data);
+                                              std::string& current);
   static void SettingOptions24HourClockFormatsFiller(const std::shared_ptr<const CSetting>& setting,
                                                      std::vector<StringSettingOption>& list,
-                                                     std::string& current,
-                                                     void* data);
+                                                     std::string& current);
   static void SettingOptionsTemperatureUnitsFiller(const std::shared_ptr<const CSetting>& setting,
                                                    std::vector<StringSettingOption>& list,
-                                                   std::string& current,
-                                                   void* data);
+                                                   std::string& current);
   static void SettingOptionsSpeedUnitsFiller(const std::shared_ptr<const CSetting>& setting,
                                              std::vector<StringSettingOption>& list,
-                                             std::string& current,
-                                             void* data);
+                                             std::string& current);
 
 protected:
   void SetDefaults();

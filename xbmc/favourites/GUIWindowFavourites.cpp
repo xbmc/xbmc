@@ -9,6 +9,7 @@
 #include "GUIWindowFavourites.h"
 
 #include "FileItem.h"
+#include "favourites/FavouritesService.h"
 #include "favourites/FavouritesURL.h"
 #include "favourites/FavouritesUtils.h"
 #include "guilib/GUIMessage.h"
@@ -29,18 +30,17 @@ CGUIWindowFavourites::CGUIWindowFavourites()
 {
   m_loadType = KEEP_IN_MEMORY;
   CServiceBroker::GetFavouritesService().Events().Subscribe(
-      this, &CGUIWindowFavourites::OnFavouritesEvent);
+      this,
+      [this](const CFavouritesService::FavouritesUpdated& event)
+      {
+        CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 0);
+        CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
+      });
 }
 
 CGUIWindowFavourites::~CGUIWindowFavourites()
 {
   CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
-}
-
-void CGUIWindowFavourites::OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event)
-{
-  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 0);
-  CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
 }
 
 bool CGUIWindowFavourites::OnSelect(int itemIdx)

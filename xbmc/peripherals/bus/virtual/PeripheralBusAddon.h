@@ -17,7 +17,6 @@
 
 namespace ADDON
 {
-struct AddonEvent;
 class CAddonInfo;
 } // namespace ADDON
 
@@ -85,7 +84,6 @@ protected:
   void UnregisterRemovedDevices(const PeripheralScanResults& results) override;
 
 private:
-  void OnEvent(const ADDON::AddonEvent& event);
   void UnRegisterAddon(const std::string& addonId);
 
   void PromptEnableAddons(const std::vector<std::shared_ptr<ADDON::CAddonInfo>>& disabledAddons);

@@ -33,6 +33,32 @@ class CSettingUpdate;
 class TiXmlElement;
 class TiXmlNode;
 
+enum class SettingOptionsFillerType
+{
+  Unknown = 0,
+  Integer,
+  String
+};
+
+struct SettingOptionsFiller
+{
+  IntegerSettingOptionsFiller intFiller{};
+  StringSettingOptionsFiller stringFiller{};
+  SettingOptionsFillerType type{SettingOptionsFillerType::Unknown};
+
+  SettingOptionsFiller() = default;
+
+  explicit SettingOptionsFiller(const IntegerSettingOptionsFiller& _filler)
+    : intFiller(_filler), type(SettingOptionsFillerType::Integer)
+  {
+  }
+
+  explicit SettingOptionsFiller(const StringSettingOptionsFiller& _filler)
+    : stringFiller(_filler), type(SettingOptionsFillerType::String)
+  {
+  }
+};
+
 /*!
  \ingroup settings
  \brief Settings manager responsible for initializing, loading and handling
@@ -247,14 +273,16 @@ public:
    \param identifier Setting options filler identifier
    \param optionsFiller Integer setting options filler implementation
    */
-  void RegisterSettingOptionsFiller(const std::string &identifier, IntegerSettingOptionsFiller optionsFiller);
+  void RegisterSettingOptionsFiller(const std::string& identifier,
+                                    const IntegerSettingOptionsFiller& optionsFiller);
   /*!
    \brief Registers the given string setting options filler under the given identifier.
 
    \param identifier Setting options filler identifier
    \param optionsFiller String setting options filler implementation
    */
-  void RegisterSettingOptionsFiller(const std::string &identifier, StringSettingOptionsFiller optionsFiller);
+  void RegisterSettingOptionsFiller(const std::string& identifier,
+                                    const StringSettingOptionsFiller& optionsFiller);
   /*!
    \brief Unregisters the setting options filler registered under the given identifier.
 
@@ -268,7 +296,7 @@ public:
    \param setting Setting object
    \return Implementation of the setting options filler (either IntegerSettingOptionsFiller or StringSettingOptionsFiller)
    */
-  void* GetSettingOptionsFiller(const std::shared_ptr<const CSetting>& setting);
+  SettingOptionsFiller GetSettingOptionsFiller(const std::shared_ptr<const CSetting>& setting);
 
   /*!
    \brief Checks whether any settings have been initialized.
@@ -441,9 +469,8 @@ public:
 
    \param identifier Identifier of the dynamic condition
    \param condition Implementation of the dynamic condition
-   \param data Opaque data pointer, will be passed back to SettingConditionCheck function
    */
-  void AddDynamicCondition(const std::string &identifier, SettingConditionCheck condition, void *data = nullptr);
+  void AddDynamicCondition(const std::string& identifier, const SettingConditionCheck& condition);
 
   /*!
    \brief Removes the given dynamic condition.
@@ -485,14 +512,6 @@ private:
 
   void ResolveReferenceSettings(const std::shared_ptr<CSettingSection>& section);
   void CleanupIncompleteSettings();
-
-  enum class SettingOptionsFillerType {
-    Unknown = 0,
-    Integer,
-    String
-  };
-
-  void RegisterSettingOptionsFiller(const std::string &identifier, void *filler, SettingOptionsFillerType type);
 
   using CallbackSet = std::set<ISettingCallback *>;
   struct Setting {
@@ -540,10 +559,6 @@ private:
 
   CSettingConditionsManager m_conditions;
 
-  struct SettingOptionsFiller {
-    void *filler;
-    SettingOptionsFillerType type;
-  };
   using SettingOptionsFillerMap = std::map<std::string, SettingOptionsFiller>;
   SettingOptionsFillerMap m_optionsFillers;
 

@@ -12,6 +12,7 @@
 #include "GUIControllerWindow.h"
 #include "GUIFeatureList.h"
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "games/GameServices.h"
@@ -60,7 +61,25 @@ bool CGUIControllerList::Initialize(void)
   if (m_controllerButton)
     m_controllerButton->SetVisible(false);
 
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerList::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(
+      this,
+      [this](const ADDON::AddonEvent& event)
+      {
+        if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // also called on install,
+            typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // not called on uninstall
+            typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+            typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
+        {
+          CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);
+
+          // Focus installed add-on
+          if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+              typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
+            msg.SetStringParam(event.addonId);
+
+          CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow->GetID());
+        }
+      });
   Refresh("");
 
   return m_controllerList != nullptr && m_controllerButton != nullptr;
@@ -157,24 +176,6 @@ void CGUIControllerList::ResetController(void)
       return;
 
     CServiceBroker::GetPeripherals().ResetButtonMaps(strControllerId);
-  }
-}
-
-void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
-{
-  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // also called on install,
-      typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // not called on uninstall
-      typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
-      typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
-  {
-    CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);
-
-    // Focus installed add-on
-    if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
-        typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
-      msg.SetStringParam(event.addonId);
-
-    CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow->GetID());
   }
 }
 

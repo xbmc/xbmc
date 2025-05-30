@@ -72,21 +72,18 @@ CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase()
 
 std::string CGUIWindowPVRChannelsBase::GetDirectoryPath()
 {
-  const std::string basePath{CPVRChannelsPath(m_bRadio, m_bShowHiddenChannels,
+  const std::string basePath{CPVRChannelsPath(IsRadio(), m_bShowHiddenChannels,
                                               GetChannelGroup()->GroupName(),
-                                              GetChannelGroup()->GetClientID())};
+                                              GetChannelGroup()->GetClientID())
+                                 .AsString()};
   return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath()
                                                                   : basePath;
 }
 
-std::string CGUIWindowPVRChannelsBase::GetRootPath() const
+std::string CGUIWindowPVRChannelsBase::GetRootPath()
 {
-  //! @todo Would it make sense to change GetRootPath() declaration in CGUIMediaWindow
-  //! to be non-const to get rid of the const_cast's here?
-
-  auto* pThis{const_cast<CGUIWindowPVRChannelsBase*>(this)};
-  if (pThis->InitChannelGroup())
-    return pThis->GetDirectoryPath();
+  if (InitChannelGroup())
+    return GetDirectoryPath();
 
   return CGUIWindowPVRBase::GetRootPath();
 }
@@ -135,7 +132,7 @@ void CGUIWindowPVRChannelsBase::UpdateButtons()
   {
     btnShowHidden->SetVisible(CServiceBroker::GetPVRManager()
                                   .ChannelGroups()
-                                  ->GetGroupAll(m_bRadio)
+                                  ->GetGroupAll(IsRadio())
                                   ->HasHiddenChannels());
     btnShowHidden->SetSelected(m_bShowHiddenChannels);
   }
@@ -194,7 +191,7 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
           // Replace wildcard with real group name
           const auto group =
               CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio());
-          SetChannelGroupPath(group->GetPath());
+          SetChannelGroupPath(group->GetPath().AsString());
         }
         else
         {
@@ -394,7 +391,7 @@ void CGUIWindowPVRChannelsBase::ShowChannelManager() const
   if (!dialog)
     return;
 
-  dialog->SetRadio(m_bRadio);
+  dialog->SetRadio(IsRadio());
 
   const int iItem = m_viewControl.GetSelectedItem();
   dialog->Open(iItem >= 0 && iItem < m_vecItems->Size() ? m_vecItems->Get(iItem) : nullptr);
@@ -409,7 +406,7 @@ void CGUIWindowPVRChannelsBase::ShowGroupManager() const
   if (!pDlgInfo)
     return;
 
-  pDlgInfo->SetRadio(m_bRadio);
+  pDlgInfo->SetRadio(IsRadio());
   pDlgInfo->Open();
 }
 

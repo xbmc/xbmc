@@ -28,7 +28,8 @@ public:
 
   bool IsValid() const { return m_bValid; }
 
-  const std::string& GetPath() const { return m_path; }
+  const std::string& AsString() const { return m_path; }
+
   bool IsSearchRoot() const { return m_bRoot; }
   bool IsRadio() const { return m_bRadio; }
   bool IsSavedSearchesRoot() const { return m_bSavedSearchesRoot; }

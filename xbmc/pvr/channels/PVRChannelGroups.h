@@ -18,8 +18,6 @@
 
 namespace PVR
 {
-enum class PVREvent;
-
 class CPVRChannel;
 class CPVRChannelGroupFactory;
 class CPVRClient;
@@ -266,8 +264,6 @@ private:
    * @return True, if data is currently valid, false otherwise.
    */
   bool HasValidDataForClients(const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
-
-  void OnPVRManagerEvent(const PVR::PVREvent& event);
 
   int GetGroupClientPriority(const std::shared_ptr<const CPVRChannelGroup>& group) const;
 

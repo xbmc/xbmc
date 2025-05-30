@@ -175,8 +175,7 @@ float CSubtitlesSettings::GetVerticalMarginPerc()
 
 void CSubtitlesSettings::SettingOptionsSubtitleFontsFiller(const SettingConstPtr& setting,
                                                            std::vector<StringSettingOption>& list,
-                                                           std::string& current,
-                                                           void* data)
+                                                           std::string& current)
 {
   // From application system fonts folder we add the default font only
   std::string defaultFontPath =

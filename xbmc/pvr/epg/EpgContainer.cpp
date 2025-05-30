@@ -562,7 +562,7 @@ void CPVREpgContainer::InsertFromDB(const std::shared_ptr<CPVREpg>& newEpg)
     // create a new epg table
     epg = newEpg;
     m_epgIdToEpgMap.try_emplace(epg->EpgID(), epg);
-    epg->Events().Subscribe(this, &CPVREpgContainer::Notify);
+    epg->Events().Subscribe(this, [this](const PVREvent& event) { Notify(event); });
   }
 }
 
@@ -588,7 +588,7 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::CreateChannelEpg(int iEpgId, const st
     m_epgIdToEpgMap.try_emplace(iEpgId, epg);
     m_channelUidToEpgMap.try_emplace(
         {channelData->ClientId(), channelData->UniqueClientChannelId()}, epg);
-    epg->Events().Subscribe(this, &CPVREpgContainer::Notify);
+    epg->Events().Subscribe(this, [this](const PVREvent& event) { Notify(event); });
   }
   else if (epg->ChannelID() == -1)
   {

@@ -146,7 +146,12 @@ CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string& xml
   // prevent removable drives to appear in directory listing (base class default behavior).
   m_rootDir.AllowNonLocalSources(false);
 
-  CServiceBroker::GetPVRManager().Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
+  CServiceBroker::GetPVRManager().Events().Subscribe(this,
+                                                     [this](const PVREvent& event)
+                                                     {
+                                                       // call virtual event handler function
+                                                       NotifyEvent(event);
+                                                     });
 }
 
 CGUIWindowPVRBase::~CGUIWindowPVRBase()
@@ -161,12 +166,6 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
 {
   CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().SetSelectedChannelPath(
       m_bRadio, m_viewControl.GetSelectedItemPath());
-}
-
-void CGUIWindowPVRBase::Notify(const PVREvent& event)
-{
-  // call virtual event handler function
-  NotifyEvent(event);
 }
 
 void CGUIWindowPVRBase::NotifyEvent(const PVREvent& event)
@@ -441,7 +440,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
     std::string selectedGroup;
     const std::shared_ptr<const CPVRChannelGroup> channelGroup = GetChannelGroup();
     if (channelGroup)
-      selectedGroup = channelGroup->GetPath();
+      selectedGroup = channelGroup->GetPath().AsString();
 
     CPVRThumbLoader loader;
     int idx = 0;
@@ -476,7 +475,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
     if (channelGroup)
     {
       int idx = -1;
-      const std::string selectedGroup{channelGroup->GetPath()};
+      const std::string selectedGroup{channelGroup->GetPath().AsString()};
       for (const auto& group : options)
       {
         // select currently active channel group
@@ -562,7 +561,12 @@ void CGUIWindowPVRBase::SetChannelGroup(const std::shared_ptr<CPVRChannelGroup>&
         m_channelGroup->Events().Unsubscribe(this);
       m_channelGroup = group;
       // we need to register the window to receive changes from the new group
-      m_channelGroup->Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
+      m_channelGroup->Events().Subscribe(this,
+                                         [this](const PVREvent& event)
+                                         {
+                                           // call virtual event handler function
+                                           NotifyEvent(event);
+                                         });
       if (bUpdate)
         updateChannelGroup = m_channelGroup;
     }

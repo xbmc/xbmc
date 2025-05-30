@@ -70,8 +70,7 @@ public:
 
   static void SettingOptionAudioCdActionsFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<IntegerSettingOption>& list,
-                                                int& current,
-                                                void* data);
+                                                int& current);
 
 protected:
   static bool RunDisc(XFILE::IDirectory* pDir,

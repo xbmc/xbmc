@@ -56,8 +56,9 @@ void CContextMenuManager::Deinit()
 
 void CContextMenuManager::Init()
 {
-  m_addonMgr.Events().Subscribe(this, &CContextMenuManager::OnEvent);
-  CPVRContextMenuManager::GetInstance().Events().Subscribe(this, &CContextMenuManager::OnPVREvent);
+  m_addonMgr.Events().Subscribe(this, [this](const ADDON::AddonEvent& event) { OnEvent(event); });
+  CPVRContextMenuManager::GetInstance().Events().Subscribe(
+      this, [this](const PVRContextMenuEvent& event) { OnPVREvent(event); });
 
   std::unique_lock lock(m_criticalSection);
   m_items = {

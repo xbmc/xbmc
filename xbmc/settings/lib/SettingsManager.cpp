@@ -442,20 +442,32 @@ void CSettingsManager::UnregisterSettingsHandler(ISettingsHandler *settingsHandl
     m_settingsHandlers.erase(it);
 }
 
-void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifier, IntegerSettingOptionsFiller optionsFiller)
+void CSettingsManager::RegisterSettingOptionsFiller(
+    const std::string& identifier, const IntegerSettingOptionsFiller& optionsFiller)
 {
   if (identifier.empty() || optionsFiller == nullptr)
     return;
 
-  RegisterSettingOptionsFiller(identifier, reinterpret_cast<void*>(optionsFiller), SettingOptionsFillerType::Integer);
+  std::unique_lock<CSharedSection> lock(m_critical);
+  auto it = m_optionsFillers.find(identifier);
+  if (it != m_optionsFillers.end())
+    return;
+
+  m_optionsFillers.insert(std::make_pair(identifier, optionsFiller));
 }
 
-void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifier, StringSettingOptionsFiller optionsFiller)
+void CSettingsManager::RegisterSettingOptionsFiller(const std::string& identifier,
+                                                    const StringSettingOptionsFiller& optionsFiller)
 {
   if (identifier.empty() || optionsFiller == nullptr)
     return;
 
-  RegisterSettingOptionsFiller(identifier, reinterpret_cast<void*>(optionsFiller), SettingOptionsFillerType::String);
+  std::unique_lock<CSharedSection> lock(m_critical);
+  auto it = m_optionsFillers.find(identifier);
+  if (it != m_optionsFillers.end())
+    return;
+
+  m_optionsFillers.insert(std::make_pair(identifier, optionsFiller));
 }
 
 void CSettingsManager::UnregisterSettingOptionsFiller(const std::string &identifier)
@@ -464,11 +476,12 @@ void CSettingsManager::UnregisterSettingOptionsFiller(const std::string &identif
   m_optionsFillers.erase(identifier);
 }
 
-void* CSettingsManager::GetSettingOptionsFiller(const SettingConstPtr& setting)
+SettingOptionsFiller CSettingsManager::GetSettingOptionsFiller(
+    const std::shared_ptr<const CSetting>& setting)
 {
   std::shared_lock<CSharedSection> lock(m_critical);
   if (setting == nullptr)
-    return nullptr;
+    return {};
 
   // get the option filler's identifier
   std::string filler;
@@ -478,15 +491,12 @@ void* CSettingsManager::GetSettingOptionsFiller(const SettingConstPtr& setting)
     filler = std::static_pointer_cast<const CSettingString>(setting)->GetOptionsFillerName();
 
   if (filler.empty())
-    return nullptr;
+    return {};
 
   // check if such an option filler is known
   auto fillerIt = m_optionsFillers.find(filler);
   if (fillerIt == m_optionsFillers.end())
-    return nullptr;
-
-  if (fillerIt->second.filler == nullptr)
-    return nullptr;
+    return {};
 
   // make sure the option filler's type matches the setting's type
   switch (fillerIt->second.type)
@@ -494,7 +504,10 @@ void* CSettingsManager::GetSettingOptionsFiller(const SettingConstPtr& setting)
     case SettingOptionsFillerType::Integer:
     {
       if (setting->GetType() != SettingType::Integer)
-        return nullptr;
+        return {};
+
+      if (fillerIt->second.intFiller == nullptr)
+        return {};
 
       break;
     }
@@ -502,16 +515,19 @@ void* CSettingsManager::GetSettingOptionsFiller(const SettingConstPtr& setting)
     case SettingOptionsFillerType::String:
     {
       if (setting->GetType() != SettingType::String)
-        return nullptr;
+        return {};
+
+      if (fillerIt->second.stringFiller == nullptr)
+        return {};
 
       break;
     }
 
     default:
-      return nullptr;
+      return {};
   }
 
-  return fillerIt->second.filler;
+  return fillerIt->second;
 }
 
 bool CSettingsManager::HasSettings() const
@@ -719,13 +735,14 @@ void CSettingsManager::AddCondition(const std::string &condition)
   m_conditions.AddCondition(condition);
 }
 
-void CSettingsManager::AddDynamicCondition(const std::string &identifier, SettingConditionCheck condition, void *data /*= nullptr*/)
+void CSettingsManager::AddDynamicCondition(const std::string& identifier,
+                                           const SettingConditionCheck& condition)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
   if (identifier.empty() || condition == nullptr)
     return;
 
-  m_conditions.AddDynamicCondition(identifier, condition, data);
+  m_conditions.AddDynamicCondition(identifier, condition);
 }
 
 void CSettingsManager::RemoveDynamicCondition(const std::string &identifier)
@@ -1375,17 +1392,6 @@ void CSettingsManager::CleanupIncompleteSettings()
       m_settings.erase(tmpIterator);
     }
   }
-}
-
-void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifier, void *filler, SettingOptionsFillerType type)
-{
-  std::unique_lock<CSharedSection> lock(m_critical);
-  auto it = m_optionsFillers.find(identifier);
-  if (it != m_optionsFillers.end())
-    return;
-
-  SettingOptionsFiller optionsFiller = { filler, type };
-  m_optionsFillers.insert(make_pair(identifier, optionsFiller));
 }
 
 void CSettingsManager::ResolveSettingDependencies(const std::shared_ptr<CSetting>& setting)

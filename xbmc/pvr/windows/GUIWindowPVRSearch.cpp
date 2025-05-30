@@ -122,12 +122,12 @@ void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItem& item)
   }
   else if (item.IsUsablePVRRecording())
   {
-    SetSearchFilter(std::make_shared<CPVREpgSearchFilter>(m_bRadio));
+    SetSearchFilter(std::make_shared<CPVREpgSearchFilter>(IsRadio()));
     m_searchfilter->SetSearchPhrase(item.GetPVRRecordingInfoTag()->m_strTitle);
   }
   else
   {
-    SetSearchFilter(std::make_shared<CPVREpgSearchFilter>(m_bRadio));
+    SetSearchFilter(std::make_shared<CPVREpgSearchFilter>(IsRadio()));
 
     const std::shared_ptr<const CPVREpgInfoTag> epgTag(CPVRItem(item).GetEpgInfoTag());
     if (epgTag && !CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
@@ -154,8 +154,8 @@ void CGUIWindowPVRSearchBase::OnPrepareFileItems(CFileItemList& items)
     item->SetArt("icon", "DefaultPVRSearch.png");
     items.Add(item);
 
-    item = std::make_shared<CFileItem>(m_bRadio ? CPVREpgSearchPath::PATH_RADIO_SAVEDSEARCHES
-                                                : CPVREpgSearchPath::PATH_TV_SAVEDSEARCHES,
+    item = std::make_shared<CFileItem>(IsRadio() ? CPVREpgSearchPath::PATH_RADIO_SAVEDSEARCHES
+                                                 : CPVREpgSearchPath::PATH_TV_SAVEDSEARCHES,
                                        true);
     item->SetLabel(g_localizeStrings.Get(19337)); // "Saved searches"
     item->SetLabelPreformatted(true);
@@ -412,7 +412,7 @@ CGUIDialogPVRGuideSearch::Result CGUIWindowPVRSearchBase::OpenDialogSearch(
 
   const std::shared_ptr<CPVREpgSearchFilter> tmpSearchFilter =
       searchFilter != nullptr ? std::make_shared<CPVREpgSearchFilter>(*searchFilter)
-                              : std::make_shared<CPVREpgSearchFilter>(m_bRadio);
+                              : std::make_shared<CPVREpgSearchFilter>(IsRadio());
 
   dlgSearch->SetFilterData(tmpSearchFilter);
 
@@ -496,7 +496,7 @@ void CGUIWindowPVRSearchBase::SetSearchFilter(
   m_searchfilter = searchFilter;
 }
 
-std::string CGUIWindowPVRTVSearch::GetRootPath() const
+std::string CGUIWindowPVRTVSearch::GetRootPath()
 {
   return CPVREpgSearchPath::PATH_TV_SEARCH;
 }
@@ -513,7 +513,7 @@ std::string CGUIWindowPVRTVSearch::GetDirectoryPath()
              : CPVREpgSearchPath::PATH_TV_SEARCH;
 }
 
-std::string CGUIWindowPVRRadioSearch::GetRootPath() const
+std::string CGUIWindowPVRRadioSearch::GetRootPath()
 {
   return CPVREpgSearchPath::PATH_RADIO_SEARCH;
 }

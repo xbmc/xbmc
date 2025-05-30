@@ -13,6 +13,7 @@
 #include "threads/CriticalSection.h"
 
 #include <algorithm>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <vector>
@@ -22,11 +23,12 @@ template<typename Event>
 class CEventStream
 {
 public:
+  using EventHandler = std::function<void(const Event&)>;
 
   template<typename A>
-  void Subscribe(A* owner, void (A::*fn)(const Event&))
+  void Subscribe(A* owner, const EventHandler& eventHandler)
   {
-    auto subscription = std::make_shared<detail::CSubscription<Event, A>>(owner, fn);
+    auto subscription = std::make_shared<detail::CSubscription<Event, A>>(owner, eventHandler);
     std::unique_lock lock(m_criticalSection);
     m_subscriptions.emplace_back(std::move(subscription));
   }

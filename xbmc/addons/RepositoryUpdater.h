@@ -30,8 +30,6 @@ using RepositoryPtr = std::shared_ptr<CRepository>;
 
 class CRepositoryUpdateJob;
 
-struct AddonEvent;
-
 class CRepositoryUpdater : private ITimerCallback,
                            private IJobCallback,
                            public ISettingCallback,
@@ -94,8 +92,6 @@ private:
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
   void OnTimeout() override;
-
-  void OnEvent(const ADDON::AddonEvent& event);
 
   CDateTime ClosestNextCheck() const;
 

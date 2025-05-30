@@ -246,8 +246,7 @@ void CSeekHandler::FrameMove()
 
 void CSeekHandler::SettingOptionsSeekStepsFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
-                                                 int& current,
-                                                 void* data)
+                                                 int& current)
 {
   std::string label;
   for (int seconds : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_seekSteps)
