@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Návrhy</string>
+    <string name="continue_button">Pokračovat</string>
+    <string name="error_title">Chyba</string>
+    <string name="info_title">Informace</string>
+    <string name="asking_permissions">Žádost o povolení…</string>
+    <string name="clearing_cache">Čistění mezipaměti…</string>
+    <string name="waiting_external">Čekání na externí úložiště…</string>
+    <string name="external_ok">Externí úložiště OK…</string>
+    <string name="starting">Spouštím %1$s…</string>
+    <string name="first_run">Příprava prvního spuštění. Prosím čekejte…</string>
+    <string name="permission_denied">Přístup zamítnut!! Ukončuji…</string>
+    <string name="no_find_apk">Nelze najít balíček.</string>
+    <string name="no_read_apk">Nelze načíst balíček.</string>
+    <string name="exit_button">Ukončit</string>
+    <string name="notice_dialog">%1$s vyžaduje přístup k médiím a souborům na vašem zařízení pro správné fungování. Prosím, umožněte to pomocí následujícího dialogového okna nebo se %1$s ukončí.</string>
 </resources>
