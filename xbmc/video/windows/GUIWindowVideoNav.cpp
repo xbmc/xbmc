@@ -330,6 +330,26 @@ bool CGUIWindowVideoNav::Update(const std::string &strDirectory, bool updateFilt
 
 void CGUIWindowVideoNav::SelectDefaultItem()
 {
+  if (m_vecItems->IsPlugin())
+  {
+    int indexToSelect = -1;
+    for (int i = 0; i < m_vecItems->Size(); ++i)
+    {
+      if (m_vecItems->Get(i)->HasProperty("try_select"))
+      {
+        indexToSelect = i;
+        break;
+      }
+    }
+
+    if (indexToSelect > -1)
+    {
+      m_viewControl.SetSelectedItem(indexToSelect); 
+    }
+    return;
+  }
+
+
   if (!VIDEO::IsVideoDb(*m_vecItems))
     return;
 

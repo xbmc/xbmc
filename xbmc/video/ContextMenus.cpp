@@ -78,7 +78,7 @@ bool CVideoInfo::IsVisible(const CFileItem& item) const
 bool CVideoRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
-  if (item.IsDeleted()) // e.g. trashed pvr recording
+  if (item.IsDeleted() || item.IsPlugin()) // e.g. trashed pvr recording
     return false;
 
   // Folders don't have a resume point
@@ -213,7 +213,7 @@ std::string CVideoResume::GetLabel(const CFileItem& item) const
 bool CVideoResume::IsVisible(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
-  if (item.IsDeleted()) // e.g. trashed pvr recording
+  if (item.IsDeleted() || item.m_bIsFolder) // e.g. trashed pvr recording
     return false;
 
   return VIDEO::UTILS::GetItemResumeInformation(item).isResumable;

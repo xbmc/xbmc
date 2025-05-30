@@ -1260,7 +1260,7 @@ void CFileItem::SetFileSizeLabel()
 
 bool CFileItem::CanQueue() const
 {
-  return m_bCanQueue;
+  return m_bCanQueue && !IsPlugin();
 }
 
 void CFileItem::SetCanQueue(bool bYesNo)
