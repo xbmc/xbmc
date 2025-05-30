@@ -80,127 +80,127 @@ public:
    * \brief Get subtitle alignment
    * \return The alignment
    */
-  Align GetAlignment();
+  Align GetAlignment() const;
 
   /*!
    * \brief Set the subtitle alignment
    * \param align The alignment
    */
-  void SetAlignment(Align align);
+  void SetAlignment(Align align) const;
 
   /*!
    * \brief Get horizontal text alignment
    * \return The alignment
    */
-  HorizontalAlign GetHorizontalAlignment();
+  HorizontalAlign GetHorizontalAlignment() const;
 
   /*!
    * \brief Get font name
    * \return The font name
    */
-  std::string GetFontName();
+  std::string GetFontName() const;
 
   /*!
    * \brief Get font style
    * \return The font style
    */
-  FontStyle GetFontStyle();
+  FontStyle GetFontStyle() const;
 
   /*!
    * \brief Get font size
    * \return The font size in PX
    */
-  int GetFontSize();
+  int GetFontSize() const;
 
   /*!
    * \brief Get font color
    * \return The font color
    */
-  UTILS::COLOR::Color GetFontColor();
+  UTILS::COLOR::Color GetFontColor() const;
 
   /*!
    * \brief Get font opacity
    * \return The font opacity in %
    */
-  int GetFontOpacity();
+  int GetFontOpacity() const;
 
   /*!
    * \brief Get border size
    * \return The border size in %
    */
-  int GetBorderSize();
+  int GetBorderSize() const;
 
   /*!
    * \brief Get border color
    * \return The border color
    */
-  UTILS::COLOR::Color GetBorderColor();
+  UTILS::COLOR::Color GetBorderColor() const;
 
   /*!
    * \brief Get shadow size
    * \return The shadow size in %
    */
-  int GetShadowSize();
+  int GetShadowSize() const;
 
   /*!
    * \brief Get shadow color
    * \return The shadow color
    */
-  UTILS::COLOR::Color GetShadowColor();
+  UTILS::COLOR::Color GetShadowColor() const;
 
   /*!
    * \brief Get shadow opacity
    * \return The shadow opacity in %
    */
-  int GetShadowOpacity();
+  int GetShadowOpacity() const;
 
   /*!
    * \brief Get blur size
    * \return The blur size in %
    */
-  int GetBlurSize();
+  int GetBlurSize() const;
 
   /*!
    * \brief Get line spacing
    * \return The line spacing
    */
-  int GetLineSpacing();
+  int GetLineSpacing() const;
 
   /*!
    * \brief Get background type
    * \return The background type
    */
-  BackgroundType GetBackgroundType();
+  BackgroundType GetBackgroundType() const;
 
   /*!
    * \brief Get background color
    * \return The background color
    */
-  UTILS::COLOR::Color GetBackgroundColor();
+  UTILS::COLOR::Color GetBackgroundColor() const;
 
   /*!
    * \brief Get background opacity
    * \return The background opacity in %
    */
-  int GetBackgroundOpacity();
+  int GetBackgroundOpacity() const;
 
   /*!
    * \brief Check if font override is enabled
    * \return True if fonts must be overridden, otherwise false
    */
-  bool IsOverrideFonts();
+  bool IsOverrideFonts() const;
 
   /*!
    * \brief Get override styles
    * \return The styles to be overridden
    */
-  OverrideStyles GetOverrideStyles();
+  OverrideStyles GetOverrideStyles() const;
 
   /*!
    * \brief Get the subtitle vertical margin
    * \return The vertical margin in %
    */
-  float GetVerticalMarginPerc();
+  float GetVerticalMarginPerc() const;
 
   static void SettingOptionsSubtitleFontsFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<StringSettingOption>& list,

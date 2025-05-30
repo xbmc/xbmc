@@ -104,6 +104,9 @@ public:
    \return True if the XML element was successfully deserialized into setting definitions, false otherwise
    */
   bool Initialize(const TiXmlElement *root);
+
+  using LoadedSettings = std::map<std::string, std::shared_ptr<CSetting>>;
+
   /*!
    \brief Loads setting values from the given XML element.
 
@@ -113,7 +116,10 @@ public:
    \param loadedSettings A list to fill with all the successfully loaded settings
    \return True if the setting values were successfully loaded, false otherwise
    */
-  bool Load(const TiXmlElement *root, bool &updated, bool triggerEvents = true, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);
+  bool Load(const TiXmlElement* root,
+            bool& updated,
+            bool triggerEvents = true,
+            LoadedSettings* loadedSettings = nullptr);
   /*!
    \brief Saves the setting values using the given serializer.
 

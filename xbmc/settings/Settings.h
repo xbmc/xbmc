@@ -518,8 +518,6 @@ public:
   CSettings() = default;
   ~CSettings() override = default;
 
-  CSettingsManager* GetSettingsManager() const { return m_settingsManager; }
-
   // specialization of CSettingsBase
   bool Initialize() override;
 
@@ -569,7 +567,7 @@ public:
    \param file Path to an XML file
    \return True if the setting values were successfully saved, false otherwise
    */
-  bool Save(const std::string &file);
+  bool Save(const std::string& file) const;
   /*!
    \brief Saves the setting values to the given XML node.
 
@@ -586,7 +584,7 @@ public:
    \param settingId Setting identifier
    \return True if the setting was successfully loaded from the given XML node, false otherwise
    */
-  bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
+  bool LoadSetting(const TiXmlNode* node, const std::string& settingId) const;
 
   // overwrite (not override) from CSettingsBase
   bool GetBool(const std::string& id) const;

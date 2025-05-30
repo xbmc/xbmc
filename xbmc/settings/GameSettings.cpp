@@ -35,7 +35,7 @@ bool CGameSettings::operator==(const CGameSettings &rhs) const
          m_rotationDegCCW == rhs.m_rotationDegCCW;
 }
 
-void CGameSettings::SetVideoFilter(const std::string &videoFilter)
+void CGameSettings::SetVideoFilter(std::string_view videoFilter)
 {
   if (videoFilter != m_videoFilter)
   {

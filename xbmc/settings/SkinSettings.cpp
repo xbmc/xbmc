@@ -22,7 +22,10 @@
 #include <mutex>
 #include <string>
 
-#define XML_SKINSETTINGS  "skinsettings"
+namespace
+{
+constexpr const char* XML_SKINSETTINGS = "skinsettings";
+} // unnamed namespace
 
 CSkinSettings::CSkinSettings()
 {
@@ -37,7 +40,7 @@ CSkinSettings& CSkinSettings::GetInstance()
   return sSkinSettings;
 }
 
-int CSkinSettings::TranslateString(const std::string &setting)
+int CSkinSettings::TranslateString(const std::string& setting) const
 {
   return g_SkinInfo->TranslateString(setting);
 }
@@ -47,12 +50,12 @@ const std::string& CSkinSettings::GetString(int setting) const
   return g_SkinInfo->GetString(setting);
 }
 
-void CSkinSettings::SetString(int setting, const std::string &label)
+void CSkinSettings::SetString(int setting, const std::string& label) const
 {
   g_SkinInfo->SetString(setting, label);
 }
 
-int CSkinSettings::TranslateBool(const std::string &setting)
+int CSkinSettings::TranslateBool(const std::string& setting) const
 {
   return g_SkinInfo->TranslateBool(setting);
 }
@@ -67,12 +70,12 @@ int CSkinSettings::GetInt(int setting) const
   return g_SkinInfo->GetInt(setting);
 }
 
-void CSkinSettings::SetBool(int setting, bool set)
+void CSkinSettings::SetBool(int setting, bool set) const
 {
   g_SkinInfo->SetBool(setting, set);
 }
 
-void CSkinSettings::Reset(const std::string &setting)
+void CSkinSettings::Reset(const std::string& setting) const
 {
   g_SkinInfo->Reset(setting);
 }
@@ -93,7 +96,7 @@ std::shared_ptr<const ADDON::CSkinSetting> CSkinSettings::GetSetting(
   return g_SkinInfo->GetSkinSetting(settingId);
 }
 
-void CSkinSettings::Reset()
+void CSkinSettings::Reset() const
 {
   g_SkinInfo->Reset();
 
@@ -104,14 +107,14 @@ void CSkinSettings::Reset()
 
 bool CSkinSettings::Load(const TiXmlNode *settings)
 {
-  if (settings == nullptr)
+  if (!settings)
     return false;
 
   const TiXmlElement *rootElement = settings->FirstChildElement(XML_SKINSETTINGS);
 
   // return true in the case skinsettings is missing. It just means that
   // it's been migrated and it's not an error
-  if (rootElement == nullptr)
+  if (!rootElement)
   {
     CLog::Log(LOGDEBUG, "CSkinSettings: no <skinsettings> tag found");
     return true;
@@ -126,7 +129,7 @@ bool CSkinSettings::Load(const TiXmlNode *settings)
 
 bool CSkinSettings::Save(TiXmlNode *settings) const
 {
-  if (settings == nullptr)
+  if (!settings)
     return false;
 
   // nothing to do here because skin settings saving has been migrated to CSkinInfo
@@ -142,7 +145,7 @@ void CSkinSettings::Clear()
 
 void CSkinSettings::MigrateSettings(const std::shared_ptr<ADDON::CSkinInfo>& skin)
 {
-  if (skin == nullptr)
+  if (!skin)
     return;
 
   std::unique_lock lock(m_critical);

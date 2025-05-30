@@ -71,8 +71,14 @@ public:
 
   const RESOLUTION_INFO& GetCurrentResolutionInfo() const { return GetResolutionInfo(m_currentResolution); }
   RESOLUTION_INFO& GetCurrentResolutionInfo() { return GetResolutionInfo(m_currentResolution); }
-  RESOLUTION GetResFromString(const std::string &strResolution) { return GetResolutionFromString(strResolution); }
-  std::string GetStringFromRes(const RESOLUTION resolution, float refreshrate = 0.0f) { return GetStringFromResolution(resolution, refreshrate); }
+  RESOLUTION GetResFromString(const std::string& strResolution) const
+  {
+    return GetResolutionFromString(strResolution);
+  }
+  std::string GetStringFromRes(const RESOLUTION resolution, float refreshrate = 0.0f) const
+  {
+    return GetStringFromResolution(resolution, refreshrate);
+  }
 
   void ApplyCalibrations();
   void UpdateCalibrations();
@@ -146,15 +152,15 @@ private:
   // holds the real gui resolution
   RESOLUTION m_currentResolution;
 
-  typedef std::vector<RESOLUTION_INFO> ResolutionInfos;
+  using ResolutionInfos = std::vector<RESOLUTION_INFO>;
   ResolutionInfos m_resolutions;
   ResolutionInfos m_calibrations;
 
-  float m_zoomAmount;         // current zoom amount
-  float m_pixelRatio;         // current pixel ratio
-  float m_verticalShift;      // current vertical shift
-  bool  m_nonLinearStretched;   // current non-linear stretch
+  float m_zoomAmount{1.0f}; // current zoom amount
+  float m_pixelRatio{1.0f}; // current pixel ratio
+  float m_verticalShift{0.0f}; // current vertical shift
+  bool m_nonLinearStretched{false}; // current non-linear stretch
 
-  bool m_resolutionChangeAborted;
+  bool m_resolutionChangeAborted{false};
   mutable CCriticalSection m_critical;
 };

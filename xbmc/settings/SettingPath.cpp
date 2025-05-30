@@ -17,8 +17,10 @@
 
 #include <mutex>
 
-#define XML_ELM_DEFAULT     "default"
-#define XML_ELM_CONSTRAINTS "constraints"
+namespace
+{
+constexpr const char* XML_ELM_CONSTRAINTS = "constraints";
+} // unnamed namespace
 
 CSettingPath::CSettingPath(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
   : CSettingString(id, settingsManager)
@@ -41,20 +43,21 @@ SettingPtr CSettingPath::Clone(const std::string &id) const
 
 bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  std::unique_lock<CSharedSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
 
   if (!CSettingString::Deserialize(node, update))
     return false;
 
-  if (m_control != nullptr &&
-     (m_control->GetType() != "button" || (m_control->GetFormat() != "path" && m_control->GetFormat() != "file" && m_control->GetFormat() != "image")))
+  if (m_control && (m_control->GetType() != "button" ||
+                    (m_control->GetFormat() != "path" && m_control->GetFormat() != "file" &&
+                     m_control->GetFormat() != "image")))
   {
     CLog::Log(LOGERROR, "CSettingPath: invalid <control> of \"{}\"", m_id);
     return false;
   }
 
-  auto constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
-  if (constraints != nullptr)
+  const TiXmlNode* constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
+  if (constraints)
   {
     // get writable
     XMLUtils::GetBoolean(constraints, "writable", m_writable);
@@ -62,15 +65,15 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
     XMLUtils::GetBoolean(constraints, "hideextensions", m_hideExtension);
 
     // get sources
-    auto sources = constraints->FirstChild("sources");
-    if (sources != nullptr)
+    const TiXmlNode* sources = constraints->FirstChild("sources");
+    if (sources)
     {
       m_sources.clear();
-      auto source = sources->FirstChild("source");
-      while (source != nullptr)
+      const TiXmlNode* source = sources->FirstChild("source");
+      while (source)
       {
-        auto child = source->FirstChild();
-        if (child != nullptr)
+        const TiXmlNode* child = source->FirstChild();
+        if (child)
         {
           const std::string& strSource = child->ValueStr();
           if (!strSource.empty())
@@ -82,8 +85,8 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
     }
 
     // get masking
-    auto masking = constraints->FirstChild("masking");
-    if (masking != nullptr)
+    const TiXmlNode* masking = constraints->FirstChild("masking");
+    if (masking)
       m_masking = masking->FirstChild()->ValueStr();
   }
 
@@ -106,10 +109,10 @@ std::string CSettingPath::GetMasking(const CFileExtensionProvider& fileExtension
     return m_masking;
 
   // setup masking
-  auto audioMask = fileExtensionProvider.GetMusicExtensions();
-  auto videoMask = fileExtensionProvider.GetVideoExtensions();
-  auto imageMask = fileExtensionProvider.GetPictureExtensions();
-  auto execMask = "";
+  const std::string audioMask = fileExtensionProvider.GetMusicExtensions();
+  const std::string videoMask = fileExtensionProvider.GetVideoExtensions();
+  const std::string imageMask = fileExtensionProvider.GetPictureExtensions();
+  std::string execMask = "";
 #if defined(TARGET_WINDOWS)
   execMask = ".exe|.bat|.cmd|.py";
 #endif // defined(TARGET_WINDOWS)
@@ -137,7 +140,7 @@ void CSettingPath::copy(const CSettingPath& setting)
 {
   CSettingString::Copy(setting);
 
-  std::unique_lock<CSharedSection> lock(m_critical);
+  std::unique_lock lock(m_critical);
   m_writable = setting.m_writable;
   m_sources = setting.m_sources;
   m_hideExtension = setting.m_hideExtension;

@@ -13,11 +13,14 @@
 
 #include <shared_mutex>
 
-CSettingDate::CSettingDate(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
+CSettingDate::CSettingDate(const std::string& id, CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, settingsManager)
 { }
 
-CSettingDate::CSettingDate(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = NULL */)
+CSettingDate::CSettingDate(const std::string& id,
+                           int label,
+                           const std::string& value,
+                           CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, label, value, settingsManager)
 { }
 
@@ -32,7 +35,7 @@ SettingPtr CSettingDate::Clone(const std::string &id) const
 
 bool CSettingDate::CheckValidity(const std::string &value) const
 {
-  std::shared_lock<CSharedSection> lock(m_critical);
+  std::shared_lock lock(m_critical);
 
   if (!CSettingString::CheckValidity(value))
     return false;
@@ -50,11 +53,14 @@ bool CSettingDate::SetDate(const CDateTime& date)
   return SetValue(date.GetAsDBDate());
 }
 
-CSettingTime::CSettingTime(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
+CSettingTime::CSettingTime(const std::string& id, CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, settingsManager)
 { }
 
-CSettingTime::CSettingTime(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = NULL */)
+CSettingTime::CSettingTime(const std::string& id,
+                           int label,
+                           const std::string& value,
+                           CSettingsManager* settingsManager /* = nullptr */)
   : CSettingString(id, label, value, settingsManager)
 { }
 
@@ -69,7 +75,7 @@ SettingPtr CSettingTime::Clone(const std::string &id) const
 
 bool CSettingTime::CheckValidity(const std::string &value) const
 {
-  std::shared_lock<CSharedSection> lock(m_critical);
+  std::shared_lock lock(m_critical);
 
   if (!CSettingString::CheckValidity(value))
     return false;

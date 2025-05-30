@@ -138,7 +138,10 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
   return true;
 }
 
-bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool triggerEvents /* = true */, std::map<std::string, SettingPtr> *loadedSettings /* = nullptr */)
+bool CSettingsManager::Load(const TiXmlElement* root,
+                            bool& updated,
+                            bool triggerEvents /* = true */,
+                            LoadedSettings* loadedSettings /* = nullptr */)
 {
   std::shared_lock<CSharedSection> lock(m_critical);
   std::unique_lock<CSharedSection> settingsLock(m_settingsCritical);

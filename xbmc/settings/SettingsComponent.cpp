@@ -31,120 +31,32 @@
 #include "win32util.h"
 #endif
 
-CSettingsComponent::CSettingsComponent()
-  : m_settings(new CSettings()),
-    m_advancedSettings(new CAdvancedSettings()),
-    m_subtitlesSettings(new KODI::SUBTITLES::CSubtitlesSettings(m_settings)),
-    m_profileManager(new CProfileManager())
+namespace
 {
+void CreateUserDirs()
+{
+  XFILE::CDirectory::Create("special://home/");
+  XFILE::CDirectory::Create("special://home/addons");
+  XFILE::CDirectory::Create("special://home/addons/packages");
+  XFILE::CDirectory::Create("special://home/addons/temp");
+  XFILE::CDirectory::Create("special://home/media");
+  XFILE::CDirectory::Create("special://home/system");
+  XFILE::CDirectory::Create("special://masterprofile/");
+  XFILE::CDirectory::Create("special://temp/");
+  XFILE::CDirectory::Create("special://logpath");
+  XFILE::CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
+
+  //Let's clear our archive cache before starting up anything more
+  const std::string archiveCachePath =
+      CSpecialProtocol::TranslatePath("special://temp/archive_cache/");
+  if (XFILE::CDirectory::Exists(archiveCachePath) &&
+      !XFILE::CDirectory::RemoveRecursive(archiveCachePath))
+    CLog::Log(LOGWARNING, "Failed to remove the archive cache at {}", archiveCachePath);
+
+  XFILE::CDirectory::Create(archiveCachePath);
 }
 
-CSettingsComponent::~CSettingsComponent()
-{
-}
-
-void CSettingsComponent::Initialize()
-{
-  if (m_state == State::DEINITED)
-  {
-    const auto params = CServiceBroker::GetAppParams();
-
-    // only the InitDirectories* for the current platform should return true
-    bool inited = InitDirectoriesLinux(params->HasPlatformDirectories());
-    if (!inited)
-      inited = InitDirectoriesOSX(params->HasPlatformDirectories());
-    if (!inited)
-      inited = InitDirectoriesWin32(params->HasPlatformDirectories());
-
-    m_settings->Initialize();
-
-    m_advancedSettings->Initialize(*m_settings->GetSettingsManager());
-    URIUtils::RegisterAdvancedSettings(*m_advancedSettings);
-
-    m_profileManager->Initialize(m_settings);
-
-    m_state = State::INITED;
-  }
-}
-
-bool CSettingsComponent::Load()
-{
-  if (m_state == State::INITED)
-  {
-    if (!m_profileManager->Load())
-    {
-      CLog::Log(LOGFATAL, "unable to load profile");
-      return false;
-    }
-
-    CSpecialProtocol::RegisterProfileManager(*m_profileManager);
-    XFILE::IDirectory::RegisterProfileManager(*m_profileManager);
-
-    if (!m_settings->Load())
-    {
-      CLog::Log(LOGFATAL, "unable to load settings");
-      return false;
-    }
-
-    m_settings->SetLoaded();
-
-    m_state = State::LOADED;
-    return true;
-  }
-  else if (m_state == State::LOADED)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-void CSettingsComponent::Deinitialize()
-{
-  if (m_state >= State::INITED)
-  {
-    if (m_state == State::LOADED)
-    {
-      m_subtitlesSettings.reset();
-
-      m_settings->Unload();
-
-      XFILE::IDirectory::UnregisterProfileManager();
-      CSpecialProtocol::UnregisterProfileManager();
-    }
-    m_profileManager->Uninitialize();
-
-    URIUtils::UnregisterAdvancedSettings();
-    m_advancedSettings->Uninitialize(*m_settings->GetSettingsManager());
-
-    m_settings->Uninitialize();
-  }
-  m_state = State::DEINITED;
-}
-
-std::shared_ptr<CSettings> CSettingsComponent::GetSettings()
-{
-  return m_settings;
-}
-
-std::shared_ptr<CAdvancedSettings> CSettingsComponent::GetAdvancedSettings()
-{
-  return m_advancedSettings;
-}
-
-std::shared_ptr<KODI::SUBTITLES::CSubtitlesSettings> CSettingsComponent::GetSubtitlesSettings()
-{
-  return m_subtitlesSettings;
-}
-
-std::shared_ptr<CProfileManager> CSettingsComponent::GetProfileManager()
-{
-  return m_profileManager;
-}
-
-bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)
+bool InitDirectoriesLinux(bool bPlatformDirectories)
 {
   /*
    The following is the directory mapping for Platform Specific Mode:
@@ -198,7 +110,7 @@ bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)
   if (getenv("KODI_BINADDON_PATH"))
     binaddonAltDir = getenv("KODI_BINADDON_PATH");
 
-  auto appBinPath = CUtil::GetHomePath(envAppBinHome);
+  const std::string appBinPath = CUtil::GetHomePath(envAppBinHome);
   // overridden by user
   if (getenv(envAppHome))
     appPath = getenv(envAppHome);
@@ -264,7 +176,7 @@ bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)
 #endif
 }
 
-bool CSettingsComponent::InitDirectoriesOSX(bool bPlatformDirectories)
+bool InitDirectoriesOSX(bool bPlatformDirectories)
 {
 #if defined(TARGET_DARWIN)
   std::string userHome;
@@ -352,7 +264,7 @@ bool CSettingsComponent::InitDirectoriesOSX(bool bPlatformDirectories)
 #endif
 }
 
-bool CSettingsComponent::InitDirectoriesWin32(bool bPlatformDirectories)
+bool InitDirectoriesWin32(bool bPlatformDirectories)
 {
 #ifdef TARGET_WINDOWS
   std::string xbmcPath = CUtil::GetHomePath();
@@ -376,25 +288,114 @@ bool CSettingsComponent::InitDirectoriesWin32(bool bPlatformDirectories)
   return false;
 #endif
 }
+} // unnamed namespace
 
-void CSettingsComponent::CreateUserDirs() const
+CSettingsComponent::CSettingsComponent()
+  : m_settings(std::make_shared<CSettings>()),
+    m_advancedSettings(std::make_shared<CAdvancedSettings>()),
+    m_subtitlesSettings(std::make_shared<KODI::SUBTITLES::CSubtitlesSettings>(m_settings)),
+    m_profileManager(std::make_shared<CProfileManager>())
 {
-  XFILE::CDirectory::Create("special://home/");
-  XFILE::CDirectory::Create("special://home/addons");
-  XFILE::CDirectory::Create("special://home/addons/packages");
-  XFILE::CDirectory::Create("special://home/addons/temp");
-  XFILE::CDirectory::Create("special://home/media");
-  XFILE::CDirectory::Create("special://home/system");
-  XFILE::CDirectory::Create("special://masterprofile/");
-  XFILE::CDirectory::Create("special://temp/");
-  XFILE::CDirectory::Create("special://logpath");
-  XFILE::CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
+}
 
-  //Let's clear our archive cache before starting up anything more
-  auto archiveCachePath = CSpecialProtocol::TranslatePath("special://temp/archive_cache/");
-  if (XFILE::CDirectory::Exists(archiveCachePath))
-    if (!XFILE::CDirectory::RemoveRecursive(archiveCachePath))
-      CLog::Log(LOGWARNING, "Failed to remove the archive cache at {}", archiveCachePath);
-  XFILE::CDirectory::Create(archiveCachePath);
+CSettingsComponent::~CSettingsComponent() = default;
 
+void CSettingsComponent::Initialize()
+{
+  if (m_state == State::DEINITED)
+  {
+    const std::shared_ptr<const CAppParams> params = CServiceBroker::GetAppParams();
+
+    // only the InitDirectories* for the current platform should return true
+    InitDirectoriesLinux(params->HasPlatformDirectories()) ||
+        InitDirectoriesOSX(params->HasPlatformDirectories()) ||
+        InitDirectoriesWin32(params->HasPlatformDirectories());
+
+    m_settings->Initialize();
+
+    m_advancedSettings->Initialize(*m_settings->GetSettingsManager());
+    URIUtils::RegisterAdvancedSettings(*m_advancedSettings);
+
+    m_profileManager->Initialize(m_settings);
+
+    m_state = State::INITED;
+  }
+}
+
+bool CSettingsComponent::Load()
+{
+  if (m_state == State::INITED)
+  {
+    if (!m_profileManager->Load())
+    {
+      CLog::Log(LOGFATAL, "unable to load profile");
+      return false;
+    }
+
+    CSpecialProtocol::RegisterProfileManager(*m_profileManager);
+    XFILE::IDirectory::RegisterProfileManager(*m_profileManager);
+
+    if (!m_settings->Load())
+    {
+      CLog::Log(LOGFATAL, "unable to load settings");
+      return false;
+    }
+
+    m_settings->SetLoaded();
+
+    m_state = State::LOADED;
+    return true;
+  }
+  else if (m_state == State::LOADED)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+void CSettingsComponent::Deinitialize()
+{
+  if (m_state >= State::INITED)
+  {
+    if (m_state == State::LOADED)
+    {
+      m_subtitlesSettings.reset();
+
+      m_settings->Unload();
+
+      XFILE::IDirectory::UnregisterProfileManager();
+      CSpecialProtocol::UnregisterProfileManager();
+    }
+    m_profileManager->Uninitialize();
+
+    URIUtils::UnregisterAdvancedSettings();
+    m_advancedSettings->Uninitialize(*m_settings->GetSettingsManager());
+
+    m_settings->Uninitialize();
+  }
+  m_state = State::DEINITED;
+}
+
+std::shared_ptr<CSettings> CSettingsComponent::GetSettings() const
+{
+  return m_settings;
+}
+
+std::shared_ptr<CAdvancedSettings> CSettingsComponent::GetAdvancedSettings() const
+{
+  return m_advancedSettings;
+}
+
+std::shared_ptr<KODI::SUBTITLES::CSubtitlesSettings> CSettingsComponent::GetSubtitlesSettings()
+    const
+{
+  return m_subtitlesSettings;
+}
+
+std::shared_ptr<CProfileManager> CSettingsComponent::GetProfileManager() const
+{
+  return m_profileManager;
 }

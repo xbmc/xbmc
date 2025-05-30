@@ -220,11 +220,11 @@ static int ExportLibrary(const std::vector<std::string>& params)
     {
       CLibExportSettings settings;
       // ELIBEXPORT_SINGLEFILE, ELIBEXPORT_ALBUMS + ELIBEXPORT_ALBUMARTISTS by default
-      settings.m_strPath = path;
+      settings.SetPath(path);
       if (!singleFile)
         settings.SetExportType(ELIBEXPORT_TOLIBRARYFOLDER);
-      settings.m_artwork = thumbs;
-      settings.m_overwrite = overwrite;
+      settings.SetArtwork(thumbs);
+      settings.SetOverwrite(overwrite);
       // Export music library (not showing progress dialog)
       CMusicLibraryQueue::GetInstance().ExportLibrary(settings, false);
     }
@@ -253,27 +253,27 @@ static int ExportLibrary2(const std::vector<std::string>& params)
   CLibExportSettings settings;
   if (params.size() < 3)
     return -1;
-  settings.m_strPath = params[2];
+  settings.SetPath(params[2]);
   settings.SetExportType(ELIBEXPORT_SINGLEFILE);
   if (StringUtils::EqualsNoCase(params[1], "separate"))
     settings.SetExportType(ELIBEXPORT_SEPARATEFILES);
   else if (StringUtils::EqualsNoCase(params[1], "library"))
   {
     settings.SetExportType(ELIBEXPORT_TOLIBRARYFOLDER);
-    settings.m_strPath.clear();
+    settings.SetPath("");
   }
   settings.ClearItems();
 
   for (unsigned int i = 2; i < params.size(); i++)
   {
     if (StringUtils::EqualsNoCase(params[i], "artwork"))
-      settings.m_artwork = true;
+      settings.SetArtwork(true);
     else if (StringUtils::EqualsNoCase(params[i], "overwrite"))
-      settings.m_overwrite = true;
+      settings.SetOverwrite(true);
     else if (StringUtils::EqualsNoCase(params[i], "unscraped"))
-      settings.m_unscraped = true;
+      settings.SetUnscraped(true);
     else if (StringUtils::EqualsNoCase(params[i], "skipnfo"))
-      settings.m_skipnfo = true;
+      settings.SetSkipNfo(true);
     else if (StringUtils::EqualsNoCase(params[i], "albums"))
       settings.AddItem(ELIBEXPORT_ALBUMS);
     else if (StringUtils::EqualsNoCase(params[i], "albumartists"))
@@ -294,8 +294,9 @@ static int ExportLibrary2(const std::vector<std::string>& params)
   {
     CVideoDatabase videodatabase;
     videodatabase.Open();
-    videodatabase.ExportToXML(settings.m_strPath, settings.IsSingleFile(),
-      settings.m_artwork, settings.IsItemExported(ELIBEXPORT_ACTORTHUMBS), settings.m_overwrite);
+    videodatabase.ExportToXML(settings.GetPath(), settings.IsSingleFile(), settings.IsArtwork(),
+                              settings.IsItemExported(ELIBEXPORT_ACTORTHUMBS),
+                              settings.IsOverwrite());
     videodatabase.Close();
   }
   return 0;
