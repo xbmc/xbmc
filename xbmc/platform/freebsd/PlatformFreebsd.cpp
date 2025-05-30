@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "application/AppParams.h"
+#include "cores/AudioEngine/Sinks/AENullSink.h"
 #include "utils/StringUtils.h"
 
 #include "platform/freebsd/OptionalsReg.h"
@@ -104,6 +105,10 @@ bool CPlatformFreebsd::InitStageOne()
     OPTIONALS::ALSARegister();
     OPTIONALS::PulseAudioRegister(true);
   }
+  else if (sink == "null")
+  {
+    CAENullSink::Register();
+  }
   else
   {
     if (!OPTIONALS::PulseAudioRegister(false))
@@ -112,7 +117,10 @@ bool CPlatformFreebsd::InitStageOne()
       {
         if (!OPTIONALS::SndioRegister())
         {
-          OPTIONALS::OSSRegister();
+          if (!OPTIONALS::OSSRegister())
+          {
+            CAENullSink::Register();
+          }
         }
       }
     }
