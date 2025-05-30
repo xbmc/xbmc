@@ -353,7 +353,6 @@ private:
   CDataCacheCore  &m_dataCacheCore;
 
   int              m_decoder_timeout;
-  bool             m_decoder_bypass_buffer_ready;
   float            m_decoder_buffer;
   float            m_decoder_stream_buffer;
   float            m_decoder_minimum_buffer;

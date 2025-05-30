@@ -1646,7 +1646,6 @@ bool CAMLCodec::OpenDecoder(bool restart)
   auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 
   m_decoder_timeout = advancedSettings->m_videoDecoderTimeout;
-  m_decoder_bypass_buffer_ready = advancedSettings->m_videoDecoderBypassBufferReady;
   m_decoder_buffer = advancedSettings->m_videoDecoderBuffer;
   m_decoder_stream_buffer = advancedSettings->m_videoDecoderStreamBuffer;
   m_decoder_minimum_buffer = advancedSettings->m_videoDecoderMinimumBuffer;
@@ -1657,12 +1656,12 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   m_buffer_level_ready = false;
 
-  logM(LOGINFO, "CAMLCodec", "Decoder settings: timeout: [{:d}s], bypass buffer ready: [{:d}], buffer: [{:.1f}%], "
-                             "stream buffer: [{:.1f}%], minimum buffer: [{:.1f}%], minimum stream buffer: [{:.1f}%] "
-                             "stream type stream offset: [{:d}usec] h264 offset: [{:d}usec] "
-                             "stream type stream min queue count: [{:d}]",
+  logM(LOGINFO, "CAMLCodec", "Decoder settings: timeout:[{:d}s] "
+                             "buffer:[{:.1f}%] stream buffer:[{:.1f}%] "
+                             "minimum buffer:[{:.1f}%] minimum stream buffer:[{:.1f}%] "
+                             "stream type stream offset:[{:d}usec] h264 offset:[{:d}usec] "
+                             "stream type stream min queue count:[{:d}]",
     m_decoder_timeout,
-    m_decoder_bypass_buffer_ready,
     m_decoder_buffer,
     m_decoder_stream_buffer,
     m_decoder_minimum_buffer,
@@ -2112,10 +2111,9 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
   float new_buffer_level = GetBufferLevel(chunk_size, data_len, free_len);
 
   if (!m_buffer_level_ready) {
-    m_buffer_level_ready = m_decoder_bypass_buffer_ready ||
-                           (IsDecStreamTypeStream()
-                              ? new_buffer_level > m_decoder_stream_buffer
-                              : new_buffer_level > m_decoder_buffer);
+    m_buffer_level_ready = IsDecStreamTypeStream()
+                             ? (new_buffer_level > m_decoder_stream_buffer)
+                             : (new_buffer_level > m_decoder_buffer);
 
     m_minimum_buffer_level = IsDecStreamTypeStream()
                                ? m_decoder_minimum_stream_buffer
