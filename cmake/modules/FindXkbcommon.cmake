@@ -19,6 +19,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   set(XKBCOMMON_VERSION ${PC_XKBCOMMON_VERSION})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Xkbcommon
                                     REQUIRED_VARS XKBCOMMON_LIBRARY XKBCOMMON_INCLUDE_DIR

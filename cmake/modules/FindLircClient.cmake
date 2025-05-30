@@ -17,6 +17,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_library(LIRCCLIENT_LIBRARY lirc_client
                                   HINTS ${PC_LIRC_LIBDIR})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LircClient
                                     REQUIRED_VARS LIRCCLIENT_LIBRARY LIRCCLIENT_INCLUDE_DIR)

@@ -20,6 +20,10 @@ if(NOT TARGET UUID::UUID)
                             HINTS ${PC_UUID_LIBRARY})
   set(UUID_VERSION ${PC_UUID_VERSION})
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(UUID
                                     REQUIRED_VARS UUID_LIBRARY UUID_INCLUDE_DIR

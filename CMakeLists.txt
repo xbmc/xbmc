@@ -69,7 +69,11 @@ endif()
 # Hide messages from Check*.cmake (e.g. CheckCSourceCompiles)
 if(NOT VERBOSE)
   set(CMAKE_REQUIRED_QUIET ON)
-  set(SEARCH_QUIET QUIET)
+
+  # Hide Find module output
+  if(NOT VERBOSE_FIND)
+    set(SEARCH_QUIET QUIET)
+  endif()
 endif()
 
 # Includes
@@ -89,6 +93,7 @@ include(cmake/scripts/common/DependencyOptions.cmake)
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
+option(VERBOSE_FIND       "Enable verbose output of library searches only?" OFF)
 option(ENABLE_CLANGTIDY   "Enable clang-tidy support?" OFF)
 option(ENABLE_CPPCHECK    "Enable cppcheck support?" OFF)
 option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)

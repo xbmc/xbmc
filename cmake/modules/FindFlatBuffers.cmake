@@ -52,6 +52,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                       NO_CACHE)
   endif()
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(FlatBuffers
                                     REQUIRED_VARS FLATBUFFERS_INCLUDE_DIR
