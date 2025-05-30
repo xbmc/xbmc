@@ -340,7 +340,6 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioBitsPerSample());
       return true;
-
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYLIST_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -437,6 +436,9 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case PLAYER_IS_EXTERNAL:
       value = m_appPlayer->IsExternalPlaying();
+      return true;
+    case PLAYER_IS_LIVE:
+      value = m_appPlayer->IsLiveStream();
       return true;
     case PLAYER_PLAYING:
       value = m_appPlayer->GetPlaySpeed() == 1.0f;

@@ -316,6 +316,10 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "መጨረሻ በ"
 
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "ግጥም መጨ-መሪያ"

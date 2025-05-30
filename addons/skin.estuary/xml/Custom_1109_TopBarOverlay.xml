@@ -250,7 +250,15 @@
 						<height>100</height>
 						<width>auto</width>
 						<visible>!String.isempty(Player.Duration)</visible>
+						<visible>!Player.IsLive</visible>
 						<visible>Player.HasVideo + ![Player.HasGame | VideoPlayer.HasEpg]</visible>
+					</control>
+					<control type="label">
+						<label>$LOCALIZE[31081]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+						<height>100</height>
+						<width>auto</width>
+						<visible>Player.IsLive</visible>
 					</control>
 					<control type="label">
 						<label>$INFO[PVR.EpgEventFinishTime,$LOCALIZE[31080]: ]</label>
