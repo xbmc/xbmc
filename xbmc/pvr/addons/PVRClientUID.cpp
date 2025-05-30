@@ -74,3 +74,8 @@ int CPVRClientUID::GetLegacyUID() const
 
   return uid;
 }
+
+void CPVRClientUID::ClearCache()
+{
+  s_idMap.clear();
+}

@@ -34,6 +34,11 @@ public:
    */
   int GetLegacyUID() const;
 
+  /*!
+   * @brief Clear the UID cache.
+   */
+  static void ClearCache();
+
 private:
   CPVRClientUID() = delete;
 

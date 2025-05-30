@@ -67,6 +67,8 @@ void CPVRClients::Stop()
   {
     client->Stop();
   }
+
+  CPVRClientUID::ClearCache();
 }
 
 void CPVRClients::Continue()

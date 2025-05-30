@@ -278,6 +278,9 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string& strDirectory, CFile
     items.Assign(*newTimeline, false);
   }
 
+  // update the view state's reference to the current items
+  m_guiState.reset(CGUIViewState::GetViewState(GetID(), items));
+
   return true;
 }
 
