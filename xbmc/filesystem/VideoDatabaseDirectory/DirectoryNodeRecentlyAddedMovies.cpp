@@ -36,3 +36,8 @@ bool CDirectoryNodeRecentlyAddedMovies::GetContent(CFileItemList& items) const
 
   return bSuccess;
 }
+
+NodeType CDirectoryNodeRecentlyAddedMovies::GetChildType() const
+{
+  return NodeType::MOVIE_ASSET_TYPES;
+}
