@@ -232,9 +232,8 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayoutLegacy(const AEAudioFormat& f
   // but no BR BL channels, we use the wide map in order to open only the num of channels really
   // needed.
   if (format.m_channelLayout.HasChannel(AE_CH_SL) && !format.m_channelLayout.HasChannel(AE_CH_BL))
-  {
     channelMap = LegacyALSAChannelMap51Wide;
-  }
+
   for (unsigned int c = 0; c < 8; ++c)
   {
     for (unsigned int i = 0; i < format.m_channelLayout.Count(); ++i)
@@ -301,13 +300,9 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(const AEAudioFormat& format,
     }
   }
 
-  CLog::Log(LOGDEBUG,
-            "CAESinkALSA::GetChannelLayout - Input Channel Count: {} Output Channel Count: {}",
-            format.m_channelLayout.Count(), info.Count());
-  CLog::Log(LOGDEBUG, "CAESinkALSA::GetChannelLayout - Requested Layout: {}",
-            std::string(format.m_channelLayout));
-  CLog::Log(LOGDEBUG, "CAESinkALSA::GetChannelLayout - Got Layout: {} (ALSA: {})",
-            std::string(info), alsaMapStr);
+  logM(LOGINFO, "CAESinkALSA", "Input Channel Count: {} Output Channel Count: {}", format.m_channelLayout.Count(), info.Count());
+  logM(LOGINFO, "CAESinkALSA", "Requested Layout: {}", std::string(format.m_channelLayout));
+  logM(LOGINFO, "CAESinkALSA", "Got Layout: {} (ALSA: {})", std::string(info), alsaMapStr);
 
   return info;
 }
@@ -743,10 +738,9 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   AMLDeviceType amlDeviceType = GetAMLDeviceType(device);
   if (amlDeviceType != AML_NONE)
   {
-    enum IEC958_mode_codec codec = inconfig.channels > 2 ? MULTI_CHANNEL_LPCM : STEREO_PCM;
+    CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Configure simple control for \"{}\"", GetAMLCardName(amlDeviceType));
 
-    CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Configure simple control for \"{}\"",
-      GetAMLCardName(amlDeviceType));
+    enum IEC958_mode_codec codec = inconfig.channels > 2 ? MULTI_CHANNEL_LPCM : STEREO_PCM;
 
     if (m_passthrough)
     {
@@ -831,15 +825,17 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 
   // we want it blocking
   snd_pcm_nonblock(m_pcm, 0);
-  snd_pcm_prepare (m_pcm);
+  snd_pcm_prepare(m_pcm);
 
   if (m_passthrough && inconfig.channels != outconfig.channels)
   {
     CLog::Log(LOGINFO, "CAESinkALSA::Initialize - could not open required number of channels");
     return false;
   }
+
   // adjust format to the configuration we got
   format.m_channelLayout = GetChannelLayout(format, outconfig.channels);
+
   // we might end up with an unusable channel layout that contains only UNKNOWN
   // channels, let's do a sanity check.
   if (!format.m_channelLayout.IsLayoutValid())
