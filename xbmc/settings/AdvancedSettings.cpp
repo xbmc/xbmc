@@ -181,7 +181,6 @@ void CAdvancedSettings::Initialize()
   m_videoDefaultLatency = 0.0;
 
   m_videoDecoderTimeout = 5;
-  m_videoDecoderBypassBufferReady = false;
   m_videoDecoderBuffer = 5.0f;
   m_videoDecoderStreamBuffer = 90.0f;
   m_videoDecoderMinimumBuffer = 5.0f;
@@ -861,7 +860,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     }
 
     XMLUtils::GetInt(pElement, "decodertimeout", m_videoDecoderTimeout, 1, 60);
-    XMLUtils::GetBoolean(pElement, "decoderbypassbufferready", m_videoDecoderBypassBufferReady);
     XMLUtils::GetFloat(pElement, "decoderbuffer", m_videoDecoderBuffer, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "decoderstreambuffer", m_videoDecoderStreamBuffer, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "decoderminimumbuffer", m_videoDecoderMinimumBuffer, 0.0f, 100.0f);
