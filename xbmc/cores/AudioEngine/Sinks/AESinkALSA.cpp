@@ -1237,7 +1237,6 @@ void CAESinkALSA::Drain()
     return;
 
   snd_pcm_drain(m_pcm);
-  snd_pcm_prepare(m_pcm);
 }
 
 void CAESinkALSA::AppendParams(std::string &device, const std::string &params)
