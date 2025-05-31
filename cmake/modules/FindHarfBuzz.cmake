@@ -6,41 +6,42 @@
 # This will define the following target:
 #
 #   ${APP_NAME_LC}::HarfBuzz   - The HarfBuzz library
+#   LIBRARY::HarfBuzz   - ALIAS TARGET for the HarfBuzz library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig ${SEARCH_QUIET})
-  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(PC_HARFBUZZ harfbuzz ${SEARCH_QUIET})
-  endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_path(HARFBUZZ_INCLUDE_DIR NAMES harfbuzz/hb-ft.h hb-ft.h
-                                 HINTS ${DEPENDS_PATH}/include
-                                       ${PC_HARFBUZZ_INCLUDEDIR}
-                                       ${PC_HARFBUZZ_INCLUDE_DIRS}
-                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-  find_library(HARFBUZZ_LIBRARY NAMES harfbuzz
-                                HINTS ${DEPENDS_PATH}/lib ${PC_HARFBUZZ_LIBDIR}
-                                ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC harfbuzz)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  set(HARFBUZZ_VERSION ${PC_HARFBUZZ_VERSION})
+  SETUP_BUILD_VARS()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SETUP_FIND_SPECS()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(HarfBuzz
-                                    REQUIRED_VARS HARFBUZZ_LIBRARY HARFBUZZ_INCLUDE_DIR
-                                    VERSION_VAR HARFBUZZ_VERSION)
+  SEARCH_EXISTING_PACKAGES()
 
-  if(HARFBUZZ_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${HARFBUZZ_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${HARFBUZZ_INCLUDE_DIR}")
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET harfbuzz::harfbuzz)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS harfbuzz::harfbuzz)
 
-    if(NOT TARGET harfbuzz::harfbuzz)
-      add_library(harfbuzz::harfbuzz ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+      if(WIN32 OR WINDOWS_STORE)
+        # Harfbuzz cmake config has a full path reference to freetype.
+        # As we currently use a prebuilt harfbuzz, this ends up with the path to freetype being the path
+        # used on the GH Action that builds the prebuilt libs. remove and add TARGET for freetype
+        get_target_property(_link_libs harfbuzz::harfbuzz INTERFACE_LINK_LIBRARIES)
+        list(REMOVE_AT _link_libs 0)
+        list(INSERT _link_libs 0 "freetype::freetype")
+        set_target_properties(harfbuzz::harfbuzz PROPERTIES INTERFACE_LINK_LIBRARIES "${_link_libs}")
+      endif()
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    endif()
+
+    get_target_property(_ALIASTARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIASED_TARGET)
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_ALIASTARGET})
+
+    if(NOT TARGET HarfBuzz::HarfBuzz)
+      add_library(HarfBuzz::HarfBuzz ALIAS ${_ALIASTARGET})
     endif()
   else()
     if(HarfBuzz_FIND_REQUIRED)
