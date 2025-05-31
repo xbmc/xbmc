@@ -23,14 +23,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   unset(DETOURS_LIBRARIES)
 
   if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+    set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+  endif()
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Detours
                                     REQUIRED_VARS DETOURS_LIBRARY DETOURS_INCLUDE_DIR)
 
-  if(DETOURS_FOUND)
+  if(Detours_FOUND)
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                      INTERFACE_INCLUDE_DIRECTORIES "${DETOURS_INCLUDE_DIR}")
