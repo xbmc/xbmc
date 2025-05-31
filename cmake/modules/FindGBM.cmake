@@ -7,58 +7,50 @@
 #   ${APP_NAME_LC}::GBM   - The GBM library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig ${SEARCH_QUIET})
-  if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_GBM gbm ${SEARCH_QUIET})
-  endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_path(GBM_INCLUDE_DIR NAMES gbm.h
-                            HINTS ${PC_GBM_INCLUDEDIR})
-  find_library(GBM_LIBRARY NAMES gbm
-                           HINTS ${PC_GBM_LIBDIR})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC gbm)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  set(GBM_VERSION ${PC_GBM_VERSION})
+  SETUP_BUILD_VARS()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SETUP_FIND_SPECS()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(GBM
-                                    REQUIRED_VARS GBM_LIBRARY GBM_INCLUDE_DIR
-                                    VERSION_VAR GBM_VERSION)
+  SEARCH_EXISTING_PACKAGES()
 
-  include(CheckCSourceCompiles)
-  set(CMAKE_REQUIRED_LIBRARIES ${GBM_LIBRARY})
-  check_c_source_compiles("#include <gbm.h>
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
 
-                           int main()
-                           {
-                             gbm_bo_map(NULL, 0, 0, 0, 0, GBM_BO_TRANSFER_WRITE, NULL, NULL);
-                           }
-                           " GBM_HAS_BO_MAP)
+    include(CheckCSourceCompiles)
+    set(CMAKE_REQUIRED_LIBRARIES PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    check_c_source_compiles("#include <gbm.h>
 
-  check_c_source_compiles("#include <gbm.h>
+                             int main()
+                             {
+                               gbm_bo_map(NULL, 0, 0, 0, 0, GBM_BO_TRANSFER_WRITE, NULL, NULL);
+                             }
+                             " GBM_HAS_BO_MAP)
 
-                           int main()
-                           {
-                             gbm_surface_create_with_modifiers(NULL, 0, 0, 0, NULL, 0);
-                           }
-                           " GBM_HAS_MODIFIERS)
+    check_c_source_compiles("#include <gbm.h>
 
-  if(GBM_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${GBM_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${GBM_INCLUDE_DIR}"
-                                                                     INTERFACE_COMPILE_DEFINITIONS "HAVE_GBM")
+                             int main()
+                             {
+                               gbm_surface_create_with_modifiers(NULL, 0, 0, 0, NULL, 0);
+                             }
+                             " GBM_HAS_MODIFIERS)
+
+    unset(CMAKE_REQUIRED_LIBRARIES)
+
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_GBM)
+
     if(GBM_HAS_BO_MAP)
-      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                            INTERFACE_COMPILE_DEFINITIONS HAS_GBM_BO_MAP)
+      list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAS_GBM_BO_MAP)
     endif()
     if(GBM_HAS_MODIFIERS)
-      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                            INTERFACE_COMPILE_DEFINITIONS HAS_GBM_MODIFIERS)
+      list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAS_GBM_MODIFIERS)
     endif()
+
+    ADD_TARGET_COMPILE_DEFINITION()
   endif()
 endif()
