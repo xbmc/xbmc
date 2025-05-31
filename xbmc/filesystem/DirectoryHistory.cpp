@@ -13,6 +13,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <ranges>
 
 const std::string& CDirectoryHistory::CPathHistoryItem::GetPath(bool filter /* = false */) const
 {
@@ -100,12 +101,20 @@ void CDirectoryHistory::AddPathFront(const std::string& strPath, const std::stri
   m_vecPathHistory.insert(m_vecPathHistory.begin(), item);
 }
 
-std::string CDirectoryHistory::GetParentPath(bool filter /* = false */)
+std::string CDirectoryHistory::GetParentPath(const std::string& currentPath /* = "" */,
+                                             bool filter /* = false */)
 {
   if (m_vecPathHistory.empty())
-    return "";
+    return {};
 
-  return m_vecPathHistory.back().GetPath(filter);
+  if (currentPath.empty())
+    return m_vecPathHistory.back().GetPath(filter);
+
+  const auto it{std::ranges::find_if(std::views::reverse(m_vecPathHistory),
+                                     [&currentPath, filter](const CPathHistoryItem& path)
+                                     { return currentPath != path.GetPath(filter); })};
+
+  return it != m_vecPathHistory.rend() ? it->GetPath(filter) : std::string{};
 }
 
 bool CDirectoryHistory::IsInHistory(const std::string &path) const
@@ -127,7 +136,7 @@ std::string CDirectoryHistory::RemoveParentPath(bool filter /* = false */)
   if (m_vecPathHistory.empty())
     return "";
 
-  std::string strParent = GetParentPath(filter);
+  std::string strParent = GetParentPath("", filter);
   m_vecPathHistory.pop_back();
   return strParent;
 }
