@@ -225,7 +225,7 @@ endif()
 
 # Required dependencies. Keep in alphabetical order please
 set(required_deps ASS>=0.15.0
-                  Cdio
+                  Cdio>=0.80
                   CrossGUID
                   Curl
                   Exiv2
