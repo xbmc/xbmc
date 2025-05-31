@@ -294,12 +294,7 @@ else()
     endforeach()
 
   else()
-    if(FFMPEG_PATH)
-      message(FATAL_ERROR "FFmpeg not found, please consider using -DENABLE_INTERNAL_FFMPEG=ON")
-    else()
-      message(STATUS "FFmpeg ${REQUIRED_FFMPEG_VERSION} not found, falling back to internal build")
-      buildFFMPEG()
-    endif()
+    message(FATAL_ERROR "FFmpeg ${REQUIRED_FFMPEG_VERSION} not found, consider using -DENABLE_INTERNAL_FFMPEG=ON")
   endif()
 endif()
 
