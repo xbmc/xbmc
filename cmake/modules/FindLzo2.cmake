@@ -9,28 +9,24 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_path(LZO2_INCLUDE_DIR NAMES lzo1x.h
-                             PATH_SUFFIXES lzo
-                             HINTS ${DEPENDS_PATH}/include
-                             ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_library(LZO2_LIBRARY NAMES lzo2 liblzo2
-                            HINTS ${DEPENDS_PATH}/lib
-                            ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC lzo2)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SETUP_BUILD_VARS()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Lzo2
-                                    REQUIRED_VARS LZO2_LIBRARY LZO2_INCLUDE_DIR)
+  SETUP_FIND_SPECS()
 
-  if(LZO2_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${LZO2_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${LZO2_INCLUDE_DIR}")
+  SEARCH_EXISTING_PACKAGES()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    elseif(TARGET lzo2::lzo2)
+      # Kodi target - windows prebuilt lib
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS lzo2::lzo2)
+    endif()
   else()
     if(LibLzo2_FIND_REQUIRED)
       message(FATAL_ERROR "Lzo2 library was not found.")
