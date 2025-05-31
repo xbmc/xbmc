@@ -46,7 +46,9 @@
 #include "platform/posix/filesystem/SMBDirectory.h"
 #endif
 #endif
+#ifdef HAS_OPTICAL_DRIVE
 #include "CDDADirectory.h"
+#endif // HAS_OPTICAL_DRIVE
 #include "PluginDirectory.h"
 #if defined(HAS_ISO9660PP)
 #include "ISO9660Directory.h"
