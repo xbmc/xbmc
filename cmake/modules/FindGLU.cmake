@@ -8,31 +8,18 @@
 #   ${APP_NAME_LC}::GLU   - The GLU library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_package(PkgConfig ${SEARCH_QUIET})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC glu)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_GLU glu ${SEARCH_QUIET})
+  SETUP_BUILD_VARS()
+
+  SETUP_FIND_SPECS()
+
+  SEARCH_EXISTING_PACKAGES()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
   endif()
-
-  find_path(GLU_INCLUDE_DIR NAMES GL/glu.h
-                            HINTS ${PC_GLU_INCLUDEDIR})
-  find_library(GLU_LIBRARY NAMES GLU
-                           HINTS ${PC_GLU_LIBDIR})
-
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(GLU
-                                    REQUIRED_VARS GLU_LIBRARY GLU_INCLUDE_DIR)
-
-  if(GLU_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${GLU_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${GLU_INCLUDE_DIR}")
-  endif()
-
 endif()
