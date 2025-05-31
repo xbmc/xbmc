@@ -31,8 +31,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   endmacro()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC flatbuffers)
-
   SETUP_BUILD_VARS()
+
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INTERFACE_LIB TRUE)
 
   find_package(flatbuffers CONFIG ${SEARCH_QUIET}
                            HINTS ${DEPENDS_PATH}/lib/cmake
@@ -42,36 +43,27 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # A corner case, but if a linux/freebsd user WANTS to build internal flatbuffers, build anyway
   if((flatbuffers_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_FLATBUFFERS) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_FLATBUFFERS))
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
     ")
   else()
-    find_path(FLATBUFFERS_INCLUDE_DIR NAMES flatbuffers/flatbuffers.h
-                                      HINTS ${DEPENDS_PATH}/include
-                                      ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG}
-                                      NO_CACHE)
+    # Flatbuffers cmake targets are odd. We dont use static/shared builds, and only use header only
+    # however they do not provide header only targets. Manually search for header to create our own
+    # target.
+    find_path(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR NAMES flatbuffers/flatbuffers.h
+                                                               HINTS ${DEPENDS_PATH}/include
+                                                               ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
   endif()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(FlatBuffers
-                                    REQUIRED_VARS FLATBUFFERS_INCLUDE_DIR
-                                    VERSION_VAR FLATBUFFERS_VER)
-
-  if(FlatBuffers_FOUND)
-
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR}")
-
-    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} flatbuffers::flatc)
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    SETUP_BUILD_TARGET()
 
     if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
+
+    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} flatbuffers::flatc)
 
     ADD_MULTICONFIG_BUILDMACRO()
   else()
