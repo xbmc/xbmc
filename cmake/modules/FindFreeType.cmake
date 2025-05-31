@@ -6,43 +6,37 @@
 # This will define the following target:
 #
 #   ${APP_NAME_LC}::FreeType   - The FreeType library
+#   LIBRARY::FreeType   - ALIAS TARGET for the FreeType library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig ${SEARCH_QUIET})
-  # Do not use pkgconfig on windows
-  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(PC_FREETYPE freetype2 ${SEARCH_QUIET})
-  endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_path(FREETYPE_INCLUDE_DIR NAMES freetype/freetype.h freetype.h
-                                 HINTS ${DEPENDS_PATH}/include
-                                       ${PC_FREETYPE_INCLUDEDIR}
-                                       ${PC_FREETYPE_INCLUDE_DIRS}
-                                 PATH_SUFFIXES freetype2
-                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-  find_library(FREETYPE_LIBRARY NAMES freetype freetype246MT
-                                HINTS ${DEPENDS_PATH}/lib ${PC_FREETYPE_LIBDIR}
-                                ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC freetype)
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC freetype2)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  set(FREETYPE_VERSION ${PC_FREETYPE_VERSION})
+  SETUP_BUILD_VARS()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SETUP_FIND_SPECS()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(FreeType
-                                    REQUIRED_VARS FREETYPE_LIBRARY FREETYPE_INCLUDE_DIR
-                                    VERSION_VAR FREETYPE_VERSION)
+  SEARCH_EXISTING_PACKAGES()
 
-  if(FREETYPE_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${FREETYPE_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${FREETYPE_INCLUDE_DIR}")
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    elseif(TARGET freetype::freetype)
+      # Kodi target - windows prebuilt lib
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS freetype::freetype)
+    elseif(TARGET Freetype::Freetype)
+      # Freetype native target
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS Freetype::Freetype)
+    endif()
+
+    get_target_property(_ALIASTARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIASED_TARGET)
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_ALIASTARGET})
 
     if(NOT TARGET Freetype::Freetype)
-      add_library(Freetype::Freetype ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+      add_library(Freetype::Freetype ALIAS ${_ALIASTARGET})
     endif()
   else()
     if(Freetype_FIND_REQUIRED)
