@@ -34,26 +34,14 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                                                          HINTS ${DEPENDS_PATH}/share/utf8cpp/cmake
                                                          ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
-  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
-    # extract INTERFACE_INCLUDE_DIRECTORIES for find_package_handle_standard_args usage
-    get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR utf8cpp::utf8cpp INTERFACE_INCLUDE_DIRECTORIES)
-    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION})
-  else()
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
     ")
   endif()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Utfcpp
-                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
-                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
-
-  if(Utfcpp_FOUND)
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     if(TARGET utf8cpp::utf8cpp AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS utf8cpp::utf8cpp)
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
