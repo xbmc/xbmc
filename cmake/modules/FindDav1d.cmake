@@ -29,7 +29,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                           -Denable_tools=false
                           -Denable_examples=false
                           -Denable_tests=false
-                          ../dav1d)
+                          ../${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     set(BUILD_COMMAND ${NINJA_EXECUTABLE})
     set(INSTALL_COMMAND ${NINJA_EXECUTABLE} install)
 
