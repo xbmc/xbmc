@@ -8,7 +8,7 @@
 #   ${APP_NAME_LC}::Dav1d   - The dav1d library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  if(ENABLE_INTERNAL_DAV1D AND NOT (WIN32 OR WINDOWS_STORE))
+  if((ENABLE_INTERNAL_DAV1D AND ENABLE_INTERNAL_FFMPEG) AND NOT (WIN32 OR WINDOWS_STORE))
     include(cmake/scripts/common/ModuleHelpers.cmake)
 
     set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC dav1d)
@@ -29,7 +29,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                           -Denable_tools=false
                           -Denable_examples=false
                           -Denable_tests=false
-                          ../dav1d)
+                          ../${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     set(BUILD_COMMAND ${NINJA_EXECUTABLE})
     set(INSTALL_COMMAND ${NINJA_EXECUTABLE} install)
 
