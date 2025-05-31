@@ -11,6 +11,7 @@
 #include "CueDocument.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "filesystem/BlurayDirectory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory.h"
@@ -30,7 +31,9 @@
 #include "utils/RegExp.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 
 #include <algorithm>
@@ -927,6 +930,39 @@ void CFileItemList::StackFiles()
       }
     }
     i++;
+  }
+}
+
+void CFileItemList::ReplaceBlurayFiles()
+{
+  for (auto& item : m_items)
+  {
+    if (URIUtils::IsBlurayPath(item->GetDynPath()))
+      continue;
+
+    const std::string path{VIDEO::UTILS::GetOpticalMediaPath(*item)};
+    if (path.empty())
+      continue;
+
+    const std::string file{CBlurayDirectory::GetBlurayPlaylistPath(*item)};
+    if (file.empty())
+      continue;
+
+    item->SetPath(path); // index.bdmv
+    item->SetFolder(false);
+
+    // The removable path encapsulated in bluray://
+    item->GetVideoInfoTag()->m_strFileNameAndPath = file;
+
+    // See if bookmark exists
+    CVideoDatabase db;
+    if (db.Open())
+    {
+      CBookmark bookmark;
+      if (db.GetResumeBookMark(file, bookmark))
+        item->GetVideoInfoTag()->SetResumePoint(bookmark);
+      db.Close();
+    }
   }
 }
 

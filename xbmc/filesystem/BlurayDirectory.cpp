@@ -20,11 +20,14 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
+#include "utils/DiscsUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
@@ -1862,4 +1865,42 @@ const BLURAY_DISC_INFO* CBlurayDirectory::GetDiscInfo() const
   return bd_get_disc_info(m_bd);
 }
 
+std::string CBlurayDirectory::GetBlurayPlaylistPath(const CFileItem& item)
+{
+  const std::string& path{item.GetPath()};
+  if (URIUtils::IsBlurayPath(path))
+    return path; // Already a bluray playlist path
+
+  CVideoDatabase db;
+  if (!db.Open())
+    return {};
+
+  // First see if the path is a removable bluray path
+  std::string playlistPath;
+#ifdef HAS_OPTICAL_DRIVE
+  if (item.IsRemovable())
+  {
+    const CURL url{path};
+    const std::string mediaPath{
+        CServiceBroker::GetMediaManager().TranslateDevicePath(url.GetHostName())};
+    UTILS::DISCS::DiscInfo info{CServiceBroker::GetMediaManager().GetDiscInfo(mediaPath)};
+    if (!info.empty() && info.type == UTILS::DISCS::DiscType::BLURAY)
+    {
+      const std::string blurayPath{CServiceBroker::GetMediaManager().GetDiskUniqueId()};
+      playlistPath = db.GetRemovableBlurayPath(blurayPath);
+    }
+  }
+  else
+#endif
+  {
+    // See if the bluray path exists in the database
+    const std::string blurayPath{URIUtils::GetBlurayPlaylistPath(path)};
+    if (const int idPath{db.GetPathId(blurayPath)}; idPath != -1)
+      if (std::vector<std::string> files{db.GetFilesByPathId(idPath)}; !files.empty())
+        playlistPath = *files.begin();
+  }
+
+  db.Close();
+  return playlistPath;
+}
 } // namespace XFILE
