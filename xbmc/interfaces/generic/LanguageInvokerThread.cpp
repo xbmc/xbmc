@@ -105,6 +105,7 @@ void CLanguageInvokerThread::Process()
   {
     m_restart = false;
     m_invoker->Execute(m_script, m_args);
+    m_invocationManager->OnExecutionDone(GetId());
 
     if (m_invoker->GetState() != InvokerStateScriptDone)
       m_reusable = false;
@@ -120,7 +121,6 @@ void CLanguageInvokerThread::OnExit()
     return;
 
   m_invoker->onExecutionDone();
-  m_invocationManager->OnExecutionDone(GetId());
 }
 
 void CLanguageInvokerThread::OnException()

@@ -467,6 +467,7 @@ public:
   static constexpr auto SETTING_ADDONS_AUTOUPDATES = "general.addonupdates";
   static constexpr auto SETTING_ADDONS_NOTIFICATIONS = "general.addonnotifications";
   static constexpr auto SETTING_ADDONS_SHOW_RUNNING = "addons.showrunning";
+  static constexpr auto SETTING_ADDONS_MAX_REUSABLE_THREADS = "addons.maxreusablethreads";
   static constexpr auto SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES = "addons.unknownsources";
   static constexpr auto SETTING_ADDONS_UPDATEMODE = "addons.updatemode";
   static constexpr auto SETTING_ADDONS_MANAGE_DEPENDENCIES = "addons.managedependencies";

@@ -67,6 +67,13 @@ public:
    */
   bool UnsetActive(const AddonInfoPtr& addon);
 
+  /*!
+   * Gets the maximum amount of threads to keep alive to run addon scripts
+   * 
+   * @return the amount of threads to keep alive
+   */
+  int GetMaxReusableThreads() const;
+
 private:
   CAddonSystemSettings();
   CAddonSystemSettings(const CAddonSystemSettings&) = delete;

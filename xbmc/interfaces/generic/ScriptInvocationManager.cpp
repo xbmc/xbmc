@@ -8,6 +8,7 @@
 
 #include "ScriptInvocationManager.h"
 
+#include "addons/AddonSystemSettings.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "interfaces/generic/LanguageInvokerThread.h"
@@ -43,6 +44,7 @@ void CScriptInvocationManager::Process()
   {
     if (it->second.done && !it->second.thread->Reuseable())
     {
+      tempList.push_back(it->second);
       m_scripts.erase(it++);
     }
     else
@@ -206,6 +208,7 @@ int CScriptInvocationManager::ExecuteAsync(
   // If we can't find a suitable one, we'll kill another ready reusable thread off so we can replace it for this script.
   if (reuseable)
   {
+    const int maxReusableThreads = ADDON::CAddonSystemSettings::GetInstance().GetMaxReusableThreads();
     std::unique_lock lock(m_critSection);
 
     int reusableThreadId = -1;
@@ -230,9 +233,9 @@ int CScriptInvocationManager::ExecuteAsync(
         it.second.done = false;
         if (addon != NULL) reusedThread->SetAddon(addon);
 
-        reusedThread->GetInvoker()->Reset();
-        lock.unlock();
-        reusedThread->Execute(script, arguments);
+                reusedThread->GetInvoker()->Reset();
+                lock.unlock();
+                reusedThread->Execute(script, arguments);
 
         return reusedThread->GetId();
       }
@@ -243,7 +246,7 @@ int CScriptInvocationManager::ExecuteAsync(
     }
 
     // If we've run out of resumable threads.
-    if (countResumableThreads >= m_maxReusableThreads)
+    if (countResumableThreads >= maxReusableThreads)
     {
       // And there are no threads we can close down.
       if (reusableThreadId == -1)
@@ -398,7 +401,7 @@ bool CScriptInvocationManager::IsRunning(int scriptId) const
   std::unique_lock lock(m_critSection);
   LanguageInvokerThread invokerThread = getInvokerThread(scriptId);
   if (invokerThread.thread == NULL)
-    return false;
+  return false;
 
   return !invokerThread.done;
 }

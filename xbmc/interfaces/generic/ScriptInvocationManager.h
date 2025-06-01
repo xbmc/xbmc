@@ -149,6 +149,5 @@ private:
   LanguageInvokerThreadMap m_scripts;
 
   int m_nextId = 0;
-  const int m_maxReusableThreads = 5;
   mutable CCriticalSection m_critSection;
 };
