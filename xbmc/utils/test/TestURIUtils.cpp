@@ -680,6 +680,10 @@ TEST(TestPathStringUtils, GetFileNameConflicts)
     EXPECT_EQ(".thing",  URIUtils::GetFileName("/.thing"));
     EXPECT_EQ("/.thing", CURL_FileName_URIUtils_Split("/.thing"));
     EXPECT_EQ("/.thing", URIUtils_Split("/.thing"));
+
+    EXPECT_EQ(".thing",  URIUtils::GetFileName("/hello/there/.thing"));
+    EXPECT_EQ(".thing", CURL_FileName_URIUtils_Split("/hello/there/.thing"));
+    EXPECT_EQ(".thing", URIUtils_Split("/hello/there/.thing"));
   }
 }
 
