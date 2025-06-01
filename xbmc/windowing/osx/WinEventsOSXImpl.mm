@@ -150,6 +150,9 @@
       return XBMCK_PAUSE;
     case NSInsertCharFunctionKey:
       return XBMCK_INSERT;
+    case NSDeleteFunctionKey:
+    case NSDeleteCharFunctionKey:
+      return XBMCK_DELETE;
     default:
       return character;
   }
