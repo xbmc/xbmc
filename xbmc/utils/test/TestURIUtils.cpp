@@ -600,3 +600,118 @@ TEST_F(TestURIUtils, UpdateUrlEncoding)
   EXPECT_FALSE(URIUtils::UpdateUrlEncoding(oldUrl));
   EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
 }
+
+TEST(TestPathStringUtils, ServiceAvailabilityInTestEnvironment)
+{
+  URIUtils::IsOnLAN("ftp://some.where/foo.avi", LanCheckMode::ANY_PRIVATE_SUBNET);
+  URIUtils::IsHostOnLAN("ftp://some.where/foo.avi", LanCheckMode::ANY_PRIVATE_SUBNET);
+}
+
+TEST(TestPathStringUtils, GetFileNameConflicts)
+{
+  auto URIUtils_Split = [=](const std::string& in) {
+    std::string _, splitCurlFileName;
+    URIUtils::Split(in, _, splitCurlFileName);
+    return splitCurlFileName;
+  };
+  auto CURL_FileName_URIUtils_Split = [=](const std::string& in) {
+    return URIUtils_Split(CURL(in).GetFileName());
+  };
+
+  // These conflics are caused by having two implementations of the
+  // same thing. Given a std::string representing a file/path description
+  // you may wish to extract its filename. (ie `abc.bat` from
+  // `C:\\Users\\name\\scripts\\abc.bat`.
+  //
+  // URIUtils::GetFileName() does exactly as described above.
+  //
+  // CURL::GetFileName() actually returns the full path from the parsed
+  // protocol description (a misleading name). Although, from there we
+  // can cut off the path and retreive the filename.
+  // std::string -> CURL -> fullpath -> filename
+  //
+  // These 2 ways of calculating the filename should be equvalent and
+  // returning the same answer.
+
+  {
+    // Conflict 1
+    //
+    // Root cause: CURL::parse discards "?" as filename
+    EXPECT_EQ("", CURL("?").GetFileName());
+
+
+    EXPECT_EQ("?", URIUtils::GetFileName("?"));
+    EXPECT_EQ("",  CURL_FileName_URIUtils_Split("?"));
+    EXPECT_EQ("?", URIUtils_Split("?"));
+  }
+  {
+    // Conflict 2
+    //
+    // Root cause: URIUtils::Split is treating a colon as a special
+    // character representing a win32 drive delimeter. This is a correct
+    // delimeter but the drive should not be returned as the "filename"
+    EXPECT_EQ("", URIUtils_Split("C:"));
+
+
+    EXPECT_EQ("C:", URIUtils::GetFileName("C:"));
+    EXPECT_EQ("", CURL_FileName_URIUtils_Split("C:"));
+    EXPECT_EQ("", URIUtils_Split("C:"));
+  }
+  {
+    // Conflict 3
+    //
+    // Root cause: URIUtils::Split is treating any preceeding slash
+    // as part of the filename.
+    //
+    // The slash will also be "normalized" when being parsed by CURL
+    // but will remain true to the input slash when URIUtils::Split
+    // is called
+    EXPECT_EQ("/.thing", URIUtils_Split("/.thing"));
+
+
+    EXPECT_EQ("",  URIUtils::GetFileName("/"));
+    EXPECT_EQ("/", CURL_FileName_URIUtils_Split("/"));
+    EXPECT_EQ("/", URIUtils_Split("/"));
+
+    EXPECT_EQ("",   URIUtils::GetFileName("\\"));
+    EXPECT_EQ("/",  CURL_FileName_URIUtils_Split("\\"));
+    EXPECT_EQ("\\", URIUtils_Split("\\"));
+
+    EXPECT_EQ(".thing",  URIUtils::GetFileName("/.thing"));
+    EXPECT_EQ("/.thing", CURL_FileName_URIUtils_Split("/.thing"));
+    EXPECT_EQ("/.thing", URIUtils_Split("/.thing"));
+  }
+}
+
+TEST(TestPathStringUtils, ContainerEncodingConflicts)
+{
+  CURL curl("/path/thing");
+
+  // Zip, APK, UDF, ISO9660 and bluray are known to store "the parent in the
+  // hostname". This means that the hostname probably should be "encoded" (%2f etc).
+  //
+  // RAR is also a filetype which acts as a file container, although this file
+  // does not get its file encoded (the filename is stored in the hostname within
+  // the CURL structure).
+  //
+  // Including "rar" in the list of protocols in URI::Utils::HasParentInHostname
+  // will change this behaviour to match zip, udf etc...
+
+  EXPECT_EQ("zip://%2fpath%2fthing/my/archived/path",
+    URIUtils::CreateArchivePath("zip", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("apk://%2fpath%2fthing/my/archived/path",
+    URIUtils::CreateArchivePath("apk", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("udf://%2fpath%2fthing/my/archived/path",
+    URIUtils::CreateArchivePath("udf", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("iso9660://%2fpath%2fthing/my/archived/path",
+    URIUtils::CreateArchivePath("iso9660", curl, "/my/archived/path").Get());
+
+  // RAR file hostnames are __NOT__ "encoded" (%2f etc)
+  // This is a contradiction to the other file containers above
+  EXPECT_EQ("rar:///path/thing/my/archived/path",
+    URIUtils::CreateArchivePath("rar", curl, "/my/archived/path").Get());
+}
+
