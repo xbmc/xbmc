@@ -148,6 +148,7 @@
       return XBMCK_PAGEUP;
     case NSPauseFunctionKey:
       return XBMCK_PAUSE;
+    case NSInsertFunctionKey:
     case NSInsertCharFunctionKey:
       return XBMCK_INSERT;
     case NSDeleteFunctionKey:
