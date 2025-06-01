@@ -52,7 +52,7 @@ endif
 
 FONTCONFIG=fontconfig
 ifeq ($(OS),darwin_embedded)
-  EXCLUDED_DEPENDS = libusb gtest
+  EXCLUDED_DEPENDS = libusb gtest libcdio libcdio-gplv3
   FONTCONFIG=
   ifeq ($(TARGET_PLATFORM),appletvos)
     EXCLUDED_DEPENDS += libshairplay libplist
@@ -70,7 +70,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  EXCLUDED_DEPENDS = libusb gtest
+  EXCLUDED_DEPENDS = libusb gtest libcdio libcdio-gplv3
   DEPENDS += dummy-libxbmc libdovi libuuid
   PYMODULE_DEPS = dummy-libxbmc
   LIBUUID = libuuid
