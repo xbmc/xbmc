@@ -870,7 +870,8 @@ bool URIUtils::IsHostOnLAN(const std::string& host, LanCheckMode lanCheckMode)
   if(address == INADDR_NONE)
   {
     std::string ip;
-    if (CServiceBroker::GetDNSNameCache()->Lookup(host, ip))
+    auto cache = CServiceBroker::GetDNSNameCache();
+    if (cache && cache->Lookup(host, ip))
       address = ntohl(inet_addr(ip.c_str()));
   }
 
