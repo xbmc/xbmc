@@ -9242,7 +9242,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
   {
     if (scraperCache)
     {
-      auto key = scraperID + pathSettings;
+      auto key = scraperID + pathSettings + TranslateContent(content);
       if (auto iter = scraperCache->find(key); iter != scraperCache->end())
         return std::make_pair(true, iter->second);
     }
@@ -9257,7 +9257,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
       scraper->SetPathSettings(content, pathSettings);
       if (scraperCache)
       {
-        auto key = scraperID + pathSettings;
+        auto key = scraperID + pathSettings + TranslateContent(content);
         scraperCache->emplace(std::move(key), scraper);
       }
     }
