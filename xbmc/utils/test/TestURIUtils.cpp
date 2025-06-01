@@ -600,3 +600,23 @@ TEST_F(TestURIUtils, UpdateUrlEncoding)
   EXPECT_FALSE(URIUtils::UpdateUrlEncoding(oldUrl));
   EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
 }
+
+TEST_F(TestURIUtils, ContainersEncodeHostnamePaths)
+{
+  CURL curl("/path/thing");
+
+  EXPECT_EQ("zip://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("zip", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("apk://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("apk", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("udf://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("udf", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("iso9660://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("iso9660", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("rar://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("rar", curl, "/my/archived/path").Get());
+}

@@ -295,6 +295,7 @@ bool URIUtils::HasParentInHostname(const CURL& url)
 {
   return url.IsProtocol("zip") || url.IsProtocol("apk") || url.IsProtocol("bluray") ||
          url.IsProtocol("udf") || url.IsProtocol("iso9660") || url.IsProtocol("xbt") ||
+         url.IsProtocol("rar") ||
          (CServiceBroker::IsAddonInterfaceUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(url.GetProtocol()));
 }
