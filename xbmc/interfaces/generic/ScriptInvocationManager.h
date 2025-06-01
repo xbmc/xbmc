@@ -35,11 +35,6 @@ public:
   std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script);
 
   /*!
-  * \brief Returns addon_handle if last reusable invoker is ready to use.
-  */
-  int GetReusablePluginHandle(const std::string& script);
-
-  /*!
    * \brief Executes the given script asynchronously in a separate thread.
    *
    * \param script Path to the script to be executed

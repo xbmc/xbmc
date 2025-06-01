@@ -168,11 +168,6 @@ bool CScriptInvocationManager::HasLanguageInvoker(const std::string &script) con
   return it != m_invocationHandlers.end() && it->second != NULL;
 }
 
-int CScriptInvocationManager::GetReusablePluginHandle(const std::string& script)
-{
-  return -1;
-}
-
 std::shared_ptr<ILanguageInvoker> CScriptInvocationManager::GetLanguageInvoker(
     const std::string& script)
 {

@@ -16,7 +16,6 @@
 #include "addons/RepositoryUpdater.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
-#include "filesystem/PluginDirectory.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/IAnnouncer.h"
