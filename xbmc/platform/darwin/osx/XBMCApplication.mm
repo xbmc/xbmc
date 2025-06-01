@@ -179,7 +179,7 @@ static NSDictionary* _windowMenu = @{
   if (appPort == nullptr)
     return NSTerminateNow;
 
-  XBMC_Event quitEvent{.type = XBMC_QUIT};
+  XBMC_Event quitEvent{.type = XBMC_QUIT, .quit = {}};
   appPort->OnEvent(quitEvent);
 
   return NSTerminateLater;
