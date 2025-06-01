@@ -777,3 +777,76 @@ TEST_F(TestURIUtils, GetBlurayPlaylistFromPath)
                 "PLAYLIST/00800.mpls"),
             800);
 }
+
+struct TestIsHostOnLANData
+{
+  const static bool DONT_TEST_LOCAL_NETWORK = false;
+
+  bool expectedHostOnAnyLAN;
+  bool expectedOnAnyLAN;
+  bool expectedHostOnLocalLAN;
+  bool expectedOnLocalLAN;
+  std::string input;
+  bool testLocalNetwork = true;
+};
+
+std::ostream& operator<<(std::ostream& os, const TestIsHostOnLANData& rhs)
+{
+  return os << rhs.input;
+}
+
+class TestLANParamTest : public testing::Test,
+                         public testing::WithParamInterface<TestIsHostOnLANData>
+{
+};
+
+const TestIsHostOnLANData values[] = {
+    // clang-format off
+    /*
+    +-------------+--------------+
+    |   Private   |    Local     |
+    | Host | URL  | Host | URL   |
+    +------+------+------+-------+   */
+    // Assumption that hostnames without a period are local (smb, netbios)
+    { true,  false, true,  false, "localhost" },
+    { true,  true,  true,  true,  "some_unresolveable_hostname" },
+    { true,  true,  true,  true,  "google" },
+    { true,  true,  true,  true,  "aol" },
+
+    { false, false, false, false, "www.some_unresolveable_hostname.com" },
+    { false, false, false, false, "www.google.com" },
+    { false, false, false, false, "google.com" },
+    { false, false, false, false, "www.aol.com" },
+    { false, false, false, false, "aol.com" },
+    { false, false, false, false, "168.219.34.129" },
+
+    { false, false, false, false, "0.0.0.0" },
+    { false, false, false, false, "127.0.0.1" },
+    /*
+     * The following checks cannot be reliable tested on build machines
+     * These tests pass for a class B network (172.16.0.0/16) but cannot be guaranteed to work under different network configurations
+     */
+    { true,  true,  false, false, "192.168.0.3", TestIsHostOnLANData::DONT_TEST_LOCAL_NETWORK },
+    { true,  true,  true,  true,  "172.16.0.2",  TestIsHostOnLANData::DONT_TEST_LOCAL_NETWORK },
+    { true,  true,  false, false, "10.0.0.9",    TestIsHostOnLANData::DONT_TEST_LOCAL_NETWORK },
+    // clang-format on
+};
+
+TEST_P(TestLANParamTest, TestIsHostOnLAN)
+{
+  using enum LanCheckMode;
+
+  auto& param = GetParam();
+  auto hostnameURL = "http://" + param.input;
+
+  EXPECT_EQ(param.expectedHostOnAnyLAN, URIUtils::IsHostOnLAN(param.input, ANY_PRIVATE_SUBNET));
+  EXPECT_EQ(param.expectedOnAnyLAN, URIUtils::IsOnLAN(hostnameURL, ANY_PRIVATE_SUBNET));
+
+  if (param.testLocalNetwork)
+  {
+    EXPECT_EQ(param.expectedHostOnLocalLAN, URIUtils::IsHostOnLAN(param.input, ONLY_LOCAL_SUBNET));
+    EXPECT_EQ(param.expectedOnLocalLAN, URIUtils::IsOnLAN(hostnameURL, ONLY_LOCAL_SUBNET));
+  }
+}
+
+INSTANTIATE_TEST_SUITE_P(TestURIUtils, TestLANParamTest, testing::ValuesIn(values));
