@@ -39,4 +39,27 @@ public:
    * \return The codec name
    */
   static std::string GetCodecName(int codecId, int profile);
+
+  /*!
+   * \brief Return a channel layout of the form x.y.z (x standard channels, y lfe channels,
+   *  z top channels)
+   * \param[in] mask The channels mask
+   * \return The layout. Blank for an empty mask.
+   */
+  static std::string GetLayoutXYZ(uint64_t mask);
+
+  /*!
+   * \brief Return a channel layout for the channels mask and count. x.y.z form when a mask is
+   * provided, localized count of channels otherwise.
+   * \param[in] channels The channels mask
+   * \return The layout
+   */
+  static std::string GetLayout(uint64_t mask, int channels);
+
+  /*!
+   * \brief Get a default channel mask for the channel count.
+   * \param[in] channels The count of channels
+   * \return The mask
+   */
+  static uint64_t GetDefaultMask(int channels);
 };
