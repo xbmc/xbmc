@@ -14,6 +14,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
+#include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
@@ -267,6 +268,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       XMLUtils::SetString(&stream, "codec", m_streamDetails.GetAudioCodec(iStream));
       XMLUtils::SetString(&stream, "language", m_streamDetails.GetAudioLanguage(iStream));
       XMLUtils::SetInt(&stream, "channels", m_streamDetails.GetAudioChannels(iStream));
+      XMLUtils::SetString(&stream, "layout", m_streamDetails.GetAudioChannelLayout(iStream));
       streamdetails.InsertEndChild(stream);
     }
     for (int iStream=1; iStream<=m_streamDetails.GetSubtitleStreamCount(); iStream++)
@@ -1331,6 +1333,13 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
           p->m_strLanguage = StringUtils::Trim(value);
 
         XMLUtils::GetInt(nodeDetail, "channels", p->m_iChannels);
+
+        if (XMLUtils::GetString(nodeDetail, "layout", value))
+          p->m_channelLayout = StringUtils::Trim(value);
+        else
+          p->m_channelLayout =
+              StreamUtils::GetLayoutXYZ(StreamUtils::GetDefaultMask(p->m_iChannels));
+
         StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);
