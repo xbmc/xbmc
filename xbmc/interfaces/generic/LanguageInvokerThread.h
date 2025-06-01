@@ -20,7 +20,6 @@ class CLanguageInvokerThread : public ILanguageInvoker, protected CThread
 {
 public:
   CLanguageInvokerThread(std::shared_ptr<ILanguageInvoker> invoker,
-                         CScriptInvocationManager* invocationManager,
                          bool reuseable);
   ~CLanguageInvokerThread() override;
 
@@ -28,10 +27,23 @@ public:
 
   const std::string& GetScript() const { return m_script; }
   std::shared_ptr<ILanguageInvoker> GetInvoker() const { return m_invoker; }
+  bool Reuseable() const
+  { 
+      return !m_bStop && m_reusable;
+  };
+
   bool Reuseable(const std::string& script) const
   {
     return !m_bStop && m_reusable && GetState() == InvokerStateScriptDone && m_script == script;
   };
+
+  bool IsDone() const
+  {
+    const auto state = GetState();
+    return state == InvokerStateScriptDone || state == InvokerStateFailed ||
+           state == InvokerStateExecutionDone;
+  }
+
   virtual void Release();
 
 protected:
@@ -45,7 +57,6 @@ protected:
 
 private:
   std::shared_ptr<ILanguageInvoker> m_invoker;
-  CScriptInvocationManager *m_invocationManager;
   std::string m_script;
   std::vector<std::string> m_args;
 

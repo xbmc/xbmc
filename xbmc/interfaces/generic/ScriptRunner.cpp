@@ -85,7 +85,7 @@ int CScriptRunner::ExecuteScript(const ADDON::AddonPtr& addon,
   CLog::Log(LOGDEBUG, "CScriptRunner: running add-on script {:s}('{:s}', '{:s}', '{:s}')",
             addon->Name(), argv[0], argv[1], argv[2]);
   int scriptId = CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon, argv,
-                                                                      reuseLanguageInvoker, handle);
+                                                                      reuseLanguageInvoker);
   if (scriptId < 0)
     CLog::Log(LOGERROR, "CScriptRunner: unable to run add-on script {:s}", addon->Name());
 

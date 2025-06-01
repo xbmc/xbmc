@@ -35,11 +35,6 @@ public:
   std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script);
 
   /*!
-  * \brief Returns addon_handle if last reusable invoker is ready to use.
-  */
-  int GetReusablePluginHandle(const std::string& script);
-
-  /*!
    * \brief Executes the given script asynchronously in a separate thread.
    *
    * \param script Path to the script to be executed
@@ -50,8 +45,7 @@ public:
   int ExecuteAsync(const std::string& script,
                    const ADDON::AddonPtr& addon = ADDON::AddonPtr(),
                    const std::vector<std::string>& arguments = std::vector<std::string>(),
-                   bool reuseable = false,
-                   int pluginHandle = -1);
+                   bool reuseable = false);
   /*!
   * \brief Executes the given script asynchronously in a separate thread.
   *
@@ -65,8 +59,7 @@ public:
                    const std::shared_ptr<ILanguageInvoker>& languageInvoker,
                    const ADDON::AddonPtr& addon = ADDON::AddonPtr(),
                    const std::vector<std::string>& arguments = std::vector<std::string>(),
-                   bool reuseable = false,
-                   int pluginHandle = -1);
+                   bool reuseable = false);
 
   /*!
   * \brief Executes the given script synchronously.
@@ -127,30 +120,25 @@ public:
 protected:
   friend class CLanguageInvokerThread;
 
-  void OnExecutionDone(int scriptId);
-
 private:
   CScriptInvocationManager() = default;
   CScriptInvocationManager(const CScriptInvocationManager&) = delete;
   CScriptInvocationManager const& operator=(CScriptInvocationManager const&) = delete;
   virtual ~CScriptInvocationManager();
 
-  typedef struct {
-    CLanguageInvokerThreadPtr thread;
-    std::string script;
-    bool done;
-  } LanguageInvokerThread;
-  typedef std::map<int, LanguageInvokerThread> LanguageInvokerThreadMap;
+  typedef std::map<int, CLanguageInvokerThreadPtr> LanguageInvokerThreadMap;
   typedef std::map<std::string, ILanguageInvocationHandler*> LanguageInvocationHandlerMap;
 
-  LanguageInvokerThread getInvokerThread(int scriptId) const;
+  CLanguageInvokerThreadPtr AddThread(
+      const std::shared_ptr<ILanguageInvoker>& languageInvoker,
+      bool reusable);
+  CLanguageInvokerThreadPtr GetThread(int scriptId) const;
+  std::vector<CLanguageInvokerThreadPtr> GetAllThreads() const;
+  std::vector<CLanguageInvokerThreadPtr> GetReusableThreads() const;
 
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
-  CLanguageInvokerThreadPtr m_lastInvokerThread;
-  int m_lastPluginHandle = -1;
 
-  std::map<std::string, int> m_scriptPaths;
   int m_nextId = 0;
   mutable CCriticalSection m_critSection;
 };

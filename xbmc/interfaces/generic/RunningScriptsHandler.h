@@ -39,14 +39,8 @@ protected:
     if (script == nullptr || addon == nullptr || path.empty())
       return false;
 
-    // reuse an existing script handle or get a new one if necessary
-    int handle = CScriptInvocationManager::GetInstance().GetReusablePluginHandle(addon->LibPath());
-    if (handle < 0)
-      handle = GetNewScriptHandle(script);
-    else
-      ReuseScriptHandle(handle, script);
-
     // run the script
+    const int handle = GetNewScriptHandle(script);
     auto result = CScriptRunner::RunScript(addon, path, handle, resume);
 
     // remove the script handle if necessary
@@ -62,12 +56,6 @@ protected:
     s_scriptHandles[handle] = script;
 
     return handle;
-  }
-
-  static void ReuseScriptHandle(HandleType handle, TScript* script)
-  {
-    std::unique_lock lock(s_critical);
-    s_scriptHandles[handle] = script;
   }
 
   static void RemoveScriptHandle(HandleType handle)

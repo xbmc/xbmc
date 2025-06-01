@@ -142,6 +142,17 @@ bool CAddonSystemSettings::UnsetActive(const AddonInfoPtr& addon)
   return true;
 }
 
+int CAddonSystemSettings::GetMaxReusableThreads() const
+{
+  const int maxReusableThread = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_ADDONS_MAX_REUSABLE_THREADS);
+
+  if (maxReusableThread <= 0)
+    return 5;
+
+  return std::clamp(maxReusableThread, 1, 25);
+}
+
 int CAddonSystemSettings::GetAddonAutoUpdateMode() const
 {
   return CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(

@@ -13,12 +13,10 @@
 #include <utility>
 
 CLanguageInvokerThread::CLanguageInvokerThread(std::shared_ptr<ILanguageInvoker> invoker,
-                                               CScriptInvocationManager* invocationManager,
                                                bool reuseable)
   : ILanguageInvoker(NULL),
     CThread("LanguageInvoker"),
     m_invoker(std::move(invoker)),
-    m_invocationManager(invocationManager),
     m_reusable(reuseable)
 { }
 
@@ -120,7 +118,6 @@ void CLanguageInvokerThread::OnExit()
     return;
 
   m_invoker->onExecutionDone();
-  m_invocationManager->OnExecutionDone(GetId());
 }
 
 void CLanguageInvokerThread::OnException()
@@ -129,5 +126,4 @@ void CLanguageInvokerThread::OnException()
     return;
 
   m_invoker->onExecutionFailed();
-  m_invocationManager->OnExecutionDone(GetId());
 }
