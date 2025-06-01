@@ -39,4 +39,19 @@ public:
    * \return The codec name
    */
   static std::string GetCodecName(int codecId, int profile);
+
+  /*!
+   * \brief Return a default channel layout in x.y.z form for a channel count.
+   * \param[in] channels the count of channels
+   * \return the default layout
+   */
+  static std::string GetDefaultLayout(unsigned int channels);
+
+  /*!
+   * \brief Return a default channel layout for a channel count or localized count of channels
+   * when no default exists.
+   * \param[in] channels the count of channels
+   * \return the layout
+   */
+  static std::string GetLayout(unsigned int channels);
 };
