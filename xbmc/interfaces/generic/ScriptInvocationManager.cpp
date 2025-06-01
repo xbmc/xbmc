@@ -365,6 +365,7 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
   CLanguageInvokerThreadPtr invokerThread = getInvokerThread(scriptId).thread;
   if (invokerThread == NULL)
     return false;
+  lock.unlock();
 
   return invokerThread->Stop(wait);
 }
