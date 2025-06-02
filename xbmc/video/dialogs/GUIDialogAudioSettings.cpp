@@ -338,6 +338,30 @@ bool CGUIDialogAudioSettings::IsPlayingPassthrough(const std::string& condition,
   return appPlayer->IsPassthrough();
 }
 
+namespace
+{
+std::string FormatCodec(const AudioStreamInfo& info)
+{
+  std::string codec = " (";
+  if (!info.codecDesc.empty())
+  {
+    codec += info.codecDesc;
+  }
+  else
+  {
+    codec += StringUtils::Format("{} - {} {}",
+                                 info.codecName.empty() ? g_localizeStrings.Get(13205) // unknown
+                                                        : info.codecName,
+                                 info.channels,
+                                 g_localizeStrings.Get(10127) // channels
+    );
+  }
+  codec += ")";
+
+  return codec;
+}
+} // namespace
+
 void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& setting,
                                                        std::vector<IntegerSettingOption>& list,
                                                        int& current)
@@ -345,9 +369,6 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& se
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   const int audioStreamCount = appPlayer->GetAudioStreamCount();
-
-  const std::string& channelsLabel = g_localizeStrings.Get(10127);
-  std::string strUnknown = "[" + g_localizeStrings.Get(13205) + "]";
 
   // cycle through each audio stream and add it to our list control
   for (int i = 0; i < audioStreamCount; ++i)
@@ -358,18 +379,13 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& se
     appPlayer->GetAudioStreamInfo(i, info);
 
     if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
-      strLanguage = strUnknown;
+      strLanguage = "[" + g_localizeStrings.Get(13205) + "]"; // Unknown
 
     std::string textInfo = strLanguage;
     if (!info.name.empty())
       textInfo += " - " + info.name;
 
-    textInfo += " (";
-    if (!info.codecDesc.empty())
-      textInfo += info.codecDesc + ", ";
-
-    textInfo += std::to_string(info.channels) + " " + channelsLabel + ")";
-
+    textInfo += FormatCodec(info);
     textInfo += FormatFlags(info.flags);
     textInfo += StringUtils::Format(" ({}/{})", i + 1, audioStreamCount);
     list.emplace_back(textInfo, i);
