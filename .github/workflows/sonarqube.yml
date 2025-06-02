@@ -30,7 +30,7 @@ jobs:
       - name: Run Build Wrapper
         run: |
           mkdir build
-          cmake -S . -B build -D APP_RENDER_SYSTEM=gl -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cmake -S . -B build -D APP_RENDER_SYSTEM=gl -D ENABLE_INTERNAL_FFMPEG=ON -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
