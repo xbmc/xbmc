@@ -16,6 +16,7 @@
 #include <list>
 #include <set>
 #include <string>
+#include <string_view>
 
 enum class SettingDependencyType {
   Unknown = 0,
@@ -62,9 +63,9 @@ public:
 
 private:
   CSettingDependencyCondition(CSettingsManager* settingsManager,
-                              const std::string& strProperty,
-                              const std::string& setting,
-                              const std::string& value,
+                              std::string_view strProperty,
+                              std::string_view setting,
+                              std::string_view value,
                               SettingDependencyTarget target = SettingDependencyTarget::Unknown,
                               SettingDependencyOperator op = SettingDependencyOperator::Equals,
                               bool negated = false);
@@ -135,4 +136,4 @@ private:
 };
 
 using SettingDependencies = std::list<CSettingDependency>;
-using SettingDependencyMap = std::map<std::string, SettingDependencies>;
+using SettingDependencyMap = std::map<std::string, SettingDependencies, std::less<>>;
