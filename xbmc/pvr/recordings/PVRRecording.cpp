@@ -502,7 +502,8 @@ void CPVRRecording::UpdatePath()
 {
   m_strFileNameAndPath = CPVRRecordingsPath(m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle,
                                             m_iSeason, m_iEpisode, GetYear(), m_strShowTitle,
-                                            m_strChannelName, m_recordingTime, m_strRecordingId);
+                                            m_strChannelName, m_recordingTime, m_strRecordingId)
+                             .AsString();
 }
 
 const CDateTime& CPVRRecording::RecordingTimeAsLocalTime() const

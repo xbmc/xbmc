@@ -16,8 +16,7 @@ using namespace XFILE;
 
 void CServicesSettings::SettingOptionsChunkSizesFiller(const SettingConstPtr& setting,
                                                        std::vector<IntegerSettingOption>& list,
-                                                       int& current,
-                                                       void* data)
+                                                       int& current)
 {
   const auto& kb = g_localizeStrings.Get(37121);
   const auto& mb = g_localizeStrings.Get(37122);
@@ -33,8 +32,7 @@ void CServicesSettings::SettingOptionsChunkSizesFiller(const SettingConstPtr& se
 
 void CServicesSettings::SettingOptionsBufferModesFiller(const SettingConstPtr& setting,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current,
-                                                        void* data)
+                                                        int& current)
 {
   list.emplace_back(g_localizeStrings.Get(37110), static_cast<int>(CacheBufferMode::NONE));
   list.emplace_back(g_localizeStrings.Get(37111), static_cast<int>(CacheBufferMode::TRUE_INTERNET));
@@ -45,8 +43,7 @@ void CServicesSettings::SettingOptionsBufferModesFiller(const SettingConstPtr& s
 
 void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& setting,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current,
-                                                        void* data)
+                                                        int& current)
 {
   const auto& mb = g_localizeStrings.Get(37122);
   const auto& gb = g_localizeStrings.Get(37123);
@@ -70,8 +67,7 @@ void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& s
 
 void CServicesSettings::SettingOptionsReadFactorsFiller(const SettingConstPtr& setting,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current,
-                                                        void* data)
+                                                        int& current)
 {
   list.emplace_back(g_localizeStrings.Get(37116), 0);
   list.emplace_back("1.1x", 110);
@@ -93,8 +89,7 @@ void CServicesSettings::SettingOptionsReadFactorsFiller(const SettingConstPtr& s
 
 void CServicesSettings::SettingOptionsCacheChunkSizesFiller(const SettingConstPtr& setting,
                                                             std::vector<IntegerSettingOption>& list,
-                                                            int& current,
-                                                            void* data)
+                                                            int& current)
 {
   const auto& byte = g_localizeStrings.Get(37120);
   const auto& kb = g_localizeStrings.Get(37121);
@@ -117,8 +112,7 @@ void CServicesSettings::SettingOptionsCacheChunkSizesFiller(const SettingConstPt
 
 void CServicesSettings::SettingOptionsSmbVersionsFiller(const SettingConstPtr& setting,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current,
-                                                        void* data)
+                                                        int& current)
 {
   list.emplace_back(g_localizeStrings.Get(36623), 0);
   list.emplace_back(g_localizeStrings.Get(36624), 1);

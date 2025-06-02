@@ -836,7 +836,7 @@ int CPVRChannelGroups::CleanupCachedImages()
   {
     std::unique_lock lock(m_critSection);
     std::ranges::transform(m_groups, std::back_inserter(urlsToCheck),
-                           [](const auto& group) { return group->GetPath(); });
+                           [](const auto& group) { return group->GetPath().AsString(); });
   }
 
   // kodi-generated thumbnail (see CPVRThumbLoader)

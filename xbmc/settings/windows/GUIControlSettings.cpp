@@ -819,7 +819,7 @@ void CGUIControlListSetting::Update(bool fromControl, bool updateDisplayOnly)
   std::string label2;
   if (optionsValid && !control->HideValue())
   {
-    SettingControlListValueFormatter formatter = control->GetFormatter();
+    const SettingControlListValueFormatter& formatter = control->GetFormatter();
     if (formatter)
       label2 = formatter(m_pSetting);
 

@@ -195,7 +195,7 @@ protected:
                                              int label,
                                              SettingLevel level,
                                              const std::string& value,
-                                             StringSettingOptionsFiller filler,
+                                             const StringSettingOptionsFiller& filler,
                                              bool delayed = false,
                                              bool visible = true,
                                              int help = -1);
@@ -248,7 +248,7 @@ protected:
                                           int label,
                                           SettingLevel level,
                                           int value,
-                                          IntegerSettingOptionsFiller filler,
+                                          const IntegerSettingOptionsFiller& filler,
                                           bool delayed = false,
                                           bool visible = true,
                                           int help = -1);
@@ -285,7 +285,7 @@ protected:
                                           int label,
                                           SettingLevel level,
                                           const std::string& value,
-                                          StringSettingOptionsFiller filler,
+                                          const StringSettingOptionsFiller& filler,
                                           int heading,
                                           bool visible = true,
                                           int help = -1,
@@ -315,7 +315,7 @@ protected:
                                        int label,
                                        SettingLevel level,
                                        int value,
-                                       IntegerSettingOptionsFiller filler,
+                                       const IntegerSettingOptionsFiller& filler,
                                        int heading,
                                        bool visible = true,
                                        int help = -1,
@@ -325,7 +325,7 @@ protected:
                                         int label,
                                         SettingLevel level,
                                         std::vector<std::string> values,
-                                        StringSettingOptionsFiller filler,
+                                        const StringSettingOptionsFiller& filler,
                                         int heading,
                                         int minimumItems = 0,
                                         int maximumItems = -1,
@@ -361,13 +361,13 @@ protected:
                                         int label,
                                         SettingLevel level,
                                         std::vector<int> values,
-                                        IntegerSettingOptionsFiller filler,
+                                        const IntegerSettingOptionsFiller& filler,
                                         int heading,
                                         int minimumItems = 0,
                                         int maximumItems = -1,
                                         bool visible = true,
                                         int help = -1,
-                                        SettingControlListValueFormatter formatter = nullptr,
+                                        const SettingControlListValueFormatter& formatter = {},
                                         bool details = false);
 
   // slider controls
@@ -601,7 +601,7 @@ protected:
       bool delayed = false,
       int heading = -1,
       bool multiselect = false,
-      SettingControlListValueFormatter formatter = nullptr,
+      const SettingControlListValueFormatter& formatter = {},
       bool details = false);
   std::shared_ptr<ISettingControl> GetSliderControl(const std::string &format, bool delayed = false, int heading = -1, bool usePopup = false, int formatLabel = -1, const std::string &formatString = "");
   std::shared_ptr<ISettingControl> GetRangeControl(const std::string &format, bool delayed = false, int formatLabel = -1, int valueFormatLabel = -1, const std::string &valueFormatString = "");

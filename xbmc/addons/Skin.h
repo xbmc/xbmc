@@ -192,20 +192,16 @@ public:
 
   static void SettingOptionsSkinColorsFiller(const std::shared_ptr<const CSetting>& setting,
                                              std::vector<StringSettingOption>& list,
-                                             std::string& current,
-                                             void* data);
+                                             std::string& current);
   static void SettingOptionsSkinFontsFiller(const std::shared_ptr<const CSetting>& setting,
                                             std::vector<StringSettingOption>& list,
-                                            std::string& current,
-                                            void* data);
+                                            std::string& current);
   static void SettingOptionsSkinThemesFiller(const std::shared_ptr<const CSetting>& setting,
                                              std::vector<StringSettingOption>& list,
-                                             std::string& current,
-                                             void* data);
+                                             std::string& current);
   static void SettingOptionsStartupWindowsFiller(const std::shared_ptr<const CSetting>& setting,
                                                  std::vector<IntegerSettingOption>& list,
-                                                 int& current,
-                                                 void* data);
+                                                 int& current);
 
   /*! \brief Don't handle skin settings like normal addon settings
    */

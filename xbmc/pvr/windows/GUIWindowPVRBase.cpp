@@ -441,7 +441,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
     std::string selectedGroup;
     const std::shared_ptr<const CPVRChannelGroup> channelGroup = GetChannelGroup();
     if (channelGroup)
-      selectedGroup = channelGroup->GetPath();
+      selectedGroup = channelGroup->GetPath().AsString();
 
     CPVRThumbLoader loader;
     int idx = 0;
@@ -476,7 +476,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
     if (channelGroup)
     {
       int idx = -1;
-      const std::string selectedGroup{channelGroup->GetPath()};
+      const std::string selectedGroup{channelGroup->GetPath().AsString()};
       for (const auto& group : options)
       {
         // select currently active channel group

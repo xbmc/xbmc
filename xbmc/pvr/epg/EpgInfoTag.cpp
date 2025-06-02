@@ -475,7 +475,7 @@ std::string CPVREpgInfoTag::ClientIconPath() const
 
 std::string CPVREpgInfoTag::Path() const
 {
-  return CPVREpgGuidePath(EpgID(), m_startTime).GetPath();
+  return CPVREpgGuidePath(EpgID(), m_startTime).AsString();
 }
 
 bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /* = true */)

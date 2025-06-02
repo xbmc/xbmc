@@ -91,55 +91,42 @@ public:
 
   static void SettingOptionsModesFiller(const std::shared_ptr<const CSetting>& setting,
                                         std::vector<StringSettingOption>& list,
-                                        std::string& current,
-                                        void* data);
+                                        std::string& current);
   static void SettingOptionsRefreshChangeDelaysFiller(
       const std::shared_ptr<const CSetting>& setting,
       std::vector<IntegerSettingOption>& list,
-      int& current,
-      void* data);
+      int& current);
   static void SettingOptionsRefreshRatesFiller(const std::shared_ptr<const CSetting>& setting,
                                                std::vector<StringSettingOption>& list,
-                                               std::string& current,
-                                               void* data);
+                                               std::string& current);
   static void SettingOptionsResolutionsFiller(const std::shared_ptr<const CSetting>& setting,
                                               std::vector<IntegerSettingOption>& list,
-                                              int& current,
-                                              void* data);
+                                              int& current);
   static void SettingOptionsDispModeFiller(const std::shared_ptr<const CSetting>& setting,
                                            std::vector<IntegerSettingOption>& list,
-                                           int& current,
-                                           void* data);
+                                           int& current);
   static void SettingOptionsStereoscopicModesFiller(const std::shared_ptr<const CSetting>& setting,
                                                     std::vector<IntegerSettingOption>& list,
-                                                    int& current,
-                                                    void* data);
+                                                    int& current);
   static void SettingOptionsPreferredStereoscopicViewModesFiller(
       const std::shared_ptr<const CSetting>& setting,
       std::vector<IntegerSettingOption>& list,
-      int& current,
-      void* data);
+      int& current);
   static void SettingOptionsMonitorsFiller(const std::shared_ptr<const CSetting>& setting,
                                            std::vector<StringSettingOption>& list,
-                                           std::string& current,
-                                           void* data);
+                                           std::string& current);
   static void SettingOptionsCmsModesFiller(const std::shared_ptr<const CSetting>& setting,
                                            std::vector<IntegerSettingOption>& list,
-                                           int& current,
-                                           void* data);
+                                           int& current);
   static void SettingOptionsCmsWhitepointsFiller(const std::shared_ptr<const CSetting>& setting,
                                                  std::vector<IntegerSettingOption>& list,
-                                                 int& current,
-                                                 void* data);
+                                                 int& current);
   static void SettingOptionsCmsPrimariesFiller(const std::shared_ptr<const CSetting>& setting,
                                                std::vector<IntegerSettingOption>& list,
-                                               int& current,
-                                               void* data);
+                                               int& current);
   static void SettingOptionsCmsGammaModesFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<IntegerSettingOption>& list,
-                                                int& current,
-                                                void* data);
-
+                                                int& current);
 
 protected:
   CDisplaySettings();

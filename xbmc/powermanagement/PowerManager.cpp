@@ -302,8 +302,7 @@ void CPowerManager::RestorePlayerState()
 
 void CPowerManager::SettingOptionsShutdownStatesFiller(const SettingConstPtr& setting,
                                                        std::vector<IntegerSettingOption>& list,
-                                                       int& current,
-                                                       void* data)
+                                                       int& current)
 {
   if (CServiceBroker::GetPowerManager().CanPowerdown())
     list.emplace_back(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);

@@ -18,7 +18,7 @@ public:
   ~CGUIWindowFavourites() override;
 
 protected:
-  std::string GetRootPath() const override { return "favourites://"; }
+  std::string GetRootPath() override { return "favourites://"; }
 
   bool OnSelect(int item) override;
   bool OnAction(const CAction& action) override;

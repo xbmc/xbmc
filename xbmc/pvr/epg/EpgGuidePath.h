@@ -22,7 +22,9 @@ public:
 
   bool IsValid() const { return m_isValid; }
 
-  const std::string& GetPath() const { return m_path; }
+  const std::string& AsString() const& { return m_path; }
+  std::string AsString() && { return std::move(m_path); }
+
   int GetEpgId() const { return m_epgId; }
   CDateTime GetStartDateTime() const { return m_startDateTime; }
 

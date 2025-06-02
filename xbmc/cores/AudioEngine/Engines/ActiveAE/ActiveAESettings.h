@@ -35,25 +35,20 @@ public:
 
   static void SettingOptionsAudioDevicesFiller(const std::shared_ptr<const CSetting>& setting,
                                                std::vector<StringSettingOption>& list,
-                                               std::string& current,
-                                               void* data);
+                                               std::string& current);
   static void SettingOptionsAudioDevicesPassthroughFiller(
       const std::shared_ptr<const CSetting>& setting,
       std::vector<StringSettingOption>& list,
-      std::string& current,
-      void* data);
+      std::string& current);
   static void SettingOptionsAudioQualityLevelsFiller(const std::shared_ptr<const CSetting>& setting,
                                                      std::vector<IntegerSettingOption>& list,
-                                                     int& current,
-                                                     void* data);
+                                                     int& current);
   static void SettingOptionsAudioStreamsilenceFiller(const std::shared_ptr<const CSetting>& setting,
                                                      std::vector<IntegerSettingOption>& list,
-                                                     int& current,
-                                                     void* data);
+                                                     int& current);
   static bool IsSettingVisible(const std::string& condition,
                                const std::string& value,
-                               const std::shared_ptr<const CSetting>& setting,
-                               void* data);
+                               const std::shared_ptr<const CSetting>& setting);
 
 protected:
   static void SettingOptionsAudioDevicesFillerGeneral(

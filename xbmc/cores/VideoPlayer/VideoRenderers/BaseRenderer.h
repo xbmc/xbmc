@@ -89,8 +89,7 @@ public:
 
   static void SettingOptionsRenderMethodsFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<IntegerSettingOption>& list,
-                                                int& current,
-                                                void* data);
+                                                int& current);
 
   void SetVideoSettings(const CVideoSettings &settings);
 

@@ -316,15 +316,13 @@ public:
   const IntegerSettingOptions& GetOptions() const { return m_options; }
   void SetOptions(const IntegerSettingOptions &options) { m_options = options; }
   const std::string& GetOptionsFillerName() const { return m_optionsFillerName; }
-  void SetOptionsFillerName(const std::string &optionsFillerName, void *data = nullptr)
+  void SetOptionsFillerName(const std::string& optionsFillerName)
   {
     m_optionsFillerName = optionsFillerName;
-    m_optionsFillerData = data;
   }
-  void SetOptionsFiller(IntegerSettingOptionsFiller optionsFiller, void *data = nullptr)
+  void SetOptionsFiller(const IntegerSettingOptionsFiller& optionsFiller)
   {
     m_optionsFiller = optionsFiller;
-    m_optionsFillerData = data;
   }
   const IntegerSettingOptions& GetDynamicOptions() const { return m_dynamicOptions; }
   IntegerSettingOptions UpdateDynamicOptions();
@@ -348,8 +346,7 @@ private:
   TranslatableIntegerSettingOptions m_translatableOptions;
   IntegerSettingOptions m_options;
   std::string m_optionsFillerName;
-  IntegerSettingOptionsFiller m_optionsFiller = nullptr;
-  void *m_optionsFillerData = nullptr;
+  IntegerSettingOptionsFiller m_optionsFiller{};
   IntegerSettingOptions m_dynamicOptions;
   SettingOptionsSort m_optionsSort = SettingOptionsSort::NoSorting;
 
@@ -460,15 +457,13 @@ public:
   const StringSettingOptions& GetOptions() const { return m_options; }
   void SetOptions(const StringSettingOptions &options) { m_options = options; }
   const std::string& GetOptionsFillerName() const { return m_optionsFillerName; }
-  void SetOptionsFillerName(const std::string &optionsFillerName, void *data = nullptr)
+  void SetOptionsFillerName(const std::string& optionsFillerName)
   {
     m_optionsFillerName = optionsFillerName;
-    m_optionsFillerData = data;
   }
-  void SetOptionsFiller(StringSettingOptionsFiller optionsFiller, void *data = nullptr)
+  void SetOptionsFiller(const StringSettingOptionsFiller& optionsFiller)
   {
     m_optionsFiller = optionsFiller;
-    m_optionsFillerData = data;
   }
   const StringSettingOptions& GetDynamicOptions() const { return m_dynamicOptions; }
   StringSettingOptions UpdateDynamicOptions();
@@ -487,8 +482,7 @@ protected:
   TranslatableStringSettingOptions m_translatableOptions;
   StringSettingOptions m_options;
   std::string m_optionsFillerName;
-  StringSettingOptionsFiller m_optionsFiller = nullptr;
-  void *m_optionsFillerData = nullptr;
+  StringSettingOptionsFiller m_optionsFiller{};
   StringSettingOptions m_dynamicOptions;
   SettingOptionsSort m_optionsSort = SettingOptionsSort::NoSorting;
 

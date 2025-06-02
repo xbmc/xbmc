@@ -887,8 +887,6 @@ void CSettingInt::MergeDetails(const CSetting& other)
     m_optionsFillerName = intSetting.m_optionsFillerName;
   if (m_optionsFiller == nullptr && intSetting.m_optionsFiller != nullptr)
     m_optionsFiller = intSetting.m_optionsFiller;
-  if (m_optionsFillerData == nullptr && intSetting.m_optionsFillerData != nullptr)
-    m_optionsFillerData = intSetting.m_optionsFillerData;
   if (m_dynamicOptions.empty() && !intSetting.m_dynamicOptions.empty())
     m_dynamicOptions = intSetting.m_dynamicOptions;
   if (m_optionsSort == SettingOptionsSort::NoSorting &&
@@ -929,7 +927,8 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
         m_optionsFillerName = options->FirstChild()->ValueStr();
         if (!m_optionsFillerName.empty())
         {
-          m_optionsFiller = reinterpret_cast<IntegerSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()));
+          m_optionsFiller =
+              m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()).intFiller;
         }
       }
       else
@@ -1086,7 +1085,9 @@ IntegerSettingOptions CSettingInt::UpdateDynamicOptions()
 
   if (m_optionsFiller == nullptr)
   {
-    m_optionsFiller = reinterpret_cast<IntegerSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()));
+    m_optionsFiller =
+        m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()).intFiller;
+
     if (m_optionsFiller == nullptr)
     {
       s_logger->warn("unknown options filler \"{}\" of \"{}\"", m_optionsFillerName, m_id);
@@ -1095,7 +1096,7 @@ IntegerSettingOptions CSettingInt::UpdateDynamicOptions()
   }
 
   int bestMatchingValue = m_value;
-  m_optionsFiller(shared_from_base<CSettingInt>(), options, bestMatchingValue, m_optionsFillerData);
+  m_optionsFiller(shared_from_base<CSettingInt>(), options, bestMatchingValue);
 
   if (bestMatchingValue != m_value)
     SetValue(bestMatchingValue);
@@ -1138,7 +1139,6 @@ void CSettingInt::copy(const CSettingInt &setting)
   m_options = setting.m_options;
   m_optionsFillerName = setting.m_optionsFillerName;
   m_optionsFiller = setting.m_optionsFiller;
-  m_optionsFillerData = setting.m_optionsFillerData;
   m_dynamicOptions = setting.m_dynamicOptions;
 }
 
@@ -1410,8 +1410,6 @@ void CSettingString::MergeDetails(const CSetting& other)
     m_optionsFillerName = stringSetting.m_optionsFillerName;
   if (m_optionsFiller == nullptr && stringSetting.m_optionsFiller != nullptr)
     m_optionsFiller = stringSetting.m_optionsFiller;
-  if (m_optionsFillerData == nullptr && stringSetting.m_optionsFillerData != nullptr)
-    m_optionsFillerData = stringSetting.m_optionsFillerData;
   if (m_dynamicOptions.empty() && !stringSetting.m_dynamicOptions.empty())
     m_dynamicOptions = stringSetting.m_dynamicOptions;
   if (m_optionsSort == SettingOptionsSort::NoSorting &&
@@ -1448,7 +1446,9 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
         m_optionsFillerName = options->FirstChild()->ValueStr();
         if (!m_optionsFillerName.empty())
         {
-          m_optionsFiller = reinterpret_cast<StringSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>()));
+          m_optionsFiller =
+              m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>())
+                  .stringFiller;
         }
       }
       else
@@ -1575,7 +1575,9 @@ StringSettingOptions CSettingString::UpdateDynamicOptions()
 
   if (m_optionsFiller == nullptr)
   {
-    m_optionsFiller = reinterpret_cast<StringSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>()));
+    m_optionsFiller =
+        m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>()).stringFiller;
+
     if (m_optionsFiller == nullptr)
     {
       s_logger->error("unknown options filler \"{}\" of \"{}\"", m_optionsFillerName, m_id);
@@ -1584,7 +1586,7 @@ StringSettingOptions CSettingString::UpdateDynamicOptions()
   }
 
   std::string bestMatchingValue = m_value;
-  m_optionsFiller(shared_from_base<CSettingString>(), options, bestMatchingValue, m_optionsFillerData);
+  m_optionsFiller(shared_from_base<CSettingString>(), options, bestMatchingValue);
 
   if (bestMatchingValue != m_value)
     SetValue(bestMatchingValue);
@@ -1626,7 +1628,6 @@ void CSettingString::copy(const CSettingString &setting)
   m_options = setting.m_options;
   m_optionsFillerName = setting.m_optionsFillerName;
   m_optionsFiller = setting.m_optionsFiller;
-  m_optionsFillerData = setting.m_optionsFillerData;
   m_dynamicOptions = setting.m_dynamicOptions;
 }
 

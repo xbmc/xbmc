@@ -79,8 +79,7 @@ public:
   bool CanLogComponent(uint32_t component) const;
   static void SettingOptionsLoggingComponentsFiller(const std::shared_ptr<const CSetting>& setting,
                                                     std::vector<IntegerSettingOption>& list,
-                                                    int& current,
-                                                    void* data);
+                                                    int& current);
 
   Logger GetLogger(const std::string& loggerName);
 

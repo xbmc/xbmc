@@ -586,8 +586,7 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
 
 void CAutorun::SettingOptionAudioCdActionsFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
-                                                 int& current,
-                                                 void* data)
+                                                 int& current)
 {
   list.emplace_back(g_localizeStrings.Get(16018), static_cast<int>(AutoCDAction::NONE));
   list.emplace_back(g_localizeStrings.Get(14098), static_cast<int>(AutoCDAction::PLAY));

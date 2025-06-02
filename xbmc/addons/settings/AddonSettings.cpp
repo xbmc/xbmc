@@ -53,8 +53,7 @@ constexpr int UnknownSettingLabelIdStart = 100000;
 
 bool InfoBool(const std::string& condition,
               const std::string& value,
-              const SettingConstPtr& setting,
-              void* data)
+              const SettingConstPtr& setting)
 {
   return CServiceBroker::GetGUI()->GetInfoManager().EvaluateBool(value, INFO::DEFAULT_CONTEXT);
 }
@@ -1702,8 +1701,7 @@ bool CAddonSettings::ParseOldConditionExpression(std::string str, ConditionExpre
 
 void CAddonSettings::FileEnumSettingOptionsFiller(const std::shared_ptr<const CSetting>& setting,
                                                   std::vector<StringSettingOption>& list,
-                                                  std::string& current,
-                                                  void* data)
+                                                  std::string& current)
 {
   if (setting == nullptr)
     return;

@@ -32,10 +32,11 @@ namespace
 {
 bool IsPlaying(const std::string& condition,
                const std::string& value,
-               const SettingConstPtr& setting,
-               void* data)
+               const SettingConstPtr& setting)
 {
-  return data ? static_cast<CApplicationPlayer*>(data)->IsPlaying() : false;
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  return appPlayer ? appPlayer->IsPlaying() : false;
 }
 } // namespace
 
@@ -83,7 +84,7 @@ void CApplicationSettingsHandling::RegisterSettings()
       {CSettings::SETTING_VIDEOPLAYER_SEEKDELAY, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS,
        CSettings::SETTING_MUSICPLAYER_SEEKDELAY, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS});
 
-  settingsMgr->AddDynamicCondition("isplaying", IsPlaying, appPlayer.get());
+  settingsMgr->AddDynamicCondition("isplaying", IsPlaying);
 
   settings->RegisterSubSettings(this);
 }

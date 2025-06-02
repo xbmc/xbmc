@@ -422,7 +422,7 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
 
     CPVRRecordingsPath recChildPath(recParentPath);
     recChildPath.AppendSegment(strCurrent);
-    const std::string strFilePath = recChildPath;
+    const std::string strFilePath{recChildPath.AsString()};
 
     std::shared_ptr<CFileItem> item;
     if (!results.Contains(strFilePath))
@@ -709,7 +709,7 @@ bool CPVRGUIDirectory::GetChannelGroupsDirectory(bool bRadio,
         channelGroups->GetMembers(bExcludeHidden);
     for (const auto& group : groups)
     {
-      item = std::make_shared<CFileItem>(group->GetPath(), true);
+      item = std::make_shared<CFileItem>(group->GetPath().AsString(), true);
       item->m_strTitle = group->GroupName();
       item->SetLabel(group->GroupName());
       results.Add(item);
@@ -918,8 +918,8 @@ bool GetTimersRootDirectory(const CPVRTimersPath& path,
         (bRules == timer->IsTimerRule()) && (!bHideDisabled || !timer->IsDisabled()))
     {
       const auto item = std::make_shared<CFileItem>(timer);
-      const CPVRTimersPath timersPath(path.GetPath(), timer->ClientID(), timer->ClientIndex());
-      item->SetPath(timersPath.GetPath());
+      const CPVRTimersPath timersPath(path.AsString(), timer->ClientID(), timer->ClientIndex());
+      item->SetPath(timersPath.AsString());
       results.Add(item);
     }
   }
@@ -944,8 +944,8 @@ bool GetTimersSubDirectory(const CPVRTimersPath& path,
         (timer->ParentClientIndex() == iParentId) && (!bHideDisabled || !timer->IsDisabled()))
     {
       item = std::make_shared<CFileItem>(timer);
-      const CPVRTimersPath timersPath(path.GetPath(), timer->ClientID(), timer->ClientIndex());
-      item->SetPath(timersPath.GetPath());
+      const CPVRTimersPath timersPath(path.AsString(), timer->ClientID(), timer->ClientIndex());
+      item->SetPath(timersPath.AsString());
       results.Add(item);
     }
   }
@@ -1020,7 +1020,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
 
         const CPVRProvidersPath providerPath{path.GetKind(), provider->GetClientId(),
                                              provider->GetUniqueId()};
-        results.Add(std::make_shared<CFileItem>(providerPath, provider));
+        results.Add(std::make_shared<CFileItem>(providerPath.AsString(), provider));
       }
       return true;
     }
@@ -1036,7 +1036,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
       {
         const CPVRProvidersPath channelsPath{path.GetKind(), path.GetClientId(),
                                              path.GetProviderUid(), CPVRProvidersPath::CHANNELS};
-        auto channelsItem{std::make_shared<CFileItem>(channelsPath, true)};
+        auto channelsItem{std::make_shared<CFileItem>(channelsPath.AsString(), true)};
         channelsItem->SetLabel(g_localizeStrings.Get(19019)); // Channels
         channelsItem->SetArt("icon", "DefaultPVRChannels.png");
         channelsItem->SetProperty("totalcount", channelCount);
@@ -1052,7 +1052,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         const CPVRProvidersPath recordingsPath{path.GetKind(), path.GetClientId(),
                                                path.GetProviderUid(),
                                                CPVRProvidersPath::RECORDINGS};
-        auto recordingsItem{std::make_shared<CFileItem>(recordingsPath, true)};
+        auto recordingsItem{std::make_shared<CFileItem>(recordingsPath.AsString(), true)};
         recordingsItem->SetLabel(g_localizeStrings.Get(19017)); // Recordings
         recordingsItem->SetArt("icon", "DefaultPVRRecordings.png");
         recordingsItem->SetProperty("totalcount", recordingCount);

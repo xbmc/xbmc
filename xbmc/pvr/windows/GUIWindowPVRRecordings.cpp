@@ -77,17 +77,17 @@ void CGUIWindowPVRRecordingsBase::OnDeinitWindow(int nextWindowID)
   CGUIWindowPVRBase::OnDeinitWindow(nextWindowID);
 }
 
-std::string CGUIWindowPVRRecordingsBase::GetRootPath() const
+std::string CGUIWindowPVRRecordingsBase::GetRootPath()
 {
   const CURL url{m_vecItems->GetPath()};
-  std::string rootPath{CPVRRecordingsPath(m_bShowDeletedRecordings, m_bRadio)};
+  std::string rootPath{CPVRRecordingsPath(m_bShowDeletedRecordings, IsRadio()).AsString()};
   rootPath += url.GetOptions();
   return rootPath;
 }
 
 std::string CGUIWindowPVRRecordingsBase::GetDirectoryPath()
 {
-  const std::string basePath = CPVRRecordingsPath(m_bShowDeletedRecordings, m_bRadio);
+  const std::string basePath{CPVRRecordingsPath(m_bShowDeletedRecordings, IsRadio()).AsString()};
   return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath()
                                                                   : basePath;
 }
@@ -235,8 +235,8 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
   if (btnShowDeleted)
   {
     btnShowDeleted->SetVisible(
-        m_bRadio ? CServiceBroker::GetPVRManager().Recordings()->HasDeletedRadioRecordings()
-                 : CServiceBroker::GetPVRManager().Recordings()->HasDeletedTVRecordings());
+        IsRadio() ? CServiceBroker::GetPVRManager().Recordings()->HasDeletedRadioRecordings()
+                  : CServiceBroker::GetPVRManager().Recordings()->HasDeletedTVRecordings());
     btnShowDeleted->SetSelected(m_bShowDeletedRecordings);
   }
 

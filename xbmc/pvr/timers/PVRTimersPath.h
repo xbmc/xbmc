@@ -30,7 +30,9 @@ public:
 
   bool IsValid() const { return m_bValid; }
 
-  const std::string& GetPath() const { return m_path; }
+  const std::string& AsString() const& { return m_path; }
+  std::string AsString() && { return std::move(m_path); }
+
   bool IsTimersRoot() const { return m_bRoot; }
   bool IsTimerRule() const { return !IsTimersRoot(); }
   bool IsRadio() const { return m_bRadio; }

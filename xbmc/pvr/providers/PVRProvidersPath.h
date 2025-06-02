@@ -35,9 +35,9 @@ public:
 
   bool IsValid() const { return m_isValid; }
 
-  operator std::string() const { return m_path; }
+  const std::string& AsString() const& { return m_path; }
+  std::string AsString() && { return std::move(m_path); }
 
-  const std::string& GetPath() const { return m_path; }
   bool IsProvidersRoot() const { return m_isRoot; }
   bool IsProvider() const { return m_isProvider; }
   bool IsChannels() const { return m_isChannels; }

@@ -350,10 +350,7 @@ void CGUIDialogSubtitleSettings::AddSubtitleStreams(const std::shared_ptr<CSetti
 }
 
 void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
-    const SettingConstPtr& setting,
-    std::vector<IntegerSettingOption>& list,
-    int& current,
-    void* data)
+    const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();

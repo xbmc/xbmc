@@ -21,7 +21,7 @@ namespace PVR
     ~CGUIWindowPVRTVTimerRules() override = default;
 
   protected:
-    std::string GetRootPath() const override;
+    std::string GetRootPath() override;
     std::string GetDirectoryPath() override;
   };
 
@@ -32,7 +32,7 @@ namespace PVR
     ~CGUIWindowPVRRadioTimerRules() override = default;
 
   protected:
-    std::string GetRootPath() const override;
+    std::string GetRootPath() override;
     std::string GetDirectoryPath() override;
   };
 }

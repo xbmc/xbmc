@@ -168,8 +168,7 @@ std::string CPVRSettings::GetStringValue(const std::string& settingName) const
 
 void CPVRSettings::MarginTimeFiller(const SettingConstPtr& /*setting*/,
                                     std::vector<IntegerSettingOption>& list,
-                                    int& current,
-                                    void* /*data*/)
+                                    int& current)
 {
   list.clear();
 
@@ -186,8 +185,7 @@ void CPVRSettings::MarginTimeFiller(const SettingConstPtr& /*setting*/,
 
 bool CPVRSettings::IsSettingVisible(const std::string& condition,
                                     const std::string& value,
-                                    const std::shared_ptr<const CSetting>& setting,
-                                    void* data)
+                                    const std::shared_ptr<const CSetting>& setting)
 {
   if (setting == nullptr)
     return false;
@@ -225,8 +223,7 @@ bool CPVRSettings::IsSettingVisible(const std::string& condition,
 
 bool CPVRSettings::CheckParentalPin(const std::string& condition,
                                     const std::string& value,
-                                    const std::shared_ptr<const CSetting>& setting,
-                                    void* data)
+                                    const std::shared_ptr<const CSetting>& setting)
 {
   return CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalPIN() ==
          ParentalCheckResult::SUCCESS;

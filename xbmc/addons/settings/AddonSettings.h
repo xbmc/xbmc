@@ -184,8 +184,7 @@ private:
 
   static void FileEnumSettingOptionsFiller(const std::shared_ptr<const CSetting>& setting,
                                            std::vector<StringSettingOption>& list,
-                                           std::string& current,
-                                           void* data);
+                                           std::string& current);
 
   // store these values so that we don't always have to access the weak pointer
   const std::string m_addonId;

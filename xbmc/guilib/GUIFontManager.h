@@ -100,8 +100,7 @@ public:
 
   static void SettingOptionsFontsFiller(const std::shared_ptr<const CSetting>& setting,
                                         std::vector<StringSettingOption>& list,
-                                        std::string& current,
-                                        void* data);
+                                        std::string& current);
 
   /*!
    * \brief Get the list of user fonts as family names from cache

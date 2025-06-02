@@ -51,13 +51,11 @@ protected:
 
   static bool IsPlayingPassthrough(const std::string& condition,
                                    const std::string& value,
-                                   const std::shared_ptr<const CSetting>& setting,
-                                   void* data);
+                                   const std::shared_ptr<const CSetting>& setting);
 
   static void AudioStreamsOptionFiller(const std::shared_ptr<const CSetting>& setting,
                                        std::vector<IntegerSettingOption>& list,
-                                       int& current,
-                                       void* data);
+                                       int& current);
 
   static std::string SettingFormatterDelay(
       const std::shared_ptr<const CSettingControlSlider>& control,

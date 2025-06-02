@@ -217,7 +217,13 @@ private:
 
   using INFOBOOLTYPE =
       std::set<INFO::InfoPtr, bool (*)(const INFO::InfoPtr&, const INFO::InfoPtr&)>;
-  INFOBOOLTYPE m_bools;
+
+  static bool InfoBoolComparator(const INFO::InfoPtr& right, const INFO::InfoPtr& left)
+  {
+    return *right < *left;
+  }
+
+  INFOBOOLTYPE m_bools{&CGUIInfoManager::InfoBoolComparator};
   unsigned int m_refreshCounter = 0;
   std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
 
