@@ -5213,6 +5213,13 @@ bool CVideoPlayer::IsRenderingVideo() const
   return m_renderManager.IsConfigured();
 }
 
+bool CVideoPlayer::IsLiveStream() const
+{
+  if (m_pInputStream)
+    return m_pInputStream->IsRealtime();
+  return false;
+}
+
 bool CVideoPlayer::Supports(EINTERLACEMETHOD method) const
 {
   if (!m_processInfo)

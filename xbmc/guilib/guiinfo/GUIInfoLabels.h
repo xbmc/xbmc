@@ -95,6 +95,7 @@ constexpr int      PLAYER_OFFSET_POSITION_LAST       = PLAYER_FILENAME;
 
 constexpr uint32_t PLAYER_IS_REMOTE                  = 85;
 constexpr uint32_t PLAYER_IS_EXTERNAL                = 86;
+constexpr uint32_t PLAYER_IS_LIVE                    = 87;
 
 constexpr uint32_t WEATHER_CONDITIONS_TEXT           = 100;
 constexpr uint32_t WEATHER_TEMPERATURE               = 101;

@@ -394,7 +394,11 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr ""
 
-#empty string with id 31081
+#: /xml/Custom_1109_TopBarOverlay.xml
+#. Label to highlight that live stream is being played
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
 
 #: /xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#31082"

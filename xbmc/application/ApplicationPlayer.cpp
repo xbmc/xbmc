@@ -278,6 +278,15 @@ bool CApplicationPlayer::IsPlayingRDS() const
   return (IsPlaying() && HasRDS());
 }
 
+bool CApplicationPlayer::IsLiveStream() const
+{
+  std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->IsLiveStream();
+
+  return false;
+}
+
 void CApplicationPlayer::Pause()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
