@@ -9,7 +9,9 @@
 #include "MusicInfoTagLoaderFactory.h"
 
 #include "FileItem.h"
+#ifdef HAS_OPTICAL_DRIVE
 #include "MusicInfoTagLoaderCDDA.h"
+#endif // HAS_OPTICAL_DRIVE
 #include "MusicInfoTagLoaderDatabase.h"
 #include "MusicInfoTagLoaderFFmpeg.h"
 #include "MusicInfoTagLoaderShn.h"

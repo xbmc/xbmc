@@ -16,7 +16,6 @@
 #include "my_ntddscsi.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "storage/MediaManager.h"
-#include "storage/cdioSupport.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
