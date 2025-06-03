@@ -28,7 +28,12 @@ bool CPlatformWebOS::InitStageOne()
   setenv("XKB_CONFIG_ROOT", "/usr/share/X11/xkb", 1);
   setenv("WAYLAND_DISPLAY", "wayland-0", 1);
   setenv("PYTHONHOME", (HOME + "/lib/python3").c_str(), 1);
-  setenv("PYTHONPATH", (HOME + "/lib/python3").c_str(), 1);
+
+  std::string pythonPath;
+  pythonPath = HOME + "/lib/python3";
+  pythonPath += ":" + pythonPath + "/site-packages";
+
+  setenv("PYTHONPATH", pythonPath.c_str(), 1);
   setenv("PYTHONIOENCODING", "UTF-8", 1);
   setenv("KODI_HOME", HOME.c_str(), 1);
   setenv("SSL_CERT_FILE",
