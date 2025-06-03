@@ -74,6 +74,8 @@ AddonPtr CAddonBuilder::Generate(const AddonInfoPtr& info, AddonType type)
       return std::make_shared<CAddonDll>(info, type);
     case AddonType::GAMEDLL:
       return std::make_shared<GAME::CGameClient>(info);
+    case AddonType::SHADERDLL:
+      return std::make_shared<CAddonDll>(info, type);
     case AddonType::PLUGIN:
     case AddonType::SCRIPT:
       return std::make_shared<CPluginSource>(info, type);

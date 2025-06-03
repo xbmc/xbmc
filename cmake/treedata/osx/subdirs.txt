@@ -1,4 +1,5 @@
 xbmc/cores/RetroPlayer/process/osx    cores/RetroPlayer/process/osx
+xbmc/cores/RetroPlayer/shaders/gl     cores/RetroPlayer/shaders/gl
 xbmc/cores/VideoPlayer/Process/osx    cores/VideoPlayer/Process/osx
 xbmc/platform/darwin                  platform/darwin
 xbmc/platform/darwin/network          platform/darwin/network

@@ -139,8 +139,8 @@ std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
   return std::make_unique<CGLTexture>(width, height, format);
 }
 
-CGLTexture::CGLTexture(unsigned int width, unsigned int height, XB_FMT format)
-  : CTexture(width, height, format)
+CGLTexture::CGLTexture(unsigned int width, unsigned int height, XB_FMT format, GLuint texture)
+  : CTexture(width, height, format), m_texture(texture)
 {
   unsigned int major, minor;
   CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
@@ -325,4 +325,9 @@ TextureFormat CGLTexture::GetFormatGL(KD_TEX_FMT textureFormat)
   }
 
   return glFormat;
+}
+
+GLuint CGLTexture::GetTextureID() const
+{
+  return m_texture;
 }

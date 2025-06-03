@@ -281,6 +281,7 @@ extern "C"
       struct AddonInstance_Peripheral* peripheral;
       struct AddonInstance_PVR* pvr;
       struct AddonInstance_Screensaver* screensaver;
+      struct AddonInstance_ShaderPreset* shaderpreset;
       struct AddonInstance_VFSEntry* vfs;
       struct AddonInstance_VideoCodec* videocodec;
       struct AddonInstance_Visualization* visualization;
