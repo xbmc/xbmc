@@ -24,8 +24,6 @@ public:
   void DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
   void FrameMove() override;
   void DoRender() override;
-  void AllocResources(bool forceLoad = false) override;
-  void FreeResources(bool forceUnLoad = false) override;
 
 protected:
   unsigned int FindCurrentResolution();
@@ -34,12 +32,11 @@ protected:
   void EnableControl(int iControl);
   bool UpdateFromControl(int iControl);
   void ResetCalibration();
-  unsigned int m_iCurRes;
-  std::vector<RESOLUTION> m_Res;
-  int m_iControl;
-  float m_fPixelRatioBoxHeight;
 
 private:
+  unsigned int m_iCurRes{0};
+  std::vector<RESOLUTION> m_Res;
+  int m_iControl{0};
   std::map<int, std::pair<float, float>> m_controlsSize;
   int m_subtitlesHalfSpace{0};
   int m_subtitleVerticalMargin{0};
