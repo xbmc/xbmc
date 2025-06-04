@@ -106,7 +106,8 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   }
 
   // This check + the reinterpret cast is for security reason, if the user has outdated platform header files which often is the case
-  static_assert(sizeof(EGLNativeWindowType) == sizeof(gbm_surface*), "Declaration specifier differs in size");
+  static_assert(sizeof(EGLNativeWindowType) == sizeof(gbm_surface*),
+                "Declaration specifier differs in size");
 
   if (!m_eglContext.CreatePlatformSurface(
           m_GBM->GetDevice().GetSurface().Get(),
@@ -146,7 +147,7 @@ bool CWinSystemGbmEGLContext::DestroyWindowSystem()
   return CWinSystemGbm::DestroyWindowSystem();
 }
 
-void CWinSystemGbmEGLContext::delete_CVaapiProxy::operator()(CVaapiProxy *p) const
+void CWinSystemGbmEGLContext::delete_CVaapiProxy::operator()(CVaapiProxy* p) const
 {
   VaapiProxyDelete(p);
 }

@@ -26,10 +26,10 @@ bool CGBMDPMSSupport::EnablePowerSaving(PowerSavingMode mode)
 
   switch (mode)
   {
-  case OFF:
-    return winSystem->Hide();
-  default:
-    return false;
+    case OFF:
+      return winSystem->Hide();
+    default:
+      return false;
   }
 }
 

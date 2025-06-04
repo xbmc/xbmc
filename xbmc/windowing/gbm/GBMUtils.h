@@ -172,6 +172,6 @@ private:
   std::unique_ptr<CGBMDevice, CGBMDeviceDeleter> m_device;
 };
 
-}
-}
-}
+} // namespace GBM
+} // namespace WINDOWING
+} // namespace KODI

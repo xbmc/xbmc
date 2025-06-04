@@ -36,7 +36,7 @@ void DrmFbDestroyCallback(gbm_bo* bo, void* data)
 
   delete fb;
 }
-}
+} // namespace
 
 CDRMUtils::~CDRMUtils()
 {
@@ -59,11 +59,11 @@ bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
   return true;
 }
 
-drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
+drm_fb* CDRMUtils::DrmFbGetFromBo(struct gbm_bo* bo)
 {
   {
-    struct drm_fb *fb = static_cast<drm_fb *>(gbm_bo_get_user_data(bo));
-    if(fb)
+    struct drm_fb* fb = static_cast<drm_fb*>(gbm_bo_get_user_data(bo));
+    if (fb)
     {
       if (m_gui_plane->GetFormat() == fb->format)
         return fb;
@@ -72,15 +72,11 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
     }
   }
 
-  struct drm_fb *fb = new drm_fb;
+  struct drm_fb* fb = new drm_fb;
   fb->bo = bo;
   fb->format = m_gui_plane->GetFormat();
 
-  uint32_t width,
-           height,
-           handles[4] = {0},
-           strides[4] = {0},
-           offsets[4] = {0};
+  uint32_t width, height, handles[4] = {0}, strides[4] = {0}, offsets[4] = {0};
 
   uint64_t modifiers[4] = {0};
 
@@ -110,33 +106,19 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
               DRMHELPERS::ModifierToString(modifiers[0]));
   }
 
-  int ret = drmModeAddFB2WithModifiers(m_fd,
-                                       width,
-                                       height,
-                                       fb->format,
-                                       handles,
-                                       strides,
-                                       offsets,
-                                       modifiers,
-                                       &fb->fb_id,
-                                       flags);
+  int ret = drmModeAddFB2WithModifiers(m_fd, width, height, fb->format, handles, strides, offsets,
+                                       modifiers, &fb->fb_id, flags);
 
-  if(ret < 0)
+  if (ret < 0)
   {
-    ret = drmModeAddFB2(m_fd,
-                        width,
-                        height,
-                        fb->format,
-                        handles,
-                        strides,
-                        offsets,
-                        &fb->fb_id,
+    ret = drmModeAddFB2(m_fd, width, height, fb->format, handles, strides, offsets, &fb->fb_id,
                         flags);
 
     if (ret < 0)
     {
       delete (fb);
-      CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to add framebuffer: {} ({})", __FUNCTION__, strerror(errno), errno);
+      CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to add framebuffer: {} ({})", __FUNCTION__,
+                strerror(errno), errno);
       return nullptr;
     }
   }
@@ -155,7 +137,7 @@ bool CDRMUtils::FindPreferredMode()
   {
     drmModeModeInfo* current_mode = m_connector->GetModeForIndex(i);
 
-    if(current_mode->type & DRM_MODE_TYPE_PREFERRED)
+    if (current_mode->type & DRM_MODE_TYPE_PREFERRED)
     {
       m_mode = current_mode;
       CLog::Log(LOGDEBUG, "CDRMUtils::{} - found preferred mode: {}x{}{} @ {} Hz", __FUNCTION__,
@@ -172,7 +154,7 @@ bool CDRMUtils::FindPreferredMode()
     }
   }
 
-  if(!m_mode)
+  if (!m_mode)
   {
     CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to find preferred mode", __FUNCTION__);
     return false;
@@ -188,21 +170,25 @@ bool CDRMUtils::FindPlanes()
     if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
       continue;
 
-    auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [&i](auto& plane) {
-      if (plane->GetPossibleCrtcs() & (1 << i))
-      {
-        return plane->SupportsFormat(DRM_FORMAT_NV12);
-      }
-      return false;
-    });
+    auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(),
+                                   [&i](auto& plane)
+                                   {
+                                     if (plane->GetPossibleCrtcs() & (1 << i))
+                                     {
+                                       return plane->SupportsFormat(DRM_FORMAT_NV12);
+                                     }
+                                     return false;
+                                   });
 
     uint32_t videoPlaneId{0};
 
     if (videoPlane != m_planes.end())
       videoPlaneId = videoPlane->get()->GetPlaneId();
 
-    auto guiPlane =
-        std::find_if(m_planes.begin(), m_planes.end(), [&i, &videoPlaneId](auto& plane) {
+    auto guiPlane = std::find_if(
+        m_planes.begin(), m_planes.end(),
+        [&i, &videoPlaneId](auto& plane)
+        {
           if (plane->GetPossibleCrtcs() & (1 << i))
           {
             return (plane->GetPlaneId() != videoPlaneId &&
@@ -424,7 +410,8 @@ bool CDRMUtils::InitDrm()
   auto resources = drmModeGetResources(m_fd);
   if (!resources)
   {
-    CLog::Log(LOGERROR, "CDRMUtils::{} - failed to get drm resources: {}", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "CDRMUtils::{} - failed to get drm resources: {}", __FUNCTION__,
+              strerror(errno));
     return false;
   }
 
@@ -445,7 +432,8 @@ bool CDRMUtils::InitDrm()
   auto planeResources = drmModeGetPlaneResources(m_fd);
   if (!planeResources)
   {
-    CLog::Log(LOGERROR, "CDRMUtils::{} - failed to get drm plane resources: {}", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "CDRMUtils::{} - failed to get drm plane resources: {}", __FUNCTION__,
+              strerror(errno));
     return false;
   }
 
@@ -536,8 +524,7 @@ bool CDRMUtils::FindConnector()
 
   if (connectorName == "Default")
   {
-    connector = std::find_if(m_connectors.begin(), m_connectors.end(),
-                             [](auto& connector)
+    connector = std::find_if(m_connectors.begin(), m_connectors.end(), [](auto& connector)
                              { return connector->GetEncoderId() > 0 && connector->IsConnected(); });
   }
 
@@ -556,9 +543,8 @@ bool CDRMUtils::FindConnector()
 
 bool CDRMUtils::FindEncoder()
 {
-  auto encoder = std::find_if(m_encoders.begin(), m_encoders.end(), [this](auto& encoder) {
-    return encoder->GetEncoderId() == m_connector->GetEncoderId();
-  });
+  auto encoder = std::find_if(m_encoders.begin(), m_encoders.end(), [this](auto& encoder)
+                              { return encoder->GetEncoderId() == m_connector->GetEncoderId(); });
 
   if (encoder == m_encoders.end())
   {
@@ -600,7 +586,7 @@ bool CDRMUtils::FindCrtc()
 
 bool CDRMUtils::RestoreOriginalMode()
 {
-  if(!m_orig_crtc)
+  if (!m_orig_crtc)
   {
     return false;
   }
@@ -609,7 +595,7 @@ bool CDRMUtils::RestoreOriginalMode()
                             m_orig_crtc->GetX(), m_orig_crtc->GetY(), m_connector->GetConnectorId(),
                             1, m_orig_crtc->GetMode());
 
-  if(ret)
+  if (ret)
   {
     CLog::Log(LOGERROR, "CDRMUtils::{} - failed to set original crtc mode", __FUNCTION__);
     return false;
@@ -672,7 +658,7 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
   }
 
   if (mode->clock % 5 != 0)
-    res.fRefreshRate = static_cast<float>(mode->vrefresh) * (1000.0f/1001.0f);
+    res.fRefreshRate = static_cast<float>(mode->vrefresh) * (1000.0f / 1001.0f);
   else
     res.fRefreshRate = mode->vrefresh;
   res.iSubtitles = res.iHeight;

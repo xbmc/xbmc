@@ -85,10 +85,8 @@ constexpr auto ColorimetryMap = make_map<KODI::UTILS::Colorimetry, std::string_v
 });
 } // namespace
 
-CWinSystemGbm::CWinSystemGbm() :
-  m_DRM(nullptr),
-  m_GBM(new CGBMUtils),
-  m_libinput(new CLibInputHandler)
+CWinSystemGbm::CWinSystemGbm()
+  : m_DRM(nullptr), m_GBM(new CGBMUtils), m_libinput(new CLibInputHandler)
 {
   m_dpms = std::make_shared<CGBMDPMSSupport>();
   m_libinput->Start();
@@ -198,17 +196,14 @@ void CWinSystemGbm::UpdateResolutions()
   {
     CDisplaySettings::GetInstance().ClearCustomResolutions();
 
-    for (auto &res : resolutions)
+    for (auto& res : resolutions)
     {
       CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
       CDisplaySettings::GetInstance().AddResolutionInfo(res);
 
-      if (current.iScreenWidth == res.iScreenWidth &&
-          current.iScreenHeight == res.iScreenHeight &&
-          current.iWidth == res.iWidth &&
-          current.iHeight == res.iHeight &&
-          current.fRefreshRate == res.fRefreshRate &&
-          current.dwFlags == res.dwFlags)
+      if (current.iScreenWidth == res.iScreenWidth && current.iScreenHeight == res.iScreenHeight &&
+          current.iWidth == res.iWidth && current.iHeight == res.iHeight &&
+          current.fRefreshRate == res.fRefreshRate && current.dwFlags == res.dwFlags)
       {
         CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = res;
       }
@@ -232,13 +227,13 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   // Notify other subsystems that we will change resolution
   OnLostDevice();
 
-  if(!m_DRM->SetMode(res))
+  if (!m_DRM->SetMode(res))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::{} - failed to set DRM mode", __FUNCTION__);
     return false;
   }
 
-  struct gbm_bo *bo = nullptr;
+  struct gbm_bo* bo = nullptr;
 
   if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
   {
@@ -286,7 +281,7 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
     m_videoLayerBridge->Disable();
   }
 
-  struct gbm_bo *bo = nullptr;
+  struct gbm_bo* bo = nullptr;
 
   if (rendered)
   {
@@ -304,7 +299,8 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
 
 bool CWinSystemGbm::UseLimitedColor()
 {
-  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
 }
 
 bool CWinSystemGbm::Hide()
@@ -321,13 +317,13 @@ bool CWinSystemGbm::Show(bool raise)
   return ret;
 }
 
-void CWinSystemGbm::Register(IDispResource *resource)
+void CWinSystemGbm::Register(IDispResource* resource)
 {
   std::unique_lock lock(m_resourceSection);
   m_resources.push_back(resource);
 }
 
-void CWinSystemGbm::Unregister(IDispResource *resource)
+void CWinSystemGbm::Unregister(IDispResource* resource)
 {
   std::unique_lock lock(m_resourceSection);
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);

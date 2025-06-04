@@ -86,8 +86,8 @@ CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer& CGBMUtils::CGBMDevice::CG
      * we have to release buffers. This means that the maximum amount of buffers had been reached.
      * For mesa this should be 4 buffers but it may vary across other implementations.
      */
-    std::call_once(
-        flag, [this]() { CLog::Log(LOGDEBUG, "CGBMUtils - using {} buffers", m_buffers.size()); });
+    std::call_once(flag, [this]()
+                   { CLog::Log(LOGDEBUG, "CGBMUtils - using {} buffers", m_buffers.size()); });
 
     m_buffers.pop();
   }

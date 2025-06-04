@@ -30,9 +30,7 @@ public:
   ~CWinSystemGbmEGLContext() override = default;
 
   bool DestroyWindowSystem() override;
-  bool CreateNewWindow(const std::string& name,
-                       bool fullScreen,
-                       RESOLUTION_INFO& res) override;
+  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   bool DestroyWindow() override;
   void SetDirtyRegions(const CDirtyRegionList& dirtyRegions) override
   {
@@ -47,7 +45,8 @@ public:
 protected:
   CWinSystemGbmEGLContext(EGLenum platform, std::string const& platformExtension)
     : CWinSystemEGL{platform, platformExtension}
-  {}
+  {
+  }
 
   /**
    * Inheriting classes should override InitWindowSystem() without parameters
@@ -60,11 +59,11 @@ protected:
 
   struct delete_CVaapiProxy
   {
-    void operator()(CVaapiProxy *p) const;
+    void operator()(CVaapiProxy* p) const;
   };
   std::unique_ptr<CVaapiProxy, delete_CVaapiProxy> m_vaapiProxy;
 };
 
-}
-}
-}
+} // namespace GBM
+} // namespace WINDOWING
+} // namespace KODI

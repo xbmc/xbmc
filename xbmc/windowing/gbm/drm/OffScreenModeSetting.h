@@ -23,7 +23,7 @@ public:
   COffScreenModeSetting() = default;
   ~COffScreenModeSetting() override = default;
   void FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async) override {}
-  bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo) override { return false; }
+  bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo) override { return false; }
   bool SetActive(bool active) override { return false; }
   bool InitDrm() override;
   void DestroyDrm() override {}
@@ -33,6 +33,6 @@ public:
   bool SetMode(const RESOLUTION_INFO& res) override { return true; }
 };
 
-}
-}
-}
+} // namespace GBM
+} // namespace WINDOWING
+} // namespace KODI
