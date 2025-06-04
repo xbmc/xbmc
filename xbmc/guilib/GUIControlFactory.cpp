@@ -743,9 +743,10 @@ std::string CGUIControlFactory::GetType(const TiXmlElement* pControlNode)
   return type;
 }
 
-bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
-                                              const char* strTag,
-                                              KODI::UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg)
+bool CGUIControlFactory::GetMovingSpeedConfig(
+    const TiXmlNode* pRootNode,
+    const char* strTag,
+    KODI::UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg)
 {
   const TiXmlElement* msNode = pRootNode->FirstChildElement(strTag);
   if (!msNode)
