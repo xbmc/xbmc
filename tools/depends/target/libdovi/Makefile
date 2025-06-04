@@ -1,6 +1,5 @@
 include ../../Makefile.include LIBDOVI-VERSION ../../download-files.include
-DEPS = ../../Makefile.include Makefile LIBDOVI-VERSION ../../download-files.include \
-                                       dolby_vision-Cargo.lock
+DEPS = ../../Makefile.include Makefile LIBDOVI-VERSION ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/target/$(HOST)/release/$(BYPRODUCT)
 
@@ -30,7 +29,6 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cp dolby_vision-Cargo.lock $(PLATFORM)/dolby_vision/Cargo.lock
 	$(CARGO) fetch  --locked $(CARGO_BASE_OPTS)
 
 $(LIBDYLIB): $(PLATFORM)
