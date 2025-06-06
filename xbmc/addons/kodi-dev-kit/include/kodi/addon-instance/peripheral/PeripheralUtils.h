@@ -29,7 +29,7 @@
 #define PERIPHERAL_SAFE_DELETE_ARRAY(x) \
   do \
   { \
-    delete[](x); \
+    delete[] (x); \
     (x) = NULL; \
   } while (0)
 

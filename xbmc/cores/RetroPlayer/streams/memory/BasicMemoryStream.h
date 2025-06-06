@@ -37,7 +37,7 @@ public:
   uint64_t PastFramesAvailable() const override { return 0; }
   uint64_t RewindFrames(uint64_t frameCount) override { return 0; }
   uint64_t GetFrameCounter() const override { return 0; }
-  void SetFrameCounter(uint64_t frameCount) override{};
+  void SetFrameCounter(uint64_t frameCount) override {}
 
 private:
   size_t m_frameSize;

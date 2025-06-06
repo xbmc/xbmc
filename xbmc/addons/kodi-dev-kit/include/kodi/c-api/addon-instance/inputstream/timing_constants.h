@@ -35,8 +35,8 @@
 #define STREAM_NOPTS_VALUE 0xFFF0000000000000
 
 // "C" defines to translate stream times
-#define STREAM_TIME_TO_MSEC(x) ((int)((double)(x)*1000 / STREAM_TIME_BASE))
-#define STREAM_SEC_TO_TIME(x) ((double)(x)*STREAM_TIME_BASE)
-#define STREAM_MSEC_TO_TIME(x) ((double)(x)*STREAM_TIME_BASE / 1000)
+#define STREAM_TIME_TO_MSEC(x) ((int)((double)(x) * 1000 / STREAM_TIME_BASE))
+#define STREAM_SEC_TO_TIME(x) ((double)(x) * STREAM_TIME_BASE)
+#define STREAM_MSEC_TO_TIME(x) ((double)(x) * STREAM_TIME_BASE / 1000)
 
 #endif /* !C_API_ADDONINSTANCE_INPUTSTREAM_TIMINGCONSTANTS_H */

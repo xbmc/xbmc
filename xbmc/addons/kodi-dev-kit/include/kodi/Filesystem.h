@@ -568,7 +568,7 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  // @note Not necessary for addon development, therefore it's 
+  // @note Not necessary for addon development, therefore it's
   // disabled for doxygen below!
   //
   // @ingroup cpp_kodi_vfs_CDirEntry

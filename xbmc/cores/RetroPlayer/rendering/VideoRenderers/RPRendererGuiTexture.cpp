@@ -48,12 +48,11 @@ CRPBaseRenderer* CRendererFactoryGuiTexture::CreateRenderer(
 
 RenderBufferPoolVector CRendererFactoryGuiTexture::CreateBufferPools(CRenderContext& context)
 {
-  return
-  {
+  return {
 #if !defined(HAS_DX)
-    std::make_shared<CRenderBufferPoolGuiTexture>(SCALINGMETHOD::NEAREST),
+      std::make_shared<CRenderBufferPoolGuiTexture>(SCALINGMETHOD::NEAREST),
 #endif
-        std::make_shared<CRenderBufferPoolGuiTexture>(SCALINGMETHOD::LINEAR),
+      std::make_shared<CRenderBufferPoolGuiTexture>(SCALINGMETHOD::LINEAR),
   };
 }
 

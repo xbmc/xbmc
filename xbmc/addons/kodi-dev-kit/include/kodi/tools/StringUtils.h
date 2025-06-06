@@ -1453,10 +1453,7 @@ public:
   /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
   /// ~~~~~~~~~~~~~
   ///
-  inline static void RemoveCRLF(std::string& strLine)
-  {
-    StringUtils::TrimRight(strLine, "\n\r");
-  }
+  inline static void RemoveCRLF(std::string& strLine) { StringUtils::TrimRight(strLine, "\n\r"); }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -2028,10 +2025,7 @@ public:
   /// @param[in] c Character to check
   /// @return true if space, false otherwise
   ///
-  inline static int IsSpace(char c)
-  {
-    return (c & 0x80) == 0 && ::isspace(c);
-  }
+  inline static int IsSpace(char c) { return (c & 0x80) == 0 && ::isspace(c); }
   //----------------------------------------------------------------------------
 
   //============================================================================
