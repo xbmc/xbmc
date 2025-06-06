@@ -76,6 +76,6 @@ private:
   std::deque<std::unique_ptr<CDRMAtomicRequest>> m_atomicRequestQueue;
 };
 
-}
-}
-}
+} // namespace GBM
+} // namespace WINDOWING
+} // namespace KODI

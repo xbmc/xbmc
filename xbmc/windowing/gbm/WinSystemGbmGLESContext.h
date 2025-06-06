@@ -33,16 +33,17 @@ public:
   static std::unique_ptr<CWinSystemBase> CreateWinSystem();
 
   // Implementation of CWinSystemBase via CWinSystemGbm
-  CRenderSystemBase *GetRenderSystem() override { return this; }
+  CRenderSystemBase* GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void PresentRender(bool rendered, bool videoLayer) override;
+
 protected:
   void SetVSyncImpl(bool enable) override {}
   void PresentRenderImpl(bool rendered) override {};
   bool CreateContext() override;
 };
 
-}
-}
-}
+} // namespace GBM
+} // namespace WINDOWING
+} // namespace KODI

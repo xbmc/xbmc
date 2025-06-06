@@ -29,11 +29,11 @@ public:
 
 private:
   bool WaitingForFlip();
-  bool QueueFlip(struct gbm_bo *bo);
-  static void PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
-                              unsigned int usec, void *data);
+  bool QueueFlip(struct gbm_bo* bo);
+  static void PageFlipHandler(
+      int fd, unsigned int frame, unsigned int sec, unsigned int usec, void* data);
 };
 
-}
-}
-}
+} // namespace GBM
+} // namespace WINDOWING
+} // namespace KODI

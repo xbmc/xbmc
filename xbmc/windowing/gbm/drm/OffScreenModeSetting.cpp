@@ -30,9 +30,9 @@ bool COffScreenModeSetting::InitDrm()
 
 std::vector<RESOLUTION_INFO> COffScreenModeSetting::GetModes()
 {
-    std::vector<RESOLUTION_INFO> resolutions;
-    resolutions.push_back(GetCurrentMode());
-    return resolutions;
+  std::vector<RESOLUTION_INFO> resolutions;
+  resolutions.push_back(GetCurrentMode());
+  return resolutions;
 }
 
 RESOLUTION_INFO COffScreenModeSetting::GetCurrentMode()

@@ -38,8 +38,9 @@ using namespace KODI::WINDOWING::GBM;
 using namespace std::chrono_literals;
 
 CWinSystemGbmGLESContext::CWinSystemGbmGLESContext()
-: CWinSystemGbmEGLContext(EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm")
-{}
+  : CWinSystemGbmEGLContext(EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm")
+{
+}
 
 void CWinSystemGbmGLESContext::Register()
 {
@@ -97,10 +98,11 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   return true;
 }
 
-bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen,
+                                             RESOLUTION_INFO& res,
+                                             bool blankOtherDisplays)
 {
-  if (res.iWidth != m_nWidth ||
-      res.iHeight != m_nHeight)
+  if (res.iWidth != m_nWidth || res.iHeight != m_nHeight)
   {
     CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::{} - resolution changed, creating a new window",
               __FUNCTION__);

@@ -22,6 +22,6 @@ public:
   virtual void Disable() {}
 };
 
-}
-}
-}
+} // namespace GBM
+} // namespace WINDOWING
+} // namespace KODI

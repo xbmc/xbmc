@@ -27,14 +27,14 @@ using namespace KODI::WINDOWING::GBM;
 
 static int flip_happening = 0;
 
-bool CDRMLegacy::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo)
+bool CDRMLegacy::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo)
 {
-  struct drm_fb *drm_fb = DrmFbGetFromBo(bo);
+  struct drm_fb* drm_fb = DrmFbGetFromBo(bo);
 
   auto ret = drmModeSetCrtc(m_fd, m_crtc->GetCrtcId(), drm_fb->fb_id, 0, 0,
                             m_connector->GetConnectorId(), 1, m_mode);
 
-  if(ret < 0)
+  if (ret < 0)
   {
     CLog::Log(LOGERROR, "CDRMLegacy::{} - failed to set crtc mode: {}x{}{} @ {} Hz", __FUNCTION__,
               m_mode->hdisplay, m_mode->vdisplay,
@@ -50,12 +50,12 @@ bool CDRMLegacy::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo)
   return true;
 }
 
-void CDRMLegacy::PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
-                                unsigned int usec, void *data)
+void CDRMLegacy::PageFlipHandler(
+    int fd, unsigned int frame, unsigned int sec, unsigned int usec, void* data)
 {
-  (void) fd, (void) frame, (void) sec, (void) usec;
+  (void)fd, (void)frame, (void)sec, (void)usec;
 
-  int *flip_happening = static_cast<int *>(data);
+  int* flip_happening = static_cast<int*>(data);
   *flip_happening = 0;
 }
 
@@ -64,42 +64,41 @@ bool CDRMLegacy::WaitingForFlip()
   if (!flip_happening)
     return false;
 
-  struct pollfd drm_fds =
-  {
-    m_fd,
-    POLLIN,
-    0,
+  struct pollfd drm_fds = {
+      m_fd,
+      POLLIN,
+      0,
   };
 
   drmEventContext drm_evctx{};
   drm_evctx.version = DRM_EVENT_CONTEXT_VERSION;
   drm_evctx.page_flip_handler = PageFlipHandler;
 
-  while(flip_happening)
+  while (flip_happening)
   {
     auto ret = poll(&drm_fds, 1, -1);
 
-    if(ret < 0)
+    if (ret < 0)
       return true;
 
-    if(drm_fds.revents & (POLLHUP | POLLERR))
+    if (drm_fds.revents & (POLLHUP | POLLERR))
       return true;
 
-    if(drm_fds.revents & POLLIN)
+    if (drm_fds.revents & POLLIN)
       drmHandleEvent(m_fd, &drm_evctx);
   }
 
   return false;
 }
 
-bool CDRMLegacy::QueueFlip(struct gbm_bo *bo)
+bool CDRMLegacy::QueueFlip(struct gbm_bo* bo)
 {
-  struct drm_fb *drm_fb = DrmFbGetFromBo(bo);
+  struct drm_fb* drm_fb = DrmFbGetFromBo(bo);
 
   auto ret = drmModePageFlip(m_fd, m_crtc->GetCrtcId(), drm_fb->fb_id, DRM_MODE_PAGE_FLIP_EVENT,
                              &flip_happening);
 
-  if(ret)
+  if (ret)
   {
     CLog::Log(LOGDEBUG, "CDRMLegacy::{} - failed to queue DRM page flip", __FUNCTION__);
     return false;

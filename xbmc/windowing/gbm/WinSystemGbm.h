@@ -86,7 +86,7 @@ protected:
   std::shared_ptr<CVideoLayerBridge> m_videoLayerBridge;
 
   CCriticalSection m_resourceSection;
-  std::vector<IDispResource*>  m_resources;
+  std::vector<IDispResource*> m_resources;
 
   bool m_dispReset = false;
   XbmcThreads::EndTime<> m_dispResetTimer;
@@ -98,6 +98,6 @@ private:
   std::unique_ptr<UTILS::CDisplayInfo> m_info;
 };
 
-}
-}
+} // namespace GBM
+} // namespace WINDOWING
 } // namespace KODI

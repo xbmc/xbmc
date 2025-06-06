@@ -147,8 +147,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags, nullptr);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CDRMAtomic::{} - atomic commit failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::Log(LOGERROR, "CDRMAtomic::{} - atomic commit failed: {}", __FUNCTION__, strerror(errno));
     m_atomicRequestQueue.pop_back();
   }
   else if (m_atomicRequestQueue.size() > 1)
@@ -175,7 +174,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
 
 void CDRMAtomic::FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async)
 {
-  struct drm_fb *drm_fb = nullptr;
+  struct drm_fb* drm_fb = nullptr;
   uint32_t flags = 0;
 
   if (rendered)
@@ -249,7 +248,7 @@ void CDRMAtomic::DestroyDrm()
   CDRMUtils::DestroyDrm();
 }
 
-bool CDRMAtomic::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo)
+bool CDRMAtomic::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo)
 {
   m_need_modeset = true;
 
@@ -283,7 +282,9 @@ CDRMAtomic::CDRMAtomicRequest::CDRMAtomicRequest() : m_atomicRequest(drmModeAtom
 {
 }
 
-bool CDRMAtomic::CDRMAtomicRequest::AddProperty(CDRMObject* object, const char* name, uint64_t value)
+bool CDRMAtomic::CDRMAtomicRequest::AddProperty(CDRMObject* object,
+                                                const char* name,
+                                                uint64_t value)
 {
   uint32_t propertyId = object->GetPropertyId(name);
   if (propertyId == 0)
