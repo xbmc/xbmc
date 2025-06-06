@@ -27,11 +27,17 @@
 #include "platform/posix/ConvUtils.h"
 #endif
 
+#include <algorithm>
+#include <cstdlib>
 #include <memory>
+#include <string>
 
 using namespace dbiplus;
 
-#define MAX_COMPRESS_COUNT 20
+namespace
+{
+constexpr int MAX_COMPRESS_COUNT = 20;
+} // unnamed namespace
 
 void CDatabase::Filter::AppendField(const std::string& strField)
 {
@@ -103,7 +109,7 @@ void CDatabase::ExistsSubQuery::AppendJoin(const std::string& strJoin)
     join += " " + strJoin;
 }
 
-void CDatabase::ExistsSubQuery::AppendWhere(const std::string& strWhere,
+void CDatabase::ExistsSubQuery::AppendWhere(std::string_view strWhere,
                                             bool combineWithAnd /* = true */)
 {
   if (strWhere.empty())
@@ -118,7 +124,7 @@ void CDatabase::ExistsSubQuery::AppendWhere(const std::string& strWhere,
   }
 }
 
-bool CDatabase::ExistsSubQuery::BuildSQL(std::string& strSQL)
+bool CDatabase::ExistsSubQuery::BuildSQL(std::string& strSQL) const
 {
   if (tablename.empty())
     return false;
@@ -147,7 +153,7 @@ CDatabase::DatasetLayout::DatasetLayout(size_t totalfields)
 }
 
 void CDatabase::DatasetLayout::SetField(int fieldNo,
-                                        const std::string& strField,
+                                        std::string_view strField,
                                         bool bOutput /*= false*/)
 {
   if (fieldNo >= 0 && fieldNo < static_cast<int>(m_fields.size()))
@@ -198,7 +204,7 @@ int CDatabase::DatasetLayout::GetRecNo(int fieldno)
   return -1;
 }
 
-const std::string CDatabase::DatasetLayout::GetFields()
+std::string CDatabase::DatasetLayout::GetFields() const
 {
   std::string strSQL;
   for (const auto& field : m_fields)
@@ -215,22 +221,14 @@ const std::string CDatabase::DatasetLayout::GetFields()
   return strSQL;
 }
 
-bool CDatabase::DatasetLayout::HasFilterFields()
+bool CDatabase::DatasetLayout::HasFilterFields() const
 {
-  for (const auto& field : m_fields)
-  {
-    if (field.fetch)
-      return true;
-  }
-  return false;
+  return std::ranges::any_of(m_fields, [](const auto& field) { return field.fetch; });
 }
 
 CDatabase::CDatabase()
   : m_profileManager(*CServiceBroker::GetSettingsComponent()->GetProfileManager())
 {
-  m_openCount = 0;
-  m_sqlite = true;
-  m_multipleExecute = false;
 }
 
 CDatabase::~CDatabase(void)
@@ -240,7 +238,7 @@ CDatabase::~CDatabase(void)
 
 void CDatabase::Split(const std::string& strFileNameAndPath,
                       std::string& strPath,
-                      std::string& strFileName)
+                      std::string& strFileName) const
 {
   strFileName = "";
   strPath = "";
@@ -287,7 +285,7 @@ std::string CDatabase::GetSingleValue(const std::string& query, Dataset& ds) con
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed on query '{}'", __FUNCTION__, query);
+    CLog::LogF(LOGERROR, "Failed on query '{}'", query);
   }
   return ret;
 }
@@ -332,7 +330,7 @@ int CDatabase::GetSingleValueInt(const std::string& query, Dataset& ds) const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed on query '{}'", __FUNCTION__, query);
+    CLog::LogF(LOGERROR, "Failed on query '{}'", query);
   }
   return ret;
 }
@@ -343,7 +341,7 @@ int CDatabase::GetSingleValueInt(const std::string& strTable,
                                  const std::string& strOrderBy /* = std::string() */) const
 {
   std::string strResult = GetSingleValue(strTable, strColumn, strWhereClause, strOrderBy);
-  return static_cast<int>(strtol(strResult.c_str(), NULL, 10));
+  return static_cast<int>(std::strtol(strResult.c_str(), nullptr, 10));
 }
 
 int CDatabase::GetSingleValueInt(const std::string& query) const
@@ -405,7 +403,7 @@ bool CDatabase::ExecuteQuery(const std::string& strQuery)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed to execute query '{}'", __FUNCTION__, strQuery);
+    CLog::LogF(LOGERROR, "Failed to execute query '{}'", strQuery);
   }
 
   return bReturn;
@@ -428,7 +426,7 @@ bool CDatabase::ResultQuery(const std::string& strQuery) const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed to execute query '{}'", __FUNCTION__, strQuery);
+    CLog::LogF(LOGERROR, "Failed to execute query '{}'", strQuery);
   }
 
   return bReturn;
@@ -470,7 +468,7 @@ bool CDatabase::CommitInsertQueries()
     catch (...)
     {
       bReturn = false;
-      CLog::Log(LOGERROR, "{} - failed to execute queries", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Failed to execute queries");
     }
   }
 
@@ -508,7 +506,7 @@ bool CDatabase::CommitDeleteQueries()
     catch (...)
     {
       bReturn = false;
-      CLog::Log(LOGERROR, "{} - failed to execute queries", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Failed to execute queries");
     }
   }
 
@@ -670,7 +668,7 @@ CDatabase::ConnectionState CDatabase::Connect(const std::string& dbName,
   }
   catch (DbErrors& error)
   {
-    CLog::Log(LOGERROR, "{} failed with '{}'", __FUNCTION__, error.getMsg());
+    CLog::LogF(LOGERROR, "Failed with '{}'", error.getMsg());
     m_openCount = 1; // set to open so we can execute Close()
     Close();
     return ConnectionState::STATE_ERROR;
@@ -688,7 +686,7 @@ int CDatabase::GetDBVersion()
   return 0;
 }
 
-bool CDatabase::IsOpen()
+bool CDatabase::IsOpen() const
 {
   return m_openCount > 0;
 }
@@ -749,7 +747,7 @@ bool CDatabase::Compress(bool bForce /* =true */)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - Compressing the database failed", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Compressing the database failed");
     return false;
   }
   return true;
@@ -817,7 +815,7 @@ bool CDatabase::CreateDatabase()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} unable to create database:{}", __FUNCTION__, (int)GetLastError());
+    CLog::LogF(LOGERROR, "Unable to create database:{}", static_cast<int>(GetLastError()));
     RollbackTransaction();
     return false;
   }
@@ -831,9 +829,7 @@ void CDatabase::UpdateVersionNumber()
   m_pDS->exec(strSQL);
 }
 
-bool CDatabase::BuildSQL(const std::string& strQuery,
-                         const Filter& filter,
-                         std::string& strSQL) const
+bool CDatabase::BuildSQL(std::string_view strQuery, const Filter& filter, std::string& strSQL) const
 {
   strSQL = strQuery;
 

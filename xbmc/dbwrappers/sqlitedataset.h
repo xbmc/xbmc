@@ -14,7 +14,7 @@
 
 #include "dataset.h"
 
-#include <stdio.h>
+#include <string>
 
 #include <sqlite3.h>
 
@@ -30,7 +30,7 @@ class SqliteDatabase : public Database
 protected:
   /* connect descriptor */
   sqlite3* conn;
-  bool _in_transaction;
+  bool _in_transaction{false};
   int last_err;
 
 public:
@@ -39,7 +39,7 @@ public:
   /* destructor */
   ~SqliteDatabase() override;
 
-  Dataset* CreateDataset() const override;
+  Dataset* CreateDataset() override;
 
   /* func. returns connection handle with SQLite-server */
   sqlite3* getHandle() { return conn; }
@@ -70,7 +70,7 @@ public:
   int copy(const char* backup_name) override;
 
   /* \brief drop all extra analytics from database */
-  int drop_analytics(void) override;
+  int drop_analytics() override;
 
   long nextid(const char* seq_name) override;
 
@@ -116,8 +116,7 @@ protected:
 
 public:
   /* constructor */
-  SqliteDataset();
-  explicit SqliteDataset(SqliteDatabase* newDb);
+  using Dataset::Dataset;
 
   /* destructor */
   ~SqliteDataset() override;
@@ -136,7 +135,7 @@ or insert() operations default = false) */
   /* as open, but with our query exec Sql */
   bool query(const std::string& query) override;
   /* func. closes a query */
-  void close(void) override;
+  void close() override;
   /* Cancel changes, made in insert or edit states of dataset */
   void cancel() override;
   /* last inserted id */
