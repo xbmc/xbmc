@@ -132,8 +132,7 @@ public:
    \param ds the dataset to use for the query.
    \return the value from the query, empty on failure.
    */
-  std::string GetSingleValue(const std::string& query,
-                             const std::unique_ptr<dbiplus::Dataset>& ds) const;
+  std::string GetSingleValue(const std::string& query, dbiplus::Dataset& ds) const;
 
   /*!
  * @brief Get a single integer value from a table.
@@ -155,8 +154,7 @@ public:
    \param ds the dataset to use for the query.
    \return the value from the query, 0 on failure.
    */
-  int GetSingleValueInt(const std::string& query,
-                        const std::unique_ptr<dbiplus::Dataset>& ds) const;
+  int GetSingleValueInt(const std::string& query, dbiplus::Dataset& ds) const;
 
   /*!
    * @brief Delete values from a table.
