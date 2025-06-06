@@ -53,6 +53,8 @@ public:
   void SetGroupID(int iGroupID);
 
   const std::string& Path() const { return m_path; }
+
+  const std::string& GroupName() const { return m_groupName; }
   void SetGroupName(const std::string& groupName);
 
   const CPVRChannelNumber& ChannelNumber() const { return m_channelNumber; }
@@ -80,6 +82,7 @@ public:
 
 private:
   int m_iGroupID = -1;
+  std::string m_groupName;
   int m_iGroupClientID = PVR_CLIENT_INVALID_UID;
   int m_iChannelClientID = PVR_CLIENT_INVALID_UID;
   int m_iChannelUID = -1;

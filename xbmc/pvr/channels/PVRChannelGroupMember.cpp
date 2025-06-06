@@ -87,6 +87,12 @@ void CPVRChannelGroupMember::SetGroupID(int iGroupID)
 
 void CPVRChannelGroupMember::SetGroupName(const std::string& groupName)
 {
+  if (m_groupName != groupName)
+  {
+    m_groupName = groupName;
+    // Note: do not set m_bNeedsSave here as group name is not stored in database
+  }
+
   const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(m_iChannelClientID);
   if (client)
