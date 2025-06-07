@@ -2,3 +2,5 @@ APPNAME=cargo-c
 VERSION=0.10.13
 ARCHIVE=$(APPNAME)-$(VERSION).tar.gz
 SHA512=dbd861692bc6b8de2f0a5377e3e187c69f22fe2e2ba9a6b64bc644af935215bc1362ad490ad255b2b5775bbef617f47665a37b8c6d747e8dc2fb4f655fe1384c
+
+FULL_URL=https://github.com/lu-zero/cargo-c/archive/refs/tags/v0.10.13.tar.gz

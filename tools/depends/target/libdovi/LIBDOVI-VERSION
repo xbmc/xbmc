@@ -4,3 +4,5 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 SHA512=5883c9cb1106b41d3c5280685f0a30ee6e0edd6d9410c31d8669d9ad0da0fecc63840e1b5f20b5ab32637ccd946b06064da66185f2b7856fc6be23cd9830dc1a
 BYPRODUCT=libdovi.a
+
+FULL_URL=https://github.com/quietvoid/dovi_tool/archive/refs/tags/libdovi-3.3.2.tar.gz
