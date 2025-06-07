@@ -7,29 +7,18 @@
 #   ${APP_NAME_LC}::EpollShim   - The epoll-shim library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig ${SEARCH_QUIET})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_EPOLLSHIM epoll-shim ${SEARCH_QUIET})
-  endif()
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC epoll-shim)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  find_path(EPOLLSHIM_INCLUDE_DIR NAMES sys/epoll.h
-                                  HINTS ${PC_EPOLLSHIM_INCLUDE_DIRS})
-  find_library(EPOLLSHIM_LIBRARY NAMES epoll-shim
-                                 HINTS ${PC_EPOLLSHIM_LIBDIR})
+  SETUP_BUILD_VARS()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SETUP_FIND_SPECS()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(EpollShim
-                                    REQUIRED_VARS EPOLLSHIM_LIBRARY EPOLLSHIM_INCLUDE_DIR)
+  SEARCH_EXISTING_PACKAGES()
 
-  if(EPOLLSHIM_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${EPOLLSHIM_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${EPOLLSHIM_INCLUDE_DIR}")
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
   endif()
 endif()

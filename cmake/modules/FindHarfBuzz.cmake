@@ -8,39 +8,28 @@
 #   ${APP_NAME_LC}::HarfBuzz   - The HarfBuzz library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig ${SEARCH_QUIET})
-  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(PC_HARFBUZZ harfbuzz ${SEARCH_QUIET})
-  endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_path(HARFBUZZ_INCLUDE_DIR NAMES harfbuzz/hb-ft.h hb-ft.h
-                                 HINTS ${DEPENDS_PATH}/include
-                                       ${PC_HARFBUZZ_INCLUDEDIR}
-                                       ${PC_HARFBUZZ_INCLUDE_DIRS}
-                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-  find_library(HARFBUZZ_LIBRARY NAMES harfbuzz
-                                HINTS ${DEPENDS_PATH}/lib ${PC_HARFBUZZ_LIBDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC harfbuzz)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  set(HARFBUZZ_VERSION ${PC_HARFBUZZ_VERSION})
+  SETUP_BUILD_VARS()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SETUP_FIND_SPECS()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(HarfBuzz
-                                    REQUIRED_VARS HARFBUZZ_LIBRARY HARFBUZZ_INCLUDE_DIR
-                                    VERSION_VAR HARFBUZZ_VERSION)
+  SEARCH_EXISTING_PACKAGES()
 
-  if(HARFBUZZ_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${HARFBUZZ_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${HARFBUZZ_INCLUDE_DIR}")
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET harfbuzz::harfbuzz)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS harfbuzz::harfbuzz)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    endif()
 
-    if(NOT TARGET harfbuzz::harfbuzz)
-      add_library(harfbuzz::harfbuzz ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+    if(NOT TARGET HarfBuzz::HarfBuzz)
+      get_target_property(_ALIASTARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIASED_TARGET)
+
+      add_library(HarfBuzz::HarfBuzz ALIAS ${_ALIASTARGET})
     endif()
   else()
     if(HarfBuzz_FIND_REQUIRED)

@@ -8,32 +8,22 @@
 #   ${APP_NAME_LC}::VDPAU   - The VDPAU library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig ${SEARCH_QUIET})
-  if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_VDPAU vdpau ${SEARCH_QUIET})
-  endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_path(VDPAU_INCLUDE_DIR NAMES vdpau/vdpau.h vdpau/vdpau_x11.h
-                              HINTS ${PC_VDPAU_INCLUDEDIR})
-  find_library(VDPAU_LIBRARY NAMES vdpau
-                             HINTS ${PC_VDPAU_LIBDIR})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC vdpau)
 
-  set(VDPAU_VERSION ${PC_VDPAU_VERSION})
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SETUP_BUILD_VARS()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(VDPAU
-                                    REQUIRED_VARS VDPAU_LIBRARY VDPAU_INCLUDE_DIR
-                                    VERSION_VAR VDPAU_VERSION)
+  SETUP_FIND_SPECS()
 
-  if(VDPAU_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${VDPAU_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${VDPAU_INCLUDE_DIR}"
-                                                                     INTERFACE_COMPILE_DEFINITIONS HAVE_LIBVDPAU)
+  SEARCH_EXISTING_PACKAGES()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_LIBVDPAU)
+    ADD_TARGET_COMPILE_DEFINITION()
   endif()
 endif()
