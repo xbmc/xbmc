@@ -9,6 +9,7 @@
 #include "FrameBufferObject.h"
 
 #include "ServiceBroker.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/RenderSystem.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
@@ -26,7 +27,7 @@ CFrameBufferObject::CFrameBufferObject()
 
 bool CFrameBufferObject::IsSupported()
 {
-  if(CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_framebuffer_object"))
+  if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_framebuffer_object))
     m_supported = true;
   else
     m_supported = false;
