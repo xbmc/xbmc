@@ -329,7 +329,9 @@ void CGUIViewState::AddSortMethod(SortBy sortBy, SortAttribute sortAttributes, i
   m_sortMethods.push_back(sort);
 }
 
-void CGUIViewState::AddSortMethod(SortDescription sortDescription, int buttonLabel, const LABEL_MASKS &labelMasks)
+void CGUIViewState::AddSortMethod(const SortDescription& sortDescription,
+                                  int buttonLabel,
+                                  const LABEL_MASKS& labelMasks)
 {
   AddSortMethod(sortDescription.sortBy, sortDescription.sortAttributes, buttonLabel, labelMasks, sortDescription.sortOrder);
 }
@@ -359,7 +361,7 @@ void CGUIViewState::SetSortMethod(SortBy sortBy, SortOrder sortOrder /* = SortOr
     SetSortOrder(sortOrder);
 }
 
-void CGUIViewState::SetSortMethod(SortDescription sortDescription)
+void CGUIViewState::SetSortMethod(const SortDescription& sortDescription)
 {
   return SetSortMethod(sortDescription.sortBy, sortDescription.sortOrder);
 }

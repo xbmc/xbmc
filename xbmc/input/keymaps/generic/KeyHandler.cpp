@@ -196,7 +196,7 @@ CAction CKeyHandler::ProcessActions(std::vector<const KeymapAction*> actions,
   return dispatchAction;
 }
 
-CAction CKeyHandler::ProcessRelease(std::vector<const KeymapAction*> actions, int windowId)
+CAction CKeyHandler::ProcessRelease(const std::vector<const KeymapAction*>& actions, int windowId)
 {
   CAction dispatchAction;
 
