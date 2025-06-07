@@ -24340,7 +24340,19 @@ msgctxt "#39206"
 msgid "CC"
 msgstr ""
 
-#empty strings from id 39207 to 39999
+# Use Starfish decoder
+#: system/settings/linux.xml
+msgctxt "#39207"
+msgid "Use Starfish decoder"
+msgstr ""
+
+#. Description of setting with label #39207 "Use Starfish decoder"
+#: system/settings/linux.xml
+msgctxt "#39208"
+msgid "Starfish is the hardware video decoder for LG's webOS. Disable it for troubleshooting or testing."
+msgstr ""
+
+#empty strings from id 39209 to 39999
 
 # 40000 to 40800 are reserved for Video Versions feature
 
