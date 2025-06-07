@@ -8,29 +8,53 @@
 #   ${APP_NAME_LC}::TinyXML   - The TinyXML library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  find_package(PkgConfig ${SEARCH_QUIET})
 
-  include(cmake/scripts/common/ModuleHelpers.cmake)
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_TINYXML tinyxml ${SEARCH_QUIET})
+  endif()
 
-  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC tinyxml)
+  find_path(TINYXML_INCLUDE_DIR tinyxml.h
+                                PATH_SUFFIXES tinyxml
+                                HINTS ${PC_TINYXML_INCLUDEDIR})
+  find_library(TINYXML_LIBRARY_RELEASE NAMES tinyxml tinyxmlSTL
+                                       PATH_SUFFIXES tinyxml
+                                       HINTS ${PC_TINYXML_LIBDIR})
+  find_library(TINYXML_LIBRARY_DEBUG NAMES tinyxmld tinyxmlSTLd
+                                     PATH_SUFFIXES tinyxml
+                                     HINTS ${PC_TINYXML_LIBDIR})
+  set(TINYXML_VERSION ${PC_TINYXML_VERSION})
 
-  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
+  include(SelectLibraryConfigurations)
+  select_library_configurations(TINYXML)
 
-  SETUP_BUILD_VARS()
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
 
-  SETUP_FIND_SPECS()
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(TinyXML
+                                    REQUIRED_VARS TINYXML_LIBRARY TINYXML_INCLUDE_DIR
+                                    VERSION_VAR TINYXML_VERSION)
 
-  SEARCH_EXISTING_PACKAGES()
-
-  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
-    if(TARGET tinyxml::tinyXML)
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS tinyxml::tinyXML)
-    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+  if(TINYXML_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    if(TINYXML_LIBRARY_RELEASE)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       IMPORTED_CONFIGURATIONS RELEASE
+                                                                       IMPORTED_LOCATION_RELEASE "${TINYXML_LIBRARY_RELEASE}")
     endif()
-
+    if(TINYXML_LIBRARY_DEBUG)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       IMPORTED_LOCATION_DEBUG "${TINYXML_LIBRARY_DEBUG}")
+      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                            IMPORTED_CONFIGURATIONS DEBUG)
+    endif()
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${TINYXML_INCLUDE_DIR}")
     if(WIN32 OR WINDOWS_STORE)
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS TIXML_USE_STL)
-      ADD_TARGET_COMPILE_DEFINITION()
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_COMPILE_DEFINITIONS TIXML_USE_STL)
     endif()
   else()
     if(TinyXML_FIND_REQUIRED)
