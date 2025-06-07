@@ -1945,6 +1945,21 @@ std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
   if (IsPlugin() && HasVideoInfoTag() && !GetVideoInfoTag()->m_strTitle.empty())
     return GetVideoInfoTag()->m_strTitle;
 
+  // Deal with special case of files in a 'Disc n' folder etc..
+  if (bUseFolderNames)
+  {
+    const std::string r{URIUtils::GetTrailingPartNumberRegex()};
+    CRegExp regex{true, CRegExp::autoUtf8, r.c_str()};
+    std::string path{URIUtils::GetDirectory(URIUtils::GetDiscBase(GetPath()))};
+    URIUtils::RemoveSlashAtEnd(path);
+    if (regex.RegFind(path) != -1)
+    {
+      std::string moviePath{URIUtils::GetParentPath(path)};
+      URIUtils::RemoveSlashAtEnd(moviePath);
+      return URIUtils::GetFileName(moviePath);
+    }
+  }
+
   if (IsLabelPreformatted())
     return GetLabel();
 
@@ -1970,34 +1985,32 @@ std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
 std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 {
-  std::string strMovieName = m_strPath;
+  std::string strMovieName{m_strPath};
 
   if (IsMultiPath())
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
 
-  if (IsOpticalMediaFile())
-    return GetLocalMetadataPath();
-
-  if (bUseFolderNames &&
-      (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) || URIUtils::IsBlurayPath(m_strPath) ||
-       (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 &&
-        !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
+  if (URIUtils::IsOpticalMediaFile(strMovieName) || URIUtils::IsBlurayPath(strMovieName))
+    strMovieName = URIUtils::GetDiscBasePath(strMovieName);
+  else if (bUseFolderNames && (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) ||
+                               (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 &&
+                                !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
   {
-    std::string name2(strMovieName);
-    URIUtils::GetParentPath(name2,strMovieName);
-    if (URIUtils::IsInArchive(m_strPath))
-    {
-      // Try to get archive itself, if empty take path before
-      name2 = CURL(m_strPath).GetHostName();
-      if (name2.empty())
-        name2 = strMovieName;
-
-      URIUtils::GetParentPath(name2, strMovieName);
-    }
-
-    // Remove trailing 'Disc n' path segment to get actual movie title
-    strMovieName = CUtil::RemoveTrailingDiscNumberSegmentFromPath(strMovieName);
+    const std::string name{strMovieName};
+    URIUtils::GetParentPath(name, strMovieName);
   }
+  const CURL url{strMovieName};
+  if (URIUtils::IsInArchive(strMovieName) || URIUtils::IsArchive(url))
+  {
+    // Try to get archive itself, if empty take path before
+    std::string name{url.GetHostName()};
+    if (name.empty())
+      name = strMovieName;
+    URIUtils::GetParentPath(name, strMovieName);
+  }
+
+  // Remove trailing 'Disc n' path segment to get actual movie title
+  strMovieName = CUtil::RemoveTrailingPartNumberSegmentFromPath(strMovieName);
 
   return strMovieName;
 }
