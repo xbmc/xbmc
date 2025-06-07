@@ -36,12 +36,6 @@
 
 using namespace ADDON;
 
-CAdvancedSettings::CAdvancedSettings()
-{
-  m_initialized = false;
-  m_fullScreen = false;
-}
-
 void CAdvancedSettings::OnSettingsLoaded()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -75,7 +69,7 @@ void CAdvancedSettings::OnSettingsUnloaded()
 
 void CAdvancedSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string &settingId = setting->GetId();
@@ -87,7 +81,7 @@ void CAdvancedSettings::Initialize(CSettingsManager& settingsMgr)
 {
   Initialize();
 
-  const auto params = CServiceBroker::GetAppParams();
+  const std::shared_ptr<const CAppParams> params = CServiceBroker::GetAppParams();
 
   if (params->GetLogLevel() == LOG_LEVEL_DEBUG)
   {
@@ -445,7 +439,7 @@ void CAdvancedSettings::Initialize()
 
   m_openGlDebugging = false;
 
-  m_userAgent = g_sysinfo.GetUserAgent();
+  m_userAgent = CSysInfo::GetUserAgent();
 
   m_nfsTimeout = 30;
   m_nfsRetries = -1;
@@ -460,8 +454,8 @@ bool CAdvancedSettings::Load(const CProfileManager &profileManager)
   //       don't take defaults in.  Defaults are set in the constructor above
   Initialize(); // In case of profile switch.
   ParseSettingsFile("special://xbmc/system/advancedsettings.xml");
-  for (unsigned int i = 0; i < m_settingsFiles.size(); i++)
-    ParseSettingsFile(m_settingsFiles[i]);
+  for (const auto& file : m_settingsFiles)
+    ParseSettingsFile(file);
 
   ParseSettingsFile(profileManager.GetUserDataItem("advancedsettings.xml"));
 
@@ -654,48 +648,53 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       TiXmlElement* pRefreshOverride = pAdjustRefreshrate->FirstChildElement("override");
       while (pRefreshOverride)
       {
-        RefreshOverride override = {};
+        RefreshOverride refreshOverride = {};
 
         float fps;
         if (XMLUtils::GetFloat(pRefreshOverride, "fps", fps))
         {
-          override.fpsmin = fps - 0.01f;
-          override.fpsmax = fps + 0.01f;
+          refreshOverride.fpsmin = fps - 0.01f;
+          refreshOverride.fpsmax = fps + 0.01f;
         }
 
-        float fpsmin, fpsmax;
+        float fpsmin;
+        float fpsmax;
         if (XMLUtils::GetFloat(pRefreshOverride, "fpsmin", fpsmin) &&
             XMLUtils::GetFloat(pRefreshOverride, "fpsmax", fpsmax))
         {
-          override.fpsmin = fpsmin;
-          override.fpsmax = fpsmax;
+          refreshOverride.fpsmin = fpsmin;
+          refreshOverride.fpsmax = fpsmax;
         }
 
         float refresh;
         if (XMLUtils::GetFloat(pRefreshOverride, "refresh", refresh))
         {
-          override.refreshmin = refresh - 0.01f;
-          override.refreshmax = refresh + 0.01f;
+          refreshOverride.refreshmin = refresh - 0.01f;
+          refreshOverride.refreshmax = refresh + 0.01f;
         }
 
-        float refreshmin, refreshmax;
+        float refreshmin;
+        float refreshmax;
         if (XMLUtils::GetFloat(pRefreshOverride, "refreshmin", refreshmin) &&
             XMLUtils::GetFloat(pRefreshOverride, "refreshmax", refreshmax))
         {
-          override.refreshmin = refreshmin;
-          override.refreshmax = refreshmax;
+          refreshOverride.refreshmin = refreshmin;
+          refreshOverride.refreshmax = refreshmax;
         }
 
-        bool fpsCorrect     = (override.fpsmin > 0.0f && override.fpsmax >= override.fpsmin);
-        bool refreshCorrect = (override.refreshmin > 0.0f && override.refreshmax >= override.refreshmin);
+        const bool fpsCorrect =
+            (refreshOverride.fpsmin > 0.0f && refreshOverride.fpsmax >= refreshOverride.fpsmin);
+        const bool refreshCorrect = (refreshOverride.refreshmin > 0.0f &&
+                                     refreshOverride.refreshmax >= refreshOverride.refreshmin);
 
         if (fpsCorrect && refreshCorrect)
-          m_videoAdjustRefreshOverrides.push_back(override);
+          m_videoAdjustRefreshOverrides.emplace_back(refreshOverride);
         else
           CLog::Log(LOGWARNING,
                     "Ignoring malformed refreshrate override, fpsmin:{:f} fpsmax:{:f} "
                     "refreshmin:{:f} refreshmax:{:f}",
-                    override.fpsmin, override.fpsmax, override.refreshmin, override.refreshmax);
+                    refreshOverride.fpsmin, refreshOverride.fpsmax, refreshOverride.refreshmin,
+                    refreshOverride.refreshmax);
 
         pRefreshOverride = pRefreshOverride->NextSiblingElement("override");
       }
@@ -713,7 +712,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
           fallback.refreshmax = refresh + 0.01f;
         }
 
-        float refreshmin, refreshmax;
+        float refreshmin;
+        float refreshmax;
         if (XMLUtils::GetFloat(pRefreshFallback, "refreshmin", refreshmin) &&
             XMLUtils::GetFloat(pRefreshFallback, "refreshmax", refreshmax))
         {
@@ -889,10 +889,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     // as altering it will do nothing - we don't write to advancedsettings.xml
     XMLUtils::GetInt(pRootElement, "loglevel", m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
     const char* hide = pElement->Attribute("hide");
-    if (hide == NULL || StringUtils::CompareNoCase("false", hide, 5) != 0)
+    if (!hide || StringUtils::CompareNoCase("false", hide, 5) != 0)
     {
       SettingPtr setting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_DEBUG_SHOWLOGINFO);
-      if (setting != NULL)
+      if (setting)
         setting->SetVisible(false);
     }
     m_logLevel = std::max(m_logLevel, m_logLevelHint);
@@ -983,7 +983,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     GetCustomExtensions(pExts, m_discStubExtensions);
 
   m_vecTokens.clear();
-  CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
+  CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"), m_vecTokens);
 
   //! @todo Should cache path be given in terms of our predefined paths??
   //! Are we even going to have predefined paths??
@@ -1125,7 +1125,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
                       60000);
     XMLUtils::GetInt(pPVR, "timeshiftthreshold", m_iPVRTimeshiftThreshold, 0, 60);
     XMLUtils::GetBoolean(pPVR, "timeshiftsimpleosd", m_bPVRTimeshiftSimpleOSD);
-    TiXmlElement* pSortDecription = pPVR->FirstChildElement("pvrrecordings");
+    const TiXmlElement* pSortDecription = pPVR->FirstChildElement("pvrrecordings");
     if (pSortDecription)
     {
       const char* XML_SORTMETHOD = "sortmethod";
@@ -1145,7 +1145,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     }
   }
 
-  TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
+  const TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
   if (pDatabase)
   {
     CLog::Log(LOGWARNING, "VIDEO database configuration is experimental.");
@@ -1243,8 +1243,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   {
     m_seekSteps.clear();
     std::vector<std::string> steps = StringUtils::Split(seekSteps, ',');
-    for(std::vector<std::string>::iterator it = steps.begin(); it != steps.end(); ++it)
-      m_seekSteps.push_back(atoi((*it).c_str()));
+    for (const auto& step : steps)
+      m_seekSteps.emplace_back(std::atoi(step.c_str()));
   }
 
   XMLUtils::GetBoolean(pRootElement, "opengldebugging", m_openGlDebugging);
@@ -1282,7 +1282,7 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
     int iAction = 0; // overwrite
     // for backward compatibility
     const char* szAppend = pElement->Attribute("append");
-    if ((szAppend && StringUtils::CompareNoCase(szAppend, "yes") == 0))
+    if (szAppend && StringUtils::CompareNoCase(szAppend, "yes") == 0)
       iAction = 1;
     // action takes precedence if both attributes exist
     const char* szAction = pElement->Attribute("action");
@@ -1323,8 +1323,9 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
         std::string regExp = pRegExp->FirstChild()->Value();
         if (iAction == 2)
         {
-          settings.insert(settings.begin() + i++, 1,
+          settings.insert(settings.begin() + i, 1,
                           TVShowRegexp(bByDate, regExp, iDefaultSeason, byTitle));
+          ++i;
         }
         else
         {
@@ -1346,7 +1347,7 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, std::vector
     int iAction = 0; // overwrite
     // for backward compatibility
     const char* szAppend = pElement->Attribute("append");
-    if ((szAppend && StringUtils::CompareNoCase(szAppend, "yes") == 0))
+    if (szAppend && StringUtils::CompareNoCase(szAppend, "yes") == 0)
       iAction = 1;
     // action takes precedence if both attributes exist
     const char* szAction = pElement->Attribute("action");
@@ -1368,7 +1369,10 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, std::vector
       {
         std::string regExp = pRegExp->FirstChild()->Value();
         if (iAction == 2)
-          settings.insert(settings.begin() + i++, 1, regExp);
+        {
+          settings.insert(settings.begin() + i, 1, regExp);
+          ++i;
+        }
         else
           settings.push_back(regExp);
       }
@@ -1379,7 +1383,8 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, std::vector
   }
 }
 
-void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, std::string& extensions)
+void CAdvancedSettings::GetCustomExtensions(const TiXmlElement* pRootElement,
+                                            std::string& extensions)
 {
   std::string extraExtensions;
   if (XMLUtils::GetString(pRootElement, "add", extraExtensions) && !extraExtensions.empty())
@@ -1387,11 +1392,11 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, std::str
   if (XMLUtils::GetString(pRootElement, "remove", extraExtensions) && !extraExtensions.empty())
   {
     std::vector<std::string> exts = StringUtils::Split(extraExtensions, '|');
-    for (std::vector<std::string>::const_iterator i = exts.begin(); i != exts.end(); ++i)
+    for (const auto& ext : exts)
     {
-      size_t iPos = extensions.find(*i);
+      size_t iPos = extensions.find(ext);
       if (iPos != std::string::npos)
-        extensions.erase(iPos,i->size()+1);
+        extensions.erase(iPos, ext.size() + 1);
     }
   }
 }
@@ -1401,13 +1406,12 @@ void CAdvancedSettings::AddSettingsFile(const std::string &filename)
   m_settingsFiles.push_back(filename);
 }
 
-float CAdvancedSettings::GetLatencyTweak(float refreshrate, bool isHDREnabled)
+float CAdvancedSettings::GetLatencyTweak(float refreshrate, bool isHDREnabled) const
 {
   float delay{};
-  const auto& latency =
-      std::find_if(m_videoRefreshLatency.cbegin(), m_videoRefreshLatency.cend(),
-                   [refreshrate](const auto& param)
-                   { return refreshrate >= param.refreshmin && refreshrate <= param.refreshmax; });
+  const auto& latency = std::ranges::find_if(
+      m_videoRefreshLatency, [refreshrate](const auto& param)
+      { return refreshrate >= param.refreshmin && refreshrate <= param.refreshmax; });
 
   if (latency != m_videoRefreshLatency.cend()) //refresh rate specific setting is found
   {
@@ -1442,7 +1446,8 @@ void CAdvancedSettings::SetDebugMode(bool debug)
   }
 }
 
-void CAdvancedSettings::SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap)
+void CAdvancedSettings::SetExtraArtwork(const TiXmlElement* arttypes,
+                                        std::vector<std::string>& artworkMap) const
 {
   if (!arttypes)
     return;

@@ -49,9 +49,6 @@ public:
                    CONTENT_TYPE content = CONTENT_NONE);
 
 protected:
-  // specializations of CGUIWindow
-  void OnInitWindow() override;
-
   // implementations of ISettingCallback
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;

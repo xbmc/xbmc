@@ -21,32 +21,39 @@
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
+#include <array>
 #include <string>
 
-#define SETTINGS_SYSTEM                 WINDOW_SETTINGS_SYSTEM - WINDOW_SETTINGS_START
-#define SETTINGS_SERVICE                WINDOW_SETTINGS_SERVICE - WINDOW_SETTINGS_START
-#define SETTINGS_PVR                    WINDOW_SETTINGS_MYPVR - WINDOW_SETTINGS_START
-#define SETTINGS_PLAYER                 WINDOW_SETTINGS_PLAYER - WINDOW_SETTINGS_START
-#define SETTINGS_MEDIA                  WINDOW_SETTINGS_MEDIA - WINDOW_SETTINGS_START
-#define SETTINGS_INTERFACE              WINDOW_SETTINGS_INTERFACE - WINDOW_SETTINGS_START
-#define SETTINGS_GAMES                  WINDOW_SETTINGS_MYGAMES - WINDOW_SETTINGS_START
+namespace
+{
+constexpr int SETTINGS_SYSTEM = WINDOW_SETTINGS_SYSTEM - WINDOW_SETTINGS_START;
+constexpr int SETTINGS_SERVICE = WINDOW_SETTINGS_SERVICE - WINDOW_SETTINGS_START;
+constexpr int SETTINGS_PVR = WINDOW_SETTINGS_MYPVR - WINDOW_SETTINGS_START;
+constexpr int SETTINGS_PLAYER = WINDOW_SETTINGS_PLAYER - WINDOW_SETTINGS_START;
+constexpr int SETTINGS_MEDIA = WINDOW_SETTINGS_MEDIA - WINDOW_SETTINGS_START;
+constexpr int SETTINGS_INTERFACE = WINDOW_SETTINGS_INTERFACE - WINDOW_SETTINGS_START;
+constexpr int SETTINGS_GAMES = WINDOW_SETTINGS_MYGAMES - WINDOW_SETTINGS_START;
 
-#define CONTROL_BTN_LEVELS               20
+constexpr int CONTROL_BTN_LEVELS = 20;
 
-typedef struct {
+struct SettingGroup
+{
   int id;
   std::string name;
-} SettingGroup;
+};
 
-static const SettingGroup s_settingGroupMap[] = { { SETTINGS_SYSTEM,      "system" },
-                                                  { SETTINGS_SERVICE,     "services" },
-                                                  { SETTINGS_PVR,         "pvr" },
-                                                  { SETTINGS_PLAYER,      "player" },
-                                                  { SETTINGS_MEDIA,       "media" },
-                                                  { SETTINGS_INTERFACE,   "interface" },
-                                                  { SETTINGS_GAMES,       "games" } };
-
-#define SettingGroupSize sizeof(s_settingGroupMap) / sizeof(SettingGroup)
+// clang-format off
+const std::array<SettingGroup, 7> s_settingGroupMap = {{
+  { SETTINGS_SYSTEM,      "system" },
+  { SETTINGS_SERVICE,     "services" },
+  { SETTINGS_PVR,         "pvr" },
+  { SETTINGS_PLAYER,      "player" },
+  { SETTINGS_MEDIA,       "media" },
+  { SETTINGS_INTERFACE,   "interface" },
+  { SETTINGS_GAMES,       "games" },
+}};
+// clang-format on
+} // unnamed namespace
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
     : CGUIDialogSettingsManagerBase(WINDOW_SETTINGS_SYSTEM, "SettingsCategory.xml"),
@@ -118,6 +125,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       }
       break;
     }
+
+    default:
+      break;
   }
 
   return CGUIDialogSettingsManagerBase::OnMessage(message);

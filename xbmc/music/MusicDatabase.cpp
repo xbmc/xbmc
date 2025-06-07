@@ -11862,18 +11862,18 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
     return;
 
   // Exporting albums either art or NFO (or both) selected
-  if ((settings.IsToLibFolders() || settings.IsSeparateFiles()) && settings.m_skipnfo &&
-      !settings.m_artwork && settings.IsItemExported(ELIBEXPORT_ALBUMS))
+  if ((settings.IsToLibFolders() || settings.IsSeparateFiles()) && settings.IsSkipNfo() &&
+      !settings.IsArtwork() && settings.IsItemExported(ELIBEXPORT_ALBUMS))
     return;
 
   std::string strFolder;
   if (settings.IsSingleFile() || settings.IsSeparateFiles())
   {
     // Exporting to single file or separate files in a specified location
-    if (settings.m_strPath.empty())
+    if (settings.GetPath().empty())
       return;
 
-    strFolder = settings.m_strPath;
+    strFolder = settings.GetPath();
     if (!URIUtils::HasSlashAtEnd(strFolder))
       URIUtils::AddSlashAtEnd(strFolder);
     strFolder = URIUtils::GetDirectory(strFolder);
@@ -11895,7 +11895,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
   bool artistfoldersonly;
   artistfoldersonly = settings.IsArtistFoldersOnly() ||
                       ((settings.IsToLibFolders() || settings.IsSeparateFiles()) &&
-                       settings.m_skipnfo && !settings.m_artwork);
+                       settings.IsSkipNfo() && !settings.IsArtwork());
 
   int iFailCount = 0;
   try
@@ -11926,7 +11926,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
       std::vector<int> albumIds;
       std::string strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE strReleaseType = '%s' ",
                                       CAlbum::ReleaseTypeToString(CAlbum::Album).c_str());
-      if (!settings.m_unscraped)
+      if (!settings.IsUnscraped())
         strSQL += "AND lastScraped IS NOT NULL";
       CLog::Log(LOGDEBUG, "CMusicDatabase::{} - {}", __FUNCTION__, strSQL);
       m_pDS->query(strSQL);
@@ -12017,12 +12017,12 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
           }
           if (pathfound)
           {
-            if (!settings.m_skipnfo)
+            if (!settings.IsSkipNfo())
             {
               // Save album to NFO, including album path
               album.Save(pMain, "album", strAlbumPath);
               std::string nfoFile = URIUtils::AddFileToFolder(strPath, "album.nfo");
-              if (settings.m_overwrite || !CFile::Exists(nfoFile))
+              if (settings.IsOverwrite() || !CFile::Exists(nfoFile))
               {
                 if (!xmlDoc.SaveFile(nfoFile))
                 {
@@ -12035,7 +12035,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                 }
               }
             }
-            if (settings.m_artwork)
+            if (settings.IsArtwork())
             {
               // Save art in album folder
               // Note thumb resolution may be lower than original when overwriting
@@ -12050,7 +12050,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                   else
                     savedArtfile = URIUtils::AddFileToFolder(strPath, art.first);
                   CServiceBroker::GetTextureCache()->Export(art.second, savedArtfile,
-                                                            settings.m_overwrite);
+                                                            settings.IsOverwrite());
                 }
               }
             }
@@ -12105,7 +12105,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
             "WHERE song_artist.idArtist = artist.idArtist AND song_artist.idRole > 1)",
             false);
 
-      if (!settings.m_unscraped && !artistfoldersonly)
+      if (!settings.IsUnscraped() && !artistfoldersonly)
         filter.AppendWhere("lastScraped IS NOT NULL", true);
 
       std::string strSQL = "SELECT idArtist FROM artist";
@@ -12163,11 +12163,11 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
           {
             if (!artistfoldersonly)
             {
-              if (!settings.m_skipnfo)
+              if (!settings.IsSkipNfo())
               {
                 artist.Save(pMain, "artist", strPath);
                 std::string nfoFile = URIUtils::AddFileToFolder(strPath, "artist.nfo");
-                if (settings.m_overwrite || !CFile::Exists(nfoFile))
+                if (settings.IsOverwrite() || !CFile::Exists(nfoFile))
                 {
                   if (!xmlDoc.SaveFile(nfoFile))
                   {
@@ -12180,7 +12180,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                   }
                 }
               }
-              if (settings.m_artwork)
+              if (settings.IsArtwork())
               {
                 std::string savedArtfile;
                 if (GetArtForItem(artist.idArtist, MediaTypeArtist, artwork))
@@ -12192,7 +12192,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                     else
                       savedArtfile = URIUtils::AddFileToFolder(strPath, art.first);
                     CServiceBroker::GetTextureCache()->Export(art.second, savedArtfile,
-                                                              settings.m_overwrite);
+                                                              settings.IsOverwrite());
                   }
                 }
               }

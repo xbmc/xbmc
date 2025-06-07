@@ -33,5 +33,5 @@ bool CSettingRequirementConditionCombination::Check() const
 CSettingRequirement::CSettingRequirement(CSettingsManager *settingsManager /* = nullptr */)
   : CSettingCondition(settingsManager)
 {
-  m_operation = CBooleanLogicOperationPtr(new CSettingRequirementConditionCombination(m_settingsManager));
+  m_operation = std::make_shared<CSettingRequirementConditionCombination>(m_settingsManager);
 }

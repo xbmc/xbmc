@@ -22,7 +22,7 @@ class CSettingsValueXmlSerializer : public ISettingsValueSerializer
 {
 public:
   CSettingsValueXmlSerializer() = default;
-  ~CSettingsValueXmlSerializer() = default;
+  ~CSettingsValueXmlSerializer() override = default;
 
   // implementation of ISettingsValueSerializer
   std::string SerializeValues(const CSettingsManager* settingsManager) const override;

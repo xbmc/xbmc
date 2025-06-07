@@ -26,10 +26,7 @@ public:
   CSettingUpdate();
   virtual ~CSettingUpdate() = default;
 
-  inline bool operator<(const CSettingUpdate& rhs) const
-  {
-    return m_type < rhs.m_type && m_value < rhs.m_value;
-  }
+  auto operator<=>(const CSettingUpdate&) const = default;
 
   virtual bool Deserialize(const TiXmlNode *node);
 

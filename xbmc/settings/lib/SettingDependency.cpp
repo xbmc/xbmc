@@ -58,15 +58,15 @@ CSettingDependencyCondition::CSettingDependencyCondition(
 
 CSettingDependencyCondition::CSettingDependencyCondition(
     CSettingsManager* settingsManager,
-    const std::string& strProperty,
-    const std::string& setting,
-    const std::string& value,
+    std::string_view strProperty,
+    std::string_view setting,
+    std::string_view value,
     SettingDependencyTarget target /* = SettingDependencyTarget::Unknown */,
     SettingDependencyOperator op /* = SettingDependencyOperator::Equals */,
     bool negated /* = false */)
   : CSettingConditionItem(settingsManager), m_target(target), m_operator(op)
 {
-  if (s_logger == nullptr)
+  if (!s_logger)
     s_logger = CServiceBroker::GetLogging().GetLogger("CSettingDependencyCondition");
 
   m_name = strProperty;
@@ -81,12 +81,12 @@ bool CSettingDependencyCondition::Deserialize(const TiXmlNode *node)
     return false;
 
   auto elem = node->ToElement();
-  if (elem == nullptr)
+  if (!elem)
     return false;
 
   m_target = SettingDependencyTarget::Setting;
   auto strTarget = elem->Attribute(SETTING_XML_ATTR_ON);
-  if (strTarget != nullptr && !setTarget(strTarget))
+  if (strTarget && !setTarget(strTarget))
   {
     s_logger->warn("unknown target \"{}\"", strTarget);
     return false;
@@ -111,7 +111,7 @@ bool CSettingDependencyCondition::Deserialize(const TiXmlNode *node)
 
   m_operator = SettingDependencyOperator::Equals;
   auto strOperator = elem->Attribute(SETTING_XML_ATTR_OPERATOR);
-  if (strOperator != nullptr && !setOperator(strOperator))
+  if (strOperator && !setOperator(strOperator))
   {
     s_logger->warn("unknown operator \"{}\"", strOperator);
     return false;
@@ -122,10 +122,8 @@ bool CSettingDependencyCondition::Deserialize(const TiXmlNode *node)
 
 bool CSettingDependencyCondition::Check() const
 {
-  if (m_name.empty() ||
-      m_target == SettingDependencyTarget::Unknown ||
-      m_operator == SettingDependencyOperator::Unknown ||
-      m_settingsManager == nullptr)
+  if (m_name.empty() || m_target == SettingDependencyTarget::Unknown ||
+      m_operator == SettingDependencyOperator::Unknown || !m_settingsManager)
     return false;
 
   bool result = false;
@@ -137,7 +135,7 @@ bool CSettingDependencyCondition::Check() const
         return false;
 
       auto setting = m_settingsManager->GetSetting(m_setting);
-      if (setting == nullptr)
+      if (!setting)
       {
         s_logger->warn("unable to check condition on unknown setting \"{}\"", m_setting);
         return false;
@@ -153,7 +151,8 @@ bool CSettingDependencyCondition::Check() const
         {
           const auto value = setting->ToString();
           if (StringUtils::IsInteger(m_value))
-            result = strtol(value.c_str(), nullptr, 0) < strtol(m_value.c_str(), nullptr, 0);
+            result =
+                std::strtol(value.c_str(), nullptr, 0) < std::strtol(m_value.c_str(), nullptr, 0);
           else
             result = value.compare(m_value) < 0;
           break;
@@ -163,7 +162,8 @@ bool CSettingDependencyCondition::Check() const
         {
           const auto value = setting->ToString();
           if (StringUtils::IsInteger(m_value))
-            result = strtol(value.c_str(), nullptr, 0) > strtol(m_value.c_str(), nullptr, 0);
+            result =
+                std::strtol(value.c_str(), nullptr, 0) > std::strtol(m_value.c_str(), nullptr, 0);
           else
             result = value.compare(m_value) > 0;
           break;
@@ -187,7 +187,7 @@ bool CSettingDependencyCondition::Check() const
       if (!m_setting.empty())
       {
         setting = m_settingsManager->GetSetting(m_setting);
-        if (setting == nullptr)
+        if (!setting)
         {
           s_logger->warn("unable to check condition on unknown setting \"{}\"", m_setting);
           return false;
@@ -264,7 +264,7 @@ bool CSettingDependencyCondition::setOperator(const std::string &op)
 
 bool CSettingDependencyConditionCombination::Deserialize(const TiXmlNode *node)
 {
-  if (node == nullptr)
+  if (!node)
     return false;
 
   size_t numOperations = m_operations.size();
@@ -277,11 +277,11 @@ bool CSettingDependencyConditionCombination::Deserialize(const TiXmlNode *node)
   {
     for (size_t i = numOperations; i < m_operations.size(); i++)
     {
-      if (m_operations[i] == nullptr)
+      if (!m_operations[i])
         continue;
 
       auto combination = static_cast<CSettingDependencyConditionCombination*>(m_operations[i].get());
-      if (combination == nullptr)
+      if (!combination)
         continue;
 
       const SettingsContainer& settings = combination->GetSettings();
@@ -293,14 +293,14 @@ bool CSettingDependencyConditionCombination::Deserialize(const TiXmlNode *node)
   {
     for (size_t i = numValues; i < m_values.size(); i++)
     {
-      if (m_values[i] == nullptr)
+      if (!m_values[i])
         continue;
 
       auto condition = static_cast<CSettingDependencyCondition*>(m_values[i].get());
-      if (condition == nullptr)
+      if (!condition)
         continue;
 
-      auto settingId = condition->GetSetting();
+      const auto& settingId = condition->GetSetting();
       if (!settingId.empty())
         m_settings.insert(settingId);
     }
@@ -312,7 +312,7 @@ bool CSettingDependencyConditionCombination::Deserialize(const TiXmlNode *node)
 CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::Add(
     const CSettingDependencyConditionPtr& condition)
 {
-  if (condition != nullptr)
+  if (condition)
   {
     m_values.push_back(condition);
 
@@ -327,7 +327,7 @@ CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::
 CSettingDependencyConditionCombination* CSettingDependencyConditionCombination::Add(
     const CSettingDependencyConditionCombinationPtr& operation)
 {
-  if (operation != nullptr)
+  if (operation)
   {
     m_operations.push_back(operation);
 
@@ -349,23 +349,23 @@ CSettingDependency::CSettingDependency(SettingDependencyType type,
                                        CSettingsManager* settingsManager /* = nullptr */)
   : CSettingCondition(settingsManager), m_type(type)
 {
-  if (s_logger == nullptr)
+  if (!s_logger)
     s_logger = CServiceBroker::GetLogging().GetLogger("CSettingDependency");
 
-  m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
+  m_operation = std::make_shared<CSettingDependencyConditionCombination>(m_settingsManager);
 }
 
 bool CSettingDependency::Deserialize(const TiXmlNode *node)
 {
-  if (node == nullptr)
+  if (!node)
     return false;
 
   auto elem = node->ToElement();
-  if (elem == nullptr)
+  if (!elem)
     return false;
 
   auto strType = elem->Attribute(SETTING_XML_ATTR_TYPE);
-  if (strType == nullptr || strlen(strType) <= 0 || !setType(strType))
+  if (!strType || strlen(strType) <= 0 || !setType(strType))
   {
     s_logger->warn("missing or unknown dependency type definition");
     return false;
@@ -376,11 +376,11 @@ bool CSettingDependency::Deserialize(const TiXmlNode *node)
 
 SettingsContainer CSettingDependency::GetSettings() const
 {
-  if (m_operation == nullptr)
+  if (!m_operation)
     return {};
 
   auto combination = static_cast<CSettingDependencyConditionCombination*>(m_operation.get());
-  if (combination == nullptr)
+  if (!combination)
     return {};
 
   return combination->GetSettings();
@@ -388,8 +388,8 @@ SettingsContainer CSettingDependency::GetSettings() const
 
 CSettingDependencyConditionCombinationPtr CSettingDependency::And()
 {
-  if (m_operation == nullptr)
-    m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
+  if (!m_operation)
+    m_operation = std::make_shared<CSettingDependencyConditionCombination>(m_settingsManager);
 
   m_operation->SetOperation(BooleanLogicOperationAnd);
 
@@ -398,8 +398,8 @@ CSettingDependencyConditionCombinationPtr CSettingDependency::And()
 
 CSettingDependencyConditionCombinationPtr CSettingDependency::Or()
 {
-  if (m_operation == nullptr)
-    m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
+  if (!m_operation)
+    m_operation = std::make_shared<CSettingDependencyConditionCombination>(m_settingsManager);
 
   m_operation->SetOperation(BooleanLogicOperationOr);
 

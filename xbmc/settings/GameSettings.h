@@ -12,6 +12,7 @@
 #include "utils/Observer.h"
 
 #include <string>
+#include <string_view>
 
 class CGameSettings : public Observable
 {
@@ -24,11 +25,10 @@ public:
   // Restore game settings to default
   void Reset();
 
-  bool operator==(const CGameSettings &rhs) const;
-  bool operator!=(const CGameSettings &rhs) const { return !(*this == rhs); }
+  bool operator==(const CGameSettings& rhs) const;
 
   const std::string &VideoFilter() const { return m_videoFilter; }
-  void SetVideoFilter(const std::string &videoFilter);
+  void SetVideoFilter(std::string_view videoFilter);
 
   KODI::RETRO::STRETCHMODE StretchMode() const { return m_stretchMode; }
   void SetStretchMode(KODI::RETRO::STRETCHMODE stretchMode);

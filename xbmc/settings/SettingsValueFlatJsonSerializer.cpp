@@ -23,12 +23,12 @@ CSettingsValueFlatJsonSerializer::CSettingsValueFlatJsonSerializer(bool compact 
 std::string CSettingsValueFlatJsonSerializer::SerializeValues(
   const CSettingsManager* settingsManager) const
 {
-  if (settingsManager == nullptr)
+  if (!settingsManager)
     return "";
 
   CVariant root(CVariant::VariantTypeObject);
 
-  const auto sections = settingsManager->GetSections();
+  const SettingSectionList sections = settingsManager->GetSections();
   for (const auto& section : sections)
     SerializeSection(root, section);
 
@@ -46,10 +46,10 @@ std::string CSettingsValueFlatJsonSerializer::SerializeValues(
 void CSettingsValueFlatJsonSerializer::SerializeSection(
     CVariant& parent, const std::shared_ptr<CSettingSection>& section) const
 {
-  if (section == nullptr)
+  if (!section)
     return;
 
-  const auto categories = section->GetCategories();
+  const SettingCategoryList& categories = section->GetCategories();
   for (const auto& category : categories)
     SerializeCategory(parent, category);
 }
@@ -57,10 +57,10 @@ void CSettingsValueFlatJsonSerializer::SerializeSection(
 void CSettingsValueFlatJsonSerializer::SerializeCategory(
     CVariant& parent, const std::shared_ptr<CSettingCategory>& category) const
 {
-  if (category == nullptr)
+  if (!category)
     return;
 
-  const auto groups = category->GetGroups();
+  const SettingGroupList& groups = category->GetGroups();
   for (const auto& group : groups)
     SerializeGroup(parent, group);
 }
@@ -68,10 +68,10 @@ void CSettingsValueFlatJsonSerializer::SerializeCategory(
 void CSettingsValueFlatJsonSerializer::SerializeGroup(
     CVariant& parent, const std::shared_ptr<CSettingGroup>& group) const
 {
-  if (group == nullptr)
+  if (!group)
     return;
 
-  const auto settings = group->GetSettings();
+  const SettingList& settings = group->GetSettings();
   for (const auto& setting : settings)
     SerializeSetting(parent, setting);
 }
@@ -79,14 +79,14 @@ void CSettingsValueFlatJsonSerializer::SerializeGroup(
 void CSettingsValueFlatJsonSerializer::SerializeSetting(
     CVariant& parent, const std::shared_ptr<CSetting>& setting) const
 {
-  if (setting == nullptr)
+  if (!setting)
     return;
 
   // ignore references and action settings (which don't have a value)
   if (setting->IsReference() || setting->GetType() == SettingType::Action)
     return;
 
-  const auto valueObj = SerializeSettingValue(setting);
+  const CVariant valueObj = SerializeSettingValue(setting);
   if (valueObj.isNull())
     return;
 
@@ -118,10 +118,10 @@ CVariant CSettingsValueFlatJsonSerializer::SerializeSettingValue(
       const auto settingList = std::static_pointer_cast<CSettingList>(setting);
 
       CVariant settingListValuesObj(CVariant::VariantTypeArray);
-      const auto settingListValues = settingList->GetValue();
+      const SettingList& settingListValues = settingList->GetValue();
       for (const auto& settingListValue : settingListValues)
       {
-        const auto valueObj = SerializeSettingValue(settingListValue);
+        const CVariant valueObj = SerializeSettingValue(settingListValue);
         if (!valueObj.isNull())
           settingListValuesObj.push_back(valueObj);
       }

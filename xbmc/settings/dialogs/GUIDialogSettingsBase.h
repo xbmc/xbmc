@@ -15,20 +15,21 @@
 #include "threads/Timer.h"
 #include "utils/ILocalizer.h"
 
+#include <string_view>
 #include <vector>
 
-#define CONTROL_SETTINGS_LABEL 2
-#define CONTROL_SETTINGS_DESCRIPTION 6
+constexpr int CONTROL_SETTINGS_LABEL = 2;
+constexpr int CONTROL_SETTINGS_DESCRIPTION = 6;
 
-#define CONTROL_SETTINGS_OKAY_BUTTON 28
-#define CONTROL_SETTINGS_CANCEL_BUTTON 29
-#define CONTROL_SETTINGS_CUSTOM_BUTTON 30
+constexpr int CONTROL_SETTINGS_OKAY_BUTTON = 28;
+constexpr int CONTROL_SETTINGS_CANCEL_BUTTON = 29;
+constexpr int CONTROL_SETTINGS_CUSTOM_BUTTON = 30;
 
-#define CONTROL_SETTINGS_START_BUTTONS -200
-#define CONTROL_SETTINGS_START_CONTROL -180
+constexpr int CONTROL_SETTINGS_START_BUTTONS = -200;
+constexpr int CONTROL_SETTINGS_START_CONTROL = -180;
 
-#define SETTINGS_RESET_SETTING_ID "settings.reset"
-#define SETTINGS_EMPTY_CATEGORY_ID "categories.empty"
+constexpr const char* SETTINGS_RESET_SETTING_ID = "settings.reset";
+constexpr const char* SETTINGS_EMPTY_CATEGORY_ID = "categories.empty";
 
 class CGUIControl;
 class CGUIControlBaseSetting;
@@ -51,7 +52,7 @@ class CVariant;
 
 class ISetting;
 
-typedef std::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;
+using BaseSettingControlPtr = std::shared_ptr<CGUIControlBaseSetting>;
 
 class CGUIDialogSettingsBase : public CGUIDialog,
                                public CSettingControlCreator,
@@ -106,14 +107,14 @@ protected:
   virtual void UpdateSettings();
 
   /*!
-    \brief Get the name for the setting entry
+   \brief Get the name for the setting entry
 
-    Used as virtual to allow related settings dialog to give a std::string name of the setting.
-    If not used on own dialog class it handle the string from int CSetting::GetLabel(),
-    This must also be used if on related dialog no special entry is wanted.
+   Used as virtual to allow related settings dialog to give a std::string name of the setting.
+   If not used on own dialog class it handle the string from int CSetting::GetLabel(),
+   This must also be used if on related dialog no special entry is wanted.
 
-    \param pSetting Base settings class which need the name
-    \return Name used on settings dialog
+   \param pSetting Base settings class which need the name
+   \return Name used on settings dialog
    */
   virtual std::string GetSettingsLabel(const std::shared_ptr<ISetting>& pSetting);
 
@@ -136,24 +137,24 @@ protected:
   virtual void OnResetSettings();
 
   /*!
-    \brief A setting control has been interacted with by the user
+   \brief A setting control has been interacted with by the user
 
-    This method is called when the user manually interacts (clicks,
-    edits) with a setting control. It contains handling for both
-    delayed and undelayed settings and either starts the delay timer
-    or triggers the setting change which, on success, results in a
-    callback to OnSettingChanged().
+   This method is called when the user manually interacts (clicks,
+   edits) with a setting control. It contains handling for both
+   delayed and undelayed settings and either starts the delay timer
+   or triggers the setting change which, on success, results in a
+   callback to OnSettingChanged().
 
-    \param pSettingControl Setting control that has been interacted with
+   \param pSettingControl Setting control that has been interacted with
    */
   virtual void OnClick(const BaseSettingControlPtr& pSettingControl);
 
   void UpdateSettingControl(const std::string& settingId, bool updateDisplayOnly = false);
   void UpdateSettingControl(const BaseSettingControlPtr& pSettingControl,
-                            bool updateDisplayOnly = false);
+                            bool updateDisplayOnly = false) const;
   void SetControlLabel(int controlId, const CVariant& label);
 
-  BaseSettingControlPtr GetSettingControl(const std::string& setting);
+  BaseSettingControlPtr GetSettingControl(std::string_view setting);
   BaseSettingControlPtr GetSettingControl(int controlId);
 
   CGUIControl* AddSeparator(float width, int& iControlID);
@@ -164,20 +165,20 @@ protected:
   std::vector<std::shared_ptr<CSettingCategory>> m_categories;
   std::vector<BaseSettingControlPtr> m_settingControls;
 
-  int m_iSetting = 0;
-  int m_iCategory = 0;
+  int m_iSetting{0};
+  int m_iCategory{0};
   std::shared_ptr<CSettingAction> m_resetSetting;
   std::shared_ptr<CSettingCategory> m_dummyCategory;
 
-  CGUISpinControlEx* m_pOriginalSpin;
-  CGUISettingsSliderControl* m_pOriginalSlider;
-  CGUIRadioButtonControl* m_pOriginalRadioButton;
-  CGUIColorButtonControl* m_pOriginalColorButton = nullptr;
-  CGUIButtonControl* m_pOriginalCategoryButton;
-  CGUIButtonControl* m_pOriginalButton;
-  CGUIEditControl* m_pOriginalEdit;
-  CGUIImage* m_pOriginalImage;
-  CGUILabelControl* m_pOriginalGroupTitle;
+  CGUISpinControlEx* m_pOriginalSpin{nullptr};
+  CGUISettingsSliderControl* m_pOriginalSlider{nullptr};
+  CGUIRadioButtonControl* m_pOriginalRadioButton{nullptr};
+  CGUIColorButtonControl* m_pOriginalColorButton{nullptr};
+  CGUIButtonControl* m_pOriginalCategoryButton{nullptr};
+  CGUIButtonControl* m_pOriginalButton{nullptr};
+  CGUIEditControl* m_pOriginalEdit{nullptr};
+  CGUIImage* m_pOriginalImage{nullptr};
+  CGUILabelControl* m_pOriginalGroupTitle{nullptr};
   bool m_newOriginalEdit = false;
 
   BaseSettingControlPtr
@@ -185,5 +186,6 @@ protected:
   CTimer m_delayedTimer; ///< Delayed setting timer
 
   bool m_confirmed = false;
-  int m_focusedControl = 0, m_fadedControl = 0;
+  int m_focusedControlID{0};
+  int m_fadedControlID{0};
 };

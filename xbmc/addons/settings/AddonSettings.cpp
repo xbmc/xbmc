@@ -505,7 +505,8 @@ void CAddonSettings::InitializeConditions()
   CSettingConditions::Initialize();
 
   // add basic conditions
-  const std::set<std::string>& simpleConditions = CSettingConditions::GetSimpleConditions();
+  const CSettingConditions::SimpleConditions& simpleConditions =
+      CSettingConditions::GetSimpleConditions();
   for (const auto& condition : simpleConditions)
     GetSettingsManager()->AddCondition(condition);
 

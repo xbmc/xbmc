@@ -15,16 +15,6 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CLibExportSettings::CLibExportSettings()
-{
-  m_exporttype = ELIBEXPORT_SINGLEFILE;
-  m_itemstoexport = ELIBEXPORT_ALBUMS + ELIBEXPORT_ALBUMARTISTS;
-  m_overwrite = false;
-  m_artwork = false;
-  m_unscraped  = false;
-  m_skipnfo = false;
-}
-
 bool CLibExportSettings::operator!=(const CLibExportSettings &right) const
 {
   if (m_exporttype != right.m_exporttype)

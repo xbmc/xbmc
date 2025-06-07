@@ -94,7 +94,7 @@ bool CSettings::Initialize()
 
 void CSettings::RegisterSubSettings(ISubSettings* subSettings)
 {
-  if (subSettings == nullptr)
+  if (!subSettings)
     return;
 
   std::unique_lock lock(m_critical);
@@ -103,7 +103,7 @@ void CSettings::RegisterSubSettings(ISubSettings* subSettings)
 
 void CSettings::UnregisterSubSettings(ISubSettings* subSettings)
 {
-  if (subSettings == nullptr)
+  if (!subSettings)
     return;
 
   std::unique_lock lock(m_critical);
@@ -152,14 +152,14 @@ bool CSettings::Save()
   return Save(profileManager->GetSettingsFile());
 }
 
-bool CSettings::Save(const std::string &file)
+bool CSettings::Save(const std::string& file) const
 {
   CXBMCTinyXML xmlDoc;
   if (!SaveValuesToXml(xmlDoc))
     return false;
 
   TiXmlElement* root = xmlDoc.RootElement();
-  if (root == nullptr)
+  if (!root)
     return false;
 
   if (!Save(root))
@@ -181,7 +181,7 @@ bool CSettings::Save(TiXmlNode* root) const
   return true;
 }
 
-bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
+bool CSettings::LoadSetting(const TiXmlNode* node, const std::string& settingId) const
 {
   return GetSettingsManager()->LoadSetting(node, settingId);
 }
@@ -211,7 +211,7 @@ void CSettings::Clear()
 
 bool CSettings::Load(const TiXmlElement* root, bool& updated)
 {
-  if (root == nullptr)
+  if (!root)
     return false;
 
   if (!CSettingsBase::LoadValuesFromXml(root, updated))
@@ -335,7 +335,8 @@ void CSettings::InitializeDefaults()
   // the front
   if (g_sysinfo.IsAeroDisabled())
   {
-    auto setting = GetSettingsManager()->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
+    const SettingPtr setting =
+        GetSettingsManager()->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
     if (!setting)
       CLog::Log(LOGERROR, "Failed to load setting for: {}",
                 CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
@@ -346,7 +347,7 @@ void CSettings::InitializeDefaults()
 
   if (CServiceBroker::GetAppParams()->IsStandAlone())
   {
-    auto setting =
+    const SettingPtr setting =
         GetSettingsManager()->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
     if (!setting)
       CLog::Log(LOGERROR, "Failed to load setting for: {}",
@@ -360,7 +361,8 @@ void CSettings::InitializeDefaults()
   if (deviceUUID->GetValue().empty())
   {
     const std::string& uuid = StringUtils::CreateUUID();
-    auto setting = GetSettingsManager()->GetSetting(CSettings::SETTING_SERVICES_DEVICEUUID);
+    const SettingPtr setting =
+        GetSettingsManager()->GetSetting(CSettings::SETTING_SERVICES_DEVICEUUID);
     if (!setting)
       CLog::Log(LOGERROR, "Failed to load setting for: {}", CSettings::SETTING_SERVICES_DEVICEUUID);
     else
@@ -487,14 +489,16 @@ void CSettings::InitializeConditions()
   CSettingConditions::Initialize();
 
   // add basic conditions
-  const std::set<std::string> &simpleConditions = CSettingConditions::GetSimpleConditions();
-  for (std::set<std::string>::const_iterator itCondition = simpleConditions.begin(); itCondition != simpleConditions.end(); ++itCondition)
-    GetSettingsManager()->AddCondition(*itCondition);
+  const CSettingConditions::SimpleConditions& simpleConditions =
+      CSettingConditions::GetSimpleConditions();
+  for (const auto& simpleCondition : simpleConditions)
+    GetSettingsManager()->AddCondition(simpleCondition);
 
   // add more complex conditions
-  const std::map<std::string, SettingConditionCheck> &complexConditions = CSettingConditions::GetComplexConditions();
-  for (std::map<std::string, SettingConditionCheck>::const_iterator itCondition = complexConditions.begin(); itCondition != complexConditions.end(); ++itCondition)
-    GetSettingsManager()->AddDynamicCondition(itCondition->first, itCondition->second);
+  const CSettingConditions::ComplexConditions& complexConditions =
+      CSettingConditions::GetComplexConditions();
+  for (const auto& complexCondition : complexConditions)
+    GetSettingsManager()->AddDynamicCondition(complexCondition.first, complexCondition.second);
 }
 
 void CSettings::UninitializeConditions()

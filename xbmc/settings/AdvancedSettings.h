@@ -8,13 +8,13 @@
 
 #pragma once
 
+#include "LangInfo.h"
 #include "pictures/PictureScalingAlgorithm.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/SortUtils.h"
 
 #include <cstdint>
-#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -73,11 +73,10 @@ struct TVShowRegexp
   bool byTitle;
   std::string regexp;
   int defaultSeason;
-  TVShowRegexp(bool d, const std::string& r, int s = 1, bool t = false) : regexp(r)
+
+  TVShowRegexp(bool d, const std::string& r, int s = 1, bool t = false)
+    : byDate(d), byTitle(t), regexp(r), defaultSeason(s)
   {
-    byDate = d;
-    defaultSeason = s;
-    byTitle = t;
   }
 };
 
@@ -102,12 +101,12 @@ struct RefreshVideoLatency
   float hdrextradelay;
 };
 
-typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
+using SETTINGS_TVSHOWLIST = std::vector<TVShowRegexp>;
 
 class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 {
   public:
-    CAdvancedSettings();
+    CAdvancedSettings() = default;
 
     void OnSettingsLoaded() override;
     void OnSettingsUnloaded() override;
@@ -122,7 +121,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
     static void GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string> &settings);
-    static void GetCustomExtensions(TiXmlElement *pRootElement, std::string& extensions);
+    static void GetCustomExtensions(const TiXmlElement* pRootElement, std::string& extensions);
 
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
@@ -224,7 +223,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_trailerMatchRegExps;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     std::string m_tvshowMultiPartEnumRegExp;
-    typedef std::vector< std::pair<std::string, std::string> > StringMapping;
+    using StringMapping = std::vector<std::pair<std::string, std::string>>;
     StringMapping m_pathSubstitutions;
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     bool m_bScanIRServer;
@@ -276,7 +275,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_caseSensitiveLocalArtMatch{true};
     int m_minimumEpisodePlaylistDuration; // seconds
 
-    std::set<std::string> m_vecTokens;
+    CLangInfo::Tokens m_vecTokens;
 
     int m_iEpgUpdateCheckInterval;  // seconds
     int m_iEpgCleanupInterval;      // seconds
@@ -307,7 +306,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_caTrustFile;
 
     bool m_minimizeToTray; /* win32 only */
-    bool m_fullScreen;
+    bool m_fullScreen{false};
     bool m_startFullScreen;
     bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
     bool m_canWindowed;
@@ -359,8 +358,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_settingsFiles;
     void ParseSettingsFile(const std::string &file);
 
-    float GetLatencyTweak(float refreshrate, bool isHDREnabled);
-    bool m_initialized;
+    float GetLatencyTweak(float refreshrate, bool isHDREnabled) const;
+    bool m_initialized{false};
 
     void SetDebugMode(bool debug);
 
@@ -390,5 +389,5 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
   private:
     void Initialize();
     void Clear();
-    void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap);
+    void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap) const;
 };

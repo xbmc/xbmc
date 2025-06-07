@@ -15,9 +15,9 @@ void CPlayerSettings::SettingOptionsQueueTimeSizesFiller(const SettingConstPtr& 
                                                          std::vector<IntegerSettingOption>& list,
                                                          int& current)
 {
-  const auto& secFloat = g_localizeStrings.Get(13553);
-  const auto& seconds = g_localizeStrings.Get(37129);
-  const auto& second = g_localizeStrings.Get(37128);
+  const std::string& secFloat = g_localizeStrings.Get(13553);
+  const std::string& seconds = g_localizeStrings.Get(37129);
+  const std::string& second = g_localizeStrings.Get(37128);
 
   list.emplace_back(StringUtils::Format(secFloat, 0.5), 5);
   list.emplace_back(StringUtils::Format(second, 1), 10);
@@ -31,8 +31,8 @@ void CPlayerSettings::SettingOptionsQueueDataSizesFiller(const SettingConstPtr& 
                                                          std::vector<IntegerSettingOption>& list,
                                                          int& current)
 {
-  const auto& mb = g_localizeStrings.Get(37122);
-  const auto& gb = g_localizeStrings.Get(37123);
+  const std::string& mb = g_localizeStrings.Get(37122);
+  const std::string& gb = g_localizeStrings.Get(37123);
 
   list.emplace_back(StringUtils::Format(mb, 16), 16);
   list.emplace_back(StringUtils::Format(mb, 32), 32);

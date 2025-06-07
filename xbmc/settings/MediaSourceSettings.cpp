@@ -25,9 +25,12 @@
 #include <cstdlib>
 #include <cstring>
 
-#define SOURCES_FILE "sources.xml"
-#define XML_SOURCES "sources"
-#define XML_SOURCE "source"
+namespace
+{
+constexpr const char* SOURCES_FILE = "sources.xml";
+constexpr const char* XML_SOURCES = "sources";
+constexpr const char* XML_SOURCE = "source";
+} // unnamed namespace
 
 CMediaSourceSettings::CMediaSourceSettings()
 {
@@ -89,7 +92,7 @@ bool CMediaSourceSettings::Load(const std::string& file)
     return false;
   }
 
-  auto* rootElement = xmlDoc.RootElement();
+  const tinyxml2::XMLElement* rootElement = xmlDoc.RootElement();
   if (!rootElement || !StringUtils::EqualsNoCase(rootElement->Value(), XML_SOURCES))
     CLog::Log(LOGERROR, "CMediaSourceSettings: sources.xml file does not contain <sources>");
 
@@ -105,7 +108,7 @@ bool CMediaSourceSettings::Load(const std::string& file)
   return true;
 }
 
-bool CMediaSourceSettings::Save()
+bool CMediaSourceSettings::Save() const
 {
   return Save(GetSourcesFile());
 }
@@ -113,8 +116,8 @@ bool CMediaSourceSettings::Save()
 bool CMediaSourceSettings::Save(const std::string& file) const
 {
   CXBMCTinyXML2 doc;
-  auto* element = doc.NewElement(XML_SOURCES);
-  auto* rootNode = doc.InsertFirstChild(element);
+  tinyxml2::XMLElement* element = doc.NewElement(XML_SOURCES);
+  tinyxml2::XMLNode* rootNode = doc.InsertFirstChild(element);
 
   if (!rootNode)
     return false;
@@ -142,7 +145,7 @@ void CMediaSourceSettings::Clear()
   m_gameSources.clear();
 }
 
-std::vector<CMediaSource>* CMediaSourceSettings::GetSources(const std::string& type)
+std::vector<CMediaSource>* CMediaSourceSettings::GetSources(std::string_view type)
 {
   if (type == "programs" || type == "myprograms")
     return &m_programSources;
@@ -157,10 +160,10 @@ std::vector<CMediaSource>* CMediaSourceSettings::GetSources(const std::string& t
   else if (type == "games")
     return &m_gameSources;
 
-  return NULL;
+  return nullptr;
 }
 
-const std::string& CMediaSourceSettings::GetDefaultSource(const std::string& type) const
+const std::string& CMediaSourceSettings::GetDefaultSource(std::string_view type) const
 {
   if (type == "programs" || type == "myprograms")
     return m_defaultProgramSource;
@@ -174,7 +177,7 @@ const std::string& CMediaSourceSettings::GetDefaultSource(const std::string& typ
   return StringUtils::Empty;
 }
 
-void CMediaSourceSettings::SetDefaultSource(const std::string& type, const std::string& source)
+void CMediaSourceSettings::SetDefaultSource(std::string_view type, std::string_view source)
 {
   if (type == "programs" || type == "myprograms")
     m_defaultProgramSource = source;
@@ -187,34 +190,34 @@ void CMediaSourceSettings::SetDefaultSource(const std::string& type, const std::
 }
 
 // NOTE: This function does NOT save the sources.xml file - you need to call SaveSources() separately.
-bool CMediaSourceSettings::UpdateSource(const std::string& strType,
-                                        const std::string& strOldName,
-                                        const std::string& strUpdateChild,
+bool CMediaSourceSettings::UpdateSource(std::string_view strType,
+                                        std::string_view strOldName,
+                                        std::string_view strUpdateChild,
                                         const std::string& strUpdateValue)
 {
   std::vector<CMediaSource>* pShares = GetSources(strType);
-  if (pShares == NULL)
+  if (!pShares)
     return false;
 
-  for (std::vector<CMediaSource>::iterator it = pShares->begin(); it != pShares->end(); ++it)
+  for (auto& share : *pShares)
   {
-    if (it->strName == strOldName)
+    if (share.strName == strOldName)
     {
       if (strUpdateChild == "name")
-        it->strName = strUpdateValue;
+        share.strName = strUpdateValue;
       else if (strUpdateChild == "lockmode")
-        it->m_iLockMode = static_cast<LockMode>(std::strtol(strUpdateValue.c_str(), nullptr, 10));
+        share.m_iLockMode = static_cast<LockMode>(std::strtol(strUpdateValue.c_str(), nullptr, 10));
       else if (strUpdateChild == "lockcode")
-        it->m_strLockCode = strUpdateValue;
+        share.m_strLockCode = strUpdateValue;
       else if (strUpdateChild == "badpwdcount")
-        it->m_iBadPwdCount = (int)std::strtol(strUpdateValue.c_str(), NULL, 10);
+        share.m_iBadPwdCount = (int)std::strtol(strUpdateValue.c_str(), nullptr, 10);
       else if (strUpdateChild == "thumbnail")
-        it->m_strThumbnailImage = strUpdateValue;
+        share.m_strThumbnailImage = strUpdateValue;
       else if (strUpdateChild == "path")
       {
-        it->vecPaths.clear();
-        it->strPath = strUpdateValue;
-        it->vecPaths.push_back(strUpdateValue);
+        share.vecPaths.clear();
+        share.strPath = strUpdateValue;
+        share.vecPaths.emplace_back(strUpdateValue);
       }
       else
         return false;
@@ -226,18 +229,18 @@ bool CMediaSourceSettings::UpdateSource(const std::string& strType,
   return false;
 }
 
-bool CMediaSourceSettings::DeleteSource(const std::string& strType,
-                                        const std::string& strName,
-                                        const std::string& strPath,
+bool CMediaSourceSettings::DeleteSource(std::string_view strType,
+                                        std::string_view strName,
+                                        std::string_view strPath,
                                         bool virtualSource /* = false */)
 {
   std::vector<CMediaSource>* pShares = GetSources(strType);
-  if (pShares == NULL)
+  if (!pShares)
     return false;
 
   bool found = false;
 
-  for (std::vector<CMediaSource>::iterator it = pShares->begin(); it != pShares->end(); ++it)
+  for (auto it = pShares->begin(); it != pShares->end(); ++it)
   {
     if (it->strName == strName && it->strPath == strPath)
     {
@@ -254,10 +257,10 @@ bool CMediaSourceSettings::DeleteSource(const std::string& strType,
   return Save();
 }
 
-bool CMediaSourceSettings::AddShare(const std::string& type, const CMediaSource& share)
+bool CMediaSourceSettings::AddShare(std::string_view type, const CMediaSource& share)
 {
   std::vector<CMediaSource>* pShares = GetSources(type);
-  if (pShares == NULL)
+  if (!pShares)
     return false;
 
   // translate dir and add to our current shares
@@ -291,29 +294,29 @@ bool CMediaSourceSettings::AddShare(const std::string& type, const CMediaSource&
   return true;
 }
 
-bool CMediaSourceSettings::UpdateShare(const std::string& type,
-                                       const std::string& oldName,
+bool CMediaSourceSettings::UpdateShare(std::string_view type,
+                                       std::string_view oldName,
                                        const CMediaSource& share)
 {
   std::vector<CMediaSource>* pShares = GetSources(type);
-  if (pShares == NULL)
+  if (!pShares)
     return false;
 
   // update our current share list
-  CMediaSource* pShare = NULL;
-  for (std::vector<CMediaSource>::iterator it = pShares->begin(); it != pShares->end(); ++it)
+  const CMediaSource* pShare = nullptr;
+  for (auto& currshare : *pShares)
   {
-    if (it->strName == oldName)
+    if (currshare.strName == oldName)
     {
-      it->strName = share.strName;
-      it->strPath = share.strPath;
-      it->vecPaths = share.vecPaths;
-      pShare = &(*it);
+      currshare.strName = share.strName;
+      currshare.strPath = share.strPath;
+      currshare.vecPaths = share.vecPaths;
+      pShare = &currshare;
       break;
     }
   }
 
-  if (pShare == NULL)
+  if (!pShare)
     return false;
 
   // Update our XML file as well
@@ -322,9 +325,9 @@ bool CMediaSourceSettings::UpdateShare(const std::string& type,
 
 bool CMediaSourceSettings::GetSource(const std::string& category,
                                      const tinyxml2::XMLNode* source,
-                                     CMediaSource& share)
+                                     CMediaSource& share) const
 {
-  const auto* nodeName = source->FirstChildElement("name");
+  const tinyxml2::XMLElement* nodeName = source->FirstChildElement("name");
   std::string name;
   if (nodeName && nodeName->FirstChild())
     name = nodeName->FirstChild()->Value();
@@ -334,7 +337,7 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
 
   // get multiple paths
   std::vector<std::string> vecPaths;
-  const auto* pathName = source->FirstChildElement("path");
+  const tinyxml2::XMLElement* pathName = source->FirstChildElement("path");
   while (pathName)
   {
     if (pathName->FirstChild())
@@ -365,10 +368,10 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
   if (vecPaths.empty())
     return false;
 
-  const auto* lockModeElement = source->FirstChildElement("lockmode");
-  const auto* lockCodeElement = source->FirstChildElement("lockcode");
-  const auto* badPwdCountElement = source->FirstChildElement("badpwdcount");
-  const auto* thumbnailNodeElement = source->FirstChildElement("thumbnail");
+  const tinyxml2::XMLElement* lockModeElement = source->FirstChildElement("lockmode");
+  const tinyxml2::XMLElement* lockCodeElement = source->FirstChildElement("lockcode");
+  const tinyxml2::XMLElement* badPwdCountElement = source->FirstChildElement("badpwdcount");
+  const tinyxml2::XMLElement* thumbnailNodeElement = source->FirstChildElement("thumbnail");
 
   std::vector<std::string> verifiedPaths;
   // disallowed for files, or there's only a single path in the vector
@@ -379,9 +382,9 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
   else // multiple paths?
   {
     // validate the paths
-    for (auto path = vecPaths.begin(); path != vecPaths.end(); ++path)
+    for (const auto& path : vecPaths)
     {
-      CURL url(*path);
+      const CURL url(path);
       bool isInvalid = false;
 
       // for my programs
@@ -390,18 +393,18 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
       {
         // only allow HD and plugins
         if (url.IsLocal() || url.IsProtocol("plugin"))
-          verifiedPaths.push_back(*path);
+          verifiedPaths.emplace_back(path);
         else
           isInvalid = true;
       }
       // for others allow everything (if the user does something silly, we can't stop them)
       else
-        verifiedPaths.push_back(*path);
+        verifiedPaths.emplace_back(path);
 
       // error message
       if (isInvalid)
         CLog::Log(LOGERROR, "CMediaSourceSettings:    invalid path type ({}) for multipath source",
-                  *path);
+                  path);
     }
 
     // no valid paths? skip to next source
@@ -449,7 +452,7 @@ void CMediaSourceSettings::GetSources(const tinyxml2::XMLNode* rootElement,
   defaultString = "";
   items.clear();
 
-  const auto* childElement = rootElement->FirstChildElement(tagName.c_str());
+  const tinyxml2::XMLElement* childElement = rootElement->FirstChildElement(tagName.c_str());
   if (!childElement)
   {
     CLog::Log(LOGDEBUG, "CMediaSourceSettings: <{}> tag is missing or sources.xml is malformed",
@@ -457,7 +460,7 @@ void CMediaSourceSettings::GetSources(const tinyxml2::XMLNode* rootElement,
     return;
   }
 
-  auto child = childElement->FirstChild();
+  const tinyxml2::XMLNode* child = childElement->FirstChild();
   while (child)
   {
     std::string value = child->Value();
@@ -473,7 +476,7 @@ void CMediaSourceSettings::GetSources(const tinyxml2::XMLNode* rootElement,
     }
     else if (value == "default")
     {
-      const auto* valueNode = child->FirstChild();
+      const tinyxml2::XMLNode* valueNode = child->FirstChild();
       if (valueNode)
       {
         const char* text = child->FirstChild()->Value();
@@ -493,26 +496,25 @@ bool CMediaSourceSettings::SetSources(tinyxml2::XMLNode* root,
                                       const std::vector<CMediaSource>& shares,
                                       const std::string& defaultPath) const
 {
-  auto* doc = root->GetDocument();
-  auto* newElement = doc->NewElement(section);
-  auto* sectionNode = root->InsertEndChild(newElement);
+  tinyxml2::XMLDocument* doc = root->GetDocument();
+  tinyxml2::XMLElement* newElement = doc->NewElement(section);
+  tinyxml2::XMLNode* sectionNode = root->InsertEndChild(newElement);
 
   if (!sectionNode)
     return false;
 
   XMLUtils::SetPath(sectionNode, "default", defaultPath);
-  for (std::vector<CMediaSource>::const_iterator it = shares.begin(); it != shares.end(); ++it)
+  for (const auto& share : shares)
   {
-    const CMediaSource& share = *it;
     if (share.m_ignore)
       continue;
 
-    auto* sourceElement = doc->NewElement(XML_SOURCE);
+    tinyxml2::XMLElement* sourceElement = doc->NewElement(XML_SOURCE);
 
     XMLUtils::SetString(sourceElement, "name", share.strName);
 
-    for (unsigned int i = 0; i < share.vecPaths.size(); i++)
-      XMLUtils::SetPath(sourceElement, "path", share.vecPaths[i]);
+    for (const auto& path : share.vecPaths)
+      XMLUtils::SetPath(sourceElement, "path", path);
 
     if (share.m_iHasLock)
     {
