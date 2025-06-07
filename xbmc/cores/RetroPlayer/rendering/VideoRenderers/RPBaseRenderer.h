@@ -105,8 +105,8 @@ protected:
   void Updateshaders();
   std::unique_ptr<SHADER::IShaderPreset> m_shaderPreset;
 
-  bool m_bShadersNeedUpdate;
-  bool m_bUseShaderPreset;
+  bool m_bShadersNeedUpdate = true;
+  bool m_bUseShaderPreset = false;
 
 private:
   /*!

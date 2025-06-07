@@ -46,7 +46,7 @@ CFileExtensionProvider::~CFileExtensionProvider()
   m_addonExtensions.clear();
 }
 
-std::string CFileExtensionProvider::GetDiscStubExtensions() const
+const std::string& CFileExtensionProvider::GetDiscStubExtensions() const
 {
   return m_advancedSettings->m_discStubExtensions;
 }

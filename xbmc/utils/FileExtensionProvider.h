@@ -51,7 +51,7 @@ public:
   /*!
    * @brief Returns a list of disc stub extensions
    */
-  std::string GetDiscStubExtensions() const;
+  const std::string& GetDiscStubExtensions() const;
 
   /*!
    * @brief Returns a file folder extensions

@@ -1326,7 +1326,7 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
 
     // must first determine type of file from object id
     VIDEODATABASEDIRECTORY::CQueryParams params;
-    VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(path.c_str(), params);
+    VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(path, params);
 
     int id = -1;
     VideoDbContentType content_type;

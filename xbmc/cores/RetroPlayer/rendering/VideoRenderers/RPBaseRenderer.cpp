@@ -24,11 +24,7 @@ using namespace RETRO;
 CRPBaseRenderer::CRPBaseRenderer(const CRenderSettings& renderSettings,
                                  CRenderContext& context,
                                  std::shared_ptr<IRenderBufferPool> bufferPool)
-  : m_context(context),
-    m_bufferPool(std::move(bufferPool)),
-    m_renderSettings(renderSettings),
-    m_bShadersNeedUpdate(true),
-    m_bUseShaderPreset(false)
+  : m_context(context), m_bufferPool(std::move(bufferPool)), m_renderSettings(renderSettings)
 {
   m_bufferPool->RegisterRenderer(this);
 }

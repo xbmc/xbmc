@@ -2044,7 +2044,7 @@ bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList 
     if (numericMatch)
       StringUtils::WordToDigits(match);
 
-    size_t pos = StringUtils::FindWords(match.c_str(), trimmedFilter.c_str());
+    size_t pos = StringUtils::FindWords(match, trimmedFilter);
     if (pos != std::string::npos)
       filteredItems.Add(item);
   }

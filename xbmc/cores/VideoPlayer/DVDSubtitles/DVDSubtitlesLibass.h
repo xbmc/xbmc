@@ -152,7 +152,7 @@ private:
   void ConfigureAssOverride(const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
                             ASS_Style* style);
   void ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
-                  KODI::SUBTITLES::STYLE::renderOpts opts);
+                  const KODI::SUBTITLES::STYLE::renderOpts& opts);
 
   ASS_Library* m_library = nullptr;
   ASS_Track* m_track = nullptr;

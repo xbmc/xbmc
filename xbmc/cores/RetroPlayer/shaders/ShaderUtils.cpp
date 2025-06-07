@@ -18,7 +18,7 @@ std::string CShaderUtils::StripParameterPragmas(std::string source)
 
   while ((pragmaPosition = source.find("#pragma parameter")) != std::string::npos)
   {
-    newlinePosition = source.find_first_of("\n", pragmaPosition + 17);
+    newlinePosition = source.find_first_of('\n', pragmaPosition + 17);
 
     if (newlinePosition != std::string::npos)
       source.erase(pragmaPosition, newlinePosition - pragmaPosition + 1);
