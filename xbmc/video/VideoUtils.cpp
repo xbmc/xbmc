@@ -121,52 +121,39 @@ std::string FindTrailer(const CFileItem& item)
 std::string GetOpticalMediaPath(const CFileItem& item)
 {
   using namespace std::string_literals;
-  const auto files = std::array{
-      "VIDEO_TS.IFO"s,    "VIDEO_TS/VIDEO_TS.IFO"s,
+  const auto files{std::array{
+      "VIDEO_TS.IFO"s,
+      "VIDEO_TS/VIDEO_TS.IFO"s,
 #ifdef HAVE_LIBBLURAY
-      "index.bdmv"s,      "INDEX.BDM"s,
-      "BDMV/index.bdmv"s, "BDMV/INDEX.BDM"s,
+      "index.bdmv"s,
+      "INDEX.BDM"s,
+      "BDMV/index.bdmv"s,
+      "BDMV/INDEX.BDM"s,
 #endif
-  };
+  }};
 
-  std::string mediaPath;
-  return std::ranges::any_of(files,
-                             [&](const std::string& file)
-                             {
-                               const std::string& dynPath{item.GetDynPath()};
+  const std::string& dynPath{item.GetDynPath()};
+  for (const auto& file : files)
+  {
+    // See if already pointing to a playable bluray/dvd file
+    if (URIUtils::GetFileName(dynPath) == file)
+      return dynPath;
 
-                               // See if already pointing to a playable bluray/dvd file
-                               if (URIUtils::GetFileName(dynPath) == file)
-                               {
-                                 mediaPath = dynPath;
-                                 return true;
-                               }
+    // See if one exists in the directory
+    if (const std::string path{URIUtils::AddFileToFolder(dynPath, file)}; CFileUtils::Exists(path))
+      return path;
 
-                               // See if one exists in the directory
-                               const std::string path{URIUtils::AddFileToFolder(dynPath, file)};
-                               if (CFileUtils::Exists(path))
-                               {
-                                 mediaPath = path;
-                                 return true;
-                               }
-                               // If disc image, then see if one exists in image
-                               if (item.IsDiscImage())
-                               {
-                                 CURL url("udf://");
-                                 url.SetHostName(dynPath);
-                                 url.SetFileName(file);
-                                 const std::string path2{url.Get()};
-                                 if (CFileUtils::Exists(path2))
-                                 {
-                                   mediaPath = path2;
-                                   return true;
-                                 }
-                               }
-
-                               return false;
-                             })
-             ? mediaPath
-             : std::string{};
+    // If disc image, then see if one exists in image
+    if (item.IsDiscImage())
+    {
+      CURL url("udf://");
+      url.SetHostName(dynPath);
+      url.SetFileName(file);
+      if (const std::string path{url.Get()}; CFileUtils::Exists(path))
+        return path;
+    }
+  }
+  return std::string{};
 }
 
 bool IsAutoPlayNextItem(const CFileItem& item)

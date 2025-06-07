@@ -616,6 +616,11 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 bool CMediaManager::HasMediaBlurayPlaylist(const std::string& devicePath)
 {
 #ifdef HAVE_LIBBLURAY
+  // When the disc node is displayed, this gets called by the GUI via SYSTEM_MEDIA_BLURAY_PLAYLIST
+  // in CSystemCGUIInfo at every refresh - so cache result until eject.
+  if (m_hasBlurayPlaylist != HasBlurayPlaylist::UNKNOWN)
+    return m_hasBlurayPlaylist == HasBlurayPlaylist::YES;
+
   const std::string mediaPath{TranslateDevicePath(devicePath)};
   UTILS::DISCS::DiscInfo info{GetDiscInfo(mediaPath)};
   if (!info.empty() && info.type == UTILS::DISCS::DiscType::BLURAY)
@@ -626,11 +631,18 @@ bool CMediaManager::HasMediaBlurayPlaylist(const std::string& devicePath)
     {
       const std::string path{db.GetRemovableBlurayPath(blurayPath)};
       db.Close();
+      m_hasBlurayPlaylist = path.empty() ? HasBlurayPlaylist::NO : HasBlurayPlaylist::YES;
       return !path.empty();
     }
   }
+  m_hasBlurayPlaylist = HasBlurayPlaylist::NO;
 #endif
   return false;
+}
+
+void CMediaManager::ResetBlurayPlaylistStatus()
+{
+  m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
 }
 
 std::string CMediaManager::GetDiscPath()
@@ -668,6 +680,9 @@ void CMediaManager::SetHasOpticalDrive(bool bstatus)
 bool CMediaManager::Eject(const std::string& mountpath)
 {
   std::unique_lock lock(m_CritSecStorageProvider);
+#ifdef HAVE_LIBBLURAY
+  m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
+#endif
   return m_platformStorage->Eject(mountpath);
 }
 
@@ -676,6 +691,9 @@ void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
 #ifdef HAS_OPTICAL_DRIVE
   if (m_platformDiscDriveHander)
   {
+#ifdef HAVE_LIBBLURAY
+    m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
+#endif
     m_platformDiscDriveHander->EjectDriveTray(TranslateDevicePath(""));
   }
 #endif
@@ -686,6 +704,9 @@ void CMediaManager::CloseTray(const char cDriveLetter)
 #ifdef HAS_OPTICAL_DRIVE
   if (m_platformDiscDriveHander)
   {
+#ifdef HAVE_LIBBLURAY
+    m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
+#endif
     m_platformDiscDriveHander->ToggleDriveTray(TranslateDevicePath(""));
   }
 #endif
@@ -696,6 +717,9 @@ void CMediaManager::ToggleTray(const char cDriveLetter)
 #ifdef HAS_OPTICAL_DRIVE
   if (m_platformDiscDriveHander)
   {
+#ifdef HAVE_LIBBLURAY
+    m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
+#endif
     m_platformDiscDriveHander->ToggleDriveTray(TranslateDevicePath(""));
   }
 #endif
