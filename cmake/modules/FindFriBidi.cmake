@@ -24,6 +24,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                  HINTS ${DEPENDS_PATH}/lib)
   endif()
 
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
+
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(FriBidi
                                     REQUIRED_VARS FRIBIDI_LIBRARY FRIBIDI_INCLUDE_DIR
