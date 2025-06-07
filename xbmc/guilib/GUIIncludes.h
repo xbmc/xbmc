@@ -11,13 +11,14 @@
 #include "interfaces/info/InfoBool.h"
 
 #include <map>
-#include <set>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
+#include <tinyxml.h>
+
 // forward definitions
-class TiXmlElement;
 namespace INFO
 {
   class CSkinVariableString;
@@ -119,15 +120,9 @@ private:
   std::string ResolveExpressions(const std::string &expression) const;
 
   std::vector<std::string> m_files;
-  std::map<std::string, std::pair<TiXmlElement, Params>> m_includes;
-  std::map<std::string, TiXmlElement> m_defaults;
-  std::map<std::string, TiXmlElement> m_skinvariables;
-  std::map<std::string, std::string> m_constants;
-  std::map<std::string, std::string> m_expressions;
-
-  std::set<std::string> m_constantAttributes;
-  std::set<std::string> m_constantNodes;
-
-  std::set<std::string> m_expressionAttributes;
-  std::set<std::string> m_expressionNodes;
+  std::unordered_map<std::string, std::pair<TiXmlElement, Params>> m_includes;
+  std::unordered_map<std::string, TiXmlElement> m_defaults;
+  std::unordered_map<std::string, TiXmlElement> m_skinvariables;
+  std::unordered_map<std::string, std::string> m_constants;
+  std::unordered_map<std::string, std::string> m_expressions;
 };
