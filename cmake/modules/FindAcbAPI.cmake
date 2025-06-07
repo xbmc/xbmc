@@ -8,19 +8,34 @@
 #   ${APP_NAME_LC}::AcbAPI   - The acbAPI library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  include(cmake/scripts/common/ModuleHelpers.cmake)
+  find_package(PkgConfig ${SEARCH_QUIET})
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_ACBAPI libAcbAPI ${SEARCH_QUIET})
+  endif()
 
-  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libAcbAPI)
-  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
+  find_path(ACBAPI_INCLUDE_DIR NAMES appswitching-control-block/AcbAPI.h
+                               HINTS ${PC_ACBAPI_INCLUDEDIR}
+                               NO_CACHE)
+  find_library(ACBAPI_LIBRARY NAMES AcbAPI
+                              HINTS ${PC_ACBAPI_LIBDIR}
+                              NO_CACHE)
 
-  SETUP_BUILD_VARS()
+  set(ACBAPI_VERSION ${PC_ACBAPI_VERSION})
 
-  SETUP_FIND_SPECS()
+  if(NOT VERBOSE_FIND)
+     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
+   endif()
 
-  SEARCH_EXISTING_PACKAGES()
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(AcbAPI
+                                    REQUIRED_VARS ACBAPI_LIBRARY ACBAPI_INCLUDE_DIR
+                                    VERSION_VAR ACBAPI_VERSION)
 
-  if(libAcbAPI_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+  if(ACBAPI_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${ACBAPI_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${ACBAPI_INCLUDE_DIR}")
 
     # creates an empty library to install on webOS 5+ devices
     file(TOUCH dummy.c)
