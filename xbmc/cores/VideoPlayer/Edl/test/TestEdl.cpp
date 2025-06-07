@@ -21,7 +21,6 @@
 using namespace std::chrono_literals;
 using namespace EDL;
 
-
 class TestEdl : public ::testing::Test
 {
 protected:
@@ -35,7 +34,7 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedEDL)
   // create a dummy "media" fileitem whose corresponding edl file is testdata/mplayertimebased.edl
   CFileItem mediaItem;
   mediaItem.SetPath(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/mplayertimebased.mkv"));
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/mplayertimebased.mkv"));
   const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   // expect kodi to be able to parse the file correctly
   EXPECT_EQ(found, true);
@@ -123,7 +122,7 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedInterleavedCutsEDL)
   // this is an edl file with commbreaks interleaved with cuts
   CFileItem mediaItem;
   mediaItem.SetPath(XBMC_REF_FILE_PATH(
-      "xbmc/cores/VideoPlayer/test/edl/testdata/mplayertimebasedinterleavedcuts.mkv"));
+      "xbmc/cores/VideoPlayer/Edl/test/testdata/mplayertimebasedinterleavedcuts.mkv"));
   const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   // expect kodi to be able to parse the file correctly
   EXPECT_EQ(found, true);
@@ -153,7 +152,7 @@ TEST_F(TestEdl, TestParsingMplayerFrameBasedEDL)
   // this is an edl file with frame based edit points
   CFileItem mediaItem;
   mediaItem.SetPath(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/mplayerframebased.mkv"));
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/mplayerframebased.mkv"));
   const bool found = edl.ReadEditDecisionLists(mediaItem, fps);
   // expect kodi to be able to parse the file correctly
   EXPECT_EQ(found, true);
@@ -180,7 +179,7 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedMixedEDL)
   // this file has edit points with seconds and others with seconds timestrings
   CFileItem mediaItem;
   mediaItem.SetPath(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/mplayertimebasedmixed.mkv"));
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/mplayertimebasedmixed.mkv"));
   bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   // expect kodi to be able to parse the file correctly
   EXPECT_EQ(found, true);
@@ -210,7 +209,7 @@ TEST_F(TestEdl, TestParsingVideoRedoEDL)
   // create a dummy "media" fileitem whose corresponding edl file is testdata/videoredo.Vprj
   // this is an edl file in VideoReDo format
   CFileItem mediaItem;
-  mediaItem.SetPath(XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/videoredo.mkv"));
+  mediaItem.SetPath(XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/videoredo.mkv"));
   bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   EXPECT_EQ(found, true);
   EXPECT_EQ(edl.HasEdits(), true);
@@ -233,7 +232,7 @@ TEST_F(TestEdl, TestSnapStreamEDL)
   // create a dummy "media" fileitem whose corresponding edl file is testdata/snapstream.mkv.chapters.xml
   // this is an edl file in SnapStream BeyondTV format
   CFileItem mediaItem;
-  mediaItem.SetPath(XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/snapstream.mkv"));
+  mediaItem.SetPath(XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/snapstream.mkv"));
   const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   EXPECT_EQ(found, true);
   // this format only supports commbreak types
@@ -255,7 +254,7 @@ TEST_F(TestEdl, TestComSkipVersion1EDL)
   // this is an edl file in ComSkip (version 1) format
   CFileItem mediaItem;
   mediaItem.SetPath(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/comskipversion1.mkv"));
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/comskipversion1.mkv"));
   bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   // fps was not supplied, kodi will not be able to process the file
   EXPECT_EQ(found, false);
@@ -283,7 +282,7 @@ TEST_F(TestEdl, TestComSkipVersion2EDL)
   // this is an edl file in ComSkip (version 2) format where fps is obtained from the file
   CFileItem mediaItem;
   mediaItem.SetPath(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/comskipversion2.mkv"));
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/comskipversion2.mkv"));
   const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   EXPECT_EQ(found, true);
   // fps is obtained from the file as it always takes precedence (note we supplied 0 above),
@@ -338,7 +337,7 @@ TEST_F(TestEdl, TestCommBreakAdvancedSettings)
   // create a dummy "media" fileitem whose corresponding edl file is testdata/edlautowindautowait.txt
   CFileItem mediaItem;
   mediaItem.SetPath(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/edlautowindautowait.mkv"));
   bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   EXPECT_EQ(found, true);
   // confirm the start and end times of all the commbreaks match
@@ -408,7 +407,7 @@ TEST_F(TestEdl, TestCommBreakAdvancedSettingsRemoveSmallCommbreaks)
 
   CFileItem mediaItem;
   mediaItem.SetPath(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/edlautowindautowait.mkv"));
   const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   EXPECT_EQ(found, true);
   EXPECT_EQ(edl.GetEditList().size(), 3);
@@ -437,7 +436,7 @@ TEST_F(TestEdl, TestMergeSmallCommbreaks)
 
   CFileItem mediaItem;
   mediaItem.SetPath(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/edlautowindautowait.mkv"));
   const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   EXPECT_EQ(found, true);
   // kodi should merge all commbreaks into a single one starting at the first point (0)
@@ -470,7 +469,7 @@ TEST_F(TestEdl, TestMergeSmallCommbreaksAdvanced)
 
   CFileItem mediaItem;
   mediaItem.SetPath(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/edlautowindautowait.mkv"));
   const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   EXPECT_EQ(found, true);
   // kodi should merge all commbreaks into two
