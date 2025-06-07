@@ -767,11 +767,11 @@
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
-			<width>1639</width>
-			<height>919</height>
+			<width>1580</width>
+			<height>920</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1639" />
-				<param name="height" value="919" />
+				<param name="width" value="1580" />
+				<param name="height" value="920" />
 				<param name="header_label" value="35260" />
 				<param name="header_id" value="10820" />
 			</include>
@@ -871,14 +871,14 @@
 					</control>
 					<control type="scrollbar" id="61">
 						<description>Scroll bar</description>
-						<right>-20</right>
+						<right>-12</right>
 						<width>12</width>
 						<orientation>vertical</orientation>
 					</control>
 				</control>
 				<control type="grouplist" id="9001">
 					<description>Buttons on the right</description>
-					<left>1302</left>
+					<left>1240</left>
 					<top>-20</top>
 					<onleft>3</onleft>
 					<itemgap>dialogbuttons_itemgap</itemgap>
@@ -893,7 +893,7 @@
 				</control>
 				<control type="group">
 					<description>Saved-with emulator name, version and icon</description>
-					<left>1302</left>
+					<left>1260</left>
 					<top>420</top>
 					<control type="label" id="10823">
 						<description>Emulator name</description>
@@ -954,14 +954,14 @@
 			<left>0</left>
 			<top>0</top>
 			<width>100%</width>
-			<bottom>540</bottom>
+			<bottom>410</bottom>
 			<texturefocus />
 			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
 			<bottom>0</bottom>
-			<height>540</height>
+			<height>410</height>
 			<width>100%</width>
 			<control type="image">
 				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
@@ -1040,17 +1040,6 @@
 						</control>
 					</control>
 				</focusedlayout>
-			</control>
-			<control type="textbox" id="10812">
-				<description>Description Area</description>
-				<top>410</top>
-				<left>100</left>
-				<right>100</right>
-				<height>200</height>
-				<font>font37</font>
-				<align>justify</align>
-				<shadowcolor>text_shadow</shadowcolor>
-				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
 			</control>
 		</control>
 	</include>
