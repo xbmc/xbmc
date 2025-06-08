@@ -149,7 +149,8 @@ bool CRPRendererOpenGL::Supports(RENDERFEATURE feature) const
 
 bool CRPRendererOpenGL::SupportsScalingMethod(SCALINGMETHOD method)
 {
-  return method == SCALINGMETHOD::NEAREST || method == SCALINGMETHOD::LINEAR;
+  return method == SCALINGMETHOD::AUTO || method == SCALINGMETHOD::NEAREST ||
+         method == SCALINGMETHOD::LINEAR;
 }
 
 void CRPRendererOpenGL::ClearBackBuffer()
