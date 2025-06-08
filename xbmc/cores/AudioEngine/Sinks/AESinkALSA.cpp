@@ -816,6 +816,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 
   if (selectedChmap)
   {
+    logM(LOGINFO, "CAESinkALSA", "Selecting Channel Map: channels:[{}] pos:[{}]", selectedChmap->channels, selectedChmap->pos);
     int err = snd_pcm_set_chmap(m_pcm, selectedChmap);
     if (err < 0) logM(LOGERROR, "CAESinkALSA", "Failed to set pcm channel map: [{}]", snd_strerror(err));
     free(selectedChmap);
@@ -825,9 +826,9 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   snd_pcm_nonblock(m_pcm, 0);
   snd_pcm_prepare(m_pcm);
 
-  if (m_passthrough && inconfig.channels != outconfig.channels)
+  if (m_passthrough && (inconfig.channels != outconfig.channels))
   {
-    CLog::Log(LOGINFO, "CAESinkALSA::Initialize - could not open required number of channels");
+    logM(LOGINFO, "CAESinkALSA", "passthough - could not open required number of channels");
     return false;
   }
 
@@ -1151,11 +1152,11 @@ unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsign
 {
   if (!m_pcm)
   {
-    CLog::Log(LOGERROR, "CAESinkALSA - Tried to add packets without a sink");
+    logM(LOGERROR, "CAESinkALSA", "Tried to add packets without a sink");
     return INT_MAX;
   }
 
-  void *buffer = data[0]+offset*m_format.m_frameSize;
+  uint8_t *buffer = data[0] + (m_format.m_frameSize * offset);
   unsigned int amount = 0;
   int64_t data_left = frames;
   int frames_written = 0;
@@ -1170,10 +1171,9 @@ unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsign
     int ret = snd_pcm_writei(m_pcm, buffer, amount);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CAESinkALSA - snd_pcm_writei({}) {} - trying to recover", ret,
-                snd_strerror(ret));
+      logM(LOGERROR, "CAESinkALSA", "snd_pcm_writei({}) {} - trying to recover", ret, snd_strerror(ret));
       ret = snd_pcm_recover(m_pcm, ret, 1);
-      if(ret < 0)
+      if (ret < 0)
       {
         HandleError("snd_pcm_writei(1)", ret);
         ret = snd_pcm_writei(m_pcm, buffer, amount);
@@ -1185,7 +1185,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsign
       }
     }
 
-    if ( ret > 0 && snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED)
+    if ((ret > 0) && (snd_pcm_state(m_pcm) == SND_PCM_STATE_PREPARED))
       snd_pcm_start(m_pcm);
 
     if (ret <= 0)
@@ -1193,7 +1193,7 @@ unsigned int CAESinkALSA::AddPackets(uint8_t **data, unsigned int frames, unsign
 
     frames_written += ret;
     data_left -= ret;
-    buffer = data[0]+offset*m_format.m_frameSize + frames_written*m_format.m_frameSize;
+    buffer += m_format.m_frameSize * ret;
   }
   return frames_written;
 }
