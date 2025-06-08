@@ -8,6 +8,8 @@ ifeq ($(OS), linux)
   CONFIGURE=./Configure no-shared zlib no-tests no-asm no-module  $(TARGETOPT) --prefix=$(PREFIX) --libdir=lib
   ifeq ($(TARGET_PLATFORM),webos)
     CONFIGURE+= linux-armv4
+    # Need to add "no-async" to avoid "setcontext is not implemented and will always fail" warning
+    TARGETOPT+= no-async
   else
     ifeq ($(CPU),aarch64)
       CONFIGURE+= linux-aarch64

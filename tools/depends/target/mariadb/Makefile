@@ -15,6 +15,11 @@ ifeq ($(TARGET_PLATFORM),appletvos)
   PLUGIN_BUILD_FLAGS+=-DHAVE_UCONTEXT_H= -DHAVE_FILE_UCONTEXT_H=
 endif
 
+# webos: warning: setcontext is not implemented and will always fail
+ifeq ($(TARGET_PLATFORM),webos)
+  PLUGIN_BUILD_FLAGS+=-DHAVE_UCONTEXT_H= -DHAVE_FILE_UCONTEXT_H=
+endif
+
 # Disable GSSAPI authentication plugin (not widely used by Kodi users)
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_AUTH_GSSAPI_CLIENT=OFF
 
