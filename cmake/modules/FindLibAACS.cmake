@@ -9,45 +9,36 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_package(PkgConfig ${SEARCH_QUIET})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  # We only rely on pkgconfig for non windows platforms
-  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(LIBAACS libaacs IMPORTED_TARGET ${SEARCH_QUIET})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libaacs)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-    get_target_property(LIBAACS_LIBRARY PkgConfig::LIBAACS INTERFACE_LINK_LIBRARIES)
-    get_target_property(LIBAACS_INCLUDE_DIR PkgConfig::LIBAACS INTERFACE_INCLUDE_DIRECTORIES)
-  else()
-    # Current packaged windows libaacs cmake config has a fault, so we cant use find_package
-    find_path(LIBAACS_INCLUDE_DIR NAMES libaacs/aacs.h
-                                  HINTS ${DEPENDS_PATH}/include
-                                  ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+  SETUP_BUILD_VARS()
 
-    find_library(LIBAACS_LIBRARY NAMES aacs libaacs
-                                 HINTS ${DEPENDS_PATH}/lib
-                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+  SETUP_FIND_SPECS()
 
-    if(EXISTS ${LIBAACS_INCLUDEDIR}/libaacs/aacs-version.h)
-      file(STRINGS ${LIBAACS_INCLUDEDIR}/libaacs/aacs-version.h _aacs_version_str
-           REGEX "#define[ \t]AACS_VERSION_STRING[ \t][\"]?[0-9.]+[\"]?")
-      string(REGEX REPLACE "^.*AACS_VERSION_STRING[ \t][\"]?([0-9.]+).*$" "\\1" LIBAACS_VERSION ${_aacs_version_str})
-      unset(_aacs_version_str)
+  # Kodi libaacs-0.9.0-* prebuilt libs have a broken cmake config file
+  # We need to detect this, otherwise the call to find_package will run and error out
+  # if we detect it, make the change to correct in the source config file
+  if(EXISTS ${DEPENDS_PATH}/lib/cmake/libaacs/libaacs-config.cmake)
+    file(READ ${DEPENDS_PATH}/lib/cmake/libaacs/libaacs-config.cmake aacs_config_output)
+    string(FIND ${aacs_config_output} "libbdplus.cmake" BROKEN_CONFIG)
+
+    if(${BROKEN_CONFIG} GREATER "-1")
+      string(REPLACE "libbdplus.cmake" "libaacs.cmake" aacs_config_output ${aacs_config_output})
+      file(WRITE ${DEPENDS_PATH}/lib/cmake/libaacs/libaacs-config.cmake ${aacs_config_output})
     endif()
   endif()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SEARCH_EXISTING_PACKAGES()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(LibAACS
-                                    REQUIRED_VARS LIBAACS_LIBRARY LIBAACS_INCLUDE_DIR
-                                    VERSION_VAR LIBAACS_VERSION)
-
-  if(LIBAACS_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${LIBAACS_INCLUDE_DIR}"
-                                                                     INTERFACE_LINK_LIBRARIES "${LIBAACS_LIBRARY}")
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    elseif(TARGET libaacs::libaacs)
+      # Kodi target - windows prebuilt lib
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libaacs::libaacs)
+    endif()
   endif()
 endif()
