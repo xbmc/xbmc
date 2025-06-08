@@ -107,7 +107,7 @@ void CDialogGameVideoFilter::InitVideoFilters()
   std::string xmlPath;
   std::unique_ptr<CXBMCTinyXML> xml;
 
-  // TODO: Have the add-on give us the xml as a string (or parse it)
+  //! @todo Have the add-on give us the xml as a string (or parse it)
   std::string xmlFilename;
 #ifdef TARGET_WINDOWS
   xmlFilename = "ShaderPresetsHLSLP.xml";
@@ -126,7 +126,7 @@ void CDialogGameVideoFilter::InitVideoFilters()
   {
     xmlPath = URIUtils::AddFileToFolder(basePath, "resources", xmlFilename);
 
-    CLog::LogF(LOGERROR, "Looking for shader preset XML at {}", CURL::GetRedacted(xmlPath));
+    CLog::LogF(LOGDEBUG, "Looking for shader preset XML at {}", CURL::GetRedacted(xmlPath));
 
     if (XFILE::CFile::Exists(xmlPath))
     {

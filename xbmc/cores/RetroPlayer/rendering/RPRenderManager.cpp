@@ -886,7 +886,7 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
   if (CPicture::ScaleImage(copiedData.data(), width, height, stride, sourceFormat,
                            scaledImage.data(), scaleWidth, scaleHeight, scaleStride, outFormat))
   {
-    //! @todo rotate image by rotationCCW
+    //! @todo Rotate image by rotationCCW
     (void)rotationCCW;
 
     CPicture::CreateThumbnailFromSurface(scaledImage.data(), scaleWidth, scaleHeight, scaleStride,

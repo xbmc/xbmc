@@ -183,7 +183,7 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   // Get screen parameters
   float screenWidth;
   float screenHeight;
-  //! @Todo screenPixelRatio unused - Possibly due to display integer scaling according to Garbear
+  //! @todo screenPixelRatio unused - Possibly due to display integer scaling according to Garbear
   float screenPixelRatio;
 
   if (scaleMode == SCALINGMETHOD::NEAREST && stretchMode == STRETCHMODE::Original &&
