@@ -286,7 +286,8 @@ bool CRPWinRenderer::Supports(RENDERFEATURE feature) const
 
 bool CRPWinRenderer::SupportsScalingMethod(SCALINGMETHOD method)
 {
-  if (method == SCALINGMETHOD::LINEAR || method == SCALINGMETHOD::NEAREST)
+  if (method == SCALINGMETHOD::AUTO || method == SCALINGMETHOD::NEAREST ||
+      method == SCALINGMETHOD::LINEAR)
     return true;
 
   return false;
