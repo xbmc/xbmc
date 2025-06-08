@@ -72,8 +72,6 @@ private:
   void GetAESParams(const AEAudioFormat& format, std::string& params) const;
   void HandleError(const char* name, int err) const;
 
-  std::string m_initDevice;
-  AEAudioFormat m_initFormat;
   AEAudioFormat m_format;
   unsigned int m_bufferSize = 0;
   double m_formatSampleRateMul = 0.0;

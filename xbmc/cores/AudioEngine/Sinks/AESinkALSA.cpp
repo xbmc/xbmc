@@ -695,8 +695,6 @@ void CAESinkALSA::aml_configure_simple_control(std::string &device, const enum I
 
 bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 {
-  m_initDevice = device;
-  m_initFormat = format;
   ALSAConfig inconfig, outconfig;
   inconfig.format = format.m_dataFormat;
   inconfig.sampleRate = format.m_sampleRate;
