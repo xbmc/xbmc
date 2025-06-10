@@ -92,7 +92,7 @@ std::optional<int64_t> CApplicationStackHelper::InitializeStackStartPartAndOffse
   if (m_currentStackIsDiscImageStack)
   {
     // first assume values passed to the stack
-    int selectedFile = item.m_lStartPartNumber;
+    int selectedFile = item.GetStartPartNumber();
     startoffset = item.GetStartOffset();
 
     // check if we instructed the stack to resume from default

@@ -362,7 +362,7 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
     {
       if (queuedItem->IsSamePath(itemToPlay.get()))
       {
-        queuedItem->m_lStartPartNumber = itemToPlay->m_lStartPartNumber;
+        queuedItem->SetStartPartNumber(itemToPlay->GetStartPartNumber());
         break;
       }
       pos++;

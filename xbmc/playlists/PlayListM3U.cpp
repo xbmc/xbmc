@@ -176,7 +176,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         if (iStartOffset != 0 || iEndOffset != 0)
         {
           newItem->SetStartOffset(iStartOffset);
-          newItem->m_lStartPartNumber = 1;
+          newItem->SetStartPartNumber(1);
           newItem->SetProperty("item_start", iStartOffset);
           newItem->SetEndOffset(iEndOffset);
           // Prevent load message from file and override offset set here

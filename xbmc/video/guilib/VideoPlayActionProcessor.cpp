@@ -178,12 +178,12 @@ void CVideoPlayActionProcessor::SetResumeData()
 {
   if (m_chosenStackPart)
   {
-    m_item->m_lStartPartNumber = m_chosenStackPart;
+    m_item->SetStartPartNumber(m_chosenStackPart);
     m_item->SetStartOffset(VIDEO::UTILS::GetStackPartResumeOffset(*m_item, m_chosenStackPart));
   }
   else
   {
-    m_item->m_lStartPartNumber = 1;
+    m_item->SetStartPartNumber(1);
     m_item->SetStartOffset(STARTOFFSET_RESUME);
   }
 }
@@ -192,12 +192,12 @@ void CVideoPlayActionProcessor::SetStartData()
 {
   if (m_chosenStackPart)
   {
-    m_item->m_lStartPartNumber = m_chosenStackPart;
+    m_item->SetStartPartNumber(m_chosenStackPart);
     m_item->SetStartOffset(VIDEO::UTILS::GetStackPartStartOffset(*m_item, m_chosenStackPart));
   }
   else
   {
-    m_item->m_lStartPartNumber = 1;
+    m_item->SetStartPartNumber(1);
     m_item->SetStartOffset(0);
   }
 }
