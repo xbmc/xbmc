@@ -238,13 +238,19 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = StringUtils::SizeToString(item->m_dwSize);
     break;
   case 'J': // date
-    if (item->m_dateTime.IsValid())
-      value = item->m_dateTime.GetAsLocalizedDate();
+  {
+    const CDateTime& dateTime{item->GetDateTime()};
+    if (dateTime.IsValid())
+      value = dateTime.GetAsLocalizedDate();
     break;
+  }
   case 'Q': // time
-    if (item->m_dateTime.IsValid())
-      value = item->m_dateTime.GetAsLocalizedTime("", false);
+  {
+    const CDateTime& dateTime{item->GetDateTime()};
+    if (dateTime.IsValid())
+      value = dateTime.GetAsLocalizedTime("", false);
     break;
+  }
   case 'R': // rating
     if (music && music->GetRating() != 0.f)
       value = StringUtils::Format("{:.1f}", music->GetRating());
@@ -334,9 +340,12 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     }
     break;
   case 'd': // date and time
-    if (item->m_dateTime.IsValid())
-      value = item->m_dateTime.GetAsLocalizedDateTime();
+  {
+    const CDateTime& dateTime{item->GetDateTime()};
+    if (dateTime.IsValid())
+      value = dateTime.GetAsLocalizedDateTime();
     break;
+  }
   case 'p': // Last played
     if (movie && movie->m_lastPlayed.IsValid())
       value = movie->m_lastPlayed.GetAsLocalizedDate();

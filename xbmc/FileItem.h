@@ -22,6 +22,7 @@
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 #include "utils/SortUtils.h"
+#include "utils/XTimeUtils.h"
 
 #include <memory>
 #include <string>
@@ -216,6 +217,11 @@ public:
   void SetIsShareOrDrive(bool set) { m_bIsShareOrDrive = set; }
   SourceType GetDriveType() const { return m_iDriveType; }
   void SetDriveType(SourceType driveType) { m_iDriveType = driveType; }
+  const CDateTime& GetDateTime() const { return m_dateTime; }
+  void SetDateTime(const CDateTime& dateTime) { m_dateTime = dateTime; }
+  void SetDateTime(time_t dateTime) { m_dateTime = dateTime; }
+  void SetDateTime(KODI::TIME::SystemTime dateTime) { m_dateTime = dateTime; }
+  void SetDateTime(KODI::TIME::FileTime dateTime) { m_dateTime = dateTime; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -504,7 +510,6 @@ public:
    */
   void SetFromSong(const CSong &song);
 
-  CDateTime m_dateTime;             ///< file creation date & time
   int64_t m_dwSize{0}; ///< file size (0 for folders)
   std::string m_strDVDLabel;
   std::string m_strTitle;
@@ -546,6 +551,7 @@ private:
   /// If \e m_bIsShareOrDrive is \e true, use to get the share type.
   /// Types see: CMediaSource::m_iDriveType
   SourceType m_iDriveType{SourceType::UNKNOWN};
+  CDateTime m_dateTime; ///< file creation date & time
 
   SortSpecial m_specialSort{SortSpecialNone};
   bool m_bIsParentFolder{false};

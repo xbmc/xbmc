@@ -249,7 +249,10 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
         if (!day.empty() && monthNum > 0 && !year.empty())
         {
-          pItem->m_dateTime = CDateTime(atoi(year.c_str()), monthNum, atoi(day.c_str()), atoi(hour.c_str()), atoi(minute.c_str()), 0);
+          const CDateTime dt{std::atoi(year.c_str()),   monthNum,
+                             std::atoi(day.c_str()),    std::atoi(hour.c_str()),
+                             std::atoi(minute.c_str()), 0};
+          pItem->SetDateTime(dt);
         }
 
         if (!pItem->m_bIsFolder)

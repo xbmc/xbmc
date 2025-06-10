@@ -431,7 +431,7 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
       item->SetPath(strFilePath);
       item->SetLabel(strCurrent);
       item->SetLabelPreformatted(true);
-      item->m_dateTime = recording->RecordingTimeAsLocalTime();
+      item->SetDateTime(recording->RecordingTimeAsLocalTime());
       item->SetProperty("totalepisodes", 0);
       item->SetProperty("watchedepisodes", 0);
       item->SetProperty("unwatchedepisodes", 0);
@@ -445,8 +445,8 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
     else
     {
       item = results.Get(strFilePath);
-      if (item->m_dateTime < recording->RecordingTimeAsLocalTime())
-        item->m_dateTime = recording->RecordingTimeAsLocalTime();
+      if (item->GetDateTime() < recording->RecordingTimeAsLocalTime())
+        item->SetDateTime(recording->RecordingTimeAsLocalTime());
     }
 
     item->IncrementProperty("totalepisodes", 1);
@@ -505,8 +505,9 @@ bool CPVRGUIDirectory::GetRecordingsDirectoryInfo(CFileItem& item)
       if (!recording)
         continue;
 
-      if (item.m_dateTime.IsValid() || (item.m_dateTime < recording->RecordingTimeAsLocalTime()))
-        item.m_dateTime = recording->RecordingTimeAsLocalTime();
+      const CDateTime& dateTime{item.GetDateTime()};
+      if (dateTime.IsValid() || (dateTime < recording->RecordingTimeAsLocalTime()))
+        item.SetDateTime(recording->RecordingTimeAsLocalTime());
 
       item.IncrementProperty("totalepisodes", 1);
 

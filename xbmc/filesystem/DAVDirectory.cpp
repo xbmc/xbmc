@@ -67,20 +67,20 @@ void CDAVDirectory::ParseResponse(const tinyxml2::XMLElement* element, CFileItem
               {
                 struct tm timeDate = {};
                 strptime(propChild->FirstChild()->Value(), "%a, %d %b %Y %T", &timeDate);
-                item.m_dateTime = mktime(&timeDate);
+                item.SetDateTime(std::mktime(&timeDate));
               }
               else if (CDAVCommon::ValueWithoutNamespace(propChild, "displayname") &&
                        !propChild->NoChildren())
               {
                 item.SetLabel(CURL::Decode(propChild->FirstChild()->Value()));
               }
-              else if (!item.m_dateTime.IsValid() &&
+              else if (!item.GetDateTime().IsValid() &&
                        CDAVCommon::ValueWithoutNamespace(propChild, "creationdate") &&
                        !propChild->NoChildren())
               {
                 struct tm timeDate = {};
                 strptime(propChild->FirstChild()->Value(), "%Y-%m-%dT%T", &timeDate);
-                item.m_dateTime = mktime(&timeDate);
+                item.SetDateTime(std::mktime(&timeDate));
               }
               else if (CDAVCommon::ValueWithoutNamespace(propChild, "resourcetype"))
               {

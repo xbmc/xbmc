@@ -179,7 +179,8 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
   {
     // first check the cached item
     CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
-    if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
+    if (mapItem && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded() &&
+        mapItem->GetDateTime() == pItem->GetDateTime())
     { // Query map if we previously cached the file on HD
       *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
       if (mapItem->HasArt("thumb"))

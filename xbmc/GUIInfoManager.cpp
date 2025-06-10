@@ -11832,13 +11832,19 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
         return strFile;
       }
       case LISTITEM_DATE:
-        if (item->m_dateTime.IsValid())
-          return item->m_dateTime.GetAsLocalizedDate();
+      {
+        const CDateTime& dateTime{item->GetDateTime()};
+        if (dateTime.IsValid())
+          return dateTime.GetAsLocalizedDate();
         break;
+      }
       case LISTITEM_DATETIME:
-        if (item->m_dateTime.IsValid())
-          return item->m_dateTime.GetAsLocalizedDateTime();
+      {
+        const CDateTime& dateTime{item->GetDateTime()};
+        if (dateTime.IsValid())
+          return dateTime.GetAsLocalizedDateTime();
         break;
+      }
       case LISTITEM_SIZE:
         if (!item->m_bIsFolder || item->m_dwSize)
           return StringUtils::SizeToString(item->m_dwSize);
@@ -11893,14 +11899,16 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
       }
       case LISTITEM_STARTTIME:
       {
-        if (item->m_dateTime.IsValid())
-          return item->m_dateTime.GetAsLocalizedTime("", false);
+        const CDateTime& dateTime{item->GetDateTime()};
+        if (dateTime.IsValid())
+          return dateTime.GetAsLocalizedTime("", false);
         break;
       }
       case LISTITEM_STARTDATE:
       {
-        if (item->m_dateTime.IsValid())
-          return item->m_dateTime.GetAsLocalizedDate(true);
+        const CDateTime& dateTime{item->GetDateTime()};
+        if (dateTime.IsValid())
+          return dateTime.GetAsLocalizedDate(true);
         break;
       }
       case LISTITEM_CURRENTITEM:

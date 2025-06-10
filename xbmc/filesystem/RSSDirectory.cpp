@@ -267,8 +267,7 @@ static void ParseItemRSS(CFileItem* item,
   }
   else if (name == "pubDate")
   {
-    CDateTime pubDate(ParseDate(text));
-    item->m_dateTime = pubDate;
+    item->SetDateTime(ParseDate(text));
   }
   else if (name == "link")
   {

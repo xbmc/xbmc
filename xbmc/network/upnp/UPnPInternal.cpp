@@ -567,9 +567,11 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       resource.m_Size = (NPT_LargeSize)-1;
 
     // set date
-    if (object->m_Date.IsEmpty() && item.m_dateTime.IsValid())
+    if (object->m_Date.IsEmpty())
     {
-      object->m_Date = item.m_dateTime.GetAsW3CDate().c_str();
+      const CDateTime& dateTime{item.GetDateTime()};
+      if (dateTime.IsValid())
+        object->m_Date = dateTime.GetAsW3CDate().c_str();
     }
 
     if (upnp_server)
@@ -1241,7 +1243,7 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
     KODI::TIME::SystemTime time = {};
     sscanf(entry->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu", &time.year, &time.month, &time.day,
            &time.hour, &time.minute, &time.second);
-    pItem->m_dateTime = time;
+    pItem->SetDateTime(time);
   }
 
   // if there is a thumbnail available set it here

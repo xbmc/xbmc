@@ -118,7 +118,7 @@ SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemLi
       // check whether at least one item has actually a valid date set
       for (const auto& item : items)
       {
-        if (item->m_dateTime.IsValid())
+        if (item->GetDateTime().IsValid())
         {
           // fallback, if neither ByEpisode nor ByYear is available
           sortDescDate = sortDescription;

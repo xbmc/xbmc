@@ -111,8 +111,9 @@ namespace XBMCAddon
       String ret;
       {
         XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-        if (item->m_dateTime.IsValid())
-          ret = item->m_dateTime.GetAsW3CDateTime();
+        const CDateTime& dateTime{item->GetDateTime()};
+        if (dateTime.IsValid())
+          ret = dateTime.GetAsW3CDateTime();
       }
 
       return ret;
@@ -1000,10 +1001,16 @@ namespace XBMCAddon
         int year = strtol(dateTime.substr(dateTime.size() - 4).c_str(), nullptr, 10);
         int month = strtol(dateTime.substr(3, 4).c_str(), nullptr, 10);
         int day = strtol(dateTime.substr(0, 2).c_str(), nullptr, 10);
-        item->m_dateTime.SetDate(year, month, day);
+        CDateTime dt{item->GetDateTime()};
+        dt.SetDate(year, month, day);
+        item->SetDateTime(dt);
       }
       else
-        item->m_dateTime.SetFromW3CDateTime(dateTime);
+      {
+        CDateTime dt;
+        dt.SetFromW3CDateTime(dateTime);
+        item->SetDateTime(dt);
+      }
     }
 
     void ListItem::setIsFolderRaw(bool isFolder)

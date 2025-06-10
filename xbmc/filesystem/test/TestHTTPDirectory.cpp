@@ -170,12 +170,12 @@ protected:
   {
     ASSERT_EQ(items.GetObjectCount(), SAMPLE_ITEM_COUNT);
 
-    ASSERT_STREQ(items[0]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_1_DATETIME);
-    ASSERT_STREQ(items[1]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_2_DATETIME);
-    ASSERT_STREQ(items[2]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_3_DATETIME);
-    ASSERT_STREQ(items[3]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_4_DATETIME);
-    ASSERT_STREQ(items[4]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_5_DATETIME);
-    ASSERT_STREQ(items[5]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_6_DATETIME);
+    ASSERT_STREQ(items[0]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_1_DATETIME);
+    ASSERT_STREQ(items[1]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_2_DATETIME);
+    ASSERT_STREQ(items[2]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_3_DATETIME);
+    ASSERT_STREQ(items[3]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_4_DATETIME);
+    ASSERT_STREQ(items[4]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_5_DATETIME);
+    ASSERT_STREQ(items[5]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_6_DATETIME);
   }
 
   void CheckFileItemSizes(CFileItemList const& items)

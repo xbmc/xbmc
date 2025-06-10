@@ -224,7 +224,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         URIUtils::AddSlashAtEnd(path);
         pItem->SetPath(path);
         pItem->m_bIsFolder = true;
-        pItem->m_dateTime=localTime;
+        pItem->SetDateTime(localTime);
         if (hidden)
           pItem->SetProperty("file:hidden", true);
         items.Add(pItem);
@@ -235,7 +235,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         pItem->SetPath(strRoot + aDir.name);
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
-        pItem->m_dateTime=localTime;
+        pItem->SetDateTime(localTime);
         if (hidden)
           pItem->SetProperty("file:hidden", true);
         items.Add(pItem);

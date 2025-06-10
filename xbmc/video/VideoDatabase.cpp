@@ -4844,7 +4844,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
 
   if (item != NULL)
   {
-    item->m_dateTime = details.GetPremiered();
+    item->SetDateTime(details.GetPremiered());
     item->SetProperty("totalseasons", details.m_iSeason);
     item->SetProperty("totalepisodes", details.m_iEpisode);
     item->SetProperty("numepisodes", details.m_iEpisode); // will be changed later to reflect watchmode setting
@@ -8998,7 +8998,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
 
         pItem->SetOverlayImage(episode.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
                                                           : CGUIListItem::ICON_OVERLAY_UNWATCHED);
-        pItem->m_dateTime = episode.m_firstAired;
+        pItem->SetDateTime(episode.m_firstAired);
         items.Add(pItem);
       }
     }

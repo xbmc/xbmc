@@ -2198,16 +2198,18 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // according to ListItem.setInfo() documentation date format should be "d.m.Y"
         if (pItem->m_dwSize)
           digest.Update(std::to_string(pItem->m_dwSize));
-        if (pItem->m_dateTime.IsValid())
-          digest.Update(StringUtils::Format("{:02}.{:02}.{:04}", pItem->m_dateTime.GetDay(),
-                                            pItem->m_dateTime.GetMonth(),
-                                            pItem->m_dateTime.GetYear()));
+
+        const CDateTime& dateTime{pItem->GetDateTime()};
+        if (dateTime.IsValid())
+          digest.Update(StringUtils::Format("{:02}.{:02}.{:04}", dateTime.GetDay(),
+                                            dateTime.GetMonth(), dateTime.GetYear()));
       }
       else
       {
         digest.Update(&pItem->m_dwSize, sizeof(pItem->m_dwSize));
-        KODI::TIME::FileTime time = pItem->m_dateTime;
-        digest.Update(&time, sizeof(KODI::TIME::FileTime));
+        KODI::TIME::FileTime time{};
+        pItem->GetDateTime().GetAsTimeStamp(time);
+        digest.Update(&time, sizeof(time));
       }
       if (IsVideo(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
         count++;

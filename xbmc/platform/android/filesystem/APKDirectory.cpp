@@ -71,7 +71,7 @@ bool CAPKDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       g_charsetConverter.unknownToUTF8(test_name);
       CFileItemPtr pItem(new CFileItem(test_name));
       pItem->m_dwSize    = sb.size;
-      pItem->m_dateTime  = sb.mtime;
+      pItem->SetDateTime(sb.mtime);
       pItem->m_bIsFolder = dir_marker > 0 ;
       pItem->SetPath(host + "/" + test_name);
       pItem->SetLabel(test_name.substr(path.size()));
