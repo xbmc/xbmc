@@ -314,7 +314,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
     return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
 #endif
 
-  if (pItem->m_bIsShareOrDrive)
+  if (pItem->IsShareOrDrive())
     return false;
 
   //! @todo this should be reactive, based on a given event app player should stop the playback

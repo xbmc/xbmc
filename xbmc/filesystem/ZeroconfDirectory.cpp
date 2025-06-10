@@ -140,7 +140,7 @@ bool GetDirectoryFromTxtRecords(const CZeroconfBrowser::ZeroconfService& zerocon
       item->SetLabelPreformatted(true);
       //just set the default folder icon
       ART::FillInDefaultIcon(*item);
-      item->m_bIsShareOrDrive=true;
+      item->SetIsShareOrDrive(true);
       items.Add(item);
       ret = true;
     }

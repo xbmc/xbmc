@@ -212,6 +212,10 @@ public:
   VideoDbContentType GetVideoContentType() const;
   bool IsLabelPreformatted() const { return m_bLabelPreformatted; }
   void SetLabelPreformatted(bool bYesNo) { m_bLabelPreformatted=bYesNo; }
+  bool IsShareOrDrive() const { return m_bIsShareOrDrive; }
+  void SetIsShareOrDrive(bool set) { m_bIsShareOrDrive = set; }
+  SourceType GetDriveType() const { return m_iDriveType; }
+  void SetDriveType(SourceType driveType) { m_iDriveType = driveType; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -500,10 +504,6 @@ public:
    */
   void SetFromSong(const CSong &song);
 
-  bool m_bIsShareOrDrive{false}; ///< is this a root share/drive
-  /// If \e m_bIsShareOrDrive is \e true, use to get the share type.
-  /// Types see: CMediaSource::m_iDriveType
-  SourceType m_iDriveType{SourceType::UNKNOWN};
   CDateTime m_dateTime;             ///< file creation date & time
   int64_t m_dwSize{0}; ///< file size (0 for folders)
   std::string m_strDVDLabel;
@@ -541,6 +541,11 @@ private:
 
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
+
+  bool m_bIsShareOrDrive{false}; ///< is this a root share/drive
+  /// If \e m_bIsShareOrDrive is \e true, use to get the share type.
+  /// Types see: CMediaSource::m_iDriveType
+  SourceType m_iDriveType{SourceType::UNKNOWN};
 
   SortSpecial m_specialSort{SortSpecialNone};
   bool m_bIsParentFolder{false};

@@ -154,7 +154,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     }
 
     // Check if we add a locked share
-    if (!item->IsPVR() && item->m_bIsShareOrDrive)
+    if (!item->IsPVR() && item->IsShareOrDrive())
     {
       if (!g_passwordManager.IsItemUnlocked(item.get(), "video"))
         return;

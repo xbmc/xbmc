@@ -175,8 +175,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
 bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive
-  ||  pItem->IsParentFolder())
+  if (pItem->IsShareOrDrive() || pItem->IsParentFolder())
     return false;
 
   m_videoDatabase->Open();
@@ -235,7 +234,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
 
 bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive || pItem->IsParentFolder() || pItem->GetPath() == "add")
+  if (pItem->IsShareOrDrive() || pItem->IsParentFolder() || pItem->GetPath() == "add")
     return false;
 
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_type.empty() &&
