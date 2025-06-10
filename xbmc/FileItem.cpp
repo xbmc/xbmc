@@ -478,7 +478,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   m_strDVDLabel = item.m_strDVDLabel;
   m_strTitle = item.m_strTitle;
   m_programCount = item.m_programCount;
-  m_idepth = item.m_idepth;
+  m_depth = item.m_depth;
   m_iLockMode = item.m_iLockMode;
   m_strLockCode = item.m_strLockCode;
   m_iHasLock = item.m_iHasLock;
@@ -509,7 +509,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_strDVDLabel;
     ar << m_strTitle;
     ar << m_programCount;
-    ar << m_idepth;
+    ar << m_depth;
     ar << m_lStartOffset;
     ar << m_lStartPartNumber;
     ar << m_lEndOffset;
@@ -567,7 +567,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_strDVDLabel;
     ar >> m_strTitle;
     ar >> m_programCount;
-    ar >> m_idepth;
+    ar >> m_depth;
     ar >> m_lStartOffset;
     ar >> m_lStartPartNumber;
     ar >> m_lEndOffset;

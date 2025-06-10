@@ -27,7 +27,7 @@ namespace XFILE
     if (!isFolder)
     {
       item->SetSize(entry.usize);
-      item->m_idepth = entry.method;
+      item->SetDepth(entry.method);
     }
 
     return item;

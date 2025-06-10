@@ -230,6 +230,8 @@ public:
   void SetTitle(std::string_view title) { m_strTitle = title; }
   int GetProgramCount() const { return m_programCount; }
   void SetProgramCount(int count) { m_programCount = count; }
+  int GetDepth() const { return m_depth; }
+  void SetDepth(int depth) { m_depth = depth; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -518,7 +520,6 @@ public:
    */
   void SetFromSong(const CSong &song);
 
-  int m_idepth{1};
   int m_lStartPartNumber{1};
   LockMode m_iLockMode{LockMode::EVERYONE};
   std::string m_strLockCode;
@@ -560,6 +561,7 @@ private:
   std::string m_strDVDLabel;
   std::string m_strTitle;
   int m_programCount{0};
+  int m_depth{1};
 
   SortSpecial m_specialSort{SortSpecialNone};
   bool m_bIsParentFolder{false};

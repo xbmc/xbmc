@@ -1865,7 +1865,8 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
                 strTemp = StringUtils::Format("[{}] {}", genres, strTemp);
             }
             item.SetLabel(strTemp);
-            item.m_idepth = i; // use this to hold the index of the album in the scraper
+            item.SetDepth(
+                i); //! @todo remove hack to use this to hold the index of the album in the scraper
             pDlg->Add(item);
           }
           pDlg->Open();
@@ -1891,7 +1892,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
             newArtist.strArtist = strNewArtist;
             return DownloadArtistInfo(newArtist, info, artistInfo, bUseScrapedMBID, pDialog);
           }
-          iSelectedArtist = pDlg->GetSelectedFileItem()->m_idepth;
+          iSelectedArtist = pDlg->GetSelectedFileItem()->GetDepth();
         }
       }
     }
