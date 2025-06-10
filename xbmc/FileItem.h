@@ -213,6 +213,8 @@ public:
   VideoDbContentType GetVideoContentType() const;
   bool IsLabelPreformatted() const { return m_bLabelPreformatted; }
   void SetLabelPreformatted(bool bYesNo) { m_bLabelPreformatted=bYesNo; }
+  const std::string& GetDVDLabel() const { return m_strDVDLabel; }
+  void SetDVDLabel(std::string_view label) { m_strDVDLabel = label; }
   bool IsShareOrDrive() const { return m_bIsShareOrDrive; }
   void SetIsShareOrDrive(bool set) { m_bIsShareOrDrive = set; }
   SourceType GetDriveType() const { return m_iDriveType; }
@@ -512,7 +514,6 @@ public:
    */
   void SetFromSong(const CSong &song);
 
-  std::string m_strDVDLabel;
   std::string m_strTitle;
   int m_iprogramCount{0};
   int m_idepth{1};
@@ -554,6 +555,7 @@ private:
   SourceType m_iDriveType{SourceType::UNKNOWN};
   CDateTime m_dateTime; ///< file creation date & time
   int64_t m_dwSize{0}; ///< file size (0 for folders)
+  std::string m_strDVDLabel;
 
   SortSpecial m_specialSort{SortSpecialNone};
   bool m_bIsParentFolder{false};

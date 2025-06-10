@@ -355,15 +355,15 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
       GetParentPath(url2.Get(), strParent);
     else
       strParent = url2.Get();
-    for( int i=1;i<items.Size();++i)
+    for (const auto& item : items)
     {
-      items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
+      item->SetDVDLabel(GetDirectory(item->GetPath()));
       if (HasParentInHostname(url2))
-        items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
+        item->SetPath(GetParentPath(item->GetDVDLabel()));
       else
-        items[i]->SetPath(items[i]->m_strDVDLabel);
+        item->SetPath(item->GetDVDLabel());
 
-      GetCommonPath(strParent,items[i]->GetPath());
+      GetCommonPath(strParent, item->GetPath());
     }
     return true;
   }
