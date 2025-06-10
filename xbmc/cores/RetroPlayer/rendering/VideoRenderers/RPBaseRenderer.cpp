@@ -267,13 +267,11 @@ void CRPBaseRenderer::PreRender(bool clear)
   if (clear)
     m_context.Clear(m_context.UseLimitedColor() ? UTILS::COLOR::LIMITED_BLACK
                                                 : UTILS::COLOR::BLACK);
-
-  // ManageRenderArea(*m_renderBuffer);
 }
 
 void CRPBaseRenderer::PostRender()
 {
-  m_context.ApplyStateBlock();
+  // m_context.ApplyStateBlock(); //! @todo
 }
 
 void CRPBaseRenderer::GetScreenDimensions(float& screenWidth,

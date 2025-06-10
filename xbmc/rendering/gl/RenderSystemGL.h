@@ -105,6 +105,8 @@ public:
 
   std::string GetShaderPath(const std::string &filename) override;
 
+  GLuint GetVertexArray() { return m_vertexArray; };
+
   void GetGLVersion(int& major, int& minor);
   void GetGLSLVersion(int& major, int& minor);
 

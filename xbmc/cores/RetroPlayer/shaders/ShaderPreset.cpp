@@ -35,9 +35,6 @@ CShaderPreset::CShaderPreset(RETRO::CRenderContext& context,
 CShaderPreset::~CShaderPreset()
 {
   DisposeShaders();
-
-  // The GUI is going to render after this, so apply the state required
-  m_context.ApplyStateBlock();
 }
 
 bool CShaderPreset::ReadPresetFile(const std::string& presetPath)
