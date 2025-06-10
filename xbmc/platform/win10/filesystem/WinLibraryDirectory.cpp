@@ -136,7 +136,7 @@ bool CWinLibraryDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     fileTime2.lowDateTime = fileTime1.dwLowDateTime;
     pItem->SetDateTime(fileTime2);
     if (!pItem->m_bIsFolder)
-      pItem->m_dwSize = static_cast<int64_t>(props.Size());
+      pItem->SetSize(static_cast<int64_t>(props.Size()));
 
     items.Add(pItem);
   }

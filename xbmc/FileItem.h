@@ -222,6 +222,8 @@ public:
   void SetDateTime(time_t dateTime) { m_dateTime = dateTime; }
   void SetDateTime(KODI::TIME::SystemTime dateTime) { m_dateTime = dateTime; }
   void SetDateTime(KODI::TIME::FileTime dateTime) { m_dateTime = dateTime; }
+  int64_t GetSize() const { return m_dwSize; }
+  void SetSize(int64_t size) { m_dwSize = size; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -510,7 +512,6 @@ public:
    */
   void SetFromSong(const CSong &song);
 
-  int64_t m_dwSize{0}; ///< file size (0 for folders)
   std::string m_strDVDLabel;
   std::string m_strTitle;
   int m_iprogramCount{0};
@@ -552,6 +553,7 @@ private:
   /// Types see: CMediaSource::m_iDriveType
   SourceType m_iDriveType{SourceType::UNKNOWN};
   CDateTime m_dateTime; ///< file creation date & time
+  int64_t m_dwSize{0}; ///< file size (0 for folders)
 
   SortSpecial m_specialSort{SortSpecialNone};
   bool m_bIsParentFolder{false};

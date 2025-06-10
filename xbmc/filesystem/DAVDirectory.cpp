@@ -60,7 +60,7 @@ void CDAVDirectory::ParseResponse(const tinyxml2::XMLElement* element, CFileItem
               if (CDAVCommon::ValueWithoutNamespace(propChild, "getcontentlength") &&
                   !propChild->NoChildren())
               {
-                item.m_dwSize = strtoll(propChild->FirstChild()->Value(), NULL, 10);
+                item.SetSize(std::strtoll(propChild->FirstChild()->Value(), nullptr, 10));
               }
               else if (CDAVCommon::ValueWithoutNamespace(propChild, "getlastmodified") &&
                        !propChild->NoChildren())

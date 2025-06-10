@@ -535,7 +535,7 @@ static void ParseItem(CFileItem* item, tinyxml2::XMLElement* root, const std::st
   {
     item->SetMimeType(best->mime);
     item->SetPath(best->path);
-    item->m_dwSize  = best->size;
+    item->SetSize(best->size);
 
     if(best->duration)
       item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));

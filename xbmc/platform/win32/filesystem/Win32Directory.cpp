@@ -103,7 +103,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
       pItem->SetDateTime(0);
 
     if (!pItem->m_bIsFolder)
-        pItem->m_dwSize = (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
+      pItem->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
 
     items.Add(pItem);
   } while (FindNextFileW(hSearch, &findData));

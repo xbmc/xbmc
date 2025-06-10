@@ -75,7 +75,7 @@ bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
   }
 
   items.SetPath(path);
-  items.m_dwSize = -1;  // No size
+  items.SetSize(-1); // No size
 
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 

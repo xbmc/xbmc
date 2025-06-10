@@ -285,7 +285,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
       CFileItemPtr pItem(new CFileItem(tmpDirent.name));
       pItem->SetDateTime(localTime);
-      pItem->m_dwSize = iSize;
+      pItem->SetSize(iSize);
 
       if (bIsDir)
       {

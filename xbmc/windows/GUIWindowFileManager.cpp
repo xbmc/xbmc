@@ -350,7 +350,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->m_bIsFolder && (!pItem->m_dwSize || pItem->IsPath("add")))
+    if (pItem->m_bIsFolder && (!pItem->GetSize() || pItem->IsPath("add")))
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
@@ -364,7 +364,7 @@ void CGUIWindowFileManager::OnSort(int iList)
         auto freeSpace = space(pItem->GetPath(), ec);
         if (ec.value() == 0)
         {
-          pItem->m_dwSize = freeSpace.free;
+          pItem->SetSize(freeSpace.free);
           pItem->SetFileSizeLabel();
         }
       }
@@ -374,7 +374,7 @@ void CGUIWindowFileManager::OnSort(int iList)
         auto freeSpace = space(pItem->GetPath(), ec);
         if (ec.value() == 0)
         {
-          pItem->m_dwSize = freeSpace.capacity;
+          pItem->SetSize(freeSpace.capacity);
           pItem->SetFileSizeLabel();
         }
       }
@@ -433,7 +433,7 @@ void CGUIWindowFileManager::UpdateItemCounts()
       if (item->IsSelected())
       {
         selectedCount++;
-        selectedSize += item->m_dwSize;
+        selectedSize += item->GetSize();
       }
       totalCount++;
     }
@@ -1136,7 +1136,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
         int64_t folderSize = CalculateFolderSize(pItem2->GetPath(), progress);
         if (folderSize >= 0)
         {
-          pItem2->m_dwSize = folderSize;
+          pItem2->SetSize(folderSize);
           if (folderSize == 0)
             pItem2->SetLabel2(StringUtils::SizeToString(folderSize));
           else
@@ -1205,7 +1205,7 @@ int64_t CGUIWindowFileManager::CalculateFolderSize(const std::string &strDirecto
       totalSize += folderSize;
     }
     else // file
-      totalSize += items[i]->m_dwSize;
+      totalSize += items[i]->GetSize();
   }
   return totalSize;
 }

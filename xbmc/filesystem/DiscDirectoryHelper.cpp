@@ -768,7 +768,7 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
       g_localizeStrings.Get(180) /* Duration */,
       StringUtils::SecondsToTimeString(static_cast<int>(duration.count() / 1000)),
       g_localizeStrings.Get(24026) /* Languages */, langs));
-  item->m_dwSize = 0;
+  item->SetSize(0);
   item->SetArt("icon", "DefaultVideo.png");
 }
 

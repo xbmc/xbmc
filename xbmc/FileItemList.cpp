@@ -845,10 +845,10 @@ void CFileItemList::StackFiles()
                   {
                     stackName = Title1 + Ignore1 + Extension1;
                     stack.push_back(i);
-                    size += item1->m_dwSize;
+                    size += item1->GetSize();
                   }
                   stack.push_back(j);
-                  size += item2->m_dwSize;
+                  size += item2->GetSize();
                 }
                 else // Sequel
                 {
@@ -917,7 +917,7 @@ void CFileItemList::StackFiles()
           URIUtils::RemoveExtension(stackName);
 
         item1->SetLabel(stackName);
-        item1->m_dwSize = size;
+        item1->SetSize(size);
         break;
       }
     }

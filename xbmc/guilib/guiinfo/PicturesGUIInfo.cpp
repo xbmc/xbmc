@@ -166,9 +166,9 @@ bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int c
       }
       case SLIDESHOW_FILE_SIZE:
       {
-        if (!m_currentSlide->m_bIsFolder || m_currentSlide->m_dwSize)
+        if (!m_currentSlide->m_bIsFolder || m_currentSlide->GetSize())
         {
-          value = StringUtils::SizeToString(m_currentSlide->m_dwSize);
+          value = StringUtils::SizeToString(m_currentSlide->GetSize());
           return true;
         }
         break;

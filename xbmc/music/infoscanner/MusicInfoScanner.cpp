@@ -1277,7 +1277,8 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, std::string &hash
   {
     const CFileItemPtr pItem = items[i];
     digest.Update(pItem->GetPath());
-    digest.Update((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+    const int64_t size{pItem->GetSize()};
+    digest.Update(&size, sizeof(size));
     KODI::TIME::FileTime time{};
     pItem->GetDateTime().GetAsTimeStamp(time);
     digest.Update(&time, sizeof(time));

@@ -473,7 +473,7 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
   {
     int64_t size = item->GetProperty("sizeinbytes").asInteger();
     item->ClearProperty("sizeinbytes");
-    item->m_dwSize = size; // We'll also sort recording folders by size
+    item->SetSize(size); // We'll also sort recording folders by size
     if (size > 0)
       item->SetProperty("recordingsize", StringUtils::SizeToString(size));
   }

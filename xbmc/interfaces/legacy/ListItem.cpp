@@ -991,7 +991,7 @@ namespace XBMCAddon
 
     void ListItem::setSizeRaw(int64_t size)
     {
-      item->m_dwSize = size;
+      item->SetSize(size);
     }
 
     void ListItem::setDateTimeRaw(const std::string& dateTime)

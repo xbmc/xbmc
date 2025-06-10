@@ -26,7 +26,7 @@ namespace XFILE
     CFileItemPtr item(new CFileItem(label));
     if (!isFolder)
     {
-      item->m_dwSize = entry.usize;
+      item->SetSize(entry.usize);
       item->m_idepth = entry.method;
     }
 

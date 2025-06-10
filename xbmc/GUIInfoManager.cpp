@@ -11846,8 +11846,8 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
         break;
       }
       case LISTITEM_SIZE:
-        if (!item->m_bIsFolder || item->m_dwSize)
-          return StringUtils::SizeToString(item->m_dwSize);
+        if (!item->m_bIsFolder || item->GetSize())
+          return StringUtils::SizeToString(item->GetSize());
         break;
       case LISTITEM_PROGRAM_COUNT:
         return std::to_string(item->m_iprogramCount);

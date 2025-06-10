@@ -2196,8 +2196,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         // allow plugin to calculate hash itself using strings rather than binary data for size and date
         // according to ListItem.setInfo() documentation date format should be "d.m.Y"
-        if (pItem->m_dwSize)
-          digest.Update(std::to_string(pItem->m_dwSize));
+        const int64_t size{pItem->GetSize()};
+        if (size)
+          digest.Update(std::to_string(size));
 
         const CDateTime& dateTime{pItem->GetDateTime()};
         if (dateTime.IsValid())
@@ -2206,7 +2207,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       else
       {
-        digest.Update(&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+        const int64_t size{pItem->GetSize()};
+        digest.Update(&size, sizeof(size));
         KODI::TIME::FileTime time{};
         pItem->GetDateTime().GetAsTimeStamp(time);
         digest.Update(&time, sizeof(time));

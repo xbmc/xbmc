@@ -183,19 +183,19 @@ protected:
     ASSERT_EQ(items.GetObjectCount(), SAMPLE_ITEM_COUNT);
 
     // folders
-    ASSERT_EQ(items[0]->m_dwSize, SAMPLE_ITEM_1_SIZE);
-    ASSERT_EQ(items[1]->m_dwSize, SAMPLE_ITEM_2_SIZE);
+    ASSERT_EQ(items[0]->GetSize(), SAMPLE_ITEM_1_SIZE);
+    ASSERT_EQ(items[1]->GetSize(), SAMPLE_ITEM_2_SIZE);
 
     // files - due to K/M/G conversions provided by some formats, allow for
     // non-zero values that are less than or equal to the expected file size
-    ASSERT_NE(items[2]->m_dwSize, 0);
-    ASSERT_LE(items[2]->m_dwSize, SAMPLE_ITEM_3_SIZE);
-    ASSERT_NE(items[3]->m_dwSize, 0);
-    ASSERT_LE(items[3]->m_dwSize, SAMPLE_ITEM_4_SIZE);
-    ASSERT_NE(items[4]->m_dwSize, 0);
-    ASSERT_LE(items[4]->m_dwSize, SAMPLE_ITEM_5_SIZE);
-    ASSERT_NE(items[5]->m_dwSize, 0);
-    ASSERT_LE(items[5]->m_dwSize, SAMPLE_ITEM_6_SIZE);
+    ASSERT_NE(items[2]->GetSize(), 0);
+    ASSERT_LE(items[2]->GetSize(), SAMPLE_ITEM_3_SIZE);
+    ASSERT_NE(items[3]->GetSize(), 0);
+    ASSERT_LE(items[3]->GetSize(), SAMPLE_ITEM_4_SIZE);
+    ASSERT_NE(items[4]->GetSize(), 0);
+    ASSERT_LE(items[4]->GetSize(), SAMPLE_ITEM_5_SIZE);
+    ASSERT_NE(items[5]->GetSize(), 0);
+    ASSERT_LE(items[5]->GetSize(), SAMPLE_ITEM_6_SIZE);
   }
 
   void CheckFileItems(CFileItemList const& items)

@@ -562,7 +562,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       resource.m_Duration = -1;
 
     // Set the resource file size
-    resource.m_Size = item.m_dwSize;
+    resource.m_Size = item.GetSize();
     if (resource.m_Size == 0)
       resource.m_Size = (NPT_LargeSize)-1;
 
@@ -1215,7 +1215,7 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
       // set metadata
       if (resource.m_Size != (NPT_LargeSize)-1)
       {
-        pItem->m_dwSize = resource.m_Size;
+        pItem->SetSize(resource.m_Size);
       }
       res = &resource;
     }

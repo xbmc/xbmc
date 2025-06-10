@@ -1028,7 +1028,7 @@ std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
   const std::string chap{StringUtils::Format(g_localizeStrings.Get(25007), title.chapters.size(),
                                              StringUtils::SecondsToTimeString(duration))};
   item->SetLabel2(chap);
-  item->m_dwSize = 0;
+  item->SetSize(0);
   item->SetArt("icon", "DefaultVideo.png");
 
   // Generate streamdetails

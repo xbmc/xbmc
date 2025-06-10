@@ -184,7 +184,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       pItem->SetDateTime(dt);
     }
     if (!pItem->m_bIsFolder)
-        pItem->m_dwSize = (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
+      pItem->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
 
     items.Add(pItem);
   } while (FindNextFileW(hSearch, &findData));

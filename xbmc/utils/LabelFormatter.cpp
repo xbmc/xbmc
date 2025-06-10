@@ -229,14 +229,17 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
         nDuration = movie->GetDuration();
       if (nDuration > 0)
         value = StringUtils::SecondsToTimeString(nDuration, (nDuration >= 3600) ? TIME_FORMAT_H_MM_SS : TIME_FORMAT_MM_SS);
-      else if (item->m_dwSize > 0)
-        value = StringUtils::SizeToString(item->m_dwSize);
+      else if (item->GetSize() > 0)
+        value = StringUtils::SizeToString(item->GetSize());
     }
     break;
   case 'I': // size
-    if( (item->m_bIsFolder && item->m_dwSize != 0) || item->m_dwSize >= 0 )
-      value = StringUtils::SizeToString(item->m_dwSize);
+  {
+    const int64_t size{item->GetSize()};
+    if ((item->m_bIsFolder && size != 0) || size >= 0)
+      value = StringUtils::SizeToString(item->GetSize());
     break;
+  }
   case 'J': // date
   {
     const CDateTime& dateTime{item->GetDateTime()};
@@ -312,8 +315,12 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = std::to_string(movie->GetPlayCount());
     break;
   case 'X': // Bitrate
-    if( !item->m_bIsFolder && item->m_dwSize != 0 )
-      value = StringUtils::Format("{} kbps", item->m_dwSize);
+    if (!item->m_bIsFolder)
+    {
+      const int64_t size{item->GetSize()};
+      if (size != 0)
+        value = StringUtils::Format("{} kbps", size);
+    }
     break;
    case 'W': // Listeners
     if( !item->m_bIsFolder && music && music->GetListeners() != 0 )

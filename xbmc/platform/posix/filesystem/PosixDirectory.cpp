@@ -90,7 +90,7 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         pItem->SetDateTime(localTime);
 
         if (!pItem->m_bIsFolder)
-          pItem->m_dwSize = buffer.st_size;
+          pItem->SetSize(buffer.st_size);
       }
     }
     items.Add(pItem);
