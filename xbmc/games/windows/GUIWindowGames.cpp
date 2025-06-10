@@ -334,8 +334,7 @@ std::string CGUIWindowGames::GetStartFolder(const std::string& dir)
   int iIndex = CUtil::GetMatchingSource(dir, shares, bIsSourceName);
   if (iIndex >= 0)
   {
-    if (iIndex < static_cast<int>(shares.size()) &&
-        shares[iIndex].GetLockState() == LOCK_STATE_LOCKED)
+    if (iIndex < static_cast<int>(shares.size()) && shares[iIndex].GetLockInfo().IsLocked())
     {
       CFileItem item(shares[iIndex]);
       if (!g_passwordManager.IsItemUnlocked(&item, "games"))

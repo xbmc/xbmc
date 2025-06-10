@@ -206,11 +206,13 @@ bool CMediaSourceSettings::UpdateSource(std::string_view strType,
       if (strUpdateChild == "name")
         share.strName = strUpdateValue;
       else if (strUpdateChild == "lockmode")
-        share.SetLockMode(static_cast<LockMode>(std::strtol(strUpdateValue.c_str(), nullptr, 10)));
+        share.GetLockInfo().SetMode(
+            static_cast<LockMode>(std::strtol(strUpdateValue.c_str(), nullptr, 10)));
       else if (strUpdateChild == "lockcode")
-        share.SetLockCode(strUpdateValue);
+        share.GetLockInfo().SetCode(strUpdateValue);
       else if (strUpdateChild == "badpwdcount")
-        share.SetBadPwdCount(static_cast<int>(std::strtol(strUpdateValue.c_str(), nullptr, 10)));
+        share.GetLockInfo().SetBadPasswordCount(
+            static_cast<int>(std::strtol(strUpdateValue.c_str(), nullptr, 10)));
       else if (strUpdateChild == "thumbnail")
         share.m_strThumbnailImage = strUpdateValue;
       else if (strUpdateChild == "path")
@@ -418,20 +420,21 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
 
   share.FromNameAndPaths(name, verifiedPaths);
 
-  share.ResetBadPwdCount();
+  KODI::UTILS::CLockInfo& lockInfo{share.GetLockInfo()};
+  lockInfo.ResetBadPasswordCount();
   if (lockModeElement)
   {
-    share.SetLockMode(
+    lockInfo.SetMode(
         static_cast<LockMode>(std::strtol(lockModeElement->FirstChild()->Value(), nullptr, 10)));
-    share.SetLockState(LOCK_STATE_LOCKED);
+    lockInfo.SetState(LOCK_STATE_LOCKED);
   }
 
   if (lockCodeElement && lockCodeElement->FirstChild())
-    share.SetLockCode(lockCodeElement->FirstChild()->Value());
+    lockInfo.SetCode(lockCodeElement->FirstChild()->Value());
 
   if (badPwdCountElement && badPwdCountElement->FirstChild())
   {
-    share.SetBadPwdCount(
+    lockInfo.SetBadPasswordCount(
         static_cast<int>(std::strtol(badPwdCountElement->FirstChild()->Value(), nullptr, 10)));
   }
 
@@ -516,11 +519,12 @@ bool CMediaSourceSettings::SetSources(tinyxml2::XMLNode* root,
     for (const auto& path : share.vecPaths)
       XMLUtils::SetPath(sourceElement, "path", path);
 
-    if (share.GetLockState())
+    const KODI::UTILS::CLockInfo& lockInfo{share.GetLockInfo()};
+    if (lockInfo.GetState() > LOCK_STATE_NO_LOCK)
     {
-      XMLUtils::SetInt(sourceElement, "lockmode", static_cast<int>(share.GetLockMode()));
-      XMLUtils::SetString(sourceElement, "lockcode", share.GetLockCode());
-      XMLUtils::SetInt(sourceElement, "badpwdcount", share.GetBadPwdCount());
+      XMLUtils::SetInt(sourceElement, "lockmode", static_cast<int>(lockInfo.GetMode()));
+      XMLUtils::SetString(sourceElement, "lockcode", lockInfo.GetCode());
+      XMLUtils::SetInt(sourceElement, "badpwdcount", lockInfo.GetBadPasswordCount());
     }
 
     if (!share.m_strThumbnailImage.empty())

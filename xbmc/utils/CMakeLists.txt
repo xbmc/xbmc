@@ -139,6 +139,7 @@ set(HEADERS ActorProtocol.h
             LangCodeExpander.h
             LegacyPathTranslation.h
             Locale.h
+            LockInfo.h
             log.h
             logtypes.h
             Map.h

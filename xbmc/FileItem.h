@@ -13,14 +13,13 @@
  \brief
  */
 
-#include "LockMode.h"
 #include "SourceType.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
-#include "media/MediaLockState.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
+#include "utils/LockInfo.h"
 #include "utils/SortUtils.h"
 #include "utils/XTimeUtils.h"
 
@@ -88,8 +87,7 @@ constexpr int STARTOFFSET_RESUME = -1;
   \brief Represents a file on a share
   \sa CFileItemList
   */
-class CFileItem :
-  public CGUIListItem, public IArchivable, public ISerializable, public ISortable
+class CFileItem : public CGUIListItem, public IArchivable, public ISerializable, public ISortable
 {
 public:
   CFileItem();
@@ -234,15 +232,6 @@ public:
   void SetDepth(int depth) { m_depth = depth; }
   int GetStartPartNumber() const { return m_lStartPartNumber; }
   void SetStartPartNumber(int number) { m_lStartPartNumber = number; }
-  LockMode GetLockMode() const { return m_iLockMode; }
-  void SetLockMode(LockMode mode) { m_iLockMode = mode; }
-  const std::string& GetLockCode() const { return m_strLockCode; }
-  void SetLockCode(std::string_view code) { m_strLockCode = code; }
-  int GetLockState() const { return m_lockState; }
-  void SetLockState(int state) { m_lockState = state; }
-  int GetBadPwdCount() const { return m_iBadPwdCount; }
-  void ResetBadPwdCount() { m_iBadPwdCount = 0; }
-  void IncrementBadPwdCount() { m_iBadPwdCount++; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -531,6 +520,18 @@ public:
    */
   void SetFromSong(const CSong &song);
 
+  /*!
+  \brief Retrieve item's lock information, like lock code, lock mode, etc.
+  \return The lock information
+  */
+  KODI::UTILS::CLockInfo& GetLockInfo() { return m_lockInfo; }
+
+  /*!
+  \brief Retrieve item's lock information, like lock code, lock mode, etc.
+  \return The lock information
+  */
+  const KODI::UTILS::CLockInfo& GetLockInfo() const { return m_lockInfo; }
+
   void SetCueDocument(const std::shared_ptr<CCueDocument>& cuePtr);
   void LoadEmbeddedCue();
   bool HasCueDocument() const;
@@ -568,10 +569,7 @@ private:
   int m_programCount{0};
   int m_depth{1};
   int m_lStartPartNumber{1};
-  LockMode m_iLockMode{LockMode::EVERYONE};
-  std::string m_strLockCode;
-  int m_lockState{LOCK_STATE_NO_LOCK};
-  int m_iBadPwdCount{0};
+  KODI::UTILS::CLockInfo m_lockInfo;
   SortSpecial m_specialSort{SortSpecialNone};
   bool m_bIsParentFolder{false};
   bool m_bCanQueue{true};

@@ -220,6 +220,34 @@ bool CGUIDialogContextMenu::SourcesMenu(const std::string &strType, const CFileI
   return false;
 }
 
+namespace
+{
+bool ShowAndGetLock(CMediaSource& share, const std::string& type, MediaLockState state)
+{
+  KODI::UTILS::CLockInfo& lockInfo{share.GetLockInfo()};
+
+  LockMode newLockMode{lockInfo.GetMode()};
+  std::string newPassword;
+  if (CGUIDialogLockSettings::ShowAndGetLock(newLockMode, newPassword))
+  {
+    lockInfo.SetState(state);
+    lockInfo.SetMode(newLockMode);
+  }
+  else
+    return false;
+
+  // password entry and re-entry succeeded, write out the lock data
+  CMediaSourceSettings& settings{CMediaSourceSettings::GetInstance()};
+  settings.UpdateSource(type, share.strName, "lockcode", newPassword);
+  settings.UpdateSource(type, share.strName, "lockmode",
+                        std::to_string(static_cast<int>(newLockMode)));
+  settings.UpdateSource(type, share.strName, "badpwdcount", "0");
+  settings.Save();
+
+  return true;
+}
+} // unnamed namespace
+
 void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFileItemPtr& item, CContextButtons &buttons)
 {
   // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
@@ -255,38 +283,41 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
     if (!GetDefaultShareNameByType(type).empty())
       buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
   }
-  if (share && LockMode::EVERYONE != CServiceBroker::GetSettingsComponent()
-                                         ->GetProfileManager()
-                                         ->GetMasterProfile()
-                                         .getLockMode())
+
+  if (share)
   {
-    if (share->GetLockState() == LOCK_STATE_NO_LOCK && (CServiceBroker::GetSettingsComponent()
-                                                            ->GetProfileManager()
-                                                            ->GetCurrentProfile()
-                                                            .canWriteSources() ||
-                                                        g_passwordManager.bMasterUser))
-      buttons.Add(CONTEXT_BUTTON_ADD_LOCK, 12332);
-    else if (share->GetLockState() == LOCK_STATE_LOCK_BUT_UNLOCKED)
-      buttons.Add(CONTEXT_BUTTON_REMOVE_LOCK, 12335);
-    else if (share->GetLockState() == LOCK_STATE_LOCKED)
+    const KODI::UTILS::CLockInfo& lockInfo{share->GetLockInfo()};
+    const std::shared_ptr<const CSettingsComponent> settings{
+        CServiceBroker::GetSettingsComponent()};
+    const std::shared_ptr<const CProfileManager> profileMgr{settings->GetProfileManager()};
+
+    if (profileMgr->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
     {
-      buttons.Add(CONTEXT_BUTTON_REMOVE_LOCK, 12335);
+      if (lockInfo.GetState() == LOCK_STATE_NO_LOCK &&
+          (profileMgr->GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser))
+        buttons.Add(CONTEXT_BUTTON_ADD_LOCK, 12332);
+      else if (lockInfo.GetState() == LOCK_STATE_LOCK_BUT_UNLOCKED)
+        buttons.Add(CONTEXT_BUTTON_REMOVE_LOCK, 12335);
+      else if (lockInfo.GetState() == LOCK_STATE_LOCKED)
+      {
+        buttons.Add(CONTEXT_BUTTON_REMOVE_LOCK, 12335);
 
-      bool maxRetryExceeded = false;
-      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) != 0)
-        maxRetryExceeded = (share->GetBadPwdCount() >=
-                            CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                                CSettings::SETTING_MASTERLOCK_MAXRETRIES));
+        bool maxRetryExceeded = false;
+        if (settings->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) != 0)
+          maxRetryExceeded =
+              (lockInfo.GetBadPasswordCount() >=
+               settings->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES));
 
-      if (maxRetryExceeded)
-        buttons.Add(CONTEXT_BUTTON_RESET_LOCK, 12334);
-      else
-        buttons.Add(CONTEXT_BUTTON_CHANGE_LOCK, 12356);
+        if (maxRetryExceeded)
+          buttons.Add(CONTEXT_BUTTON_RESET_LOCK, 12334);
+        else
+          buttons.Add(CONTEXT_BUTTON_CHANGE_LOCK, 12356);
+      }
     }
+
+    if (!g_passwordManager.bMasterUser && lockInfo.GetState() == LOCK_STATE_LOCK_BUT_UNLOCKED)
+      buttons.Add(CONTEXT_BUTTON_REACTIVATE_LOCK, 12353);
   }
-  if (share && !g_passwordManager.bMasterUser &&
-      item->GetLockState() == LOCK_STATE_LOCK_BUT_UNLOCKED)
-    buttons.Add(CONTEXT_BUTTON_REACTIVATE_LOCK, 12353);
 }
 
 bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFileItemPtr& item, CONTEXT_BUTTON button)
@@ -446,21 +477,8 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
-      std::string strNewPW;
-      LockMode newLockMode{share->GetLockMode()};
-      std::string strNewLockMode;
-      if (CGUIDialogLockSettings::ShowAndGetLock(newLockMode, strNewPW))
-        strNewLockMode = std::to_string(static_cast<int>(newLockMode));
-      else
+      if (!ShowAndGetLock(*share, type, LOCK_STATE_LOCKED))
         return false;
-      // password entry and re-entry succeeded, write out the lock data
-      share->SetLockState(LOCK_STATE_LOCKED);
-      share->SetLockMode(newLockMode);
-      CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockcode", strNewPW);
-      CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockmode",
-                                                       strNewLockMode);
-      CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "badpwdcount", "0");
-      CMediaSourceSettings::GetInstance().Save();
 
       // lock of a mediasource has been added
       // => refresh favourites due to possible visibility changes
@@ -491,7 +509,8 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{12335}, CVariant{750}))
         return false;
 
-      share->SetLockState(LOCK_STATE_NO_LOCK);
+      KODI::UTILS::CLockInfo& lockInfo{share->GetLockInfo()};
+      lockInfo.SetState(LOCK_STATE_NO_LOCK);
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockmode", "0");
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockcode", "0");
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "badpwdcount", "0");
@@ -509,7 +528,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
     {
       bool maxRetryExceeded = false;
       if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) != 0)
-        maxRetryExceeded = (share->GetBadPwdCount() >=
+        maxRetryExceeded = (share->GetLockInfo().GetBadPasswordCount() >=
                             CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
                                 CSettings::SETTING_MASTERLOCK_MAXRETRIES));
       if (!maxRetryExceeded)
@@ -529,19 +548,8 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
-      std::string strNewPW;
-      LockMode newLockMode{share->GetLockMode()};
-      std::string strNewLockMode;
-      if (CGUIDialogLockSettings::ShowAndGetLock(newLockMode, strNewPW))
-        strNewLockMode = std::to_string(static_cast<int>(newLockMode));
-      else
+      if (!ShowAndGetLock(*share, type, share->GetLockInfo().GetState()))
         return false;
-      // password ReSet and re-entry succeeded, write out the lock data
-      share->SetLockMode(newLockMode);
-      CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockcode", strNewPW);
-      CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockmode", strNewLockMode);
-      CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "badpwdcount", "0");
-      CMediaSourceSettings::GetInstance().Save();
 
       // lock of a mediasource has been changed
       // => refresh favourites due to possible visibility changes
