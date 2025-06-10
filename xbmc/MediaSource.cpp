@@ -44,7 +44,7 @@ void CMediaSource::FromNameAndPaths(const std::string& name, const std::vector<s
   m_iLockMode = LockMode::EVERYONE;
   m_strLockCode = "0";
   m_iBadPwdCount = 0;
-  m_iHasLock = LOCK_STATE_NO_LOCK;
+  m_lockState = LOCK_STATE_NO_LOCK;
   m_allowSharing = true;
 
   if (URIUtils::IsMultiPath(strPath))

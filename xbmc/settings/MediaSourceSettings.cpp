@@ -206,11 +206,11 @@ bool CMediaSourceSettings::UpdateSource(std::string_view strType,
       if (strUpdateChild == "name")
         share.strName = strUpdateValue;
       else if (strUpdateChild == "lockmode")
-        share.m_iLockMode = static_cast<LockMode>(std::strtol(strUpdateValue.c_str(), nullptr, 10));
+        share.SetLockMode(static_cast<LockMode>(std::strtol(strUpdateValue.c_str(), nullptr, 10)));
       else if (strUpdateChild == "lockcode")
-        share.m_strLockCode = strUpdateValue;
+        share.SetLockCode(strUpdateValue);
       else if (strUpdateChild == "badpwdcount")
-        share.m_iBadPwdCount = (int)std::strtol(strUpdateValue.c_str(), nullptr, 10);
+        share.SetBadPwdCount(static_cast<int>(std::strtol(strUpdateValue.c_str(), nullptr, 10)));
       else if (strUpdateChild == "thumbnail")
         share.m_strThumbnailImage = strUpdateValue;
       else if (strUpdateChild == "path")
@@ -418,21 +418,21 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
 
   share.FromNameAndPaths(name, verifiedPaths);
 
-  share.m_iBadPwdCount = 0;
+  share.ResetBadPwdCount();
   if (lockModeElement)
   {
-    share.m_iLockMode =
-        static_cast<LockMode>(std::strtol(lockModeElement->FirstChild()->Value(), nullptr, 10));
-    share.m_iHasLock = LOCK_STATE_LOCKED;
+    share.SetLockMode(
+        static_cast<LockMode>(std::strtol(lockModeElement->FirstChild()->Value(), nullptr, 10)));
+    share.SetLockState(LOCK_STATE_LOCKED);
   }
 
   if (lockCodeElement && lockCodeElement->FirstChild())
-    share.m_strLockCode = lockCodeElement->FirstChild()->Value();
+    share.SetLockCode(lockCodeElement->FirstChild()->Value());
 
   if (badPwdCountElement && badPwdCountElement->FirstChild())
   {
-    share.m_iBadPwdCount =
-        static_cast<int>(std::strtol(badPwdCountElement->FirstChild()->Value(), nullptr, 10));
+    share.SetBadPwdCount(
+        static_cast<int>(std::strtol(badPwdCountElement->FirstChild()->Value(), nullptr, 10)));
   }
 
   if (thumbnailNodeElement && thumbnailNodeElement->FirstChild())
@@ -516,11 +516,11 @@ bool CMediaSourceSettings::SetSources(tinyxml2::XMLNode* root,
     for (const auto& path : share.vecPaths)
       XMLUtils::SetPath(sourceElement, "path", path);
 
-    if (share.m_iHasLock)
+    if (share.GetLockState())
     {
-      XMLUtils::SetInt(sourceElement, "lockmode", static_cast<int>(share.m_iLockMode));
-      XMLUtils::SetString(sourceElement, "lockcode", share.m_strLockCode);
-      XMLUtils::SetInt(sourceElement, "badpwdcount", share.m_iBadPwdCount);
+      XMLUtils::SetInt(sourceElement, "lockmode", static_cast<int>(share.GetLockMode()));
+      XMLUtils::SetString(sourceElement, "lockcode", share.GetLockCode());
+      XMLUtils::SetInt(sourceElement, "badpwdcount", share.GetBadPwdCount());
     }
 
     if (!share.m_strThumbnailImage.empty())

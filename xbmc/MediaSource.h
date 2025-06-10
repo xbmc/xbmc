@@ -27,6 +27,17 @@ public:
 
   void FromNameAndPaths(const std::string& name, const std::vector<std::string>& paths);
   bool IsWritable() const;
+  int GetLockState() const { return m_lockState; }
+  void SetLockState(int state) { m_lockState = state; }
+  LockMode GetLockMode() const { return m_iLockMode; }
+  void SetLockMode(LockMode mode) { m_iLockMode = mode; }
+  const std::string& GetLockCode() const { return m_strLockCode; }
+  void SetLockCode(std::string_view code) { m_strLockCode = code; }
+  int GetBadPwdCount() const { return m_iBadPwdCount; }
+  void SetBadPwdCount(int count) { m_iBadPwdCount = count; }
+  void ResetBadPwdCount() { m_iBadPwdCount = 0; }
+  void IncrementBadPwdCount() { m_iBadPwdCount++; }
+
   std::string strName; ///< Name of the share, can be chosen freely.
   std::string strStatus; ///< Status of the share (eg has disk etc.)
   std::string strDiskUniqueId; ///< removable:// + DVD Label + DVD ID for resume point storage, if available
@@ -49,6 +60,14 @@ public:
   */
   SourceType m_iDriveType = SourceType::UNKNOWN;
 
+  std::string
+      m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
+
+  std::vector<std::string> vecPaths;
+  bool m_ignore = false; /// <Do not store in xml
+  bool m_allowSharing = true; /// <Allow browsing of source from UPnP / WebServer
+
+private:
   /*!
   \brief The type of Lock UI to show when accessing the media source.
 
@@ -68,16 +87,11 @@ public:
   - LockMode::UNKNOWN \n
   Value is unknown or unspecified.
   */
-  LockMode m_iLockMode = LockMode::EVERYONE;
+  LockMode m_iLockMode{LockMode::EVERYONE};
   std::string m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
-  int m_iHasLock = LOCK_STATE_NO_LOCK;
-  int m_iBadPwdCount = 0; ///< Number of wrong passwords user has entered since share was last unlocked
-
-  std::string m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
-
-  std::vector<std::string> vecPaths;
-  bool m_ignore = false; /// <Do not store in xml
-  bool m_allowSharing = true; /// <Allow browsing of source from UPnP / WebServer
+  int m_lockState{LOCK_STATE_NO_LOCK};
+  int m_iBadPwdCount{
+      0}; ///< Number of wrong passwords user has entered since share was last unlocked
 };
 
 void AddOrReplace(std::vector<CMediaSource>& sources, const std::vector<CMediaSource>& extras);

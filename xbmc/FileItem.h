@@ -234,6 +234,15 @@ public:
   void SetDepth(int depth) { m_depth = depth; }
   int GetStartPartNumber() const { return m_lStartPartNumber; }
   void SetStartPartNumber(int number) { m_lStartPartNumber = number; }
+  LockMode GetLockMode() const { return m_iLockMode; }
+  void SetLockMode(LockMode mode) { m_iLockMode = mode; }
+  const std::string& GetLockCode() const { return m_strLockCode; }
+  void SetLockCode(std::string_view code) { m_strLockCode = code; }
+  int GetLockState() const { return m_lockState; }
+  void SetLockState(int state) { m_lockState = state; }
+  int GetBadPwdCount() const { return m_iBadPwdCount; }
+  void ResetBadPwdCount() { m_iBadPwdCount = 0; }
+  void IncrementBadPwdCount() { m_iBadPwdCount++; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -522,11 +531,6 @@ public:
    */
   void SetFromSong(const CSong &song);
 
-  LockMode m_iLockMode{LockMode::EVERYONE};
-  std::string m_strLockCode;
-  int m_iHasLock{LOCK_STATE_NO_LOCK};
-  int m_iBadPwdCount{0};
-
   void SetCueDocument(const std::shared_ptr<CCueDocument>& cuePtr);
   void LoadEmbeddedCue();
   bool HasCueDocument() const;
@@ -564,7 +568,10 @@ private:
   int m_programCount{0};
   int m_depth{1};
   int m_lStartPartNumber{1};
-
+  LockMode m_iLockMode{LockMode::EVERYONE};
+  std::string m_strLockCode;
+  int m_lockState{LOCK_STATE_NO_LOCK};
+  int m_iBadPwdCount{0};
   SortSpecial m_specialSort{SortSpecialNone};
   bool m_bIsParentFolder{false};
   bool m_bCanQueue{true};
