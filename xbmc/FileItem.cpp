@@ -477,7 +477,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   m_lEndOffset = item.m_lEndOffset;
   m_strDVDLabel = item.m_strDVDLabel;
   m_strTitle = item.m_strTitle;
-  m_iprogramCount = item.m_iprogramCount;
+  m_programCount = item.m_programCount;
   m_idepth = item.m_idepth;
   m_iLockMode = item.m_iLockMode;
   m_strLockCode = item.m_strLockCode;
@@ -508,7 +508,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_dwSize;
     ar << m_strDVDLabel;
     ar << m_strTitle;
-    ar << m_iprogramCount;
+    ar << m_programCount;
     ar << m_idepth;
     ar << m_lStartOffset;
     ar << m_lStartPartNumber;
@@ -566,7 +566,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_dwSize;
     ar >> m_strDVDLabel;
     ar >> m_strTitle;
-    ar >> m_iprogramCount;
+    ar >> m_programCount;
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lStartPartNumber;
@@ -658,7 +658,7 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
       sortable[FieldEndOffset] = m_lEndOffset;
       break;
     case FieldProgramCount:
-      sortable[FieldProgramCount] = m_iprogramCount;
+      sortable[FieldProgramCount] = m_programCount;
       break;
     case FieldBitrate:
       sortable[FieldBitrate] = m_dwSize;

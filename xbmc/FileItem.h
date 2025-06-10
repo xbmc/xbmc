@@ -228,6 +228,8 @@ public:
   void SetSize(int64_t size) { m_dwSize = size; }
   const std::string& GetTitle() const { return m_strTitle; }
   void SetTitle(std::string_view title) { m_strTitle = title; }
+  int GetProgramCount() const { return m_programCount; }
+  void SetProgramCount(int count) { m_programCount = count; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -516,7 +518,6 @@ public:
    */
   void SetFromSong(const CSong &song);
 
-  int m_iprogramCount{0};
   int m_idepth{1};
   int m_lStartPartNumber{1};
   LockMode m_iLockMode{LockMode::EVERYONE};
@@ -558,6 +559,7 @@ private:
   int64_t m_dwSize{0}; ///< file size (0 for folders)
   std::string m_strDVDLabel;
   std::string m_strTitle;
+  int m_programCount{0};
 
   SortSpecial m_specialSort{SortSpecialNone};
   bool m_bIsParentFolder{false};

@@ -6334,8 +6334,8 @@ bool CMusicDatabase::GetSongsFullByWhere(
           songId = record->at(song_idSong).get_asInt();
           CFileItemPtr item(new CFileItem);
           GetFileItemFromDataset(record, item.get(), musicUrl);
-          // HACK for sorting by database returned order
-          item->m_iprogramCount = ++count;
+          //! @todo remove hack to use program count for sorting by database returned order
+          item->SetProgramCount(++count);
           // Set icon now to avoid slow per item processing in FillInDefaultIcon later
           item->SetProperty("icon_never_overlay", true);
           item->SetArt("icon", "DefaultAudio.png");
@@ -6475,8 +6475,8 @@ bool CMusicDatabase::GetSongsByWhere(
       {
         CFileItemPtr item(new CFileItem);
         GetFileItemFromDataset(record, item.get(), musicUrl);
-        // HACK for sorting by database returned order
-        item->m_iprogramCount = ++count;
+        //! @todo remove hack to use program count for sorting by database returned order
+        item->SetProgramCount(++count);
         items.Add(item);
       }
       catch (...)

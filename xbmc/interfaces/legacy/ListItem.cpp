@@ -986,7 +986,7 @@ namespace XBMCAddon
 
     void ListItem::setCountRaw(int count)
     {
-      item->m_iprogramCount = count;
+      item->SetProgramCount(count);
     }
 
     void ListItem::setSizeRaw(int64_t size)

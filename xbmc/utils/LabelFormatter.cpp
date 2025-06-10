@@ -261,7 +261,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = StringUtils::Format("{:.1f}", movie->GetRating().rating);
     break;
   case 'C': // programs count
-    value = std::to_string(item->m_iprogramCount);
+    value = std::to_string(item->GetProgramCount());
     break;
   case 'c': // relevance
     value = std::to_string(movie->m_relevance);
