@@ -1159,7 +1159,7 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
 
   CFileItemPtr pItem(new CFileItem((const char*)entry->m_Title));
   pItem->SetLabelPreformatted(true);
-  pItem->m_strTitle = (const char*)entry->m_Title;
+  pItem->SetTitle(static_cast<const char*>(entry->m_Title));
   pItem->m_bIsFolder = entry->IsContainer();
 
   // if it's a container, format a string as upnp://uuid/object_id

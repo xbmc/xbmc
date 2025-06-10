@@ -267,7 +267,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     value = std::to_string(movie->m_relevance);
     break;
   case 'K':
-    value = item->m_strTitle;
+    value = item->GetTitle();
     break;
   case 'M':
     if (movie && movie->m_iEpisode > 0)

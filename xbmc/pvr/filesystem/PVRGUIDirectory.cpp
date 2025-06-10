@@ -711,7 +711,7 @@ bool CPVRGUIDirectory::GetChannelGroupsDirectory(bool bRadio,
     for (const auto& group : groups)
     {
       item = std::make_shared<CFileItem>(group->GetPath().AsString(), true);
-      item->m_strTitle = group->GroupName();
+      item->SetTitle(group->GroupName());
       item->SetLabel(group->GroupName());
       results.Add(item);
     }

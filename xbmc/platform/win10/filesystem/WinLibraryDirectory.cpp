@@ -117,7 +117,7 @@ bool CWinLibraryDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     IStorageItemProperties storageItemProperties = item.as<IStorageItemProperties>();
     if (item != nullptr)
     {
-      pItem->m_strTitle = FromW(storageItemProperties.DisplayName().c_str());
+      pItem->SetTitle(FromW(storageItemProperties.DisplayName().c_str()));
     }
 
     if (pItem->m_bIsFolder)

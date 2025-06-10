@@ -12754,7 +12754,7 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
         infoTag.m_fanart = videoItem.GetVideoInfoTag()->m_fanart;
 
         auto item(std::make_shared<CFileItem>(infoTag));
-        item->m_strTitle = name;
+        item->SetTitle(name);
         item->SetLabel(name);
 
         CVideoDbUrl itemUrl;
@@ -12827,7 +12827,7 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
         infoTag.m_strTitle = name;
 
         item.SetFromVideoInfoTag(infoTag);
-        item.m_strTitle = name;
+        item.SetTitle(name);
         item.SetLabel(name);
       }
     }
@@ -13214,7 +13214,7 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
       item->GetVideoInfoTag()->GetAssetInfo().SetTitle(name);
       item->GetVideoInfoTag()->m_strTitle = name;
 
-      item->m_strTitle = name;
+      item->SetTitle(name);
       item->SetLabel(name);
 
       items.Add(item);

@@ -226,6 +226,8 @@ public:
   void SetDateTime(KODI::TIME::FileTime dateTime) { m_dateTime = dateTime; }
   int64_t GetSize() const { return m_dwSize; }
   void SetSize(int64_t size) { m_dwSize = size; }
+  const std::string& GetTitle() const { return m_strTitle; }
+  void SetTitle(std::string_view title) { m_strTitle = title; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -514,7 +516,6 @@ public:
    */
   void SetFromSong(const CSong &song);
 
-  std::string m_strTitle;
   int m_iprogramCount{0};
   int m_idepth{1};
   int m_lStartPartNumber{1};
@@ -556,6 +557,7 @@ private:
   CDateTime m_dateTime; ///< file creation date & time
   int64_t m_dwSize{0}; ///< file size (0 for folders)
   std::string m_strDVDLabel;
+  std::string m_strTitle;
 
   SortSpecial m_specialSort{SortSpecialNone};
   bool m_bIsParentFolder{false};

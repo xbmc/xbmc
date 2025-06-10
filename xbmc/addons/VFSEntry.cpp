@@ -506,7 +506,7 @@ static void VFSDirEntriesToCFileItemList(int num_entries,
     item->SetDateTime(entries[i].date_time);
     item->m_bIsFolder = entries[i].folder;
     if (entries[i].title)
-      item->m_strTitle = entries[i].title;
+      item->SetTitle(entries[i].title);
     for (unsigned int j=0;j<entries[i].num_props;++j)
     {
       if (StringUtils::CompareNoCase(entries[i].properties[j].name, "propmisusepreformatted") == 0)

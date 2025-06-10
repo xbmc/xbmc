@@ -976,7 +976,7 @@ namespace XBMCAddon
 
     void ListItem::setTitleRaw(std::string title)
     {
-      item->m_strTitle = std::move(title);
+      item->SetTitle(std::move(title));
     }
 
     void ListItem::setPathRaw(const std::string& path)
