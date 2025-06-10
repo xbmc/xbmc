@@ -11663,7 +11663,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
 
 void CGUIInfoManager::ResetCurrentItem()
 {
-  m_currentFile->Reset();
+  m_currentFile = std::make_unique<CFileItem>();
   m_infoProviders.InitCurrentItem(nullptr);
 }
 

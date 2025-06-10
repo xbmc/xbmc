@@ -554,7 +554,7 @@ void CFileItemList::FilterCueItems()
     { // see if it's a .CUE sheet
       if (MUSIC::IsCUESheet(*pItem))
       {
-        CCueDocumentPtr cuesheet(new CCueDocument);
+        const auto cuesheet(std::make_shared<CCueDocument>());
         if (cuesheet->ParseFile(pItem->GetPath()))
         {
           std::vector<std::string> MediaFileVec;
