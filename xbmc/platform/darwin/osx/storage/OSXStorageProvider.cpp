@@ -6,17 +6,20 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
 #include "OSXStorageProvider.h"
-#include "utils/RegExp.h"
+
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/RegExp.h"
 
-#include <sys/mount.h>
+#include "platform/darwin/osx/CocoaInterface.h"
+
+#include <stdlib.h>
+
 #include <DiskArbitration/DiskArbitration.h>
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
-#include "platform/darwin/osx/CocoaInterface.h"
+#include <sys/mount.h>
 
 std::vector<std::pair<std::string, std::string>> COSXStorageProvider::m_mountsToNotify;
 std::vector<std::pair<std::string, std::string>> COSXStorageProvider::m_unmountsToNotify;
@@ -59,11 +62,11 @@ void COSXStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
   if (session)
   {
     unsigned i, count = 0;
-    struct statfs *buf = NULL;
+    struct statfs* buf = NULL;
     std::string mountpoint, devicepath;
 
     count = getmntinfo(&buf, 0);
-    for (i=0; i<count; i++)
+    for (i = 0; i < count; i++)
     {
       mountpoint = buf[i].f_mntonname;
       devicepath = buf[i].f_mntfromname;
@@ -99,11 +102,11 @@ void COSXStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removabl
   if (session)
   {
     unsigned i, count = 0;
-    struct statfs *buf = NULL;
+    struct statfs* buf = NULL;
     std::string mountpoint, devicepath;
 
     count = getmntinfo(&buf, 0);
-    for (i=0; i<count; i++)
+    for (i = 0; i < count; i++)
     {
       mountpoint = buf[i].f_mntonname;
       devicepath = buf[i].f_mntfromname;
@@ -130,13 +133,15 @@ void COSXStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removabl
             share.m_ignore = true;
             // detect if its a cd or dvd
             // needs to be ejectable
-            if (kCFBooleanTrue == CFDictionaryGetValue(details, kDADiskDescriptionMediaEjectableKey))
+            if (kCFBooleanTrue ==
+                CFDictionaryGetValue(details, kDADiskDescriptionMediaEjectableKey))
             {
-              CFStringRef mediaKind = (CFStringRef)CFDictionaryGetValue(details, kDADiskDescriptionMediaKindKey);
+              CFStringRef mediaKind =
+                  (CFStringRef)CFDictionaryGetValue(details, kDADiskDescriptionMediaKindKey);
               // and either cd or dvd kind of media in it
               if (mediaKind != NULL &&
                   (CFStringCompare(mediaKind, CFSTR(kIOCDMediaClass), 0) == kCFCompareEqualTo ||
-                  CFStringCompare(mediaKind, CFSTR(kIODVDMediaClass), 0) == kCFCompareEqualTo))
+                   CFStringCompare(mediaKind, CFSTR(kIODVDMediaClass), 0) == kCFCompareEqualTo))
                 share.m_iDriveType = SourceType::OPTICAL_DISC;
             }
             removableDrives.push_back(share);
@@ -171,109 +176,110 @@ std::vector<std::string> COSXStorageProvider::GetDiskUsage()
 
 namespace
 {
-  class DAOperationContext
-  {
-  public:
-    explicit DAOperationContext(const std::string& mountpath);
-    ~DAOperationContext();
+class DAOperationContext
+{
+public:
+  explicit DAOperationContext(const std::string& mountpath);
+  ~DAOperationContext();
 
-    DADiskRef GetDisk() const { return m_disk; }
+  DADiskRef GetDisk() const { return m_disk; }
 
-    void Reset();
-    bool WaitForCompletion(CFTimeInterval timeout);
-    void Completed(bool success);
+  void Reset();
+  bool WaitForCompletion(CFTimeInterval timeout);
+  void Completed(bool success);
 
-    static void CompletionCallback(DADiskRef disk, DADissenterRef dissenter, void* context);
+  static void CompletionCallback(DADiskRef disk, DADissenterRef dissenter, void* context);
 
-  private:
-    DAOperationContext() = delete;
+private:
+  DAOperationContext() = delete;
 
-    static void RunloopPerformCallback(void* info) {}
-    CFRunLoopSourceContext m_runLoopSourceContext = { .perform = RunloopPerformCallback };
+  static void RunloopPerformCallback(void* info) {}
+  CFRunLoopSourceContext m_runLoopSourceContext = {.perform = RunloopPerformCallback};
 
-    bool m_success;
-    bool m_completed;
-    const DASessionRef m_session;
-    const CFRunLoopRef m_runloop;
-    const CFRunLoopSourceRef m_runloopSource;
-    DADiskRef m_disk;
-  };
+  bool m_success;
+  bool m_completed;
+  const DASessionRef m_session;
+  const CFRunLoopRef m_runloop;
+  const CFRunLoopSourceRef m_runloopSource;
+  DADiskRef m_disk;
+};
 
-  DAOperationContext::DAOperationContext(const std::string& mountpath)
+DAOperationContext::DAOperationContext(const std::string& mountpath)
   : m_success(true),
     m_completed(false),
     m_session(DASessionCreate(kCFAllocatorDefault)),
     m_runloop(CFRunLoopGetCurrent()), // not owner!
     m_runloopSource(CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &m_runLoopSourceContext))
+{
+  if (m_session && m_runloop && m_runloopSource)
   {
-    if (m_session && m_runloop && m_runloopSource)
+    CFURLRef url = CFURLCreateFromFileSystemRepresentation(
+        kCFAllocatorDefault, (const UInt8*)mountpath.c_str(), mountpath.size(), TRUE);
+    if (url)
     {
-      CFURLRef url = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (const UInt8 *)mountpath.c_str(), mountpath.size(), TRUE);
-      if (url)
-      {
-        m_disk = DADiskCreateFromVolumePath(kCFAllocatorDefault, m_session, url);
-        CFRelease(url);
-      }
-
-      DASessionScheduleWithRunLoop(m_session, m_runloop, kCFRunLoopDefaultMode);
-      CFRunLoopAddSource(m_runloop, m_runloopSource, kCFRunLoopDefaultMode);
-    }
-  }
-
-  DAOperationContext::~DAOperationContext()
-  {
-    if (m_session && m_runloop && m_runloopSource)
-    {
-      CFRunLoopRemoveSource(m_runloop, m_runloopSource, kCFRunLoopDefaultMode);
-      DASessionUnscheduleFromRunLoop(m_session, m_runloop, kCFRunLoopDefaultMode);
-      CFRunLoopSourceInvalidate(m_runloopSource);
+      m_disk = DADiskCreateFromVolumePath(kCFAllocatorDefault, m_session, url);
+      CFRelease(url);
     }
 
-    if (m_disk)
-      CFRelease(m_disk);
-    if (m_runloopSource)
-      CFRelease(m_runloopSource);
-    if (m_session)
-      CFRelease(m_session);
+    DASessionScheduleWithRunLoop(m_session, m_runloop, kCFRunLoopDefaultMode);
+    CFRunLoopAddSource(m_runloop, m_runloopSource, kCFRunLoopDefaultMode);
   }
+}
 
-  bool DAOperationContext::WaitForCompletion(CFTimeInterval timeout)
+DAOperationContext::~DAOperationContext()
+{
+  if (m_session && m_runloop && m_runloopSource)
   {
-    while (!m_completed)
-    {
-      if (CFRunLoopRunInMode(kCFRunLoopDefaultMode, timeout, TRUE) == kCFRunLoopRunTimedOut)
-        break;
-    }
-    return m_success;
+    CFRunLoopRemoveSource(m_runloop, m_runloopSource, kCFRunLoopDefaultMode);
+    DASessionUnscheduleFromRunLoop(m_session, m_runloop, kCFRunLoopDefaultMode);
+    CFRunLoopSourceInvalidate(m_runloopSource);
   }
 
-  void DAOperationContext::Completed(bool success)
+  if (m_disk)
+    CFRelease(m_disk);
+  if (m_runloopSource)
+    CFRelease(m_runloopSource);
+  if (m_session)
+    CFRelease(m_session);
+}
+
+bool DAOperationContext::WaitForCompletion(CFTimeInterval timeout)
+{
+  while (!m_completed)
   {
-    m_success = success;
-    m_completed = true;
-    CFRunLoopSourceSignal(m_runloopSource);
-    CFRunLoopWakeUp(m_runloop);
+    if (CFRunLoopRunInMode(kCFRunLoopDefaultMode, timeout, TRUE) == kCFRunLoopRunTimedOut)
+      break;
   }
+  return m_success;
+}
 
-  void DAOperationContext::Reset()
+void DAOperationContext::Completed(bool success)
+{
+  m_success = success;
+  m_completed = true;
+  CFRunLoopSourceSignal(m_runloopSource);
+  CFRunLoopWakeUp(m_runloop);
+}
+
+void DAOperationContext::Reset()
+{
+  m_success = true;
+  m_completed = false;
+}
+
+void DAOperationContext::CompletionCallback(DADiskRef disk, DADissenterRef dissenter, void* context)
+{
+  DAOperationContext* dacontext = static_cast<DAOperationContext*>(context);
+
+  bool success = true;
+  if (dissenter)
   {
-    m_success = true;
-    m_completed = false;
+    DAReturn status = DADissenterGetStatus(dissenter);
+    success = (status == kDAReturnSuccess || status == kDAReturnUnsupported);
   }
 
-  void DAOperationContext::CompletionCallback(DADiskRef disk, DADissenterRef dissenter, void* context)
-  {
-    DAOperationContext* dacontext = static_cast<DAOperationContext*>(context);
-
-    bool success = true;
-    if (dissenter)
-    {
-      DAReturn status = DADissenterGetStatus(dissenter);
-      success = (status == kDAReturnSuccess || status == kDAReturnUnsupported);
-    }
-
-    dacontext->Completed(success);
-  }
+  dacontext->Completed(success);
+}
 
 } // unnamed namespace
 
@@ -296,7 +302,8 @@ bool COSXStorageProvider::Eject(const std::string& mountpath)
     // Does the device need to be unmounted first?
     if (CFDictionaryGetValueIfPresent(details, kDADiskDescriptionVolumePathKey, NULL))
     {
-      DADiskUnmount(disk, kDADiskUnmountOptionDefault, DAOperationContext::CompletionCallback, &ctx);
+      DADiskUnmount(disk, kDADiskUnmountOptionDefault, DAOperationContext::CompletionCallback,
+                    &ctx);
       success = ctx.WaitForCompletion(30.0); // timeout after 30 secs
     }
 
