@@ -13,6 +13,8 @@
 #include "powermanagement/LunaPowerManagement.h"
 #include "utils/log.h"
 
+#include <filesystem>
+
 #include <sys/resource.h>
 
 CPlatform* CPlatform::CreateInstance()
@@ -20,10 +22,27 @@ CPlatform* CPlatform::CreateInstance()
   return new CPlatformWebOS();
 }
 
+std::string CPlatformWebOS::GetHomePath()
+{
+  std::filesystem::path self("/proc/self/exe");
+  std::error_code ec;
+  std::filesystem::path path = std::filesystem::read_symlink(self, ec);
+
+  if (ec)
+  {
+    const char* homeEnv = getenv("HOME");
+    return homeEnv ? std::string(homeEnv) : std::string("");
+  }
+
+  return path.parent_path().string();
+}
+
 bool CPlatformWebOS::InitStageOne()
 {
-  // WebOS ipks run in a chroot like environment. $HOME is set to the ipk dir and $LD_LIBRARY_PATH is lib
-  const auto HOME = std::string(getenv("HOME"));
+  // WebOS ipks run in a chroot like std::filesystem::current_pathenvironment
+  // $HOME is set to the ipk dir and $LD_LIBRARY_PATH is lib
+  const auto HOME = GetHomePath();
+
   setenv("XDG_RUNTIME_DIR", "/tmp/xdg", 1);
   setenv("XKB_CONFIG_ROOT", "/usr/share/X11/xkb", 1);
   setenv("WAYLAND_DISPLAY", "wayland-0", 1);
