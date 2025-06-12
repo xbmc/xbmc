@@ -204,6 +204,7 @@ CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_mapProperties = item.m_mapProperties;
   m_art = item.m_art;
   m_artFallbacks = item.m_artFallbacks;
+  m_currentItem = item.m_currentItem;
   SetInvalid();
   return *this;
 }
@@ -236,6 +237,7 @@ void CGUIListItem::Archive(CArchive &ar)
       ar << type;
       ar << url;
     }
+    ar << m_currentItem;
   }
   else
   {
@@ -277,6 +279,7 @@ void CGUIListItem::Archive(CArchive &ar)
       ar >> value;
       m_artFallbacks.try_emplace(key, value);
     }
+    ar >> m_currentItem;
     SetInvalid();
   }
 }
@@ -293,6 +296,8 @@ void CGUIListItem::Serialize(CVariant& value) const
 
   for (const auto& [type, url] : m_art)
     value["art"][type] = url;
+
+  value["current"] = m_currentItem;
 }
 
 void CGUIListItem::FreeIcons()

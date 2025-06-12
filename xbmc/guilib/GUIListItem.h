@@ -177,8 +177,6 @@ public:
   unsigned int GetCurrentItem() const;
 
 protected:
-  unsigned int m_currentItem{1}; // current item number within container (starting at 1)
-
   struct CaseInsensitiveCompare
   {
     using is_transparent = void; // Enables heterogeneous operations.
@@ -197,6 +195,7 @@ private:
   std::unique_ptr<CGUIListItemLayout> m_layout;
   std::unique_ptr<CGUIListItemLayout> m_focusedLayout;
   bool m_bSelected{false}; // item is selected or not
+  unsigned int m_currentItem{1}; // current item number within container (starting at 1)
 
   KODI::ART::Artwork m_art;
   KODI::ART::Artwork m_artFallbacks;
