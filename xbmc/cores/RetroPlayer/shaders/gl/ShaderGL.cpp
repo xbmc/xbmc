@@ -143,6 +143,7 @@ void CShaderGL::Render(IShaderTexture& source, IShaderTexture& target)
   SetShaderParameters(sourceGL.GetTexture());
 
   glBindVertexArray(m_shaderVAO);
+
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[0]);
   glBufferData(GL_ARRAY_BUFFER, sizeof(m_VertexCoords), m_VertexCoords, GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
@@ -162,6 +163,8 @@ void CShaderGL::Render(IShaderTexture& source, IShaderTexture& target)
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices, GL_STATIC_DRAW);
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   glDisableVertexAttribArray(0);
   glDisableVertexAttribArray(1);

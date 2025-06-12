@@ -18,7 +18,6 @@
 #include "guilib/TextureGL.h"
 #include "utils/BufferObjectFactory.h"
 #include "utils/GLUtils.h"
-#include "xbmc/rendering/gl/RenderSystemGL.h"
 
 #include <cassert>
 #include <cstddef>
@@ -174,10 +173,8 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
 
     glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     m_context.DisableGUIShader();
   }
-
-  // Rebind global VAO
-  CRenderSystemGL* rendering = dynamic_cast<CRenderSystemGL*>(m_context.Rendering());
-  glBindVertexArray(rendering->GetVertexArray());
 }
