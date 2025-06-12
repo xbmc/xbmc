@@ -614,7 +614,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const std::string &method, ITransp
     return InvalidParams;
 
   // get artwork
-  std::map<std::string, std::string> artwork;
+  KODI::ART::Artwork artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   int playcount = infos.GetPlayCount();
@@ -661,7 +661,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieSetDetails(const std::string &method, ITra
   }
 
   // get artwork
-  std::map<std::string, std::string> artwork;
+  KODI::ART::Artwork artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   std::set<std::string> removedArtwork;
@@ -691,10 +691,10 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const std::string &method, ITrans
     return InvalidParams;
 
   // get artwork
-  std::map<std::string, std::string> artwork;
+  KODI::ART::Artwork artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
-  std::map<int, std::map<std::string, std::string> > seasonArt;
+  KODI::ART::SeasonsArtwork seasonArt;
   videodatabase.GetTvShowSeasonArt(infos.m_iDbId, seasonArt);
 
   std::set<std::string> removedArtwork;
@@ -732,7 +732,7 @@ JSONRPC_STATUS CVideoLibrary::SetSeasonDetails(const std::string &method, ITrans
   }
 
   // get artwork
-  std::map<std::string, std::string> artwork;
+  KODI::ART::Artwork artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   std::set<std::string> removedArtwork;
@@ -775,7 +775,7 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const std::string &method, ITran
   }
 
   // get artwork
-  std::map<std::string, std::string> artwork;
+  KODI::ART::Artwork artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   int playcount = infos.GetPlayCount();
@@ -822,7 +822,7 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const std::string &method, IT
   }
 
   // get artwork
-  std::map<std::string, std::string> artwork;
+  KODI::ART::Artwork artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
   int playcount = infos.GetPlayCount();
@@ -1208,7 +1208,11 @@ void CVideoLibrary::UpdateVideoTagField(const CVariant& parameterObject, const s
   }
 }
 
-void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork, std::set<std::string> &updatedDetails)
+void CVideoLibrary::UpdateVideoTag(const CVariant& parameterObject,
+                                   CVideoInfoTag& details,
+                                   KODI::ART::Artwork& artwork,
+                                   std::set<std::string>& removedArtwork,
+                                   std::set<std::string>& updatedDetails)
 {
   if (ParameterNotNull(parameterObject, "title"))
     details.SetTitle(parameterObject["title"].asString());

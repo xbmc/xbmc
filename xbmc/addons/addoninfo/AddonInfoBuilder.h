@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/IAddon.h"
+#include "utils/Artwork.h"
 
 #include <map>
 #include <memory>
@@ -91,7 +92,7 @@ public:
   void SetEMail(std::string email);
   void SetIcon(std::string icon);
   void SetArt(const std::string& type, std::string value);
-  void SetArt(std::map<std::string, std::string> art);
+  void SetArt(KODI::ART::Artwork art);
   void SetScreenshots(std::vector<std::string> screenshots);
   void SetChangelog(std::string changelog);
   void SetLifecycleState(AddonLifecycleState state, std::string description);

@@ -84,6 +84,7 @@ set(HEADERS ActorProtocol.h
             AliasShortcutUtils.h
             Archive.h
             ArtUtils.h
+            Artwork.h
             Base64.h
             BitstreamConverter.h
             BitstreamReader.h

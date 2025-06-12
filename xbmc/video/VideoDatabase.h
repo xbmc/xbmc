@@ -12,6 +12,7 @@
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
+#include "utils/Artwork.h"
 #include "utils/SortUtils.h"
 #include "utils/UrlOptions.h"
 
@@ -608,13 +609,18 @@ public:
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
   void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
 
-  int SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
-  int SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
+  int SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork);
+  int SetDetailsForItem(int id,
+                        const MediaType& mediaType,
+                        CVideoInfoTag& details,
+                        const KODI::ART::Artwork& artwork);
 
   int SetDetailsForMovie(CVideoInfoTag& details,
-                         const std::map<std::string, std::string>& artwork,
+                         const KODI::ART::Artwork& artwork,
                          int idMovie = -1);
-  int SetDetailsForMovieSet(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idSet = -1);
+  int SetDetailsForMovieSet(const CVideoInfoTag& details,
+                            const KODI::ART::Artwork& artwork,
+                            int idSet = -1);
 
   /*! \brief add a tvshow to the library, setting metadata detail
    First checks for whether this TV Show is already in the database (based on idTvShow, or via GetMatchingTvShow)
@@ -626,11 +632,21 @@ public:
    \param idTvShow the database id of the tvshow if known (defaults to -1)
    \return the id of the tvshow.
    */
-  int SetDetailsForTvShow(const std::vector< std::pair<std::string, std::string> > &paths, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt, int idTvShow = -1);
-  bool UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details, const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string> > &seasonArt);
-  int SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idSeason = -1);
+  int SetDetailsForTvShow(const std::vector<std::pair<std::string, std::string>>& paths,
+                          CVideoInfoTag& details,
+                          const KODI::ART::Artwork& artwork,
+                          const KODI::ART::SeasonsArtwork& seasonArt,
+                          int idTvShow = -1);
+  bool UpdateDetailsForTvShow(int idTvShow,
+                              CVideoInfoTag& details,
+                              const KODI::ART::Artwork& artwork,
+                              const KODI::ART::SeasonsArtwork& seasonArt);
+  int SetDetailsForSeason(const CVideoInfoTag& details,
+                          const KODI::ART::Artwork& artwork,
+                          int idShow,
+                          int idSeason = -1);
   int SetDetailsForEpisode(CVideoInfoTag& details,
-                           const std::map<std::string, std::string>& artwork,
+                           const KODI::ART::Artwork& artwork,
                            int idShow,
                            int idEpisode = -1);
   bool SetFileForMedia(const std::string& fileAndPath,
@@ -638,7 +654,7 @@ public:
                        int mediaId,
                        int oldIdFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
-                              const std::map<std::string, std::string>& artwork,
+                              const KODI::ART::Artwork& artwork,
                               int idMVideo = -1);
   bool SetStreamDetailsForFile(const CStreamDetails& details,
                                const std::string& strFileNameAndPath);
@@ -673,7 +689,10 @@ public:
   bool SetSingleValue(const std::string &table, const std::string &fieldName, const std::string &strValue,
                       const std::string &conditionName = "", int conditionValue = -1);
 
-  int UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails);
+  int UpdateDetailsForMovie(int idMovie,
+                            CVideoInfoTag& details,
+                            const KODI::ART::Artwork& artwork,
+                            const std::set<std::string>& updatedDetails);
 
   /*!
    * \brief Remove a movie from the library.
@@ -1015,7 +1034,7 @@ public:
                          const std::string& tvshowDir = "") const;
   void ImportFromXML(const std::string &path);
   void DumpToDummyFiles(const std::string &path);
-  bool ImportArtFromXML(const TiXmlNode *node, std::map<std::string, std::string> &artwork);
+  bool ImportArtFromXML(const TiXmlNode* node, KODI::ART::Artwork& artwork);
 
   // smart playlists and main retrieval work in these functions
   bool GetMoviesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
@@ -1072,12 +1091,8 @@ public:
                      const MediaType& mediaType,
                      const std::string& artType,
                      const std::string& url);
-  bool SetArtForItem(int mediaId,
-                     const MediaType& mediaType,
-                     const std::map<std::string, std::string>& art);
-  bool GetArtForItem(int mediaId,
-                     const MediaType& mediaType,
-                     std::map<std::string, std::string>& art);
+  bool SetArtForItem(int mediaId, const MediaType& mediaType, const KODI::ART::Artwork& art);
+  bool GetArtForItem(int mediaId, const MediaType& mediaType, KODI::ART::Artwork& art);
   std::string GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
 
   void UpdateArtForItem(int mediaId, const MediaType& mediaType);
@@ -1091,9 +1106,7 @@ public:
    * \param art collection of the retrieved art
    * \return 
   */
-  bool GetArtForAsset(int assetId,
-                      ArtFallbackOptions fallback,
-                      std::map<std::string, std::string>& art);
+  bool GetArtForAsset(int assetId, ArtFallbackOptions fallback, KODI::ART::Artwork& art);
   bool HasArtForItem(int mediaId, const MediaType &mediaType);
   bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
   bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::set<std::string> &artTypes);
@@ -1108,7 +1121,7 @@ public:
    */
   std::string GetTvShowNamedSeasonById(int tvshowId, int seasonId);
 
-  bool GetTvShowSeasonArt(int mediaId, std::map<int, std::map<std::string, std::string> > &seasonArt);
+  bool GetTvShowSeasonArt(int mediaId, KODI::ART::SeasonsArtwork& seasonArt);
   bool GetArtTypes(const MediaType &mediaType, std::vector<std::string> &artTypes);
 
   /*! \brief Fetch the distinct types of available-but-unassigned art held in the

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "IVideoInfoTagLoader.h"
+#include "utils/Artwork.h"
 #include "video/VideoInfoTag.h"
 
 #include <map>
@@ -33,12 +34,10 @@ public:
                               bool prioritise,
                               std::vector<EmbeddedArt>* = nullptr) override;
 
-  inline std::unique_ptr<std::map<std::string, std::string>>& GetArt()
-  {
-    return m_art;
-  }
+  inline std::unique_ptr<KODI::ART::Artwork>& GetArt() { return m_art; }
+
 protected:
   std::unique_ptr<CVideoInfoTag> m_tag;
-  std::unique_ptr<std::map<std::string, std::string>> m_art;
+  std::unique_ptr<KODI::ART::Artwork> m_art;
   bool m_force_refresh;
 };

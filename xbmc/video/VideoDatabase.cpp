@@ -2616,12 +2616,15 @@ std::string CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min
 }
 
 //********************************************************************************************************************************
-int CVideoDatabase::SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork)
+int CVideoDatabase::SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork)
 {
   return SetDetailsForItem(details.m_iDbId, details.m_type, details, artwork);
 }
 
-int CVideoDatabase::SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork)
+int CVideoDatabase::SetDetailsForItem(int id,
+                                      const MediaType& mediaType,
+                                      CVideoInfoTag& details,
+                                      const KODI::ART::Artwork& artwork)
 {
   if (mediaType == MediaTypeNone)
     return -1;
@@ -2632,7 +2635,7 @@ int CVideoDatabase::SetDetailsForItem(int id, const MediaType& mediaType, CVideo
     return SetDetailsForMovieSet(details, artwork, id);
   else if (mediaType == MediaTypeTvShow)
   {
-    std::map<int, std::map<std::string, std::string> > seasonArtwork;
+    KODI::ART::SeasonsArtwork seasonArtwork;
     if (!UpdateDetailsForTvShow(id, details, artwork, seasonArtwork))
       return -1;
 
@@ -2649,7 +2652,7 @@ int CVideoDatabase::SetDetailsForItem(int id, const MediaType& mediaType, CVideo
 }
 
 int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
-                                       const std::map<std::string, std::string>& artwork,
+                                       const KODI::ART::Artwork& artwork,
                                        int idMovie /* = -1 */)
 {
   const auto filePath = details.GetPath();
@@ -2768,7 +2771,10 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
   return -1;
 }
 
-int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails)
+int CVideoDatabase::UpdateDetailsForMovie(int idMovie,
+                                          CVideoInfoTag& details,
+                                          const KODI::ART::Artwork& artwork,
+                                          const std::set<std::string>& updatedDetails)
 {
   if (idMovie < 0)
     return idMovie;
@@ -2864,7 +2870,9 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
   return -1;
 }
 
-int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idSet /* = -1 */)
+int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details,
+                                          const KODI::ART::Artwork& artwork,
+                                          int idSet /* = -1 */)
 {
   if (details.m_strTitle.empty())
     return -1;
@@ -2910,9 +2918,12 @@ int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag &details)
   return id;
 }
 
-int CVideoDatabase::SetDetailsForTvShow(const std::vector<std::pair<std::string, std::string> > &paths,
-    CVideoInfoTag& details, const std::map<std::string, std::string> &artwork,
-    const std::map<int, std::map<std::string, std::string> > &seasonArt, int idTvShow /*= -1 */)
+int CVideoDatabase::SetDetailsForTvShow(
+    const std::vector<std::pair<std::string, std::string>>& paths,
+    CVideoInfoTag& details,
+    const KODI::ART::Artwork& artwork,
+    const KODI::ART::SeasonsArtwork& seasonArt,
+    int idTvShow /*= -1 */)
 {
 
   /*
@@ -2951,8 +2962,10 @@ int CVideoDatabase::SetDetailsForTvShow(const std::vector<std::pair<std::string,
   return idTvShow;
 }
 
-bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details,
-    const std::map<std::string, std::string> &artwork, const std::map<int, std::map<std::string, std::string>> &seasonArt)
+bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
+                                            CVideoInfoTag& details,
+                                            const KODI::ART::Artwork& artwork,
+                                            const KODI::ART::SeasonsArtwork& seasonArt)
 {
   BeginTransaction();
 
@@ -2985,7 +2998,7 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
       continue;
 
     season.SetSortTitle(namedSeason.second);
-    SetDetailsForSeason(season, std::map<std::string, std::string>(), idTvShow, seasonId);
+    SetDetailsForSeason(season, KODI::ART::Artwork(), idTvShow, seasonId);
   }
 
   SetArtForItem(idTvShow, MediaTypeTvShow, artwork);
@@ -3016,8 +3029,10 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
   return false;
 }
 
-int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std::map<std::string,
-    std::string> &artwork, int idShow, int idSeason /* = -1 */)
+int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
+                                        const KODI::ART::Artwork& artwork,
+                                        int idShow,
+                                        int idSeason /* = -1 */)
 {
   if (idShow < 0 || details.m_iSeason < -1)
     return -1;
@@ -3215,7 +3230,7 @@ bool CVideoDatabase::DeleteFile(int idFile)
 }
 
 int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
-                                         const std::map<std::string, std::string>& artwork,
+                                         const KODI::ART::Artwork& artwork,
                                          int idShow,
                                          int idEpisode /* = -1 */)
 {
@@ -3332,7 +3347,7 @@ int CVideoDatabase::AddSeason(int showID, int season, const std::string& name /*
 }
 
 int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
-                                            const std::map<std::string, std::string>& artwork,
+                                            const KODI::ART::Artwork& artwork,
                                             int idMVideo /* = -1 */)
 {
   const auto filePath = details.GetPath();
@@ -5285,7 +5300,7 @@ void CVideoDatabase::UpdateArtForItem(int mediaId, const MediaType& mediaType)
 
 bool CVideoDatabase::SetArtForItem(int mediaId,
                                    const MediaType& mediaType,
-                                   const std::map<std::string, std::string>& art)
+                                   const KODI::ART::Artwork& art)
 {
   for (const auto& i : art)
     if (!SetArtForItem(mediaId, mediaType, i.first, i.second))
@@ -5338,9 +5353,7 @@ bool CVideoDatabase::SetArtForItem(int mediaId,
   }
 }
 
-bool CVideoDatabase::GetArtForItem(int mediaId,
-                                   const MediaType& mediaType,
-                                   std::map<std::string, std::string>& art)
+bool CVideoDatabase::GetArtForItem(int mediaId, const MediaType& mediaType, KODI::ART::Artwork& art)
 {
   try
   {
@@ -5369,7 +5382,7 @@ bool CVideoDatabase::GetArtForItem(int mediaId,
 
 bool CVideoDatabase::GetArtForAsset(int assetId,
                                     ArtFallbackOptions fallback,
-                                    std::map<std::string, std::string>& art)
+                                    KODI::ART::Artwork& art)
 {
   try
   {
@@ -5526,7 +5539,7 @@ std::string CVideoDatabase::GetTvShowNamedSeasonById(int tvshowId, int seasonId)
                         PrepareSQL("season=%i AND idShow=%i", seasonId, tvshowId));
 }
 
-bool CVideoDatabase::GetTvShowSeasonArt(int showId, std::map<int, std::map<std::string, std::string> > &seasonArt)
+bool CVideoDatabase::GetTvShowSeasonArt(int showId, KODI::ART::SeasonsArtwork& seasonArt)
 {
   try
   {
@@ -5540,7 +5553,7 @@ bool CVideoDatabase::GetTvShowSeasonArt(int showId, std::map<int, std::map<std::
 
     for (const auto &i : seasons)
     {
-      std::map<std::string, std::string> art;
+      KODI::ART::Artwork art;
       GetArtForItem(i.second, MediaTypeSeason, art);
       seasonArt.insert(std::make_pair(i.first,art));
     }
@@ -11182,7 +11195,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       // strip paths to make them relative
       if (StringUtils::StartsWith(movie.m_strTrailer, movie.m_strPath))
         movie.m_strTrailer = movie.m_strTrailer.substr(movie.m_strPath.size());
-      std::map<std::string, std::string> artwork;
+      KODI::ART::Artwork artwork;
       if (GetArtForItem(movie.m_iDbId, movie.m_type, artwork) && !artwork.empty() && singleFile)
       {
         TiXmlElement additionalNode("art");
@@ -11305,7 +11318,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             movieSetsDir, CUtil::MakeLegalFileName(title, LegalPath::WIN32_COMPAT));
         if (CDirectory::Exists(itemPath) || CDirectory::Create(itemPath))
         {
-          std::map<std::string, std::string> artwork;
+          KODI::ART::Artwork artwork;
           GetArtForItem(m_pDS->fv("idSet").get_asInt(), MediaTypeVideoCollection, artwork);
           for (const auto& art : artwork)
           {
@@ -11335,7 +11348,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS, VideoDbDetailsAll);
-      std::map<std::string, std::string> artwork;
+      KODI::ART::Artwork artwork;
       if (GetArtForItem(movie.m_iDbId, movie.m_type, artwork) && !artwork.empty() && singleFile)
       {
         TiXmlElement additionalNode("art");
@@ -11427,10 +11440,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, VideoDbDetailsAll);
       GetTvShowNamedSeasons(tvshow.m_iDbId, tvshow.m_namedSeasons);
 
-      std::map<int, std::map<std::string, std::string> > seasonArt;
+      KODI::ART::SeasonsArtwork seasonArt;
       GetTvShowSeasonArt(tvshow.m_iDbId, seasonArt);
 
-      std::map<std::string, std::string> artwork;
+      KODI::ART::Artwork artwork;
       if (GetArtForItem(tvshow.m_iDbId, tvshow.m_type, artwork) && !artwork.empty() && singleFile)
       {
         TiXmlElement additionalNode("art");
@@ -11540,7 +11553,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       while (!pDS->eof())
       {
         CVideoInfoTag episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
-        std::map<std::string, std::string> artwork;
+        KODI::ART::Artwork artwork;
         if (GetArtForItem(episode.m_iDbId, MediaTypeEpisode, artwork) && !artwork.empty() &&
             singleFile)
         {
@@ -11814,7 +11827,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
                                                      LegalPath::WIN32_COMPAT));
           if (CDirectory::Exists(setPath))
           {
-            CGUIListItem::ArtMap setArt;
+            KODI::ART::Artwork setArt;
             CFileItem artItem(setPath, true);
             for (const auto& artType : CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection))
             {
@@ -11861,7 +11874,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         showItem.SetArt(artItem.GetArt());
         int showID = scanner.AddVideo(&showItem, CONTENT_TVSHOWS, useFolders, true, NULL, true);
         // season artwork
-        std::map<int, std::map<std::string, std::string> > seasonArt;
+        KODI::ART::SeasonsArtwork seasonArt;
         artItem.GetVideoInfoTag()->m_strPath = artPath;
         scanner.GetSeasonThumbs(*artItem.GetVideoInfoTag(), seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), true);
         for (const auto &i : seasonArt)
@@ -11910,7 +11923,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
     progress->Close();
 }
 
-bool CVideoDatabase::ImportArtFromXML(const TiXmlNode *node, std::map<std::string, std::string> &artwork)
+bool CVideoDatabase::ImportArtFromXML(const TiXmlNode* node, KODI::ART::Artwork& artwork)
 {
   if (!node) return false;
   const TiXmlNode *art = node->FirstChild();
@@ -13246,7 +13259,7 @@ bool CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbCont
   MediaType mediaType;
   VideoContentTypeToString(type, mediaType);
 
-  std::map<std::string, std::string> art;
+  KODI::ART::Artwork art;
   if (GetArtForItem(idFrom, mediaType, art))
   {
     for (const auto& it : art)

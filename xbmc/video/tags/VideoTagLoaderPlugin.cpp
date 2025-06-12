@@ -27,7 +27,7 @@ CVideoTagLoaderPlugin::CVideoTagLoaderPlugin(const CFileItem& item, bool forceRe
     m_tag = std::make_unique<CVideoInfoTag>(*m_item.GetVideoInfoTag());
   auto& art = item.GetArt();
   if (!art.empty())
-    m_art = std::make_unique<CGUIListItem::ArtMap>(art);
+    m_art = std::make_unique<KODI::ART::Artwork>(art);
 }
 
 bool CVideoTagLoaderPlugin::HasInfo() const
@@ -53,7 +53,7 @@ CInfoScanner::InfoType CVideoTagLoaderPlugin::Load(CVideoInfoTag& tag,
     if (!items.IsEmpty())
     {
       const CFileItemPtr &item = items[0];
-      m_art = std::make_unique<CGUIListItem::ArtMap>(item->GetArt());
+      m_art = std::make_unique<KODI::ART::Artwork>(item->GetArt());
       if (item->HasVideoInfoTag())
       {
         tag = *item->GetVideoInfoTag();

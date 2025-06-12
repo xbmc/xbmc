@@ -42,6 +42,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/Artwork.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/ProgressJob.h"
@@ -770,13 +771,13 @@ void CGUIDialogMusicInfo::OnGetArt()
     return; // Cancelled
 
   CFileItemList items;
-  CGUIListItem::ArtMap primeArt = m_item->GetArt(); // art without fallbacks
+  const KODI::ART::Artwork& primeArt = m_item->GetArt(); // art without fallbacks
   bool bHasArt = m_item->HasArt(type);
   bool bFallback(false);
   if (bHasArt)
   {
     // Check if that type of art is actually a fallback, e.g. artist fanart
-    CGUIListItem::ArtMap::const_iterator i = primeArt.find(type);
+    const auto i = primeArt.find(type);
     bFallback = (i == primeArt.end());
   }
 

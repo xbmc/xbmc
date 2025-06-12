@@ -211,7 +211,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   }
 
   // if we have no art, look for it all
-  std::map<std::string, std::string> artwork = pItem->GetArt();
+  KODI::ART::Artwork artwork = pItem->GetArt();
   if (artwork.empty())
   {
     std::vector<std::string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
@@ -253,7 +253,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
       pItem->HasVideoInfoTag() && pItem->GetProperty("libraryartfilled").asBoolean();
   if (!isLibraryItem || !libraryArtFilled)
   {
-    std::map<std::string, std::string> artwork = pItem->GetArt();
+    KODI::ART::Artwork artwork = pItem->GetArt();
     std::vector<std::string> artTypes =
         GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
     if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
@@ -356,7 +356,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
 {
   CVideoInfoTag &tag = *item.GetVideoInfoTag();
-  std::map<std::string, std::string> artwork;
+  KODI::ART::Artwork artwork;
   // Video item can be an album - either a 
   // a) search result with full details including music library album id, or 
   // b) musicvideo album that needs matching to a music album, storing id as well as fetch art.
@@ -446,7 +446,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       // For episodes and seasons, we want to set fanart for that of the show
       if (!item.HasArt("tvshow.fanart") && tag.m_iIdShow >= 0)
       {
-        const ArtMap& artmap = GetArtFromCache(MediaTypeTvShow, tag.m_iIdShow);
+        const KODI::ART::Artwork& artmap = GetArtFromCache(MediaTypeTvShow, tag.m_iIdShow);
         if (!artmap.empty())
         {
           item.AppendArt(artmap, MediaTypeTvShow);
@@ -457,14 +457,14 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
 
       if (tag.m_type == MediaTypeEpisode && !item.HasArt("season.poster") && tag.m_iSeason > -1)
       {
-        const ArtMap& artmap = GetArtFromCache(MediaTypeSeason, tag.m_iIdSeason);
+        const KODI::ART::Artwork& artmap = GetArtFromCache(MediaTypeSeason, tag.m_iIdSeason);
         if (!artmap.empty())
           item.AppendArt(artmap, MediaTypeSeason);
       }
     }
     else if (tag.m_type == MediaTypeMovie && tag.m_set.id >= 0 && !item.HasArt("set.fanart"))
     {
-      const ArtMap& artmap = GetArtFromCache(MediaTypeVideoCollection, tag.m_set.id);
+      const KODI::ART::Artwork& artmap = GetArtFromCache(MediaTypeVideoCollection, tag.m_set.id);
       if (!artmap.empty())
         item.AppendArt(artmap, MediaTypeVideoCollection);
     }
@@ -622,13 +622,14 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     item.SetProperty("stereomode", CStereoscopicsManager::NormalizeStereoMode(stereoMode));
 }
 
-const ArtMap& CVideoThumbLoader::GetArtFromCache(const std::string &mediaType, const int id)
+const KODI::ART::Artwork& CVideoThumbLoader::GetArtFromCache(const std::string& mediaType,
+                                                             const int id)
 {
   std::pair<MediaType, int> key = std::make_pair(mediaType, id);
   auto it = m_artCache.find(key);
   if (it == m_artCache.end())
   {
-    ArtMap newart;
+    KODI::ART::Artwork newart;
     m_videoDatabase->GetArtForItem(id, mediaType, newart);
     it = m_artCache.insert(std::make_pair(key, std::move(newart))).first;
   }

@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
+#include "utils/Artwork.h"
 
 #include <map>
 #include <memory>
@@ -134,7 +135,6 @@ struct DependencyInfo
 };
 
 typedef std::map<std::string, std::string> InfoMap;
-typedef std::map<std::string, std::string> ArtMap;
 
 class CAddonInfoBuilder;
 
@@ -222,7 +222,7 @@ public:
   const std::string& ProfilePath() const { return m_profilePath; }
   const std::string& ChangeLog() const { return GetTranslatedText(m_changelog); }
   const std::string& Icon() const { return m_icon; }
-  const ArtMap& Art() const { return m_art; }
+  const KODI::ART::Artwork& Art() const { return m_art; }
   const std::vector<std::string>& Screenshots() const { return m_screenshots; }
   const std::string& Disclaimer() const { return GetTranslatedText(m_disclaimer); }
   const std::vector<DependencyInfo>& GetDependencies() const { return m_dependencies; }
@@ -284,7 +284,7 @@ private:
   std::string m_profilePath;
   std::unordered_map<std::string, std::string> m_changelog;
   std::string m_icon;
-  ArtMap m_art;
+  KODI::ART::Artwork m_art;
   std::vector<std::string> m_screenshots;
   std::unordered_map<std::string, std::string> m_disclaimer;
   std::vector<DependencyInfo> m_dependencies;

@@ -26,6 +26,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Artwork.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -107,7 +108,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   do
   {
     std::unique_ptr<CVideoInfoTag> pluginTag;
-    std::unique_ptr<CGUIListItem::ArtMap> pluginArt;
+    std::unique_ptr<KODI::ART::Artwork> pluginArt;
 
     if (!ignoreNfo)
     {

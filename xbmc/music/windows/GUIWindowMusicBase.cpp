@@ -61,6 +61,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -826,7 +827,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       std::string dirType = MediaTypeArtist;
       if (params.GetAlbumId() > 0)
         dirType = MediaTypeAlbum;
-      std::map<std::string, std::string> artmap;
+      KODI::ART::Artwork artmap;
       for (auto artitem : art)
       {
         std::string artname;
@@ -840,7 +841,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
             StringUtils::Replace(artitem.prefix, "albumartist", "artist");
           artname = artitem.prefix + "." + artitem.artType;
         }
-      artmap.insert(std::make_pair(artname, artitem.url));
+        artmap.insert(std::make_pair(artname, artitem.url));
       }
       items.SetArt(artmap);
     }

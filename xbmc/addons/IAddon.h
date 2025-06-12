@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/Artwork.h"
+
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -67,7 +69,6 @@ typedef std::shared_ptr<IAddon> AddonPtr;
 typedef std::vector<AddonPtr> VECADDONS;
 
 using InfoMap = std::map<std::string, std::string>;
-using ArtMap = std::map<std::string, std::string>;
 
 class IAddon : public std::enable_shared_from_this<IAddon>
 {
@@ -90,7 +91,7 @@ public:
   virtual std::string LibPath() const = 0;
   virtual std::string ChangeLog() const = 0;
   virtual std::string FanArt() const = 0;
-  virtual ArtMap Art() const = 0;
+  virtual KODI::ART::Artwork Art() const = 0;
   virtual std::vector<std::string> Screenshots() const = 0;
   virtual std::string Author() const = 0;
   virtual std::string Icon() const = 0;

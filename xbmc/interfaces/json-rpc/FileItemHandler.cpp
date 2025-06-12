@@ -28,6 +28,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 #include "utils/ISerializable.h"
 #include "utils/SortUtils.h"
@@ -189,7 +190,7 @@ bool CFileItemHandler::GetField(const std::string& field,
         fetchedArt = true;
       }
 
-      CGUIListItem::ArtMap artMap = item->GetArt();
+      const KODI::ART::Artwork& artMap = item->GetArt();
       CVariant artObj(CVariant::VariantTypeObject);
       for (const auto& artIt : artMap)
       {

@@ -12,6 +12,7 @@
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
 #include "guilib/GUIListItem.h"
+#include "utils/Artwork.h"
 
 #include <set>
 #include <string>
@@ -99,7 +100,10 @@ namespace KODI::VIDEO
      \param art      artwork map to which season thumbs are added.
      \param useLocal whether to use local thumbs, defaults to true
      */
-    static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::map<std::string, std::string> > &art, const std::vector<std::string> &artTypes, bool useLocal = true);
+    static void GetSeasonThumbs(const CVideoInfoTag& show,
+                                KODI::ART::SeasonsArtwork& art,
+                                const std::vector<std::string>& artTypes,
+                                bool useLocal = true);
     static std::string GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath);
 
     bool EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList);
@@ -283,9 +287,11 @@ namespace KODI::VIDEO
     CVideoDatabase::ScraperCache m_scraperCache;
 
   private:
-    static void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
-      const std::vector<std::string>& wantedArtTypes, const std::string& itemPath,
-      bool addAll, bool exactName);
+    static void AddLocalItemArtwork(KODI::ART::Artwork& itemArt,
+                                    const std::vector<std::string>& wantedArtTypes,
+                                    const std::string& itemPath,
+                                    bool addAll,
+                                    bool exactName);
 
     /*! \brief Retrieve the art type for an image from the given size.
      \param width the width of the image.

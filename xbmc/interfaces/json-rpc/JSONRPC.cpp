@@ -387,8 +387,7 @@ void CJSONRPCUtils::NotifyItemUpdated(const std::shared_ptr<CFileItem>& item)
   wm.SendThreadMessage(message);
 }
 
-void CJSONRPCUtils::NotifyItemUpdated(const CVideoInfoTag& info,
-                                      const std::map<std::string, std::string>& artwork)
+void CJSONRPCUtils::NotifyItemUpdated(const CVideoInfoTag& info, const KODI::ART::Artwork& artwork)
 {
   CFileItemPtr msgItem(new CFileItem(info));
   if (!artwork.empty())

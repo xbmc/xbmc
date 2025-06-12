@@ -16,6 +16,7 @@
 #include "Artist.h"
 #include "Song.h"
 #include "XBDateTime.h"
+#include "utils/Artwork.h"
 #include "utils/ScraperUrl.h"
 
 #include <map>
@@ -154,7 +155,7 @@ public:
   std::vector<std::string> moods;
   std::vector<std::string> styles;
   std::vector<std::string> themes;
-  std::map<std::string, std::string> art;
+  KODI::ART::Artwork art;
   std::string strReview;
   std::string strLabel;
   std::string strType;

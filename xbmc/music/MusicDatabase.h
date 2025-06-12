@@ -18,6 +18,7 @@
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
 #include "settings/LibExportSettings.h"
+#include "utils/Artwork.h"
 #include "utils/SortUtils.h"
 
 #include <utility>
@@ -750,10 +751,7 @@ public:
    \param art a map of <type, url> where type is "thumb", "fanart", etc. and url is the original url of the art.
    \sa GetArtForItem
    */
-  void SetArtForItem(int mediaId,
-                     const std::string& mediaType,
-                     const std::map<std::string, std::string>& art);
-
+  void SetArtForItem(int mediaId, const std::string& mediaType, const KODI::ART::Artwork& art);
 
   /*! \brief Fetch all related art for a database item.
   Fetches multiple pieces of art for a database item including that for related media types
@@ -786,9 +784,7 @@ public:
    \return true if art is retrieved, false if no art is found.
    \sa SetArtForItem
    */
-  bool GetArtForItem(int mediaId,
-                     const std::string& mediaType,
-                     std::map<std::string, std::string>& art);
+  bool GetArtForItem(int mediaId, const std::string& mediaType, KODI::ART::Artwork& art);
 
   /*! \brief Fetch art for a database item.
    Fetches a single piece of art for a database item.
