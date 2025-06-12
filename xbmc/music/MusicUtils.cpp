@@ -509,7 +509,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
   if (item->IsParentFolder() || !item->CanQueue() || item->IsRAR() || item->IsZIP())
     return;
 
-  if (MUSIC::IsMusicDb(*item) && item->m_bIsFolder && !item->IsParentFolder())
+  if (MUSIC::IsMusicDb(*item) && item->IsFolder() && !item->IsParentFolder())
   {
     // we have a music database folder, just grab the "all" item underneath it
     XFILE::CMusicDatabaseDirectory dir;
@@ -532,7 +532,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     }
   }
 
-  if (item->m_bIsFolder)
+  if (item->IsFolder())
   {
     // Check if we add a locked share
     if (item->IsShareOrDrive())
@@ -559,7 +559,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
         if (i->IsLabelPreformatted())
           continue;
 
-        if (i->m_bIsFolder)
+        if (i->IsFolder())
           folderFormatter.FormatLabels(i.get());
         else
           fileFormatter.FormatLabels(i.get());
@@ -728,7 +728,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
     item->SetCanQueue(true);
   }
 
-  if (item->m_bIsFolder)
+  if (item->IsFolder())
   {
     AddItemToPlayListAndPlay(item, nullptr, player);
   }
@@ -918,7 +918,7 @@ bool IsItemPlayable(const CFileItem& item)
     if (StringUtils::StartsWith(item.GetPath(), StringUtils::Format("{}/music/", path)))
       return true;
 
-    if (!item.m_bIsFolder && !item.HasMusicInfoTag())
+    if (!item.IsFolder() && !item.HasMusicInfoTag())
     {
       // Unknown location. Type cannot be determined for non-folder items.
       return false;
@@ -928,7 +928,7 @@ bool IsItemPlayable(const CFileItem& item)
   if (IsNonExistingUserPartyModePlaylist(item))
     return false;
 
-  if (item.m_bIsFolder &&
+  if (item.IsFolder() &&
       (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/")))
   {
     // Exclude top level nodes - eg can't play 'genres' just a specific genre etc
@@ -948,11 +948,11 @@ bool IsItemPlayable(const CFileItem& item)
   {
     return true;
   }
-  else if (!item.m_bIsFolder && MUSIC::IsAudio(item) && !IsEmptyMusicItem(item))
+  else if (!item.IsFolder() && MUSIC::IsAudio(item) && !IsEmptyMusicItem(item))
   {
     return true;
   }
-  else if (item.m_bIsFolder && !item.IsPlugin() && !item.IsScript())
+  else if (item.IsFolder() && !item.IsPlugin() && !item.IsScript())
   {
     // Not a music-specific folder (just file:// or nfs://). Allow play if context is Music window.
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_NAV &&

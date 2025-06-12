@@ -48,7 +48,7 @@ CExecString::CExecString(const std::string& function,
 
   m_params.emplace_back(StringUtils::Paramify(target.GetPath()));
 
-  if (target.m_bIsFolder)
+  if (target.IsFolder())
     m_params.emplace_back("isdir");
 
   if (!param.empty())
@@ -105,7 +105,7 @@ bool CExecString::Parse(const CFileItem& item, const std::string& contextWindow)
     const CURL url(item.GetPath());
     Parse(CURL::Decode(url.GetHostName()));
   }
-  else if (item.m_bIsFolder &&
+  else if (item.IsFolder() &&
            (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders ||
             !(PLAYLIST::IsSmartPlayList(item) || PLAYLIST::IsPlayList(item))))
   {

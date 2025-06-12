@@ -163,7 +163,7 @@ bool CFileOperationJob::DoProcess(FileAction action,
         // get filename from label instead of path
         strFileName = pItem->GetLabel();
 
-        if (!pItem->m_bIsFolder && !URIUtils::HasExtension(strFileName))
+        if (!pItem->IsFolder() && !URIUtils::HasExtension(strFileName))
         {
           // FIXME: for now we only work well if the url has the extension
           // we should map the content type to the extension otherwise
@@ -177,7 +177,7 @@ bool CFileOperationJob::DoProcess(FileAction action,
       if (!strDestFile.empty()) // only do this if we have a destination
         strnewDestFile = URIUtils::ChangeBasePath(pItem->GetPath(), strFileName, strDestFile); // Convert (URL) encoding + slashes (if source / target differ)
 
-      if (pItem->m_bIsFolder)
+      if (pItem->IsFolder())
       {
         // in ActionReplace mode all subdirectories will be removed by the below
         // DoProcessFolder(ActionDelete) call as well, so ActionCopy is enough when

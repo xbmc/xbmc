@@ -388,7 +388,7 @@ std::string DeleteRecording::GetLabel(const CFileItem& item) const
   if (recording && recording->IsDeleted())
     return g_localizeStrings.Get(19291); // Delete permanently
 
-  if (recording || item.m_bIsFolder)
+  if (recording || item.IsFolder())
     return g_localizeStrings.Get(117); // Delete
 
   return g_localizeStrings.Get(19357); // Delete recording
@@ -410,7 +410,7 @@ bool DeleteRecording::IsVisible(const CFileItem& item) const
     return true;
 
   // recordings folder?
-  if (item.m_bIsFolder && pvrMgr.Clients()->AnyClientSupportingRecordingsDelete())
+  if (item.IsFolder() && pvrMgr.Clients()->AnyClientSupportingRecordingsDelete())
   {
     const CPVRRecordingsPath path(item.GetPath());
     return path.IsValid() && !path.IsRecordingsRoot();
@@ -447,7 +447,7 @@ bool UndeleteRecording::Execute(const CFileItemPtr& item) const
 bool DeleteWatchedRecordings::IsVisible(const CFileItem& item) const
 {
   // recordings folder?
-  if (item.m_bIsFolder && !item.IsParentFolder() && CPVRRecordingsPath(item.GetPath()).IsValid())
+  if (item.IsFolder() && !item.IsParentFolder() && CPVRRecordingsPath(item.GetPath()).IsValid())
     return item.GetProperty("watchedepisodes").asInteger() > 0;
 
   return false;
@@ -666,8 +666,7 @@ bool PVRClientMenuHook::IsVisible(const CFileItem& item) const
     return false;
 
   if (m_hook.IsAllHook())
-    return !item.m_bIsFolder &&
-           !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER);
+    return !item.IsFolder() && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER);
   else if (m_hook.IsEpgHook())
     return item.IsEPG();
   else if (m_hook.IsChannelHook())

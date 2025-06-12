@@ -128,7 +128,7 @@ bool CGUIWindowPVRProvidersBase::OnMessage(CGUIMessage& message)
                 }
               }
 
-              if (item->m_bIsFolder)
+              if (item->IsFolder())
               {
                 // Folders and ".." folders in subfolders are handled by base class.
                 ret = false;

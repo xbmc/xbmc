@@ -229,7 +229,7 @@ void CSkinInfo::Start()
     for (int i = 0; i < items.Size(); i++)
     {
       RESOLUTION_INFO res;
-      if (items[i]->m_bIsFolder && TranslateResolution(items[i]->GetLabel(), res))
+      if (items[i]->IsFolder() && TranslateResolution(items[i]->GetLabel(), res))
         m_resolutions.push_back(res);
     }
   }
@@ -474,7 +474,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const SettingConstPtr& setting,
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
-    if (!pItem->m_bIsFolder && !StringUtils::EqualsNoCase(pItem->GetLabel(), "defaults.xml"))
+    if (!pItem->IsFolder() && !StringUtils::EqualsNoCase(pItem->GetLabel(), "defaults.xml"))
     { // not the default one
       vecColors.push_back(pItem->GetLabel().substr(0, pItem->GetLabel().size() - 4));
     }

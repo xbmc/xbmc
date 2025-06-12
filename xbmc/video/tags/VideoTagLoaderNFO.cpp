@@ -29,7 +29,7 @@ CVideoTagLoaderNFO::CVideoTagLoaderNFO(const CFileItem& item,
                                        bool lookInFolder)
   : IVideoInfoTagLoader(item, std::move(info), lookInFolder)
 {
-  if (m_info && m_info->Content() == CONTENT_TVSHOWS && m_item.m_bIsFolder)
+  if (m_info && m_info->Content() == CONTENT_TVSHOWS && m_item.IsFolder())
     m_path = URIUtils::AddFileToFolder(m_item.GetPath(), "tvshow.nfo");
   else
     m_path = FindNFO(m_item, lookInFolder);
@@ -46,7 +46,7 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
 {
   CNfoFile nfoReader;
   CInfoScanner::InfoType result = CInfoScanner::InfoType::NONE;
-  if (m_info && m_info->Content() == CONTENT_TVSHOWS && !m_item.m_bIsFolder)
+  if (m_info && m_info->Content() == CONTENT_TVSHOWS && !m_item.IsFolder())
     result = nfoReader.Create(m_path, m_info, m_item.GetVideoInfoTag()->m_iEpisode);
   else if (m_info)
     result = nfoReader.Create(m_path, m_info);
@@ -96,7 +96,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
 {
   std::string nfoFile;
   // Find a matching .nfo file
-  if (!item.m_bIsFolder)
+  if (!item.IsFolder())
   {
     if (URIUtils::IsInRAR(item.GetPath())) // we have a rarred item - we want to check outside the rars
     {
@@ -168,13 +168,13 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     }
   }
   // folders (or stacked dvds) can take any nfo file if there's a unique one
-  if (item.m_bIsFolder || item.IsOpticalMediaFile() || (movieFolder && nfoFile.empty()))
+  if (item.IsFolder() || item.IsOpticalMediaFile() || (movieFolder && nfoFile.empty()))
   {
     // see if there is a unique nfo file in this folder, and if so, use that
     CFileItemList items;
     CDirectory dir;
     std::string strPath;
-    if (item.m_bIsFolder)
+    if (item.IsFolder())
       strPath = item.GetPath();
     else
       strPath = URIUtils::GetDirectory(item.GetPath());

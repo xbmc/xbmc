@@ -27,7 +27,7 @@ TEST(TestFileOperationJob, ActionCopy)
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
+  item->SetFolder(false);
   item->Select(true);
   items.Add(item);
 
@@ -61,7 +61,7 @@ TEST(TestFileOperationJob, ActionMove)
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
+  item->SetFolder(false);
   item->Select(true);
   items.Add(item);
 
@@ -97,7 +97,7 @@ TEST(TestFileOperationJob, ActionDelete)
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
+  item->SetFolder(false);
   item->Select(true);
   items.Add(item);
 
@@ -122,7 +122,7 @@ TEST(TestFileOperationJob, ActionDelete)
   items.Clear();
   CFileItemPtr item2(new CFileItem(destfile));
   item2->SetPath(destfile);
-  item2->m_bIsFolder = false;
+  item2->SetFolder(false);
   item2->Select(true);
   items.Add(item2);
 
@@ -149,7 +149,7 @@ TEST(TestFileOperationJob, ActionReplace)
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
+  item->SetFolder(false);
   item->Select(true);
   items.Add(item);
 
@@ -197,7 +197,7 @@ TEST(TestFileOperationJob, ActionCreateFolder)
 
   CFileItemPtr item(new CFileItem(destpath));
   item->SetPath(destpath);
-  item->m_bIsFolder = true;
+  item->SetFolder(true);
   item->Select(true);
   items.Add(item);
 
@@ -233,7 +233,7 @@ TEST(TestFileOperationJob, ActionDeleteFolder)
 
   CFileItemPtr item(new CFileItem(destpath));
   item->SetPath(destpath);
-  item->m_bIsFolder = true;
+  item->SetFolder(true);
   item->Select(true);
   items.Add(item);
 
@@ -265,7 +265,7 @@ TEST(TestFileOperationJob, GetFunctions)
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
+  item->SetFolder(false);
   item->Select(true);
   items.Add(item);
 

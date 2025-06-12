@@ -492,7 +492,7 @@ void CGUIDialogSongInfo::OnSetUserrating()
 
 void CGUIDialogSongInfo::ShowFor(CFileItem* pItem)
 {
-  if (pItem->m_bIsFolder)
+  if (pItem->IsFolder())
     return;
   if (!MUSIC::IsMusicDb(*pItem))
     pItem->LoadMusicTag();

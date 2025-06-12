@@ -223,7 +223,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         path = URIUtils::AddFileToFolder(path,aDir.name);
         URIUtils::AddSlashAtEnd(path);
         pItem->SetPath(path);
-        pItem->m_bIsFolder = true;
+        pItem->SetFolder(true);
         pItem->SetDateTime(localTime);
         if (hidden)
           pItem->SetProperty("file:hidden", true);
@@ -233,7 +233,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         CFileItemPtr pItem(new CFileItem(strFile));
         pItem->SetPath(strRoot + aDir.name);
-        pItem->m_bIsFolder = false;
+        pItem->SetFolder(false);
         pItem->SetSize(iSize);
         pItem->SetDateTime(localTime);
         if (hidden)

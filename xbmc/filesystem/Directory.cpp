@@ -264,7 +264,7 @@ bool CDirectory::GetDirectory(const CURL& url,
       for (int i = 0; i < items.Size(); ++i)
       {
         CFileItemPtr item = items[i];
-        if (!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetURL()))
+        if (!item->IsFolder() && !pDirectory->IsAllowed(item->GetURL()))
         {
           items.Remove(i);
           i--; // don't confuse loop
@@ -328,14 +328,14 @@ bool CDirectory::EnumerateDirectory(
   // process all files
   for (const auto& item : items)
   {
-    if (!item->m_bIsFolder)
+    if (!item->IsFolder())
       callback(item);
   }
 
   // process all directories
   for (const auto& item : items)
   {
-    if (item->m_bIsFolder && filter(item))
+    if (item->IsFolder() && filter(item))
     {
       if (!fileOnly)
         callback(item);
@@ -474,17 +474,16 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const std::string &
     CFileItemPtr pItem=items[i];
     auto mode =
         expandImages && pItem->IsDiscImage() ? FileFolderType::ONBROWSE : FileFolderType::ALWAYS;
-    if (!pItem->m_bIsFolder && pItem->IsFileFolder(mode))
+    if (!pItem->IsFolder() && pItem->IsFileFolder(mode))
     {
       std::unique_ptr<IFileDirectory> pDirectory(CFileDirectoryFactory::Create(pItem->GetURL(),pItem.get(),mask));
       if (pDirectory)
-        pItem->m_bIsFolder = true;
-      else
-        if (pItem->m_bIsFolder)
-        {
-          items.Remove(i);
-          i--; // don't confuse loop
-        }
+        pItem->SetFolder(true);
+      else if (pItem->IsFolder())
+      {
+        items.Remove(i);
+        i--; // don't confuse loop
+      }
     }
   }
 }

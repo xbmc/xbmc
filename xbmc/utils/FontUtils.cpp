@@ -233,7 +233,7 @@ void ClearTemporaryFonts()
                            DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_BYPASS_CACHE | DIR_FLAG_GET_HIDDEN);
   for (const auto& item : items)
   {
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
       continue;
 
     CFile::Delete(item->GetPath());

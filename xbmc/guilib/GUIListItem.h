@@ -61,6 +61,9 @@ public:
   void SetLabel2(std::string_view strLabel);
   const std::string& GetLabel2() const;
 
+  void SetFolder(bool isFolder) { m_bIsFolder = isFolder; }
+  bool IsFolder() const { return m_bIsFolder; }
+
   void SetOverlayImage(GUIIconOverlay icon);
   std::string GetOverlayImage() const;
 
@@ -135,8 +138,6 @@ public:
   void FreeMemory(bool immediately = false);
   void SetInvalid();
 
-  bool m_bIsFolder{false}; ///< is item a folder or a file
-
   void SetProperty(const std::string &strKey, const CVariant &value);
 
   void IncrementProperty(const std::string &strKey, int nVal);
@@ -194,6 +195,7 @@ protected:
   PropertyMap m_mapProperties;
 
 private:
+  bool m_bIsFolder{false}; ///< is item a folder or a file
   std::wstring m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
   std::string m_strLabel;      // text of column1
 

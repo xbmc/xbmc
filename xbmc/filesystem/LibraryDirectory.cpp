@@ -95,7 +95,7 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     const TiXmlElement *node = NULL;
     std::string xml = nodes[i]->GetPath();
-    if (nodes[i]->m_bIsFolder)
+    if (nodes[i]->IsFolder())
       node = LoadXML(URIUtils::AddFileToFolder(xml, "index.xml"));
     else
     {

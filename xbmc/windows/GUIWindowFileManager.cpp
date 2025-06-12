@@ -123,8 +123,8 @@ CGUIWindowFileManager::CGUIWindowFileManager(void)
   m_vecItems[1] = new CFileItemList;
   m_Directory[0]->SetPath("?");
   m_Directory[1]->SetPath("?");
-  m_Directory[0]->m_bIsFolder = true;
-  m_Directory[1]->m_bIsFolder = true;
+  m_Directory[0]->SetFolder(true);
+  m_Directory[1]->SetFolder(true);
   bCheckShareConnectivity = true;
   m_loadType = KEEP_IN_MEMORY;
 }
@@ -227,8 +227,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
       {
         m_Directory[0]->SetPath("?");
         m_Directory[1]->SetPath("?");
-        m_Directory[0]->m_bIsFolder = true;
-        m_Directory[1]->m_bIsFolder = true;
+        m_Directory[0]->SetFolder(true);
+        m_Directory[1]->SetFolder(true);
         return true;
       }
 
@@ -350,7 +350,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->m_bIsFolder && (!pItem->GetSize() || pItem->IsPath("add")))
+    if (pItem->IsFolder() && (!pItem->GetSize() || pItem->IsPath("add")))
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
@@ -502,7 +502,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     pItem->SetArt("icon", "DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);
-    pItem->m_bIsFolder = true;
+    pItem->SetFolder(true);
     pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems[iList]->Add(pItem);
   }
@@ -510,7 +510,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(m_rootDir.IsSource(strDirectory) ? "" : strParentPath);
-    pItem->m_bIsFolder = true;
+    pItem->SetFolder(true);
     pItem->SetIsShareOrDrive(false);
     m_vecItems[iList]->AddFront(pItem, 0);
   }
@@ -591,18 +591,18 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     return;
   }
 
-  if (!pItem->m_bIsFolder && pItem->IsFileFolder(FileFolderType::MASK_ALL))
+  if (!pItem->IsFolder() && pItem->IsFileFolder(FileFolderType::MASK_ALL))
   {
     XFILE::IFileDirectory *pFileDirectory = NULL;
     pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get(), "");
     if(pFileDirectory)
-      pItem->m_bIsFolder = true;
-    else if(pItem->m_bIsFolder)
-      pItem->m_bIsFolder = false;
+      pItem->SetFolder(true);
+    else if (pItem->IsFolder())
+      pItem->SetFolder(false);
     delete pFileDirectory;
   }
 
-  if (pItem->m_bIsFolder)
+  if (pItem->IsFolder())
   {
     // save path + drive type because of the possible refresh
     std::string strPath = pItem->GetPath();
@@ -1077,13 +1077,13 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   }
   if (CanNewFolder(list))
     choices.Add(CONTROL_BTNNEWFOLDER, 20309);
-  if (item >= 0 && pItem->m_bIsFolder && !pItem->IsParentFolder())
+  if (item >= 0 && pItem->IsFolder() && !pItem->IsParentFolder())
     choices.Add(CONTROL_BTNCALCSIZE, 13393);
   choices.Add(CONTROL_BTNSWITCHMEDIA, 523);
   if (CServiceBroker::GetJobManager()->IsProcessing("filemanager"))
     choices.Add(CONTROL_BTNCANCELJOB, 167);
 
-  if (!pItem->m_bIsFolder)
+  if (!pItem->IsFolder())
     choices.Add(CONTROL_BTNVIEW, 39104);
 
   int btnid = CGUIDialogContextMenu::ShowAndGetChoice(choices);
@@ -1131,7 +1131,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     for (int i=0; i<m_vecItems[list]->Size(); ++i)
     {
       CFileItemPtr pItem2=m_vecItems[list]->Get(i);
-      if (pItem2->m_bIsFolder && pItem2->IsSelected())
+      if (pItem2->IsFolder() && pItem2->IsSelected())
       {
         int64_t folderSize = CalculateFolderSize(pItem2->GetPath(), progress);
         if (folderSize >= 0)
@@ -1198,7 +1198,7 @@ int64_t CGUIWindowFileManager::CalculateFolderSize(const std::string &strDirecto
   rootDir.GetDirectory(pathToUrl, items, false, false);
   for (int i=0; i < items.Size(); i++)
   {
-    if (items[i]->m_bIsFolder && !items[i]->IsParentFolder()) // folder
+    if (items[i]->IsFolder() && !items[i]->IsParentFolder()) // folder
     {
       int64_t folderSize = CalculateFolderSize(items[i]->GetPath(), pProgress);
       if (folderSize < 0) return -1;

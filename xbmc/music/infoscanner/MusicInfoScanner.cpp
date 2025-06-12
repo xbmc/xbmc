@@ -557,7 +557,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
     if (m_bStop)
       break;
     // if we have a directory item (non-playlist) we then recurse into that folder
-    if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
+    if (pItem->IsFolder() && !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
     {
       std::string strPath=pItem->GetPath();
       if (!DoScan(strPath))
@@ -584,7 +584,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::ScanTags(const CFileItemList& items,
     if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
       continue;
 
-    if (pItem->m_bIsFolder || PLAYLIST::IsPlayList(*pItem) || pItem->IsPicture() ||
+    if (pItem->IsFolder() || PLAYLIST::IsPlayList(*pItem) || pItem->IsPicture() ||
         MUSIC::IsLyrics(*pItem))
       continue;
 
@@ -2196,7 +2196,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
 
   for (const auto& artFile : availableArtFiles)
   {
-    if (artFile->m_bIsFolder)
+    if (artFile->IsFolder())
       continue;
     std::string strCandidate = URIUtils::GetFileName(artFile->GetPath());
     // Strip media name
@@ -2338,7 +2338,7 @@ int CMusicInfoScanner::CountFiles(const CFileItemList& items, bool recursive)
   {
     const CFileItemPtr pItem = items[i];
 
-    if (recursive && pItem->m_bIsFolder)
+    if (recursive && pItem->IsFolder())
       count += CountFilesRecursively(pItem->GetPath());
     else if (MUSIC::IsAudio(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
       ++count;

@@ -708,7 +708,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
   else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
-           pItem->GetPath().size() > 22 && pItem->m_bIsFolder)
+           pItem->GetPath().size() > 22 && pItem->IsFolder())
   {
     CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
 
@@ -737,7 +737,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
   else if (m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
            m_vecItems->IsPath("special://videoplaylists/"))
   {
-    pItem->m_bIsFolder = false;
+    pItem->SetFolder(false);
     CFileUtils::DeleteItemWithConfirm(pItem);
   }
   else
@@ -842,7 +842,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
-        if (node == NodeType::ACTOR && !dir.IsAllItem(item->GetPath()) && item->m_bIsFolder)
+        if (node == NodeType::ACTOR && !dir.IsAllItem(item->GetPath()) && item->IsFolder())
         {
           buttons.Add(CONTEXT_BUTTON_SET_ART, 13511); // Choose art
         }
@@ -860,7 +860,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
         // add "Set/Change content" to folders
-        if (item->m_bIsFolder && !VIDEO::IsVideoDb(*item) && !PLAYLIST::IsPlayList(*item) &&
+        if (item->IsFolder() && !VIDEO::IsVideoDb(*item) && !PLAYLIST::IsPlayList(*item) &&
             !PLAYLIST::IsSmartPlayList(*item) && !item->IsLibraryFolder() && !item->IsLiveTV() &&
             !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
         {

@@ -65,7 +65,7 @@ bool CVideoInfo::IsVisible(const CFileItem& item) const
   if (CVideoInfoBase::IsVisible(item))
     return true;
 
-  if (item.m_bIsFolder)
+  if (item.IsFolder())
     return false;
 
   if (item.IsPVRRecording())
@@ -82,7 +82,7 @@ bool CVideoRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
     return false;
 
   // Folders don't have a resume point
-  return !item.m_bIsFolder && VIDEO::UTILS::GetItemResumeInformation(item).isResumable;
+  return !item.IsFolder() && VIDEO::UTILS::GetItemResumeInformation(item).isResumable;
 }
 
 bool CVideoRemoveResumePoint::Execute(const std::shared_ptr<CFileItem>& item) const
@@ -96,10 +96,10 @@ bool CVideoMarkWatched::IsVisible(const CFileItem& item) const
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
-  if (item.m_bIsFolder && item.IsPlugin()) // we cannot manage plugin folder's watched state
+  if (item.IsFolder() && item.IsPlugin()) // we cannot manage plugin folder's watched state
     return false;
 
-  if (item.m_bIsFolder)
+  if (item.IsFolder())
   {
     if (item.HasProperty("watchedepisodes") && item.HasProperty("totalepisodes"))
     {
@@ -136,10 +136,10 @@ bool CVideoMarkUnWatched::IsVisible(const CFileItem& item) const
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
-  if (item.m_bIsFolder && item.IsPlugin()) // we cannot manage plugin folder's watched state
+  if (item.IsFolder() && item.IsPlugin()) // we cannot manage plugin folder's watched state
     return false;
 
-  if (item.m_bIsFolder)
+  if (item.IsFolder())
   {
     if (item.HasProperty("watchedepisodes"))
     {
@@ -172,7 +172,7 @@ bool CVideoMarkUnWatched::Execute(const std::shared_ptr<CFileItem>& item) const
 
 bool CVideoBrowse::IsVisible(const CFileItem& item) const
 {
-  return ((item.m_bIsFolder || item.IsFileFolder(FileFolderType::MASK_ONBROWSE)) &&
+  return ((item.IsFolder() || item.IsFileFolder(FileFolderType::MASK_ONBROWSE)) &&
           VIDEO::UTILS::IsItemPlayable(item));
 }
 
@@ -240,7 +240,7 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
     const auto itemCopy{std::make_shared<CFileItem>(*item)};
     if (VIDEO::IsVideoDb(*itemCopy))
     {
-      if (!itemCopy->m_bIsFolder)
+      if (!itemCopy->IsFolder())
       {
         itemCopy->SetProperty("original_listitem_url", item->GetPath());
         itemCopy->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
@@ -248,7 +248,7 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
       else if (itemCopy->HasVideoInfoTag() && itemCopy->GetVideoInfoTag()->IsDefaultVideoVersion())
       {
         //! @todo get rid of "videos with versions as folder" hack!
-        itemCopy->m_bIsFolder = false;
+        itemCopy->SetFolder(false);
       }
     }
 

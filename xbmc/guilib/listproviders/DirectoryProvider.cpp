@@ -637,7 +637,7 @@ bool CDirectoryProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
   const bool isPlayMedia{exec.GetFunction() == "playmedia"};
 
   // video select action setting is for files only, except exec func is playmedia...
-  if (targetItem->HasVideoInfoTag() && (!targetItem->m_bIsFolder || isPlayMedia))
+  if (targetItem->HasVideoInfoTag() && (!targetItem->IsFolder() || isPlayMedia))
   {
     const std::string targetWindow{GetTarget(*targetItem)};
     if (!targetWindow.empty())
@@ -670,7 +670,7 @@ bool CDirectoryProvider::OnPlay(const std::shared_ptr<CGUIListItem>& item)
 
   // video play action setting is for files and folders...
   if (targetItem->HasVideoInfoTag() ||
-      (targetItem->m_bIsFolder && VIDEO::UTILS::IsItemPlayable(*targetItem)))
+      (targetItem->IsFolder() && VIDEO::UTILS::IsItemPlayable(*targetItem)))
   {
     KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{targetItem};
     if (proc.ProcessDefaultAction())

@@ -207,7 +207,7 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
             CFileItemPtr pItem(new CFileItem((const char*)name));
             pItem->SetPath(std::string((const char*) "upnp://" + uuid + "/"));
-            pItem->m_bIsFolder = true;
+            pItem->SetFolder(true);
             pItem->SetArt("thumb", (const char*)(*device)->GetIconUrl("image/png"));
 
             items.Add(pItem);

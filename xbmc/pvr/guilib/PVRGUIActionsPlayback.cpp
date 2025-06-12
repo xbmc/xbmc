@@ -87,7 +87,7 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item) const
     return true;
   }
 
-  if (!item.m_bIsFolder && VIDEO::UTILS::IsAutoPlayNextItem(item))
+  if (!item.IsFolder() && VIDEO::UTILS::IsAutoPlayNextItem(item))
   {
     // recursively add items located in the same folder as item to play list, starting with item
     std::string parentPath{item.GetProperty("ParentPath").asString()};
@@ -157,7 +157,7 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
 
 bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item) const
 {
-  if (item.m_bIsFolder)
+  if (item.IsFolder())
     return false;
 
   std::shared_ptr<CPVRRecording> recording;

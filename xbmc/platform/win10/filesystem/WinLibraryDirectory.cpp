@@ -112,15 +112,14 @@ bool CWinLibraryDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     std::string itemName = FromW(item.Name().c_str());
 
     CFileItemPtr pItem(new CFileItem(itemName));
-    pItem->m_bIsFolder =
-        (item.Attributes() & FileAttributes::Directory) == FileAttributes::Directory;
+    pItem->SetFolder((item.Attributes() & FileAttributes::Directory) == FileAttributes::Directory);
     IStorageItemProperties storageItemProperties = item.as<IStorageItemProperties>();
     if (item != nullptr)
     {
       pItem->SetTitle(FromW(storageItemProperties.DisplayName().c_str()));
     }
 
-    if (pItem->m_bIsFolder)
+    if (pItem->IsFolder())
       pItem->SetPath(path + itemName + "/");
     else
       pItem->SetPath(path + itemName);
@@ -135,7 +134,7 @@ bool CWinLibraryDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     fileTime2.highDateTime = fileTime1.dwHighDateTime;
     fileTime2.lowDateTime = fileTime1.dwLowDateTime;
     pItem->SetDateTime(fileTime2);
-    if (!pItem->m_bIsFolder)
+    if (!pItem->IsFolder())
       pItem->SetSize(static_cast<int64_t>(props.Size()));
 
     items.Add(pItem);
