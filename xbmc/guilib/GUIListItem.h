@@ -177,8 +177,6 @@ public:
   unsigned int GetCurrentItem() const;
 
 protected:
-  GUIIconOverlay m_overlayIcon{ICON_OVERLAY_NONE}; // type of overlay icon
-
   std::unique_ptr<CGUIListItemLayout> m_layout;
   std::unique_ptr<CGUIListItemLayout> m_focusedLayout;
   bool m_bSelected{false}; // item is selected or not
@@ -198,6 +196,7 @@ private:
   std::wstring m_sortLabel; // text for sorting. Need to be UTF16 for proper sorting
   std::string m_strLabel; // text of column1
   std::string m_strLabel2; // text of column2
+  GUIIconOverlay m_overlayIcon{ICON_OVERLAY_NONE}; // type of overlay icon
 
   KODI::ART::Artwork m_art;
   KODI::ART::Artwork m_artFallbacks;
