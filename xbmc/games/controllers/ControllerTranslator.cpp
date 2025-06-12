@@ -9,6 +9,7 @@
 #include "ControllerTranslator.h"
 
 #include "ControllerDefinitions.h"
+#include "games/ports/PortDefinitions.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -168,4 +169,33 @@ INPUT_TYPE CControllerTranslator::TranslateInputType(const std::string& strType)
     return INPUT_TYPE::ANALOG;
 
   return INPUT_TYPE::UNKNOWN;
+}
+
+PORT_TYPE CControllerTranslator::TranslatePortType(const std::string& strPortType)
+{
+  if (strPortType == KEYBOARD_PORT_TYPE)
+    return PORT_TYPE::KEYBOARD;
+  else if (strPortType == MOUSE_PORT_TYPE)
+    return PORT_TYPE::MOUSE;
+  else if (strPortType == CONTROLLER_PORT_TYPE)
+    return PORT_TYPE::CONTROLLER;
+
+  return PORT_TYPE::UNKNOWN;
+}
+
+const char* CControllerTranslator::TranslatePortType(PORT_TYPE portType)
+{
+  switch (portType)
+  {
+    case PORT_TYPE::KEYBOARD:
+      return KEYBOARD_PORT_TYPE;
+    case PORT_TYPE::MOUSE:
+      return MOUSE_PORT_TYPE;
+    case PORT_TYPE::CONTROLLER:
+      return CONTROLLER_PORT_TYPE;
+    default:
+      break;
+  }
+
+  return "";
 }

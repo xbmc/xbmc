@@ -14,6 +14,11 @@
 #include <string>
 #include <vector>
 
+namespace tinyxml2
+{
+class XMLElement;
+} // namespace tinyxml2
+
 namespace KODI
 {
 namespace GAME
@@ -34,6 +39,8 @@ public:
   CPortNode& operator=(const CPortNode& rhs);
   CPortNode& operator=(CPortNode&& rhs) noexcept;
   ~CPortNode();
+
+  void Clear();
 
   /*!
    * \brief Connection state of the port
@@ -118,6 +125,10 @@ public:
    * \param[out] inputPorts The list of input ports
    */
   void GetInputPorts(std::vector<std::string>& inputPorts) const;
+
+  // XML functions
+  bool Serialize(tinyxml2::XMLElement& portElement) const;
+  bool Deserialize(const tinyxml2::XMLElement& portElement);
 
 private:
   void GetPort(CPhysicalPort& port) const;

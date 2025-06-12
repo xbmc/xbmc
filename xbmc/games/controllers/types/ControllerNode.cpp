@@ -9,16 +9,28 @@
 #include "ControllerNode.h"
 
 #include "ControllerHub.h"
+#include "ServiceBroker.h"
+#include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerTranslator.h"
 #include "games/controllers/input/PhysicalTopology.h"
 #include "games/ports/types/PortNode.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <memory>
 #include <utility>
 
+#include <tinyxml2.h>
+
 using namespace KODI;
 using namespace GAME;
+
+namespace
+{
+constexpr auto XML_ATTR_CONTROLLER = "controller";
+} // namespace
 
 CControllerNode::CControllerNode() : m_hub(new CControllerHub)
 {
@@ -141,4 +153,51 @@ void CControllerNode::GetInputPorts(std::vector<std::string>& inputPorts) const
     inputPorts.emplace_back(m_portAddress);
 
   m_hub->GetInputPorts(inputPorts);
+}
+
+bool CControllerNode::Serialize(tinyxml2::XMLElement& controllerElement) const
+{
+  // Validate state
+  if (!m_controller)
+  {
+    CLog::Log(LOGERROR, "Controller is not set");
+    return false;
+  }
+
+  // Set controller ID
+  controllerElement.SetAttribute(XML_ATTR_CONTROLLER, m_controller->ID().c_str());
+
+  // Serialize hub
+  if (!m_hub->Serialize(controllerElement))
+    return false;
+
+  return true;
+}
+
+bool CControllerNode::Deserialize(const tinyxml2::XMLElement& controllerElement)
+{
+  Clear();
+
+  // Get controller ID
+  const char* controllerId = controllerElement.Attribute(XML_ATTR_CONTROLLER);
+  if (controllerId == nullptr)
+  {
+    CLog::Log(LOGERROR, "Controller is missing \"{}\" attribute", XML_ATTR_CONTROLLER);
+    return false;
+  }
+
+  ADDON::AddonPtr addon;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(
+          controllerId, addon, ADDON::AddonType::GAME_CONTROLLER, ADDON::OnlyEnabled::CHOICE_NO))
+  {
+    CLog::Log(LOGERROR, "Unknown controller: \"{}\"", controllerId);
+    return false;
+  }
+  m_controller = std::static_pointer_cast<CController>(addon);
+
+  // Deserialize hub
+  if (!m_hub->Deserialize(controllerElement))
+    return false;
+
+  return true;
 }
