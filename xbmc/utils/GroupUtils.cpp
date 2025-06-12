@@ -85,7 +85,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
         videoUrl.AddOptions((*set->second.begin())->GetURL().GetOptions());
         pItem->SetPath(videoUrl.ToString());
       }
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
 
       CVideoInfoTag* setInfo = pItem->GetVideoInfoTag();
       setInfo->m_strPath = pItem->GetPath();

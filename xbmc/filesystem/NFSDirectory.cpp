@@ -66,8 +66,7 @@ bool CNFSDirectory::GetDirectoryFromExportList(const std::string& strPath, CFile
     URIUtils::AddSlashAtEnd(path);
     pItem->SetPath(path);
     pItem->SetDateTime(0);
-
-    pItem->m_bIsFolder = true;
+    pItem->SetFolder(true);
     items.Add(pItem);
   }
 
@@ -90,9 +89,8 @@ bool CNFSDirectory::GetServerList(CFileItemList &items)
       std::string path("nfs://" + currentExport);
       URIUtils::AddSlashAtEnd(path);
       pItem->SetDateTime(0);
-
       pItem->SetPath(path);
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
       ret = true; //added at least one entry
   }
@@ -290,11 +288,11 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if (bIsDir)
       {
         URIUtils::AddSlashAtEnd(path);
-        pItem->m_bIsFolder = true;
+        pItem->SetFolder(true);
       }
       else
       {
-        pItem->m_bIsFolder = false;
+        pItem->SetFolder(false);
       }
 
       if (strName[0] == '.')

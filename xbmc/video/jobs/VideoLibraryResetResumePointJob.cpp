@@ -53,7 +53,7 @@ bool CVideoLibraryResetResumePointJob::Work(CVideoDatabase &db)
   CFileItemList items;
   items.Add(std::make_shared<CFileItem>(*m_item));
 
-  if (m_item->m_bIsFolder)
+  if (m_item->IsFolder())
     CUtil::GetRecursiveListing(m_item->GetPath(), items, "", XFILE::DIR_FLAG_NO_FILE_INFO);
 
   std::vector<CFileItemPtr> resetItems;

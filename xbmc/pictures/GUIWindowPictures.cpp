@@ -328,7 +328,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   bool bShowVideos = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PICTURES_SHOWVIDEOS);
   for (const auto& pItem : *m_vecItems)
   {
-    if (!pItem->m_bIsFolder &&
+    if (!pItem->IsFolder() &&
         !(URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath())) &&
         (pItem->IsPicture() || (bShowVideos && VIDEO::IsVideo(*pItem))))
     {
@@ -450,13 +450,15 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (item)
       {
-        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || item->IsScript()))
+        if (!(item->IsFolder() || item->IsZIP() || item->IsRAR() || item->IsCBZ() ||
+              item->IsCBR() || item->IsScript()))
         {
           if (item->IsPicture())
             buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
-          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
+          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW,
+                      item->IsFolder() ? 13317 : 13422); // View Slideshow
         }
-        if (item->m_bIsFolder)
+        if (item->IsFolder())
           buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
 
         if (!m_thumbLoader.IsLoading())
@@ -486,7 +488,7 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   switch (button)
   {
   case CONTEXT_BUTTON_VIEW_SLIDESHOW:
-    if (item && item->m_bIsFolder)
+    if (item && item->IsFolder())
       OnSlideShow(item->GetPath());
     else
       ShowPicture(itemNumber, true);
@@ -582,7 +584,8 @@ void CGUIWindowPictures::OnItemInfo(int itemNumber)
     CGUIDialogAddonInfo::ShowForItem(item);
     return;
   }
-  if (item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || !item->IsPicture())
+  if (item->IsFolder() || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() ||
+      !item->IsPicture())
     return;
   CGUIDialogPictureInfo *pictureInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPictureInfo>(WINDOW_DIALOG_PICTURE_INFO);
   if (pictureInfo)

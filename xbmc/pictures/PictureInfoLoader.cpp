@@ -76,7 +76,7 @@ bool CPictureInfoLoader::LoadItemCached(CFileItem* pItem)
 
 bool CPictureInfoLoader::LoadItemLookup(CFileItem* pItem)
 {
-  if (m_pProgressCallback && !pItem->m_bIsFolder)
+  if (m_pProgressCallback && !pItem->IsFolder())
     m_pProgressCallback->SetProgressAdvance();
 
   if (!pItem->IsPicture() || pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBR() || pItem->IsCBZ() ||

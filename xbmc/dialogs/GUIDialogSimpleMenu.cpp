@@ -132,7 +132,7 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
     }
 
     // If item is not folder (ie. all titles)
-    if (!item_new->m_bIsFolder)
+    if (!item_new->IsFolder())
     {
       if (!usedPlaylists.empty())
       {

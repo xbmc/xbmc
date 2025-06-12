@@ -127,7 +127,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       return;
     }
   }
-  if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->IsShareOrDrive() &&
+  if ((pItem->IsFolder() || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->IsShareOrDrive() &&
       !pItem->IsParentFolder() && !pItem->IsPath("add"))
   {
     // first check for a folder.jpg
@@ -184,7 +184,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
           for (int i=0;i<items.Size();++i)
           {
             CFileItemPtr item = items[i];
-            if (item->m_bIsFolder)
+            if (item->IsFolder())
             {
               ProcessFoldersAndArchives(item.get());
               pItem->SetArt("thumb", items[i]->GetArt("thumb"));

@@ -124,7 +124,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string& strType)
 {
   const std::string strLabel = pItem->GetLabel();
   std::string strHeading;
-  if (pItem->m_bIsFolder)
+  if (pItem->IsFolder())
     strHeading = g_localizeStrings.Get(12325); // "Locked! Enter code..."
   else
     strHeading = g_localizeStrings.Get(12348); // "Item locked"

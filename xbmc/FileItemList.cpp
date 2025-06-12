@@ -511,7 +511,7 @@ int CFileItemList::GetFolderCount() const
 {
   std::unique_lock lock(m_lock);
   return static_cast<int>(
-      std::ranges::count_if(m_items, [](const auto& pItem) { return pItem->m_bIsFolder; }));
+      std::ranges::count_if(m_items, [](const auto& pItem) { return pItem->IsFolder(); }));
 }
 
 int CFileItemList::GetObjectCount() const
@@ -529,7 +529,7 @@ int CFileItemList::GetFileCount() const
 {
   std::unique_lock lock(m_lock);
   return static_cast<int>(
-      std::ranges::count_if(m_items, [](const auto& pItem) { return !pItem->m_bIsFolder; }));
+      std::ranges::count_if(m_items, [](const auto& pItem) { return !pItem->IsFolder(); }));
 }
 
 int CFileItemList::GetSelectedCount() const
@@ -546,7 +546,7 @@ void CFileItemList::FilterCueItems()
   std::vector<std::string> itemstodelete;
   for (const auto& pItem : m_items)
   {
-    if (!pItem->m_bIsFolder)
+    if (!pItem->IsFolder())
     { // see if it's a .CUE sheet
       if (MUSIC::IsCUESheet(*pItem))
       {
@@ -681,7 +681,7 @@ void CFileItemList::StackFolders()
   for (const auto& item : m_items)
   {
     // combined the folder checks
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
     {
       // only check known fast sources?
       // NOTES:
@@ -711,7 +711,7 @@ void CFileItemList::StackFolders()
             int index = -1;
             for (int j = 0; j < items.Size(); j++)
             {
-              if (!items[j]->m_bIsFolder)
+              if (!items[j]->IsFolder())
               {
                 nFiles++;
                 index = j;
@@ -735,7 +735,7 @@ void CFileItemList::StackFolders()
           if (!dvdPath.empty())
           {
             // NOTE: should this be done for the CD# folders too?
-            item->m_bIsFolder = false;
+            item->SetFolder(false);
             item->SetPath(dvdPath);
             item->SetLabel2("");
             item->SetLabelPreformatted(true);
@@ -774,7 +774,7 @@ void CFileItemList::StackFiles()
     CFileItemPtr item1 = Get(i);
 
     // skip folders, nfo files, playlists
-    if (item1->m_bIsFolder || item1->IsParentFolder() || item1->IsNFO() ||
+    if (item1->IsFolder() || item1->IsParentFolder() || item1->IsNFO() ||
         PLAYLIST::IsPlayList(*item1))
     {
       // increment index
@@ -811,7 +811,7 @@ void CFileItemList::StackFiles()
           const CFileItemPtr item2 = Get(j);
 
           // skip folders, nfo files, playlists
-          if (item2->m_bIsFolder || item2->IsParentFolder() || item2->IsNFO() ||
+          if (item2->IsFolder() || item2->IsParentFolder() || item2->IsNFO() ||
               PLAYLIST::IsPlayList(*item2))
           {
             // increment index
@@ -907,7 +907,7 @@ void CFileItemList::StackFiles()
         // clean up list
         for (size_t k = 1; k < stack.size(); k++)
           Remove(i + 1);
-        // item->m_bIsFolder = true;  // don't treat stacked files as folders
+        // item->SetFolder(true);  // don't treat stacked files as folders
         // the label may be in a different char set from the filename (eg over smb
         // the label is converted from utf8, but the filename is not)
         if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(

@@ -521,7 +521,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_PATH:
         if (VIDEO::IsVideoDb(*item))
         {
-          if (item->m_bIsFolder)
+          if (item->IsFolder())
             value = tag->m_strPath;
           else
             URIUtils::GetParentPath(tag->m_strFileNameAndPath, value);

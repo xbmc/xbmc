@@ -135,7 +135,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
             case ACTION_MOUSE_LEFT_CLICK:
             {
               CFileItemPtr item(m_vecItems->Get(iItem));
-              if (item->m_bIsFolder && (message.GetParam1() != ACTION_SHOW_INFO))
+              if (item->IsFolder() && (message.GetParam1() != ACTION_SHOW_INFO))
               {
                 m_currentFileItem = item;
                 bReturn = false; // folders are handled by base class

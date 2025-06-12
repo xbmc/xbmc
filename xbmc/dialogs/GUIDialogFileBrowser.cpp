@@ -59,7 +59,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_Directory = new CFileItem;
   m_vecItems = new CFileItemList;
   m_bConfirmed = false;
-  m_Directory->m_bIsFolder = true;
+  m_Directory->SetFolder(true);
   m_browsingForFolders = 0;
   m_browsingForImages = false;
   m_useFileDirectories = false;
@@ -182,14 +182,14 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         if (iItem < 0) break;
         CFileItemPtr pItem = (*m_vecItems)[iItem];
         if ((iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK) &&
-            (!m_multipleSelection || pItem->IsShareOrDrive() || pItem->m_bIsFolder))
+            (!m_multipleSelection || pItem->IsShareOrDrive() || pItem->IsFolder()))
         {
           OnClick(iItem);
           return true;
         }
         else if ((iAction == ACTION_HIGHLIGHT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK ||
                   iAction == ACTION_SELECT_ITEM) &&
-                 (m_multipleSelection && !pItem->IsShareOrDrive() && !pItem->m_bIsFolder))
+                 (m_multipleSelection && !pItem->IsShareOrDrive() && !pItem->IsFolder()))
         {
           pItem->Select(!pItem->IsSelected());
           CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), message.GetSenderId(), iItem + 1);
@@ -379,7 +379,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
       {
         CFileItemPtr pItem(new CFileItem(".."));
         pItem->SetPath(strParentPath);
-        pItem->m_bIsFolder = true;
+        pItem->SetFolder(true);
         pItem->SetIsShareOrDrive(false);
         items.AddFront(pItem, 0);
       }
@@ -391,7 +391,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
       CFileItemPtr pItem(new CFileItem(".."));
       pItem->SetPath("");
       pItem->SetIsShareOrDrive(false);
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.AddFront(pItem, 0);
       strParentPath = "";
     }
@@ -411,7 +411,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
   if (m_browsingForFolders)
   {
     for (int i=0;i<m_vecItems->Size();++i)
-      if (!(*m_vecItems)[i]->m_bIsFolder)
+      if (!(*m_vecItems)[i]->IsFolder())
       {
         m_vecItems->Remove(i);
         i--;
@@ -434,14 +434,14 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
   { // we are in the virtual directory - add the "Add Network Location" item
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(1032)));
     pItem->SetPath("net://");
-    pItem->m_bIsFolder = true;
+    pItem->SetFolder(true);
     m_vecItems->Add(pItem);
   }
   if (m_Directory->GetPath().empty() && !m_addSourceType.empty())
   {
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(21359)));
     pItem->SetPath("source://");
-    pItem->m_bIsFolder = true;
+    pItem->SetFolder(true);
     m_vecItems->Add(pItem);
   }
 
@@ -498,7 +498,8 @@ void CGUIDialogFileBrowser::FrameMove()
       std::string safePath = url.GetWithoutUserDetails();
       SET_CONTROL_LABEL(CONTROL_LABEL_PATH, safePath);
     }
-    if ((!m_browsingForFolders && (*m_vecItems)[item]->m_bIsFolder) || ((*m_vecItems)[item]->GetPath() == "image://Browse"))
+    if ((!m_browsingForFolders && (*m_vecItems)[item]->IsFolder()) ||
+        ((*m_vecItems)[item]->GetPath() == "image://Browse"))
     {
       CONTROL_DISABLE(CONTROL_OK);
     }
@@ -532,7 +533,7 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
   CFileItemPtr pItem = (*m_vecItems)[iItem];
   std::string strPath = pItem->GetPath();
 
-  if (pItem->m_bIsFolder)
+  if (pItem->IsFolder())
   {
     if (pItem->GetPath() == "net://")
     { // special "Add Network Location" item

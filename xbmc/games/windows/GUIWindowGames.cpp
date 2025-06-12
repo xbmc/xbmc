@@ -147,7 +147,7 @@ bool CGUIWindowGames::OnClick(int iItem, const std::string& player /* = "" */)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (item)
   {
-    if (!item->m_bIsFolder)
+    if (!item->IsFolder())
     {
       PlayGame(*item);
       return true;
@@ -236,7 +236,7 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr item = items[i];
-    if (item->m_bIsFolder || !item->IsFileFolder(FileFolderType::ALWAYS))
+    if (item->IsFolder() || !item->IsFileFolder(FileFolderType::ALWAYS))
       continue;
 
     const std::string originalPath = item->GetPath();
@@ -258,7 +258,7 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
       // Check if file folder contains games or subfolders
       if (std::any_of(fileFolderItems.begin(), fileFolderItems.end(),
                       [](const CFileItemPtr& fileFolderItem) {
-                        return fileFolderItem->m_bIsFolder ||
+                        return fileFolderItem->IsFolder() ||
                                CGameUtils::HasGameExtension(fileFolderItem->GetPath());
                       }))
       {
@@ -266,7 +266,7 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
       }
 
       // If the file folder contains no games, turn it back into a regular file
-      item->m_bIsFolder = false;
+      item->SetFolder(false);
       item->SetPath(originalPath);
     }
     else
@@ -311,7 +311,7 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
   // Ensure a game info tag is created so that files are recognized as games
   for (const CFileItemPtr& item : items)
   {
-    if (!item->m_bIsFolder)
+    if (!item->IsFolder())
       item->GetGameInfoTag();
   }
 
@@ -377,9 +377,9 @@ bool CGUIWindowGames::PlayGame(const CFileItem& item)
 
   // Dereference file folders. The check here assumes all "is folder" items
   // passed CanPlay(), e.g. are definitely file folders.
-  if (itemCopy.m_bIsFolder)
+  if (itemCopy.IsFolder())
   {
-    itemCopy.m_bIsFolder = false;
+    itemCopy.SetFolder(false);
     itemCopy.SetPath(itemCopy.GetURL().GetHostName());
     itemCopy.GetGameInfoTag();
   }
@@ -392,7 +392,7 @@ bool CGUIWindowGames::CanPlay(const CFileItem& item) const
   if (item.IsGame())
     return true;
 
-  if (item.m_bIsFolder)
+  if (item.IsFolder())
   {
     // Check for file folders
     CURL url{item.GetPath()};

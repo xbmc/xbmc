@@ -81,8 +81,8 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
 
     CFileItemPtr pItem(new CFileItem(itemName));
 
-    pItem->m_bIsFolder = ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    if (pItem->m_bIsFolder)
+    pItem->SetFolder((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+    if (pItem->IsFolder())
       pItem->SetPath(pathWithSlash + itemName + '\\');
     else
       pItem->SetPath(pathWithSlash + itemName);
@@ -102,7 +102,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
     else
       pItem->SetDateTime(0);
 
-    if (!pItem->m_bIsFolder)
+    if (!pItem->IsFolder())
       pItem->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
 
     items.Add(pItem);

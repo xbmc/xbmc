@@ -43,7 +43,7 @@ bool CFileUtils::DeleteItem(const std::string &strPath)
 {
   CFileItemPtr item(new CFileItem(strPath));
   item->SetPath(strPath);
-  item->m_bIsFolder = URIUtils::HasSlashAtEnd(strPath);
+  item->SetFolder(URIUtils::HasSlashAtEnd(strPath));
   item->Select(true);
   return DeleteItem(item);
 }

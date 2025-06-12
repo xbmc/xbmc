@@ -428,7 +428,7 @@ void CFileItemHandler::HandleFileItem(const char* ID,
           std::string type = item->GetMusicInfoTag()->GetType();
           if (type == MediaTypeAlbum || type == MediaTypeSong || type == MediaTypeArtist)
             object["type"] = type;
-          else if (!item->m_bIsFolder)
+          else if (!item->IsFolder())
             object["type"] = MediaTypeSong;
         }
         else if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_type.empty())
@@ -445,7 +445,7 @@ void CFileItemHandler::HandleFileItem(const char* ID,
 
         if (fields.contains("filetype"))
         {
-          if (item->m_bIsFolder)
+          if (item->IsFolder())
             object["filetype"] = "directory";
           else
             object["filetype"] = "file";

@@ -25,7 +25,7 @@ namespace XBMCAddon
         throw new XBMCAddon::WrongTypeException("None not allowed as argument for listitem");
       AddonClass::Ref<xbmcgui::ListItem> pListItem(listItem);
       pListItem->item->SetPath(url);
-      pListItem->item->m_bIsFolder = isFolder;
+      pListItem->item->SetFolder(isFolder);
 
       // call the directory class to add our item
       return XFILE::CPluginDirectory::AddItem(handle, pListItem->item.get(), totalItems);
@@ -42,7 +42,7 @@ namespace XBMCAddon
         const XBMCAddon::xbmcgui::ListItem* pListItem = item.second();
         bool bIsFolder = item.GetNumValuesSet() > 2 ? item.third() : false;
         pListItem->item->SetPath(url);
-        pListItem->item->m_bIsFolder = bIsFolder;
+        pListItem->item->SetFolder(bIsFolder);
         fitems.Add(pListItem->item);
       }
 

@@ -334,7 +334,7 @@ bool CFileOperations::FillFileItem(
 
         item->SetLabel(label);
         item->SetPath(strFilename);
-        item->m_bIsFolder = isDir;
+        item->SetFolder(isDir);
       }
       else
         *item = *originalItem;
@@ -391,7 +391,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
           if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
             continue;
 
-          if (items[i]->m_bIsFolder)
+          if (items[i]->IsFolder())
             filteredDirectories.Add(items[i]);
           else if ((media == "video" && items[i]->HasVideoInfoTag()) ||
                    (media == "music" && items[i]->HasMusicInfoTag()))

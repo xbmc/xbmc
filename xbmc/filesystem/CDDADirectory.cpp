@@ -58,7 +58,7 @@ bool CCDDADirectory::GetDirectory(const CURL& url, CFileItemList &items)
     std::string strLabel = StringUtils::Format("Track {:02}", i);
 
     CFileItemPtr pItem(new CFileItem(strLabel));
-    pItem->m_bIsFolder = false;
+    pItem->SetFolder(false);
     std::string path = StringUtils::Format("cdda://local/{:02}.cdda", i);
     pItem->SetPath(path);
 

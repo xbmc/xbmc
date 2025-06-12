@@ -1087,13 +1087,13 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
     buttons.Add(CONTEXT_BUTTON_SET_ART, 13511);
 
   // movie sets
-  if (item->m_bIsFolder && type == MediaTypeVideoCollection)
+  if (item->IsFolder() && type == MediaTypeVideoCollection)
   {
     buttons.Add(CONTEXT_BUTTON_MOVIESET_ADD_REMOVE_ITEMS, 20465);
   }
 
   // tags
-  if (item->m_bIsFolder && type == "tag")
+  if (item->IsFolder() && type == "tag")
   {
     CVideoDbUrl videoUrl;
     if (videoUrl.FromString(item->GetPath()))
@@ -1415,7 +1415,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item
     if (URIUtils::IsBlurayPath(strDeletePath) || VIDEO::IsDVDFile(*item) || VIDEO::IsBDFile(*item))
       strDeletePath = URIUtils::GetDiscBase(strDeletePath);
     if (URIUtils::HasSlashAtEnd(strDeletePath))
-      item->m_bIsFolder = true;
+      item->SetFolder(true);
 
     // check if the file/directory can be deleted
     if (CUtil::SupportsWriteFileOperations(strDeletePath))
@@ -1424,7 +1424,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item
 
       // HACK: stacked files need to be treated as folders in order to be deleted
       if (item->IsStack())
-        item->m_bIsFolder = true;
+        item->SetFolder(true);
 
       CFileUtils::DeleteItemWithConfirm(item);
     }

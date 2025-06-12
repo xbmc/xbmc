@@ -54,7 +54,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList& items)
           std::string strDir(strRoot + filename);
           URIUtils::AddSlashAtEnd(strDir);
           pItem->SetPath(strDir);
-          pItem->m_bIsFolder = true;
+          pItem->SetFolder(true);
           items.Add(pItem);
         }
       }
@@ -62,7 +62,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList& items)
       {
         CFileItemPtr pItem(new CFileItem(filename));
         pItem->SetPath(strRoot + filename);
-        pItem->m_bIsFolder = false;
+        pItem->SetFolder(false);
         pItem->SetSize(file->p_stat->size);
         items.Add(pItem);
       }

@@ -4884,7 +4884,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     std::map<uint32_t, std::string> mapCDDBIds;
     for (int i = 0; i < items.Size(); ++i)
     {
-      if (items[i]->m_bIsFolder)
+      if (items[i]->IsFolder())
         continue;
 
       std::string strFile = URIUtils::GetFileName(items[i]->GetPath());
@@ -5059,7 +5059,7 @@ bool CMusicDatabase::GetGenresNav(const std::string& strBaseDir,
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -5177,7 +5177,7 @@ bool CMusicDatabase::GetSourcesNav(const std::string& strBaseDir,
       itemUrl.AddOption("sourceid", m_pDS->fv("source.idSource").get_asInt());
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -5260,7 +5260,7 @@ bool CMusicDatabase::GetYearsNav(const std::string& strBaseDir,
         itemUrl.AddOption("useoriginalyear", true);
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -5326,7 +5326,7 @@ bool CMusicDatabase::GetRolesNav(const std::string& strBaseDir,
       itemUrl.AddOption("roleid", m_pDS->fv("role.idRole").get_asInt());
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -5428,7 +5428,7 @@ bool CMusicDatabase::GetCommonNav(const std::string& strBaseDir,
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -10402,7 +10402,7 @@ bool CMusicDatabase::GetSources(CFileItemList& items)
         // Set item path as source URL encoded multipath too
         pItem->SetPath(m_pDS->fv("source.strMultiPath").get_asString());
 
-        pItem->m_bIsFolder = true;
+        pItem->SetFolder(true);
         items.Add(pItem);
       }
       // Get path data
@@ -11128,7 +11128,7 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
         pItem->GetMusicInfoTag()->SetGenre(strGenre);
         pItem->GetMusicInfoTag()->SetDatabaseId(idGenre, "genre");
         pItem->SetPath(StringUtils::Format("musicdb://genres/{}/", idGenre));
-        pItem->m_bIsFolder = true;
+        pItem->SetFolder(true);
         items.Add(pItem);
       }
       // Get source data

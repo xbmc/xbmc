@@ -562,7 +562,7 @@ void GUIFontManager::SettingOptionsFontsFiller(const SettingConstPtr& setting,
 
   for (const auto& item : items)
   {
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
       continue;
 
     list.emplace_back(item->GetLabel(), item->GetLabel());
@@ -645,7 +645,7 @@ void GUIFontManager::LoadUserFonts()
   for (auto& item : dirItems)
   {
     std::string filepath = item->GetPath();
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
       continue;
 
     std::set<std::string> familyNames;

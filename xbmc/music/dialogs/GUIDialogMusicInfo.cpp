@@ -985,7 +985,7 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
     StringUtils::StartsWithNoCase(pItem->GetPath(), "musicsearch://"))
     return; // nothing to do
 
-  if (!pItem->m_bIsFolder)
+  if (!pItem->IsFolder())
   { // Show Song information dialog
     CGUIDialogSongInfo::ShowFor(pItem);
     return;

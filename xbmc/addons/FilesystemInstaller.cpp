@@ -94,7 +94,7 @@ bool CFilesystemInstaller::UnpackArchive(std::string path, const std::string& de
   if (!CDirectory::GetDirectory(path, files, "", DIR_FLAG_DEFAULTS))
     return false;
 
-  if (files.Size() == 1 && files[0]->m_bIsFolder)
+  if (files.Size() == 1 && files[0]->IsFolder())
   {
     path = files[0]->GetPath();
     files.Clear();

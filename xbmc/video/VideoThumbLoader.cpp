@@ -184,7 +184,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   {
     if ((pItem->HasVideoInfoTag() &&
          pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
-        || (!pItem->m_bIsFolder &&
+        || (!pItem->IsFolder() &&
             VIDEO::IsVideo(
                 *pItem))) // Some other video file for which we haven't yet got any database details
     {
@@ -291,7 +291,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   }
 
   // We can only extract flags/thumbs for file-like items
-  if (!pItem->m_bIsFolder && VIDEO::IsVideo(*pItem))
+  if (!pItem->IsFolder() && VIDEO::IsVideo(*pItem))
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (!pItem->HasArt("thumb"))
@@ -524,7 +524,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
                                        static_cast<int>(CacheBufferMode::ALL)
                                  : false;
 
-  if (item.m_bIsFolder && (NETWORK::IsStreamedFilesystem(item) || cacheAll))
+  if (item.IsFolder() && (NETWORK::IsStreamedFilesystem(item) || cacheAll))
   {
     CFileItemList items; // Dummy list
     CDirectory::GetDirectory(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
@@ -540,7 +540,8 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
   if (art.empty() && (type.empty() || type == "thumb"))
   { // backward compatibility
     art = item.FindLocalArt("", false);
-    if (art.empty() && (checkFolder || (item.m_bIsFolder && !item.IsFileFolder()) || item.IsOpticalMediaFile()))
+    if (art.empty() &&
+        (checkFolder || (item.IsFolder() && !item.IsFileFolder()) || item.IsOpticalMediaFile()))
     { // try movie.tbn
       art = item.FindLocalArt("movie.tbn", true);
       if (art.empty()) // try folder.jpg
@@ -565,7 +566,7 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
 {
   // @todo remove exception for hybrid movie/folder of versions
-  if (item.m_bIsFolder && !item.GetProperty("IsHybridFolder").asBoolean(false))
+  if (item.IsFolder() && !item.GetProperty("IsHybridFolder").asBoolean(false))
     return;
 
   if (item.HasVideoInfoTag())

@@ -519,7 +519,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     rooturi = NPT_HttpUrl("localhost", upnp_server->GetPort(), "/");
   }
 
-  if (!item.m_bIsFolder)
+  if (!item.IsFolder())
   {
     object = new PLT_MediaItem();
     object->m_ObjectID = EncodeObjectId(item.GetPath());
@@ -752,7 +752,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     if (!item.GetLabel().empty())
     {
       std::string title = item.GetLabel();
-      if (PLAYLIST::IsPlayList(item) || !item.m_bIsFolder)
+      if (PLAYLIST::IsPlayList(item) || !item.IsFolder())
         URIUtils::RemoveExtension(title);
       object->m_Title = title.c_str();
     }
@@ -1160,10 +1160,10 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
   CFileItemPtr pItem(new CFileItem((const char*)entry->m_Title));
   pItem->SetLabelPreformatted(true);
   pItem->SetTitle(static_cast<const char*>(entry->m_Title));
-  pItem->m_bIsFolder = entry->IsContainer();
+  pItem->SetFolder(entry->IsContainer());
 
   // if it's a container, format a string as upnp://uuid/object_id
-  if (pItem->m_bIsFolder)
+  if (pItem->IsFolder())
   {
 
     // look for metadata

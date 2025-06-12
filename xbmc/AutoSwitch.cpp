@@ -160,7 +160,7 @@ bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, 
     return false;
 
   const int numThumbs = std::ranges::count_if(
-      vecItems, [](const auto& item) { return item->m_bIsFolder && item->HasArt("thumb"); });
+      vecItems, [](const auto& item) { return item->IsFolder() && item->HasArt("thumb"); });
   return numThumbs >= 0.01f * percent * (numItems - fileCount);
 }
 

@@ -118,7 +118,7 @@ void CDVDSubtitlesLibass::Configure()
   }
   for (const auto& item : items)
   {
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
       continue;
     const std::string filepath = item->GetPath();
     const std::string fileName = item->GetLabel();
