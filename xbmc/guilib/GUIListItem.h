@@ -13,6 +13,8 @@
 \brief
 */
 
+#include "utils/ArtWork.h"
+
 #include <map>
 #include <memory>
 #include <string>
@@ -29,8 +31,6 @@ class CVariant;
 class CGUIListItem
 {
 public:
-  typedef std::map<std::string, std::string> ArtMap;
-
   ///
   /// @ingroup controls python_xbmcgui_listitem
   /// @defgroup kodi_guilib_listitem_iconoverlay Overlay icon types
@@ -73,14 +73,14 @@ public:
    \param art a type:url map for artwork
    \sa GetArt
    */
-  void SetArt(const ArtMap &art);
+  void SetArt(const KODI::ART::ArtWork& art);
 
   /*! \brief append artwork to an item
    \param art a type:url map for artwork
    \param prefix a prefix for the art, if applicable.
    \sa GetArt
    */
-  void AppendArt(const ArtMap &art, const std::string &prefix = "");
+  void AppendArt(const KODI::ART::ArtWork& art, const std::string& prefix = "");
 
   /*! \brief set a fallback image for art
    \param from the type to fallback from
@@ -105,7 +105,7 @@ public:
    \return a type:url map for artwork
    \sa SetArt
    */
-  const ArtMap &GetArt() const;
+  const KODI::ART::ArtWork& GetArt() const;
 
   /*! \brief Check whether an item has a particular piece of art
    Equivalent to !GetArt(type).empty()
@@ -194,7 +194,6 @@ private:
   std::wstring m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
   std::string m_strLabel;      // text of column1
 
-  ArtMap m_art;
-  ArtMap m_artFallbacks;
+  KODI::ART::ArtWork m_art;
+  KODI::ART::ArtWork m_artFallbacks;
 };
-

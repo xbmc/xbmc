@@ -125,7 +125,7 @@ std::string CAddon::Icon() const
   return m_addonInfo->Icon();
 }
 
-ArtMap CAddon::Art() const
+KODI::ART::ArtWork CAddon::Art() const
 {
   return m_addonInfo->Art();
 }
