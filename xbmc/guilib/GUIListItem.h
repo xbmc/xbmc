@@ -177,8 +177,6 @@ public:
   unsigned int GetCurrentItem() const;
 
 protected:
-  std::unique_ptr<CGUIListItemLayout> m_layout;
-  std::unique_ptr<CGUIListItemLayout> m_focusedLayout;
   bool m_bSelected{false}; // item is selected or not
   unsigned int m_currentItem{1}; // current item number within container (starting at 1)
 
@@ -197,6 +195,8 @@ private:
   std::string m_strLabel; // text of column1
   std::string m_strLabel2; // text of column2
   GUIIconOverlay m_overlayIcon{ICON_OVERLAY_NONE}; // type of overlay icon
+  std::unique_ptr<CGUIListItemLayout> m_layout;
+  std::unique_ptr<CGUIListItemLayout> m_focusedLayout;
 
   KODI::ART::Artwork m_art;
   KODI::ART::Artwork m_artFallbacks;
