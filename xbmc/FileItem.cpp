@@ -1550,7 +1550,7 @@ void CFileItem::SetFromAlbum(const CAlbum &album)
   if (!album.strAlbum.empty())
     SetLabel(album.strAlbum);
   SetFolder(true);
-  m_strLabel2 = album.GetAlbumArtistString();
+  SetLabel2(album.GetAlbumArtistString());
   GetMusicInfoTag()->SetAlbum(album);
 
   if (album.art.empty())
