@@ -177,7 +177,6 @@ public:
   unsigned int GetCurrentItem() const;
 
 protected:
-  std::string m_strLabel2;     // text of column2
   GUIIconOverlay m_overlayIcon{ICON_OVERLAY_NONE}; // type of overlay icon
 
   std::unique_ptr<CGUIListItemLayout> m_layout;
@@ -198,6 +197,7 @@ private:
   bool m_bIsFolder{false}; ///< is item a folder or a file
   std::wstring m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
   std::string m_strLabel;      // text of column1
+  std::string m_strLabel2; // text of column2
 
   KODI::ART::ArtWork m_art;
   KODI::ART::ArtWork m_artFallbacks;
