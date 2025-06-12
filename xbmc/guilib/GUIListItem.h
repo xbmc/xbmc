@@ -177,7 +177,6 @@ public:
   unsigned int GetCurrentItem() const;
 
 protected:
-  bool m_bSelected{false}; // item is selected or not
   unsigned int m_currentItem{1}; // current item number within container (starting at 1)
 
   struct CaseInsensitiveCompare
@@ -197,6 +196,7 @@ private:
   GUIIconOverlay m_overlayIcon{ICON_OVERLAY_NONE}; // type of overlay icon
   std::unique_ptr<CGUIListItemLayout> m_layout;
   std::unique_ptr<CGUIListItemLayout> m_focusedLayout;
+  bool m_bSelected{false}; // item is selected or not
 
   KODI::ART::Artwork m_art;
   KODI::ART::Artwork m_artFallbacks;
