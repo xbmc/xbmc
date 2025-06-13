@@ -442,5 +442,3 @@ private:
 
   bool m_updateSetOverview{true};
 };
-
-typedef std::vector<CVideoInfoTag> VECMOVIES;
