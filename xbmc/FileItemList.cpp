@@ -219,14 +219,21 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   std::unique_lock lock(m_lock);
   if (!append)
     Clear();
+
   Append(itemlist);
+
+  //! @todo Is it intentional not to copy CFileItem properties, except path, label and property map?
+  //! This is different from CFileItemList::Copy. Why?
   SetPath(itemlist.GetPath());
   SetLabel(itemlist.GetLabel());
+  SetProperties(itemlist.GetProperties());
+
+  //! @todo Is it intentional not to copy m_ignoreURLOptions, m_fastLookup, m_sortIgnoreFolders, m_content?
+  //! This is (partly) different from CFileItemList::Copy. Why?
   m_sortDetails = itemlist.m_sortDetails;
   m_sortDescription = itemlist.m_sortDescription;
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
-  m_mapProperties = itemlist.m_mapProperties;
   m_cacheToDisc = itemlist.m_cacheToDisc;
 }
 
@@ -235,10 +242,10 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   // assign all CFileItem parts
   *static_cast<CFileItem*>(this) = static_cast<const CFileItem&>(items);
 
+  //! @todo Is it intentional not to copy m_ignoreURLOptions, m_fastLookup ?
   // assign the rest of the CFileItemList properties
   m_replaceListing = items.m_replaceListing;
   m_content = items.m_content;
-  m_mapProperties = items.m_mapProperties;
   m_cacheToDisc = items.m_cacheToDisc;
   m_sortDetails = items.m_sortDetails;
   m_sortDescription = items.m_sortDescription;
