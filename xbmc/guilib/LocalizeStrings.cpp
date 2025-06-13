@@ -44,7 +44,7 @@ static bool LoadPO(const std::string &filename, std::map<uint32_t, LocStr>& stri
     uint32_t id;
     if (PODoc.GetEntryType() == ID_FOUND)
     {
-      bool bStrInMem = strings.find((id = PODoc.GetEntryID()) + offset) != strings.end();
+      bool bStrInMem = strings.contains((id = PODoc.GetEntryID()) + offset);
       PODoc.ParseEntry(bSourceLanguage);
 
       if (bSourceLanguage && !PODoc.GetMsgid().empty())

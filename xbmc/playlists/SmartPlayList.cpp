@@ -1173,7 +1173,7 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
     if ((*it)->m_field == FieldPlaylist)
     {
       std::string playlistFile = CSmartPlaylistDirectory::GetPlaylistByName((*it)->m_parameter.at(0), strType);
-      if (!playlistFile.empty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
+      if (!playlistFile.empty() && !referencedPlaylists.contains(playlistFile))
       {
         referencedPlaylists.insert(playlistFile);
         CSmartPlaylist playlist;

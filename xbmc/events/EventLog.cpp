@@ -98,7 +98,7 @@ void CEventLog::Add(const EventPtr& eventPtr)
     return;
 
   std::unique_lock lock(m_critical);
-  if (m_eventsMap.find(eventPtr->GetIdentifier()) != m_eventsMap.end())
+  if (m_eventsMap.contains(eventPtr->GetIdentifier()))
     return;
 
   // store the event

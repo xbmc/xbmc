@@ -1046,7 +1046,7 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
           break;
 
         if (!m_musicDatabase.HasArtistBeenScraped(artistCredit.GetArtistId()) &&
-          artists.find(artistCredit.GetArtistId()) == artists.end())
+            !artists.contains(artistCredit.GetArtistId()))
         {
           artists.insert(artistCredit.GetArtistId()); // Artist scraping attempted
           CArtist artist;
@@ -1068,7 +1068,7 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
 
             CMusicArtistInfo musicArtistInfo;
             if (!m_musicDatabase.HasArtistBeenScraped(artistCredit.GetArtistId()) &&
-              artists.find(artistCredit.GetArtistId()) == artists.end())
+                !artists.contains(artistCredit.GetArtistId()))
             {
               artists.insert(artistCredit.GetArtistId()); // Artist scraping attempted
               CArtist artist;
@@ -1240,7 +1240,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
       if (m_bStop)
         break;
       int idArtist = artistCredit->GetArtistId();
-      if (artistsArtDone.find(idArtist) == artistsArtDone.end())
+      if (!artistsArtDone.contains(idArtist))
       {
         artistsArtDone.insert(idArtist); // Artist processed
 
@@ -1977,7 +1977,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
   std::string strArt;
 
   // Handle thumb separately, can be from multiple configurable file names
-  if (artist.art.find("thumb") == artist.art.end())
+  if (!artist.art.contains("thumb"))
   {
     if (!artfolder.empty())
     { // Local music thumbnail images named by "musiclibrary.musicthumbs"
@@ -2106,7 +2106,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
     }
     // Finally if we still don't have album thumb then use the art from the
     // first disc in the set with a thumb
-    if (!firstDiscThumb.empty() && album.art.find("thumb") == album.art.end())
+    if (!firstDiscThumb.empty() && !album.art.contains("thumb"))
     {
       m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb", firstDiscThumb);
       // Assign art as folder thumb (in textures db) as well
@@ -2247,7 +2247,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
         // Append disc number when candidate art type (and file) not have it
         strCandidate += std::to_string(discnum);
 
-      if (art.find(strCandidate) == art.end())
+      if (!art.contains(strCandidate))
         art.insert(std::make_pair(strCandidate, artFile->GetPath()));
     }
   }
@@ -2290,7 +2290,7 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
           whitelistarttypes.end())
         continue;
     }
-    if (art.find(url.m_aspect) == art.end())
+    if (!art.contains(url.m_aspect))
     {
       std::string strArt = CScraperUrl::GetThumbUrl(url);
       if (!strArt.empty())

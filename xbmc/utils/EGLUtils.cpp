@@ -149,13 +149,13 @@ std::set<std::string> CEGLUtils::GetExtensions(EGLDisplay eglDisplay)
 bool CEGLUtils::HasExtension(EGLDisplay eglDisplay, const std::string& name)
 {
   auto exts = GetExtensions(eglDisplay);
-  return (exts.find(name) != exts.end());
+  return (exts.contains(name));
 }
 
 bool CEGLUtils::HasClientExtension(const std::string& name)
 {
   auto exts = GetClientExtensions();
-  return (exts.find(name) != exts.end());
+  return (exts.contains(name));
 }
 
 void CEGLUtils::Log(int logLevel, const std::string& what)

@@ -27,7 +27,7 @@ bool CAddonUpdateRules::RefreshRulesMap(const CAddonDatabase& db)
 bool CAddonUpdateRules::IsAutoUpdateable(const std::string& id) const
 {
   std::unique_lock lock(m_critSection);
-  return m_updateRules.find(id) == m_updateRules.end();
+  return !m_updateRules.contains(id);
 }
 
 bool CAddonUpdateRules::IsUpdateableByRule(const std::string& id, AddonUpdateRule updateRule) const

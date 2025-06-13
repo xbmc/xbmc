@@ -677,7 +677,7 @@ void CAgentInput::UpdateConnectedJoysticks(
     JOYSTICK::IInputProvider* inputProvider = peripheral.get();
 
     // Check if peripheral is disconnected
-    if (m_portMap.find(inputProvider) == m_portMap.end())
+    if (!m_portMap.contains(inputProvider))
       disconnectedPeripherals.emplace(peripheral);
   }
 }
@@ -765,7 +765,7 @@ CAgentInput::PortMap CAgentInput::MapJoysticks(
             const PortAddress& portAddress = itPeripheral->second;
 
             // If port is disconnected, use this joystick
-            if (gameClientjoysticks.find(portAddress) == gameClientjoysticks.end())
+            if (!gameClientjoysticks.contains(portAddress))
               return true;
 
             return false;

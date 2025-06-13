@@ -143,7 +143,7 @@ bool CSettingConditionsManager::Check(
     std::string tmpValue = value;
     StringUtils::ToLower(tmpValue);
 
-    return m_defines.find(tmpValue) != m_defines.end();
+    return m_defines.contains(tmpValue);
   }
 
   auto conditionIt = m_conditions.find(condition);

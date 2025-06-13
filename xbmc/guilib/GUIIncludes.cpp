@@ -357,7 +357,8 @@ void CGUIIncludes::ResolveConstants(TiXmlElement *node)
     return;
 
   TiXmlNode *child = node->FirstChild();
-  if (child && child->Type() == TiXmlNode::TINYXML_TEXT && m_constantNodes.count(node->ValueStr()))
+  if (child && child->Type() == TiXmlNode::TINYXML_TEXT &&
+      m_constantNodes.contains(node->ValueStr()))
   {
     child->SetValue(ResolveConstant(child->ValueStr()));
   }
@@ -366,7 +367,7 @@ void CGUIIncludes::ResolveConstants(TiXmlElement *node)
     TiXmlAttribute *attribute = node->FirstAttribute();
     while (attribute)
     {
-      if (m_constantAttributes.count(attribute->Name()))
+      if (m_constantAttributes.contains(attribute->Name()))
         attribute->SetValue(ResolveConstant(attribute->ValueStr()));
 
       attribute = attribute->Next();
@@ -380,7 +381,8 @@ void CGUIIncludes::ResolveExpressions(TiXmlElement *node)
     return;
 
   TiXmlNode *child = node->FirstChild();
-  if (child && child->Type() == TiXmlNode::TINYXML_TEXT && m_expressionNodes.count(node->ValueStr()))
+  if (child && child->Type() == TiXmlNode::TINYXML_TEXT &&
+      m_expressionNodes.contains(node->ValueStr()))
   {
     child->SetValue(ResolveExpressions(child->ValueStr()));
   }
@@ -389,7 +391,7 @@ void CGUIIncludes::ResolveExpressions(TiXmlElement *node)
     TiXmlAttribute *attribute = node->FirstAttribute();
     while (attribute)
     {
-      if (m_expressionAttributes.count(attribute->Name()))
+      if (m_expressionAttributes.contains(attribute->Name()))
         attribute->SetValue(ResolveExpressions(attribute->ValueStr()));
 
       attribute = attribute->Next();

@@ -48,17 +48,17 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
     const CFavouritesURL::Action function = url.GetAction();
 
     object["title"] = item->GetLabel();
-    if (fields.find("thumbnail") !=  fields.end())
+    if (fields.contains("thumbnail"))
       object["thumbnail"] = item->GetArt("thumb");
 
     if (function == CFavouritesURL::Action::ACTIVATE_WINDOW)
     {
       object["type"] = "window";
-      if (fields.find("window") != fields.end())
+      if (fields.contains("window"))
       {
         object["window"] = CWindowTranslator::TranslateWindow(url.GetWindowID());
       }
-      if (fields.find("windowparameter") != fields.end())
+      if (fields.contains("windowparameter"))
       {
         object["windowparameter"] = url.GetTarget();
       }
@@ -66,19 +66,19 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
     else if (function == CFavouritesURL::Action::PLAY_MEDIA)
     {
       object["type"] = "media";
-      if (fields.find("path") !=  fields.end())
+      if (fields.contains("path"))
         object["path"] = url.GetTarget();
     }
     else if (function == CFavouritesURL::Action::RUN_SCRIPT)
     {
       object["type"] = "script";
-      if (fields.find("path") !=  fields.end())
+      if (fields.contains("path"))
         object["path"] = url.GetTarget();
     }
     else if (function == CFavouritesURL::Action::START_ANDROID_ACTIVITY)
     {
       object["type"] = "androidapp";
-      if (fields.find("path") !=  fields.end())
+      if (fields.contains("path"))
         object["path"] = url.GetTarget();
     }
     else

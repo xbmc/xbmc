@@ -737,7 +737,7 @@ JSONRPC_STATUS CPlayerOperations::SetViewMode(const std::string &method, ITransp
   if (viewMode.isString())
   {
     std::string modestr = viewMode.asString();
-    if (viewModes.find(modestr) != viewModes.end())
+    if (viewModes.contains(modestr))
     {
       mode = viewModes[modestr];
       jsonStatus = ACK;

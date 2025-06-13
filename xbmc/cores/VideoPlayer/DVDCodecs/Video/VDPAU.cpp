@@ -353,7 +353,7 @@ void CVideoSurfaces::AddSurface(VdpVideoSurface surf)
 void CVideoSurfaces::ClearReference(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) == m_state.end())
+  if (!m_state.contains(surf))
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::ClearReference - surface invalid");
     return;
@@ -368,7 +368,7 @@ void CVideoSurfaces::ClearReference(VdpVideoSurface surf)
 bool CVideoSurfaces::MarkRender(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) == m_state.end())
+  if (!m_state.contains(surf))
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::MarkRender - surface invalid");
     return false;
@@ -386,7 +386,7 @@ bool CVideoSurfaces::MarkRender(VdpVideoSurface surf)
 void CVideoSurfaces::ClearRender(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) == m_state.end())
+  if (!m_state.contains(surf))
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::ClearRender - surface invalid");
     return;
@@ -401,7 +401,7 @@ void CVideoSurfaces::ClearRender(VdpVideoSurface surf)
 bool CVideoSurfaces::IsValid(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) != m_state.end())
+  if (m_state.contains(surf))
     return true;
   else
     return false;
@@ -410,7 +410,7 @@ bool CVideoSurfaces::IsValid(VdpVideoSurface surf)
 VdpVideoSurface CVideoSurfaces::GetFree(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) != m_state.end())
+  if (m_state.contains(surf))
   {
     std::list<VdpVideoSurface>::iterator it;
     it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);

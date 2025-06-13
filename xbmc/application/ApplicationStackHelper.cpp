@@ -317,7 +317,7 @@ void CApplicationStackHelper::SetRegisteredStackTotalTimeMs(const CFileItem& ite
 CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetStackPartInformation(
     const std::string& key)
 {
-  if (m_stackmap.count(key) == 0)
+  if (!m_stackmap.contains(key))
   {
     StackPartInformationPtr value(new StackPartInformation());
     m_stackmap[key] = value;

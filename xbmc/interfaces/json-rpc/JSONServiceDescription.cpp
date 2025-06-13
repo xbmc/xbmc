@@ -1612,7 +1612,7 @@ bool CJSONServiceDescription::AddType(const std::string &jsonType)
     return false;
   }
 
-  if (m_types.find(typeName) != m_types.end())
+  if (m_types.contains(typeName))
   {
     CLog::Log(LOGERROR, "JSONRPC: There already is a type with the name \"{}\"", typeName);
     return false;
@@ -1685,7 +1685,7 @@ bool CJSONServiceDescription::AddNotification(const std::string &jsonNotificatio
     return false;
   }
 
-  if (m_notifications.find(notificationName) != m_notifications.end())
+  if (m_notifications.contains(notificationName))
   {
     CLog::Log(LOGERROR, "JSONRPC: There already is a notification with the name \"{}\"",
               notificationName);
@@ -1706,8 +1706,7 @@ bool CJSONServiceDescription::AddNotification(const std::string &jsonNotificatio
 
 bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector<CVariant> &values, CVariant::VariantType type /* = CVariant::VariantTypeNull */, const CVariant &defaultValue /* = CVariant::ConstNullVariant */)
 {
-  if (name.empty() || m_types.find(name) != m_types.end() ||
-      values.size() == 0)
+  if (name.empty() || m_types.contains(name) || values.size() == 0)
     return false;
 
   JSONSchemaTypeDefinitionPtr definition = std::make_shared<JSONSchemaTypeDefinition>();
@@ -2049,7 +2048,7 @@ void CJSONServiceDescription::addReferenceTypeDefinition(
     return;
 
   // If the id has already been defined we ignore the type definition
-  if (m_types.find(typeDefinition->ID) != m_types.end())
+  if (m_types.contains(typeDefinition->ID))
     return;
 
   // Add the type to the list of type definitions

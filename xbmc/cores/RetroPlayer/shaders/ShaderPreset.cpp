@@ -225,7 +225,7 @@ void CShaderPreset::DisposeShaders()
 
 bool CShaderPreset::HasPathFailed(const std::string& path) const
 {
-  return m_failedPaths.find(path) != m_failedPaths.end();
+  return m_failedPaths.contains(path);
 }
 
 ShaderParameterMap CShaderPreset::GetShaderParameters(
