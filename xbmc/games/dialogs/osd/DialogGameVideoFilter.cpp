@@ -10,6 +10,9 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "addons/AddonInstaller.h"
+#include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "cores/RetroPlayer/shaders/ShaderPresetFactory.h"
@@ -17,10 +20,15 @@
 #include "filesystem/SpecialProtocol.h"
 #include "games/GameServices.h"
 #include "games/dialogs/DialogGameDefines.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
+#include "threads/SystemClock.h"
+#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -31,11 +39,16 @@
 
 using namespace KODI;
 using namespace GAME;
+using namespace std::chrono_literals;
 
 #define PRESETS_ADDON_NAME "game.shader.presets"
 
 namespace
 {
+
+constexpr auto ICON_VIDEO = "DefaultVideo.png";
+constexpr auto ICON_GET_MORE = "DefaultAddSource.png";
+
 struct ScalingMethodProperties
 {
   int nameIndex;
@@ -72,6 +85,7 @@ void CDialogGameVideoFilter::PreInit()
 
   InitScalingMethods();
   InitVideoFilters();
+  InitGetMoreButton();
 
   if (m_items.Size() == 0)
   {
@@ -95,6 +109,7 @@ void CDialogGameVideoFilter::InitScalingMethods()
             std::make_shared<CFileItem>(g_localizeStrings.Get(scalingMethodProps.nameIndex));
         item->SetLabel2(g_localizeStrings.Get(scalingMethodProps.categoryIndex));
         item->SetProperty("game.videofilter", CVariant{videoSettings.GetVideoFilter()});
+        item->SetArt("icon", ICON_VIDEO);
         m_items.Add(std::move(item));
       }
     }
@@ -187,7 +202,38 @@ void CDialogGameVideoFilter::InitVideoFilters()
     CFileItem item{videoFilter.name};
     item.SetLabel2(videoFilter.folder);
     item.SetProperty("game.videofilter", CVariant{videoFilter.path});
+    item.SetArt("icon", ICON_VIDEO);
 
+    m_items.Add(std::move(item));
+  }
+}
+
+void CDialogGameVideoFilter::InitGetMoreButton()
+{
+  using namespace ADDON;
+
+  CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
+
+  // Show the "Get more" icon if add-on is disabled or missing
+  bool showGetMore = false;
+
+  if (addonManager.IsAddonInstalled(PRESETS_ADDON_NAME))
+  {
+    if (addonManager.IsAddonDisabled(PRESETS_ADDON_NAME))
+      showGetMore = true;
+  }
+  else
+  {
+    // Check if the add-on is in a remote repo
+    VECADDONS addons;
+    if (addonManager.GetInstallableAddons(addons, AddonType::SHADERDLL) && !addons.empty())
+      showGetMore = true;
+  }
+
+  if (showGetMore)
+  {
+    auto item = std::make_shared<CFileItem>(g_localizeStrings.Get(21452)); // "Get more..."
+    item->SetArt("icon", ICON_GET_MORE);
     m_items.Add(std::move(item));
   }
 }
@@ -202,10 +248,14 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
 {
   if (static_cast<int>(index) < m_items.Size())
   {
+    m_focusedItemIndex = index;
+
     CFileItemPtr item = m_items[index];
 
     std::string videoFilter;
     GetProperties(*item, videoFilter);
+    if (videoFilter.empty())
+      return;
 
     ::CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
@@ -242,11 +292,96 @@ void CDialogGameVideoFilter::PostExit()
 
 bool CDialogGameVideoFilter::OnClickAction()
 {
+  if (static_cast<int>(m_focusedItemIndex) < m_items.Size())
+  {
+    const auto focusedItem = std::const_pointer_cast<const CFileItem>(m_items[m_focusedItemIndex]);
+
+    // "Get more..." button has an empty string for the video filter
+    if (focusedItem && focusedItem->GetProperty("game.videofilter").empty())
+    {
+      OnGetMore();
+      return true;
+    }
+  }
+
   Close();
   return true;
+}
+
+void CDialogGameVideoFilter::RefreshList()
+{
+  // Re-generate the items in case the shader preset add-on was installed
+  if (m_regenerateList)
+  {
+    m_regenerateList = false;
+    PreInit();
+  }
+
+  // Call ancestor
+  CDialogGameVideoSelect::RefreshList();
 }
 
 std::string CDialogGameVideoFilter::GetLocalizedString(uint32_t code)
 {
   return g_localizeStrings.GetAddonString(PRESETS_ADDON_NAME, code);
+}
+
+void CDialogGameVideoFilter::OnGetMore()
+{
+  const std::shared_ptr<CJobManager> jobManager = CServiceBroker::GetJobManager();
+  if (!jobManager)
+    return;
+
+  jobManager->Submit(
+      [this]()
+      {
+        using namespace ADDON;
+
+        CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
+
+        bool success = false;
+        if (addonManager.IsAddonDisabled(PRESETS_ADDON_NAME))
+        {
+          success = addonManager.EnableAddon(PRESETS_ADDON_NAME);
+        }
+        else if (!addonManager.IsAddonInstalled(PRESETS_ADDON_NAME))
+        {
+          AddonPtr addon;
+          success = CAddonInstaller::GetInstance().InstallModal(PRESETS_ADDON_NAME, addon,
+                                                                InstallModalPrompt::CHOICE_NO);
+        }
+
+        if (success)
+          OnGetMoreComplete();
+      });
+}
+
+void CDialogGameVideoFilter::OnGetMoreComplete()
+{
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (gui == nullptr)
+    return;
+
+  // Shader preset add-ons are loaded async, so wait until the new
+  // add-on is fully loaded. Bail after a reasonable timeout to avoid
+  // waiting indefinitely.
+  XbmcThreads::EndTime<> timeout(5s);
+  while (!CServiceBroker::GetGameServices().VideoShaders().HasAddons() && !timeout.IsTimePast())
+  {
+    // Should take on the order of 100-200ms
+    KODI::TIME::Sleep(50ms);
+  }
+
+  if (timeout.IsTimePast())
+    CLog::Log(LOGERROR, "Timed out waiting for shader presets to load");
+
+  if (CServiceBroker::GetGameServices().VideoShaders().HasAddons())
+  {
+    // Indicate that the new presets should be loaded
+    m_regenerateList = true;
+
+    // Send the GUI message to reload the list
+    CGUIMessage msg(GUI_MSG_REFRESH_LIST, GetID(), CONTROL_VIDEO_THUMBS);
+    gui->GetWindowManager().SendThreadMessage(msg, GetID());
+  }
 }

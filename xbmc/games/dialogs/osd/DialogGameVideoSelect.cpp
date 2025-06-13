@@ -124,7 +124,11 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage& message)
     }
     case GUI_MSG_REFRESH_LIST:
     {
-      RefreshList();
+      if (message.GetControlId() == CONTROL_VIDEO_THUMBS)
+      {
+        RefreshList();
+        return true;
+      }
       break;
     }
     default:

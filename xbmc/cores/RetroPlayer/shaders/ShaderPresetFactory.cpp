@@ -60,6 +60,11 @@ void CShaderPresetFactory::UnregisterLoader(IShaderPresetLoader* loader)
   }
 }
 
+bool CShaderPresetFactory::HasAddons() const
+{
+  return !m_shaderAddons.empty() || !m_failedAddons.empty();
+}
+
 bool CShaderPresetFactory::LoadPreset(const std::string& presetPath, IShaderPreset& shaderPreset)
 {
   bool bSuccess = false;
