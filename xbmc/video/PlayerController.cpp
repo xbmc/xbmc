@@ -84,7 +84,7 @@ bool CPlayerController::OnAction(const CAction &action)
           if (!g_LangCodeExpander.Lookup(info.language, lang))
             lang = g_localizeStrings.Get(13205); // Unknown
 
-          if (info.name.length() == 0)
+          if (info.name.empty())
             sub = lang;
           else
             sub = StringUtils::Format("{} - {}", lang, info.name);
@@ -138,7 +138,7 @@ bool CPlayerController::OnAction(const CAction &action)
           if (!g_LangCodeExpander.Lookup(info.language, lang))
             lang = g_localizeStrings.Get(13205); // Unknown
 
-          if (info.name.length() == 0)
+          if (info.name.empty())
             sub = lang;
           else
             sub = StringUtils::Format("{} - {}", lang, info.name);

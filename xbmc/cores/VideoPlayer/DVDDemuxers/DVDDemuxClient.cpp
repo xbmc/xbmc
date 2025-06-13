@@ -333,7 +333,7 @@ DemuxPacket* CDVDDemuxClient::Read()
   {
     RequestStreams();
   }
-  else if (m_packet->iStreamId >= 0 && m_streams.count(m_packet->iStreamId) > 0)
+  else if (m_packet->iStreamId >= 0 && m_streams.contains(m_packet->iStreamId))
   {
     if (ParsePacket(m_packet.get()))
     {

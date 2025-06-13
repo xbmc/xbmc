@@ -125,7 +125,7 @@ void CFDEventMonitor::Process()
      */
     lock.unlock();
 
-    int err = poll(&m_pollDescs[0], m_pollDescs.size(), -1);
+    int err = poll(m_pollDescs.data(), m_pollDescs.size(), -1);
 
     if (err < 0 && errno != EINTR)
     {
@@ -177,7 +177,7 @@ void CFDEventMonitor::AddFDLocked(const MonitoredFD& monitoredFD, int& id)
 {
   id = m_nextID;
 
-  while (m_monitoredFDs.count(id))
+  while (m_monitoredFDs.contains(id))
   {
     ++id;
   }

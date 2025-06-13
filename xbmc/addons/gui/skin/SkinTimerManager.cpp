@@ -175,7 +175,7 @@ size_t CSkinTimerManager::GetTimerCount() const
 
 bool CSkinTimerManager::TimerExists(const std::string& timer) const
 {
-  return m_timers.count(timer) != 0;
+  return m_timers.contains(timer);
 }
 
 std::unique_ptr<CSkinTimer> CSkinTimerManager::GrabTimer(const std::string& timer)

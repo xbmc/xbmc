@@ -197,7 +197,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTN_DIRECTOR)
       {
         auto directors = m_movieItem->GetVideoInfoTag()->m_director;
-        if (directors.size() == 0)
+        if (directors.empty())
           return true;
         if (directors.size() == 1)
           OnSearch(directors[0]);

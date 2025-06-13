@@ -72,7 +72,7 @@ bool IHTTPRequestHandler::HasResponseHeader(const std::string &field) const
   if (field.empty())
     return false;
 
-  return m_response.headers.find(field) != m_response.headers.end();
+  return m_response.headers.contains(field);
 }
 
 bool IHTTPRequestHandler::AddResponseHeader(const std::string &field, const std::string &value, bool allowMultiple /* = false */)

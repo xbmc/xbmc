@@ -39,7 +39,7 @@ using namespace KEYMAP;
 bool CButtonTranslator::AddDevice(const std::string& strDevice)
 {
   // Only add the device if it isn't already in the list
-  if (m_deviceList.find(strDevice) != m_deviceList.end())
+  if (m_deviceList.contains(strDevice))
     return false;
 
   // Add the device

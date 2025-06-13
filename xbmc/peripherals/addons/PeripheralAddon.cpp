@@ -189,7 +189,7 @@ bool CPeripheralAddon::Register(unsigned int peripheralIndex, const PeripheralPt
     return false;
 
   std::unique_lock lock(m_critSection);
-  if (m_peripherals.find(peripheralIndex) == m_peripherals.end())
+  if (!m_peripherals.contains(peripheralIndex))
   {
     if (peripheral->Type() == PERIPHERAL_JOYSTICK)
     {

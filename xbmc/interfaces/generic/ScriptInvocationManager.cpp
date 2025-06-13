@@ -118,7 +118,7 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
     ext = "." + ext;
 
   std::unique_lock lock(m_critSection);
-  if (m_invocationHandlers.find(ext) != m_invocationHandlers.end())
+  if (m_invocationHandlers.contains(ext))
     return;
 
   m_invocationHandlers.insert(std::make_pair(extension, invocationHandler));

@@ -391,7 +391,7 @@ void CGUIWindowSlideShow::StartSlideShow()
 {
   m_bSlideShow = true;
   m_iDirection = 1;
-  if (m_slides.size())
+  if (!m_slides.empty())
     AnnouncePlayerPlay(m_slides.at(m_iCurrentSlide));
 }
 
@@ -867,7 +867,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     break;
   case ACTION_STOP:
   {
-    if (m_slides.size())
+    if (!m_slides.empty())
       AnnouncePlayerStop(m_slides.at(m_iCurrentSlide));
     auto& components = CServiceBroker::GetAppComponents();
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -909,7 +909,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
 
   case ACTION_PAUSE:
   case ACTION_PLAYER_PLAY:
-    if (m_slides.size() == 0)
+    if (m_slides.empty())
       break;
     if (IsVideo(*m_slides.at(m_iCurrentSlide)))
     {
@@ -1301,7 +1301,7 @@ void CGUIWindowSlideShow::AddFromPath(const std::string &strPath,
                                       SortBy method, SortOrder order, SortAttribute sortAttributes,
                                       const std::string &strExtensions)
 {
-  if (strPath!="")
+  if (!strPath.empty())
   {
     // reset the slideshow
     Reset();
@@ -1368,7 +1368,7 @@ void CGUIWindowSlideShow::AddItems(const std::string &strPath, path_set *recursi
   {
     std::string path(strPath);
     URIUtils::RemoveSlashAtEnd(path);
-    if (recursivePaths->find(path) != recursivePaths->end())
+    if (recursivePaths->contains(path))
       return;
     recursivePaths->insert(path);
   }

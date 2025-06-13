@@ -291,7 +291,10 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
 
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH) != "")
+    if (!CServiceBroker::GetSettingsComponent()
+             ->GetSettings()
+             ->GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)
+             .empty())
     {
       share1.strPath = "special://recordings/";
       share1.strName = g_localizeStrings.Get(21883);
@@ -391,7 +394,10 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 #endif
 
     share1.m_ignore = true;
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH) != "")
+    if (!CServiceBroker::GetSettingsComponent()
+             ->GetSettings()
+             ->GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH)
+             .empty())
     {
       share1.strPath = "special://screenshots/";
       share1.strName = g_localizeStrings.Get(20008);
@@ -406,7 +412,8 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   {
     // nothing to add
   }
-  if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size() == 0 ? NULL : &extraShares))
+  if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares,
+                                              extraShares.empty() ? NULL : &extraShares))
   {
     if (item < m_paths->Size()) // if the skin does funky things, m_paths may have been cleared
       m_paths->Get(item)->SetPath(path);
@@ -506,7 +513,7 @@ void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
     CFileItemPtr item(new CFileItem(share.vecPaths[i], true));
     m_paths->Add(item);
   }
-  if (0 == share.vecPaths.size())
+  if (share.vecPaths.empty())
   {
     CFileItemPtr item(new CFileItem("", true));
     m_paths->Add(item);

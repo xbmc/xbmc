@@ -40,7 +40,7 @@ bool CXRandR::Query(bool force, bool ignoreoff)
 {
   if (!force)
     if (m_bInit)
-      return m_outputs.size() > 0;
+      return !m_outputs.empty();
 
   m_bInit = true;
 
@@ -143,7 +143,7 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
       CLog::Log(LOGWARNING, "CXRandR::Query - output {} has no current mode, assuming disconnected",
                 xoutput.name);
   }
-  return m_outputs.size() > 0;
+  return !m_outputs.empty();
 }
 
 bool CXRandR::TurnOffOutput(const std::string& name)
@@ -234,7 +234,7 @@ void CXRandR::SaveState()
 
 bool CXRandR::SetMode(const XOutput& output, const XMode& mode)
 {
-  if ((output.name == "" && mode.id == ""))
+  if ((output.name.empty() && mode.id.empty()))
     return true;
 
   Query();
@@ -355,7 +355,7 @@ XMode CXRandR::GetCurrentMode(const std::string& outputName)
 
   for (unsigned int j = 0; j < m_outputs.size(); j++)
   {
-    if (m_outputs[j].name == outputName || outputName == "")
+    if (m_outputs[j].name == outputName || outputName.empty())
     {
       for (unsigned int i = 0; i < m_outputs[j].modes.size(); i++)
       {
@@ -378,7 +378,7 @@ XMode CXRandR::GetPreferredMode(const std::string& outputName)
 
   for (unsigned int j = 0; j < m_outputs.size(); j++)
   {
-    if (m_outputs[j].name == outputName || outputName == "")
+    if (m_outputs[j].name == outputName || outputName.empty())
     {
       for (unsigned int i = 0; i < m_outputs[j].modes.size(); i++)
       {

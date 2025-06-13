@@ -267,8 +267,8 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
 
   if (!result.isNull())
   {
-    bool bFetchArt = fields.find("art") != fields.end();
-    bool bFetchFanart = fields.find("fanart") != fields.end();
+    bool bFetchArt = fields.contains("art");
+    bool bFetchFanart = fields.contains("fanart");
     if (bFetchArt || bFetchFanart)
     {
       CThumbLoader* thumbLoader = new CMusicThumbLoader();
@@ -417,9 +417,9 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
 
   if (!result.isNull())
   {
-    bool bFetchArt = fields.find("art") != fields.end();
-    bool bFetchFanart = fields.find("fanart") != fields.end();
-    bool bFetchThumb = fields.find("thumbnail") != fields.end();
+    bool bFetchArt = fields.contains("art");
+    bool bFetchFanart = fields.contains("fanart");
+    bool bFetchThumb = fields.contains("thumbnail");
     if (bFetchArt || bFetchFanart || bFetchThumb)
     {
       CThumbLoader* thumbLoader = new CMusicThumbLoader();
@@ -622,7 +622,7 @@ JSONRPC_STATUS CAudioLibrary::GetGenres(const std::string &method, ITransportLay
   checkProperties.insert("sourceid");
   std::set<std::string> additionalProperties;
   if (CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
-    sourcesneeded = (additionalProperties.find("sourceid") != additionalProperties.end());
+    sourcesneeded = (additionalProperties.contains("sourceid"));
 
   CFileItemList items;
   if (!musicdatabase.GetGenresJSON(items, sourcesneeded))
@@ -1233,7 +1233,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalArtistDetails(const CVariant& paramet
   if (!CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
     return OK;
 
-  if (additionalProperties.find("roles") != additionalProperties.end())
+  if (additionalProperties.contains("roles"))
   {
     for (int i = 0; i < items.Size(); i++)
     {
@@ -1241,7 +1241,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalArtistDetails(const CVariant& paramet
       musicdatabase.GetRolesByArtist(item->GetMusicInfoTag()->GetDatabaseId(), item.get());
     }
   }
-  if (additionalProperties.find("songgenres") != additionalProperties.end())
+  if (additionalProperties.contains("songgenres"))
   {
     for (int i = 0; i < items.Size(); i++)
     {
@@ -1249,7 +1249,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalArtistDetails(const CVariant& paramet
       musicdatabase.GetGenresByArtist(item->GetMusicInfoTag()->GetDatabaseId(), item.get());
     }
   }
-  if (additionalProperties.find("isalbumartist") != additionalProperties.end())
+  if (additionalProperties.contains("isalbumartist"))
   {
     for (int i = 0; i < items.Size(); i++)
     {
@@ -1257,7 +1257,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalArtistDetails(const CVariant& paramet
       musicdatabase.GetIsAlbumArtist(item->GetMusicInfoTag()->GetDatabaseId(), item.get());
     }
   }
-  if (additionalProperties.find("sourceid") != additionalProperties.end())
+  if (additionalProperties.contains("sourceid"))
   {
     for (int i = 0; i < items.Size(); i++)
     {
@@ -1283,7 +1283,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant& paramete
   if (!CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
     return OK;
 
-  if (additionalProperties.find("songgenres") != additionalProperties.end())
+  if (additionalProperties.contains("songgenres"))
   {
     for (int i = 0; i < items.Size(); i++)
     {
@@ -1291,7 +1291,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant& paramete
       musicdatabase.GetGenresByAlbum(item->GetMusicInfoTag()->GetDatabaseId(), item.get());
     }
   }
-  if (additionalProperties.find("sourceid") != additionalProperties.end())
+  if (additionalProperties.contains("sourceid"))
   {
     for (int i = 0; i < items.Size(); i++)
     {
@@ -1326,7 +1326,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant& parameter
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
-    if (additionalProperties.find("genreid") != additionalProperties.end())
+    if (additionalProperties.contains("genreid"))
     {
       std::vector<int> genreids;
       if (musicdatabase.GetGenresBySong(item->GetMusicInfoTag()->GetDatabaseId(), genreids))
@@ -1338,15 +1338,15 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant& parameter
         item->SetProperty("genreid", genreidObj);
       }
     }
-    if (additionalProperties.find("sourceid") != additionalProperties.end())
+    if (additionalProperties.contains("sourceid"))
     {
       musicdatabase.GetSourcesBySong(item->GetMusicInfoTag()->GetDatabaseId(), item->GetPath(), item.get());
     }
     if (item->GetMusicInfoTag()->GetAlbumId() > 0)
     {
-      if (additionalProperties.find("albumartist") != additionalProperties.end() ||
-          additionalProperties.find("albumartistid") != additionalProperties.end() ||
-          additionalProperties.find("musicbrainzalbumartistid") != additionalProperties.end())
+      if (additionalProperties.contains("albumartist") ||
+          additionalProperties.contains("albumartistid") ||
+          additionalProperties.contains("musicbrainzalbumartistid"))
       {
         musicdatabase.GetArtistsByAlbum(item->GetMusicInfoTag()->GetAlbumId(), item.get());
       }
@@ -1423,7 +1423,7 @@ bool CAudioLibrary::CheckForAdditionalProperties(const CVariant &properties, con
       continue;
 
     std::string property = itr->asString();
-    if (checkingProperties.find(property) != checkingProperties.end())
+    if (checkingProperties.contains(property))
     {
       checkingProperties.erase(property);
       foundProperties.insert(property);

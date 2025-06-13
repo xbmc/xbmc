@@ -274,7 +274,7 @@ XFILE::Pipe *PipesManager::CreatePipe(const std::string &name, int nMaxPipeSize)
     pName = GetUniquePipeName();
 
   std::unique_lock lock(m_lock);
-  if (m_pipes.find(pName) != m_pipes.end())
+  if (m_pipes.contains(pName))
     return NULL;
 
   XFILE::Pipe *p = new XFILE::Pipe(pName, nMaxPipeSize);
@@ -285,7 +285,7 @@ XFILE::Pipe *PipesManager::CreatePipe(const std::string &name, int nMaxPipeSize)
 XFILE::Pipe *PipesManager::OpenPipe(const std::string &name)
 {
   std::unique_lock lock(m_lock);
-  if (m_pipes.find(name) == m_pipes.end())
+  if (!m_pipes.contains(name))
     return NULL;
   m_pipes[name]->AddRef();
   return m_pipes[name];
@@ -309,6 +309,6 @@ void         PipesManager::ClosePipe(XFILE::Pipe *pipe)
 bool         PipesManager::Exists(const std::string &name)
 {
   std::unique_lock lock(m_lock);
-  return (m_pipes.find(name) != m_pipes.end());
+  return (m_pipes.contains(name));
 }
 

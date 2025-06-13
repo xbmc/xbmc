@@ -105,12 +105,12 @@ bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
     std::string subtagCode = code.substr(iSplit + 1);
     if (hasPrimaryTagDesc)
     {
-      if (primaryTagDesc.length() > 0)
+      if (!primaryTagDesc.empty())
         desc = primaryTagDesc;
       else
         desc = code.substr(0, iSplit);
 
-      if (subtagCode.length() > 0)
+      if (!subtagCode.empty())
         desc += " - " + subtagCode;
 
       return true;

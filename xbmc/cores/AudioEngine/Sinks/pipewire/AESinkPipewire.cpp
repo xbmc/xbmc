@@ -332,7 +332,7 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
     }
 
     auto& channels = node->GetChannels();
-    if (channels.size() < 1)
+    if (channels.empty())
       continue;
 
     for (const auto& channel : channels)

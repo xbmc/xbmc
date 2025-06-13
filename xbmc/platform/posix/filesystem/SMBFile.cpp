@@ -181,7 +181,9 @@ void CSMB::Init()
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
         // if no WINS server has been specified the wins method will be ignored.
-        if (settings->GetString(CSettings::SETTING_SMB_WINSSERVER).length() > 0 && !StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_SMB_WINSSERVER), "0.0.0.0") )
+        if (!settings->GetString(CSettings::SETTING_SMB_WINSSERVER).empty() &&
+            !StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_SMB_WINSSERVER),
+                                       "0.0.0.0"))
         {
           fprintf(f, "\twins server = %s\n", settings->GetString(CSettings::SETTING_SMB_WINSSERVER).c_str());
           fprintf(f, "\tname resolve order = bcast wins host\n");
@@ -191,7 +193,9 @@ void CSMB::Init()
 
         // use user-configured charset. if no charset is specified,
         // samba tries to use charset 850 but falls back to ASCII in case it is not available
-        if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambadoscodepage.length() > 0)
+        if (!CServiceBroker::GetSettingsComponent()
+                 ->GetAdvancedSettings()
+                 ->m_sambadoscodepage.empty())
           fprintf(f, "\tdos charset = %s\n", CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambadoscodepage.c_str());
 
         // include users configuration if available
@@ -227,7 +231,7 @@ void CSMB::Init()
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
     smbc_setTimeout(m_context, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000);
     // we do not need to strdup these, smbc_setXXX below will make their own copies
-    if (settings->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
+    if (!settings->GetString(CSettings::SETTING_SMB_WORKGROUP).empty())
       //! @bug libsmbclient < 4.9 isn't const correct
       smbc_setWorkgroup(m_context, const_cast<char*>(settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
     std::string guest = "guest";
@@ -281,7 +285,7 @@ std::string CSMB::URLEncode(const CURL &url)
 
   /* samba messes up of password is set but no username is set. don't know why yet */
   /* probably the url parser that goes crazy */
-  if(url.GetUserName().length() > 0 /* || url.GetPassWord().length() > 0 */)
+  if (!url.GetUserName().empty() /* || url.GetPassWord().length() > 0 */)
   {
     if(!url.GetDomain().empty())
     {
@@ -289,7 +293,7 @@ std::string CSMB::URLEncode(const CURL &url)
       flat += ";";
     }
     flat += URLEncode(url.GetUserName());
-    if(url.GetPassWord().length() > 0)
+    if (!url.GetPassWord().empty())
     {
       flat += ":";
       flat += URLEncode(url.GetPassWord());

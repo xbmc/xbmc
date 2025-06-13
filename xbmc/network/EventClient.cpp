@@ -58,7 +58,7 @@ void CEventButtonState::Load()
 {
   if ( m_iKeyCode == 0 )
   {
-    if ( (m_mapName.length() > 0) && (m_buttonName.length() > 0) )
+    if ((!m_mapName.empty()) && (!m_buttonName.empty()))
     {
       m_iKeyCode = KEYMAP::CButtonTranslator::TranslateString(m_mapName, m_buttonName);
       if (m_iKeyCode == 0)
@@ -691,7 +691,7 @@ unsigned int CEventClient::GetButtonCode(std::string& strMapName, bool& isAxis, 
     bcode = m_currentButton.KeyCode();
     strMapName = m_currentButton.JoystickName();
     isJoystick = true;
-    if (strMapName.length() == 0)
+    if (strMapName.empty())
     {
       strMapName = m_currentButton.CustomControllerName();
       isJoystick = false;
@@ -722,7 +722,7 @@ unsigned int CEventClient::GetButtonCode(std::string& strMapName, bool& isAxis, 
     strMapName   = it->JoystickName();
     isJoystick   = true;
 
-    if (strMapName.length() == 0)
+    if (strMapName.empty())
     {
       strMapName = it->CustomControllerName();
       isJoystick = false;

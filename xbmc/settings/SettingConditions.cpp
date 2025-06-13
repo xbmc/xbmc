@@ -496,7 +496,7 @@ bool CSettingConditions::Check(const std::string& condition,
                                const std::string& value /* = "" */,
                                const SettingConstPtr& setting /* = NULL */)
 {
-  if (m_simpleConditions.find(condition) != m_simpleConditions.end())
+  if (m_simpleConditions.contains(condition))
     return true;
 
   std::map<std::string, SettingConditionCheck>::const_iterator itCondition = m_complexConditions.find(condition);

@@ -1242,7 +1242,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     {
       std::string baseName = iter->m_deviceName.substr(0, iter->m_deviceName.find(':'));
       std::string card = GetParamFromName(iter->m_deviceName, "CARD");
-      if (baseName == "sysdefault" && cardsWithSurround.find(card) != cardsWithSurround.end())
+      if (baseName == "sysdefault" && cardsWithSurround.contains(card))
         iter = list.erase(iter);
       else
         ++iter;

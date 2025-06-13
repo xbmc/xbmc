@@ -300,7 +300,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
         if (StringUtils::EqualsNoCase(name, "HVDVD_TS") && bAllowVideo &&
             (options.bypassSettings || bAutorunDVDs))
         {
-          if (hddvdname == "")
+          if (hddvdname.empty())
           {
             CLog::Log(LOGINFO,"HD DVD: Checking for ifo.");
             // find Video Manager or Title Set Information
@@ -349,7 +349,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
             items.Copy (sitems);
             sitems.Clear();
           }
-          if (hddvdname != "")
+          if (!hddvdname.empty())
           {
             CFileItem item(URIUtils::AddFileToFolder(phddvdItem->GetPath(), hddvdname), false);
             item.SetLabel(CServiceBroker::GetMediaManager().GetDiskLabel(strDrive));

@@ -307,7 +307,7 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
     strArtistSort = source.strArtistSort;
   for (const auto& i : source.art)
   {
-    if (override || art.find(i.first) == art.end())
+    if (override || !art.contains(i.first))
       art[i.first] = i.second;
   }
   if((override && !source.strLabel.empty()) || strLabel.empty())

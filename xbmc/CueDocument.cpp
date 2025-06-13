@@ -134,10 +134,7 @@ public:
     return !line.empty();
   }
 
-  bool ready() const override
-  {
-    return m_data.size() > 0;
-  }
+  bool ready() const override { return !m_data.empty(); }
 
 private:
   std::string m_data;

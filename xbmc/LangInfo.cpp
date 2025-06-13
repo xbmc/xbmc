@@ -238,7 +238,7 @@ void CLangInfo::CRegion::SetTimeZone(const std::string& strTimeZone)
 void CLangInfo::CRegion::SetGlobalLocale()
 {
   std::string strLocale;
-  if (m_strRegionLocaleName.length() > 0)
+  if (!m_strRegionLocaleName.empty())
   {
 #ifdef TARGET_WINDOWS
     std::string strLang, strRegion;

@@ -90,9 +90,9 @@ CFileHandle CSharedMemory::OpenShm()
 #if defined(HAVE_MKOSTEMP)
   // Opening the file with O_CLOEXEC is preferred since it avoids races where
   // other threads might exec() before setting the CLOEXEC flag
-  rawFd = mkostemp(&tmpFilename[0], O_CLOEXEC);
+  rawFd = mkostemp(tmpFilename.data(), O_CLOEXEC);
 #else
-  rawFd = mkstemp(&tmpFilename[0]);
+  rawFd = mkstemp(tmpFilename.data());
 #endif
 
   if (rawFd < 0)

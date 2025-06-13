@@ -151,7 +151,7 @@ void CMusicInfoScanner::Process()
         bool scancomplete = DoScan(it);
         if (scancomplete)
         {
-          if (m_albumsAdded.size() > 0)
+          if (!m_albumsAdded.empty())
           {
             // Set local art for added album disc sets and primary album artists
             if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
@@ -1046,7 +1046,7 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
           break;
 
         if (!m_musicDatabase.HasArtistBeenScraped(artistCredit.GetArtistId()) &&
-          artists.find(artistCredit.GetArtistId()) == artists.end())
+            !artists.contains(artistCredit.GetArtistId()))
         {
           artists.insert(artistCredit.GetArtistId()); // Artist scraping attempted
           CArtist artist;
@@ -1068,7 +1068,7 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
 
             CMusicArtistInfo musicArtistInfo;
             if (!m_musicDatabase.HasArtistBeenScraped(artistCredit.GetArtistId()) &&
-              artists.find(artistCredit.GetArtistId()) == artists.end())
+                !artists.contains(artistCredit.GetArtistId()))
             {
               artists.insert(artistCredit.GetArtistId()); // Artist scraping attempted
               CArtist artist;
@@ -1240,7 +1240,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
       if (m_bStop)
         break;
       int idArtist = artistCredit->GetArtistId();
-      if (artistsArtDone.find(idArtist) == artistsArtDone.end())
+      if (!artistsArtDone.contains(idArtist))
       {
         artistsArtDone.insert(idArtist); // Artist processed
 
@@ -1639,7 +1639,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
             std::string strNewAlbum = album.strAlbum;
             if (!CGUIKeyboardFactory::ShowAndGetInput(strNewAlbum, CVariant{g_localizeStrings.Get(16011)}, false))
               return InfoRet::CANCELLED;
-            if (strNewAlbum == "")
+            if (strNewAlbum.empty())
               return InfoRet::CANCELLED;
 
             std::string strNewArtist = album.GetAlbumArtistString();
@@ -1977,7 +1977,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
   std::string strArt;
 
   // Handle thumb separately, can be from multiple configurable file names
-  if (artist.art.find("thumb") == artist.art.end())
+  if (!artist.art.contains("thumb"))
   {
     if (!artfolder.empty())
     { // Local music thumbnail images named by "musiclibrary.musicthumbs"
@@ -2010,7 +2010,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
     if (ret.second)
       m_musicDatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, it.first, it.second);
   }
-  return addedart.size() > 0;
+  return !addedart.empty();
 }
 
 bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
@@ -2106,7 +2106,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
     }
     // Finally if we still don't have album thumb then use the art from the
     // first disc in the set with a thumb
-    if (!firstDiscThumb.empty() && album.art.find("thumb") == album.art.end())
+    if (!firstDiscThumb.empty() && !album.art.contains("thumb"))
     {
       m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb", firstDiscThumb);
       // Assign art as folder thumb (in textures db) as well
@@ -2133,7 +2133,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
     if (ret.second)
       m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, it.first, it.second);
   }
-  return addedart.size() > 0;
+  return !addedart.empty();
 }
 
 std::vector<CVariant> CMusicInfoScanner::GetArtWhitelist(const MediaType& mediaType, int iArtLevel)
@@ -2247,12 +2247,12 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
         // Append disc number when candidate art type (and file) not have it
         strCandidate += std::to_string(discnum);
 
-      if (art.find(strCandidate) == art.end())
+      if (!art.contains(strCandidate))
         art.insert(std::make_pair(strCandidate, artFile->GetPath()));
     }
   }
 
-  return art.size() > 0;
+  return !art.empty();
 }
 
 bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art,
@@ -2290,7 +2290,7 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
           whitelistarttypes.end())
         continue;
     }
-    if (art.find(url.m_aspect) == art.end())
+    if (!art.contains(url.m_aspect))
     {
       std::string strArt = CScraperUrl::GetThumbUrl(url);
       if (!strArt.empty())
@@ -2298,7 +2298,7 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
     }
   }
 
-  return art.size() > 0;
+  return !art.empty();
 }
 
 // This function is the Run() function of the IRunnable

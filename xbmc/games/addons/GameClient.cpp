@@ -93,7 +93,7 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
                  std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
 
   // Check for wildcard extension
-  if (m_extensions.find(EXTENSION_WILDCARD) != m_extensions.end())
+  if (m_extensions.contains(EXTENSION_WILDCARD))
   {
     m_bSupportsAllExtensions = true;
     m_extensions.clear();
@@ -143,7 +143,7 @@ bool CGameClient::IsExtensionValid(const std::string& strExtension) const
   if (SupportsAllExtensions())
     return true;
 
-  return m_extensions.find(NormalizeExtension(strExtension)) != m_extensions.end();
+  return m_extensions.contains(NormalizeExtension(strExtension));
 }
 
 bool CGameClient::Initialize(void)

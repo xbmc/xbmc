@@ -247,7 +247,7 @@ void CZeroconfBrowserAvahi::browseCallback (
         info.protocol = protocol;
         p_instance->m_discovered_services.insert ( std::make_pair ( service, info ) );
         //if this browser already sent the all for now message, we need to update the gui now
-        if( p_instance->m_all_for_now_browsers.find(browser) != p_instance->m_all_for_now_browsers.end() )
+        if (p_instance->m_all_for_now_browsers.contains(browser))
           update_gui = true;
         break;
       }
@@ -261,7 +261,7 @@ void CZeroconfBrowserAvahi::browseCallback (
                   "domain '{}'\n",
                   name, type, domain);
         //if this browser already sent the all for now message, we need to update the gui now
-        if( p_instance->m_all_for_now_browsers.find(browser) != p_instance->m_all_for_now_browsers.end() )
+        if (p_instance->m_all_for_now_browsers.contains(browser))
           update_gui = true;
         break;
       }

@@ -36,7 +36,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo& hints)
   {
     StringUtils::Trim(line);
 
-    if (line.length() > 0)
+    if (!line.empty())
     {
       char sep;
       int hh1, mm1, ss1, ms1, hh2, mm2, ss2, ms2;
@@ -63,7 +63,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo& hints)
           if (line.empty())
             break;
 
-          if (convText.size() > 0)
+          if (!convText.empty())
             convText += "\n";
           TagConv.ConvertLine(line);
           convText += line;

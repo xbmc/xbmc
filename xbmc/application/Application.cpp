@@ -1526,7 +1526,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_START_ANDROID_ACTIVITY:
   {
 #if defined(TARGET_ANDROID)
-    if (pMsg->params.size())
+    if (!pMsg->params.empty())
     {
       CXBMCApp::StartActivity(pMsg->params[0], pMsg->params.size() > 1 ? pMsg->params[1] : "",
                               pMsg->params.size() > 2 ? pMsg->params[2] : "",

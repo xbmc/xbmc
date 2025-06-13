@@ -151,7 +151,7 @@ public:
   void AddSortMethod(const SortDescription& sortDescription,
                      int buttonLabel,
                      const LABEL_MASKS& labelMasks);
-  bool HasSortDetails() const { return m_sortDetails.size() != 0; }
+  bool HasSortDetails() const { return !m_sortDetails.empty(); }
   const std::vector<GUIViewSortDetails>& GetSortDetails() const { return m_sortDetails; }
 
   /*! \brief Specify whether this list should be sorted with folders separate from files

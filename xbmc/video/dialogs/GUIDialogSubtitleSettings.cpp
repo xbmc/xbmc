@@ -369,7 +369,7 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
     if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = g_localizeStrings.Get(13205); // Unknown
 
-    if (info.name.length() == 0)
+    if (info.name.empty())
       strItem = strLanguage;
     else
       strItem = StringUtils::Format("{} - {}", strLanguage, info.name);

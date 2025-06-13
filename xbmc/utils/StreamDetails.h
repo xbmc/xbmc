@@ -101,7 +101,7 @@ public:
   static std::string VideoDimsToResolutionDescription(int iWidth, int iHeight);
   static std::string VideoAspectToAspectDescription(float fAspect);
 
-  bool HasItems(void) const { return m_vecItems.size() > 0; }
+  bool HasItems(void) const { return !m_vecItems.empty(); }
   int GetStreamCount(CStreamDetail::StreamType type) const;
   int GetVideoStreamCount(void) const;
   int GetAudioStreamCount(void) const;

@@ -113,7 +113,7 @@ void CGUIDialogTextViewer::ShowForFile(const std::string& path, bool useMonoFont
     try
     {
       data.resize(file.GetLength()+1);
-      file.Read(&data[0], file.GetLength());
+      file.Read(data.data(), file.GetLength());
       CGUIDialogTextViewer* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
       pDialog->SetHeading(URIUtils::GetFileName(path));
       pDialog->SetText(data);

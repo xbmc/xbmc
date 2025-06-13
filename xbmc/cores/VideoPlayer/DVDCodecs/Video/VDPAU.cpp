@@ -353,7 +353,7 @@ void CVideoSurfaces::AddSurface(VdpVideoSurface surf)
 void CVideoSurfaces::ClearReference(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) == m_state.end())
+  if (!m_state.contains(surf))
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::ClearReference - surface invalid");
     return;
@@ -368,7 +368,7 @@ void CVideoSurfaces::ClearReference(VdpVideoSurface surf)
 bool CVideoSurfaces::MarkRender(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) == m_state.end())
+  if (!m_state.contains(surf))
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::MarkRender - surface invalid");
     return false;
@@ -386,7 +386,7 @@ bool CVideoSurfaces::MarkRender(VdpVideoSurface surf)
 void CVideoSurfaces::ClearRender(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) == m_state.end())
+  if (!m_state.contains(surf))
   {
     CLog::Log(LOGWARNING, "CVideoSurfaces::ClearRender - surface invalid");
     return;
@@ -401,7 +401,7 @@ void CVideoSurfaces::ClearRender(VdpVideoSurface surf)
 bool CVideoSurfaces::IsValid(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) != m_state.end())
+  if (m_state.contains(surf))
     return true;
   else
     return false;
@@ -410,7 +410,7 @@ bool CVideoSurfaces::IsValid(VdpVideoSurface surf)
 VdpVideoSurface CVideoSurfaces::GetFree(VdpVideoSurface surf)
 {
   std::unique_lock lock(m_section);
-  if (m_state.find(surf) != m_state.end())
+  if (m_state.contains(surf))
   {
     std::list<VdpVideoSurface>::iterator it;
     it = std::find(m_freeSurfaces.begin(), m_freeSurfaces.end(), surf);
@@ -1707,9 +1707,8 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
             m_state = M_TOP_CONFIGURED_STEP1;
             m_bStateMachineSelfTrigger = true;
           }
-          else if (!m_outputSurfaces.empty() &&
-                   m_config.stats->IsDraining() &&
-                   m_mixerInput.size() >= 1)
+          else if (!m_outputSurfaces.empty() && m_config.stats->IsDraining() &&
+                   !m_mixerInput.empty())
           {
             CVdpauDecodedPicture pic;
             pic.DVDPic.SetParams(m_mixerInput[0].DVDPic);
@@ -2664,8 +2663,7 @@ void CMixer::FiniCycle()
   // NVidia recommends num_ref + 5
   size_t surfToKeep = 5;
 
-  if (m_mixerInput.size() > 0 &&
-      (m_mixerInput[0].videoSurface == VDP_INVALID_HANDLE))
+  if (!m_mixerInput.empty() && (m_mixerInput[0].videoSurface == VDP_INVALID_HANDLE))
     surfToKeep = 1;
 
   while (m_mixerInput.size() > surfToKeep)

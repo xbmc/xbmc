@@ -153,7 +153,7 @@ bool CUrlOptions::HasOption(const std::string &key) const
   if (key.empty())
     return false;
 
-  return m_options.find(key) != m_options.end();
+  return m_options.contains(key);
 }
 
 bool CUrlOptions::GetOption(const std::string &key, CVariant &value) const

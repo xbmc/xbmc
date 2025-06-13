@@ -238,7 +238,7 @@ void CGUITextBox::Render()
       int current = offset;
 
       // set the main text color
-      if (m_colors.size())
+      if (!m_colors.empty())
         m_colors[0] = m_label.textColor;
 
       while (posY < m_posY + m_renderHeight && current < (int)m_lines.size())
@@ -246,7 +246,7 @@ void CGUITextBox::Render()
         const CGUIString& lineString = m_lines[current];
         uint32_t align = alignment;
 
-        if (lineString.m_text.size() && lineString.m_carriageReturn)
+        if (!lineString.m_text.empty() && lineString.m_carriageReturn)
           align &= ~XBFONT_JUSTIFIED; // last line of a paragraph shouldn't be justified
 
         m_font->DrawText(posX, posY, m_colors, m_label.shadowColor, lineString.m_text, align,

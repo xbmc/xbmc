@@ -323,7 +323,7 @@ bool CWSDiscoveryListenerUDP::DispatchCommand()
   Command sendCommand;
   {
     std::unique_lock lock(crit_commandqueue);
-    if (m_commandbuffer.size() <= 0)
+    if (m_commandbuffer.empty())
       return false;
 
     auto it = m_commandbuffer.begin();

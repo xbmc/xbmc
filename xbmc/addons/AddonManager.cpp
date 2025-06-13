@@ -98,7 +98,7 @@ CAddonMgr::~CAddonMgr()
 
 IAddonMgrCallback* CAddonMgr::GetCallbackForType(AddonType type)
 {
-  if (m_managers.find(type) == m_managers.end())
+  if (!m_managers.contains(type))
     return nullptr;
   else
     return m_managers[type];
@@ -495,7 +495,7 @@ bool CAddonMgr::GetAddonsInternal(AddonType type,
       addons.emplace_back(std::move(addon));
     }
   }
-  return addons.size() > 0;
+  return !addons.empty();
 }
 
 bool CAddonMgr::GetIncompatibleEnabledAddonInfos(std::vector<AddonInfoPtr>& incompatible) const
@@ -852,7 +852,7 @@ bool CAddonMgr::DisableAddon(const std::string& id, AddonDisabledReason disabled
   std::unique_lock lock(m_critSection);
   if (!CanAddonBeDisabled(id))
     return false;
-  if (m_disabled.find(id) != m_disabled.end())
+  if (m_disabled.contains(id))
     return true; //already disabled
   if (!m_database->DisableAddon(id, disabledReason))
     return false;
@@ -893,7 +893,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
 {
   std::unique_lock lock(m_critSection);
 
-  if (m_disabled.find(id) == m_disabled.end())
+  if (!m_disabled.contains(id))
     return true; //already enabled
 
   AddonPtr addon;
@@ -949,7 +949,7 @@ bool CAddonMgr::EnableAddon(const std::string& id)
 bool CAddonMgr::IsAddonDisabled(const std::string& ID) const
 {
   std::unique_lock lock(m_critSection);
-  return m_disabled.find(ID) != m_disabled.end();
+  return m_disabled.contains(ID);
 }
 
 bool CAddonMgr::IsAddonDisabledExcept(const std::string& ID,
@@ -1210,7 +1210,7 @@ bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool onlyEnabled, AddonTyp
   bool forUnknown = type == AddonType::UNKNOWN;
   for (auto& info : m_installedAddons)
   {
-    if (onlyEnabled && m_disabled.find(info.first) != m_disabled.end())
+    if (onlyEnabled && m_disabled.contains(info.first))
       continue;
 
     if (info.second->MainType() != AddonType::UNKNOWN && (forUnknown || info.second->HasType(type)))
@@ -1231,7 +1231,7 @@ std::vector<AddonInfoPtr> CAddonMgr::GetAddonInfos(bool onlyEnabled,
 
   for (auto& info : m_installedAddons)
   {
-    if (onlyEnabled && m_disabled.find(info.first) != m_disabled.end())
+    if (onlyEnabled && m_disabled.contains(info.first))
       continue;
 
     if (info.second->MainType() == AddonType::UNKNOWN)

@@ -62,7 +62,7 @@ bool CContextMenuItem::Execute(const std::shared_ptr<CFileItem>& item) const
     return false;
 
   bool reuseLanguageInvoker = false;
-  if (addon->ExtraInfo().find("reuselanguageinvoker") != addon->ExtraInfo().end())
+  if (addon->ExtraInfo().contains("reuselanguageinvoker"))
     reuseLanguageInvoker = addon->ExtraInfo().at("reuselanguageinvoker") == "true";
 
 #ifdef HAS_PYTHON

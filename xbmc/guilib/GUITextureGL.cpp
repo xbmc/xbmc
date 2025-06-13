@@ -102,7 +102,7 @@ void CGUITextureGL::Begin(KODI::UTILS::COLOR::Color color)
 
 void CGUITextureGL::End()
 {
-  if (m_packedVertices.size())
+  if (!m_packedVertices.empty())
   {
     GLint posLoc  = m_renderSystem->ShaderGetPos();
     GLint tex0Loc = m_renderSystem->ShaderGetCoord0();
@@ -115,7 +115,8 @@ void CGUITextureGL::End()
 
     glGenBuffers(1, &VertexVBO);
     glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*m_packedVertices.size(), &m_packedVertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * m_packedVertices.size(),
+                 m_packedVertices.data(), GL_STATIC_DRAW);
 
     glUniform1f(depthLoc, m_depth);
 

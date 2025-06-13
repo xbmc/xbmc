@@ -81,7 +81,7 @@ bool CShaderPresetFactory::CanLoadPreset(const std::string& presetPath)
 
   std::string extension = URIUtils::GetExtension(presetPath);
   if (!extension.empty())
-    bSuccess = (m_loaders.find(extension) != m_loaders.end());
+    bSuccess = (m_loaders.contains(extension));
 
   return bSuccess;
 }
@@ -126,11 +126,11 @@ void CShaderPresetFactory::UpdateAddons()
   {
     std::string addonId = shaderAddon->ID();
 
-    const bool bIsNew = (m_shaderAddons.find(addonId) == m_shaderAddons.end());
+    const bool bIsNew = (!m_shaderAddons.contains(addonId));
     if (!bIsNew)
       continue;
 
-    const bool bIsFailed = (m_failedAddons.find(addonId) != m_failedAddons.end());
+    const bool bIsFailed = (m_failedAddons.contains(addonId));
     if (bIsFailed)
       continue;
 

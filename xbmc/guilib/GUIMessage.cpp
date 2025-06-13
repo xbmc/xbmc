@@ -134,7 +134,7 @@ void CGUIMessage::SetLabel(int iString)
 void CGUIMessage::SetStringParam(const std::string& strParam)
 {
   m_params.clear();
-  if (strParam.size())
+  if (!strParam.empty())
     m_params.push_back(strParam);
 }
 

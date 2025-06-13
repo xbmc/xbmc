@@ -121,7 +121,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
   m_streaminfo = hints;
 
   // okey check if this is a filesubtitle
-  if(filename.size() && filename != "dvd" )
+  if (!filename.empty() && filename != "dvd")
   {
     m_pSubtitleFileParser.reset(CDVDFactorySubtitle::CreateParser(filename));
     if (!m_pSubtitleFileParser)
