@@ -77,7 +77,7 @@ bool CShaderGLES::Create(std::string shaderSource,
     GLint maxLength = 0;
     glGetShaderiv(vShader, GL_INFO_LOG_LENGTH, &maxLength);
     std::vector<GLchar> errorLog(maxLength);
-    glGetShaderInfoLog(vShader, maxLength, &maxLength, &errorLog[0]);
+    glGetShaderInfoLog(vShader, maxLength, &maxLength, errorLog.data());
     CLog::Log(LOGERROR, "CShaderGLES::Create: Vertex shader compile error:\n{}",
               std::string(errorLog.begin(), errorLog.end()));
   }
@@ -92,7 +92,7 @@ bool CShaderGLES::Create(std::string shaderSource,
     GLint maxLength = 0;
     glGetShaderiv(fShader, GL_INFO_LOG_LENGTH, &maxLength);
     std::vector<GLchar> errorLog(maxLength);
-    glGetShaderInfoLog(fShader, maxLength, &maxLength, &errorLog[0]);
+    glGetShaderInfoLog(fShader, maxLength, &maxLength, errorLog.data());
     CLog::Log(LOGERROR, "CShaderGLES::Create: Fragment shader compile error:\n{}",
               std::string(errorLog.begin(), errorLog.end()));
   }
@@ -113,7 +113,7 @@ bool CShaderGLES::Create(std::string shaderSource,
     GLint maxLength = 0;
     glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
     std::vector<GLchar> errorLog(maxLength);
-    glGetProgramInfoLog(m_shaderProgram, maxLength, &maxLength, &errorLog[0]);
+    glGetProgramInfoLog(m_shaderProgram, maxLength, &maxLength, errorLog.data());
     CLog::Log(LOGERROR, "CShaderGLES::Create: Shader program link error:\n{}",
               std::string(errorLog.begin(), errorLog.end()));
     CLog::Log(LOGERROR, "CShaderGLES::Create: Failed to load video shader: {}", m_shaderPath);
