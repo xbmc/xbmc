@@ -2234,7 +2234,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     CDigest digest{CDigest::Type::MD5};
 
-    if (excludes.size())
+    if (!excludes.empty())
       digest.Update(StringUtils::Join(excludes, "|"));
 
     struct __stat64 buffer;
@@ -2261,7 +2261,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     CDigest digest{CDigest::Type::MD5};
 
-    if (excludes.size())
+    if (!excludes.empty())
       digest.Update(StringUtils::Join(excludes, "|"));
 
     int64_t time = 0;
@@ -2436,7 +2436,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       m_bStop = true;
       return -1; // cancelled
     }
-    if (returncode > 0 && movielist.size())
+    if (returncode > 0 && !movielist.empty())
     {
       url = movielist[0];
       return 1;  // found a movie

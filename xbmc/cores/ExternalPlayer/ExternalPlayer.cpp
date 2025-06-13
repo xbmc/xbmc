@@ -549,7 +549,7 @@ bool CExternalPlayer::SetPlayerState(const std::string& state)
 bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
 {
   XMLUtils::GetString(pConfig, "filename", m_filename);
-  if (m_filename.length() > 0)
+  if (!m_filename.empty())
   {
     CLog::Log(LOGINFO, "ExternalPlayer Filename: {}", m_filename);
   }

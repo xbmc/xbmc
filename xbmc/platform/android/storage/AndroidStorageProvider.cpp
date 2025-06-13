@@ -109,7 +109,7 @@ std::string CAndroidStorageProvider::unescape(const std::string& str)
           octString += str[i];
           i += 1;
         }
-        if (octString.length() != 0)
+        if (!octString.empty())
         {
           uint8_t val = 0;
           for (int j=octString.length()-1; j>=0; --j)

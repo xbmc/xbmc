@@ -1269,7 +1269,7 @@ bool IsAddonImageChecked(const std::string& addonImage,
 std::vector<std::string> CAddonDatabase::GetUsedImages(
     const std::vector<std::string>& imagesToCheck) const
 {
-  if (!imagesToCheck.size())
+  if (imagesToCheck.empty())
     return {};
 
   VECADDONS allAddons;

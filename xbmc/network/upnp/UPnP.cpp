@@ -750,7 +750,7 @@ void CUPnP::StopController()
 CUPnPServer* CUPnP::CreateServer(int port /* = 0 */)
 {
   CUPnPServer* device = new CUPnPServer(CSysInfo::GetDeviceName().c_str(),
-                                        CUPnPSettings::GetInstance().GetServerUUID().length()
+                                        !CUPnPSettings::GetInstance().GetServerUUID().empty()
                                             ? CUPnPSettings::GetInstance().GetServerUUID().c_str()
                                             : NULL,
                                         port);
@@ -847,7 +847,7 @@ CUPnPRenderer* CUPnP::CreateRenderer(int port /* = 0 */)
 {
   CUPnPRenderer* device =
       new CUPnPRenderer(CSysInfo::GetDeviceName().c_str(), false,
-                        (CUPnPSettings::GetInstance().GetRendererUUID().length()
+                        (!CUPnPSettings::GetInstance().GetRendererUUID().empty()
                              ? CUPnPSettings::GetInstance().GetRendererUUID().c_str()
                              : NULL),
                         port);

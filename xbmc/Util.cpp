@@ -714,7 +714,7 @@ bool CUtil::GetDirectoryName(const std::string& strFileName, std::string& strDes
   size_t iPos = strDescription.find_last_of("/\\");
   if (iPos != std::string::npos)
     strDescription = strDescription.substr(iPos + 1);
-  else if (strDescription.size() <= 0)
+  else if (strDescription.empty())
     strDescription = strFName;
   return true;
 }
@@ -1214,7 +1214,7 @@ void CUtil::SplitParams(const std::string &paramString, std::vector<std::string>
       parameter.erase(quotaPos, 1);
     }
   }
-  if (!parameter.empty() || parameters.size())
+  if (!parameter.empty() || !parameters.empty())
     parameters.push_back(parameter);
 }
 

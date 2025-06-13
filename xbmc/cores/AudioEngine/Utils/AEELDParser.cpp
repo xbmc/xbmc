@@ -115,7 +115,7 @@ void CAEELDParser::Parse(const uint8_t *data, size_t length, CAEDeviceInfo& info
                                            [](char c) { return !std::isspace(c); })
                                   .base(),
                               header.monitor_name.end());
-    if (header.monitor_name.length() > 0)
+    if (!header.monitor_name.empty())
     {
       info.m_displayNameExtra.append(" ");
       info.m_displayNameExtra.append(header.monitor_name);

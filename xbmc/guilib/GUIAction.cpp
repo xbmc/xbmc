@@ -136,7 +136,7 @@ bool CGUIAction::HasActionsMeetingCondition() const
 
 bool CGUIAction::HasAnyActions() const
 {
-  return m_actions.size() > 0;
+  return !m_actions.empty();
 }
 
 size_t CGUIAction::GetActionCount() const

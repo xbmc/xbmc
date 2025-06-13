@@ -117,7 +117,7 @@ void CGUIDialogContextMenu::OnInitWindow()
 
 void CGUIDialogContextMenu::SetupButtons()
 {
-  if (!m_buttons.size())
+  if (m_buttons.empty())
     return;
 
   // disable the template button control

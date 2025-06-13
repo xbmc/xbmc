@@ -157,7 +157,8 @@ bool CPlayListXML::Load( const std::string& strFileName )
 
 void CPlayListXML::Save(const std::string& strFileName) const
 {
-  if (!m_vecItems.size()) return ;
+  if (m_vecItems.empty())
+    return;
   std::string strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true))

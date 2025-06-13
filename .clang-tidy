@@ -18,5 +18,6 @@ Checks: "\
   performance-unnecessary-value-param,\
   readability-container-contains,\
   readability-container-data-pointer,\
+  readability-container-size-empty,\
 "
 HeaderFilterRegex: '(^|/)(tools|xbmc)/'

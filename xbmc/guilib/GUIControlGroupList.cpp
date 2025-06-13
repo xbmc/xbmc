@@ -265,7 +265,7 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
   { // set the navigation of items so that they form a list
     CGUIAction beforeAction = GetAction((m_orientation == VERTICAL) ? ACTION_MOVE_UP : ACTION_MOVE_LEFT);
     CGUIAction afterAction = GetAction((m_orientation == VERTICAL) ? ACTION_MOVE_DOWN : ACTION_MOVE_RIGHT);
-    if (m_children.size())
+    if (!m_children.empty())
     {
       // we're inserting at the given position, so grab the items above and below and alter
       // their navigation accordingly

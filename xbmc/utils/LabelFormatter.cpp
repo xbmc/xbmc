@@ -171,15 +171,15 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = StringUtils::Format("{:02}", music->GetDiscNumber());
     break;
   case 'A':
-    if (music && music->GetArtistString().size())
+    if (music && !music->GetArtistString().empty())
       value = music->GetArtistString();
-    if (movie && movie->m_artist.size())
+    if (movie && !movie->m_artist.empty())
       value = StringUtils::Join(movie->m_artist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     break;
   case 'T':
-    if (music && music->GetTitle().size())
+    if (music && !music->GetTitle().empty())
       value = music->GetTitle();
-    if (movie && movie->m_strTitle.size())
+    if (movie && !movie->m_strTitle.empty())
       value = movie->m_strTitle;
     break;
   case 'Z':
@@ -187,15 +187,15 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = movie->m_strShowTitle;
     break;
   case 'B':
-    if (music && music->GetAlbum().size())
+    if (music && !music->GetAlbum().empty())
       value = music->GetAlbum();
     else if (movie)
       value = movie->m_strAlbum;
     break;
   case 'G':
-    if (music && music->GetGenre().size())
+    if (music && !music->GetGenre().empty())
       value = StringUtils::Join(music->GetGenre(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
-    if (movie && movie->m_genre.size())
+    if (movie && !movie->m_genre.empty())
       value = StringUtils::Join(movie->m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     break;
   case 'Y':
@@ -430,7 +430,8 @@ bool CLabelFormatter::FillMusicTag(const std::string &fileName, CMusicInfoTag *t
     return false;
   for (unsigned int i = 1; i < m_staticContent[0].size(); i++)
   {
-    size_t pos2 = m_staticContent[0][i].size() ? fileName.find(m_staticContent[0][i], pos1) : fileName.size();
+    size_t pos2 = !m_staticContent[0][i].empty() ? fileName.find(m_staticContent[0][i], pos1)
+                                                 : fileName.size();
     if (pos2 == std::string::npos)
       return false;
     // found static content - thus we have the dynamic content surrounded

@@ -541,7 +541,7 @@ SettingsContainer CGUIDialogSettingsBase::CreateSettings()
 
   SettingsContainer settingMap;
 
-  if (m_categories.size() <= 0)
+  if (m_categories.empty())
     return settingMap;
 
   if (m_iCategory < 0 || m_iCategory >= (int)m_categories.size())
@@ -568,7 +568,7 @@ SettingsContainer CGUIDialogSettingsBase::CreateSettings()
       continue;
 
     const SettingList& settings = (*groupIt)->GetSettings((SettingLevel)GetSettingLevel());
-    if (settings.size() <= 0)
+    if (settings.empty())
       continue;
 
     std::shared_ptr<const CSettingControlTitle> title =

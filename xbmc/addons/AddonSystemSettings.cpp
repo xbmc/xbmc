@@ -69,7 +69,7 @@ void CAddonSystemSettings::OnSettingAction(const std::shared_ptr<const CSetting>
     using namespace KODI::MESSAGING::HELPERS;
 
     const auto removedItems = CAddonInstaller::GetInstance().RemoveOrphanedDepsRecursively();
-    if (removedItems.size() > 0)
+    if (!removedItems.empty())
     {
       const auto message =
           StringUtils::Format(g_localizeStrings.Get(36641), StringUtils::Join(removedItems, ", "));

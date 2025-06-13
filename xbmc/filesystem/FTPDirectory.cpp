@@ -53,7 +53,7 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
     CFTPParse parse;
     if (parse.FTPParse(strBuffer))
     {
-      if( parse.getName().length() == 0 )
+      if (parse.getName().empty())
         continue;
 
       if( parse.getFlagtrycwd() == 0 && parse.getFlagtryretr() == 0 )

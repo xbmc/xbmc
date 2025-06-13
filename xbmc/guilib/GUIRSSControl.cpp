@@ -121,7 +121,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
       }
       else
       {
-        if (m_strRSSTags != "")
+        if (!m_strRSSTags.empty())
         {
           std::vector<std::string> tags = StringUtils::Split(m_strRSSTags, ",");
           for (const std::string& i : tags)

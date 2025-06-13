@@ -140,7 +140,7 @@ void CGUITextureGLES::Begin(KODI::UTILS::COLOR::Color color)
 
 void CGUITextureGLES::End()
 {
-  if (m_packedVertices.size())
+  if (!m_packedVertices.empty())
   {
     GLint posLoc  = m_renderSystem->GUIShaderGetPos();
     GLint tex0Loc = m_renderSystem->GUIShaderGetCoord0();

@@ -152,13 +152,13 @@ void CMusicInfoScraper::Process()
 {
   try
   {
-    if (m_strAlbum.size())
+    if (!m_strAlbum.empty())
     {
       FindAlbumInfo();
       m_strAlbum.clear();
       m_strArtist.clear();
     }
-    else if (m_strArtist.size())
+    else if (!m_strArtist.empty())
     {
       FindArtistInfo();
       m_strArtist.clear();

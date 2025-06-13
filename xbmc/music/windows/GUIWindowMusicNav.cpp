@@ -105,7 +105,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       if (!CGUIWindowMusicBase::OnMessage(message))
         return false;
 
-      if (message.GetStringParam(0) != "")
+      if (!message.GetStringParam(0).empty())
       {
         CURL url(message.GetStringParam(0));
 

@@ -742,7 +742,7 @@ void CGUIEditControl::OnPasteClipboard()
   g_charsetConverter.utf8ToW(utf8_text, unicode_text, false);
 
   // Insert the pasted text at the current cursor position.
-  if (unicode_text.length() > 0)
+  if (!unicode_text.empty())
   {
     std::wstring left_end = m_text2.substr(0, m_cursorPos);
     std::wstring right_end = m_text2.substr(m_cursorPos);

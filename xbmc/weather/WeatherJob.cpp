@@ -110,7 +110,7 @@ void CWeatherJob::LocalizeOverviewToken(std::string &token)
       strLocStr = g_localizeStrings.Get(i->second);
     }
   }
-  if (strLocStr == "")
+  if (strLocStr.empty())
     strLocStr = token; //if not found, let fallback
   token = strLocStr;
 }

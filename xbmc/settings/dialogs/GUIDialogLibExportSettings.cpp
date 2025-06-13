@@ -369,14 +369,14 @@ void CGUIDialogLibExportSettings::InitializeSettings()
   {
     // Only artists, not albums, at least album artists
     items = m_settings.GetLimitedItems(ELIBEXPORT_ALBUMARTISTS + ELIBEXPORT_SONGARTISTS + ELIBEXPORT_OTHERARTISTS);
-    if (items.size() == 0)
+    if (items.empty())
       items.emplace_back(ELIBEXPORT_ALBUMARTISTS);
   }
   else if (!m_settings.IsSingleFile())
   {
     // No songs unless single file export, at least album artists
     items = m_settings.GetLimitedItems(ELIBEXPORT_ALBUMS + ELIBEXPORT_ALBUMARTISTS + ELIBEXPORT_SONGARTISTS + ELIBEXPORT_OTHERARTISTS);
-    if (items.size() == 0)
+    if (items.empty())
       items.emplace_back(ELIBEXPORT_ALBUMARTISTS);
   }
   else

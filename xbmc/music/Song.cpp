@@ -117,8 +117,7 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
         musicbrainz id so ignore them but raise warning.
       */
       // Do hints exist yet mismatch
-      if (artistHints.size() > 0 &&
-        artistHints.size() != mbids.size())
+      if (!artistHints.empty() && artistHints.size() != mbids.size())
       {
         if (names.size() == mbids.size())
           // Artist name count matches, use that as hints
