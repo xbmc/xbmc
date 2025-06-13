@@ -427,6 +427,11 @@ void CGUIListItem::AppendProperties(const CGUIListItem &item)
     SetProperty(propname, propvalue);
 }
 
+void CGUIListItem::SetProperties(const PropertyMap& props)
+{
+  m_mapProperties = props;
+}
+
 void CGUIListItem::SetCurrentItem(unsigned int position)
 {
   m_currentItem = position;

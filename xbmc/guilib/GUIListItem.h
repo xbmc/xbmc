@@ -162,6 +162,17 @@ public:
 
   const CVariant &GetProperty(const std::string &strKey) const;
 
+  struct CaseInsensitiveCompare
+  {
+    using is_transparent = void; // Enables heterogeneous operations.
+    bool operator()(const std::string_view& s1, const std::string_view& s2) const;
+  };
+
+  using PropertyMap = std::map<std::string, CVariant, CaseInsensitiveCompare>;
+  const PropertyMap& GetProperties() const { return m_mapProperties; }
+
+  void SetProperties(const PropertyMap& props);
+
   /*! \brief Set the current item number within it's container
    Our container classes will set this member with the items position
    in the container starting at 1.
@@ -176,16 +187,6 @@ public:
    */
   unsigned int GetCurrentItem() const;
 
-protected:
-  struct CaseInsensitiveCompare
-  {
-    using is_transparent = void; // Enables heterogeneous operations.
-    bool operator()(const std::string_view& s1, const std::string_view& s2) const;
-  };
-
-  using PropertyMap = std::map<std::string, CVariant, CaseInsensitiveCompare>;
-  PropertyMap m_mapProperties;
-
 private:
   bool m_bIsFolder{false}; ///< is item a folder or a file
   std::wstring m_sortLabel; // text for sorting. Need to be UTF16 for proper sorting
@@ -196,6 +197,8 @@ private:
   std::unique_ptr<CGUIListItemLayout> m_focusedLayout;
   bool m_bSelected{false}; // item is selected or not
   unsigned int m_currentItem{1}; // current item number within container (starting at 1)
+
+  PropertyMap m_mapProperties;
 
   KODI::ART::Artwork m_art;
   KODI::ART::Artwork m_artFallbacks;
