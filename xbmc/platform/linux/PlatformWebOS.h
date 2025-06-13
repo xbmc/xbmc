@@ -19,4 +19,7 @@ public:
 
 protected:
   void RegisterPowerManagement() override;
+
+private:
+  std::string GetHomePath();
 };
