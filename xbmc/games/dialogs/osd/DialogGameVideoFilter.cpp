@@ -40,14 +40,20 @@ struct ScalingMethodProperties
 {
   int nameIndex;
   int categoryIndex;
-  int descriptionIndex;
   RETRO::SCALINGMETHOD scalingMethod;
 };
 
 const std::vector<ScalingMethodProperties> scalingMethods = {
-    {16301, 16296, 16298, RETRO::SCALINGMETHOD::NEAREST},
-    {16302, 16297, 16299, RETRO::SCALINGMETHOD::LINEAR},
+    {16301, 16296, RETRO::SCALINGMETHOD::NEAREST},
+    {16302, 16297, RETRO::SCALINGMETHOD::LINEAR},
 };
+
+// Helper function
+void GetProperties(const CFileItem& item, std::string& videoFilter)
+{
+  videoFilter = item.GetProperty("game.videofilter").asString();
+}
+
 } // namespace
 
 CDialogGameVideoFilter::CDialogGameVideoFilter()
@@ -72,8 +78,6 @@ void CDialogGameVideoFilter::PreInit()
     CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(231)); // "None"
     m_items.Add(std::move(item));
   }
-
-  m_bHasDescription = false;
 }
 
 void CDialogGameVideoFilter::InitScalingMethods()
@@ -91,8 +95,6 @@ void CDialogGameVideoFilter::InitScalingMethods()
             std::make_shared<CFileItem>(g_localizeStrings.Get(scalingMethodProps.nameIndex));
         item->SetLabel2(g_localizeStrings.Get(scalingMethodProps.categoryIndex));
         item->SetProperty("game.videofilter", CVariant{videoSettings.GetVideoFilter()});
-        item->SetProperty("game.videofilterdescription",
-                          CVariant{g_localizeStrings.Get(scalingMethodProps.descriptionIndex)});
         m_items.Add(std::move(item));
       }
     }
@@ -203,8 +205,7 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
     CFileItemPtr item = m_items[index];
 
     std::string videoFilter;
-    std::string description;
-    GetProperties(*item, videoFilter, description);
+    GetProperties(*item, videoFilter);
 
     ::CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
@@ -212,14 +213,6 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
     {
       gameSettings.SetVideoFilter(videoFilter);
       gameSettings.NotifyObservers(ObservableMessageSettingsChanged);
-
-      OnDescriptionChange(description);
-      m_bHasDescription = true;
-    }
-    else if (!m_bHasDescription)
-    {
-      OnDescriptionChange(description);
-      m_bHasDescription = true;
     }
   }
 }
@@ -231,8 +224,7 @@ unsigned int CDialogGameVideoFilter::GetFocusedItem() const
   for (int i = 0; i < m_items.Size(); i++)
   {
     std::string videoFilter;
-    std::string description;
-    GetProperties(*m_items[i], videoFilter, description);
+    GetProperties(*m_items[i], videoFilter);
 
     if (videoFilter == gameSettings.VideoFilter())
     {
@@ -257,12 +249,4 @@ bool CDialogGameVideoFilter::OnClickAction()
 std::string CDialogGameVideoFilter::GetLocalizedString(uint32_t code)
 {
   return g_localizeStrings.GetAddonString(PRESETS_ADDON_NAME, code);
-}
-
-void CDialogGameVideoFilter::GetProperties(const CFileItem& item,
-                                           std::string& videoFilter,
-                                           std::string& description)
-{
-  videoFilter = item.GetProperty("game.videofilter").asString();
-  description = item.GetProperty("game.videofilterdescription").asString();
 }
