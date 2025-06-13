@@ -131,6 +131,7 @@ public:
   static constexpr auto SETTING_VIDEOPLAYER_USEDXVA2 = "videoplayer.usedxva2";
   static constexpr auto SETTING_VIDEOPLAYER_USEVTB = "videoplayer.usevtb";
   static constexpr auto SETTING_VIDEOPLAYER_USEPRIMEDECODER = "videoplayer.useprimedecoder";
+  static constexpr auto SETTING_VIDEOPLAYER_USESTARFISHDECODER = "videoplayer.usestarfishdecoder";
   static constexpr auto SETTING_VIDEOPLAYER_USESTAGEFRIGHT = "videoplayer.usestagefright";
   static constexpr auto SETTING_VIDEOPLAYER_LIMITGUIUPDATE = "videoplayer.limitguiupdate";
   static constexpr auto SETTING_VIDEOPLAYER_SUPPORTMVC = "videoplayer.supportmvc";
