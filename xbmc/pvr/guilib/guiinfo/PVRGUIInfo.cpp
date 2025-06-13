@@ -431,6 +431,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_EPISODEPART:
       case LISTITEM_DIRECTOR:
       case LISTITEM_CHANNEL_NUMBER:
+      case LISTITEM_CHANNEL_GROUP:
       case LISTITEM_PREMIERED:
       case LISTITEM_PARENTAL_RATING:
       case LISTITEM_PARENTAL_RATING_CODE:
@@ -968,6 +969,21 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         std::unique_lock lock(m_critSection);
         strValue = channel->IsRadio() ? m_strPlayingRadioGroup : m_strPlayingTVGroup;
         return true;
+      }
+      case LISTITEM_CHANNEL_GROUP:
+      {
+        std::shared_ptr<const CPVRChannelGroupMember> groupMember{
+            item->GetPVRChannelGroupMemberInfoTag()};
+        if (!groupMember)
+          groupMember =
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(
+                  *item);
+        if (groupMember)
+        {
+          strValue = groupMember->GroupName();
+          return true;
+        }
+        break;
       }
       case LISTITEM_PVR_CLIENT_NAME:
         strValue = CServiceBroker::GetPVRManager().GetClient(channel->ClientID())->GetClientName();
