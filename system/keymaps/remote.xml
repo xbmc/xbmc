@@ -15,6 +15,10 @@
 <!--  eg <B>ActivateWindow(Music)</B>                                                     -->
 <!-- would automatically go to Music on the press of the B button.                        -->
 <!--                                                                                      -->
+<!--  Long presses                                                                        -->
+<!--   A limitation is that if a single press is mapped in a section, a global "longpress"-->
+<!--   will be ignored. The workaround is to duplicate the long mapping in the section.   -->
+<!--                                                                                      -->
 <!-- An empty action removes the corresponding mapping from default and parent keymaps.   -->
 <!-- This is different from a "noop" action, which disables a button.                     -->
 <!--                                                                                      -->
