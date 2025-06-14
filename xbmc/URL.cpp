@@ -89,7 +89,7 @@ void CURL::Parse(std::string strURL1)
       const auto& proto = protocolReplacement[1];
 
       for (size_t extPos = strURL.find(ext); extPos != std::string::npos;
-          extPos = strURL.find(ext, extPos))
+           extPos = strURL.find(ext, extPos))
       {
         extPos += 4; // std::strlen(ext) -1;
         const auto archiveName = strURL.substr(0, extPos);
