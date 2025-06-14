@@ -439,20 +439,7 @@ std::string CURL::Get() const
   if (m_strProtocol.empty())
     return m_strFileName;
 
-  unsigned int sizeneed = m_strProtocol.length()
-                        + m_strDomain.length()
-                        + m_strUserName.length()
-                        + m_strPassword.length()
-                        + m_strHostName.length()
-                        + m_strFileName.length()
-                        + m_strOptions.length()
-                        + m_strProtocolOptions.length()
-                        + 10;
-
-  std::string strURL;
-  strURL.reserve(sizeneed);
-
-  strURL = GetWithoutOptions();
+  std::string strURL = GetWithoutOptions();
 
   if( !m_strOptions.empty() )
     strURL += m_strOptions;
