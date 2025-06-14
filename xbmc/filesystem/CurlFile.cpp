@@ -748,7 +748,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 
   // lookup host in DNS cache
   std::string resolvedHost;
-  if (CServiceBroker::GetDNSNameCache()->GetCached(url2.GetHostName(), resolvedHost))
+  const std::shared_ptr<CDNSNameCache> dnsCache = CServiceBroker::GetDNSNameCache();
+  if (dnsCache && dnsCache->GetCached(url2.GetHostName(), resolvedHost))
   {
     struct curl_slist* tempCache;
     int entryPort = url2.GetPort();
