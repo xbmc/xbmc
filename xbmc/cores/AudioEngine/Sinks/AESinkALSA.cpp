@@ -267,7 +267,7 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(const AEAudioFormat& format,
   else
   {
     /* ask for the actual map */
-    snd_pcm_chmap_t* actualMap = snd_pcm_get_chmap(m_pcm);
+    auto actualMap = snd_pcm_get_chmap(m_pcm);
     if (actualMap)
     {
       alsaMapStr = ALSAchmapToString(actualMap);
@@ -469,11 +469,9 @@ CAEChannelInfo CAESinkALSA::GetAlternateLayoutForm(const CAEChannelInfo& info)
   return altLayout;
 }
 
-snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info) const {
-  snd_pcm_chmap_t* chmap = nullptr;
-  snd_pcm_chmap_query_t** supportedMaps;
-
-  supportedMaps = snd_pcm_query_chmaps(m_pcm);
+snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info) const
+{
+  auto supportedMaps = snd_pcm_query_chmaps(m_pcm);
 
   if (!supportedMaps)
     return nullptr;
@@ -484,6 +482,7 @@ snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info) c
 
   /* for efficiency, first try to find an exact match, and only then fallback
    * to searching for less perfect matches */
+  snd_pcm_chmap_t* chmap = nullptr;
   int i = 0;
   for (auto supportedMap = supportedMaps[i++]; supportedMap; supportedMap = supportedMaps[i++])
   {
@@ -635,10 +634,9 @@ void CAESinkALSA::aml_configure_simple_control(std::string &device, const enum I
       case AML_AUGESOUND:
         {
           // do set Spdif to HDMITX to SPDIF-A or SPDIF-B
-          AEDeviceType devType = AEDeviceTypeFromName(device);
           enum spdif_id spdif_id = SPDIF_ID_CNT;
 
-          switch (devType) {
+          switch (AEDeviceTypeFromName(device)) {
             case AE_DEVTYPE_HDMI:
               spdif_id = SPDIF_B;
               break;
@@ -735,7 +733,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
     GetAESParams(format, AESParams);
 
   // set codec before opening the device
-  if (AMLDeviceType amlDeviceType = GetAMLDeviceType(device);
+  if (auto amlDeviceType = GetAMLDeviceType(device);
       amlDeviceType != AML_NONE)
   {
     logM(LOGINFO, "CAESinkALSA", "Configure simple control for \"{}\"", GetAMLCardName(amlDeviceType));
