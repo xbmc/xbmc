@@ -53,6 +53,15 @@ public:
   void UnregisterLoader(IShaderPresetLoader* loader);
 
   /*!
+   * \brief Check if any shader preset add-ons have been loaded
+   *
+   * This includes add-ons in a failed state.
+   *
+   * \return True if any shader preset add-ons are present, false otherwise
+   */
+  bool HasAddons() const;
+
+  /*!
    * \brief Load a preset from the given path
    *
    * \param presetPath The path to the shader preset
