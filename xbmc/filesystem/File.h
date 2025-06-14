@@ -180,6 +180,7 @@ public:
   * @return zero of success, -1 otherwise.
   */
   int Stat(struct __stat64 *buffer);
+  static bool FileExists(const std::string& strPath);
   static bool Delete(const std::string& strFileName);
   static bool Rename(const std::string& strFileName, const std::string& strNewFileName);
   static bool Copy(const std::string& strFileName, const std::string& strDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
