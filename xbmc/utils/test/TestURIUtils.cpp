@@ -8,9 +8,11 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "test/TestUtils.h"
 #include "utils/URIUtils.h"
 
 #include <utility>
@@ -850,3 +852,19 @@ TEST_P(TestLANParamTest, TestIsHostOnLAN)
 }
 
 INSTANTIATE_TEST_SUITE_P(TestURIUtils, TestLANParamTest, testing::ValuesIn(values));
+
+TEST_F(TestURIUtils, ParsingArchiveFile)
+{
+  XFILE::CFile* file = XBMC_CREATETEMPFILE(".zip");
+  std::string archivePath = XBMC_TEMPFILEPATH(file);
+  std::string pathInArchive = archivePath + "/path/in/archive/info.txt";
+  file->Close();
+
+  CURL curl(pathInArchive);
+
+  EXPECT_EQ("zip", curl.GetProtocol());
+  EXPECT_EQ("path/in/archive/info.txt", curl.GetFileName());
+  EXPECT_EQ(archivePath, CURL::Decode(curl.GetHostName()));
+
+  XBMC_DELETETEMPFILE(file);
+}
