@@ -433,7 +433,7 @@ public:
   /////////////////////////////////////////////////
   int AddPath(const std::string& strPath);
 
-  bool GetPaths(std::set<std::string>& paths);
+  bool GetPaths(std::set<std::string, std::less<>>& paths);
   bool SetPathHash(const std::string& path, const std::string& hash);
   bool GetPathHash(const std::string& path, std::string& hash);
   bool GetAlbumPaths(int idAlbum, std::vector<std::pair<std::string, int>>& paths);

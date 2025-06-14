@@ -93,8 +93,11 @@ namespace JSONRPC
     static void UpdateVideoTag(const CVariant& parameterObject,
                                CVideoInfoTag& details,
                                KODI::ART::Artwork& artwork,
-                               std::set<std::string>& removedArtwork,
-                               std::set<std::string>& updatedDetails);
-    static void UpdateVideoTagField(const CVariant& parameterObject, const std::string& fieldName, std::vector<std::string>& fieldValue, std::set<std::string>& updatedDetails);
+                               std::set<std::string, std::less<>>& removedArtwork,
+                               std::set<std::string, std::less<>>& updatedDetails);
+    static void UpdateVideoTagField(const CVariant& parameterObject,
+                                    const std::string& fieldName,
+                                    std::vector<std::string>& fieldValue,
+                                    std::set<std::string, std::less<>>& updatedDetails);
   };
 }

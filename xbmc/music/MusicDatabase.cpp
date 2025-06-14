@@ -11392,7 +11392,7 @@ void CMusicDatabase::CheckArtistLinksChanged()
   }
 }
 
-bool CMusicDatabase::GetPaths(std::set<std::string>& paths)
+bool CMusicDatabase::GetPaths(std::set<std::string, std::less<>>& paths)
 {
   try
   {
