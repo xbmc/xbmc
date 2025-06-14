@@ -13,9 +13,11 @@
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URL.h"
+#include "filesystem/BlurayDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
+#include "guilib/LocalizeStrings.h"
 #include "network/DNSNameCache.h"
 #include "network/Network.h"
 #include "pvr/channels/PVRChannelsPath.h"
@@ -454,11 +456,16 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
     strCheck = CStackDirectory::GetFirstStackedFile(strPath);
 
   std::string strDirectory = GetDirectory(strCheck);
+
   if (IsInRAR(strCheck))
   {
     std::string strPath=strDirectory;
     GetParentPath(strPath, strDirectory);
   }
+
+  if (IsBlurayPath(strCheck))
+    strDirectory = CBlurayDirectory::GetBasePath(CURL(strPath));
+
   if (IsStack(strPath))
   {
     strCheck = strDirectory;
@@ -466,7 +473,16 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
     if (GetFileName(strCheck).size() == 3 && StringUtils::StartsWithNoCase(GetFileName(strCheck), "cd"))
       strDirectory = GetDirectory(strCheck);
   }
+
   return strDirectory;
+}
+
+bool URIUtils::IsDiscPath(const std::string& path)
+{
+  std::string folder{path};
+  RemoveSlashAtEnd(folder);
+  folder = GetFileName(folder);
+  return StringUtils::EqualsNoCase(folder, "VIDEO_TS") || StringUtils::EqualsNoCase(folder, "BDMV");
 }
 
 std::string URIUtils::GetDiscBase(const std::string& file)
@@ -572,6 +588,16 @@ std::string URIUtils::GetBlurayPath(const std::string& path)
   }
 
   return newPath;
+}
+
+std::string URIUtils::GetTrailingPartNumberRegex()
+{
+  // Build regex inserting local specific spelling of disc (xxx)
+  // \/?:cd|dvd|xxx|dis[ck][ _.-]*([0-9]+)$
+  std::string localeDiscStr{StringUtils::Format("{} ", g_localizeStrings.Get(427))};
+  if (!localeDiscStr.empty())
+    localeDiscStr += "|";
+  return {R"([\\\/](?:cd|dvd|)" + localeDiscStr + R"(dis[ck])[ _.-]*(\d{1,3})$)"};
 }
 
 std::string URLEncodePath(const std::string& strPath)

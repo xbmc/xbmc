@@ -450,7 +450,8 @@ enum class ArtFallbackOptions
 enum class DeleteMovieCascadeAction
 {
   DEFAULT_VERSION,
-  ALL_ASSETS
+  ALL_ASSETS,
+  ALL_ASSETS_NOT_STREAMDETAILS
 };
 
 enum class DeleteMovieHashAction
@@ -633,10 +634,10 @@ public:
                            const std::map<std::string, std::string>& artwork,
                            int idShow,
                            int idEpisode = -1);
-  bool SetFileForMedia(const std::string& fileAndPath,
-                       VideoDbContentType type,
-                       int mediaId,
-                       int oldIdFile);
+  int SetFileForMedia(const std::string& fileAndPath,
+                      VideoDbContentType type,
+                      int mediaId,
+                      int oldIdFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
@@ -1168,13 +1169,32 @@ public:
    * \param dbIdTarget id that the video will be attached to
    * \param idVideoVersion new versiontype of the default version of the video
    * \param assetType new asset type of the default version of the video
+   * \param cascadeAction action to take on the assets of the video being converted
+   *        (used to preserve streamdetails for bluray playlists)
    * \return true for success, false otherwise
    */
-  bool ConvertVideoToVersion(VideoDbContentType itemType,
-                             int dbIdSource,
-                             int dbIdTarget,
-                             int idVideoVersion,
-                             VideoAssetType assetType);
+  bool ConvertVideoToVersion(
+      VideoDbContentType itemType,
+      int dbIdSource,
+      int dbIdTarget,
+      int idVideoVersion,
+      VideoAssetType assetType,
+      DeleteMovieCascadeAction cascadeAction = DeleteMovieCascadeAction::ALL_ASSETS);
+
+  /*!
+   * \brief Adds a version of an existing movie to the database
+   * \param itemType type of the video being converted
+   * \param dbIdSource id of the video being converted
+   * \param idVideoVersion new versiontype of the default version of the video
+   * \param assetType new asset type of the default version of the video
+   * \return dbId in the videoversion table, -1 if failure
+   */
+  int AddVideoVersion(VideoDbContentType itemType,
+                      int dbIdSource,
+                      int idFile,
+                      int idVideoVersion,
+                      VideoAssetType assetType);
+
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
@@ -1324,9 +1344,9 @@ protected:
   void GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   std::string GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
 
-  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
-  bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
-  bool SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
+  int SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
+  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
+  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
 
 private:
   void CreateTables() override;

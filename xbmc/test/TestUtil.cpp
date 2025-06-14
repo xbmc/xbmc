@@ -277,3 +277,70 @@ const TestUtilSplitParamsData valuesSplitParams[] = {
 };
 
 INSTANTIATE_TEST_SUITE_P(SP, TestUtilSplitParams, ValuesIn(valuesSplitParams));
+
+struct TestDiscData
+{
+  const char* file;
+  const char* number;
+};
+
+class TestDiscNumbers : public Test, public WithParamInterface<TestDiscData>
+{
+};
+
+const TestDiscData BaseFiles[] = {{"/home/user/movies/movie/video_ts/VIDEO_TS.IFO", ""},
+                                  {"/home/user/movies/movie/disc 1/video_ts/VIDEO_TS.IFO", "1"},
+                                  {"/home/user/movies/movie/BDMV/index.bdmv", ""},
+                                  {"/home/user/movies/movie/disc 1/BDMV/index.bdmv", "1"},
+                                  {"/home/user/movies/movie.iso", ""},
+                                  {"/home/user/movies/movie/file.iso", ""},
+                                  {"/home/user/movies/disc 1/movie.iso", "1"},
+                                  {"/home/user/movies/movie/disc 1/file.iso", "1"},
+                                  {"/home/user/movies/movie.avi", ""},
+                                  {"/home/user/movies/movie/file.avi", ""},
+                                  {"/home/user/movies/movie/disc 1/file.avi", "1"},
+                                  {"/home/user/movies/movie/disk 1/file.avi", "1"},
+                                  {"/home/user/movies/movie/cd 1/file.avi", "1"},
+                                  {"/home/user/movies/movie/dvd 1/file.avi", "1"}};
+
+TEST_P(TestDiscNumbers, GetDiscNumbers)
+{
+  const std::string discNum = CUtil::GetPartNumberFromPath(GetParam().file);
+  const std::string compare = GetParam().number;
+  EXPECT_EQ(compare, discNum);
+}
+
+INSTANTIATE_TEST_SUITE_P(DiscNumbers, TestDiscNumbers, ValuesIn(BaseFiles));
+
+struct TestRemoveData
+{
+  const char* path;
+  const char* result;
+};
+
+class TestRemoveDiscNumbers : public Test, public WithParamInterface<TestRemoveData>
+{
+};
+
+const TestRemoveData BasePaths[] = {
+    {"/home/user/movies/movie/video_ts/", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/disc 1/video_ts/", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/BDMV/", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/disc 1/BDMV/index.bdmv", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/file.iso", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/disc 1/file.iso", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/file.avi", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/disc 1/file.avi", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/disk 1/file.avi", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/cd 1/file.avi", "/home/user/movies/movie/"},
+    {"/home/user/movies/movie/dvd 1/file.avi", "/home/user/movies/movie/"}};
+
+TEST_P(TestRemoveDiscNumbers, RemoveDiscNumbers)
+{
+  const std::string path = CUtil::RemoveTrailingPartNumberSegmentFromPath(
+      GetParam().path, CUtil::PreserveFileName::REMOVE);
+  const std::string compare = GetParam().result;
+  EXPECT_EQ(compare, path);
+}
+
+INSTANTIATE_TEST_SUITE_P(RemoveDiscNumbers, TestRemoveDiscNumbers, ValuesIn(BasePaths));
