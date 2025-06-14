@@ -808,13 +808,31 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 
   if (selectedChmap)
   {
-    logM(LOGINFO, "CAESinkALSA", "Selecting Channel Map: channels:[{}] pos:[{}]", selectedChmap->channels, selectedChmap->pos);
+    // First switch to stereo (first channel map) then to the selected channel map.
+    auto supportedMaps = snd_pcm_query_chmaps(m_pcm);
+    if (supportedMaps && supportedMaps[0])
+    {
+      snd_pcm_set_chmap(m_pcm, &supportedMaps[0]->map);
+      snd_pcm_free_chmaps(supportedMaps);
+    }
+
+    logM(LOGINFO, "CAESinkALSA", "Selecting Channel Map: channels:[{}] chmap:[{}]",
+                                 selectedChmap->channels, ALSAchmapToString(selectedChmap));
 
     if (int err = snd_pcm_set_chmap(m_pcm, selectedChmap);
         err < 0)
       logM(LOGERROR, "CAESinkALSA", "Failed to set pcm channel map: [{}]", snd_strerror(err));
 
     free(selectedChmap);
+
+    // Verify the current set channel map
+    auto newMap = snd_pcm_get_chmap(m_pcm);
+    if (newMap)
+    {
+      logM(LOGINFO, "CAESinkALSA", "Current Channel Map: channels:[{}] chmap:[{}]",
+                                   newMap->channels, ALSAchmapToString(newMap));
+      free(newMap);
+    }
   }
 
   // we want it blocking
