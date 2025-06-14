@@ -189,7 +189,7 @@ std::unique_ptr<IAESink> CAESinkALSA::Create(std::string& device, AEAudioFormat&
   return {};
 }
 
-inline CAEChannelInfo CAESinkALSA::GetChannelLayoutRaw(const AEAudioFormat& format)
+inline CAEChannelInfo CAESinkALSA::GetChannelLayoutRaw(const AEAudioFormat& format) const
 {
   unsigned int count = 0;
 
@@ -220,7 +220,7 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayoutRaw(const AEAudioFormat& form
   return info;
 }
 
-inline CAEChannelInfo CAESinkALSA::GetChannelLayoutLegacy(const AEAudioFormat& format, unsigned int minChannels, unsigned int maxChannels)
+inline CAEChannelInfo CAESinkALSA::GetChannelLayoutLegacy(const AEAudioFormat& format, unsigned int minChannels, unsigned int maxChannels) const
 {
   enum AEChannel* channelMap = LegacyALSAChannelMap;
   unsigned int count = 0;

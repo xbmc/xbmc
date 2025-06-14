@@ -53,8 +53,8 @@ public:
   void Drain() override;
 
 private:
-  CAEChannelInfo GetChannelLayoutRaw(const AEAudioFormat& format);
-  CAEChannelInfo GetChannelLayoutLegacy(const AEAudioFormat& format, unsigned int minChannels, unsigned int maxChannels);
+  CAEChannelInfo GetChannelLayoutRaw(const AEAudioFormat& format) const;
+  CAEChannelInfo GetChannelLayoutLegacy(const AEAudioFormat& format, unsigned int minChannels, unsigned int maxChannels) const;
   CAEChannelInfo GetChannelLayout(const AEAudioFormat& format, unsigned int channels);
 
   static AEChannel ALSAChannelToAEChannel(unsigned int alsaChannel);
