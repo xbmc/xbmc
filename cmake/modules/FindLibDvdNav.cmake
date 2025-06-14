@@ -40,11 +40,12 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
   string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS "-D_XBMC")
 
   if(APPLE)
-    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS "-framework CoreFoundation")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES "-framework CoreFoundation")
     string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -D__DARWIN__")
     if(NOT CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS " -framework IOKit")
+      list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES "-framework IOKit")
     endif()
+    string(REPLACE ";" " " ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES}")
   endif()
 
   if(CORE_SYSTEM_NAME MATCHES windows)
@@ -55,13 +56,13 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
     # INTERFACE_INCLUDE_DIRECTORIES may have multiple paths. We need to separate these
     # individually to then set the -I argument correctly with each path
-    get_target_property(_interface_include_dirs LibDvdRead::LibDvdRead INTERFACE_INCLUDE_DIRECTORIES)
+    get_target_property(_interface_include_dirs ${APP_NAME_LC}::LibDvdRead INTERFACE_INCLUDE_DIRECTORIES)
     foreach(_interface_include_dir ${_interface_include_dirs})
       string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -I${_interface_include_dir}")
     endforeach()
 
-    if(TARGET LibDvdCSS::LibDvdCSS)
-      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -I$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_INCLUDE_DIRECTORIES> $<$<TARGET_EXISTS:LibDvdCSS::LibDvdCSS>:-D$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_COMPILE_DEFINITIONS>>")
+    if(TARGET ${APP_NAME_LC}::LibDvdCSS)
+      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -I$<TARGET_PROPERTY:${APP_NAME_LC}::LibDvdCSS,INTERFACE_INCLUDE_DIRECTORIES> $<$<TARGET_EXISTS:${APP_NAME_LC}::LibDvdCSS>:-D$<TARGET_PROPERTY:${APP_NAME_LC}::LibDvdCSS,INTERFACE_COMPILE_DEFINITIONS>>")
     endif()
 
     find_program(AUTORECONF autoreconf REQUIRED)
@@ -91,25 +92,15 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   BUILD_DEP_TARGET()
 
-  add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LibDvdRead::LibDvdRead)
+  add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} ${APP_NAME_LC}::LibDvdRead)
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    SETUP_BUILD_TARGET()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(LibDvdNav
-                                    REQUIRED_VARS LIBDVDNAV_LIBRARY LIBDVDNAV_INCLUDE_DIR
-                                    VERSION_VAR LIBDVDNAV_VERSION)
+    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     INTERFACE_LINK_LIBRARIES ${APP_NAME_LC}::LibDvdRead)
 
-  if(LibDvdNav_FOUND)
-    add_library(LibDvdNav::LibDvdNav UNKNOWN IMPORTED)
-    set_target_properties(LibDvdNav::LibDvdNav PROPERTIES
-                                               IMPORTED_LOCATION "${LIBDVDNAV_LIBRARY}"
-                                               INTERFACE_LINK_LIBRARIES LibDvdRead::LibDvdRead
-                                               INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDNAV_INCLUDE_DIR}")
-
-    add_dependencies(LibDvdNav::LibDvdNav ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
   else()
     if(LibDvdNav_FIND_REQUIRED)
       message(FATAL_ERROR "Libdvdnav not found")

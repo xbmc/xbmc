@@ -51,14 +51,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(Python3_FOUND)
     if(KODI_DEPENDSBUILD)
       set(EXPAT_USE_STATIC_LIBS TRUE)
-      find_package(EXPAT REQUIRED)
+      find_package(EXPAT REQUIRED ${SEARCH_QUIET})
 
       find_library(FFI_LIBRARY ffi REQUIRED)
       find_library(GMP_LIBRARY gmp REQUIRED)
 
-      find_package(Iconv REQUIRED)
-      find_package(Intl REQUIRED)
-      find_package(LibLZMA REQUIRED)
+      find_package(Iconv REQUIRED ${SEARCH_QUIET})
+      find_package(Intl REQUIRED ${SEARCH_QUIET})
+      find_package(LibLZMA REQUIRED ${SEARCH_QUIET})
 
       if(NOT CORE_SYSTEM_NAME STREQUAL android)
         set(PYTHON_DEP_LIBRARIES pthread dl util)

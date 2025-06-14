@@ -8,35 +8,19 @@
 #   ${APP_NAME_LC}::LibDisplayInfo   - The LibDisplayInfo library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_package(PkgConfig ${SEARCH_QUIET})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdisplay-info)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_LIBDISPLAYINFO libdisplay-info ${SEARCH_QUIET})
-  endif()
+  SETUP_BUILD_VARS()
 
-  find_path(LIBDISPLAYINFO_INCLUDE_DIR libdisplay-info/edid.h
-                            HINTS ${PC_LIBDISPLAYINFO_INCLUDEDIR})
+  SETUP_FIND_SPECS()
 
-  find_library(LIBDISPLAYINFO_LIBRARY NAMES display-info
-                           HINTS ${PC_LIBDISPLAYINFO_LIBDIR})
+  SEARCH_EXISTING_PACKAGES()
 
-  set(LIBDISPLAYINFO_VERSION ${PC_LIBDISPLAYINFO_VERSION})
-
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(LibDisplayInfo
-                                    REQUIRED_VARS LIBDISPLAYINFO_LIBRARY LIBDISPLAYINFO_INCLUDE_DIR
-                                    VERSION_VAR LIBDISPLAYINFO_VERSION)
-
-  if(LIBDISPLAYINFO_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${LIBDISPLAYINFO_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${LIBDISPLAYINFO_INCLUDE_DIR}")
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
   else()
     if(LibDisplayInfo_FIND_REQUIRED)
       message(FATAL_ERROR "Libdisplayinfo libraries were not found.")
