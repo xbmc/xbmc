@@ -17,7 +17,10 @@
 
 #include <mutex>
 
-#define SETTINGS_XML_ROOT   "settings"
+namespace
+{
+constexpr const char* SETTINGS_XML_ROOT = "settings";
+} // unnamed namespace
 
 CSettingsBase::CSettingsBase()
   : m_settingsManager(new CSettingsManager())
@@ -91,15 +94,15 @@ bool CSettingsBase::LoadHiddenValuesFromXml(const TiXmlElement* root)
   if (root == nullptr)
     return false;
 
-  std::map<std::string, std::shared_ptr<CSetting>> loadedSettings;
+  CSettingsManager::LoadedSettings loadedSettings;
 
   bool updated;
   // don't trigger events for hidden settings
   bool success = m_settingsManager->Load(root, updated, false, &loadedSettings);
   if (success)
   {
-    for(std::map<std::string, std::shared_ptr<CSetting>>::const_iterator setting = loadedSettings.begin(); setting != loadedSettings.end(); ++setting)
-      setting->second->SetVisible(false);
+    for (const auto& setting : loadedSettings)
+      setting.second->SetVisible(false);
   }
 
   return success;
@@ -118,7 +121,7 @@ bool CSettingsBase::IsLoaded() const
 bool CSettingsBase::SaveValuesToXml(CXBMCTinyXML& xml) const
 {
   std::string serializedSettings;
-  auto xmlSerializer = std::make_unique<CSettingsValueXmlSerializer>();
+  const auto xmlSerializer = std::make_unique<CSettingsValueXmlSerializer>();
   if (!m_settingsManager->Save(xmlSerializer.get(), serializedSettings))
     return false;
 
@@ -239,16 +242,16 @@ bool CSettingsBase::SetString(const std::string& id, const std::string& value)
 std::vector<CVariant> CSettingsBase::GetList(const std::string& id) const
 {
   std::shared_ptr<CSetting> setting = m_settingsManager->GetSetting(id);
-  if (setting == nullptr || setting->GetType() != SettingType::List)
+  if (!setting || setting->GetType() != SettingType::List)
     return std::vector<CVariant>();
 
   return CSettingUtils::GetList(std::static_pointer_cast<CSettingList>(setting));
 }
 
-bool CSettingsBase::SetList(const std::string& id, const std::vector<CVariant>& value)
+bool CSettingsBase::SetList(const std::string& id, const std::vector<CVariant>& value) const
 {
   std::shared_ptr<CSetting> setting = m_settingsManager->GetSetting(id);
-  if (setting == nullptr || setting->GetType() != SettingType::List)
+  if (!setting || setting->GetType() != SettingType::List)
     return false;
 
   return CSettingUtils::SetList(std::static_pointer_cast<CSettingList>(setting), value);
@@ -267,7 +270,7 @@ void CSettingsBase::SetDefaults()
 bool CSettingsBase::InitializeDefinitionsFromXml(const CXBMCTinyXML& xml)
 {
   const TiXmlElement* root = xml.RootElement();
-  if (root == nullptr)
+  if (!root)
     return false;
 
   return m_settingsManager->Initialize(root);

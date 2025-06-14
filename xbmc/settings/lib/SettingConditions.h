@@ -97,6 +97,6 @@ public:
       const std::shared_ptr<const CSetting>& setting = std::shared_ptr<const CSetting>()) const;
 
 private:
-  std::map<std::string, SettingConditionCheck> m_conditions;
-  std::set<std::string> m_defines;
+  std::map<std::string, SettingConditionCheck, std::less<>> m_conditions;
+  std::set<std::string, std::less<>> m_defines;
 };

@@ -18,8 +18,8 @@ void CServicesSettings::SettingOptionsChunkSizesFiller(const SettingConstPtr& se
                                                        std::vector<IntegerSettingOption>& list,
                                                        int& current)
 {
-  const auto& kb = g_localizeStrings.Get(37121);
-  const auto& mb = g_localizeStrings.Get(37122);
+  const std::string& kb = g_localizeStrings.Get(37121);
+  const std::string& mb = g_localizeStrings.Get(37122);
 
   list.emplace_back(StringUtils::Format(kb, 16), 16);
   list.emplace_back(StringUtils::Format(kb, 32), 32);
@@ -45,8 +45,8 @@ void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& s
                                                         std::vector<IntegerSettingOption>& list,
                                                         int& current)
 {
-  const auto& mb = g_localizeStrings.Get(37122);
-  const auto& gb = g_localizeStrings.Get(37123);
+  const std::string& mb = g_localizeStrings.Get(37122);
+  const std::string& gb = g_localizeStrings.Get(37123);
 
   list.emplace_back(StringUtils::Format(mb, 16), 16);
   list.emplace_back(StringUtils::Format(mb, 20), 20);
@@ -91,9 +91,9 @@ void CServicesSettings::SettingOptionsCacheChunkSizesFiller(const SettingConstPt
                                                             std::vector<IntegerSettingOption>& list,
                                                             int& current)
 {
-  const auto& byte = g_localizeStrings.Get(37120);
-  const auto& kb = g_localizeStrings.Get(37121);
-  const auto& mb = g_localizeStrings.Get(37122);
+  const std::string& byte = g_localizeStrings.Get(37120);
+  const std::string& kb = g_localizeStrings.Get(37121);
+  const std::string& mb = g_localizeStrings.Get(37122);
 
   list.emplace_back(StringUtils::Format(byte, 256), 256);
   list.emplace_back(StringUtils::Format(byte, 512), 512);

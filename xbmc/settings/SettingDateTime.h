@@ -15,8 +15,11 @@ class CDateTime;
 class CSettingDate : public CSettingString
 {
 public:
-  CSettingDate(const std::string &id, CSettingsManager *settingsManager = NULL);
-  CSettingDate(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
+  CSettingDate(const std::string& id, CSettingsManager* settingsManager = nullptr);
+  CSettingDate(const std::string& id,
+               int label,
+               const std::string& value,
+               CSettingsManager* settingsManager = nullptr);
   CSettingDate(const std::string &id, const CSettingDate &setting);
   ~CSettingDate() override = default;
 
@@ -31,8 +34,11 @@ public:
 class CSettingTime : public CSettingString
 {
 public:
-  CSettingTime(const std::string &id, CSettingsManager *settingsManager = NULL);
-  CSettingTime(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
+  CSettingTime(const std::string& id, CSettingsManager* settingsManager = nullptr);
+  CSettingTime(const std::string& id,
+               int label,
+               const std::string& value,
+               CSettingsManager* settingsManager = nullptr);
   CSettingTime(const std::string &id, const CSettingTime &setting);
   ~CSettingTime() override = default;
 

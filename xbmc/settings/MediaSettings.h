@@ -19,16 +19,17 @@
 #include <map>
 #include <string>
 
-#define VOLUME_DRC_MINIMUM 0    // 0dB
-#define VOLUME_DRC_MAXIMUM 6000 // 60dB
+constexpr int VOLUME_DRC_MINIMUM = 0; // 0dB
+constexpr int VOLUME_DRC_MAXIMUM = 6000; // 60dB
 
 class TiXmlNode;
 
-typedef enum {
-  WatchedModeAll        = 0,
+enum WatchedMode
+{
+  WatchedModeAll = 0,
   WatchedModeUnwatched,
   WatchedModeWatched
-} WatchedMode;
+};
 
 class CMediaSettings : public ISettingCallback, public ISettingsHandler, public ISubSettings
 {
@@ -86,10 +87,10 @@ public:
   void SetVideoNeedsUpdate(int version) { m_videoNeedsUpdate = version; }
 
 protected:
-  CMediaSettings();
+  CMediaSettings() = default;
   CMediaSettings(const CMediaSettings&) = delete;
   CMediaSettings& operator=(CMediaSettings const&) = delete;
-  ~CMediaSettings() override;
+  ~CMediaSettings() override = default;
 
   static std::string GetWatchedContent(const std::string &content);
 
@@ -99,19 +100,25 @@ private:
   CGameSettings m_defaultGameSettings;
   CGameSettings m_currentGameSettings;
 
-  typedef std::map<std::string, WatchedMode> WatchedModes;
-  WatchedModes m_watchedModes;
+  using WatchedModes = std::map<std::string, WatchedMode, std::less<>>;
+  WatchedModes m_watchedModes{{"files", WatchedModeAll},
+                              {"movies", WatchedModeAll},
+                              {"tvshows", WatchedModeAll},
+                              {"musicvideos", WatchedModeAll},
+                              {"recordings", WatchedModeAll}};
 
-  bool m_musicPlaylistRepeat;
-  bool m_musicPlaylistShuffle;
-  bool m_videoPlaylistRepeat;
-  bool m_videoPlaylistShuffle;
+  bool m_musicPlaylistRepeat{false};
+  bool m_musicPlaylistShuffle{false};
+  bool m_videoPlaylistRepeat{false};
+  bool m_videoPlaylistShuffle{false};
 
-  bool m_mediaStartWindowed;
-  int m_additionalSubtitleDirectoryChecked;
+  bool m_mediaStartWindowed{false};
+  int m_additionalSubtitleDirectoryChecked{0};
 
-  int m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
-  int m_videoNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
+  int m_musicNeedsUpdate{
+      0}; ///< if a database update means an update is required (set to the version number of the db)
+  int m_videoNeedsUpdate{
+      0}; ///< if a database update means an update is required (set to the version number of the db)
 
   mutable CCriticalSection m_critical;
 };

@@ -35,7 +35,7 @@ std::vector<CVariant> CSettingUtils::ListToValues(
 {
   std::vector<CVariant> realValues;
 
-  if (setting == NULL)
+  if (!setting)
     return realValues;
 
   for (const auto& value : values)
@@ -70,7 +70,7 @@ bool CSettingUtils::ValuesToList(const std::shared_ptr<const CSettingList>& sett
                                  const std::vector<CVariant>& values,
                                  std::vector<std::shared_ptr<CSetting>>& newValues)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   int index = 0;
@@ -78,8 +78,9 @@ bool CSettingUtils::ValuesToList(const std::shared_ptr<const CSettingList>& sett
   for (const auto& value : values)
   {
     SettingPtr settingValue =
-        setting->GetDefinition()->Clone(StringUtils::Format("{}.{}", setting->GetId(), index++));
-    if (settingValue == NULL)
+        setting->GetDefinition()->Clone(StringUtils::Format("{}.{}", setting->GetId(), index));
+    index++;
+    if (!settingValue)
       return false;
 
     switch (setting->GetElementType())
@@ -128,13 +129,12 @@ bool CSettingUtils::ValuesToList(const std::shared_ptr<const CSettingList>& sett
 
 bool CSettingUtils::FindIntInList(const std::shared_ptr<const CSettingList>& settingList, int value)
 {
-  if (settingList == nullptr || settingList->GetElementType() != SettingType::Integer)
+  if (!settingList || settingList->GetElementType() != SettingType::Integer)
     return false;
 
-  const auto values = settingList->GetValue();
-  const auto matchingValue =
-      std::find_if(values.begin(), values.end(), [value](const SettingPtr& setting) {
-        return std::static_pointer_cast<CSettingInt>(setting)->GetValue() == value;
-      });
+  const SettingList& values = settingList->GetValue();
+  const auto matchingValue = std::ranges::find_if(
+      values, [value](const SettingPtr& setting)
+      { return std::static_pointer_cast<CSettingInt>(setting)->GetValue() == value; });
   return matchingValue != values.end();
 }

@@ -103,7 +103,7 @@ public:
    \brief Gets the setting with the given identifier.
 
    \param id Setting identifier
-   \return Setting object with the given identifier or NULL if the identifier is unknown
+   \return Setting object with the given identifier or nullptr if the identifier is unknown
    */
   std::shared_ptr<CSetting> GetSetting(const std::string& id) const;
   /*!
@@ -116,7 +116,7 @@ public:
    \brief Gets the setting section with the given identifier.
 
    \param section Setting section identifier
-   \return Setting section with the given identifier or NULL if the identifier is unknown
+   \return Setting section with the given identifier or nullptr if the identifier is unknown
    */
   std::shared_ptr<CSettingSection> GetSection(const std::string& section) const;
 
@@ -202,7 +202,7 @@ public:
    \param value Values to set
    \return True if setting the values was successful, false otherwise
    */
-  bool SetList(const std::string& id, const std::vector<CVariant>& value);
+  bool SetList(const std::string& id, const std::vector<CVariant>& value) const;
 
   /*!
   \brief Sets the value of the setting with the given identifier to its default.

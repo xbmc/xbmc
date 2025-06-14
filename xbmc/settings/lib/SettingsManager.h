@@ -22,6 +22,7 @@
 
 #include <map>
 #include <set>
+#include <string_view>
 #include <unordered_set>
 #include <vector>
 
@@ -104,6 +105,9 @@ public:
    \return True if the XML element was successfully deserialized into setting definitions, false otherwise
    */
   bool Initialize(const TiXmlElement *root);
+
+  using LoadedSettings = std::map<std::string, std::shared_ptr<CSetting>, std::less<>>;
+
   /*!
    \brief Loads setting values from the given XML element.
 
@@ -113,7 +117,10 @@ public:
    \param loadedSettings A list to fill with all the successfully loaded settings
    \return True if the setting values were successfully loaded, false otherwise
    */
-  bool Load(const TiXmlElement *root, bool &updated, bool triggerEvents = true, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);
+  bool Load(const TiXmlElement* root,
+            bool& updated,
+            bool triggerEvents = true,
+            LoadedSettings* loadedSettings = nullptr);
   /*!
    \brief Saves the setting values using the given serializer.
 
@@ -499,7 +506,7 @@ private:
   void OnSettingsCleared() override;
 
   bool Serialize(TiXmlNode *parent) const;
-  bool Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);
+  bool Deserialize(const TiXmlNode* node, bool& updated, LoadedSettings* loadedSettings = nullptr);
 
   bool LoadSetting(const TiXmlNode* node, const std::shared_ptr<CSetting>& setting, bool& updated);
   bool UpdateSetting(const TiXmlNode* node,
@@ -514,15 +521,26 @@ private:
   void CleanupIncompleteSettings();
 
   using CallbackSet = std::set<ISettingCallback *>;
+
+  struct StringHash
+  {
+    using is_transparent = void; // Enables heterogeneous operations.
+    std::size_t operator()(std::string_view sv) const
+    {
+      std::hash<std::string_view> hasher;
+      return hasher(sv);
+    }
+  };
+
   struct Setting {
     std::shared_ptr<CSetting> setting;
     SettingDependencyMap dependencies;
     SettingsContainer children;
     CallbackSet callbacks;
-    std::unordered_set<std::string> references;
+    std::unordered_set<std::string, StringHash, std::equal_to<>> references;
   };
 
-  using SettingMap = std::map<std::string, Setting>;
+  using SettingMap = std::map<std::string, Setting, std::less<>>;
 
   /*!
    * \brief Refresh the visibility and enable status of a given setting
@@ -545,13 +563,13 @@ private:
   bool m_loaded = false;
 
   SettingMap m_settings;
-  using SettingSectionMap = std::map<std::string, std::shared_ptr<CSettingSection>>;
+  using SettingSectionMap = std::map<std::string, std::shared_ptr<CSettingSection>, std::less<>>;
   SettingSectionMap m_sections;
 
-  using SettingCreatorMap = std::map<std::string, ISettingCreator*>;
+  using SettingCreatorMap = std::map<std::string, ISettingCreator*, std::less<>>;
   SettingCreatorMap m_settingCreators;
 
-  using SettingControlCreatorMap = std::map<std::string, ISettingControlCreator*>;
+  using SettingControlCreatorMap = std::map<std::string, ISettingControlCreator*, std::less<>>;
   SettingControlCreatorMap m_settingControlCreators;
 
   using SettingsHandlers = std::vector<ISettingsHandler*>;
@@ -559,7 +577,7 @@ private:
 
   CSettingConditionsManager m_conditions;
 
-  using SettingOptionsFillerMap = std::map<std::string, SettingOptionsFiller>;
+  using SettingOptionsFillerMap = std::map<std::string, SettingOptionsFiller, std::less<>>;
   SettingOptionsFillerMap m_optionsFillers;
 
   mutable CSharedSection m_critical;

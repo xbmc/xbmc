@@ -29,13 +29,13 @@ public:
 
   void MigrateSettings(const std::shared_ptr<ADDON::CSkinInfo>& skin);
 
-  int TranslateString(const std::string &setting);
+  int TranslateString(const std::string& setting) const;
   const std::string& GetString(int setting) const;
-  void SetString(int setting, const std::string &label);
+  void SetString(int setting, const std::string& label) const;
 
-  int TranslateBool(const std::string &setting);
+  int TranslateBool(const std::string& setting) const;
   bool GetBool(int setting) const;
-  void SetBool(int setting, bool set);
+  void SetBool(int setting, bool set) const;
 
   /*! \brief Get the skin setting value as an integer value
    * \param setting - the setting id
@@ -47,8 +47,8 @@ public:
   ADDON::CSkinSettingPtr GetSetting(const std::string& settingId);
   std::shared_ptr<const ADDON::CSkinSetting> GetSetting(const std::string& settingId) const;
 
-  void Reset(const std::string &setting);
-  void Reset();
+  void Reset(const std::string& setting) const;
+  void Reset() const;
 
 protected:
   CSkinSettings();

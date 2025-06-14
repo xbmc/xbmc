@@ -38,31 +38,42 @@ enum ELIBEXPORTOPTIONS
 class CLibExportSettings
 {
 public:
-  CLibExportSettings();
+  CLibExportSettings() = default;
   ~CLibExportSettings() = default;
 
   bool operator!=(const CLibExportSettings &right) const;
+
+  const std::string& GetPath() const { return m_strPath; }
+  void SetPath(const std::string& path) { m_strPath = path; }
+  bool IsOverwrite() const { return m_overwrite; }
+  void SetOverwrite(bool set) { m_overwrite = set; }
+  bool IsArtwork() const { return m_artwork; }
+  void SetArtwork(bool set) { m_artwork = set; }
+  bool IsUnscraped() const { return m_unscraped; }
+  void SetUnscraped(bool set) { m_unscraped = set; }
+  bool IsSkipNfo() const { return m_skipnfo; }
+  void SetSkipNfo(bool set) { m_skipnfo = set; }
   bool IsItemExported(ELIBEXPORTOPTIONS item) const;
   bool IsArtists() const;
   std::vector<int> GetExportItems() const;
   std::vector<int> GetLimitedItems(int items) const;
   void ClearItems() { m_itemstoexport = 0; }
   void AddItem(ELIBEXPORTOPTIONS item) { m_itemstoexport += item; }
-  unsigned int GetItemsToExport() { return m_itemstoexport; }
+  unsigned int GetItemsToExport() const { return m_itemstoexport; }
   void SetItemsToExport(int itemstoexport) { m_itemstoexport = static_cast<unsigned int>(itemstoexport); }
-  unsigned int GetExportType() { return m_exporttype; }
+  unsigned int GetExportType() const { return m_exporttype; }
   void SetExportType(int exporttype) { m_exporttype = static_cast<unsigned int>(exporttype); }
   bool IsSingleFile() const;
   bool IsSeparateFiles() const;
   bool IsToLibFolders() const;
   bool IsArtistFoldersOnly() const;
 
-  std::string m_strPath;
-  bool m_overwrite;
-  bool m_artwork;
-  bool m_unscraped;
-  bool m_skipnfo;
 private:
-  unsigned int m_exporttype; //singlefile, separate files, to library folder
-  unsigned int m_itemstoexport;
+  std::string m_strPath;
+  bool m_overwrite{false};
+  bool m_artwork{false};
+  bool m_unscraped{false};
+  bool m_skipnfo{false};
+  unsigned int m_exporttype{ELIBEXPORT_SINGLEFILE}; //singlefile, separate files, to library folder
+  unsigned int m_itemstoexport{ELIBEXPORT_ALBUMS + ELIBEXPORT_ALBUMARTISTS};
 };
