@@ -3107,6 +3107,12 @@
         "type": "boolean",
         "default": true,
         "description": "Whether or not to show the progress bar or any other GUI dialog"
+      },
+      {
+        "name": "rescan",
+        "type": "boolean",
+        "default": false,
+        "description": "Force full tag rescan of music files"
       }
     ],
     "returns": "string"
