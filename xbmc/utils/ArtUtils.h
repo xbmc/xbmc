@@ -15,6 +15,13 @@ class CFileItem;
 namespace KODI::ART
 {
 
+enum class AdditionalIdentifiers : uint8_t
+{
+  NONE,
+  SEASON_AND_EPISODE, // Append SxxEyy to the file name
+  PLAYLIST, // Append playlist number to the file name
+};
+
 //! \brief Set default icon for item.
 void FillInDefaultIcon(CFileItem& item);
 
@@ -39,10 +46,15 @@ std::string GetLocalArt(const CFileItem& item, const std::string& artFile, bool 
  \brief Assemble the base filename of local artwork for an item,
  accounting for archives, stacks and multi-paths, and BDMV/VIDEO_TS folders.
  \param useFolder whether to look in the folder for the art file. Defaults to false.
+ \param additionalIdentifiers for multi-episode/multi-movie files. Append SxxEyy or playlist number to the file name.
+                              Defaults to none.
  \return the path to the base filename for artwork lookup.
  \sa GetLocalArt
  */
-std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder);
+std::string GetLocalArtBaseFilename(
+    const CFileItem& item,
+    bool& useFolder,
+    AdditionalIdentifiers additionalIdentifiers = AdditionalIdentifiers::NONE);
 
 /*!
  \brief Get the local fanart for item if it exists
@@ -51,7 +63,12 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder);
  */
 std::string GetLocalFanart(const CFileItem& item);
 
-//! \brief Get the .tbn file associated with an item
-std::string GetTBNFile(const CFileItem& item);
+/*! \brief Get the .tbn file associated with an item.
+ \param item CFileItem containing the item path.
+ \param season For multi-episode files. Append SxxEyy to the file name.
+ \param episode For multi-episode files. Append SxxEyy to the file name.
+ \return the path to the .tbm file
+*/
+std::string GetTBNFile(const CFileItem& item, int season = -1, int episode = -1);
 
 } // namespace KODI::ART
