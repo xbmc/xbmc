@@ -834,14 +834,23 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///     @skinning_v21 **[New Boolean Condition]** \link Player_IsRemote `Player.IsRemote`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.IsLive`</b>,
+///                  \anchor Player_IsLive
+///                  _boolean_,
+///     @return **True** if the inputstream of the player is a live stream (a.k.a. real time stream)\, **False** otherwise
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link Player_IsLive `Player.IsLive`\endlink
+///     <p>
+///   }
 // clang-format off
-constexpr std::array<InfoMap, 57> player_labels = {{
+constexpr std::array<InfoMap, 58> player_labels = {{
     {"hasmedia",              PLAYER_HAS_MEDIA},
     {"hasaudio",              PLAYER_HAS_AUDIO},
     {"hasvideo",              PLAYER_HAS_VIDEO},
     {"hasgame",               PLAYER_HAS_GAME},
     {"isexternal",            PLAYER_IS_EXTERNAL},
     {"isremote",              PLAYER_IS_REMOTE},
+    {"islive",                PLAYER_IS_LIVE},
     {"playing",               PLAYER_PLAYING},
     {"paused",                PLAYER_PAUSED},
     {"rewinding",             PLAYER_REWINDING},
