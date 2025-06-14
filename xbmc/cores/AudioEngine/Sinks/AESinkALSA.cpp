@@ -596,34 +596,34 @@ void CAESinkALSA::aml_configure_simple_control(std::string &device, const enum I
     char card[64] = { 0 };
     sprintf(card, "hw:%i", cardNr);
 
-    CLog::Log(LOGINFO, "CAESinkALSA - Use card \"{}\" and set codec format \"{}\"", card, AMLCodecToStr(codec));
+    logM(LOGINFO, "CAESinkALSA", "Use card \"{}\" and set codec format \"{}\"", card, AMLCodecToStr(codec));
 
     snd_mixer_selem_id_alloca(&sid);
     snd_mixer_selem_id_set_index(sid, 0);
 
     if ((err = snd_mixer_open(&handle, 0)) < 0)
     {
-      CLog::Log(LOGERROR, "CAESinkALSA- can not open Mixer: {}\n", snd_strerror(err));
+      logM(LOGERROR, "CAESinkALSA", "can not open Mixer: {}\n", snd_strerror(err));
       return;
     }
 
     if ((err = snd_mixer_attach(handle, card)) < 0)
     {
-      CLog::Log(LOGERROR, "CAESinkALSA - Mixer attach {} error: {}", card, snd_strerror(err));
+      logM(LOGERROR, "CAESinkALSA", "Mixer attach {} error: {}", card, snd_strerror(err));
       snd_mixer_close(handle);
       return;
     }
 
     if ((err = snd_mixer_selem_register(handle, nullptr, nullptr)) < 0)
     {
-      CLog::Log(LOGERROR, "CAESinkALSA - Mixer register error: {}", snd_strerror(err));
+      logM(LOGERROR, "CAESinkALSA", "Mixer register error: {}", snd_strerror(err));
       snd_mixer_close(handle);
       return;
     }
 
     if ((err = snd_mixer_load(handle)) < 0)
     {
-      CLog::Log(LOGERROR, "CAESinkALSA- Mixer {} load error: {}", card, snd_strerror(err));
+      logM(LOGERROR, "CAESinkALSA", "Mixer {} load error: {}", card, snd_strerror(err));
       snd_mixer_close(handle);
       return;
     }
@@ -645,12 +645,12 @@ void CAESinkALSA::aml_configure_simple_control(std::string &device, const enum I
               break;
           }
 
-          CLog::Log(LOGINFO, "CAESinkALSA - Set Spdif to HDMITX to \"{}\"", AMLSpdifIDToStr(spdif_id).c_str());
-          snd_mixer_selem_id_set_name(sid, "Spdif to HDMITX Select");
-          elem = snd_mixer_find_selem(handle, sid);
+          logM(LOGINFO, "CAESinkALSA", "Set Spdif to HDMITX to \"{}\"", AMLSpdifIDToStr(spdif_id).c_str());
+                                       snd_mixer_selem_id_set_name(sid, "Spdif to HDMITX Select");
+                                       elem = snd_mixer_find_selem(handle, sid);
           if (!elem) {
-            CLog::Log(LOGERROR, "CAESinkALSA - Unable to find simple control '{}',{:d}\n",
-              snd_mixer_selem_id_get_name(sid), snd_mixer_selem_id_get_index(sid));
+            logM(LOGERROR, "CAESinkALSA", "Unable to find simple control '{}',{:d}\n",
+                                          snd_mixer_selem_id_get_name(sid), snd_mixer_selem_id_get_index(sid));
             snd_mixer_close(handle);
             return;
           }
@@ -658,13 +658,13 @@ void CAESinkALSA::aml_configure_simple_control(std::string &device, const enum I
           snd_mixer_selem_set_enum_item(elem, (snd_mixer_selem_channel_id_t)0, spdif_id);
 
           // set codec format for SPDIF-B
-          CLog::Log(LOGINFO, "CAESinkALSA - Set codec for \"{}\"", sid_names_fmt[SPDIF_B].c_str());
-          snd_mixer_selem_id_set_name(sid, sid_names_fmt[SPDIF_B].c_str());
-          elem = snd_mixer_find_selem(handle, sid);
+          logM(LOGINFO, "CAESinkALSA", "Set codec for \"{}\"", sid_names_fmt[SPDIF_B].c_str());
+                                       snd_mixer_selem_id_set_name(sid, sid_names_fmt[SPDIF_B].c_str());
+                                       elem = snd_mixer_find_selem(handle, sid);
           if (!elem) {
-            CLog::Log(LOGERROR, "CAESinkALSA - Unable to find simple control '{}',{:d}\n",
-              snd_mixer_selem_id_get_name(sid), snd_mixer_selem_id_get_index(sid));
-            snd_mixer_close(handle);
+            logM(LOGERROR, "CAESinkALSA", "Unable to find simple control '{}',{:d}\n",
+                                          snd_mixer_selem_id_get_name(sid), snd_mixer_selem_id_get_index(sid));
+                                          snd_mixer_close(handle);
             return;
           }
 
@@ -674,13 +674,13 @@ void CAESinkALSA::aml_configure_simple_control(std::string &device, const enum I
       default:
         {
           // set codec format for SPDIF-A
-          CLog::Log(LOGINFO, "CAESinkALSA - Set codec for \"{}\"", sid_names_fmt[SPDIF_A].c_str());
-          snd_mixer_selem_id_set_name(sid, sid_names_fmt[SPDIF_A].c_str());
-          elem = snd_mixer_find_selem(handle, sid);
+          logM(LOGINFO, "CAESinkALSA", "Set codec for \"{}\"", sid_names_fmt[SPDIF_A].c_str());
+                                       snd_mixer_selem_id_set_name(sid, sid_names_fmt[SPDIF_A].c_str());
+                                       elem = snd_mixer_find_selem(handle, sid);
           if (!elem) {
-            CLog::Log(LOGERROR, "CAESinkALSA - Unable to find simple control '{}',{:d}\n",
-              snd_mixer_selem_id_get_name(sid), snd_mixer_selem_id_get_index(sid));
-            snd_mixer_close(handle);
+            logM(LOGERROR, "CAESinkALSA", "Unable to find simple control '{}',{:d}\n",
+                                          snd_mixer_selem_id_get_name(sid), snd_mixer_selem_id_get_index(sid));
+                                          snd_mixer_close(handle);
             return;
           }
 
@@ -720,7 +720,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
 
   if (inconfig.channels == 0)
   {
-    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - Unable to open the requested channel layout");
+    logM(LOGERROR, "CAESinkALSA", "Unable to open the requested channel layout");
     return false;
   }
 
@@ -736,7 +736,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   AMLDeviceType amlDeviceType = GetAMLDeviceType(device);
   if (amlDeviceType != AML_NONE)
   {
-    CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Configure simple control for \"{}\"", GetAMLCardName(amlDeviceType));
+    logM(LOGINFO, "CAESinkALSA", "Configure simple control for \"{}\"", GetAMLCardName(amlDeviceType));
 
     enum IEC958_mode_codec codec = inconfig.channels > 2 ? MULTI_CHANNEL_LPCM : STEREO_PCM;
 
@@ -780,14 +780,14 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
     aml_configure_simple_control(device, codec);
   }
 
-  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Attempting to open device \"{}\"", device);
+  logM(LOGINFO, "CAESinkALSA", "Attempting to open device \"{}\"", device);
 
   /* get the sound config */
   std::unique_ptr<snd_config_t, SndConfigDeleter> config = SndConfigCopy(snd_config);
 
   if (!OpenPCMDevice(device, AESParams, inconfig.channels, &m_pcm, config.get()))
   {
-    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - failed to initialize device \"{}\"", device);
+    logM(LOGERROR, "CAESinkALSA", "failed to initialize device \"{}\"", device);
     return false;
   }
 
@@ -795,7 +795,7 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   device = snd_pcm_name(m_pcm);
   m_device = device;
 
-  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Opened device \"{}\"", device);
+  logM(LOGINFO, "CAESinkALSA", "Opened device \"{}\"", device);
 
   snd_pcm_chmap_t* selectedChmap = nullptr;
   if (!m_passthrough)
@@ -898,9 +898,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
 
   /* ensure we opened X channels or more */
   if (inconfig.channels > channelCount)
-  {
-    CLog::Log(LOGINFO, "CAESinkALSA::InitializeHW - Unable to open the required number of channels");
-  }
+    logM(LOGINFO, "CAESinkALSA:", "Unable to open the required number of channels");
 
   /* update outconfig */
   outconfig.channels = channelCount;
@@ -923,9 +921,9 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   if (snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)
   {
     /* if the chosen format is not supported, try each one in descending order */
-    CLog::Log(LOGINFO,
-              "CAESinkALSA::InitializeHW - Your hardware does not support {}, trying other formats",
+    logM(LOGINFO, "CAESinkALSA", "Your hardware does not support {}, trying other formats",
               CAEUtil::DataFormatToStr(outconfig.format));
+
     for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
     {
       if (i == AE_FMT_RAW || i == AE_FMT_MAX)
@@ -962,15 +960,14 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
 
       /* record that the format fell back to X */
       outconfig.format = i;
-      CLog::Log(LOGINFO, "CAESinkALSA::InitializeHW - Using data format {}",
-                CAEUtil::DataFormatToStr(outconfig.format));
+      logM(LOGINFO, "CAESinkALSA", "Using data format {}", CAEUtil::DataFormatToStr(outconfig.format));
       break;
     }
 
     /* if we failed to find a valid output format */
     if (fmt == SND_PCM_FORMAT_UNKNOWN)
     {
-      CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Unable to find a suitable output format");
+      logM(LOGERROR, "CAESinkALSA", "Unable to find a suitable output format");
       return false;
     }
   }
@@ -994,8 +991,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   */
   periodSize = std::min(periodSize, bufferSize / 4);
 
-  CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Request: periodSize {}, bufferSize {}",
-            periodSize, bufferSize);
+  logM(LOGDEBUG, "CAESinkALSA", "Request: periodSize {}, bufferSize {}", periodSize, bufferSize);
 
   snd_pcm_hw_params_copy(hw_params_copy, hw_params); // copy what we have and is already working
 
@@ -1004,8 +1000,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   if(snd_pcm_hw_params_set_period_size_max(m_pcm, hw_params_copy, &periodSizeMax, nullptr) != 0)
   {
     snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restore working copy
-    CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Request: Failed to limit periodSize to {}",
-              periodSizeMax);
+    logM(LOGDEBUG, "CAESinkALSA", "Request: Failed to limit periodSize to {}", periodSizeMax);
   }
 
   // first trying bufferSize, PeriodSize
@@ -1042,10 +1037,10 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
           || snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
         {
           // set default that Alsa would choose
-          CLog::Log(LOGWARNING, "CAESinkAlsa::InitializeHW - Using default alsa values - set failed");
+          logM(LOGWARNING, "CAESinkAlsa", "Using default alsa values - set failed");
           if (snd_pcm_hw_params(m_pcm, hw_params) != 0)
           {
-            CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Could not init a valid sink");
+            logM(LOGDEBUG, "CAESinkALSA", "Could not init a valid sink");
             return false;
           }
         }
@@ -1055,8 +1050,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
     }
   }
 
-  CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Got: periodSize {}, bufferSize {}", periodSize,
-            bufferSize);
+  logM(LOGDEBUG, "CAESinkALSA", "Got: periodSize {}, bufferSize {}", periodSize, bufferSize);
 
   /* set the format parameters */
   outconfig.sampleRate = sampleRate;
@@ -1067,8 +1061,8 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   if (periodSize < AE_MIN_PERIODSIZE)
   {
     fragments = std::ceil((double) AE_MIN_PERIODSIZE / periodSize);
-    CLog::Log(LOGDEBUG, "Audio Driver reports too low periodSize {} - will use {} fragments",
-              (int)periodSize, (int)fragments);
+    logM(LOGDEBUG, "CAESinkALSA", "Audio Driver reports too low periodSize {} - will use {} fragments",
+                                  (int)periodSize, (int)fragments);
     m_fragmented = true;
   }
 
@@ -1079,7 +1073,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   m_bufferSize = (unsigned int)bufferSize;
   m_timeout    = std::ceil((double)(bufferSize * 1000) / (double)sampleRate);
 
-  CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Setting timeout to {} ms", m_timeout);
+  logM(LOGDEBUG, "CAESinkALSA", "Setting timeout to {} ms", m_timeout);
 
   return true;
 }
@@ -1100,7 +1094,7 @@ bool CAESinkALSA::InitializeSW(const ALSAConfig &inconfig) const {
 
   if (snd_pcm_sw_params(m_pcm, sw_params) < 0)
   {
-    CLog::Log(LOGERROR, "CAESinkALSA::InitializeSW - Failed to set the parameters");
+    logM(LOGERROR, "CAESinkALSA", "Failed to set the parameters");
     return false;
   }
 
@@ -1202,14 +1196,14 @@ void CAESinkALSA::HandleError(const char* name, int err) const {
   switch(err)
   {
     case -EPIPE:
-      CLog::Log(LOGERROR, "CAESinkALSA::HandleError({}) - underrun", name);
+      logM(LOGERROR, "CAESinkALSA", "underrun", name);
       if ((err = snd_pcm_prepare(m_pcm)) < 0)
-        CLog::Log(LOGERROR, "CAESinkALSA::HandleError({}) - snd_pcm_prepare returned {} ({})", name,
-                  err, snd_strerror(err));
+        logM(LOGERROR, "CAESinkALSA", "({}) - snd_pcm_prepare returned {} ({})", name,
+                                      err, snd_strerror(err));
       break;
 
     case -ESTRPIPE:
-      CLog::Log(LOGINFO, "CAESinkALSA::HandleError({}) - Resuming after suspend", name);
+      logM(LOGINFO, "CAESinkALSA", "({}) - Resuming after suspend", name);
 
       /* try to resume the stream */
       while((err = snd_pcm_resume(m_pcm)) == -EAGAIN)
@@ -1218,13 +1212,13 @@ void CAESinkALSA::HandleError(const char* name, int err) const {
       /* if the hardware doesn't support resume, prepare the stream */
       if (err == -ENOSYS)
         if ((err = snd_pcm_prepare(m_pcm)) < 0)
-          CLog::Log(LOGERROR, "CAESinkALSA::HandleError({}) - snd_pcm_prepare returned {} ({})",
-                    name, err, snd_strerror(err));
+          logM(LOGERROR, "CAESinkALSA", "({}) - snd_pcm_prepare returned {} ({})",
+                                        name, err, snd_strerror(err));
       break;
 
     default:
-      CLog::Log(LOGERROR, "CAESinkALSA::HandleError({}) - snd_pcm_writei returned {} ({})", name,
-                err, snd_strerror(err));
+      logM(LOGERROR, "CAESinkALSA", "({}) - snd_pcm_writei returned {} ({})", name,
+                                    err, snd_strerror(err));
       break;
   }
 }
@@ -1261,9 +1255,7 @@ bool CAESinkALSA::TryDevice(const std::string &name, snd_pcm_t **pcmp, snd_confi
 
   int err = snd_pcm_open_lconf(pcmp, name.c_str(), SND_PCM_STREAM_PLAYBACK, ALSA_OPTIONS, lconf);
   if (err < 0)
-  {
-    CLog::Log(LOGINFO, "CAESinkALSA - Unable to open device \"{}\" for playback", name);
-  }
+    logM(LOGINFO, "CAESinkALSA", "Unable to open device \"{}\" for playback", name);
 
   return err == 0;
 }
@@ -1384,7 +1376,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   if (snd_device_name_hint(-1, "pcm", &hints) < 0)
   {
-    CLog::Log(LOGINFO, "CAESinkALSA - Unable to get a list of devices");
+    logM(LOGINFO, "CAESinkALSA", "Unable to get a list of devices");
     return;
   }
 
@@ -1610,7 +1602,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   int err = snd_pcm_info(pcmhandle, pcminfo);
   if (err < 0)
   {
-    CLog::Log(LOGINFO, "CAESinkALSA - Unable to get pcm_info for \"{}\"", device);
+    logM(LOGINFO, "CAESinkALSA", "Unable to get pcm_info for \"{}\"", device);
     snd_pcm_close(pcmhandle);
   }
 
@@ -1679,26 +1671,17 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
 #endif
 
             if (!GetELD(hctl, dev, info, badHDMI))
-              CLog::Log(LOGDEBUG,
-                        "CAESinkALSA - Unable to obtain ELD information for device \"{}\" (not "
-                        "supported by device, or kernel older than 3.2)",
-                        device);
+              logM(LOGDEBUG, "CAESinkALSA", "Unable to obtain ELD information for device \"{}\" (not "
+                                            "supported by device, or kernel older than 3.2)", device);
 
             /* snd_hctl_close also closes ctlhandle */
             snd_hctl_close(hctl);
 
+            // Warn about disconnected devices, but keep them enabled
+            // Detection can go wrong on Intel, Nvidia and on all
+            // AMD (fglrx) hardware, so it is not safe to close those handles
             if (badHDMI)
-            {
-              /*
-               * Warn about disconnected devices, but keep them enabled
-               * Detection can go wrong on Intel, Nvidia and on all
-               * AMD (fglrx) hardware, so it is not safe to close those
-               * handles
-               */
-              CLog::Log(LOGDEBUG,
-                        "CAESinkALSA - HDMI device \"{}\" may be unconnected (no ELD data)",
-                        device);
-            }
+              logM(LOGDEBUG, "CAESinkALSA", "HDMI device \"{}\" may be unconnected (no ELD data)", device);
           }
           else
           {
@@ -1756,8 +1739,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   /* ensure we can get a playback configuration for the device */
   if (snd_pcm_hw_params_any(pcmhandle, hwparams) < 0)
   {
-    CLog::Log(LOGINFO, "CAESinkALSA - No playback configurations available for device \"{}\"",
-              device);
+    logM(LOGINFO, "CAESinkALSA", "No playback configurations available for device \"{}\"", device);
     snd_pcm_close(pcmhandle);
     return;
   }
@@ -1935,7 +1917,7 @@ void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *fun
   char *errorStr;
   if (vasprintf(&errorStr, fmt, arg) >= 0)
   {
-    CLog::Log(LOGINFO, "CAESinkALSA - ALSA: {}:{}:({}) {}{}{}", file, line, function, errorStr,
+    logM(LOGINFO, "CAESinkALSA", "ALSA: {}:{}:({}) {}{}{}", file, line, function, errorStr,
               err ? ": " : "", err ? snd_strerror(err) : "");
     free(errorStr);
   }
