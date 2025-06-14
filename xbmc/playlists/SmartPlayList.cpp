@@ -1157,7 +1157,10 @@ std::string CSmartPlaylistRule::GetField(int field, const std::string &type) con
   return "";
 }
 
-std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const std::string& strType, std::set<std::string> &referencedPlaylists) const
+std::string CSmartPlaylistRuleCombination::GetWhereClause(
+    const CDatabase& db,
+    const std::string& strType,
+    std::set<std::string, std::less<>>& referencedPlaylists) const
 {
   std::string rule;
 
@@ -1627,7 +1630,8 @@ bool CSmartPlaylist::IsMusicType(const std::string &type)
          type == "songs" || type == "mixed";
 }
 
-std::string CSmartPlaylist::GetWhereClause(const CDatabase &db, std::set<std::string> &referencedPlaylists) const
+std::string CSmartPlaylist::GetWhereClause(
+    const CDatabase& db, std::set<std::string, std::less<>>& referencedPlaylists) const
 {
   return m_ruleCombination.GetWhereClause(db, GetType(), referencedPlaylists);
 }

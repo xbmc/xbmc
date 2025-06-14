@@ -506,8 +506,8 @@ public:
     DatabaseResults results;
   };
 
-  CVideoDatabase(void);
-  ~CVideoDatabase(void) override;
+  CVideoDatabase();
+  ~CVideoDatabase() override;
 
   bool Open() override;
   bool CommitTransaction() override;
@@ -584,16 +584,16 @@ public:
   bool HasMusicVideoInfo(const std::string& strFilenameAndPath);
 
   void GetFilePathById(int idMovie, std::string& filePath, VideoDbContentType iType);
-  std::string GetGenreById(int id);
-  std::string GetCountryById(int id);
-  std::string GetSetById(int id);
-  std::string GetTagById(int id);
-  std::string GetPersonById(int id);
-  std::string GetStudioById(int id);
-  std::string GetTvShowTitleById(int id);
-  std::string GetMusicVideoAlbumById(int id);
-  int GetTvShowForEpisode(int idEpisode);
-  int GetSeasonForEpisode(int idEpisode);
+  std::string GetGenreById(int id) const;
+  std::string GetCountryById(int id) const;
+  std::string GetSetById(int id) const;
+  std::string GetTagById(int id) const;
+  std::string GetPersonById(int id) const;
+  std::string GetStudioById(int id) const;
+  std::string GetTvShowTitleById(int id) const;
+  std::string GetMusicVideoAlbumById(int id) const;
+  int GetTvShowForEpisode(int idEpisode) const;
+  int GetSeasonForEpisode(int idEpisode) const;
 
   bool LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details);
   bool GetMovieInfo(const std::string& strFilenameAndPath,
@@ -619,7 +619,7 @@ public:
   int GetPathId(const std::string& strPath);
   int GetTvShowId(const std::string& strPath);
   int GetEpisodeId(const std::string& strFilenameAndPath, int idEpisode=-1, int idSeason=-1); // idEpisode, idSeason are used for multipart episodes as hints
-  int GetSeasonId(int idShow, int season);
+  int GetSeasonId(int idShow, int season) const;
 
   void GetEpisodesByBlurayPath(const std::string& path, std::vector<CVideoInfoTag>& episodes);
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
@@ -999,7 +999,9 @@ public:
   bool GetRecentlyAddedMoviesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit=0, int getDetails = VideoDbDetailsNone);
   bool GetRecentlyAddedEpisodesNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit=0, int getDetails = VideoDbDetailsNone);
   bool GetRecentlyAddedMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit=0, int getDetails = VideoDbDetailsNone);
-  bool GetInProgressTvShowsNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit=0, int getDetails = VideoDbDetailsNone);
+  bool GetInProgressTvShowsNav(const std::string& strBaseDir,
+                               CFileItemList& items,
+                               int getDetails = VideoDbDetailsNone);
 
   bool HasContent();
   bool HasContent(VideoDbContentType type);
@@ -1062,7 +1064,7 @@ public:
                          const std::string& tvshowDir = "") const;
   void ImportFromXML(const std::string &path);
   void DumpToDummyFiles(const std::string &path);
-  bool ImportArtFromXML(const TiXmlNode* node, KODI::ART::Artwork& artwork);
+  bool ImportArtFromXML(const TiXmlNode* node, KODI::ART::Artwork& artwork) const;
 
   // smart playlists and main retrieval work in these functions
   bool GetMoviesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
@@ -1123,7 +1125,7 @@ public:
   bool GetArtForItem(int mediaId, const MediaType& mediaType, KODI::ART::Artwork& art);
   std::string GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
 
-  void UpdateArtForItem(int mediaId, const MediaType& mediaType);
+  void UpdateArtForItem(int mediaId, const MediaType& mediaType) const;
 
   /*!
    * \brief Retrieve all art for the given video asset, with optional fallback to the art of the
@@ -1149,7 +1151,7 @@ public:
    * \param seasonId The season id for which to search the named title.
    * \return The named title if found, otherwise empty.
    */
-  std::string GetTvShowNamedSeasonById(int tvshowId, int seasonId);
+  std::string GetTvShowNamedSeasonById(int tvshowId, int seasonId) const;
 
   bool GetTvShowSeasonArt(int mediaId, KODI::ART::SeasonsArtwork& seasonArt);
   bool GetArtTypes(const MediaType &mediaType, std::vector<std::string> &artTypes);
@@ -1347,19 +1349,19 @@ protected:
 
   void AddCast(int mediaId, const char *mediaType, const std::vector<SActorInfo> &cast);
 
-  CVideoInfoTag GetDetailsForMovie(std::unique_ptr<dbiplus::Dataset> &pDS, int getDetails = VideoDbDetailsNone);
+  CVideoInfoTag GetDetailsForMovie(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForMovie(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
-  CVideoInfoTag GetDetailsForTvShow(std::unique_ptr<dbiplus::Dataset>& pDS,
+  CVideoInfoTag GetDetailsForTvShow(dbiplus::Dataset& pDS,
                                     int getDetails = VideoDbDetailsNone,
                                     CFileItem* item = nullptr);
   CVideoInfoTag GetDetailsForTvShow(const dbiplus::sql_record* const record,
                                     int getDetails = VideoDbDetailsNone,
                                     CFileItem* item = nullptr);
-  CVideoInfoTag GetBasicDetailsForEpisode(std::unique_ptr<dbiplus::Dataset> &pDS);
+  CVideoInfoTag GetBasicDetailsForEpisode(dbiplus::Dataset& pDS);
   CVideoInfoTag GetBasicDetailsForEpisode(const dbiplus::sql_record* const record);
-  CVideoInfoTag GetDetailsForEpisode(std::unique_ptr<dbiplus::Dataset> &pDS, int getDetails = VideoDbDetailsNone);
+  CVideoInfoTag GetDetailsForEpisode(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForEpisode(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
-  CVideoInfoTag GetDetailsForMusicVideo(std::unique_ptr<dbiplus::Dataset> &pDS, int getDetails = VideoDbDetailsNone);
+  CVideoInfoTag GetDetailsForMusicVideo(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForMusicVideo(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
   bool GetPeopleNav(const std::string& strBaseDir,
                     CFileItemList& items,
@@ -1384,7 +1386,7 @@ protected:
                         int max,
                         const T& offsets,
                         CVideoInfoTag& details,
-                        int idxOffset = 2);
+                        int idxOffset = 2) const;
 
   template<typename T>
   std::string GetValueString(const CVideoInfoTag& details,
@@ -1413,7 +1415,7 @@ private:
    \param query the SQL that will retrieve a database id.
    \return -1 if not found, else a valid database id (i.e. > 0)
    */
-  int GetDbId(const std::string &query);
+  int GetDbId(const std::string& query) const;
 
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
@@ -1422,8 +1424,20 @@ private:
    */
   int RunQuery(const std::string &sql);
 
-  void AppendIdLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter);
-  void AppendLinkFilter(const char* field, const char *table, const MediaType& mediaType, const char *view, const char *viewKey, const CUrlOptions::UrlOptions& options, Filter &filter);
+  void AppendIdLinkFilter(const char* field,
+                          const char* table,
+                          const MediaType& mediaType,
+                          const char* view,
+                          const char* viewKey,
+                          const CUrlOptions::UrlOptions& options,
+                          Filter& filter) const;
+  void AppendLinkFilter(const char* field,
+                        const char* table,
+                        const MediaType& mediaType,
+                        const char* view,
+                        const char* viewKey,
+                        const CUrlOptions::UrlOptions& options,
+                        Filter& filter) const;
 
   /*! \brief Determine whether the path is using lookup using folders
    \param path the path to check
@@ -1452,8 +1466,12 @@ private:
   virtual int GetExportVersion() const { return 1; }
   const char* GetBaseDBName() const override { return "MyVideos"; }
 
-  void ConstructPath(std::string& strDest, const std::string& strPath, const std::string& strFileName);
-  void SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName);
+  void ConstructPath(std::string& strDest,
+                     const std::string& strPath,
+                     const std::string& strFileName) const;
+  void SplitPath(const std::string& strFileNameAndPath,
+                 std::string& strPath,
+                 std::string& strFileName) const;
   void InvalidatePathHash(const std::string& strPath);
 
   /*! \brief Get a safe filename from a given string

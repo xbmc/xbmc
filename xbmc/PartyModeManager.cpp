@@ -105,7 +105,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CMusicDatabase db;
     if (db.Open())
     {
-      std::set<std::string> playlists;
+      std::set<std::string, std::less<>> playlists;
       if (playlistLoaded)
       {
         playlist.SetType("songs");
@@ -139,7 +139,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     CVideoDatabase db;
     if (db.Open())
     {
-      std::set<std::string> playlists;
+      std::set<std::string, std::less<>> playlists;
       if (playlistLoaded)
       {
         playlist.SetType("musicvideos");

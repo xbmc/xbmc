@@ -432,7 +432,9 @@ JSONRPC_STATUS CVideoLibrary::GetInProgressTVShows(const std::string &method, IT
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetInProgressTvShowsNav("videodb://inprogresstvshows/", items, 0, RequiresAdditionalDetails(MediaTypeTvShow, parameterObject)))
+  if (!videodatabase.GetInProgressTvShowsNav(
+          "videodb://inprogresstvshows/", items,
+          RequiresAdditionalDetails(MediaTypeTvShow, parameterObject)))
     return InternalError;
 
   return HandleItems("tvshowid", "tvshows", items, parameterObject, result, false);
