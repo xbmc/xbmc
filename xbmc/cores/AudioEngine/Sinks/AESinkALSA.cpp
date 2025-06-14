@@ -182,8 +182,8 @@ void CAESinkALSA::Register()
 
 std::unique_ptr<IAESink> CAESinkALSA::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
-  auto sink = std::make_unique<CAESinkALSA>();
-  if (sink->Initialize(desiredFormat, device))
+  if (auto sink = std::make_unique<CAESinkALSA>();
+      sink->Initialize(desiredFormat, device))
     return sink;
 
   return {};
@@ -405,9 +405,10 @@ std::string CAESinkALSA::ALSAchmapToString(snd_pcm_chmap_t* alsaMap)
   char buf[128] = {};
   //! @bug ALSA bug - buffer overflow by a factor of 2 is possible
   //! http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085815.html
-  int err = snd_pcm_chmap_print(alsaMap, sizeof(buf) / 2, buf);
-  if (err < 0)
+  if (int err = snd_pcm_chmap_print(alsaMap, sizeof(buf) / 2, buf);
+      err < 0)
     return "Error";
+
   return std::string(buf);
 }
 
@@ -582,9 +583,9 @@ void CAESinkALSA::aml_configure_simple_control(std::string &device, const enum I
   };
 
   int cardNr = 0;
-  std::string card = GetParamFromName(device, "DEV");
 
-  if (!card.empty())
+  if (std::string card = GetParamFromName(device, "DEV");
+      !card.empty())
     cardNr = atoi(card.c_str());
 
   if (cardNr >= 0)
@@ -733,8 +734,8 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
     GetAESParams(format, AESParams);
 
   // set codec before opening the device
-  AMLDeviceType amlDeviceType = GetAMLDeviceType(device);
-  if (amlDeviceType != AML_NONE)
+  if (AMLDeviceType amlDeviceType = GetAMLDeviceType(device);
+      amlDeviceType != AML_NONE)
   {
     logM(LOGINFO, "CAESinkALSA", "Configure simple control for \"{}\"", GetAMLCardName(amlDeviceType));
 
@@ -783,9 +784,8 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   logM(LOGINFO, "CAESinkALSA", "Attempting to open device \"{}\"", device);
 
   /* get the sound config */
-  std::unique_ptr<snd_config_t, SndConfigDeleter> config = SndConfigCopy(snd_config);
-
-  if (!OpenPCMDevice(device, AESParams, inconfig.channels, &m_pcm, config.get()))
+  if (auto config = SndConfigCopy(snd_config);
+      !OpenPCMDevice(device, AESParams, inconfig.channels, &m_pcm, config.get()))
   {
     logM(LOGERROR, "CAESinkALSA", "failed to initialize device \"{}\"", device);
     return false;
@@ -817,8 +817,11 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   if (selectedChmap)
   {
     logM(LOGINFO, "CAESinkALSA", "Selecting Channel Map: channels:[{}] pos:[{}]", selectedChmap->channels, selectedChmap->pos);
-    int err = snd_pcm_set_chmap(m_pcm, selectedChmap);
-    if (err < 0) logM(LOGERROR, "CAESinkALSA", "Failed to set pcm channel map: [{}]", snd_strerror(err));
+
+    if (int err = snd_pcm_set_chmap(m_pcm, selectedChmap);
+        err < 0)
+      logM(LOGERROR, "CAESinkALSA", "Failed to set pcm channel map: [{}]", snd_strerror(err));
+
     free(selectedChmap);
   }
 
@@ -944,10 +947,10 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
       }
 
       int fmtBits = CAEUtil::DataFormatToBits(i);
-      int bits    = snd_pcm_hw_params_get_sbits(hw_params);
 
       // skip bits check when alsa reports invalid sbits value
-      if (bits > 0 && bits != fmtBits)
+      if (int bits = snd_pcm_hw_params_get_sbits(hw_params);
+          bits > 0 && bits != fmtBits)
       {
         /* if we opened in 32bit and only have 24bits, signal it accordingly */
         if (fmt == SND_PCM_FORMAT_S32 && bits == 24)
@@ -996,8 +999,8 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   snd_pcm_hw_params_copy(hw_params_copy, hw_params); // copy what we have and is already working
 
   // Make sure to not initialize too large to not cause underruns
-  snd_pcm_uframes_t periodSizeMax = bufferSize / 3;
-  if(snd_pcm_hw_params_set_period_size_max(m_pcm, hw_params_copy, &periodSizeMax, nullptr) != 0)
+  if (snd_pcm_uframes_t periodSizeMax = bufferSize / 3;
+      snd_pcm_hw_params_set_period_size_max(m_pcm, hw_params_copy, &periodSizeMax, nullptr) != 0)
   {
     snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restore working copy
     logM(LOGDEBUG, "CAESinkALSA", "Request: Failed to limit periodSize to {}", periodSizeMax);
@@ -1313,8 +1316,8 @@ bool CAESinkALSA::OpenPCMDevice(const std::string &name, const std::string &para
      * "sysdefault" is a newish device name that won't be overwritten in case
      * system configuration redefines "default". "default" is still tried
      * because "sysdefault" is rather new. */
-    size_t devPos = openName.find(",DEV=");
-    if (devPos == std::string::npos || (devPos + 5 < openName.size() && openName[devPos+5] == '0'))
+    if (size_t devPos = openName.find(",DEV=");
+        devPos == std::string::npos || (devPos + 5 < openName.size() && openName[devPos+5] == '0'))
     {
       /* "sysdefault" and "default" do not have "DEV=0", drop it */
       std::string nameWithoutDev = openName;
@@ -1579,8 +1582,8 @@ AEDeviceType CAESinkALSA::AEDeviceTypeFromName(const std::string &name)
 std::string CAESinkALSA::GetParamFromName(const std::string &name, const std::string &param)
 {
   /* name = "hdmi:CARD=x,DEV=y" param = "CARD" => return "x" */
-  size_t parPos = name.find(param + '=');
-  if (parPos != std::string::npos)
+  if (size_t parPos = name.find(param + '=');
+      parPos != std::string::npos)
   {
     parPos += param.size() + 1;
     return name.substr(parPos, name.find_first_of(",'\"", parPos)-parPos);
@@ -1599,8 +1602,8 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   snd_pcm_info_alloca(&pcminfo);
   memset(pcminfo, 0, snd_pcm_info_sizeof());
 
-  int err = snd_pcm_info(pcmhandle, pcminfo);
-  if (err < 0)
+  if (int err = snd_pcm_info(pcmhandle, pcminfo);
+      err < 0)
   {
     logM(LOGINFO, "CAESinkALSA", "Unable to get pcm_info for \"{}\"", device);
     snd_pcm_close(pcmhandle);
@@ -1615,8 +1618,8 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   if (cardNr >= 0)
   {
     /* "HDA NVidia", "HDA Intel", "HDA ATI HDMI", "SB Live! 24-bit External", ... */
-    char *cardName;
-    if (snd_card_get_name(cardNr, &cardName) == 0)
+    if (char *cardName;
+        snd_card_get_name(cardNr, &cardName) == 0)
     {
       info.m_displayName = cardName;
       free(cardName);
@@ -1629,14 +1632,10 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
       info.m_displayName.erase(info.m_displayName.size()-5);
     }
 
-    /* "CONEXANT Analog", "USB Audio", "HDMI 0", "ALC889 Digital" ... */
-    std::string pcminfoName = snd_pcm_info_get_name(pcminfo);
-
-    /*
-     * Filter "USB Audio", in those cases snd_card_get_name() is more
-     * meaningful already
-     */
-    if (pcminfoName != "USB Audio")
+    // "CONEXANT Analog", "USB Audio", "HDMI 0", "ALC889 Digital" ...
+    // Filter "USB Audio", in those cases snd_card_get_name() is more meaningful already
+    if (std::string pcminfoName = snd_pcm_info_get_name(pcminfo);
+        pcminfoName != "USB Audio")
       info.m_displayNameExtra = pcminfoName;
 
     if (info.m_deviceType == AE_DEVTYPE_HDMI)
@@ -1891,10 +1890,10 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
   if (snd_hctl_elem_read(elem, control) < 0)
     return false;
 
-  int dataLength = snd_ctl_elem_info_get_count(einfo);
   /* if there is no ELD data, then its a bad HDMI device, either nothing attached OR an invalid nVidia HDMI device
    * OR the driver doesn't properly support ELD (notably ATI/AMD, 2012-05) */
-  if (!dataLength)
+  if (int dataLength = snd_ctl_elem_info_get_count(einfo);
+      !dataLength)
     badHDMI = true;
   else
     CAEELDParser::Parse(
@@ -1914,8 +1913,9 @@ void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *fun
 
   va_list arg;
   va_start(arg, fmt);
-  char *errorStr;
-  if (vasprintf(&errorStr, fmt, arg) >= 0)
+
+  if (char *errorStr;
+      vasprintf(&errorStr, fmt, arg) >= 0)
   {
     logM(LOGINFO, "CAESinkALSA", "ALSA: {}:{}:({}) {}{}{}", file, line, function, errorStr,
               err ? ": " : "", err ? snd_strerror(err) : "");
