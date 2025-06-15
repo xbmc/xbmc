@@ -46,8 +46,6 @@ public:
   void OnInputFrame() override;
 
 private:
-  static INPUT::INTERCARDINAL_DIRECTION GetPointerDirection(int differenceX, int differenceY);
-
   // Construction parameters
   const PERIPHERALS::PeripheralPtr m_peripheral;
 
