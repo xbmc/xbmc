@@ -1,4 +1,5 @@
-set(SOURCES TestDefaultKeyboardTranslator.cpp
+set(SOURCES TestControllerActivity.cpp
+            TestDefaultKeyboardTranslator.cpp
             TestDefaultMouseTranslator.cpp
 )
 
