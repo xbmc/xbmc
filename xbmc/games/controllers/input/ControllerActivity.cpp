@@ -11,11 +11,31 @@
 #include "application/Application.h"
 #include "input/InputTranslator.h"
 
+using namespace std::chrono_literals;
+
 using namespace KODI;
 using namespace GAME;
 
 #include <algorithm>
 #include <cstdlib>
+
+namespace
+{
+// Chosen small for high responsiveness
+constexpr auto MOUSE_MOTION_TIMEOUT = 50ms;
+} // namespace
+
+float CControllerActivity::GetActivation() const
+{
+  // De-activate mouse if an event hasn't been sent since last motion
+  if (m_mouseActive && m_motionTimer.IsTimePast() && m_activeButtons.empty())
+  {
+    m_lastActivation = 0.0f;
+    m_mouseActive = false;
+  }
+
+  return m_lastActivation;
+}
 
 void CControllerActivity::ClearButtonState()
 {
@@ -24,6 +44,9 @@ void CControllerActivity::ClearButtonState()
   m_activeKey.clear();
   m_activePointers.clear();
   m_activeButtons.clear();
+  m_bKeyPressed = false;
+  m_mouseActive = false;
+  m_motionTimer.SetExpired();
 }
 
 void CControllerActivity::OnButtonPress(bool pressed)
@@ -77,17 +100,8 @@ void CControllerActivity::OnMouseMotion(const MOUSE::PointerName& relpointer,
                                         int differenceX,
                                         int differenceY)
 {
-  //! @todo Fix mouse pointer handling
-  return;
-
-  //! @todo Handle multiple pointers
-  //m_activePointers.insert(relpointer);
-
-  INPUT::INTERCARDINAL_DIRECTION dir = GetPointerDirection(differenceX, differenceY);
-
-  // Check if direction is valid
-  if (dir != INPUT::INTERCARDINAL_DIRECTION::NONE)
-    m_currentActivation = 1.0f;
+  m_mouseActive = true;
+  m_motionTimer.Set(MOUSE_MOTION_TIMEOUT);
 }
 
 void CControllerActivity::OnMouseButtonPress(const MOUSE::ButtonName& button)
@@ -111,21 +125,13 @@ void CControllerActivity::OnInputFrame()
     // Process pressed mouse buttons
     if (!m_activeButtons.empty())
       m_currentActivation = 1.0f;
+
+    // Process mouse motion
+    if (m_mouseActive && !m_motionTimer.IsTimePast())
+      m_currentActivation = 1.0f;
   }
 
   // Process activation
   m_lastActivation = m_currentActivation;
   m_currentActivation = 0.0f;
-}
-
-KODI::INPUT::INTERCARDINAL_DIRECTION CControllerActivity::GetPointerDirection(int differenceX,
-                                                                              int differenceY)
-{
-  using namespace INPUT;
-
-  // Translate from left-handed coordinate system to right-handed coordinate system
-  differenceY *= -1;
-
-  return CInputTranslator::VectorToIntercardinalDirection(static_cast<float>(differenceX),
-                                                          static_cast<float>(differenceY));
 }
