@@ -13,6 +13,8 @@ ifeq ($(NATIVE_OS), osx)
   endif
 endif
 
+CONFIGURE += --libdir=lib
+
 CFLAGS=$(NATIVE_CFLAGS)
 LDFLAGS=$(NATIVE_LDFLAGS)
 CXXFLAGS=$(NATIVE_CXXFLAGS)

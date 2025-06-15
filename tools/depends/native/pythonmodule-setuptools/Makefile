@@ -1,23 +1,20 @@
-include ../../Makefile.include PYTHONMODULE-SETUPTOOLS-VERSION ../../download-files.include
+include ../../Makefile.include PYTHONMODULE-SETUPTOOLS-VERSION
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile PYTHONMODULE-SETUPTOOLS-VERSION ../../download-files.include 01-distutils-flag.patch
+DEPS= ../../Makefile.include Makefile PYTHONMODULE-SETUPTOOLS-VERSION \
+                             01-distutils-flag.patch
 
-LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py$(NATIVE_PYTHON_VERSION).egg
+export PIP_CACHE_DIR=$(TARBALLS_LOCATION)/pip-cache
 
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
-	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
-	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-
-.installed-$(PLATFORM): $(PLATFORM)
-	cd $(PLATFORM); patch -p1 -i ../01-distutils-flag.patch
-	cd $(PLATFORM); PYTHONPATH="$(NATIVEPREFIX)/lib/python${NATIVE_PYTHON_VERSION}/site-packages" $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(NATIVEPREFIX)
+.installed-$(PLATFORM):
+	PYTHONPATH="$(NATIVEPREFIX)/lib/python${NATIVE_PYTHON_VERSION}/site-packages" $(NATIVEPREFIX)/bin/python3 -m pip install setuptools==$(VERSION)
+	cd $(NATIVEPREFIX)/lib/python${NATIVE_PYTHON_VERSION}/site-packages; patch -p1 -i $(abs_top_srcdir)/native/pythonmodule-setuptools/01-distutils-flag.patch
 	touch $@
 
 clean:
-	$(MAKE) -C $(PLATFORM) clean
-	rm -f .installed-$(PLATFORM)
+	rm -rf .installed-$(PLATFORM)
 
 distclean::
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf .installed-$(PLATFORM)
+	cd $(NATIVEPREFIX)/lib/python${NATIVE_PYTHON_VERSION}/site-packages; rm -rf *distutils* pkg_resources setuptools*
