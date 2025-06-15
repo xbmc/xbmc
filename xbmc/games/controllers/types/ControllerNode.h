@@ -9,6 +9,7 @@
 #pragma once
 
 #include "games/controllers/ControllerTypes.h"
+#include "utils/Digest.h"
 
 #include <memory>
 #include <string>
@@ -118,6 +119,9 @@ public:
   // XML functions
   bool Serialize(tinyxml2::XMLElement& controllerElement) const;
   bool Deserialize(const tinyxml2::XMLElement& controllerElement);
+
+  // Crypto functions
+  std::string GetDigest(UTILITY::CDigest::Type digestType) const;
 
 private:
   ControllerPtr m_controller;

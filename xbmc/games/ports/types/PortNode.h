@@ -10,6 +10,7 @@
 
 #include "games/controllers/ControllerTypes.h"
 #include "games/controllers/types/ControllerNode.h"
+#include "utils/Digest.h"
 
 #include <string>
 #include <vector>
@@ -129,6 +130,9 @@ public:
   // XML functions
   bool Serialize(tinyxml2::XMLElement& portElement) const;
   bool Deserialize(const tinyxml2::XMLElement& portElement);
+
+  // Crypto functions
+  std::string GetDigest(UTILITY::CDigest::Type digestType) const;
 
 private:
   void GetPort(CPhysicalPort& port) const;

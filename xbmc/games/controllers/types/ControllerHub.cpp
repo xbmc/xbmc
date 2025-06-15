@@ -168,3 +168,13 @@ bool CControllerHub::Deserialize(const tinyxml2::XMLElement& controllerElement)
 
   return true;
 }
+
+std::string CControllerHub::GetDigest(UTILITY::CDigest::Type digestType) const
+{
+  UTILITY::CDigest digest{digestType};
+
+  for (const CPortNode& port : m_ports)
+    digest.Update(port.GetDigest(digestType));
+
+  return digest.FinalizeRaw();
+}
