@@ -296,7 +296,7 @@ enum class InfoFormat
 
 struct InfoFormatData
 {
-  const char* str{nullptr};
+  std::string_view str{};
   InfoFormat val{0};
 };
 
@@ -333,7 +333,7 @@ void CGUIInfoLabel::Parse(const std::string& label,
       if (pos2 != std::string::npos && pos2 < pos1)
       {
         pos1 = pos2;
-        len = strlen(infoformat.str);
+        len = infoformat.str.length();
         format = infoformat.val;
       }
     }
