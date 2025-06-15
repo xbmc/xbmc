@@ -238,6 +238,7 @@ public:
   virtual float GetRenderAspectRatio() const { return 1.0; }
   virtual void TriggerUpdateResolution() {}
   virtual bool IsRenderingVideo() const { return false; }
+  virtual bool IsLiveStream() const { return false; }
   virtual void GetRects(CRect& source, CRect& dest, CRect& view) const
   {
     source = {};
