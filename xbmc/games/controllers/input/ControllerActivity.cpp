@@ -11,19 +11,44 @@
 #include "application/Application.h"
 #include "input/InputTranslator.h"
 
+using namespace std::chrono_literals;
+
 using namespace KODI;
 using namespace GAME;
 
 #include <algorithm>
 #include <cstdlib>
 
+namespace
+{
+// Chosen small for high responsiveness
+constexpr auto MOUSE_MOTION_TIMEOUT = 50ms;
+} // namespace
+
+float CControllerActivity::GetActivation() const
+{
+  // De-activate mouse if an event hasn't been sent since last motion and
+  // no mouse button is pressed
+  if (!m_mousePointers.empty() && m_activeMouseButtons.empty())
+  {
+    const bool anyPointerActive =
+        std::any_of(m_mousePointers.begin(), m_mousePointers.end(), [](const auto& it)
+                    { return it.second.active && !it.second.timer.IsTimePast(); });
+    if (!anyPointerActive)
+      return 0.0f;
+  }
+
+  return m_lastActivation;
+}
+
 void CControllerActivity::ClearButtonState()
 {
   m_lastActivation = 0.0f;
   m_currentActivation = 0.0f;
   m_activeKey.clear();
-  m_activePointers.clear();
-  m_activeButtons.clear();
+  m_mousePointers.clear();
+  m_activeMouseButtons.clear();
+  m_bKeyPressed = false;
 }
 
 void CControllerActivity::OnButtonPress(bool pressed)
@@ -77,27 +102,19 @@ void CControllerActivity::OnMouseMotion(const MOUSE::PointerName& relpointer,
                                         int differenceX,
                                         int differenceY)
 {
-  //! @todo Fix mouse pointer handling
-  return;
-
-  //! @todo Handle multiple pointers
-  //m_activePointers.insert(relpointer);
-
-  INPUT::INTERCARDINAL_DIRECTION dir = GetPointerDirection(differenceX, differenceY);
-
-  // Check if direction is valid
-  if (dir != INPUT::INTERCARDINAL_DIRECTION::NONE)
-    m_currentActivation = 1.0f;
+  auto& pointer = m_mousePointers[relpointer];
+  pointer.active = true;
+  pointer.timer.Set(MOUSE_MOTION_TIMEOUT);
 }
 
 void CControllerActivity::OnMouseButtonPress(const MOUSE::ButtonName& button)
 {
-  m_activeButtons.insert(button);
+  m_activeMouseButtons.insert(button);
 }
 
 void CControllerActivity::OnMouseButtonRelease(const MOUSE::ButtonName& button)
 {
-  m_activeButtons.erase(button);
+  m_activeMouseButtons.erase(button);
 }
 
 void CControllerActivity::OnInputFrame()
@@ -109,23 +126,22 @@ void CControllerActivity::OnInputFrame()
       m_currentActivation = 1.0f;
 
     // Process pressed mouse buttons
-    if (!m_activeButtons.empty())
+    if (!m_activeMouseButtons.empty())
       m_currentActivation = 1.0f;
+
+    // Process mouse motion
+    for (auto& it : m_mousePointers)
+    {
+      const MousePointer& pointer = it.second;
+      if (pointer.active && !pointer.timer.IsTimePast())
+      {
+        m_currentActivation = 1.0f;
+        break;
+      }
+    }
   }
 
   // Process activation
   m_lastActivation = m_currentActivation;
   m_currentActivation = 0.0f;
-}
-
-KODI::INPUT::INTERCARDINAL_DIRECTION CControllerActivity::GetPointerDirection(int differenceX,
-                                                                              int differenceY)
-{
-  using namespace INPUT;
-
-  // Translate from left-handed coordinate system to right-handed coordinate system
-  differenceY *= -1;
-
-  return CInputTranslator::VectorToIntercardinalDirection(static_cast<float>(differenceX),
-                                                          static_cast<float>(differenceY));
 }
