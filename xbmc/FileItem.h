@@ -15,6 +15,7 @@
 
 #include "LockMode.h"
 #include "SourceType.h"
+#include "URL.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
 #include "utils/IArchivable.h"
@@ -23,6 +24,7 @@
 #include "utils/SortUtils.h"
 
 #include <memory>
+#include <optional>
 #include <string>
 
 class CMediaSource;
@@ -126,14 +128,20 @@ public:
   ~CFileItem(void) override;
   CGUIListItem* Clone() const override { return new CFileItem(*this); }
 
-  const CURL GetURL() const;
+  [[deprecated("This returns a copy of the CURL object. To avoid an extra copy Use "
+               "FileItem::GetURLRef() instead.")]] CURL
+  GetURL() const;
+  const CURL& GetURLRef() const;
   void SetURL(const CURL& url);
   bool IsURL(const CURL& url) const;
-  const std::string& GetPath() const { return m_strPath; }
-  void SetPath(const std::string& path) { m_strPath = path; }
+  const std::string& GetPath() const;
+  void SetPath(const std::string& path);
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
-  const CURL GetDynURL() const;
+  [[deprecated("This returns a copy of the CURL object. To avoid an extra copy Use "
+               "FileItem::GetDynURLRef() instead.")]] CURL
+  GetDynURL() const;
+  const CURL& GetDynURLRef() const;
   void SetDynURL(const CURL& url);
   const std::string &GetDynPath() const;
   void SetDynPath(const std::string &path);
@@ -577,6 +585,8 @@ private:
    */
   void FillMusicInfoTag(const std::shared_ptr<const PVR::CPVREpgInfoTag>& tag);
 
+  mutable std::optional<CURL> m_curlPath;
+  mutable std::optional<CURL> m_curlDynPath;
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
 
