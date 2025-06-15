@@ -1377,7 +1377,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
       CFileItem* item = new CFileItem(targetFile, false);
       if (IsVideoDb(*item))
       {
-        *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(item->GetURL());
+        *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(item->GetURLRef());
         item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
       }
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));

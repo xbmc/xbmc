@@ -1293,13 +1293,13 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
       if (!lookup)
         return;
 
-      CCurlFile::GetMimeType(GetDynURL(), m_mimetype);
+      CCurlFile::GetMimeType(GetDynURLRef(), m_mimetype);
 
       // try to get mime-type again but with an NSPlayer User-Agent
       // in order for server to provide correct mime-type.  Allows us
       // to properly detect an MMS stream
       if (StringUtils::StartsWithNoCase(m_mimetype, "video/x-ms-"))
-        CCurlFile::GetMimeType(GetDynURL(), m_mimetype, "NSPlayer/11.00.6001.7000");
+        CCurlFile::GetMimeType(GetDynURLRef(), m_mimetype, "NSPlayer/11.00.6001.7000");
 
       // make sure there are no options set in mime-type
       // mime-type can look like "video/x-ms-asf ; charset=utf8"
@@ -1740,7 +1740,12 @@ void CFileItem::SetURL(const CURL& url)
   SetPath(url.Get());
 }
 
-const CURL& CFileItem::GetURL() const
+CURL CFileItem::GetURL() const
+{
+  return GetURLRef();
+}
+
+const CURL& CFileItem::GetURLRef() const
 {
   if (!m_curlPath)
     m_curlPath = CURL(m_strPath);
@@ -1762,7 +1767,12 @@ void CFileItem::SetDynURL(const CURL& url)
   SetDynPath(url.Get());
 }
 
-const CURL& CFileItem::GetDynURL() const
+CURL CFileItem::GetDynURL() const
+{
+  return GetDynURLRef();
+}
+
+const CURL& CFileItem::GetDynURLRef() const
 {
   if (!m_strDynPath.empty())
   {
@@ -2008,7 +2018,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     if (URIUtils::IsInArchive(m_strPath))
     {
       // Try to get archive itself, if empty take path before
-      name2 = GetURL().GetHostName();
+      name2 = GetURLRef().GetHostName();
       if (name2.empty())
         name2 = strMovieName;
 

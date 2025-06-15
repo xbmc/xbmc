@@ -11869,7 +11869,7 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
       case LISTITEM_THUMB:
         return item->GetThumbHideIfUnwatched(item);
       case LISTITEM_FOLDERPATH:
-        return item->GetURL().GetWithoutUserDetails();
+        return item->GetURLRef().GetWithoutUserDetails();
       case LISTITEM_FOLDERNAME:
       case LISTITEM_PATH:
       {
