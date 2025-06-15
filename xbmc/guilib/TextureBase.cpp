@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -24,9 +24,14 @@
 void CTextureBase::Allocate(uint32_t width, uint32_t height, XB_FMT format)
 {
   SetKDFormat(format);
+  m_format = format;
+  Allocate(width, height);
+}
+
+void CTextureBase::Allocate(uint32_t width, uint32_t height)
+{
   m_imageWidth = m_originalWidth = width;
   m_imageHeight = m_originalHeight = height;
-  m_format = format;
   m_orientation = 0;
 
   m_textureWidth = m_imageWidth;
