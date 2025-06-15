@@ -579,7 +579,7 @@ private:
    */
   void FillMusicInfoTag(const std::shared_ptr<const PVR::CPVREpgInfoTag>& tag);
 
-  std::optional<CURL> m_curlPath;            ///< complete path to item
+  std::optional<CURL> m_curlPath; ///< complete path to item
   std::optional<CURL> m_curlDynPath;
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
