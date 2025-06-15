@@ -95,8 +95,7 @@ CFileItem::CFileItem(const CURL &url, const CAlbum& album)
 {
   Initialize();
 
-  m_strPath = url.Get();
-  m_curlPath.reset();
+  SetPath(url.Get());
   URIUtils::AddSlashAtEnd(m_strPath);
   SetFromAlbum(album);
 }
@@ -105,8 +104,7 @@ CFileItem::CFileItem(const std::string &path, const CAlbum& album)
 {
   Initialize();
 
-  m_strPath = path;
-  m_curlPath.reset();
+  SetPath(path);
   URIUtils::AddSlashAtEnd(m_strPath);
   SetFromAlbum(album);
 }
@@ -115,8 +113,7 @@ CFileItem::CFileItem(const CMusicInfoTag& music)
 {
   Initialize();
   SetLabel(music.GetTitle());
-  m_strPath = music.GetURL();
-  m_curlPath.reset();
+  SetPath(music.GetURL());
   m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
   *GetMusicInfoTag() = music;
   ART::FillInDefaultIcon(*this);
@@ -151,8 +148,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
 
   m_bIsFolder = false;
   m_epgInfoTag = tag;
-  m_strPath = tag->Path();
-  m_curlPath.reset();
+  SetPath(tag->Path());
   m_bCanQueue = false;
   SetLabel(CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().GetTitleForEpgTag(tag));
   m_dateTime = tag->StartAsLocalTime();
@@ -187,8 +183,7 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
 
   m_bIsFolder = true;
   m_epgSearchFilter = filter;
-  m_strPath = filter->GetPath();
-  m_curlPath.reset();
+  SetPath(filter->GetPath());
   m_bCanQueue = false;
   SetLabel(filter->GetTitle());
 
@@ -216,8 +211,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
 
   m_pvrChannelGroupMemberInfoTag = channelGroupMember;
 
-  m_strPath = channelGroupMember->Path();
-  m_curlPath.reset();
+  SetPath(channelGroupMember->Path());
   m_bIsFolder = false;
   m_bCanQueue = false;
   SetLabel(channel->ChannelName());
@@ -250,8 +244,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
 
   m_bIsFolder = false;
   m_pvrRecordingInfoTag = record;
-  m_strPath = record->m_strFileNameAndPath;
-  m_curlPath.reset();
+  SetPath(record->m_strFileNameAndPath);
   SetLabel(record->m_strTitle);
   m_dateTime = record->RecordingTimeAsLocalTime();
   m_dwSize = record->GetSizeInBytes();
@@ -289,8 +282,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
 
   m_bIsFolder = timer->IsTimerRule();
   m_pvrTimerInfoTag = timer;
-  m_strPath = timer->Path();
-  m_curlPath.reset();
+  SetPath(timer->Path());
   SetLabel(timer->Title());
   m_dateTime = timer->StartAsLocalTime();
   m_bCanQueue = false;
@@ -312,8 +304,7 @@ CFileItem::CFileItem(const std::string& path, const std::shared_ptr<CPVRProvider
 {
   Initialize();
 
-  m_strPath = path;
-  m_curlPath.reset();
+  SetPath(path);
   m_bIsFolder = true;
   m_pvrProviderInfoTag = provider;
   SetLabel(provider->GetName());
@@ -338,8 +329,7 @@ CFileItem::CFileItem(const CArtist& artist)
 {
   Initialize();
   SetLabel(artist.strArtist);
-  m_strPath = artist.strArtist;
-  m_curlPath.reset();
+  SetPath(artist.strArtist);
   m_bIsFolder = true;
   URIUtils::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetArtist(artist);
@@ -350,8 +340,7 @@ CFileItem::CFileItem(const CGenre& genre)
 {
   Initialize();
   SetLabel(genre.strGenre);
-  m_strPath = genre.strGenre;
-  m_curlPath.reset();
+  SetPath(genre.strGenre);
   m_bIsFolder = true;
   URIUtils::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
@@ -398,8 +387,7 @@ CFileItem::CFileItem(const char* strLabel)
 CFileItem::CFileItem(const CURL& path, bool bIsFolder)
 {
   Initialize();
-  m_strPath = path.Get();
-  m_curlPath.reset();
+  SetPath(path.Get());
   m_bIsFolder = bIsFolder;
   if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder())
     URIUtils::AddSlashAtEnd(m_strPath);
@@ -409,8 +397,7 @@ CFileItem::CFileItem(const CURL& path, bool bIsFolder)
 CFileItem::CFileItem(const std::string& strPath, bool bIsFolder)
 {
   Initialize();
-  m_strPath = strPath;
-  m_curlPath.reset();
+  SetPath(strPath);
   m_bIsFolder = bIsFolder;
   if (m_bIsFolder && !m_strPath.empty() && !IsFileFolder())
     URIUtils::AddSlashAtEnd(m_strPath);
@@ -422,8 +409,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   Initialize();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
-  m_strPath = share.strPath;
-  m_curlPath.reset();
+  SetPath(share.strPath);
   if (!IsRSS()) // no slash at end for rss feeds
     URIUtils::AddSlashAtEnd(m_strPath);
   std::string label = share.strName;
@@ -479,10 +465,8 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   CGUIListItem::operator=(item);
   m_bLabelPreformatted=item.m_bLabelPreformatted;
   FreeMemory();
-  m_strPath = item.m_strPath;
-  m_curlPath.reset();
-  m_strDynPath = item.m_strDynPath;
-  m_curlDynPath.reset();
+  SetPath(item.m_strPath);
+  SetDynPath(item.m_strDynPath);
   m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
@@ -1337,10 +1321,9 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
      StringUtils::StartsWithNoCase(m_mimetype, "application/x-mms-framed"))
   {
     if (m_strDynPath.empty())
-      m_strDynPath = m_strPath;
+      SetDynPath(m_strPath);
 
     StringUtils::Replace(m_strDynPath, "http:", "mms:");
-    m_curlDynPath.reset();
   }
 }
 
@@ -1604,15 +1587,13 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
     SetLabel(video.m_strTitle);
   if (video.m_strFileNameAndPath.empty())
   {
-    m_strPath = video.m_strPath;
-    m_curlPath.reset();
+    SetPath(video.m_strPath);
     URIUtils::AddSlashAtEnd(m_strPath);
     m_bIsFolder = true;
   }
   else
   {
-    m_strPath = video.m_strFileNameAndPath;
-    m_curlPath.reset();
+    SetPath(video.m_strFileNameAndPath);
     m_bIsFolder = false;
   }
 
@@ -1720,13 +1701,11 @@ void CFileItem::SetFromSong(const CSong &song)
   if (song.idSong > 0)
   {
     std::string strExt = URIUtils::GetExtension(song.strFileName);
-    m_strPath = StringUtils::Format("musicdb://songs/{}{}", song.idSong, strExt);
-    m_curlPath.reset();
+    SetPath(StringUtils::Format("musicdb://songs/{}{}", song.idSong, strExt));
   }
   else if (!song.strFileName.empty())
   {
-    m_strPath = song.strFileName;
-    m_curlPath.reset();
+    SetPath(song.strFileName);
   }
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
@@ -1758,8 +1737,7 @@ void CFileItem::SetPath(const std::string& path)
 
 void CFileItem::SetURL(const CURL& url)
 {
-  m_strPath = url.Get();
-  m_curlPath.reset();
+  SetPath(url.Get());
 }
 
 const CURL& CFileItem::GetURL() const
@@ -1781,8 +1759,7 @@ bool CFileItem::IsPath(const std::string& path, bool ignoreURLOptions /* = false
 
 void CFileItem::SetDynURL(const CURL& url)
 {
-  m_strDynPath = url.Get();
-  m_curlDynPath.reset();
+  SetDynPath(url.Get());
 }
 
 const CURL& CFileItem::GetDynURL() const
