@@ -595,7 +595,15 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
 bool CFile::FileExists(const std::string& path)
 {
   struct __stat64 s;
-  return ((XFILE::CFile::Stat(path, &s) == 0) && !S_ISDIR(s.st_mode));
+  if (XFILE::CFile::Stat(path, &s) == 0)
+  {
+#ifdef TARGET_POSIX
+    return !S_ISDIR(s.st_mode);
+#else
+    return !(s.st_mode & S_IFDIR);
+#endif
+  }
+  return false;
 }
 
 ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
