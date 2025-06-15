@@ -32,6 +32,8 @@ class DecoderManager
     ~DecoderManager() = default;
 
     bool IsSupportedGraphicsFile(std::string_view filename);
+    bool IsSubstitutionFile(std::string_view filename);
+    void SubstitudeFileName(KD_TEX_FMT& family, std::string& filename);
     bool LoadFile(const std::string& filename, DecodedFrames& frames);
     void EnableVerboseOutput() { verbose = true; }
 
