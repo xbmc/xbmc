@@ -1,0 +1,20 @@
+--- a/lib/socket.c
++++ b/lib/socket.c
+@@ -602,7 +602,7 @@
+ 		return 0;
+ 	}
+ 
+-        while (1){
++        do {
+                 if (rpc->inpos == 0) {
+                         switch (rpc->state) {
+                         case READ_RM:
+@@ -942,7 +942,7 @@
+                                 break;
+                         }
+                 }
+-	}
++	} while (rpc->is_nonblocking && rpc->waitpdu_len > 0);
+ 
+ 	return 0;
+ }
