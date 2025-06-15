@@ -410,7 +410,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
     Filter filter = f;
 
     // check the smartplaylist if it contains a matching rule
-    for (auto& rule : m_filter->m_ruleCombination.m_rules)
+    for (const auto& rule : m_filter->m_ruleCombination.GetRules())
     {
       if (rule->m_field == filter.field)
       {
@@ -550,7 +550,8 @@ void CGUIDialogMediaFilter::InitializeSettings()
   // make sure that no change in capacity size is needed when adding new rules
   // which would copy around the rules and our pointers in the Filter struct
   // wouldn't work anymore
-  m_filter->m_ruleCombination.m_rules.reserve(m_filters.size() + (m_filter->m_ruleCombination.m_rules.size() - handledRules));
+  m_filter->m_ruleCombination.Reserve(
+      m_filters.size() + (m_filter->m_ruleCombination.GetRulesAmount() - handledRules));
 }
 
 bool CGUIDialogMediaFilter::SetPath(const std::string &path)
@@ -651,16 +652,12 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
 {
   CFileItemList selectItems;
 
-  // remove the rule for the field of the filter we want to retrieve items for
-  PLAYLIST::CSmartPlaylist tmpFilter = *m_filter;
-  for (CDatabaseQueryRules::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin();
-       rule != tmpFilter.m_ruleCombination.m_rules.end(); ++rule)
+  // add all rules except for the field of the filter we want to retrieve items for
+  PLAYLIST::CSmartPlaylist tmpFilter;
+  for (const auto& rule : m_filter->m_ruleCombination.GetRules())
   {
-    if ((*rule)->m_field == filter.field)
-    {
-      tmpFilter.m_ruleCombination.m_rules.erase(rule);
-      break;
-    }
+    if (rule->m_field != filter.field)
+      tmpFilter.m_ruleCombination.AddRule(rule);
   }
 
   if (m_mediaType == "movies" || m_mediaType == "tvshows" || m_mediaType == "episodes" || m_mediaType == "musicvideos")
@@ -742,23 +739,22 @@ PLAYLIST::CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(
     Field field,
     CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator /* = CDatabaseQueryRule::OPERATOR_CONTAINS */)
 {
-  PLAYLIST::CSmartPlaylistRule rule;
-  rule.m_field = field;
-  rule.m_operator = ruleOperator;
+  const auto rule{std::make_shared<PLAYLIST::CSmartPlaylistRule>()};
+  rule->m_field = field;
+  rule->m_operator = ruleOperator;
 
   m_filter->m_ruleCombination.AddRule(rule);
   return static_cast<PLAYLIST::CSmartPlaylistRule*>(
-      m_filter->m_ruleCombination.m_rules.back().get());
+      m_filter->m_ruleCombination.GetRules().back().get());
 }
 
 void CGUIDialogMediaFilter::DeleteRule(Field field)
 {
-  for (CDatabaseQueryRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin();
-       rule != m_filter->m_ruleCombination.m_rules.end(); ++rule)
+  for (const auto& rule : m_filter->m_ruleCombination.GetRules())
   {
-    if ((*rule)->m_field == field)
+    if (rule->m_field == field)
     {
-      m_filter->m_ruleCombination.m_rules.erase(rule);
+      m_filter->m_ruleCombination.RemoveRule(rule);
       break;
     }
   }

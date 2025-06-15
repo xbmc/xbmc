@@ -5419,8 +5419,11 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
 
 std::string CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType)
 {
+  if (!m_pDS2)
+    return {};
+
   std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
-  return GetSingleValue(query, m_pDS2);
+  return GetSingleValue(query, *m_pDS2);
 }
 
 bool CVideoDatabase::RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType)
@@ -8332,7 +8335,7 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
         (sorting.limitStart > 0 || sorting.limitEnd > 0 ||
          (sorting.limitStart == 0 && sorting.limitEnd == 0)))
     {
-      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      total = GetSingleValueInt(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, *m_pDS);
       strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
@@ -8665,7 +8668,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
         (sorting.limitStart > 0 || sorting.limitEnd > 0 ||
          (sorting.limitStart == 0 && sorting.limitEnd == 0)))
     {
-      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      total = GetSingleValueInt(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, *m_pDS);
       strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
@@ -8813,7 +8816,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
         (sorting.limitStart > 0 || sorting.limitEnd > 0 ||
          (sorting.limitStart == 0 && sorting.limitEnd == 0)))
     {
-      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      total = GetSingleValueInt(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, *m_pDS);
       strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
@@ -8942,7 +8945,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
         (sorting.limitStart > 0 || sorting.limitEnd > 0 ||
          (sorting.limitStart == 0 && sorting.limitEnd == 0)))
     {
-      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      total = GetSingleValueInt(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, *m_pDS);
       strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
@@ -9906,7 +9909,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
     {
       idArtist = option->second.asInteger();
       strArtist = GetSingleValue(
-                      PrepareSQL("SELECT name FROM actor where actor_id = '%i'", idArtist), m_pDS)
+                      PrepareSQL("SELECT name FROM actor where actor_id = '%i'", idArtist), *m_pDS)
                       .c_str();
     }
     Filter extFilter = filter;
@@ -9919,7 +9922,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
         (sorting.limitStart > 0 || sorting.limitEnd > 0 ||
          (sorting.limitStart == 0 && sorting.limitEnd == 0)))
     {
-      total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
+      total = GetSingleValueInt(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, *m_pDS);
       strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
@@ -13232,7 +13235,10 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
 
 std::string CVideoDatabase::GetVideoVersionById(int id)
 {
-  return GetSingleValue(PrepareSQL("SELECT name FROM videoversiontype WHERE id=%i", id), m_pDS2);
+  if (!m_pDS2)
+    return {};
+
+  return GetSingleValue(PrepareSQL("SELECT name FROM videoversiontype WHERE id=%i", id), *m_pDS2);
 }
 
 bool CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type)

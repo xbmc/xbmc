@@ -9,11 +9,10 @@
 #pragma once
 
 #include <memory>
-#include <set>
 #include <string>
 #include <vector>
 
-#define DATABASEQUERY_RULE_VALUE_SEPARATOR " / "
+constexpr const char* DATABASEQUERY_RULE_VALUE_SEPARATOR = " / ";
 
 class CDatabase;
 class CVariant;
@@ -22,7 +21,7 @@ class TiXmlNode;
 class CDatabaseQueryRule
 {
 public:
-  CDatabaseQueryRule();
+  CDatabaseQueryRule() = default;
   virtual ~CDatabaseQueryRule() = default;
 
   enum SEARCH_OPERATOR
@@ -72,8 +71,8 @@ public:
 
   virtual std::string GetWhereClause(const CDatabase& db, const std::string& strType) const;
 
-  int m_field;
-  SEARCH_OPERATOR m_operator;
+  int m_field{0};
+  SEARCH_OPERATOR m_operator{OPERATOR_CONTAINS};
   std::vector<std::string> m_parameter;
 
 protected:
@@ -104,8 +103,8 @@ protected:
 
 class CDatabaseQueryRuleCombination;
 
-typedef std::vector<std::shared_ptr<CDatabaseQueryRule>> CDatabaseQueryRules;
-typedef std::vector<std::shared_ptr<CDatabaseQueryRuleCombination>> CDatabaseQueryRuleCombinations;
+using CDatabaseQueryRules = std::vector<std::shared_ptr<CDatabaseQueryRule>>;
+using CDatabaseQueryRuleCombinations = std::vector<std::shared_ptr<CDatabaseQueryRuleCombination>>;
 
 class IDatabaseQueryRuleFactory
 {
@@ -120,11 +119,11 @@ class CDatabaseQueryRuleCombination
 public:
   virtual ~CDatabaseQueryRuleCombination() = default;
 
-  typedef enum
+  enum Combination
   {
     CombinationOr = 0,
     CombinationAnd
-  } Combination;
+  };
 
   void clear();
   virtual bool Load(const TiXmlNode* node, const std::string& encoding = "UTF-8") { return false; }
@@ -138,12 +137,17 @@ public:
   Combination GetType() const { return m_type; }
   void SetType(Combination combination) { m_type = combination; }
 
+  const CDatabaseQueryRuleCombinations& GetCombinations() const { return m_combinations; }
   bool empty() const { return m_combinations.empty() && m_rules.empty(); }
 
-protected:
-  friend class CGUIDialogSmartPlaylistEditor;
-  friend class CGUIDialogMediaFilter;
+  size_t GetRulesAmount() const { return m_rules.size(); }
+  const CDatabaseQueryRules& GetRules() const { return m_rules; }
+  void AddRule(const std::shared_ptr<CDatabaseQueryRule>& rule);
+  void RemoveRule(const std::shared_ptr<CDatabaseQueryRule>& rule);
+  void RemoveRule(int index);
+  void Reserve(size_t amount);
 
+private:
   Combination m_type = CombinationAnd;
   CDatabaseQueryRuleCombinations m_combinations;
   CDatabaseQueryRules m_rules;

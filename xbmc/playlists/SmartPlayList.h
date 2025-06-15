@@ -91,9 +91,7 @@ public:
                              const std::string& strType,
                              std::set<std::string> &referencedPlaylists) const;
   void GetVirtualFolders(const std::string& strType,
-                         std::vector<std::string> &virtualFolders) const;
-
-  void AddRule(const CSmartPlaylistRule &rule);
+                         std::vector<std::string>& virtualFolders) const;
 };
 
 class CSmartPlaylist : public IDatabaseQueryRuleFactory
