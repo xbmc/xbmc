@@ -188,7 +188,7 @@ int callback(void* res_ptr, int ncol, char** result, char** cols)
       dbiplus::field_value& v = rec->at(i);
       if (!result[i])
       {
-        v.set_asString("");
+        v.set_asString("", 0);
         v.set_isNull();
       }
       else
@@ -971,7 +971,7 @@ bool SqliteDataset::query(const std::string& query)
           break;
         case SQLITE_NULL:
         default:
-          v.set_asString("");
+          v.set_asString("", 0);
           v.set_isNull();
           break;
       }
