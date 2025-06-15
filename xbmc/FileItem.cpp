@@ -1762,10 +1762,10 @@ void CFileItem::SetURL(const CURL& url)
   m_curlPath.reset();
 }
 
-const CURL CFileItem::GetURL() const
+const CURL& CFileItem::GetURL() const
 {
   if (!m_curlPath)
-    const_cast<CFileItem*>(this)->m_curlPath = CURL(m_strPath);
+    m_curlPath = CURL(m_strPath);
   return *m_curlPath;
 }
 
@@ -1785,18 +1785,18 @@ void CFileItem::SetDynURL(const CURL& url)
   m_curlDynPath.reset();
 }
 
-const CURL CFileItem::GetDynURL() const
+const CURL& CFileItem::GetDynURL() const
 {
   if (!m_strDynPath.empty())
   {
     if (!m_curlDynPath)
-      const_cast<CFileItem*>(this)->m_curlDynPath = CURL(m_strDynPath);
+      m_curlDynPath = CURL(m_strDynPath);
     return *m_curlDynPath;
   }
   else
   {
     if (!m_curlPath)
-      const_cast<CFileItem*>(this)->m_curlPath = CURL(m_strPath);
+      m_curlPath = CURL(m_strPath);
     return *m_curlPath;
   }
 }

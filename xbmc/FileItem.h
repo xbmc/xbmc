@@ -128,14 +128,14 @@ public:
   ~CFileItem(void) override;
   CGUIListItem* Clone() const override { return new CFileItem(*this); }
 
-  const CURL GetURL() const;
+  const CURL& GetURL() const;
   void SetURL(const CURL& url);
   bool IsURL(const CURL& url) const;
   const std::string& GetPath() const;
   void SetPath(const std::string& path);
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
-  const CURL GetDynURL() const;
+  const CURL& GetDynURL() const;
   void SetDynURL(const CURL& url);
   const std::string &GetDynPath() const;
   void SetDynPath(const std::string &path);
@@ -579,8 +579,8 @@ private:
    */
   void FillMusicInfoTag(const std::shared_ptr<const PVR::CPVREpgInfoTag>& tag);
 
-  std::optional<CURL> m_curlPath; ///< complete path to item
-  std::optional<CURL> m_curlDynPath;
+  mutable std::optional<CURL> m_curlPath;
+  mutable std::optional<CURL> m_curlDynPath;
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
 
