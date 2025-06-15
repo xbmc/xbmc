@@ -63,7 +63,7 @@ static constexpr const std::array<TypeMapping, 41> types =
    {"xbmc.addon.repository",             "", AddonType::REPOSITORY,          24011, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonRepository.png" },
    {"kodi.pvrclient",      "xbmc.pvrclient", AddonType::PVRDLL,              24019, AddonInstanceSupport::SUPPORT_SETTINGS,  "DefaultAddonPVRClient.png" },
    {"kodi.gameclient",                   "", AddonType::GAMEDLL,             35049, AddonInstanceSupport::SUPPORT_OPTIONAL,  "DefaultAddonGame.png" },
-   {"kodi.shader.presets",               "", AddonType::SHADERDLL,           35256, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonGame.png" },
+   {"kodi.shader.presets",               "", AddonType::SHADERDLL,           35049, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonGame.png" },
    {"kodi.peripheral",                   "", AddonType::PERIPHERALDLL,       35010, AddonInstanceSupport::SUPPORT_MANDATORY, "DefaultAddonPeripheral.png" },
    {"xbmc.addon.video",                  "", AddonType::VIDEO,                1037, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonVideo.png" },
    {"xbmc.addon.audio",                  "", AddonType::AUDIO,                1038, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonMusic.png" },
