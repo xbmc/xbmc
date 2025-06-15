@@ -77,48 +77,35 @@ void CURL::Parse(std::string strURL1)
     // This is an ugly hack that needs some work.
     // example: filename /foo/bar.zip/alice.rar/bob.avi
     // This should turn into zip://rar:///foo/bar.zip/alice.rar/bob.avi
-    iPos = 0;
-    bool is_apk = (strURL.find(".apk/", iPos) != std::string::npos);
-    while (true)
-    {
-      if (is_apk)
-        iPos = strURL.find(".apk/", iPos);
-      else
-        iPos = strURL.find(".zip/", iPos);
+    const char* protocolReplacements[][2] = {
+        {".zip/", "zip://"},
+        {".apk/", "apk://"},
+        {".rar/", "rar://"},
+    };
 
-      int extLen = 3;
-      if (iPos == std::string::npos)
+    for (const auto& protocolReplacement : protocolReplacements)
+    {
+      const auto& ext = protocolReplacement[0];
+      const auto& proto = protocolReplacement[1];
+
+      for (size_t extPos = strURL.find(ext); extPos != std::string::npos;
+           extPos = strURL.find(ext, extPos))
       {
-        /* set filename and update extension*/
-        SetFileName(std::move(strURL));
-        return ;
-      }
-      iPos += extLen + 1;
-      std::string archiveName = strURL.substr(0, iPos);
-      struct __stat64 s;
-      if (XFILE::CFile::Stat(archiveName, &s) == 0)
-      {
-#ifdef TARGET_POSIX
-        if (!S_ISDIR(s.st_mode))
-#else
-        if (!(s.st_mode & S_IFDIR))
-#endif
+        extPos += 4; // std::strlen(ext) -1;
+        const auto archiveName = strURL.substr(0, extPos);
+
+        if (XFILE::CFile::FileExists(archiveName))
         {
-          archiveName = Encode(archiveName);
-          if (is_apk)
-          {
-            CURL c("apk://" + archiveName + "/" + std::move(strURL).substr(iPos + 1));
-            *this = c;
-          }
-          else
-          {
-            CURL c("zip://" + archiveName + "/" + std::move(strURL).substr(iPos + 1));
-            *this = c;
-          }
+          // TODO: Maybe use URIUtils::CreateArchivePath; although, its not quite the correct interface yet
+          *this = CURL(proto + Encode(archiveName) + std::move(strURL).substr(extPos));
           return;
         }
       }
     }
+
+    /* set filename and update extension*/
+    SetFileName(std::move(strURL));
+    return;
   }
   else
   {
