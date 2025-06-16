@@ -364,9 +364,9 @@ CJob* CJobManager::GetNextJob()
     CJob *job = PopJob();
     if (job)
       return job;
-    // no jobs are left - sleep for 30 seconds to allow new jobs to come in
+    // no jobs are left - sleep for 10 milliseconds to allow new jobs to come in
     lock.unlock();
-    bool newJob = m_jobEvent.Wait(30000ms);
+    bool newJob = m_jobEvent.Wait(10ms);
     lock.lock();
     if (!newJob)
       break;
