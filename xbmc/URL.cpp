@@ -74,9 +74,12 @@ void CURL::Parse(std::string strURL1)
   size_t iPos = strURL.find("://");
   if (iPos == std::string::npos)
   {
-    // This is an ugly hack that needs some work.
-    // example: filename /foo/bar.zip/alice.rar/bob.avi
-    // This should turn into zip://rar:///foo/bar.zip/alice.rar/bob.avi
+    /* Consider files with the extensions {.zip .apk .rar} as special if they exist
+     * on the filesystem and convert the archive paths into archive protocols.
+     * Example:
+     *   [input]  /foo/bar.zip/alice.rar/bob.avi
+     *   [result] zip://rar:///foo/bar.zip/alice.rar/bob.avi
+     */
     const char* protocolReplacements[][2] = {
         {".zip/", "zip://"},
         {".apk/", "apk://"},
