@@ -96,7 +96,6 @@ void CURL::Parse(std::string strURL1)
 
         if (XFILE::CFile::FileExists(archiveName))
         {
-          // TODO: Maybe use URIUtils::CreateArchivePath; although, its not quite the correct interface yet
           *this = CURL(proto + Encode(archiveName) + std::move(strURL).substr(extPos));
           return;
         }
