@@ -1,6 +1,6 @@
 --- a/lib/Crypto/Util/_raw_api.py
 +++ b/lib/Crypto/Util/_raw_api.py
-@@ -183,11 +183,14 @@
+@@ -183,11 +183,14 @@ except ImportError:
              import platform
              cached_architecture[:] = platform.architecture()
          bits, linkage = cached_architecture
@@ -20,7 +20,7 @@
          return CDLL(name)
  
      def get_c_string(c_string):
-@@ -288,20 +291,10 @@
+@@ -288,20 +291,10 @@ def load_pycryptodome_raw_lib(name, cdecl):
      @cdecl, the C function declarations.
      """
  
