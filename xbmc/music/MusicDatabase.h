@@ -21,6 +21,9 @@
 #include "utils/Artwork.h"
 #include "utils/SortUtils.h"
 
+#include <map>
+#include <set>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -32,40 +35,21 @@ class TiXmlNode;
 namespace dbiplus
 {
 class field_value;
-typedef std::vector<field_value> sql_record;
+using sql_record = std::vector<field_value>;
 } // namespace dbiplus
-
-#include <set>
-#include <string>
 
 // return codes of Cleaning up the Database
 // numbers are strings from strings.po
-#define ERROR_OK 317
-#define ERROR_CANCEL 0
-#define ERROR_DATABASE 315
-#define ERROR_REORG_SONGS 319
-#define ERROR_REORG_ARTIST 321
-#define ERROR_REORG_OTHER 323
-#define ERROR_REORG_PATH 325
-#define ERROR_REORG_ALBUM 327
-#define ERROR_WRITING_CHANGES 329
-#define ERROR_COMPRESSING 332
-
-#define NUM_SONGS_BEFORE_COMMIT 500
-
-/*!
- \ingroup music
- \brief A set of std::string objects, used for CMusicDatabase
- \sa ISETPATHS, CMusicDatabase
- */
-typedef std::set<std::string> SETPATHS;
-
-/*!
- \ingroup music
- \brief The SETPATHS iterator
- \sa SETPATHS, CMusicDatabase
- */
-typedef std::set<std::string>::iterator ISETPATHS;
+constexpr int ERROR_OK = 317;
+constexpr int ERROR_CANCEL = 0;
+constexpr int ERROR_DATABASE = 315;
+constexpr int ERROR_REORG_SONGS = 319;
+constexpr int ERROR_REORG_ARTIST = 321;
+constexpr int ERROR_REORG_OTHER = 323;
+constexpr int ERROR_REORG_PATH = 325;
+constexpr int ERROR_REORG_ALBUM = 327;
+constexpr int ERROR_WRITING_CHANGES = 329;
+constexpr int ERROR_COMPRESSING = 332;
 
 /*!
 \ingroup music
@@ -73,13 +57,13 @@ typedef std::set<std::string>::iterator ISETPATHS;
 \sa CMusicDatabase::GetArtForItem()
 */
 
-typedef struct
+struct ArtForThumbLoader
 {
   std::string mediaType;
   std::string artType;
   std::string prefix;
   std::string url;
-} ArtForThumbLoader;
+};
 
 class CGUIDialogProgress;
 class CFileItemList;
@@ -103,16 +87,16 @@ class CMusicDatabase : public CDatabase
   friend class TestDatabaseUtilsHelper;
 
 public:
-  CMusicDatabase(void);
-  ~CMusicDatabase(void) override;
+  CMusicDatabase();
+  ~CMusicDatabase() override;
 
   bool Open() override;
   bool CommitTransaction() override;
   void EmptyCache();
-  void Clean();
+  void Clean() const;
   int Cleanup(CGUIDialogProgress* progressDialog = nullptr);
-  bool LookupCDDBInfo(bool bRequery = false);
-  void DeleteCDDBInfo();
+  bool LookupCDDBInfo(bool bRequery = false) const;
+  void DeleteCDDBInfo() const;
 
   /////////////////////////////////////////////////
   // Song CRUD
@@ -338,7 +322,7 @@ public:
                   CAlbum::ReleaseType releaseType,
                   bool bScrapedMBID);
   bool ClearAlbumLastScrapedTime(int idAlbum);
-  bool HasAlbumBeenScraped(int idAlbum);
+  bool HasAlbumBeenScraped(int idAlbum) const;
 
   /////////////////////////////////////////////////
   // Audiobook
@@ -350,7 +334,7 @@ public:
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check
    */
-  bool InsideScannedPath(const std::string& path);
+  bool InsideScannedPath(const std::string& path) const;
 
   //// Misc Album
   int GetAlbumIdByPath(const std::string& path);
@@ -382,7 +366,7 @@ public:
                 bool bScrapedMBID = false);
   bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = false);
   bool GetArtistExists(int idArtist);
-  int GetLastArtist();
+  int GetLastArtist() const;
   int GetArtistFromMBID(const std::string& strMusicBrainzArtistID, std::string& artistname);
   int UpdateArtist(int idArtist,
                    const std::string& strArtist,
@@ -404,9 +388,9 @@ public:
                    const std::string& strYearsActive,
                    const std::string& strImage);
   bool UpdateArtistScrapedMBID(int idArtist, const std::string& strMusicBrainzArtistID);
-  bool GetTranslateBlankArtist() { return m_translateBlankArtist; }
+  bool GetTranslateBlankArtist() const { return m_translateBlankArtist; }
   void SetTranslateBlankArtist(bool translate) { m_translateBlankArtist = translate; }
-  bool HasArtistBeenScraped(int idArtist);
+  bool HasArtistBeenScraped(int idArtist) const;
   bool ClearArtistLastScrapedTime(int idArtist);
   int AddArtistDiscography(int idArtist, const CDiscoAlbum& discoAlbum);
   bool DeleteArtistDiscography(int idArtist);
@@ -515,7 +499,7 @@ public:
   bool GetGenresByAlbum(int idAlbum, CFileItem* item);
 
   bool GetGenresByArtist(int idArtist, CFileItem* item);
-  bool GetIsAlbumArtist(int idArtist, CFileItem* item);
+  bool GetIsAlbumArtist(int idArtist, CFileItem* item) const;
 
   /////////////////////////////////////////////////
   // Top 100
@@ -666,17 +650,17 @@ public:
   // JSON-RPC
   /////////////////////////////////////////////////
   bool GetGenresJSON(CFileItemList& items, bool bSources = false);
-  bool GetArtistsByWhereJSON(const std::set<std::string>& fields,
+  bool GetArtistsByWhereJSON(const std::set<std::string, std::less<>>& fields,
                              const std::string& baseDir,
                              CVariant& result,
                              int& total,
                              const SortDescription& sortDescription = SortDescription());
-  bool GetAlbumsByWhereJSON(const std::set<std::string>& fields,
+  bool GetAlbumsByWhereJSON(const std::set<std::string, std::less<>>& fields,
                             const std::string& baseDir,
                             CVariant& result,
                             int& total,
                             const SortDescription& sortDescription = SortDescription());
-  bool GetSongsByWhereJSON(const std::set<std::string>& fields,
+  bool GetSongsByWhereJSON(const std::set<std::string, std::less<>>& fields,
                            const std::string& baseDir,
                            CVariant& result,
                            int& total,
@@ -816,7 +800,7 @@ public:
   */
   bool RemoveArtForItem(int mediaId,
                         const MediaType& mediaType,
-                        const std::set<std::string>& artTypes);
+                        const std::set<std::string, std::less<>>& artTypes);
 
   /*! \brief Fetch the distinct types of art held in the database for a type of media.
   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
@@ -886,9 +870,6 @@ public:
   std::vector<std::string> GetUsedImages(const std::vector<std::string>& imagesToCheck) const;
 
 protected:
-  std::map<std::string, int> m_genreCache;
-  std::map<std::string, int> m_pathCache;
-
   void CreateTables() override;
   void CreateAnalytics() override;
   int GetMinSchemaVersion() const override { return 32; }
@@ -905,26 +886,28 @@ private:
 
   void SplitPath(const std::string& strFileNameAndPath,
                  std::string& strPath,
-                 std::string& strFileName);
+                 std::string& strFileName) const;
 
   CSong GetSongFromDataset();
-  CSong GetSongFromDataset(const dbiplus::sql_record* const record, int offset = 0);
+  CSong GetSongFromDataset(const dbiplus::sql_record* const record, int offset = 0) const;
   CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, int offset = 0, bool needThumb = true);
   CArtist GetArtistFromDataset(const dbiplus::sql_record* const record,
                                int offset = 0,
-                               bool needThumb = true);
+                               bool needThumb = true) const;
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, int offset = 0, bool imageURL = false);
   CAlbum GetAlbumFromDataset(const dbiplus::sql_record* const record,
                              int offset = 0,
-                             bool imageURL = false);
-  CArtistCredit GetArtistCreditFromDataset(const dbiplus::sql_record* const record, int offset = 0);
-  CMusicRole GetArtistRoleFromDataset(const dbiplus::sql_record* const record, int offset = 0);
+                             bool imageURL = false) const;
+  CArtistCredit GetArtistCreditFromDataset(const dbiplus::sql_record* const record,
+                                           int offset = 0) const;
+  CMusicRole GetArtistRoleFromDataset(const dbiplus::sql_record* const record,
+                                      int offset = 0) const;
   std::string GetMediaDateFromFile(const std::string& strFileNameAndPath);
   void GetFileItemFromDataset(CFileItem* item, const CMusicDbUrl& baseUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record,
                               CFileItem* item,
-                              const CMusicDbUrl& baseUrl);
-  void GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredits, CFileItem* item);
+                              const CMusicDbUrl& baseUrl) const;
+  void GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredits, CFileItem* item) const;
 
   bool DeleteRemovedLinks();
 
@@ -941,8 +924,8 @@ private:
   bool SearchAlbums(const std::string& search, CFileItemList& albums);
   bool SearchSongs(const std::string& strSearch, CFileItemList& songs);
   int GetSongIDFromPath(const std::string& filePath);
-  void NormaliseSongDates(std::string& strRelease, std::string& strOriginal);
-  bool TrimImageURLs(std::string& strImage, const size_t space);
+  void NormaliseSongDates(std::string& strRelease, std::string& strOriginal) const;
+  bool TrimImageURLs(std::string& strImage, const size_t space) const;
 
   /*! \brief Build SQL  for sort subquery from ignore article token list
   \param strField original name or title field that articles could be removed from
@@ -986,11 +969,14 @@ private:
   */
   bool MigrateSources();
 
-  bool m_translateBlankArtist;
+  std::map<std::string, int, std::less<>> m_genreCache;
+  std::map<std::string, int, std::less<>> m_pathCache;
+  bool m_translateBlankArtist{true};
 
   // Fields should be ordered as they
   // appear in the songview
-  static enum _SongFields {
+  enum SongFields
+  {
     song_idSong = 0,
     song_strArtists,
     song_strArtistSort,
@@ -1033,11 +1019,12 @@ private:
     song_dateNew,
     song_dateModified,
     song_enumCount // end of the enum, do not add past here
-  } SongFields;
+  };
 
   // Fields should be ordered as they
   // appear in the albumview
-  static enum _AlbumFields {
+  enum AlbumFields
+  {
     album_idAlbum = 0,
     album_strAlbum,
     album_strMusicBrainzAlbumID,
@@ -1071,11 +1058,12 @@ private:
     album_dtLastPlayed,
     album_iAlbumDuration,
     album_enumCount // end of the enum, do not add past here
-  } AlbumFields;
+  };
 
   // Fields should be ordered as they
   // appear in the songartistview/albumartistview
-  static enum _ArtistCreditFields {
+  enum ArtistCreditFields
+  {
     // used for GetAlbum to get the cascaded album/song artist credits
     artistCredit_idEntity = 0, // can be idSong or idAlbum depending on context
     artistCredit_idArtist,
@@ -1086,11 +1074,12 @@ private:
     artistCredit_strMusicBrainzArtistID,
     artistCredit_iOrder,
     artistCredit_enumCount
-  } ArtistCreditFields;
+  };
 
   // Fields should be ordered as they
   // appear in the artistview
-  static enum _ArtistFields {
+  enum ArtistFields
+  {
     artist_idArtist = 0,
     artist_strArtist,
     artist_strSortName,
@@ -1115,10 +1104,11 @@ private:
     artist_dateNew,
     artist_dateModified,
     artist_enumCount // end of the enum, do not add past here
-  } ArtistFields;
+  };
 
   // Fields fetched by GetArtistsByWhereJSON,  order same as in JSONtoDBArtist
-  static enum _JoinToArtistFields {
+  enum JoinToArtistFields
+  {
     joinToArtist_isSong = 0,
     joinToArtist_idSourceAlbum,
     joinToArtist_idSourceSong,
@@ -1136,18 +1126,20 @@ private:
     joinToArtist_thumbnail,
     joinToArtist_fanart,
     joinToArtist_enumCount // end of the enum, do not add past here
-  } JoinToArtistFields;
+  };
 
   // Fields fetched by GetAlbumsByWhereJSON,  order same as in JSONtoDBAlbum
-  static enum _JoinToAlbumFields {
+  enum JoinToAlbumFields
+  {
     joinToAlbum_idArtist = 0,
     joinToAlbum_strArtist,
     joinToAlbum_strArtistMBID,
     joinToAlbum_enumCount // end of the enum, do not add past here
-  } JoinToAlbumFields;
+  };
 
   // Fields fetched by GetSongsByWhereJSON,  order same as in JSONtoDBSong
-  static enum _JoinToSongFields {
+  enum JoinToSongFields
+  {
     // Used by GetSongsByWhereJSON
     joinToSongs_idAlbumArtist = 0,
     joinToSongs_strAlbumArtist,
@@ -1163,5 +1155,5 @@ private:
     joinToSongs_idGenre,
     joinToSongs_iOrderGenre,
     joinToSongs_enumCount // end of the enum, do not add past here
-  } JoinToSongFields;
+  };
 };
