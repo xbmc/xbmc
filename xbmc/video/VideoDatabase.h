@@ -462,8 +462,31 @@ enum class DeleteMovieHashAction
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
+enum class AllowNonFileNameMatch : bool
+{
+  NO_MATCH,
+  YES_MATCH
+};
+
+struct EpisodeInformation
+{
+  int index{0};
+  unsigned int duration{0};
+};
+
+using EpisodeFileMap = std::multimap<std::string, EpisodeInformation>;
+using EpisodeFileMapEntry = std::pair<std::string, EpisodeInformation>;
+
 class CVideoDatabase : public CDatabase
 {
+  struct FileInformation
+  {
+    std::string path;
+    int fileId{0};
+    int vvId{0};
+    std::string hash;
+  };
+
 public:
 
   class CActor    // used for actor retrieval for non-master users
@@ -607,6 +630,10 @@ public:
   void GetEpisodesByBlurayPath(const std::string& path, std::vector<CVideoInfoTag>& episodes);
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
   void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
+  bool GetEpisodeMap(int idShow,
+                     EpisodeFileMap& fileMap,
+                     std::unique_ptr<dbiplus::Dataset>& pDS,
+                     int idFile = -1 /* = -1 */);
 
   int SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
   int SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
@@ -642,6 +669,9 @@ public:
                               int idMVideo = -1);
   bool SetStreamDetailsForFile(const CStreamDetails& details,
                                const std::string& strFileNameAndPath);
+
+  int AddMovieVersion(CFileItem& item, int idMovie, const ADDON::ArtMap& art);
+
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
    * \param[in] details New stream details
@@ -1008,7 +1038,9 @@ public:
   void UpdateFileDateAdded(CVideoInfoTag& details);
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
+  void ExportArt(const CFileItem& item, const ADDON::ArtMap& artwork, bool overwrite);
   void ExportActorThumbs(const std::string& path,
+                         const std::string& singlePath,
                          const CVideoInfoTag& tag,
                          bool singleFiles,
                          bool overwrite = false,
@@ -1175,6 +1207,21 @@ public:
                              int dbIdTarget,
                              int idVideoVersion,
                              VideoAssetType assetType);
+
+  /*!
+   * \brief Adds a version of an existing movie to the database
+   * \param itemType type of the video being converted
+   * \param dbIdSource id of the video being converted
+   * \param idVideoVersion new versiontype of the default version of the video
+   * \param assetType new asset type of the default version of the video
+   * \return dbId in the videoversion table, -1 if failure
+   */
+  int AddVideoVersion(VideoDbContentType itemType,
+                      int dbIdSource,
+                      int idFile,
+                      int idVideoVersion,
+                      VideoAssetType assetType);
+
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
@@ -1210,8 +1257,10 @@ public:
   VideoAssetInfo GetVideoVersionInfo(const std::string& filenameAndPath);
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
-  int GetMovieId(const std::string& strFilenameAndPath);
+  int GetMovieId(const std::string& strFilenameAndPath,
+                 AllowNonFileNameMatch allowNonFileNameMatch = AllowNonFileNameMatch::NO_MATCH);
   std::string GetMovieTitle(int idMovie);
+  int GetMovieByTitle(const std::string& title);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
   int GetFileIdByMovie(int idMovie);
   int GetFileIdByFile(const std::string& fullpath);
