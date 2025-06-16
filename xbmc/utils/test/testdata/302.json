@@ -1,0 +1,16 @@
+{
+  "expectedAddFileToFolder": "NewFile.pdf",
+  "expectedAppendSlash": "/",
+  "expectedCreateAPKArchivePath": "apk://passwd@my/archived/path",
+  "expectedCreateRARArchivePath": "rar://passwd@my/archived/path",
+  "expectedCreateZIPArchivePath": "zip://passwd@my/archived/path",
+  "expectedGetBlurayAllEpisodesPath": "root/episode/all",
+  "expectedGetBlurayEpisodePath": "root/episode/1/2",
+  "expectedGetBlurayPlaylistPath": "BDMV/PLAYLIST/",
+  "expectedGetBlurayRootPath": "root",
+  "expectedGetBlurayTitlesPath": "root/titles",
+  "expectedIsFileOnly": true,
+  "expectedIsHD": true,
+  "expectedIsLocal": true,
+  "expectedReplacedExtension": "xyz"
+}
