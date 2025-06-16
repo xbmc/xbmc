@@ -245,6 +245,7 @@ unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORI
   m_jobQueue[priority].push_back(work);
 
   StartWorkers(priority);
+  m_jobEvent.Set();
   return work.m_id;
 }
 
@@ -323,6 +324,7 @@ void CJobManager::UnPauseJobs()
 {
   std::unique_lock lock(m_section);
   m_pauseJobs = false;
+  m_jobEvent.Set();
 }
 
 bool CJobManager::IsProcessing(const CJob::PRIORITY &priority) const
@@ -417,7 +419,10 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
     lock.lock();
     Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);
     if (j != m_processing.end())
+    {
       m_processing.erase(j);
+      m_jobEvent.Set();
+    }
     lock.unlock();
     item.FreeJob();
   }
