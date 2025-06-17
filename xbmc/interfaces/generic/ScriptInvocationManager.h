@@ -18,7 +18,6 @@
 #include <vector>
 
 class CLanguageInvokerThread;
-typedef std::shared_ptr<CLanguageInvokerThread> CLanguageInvokerThreadPtr;
 
 class CScriptInvocationManager
 {
@@ -135,19 +134,20 @@ private:
   CScriptInvocationManager const& operator=(CScriptInvocationManager const&) = delete;
   virtual ~CScriptInvocationManager();
 
-  typedef struct {
-    CLanguageInvokerThreadPtr thread;
+  struct LanguageInvokerThread
+  {
+    std::shared_ptr<CLanguageInvokerThread> thread;
     std::string script;
     bool done;
-  } LanguageInvokerThread;
-  typedef std::map<int, LanguageInvokerThread> LanguageInvokerThreadMap;
-  typedef std::map<std::string, ILanguageInvocationHandler*> LanguageInvocationHandlerMap;
+  };
+  using LanguageInvokerThreadMap = std::map<int, LanguageInvokerThread>;
+  using LanguageInvocationHandlerMap = std::map<std::string, ILanguageInvocationHandler*>;
 
   LanguageInvokerThread getInvokerThread(int scriptId) const;
 
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
-  CLanguageInvokerThreadPtr m_lastInvokerThread;
+  std::shared_ptr<CLanguageInvokerThread> m_lastInvokerThread;
   int m_lastPluginHandle = -1;
 
   std::map<std::string, int> m_scriptPaths;

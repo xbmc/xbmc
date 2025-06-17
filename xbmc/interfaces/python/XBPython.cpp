@@ -631,9 +631,9 @@ void XBPython::OnScriptFinalized(ILanguageInvoker* invoker)
     CLog::Log(LOGERROR, "Python script counter attempted to become negative");
 }
 
-ILanguageInvoker* XBPython::CreateInvoker()
+std::shared_ptr<ILanguageInvoker> XBPython::CreateInvoker()
 {
-  return new CAddonPythonInvoker(this);
+  return std::make_shared<CAddonPythonInvoker>(this);
 }
 
 void XBPython::PulseGlobalEvent()

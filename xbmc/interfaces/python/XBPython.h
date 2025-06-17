@@ -98,7 +98,7 @@ public:
   void NotifyScriptAborting(ILanguageInvoker* invoker) override;
   void OnExecutionEnded(ILanguageInvoker* invoker) override;
   void OnScriptFinalized(ILanguageInvoker* invoker) override;
-  ILanguageInvoker* CreateInvoker() override;
+  std::shared_ptr<ILanguageInvoker> CreateInvoker() override;
 
   bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
