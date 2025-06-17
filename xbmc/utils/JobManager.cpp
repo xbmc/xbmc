@@ -322,6 +322,7 @@ void CJobManager::UnPauseJobs()
 {
   std::unique_lock lock(m_section);
   m_pauseJobs = false;
+  m_jobEvent.Set();
 }
 
 bool CJobManager::IsProcessing(const CJob::PRIORITY &priority) const
@@ -364,9 +365,9 @@ CJob* CJobManager::GetNextJob()
     CJob *job = PopJob();
     if (job)
       return job;
-    // no jobs are left - sleep for 10 milliseconds to allow new jobs to come in
+    // no jobs are left - sleep for 30 seconds to allow new jobs to come in
     lock.unlock();
-    bool newJob = m_jobEvent.Wait(10ms);
+    bool newJob = m_jobEvent.Wait(30000ms);
     lock.lock();
     if (!newJob)
       break;
@@ -416,7 +417,10 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
     lock.lock();
     Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);
     if (j != m_processing.end())
+    {
       m_processing.erase(j);
+      m_jobEvent.Set();
+    }
     lock.unlock();
     item.FreeJob();
   }
