@@ -1153,7 +1153,7 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
   for (auto it = combinations.cbegin(); it != combinations.cend(); ++it)
   {
     if (it != combinations.cbegin())
-      rule += GetType() == CombinationAnd ? " AND " : " OR ";
+      rule += GetType() == CDatabaseQueryRuleCombination::Type::COMBINATION_AND ? " AND " : " OR ";
     std::shared_ptr<CSmartPlaylistRuleCombination> combo = std::static_pointer_cast<CSmartPlaylistRuleCombination>(*it);
     if (combo)
       rule += "(" + combo->GetWhereClause(db, strType, referencedPlaylists) + ")";
@@ -1168,7 +1168,7 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
       continue;
 
     if (!rule.empty())
-      rule += GetType() == CombinationAnd ? " AND " : " OR ";
+      rule += GetType() == CDatabaseQueryRuleCombination::Type::COMBINATION_AND ? " AND " : " OR ";
     rule += "(";
     std::string currentRule;
     if (r->m_field == FieldPlaylist)
@@ -1202,7 +1202,8 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
       currentRule = r->GetWhereClause(db, strType);
     // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
     if (currentRule.empty())
-      currentRule = GetType() == CombinationAnd ? "'1'" : "'0'";
+      currentRule =
+          GetType() == CDatabaseQueryRuleCombination::Type::COMBINATION_AND ? "'1'" : "'0'";
     rule += currentRule;
     rule += ")";
   }
@@ -1413,7 +1414,9 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
 
   std::string tmp;
   if (XMLUtils::GetString(root, "match", tmp))
-    m_ruleCombination.SetType(StringUtils::EqualsNoCase(tmp, "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
+    m_ruleCombination.SetType(StringUtils::EqualsNoCase(tmp, "all")
+                                  ? CDatabaseQueryRuleCombination::Type::COMBINATION_AND
+                                  : CDatabaseQueryRuleCombination::Type::COMBINATION_OR);
 
   // now the rules
   const TiXmlNode *ruleNode = root->FirstChild("rule");
@@ -1484,7 +1487,10 @@ bool CSmartPlaylist::Save(const std::string &path) const
   XMLUtils::SetString(pRoot, "name", m_playlistName);
 
   // add the <match> tag
-  XMLUtils::SetString(pRoot, "match", m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd ? "all" : "one");
+  XMLUtils::SetString(
+      pRoot, "match",
+      m_ruleCombination.GetType() == CDatabaseQueryRuleCombination::Type::COMBINATION_AND ? "all"
+                                                                                          : "one");
 
   // add <rule> tags
   m_ruleCombination.Save(pRoot);

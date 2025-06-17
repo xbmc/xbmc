@@ -123,13 +123,13 @@ public:
 
   void SetMatchAllRules(bool matchAll)
   {
-    m_ruleCombination.SetType(matchAll ? CSmartPlaylistRuleCombination::CombinationAnd
-                                       : CSmartPlaylistRuleCombination::CombinationOr);
+    m_ruleCombination.SetType(matchAll ? CDatabaseQueryRuleCombination::Type::COMBINATION_AND
+                                       : CDatabaseQueryRuleCombination::Type::COMBINATION_OR);
   }
 
   bool GetMatchAllRules() const
   {
-    return m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd;
+    return m_ruleCombination.GetType() == CDatabaseQueryRuleCombination::Type::COMBINATION_AND;
   }
 
   void SetLimit(unsigned int limit) { m_limit = limit; }

@@ -453,7 +453,7 @@ void CDatabaseQueryRuleCombination::clear()
 {
   m_combinations.clear();
   m_rules.clear();
-  m_type = CombinationAnd;
+  m_type = CDatabaseQueryRuleCombination::Type::COMBINATION_AND;
 }
 
 std::string CDatabaseQueryRuleCombination::GetWhereClause(const CDatabase& db,
@@ -465,7 +465,7 @@ std::string CDatabaseQueryRuleCombination::GetWhereClause(const CDatabase& db,
   for (auto it = m_combinations.begin(); it != m_combinations.end(); ++it)
   {
     if (it != m_combinations.begin())
-      rule += m_type == CombinationAnd ? " AND " : " OR ";
+      rule += m_type == CDatabaseQueryRuleCombination::Type::COMBINATION_AND ? " AND " : " OR ";
     rule += "(" + (*it)->GetWhereClause(db, strType) + ")";
   }
 
@@ -473,12 +473,12 @@ std::string CDatabaseQueryRuleCombination::GetWhereClause(const CDatabase& db,
   for (const auto& it : m_rules)
   {
     if (!rule.empty())
-      rule += m_type == CombinationAnd ? " AND " : " OR ";
+      rule += m_type == CDatabaseQueryRuleCombination::Type::COMBINATION_AND ? " AND " : " OR ";
     rule += "(";
     std::string currentRule = it->GetWhereClause(db, strType);
     // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
     if (currentRule.empty())
-      currentRule = m_type == CombinationAnd ? "'1'" : "'0'";
+      currentRule = m_type == CDatabaseQueryRuleCombination::Type::COMBINATION_AND ? "'1'" : "'0'";
     rule += currentRule;
     rule += ")";
   }
@@ -497,12 +497,12 @@ bool CDatabaseQueryRuleCombination::Load(const CVariant& obj,
   {
     if (obj.isMember("and") && obj["and"].isArray())
     {
-      m_type = CombinationAnd;
+      m_type = CDatabaseQueryRuleCombination::Type::COMBINATION_AND;
       child = obj["and"];
     }
     else if (obj.isMember("or") && obj["or"].isArray())
     {
-      m_type = CombinationOr;
+      m_type = CDatabaseQueryRuleCombination::Type::COMBINATION_OR;
       child = obj["or"];
     }
     else
@@ -572,7 +572,7 @@ bool CDatabaseQueryRuleCombination::Save(CVariant& obj) const
 
 std::string CDatabaseQueryRuleCombination::TranslateCombinationType() const
 {
-  return m_type == CombinationAnd ? "and" : "or";
+  return m_type == CDatabaseQueryRuleCombination::Type::COMBINATION_AND ? "and" : "or";
 }
 
 void CDatabaseQueryRuleCombination::AddRule(const std::shared_ptr<CDatabaseQueryRule>& rule)

@@ -119,10 +119,10 @@ class CDatabaseQueryRuleCombination
 public:
   virtual ~CDatabaseQueryRuleCombination() = default;
 
-  enum Combination
+  enum class Type
   {
-    CombinationOr = 0,
-    CombinationAnd
+    COMBINATION_OR = 0,
+    COMBINATION_AND
   };
 
   void clear();
@@ -134,8 +134,8 @@ public:
   std::string GetWhereClause(const CDatabase& db, const std::string& strType) const;
   std::string TranslateCombinationType() const;
 
-  Combination GetType() const { return m_type; }
-  void SetType(Combination combination) { m_type = combination; }
+  Type GetType() const { return m_type; }
+  void SetType(Type combination) { m_type = combination; }
 
   const CDatabaseQueryRuleCombinations& GetCombinations() const { return m_combinations; }
   bool empty() const { return m_combinations.empty() && m_rules.empty(); }
@@ -148,7 +148,7 @@ public:
   void Reserve(size_t amount);
 
 private:
-  Combination m_type = CombinationAnd;
+  Type m_type{Type::COMBINATION_AND};
   CDatabaseQueryRuleCombinations m_combinations;
   CDatabaseQueryRules m_rules;
 };
