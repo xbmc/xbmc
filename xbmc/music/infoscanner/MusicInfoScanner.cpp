@@ -151,7 +151,7 @@ void CMusicInfoScanner::Process()
         bool scancomplete = DoScan(it);
         if (scancomplete)
         {
-          if (m_albumsAdded.size() > 0)
+          if (!m_albumsAdded.empty())
           {
             // Set local art for added album disc sets and primary album artists
             if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
@@ -1639,7 +1639,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
             std::string strNewAlbum = album.strAlbum;
             if (!CGUIKeyboardFactory::ShowAndGetInput(strNewAlbum, CVariant{g_localizeStrings.Get(16011)}, false))
               return InfoRet::CANCELLED;
-            if (strNewAlbum == "")
+            if (strNewAlbum.empty())
               return InfoRet::CANCELLED;
 
             std::string strNewArtist = album.GetAlbumArtistString();
@@ -2010,7 +2010,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
     if (ret.second)
       m_musicDatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, it.first, it.second);
   }
-  return addedart.size() > 0;
+  return !addedart.empty();
 }
 
 bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
@@ -2133,7 +2133,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
     if (ret.second)
       m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, it.first, it.second);
   }
-  return addedart.size() > 0;
+  return !addedart.empty();
 }
 
 std::vector<CVariant> CMusicInfoScanner::GetArtWhitelist(const MediaType& mediaType, int iArtLevel)
@@ -2252,7 +2252,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
     }
   }
 
-  return art.size() > 0;
+  return !art.empty();
 }
 
 bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art,
@@ -2298,7 +2298,7 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
     }
   }
 
-  return art.size() > 0;
+  return !art.empty();
 }
 
 // This function is the Run() function of the IRunnable

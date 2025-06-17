@@ -440,7 +440,7 @@ void CGUIDialogKeyboardGeneric::NormalCharacter(const std::string &ch)
 
 void CGUIDialogKeyboardGeneric::Backspace()
 {
-  if (m_codingtable && m_hzcode.length() > 0)
+  if (m_codingtable && !m_hzcode.empty())
   {
     std::wstring tmp;
     g_charsetConverter.utf8ToW(m_hzcode, tmp);
@@ -579,7 +579,7 @@ void CGUIDialogKeyboardGeneric::OnDeinitWindow(int nextWindowID)
 
 void CGUIDialogKeyboardGeneric::MoveCursor(int iAmount)
 {
-  if (m_codingtable && m_words.size())
+  if (m_codingtable && !m_words.empty())
     ChangeWordList(iAmount);
   else
   {

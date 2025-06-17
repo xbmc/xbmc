@@ -312,7 +312,7 @@ std::vector<std::string> CAddonInstaller::RemoveOrphanedDepsRecursively() const
   std::vector<std::string> removedItems;
 
   auto toRemove = CServiceBroker::GetAddonMgr().GetOrphanedDependencies();
-  while (toRemove.size() > 0)
+  while (!toRemove.empty())
   {
     for (const auto& dep : toRemove)
     {
@@ -1257,7 +1257,7 @@ bool CAddonUnInstallJob::DoWork()
   {
     const auto removedItems = CAddonInstaller::GetInstance().RemoveOrphanedDepsRecursively();
 
-    if (removedItems.size() > 0)
+    if (!removedItems.empty())
     {
       CLog::Log(LOGINFO, "CAddonUnInstallJob[{}]: removed orphaned dependencies ({})",
                 m_addon->ID(), StringUtils::Join(removedItems, ", "));

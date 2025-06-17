@@ -117,7 +117,7 @@ std::string CDVDInputStreamFFmpeg::GetFileName()
       url.IsProtocol("rtmps"))
   {
     std::vector<std::string> opts = StringUtils::Split(url.Get(), " ");
-    if (opts.size() > 0)
+    if (!opts.empty())
     {
       return opts.front();
     }

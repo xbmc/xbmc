@@ -179,7 +179,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       thumb = thumb->NextSibling("thumb");
     }
   }
-  if (m_fanart.m_xml.size())
+  if (!m_fanart.m_xml.empty())
   {
     CXBMCTinyXML doc;
     doc.Parse(m_fanart.m_xml);
@@ -359,7 +359,7 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
     m_strOriginalTitle = other.m_strOriginalTitle;
   if (!other.m_strSortTitle.empty())
     m_strSortTitle = other.m_strSortTitle;
-  if (other.m_cast.size())
+  if (!other.m_cast.empty())
     m_cast = other.m_cast;
 
   if (!other.m_set.title.empty())
@@ -408,7 +408,7 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
 
   if (other.m_iIdUniqueID != -1)
     m_iIdUniqueID = other.m_iIdUniqueID;
-  if (other.m_uniqueIDs.size())
+  if (!other.m_uniqueIDs.empty())
   {
     m_uniqueIDs = other.m_uniqueIDs;
     m_strDefaultUniqueID = other.m_strDefaultUniqueID;
@@ -447,7 +447,7 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
 
   if (!other.m_showLink.empty())
     m_showLink = other.m_showLink;
-  if (other.m_namedSeasons.size())
+  if (!other.m_namedSeasons.empty())
     m_namedSeasons = other.m_namedSeasons;
   if (other.m_streamDetails.HasItems())
     m_streamDetails = other.m_streamDetails;
@@ -478,7 +478,7 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
     m_relevance = other.m_relevance;
   if (other.m_parsedDetails)
     m_parsedDetails = other.m_parsedDetails;
-  if (other.m_coverArt.size())
+  if (!other.m_coverArt.empty())
     m_coverArt = other.m_coverArt;
   if (other.m_year != -1)
     m_year = other.m_year;

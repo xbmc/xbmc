@@ -291,7 +291,7 @@ void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) cons
   minCursor = std::max(m_fixedCursor - m_cursorRange, 0);
   maxCursor = std::min(m_fixedCursor + m_cursorRange, m_itemsPerPage);
 
-  if (!m_items.size())
+  if (m_items.empty())
   {
     minCursor = m_fixedCursor;
     maxCursor = m_fixedCursor;

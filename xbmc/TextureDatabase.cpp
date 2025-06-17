@@ -333,7 +333,7 @@ std::vector<std::string> CTextureDatabase::GetOldestCachedImages(unsigned int ma
 
 bool CTextureDatabase::SetKeepCachedImages(const std::vector<std::string>& imagesToKeep)
 {
-  if (!imagesToKeep.size())
+  if (imagesToKeep.empty())
     return true;
 
   std::string sql = "UPDATE texture SET lastlibrarycheck=CURRENT_TIMESTAMP WHERE url IN (";

@@ -254,7 +254,7 @@ int CGUIViewControl::GetViewModeNumber(int number) const
   IGUIContainer *nextView = nullptr;
   if (number >= 0 && number < (int)m_visibleViews.size())
     nextView = static_cast<IGUIContainer*>(m_visibleViews[number]);
-  else if (m_visibleViews.size())
+  else if (!m_visibleViews.empty())
     nextView = static_cast<IGUIContainer*>(m_visibleViews[0]);
   if (nextView)
     return (nextView->GetType() << 16) | nextView->GetID();
@@ -281,7 +281,7 @@ int CGUIViewControl::GetViewModeByID(int id) const
 // returns the next viewmode in the cycle
 int CGUIViewControl::GetNextViewMode(int direction) const
 {
-  if (!m_visibleViews.size())
+  if (m_visibleViews.empty())
     return 0; // no view modes :(
 
   int viewNumber = (m_currentView + direction) % (int)m_visibleViews.size();

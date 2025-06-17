@@ -155,13 +155,13 @@ bool CPlayListM3U::Load(const std::string& strFileName)
       if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strFileName), m_strPlayListName))
         continue;
 
-      if (strFileName.length() > 0)
+      if (!strFileName.empty())
       {
         if (!utf8)
           g_charsetConverter.unknownToUTF8(strFileName);
 
         // If no info was read from from the extended tag information, use the file name
-        if (strInfo.length() == 0)
+        if (strInfo.empty())
         {
           strInfo = URIUtils::GetFileName(strFileName);
         }
@@ -218,7 +218,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
 
 void CPlayListM3U::Save(const std::string& strFileName) const
 {
-  if (!m_vecItems.size())
+  if (m_vecItems.empty())
     return;
   bool utf8 = false;
   if (URIUtils::GetExtension(strFileName) == ".m3u8")

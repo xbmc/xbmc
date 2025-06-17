@@ -34,7 +34,7 @@ bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryT
     return false;
 
   std::vector<std::string> parts = StringUtils::Split(settingId, Separator);
-  if (parts.size() < 1 || parts.at(0).empty())
+  if (parts.empty() || parts.at(0).empty())
     return false;
 
   if (parts.size() == 1)

@@ -502,7 +502,7 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
     if (type == allowedType)
       allowed = true;
   }
-  if (!allowed && allowedTypes.size())
+  if (!allowed && !allowedTypes.empty())
     m_playlist.SetType(ConvertType(allowedTypes[0]));
 
   UpdateButtons();

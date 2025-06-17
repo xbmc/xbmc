@@ -190,7 +190,7 @@ void CVirtualDirectory::GetSources(std::vector<CMediaSource>& shares) const
       {
         share.strStatus = CServiceBroker::GetMediaManager().GetDiskLabel(share.strPath);
         share.strDiskUniqueId = CServiceBroker::GetMediaManager().GetDiskUniqueId(share.strPath);
-        if (!share.strPath.length()) // unmounted CD
+        if (share.strPath.empty()) // unmounted CD
         {
           if (CServiceBroker::GetMediaManager().GetDiscPath() == "iso9660://")
             share.strPath = "iso9660://";

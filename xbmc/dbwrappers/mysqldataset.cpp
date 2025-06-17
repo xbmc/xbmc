@@ -1760,7 +1760,7 @@ void MysqlDataset::fill_fields()
       (result.records.size() < (unsigned int)frecno))
     return;
 
-  if (fields_object->size() == 0) // Filling columns name
+  if (fields_object->empty()) // Filling columns name
   {
     const unsigned int ncols = result.record_header.size();
     fields_object->resize(ncols);
@@ -1773,7 +1773,7 @@ void MysqlDataset::fill_fields()
   }
 
   //Filling result
-  if (result.records.size() != 0)
+  if (!result.records.empty())
   {
     const sql_record* row = result.records[frecno];
     if (row)
@@ -2015,7 +2015,7 @@ void MysqlDataset::open(const std::string& sql)
 
 void MysqlDataset::open()
 {
-  if (select_sql.size())
+  if (!select_sql.empty())
   {
     query(select_sql);
   }
@@ -2039,7 +2039,7 @@ void MysqlDataset::cancel()
 {
   if ((ds_state == dsInsert) || (ds_state == dsEdit))
   {
-    if (result.record_header.size())
+    if (!result.record_header.empty())
       ds_state = dsSelect;
     else
       ds_state = dsInactive;

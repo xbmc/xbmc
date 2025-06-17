@@ -110,7 +110,7 @@ void CAppParamParser::ParseArg(const std::string &arg)
     m_params->SetTestMode(true);
   else if (arg.substr(0, 11) == "--settings=")
     m_params->SetSettingsFile(arg.substr(11));
-  else if (arg.length() != 0 && arg[0] != '-')
+  else if (!arg.empty() && arg[0] != '-')
   {
     const CFileItemPtr item = std::make_shared<CFileItem>(arg);
     item->SetPath(arg);

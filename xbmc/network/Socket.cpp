@@ -251,7 +251,7 @@ void CSocketListener::AddSocket(CBaseSocket *sock)
 
 bool CSocketListener::Listen(int timeout)
 {
-  if (m_sockets.size()==0)
+  if (m_sockets.empty())
   {
     CLog::Log(LOGERROR, "SOCK: No sockets to listen for");
     throw LISTENEMPTY;

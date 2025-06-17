@@ -257,17 +257,18 @@ void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 
   if (m_upcomingCrossfadeMS)
   {
-    if (!m_currentStream || (file.HasMusicInfoTag() &&
-                             !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                                 CSettings::SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS) &&
-                             m_currentStream->m_fileItem->HasMusicInfoTag() &&
-                             (m_currentStream->m_fileItem->GetMusicInfoTag()->GetAlbum() != "") &&
-                             (m_currentStream->m_fileItem->GetMusicInfoTag()->GetAlbum() ==
-                              file.GetMusicInfoTag()->GetAlbum()) &&
-                             (m_currentStream->m_fileItem->GetMusicInfoTag()->GetDiscNumber() ==
-                              file.GetMusicInfoTag()->GetDiscNumber()) &&
-                             (m_currentStream->m_fileItem->GetMusicInfoTag()->GetTrackNumber() ==
-                              file.GetMusicInfoTag()->GetTrackNumber() - 1)))
+    if (!m_currentStream ||
+        (file.HasMusicInfoTag() &&
+         !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+             CSettings::SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS) &&
+         m_currentStream->m_fileItem->HasMusicInfoTag() &&
+         (!m_currentStream->m_fileItem->GetMusicInfoTag()->GetAlbum().empty()) &&
+         (m_currentStream->m_fileItem->GetMusicInfoTag()->GetAlbum() ==
+          file.GetMusicInfoTag()->GetAlbum()) &&
+         (m_currentStream->m_fileItem->GetMusicInfoTag()->GetDiscNumber() ==
+          file.GetMusicInfoTag()->GetDiscNumber()) &&
+         (m_currentStream->m_fileItem->GetMusicInfoTag()->GetTrackNumber() ==
+          file.GetMusicInfoTag()->GetTrackNumber() - 1)))
     {
       //do not crossfade when playing consecutive albumtracks
       m_upcomingCrossfadeMS = 0;

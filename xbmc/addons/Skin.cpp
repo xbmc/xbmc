@@ -222,7 +222,7 @@ void CSkinInfo::Start()
   if (!LoadUserSettings())
     CLog::Log(LOGWARNING, "CSkinInfo: failed to load skin settings");
 
-  if (!m_resolutions.size())
+  if (m_resolutions.empty())
   { // try falling back to whatever resolutions exist in the directory
     CFileItemList items;
     CDirectory::GetDirectory(Path(), items, "", DIR_FLAG_NO_FILE_DIRS);

@@ -303,7 +303,7 @@ bool CGUIControlGroup::CanFocus() const
 void CGUIControlGroup::AssignDepth()
 {
   CGUIControl* focusedControl = nullptr;
-  if (m_children.size())
+  if (!m_children.empty())
   {
     for (auto* control : m_children)
     {

@@ -146,8 +146,10 @@ CMediaSource CUDiskDevice::ToMediaShare() const
 
 bool CUDiskDevice::IsApproved() const
 {
-  return (m_isFileSystem && m_isMounted && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && m_FileSystem != "swap")
-      && m_MountPath != "/" && m_MountPath != "/boot") || m_isOptical;
+  return (m_isFileSystem && m_isMounted && !m_UDI.empty() &&
+          (!m_FileSystem.empty() && m_FileSystem != "swap") && m_MountPath != "/" &&
+          m_MountPath != "/boot") ||
+         m_isOptical;
 }
 
 bool CUDiskDevice::IsOptical() const

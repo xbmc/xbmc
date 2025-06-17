@@ -212,7 +212,7 @@ void CGUIDialogSelect::SetItems(const CFileItemList& pList)
 
 int CGUIDialogSelect::GetSelectedItem() const
 {
-  return m_selectedItems.size() > 0 ? m_selectedItems[0] : -1;
+  return !m_selectedItems.empty() ? m_selectedItems[0] : -1;
 }
 
 const CFileItemPtr CGUIDialogSelect::GetSelectedFileItem() const

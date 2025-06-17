@@ -69,9 +69,8 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_videoAspect = XMLUtils::GetAttribute(pRule, "videoaspect");
   m_hdrType = XMLUtils::GetAttribute(pRule, "hdrtype");
 
-  m_bStreamDetails = m_audioCodec.length() > 0 || m_audioChannels.length() > 0 ||
-                     m_videoCodec.length() > 0 || m_videoResolution.length() > 0 ||
-                     m_videoAspect.length() > 0 || m_hdrType.length() > 0;
+  m_bStreamDetails = !m_audioCodec.empty() || !m_audioChannels.empty() || !m_videoCodec.empty() ||
+                     !m_videoResolution.empty() || !m_videoAspect.empty() || !m_hdrType.empty();
 
   if (m_bStreamDetails && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
   {
@@ -174,7 +173,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
       return;
 
     std::string hdrType{streamDetails.GetVideoHdrType()};
-    if (hdrType.length() == 0)
+    if (hdrType.empty())
       hdrType = "none";
 
     if (CompileRegExp(m_hdrType, regExp) && !MatchesRegExp(hdrType, regExp))

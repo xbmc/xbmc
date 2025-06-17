@@ -491,7 +491,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control,
       conditions.emplace_back(node->FirstChild()->Value());
     node = node->NextSiblingElement("visible");
   }
-  if (!conditions.size())
+  if (conditions.empty())
     return false;
   if (conditions.size() == 1)
     condition = conditions[0];
@@ -643,7 +643,7 @@ void CGUIControlFactory::GetInfoLabel(const TiXmlNode* pControlNode,
 {
   std::vector<GUIINFO::CGUIInfoLabel> labels;
   GetInfoLabels(pControlNode, labelTag, labels, parentID);
-  if (labels.size())
+  if (!labels.empty())
     infoLabel = labels[0];
 }
 
@@ -698,7 +698,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode* pControlNode,
   if (infoNode)
   { // <info> nodes override <label>'s (backward compatibility)
     std::string fallback;
-    if (infoLabels.size())
+    if (!infoLabels.empty())
       fallback = infoLabels[0].GetLabel(0);
     infoLabels.clear();
     while (infoNode)
@@ -1618,7 +1618,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       CGUITextBox* tcontrol = static_cast<CGUITextBox*>(control);
 
       tcontrol->SetPageControl(pageControl);
-      if (infoLabels.size())
+      if (!infoLabels.empty())
         tcontrol->SetInfo(infoLabels[0]);
       tcontrol->SetAutoScrolling(pControlNode);
       tcontrol->SetMinHeight(minHeight);

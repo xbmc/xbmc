@@ -204,7 +204,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(std::string& newPassword, uns
 int CGUIKeyboardFactory::ShowAndVerifyPassword(std::string& strPassword, const std::string& strHeading, int iRetries, unsigned int autoCloseMs /* = 0 */)
 {
   std::string strHeadingTemp;
-  if (1 > iRetries && strHeading.size())
+  if (1 > iRetries && !strHeading.empty())
     strHeadingTemp = strHeading;
   else
     strHeadingTemp =

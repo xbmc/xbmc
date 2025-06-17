@@ -199,7 +199,7 @@ bool CNetworkBase::HasInterfaceForIP(unsigned long address)
 bool CNetworkBase::IsAvailable(void)
 {
   const std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-  return (ifaces.size() != 0);
+  return (!ifaces.empty());
 }
 
 bool CNetworkBase::IsConnected()

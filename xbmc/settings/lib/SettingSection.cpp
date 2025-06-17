@@ -346,7 +346,8 @@ SettingCategoryList CSettingSection::GetCategories(SettingLevel level) const
   SettingCategoryList categories;
   for (const auto& category : m_categories)
   {
-    if (category->MeetsRequirements() && category->IsVisible() && category->GetGroups(level).size() > 0)
+    if (category->MeetsRequirements() && category->IsVisible() &&
+        !category->GetGroups(level).empty())
       categories.push_back(category);
   }
 

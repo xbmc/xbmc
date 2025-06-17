@@ -188,7 +188,7 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     elem->LinkEndChild(text);
   }
 
-  if (m_vecChildren.size())
+  if (!m_vecChildren.empty())
   {
     TiXmlElement *xmlChilds = new TiXmlElement("children");
     xmlControl->LinkEndChild(xmlChilds);

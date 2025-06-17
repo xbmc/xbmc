@@ -862,7 +862,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
     if (!pNewWindow->IsDialogRunning())
     {
       CSingleExit exitit(CServiceBroker::GetWinSystem()->GetGfxContext());
-      static_cast<CGUIDialog *>(pNewWindow)->Open(params.size() > 0 ? params[0] : "");
+      static_cast<CGUIDialog*>(pNewWindow)->Open(!params.empty() ? params[0] : "");
       // Invalidate underlying windows after closing a modal dialog
       MarkDirty();
     }

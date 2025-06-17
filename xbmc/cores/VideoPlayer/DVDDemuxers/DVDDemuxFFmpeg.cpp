@@ -253,7 +253,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
 
-  if (m_pInput->GetContent().length() > 0)
+  if (!m_pInput->GetContent().empty())
   {
     std::string content = m_pInput->GetContent();
     StringUtils::ToLower(content);
@@ -798,7 +798,7 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       }
       // Any other headers that need to be sent would be user defined and should be prefixed
       // by a `!`. We mask these values so we don't log anything we shouldn't
-      else if (name.length() > 0 && name[0] == '!')
+      else if (!name.empty() && name[0] == '!')
       {
         CLog::Log(LOGDEBUG,
                   "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding user custom header option "

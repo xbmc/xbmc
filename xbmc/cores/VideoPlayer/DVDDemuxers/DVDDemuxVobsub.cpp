@@ -52,7 +52,7 @@ bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::s
     return false;
 
   std::string vobsub = subfilename;
-  if ( vobsub == "")
+  if (vobsub.empty())
   {
     vobsub = filename;
     vobsub.erase(vobsub.rfind('.'), vobsub.size());

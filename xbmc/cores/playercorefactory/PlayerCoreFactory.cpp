@@ -305,7 +305,7 @@ std::string CPlayerCoreFactory::GetDefaultPlayer(const CFileItem& item) const
 std::string CPlayerCoreFactory::SelectPlayerDialog(const std::vector<std::string>&players, float posX, float posY) const
 {
   CContextButtons choices;
-  if (players.size())
+  if (!players.empty())
   {
     //Add default player
     std::string strCaption = players[0];

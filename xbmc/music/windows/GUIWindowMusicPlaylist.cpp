@@ -507,7 +507,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
       if (nDuration > 0)
         pItem->SetLabel2(StringUtils::SecondsToTimeString(nDuration));
     }
-    else if (pItem->GetLabel() == "") // pls labels come in preformatted
+    else if (pItem->GetLabel().empty()) // pls labels come in preformatted
     {
       // FIXME: get the position of the item in the playlist
       //        currently it is hacked into m_iprogramCount
