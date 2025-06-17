@@ -176,7 +176,7 @@ const CAddonType* CAddonInfo::Type(AddonType type) const
   if (!m_types.empty())
   {
     if (type == AddonType::UNKNOWN)
-      return &m_types[0];
+      return m_types.data();
 
     for (auto& addonType : m_types)
     {

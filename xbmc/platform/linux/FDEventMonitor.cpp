@@ -125,7 +125,7 @@ void CFDEventMonitor::Process()
      */
     lock.unlock();
 
-    int err = poll(&m_pollDescs[0], m_pollDescs.size(), -1);
+    int err = poll(m_pollDescs.data(), m_pollDescs.size(), -1);
 
     if (err < 0 && errno != EINTR)
     {

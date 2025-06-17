@@ -1122,7 +1122,7 @@ bool CCurlFile::Open(const CURL& url)
     if (m_httpresponse >= 400 && CServiceBroker::GetLogging().CanLogComponent(LOGCURL))
     {
       error.resize(4096);
-      ReadLine(&error[0], 4095);
+      ReadLine(error.data(), 4095);
     }
 
     CLog::Log(LOGERROR, "CCurlFile::{} - <{}> Failed with code {}:\n{}", __FUNCTION__,
