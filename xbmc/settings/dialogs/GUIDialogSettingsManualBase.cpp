@@ -811,6 +811,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     return nullptr;
 
   std::vector<CVariant> valueList;
+  valueList.reserve(values.size());
   for (const auto& value : values)
     valueList.emplace_back(value);
 
@@ -859,6 +860,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     return nullptr;
 
   std::vector<CVariant> valueList;
+  valueList.reserve(values.size());
   for (const auto& value : values)
     valueList.emplace_back(value);
 
@@ -906,6 +908,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     return nullptr;
 
   std::vector<CVariant> valueList;
+  valueList.reserve(values.size());
   for (const auto& value : values)
     valueList.emplace_back(value);
 
@@ -955,6 +958,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     return nullptr;
 
   std::vector<CVariant> valueList;
+  valueList.reserve(values.size());
   for (const auto& value : values)
     valueList.emplace_back(value);
 
