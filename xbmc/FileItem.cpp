@@ -1323,7 +1323,9 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
     if (m_strDynPath.empty())
       SetDynPath(m_strPath);
 
-    StringUtils::Replace(m_strDynPath, "http:", "mms:");
+    auto temp = m_strDynPath;
+    StringUtils::Replace(temp, "http:", "mms:");
+    SetDynPath(temp);
   }
 }
 
