@@ -194,7 +194,7 @@ bool CGLSLPixelShader::Compile()
   Free();
 
   // Pixel shaders are not mandatory.
-  if (m_source.length()==0)
+  if (m_source.empty())
   {
     CLog::Log(LOGINFO, "GL: No pixel shader, fixed pipeline in use");
     return true;

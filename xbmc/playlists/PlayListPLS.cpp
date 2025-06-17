@@ -200,7 +200,8 @@ bool CPlayListPLS::Load(const std::string &strFile)
 
 void CPlayListPLS::Save(const std::string& strFileName) const
 {
-  if (!m_vecItems.size()) return ;
+  if (m_vecItems.empty())
+    return;
   std::string strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true))

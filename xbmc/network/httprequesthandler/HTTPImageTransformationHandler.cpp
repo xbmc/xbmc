@@ -102,8 +102,8 @@ bool CHTTPImageTransformationHandler::CanHandleRequest(const HTTPRequest &reques
   std::map<std::string, std::string> options;
   HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, options);
 
-  return (options.find(TRANSFORMATION_OPTION_WIDTH) != options.end() ||
-          options.find(TRANSFORMATION_OPTION_HEIGHT) != options.end());
+  return (options.contains(TRANSFORMATION_OPTION_WIDTH) ||
+          options.contains(TRANSFORMATION_OPTION_HEIGHT));
 }
 
 MHD_RESULT CHTTPImageTransformationHandler::HandleRequest()

@@ -2780,30 +2780,30 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
     BeginTransaction();
 
     // process the link table updates
-    if (updatedDetails.find("genre") != updatedDetails.end())
+    if (updatedDetails.contains("genre"))
       UpdateLinksToItem(idMovie, MediaTypeMovie, "genre", details.m_genre);
-    if (updatedDetails.find("studio") != updatedDetails.end())
+    if (updatedDetails.contains("studio"))
       UpdateLinksToItem(idMovie, MediaTypeMovie, "studio", details.m_studio);
-    if (updatedDetails.find("country") != updatedDetails.end())
+    if (updatedDetails.contains("country"))
       UpdateLinksToItem(idMovie, MediaTypeMovie, "country", details.m_country);
-    if (updatedDetails.find("tag") != updatedDetails.end())
+    if (updatedDetails.contains("tag"))
       UpdateLinksToItem(idMovie, MediaTypeMovie, "tag", details.m_tags);
-    if (updatedDetails.find("director") != updatedDetails.end())
+    if (updatedDetails.contains("director"))
       UpdateActorLinksToItem(idMovie, MediaTypeMovie, "director", details.m_director);
-    if (updatedDetails.find("writer") != updatedDetails.end())
+    if (updatedDetails.contains("writer"))
       UpdateActorLinksToItem(idMovie, MediaTypeMovie, "writer", details.m_writingCredits);
-    if (updatedDetails.find("art.altered") != updatedDetails.end())
+    if (updatedDetails.contains("art.altered"))
       SetArtForItem(idMovie, MediaTypeMovie, artwork);
-    if (updatedDetails.find("ratings") != updatedDetails.end())
+    if (updatedDetails.contains("ratings"))
       details.m_iIdRating = UpdateRatings(idMovie, MediaTypeMovie, details.m_ratings, details.GetDefaultRating());
-    if (updatedDetails.find("uniqueid") != updatedDetails.end())
+    if (updatedDetails.contains("uniqueid"))
       details.m_iIdUniqueID = UpdateUniqueIDs(idMovie, MediaTypeMovie, details);
-    if (updatedDetails.find("dateadded") != updatedDetails.end() && details.m_dateAdded.IsValid())
+    if (updatedDetails.contains("dateadded") && details.m_dateAdded.IsValid())
       UpdateFileDateAdded(details);
 
     // track if the set was updated
     int idSet = 0;
-    if (updatedDetails.find("set") != updatedDetails.end())
+    if (updatedDetails.contains("set"))
     { // set
       idSet = -1;
       if (!details.m_set.title.empty())
@@ -2812,7 +2812,7 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, c
       }
     }
 
-    if (updatedDetails.find("showlink") != updatedDetails.end())
+    if (updatedDetails.contains("showlink"))
     {
       // remove existing links
       std::vector<int> tvShowIds;
@@ -8357,7 +8357,7 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
       std::string name = m_pDS->fv(VIDEODB_ID_SEASON_NAME).get_asString();
       std::string path = m_pDS->fv(VIDEODB_ID_SEASON_TVSHOW_PATH).get_asString();
 
-      if (mapSeasons.find(std::make_pair(showId, iSeason)) == mapSeasons.end() &&
+      if (!mapSeasons.contains(std::make_pair(showId, iSeason)) &&
           (m_profileManager.GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
            g_passwordManager.bMasterUser ||
            g_passwordManager.IsDatabasePathUnlocked(
@@ -8649,9 +8649,9 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
 
     // navigation = from videoversions node
-    const bool videoVersionNav{options.find("videoversionid") != options.end()};
+    const bool videoVersionNav{options.contains("videoversionid")};
     // navigation = list of assets of the movie
-    const bool assetsNav{options.find("assetType") != options.end()};
+    const bool assetsNav{options.contains("assetType")};
 
     int total = -1;
 
@@ -13261,7 +13261,7 @@ std::vector<std::string> CVideoDatabase::GetUsedImages(
     if (!m_pDB || !m_pDS)
       return imagesToCheck;
 
-    if (!imagesToCheck.size())
+    if (imagesToCheck.empty())
       return {};
 
     int artworkLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(

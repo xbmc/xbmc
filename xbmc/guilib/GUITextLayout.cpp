@@ -62,7 +62,7 @@ void CGUITextLayout::Render(float x,
     return;
 
   // set the main text color
-  if (m_colors.size())
+  if (!m_colors.empty())
     m_colors[0] = color;
 
   // render the text at the required location, angle, and size
@@ -117,7 +117,7 @@ void CGUITextLayout::RenderScrolling(float x,
     return;
 
   // set the main text color
-  if (m_colors.size())
+  if (!m_colors.empty())
     m_colors[0] = color;
 
   // render the text at the required location, angle, and size
@@ -161,7 +161,7 @@ void CGUITextLayout::RenderOutline(float x,
 
   // set the outline color
   std::vector<KODI::UTILS::COLOR::Color> outlineColors;
-  if (m_colors.size())
+  if (!m_colors.empty())
     outlineColors.push_back(outlineColor);
 
   // center our text vertically
@@ -202,7 +202,7 @@ void CGUITextLayout::RenderOutline(float x,
   }
 
   // set the main text color
-  if (m_colors.size())
+  if (!m_colors.empty())
     m_colors[0] = color;
 
   m_font->Begin();
@@ -701,7 +701,7 @@ unsigned int CGUITextLayout::GetTextLength() const
 void CGUITextLayout::GetFirstText(vecText &text) const
 {
   text.clear();
-  if (m_lines.size())
+  if (!m_lines.empty())
     text = m_lines[0].m_text;
 }
 

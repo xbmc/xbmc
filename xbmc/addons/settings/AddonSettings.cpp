@@ -713,7 +713,7 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
         settingWithConditions.visibleCondition = conditionVisible;
 
       // check if there already is a setting with the setting identifier
-      if (settingIds.find(settingId) != settingIds.end())
+      if (settingIds.contains(settingId))
       {
         // turn the setting into a reference setting
         setting->MakeReference();

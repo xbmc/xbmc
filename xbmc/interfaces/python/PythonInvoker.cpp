@@ -689,7 +689,7 @@ void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<s
                                                ADDON::OnlyEnabled::CHOICE_YES))
     {
       std::string path = CSpecialProtocol::TranslatePath(dependency->LibPath());
-      if (paths.find(path) == paths.end())
+      if (!paths.contains(path))
       {
         // add it and its dependencies
         paths.insert(path);

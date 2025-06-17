@@ -122,11 +122,11 @@ void CAirTunesServer::RefreshMetadata()
   CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
   if (infoMgr.GetCurrentSongTag())
     tag = *infoMgr.GetCurrentSongTag();
-  if (m_metadata[0].length())
+  if (!m_metadata[0].empty())
     tag.SetAlbum(m_metadata[0]);//album
-  if (m_metadata[1].length())
+  if (!m_metadata[1].empty())
     tag.SetTitle(m_metadata[1]);//title
-  if (m_metadata[2].length())
+  if (!m_metadata[2].empty())
     tag.SetArtist(m_metadata[2]);//artist
 
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
@@ -158,11 +158,11 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
   std::map<std::string, std::string> metadata = decodeDMAP(buffer, size);
   std::unique_lock lock(m_metadataLock);
 
-  if(metadata["asal"].length())
+  if (!metadata["asal"].empty())
     m_metadata[0] = metadata["asal"];//album
-  if(metadata["minm"].length())
+  if (!metadata["minm"].empty())
     m_metadata[1] = metadata["minm"];//title
-  if(metadata["asar"].length())
+  if (!metadata["asar"].empty())
     m_metadata[2] = metadata["asar"];//artist
 
   RefreshMetadata();

@@ -449,7 +449,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
 
   std::string strPath2 = m_Directory->GetPath();
   URIUtils::RemoveSlashAtEnd(strPath2);
-  strSelectedItem = m_history.GetSelectedItem(strPath2==""?"empty":strPath2);
+  strSelectedItem = m_history.GetSelectedItem(strPath2.empty() ? "empty" : strPath2);
 
   bool bSelectedFound = false;
   for (int i = 0; i < m_vecItems->Size(); ++i)
@@ -822,7 +822,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFileList(const std::vector<CMediaSource>& 
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
   {
-    if (browser->m_markedPath.size())
+    if (!browser->m_markedPath.empty())
       path = browser->m_markedPath;
     else
       path.push_back(browser->m_selectedPath);
@@ -910,7 +910,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(
 void CGUIDialogFileBrowser::SetSources(const std::vector<CMediaSource>& shares)
 {
   m_shares = shares;
-  if (!m_shares.size() && m_addSourceType.empty())
+  if (m_shares.empty() && m_addSourceType.empty())
     CServiceBroker::GetMediaManager().GetLocalDrives(m_shares);
   m_rootDir.SetSources(m_shares);
 }

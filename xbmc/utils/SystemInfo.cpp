@@ -454,7 +454,7 @@ std::string CSysInfo::TranslateInfo(int info) const
   case NETWORK_GATEWAY_ADDRESS:
     return m_info.gatewayAddress;
   case NETWORK_DNS1_ADDRESS:
-    return m_info.dnsServers.size() > 0 ? m_info.dnsServers.at(0) : g_localizeStrings.Get(231);
+    return !m_info.dnsServers.empty() ? m_info.dnsServers.at(0) : g_localizeStrings.Get(231);
   case NETWORK_DNS2_ADDRESS:
     return m_info.dnsServers.size() > 1 ? m_info.dnsServers.at(1) : g_localizeStrings.Get(231);
   case NETWORK_LINK_STATE:

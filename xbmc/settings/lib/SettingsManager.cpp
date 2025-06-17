@@ -34,7 +34,7 @@ bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryT
     return false;
 
   std::vector<std::string> parts = StringUtils::Split(settingId, Separator);
-  if (parts.size() < 1 || parts.at(0).empty())
+  if (parts.empty() || parts.at(0).empty())
     return false;
 
   if (parts.size() == 1)
@@ -403,7 +403,7 @@ void CSettingsManager::RegisterSettingType(const std::string &settingType, ISett
   if (settingType.empty() || !settingCreator)
     return;
 
-  if (m_settingCreators.find(settingType) == m_settingCreators.end())
+  if (!m_settingCreators.contains(settingType))
     m_settingCreators.try_emplace(settingType, settingCreator);
 }
 
@@ -413,7 +413,7 @@ void CSettingsManager::RegisterSettingControl(const std::string &controlType, IS
     return;
 
   std::unique_lock lock(m_critical);
-  if (m_settingControlCreators.find(controlType) == m_settingControlCreators.end())
+  if (!m_settingControlCreators.contains(controlType))
     m_settingControlCreators.try_emplace(controlType, settingControlCreator);
 }
 

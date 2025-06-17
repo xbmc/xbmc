@@ -291,7 +291,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
     std::string refType = value["$ref"].asString();
     // Check if the referenced type exists
     JSONSchemaTypeDefinitionPtr referencedTypeDef = CJSONServiceDescription::GetType(refType);
-    if (refType.length() <= 0 || referencedTypeDef.get() == NULL)
+    if (refType.empty() || referencedTypeDef.get() == NULL)
     {
       CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type {} references an unknown type {}", name,
                 refType);
@@ -322,7 +322,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
     if (value.isMember("default") && IsType(value["default"], type))
     {
       bool ok = false;
-      if (enums.size() <= 0)
+      if (enums.empty())
         ok = true;
       // If the type has an enum definition we must make
       // sure that the default value is a valid enum value
@@ -406,7 +406,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
 
   // Only read the "type" attribute if it's
   // not an extending type
-  if (extends.size() <= 0)
+  if (extends.empty())
   {
     // Get the defined type of the parameter
     if (!CJSONServiceDescription::parseJSONSchemaType(value["type"], unionTypes, type, missingReference))
@@ -621,7 +621,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
     bool ok = false;
     if (value.isMember("default") && IsType(value["default"], type))
     {
-      if (enums.size() <= 0)
+      if (enums.empty())
         ok = true;
       // If the type has an enum definition we must make
       // sure that the default value is a valid enum value
@@ -649,7 +649,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
 
       // If the type contains an "enum" we need to get the
       // default value from the first enum value
-      if (enums.size() > 0)
+      if (!enums.empty())
         defaultValue = enums.at(0);
       // otherwise set a default value instead
       else
@@ -683,7 +683,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
   }
 
   // Let's check if we have to handle a union type
-  if (unionTypes.size() > 0)
+  if (!unionTypes.empty())
   {
     bool ok = false;
     for (unsigned int unionIndex = 0; unionIndex < unionTypes.size(); unionIndex++)
@@ -708,7 +708,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
   // First we need to check if this type extends another
   // type and if so we need to check against the extended
   // type first
-  if (extends.size() > 0)
+  if (!extends.empty())
   {
     for (unsigned int extendsIndex = 0; extendsIndex < extends.size(); extendsIndex++)
     {
@@ -752,7 +752,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
       return InvalidParams;
     }
 
-    if (items.size() == 0)
+    if (items.empty())
       outputValue = value;
     else if (items.size() == 1)
     {
@@ -786,7 +786,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
       // does not match the number of elements in the
       // "items" array and additional items are not
       // allowed there is no need to check every element
-      if (value.size() < items.size() || (value.size() != items.size() && additionalItems.size() == 0))
+      if (value.size() < items.size() || (value.size() != items.size() && additionalItems.empty()))
       {
         CLog::Log(LOGDEBUG, "JSONRPC: One of the array elements does not match in type {}", name);
         errorMessage = StringUtils::Format("{0} array elements expected but {1} received", items.size(), value.size());
@@ -811,7 +811,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
         }
       }
 
-      if (additionalItems.size() > 0)
+      if (!additionalItems.empty())
       {
         // Loop through the rest of the elements
         // in the array and check them against the
@@ -948,7 +948,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
 
   // If it can only take certain values ("enum")
   // we need to check against those
-  if (enums.size() > 0)
+  if (!enums.empty())
   {
     bool valid = false;
     for (const auto& enumItr : enums)
@@ -1075,7 +1075,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
       for (unsigned int extendsIndex = 0; extendsIndex < extends.size(); extendsIndex++)
         output["extends"].append(extends.at(extendsIndex)->ID);
     }
-    else if (unionTypes.size() > 0)
+    else if (!unionTypes.empty())
     {
       output["type"] = CVariant(CVariant::VariantTypeArray);
       for (unsigned int unionIndex = 0; unionIndex < unionTypes.size(); unionIndex++)
@@ -1089,7 +1089,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
       CJSONUtils::SchemaValueTypeToJson(type, output["type"]);
 
     // Printing enum field
-    if (enums.size() > 0)
+    if (!enums.empty())
     {
       output["enums"] = CVariant(CVariant::VariantTypeArray);
       for (unsigned int enumIndex = 0; enumIndex < enums.size(); enumIndex++)
@@ -1612,7 +1612,7 @@ bool CJSONServiceDescription::AddType(const std::string &jsonType)
     return false;
   }
 
-  if (m_types.find(typeName) != m_types.end())
+  if (m_types.contains(typeName))
   {
     CLog::Log(LOGERROR, "JSONRPC: There already is a type with the name \"{}\"", typeName);
     return false;
@@ -1685,7 +1685,7 @@ bool CJSONServiceDescription::AddNotification(const std::string &jsonNotificatio
     return false;
   }
 
-  if (m_notifications.find(notificationName) != m_notifications.end())
+  if (m_notifications.contains(notificationName))
   {
     CLog::Log(LOGERROR, "JSONRPC: There already is a notification with the name \"{}\"",
               notificationName);
@@ -1706,8 +1706,7 @@ bool CJSONServiceDescription::AddNotification(const std::string &jsonNotificatio
 
 bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector<CVariant> &values, CVariant::VariantType type /* = CVariant::VariantTypeNull */, const CVariant &defaultValue /* = CVariant::ConstNullVariant */)
 {
-  if (name.empty() || m_types.find(name) != m_types.end() ||
-      values.size() == 0)
+  if (name.empty() || m_types.contains(name) || values.empty())
     return false;
 
   JSONSchemaTypeDefinitionPtr definition = std::make_shared<JSONSchemaTypeDefinition>();
@@ -1815,7 +1814,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
   int clientPermissions = client->GetPermissionFlags();
   int transportCapabilities = transport->GetCapabilities();
 
-  if (filterByName.size() > 0)
+  if (!filterByName.empty())
   {
     std::string name = filterByName;
 
@@ -2049,7 +2048,7 @@ void CJSONServiceDescription::addReferenceTypeDefinition(
     return;
 
   // If the id has already been defined we ignore the type definition
-  if (m_types.find(typeDefinition->ID) != m_types.end())
+  if (m_types.contains(typeDefinition->ID))
     return;
 
   // Add the type to the list of type definitions
@@ -2086,7 +2085,7 @@ void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinitionP
                                                  std::vector<std::string>& referencedTypes)
 {
   // If the current type is a referenceable object, we can add it to the list
-  if (type->ID.size() > 0)
+  if (!type->ID.empty())
   {
     for (unsigned int index = 0; index < referencedTypes.size(); index++)
     {

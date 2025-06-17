@@ -456,7 +456,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
             filter += message.GetStringParam();
           else if (message.GetParam2() == 2)
           { // delete
-            if (filter.size())
+            if (!filter.empty())
               filter.erase(filter.size() - 1);
           }
           else
@@ -807,7 +807,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   if (iWindow == WINDOW_PICTURES)
     regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pictureExcludeFromListingRegExps;
 
-  if (regexps.size())
+  if (!regexps.empty())
   {
     for (int i=0; i < items.Size();)
     {

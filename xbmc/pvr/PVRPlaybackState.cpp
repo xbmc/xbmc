@@ -212,7 +212,7 @@ bool CPVRPlaybackState::OnPreparePlayback(CFileItem& item) const
   else if (item.IsEPG() && !ResolveEPG(item, props, client))
     return false;
 
-  if (props.size())
+  if (!props.empty())
   {
     const std::string url{props.GetStreamURL()};
     if (!url.empty())

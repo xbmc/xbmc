@@ -74,7 +74,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   /* read response from server into string buffer */
   std::string strBuffer;
-  if (http.ReadData(strBuffer) && strBuffer.length() > 0)
+  if (http.ReadData(strBuffer) && !strBuffer.empty())
   {
     /* if Content-Length is found and its not text/html, URL is pointing to file so don't treat URL as HTTPDirectory */
     if (!http.GetHttpHeader().GetValue("Content-Length").empty() &&
@@ -179,7 +179,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
       // we detect http directory items by its display name and its stripped link
       // if same, we consider it as a valid item.
-      if (strLinkTemp != ".." && strLinkTemp != "" && NameMatchesLink(strNameTemp, strLinkTemp))
+      if (strLinkTemp != ".." && !strLinkTemp.empty() && NameMatchesLink(strNameTemp, strLinkTemp))
       {
         CFileItemPtr pItem(new CFileItem(strNameTemp));
         pItem->SetProperty("IsHTTPDirectory", true);
@@ -244,10 +244,10 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           minute = reDateTime.GetMatch(5);
         }
 
-        if (month.length() > 0)
+        if (!month.empty())
           monthNum = CDateTime::MonthStringToMonthNum(month);
 
-        if (day.length() > 0 && monthNum > 0 && year.length() > 0)
+        if (!day.empty() && monthNum > 0 && !year.empty())
         {
           pItem->m_dateTime = CDateTime(atoi(year.c_str()), monthNum, atoi(day.c_str()), atoi(hour.c_str()), atoi(minute.c_str()), 0);
         }

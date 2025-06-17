@@ -395,7 +395,7 @@ SortDescription CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
   if (m_currentSortMethod >= (int)m_sortMethods.size())
     m_currentSortMethod = 0;
   if (m_currentSortMethod < 0)
-    m_currentSortMethod = m_sortMethods.size() ? (int)m_sortMethods.size() - 1 : 0;
+    m_currentSortMethod = !m_sortMethods.empty() ? (int)m_sortMethods.size() - 1 : 0;
 
   SaveViewState();
 

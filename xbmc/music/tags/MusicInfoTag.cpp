@@ -992,7 +992,7 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
   {
     // make sure not to overwrite an existing path with an empty one
     std::string title = m_strTitle;
-    if (!title.empty() || sortable.find(FieldTitle) == sortable.end())
+    if (!title.empty() || !sortable.contains(FieldTitle))
       sortable[FieldTitle] = title;
     break;
   }

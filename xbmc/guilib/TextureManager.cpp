@@ -139,7 +139,7 @@ CTextureMap::~CTextureMap()
 
 bool CTextureMap::Release()
 {
-  if (!m_texture.m_textures.size())
+  if (m_texture.m_textures.empty())
     return true;
   if (!m_referenceCount)
     return true;

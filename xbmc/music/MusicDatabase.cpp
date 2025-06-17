@@ -1639,7 +1639,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
         const dbiplus::sql_record* const record = m_pDS->get_sql_record();
 
         int idSong = record->at(song_idSong).get_asInt(); //Same as songartist.idSong by join
-        if (songs.find(idSong) == songs.end())
+        if (!songs.contains(idSong))
         {
           album.songs.emplace_back(GetSongFromDataset(record));
           songs.insert(idSong);
@@ -4812,7 +4812,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/)
         while (true)
         {
           std::string strTitle = cddb.getInexactTitle(i);
-          if (strTitle == "")
+          if (strTitle.empty())
             break;
 
           const std::string& strArtist = cddb.getInexactArtist(i);
@@ -6693,7 +6693,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
     // Check each optional artist db field that could be retrieved (not "artist")
     for (unsigned int i = 1; i < NUM_ARTIST_FIELDS; i++)
     {
-      bool foundJSON = fields.find(JSONtoDBArtist[i].fieldJSON) != fields.end();
+      bool foundJSON = fields.contains(JSONtoDBArtist[i].fieldJSON);
       if (JSONtoDBArtist[i].bSimple)
       {
         // Check for non-join fields in order too.
@@ -7399,7 +7399,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
     std::vector<int> dbfieldindex;
     // JSON "label" field is strAlbum which may also be requested as "title", query field once output twice
     extFilter.AppendField(JSONtoDBAlbum[0].fieldDB);
-    if (fields.find(JSONtoDBAlbum[0].fieldJSON) != fields.end())
+    if (fields.contains(JSONtoDBAlbum[0].fieldJSON))
       dbfieldindex.emplace_back(0); // Output "title"
     else
       dbfieldindex.emplace_back(-1); // fetch but not output
@@ -7407,7 +7407,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
     // Check each optional album db field that could be retrieved (not label)
     for (unsigned int i = 1; i < NUM_ALBUM_FIELDS; i++)
     {
-      bool foundJSON = fields.find(JSONtoDBAlbum[i].fieldJSON) != fields.end();
+      bool foundJSON = fields.contains(JSONtoDBAlbum[i].fieldJSON);
       if (JSONtoDBAlbum[i].bSimple)
       {
         // Check for non-join fields in order too.
@@ -7857,7 +7857,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
     std::vector<int> dbfieldindex;
     // JSON "label" field is strTitle which may also be requested as "title", query field once output twice
     extFilter.AppendField(JSONtoDBSong[0].fieldDB);
-    if (fields.find(JSONtoDBSong[0].fieldJSON) != fields.end())
+    if (fields.contains(JSONtoDBSong[0].fieldJSON))
       dbfieldindex.emplace_back(0); // Output "title"
     else
       dbfieldindex.emplace_back(-1); // Fetch but not output
@@ -7866,7 +7866,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
     // Check each optional db field that could be retrieved (not label)
     for (unsigned int i = 1; i < NUM_SONG_FIELDS; i++)
     {
-      bool foundJSON = fields.find(JSONtoDBSong[i].fieldJSON) != fields.end();
+      bool foundJSON = fields.contains(JSONtoDBSong[i].fieldJSON);
       if (JSONtoDBSong[i].bSimple)
       {
         // Check for non-join fields in order too.
@@ -7983,7 +7983,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
                             JSONtoDBSong[index_idAlbumArtist + joinToSongs_idAlbumArtist].SQL);
       }
       // Ensure song.IdAlbum is field of the inline view for join
-      if (fields.find("albumid") == fields.end())
+      if (!fields.contains("albumid"))
       {
         extFilter.AppendField("song.idAlbum"); //Prefer lookup JSONtoDBSong[XXX].dbField);
         dbfieldindex.emplace_back(-1);
@@ -8026,7 +8026,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
           joinLayout.SetField(joinToSongs_strArtist,
                               JSONtoDBSong[index_idAlbumArtist + joinToSongs_strArtist].SQL);
         }
-        if (fields.find("contributors") != fields.end())
+        if (fields.contains("contributors"))
         { // all roles
           bJoinRole = true;
           // Ensure strRole is queried from role table
@@ -9978,7 +9978,7 @@ int CMusicDatabase::AddSource(const std::string& strName,
 
       // Find albums by song path, building WHERE for multiple source paths
       // (providing source has a path)
-      if (vecPaths.size() > 0)
+      if (!vecPaths.empty())
       {
         std::vector<int> albumIds;
         Filter extFilter;
@@ -13972,7 +13972,7 @@ std::vector<std::string> CMusicDatabase::GetUsedImages(
     if (!m_pDB || !m_pDS)
       return imagesToCheck;
 
-    if (!imagesToCheck.size())
+    if (imagesToCheck.empty())
       return {};
 
     int artworkLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(

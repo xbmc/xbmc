@@ -167,7 +167,7 @@ void CTCPServer::Process()
               }
             }
 
-            if (response.size() <= 0)
+            if (response.empty())
               m_connections[i]->PushBuffer(this, buffer, nread);
 
             close = m_connections[i]->Closing();

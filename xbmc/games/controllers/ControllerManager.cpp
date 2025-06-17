@@ -42,7 +42,7 @@ ControllerPtr CControllerManager::GetController(const std::string& controllerId)
 
   ControllerPtr& cachedController = m_cache[controllerId];
 
-  if (!cachedController && m_failedControllers.find(controllerId) == m_failedControllers.end())
+  if (!cachedController && !m_failedControllers.contains(controllerId))
   {
     AddonPtr addon;
     if (m_addonManager.GetAddon(controllerId, addon, AddonType::GAME_CONTROLLER,
@@ -82,7 +82,7 @@ ControllerVector CControllerManager::GetControllers()
     for (auto& addon : addons)
     {
       ControllerPtr& cachedController = m_cache[addon->ID()];
-      if (!cachedController && m_failedControllers.find(addon->ID()) == m_failedControllers.end())
+      if (!cachedController && !m_failedControllers.contains(addon->ID()))
         cachedController = LoadController(addon);
 
       if (cachedController)

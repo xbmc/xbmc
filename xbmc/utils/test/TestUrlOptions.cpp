@@ -176,7 +176,7 @@ TEST(TestUrlOptions, GetOptions)
   EXPECT_TRUE(it1 != options.end());
   CUrlOptions::UrlOptions::const_iterator it2 = options.find(key2);
   EXPECT_TRUE(it2 != options.end());
-  EXPECT_FALSE(options.find("wrong") != options.end());
+  EXPECT_FALSE(options.contains("wrong"));
   EXPECT_TRUE(it1->second.isString());
   EXPECT_TRUE(it2->second.isString());
   EXPECT_STREQ(value1, it1->second.asString().c_str());

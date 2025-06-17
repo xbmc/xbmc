@@ -137,7 +137,7 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
     else if (boxType == BOX_TYPE_STYL)
     {
       // Parse the contained StyleRecords
-      if (styleRecords.size() != 0)
+      if (!styleRecords.empty())
       {
         CLog::Log(LOGDEBUG, "{} - Found additional TextStyleBox, skipping", __FUNCTION__);
         sampleData.SkipChars(boxSize - MP4_BOX_HEADER_SIZE);

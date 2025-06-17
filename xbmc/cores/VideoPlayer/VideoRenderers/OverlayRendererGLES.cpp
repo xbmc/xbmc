@@ -328,7 +328,7 @@ COverlayGlyphGLES::~COverlayGlyphGLES()
 
 void COverlayGlyphGLES::Render(SRenderState& state)
 {
-  if ((m_texture == 0) || (m_vertex.size() == 0))
+  if ((m_texture == 0) || (m_vertex.empty()))
     return;
 
   glEnable(GL_BLEND);

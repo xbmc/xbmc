@@ -456,7 +456,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(dbiplus::Dataset& 
     newTag->m_endTime = endTime;
 
     const std::string sFirstAired = m_pDS->fv("sFirstAired").get_asString();
-    if (sFirstAired.length() > 0)
+    if (!sFirstAired.empty())
       newTag->m_firstAired.SetFromW3CDate(sFirstAired);
 
     int iBroadcastUID = m_pDS->fv("iBroadcastUid").get_asInt();

@@ -290,7 +290,7 @@ void CAirPlayServer::AnnounceToClients(int state)
 
     // Send event status per reverse http socket (play, loading, paused)
     // if we have a reverse header and a reverse socket
-    if (!reverseHeader.empty() && m_reverseSockets.find(it.m_sessionId) != m_reverseSockets.end())
+    if (!reverseHeader.empty() && m_reverseSockets.contains(it.m_sessionId))
     {
       //search the reverse socket to this sessionid
       response = StringUtils::Format("POST /event HTTP/1.1\r\n");
@@ -1078,11 +1078,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       else if (photoAction == "displayCached")
       {
         receivePhoto = false;
-        if (photoCacheId.length())
+        if (!photoCacheId.empty())
           CLog::Log(LOGDEBUG, "AIRPLAY: Trying to show from cache asset: {}", photoCacheId);
       }
 
-      if (photoCacheId.length())
+      if (!photoCacheId.empty())
         tmpFileName += photoCacheId;
       else
         tmpFileName += "airplay_photo";
@@ -1107,7 +1107,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
           writtenBytes = tmpFile.Write(m_httpParser->getBody(), m_httpParser->getContentLength());
           tmpFile.Close();
         }
-        if (photoCacheId.length())
+        if (!photoCacheId.empty())
           CLog::Log(LOGDEBUG, "AIRPLAY: Cached asset: {}", photoCacheId);
       }
 
@@ -1118,7 +1118,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
           if (!receivePhoto && !XFILE::CFile::Exists(tmpFileName))
           {
             status = AIRPLAY_STATUS_PRECONDITION_FAILED; //image not found in the cache
-            if (photoCacheId.length())
+            if (!photoCacheId.empty())
               CLog::Log(LOGWARNING, "AIRPLAY: Asset {} not found in our cache.", photoCacheId);
           }
           else

@@ -755,7 +755,7 @@ int CXBMCApp::android_printf(const char* format, ...)
     std::string message;
     int len = vsnprintf(0, 0, format, args_copy);
     message.resize(len);
-    result = vsnprintf(&message[0], len + 1, format, args);
+    result = vsnprintf(message.data(), len + 1, format, args);
     CLog::Log(LOGDEBUG, "{}", message);
   }
   else

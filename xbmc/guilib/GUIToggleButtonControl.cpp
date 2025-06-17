@@ -146,7 +146,7 @@ void CGUIToggleButtonControl::SetLabel(const std::string &label)
 
 void CGUIToggleButtonControl::SetAltLabel(const std::string &label)
 {
-  if (label.size())
+  if (!label.empty())
     m_selectButton.SetLabel(label);
 }
 

@@ -289,7 +289,8 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDD
   std::string strDescription = "DVD";
   if (bCDDA) strDescription = "CD";
 
-  if (strDiscLabel != "") strDescription = strDiscLabel;
+  if (!strDiscLabel.empty())
+    strDescription = strDiscLabel;
 
   // Store it in case others want it
   m_diskLabel = strDescription;

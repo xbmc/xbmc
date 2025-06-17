@@ -140,7 +140,7 @@ void CGUITextureGLES::Begin(KODI::UTILS::COLOR::Color color)
 
 void CGUITextureGLES::End()
 {
-  if (m_packedVertices.size())
+  if (!m_packedVertices.empty())
   {
     GLint posLoc  = m_renderSystem->GUIShaderGetPos();
     GLint tex0Loc = m_renderSystem->GUIShaderGetCoord0();
@@ -159,12 +159,15 @@ void CGUITextureGLES::End()
     {
       if (m_texture.m_textures[m_currentFrame]->GetSwizzle() == KD_TEX_SWIZ_111R)
         std::swap(tex0Loc, tex1Loc);
-      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u2));
+      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                            (char*)m_packedVertices.data() + offsetof(PackedVertex, u2));
       glEnableVertexAttribArray(tex1Loc);
     }
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, x));
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                          (char*)m_packedVertices.data() + offsetof(PackedVertex, x));
     glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u1));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                          (char*)m_packedVertices.data() + offsetof(PackedVertex, u1));
     glEnableVertexAttribArray(tex0Loc);
 
     glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, m_idx.data());

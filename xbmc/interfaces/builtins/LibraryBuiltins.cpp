@@ -40,10 +40,10 @@ static int CleanLibrary(const std::vector<std::string>& params)
   bool userInitiated = true;
   if (params.size() > 1)
     userInitiated = StringUtils::EqualsNoCase(params[1], "true");
-  if (!params.size() || StringUtils::EqualsNoCase(params[0], "video")
-                     || StringUtils::EqualsNoCase(params[0], "movies")
-                     || StringUtils::EqualsNoCase(params[0], "tvshows")
-                     || StringUtils::EqualsNoCase(params[0], "musicvideos"))
+  if (params.empty() || StringUtils::EqualsNoCase(params[0], "video") ||
+      StringUtils::EqualsNoCase(params[0], "movies") ||
+      StringUtils::EqualsNoCase(params[0], "tvshows") ||
+      StringUtils::EqualsNoCase(params[0], "musicvideos"))
   {
     if (!CVideoLibraryQueue::GetInstance().IsScanningLibrary())
     {

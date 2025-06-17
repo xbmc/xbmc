@@ -209,7 +209,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
 
   if (wKeyID)
   {
-    if (strMapName.length() > 0)
+    if (!strMapName.empty())
     {
       // joysticks are not supported via eventserver
       if (isJoystick)

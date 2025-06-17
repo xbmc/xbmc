@@ -362,7 +362,7 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   XbmcThreads::EndTime<> timeout(10s);
 
   /* if no path we want to attach to a already playing player */
-  if (file.GetPath() == "")
+  if (file.GetPath().empty())
   {
     NPT_CHECK_LABEL_SEVERE(
         m_control->GetTransportInfo(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),

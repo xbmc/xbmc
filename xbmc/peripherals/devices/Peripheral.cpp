@@ -223,7 +223,7 @@ void CPeripheral::GetSubdevices(PeripheralVector& subDevices) const
 
 bool CPeripheral::IsMultiFunctional(void) const
 {
-  return m_subDevices.size() > 0;
+  return !m_subDevices.empty();
 }
 
 std::vector<std::shared_ptr<CSetting>> CPeripheral::GetSettings(void) const

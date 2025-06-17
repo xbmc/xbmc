@@ -178,7 +178,7 @@ HttpParser::addBytes( const char* bytes, unsigned len )
 const char*
 HttpParser::getMethod() const
 {
-    return &_data[0];
+  return _data.data();
 }
 
 const char*

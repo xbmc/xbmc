@@ -106,7 +106,8 @@ bool CPlayListWPL::LoadData(std::istream& stream)
 
 void CPlayListWPL::Save(const std::string& strFileName) const
 {
-  if (!m_vecItems.size()) return ;
+  if (m_vecItems.empty())
+    return;
   std::string strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
   if (!file.OpenForWrite(strPlaylist, true))

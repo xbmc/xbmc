@@ -250,7 +250,7 @@ std::string CJSONRPC::MethodCall(const std::string &inputString, ITransportLayer
   {
     if (inputroot.isArray())
     {
-      if (inputroot.size() <= 0)
+      if (inputroot.empty())
       {
         CLog::Log(LOGERROR, "JSONRPC: Empty batch call");
         BuildResponse(inputroot, InvalidRequest, CVariant(), outputroot);

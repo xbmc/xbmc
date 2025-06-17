@@ -347,7 +347,7 @@ std::string ByEpisodeNumber(SortAttribute attributes, const SortItem &values)
     num = ((uint64_t)values.at(FieldSeason).asInteger() << 32) + (values.at(FieldEpisodeNumber).asInteger() << 16);
 
   std::string title;
-  if (values.find(FieldMediaType) != values.end() && values.at(FieldMediaType).asString() == MediaTypeMovie)
+  if (values.contains(FieldMediaType) && values.at(FieldMediaType).asString() == MediaTypeMovie)
     title = BySortTitle(attributes, values);
   if (title.empty())
     title = ByLabel(attributes, values);
@@ -1005,7 +1005,7 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
         // add all fields to the item that are required for sorting if they are currently missing
         for (Fields::const_iterator field = sortingFields.begin(); field != sortingFields.end(); ++field)
         {
-          if (item->find(*field) == item->end())
+          if (!item->contains(*field))
             item->insert(std::pair<Field, CVariant>(*field, CVariant::ConstNullVariant));
         }
 
@@ -1044,7 +1044,7 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
         // add all fields to the item that are required for sorting if they are currently missing
         for (Fields::const_iterator field = sortingFields.begin(); field != sortingFields.end(); ++field)
         {
-          if ((*item)->find(*field) == (*item)->end())
+          if (!(*item)->contains(*field))
             (*item)->insert(std::pair<Field, CVariant>(*field, CVariant::ConstNullVariant));
         }
 

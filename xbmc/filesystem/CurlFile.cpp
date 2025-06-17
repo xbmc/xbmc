@@ -600,7 +600,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   }
 
   // allow passive mode for ftp
-  if( m_ftpport.length() > 0 )
+  if (!m_ftpport.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_FTPPORT, m_ftpport.c_str());
   else
     g_curlInterface.easy_setopt(h, CURLOPT_FTPPORT, NULL);
@@ -612,13 +612,13 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
     g_curlInterface.easy_setopt(h, CURLOPT_FTP_SKIP_PASV_IP, 1);
 
   // setup Accept-Encoding if requested
-  if (m_acceptencoding.length() > 0)
+  if (!m_acceptencoding.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_acceptencoding == "all" ? "" : m_acceptencoding.c_str());
 
   if (!m_acceptCharset.empty())
     SetRequestHeader("Accept-Charset", m_acceptCharset);
 
-  if (m_userAgent.length() > 0)
+  if (!m_userAgent.empty())
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, m_userAgent.c_str());
   else /* set some default agent as shoutcast doesn't return proper stuff otherwise */
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_userAgent.c_str());
@@ -641,7 +641,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
     if (!userpass.empty())
       g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, userpass.c_str());
   }
-  if (m_customrequest.length() > 0)
+  if (!m_customrequest.empty())
   {
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
     if (StringUtils::CompareNoCase(m_customrequest, "HEAD") == 0)
@@ -927,7 +927,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         }
         else
         {
-          if (name.length() > 0 && name[0] == '!')
+          if (!name.empty() && name[0] == '!')
           {
             SetRequestHeader(it.first.substr(1), value);
             CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Adding custom header option '{}: ***********'",
@@ -951,7 +951,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   // Unset the protocol options to have an url without protocol options
   url2.SetProtocolOptions("");
 
-  if (m_username.length() > 0 && m_password.length() > 0)
+  if (!m_username.empty() && !m_password.empty())
     m_url = url2.GetWithoutUserDetails();
   else
     m_url = url2.Get();
@@ -1122,7 +1122,7 @@ bool CCurlFile::Open(const CURL& url)
     if (m_httpresponse >= 400 && CServiceBroker::GetLogging().CanLogComponent(LOGCURL))
     {
       error.resize(4096);
-      ReadLine(&error[0], 4095);
+      ReadLine(error.data(), 4095);
     }
 
     CLog::Log(LOGERROR, "CCurlFile::{} - <{}> Failed with code {}:\n{}", __FUNCTION__,

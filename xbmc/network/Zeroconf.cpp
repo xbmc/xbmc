@@ -106,7 +106,7 @@ bool CZeroconf::ForceReAnnounceService(const std::string& fcr_identifier)
 
 bool CZeroconf::HasService(const std::string& fcr_identifier) const
 {
-  return (m_service_map.find(fcr_identifier) != m_service_map.end());
+  return (m_service_map.contains(fcr_identifier));
 }
 
 bool CZeroconf::Start()

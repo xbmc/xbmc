@@ -71,7 +71,7 @@ static int ActivateWindow(const std::vector<std::string>& params2)
   std::vector<std::string> params(params2);
   // get the parameters
   std::string strWindow;
-  if (params.size())
+  if (!params.empty())
   {
     strWindow = params[0];
     params.erase(params.begin());

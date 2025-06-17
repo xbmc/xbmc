@@ -123,7 +123,7 @@ void CGUIWrappingListContainer::ValidateOffset()
   // no need to check the range here, but we need to check we have
   // more items than slots.
   ResetExtraItems();
-  if (m_items.size())
+  if (!m_items.empty())
   {
     size_t numItems = m_items.size();
     while (m_items.size() < minItems)
@@ -140,7 +140,7 @@ void CGUIWrappingListContainer::ValidateOffset()
 
 int CGUIWrappingListContainer::CorrectOffset(int offset, int cursor) const
 {
-  if (m_items.size())
+  if (!m_items.empty())
   {
     int correctOffset = (offset + cursor) % (int)m_items.size();
     if (correctOffset < 0) correctOffset += m_items.size();

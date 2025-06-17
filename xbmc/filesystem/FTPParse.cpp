@@ -135,7 +135,7 @@ void CFTPParse::setTime(const std::string& str)
     time_struct.tm_min = std::stol(minute);
 
     /* set the second if given*/
-    if (second.length() > 0)
+    if (!second.empty())
       time_struct.tm_sec = std::stol(second);
   }
   // Regex to read MSDOS time format

@@ -343,7 +343,7 @@ void CUPnPRenderer::UpdateState()
     // get duration
     buffer = StringUtils::SecondsToTimeString(std::lrint(g_application.GetTotalTime()),
                                               TIME_FORMAT_HH_MM_SS);
-    if (buffer.length() > 0)
+    if (!buffer.empty())
     {
       avt->SetStateVariable("CurrentTrackDuration", buffer.c_str());
       avt->SetStateVariable("CurrentMediaDuration", buffer.c_str());

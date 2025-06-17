@@ -116,7 +116,7 @@ void CGUIPortList::Refresh()
     m_viewControl->SetItems(*m_vecItems);
 
     // Try to restore focus to the previously focused port
-    if (!m_focusedPort.empty() && m_addressToItem.find(m_focusedPort) != m_addressToItem.end())
+    if (!m_focusedPort.empty() && m_addressToItem.contains(m_focusedPort))
     {
       const unsigned int itemIndex = m_addressToItem[m_focusedPort];
       m_viewControl->SetSelectedItem(itemIndex);
