@@ -1307,36 +1307,50 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
 {
   try
   {
-    if (nullptr == m_pDB)
+    if (!m_pDB || !m_pDS)
       return -1;
-    if (nullptr == m_pDS)
-      return -1;
-    int idMovie = -1;
 
     // needed for query parameters
-    int idFile = GetFileId(strFilenameAndPath);
-    int idPath=-1;
+    int idMovie{-1};
+    int idFile{GetFileId(strFilenameAndPath)};
+    int idPath{-1};
+    bool isDisc{false};
     std::string strPath;
+
     if (idFile < 0)
     {
-      std::string strFile;
-      SplitPath(strFilenameAndPath,strPath,strFile);
-
-      // have to join movieinfo table for correct results
+      if (URIUtils::IsBDFile(strFilenameAndPath) || URIUtils::IsDiscImage(strFilenameAndPath))
+      {
+        strPath = URIUtils::GetBlurayPlaylistPath(strFilenameAndPath);
+        isDisc = true;
+      }
+      else
+      {
+        std::string strFile;
+        SplitPath(strFilenameAndPath, strPath, strFile);
+      }
       idPath = GetPathId(strPath);
-      if (idPath < 0 && strPath != strFilenameAndPath)
+      if (idPath < 0)
         return -1;
     }
 
-    if (idFile == -1 && strPath != strFilenameAndPath)
+    if (idFile == -1 && strPath != strFilenameAndPath && !isDisc)
       return -1;
 
     std::string strSQL;
     if (idFile == -1)
-      strSQL = PrepareSQL("SELECT idMovie FROM movie "
-                          "  JOIN files ON files.idFile=movie.idFile "
-                          "WHERE files.idPath=%i",
-                          idPath);
+    {
+      if (isDisc)
+        strSQL = PrepareSQL("SELECT idMovie FROM movie "
+                            "JOIN files "
+                            "WHERE files.idPath=%i",
+                            idPath);
+      else
+        strSQL = PrepareSQL("SELECT idMovie FROM movie "
+                            "JOIN files ON files.idFile=movie.idFile "
+                            "WHERE files.idPath=%i",
+                            idPath);
+    }
     else
       strSQL = PrepareSQL("SELECT idMedia FROM videoversion "
                           "WHERE idFile = %i AND media_type = '%s' AND itemType = %i",
