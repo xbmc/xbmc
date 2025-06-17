@@ -73,7 +73,7 @@ JSONRPC_STATUS CTextureOperations::GetTextures(const std::string &method, ITrans
       for (const auto& i : fields)
         item->erase(i);
     }
-    if (fields.find("url") == fields.end())
+    if (!fields.contains("url"))
     {
       // wrap cached url to something retrieval from Files.GetFiles()
       for (CVariant::iterator_array item = items.begin_array(); item != items.end_array(); ++item)

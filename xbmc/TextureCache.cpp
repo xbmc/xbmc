@@ -159,7 +159,7 @@ std::string CTextureCache::CacheImage(
     return "";
 
   std::unique_lock lock(m_processingSection);
-  if (m_processinglist.find(url) == m_processinglist.end())
+  if (!m_processinglist.contains(url))
   {
     m_processinglist.insert(url);
     lock.unlock();
@@ -179,7 +179,7 @@ std::string CTextureCache::CacheImage(
     m_completeEvent.Wait(1000ms);
     {
       std::unique_lock lock(m_processingSection);
-      if (m_processinglist.find(url) == m_processinglist.end())
+      if (!m_processinglist.contains(url))
         break;
     }
   }

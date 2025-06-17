@@ -86,7 +86,7 @@ public:
   {
     return content == AddonType::UNKNOWN
                ? false
-               : m_type == content || m_providedSubContent.count(content) > 0;
+               : m_type == content || m_providedSubContent.contains(content);
   }
 
   bool ProvidesSeveralSubContents() const

@@ -225,7 +225,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       std::unique_lock l(*this);
-      return currentObjects.find(obj) != currentObjects.end();
+      return currentObjects.contains(obj);
     }
   }
 }

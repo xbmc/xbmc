@@ -215,7 +215,7 @@ void CDirectoryCache::ClearCache(std::set<std::string>& dirs)
   auto i = m_cache.begin();
   while (i != m_cache.end())
   {
-    if (dirs.find(i->first) != dirs.end())
+    if (dirs.contains(i->first))
       m_cache.erase(i++);
     else
       i++;

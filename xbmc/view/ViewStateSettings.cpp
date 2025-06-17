@@ -267,7 +267,7 @@ EventLevel CViewStateSettings::GetNextEventLevel() const
 
 void CViewStateSettings::AddViewState(const std::string& strTagName, int defaultView /* = DEFAULT_VIEW_LIST */, SortBy defaultSort /* = SortByLabel */)
 {
-  if (strTagName.empty() || m_viewStates.find(strTagName) != m_viewStates.end())
+  if (strTagName.empty() || m_viewStates.contains(strTagName))
     return;
 
   CViewState *viewState = new CViewState(defaultView, defaultSort, SortOrderAscending);

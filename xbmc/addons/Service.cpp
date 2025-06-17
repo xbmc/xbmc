@@ -78,7 +78,7 @@ void CServiceAddonManager::Start(const std::string& addonId)
 void CServiceAddonManager::Start(const AddonPtr& addon)
 {
   std::unique_lock lock(m_criticalSection);
-  if (m_services.find(addon->ID()) != m_services.end())
+  if (m_services.contains(addon->ID()))
   {
     CLog::Log(LOGDEBUG, "CServiceAddonManager: {} already started.", addon->ID());
     return;

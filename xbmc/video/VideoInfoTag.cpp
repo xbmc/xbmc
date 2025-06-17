@@ -825,7 +825,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   {
     // make sure not to overwrite an existing title with an empty one
     std::string title = m_strTitle;
-    if (!title.empty() || sortable.find(FieldTitle) == sortable.end())
+    if (!title.empty() || !sortable.contains(FieldTitle))
       sortable[FieldTitle] = title;
     break;
   }
@@ -840,7 +840,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   {
     // make sure not to overwrite an existing path with an empty one
     std::string path = GetPath();
-    if (!path.empty() || sortable.find(FieldPath) == sortable.end())
+    if (!path.empty() || !sortable.contains(FieldPath))
       sortable[FieldPath] = path;
     break;
   }
@@ -1575,7 +1575,7 @@ void CVideoInfoTag::SetRating(float rating, const std::string& type /* = "" */, 
 
 void CVideoInfoTag::RemoveRating(const std::string& type)
 {
-  if (m_ratings.find(type) != m_ratings.end())
+  if (m_ratings.contains(type))
   {
     m_ratings.erase(type);
     if (m_strDefaultRating == type && !m_ratings.empty())
@@ -1587,7 +1587,7 @@ void CVideoInfoTag::SetRatings(RatingMap ratings, const std::string& defaultRati
 {
   m_ratings = std::move(ratings);
 
-  if (!defaultRating.empty() && m_ratings.find(defaultRating) != m_ratings.end())
+  if (!defaultRating.empty() && m_ratings.contains(defaultRating))
     m_strDefaultRating = defaultRating;
 }
 
@@ -1632,7 +1632,7 @@ void CVideoInfoTag::SetUniqueIDs(std::map<std::string, std::string> uniqueIDs)
     if (uniqueid.first.empty())
       uniqueIDs.erase(uniqueid.first);
   }
-  if (uniqueIDs.find(m_strDefaultUniqueID) == uniqueIDs.end())
+  if (!uniqueIDs.contains(m_strDefaultUniqueID))
   {
     const auto defaultUniqueId = GetUniqueID();
     if (!defaultUniqueId.empty())
@@ -1737,7 +1737,7 @@ void CVideoInfoTag::SetUniqueID(const std::string& uniqueid, const std::string& 
 
 void CVideoInfoTag::RemoveUniqueID(const std::string& type)
 {
-  if (m_uniqueIDs.find(type) != m_uniqueIDs.end())
+  if (m_uniqueIDs.contains(type))
     m_uniqueIDs.erase(type);
 }
 

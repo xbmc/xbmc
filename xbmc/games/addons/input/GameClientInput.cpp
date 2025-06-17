@@ -268,7 +268,7 @@ void CGameClientInput::SetControllerLayouts(const ControllerVector& controllers)
   for (const auto& controller : controllers)
   {
     const std::string controllerId = controller->ID();
-    if (m_controllerLayouts.find(controllerId) == m_controllerLayouts.end())
+    if (!m_controllerLayouts.contains(controllerId))
       m_controllerLayouts[controllerId] =
           std::make_unique<CGameClientController>(*this, controller);
   }
@@ -639,7 +639,7 @@ bool CGameClientInput::OpenJoystick(const std::string& portAddress, const Contro
     return false;
   }
 
-  if (m_joysticks.find(portAddress) != m_joysticks.end())
+  if (m_joysticks.contains(portAddress))
   {
     CLog::Log(LOGERROR, "Failed to open port \"{}\", already open", portAddress);
     return false;

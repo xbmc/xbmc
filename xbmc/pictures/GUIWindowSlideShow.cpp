@@ -1368,7 +1368,7 @@ void CGUIWindowSlideShow::AddItems(const std::string &strPath, path_set *recursi
   {
     std::string path(strPath);
     URIUtils::RemoveSlashAtEnd(path);
-    if (recursivePaths->find(path) != recursivePaths->end())
+    if (recursivePaths->contains(path))
       return;
     recursivePaths->insert(path);
   }

@@ -107,7 +107,7 @@ bool CFileItemList::Contains(const std::string& fileName) const
 
   const std::string fname = m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName;
   if (m_fastLookup)
-    return m_map.find(fname) != m_map.end();
+    return m_map.contains(fname);
 
   // slow method...
   return std::ranges::any_of(m_items, [&fname](const auto& pItem) { return pItem->IsPath(fname); });

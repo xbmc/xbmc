@@ -524,7 +524,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
 
         // get chapters' timestamps if we have not cached them yet
-        if (m_mapTitleChapters.find(m_iTitle) == m_mapTitleChapters.end())
+        if (!m_mapTitleChapters.contains(m_iTitle))
         {
           uint64_t* times = NULL;
           uint64_t duration;

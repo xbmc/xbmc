@@ -596,8 +596,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForPool(
               m_processInfo.GetRenderSystemName(bufferPool));
 
     // Try to create a renderer now, unless the shader preset has failed already
-    if (shaderPreset.empty() ||
-        m_failedShaderPresets.find(shaderPreset) == m_failedShaderPresets.end())
+    if (shaderPreset.empty() || !m_failedShaderPresets.contains(shaderPreset))
       renderer.reset(m_processInfo.CreateRenderer(bufferPool, renderSettings));
 
     if (renderer && renderer->Configure(m_format))

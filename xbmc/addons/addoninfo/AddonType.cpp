@@ -55,5 +55,5 @@ void CAddonType::SetProvides(const std::string& content)
 
 bool CAddonType::IsDependencyType(AddonType type)
 {
-  return dependencyTypes.find(type) != dependencyTypes.end();
+  return dependencyTypes.contains(type);
 }

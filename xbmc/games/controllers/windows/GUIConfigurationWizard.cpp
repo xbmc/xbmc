@@ -236,7 +236,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
     // Discard input
     bHandled = true;
   }
-  else if (m_history.find(primitive) != m_history.end())
+  else if (m_history.contains(primitive))
   {
     // Primitive has already been mapped this round, ignore it
     bHandled = true;
@@ -366,7 +366,7 @@ void CGUIConfigurationWizard::OnEventFrame(const JOYSTICK::IButtonMap* buttonMap
 {
   std::unique_lock lock(m_motionMutex);
 
-  if (m_bInMotion.find(buttonMap) != m_bInMotion.end() && !bMotion)
+  if (m_bInMotion.contains(buttonMap) && !bMotion)
     OnMotionless(buttonMap);
 }
 

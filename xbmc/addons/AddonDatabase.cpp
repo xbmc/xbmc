@@ -419,7 +419,7 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
     {
       int enable = 0;
 
-      if (system.find(id) != system.end() || optional.find(id) != optional.end())
+      if (system.contains(id) || optional.contains(id))
         enable = 1;
 
       m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) "

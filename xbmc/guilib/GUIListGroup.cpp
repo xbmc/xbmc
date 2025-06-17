@@ -55,7 +55,7 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
 {
   if (control)
   {
-    if (supportedTypes.find(control->GetControlType()) == supportedTypes.end())
+    if (!supportedTypes.contains(control->GetControlType()))
       CLog::Log(LOGWARNING, "Trying to add unsupported control type {}", control->GetControlType());
   }
   CGUIControlGroup::AddControl(control, position);

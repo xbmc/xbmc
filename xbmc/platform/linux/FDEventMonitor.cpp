@@ -177,7 +177,7 @@ void CFDEventMonitor::AddFDLocked(const MonitoredFD& monitoredFD, int& id)
 {
   id = m_nextID;
 
-  while (m_monitoredFDs.count(id))
+  while (m_monitoredFDs.contains(id))
   {
     ++id;
   }
