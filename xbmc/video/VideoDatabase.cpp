@@ -1307,39 +1307,58 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
       return -1;
     if (nullptr == m_pDS)
       return -1;
-    int idMovie = -1;
 
     // needed for query parameters
-    int idFile = GetFileId(strFilenameAndPath);
-    int idPath=-1;
+    int idMovie{-1};
+    int idFile{GetFileId(strFilenameAndPath)};
+    int idPath{-1};
+    bool isDisc{false};
     std::string strPath;
     if (idFile < 0)
     {
       std::string strFile;
-      SplitPath(strFilenameAndPath,strPath,strFile);
+      SplitPath(strFilenameAndPath, strPath, strFile);
 
-      // have to join movieinfo table for correct results
       idPath = GetPathId(strPath);
       if (idPath < 0 && strPath != strFilenameAndPath)
-        return -1;
+      {
+        if (URIUtils::IsBDFile(strFilenameAndPath) || URIUtils::IsDiscImage(strFilenameAndPath))
+        {
+          const std::string blurayPath{URIUtils::GetBlurayPlaylistPath(strFilenameAndPath)};
+          idPath = GetPathId(blurayPath);
+          if (idPath < 0)
+            return -1;
+          isDisc = true;
+        }
+        else
+          return -1;
+      }
     }
 
-    if (idFile == -1 && strPath != strFilenameAndPath)
+    if (idFile == -1 && strPath != strFilenameAndPath && !isDisc)
       return -1;
 
     std::string strSQL;
     if (idFile == -1)
-      strSQL = PrepareSQL("SELECT idMovie FROM movie "
-                          "  JOIN files ON files.idFile=movie.idFile "
-                          "WHERE files.idPath=%i",
-                          idPath);
+    {
+      if (isDisc)
+        strSQL = PrepareSQL("SELECT idMovie FROM movie "
+                            "JOIN files "
+                            "WHERE files.idPath=%i",
+                            idPath);
+      else
+        strSQL = PrepareSQL("SELECT idMovie FROM movie "
+                            "JOIN files ON files.idFile=movie.idFile "
+                            "WHERE files.idPath=%i",
+                            idPath);
+    }
     else
       strSQL = PrepareSQL("SELECT idMedia FROM videoversion "
                           "WHERE idFile = %i AND media_type = '%s' AND itemType = %i",
                           idFile, MediaTypeMovie, VideoAssetType::VERSION);
 
-    CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
-              CURL::GetRedacted(strFilenameAndPath), strSQL);
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "({}), query = {}", CURL::GetRedacted(strFilenameAndPath),
+                strSQL);
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() > 0)
       idMovie = m_pDS->fv(0).get_asInt();
@@ -1349,7 +1368,7 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
+    CLog::LogF(LOGERROR, "({}) failed", strFilenameAndPath);
   }
   return -1;
 }
