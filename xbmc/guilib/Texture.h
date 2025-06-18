@@ -120,13 +120,20 @@ public:
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
-  /*! 
+  /*!
    * \brief Blocks execution until the previous GFX commands have been processed.
    */
   virtual void SyncGPU(){};
   virtual void BindToUnit(unsigned int unit) = 0;
 
-  /*! 
+  /*!
+   * \brief Set texture filtering method and update GPU state if needed
+   *
+   * \param scalingMethod the scaling method to use for the texture
+   */
+  virtual void SetScalingMethod(TEXTURE_SCALING scalingMethod);
+
+  /*!
    * \brief Checks if the processing pipeline can handle the texture format/swizzle
    \param format the format of the texture.
    \return true if the texturing pipeline supports the format
@@ -141,6 +148,21 @@ private:
   CTexture(const CTexture& copy) = delete;
 
 protected:
+  /*!
+   * \brief Apply the currently-selected texture scaling method to the GPU state
+   *
+   * This is called automatically by SetScalingMethod() once the desired
+   * TEXTURE_SCALING value has been stored in \a m_scalingMethod.  Concrete
+   * subclasses (e.g., CGLTexture, CGLESTexture, CDXTexture) should override this
+   * method to bind the underlying texture object and update its filtering
+   * parameters (GL_LINEAR / GL_NEAREST, mip-map variants, etc.) so that the
+   * texture is rendered with the correct magnification and minification filters.
+   *
+   * Classes that do not keep a GPU-resident texture (or whose platform handles
+   * filtering externally) may leave the base implementation empty.
+   */
+  virtual void ApplyScalingMethod() {}
+
   bool LoadFromFileInMem(unsigned char* buffer,
                          size_t size,
                          const std::string& mimeType,
