@@ -128,7 +128,7 @@ public:
   ~CFileItem(void) override;
   CGUIListItem* Clone() const override { return new CFileItem(*this); }
 
-  GetURL() const;
+  CURL GetURL() const;
   const CURL& GetURLRef() const;
   void SetURL(const CURL& url);
   bool IsURL(const CURL& url) const;
@@ -136,7 +136,7 @@ public:
   void SetPath(const std::string& path);
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
-  GetDynURL() const;
+  CURL GetDynURL() const;
   const CURL& GetDynURLRef() const;
   void SetDynURL(const CURL& url);
   const std::string &GetDynPath() const;
