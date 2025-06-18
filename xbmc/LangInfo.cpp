@@ -1190,9 +1190,9 @@ const std::string& CLangInfo::GetSpeedUnitString(CSpeed::Unit speedUnit)
   return g_localizeStrings.Get(SPEED_UNIT_STRINGS + speedUnit);
 }
 
-std::set<std::string> CLangInfo::GetSortTokens() const
+CLangInfo::Tokens CLangInfo::GetSortTokens() const
 {
-  std::set<std::string> sortTokens = m_sortTokens;
+  Tokens sortTokens = m_sortTokens;
   for (const auto& t : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_vecTokens)
     sortTokens.insert(t);
 

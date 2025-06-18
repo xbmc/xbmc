@@ -152,7 +152,7 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &prope
   else if (property == "sorttokens")
   {
     result = CVariant(CVariant::VariantTypeArray); // Ensure no tokens returns as []
-    std::set<std::string> sortTokens = g_langInfo.GetSortTokens();
+    const CLangInfo::Tokens sortTokens = g_langInfo.GetSortTokens();
     for (const auto& token : sortTokens)
       result.append(token);
   }

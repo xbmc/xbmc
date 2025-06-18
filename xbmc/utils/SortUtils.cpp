@@ -1134,7 +1134,7 @@ const Fields& SortUtils::GetFieldsForSorting(SortBy sortBy)
 
 std::string SortUtils::RemoveArticles(const std::string &label)
 {
-  std::set<std::string> sortTokens = g_langInfo.GetSortTokens();
+  const CLangInfo::Tokens sortTokens = g_langInfo.GetSortTokens();
   for (std::set<std::string>::const_iterator token = sortTokens.begin(); token != sortTokens.end(); ++token)
   {
     if (token->size() < label.size() && StringUtils::StartsWithNoCase(label, *token))

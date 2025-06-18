@@ -347,10 +347,10 @@ public:
                                   std::string& strReview);
   bool SearchAlbumsByArtistName(const std::string& strArtist, CFileItemList& items);
   int GetAlbumByMatch(const CAlbum& album);
-  std::string GetAlbumById(int id);
+  std::string GetAlbumById(int id) const;
   std::string GetAlbumDiscTitle(int idAlbum, int idDisc);
   bool SetAlbumUserrating(const int idAlbum, int userrating);
-  int GetAlbumDiscsCount(int idAlbum);
+  int GetAlbumDiscsCount(int idAlbum) const;
 
   /////////////////////////////////////////////////
   // Artist CRUD
@@ -398,13 +398,13 @@ public:
   bool AddArtistVideoLinks(const CArtist& artist);
   bool DeleteArtistVideoLinks(const int idArtist);
 
-  std::string GetArtistById(int id);
+  std::string GetArtistById(int id) const;
   int GetArtistByName(const std::string& strArtist);
   int GetArtistByMatch(const CArtist& artist);
   bool GetArtistFromSong(int idSong, CArtist& artist);
-  bool IsSongArtist(int idSong, int idArtist);
-  bool IsSongAlbumArtist(int idSong, int idArtist);
-  std::string GetRoleById(int id);
+  bool IsSongArtist(int idSong, int idArtist) const;
+  bool IsSongAlbumArtist(int idSong, int idArtist) const;
+  std::string GetRoleById(int id) const;
 
   /*! \brief Propagate artist sort name into the concatenated artist sort name strings
   held for songs and albums
@@ -454,13 +454,13 @@ public:
   bool GetSourcesByAlbum(int idAlbum, CFileItem* item);
   bool GetSourcesBySong(int idSong, const std::string& strPath, CFileItem* item);
   int GetSourceByName(const std::string& strSource);
-  std::string GetSourceById(int id);
+  std::string GetSourceById(int id) const;
 
   /////////////////////////////////////////////////
   // Genres
   /////////////////////////////////////////////////
   int AddGenre(std::string& strGenre);
-  std::string GetGenreById(int id);
+  std::string GetGenreById(int id) const;
   int GetGenreByName(const std::string& strGenre);
 
   /////////////////////////////////////////////////
@@ -521,18 +521,18 @@ public:
   /////////////////////////////////////////////////
   // Compilations
   /////////////////////////////////////////////////
-  int GetCompilationAlbumsCount();
+  int GetCompilationAlbumsCount() const;
 
   ////////////////////////////////////////////////
   // Boxsets
   ////////////////////////////////////////////////
-  bool IsAlbumBoxset(int idAlbum);
-  int GetBoxsetsCount();
+  bool IsAlbumBoxset(int idAlbum) const;
+  int GetBoxsetsCount() const;
 
   int GetSinglesCount();
 
-  int GetArtistCountForRole(int role);
-  int GetArtistCountForRole(const std::string& strRole);
+  int GetArtistCountForRole(int role) const;
+  int GetArtistCountForRole(const std::string& strRole) const;
 
   /*! \brief Increment the playcount of an item
    Increments the playcount and updates the last played date
@@ -848,19 +848,19 @@ public:
   */
   void SetMusicTagScanVersion(int version = 0);
 
-  std::string GetLibraryLastUpdated();
+  std::string GetLibraryLastUpdated() const;
   void SetLibraryLastUpdated();
-  std::string GetLibraryLastCleaned();
+  std::string GetLibraryLastCleaned() const;
   void SetLibraryLastCleaned();
-  std::string GetArtistLinksUpdated();
+  std::string GetArtistLinksUpdated() const;
   void SetArtistLinksUpdated();
-  std::string GetGenresLastAdded();
-  std::string GetSongsLastAdded();
-  std::string GetAlbumsLastAdded();
-  std::string GetArtistsLastAdded();
-  std::string GetSongsLastModified();
-  std::string GetAlbumsLastModified();
-  std::string GetArtistsLastModified();
+  std::string GetGenresLastAdded() const;
+  std::string GetSongsLastAdded() const;
+  std::string GetAlbumsLastAdded() const;
+  std::string GetArtistsLastAdded() const;
+  std::string GetSongsLastModified() const;
+  std::string GetAlbumsLastModified() const;
+  std::string GetArtistsLastModified() const;
 
   /*!
    * @brief Check the passed in list of images if used in this database. Used to clean the image cache.
@@ -902,7 +902,7 @@ private:
                                            int offset = 0) const;
   CMusicRole GetArtistRoleFromDataset(const dbiplus::sql_record* const record,
                                       int offset = 0) const;
-  std::string GetMediaDateFromFile(const std::string& strFileNameAndPath);
+  std::string GetMediaDateFromFile(const std::string& strFileNameAndPath) const;
   void GetFileItemFromDataset(CFileItem* item, const CMusicDbUrl& baseUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record,
                               CFileItem* item,
@@ -931,7 +931,7 @@ private:
   \param strField original name or title field that articles could be removed from
   \return SQL string e.g.  WHEN strField LIKE 'the_' ESCAPE '_' THEN SUBSTR(strArtist, 5)
   */
-  std::string GetIgnoreArticleSQL(const std::string& strField);
+  std::string GetIgnoreArticleSQL(const std::string& strField) const;
 
   /*! \brief Build SQL for sort name scalar subquery from sort attributes and ignore article list.
   \param strAlias alias name of scalar subquery field
@@ -956,12 +956,12 @@ private:
   CASE WHEN CAST(strTitle AS INTEGER) = 0 THEN 100000000
   ELSE CAST(strTitle AS INTEGER) END DESC, strTitle COLLATE NOCASE DESC
   */
-  std::string AlphanumericSortSQL(const std::string& strField, const SortOrder& sortOrder);
+  std::string AlphanumericSortSQL(const std::string& strField, const SortOrder& sortOrder) const;
 
   /*! \brief Checks that source table matches sources.xml
   returns true when they do
   */
-  bool CheckSources(std::vector<CMediaSource>& sources);
+  bool CheckSources(const std::vector<CMediaSource>& sources);
 
   /*! \brief Initially fills source table from sources.xml for use only at
   migration of db from an earlier version than 72
