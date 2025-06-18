@@ -128,8 +128,6 @@ public:
   ~CFileItem(void) override;
   CGUIListItem* Clone() const override { return new CFileItem(*this); }
 
-  [[deprecated("This returns a copy of the CURL object. To avoid an extra copy Use "
-               "FileItem::GetURLRef() instead.")]] CURL
   GetURL() const;
   const CURL& GetURLRef() const;
   void SetURL(const CURL& url);
@@ -138,8 +136,6 @@ public:
   void SetPath(const std::string& path);
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
-  [[deprecated("This returns a copy of the CURL object. To avoid an extra copy Use "
-               "FileItem::GetDynURLRef() instead.")]] CURL
   GetDynURL() const;
   const CURL& GetDynURLRef() const;
   void SetDynURL(const CURL& url);
