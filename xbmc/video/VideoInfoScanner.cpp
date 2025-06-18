@@ -200,7 +200,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::Start(const std::string& strDirectory, bool scanAll)
   {
-    m_strStartDir = strDirectory;
     m_scanAll = scanAll;
     m_pathsToScan.clear();
     m_pathsToClean.clear();
@@ -1645,7 +1644,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
-  std::string CVideoInfoScanner::GetArtTypeFromSize(unsigned int width, unsigned int height)
+  /*! \brief Retrieve the art type for an image from the given size.
+   \param width the width of the image.
+   \param height the height of the image.
+   \return "poster" if the aspect ratio is at most 4:5, "banner" if the aspect ratio
+           is at least 1:4, "thumb" otherwise.
+   */
+  static std::string GetArtTypeFromSize(unsigned int width, unsigned int height)
   {
     std::string type = "thumb";
     if (width*5 < height*4)
@@ -1698,9 +1703,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return CDirectory::Exists(path) ? path : "";
   }
 
-  void CVideoInfoScanner::AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
-    const std::vector<std::string>& wantedArtTypes, const std::string& itemPath,
-    bool addAll, bool exactName)
+  static void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
+                                  const std::vector<std::string>& wantedArtTypes,
+                                  const std::string& itemPath,
+                                  bool addAll,
+                                  bool exactName)
   {
     std::string path = URIUtils::GetDirectory(itemPath);
     if (path.empty())
