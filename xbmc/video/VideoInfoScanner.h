@@ -294,26 +294,9 @@ namespace KODI::VIDEO
     bool m_scanAll;
     bool m_ignoreVideoVersions{false};
     bool m_ignoreVideoExtras{false};
-    std::string m_strStartDir;
     CVideoDatabase m_database;
-    std::set<std::string> m_pathsToCount;
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
-
-  private:
-    static void AddLocalItemArtwork(KODI::ART::Artwork& itemArt,
-                                    const std::vector<std::string>& wantedArtTypes,
-                                    const std::string& itemPath,
-                                    bool addAll,
-                                    bool exactName);
-
-    /*! \brief Retrieve the art type for an image from the given size.
-     \param width the width of the image.
-     \param height the height of the image.
-     \return "poster" if the aspect ratio is at most 4:5, "banner" if the aspect ratio
-             is at least 1:4, "thumb" otherwise.
-     */
-    static std::string GetArtTypeFromSize(unsigned int width, unsigned int height);
   };
   } // namespace KODI::VIDEO
