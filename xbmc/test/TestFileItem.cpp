@@ -73,3 +73,88 @@ const TestFileData BaseMovies[] = {{ "c:\\dir\\filename.avi", false, "c:\\dir\\f
                                    { "/home/user/movies/movie_name/BDMV/index.bdmv", true, "/home/user/movies/movie_name/" }};
 
 INSTANTIATE_TEST_SUITE_P(BaseNameMovies, TestFileItemBasePath, ValuesIn(BaseMovies));
+
+TEST(TestFileItem, TestSimplePathSet)
+{
+  CFileItem item;
+  item.SetPath("/local/path/regular/file.txt");
+  item.SetDynPath("/local/path/dynamic/file.txt");
+
+  EXPECT_EQ("/local/path/regular/file.txt", item.GetURL().Get());
+  EXPECT_EQ("/local/path/dynamic/file.txt", item.GetDynURL().Get());
+  EXPECT_EQ("/local/path/regular/file.txt", item.GetURLRef().Get());
+  EXPECT_EQ("/local/path/dynamic/file.txt", item.GetDynURLRef().Get());
+}
+
+TEST(TestFileItem, TestLabel)
+{
+  CFileItem item("My Item Label");
+  item.SetPath("/local/path/file.txt");
+
+  EXPECT_EQ("My Item Label", item.GetLabel());
+  EXPECT_EQ("/local/path/file.txt", item.GetURL().Get());
+  EXPECT_EQ("/local/path/file.txt", item.GetDynURL().Get());
+  EXPECT_EQ("/local/path/file.txt", item.GetURLRef().Get());
+  EXPECT_EQ("/local/path/file.txt", item.GetDynURLRef().Get());
+}
+
+TEST(TestFileItem, TestCURLConstructor)
+{
+  CFileItem folderItem(CURL("/local/path/file.txt"), true);
+
+  EXPECT_EQ("", folderItem.GetLabel());
+  EXPECT_EQ("/local/path/file.txt/", folderItem.GetURL().Get());
+  EXPECT_EQ("/local/path/file.txt/", folderItem.GetDynURL().Get());
+  EXPECT_EQ("/local/path/file.txt/", folderItem.GetURLRef().Get());
+  EXPECT_EQ("/local/path/file.txt/", folderItem.GetDynURLRef().Get());
+
+  CFileItem fileItem(CURL("/local/path/file.txt"), false);
+
+  EXPECT_EQ("", fileItem.GetLabel());
+  EXPECT_EQ("/local/path/file.txt", fileItem.GetURL().Get());
+  EXPECT_EQ("/local/path/file.txt", fileItem.GetDynURL().Get());
+  EXPECT_EQ("/local/path/file.txt", fileItem.GetURLRef().Get());
+  EXPECT_EQ("/local/path/file.txt", fileItem.GetDynURLRef().Get());
+}
+
+TEST(TestFileItem, TestAssignment)
+{
+  CFileItem itemToCopy("My Item Label");
+  itemToCopy.SetPath("/local/path/file.txt");
+
+  CFileItem item("Alternative Label");
+  item = itemToCopy;
+
+  EXPECT_EQ("My Item Label", item.GetLabel());
+  EXPECT_EQ("/local/path/file.txt", item.GetURL().Get());
+  EXPECT_EQ("/local/path/file.txt", item.GetDynURL().Get());
+  EXPECT_EQ("/local/path/file.txt", item.GetURLRef().Get());
+  EXPECT_EQ("/local/path/file.txt", item.GetDynURLRef().Get());
+
+  item.Reset();
+  EXPECT_EQ("", item.GetLabel());
+  EXPECT_EQ("", item.GetURL().Get());
+  EXPECT_EQ("", item.GetDynURL().Get());
+  EXPECT_EQ("", item.GetURLRef().Get());
+  EXPECT_EQ("", item.GetDynURLRef().Get());
+}
+
+TEST(TestFileItem, MimeType)
+{
+  CFileItem item("Internet Movies List");
+  item.SetPath("http://testdomain.com/api/movies");
+
+  item.FillInMimeType(true);
+  EXPECT_EQ("Internet Movies List", item.GetLabel());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetURL().Get());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetDynURL().Get());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetURLRef().Get());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetDynURLRef().Get());
+
+  item.FillInMimeType(false);
+  EXPECT_EQ("Internet Movies List", item.GetLabel());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetURL().Get());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetDynURL().Get());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetURLRef().Get());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetDynURLRef().Get());
+}
