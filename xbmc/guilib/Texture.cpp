@@ -54,6 +54,12 @@ CTexture::~CTexture()
   m_pixels = NULL;
 }
 
+void CTexture::SetScalingMethod(TEXTURE_SCALING scalingMethod)
+{
+  m_scalingMethod = scalingMethod;
+  ApplyScalingMethod();
+}
+
 void CTexture::Update(unsigned int width,
                       unsigned int height,
                       unsigned int pitch,
