@@ -13,6 +13,8 @@
 \brief
 */
 
+#include "utils/ArtUtils.h"
+
 #include <map>
 #include <memory>
 #include <string>
@@ -29,7 +31,7 @@ class CVariant;
 class CGUIListItem
 {
 public:
-  typedef std::map<std::string, std::string> ArtMap;
+  using ArtMap = KODI::ART::ArtMap;
 
   ///
   /// @ingroup controls python_xbmcgui_listitem

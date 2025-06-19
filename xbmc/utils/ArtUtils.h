@@ -8,12 +8,17 @@
 
 #pragma once
 
+#include "utils/ArtUtils.h"
+
+#include <map>
 #include <string>
 
 class CFileItem;
 
 namespace KODI::ART
 {
+
+typedef std::map<std::string, std::string> ArtMap;
 
 //! \brief Set default icon for item.
 void FillInDefaultIcon(CFileItem& item);

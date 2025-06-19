@@ -12,6 +12,7 @@
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
 #include "guilib/GUIListItem.h"
+#include "utils/ArtUtils.h"
 
 #include <set>
 #include <string>
@@ -283,9 +284,11 @@ namespace KODI::VIDEO
     CVideoDatabase::ScraperCache m_scraperCache;
 
   private:
-    static void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
-      const std::vector<std::string>& wantedArtTypes, const std::string& itemPath,
-      bool addAll, bool exactName);
+    static void AddLocalItemArtwork(ART::ArtMap& itemArt,
+                                    const std::vector<std::string>& wantedArtTypes,
+                                    const std::string& itemPath,
+                                    bool addAll,
+                                    bool exactName);
 
     /*! \brief Retrieve the art type for an image from the given size.
      \param width the width of the image.

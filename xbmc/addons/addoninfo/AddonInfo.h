@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
+#include "utils/ArtUtils.h"
 
 #include <map>
 #include <memory>
@@ -134,7 +135,7 @@ struct DependencyInfo
 };
 
 typedef std::map<std::string, std::string> InfoMap;
-typedef std::map<std::string, std::string> ArtMap;
+using ArtMap = KODI::ART::ArtMap;
 
 class CAddonInfoBuilder;
 

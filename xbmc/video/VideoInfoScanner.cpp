@@ -1698,9 +1698,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return CDirectory::Exists(path) ? path : "";
   }
 
-  void CVideoInfoScanner::AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
-    const std::vector<std::string>& wantedArtTypes, const std::string& itemPath,
-    bool addAll, bool exactName)
+  void CVideoInfoScanner::AddLocalItemArtwork(ArtMap& itemArt,
+                                              const std::vector<std::string>& wantedArtTypes,
+                                              const std::string& itemPath,
+                                              bool addAll,
+                                              bool exactName)
   {
     std::string path = URIUtils::GetDirectory(itemPath);
     if (path.empty())
@@ -1772,7 +1774,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     movieDetails.m_fanart.Unpack();
     movieDetails.m_strPictureURL.Parse();
 
-    CGUIListItem::ArtMap art = pItem->GetArt();
+    ArtMap art = pItem->GetArt();
 
     // get and cache thumb images
     std::string mediaType = ContentToMediaType(content, pItem->m_bIsFolder);
@@ -1814,7 +1816,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         std::string movieSetInfoPath = GetMovieSetInfoFolder(movieDetails.m_set.title);
         if (!movieSetInfoPath.empty())
         {
-          CGUIListItem::ArtMap movieSetArt;
+          ArtMap movieSetArt;
           AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, addAll, exactName);
           for (const auto& artItem : movieSetArt)
           {

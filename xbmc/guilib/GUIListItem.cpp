@@ -16,6 +16,8 @@
 
 #include <utility>
 
+using namespace KODI;
+
 bool CGUIListItem::icompare::operator()(const std::string &s1, const std::string &s2) const
 {
   return StringUtils::CompareNoCase(s1, s2) < 0;
@@ -97,7 +99,7 @@ const std::wstring& CGUIListItem::GetSortLabel() const
 
 void CGUIListItem::SetArt(const std::string &type, const std::string &url)
 {
-  ArtMap::iterator i = m_art.find(type);
+  ART::ArtMap::const_iterator i = m_art.find(type);
   if (i == m_art.end() || i->second != url)
   {
     m_art[type] = url;
@@ -105,7 +107,7 @@ void CGUIListItem::SetArt(const std::string &type, const std::string &url)
   }
 }
 
-void CGUIListItem::SetArt(const ArtMap &art)
+void CGUIListItem::SetArt(const ART::ArtMap& art)
 {
   m_art = art;
   SetInvalid();
@@ -123,7 +125,7 @@ void CGUIListItem::ClearArt()
   SetProperty("libraryartfilled", false);
 }
 
-void CGUIListItem::AppendArt(const ArtMap &art, const std::string &prefix)
+void CGUIListItem::AppendArt(const ART::ArtMap& art, const std::string& prefix)
 {
   for (const auto& i : art)
     SetArt(prefix.empty() ? i.first : prefix + '.' + i.first, i.second);
@@ -131,20 +133,20 @@ void CGUIListItem::AppendArt(const ArtMap &art, const std::string &prefix)
 
 std::string CGUIListItem::GetArt(const std::string &type) const
 {
-  ArtMap::const_iterator i = m_art.find(type);
+  ART::ArtMap::const_iterator i = m_art.find(type);
   if (i != m_art.end())
     return i->second;
   i = m_artFallbacks.find(type);
   if (i != m_artFallbacks.end())
   {
-    ArtMap::const_iterator j = m_art.find(i->second);
+    ART::ArtMap::const_iterator j = m_art.find(i->second);
     if (j != m_art.end())
       return j->second;
   }
   return "";
 }
 
-const CGUIListItem::ArtMap &CGUIListItem::GetArt() const
+const ART::ArtMap& CGUIListItem::GetArt() const
 {
   return m_art;
 }

@@ -11811,7 +11811,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
                                                      LegalPath::WIN32_COMPAT));
           if (CDirectory::Exists(setPath))
           {
-            CGUIListItem::ArtMap setArt;
+            ArtMap setArt;
             CFileItem artItem(setPath, true);
             for (const auto& artType : CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection))
             {

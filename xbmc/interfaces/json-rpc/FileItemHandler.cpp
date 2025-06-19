@@ -189,9 +189,8 @@ bool CFileItemHandler::GetField(const std::string& field,
         fetchedArt = true;
       }
 
-      CGUIListItem::ArtMap artMap = item->GetArt();
       CVariant artObj(CVariant::VariantTypeObject);
-      for (const auto& artIt : artMap)
+      for (const auto& artIt : item->GetArt())
       {
         if (!artIt.second.empty())
           artObj[artIt.first] = IMAGE_FILES::URLFromFile(artIt.second);

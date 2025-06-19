@@ -37,6 +37,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -480,7 +481,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           else
             seasonID = items[firstIndex]->GetVideoInfoTag()->m_iIdSeason;
 
-          CGUIListItem::ArtMap seasonArt;
+          ArtMap seasonArt;
           if (seasonID > -1 && m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt) &&
               !seasonArt.empty())
           {
@@ -497,7 +498,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       {
         if (params.GetSetId() > 0)
         {
-          CGUIListItem::ArtMap setArt;
+          ArtMap setArt;
           if (m_database.GetArtForItem(params.GetSetId(), MediaTypeVideoCollection, setArt) &&
               !setArt.empty())
           {

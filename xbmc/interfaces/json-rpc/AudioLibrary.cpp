@@ -300,9 +300,8 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
         }
         if (bFetchArt)
         {
-          CGUIListItem::ArtMap artMap = item.GetArt();
           CVariant artObj(CVariant::VariantTypeObject);
-          for (const auto& artIt : artMap)
+          for (const auto& artIt : item.GetArt())
           {
             if (!artIt.second.empty())
               artObj[artIt.first] = IMAGE_FILES::URLFromFile(artIt.second);
@@ -466,9 +465,8 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
         }
         if (bFetchArt)
         {
-          CGUIListItem::ArtMap artMap = item.GetArt();
           CVariant artObj(CVariant::VariantTypeObject);
-          for (const auto& artIt : artMap)
+          for (const auto& artIt : item.GetArt())
           {
             if (!artIt.second.empty())
               artObj[artIt.first] = IMAGE_FILES::URLFromFile(artIt.second);
