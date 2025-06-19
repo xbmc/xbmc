@@ -12850,23 +12850,16 @@ bool CVideoDatabase::UpdateAssetsOwner(const std::string& mediaType, int dbIdSou
   return true;
 }
 
-bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
-                                           int dbIdSource,
-                                           int dbIdTarget,
-                                           int idVideoVersion,
-                                           VideoAssetType assetType)
+bool CVideoDatabase::ConvertMovieVideoToVersion(VideoDbContentType itemType,
+                                                int dbIdSource,
+                                                int dbIdTarget,
+                                                int idVideoVersion,
+                                                VideoAssetType assetType)
 {
-  int idFile = -1;
-  MediaType mediaType;
-  VideoContentTypeToString(itemType, mediaType);
-
-  if (itemType == VideoDbContentType::MOVIES)
-  {
-    idFile = GetFileIdByMovie(dbIdSource);
-  }
-  else
+  if (itemType != VideoDbContentType::MOVIES)
     return false;
 
+  int idFile = GetFileIdByMovie(dbIdSource);
   if (idFile < 0)
     return false;
 
@@ -12875,20 +12868,20 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
   if (dbIdSource != dbIdTarget)
   {
     // Transfer all assets (versions, extras,...) to the new movie.
-    UpdateAssetsOwner(mediaType, dbIdSource, dbIdTarget);
+    UpdateAssetsOwner(MediaTypeMovie, dbIdSource, dbIdTarget);
 
     // version-level art doesn't need any change.
     // 'movie' art is converted to 'videoversion' art.
-    SetVideoVersionDefaultArt(idFile, dbIdSource, itemType);
+    SetVideoVersionDefaultArt(idFile, dbIdSource, MediaTypeMovie);
 
-    if (itemType == VideoDbContentType::MOVIES)
-      DeleteMovie(dbIdSource, DeleteMovieCascadeAction::ALL_ASSETS,
-                  DeleteMovieHashAction::HASH_PRESERVE);
+    DeleteMovie(dbIdSource, DeleteMovieCascadeAction::ALL_ASSETS,
+                DeleteMovieHashAction::HASH_PRESERVE);
   }
 
   // Rename the default version
-  ExecuteQuery(PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i",
-                          idVideoVersion, assetType, idFile));
+  ExecuteQuery(PrepareSQL(
+      "UPDATE videoversion SET idType = %i, VideoDbContentType::MOVIES = %i WHERE idFile = %i",
+      idVideoVersion, assetType, idFile));
 
   CommitTransaction();
 
@@ -13016,8 +13009,7 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
   if (itemType != VideoDbContentType::MOVIES)
     return false;
 
-  MediaType mediaType;
-  VideoContentTypeToString(itemType, mediaType);
+  MediaType mediaType = VideoContentTypeToString(itemType);
 
   int idFile = AddFile(item.GetPath());
   if (idFile < 0)
@@ -13235,11 +13227,8 @@ std::string CVideoDatabase::GetVideoVersionById(int id)
   return GetSingleValue(PrepareSQL("SELECT name FROM videoversiontype WHERE id=%i", id), m_pDS2);
 }
 
-bool CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type)
+bool CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, const MediaType& mediaType)
 {
-  MediaType mediaType;
-  VideoContentTypeToString(type, mediaType);
-
   std::map<std::string, std::string> art;
   if (GetArtForItem(idFrom, mediaType, art))
   {

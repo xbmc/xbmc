@@ -1047,24 +1047,20 @@ public:
   */
   unsigned int GetRandomMusicVideoIDs(const std::string& strWhere, std::vector<std::pair<int, int> > &songIDs);
 
-  static void VideoContentTypeToString(VideoDbContentType type, std::string& out)
+  static std::string VideoContentTypeToString(VideoDbContentType type)
   {
     switch (type)
     {
       case VideoDbContentType::MOVIES:
-        out = MediaTypeMovie;
-        break;
+        return MediaTypeMovie;
       case VideoDbContentType::TVSHOWS:
-        out = MediaTypeTvShow;
-        break;
+        return MediaTypeTvShow;
       case VideoDbContentType::EPISODES:
-        out = MediaTypeEpisode;
-        break;
+        return MediaTypeEpisode;
       case VideoDbContentType::MUSICVIDEOS:
-        out = MediaTypeMusicVideo;
-        break;
+        return MediaTypeMusicVideo;
       default:
-        break;
+        return {};
     }
   }
 
@@ -1170,11 +1166,11 @@ public:
    * \param assetType new asset type of the default version of the video
    * \return true for success, false otherwise
    */
-  bool ConvertVideoToVersion(VideoDbContentType itemType,
-                             int dbIdSource,
-                             int dbIdTarget,
-                             int idVideoVersion,
-                             VideoAssetType assetType);
+  bool ConvertMovieVideoToVersion(VideoDbContentType itemType,
+                                  int dbIdSource,
+                                  int dbIdTarget,
+                                  int idVideoVersion,
+                                  VideoAssetType assetType);
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
@@ -1200,7 +1196,7 @@ public:
   bool GetVideoVersionTypes(VideoDbContentType idContent,
                             VideoAssetType asset,
                             CFileItemList& items);
-  bool SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
+  bool SetVideoVersionDefaultArt(int dbId, int idFrom, const MediaType& mediaType);
   void InitializeVideoVersionTypeTable(int schemaVersion);
   void UpdateVideoVersionTypeTable();
   bool GetVideoVersionsNav(const std::string& strBaseDir,
