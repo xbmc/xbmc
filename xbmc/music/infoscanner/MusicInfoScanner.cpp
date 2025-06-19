@@ -1973,7 +1973,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
   if (artist.art.empty())
     m_musicDatabase.GetArtForItem(artist.idArtist, MediaTypeArtist, artist.art);
 
-  std::map<std::string, std::string> addedart;
+  ART::ArtMap addedart;
   std::string strArt;
 
   // Handle thumb separately, can be from multiple configurable file names
@@ -2046,7 +2046,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
       replaceThumb = true;
   }
 
-  std::map<std::string, std::string> addedart;
+  ART::ArtMap addedart;
   std::string strArt;
 
   // Fetch local art from album folder
@@ -2159,7 +2159,7 @@ std::vector<CVariant> CMusicInfoScanner::GetArtWhitelist(const MediaType& mediaT
   return whitelistarttypes;
 }
 
-bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
+bool CMusicInfoScanner::AddLocalArtwork(ART::ArtMap& art,
                                         const std::string& mediaType,
                                         const std::string& mediaName,
                                         const std::string& artfolder,
@@ -2255,7 +2255,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
   return art.size() > 0;
 }
 
-bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art,
+bool CMusicInfoScanner::AddRemoteArtwork(ART::ArtMap& art,
                                          const std::string& mediaType,
                                          const CScraperUrl& thumbURL)
 {

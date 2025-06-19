@@ -12039,7 +12039,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
             {
               // Save art in album folder
               // Note thumb resolution may be lower than original when overwriting
-              std::map<std::string, std::string> artwork;
+              ART::ArtMap artwork;
               std::string savedArtfile;
               if (GetArtForItem(album.idAlbum, MediaTypeAlbum, artwork))
               {
@@ -12129,7 +12129,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
         // Include discography when not folders only
         GetArtist(artistId, artist, !artistfoldersonly);
         std::string strPath;
-        std::map<std::string, std::string> artwork;
+        ART::ArtMap artwork;
         if (settings.IsSingleFile())
         {
           // Save artist to xml, and old path (common to music files) if it has one
@@ -12889,7 +12889,7 @@ void CMusicDatabase::SetItemUpdated(int mediaId, const std::string& mediaType)
 
 void CMusicDatabase::SetArtForItem(int mediaId,
                                    const std::string& mediaType,
-                                   const std::map<std::string, std::string>& art)
+                                   const ART::ArtMap& art)
 {
   for (const auto& i : art)
     SetArtForItem(mediaId, mediaType, i.first, i.second);
@@ -13053,9 +13053,7 @@ bool CMusicDatabase::GetArtForItem(
   return false;
 }
 
-bool CMusicDatabase::GetArtForItem(int mediaId,
-                                   const std::string& mediaType,
-                                   std::map<std::string, std::string>& art)
+bool CMusicDatabase::GetArtForItem(int mediaId, const std::string& mediaType, ART::ArtMap& art)
 {
   try
   {

@@ -182,7 +182,7 @@ protected:
   \param artfolder [in] path of folder containing local image files
   \return true when art is added
   */
-  bool AddLocalArtwork(std::map<std::string, std::string>& art,
+  bool AddLocalArtwork(KODI::ART::ArtMap& art,
                        const std::string& mediaType,
                        const std::string& mediaName,
                        const std::string& artfolder,
@@ -197,7 +197,7 @@ protected:
   \param thumbURL [in] URLs for potential remote artwork (provided by scrapers)
   \return true when art is added
   */
-  bool AddRemoteArtwork(std::map<std::string, std::string>& art,
+  bool AddRemoteArtwork(KODI::ART::ArtMap& art,
                         const std::string& mediaType,
                         const CScraperUrl& thumbURL);
 

@@ -925,7 +925,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (ret == InfoRet::ADDED)
     {
-      std::map<int, std::map<std::string, std::string>> seasonArt;
+      std::map<int, ART::ArtMap> seasonArt;
       m_database.GetTvShowSeasonArt(showID, seasonArt);
 
       const bool updateSeasonArt{
@@ -1557,7 +1557,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         for (std::vector<std::string>::const_iterator i = multipath.begin(); i != multipath.end(); ++i)
           paths.emplace_back(*i, URIUtils::GetParentPath(*i));
 
-        std::map<int, std::map<std::string, std::string> > seasonArt;
+        std::map<int, ART::ArtMap> seasonArt;
 
         if (!libraryImport)
           GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !pItem->IsPlugin());
@@ -1698,7 +1698,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return CDirectory::Exists(path) ? path : "";
   }
 
-  void CVideoInfoScanner::AddLocalItemArtwork(ArtMap& itemArt,
+  void CVideoInfoScanner::AddLocalItemArtwork(ART::ArtMap& itemArt,
                                               const std::vector<std::string>& wantedArtTypes,
                                               const std::string& itemPath,
                                               bool addAll,
@@ -1774,7 +1774,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     movieDetails.m_fanart.Unpack();
     movieDetails.m_strPictureURL.Parse();
 
-    ArtMap art = pItem->GetArt();
+    ART::ArtMap art = pItem->GetArt();
 
     // get and cache thumb images
     std::string mediaType = ContentToMediaType(content, pItem->m_bIsFolder);
@@ -1816,7 +1816,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         std::string movieSetInfoPath = GetMovieSetInfoFolder(movieDetails.m_set.title);
         if (!movieSetInfoPath.empty())
         {
-          ArtMap movieSetArt;
+          ART::ArtMap movieSetArt;
           AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, addAll, exactName);
           for (const auto& artItem : movieSetArt)
           {
@@ -2291,8 +2291,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return "";
   }
 
-  void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag &show,
-      std::map<int, std::map<std::string, std::string>> &seasonArt, const std::vector<std::string> &artTypes, bool useLocal)
+  void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag& show,
+                                          std::map<int, ART::ArtMap>& seasonArt,
+                                          const std::vector<std::string>& artTypes,
+                                          bool useLocal)
   {
     int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->
       GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
@@ -2332,7 +2334,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (it != seasonArt.end() && !it->second.empty())
           continue;
 
-        std::map<std::string, std::string> art;
+        ART::ArtMap art;
         std::string basePath;
         if (season == -1)
           basePath = "season-all";

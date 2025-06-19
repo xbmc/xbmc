@@ -212,7 +212,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   }
 
   // if we have no art, look for it all
-  std::map<std::string, std::string> artwork = pItem->GetArt();
+  ArtMap artwork = pItem->GetArt();
   if (artwork.empty())
   {
     std::vector<std::string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
@@ -254,7 +254,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
       pItem->HasVideoInfoTag() && pItem->GetProperty("libraryartfilled").asBoolean();
   if (!isLibraryItem || !libraryArtFilled)
   {
-    std::map<std::string, std::string> artwork = pItem->GetArt();
+    ArtMap artwork = pItem->GetArt();
     std::vector<std::string> artTypes =
         GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
     if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
@@ -357,7 +357,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
 {
   CVideoInfoTag &tag = *item.GetVideoInfoTag();
-  std::map<std::string, std::string> artwork;
+  ArtMap artwork;
   // Video item can be an album - either a 
   // a) search result with full details including music library album id, or 
   // b) musicvideo album that needs matching to a music album, storing id as well as fetch art.

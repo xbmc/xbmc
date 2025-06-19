@@ -100,7 +100,10 @@ namespace KODI::VIDEO
      \param art      artwork map to which season thumbs are added.
      \param useLocal whether to use local thumbs, defaults to true
      */
-    static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::map<std::string, std::string> > &art, const std::vector<std::string> &artTypes, bool useLocal = true);
+    static void GetSeasonThumbs(const CVideoInfoTag& show,
+                                std::map<int, KODI::ART::ArtMap>& art,
+                                const std::vector<std::string>& artTypes,
+                                bool useLocal = true);
     static std::string GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath);
 
     bool EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList);

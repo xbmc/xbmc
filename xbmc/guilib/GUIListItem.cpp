@@ -99,7 +99,7 @@ const std::wstring& CGUIListItem::GetSortLabel() const
 
 void CGUIListItem::SetArt(const std::string &type, const std::string &url)
 {
-  ART::ArtMap::const_iterator i = m_art.find(type);
+  auto i = m_art.find(type);
   if (i == m_art.end() || i->second != url)
   {
     m_art[type] = url;
@@ -133,13 +133,13 @@ void CGUIListItem::AppendArt(const ART::ArtMap& art, const std::string& prefix)
 
 std::string CGUIListItem::GetArt(const std::string &type) const
 {
-  ART::ArtMap::const_iterator i = m_art.find(type);
+  auto i = m_art.find(type);
   if (i != m_art.end())
     return i->second;
   i = m_artFallbacks.find(type);
   if (i != m_artFallbacks.end())
   {
-    ART::ArtMap::const_iterator j = m_art.find(i->second);
+    auto j = m_art.find(i->second);
     if (j != m_art.end())
       return j->second;
   }

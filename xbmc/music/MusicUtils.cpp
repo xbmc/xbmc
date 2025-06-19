@@ -40,6 +40,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
+#include "utils/ArtUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
@@ -234,7 +235,7 @@ void AddCurrentArtTypes(std::vector<std::string>& artTypes,
                         const CMusicInfoTag& tag,
                         CMusicDatabase& db)
 {
-  std::map<std::string, std::string> currentArt;
+  ART::ArtMap currentArt;
   db.GetArtForItem(tag.GetDatabaseId(), tag.GetType(), currentArt);
   for (const auto& art : currentArt)
   {

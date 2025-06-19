@@ -776,8 +776,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   if (bHasArt)
   {
     // Check if that type of art is actually a fallback, e.g. artist fanart
-    ART::ArtMap::const_iterator i = primeArt.find(type);
-    bFallback = (i == primeArt.end());
+    bFallback = (primeArt.find(type) == primeArt.end());
   }
 
   // Build list of possible images of that art type

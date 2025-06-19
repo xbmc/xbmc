@@ -345,8 +345,7 @@ void CGUIDialogSongInfo::OnGetArt()
   if (bHasArt)
   {
     // Check if that type of art is actually a fallback, e.g. album thumb or artist fanart
-    ART::ArtMap::const_iterator i = primeArt.find(type);
-    bFallback = (i == primeArt.end());
+    bFallback = (primeArt.find(type) == primeArt.end());
   }
 
   // Build list of possible images of that art type
@@ -361,8 +360,7 @@ void CGUIDialogSongInfo::OnGetArt()
   }
   else if (m_song->HasArt("thumb"))
   { // For missing art of that type add the thumb (when it exists and not a fallback)
-    ART::ArtMap::const_iterator i = primeArt.find("thumb");
-    if (i != primeArt.end())
+    if (primeArt.find("thumb") != primeArt.end())
     {
       CFileItemPtr item(new CFileItem("thumb://Thumb", false));
       item->SetArt("thumb", m_song->GetArt("thumb"));

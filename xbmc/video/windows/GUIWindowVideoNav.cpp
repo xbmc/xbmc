@@ -443,7 +443,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         // grab the show thumb
         CVideoInfoTag details;
         m_database.GetTvShowInfo("", details, params.GetTvShowId());
-        std::map<std::string, std::string> art;
+        ART::ArtMap art;
         if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art) && !art.empty())
         {
           items.AppendArt(art, details.m_type);
@@ -481,7 +481,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           else
             seasonID = items[firstIndex]->GetVideoInfoTag()->m_iIdSeason;
 
-          ArtMap seasonArt;
+          ART::ArtMap seasonArt;
           if (seasonID > -1 && m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt) &&
               !seasonArt.empty())
           {
@@ -498,7 +498,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       {
         if (params.GetSetId() > 0)
         {
-          ArtMap setArt;
+          ART::ArtMap setArt;
           if (m_database.GetArtForItem(params.GetSetId(), MediaTypeVideoCollection, setArt) &&
               !setArt.empty())
           {

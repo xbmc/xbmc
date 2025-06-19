@@ -12,11 +12,13 @@
 #include "imagefiles/ImageFileURL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
+#include "utils/ArtUtils.h"
 #include "utils/StringUtils.h"
 #include "video/VideoThumbLoader.h"
 
 #include <utility>
 
+using namespace KODI;
 using namespace MUSIC_INFO;
 
 CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader()
@@ -269,8 +271,8 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
   {
     std::string fanartfallback;
     std::string artname;
-    std::map<std::string, std::string> artmap;
-    std::map<std::string, std::string> discartmap;
+    ART::ArtMap artmap;
+    ART::ArtMap discartmap;
     for (auto artitem : art)
     {
       /* Add art to artmap, naming according to media type.
@@ -327,11 +329,10 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     // Process specific disc art when we have some
     for (const auto& discart : discartmap)
     {
-      std::map<std::string, std::string>::iterator it;
       if (tag.GetType() == MediaTypeAlbum)
       {
         // Insert or replace album art with specific disc art
-        it = artmap.find(discart.first);
+        auto it = artmap.find(discart.first);
         if (it != artmap.end())
           it->second = discart.second;
         else
@@ -343,7 +344,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
         // (Fallback approach is used to fill missing thumbs).
         if (discart.first == "thumb")
         {
-          it = artmap.find("album.thumb");
+          auto it = artmap.find("album.thumb");
           if (it != artmap.end())
             // Replace "album.thumb" already set as fallback
             it->second = discart.second;
@@ -358,7 +359,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
         {
           // Apply disc art as song art when not have that type (fallback does not apply).
           // Art of other types could been set via JSON, or in future read from metadata
-          it = artmap.find(discart.first);
+          auto it = artmap.find(discart.first);
           if (it == artmap.end())
             artmap.insert(discart);
         }
