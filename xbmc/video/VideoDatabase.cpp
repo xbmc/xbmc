@@ -3710,25 +3710,7 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
     std::string sql = PrepareSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
     m_pDS->exec(sql);
 
-    const VideoDbContentType iType = item.GetVideoContentType();
-    std::string content;
-    switch (iType)
-    {
-      case VideoDbContentType::MOVIES:
-        content = MediaTypeMovie;
-        break;
-      case VideoDbContentType::EPISODES:
-        content = MediaTypeEpisode;
-        break;
-      case VideoDbContentType::TVSHOWS:
-        content = MediaTypeTvShow;
-        break;
-      case VideoDbContentType::MUSICVIDEOS:
-        content = MediaTypeMusicVideo;
-        break;
-      default:
-        break;
-    }
+    const MediaType content = VideoContentTypeToString(item.GetVideoContentType());
 
     if (!content.empty())
     {
@@ -12977,13 +12959,10 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
                                            VideoAssetType assetType)
 {
   int idFile = -1;
-  MediaType mediaType;
-  VideoContentTypeToString(itemType, mediaType);
+  const MediaType mediaType = VideoContentTypeToString(itemType);
 
   if (itemType == VideoDbContentType::MOVIES)
-  {
     idFile = GetFileIdByMovie(dbIdSource);
-  }
   else
     return false;
 
@@ -12999,7 +12978,7 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
 
     // version-level art doesn't need any change.
     // 'movie' art is converted to 'videoversion' art.
-    SetVideoVersionDefaultArt(idFile, dbIdSource, itemType);
+    SetVideoVersionDefaultArt(idFile, dbIdSource, mediaType);
 
     if (itemType == VideoDbContentType::MOVIES)
       DeleteMovie(dbIdSource, DeleteMovieCascadeAction::ALL_ASSETS,
@@ -13136,8 +13115,7 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
   if (itemType != VideoDbContentType::MOVIES)
     return false;
 
-  MediaType mediaType;
-  VideoContentTypeToString(itemType, mediaType);
+  MediaType mediaType = VideoContentTypeToString(itemType);
 
   int idFile = AddFile(item.GetPath());
   if (idFile < 0)
@@ -13357,11 +13335,8 @@ std::string CVideoDatabase::GetVideoVersionById(int id)
   return GetSingleValue(PrepareSQL("SELECT name FROM videoversiontype WHERE id=%i", id), *m_pDS2);
 }
 
-bool CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type)
+bool CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, const MediaType& mediaType)
 {
-  MediaType mediaType;
-  VideoContentTypeToString(type, mediaType);
-
   KODI::ART::Artwork art;
   if (GetArtForItem(idFrom, mediaType, art))
   {
