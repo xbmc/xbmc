@@ -40,14 +40,16 @@ public:
 
   // Implementation of IMouseInputHandler
   std::string ControllerID() const override;
+  bool OnPosition(const MOUSE::PointerName& relpointer, int positionX, int positionY) override
+  {
+    return false;
+  }
   bool OnMotion(const MOUSE::PointerName& relpointer, int differenceX, int differenceY) override;
   bool OnButtonPress(const MOUSE::ButtonName& button) override;
   void OnButtonRelease(const MOUSE::ButtonName& button) override;
   void OnInputFrame() override;
 
 private:
-  static INPUT::INTERCARDINAL_DIRECTION GetPointerDirection(int differenceX, int differenceY);
-
   // Construction parameters
   const PERIPHERALS::PeripheralPtr m_peripheral;
 

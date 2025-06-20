@@ -36,7 +36,7 @@ public:
    * \return Always true - pointer motion events are always absorbed while
    *         button mapping
    */
-  bool OnMotion(int x, int y);
+  bool OnPosition(int x, int y);
 
 private:
   // Utility function
