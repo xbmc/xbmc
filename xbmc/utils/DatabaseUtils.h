@@ -25,7 +25,7 @@ namespace dbiplus
   class field_value;
 }
 
-typedef enum
+enum Field
 {
   // special fields used during sorting
   FieldUnknown = -1,
@@ -154,19 +154,20 @@ typedef enum
   FieldHasVideoVersions,
   FieldHasVideoExtras,
   FieldMax
-} Field;
+};
 
-typedef std::set<Field> Fields;
-typedef std::vector<Field> FieldList;
+using Fields = std::set<Field>;
+using FieldList = std::vector<Field>;
 
-typedef enum {
+enum DatabaseQueryPart
+{
   DatabaseQueryPartSelect,
   DatabaseQueryPartWhere,
   DatabaseQueryPartOrderBy,
-} DatabaseQueryPart;
+};
 
-typedef std::map<Field, CVariant> DatabaseResult;
-typedef std::vector<DatabaseResult> DatabaseResults;
+using DatabaseResult = std::map<Field, CVariant>;
+using DatabaseResults = std::vector<DatabaseResult>;
 
 class DatabaseUtils
 {
