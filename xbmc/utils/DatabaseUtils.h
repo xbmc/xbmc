@@ -11,7 +11,6 @@
 #include "media/MediaType.h"
 
 #include <map>
-#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -180,7 +179,10 @@ public:
   static bool GetSelectFields(const Fields &fields, const MediaType &mediaType, FieldList &selectFields);
 
   static bool GetFieldValue(const dbiplus::field_value &fieldValue, CVariant &variantValue);
-  static bool GetDatabaseResults(const MediaType &mediaType, const FieldList &fields, const std::unique_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);
+  static bool GetDatabaseResults(const MediaType& mediaType,
+                                 const FieldList& fields,
+                                 dbiplus::Dataset& dataset,
+                                 DatabaseResults& results);
 
   static std::string BuildLimitClause(int end, int start = 0);
   static std::string BuildLimitClauseOnly(int end, int start = 0);

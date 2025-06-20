@@ -438,12 +438,15 @@ bool DatabaseUtils::GetFieldValue(const dbiplus::field_value &fieldValue, CVaria
   return false;
 }
 
-bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldList &fields, const std::unique_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results)
+bool DatabaseUtils::GetDatabaseResults(const MediaType& mediaType,
+                                       const FieldList& fields,
+                                       dbiplus::Dataset& dataset,
+                                       DatabaseResults& results)
 {
-  if (dataset->num_rows() == 0)
+  if (dataset.num_rows() == 0)
     return true;
 
-  const dbiplus::result_set &resultSet = dataset->get_result_set();
+  const dbiplus::result_set& resultSet = dataset.get_result_set();
   const unsigned int offset = static_cast<unsigned int>(results.size());
 
   if (fields.empty())
