@@ -103,6 +103,7 @@ void Dataset::setSqlParams(sqlType t, const char* sqlFrmt, ...)
 
   switch (t)
   {
+    using enum sqlType;
     case sqlSelect:
       set_select_sql(sqlCmd);
       break;

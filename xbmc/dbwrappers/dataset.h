@@ -193,7 +193,7 @@ enum class dsStates
   dsDelete,
   dsInactive
 };
-enum sqlType
+enum class sqlType
 {
   sqlSelect,
   sqlUpdate,
