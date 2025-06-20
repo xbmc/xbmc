@@ -45,7 +45,7 @@ public:
     OPERATOR_END
   };
 
-  enum FIELD_TYPE
+  enum class FieldType
   {
     TEXT_FIELD = 0,
     REAL_FIELD,
@@ -77,7 +77,7 @@ public:
 
 protected:
   virtual std::string GetField(int field, const std::string& type) const = 0;
-  virtual FIELD_TYPE GetFieldType(int field) const = 0;
+  virtual CDatabaseQueryRule::FieldType GetFieldType(int field) const = 0;
   virtual int TranslateField(const char* field) const = 0;
   virtual std::string TranslateField(int field) const = 0;
   std::string ValidateParameter(const std::string& parameter) const;

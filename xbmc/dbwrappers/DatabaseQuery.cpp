@@ -23,6 +23,7 @@
 #include <vector>
 
 using enum CDatabaseQueryRule::SearchOperator;
+using enum CDatabaseQueryRule::FieldType;
 
 namespace
 {
@@ -384,7 +385,7 @@ std::string CDatabaseQueryRule::GetWhereClause(const CDatabase& db,
     if (m_parameter.size() != 2)
       return "";
 
-    FIELD_TYPE fieldType = GetFieldType(m_field);
+    const CDatabaseQueryRule::FieldType fieldType = GetFieldType(m_field);
     if (fieldType == REAL_FIELD)
       return db.PrepareSQL("%s BETWEEN %s AND %s", GetField(m_field, strType).c_str(),
                            m_parameter[0].c_str(), m_parameter[1].c_str());

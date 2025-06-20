@@ -30,6 +30,7 @@
 
 #include <utility>
 
+using enum CDatabaseQueryRule::FieldType;
 using namespace KODI;
 
 #define CONTROL_FIELD           15
@@ -398,7 +399,7 @@ CGUIDialogSmartPlaylistRule::GetValidOperators(const PLAYLIST::CSmartPlaylistRul
   switch (rule.GetFieldType(rule.m_field))
   {
     using enum CDatabaseQueryRule::SearchOperator;
-    case CDatabaseQueryRule::TEXT_FIELD:
+    case TEXT_FIELD:
       // text fields - add the usual comparisons
       labels.push_back(OperatorLabel(OPERATOR_EQUALS));
       labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
@@ -408,9 +409,9 @@ CGUIDialogSmartPlaylistRule::GetValidOperators(const PLAYLIST::CSmartPlaylistRul
       labels.push_back(OperatorLabel(OPERATOR_ENDS_WITH));
       break;
 
-    case CDatabaseQueryRule::REAL_FIELD:
-    case CDatabaseQueryRule::NUMERIC_FIELD:
-    case CDatabaseQueryRule::SECONDS_FIELD:
+    case REAL_FIELD:
+    case NUMERIC_FIELD:
+    case SECONDS_FIELD:
       // numerical fields - less than greater than
       labels.push_back(OperatorLabel(OPERATOR_EQUALS));
       labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
@@ -418,7 +419,7 @@ CGUIDialogSmartPlaylistRule::GetValidOperators(const PLAYLIST::CSmartPlaylistRul
       labels.push_back(OperatorLabel(OPERATOR_LESS_THAN));
       break;
 
-    case CDatabaseQueryRule::DATE_FIELD:
+    case DATE_FIELD:
       // date field
       labels.push_back(OperatorLabel(OPERATOR_AFTER));
       labels.push_back(OperatorLabel(OPERATOR_BEFORE));
@@ -426,17 +427,17 @@ CGUIDialogSmartPlaylistRule::GetValidOperators(const PLAYLIST::CSmartPlaylistRul
       labels.push_back(OperatorLabel(OPERATOR_NOT_IN_THE_LAST));
       break;
 
-    case CDatabaseQueryRule::PLAYLIST_FIELD:
+    case PLAYLIST_FIELD:
       labels.push_back(OperatorLabel(OPERATOR_EQUALS));
       labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
       break;
 
-    case CDatabaseQueryRule::BOOLEAN_FIELD:
+    case BOOLEAN_FIELD:
       labels.push_back(OperatorLabel(OPERATOR_TRUE));
       labels.push_back(OperatorLabel(OPERATOR_FALSE));
       break;
 
-    case CDatabaseQueryRule::TEXTIN_FIELD:
+    case TEXTIN_FIELD:
       labels.push_back(OperatorLabel(OPERATOR_EQUALS));
       labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
       break;
@@ -511,9 +512,9 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     m_rule.m_field = PLAYLIST::CSmartPlaylistRule::GetFields(m_type)[0];
   SET_CONTROL_LABEL(CONTROL_FIELD, PLAYLIST::CSmartPlaylistRule::GetLocalizedField(m_rule.m_field));
 
-  const CDatabaseQueryRule::FIELD_TYPE fieldType = m_rule.GetFieldType(m_rule.m_field);
+  const CDatabaseQueryRule::FieldType fieldType = m_rule.GetFieldType(m_rule.m_field);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_VALUE, fieldType != CDatabaseQueryRule::BOOLEAN_FIELD);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_VALUE, fieldType != BOOLEAN_FIELD);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BROWSE,
                               PLAYLIST::CSmartPlaylistRule::IsFieldBrowseable(m_rule.m_field));
 
@@ -525,26 +526,26 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
 
   switch (fieldType)
   {
-  case CDatabaseQueryRule::TEXT_FIELD:
-  case CDatabaseQueryRule::PLAYLIST_FIELD:
-  case CDatabaseQueryRule::TEXTIN_FIELD:
-  case CDatabaseQueryRule::REAL_FIELD:
-  case CDatabaseQueryRule::NUMERIC_FIELD:
-    type = CGUIEditControl::INPUT_TYPE_TEXT;
-    break;
-  case CDatabaseQueryRule::DATE_FIELD:
-    if (m_rule.m_operator == CDatabaseQueryRule::SearchOperator::OPERATOR_IN_THE_LAST ||
-        m_rule.m_operator == CDatabaseQueryRule::SearchOperator::OPERATOR_NOT_IN_THE_LAST)
+    case TEXT_FIELD:
+    case PLAYLIST_FIELD:
+    case TEXTIN_FIELD:
+    case REAL_FIELD:
+    case NUMERIC_FIELD:
       type = CGUIEditControl::INPUT_TYPE_TEXT;
-    else
-      type = CGUIEditControl::INPUT_TYPE_DATE;
-    break;
-  case CDatabaseQueryRule::SECONDS_FIELD:
-    type = CGUIEditControl::INPUT_TYPE_SECONDS;
-    break;
-  case CDatabaseQueryRule::BOOLEAN_FIELD:
-    type = CGUIEditControl::INPUT_TYPE_NUMBER;
-    break;
+      break;
+    case DATE_FIELD:
+      if (m_rule.m_operator == CDatabaseQueryRule::SearchOperator::OPERATOR_IN_THE_LAST ||
+          m_rule.m_operator == CDatabaseQueryRule::SearchOperator::OPERATOR_NOT_IN_THE_LAST)
+        type = CGUIEditControl::INPUT_TYPE_TEXT;
+      else
+        type = CGUIEditControl::INPUT_TYPE_DATE;
+      break;
+    case SECONDS_FIELD:
+      type = CGUIEditControl::INPUT_TYPE_SECONDS;
+      break;
+    case BOOLEAN_FIELD:
+      type = CGUIEditControl::INPUT_TYPE_NUMBER;
+      break;
   }
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_VALUE, type, 21420);
 }

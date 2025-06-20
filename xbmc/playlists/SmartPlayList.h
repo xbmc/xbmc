@@ -44,7 +44,7 @@ public:
   static std::vector<Field> GetFields(const std::string &type);
   static std::vector<SortBy> GetOrders(const std::string &type);
   static std::vector<Field> GetGroups(const std::string &type);
-  FIELD_TYPE GetFieldType(int field) const override;
+  CDatabaseQueryRule::FieldType GetFieldType(int field) const override;
   static bool IsFieldBrowseable(int field);
 
   static bool Validate(const std::string &input, void *data);
