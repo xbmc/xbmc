@@ -120,6 +120,18 @@ void CControllerHub::GetInputPorts(std::vector<std::string>& inputPorts) const
     port.GetInputPorts(inputPorts);
 }
 
+void CControllerHub::GetKeyboardPorts(std::vector<std::string>& keyboardPorts) const
+{
+  for (const CPortNode& port : m_ports)
+    port.GetKeyboardPorts(keyboardPorts);
+}
+
+void CControllerHub::GetMousePorts(std::vector<std::string>& mousePorts) const
+{
+  for (const CPortNode& port : m_ports)
+    port.GetMousePorts(mousePorts);
+}
+
 bool CControllerHub::Serialize(tinyxml2::XMLElement& controllerElement) const
 {
   // Iterate and serialize each port

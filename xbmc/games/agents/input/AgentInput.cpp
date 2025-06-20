@@ -374,11 +374,10 @@ void CAgentInput::ProcessKeyboard()
                              { return port.GetPortType() == PORT_TYPE::KEYBOARD; });
 
       // Open keyboard input
-      PERIPHERALS::PeripheralPtr keyboard = std::move(keyboards.at(0));
-      m_gameClient->Input().OpenKeyboard(it->GetActiveController().GetController(), keyboard);
+      m_gameClient->Input().OpenKeyboard(it->GetActiveController().GetController());
 
       // Save keyboard port
-      m_keyboardPort[static_cast<KEYBOARD::IKeyboardInputProvider*>(keyboard.get())] =
+      m_keyboardPort[static_cast<KEYBOARD::IKeyboardInputProvider*>(keyboards.at(0).get())] =
           it->GetAddress();
 
       SetChanged(true);
@@ -409,11 +408,10 @@ void CAgentInput::ProcessMouse()
                              { return port.GetPortType() == PORT_TYPE::MOUSE; });
 
       // Open mouse input
-      PERIPHERALS::PeripheralPtr mouse = std::move(mice.at(0));
-      m_gameClient->Input().OpenMouse(it->GetActiveController().GetController(), mouse);
+      m_gameClient->Input().OpenMouse(it->GetActiveController().GetController());
 
       // Save mouse port
-      m_mousePort[static_cast<MOUSE::IMouseInputProvider*>(mouse.get())] = it->GetAddress();
+      m_mousePort[static_cast<MOUSE::IMouseInputProvider*>(mice.at(0).get())] = it->GetAddress();
 
       SetChanged(true);
     }

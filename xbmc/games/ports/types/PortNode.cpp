@@ -168,6 +168,34 @@ void CPortNode::GetInputPorts(std::vector<std::string>& inputPorts) const
   }
 }
 
+void CPortNode::GetKeyboardPorts(std::vector<std::string>& keyboardPorts) const
+{
+  // Base case: we're a keyboard port
+  if (GetPortType() == PORT_TYPE::KEYBOARD)
+    keyboardPorts.emplace_back(GetAddress());
+
+  // Visit children
+  if (IsConnected())
+  {
+    const CControllerNode& controller = GetActiveController();
+    controller.GetKeyboardPorts(keyboardPorts);
+  }
+}
+
+void CPortNode::GetMousePorts(std::vector<std::string>& mousePorts) const
+{
+  // Base case: we're a mouse port
+  if (GetPortType() == PORT_TYPE::MOUSE)
+    mousePorts.emplace_back(GetAddress());
+
+  // Visit children
+  if (IsConnected())
+  {
+    const CControllerNode& controller = GetActiveController();
+    controller.GetMousePorts(mousePorts);
+  }
+}
+
 void CPortNode::GetPort(CPhysicalPort& port) const
 {
   std::vector<std::string> accepts;

@@ -84,14 +84,14 @@ public:
   void CloseJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
 
   // Keyboard functions
-  bool OpenKeyboard(const ControllerPtr& controller, const PERIPHERALS::PeripheralPtr& keyboard);
+  bool OpenKeyboard(const ControllerPtr& controller);
   bool IsKeyboardOpen() const;
-  void CloseKeyboard();
+  bool CloseKeyboard();
 
   // Mouse functions
-  bool OpenMouse(const ControllerPtr& controller, const PERIPHERALS::PeripheralPtr& mouse);
+  bool OpenMouse(const ControllerPtr& controller);
   bool IsMouseOpen() const;
-  void CloseMouse();
+  bool CloseMouse();
 
   // Agent functions
   bool HasAgent() const;
