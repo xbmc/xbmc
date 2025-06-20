@@ -397,40 +397,41 @@ bool DatabaseUtils::GetFieldValue(const dbiplus::field_value &fieldValue, CVaria
 
   switch (fieldValue.get_fType())
   {
-  case dbiplus::ft_String:
-  case dbiplus::ft_WideString:
-  case dbiplus::ft_Object:
-    variantValue = fieldValue.get_asString();
-    return true;
-  case dbiplus::ft_Char:
-  case dbiplus::ft_WChar:
-    variantValue = fieldValue.get_asChar();
-    return true;
-  case dbiplus::ft_Boolean:
-    variantValue = fieldValue.get_asBool();
-    return true;
-  case dbiplus::ft_Short:
-    variantValue = fieldValue.get_asShort();
-    return true;
-  case dbiplus::ft_UShort:
-    variantValue = fieldValue.get_asShort();
-    return true;
-  case dbiplus::ft_Int:
-    variantValue = fieldValue.get_asInt();
-    return true;
-  case dbiplus::ft_UInt:
-    variantValue = fieldValue.get_asUInt();
-    return true;
-  case dbiplus::ft_Float:
-    variantValue = fieldValue.get_asFloat();
-    return true;
-  case dbiplus::ft_Double:
-  case dbiplus::ft_LongDouble:
-    variantValue = fieldValue.get_asDouble();
-    return true;
-  case dbiplus::ft_Int64:
-    variantValue = fieldValue.get_asInt64();
-    return true;
+    using enum dbiplus::fType;
+    case ft_String:
+    case ft_WideString:
+    case ft_Object:
+      variantValue = fieldValue.get_asString();
+      return true;
+    case ft_Char:
+    case ft_WChar:
+      variantValue = fieldValue.get_asChar();
+      return true;
+    case ft_Boolean:
+      variantValue = fieldValue.get_asBool();
+      return true;
+    case ft_Short:
+      variantValue = fieldValue.get_asShort();
+      return true;
+    case ft_UShort:
+      variantValue = fieldValue.get_asShort();
+      return true;
+    case ft_Int:
+      variantValue = fieldValue.get_asInt();
+      return true;
+    case ft_UInt:
+      variantValue = fieldValue.get_asUInt();
+      return true;
+    case ft_Float:
+      variantValue = fieldValue.get_asFloat();
+      return true;
+    case ft_Double:
+    case ft_LongDouble:
+      variantValue = fieldValue.get_asDouble();
+      return true;
+    case ft_Int64:
+      variantValue = fieldValue.get_asInt64();
+      return true;
   }
 
   return false;

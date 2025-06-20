@@ -21,7 +21,7 @@
 namespace dbiplus
 {
 
-enum fType
+enum class fType
 {
   ft_String,
   ft_Boolean,
@@ -159,52 +159,52 @@ public:
   {
     switch (fv.get_fType())
     {
-      case ft_String:
+      case fType::ft_String:
       {
         return os << fv.get_asString();
         break;
       }
-      case ft_Boolean:
+      case fType::ft_Boolean:
       {
         return os << fv.get_asBool();
         break;
       }
-      case ft_Char:
+      case fType::ft_Char:
       {
         return os << fv.get_asChar();
         break;
       }
-      case ft_Short:
+      case fType::ft_Short:
       {
         return os << fv.get_asShort();
         break;
       }
-      case ft_UShort:
+      case fType::ft_UShort:
       {
         return os << fv.get_asUShort();
         break;
       }
-      case ft_Int:
+      case fType::ft_Int:
       {
         return os << fv.get_asInt();
         break;
       }
-      case ft_UInt:
+      case fType::ft_UInt:
       {
         return os << fv.get_asUInt();
         break;
       }
-      case ft_Float:
+      case fType::ft_Float:
       {
         return os << fv.get_asFloat();
         break;
       }
-      case ft_Double:
+      case fType::ft_Double:
       {
         return os << fv.get_asDouble();
         break;
       }
-      case ft_Int64:
+      case fType::ft_Int64:
       {
         return os << fv.get_asInt64();
         break;

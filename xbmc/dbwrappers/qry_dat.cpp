@@ -29,6 +29,7 @@
 
 namespace dbiplus
 {
+using enum fType;
 
 //Constructors
 field_value::field_value() : field_type(ft_String)
