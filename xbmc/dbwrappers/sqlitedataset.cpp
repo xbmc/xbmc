@@ -208,6 +208,8 @@ int busy_callback(void*, int /*busyCount*/)
 
 namespace dbiplus
 {
+using enum dsStates;
+
 //************* SqliteDatabase implementation ***************
 
 SqliteDatabase::SqliteDatabase()

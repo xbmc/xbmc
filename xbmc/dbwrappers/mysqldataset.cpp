@@ -41,6 +41,7 @@ constexpr int ER_BAD_DB_ERROR = 1049;
 
 namespace dbiplus
 {
+using enum dsStates;
 
 //************* MysqlDatabase implementation ***************
 

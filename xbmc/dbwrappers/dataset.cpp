@@ -25,6 +25,8 @@
 
 namespace dbiplus
 {
+using enum dsStates;
+
 //************* Database implementation ***************
 
 Database::Database() = default;

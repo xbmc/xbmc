@@ -184,7 +184,7 @@ public:
 ******************************************************************/
 
 // define Dataset States type
-enum dsStates
+enum class dsStates
 {
   dsSelect,
   dsInsert,
@@ -209,7 +209,7 @@ class Dataset
 {
 protected:
   Database* db{nullptr}; // info about db connection
-  dsStates ds_state{dsInactive}; // current state
+  dsStates ds_state{dsStates::dsInactive}; // current state
   std::unique_ptr<Fields> fields_object{std::make_unique<Fields>()};
   std::unique_ptr<Fields> edit_object{std::make_unique<Fields>()};
   std::unordered_map<std::string, unsigned int>
