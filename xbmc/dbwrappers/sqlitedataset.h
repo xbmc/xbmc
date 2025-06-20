@@ -16,7 +16,7 @@
 
 #include <string>
 
-#include <sqlite3.h>
+struct sqlite3;
 
 namespace dbiplus
 {
@@ -29,7 +29,7 @@ class SqliteDatabase : public Database
 {
 protected:
   /* connect descriptor */
-  sqlite3* conn;
+  sqlite3* conn{nullptr};
   bool _in_transaction{false};
   int last_err;
 

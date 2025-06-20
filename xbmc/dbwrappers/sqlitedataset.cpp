@@ -24,6 +24,8 @@
 #include <string>
 #include <utility>
 
+#include <sqlite3.h>
+
 using namespace std::chrono_literals;
 
 namespace
