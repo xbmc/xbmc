@@ -24,7 +24,7 @@ public:
   CDatabaseQueryRule() = default;
   virtual ~CDatabaseQueryRule() = default;
 
-  enum SEARCH_OPERATOR
+  enum class SearchOperator
   {
     OPERATOR_START = 0,
     OPERATOR_CONTAINS,
@@ -62,7 +62,7 @@ public:
   virtual bool Save(TiXmlNode* parent) const;
   virtual bool Save(CVariant& obj) const;
 
-  static std::string GetLocalizedOperator(SEARCH_OPERATOR oper);
+  static std::string GetLocalizedOperator(SearchOperator oper);
   static void GetAvailableOperators(std::vector<std::string>& operatorList);
 
   std::string GetParameter() const;
@@ -72,7 +72,7 @@ public:
   virtual std::string GetWhereClause(const CDatabase& db, const std::string& strType) const;
 
   int m_field{0};
-  SEARCH_OPERATOR m_operator{OPERATOR_CONTAINS};
+  SearchOperator m_operator{SearchOperator::OPERATOR_CONTAINS};
   std::vector<std::string> m_parameter;
 
 protected:
@@ -90,15 +90,15 @@ protected:
                                         const std::string& param,
                                         const CDatabase& db,
                                         const std::string& type) const;
-  virtual SEARCH_OPERATOR GetOperator(const std::string& type) const { return m_operator; }
-  virtual std::string GetOperatorString(SEARCH_OPERATOR op) const;
+  virtual SearchOperator GetOperator(const std::string& type) const { return m_operator; }
+  virtual std::string GetOperatorString(SearchOperator op) const;
   virtual std::string GetBooleanQuery(const std::string& negate, const std::string& strType) const
   {
     return "";
   }
 
-  static SEARCH_OPERATOR TranslateOperator(const char* oper);
-  static std::string TranslateOperator(SEARCH_OPERATOR oper);
+  static SearchOperator TranslateOperator(const char* oper);
+  static std::string TranslateOperator(SearchOperator oper);
 };
 
 class CDatabaseQueryRuleCombination;

@@ -65,7 +65,7 @@ protected:
                                 const std::string &param,
                                 const CDatabase &db,
                                 const std::string &type) const override;
-  SEARCH_OPERATOR GetOperator(const std::string &type) const override;
+  SearchOperator GetOperator(const std::string& type) const override;
   std::string GetBooleanQuery(const std::string &negate,
                               const std::string &strType) const override;
 

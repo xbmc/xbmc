@@ -36,6 +36,7 @@
 #include <string>
 #include <vector>
 
+using enum CDatabaseQueryRule::SearchOperator;
 using namespace XFILE;
 
 namespace KODI::PLAYLIST
@@ -319,8 +320,7 @@ bool CSmartPlaylistRule::ValidateDate(const std::string& input, void* data)
   CSmartPlaylistRule* rule = static_cast<CSmartPlaylistRule*>(data);
 
   //! @todo implement a validation for relative dates
-  if (rule->m_operator == CDatabaseQueryRule::OPERATOR_IN_THE_LAST ||
-      rule->m_operator == CDatabaseQueryRule::OPERATOR_NOT_IN_THE_LAST)
+  if (rule->m_operator == OPERATOR_IN_THE_LAST || rule->m_operator == OPERATOR_NOT_IN_THE_LAST)
     return true;
 
   // The date format must be YYYY-MM-DD
@@ -879,9 +879,9 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
   return "";
 }
 
-CDatabaseQueryRule::SEARCH_OPERATOR CSmartPlaylistRule::GetOperator(const std::string &strType) const
+CDatabaseQueryRule::SearchOperator CSmartPlaylistRule::GetOperator(const std::string& strType) const
 {
-  SEARCH_OPERATOR op = CDatabaseQueryRule::GetOperator(strType);
+  SearchOperator op = CDatabaseQueryRule::GetOperator(strType);
   if ((strType == "tvshows" || strType == "episodes") && m_field == FieldYear)
   { // special case for premiered which is a date rather than a year
     //! @todo SMARTPLAYLISTS do we really need this, or should we just make this field the premiered date and request a date?
@@ -950,7 +950,9 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + " EXISTS (SELECT 1 FROM song_artist, artist WHERE song_artist.idSong = " + GetField(FieldId, strType) + " AND song_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     else if (m_field == FieldAlbumArtist)
       query = negate + " EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = " + table + ".idAlbum AND album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
-    else if (m_field == FieldLastPlayed && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+    else if (m_field == FieldLastPlayed &&
+             (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE ||
+              m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " is NULL or " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldSource)
       query = negate + " EXISTS (SELECT 1 FROM album_source, source WHERE album_source.idAlbum = " + table + ".idAlbum AND album_source.idSource = source.idSource AND source.strName" + parameter + ")";
@@ -977,7 +979,9 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + " EXISTS (SELECT 1 FROM album_artist, artist WHERE album_artist.idAlbum = " + GetField(FieldId, strType) + " AND album_artist.idArtist = artist.idArtist AND artist.strArtist" + parameter + ")";
     else if (m_field == FieldPath)
       query = negate + " EXISTS (SELECT 1 FROM song JOIN path on song.idpath = path.idpath WHERE song.idAlbum = " + GetField(FieldId, strType) + " AND path.strPath" + parameter + ")";
-    else if (m_field == FieldLastPlayed && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+    else if (m_field == FieldLastPlayed &&
+             (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE ||
+              m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " is NULL or " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldSource)
       query = negate + " EXISTS (SELECT 1 FROM album_source, source WHERE album_source.idAlbum = " + GetField(FieldId, strType) + " AND album_source.idSource = source.idSource AND source.strName" + parameter + ")";
@@ -1038,7 +1042,9 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + FormatLinkQuery("studio", "studio", MediaTypeMovie, GetField(FieldId, strType), parameter);
     else if (m_field == FieldCountry)
       query = negate + FormatLinkQuery("country", "country", MediaTypeMovie, GetField(FieldId, strType), parameter);
-    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) &&
+             (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE ||
+              m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldTag)
       query = negate + FormatLinkQuery("tag", "tag", MediaTypeMovie, GetField(FieldId, strType), parameter);
@@ -1055,7 +1061,9 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + FormatLinkQuery("studio", "studio", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
     else if (m_field == FieldDirector)
       query = negate + FormatLinkQuery("director", "actor", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
-    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) &&
+             (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE ||
+              m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldTag)
       query = negate + FormatLinkQuery("tag", "tag", MediaTypeMusicVideo, GetField(FieldId, strType), parameter);
@@ -1074,7 +1082,9 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + FormatLinkQuery("studio", "studio", MediaTypeTvShow, GetField(FieldId, strType), parameter);
     else if (m_field == FieldMPAA)
       query = negate + " (" + GetField(m_field, strType) + parameter + ")";
-    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) &&
+             (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE ||
+              m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldPlaycount)
       query = "CASE WHEN COALESCE(" + GetField(FieldNumberOfEpisodes, strType) + " - " + GetField(FieldNumberOfWatchedEpisodes, strType) + ", 0) > 0 THEN 0 ELSE 1 END " + parameter;
@@ -1095,7 +1105,9 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + FormatLinkQuery("actor", "actor", MediaTypeEpisode, GetField(FieldId, strType), parameter);
     else if (m_field == FieldWriter)
       query = negate + FormatLinkQuery("writer", "actor", MediaTypeEpisode, GetField(FieldId, strType), parameter);
-    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+    else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) &&
+             (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE ||
+              m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
     else if (m_field == FieldStudio)
       query = negate + FormatLinkQuery("studio", "studio", MediaTypeTvShow, (table + ".idShow").c_str(), parameter);
@@ -1190,7 +1202,7 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, c
           }
           if (playlist.GetType() == strType)
           {
-            if (r->m_operator == CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL)
+            if (r->m_operator == OPERATOR_DOES_NOT_EQUAL)
               currentRule = StringUtils::Format("NOT ({})", playlistQuery);
             else
               currentRule = playlistQuery;
@@ -1223,7 +1235,7 @@ void CSmartPlaylistRuleCombination::GetVirtualFolders(const std::string& strType
   for (const auto& r : GetRules())
   {
     if ((r->m_field != FieldVirtualFolder && r->m_field != FieldPlaylist) ||
-        r->m_operator != CDatabaseQueryRule::OPERATOR_EQUALS)
+        r->m_operator != OPERATOR_EQUALS)
       continue;
 
     const std::string playlistFile =

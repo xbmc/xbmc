@@ -22,32 +22,34 @@
 #include <string>
 #include <vector>
 
+using enum CDatabaseQueryRule::SearchOperator;
+
 namespace
 {
 struct OperatorField
 {
   std::string name;
-  CDatabaseQueryRule::SEARCH_OPERATOR op{CDatabaseQueryRule::OPERATOR_START};
+  CDatabaseQueryRule::SearchOperator op{OPERATOR_START};
   int localizedName{0};
 };
 
 // clang-format off
 const std::array<OperatorField, 15> operators = {{
-  {"contains",        CDatabaseQueryRule::OPERATOR_CONTAINS,          21400},
-  {"doesnotcontain",  CDatabaseQueryRule::OPERATOR_DOES_NOT_CONTAIN,  21401},
-  {"is",              CDatabaseQueryRule::OPERATOR_EQUALS,            21402},
-  {"isnot",           CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL,    21403},
-  {"startswith",      CDatabaseQueryRule::OPERATOR_STARTS_WITH,       21404},
-  {"endswith",        CDatabaseQueryRule::OPERATOR_ENDS_WITH,         21405},
-  {"greaterthan",     CDatabaseQueryRule::OPERATOR_GREATER_THAN,      21406},
-  {"lessthan",        CDatabaseQueryRule::OPERATOR_LESS_THAN,         21407},
-  {"after",           CDatabaseQueryRule::OPERATOR_AFTER,             21408},
-  {"before",          CDatabaseQueryRule::OPERATOR_BEFORE,            21409},
-  {"inthelast",       CDatabaseQueryRule::OPERATOR_IN_THE_LAST,       21410},
-  {"notinthelast",    CDatabaseQueryRule::OPERATOR_NOT_IN_THE_LAST,   21411},
-  {"true",            CDatabaseQueryRule::OPERATOR_TRUE,              20122},
-  {"false",           CDatabaseQueryRule::OPERATOR_FALSE,             20424},
-  {"between",         CDatabaseQueryRule::OPERATOR_BETWEEN,           21456},
+  {"contains",        OPERATOR_CONTAINS,          21400},
+  {"doesnotcontain",  OPERATOR_DOES_NOT_CONTAIN,  21401},
+  {"is",              OPERATOR_EQUALS,            21402},
+  {"isnot",           OPERATOR_DOES_NOT_EQUAL,    21403},
+  {"startswith",      OPERATOR_STARTS_WITH,       21404},
+  {"endswith",        OPERATOR_ENDS_WITH,         21405},
+  {"greaterthan",     OPERATOR_GREATER_THAN,      21406},
+  {"lessthan",        OPERATOR_LESS_THAN,         21407},
+  {"after",           OPERATOR_AFTER,             21408},
+  {"before",          OPERATOR_BEFORE,            21409},
+  {"inthelast",       OPERATOR_IN_THE_LAST,       21410},
+  {"notinthelast",    OPERATOR_NOT_IN_THE_LAST,   21411},
+  {"true",            OPERATOR_TRUE,              20122},
+  {"false",           OPERATOR_FALSE,             20424},
+  {"between",         OPERATOR_BETWEEN,           21456},
 }};
 // clang-format on
 
@@ -189,7 +191,7 @@ bool CDatabaseQueryRule::Save(CVariant& obj) const
   return true;
 }
 
-CDatabaseQueryRule::SEARCH_OPERATOR CDatabaseQueryRule::TranslateOperator(const char* oper)
+CDatabaseQueryRule::SearchOperator CDatabaseQueryRule::TranslateOperator(const char* oper)
 {
   for (const auto& o : operators)
     if (StringUtils::EqualsNoCase(oper, o.name))
@@ -197,7 +199,7 @@ CDatabaseQueryRule::SEARCH_OPERATOR CDatabaseQueryRule::TranslateOperator(const 
   return OPERATOR_CONTAINS;
 }
 
-std::string CDatabaseQueryRule::TranslateOperator(SEARCH_OPERATOR oper)
+std::string CDatabaseQueryRule::TranslateOperator(SearchOperator oper)
 {
   for (const auto& o : operators)
     if (oper == o.op)
@@ -205,7 +207,7 @@ std::string CDatabaseQueryRule::TranslateOperator(SEARCH_OPERATOR oper)
   return "contains";
 }
 
-std::string CDatabaseQueryRule::GetLocalizedOperator(SEARCH_OPERATOR oper)
+std::string CDatabaseQueryRule::GetLocalizedOperator(SearchOperator oper)
 {
   for (const auto& o : operators)
     if (oper == o.op)
@@ -277,7 +279,7 @@ std::string CDatabaseQueryRule::FormatParameter(const std::string& operatorStrin
   return parameter;
 }
 
-std::string CDatabaseQueryRule::GetOperatorString(SEARCH_OPERATOR op) const
+std::string CDatabaseQueryRule::GetOperatorString(SearchOperator op) const
 {
   std::string operatorString;
   if (GetFieldType(m_field) != TEXTIN_FIELD)
@@ -347,7 +349,7 @@ std::string CDatabaseQueryRule::GetOperatorString(SEARCH_OPERATOR op) const
 std::string CDatabaseQueryRule::GetWhereClause(const CDatabase& db,
                                                const std::string& strType) const
 {
-  SEARCH_OPERATOR op = GetOperator(strType);
+  const SearchOperator op = GetOperator(strType);
 
   std::string operatorString = GetOperatorString(op);
   std::string negate;

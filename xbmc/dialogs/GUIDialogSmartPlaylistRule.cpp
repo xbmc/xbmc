@@ -382,59 +382,64 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   pDialog->Reset();
 }
 
-std::pair<std::string, int> OperatorLabel(CDatabaseQueryRule::SEARCH_OPERATOR op)
+namespace
+{
+std::pair<std::string, CDatabaseQueryRule::SearchOperator> OperatorLabel(
+    CDatabaseQueryRule::SearchOperator op)
 {
   return std::make_pair(PLAYLIST::CSmartPlaylistRule::GetLocalizedOperator(op), op);
 }
+} // unnamed namespace
 
-std::vector<std::pair<std::string, int>> CGUIDialogSmartPlaylistRule::GetValidOperators(
-    const PLAYLIST::CSmartPlaylistRule& rule)
+std::vector<std::pair<std::string, CDatabaseQueryRule::SearchOperator>>
+CGUIDialogSmartPlaylistRule::GetValidOperators(const PLAYLIST::CSmartPlaylistRule& rule)
 {
-  std::vector< std::pair<std::string, int> > labels;
+  std::vector<std::pair<std::string, CDatabaseQueryRule::SearchOperator>> labels;
   switch (rule.GetFieldType(rule.m_field))
   {
-  case CDatabaseQueryRule::TEXT_FIELD:
-    // text fields - add the usual comparisons
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_CONTAINS));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_CONTAIN));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_STARTS_WITH));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_ENDS_WITH));
-    break;
+    using enum CDatabaseQueryRule::SearchOperator;
+    case CDatabaseQueryRule::TEXT_FIELD:
+      // text fields - add the usual comparisons
+      labels.push_back(OperatorLabel(OPERATOR_EQUALS));
+      labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
+      labels.push_back(OperatorLabel(OPERATOR_CONTAINS));
+      labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_CONTAIN));
+      labels.push_back(OperatorLabel(OPERATOR_STARTS_WITH));
+      labels.push_back(OperatorLabel(OPERATOR_ENDS_WITH));
+      break;
 
-  case CDatabaseQueryRule::REAL_FIELD:
-  case CDatabaseQueryRule::NUMERIC_FIELD:
-  case CDatabaseQueryRule::SECONDS_FIELD:
-    // numerical fields - less than greater than
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_GREATER_THAN));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_LESS_THAN));
-    break;
+    case CDatabaseQueryRule::REAL_FIELD:
+    case CDatabaseQueryRule::NUMERIC_FIELD:
+    case CDatabaseQueryRule::SECONDS_FIELD:
+      // numerical fields - less than greater than
+      labels.push_back(OperatorLabel(OPERATOR_EQUALS));
+      labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
+      labels.push_back(OperatorLabel(OPERATOR_GREATER_THAN));
+      labels.push_back(OperatorLabel(OPERATOR_LESS_THAN));
+      break;
 
-  case CDatabaseQueryRule::DATE_FIELD:
-    // date field
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_AFTER));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_BEFORE));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_IN_THE_LAST));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_NOT_IN_THE_LAST));
-    break;
+    case CDatabaseQueryRule::DATE_FIELD:
+      // date field
+      labels.push_back(OperatorLabel(OPERATOR_AFTER));
+      labels.push_back(OperatorLabel(OPERATOR_BEFORE));
+      labels.push_back(OperatorLabel(OPERATOR_IN_THE_LAST));
+      labels.push_back(OperatorLabel(OPERATOR_NOT_IN_THE_LAST));
+      break;
 
-  case CDatabaseQueryRule::PLAYLIST_FIELD:
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
-    break;
+    case CDatabaseQueryRule::PLAYLIST_FIELD:
+      labels.push_back(OperatorLabel(OPERATOR_EQUALS));
+      labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
+      break;
 
-  case CDatabaseQueryRule::BOOLEAN_FIELD:
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_TRUE));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_FALSE));
-    break;
+    case CDatabaseQueryRule::BOOLEAN_FIELD:
+      labels.push_back(OperatorLabel(OPERATOR_TRUE));
+      labels.push_back(OperatorLabel(OPERATOR_FALSE));
+      break;
 
-  case CDatabaseQueryRule::TEXTIN_FIELD:
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS));
-    labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
-    break;
+    case CDatabaseQueryRule::TEXTIN_FIELD:
+      labels.push_back(OperatorLabel(OPERATOR_EQUALS));
+      labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
+      break;
   }
   return labels;
 }
@@ -468,13 +473,14 @@ void CGUIDialogSmartPlaylistRule::OnField()
 
   m_rule.m_field = fields[newSelected];
   // check if operator is still valid. if not, reset to first valid one
-  std::vector< std::pair<std::string, int> > validOperators = GetValidOperators(m_rule);
+  const std::vector<std::pair<std::string, CDatabaseQueryRule::SearchOperator>> validOperators =
+      GetValidOperators(m_rule);
   bool isValid = false;
   for (auto op : validOperators)
     if (std::get<0>(op) == std::get<0>(OperatorLabel(m_rule.m_operator)))
       isValid = true;
   if (!isValid)
-    m_rule.m_operator = (CDatabaseQueryRule::SEARCH_OPERATOR)std::get<1>(validOperators[0]);
+    m_rule.m_operator = std::get<1>(validOperators[0]);
 
   m_rule.SetParameter("");
   UpdateButtons();
@@ -495,7 +501,7 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
   if (!dialog->IsConfirmed() || newSelected < 0)
     return;
 
-  m_rule.m_operator = (CDatabaseQueryRule::SEARCH_OPERATOR)std::get<1>(labels[newSelected]);
+  m_rule.m_operator = std::get<1>(labels[newSelected]);
   UpdateButtons();
 }
 
@@ -527,8 +533,8 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     type = CGUIEditControl::INPUT_TYPE_TEXT;
     break;
   case CDatabaseQueryRule::DATE_FIELD:
-    if (m_rule.m_operator == CDatabaseQueryRule::OPERATOR_IN_THE_LAST ||
-        m_rule.m_operator == CDatabaseQueryRule::OPERATOR_NOT_IN_THE_LAST)
+    if (m_rule.m_operator == CDatabaseQueryRule::SearchOperator::OPERATOR_IN_THE_LAST ||
+        m_rule.m_operator == CDatabaseQueryRule::SearchOperator::OPERATOR_NOT_IN_THE_LAST)
       type = CGUIEditControl::INPUT_TYPE_TEXT;
     else
       type = CGUIEditControl::INPUT_TYPE_DATE;

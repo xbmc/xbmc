@@ -48,7 +48,7 @@ public:
     SettingType settingType;
     std::string controlType;
     std::string controlFormat;
-    CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator;
+    CDatabaseQueryRule::SearchOperator ruleOperator;
     std::shared_ptr<CSetting> setting = nullptr;
     KODI::PLAYLIST::CSmartPlaylistRule* rule = nullptr;
     void* data = nullptr;
@@ -83,7 +83,8 @@ protected:
 
   KODI::PLAYLIST::CSmartPlaylistRule* AddRule(
       Field field,
-      CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
+      CDatabaseQueryRule::SearchOperator ruleOperator =
+          CDatabaseQueryRule::SearchOperator::OPERATOR_CONTAINS);
   void DeleteRule(Field field);
 
   void GetStringListOptions(const std::shared_ptr<const CSetting>& setting,
