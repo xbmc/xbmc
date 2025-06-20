@@ -183,7 +183,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldTitle)
     {
       // We need some extra logic to get the title value if sorttitle isn't set
-      if (queryPart == DatabaseQueryPartOrderBy)
+      if (queryPart == DatabaseQueryPart::ORDER_BY)
         result = StringUtils::Format("CASE WHEN length(movie_view.c{:02}) > 0 THEN "
                                      "movie_view.c{:02} ELSE movie_view.c{:02} END",
                                      VIDEODB_ID_SORTTITLE, VIDEODB_ID_SORTTITLE, VIDEODB_ID_TITLE);
@@ -243,7 +243,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldTitle)
     {
       // We need some extra logic to get the title value if sorttitle isn't set
-      if (queryPart == DatabaseQueryPartOrderBy)
+      if (queryPart == DatabaseQueryPart::ORDER_BY)
         result = StringUtils::Format("CASE WHEN length(tvshow_view.c{:02}) > 0 THEN "
                                      "tvshow_view.c{:02} ELSE tvshow_view.c{:02} END",
                                      VIDEODB_ID_TV_SORTTITLE, VIDEODB_ID_TV_SORTTITLE,
@@ -325,7 +325,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
       return result;
   }
 
-  if (field == FieldRandom && queryPart == DatabaseQueryPartOrderBy)
+  if (field == FieldRandom && queryPart == DatabaseQueryPart::ORDER_BY)
     return "RANDOM()";
 
   return "";
@@ -377,7 +377,7 @@ bool DatabaseUtils::GetSelectFields(const Fields &fields, const MediaType &media
     if (field == FieldLabel)
       continue;
 
-    if (GetField(field, mediaType, DatabaseQueryPartSelect).empty())
+    if (GetField(field, mediaType, DatabaseQueryPart::SELECT).empty())
     {
       CLog::Log(LOGDEBUG, "DatabaseUtils::GetSortFieldList: unknown field {}", field);
       continue;

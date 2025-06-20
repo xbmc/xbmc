@@ -13237,7 +13237,7 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
       if (it == FieldYear)
         strField = "iYear";
       else
-        strField = DatabaseUtils::GetField(it, type, DatabaseQueryPartSelect);
+        strField = DatabaseUtils::GetField(it, type, DatabaseQueryPart::SELECT);
       if (!strField.empty())
         orderfields.emplace_back(strField);
     }

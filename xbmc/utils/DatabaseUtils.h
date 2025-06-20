@@ -158,11 +158,11 @@ enum Field
 using Fields = std::set<Field>;
 using FieldList = std::vector<Field>;
 
-enum DatabaseQueryPart
+enum class DatabaseQueryPart
 {
-  DatabaseQueryPartSelect,
-  DatabaseQueryPartWhere,
-  DatabaseQueryPartOrderBy,
+  SELECT,
+  WHERE,
+  ORDER_BY,
 };
 
 using DatabaseResult = std::map<Field, CVariant>;
