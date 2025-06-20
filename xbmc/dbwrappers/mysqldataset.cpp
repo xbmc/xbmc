@@ -25,8 +25,10 @@
 
 #ifdef HAS_MYSQL
 #include <mysql/errmsg.h>
+#include <mysql/mysql.h>
 #elif defined(HAS_MARIADB)
 #include <mariadb/errmsg.h>
+#include <mariadb/mysql.h>
 #endif
 
 #ifdef TARGET_POSIX
