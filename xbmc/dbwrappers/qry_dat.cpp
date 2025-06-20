@@ -784,56 +784,30 @@ fType field_value::get_field_type() const
   return field_type;
 }
 
-std::string field_value::gft() const
+std::string_view field_value::gft() const
 {
-  std::string tmp;
   switch (field_type)
   {
     case ft_String:
-    {
-      tmp.assign("string");
-      break;
-    }
+      return "string";
     case ft_Boolean:
-    {
-      tmp.assign("bool");
-      break;
-    }
+      return "bool";
     case ft_Char:
-    {
-      tmp.assign("char");
-      break;
-    }
+      return "char";
     case ft_Short:
-    {
-      tmp.assign("short");
-      break;
-    }
+      return "short";
     case ft_Int:
-    {
-      tmp.assign("int");
-      break;
-    }
+      return "int";
     case ft_Float:
-    {
-      tmp.assign("float");
-      break;
-    }
+      return "float";
     case ft_Double:
-    {
-      tmp.assign("double");
-      break;
-    }
+      return "double";
     case ft_Int64:
-    {
-      tmp.assign("int64");
-      break;
-    }
+      return "int64";
     default:
       break;
   }
-
-  return tmp;
+  return "";
 }
 
 } // namespace dbiplus

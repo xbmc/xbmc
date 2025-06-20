@@ -233,7 +233,7 @@ public:
   void set_asInt64(const int64_t i);
 
   fType get_field_type() const;
-  std::string gft() const;
+  std::string_view gft() const;
 };
 
 struct field_prop
