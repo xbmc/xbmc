@@ -17,6 +17,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+using enum CDatabaseQueryRule::FieldType;
+
 enum TextureField
 {
   TF_None = 0,
@@ -36,21 +38,23 @@ typedef struct
 {
   char string[14];
   TextureField field;
-  CDatabaseQueryRule::FIELD_TYPE type;
+  CDatabaseQueryRule::FieldType type;
 } translateField;
 
+// clang-format off
 static const translateField fields[] = {
-  { "none",          TF_None,          CDatabaseQueryRule::TEXT_FIELD    },
-  { "textureid",     TF_Id,            CDatabaseQueryRule::REAL_FIELD    },
-  { "url",           TF_Url,           CDatabaseQueryRule::TEXT_FIELD    },
-  { "cachedurl",     TF_CachedUrl,     CDatabaseQueryRule::TEXT_FIELD    },
-  { "lasthashcheck", TF_LastHashCheck, CDatabaseQueryRule::TEXT_FIELD    },
-  { "imagehash",     TF_ImageHash,     CDatabaseQueryRule::TEXT_FIELD    },
-  { "width",         TF_Width,         CDatabaseQueryRule::REAL_FIELD    },
-  { "height",        TF_Height,        CDatabaseQueryRule::REAL_FIELD    },
-  { "usecount",      TF_UseCount,      CDatabaseQueryRule::REAL_FIELD    },
-  { "lastused",      TF_LastUsed,      CDatabaseQueryRule::TEXT_FIELD    }
+  { "none",          TF_None,          TEXT_FIELD },
+  { "textureid",     TF_Id,            REAL_FIELD },
+  { "url",           TF_Url,           TEXT_FIELD },
+  { "cachedurl",     TF_CachedUrl,     TEXT_FIELD },
+  { "lasthashcheck", TF_LastHashCheck, TEXT_FIELD },
+  { "imagehash",     TF_ImageHash,     TEXT_FIELD },
+  { "width",         TF_Width,         REAL_FIELD },
+  { "height",        TF_Height,        REAL_FIELD },
+  { "usecount",      TF_UseCount,      REAL_FIELD },
+  { "lastused",      TF_LastUsed,      TEXT_FIELD }
 };
+// clang-format on
 
 static const size_t NUM_FIELDS = sizeof(fields) / sizeof(translateField);
 
@@ -82,7 +86,7 @@ std::string CTextureRule::GetField(int field, const std::string &type) const
   return "";
 }
 
-CDatabaseQueryRule::FIELD_TYPE CTextureRule::GetFieldType(int field) const
+CDatabaseQueryRule::FieldType CTextureRule::GetFieldType(int field) const
 {
   for (const translateField& f : fields)
     if (field == f.field) return f.type;

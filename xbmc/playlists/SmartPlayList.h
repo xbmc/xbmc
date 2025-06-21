@@ -44,7 +44,7 @@ public:
   static std::vector<Field> GetFields(const std::string &type);
   static std::vector<SortBy> GetOrders(const std::string &type);
   static std::vector<Field> GetGroups(const std::string &type);
-  FIELD_TYPE GetFieldType(int field) const override;
+  CDatabaseQueryRule::FieldType GetFieldType(int field) const override;
   static bool IsFieldBrowseable(int field);
 
   static bool Validate(const std::string &input, void *data);
@@ -65,7 +65,7 @@ protected:
                                 const std::string &param,
                                 const CDatabase &db,
                                 const std::string &type) const override;
-  SEARCH_OPERATOR GetOperator(const std::string &type) const override;
+  SearchOperator GetOperator(const std::string& type) const override;
   std::string GetBooleanQuery(const std::string &negate,
                               const std::string &strType) const override;
 
@@ -91,9 +91,7 @@ public:
                              const std::string& strType,
                              std::set<std::string> &referencedPlaylists) const;
   void GetVirtualFolders(const std::string& strType,
-                         std::vector<std::string> &virtualFolders) const;
-
-  void AddRule(const CSmartPlaylistRule &rule);
+                         std::vector<std::string>& virtualFolders) const;
 };
 
 class CSmartPlaylist : public IDatabaseQueryRuleFactory
@@ -125,13 +123,13 @@ public:
 
   void SetMatchAllRules(bool matchAll)
   {
-    m_ruleCombination.SetType(matchAll ? CSmartPlaylistRuleCombination::CombinationAnd
-                                       : CSmartPlaylistRuleCombination::CombinationOr);
+    m_ruleCombination.SetType(matchAll ? CDatabaseQueryRuleCombination::Type::COMBINATION_AND
+                                       : CDatabaseQueryRuleCombination::Type::COMBINATION_OR);
   }
 
   bool GetMatchAllRules() const
   {
-    return m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd;
+    return m_ruleCombination.GetType() == CDatabaseQueryRuleCombination::Type::COMBINATION_AND;
   }
 
   void SetLimit(unsigned int limit) { m_limit = limit; }

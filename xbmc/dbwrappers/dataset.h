@@ -14,32 +14,32 @@
 
 #include "qry_dat.h"
 
-#include <cstdio>
 #include <list>
 #include <map>
-#include <stdarg.h>
+#include <memory>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 
 namespace dbiplus
 {
-class Dataset; // forward declaration of class Dataset
+class Dataset;
 
-#define S_NO_CONNECTION "No active connection";
+constexpr const char* S_NO_CONNECTION = "No active connection";
 
-#define DB_BUFF_MAX 8 * 1024 // Maximum buffer's capacity
+constexpr unsigned int DB_BUFF_MAX = 8 * 1024; // Maximum buffer's capacity
 
 constexpr unsigned int DB_CONNECTION_NONE = 0;
 constexpr unsigned int DB_CONNECTION_OK = 1;
 constexpr unsigned int DB_CONNECTION_DATABASE_NOT_FOUND = 2;
 
-#define DB_COMMAND_OK 0 // OK - command executed
-#define DB_EMPTY_QUERY 1 // Query didn't return tuples
-#define DB_TUPLES_OK 2 // Query returned tuples
-#define DB_ERROR 5
-#define DB_BAD_RESPONSE 6
-#define DB_UNEXPECTED 7 // This shouldn't ever happen
-#define DB_UNEXPECTED_RESULT -1 //For integer functions
+constexpr int DB_COMMAND_OK = 0; // OK - command executed
+constexpr int DB_EMPTY_QUERY = 1; // Query didn't return tuples
+constexpr int DB_TUPLES_OK = 2; // Query returned tuples
+constexpr int DB_ERROR = 5;
+constexpr int DB_BAD_RESPONSE = 6;
+constexpr int DB_UNEXPECTED = 7; // This shouldn't ever happen
+constexpr int DB_UNEXPECTED_RESULT = -1; //For integer functions
 
 /******************* Class Database definition ********************
 
@@ -49,13 +49,21 @@ constexpr unsigned int DB_CONNECTION_DATABASE_NOT_FOUND = 2;
 class Database
 {
 protected:
-  bool active;
-  bool compression;
-  std::string error, // Error description
-      host, port, db, login, passwd, //Login info
-      sequence_table, //Sequence table for nextid
-      default_charset, //Default character set
-      key, cert, ca, capath, ciphers; //SSL - Encryption info
+  bool active{false};
+  bool compression{false};
+  std::string error; // Error description
+  std::string host;
+  std::string port;
+  std::string db;
+  std::string login;
+  std::string passwd; // Login info
+  std::string sequence_table{"db_sequence"}; // Sequence table for nextid
+  std::string default_charset; // Default character set
+  std::string key;
+  std::string cert;
+  std::string ca;
+  std::string capath;
+  std::string ciphers; // SSL - Encryption info
   unsigned int connect_timeout; // seconds
 
 public:
@@ -63,35 +71,35 @@ public:
   Database();
   /* destructor */
   virtual ~Database();
-  virtual Dataset* CreateDataset() const = 0;
+  virtual Dataset* CreateDataset() = 0;
   /* sets a new host name */
   virtual void setHostName(const char* newHost) { host = newHost; }
   /* gets a host name */
-  const char* getHostName(void) const { return host.c_str(); }
+  const char* getHostName() const { return host.c_str(); }
   /* sets a new port */
   void setPort(const char* newPort) { port = newPort; }
   /* gets a port */
-  const char* getPort(void) const { return port.c_str(); }
+  const char* getPort() const { return port.c_str(); }
   /* sets a new database name */
   virtual void setDatabase(const char* newDb) { db = newDb; }
   /* gets a database name */
-  const char* getDatabase(void) const { return db.c_str(); }
+  const char* getDatabase() const { return db.c_str(); }
   /* sets a new login to database */
   void setLogin(const char* newLogin) { login = newLogin; }
   /* gets a login */
-  const char* getLogin(void) const { return login.c_str(); }
+  const char* getLogin() const { return login.c_str(); }
   /* sets a password */
   void setPasswd(const char* newPasswd) { passwd = newPasswd; }
   /* gets a password */
-  const char* getPasswd(void) const { return passwd.c_str(); }
+  const char* getPasswd() const { return passwd.c_str(); }
   /* active status is OK state */
-  virtual bool isActive(void) const { return active; }
+  virtual bool isActive() const { return active; }
   /* Set new name of sequence table */
   void setSequenceTable(const char* new_seq_table) { sequence_table = new_seq_table; }
   /* Get name of sequence table */
-  const char* getSequenceTable(void) { return sequence_table.c_str(); }
+  const char* getSequenceTable() const { return sequence_table.c_str(); }
   /* Get the default character set */
-  const char* getDefaultCharset(void) { return default_charset.c_str(); }
+  const char* getDefaultCharset() const { return default_charset.c_str(); }
   /* Sets configuration */
   virtual void setConfig(const char* newKey,
                          const char* newCert,
@@ -112,37 +120,37 @@ public:
 
   /* virtual methods that must be overloaded in derived classes */
 
-  virtual int init(void) { return DB_COMMAND_OK; }
-  virtual int status(void) { return DB_CONNECTION_NONE; }
+  virtual int init() { return DB_COMMAND_OK; }
+  virtual int status() { return DB_CONNECTION_NONE; }
   virtual int setErr(int err_code, const char* qry) = 0;
-  virtual const char* getErrorMsg(void) { return error.c_str(); }
+  virtual const char* getErrorMsg() { return error.c_str(); }
 
   virtual int connect(bool create) { return DB_COMMAND_OK; }
   virtual int connectFull(const char* newDb,
-                          const char* newHost = NULL,
-                          const char* newLogin = NULL,
-                          const char* newPasswd = NULL,
-                          const char* newPort = NULL,
-                          const char* newKey = NULL,
-                          const char* newCert = NULL,
-                          const char* newCA = NULL,
-                          const char* newCApath = NULL,
-                          const char* newCiphers = NULL,
+                          const char* newHost = nullptr,
+                          const char* newLogin = nullptr,
+                          const char* newPasswd = nullptr,
+                          const char* newPort = nullptr,
+                          const char* newKey = nullptr,
+                          const char* newCert = nullptr,
+                          const char* newCA = nullptr,
+                          const char* newCApath = nullptr,
+                          const char* newCiphers = nullptr,
                           bool newCompression = false);
-  virtual void disconnect(void) { active = false; }
+  virtual void disconnect() { active = false; }
   virtual int postconnect() { return DB_COMMAND_OK; }
-  virtual int reset(void) { return DB_COMMAND_OK; }
-  virtual int create(void) { return DB_COMMAND_OK; }
-  virtual int drop(void) { return DB_COMMAND_OK; }
+  virtual int reset() { return DB_COMMAND_OK; }
+  virtual int create() { return DB_COMMAND_OK; }
+  virtual int drop() { return DB_COMMAND_OK; }
   virtual long nextid(const char* seq_name) = 0;
 
   /* \brief copy database */
   virtual int copy(const char* new_name) { return -1; }
 
   /* \brief drop all extra analytics from database */
-  virtual int drop_analytics(void) { return -1; }
+  virtual int drop_analytics() { return -1; }
 
-  virtual bool exists(void) { return false; }
+  virtual bool exists() { return false; }
 
   /* virtual methods for transaction */
 
@@ -176,7 +184,7 @@ public:
 ******************************************************************/
 
 // define Dataset States type
-enum dsStates
+enum class dsStates
 {
   dsSelect,
   dsInsert,
@@ -185,7 +193,7 @@ enum dsStates
   dsDelete,
   dsInactive
 };
-enum sqlType
+enum class sqlType
 {
   sqlSelect,
   sqlUpdate,
@@ -194,37 +202,33 @@ enum sqlType
   sqlExec
 };
 
-typedef std::list<std::string> StringList;
-typedef std::map<std::string, field_value> ParamList;
+using StringList = std::list<std::string>;
+using ParamList = std::map<std::string, field_value, std::less<>>;
 
 class Dataset
 {
 protected:
-  /*  char *Host     = ""; //WORK_HOST;
-  char *Database = ""; //WORK_DATABASE;
-  char *User     = ""; //WORK_USER;
-  char *Password = ""; //WORK_PASSWORD;
-*/
-
-  Database* db; // info about db connection
-  dsStates ds_state; // current state
-  Fields *fields_object, *edit_object;
+  Database* db{nullptr}; // info about db connection
+  dsStates ds_state{dsStates::dsInactive}; // current state
+  std::unique_ptr<Fields> fields_object{std::make_unique<Fields>()};
+  std::unique_ptr<Fields> edit_object{std::make_unique<Fields>()};
   std::unordered_map<std::string, unsigned int>
       name2indexMap; // Lower case field name -> database index
 
   /* query results*/
   result_set result;
   result_set exec_res;
-  bool autorefresh;
+  bool autorefresh{false};
 
-  bool active; // Is Query Opened?
-  bool haveError;
-  int frecno; // number of current row bei bewegung
+  bool active{false}; // Is Query Opened?
+  bool haveError{false};
+  int frecno{0}; // number of current row bei bewegung
   std::string sql;
 
   ParamList plist; // Paramlist for locate
-  bool fbof, feof;
-  bool autocommit; // for transactions
+  bool fbof{true};
+  bool feof{true};
+  bool autocommit{true}; // for transactions
 
   /* Variables to store SQL statements */
   std::string empty_sql; // Executed when result set is empty
@@ -252,9 +256,6 @@ protected:
    Essentially field idobject must present in the
    result set (select_sql statement) */
 
-  /* Arrays for searching */
-  //  StringList names, values;
-
   /* Makes direct inserts into database via mysql_query function */
   virtual void make_insert() = 0;
   /* Edit SQL */
@@ -264,7 +265,7 @@ protected:
 
   /* This function works only with MySQL database
    Filling the fields information from select statement */
-  virtual void fill_fields(void) = 0;
+  virtual void fill_fields() = 0;
 
   /* Parse Sql - replacing fields with prefixes :OLD_ and :NEW_ with current values of OLD or NEW field. */
   void parse_sql(std::string& sql);
@@ -286,20 +287,17 @@ public:
   /* sets a new value of connection to database */
   void setDatabase(Database* newDb) { db = newDb; }
   /* retrieves  a database which connected */
-  Database* getDatabase(void) { return db; }
+  Database* getDatabase() { return db; }
 
   /* sets a new query string to database server */
   void setExecSql(const char* newSql) { sql = newSql; }
   /* retrieves a query string */
-  const char* getExecSql(void) { return sql.c_str(); }
+  const char* getExecSql() const { return sql.c_str(); }
 
   /* status active is OK query */
-  virtual bool isActive(void) { return active; }
+  virtual bool isActive() { return active; }
 
   virtual void setSqlParams(sqlType t, const char* sqlFrmt, ...);
-
-  /* error handling */
-  //  virtual void halt(const char *msg);
 
   /* last inserted id */
   virtual int64_t lastinsertid() = 0;
@@ -319,10 +317,6 @@ public:
   virtual bool query(const std::string& sql) = 0;
   /* Close SQL Query*/
   virtual void close();
-  /* This function looks for field Field_name with value equal Field_value
-   Returns true if found (position of dataset is set to founded position)
-   and false another way (position is not changed). */
-  //  virtual bool lookup(char *field_name, char*field_value);
   /* Refresh dataset (reopen it and set the same cursor position) */
   virtual void refresh();
 
@@ -347,9 +341,9 @@ public:
   virtual void last();
 
   /* Check for Ending dataset */
-  virtual bool eof(void) { return feof; }
+  virtual bool eof() { return feof; }
   /* Check for Beginning dataset */
-  virtual bool bof(void) { return fbof; }
+  virtual bool bof() { return fbof; }
 
   /* Start the insert mode */
   virtual void insert();
@@ -388,9 +382,6 @@ public:
   /* alias for set_field_value */
   virtual bool sf(const char* f, const field_value& v) { return set_field_value(f, v); }
 
-  /* Return field name by it index */
-  //  virtual char *field_name(int f_index) { return field_by_index(f_index)->get_field_name(); }
-
   /* Getting value of field for current record */
   virtual const field_value& get_field_value(const char* f_name);
   virtual const field_value& get_field_value(int index);
@@ -400,14 +391,14 @@ public:
 
   /* ------------ for transaction ------------------- */
   void set_autocommit(bool v) { autocommit = v; }
-  bool get_autocommit() { return autocommit; }
+  bool get_autocommit() const { return autocommit; }
 
   /* ----------------- for debug -------------------- */
-  Fields* get_fields_object() { return fields_object; }
-  Fields* get_edit_object() { return edit_object; }
+  Fields& get_fields_object() { return *fields_object; }
+  Fields& get_edit_object() { return *edit_object; }
 
   /* --------------- for fast access ---------------- */
-  const result_set& get_result_set() { return result; }
+  const result_set& get_result_set() const { return result; }
   const sql_record* get_sql_record();
 
 private:
@@ -421,19 +412,15 @@ private:
 
 public:
   /* return ds_state value */
-  dsStates get_state() { return ds_state; }
+  dsStates get_state() const { return ds_state; }
 
   /*add a new value to select_sql*/
-  void set_select_sql(const char* sel_sql);
-  void set_select_sql(const std::string& select_sql);
+  void set_select_sql(std::string_view select_sql);
   /*add a new value to update_sql*/
-  void add_update_sql(const char* upd_sql);
   void add_update_sql(const std::string& upd_sql);
   /*add a new value to insert_sql*/
-  void add_insert_sql(const char* ins_sql);
   void add_insert_sql(const std::string& ins_sql);
   /*add a new value to delete_sql*/
-  void add_delete_sql(const char* del_sql);
   void add_delete_sql(const std::string& del_sql);
 
   /*clear update_sql*/
@@ -444,9 +431,9 @@ public:
   void clear_delete_sql();
 
   /* size of insert_sql*/
-  size_t insert_sql_count();
+  size_t insert_sql_count() const;
   /* size of delete_sql*/
-  size_t delete_sql_count();
+  size_t delete_sql_count() const;
 
   /*get value of select_sql*/
   const char* get_select_sql();
@@ -454,7 +441,7 @@ public:
 
 /******************** Class DbErrors definition *********************
 
-			   error handling
+    error handling
 
 ******************************************************************/
 class DbErrors
@@ -463,9 +450,9 @@ class DbErrors
 public:
   /* constructor */
   DbErrors();
-  DbErrors(const char* msg, ...);
+  explicit DbErrors(const char* msg, ...);
 
-  const char* getMsg();
+  const char* getMsg() const;
 
 private:
   std::string msg_;

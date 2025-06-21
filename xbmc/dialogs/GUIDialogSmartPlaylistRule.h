@@ -11,6 +11,10 @@
 #include "guilib/GUIDialog.h"
 #include "playlists/SmartPlayList.h"
 
+#include <string>
+#include <utility>
+#include <vector>
+
 class CGUIDialogSmartPlaylistRule :
       public CGUIDialog
 {
@@ -31,8 +35,9 @@ protected:
   void OnCancel();
   void UpdateButtons();
   void OnBrowse();
-  std::vector<std::pair<std::string, int>> GetValidOperators(
+  std::vector<std::pair<std::string, CDatabaseQueryRule::SearchOperator>> GetValidOperators(
       const KODI::PLAYLIST::CSmartPlaylistRule& rule);
+
   KODI::PLAYLIST::CSmartPlaylistRule m_rule;
   bool m_cancelled;
   std::string m_type;
