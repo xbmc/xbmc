@@ -131,9 +131,9 @@ private:
   GLint m_InputSizeLoc{-1};
   GLint m_MVPMatrixLoc{-1};
 
-  GLuint VAO{0};
-  GLuint VBO[3]{};
-  GLuint EBO{0};
+  GLuint m_shaderVAO = GL_NONE;
+  GLuint m_shaderVertexVBO[3]{GL_NONE};
+  GLuint m_shaderIndexVBO = GL_NONE;
 };
 } // namespace SHADER
 } // namespace KODI
