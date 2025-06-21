@@ -26,8 +26,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # Darwin platforms link against toolchain provided zlib regardless
   # They will fail when searching for static. All other platforms, prefer static
   # if possible (requires cmake 3.24+ otherwise variable is a no-op)
-  # Windows still uses dynamic lib for zlib for other purposes, dont mix
-  if(NOT CMAKE_SYSTEM_NAME MATCHES "Darwin" AND NOT (WIN32 OR WINDOWS_STORE))
+  if(KODI_DEPENDSBUILD AND NOT CMAKE_SYSTEM_NAME MATCHES "Darwin")
     set(ZLIB_USE_STATIC_LIBS ON)
   endif()
 
