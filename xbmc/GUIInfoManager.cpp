@@ -1266,7 +1266,7 @@ constexpr std::array<InfoMap, 7> weather = {{
 ///                  \anchor System_HasMediaBlurayPlaylist
 ///                  _boolean_,
 ///     @return **True** if there is a bluray in the drive that has been played before.
-///     **False** if no drive available\, empty drive, other medium or new bluray.
+///     **False** if no drive available\, empty drive\, other medium or new bluray.
 ///   <p><hr>
 ///   @skinning_v18 **[New Boolean Condition]** \link System_HasMediaBlurayPlaylist
 ///   `System.System_HasMediaBlurayPlaylist` \endlink <p>
