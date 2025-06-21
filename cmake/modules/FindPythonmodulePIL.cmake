@@ -69,14 +69,14 @@ if(NOT TARGET Python::${CMAKE_FIND_PACKAGE_NAME})
         endif()
 
         set(LDSHARED "${CMAKE_C_COMPILER} -bundle -undefined dynamic_lookup ${LDFLAGS}")
-      elseif(CORE_SYSTEM_NAME STREQUAL android)
+      elseif(${CORE_SYSTEM_NAME} STREQUAL android)
         find_package(Pythonmoduledummylib REQUIRED ${SEARCH_QUIET})
         # ToDo: ideally we want to get the -L link path from the Python::dummylib TARGET
         #       For now, we just expect the dummy lib to be built as part of tools/depends
         set(LDFLAGS "${CMAKE_EXE_LINKER_FLAGS} -L${DEPENDS_PATH}/lib/dummy-lib${APP_NAME_LC} -l${APP_NAME_LC} -lm")
       endif()
 
-      if(CORE_SYSTEM_NAME STREQUAL darwin_embedded OR CORE_SYSTEM_NAME STREQUAL android)
+      if(${CORE_SYSTEM_NAME} STREQUAL darwin_embedded OR ${CORE_SYSTEM_NAME} STREQUAL android)
         set(PIL_OUTPUT_DIR ${DEPENDS_PATH}/share/${APP_NAME_LC}/addons/script.module.pil/lib)
       else()
         set(PIL_OUTPUT_DIR ${PYTHON_SITE_PKG})
@@ -123,20 +123,23 @@ if(NOT TARGET Python::${CMAKE_FIND_PACKAGE_NAME})
       # Set Target Configure command. Must be "" if no step required
       set(CONFIGURE_COMMAND COMMAND "")
 
-      set(BUILD_COMMAND COMMAND ${CMAKE_COMMAND} -E env ${PYMOD_TARGETENV} ${PROJECT_BUILDENV} PYTHONPATH=${PIL_OUTPUT_DIR}
-                                ${PYTHON_EXECUTABLE} setup.py build build_py build_ext --plat-name ${OS}-${CPU}
-                                                                        --disable-jpeg2000
-                                                                        --disable-webp
-                                                                        --disable-imagequant
-                                                                        --disable-tiff
-                                                                        --disable-xcb
-                                                                        --disable-lcms
-                                                                        --disable-platform-guessing
-                                                              install --install-lib ${PIL_OUTPUT_DIR}
-                                                              bdist_egg)
+      set(BUILD_COMMAND ${CMAKE_COMMAND} -E env ${PYMOD_TARGETENV} ${PROJECT_BUILDENV} PYTHONPATH=${PIL_OUTPUT_DIR}
+                        ${PYTHON_EXECUTABLE} setup.py build
+                                                      build_py
+                                                      build_ext
+                                                      --plat-name ${OS}-${CPU}
+                                                      --disable-jpeg2000
+                                                      --disable-webp
+                                                      --disable-imagequant
+                                                      --disable-tiff
+                                                      --disable-xcb
+                                                      --disable-lcms
+                                                      --disable-platform-guessing
+                                                      install --install-lib ${PIL_OUTPUT_DIR}
+                                                      bdist_egg)
 
-      # ToDo: empty install_command possible?
-      set(INSTALL_COMMAND COMMAND ${CMAKE_COMMAND} -E true)
+      set(INSTALL_COMMAND ${CMAKE_COMMAND} -E true)
+
       set(BUILD_IN_SOURCE 1)
 
       set(BUILD_BYPRODUCTS "${PIL_OUTPUT_DIR}/PIL/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPRODUCT}")
@@ -144,23 +147,36 @@ if(NOT TARGET Python::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
 
-    if(NOT ${CORE_SYSTEM_NAME} MATCHES "windows")
-      if(CORE_SYSTEM_NAME STREQUAL android)
+    if("webos" IN_LIST CORE_PLATFORM_NAME_LC OR
+       ${CORE_SYSTEM_NAME} STREQUAL android OR
+       ${CORE_SYSTEM_NAME} STREQUAL darwin_embedded)
+
+      # Extraction only adds stub loaders for _imaging* libraries.
+      # We install the whole lib as part of the BUILD_COMMAND, and as we have to patch
+      # android loaders anyway, we will skip extraction and just copy in stub py files.
+      # For webos/darwin_embedded, we will just extract to get the standard stub py files.
+      if(${CORE_SYSTEM_NAME} STREQUAL android)
+        find_program(SED_EXECUTABLE sed REQUIRED)
         if(CMAKE_HOST_APPLE)
-          set(SED_FLAG -i \'\')
+          set(SED_FLAG -i \"\")
         else()
           set(SED_FLAG -i)
         endif()
 
-        add_custom_command(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} POST_BUILD
-                           COMMAND sed ${SED_FLAG} -e \'s\/import sys\/import os, sys \/\'
-                                                   -e \"\/__file__\/ s\/\'_imaging.so\'\/\'lib_imaging.so\'\/g\"
-                                                   -e \'s\/pkg_resources.resource_filename\(__name__\,\/os.path.join\(os.environ\[\"KODI_ANDROID_LIBS\"\], \/\'
-                                                      ${PIL_OUTPUT_DIR}/PIL/_imaging*.py)
+        # creates a stub loader .py file corresponding to each _imaging*.so lib and fill
+        # android lib names (eg. lib_imaging.so)
+        set(POST_COMMAND find ${PIL_OUTPUT_DIR}/PIL/ -maxdepth 1 -type f -name '_imaging*.so' -execdir sh -c 'libfile=$$\{1\#\#*\/\}\\\; cp -f ${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/12-android-loader.patch ${PIL_OUTPUT_DIR}/PIL/$$\{libfile%.so\}.py\\\; sed ${SED_FLAG} -e s,PYFILENAME,lib$$libfile, $$\{libfile%.so}.py' sh \{\} \\\\\;)
 
         add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} Python::Pythonmoduledummylib)
+      else()
+        find_program(UNZIP_EXECUTABLE unzip REQUIRED)
+        set(POST_COMMAND ${UNZIP_EXECUTABLE} -o ${CMAKE_BINARY_DIR}/build/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME}/src/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME}/dist/pillow-${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}-*.egg -d ${PIL_OUTPUT_DIR})
       endif()
+
+      add_custom_command(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} POST_BUILD
+                                COMMAND ${POST_COMMAND})
     endif()
+
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} ${APP_NAME_LC}::Python
                                                                         Python::PythonmoduleSetuptools
                                                                         LIBRARY::FreeType
