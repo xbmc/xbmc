@@ -538,6 +538,13 @@ if(package_libs)
   add_dependencies(export-files ${package_libs})
 endif()
 
+# If we have any python modules, we create a dependency to make sure we build anything required
+# These TARGETS are not required for the core app, therefore they only need to be available
+# before we export-files for packaging.
+if(TARGET python-modules)
+  add_dependencies(export-files python-modules)
+endif()
+
 # Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
 # generated buildtree if we do it later. Other platforms dont care when this happens.
 add_dependencies(lib${APP_NAME_LC} generate-packaging)
