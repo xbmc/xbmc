@@ -192,15 +192,13 @@ if(NOT TARGET Python::${CMAKE_FIND_PACKAGE_NAME})
      string(REGEX REPLACE "^.*__version__ = \"([0-9]+\.[0-9]+\.[0-9]+)\".*" "\\1" PIL_VER ${pil_ver_file})
   endif()
 
+  add_library(Python::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+
   if(PIL_VER VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
     ")
-
-    add_library(Python::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-
-    add_dependencies(Python::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
 
     message(STATUS "Building Python module: Pillow")
 
@@ -209,12 +207,8 @@ if(NOT TARGET Python::${CMAKE_FIND_PACKAGE_NAME})
       set_target_properties(python-modules PROPERTIES EXCLUDE_FROM_ALL TRUE)
     endif()
 
+    add_dependencies(Python::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     add_dependencies(python-modules Python::${CMAKE_FIND_PACKAGE_NAME})
-  endif()
-
-  if(NOT TARGET Python::${CMAKE_FIND_PACKAGE_NAME})
-    # Dummy TARGET
-    add_library(Python::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
   endif()
 
   ADD_MULTICONFIG_BUILDMACRO()
