@@ -549,9 +549,9 @@ static void ParseItem(CFileItem* item, tinyxml2::XMLElement* root, const std::st
 
     if(StringUtils::StartsWithNoCase(item->GetPath(), "rss://")
       || StringUtils::StartsWithNoCase(item->GetPath(), "rsss://"))
-      item->m_bIsFolder = true;
+      item->SetFolder(true);
     else
-      item->m_bIsFolder = false;
+      item->SetFolder(false);
   }
 
   const std::string& title{item->GetTitle()};

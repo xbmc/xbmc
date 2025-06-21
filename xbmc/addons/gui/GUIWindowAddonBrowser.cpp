@@ -239,7 +239,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string& player)
     CGUIDialogBusy::Wait(&updater, 100, true);
     return true;
   }
-  if (!item->m_bIsFolder)
+  if (!item->IsFolder())
   {
     // cancel a downloading job
     if (item->HasProperty("Addon.Downloading"))
@@ -345,7 +345,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
 
 void CGUIWindowAddonBrowser::UpdateStatus(const CFileItemPtr& item)
 {
-  if (!item || item->m_bIsFolder)
+  if (!item || item->IsFolder())
     return;
 
   unsigned int percent;

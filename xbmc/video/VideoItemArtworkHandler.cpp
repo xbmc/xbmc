@@ -112,7 +112,7 @@ std::string CVideoItemArtworkHandler::GetLocalArt() const
 
 std::string CVideoItemArtworkHandler::GetDefaultIcon() const
 {
-  return m_item->m_bIsFolder ? "DefaultFolder.png" : "DefaultPicture.png";
+  return m_item->IsFolder() ? "DefaultFolder.png" : "DefaultPicture.png";
 }
 
 void CVideoItemArtworkHandler::AddItemPathToFileBrowserSources(std::vector<CMediaSource>& sources)

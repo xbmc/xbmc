@@ -777,7 +777,7 @@ void CUtil::RemoveTempFiles()
 
   for (const auto &item : items)
   {
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
       continue;
     XFILE::CFile::Delete(item->GetPath());
   }
@@ -790,7 +790,7 @@ void CUtil::ClearSubtitles()
   CDirectory::GetDirectory("special://temp/",items, "", DIR_FLAG_DEFAULTS);
   for (const auto &item : items)
   {
-    if (!item->m_bIsFolder)
+    if (!item->IsFolder())
     {
       if (item->GetPath().find("subtitle") != std::string::npos ||
           item->GetPath().find("vobsub_queue") != std::string::npos)
@@ -1439,7 +1439,7 @@ void CUtil::DeleteDirectoryCache(const std::string &prefix)
 
   for (const auto &item : items)
   {
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
       continue;
     std::string fileName = URIUtils::GetFileName(item->GetPath());
     if (StringUtils::StartsWith(fileName, prefix))
@@ -1454,7 +1454,7 @@ void CUtil::GetRecursiveListing(const std::string& strPath, CFileItemList& items
   CDirectory::GetDirectory(strPath,myItems,strMask,flags);
   for (const auto &item : myItems)
   {
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
       CUtil::GetRecursiveListing(item->GetPath(),items,strMask,flags);
     else
       items.Add(item);
@@ -1467,7 +1467,7 @@ void CUtil::GetRecursiveDirsListing(const std::string& strPath, CFileItemList& i
   CDirectory::GetDirectory(strPath,myItems,"",flags);
   for (const auto &i : myItems)
   {
-    if (i->m_bIsFolder && !i->IsPath(".."))
+    if (i->IsFolder() && !i->IsPath(".."))
     {
       item.Add(i);
       CUtil::GetRecursiveDirsListing(i->GetPath(),item,flags);
@@ -1628,7 +1628,7 @@ void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
   // Search for Themes in the Current skin!
   for (const auto &pItem : items)
   {
-    if (!pItem->m_bIsFolder)
+    if (!pItem->IsFolder())
     {
       std::string strExtension = URIUtils::GetExtension(pItem->GetPath());
       std::string strLabel = pItem->GetLabel();
@@ -1963,7 +1963,7 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
 {
   for (const auto &pItem : items)
   {
-    if (pItem->m_bIsFolder)
+    if (pItem->IsFolder())
       continue;
 
     std::string strCandidate = URIUtils::GetFileName(pItem->GetPath());

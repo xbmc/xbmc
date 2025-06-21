@@ -142,7 +142,7 @@ void CLabelFormatter::FormatLabel(CFileItem *item) const
   std::string maskedLabel = GetContent(0, item);
   if (!maskedLabel.empty())
     item->SetLabel(maskedLabel);
-  else if (!item->m_bIsFolder && m_hideFileExtensions)
+  else if (!item->IsFolder() && m_hideFileExtensions)
     item->RemoveExtension();
 }
 
@@ -210,14 +210,14 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     }
     break;
   case 'F': // filename
-    value = CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder && !item->IsFileFolder());
+    value = CUtil::GetTitleFromPath(item->GetPath(), item->IsFolder() && !item->IsFileFolder());
     break;
   case 'L':
     value = item->GetLabel();
     // is the label the actual file or folder name?
     if (value == URIUtils::GetFileName(item->GetPath()))
     { // label is the same as filename, clean it up as appropriate
-      value = CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder && !item->IsFileFolder());
+      value = CUtil::GetTitleFromPath(item->GetPath(), item->IsFolder() && !item->IsFileFolder());
     }
     break;
   case 'D':
@@ -236,7 +236,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 'I': // size
   {
     const int64_t size{item->GetSize()};
-    if ((item->m_bIsFolder && size != 0) || size >= 0)
+    if ((item->IsFolder() && size != 0) || size >= 0)
       value = StringUtils::SizeToString(item->GetSize());
     break;
   }
@@ -315,7 +315,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = std::to_string(movie->GetPlayCount());
     break;
   case 'X': // Bitrate
-    if (!item->m_bIsFolder)
+    if (!item->IsFolder())
     {
       const int64_t size{item->GetSize()};
       if (size != 0)
@@ -323,11 +323,11 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     }
     break;
    case 'W': // Listeners
-    if( !item->m_bIsFolder && music && music->GetListeners() != 0 )
-      value =
-          StringUtils::Format("{} {}", music->GetListeners(),
-                              g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455));
-    break;
+     if (!item->IsFolder() && music && music->GetListeners() != 0)
+       value =
+           StringUtils::Format("{} {}", music->GetListeners(),
+                               g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455));
+     break;
   case 'a': // Date Added
     if (movie && movie->m_dateAdded.IsValid())
       value = movie->m_dateAdded.GetAsLocalizedDate();

@@ -944,7 +944,7 @@ std::string CGUIBaseContainer::GetDescription() const
   if (item >= 0 && item < (int)m_items.size())
   {
     std::shared_ptr<CGUIListItem> pItem = m_items[item];
-    if (pItem->m_bIsFolder)
+    if (pItem->IsFolder())
       strLabel = StringUtils::Format("[{}]", pItem->GetLabel());
     else
       strLabel = pItem->GetLabel();
@@ -1496,7 +1496,7 @@ std::string CGUIBaseContainer::GetLabel(int info) const
       int numItems = 0;
       for (const auto& item : m_items)
       {
-        if (!item->m_bIsFolder)
+        if (!item->IsFolder())
           numItems++;
       }
       label = std::to_string(numItems);

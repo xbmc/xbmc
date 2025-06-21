@@ -276,7 +276,7 @@ bool CApplicationSkinHandling::LoadCustomWindows()
     {
       for (const auto& item : items)
       {
-        if (item->m_bIsFolder)
+        if (item->IsFolder())
           continue;
 
         std::string skinFile = URIUtils::GetFileName(item->GetPath());

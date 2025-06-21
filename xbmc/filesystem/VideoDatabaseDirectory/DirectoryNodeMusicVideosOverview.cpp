@@ -64,7 +64,7 @@ bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items) const
     itemUrl.AppendPath(strDir);
     pItem->SetPath(itemUrl.ToString());
 
-    pItem->m_bIsFolder = true;
+    pItem->SetFolder(true);
     pItem->SetCanQueue(false);
     pItem->SetSpecialSort(SortSpecialOnTop);
     items.Add(pItem);

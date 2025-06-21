@@ -61,7 +61,7 @@ bool CGUIWindowFavourites::OnSelect(int itemIdx)
     return false;
 
   // video select action setting is for files only, except exec func is playmedia...
-  if (targetItem->HasVideoInfoTag() && (!targetItem->m_bIsFolder || isPlayMedia))
+  if (targetItem->HasVideoInfoTag() && (!targetItem->IsFolder() || isPlayMedia))
   {
     KODI::VIDEO::GUILIB::CVideoSelectActionProcessor proc{targetItem};
     if (proc.ProcessDefaultAction())
@@ -88,7 +88,7 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
     const auto item{std::make_shared<CFileItem>(*targetItem)};
 
     // video play action setting is for files and folders...
-    if (item->HasVideoInfoTag() || (item->m_bIsFolder && VIDEO::UTILS::IsItemPlayable(*item)))
+    if (item->HasVideoInfoTag() || (item->IsFolder() && VIDEO::UTILS::IsItemPlayable(*item)))
     {
       KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{item};
       if (proc.ProcessDefaultAction())

@@ -418,8 +418,8 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   CURL pathToUrl(path);
   CURL zipDir = URIUtils::CreateArchivePath("zip", pathToUrl, "");
   auto eventLog = CServiceBroker::GetEventLog();
-  if (!CDirectory::GetDirectory(zipDir, items, "", DIR_FLAG_DEFAULTS) ||
-      items.Size() != 1 || !items[0]->m_bIsFolder)
+  if (!CDirectory::GetDirectory(zipDir, items, "", DIR_FLAG_DEFAULTS) || items.Size() != 1 ||
+      !items[0]->IsFolder())
   {
     if (eventLog)
       eventLog->AddWithNotification(EventPtr(
@@ -429,7 +429,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
     CLog::Log(
         LOGERROR,
         "CAddonInstaller: installing addon failed '{}' - itemsize: {}, first item is folder: {}",
-        CURL::GetRedacted(path), items.Size(), items[0]->m_bIsFolder);
+        CURL::GetRedacted(path), items.Size(), items[0]->IsFolder());
     return false;
   }
 
@@ -619,7 +619,7 @@ int64_t CAddonInstaller::EnumeratePackageFolder(
   int64_t size = 0;
   for (int i = 0; i < items.Size(); i++)
   {
-    if (items[i]->m_bIsFolder)
+    if (items[i]->IsFolder())
       continue;
 
     size += items[i]->GetSize();
@@ -776,7 +776,7 @@ bool CAddonInstallJob::DoWork()
       CFileItemList archivedFiles;
       AddonPtr temp;
       if (!CDirectory::GetDirectory(archive, archivedFiles, "", DIR_FLAG_DEFAULTS) ||
-          archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder ||
+          archivedFiles.Size() != 1 || !archivedFiles[0]->IsFolder() ||
           !CServiceBroker::GetAddonMgr().LoadAddonDescription(archivedFiles[0]->GetPath(), temp))
       {
         CLog::Log(LOGERROR, "CAddonInstallJob[{}]: invalid package {}", m_addon->ID(), package);

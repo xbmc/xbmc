@@ -207,7 +207,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
     for (const auto& pItem : vecItems)
     {
       // is the current item a (non system) folder?
-      if (pItem->m_bIsFolder && pItem->GetPath() != "." && pItem->GetPath() != "..")
+      if (pItem->IsFolder() && pItem->GetPath() != "." && pItem->GetPath() != "..")
       {
         std::string name = pItem->GetPath();
         URIUtils::RemoveSlashAtEnd(name);
@@ -442,7 +442,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
     for (int i = 0; i < tempItems.Size(); i++)
     {
       CFileItemPtr pItem = tempItems[i];
-      if (!pItem->m_bIsFolder && IsVideo(*pItem))
+      if (!pItem->IsFolder() && IsVideo(*pItem))
       {
         bPlaying = true;
         if (pItem->IsStack())
@@ -483,7 +483,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItemPtr pItem = vecItems[i];
-      if (!pItem->m_bIsFolder && MUSIC::IsAudio(*pItem))
+      if (!pItem->IsFolder() && MUSIC::IsAudio(*pItem))
       {
         nAddedToPlaylist++;
         CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST::Id::TYPE_MUSIC, pItem);
@@ -497,7 +497,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItemPtr pItem = vecItems[i];
-      if (!pItem->m_bIsFolder && pItem->IsPicture())
+      if (!pItem->IsFolder() && pItem->IsPicture())
       {
         bPlaying = true;
         std::string strExec = StringUtils::Format("RecursiveSlideShow({})", strDrive);
@@ -514,7 +514,7 @@ bool CAutorun::RunDisc(IDirectory* pDir,
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItemPtr  pItem = vecItems[i];
-      if (pItem->m_bIsFolder)
+      if (pItem->IsFolder())
       {
         if (pItem->GetPath() != "." && pItem->GetPath() != ".." )
         {

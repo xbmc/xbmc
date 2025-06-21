@@ -257,7 +257,7 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
       // create our new favourite item
       const auto favourite{std::make_shared<CFileItem>(item.GetLabel())};
       if (item.GetLabel().empty())
-        favourite->SetLabel(CUtil::GetTitleFromPath(item.GetPath(), item.m_bIsFolder));
+        favourite->SetLabel(CUtil::GetTitleFromPath(item.GetPath(), item.IsFolder()));
       favourite->SetArt("thumb", ContentUtils::GetPreferredArtImage(item));
       const std::string favUrl{CFavouritesURL(item, contextWindow).GetURL()};
       favourite->SetPath(favUrl);

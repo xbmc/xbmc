@@ -190,7 +190,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         pItem->SetURL(url2);
 
         if(URIUtils::HasSlashAtEnd(pItem->GetPath(), true))
-          pItem->m_bIsFolder = true;
+          pItem->SetFolder(true);
 
         std::string day, month, year, hour, minute;
         int monthNum = 0;
@@ -255,7 +255,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           pItem->SetDateTime(dt);
         }
 
-        if (!pItem->m_bIsFolder)
+        if (!pItem->IsFolder())
         {
           if (reSizeHtml.RegFind(strMetadata.c_str()) >= 0)
           {

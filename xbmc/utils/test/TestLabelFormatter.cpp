@@ -40,7 +40,7 @@ TEST_F(TestLabelFormatter, FormatLabel)
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
+  item->SetFolder(false);
   item->Select(true);
 
   formatter.FormatLabel(item.get());
@@ -60,7 +60,7 @@ TEST_F(TestLabelFormatter, FormatLabel2)
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
+  item->SetFolder(false);
   item->Select(true);
 
   formatter.FormatLabel2(item.get());

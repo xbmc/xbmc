@@ -72,7 +72,7 @@ bool CAPKDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       CFileItemPtr pItem(new CFileItem(test_name));
       pItem->SetSize(sb.size);
       pItem->SetDateTime(sb.mtime);
-      pItem->m_bIsFolder = dir_marker > 0 ;
+      pItem->SetFolder(dir_marker > 0);
       pItem->SetPath(host + "/" + test_name);
       pItem->SetLabel(test_name.substr(path.size()));
       items.Add(pItem);

@@ -1724,7 +1724,7 @@ void CAddonSettings::FileEnumSettingOptionsFiller(const std::shared_ptr<const CS
   // process the matching files/directories
   for (const auto& item : items)
   {
-    if ((masking == "/" && item->m_bIsFolder) || !item->m_bIsFolder)
+    if ((masking == "/" && item->IsFolder()) || !item->IsFolder())
     {
       if (settingPath->HideExtension())
         item->RemoveExtension();

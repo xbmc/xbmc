@@ -80,7 +80,7 @@ bool CTVOSDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   {
     CFileItemPtr pItem(new CFileItem(URIUtils::GetFileName(path)));
     // we only save files to persistent storage
-    pItem->m_bIsFolder = false;
+    pItem->SetFolder(false);
     // path must a full path, with no protocol
     // or they will not get intercepted in CFileFactory
     pItem->SetPath(path);

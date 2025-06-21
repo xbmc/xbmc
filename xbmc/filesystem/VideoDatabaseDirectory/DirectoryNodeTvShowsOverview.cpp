@@ -63,7 +63,7 @@ bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items) const
     itemUrl.AppendPath(strDir);
     pItem->SetPath(itemUrl.ToString());
 
-    pItem->m_bIsFolder = true;
+    pItem->SetFolder(true);
     pItem->SetCanQueue(false);
     items.Add(pItem);
   }

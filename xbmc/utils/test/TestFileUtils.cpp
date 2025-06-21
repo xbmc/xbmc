@@ -23,7 +23,7 @@ TEST(TestFileUtils, DeleteItem_CFileItemPtr)
 
   CFileItemPtr item(new CFileItem(tmpfilepath));
   item->SetPath(tmpfilepath);
-  item->m_bIsFolder = false;
+  item->SetFolder(false);
   item->Select(true);
   tmpfile->Close();  //Close tmpfile before we try to delete it
   EXPECT_TRUE(CFileUtils::DeleteItem(item));

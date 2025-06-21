@@ -144,14 +144,14 @@ protected:
     ASSERT_EQ(items.GetObjectCount(), SAMPLE_ITEM_COUNT);
 
     // folders
-    ASSERT_TRUE(items[0]->m_bIsFolder);
-    ASSERT_TRUE(items[1]->m_bIsFolder);
+    ASSERT_TRUE(items[0]->IsFolder());
+    ASSERT_TRUE(items[1]->IsFolder());
 
     // files
-    ASSERT_FALSE(items[2]->m_bIsFolder);
-    ASSERT_FALSE(items[3]->m_bIsFolder);
-    ASSERT_FALSE(items[4]->m_bIsFolder);
-    ASSERT_FALSE(items[5]->m_bIsFolder);
+    ASSERT_FALSE(items[2]->IsFolder());
+    ASSERT_FALSE(items[3]->IsFolder());
+    ASSERT_FALSE(items[4]->IsFolder());
+    ASSERT_FALSE(items[5]->IsFolder());
   }
 
   void CheckFileItemLabels(CFileItemList const& items)

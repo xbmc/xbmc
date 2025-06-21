@@ -440,8 +440,8 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
         const CFileItemList& items = window->CurrentDirectory();
         for (const auto& item : items)
         {
-          if ((!item->m_bIsFolder && info.GetInfo() == CONTAINER_HASFILES) ||
-              (item->m_bIsFolder && !item->IsParentFolder() &&
+          if ((!item->IsFolder() && info.GetInfo() == CONTAINER_HASFILES) ||
+              (item->IsFolder() && !item->IsParentFolder() &&
                info.GetInfo() == CONTAINER_HASFOLDERS))
           {
             value = true;

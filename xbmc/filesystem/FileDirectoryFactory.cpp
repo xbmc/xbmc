@@ -50,7 +50,7 @@ CFileDirectoryFactory::CFileDirectoryFactory(void) = default;
 
 CFileDirectoryFactory::~CFileDirectoryFactory(void) = default;
 
-// return NULL + set pItem->m_bIsFolder to remove it completely from list.
+// return NULL + set pItem->IsFolder() to remove it completely from list.
 IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem, const std::string& strMask)
 {
   if (url.IsProtocol("stack")) // disqualify stack as we need to work with each of the parts instead
@@ -123,13 +123,13 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 
             // Check for folder, if yes return also wrap.
             // Needed to fix for e.g. RAR files with only one file inside
-            pItem->m_bIsFolder = URIUtils::HasSlashAtEnd(pItem->GetPath());
-            if (pItem->m_bIsFolder)
+            pItem->SetFolder(URIUtils::HasSlashAtEnd(pItem->GetPath()));
+            if (pItem->IsFolder())
               return wrap;
           }
           else
           {
-            pItem->m_bIsFolder = true;
+            pItem->SetFolder(true);
           }
 
           delete wrap;
@@ -169,8 +169,8 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     CFileItemList items;
     CDirectory::GetDirectory(zipURL, items, strMask, DIR_FLAG_DEFAULTS);
     if (items.Size() == 0) // no files
-      pItem->m_bIsFolder = true;
-    else if (items.Size() == 1 && items[0]->GetDepth() == 0 && !items[0]->m_bIsFolder)
+      pItem->SetFolder(true);
+    else if (items.Size() == 1 && items[0]->GetDepth() == 0 && !items[0]->IsFolder())
     {
       // one STORED file - collapse it down
       *pItem = *items[0];
@@ -190,8 +190,8 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     CFileItemList items;
     CDirectory::GetDirectory(zipURL, items, strMask, DIR_FLAG_DEFAULTS);
     if (items.Size() == 0) // no files
-      pItem->m_bIsFolder = true;
-    else if (items.Size() == 1 && items[0]->GetDepth() == 0 && !items[0]->m_bIsFolder)
+      pItem->SetFolder(true);
+    else if (items.Size() == 1 && items[0]->GetDepth() == 0 && !items[0]->IsFolder())
     {
       // one STORED file - collapse it down
       *pItem = *items[0];

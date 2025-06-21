@@ -118,7 +118,7 @@ private:
   bool DoRun(const std::shared_ptr<CFileItem>& item) override
   {
     CFileItemList items;
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
     {
       CUtil::GetRecursiveListing(item->GetPath(), items, "", XFILE::DIR_FLAG_NO_FILE_INFO);
     }
@@ -273,7 +273,7 @@ bool CPVRGUIActionsRecordings::CanEditRecording(const CFileItem& item) const
 
 bool CPVRGUIActionsRecordings::DeleteRecording(const CFileItem& item) const
 {
-  if (!item.m_bIsFolder && !item.HasPVRRecordingInfoTag())
+  if (!item.IsFolder() && !item.HasPVRRecordingInfoTag())
   {
     const std::shared_ptr<CPVRRecording> recording{CPVRItem(item).GetRecording()};
     if (recording)
@@ -282,7 +282,7 @@ bool CPVRGUIActionsRecordings::DeleteRecording(const CFileItem& item) const
       return false;
   }
 
-  if ((!item.IsPVRRecording() && !item.m_bIsFolder) || item.IsParentFolder())
+  if ((!item.IsPVRRecording() && !item.IsFolder()) || item.IsParentFolder())
     return false;
 
   if (!ConfirmDeleteRecording(item))
@@ -301,18 +301,17 @@ bool CPVRGUIActionsRecordings::ConfirmDeleteRecording(const CFileItem& item) con
 {
   return CGUIDialogYesNo::ShowAndGetInput(
       CVariant{122}, // "Confirm delete"
-      item.m_bIsFolder
-          ? CVariant{19113} // "Delete all recordings in this folder?"
-          : item.GetPVRRecordingInfoTag()->IsDeleted()
-                ? CVariant{19294}
-                // "Remove this deleted recording from trash? This operation cannot be reverted."
-                : CVariant{19112}, // "Delete this recording?"
+      item.IsFolder() ? CVariant{19113} // "Delete all recordings in this folder?"
+      : item.GetPVRRecordingInfoTag()->IsDeleted()
+          ? CVariant{19294}
+          // "Remove this deleted recording from trash? This operation cannot be reverted."
+          : CVariant{19112}, // "Delete this recording?"
       CVariant{""}, CVariant{item.GetLabel()});
 }
 
 bool CPVRGUIActionsRecordings::DeleteWatchedRecordings(const CFileItem& item) const
 {
-  if (!item.m_bIsFolder || item.IsParentFolder())
+  if (!item.IsFolder() || item.IsParentFolder())
     return false;
 
   if (!ConfirmDeleteWatchedRecordings(item))
