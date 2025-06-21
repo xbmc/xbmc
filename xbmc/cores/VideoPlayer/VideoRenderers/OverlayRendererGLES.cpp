@@ -17,6 +17,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
@@ -53,18 +54,16 @@ static void LoadTexture(GLenum target,
   int bytesPerPixel = KODI::UTILS::GL::glFormatElementByteCount(externalFormat);
 
   bool bgraSupported = false;
-  CRenderSystemGLES* renderSystem =
-      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
   if (!alpha)
   {
-    if (renderSystem->IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
-        renderSystem->IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+    if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_format_BGRA8888) ||
+        CGLExtensions::IsExtensionSupported(CGLExtensions::IMG_texture_format_BGRA8888))
     {
       bgraSupported = true;
       internalFormat = externalFormat = GL_BGRA_EXT;
     }
-    else if (renderSystem->IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+    else if (CGLExtensions::IsExtensionSupported(CGLExtensions::APPLE_texture_format_BGRA8888))
     {
       // Apple's implementation does not conform to spec. Instead, they require
       // differing format/internalformat, more like GL.
