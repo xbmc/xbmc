@@ -313,6 +313,11 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "Ще свърши в"
 
+#. Label to highlight that live stream is being played
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Добавка за лирики"

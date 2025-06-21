@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-02-26 21:51+0000\n"
+"PO-Revision-Date: 2025-04-21 16:05+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/is_is/>\n"
 "Language: is_is\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n % 10 != 1 || n % 100 == 11;\n"
-"X-Generator: Weblate 5.10.1\n"
+"X-Generator: Weblate 5.11\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -313,6 +313,11 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "Lýkur"
 
+#. Label to highlight that live stream is being played
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Viðbót fyrir lagatexta"
@@ -397,7 +402,7 @@ msgstr "Breiðlisti"
 #. viewtype name
 msgctxt "#31108"
 msgid "MediaList"
-msgstr ""
+msgstr "Miðlalisti"
 
 # empty strings from id 31108 to 31108
 msgctxt "#31109"

@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-12-04 09:42+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
-"Language-Team: Chinese (China) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/zh_cn/>\n"
+"PO-Revision-Date: 2025-06-18 22:03+0000\n"
+"Last-Translator: wabisabi926 <liwenliang926@163.com>\n"
+"Language-Team: Chinese (Simplified Han script) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/zh_Hans/>\n"
 "Language: zh_cn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.2.1\n"
+"X-Generator: Weblate 5.12.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -138,7 +138,7 @@ msgstr "未找到收藏。你可以从媒体浏览使用上下文菜单添加收
 
 msgctxt "#31026"
 msgid "Timeshift"
-msgstr "时光平移"
+msgstr "时移"
 
 msgctxt "#31027"
 msgid "Next aired"
@@ -195,7 +195,7 @@ msgstr "快进"
 
 msgctxt "#31040"
 msgid "Edit widgets"
-msgstr ""
+msgstr "编辑小部件"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -313,6 +313,11 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "结束于"
 
+#. Label to highlight that live stream is being played
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "歌词插件"
@@ -397,12 +402,12 @@ msgstr "宽列表"
 #. viewtype name
 msgctxt "#31108"
 msgid "MediaList"
-msgstr ""
+msgstr "媒体列表"
 
 # empty strings from id 31108 to 31108
 msgctxt "#31109"
 msgid "Video streams"
-msgstr ""
+msgstr "视频流"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -414,7 +419,7 @@ msgstr "浏览你的个人图片或通过官方插件库图片插件下载。"
 
 msgctxt "#31112"
 msgid "Audio streams"
-msgstr ""
+msgstr "音频流"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -426,7 +431,7 @@ msgstr "搜索 YouTube"
 
 msgctxt "#31115"
 msgid "Subtitles streams"
-msgstr ""
+msgstr "字幕流"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -462,7 +467,7 @@ msgstr "同一导演"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "按“上”为演员信息"
+msgstr "按“上键”为演员信息"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
@@ -689,17 +694,17 @@ msgstr "主屏幕上电影集的默认选择操作"
 #. Button to select Player Process Info window
 msgctxt "#31597"
 msgid "Player info"
-msgstr ""
+msgstr "播放器信息"
 
 #. Label to show player cache
 msgctxt "#31598"
 msgid "Player cache"
-msgstr ""
+msgstr "播放器缓存"
 
 #. Label to show the video codec name
 msgctxt "#31599"
 msgid "Audio decoder"
-msgstr ""
+msgstr "音频解码器"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -765,7 +770,7 @@ msgstr "系统"
 #. Audio channels
 msgctxt "#31612"
 msgid "channels"
-msgstr ""
+msgstr "频道"
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"

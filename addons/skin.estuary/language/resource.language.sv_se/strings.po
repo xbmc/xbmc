@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-04-18 09:31+0000\n"
+"PO-Revision-Date: 2025-05-13 18:14+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/sv_se/>\n"
 "Language: sv_se\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11\n"
+"X-Generator: Weblate 5.11.3\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -313,6 +313,11 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "Slutar"
 
+#. Label to highlight that live stream is being played
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Tillägg för sångtexter"
@@ -359,10 +364,9 @@ msgid "IconWall"
 msgstr "Ikonvägg"
 
 #. viewtype name
-#, fuzzy
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Skift"
+msgstr "Shift"
 
 #. viewtype name
 msgctxt "#31101"
@@ -662,16 +666,14 @@ msgid "On screen display (OSD) related settings"
 msgstr "Skärmvisning (OSD) relaterade inställningar"
 
 #. Setting Automatically close video OSD
-#, fuzzy
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr "Automatisk stängning av video OSD"
+msgstr "Automatisk stängning av video-OSD"
 
 #. Setting auto close time for video osd
-#, fuzzy
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr "Tid för automatisk stängning av video OSD (sekunder)"
+msgstr "Tid för automatisk stängning av video-OSD (sekunder)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
@@ -690,13 +692,11 @@ msgstr "Standardvalsåtgärd för filmer på hemskärmen"
 
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window
-#, fuzzy
 msgctxt "#31597"
 msgid "Player info"
-msgstr "Spelarinformation"
+msgstr "Spelarinfo"
 
 #. Label to show player cache
-#, fuzzy
 msgctxt "#31598"
 msgid "Player cache"
 msgstr "Spelarcache"
