@@ -295,7 +295,7 @@ void CURL::Parse(std::string strURL1)
     if (!m_strHostName.empty() && !m_strFileName.empty())
     {
       m_strFileName = StringUtils::Format("{}/{}", m_strHostName, m_strFileName);
-      m_strHostName = "";
+      m_strHostName.clear();
     }
     else
     {
@@ -303,7 +303,7 @@ void CURL::Parse(std::string strURL1)
         m_strFileName = m_strHostName + "/";
       else
         m_strFileName = m_strHostName;
-      m_strHostName = "";
+      m_strHostName.clear();
     }
   }
 
@@ -705,7 +705,7 @@ std::string CURL::Encode(std::string_view strURLData)
   return strResult;
 }
 
-bool CURL::IsProtocolEqual(const std::string &protocol, const char *type)
+bool CURL::IsProtocolEqual(const std::string& protocol, std::string_view type)
 {
   /*
    NOTE: We're currently using == here as m_strProtocol is assigned as lower-case in SetProtocol(),
@@ -713,9 +713,7 @@ bool CURL::IsProtocolEqual(const std::string &protocol, const char *type)
    We possibly shouldn't do this (as CURL(foo).Get() != foo, though there are other reasons for this as well)
    but it handles the requirements of RFC-1738 which allows the scheme to be case-insensitive.
    */
-  if (type)
-    return protocol == type;
-  return false;
+  return protocol == type;
 }
 
 void CURL::GetOptions(std::map<std::string, std::string> &options) const

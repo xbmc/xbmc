@@ -575,18 +575,9 @@ const char* Dataset::fieldName(int n)
     return NULL;
 }
 
-char* Dataset::str_toLower(char* s)
-{
-  for (char* p = s; *p; p++)
-    *p = std::tolower(*p);
-
-  return s;
-}
-
 int Dataset::fieldIndex(const char* fn)
 {
-  std::string name(fn);
-  const auto it = name2indexMap.find(str_toLower(name.data()));
+  const auto it = name2indexMap.find(StringUtils::ToLower(fn));
   if (it != name2indexMap.end())
     return (*it).second;
   else
