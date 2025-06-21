@@ -249,15 +249,21 @@
 						<shadowcolor>text_shadow</shadowcolor>
 						<height>100</height>
 						<width>auto</width>
-						<visible>!String.isempty(Player.Duration)</visible>
-						<visible>Player.HasVideo + ![Player.HasGame | VideoPlayer.HasEpg]</visible>
+						<visible>!Player.IsLive + Player.HasVideo + ![Player.HasGame | VideoPlayer.HasEpg] !String.IsEmpty(Player.Duration)</visible>
+					</control>
+					<control type="label">
+						<label>$LOCALIZE[31081]</label>
+						<shadowcolor>text_shadow</shadowcolor>
+						<height>100</height>
+						<width>auto</width>
+						<visible>Player.IsLive</visible>
 					</control>
 					<control type="label">
 						<label>$INFO[PVR.EpgEventFinishTime,$LOCALIZE[31080]: ]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 						<height>100</height>
 						<width>auto</width>
-						<visible>VideoPlayer.HasEpg</visible>
+						<visible>!Player.IsLive + VideoPlayer.HasEpg</visible>
 					</control>
 					<control type="image">
 						<top>2</top>

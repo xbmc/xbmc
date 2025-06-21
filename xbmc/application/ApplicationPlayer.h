@@ -136,6 +136,7 @@ public:
   bool IsPlayingVideo() const;
   bool IsPlayingGame() const;
   bool IsPlayingRDS() const;
+  bool IsLiveStream() const;
   void LoadPage(int p, int sp, unsigned char* buffer);
   bool OnAction(const CAction &action);
   void OnNothingToQueueNotify();
