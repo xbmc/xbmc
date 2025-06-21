@@ -223,5 +223,6 @@ set(DEP_BUILDENV ${CMAKE_COMMAND} -E env ${PROJECT_TARGETENV} ${PROJECT_BUILDENV
 
 # version populated from tools/depends/target/python3/PYTHON3-VERSION file
 set(PYTHON_VER @target_py_version@)
+set(PYTHON_SITE_PKG @prefix@/@deps_dir@/lib/python${PYTHON_VER}/site-packages)
 
 set(KODI_DEPENDSBUILD 1)
