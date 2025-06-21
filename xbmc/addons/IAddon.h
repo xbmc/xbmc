@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/ArtUtils.h"
+
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -67,7 +69,7 @@ typedef std::shared_ptr<IAddon> AddonPtr;
 typedef std::vector<AddonPtr> VECADDONS;
 
 using InfoMap = std::map<std::string, std::string>;
-using ArtMap = std::map<std::string, std::string>;
+using ArtMap = KODI::ART::ArtMap;
 
 class IAddon : public std::enable_shared_from_this<IAddon>
 {

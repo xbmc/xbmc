@@ -826,7 +826,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       std::string dirType = MediaTypeArtist;
       if (params.GetAlbumId() > 0)
         dirType = MediaTypeAlbum;
-      std::map<std::string, std::string> artmap;
+      ART::ArtMap artmap;
       for (auto artitem : art)
       {
         std::string artname;

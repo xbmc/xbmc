@@ -45,6 +45,7 @@
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
 #include "threads/IRunnable.h"
+#include "utils/ArtUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
@@ -816,7 +817,7 @@ void AddCurrentArtTypes(std::vector<std::string>& artTypes,
                         const CVideoInfoTag& tag,
                         CVideoDatabase& db)
 {
-  std::map<std::string, std::string> currentArt;
+  ART::ArtMap currentArt;
 
   if (tag.GetAssetInfo().GetId() >= 0)
     db.GetArtForAsset(tag.m_iFileId, ArtFallbackOptions::NONE, currentArt);
@@ -1255,7 +1256,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const std::shared_ptr<CFileItem>&
   if (mediaType == MediaTypeSeason)
   {
     detail.m_strSortTitle = title;
-    std::map<std::string, std::string> artwork;
+    ART::ArtMap artwork;
     database.SetDetailsForSeason(detail, artwork, detail.m_iIdShow, detail.m_iDbId);
   }
   else
@@ -1612,7 +1613,7 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem* movieItem,
     if (!CGUIKeyboardFactory::ShowAndGetInput(newSetTitle, CVariant{g_localizeStrings.Get(20468)}, false))
       return false;
     int idSet = videodb.AddSet(newSetTitle);
-    std::map<std::string, std::string> movieArt, setArt;
+    ART::ArtMap movieArt, setArt;
     if (!videodb.GetArtForItem(idSet, MediaTypeVideoCollection, setArt))
     {
       videodb.GetArtForItem(movieItem->GetVideoInfoTag()->m_iDbId, MediaTypeMovie, movieArt);

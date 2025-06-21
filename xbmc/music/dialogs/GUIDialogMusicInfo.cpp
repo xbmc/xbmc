@@ -770,14 +770,13 @@ void CGUIDialogMusicInfo::OnGetArt()
     return; // Cancelled
 
   CFileItemList items;
-  CGUIListItem::ArtMap primeArt = m_item->GetArt(); // art without fallbacks
+  ART::ArtMap primeArt = m_item->GetArt(); // art without fallbacks
   bool bHasArt = m_item->HasArt(type);
   bool bFallback(false);
   if (bHasArt)
   {
     // Check if that type of art is actually a fallback, e.g. artist fanart
-    CGUIListItem::ArtMap::const_iterator i = primeArt.find(type);
-    bFallback = (i == primeArt.end());
+    bFallback = (primeArt.find(type) == primeArt.end());
   }
 
   // Build list of possible images of that art type
