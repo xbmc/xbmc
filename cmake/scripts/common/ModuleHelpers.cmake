@@ -342,15 +342,20 @@ macro(BUILD_DEP_TARGET)
     endif()
   endif()
 
+  # Explicitly bypass buildenv for native libs. Makes sure we dont append any target
+  # info to the CONFIGURE_COMMAND
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE STREQUAL "native")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPASS_DEP_BUILDENV 1)
+  endif()
+
   if(PATCH_COMMAND)
     set(PATCH_COMMAND PATCH_COMMAND ${PATCH_COMMAND})
   endif()
 
   if(CONFIGURE_COMMAND)
-    # DEP_BUILDENV is potentially populated in a toolchain file. We dont want to use it
-    # for host tool builds, so make sure to check _LIB_TYPE
-    if(NOT CMAKE_ARGS AND
-      (DEP_BUILDENV AND NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE STREQUAL "native"))
+    if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPASS_DEP_BUILDENV OR CMAKE_ARGS)
+      set(CONFIGURE_COMMAND CONFIGURE_COMMAND ${CONFIGURE_COMMAND})
+    else()
       # DEP_BUILDENV only used for non cmake externalproject_add builds
       # iterate through CONFIGURE_COMMAND looking for multiple COMMAND, we need to
       # add DEP_BUILDENV for each distinct COMMAND
@@ -363,8 +368,6 @@ macro(BUILD_DEP_TARGET)
       endforeach()
       set(CONFIGURE_COMMAND CONFIGURE_COMMAND ${tmp_config_command})
       unset(tmp_config_command)
-    else()
-      set(CONFIGURE_COMMAND CONFIGURE_COMMAND ${CONFIGURE_COMMAND})
     endif()
   endif()
 
