@@ -82,6 +82,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                                      INTERFACE_LINK_OPTIONS "${Python3_LINK_OPTIONS}"
                                                                      INTERFACE_COMPILE_DEFINITIONS HAS_PYTHON)
 
+    # Add python modules
+    if(KODI_DEPENDSBUILD)
+      if(NOT PYTHON_SITE_PKG)
+        set(PYTHON_SITE_PKG "${DEPENDS_PATH}/lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages" CACHE INTERNAL "" FORCE)
+      endif()
+
+      find_package(PythonmodulePIL REQUIRED ${SEARCH_QUIET})
+    endif()
+
     if(Py_LINK_LIBRARIES)
       set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                        INTERFACE_LINK_LIBRARIES "${Py_LINK_LIBRARIES}")
