@@ -195,9 +195,12 @@ std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
     return GetFileName(url.GetFileName());
   }
 
-  /* find the last slash */
-  const size_t slash = strFileNameAndPath.find_last_of("/\\");
-  return strFileNameAndPath.substr(slash+1);
+  size_t lastPos = strFileNameAndPath.find_last_of(":/\\");
+  // If the colon is found at position 1, it is part of a Windows drive letter (e.g., "C:").
+  // Otherwise, it is treated as part of a URL or other path format.
+  if (lastPos != std::string::npos && strFileNameAndPath[lastPos] == ':' && lastPos != 1)
+    lastPos = std::string::npos;
+  return strFileNameAndPath.substr(lastPos + 1);
 }
 
 std::string URIUtils::GetFileOrFolderName(const std::string& path)
@@ -229,7 +232,7 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
     if (ch == '/' || ch == '\\' || (ch == ':' && i == 1)) break;
     else i--;
   }
-  if (i == 0)
+  if (i == 0 && strFileNameAndPath[0] != '/' && strFileNameAndPath[0] != '\\')
     i--;
 
   // take left including the directory separator
@@ -295,6 +298,7 @@ bool URIUtils::HasParentInHostname(const CURL& url)
 {
   return url.IsProtocol("zip") || url.IsProtocol("apk") || url.IsProtocol("bluray") ||
          url.IsProtocol("udf") || url.IsProtocol("iso9660") || url.IsProtocol("xbt") ||
+         url.IsProtocol("rar") ||
          (CServiceBroker::IsAddonInterfaceUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(url.GetProtocol()));
 }
@@ -823,7 +827,8 @@ bool URIUtils::IsHostOnLAN(const std::string& host, LanCheckMode lanCheckMode)
   if(address == INADDR_NONE)
   {
     std::string ip;
-    if (CServiceBroker::GetDNSNameCache()->Lookup(host, ip))
+    auto cache = CServiceBroker::GetDNSNameCache();
+    if (cache && cache->Lookup(host, ip))
       address = ntohl(inet_addr(ip.c_str()));
   }
 

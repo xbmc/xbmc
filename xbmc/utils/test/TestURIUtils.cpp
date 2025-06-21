@@ -600,3 +600,73 @@ TEST_F(TestURIUtils, UpdateUrlEncoding)
   EXPECT_FALSE(URIUtils::UpdateUrlEncoding(oldUrl));
   EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
 }
+
+TEST_F(TestURIUtils, ServiceAvailabilityInTestEnvironment)
+{
+  URIUtils::IsOnLAN("ftp://some.where/foo.avi", LanCheckMode::ANY_PRIVATE_SUBNET);
+  URIUtils::IsHostOnLAN("ftp://some.where/foo.avi", LanCheckMode::ANY_PRIVATE_SUBNET);
+}
+
+TEST_F(TestURIUtils, CheckConsistencyBetweenFileNameUtilities)
+{
+  auto URIUtils_Split = [=](const std::string& in)
+  {
+    std::string _, splitCurlFileName;
+    URIUtils::Split(in, _, splitCurlFileName);
+    return splitCurlFileName;
+  };
+  auto CURL_FileName_URIUtils_Split = [=](const std::string& in)
+  { return URIUtils_Split(CURL(in).GetFileName()); };
+
+  {
+    EXPECT_EQ("?", CURL("?").GetFileName());
+
+    EXPECT_EQ("?", URIUtils::GetFileName("?"));
+    EXPECT_EQ("?", CURL_FileName_URIUtils_Split("?"));
+    EXPECT_EQ("?", URIUtils_Split("?"));
+  }
+  {
+    EXPECT_EQ("", URIUtils_Split("C:"));
+
+    EXPECT_EQ("", URIUtils::GetFileName("C:"));
+    EXPECT_EQ("", CURL_FileName_URIUtils_Split("C:"));
+    EXPECT_EQ("", URIUtils_Split("C:"));
+  }
+  {
+    EXPECT_EQ("", URIUtils::GetFileName("/"));
+    EXPECT_EQ("", CURL_FileName_URIUtils_Split("/"));
+    EXPECT_EQ("", URIUtils_Split("/"));
+
+    EXPECT_EQ("", URIUtils::GetFileName("\\"));
+    EXPECT_EQ("", CURL_FileName_URIUtils_Split("\\"));
+    EXPECT_EQ("", URIUtils_Split("\\"));
+
+    EXPECT_EQ(".thing", URIUtils::GetFileName("/.thing"));
+    EXPECT_EQ(".thing", CURL_FileName_URIUtils_Split("/.thing"));
+    EXPECT_EQ(".thing", URIUtils_Split("/.thing"));
+
+    EXPECT_EQ(".thing", URIUtils::GetFileName("/hello/there/.thing"));
+    EXPECT_EQ(".thing", CURL_FileName_URIUtils_Split("/hello/there/.thing"));
+    EXPECT_EQ(".thing", URIUtils_Split("/hello/there/.thing"));
+  }
+}
+
+TEST_F(TestURIUtils, ContainersEncodeHostnamePaths)
+{
+  CURL curl("/path/thing");
+
+  EXPECT_EQ("zip://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("zip", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("apk://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("apk", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("udf://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("udf", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("iso9660://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("iso9660", curl, "/my/archived/path").Get());
+
+  EXPECT_EQ("rar://%2fpath%2fthing/my/archived/path",
+            URIUtils::CreateArchivePath("rar", curl, "/my/archived/path").Get());
+}
