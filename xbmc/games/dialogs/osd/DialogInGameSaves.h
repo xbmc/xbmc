@@ -77,7 +77,7 @@ private:
 
   CFileItemList m_savestateItems;
   const CFileItemPtr m_newSaveItem;
-  unsigned int m_focusedItemIndex = false;
+  unsigned int m_focusedItemIndex{0};
 };
 } // namespace GAME
 } // namespace KODI

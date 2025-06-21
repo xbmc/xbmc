@@ -66,7 +66,7 @@ protected:
   virtual bool OnDeleteAction() { return false; }
 
   // GUI functions
-  void RefreshList();
+  virtual void RefreshList();
   void OnDescriptionChange(const std::string& description);
 
   std::shared_ptr<RETRO::CGUIGameVideoHandle> m_gameVideoHandle;
