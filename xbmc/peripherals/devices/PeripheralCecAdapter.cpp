@@ -67,7 +67,10 @@ using namespace std::chrono_literals;
 CPeripheralCecAdapter::CPeripheralCecAdapter(CPeripherals& manager,
                                              const PeripheralScanResult& scanResult,
                                              CPeripheralBus* bus)
-  : CPeripheralHID(manager, scanResult, bus), CThread("CECAdapter"), m_cecAdapter(NULL)
+  : CPeripheralHID(manager, scanResult, bus),
+    CThread("CECAdapter"),
+    m_cecAdapter(NULL),
+    m_cecCommandState(CecCommandState::PROCESSED)
 {
   ResetMembers();
   m_features.push_back(FEATURE_CEC);
@@ -113,8 +116,7 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bGoingToStandby = false;
   m_bIsRunning = false;
   m_bDeviceRemoved = false;
-  m_bActiveSourcePending = false;
-  m_bStandbyPending = false;
+  m_cecCommandState = CecCommandState::PROCESSED;
   m_bActiveSourceBeforeStandby = false;
   m_bOnPlayReceived = false;
   m_bPlaybackPaused = false;
@@ -1785,52 +1787,43 @@ bool CPeripheralCecAdapter::ReopenConnection(bool bAsync /* = false */)
 void CPeripheralCecAdapter::ActivateSource(void)
 {
   std::unique_lock lock(m_critSection);
-  m_bActiveSourcePending = true;
+  m_cecCommandState = CecCommandState::WAITING_ACTIVATE;
 }
 
 void CPeripheralCecAdapter::ProcessActivateSource(void)
 {
-  bool bActivate(false);
-
+  std::unique_lock lock(m_critSection);
+  if (m_cecCommandState == CecCommandState::WAITING_ACTIVATE)
   {
-    std::unique_lock lock(m_critSection);
-    bActivate = m_bActiveSourcePending;
-    m_bActiveSourcePending = false;
-  }
-
-  if (bActivate)
     m_cecAdapter->SetActiveSource();
+    m_cecCommandState = CecCommandState::PROCESSED;
+  }
 }
 
 void CPeripheralCecAdapter::StandbyDevices(void)
 {
   std::unique_lock lock(m_critSection);
-  m_bStandbyPending = true;
+  m_cecCommandState = CecCommandState::WAITING_STAND_BY;
 }
 
 void CPeripheralCecAdapter::ProcessStandbyDevices(void)
 {
-  bool bStandby(false);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
+  if (m_cecCommandState == CecCommandState::WAITING_STAND_BY)
   {
-    std::unique_lock lock(m_critSection);
-    bStandby = m_bStandbyPending;
-    m_bStandbyPending = false;
-    if (bStandby)
-      m_bGoingToStandby = true;
-  }
-
-  if (bStandby)
-  {
+    m_bGoingToStandby = true;
     if (!m_configuration.powerOffDevices.IsEmpty())
     {
       m_standbySent = CDateTime::GetCurrentDateTime();
       m_cecAdapter->StandbyDevices(CECDEVICE_BROADCAST);
+      m_cecCommandState = CecCommandState::PROCESSED;
     }
     else if (m_bSendInactiveSource == 1)
     {
       CLog::Log(LOGDEBUG, "{} - sending inactive source commands", __FUNCTION__);
       m_cecAdapter->SetInactiveView();
+      m_cecCommandState = CecCommandState::PROCESSED;
     }
   }
 }
@@ -1840,14 +1833,24 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
 {
   if (!IsRunning())
     return false;
-  if (m_cecAdapter->IsLibCECActiveSource() &&
-      (mode == STATE_SWITCH_TOGGLE || mode == STATE_STANDBY))
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  if (m_cecCommandState != CecCommandState::PROCESSED)
+  {
+    return false;
+  }
+
+  const CecPowerState cecStatus = GetConnectedDevicesPowerState();
+
+  if (cecStatus == CecPowerState::ACTIVE && (mode == STATE_SWITCH_TOGGLE || mode == STATE_STANDBY))
   {
     CLog::Log(LOGDEBUG, "{} - putting CEC device on standby...", __FUNCTION__);
     StandbyDevices();
     return false;
   }
-  else if (mode == STATE_SWITCH_TOGGLE || mode == STATE_ACTIVATE_SOURCE)
+  else if (cecStatus == CecPowerState::STAND_BY &&
+           (mode == STATE_SWITCH_TOGGLE || mode == STATE_ACTIVATE_SOURCE))
   {
     CLog::Log(LOGDEBUG, "{} - waking up CEC device...", __FUNCTION__);
     ActivateSource();
@@ -1855,4 +1858,42 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
   }
 
   return false;
+}
+
+CPeripheralCecAdapter::CecPowerState CPeripheralCecAdapter::GetConnectedDevicesPowerState() const
+{
+  cec_logical_addresses controlledAdresses = m_cecAdapter->GetLogicalAddresses();
+
+  uint8_t standingByDevices = 0;
+  uint8_t activeDevices = 0;
+  bool hasChangingPowerDevices = false;
+
+  for (uint8_t i = 0; i < 16; ++i)
+  {
+    if (controlledAdresses[i])
+    {
+      const cec_power_status devicePowerStatus =
+          m_cecAdapter->GetDevicePowerStatus(static_cast<cec_logical_address>(i));
+      switch (devicePowerStatus)
+      {
+        case CEC::CEC_POWER_STATUS_ON:
+          ++activeDevices;
+          break;
+        case CEC::CEC_POWER_STATUS_STANDBY:
+          ++standingByDevices;
+          break;
+        case CEC::CEC_POWER_STATUS_IN_TRANSITION_ON_TO_STANDBY:
+        case CEC::CEC_POWER_STATUS_IN_TRANSITION_STANDBY_TO_ON:
+          hasChangingPowerDevices = true;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  if (hasChangingPowerDevices)
+    return CecPowerState::IN_TRANSITION;
+
+  return activeDevices > standingByDevices ? CecPowerState::ACTIVE : CecPowerState::STAND_BY;
 }
