@@ -846,7 +846,7 @@ extern "C"
       strncpy(data->name,vecDirsOpen[iDirSlot].items[0]->GetLabel().c_str(), size);
       if (size)
         data->name[size - 1] = '\0';
-      data->size = static_cast<_fsize_t>(vecDirsOpen[iDirSlot].items[0]->m_dwSize);
+      data->size = static_cast<_fsize_t>(vecDirsOpen[iDirSlot].items[0]->GetSize());
       data->time_write = 0;
       data->time_access = 0;
       vecDirsOpen[iDirSlot].curr_index = 0;
@@ -903,7 +903,7 @@ extern "C"
       strncpy(data->name,vecDirsOpen[found].items[iItem+1]->GetLabel().c_str(), size);
       if (size)
         data->name[size - 1] = '\0';
-      data->size = static_cast<_fsize_t>(vecDirsOpen[found].items[iItem+1]->m_dwSize);
+      data->size = static_cast<_fsize_t>(vecDirsOpen[found].items[iItem + 1]->GetSize());
       vecDirsOpen[found].curr_index++;
       return 0;
     }

@@ -111,7 +111,7 @@ protected:
     source.vecPaths.push_back(m_sourcePath);
     source.m_allowSharing = true;
     source.m_iDriveType = SourceType::LOCAL;
-    source.m_iLockMode = LockMode::EVERYONE;
+    source.GetLockInfo().SetMode(LockMode::EVERYONE);
     source.m_ignore = true;
 
     CMediaSourceSettings::GetInstance().AddShare("videos", source);
@@ -170,12 +170,12 @@ protected:
   {
     ASSERT_EQ(items.GetObjectCount(), SAMPLE_ITEM_COUNT);
 
-    ASSERT_STREQ(items[0]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_1_DATETIME);
-    ASSERT_STREQ(items[1]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_2_DATETIME);
-    ASSERT_STREQ(items[2]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_3_DATETIME);
-    ASSERT_STREQ(items[3]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_4_DATETIME);
-    ASSERT_STREQ(items[4]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_5_DATETIME);
-    ASSERT_STREQ(items[5]->m_dateTime.GetAsDBDateTime().c_str(), SAMPLE_ITEM_6_DATETIME);
+    ASSERT_STREQ(items[0]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_1_DATETIME);
+    ASSERT_STREQ(items[1]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_2_DATETIME);
+    ASSERT_STREQ(items[2]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_3_DATETIME);
+    ASSERT_STREQ(items[3]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_4_DATETIME);
+    ASSERT_STREQ(items[4]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_5_DATETIME);
+    ASSERT_STREQ(items[5]->GetDateTime().GetAsDBDateTime().c_str(), SAMPLE_ITEM_6_DATETIME);
   }
 
   void CheckFileItemSizes(CFileItemList const& items)
@@ -183,19 +183,19 @@ protected:
     ASSERT_EQ(items.GetObjectCount(), SAMPLE_ITEM_COUNT);
 
     // folders
-    ASSERT_EQ(items[0]->m_dwSize, SAMPLE_ITEM_1_SIZE);
-    ASSERT_EQ(items[1]->m_dwSize, SAMPLE_ITEM_2_SIZE);
+    ASSERT_EQ(items[0]->GetSize(), SAMPLE_ITEM_1_SIZE);
+    ASSERT_EQ(items[1]->GetSize(), SAMPLE_ITEM_2_SIZE);
 
     // files - due to K/M/G conversions provided by some formats, allow for
     // non-zero values that are less than or equal to the expected file size
-    ASSERT_NE(items[2]->m_dwSize, 0);
-    ASSERT_LE(items[2]->m_dwSize, SAMPLE_ITEM_3_SIZE);
-    ASSERT_NE(items[3]->m_dwSize, 0);
-    ASSERT_LE(items[3]->m_dwSize, SAMPLE_ITEM_4_SIZE);
-    ASSERT_NE(items[4]->m_dwSize, 0);
-    ASSERT_LE(items[4]->m_dwSize, SAMPLE_ITEM_5_SIZE);
-    ASSERT_NE(items[5]->m_dwSize, 0);
-    ASSERT_LE(items[5]->m_dwSize, SAMPLE_ITEM_6_SIZE);
+    ASSERT_NE(items[2]->GetSize(), 0);
+    ASSERT_LE(items[2]->GetSize(), SAMPLE_ITEM_3_SIZE);
+    ASSERT_NE(items[3]->GetSize(), 0);
+    ASSERT_LE(items[3]->GetSize(), SAMPLE_ITEM_4_SIZE);
+    ASSERT_NE(items[4]->GetSize(), 0);
+    ASSERT_LE(items[4]->GetSize(), SAMPLE_ITEM_5_SIZE);
+    ASSERT_NE(items[5]->GetSize(), 0);
+    ASSERT_LE(items[5]->GetSize(), SAMPLE_ITEM_6_SIZE);
   }
 
   void CheckFileItems(CFileItemList const& items)

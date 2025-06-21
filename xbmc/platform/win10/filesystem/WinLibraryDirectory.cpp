@@ -117,7 +117,7 @@ bool CWinLibraryDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     IStorageItemProperties storageItemProperties = item.as<IStorageItemProperties>();
     if (item != nullptr)
     {
-      pItem->m_strTitle = FromW(storageItemProperties.DisplayName().c_str());
+      pItem->SetTitle(FromW(storageItemProperties.DisplayName().c_str()));
     }
 
     if (pItem->m_bIsFolder)
@@ -134,9 +134,9 @@ bool CWinLibraryDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     KODI::TIME::FileTime fileTime2;
     fileTime2.highDateTime = fileTime1.dwHighDateTime;
     fileTime2.lowDateTime = fileTime1.dwLowDateTime;
-    pItem->m_dateTime = fileTime2;
+    pItem->SetDateTime(fileTime2);
     if (!pItem->m_bIsFolder)
-      pItem->m_dwSize = static_cast<int64_t>(props.Size());
+      pItem->SetSize(static_cast<int64_t>(props.Size()));
 
     items.Add(pItem);
   }

@@ -229,22 +229,31 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
         nDuration = movie->GetDuration();
       if (nDuration > 0)
         value = StringUtils::SecondsToTimeString(nDuration, (nDuration >= 3600) ? TIME_FORMAT_H_MM_SS : TIME_FORMAT_MM_SS);
-      else if (item->m_dwSize > 0)
-        value = StringUtils::SizeToString(item->m_dwSize);
+      else if (item->GetSize() > 0)
+        value = StringUtils::SizeToString(item->GetSize());
     }
     break;
   case 'I': // size
-    if( (item->m_bIsFolder && item->m_dwSize != 0) || item->m_dwSize >= 0 )
-      value = StringUtils::SizeToString(item->m_dwSize);
+  {
+    const int64_t size{item->GetSize()};
+    if ((item->m_bIsFolder && size != 0) || size >= 0)
+      value = StringUtils::SizeToString(item->GetSize());
     break;
+  }
   case 'J': // date
-    if (item->m_dateTime.IsValid())
-      value = item->m_dateTime.GetAsLocalizedDate();
+  {
+    const CDateTime& dateTime{item->GetDateTime()};
+    if (dateTime.IsValid())
+      value = dateTime.GetAsLocalizedDate();
     break;
+  }
   case 'Q': // time
-    if (item->m_dateTime.IsValid())
-      value = item->m_dateTime.GetAsLocalizedTime("", false);
+  {
+    const CDateTime& dateTime{item->GetDateTime()};
+    if (dateTime.IsValid())
+      value = dateTime.GetAsLocalizedTime("", false);
     break;
+  }
   case 'R': // rating
     if (music && music->GetRating() != 0.f)
       value = StringUtils::Format("{:.1f}", music->GetRating());
@@ -252,13 +261,13 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = StringUtils::Format("{:.1f}", movie->GetRating().rating);
     break;
   case 'C': // programs count
-    value = std::to_string(item->m_iprogramCount);
+    value = std::to_string(item->GetProgramCount());
     break;
   case 'c': // relevance
     value = std::to_string(movie->m_relevance);
     break;
   case 'K':
-    value = item->m_strTitle;
+    value = item->GetTitle();
     break;
   case 'M':
     if (movie && movie->m_iEpisode > 0)
@@ -306,8 +315,12 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = std::to_string(movie->GetPlayCount());
     break;
   case 'X': // Bitrate
-    if( !item->m_bIsFolder && item->m_dwSize != 0 )
-      value = StringUtils::Format("{} kbps", item->m_dwSize);
+    if (!item->m_bIsFolder)
+    {
+      const int64_t size{item->GetSize()};
+      if (size != 0)
+        value = StringUtils::Format("{} kbps", size);
+    }
     break;
    case 'W': // Listeners
     if( !item->m_bIsFolder && music && music->GetListeners() != 0 )
@@ -334,9 +347,12 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     }
     break;
   case 'd': // date and time
-    if (item->m_dateTime.IsValid())
-      value = item->m_dateTime.GetAsLocalizedDateTime();
+  {
+    const CDateTime& dateTime{item->GetDateTime()};
+    if (dateTime.IsValid())
+      value = dateTime.GetAsLocalizedDateTime();
     break;
+  }
   case 'p': // Last played
     if (movie && movie->m_lastPlayed.IsValid())
       value = movie->m_lastPlayed.GetAsLocalizedDate();

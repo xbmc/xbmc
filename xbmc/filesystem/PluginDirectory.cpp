@@ -82,7 +82,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
   }
 
   // clear out our status variables
-  m_fileResult->Reset();
+  m_fileResult = std::make_unique<CFileItem>();
   m_listItems->Clear();
   m_listItems->SetPath(strPath);
   m_listItems->SetLabel(addon->Name());

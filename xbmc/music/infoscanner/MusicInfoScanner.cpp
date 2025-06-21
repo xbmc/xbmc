@@ -1277,9 +1277,11 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, std::string &hash
   {
     const CFileItemPtr pItem = items[i];
     digest.Update(pItem->GetPath());
-    digest.Update((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
-    KODI::TIME::FileTime time = pItem->m_dateTime;
-    digest.Update((unsigned char*)&time, sizeof(KODI::TIME::FileTime));
+    const int64_t size{pItem->GetSize()};
+    digest.Update(&size, sizeof(size));
+    KODI::TIME::FileTime time{};
+    pItem->GetDateTime().GetAsTimeStamp(time);
+    digest.Update(&time, sizeof(time));
     if (MUSIC::IsAudio(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
       count++;
   }
@@ -1863,7 +1865,8 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
                 strTemp = StringUtils::Format("[{}] {}", genres, strTemp);
             }
             item.SetLabel(strTemp);
-            item.m_idepth = i; // use this to hold the index of the album in the scraper
+            item.SetDepth(
+                i); //! @todo remove hack to use this to hold the index of the album in the scraper
             pDlg->Add(item);
           }
           pDlg->Open();
@@ -1889,7 +1892,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
             newArtist.strArtist = strNewArtist;
             return DownloadArtistInfo(newArtist, info, artistInfo, bUseScrapedMBID, pDialog);
           }
-          iSelectedArtist = pDlg->GetSelectedFileItem()->m_idepth;
+          iSelectedArtist = pDlg->GetSelectedFileItem()->GetDepth();
         }
       }
     }

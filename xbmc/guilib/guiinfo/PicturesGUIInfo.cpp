@@ -166,18 +166,19 @@ bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int c
       }
       case SLIDESHOW_FILE_SIZE:
       {
-        if (!m_currentSlide->m_bIsFolder || m_currentSlide->m_dwSize)
+        if (!m_currentSlide->m_bIsFolder || m_currentSlide->GetSize())
         {
-          value = StringUtils::SizeToString(m_currentSlide->m_dwSize);
+          value = StringUtils::SizeToString(m_currentSlide->GetSize());
           return true;
         }
         break;
       }
       case SLIDESHOW_FILE_DATE:
       {
-        if (m_currentSlide->m_dateTime.IsValid())
+        const CDateTime& dateTime{m_currentSlide->GetDateTime()};
+        if (dateTime.IsValid())
         {
-          value = m_currentSlide->m_dateTime.GetAsLocalizedDate();
+          value = dateTime.GetAsLocalizedDate();
           return true;
         }
         break;

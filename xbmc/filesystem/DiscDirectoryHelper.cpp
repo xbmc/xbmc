@@ -760,7 +760,7 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
   else
     /* Episode xx - title */
     buf = StringUtils::Format(g_localizeStrings.Get(21349), tag.m_iEpisode, tag.GetTitle());
-  item->m_strTitle = buf;
+  item->SetTitle(buf);
   item->SetLabel(buf);
 
   item->SetLabel2(StringUtils::Format(
@@ -768,7 +768,7 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
       g_localizeStrings.Get(180) /* Duration */,
       StringUtils::SecondsToTimeString(static_cast<int>(duration.count() / 1000)),
       g_localizeStrings.Get(24026) /* Languages */, langs));
-  item->m_dwSize = 0;
+  item->SetSize(0);
   item->SetArt("icon", "DefaultVideo.png");
 }
 

@@ -510,12 +510,12 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     else if (pItem->GetLabel().empty()) // pls labels come in preformatted
     {
       // FIXME: get the position of the item in the playlist
-      //        currently it is hacked into m_iprogramCount
+      //        currently it is hacked into program count
 
       // No music info and it's not CDDA so we'll just show the filename
       std::string str;
       str = CUtil::GetTitleFromPath(pItem->GetPath());
-      str = StringUtils::Format("{:02}. {} ", pItem->m_iprogramCount, str);
+      str = StringUtils::Format("{:02}. {} ", pItem->GetProgramCount(), str);
       pItem->SetLabel(str);
     }
   }

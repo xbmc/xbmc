@@ -57,39 +57,40 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
   if (profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE)
     return true;
 
-  while (pItem->m_iHasLock > LOCK_STATE_LOCK_BUT_UNLOCKED)
+  while (pItem->GetLockInfo().GetState() > LOCK_STATE_LOCK_BUT_UNLOCKED)
   {
-    const std::string strLockCode = pItem->m_strLockCode;
     int iResult = 0; // init to user succeeded state, doing this to optimize switch statement below
     if (!g_passwordManager.bMasterUser) // Check if we are the MasterUser!
     {
+      const KODI::UTILS::CLockInfo& lockInfo{pItem->GetLockInfo()};
       if (0 != CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
                    CSettings::SETTING_MASTERLOCK_MAXRETRIES) &&
-          pItem->m_iBadPwdCount >= CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                                       CSettings::SETTING_MASTERLOCK_MAXRETRIES))
+          lockInfo.GetBadPasswordCount() >=
+              CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                  CSettings::SETTING_MASTERLOCK_MAXRETRIES))
       {
         // user previously exhausted all retries, show access denied error
         HELPERS::ShowOKDialogText(CVariant{12345}, CVariant{12346});
         return false;
       }
       // show the appropriate lock dialog
-      iResult = VerifyPassword(pItem->m_iLockMode, strLockCode, strHeading);
+      iResult = VerifyPassword(lockInfo.GetMode(), lockInfo.GetCode(), strHeading);
     }
     switch (iResult)
     {
     case -1:
       { // user canceled out
         return false;
-        break;
       }
     case 0:
       {
         // password entry succeeded
-        pItem->m_iBadPwdCount = 0;
-        pItem->m_iHasLock = LOCK_STATE_LOCK_BUT_UNLOCKED;
+        KODI::UTILS::CLockInfo& lockInfo{pItem->GetLockInfo()};
+        lockInfo.ResetBadPasswordCount();
+        lockInfo.SetState(LOCK_STATE_LOCK_BUT_UNLOCKED);
         g_passwordManager.LockSource(strType, strLabel, false);
-        CMediaSourceSettings::GetInstance().UpdateSource(strType, strLabel, "badpwdcount",
-                                                         std::to_string(pItem->m_iBadPwdCount));
+        CMediaSourceSettings::GetInstance().UpdateSource(
+            strType, strLabel, "badpwdcount", std::to_string(lockInfo.GetBadPasswordCount()));
         CMediaSourceSettings::GetInstance().Save();
 
         // a mediasource has been unlocked successfully
@@ -100,11 +101,12 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
     case 1:
       {
         // password entry failed
+        KODI::UTILS::CLockInfo& lockInfo{pItem->GetLockInfo()};
         if (0 != CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
                      CSettings::SETTING_MASTERLOCK_MAXRETRIES))
-          pItem->m_iBadPwdCount++;
-        CMediaSourceSettings::GetInstance().UpdateSource(strType, strLabel, "badpwdcount",
-                                                         std::to_string(pItem->m_iBadPwdCount));
+          lockInfo.IncrementBadPasswordCount();
+        CMediaSourceSettings::GetInstance().UpdateSource(
+            strType, strLabel, "badpwdcount", std::to_string(lockInfo.GetBadPasswordCount()));
         CMediaSourceSettings::GetInstance().Save();
         break;
       }
@@ -112,7 +114,6 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
       {
         // this should never happen, but if it does, do nothing
         return false;
-        break;
       }
     }
   }
@@ -517,9 +518,9 @@ bool CGUIPassword::LockSource(const std::string& strType, const std::string& str
   {
     if (it->strName == strName)
     {
-      if (it->m_iHasLock > LOCK_STATE_NO_LOCK)
+      if (it->GetLockInfo().GetState() > LOCK_STATE_NO_LOCK)
       {
-        it->m_iHasLock = bState ? LOCK_STATE_LOCKED : LOCK_STATE_LOCK_BUT_UNLOCKED;
+        it->GetLockInfo().SetState(bState ? LOCK_STATE_LOCKED : LOCK_STATE_LOCK_BUT_UNLOCKED);
         bResult = true;
       }
       break;
@@ -539,8 +540,11 @@ void CGUIPassword::LockSources(bool lock)
   {
     std::vector<CMediaSource>* shares = CMediaSourceSettings::GetInstance().GetSources(strType);
     for (std::vector<CMediaSource>::iterator it = shares->begin(); it != shares->end(); ++it)
-      if (it->m_iLockMode != LockMode::EVERYONE)
-        it->m_iHasLock = lock ? LOCK_STATE_LOCKED : LOCK_STATE_LOCK_BUT_UNLOCKED;
+    {
+      KODI::UTILS::CLockInfo& lockInfo{it->GetLockInfo()};
+      if (lockInfo.GetMode() != LockMode::EVERYONE)
+        lockInfo.SetState(lock ? LOCK_STATE_LOCKED : LOCK_STATE_LOCK_BUT_UNLOCKED);
+    }
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -554,14 +558,17 @@ void CGUIPassword::RemoveSourceLocks()
   {
     std::vector<CMediaSource>* shares = CMediaSourceSettings::GetInstance().GetSources(strType);
     for (std::vector<CMediaSource>::iterator it = shares->begin(); it != shares->end(); ++it)
-      if (it->m_iLockMode != LockMode::EVERYONE) // remove old info
+    {
+      KODI::UTILS::CLockInfo& lockInfo{it->GetLockInfo()};
+      if (lockInfo.GetMode() != LockMode::EVERYONE) // remove old info
       {
-        it->m_iHasLock = LOCK_STATE_NO_LOCK;
-        it->m_iLockMode = LockMode::EVERYONE;
+        lockInfo.SetState(LOCK_STATE_NO_LOCK);
+        lockInfo.SetMode(LockMode::EVERYONE);
 
         // remove locks from xml
         CMediaSourceSettings::GetInstance().UpdateSource(strType, it->strName, "lockmode", "0");
       }
+    }
   }
   CMediaSourceSettings::GetInstance().Save();
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_SOURCES);
@@ -590,7 +597,7 @@ bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath,
   int iIndex = CUtil::GetMatchingSource(strPath, sources, bName);
 
   if (iIndex > -1 && iIndex < static_cast<int>(sources.size()))
-    if (sources[iIndex].m_iHasLock < LOCK_STATE_LOCKED)
+    if (sources[iIndex].GetLockInfo().GetState() < LOCK_STATE_LOCKED)
       return true;
 
   return false;
@@ -638,7 +645,7 @@ bool CGUIPassword::IsMediaFileUnlocked(const std::string& type, const std::strin
   int iIndex = CUtil::GetMatchingSource(fileBasePath, *sources, isSourceName);
 
   if (iIndex > -1 && iIndex < static_cast<int>(sources->size()))
-    return (*sources)[iIndex].m_iHasLock < LOCK_STATE_LOCKED;
+    return (*sources)[iIndex].GetLockInfo().GetState() < LOCK_STATE_LOCKED;
 
   return true;
 }

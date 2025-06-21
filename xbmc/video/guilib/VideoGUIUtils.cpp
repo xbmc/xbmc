@@ -118,7 +118,7 @@ SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemLi
       // check whether at least one item has actually a valid date set
       for (const auto& item : items)
       {
-        if (item->m_dateTime.IsValid())
+        if (item->GetDateTime().IsValid())
         {
           // fallback, if neither ByEpisode nor ByYear is available
           sortDescDate = sortDescription;
@@ -154,7 +154,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     }
 
     // Check if we add a locked share
-    if (!item->IsPVR() && item->m_bIsShareOrDrive)
+    if (!item->IsPVR() && item->IsShareOrDrive())
     {
       if (!g_passwordManager.IsItemUnlocked(item.get(), "video"))
         return;
@@ -362,7 +362,7 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
     {
       if (queuedItem->IsSamePath(itemToPlay.get()))
       {
-        queuedItem->m_lStartPartNumber = itemToPlay->m_lStartPartNumber;
+        queuedItem->SetStartPartNumber(itemToPlay->GetStartPartNumber());
         break;
       }
       pos++;

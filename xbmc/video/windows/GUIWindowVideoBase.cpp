@@ -220,7 +220,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
 {
-  if (fileItem.IsParentFolder() || fileItem.m_bIsShareOrDrive || fileItem.IsPath("add") ||
+  if (fileItem.IsParentFolder() || fileItem.IsShareOrDrive() || fileItem.IsPath("add") ||
       (PLAYLIST::IsPlayList(fileItem) && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
     return false;
 

@@ -92,8 +92,8 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
       url.SetFileName(filePath);
       pItem->SetPath(url.Get());
 
-      pItem->m_dwSize = parse.getSize();
-      pItem->m_dateTime=parse.getTime();
+      pItem->SetSize(parse.getSize());
+      pItem->SetDateTime(parse.getTime());
 
       items.Add(pItem);
     }

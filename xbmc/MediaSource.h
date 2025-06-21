@@ -8,9 +8,8 @@
 
 #pragma once
 
-#include "LockMode.h"
 #include "SourceType.h"
-#include "media/MediaLockState.h"
+#include "utils/LockInfo.h"
 
 #include <string>
 #include <vector>
@@ -27,6 +26,10 @@ public:
 
   void FromNameAndPaths(const std::string& name, const std::vector<std::string>& paths);
   bool IsWritable() const;
+
+  KODI::UTILS::CLockInfo& GetLockInfo() { return m_lockInfo; }
+  const KODI::UTILS::CLockInfo& GetLockInfo() const { return m_lockInfo; }
+
   std::string strName; ///< Name of the share, can be chosen freely.
   std::string strStatus; ///< Status of the share (eg has disk etc.)
   std::string strDiskUniqueId; ///< removable:// + DVD Label + DVD ID for resume point storage, if available
@@ -49,31 +52,10 @@ public:
   */
   SourceType m_iDriveType = SourceType::UNKNOWN;
 
-  /*!
-  \brief The type of Lock UI to show when accessing the media source.
+  KODI::UTILS::CLockInfo m_lockInfo;
 
-  Value can be:
-  - LockMode::EVERYONE \n
-  Default value.  No lock UI is shown, user can freely access the source.
-  - LockMode::NUMERIC \n
-  Lock code is entered via OSD numpad or IrDA remote buttons.
-  - LockMode::GAMEPAD \n
-  Lock code is entered via XBOX gamepad buttons.
-  - LockMode::QWERTY \n
-  Lock code is entered via OSD keyboard or PC USB keyboard.
-  - LockMode::SAMBA \n
-  Lock code is entered via OSD keyboard or PC USB keyboard and passed directly to SMB for authentication.
-  - LockMode::EEPROM_PARENTAL \n
-  Lock code is retrieved from XBOX EEPROM and entered via XBOX gamepad or remote.
-  - LockMode::UNKNOWN \n
-  Value is unknown or unspecified.
-  */
-  LockMode m_iLockMode = LockMode::EVERYONE;
-  std::string m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
-  int m_iHasLock = LOCK_STATE_NO_LOCK;
-  int m_iBadPwdCount = 0; ///< Number of wrong passwords user has entered since share was last unlocked
-
-  std::string m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
+  std::string
+      m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
 
   std::vector<std::string> vecPaths;
   bool m_ignore = false; /// <Do not store in xml

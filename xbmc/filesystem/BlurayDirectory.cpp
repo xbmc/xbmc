@@ -1023,12 +1023,12 @@ std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
   item->GetVideoInfoTag()->SetDuration(duration);
   item->SetProperty("bluray_playlist", title.playlist);
   const std::string buf{StringUtils::Format(label, title.playlist)};
-  item->m_strTitle = buf;
+  item->SetTitle(buf);
   item->SetLabel(buf);
   const std::string chap{StringUtils::Format(g_localizeStrings.Get(25007), title.chapters.size(),
                                              StringUtils::SecondsToTimeString(duration))};
   item->SetLabel2(chap);
-  item->m_dwSize = 0;
+  item->SetSize(0);
   item->SetArt("icon", "DefaultVideo.png");
 
   // Generate streamdetails

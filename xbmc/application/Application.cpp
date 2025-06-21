@@ -1874,7 +1874,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
 void CApplication::ResetCurrentItem()
 {
-  m_itemCurrentFile->Reset();
+  m_itemCurrentFile = std::make_unique<CFileItem>();
   if (m_pGUI)
     m_pGUI->GetInfoManager().ResetCurrentItem();
 }

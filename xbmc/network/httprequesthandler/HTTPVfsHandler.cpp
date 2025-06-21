@@ -57,7 +57,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
               break;
 
             // don't allow access to locked / disabled sharing sources
-            if (source.m_iHasLock == LOCK_STATE_LOCKED || !source.m_allowSharing)
+            if (source.GetLockInfo().IsLocked() || !source.m_allowSharing)
               continue;
 
             for (const auto& path : source.vecPaths)
@@ -80,7 +80,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
           CServiceBroker::GetMediaManager().GetRemovableDrives(removableSources);
           int sourceIndex = CUtil::GetMatchingSource(realPath, removableSources, isSource);
           if (sourceIndex >= 0 && sourceIndex < static_cast<int>(removableSources.size()) &&
-              removableSources.at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+              !removableSources.at(sourceIndex).GetLockInfo().IsLocked() &&
               removableSources.at(sourceIndex).m_allowSharing)
             accessible = true;
         }

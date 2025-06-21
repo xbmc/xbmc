@@ -64,8 +64,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 
 bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive
-  ||  pItem->IsParentFolder())
+  if (pItem->IsShareOrDrive() || pItem->IsParentFolder())
     return false;
 
   if (pItem->HasArt("thumb") && m_regenerateThumbs)
@@ -128,8 +127,8 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       return;
     }
   }
-  if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->m_bIsShareOrDrive
-      && !pItem->IsParentFolder() && !pItem->IsPath("add"))
+  if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->IsShareOrDrive() &&
+      !pItem->IsParentFolder() && !pItem->IsPath("add"))
   {
     // first check for a folder.jpg
     std::string thumb = "folder.jpg";

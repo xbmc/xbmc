@@ -182,7 +182,7 @@ void CSavestateDatabase::GetSavestateItem(const ISavestate& savestate,
   item.SetProperty(SAVESTATE_CAPTION, savestate.Caption());
   item.SetProperty(SAVESTATE_GAME_CLIENT, savestate.GameClientID());
   item.SetProperty(SAVESTATE_GAME_CLIENT_VERSION, savestate.GameClientVersion());
-  item.m_dateTime = dateUTC;
+  item.SetDateTime(dateUTC);
 }
 
 std::unique_ptr<ISavestate> CSavestateDatabase::RenameSavestate(const std::string& savestatePath,

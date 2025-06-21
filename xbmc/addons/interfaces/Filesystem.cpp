@@ -239,9 +239,9 @@ static void CFileItemListToVFSDirEntries(VFSDirEntry* entries, const CFileItemLi
   {
     entries[i].label = strdup(items[i]->GetLabel().c_str());
     entries[i].path = strdup(items[i]->GetPath().c_str());
-    entries[i].size = items[i]->m_dwSize;
+    entries[i].size = items[i]->GetSize();
     entries[i].folder = items[i]->m_bIsFolder;
-    items[i]->m_dateTime.GetAsTime(entries[i].date_time);
+    items[i]->GetDateTime().GetAsTime(entries[i].date_time);
   }
 }
 

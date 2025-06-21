@@ -562,14 +562,16 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       resource.m_Duration = -1;
 
     // Set the resource file size
-    resource.m_Size = item.m_dwSize;
+    resource.m_Size = item.GetSize();
     if (resource.m_Size == 0)
       resource.m_Size = (NPT_LargeSize)-1;
 
     // set date
-    if (object->m_Date.IsEmpty() && item.m_dateTime.IsValid())
+    if (object->m_Date.IsEmpty())
     {
-      object->m_Date = item.m_dateTime.GetAsW3CDate().c_str();
+      const CDateTime& dateTime{item.GetDateTime()};
+      if (dateTime.IsValid())
+        object->m_Date = dateTime.GetAsW3CDate().c_str();
     }
 
     if (upnp_server)
@@ -1157,7 +1159,7 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
 
   CFileItemPtr pItem(new CFileItem((const char*)entry->m_Title));
   pItem->SetLabelPreformatted(true);
-  pItem->m_strTitle = (const char*)entry->m_Title;
+  pItem->SetTitle(static_cast<const char*>(entry->m_Title));
   pItem->m_bIsFolder = entry->IsContainer();
 
   // if it's a container, format a string as upnp://uuid/object_id
@@ -1213,7 +1215,7 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
       // set metadata
       if (resource.m_Size != (NPT_LargeSize)-1)
       {
-        pItem->m_dwSize = resource.m_Size;
+        pItem->SetSize(resource.m_Size);
       }
       res = &resource;
     }
@@ -1241,7 +1243,7 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
     KODI::TIME::SystemTime time = {};
     sscanf(entry->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu", &time.year, &time.month, &time.day,
            &time.hour, &time.minute, &time.second);
-    pItem->m_dateTime = time;
+    pItem->SetDateTime(time);
   }
 
   // if there is a thumbnail available set it here

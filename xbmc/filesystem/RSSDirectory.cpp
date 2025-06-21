@@ -149,8 +149,8 @@ static void ParseItemMRSS(CFileItem* item,
     if(text.empty())
       return;
 
-    if(text.length() > item->m_strTitle.length())
-      item->m_strTitle = text;
+    if (text.length() > item->GetTitle().length())
+      item->SetTitle(text);
   }
   else if(name == "description")
   {
@@ -262,13 +262,12 @@ static void ParseItemRSS(CFileItem* item,
   std::string text = GetValue(item_child);
   if (name == "title")
   {
-    if(text.length() > item->m_strTitle.length())
-      item->m_strTitle = text;
+    if (text.length() > item->GetTitle().length())
+      item->SetTitle(text);
   }
   else if (name == "pubDate")
   {
-    CDateTime pubDate(ParseDate(text));
-    item->m_dateTime = pubDate;
+    item->SetDateTime(ParseDate(text));
   }
   else if (name == "link")
   {
@@ -536,7 +535,7 @@ static void ParseItem(CFileItem* item, tinyxml2::XMLElement* root, const std::st
   {
     item->SetMimeType(best->mime);
     item->SetPath(best->path);
-    item->m_dwSize  = best->size;
+    item->SetSize(best->size);
 
     if(best->duration)
       item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));
@@ -555,8 +554,9 @@ static void ParseItem(CFileItem* item, tinyxml2::XMLElement* root, const std::st
       item->m_bIsFolder = false;
   }
 
-  if(!item->m_strTitle.empty())
-    item->SetLabel(item->m_strTitle);
+  const std::string& title{item->GetTitle()};
+  if (!title.empty())
+    item->SetLabel(title);
 
   if(item->HasVideoInfoTag())
   {

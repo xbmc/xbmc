@@ -98,12 +98,12 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
     fileTime.highDateTime = findData.ftLastWriteTime.dwHighDateTime;
     KODI::TIME::FileTime localTime;
     if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
-      pItem->m_dateTime = localTime;
+      pItem->SetDateTime(localTime);
     else
-      pItem->m_dateTime = 0;
+      pItem->SetDateTime(0);
 
     if (!pItem->m_bIsFolder)
-        pItem->m_dwSize = (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
+      pItem->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
 
     items.Add(pItem);
   } while (FindNextFileW(hSearch, &findData));

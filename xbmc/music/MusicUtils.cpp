@@ -534,7 +534,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
   if (item->m_bIsFolder)
   {
     // Check if we add a locked share
-    if (item->m_bIsShareOrDrive)
+    if (item->IsShareOrDrive())
     {
       if (!g_passwordManager.IsItemUnlocked(item.get(), "music"))
         return;

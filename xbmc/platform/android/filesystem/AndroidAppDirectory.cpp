@@ -51,7 +51,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       pItem->SetPath(path);
       pItem->SetLabel(i.packageLabel);
       pItem->SetArt("thumb", path+".png");
-      pItem->m_dwSize = -1;  // No size
+      pItem->SetSize(-1); // No size
       items.Add(pItem);
     }
     return true;

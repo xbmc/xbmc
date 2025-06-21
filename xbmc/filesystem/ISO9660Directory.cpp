@@ -63,7 +63,7 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList& items)
         CFileItemPtr pItem(new CFileItem(filename));
         pItem->SetPath(strRoot + filename);
         pItem->m_bIsFolder = false;
-        pItem->m_dwSize = file->p_stat->size;
+        pItem->SetSize(file->p_stat->size);
         items.Add(pItem);
       }
     }

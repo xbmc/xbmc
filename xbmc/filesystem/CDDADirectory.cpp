@@ -64,7 +64,7 @@ bool CCDDADirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     struct __stat64 s64;
     if (CFile::Stat(pItem->GetPath(), &s64) == 0)
-      pItem->m_dwSize = s64.st_size;
+      pItem->SetSize(s64.st_size);
 
     items.Add(pItem);
   }

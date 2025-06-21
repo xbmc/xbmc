@@ -13,39 +13,47 @@
  \brief
  */
 
-#include "LockMode.h"
 #include "SourceType.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
+#include "utils/LockInfo.h"
 #include "utils/SortUtils.h"
+#include "utils/XTimeUtils.h"
 
 #include <memory>
 #include <string>
+#include <string_view>
 
+class CAlbum;
+class CArtist;
+class CBookmark;
+class CCueDocument;
+class CFileItemList;
+class CGenre;
 class CMediaSource;
-enum class VideoDbContentType;
+class CPictureInfoTag;
+class CSong;
+class CURL;
+class CVariant;
+class CVideoInfoTag;
+class IEvent;
 
 namespace ADDON
 {
 class IAddon;
 }
 
+namespace KODI::GAME
+{
+class CGameInfoTag;
+}
+
 namespace MUSIC_INFO
 {
-  class CMusicInfoTag;
-}
-class CVideoInfoTag;
-class CPictureInfoTag;
-
-namespace KODI
-{
-namespace GAME
-{
-  class CGameInfoTag;
-}
+class CMusicInfoTag;
 }
 
 namespace PVR
@@ -59,25 +67,7 @@ class CPVRRecording;
 class CPVRTimerInfoTag;
 }
 
-class CAlbum;
-class CArtist;
-class CSong;
-class CGenre;
-
-class CURL;
-class CVariant;
-
-class CFileItemList;
-class CCueDocument;
-typedef std::shared_ptr<CCueDocument> CCueDocumentPtr;
-
-class IEvent;
-typedef std::shared_ptr<const IEvent> EventPtr;
-
-/* special startoffset used to indicate that we wish to resume */
-#define STARTOFFSET_RESUME (-1)
-
-class CBookmark;
+enum class VideoDbContentType;
 
 enum class FileFolderType
 {
@@ -90,25 +80,27 @@ enum class FileFolderType
   MASK_ONBROWSE = ALWAYS | ONCLICK | ONBROWSE,
 };
 
+/* special startoffset used to indicate that we wish to resume */
+constexpr int STARTOFFSET_RESUME = -1;
+
 /*!
   \brief Represents a file on a share
   \sa CFileItemList
   */
-class CFileItem :
-  public CGUIListItem, public IArchivable, public ISerializable, public ISortable
+class CFileItem : public CGUIListItem, public IArchivable, public ISerializable, public ISortable
 {
 public:
-  CFileItem(void);
+  CFileItem();
   CFileItem(const CFileItem& item);
   explicit CFileItem(const CGUIListItem& item);
   explicit CFileItem(const std::string& strLabel);
   explicit CFileItem(const char* strLabel);
   CFileItem(const CURL& path, bool bIsFolder);
-  CFileItem(const std::string& strPath, bool bIsFolder);
+  CFileItem(std::string_view strPath, bool bIsFolder);
   explicit CFileItem(const CSong& song);
   CFileItem(const CSong& song, const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CURL &path, const CAlbum& album);
-  CFileItem(const std::string &path, const CAlbum& album);
+  CFileItem(std::string_view path, const CAlbum& album);
   explicit CFileItem(const CArtist& artist);
   explicit CFileItem(const CGenre& genre);
   explicit CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
@@ -118,31 +110,27 @@ public:
   explicit CFileItem(const std::shared_ptr<PVR::CPVRChannelGroupMember>& channelGroupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRRecording>& record);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRTimerInfoTag>& timer);
-  explicit CFileItem(const std::string& path, const std::shared_ptr<PVR::CPVRProvider>& provider);
+  explicit CFileItem(const std::string_view path,
+                     const std::shared_ptr<PVR::CPVRProvider>& provider);
   explicit CFileItem(const CMediaSource& share);
-  explicit CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
-  explicit CFileItem(const EventPtr& eventLogEntry);
+  explicit CFileItem(const std::shared_ptr<const ADDON::IAddon>& addonInfo);
+  explicit CFileItem(const std::shared_ptr<const IEvent>& eventLogEntry);
 
-  ~CFileItem(void) override;
+  ~CFileItem() override;
   CGUIListItem* Clone() const override { return new CFileItem(*this); }
 
-  const CURL GetURL() const;
+  CURL GetURL() const;
   void SetURL(const CURL& url);
   bool IsURL(const CURL& url) const;
   const std::string& GetPath() const { return m_strPath; }
-  void SetPath(const std::string& path) { m_strPath = path; }
+  void SetPath(std::string_view path) { m_strPath = path; }
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
-  const CURL GetDynURL() const;
+  CURL GetDynURL() const;
   void SetDynURL(const CURL& url);
   const std::string &GetDynPath() const;
-  void SetDynPath(const std::string &path);
+  void SetDynPath(std::string_view path);
 
-  /*! \brief reset class to it's default values as per construction.
-   Free's all allocated memory.
-   \sa Initialize
-   */
-  void Reset();
   CFileItem& operator=(const CFileItem& item);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
@@ -223,14 +211,32 @@ public:
   VideoDbContentType GetVideoContentType() const;
   bool IsLabelPreformatted() const { return m_bLabelPreformatted; }
   void SetLabelPreformatted(bool bYesNo) { m_bLabelPreformatted=bYesNo; }
+  const std::string& GetDVDLabel() const { return m_strDVDLabel; }
+  void SetDVDLabel(std::string_view label) { m_strDVDLabel = label; }
+  bool IsShareOrDrive() const { return m_bIsShareOrDrive; }
+  void SetIsShareOrDrive(bool set) { m_bIsShareOrDrive = set; }
+  SourceType GetDriveType() const { return m_iDriveType; }
+  void SetDriveType(SourceType driveType) { m_iDriveType = driveType; }
+  const CDateTime& GetDateTime() const { return m_dateTime; }
+  void SetDateTime(const CDateTime& dateTime) { m_dateTime = dateTime; }
+  void SetDateTime(time_t dateTime) { m_dateTime = dateTime; }
+  void SetDateTime(KODI::TIME::SystemTime dateTime) { m_dateTime = dateTime; }
+  void SetDateTime(KODI::TIME::FileTime dateTime) { m_dateTime = dateTime; }
+  int64_t GetSize() const { return m_dwSize; }
+  void SetSize(int64_t size) { m_dwSize = size; }
+  const std::string& GetTitle() const { return m_strTitle; }
+  void SetTitle(std::string_view title) { m_strTitle = title; }
+  int GetProgramCount() const { return m_programCount; }
+  void SetProgramCount(int count) { m_programCount = count; }
+  int GetDepth() const { return m_depth; }
+  void SetDepth(int depth) { m_depth = depth; }
+  int GetStartPartNumber() const { return m_lStartPartNumber; }
+  void SetStartPartNumber(int number) { m_lStartPartNumber = number; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
 
-  inline bool HasMusicInfoTag() const
-  {
-    return m_musicInfoTag != NULL;
-  }
+  inline bool HasMusicInfoTag() const { return m_musicInfoTag != nullptr; }
 
   MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
 
@@ -245,19 +251,13 @@ public:
 
   const CVideoInfoTag* GetVideoInfoTag() const;
 
-  inline bool HasEPGInfoTag() const
-  {
-    return m_epgInfoTag.get() != NULL;
-  }
+  inline bool HasEPGInfoTag() const { return m_epgInfoTag.get() != nullptr; }
 
-  inline const std::shared_ptr<PVR::CPVREpgInfoTag> GetEPGInfoTag() const
-  {
-    return m_epgInfoTag;
-  }
+  inline std::shared_ptr<PVR::CPVREpgInfoTag> GetEPGInfoTag() const { return m_epgInfoTag; }
 
   bool HasEPGSearchFilter() const { return m_epgSearchFilter != nullptr; }
 
-  const std::shared_ptr<PVR::CPVREpgSearchFilter> GetEPGSearchFilter() const
+  inline std::shared_ptr<PVR::CPVREpgSearchFilter> GetEPGSearchFilter() const
   {
     return m_epgSearchFilter;
   }
@@ -267,37 +267,31 @@ public:
     return m_pvrChannelGroupMemberInfoTag.get() != nullptr;
   }
 
-  inline const std::shared_ptr<PVR::CPVRChannelGroupMember> GetPVRChannelGroupMemberInfoTag() const
+  inline std::shared_ptr<PVR::CPVRChannelGroupMember> GetPVRChannelGroupMemberInfoTag() const
   {
     return m_pvrChannelGroupMemberInfoTag;
   }
 
   bool HasPVRChannelInfoTag() const;
-  const std::shared_ptr<PVR::CPVRChannel> GetPVRChannelInfoTag() const;
+  std::shared_ptr<PVR::CPVRChannel> GetPVRChannelInfoTag() const;
 
-  inline bool HasPVRRecordingInfoTag() const
-  {
-    return m_pvrRecordingInfoTag.get() != NULL;
-  }
+  inline bool HasPVRRecordingInfoTag() const { return m_pvrRecordingInfoTag != nullptr; }
 
-  inline const std::shared_ptr<PVR::CPVRRecording> GetPVRRecordingInfoTag() const
+  inline std::shared_ptr<PVR::CPVRRecording> GetPVRRecordingInfoTag() const
   {
     return m_pvrRecordingInfoTag;
   }
 
-  inline bool HasPVRTimerInfoTag() const
-  {
-    return m_pvrTimerInfoTag != NULL;
-  }
+  inline bool HasPVRTimerInfoTag() const { return m_pvrTimerInfoTag != nullptr; }
 
-  inline const std::shared_ptr<PVR::CPVRTimerInfoTag> GetPVRTimerInfoTag() const
+  inline std::shared_ptr<PVR::CPVRTimerInfoTag> GetPVRTimerInfoTag() const
   {
     return m_pvrTimerInfoTag;
   }
 
   inline bool HasPVRProviderInfoTag() const { return m_pvrProviderInfoTag != nullptr; }
 
-  inline const std::shared_ptr<PVR::CPVRProvider> GetPVRProviderInfoTag() const
+  inline std::shared_ptr<PVR::CPVRProvider> GetPVRProviderInfoTag() const
   {
     return m_pvrProviderInfoTag;
   }
@@ -362,10 +356,7 @@ public:
    */
   void SetEndOffset(const int64_t offset) { m_lEndOffset = offset; }
 
-  inline bool HasPictureInfoTag() const
-  {
-    return m_pictureInfoTag != NULL;
-  }
+  inline bool HasPictureInfoTag() const { return m_pictureInfoTag != nullptr; }
 
   inline const CPictureInfoTag* GetPictureInfoTag() const
   {
@@ -373,12 +364,9 @@ public:
   }
 
   bool HasAddonInfo() const { return m_addonInfo != nullptr; }
-  const std::shared_ptr<const ADDON::IAddon> GetAddonInfo() const { return m_addonInfo; }
+  inline std::shared_ptr<const ADDON::IAddon> GetAddonInfo() const { return m_addonInfo; }
 
-  inline bool HasGameInfoTag() const
-  {
-    return m_gameInfoTag != NULL;
-  }
+  inline bool HasGameInfoTag() const { return m_gameInfoTag != nullptr; }
 
   KODI::GAME::CGameInfoTag* GetGameInfoTag();
 
@@ -454,7 +442,7 @@ public:
   const std::string& GetMimeType() const { return m_mimetype; }
 
   /* sets the mime-type if known beforehand */
-  void SetMimeType(const std::string& mimetype) { m_mimetype = mimetype; } ;
+  void SetMimeType(std::string_view mimetype) { m_mimetype = mimetype; }
 
   /*! \brief Resolve the MIME type based on file extension or a web lookup
    If m_mimetype is already set (non-empty), this function has no effect. For
@@ -467,7 +455,7 @@ public:
   \brief Some sources do not support HTTP HEAD request to determine i.e. mime type
   \return false if HEAD requests have to be avoided
   */
-  bool ContentLookup() { return m_doContentLookup; }
+  bool ContentLookup() const { return m_doContentLookup; }
 
   /*!
    \brief (Re)set the mime-type for internet files if allowed (m_doContentLookup)
@@ -482,7 +470,7 @@ public:
   void SetContentLookup(bool enable) { m_doContentLookup = enable; }
 
   /* general extra info about the contents of the item, not for display */
-  void SetExtraInfo(const std::string& info) { m_extrainfo = info; }
+  void SetExtraInfo(std::string_view info) { m_extrainfo = info; }
   const std::string& GetExtraInfo() const { return m_extrainfo; }
 
   /*! \brief Update an item with information from another item
@@ -532,34 +520,24 @@ public:
    */
   void SetFromSong(const CSong &song);
 
-  bool m_bIsShareOrDrive;    ///< is this a root share/drive
-  /// If \e m_bIsShareOrDrive is \e true, use to get the share type.
-  /// Types see: CMediaSource::m_iDriveType
-  SourceType m_iDriveType;
-  CDateTime m_dateTime;             ///< file creation date & time
-  int64_t m_dwSize;             ///< file size (0 for folders)
-  std::string m_strDVDLabel;
-  std::string m_strTitle;
-  int m_iprogramCount;
-  int m_idepth;
-  int m_lStartPartNumber;
-  LockMode m_iLockMode;
-  std::string m_strLockCode;
-  int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
-  int m_iBadPwdCount;
+  /*!
+  \brief Retrieve item's lock information, like lock code, lock mode, etc.
+  \return The lock information
+  */
+  KODI::UTILS::CLockInfo& GetLockInfo() { return m_lockInfo; }
 
-  void SetCueDocument(const CCueDocumentPtr& cuePtr);
+  /*!
+  \brief Retrieve item's lock information, like lock code, lock mode, etc.
+  \return The lock information
+  */
+  const KODI::UTILS::CLockInfo& GetLockInfo() const { return m_lockInfo; }
+
+  void SetCueDocument(const std::shared_ptr<CCueDocument>& cuePtr);
   void LoadEmbeddedCue();
   bool HasCueDocument() const;
   bool LoadTracksFromCueDocument(CFileItemList& scannedItems);
 
 private:
-  /*! \brief initialize all members of this class (not CGUIListItem members) to default values.
-   Called from constructors, and from Reset()
-   \sa Reset, CGUIListItem
-   */
-  void Initialize();
-
   /*! \brief Recalculate item's MIME type if it is not set or is set to "application/octet-stream".
    Resolve the MIME type based on file extension or a web lookup.
    \sa FillInMimeType
@@ -580,34 +558,46 @@ private:
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
 
-  SortSpecial m_specialSort;
-  bool m_bIsParentFolder;
-  bool m_bCanQueue;
-  bool m_bLabelPreformatted;
+  bool m_bIsShareOrDrive{false}; ///< is this a root share/drive
+  /// If \e m_bIsShareOrDrive is \e true, use to get the share type.
+  /// Types see: CMediaSource::m_iDriveType
+  SourceType m_iDriveType{SourceType::UNKNOWN};
+  CDateTime m_dateTime; ///< file creation date & time
+  int64_t m_dwSize{0}; ///< file size (0 for folders)
+  std::string m_strDVDLabel;
+  std::string m_strTitle;
+  int m_programCount{0};
+  int m_depth{1};
+  int m_lStartPartNumber{1};
+  KODI::UTILS::CLockInfo m_lockInfo;
+  SortSpecial m_specialSort{SortSpecialNone};
+  bool m_bIsParentFolder{false};
+  bool m_bCanQueue{true};
+  bool m_bLabelPreformatted{false};
   std::string m_mimetype;
   std::string m_extrainfo;
-  bool m_doContentLookup;
-  MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
-  CVideoInfoTag* m_videoInfoTag;
+  bool m_doContentLookup{true};
+  MUSIC_INFO::CMusicInfoTag* m_musicInfoTag{nullptr};
+  CVideoInfoTag* m_videoInfoTag{nullptr};
   std::shared_ptr<PVR::CPVREpgInfoTag> m_epgInfoTag;
   std::shared_ptr<PVR::CPVREpgSearchFilter> m_epgSearchFilter;
   std::shared_ptr<PVR::CPVRRecording> m_pvrRecordingInfoTag;
   std::shared_ptr<PVR::CPVRTimerInfoTag> m_pvrTimerInfoTag;
   std::shared_ptr<PVR::CPVRChannelGroupMember> m_pvrChannelGroupMemberInfoTag;
   std::shared_ptr<PVR::CPVRProvider> m_pvrProviderInfoTag;
-  CPictureInfoTag* m_pictureInfoTag;
+  CPictureInfoTag* m_pictureInfoTag{nullptr};
   std::shared_ptr<const ADDON::IAddon> m_addonInfo;
-  KODI::GAME::CGameInfoTag* m_gameInfoTag;
-  EventPtr m_eventLogEntry;
-  bool m_bIsAlbum;
-  int64_t m_lStartOffset;
-  int64_t m_lEndOffset;
+  KODI::GAME::CGameInfoTag* m_gameInfoTag{nullptr};
+  std::shared_ptr<const IEvent> m_eventLogEntry;
+  bool m_bIsAlbum{false};
+  int64_t m_lStartOffset{0};
+  int64_t m_lEndOffset{0};
 
-  CCueDocumentPtr m_cueDocument;
+  std::shared_ptr<CCueDocument> m_cueDocument;
 };
 
 /*!
   \brief A shared pointer to CFileItem
   \sa CFileItem
   */
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
+using CFileItemPtr = std::shared_ptr<CFileItem>;

@@ -184,20 +184,20 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const std::string &strDirectory
     CFileItemPtr files(new CFileItem("sources://music/", true));
     files->SetLabel(g_localizeStrings.Get(744));
     files->SetLabelPreformatted(true);
-    files->m_bIsShareOrDrive = true;
+    files->SetIsShareOrDrive(true);
     items.Add(files);
 
     CFileItemPtr mdb(new CFileItem("library://music/", true));
     mdb->SetLabel(g_localizeStrings.Get(14022));
     mdb->SetLabelPreformatted(true);
-    mdb->m_bIsShareOrDrive = true;
+    mdb->SetIsShareOrDrive(true);
     items.SetPath("");
     items.Add(mdb);
 
     CFileItemPtr vdb(new CFileItem("videodb://musicvideos/", true));
     vdb->SetLabel(g_localizeStrings.Get(20389));
     vdb->SetLabelPreformatted(true);
-    vdb->m_bIsShareOrDrive = true;
+    vdb->SetIsShareOrDrive(true);
     items.SetPath("");
     items.Add(vdb);
 

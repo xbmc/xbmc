@@ -18,6 +18,7 @@
 
 #include <map>
 #include <string>
+#include <string_view>
 #include <vector>
 
 /*!
@@ -38,16 +39,14 @@ public:
   explicit CFileItemList(const std::string& strPath);
   ~CFileItemList() override;
   void Archive(CArchive& ar) override;
-  CFileItemPtr operator[](int iItem);
-  const CFileItemPtr operator[](int iItem) const;
-  CFileItemPtr operator[](const std::string& strPath);
-  const CFileItemPtr operator[](const std::string& strPath) const;
+  CFileItemPtr operator[](int iItem) const;
+  CFileItemPtr operator[](const std::string& strPath) const;
   void Clear();
   void ClearItems();
   void Add(CFileItemPtr item);
   void Add(CFileItem&& item);
   void AddFront(const CFileItemPtr& pItem, int itemPosition);
-  void Remove(CFileItem* pItem);
+  void Remove(const CFileItem* pItem);
   void Remove(int iItem);
   CFileItemPtr Get(int iItem) const;
   const auto& GetList() const { return m_items; }
@@ -163,7 +162,7 @@ public:
   void SetSortIgnoreFolders(bool sort) { m_sortIgnoreFolders = sort; }
   bool GetReplaceListing() const { return m_replaceListing; }
   void SetReplaceListing(bool replace);
-  void SetContent(const std::string& content) { m_content = content; }
+  void SetContent(std::string_view content) { m_content = content; }
   const std::string& GetContent() const { return m_content; }
 
   void ClearSortState();
@@ -199,7 +198,7 @@ private:
   void StackFolders();
 
   std::vector<std::shared_ptr<CFileItem>> m_items;
-  std::map<std::string, std::shared_ptr<CFileItem>> m_map;
+  std::map<std::string, std::shared_ptr<CFileItem>, std::less<>> m_map;
   bool m_ignoreURLOptions = false;
   bool m_fastLookup = false;
   SortDescription m_sortDescription;

@@ -65,7 +65,7 @@ bool CNFSDirectory::GetDirectoryFromExportList(const std::string& strPath, CFile
     std::string path(nonConstStrPath + currentExport);
     URIUtils::AddSlashAtEnd(path);
     pItem->SetPath(path);
-    pItem->m_dateTime = 0;
+    pItem->SetDateTime(0);
 
     pItem->m_bIsFolder = true;
     items.Add(pItem);
@@ -89,7 +89,7 @@ bool CNFSDirectory::GetServerList(CFileItemList &items)
       CFileItemPtr pItem(new CFileItem(currentExport));
       std::string path("nfs://" + currentExport);
       URIUtils::AddSlashAtEnd(path);
-      pItem->m_dateTime=0;
+      pItem->SetDateTime(0);
 
       pItem->SetPath(path);
       pItem->m_bIsFolder = true;
@@ -284,8 +284,8 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
 
       CFileItemPtr pItem(new CFileItem(tmpDirent.name));
-      pItem->m_dateTime=localTime;
-      pItem->m_dwSize = iSize;
+      pItem->SetDateTime(localTime);
+      pItem->SetSize(iSize);
 
       if (bIsDir)
       {

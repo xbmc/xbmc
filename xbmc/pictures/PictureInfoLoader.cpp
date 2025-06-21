@@ -64,7 +64,7 @@ bool CPictureInfoLoader::LoadItemCached(CFileItem* pItem)
 
   // Check the cached item
   CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
-  if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasPictureInfoTag())
+  if (mapItem && mapItem->HasPictureInfoTag() && mapItem->GetDateTime() == pItem->GetDateTime())
   { // Query map if we previously cached the file on HD
     *pItem->GetPictureInfoTag() = *mapItem->GetPictureInfoTag();
     pItem->SetArt("thumb", mapItem->GetArt("thumb"));

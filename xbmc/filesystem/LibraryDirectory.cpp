@@ -126,7 +126,7 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       item->SetLabel(label);
       if (!icon.empty() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture(icon))
         item->SetArt("icon", icon);
-      item->m_iprogramCount = order;
+      item->SetProgramCount(order);
       items.Add(item);
     }
   }

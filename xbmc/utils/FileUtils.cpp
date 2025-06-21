@@ -149,7 +149,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
     std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources(sourceName);
     int sourceIndex = CUtil::GetMatchingSource(realPath, *sources, isSource);
     if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources->size()) &&
-        sources->at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
+        !sources->at(sourceIndex).GetLockInfo().IsLocked() &&
         sources->at(sourceIndex).m_allowSharing)
       return true;
   }
@@ -160,8 +160,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   //! @todo Make sharing of auto-mounted sources user configurable
   int sourceIndex = CUtil::GetMatchingSource(realPath, sources, isSource);
   if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) &&
-      sources.at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
-      sources.at(sourceIndex).m_allowSharing)
+      !sources.at(sourceIndex).GetLockInfo().IsLocked() && sources.at(sourceIndex).m_allowSharing)
     return true;
 
   return false;

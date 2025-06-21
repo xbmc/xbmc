@@ -314,7 +314,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
     return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
 #endif
 
-  if (pItem->m_bIsShareOrDrive)
+  if (pItem->IsShareOrDrive())
     return false;
 
   //! @todo this should be reactive, based on a given event app player should stop the playback
@@ -605,7 +605,7 @@ std::string CGUIWindowPictures::GetStartFolder(const std::string &dir)
   int iIndex = CUtil::GetMatchingSource(dir, shares, bIsSourceName);
   if (iIndex > -1)
   {
-    if (iIndex < static_cast<int>(shares.size()) && shares[iIndex].m_iHasLock == LOCK_STATE_LOCKED)
+    if (iIndex < static_cast<int>(shares.size()) && shares[iIndex].GetLockInfo().IsLocked())
     {
       CFileItem item(shares[iIndex]);
       if (!g_passwordManager.IsItemUnlocked(&item,"pictures"))

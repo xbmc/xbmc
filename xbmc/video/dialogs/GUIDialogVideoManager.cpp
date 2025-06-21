@@ -305,7 +305,7 @@ void CGUIDialogVideoManager::Remove()
 void CGUIDialogVideoManager::Rename()
 {
   const int idAsset{
-      ChooseVideoAsset(m_videoAsset, GetVideoAssetType(), m_selectedVideoAsset->m_strTitle)};
+      ChooseVideoAsset(m_videoAsset, GetVideoAssetType(), m_selectedVideoAsset->GetTitle())};
   if (idAsset != -1)
   {
     //! @todo db refactor: should not be version, but asset

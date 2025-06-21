@@ -92,7 +92,7 @@ bool CSourcesDirectory::GetDirectory(const std::vector<CMediaSource>& sources, C
       strIcon = "DefaultHardDisk.png";
 
     pItem->SetArt("icon", strIcon);
-    if (share.m_iHasLock == LOCK_STATE_LOCKED &&
+    if (share.GetLockInfo().IsLocked() &&
         m_profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
     else

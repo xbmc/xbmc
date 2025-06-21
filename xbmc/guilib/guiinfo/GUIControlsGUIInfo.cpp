@@ -594,7 +594,9 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
         if (control && control->IsContainer())
         {
           const CFileItemPtr item = std::static_pointer_cast<CFileItem>(static_cast<const IGUIContainer*>(control)->GetListItem(0));
-          if (item && item->m_iprogramCount == info.GetData2())  // programcount used to store item id
+          if (item &&
+              item->GetProgramCount() ==
+                  info.GetData2()) //! @todo remove hack to use programcount to store item id
           {
             value = true;
             return true;

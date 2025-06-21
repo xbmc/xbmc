@@ -53,7 +53,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 
 bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive)
+  if (pItem->IsShareOrDrive())
     return false;
 
   if (pItem->HasMusicInfoTag() && !pItem->GetProperty("libraryartfilled").asBoolean())
@@ -97,7 +97,7 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
 
 bool CMusicThumbLoader::LoadItemLookup(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive)
+  if (pItem->IsShareOrDrive())
     return false;
 
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->GetType() == MediaTypeArtist) // No fallback for artist

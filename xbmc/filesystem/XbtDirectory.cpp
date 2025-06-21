@@ -23,7 +23,7 @@ static CFileItemPtr XBTFFileToFileItem(const CXBTFFile& entry, const std::string
 {
   CFileItemPtr item(new CFileItem(label));
   if (!isFolder)
-    item->m_dwSize = static_cast<int64_t>(entry.GetUnpackedSize());
+    item->SetSize(static_cast<int64_t>(entry.GetUnpackedSize()));
 
   return item;
 }

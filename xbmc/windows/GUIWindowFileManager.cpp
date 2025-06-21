@@ -350,13 +350,13 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->m_bIsFolder && (!pItem->m_dwSize || pItem->IsPath("add")))
+    if (pItem->m_bIsFolder && (!pItem->GetSize() || pItem->IsPath("add")))
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
 
     // Set free space on disc
-    if (pItem->m_bIsShareOrDrive)
+    if (pItem->IsShareOrDrive())
     {
       if (pItem->IsHD())
       {
@@ -364,7 +364,7 @@ void CGUIWindowFileManager::OnSort(int iList)
         auto freeSpace = space(pItem->GetPath(), ec);
         if (ec.value() == 0)
         {
-          pItem->m_dwSize = freeSpace.free;
+          pItem->SetSize(freeSpace.free);
           pItem->SetFileSizeLabel();
         }
       }
@@ -374,7 +374,7 @@ void CGUIWindowFileManager::OnSort(int iList)
         auto freeSpace = space(pItem->GetPath(), ec);
         if (ec.value() == 0)
         {
-          pItem->m_dwSize = freeSpace.capacity;
+          pItem->SetSize(freeSpace.capacity);
           pItem->SetFileSizeLabel();
         }
       }
@@ -433,7 +433,7 @@ void CGUIWindowFileManager::UpdateItemCounts()
       if (item->IsSelected())
       {
         selectedCount++;
-        selectedSize += item->m_dwSize;
+        selectedSize += item->GetSize();
       }
       totalCount++;
     }
@@ -511,7 +511,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(m_rootDir.IsSource(strDirectory) ? "" : strParentPath);
     pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
+    pItem->SetIsShareOrDrive(false);
     m_vecItems[iList]->AddFront(pItem, 0);
   }
 
@@ -606,8 +606,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   {
     // save path + drive type because of the possible refresh
     std::string strPath = pItem->GetPath();
-    auto iDriveType = pItem->m_iDriveType;
-    if (pItem->m_bIsShareOrDrive)
+    if (pItem->IsShareOrDrive())
     {
       if ( !g_passwordManager.IsItemUnlocked( pItem.get(), "files" ) )
       {
@@ -615,7 +614,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
         return ;
       }
 
-      if ( !HaveDiscOrConnection( strPath, iDriveType ) )
+      if (!HaveDiscOrConnection(strPath, pItem->GetDriveType()))
         return ;
     }
     if (!Update(iList, strPath))
@@ -733,7 +732,7 @@ void CGUIWindowFileManager::OnMark(int iList, int iItem)
 {
   CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
 
-  if (!pItem->m_bIsShareOrDrive)
+  if (!pItem->IsShareOrDrive())
   {
     if (!pItem->IsParentFolder())
     {
@@ -892,13 +891,13 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
 /// \param strHistoryString History string build as return value
 void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString)
 {
-  if (pItem->m_bIsShareOrDrive)
+  if (pItem->IsShareOrDrive())
   {
     // We are in the virtual directory
 
     // History string of the DVD drive
     // must be handled separately
-    if (pItem->m_iDriveType == SourceType::OPTICAL_DISC)
+    if (pItem->GetDriveType() == SourceType::OPTICAL_DISC)
     {
       // Remove disc label from item label
       // and use as history string, m_strPath
@@ -1137,7 +1136,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
         int64_t folderSize = CalculateFolderSize(pItem2->GetPath(), progress);
         if (folderSize >= 0)
         {
-          pItem2->m_dwSize = folderSize;
+          pItem2->SetSize(folderSize);
           if (folderSize == 0)
             pItem2->SetLabel2(StringUtils::SizeToString(folderSize));
           else
@@ -1206,7 +1205,7 @@ int64_t CGUIWindowFileManager::CalculateFolderSize(const std::string &strDirecto
       totalSize += folderSize;
     }
     else // file
-      totalSize += items[i]->m_dwSize;
+      totalSize += items[i]->GetSize();
   }
   return totalSize;
 }
@@ -1236,7 +1235,7 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 
   if (url.IsProtocol("smb") && url.GetHostName().empty()) //  smb workgroup
     idMessageText = 15303; // Workgroup not found
-  else if (pItem->m_iDriveType == SourceType::REMOTE || URIUtils::IsRemote(pItem->GetPath()))
+  else if (pItem->GetDriveType() == SourceType::REMOTE || URIUtils::IsRemote(pItem->GetPath()))
     idMessageText = 15301; // Could not connect to network server
   else
     idMessageText = 15300; // Path not found or invalid

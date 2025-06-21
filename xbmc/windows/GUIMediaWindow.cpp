@@ -792,7 +792,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(strParentPath);
     pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
+    pItem->SetIsShareOrDrive(false);
     items.AddFront(pItem, 0);
   }
 
@@ -1078,14 +1078,14 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 
   if (pItem->m_bIsFolder)
   {
-    if ( pItem->m_bIsShareOrDrive )
+    if (pItem->IsShareOrDrive())
     {
       const std::string& strLockType=m_guiState->GetLockType();
       if (profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
         if (!strLockType.empty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
             return true;
 
-      if (!HaveDiscOrConnection(pItem->GetPath(), pItem->m_iDriveType))
+      if (!HaveDiscOrConnection(pItem->GetPath(), pItem->GetDriveType()))
         return true;
     }
 
@@ -1232,7 +1232,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, SourceTyp
  */
 void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem) const
 {
-  if (!pItem->m_bIsShareOrDrive)
+  if (!pItem->IsShareOrDrive())
     return;
 
   int idMessageText = 0;
@@ -1240,7 +1240,7 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem) const
 
   if (url.IsProtocol("smb") && url.GetHostName().empty()) //  smb workgroup
     idMessageText = 15303; // Workgroup not found
-  else if (pItem->m_iDriveType == SourceType::REMOTE || URIUtils::IsRemote(pItem->GetPath()))
+  else if (pItem->GetDriveType() == SourceType::REMOTE || URIUtils::IsRemote(pItem->GetPath()))
     idMessageText = 15301; // Could not connect to network server
   else
     idMessageText = 15300; // Path not found or invalid
@@ -1365,13 +1365,13 @@ void CGUIMediaWindow::RestoreSelectedItemFromHistory()
  */
 void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString) const
 {
-  if (pItem->m_bIsShareOrDrive)
+  if (pItem->IsShareOrDrive())
   {
     // We are in the virtual directory
 
     // History string of the DVD drive
     // must be handled separately
-    if (pItem->m_iDriveType == SourceType::OPTICAL_DISC)
+    if (pItem->GetDriveType() == SourceType::OPTICAL_DISC)
     {
       // Remove disc label from item label
       // and use as history string, m_strPath
@@ -1996,7 +1996,7 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(m_history.GetParentPath());
     pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
+    pItem->SetIsShareOrDrive(false);
     m_vecItems->AddFront(pItem, 0);
   }
 

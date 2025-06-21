@@ -60,27 +60,27 @@ void CDAVDirectory::ParseResponse(const tinyxml2::XMLElement* element, CFileItem
               if (CDAVCommon::ValueWithoutNamespace(propChild, "getcontentlength") &&
                   !propChild->NoChildren())
               {
-                item.m_dwSize = strtoll(propChild->FirstChild()->Value(), NULL, 10);
+                item.SetSize(std::strtoll(propChild->FirstChild()->Value(), nullptr, 10));
               }
               else if (CDAVCommon::ValueWithoutNamespace(propChild, "getlastmodified") &&
                        !propChild->NoChildren())
               {
                 struct tm timeDate = {};
                 strptime(propChild->FirstChild()->Value(), "%a, %d %b %Y %T", &timeDate);
-                item.m_dateTime = mktime(&timeDate);
+                item.SetDateTime(std::mktime(&timeDate));
               }
               else if (CDAVCommon::ValueWithoutNamespace(propChild, "displayname") &&
                        !propChild->NoChildren())
               {
                 item.SetLabel(CURL::Decode(propChild->FirstChild()->Value()));
               }
-              else if (!item.m_dateTime.IsValid() &&
+              else if (!item.GetDateTime().IsValid() &&
                        CDAVCommon::ValueWithoutNamespace(propChild, "creationdate") &&
                        !propChild->NoChildren())
               {
                 struct tm timeDate = {};
                 strptime(propChild->FirstChild()->Value(), "%Y-%m-%dT%T", &timeDate);
-                item.m_dateTime = mktime(&timeDate);
+                item.SetDateTime(std::mktime(&timeDate));
               }
               else if (CDAVCommon::ValueWithoutNamespace(propChild, "resourcetype"))
               {

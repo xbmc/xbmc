@@ -170,7 +170,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     CDirectory::GetDirectory(zipURL, items, strMask, DIR_FLAG_DEFAULTS);
     if (items.Size() == 0) // no files
       pItem->m_bIsFolder = true;
-    else if (items.Size() == 1 && items[0]->m_idepth == 0 && !items[0]->m_bIsFolder)
+    else if (items.Size() == 1 && items[0]->GetDepth() == 0 && !items[0]->m_bIsFolder)
     {
       // one STORED file - collapse it down
       *pItem = *items[0];
@@ -191,7 +191,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     CDirectory::GetDirectory(zipURL, items, strMask, DIR_FLAG_DEFAULTS);
     if (items.Size() == 0) // no files
       pItem->m_bIsFolder = true;
-    else if (items.Size() == 1 && items[0]->m_idepth == 0 && !items[0]->m_bIsFolder)
+    else if (items.Size() == 1 && items[0]->GetDepth() == 0 && !items[0]->m_bIsFolder)
     {
       // one STORED file - collapse it down
       *pItem = *items[0];

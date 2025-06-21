@@ -319,7 +319,7 @@ namespace XFILE
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
-      item->m_iprogramCount = i;  // hack for playlist order
+      item->SetProgramCount(i); //! @todo remove this hack for playlist order
       item->SetProperty("playlist_type_hint", static_cast<int>(playlistTypeHint));
     }
 

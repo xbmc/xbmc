@@ -561,7 +561,7 @@ void CAddonInstaller::PrunePackageCache()
   int i = 0;
   while (size > limit && i < items.Size())
   {
-    size -= items[i]->m_dwSize;
+    size -= items[i]->GetSize();
     db.RemovePackage(items[i]->GetPath());
     CFileUtils::DeleteItem(items[i++]);
   }
@@ -580,7 +580,7 @@ void CAddonInstaller::PrunePackageCache()
     i = 0;
     while (size > limit && i < items.Size())
     {
-      size -= items[i]->m_dwSize;
+      size -= items[i]->GetSize();
       db.RemovePackage(items[i]->GetPath());
       CFileUtils::DeleteItem(items[i++]);
     }
@@ -622,7 +622,7 @@ int64_t CAddonInstaller::EnumeratePackageFolder(
     if (items[i]->m_bIsFolder)
       continue;
 
-    size += items[i]->m_dwSize;
+    size += items[i]->GetSize();
     std::string pack,dummy;
     CAddonVersion::SplitFileName(pack, dummy, items[i]->GetLabel());
     result.try_emplace(pack, std::make_unique<CFileItemList>());

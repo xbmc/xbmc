@@ -95,9 +95,9 @@ bool CTVOSDirectory::GetDirectory(const CURL& url, CFileItemList& items)
         KODI::TIME::FileTime fileTime, localTime;
         KODI::TIME::TimeTToFileTime(buffer.st_mtime, &fileTime);
         KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
-        pItem->m_dateTime = localTime;
+        pItem->SetDateTime(localTime);
         // all this to get the file size
-        pItem->m_dwSize = buffer.st_size;
+        pItem->SetSize(buffer.st_size);
       }
     }
     items.Add(pItem);

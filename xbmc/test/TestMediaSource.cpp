@@ -20,8 +20,13 @@ CMediaSource createRef(const std::string& path,
                        const std::string& name,
                        SourceType type = SourceType::LOCAL)
 {
-  return CMediaSource{name, "", "",     path,  type, LockMode::EVERYONE, "", 0,
-                      0,    "", {path}, false, false};
+  CMediaSource source;
+  source.strPath = path;
+  source.strName = name;
+  source.m_iDriveType = type;
+  source.vecPaths = {path};
+  source.m_allowSharing = false;
+  return source;
 }
 
 CMediaSource createRefv(const std::string& path,
@@ -29,8 +34,13 @@ CMediaSource createRefv(const std::string& path,
                         const std::string& name,
                         SourceType type)
 {
-  return CMediaSource{name, "", "",    path,  type, LockMode::EVERYONE, "", 0,
-                      0,    "", paths, false, false};
+  CMediaSource source;
+  source.strPath = path;
+  source.strName = name;
+  source.m_iDriveType = type;
+  source.vecPaths = paths;
+  source.m_allowSharing = false;
+  return source;
 }
 
 struct FromNameAndPathDef

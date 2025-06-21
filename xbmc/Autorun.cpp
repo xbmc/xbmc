@@ -327,23 +327,30 @@ bool CAutorun::RunDisc(IDirectory* pDir,
             int ecount = 0;
             // calculate average size of elements above 1gb
             for (int j = 0; j < items.Size(); j++)
-              if (items[j]->m_dwSize > 1000000000)
+            {
+              const int64_t size{items[j]->GetSize()};
+              if (size > 1000000000)
               {
                 ecount++;
-                asize = asize + items[j]->m_dwSize;
+                asize = asize + size;
               }
+            }
             if (ecount > 0)
               asize = asize / ecount;
             // Put largest files in alphabetical order to top of new list.
             for (int j = 0; j < items.Size(); j++)
-              if (items[j]->m_dwSize >= asize)
+            {
+              if (items[j]->GetSize() >= asize)
                 sitems.Add (items[j]);
+            }
             // Sort *.evo files by size.
             items.Sort(SortBySize, SortOrderDescending);
             // Add other files with descending size to bottom of new list.
             for (int j = 0; j < items.Size(); j++)
-              if (items[j]->m_dwSize < asize)
+            {
+              if (items[j]->GetSize() < asize)
                 sitems.Add (items[j]);
+            }
             // Replace list with optimized list.
             items.Clear();
             items.Copy (sitems);
