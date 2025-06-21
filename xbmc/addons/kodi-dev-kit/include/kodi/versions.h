@@ -44,8 +44,8 @@
                                                       "addon-instance/" \
                                                       "c-api/addon_base.h"
 
-#define ADDON_GLOBAL_VERSION_GENERAL                  "1.0.5"
-#define ADDON_GLOBAL_VERSION_GENERAL_MIN              "1.0.4"
+#define ADDON_GLOBAL_VERSION_GENERAL                  "1.1.0"
+#define ADDON_GLOBAL_VERSION_GENERAL_MIN              "1.1.0"
 #define ADDON_GLOBAL_VERSION_GENERAL_XML_ID           "kodi.binary.global.general"
 #define ADDON_GLOBAL_VERSION_GENERAL_DEPENDS          "General.h"
 
