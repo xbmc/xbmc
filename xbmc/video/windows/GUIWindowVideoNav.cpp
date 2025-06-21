@@ -159,7 +159,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
             CFileItem item(path, URIUtils::HasSlashAtEnd(path));
             if (VIDEO::IsVideoDb(item))
             {
-              *(item.GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item.GetPath()));
+              *(item.GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(item.GetURLRef());
               if (!item.GetVideoInfoTag()->IsEmpty())
               {
                 item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
