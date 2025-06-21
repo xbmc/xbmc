@@ -539,11 +539,6 @@ std::string URIUtils::GetBlurayAllEpisodesPath(const std::string& path)
   return AddFileToFolder(GetBlurayPath(path), "root", "episode", "all");
 }
 
-std::string URIUtils::GetBlurayPlaylistPath(const std::string& path)
-{
-  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST", "");
-}
-
 std::string URIUtils::GetBlurayPath(const std::string& path)
 {
   if (IsBlurayPath(path))
@@ -572,6 +567,24 @@ std::string URIUtils::GetBlurayPath(const std::string& path)
   }
 
   return newPath;
+}
+
+int URIUtils::GetBlurayPlaylistFromPath(const std::string& path)
+{
+  int playlist{-1};
+  if (IsBlurayPath(path))
+  {
+    CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
+    if (regex.RegFind(path) != -1)
+      playlist = std::stoi(regex.GetMatch(1));
+  }
+  return playlist;
+}
+
+std::string URIUtils::GetBlurayPlaylistPath(const std::string& path, int playlist /* = -1 */)
+{
+  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST",
+                         playlist != -1 ? StringUtils::Format("{:05}.mpls", playlist) : "");
 }
 
 std::string URLEncodePath(const std::string& strPath)
