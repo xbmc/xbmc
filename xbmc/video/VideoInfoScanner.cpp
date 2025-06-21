@@ -242,12 +242,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
     m_bStop = true;
   }
 
-  static void OnDirectoryScanned(const std::string& strDirectory)
+namespace
+{
+
+  void OnDirectoryScanned(const std::string& strDirectory)
   {
     CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
     msg.SetStringParam(strDirectory);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
+
+} // unnamed namespace
 
   bool CVideoInfoScanner::DoScan(const std::string& strDirectory)
   {
@@ -1644,13 +1649,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
+namespace
+{
+
   /*! \brief Retrieve the art type for an image from the given size.
    \param width the width of the image.
    \param height the height of the image.
    \return "poster" if the aspect ratio is at most 4:5, "banner" if the aspect ratio
            is at least 1:4, "thumb" otherwise.
    */
-  static std::string GetArtTypeFromSize(unsigned int width, unsigned int height)
+  std::string GetArtTypeFromSize(unsigned int width, unsigned int height)
   {
     std::string type = "thumb";
     if (width*5 < height*4)
@@ -1659,6 +1667,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       type = "banner";
     return type;
   }
+
+} // unnamed namespace
 
   std::pair<CVideoInfoScanner::InfoType, std::unique_ptr<IVideoInfoTagLoader>> CVideoInfoScanner::
       ReadInfoTag(CFileItem& item,
@@ -1703,7 +1713,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return CDirectory::Exists(path) ? path : "";
   }
 
-  static void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
+namespace
+{
+
+  void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
                                   const std::vector<std::string>& wantedArtTypes,
                                   const std::string& itemPath,
                                   bool addAll,
@@ -1767,6 +1780,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
     }
   }
+
+} // unnamed namespace
 
   void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal, const std::string &actorArtPath)
   {
