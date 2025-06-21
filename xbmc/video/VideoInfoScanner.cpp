@@ -2518,8 +2518,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
           }
           else
           {
-            m_database.ConvertVideoToVersion(ContentToVideoDbType(content), idMovie, dbId,
-                                             idVideoAssetType, VideoAssetType::EXTRA);
+            m_database.ConvertMovieVideoToVersion(ContentToVideoDbType(content), idMovie, dbId,
+                                                  idVideoAssetType, VideoAssetType::EXTRA);
           }
         },
         [](const std::shared_ptr<CFileItem>& dirItem) { return !HasNoMedia(dirItem->GetPath()); },

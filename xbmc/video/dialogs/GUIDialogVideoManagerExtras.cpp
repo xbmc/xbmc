@@ -213,8 +213,8 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
         if (idNewVideoVersion == -1)
           return false;
 
-        return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
-                                                idNewVideoVersion, VideoAssetType::EXTRA);
+        return m_database.ConvertMovieVideoToVersion(itemType, newAsset.m_idMedia, dbId,
+                                                     idNewVideoVersion, VideoAssetType::EXTRA);
       }
     }
 

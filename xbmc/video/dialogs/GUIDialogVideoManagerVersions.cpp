@@ -394,8 +394,8 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
       return false;
   }
 
-  return videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, idVideoVersion,
-                                       VideoAssetType::VERSION);
+  return videoDb.ConvertMovieVideoToVersion(itemType, sourceDbId, targetDbId, idVideoVersion,
+                                            VideoAssetType::VERSION);
 }
 
 bool CGUIDialogVideoManagerVersions::GetAllOtherMovies(const std::shared_ptr<CFileItem>& item,
@@ -577,8 +577,8 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION, "")};
         if (idNewVideoVersion != -1)
         {
-          return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
-                                                  idNewVideoVersion, VideoAssetType::VERSION);
+          return m_database.ConvertMovieVideoToVersion(itemType, newAsset.m_idMedia, dbId,
+                                                       idNewVideoVersion, VideoAssetType::VERSION);
         }
         else
         {
@@ -654,8 +654,8 @@ bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
 
   const int sourceDbId{itemMovie->GetVideoInfoTag()->m_iDbId};
   const int targetDbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
-  return videoDb.ConvertVideoToVersion(VideoDbContentType::MOVIES, sourceDbId, targetDbId,
-                                       idVideoVersion, VideoAssetType::VERSION);
+  return videoDb.ConvertMovieVideoToVersion(VideoDbContentType::MOVIES, sourceDbId, targetDbId,
+                                            idVideoVersion, VideoAssetType::VERSION);
 }
 
 bool CGUIDialogVideoManagerVersions::PostProcessList(CFileItemList& list, int dbId)
