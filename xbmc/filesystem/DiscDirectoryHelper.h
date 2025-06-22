@@ -140,9 +140,9 @@ class CDiscDirectoryHelper
     std::string languages;
 
     // Used for inserting into a set where playlist is the key
-    bool operator<(const CandidatePlaylistInformation& rhs) const noexcept
+    auto operator<=>(const CandidatePlaylistInformation& rhs) const noexcept
     {
-      return playlist < rhs.playlist;
+      return playlist <=> rhs.playlist;
     }
   };
 
@@ -199,8 +199,29 @@ public:
 
 private:
   void InitialisePlaylistSearch(int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc);
+  bool IsPotentialPlayAllPlaylist(const PlaylistInfo& playlistInformation) const;
+  static bool ClipQualifies(const ClipInfo& clipInformation,
+                            unsigned int clip,
+                            const PlaylistInfo& playlistInformation,
+                            bool& allowBeginningOrEnd,
+                            bool allowBeginningAndEnd);
   bool IsValidSingleEpisodePlaylist(const PlaylistInfo& singleEpisodePlaylistInformation,
                                     unsigned int clip) const;
+  bool CheckClip(const PlaylistMap& playlists,
+                 unsigned int playlistNumber,
+                 const ClipInfo& clipInformation,
+                 unsigned int clip,
+                 std::vector<unsigned int>& playAllPlaylistMap) const;
+  bool ProcessPlaylistClips(
+      const ClipMap& clips,
+      const PlaylistMap& playlists,
+      unsigned int playlistNumber,
+      const PlaylistInfo& playlistInformation,
+      std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap) const;
+  void StorePlayAllPlaylist(
+      unsigned int playlistNumber,
+      const PlaylistInfo& playlistInformation,
+      const std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap);
   void FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists);
   void FindGroups(const PlaylistMap& playlists);
   void UsePlayAllPlaylistMethod(unsigned int episodeIndex, const PlaylistMap& playlists);

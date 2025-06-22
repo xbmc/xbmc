@@ -34,8 +34,8 @@
 #include <memory>
 #include <ranges>
 #include <regex>
-#include <set>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include <fmt/chrono.h>
@@ -274,11 +274,7 @@ StreamInformation ParseStream(std::vector<std::byte>& buffer,
 constexpr unsigned int CLPI_HEADER_SIZE = 28;
 constexpr unsigned int OFFSET_CLPI_HEADER = 0;
 constexpr unsigned int OFFSET_CLPI_VERSION = 4;
-// OFFSET_SEQUENCE_INFORMATION = 8;
 constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION = 12;
-// OFFSET_CPI = 16;
-// OFFSET_CLIP_MARK = 20;
-// OFFSET_EXTENSION_DATA = 24;
 constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION_NUM_PROGRAMS = 5;
 constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION_SEQUENCE_START = 0;
 constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION_PROGRAM_ID = 4;
@@ -291,6 +287,98 @@ constexpr unsigned int OFFSET_CLPI_STREAM_AUDIO_LANGUAGE = 3;
 constexpr unsigned int OFFSET_CLPI_STREAM_SUB_LANGUAGE = 2;
 constexpr unsigned int OFFSET_CLPI_STREAM_TEXT_ENCODING = 2;
 constexpr unsigned int OFFSET_CLPI_STREAM_TEXT_LANGUAGE = 3;
+
+void ParseProgramInformation(std::vector<std::byte>& buffer,
+                             unsigned int& offset,
+                             ProgramInformation& programInformation)
+{
+  programInformation.spnProgramSequenceStart =
+      GetDWord(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_SEQUENCE_START);
+  programInformation.programId =
+      GetWord(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_PROGRAM_ID);
+  const unsigned int numStreams{
+      GetByte(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_NUM_STREAMS)};
+  programInformation.numGroups =
+      GetByte(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_NUM_GROUPS);
+  offset += 8;
+
+  programInformation.streams.reserve(numStreams);
+  for (unsigned int j = 0; j < numStreams; ++j)
+  {
+    StreamInformation streamInformation;
+    streamInformation.packetIdentifier = GetWord(buffer, offset);
+    offset += 2;
+
+    const unsigned int streamLength{GetByte(buffer, offset)};
+    const ENCODING_TYPE coding{GetByte(buffer, offset + OFFSET_CLPI_STREAM_INFORMATION_CODING)};
+    streamInformation.coding = coding;
+    switch (coding)
+    {
+      using enum ENCODING_TYPE;
+      case VIDEO_MPEG1:
+      case VIDEO_MPEG2:
+      case VIDEO_H264:
+      case VIDEO_HEVC:
+      case VIDEO_VC1:
+      {
+        const unsigned int flag{GetDWord(buffer, offset + OFFSET_CLPI_STREAM_VIDEO_FLAGS)};
+        streamInformation.format = GetBits(flag, 32, 4);
+        streamInformation.rate = GetBits(flag, 28, 4);
+        streamInformation.aspect = static_cast<ASPECT_RATIO>(GetBits(flag, 24, 4));
+        streamInformation.outOfMux = GetBits(flag, 18, 1);
+        if (coding == VIDEO_HEVC)
+        {
+          streamInformation.copyRestricted = GetBits(flag, 17, 1);
+          streamInformation.dynamicRangeType = GetBits(flag, 16, 4);
+          streamInformation.colorSpace = GetBits(flag, 12, 4);
+          streamInformation.HDRPlus = GetBits(flag, 8, 1);
+        }
+        break;
+      }
+      case AUDIO_MPEG1:
+      case AUDIO_MPEG2:
+      case AUDIO_LPCM:
+      case AUDIO_AC3:
+      case AUDIO_DTS:
+      case AUDIO_TRUHD:
+      case AUDIO_AC3PLUS:
+      case AUDIO_DTSHD:
+      case AUDIO_DTSHD_MASTER:
+      case AUDIO_AC3PLUS_SECONDARY:
+      case AUDIO_DTSHD_SECONDARY:
+      {
+        const unsigned int flag{GetByte(buffer, offset + OFFSET_CLPI_STREAM_AUDIO_FLAGS)};
+        streamInformation.format = GetBits(flag, 8, 4);
+        streamInformation.rate = GetBits(flag, 4, 4);
+        streamInformation.language =
+            GetString(buffer, offset + OFFSET_CLPI_STREAM_AUDIO_LANGUAGE, 3);
+        break;
+      }
+      case SUB_PG:
+      case SUB_IG:
+      {
+        streamInformation.language = GetString(buffer, offset + OFFSET_CLPI_STREAM_SUB_LANGUAGE, 3);
+        break;
+      }
+      case SUB_TEXT:
+      {
+        streamInformation.characterEncoding =
+            GetByte(buffer, offset + OFFSET_CLPI_STREAM_TEXT_ENCODING);
+        streamInformation.language =
+            GetString(buffer, offset + OFFSET_CLPI_STREAM_TEXT_LANGUAGE, 3);
+        break;
+      }
+      default:
+        break;
+    }
+    programInformation.streams.emplace_back(streamInformation);
+
+    CLog::Log(LOGDEBUG, "  Stream - coding 0x{}",
+              fmt::format("{:02x}", static_cast<int>(streamInformation.coding)));
+
+    offset += streamLength + 1;
+  }
+}
 
 bool ParseCLPI(std::vector<std::byte>& buffer, ClipInformation& clipInformation, unsigned int clip)
 {
@@ -330,95 +418,8 @@ bool ParseCLPI(std::vector<std::byte>& buffer, ClipInformation& clipInformation,
   for (unsigned int i = 0; i < numPrograms; ++i)
   {
     ProgramInformation programInformation;
-    programInformation.spnProgramSequenceStart =
-        GetDWord(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_SEQUENCE_START);
-    programInformation.programId =
-        GetWord(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_PROGRAM_ID);
-    const unsigned int numStreams{
-        GetByte(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_NUM_STREAMS)};
-    programInformation.numGroups =
-        GetByte(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_NUM_GROUPS);
-    offset += 8;
-
     CLog::Log(LOGDEBUG, " Program {}", i);
-
-    programInformation.streams.reserve(numStreams);
-    for (unsigned int j = 0; j < numStreams; ++j)
-    {
-      StreamInformation streamInformation;
-      streamInformation.packetIdentifier = GetWord(buffer, offset);
-      offset += 2;
-
-      const unsigned int streamLength{GetByte(buffer, offset)};
-      const ENCODING_TYPE coding{GetByte(buffer, offset + OFFSET_CLPI_STREAM_INFORMATION_CODING)};
-      streamInformation.coding = coding;
-      switch (coding)
-      {
-        using enum ENCODING_TYPE;
-        case VIDEO_MPEG1:
-        case VIDEO_MPEG2:
-        case VIDEO_H264:
-        case VIDEO_HEVC:
-        case VIDEO_VC1:
-        {
-          const unsigned int flag{GetDWord(buffer, offset + OFFSET_CLPI_STREAM_VIDEO_FLAGS)};
-          streamInformation.format = GetBits(flag, 32, 4);
-          streamInformation.rate = GetBits(flag, 28, 4);
-          streamInformation.aspect = static_cast<ASPECT_RATIO>(GetBits(flag, 24, 4));
-          streamInformation.outOfMux = GetBits(flag, 18, 1);
-          if (coding == VIDEO_HEVC)
-          {
-            streamInformation.copyRestricted = GetBits(flag, 17, 1);
-            streamInformation.dynamicRangeType = GetBits(flag, 16, 4);
-            streamInformation.colorSpace = GetBits(flag, 12, 4);
-            streamInformation.HDRPlus = GetBits(flag, 8, 1);
-          }
-          break;
-        }
-        case AUDIO_MPEG1:
-        case AUDIO_MPEG2:
-        case AUDIO_LPCM:
-        case AUDIO_AC3:
-        case AUDIO_DTS:
-        case AUDIO_TRUHD:
-        case AUDIO_AC3PLUS:
-        case AUDIO_DTSHD:
-        case AUDIO_DTSHD_MASTER:
-        case AUDIO_AC3PLUS_SECONDARY:
-        case AUDIO_DTSHD_SECONDARY:
-        {
-          const unsigned int flag{GetByte(buffer, offset + OFFSET_CLPI_STREAM_AUDIO_FLAGS)};
-          streamInformation.format = GetBits(flag, 8, 4);
-          streamInformation.rate = GetBits(flag, 4, 4);
-          streamInformation.language =
-              GetString(buffer, offset + OFFSET_CLPI_STREAM_AUDIO_LANGUAGE, 3);
-          break;
-        }
-        case SUB_PG:
-        case SUB_IG:
-        {
-          streamInformation.language =
-              GetString(buffer, offset + OFFSET_CLPI_STREAM_SUB_LANGUAGE, 3);
-          break;
-        }
-        case SUB_TEXT:
-        {
-          streamInformation.characterEncoding =
-              GetByte(buffer, offset + OFFSET_CLPI_STREAM_TEXT_ENCODING);
-          streamInformation.language =
-              GetString(buffer, offset + OFFSET_CLPI_STREAM_TEXT_LANGUAGE, 3);
-          break;
-        }
-        default:
-          break;
-      }
-      programInformation.streams.emplace_back(streamInformation);
-
-      CLog::Log(LOGDEBUG, "  Stream - coding 0x{}",
-                fmt::format("{:02x}", static_cast<int>(streamInformation.coding)));
-
-      offset += streamLength + 1;
-    }
+    ParseProgramInformation(buffer, offset, programInformation);
     clipInformation.programs.emplace_back(programInformation);
   }
 
@@ -769,13 +770,10 @@ constexpr unsigned int OFFSET_MPLS_HEADER = 0;
 constexpr unsigned int OFFSET_MPLS_VERSION = 4;
 constexpr unsigned int OFFSET_MPLS_PLAYLIST_POSITION = 8;
 constexpr unsigned int OFFSET_MPLS_PLAYLIST_MARK_POSITION = 12;
-// OFFSET_EXTENSION_POSITION = 16;
 constexpr unsigned int OFFSET_MPLS_APP_INFO_PLAYLIST = 40;
 constexpr unsigned int OFFSET_MPLS_APP_INFO_PLAYBACK_TYPE = 5;
 constexpr unsigned int OFFSET_MPLS_NUM_PLAYITEMS = 6;
 constexpr unsigned int OFFSET_MPLS_NUM_SUBPATHS = 8;
-constexpr unsigned int OFFSET_MPLS_SUBPATH_TYPE = 5;
-constexpr unsigned int OFFSET_MPLS_SUBPATH_FLAGS = 6;
 constexpr unsigned int OFFSET_MPLS_SUBPATH_NUM_SUBPLAYITEMS = 9;
 constexpr unsigned int OFFSET_MPLS_NUM_PLAYLISTMARKS = 4;
 constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_TYPE = 1;
@@ -783,6 +781,74 @@ constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_PLAYITEM = 2;
 constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_TIME = 4;
 constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_PACKET_IDENTIFIER = 8;
 constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_DURATION = 10;
+
+bool ProcessClips(const CURL& url,
+                  PlaylistInformation& playlistInformation,
+                  std::map<unsigned int, ClipInformation>& clipCache)
+{
+  for (const auto& playItem : playlistInformation.playItems)
+  {
+    for (const auto& clip : playItem.angleClips)
+    {
+      if (const auto& it = clipCache.find(clip.clip); it != clipCache.end())
+      {
+        // In local cache
+        playlistInformation.clips.emplace_back(it->second);
+        continue;
+      }
+
+      // Not in local cache
+      ClipInformation clipInformation;
+      if (!ReadCLPI(url, clip.clip, clipInformation))
+      {
+        CLog::Log(LOGDEBUG, "Cannot read clip {} information", clip.clip);
+        return false;
+      }
+      playlistInformation.clips.emplace_back(clipInformation);
+      clipCache[clip.clip] = clipInformation;
+    }
+  }
+  return true;
+}
+
+bool ParsePlaylistMark(std::vector<std::byte>& buffer,
+                       unsigned int& offset,
+                       PlaylistInformation& playlistInformation)
+{
+  if (const unsigned int playlistMarkSize{GetDWord(buffer, offset)};
+      buffer.size() < playlistMarkSize + offset)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for PlayListMark");
+    return false;
+  }
+
+  const unsigned int numPlaylistMarks{GetWord(buffer, offset + OFFSET_MPLS_NUM_PLAYLISTMARKS)};
+  if (buffer.size() < (numPlaylistMarks * MPLS_PLAYLISTMARK_SIZE) + offset + 6)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for PlayListMark");
+    return false;
+  }
+
+  offset += 6;
+  playlistInformation.playlistMarks.reserve(numPlaylistMarks);
+  for (unsigned int i = 0; i < numPlaylistMarks; ++i)
+  {
+    PlaylistMarkInformation playlistMark{
+        .markType =
+            static_cast<BLURAY_MARK_TYPE>(GetByte(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TYPE)),
+        .playItemReference = GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PLAYITEM),
+        .time = std::chrono::milliseconds(GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TIME) /
+                                          45), // 45KHz clock
+        .elementaryStreamPacketIdentifier =
+            GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PACKET_IDENTIFIER),
+        .duration = std::chrono::milliseconds(
+            GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_DURATION))};
+    playlistInformation.playlistMarks.emplace_back(playlistMark);
+    offset += MPLS_PLAYLISTMARK_SIZE;
+  }
+
+  return true;
+}
 
 void GetChaptersAndTimings(PlaylistInformation& playlistInformation)
 {
@@ -919,42 +985,13 @@ bool ParseMPLS(const CURL& url,
   CLog::Log(LOGDEBUG, "Playlist duration {}", fmt::format("{:%H:%M:%S}", duration));
 
   // Process clips
-  for (const auto& playItem : playlistInformation.playItems)
-  {
-    for (const auto& clip : playItem.angleClips)
-    {
-      const auto& it = clipCache.find(clip.clip);
-
-      if (it != clipCache.end())
-      {
-        // In local cache
-        playlistInformation.clips.emplace_back(it->second);
-        continue;
-      }
-
-      // Not in local cache
-      ClipInformation clipInformation;
-      if (!ReadCLPI(url, clip.clip, clipInformation))
-      {
-        CLog::Log(LOGDEBUG, "Cannot read clip {} information", clip.clip);
-        return false;
-      }
-      playlistInformation.clips.emplace_back(clipInformation);
-      clipCache[clip.clip] = clipInformation;
-    }
-  }
+  if (!ProcessClips(url, playlistInformation, clipCache))
+    return false;
 
   if (numSubPaths > 0)
   {
     for (unsigned int i = 0; i < numSubPaths; ++i)
     {
-      SubPathInformation subPathInformation;
-
-      const BLURAY_SUBPATH_TYPE type{GetByte(buffer, offset + OFFSET_MPLS_SUBPATH_TYPE)};
-      const unsigned int flags{GetWord(buffer, offset + OFFSET_MPLS_SUBPATH_FLAGS)};
-      subPathInformation.type = type;
-      subPathInformation.repeat = GetBits(flags, 1, 1);
-
       const unsigned int numSubPlayItems{
           GetByte(buffer, offset + OFFSET_MPLS_SUBPATH_NUM_SUBPLAYITEMS)};
       offset += 10;
@@ -975,37 +1012,8 @@ bool ParseMPLS(const CURL& url,
 
   // Parse PlayListMark
   offset = playlistMarkPosition;
-  if (const unsigned int playlistMarkSize{GetDWord(buffer, offset)};
-      buffer.size() < playlistMarkSize + offset)
-  {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for PlayListMark");
+  if (!ParsePlaylistMark(buffer, offset, playlistInformation))
     return false;
-  }
-
-  const unsigned int numPlaylistMarks{GetWord(buffer, offset + OFFSET_MPLS_NUM_PLAYLISTMARKS)};
-  if (buffer.size() < (numPlaylistMarks * MPLS_PLAYLISTMARK_SIZE) + offset + 6)
-  {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for PlayListMark");
-    return false;
-  }
-
-  offset += 6;
-  playlistInformation.playlistMarks.reserve(numPlaylistMarks);
-  for (unsigned int i = 0; i < numPlaylistMarks; ++i)
-  {
-    PlaylistMarkInformation playlistMark{
-        .markType =
-            static_cast<BLURAY_MARK_TYPE>(GetByte(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TYPE)),
-        .playItemReference = GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PLAYITEM),
-        .time = std::chrono::milliseconds(GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TIME) /
-                                          45), // 45KHz clock
-        .elementaryStreamPacketIdentifier =
-            GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PACKET_IDENTIFIER),
-        .duration = std::chrono::milliseconds(
-            GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_DURATION))};
-    playlistInformation.playlistMarks.emplace_back(playlistMark);
-    offset += MPLS_PLAYLISTMARK_SIZE;
-  }
 
   GetChaptersAndTimings(playlistInformation);
 
@@ -1355,17 +1363,72 @@ bool GetPlaylistsFromDisc(const CURL& url,
   return true;
 }
 
+void RemoveDuplicatePlaylists(std::vector<PlaylistInfo>& playlists)
+{
+  std::unordered_set<unsigned int> duplicatePlaylists;
+  for (unsigned int i = 0; i < playlists.size() - 1; ++i)
+  {
+    for (unsigned int j = i + 1; j < playlists.size(); ++j)
+    {
+      if (playlists[i].audioStreams == playlists[j].audioStreams &&
+          playlists[i].pgStreams == playlists[j].pgStreams &&
+          playlists[i].chapters == playlists[j].chapters &&
+          playlists[i].clips == playlists[j].clips)
+      {
+        duplicatePlaylists.emplace(playlists[j].playlist);
+      }
+    }
+  }
+  std::erase_if(playlists, [&duplicatePlaylists](const PlaylistInfo& p)
+                { return duplicatePlaylists.contains(p.playlist); });
+}
+
+void RemoveShortPlaylists(std::vector<PlaylistInfo>& playlists)
+{
+  const std::chrono::milliseconds minimumDuration{CServiceBroker::GetSettingsComponent()
+                                                      ->GetAdvancedSettings()
+                                                      ->m_minimumEpisodePlaylistDuration *
+                                                  1000};
+  if (std::ranges::any_of(playlists, [&minimumDuration](const PlaylistInfo& playlist)
+                          { return playlist.duration >= minimumDuration; }))
+  {
+    std::erase_if(playlists, [&minimumDuration](const PlaylistInfo& playlist)
+                  { return playlist.duration < minimumDuration; });
+  }
+}
+
+void SortPlaylists(std::vector<PlaylistInfo>& playlists, SortTitles sort, int mainPlaylist)
+{
+  std::ranges::sort(playlists,
+                    [&sort](const PlaylistInfo& i, const PlaylistInfo& j)
+                    {
+                      if (sort == SortTitles::SORT_TITLES_MOVIE)
+                      {
+                        if (i.duration == j.duration)
+                          return i.playlist < j.playlist;
+                        return i.duration > j.duration;
+                      }
+                      return i.playlist < j.playlist;
+                    });
+
+  const auto& pivot{
+      std::ranges::find_if(playlists, [&mainPlaylist](const PlaylistInfo& title)
+                           { return title.playlist == static_cast<unsigned int>(mainPlaylist); })};
+  if (pivot != playlists.end())
+    std::rotate(playlists.begin(), pivot, pivot + 1);
+}
+
 bool IncludePlaylist(GetTitles job,
                      const PlaylistInfo& title,
                      std::chrono::milliseconds minDuration,
                      int mainPlaylist,
                      unsigned int maxPlaylist)
 {
-  return job == GetTitles::GET_TITLES_ALL || job == GetTitles::GET_TITLES_EPISODES ||
-         (job == GetTitles::GET_TITLES_MAIN && title.duration >= minDuration) ||
-         (job == GetTitles::GET_TITLES_ONE &&
-          (title.playlist == static_cast<unsigned int>(mainPlaylist) ||
-           (mainPlaylist == -1 && title.playlist == maxPlaylist)));
+  using enum GetTitles;
+  return job == GET_TITLES_ALL || job == GET_TITLES_EPISODES ||
+         (job == GET_TITLES_MAIN && title.duration >= minDuration) ||
+         (job == GET_TITLES_ONE && (title.playlist == static_cast<unsigned int>(mainPlaylist) ||
+                                    (mainPlaylist == -1 && title.playlist == maxPlaylist)));
 }
 
 bool GetPlaylists(const CURL& url,
@@ -1407,7 +1470,7 @@ bool GetPlaylists(const CURL& url,
   std::erase_if(playlists,
                 [](const PlaylistInfo& playlist)
                 {
-                  std::set<unsigned int> clips;
+                  std::unordered_set<unsigned int> clips;
                   for (const auto& clip : playlist.clips)
                     clips.emplace(clip);
                   return clips.size() < playlist.clips.size();
@@ -1417,43 +1480,11 @@ bool GetPlaylists(const CURL& url,
   // For episodes playlist selection happens in CDiscDirectoryHelper
   if (job != GetTitles::GET_TITLES_ALL && job != GetTitles::GET_TITLES_EPISODES &&
       playlists.size() > 1)
-  {
-    std::set<unsigned int> duplicatePlaylists;
-    for (unsigned int i = 0; i < playlists.size() - 1; ++i)
-    {
-      for (unsigned int j = i + 1; j < playlists.size(); ++j)
-      {
-        if (playlists[i].audioStreams.size() == playlists[j].audioStreams.size() &&
-            playlists[i].pgStreams.size() == playlists[j].pgStreams.size() &&
-            playlists[i].chapters.size() == playlists[j].chapters.size() &&
-            playlists[i].clips.size() == playlists[j].clips.size() &&
-            playlists[i].audioStreams == playlists[j].audioStreams &&
-            playlists[i].pgStreams == playlists[j].pgStreams &&
-            playlists[i].chapters == playlists[j].chapters &&
-            playlists[i].clips == playlists[j].clips)
-        {
-          duplicatePlaylists.emplace(playlists[j].playlist);
-        }
-      }
-    }
-    std::erase_if(playlists, [&duplicatePlaylists](const PlaylistInfo& p)
-                  { return duplicatePlaylists.contains(p.playlist); });
-  }
+    RemoveDuplicatePlaylists(playlists);
 
   // Remove playlists below minimum duration (default 5 minutes) unless that would leave no playlists
   if (job != GetTitles::GET_TITLES_ALL)
-  {
-    const std::chrono::milliseconds minimumDuration{CServiceBroker::GetSettingsComponent()
-                                                        ->GetAdvancedSettings()
-                                                        ->m_minimumEpisodePlaylistDuration *
-                                                    1000};
-    if (std::ranges::any_of(playlists, [&minimumDuration](const PlaylistInfo& playlist)
-                            { return playlist.duration >= minimumDuration; }))
-    {
-      std::erase_if(playlists, [&minimumDuration](const PlaylistInfo& playlist)
-                    { return playlist.duration < minimumDuration; });
-    }
-  }
+    RemoveShortPlaylists(playlists);
 
   // No playlists found
   if (playlists.empty())
@@ -1461,7 +1492,6 @@ bool GetPlaylists(const CURL& url,
 
   // Now we have curated playlists, find longest (for main title derivation)
   const auto& it{std::ranges::max_element(playlists, {}, &PlaylistInfo::duration)};
-
   const std::chrono::milliseconds maxDuration{it->duration};
   const unsigned int maxPlaylist{it->playlist};
 
@@ -1469,25 +1499,7 @@ bool GetPlaylists(const CURL& url,
   // Movies - placing main title - if present - first, then by duration
   // Episodes - by playlist number
   if (sort != SortTitles::SORT_TITLES_NONE)
-  {
-    std::ranges::sort(playlists,
-                      [&sort](const PlaylistInfo& i, const PlaylistInfo& j)
-                      {
-                        if (sort == SortTitles::SORT_TITLES_MOVIE)
-                        {
-                          if (i.duration == j.duration)
-                            return i.playlist < j.playlist;
-                          return i.duration > j.duration;
-                        }
-                        return i.playlist < j.playlist;
-                      });
-
-    const auto& pivot{std::ranges::find_if(
-        playlists, [&mainPlaylist](const PlaylistInfo& title)
-        { return title.playlist == static_cast<unsigned int>(mainPlaylist); })};
-    if (pivot != playlists.end())
-      std::rotate(playlists.begin(), pivot, pivot + 1);
-  }
+    SortPlaylists(playlists, sort, mainPlaylist);
 
   const std::chrono::milliseconds minDuration{maxDuration * MAIN_TITLE_LENGTH_PERCENT / 100};
   for (const auto& title : playlists)
@@ -1502,6 +1514,50 @@ bool GetPlaylists(const CURL& url,
   }
 
   return !items.IsEmpty();
+}
+
+void ProcessPlaylist(PlaylistMap& playlists, PlaylistInfo& titleInfo, ClipMap& clips)
+{
+  const unsigned int playlist{titleInfo.playlist};
+
+  // Save playlist
+  PlaylistInfo info;
+  info.playlist = playlist;
+
+  // Save playlist duration and chapters
+  info.duration = titleInfo.duration;
+  info.chapters = titleInfo.chapters;
+
+  // Get clips
+  for (const auto& clip : titleInfo.clips)
+  {
+    // Add clip to playlist
+    info.clips.emplace_back(clip);
+
+    // Add/extend clip information
+    const auto& it = clips.find(clip);
+    if (it == clips.end())
+    {
+      // First reference to clip
+      ClipInfo clipInfo;
+      clipInfo.duration = titleInfo.clipDuration[clip];
+      clipInfo.playlists.emplace_back(playlist);
+      clips[clip] = clipInfo;
+    }
+    else
+    {
+      // Additional reference to clip, add this playlist
+      it->second.playlists.emplace_back(playlist);
+    }
+  }
+
+  // Get languages
+  const std::string langs{fmt::format(
+      "{}", fmt::join(titleInfo.audioStreams | std::views::transform(&DiscStreamInfo::lang), ","))};
+  info.languages = langs;
+  titleInfo.languages = langs;
+
+  playlists[playlist] = info;
 }
 
 void GetPlaylistsInformation(const CURL& url,
@@ -1537,52 +1593,14 @@ void GetPlaylistsInformation(const CURL& url,
     if (!GetPlaylistInfoFromDisc(url, realPath, playlist, titleInfo, clipCache))
     {
       CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
+      continue;
     }
-    else
-    {
-      // Save playlist
-      PlaylistInfo info;
-      info.playlist = playlist;
 
-      // Save playlist duration and chapters
-      info.duration = titleInfo.duration;
-      info.chapters = titleInfo.chapters;
+    ProcessPlaylist(playlists, titleInfo, clips);
 
-      // Get clips
-      for (const auto& clip : titleInfo.clips)
-      {
-        // Add clip to playlist
-        info.clips.emplace_back(clip);
-
-        // Add/extend clip information
-        const auto& it = clips.find(clip);
-        if (it == clips.end())
-        {
-          // First reference to clip
-          ClipInfo clipInfo;
-          clipInfo.duration = titleInfo.clipDuration[clip];
-          clipInfo.playlists.emplace_back(playlist);
-          clips[clip] = clipInfo;
-        }
-        else
-        {
-          // Additional reference to clip, add this playlist
-          it->second.playlists.emplace_back(playlist);
-        }
-      }
-
-      playlists[playlist] = info;
-
-      // Get languages
-      const std::string langs{fmt::format(
-          "{}",
-          fmt::join(titleInfo.audioStreams | std::views::transform(&DiscStreamInfo::lang), ","))};
-
-      playlists[playlist].languages = langs;
-
-      CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {} ", playlist,
-                 title->GetVideoInfoTag()->GetDuration(), langs, fmt::join(titleInfo.clips, ","));
-    }
+    CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {} ", playlist,
+               title->GetVideoInfoTag()->GetDuration(), titleInfo.languages,
+               fmt::join(titleInfo.clips, ","));
   }
 
   // List clip info (automatically sorted as map)
