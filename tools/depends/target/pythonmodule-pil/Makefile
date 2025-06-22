@@ -21,8 +21,6 @@ else ifeq ($(OS),darwin_embedded)
   PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
   PILPATHLIB=$(PILPATH)/lib
   PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
-else ifeq ($(TARGET_PLATFORM),webos)
-  PILPATHLIB=$(PYTHON_SITE_PKG)/..
 endif
 
 SED_FLAG=-i
@@ -89,7 +87,7 @@ else ifeq ($(OS),darwin_embedded)
 	cd $(PILPATHLIB) && unzip -o ../pillow-*.egg
 	cd $(PILPATH) && rm -rf pillow-*.egg
 else ifeq ($(TARGET_PLATFORM),webos)
-	cd $(PILPATHLIB) && unzip -o $(PILPATH)/pillow-*.egg && rm -f $(PILPATH)/pillow-*.egg
+	cd $(PILPATH) && unzip -o $(PILPATH)/pillow-*.egg && rm -f $(PILPATH)/pillow-*.egg
 endif
 	touch $@
 
