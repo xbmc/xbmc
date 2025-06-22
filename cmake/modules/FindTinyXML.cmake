@@ -8,6 +8,9 @@
 #   ${APP_NAME_LC}::TinyXML   - The TinyXML library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+
+  # NOTE: Freebsd does not have a pkgconfig file for tinyxml
+
   find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND)
