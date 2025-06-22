@@ -85,6 +85,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # Add python modules
     if(KODI_DEPENDSBUILD)
       find_package(PythonmodulePIL REQUIRED ${SEARCH_QUIET})
+      find_package(PythonmodulePycryptodome REQUIRED ${SEARCH_QUIET})
     endif()
 
     if(Py_LINK_LIBRARIES)
