@@ -249,7 +249,7 @@
 						<shadowcolor>text_shadow</shadowcolor>
 						<height>100</height>
 						<width>auto</width>
-						<visible>!Player.IsLive + Player.HasVideo + ![Player.HasGame | VideoPlayer.HasEpg] !String.IsEmpty(Player.Duration)</visible>
+						<visible>!Player.IsLive + Player.HasVideo + ![Player.HasGame | VideoPlayer.HasEpg] + !String.IsEmpty(Player.Duration)</visible>
 					</control>
 					<control type="label">
 						<label>$LOCALIZE[31081]</label>
