@@ -50,10 +50,6 @@ public:
   // Player functions
   bool Configure(AVPixelFormat format);
   void FrameMove();
-  /*!
-   * \brief Performs whatever necessary before rendering the frame
-   */
-  void PreRender(bool clear);
   void SetBuffer(IRenderBuffer* buffer);
   void RenderFrame(bool clear, uint8_t alpha);
 
@@ -114,12 +110,17 @@ private:
    */
   virtual void ManageRenderArea(const IRenderBuffer& renderBuffer);
 
+  void MarkDirty();
+
+  /*!
+   * \brief Performs whatever necessary before rendering the frame
+   */
+  void PreRender(bool clear);
+
   /*!
    * \brief Performs whatever necessary after a frame has been rendered
    */
   void PostRender();
-
-  void MarkDirty();
 
   // Utility functions
   void GetScreenDimensions(float& screenWidth, float& screenHeight, float& screenPixelRatio);

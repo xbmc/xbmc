@@ -129,6 +129,7 @@ bool CShaderGLES::Create(std::string shaderSource,
 
   glGenBuffers(3, m_shaderVertexVBO);
   glGenBuffers(1, &m_shaderIndexVBO);
+
   return true;
 }
 

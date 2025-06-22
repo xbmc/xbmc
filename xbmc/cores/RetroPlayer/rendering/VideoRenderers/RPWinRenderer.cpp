@@ -308,7 +308,7 @@ void CRPWinRenderer::Render(CD3DTexture& target)
 
   Updateshaders();
 
-  // Are we using video shaders?
+  // Use video shader preset
   if (m_bUseShaderPreset)
   {
     //! @todo Orientation?
@@ -339,7 +339,8 @@ void CRPWinRenderer::Render(CD3DTexture& target)
       m_bUseShaderPreset = false;
     }
   }
-  else // Not using video shaders, output using output shader
+  // Use output shader
+  else
   {
     CD3DTexture& intermediateTarget = renderBufferTarget->GetTexture();
 
