@@ -36,5 +36,5 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                                    IMPORTED_LOCATION "${LIBANDROIDJNI_LIBRARY}"
                                                                    INTERFACE_INCLUDE_DIRECTORIES "${LIBANDROIDJNI_INCLUDE_DIR}")
 
-  add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} libandroidjni)
+  add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
 endif()
