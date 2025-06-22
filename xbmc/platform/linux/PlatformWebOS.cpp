@@ -8,6 +8,7 @@
 
 #include "PlatformWebOS.h"
 
+#include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "powermanagement/LunaPowerManagement.h"
@@ -43,6 +44,7 @@ bool CPlatformWebOS::InitStageOne()
   // $HOME is set to the ipk dir and $LD_LIBRARY_PATH is lib
   const auto HOME = GetHomePath();
 
+  setenv("APPID", CCompileInfo::GetPackage(), 0);
   setenv("XDG_RUNTIME_DIR", "/tmp/xdg", 1);
   setenv("XKB_CONFIG_ROOT", "/usr/share/X11/xkb", 1);
   setenv("WAYLAND_DISPLAY", "wayland-0", 1);
