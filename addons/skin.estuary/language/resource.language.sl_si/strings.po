@@ -318,6 +318,11 @@ msgctxt "#31080"
 msgid "Ends at"
 msgstr "Konec ob"
 
+#. Label to highlight that live stream is being played
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Razširitev za prikaz besedil skladb"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2025-04-11 06:52+0000\n"
 "Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
@@ -312,6 +312,11 @@ msgstr "Reparto no disponible"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Finaliza a las"
+
+#. Label to highlight that live stream is being played
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
