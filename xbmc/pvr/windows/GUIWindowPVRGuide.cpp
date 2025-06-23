@@ -676,10 +676,12 @@ class CContextMenuFunctions : public CContextButtons
 {
 public:
   using ContextMenuFunction = std::function<bool()>;
-  void Add(auto&& function, unsigned int resId)
+
+  template<class T>
+  void Add(T&& function, unsigned int resId)
   {
     CContextButtons::Add(static_cast<unsigned int>(size()), resId);
-    m_functions.emplace_back(std::forward<decltype(function)>(function));
+    m_functions.emplace_back(std::forward<T>(function));
   }
 
   bool Call(int idx)

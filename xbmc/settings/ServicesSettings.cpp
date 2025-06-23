@@ -14,9 +14,9 @@
 
 using namespace XFILE;
 
-void CServicesSettings::SettingOptionsChunkSizesFiller(const SettingConstPtr& setting,
+void CServicesSettings::SettingOptionsChunkSizesFiller(const SettingConstPtr& /*setting*/,
                                                        std::vector<IntegerSettingOption>& list,
-                                                       int& current)
+                                                       int& /*current*/)
 {
   const std::string& kb = g_localizeStrings.Get(37121);
   const std::string& mb = g_localizeStrings.Get(37122);
@@ -30,9 +30,9 @@ void CServicesSettings::SettingOptionsChunkSizesFiller(const SettingConstPtr& se
   list.emplace_back(StringUtils::Format(mb, 1), 1024);
 }
 
-void CServicesSettings::SettingOptionsBufferModesFiller(const SettingConstPtr& setting,
+void CServicesSettings::SettingOptionsBufferModesFiller(const SettingConstPtr& /*setting*/,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current)
+                                                        int& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(37110), static_cast<int>(CacheBufferMode::NONE));
   list.emplace_back(g_localizeStrings.Get(37111), static_cast<int>(CacheBufferMode::TRUE_INTERNET));
@@ -41,9 +41,9 @@ void CServicesSettings::SettingOptionsBufferModesFiller(const SettingConstPtr& s
   list.emplace_back(g_localizeStrings.Get(37114), static_cast<int>(CacheBufferMode::ALL));
 }
 
-void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& setting,
+void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& /*setting*/,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current)
+                                                        int& /*current*/)
 {
   const std::string& mb = g_localizeStrings.Get(37122);
   const std::string& gb = g_localizeStrings.Get(37123);
@@ -65,9 +65,9 @@ void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& s
   list.emplace_back(g_localizeStrings.Get(37115), 0);
 }
 
-void CServicesSettings::SettingOptionsReadFactorsFiller(const SettingConstPtr& setting,
+void CServicesSettings::SettingOptionsReadFactorsFiller(const SettingConstPtr& /*setting*/,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current)
+                                                        int& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(37116), 0);
   list.emplace_back("1.1x", 110);
@@ -87,9 +87,9 @@ void CServicesSettings::SettingOptionsReadFactorsFiller(const SettingConstPtr& s
   list.emplace_back("50x", 5000);
 }
 
-void CServicesSettings::SettingOptionsCacheChunkSizesFiller(const SettingConstPtr& setting,
+void CServicesSettings::SettingOptionsCacheChunkSizesFiller(const SettingConstPtr& /*setting*/,
                                                             std::vector<IntegerSettingOption>& list,
-                                                            int& current)
+                                                            int& /*current*/)
 {
   const std::string& byte = g_localizeStrings.Get(37120);
   const std::string& kb = g_localizeStrings.Get(37121);
@@ -110,9 +110,9 @@ void CServicesSettings::SettingOptionsCacheChunkSizesFiller(const SettingConstPt
   list.emplace_back(StringUtils::Format(mb, 1), 1024 * 1024);
 }
 
-void CServicesSettings::SettingOptionsSmbVersionsFiller(const SettingConstPtr& setting,
+void CServicesSettings::SettingOptionsSmbVersionsFiller(const SettingConstPtr& /*setting*/,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current)
+                                                        int& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(36623), 0);
   list.emplace_back(g_localizeStrings.Get(36624), 1);

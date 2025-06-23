@@ -138,7 +138,9 @@ inline bool LayoutSort(const StringSettingOption& i, const StringSettingOption& 
 } // namespace
 
 void CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller(
-    const SettingConstPtr& setting, std::vector<StringSettingOption>& list, std::string& current)
+    const SettingConstPtr& /*setting*/,
+    std::vector<StringSettingOption>& list,
+    std::string& /*current*/)
 {
   for (const auto& it : CServiceBroker::GetKeyboardLayoutManager()->m_layouts)
   {

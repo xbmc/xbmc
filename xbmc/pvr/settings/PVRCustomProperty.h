@@ -21,7 +21,7 @@ namespace PVR
 struct CustomProperty
 {
   PVR_SETTING_TYPE type{PVR_SETTING_TYPE::INTEGER};
-  CVariant value{static_cast<int>(0)};
+  CVariant value{int{0}};
 
   CustomProperty() = default;
   CustomProperty(PVR_SETTING_TYPE t, const CVariant& v) : type(t), value(v) {}

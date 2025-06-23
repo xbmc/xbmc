@@ -923,11 +923,8 @@ CGUIControlButtonSetting::CGUIControlButtonSetting(CGUIButtonControl* pButton,
                                                    ILocalizer* localizer)
   : CGUIControlBaseSetting(id, pSetting, localizer), m_pButton(pButton)
 {
-  ;
-  if (!m_pButton)
-    return;
-
-  m_pButton->SetID(id);
+  if (m_pButton)
+    m_pButton->SetID(id);
 }
 
 CGUIControlButtonSetting::~CGUIControlButtonSetting() = default;
@@ -1351,7 +1348,7 @@ bool CGUIControlEditSetting::InputValidation(const std::string& input, void* dat
   if (!data)
     return true;
 
-  auto* editControl = reinterpret_cast<CGUIControlEditSetting*>(data);
+  auto* editControl = static_cast<CGUIControlEditSetting*>(data);
   if (!editControl->GetSetting())
     return true;
 

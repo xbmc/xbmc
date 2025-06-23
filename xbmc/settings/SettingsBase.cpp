@@ -101,8 +101,8 @@ bool CSettingsBase::LoadHiddenValuesFromXml(const TiXmlElement* root)
   bool success = m_settingsManager->Load(root, updated, false, &loadedSettings);
   if (success)
   {
-    for (const auto& setting : loadedSettings)
-      setting.second->SetVisible(false);
+    for (const auto& [_, setting] : loadedSettings)
+      setting->SetVisible(false);
   }
 
   return success;

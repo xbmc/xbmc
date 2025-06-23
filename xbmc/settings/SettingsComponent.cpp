@@ -176,7 +176,11 @@ bool InitDirectoriesLinux(bool bPlatformDirectories)
 #endif
 }
 
+#if defined(TARGET_DARWIN)
 bool InitDirectoriesOSX(bool bPlatformDirectories)
+#else
+bool InitDirectoriesOSX(bool /*bPlatformDirectories*/)
+#endif
 {
 #if defined(TARGET_DARWIN)
   std::string userHome;

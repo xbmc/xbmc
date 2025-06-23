@@ -478,7 +478,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 
 void CGUIDialogSmartPlaylistEditor::UpdateRuleControlButtons()
 {
-  const int iSize = static_cast<int>(m_playlist.m_ruleCombination.GetRulesAmount());
+  const auto iSize = static_cast<int>(m_playlist.m_ruleCombination.GetRulesAmount());
   int iItem = GetSelectedItem();
   // only enable the remove control if ...
   CONTROL_ENABLE_ON_CONDITION(CONTROL_RULE_REMOVE,

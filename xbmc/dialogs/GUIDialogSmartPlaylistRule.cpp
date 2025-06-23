@@ -393,7 +393,7 @@ std::pair<std::string, CDatabaseQueryRule::SearchOperator> OperatorLabel(
 } // unnamed namespace
 
 std::vector<std::pair<std::string, CDatabaseQueryRule::SearchOperator>>
-CGUIDialogSmartPlaylistRule::GetValidOperators(const PLAYLIST::CSmartPlaylistRule& rule)
+CGUIDialogSmartPlaylistRule::GetValidOperators(const PLAYLIST::CSmartPlaylistRule& rule) const
 {
   std::vector<std::pair<std::string, CDatabaseQueryRule::SearchOperator>> labels;
   switch (rule.GetFieldType(rule.m_field))
@@ -428,6 +428,7 @@ CGUIDialogSmartPlaylistRule::GetValidOperators(const PLAYLIST::CSmartPlaylistRul
       break;
 
     case PLAYLIST_FIELD:
+    case TEXTIN_FIELD:
       labels.push_back(OperatorLabel(OPERATOR_EQUALS));
       labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
       break;
@@ -435,11 +436,6 @@ CGUIDialogSmartPlaylistRule::GetValidOperators(const PLAYLIST::CSmartPlaylistRul
     case BOOLEAN_FIELD:
       labels.push_back(OperatorLabel(OPERATOR_TRUE));
       labels.push_back(OperatorLabel(OPERATOR_FALSE));
-      break;
-
-    case TEXTIN_FIELD:
-      labels.push_back(OperatorLabel(OPERATOR_EQUALS));
-      labels.push_back(OperatorLabel(OPERATOR_DOES_NOT_EQUAL));
       break;
   }
   return labels;

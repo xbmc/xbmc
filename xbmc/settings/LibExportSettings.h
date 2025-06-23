@@ -15,6 +15,7 @@
 #include "settings/lib/Setting.h"
 
 #include <string>
+#include <string_view>
 
 // Enumeration of library export options (possibly OR'd together)
 enum ELIBEXPORTOPTIONS
@@ -44,7 +45,7 @@ public:
   bool operator!=(const CLibExportSettings &right) const;
 
   const std::string& GetPath() const { return m_strPath; }
-  void SetPath(const std::string& path) { m_strPath = path; }
+  void SetPath(std::string_view path) { m_strPath = path; }
   bool IsOverwrite() const { return m_overwrite; }
   void SetOverwrite(bool set) { m_overwrite = set; }
   bool IsArtwork() const { return m_artwork; }

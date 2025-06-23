@@ -157,54 +157,55 @@ public:
   // class ostream
   friend std::ostream& operator<<(std::ostream& os, const field_value& fv)
   {
+    using enum dbiplus::fType;
     switch (fv.get_fType())
     {
-      case fType::ft_String:
+      case ft_String:
       {
         return os << fv.get_asString();
         break;
       }
-      case fType::ft_Boolean:
+      case ft_Boolean:
       {
         return os << fv.get_asBool();
         break;
       }
-      case fType::ft_Char:
+      case ft_Char:
       {
         return os << fv.get_asChar();
         break;
       }
-      case fType::ft_Short:
+      case ft_Short:
       {
         return os << fv.get_asShort();
         break;
       }
-      case fType::ft_UShort:
+      case ft_UShort:
       {
         return os << fv.get_asUShort();
         break;
       }
-      case fType::ft_Int:
+      case ft_Int:
       {
         return os << fv.get_asInt();
         break;
       }
-      case fType::ft_UInt:
+      case ft_UInt:
       {
         return os << fv.get_asUInt();
         break;
       }
-      case fType::ft_Float:
+      case ft_Float:
       {
         return os << fv.get_asFloat();
         break;
       }
-      case fType::ft_Double:
+      case ft_Double:
       {
         return os << fv.get_asDouble();
         break;
       }
-      case fType::ft_Int64:
+      case ft_Int64:
       {
         return os << fv.get_asInt64();
         break;

@@ -19,11 +19,7 @@ namespace KODI::VIDEO::GUILIB
 class CVideoPlayActionProcessor : public CVideoActionProcessorBase
 {
 public:
-  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : CVideoActionProcessorBase(item)
-  {
-  }
-  virtual ~CVideoPlayActionProcessor() = default;
+  using CVideoActionProcessorBase::CVideoActionProcessorBase;
 
   void SetChoosePlayer() { m_choosePlayer = true; }
   void SetChooseStackPart() { m_chooseStackPart = true; }
@@ -42,9 +38,9 @@ private:
   unsigned int ChooseStackPart() const;
   Action ChoosePlayOrResume() const;
   static Action ChoosePlayOrResume(const std::string& resumeString);
-  void SetResumeData();
-  void SetStartData();
-  void Play(const std::string& player);
+  void SetResumeData() const;
+  void SetStartData() const;
+  void Play(const std::string& player) const;
 
   bool m_chooseStackPart{false};
   bool m_choosePlayer{false};

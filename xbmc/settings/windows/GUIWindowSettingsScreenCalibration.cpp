@@ -339,8 +339,8 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
     pControl->SetLimits(info.iWidth * 3 / 4, info.iHeight * 3 / 4, info.iWidth * 5 / 4,
                         info.iHeight * 5 / 4);
     const auto& [height, width] = m_controlsSize[CONTROL_BOTTOM_RIGHT];
-    pControl->SetHeight(height / DEFAULT_GUI_HEIGHT * info.iHeight);
-    pControl->SetWidth(width / DEFAULT_GUI_WIDTH * info.iWidth);
+    pControl->SetHeight(height / DEFAULT_GUI_HEIGHT * static_cast<float>(info.iHeight));
+    pControl->SetWidth(width / DEFAULT_GUI_WIDTH * static_cast<float>(info.iWidth));
     pControl->SetPosition(
         static_cast<float>(info.Overscan.right) - info.guiInsets.right - pControl->GetWidth(),
         static_cast<float>(info.Overscan.bottom) - info.guiInsets.bottom - pControl->GetHeight());
@@ -351,7 +351,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   if (pControl)
   {
     const auto& [height, width] = m_controlsSize[CONTROL_SUBTITLES];
-    const float scaledHeight = height / DEFAULT_GUI_HEIGHT * info.iHeight;
+    const float scaledHeight = height / DEFAULT_GUI_HEIGHT * static_cast<float>(info.iHeight);
     const auto scaledSpace =
         static_cast<float>(CONTROL_SUBTITLES_SPACE) / DEFAULT_GUI_HEIGHT * info.iHeight;
     m_subtitlesHalfSpace = static_cast<int>(scaledSpace / 2);
@@ -360,7 +360,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
                         m_subtitlesHalfSpace + barHeight + info.Overscan.top + info.guiInsets.top,
                         0, info.Overscan.bottom + m_subtitlesHalfSpace - info.guiInsets.bottom);
     pControl->SetHeight(scaledHeight);
-    pControl->SetWidth(width / DEFAULT_GUI_WIDTH * info.iWidth);
+    pControl->SetWidth(width / DEFAULT_GUI_WIDTH * static_cast<float>(info.iWidth));
     // If the vertical margin has been changed from the previous calibration,
     // the text bar could appear offscreen, then force move to visible area
     if (info.iSubtitles - m_subtitleVerticalMargin >
@@ -391,8 +391,8 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   if (pControl)
   {
     const auto& [height, width] = m_controlsSize[CONTROL_RESET];
-    pControl->SetHeight(height / DEFAULT_GUI_HEIGHT * info.iHeight);
-    pControl->SetWidth(width / DEFAULT_GUI_WIDTH * info.iWidth);
+    pControl->SetHeight(height / DEFAULT_GUI_HEIGHT * static_cast<float>(info.iHeight));
+    pControl->SetWidth(width / DEFAULT_GUI_WIDTH * static_cast<float>(info.iWidth));
     const float posX = 0 + info.guiInsets.right;
     const auto posY =
         static_cast<float>(info.Overscan.bottom) - info.guiInsets.bottom - pControl->GetHeight();
@@ -449,12 +449,13 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
           auto* moverControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_RESET));
           if (moverControl)
           {
-            const float posX = info.Overscan.left + info.guiInsets.left;
-            const float posY =
-                info.Overscan.bottom - moverControl->GetHeight() - info.guiInsets.bottom;
-            moverControl->SetLimits(posX, posY, posX, posY);
+            const float posX = static_cast<float>(info.Overscan.left) + info.guiInsets.left;
+            const float posY = static_cast<float>(info.Overscan.bottom) -
+                               moverControl->GetHeight() - info.guiInsets.bottom;
+            moverControl->SetLimits(static_cast<int>(posX), static_cast<int>(posY),
+                                    static_cast<int>(posX), static_cast<int>(posY));
             moverControl->SetPosition(posX, posY);
-            moverControl->SetLocation(posX, posY, false);
+            moverControl->SetLocation(static_cast<int>(posX), static_cast<int>(posY), false);
           }
           break;
         }
@@ -473,11 +474,13 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
           pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_RESET));
           if (pControl)
           {
-            float posX = info.Overscan.left + info.guiInsets.left;
-            float posY = info.Overscan.bottom - pControl->GetHeight() - info.guiInsets.bottom;
-            pControl->SetLimits(posX, posY, posX, posY);
+            const float posX = static_cast<float>(info.Overscan.left) + info.guiInsets.left;
+            const float posY = static_cast<float>(info.Overscan.bottom) - pControl->GetHeight() -
+                               info.guiInsets.bottom;
+            pControl->SetLimits(static_cast<int>(posX), static_cast<int>(posY),
+                                static_cast<int>(posX), static_cast<int>(posY));
             pControl->SetPosition(posX, posY);
-            pControl->SetLocation(posX, posY, false);
+            pControl->SetLocation(static_cast<int>(posX), static_cast<int>(posY), false);
           }
           break;
         }
@@ -557,7 +560,7 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 
       // Recalculate limits based on overscan values
       const auto& [height, _] = m_controlsSize[CONTROL_SUBTITLES];
-      const float scaledHeight = height / DEFAULT_GUI_HEIGHT * info.iHeight;
+      const float scaledHeight = height / DEFAULT_GUI_HEIGHT * static_cast<float>(info.iHeight);
       const auto scaledSpace =
           static_cast<float>(CONTROL_SUBTITLES_SPACE) / DEFAULT_GUI_HEIGHT * info.iHeight;
 

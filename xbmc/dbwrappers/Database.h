@@ -30,7 +30,7 @@ public:
   class Filter
   {
   public:
-    Filter() {}
+    Filter();
     explicit Filter(const char* w) : where(w) {}
     explicit Filter(const std::string& w) : where(w) {}
 
@@ -220,7 +220,7 @@ public:
    * @brief Get the number of INSERT queries in the queue.
    * @return The number of queries.
    */
-  size_t GetInsertQueriesCount();
+  size_t GetInsertQueriesCount() const;
 
   /*!
    * @brief Put a DELETE query in the queue.
@@ -239,7 +239,7 @@ public:
    * @brief Get the number of DELETE queries in the queue.
    * @return The number of queries.
    */
-  size_t GetDeleteQueriesCount();
+  size_t GetDeleteQueriesCount() const;
 
   virtual bool GetFilter(CDbUrl& dbUrl, Filter& filter, SortDescription& sorting) { return true; }
   virtual bool BuildSQL(const std::string& strBaseDir,

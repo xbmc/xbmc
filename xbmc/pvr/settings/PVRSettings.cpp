@@ -221,9 +221,9 @@ bool CPVRSettings::IsSettingVisible(const std::string& condition,
   }
 }
 
-bool CPVRSettings::CheckParentalPin(const std::string& condition,
-                                    const std::string& value,
-                                    const std::shared_ptr<const CSetting>& setting)
+bool CPVRSettings::CheckParentalPin(const std::string& /*condition*/,
+                                    const std::string& /*value*/,
+                                    const std::shared_ptr<const CSetting>& /*setting*/)
 {
   return CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalPIN() ==
          ParentalCheckResult::SUCCESS;

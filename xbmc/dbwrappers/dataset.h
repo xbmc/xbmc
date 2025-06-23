@@ -268,7 +268,7 @@ protected:
   virtual void fill_fields() = 0;
 
   /* Parse Sql - replacing fields with prefixes :OLD_ and :NEW_ with current values of OLD or NEW field. */
-  void parse_sql(std::string& sql);
+  void parse_sql(std::string& sql) const;
 
   /* Returns old field value (for :OLD) */
   virtual field_value f_old(const char* f);

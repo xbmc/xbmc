@@ -141,11 +141,12 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
 
       // The bookmark coming from the player is only relative to the current part, thus needs
       // to be corrected with these attributes (start time will be 0 for non-stackparts).
-      bookmark.timeInSeconds += stackHelper->GetRegisteredStackPartStartTimeMs(file) / 1000.0;
+      bookmark.timeInSeconds +=
+          static_cast<double>(stackHelper->GetRegisteredStackPartStartTimeMs(file)) / 1000.0;
 
       const uint64_t registeredStackTotalTimeMs{stackHelper->GetRegisteredStackTotalTimeMs(file)};
       if (registeredStackTotalTimeMs > 0)
-        bookmark.totalTimeInSeconds = registeredStackTotalTimeMs / 1000.0;
+        bookmark.totalTimeInSeconds = static_cast<double>(registeredStackTotalTimeMs) / 1000.0;
     }
     // Any stack case: We need to save the part number.
     bookmark.partNumber =

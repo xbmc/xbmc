@@ -913,7 +913,7 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
     if (options && options->FirstChild())
     {
       if (!DeserializeOptionsSort(options, m_optionsSort))
-        s_logger->warn(StringUtils::Format("invalid \"sort\" attribute of <{}> for \"{}\"",
+        s_logger->warn(StringUtils::Format(R"(invalid "sort" attribute of <{}> for "{}")",
                                            SETTING_XML_ELM_OPTIONS, m_id));
 
       if (options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
@@ -936,7 +936,8 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
                   TIXML_SUCCESS &&
               entry.label > 0)
           {
-            entry.value = std::strtol(optionElement->FirstChild()->Value(), nullptr, 10);
+            entry.value =
+                static_cast<int>(std::strtol(optionElement->FirstChild()->Value(), nullptr, 10));
             m_translatableOptions.push_back(entry);
           }
           else
@@ -945,7 +946,8 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
             if (optionElement->QueryStringAttribute(SETTING_XML_ATTR_LABEL, &label) ==
                 TIXML_SUCCESS)
             {
-              const int val = std::strtol(optionElement->FirstChild()->Value(), nullptr, 10);
+              const int val =
+                  static_cast<int>(std::strtol(optionElement->FirstChild()->Value(), nullptr, 10));
               m_options.emplace_back(label, val);
             }
           }
@@ -1431,7 +1433,7 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
     if (options && options->FirstChild())
     {
       if (!DeserializeOptionsSort(options, m_optionsSort))
-        s_logger->warn(StringUtils::Format("invalid \"sort\" attribute of <{}> for \"{}\"",
+        s_logger->warn(StringUtils::Format(R"(invalid "sort" attribute of <{}> for "{}")",
                                            SETTING_XML_ELM_OPTIONS, m_id));
 
       if (options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)

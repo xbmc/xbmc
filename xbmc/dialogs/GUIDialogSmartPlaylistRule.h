@@ -36,7 +36,7 @@ protected:
   void UpdateButtons();
   void OnBrowse();
   std::vector<std::pair<std::string, CDatabaseQueryRule::SearchOperator>> GetValidOperators(
-      const KODI::PLAYLIST::CSmartPlaylistRule& rule);
+      const KODI::PLAYLIST::CSmartPlaylistRule& rule) const;
 
   KODI::PLAYLIST::CSmartPlaylistRule m_rule;
   bool m_cancelled;

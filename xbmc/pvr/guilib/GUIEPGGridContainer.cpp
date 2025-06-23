@@ -288,7 +288,8 @@ float CGUIEPGGridContainer::GetCurrentTimePositionOnPage() const
     return -1.0f;
 
   const CDateTimeSpan startDelta(CDateTime::GetUTCDateTime() - m_gridModel->GetGridStart());
-  const float fPos = (startDelta.GetSecondsTotal() * m_blockSize) / (m_minutesPerBlock * 60) -
+  const float fPos = (static_cast<float>(startDelta.GetSecondsTotal()) * m_blockSize) /
+                         static_cast<float>(m_minutesPerBlock * 60) -
                      GetProgrammeScrollOffsetPos();
   return std::min(fPos, m_orientation == VERTICAL ? m_gridWidth : m_gridHeight);
 }
@@ -1545,8 +1546,8 @@ void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
   float size = m_programmeLayout->Size(m_orientation);
   int range = m_channelsPerPage / 4;
 
-  if (range <= 0.0f)
-    range = 1.0f;
+  if (range <= 0)
+    range = 1;
 
   if (offset * size < m_channelScrollOffset && m_channelScrollOffset - offset * size > size * range)
   {
@@ -1575,18 +1576,20 @@ void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
   float size = m_blockSize;
   int range = m_blocksPerPage / 1;
 
-  if (range <= 0.0f)
-    range = 1.0f;
+  if (range <= 0)
+    range = 1;
 
-  if (offset * size < m_programmeScrollOffset &&
-      m_programmeScrollOffset - offset * size > size * range)
+  if (static_cast<float>(offset) * size < m_programmeScrollOffset &&
+      m_programmeScrollOffset - static_cast<float>(offset) * size >
+          size * static_cast<float>(range))
   {
     // scrolling left, and we're jumping more than 0.5 of a screen
     m_programmeScrollOffset = (offset + range) * size;
   }
 
-  if (offset * size > m_programmeScrollOffset &&
-      offset * size - m_programmeScrollOffset > size * range)
+  if (static_cast<float>(offset) * size > m_programmeScrollOffset &&
+      static_cast<float>(offset) * size - m_programmeScrollOffset >
+          size * static_cast<float>(range))
   {
     // scrolling right, and we're jumping more than 0.5 of a screen
     m_programmeScrollOffset = (offset - range) * size;
@@ -1948,7 +1951,7 @@ void CGUIEPGGridContainer::UpdateLayout()
     m_gridWidth = m_width - m_channelWidth;
     m_gridHeight = m_height - m_rulerHeight - m_rulerDateHeight;
     m_blockSize = m_gridWidth / m_blocksPerPage;
-    m_rulerWidth = m_blocksPerRulerItem * m_blockSize;
+    m_rulerWidth = static_cast<float>(m_blocksPerRulerItem) * m_blockSize;
     m_channelPosX = m_posX;
     m_channelPosY = m_posY + m_rulerHeight + m_rulerDateHeight;
     m_rulerPosX = m_posX + m_channelWidth;
@@ -1967,7 +1970,7 @@ void CGUIEPGGridContainer::UpdateLayout()
     m_gridWidth = m_width - m_rulerWidth;
     m_gridHeight = m_height - m_channelHeight - m_rulerDateHeight;
     m_blockSize = m_gridHeight / m_blocksPerPage;
-    m_rulerHeight = m_blocksPerRulerItem * m_blockSize;
+    m_rulerHeight = static_cast<float>(m_blocksPerRulerItem) * m_blockSize;
     m_channelPosX = m_posX + m_rulerWidth;
     m_channelPosY = m_posY + m_rulerDateHeight;
     m_rulerPosX = m_posX;
@@ -1991,9 +1994,11 @@ void CGUIEPGGridContainer::UpdateScrollOffset(unsigned int currentTime)
 
   m_channelScrollOffset += m_channelScrollSpeed * (currentTime - m_channelScrollLastTime);
   if ((m_channelScrollSpeed < 0.0f &&
-       m_channelScrollOffset < m_channelOffset * m_programmeLayout->Size(m_orientation)) ||
+       m_channelScrollOffset <
+           static_cast<float>(m_channelOffset) * m_programmeLayout->Size(m_orientation)) ||
       (m_channelScrollSpeed > 0.0f &&
-       m_channelScrollOffset > m_channelOffset * m_programmeLayout->Size(m_orientation)))
+       m_channelScrollOffset >
+           static_cast<float>(m_channelOffset) * m_programmeLayout->Size(m_orientation)))
   {
     m_channelScrollOffset = m_channelOffset * m_programmeLayout->Size(m_orientation);
     m_channelScrollSpeed = 0.0f;
@@ -2003,8 +2008,10 @@ void CGUIEPGGridContainer::UpdateScrollOffset(unsigned int currentTime)
   m_channelScrollLastTime = currentTime;
   m_programmeScrollOffset += m_programmeScrollSpeed * (currentTime - m_programmeScrollLastTime);
 
-  if ((m_programmeScrollSpeed < 0.0f && m_programmeScrollOffset < m_blockOffset * m_blockSize) ||
-      (m_programmeScrollSpeed > 0.0f && m_programmeScrollOffset > m_blockOffset * m_blockSize))
+  if ((m_programmeScrollSpeed < 0.0f &&
+       m_programmeScrollOffset < static_cast<float>(m_blockOffset) * m_blockSize) ||
+      (m_programmeScrollSpeed > 0.0f &&
+       m_programmeScrollOffset > static_cast<float>(m_blockOffset) * m_blockSize))
   {
     m_programmeScrollOffset = m_blockOffset * m_blockSize;
     m_programmeScrollSpeed = 0.0f;

@@ -766,9 +766,9 @@ void CGUIDialogMediaFilter::DeleteRule(Field field)
 
 void CGUIDialogMediaFilter::GetStringListOptions(const SettingConstPtr& setting,
                                                  std::vector<StringSettingOption>& list,
-                                                 std::string& current)
+                                                 std::string& /*current*/)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   auto itFilter = m_filters.find(setting->GetId());

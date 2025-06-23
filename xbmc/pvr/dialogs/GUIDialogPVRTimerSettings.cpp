@@ -274,9 +274,8 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
 
   setting = AddList(
       group, SETTING_TMR_TYPE, 803, SettingLevel::Basic, 0,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { TypesFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { TypesFiller(s, list, current); },
       803, true, -1, useDetails);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_TYPE);
 
@@ -304,9 +303,8 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   // Channel
   setting = AddList(
       group, SETTING_TMR_CHANNEL, 19078, SettingLevel::Basic, 0,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { ChannelsFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { ChannelsFiller(s, list, current); },
       19078);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_CHANNEL);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_CHANNEL);
@@ -330,9 +328,8 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
 
   setting = AddList(
       group, SETTING_TMR_WEEKDAYS, 19079, SettingLevel::Basic, weekdaysPreselect,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { WeekdaysFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { WeekdaysFiller(s, list, current); },
       19079, 1, -1, true, -1, WeekdaysValueFormatter);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_WEEKDAYS);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_WEEKDAYS);
@@ -343,11 +340,10 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_START_ANYTIME);
 
   // Start day (day + month + year only, no hours, minutes)
-  setting = AddSpinner(group, SETTING_TMR_START_DAY, 19128, SettingLevel::Basic,
-                       GetDateAsIndex(m_startLocalTime),
-                       [this](const std::shared_ptr<const CSetting>& setting,
-                              std::vector<IntegerSettingOption>& list, int& current)
-                       { DaysFiller(setting, list, current); });
+  setting = AddSpinner(
+      group, SETTING_TMR_START_DAY, 19128, SettingLevel::Basic, GetDateAsIndex(m_startLocalTime),
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { DaysFiller(s, list, current); });
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_START_DAY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_START_DAY);
   AddStartAnytimeDependentVisibilityCondition(setting, SETTING_TMR_START_DAY);
@@ -364,11 +360,10 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END_ANYTIME);
 
   // End day (day + month + year only, no hours, minutes)
-  setting = AddSpinner(group, SETTING_TMR_END_DAY, 19129, SettingLevel::Basic,
-                       GetDateAsIndex(m_endLocalTime),
-                       [this](const std::shared_ptr<const CSetting>& setting,
-                              std::vector<IntegerSettingOption>& list, int& current)
-                       { DaysFiller(setting, list, current); });
+  setting = AddSpinner(
+      group, SETTING_TMR_END_DAY, 19129, SettingLevel::Basic, GetDateAsIndex(m_endLocalTime),
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { DaysFiller(s, list, current); });
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END_DAY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END_DAY);
   AddEndAnytimeDependentVisibilityCondition(setting, SETTING_TMR_END_DAY);
@@ -380,20 +375,18 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   AddEndAnytimeDependentVisibilityCondition(setting, SETTING_TMR_END);
 
   // First day (only for timer rules)
-  setting = AddSpinner(group, SETTING_TMR_FIRST_DAY, 19084, SettingLevel::Basic,
-                       GetDateAsIndex(m_firstDayLocalTime),
-                       [this](const std::shared_ptr<const CSetting>& setting,
-                              std::vector<IntegerSettingOption>& list, int& current)
-                       { DaysFiller(setting, list, current); });
+  setting = AddSpinner(
+      group, SETTING_TMR_FIRST_DAY, 19084, SettingLevel::Basic, GetDateAsIndex(m_firstDayLocalTime),
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { DaysFiller(s, list, current); });
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_FIRST_DAY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_FIRST_DAY);
 
   // "Prevent duplicate episodes" (only for timer rules)
   setting = AddList(
       group, SETTING_TMR_NEW_EPISODES, 812, SettingLevel::Basic, m_iPreventDupEpisodes,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { DupEpisodesFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { DupEpisodesFiller(s, list, current); },
       812);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_NEW_EPISODES);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_NEW_EPISODES);
@@ -401,18 +394,16 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   // Pre and post record time
   setting = AddList(
       group, SETTING_TMR_BEGIN_PRE, 813, SettingLevel::Basic, m_iMarginStart,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { MarginTimeFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { MarginTimeFiller(s, list, current); },
       813);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_BEGIN_PRE);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_BEGIN_PRE);
 
   setting = AddList(
       group, SETTING_TMR_END_POST, 814, SettingLevel::Basic, m_iMarginEnd,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { MarginTimeFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { MarginTimeFiller(s, list, current); },
       814);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_END_POST);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_END_POST);
@@ -420,9 +411,8 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   // Priority
   setting = AddList(
       group, SETTING_TMR_PRIORITY, 19082, SettingLevel::Basic, m_iPriority,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { PrioritiesFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { PrioritiesFiller(s, list, current); },
       19082);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_PRIORITY);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_PRIORITY);
@@ -430,9 +420,8 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   // Lifetime
   setting = AddList(
       group, SETTING_TMR_LIFETIME, 19083, SettingLevel::Basic, m_iLifetime,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { LifetimesFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { LifetimesFiller(s, list, current); },
       19083);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_LIFETIME);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_LIFETIME);
@@ -440,9 +429,8 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   // MaxRecordings
   setting = AddList(
       group, SETTING_TMR_MAX_REC, 818, SettingLevel::Basic, m_iMaxRecordings,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { MaxRecordingsFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { MaxRecordingsFiller(s, list, current); },
       818);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_MAX_REC);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_MAX_REC);
@@ -456,9 +444,8 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   // Recording group
   setting = AddList(
       group, SETTING_TMR_REC_GROUP, 811, SettingLevel::Basic, m_iRecordingGroup,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { RecordingGroupFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { RecordingGroupFiller(s, list, current); },
       811);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_REC_GROUP);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_REC_GROUP);
@@ -473,9 +460,8 @@ void CGUIDialogPVRTimerSettings::AddMultiIntSetting(const std::shared_ptr<CSetti
 {
   const std::shared_ptr<CSetting> setting{AddList(
       group, settingName, 16028, SettingLevel::Basic, settingValue,
-      [this](const std::shared_ptr<const CSetting>& setting,
-             std::vector<IntegerSettingOption>& list, int& current)
-      { CustomIntSettingDefinitionsFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+             int& current) { CustomIntSettingDefinitionsFiller(s, list, current); },
       16028)};
   AddTypeDependentVisibilityCondition(setting, settingName);
   AddTypeDependentEnableCondition(setting, settingName);
@@ -500,9 +486,8 @@ void CGUIDialogPVRTimerSettings::AddMultiStringSetting(const std::shared_ptr<CSe
 {
   const std::shared_ptr<CSetting> setting{AddList(
       group, settingName, 16028, SettingLevel::Basic, settingValue,
-      [this](const std::shared_ptr<const CSetting>& setting, std::vector<StringSettingOption>& list,
-             std::string& current)
-      { CustomStringSettingDefinitionsFiller(setting, list, current); },
+      [this](const std::shared_ptr<const CSetting>& s, std::vector<StringSettingOption>& list,
+             std::string& current) { CustomStringSettingDefinitionsFiller(s, list, current); },
       16028)};
   AddTypeDependentVisibilityCondition(setting, settingName);
   AddTypeDependentEnableCondition(setting, settingName);
@@ -1393,8 +1378,8 @@ void CGUIDialogPVRTimerSettings::AddTypeDependentEnableCondition(
   id.append(TYPE_DEP_ENABLE_COND_ID_POSTFIX);
   AddCondition(
       setting, id,
-      [this](const std::string& condition, const std::string& value, const SettingConstPtr& setting)
-      { return TypeReadOnlyCondition(condition, value, setting); }, SettingDependencyType::Enable,
+      [this](const std::string& condition, const std::string& value, const SettingConstPtr& s)
+      { return TypeReadOnlyCondition(condition, value, s); }, SettingDependencyType::Enable,
       SETTING_TMR_TYPE);
 }
 
@@ -1467,8 +1452,8 @@ void CGUIDialogPVRTimerSettings::AddTypeDependentVisibilityCondition(
   id.append(TYPE_DEP_VISIBI_COND_ID_POSTFIX);
   AddCondition(
       setting, id,
-      [this](const std::string& condition, const std::string& value, const SettingConstPtr& setting)
-      { return TypeSupportsCondition(condition, value, setting); }, SettingDependencyType::Visible,
+      [this](const std::string& condition, const std::string& value, const SettingConstPtr& s)
+      { return TypeSupportsCondition(condition, value, s); }, SettingDependencyType::Visible,
       SETTING_TMR_TYPE);
 }
 
@@ -1549,9 +1534,9 @@ void CGUIDialogPVRTimerSettings::AddStartAnytimeDependentVisibilityCondition(
   id.append(START_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX);
   AddCondition(
       setting, id,
-      [this](const std::string& condition, const std::string& value, const SettingConstPtr& setting)
-      { return StartAnytimeSetCondition(condition, value, setting); },
-      SettingDependencyType::Visible, SETTING_TMR_START_ANYTIME);
+      [this](const std::string& condition, const std::string& value, const SettingConstPtr& s)
+      { return StartAnytimeSetCondition(condition, value, s); }, SettingDependencyType::Visible,
+      SETTING_TMR_START_ANYTIME);
 }
 
 bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string& condition,
@@ -1591,8 +1576,8 @@ void CGUIDialogPVRTimerSettings::AddEndAnytimeDependentVisibilityCondition(
   id.append(END_ANYTIME_DEP_VISIBI_COND_ID_POSTFIX);
   AddCondition(
       setting, id,
-      [this](const std::string& condition, const std::string& value, const SettingConstPtr& setting)
-      { return EndAnytimeSetCondition(condition, value, setting); }, SettingDependencyType::Visible,
+      [this](const std::string& condition, const std::string& value, const SettingConstPtr& s)
+      { return EndAnytimeSetCondition(condition, value, s); }, SettingDependencyType::Visible,
       SETTING_TMR_END_ANYTIME);
 }
 

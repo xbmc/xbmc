@@ -1516,20 +1516,20 @@ PVR_ERROR CPVRClient::GetStreamReadChunkSize(int& iChunkSize) const
       m_clientCapabilities.SupportsRecordings() || m_clientCapabilities.HandlesInputStream());
 }
 
-PVR_ERROR CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize, int& iRead)
+PVR_ERROR CPVRClient::ReadLiveStream(uint8_t* lpBuf, int64_t uiBufSize, int& iRead)
 {
   iRead = -1;
   return DoAddonCall(std::source_location::current().function_name(),
                      [&lpBuf, uiBufSize, &iRead](const AddonInstance* addon)
                      {
-                       iRead = addon->toAddon->ReadLiveStream(
-                           addon, static_cast<unsigned char*>(lpBuf), static_cast<int>(uiBufSize));
+                       iRead = addon->toAddon->ReadLiveStream(addon, lpBuf,
+                                                              static_cast<int>(uiBufSize));
                        return (iRead == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
                      });
 }
 
 PVR_ERROR CPVRClient::ReadRecordedStream(int64_t streamId,
-                                         void* lpBuf,
+                                         uint8_t* lpBuf,
                                          int64_t uiBufSize,
                                          int& iRead)
 {
@@ -1537,9 +1537,8 @@ PVR_ERROR CPVRClient::ReadRecordedStream(int64_t streamId,
   return DoAddonCall(std::source_location::current().function_name(),
                      [streamId, &lpBuf, uiBufSize, &iRead](const AddonInstance* addon)
                      {
-                       iRead = addon->toAddon->ReadRecordedStream(
-                           addon, streamId, static_cast<unsigned char*>(lpBuf),
-                           static_cast<int>(uiBufSize));
+                       iRead = addon->toAddon->ReadRecordedStream(addon, streamId, lpBuf,
+                                                                  static_cast<int>(uiBufSize));
                        return (iRead == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
                      });
 }
@@ -2489,9 +2488,8 @@ void CPVRClient::cb_free_demux_packet(void* kodiInstance, DEMUX_PACKET* pPacket)
 {
   HandleAddonCallback(
       std::source_location::current().function_name(), kodiInstance,
-      [pPacket](const CPVRClient* client)
-      { CDVDDemuxUtils::FreeDemuxPacket(static_cast<DemuxPacket*>(pPacket)); },
-      true);
+      [pPacket](const CPVRClient* /*client*/)
+      { CDVDDemuxUtils::FreeDemuxPacket(static_cast<DemuxPacket*>(pPacket)); }, true);
 }
 
 DEMUX_PACKET* CPVRClient::cb_allocate_demux_packet(void* kodiInstance, int iDataSize)
@@ -2500,9 +2498,8 @@ DEMUX_PACKET* CPVRClient::cb_allocate_demux_packet(void* kodiInstance, int iData
 
   HandleAddonCallback(
       std::source_location::current().function_name(), kodiInstance,
-      [iDataSize, &result](const CPVRClient* client)
-      { result = CDVDDemuxUtils::AllocateDemuxPacket(iDataSize); },
-      true);
+      [iDataSize, &result](const CPVRClient* /*client*/)
+      { result = CDVDDemuxUtils::AllocateDemuxPacket(iDataSize); }, true);
 
   return result;
 }

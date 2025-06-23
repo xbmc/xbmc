@@ -661,7 +661,8 @@ int CGUIEPGGridContainerModel::GetFirstEventBlock(
     diff = (eventStart - m_gridStart).GetSecondsTotal();
 
   // First block of a tag is always the block calculated using event's start time, rounded up.
-  float fBlockIndex = diff / 60.0f / m_minutesPerBlock;
+  const float fBlockIndex =
+      static_cast<float>(diff) / 60.0f / static_cast<float>(m_minutesPerBlock);
   return static_cast<int>(std::ceil(fBlockIndex));
 }
 

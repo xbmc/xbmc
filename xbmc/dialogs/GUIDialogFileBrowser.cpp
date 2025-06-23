@@ -549,10 +549,9 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
       OnEditMediaSource(pItem.get());
       return;
     }
-    if (pItem->IsShareOrDrive())
+    if (pItem->IsShareOrDrive() && !HaveDiscOrConnection(pItem->GetDriveType()))
     {
-      if (!HaveDiscOrConnection(pItem->GetDriveType()))
-        return ;
+      return;
     }
     Update(strPath);
   }

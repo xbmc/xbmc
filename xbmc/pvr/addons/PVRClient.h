@@ -577,7 +577,7 @@ public:
    * @param iRead The amount of bytes that were actually read from the stream.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR ReadLiveStream(void* lpBuf, int64_t uiBufSize, int& iRead);
+  PVR_ERROR ReadLiveStream(uint8_t* lpBuf, int64_t uiBufSize, int& iRead);
 
   /*!
    * @brief Seek in a live stream on a backend.
@@ -697,7 +697,7 @@ public:
    * @param iRead The amount of bytes that were actually read from the stream.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR ReadRecordedStream(int64_t streamId, void* lpBuf, int64_t uiBufSize, int& iRead);
+  PVR_ERROR ReadRecordedStream(int64_t streamId, uint8_t* lpBuf, int64_t uiBufSize, int& iRead);
 
   /*!
    * @brief Seek in a recording stream on a backend.
