@@ -11355,11 +11355,17 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       CDirectory::Create(tvshowsDir);
     }
 
+    // Need this due to query clashes in GetFile/GetPath
+    std::unique_ptr<Dataset> pDS3;
+    pDS3.reset(m_pDB->CreateDataset());
+    if (nullptr == pDS3)
+      return;
+
     progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     // find all movies
     std::string sql = "select * from movie_view";
 
-    m_pDS->query(sql);
+    pDS3->query(sql);
 
     if (progress)
     {
@@ -11372,7 +11378,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       progress->ShowProgressBar(true);
     }
 
-    int total = m_pDS->num_rows();
+    int total = pDS3->num_rows();
     int current = 0;
 
     // create our xml document
@@ -11389,9 +11395,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       XMLUtils::SetInt(pMain,"version", GetExportVersion());
     }
 
-    while (!m_pDS->eof())
+    while (!pDS3->eof())
     {
-      CVideoInfoTag movie = GetDetailsForMovie(*m_pDS, VideoDbDetailsAll);
+      CVideoInfoTag movie = GetDetailsForMovie(*pDS3, VideoDbDetailsAll);
       // strip paths to make them relative
       if (StringUtils::StartsWith(movie.m_strTrailer, movie.m_strPath))
         movie.m_strTrailer = movie.m_strTrailer.substr(movie.m_strPath.size());
@@ -11417,13 +11423,13 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         if (progress->IsCanceled())
         {
           progress->Close();
-          m_pDS->close();
+          pDS3->close();
           return;
         }
       }
 
       CFileItem item(movie.m_strFileNameAndPath,false);
-      std::string singlePath;
+      std::string singlePath{movie.m_strPath};
       if (!singleFile && CUtil::SupportsWriteFileOperations(movie.m_strFileNameAndPath))
       {
         if (!item.Exists(false))
@@ -11434,7 +11440,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         }
         else
         {
-          std::string nfoFile{URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo")};
+          const std::string nfoFile{URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo")};
           singlePath = item.IsOpticalMediaFile() ? URIUtils::GetBasePath(item.GetDynPath())
                                                  : URIUtils::GetDirectory(nfoFile);
 
@@ -11449,7 +11455,6 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               iFailCount++;
             }
           }
-          singlePath = URIUtils::GetDirectory(nfoFile);
         }
       }
       if (!singleFile)
@@ -11476,10 +11481,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         if (actorThumbs)
           ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
       }
-      m_pDS->next();
+      pDS3->next();
       current++;
     }
-    m_pDS->close();
+    pDS3->close();
 
     if (!singleFile)
       movieSetsDir = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
