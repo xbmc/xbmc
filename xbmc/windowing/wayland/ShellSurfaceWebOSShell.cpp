@@ -82,7 +82,7 @@ CShellSurfaceWebOSShell::CShellSurfaceWebOSShell(IShellSurfaceHandler& handler,
     m_handler.OnClose();
   };
 
-  std::string appId = CEnvironment::getenv("APP_ID");
+  std::string appId = CEnvironment::getenv("APPID");
   if (appId.empty())
   {
     appId = CCompileInfo::GetPackage();
