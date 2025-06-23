@@ -125,8 +125,8 @@ msgid "Sort by"
 msgstr "Sort by"
 
 msgctxt "#31023"
-msgid "View type"
-msgstr "View type"
+msgid "Viewtype"
+msgstr ""
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
@@ -312,6 +312,11 @@ msgstr "Cast not available"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Ends at"
+
+#. Label to highlight that live stream is being played
+msgctxt "#31081"
+msgid "Live"
+msgstr ""
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -766,6 +771,10 @@ msgstr "System"
 msgctxt "#31612"
 msgid "channels"
 msgstr ""
+
+#~ msgctxt "#31023"
+#~ msgid "View type"
+#~ msgstr "View type"
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"

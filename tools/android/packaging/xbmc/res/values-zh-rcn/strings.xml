@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">建议</string>
+    <string name="permission_denied">没有权限！！退出…</string>
+    <string name="continue_button">继续</string>
+    <string name="notice_dialog">%1$s 需要访问您的设备媒体和文件才能运行。请通过以下对话框允许访问，否则 %1$s 将退出。</string>
+    <string name="exit_button">退出</string>
+    <string name="clearing_cache">正在清除缓存…</string>
+    <string name="error_title">错误</string>
+    <string name="info_title">信息</string>
+    <string name="asking_permissions">正在请求权限…</string>
+    <string name="waiting_external">正在等待外部存储…</string>
+    <string name="external_ok">外部存储正常…</string>
+    <string name="starting">正在启动 %1$s…</string>
+    <string name="first_run">正在为首次运行做准备。请稍等…</string>
+    <string name="no_find_apk">找不到软件包。</string>
+    <string name="no_read_apk">无法读取软件包。</string>
 </resources>
