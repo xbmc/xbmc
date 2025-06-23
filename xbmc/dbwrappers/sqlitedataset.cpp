@@ -188,7 +188,7 @@ int callback(void* res_ptr, int ncol, char** result, char** cols)
       dbiplus::field_value& v = rec->at(i);
       if (!result[i])
       {
-        v.set_asString("");
+        v.set_asString("", 0);
         v.set_isNull();
       }
       else
@@ -805,7 +805,8 @@ void SqliteDataset::fill_fields()
     {
       (*fields_object)[i].props = result.record_header[i];
       std::string name = result.record_header[i].name;
-      name2indexMap.try_emplace(str_toLower(name.data()), static_cast<unsigned int>(i));
+      StringUtils::ToLower(name);
+      name2indexMap.try_emplace(std::move(name), static_cast<unsigned int>(i));
     }
   }
 
@@ -971,7 +972,7 @@ bool SqliteDataset::query(const std::string& query)
           break;
         case SQLITE_NULL:
         default:
-          v.set_asString("");
+          v.set_asString("", 0);
           v.set_isNull();
           break;
       }

@@ -1752,7 +1752,8 @@ void MysqlDataset::fill_fields()
     {
       (*fields_object)[i].props = result.record_header[i];
       std::string name = result.record_header[i].name;
-      name2indexMap.try_emplace(str_toLower(name.data()), static_cast<unsigned int>(i));
+      StringUtils::ToLower(name);
+      name2indexMap.try_emplace(std::move(name), static_cast<unsigned int>(i));
     }
   }
 
@@ -1965,7 +1966,7 @@ bool MysqlDataset::query(const std::string& query)
         case MYSQL_TYPE_NULL:
         default:
           CLog::Log(LOGDEBUG, "MYSQL: Unknown field type: {}", fields[i].type);
-          v.set_asString("");
+          v.set_asString("", 0);
           v.set_isNull();
           break;
       }
