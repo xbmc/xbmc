@@ -77,6 +77,7 @@ public:
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem& sortable, Field field) const override;
+  int GetDatabaseId() const;
   CRating GetRating(std::string type = "") const;
   const std::string& GetDefaultRating() const;
   std::string GetUniqueID(std::string type = "") const;

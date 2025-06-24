@@ -30,6 +30,201 @@ using namespace KODI;
 
 const std::string CAnnouncementManager::ANNOUNCEMENT_SENDER = "xbmc";
 
+namespace
+{
+
+void CopyPVRTagInfoToObject(const PVR::CPVRChannel& channel, bool copyPlayerId, CVariant& object)
+{
+  auto& objItem = object["item"];
+
+  objItem["type"] = "channel";
+  objItem["title"] = channel.ChannelName();
+  objItem["channeltype"] = channel.IsRadio() ? "radio" : "tv";
+
+  if (copyPlayerId)
+  {
+    object["player"]["playerid"] =
+        static_cast<int>(channel.IsRadio() ? PLAYLIST::Id::TYPE_MUSIC : PLAYLIST::Id::TYPE_VIDEO);
+  }
+
+  objItem["id"] = channel.ChannelID();
+}
+
+void CopyVideoTagInfoToObject(CFileItem& item, CVariant& object)
+{
+  CVideoInfoTag& tag = *item.GetVideoInfoTag();
+
+  auto& objItem = object["item"];
+  int id = tag.GetDatabaseId();
+
+  //! @todo Can be removed once this is properly handled when starting playback of a file
+  if (id <= 0 && !item.GetPath().empty() && item.GetProperty(LOOKUP_PROPERTY).asBoolean(true))
+  {
+    CVideoDatabase videodatabase;
+    if (videodatabase.Open())
+    {
+      std::string videoInfoTagPath = tag.m_strFileNameAndPath;
+      std::string path;
+      if (StringUtils::StartsWith(videoInfoTagPath, "removable://"))
+        path = videoInfoTagPath;
+      else
+        path = item.GetPath();
+      if (videodatabase.LoadVideoInfo(path, tag, VideoDbDetailsNone))
+        id = tag.GetDatabaseId();
+
+      videodatabase.Close();
+    }
+    else
+    {
+      CLog::LogFC(LOGWARNING, LOGANNOUNCE,
+                  "Unable to open video database. Can not load video tag for announcement!");
+    }
+  }
+
+  if (!tag.m_type.empty())
+  {
+    objItem["type"] = tag.m_type;
+  }
+  else
+  {
+    std::string type;
+    CVideoDatabase::VideoContentTypeToString(item.GetVideoContentType(), type);
+    objItem["type"] = type;
+  }
+
+  if (id <= 0)
+  {
+    //! @todo Can be removed once this is properly handled when starting playback of a file
+    item.SetProperty(LOOKUP_PROPERTY, false);
+
+    std::string title = tag.m_strTitle;
+    if (title.empty())
+      title = item.GetLabel();
+    objItem["title"] = title;
+
+    using enum VideoDbContentType;
+    switch (item.GetVideoContentType())
+    {
+      case MOVIES:
+        if (tag.HasYear())
+          objItem["year"] = tag.GetYear();
+        break;
+      case EPISODES:
+        if (tag.m_iEpisode >= 0)
+          objItem["episode"] = tag.m_iEpisode;
+        if (tag.m_iSeason >= 0)
+          objItem["season"] = tag.m_iSeason;
+        if (!tag.m_strShowTitle.empty())
+          objItem["showtitle"] = tag.m_strShowTitle;
+        break;
+      case MUSICVIDEOS:
+        if (!tag.m_strAlbum.empty())
+          objItem["album"] = tag.m_strAlbum;
+        if (!tag.m_artist.empty())
+          objItem["artist"] = StringUtils::Join(tag.m_artist, " / ");
+        break;
+      default:
+        break;
+    }
+  }
+  else
+  {
+    objItem["id"] = id;
+  }
+}
+
+void CopyMusicTagInfoToObject(CFileItem& item, CVariant& object)
+{
+  MUSIC_INFO::CMusicInfoTag& tag = *item.GetMusicInfoTag();
+
+  auto& objItem = object["item"];
+  int id = tag.GetDatabaseId();
+  objItem["type"] = MediaTypeSong;
+
+  //! @todo Can be removed once this is properly handled when starting playback of a file
+  if (id <= 0 && !item.GetPath().empty() && item.GetProperty(LOOKUP_PROPERTY).asBoolean(true))
+  {
+    CMusicDatabase musicdatabase;
+    if (musicdatabase.Open())
+    {
+      CSong song;
+      if (musicdatabase.GetSongByFileName(item.GetPath(), song, item.GetStartOffset()))
+      {
+        tag.SetSong(song);
+        id = tag.GetDatabaseId();
+      }
+
+      musicdatabase.Close();
+    }
+    else
+    {
+      CLog::LogFC(LOGWARNING, LOGANNOUNCE,
+                  "Unable to open music database. Can not load song tag for announcement!");
+    }
+  }
+
+  if (id <= 0)
+  {
+    //! @todo Can be removed once this is properly handled when starting playback of a file
+    item.SetProperty(LOOKUP_PROPERTY, false);
+
+    objItem["title"] = tag.GetTitle();
+    if (objItem["title"].empty())
+      objItem["title"] = item.GetLabel();
+
+    if (tag.GetTrackNumber() > 0)
+      objItem["track"] = tag.GetTrackNumber();
+    if (!tag.GetAlbum().empty())
+      objItem["album"] = tag.GetAlbum();
+    if (!tag.GetArtist().empty())
+      objItem["artist"] = tag.GetArtist();
+  }
+  else
+  {
+    objItem["id"] = id;
+  }
+}
+
+CVariant CreateDataObjectFromItem(CFileItem& item, const CVariant& data)
+{
+  CVariant object;
+  if (data.isNull() || data.isObject())
+    object = data;
+  else
+    object = CVariant::VariantTypeObject;
+
+  if (item.HasPVRChannelInfoTag())
+  {
+    const bool copyPlayerId = data.isMember("player") && data["player"].isMember("playerid");
+    CopyPVRTagInfoToObject(*item.GetPVRChannelInfoTag(), copyPlayerId, object);
+  }
+  else if (item.HasVideoInfoTag() && !item.HasPVRRecordingInfoTag())
+  {
+    CopyVideoTagInfoToObject(item, object);
+  }
+  else if (item.HasMusicInfoTag())
+  {
+    CopyMusicTagInfoToObject(item, object);
+  }
+  else if (VIDEO::IsVideo(item))
+  {
+    // video item but has no video info tag.
+    object["item"]["type"] = "movie";
+    object["item"]["title"] = item.GetLabel();
+  }
+  else if (item.HasPictureInfoTag())
+  {
+    object["item"]["type"] = "picture";
+    object["item"]["file"] = item.GetPath();
+  }
+  else
+    object["item"]["type"] = "unknown";
+
+  return object;
+}
+
+} // unnamed namespace
+
 CAnnouncementManager::CAnnouncementManager() : CThread("Announce")
 {
 }
@@ -149,7 +344,8 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
                                       const std::string& message,
                                       const CVariant& data)
 {
-  CLog::Log(LOGDEBUG, LOGANNOUNCE, "CAnnouncementManager - Announcement: {} from {}", message, sender);
+  CLog::LogFC(LOGWARNING, LOGANNOUNCE, "CAnnouncementManager - Announcement: {} from {}", message,
+              sender);
 
   std::unique_lock lock(m_announcersCritSection);
 
@@ -171,154 +367,9 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
                                       const CVariant& data)
 {
   if (item == nullptr)
-  {
     DoAnnounce(flag, sender, message, data);
-    return;
-  }
-
-  // Extract db id of item
-  CVariant object = data.isNull() || data.isObject() ? data : CVariant::VariantTypeObject;
-  std::string type;
-  int id = 0;
-
-  if(item->HasPVRChannelInfoTag())
-  {
-    const std::shared_ptr<PVR::CPVRChannel> channel(item->GetPVRChannelInfoTag());
-    id = channel->ChannelID();
-    type = "channel";
-
-    object["item"]["title"] = channel->ChannelName();
-    object["item"]["channeltype"] = channel->IsRadio() ? "radio" : "tv";
-
-    if (data.isMember("player") && data["player"].isMember("playerid"))
-    {
-      object["player"]["playerid"] = channel->IsRadio()
-                                         ? static_cast<int>(PLAYLIST::Id::TYPE_MUSIC)
-                                         : static_cast<int>(PLAYLIST::Id::TYPE_VIDEO);
-    }
-  }
-  else if (item->HasVideoInfoTag() && !item->HasPVRRecordingInfoTag())
-  {
-    id = item->GetVideoInfoTag()->m_iDbId;
-
-    //! @todo Can be removed once this is properly handled when starting playback of a file
-    if (id <= 0 && !item->GetPath().empty() &&
-       (!item->HasProperty(LOOKUP_PROPERTY) || item->GetProperty(LOOKUP_PROPERTY).asBoolean()))
-    {
-      CVideoDatabase videodatabase;
-      if (videodatabase.Open())
-      {
-        std::string path = item->GetPath();
-        std::string videoInfoTagPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-        if (StringUtils::StartsWith(videoInfoTagPath, "removable://"))
-          path = videoInfoTagPath;
-        if (videodatabase.LoadVideoInfo(path, *item->GetVideoInfoTag(), VideoDbDetailsNone))
-          id = item->GetVideoInfoTag()->m_iDbId;
-
-        videodatabase.Close();
-      }
-    }
-
-    if (!item->GetVideoInfoTag()->m_type.empty())
-      type = item->GetVideoInfoTag()->m_type;
-    else
-      CVideoDatabase::VideoContentTypeToString(item->GetVideoContentType(), type);
-
-    if (id <= 0)
-    {
-      //! @todo Can be removed once this is properly handled when starting playback of a file
-      item->SetProperty(LOOKUP_PROPERTY, false);
-
-      std::string title = item->GetVideoInfoTag()->m_strTitle;
-      if (title.empty())
-        title = item->GetLabel();
-      object["item"]["title"] = title;
-
-      switch (item->GetVideoContentType())
-      {
-        case VideoDbContentType::MOVIES:
-          if (item->GetVideoInfoTag()->HasYear())
-            object["item"]["year"] = item->GetVideoInfoTag()->GetYear();
-          break;
-        case VideoDbContentType::EPISODES:
-          if (item->GetVideoInfoTag()->m_iEpisode >= 0)
-            object["item"]["episode"] = item->GetVideoInfoTag()->m_iEpisode;
-          if (item->GetVideoInfoTag()->m_iSeason >= 0)
-            object["item"]["season"] = item->GetVideoInfoTag()->m_iSeason;
-          if (!item->GetVideoInfoTag()->m_strShowTitle.empty())
-            object["item"]["showtitle"] = item->GetVideoInfoTag()->m_strShowTitle;
-          break;
-        case VideoDbContentType::MUSICVIDEOS:
-          if (!item->GetVideoInfoTag()->m_strAlbum.empty())
-            object["item"]["album"] = item->GetVideoInfoTag()->m_strAlbum;
-          if (!item->GetVideoInfoTag()->m_artist.empty())
-            object["item"]["artist"] = StringUtils::Join(item->GetVideoInfoTag()->m_artist, " / ");
-          break;
-        default:
-          break;
-      }
-    }
-  }
-  else if (item->HasMusicInfoTag())
-  {
-    id = item->GetMusicInfoTag()->GetDatabaseId();
-    type = MediaTypeSong;
-
-    //! @todo Can be removed once this is properly handled when starting playback of a file
-    if (id <= 0 && !item->GetPath().empty() &&
-       (!item->HasProperty(LOOKUP_PROPERTY) || item->GetProperty(LOOKUP_PROPERTY).asBoolean()))
-    {
-      CMusicDatabase musicdatabase;
-      if (musicdatabase.Open())
-      {
-        CSong song;
-        if (musicdatabase.GetSongByFileName(item->GetPath(), song, item->GetStartOffset()))
-        {
-          item->GetMusicInfoTag()->SetSong(song);
-          id = item->GetMusicInfoTag()->GetDatabaseId();
-        }
-
-        musicdatabase.Close();
-      }
-    }
-
-    if (id <= 0)
-    {
-      //! @todo Can be removed once this is properly handled when starting playback of a file
-      item->SetProperty(LOOKUP_PROPERTY, false);
-
-      std::string title = item->GetMusicInfoTag()->GetTitle();
-      if (title.empty())
-        title = item->GetLabel();
-      object["item"]["title"] = title;
-
-      if (item->GetMusicInfoTag()->GetTrackNumber() > 0)
-        object["item"]["track"] = item->GetMusicInfoTag()->GetTrackNumber();
-      if (!item->GetMusicInfoTag()->GetAlbum().empty())
-        object["item"]["album"] = item->GetMusicInfoTag()->GetAlbum();
-      if (!item->GetMusicInfoTag()->GetArtist().empty())
-        object["item"]["artist"] = item->GetMusicInfoTag()->GetArtist();
-    }
-  }
-  else if (VIDEO::IsVideo(*item))
-  {
-    // video item but has no video info tag.
-    type = "movie";
-    object["item"]["title"] = item->GetLabel();
-  }
-  else if (item->HasPictureInfoTag())
-  {
-    type = "picture";
-    object["item"]["file"] = item->GetPath();
-  }
   else
-    type = "unknown";
-
-  object["item"]["type"] = type;
-  if (id > 0)
-    object["item"]["id"] = id;
-
-  DoAnnounce(flag, sender, message, object);
+    DoAnnounce(flag, sender, message, CreateDataObjectFromItem(*item, data));
 }
 
 void CAnnouncementManager::Process()
