@@ -1727,7 +1727,7 @@ namespace XBMCAddon
       ///
       setUniqueIDs(...);
 #else
-      void setUniqueIDs(const std::map<String, String>& uniqueIDs,
+      void setUniqueIDs(const std::map<String, String, std::less<>>& uniqueIDs,
                         const String& defaultuniqueid = "");
 #endif
 
@@ -2711,7 +2711,7 @@ namespace XBMCAddon
                                  const String& type = "",
                                  bool isDefault = false);
       static void setUniqueIDsRaw(CVideoInfoTag* infoTag,
-                                  std::map<String, String> uniqueIDs,
+                                  std::map<String, String, std::less<>> uniqueIDs,
                                   const String& defaultUniqueID = "");
       static void setYearRaw(CVideoInfoTag* infoTag, int year);
       static void setEpisodeRaw(CVideoInfoTag* infoTag, int episode);
