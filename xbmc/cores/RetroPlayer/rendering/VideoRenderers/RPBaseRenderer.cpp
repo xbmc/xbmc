@@ -119,8 +119,8 @@ void CRPBaseRenderer::RenderFrame(bool clear, uint8_t alpha)
   if (!m_bConfigured || m_renderBuffer == nullptr)
     return;
 
+  PreRender(clear);
   ManageRenderArea(*m_renderBuffer);
-
   RenderInternal(clear, alpha);
   PostRender();
 
@@ -256,15 +256,12 @@ void CRPBaseRenderer::Updateshaders()
 
 void CRPBaseRenderer::PreRender(bool clear)
 {
-  if (!m_bConfigured)
-    return;
+  m_context.CaptureStateBlock();
 
   // Clear screen
   if (clear)
     m_context.Clear(m_context.UseLimitedColor() ? UTILS::COLOR::LIMITED_BLACK
                                                 : UTILS::COLOR::BLACK);
-
-  // ManageRenderArea(*m_renderBuffer);
 }
 
 void CRPBaseRenderer::PostRender()

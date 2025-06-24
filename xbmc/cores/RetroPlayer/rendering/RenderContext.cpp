@@ -61,6 +61,11 @@ void CRenderContext::SetScissors(const CRect& rect)
   m_rendering->SetScissors(rect);
 }
 
+void CRenderContext::CaptureStateBlock()
+{
+  m_rendering->CaptureStateBlock();
+}
+
 void CRenderContext::ApplyStateBlock()
 {
   m_rendering->ApplyStateBlock();

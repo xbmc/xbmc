@@ -506,8 +506,6 @@ void CRPRenderManager::RenderInternal(const std::shared_ptr<CRPBaseRenderer>& re
                                       bool bClear,
                                       uint32_t alpha)
 {
-  renderer->PreRender(bClear);
-
   CSingleExit exitLock(m_renderContext.GraphicsMutex());
 
   if (renderBuffer != nullptr)
