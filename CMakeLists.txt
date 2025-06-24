@@ -146,6 +146,7 @@ if(UNIX)
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
   option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
+  dependent_option(ENABLE_INTERNAL_PYTHON "Enable internal python3?")
 endif()
 
 # System options

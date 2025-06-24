@@ -31,8 +31,6 @@ DEPENDS = \
   libxml2 \
   nettle \
   openssl \
-  python3 \
-  pythonmodule-setuptools \
   sqlite3 \
   tinyxml \
   udfread \
