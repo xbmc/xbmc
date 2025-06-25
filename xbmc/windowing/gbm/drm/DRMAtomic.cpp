@@ -55,6 +55,10 @@ bool CDRMAtomic::SetScalingFilter(CDRMObject* object, const char* name, const ch
 
   uint32_t mar_scale_factor =
       GetScalingFactor(m_width, m_height, m_mode->hdisplay, m_mode->vdisplay);
+  uint32_t diff_w = m_mode->hdisplay - (mar_scale_factor * m_width);
+  uint32_t diff_h = m_mode->vdisplay - (mar_scale_factor * m_height);
+  AddProperty(object, "CRTC_X", (diff_w / 2));
+  AddProperty(object, "CRTC_Y", (diff_h / 2));
   AddProperty(object, "CRTC_W", (mar_scale_factor * m_width));
   AddProperty(object, "CRTC_H", (mar_scale_factor * m_height));
 
@@ -98,15 +102,14 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "SRC_Y", 0);
     AddProperty(m_gui_plane, "SRC_W", m_width << 16);
     AddProperty(m_gui_plane, "SRC_H", m_height << 16);
-    AddProperty(m_gui_plane, "CRTC_X", 0);
-    AddProperty(m_gui_plane, "CRTC_Y", 0);
-    //! @todo: disabled until upstream kernel changes are merged
-    // if (DisplayHardwareScalingEnabled())
-    // {
-    //   SetScalingFilter(m_gui_plane, "SCALING_FILTER", "Nearest Neighbor");
-    // }
-    // else
+    if (DisplayHardwareScalingEnabled())
     {
+      SetScalingFilter(m_gui_plane, "SCALING_FILTER", "Nearest Neighbor");
+    }
+    else
+    {
+      AddProperty(m_gui_plane, "CRTC_X", 0);
+      AddProperty(m_gui_plane, "CRTC_Y", 0);
       AddProperty(m_gui_plane, "CRTC_W", m_mode->hdisplay);
       AddProperty(m_gui_plane, "CRTC_H", m_mode->vdisplay);
     }
@@ -233,13 +236,12 @@ bool CDRMAtomic::InitDrm()
 
   CLog::Log(LOGDEBUG, "CDRMAtomic::{} - initialized atomic DRM", __FUNCTION__);
 
-  //! @todo: disabled until upstream kernel changes are merged
-  // if (m_gui_plane->SupportsProperty("SCALING_FILTER"))
-  // {
-  //   const std::shared_ptr<CSettings> settings =
-  //       CServiceBroker::GetSettingsComponent()->GetSettings();
-  //   settings->GetSetting(SETTING_VIDEOSCREEN_HW_SCALING_FILTER)->SetVisible(true);
-  // }
+  if (m_gui_plane->SupportsProperty("SCALING_FILTER"))
+  {
+    const std::shared_ptr<CSettings> settings =
+        CServiceBroker::GetSettingsComponent()->GetSettings();
+    settings->GetSetting(SETTING_VIDEOSCREEN_HW_SCALING_FILTER)->SetVisible(true);
+  }
 
   return true;
 }
