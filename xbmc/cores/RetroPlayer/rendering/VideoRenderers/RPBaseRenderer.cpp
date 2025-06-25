@@ -175,7 +175,6 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   const float sourceAspectRatio =
       static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
 
-  const SCALINGMETHOD scaleMode = m_renderSettings.VideoSettings().GetScalingMethod();
   const STRETCHMODE stretchMode = m_renderSettings.VideoSettings().GetRenderStretchMode();
   const unsigned int rotationDegCCW =
       (sourceRotationDegCCW + m_renderSettings.VideoSettings().GetRenderRotation()) % 360;
@@ -185,18 +184,7 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   float screenHeight;
   //! @todo screenPixelRatio unused - Possibly due to display integer scaling according to Garbear
   float screenPixelRatio;
-
-  if (scaleMode == SCALINGMETHOD::NEAREST && stretchMode == STRETCHMODE::Original &&
-      m_context.DisplayHardwareScalingEnabled())
-  {
-    screenWidth = sourceWidth;
-    screenHeight = sourceHeight;
-    screenPixelRatio = 1.0;
-  }
-  else
-  {
-    GetScreenDimensions(screenWidth, screenHeight, screenPixelRatio);
-  }
+  GetScreenDimensions(screenWidth, screenHeight, screenPixelRatio);
 
   // Entire target rendering area for the video (including black bars)
   const CRect viewRect = m_context.GetViewWindow();
