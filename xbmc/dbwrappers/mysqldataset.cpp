@@ -224,9 +224,12 @@ int MysqlDatabase::connect(bool create_new)
       //mysql_autocommit(conn, false);
 
       // enforce utf8mb4 charset usage
+      // enforce utf8mb4 charset usage
       default_charset = mysql_character_set_name(conn);
       if (mysql_set_character_set(conn, "utf8mb4")) // returns 0 on success
+      if (mysql_set_character_set(conn, "utf8mb4")) // returns 0 on success
       {
+        CLog::Log(LOGERROR, "Unable to set utf8mb4 charset: {} [{}]({})", db, mysql_errno(conn),
         CLog::Log(LOGERROR, "Unable to set utf8mb4 charset: {} [{}]({})", db, mysql_errno(conn),
                   mysql_error(conn));
       }
