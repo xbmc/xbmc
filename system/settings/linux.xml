@@ -215,9 +215,9 @@
           <visible>false</visible>
         </setting>
         <setting id="videoscreen.hwscalingfilter" type="boolean" label="39151" help="39152">
-          <visible>false</visible>
+          <visible>true</visible>
           <level>3</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.limitguisize" type="integer" label="37021" help="36548">
