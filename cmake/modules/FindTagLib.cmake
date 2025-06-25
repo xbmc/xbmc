@@ -27,7 +27,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(WIN32 OR WINDOWS_STORE)
       set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-cmake-pdb-debug.patch")
       generate_patchcommand("${patches}")
-  
+      unset(patches)
+
       if(WINDOWS_STORE)
         set(EXTRA_ARGS -DPLATFORM_WINRT=ON)
       endif()

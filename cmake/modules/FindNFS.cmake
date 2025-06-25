@@ -23,6 +23,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
       set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE}/01-MSUWP-compat.patch")
       generate_patchcommand("${patches}")
+      unset(patches)
     endif()
 
     BUILD_DEP_TARGET()
