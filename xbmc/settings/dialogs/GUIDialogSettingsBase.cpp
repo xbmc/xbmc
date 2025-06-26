@@ -892,7 +892,7 @@ void CGUIDialogSettingsBase::OnClick(const BaseSettingControlPtr& pSettingContro
 }
 
 void CGUIDialogSettingsBase::UpdateSettingControl(const std::string& settingId,
-                                                  bool updateDisplayOnly /* = false */)
+                                                  bool updateDisplayOnly /* = false */) const
 {
   if (settingId.empty())
     return;

@@ -1702,7 +1702,7 @@ bool CAddonSettings::ParseOldConditionExpression(std::string str, ConditionExpre
 
 void CAddonSettings::FileEnumSettingOptionsFiller(const std::shared_ptr<const CSetting>& setting,
                                                   std::vector<StringSettingOption>& list,
-                                                  std::string& current)
+                                                  std::string& /*current*/)
 {
   if (setting == nullptr)
     return;

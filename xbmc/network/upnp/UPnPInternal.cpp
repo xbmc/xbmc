@@ -1366,7 +1366,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     // if this is an image fill the thumb of the item
     if (StringUtils::StartsWithNoCase(resource.m_ProtocolInfo.GetContentType().GetChars(), "image"))
     {
-      item.SetArt("thumb", std::string(resource.m_Uri));
+      item.SetArt("thumb", std::string_view(resource.m_Uri));
     }
   }
   else

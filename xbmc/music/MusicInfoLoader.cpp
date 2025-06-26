@@ -294,7 +294,7 @@ void CMusicInfoLoader::LoadCache(const std::string& strFileName, CFileItemList& 
   }
 }
 
-void CMusicInfoLoader::SaveCache(const std::string& strFileName, CFileItemList& items)
+void CMusicInfoLoader::SaveCache(const std::string& strFileName, const CFileItemList& items)
 {
   int iSize = items.Size();
 

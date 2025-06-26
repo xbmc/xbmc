@@ -11,6 +11,7 @@
 #include "VideoThumbLoader.h"
 
 #include <string>
+#include <string_view>
 
 class TiXmlNode;
 class TiXmlElement;
@@ -32,18 +33,18 @@ public:
   bool IsEmpty() const;
 
   int GetID() const { return m_id; }
-  void SetID(int id) { m_id = id; }
+  void SetID(int setId) { m_id = setId; }
 
-  void SetOverview(const std::string& overview);
+  void SetOverview(std::string_view overview);
   bool HasOverview() const { return !m_overview.empty(); }
   std::string GetOverview() const { return m_overview; }
   bool GetUpdateSetOverview() const { return m_updateSetOverview; }
 
-  void SetTitle(const std::string& title);
+  void SetTitle(std::string_view title);
   bool HasTitle() const { return !m_title.empty(); }
   std::string GetTitle() const { return m_title; }
 
-  void SetOriginalTitle(const std::string& title);
+  void SetOriginalTitle(std::string_view title);
   bool HasOriginalTitle() const { return !m_originalTitle.empty(); }
   std::string GetOriginalTitle() const { return m_originalTitle; }
 
@@ -55,8 +56,7 @@ public:
   void Copy(const CSetInfoTag& other);
   bool Save(TiXmlNode* node,
             const std::string& tag,
-            bool savePathInfo = true,
-            const TiXmlElement* additionalNode = nullptr);
+            const TiXmlElement* additionalNode = nullptr) const;
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
 
@@ -73,8 +73,7 @@ private:
    See Load for a description of the available tag types.
 
    \param element    the root XML element to parse.
-   \param prioritise whether additive tags should be replaced (or prepended) by the content of the tags, or appended to.
    \sa Load
    */
-  void ParseNative(const TiXmlElement* set, bool prioritise);
+  void ParseNative(const TiXmlElement* set);
 };

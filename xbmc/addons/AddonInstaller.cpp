@@ -558,7 +558,7 @@ bool CAddonInstaller::HasJob(const std::string& ID) const
   return m_downloadJobs.contains(ID);
 }
 
-void CAddonInstaller::PrunePackageCache()
+void CAddonInstaller::PrunePackageCache() const
 {
   std::map<std::string, std::unique_ptr<CFileItemList>, std::less<>> packs;
   int64_t size = EnumeratePackageFolder(packs);
@@ -1157,7 +1157,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
   }
 
   SetText(g_localizeStrings.Get(24086));
-  SetProgress(100.0f * (totalSteps - 1.0f) / totalSteps);
+  SetProgress(100.0f * (static_cast<float>(totalSteps) - 1.0f) / static_cast<float>(totalSteps));
 
   CFilesystemInstaller fsInstaller;
   if (!fsInstaller.InstallToFilesystem(installFrom, m_addon->ID()))

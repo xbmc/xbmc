@@ -65,14 +65,14 @@ public:
   bool CanFocus() const override { return false; }
   bool CanFocusFromPoint(const CPoint& point) const override;
 
-  std::string Name();
+  std::string Name() const;
   void UpdateTrack();
-  bool HasPresets();
+  bool HasPresets() const;
   void SetPreset(int idx);
-  bool IsLocked();
-  int GetActivePreset();
-  std::string GetActivePresetName();
-  bool GetPresetList(std::vector<std::string>& vecpresets);
+  bool IsLocked() const;
+  int GetActivePreset() const;
+  std::string GetActivePresetName() const;
+  bool GetPresetList(std::vector<std::string>& vecpresets) const;
 
 private:
   bool InitVisualization();

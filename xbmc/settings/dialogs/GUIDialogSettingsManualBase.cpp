@@ -93,7 +93,7 @@ SettingGroupPtr CGUIDialogSettingsManualBase::AddGroup(const SettingCategoryPtr&
                                                        int label /* = -1 */,
                                                        int help /* = -1 */,
                                                        bool separatorBelowLabel /* = true */,
-                                                       bool hideSeparator /* = false */)
+                                                       bool hideSeparator /* = false */) const
 {
   if (!category)
     return nullptr;

@@ -65,7 +65,7 @@ private:
   void GetSources(const tinyxml2::XMLNode* rootElement,
                   const std::string& tagName,
                   std::vector<CMediaSource>& items,
-                  std::string& defaultString);
+                  std::string& defaultString) const;
   bool SetSources(tinyxml2::XMLNode* rootNode,
                   const char* section,
                   const std::vector<CMediaSource>& shares,

@@ -233,7 +233,7 @@ private:
    */
   bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database, std::pair<std::string, std::string> &failedDep);
 
-  void PrunePackageCache();
+  void PrunePackageCache() const;
 
   mutable CCriticalSection m_critSection;
   JobMap m_downloadJobs;

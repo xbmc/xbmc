@@ -208,7 +208,7 @@ bool GetIntegerOptions(const SettingConstPtr& setting,
 bool GetStringOptions(const SettingConstPtr& setting,
                       StringSettingOptions& options,
                       std::set<std::string>& selectedOptions,
-                      ILocalizer* localizer,
+                      const ILocalizer* localizer,
                       bool updateOptions)
 {
   std::shared_ptr<const CSettingString> pSettingString;
@@ -1163,7 +1163,7 @@ void CGUIControlButtonSetting::Update(bool fromControl, bool updateDisplayOnly)
 }
 
 bool CGUIControlButtonSetting::GetPath(const std::shared_ptr<CSettingPath>& pathSetting,
-                                       ILocalizer* localizer)
+                                       const ILocalizer* localizer)
 {
   if (!pathSetting)
     return false;
@@ -1486,7 +1486,7 @@ std::string CGUIControlSliderSetting::GetText(const std::shared_ptr<CSetting>& s
                                               const CVariant& minimum,
                                               const CVariant& step,
                                               const CVariant& maximum,
-                                              ILocalizer* localizer)
+                                              const ILocalizer* localizer)
 {
   if (!setting || !(value.isInteger() || value.isDouble()))
     return "";

@@ -655,7 +655,7 @@ int CSkinInfo::TranslateString(const std::string &setting)
   auto skinString = std::make_shared<CSkinSettingString>();
   skinString->name = setting;
 
-  const int number = static_cast<int>(m_bools.size() + m_strings.size());
+  const auto number = static_cast<int>(m_bools.size() + m_strings.size());
   m_strings.try_emplace(number, skinString);
 
   return number;
@@ -709,7 +709,7 @@ int CSkinInfo::TranslateBool(const std::string &setting)
   auto skinBool = std::make_shared<CSkinSettingBool>();
   skinBool->name = setting;
 
-  const int number = static_cast<int>(m_bools.size() + m_strings.size());
+  const auto number = static_cast<int>(m_bools.size() + m_strings.size());
   m_bools.try_emplace(number, skinBool);
   m_settingsUpdateHandler->TriggerSave();
 
@@ -835,14 +835,9 @@ CSkinSettingPtr CSkinInfo::ParseSetting(const TiXmlElement* element)
     setting = std::make_shared<CSkinSettingString>();
   else if (settingType == "bool")
     setting = std::make_shared<CSkinSettingBool>();
-  else
-    return setting;
 
-  if (setting == nullptr)
-    return setting;
-
-  if (!setting->Deserialize(element))
-    return setting;
+  if (setting)
+    setting->Deserialize(element);
 
   return setting;
 }

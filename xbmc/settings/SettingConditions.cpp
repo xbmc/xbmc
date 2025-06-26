@@ -53,9 +53,9 @@ bool AddonHasSettings(const std::string& condition,
   return addon->CanHaveAddonOrInstanceSettings();
 }
 
-bool CheckMasterLock(const std::string& condition,
+bool CheckMasterLock(const std::string& /*condition*/,
                      const std::string& value,
-                     const SettingConstPtr& setting)
+                     const SettingConstPtr& /*setting*/)
 {
   return g_passwordManager.IsMasterLockUnlocked(StringUtils::EqualsNoCase(value, "true"));
 }

@@ -659,7 +659,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       tag.m_strPictureURL.Parse();
       for (const auto& url : tag.m_strPictureURL.GetUrls())
         if (StringUtils::StartsWith(url.m_aspect, "set."))
-          movieSetArt.insert({url.m_aspect.substr(4), url.m_url});
+          movieSetArt.try_emplace(url.m_aspect.substr(4), url.m_url);
     }
     if (!movieSetArt.empty())
       tag.m_set.SetArt(movieSetArt);
@@ -667,7 +667,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return setUpdated;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items,
+  bool CVideoInfoScanner::RetrieveVideoInfo(const CFileItemList& items,
                                             bool bDirNames,
                                             ContentType content,
                                             bool useLocal,
@@ -1167,10 +1167,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
           loader.GetArtwork(showInfo);
         }
         GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !item->IsPlugin());
-        for (auto i = seasonArt.begin(); i != seasonArt.end(); ++i)
+        for (const auto& [name, art] : seasonArt)
         {
-          int seasonID = m_database.AddSeason(showID, i->first);
-          m_database.SetArtForItem(seasonID, MediaTypeSeason, i->second);
+          int seasonID = m_database.AddSeason(showID, name);
+          m_database.SetArtForItem(seasonID, MediaTypeSeason, art);
         }
       }
     }
@@ -1712,21 +1712,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return false;
   }
 
-  bool CVideoInfoScanner::AddSet(CSetInfoTag* set)
+  bool CVideoInfoScanner::AddSet(const CSetInfoTag& set)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
       return false;
 
-    CLog::LogF(LOGDEBUG, "Adding new set {}", set->GetTitle());
+    CLog::LogF(LOGDEBUG, "Adding new set {}", set.GetTitle());
 
     // Create set
-    const int idSet{
-        m_database.AddSet(set->GetTitle(), set->GetOverview(), set->GetOriginalTitle())};
+    const int idSet{m_database.AddSet(set.GetTitle(), set.GetOverview(), set.GetOriginalTitle())};
 
     // Assume art in set
     if (idSet > 0)
-      return m_database.SetArtForItem(idSet, MediaTypeVideoCollection, set->GetArt());
+      return m_database.SetArtForItem(idSet, MediaTypeVideoCollection, set.GetArt());
+
     return false;
   }
 

@@ -932,9 +932,9 @@ void CDisplaySettings::SettingOptionsCmsModesFiller(const SettingConstPtr& /*set
 #endif
 }
 
-void CDisplaySettings::SettingOptionsCmsWhitepointsFiller(const SettingConstPtr& setting,
+void CDisplaySettings::SettingOptionsCmsWhitepointsFiller(const SettingConstPtr& /*setting*/,
                                                           std::vector<IntegerSettingOption>& list,
-                                                          int& current)
+                                                          int& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(36586), CMS_WHITEPOINT_D65);
   list.emplace_back(g_localizeStrings.Get(36587), CMS_WHITEPOINT_D93);

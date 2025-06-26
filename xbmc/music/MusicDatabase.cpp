@@ -1720,7 +1720,7 @@ int CMusicDatabase::AddGenre(std::string& strGenre)
                           strGenre.c_str());
       m_pDS->exec(strSQL);
 
-      const int idGenre = static_cast<int>(m_pDS->lastinsertid());
+      const auto idGenre = static_cast<int>(m_pDS->lastinsertid());
       m_genreCache.try_emplace(strGenre, idGenre);
       return idGenre;
     }
@@ -3238,7 +3238,7 @@ void CMusicDatabase::GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredit
 
 CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS,
                                            int offset /* = 0 */,
-                                           bool imageURL /* = false*/)
+                                           bool imageURL /* = false*/) const
 {
   return GetAlbumFromDataset(pDS->get_sql_record(), offset, imageURL);
 }
@@ -3321,7 +3321,7 @@ CMusicRole CMusicDatabase::GetArtistRoleFromDataset(const dbiplus::sql_record* c
 
 CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS,
                                              int offset /* = 0 */,
-                                             bool needThumb /* = true */)
+                                             bool needThumb /* = true */) const
 {
   return GetArtistFromDataset(pDS->get_sql_record(), offset, needThumb);
 }
@@ -8411,7 +8411,7 @@ std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField) con
 std::string CMusicDatabase::SortnameBuildSQL(const std::string& strAlias,
                                              const SortAttribute& sortAttributes,
                                              const std::string& strField,
-                                             const std::string& strSortField)
+                                             const std::string& strSortField) const
 {
   /*
   Build SQL for sort name scalar subquery from sort attributes and ignore article list.
@@ -11161,7 +11161,7 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
   return false;
 }
 
-std::string CMusicDatabase::GetAlbumDiscTitle(int idAlbum, int idDisc)
+std::string CMusicDatabase::GetAlbumDiscTitle(int idAlbum, int idDisc) const
 {
   // Get disc node title from ids allowing for "*all"
   std::string disctitle;
@@ -11849,7 +11849,7 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
   return false;
 }
 
-std::string CMusicDatabase::GetItemById(const std::string& itemType, int id)
+std::string CMusicDatabase::GetItemById(const std::string& itemType, int id) const
 {
   if (StringUtils::EqualsNoCase(itemType, "genres"))
     return GetGenreById(id);

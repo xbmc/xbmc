@@ -449,7 +449,7 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
 void CMediaSourceSettings::GetSources(const tinyxml2::XMLNode* rootElement,
                                       const std::string& tagName,
                                       std::vector<CMediaSource>& items,
-                                      std::string& defaultString)
+                                      std::string& defaultString) const
 {
 
   defaultString = "";

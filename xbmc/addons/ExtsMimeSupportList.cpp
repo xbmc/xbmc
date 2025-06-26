@@ -104,7 +104,7 @@ CExtsMimeSupportList::SupportValues CExtsMimeSupportList::ScanAddonProperties(
     // `<extension name=".zwdsp">`
     // `  <description>30246</description>`
     // `</extension>`
-    for (const auto& [type, addonExtensions] : support->GetElements())
+    for (const auto& [extensionType, addonExtensions] : support->GetElements())
     {
       std::string name = addonExtensions.GetValue("@name").asString();
       if (name.empty())
@@ -117,18 +117,18 @@ CExtsMimeSupportList::SupportValues CExtsMimeSupportList::ScanAddonProperties(
                                           addonExtensions.GetValue("icon").asString())
               : "";
 
-      if (type == "extension")
+      if (extensionType == "extension")
       {
         if (name[0] != '.')
           name.insert(name.begin(), '.');
-        values.m_supportedExtensions.try_emplace(name, SupportValue(description, icon));
+        values.m_supportedExtensions.try_emplace(name, description, icon);
       }
-      else if (type == "mimetype")
+      else if (extensionType == "mimetype")
       {
-        values.m_supportedMimetypes.try_emplace(name, SupportValue(description, icon));
+        values.m_supportedMimetypes.try_emplace(name, description, icon);
         const std::string extension = addonExtensions.GetValue("extension").asString();
         if (!extension.empty())
-          values.m_supportedExtensions.try_emplace(extension, SupportValue(description, icon));
+          values.m_supportedExtensions.try_emplace(extension, description, icon);
       }
     }
 
@@ -143,10 +143,10 @@ CExtsMimeSupportList::SupportValues CExtsMimeSupportList::ScanAddonProperties(
         {
           if (name[0] != '.')
             name.insert(name.begin(), '.');
-          values.m_supportedExtensions.try_emplace(name, SupportValue(-1, ""));
+          values.m_supportedExtensions.try_emplace(name, -1, "");
         }
         else if (extName == "mimetype@name")
-          values.m_supportedMimetypes.try_emplace(name, SupportValue(-1, ""));
+          values.m_supportedMimetypes.try_emplace(name, -1, "");
       }
     }
   }
@@ -155,7 +155,7 @@ CExtsMimeSupportList::SupportValues CExtsMimeSupportList::ScanAddonProperties(
   // By them addon no more need to add itself on his addon.xml
   if (values.m_hasTracks)
     values.m_supportedExtensions.try_emplace(
-        "." + values.m_codecName + KODI_ADDON_AUDIODECODER_TRACK_EXT, SupportValue(-1, ""));
+        "." + values.m_codecName + KODI_ADDON_AUDIODECODER_TRACK_EXT, -1, "");
 
   return values;
 }
@@ -257,8 +257,7 @@ std::vector<AddonSupportEntry> CExtsMimeSupportList::GetSupportedExtsAndMimeType
 {
   std::vector<AddonSupportEntry> list;
 
-  const auto it = std::ranges::find_if(m_supportedList.begin(), m_supportedList.end(),
-                                       [&addonId](const SupportValues& v)
+  const auto it = std::ranges::find_if(m_supportedList, [&addonId](const SupportValues& v)
                                        { return v.m_addonInfo->ID() == addonId; });
   if (it == m_supportedList.end())
     return list;

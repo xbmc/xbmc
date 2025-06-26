@@ -23,17 +23,17 @@ void CSetInfoTag::Reset()
   m_art.clear();
 }
 
-bool CSetInfoTag::Load(const TiXmlElement* element, bool append, bool prioritise)
+bool CSetInfoTag::Load(const TiXmlElement* element, bool append, bool /*prioritise*/)
 {
   if (!element)
     return false;
   if (!append)
     Reset();
-  ParseNative(element, prioritise);
+  ParseNative(element);
   return true;
 }
 
-void CSetInfoTag::ParseNative(const TiXmlElement* set, bool prioritise)
+void CSetInfoTag::ParseNative(const TiXmlElement* set)
 {
   std::string value;
 
@@ -52,24 +52,24 @@ void CSetInfoTag::ParseNative(const TiXmlElement* set, bool prioritise)
       std::string type{picture->ValueStr()};
       std::string url{picture->GetText()};
       if (!type.empty() && !url.empty())
-        m_art.insert({type, url});
+        m_art.try_emplace(type, url);
     }
 }
 
-void CSetInfoTag::SetOverview(const std::string& overview)
+void CSetInfoTag::SetOverview(std::string_view overview)
 {
   m_overview = overview;
   m_overview = StringUtils::Trim(m_overview);
   m_updateSetOverview = true;
 }
 
-void CSetInfoTag::SetTitle(const std::string& title)
+void CSetInfoTag::SetTitle(std::string_view title)
 {
   m_title = title;
   m_title = StringUtils::Trim(m_title);
 }
 
-void CSetInfoTag::SetOriginalTitle(const std::string& title)
+void CSetInfoTag::SetOriginalTitle(std::string_view title)
 {
   m_originalTitle = title;
 }
@@ -104,8 +104,7 @@ void CSetInfoTag::Copy(const CSetInfoTag& other)
 
 bool CSetInfoTag::Save(TiXmlNode* node,
                        const std::string& tag,
-                       bool savePathInfo,
-                       const TiXmlElement* additionalNode /* =nullptr */)
+                       const TiXmlElement* additionalNode /* =nullptr */) const
 {
   if (!node)
     return false;
@@ -125,7 +124,7 @@ bool CSetInfoTag::Save(TiXmlNode* node,
   if (HasArt())
   {
     TiXmlElement art("art");
-    for (auto& [type, url] : m_art)
+    for (const auto& [type, url] : m_art)
     {
       XMLUtils::SetString(&art, type.c_str(), url);
     }

@@ -82,7 +82,7 @@ CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationContro
   ControlType = GUICONTROL_VISUALISATION;
 }
 
-std::string CGUIVisualisationControl::Name()
+std::string CGUIVisualisationControl::Name() const
 {
   if (m_instance == nullptr)
     return "";
@@ -309,7 +309,7 @@ void CGUIVisualisationControl::UpdateTrack()
   m_instance->UpdateTrack(&track);
 }
 
-bool CGUIVisualisationControl::IsLocked()
+bool CGUIVisualisationControl::IsLocked() const
 {
   if (m_instance && m_alreadyStarted)
     return m_instance->IsLocked();
@@ -317,7 +317,7 @@ bool CGUIVisualisationControl::IsLocked()
   return false;
 }
 
-bool CGUIVisualisationControl::HasPresets()
+bool CGUIVisualisationControl::HasPresets() const
 {
   if (m_instance && m_alreadyStarted)
     return m_instance->HasPresets();
@@ -325,7 +325,7 @@ bool CGUIVisualisationControl::HasPresets()
   return false;
 }
 
-int CGUIVisualisationControl::GetActivePreset()
+int CGUIVisualisationControl::GetActivePreset() const
 {
   if (m_instance && m_alreadyStarted)
     return m_instance->GetActivePreset();
@@ -339,7 +339,7 @@ void CGUIVisualisationControl::SetPreset(int idx)
     m_instance->LoadPreset(idx);
 }
 
-std::string CGUIVisualisationControl::GetActivePresetName()
+std::string CGUIVisualisationControl::GetActivePresetName() const
 {
   if (m_instance && m_alreadyStarted)
     return m_instance->GetActivePresetName();
@@ -347,7 +347,7 @@ std::string CGUIVisualisationControl::GetActivePresetName()
   return "";
 }
 
-bool CGUIVisualisationControl::GetPresetList(std::vector<std::string>& vecpresets)
+bool CGUIVisualisationControl::GetPresetList(std::vector<std::string>& vecpresets) const
 {
   if (m_instance && m_alreadyStarted)
     return m_instance->GetPresetList(vecpresets);

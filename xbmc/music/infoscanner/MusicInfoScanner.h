@@ -51,7 +51,9 @@ public:
    \param songs [in/out] list of songs to categorise - albumartist field may be altered.
    \param albums [out] albums found within these songs.
    */
-  static void FileItemsToAlbums(CFileItemList& items, VECALBUMS& albums, MAPSONGS* songsMap = NULL);
+  static void FileItemsToAlbums(const CFileItemList& items,
+                                VECALBUMS& albums,
+                                MAPSONGS* songsMap = nullptr);
 
   /*! \brief Scrape additional album information and update the music database with it.
   Given an album, search for it using the given scraper.

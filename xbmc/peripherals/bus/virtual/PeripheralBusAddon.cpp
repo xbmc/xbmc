@@ -479,9 +479,8 @@ void CPeripheralBusAddon::PromptEnableAddons(
   // True if the user confirms enabling the disabled peripheral add-on
   bool bAccepted = false;
 
-  auto itAddon =
-      std::find_if(disabledAddons.begin(), disabledAddons.end(), [](const AddonInfoPtr& addonInfo)
-                   { return CPeripheralAddon::ProvidesJoysticks(addonInfo); });
+  auto itAddon = std::ranges::find_if(disabledAddons, [](const AddonInfoPtr& addonInfo)
+                                      { return CPeripheralAddon::ProvidesJoysticks(addonInfo); });
 
   if (itAddon != disabledAddons.end())
   {

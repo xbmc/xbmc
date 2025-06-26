@@ -228,7 +228,8 @@ public:
   bool OnClick() override;
   void Clear() override { m_pButton = nullptr; }
 
-  static bool GetPath(const std::shared_ptr<CSettingPath>& pathSetting, ILocalizer* localizer);
+  static bool GetPath(const std::shared_ptr<CSettingPath>& pathSetting,
+                      const ILocalizer* localizer);
 
 protected:
   // specialization of CGUIControlBaseSetting
@@ -282,7 +283,7 @@ public:
                              const CVariant& minimum,
                              const CVariant& step,
                              const CVariant& maximum,
-                             ILocalizer* localizer);
+                             const ILocalizer* localizer);
 
 protected:
   // specialization of CGUIControlBaseSetting

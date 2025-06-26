@@ -644,7 +644,7 @@ public:
 
   int SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork);
   int SetDetailsForItem(int id,
-                        const MediaType& mediaType,
+                        MediaType_view mediaType,
                         CVideoInfoTag& details,
                         const KODI::ART::Artwork& artwork);
 
@@ -1343,7 +1343,7 @@ protected:
    \param show the details of the show to check for.
    \return the show id if found, else -1.
    */
-  int GetMatchingTvShow(const CVideoInfoTag &show);
+  int GetMatchingTvShow(const CVideoInfoTag& show) const;
 
   // link functions - these two do all the work
   void AddLinkToActor(int mediaId, const char *mediaType, int actorId, const std::string &role, int order);
@@ -1375,8 +1375,8 @@ protected:
   CVideoInfoTag GetDetailsForTvShow(const dbiplus::sql_record* const record,
                                     int getDetails = VideoDbDetailsNone,
                                     CFileItem* item = nullptr);
-  CVideoInfoTag GetBasicDetailsForEpisode(dbiplus::Dataset& pDS);
-  CVideoInfoTag GetBasicDetailsForEpisode(const dbiplus::sql_record* const record);
+  CVideoInfoTag GetBasicDetailsForEpisode(dbiplus::Dataset& pDS) const;
+  CVideoInfoTag GetBasicDetailsForEpisode(const dbiplus::sql_record* const record) const;
   CVideoInfoTag GetDetailsForEpisode(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForEpisode(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForMusicVideo(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
@@ -1411,7 +1411,7 @@ protected:
                         int max,
                         const T& offsets,
                         CSetInfoTag& details,
-                        int idxOffset);
+                        int idxOffset) const;
 
   template<typename T>
   std::string GetValueString(const CVideoInfoTag& details,

@@ -25,7 +25,7 @@ class ISetInfoTagLoader
 public:
   //! \brief Constructor
   //! \param title The title of the set to load info for
-  ISetInfoTagLoader(const std::string title) : m_title(title) {}
+  explicit ISetInfoTagLoader(const std::string& title) : m_title(title) {}
   virtual ~ISetInfoTagLoader() = default;
 
   //! \brief Returns true if we have info to provide.

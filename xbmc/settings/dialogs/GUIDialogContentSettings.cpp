@@ -228,7 +228,7 @@ void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSet
         return;
 
       const auto& [_, selected] = labels.at(newSelected);
-      m_content = static_cast<ContentType>(selected);
+      m_content = selected;
 
       AddonPtr scraperAddon;
       if (!CAddonSystemSettings::GetInstance().GetActive(ADDON::ScraperTypeFromContent(m_content),
