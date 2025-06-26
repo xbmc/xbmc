@@ -189,8 +189,7 @@ struct CVaapiConfig
   VADisplay dpy;
   VAProfile profile;
   VAConfigAttrib attrib;
-  CProcessInfo *processInfo;
-  bool driverIsMesa;
+  CProcessInfo* processInfo;
   int bitDepth;
 };
 
