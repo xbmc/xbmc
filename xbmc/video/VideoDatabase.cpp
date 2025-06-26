@@ -7128,8 +7128,8 @@ CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const C
 
     m_pDS->exec(strSQL);
 
-    // We only need to announce changes to video items in the library
-    if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
+    if (item.HasVideoInfoTag() &&
+        (item.GetVideoInfoTag()->m_iDbId > 0 || !item.GetVideoInfoTag()->GetUniqueID().empty()))
     {
       CVariant data;
       if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
