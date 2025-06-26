@@ -26,6 +26,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Artwork.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -107,7 +108,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   do
   {
     std::unique_ptr<CVideoInfoTag> pluginTag;
-    std::unique_ptr<CGUIListItem::ArtMap> pluginArt;
+    std::unique_ptr<KODI::ART::Artwork> pluginArt;
 
     if (!ignoreNfo)
     {
@@ -132,7 +133,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
             scraper->ID() == "metadata.local")
         {
           // get video info and art from plugin source with metadata.local scraper
-          if (scraper->Content() == CONTENT_TVSHOWS && !m_item->m_bIsFolder && tag->m_iIdShow < 0)
+          if (scraper->Content() == CONTENT_TVSHOWS && !m_item->IsFolder() && tag->m_iIdShow < 0)
             // preserve show_id for episode
             tag->m_iIdShow = m_item->GetVideoInfoTag()->m_iIdShow;
           pluginTag = std::move(tag);
@@ -158,7 +159,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         if (scraper->Content() == CONTENT_MOVIES)
           heading = 13346;
         else if (scraper->Content() == CONTENT_TVSHOWS)
-          heading = m_item->m_bIsFolder ? 20351 : 20352;
+          heading = m_item->IsFolder() ? 20351 : 20352;
         else if (scraper->Content() == CONTENT_MUSICVIDEOS)
           heading = 20393;
         if (CGUIDialogYesNo::ShowAndGetInput(heading, 20446))
@@ -172,7 +173,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     }
 
     // no need to re-fetch the episode guide for episodes
-    if (scraper->Content() == CONTENT_TVSHOWS && !m_item->m_bIsFolder)
+    if (scraper->Content() == CONTENT_TVSHOWS && !m_item->IsFolder())
       hasDetails = true;
 
     // if we don't have an url or need to refresh anyway do the web search
@@ -193,8 +194,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       {
         CFileItemList items;
         items.Add(m_item);
-        items.SetPath(m_item->m_bIsFolder ? URIUtils::GetParentPath(m_item->GetPath())
-                                          : URIUtils::GetDirectory(m_item->GetPath()));
+        items.SetPath(m_item->IsFolder() ? URIUtils::GetParentPath(m_item->GetPath())
+                                         : URIUtils::GetDirectory(m_item->GetPath()));
         VIDEO::CVideoInfoScanner scanner;
         if (scanner.RetrieveVideoInfo(items, scanSettings.parent_name, scraper->Content(),
                                       !ignoreNfo, nullptr, m_refreshAll, GetProgressDialog()))
@@ -319,12 +320,13 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       items.Add(std::make_shared<CFileItem>(*m_item));
 
     // set the proper path of the list of items to lookup
-    items.SetPath(m_item->m_bIsFolder ? URIUtils::GetParentPath(path) : URIUtils::GetDirectory(path));
+    items.SetPath(m_item->IsFolder() ? URIUtils::GetParentPath(path)
+                                     : URIUtils::GetDirectory(path));
 
     int headingLabel = 198;
     if (scraper->Content() == CONTENT_TVSHOWS)
     {
-      if (m_item->m_bIsFolder)
+      if (m_item->IsFolder())
         headingLabel = 20353;
       else
         headingLabel = 20361;
@@ -349,7 +351,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         db.DeleteMusicVideo(origDbId);
       else if (scraper->Content() == CONTENT_TVSHOWS)
       {
-        if (!m_item->m_bIsFolder)
+        if (!m_item->IsFolder())
           db.DeleteEpisode(origDbId);
         else if (m_item->GetVideoInfoTag()->m_type == MediaTypeSeason)
           db.DeleteSeason(origDbId);
@@ -397,7 +399,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     else if (scraper->Content() == CONTENT_TVSHOWS)
     {
       // update tvshow/season info to get updated episode numbers
-      if (m_item->m_bIsFolder)
+      if (m_item->IsFolder())
       {
         // Note: don't use any database ids (m_iDbId, m_idSeason, m_IdShow) of m_item's video
         // info tag here. The db information might have been deleted and recreated afterwards,

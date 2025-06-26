@@ -30,6 +30,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 
 using namespace KODI;
@@ -339,13 +340,13 @@ void CGUIDialogSongInfo::OnGetArt()
     return; // Cancelled
 
   CFileItemList items;
-  CGUIListItem::ArtMap primeArt = m_song->GetArt(); // Song art without fallbacks
+  KODI::ART::Artwork primeArt = m_song->GetArt(); // Song art without fallbacks
   bool bHasArt = m_song->HasArt(type);
   bool bFallback(false);
   if (bHasArt)
   {
     // Check if that type of art is actually a fallback, e.g. album thumb or artist fanart
-    CGUIListItem::ArtMap::const_iterator i = primeArt.find(type);
+    auto i = primeArt.find(type);
     bFallback = (i == primeArt.end());
   }
 
@@ -361,7 +362,7 @@ void CGUIDialogSongInfo::OnGetArt()
   }
   else if (m_song->HasArt("thumb"))
   { // For missing art of that type add the thumb (when it exists and not a fallback)
-    CGUIListItem::ArtMap::const_iterator i = primeArt.find("thumb");
+    auto i = primeArt.find("thumb");
     if (i != primeArt.end())
     {
       CFileItemPtr item(new CFileItem("thumb://Thumb", false));
@@ -491,7 +492,7 @@ void CGUIDialogSongInfo::OnSetUserrating()
 
 void CGUIDialogSongInfo::ShowFor(CFileItem* pItem)
 {
-  if (pItem->m_bIsFolder)
+  if (pItem->IsFolder())
     return;
   if (!MUSIC::IsMusicDb(*pItem))
     pItem->LoadMusicTag();

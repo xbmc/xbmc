@@ -4884,7 +4884,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     std::map<uint32_t, std::string> mapCDDBIds;
     for (int i = 0; i < items.Size(); ++i)
     {
-      if (items[i]->m_bIsFolder)
+      if (items[i]->IsFolder())
         continue;
 
       std::string strFile = URIUtils::GetFileName(items[i]->GetPath());
@@ -5059,7 +5059,7 @@ bool CMusicDatabase::GetGenresNav(const std::string& strBaseDir,
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -5177,7 +5177,7 @@ bool CMusicDatabase::GetSourcesNav(const std::string& strBaseDir,
       itemUrl.AddOption("sourceid", m_pDS->fv("source.idSource").get_asInt());
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -5260,7 +5260,7 @@ bool CMusicDatabase::GetYearsNav(const std::string& strBaseDir,
         itemUrl.AddOption("useoriginalyear", true);
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -5326,7 +5326,7 @@ bool CMusicDatabase::GetRolesNav(const std::string& strBaseDir,
       itemUrl.AddOption("roleid", m_pDS->fv("role.idRole").get_asInt());
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -5428,7 +5428,7 @@ bool CMusicDatabase::GetCommonNav(const std::string& strBaseDir,
       itemUrl.AppendPath(strDir);
       pItem->SetPath(itemUrl.ToString());
 
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
 
       m_pDS->next();
@@ -10404,7 +10404,7 @@ bool CMusicDatabase::GetSources(CFileItemList& items)
         // Set item path as source URL encoded multipath too
         pItem->SetPath(m_pDS->fv("source.strMultiPath").get_asString());
 
-        pItem->m_bIsFolder = true;
+        pItem->SetFolder(true);
         items.Add(pItem);
       }
       // Get path data
@@ -11130,7 +11130,7 @@ bool CMusicDatabase::GetGenresJSON(CFileItemList& items, bool bSources)
         pItem->GetMusicInfoTag()->SetGenre(strGenre);
         pItem->GetMusicInfoTag()->SetDatabaseId(idGenre, "genre");
         pItem->SetPath(StringUtils::Format("musicdb://genres/{}/", idGenre));
-        pItem->m_bIsFolder = true;
+        pItem->SetFolder(true);
         items.Add(pItem);
       }
       // Get source data
@@ -12052,7 +12052,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
             {
               // Save art in album folder
               // Note thumb resolution may be lower than original when overwriting
-              std::map<std::string, std::string> artwork;
+              KODI::ART::Artwork artwork;
               std::string savedArtfile;
               if (GetArtForItem(album.idAlbum, MediaTypeAlbum, artwork))
               {
@@ -12142,7 +12142,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
         // Include discography when not folders only
         GetArtist(artistId, artist, !artistfoldersonly);
         std::string strPath;
-        std::map<std::string, std::string> artwork;
+        KODI::ART::Artwork artwork;
         if (settings.IsSingleFile())
         {
           // Save artist to xml, and old path (common to music files) if it has one
@@ -12906,7 +12906,7 @@ void CMusicDatabase::SetItemUpdated(int mediaId, const std::string& mediaType)
 
 void CMusicDatabase::SetArtForItem(int mediaId,
                                    const std::string& mediaType,
-                                   const std::map<std::string, std::string>& art)
+                                   const KODI::ART::Artwork& art)
 {
   for (const auto& i : art)
     SetArtForItem(mediaId, mediaType, i.first, i.second);
@@ -13072,7 +13072,7 @@ bool CMusicDatabase::GetArtForItem(
 
 bool CMusicDatabase::GetArtForItem(int mediaId,
                                    const std::string& mediaType,
-                                   std::map<std::string, std::string>& art)
+                                   KODI::ART::Artwork& art)
 {
   try
   {

@@ -142,7 +142,7 @@ bool CGUIWindowPVRRecordingsBase::OnAction(const CAction& action)
     bool bUnWatched = false;
     if (pItem->HasPVRRecordingInfoTag())
       bUnWatched = pItem->GetPVRRecordingInfoTag()->GetPlayCount() == 0;
-    else if (pItem->m_bIsFolder)
+    else if (pItem->IsFolder())
       bUnWatched = pItem->GetProperty("unwatchedepisodes").asInteger() > 0;
     else
       return false;
@@ -307,7 +307,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
                 KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{item};
                 bReturn = proc.ProcessDefaultAction();
               }
-              else if (item->m_bIsFolder)
+              else if (item->IsFolder())
               {
                 // recording folders and ".." folders in subfolders are handled by base class.
                 bReturn = false;
@@ -416,7 +416,7 @@ void CGUIWindowPVRRecordingsBase::OnPrepareFileItems(CFileItemList& items)
   CFileItemList files;
   for (const auto& item : items)
   {
-    if (!item->m_bIsFolder)
+    if (!item->IsFolder())
       files.Add(item);
   }
 

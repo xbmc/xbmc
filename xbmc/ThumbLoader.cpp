@@ -112,7 +112,7 @@ std::string CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
     return "";
 
   // look for the thumb
-  if (item.m_bIsFolder)
+  if (item.IsFolder())
   {
     const std::string folderThumb = ART::GetFolderThumb(item);
     if (CFileUtils::Exists(folderThumb))

@@ -86,7 +86,7 @@ void CDAVDirectory::ParseResponse(const tinyxml2::XMLElement* element, CFileItem
               {
                 if (CDAVCommon::ValueWithoutNamespace(propChild->FirstChild(), "collection"))
                 {
-                  item.m_bIsFolder = true;
+                  item.SetFolder(true);
                 }
               }
             }
@@ -156,7 +156,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         item.SetLabel(CURL::Decode(URIUtils::GetFileName(name)));
       }
 
-      if (item.m_bIsFolder)
+      if (item.IsFolder())
         URIUtils::AddSlashAtEnd(itemPath);
 
       // Add back protocol options

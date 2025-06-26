@@ -91,7 +91,7 @@ bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
 
       CFileItemPtr pItem = std::make_shared<CFileItem>(host);
       pItem->SetPath("smb://" + host + '/');
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       items.Add(pItem);
     }
   }

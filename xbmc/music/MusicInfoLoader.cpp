@@ -76,7 +76,7 @@ void CMusicInfoLoader::OnLoaderStart()
 
 bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 {
-  if (!pItem || (pItem->m_bIsFolder && !MUSIC::IsAudio(*pItem)) || PLAYLIST::IsPlayList(*pItem) ||
+  if (!pItem || (pItem->IsFolder() && !MUSIC::IsAudio(*pItem)) || PLAYLIST::IsPlayList(*pItem) ||
       pItem->IsNFO() || NETWORK::IsInternetStream(*pItem))
     return false;
 
@@ -150,7 +150,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
 bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
 {
-  if ((pItem->m_bIsFolder && !MUSIC::IsAudio(*pItem)) || PLAYLIST::IsPlayList(*pItem) ||
+  if ((pItem->IsFolder() && !MUSIC::IsAudio(*pItem)) || PLAYLIST::IsPlayList(*pItem) ||
       PLAYLIST::IsSmartPlayList(*pItem) ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || pItem->IsNFO() ||
@@ -165,10 +165,10 @@ bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
 
 bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
 {
-  if (m_pProgressCallback && !pItem->m_bIsFolder)
+  if (m_pProgressCallback && !pItem->IsFolder())
     m_pProgressCallback->SetProgressAdvance();
 
-  if ((pItem->m_bIsFolder && !MUSIC::IsAudio(*pItem)) || //
+  if ((pItem->IsFolder() && !MUSIC::IsAudio(*pItem)) || //
       PLAYLIST::IsPlayList(*pItem) || PLAYLIST::IsSmartPlayList(*pItem) || //
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") || //
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || //

@@ -11855,7 +11855,7 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
         break;
       }
       case LISTITEM_SIZE:
-        if (!item->m_bIsFolder || item->GetSize())
+        if (!item->IsFolder() || item->GetSize())
           return StringUtils::SizeToString(item->GetSize());
         break;
       case LISTITEM_PROGRAM_COUNT:
@@ -11966,7 +11966,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int contextWindow, i
       case LISTITEM_ISSELECTED:
         return item->IsSelected();
       case LISTITEM_IS_FOLDER:
-        return item->m_bIsFolder;
+        return item->IsFolder();
       case LISTITEM_IS_PARENTFOLDER:
       {
         if (item->IsFileItem())

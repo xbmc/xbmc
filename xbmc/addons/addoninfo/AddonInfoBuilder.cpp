@@ -108,7 +108,7 @@ void CAddonInfoBuilderFromDB::SetArt(const std::string& type, std::string value)
   m_addonInfo->m_art[type] = std::move(value);
 }
 
-void CAddonInfoBuilderFromDB::SetArt(std::map<std::string, std::string> art)
+void CAddonInfoBuilderFromDB::SetArt(KODI::ART::Artwork art)
 {
   m_addonInfo->m_art = std::move(art);
 }

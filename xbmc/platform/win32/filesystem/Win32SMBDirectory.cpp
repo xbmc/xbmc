@@ -159,8 +159,8 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     CFileItemPtr pItem(new CFileItem(itemName));
 
-    pItem->m_bIsFolder = ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    if (pItem->m_bIsFolder)
+    pItem->SetFolder((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+    if (pItem->IsFolder())
       pItem->SetPath(pathWithSlash + itemName + '/');
     else
       pItem->SetPath(pathWithSlash + itemName);
@@ -183,7 +183,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       dt.SetValid(false);
       pItem->SetDateTime(dt);
     }
-    if (!pItem->m_bIsFolder)
+    if (!pItem->IsFolder())
       pItem->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
 
     items.Add(pItem);
@@ -471,7 +471,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
               {
                 CFileItemPtr pItem(new CFileItem(remoteNameUtf8));
                 pItem->SetPath(urlPrefixForItems + remoteNameUtf8 + '/');
-                pItem->m_bIsFolder = true;
+                pItem->SetFolder(true);
                 items.Add(pItem);
               }
               else
@@ -505,7 +505,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
                 {
                   CFileItemPtr pItem(new CFileItem(shareNameUtf8));
                   pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
-                  pItem->m_bIsFolder = true;
+                  pItem->SetFolder(true);
                   if (curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SHAREADMIN)
                     pItem->SetProperty("file:hidden", true);
 
@@ -617,7 +617,7 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
           {
             CFileItemPtr pItem(new CFileItem(shareNameUtf8));
             pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
-            pItem->m_bIsFolder = true;
+            pItem->SetFolder(true);
             if ((curShare.shi1_type & STYPE_SPECIAL) != 0 || shareNameUtf8.back() == '$')
               pItem->SetProperty("file:hidden", true);
 
@@ -655,7 +655,7 @@ static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList&
       {
         CFileItemPtr pItem = std::make_shared<CFileItem>(shareNameUtf8);
         pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
-        pItem->m_bIsFolder = true;
+        pItem->SetFolder(true);
         items.Add(pItem);
       }
     }

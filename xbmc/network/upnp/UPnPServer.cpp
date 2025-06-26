@@ -291,7 +291,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
   if (path.StartsWith("virtualpath://upnproot"))
   {
     path.TrimRight("/");
-    item->m_bIsFolder = true;
+    item->SetFolder(true);
     if (path.StartsWith("virtualpath://"))
     {
       object = new PLT_MediaContainer;
@@ -327,7 +327,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
       {
         item->SetLabel("Music Library");
         item->SetLabelPreformatted(true);
-        item->m_bIsFolder = true;
+        item->SetFolder(true);
       }
       else
       {
@@ -348,14 +348,14 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
           }
           else if (params.GetAlbumId() >= 0)
           {
-            item->m_bIsFolder = true;
+            item->SetFolder(true);
             CAlbum album;
             if (db.GetAlbum(params.GetAlbumId(), album, false))
               item->GetMusicInfoTag()->SetAlbum(album);
           }
           else if (params.GetArtistId() >= 0)
           {
-            item->m_bIsFolder = true;
+            item->SetFolder(true);
             CArtist artist;
             if (db.GetArtist(params.GetArtistId(), artist, false))
               item->GetMusicInfoTag()->SetArtist(artist);
@@ -365,7 +365,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
         // all items apart from songs (artists, albums, etc) are folders
         if (!item->HasMusicInfoTag() || item->GetMusicInfoTag()->GetType() != MediaTypeSong)
         {
-          item->m_bIsFolder = true;
+          item->SetFolder(true);
         }
 
         if (item->GetLabel().empty())
@@ -386,7 +386,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
       {
         item->SetLabel("Video Library");
         item->SetLabelPreformatted(true);
-        item->m_bIsFolder = true;
+        item->SetFolder(true);
       }
       else
       {
@@ -425,7 +425,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
         {
           // for tvshows and seasons, iEpisode and playCount are
           // invalid
-          item->m_bIsFolder = true;
+          item->SetFolder(true);
           item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("totalepisodes").asInteger();
           item->GetVideoInfoTag()->SetPlayCount(
               static_cast<int>(item->GetProperty("watchedepisodes").asInteger()));
@@ -433,7 +433,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
         // if this is an item in the library without a playable path it most be a folder
         else if (item->GetVideoInfoTag()->m_strFileNameAndPath.empty())
         {
-          item->m_bIsFolder = true;
+          item->SetFolder(true);
         }
 
         // try to grab title from tag
@@ -458,17 +458,17 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
     // all playlist types are folders
     else if (PLAYLIST::IsPlayList(*item) || PLAYLIST::IsSmartPlayList(*item))
     {
-      item->m_bIsFolder = true;
+      item->SetFolder(true);
     }
     // audio and not a playlist -> song, so it's not a folder
     else if (MUSIC::IsAudio(*item))
     {
-      item->m_bIsFolder = false;
+      item->SetFolder(true);
     }
     // any other type of item -> delegate to CDirectory
     else
     {
-      item->m_bIsFolder = CDirectory::Exists(item->GetPath());
+      item->SetFolder(CDirectory::Exists(item->GetPath()));
     }
 
     // not a virtual path directory, new system

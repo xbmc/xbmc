@@ -54,7 +54,7 @@ void FillInDefaultIcon(CFileItem& item)
 
   if (item.GetArt("icon").empty())
   {
-    if (!item.m_bIsFolder)
+    if (!item.IsFolder())
     {
       /* To reduce the average runtime of this code, this list should
        * be ordered with most frequently seen types first.  Also bear
@@ -231,7 +231,7 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
     useFolder = true;
     strFile = item.GetLocalMetadataPath();
   }
-  else if (useFolder && !(item.m_bIsFolder && !item.IsFileFolder()))
+  else if (useFolder && !(item.IsFolder() && !item.IsFileFolder()))
   {
     file = strFile.empty() ? item.GetPath() : strFile;
     strFile = URIUtils::GetDirectory(file);
@@ -249,9 +249,9 @@ std::string GetLocalFanart(const CFileItem& item)
   {
     if (!item.HasVideoInfoTag())
       return ""; // nothing can be done
-    CFileItem dbItem(item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath
-                                      : item.GetVideoInfoTag()->m_strFileNameAndPath,
-                     item.m_bIsFolder);
+    CFileItem dbItem(item.IsFolder() ? item.GetVideoInfoTag()->m_strPath
+                                     : item.GetVideoInfoTag()->m_strFileNameAndPath,
+                     item.IsFolder());
     return GetLocalFanart(dbItem);
   }
 
@@ -307,11 +307,10 @@ std::string GetLocalFanart(const CFileItem& item)
   std::vector<std::string> fanarts = {"fanart"};
 
   file = URIUtils::ReplaceExtension(file, "-fanart");
-  fanarts.insert(item.m_bIsFolder ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(file));
+  fanarts.insert(item.IsFolder() ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(file));
 
   if (!file2.empty())
-    fanarts.insert(item.m_bIsFolder ? fanarts.end() : fanarts.begin(),
-                   URIUtils::GetFileName(file2));
+    fanarts.insert(item.IsFolder() ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(file2));
 
   for (const auto& fanart : fanarts)
   {
@@ -362,12 +361,12 @@ std::string GetTBNFile(const CFileItem& item)
   CURL url(file);
   file = url.GetFileName();
 
-  if (item.m_bIsFolder && !item.IsFileFolder())
+  if (item.IsFolder() && !item.IsFileFolder())
     URIUtils::RemoveSlashAtEnd(file);
 
   if (!file.empty())
   {
-    if (item.m_bIsFolder && !item.IsFileFolder())
+    if (item.IsFolder() && !item.IsFileFolder())
       thumbFile = file + ".tbn"; // folder, so just add ".tbn"
     else
       thumbFile = URIUtils::ReplaceExtension(file, ".tbn");

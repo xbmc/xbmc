@@ -89,7 +89,7 @@ bool CButtonTranslator::Load()
       files.Sort(SortByFile, SortOrderAscending);
       for (int fileIndex = 0; fileIndex < files.Size(); ++fileIndex)
       {
-        if (!files[fileIndex]->m_bIsFolder)
+        if (!files[fileIndex]->IsFolder())
           success |= LoadKeymap(files[fileIndex]->GetPath());
       }
 
@@ -108,7 +108,7 @@ bool CButtonTranslator::Load()
           files.Sort(SortByFile, SortOrderAscending);
           for (int fileIndex = 0; fileIndex < files.Size(); ++fileIndex)
           {
-            if (!files[fileIndex]->m_bIsFolder)
+            if (!files[fileIndex]->IsFolder())
               success |= LoadKeymap(files[fileIndex]->GetPath());
           }
         }

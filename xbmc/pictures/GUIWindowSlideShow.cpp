@@ -1386,11 +1386,12 @@ void CGUIWindowSlideShow::AddItems(const std::string &strPath, path_set *recursi
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
-    if (item->m_bIsFolder && recursivePaths)
+    if (item->IsFolder() && recursivePaths)
     {
       AddItems(item->GetPath(), recursivePaths);
     }
-    else if (!item->m_bIsFolder && !URIUtils::IsRAR(item->GetPath()) && !URIUtils::IsZIP(item->GetPath()))
+    else if (!item->IsFolder() && !URIUtils::IsRAR(item->GetPath()) &&
+             !URIUtils::IsZIP(item->GetPath()))
     { // add to the slideshow
       Add(item.get());
     }

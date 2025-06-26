@@ -239,7 +239,7 @@ void ClearPhotoAssetCache()
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
-    if (!pItem->m_bIsFolder)
+    if (!pItem->IsFolder())
     {
       if (StringUtils::StartsWithNoCase(pItem->GetLabel(), "airplayasset") &&
           (StringUtils::EndsWithNoCase(pItem->GetLabel(), ".jpg") ||

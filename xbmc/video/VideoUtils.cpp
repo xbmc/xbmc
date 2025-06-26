@@ -394,7 +394,7 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item)
     return resumeInfo;
   }
 
-  if (item.m_bIsFolder && item.IsResumable())
+  if (item.IsFolder() && item.IsResumable())
   {
     ResumeInformation resumeInfo;
     resumeInfo.isResumable = true;

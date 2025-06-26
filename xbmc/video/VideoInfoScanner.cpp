@@ -351,9 +351,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
         // do not consider inner folders with .nomedia
-        items.erase(std::remove_if(items.begin(), items.end(),
-                                   [](const CFileItemPtr& item)
-                                   { return item->m_bIsFolder && HasNoMedia(item->GetPath()); }),
+        items.erase(std::remove_if(items.begin(), items.end(), [](const CFileItemPtr& item)
+                                   { return item->IsFolder() && HasNoMedia(item->GetPath()); }),
                     items.end());
         items.Stack();
 
@@ -412,7 +411,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         CFileItemPtr item(new CFileItem(URIUtils::GetFileName(strDirectory)));
         item->SetPath(strDirectory);
-        item->m_bIsFolder = true;
+        item->SetFolder(true);
         items.Add(item);
         items.SetPath(URIUtils::GetParentPath(item->GetPath()));
       }
@@ -471,7 +470,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       // if we have a directory item (non-playlist) we then recurse into that folder
       // do not recurse for tv shows - we have already looked recursively for episodes
-      if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem) &&
+      if (pItem->IsFolder() && !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem) &&
           settings.recurse > 0 && content != CONTENT_TVSHOWS)
       {
         if (!DoScan(pItem->GetPath()))
@@ -487,7 +486,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     if (pDlgProgress)
     {
-      if (items.Size() > 1 || (items[0]->m_bIsFolder && fetchEpisodes))
+      if (items.Size() > 1 || (items[0]->IsFolder() && fetchEpisodes))
       {
         pDlgProgress->ShowProgressBar(true);
         pDlgProgress->SetPercentage(0);
@@ -508,12 +507,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       // we do this since we may have a override per dir
       ScraperPtr info2 = m_database.GetScraperForPath(
-          pItem->m_bIsFolder ? pItem->GetPath() : items.GetPath(), &m_scraperCache);
+          pItem->IsFolder() ? pItem->GetPath() : items.GetPath(), &m_scraperCache);
       if (!info2) // skip
         continue;
 
       // Discard all .nomedia folders
-      if (pItem->m_bIsFolder && HasNoMedia(pItem->GetPath()))
+      if (pItem->IsFolder() && HasNoMedia(pItem->GetPath()))
         continue;
 
       // Discard all exclude files defined by regExExclude
@@ -583,7 +582,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       pURL = NULL;
 
       // Keep track of directories we've seen
-      if (m_bClean && pItem->m_bIsFolder)
+      if (m_bClean && pItem->IsFolder())
         seenPaths.push_back(m_database.GetPathId(pItem->GetPath()));
     }
 
@@ -618,7 +617,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     int idTvShow = -1;
     int idSeason = -1;
     std::string strPath = pItem->GetPath();
-    if (pItem->m_bIsFolder)
+    if (pItem->IsFolder())
     {
       idTvShow = m_database.GetTvShowId(strPath);
       if (isSeason && idTvShow > -1)
@@ -640,7 +639,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (isSeason && idTvShow > -1)
         idSeason = m_database.GetSeasonId(idTvShow, pItem->GetVideoInfoTag()->m_iSeason);
     }
-    if (idTvShow > -1 && (!isSeason || idSeason > -1) && (fetchEpisodes || !pItem->m_bIsFolder))
+    if (idTvShow > -1 && (!isSeason || idSeason > -1) && (fetchEpisodes || !pItem->IsFolder()))
     {
       InfoRet ret = RetrieveInfoForEpisodes(pItem, idTvShow, info2, useLocal, pDlgProgress);
       if (ret == InfoRet::ADDED)
@@ -648,9 +647,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return ret;
     }
 
-    if (ProgressCancelled(pDlgProgress, pItem->m_bIsFolder ? 20353 : 20361,
-                          pItem->m_bIsFolder ? pItem->GetVideoInfoTag()->m_strShowTitle
-                                             : pItem->GetVideoInfoTag()->m_strTitle))
+    if (ProgressCancelled(pDlgProgress, pItem->IsFolder() ? 20353 : 20361,
+                          pItem->IsFolder() ? pItem->GetVideoInfoTag()->m_strShowTitle
+                                            : pItem->GetVideoInfoTag()->m_strTitle))
       return InfoRet::CANCELLED;
 
     if (m_handle)
@@ -756,7 +755,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                 CScraperUrl* pURL,
                                                                 CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !IsVideo(*pItem) || pItem->IsNFO() ||
+    if (pItem->IsFolder() || !IsVideo(*pItem) || pItem->IsNFO() ||
         (PLAYLIST::IsPlayList(*pItem) && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
       return InfoRet::NOT_NEEDED;
 
@@ -852,7 +851,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       CScraperUrl* pURL,
       CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !IsVideo(*pItem) || pItem->IsNFO() ||
+    if (pItem->IsFolder() || !IsVideo(*pItem) || pItem->IsNFO() ||
         (PLAYLIST::IsPlayList(*pItem) && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
       return InfoRet::NOT_FOUND;
 
@@ -954,7 +953,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (ret == InfoRet::ADDED)
     {
-      std::map<int, std::map<std::string, std::string>> seasonArt;
+      KODI::ART::SeasonsArtwork seasonArt;
       m_database.GetTvShowSeasonArt(showID, seasonArt);
 
       const bool updateSeasonArt{
@@ -968,7 +967,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           loader.GetArtwork(showInfo);
         }
         GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !item->IsPlugin());
-        for (std::map<int, std::map<std::string, std::string> >::const_iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
+        for (auto i = seasonArt.begin(); i != seasonArt.end(); ++i)
         {
           int seasonID = m_database.AddSeason(showID, i->first);
           m_database.SetArtForItem(seasonID, MediaTypeSeason, i->second);
@@ -985,7 +984,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     bool bSkip = false;
 
-    if (item->m_bIsFolder)
+    if (item->IsFolder())
     {
       /*
        * Note: DoScan() will not remove this path as it's not recursing for tvshows.
@@ -1127,7 +1126,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // enumerate
     for (int i=0;i<items.Size();++i)
     {
-      if (items[i]->m_bIsFolder)
+      if (items[i]->IsFolder())
         continue;
       std::string strPath = URIUtils::GetDirectory(items[i]->GetPath());
       URIUtils::RemoveSlashAtEnd(strPath); // want no slash for the test that follows
@@ -1523,7 +1522,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(), showInfo ? showInfo->m_strPath : "");
 
     // ensure the art map isn't completely empty by specifying an empty thumb
-    std::map<std::string, std::string> art = pItem->GetArt();
+    KODI::ART::Artwork art = pItem->GetArt();
     if (art.empty())
       art["thumb"] = "";
 
@@ -1534,7 +1533,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     movieDetails.m_strFileNameAndPath = pItem->GetPath();
 
-    if (pItem->m_bIsFolder)
+    if (pItem->IsFolder())
       movieDetails.m_strPath = pItem->GetPath();
 
     std::string strTitle(movieDetails.m_strTitle);
@@ -1619,7 +1618,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     else if (content == CONTENT_TVSHOWS)
     {
-      if (pItem->m_bIsFolder)
+      if (pItem->IsFolder())
       {
         /*
          multipaths are not stored in the database, so in the case we have one,
@@ -1632,7 +1631,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         for (std::vector<std::string>::const_iterator i = multipath.begin(); i != multipath.end(); ++i)
           paths.emplace_back(*i, URIUtils::GetParentPath(*i));
 
-        std::map<int, std::map<std::string, std::string> > seasonArt;
+        KODI::ART::SeasonsArtwork seasonArt;
 
         if (!libraryImport)
           GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !pItem->IsPlugin());
@@ -1667,7 +1666,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       movieDetails.m_type = MediaTypeMusicVideo;
     }
 
-    if (!pItem->m_bIsFolder)
+    if (!pItem->IsFolder())
     {
       if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportWatchedState) &&
           (movieDetails.IsPlayCountSet() || movieDetails.m_lastPlayed.IsValid()))
@@ -1773,9 +1772,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return CDirectory::Exists(path) ? path : "";
   }
 
-  void CVideoInfoScanner::AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
-    const std::vector<std::string>& wantedArtTypes, const std::string& itemPath,
-    bool addAll, bool exactName)
+  void CVideoInfoScanner::AddLocalItemArtwork(KODI::ART::Artwork& itemArt,
+                                              const std::vector<std::string>& wantedArtTypes,
+                                              const std::string& itemPath,
+                                              bool addAll,
+                                              bool exactName)
   {
     std::string path = URIUtils::GetDirectory(itemPath);
     if (path.empty())
@@ -1847,10 +1848,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     movieDetails.m_fanart.Unpack();
     movieDetails.m_strPictureURL.Parse();
 
-    CGUIListItem::ArtMap art = pItem->GetArt();
+    KODI::ART::Artwork art = pItem->GetArt();
 
     // get and cache thumb images
-    std::string mediaType = ContentToMediaType(content, pItem->m_bIsFolder);
+    std::string mediaType = ContentToMediaType(content, pItem->IsFolder());
     std::vector<std::string> artTypes = CVideoThumbLoader::GetArtTypes(mediaType);
     bool moviePartOfSet = content == CONTENT_MOVIES && !movieDetails.m_set.title.empty();
     std::vector<std::string> movieSetArtTypes;
@@ -1889,7 +1890,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         std::string movieSetInfoPath = GetMovieSetInfoFolder(movieDetails.m_set.title);
         if (!movieSetInfoPath.empty())
         {
-          CGUIListItem::ArtMap movieSetArt;
+          KODI::ART::Artwork movieSetArt;
           AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, addAll, exactName);
           for (const auto& artItem : movieSetArt)
           {
@@ -2302,7 +2303,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     for (int i = 0; i < items.Size(); ++i)
     {
-      if (items[i]->m_bIsFolder && !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes))
+      if (items[i]->IsFolder() && !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes))
         return false;
     }
     return true;
@@ -2368,8 +2369,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return "";
   }
 
-  void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag &show,
-      std::map<int, std::map<std::string, std::string>> &seasonArt, const std::vector<std::string> &artTypes, bool useLocal)
+  void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag& show,
+                                          KODI::ART::SeasonsArtwork& seasonArt,
+                                          const std::vector<std::string>& artTypes,
+                                          bool useLocal)
   {
     int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->
       GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
@@ -2405,11 +2408,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
       for (int season = -1; season <= maxSeasons; season++)
       {
         // skip if we already have some art
-        std::map<int, std::map<std::string, std::string>>::const_iterator it = seasonArt.find(season);
+        const auto it = seasonArt.find(season);
         if (it != seasonArt.end() && !it->second.empty())
           continue;
 
-        std::map<std::string, std::string> art;
+        KODI::ART::Artwork art;
         std::string basePath;
         if (season == -1)
           basePath = "season-all";
@@ -2433,7 +2436,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       std::string aspect = url.m_aspect;
       if (aspect.empty())
         aspect = "thumb";
-      std::map<std::string, std::string>& art = seasonArt[url.m_season];
+      KODI::ART::Artwork& art = seasonArt[url.m_season];
       if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist(aspect, artTypes, exactName)) &&
           !art.contains(aspect))
       {
@@ -2465,7 +2468,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         {
           std::string compare = URIUtils::GetFileName(items[j]->GetPath());
           URIUtils::RemoveExtension(compare);
-          if (!items[j]->m_bIsFolder && compare == thumbFile)
+          if (!items[j]->IsFolder() && compare == thumbFile)
           {
             i->thumb = items[j]->GetPath();
             break;
@@ -2532,7 +2535,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // get the library item which was added previously with the specified content type
     for (const auto& item : items)
     {
-      if (content == CONTENT_MOVIES && !item->m_bIsFolder)
+      if (content == CONTENT_MOVIES && !item->IsFolder())
       {
         dbId = m_database.GetMovieId(item->GetPath());
         if (dbId != -1)

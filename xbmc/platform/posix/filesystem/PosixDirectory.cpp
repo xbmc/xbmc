@@ -67,12 +67,12 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     if (entry->d_type == DT_DIR || (bStat && S_ISDIR(buffer.st_mode)))
     {
-      pItem->m_bIsFolder = true;
+      pItem->SetFolder(true);
       URIUtils::AddSlashAtEnd(itemPath);
     }
     else
     {
-      pItem->m_bIsFolder = false;
+      pItem->SetFolder(false);
     }
 
     if (StringUtils::StartsWith(entry->d_name, "."))
@@ -89,7 +89,7 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
         pItem->SetDateTime(localTime);
 
-        if (!pItem->m_bIsFolder)
+        if (!pItem->IsFolder())
           pItem->SetSize(buffer.st_size);
       }
     }

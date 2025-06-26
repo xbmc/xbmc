@@ -55,7 +55,7 @@ std::shared_ptr<CFileItem> LoadRecordingFileOrFolderItem(const CFileItem& item)
     if (item.HasPVRRecordingInfoTag() || item.HasProperty("watchedepisodes"))
       return std::make_shared<CFileItem>(item); // already loaded
 
-    if (item.m_bIsFolder)
+    if (item.IsFolder())
     {
       CFileItem loadedItem{item};
       if (CPVRGUIDirectory::GetRecordingsDirectoryInfo(loadedItem))

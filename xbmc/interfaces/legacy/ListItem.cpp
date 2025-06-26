@@ -314,7 +314,7 @@ namespace XBMCAddon
     bool ListItem::isFolder() const
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      return item->m_bIsFolder;
+      return item->IsFolder();
     }
 
     String ListItem::getUniqueID(const char* key)
@@ -1015,7 +1015,7 @@ namespace XBMCAddon
 
     void ListItem::setIsFolderRaw(bool isFolder)
     {
-      item->m_bIsFolder = isFolder;
+      item->SetFolder(isFolder);
     }
 
     void ListItem::setStartOffsetRaw(double startOffset)

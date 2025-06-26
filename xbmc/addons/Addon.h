@@ -109,7 +109,7 @@ public:
   std::string Author() const override;
   std::string ChangeLog() const override;
   std::string Icon() const override;
-  ArtMap Art() const override;
+  KODI::ART::Artwork Art() const override;
   std::vector<std::string> Screenshots() const override;
   std::string Disclaimer() const override;
   AddonLifecycleState LifecycleState() const override;

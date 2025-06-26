@@ -61,6 +61,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -270,7 +271,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
-    if (item > -1 && m_vecItems->Get(item)->m_bIsFolder)
+    if (item > -1 && m_vecItems->Get(item)->IsFolder())
       OnScan(item);
 
     return true;
@@ -356,7 +357,7 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
   for (int i = 0; i < m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = (*m_vecItems)[i];
-    if (pItem->m_bIsFolder || PLAYLIST::IsPlayList(*pItem) || pItem->IsPicture() ||
+    if (pItem->IsFolder() || PLAYLIST::IsPlayList(*pItem) || pItem->IsPicture() ||
         MUSIC::IsLyrics(*pItem) || VIDEO::IsVideo(*pItem))
       continue;
 
@@ -628,7 +629,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   }
 
   // if its a folder, build a playlist
-  if (pItem->m_bIsFolder && !pItem->IsPlugin())
+  if (pItem->IsFolder() && !pItem->IsPlugin())
   {
     // make a copy so that we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -826,7 +827,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       std::string dirType = MediaTypeArtist;
       if (params.GetAlbumId() > 0)
         dirType = MediaTypeAlbum;
-      std::map<std::string, std::string> artmap;
+      KODI::ART::Artwork artmap;
       for (auto artitem : art)
       {
         std::string artname;
@@ -840,7 +841,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
             StringUtils::Replace(artitem.prefix, "albumartist", "artist");
           artname = artitem.prefix + "." + artitem.artType;
         }
-      artmap.insert(std::make_pair(artname, artitem.url));
+        artmap.insert(std::make_pair(artname, artitem.url));
       }
       items.SetArt(artmap);
     }
@@ -856,7 +857,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       newPlaylist->SetLabel(g_localizeStrings.Get(16035));
       newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetArt("icon", "DefaultPartyMode.png");
-      newPlaylist->m_bIsFolder = true;
+      newPlaylist->SetFolder(true);
       items.Add(newPlaylist);
 
       newPlaylist = std::make_shared<CFileItem>("newplaylist://", false);
@@ -992,7 +993,7 @@ void CGUIWindowMusicBase::OnScan(int iItem, bool bPromptRescan /*= false*/)
   std::string strPath;
   if (iItem < 0 || iItem >= m_vecItems->Size())
     strPath = m_vecItems->GetPath();
-  else if (m_vecItems->Get(iItem)->m_bIsFolder)
+  else if (m_vecItems->Get(iItem)->IsFolder())
     strPath = m_vecItems->Get(iItem)->GetPath();
   else
   { //! @todo MUSICDB - should we allow scanning a single item into the database?

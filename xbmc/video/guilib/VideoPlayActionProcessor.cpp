@@ -230,11 +230,11 @@ bool CVideoPlayActionProcessor::OnPlaySelected()
 void CVideoPlayActionProcessor::Play(const std::string& player) const
 {
   auto item{m_item};
-  if (item->m_bIsFolder && item->HasVideoVersions())
+  if (item->IsFolder() && item->HasVideoVersions())
   {
     //! @todo get rid of "videos with versions as folder" hack!
     item = std::make_shared<CFileItem>(*item);
-    item->m_bIsFolder = false;
+    item->SetFolder(false);
   }
 
   item->SetProperty("playlist_type_hint", static_cast<int>(KODI::PLAYLIST::Id::TYPE_VIDEO));

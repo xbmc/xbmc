@@ -15,6 +15,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/SpecialProtocol.h"
+#include "utils/Artwork.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/StringUtils.h"
@@ -126,7 +127,7 @@ void CAddonDatabaseSerializer::DeserializeMetadata(const std::string& document,
   builder.SetPath(variant["path"].asString());
   builder.SetIcon(variant["icon"].asString());
 
-  std::map<std::string, std::string> art;
+  KODI::ART::Artwork art;
   for (auto it = variant["art"].begin_map(); it != variant["art"].end_map(); ++it)
     art.emplace(it->first, it->second.asString());
   builder.SetArt(std::move(art));

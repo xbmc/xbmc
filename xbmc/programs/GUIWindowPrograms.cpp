@@ -140,7 +140,8 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem, const std::string&)
     return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
 #endif
 
-  if (pItem->m_bIsFolder) return false;
+  if (pItem->IsFolder())
+    return false;
 
   return false;
 }

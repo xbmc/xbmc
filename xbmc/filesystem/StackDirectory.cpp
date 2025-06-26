@@ -38,7 +38,7 @@ namespace XFILE
     {
       CFileItemPtr item(new CFileItem(i));
       item->SetPath(i);
-      item->m_bIsFolder = false;
+      item->SetFolder(false);
       items.Add(item);
     }
     return true;

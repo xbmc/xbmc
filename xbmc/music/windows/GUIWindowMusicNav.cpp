@@ -210,9 +210,8 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
   {
     int item = m_viewControl.GetSelectedItem();
     CMusicDatabaseDirectory dir;
-    if (item > -1 && m_vecItems->Get(item)->m_bIsFolder
-                  && (m_vecItems->Get(item)->IsAlbum()||
-                      dir.IsArtistDir(m_vecItems->Get(item)->GetPath())))
+    if (item > -1 && m_vecItems->Get(item)->IsFolder() &&
+        (m_vecItems->Get(item)->IsAlbum() || dir.IsArtistDir(m_vecItems->Get(item)->GetPath())))
     {
       OnContextButton(item,CONTEXT_BUTTON_INFO);
       return true;
@@ -356,7 +355,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem, const std::string &player /* = "" */
     }
     return true;
   }
-  if (MUSIC::IsMusicDb(*item) && !item->m_bIsFolder)
+  if (MUSIC::IsMusicDb(*item) && !item->IsFolder())
     m_musicdatabase.SetPropertiesForFileItem(*item);
 
   if (PLAYLIST::IsPlayList(*item) &&
@@ -619,7 +618,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
           !inPlaylists &&
           !NETWORK::IsInternetStream(*m_vecItems) && // Not playlists locations or streams
           !item->IsPath("add") && !item->IsParentFolder() && // Not ".." and "Add items
-          item->m_bIsFolder && // Folders only, but playlists can be folders too
+          item->IsFolder() && // Folders only, but playlists can be folders too
           !URIUtils::IsLibraryContent(item->GetPath()) && // database folder or .xsp files
           !URIUtils::IsSpecial(item->GetPath()) && !item->IsPlugin() && !item->IsScript() &&
           !PLAYLIST::IsPlayList(
@@ -635,7 +634,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
       if (!item->IsParentFolder() && !dir.IsAllItem(item->GetPath()))
       {
-        if (item->m_bIsFolder && !VIDEO::IsVideoDb(*item) && !item->IsPlugin() &&
+        if (item->IsFolder() && !VIDEO::IsVideoDb(*item) && !item->IsPlugin() &&
             !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
         {
           if (item->IsAlbum())
@@ -681,7 +680,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtistString(), item->GetMusicInfoTag()->GetAlbum(), item->GetMusicInfoTag()->GetTitle()) > -1)
             buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20401);
         }
-        if (item->HasVideoInfoTag() && !item->m_bIsFolder)
+        if (item->HasVideoInfoTag() && !item->IsFolder())
         {
           if ((profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsPlugin())
           {
@@ -827,7 +826,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_DELETE:
     if (PLAYLIST::IsPlayList(*item) || PLAYLIST::IsSmartPlayList(*item))
     {
-      item->m_bIsFolder = false;
+      item->SetFolder(false);
       CFileUtils::DeleteItemWithConfirm(item);
     }
     else if (!VIDEO::IsVideoDb(*item))

@@ -89,7 +89,7 @@ bool CGUIWindowMusicPlaylistEditor::OnClick(int iItem, const std::string& player
   if (item->IsFileFolder(FileFolderType::MASK_ONBROWSE))
     return Update(item->GetPath());
   // Avoid playback (default click behaviour) of media files
-  if (!item->m_bIsFolder)
+  if (!item->IsFolder())
     return false;
 
   return CGUIWindowMusicBase::OnClick(iItem, player);

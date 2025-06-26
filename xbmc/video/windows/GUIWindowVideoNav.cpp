@@ -37,6 +37,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -441,7 +442,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         // grab the show thumb
         CVideoInfoTag details;
         m_database.GetTvShowInfo("", details, params.GetTvShowId());
-        std::map<std::string, std::string> art;
+        KODI::ART::Artwork art;
         if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art) && !art.empty())
         {
           items.AppendArt(art, details.m_type);
@@ -479,7 +480,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           else
             seasonID = items[firstIndex]->GetVideoInfoTag()->m_iIdSeason;
 
-          CGUIListItem::ArtMap seasonArt;
+          KODI::ART::Artwork seasonArt;
           if (seasonID > -1 && m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt) &&
               !seasonArt.empty())
           {
@@ -496,7 +497,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       {
         if (params.GetSetId() > 0)
         {
-          CGUIListItem::ArtMap setArt;
+          KODI::ART::Artwork setArt;
           if (m_database.GetArtForItem(params.GetSetId(), MediaTypeVideoCollection, setArt) &&
               !setArt.empty())
           {
@@ -707,7 +708,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
   else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
-           pItem->GetPath().size() > 22 && pItem->m_bIsFolder)
+           pItem->GetPath().size() > 22 && pItem->IsFolder())
   {
     CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
 
@@ -736,7 +737,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
   else if (m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
            m_vecItems->IsPath("special://videoplaylists/"))
   {
-    pItem->m_bIsFolder = false;
+    pItem->SetFolder(false);
     CFileUtils::DeleteItemWithConfirm(pItem);
   }
   else
@@ -841,7 +842,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
-        if (node == NodeType::ACTOR && !dir.IsAllItem(item->GetPath()) && item->m_bIsFolder)
+        if (node == NodeType::ACTOR && !dir.IsAllItem(item->GetPath()) && item->IsFolder())
         {
           buttons.Add(CONTEXT_BUTTON_SET_ART, 13511); // Choose art
         }
@@ -859,7 +860,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
         // add "Set/Change content" to folders
-        if (item->m_bIsFolder && !VIDEO::IsVideoDb(*item) && !PLAYLIST::IsPlayList(*item) &&
+        if (item->IsFolder() && !VIDEO::IsVideoDb(*item) && !PLAYLIST::IsPlayList(*item) &&
             !PLAYLIST::IsSmartPlayList(*item) && !item->IsLibraryFolder() && !item->IsLiveTV() &&
             !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
         {

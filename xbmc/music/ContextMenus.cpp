@@ -52,7 +52,7 @@ bool CMusicInfo::IsVisible(const CFileItem& item) const
   if (CMusicInfoBase::IsVisible(item))
     return true;
 
-  if (item.m_bIsFolder)
+  if (item.IsFolder())
     return false;
 
   const auto* tag{item.GetMusicInfoTag()};
@@ -61,7 +61,7 @@ bool CMusicInfo::IsVisible(const CFileItem& item) const
 
 bool CMusicBrowse::IsVisible(const CFileItem& item) const
 {
-  return ((item.m_bIsFolder || item.IsFileFolder(FileFolderType::MASK_ONBROWSE)) &&
+  return ((item.IsFolder() || item.IsFileFolder(FileFolderType::MASK_ONBROWSE)) &&
           MUSIC_UTILS::IsItemPlayable(item));
 }
 

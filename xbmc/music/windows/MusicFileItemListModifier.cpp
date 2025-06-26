@@ -107,7 +107,7 @@ void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
 
   if (pItem)
   {
-    pItem->m_bIsFolder = true;
+    pItem->SetFolder(true);
     pItem->SetSpecialSort(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bMusicLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
     pItem->SetCanQueue(false);
     pItem->SetLabelPreformatted(true);

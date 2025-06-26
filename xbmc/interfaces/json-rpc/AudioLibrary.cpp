@@ -25,6 +25,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Artwork.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -300,7 +301,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
         }
         if (bFetchArt)
         {
-          CGUIListItem::ArtMap artMap = item.GetArt();
+          const KODI::ART::Artwork& artMap = item.GetArt();
           CVariant artObj(CVariant::VariantTypeObject);
           for (const auto& artIt : artMap)
           {
@@ -466,7 +467,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
         }
         if (bFetchArt)
         {
-          CGUIListItem::ArtMap artMap = item.GetArt();
+          const KODI::ART::Artwork& artMap = item.GetArt();
           CVariant artObj(CVariant::VariantTypeObject);
           for (const auto& artIt : artMap)
           {
@@ -1004,7 +1005,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
   if (ParameterNotNull(parameterObject, "art"))
   {
     // Get current artwork
-    std::map<std::string, std::string> artwork;
+    KODI::ART::Artwork artwork;
     musicdatabase.GetArtForItem(song.idSong, MediaTypeSong, artwork);
 
     std::set<std::string> removedArtwork;

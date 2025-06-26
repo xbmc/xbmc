@@ -10,6 +10,7 @@
 
 #include "FileItemHandler.h"
 #include "JSONRPC.h"
+#include "utils/Artwork.h"
 #include "utils/DatabaseUtils.h"
 
 #include <memory>
@@ -89,7 +90,11 @@ namespace JSONRPC
     static int RequiresAdditionalDetails(const MediaType& mediaType, const CVariant &parameterObject);
     static JSONRPC_STATUS HandleItems(const char *idProperty, const char *resultName, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool limit = true);
     static JSONRPC_STATUS RemoveVideo(const CVariant &parameterObject);
-    static void UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag &details, std::map<std::string, std::string> &artwork, std::set<std::string> &removedArtwork, std::set<std::string>& updatedDetails);
+    static void UpdateVideoTag(const CVariant& parameterObject,
+                               CVideoInfoTag& details,
+                               KODI::ART::Artwork& artwork,
+                               std::set<std::string>& removedArtwork,
+                               std::set<std::string>& updatedDetails);
     static void UpdateVideoTagField(const CVariant& parameterObject, const std::string& fieldName, std::vector<std::string>& fieldValue, std::set<std::string>& updatedDetails);
   };
 }
