@@ -497,8 +497,8 @@ void CSettings::InitializeConditions()
   // add more complex conditions
   const CSettingConditions::ComplexConditions& complexConditions =
       CSettingConditions::GetComplexConditions();
-  for (const auto& complexCondition : complexConditions)
-    GetSettingsManager()->AddDynamicCondition(complexCondition.first, complexCondition.second);
+  for (const auto& [identifier, condition] : complexConditions)
+    GetSettingsManager()->AddDynamicCondition(identifier, condition);
 }
 
 void CSettings::UninitializeConditions()

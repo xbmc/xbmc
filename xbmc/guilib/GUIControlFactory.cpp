@@ -1564,7 +1564,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
     }
     case CGUIControl::GUICONTAINER_EPGGRID:
     {
-      CGUIEPGGridContainer* epgGridContainer = new CGUIEPGGridContainer(
+      auto* epgGridContainer = new CGUIEPGGridContainer(
           parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems,
           timeBlocks, minutesPerTimeBlock, rulerUnit, textureProgressIndicator);
       control = epgGridContainer;

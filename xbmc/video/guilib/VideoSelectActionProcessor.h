@@ -19,12 +19,7 @@ namespace KODI::VIDEO::GUILIB
 class CVideoSelectActionProcessor : public CVideoActionProcessorBase
 {
 public:
-  explicit CVideoSelectActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : CVideoActionProcessorBase(item)
-  {
-  }
-
-  ~CVideoSelectActionProcessor() override = default;
+  using CVideoActionProcessorBase::CVideoActionProcessorBase;
 
 protected:
   Action GetDefaultAction() override;

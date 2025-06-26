@@ -77,9 +77,9 @@ public:
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem& sortable, Field field) const override;
-  const CRating GetRating(std::string type = "") const;
+  CRating GetRating(std::string type = "") const;
   const std::string& GetDefaultRating() const;
-  const std::string GetUniqueID(std::string type = "") const;
+  std::string GetUniqueID(std::string type = "") const;
   const std::map<std::string, std::string>& GetUniqueIDs() const;
   const std::string& GetDefaultUniqueID() const;
   bool HasUniqueID() const;
@@ -88,7 +88,7 @@ public:
   bool HasPremiered() const;
   const CDateTime& GetPremiered() const;
   const CDateTime& GetFirstAired() const;
-  const std::string GetCast(const std::string& separator, bool bIncludeRole = false) const;
+  std::string GetCast(const std::string& separator, bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
 

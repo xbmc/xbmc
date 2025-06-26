@@ -48,7 +48,7 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 namespace
 {
 // 0.1 second increments
-static constexpr int MAX_REFRESH_CHANGE_DELAY = 200;
+constexpr int MAX_REFRESH_CHANGE_DELAY = 200;
 
 const RESOLUTION_INFO EmptyResolution;
 RESOLUTION_INFO EmptyModifiableResolution;
@@ -648,8 +648,10 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
   else if (strResolution.size() >= 20)
   {
     // format: WWWWWHHHHHRRR.RRRRRP333, where W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
-    const int width = std::strtol(StringUtils::Mid(strResolution, 0, 5).c_str(), nullptr, 10);
-    const int height = std::strtol(StringUtils::Mid(strResolution, 5, 5).c_str(), nullptr, 10);
+    const auto width =
+        static_cast<int>(std::strtol(StringUtils::Mid(strResolution, 0, 5).c_str(), nullptr, 10));
+    const auto height =
+        static_cast<int>(std::strtol(StringUtils::Mid(strResolution, 5, 5).c_str(), nullptr, 10));
     const auto refresh =
         static_cast<float>(std::strtod(StringUtils::Mid(strResolution, 10, 9).c_str(), nullptr));
     unsigned flags = 0;
@@ -708,7 +710,7 @@ void CDisplaySettings::SettingOptionsModesFiller(const std::shared_ptr<const CSe
                                                  std::vector<StringSettingOption>& list,
                                                  std::string& current)
 {
-  for (unsigned int index = static_cast<unsigned int>(RES_CUSTOM);
+  for (auto index = static_cast<unsigned int>(RES_CUSTOM);
        index < CDisplaySettings::GetInstance().ResolutionInfoSize(); ++index)
   {
     const RESOLUTION_INFO& mode = CDisplaySettings::GetInstance().GetResolutionInfo(index);
@@ -730,7 +732,7 @@ void CDisplaySettings::SettingOptionsModesFiller(const std::shared_ptr<const CSe
 }
 
 void CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller(
-    const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
+    const SettingConstPtr& /*setting*/, std::vector<IntegerSettingOption>& list, int& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(13551), 0);
 
@@ -825,9 +827,9 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const SettingConstPtr& se
   }
 }
 
-void CDisplaySettings::SettingOptionsDispModeFiller(const SettingConstPtr& setting,
+void CDisplaySettings::SettingOptionsDispModeFiller(const SettingConstPtr& /*setting*/,
                                                     std::vector<IntegerSettingOption>& list,
-                                                    int& current)
+                                                    int& /*current*/)
 {
   // The user should only be able to disable windowed modes with the canwindowed
   // setting. When the user sets canwindowed to true but the windowing system
@@ -840,7 +842,7 @@ void CDisplaySettings::SettingOptionsDispModeFiller(const SettingConstPtr& setti
 }
 
 void CDisplaySettings::SettingOptionsStereoscopicModesFiller(
-    const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
+    const SettingConstPtr& /*setting*/, std::vector<IntegerSettingOption>& list, int& /*current*/)
 {
   CGUIComponent *gui = CServiceBroker::GetGUI();
   if (gui)
@@ -857,7 +859,7 @@ void CDisplaySettings::SettingOptionsStereoscopicModesFiller(
 }
 
 void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(
-    const SettingConstPtr& setting, std::vector<IntegerSettingOption>& list, int& current)
+    const SettingConstPtr& /*setting*/, std::vector<IntegerSettingOption>& list, int& /*current*/)
 {
   const CStereoscopicsManager &stereoscopicsManager = CServiceBroker::GetGUI()->GetStereoscopicsManager();
 
@@ -896,7 +898,7 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(const SettingConstPtr& setti
   bool foundMonitor = false;
   for (auto const& monitor : monitors)
   {
-    if(monitor == currentMonitor)
+    if (monitor == currentMonitor)
     {
       foundMonitor = true;
     }
@@ -920,9 +922,9 @@ void CDisplaySettings::ClearCustomResolutions()
   }
 }
 
-void CDisplaySettings::SettingOptionsCmsModesFiller(const SettingConstPtr& setting,
+void CDisplaySettings::SettingOptionsCmsModesFiller(const SettingConstPtr& /*setting*/,
                                                     std::vector<IntegerSettingOption>& list,
-                                                    int& current)
+                                                    int& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(36580), CMS_MODE_3DLUT);
 #ifdef HAVE_LCMS2
@@ -938,9 +940,9 @@ void CDisplaySettings::SettingOptionsCmsWhitepointsFiller(const SettingConstPtr&
   list.emplace_back(g_localizeStrings.Get(36587), CMS_WHITEPOINT_D93);
 }
 
-void CDisplaySettings::SettingOptionsCmsPrimariesFiller(const SettingConstPtr& setting,
+void CDisplaySettings::SettingOptionsCmsPrimariesFiller(const SettingConstPtr& /*setting*/,
                                                         std::vector<IntegerSettingOption>& list,
-                                                        int& current)
+                                                        int& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(36588), CMS_PRIMARIES_AUTO);
   list.emplace_back(g_localizeStrings.Get(36589), CMS_PRIMARIES_BT709);
@@ -951,9 +953,9 @@ void CDisplaySettings::SettingOptionsCmsPrimariesFiller(const SettingConstPtr& s
   list.emplace_back(g_localizeStrings.Get(36593), CMS_PRIMARIES_240M);
 }
 
-void CDisplaySettings::SettingOptionsCmsGammaModesFiller(const SettingConstPtr& setting,
+void CDisplaySettings::SettingOptionsCmsGammaModesFiller(const SettingConstPtr& /*setting*/,
                                                          std::vector<IntegerSettingOption>& list,
-                                                         int& current)
+                                                         int& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(36582), CMS_TRC_BT1886);
   list.emplace_back(g_localizeStrings.Get(36583), CMS_TRC_INPUT_OFFSET);

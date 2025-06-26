@@ -735,8 +735,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(const CDataCach
   float lastMarker = 0.0f;
   for (const auto& [_, chapterEnd] : chapters)
   {
-    float marker = chapterEnd * 1000 * 100.0f / duration;
-    if (marker != 0)
+    const float marker =
+        static_cast<float>(chapterEnd * 1000) * 100.0f / static_cast<float>(duration);
+    if (marker != 0.0f)
       ranges.emplace_back(lastMarker, marker);
 
     lastMarker = marker;

@@ -154,7 +154,7 @@ protected:
                             bool updateDisplayOnly = false) const;
   void SetControlLabel(int controlId, const CVariant& label);
 
-  BaseSettingControlPtr GetSettingControl(std::string_view setting);
+  BaseSettingControlPtr GetSettingControl(std::string_view setting) const;
   BaseSettingControlPtr GetSettingControl(int controlId);
 
   CGUIControl* AddSeparator(float width, int& iControlID);

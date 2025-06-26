@@ -934,7 +934,7 @@ void CGUIDialogSettingsBase::SetControlLabel(int controlId, const CVariant& labe
     SET_CONTROL_LABEL(controlId, "");
 }
 
-BaseSettingControlPtr CGUIDialogSettingsBase::GetSettingControl(std::string_view strSetting)
+BaseSettingControlPtr CGUIDialogSettingsBase::GetSettingControl(std::string_view strSetting) const
 {
   for (const auto& settingControl : m_settingControls)
   {

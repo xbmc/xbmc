@@ -39,6 +39,8 @@ namespace
 constexpr int MAX_COMPRESS_COUNT = 20;
 } // unnamed namespace
 
+CDatabase::Filter::Filter() = default;
+
 void CDatabase::Filter::AppendField(const std::string& strField)
 {
   if (strField.empty())
@@ -475,7 +477,7 @@ bool CDatabase::CommitInsertQueries()
   return bReturn;
 }
 
-size_t CDatabase::GetInsertQueriesCount()
+size_t CDatabase::GetInsertQueriesCount() const
 {
   return m_pDS2->insert_sql_count();
 }
@@ -513,7 +515,7 @@ bool CDatabase::CommitDeleteQueries()
   return bReturn;
 }
 
-size_t CDatabase::GetDeleteQueriesCount()
+size_t CDatabase::GetDeleteQueriesCount() const
 {
   return m_pDS->delete_sql_count();
 }
@@ -634,15 +636,16 @@ CDatabase::ConnectionState CDatabase::Connect(const std::string& dbName,
   const int state{m_pDB->connect(create)};
   switch (state)
   {
+    using enum ConnectionState;
     case DB_CONNECTION_OK:
       break;
     case DB_CONNECTION_DATABASE_NOT_FOUND:
-      return ConnectionState::STATE_DATABASE_NOT_FOUND;
+      return STATE_DATABASE_NOT_FOUND;
     case DB_CONNECTION_NONE:
-      return ConnectionState::STATE_ERROR;
+      return STATE_ERROR;
     default:
       CLog::LogF(LOGERROR, "Unhandled connection status: {}", state);
-      return ConnectionState::STATE_ERROR;
+      return STATE_ERROR;
   }
 
   try

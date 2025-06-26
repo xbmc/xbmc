@@ -27,9 +27,9 @@ void CPlayerSettings::SettingOptionsQueueTimeSizesFiller(const SettingConstPtr& 
   list.emplace_back(StringUtils::Format(seconds, 16), 160);
 }
 
-void CPlayerSettings::SettingOptionsQueueDataSizesFiller(const SettingConstPtr& setting,
+void CPlayerSettings::SettingOptionsQueueDataSizesFiller(const SettingConstPtr& /*setting*/,
                                                          std::vector<IntegerSettingOption>& list,
-                                                         int& current)
+                                                         int& /*current*/)
 {
   const std::string& mb = g_localizeStrings.Get(37122);
   const std::string& gb = g_localizeStrings.Get(37123);

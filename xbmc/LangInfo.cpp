@@ -1231,7 +1231,7 @@ std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use
   return preparedTimeFormat;
 }
 
-void CLangInfo::SettingOptionsLanguageNamesFiller(const SettingConstPtr& setting,
+void CLangInfo::SettingOptionsLanguageNamesFiller(const SettingConstPtr& /*setting*/,
                                                   std::vector<StringSettingOption>& list,
                                                   std::string& current)
 {
@@ -1246,9 +1246,9 @@ void CLangInfo::SettingOptionsLanguageNamesFiller(const SettingConstPtr& setting
   sort(list.begin(), list.end(), SortLanguage());
 }
 
-void CLangInfo::SettingOptionsISO6391LanguagesFiller(const SettingConstPtr& setting,
+void CLangInfo::SettingOptionsISO6391LanguagesFiller(const SettingConstPtr& /*setting*/,
                                                      std::vector<StringSettingOption>& list,
-                                                     std::string& current)
+                                                     std::string& /*current*/)
 {
   std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(
       CLangCodeExpander::ISO_639_1, CLangCodeExpander::LANG_LIST::INCLUDE_USERDEFINED);
@@ -1257,9 +1257,9 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(const SettingConstPtr& sett
     list.emplace_back(language, language);
 }
 
-void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(const SettingConstPtr& setting,
+void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(const SettingConstPtr& /*setting*/,
                                                          std::vector<StringSettingOption>& list,
-                                                         std::string& current)
+                                                         std::string& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(307), "mediadefault");
   list.emplace_back(g_localizeStrings.Get(308), "original");
@@ -1268,9 +1268,9 @@ void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(const SettingConstPtr& 
   AddLanguages(list);
 }
 
-void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(const SettingConstPtr& setting,
+void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(const SettingConstPtr& /*setting*/,
                                                             std::vector<StringSettingOption>& list,
-                                                            std::string& current)
+                                                            std::string& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(231), "none");
   list.emplace_back(g_localizeStrings.Get(13207), "forced_only");
@@ -1281,7 +1281,9 @@ void CLangInfo::SettingOptionsSubtitleStreamLanguagesFiller(const SettingConstPt
 }
 
 void CLangInfo::SettingOptionsSubtitleDownloadlanguagesFiller(
-    const SettingConstPtr& setting, std::vector<StringSettingOption>& list, std::string& current)
+    const SettingConstPtr& /*setting*/,
+    std::vector<StringSettingOption>& list,
+    std::string& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(308), "original");
   list.emplace_back(g_localizeStrings.Get(309), "default");

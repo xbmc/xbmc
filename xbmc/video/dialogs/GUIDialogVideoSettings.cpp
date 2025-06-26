@@ -535,9 +535,10 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(
   }
 }
 
-void CGUIDialogVideoSettings::VideoOrientationFiller(const std::shared_ptr<const CSetting>& setting,
-                                                     std::vector<IntegerSettingOption>& list,
-                                                     int& current)
+void CGUIDialogVideoSettings::VideoOrientationFiller(
+    const std::shared_ptr<const CSetting>& /*setting*/,
+    std::vector<IntegerSettingOption>& list,
+    int& /*current*/)
 {
   list.emplace_back(g_localizeStrings.Get(687), 0);
   list.emplace_back(g_localizeStrings.Get(35229), 90);

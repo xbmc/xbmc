@@ -105,9 +105,8 @@ void CGUIDialogPVRRecordingSettings::InitializeSettings()
   if (client && client->GetClientCapabilities().SupportsRecordingsLifetimeChange())
     setting = AddList(
         group, SETTING_RECORDING_LIFETIME, 19083, SettingLevel::Basic, m_iLifetime,
-        [this](const std::shared_ptr<const CSetting>& setting,
-               std::vector<IntegerSettingOption>& list, int& current)
-        { LifetimesFiller(setting, list, current); },
+        [this](const std::shared_ptr<const CSetting>& s, std::vector<IntegerSettingOption>& list,
+               int& current) { LifetimesFiller(s, list, current); },
         19083);
 }
 

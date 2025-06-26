@@ -127,7 +127,7 @@ void Dataset::set_select_sql(std::string_view sel_sql)
   select_sql = sel_sql;
 }
 
-void Dataset::parse_sql(std::string& sqlcmd)
+void Dataset::parse_sql(std::string& sqlcmd) const
 {
   std::string fpattern;
   std::string by_what;
@@ -412,9 +412,9 @@ bool Dataset::locate()
   while (!eof())
   {
     ret = true;
-    for (const auto& param : plist)
+    for (const auto& [name, value] : plist)
     {
-      if (fv(param.first.c_str()).get_asString() == param.second.get_asString())
+      if (fv(name.c_str()).get_asString() == value.get_asString())
       {
         continue;
       }
@@ -448,9 +448,9 @@ bool Dataset::findNext()
   while (!eof())
   {
     ret = true;
-    for (const auto& param : plist)
+    for (const auto& [name, value] : plist)
     {
-      if (fv(param.first.c_str()).get_asString() == param.second.get_asString())
+      if (fv(name.c_str()).get_asString() == value.get_asString())
       {
         continue;
       }

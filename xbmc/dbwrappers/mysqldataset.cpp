@@ -717,31 +717,26 @@ namespace
 /* vsprintf() functionality is based on sqlite3.c functions */
 
 /*
- ** An "etByte" is an 8-bit unsigned value.
- */
-using etByte = unsigned char;
-
-/*
  ** Conversion types fall into various categories as defined by the
  ** following enumeration.
  */
-constexpr etByte etRADIX = 1; /* Integer types.  %d, %x, %o, and so forth */
-constexpr etByte etFLOAT = 2; /* Floating point.  %f */
-constexpr etByte etEXP = 3; /* Exponential notation. %e and %E */
-constexpr etByte etGENERIC = 4; /* Floating or exponential, depending on exponent. %g */
-constexpr etByte etSIZE = 5; /* Return number of characters processed so far. %n */
-constexpr etByte etSTRING = 6; /* Strings. %s */
-constexpr etByte etDYNSTRING = 7; /* Dynamically allocated strings. %z */
-constexpr etByte etPERCENT = 8; /* Percent symbol. %% */
-constexpr etByte etCHARX = 9; /* Characters. %c */
+constexpr uint8_t etRADIX = 1; /* Integer types.  %d, %x, %o, and so forth */
+constexpr uint8_t etFLOAT = 2; /* Floating point.  %f */
+constexpr uint8_t etEXP = 3; /* Exponential notation. %e and %E */
+constexpr uint8_t etGENERIC = 4; /* Floating or exponential, depending on exponent. %g */
+constexpr uint8_t etSIZE = 5; /* Return number of characters processed so far. %n */
+constexpr uint8_t etSTRING = 6; /* Strings. %s */
+constexpr uint8_t etDYNSTRING = 7; /* Dynamically allocated strings. %z */
+constexpr uint8_t etPERCENT = 8; /* Percent symbol. %% */
+constexpr uint8_t etCHARX = 9; /* Characters. %c */
 /* The rest are extensions, not normally found in printf() */
-constexpr etByte etSQLESCAPE = 10; /* Strings with '\'' doubled. Strings with '\\' escaped.  %q */
-constexpr etByte etSQLESCAPE2 =
+constexpr uint8_t etSQLESCAPE = 10; /* Strings with '\'' doubled. Strings with '\\' escaped.  %q */
+constexpr uint8_t etSQLESCAPE2 =
     11; /* Strings with '\'' doubled and enclosed in '', NULL pointers replaced by SQL NULL.  %Q */
-constexpr etByte etPOINTER = 14; /* The %p conversion */
-constexpr etByte etSQLESCAPE3 = 15; /* %w -> Strings with '\"' doubled */
+constexpr uint8_t etPOINTER = 14; /* The %p conversion */
+constexpr uint8_t etSQLESCAPE3 = 15; /* %w -> Strings with '\"' doubled */
 
-constexpr etByte etINVALID = 0; /* Any unrecognized conversion type */
+constexpr uint8_t etINVALID = 0; /* Any unrecognized conversion type */
 
 /*
  ** Each builtin conversion character (ex: the 'd' in "%d") is described
@@ -750,19 +745,19 @@ constexpr etByte etINVALID = 0; /* Any unrecognized conversion type */
 struct et_info
 { /* Information about each format field */
   char fmttype; /* The format field code letter */
-  etByte base; /* The base for radix conversion */
-  etByte flags; /* One or more of FLAG_ constants below */
-  etByte type; /* Conversion paradigm */
-  etByte charset; /* Offset into aDigits[] of the digits string */
-  etByte prefix; /* Offset into aPrefix[] of the prefix string */
+  uint8_t base; /* The base for radix conversion */
+  uint8_t flags; /* One or more of FLAG_ constants below */
+  uint8_t type; /* Conversion paradigm */
+  uint8_t charset; /* Offset into aDigits[] of the digits string */
+  uint8_t prefix; /* Offset into aPrefix[] of the prefix string */
 };
 
 /*
  ** Allowed values for et_info.flags
  */
-constexpr etByte FLAG_SIGNED = 1; /* True if the value to convert is signed */
-constexpr etByte FLAG_INTERN = 2; /* True if for internal use only */
-constexpr etByte FLAG_STRING = 4; /* Allow infinity precision */
+constexpr uint8_t FLAG_SIGNED = 1; /* True if the value to convert is signed */
+constexpr uint8_t FLAG_INTERN = 2; /* True if for internal use only */
+constexpr uint8_t FLAG_STRING = 4; /* Allow infinity precision */
 
 /*
  ** The following table is searched linearly, so it is good to put the
@@ -866,7 +861,7 @@ private:
     if (m_zText != m_zBase)
       free(m_zText);
 
-    m_zText = 0;
+    m_zText = nullptr;
   }
 
   /*
@@ -909,7 +904,7 @@ private:
     if ((*cnt)++ >= 16)
       return '0';
 
-    int digit = static_cast<int>(*val);
+    auto digit = static_cast<int>(*val);
     double d = digit;
     digit += '0';
     *val = (*val - d) * 10.0;
@@ -936,28 +931,28 @@ void CStrAccum::VXPrintf(MYSQL* conn,
   int length; /* Length of the field */
   int idx; /* A general purpose loop counter */
   int width; /* Width of the current field */
-  etByte flag_leftjustify; /* True if "-" flag is present */
-  etByte flag_plussign; /* True if "+" flag is present */
-  etByte flag_blanksign; /* True if " " flag is present */
-  etByte flag_alternateform; /* True if "#" flag is present */
-  etByte flag_altform2; /* True if "!" flag is present */
-  etByte flag_zeropad; /* True if field width constant starts with zero */
-  etByte flag_long; /* True if "l" flag is present */
-  etByte flag_longlong; /* True if the "ll" flag is present */
-  etByte done; /* Loop termination flag */
+  bool flag_leftjustify; /* True if "-" flag is present */
+  bool flag_plussign; /* True if "+" flag is present */
+  bool flag_blanksign; /* True if " " flag is present */
+  bool flag_alternateform; /* True if "#" flag is present */
+  bool flag_altform2; /* True if "!" flag is present */
+  bool flag_zeropad; /* True if field width constant starts with zero */
+  bool flag_long; /* True if "l" flag is present */
+  bool flag_longlong; /* True if the "ll" flag is present */
+  bool done; /* Loop termination flag */
   uint64_t longvalue; /* Value for integer types */
   double realvalue; /* Value for real types */
   const et_info* infop; /* Pointer to the appropriate info structure */
   char buf[etBUFSIZE]; /* Conversion buffer */
   char prefix; /* Prefix character.  "+" or "-" or " " or '\0'. */
-  etByte xtype = 0; /* Conversion paradigm */
+  uint8_t xtype = 0; /* Conversion paradigm */
   char* zExtra; /* Extra memory used for etTCLESCAPE conversions */
   int exp;
   int e2; /* exponent of real numbers */
   double rounder; /* Used for rounding floating point values */
-  etByte flag_dp; /* True if decimal point should be shown */
-  etByte flag_rtz; /* True if trailing zeros should be removed */
-  etByte flag_exp; /* True to force display of the exponent */
+  bool flag_dp; /* True if decimal point should be shown */
+  bool flag_rtz; /* True if trailing zeros should be removed */
+  bool flag_exp; /* True to force display of the exponent */
   int nsd; /* Number of significant digits returned */
 
   length = 0;
@@ -1592,7 +1587,7 @@ bool CStrAccum::Append(const char* z, int n)
   {
     n = static_cast<int>(strlen(z));
   }
-  if (n == 0 || z == 0)
+  if (n == 0 || z == nullptr)
   {
     return false;
   }
@@ -1643,12 +1638,13 @@ bool CStrAccum::Append(const char* z, int n)
 
 size_t ci_find(std::string_view where, std::string_view what)
 {
-  const auto loc = std::search(where.begin(), where.end(), what.begin(), what.end(),
-                               [](char l, char r) { return std::tolower(l) == std::tolower(r); });
-  if (loc == where.end())
+  const auto found =
+      std::ranges::search(where.cbegin(), where.cend(), what.cbegin(), what.cend(),
+                          [](char l, char r) { return std::tolower(l) == std::tolower(r); });
+  if (found.empty())
     return std::string::npos;
   else
-    return loc - where.begin();
+    return std::distance(where.cbegin(), found.begin());
 }
 
 } // unnamed namespace

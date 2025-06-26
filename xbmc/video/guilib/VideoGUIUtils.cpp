@@ -648,11 +648,10 @@ std::string GetResumeString(int64_t startOffset, unsigned int partNumber)
 {
   if (startOffset > 0)
   {
-    std::string resumeString{
-        StringUtils::Format(g_localizeStrings.Get(12022),
-                            StringUtils::SecondsToTimeString(
-                                static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)),
-                                TIME_FORMAT_HH_MM_SS))};
+    std::string resumeString{StringUtils::Format(
+        g_localizeStrings.Get(12022),
+        StringUtils::SecondsToTimeString(CUtil::ConvertMilliSecsToSecsInt(startOffset),
+                                         TIME_FORMAT_HH_MM_SS))};
     if (partNumber > 0)
     {
       const std::string partString{StringUtils::Format(g_localizeStrings.Get(23051), partNumber)};
