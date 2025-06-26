@@ -981,11 +981,12 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture border="4">DefaultVideo.png</texture>
+							<texture>$INFO[ListItem.Icon]</texture>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="gamewindow">
+							<visible>!String.IsEmpty(ListItem.Property(game.videofilter))</visible>
 							<width>444</width>
 							<height>250</height>
 							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
@@ -1012,11 +1013,12 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture border="4">DefaultVideo.png</texture>
+							<texture>$INFO[ListItem.Icon]</texture>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="gamewindow">
+							<visible>!String.IsEmpty(ListItem.Property(game.videofilter))</visible>
 							<width>444</width>
 							<height>250</height>
 							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
