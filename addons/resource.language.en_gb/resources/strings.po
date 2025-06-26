@@ -19102,7 +19102,25 @@ msgctxt "#35236"
 msgid "In this release, only controllers can be used to play games."
 msgstr ""
 
-#empty strings from id 35237 to 35248
+#. Label of thumbnail in the in-game menu for normal size with 1:1 pixel aspect ratio (PAR)
+#: xbmc/games/dialogs/osd/DialogGameStretchMode.cpp
+msgctxt "#35237"
+msgid "Normal (1:1 PAR)"
+msgstr ""
+
+#. Label of thumbnail in the in-game menu for integer underscaling
+#: xbmc/games/dialogs/osd/DialogGameStretchMode.cpp
+msgctxt "#35238"
+msgid "Integer"
+msgstr ""
+
+#. Label of thumbnail in the in-game menu for integer underscaling with 1:1 pixel aspect ratio (PAR)
+#: xbmc/games/dialogs/osd/DialogGameStretchMode.cpp
+msgctxt "#35239"
+msgid "Integer (1:1 PAR)"
+msgstr ""
+
+#empty strings from id 35240 to 35248
 
 #. Button to open the savestate manager from the game OSD
 #: addons/skin.estuary/xml/GameOSD.xml

@@ -24,10 +24,14 @@ using namespace GAME;
 const std::vector<CDialogGameStretchMode::StretchModeProperties>
     CDialogGameStretchMode::m_allStretchModes = {
         {630, RETRO::STRETCHMODE::Normal},
+        {35237, RETRO::STRETCHMODE::Normal1x1},
         //  { 631,   RETRO::STRETCHMODE::Zoom }, //! @todo RetroArch allows trimming some outer
         //  pixels
         {632, RETRO::STRETCHMODE::Stretch4x3},
+        {634, RETRO::STRETCHMODE::Stretch16x9},
         {35232, RETRO::STRETCHMODE::Fullscreen},
+        {35238, RETRO::STRETCHMODE::Integer},
+        {35239, RETRO::STRETCHMODE::Integer1x1},
         {635, RETRO::STRETCHMODE::Original},
 };
 
@@ -52,12 +56,16 @@ void CDialogGameStretchMode::PreInit()
     switch (stretchMode.stretchMode)
     {
       case RETRO::STRETCHMODE::Normal:
+      case RETRO::STRETCHMODE::Normal1x1:
       case RETRO::STRETCHMODE::Original:
         bSupported = true;
         break;
 
       case RETRO::STRETCHMODE::Stretch4x3:
+      case RETRO::STRETCHMODE::Stretch16x9:
       case RETRO::STRETCHMODE::Fullscreen:
+      case RETRO::STRETCHMODE::Integer:
+      case RETRO::STRETCHMODE::Integer1x1:
         if (m_gameVideoHandle)
         {
           bSupported = m_gameVideoHandle->SupportsRenderFeature(RETRO::RENDERFEATURE::STRETCH) ||

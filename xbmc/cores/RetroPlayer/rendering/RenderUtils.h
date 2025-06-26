@@ -26,7 +26,6 @@ public:
                                    unsigned int sourceHeight,
                                    float screenWidth,
                                    float screenHeight,
-                                   float displayAspectRatio,
                                    float& pixelRatio,
                                    float& zoomAmount);
 

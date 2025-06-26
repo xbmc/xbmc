@@ -95,8 +95,8 @@ void CShaderPreset::SetVideoSize(unsigned int videoWidth, unsigned int videoHeig
 
 bool CShaderPreset::SetShaderPreset(const std::string& shaderPresetPath)
 {
-  m_bPresetNeedsUpdate = true;
   m_presetPath = shaderPresetPath;
+  m_bPresetNeedsUpdate = true;
   return Update();
 }
 
@@ -159,13 +159,6 @@ bool CShaderPreset::Update()
   return true;
 }
 
-void CShaderPreset::UpdateViewPort()
-{
-  CRect viewPort;
-  m_context.GetViewPort(viewPort);
-  UpdateViewPort(viewPort);
-}
-
 void CShaderPreset::UpdateViewPort(CRect viewPort)
 {
   const float2 currentViewPortSize = {viewPort.Width(), viewPort.Height()};
@@ -173,7 +166,6 @@ void CShaderPreset::UpdateViewPort(CRect viewPort)
   {
     m_outputSize = currentViewPortSize;
     m_bPresetNeedsUpdate = true;
-    Update();
   }
 }
 
@@ -187,18 +179,10 @@ void CShaderPreset::PrepareParameters(const CPoint dest[],
                                       IShaderTexture& source,
                                       IShaderTexture& target)
 {
-  if (m_dest[0] != dest[0] || m_dest[1] != dest[1] || m_dest[2] != dest[2] ||
-      m_dest[3] != dest[3] || target.GetWidth() != m_outputSize.x ||
-      target.GetHeight() != m_outputSize.y)
+  if (m_dest[0] != dest[0] || m_dest[1] != dest[1] || m_dest[2] != dest[2] || m_dest[3] != dest[3])
   {
     for (size_t i = 0; i < 4; ++i)
       m_dest[i] = dest[i];
-
-    m_outputSize = {target.GetWidth(), target.GetHeight()};
-
-    // Update projection matrix and update video shaders
-    UpdateMVPs();
-    UpdateViewPort();
   }
 
   const unsigned int numPasses = static_cast<unsigned int>(m_pShaders.size());
