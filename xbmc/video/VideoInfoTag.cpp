@@ -898,6 +898,11 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   }
 }
 
+int CVideoInfoTag::GetDatabaseId() const
+{
+  return m_iDbId;
+}
+
 CRating CVideoInfoTag::GetRating(std::string type) const
 {
   if (type.empty())
