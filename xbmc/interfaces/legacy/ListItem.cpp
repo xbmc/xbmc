@@ -161,7 +161,7 @@ namespace XBMCAddon
       if (!item)
         return;
 
-      std::map<String, String> uniqueIDs;
+      std::map<String, String, std::less<>> uniqueIDs;
       for (const auto& it : dictionary)
         uniqueIDs.emplace(it.first, it.second);
 

@@ -375,7 +375,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       m_castList->Add(item);
     }
     // get performers in the music video (added as actors)
-    for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin();
+    for (auto it = m_movieItem->GetVideoInfoTag()->m_cast.begin();
          it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
     {
       // Check to see if we have already added this performer as the artist and skip adding if so
@@ -416,7 +416,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   }
   else
   { // movie/show/season/episode
-    for (CVideoInfoTag::iCast it = m_movieItem->GetVideoInfoTag()->m_cast.begin(); it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
+    for (auto it = m_movieItem->GetVideoInfoTag()->m_cast.begin();
+         it != m_movieItem->GetVideoInfoTag()->m_cast.end(); ++it)
     {
       CFileItemPtr item(new CFileItem(it->strName));
       if (!it->thumb.empty())

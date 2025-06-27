@@ -10,8 +10,10 @@
 
 #include <map>
 #include <string>
+#include <string_view>
 
 using MediaType = std::string;
+using MediaType_view = std::string_view;
 
 #define MediaTypeNone             ""
 #define MediaTypeMusic            "music"

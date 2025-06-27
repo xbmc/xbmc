@@ -61,8 +61,6 @@ namespace dbiplus
 #endif
 #endif
 
-typedef std::vector<CVideoInfoTag> VECMOVIES;
-
 namespace KODI::VIDEO
 {
   class IVideoInfoScannerObserver;
@@ -490,7 +488,7 @@ public:
   {
   public:
     std::string name;
-    VECMOVIES movies;
+    std::vector<CVideoInfoTag> movies;
     DatabaseResults results;
   };
 

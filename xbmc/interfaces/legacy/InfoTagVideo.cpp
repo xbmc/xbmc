@@ -375,7 +375,7 @@ namespace XBMCAddon
       setUniqueIDRaw(infoTag, uniqueID, type, isDefault);
     }
 
-    void InfoTagVideo::setUniqueIDs(const std::map<String, String>& uniqueIDs,
+    void InfoTagVideo::setUniqueIDs(const std::map<String, String, std::less<>>& uniqueIDs,
                                     const String& defaultUniqueID /* = "" */)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
@@ -760,7 +760,7 @@ namespace XBMCAddon
     }
 
     void InfoTagVideo::setUniqueIDsRaw(CVideoInfoTag* infoTag,
-                                       std::map<String, String> uniqueIDs,
+                                       std::map<String, String, std::less<>> uniqueIDs,
                                        const String& defaultUniqueID /* = "" */)
     {
       infoTag->SetUniqueIDs(uniqueIDs);

@@ -17,6 +17,7 @@
 #include "video/Bookmark.h"
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CArchive;
@@ -36,7 +37,7 @@ struct SActorInfo
   std::string strRole;
   CScraperUrl thumbUrl;
   std::string thumb;
-  int        order = -1;
+  int order{-1};
 };
 
 class CRating
@@ -48,13 +49,13 @@ public:
   float rating = 0.0f;
   int votes = 0;
 };
-typedef std::map<std::string, CRating> RatingMap;
+using RatingMap = std::map<std::string, CRating, std::less<>>;
 
 class CVideoInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
   CVideoInfoTag() { Reset(); }
-  virtual ~CVideoInfoTag() = default;
+  ~CVideoInfoTag() override = default;
   virtual void Reset();
   /* \brief Load information to a videoinfotag from an XML element
    There are three types of tags supported:
@@ -72,7 +73,10 @@ public:
    \sa ParseNative
    */
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
-  bool Save(TiXmlNode *node, const std::string &tag, bool savePathInfo = true, const TiXmlElement *additionalNode = NULL);
+  bool Save(TiXmlNode* node,
+            const std::string& tag,
+            bool savePathInfo = true,
+            const TiXmlElement* additionalNode = nullptr);
   void Merge(CVideoInfoTag& other);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
@@ -81,7 +85,7 @@ public:
   CRating GetRating(std::string type = "") const;
   const std::string& GetDefaultRating() const;
   std::string GetUniqueID(std::string type = "") const;
-  const std::map<std::string, std::string>& GetUniqueIDs() const;
+  const std::map<std::string, std::string, std::less<>>& GetUniqueIDs() const;
   const std::string& GetDefaultUniqueID() const;
   bool HasUniqueID() const;
   virtual bool HasYear() const;
@@ -133,14 +137,14 @@ public:
   std::string const& GetTitle() const;
   void SetTitle(std::string title);
   void SetSortTitle(std::string sortTitle);
-  void SetPictureURL(CScraperUrl &pictureURL);
+  void SetPictureURL(const CScraperUrl& pictureURL);
   void SetRating(float rating, int votes, const std::string& type = "", bool def = false);
   void SetRating(CRating rating, const std::string& type = "", bool def = false);
   void SetRating(float rating, const std::string& type = "", bool def = false);
   void RemoveRating(const std::string& type);
   void SetRatings(RatingMap ratings, const std::string& defaultRating = "");
   void SetVotes(int votes, const std::string& type = "");
-  void SetUniqueIDs(std::map<std::string, std::string> uniqueIDs);
+  void SetUniqueIDs(std::map<std::string, std::string, std::less<>> uniqueIDs);
   void SetPremiered(const CDateTime& premiered);
   void SetPremieredFromDBDate(const std::string& premieredString);
   virtual void SetYear(int year);
@@ -160,7 +164,7 @@ public:
   void SetStudio(std::vector<std::string> studio);
   void SetAlbum(std::string album);
   void SetShowLink(std::vector<std::string> showLink);
-  void SetUniqueID(const std::string& uniqueid, const std::string& type = "", bool def = false);
+  void SetUniqueID(std::string_view uniqueid, const std::string& type = "", bool def = false);
   void RemoveUniqueID(const std::string& type);
   void SetNamedSeasons(std::map<int, std::string> namedSeasons);
   void SetUserrating(int userrating);
@@ -226,7 +230,7 @@ public:
      * @brief Store all data to XML.
      * @param movie The XML element to write the data to.
      */
-    void Save(TiXmlNode* movie);
+    void Save(TiXmlNode* movie) const;
 
     /*!
      * @brief Restore all data from XML.
@@ -238,7 +242,7 @@ public:
      * @brief Merge in all valid data from another asset info.
      * @param other The other asset info.
      */
-    void Merge(CAssetInfo& other);
+    void Merge(const CAssetInfo& other);
 
     /*!
      * @brief Serialize all data.
@@ -361,8 +365,7 @@ public:
   std::string m_strTitle;
   std::string m_strSortTitle;
   std::vector<std::string> m_artist;
-  std::vector< SActorInfo > m_cast;
-  typedef std::vector< SActorInfo >::const_iterator iCast;
+  std::vector<SActorInfo> m_cast;
   struct SetInfo //!< Struct holding information about a movie set
   {
     std::string title; //!< Title of the movie set
@@ -428,9 +431,9 @@ private:
 
   std::string m_strDefaultRating;
   std::string m_strDefaultUniqueID;
-  std::map<std::string, std::string> m_uniqueIDs;
-  std::string Trim(std::string &&value);
-  std::vector<std::string> Trim(std::vector<std::string> &&items);
+  std::map<std::string, std::string, std::less<>> m_uniqueIDs;
+  std::string Trim(std::string&& value) const;
+  std::vector<std::string> Trim(std::vector<std::string>&& items) const;
 
   int m_playCount;
   CBookmark m_resumePoint;
@@ -443,5 +446,3 @@ private:
 
   bool m_updateSetOverview{true};
 };
-
-typedef std::vector<CVideoInfoTag> VECMOVIES;
