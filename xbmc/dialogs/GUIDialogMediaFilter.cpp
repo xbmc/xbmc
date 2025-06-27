@@ -671,7 +671,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     if (!videodb.Open())
       return -1;
 
-    std::set<std::string> playlists;
+    std::set<std::string, std::less<>> playlists;
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(videodb, playlists);
 
@@ -702,7 +702,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     if (!musicdb.Open())
       return -1;
 
-    std::set<std::string> playlists;
+    std::set<std::string, std::less<>> playlists;
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(musicdb, playlists);
 
@@ -805,19 +805,19 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
       if (m_mediaType == "movies")
       {
         table = "movie_view";
-        year = DatabaseUtils::GetField(FieldYear, MediaTypeMovie, DatabaseQueryPartWhere);
+        year = DatabaseUtils::GetField(FieldYear, MediaTypeMovie, DatabaseQueryPart::WHERE);
       }
       else if (m_mediaType == "tvshows")
       {
         table = "tvshow_view";
         year = StringUtils::Format(
             "strftime(\"%%Y\", {})",
-            DatabaseUtils::GetField(FieldYear, MediaTypeTvShow, DatabaseQueryPartWhere));
+            DatabaseUtils::GetField(FieldYear, MediaTypeTvShow, DatabaseQueryPart::WHERE));
       }
       else if (m_mediaType == "musicvideos")
       {
         table = "musicvideo_view";
-        year = DatabaseUtils::GetField(FieldYear, MediaTypeMusicVideo, DatabaseQueryPartWhere);
+        year = DatabaseUtils::GetField(FieldYear, MediaTypeMusicVideo, DatabaseQueryPart::WHERE);
       }
 
       CDatabase::Filter filter;
@@ -835,8 +835,13 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
         return;
 
       CDatabase::Filter filter;
-      filter.where = DatabaseUtils::GetField(FieldYear, CMediaTypes::FromString(m_mediaType), DatabaseQueryPartWhere) + " > 0";
-      GetMinMax(table, DatabaseUtils::GetField(FieldYear, CMediaTypes::FromString(m_mediaType), DatabaseQueryPartSelect), min, max, filter);
+      filter.where = DatabaseUtils::GetField(FieldYear, CMediaTypes::FromString(m_mediaType),
+                                             DatabaseQueryPart::WHERE) +
+                     " > 0";
+      GetMinMax(table,
+                DatabaseUtils::GetField(FieldYear, CMediaTypes::FromString(m_mediaType),
+                                        DatabaseQueryPart::SELECT),
+                min, max, filter);
     }
   }
   else if (filter.field == FieldAirDate)

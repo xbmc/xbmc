@@ -21,19 +21,20 @@ MediaType DatabaseUtils::MediaTypeFromVideoContentType(VideoDbContentType videoC
 {
   switch (videoContentType)
   {
-    case VideoDbContentType::MOVIES:
+    using enum VideoDbContentType;
+    case MOVIES:
       return MediaTypeMovie;
 
-    case VideoDbContentType::MOVIE_SETS:
+    case MOVIE_SETS:
       return MediaTypeVideoCollection;
 
-    case VideoDbContentType::TVSHOWS:
+    case TVSHOWS:
       return MediaTypeTvShow;
 
-    case VideoDbContentType::EPISODES:
+    case EPISODES:
       return MediaTypeEpisode;
 
-    case VideoDbContentType::MUSICVIDEOS:
+    case MUSICVIDEOS:
       return MediaTypeMusicVideo;
 
     default:
@@ -182,7 +183,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldTitle)
     {
       // We need some extra logic to get the title value if sorttitle isn't set
-      if (queryPart == DatabaseQueryPartOrderBy)
+      if (queryPart == DatabaseQueryPart::ORDER_BY)
         result = StringUtils::Format("CASE WHEN length(movie_view.c{:02}) > 0 THEN "
                                      "movie_view.c{:02} ELSE movie_view.c{:02} END",
                                      VIDEODB_ID_SORTTITLE, VIDEODB_ID_SORTTITLE, VIDEODB_ID_TITLE);
@@ -242,7 +243,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldTitle)
     {
       // We need some extra logic to get the title value if sorttitle isn't set
-      if (queryPart == DatabaseQueryPartOrderBy)
+      if (queryPart == DatabaseQueryPart::ORDER_BY)
         result = StringUtils::Format("CASE WHEN length(tvshow_view.c{:02}) > 0 THEN "
                                      "tvshow_view.c{:02} ELSE tvshow_view.c{:02} END",
                                      VIDEODB_ID_TV_SORTTITLE, VIDEODB_ID_TV_SORTTITLE,
@@ -324,7 +325,7 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
       return result;
   }
 
-  if (field == FieldRandom && queryPart == DatabaseQueryPartOrderBy)
+  if (field == FieldRandom && queryPart == DatabaseQueryPart::ORDER_BY)
     return "RANDOM()";
 
   return "";
@@ -370,18 +371,18 @@ bool DatabaseUtils::GetSelectFields(const Fields &fields, const MediaType &media
     sortFields.insert(FieldArtist);
 
   selectFields.clear();
-  for (Fields::const_iterator it = sortFields.begin(); it != sortFields.end(); ++it)
+  for (const auto& field : sortFields)
   {
     // ignore FieldLabel because it needs special handling (see further up)
-    if (*it == FieldLabel)
+    if (field == FieldLabel)
       continue;
 
-    if (GetField(*it, mediaType, DatabaseQueryPartSelect).empty())
+    if (GetField(field, mediaType, DatabaseQueryPart::SELECT).empty())
     {
-      CLog::Log(LOGDEBUG, "DatabaseUtils::GetSortFieldList: unknown field {}", *it);
+      CLog::Log(LOGDEBUG, "DatabaseUtils::GetSortFieldList: unknown field {}", field);
       continue;
     }
-    selectFields.push_back(*it);
+    selectFields.emplace_back(field);
   }
 
   return !selectFields.empty();
@@ -414,7 +415,7 @@ bool DatabaseUtils::GetFieldValue(const dbiplus::field_value &fieldValue, CVaria
       variantValue = fieldValue.get_asShort();
       return true;
     case ft_UShort:
-      variantValue = fieldValue.get_asShort();
+      variantValue = fieldValue.get_asUShort();
       return true;
     case ft_Int:
       variantValue = fieldValue.get_asInt();
@@ -437,13 +438,16 @@ bool DatabaseUtils::GetFieldValue(const dbiplus::field_value &fieldValue, CVaria
   return false;
 }
 
-bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldList &fields, const std::unique_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results)
+bool DatabaseUtils::GetDatabaseResults(const MediaType& mediaType,
+                                       const FieldList& fields,
+                                       dbiplus::Dataset& dataset,
+                                       DatabaseResults& results)
 {
-  if (dataset->num_rows() == 0)
+  if (dataset.num_rows() == 0)
     return true;
 
-  const dbiplus::result_set &resultSet = dataset->get_result_set();
-  unsigned int offset = results.size();
+  const dbiplus::result_set& resultSet = dataset.get_result_set();
+  const unsigned int offset = static_cast<unsigned int>(results.size());
 
   if (fields.empty())
   {
@@ -462,8 +466,8 @@ bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldLi
 
   std::vector<int> fieldIndexLookup;
   fieldIndexLookup.reserve(fields.size());
-  for (FieldList::const_iterator it = fields.begin(); it != fields.end(); ++it)
-    fieldIndexLookup.push_back(GetFieldIndex(*it, mediaType));
+  for (const auto& field : fields)
+    fieldIndexLookup.push_back(GetFieldIndex(field, mediaType));
 
   results.reserve(resultSet.records.size() + offset);
   for (unsigned int index = 0; index < resultSet.records.size(); index++)
@@ -472,14 +476,16 @@ bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldLi
     result[FieldRow] = index + offset;
 
     unsigned int lookupIndex = 0;
-    for (FieldList::const_iterator it = fields.begin(); it != fields.end(); ++it)
+    for (const auto& field : fields)
     {
-      int fieldIndex = fieldIndexLookup[lookupIndex++];
+      const int fieldIndex = fieldIndexLookup[lookupIndex];
       if (fieldIndex < 0)
         return false;
 
+      lookupIndex++;
+
       std::pair<Field, CVariant> value;
-      value.first = *it;
+      value.first = field;
       if (!GetFieldValue(resultSet.records[index]->at(fieldIndex), value.second))
         CLog::Log(LOGWARNING, "GetDatabaseResults: unable to retrieve value of field {}",
                   resultSet.record_header[fieldIndex].name);

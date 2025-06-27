@@ -43,7 +43,7 @@ bool CDirectoryNodeInProgressTvShows::GetContent(CFileItemList& items) const
   int details = items.HasProperty("set_videodb_details")
                     ? items.GetProperty("set_videodb_details").asInteger32()
                     : VideoDbDetailsNone;
-  bool bSuccess = videodatabase.GetInProgressTvShowsNav(BuildPath(), items, 0, details);
+  bool bSuccess = videodatabase.GetInProgressTvShowsNav(BuildPath(), items, details);
 
   videodatabase.Close();
 

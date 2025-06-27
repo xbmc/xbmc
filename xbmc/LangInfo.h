@@ -191,14 +191,14 @@ public:
   void SetCurrentRegion(const std::string& strName);
   const std::string& GetCurrentRegion() const;
 
-  std::set<std::string> GetSortTokens() const;
+  using Tokens = std::set<std::string, std::less<>>;
+  Tokens GetSortTokens() const;
 
   static std::string GetLanguagePath() { return "resource://"; }
   static std::string GetLanguagePath(const std::string &language);
   static std::string GetLanguageInfoPath(const std::string &language);
   bool UseLocaleCollation();
 
-  using Tokens = std::set<std::string, std::less<>>;
   static void LoadTokens(const TiXmlNode* pTokens, Tokens& vecTokens);
 
   static void SettingOptionsLanguageNamesFiller(const std::shared_ptr<const CSetting>& setting,
@@ -315,7 +315,7 @@ protected:
   std::string m_strDVDMenuLanguage;
   std::string m_strDVDAudioLanguage;
   std::string m_strDVDSubtitleLanguage;
-  std::set<std::string> m_sortTokens;
+  Tokens m_sortTokens;
 
   std::string m_shortDateFormat;
   std::string m_longDateFormat;

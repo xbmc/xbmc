@@ -154,7 +154,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
     return InvalidParams;
 
   int total;
-  std::set<std::string> fields;
+  std::set<std::string, std::less<>> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
     for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
@@ -255,7 +255,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
     return InvalidParams;
 
   int total;
-  std::set<std::string> fields;
+  std::set<std::string, std::less<>> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
     for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
@@ -405,7 +405,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
     return InvalidParams;
 
   int total;
-  std::set<std::string> fields;
+  std::set<std::string, std::less<>> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
     for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
@@ -796,7 +796,7 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const std::string &method, ITrans
     // Get current artwork
     musicdatabase.GetArtForItem(artist.idArtist, MediaTypeArtist, artist.art);
 
-    std::set<std::string> removedArtwork;
+    std::set<std::string, std::less<>> removedArtwork;
     CVariant art = parameterObject["art"];
     for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); ++artIt)
     {
@@ -902,7 +902,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
     // Get current artwork
     musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, album.art);
 
-    std::set<std::string> removedArtwork;
+    std::set<std::string, std::less<>> removedArtwork;
     CVariant art = parameterObject["art"];
     for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); ++artIt)
     {
@@ -1008,7 +1008,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
     KODI::ART::Artwork artwork;
     musicdatabase.GetArtForItem(song.idSong, MediaTypeSong, artwork);
 
-    std::set<std::string> removedArtwork;
+    std::set<std::string, std::less<>> removedArtwork;
     CVariant art = parameterObject["art"];
     for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); ++artIt)
     {

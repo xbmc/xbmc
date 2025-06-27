@@ -1153,11 +1153,15 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
 std::string CSmartPlaylistRule::GetField(int field, const std::string &type) const
 {
   if (field >= FieldUnknown && field < FieldMax)
-    return DatabaseUtils::GetField((Field)field, CMediaTypes::FromString(type), DatabaseQueryPartWhere);
+    return DatabaseUtils::GetField(static_cast<Field>(field), CMediaTypes::FromString(type),
+                                   DatabaseQueryPart::WHERE);
   return "";
 }
 
-std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const std::string& strType, std::set<std::string> &referencedPlaylists) const
+std::string CSmartPlaylistRuleCombination::GetWhereClause(
+    const CDatabase& db,
+    const std::string& strType,
+    std::set<std::string, std::less<>>& referencedPlaylists) const
 {
   std::string rule;
 
@@ -1627,7 +1631,8 @@ bool CSmartPlaylist::IsMusicType(const std::string &type)
          type == "songs" || type == "mixed";
 }
 
-std::string CSmartPlaylist::GetWhereClause(const CDatabase &db, std::set<std::string> &referencedPlaylists) const
+std::string CSmartPlaylist::GetWhereClause(
+    const CDatabase& db, std::set<std::string, std::less<>>& referencedPlaylists) const
 {
   return m_ruleCombination.GetWhereClause(db, GetType(), referencedPlaylists);
 }

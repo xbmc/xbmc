@@ -58,7 +58,7 @@ static int CleanLibrary(const std::vector<std::string>& params)
         if (!content.empty() || !directory.empty())
         {
           CVideoDatabase db;
-          std::set<std::string> contentPaths;
+          std::set<std::string, std::less<>> contentPaths;
           if (db.Open())
           {
             if (!directory.empty())

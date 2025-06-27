@@ -65,7 +65,7 @@ protected:
   //! \brief Protected constructor to only allow subclass instances.
   CInfoScanner() = default;
 
-  std::set<std::string> m_pathsToScan; //!< Set of paths to scan
+  std::set<std::string, std::less<>> m_pathsToScan; //!< Set of paths to scan
   bool m_showDialog = false; //!< Whether or not to show progress bar dialog
   CGUIDialogProgressBarHandle* m_handle = nullptr; //!< Progress bar handle
   bool m_bRunning = false; //!< Whether or not scanner is running

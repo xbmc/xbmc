@@ -69,7 +69,7 @@ void CopyVideoTagInfoToObject(CFileItem& item, CVariant& object)
         path = videoInfoTagPath;
       else
         path = item.GetPath();
-      if (videodatabase.LoadVideoInfo(path, tag, VideoDbDetailsNone))
+      if (videodatabase.LoadVideoInfo(path, tag))
         id = tag.GetDatabaseId();
 
       videodatabase.Close();

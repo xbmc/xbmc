@@ -11,7 +11,6 @@
 #include "media/MediaType.h"
 
 #include <map>
-#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -25,7 +24,7 @@ namespace dbiplus
   class field_value;
 }
 
-typedef enum
+enum Field
 {
   // special fields used during sorting
   FieldUnknown = -1,
@@ -154,19 +153,20 @@ typedef enum
   FieldHasVideoVersions,
   FieldHasVideoExtras,
   FieldMax
-} Field;
+};
 
-typedef std::set<Field> Fields;
-typedef std::vector<Field> FieldList;
+using Fields = std::set<Field>;
+using FieldList = std::vector<Field>;
 
-typedef enum {
-  DatabaseQueryPartSelect,
-  DatabaseQueryPartWhere,
-  DatabaseQueryPartOrderBy,
-} DatabaseQueryPart;
+enum class DatabaseQueryPart
+{
+  SELECT,
+  WHERE,
+  ORDER_BY,
+};
 
-typedef std::map<Field, CVariant> DatabaseResult;
-typedef std::vector<DatabaseResult> DatabaseResults;
+using DatabaseResult = std::map<Field, CVariant>;
+using DatabaseResults = std::vector<DatabaseResult>;
 
 class DatabaseUtils
 {
@@ -179,7 +179,10 @@ public:
   static bool GetSelectFields(const Fields &fields, const MediaType &mediaType, FieldList &selectFields);
 
   static bool GetFieldValue(const dbiplus::field_value &fieldValue, CVariant &variantValue);
-  static bool GetDatabaseResults(const MediaType &mediaType, const FieldList &fields, const std::unique_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);
+  static bool GetDatabaseResults(const MediaType& mediaType,
+                                 const FieldList& fields,
+                                 dbiplus::Dataset& dataset,
+                                 DatabaseResults& results);
 
   static std::string BuildLimitClause(int end, int start = 0);
   static std::string BuildLimitClauseOnly(int end, int start = 0);

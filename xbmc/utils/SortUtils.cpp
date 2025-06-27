@@ -1077,7 +1077,10 @@ void SortUtils::Sort(const SortDescription &sortDescription, SortItems& items)
   Sort(sortDescription.sortBy, sortDescription.sortOrder, sortDescription.sortAttributes, items, sortDescription.limitEnd, sortDescription.limitStart);
 }
 
-bool SortUtils::SortFromDataset(const SortDescription &sortDescription, const MediaType &mediaType, const std::unique_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results)
+bool SortUtils::SortFromDataset(const SortDescription& sortDescription,
+                                const MediaType& mediaType,
+                                dbiplus::Dataset& dataset,
+                                DatabaseResults& results)
 {
   FieldList fields;
   if (!DatabaseUtils::GetSelectFields(SortUtils::GetFieldsForSorting(sortDescription.sortBy), mediaType, fields))
@@ -1134,7 +1137,7 @@ const Fields& SortUtils::GetFieldsForSorting(SortBy sortBy)
 
 std::string SortUtils::RemoveArticles(const std::string &label)
 {
-  std::set<std::string> sortTokens = g_langInfo.GetSortTokens();
+  const CLangInfo::Tokens sortTokens = g_langInfo.GetSortTokens();
   for (std::set<std::string>::const_iterator token = sortTokens.begin(); token != sortTokens.end(); ++token)
   {
     if (token->size() < label.size() && StringUtils::StartsWithNoCase(label, *token))
