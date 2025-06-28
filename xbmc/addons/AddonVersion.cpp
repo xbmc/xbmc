@@ -37,7 +37,7 @@ CAddonVersion::CAddonVersion(const std::string& version)
   size_t pos = m_upstream.find(':');
   if (pos != std::string::npos)
   {
-    m_epoch = strtol(m_upstream.c_str(), nullptr, 10);
+    m_epoch = std::strtol(m_upstream.c_str(), nullptr, 10);
     m_upstream.erase(0, pos + 1);
   }
 
@@ -72,7 +72,7 @@ int CAddonVersion::CompareComponent(const char* a, const char* b)
 {
   while (*a && *b)
   {
-    while (*a && *b && !isdigit(*a) && !isdigit(*b))
+    while (*a && *b && !std::isdigit(*a) && !std::isdigit(*b))
     {
       if (*a != *b)
       {
@@ -85,18 +85,19 @@ int CAddonVersion::CompareComponent(const char* a, const char* b)
       a++;
       b++;
     }
-    if (*a && *b && (!isdigit(*a) || !isdigit(*b)))
+    if (*a && *b && (!std::isdigit(*a) || !std::isdigit(*b)))
     {
       if (*a == '~')
         return -1;
       if (*b == '~')
         return 1;
-      return isdigit(*a) ? -1 : 1;
+      return std::isdigit(*a) ? -1 : 1;
     }
 
-    char *next_a, *next_b;
-    long int num_a = strtol(a, &next_a, 10);
-    long int num_b = strtol(b, &next_b, 10);
+    char* next_a;
+    char* next_b;
+    long num_a = std::strtol(a, &next_a, 10);
+    long num_b = std::strtol(b, &next_b, 10);
     if (num_a != num_b)
       return num_a < num_b ? -1 : 1;
 
@@ -133,11 +134,6 @@ bool CAddonVersion::operator==(const CAddonVersion& other) const
   return m_epoch == other.m_epoch &&
          CompareComponent(m_upstream.c_str(), other.m_upstream.c_str()) == 0 &&
          CompareComponent(m_revision.c_str(), other.m_revision.c_str()) == 0;
-}
-
-bool CAddonVersion::operator!=(const CAddonVersion& other) const
-{
-  return !(*this == other);
 }
 
 bool CAddonVersion::operator<=(const CAddonVersion& other) const

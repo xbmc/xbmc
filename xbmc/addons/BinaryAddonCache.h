@@ -36,7 +36,7 @@ public:
   void GetInstalledAddons(VECADDONS& addons, AddonType type);
   AddonPtr GetAddonInstance(const std::string& strId, AddonType type);
 
-protected:
+private:
   void Update();
   void OnEvent(const AddonEvent& event);
 

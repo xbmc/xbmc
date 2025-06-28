@@ -56,6 +56,7 @@ set(HEADERS Addon.h
             IAddon.h
             IAddonManagerCallback.h
             IAddonSupportCheck.h
+            IAddonSupportList.h
             ImageDecoder.h
             ImageResource.h
             LanguageResource.h

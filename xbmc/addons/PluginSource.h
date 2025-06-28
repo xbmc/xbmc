@@ -11,11 +11,12 @@
 #include "addons/Addon.h"
 
 #include <set>
+#include <string_view>
 
 namespace ADDON
 {
 
-typedef std::map<std::string, std::vector<std::string>> ContentPathMap;
+using ContentPathMap = std::map<std::string, std::vector<std::string>, std::less<>>;
 
 class CPluginSource : public CAddon
 {
@@ -48,7 +49,8 @@ public:
     return m_mediaLibraryScanPaths;
   }
 
-  static Content Translate(const std::string &content);
+  static Content Translate(std::string_view content);
+
 private:
   /*! \brief Set the provided content for this plugin
    If no valid content types are passed in, we set the EXECUTABLE type

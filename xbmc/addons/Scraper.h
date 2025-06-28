@@ -16,6 +16,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CAlbum;
@@ -28,7 +29,7 @@ class CMusicAlbumInfo;
 class CMusicArtistInfo;
 }
 
-typedef enum
+enum CONTENT_TYPE
 {
   CONTENT_MOVIES,
   CONTENT_TVSHOWS,
@@ -36,7 +37,7 @@ typedef enum
   CONTENT_ALBUMS,
   CONTENT_ARTISTS,
   CONTENT_NONE,
-} CONTENT_TYPE;
+};
 
 namespace XFILE
 {
@@ -48,10 +49,10 @@ class CScraperUrl;
 namespace ADDON
 {
 class CScraper;
-typedef std::shared_ptr<CScraper> ScraperPtr;
+using ScraperPtr = std::shared_ptr<CScraper>;
 
 std::string TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
-CONTENT_TYPE TranslateContent(const std::string &string);
+CONTENT_TYPE TranslateContent(std::string_view string);
 AddonType ScraperTypeFromContent(const CONTENT_TYPE& content);
 
 // thrown as exception to signal abort or show error dialog
@@ -99,7 +100,7 @@ public:
    Any previously cached files are cleared if they have been cached for longer than the specified
    cachepersistence.
    */
-  void ClearCache();
+  void ClearCache() const;
 
   CONTENT_TYPE Content() const { return m_pathContent; }
   bool RequiresSettings() const { return m_requiressettings; }
