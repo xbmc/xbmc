@@ -65,8 +65,9 @@ public:
    *        checked for an update
    * \param[out] addonsWithUpdate target map
    */
-  void BuildAddonsWithUpdateList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                                 std::map<std::string, AddonWithUpdate>& addonsWithUpdate) const;
+  void BuildAddonsWithUpdateList(
+      const std::vector<std::shared_ptr<IAddon>>& installed,
+      std::map<std::string, AddonWithUpdate, std::less<>>& addonsWithUpdate) const;
 
   /*!
    * \brief Checks if the origin-repository of a given addon is defined as official repo
@@ -185,9 +186,10 @@ private:
    *         its version is newer than our local version.
    *         false if the addon does NOT exist in the map or it is up to date.
    */
-  bool FindAddonAndCheckForUpdate(const std::shared_ptr<IAddon>& addonToCheck,
-                                  const std::map<std::string, std::shared_ptr<IAddon>>& map,
-                                  std::shared_ptr<IAddon>& update) const;
+  bool FindAddonAndCheckForUpdate(
+      const std::shared_ptr<IAddon>& addonToCheck,
+      const std::map<std::string, std::shared_ptr<IAddon>, std::less<>>& map,
+      std::shared_ptr<IAddon>& update) const;
 
   /*!
    * \brief Adds the latest version of an addon to the desired map
@@ -195,7 +197,7 @@ private:
    * \param map target map, e.g. latestOfficialVersions or latestPrivateVersions
    */
   void AddAddonIfLatest(const std::shared_ptr<IAddon>& addonToAdd,
-                        std::map<std::string, std::shared_ptr<IAddon>>& map) const;
+                        std::map<std::string, std::shared_ptr<IAddon>, std::less<>>& map) const;
 
   /*!
    * \brief Adds the latest version of an addon to the desired map per repository
@@ -204,10 +206,11 @@ private:
    * \param addonToAdd the addon whose latest version should be added
    * \param map target map, latestVersionsByRepo
    */
-  void AddAddonIfLatest(
-      const std::string& repoId,
-      const std::shared_ptr<IAddon>& addonToAdd,
-      std::map<std::string, std::map<std::string, std::shared_ptr<IAddon>>>& map) const;
+  void AddAddonIfLatest(const std::string& repoId,
+                        const std::shared_ptr<IAddon>& addonToAdd,
+                        std::map<std::string,
+                                 std::map<std::string, std::shared_ptr<IAddon>, std::less<>>,
+                                 std::less<>>& map) const;
 
   /*!
    * \brief Looks up an addon entry in a specific map
@@ -217,19 +220,21 @@ private:
    * \return true if the addon was found in the map, false otherwise
    */
   bool GetLatestVersionByMap(const std::string& addonId,
-                             const std::map<std::string, std::shared_ptr<IAddon>>& map,
+                             const std::map<std::string, std::shared_ptr<IAddon>, std::less<>>& map,
                              std::shared_ptr<IAddon>& addon) const;
 
   const CAddonMgr& m_addonMgr;
   CAddonDatabase m_addonDb;
-  bool m_valid{false};
 
   std::vector<std::shared_ptr<IAddon>> m_allAddons;
 
-  std::map<std::string, std::shared_ptr<IAddon>> m_latestOfficialVersions;
-  std::map<std::string, std::shared_ptr<IAddon>> m_latestPrivateVersions;
-  std::map<std::string, std::map<std::string, std::shared_ptr<IAddon>>> m_latestVersionsByRepo;
+  std::map<std::string, std::shared_ptr<IAddon>, std::less<>> m_latestOfficialVersions;
+  std::map<std::string, std::shared_ptr<IAddon>, std::less<>> m_latestPrivateVersions;
+  std::map<std::string, std::map<std::string, std::shared_ptr<IAddon>, std::less<>>, std::less<>>
+      m_latestVersionsByRepo;
   std::map<std::string, std::multimap<std::string, std::shared_ptr<IAddon>>> m_addonsByRepoMap;
+
+  bool m_valid{false};
 };
 
 }; /* namespace ADDON */

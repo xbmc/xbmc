@@ -35,8 +35,8 @@ bool CAddonUpdateRules::IsUpdateableByRule(const std::string& id, AddonUpdateRul
   std::unique_lock lock(m_critSection);
   const auto& updateRulesEntry = m_updateRules.find(id);
   return (updateRulesEntry == m_updateRules.end() ||
-          std::none_of(updateRulesEntry->second.begin(), updateRulesEntry->second.end(),
-                       [updateRule](AddonUpdateRule rule) { return rule == updateRule; }));
+          std::ranges::none_of(updateRulesEntry->second,
+                               [updateRule](AddonUpdateRule rule) { return rule == updateRule; }));
 }
 
 bool CAddonUpdateRules::AddUpdateRuleToList(CAddonDatabase& db,
@@ -92,8 +92,7 @@ bool CAddonUpdateRules::RemoveFromUpdateRuleslist(CAddonDatabase& db,
     }
     else if (!onlySingleRule)
     {
-      const auto& position =
-          std::find(updateRulesEntry->second.begin(), updateRulesEntry->second.end(), updateRule);
+      const auto& position = std::ranges::find(updateRulesEntry->second, updateRule);
       if (position != updateRulesEntry->second.end() && db.RemoveUpdateRuleForAddon(id, updateRule))
       {
         updateRulesEntry->second.erase(position);

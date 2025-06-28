@@ -783,7 +783,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                             CFileItemList& items,
                                             const std::string& label)
 {
-  std::map<std::string, AddonWithUpdate> addonsWithUpdate =
+  std::map<std::string, AddonWithUpdate, std::less<>> addonsWithUpdate =
       CServiceBroker::GetAddonMgr().GetAddonsWithAvailableUpdate();
 
   items.ClearItems();

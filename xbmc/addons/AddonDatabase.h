@@ -72,7 +72,7 @@ public:
                 ADDON::AddonPtr& addon);
 
   /*! Get the addon IDs that have been set to disabled */
-  bool GetDisabled(std::map<std::string, ADDON::AddonDisabledReason>& addons);
+  bool GetDisabled(std::map<std::string, ADDON::AddonDisabledReason, std::less<>>& addons);
 
   /*! Returns all addons in the repositories with id `addonId`. */
   bool FindByAddonId(const std::string& addonId, ADDON::VECADDONS& addons) const;
@@ -181,7 +181,8 @@ public:
    * \param rulesMap target map
    * \return true on success, false otherwise
    */
-  bool GetAddonUpdateRules(std::map<std::string, std::vector<AddonUpdateRule>>& rulesMap) const;
+  bool GetAddonUpdateRules(
+      std::map<std::string, std::vector<AddonUpdateRule>, std::less<>>& rulesMap) const;
 
   /*! \brief Store an addon's package filename and that file's hash for future verification
       \param  addonID         id of the addon we're adding a package for
@@ -202,7 +203,7 @@ public:
   */
   bool GetPackageHash(const std::string& addonID,
                       const std::string& packageFileName,
-                      std::string&       hash);
+                      std::string& hash) const;
   /*! \brief Remove a package's info from the database
       \param  packageFileName filename of the package
       \return Whether or not we succeeded in removing the package
@@ -213,9 +214,9 @@ public:
   /*! Clear internal fields that shouldn't be kept around indefinitely */
   void OnPostUnInstall(const std::string& addonId);
 
-  void SyncInstalled(const std::set<std::string>& ids,
-                     const std::set<std::string>& system,
-                     const std::set<std::string>& optional);
+  void SyncInstalled(const std::set<std::string, std::less<>>& ids,
+                     const std::set<std::string, std::less<>>& system,
+                     const std::set<std::string, std::less<>>& optional);
 
   bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime);
   bool SetOrigin(const std::string& addonId, const std::string& origin);
