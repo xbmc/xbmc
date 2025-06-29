@@ -82,15 +82,9 @@ void CopyVideoTagInfoToObject(CFileItem& item, CVariant& object)
   }
 
   if (!tag.m_type.empty())
-  {
     objItem["type"] = tag.m_type;
-  }
   else
-  {
-    std::string type;
-    CVideoDatabase::VideoContentTypeToString(item.GetVideoContentType(), type);
-    objItem["type"] = type;
-  }
+    objItem["type"] = CVideoDatabase::VideoContentTypeToString(item.GetVideoContentType());
 
   if (id <= 0)
   {
