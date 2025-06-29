@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2024 Team Kodi
+ *  Copyright (C) 2014-2025 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -22,32 +22,32 @@ extern "C"
   /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **Game add-on error codes**
   ///
-  /// Used as return values on most Game related functions.
+  /// Used as return values from most game-related functions.
   ///
   typedef enum GAME_ERROR
   {
-    /// @brief no error occurred
+    /// @brief No error occurred
     GAME_ERROR_NO_ERROR,
 
-    /// @brief an unknown error occurred
+    /// @brief An unknown error occurred
     GAME_ERROR_UNKNOWN,
 
-    /// @brief the method that the frontend called is not implemented
+    /// @brief The method called by the frontend is not implemented
     GAME_ERROR_NOT_IMPLEMENTED,
 
-    /// @brief the command was rejected by the game client
+    /// @brief The command was rejected by the game client
     GAME_ERROR_REJECTED,
 
-    /// @brief the parameters of the method that was called are invalid for this operation
+    /// @brief The parameters of the called method are invalid for this operation
     GAME_ERROR_INVALID_PARAMETERS,
 
-    /// @brief the command failed
+    /// @brief The command failed
     GAME_ERROR_FAILED,
 
-    /// @brief no game is loaded
+    /// @brief No game is loaded
     GAME_ERROR_NOT_LOADED,
 
-    /// @brief game requires restricted resources
+    /// @brief Game requires restricted resources
     GAME_ERROR_RESTRICTED,
   } GAME_ERROR;
   //----------------------------------------------------------------------------
@@ -55,17 +55,17 @@ extern "C"
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
   /// @defgroup cpp_kodi_addon_game_Defs_AudioStream 1. Audio stream
   /// @ingroup cpp_kodi_addon_game_Defs
-  /// @brief **The for Audio stream used data system**
+  /// @brief **Audio stream data system**
   ///
-  /// Used to give Addon currently used audio stream configuration on Kodi and
-  /// arrays to give related data to Kodi on callbacks.
+  /// Used to provide the add-on with the current audio stream configuration
+  /// from Kodi and arrays to pass related data back to Kodi during callbacks.
   ///
   ///@{
 
   //============================================================================
   /// @brief **Stream Format**
   ///
-  /// From Kodi requested specified audio sample format.
+  /// Audio sample format requested by Kodi.
   ///
   typedef enum GAME_PCM_FORMAT
   {
@@ -151,7 +151,7 @@ extern "C"
   //============================================================================
   /// @brief **Game audio stream properties**
   ///
-  /// Used by Kodi to pass the currently required audio stream settings to the addon
+  /// Used by Kodi to pass the currently required audio stream settings to the add-on
   ///
   typedef struct game_stream_audio_properties
   {
@@ -167,10 +167,10 @@ extern "C"
   ///
   typedef struct game_stream_audio_packet
   {
-    /// @brief Pointer for audio stream data given to Kodi
+    /// @brief Pointer to the audio stream data given to Kodi
     const uint8_t* data;
 
-    /// @brief Size of data array
+    /// @brief Size of the data array
     size_t size;
   } ATTR_PACKED game_stream_audio_packet;
   //----------------------------------------------------------------------------
@@ -180,17 +180,17 @@ extern "C"
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
   /// @defgroup cpp_kodi_addon_game_Defs_VideoStream 2. Video stream
   /// @ingroup cpp_kodi_addon_game_Defs
-  /// @brief **The for Video stream used data system**
+  /// @brief **Video stream data system**
   ///
-  /// Used to give Addon currently used video stream configuration on Kodi and
-  /// arrays to give related data to Kodi on callbacks.
+  /// Used to provide the add-on with the current video stream configuration
+  /// from Kodi and arrays to pass related data back to Kodi during callbacks.
   ///
   ///@{
 
   //============================================================================
   /// @brief **Pixel format**
   ///
-  /// From Kodi requested specified video RGB color model format.
+  /// Video RGB color model format requested by Kodi.
   ///
   typedef enum GAME_PIXEL_FORMAT
   {
@@ -208,22 +208,22 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief **Video rotation position**
+  /// @brief **Video rotation orientation**
   ///
-  /// To define position how video becomes shown.
+  /// Defines how the video is rotated.
   ///
   typedef enum GAME_VIDEO_ROTATION
   {
-    /// @brief 0° and Without rotation
+    /// @brief 0° without rotation
     GAME_VIDEO_ROTATION_0,
 
-    /// @brief rotate 90° counterclockwise
+    /// @brief Rotate 90° counterclockwise
     GAME_VIDEO_ROTATION_90_CCW,
 
-    /// @brief rotate 180° counterclockwise
+    /// @brief Rotate 180° counterclockwise
     GAME_VIDEO_ROTATION_180_CCW,
 
-    /// @brief rotate 270° counterclockwise
+    /// @brief Rotate 270° counterclockwise
     GAME_VIDEO_ROTATION_270_CCW,
   } GAME_VIDEO_ROTATION;
   //----------------------------------------------------------------------------
@@ -231,17 +231,18 @@ extern "C"
   //============================================================================
   /// @brief **Game video stream properties**
   ///
-  /// Used by Kodi to pass the currently required video stream settings to the addon
+  /// Used by Kodi to pass the currently required video stream settings to the
+  /// add-on.
   ///
   typedef struct game_stream_video_properties
   {
     /// @brief The stream's pixel format
     GAME_PIXEL_FORMAT format;
 
-    /// @brief The nominal used width
+    /// @brief The nominal width, in pixels
     unsigned int nominal_width;
 
-    /// @brief The nominal used height
+    /// @brief The nominal height, in pixels
     unsigned int nominal_height;
 
     /// @brief The nominal display aspect ratio (DAR) used to show the video frame
@@ -250,10 +251,10 @@ extern "C"
     ///
     float nominal_display_aspect_ratio;
 
-    /// @brief The maximal used width
+    /// @brief The maximum width, in pixels
     unsigned int max_width;
 
-    /// @brief The maximal used height
+    /// @brief The maximum height, in pixels
     unsigned int max_height;
   } ATTR_PACKED game_stream_video_properties;
   //----------------------------------------------------------------------------
@@ -265,10 +266,10 @@ extern "C"
   ///
   typedef struct game_stream_video_packet
   {
-    /// @brief Video height
+    /// @brief Video width, in pixels
     unsigned int width;
 
-    /// @brief Video width
+    /// @brief Video height, in pixels
     unsigned int height;
 
     /// @brief Display aspect ratio (DAR) to use when showing the video frame
@@ -277,13 +278,13 @@ extern "C"
     ///
     float display_aspect_ratio;
 
-    /// @brief Width @ref GAME_VIDEO_ROTATION defined rotation angle.
+    /// @brief Video rotation angle defined by @ref GAME_VIDEO_ROTATION
     GAME_VIDEO_ROTATION rotation;
 
-    /// @brief Pointer for video stream data given to Kodi
+    /// @brief Pointer to the video stream data given to Kodi
     const uint8_t* data;
 
-    /// @brief Size of data array
+    /// @brief Size of the data array
     size_t size;
   } ATTR_PACKED game_stream_video_packet;
   //----------------------------------------------------------------------------
@@ -302,16 +303,16 @@ extern "C"
   ///
   typedef enum GAME_HW_CONTEXT_TYPE
   {
-    /// @brief None context
+    /// @brief No context
     GAME_HW_CONTEXT_NONE,
 
-    /// @brief OpenGL 2.x. Driver can choose to use latest compatibility context
+    /// @brief OpenGL 2.x. The driver can choose to use the latest compatibility context
     GAME_HW_CONTEXT_OPENGL,
 
     /// @brief OpenGL ES 2.0
     GAME_HW_CONTEXT_OPENGLES2,
 
-    /// @brief Modern desktop core GL context. Use major/minor fields to set GL version
+    /// @brief Modern desktop core GL context. Use the major and minor fields to set the GL version
     GAME_HW_CONTEXT_OPENGL_CORE,
 
     /// @brief OpenGL ES 3.0
@@ -334,26 +335,26 @@ extern "C"
   ///
   typedef struct game_hw_rendering_properties
   {
-    /// @brief The API to use.
+    /// @brief The API to use
     ///
     GAME_HW_CONTEXT_TYPE context_type;
 
-    /// @brief Set if render buffers should have depth component attached.
+    /// @brief Set to true if render buffers should have a depth component attached
     ///
     /// @todo: Obsolete
     ///
     bool depth;
 
-    /// @brief Set if stencil buffers should be attached.
+    /// @brief Set to true if stencil buffers should be attached
     ///
     /// If depth and stencil are true, a packed 24/8 buffer will be added.
     /// Only attaching stencil is invalid and will be ignored.
     ///
-    /// @todo: Obsolete.
+    /// @todo: Obsolete
     ///
     bool stencil;
 
-    /// @brief Use conventional bottom-left origin convention.
+    /// @brief Use the conventional bottom-left origin
     ///
     /// If false, standard top-left origin semantics are used.
     ///
@@ -361,26 +362,26 @@ extern "C"
     ///
     bool bottom_left_origin;
 
-    /// @brief Major version number for core GL context or GLES 3.1+.
+    /// @brief Major version number for the core GL context or GLES 3.1+
     unsigned int version_major;
 
-    /// @brief Minor version number for core GL context or GLES 3.1+.
+    /// @brief Minor version number for the core GL context or GLES 3.1+
     unsigned int version_minor;
 
-    /// @brief If this is true, the frontend will go very far to avoid resetting context
-    /// in scenarios like toggling fullscreen, etc.
+    /// @brief If true, the frontend will go to great lengths to avoid
+    /// resetting the context in scenarios like toggling fullscreen, etc.
     ///
     /// @todo: Obsolete? Maybe frontend should just always assume this...
     ///
-    /// The reset callback might still be called in extreme situations such as if
-    /// the context is lost beyond recovery.
+    /// The reset callback might still be called in extreme situations such as
+    /// if the context is lost beyond recovery.
     ///
-    /// For optimal stability, set this to false, and allow context to be reset at
-    /// any time.
+    /// For optimal stability, set this to false, and allow context to be reset
+    /// at any time.
     ///
     bool cache_context;
 
-    /// @brief Creates a debug context.
+    /// @brief Creates a debug context
     bool debug_context;
 
   } ATTR_PACKED game_hw_rendering_properties;
@@ -436,7 +437,7 @@ extern "C"
   //============================================================================
   /// @brief **Game software framebuffer stream properties**
   ///
-  /// Used by Kodi to pass the currently required video stream settings to the addon
+  /// Used by Kodi to pass the currently required video stream settings to the add-on
   ///
   typedef game_stream_video_properties game_stream_sw_framebuffer_properties;
   //----------------------------------------------------------------------------
@@ -861,7 +862,7 @@ extern "C"
   /*!
     * @brief "C" Game add-on controller layout.
     *
-    * Structure used to interface in "C" between Kodi and Addon.
+    * Structure used to interface in "C" between Kodi and the add-on.
     *
     * See @ref AddonGameControllerLayout for description of values.
     */
@@ -983,7 +984,8 @@ extern "C"
   //============================================================================
   /// @brief An analog stick event, such as a joystick's motion
   ///
-  /// @todo Document which coordinate system is used, left-hand or right-hand.
+  /// Uses a right-handed coordinate system where positive X is right
+  /// and positive Y is up.
   ///
   typedef struct game_analog_stick_event
   {
