@@ -167,7 +167,7 @@ endif()
 
 core_find_git_rev(APP_SCMID FULL)
 
-set(AUDIO_BACKENDS_LIST "" CACHE STRING "Available audio backends")
+set(AUDIO_BACKENDS_LIST "null" CACHE STRING "Available audio backends")
 set(GL_INTERFACES_LIST "" CACHE STRING "Available GL interfaces")
 
 # Dynamically loaded libraries built with the project
