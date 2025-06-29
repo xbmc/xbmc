@@ -3618,40 +3618,6 @@ void CVideoDatabase::GetFilePathById(int idMovie, std::string& filePath, VideoDb
   }
 }
 
-std::vector<std::string> CVideoDatabase::GetFilesByPathId(int idPath)
-{
-  try
-  {
-    if (!m_pDB || !m_pDS || idPath < 0)
-      return {};
-
-    const std::string strSQL{PrepareSQL("SELECT path.strPath, files.strFileName FROM path "
-                                        "INNER JOIN files ON path.idPath=files.idPath "
-                                        "WHERE path.idPath=%i ORDER BY strFilename",
-                                        idPath)};
-
-    m_pDS->query(strSQL);
-
-    std::vector<std::string> files;
-    while (!m_pDS->eof())
-    {
-      std::string file;
-      ConstructPath(file, m_pDS->fv("strPath").get_asString(),
-                    m_pDS->fv("strFilename").get_asString());
-      files.emplace_back(file);
-      m_pDS->next();
-    }
-    m_pDS->close();
-
-    return files;
-  }
-  catch (const std::exception& e)
-  {
-    CLog::LogF(LOGERROR, "Failed with idPath {}, error {}", idPath, e.what());
-  }
-  return {};
-}
-
 //********************************************************************************************************************************
 void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type /*= CBookmark::STANDARD*/, bool bAppend, long partNumber)
 {

@@ -199,7 +199,6 @@ public:
   static std::string GetBasePath(const CURL& url);
   std::string GetBlurayTitle() const;
   std::string GetBlurayID() const;
-  static std::string GetBlurayPlaylistPath(const CFileItem& item);
 
 private:
   enum class DiscInfo : uint8_t
