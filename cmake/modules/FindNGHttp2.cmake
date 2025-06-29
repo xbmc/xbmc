@@ -14,6 +14,7 @@ if(NOT TARGET LIBRARY::NGHttp2)
 
     set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-all-cmake-version.patch")
     generate_patchcommand("${patches}")
+    unset(patches)
 
     set(CMAKE_ARGS -DENABLE_DEBUG=OFF
                    -DENABLE_FAILMALLOC=OFF
