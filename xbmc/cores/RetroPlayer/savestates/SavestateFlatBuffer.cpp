@@ -396,6 +396,19 @@ void CSavestateFlatBuffer::SetNominalHeight(unsigned int nominalHeight)
   m_nominalHeight = nominalHeight;
 }
 
+float CSavestateFlatBuffer::GetNominalDisplayAspectRatio() const
+{
+  if (m_savestate != nullptr)
+    return m_savestate->nominal_display_aspect_ratio();
+
+  return 0.0f;
+}
+
+void CSavestateFlatBuffer::SetNominalDisplayAspectRatio(float nominalDisplayAspectRatio)
+{
+  m_nominalDisplayAspectRatio = nominalDisplayAspectRatio;
+}
+
 unsigned int CSavestateFlatBuffer::GetMaxWidth() const
 {
   if (m_savestate != nullptr)
@@ -420,19 +433,6 @@ unsigned int CSavestateFlatBuffer::GetMaxHeight() const
 void CSavestateFlatBuffer::SetMaxHeight(unsigned int maxHeight)
 {
   m_maxHeight = maxHeight;
-}
-
-float CSavestateFlatBuffer::GetPixelAspectRatio() const
-{
-  if (m_savestate != nullptr)
-    return m_savestate->pixel_aspect_ratio();
-
-  return 0.0f;
-}
-
-void CSavestateFlatBuffer::SetPixelAspectRatio(float pixelAspectRatio)
-{
-  m_pixelAspectRatio = pixelAspectRatio;
 }
 
 const uint8_t* CSavestateFlatBuffer::GetVideoData() const
@@ -485,6 +485,19 @@ unsigned int CSavestateFlatBuffer::GetVideoHeight() const
 void CSavestateFlatBuffer::SetVideoHeight(unsigned int videoHeight)
 {
   m_videoHeight = videoHeight;
+}
+
+float CSavestateFlatBuffer::GetDisplayAspectRatio() const
+{
+  if (m_savestate != nullptr)
+    return m_savestate->display_aspect_ratio();
+
+  return 0.0f;
+}
+
+void CSavestateFlatBuffer::SetDisplayAspectRatio(float displayAspectRatio)
+{
+  m_displayAspectRatio = displayAspectRatio;
 }
 
 unsigned int CSavestateFlatBuffer::GetRotationDegCCW() const
@@ -585,11 +598,11 @@ void CSavestateFlatBuffer::Finalize()
 
   savestateBuilder.add_nominal_height(m_nominalHeight);
 
+  savestateBuilder.add_display_aspect_ratio(m_nominalDisplayAspectRatio);
+
   savestateBuilder.add_max_width(m_maxWidth);
 
   savestateBuilder.add_max_height(m_maxHeight);
-
-  savestateBuilder.add_pixel_aspect_ratio(m_pixelAspectRatio);
 
   if (m_videoDataOffset)
   {
@@ -600,6 +613,8 @@ void CSavestateFlatBuffer::Finalize()
   savestateBuilder.add_video_width(m_videoWidth);
 
   savestateBuilder.add_video_height(m_videoHeight);
+
+  savestateBuilder.add_display_aspect_ratio(m_displayAspectRatio);
 
   savestateBuilder.add_rotation_ccw(TranslateRotation(m_rotationCCW));
 

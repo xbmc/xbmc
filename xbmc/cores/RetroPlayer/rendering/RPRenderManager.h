@@ -82,22 +82,23 @@ public:
   AVPixelFormat GetPixelFormat() const { return m_format; }
   unsigned int GetNominalWidth() const { return m_nominalWidth; }
   unsigned int GetNominalHeight() const { return m_nominalHeight; }
+  float GetNominalDisplayAspectRatio() const { return m_nominalDisplayAspectRatio; }
   unsigned int GetMaxWidth() const { return m_maxWidth; }
   unsigned int GetMaxHeight() const { return m_maxHeight; }
-  float GetPixelAspectRatio() const { return m_pixelAspectRatio; }
 
   // Functions called from game loop
   bool Configure(AVPixelFormat format,
                  unsigned int nominalWidth,
                  unsigned int nominalHeight,
+                 float nominalDisplayAspectRatio,
                  unsigned int maxWidth,
-                 unsigned int maxHeight,
-                 float pixelAspectRatio);
+                 unsigned int maxHeight);
   bool GetVideoBuffer(unsigned int width, unsigned int height, VideoStreamBuffer& buffer);
   void AddFrame(const uint8_t* data,
                 size_t size,
                 unsigned int width,
                 unsigned int height,
+                float displayAspectRatio,
                 unsigned int orientationDegCW);
   void Flush();
 
@@ -236,9 +237,9 @@ private:
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
   unsigned int m_nominalWidth{0};
   unsigned int m_nominalHeight{0};
+  float m_nominalDisplayAspectRatio{0.0f}; // 0.0f means square pixels
   unsigned int m_maxWidth = 0;
   unsigned int m_maxHeight = 0;
-  float m_pixelAspectRatio{1.0f};
 
   // Render resources
   std::set<std::shared_ptr<CRPBaseRenderer>> m_renderers;
@@ -248,6 +249,7 @@ private:
   std::vector<uint8_t> m_cachedFrame;
   unsigned int m_cachedWidth = 0;
   unsigned int m_cachedHeight = 0;
+  float m_cachedDisplayAspectRatio{0.0f}; // 0.0f means square pixels
   unsigned int m_cachedRotationCCW{0};
   std::map<std::string, std::vector<IRenderBuffer*>>
       m_savestateBuffers; // Render buffers for savestates
