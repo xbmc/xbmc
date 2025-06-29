@@ -67,7 +67,7 @@ void CScreenSaver::Render()
     m_ifc.screensaver->toAddon->render(m_ifc.hdl);
 }
 
-void CScreenSaver::GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props)
+void CScreenSaver::GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props) const
 {
   if (!props)
     return;
