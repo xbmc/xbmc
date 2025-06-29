@@ -220,16 +220,6 @@ bool CRenderContext::UseLimitedColor()
   return m_windowing->UseLimitedColor();
 }
 
-bool CRenderContext::DisplayHardwareScalingEnabled()
-{
-  return m_windowing->DisplayHardwareScalingEnabled();
-}
-
-void CRenderContext::UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo)
-{
-  return m_windowing->UpdateDisplayHardwareScaling(resInfo);
-}
-
 int CRenderContext::GetScreenWidth()
 {
   return m_graphicsContext.GetWidth();

@@ -221,12 +221,6 @@
         <setting id="videoscreen.fakefullscreen">
           <visible>false</visible>
         </setting>
-        <setting id="videoscreen.hwscalingfilter" type="boolean" label="39151" help="39152">
-          <visible>false</visible>
-          <level>3</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videoscreen.limitguisize" type="integer" label="37021" help="36548">
           <visible>false</visible>
           <level>3</level>

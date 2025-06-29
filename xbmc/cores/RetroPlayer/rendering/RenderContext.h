@@ -77,8 +77,6 @@ public:
 
   // Windowing functions
   bool UseLimitedColor();
-  bool DisplayHardwareScalingEnabled();
-  void UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo);
 
   // Graphics functions
   int GetScreenWidth();

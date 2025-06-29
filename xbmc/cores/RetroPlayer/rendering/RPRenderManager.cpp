@@ -369,38 +369,6 @@ void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRe
 
   m_renderContext.SetRenderingResolution(m_renderContext.GetVideoResolution(), false);
 
-  if (!m_bDisplayScaleSet && m_renderContext.DisplayHardwareScalingEnabled())
-  {
-    // If the renderer has a render buffer, get the dimensions
-    const unsigned int sourceWidth = (renderBuffer != nullptr ? renderBuffer->GetWidth() : 0);
-    const unsigned int sourceHeight = (renderBuffer != nullptr ? renderBuffer->GetHeight() : 0);
-
-    // Get render video settings for the fullscreen window
-    CRenderVideoSettings renderVideoSettings = GetEffectiveSettings(nullptr);
-
-    // Get the scaling mode of the render video settings
-    const SCALINGMETHOD scaleMode = renderVideoSettings.GetScalingMethod();
-    const STRETCHMODE stretchMode = renderVideoSettings.GetRenderStretchMode();
-
-    // Update display with video dimensions for integer scaling
-    if (scaleMode == SCALINGMETHOD::NEAREST && stretchMode == STRETCHMODE::Original &&
-        sourceWidth > 0 && sourceHeight > 0)
-    {
-      RESOLUTION_INFO gameRes = m_renderContext.GetResInfo();
-      gameRes.Overscan.left = 0;
-      gameRes.Overscan.top = 0;
-      gameRes.Overscan.right = sourceWidth;
-      gameRes.Overscan.bottom = sourceHeight;
-      gameRes.iWidth = sourceWidth;
-      gameRes.iHeight = sourceHeight;
-      gameRes.iScreenWidth = sourceWidth;
-      gameRes.iScreenHeight = sourceHeight;
-
-      m_renderContext.UpdateDisplayHardwareScaling(gameRes);
-      m_bDisplayScaleSet = true;
-    }
-  }
-
   RenderInternal(renderer, renderBuffer, bClear, 255);
 
   m_renderContext.SetRenderingResolution(coordsRes, false);

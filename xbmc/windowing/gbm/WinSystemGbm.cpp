@@ -252,27 +252,6 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   return result;
 }
 
-bool CWinSystemGbm::DisplayHardwareScalingEnabled()
-{
-  auto drmAtomic = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
-  if (drmAtomic && drmAtomic->DisplayHardwareScalingEnabled())
-    return true;
-
-  return false;
-}
-
-void CWinSystemGbm::UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo)
-{
-  if (!DisplayHardwareScalingEnabled())
-    return;
-
-  //! @todo The PR that made the res struct constant was abandoned due to drama.
-  // It should be const-corrected and changed here.
-  RESOLUTION_INFO& resMutable = const_cast<RESOLUTION_INFO&>(resInfo);
-
-  SetFullScreen(true, resMutable, false);
-}
-
 void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
 {
   if (m_videoLayerBridge && !videoLayer)
