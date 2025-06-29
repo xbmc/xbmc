@@ -86,11 +86,6 @@ public:
    */
   void Stack(bool stackFiles = true);
 
-  /*! \brief replace any items in the list with bluray:// URLs
-   Only if these exist in the video database
-   */
-  void ReplaceBlurayFiles();
-
   SortOrder GetSortOrder() const { return m_sortDescription.sortOrder; }
   SortBy GetSortMethod() const { return m_sortDescription.sortBy; }
   void SetSortOrder(SortOrder sortOrder) { m_sortDescription.sortOrder = sortOrder; }
