@@ -12,8 +12,11 @@
 
 #include <string>
 
-struct st_mysql;
-using MYSQL = st_mysql;
+#ifdef HAS_MYSQL
+#include <mysql/mysql.h>
+#elif defined(HAS_MARIADB)
+#include <mariadb/mysql.h>
+#endif
 
 namespace dbiplus
 {
