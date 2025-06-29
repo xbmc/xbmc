@@ -6924,7 +6924,7 @@ bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
   SScanSettings settings;
   bool foundDirectly = false;
   ScraperPtr scraper = GetScraperForPath(path, settings, foundDirectly);
-  if (scraper && scraper->Content() == CONTENT_TVSHOWS && !shows)
+  if (scraper && scraper->Content() == ContentType::TVSHOWS && !shows)
     return false; // episodes
   return settings.parent_name_root; // shows, movies, musicvids
 }
@@ -9321,7 +9321,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
   // Returns a pair of bool and CScraperPtr.
   // The boolean is true if an addon matching the scraperID exists.
   // If true the CScraper can still be nullptr if the addon isn't a CScraper.
-  auto getScraper = [scraperCache](CONTENT_TYPE content, const std::string& scraperID,
+  auto getScraper = [scraperCache](ContentType content, const std::string& scraperID,
                                    const std::string& pathSettings)
   {
     if (scraperCache)
@@ -9376,7 +9376,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
     }
 
     int iFound = 1;
-    CONTENT_TYPE content = CONTENT_NONE;
+    ContentType content = ContentType::NONE;
     if (!m_pDS->eof())
     { // path is stored in db
 
@@ -9396,7 +9396,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
       content = TranslateContent(strcontent);
 
       //FIXME paths stored should not have empty strContent
-      //assert(content != CONTENT_NONE);
+      //assert(content != ContentType::CONTENT_NONE);
       std::string scraperID = m_pDS->fv("path.strScraper").get_asString();
 
       if (!scraperID.empty())
@@ -9417,7 +9417,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
       }
     }
 
-    if (content == CONTENT_NONE)
+    if (content == ContentType::NONE)
     { // this path is not saved in db
       // we must drill up until a scraper is configured
       std::string strParent;
@@ -9432,7 +9432,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
                        strParent.c_str());
         m_pDS->query(strSQL);
 
-        CONTENT_TYPE content2 = CONTENT_NONE;
+        ContentType content2 = ContentType::NONE;
         if (!m_pDS->eof())
         {
           settings.m_allExtAudio = m_pDS->fv("path.allAudio").get_asBool();
@@ -9448,7 +9448,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
 
           content2 = TranslateContent(strcontent);
 
-          if (content2 != CONTENT_NONE)
+          if (content2 != ContentType::NONE)
           {
             bool found = false;
             std::tie(found, scraper) =
@@ -9469,10 +9469,10 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
     }
     m_pDS->close();
 
-    if (!scraper || scraper->Content() == CONTENT_NONE)
+    if (!scraper || scraper->Content() == ContentType::NONE)
       return ScraperPtr();
 
-    if (scraper->Content() == CONTENT_TVSHOWS)
+    if (scraper->Content() == ContentType::TVSHOWS)
     {
       settings.recurse = 0;
       if(settings.parent_name) // single show
@@ -9484,7 +9484,8 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
         settings.parent_name_root = settings.parent_name = (iFound == 2);
       }
     }
-    else if (scraper->Content() == CONTENT_MOVIES || scraper->Content() == CONTENT_MUSICVIDEOS)
+    else if (scraper->Content() == ContentType::MOVIES ||
+             scraper->Content() == ContentType::MUSICVIDEOS)
     {
       settings.recurse = settings.recurse - (iFound-1);
       settings.parent_name_root = settings.parent_name && (!settings.recurse || iFound > 1);
@@ -9524,7 +9525,7 @@ std::string CVideoDatabase::GetContentForPath(const std::string& strPath)
   ScraperPtr scraper = GetScraperForPath(strPath, settings, foundDirectly);
   if (scraper)
   {
-    if (scraper->Content() == CONTENT_TVSHOWS)
+    if (scraper->Content() == ContentType::TVSHOWS)
     {
       // check for episodes or seasons.  Assumptions are:
       // 1. if episodes are in the path then we're in episodes.
@@ -11876,7 +11877,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           filename += StringUtils::Format("_{}", info.GetYear());
         CFileItem artItem(item);
         artItem.SetPath(GetSafeFile(moviesDir, filename) + ".avi");
-        scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
+        scanner.GetArtwork(&artItem, ContentType::MOVIES, useFolders, true, actorsDir);
         item.SetArt(artItem.GetArt());
         if (!item.GetVideoInfoTag()->m_set.title.empty())
         {
@@ -11898,7 +11899,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
             item.AppendArt(setArt, "set");
           }
         }
-        scanner.AddVideo(&item, CONTENT_MOVIES, useFolders, true, nullptr, true);
+        scanner.AddVideo(&item, ContentType::MOVIES, useFolders, true, nullptr, true);
         current++;
       }
       else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeMusicVideo, 10) == 0)
@@ -11911,9 +11912,9 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           filename += StringUtils::Format("_{}", info.GetYear());
         CFileItem artItem(item);
         artItem.SetPath(GetSafeFile(musicvideosDir, filename) + ".avi");
-        scanner.GetArtwork(&artItem, CONTENT_MUSICVIDEOS, useFolders, true, actorsDir);
+        scanner.GetArtwork(&artItem, ContentType::MUSICVIDEOS, useFolders, true, actorsDir);
         item.SetArt(artItem.GetArt());
-        scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders, true, nullptr, true);
+        scanner.AddVideo(&item, ContentType::MUSICVIDEOS, useFolders, true, nullptr, true);
         current++;
       }
       else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeTvShow, 6) == 0)
@@ -11928,10 +11929,10 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         CFileItem artItem(showItem);
         std::string artPath(GetSafeFile(tvshowsDir, info.m_strTitle));
         artItem.SetPath(artPath);
-        scanner.GetArtwork(&artItem, CONTENT_TVSHOWS, useFolders, true, actorsDir);
+        scanner.GetArtwork(&artItem, ContentType::TVSHOWS, useFolders, true, actorsDir);
         showItem.SetArt(artItem.GetArt());
-        const int showID = static_cast<int>(
-            scanner.AddVideo(&showItem, CONTENT_TVSHOWS, useFolders, true, nullptr, true));
+        const auto showID = static_cast<int>(
+            scanner.AddVideo(&showItem, ContentType::TVSHOWS, useFolders, true, nullptr, true));
         // season artwork
         KODI::ART::SeasonsArtwork seasonArt;
         artItem.GetVideoInfoTag()->m_strPath = artPath;
@@ -11955,9 +11956,10 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
               StringUtils::Format("s{:02}e{:02}.avi", info2.m_iSeason, info2.m_iEpisode);
           CFileItem artItem2(item);
           artItem2.SetPath(GetSafeFile(artPath, filename));
-          scanner.GetArtwork(&artItem2, CONTENT_TVSHOWS, useFolders, true, actorsDir);
+          scanner.GetArtwork(&artItem2, ContentType::TVSHOWS, useFolders, true, actorsDir);
           item.SetArt(artItem2.GetArt());
-          scanner.AddVideo(&item,CONTENT_TVSHOWS, false, false, showItem.GetVideoInfoTag(), true);
+          scanner.AddVideo(&item, ContentType::TVSHOWS, false, false, showItem.GetVideoInfoTag(),
+                           true);
           episode = episode->NextSiblingElement("episodedetails");
         }
       }
@@ -12042,9 +12044,11 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
   SetPathHash(strPath,"");
   if (!info)
     return;
-  if (info->Content() == CONTENT_TVSHOWS || (info->Content() == CONTENT_MOVIES && !foundDirectly)) // if we scan by folder name we need to invalidate parent as well
+  if (info->Content() == ContentType::TVSHOWS ||
+      (info->Content() == ContentType::MOVIES &&
+       !foundDirectly)) // if we scan by folder name we need to invalidate parent as well
   {
-    if (info->Content() == CONTENT_TVSHOWS || settings.parent_name_root)
+    if (info->Content() == ContentType::TVSHOWS || settings.parent_name_root)
     {
       std::string strParent;
       if (URIUtils::GetParentPath(strPath, strParent) && (!URIUtils::IsPlugin(strPath) || !CURL(strParent).GetHostName().empty()))

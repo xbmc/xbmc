@@ -19,6 +19,8 @@
 #include <string_view>
 #include <vector>
 
+#include <fmt/format.h>
+
 class CAlbum;
 class CArtist;
 class CVideoInfoTag;
@@ -29,31 +31,29 @@ class CMusicAlbumInfo;
 class CMusicArtistInfo;
 }
 
-enum CONTENT_TYPE
-{
-  CONTENT_MOVIES,
-  CONTENT_TVSHOWS,
-  CONTENT_MUSICVIDEOS,
-  CONTENT_ALBUMS,
-  CONTENT_ARTISTS,
-  CONTENT_NONE,
-};
-
 namespace XFILE
 {
-  class CCurlFile;
+class CCurlFile;
 }
-
-class CScraperUrl;
 
 namespace ADDON
 {
 class CScraper;
 using ScraperPtr = std::shared_ptr<CScraper>;
 
-std::string TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
-CONTENT_TYPE TranslateContent(std::string_view string);
-AddonType ScraperTypeFromContent(const CONTENT_TYPE& content);
+enum class ContentType
+{
+  MOVIES,
+  TVSHOWS,
+  MUSICVIDEOS,
+  ALBUMS,
+  ARTISTS,
+  NONE,
+};
+
+std::string TranslateContent(ContentType content, bool pretty = false);
+ContentType TranslateContent(std::string_view string);
+AddonType ScraperTypeFromContent(ContentType content);
 
 // thrown as exception to signal abort or show error dialog
 class CScraperError
@@ -86,7 +86,7 @@ public:
    \return true if settings are available, false otherwise
    \sa GetPathSettings
    */
-  bool SetPathSettings(CONTENT_TYPE content, const std::string& xml);
+  bool SetPathSettings(ContentType content, const std::string& xml);
 
   /*! \brief Get the scraper settings for a particular path in the form of an XML string
    Loads the default and user settings (if not already loaded) and returns the user settings in the
@@ -102,9 +102,9 @@ public:
    */
   void ClearCache() const;
 
-  CONTENT_TYPE Content() const { return m_pathContent; }
+  ContentType Content() const { return m_pathContent; }
   bool RequiresSettings() const { return m_requiressettings; }
-  bool Supports(const CONTENT_TYPE &content) const;
+  bool Supports(ContentType content) const;
 
   bool IsInUse() const override;
   bool IsNoop();
@@ -189,9 +189,40 @@ private:
   bool m_isPython = false;
   bool m_requiressettings = false;
   CDateTimeSpan m_persistence;
-  CONTENT_TYPE m_pathContent = CONTENT_NONE;
+  ContentType m_pathContent = ContentType::NONE;
   CScraperParser m_parser;
 };
 
-}
+} // namespace ADDON
 
+template<>
+struct fmt::formatter<ADDON::ContentType> : fmt::formatter<std::string_view>
+{
+  template<typename FormatContext>
+  constexpr auto format(const ADDON::ContentType& type, FormatContext& ctx)
+  {
+    return fmt::formatter<std::string_view>::format(enumToSV(type), ctx);
+  }
+
+private:
+  static constexpr std::string_view enumToSV(ADDON::ContentType type)
+  {
+    using namespace std::literals::string_view_literals;
+    switch (type)
+    {
+      case ADDON::ContentType::MOVIES:
+        return "movies"sv;
+      case ADDON::ContentType::TVSHOWS:
+        return "TV shows"sv;
+      case ADDON::ContentType::MUSICVIDEOS:
+        return "music videos"sv;
+      case ADDON::ContentType::ALBUMS:
+        return "albums"sv;
+      case ADDON::ContentType::ARTISTS:
+        return "artists"sv;
+      case ADDON::ContentType::NONE:
+        return "none"sv;
+    };
+    throw std::invalid_argument("no content string found");
+  }
+};

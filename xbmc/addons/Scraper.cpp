@@ -55,19 +55,19 @@ namespace
 struct ContentMapping
 {
   const char *name;
-  CONTENT_TYPE type;
+  ADDON::ContentType type;
   int pretty;
 };
 
 // clang-format off
 const std::array<ContentMapping, 7> content = {{
-    {"unknown", CONTENT_NONE, 231},
-    {"albums", CONTENT_ALBUMS, 132},
-    {"music", CONTENT_ALBUMS, 132},
-    {"artists", CONTENT_ARTISTS, 133},
-    {"movies", CONTENT_MOVIES, 20342},
-    {"tvshows", CONTENT_TVSHOWS, 20343},
-    {"musicvideos", CONTENT_MUSICVIDEOS, 20389},
+  {"unknown",     ADDON::ContentType::NONE,        231},
+  {"albums",      ADDON::ContentType::ALBUMS,      132},
+  {"music",       ADDON::ContentType::ALBUMS,      132},
+  {"artists",     ADDON::ContentType::ARTISTS,     133},
+  {"movies",      ADDON::ContentType::MOVIES,      20342},
+  {"tvshows",     ADDON::ContentType::TVSHOWS,     20343},
+  {"musicvideos", ADDON::ContentType::MUSICVIDEOS, 20389},
 }};
 // clang-format on
 
@@ -86,7 +86,7 @@ void CheckScraperError(const TiXmlElement* pxeRoot)
 
 namespace ADDON
 {
-std::string TranslateContent(const CONTENT_TYPE &type, bool pretty /*=false*/)
+std::string TranslateContent(ContentType type, bool pretty /*=false*/)
 {
   for (const ContentMapping& map : content)
   {
@@ -101,30 +101,31 @@ std::string TranslateContent(const CONTENT_TYPE &type, bool pretty /*=false*/)
   return "";
 }
 
-CONTENT_TYPE TranslateContent(std::string_view string)
+ContentType TranslateContent(std::string_view string)
 {
   for (const ContentMapping& map : content)
   {
     if (string == map.name)
       return map.type;
   }
-  return CONTENT_NONE;
+  return ContentType::NONE;
 }
 
-AddonType ScraperTypeFromContent(const CONTENT_TYPE& content)
+AddonType ScraperTypeFromContent(ContentType content)
 {
   switch (content)
   {
     using enum ADDON::AddonType;
-    case CONTENT_ALBUMS:
+    using enum ContentType;
+    case ALBUMS:
       return SCRAPER_ALBUMS;
-    case CONTENT_ARTISTS:
+    case ARTISTS:
       return SCRAPER_ARTISTS;
-    case CONTENT_MOVIES:
+    case MOVIES:
       return SCRAPER_MOVIES;
-    case CONTENT_MUSICVIDEOS:
+    case MUSICVIDEOS:
       return SCRAPER_MUSICVIDEOS;
-    case CONTENT_TVSHOWS:
+    case TVSHOWS:
       return SCRAPER_TVSHOWS;
     default:
       return UNKNOWN;
@@ -144,20 +145,21 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
   switch (addonType)
   {
     using enum ADDON::AddonType;
+    using enum ContentType;
     case SCRAPER_ALBUMS:
-      m_pathContent = CONTENT_ALBUMS;
+      m_pathContent = ALBUMS;
       break;
     case SCRAPER_ARTISTS:
-      m_pathContent = CONTENT_ARTISTS;
+      m_pathContent = ARTISTS;
       break;
     case SCRAPER_MOVIES:
-      m_pathContent = CONTENT_MOVIES;
+      m_pathContent = MOVIES;
       break;
     case SCRAPER_MUSICVIDEOS:
-      m_pathContent = CONTENT_MUSICVIDEOS;
+      m_pathContent = MUSICVIDEOS;
       break;
     case SCRAPER_TVSHOWS:
-      m_pathContent = CONTENT_TVSHOWS;
+      m_pathContent = TVSHOWS;
       break;
     default:
       break;
@@ -166,12 +168,12 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
   m_isPython = URIUtils::GetExtension(addonInfo->Type(addonType)->LibPath()) == ".py";
 }
 
-bool CScraper::Supports(const CONTENT_TYPE &content) const
+bool CScraper::Supports(ContentType content) const
 {
   return Type() == ScraperTypeFromContent(content);
 }
 
-bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string &xml)
+bool CScraper::SetPathSettings(ContentType content, const std::string& xml)
 {
   m_pathContent = content;
   if (!LoadSettings(false, false))
@@ -403,7 +405,7 @@ bool CScraper::Load()
 
 bool CScraper::IsInUse() const
 {
-  if (Supports(CONTENT_ALBUMS) || Supports(CONTENT_ARTISTS))
+  if (Supports(ContentType::ALBUMS) || Supports(ContentType::ARTISTS))
   { // music scraper
     CMusicDatabase db;
     if (db.Open() && db.ScraperInUse(ID()))

@@ -68,7 +68,12 @@ namespace KODI::VIDEO
      \param libraryImport Whether this call belongs to a full library import or not. Defaults to false.
      \return database id of the added item, or -1 on failure.
      */
-    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder = false, bool useLocal = true, const CVideoInfoTag *showInfo = NULL, bool libraryImport = false);
+    long AddVideo(CFileItem* pItem,
+                  ADDON::ContentType content,
+                  bool videoFolder = false,
+                  bool useLocal = true,
+                  const CVideoInfoTag* showInfo = NULL,
+                  bool libraryImport = false);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
      \param items list of items to retrieve info for.
@@ -80,7 +85,13 @@ namespace KODI::VIDEO
      \param pDlgProgress progress dialog to update and check for cancellation during processing.  Defaults to NULL.
      \return true if we successfully found information for some items, false otherwise
      */
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal = true, CScraperUrl *pURL = NULL, bool fetchEpisodes = true, CGUIDialogProgress* pDlgProgress = NULL);
+    bool RetrieveVideoInfo(CFileItemList& items,
+                           bool bDirNames,
+                           ADDON::ContentType content,
+                           bool useLocal = true,
+                           CScraperUrl* pURL = NULL,
+                           bool fetchEpisodes = true,
+                           CGUIDialogProgress* pDlgProgress = NULL);
 
     static void ApplyThumbToFolder(const std::string &folder, const std::string &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
@@ -92,7 +103,11 @@ namespace KODI::VIDEO
      \param useLocal whether we should use local thumbs. Defaults to true.
      \param actorArtPath the path to search for actor thumbs. Defaults to empty.
      */
-    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true, const std::string &actorArtPath = "");
+    void GetArtwork(CFileItem* pItem,
+                    ADDON::ContentType content,
+                    bool bApplyToDir = false,
+                    bool useLocal = true,
+                    const std::string& actorArtPath = "");
 
     /*! \brief Get season thumbs for a tvshow.
      All seasons (regardless of whether the user has episodes) are added to the art map.
@@ -269,7 +284,7 @@ namespace KODI::VIDEO
     bool EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
-    bool AddVideoExtras(CFileItemList& items, const CONTENT_TYPE& content, const std::string& path);
+    bool AddVideoExtras(CFileItemList& items, ADDON::ContentType content, const std::string& path);
     bool ProcessVideoVersion(VideoDbContentType itemType, int dbId);
 
     std::pair<InfoType, std::unique_ptr<IVideoInfoTagLoader>> ReadInfoTag(

@@ -133,7 +133,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
             scraper->ID() == "metadata.local")
         {
           // get video info and art from plugin source with metadata.local scraper
-          if (scraper->Content() == CONTENT_TVSHOWS && !m_item->IsFolder() && tag->m_iIdShow < 0)
+          if (scraper->Content() == ADDON::ContentType::TVSHOWS && !m_item->IsFolder() &&
+              tag->m_iIdShow < 0)
             // preserve show_id for episode
             tag->m_iIdShow = m_item->GetVideoInfoTag()->m_iIdShow;
           pluginTag = std::move(tag);
@@ -156,11 +157,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           nfoResult != CInfoScanner::InfoType::ERROR_NFO)
       {
         int heading = 20159;
-        if (scraper->Content() == CONTENT_MOVIES)
+        if (scraper->Content() == ADDON::ContentType::MOVIES)
           heading = 13346;
-        else if (scraper->Content() == CONTENT_TVSHOWS)
+        else if (scraper->Content() == ADDON::ContentType::TVSHOWS)
           heading = m_item->IsFolder() ? 20351 : 20352;
-        else if (scraper->Content() == CONTENT_MUSICVIDEOS)
+        else if (scraper->Content() == ADDON::ContentType::MUSICVIDEOS)
           heading = 20393;
         if (CGUIDialogYesNo::ShowAndGetInput(heading, 20446))
         {
@@ -173,7 +174,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     }
 
     // no need to re-fetch the episode guide for episodes
-    if (scraper->Content() == CONTENT_TVSHOWS && !m_item->IsFolder())
+    if (scraper->Content() == ADDON::ContentType::TVSHOWS && !m_item->IsFolder())
       hasDetails = true;
 
     // if we don't have an url or need to refresh anyway do the web search
@@ -224,7 +225,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
             // ask the user what to do
             CGUIDialogSelect* selectDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
             selectDialog->Reset();
-            selectDialog->SetHeading(scraper->Content() == CONTENT_TVSHOWS ? 20356 : 196);
+            selectDialog->SetHeading(scraper->Content() == ADDON::ContentType::TVSHOWS ? 20356
+                                                                                       : 196);
             for (const auto& itemResult : itemResultList)
               selectDialog->Add(itemResult.GetTitle());
             selectDialog->EnableButton(true, 413); // "Manual"
@@ -238,7 +240,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
             else if (selectDialog->IsButtonPressed())
             {
               // ask the user to input a title to use
-              if (!CGUIKeyboardFactory::ShowAndGetInput(itemTitle, g_localizeStrings.Get(scraper->Content() == CONTENT_TVSHOWS ? 20357 : 16009), false))
+              if (!CGUIKeyboardFactory::ShowAndGetInput(
+                      itemTitle,
+                      g_localizeStrings.Get(
+                          scraper->Content() == ADDON::ContentType::TVSHOWS ? 20357 : 16009),
+                      false))
                 return false;
 
               // go through the whole process again
@@ -268,7 +274,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       if (IsModal())
       {
         // ask the user to input a title to use
-        if (!CGUIKeyboardFactory::ShowAndGetInput(itemTitle, g_localizeStrings.Get(scraper->Content() == CONTENT_TVSHOWS ? 20357 : 16009), false))
+        if (!CGUIKeyboardFactory::ShowAndGetInput(
+                itemTitle,
+                g_localizeStrings.Get(scraper->Content() == ADDON::ContentType::TVSHOWS ? 20357
+                                                                                        : 16009),
+                false))
           return false;
 
         // go through the whole process again
@@ -324,14 +334,14 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
                                      : URIUtils::GetDirectory(path));
 
     int headingLabel = 198;
-    if (scraper->Content() == CONTENT_TVSHOWS)
+    if (scraper->Content() == ADDON::ContentType::TVSHOWS)
     {
       if (m_item->IsFolder())
         headingLabel = 20353;
       else
         headingLabel = 20361;
     }
-    else if (scraper->Content() == CONTENT_MUSICVIDEOS)
+    else if (scraper->Content() == ADDON::ContentType::MUSICVIDEOS)
       headingLabel = 20394;
 
     // prepare the progress dialog for downloading all the necessary information
@@ -345,11 +355,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // remove any existing data for the item we're going to refresh
     if (origDbId > 0)
     {
-      if (scraper->Content() == CONTENT_MOVIES)
+      if (scraper->Content() == ADDON::ContentType::MOVIES)
         db.DeleteMovie(origDbId, DeleteMovieCascadeAction::DEFAULT_VERSION);
-      else if (scraper->Content() == CONTENT_MUSICVIDEOS)
+      else if (scraper->Content() == ADDON::ContentType::MUSICVIDEOS)
         db.DeleteMusicVideo(origDbId);
-      else if (scraper->Content() == CONTENT_TVSHOWS)
+      else if (scraper->Content() == ADDON::ContentType::TVSHOWS)
       {
         if (!m_item->IsFolder())
           db.DeleteEpisode(origDbId);
@@ -392,11 +402,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     }
 
     // retrieve the updated information from the database
-    if (scraper->Content() == CONTENT_MOVIES)
+    if (scraper->Content() == ADDON::ContentType::MOVIES)
       db.GetMovieInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
-    else if (scraper->Content() == CONTENT_MUSICVIDEOS)
+    else if (scraper->Content() == ADDON::ContentType::MUSICVIDEOS)
       db.GetMusicVideoInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
-    else if (scraper->Content() == CONTENT_TVSHOWS)
+    else if (scraper->Content() == ADDON::ContentType::TVSHOWS)
     {
       // update tvshow/season info to get updated episode numbers
       if (m_item->IsFolder())
