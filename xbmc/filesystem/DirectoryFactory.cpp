@@ -86,6 +86,9 @@
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
 #include "utils/StringUtils.h"
+#ifdef HAS_LIBTORRENT
+#include "MagnetDirectory.h"
+#endif
 
 using namespace ADDON;
 
@@ -216,6 +219,11 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 
   if (url.IsProtocol("pvr"))
     return new CPVRDirectory();
+
+#ifdef HAS_LIBTORRENT
+  if (url.IsProtocol("magnet"))
+    return new CMagnetDirectory();
+#endif
 
   CLog::Log(LOGWARNING, "{} - unsupported protocol({}) in {}", __FUNCTION__, url.GetProtocol(),
             url.GetRedacted());
