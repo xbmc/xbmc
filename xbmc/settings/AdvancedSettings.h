@@ -275,6 +275,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_caseSensitiveLocalArtMatch{true};
     int m_minimumEpisodePlaylistDuration; // seconds
     bool m_disableEpisodeRanges{false};
+    bool m_bNoRemoteArtWithLocalScraper{false};
 
     CLangInfo::Tokens m_vecTokens;
 
