@@ -1007,6 +1007,10 @@ namespace VIDEO
         // fast hash failed - compute slow one
         if (hash.empty())
         {
+          // -- BP PR-26921
+          // force sorting consistency to avoid hash mismatch between platforms
+          // sort by filename as always present for any files, but keep case sensitiveness
+          items.Sort(SortByFile, SortOrderAscending, SortAttributeNone);
           GetPathHash(items, hash);
           if (StringUtils::EqualsNoCase(dbHash, hash))
           {
@@ -2200,8 +2204,14 @@ namespace VIDEO
       else
       {
         digest.Update(&pItem->m_dwSize, sizeof(pItem->m_dwSize));
-        KODI::TIME::FileTime time = pItem->m_dateTime;
-        digest.Update(&time, sizeof(KODI::TIME::FileTime));
+        // -- BP PR-26921
+        // linux and windows platform don't follow the same output format (linux return a zero value for milliseconds member)
+        // for consistency, use string format instead and discard milliseconds field.
+        // unless a modification occur during the 1 second window when kodi hash and update this particular file, we are safe.
+        if (pItem->m_dateTime.IsValid())
+          digest.Update(StringUtils::Format("{:02}.{:02}.{:04} {:02}:{:02}:{:02}", 
+                                            pItem->m_dateTime.GetDay(), pItem->m_dateTime.GetMonth(), pItem->m_dateTime.GetYear(),
+                                            pItem->m_dateTime.GetHour(), pItem->m_dateTime.GetMinute(), pItem->m_dateTime.GetSecond()));
       }
       if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
