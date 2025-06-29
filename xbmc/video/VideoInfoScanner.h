@@ -178,7 +178,7 @@ namespace KODI::VIDEO
      \return true if information is found, false if an error occurred, the lookup was cancelled, or no information was found.
      */
     bool GetDetails(CFileItem* pItem,
-                    const std::unordered_map<std::string, std::string>& uniqueIDs,
+                    const ADDON::CScraper::UniqueIDs& uniqueIDs,
                     CScraperUrl& url,
                     const ADDON::ScraperPtr& scraper,
                     VIDEO::IVideoInfoTagLoader* nfoFile = nullptr,

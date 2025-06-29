@@ -699,7 +699,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     long lResult = -1;
     if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
     {
-      const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
+      const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
                      (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
                                                                                     : nullptr,
@@ -804,7 +804,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifier;
     if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
     {
-      const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
+      const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
                      (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
                                                                                     : nullptr,
@@ -897,7 +897,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifier;
     if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
     {
-      const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
+      const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
                      (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
                                                                                     : nullptr,
@@ -2212,7 +2212,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   }
 
   bool CVideoInfoScanner::GetDetails(CFileItem* pItem,
-                                     const std::unordered_map<std::string, std::string>& uniqueIDs,
+                                     const ADDON::CScraper::UniqueIDs& uniqueIDs,
                                      CScraperUrl& url,
                                      const ScraperPtr& scraper,
                                      IVideoInfoTagLoader* loader,

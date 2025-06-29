@@ -132,8 +132,19 @@ public:
     XFILE::CCurlFile &fcurl, const std::string &sArtist);
   KODI::VIDEO::EPISODELIST GetEpisodeList(XFILE::CCurlFile& fcurl, const CScraperUrl& scurl);
 
+  struct StringHash
+  {
+    using is_transparent = void; // Enables heterogeneous operations.
+    std::size_t operator()(std::string_view sv) const
+    {
+      std::hash<std::string_view> hasher;
+      return hasher(sv);
+    }
+  };
+  using UniqueIDs = std::unordered_map<std::string, std::string, StringHash, std::equal_to<>>;
+
   bool GetVideoDetails(XFILE::CCurlFile& fcurl,
-                       const std::unordered_map<std::string, std::string>& uniqueIDs,
+                       const UniqueIDs& uniqueIDs,
                        const CScraperUrl& scurl,
                        bool fMovie /*else episode*/,
                        CVideoInfoTag& video);

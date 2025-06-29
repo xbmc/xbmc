@@ -877,7 +877,7 @@ bool PythonDetails(const std::string& ID,
                    const std::string& url,
                    const std::string& action,
                    const std::string& pathSettings,
-                   const std::unordered_map<std::string, std::string>& uniqueIDs,
+                   const CScraper::UniqueIDs& uniqueIDs,
                    T& result)
 {
   CVariant ids;
@@ -907,7 +907,7 @@ bool PythonDetails(const std::string& ID,
                    const std::string& pathSettings,
                    T& result)
 {
-  const std::unordered_map<std::string, std::string> ids;
+  const ADDON::CScraper::UniqueIDs ids;
   return PythonDetails(ID, key, url, action, pathSettings, ids, result);
 }
 } // unnamed namespace
@@ -1355,7 +1355,7 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile& fcurl, const CScra
 
 // takes URL; returns true and populates video details on success, false otherwise
 bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
-                               const std::unordered_map<std::string, std::string>& uniqueIDs,
+                               const UniqueIDs& uniqueIDs,
                                const CScraperUrl& scurl,
                                bool fMovie /*else episode*/,
                                CVideoInfoTag& video)

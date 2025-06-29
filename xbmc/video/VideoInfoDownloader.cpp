@@ -147,7 +147,7 @@ bool CVideoInfoDownloader::GetArtwork(CVideoInfoTag &details)
   return m_info->GetArtwork(*m_http, details);
 }
 
-bool CVideoInfoDownloader::GetDetails(const std::unordered_map<std::string, std::string>& uniqueIDs,
+bool CVideoInfoDownloader::GetDetails(const ADDON::CScraper::UniqueIDs& uniqueIDs,
                                       const CScraperUrl& url,
                                       CVideoInfoTag& movieDetails,
                                       CGUIDialogProgress* pProgress /* = NULL */)
