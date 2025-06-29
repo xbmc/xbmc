@@ -12,14 +12,27 @@ function(pack_xbt input output)
   set(XBT_SOURCE_FILELIST ${XBT_SOURCE_FILELIST} PARENT_SCOPE)
 
   get_filename_component(dir ${output} DIRECTORY)
+
+  # filename of output file for logging info
+  get_filename_component(file ${output} NAME)
+
+  # Get skin name for logging info. assumes path structure <skin>/media/<output.xbt>
+  get_filename_component(skin ${dir} DIRECTORY)
+  get_filename_component(skin ${skin} NAME)
+
   if(${CORE_SYSTEM_NAME} MATCHES "windows")
     string(REPLACE "${CMAKE_BINARY_DIR}" "\$\{BUNDLEDIR\}" dir ${dir})
     string(REPLACE "${CMAKE_BINARY_DIR}" "\$\{BUNDLEDIR\}" output ${output})
   endif()
 
+  if(VERBOSE)
+    set(verbose_flag "-verbose")
+  endif()
+
   file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
-"execute_process(COMMAND \"${CMAKE_COMMAND}\" -E make_directory ${dir})
-execute_process(COMMAND \$\{TEXTUREPACKER_EXECUTABLE\} -input ${input} -output ${output} -dupecheck)\n")
+"message(STATUS \"Packing ${file} for ${skin}\")
+execute_process(COMMAND \"${CMAKE_COMMAND}\" -E make_directory ${dir})
+execute_process(COMMAND \$\{TEXTUREPACKER_EXECUTABLE\} -input ${input} -output ${output} -dupecheck ${verbose_flag})\n")
 
     list(APPEND XBT_FILES ${output})
     set(XBT_FILES ${XBT_FILES} PARENT_SCOPE)
