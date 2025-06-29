@@ -46,20 +46,21 @@ bool CRetroPlayerVideo::OpenStream(const StreamProperties& properties)
   const AVPixelFormat pixfmt = videoProperties.pixfmt;
   const unsigned int nominalWidth = videoProperties.nominalWidth;
   const unsigned int nominalHeight = videoProperties.nominalHeight;
+  const float nominalDisplayAspectRatio = videoProperties.nominalDisplayAspectRatio;
   const unsigned int maxWidth = videoProperties.maxWidth;
   const unsigned int maxHeight = videoProperties.maxHeight;
-  const float pixelAspectRatio = videoProperties.pixelAspectRatio;
 
-  CLog::Log(LOGDEBUG,
-            "RetroPlayer[VIDEO]: Creating video stream - format {}, nominal {}x{}, max {}x{}",
-            CRenderTranslator::TranslatePixelFormat(pixfmt), nominalWidth, nominalHeight, maxWidth,
-            maxHeight);
+  CLog::Log(
+      LOGDEBUG,
+      "RetroPlayer[VIDEO]: Creating video stream - format {}, nominal {}x{} ({} DAR), max {}x{}",
+      CRenderTranslator::TranslatePixelFormat(pixfmt), nominalWidth, nominalHeight,
+      nominalDisplayAspectRatio, maxWidth, maxHeight);
 
   m_processInfo.SetVideoPixelFormat(pixfmt);
   m_processInfo.SetVideoDimensions(nominalWidth, nominalHeight); // Report nominal height for now
 
-  if (m_renderManager.Configure(pixfmt, nominalWidth, nominalHeight, maxWidth, maxHeight,
-                                pixelAspectRatio))
+  if (m_renderManager.Configure(pixfmt, nominalWidth, nominalHeight, nominalDisplayAspectRatio,
+                                maxWidth, maxHeight))
     m_bOpen = true;
 
   return m_bOpen;
@@ -100,7 +101,7 @@ void CRetroPlayerVideo::AddStreamData(const StreamPacket& packet)
     }
 
     m_renderManager.AddFrame(videoPacket.data, videoPacket.size, videoPacket.width,
-                             videoPacket.height, orientationDegCCW);
+                             videoPacket.height, videoPacket.displayAspectRatio, orientationDegCCW);
   }
 }
 
