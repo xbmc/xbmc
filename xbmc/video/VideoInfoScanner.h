@@ -9,6 +9,7 @@
 #pragma once
 
 #include "InfoScanner.h"
+#include "Util.h"
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
 #include "guilib/GUIListItem.h"
@@ -285,6 +286,7 @@ namespace KODI::VIDEO
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
+    mutable CUtil::RegexCache m_regexCache;
 
   private:
     static void AddLocalItemArtwork(KODI::ART::Artwork& itemArt,
