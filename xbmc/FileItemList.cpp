@@ -84,8 +84,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
     m_map.clear();
     for (const auto& pItem : m_items)
     {
-      m_map.try_emplace(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions()
-                                           : pItem->GetPath(),
+      m_map.try_emplace(m_ignoreURLOptions ? pItem->GetURL().GetWithoutOptions() : pItem->GetPath(),
                         pItem);
     }
   }
@@ -136,8 +135,8 @@ void CFileItemList::Add(CFileItemPtr pItem)
   std::unique_lock lock(m_lock);
   if (m_fastLookup)
   {
-    m_map.try_emplace(
-        m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem);
+    m_map.try_emplace(m_ignoreURLOptions ? pItem->GetURL().GetWithoutOptions() : pItem->GetPath(),
+                      pItem);
   }
   m_items.emplace_back(std::move(pItem));
 }
@@ -148,8 +147,7 @@ void CFileItemList::Add(CFileItem&& item)
   auto ptr = std::make_shared<CFileItem>(std::move(item));
   if (m_fastLookup)
   {
-    m_map.try_emplace(
-        m_ignoreURLOptions ? CURL(ptr->GetPath()).GetWithoutOptions() : ptr->GetPath(), ptr);
+    m_map.try_emplace(m_ignoreURLOptions ? ptr->GetURL().GetWithoutOptions() : ptr->GetPath(), ptr);
   }
   m_items.emplace_back(std::move(ptr));
 }
@@ -167,8 +165,8 @@ void CFileItemList::AddFront(const CFileItemPtr& pItem, int itemPosition)
   }
   if (m_fastLookup)
   {
-    m_map.try_emplace(
-        m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem);
+    m_map.try_emplace(m_ignoreURLOptions ? pItem->GetURL().GetWithoutOptions() : pItem->GetPath(),
+                      pItem);
   }
 }
 
@@ -182,8 +180,7 @@ void CFileItemList::Remove(const CFileItem* pItem)
     m_items.erase(it);
     if (m_fastLookup)
     {
-      m_map.erase(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions()
-                                     : pItem->GetPath());
+      m_map.erase(m_ignoreURLOptions ? pItem->GetURL().GetWithoutOptions() : pItem->GetPath());
     }
   }
 }
@@ -203,8 +200,7 @@ void CFileItemList::Remove(int iItem)
     CFileItemPtr pItem = *(m_items.begin() + iItem);
     if (m_fastLookup)
     {
-      m_map.erase(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions()
-                                     : pItem->GetPath());
+      m_map.erase(m_ignoreURLOptions ? pItem->GetURL().GetWithoutOptions() : pItem->GetPath());
     }
     m_items.erase(m_items.begin() + iItem);
   }
