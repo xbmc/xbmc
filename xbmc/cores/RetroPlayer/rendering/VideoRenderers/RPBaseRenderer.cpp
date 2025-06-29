@@ -168,8 +168,11 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   const unsigned int sourceWidth = renderBuffer.GetWidth();
   const unsigned int sourceHeight = renderBuffer.GetHeight();
   const unsigned int sourceRotationDegCCW = renderBuffer.GetRotation();
-  const float sourceAspectRatio =
-      static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
+  const float sourceFrameRatio = static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
+  // The frame may specify a display aspect ratio to account for non-square pixels
+  const float frameAspectRatio = (renderBuffer.GetDisplayAspectRatio() > 0.0f)
+                                     ? renderBuffer.GetDisplayAspectRatio()
+                                     : sourceFrameRatio;
 
   const SCALINGMETHOD scaleMode = m_renderSettings.VideoSettings().GetScalingMethod();
   const STRETCHMODE stretchMode = m_renderSettings.VideoSettings().GetRenderStretchMode();
@@ -201,12 +204,12 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   float pixelRatio = 1.0f;
   float zoomAmount = 1.0f;
   CRenderUtils::CalculateStretchMode(stretchMode, rotationDegCCW, sourceWidth, sourceHeight,
-                                     screenWidth, screenHeight, pixelRatio, zoomAmount);
+                                     screenWidth, screenHeight, frameAspectRatio, pixelRatio,
+                                     zoomAmount);
 
   // Calculate destination dimensions
   CRect destRect;
-  CRenderUtils::CalcNormalRenderRect(viewRect, sourceAspectRatio * pixelRatio, zoomAmount,
-                                     destRect);
+  CRenderUtils::CalcNormalRenderRect(viewRect, frameAspectRatio * pixelRatio, zoomAmount, destRect);
 
   m_sourceRect.x1 = 0.0f;
   m_sourceRect.y1 = 0.0f;
