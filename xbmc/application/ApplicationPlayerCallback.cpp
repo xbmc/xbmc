@@ -28,6 +28,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/URIUtils.h"
@@ -114,23 +115,48 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   if (bookmark.timeInSeconds == 0.0)
     return;
 
-  // Adjust paths of new fileItem for physical/removable blurays
-  // DynPath contains the mpls (playlist) played
-  // VideoInfoTag()->m_strFileNameAndPath contains the removable:// path
-  // We need to update DynPath with the removable:// path (for the database), keeping the playlist
-  if (fileItem.HasVideoInfoTag() &&
-      fileItem.GetVideoInfoTag()->m_strFileNameAndPath.starts_with("bluray://removable"))
+    // Adjust paths of new fileItem for physical/removable blurays
+    // DynPath contains the mpls (playlist) played
+    // VideoInfoTag()->m_strFileNameAndPath contains the removable:// path (if played through Disc node)
+    // otherwise if played through Video->Files we need to retrieve the removable:// path
+    // We need to update DynPath with the removable:// path (for the database), keeping the playlist
+#ifdef HAVE_LIBBLURAY
+  if (fileItem.HasVideoInfoTag())
   {
     const std::string dynPath{fileItem.GetDynPath()};
     if (URIUtils::IsBlurayPath(dynPath))
     {
-      CURL url{fileItem.GetVideoInfoTag()->m_strFileNameAndPath};
       const CURL fileUrl{dynPath};
-      url.SetFileName(fileUrl.GetFileName());
-      fileItem.SetPath(url.Get());
-      fileItem.SetDynPath("");
+      CURL url;
+      if (fileItem.GetVideoInfoTag()->m_strFileNameAndPath.starts_with("bluray://removable"))
+      {
+        // Played through Disc node
+        url.Parse(fileItem.GetVideoInfoTag()->m_strFileNameAndPath);
+      }
+      else
+      {
+#ifdef HAS_OPTICAL_DRIVE
+        // Played through Video->Files
+        ::UTILS::DISCS::DiscInfo info{
+            CServiceBroker::GetMediaManager().GetDiscInfo(fileUrl.GetHostName())};
+        if (!info.empty() && info.type == ::UTILS::DISCS::DiscType::BLURAY)
+        {
+          url.Parse(CServiceBroker::GetMediaManager().GetDiskUniqueId(fileUrl.GetHostName()));
+        }
+#endif
+      }
+      if (!url.Get().empty())
+      {
+        url.SetFileName(fileUrl.GetFileName());
+        fileItem.SetPath(url.Get());
+        fileItem.SetDynPath("");
+#ifdef HAS_OPTICAL_DRIVE
+        CServiceBroker::GetMediaManager().ResetBlurayPlaylistStatus();
+#endif
+      }
     }
   }
+#endif
 
   if (stackHelper->GetRegisteredStack(fileItem) != nullptr)
   {

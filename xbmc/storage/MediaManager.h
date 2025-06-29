@@ -34,6 +34,13 @@ public:
 class CMediaManager : public IStorageEventsCallback, public IJobCallback
 {
 public:
+  enum class HasBlurayPlaylist : uint8_t
+  {
+    YES,
+    NO,
+    UNKNOWN
+  };
+
   CMediaManager();
 
   void Initialize();
@@ -64,6 +71,13 @@ public:
   std::string GetDiskLabel(const std::string& devicePath="");
   std::string GetDiskUniqueId(const std::string& devicePath="");
   bool HasMediaBlurayPlaylist(const std::string& devicePath = "");
+
+  /*! \brief Reset flag for removable bluray playlist status
+   * This is needed as HasMediaBlurayPlaylist() is called every screen refresh when
+   * the disc node is highlighted.
+   * It needs to be reset whenever a disc is ejected or played (as a playlist may have been selected).
+  */
+  void ResetBlurayPlaylistStatus();
 
   /*! \brief Gets the platform disc drive handler
   * @todo this likely doesn't belong here but in some discsupport component owned by media manager
@@ -106,6 +120,8 @@ public:
 
   bool playStubFile(const CFileItem& item);
 
+  UTILS::DISCS::DiscInfo GetDiscInfo(const std::string& mediaPath);
+
 protected:
   std::vector<CNetworkLocation> m_locations;
 
@@ -142,7 +158,9 @@ private:
   std::shared_ptr<IDiscDriveHandler> m_platformDiscDriveHander;
 #endif
 
-  UTILS::DISCS::DiscInfo GetDiscInfo(const std::string& mediaPath);
   void RemoveDiscInfo(const std::string& devicePath);
   std::map<std::string, UTILS::DISCS::DiscInfo> m_mapDiscInfo;
+#ifdef HAVE_LIBBLURAY
+  HasBlurayPlaylist m_hasBlurayPlaylist{HasBlurayPlaylist::UNKNOWN};
+#endif
 };
