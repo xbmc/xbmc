@@ -863,6 +863,13 @@ TEST_F(TestURIUtils, CheckConsistencyBetweenFileNameUtilities)
   { return URIUtils_Split(CURL(in).GetFileName()); };
 
   {
+    EXPECT_EQ("?", CURL("?").GetFileName());
+
+    EXPECT_EQ("?", URIUtils::GetFileName("?"));
+    EXPECT_EQ("?", CURL_FileName_URIUtils_Split("?"));
+    EXPECT_EQ("?", URIUtils_Split("?"));
+  }
+  {
     EXPECT_EQ("", URIUtils_Split("C:"));
 
     EXPECT_EQ("", URIUtils::GetFileName("C:"));
