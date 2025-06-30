@@ -539,10 +539,9 @@ std::string URIUtils::GetBlurayAllEpisodesPath(const std::string& path)
   return AddFileToFolder(GetBlurayPath(path), "root", "episode", "all");
 }
 
-std::string URIUtils::GetBlurayPlaylistPath(const std::string& path, int playlist /* = -1 */)
+std::string URIUtils::GetBlurayPlaylistPath(const std::string& path)
 {
-  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST",
-                         playlist != -1 ? StringUtils::Format("{:05}.mpls", playlist) : "");
+  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST", "");
 }
 
 std::string URIUtils::GetBlurayPath(const std::string& path)
@@ -564,8 +563,6 @@ std::string URIUtils::GetBlurayPath(const std::string& path)
   }
   else if (IsBDFile(path))
     newPath = GetDiscBasePath(path);
-  else
-    newPath = path;
 
   if (!newPath.empty())
   {
