@@ -458,6 +458,7 @@ void CDiscDirectoryHelper::UseGroupMethod(unsigned int episodeIndex,
   // Use groups and find nth playlist (or all for all episodes) in group
   // Groups are already contain at least numEpisodes playlists of minimum duration
   // Firstly look just at groups that contain exactly numEpisodes playlists
+  // Having removed duplicates
   CLog::LogF(LOGDEBUG, "Using group method - exact number of playlists");
   const std::vector groups{GetGroupsWithoutDuplicates(m_groups)};
   for (const auto& group : groups)
@@ -470,13 +471,13 @@ void CDiscDirectoryHelper::UseGroupMethod(unsigned int episodeIndex,
 
   if (m_candidatePlaylists.empty())
   {
-    // Now look for groups that contain more than numEpisodes playlists
+    // Now look for groups that contain same/more than numEpisodes playlists (with duplicates)
     // Check that the first numEpisodes playlists have a duration within 20% of the desired episode
     CLog::LogF(LOGDEBUG, "Using group method - relaxed number of playlists");
     const std::chrono::milliseconds duration{episodesOnDisc[episodeIndex].GetDuration() * 1000ms};
-    for (const auto& group : groups)
+    for (const auto& group : m_groups)
     {
-      if (group.size() <= m_numEpisodes)
+      if (group.size() < m_numEpisodes)
         continue;
 
       // Check duration
