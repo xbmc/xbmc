@@ -15,7 +15,7 @@
 #include <memory>
 #include <set>
 
-class CFileItem;
+class CURL;
 
 namespace XFILE
 {
