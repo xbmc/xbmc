@@ -246,7 +246,7 @@ extern "C"
 
     /// @brief The nominal display aspect ratio (DAR) used to show the video frame
     ///
-    /// An aspect ratio of 0.0 indicates square pixels, e.i. a DAR of W/H.
+    /// An aspect ratio of 0.0 indicates square pixels, i.e. a DAR of W/H.
     ///
     float nominal_display_aspect_ratio;
 
@@ -273,7 +273,7 @@ extern "C"
 
     /// @brief Display aspect ratio (DAR) to use when showing the video frame
     ///
-    /// An aspect ratio of 0.0 indicates square pixels, e.i. a DAR of W/H.
+    /// An aspect ratio of 0.0 indicates square pixels, i.e. a DAR of W/H.
     ///
     float display_aspect_ratio;
 

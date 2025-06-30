@@ -263,6 +263,7 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
         m_cachedFrame = std::move(cachedFrame);
         m_cachedWidth = width;
         m_cachedHeight = height;
+        m_cachedDisplayAspectRatio = displayAspectRatio;
         m_cachedRotationCCW = orientationDegCCW;
       }
     }
