@@ -15,7 +15,7 @@
 #include <memory>
 #include <set>
 
-class CFileItem;
+class CURL;
 
 namespace XFILE
 {
@@ -43,14 +43,14 @@ namespace XFILE
   public:
     CDirectoryCache(void);
     virtual ~CDirectoryCache(void);
-    bool GetDirectory(const std::string& strPath, CFileItemList &items, bool retrieveAll = false);
-    void SetDirectory(const std::string& strPath, const CFileItemList& items, CacheType cacheType);
-    void ClearDirectory(const std::string& strPath);
-    void ClearFile(const std::string& strFile);
-    void ClearSubPaths(const std::string& strPath);
+    bool GetDirectory(const CURL& urlPath, CFileItemList& items, bool retrieveAll = false);
+    void SetDirectory(const CURL& urlPath, const CFileItemList& items, CacheType cacheType);
+    void ClearDirectory(const CURL& urlPath);
+    void ClearFile(const CURL& urlFile);
+    void ClearSubPaths(const CURL& urlPath);
     void Clear();
-    void AddFile(const std::string& strFile);
-    bool FileExists(const std::string& strPath, bool& bInCache);
+    void AddFile(const CURL& urlFile);
+    bool FileExists(const CURL& urlFile, bool& bInCache);
 #ifdef _DEBUG
     void PrintStats() const;
 #endif
