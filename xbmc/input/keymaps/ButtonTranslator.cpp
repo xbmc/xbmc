@@ -340,9 +340,9 @@ void CButtonTranslator::MapWindowActions(const tinyxml2::XMLNode* pWindow, int w
         if (type == "gamepad")
           buttonCode = CGamepadTranslator::TranslateString(pButton->Value());
         else if (type == "remote")
-          buttonCode = CIRTranslator::TranslateString(pButton->Value());
+          buttonCode = CIRTranslator::TranslateButton(pButton);
         else if (type == "universalremote")
-          buttonCode = CIRTranslator::TranslateUniversalRemoteString(pButton->Value());
+          buttonCode = CIRTranslator::TranslateUniversalRemoteButton(pButton);
         else if (type == "keyboard")
           buttonCode = CKeyboardTranslator::TranslateButton(pButton);
         else if (type == "mouse")
