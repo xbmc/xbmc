@@ -189,8 +189,7 @@ struct CVaapiConfig
   VADisplay dpy;
   VAProfile profile;
   VAConfigAttrib attrib;
-  CProcessInfo *processInfo;
-  bool driverIsMesa;
+  CProcessInfo* processInfo;
   int bitDepth;
 };
 
@@ -360,8 +359,6 @@ protected:
 
   // extended state variables for state machine
   std::chrono::milliseconds m_extTimeout = std::chrono::milliseconds::zero();
-  /// \brief Whether at least one interlaced frame was encountered in the video stream (indicating that more interlaced frames could potentially follow)
-  bool m_seenInterlaced;
   CVaapiConfig m_config;
   std::shared_ptr<CVaapiBufferPool> m_bufferPool;
   CVaapiDecodedPicture m_currentPicture;
