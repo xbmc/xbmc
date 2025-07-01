@@ -19,6 +19,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <ranges>
 #include <vector>
 
 #include <taglib/aifffile.h>
@@ -27,6 +28,7 @@
 #include <taglib/asffile.h>
 #include <taglib/asftag.h>
 #include <taglib/attachedpictureframe.h>
+#include <taglib/chapterframe.h>
 #include <taglib/commentsframe.h>
 #include <taglib/flacfile.h>
 #include <taglib/id3v1genres.h>
@@ -121,9 +123,11 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, MUSIC_INFO::CMusicIn
   return Load(strFileName, tag, "", art);
 }
 
-
 template<>
-bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& tag)
+bool CTagLoaderTagLib::ParseTag(ASF::Tag* asf,
+                                EmbeddedArt* art,
+                                CMusicInfoTag& tag,
+                                std::chrono::milliseconds totalLen)
 {
   if (!asf)
     return false;
@@ -262,7 +266,10 @@ int CTagLoaderTagLib::POPMtoXBMC(int popm)
 }
 
 template<>
-bool CTagLoaderTagLib::ParseTag(ID3v1::Tag *id3v1, EmbeddedArt *art, CMusicInfoTag& tag)
+bool CTagLoaderTagLib::ParseTag(ID3v1::Tag* id3v1,
+                                EmbeddedArt* art,
+                                CMusicInfoTag& tag,
+                                std::chrono::milliseconds totalLen)
 {
   if (!id3v1) return false;
   tag.SetTitle(id3v1->title().to8Bit(true));
@@ -276,10 +283,14 @@ bool CTagLoaderTagLib::ParseTag(ID3v1::Tag *id3v1, EmbeddedArt *art, CMusicInfoT
 }
 
 template<>
-bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag)
+bool CTagLoaderTagLib::ParseTag(ID3v2::Tag* id3v2,
+                                EmbeddedArt* art,
+                                MUSIC_INFO::CMusicInfoTag& tag,
+                                std::chrono::milliseconds totalLenMs)
 {
   if (!id3v2) return false;
   ReplayGain replayGainInfo;
+  ChapterMarks chapters;
 
   ID3v2::AttachedPictureFrame *pictures[3] = {};
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
@@ -461,6 +472,45 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
           tag.SetUserrating(POPMtoXBMC(popFrame->rating()));
         }
       }
+    else if (it->first == "CHAP")
+    {
+      using namespace std::ranges::views;
+
+      constexpr auto toChapterFrame = [](auto* f) { return dynamic_cast<ID3v2::ChapterFrame*>(f); };
+
+      // Produce a view of ChapterFrame pointers.
+      auto chapterFrames = it->second // original FrameList
+                           | transform(toChapterFrame) // cast
+                           | filter([](auto* p) { return p; }); // keep non‑null
+
+      std::size_t chapNumber = 0;
+      for (auto* chapFrame : chapterFrames)
+      {
+        ChapterDetails& chapter = chapters[chapNumber];
+
+        // Title - music db will generate a localised "chapter xx" if no title here
+        if (auto list = chapFrame->embeddedFrameList("TIT2"); !list.isEmpty())
+          chapter.name = list[0]->toString().toCString(true);
+
+        // Timing - all times are in Milliseconds
+        const std::chrono::milliseconds startTimeMs(chapFrame->startTime());
+        std::chrono::milliseconds endTimeMs(chapFrame->endTime());
+
+        // Make sure the very last chapter runs to EOF
+        if (chapNumber == static_cast<std::size_t>(std::ranges::distance(chapterFrames) - 1))
+          endTimeMs = totalLenMs;
+
+        chapter.startTimeMs = startTimeMs;
+        chapter.endTimeMs = endTimeMs;
+
+        CLog::Log(LOGDEBUG, "CTagLoaderTagLib - Chapter {}, {} start point {}, endpoint {}",
+                  chapNumber + 1, chapter.name, startTimeMs.count(), endTimeMs.count());
+
+        ++chapNumber;
+      }
+
+      tag.SetChapterMarks(chapters);
+    }
     else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized ID3 frame detected: {}{}{}{}", it->first[0], it->first[1],
                 it->first[2], it->first[3]);
@@ -493,7 +543,10 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
 }
 
 template<>
-bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& tag)
+bool CTagLoaderTagLib::ParseTag(APE::Tag* ape,
+                                EmbeddedArt* art,
+                                CMusicInfoTag& tag,
+                                std::chrono::milliseconds totalLen)
 {
   if (!ape)
     return false;
@@ -631,7 +684,10 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
 }
 
 template<>
-bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusicInfoTag& tag)
+bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment* xiph,
+                                EmbeddedArt* art,
+                                CMusicInfoTag& tag,
+                                std::chrono::milliseconds totalLen)
 {
   if (!xiph)
     return false;
@@ -835,7 +891,10 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
 }
 
 template<>
-bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& tag)
+bool CTagLoaderTagLib::ParseTag(MP4::Tag* mp4,
+                                EmbeddedArt* art,
+                                CMusicInfoTag& tag,
+                                std::chrono::milliseconds totalLen)
 {
   if (!mp4)
     return false;
@@ -966,7 +1025,10 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
 }
 
 template<>
-bool CTagLoaderTagLib::ParseTag(Tag *genericTag, EmbeddedArt *art, CMusicInfoTag& tag)
+bool CTagLoaderTagLib::ParseTag(Tag* genericTag,
+                                EmbeddedArt* art,
+                                CMusicInfoTag& tag,
+                                std::chrono::milliseconds totalLen)
 {
   if (!genericTag)
     return false;
@@ -1309,6 +1371,8 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
     return false;
   }
 
+  std::chrono::milliseconds totalLenMs = {}; // time in ms to the end of the current file
+
   APE::Tag *ape = nullptr;
   ASF::Tag *asf = nullptr;
   MP4::Tag *mp4 = nullptr;
@@ -1370,7 +1434,11 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   if (id3v1)
     ParseTag(id3v1, art, tag);
   if (id3v2)
-    ParseTag(id3v2, art, tag);
+  {
+    if (file->audioProperties())
+      totalLenMs = std::chrono::milliseconds(file->audioProperties()->lengthInMilliseconds());
+    ParseTag(id3v2, art, tag, totalLenMs);
+  }
   if (genericTag)
     ParseTag(genericTag, art, tag);
   if (mp4)
