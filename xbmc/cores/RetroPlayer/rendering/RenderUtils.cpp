@@ -21,10 +21,16 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
                                         unsigned int sourceHeight,
                                         float screenWidth,
                                         float screenHeight,
+                                        float displayAspectRatio,
                                         float& pixelRatio,
                                         float& zoomAmount)
 {
   const float sourceFrameRatio = static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
+
+  // If the caller provided a display aspect ratio, it represents the desired
+  // frame ratio after accounting for pixel shape. Otherwise assume square
+  // pixels.
+  const float frameAspectRatio = displayAspectRatio > 0.0f ? displayAspectRatio : sourceFrameRatio;
 
   switch (stretchMode)
   {
@@ -36,7 +42,7 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
         case 90:
         case 270:
         {
-          pixelRatio = 1.0f / (sourceFrameRatio * sourceFrameRatio);
+          pixelRatio = 1.0f / (frameAspectRatio * frameAspectRatio);
           break;
         }
         default:
@@ -50,7 +56,7 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
     case STRETCHMODE::Stretch4x3:
     {
       // Stretch to 4:3 ratio
-      pixelRatio = (4.0f / 3.0f) / sourceFrameRatio;
+      pixelRatio = (4.0f / 3.0f) / frameAspectRatio;
       zoomAmount = 1.0f;
 
       break;
@@ -58,7 +64,7 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
     case STRETCHMODE::Fullscreen:
     {
       // Stretch to the limits of the screen
-      pixelRatio = (screenWidth / screenHeight) / sourceFrameRatio;
+      pixelRatio = (screenWidth / screenHeight) / frameAspectRatio;
       zoomAmount = 1.0f;
 
       break;
@@ -70,7 +76,7 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
         case 90:
         case 270:
         {
-          pixelRatio = 1.0f / (sourceFrameRatio * sourceFrameRatio);
+          pixelRatio = 1.0f / (frameAspectRatio * frameAspectRatio);
           break;
         }
         default:
@@ -95,7 +101,7 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
         case 90:
         case 270:
         {
-          zoomAmount *= sourceFrameRatio;
+          zoomAmount *= frameAspectRatio;
           break;
         }
         default:

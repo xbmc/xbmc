@@ -40,7 +40,7 @@ bool CRetroPlayerRendering::OpenStream(const StreamProperties& properties)
   const AVPixelFormat pixelFormat = AV_PIX_FMT_NONE;
   const unsigned int width = 640;
   const unsigned int height = 480;
-  const float pixelAspectRatio = 1.0f;
+  const float displayAspectRatio = 0.0f; // 0.0f means square pixels
 
   CLog::Log(LOGDEBUG, "RetroPlayer[RENDERING]: Creating rendering stream - width {}, height {}",
             width, height);
@@ -48,7 +48,7 @@ bool CRetroPlayerRendering::OpenStream(const StreamProperties& properties)
   m_processInfo.SetVideoPixelFormat(pixelFormat);
   m_processInfo.SetVideoDimensions(width, height);
 
-  if (!m_renderManager.Configure(pixelFormat, width, height, width, height, pixelAspectRatio))
+  if (!m_renderManager.Configure(pixelFormat, width, height, displayAspectRatio, width, height))
     return false;
 
   CLog::Log(LOGDEBUG, "RetroPlayer[RENDERING]: Render manager configured");
