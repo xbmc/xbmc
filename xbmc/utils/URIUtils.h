@@ -87,6 +87,8 @@ public:
    */
   static std::string GetBasePath(const std::string& strPath);
 
+  static bool IsDiscPath(const std::string& path);
+
   /*! \brief Given a bluray:// path, return the base .ISO or folder containing the bluray file structure.
    \param path bluray:// path.
    \return the base .ISO or folder containing the bluray file structure.
@@ -136,11 +138,18 @@ public:
    */
   static std::string GetBlurayAllEpisodesPath(const std::string& path);
 
+  /*! \brief Given a path to bluray playlist (bluray://.../xxxxx.mpls), returns the playlist number.
+   \param path the bluray:// path
+   \return the playlist number
+   */
+  static int GetBlurayPlaylistFromPath(const std::string& path);
+
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
    \param path the ISO/index.BDMV path.
-   \return the bluray:// playlist path - BDMV/PLAYLIST
+   \param playlist (optional) the .mpls playlist
+   \return the bluray:// playlist path - BDMV/PLAYLIST(/xxxxx.mpls)
    */
-  static std::string GetBlurayPlaylistPath(const std::string& path);
+  static std::string GetBlurayPlaylistPath(const std::string& path, int playlist = -1);
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path.
    \param path the ISO/index.BDMV path.
@@ -153,6 +162,11 @@ public:
    \return true if file is from optical media
    */
   static bool IsOpticalMediaFile(const std::string& file);
+
+  /*! \brief Get the regex for matching trailing part numbers.
+   \return the regex
+   */
+  static std::string GetTrailingPartNumberRegex();
 
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
