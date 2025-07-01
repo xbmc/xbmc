@@ -437,6 +437,9 @@ bool CLangInfo::Load(const std::string& strLanguage)
     return false;
   }
 
+  // Load in the 'Language' information from langinfo.xml
+  // Read the locale code from the language node.
+  // This variable is potentially overwritten at a later stage
   if (pRootElement->Attribute("locale"))
     m_defaultRegion.m_strLangLocaleName = pRootElement->Attribute("locale");
 
@@ -451,6 +454,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
   if (!g_LangCodeExpander.ConvertWindowsLanguageCodeToISO6392B(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
     m_languageCodeGeneral = "";
 #else
+  // If the language code is not 3 char, 'de' vs 'deu', then try to find the correct 3 char code
   if (m_defaultRegion.m_strLangLocaleName.length() != 3)
   {
     if (!g_LangCodeExpander.ConvertToISO6392B(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
@@ -460,6 +464,17 @@ bool CLangInfo::Load(const std::string& strLanguage)
     m_languageCodeGeneral = m_defaultRegion.m_strLangLocaleName;
 #endif
 
+  m_languageISO6392 = m_languageCodeGeneral; //This should contain the ISO-639-2 (3 char) code
+  // Try to find the 2 char code.  'fra'/'fre' -> 'fr' if one exists
+  if (!g_LangCodeExpander.ConvertToISO6391(m_languageISO6392, m_languageISO6391))
+  {
+    // If we can't find a ISO-639-1 (2 char), save the ISO-639-2 (3 char).
+    m_languageISO6391 = m_languageISO6392;
+  }
+  // Save the ISO name of the language.  'deu'/'ger' -> 'German'
+  g_LangCodeExpander.Lookup(m_languageISO6392, m_languageISOEnglishName);
+
+  // Load in the 'Region' information
   std::string tmp;
   if (g_LangCodeExpander.ConvertToISO6391(m_defaultRegion.m_strLangLocaleName, tmp))
     m_defaultRegion.m_strLangLocaleCodeTwoChar = tmp;
@@ -475,8 +490,20 @@ bool CLangInfo::Load(const std::string& strLanguage)
       if (region.m_strName.empty())
         region.m_strName=g_localizeStrings.Get(10005); // Not available
 
+      // This is actually the ISO-3166-1 Alpha-2 country code
       if (pRegion->Attribute("locale"))
+      {
         region.m_strRegionLocaleName = pRegion->Attribute("locale");
+        // Use the region locale from the langinfo.xml file,
+        // converted to upper case, to get the ISO 3166-1 Alpha-2,
+        // ISO 3166-1 Alpha-3 and English name for this country.
+        region.m_regionISO31661Alpha2 = g_LangCodeExpander.GetISO31661Alpha2(
+            StringUtils::ToUpper(region.m_strRegionLocaleName.data()));
+        region.m_regionISO31661Alpha3 =
+            g_LangCodeExpander.GetISO31661Alpha3(region.m_regionISO31661Alpha2);
+        region.m_regionISO31661EnglishName =
+            g_LangCodeExpander.GetISO31661Name(region.m_regionISO31661Alpha2);
+      }
 
 #ifdef TARGET_WINDOWS
       // Windows need 3 chars regions code
@@ -1090,6 +1117,21 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
 const std::string& CLangInfo::GetCurrentRegion() const
 {
   return m_currentRegion->m_strName;
+}
+
+const std::string& CLangInfo::GetCurrentRegionISO31661Alpha2() const
+{
+  return m_currentRegion->m_regionISO31661Alpha2;
+}
+
+const std::string& CLangInfo::GetCurrentRegionISO31661Alpha3() const
+{
+  return m_currentRegion->m_regionISO31661Alpha3;
+}
+
+const std::string& CLangInfo::GetCurrentRegionISO31661EnglishName() const
+{
+  return m_currentRegion->m_regionISO31661EnglishName;
 }
 
 CTemperature::Unit CLangInfo::GetTemperatureUnit() const
