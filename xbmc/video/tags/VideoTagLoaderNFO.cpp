@@ -142,7 +142,23 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
         nfoFile = item.GetPath();
       // no, create .nfo file
       else
+      {
         nfoFile = URIUtils::ReplaceExtension(item.GetPath(), ".nfo");
+
+        // Look for specific SxxEyy nfo and use this if present
+        if (item.HasVideoInfoTag())
+        {
+          const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+          if (tag->m_iSeason >= 0 && tag->m_iEpisode >= 0)
+          {
+            std::string file{item.GetPath()};
+            URIUtils::RemoveExtension(file);
+            file = fmt::format("{}-S{:02}E{:02}.nfo", file, tag->m_iSeason, tag->m_iEpisode);
+            if (CFileUtils::Exists(file))
+              nfoFile = file;
+          }
+        }
+      }
     }
 
     // test file existence
