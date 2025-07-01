@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "SetInfoTag.h"
 #include "XBDateTime.h"
 #include "utils/EmbeddedArt.h"
 #include "utils/Fanart.h"
@@ -341,6 +342,7 @@ public:
   * by a scraper the Overview will be overwritten.
   */
   bool GetUpdateSetOverview() const { return m_updateSetOverview; }
+  void SetUpdateSetOverview(const bool value) { m_updateSetOverview = value; }
 
   /*!
    * @brief Set this videos's resume point.
@@ -366,13 +368,7 @@ public:
   std::string m_strSortTitle;
   std::vector<std::string> m_artist;
   std::vector<SActorInfo> m_cast;
-  struct SetInfo //!< Struct holding information about a movie set
-  {
-    std::string title; //!< Title of the movie set
-    int id; //!< ID of movie set in database
-    std::string overview; //!< Overview/description of the movie set
-  };
-  SetInfo m_set; //!< Assigned movie set
+  CSetInfoTag m_set;
   std::vector<std::string> m_tags;
   std::string m_strFile;
   std::string m_strPath;
