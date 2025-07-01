@@ -386,7 +386,7 @@ public:
   void OnPreInstall() override{};
   void OnPostInstall(bool update, bool modal) override{};
   void OnPreUnInstall() override{};
-  void OnPostUnInstall() override{};
+  void OnPostUnInstall() override;
 
 protected:
   /*!
