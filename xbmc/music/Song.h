@@ -40,6 +40,16 @@ public:
 
 class CFileItem;
 
+// Struct to store chapter information from mp3 files (could be used for m4b or mka files too)
+struct ChapterDetails
+{
+  std::string name;
+  unsigned int startTimeMs{0}; // All chapter timings are in milliseconds
+  unsigned int endTimeMs{0};
+};
+
+using ChapterMarks = std::map<int, ChapterDetails>;
+
 /*!
  \ingroup music
  \brief Class to store and read song information from CMusicDatabase
@@ -195,6 +205,7 @@ public:
   std::string strRecordLabel; // Record label from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
   std::string strAlbumType; // (Musicbrainz release type) album type from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
   std::string songVideoURL; // url to song video
+  std::map<int, ChapterDetails> ChapterMarks; // map of chapter names and start and end times
 
   ReplayGain replayGain;
 private:
