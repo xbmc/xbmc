@@ -3102,13 +3102,13 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
   return -1;
 }
 
-bool CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
-                                     VideoDbContentType type,
-                                     int mediaId,
-                                     int oldIdFile)
+int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
+                                    VideoDbContentType type,
+                                    int mediaId,
+                                    int oldIdFile)
 {
   if ((mediaId < 0 && type != VideoDbContentType::UNKNOWN) || oldIdFile < 0)
-    return false;
+    return -1;
 
   switch (type)
   {
@@ -3120,38 +3120,38 @@ bool CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
       return SetFileForUnknown(fileAndPath, oldIdFile); // Used for removable blurays
     default:
       CLog::LogF(LOGDEBUG, "unsupported media type {}", type);
-      return false;
+      return -1;
   }
 }
 
-bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile)
+int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile)
 {
   assert(m_pDB->in_transaction());
 
   const int idFile = AddFile(fileAndPath);
   if (idFile < 0)
-    return false;
+    return -1;
 
   try
   {
     m_pDS->exec(PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", idFile, idEpisode));
-    return DeleteFile(oldIdFile);
+    return DeleteFile(oldIdFile) ? idFile : -1;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idEpisode {}, oldIdFile {} - failed", idFile,
                fileAndPath, idEpisode, oldIdFile);
   }
-  return false;
+  return -1;
 }
 
-bool CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile)
+int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile)
 {
   assert(m_pDB->in_transaction());
 
   const int idFile{AddFile(fileAndPath)};
   if (idFile < 0)
-    return false;
+    return -1;
 
   try
   {
@@ -3173,23 +3173,23 @@ bool CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie
                      idFile, oldIdFile, idFile);
     m_pDS->exec(sql);
 
-    return DeleteFile(oldIdFile);
+    return DeleteFile(oldIdFile) ? idFile : -1;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idMovie {}, oldIdFile {} - failed", idFile,
                fileAndPath, idMovie, oldIdFile);
   }
-  return false;
+  return -1;
 }
 
-bool CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdFile)
+int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdFile)
 {
   assert(m_pDB->in_transaction());
 
   const int idFile{AddFile(fileAndPath)};
   if (idFile < 0)
-    return false;
+    return -1;
 
   try
   {
@@ -3199,14 +3199,14 @@ bool CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldId
                    idFile, oldIdFile, idFile)};
     m_pDS->exec(sql);
 
-    return DeleteFile(oldIdFile);
+    return DeleteFile(oldIdFile) ? idFile : -1;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, oldIdFile {} - failed", idFile, fileAndPath,
                oldIdFile);
   }
-  return false;
+  return -1;
 }
 
 bool CVideoDatabase::DeleteFile(int idFile)
@@ -4607,13 +4607,8 @@ bool CVideoDatabase::GetStreamDetails(CFileItem& item)
 
 bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
 {
-
   const std::string path = tag.m_strFileNameAndPath;
-  int fileId{-1};
-  if (URIUtils::GetExtension(path) == ".mpls")
-    fileId = GetFileId(path);
-  else
-    fileId = tag.m_iFileId;
+  const int fileId{tag.m_iFileId};
 
   if (fileId < 0)
     return false;
