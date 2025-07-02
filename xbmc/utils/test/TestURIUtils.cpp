@@ -620,3 +620,52 @@ TEST_F(TestURIUtils, ContainersEncodeHostnamePaths)
   EXPECT_EQ("rar://%2fpath%2fthing/my/archived/path",
             URIUtils::CreateArchivePath("rar", curl, "/my/archived/path").Get());
 }
+
+TEST_F(TestURIUtils, ServiceAvailabilityInTestEnvironment)
+{
+  using enum LanCheckMode;
+  {
+    EXPECT_FALSE(URIUtils::IsOnLAN("0.0.0.0", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsOnLAN("127.0.0.1", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsOnLAN("localhost", ANY_PRIVATE_SUBNET));
+
+    EXPECT_FALSE(URIUtils::IsOnLAN("some_unresolveable_hostname", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsOnLAN("www.google.com", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsOnLAN("www.aol.com", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsOnLAN("168.219.34.129", ANY_PRIVATE_SUBNET));
+
+    EXPECT_FALSE(URIUtils::IsOnLAN("192.168.0.3", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsOnLAN("172.16.3.2", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsOnLAN("10.0.0.9", ANY_PRIVATE_SUBNET));
+
+    EXPECT_FALSE(URIUtils::IsHostOnLAN("0.0.0.0", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsHostOnLAN("127.0.0.1", ANY_PRIVATE_SUBNET));
+
+    // Assumption that hostnames without a period are local (smb, netbios)
+    EXPECT_TRUE(URIUtils::IsHostOnLAN("localhost", ANY_PRIVATE_SUBNET));
+    EXPECT_TRUE(URIUtils::IsHostOnLAN("some_unresolveable_hostname", ANY_PRIVATE_SUBNET));
+    EXPECT_TRUE(URIUtils::IsHostOnLAN("google", ANY_PRIVATE_SUBNET));
+    EXPECT_TRUE(URIUtils::IsHostOnLAN("aol", ANY_PRIVATE_SUBNET));
+
+    EXPECT_FALSE(URIUtils::IsHostOnLAN("www.some_unresolveable_hostname.com", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsHostOnLAN("www.google.com", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsHostOnLAN("google.com", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsHostOnLAN("www.aol.com", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsHostOnLAN("aol.com", ANY_PRIVATE_SUBNET));
+    EXPECT_FALSE(URIUtils::IsHostOnLAN("168.219.34.129", ANY_PRIVATE_SUBNET));
+  }
+  {
+    EXPECT_TRUE(URIUtils::IsHostOnLAN("192.168.0.3", ANY_PRIVATE_SUBNET));
+    EXPECT_TRUE(URIUtils::IsHostOnLAN("172.16.3.2", ANY_PRIVATE_SUBNET));
+    EXPECT_TRUE(URIUtils::IsHostOnLAN("10.0.0.9", ANY_PRIVATE_SUBNET));
+  }
+  /*
+	 * The following checks cannot be reliable tested on build machines
+	 * These tests pass for a class B network (172.16.0.0/16) but cannot be guarenteed to work under different network configurations
+	{
+		EXPECT_FALSE(URIUtils::IsHostOnLAN("192.168.0.3", ONLY_LOCAL_SUBNET));
+		EXPECT_TRUE(URIUtils::IsHostOnLAN("172.16.3.2", ONLY_LOCAL_SUBNET));
+		EXPECT_FALSE(URIUtils::IsHostOnLAN("10.0.0.9", ONLY_LOCAL_SUBNET));
+	}
+	 */
+}
