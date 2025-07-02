@@ -183,6 +183,36 @@ TEST_F(TestURIUtils, GetParentPath)
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
+TEST_F(TestURIUtils, GetBasePath)
+{
+  std::string ref, var;
+
+  ref = "smb://somepath/path/";
+
+  var = URIUtils::GetBasePath("smb://somepath/path/movie.avi");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("smb://somepath/path/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath(
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+      "00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "smb://somepath/path/disc 1/";
+
+  var = URIUtils::GetBasePath("smb://somepath/path/disc 1/movie.avi");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath(
+      "bluray://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+}
+
 TEST_F(TestURIUtils, SubstitutePath)
 {
   std::string from, to, ref, var;
