@@ -302,6 +302,9 @@ void CVideoDatabase::CreateAnalytics()
 
   m_pDS->exec(PrepareSQL("CREATE INDEX ix_movie_title ON movie (c%02d(255))", VIDEODB_ID_TITLE));
 
+  m_pDS->exec(PrepareSQL("CREATE INDEX ix_tvshow_title ON tvshow (c%02d(255), c%02d(10))",
+                         VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED));
+
   CreateLinkIndex("tag");
   CreateForeignLinkIndex("director", "actor");
   CreateForeignLinkIndex("writer", "actor");
@@ -7011,7 +7014,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 136;
+  return 137;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
