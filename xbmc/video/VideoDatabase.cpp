@@ -2985,11 +2985,18 @@ int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag& details) const
   // first try matching on uniqueid, then on title + year
   int id = -1;
   if (details.HasUniqueID())
-    id = GetDbId(PrepareSQL("SELECT media_id FROM uniqueid "
+  {
+    //! @todo better handling when no default uniqueid is defined ("unknown" - legacy nfo)
+    //! @todo loop through the non-default uniqueid when no match is found
+
+    id = GetDbId(PrepareSQL("SELECT uniqueid.media_id FROM uniqueid "
                             "JOIN tvshow ON uniqueid.media_id=tvshow.idShow "
                             "WHERE uniqueid.media_type='%s' "
-                            "AND uniqueid.value='%s'",
-                            MediaTypeTvShow, details.GetUniqueID().c_str()));
+                            "AND uniqueid.value='%s' "
+                            "AND uniqueid.type='%s' ",
+                            MediaTypeTvShow, details.GetUniqueID().c_str(),
+                            details.GetDefaultUniqueID().c_str()));
+  }
   if (id < 0)
     id = GetDbId(PrepareSQL("SELECT idShow FROM tvshow WHERE c%02d='%s' AND c%02d='%s'",
                             VIDEODB_ID_TV_TITLE, details.m_strTitle.c_str(),
