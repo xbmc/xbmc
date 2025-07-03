@@ -1797,7 +1797,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     return (items.Size() > 2);
   }
 
-  const CURL url2{CURL(URIUtils::GetDiscUnderlyingFile(url))};
+  const CURL url2{CURL(URIUtils::GetDiscUnderlyingFile(m_url))};
   CDirectory::CHints hints;
   hints.flags = m_flags;
   if (!CDirectory::GetDirectory(url2, items, hints))
@@ -1806,11 +1806,18 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // Found items will have underlying protocol (eg. udf:// or smb://)
   // in path so add back bluray://
   // (so properly recognised in cache as bluray:// files for CFile:Exists() etc..)
-  CURL url3{url};
+  CURL url3{m_url};
+  const std::string baseFileName{url3.GetFileName()};
   for (const auto& item : items)
   {
-    const CURL url4{item->GetPath()};
-    url3.SetFileName(url4.GetFileName());
+    std::string path{item->GetPath()};
+    URIUtils::RemoveSlashAtEnd(path);
+    std::string fileName{URIUtils::GetFileName(path)};
+
+    if (URIUtils::HasSlashAtEnd(item->GetPath()))
+      URIUtils::AddSlashAtEnd(fileName);
+
+    url3.SetFileName(URIUtils::AddFileToFolder(baseFileName, fileName));
     item->SetPath(url3.Get());
   }
 
