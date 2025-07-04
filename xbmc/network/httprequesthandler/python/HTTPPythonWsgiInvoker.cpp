@@ -128,7 +128,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
       StringUtils::Format("CHTTPPythonWsgiInvoker[{}]", script));
 
   ADDON::CWebinterface* webinterface = static_cast<ADDON::CWebinterface*>(m_addon.get());
-  if (webinterface->GetType() != ADDON::WebinterfaceTypeWsgi)
+  if (webinterface->GetType() != ADDON::WebinterfaceType::TYPE_WSGI)
   {
     logger->error("trying to execute a non-WSGI script");
     return;

@@ -65,10 +65,9 @@ constexpr AddonInstanceId ADDON_SETTINGS_ID = ADDON_SINGLETON_INSTANCE_ID;
 constexpr char const* ORIGIN_SYSTEM = "b6a50484-93a0-4afb-a01c-8d17e059feda";
 
 class IAddon;
-typedef std::shared_ptr<IAddon> AddonPtr;
-typedef std::vector<AddonPtr> VECADDONS;
-
-using InfoMap = std::map<std::string, std::string>;
+using AddonPtr = std::shared_ptr<IAddon>;
+using VECADDONS = std::vector<AddonPtr>;
+using InfoMap = std::map<std::string, std::string, std::less<>>;
 
 class IAddon : public std::enable_shared_from_this<IAddon>
 {

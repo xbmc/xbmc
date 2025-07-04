@@ -11,9 +11,7 @@
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Screensaver.h"
 
-namespace KODI
-{
-namespace ADDONS
+namespace KODI::ADDONS
 {
 
 class CScreenSaver : public ADDON::IAddonInstanceHandler
@@ -27,8 +25,7 @@ public:
   void Render();
 
   // Addon callback functions
-  void GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props);
+  void GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props) const;
 };
 
-} /* namespace ADDONS */
-} /* namespace KODI */
+} // namespace KODI::ADDONS

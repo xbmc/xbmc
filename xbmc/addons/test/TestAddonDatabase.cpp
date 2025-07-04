@@ -33,8 +33,8 @@ protected:
 
     database.Connect("test", settings, true);
 
-    std::set<std::string> installed{"repository.a", "repository.b"};
-    database.SyncInstalled(installed, installed, std::set<std::string>());
+    std::set<std::string, std::less<>> installed{"repository.a", "repository.b"};
+    database.SyncInstalled(installed, installed, {});
 
     std::vector<AddonInfoPtr> addons;
     CreateAddon(addons, "foo.bar", "1.0.0");

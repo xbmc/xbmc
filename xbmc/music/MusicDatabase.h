@@ -669,9 +669,9 @@ public:
   /////////////////////////////////////////////////
   // Scraper
   /////////////////////////////////////////////////
-  bool SetScraper(int id, const CONTENT_TYPE& content, const ADDON::ScraperPtr& scraper);
+  bool SetScraper(int id, ADDON::ContentType content, const ADDON::ScraperPtr& scraper);
   bool SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr& scraper);
-  bool GetScraper(int id, const CONTENT_TYPE& content, ADDON::ScraperPtr& scraper);
+  bool GetScraper(int id, ADDON::ContentType content, ADDON::ScraperPtr& scraper);
 
   /*! \brief Check whether a given scraper is in use.
    \param scraperID the scraper to check for.

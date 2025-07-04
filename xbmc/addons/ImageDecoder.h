@@ -14,9 +14,7 @@
 
 class CPictureInfoTag;
 
-namespace KODI
-{
-namespace ADDONS
+namespace KODI::ADDONS
 {
 
 class CImageDecoder : public ADDON::IAddonInstanceHandler,
@@ -69,5 +67,4 @@ private:
   bool m_created{false};
 };
 
-} /* namespace ADDONS */
-} /* namespace KODI */
+} // namespace KODI::ADDONS

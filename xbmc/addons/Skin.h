@@ -16,10 +16,9 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <string_view>
 #include <utility>
 #include <vector>
-
-#define CREDIT_LINE_LENGTH 50
 
 class CSetting;
 class TiXmlElement;
@@ -48,7 +47,7 @@ protected:
   virtual bool SerializeSetting(TiXmlElement* element) const = 0;
 };
 
-typedef std::shared_ptr<CSkinSetting> CSkinSettingPtr;
+using CSkinSettingPtr = std::shared_ptr<CSkinSetting>;
 
 class CSkinSettingString : public CSkinSetting
 {
@@ -65,7 +64,7 @@ protected:
   bool SerializeSetting(TiXmlElement* element) const override;
 };
 
-typedef std::shared_ptr<CSkinSettingString> CSkinSettingStringPtr;
+using CSkinSettingStringPtr = std::shared_ptr<CSkinSettingString>;
 
 class CSkinSettingBool : public CSkinSetting
 {
@@ -82,7 +81,7 @@ protected:
   bool SerializeSetting(TiXmlElement* element) const override;
 };
 
-typedef std::shared_ptr<CSkinSettingBool> CSkinSettingBoolPtr;
+using CSkinSettingBoolPtr = std::shared_ptr<CSkinSettingBool>;
 
 class CSkinInfo : public CAddon
 {
@@ -128,7 +127,7 @@ public:
    */
   std::string GetSkinPath(const std::string& file,
                           RESOLUTION_INFO* res = nullptr,
-                          const std::string& baseDir = "") const;
+                          std::string_view baseDir = "") const;
 
   /*! \brief Return whether skin debugging is enabled
    \return true if skin debugging (set via <debugging>true</debugging> in addon.xml) is enabled.
@@ -210,7 +209,7 @@ public:
 
   int TranslateString(const std::string &setting);
   const std::string& GetString(int setting) const;
-  void SetString(int setting, const std::string &label);
+  void SetString(int setting, std::string_view label);
 
   int TranslateBool(const std::string &setting);
   bool GetBool(int setting) const;
@@ -285,7 +284,7 @@ protected:
 private:
   std::map<int, CSkinSettingStringPtr> m_strings;
   std::map<int, CSkinSettingBoolPtr> m_bools;
-  std::map<std::string, CSkinSettingPtr> m_settings;
+  std::map<std::string, CSkinSettingPtr, std::less<>> m_settings;
   std::unique_ptr<CSkinSettingUpdateHandler> m_settingsUpdateHandler;
 };
 

@@ -35,7 +35,7 @@ class IAddonMgrCallback;
 
 class CAddonInfo;
 using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
-using ADDON_INFO_LIST = std::map<std::string, AddonInfoPtr>;
+using AddonInfoMap = std::map<std::string, AddonInfoPtr, std::less<>>;
 
 class IAddon;
 using AddonPtr = std::shared_ptr<IAddon>;
@@ -97,8 +97,8 @@ public:
   CEventStream<AddonEvent>& UnloadEvents() { return m_unloadEvents; }
 
   IAddonMgrCallback* GetCallbackForType(AddonType type);
-  bool RegisterAddonMgrCallback(AddonType type, IAddonMgrCallback* cb);
-  void UnregisterAddonMgrCallback(AddonType type);
+  bool RegisterAddonMgrCallback(AddonType type, IAddonMgrCallback* cb) const;
+  void UnregisterAddonMgrCallback(AddonType type) const;
 
   /*! \brief Retrieve a specific addon (of a specific type)
      \param id the id of the addon to retrieve.
@@ -120,7 +120,7 @@ public:
      */
   bool GetAddon(const std::string& id, AddonPtr& addon, OnlyEnabled onlyEnabled) const;
 
-  bool HasType(const std::string& id, AddonType type);
+  bool HasType(const std::string& id, AddonType type) const;
 
   bool HasAddons(AddonType type);
 
@@ -133,13 +133,13 @@ public:
   bool GetAddons(VECADDONS& addons) const;
 
   /*! Returns enabled add-ons with given type. */
-  bool GetAddons(VECADDONS& addons, AddonType type);
+  bool GetAddons(VECADDONS& addons, AddonType type) const;
 
   /*! Returns all installed, including disabled. */
-  bool GetInstalledAddons(VECADDONS& addons);
+  bool GetInstalledAddons(VECADDONS& addons) const;
 
   /*! Returns installed add-ons, including disabled, with given type. */
-  bool GetInstalledAddons(VECADDONS& addons, AddonType type);
+  bool GetInstalledAddons(VECADDONS& addons, AddonType type) const;
 
   bool GetDisabledAddons(VECADDONS& addons);
 
@@ -164,8 +164,8 @@ public:
      */
   bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
 
-  void AddToUpdateableAddons(AddonPtr& pAddon);
-  void RemoveFromUpdateableAddons(AddonPtr& pAddon);
+  void AddToUpdateableAddons(const AddonPtr& pAddon);
+  void RemoveFromUpdateableAddons(const AddonPtr& pAddon);
   bool ReloadSettings(const std::string& addonId, AddonInstanceId instanceId);
 
   /*! Get addons with available updates */
@@ -175,7 +175,7 @@ public:
   std::vector<std::shared_ptr<IAddon>> GetOutdatedAddons() const;
 
   /*! Returns true if there is any addon with available updates, otherwise false */
-  bool HasAvailableUpdates();
+  bool HasAvailableUpdates() const;
 
   /*!
      * \brief Checks if the passed in addon is an orphaned dependency
@@ -293,7 +293,7 @@ public:
   /* \brief Checks whether an addon is installed.
      \param ID id of the addon
     */
-  bool IsAddonInstalled(const std::string& ID);
+  bool IsAddonInstalled(const std::string& ID) const;
 
   /* \brief Checks whether an addon is installed from a
      *        particular origin repo
@@ -314,7 +314,7 @@ public:
      */
   bool IsAddonInstalled(const std::string& ID,
                         const std::string& origin,
-                        const CAddonVersion& version);
+                        const CAddonVersion& version) const;
 
   /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
     \param addon addon to be checked
@@ -329,7 +329,7 @@ public:
      * @param[in] id id of the addon
      * @return true if addon is bundled addon, false otherwise.
      */
-  bool IsBundledAddon(const std::string& id);
+  bool IsBundledAddon(const std::string& id) const;
 
   /*!
      * @brief Checks whether an addon is a system addon
@@ -423,7 +423,7 @@ public:
      \param addon [out] returned addon.
      \return true if addon is set, false otherwise.
      */
-  bool LoadAddonDescription(const std::string& path, AddonPtr& addon);
+  bool LoadAddonDescription(const std::string& path, AddonPtr& addon) const;
 
   bool ServicesHasStarted() const;
 
@@ -512,7 +512,7 @@ public:
                              AddonType type,
                              AddonDisabledReason disabledReason) const;
 
-  const AddonInfoPtr GetAddonInfo(const std::string& id, AddonType type) const;
+  AddonInfoPtr GetAddonInfo(const std::string& id, AddonType type) const;
 
   /*!
      * @brief Get the path where temporary add-on files are stored
@@ -521,7 +521,7 @@ public:
      *
      * @warning the folder and its contents are deleted when Kodi is closed
      */
-  const std::string& GetTempAddonBasePath() { return m_tempAddonBasePath; }
+  const std::string& GetTempAddonBasePath() const { return m_tempAddonBasePath; }
 
   AddonOriginType GetAddonOriginType(const AddonPtr& addon) const;
 
@@ -578,7 +578,7 @@ public:
      */
   bool AddonsFromRepoXML(const RepositoryDirInfo& repo,
                          const std::string& xml,
-                         std::vector<AddonInfoPtr>& addons);
+                         std::vector<AddonInfoPtr>& addons) const;
 
   /*@}}}*/
 
@@ -587,7 +587,7 @@ public:
      *        available updates and stores them into map.
      * \return map of outdated addons with their update
      */
-  std::map<std::string, AddonWithUpdate> GetAddonsWithAvailableUpdate() const;
+  std::map<std::string, AddonWithUpdate, std::less<>> GetAddonsWithAvailableUpdate() const;
 
   /*!
      * \brief Retrieves list of compatible addon versions of all origins
@@ -632,7 +632,7 @@ private:
 
   bool EnableSingle(const std::string& id);
 
-  void FindAddons(ADDON_INFO_LIST& addonmap, const std::string& path);
+  void FindAddons(AddonInfoMap& addonmap, const std::string& path) const;
 
   /*!
      * @brief Fills the the provided vector with the list of incompatible
@@ -676,16 +676,16 @@ private:
   // (migration will install any available update anyway)
   mutable std::mutex m_installAddonsMutex;
 
-  std::map<std::string, AddonDisabledReason> m_disabled;
+  std::map<std::string, AddonDisabledReason, std::less<>> m_disabled;
   static std::map<AddonType, IAddonMgrCallback*> m_managers;
   mutable CCriticalSection m_critSection;
   std::unique_ptr<CAddonDatabase> m_database;
   std::unique_ptr<CAddonUpdateRules> m_updateRules;
   CEventSource<AddonEvent> m_events;
   CBlockingEventSource<AddonEvent> m_unloadEvents;
-  std::set<std::string> m_systemAddons;
-  std::set<std::string> m_optionalSystemAddons;
-  ADDON_INFO_LIST m_installedAddons;
+  std::set<std::string, std::less<>> m_systemAddons;
+  std::set<std::string, std::less<>> m_optionalSystemAddons;
+  AddonInfoMap m_installedAddons;
 
   // Temporary path given to add-ons, whose content is deleted when Kodi is stopped
   const std::string m_tempAddonBasePath = "special://temp/addons";

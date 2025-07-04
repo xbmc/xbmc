@@ -47,7 +47,7 @@ bool CShaderPreset::ResolveParameters(video_shader& shader)
   return m_struct.toAddon->VideoShaderResolveParameters(&m_struct, m_file, &shader);
 }
 
-void CShaderPreset::FreeShaderPreset(video_shader& shader)
+void CShaderPreset::FreeShaderPreset(video_shader& shader) const
 {
   m_struct.toAddon->VideoShaderFree(&m_struct, &shader);
 }
@@ -79,13 +79,13 @@ CShaderPresetAddon::~CShaderPresetAddon(void)
 
 bool CShaderPresetAddon::CreateAddon(void)
 {
-  std::unique_lock<CSharedSection> lock(m_dllSection);
+  std::unique_lock lock(m_dllSection);
 
   // Reset all properties to defaults
   ResetProperties();
 
   // Initialise the add-on
-  CLog::Log(LOGDEBUG, "{} - creating ShaderPreset add-on instance '{}'", __FUNCTION__, Name());
+  CLog::LogF(LOGDEBUG, "Creating ShaderPreset add-on instance '{}'", Name());
 
   if (CreateInstance() != ADDON_STATUS_OK)
     return false;
@@ -95,7 +95,7 @@ bool CShaderPresetAddon::CreateAddon(void)
 
 void CShaderPresetAddon::DestroyAddon()
 {
-  std::unique_lock<CSharedSection> lock(m_dllSection);
+  std::unique_lock lock(m_dllSection);
 
   DestroyInstance();
 }
@@ -122,8 +122,7 @@ bool CShaderPresetAddon::LoadPreset(const std::string& presetPath,
 
   if (file != nullptr)
   {
-    std::unique_ptr<CShaderPreset> shaderPresetAddon =
-        std::make_unique<CShaderPreset>(file, *m_ifc.shaderpreset);
+    const auto shaderPresetAddon = std::make_unique<CShaderPreset>(file, *m_ifc.shaderpreset);
 
     video_shader videoShader = {};
     if (shaderPresetAddon->ReadShaderPreset(videoShader))
@@ -244,10 +243,11 @@ SHADER::FilterType CShaderPresetAddon::TranslateFilterType(SHADER_FILTER_TYPE ty
 {
   switch (type)
   {
+    using enum KODI::SHADER::FilterType;
     case SHADER_FILTER_TYPE_LINEAR:
-      return SHADER::FilterType::LINEAR;
+      return LINEAR;
     case SHADER_FILTER_TYPE_NEAREST:
-      return SHADER::FilterType::NEAREST;
+      return NEAREST;
     default:
       break;
   }
@@ -259,14 +259,15 @@ SHADER::WrapType CShaderPresetAddon::TranslateWrapType(SHADER_WRAP_TYPE type)
 {
   switch (type)
   {
+    using enum KODI::SHADER::WrapType;
     case SHADER_WRAP_TYPE_BORDER:
-      return SHADER::WrapType::BORDER;
+      return BORDER;
     case SHADER_WRAP_TYPE_EDGE:
-      return SHADER::WrapType::EDGE;
+      return EDGE;
     case SHADER_WRAP_TYPE_REPEAT:
-      return SHADER::WrapType::REPEAT;
+      return REPEAT;
     case SHADER_WRAP_TYPE_MIRRORED_REPEAT:
-      return SHADER::WrapType::MIRRORED_REPEAT;
+      return MIRRORED_REPEAT;
     default:
       break;
   }
@@ -278,12 +279,13 @@ SHADER::ScaleType CShaderPresetAddon::TranslateScaleType(SHADER_SCALE_TYPE type)
 {
   switch (type)
   {
+    using enum KODI::SHADER::ScaleType;
     case SHADER_SCALE_TYPE_INPUT:
-      return SHADER::ScaleType::INPUT;
+      return INPUT;
     case SHADER_SCALE_TYPE_ABSOLUTE:
-      return SHADER::ScaleType::ABSOLUTE_SCALE;
+      return ABSOLUTE_SCALE;
     case SHADER_SCALE_TYPE_VIEWPORT:
-      return SHADER::ScaleType::VIEWPORT;
+      return VIEWPORT;
     default:
       break;
   }

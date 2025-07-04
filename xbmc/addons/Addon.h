@@ -88,7 +88,7 @@ public:
    *
    * **Example:**
    * ~~~~~~~~~~~~~{.cpp}
-   * // To get e.g. <extension ... name="blablabla" /> from addon.xml
+   * To get e.g. <extension ... name="blablabla" /> from addon.xml
    * std::string name = Type(ADDON_...)->GetValue("@name").asString();
    * ~~~~~~~~~~~~~
    *

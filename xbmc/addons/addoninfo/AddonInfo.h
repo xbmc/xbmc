@@ -134,7 +134,7 @@ struct DependencyInfo
   }
 };
 
-typedef std::map<std::string, std::string> InfoMap;
+using InfoMap = std::map<std::string, std::string, std::less<>>;
 
 class CAddonInfoBuilder;
 

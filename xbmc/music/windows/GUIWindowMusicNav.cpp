@@ -230,11 +230,11 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
     return false;
 
   // Set things up for processing artist or albums
-  CONTENT_TYPE content = CONTENT_ALBUMS;
+  ADDON::ContentType content = ADDON::ContentType::ALBUMS;
   int id = params.GetAlbumId();
   if (id == -1)
   {
-    content = CONTENT_ARTISTS;
+    content = ADDON::ContentType::ARTISTS;
     id = params.GetArtistId();
   }
 
@@ -264,13 +264,13 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
     case INFOPROVIDERAPPLYOPTIONS::INFOPROVIDER_ALLVIEW: // Change information provider for the filtered items shown on this node
       {
         msgctxt = 38069;
-        if (content == CONTENT_ARTISTS)
+        if (content == ADDON::ContentType::ARTISTS)
           msgctxt = 38068;
         if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 20195 }, msgctxt)) // Change information provider, confirm for all shown
         {
           // Set scraper for all items on current view.
           std::string strPath = "musicdb://";
-          if (content == CONTENT_ARTISTS)
+          if (content == ADDON::ContentType::ARTISTS)
             strPath += "artists";
           else
             strPath += "albums";
@@ -278,7 +278,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
           // Items on view could be limited by navigation criteria, smart playlist rules or a filter.
           // Get these options, except ID, from item path
           CURL musicUrl(item->GetPath());  //Use CURL, as CMusicDbUrl removes "filter" option
-          if (content == CONTENT_ARTISTS)
+          if (content == ADDON::ContentType::ARTISTS)
             musicUrl.RemoveOption("artistid");
           else
             musicUrl.RemoveOption("albumid");
@@ -290,7 +290,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
     case INFOPROVIDERAPPLYOPTIONS::INFOPROVIDER_DEFAULT: // Change information provider for all items
       {
         msgctxt = 38071;
-        if (content == CONTENT_ARTISTS)
+        if (content == ADDON::ContentType::ARTISTS)
           msgctxt = 38070;
         if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20195}, msgctxt)) // Change information provider, confirm default and clear
         {
@@ -298,13 +298,13 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
           scraper->SaveSettings();
           // Set default scraper
           const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-          if (content == CONTENT_ARTISTS)
+          if (content == ADDON::ContentType::ARTISTS)
             settings->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, scraper->ID());
           else
             settings->SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, scraper->ID());
           settings->Save();
           // Clear all item specific settings
-          if (content == CONTENT_ARTISTS)
+          if (content == ADDON::ContentType::ARTISTS)
             result = m_musicdatabase.SetScraperAll("musicdb://artists/", nullptr);
           else
             result = m_musicdatabase.SetScraperAll("musicdb://albums/", nullptr);
@@ -329,7 +329,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
       if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20195}, CVariant{38073}))
       {
         std::string itempath = StringUtils::Format("musicdb://albums/{}/", id);
-        if (content == CONTENT_ARTISTS)
+        if (content == ADDON::ContentType::ARTISTS)
           itempath = StringUtils::Format("musicdb://artists/{}/", id);
         OnItemInfoAll(itempath, true);
       }

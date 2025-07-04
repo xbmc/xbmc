@@ -10,9 +10,7 @@
 
 #include <string>
 
-namespace KODI
-{
-namespace ADDONS
+namespace KODI::ADDONS
 {
 
 /*!
@@ -42,5 +40,4 @@ public:
   virtual bool SupportsFile(const std::string& filename) { return true; }
 };
 
-} /* namespace ADDONS */
-} /* namespace KODI */
+} // namespace KODI::ADDONS

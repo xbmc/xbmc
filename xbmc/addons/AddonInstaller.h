@@ -193,7 +193,7 @@ public:
     bool downloadFinshed = false;
   };
 
-  typedef std::map<std::string, CDownloadJob> JobMap;
+  using JobMap = std::map<std::string, CDownloadJob, std::less<>>;
 
 private:
   // private construction, and no assignments; use the provided singleton methods
@@ -234,7 +234,6 @@ private:
   bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database, std::pair<std::string, std::string> &failedDep);
 
   void PrunePackageCache();
-  int64_t EnumeratePackageFolder(std::map<std::string, std::unique_ptr<CFileItemList>>& result);
 
   mutable CCriticalSection m_critSection;
   JobMap m_downloadJobs;

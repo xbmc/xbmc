@@ -45,9 +45,9 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
 {
   std::string const& path = addon->Path();
 
-  auto dirIt = std::find_if(m_dirs.begin(), m_dirs.end(), [&path](RepositoryDirInfo const& dir) {
-    return URIUtils::PathHasParent(path, dir.datadir, true);
-  });
+  const auto dirIt =
+      std::ranges::find_if(m_dirs, [&path](RepositoryDirInfo const& dir)
+                           { return URIUtils::PathHasParent(path, dir.datadir, true); });
   if (dirIt == m_dirs.end())
   {
     CLog::Log(LOGERROR, "Requested path {} not found in known repository directories", path);
@@ -108,12 +108,12 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, Addo
   if (addonver)
     version = addonver->Version();
 
-  for (const auto& element : Type(AddonType::REPOSITORY)->GetElements("dir"))
+  for (const auto& [_, addonExtensions] : Type(AddonType::REPOSITORY)->GetElements("dir"))
   {
-    RepositoryDirInfo dir = ParseDirConfiguration(element.second);
+    RepositoryDirInfo dir = ParseDirConfiguration(addonExtensions);
     if ((dir.minversion.empty() || version >= dir.minversion) &&
         (dir.maxversion.empty() || version <= dir.maxversion))
-      m_dirs.push_back(std::move(dir));
+      m_dirs.emplace_back(std::move(dir));
   }
 
   // old (dharma compatible) way of defining the addon repository structure, is no longer supported
@@ -168,7 +168,7 @@ bool CRepository::FetchChecksum(const std::string& url,
   // Transfer-Encoding: chunked servers.
   std::stringstream ss;
   char temp[1024];
-  int read;
+  ssize_t read;
   while ((read = file.Read(temp, sizeof(temp))) > 0)
     ss.write(temp, read);
   if (read <= -1)
@@ -245,7 +245,7 @@ bool CRepository::FetchIndex(const RepositoryDirInfo& repo,
   return CServiceBroker::GetAddonMgr().AddonsFromRepoXML(repo, response, addons);
 }
 
-CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldChecksum,
+CRepository::FetchStatus CRepository::FetchIfChanged(std::string_view oldChecksum,
                                                      std::string& checksum,
                                                      std::vector<AddonInfoPtr>& addons,
                                                      int& recheckAfter) const
@@ -278,16 +278,16 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
   {
     // Use smallest update interval out of all received (individual intervals per directory are
     // not possible)
-    recheckAfter = *std::min_element(recheckAfterTimes.begin(), recheckAfterTimes.end());
+    recheckAfter = *std::ranges::min_element(recheckAfterTimes);
     // If all directories have checksums and they match the last one, nothing has changed
     if (dirChecksums.size() == m_dirs.size() && oldChecksum == checksum)
       return FetchStatus::NOT_MODIFIED;
   }
 
-  for (const auto& dirTuple : dirChecksums)
+  for (const auto& [repoInfo, digest] : dirChecksums)
   {
     std::vector<AddonInfoPtr> tmp;
-    if (!FetchIndex(std::get<0>(dirTuple), std::get<1>(dirTuple), tmp))
+    if (!FetchIndex(repoInfo, digest, tmp))
       return FetchStatus::FETCH_ERROR;
     addons.insert(addons.end(), tmp.begin(), tmp.end());
   }
@@ -323,7 +323,8 @@ RepositoryDirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& con
     dir.hashType = CDigest::TypeFromString(hashStr);
     if (dir.hashType == CDigest::Type::MD5)
     {
-      CLog::Log(LOGWARNING, "CRepository::{}: Repository has MD5 hashes enabled - this hash function is broken and will only guard against unintentional data corruption", __FUNCTION__);
+      CLog::LogF(LOGWARNING, "Repository has MD5 hashes enabled - this hash function is broken and "
+                             "will only guard against unintentional data corruption");
     }
   }
 

@@ -91,13 +91,13 @@ int CGUIDialogInfoProviderSettings::Show(ADDON::ScraperPtr& scraper)
   CGUIDialogInfoProviderSettings *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogInfoProviderSettings>(WINDOW_DIALOG_INFOPROVIDER_SETTINGS);
   if (!dialog || !scraper)
     return -1;
-  if (scraper->Content() != CONTENT_ARTISTS && scraper->Content() != CONTENT_ALBUMS)
+  if (scraper->Content() != ContentType::ARTISTS && scraper->Content() != ContentType::ALBUMS)
     return -1;
 
   dialog->m_showSingleScraper = true;
   dialog->m_singleScraperType = scraper->Content();
 
-  if (dialog->m_singleScraperType == CONTENT_ALBUMS)
+  if (dialog->m_singleScraperType == ContentType::ALBUMS)
     dialog->SetAlbumScraper(scraper);
   else
     dialog->SetArtistScraper(scraper);
@@ -111,7 +111,7 @@ int CGUIDialogInfoProviderSettings::Show(ADDON::ScraperPtr& scraper)
   unsigned int applyToItems = dialog->m_applyToItems;
   if (confirmed)
   {
-    if (dialog->m_singleScraperType == CONTENT_ALBUMS)
+    if (dialog->m_singleScraperType == ContentType::ALBUMS)
       scraper = dialog->GetAlbumScraper();
     else
     {
@@ -339,7 +339,7 @@ void CGUIDialogInfoProviderSettings::SetupView()
       ToggleState(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER, true);
     }
   }
-  else if (m_singleScraperType == CONTENT_ALBUMS)
+  else if (m_singleScraperType == ContentType::ALBUMS)
   {
     SetHeading(38331);
     // Album scraper
@@ -406,7 +406,7 @@ void CGUIDialogInfoProviderSettings::InitializeSettings()
   {
     TranslatableIntegerSettingOptions entries;
     entries.clear();
-    if (m_singleScraperType == CONTENT_ALBUMS)
+    if (m_singleScraperType == ContentType::ALBUMS)
     {
       entries.emplace_back(38066, INFOPROVIDER_THISITEM);
       entries.emplace_back(38067, INFOPROVIDER_ALLVIEW);
@@ -427,14 +427,14 @@ void CGUIDialogInfoProviderSettings::InitializeSettings()
     return;
   }
   std::shared_ptr<CSettingAction> subsetting;
-  if (!m_showSingleScraper || m_singleScraperType == CONTENT_ALBUMS)
+  if (!m_showSingleScraper || m_singleScraperType == ContentType::ALBUMS)
   {
     AddButton(group, CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, 38334, SettingLevel::Basic); //Provider for album information
     subsetting = AddButton(group, SETTING_ALBUMSCRAPER_SETTINGS, 10004, SettingLevel::Basic); //"settings"
     if (subsetting)
       subsetting->SetParent(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER);
   }
-  if (!m_showSingleScraper || m_singleScraperType == CONTENT_ARTISTS)
+  if (!m_showSingleScraper || m_singleScraperType == ContentType::ARTISTS)
   {
     AddButton(group, CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, 38335, SettingLevel::Basic); //Provider for artist information
     subsetting = AddButton(group, SETTING_ARTISTSCRAPER_SETTINGS, 10004, SettingLevel::Basic); //"settings"
@@ -474,6 +474,6 @@ void CGUIDialogInfoProviderSettings::SetFocus(const std::string &settingid)
 void CGUIDialogInfoProviderSettings::ResetDefaults()
 {
   m_showSingleScraper = false;
-  m_singleScraperType = CONTENT_NONE;
+  m_singleScraperType = ContentType::NONE;
   m_applyToItems = INFOPROVIDER_THISITEM;
 }

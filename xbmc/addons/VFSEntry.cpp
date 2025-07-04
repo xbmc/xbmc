@@ -64,10 +64,10 @@ void CVFSAddonCache::Init()
   std::unique_lock lock(m_critSection);
   for (const auto& addonInfo : addonInfos)
   {
-    VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
+    auto vfs = std::make_shared<CVFSEntry>(addonInfo);
     vfs->Addon()->RegisterInformer(this);
 
-    m_addonsInstances.emplace_back(vfs);
+    m_addonsInstances.emplace_back(std::move(vfs));
 
     if (!vfs->GetZeroconfType().empty())
       CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
@@ -79,7 +79,7 @@ void CVFSAddonCache::Deinit()
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 }
 
-const std::vector<VFSEntryPtr> CVFSAddonCache::GetAddonInstances()
+std::vector<VFSEntryPtr> CVFSAddonCache::GetAddonInstances()
 {
   std::unique_lock lock(m_critSection);
   return m_addonsInstances;
@@ -91,11 +91,8 @@ VFSEntryPtr CVFSAddonCache::GetAddonInstance(const std::string& strId)
 
   std::unique_lock lock(m_critSection);
 
-  const auto& itAddon = std::find_if(m_addonsInstances.begin(), m_addonsInstances.end(),
-    [&strId](const VFSEntryPtr& addon)
-    {
-      return addon->ID() == strId;
-    });
+  const auto itAddon = std::ranges::find_if(m_addonsInstances, [&strId](const VFSEntryPtr& addon)
+                                            { return addon->ID() == strId; });
 
   if (itAddon != m_addonsInstances.end())
     addon = *itAddon;
@@ -131,8 +128,8 @@ bool CVFSAddonCache::IsInUse(const std::string& id)
 {
   std::unique_lock lock(m_critSection);
 
-  const auto& itAddon = std::find_if(m_addonsInstances.begin(), m_addonsInstances.end(),
-                                     [&id](const VFSEntryPtr& addon) { return addon->ID() == id; });
+  const auto itAddon = std::ranges::find_if(m_addonsInstances, [&id](const VFSEntryPtr& addon)
+                                            { return addon->ID() == id; });
   if (itAddon != m_addonsInstances.end() && (*itAddon).use_count() > 1)
     return true;
   return false;
@@ -146,9 +143,8 @@ void CVFSAddonCache::Update(const std::string& id)
   {
     std::unique_lock lock(m_critSection);
 
-    const auto& itAddon =
-        std::find_if(m_addonsInstances.begin(), m_addonsInstances.end(),
-                     [&id](const VFSEntryPtr& addon) { return addon->ID() == id; });
+    const auto itAddon = std::ranges::find_if(m_addonsInstances, [&id](const VFSEntryPtr& addon)
+                                              { return addon->ID() == id; });
 
     if (itAddon != m_addonsInstances.end())
     {
@@ -161,13 +157,13 @@ void CVFSAddonCache::Update(const std::string& id)
   AddonInfoPtr addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(id, AddonType::VFS);
   if (addonInfo && !CServiceBroker::GetAddonMgr().IsAddonDisabled(id))
   {
-    VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
+    auto vfs = std::make_shared<CVFSEntry>(addonInfo);
 
     if (!vfs->GetZeroconfType().empty())
       CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
 
     std::unique_lock lock(m_critSection);
-    m_addonsInstances.emplace_back(vfs);
+    m_addonsInstances.emplace_back(std::move(vfs));
   }
 }
 
@@ -201,7 +197,8 @@ class CVFSURLWrapper
     }
 
     VFSURL url;
-  protected:
+
+  private:
     std::vector<std::string> m_strings;
 };
 
@@ -271,7 +268,7 @@ void* CVFSEntry::OpenForWrite(const CURL& url, bool bOverWrite)
   return m_ifc.vfs->toAddon->open_for_write(m_ifc.vfs, &url2.url, bOverWrite);
 }
 
-bool CVFSEntry::Exists(const CURL& url)
+bool CVFSEntry::Exists(const CURL& url) const
 {
   if (!m_ifc.vfs->toAddon->exists)
     return false;
@@ -280,7 +277,7 @@ bool CVFSEntry::Exists(const CURL& url)
   return m_ifc.vfs->toAddon->exists(m_ifc.vfs, &url2.url);
 }
 
-int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer)
+int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer) const
 {
   int ret = -1;
   if (!m_ifc.vfs->toAddon->stat)
@@ -316,7 +313,7 @@ int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer)
   return ret;
 }
 
-ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize)
+ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize) const
 {
   if (!m_ifc.vfs->toAddon->read)
     return 0;
@@ -324,7 +321,7 @@ ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize)
   return m_ifc.vfs->toAddon->read(m_ifc.vfs, ctx, static_cast<uint8_t*>(lpBuf), uiBufSize);
 }
 
-ssize_t CVFSEntry::Write(void* ctx, const void* lpBuf, size_t uiBufSize)
+ssize_t CVFSEntry::Write(void* ctx, const void* lpBuf, size_t uiBufSize) const
 {
   if (!m_ifc.vfs->toAddon->write)
     return 0;
@@ -332,7 +329,7 @@ ssize_t CVFSEntry::Write(void* ctx, const void* lpBuf, size_t uiBufSize)
   return m_ifc.vfs->toAddon->write(m_ifc.vfs, ctx, static_cast<const uint8_t*>(lpBuf), uiBufSize);
 }
 
-int64_t CVFSEntry::Seek(void* ctx, int64_t position, int whence)
+int64_t CVFSEntry::Seek(void* ctx, int64_t position, int whence) const
 {
   if (!m_ifc.vfs->toAddon->seek)
     return 0;
@@ -340,7 +337,7 @@ int64_t CVFSEntry::Seek(void* ctx, int64_t position, int whence)
   return m_ifc.vfs->toAddon->seek(m_ifc.vfs, ctx, position, whence);
 }
 
-int CVFSEntry::Truncate(void* ctx, int64_t size)
+int CVFSEntry::Truncate(void* ctx, int64_t size) const
 {
   if (!m_ifc.vfs->toAddon->truncate)
     return 0;
@@ -348,13 +345,13 @@ int CVFSEntry::Truncate(void* ctx, int64_t size)
   return m_ifc.vfs->toAddon->truncate(m_ifc.vfs, ctx, size);
 }
 
-void CVFSEntry::Close(void* ctx)
+void CVFSEntry::Close(void* ctx) const
 {
   if (m_ifc.vfs->toAddon->close)
     m_ifc.vfs->toAddon->close(m_ifc.vfs, ctx);
 }
 
-int64_t CVFSEntry::GetPosition(void* ctx)
+int64_t CVFSEntry::GetPosition(void* ctx) const
 {
   if (!m_ifc.vfs->toAddon->get_position)
     return 0;
@@ -362,7 +359,7 @@ int64_t CVFSEntry::GetPosition(void* ctx)
   return m_ifc.vfs->toAddon->get_position(m_ifc.vfs, ctx);
 }
 
-int CVFSEntry::GetChunkSize(void* ctx)
+int CVFSEntry::GetChunkSize(void* ctx) const
 {
   if (!m_ifc.vfs->toAddon->get_chunk_size)
     return 0;
@@ -370,7 +367,7 @@ int CVFSEntry::GetChunkSize(void* ctx)
   return m_ifc.vfs->toAddon->get_chunk_size(m_ifc.vfs, ctx);
 }
 
-int64_t CVFSEntry::GetLength(void* ctx)
+int64_t CVFSEntry::GetLength(void* ctx) const
 {
   if (!m_ifc.vfs->toAddon->get_length)
     return 0;
@@ -378,7 +375,7 @@ int64_t CVFSEntry::GetLength(void* ctx)
   return m_ifc.vfs->toAddon->get_length(m_ifc.vfs, ctx);
 }
 
-int CVFSEntry::IoControl(void* ctx, XFILE::IOControl request, void* param)
+int CVFSEntry::IoControl(void* ctx, XFILE::IOControl request, void* param) const
 {
   switch (request)
   {
@@ -393,7 +390,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::IOControl request, void* param)
       if (!m_ifc.vfs->toAddon->io_control_get_cache_status)
         return -1;
 
-      XFILE::SCacheStatus* kodiData = static_cast<XFILE::SCacheStatus*>(param);
+      auto* kodiData = static_cast<XFILE::SCacheStatus*>(param);
       if (!kodiData)
         return -1;
 
@@ -413,7 +410,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::IOControl request, void* param)
       if (!m_ifc.vfs->toAddon->io_control_set_cache_rate)
         return -1;
 
-      uint32_t& iParam = *static_cast<uint32_t*>(param);
+      const uint32_t& iParam = *static_cast<uint32_t*>(param);
       return m_ifc.vfs->toAddon->io_control_set_cache_rate(m_ifc.vfs, ctx, iParam) ? 1 : 0;
     }
     case XFILE::IOControl::SET_RETRY:
@@ -421,7 +418,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::IOControl request, void* param)
       if (!m_ifc.vfs->toAddon->io_control_set_retry)
         return -1;
 
-      bool& bParam = *static_cast<bool*>(param);
+      const bool& bParam = *static_cast<bool*>(param);
       return m_ifc.vfs->toAddon->io_control_set_retry(m_ifc.vfs, ctx, bParam) ? 0 : -1;
     }
 
@@ -435,7 +432,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::IOControl request, void* param)
   return -1;
 }
 
-bool CVFSEntry::Delete(const CURL& url)
+bool CVFSEntry::Delete(const CURL& url) const
 {
   if (!m_ifc.vfs->toAddon->delete_it)
     return false;
@@ -444,7 +441,7 @@ bool CVFSEntry::Delete(const CURL& url)
   return m_ifc.vfs->toAddon->delete_it(m_ifc.vfs, &url2.url);
 }
 
-bool CVFSEntry::Rename(const CURL& url, const CURL& url2)
+bool CVFSEntry::Rename(const CURL& url, const CURL& url2) const
 {
   if (!m_ifc.vfs->toAddon->rename)
     return false;
@@ -454,19 +451,19 @@ bool CVFSEntry::Rename(const CURL& url, const CURL& url2)
   return m_ifc.vfs->toAddon->rename(m_ifc.vfs, &url3.url, &url4.url);
 }
 
-void CVFSEntry::ClearOutIdle()
+void CVFSEntry::ClearOutIdle() const
 {
   if (m_ifc.vfs->toAddon->clear_out_idle)
     m_ifc.vfs->toAddon->clear_out_idle(m_ifc.vfs);
 }
 
-void CVFSEntry::DisconnectAll()
+void CVFSEntry::DisconnectAll() const
 {
   if (m_ifc.vfs->toAddon->disconnect_all)
     m_ifc.vfs->toAddon->disconnect_all(m_ifc.vfs);
 }
 
-bool CVFSEntry::DirectoryExists(const CURL& url)
+bool CVFSEntry::DirectoryExists(const CURL& url) const
 {
   if (!m_ifc.vfs->toAddon->directory_exists)
     return false;
@@ -475,7 +472,7 @@ bool CVFSEntry::DirectoryExists(const CURL& url)
   return m_ifc.vfs->toAddon->directory_exists(m_ifc.vfs, &url2.url);
 }
 
-bool CVFSEntry::RemoveDirectory(const CURL& url)
+bool CVFSEntry::RemoveDirectory(const CURL& url) const
 {
   if (!m_ifc.vfs->toAddon->remove_directory)
     return false;
@@ -484,7 +481,7 @@ bool CVFSEntry::RemoveDirectory(const CURL& url)
   return m_ifc.vfs->toAddon->remove_directory(m_ifc.vfs, &url2.url);
 }
 
-bool CVFSEntry::CreateDirectory(const CURL& url)
+bool CVFSEntry::CreateDirectory(const CURL& url) const
 {
   if (!m_ifc.vfs->toAddon->create_directory)
     return false;
@@ -493,13 +490,13 @@ bool CVFSEntry::CreateDirectory(const CURL& url)
   return m_ifc.vfs->toAddon->create_directory(m_ifc.vfs, &url2.url);
 }
 
-static void VFSDirEntriesToCFileItemList(int num_entries,
-                                         VFSDirEntry* entries,
-                                         CFileItemList& items)
+namespace
+{
+void VFSDirEntriesToCFileItemList(int num_entries, const VFSDirEntry* entries, CFileItemList& items)
 {
   for (int i=0;i<num_entries;++i)
   {
-    CFileItemPtr item(new CFileItem());
+    auto item = std::make_shared<CFileItem>();
     item->SetLabel(entries[i].label);
     item->SetPath(entries[i].path);
     item->SetSize(entries[i].size);
@@ -519,12 +516,12 @@ static void VFSDirEntriesToCFileItemList(int num_entries,
         item->SetProperty(entries[i].properties[j].name,
                           entries[i].properties[j].val);
     }
-    items.Add(item);
+    items.Add(std::move(item));
   }
 }
+} // unnamed namespace
 
-bool CVFSEntry::GetDirectory(const CURL& url, CFileItemList& items,
-                             void* ctx)
+bool CVFSEntry::GetDirectory(const CURL& url, CFileItemList& items, void* ctx) const
 {
   if (!m_ifc.vfs->toAddon->get_directory || !m_ifc.vfs->toAddon->free_directory)
     return false;
@@ -549,7 +546,7 @@ bool CVFSEntry::GetDirectory(const CURL& url, CFileItemList& items,
   return ret;
 }
 
-bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items)
+bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items) const
 {
   if (!m_ifc.vfs->toAddon->contains_files || !m_ifc.vfs->toAddon->free_directory)
     return false;
@@ -743,7 +740,8 @@ void CVFSEntryIDirectoryWrapper::SetErrorDialog2(const char* heading,
                                                  const char* line2,
                                                  const char* line3)
 {
-  CVariant l2=0, l3=0;
+  CVariant l2{0};
+  CVariant l3{0};
   if (line2)
     l2 = std::string(line2);
   if (line3)

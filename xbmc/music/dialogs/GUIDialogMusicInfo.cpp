@@ -232,7 +232,7 @@ public:
     if (tag.GetType() == MediaTypeArtist)
     {
       ADDON::ScraperPtr scraper;
-      if (!database.GetScraper(m_artist.idArtist, CONTENT_ARTISTS, scraper))
+      if (!database.GetScraper(m_artist.idArtist, ADDON::ContentType::ARTISTS, scraper))
         return false;
 
       if (dlgProgress->IsCanceled())
@@ -263,7 +263,7 @@ public:
     {
       // tag.GetType == MediaTypeAlbum
       ADDON::ScraperPtr scraper;
-      if (!database.GetScraper(m_album.idAlbum, CONTENT_ALBUMS, scraper))
+      if (!database.GetScraper(m_album.idAlbum, ADDON::ContentType::ALBUMS, scraper))
         return false;
 
       if (dlgProgress->IsCanceled())

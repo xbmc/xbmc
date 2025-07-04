@@ -82,7 +82,7 @@ private:
                                  AddonUpdateRule updateRule);
 
   mutable CCriticalSection m_critSection;
-  std::map<std::string, std::vector<AddonUpdateRule>> m_updateRules;
+  std::map<std::string, std::vector<AddonUpdateRule>, std::less<>> m_updateRules;
 };
 
 }; /* namespace ADDON */

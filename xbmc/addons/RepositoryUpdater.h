@@ -101,7 +101,7 @@ private:
 
   CCriticalSection m_criticalSection;
   CTimer m_timer;
-  CEvent m_doneEvent;
+  CEvent m_doneEvent{true};
   std::vector<CRepositoryUpdateJob*> m_jobs;
   CAddonMgr& m_addonMgr;
 

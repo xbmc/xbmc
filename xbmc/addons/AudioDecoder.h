@@ -15,9 +15,7 @@
 #include "filesystem/MusicFileDirectory.h"
 #include "music/tags/ImusicInfoTagLoader.h"
 
-namespace KODI
-{
-namespace ADDONS
+namespace KODI::ADDONS
 {
 
 class CAudioDecoder : public ADDON::IAddonInstanceHandler,
@@ -46,5 +44,4 @@ private:
   bool m_hasTags;
 };
 
-} /* namespace ADDONS */
-} /* namespace KODI */
+} // namespace KODI::ADDONS

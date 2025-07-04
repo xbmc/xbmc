@@ -52,14 +52,14 @@ CGUIDialogContentSettings::CGUIDialogContentSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogSettings.xml")
 { }
 
-void CGUIDialogContentSettings::SetContent(CONTENT_TYPE content)
+void CGUIDialogContentSettings::SetContent(ContentType content)
 {
   m_content = m_originalContent = content;
 }
 
 void CGUIDialogContentSettings::ResetContent()
 {
-  SetContent(CONTENT_NONE);
+  SetContent(ContentType::NONE);
 }
 
 void CGUIDialogContentSettings::SetScanSettings(const VIDEO::SScanSettings &scanSettings)
@@ -73,13 +73,16 @@ void CGUIDialogContentSettings::SetScanSettings(const VIDEO::SScanSettings &scan
   m_allExternalAudio = scanSettings.m_allExtAudio;
 }
 
-bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE content /* = CONTENT_NONE */)
+bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper,
+                                     ContentType content /* = CONTENT_NONE */)
 {
   VIDEO::SScanSettings dummy;
   return Show(scraper, dummy, content);
 }
 
-bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, CONTENT_TYPE content /* = CONTENT_NONE */)
+bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper,
+                                     VIDEO::SScanSettings& settings,
+                                     ContentType content /* = ContentType::CONTENT_NONE */)
 {
   CGUIDialogContentSettings *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogContentSettings>(WINDOW_DIALOG_CONTENT_SETTINGS);
   if (!dialog)
@@ -87,7 +90,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
 
   if (scraper)
   {
-    dialog->SetContent(content != CONTENT_NONE ? content : scraper->Content());
+    dialog->SetContent(content != ContentType::NONE ? content : scraper->Content());
     dialog->SetScraper(scraper);
     // toast selected but disabled scrapers
     if (CServiceBroker::GetAddonMgr().IsAddonDisabled(scraper->ID()))
@@ -105,7 +108,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
 
     settings.m_allExtAudio = dialog->GetUseAllExternalAudio();
 
-    if (!scraper || content == CONTENT_NONE)
+    if (!scraper || content == ContentType::NONE)
       settings.exclude = dialog->GetExclude();
     else
     {
@@ -113,12 +116,12 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       settings.noupdate = dialog->GetNoUpdating();
       scraper->SetPathSettings(content, "");
 
-      if (content == CONTENT_TVSHOWS)
+      if (content == ContentType::TVSHOWS)
       {
         settings.parent_name = settings.parent_name_root = dialog->GetContainsSingleItem();
         settings.recurse = 0;
       }
-      else if (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS)
+      else if (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS)
       {
         if (dialog->GetUseDirectoryNames())
         {
@@ -184,17 +187,19 @@ void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSet
 
   if (settingId == SETTING_CONTENT_TYPE)
   {
-    std::vector<std::pair<std::string, int>> labels;
-    if (m_content == CONTENT_ALBUMS || m_content == CONTENT_ARTISTS)
+    std::vector<std::pair<std::string, ContentType>> labels;
+    if (m_content == ContentType::ALBUMS || m_content == ContentType::ARTISTS)
     {
       labels.emplace_back(ADDON::TranslateContent(m_content, true), m_content);
     }
     else
     {
-      labels.emplace_back(ADDON::TranslateContent(CONTENT_NONE, true), CONTENT_NONE);
-      labels.emplace_back(ADDON::TranslateContent(CONTENT_MOVIES, true), CONTENT_MOVIES);
-      labels.emplace_back(ADDON::TranslateContent(CONTENT_TVSHOWS, true), CONTENT_TVSHOWS);
-      labels.emplace_back(ADDON::TranslateContent(CONTENT_MUSICVIDEOS, true), CONTENT_MUSICVIDEOS);
+      labels.emplace_back(ADDON::TranslateContent(ContentType::NONE, true), ContentType::NONE);
+      labels.emplace_back(ADDON::TranslateContent(ContentType::MOVIES, true), ContentType::MOVIES);
+      labels.emplace_back(ADDON::TranslateContent(ContentType::TVSHOWS, true),
+                          ContentType::TVSHOWS);
+      labels.emplace_back(ADDON::TranslateContent(ContentType::MUSICVIDEOS, true),
+                          ContentType::MUSICVIDEOS);
     }
     std::ranges::sort(labels);
 
@@ -223,10 +228,12 @@ void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSet
         return;
 
       const auto& [_, selected] = labels.at(newSelected);
-      m_content = static_cast<CONTENT_TYPE>(selected);
+      m_content = static_cast<ContentType>(selected);
 
       AddonPtr scraperAddon;
-      if (!CAddonSystemSettings::GetInstance().GetActive(ADDON::ScraperTypeFromContent(m_content), scraperAddon) && m_content != CONTENT_NONE)
+      if (!CAddonSystemSettings::GetInstance().GetActive(ADDON::ScraperTypeFromContent(m_content),
+                                                         scraperAddon) &&
+          m_content != ContentType::NONE)
         return;
 
       m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
@@ -281,7 +288,7 @@ void CGUIDialogContentSettings::SetupView()
 
   SetLabel2(SETTING_CONTENT_TYPE, ADDON::TranslateContent(m_content, true));
 
-  if (m_content == CONTENT_NONE)
+  if (m_content == ContentType::NONE)
   {
     ToggleState(SETTING_SCRAPER_LIST, false);
     ToggleState(SETTING_SCRAPER_SETTINGS, false);
@@ -309,7 +316,7 @@ void CGUIDialogContentSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  if (m_content == CONTENT_NONE)
+  if (m_content == ContentType::NONE)
     m_showScanSettings = false;
   else if (m_scraper && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_scraper->ID()))
     m_showScanSettings = true;
@@ -342,7 +349,7 @@ void CGUIDialogContentSettings::InitializeSettings()
   }
   switch (m_content)
   {
-    case CONTENT_TVSHOWS:
+    case ContentType::TVSHOWS:
     {
       AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20379, SettingLevel::Basic, m_containsSingleItem, false, m_showScanSettings);
       AddToggle(groupDetails, SETTING_NO_UPDATING, 20432, SettingLevel::Basic, m_noUpdating, false, m_showScanSettings);
@@ -351,10 +358,12 @@ void CGUIDialogContentSettings::InitializeSettings()
       break;
     }
 
-    case CONTENT_MOVIES:
-    case CONTENT_MUSICVIDEOS:
+    case ContentType::MOVIES:
+    case ContentType::MUSICVIDEOS:
     {
-      AddToggle(groupDetails, SETTING_USE_DIRECTORY_NAMES, m_content == CONTENT_MOVIES ? 20329 : 20330, SettingLevel::Basic, m_useDirectoryNames, false, m_showScanSettings);
+      AddToggle(groupDetails, SETTING_USE_DIRECTORY_NAMES,
+                m_content == ContentType::MOVIES ? 20329 : 20330, SettingLevel::Basic,
+                m_useDirectoryNames, false, m_showScanSettings);
       std::shared_ptr<CSettingBool> settingScanRecursive = AddToggle(groupDetails, SETTING_SCAN_RECURSIVE, 20346, SettingLevel::Basic, m_scanRecursive, false, m_showScanSettings);
       std::shared_ptr<CSettingBool> settingContainsSingleItem = AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20383, SettingLevel::Basic, m_containsSingleItem, false, m_showScanSettings);
       AddToggle(groupDetails, SETTING_NO_UPDATING, 20432, SettingLevel::Basic, m_noUpdating, false, m_showScanSettings);
@@ -397,11 +406,11 @@ void CGUIDialogContentSettings::InitializeSettings()
       break;
     }
 
-    case CONTENT_ALBUMS:
-    case CONTENT_ARTISTS:
+    case ContentType::ALBUMS:
+    case ContentType::ARTISTS:
       break;
 
-    case CONTENT_NONE:
+    case ContentType::NONE:
     default:
       AddToggle(groupDetails, SETTING_EXCLUDE, 20380, SettingLevel::Basic, m_exclude, false, !m_showScanSettings);
       AddToggle(groupDetails, SETTING_ALL_EXTERNAL_AUDIO, 39120, SettingLevel::Basic,

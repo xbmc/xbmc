@@ -24,13 +24,11 @@ public:
    * @param addonId
    * @return true on success, otherwise false.
    */
-  bool InstallToFilesystem(const std::string& archive, const std::string& addonId);
+  bool InstallToFilesystem(const std::string& archive, const std::string& addonId) const;
 
-  bool UnInstallFromFilesystem(const std::string& addonPath);
+  bool UnInstallFromFilesystem(const std::string& addonPath) const;
 
 private:
-  static bool UnpackArchive(std::string path, const std::string& dest);
-
   std::string m_addonFolder;
   std::string m_tempFolder;
 };
