@@ -1807,10 +1807,11 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // in path so add back bluray://
   // (so properly recognised in cache as bluray:// files for CFile:Exists() etc..)
   CURL url3{url};
+  const std::string baseFileName{url3.GetFileName()};
   for (const auto& item : items)
   {
-    const CURL url4{item->GetPath()};
-    url3.SetFileName(url4.GetFileName());
+    url3.SetFileName(
+        URIUtils::AddFileToFolder(baseFileName, URIUtils::GetFileName(item->GetPath())));
     item->SetPath(url3.Get());
   }
 

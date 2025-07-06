@@ -156,7 +156,7 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
           {
             // Revert file to base file (BDMV/ISO)
             database.BeginTransaction();
-            if (database.SetFileForMedia(base, it.mediaType, it.idMedia, it.idFile))
+            if (database.SetFileForMedia(base, it.mediaType, it.idMedia, it.idFile) > 0)
               database.CommitTransaction();
             else
               database.RollbackTransaction();
@@ -165,6 +165,9 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
       }
 
       item.SetDynPath(item_new->GetDynPath());
+      item.GetVideoInfoTag()->m_streamDetails =
+          item_new->GetVideoInfoTag()
+              ->m_streamDetails; // Basic stream details from BLURAY_TITLE INFO
       item.SetProperty("get_stream_details_from_player", true); // Overwrite when played
       item.SetProperty("original_listitem_url", originalDynPath);
       return true;
