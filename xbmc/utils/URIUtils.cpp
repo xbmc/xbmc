@@ -467,8 +467,10 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
   if (IsBDFile(strCheck))
     strDirectory = GetDiscBasePath(strCheck);
 
+#ifdef HAVE_LIBBLURAY
   if (IsBlurayPath(strCheck))
     strDirectory = CBlurayDirectory::GetBasePath(CURL(strCheck));
+#endif
 
   if (IsStack(strPath))
   {
