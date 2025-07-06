@@ -56,6 +56,13 @@ public:
   void SetLoaded(bool bLoaded) { m_bLoaded = bLoaded; }
   bool IsRendered() const { return m_bRendered; }
   void SetRendered(bool bRendered) { m_bRendered = bRendered; }
+
+  // Video properties
+  virtual float GetDisplayAspectRatio() const { return m_displayAspectRatio; }
+  void SetDisplayAspectRatio(float displayAspectRatio)
+  {
+    m_displayAspectRatio = displayAspectRatio;
+  }
   unsigned int GetRotation() const { return m_rotationDegCCW; }
   void SetRotation(unsigned int rotationDegCCW) { m_rotationDegCCW = rotationDegCCW; }
 
@@ -65,6 +72,7 @@ protected:
   unsigned int m_height = 0;
   bool m_bLoaded = false;
   bool m_bRendered = false;
+  float m_displayAspectRatio{0.0f}; // 0.0f means square pixels
   unsigned int m_rotationDegCCW = 0;
 };
 } // namespace RETRO

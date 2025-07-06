@@ -11,7 +11,7 @@ include "video.fbs";
 namespace KODI.RETRO.SAVESTATE;
 
 // Savestate schema
-// Version 3
+// Version 4
 
 file_identifier "SAV_";
 
@@ -47,14 +47,16 @@ table Savestate {
   pixel_format:PixelFormat (id: 12);
   nominal_width:uint16 (id: 13);
   nominal_height:uint16 (id: 14);
+  nominal_display_aspect_ratio:float (id: 22);
   max_width:uint16 (id: 15);
   max_height:uint16 (id: 16);
-  pixel_aspect_ratio:float (id: 17);
+  pixel_aspect_ratio:float (id: 17); // Unused
 
   // Video frame properties
   video_data:[uint8] (id: 18);
   video_width:uint16 (id: 19);
   video_height:uint16 (id: 20);
+  display_aspect_ratio:float (id: 23);
   rotation_ccw:VideoRotation (id: 21);
 
   // Memory properties

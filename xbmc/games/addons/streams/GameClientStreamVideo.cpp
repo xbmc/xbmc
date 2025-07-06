@@ -57,7 +57,7 @@ void CGameClientStreamVideo::AddData(const game_stream_packet& packet)
     RETRO::VideoRotation rotation = CGameClientTranslator::TranslateRotation(video.rotation);
 
     RETRO::VideoStreamPacket videoPacket{
-        video.width, video.height, rotation, video.data, video.size,
+        video.width, video.height, video.display_aspect_ratio, rotation, video.data, video.size,
     };
 
     m_stream->AddStreamData(static_cast<const RETRO::StreamPacket&>(videoPacket));
@@ -82,6 +82,16 @@ RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(
     return nullptr;
   }
 
+  float nominalDisplayAspectRatio = properties.nominal_display_aspect_ratio;
+  if (nominalDisplayAspectRatio < 0.0f)
+  {
+    CLog::Log(LOGERROR, "GAME: Negative nominal display aspect ratio: {}",
+              nominalDisplayAspectRatio);
+
+    // Assume square pixels if the aspect ratio is invalid
+    nominalDisplayAspectRatio = 0.0f;
+  }
+
   const unsigned int maxWidth = properties.max_width;
   const unsigned int maxHeight = properties.max_height;
   if (maxWidth == 0 || maxHeight == 0)
@@ -94,15 +104,7 @@ RETRO::VideoStreamProperties* CGameClientStreamVideo::TranslateProperties(
     CLog::Log(LOGERROR, "GAME: Nominal dimensions ({}x{}) bigger than max dimensions ({}x{})",
               nominalWidth, nominalHeight, maxWidth, maxHeight);
 
-  float pixelAspectRatio;
-
-  // Game API: If aspect_ratio is <= 0.0, an aspect ratio of
-  // (nominal_width / nominal_height) is assumed
-  if (properties.aspect_ratio <= 0.0f)
-    pixelAspectRatio = 1.0f;
-  else
-    pixelAspectRatio = properties.aspect_ratio * nominalHeight / nominalWidth;
-
-  return new RETRO::VideoStreamProperties{pixelFormat, nominalWidth, nominalHeight,
-                                          maxWidth,    maxHeight,    pixelAspectRatio};
+  return new RETRO::VideoStreamProperties{
+      pixelFormat, nominalWidth, nominalHeight, nominalDisplayAspectRatio, maxWidth, maxHeight,
+  };
 }

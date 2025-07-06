@@ -100,9 +100,9 @@ void CRPRenderManager::Deinitialize()
 bool CRPRenderManager::Configure(AVPixelFormat format,
                                  unsigned int nominalWidth,
                                  unsigned int nominalHeight,
+                                 float nominalDisplayAspectRatio,
                                  unsigned int maxWidth,
-                                 unsigned int maxHeight,
-                                 float pixelAspectRatio)
+                                 unsigned int maxHeight)
 {
   CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Configuring format {}, nominal {}x{}, max {}x{}",
             CRenderTranslator::TranslatePixelFormat(format), nominalWidth, nominalHeight, maxWidth,
@@ -112,9 +112,9 @@ bool CRPRenderManager::Configure(AVPixelFormat format,
   m_format = format;
   m_nominalWidth = nominalWidth;
   m_nominalHeight = nominalHeight;
+  m_nominalDisplayAspectRatio = nominalDisplayAspectRatio;
   m_maxWidth = maxWidth;
   m_maxHeight = maxHeight;
-  m_pixelAspectRatio = pixelAspectRatio;
 
   std::unique_lock lock(m_stateMutex);
 
@@ -180,13 +180,14 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
                                 size_t size,
                                 unsigned int width,
                                 unsigned int height,
+                                float displayAspectRatio,
                                 unsigned int orientationDegCCW)
 {
   if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
     return;
 
   // Validate parameters
-  if (data == nullptr || size == 0 || width == 0 || height == 0)
+  if (data == nullptr || size == 0 || width == 0 || height == 0 || displayAspectRatio < 0.0f)
     return;
 
   // Get render buffers to copy the frame into
@@ -230,9 +231,12 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
       renderBuffer->Release();
     m_renderBuffers = std::move(renderBuffers);
 
-    // Apply rotation to render buffers
+    // Apply video properties to render buffers
     for (auto renderBuffer : m_renderBuffers)
+    {
+      renderBuffer->SetDisplayAspectRatio(displayAspectRatio);
       renderBuffer->SetRotation(orientationDegCCW);
+    }
 
     // Cache frame if it arrived after being paused
     if (m_speed == 0.0)
@@ -259,6 +263,7 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
         m_cachedFrame = std::move(cachedFrame);
         m_cachedWidth = width;
         m_cachedHeight = height;
+        m_cachedDisplayAspectRatio = displayAspectRatio;
         m_cachedRotationCCW = orientationDegCCW;
       }
     }
@@ -898,6 +903,7 @@ void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath, ISavesta
   AVPixelFormat targetFormat = AV_PIX_FMT_NONE;
   unsigned int width = 0;
   unsigned int height = 0;
+  float displayAspectRatio = 0.0f;
   unsigned int rotationCCW = 0;
   size_t sourceSize = 0;
   const uint8_t* sourceData = nullptr;
@@ -907,6 +913,7 @@ void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath, ISavesta
     targetFormat = readableBuffer->GetFormat();
     width = readableBuffer->GetWidth();
     height = readableBuffer->GetHeight();
+    displayAspectRatio = readableBuffer->GetDisplayAspectRatio();
     rotationCCW = readableBuffer->GetRotation();
     sourceSize = readableBuffer->GetFrameSize();
     sourceData = readableBuffer->GetMemory();
@@ -916,6 +923,7 @@ void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath, ISavesta
     targetFormat = m_format;
     width = m_cachedWidth;
     height = m_cachedHeight;
+    displayAspectRatio = m_cachedDisplayAspectRatio;
     rotationCCW = m_cachedRotationCCW;
     sourceSize = m_cachedFrame.size();
     sourceData = m_cachedFrame.data();
@@ -931,13 +939,14 @@ void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath, ISavesta
     savestate.SetPixelFormat(targetFormat);
     savestate.SetNominalWidth(m_nominalWidth);
     savestate.SetNominalHeight(m_nominalHeight);
+    savestate.SetNominalDisplayAspectRatio(m_nominalDisplayAspectRatio);
     savestate.SetMaxWidth(m_maxWidth);
     savestate.SetMaxHeight(m_maxHeight);
-    savestate.SetPixelAspectRatio(m_pixelAspectRatio);
 
     // Serialize video frame properties
     savestate.SetVideoWidth(width);
     savestate.SetVideoHeight(height);
+    savestate.SetDisplayAspectRatio(displayAspectRatio);
     savestate.SetRotationDegCCW(rotationCCW);
     uint8_t* const targetData = savestate.GetVideoBuffer(sourceSize);
     std::memcpy(targetData, sourceData, sourceSize);
