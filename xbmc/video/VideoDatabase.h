@@ -663,10 +663,10 @@ public:
                            const KODI::ART::Artwork& artwork,
                            int idShow,
                            int idEpisode = -1);
-  bool SetFileForMedia(const std::string& fileAndPath,
-                       VideoDbContentType type,
-                       int mediaId,
-                       int oldIdFile);
+  int SetFileForMedia(const std::string& fileAndPath,
+                      VideoDbContentType type,
+                      int mediaId,
+                      int oldIdFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const KODI::ART::Artwork& artwork,
                               int idMVideo = -1);
@@ -1388,9 +1388,9 @@ protected:
                              int max,
                              const T& offsets) const;
 
-  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
-  bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
-  bool SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
+  int SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
+  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
+  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
 
 private:
   void CreateTables() override;
