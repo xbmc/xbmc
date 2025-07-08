@@ -3773,7 +3773,7 @@ void CVideoDatabase::GetEpisodesByBlurayPath(const std::string& path,
   {
     // url will be in vfs format (ie. bluray://.../episode/1/1)
     // episode database entries will either have basepath path (ie. ISO/BDMV) if not yet played ...
-    const std::string baseFileAndPath{URIUtils::GetBlurayFile(path)};
+    const std::string baseFileAndPath{URIUtils::GetDiscFile(path)};
     std::string baseFile;
     std::string basePath;
     SplitPath(baseFileAndPath, basePath, baseFile);
@@ -3827,7 +3827,7 @@ void CVideoDatabase::GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>&
       std::string file{URIUtils::AddFileToFolder(m_pDS->fv("strPath").get_asString(),
                                                  m_pDS->fv("strFileName").get_asString())};
       if (URIUtils::IsBlurayPath(file))
-        file = URIUtils::GetBlurayFile(file);
+        file = URIUtils::GetDiscFile(file);
       fileMap.insert({file, index});
       if (episodeFile.empty() && m_pDS->fv("idFile").get_asInt() == idFile)
         episodeFile = file;
@@ -10778,7 +10778,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
 
         // if bluray:// get actual path
         if (URIUtils::IsBlurayPath(fullPath))
-          fullPath = URIUtils::GetBlurayFile(fullPath);
+          fullPath = URIUtils::GetDiscFile(fullPath);
 
         bool del = true;
         if (URIUtils::IsPlugin(fullPath))

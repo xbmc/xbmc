@@ -664,3 +664,116 @@ TEST_F(TestURIUtils, ContainersEncodeHostnamePaths)
   EXPECT_EQ("rar://%2fpath%2fthing/my/archived/path",
             URIUtils::CreateArchivePath("rar", curl, "/my/archived/path").Get());
 }
+
+TEST_F(TestURIUtils, GetDiscBase)
+{
+  constexpr std::string_view refDir{"smb://somepath/path/"};
+  EXPECT_EQ(refDir, URIUtils::GetDiscBase("smb://somepath/path/BDMV/index.bdmv"));
+  EXPECT_EQ(refDir, URIUtils::GetDiscBase(
+                        "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
+
+  constexpr std::string_view refIso{"smb://somepath/path/movie.iso"};
+  EXPECT_EQ(refIso, URIUtils::GetDiscBase("smb://somepath/path/movie.iso"));
+  EXPECT_EQ(
+      refIso,
+      URIUtils::GetDiscBase(
+          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+          "00800.mpls"));
+}
+
+TEST_F(TestURIUtils, GetDiscBasePath)
+{
+  constexpr std::string_view refDir{"smb://somepath/path/"};
+  EXPECT_EQ(refDir, URIUtils::GetDiscBasePath("smb://somepath/path/BDMV/index.bdmv"));
+  EXPECT_EQ(refDir, URIUtils::GetDiscBasePath(
+                        "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
+  EXPECT_EQ(refDir, URIUtils::GetDiscBasePath("smb://somepath/path/movie.iso"));
+  EXPECT_EQ(
+      refDir,
+      URIUtils::GetDiscBasePath(
+          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+          "00800.mpls"));
+}
+
+TEST_F(TestURIUtils, GetDiscFile)
+{
+  EXPECT_EQ(
+      "smb://somepath/path/BDMV/index.bdmv",
+      URIUtils::GetDiscFile("bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
+  EXPECT_EQ(
+      "smb://somepath/path/movie.iso",
+      URIUtils::GetDiscFile(
+          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+          "00800.mpls"));
+}
+
+TEST_F(TestURIUtils, GetDiscUnderlyingFile)
+{
+  CURL url = CURL("bluray://smb%3a%2f%2fsomepath%2fpath%2f/file.ext");
+  EXPECT_EQ("smb://somepath/path/file.ext", URIUtils::GetDiscUnderlyingFile(url));
+
+  url = CURL("bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/file.ext");
+  EXPECT_EQ("udf://smb%3a%2f%2fsomepath%2fpath%2fmovie.iso/file.ext",
+            URIUtils::GetDiscUnderlyingFile(url));
+}
+
+TEST_F(TestURIUtils, GetBlurayRootPath)
+{
+  constexpr std::string_view refRoot{"bluray://smb%3a%2f%2fsomepath%2fpath%2f/root"};
+  EXPECT_EQ(refRoot, URIUtils::GetBlurayRootPath("smb://somepath/path/BDMV/index.bdmv"));
+  EXPECT_EQ(refRoot, URIUtils::GetBlurayRootPath(
+                         "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
+
+  constexpr std::string_view refIsoRoot{
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/root"};
+  EXPECT_EQ(refIsoRoot, URIUtils::GetBlurayRootPath("smb://somepath/path/movie.iso"));
+  EXPECT_EQ(
+      refIsoRoot,
+      URIUtils::GetBlurayRootPath(
+          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+          "00800.mpls"));
+}
+
+TEST_F(TestURIUtils, GetBlurayEpisodePath)
+{
+  constexpr std::string_view ref{"bluray://smb%3a%2f%2fsomepath%2fpath%2f/root/episode/3/4"};
+  EXPECT_EQ(ref, URIUtils::GetBlurayEpisodePath("smb://somepath/path/BDMV/index.bdmv", 3, 4));
+  EXPECT_EQ(ref, URIUtils::GetBlurayEpisodePath(
+                     "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls", 3, 4));
+
+  constexpr std::string_view refIso{
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/root/episode/3/4"};
+  EXPECT_EQ(refIso, URIUtils::GetBlurayEpisodePath("smb://somepath/path/movie.iso", 3, 4));
+  EXPECT_EQ(
+      refIso,
+      URIUtils::GetBlurayEpisodePath(
+          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+          "00800.mpls",
+          3, 4));
+}
+
+TEST_F(TestURIUtils, GetBlurayPlaylistPath)
+{
+  EXPECT_EQ("bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/",
+            URIUtils::GetBlurayPlaylistPath("smb://somepath/path/BDMV/index.bdmv"));
+  EXPECT_EQ("bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls",
+            URIUtils::GetBlurayPlaylistPath("smb://somepath/path/BDMV/index.bdmv", 800));
+  EXPECT_EQ(
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/",
+      URIUtils::GetBlurayPlaylistPath("smb://somepath/path/movie.iso"));
+  EXPECT_EQ(
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+      "00800.mpls",
+      URIUtils::GetBlurayPlaylistPath("smb://somepath/path/movie.iso", 800));
+}
+
+TEST_F(TestURIUtils, GetBlurayPlaylistFromPath)
+{
+  EXPECT_EQ(URIUtils::GetBlurayPlaylistFromPath(
+                "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"),
+            800);
+  EXPECT_EQ(URIUtils::GetBlurayPlaylistFromPath(
+                "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/"
+                "PLAYLIST/00800.mpls"),
+            800);
+}

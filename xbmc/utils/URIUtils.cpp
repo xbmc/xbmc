@@ -466,7 +466,7 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
     GetParentPath(path, strDirectory);
   }
 
-  if (IsBDFile(strCheck))
+  if (IsBDFile(strCheck) || IsDVDFile(strCheck))
     strDirectory = GetDiscBasePath(strCheck);
 
 #ifdef HAVE_LIBBLURAY
@@ -495,11 +495,9 @@ bool URIUtils::IsDiscPath(const std::string& path)
 
 std::string URIUtils::GetDiscBase(const std::string& file)
 {
-  std::string discFile;
-  if (IsBlurayPath(file))
-    discFile = GetBlurayFile(file);
-  else
-    discFile = file;
+  std::string discFile{IsBlurayPath(file) ? GetDiscFile(file) : file};
+  if (IsDiscImage(discFile))
+    return discFile; // return .ISO
 
   std::string parent{GetParentPath(discFile)};
   std::string parentFolder{parent};
@@ -519,27 +517,29 @@ std::string URIUtils::GetDiscBasePath(const std::string& file)
   return base;
 }
 
+std::string URIUtils::GetDiscFile(const std::string& path)
+{
+  if (!IsBlurayPath(path))
+    return {};
+
+  const CURL url(path);
+  const CURL url2(url.GetHostName()); // strip bluray://
+
+  if (url2.IsProtocol("udf"))
+    return url2.GetHostName(); // ISO so strip udf:// before return
+  return AddFileToFolder(url2.Get(), "BDMV", "index.bdmv"); // BDMV
+}
+
 std::string URIUtils::GetDiscUnderlyingFile(const CURL& url)
 {
+  if (!url.IsProtocol("bluray"))
+    return {};
+
   const std::string& host = url.GetHostName();
   const std::string& filename = url.GetFileName();
   if (host.empty() || filename.empty())
     return {};
   return AddFileToFolder(host, filename);
-}
-
-std::string URIUtils::GetBlurayFile(const std::string& path)
-{
-  if (IsBlurayPath(path))
-  {
-    const CURL url(path);
-    const CURL url2(url.GetHostName()); // strip bluray://
-    if (url2.IsProtocol("udf"))
-      // ISO
-      return url2.GetHostName(); // strip udf://
-    return AddFileToFolder(url2.Get(), "BDMV", "index.bdmv"); // BDMV
-  }
-  return std::string{};
 }
 
 std::string URIUtils::GetBlurayRootPath(const std::string& path)
@@ -563,9 +563,10 @@ std::string URIUtils::GetBlurayAllEpisodesPath(const std::string& path)
   return AddFileToFolder(GetBlurayPath(path), "root", "episode", "all");
 }
 
-std::string URIUtils::GetBlurayPlaylistPath(const std::string& path)
+std::string URIUtils::GetBlurayPlaylistPath(const std::string& path, int playlist /* = -1 */)
 {
-  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST", "");
+  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST",
+                         playlist != -1 ? StringUtils::Format("{:05}.mpls", playlist) : "");
 }
 
 std::string URIUtils::GetBlurayPath(const std::string& path)
@@ -596,6 +597,18 @@ std::string URIUtils::GetBlurayPath(const std::string& path)
   }
 
   return newPath;
+}
+
+int URIUtils::GetBlurayPlaylistFromPath(const std::string& path)
+{
+  int playlist{-1};
+  if (IsBlurayPath(path))
+  {
+    CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
+    if (regex.RegFind(path) != -1)
+      playlist = std::stoi(regex.GetMatch(1));
+  }
+  return playlist;
 }
 
 std::string URIUtils::GetTrailingPartNumberRegex()

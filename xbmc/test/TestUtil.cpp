@@ -301,13 +301,13 @@ const TestDiscData BaseFiles[] = {{"/home/user/movies/movie/video_ts/VIDEO_TS.IF
                                   {"/home/user/movies/movie/disc 1/file.avi", "1"},
                                   {"/home/user/movies/movie/disk 1/file.avi", "1"},
                                   {"/home/user/movies/movie/cd 1/file.avi", "1"},
-                                  {"/home/user/movies/movie/dvd 1/file.avi", "1"}};
+                                  {"/home/user/movies/movie/dvd 1/file.avi", "1"},
+                                  {"smb://home/user/movies/movie/disc 1/file.avi", "1"}};
 
 TEST_P(TestDiscNumbers, GetDiscNumbers)
 {
   const std::string discNum = CUtil::GetPartNumberFromPath(GetParam().file);
-  const std::string compare = GetParam().number;
-  EXPECT_EQ(compare, discNum);
+  EXPECT_EQ(GetParam().number, discNum);
 }
 
 INSTANTIATE_TEST_SUITE_P(DiscNumbers, TestDiscNumbers, ValuesIn(BaseFiles));
@@ -333,14 +333,123 @@ const TestRemoveData BasePaths[] = {
     {"/home/user/movies/movie/disc 1/file.avi", "/home/user/movies/movie/"},
     {"/home/user/movies/movie/disk 1/file.avi", "/home/user/movies/movie/"},
     {"/home/user/movies/movie/cd 1/file.avi", "/home/user/movies/movie/"},
-    {"/home/user/movies/movie/dvd 1/file.avi", "/home/user/movies/movie/"}};
+    {"/home/user/movies/movie/dvd 1/file.avi", "/home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/disc 1/file.avi", "smb://home/user/movies/movie/"}};
 
 TEST_P(TestRemoveDiscNumbers, RemoveDiscNumbers)
 {
   const std::string path = CUtil::RemoveTrailingPartNumberSegmentFromPath(
       GetParam().path, CUtil::PreserveFileName::REMOVE);
-  const std::string compare = GetParam().result;
-  EXPECT_EQ(compare, path);
+  EXPECT_EQ(GetParam().result, path);
 }
 
 INSTANTIATE_TEST_SUITE_P(RemoveDiscNumbers, TestRemoveDiscNumbers, ValuesIn(BasePaths));
+
+struct TestBaseData
+{
+  const char* path;
+  const char* base;
+  const char* file;
+};
+
+class TestVideoBasePathAndFileName : public Test, public WithParamInterface<TestBaseData>
+{
+};
+
+const TestBaseData Paths[] = {
+    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", "smb://somepath/movie/",
+     "movie"},
+    {"c:\\dir\\movie.avi", "c:\\dir\\", "movie"},
+    {"/dir/movie.avi", "/dir/", "movie"},
+    {"smb://somepath/movie.avi", "smb://somepath/", "movie"},
+    {"smb://somepath/disc 1/movie.avi", "smb://somepath/disc 1/", "movie"},
+    {"/home/user/movies/movie/video_ts/video_ts.ifo", "/home/user/movies/movie/", "movie"},
+    {"/home/user/movies/movie/disc 1/video_ts/video_ts.ifo", "/home/user/movies/movie/disc 1/",
+     "movie"},
+    {"/home/user/movies/movie/BDMV/index.bdmv", "/home/user/movies/movie/", "movie"},
+    {"/home/user/movies/movie/disc 1/BDMV/index.bdmv", "/home/user/movies/movie/disc 1/", "movie"},
+    {"/home/user/movies/movie/file.iso", "/home/user/movies/movie/", "file"},
+    {"/home/user/movies/movie/disc 1/file.iso", "/home/user/movies/movie/disc 1/", "file"},
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/", "movie"},
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fdisc%201%252fmovie.iso%2f/BDMV/PLAYLIST/"
+     "00800.mpls",
+     "smb://somepath/disc 1/", "movie"},
+    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", "smb://somepath/movie/",
+     "movie"},
+    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/movie/disc 1/", "movie"}};
+
+TEST_P(TestVideoBasePathAndFileName, GetVideoBasePathAndFileName)
+{
+  std::string base;
+  std::string file;
+  CUtil::GetVideoBasePathAndFileName(GetParam().path, base, file);
+  EXPECT_EQ(GetParam().base, base);
+  EXPECT_EQ(GetParam().file, file);
+}
+
+INSTANTIATE_TEST_SUITE_P(GetVideoBasePathAndFileName,
+                         TestVideoBasePathAndFileName,
+                         ValuesIn(Paths));
+
+struct SourceData
+{
+  const char* name;
+  const char* path;
+};
+
+struct TestMatchingSourceData
+{
+  const char* path;
+  int matchingSource{-1};
+};
+
+class TestMatchingSource : public Test, public WithParamInterface<TestMatchingSourceData>
+{
+};
+
+constexpr SourceData Sources[] = {{"Movies", "smb://somepath/Movies/"},
+                                  {"TV Shows", "smb://somepath/TV Shows/"},
+                                  {"Documentaries", "/somepath/Documentaries/"}};
+
+constexpr TestMatchingSourceData SourcesToMatch[] = {
+    {"smb://somepath/Movies/Alien (1979)/ALIEN.ISO", 0},
+    {"smb://somepath/Movies/Alien (1979)/Disc 1/ALIEN.ISO", 0},
+    {"smb://somepath/Movies/Alien (1979)/Disc 1/BDMV/index.bdmv", 0},
+    {"bluray://"
+     "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fMovies%252fAlien%20(1979)%252fALIEN.ISO%2f/BDMV/"
+     "PLAYLIST/"
+     "00800.mpls",
+     0},
+    {"bluray://"
+     "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fMovies%252fAlien%20(1979)%252fDisc%201%252f"
+     "ALIEN.ISO%2f/BDMV/PLAYLIST/"
+     "00800.mpls",
+     0},
+    {"bluray://smb%3a%2f%2fsomepath%2fMovies%2fAlien%20(1979)/BDMV/PLAYLIST/00800.mpls", 0},
+    {"bluray://smb%3a%2f%2fsomepath%2fMovies%2fAlien%20(1979)%2fDisc%201/BDMV/PLAYLIST/00800.mpls",
+     0},
+    {"stack:///somepath/Documentaries/other/part 1.mkv,/somepath/Documentaries/other/part 2.mkv",
+     2},
+    {"smb://somepath/TV Shows/A Perfect Planet (2021)/", 1},
+    {"smb://somepath/Other/Something Else/", -1}};
+
+TEST_P(TestMatchingSource, GetMatchingSource)
+{
+  // Generate sources
+  std::vector<CMediaSource> sources;
+  for (const auto& source : Sources)
+  {
+    CMediaSource mediaSource{
+        source.name,   "",    "",  source.path, SourceType::REMOTE, KODI::UTILS::CLockInfo{}, "",
+        {source.path}, false, true};
+    sources.emplace_back(mediaSource);
+  }
+
+  bool isSourceName{false};
+  int source{CUtil::GetMatchingSource(GetParam().path, sources, isSourceName)};
+  EXPECT_EQ(source, GetParam().matchingSource);
+}
+
+INSTANTIATE_TEST_SUITE_P(GetMatchingSource, TestMatchingSource, ValuesIn(SourcesToMatch));
