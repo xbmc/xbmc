@@ -55,6 +55,8 @@ CRPRendererDMAOpenGLES::CRPRendererDMAOpenGLES(const CRenderSettings& renderSett
 
 void CRPRendererDMAOpenGLES::Render(uint8_t alpha)
 {
+  const ViewportCoordinates dest{m_rotatedDestCoords};
+
   auto renderBuffer = static_cast<CRenderBufferDMA*>(m_renderBuffer);
   assert(renderBuffer != nullptr);
 
@@ -97,11 +99,9 @@ void CRPRendererDMAOpenGLES::Render(uint8_t alpha)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    const ViewportCoordinates destPoints{m_rotatedDestCoords};
-
     SHADER::CShaderTextureGLES source(sourceTexture, false);
     SHADER::CShaderTextureGLES target(targetTexture, false);
-    if (!m_shaderPreset->RenderUpdate(destPoints, source, target))
+    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight}, source, target))
     {
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;

@@ -295,9 +295,9 @@ bool CRPWinRenderer::SupportsScalingMethod(SCALINGMETHOD method)
 
 void CRPWinRenderer::Render(CD3DTexture& target)
 {
-  const ViewportCoordinates destPoints{m_rotatedDestCoords};
+  const ViewportCoordinates dest{m_rotatedDestCoords};
 
-  CWinRenderBuffer* renderBuffer = static_cast<CWinRenderBuffer*>(m_renderBuffer);
+  auto renderBuffer = static_cast<CWinRenderBuffer*>(m_renderBuffer);
   if (renderBuffer == nullptr)
     return;
 
@@ -310,29 +310,11 @@ void CRPWinRenderer::Render(CD3DTexture& target)
   // Use video shader preset
   if (m_bUseShaderPreset)
   {
-    //! @todo Orientation?
-    /*
-    ViewportCoordinates destPoints = {};
-    // select destination rectangle
-    if (m_renderOrientation)
-    {
-      for (size_t i = 0; i < 4; ++i)
-        destPoints[i] = m_rotatedDestCoords[i];
-    }
-    else
-    {
-      CRect destRect = m_context.StereoCorrection(m_renderSettings.Geometry().Dimensions());
-      destPoints[0] = { destRect.x1, destRect.y1 };
-      destPoints[1] = { destRect.x2, destRect.y1 };
-      destPoints[2] = { destRect.x2, destRect.y2 };
-      destPoints[3] = { destRect.x1, destRect.y2 };
-    }
-    */
-
     SHADER::CShaderTextureDXRef targetTexture{target};
 
     // Render shaders and ouput to display
-    if (!m_shaderPreset->RenderUpdate(destPoints, *renderBufferTarget, targetTexture))
+    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight},
+                                      *renderBufferTarget, targetTexture))
     {
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;
@@ -355,7 +337,7 @@ void CRPWinRenderer::Render(CD3DTexture& target)
     // Use the picked output shader to render to the target
     if (outputShader != nullptr)
     {
-      outputShader->Render(intermediateTarget, m_sourceRect, destPoints, viewPort, target,
+      outputShader->Render(intermediateTarget, m_sourceRect, dest, viewPort, target,
                            m_context.UseLimitedColor() ? 1 : 0);
     }
   }
