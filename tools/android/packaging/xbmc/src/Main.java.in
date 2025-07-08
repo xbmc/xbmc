@@ -23,6 +23,8 @@ import android.view.WindowInsetsController;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Main extends NativeActivity implements Choreographer.FrameCallback
 {
@@ -49,6 +51,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   }
   private ArrayList<DelayedIntent> mDelayedIntents = new ArrayList<>();
   private boolean mPaused = true;
+
+  // Launchers that support the Recommended Content API
+  private final Set<String> mRecommendedLaunchers = new HashSet<String>() {{
+    add("com.google.android.tvlauncher"); // Android TV Stock
+    add("com.spocky.projengmenu"); // Projectivy Launcher
+  }};
 
   native void _onNewIntent(Intent intent);
 
@@ -125,7 +133,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     if (getPackageManager().hasSystemFeature(FEATURE_LEANBACK))
     {
       if (Build.VERSION.SDK_INT >= VERSION_CODES.O
-          && getLauncherName().equals("com.google.android.tvlauncher"))
+          && mRecommendedLaunchers.contains(getLauncherName()))
       {
         TvUtil.scheduleSyncingChannel(this);
       }
@@ -267,7 +275,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     if (getPackageManager().hasSystemFeature(FEATURE_LEANBACK)
         && Build.VERSION.SDK_INT >= VERSION_CODES.O
-        && getLauncherName().equals("com.google.android.tvlauncher")) {
+        && mRecommendedLaunchers.contains(getLauncherName())) {
       TvUtil.scheduleSyncingChannel(this);
     }
 
