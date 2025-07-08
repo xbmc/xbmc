@@ -1902,7 +1902,7 @@ std::string CFileItem::GetLocalMetadataPath() const
   if (URIUtils::IsBlurayPath(GetDynPath()) || VIDEO::IsDVDFile(*this) || VIDEO::IsBDFile(*this))
     return URIUtils::GetDiscBasePath(GetDynPath());
 
-  return URIUtils::GetParentPath(m_strPath);
+  return URIUtils::GetDirectory(m_strPath);
 }
 
 bool CFileItem::LoadMusicTag()
