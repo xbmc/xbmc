@@ -1143,6 +1143,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 
   if (XMLUtils::GetString(movie, "filenameandpath", value))
     SetFileNameAndPath(value);
+  XMLUtils::GetInt(movie, "playlist", m_iTrack);
 
   if (XMLUtils::GetDate(movie, "premiered", m_premiered))
   {
