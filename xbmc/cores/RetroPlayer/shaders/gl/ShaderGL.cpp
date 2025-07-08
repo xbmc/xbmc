@@ -37,7 +37,6 @@ bool CShaderGL::Create(std::string shaderSource,
                        std::string shaderPath,
                        ShaderParameterMap shaderParameters,
                        std::vector<std::shared_ptr<IShaderLut>> luts,
-                       float2 viewPortSize,
                        unsigned int passIdx,
                        unsigned int frameCountMod)
 {
@@ -51,7 +50,6 @@ bool CShaderGL::Create(std::string shaderSource,
   m_shaderPath = std::move(shaderPath);
   m_shaderParameters = std::move(shaderParameters);
   m_luts = std::move(luts);
-  m_viewportSize = viewPortSize;
   m_passIdx = passIdx;
   m_frameCountMod = frameCountMod;
   m_shaderProgram = glCreateProgram();
@@ -195,7 +193,8 @@ void CShaderGL::SetSizes(const float2& prevSize,
 }
 
 void CShaderGL::PrepareParameters(
-    CPoint dest[4],
+    const CPoint dest[4],
+    const float2 fullDestSize,
     IShaderTexture& sourceTexture,
     const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
     const std::vector<std::unique_ptr<IShader>>& pShaders,
@@ -235,7 +234,7 @@ void CShaderGL::PrepareParameters(
     m_VertexCoords[3][1] = dest[0].y - m_outputSize.y / 2;
 
     // Set destination rectangle size for the last pass
-    m_destSize = {dest[2].x - dest[0].x, dest[2].y - dest[0].y};
+    m_destSize = fullDestSize;
   }
 
   // bottom left z, tu, tv, r, g, b

@@ -38,7 +38,6 @@ bool CShaderDX::Create(std::string shaderSource,
                        std::string shaderPath,
                        ShaderParameterMap shaderParameters,
                        std::vector<std::shared_ptr<IShaderLut>> luts,
-                       float2 viewPortSize,
                        unsigned int passIdx,
                        unsigned int frameCountMod)
 {
@@ -52,7 +51,6 @@ bool CShaderDX::Create(std::string shaderSource,
   m_shaderPath = std::move(shaderPath);
   m_shaderParameters = std::move(shaderParameters);
   m_luts = std::move(luts);
-  m_viewportSize = viewPortSize;
   m_passIdx = passIdx;
   m_frameCountMod = frameCountMod;
   //m_pSampler = reinterpret_cast<ID3D11SamplerState*>(sampler);

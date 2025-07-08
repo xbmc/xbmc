@@ -246,8 +246,10 @@ void CRPRendererOpenGLES::DrawBlackBars()
 
 void CRPRendererOpenGLES::Render(uint8_t alpha)
 {
-  CRenderBufferOpenGLES* renderBuffer = static_cast<CRenderBufferOpenGLES*>(m_renderBuffer);
+  const CPoint dest[4] = {m_rotatedDestCoords[0], m_rotatedDestCoords[1],
+                          m_rotatedDestCoords[2], m_rotatedDestCoords[3]};
 
+  CRenderBufferOpenGLES* renderBuffer = static_cast<CRenderBufferOpenGLES*>(m_renderBuffer);
   if (renderBuffer == nullptr)
     return;
 
@@ -290,12 +292,9 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    const CPoint destPoints[4] = {m_rotatedDestCoords[0], m_rotatedDestCoords[1],
-                                  m_rotatedDestCoords[2], m_rotatedDestCoords[3]};
-
     SHADER::CShaderTextureGLES source(sourceTexture, false);
     SHADER::CShaderTextureGLES target(targetTexture, false);
-    if (!m_shaderPreset->RenderUpdate(destPoints, source, target))
+    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight}, source, target))
     {
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;

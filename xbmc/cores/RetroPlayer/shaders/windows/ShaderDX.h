@@ -41,7 +41,6 @@ public:
               std::string shaderPath,
               ShaderParameterMap shaderParameters,
               std::vector<std::shared_ptr<IShaderLut>> luts,
-              float2 viewPortSize,
               unsigned int passIdx,
               unsigned int frameCountMod = 0) override;
   void Render(IShaderTexture& source, IShaderTexture& target) override;
@@ -123,9 +122,6 @@ private:
 
   // Resolution of the destination rectangle of the shader
   float2 m_destSize;
-
-  // Resolution of the viewport/window
-  float2 m_viewportSize;
 
   // Projection matrix
   DirectX::XMFLOAT4X4 m_MVP{};

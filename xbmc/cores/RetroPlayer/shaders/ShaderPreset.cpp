@@ -30,6 +30,7 @@ CShaderPreset::CShaderPreset(RETRO::CRenderContext& context,
   CRect viewPort;
   m_context.GetViewPort(viewPort);
   m_outputSize = {viewPort.Width(), viewPort.Height()};
+  m_fullDestSize = m_outputSize;
 }
 
 CShaderPreset::~CShaderPreset()
@@ -43,6 +44,7 @@ bool CShaderPreset::ReadPresetFile(const std::string& presetPath)
 }
 
 bool CShaderPreset::RenderUpdate(const CPoint dest[],
+                                 const float2 fullDestSize,
                                  IShaderTexture& source,
                                  IShaderTexture& target)
 {
@@ -51,7 +53,7 @@ bool CShaderPreset::RenderUpdate(const CPoint dest[],
   m_context.GetViewPort(viewPort);
 
   // Handle resizing of the viewport (window)
-  UpdateViewPort(viewPort);
+  UpdateViewPort(viewPort, fullDestSize);
 
   // Update shaders/shader textures if required
   if (!Update())
@@ -159,12 +161,14 @@ bool CShaderPreset::Update()
   return true;
 }
 
-void CShaderPreset::UpdateViewPort(CRect viewPort)
+void CShaderPreset::UpdateViewPort(CRect viewPort, const float2 fullDestSize)
 {
   const float2 currentViewPortSize = {viewPort.Width(), viewPort.Height()};
-  if (currentViewPortSize != m_outputSize)
+  if (currentViewPortSize != m_outputSize ||
+      (fullDestSize != m_fullDestSize && fullDestSize.x > 0.0f && fullDestSize.y > 0.0f))
   {
     m_outputSize = currentViewPortSize;
+    m_fullDestSize = fullDestSize;
     m_bPresetNeedsUpdate = true;
   }
 }
@@ -179,19 +183,13 @@ void CShaderPreset::PrepareParameters(const CPoint dest[],
                                       IShaderTexture& source,
                                       IShaderTexture& target)
 {
-  if (m_dest[0] != dest[0] || m_dest[1] != dest[1] || m_dest[2] != dest[2] || m_dest[3] != dest[3])
-  {
-    for (size_t i = 0; i < 4; ++i)
-      m_dest[i] = dest[i];
-  }
-
   const unsigned int numPasses = static_cast<unsigned int>(m_pShaders.size());
 
   // Prepare parameters for all shader passes
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     std::unique_ptr<IShader>& videoShader = m_pShaders[shaderIdx];
-    videoShader->PrepareParameters(m_dest, source, m_pShaderTextures, m_pShaders,
+    videoShader->PrepareParameters(dest, m_fullDestSize, source, m_pShaderTextures, m_pShaders,
                                    static_cast<uint64_t>(m_frameCount));
   }
 }
