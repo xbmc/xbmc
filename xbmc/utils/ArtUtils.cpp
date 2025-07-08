@@ -15,6 +15,7 @@
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/StackDirectory.h"
+#include "fmt/format.h"
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -178,13 +179,16 @@ std::string GetFolderThumb(const CFileItem& item, const std::string& folderJPG /
   return URIUtils::AddFileToFolder(strFolder, folderJPG);
 }
 
-std::string GetLocalArt(const CFileItem& item, const std::string& artFile, bool useFolder)
+std::string GetLocalArt(const CFileItem& item,
+                        const std::string& artFile,
+                        bool useFolder,
+                        UseSeasonAndEpisode useSeasonAndEpisode)
 {
   // no retrieving of empty art files from folders
   if (useFolder && artFile.empty())
     return "";
 
-  std::string strFile = GetLocalArtBaseFilename(item, useFolder);
+  std::string strFile = GetLocalArtBaseFilename(item, useFolder, useSeasonAndEpisode);
   if (strFile.empty()) // empty filepath -> nothing to find
     return "";
 
@@ -203,7 +207,9 @@ std::string GetLocalArt(const CFileItem& item, const std::string& artFile, bool 
   return "";
 }
 
-std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
+std::string GetLocalArtBaseFilename(const CFileItem& item,
+                                    bool& useFolder,
+                                    UseSeasonAndEpisode useSeasonAndEpisode /* = no */)
 {
   std::string strFile;
   if (item.IsStack())
@@ -234,6 +240,21 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
     // Optical media files (VIDEO_TS.IFO/INDEX.BDMV) should be treated like folders
     useFolder = true; // ByRef so changes behaviour in GetLocalArt()
     strFile = URIUtils::GetBasePath(file);
+  }
+
+  if (useSeasonAndEpisode == UseSeasonAndEpisode::YES && !URIUtils::GetFileName(file).empty() &&
+      item.HasVideoInfoTag())
+  {
+    // Note this is an exception to the optical media rule above - episode art files will be stored alongside the episode .nfo
+    const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+    if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
+    {
+      std::string baseFile{file};
+      URIUtils::RemoveExtension(baseFile);
+      strFile = fmt::format("{}-S{:02}E{:02}{}", baseFile, tag->m_iSeason, tag->m_iEpisode,
+                            URIUtils::GetExtension(file));
+      useFolder = false;
+    }
   }
   else if (useFolder && !(item.IsFolder() && !item.IsFileFolder()))
   {
@@ -333,9 +354,9 @@ std::string GetLocalFanart(const CFileItem& item)
 }
 
 // Gets the .tbn filename from a file or folder name.
-// <filename>.ext -> <filename>.tbn
-// <foldername>/ -> <foldername>.tbn
-std::string GetTBNFile(const CFileItem& item)
+// <filename>.ext -> <filename>(-<SxxEyy>).tbn
+// <foldername>/ -> <foldername>(-<SxxEyy>).tbn
+std::string GetTBNFile(const CFileItem& item, int season /* = - 1 */, int episode /* = -1 */)
 {
   std::string thumbFile;
   std::string file{item.GetPath()};
@@ -376,7 +397,15 @@ std::string GetTBNFile(const CFileItem& item)
     if (item.IsFolder() && !item.IsFileFolder())
       thumbFile = file + ".tbn"; // folder, so just add ".tbn"
     else
-      thumbFile = URIUtils::ReplaceExtension(file, ".tbn");
+    {
+      if (season > -1 && episode > -1)
+      {
+        URIUtils::RemoveExtension(file);
+        thumbFile = fmt::format("{}-S{:02}E{:02}.tbn", file, season, episode);
+      }
+      else
+        thumbFile = URIUtils::ReplaceExtension(file, ".tbn");
+    }
 
     url.SetFileName(thumbFile);
     thumbFile = url.Get();
