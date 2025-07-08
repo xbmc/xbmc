@@ -15,6 +15,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -192,6 +193,12 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(movie, "path", m_strPath);
     XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
     XMLUtils::SetString(movie, "basepath", m_basePath);
+  }
+  if (URIUtils::IsBlurayPath(m_strFileNameAndPath))
+  {
+    const int playlist{URIUtils::GetBlurayPlaylistFromPath(m_strFileNameAndPath)};
+    if (playlist != -1)
+      XMLUtils::SetInt(movie, "playlist", playlist);
   }
   if (!m_strEpisodeGuide.empty())
   {
