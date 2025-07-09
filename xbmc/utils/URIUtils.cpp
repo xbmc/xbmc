@@ -13,7 +13,9 @@
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URL.h"
+#ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDirectory.h"
+#endif
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
