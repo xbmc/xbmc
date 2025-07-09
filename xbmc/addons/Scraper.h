@@ -16,7 +16,10 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
+
+#include <fmt/format.h>
 
 class CAlbum;
 class CArtist;
@@ -28,31 +31,29 @@ class CMusicAlbumInfo;
 class CMusicArtistInfo;
 }
 
-typedef enum
-{
-  CONTENT_MOVIES,
-  CONTENT_TVSHOWS,
-  CONTENT_MUSICVIDEOS,
-  CONTENT_ALBUMS,
-  CONTENT_ARTISTS,
-  CONTENT_NONE,
-} CONTENT_TYPE;
-
 namespace XFILE
 {
-  class CCurlFile;
+class CCurlFile;
 }
-
-class CScraperUrl;
 
 namespace ADDON
 {
 class CScraper;
-typedef std::shared_ptr<CScraper> ScraperPtr;
+using ScraperPtr = std::shared_ptr<CScraper>;
 
-std::string TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
-CONTENT_TYPE TranslateContent(const std::string &string);
-AddonType ScraperTypeFromContent(const CONTENT_TYPE& content);
+enum class ContentType
+{
+  MOVIES,
+  TVSHOWS,
+  MUSICVIDEOS,
+  ALBUMS,
+  ARTISTS,
+  NONE,
+};
+
+std::string TranslateContent(ContentType content, bool pretty = false);
+ContentType TranslateContent(std::string_view string);
+AddonType ScraperTypeFromContent(ContentType content);
 
 // thrown as exception to signal abort or show error dialog
 class CScraperError
@@ -85,7 +86,7 @@ public:
    \return true if settings are available, false otherwise
    \sa GetPathSettings
    */
-  bool SetPathSettings(CONTENT_TYPE content, const std::string& xml);
+  bool SetPathSettings(ContentType content, const std::string& xml);
 
   /*! \brief Get the scraper settings for a particular path in the form of an XML string
    Loads the default and user settings (if not already loaded) and returns the user settings in the
@@ -99,11 +100,11 @@ public:
    Any previously cached files are cleared if they have been cached for longer than the specified
    cachepersistence.
    */
-  void ClearCache();
+  void ClearCache() const;
 
-  CONTENT_TYPE Content() const { return m_pathContent; }
+  ContentType Content() const { return m_pathContent; }
   bool RequiresSettings() const { return m_requiressettings; }
-  bool Supports(const CONTENT_TYPE &content) const;
+  bool Supports(ContentType content) const;
 
   bool IsInUse() const override;
   bool IsNoop();
@@ -131,8 +132,19 @@ public:
     XFILE::CCurlFile &fcurl, const std::string &sArtist);
   KODI::VIDEO::EPISODELIST GetEpisodeList(XFILE::CCurlFile& fcurl, const CScraperUrl& scurl);
 
+  struct StringHash
+  {
+    using is_transparent = void; // Enables heterogeneous operations.
+    std::size_t operator()(std::string_view sv) const
+    {
+      std::hash<std::string_view> hasher;
+      return hasher(sv);
+    }
+  };
+  using UniqueIDs = std::unordered_map<std::string, std::string, StringHash, std::equal_to<>>;
+
   bool GetVideoDetails(XFILE::CCurlFile& fcurl,
-                       const std::unordered_map<std::string, std::string>& uniqueIDs,
+                       const UniqueIDs& uniqueIDs,
                        const CScraperUrl& scurl,
                        bool fMovie /*else episode*/,
                        CVideoInfoTag& video);
@@ -177,9 +189,40 @@ private:
   bool m_isPython = false;
   bool m_requiressettings = false;
   CDateTimeSpan m_persistence;
-  CONTENT_TYPE m_pathContent = CONTENT_NONE;
+  ContentType m_pathContent = ContentType::NONE;
   CScraperParser m_parser;
 };
 
-}
+} // namespace ADDON
 
+template<>
+struct fmt::formatter<ADDON::ContentType> : fmt::formatter<std::string_view>
+{
+  template<typename FormatContext>
+  constexpr auto format(const ADDON::ContentType& type, FormatContext& ctx)
+  {
+    return fmt::formatter<std::string_view>::format(enumToSV(type), ctx);
+  }
+
+private:
+  static constexpr std::string_view enumToSV(ADDON::ContentType type)
+  {
+    using namespace std::literals::string_view_literals;
+    switch (type)
+    {
+      case ADDON::ContentType::MOVIES:
+        return "movies"sv;
+      case ADDON::ContentType::TVSHOWS:
+        return "TV shows"sv;
+      case ADDON::ContentType::MUSICVIDEOS:
+        return "music videos"sv;
+      case ADDON::ContentType::ALBUMS:
+        return "albums"sv;
+      case ADDON::ContentType::ARTISTS:
+        return "artists"sv;
+      case ADDON::ContentType::NONE:
+        return "none"sv;
+    };
+    throw std::invalid_argument("no content string found");
+  }
+};

@@ -50,11 +50,11 @@ namespace ADDON
   private:
     void OnEvent(const AddonEvent& event);
 
-    void Stop(const std::map<std::string, int>::value_type& service);
+    void Stop(const std::map<std::string, int, std::less<>>::value_type& service) const;
 
     CAddonMgr& m_addonMgr;
     CCriticalSection m_criticalSection;
     /** add-on id -> script id */
-    std::map<std::string, int> m_services;
+    std::map<std::string, int, std::less<>> m_services;
   };
 }

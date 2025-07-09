@@ -23,7 +23,10 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-#define LANGUAGE_ADDON_PREFIX   "resource.language."
+namespace
+{
+constexpr const char* LANGUAGE_ADDON_PREFIX = "resource.language.";
+}
 
 namespace ADDON
 {
@@ -70,16 +73,16 @@ CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
      *   <token>Le</token>
      *   ...
      */
-    for (const auto& values : sorttokensElement->GetValues())
+    for (const auto& [_, addonExtensions] : sorttokensElement->GetValues())
     {
       /* Second loop goes around the row parts, e.g.
        *   separators = "'"
        *   token = Le
        */
-      std::string token = values.second.GetValue("token").asString();
-      std::string separators = values.second.GetValue("token@separators").asString();
+      const std::string token = addonExtensions.GetValue("token").asString();
       if (!token.empty())
       {
+        std::string separators = addonExtensions.GetValue("token@separators").asString();
         if (separators.empty())
           separators = " ._";
 

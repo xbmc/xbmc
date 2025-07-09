@@ -111,11 +111,11 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
     tag->m_imageMetadata.height = ifcTag.height;
     tag->m_imageMetadata.exifInfo.Distance = ifcTag.distance;
     tag->m_imageMetadata.exifInfo.Orientation = ifcTag.orientation;
-    tag->m_imageMetadata.isColor = ifcTag.color == ADDON_IMG_COLOR_COLORED ? 1 : 0;
+    tag->m_imageMetadata.isColor = (ifcTag.color == ADDON_IMG_COLOR_COLORED);
     tag->m_imageMetadata.exifInfo.ApertureFNumber = ifcTag.aperture_f_number;
     tag->m_imageMetadata.exifInfo.FlashUsed = ifcTag.flash_used ? 1 : 0;
     tag->m_imageMetadata.exifInfo.LightSource = ifcTag.light_source;
-    tag->m_imageMetadata.exifInfo.FocalLength = ifcTag.focal_length;
+    tag->m_imageMetadata.exifInfo.FocalLength = static_cast<float>(ifcTag.focal_length);
     tag->m_imageMetadata.exifInfo.FocalLength35mmEquiv = ifcTag.focal_length_in_35mm_format;
     tag->m_imageMetadata.exifInfo.MeteringMode = ifcTag.metering_mode;
     tag->m_imageMetadata.exifInfo.DigitalZoomRatio = ifcTag.digital_zoom_ratio;
@@ -194,8 +194,8 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
   if (!m_created || !m_ifc.imagedecoder->toAddon->decode)
     return false;
 
-  const auto it = std::find_if(KodiToAddonFormat.begin(), KodiToAddonFormat.end(),
-                               [format](auto& p) { return std::get<0>(p) == format; });
+  const auto it = std::ranges::find_if(KodiToAddonFormat,
+                                       [format](auto& p) { return std::get<0>(p) == format; });
   if (it == KodiToAddonFormat.end())
     return false;
 

@@ -110,15 +110,15 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
           CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
           if (wrap->ContainsFiles(url))
           {
-            if (wrap->m_items.Size() == 1)
+            if (wrap->GetItems().Size() == 1)
             {
               // one STORED file - collapse it down
-              *pItem = *wrap->m_items[0];
+              *pItem = *wrap->GetItems()[0];
             }
             else
             {
               // compressed or more than one file -> create a dir
-              pItem->SetPath(wrap->m_items.GetPath());
+              pItem->SetPath(wrap->GetItems().GetPath());
             }
 
             // Check for folder, if yes return also wrap.

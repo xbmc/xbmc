@@ -10,29 +10,27 @@
 
 #include "addons/Addon.h"
 
-#define WEBINTERFACE_DEFAULT_ENTRY_POINT  "index.html"
-
 namespace ADDON
 {
-  typedef enum WebinterfaceType
-  {
-    WebinterfaceTypeStatic = 0,
-    WebinterfaceTypeWsgi
-  } WebinterfaceType;
+enum class WebinterfaceType
+{
+  TYPE_STATIC = 0,
+  TYPE_WSGI
+};
 
-  class CWebinterface : public CAddon
-  {
-  public:
-    explicit CWebinterface(const AddonInfoPtr& addonInfo);
+class CWebinterface : public CAddon
+{
+public:
+  explicit CWebinterface(const AddonInfoPtr& addonInfo);
 
-    WebinterfaceType GetType() const { return m_type; }
-    const std::string& EntryPoint() const { return m_entryPoint; }
+  WebinterfaceType GetType() const { return m_type; }
+  const std::string& EntryPoint() const { return m_entryPoint; }
 
-    std::string GetEntryPoint(const std::string &path) const;
-    std::string GetBaseLocation() const;
+  std::string GetEntryPoint(const std::string& path) const;
+  std::string GetBaseLocation() const;
 
-  private:
-    WebinterfaceType m_type = WebinterfaceTypeStatic;
-    std::string m_entryPoint;
-  };
+private:
+  WebinterfaceType m_type{WebinterfaceType::TYPE_STATIC};
+  std::string m_entryPoint;
+};
 }

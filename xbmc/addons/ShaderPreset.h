@@ -19,7 +19,7 @@
 namespace ADDON
 {
 class CAddonInfo;
-typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
 
 class CShaderPreset
 {
@@ -59,7 +59,7 @@ public:
    *
    * \param shader Shader passes handle
    */
-  void FreeShaderPreset(video_shader& shader);
+  void FreeShaderPreset(video_shader& shader) const;
 
 private:
   preset_file m_file;
@@ -72,7 +72,7 @@ private:
 class CShaderPresetAddon : public IAddonInstanceHandler, public KODI::SHADER::IShaderPresetLoader
 {
 public:
-  CShaderPresetAddon(const AddonInfoPtr& addonInfo);
+  explicit CShaderPresetAddon(const AddonInfoPtr& addonInfo);
   ~CShaderPresetAddon() override;
 
   /*!

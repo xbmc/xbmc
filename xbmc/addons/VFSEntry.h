@@ -23,18 +23,18 @@ namespace ADDON
 struct AddonEvent;
 
 class CVFSEntry;
-typedef std::shared_ptr<CVFSEntry> VFSEntryPtr;
+using VFSEntryPtr = std::shared_ptr<CVFSEntry>;
 
 class CVFSAddonCache : public CAddonDllInformer
 {
 public:
-  virtual ~CVFSAddonCache();
+  ~CVFSAddonCache() override;
   void Init();
   void Deinit();
-  const std::vector<VFSEntryPtr> GetAddonInstances();
+  std::vector<VFSEntryPtr> GetAddonInstances();
   VFSEntryPtr GetAddonInstance(const std::string& strId);
 
-protected:
+private:
   void Update(const std::string& id);
   void OnEvent(const AddonEvent& event);
   bool IsInUse(const std::string& id) override;
@@ -61,7 +61,7 @@ protected:
       int label;             //!< String ID to use as label in dialog
 
       //! \brief The constructor reads the info from an add-on info structure.
-      ProtocolInfo(const AddonInfoPtr& addonInfo);
+      explicit ProtocolInfo(const AddonInfoPtr& addonInfo);
     };
 
     //! \brief Construct from add-on properties.
@@ -72,28 +72,28 @@ protected:
     // Things that MUST be supplied by the child classes
     void* Open(const CURL& url);
     void* OpenForWrite(const CURL& url, bool bOverWrite);
-    bool Exists(const CURL& url);
-    int Stat(const CURL& url, struct __stat64* buffer);
-    ssize_t Read(void* ctx, void* lpBuf, size_t uiBufSize);
-    ssize_t Write(void* ctx, const void* lpBuf, size_t uiBufSize);
-    int64_t Seek(void* ctx, int64_t iFilePosition, int iWhence = SEEK_SET);
-    int Truncate(void* ctx, int64_t size);
-    void Close(void* ctx);
-    int64_t GetPosition(void* ctx);
-    int64_t GetLength(void* ctx);
-    int GetChunkSize(void* ctx);
-    int IoControl(void* ctx, XFILE::IOControl request, void* param);
-    bool Delete(const CURL& url);
-    bool Rename(const CURL& url, const CURL& url2);
+    bool Exists(const CURL& url) const;
+    int Stat(const CURL& url, struct __stat64* buffer) const;
+    ssize_t Read(void* ctx, void* lpBuf, size_t uiBufSize) const;
+    ssize_t Write(void* ctx, const void* lpBuf, size_t uiBufSize) const;
+    int64_t Seek(void* ctx, int64_t iFilePosition, int iWhence = SEEK_SET) const;
+    int Truncate(void* ctx, int64_t size) const;
+    void Close(void* ctx) const;
+    int64_t GetPosition(void* ctx) const;
+    int64_t GetLength(void* ctx) const;
+    int GetChunkSize(void* ctx) const;
+    int IoControl(void* ctx, XFILE::IOControl request, void* param) const;
+    bool Delete(const CURL& url) const;
+    bool Rename(const CURL& url, const CURL& url2) const;
 
-    bool GetDirectory(const CURL& url, CFileItemList& items, void* ctx);
-    bool DirectoryExists(const CURL& url);
-    bool RemoveDirectory(const CURL& url);
-    bool CreateDirectory(const CURL& url);
-    void ClearOutIdle();
-    void DisconnectAll();
+    bool GetDirectory(const CURL& url, CFileItemList& items, void* ctx) const;
+    bool DirectoryExists(const CURL& url) const;
+    bool RemoveDirectory(const CURL& url) const;
+    bool CreateDirectory(const CURL& url) const;
+    void ClearOutIdle() const;
+    void DisconnectAll() const;
 
-    bool ContainsFiles(const CURL& url, CFileItemList& items);
+    bool ContainsFiles(const CURL& url, CFileItemList& items) const;
 
     const std::string& GetProtocols() const { return m_protocols; }
     const std::string& GetExtensions() const { return m_extensions; }
@@ -102,7 +102,8 @@ protected:
     bool HasFileDirectories() const { return m_filedirectories; }
     const std::string& GetZeroconfType() const { return m_zeroconf; }
     const ProtocolInfo& GetProtocolInfo() const { return m_protocolInfo; }
-  protected:
+
+  private:
     std::string m_protocols;  //!< Protocols for VFS entry.
     std::string m_extensions; //!< Extensions for VFS entry.
     std::string m_zeroconf;   //!< Zero conf announce string for VFS protocol.
@@ -191,7 +192,8 @@ protected:
     //! \param[in] url URL of file to rename.
     //! \param[in] url2 New URL of file.
     bool Rename(const CURL& url, const CURL& url2) override;
-  protected:
+
+  private:
     void* m_context = nullptr; //!< Opaque add-on specific context for opened file.
     VFSEntryPtr m_addon; //!< Pointer to wrapped CVFSEntry.
   };
@@ -306,6 +308,11 @@ protected:
       return CVFSEntryIDirectoryWrapper::Create(url);
     }
 
+    //! \brief Return items.
+    //! \return The items.
+    const CFileItemList& GetItems() const { return m_items; }
+
+  private:
     CFileItemList m_items; //!< Internal list of items, used for cache purposes.
   };
 

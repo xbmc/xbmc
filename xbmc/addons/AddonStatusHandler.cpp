@@ -44,7 +44,7 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string& addonID,
                                          AddonInstanceId instanceId,
                                          ADDON_STATUS status,
                                          bool sameThread)
-  : CThread(("AddonStatus " + std::to_string(instanceId) + "@" + addonID).c_str()),
+  : CThread(StringUtils::Format("AddonStatus {}@{}", instanceId, addonID).c_str()),
     m_instanceId(instanceId)
 {
   //! @todo The status handled CAddonStatusHandler by is related to the class, not the instance
@@ -53,8 +53,8 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string& addonID,
     return;
 
   CLog::Log(LOGINFO,
-            "Called Add-on status handler for '{}' of clientName:{}, clientID:{}, instanceID:{} "
-            "(same Thread={})",
+            "Called Add-on status handler for '{}' of addon name:{}, addon ID:{}, instance ID:{}, "
+            "same thread:{}",
             status, m_addon->Name(), m_addon->ID(), m_instanceId, sameThread ? "yes" : "no");
 
   m_status = status;

@@ -782,7 +782,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
       if (!item->IsLiveTV() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
       {
-        if (info && info->Content() != CONTENT_NONE)
+        if (info && info->Content() != ADDON::ContentType::NONE)
         {
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
           buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
@@ -864,17 +864,18 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
             !PLAYLIST::IsSmartPlayList(*item) && !item->IsLibraryFolder() && !item->IsLiveTV() &&
             !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
         {
-          if (info && info->Content() != CONTENT_NONE)
+          if (info && info->Content() != ADDON::ContentType::NONE)
             buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
           else
             buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
 
-          if (info && info->Content() != CONTENT_NONE)
+          if (info && info->Content() != ADDON::ContentType::NONE)
             buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
       }
 
-      if ((!item->HasVideoInfoTag() || item->GetVideoInfoTag()->m_iDbId == -1) && info && info->Content() != CONTENT_NONE)
+      if ((!item->HasVideoInfoTag() || item->GetVideoInfoTag()->m_iDbId == -1) && info &&
+          info->Content() != ADDON::ContentType::NONE)
         buttons.Add(CONTEXT_BUTTON_SCAN_TO_LIBRARY, 21845);
 
     }

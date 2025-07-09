@@ -303,12 +303,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
     SScanSettings settings;
     ScraperPtr info =
         m_database.GetScraperForPath(strDirectory, settings, foundDirectly, &m_scraperCache);
-    CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
+    ContentType content = info ? info->Content() : ContentType::NONE;
 
     // exclude folders that match our exclude regexps
     const std::vector<std::string>& regexps =
-        content == CONTENT_TVSHOWS ? m_advancedSettings->m_tvshowExcludeFromScanRegExps
-                                   : m_advancedSettings->m_moviesExcludeFromScanRegExps;
+        content == ContentType::TVSHOWS ? m_advancedSettings->m_tvshowExcludeFromScanRegExps
+                                        : m_advancedSettings->m_moviesExcludeFromScanRegExps;
 
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
       return true;
@@ -317,7 +317,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return true;
 
     bool ignoreFolder = !m_scanAll && settings.noupdate;
-    if (content == CONTENT_NONE || ignoreFolder)
+    if (content == ContentType::NONE || ignoreFolder)
       return true;
 
     if (URIUtils::IsPlugin(strDirectory) && !CPluginDirectory::IsMediaLibraryScanningAllowed(TranslateContent(content), strDirectory))
@@ -330,11 +330,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     std::string hash, dbHash;
-    if (content == CONTENT_MOVIES ||content == CONTENT_MUSICVIDEOS)
+    if (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS)
     {
       if (m_handle)
       {
-        int str = content == CONTENT_MOVIES ? 20317:20318;
+        int str = content == ContentType::MOVIES ? 20317 : 20318;
         m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(str), info->Name()));
       }
 
@@ -390,7 +390,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   CURL::GetRedacted(strDirectory), dbHash, hash);
       }
     }
-    else if (content == CONTENT_TVSHOWS)
+    else if (content == ContentType::TVSHOWS)
     {
       if (m_handle)
         m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20319), info->Name()));
@@ -422,7 +422,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       foundSomething = RetrieveVideoInfo(items, settings.parent_name_root, content);
       if (foundSomething)
       {
-        if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
+        if (!m_bStop && (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
         {
           m_database.SetPathHash(strDirectory, hash);
           if (m_bClean)
@@ -439,7 +439,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   CURL::GetRedacted(strDirectory));
       }
     }
-    else if (!StringUtils::EqualsNoCase(hash, dbHash) && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
+    else if (!StringUtils::EqualsNoCase(hash, dbHash) &&
+             (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
     { // update the hash either way - we may have changed the hash to a fast version
       m_database.SetPathHash(strDirectory, hash);
     }
@@ -455,7 +456,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         break;
 
       // add video extras to library
-      if (foundSomething && content == CONTENT_MOVIES && settings.parent_name &&
+      if (foundSomething && content == ContentType::MOVIES && settings.parent_name &&
           !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
       {
         if (AddVideoExtras(items, content, pItem->GetPath()))
@@ -471,7 +472,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // if we have a directory item (non-playlist) we then recurse into that folder
       // do not recurse for tv shows - we have already looked recursively for episodes
       if (pItem->IsFolder() && !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem) &&
-          settings.recurse > 0 && content != CONTENT_TVSHOWS)
+          settings.recurse > 0 && content != ContentType::TVSHOWS)
       {
         if (!DoScan(pItem->GetPath()))
         {
@@ -482,7 +483,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items,
+                                            bool bDirNames,
+                                            ContentType content,
+                                            bool useLocal,
+                                            CScraperUrl* pURL,
+                                            bool fetchEpisodes,
+                                            CGUIDialogProgress* pDlgProgress)
   {
     if (pDlgProgress)
     {
@@ -517,23 +524,23 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       // Discard all exclude files defined by regExExclude
       if (CUtil::ExcludeFileOrFolder(pItem->GetPath(),
-                                     (content == CONTENT_TVSHOWS)
+                                     (content == ContentType::TVSHOWS)
                                          ? m_advancedSettings->m_tvshowExcludeFromScanRegExps
                                          : m_advancedSettings->m_moviesExcludeFromScanRegExps))
         continue;
 
-      if (info2->Content() == CONTENT_MOVIES || info2->Content() == CONTENT_MUSICVIDEOS)
+      if (info2->Content() == ContentType::MOVIES || info2->Content() == ContentType::MUSICVIDEOS)
       {
         if (m_handle)
           m_handle->SetPercentage(i*100.f/items.Size());
       }
 
       InfoRet ret = InfoRet::CANCELLED;
-      if (info2->Content() == CONTENT_TVSHOWS)
+      if (info2->Content() == ContentType::TVSHOWS)
         ret = RetrieveInfoForTvShow(pItem.get(), bDirNames, info2, useLocal, pURL, fetchEpisodes, pDlgProgress);
-      else if (info2->Content() == CONTENT_MOVIES)
+      else if (info2->Content() == ContentType::MOVIES)
         ret = RetrieveInfoForMovie(pItem.get(), bDirNames, info2, useLocal, pURL, pDlgProgress);
-      else if (info2->Content() == CONTENT_MUSICVIDEOS)
+      else if (info2->Content() == ContentType::MUSICVIDEOS)
         ret = RetrieveInfoForMusicVideo(pItem.get(), bDirNames, info2, useLocal, pURL, pDlgProgress);
       else
       {
@@ -560,15 +567,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   CURL::GetRedacted(pItem->GetPath()));
 
         MediaType mediaType = MediaTypeMovie;
-        if (info2->Content() == CONTENT_TVSHOWS)
+        if (info2->Content() == ContentType::TVSHOWS)
           mediaType = MediaTypeTvShow;
-        else if (info2->Content() == CONTENT_MUSICVIDEOS)
+        else if (info2->Content() == ContentType::MUSICVIDEOS)
           mediaType = MediaTypeMusicVideo;
 
         auto eventLog = CServiceBroker::GetEventLog();
         if (eventLog)
         {
-          const std::string itemlogpath = (info2->Content() == CONTENT_TVSHOWS)
+          const std::string itemlogpath = (info2->Content() == ContentType::TVSHOWS)
                                               ? CURL::GetRedacted(pItem->GetPath())
                                               : URIUtils::GetFileName(pItem->GetPath());
 
@@ -586,7 +593,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         seenPaths.push_back(m_database.GetPathId(pItem->GetPath()));
     }
 
-    if (content == CONTENT_TVSHOWS && ! seenPaths.empty())
+    if (content == ContentType::TVSHOWS && !seenPaths.empty())
     {
       std::vector<std::pair<int, std::string>> libPaths;
       m_database.GetSubPaths(items.GetPath(), libPaths);
@@ -699,7 +706,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     long lResult = -1;
     if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
     {
-      const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
+      const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
                      (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
                                                                                     : nullptr,
@@ -804,7 +811,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifier;
     if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
     {
-      const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
+      const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
                      (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
                                                                                     : nullptr,
@@ -897,7 +904,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifier;
     if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
     {
-      const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
+      const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
                      (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
                                                                                     : nullptr,
@@ -1512,7 +1519,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return false;
   }
 
-  long CVideoInfoScanner::AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder /* = false */, bool useLocal /* = true */, const CVideoInfoTag *showInfo /* = NULL */, bool libraryImport /* = false */)
+  long CVideoInfoScanner::AddVideo(CFileItem* pItem,
+                                   ContentType content,
+                                   bool videoFolder /* = false */,
+                                   bool useLocal /* = true */,
+                                   const CVideoInfoTag* showInfo /* = NULL */,
+                                   bool libraryImport /* = false */)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -1538,7 +1550,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string strTitle(movieDetails.m_strTitle);
 
-    if (showInfo && content == CONTENT_TVSHOWS)
+    if (showInfo && content == ContentType::TVSHOWS)
     {
       strTitle = StringUtils::Format("{} - {}x{} - {}", showInfo->m_strTitle,
                                      movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle);
@@ -1566,7 +1578,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", TranslateContent(content), CURL::GetRedacted(pItem->GetPath()));
     long lResult = -1;
 
-    if (content == CONTENT_MOVIES)
+    if (content == ContentType::MOVIES)
     {
       // find local trailer first
       std::string strTrailer = UTILS::FindTrailer(*pItem);
@@ -1615,7 +1627,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                     movieDetails.m_strTitle, movieDetails.m_showLink[i]);
       }
     }
-    else if (content == CONTENT_TVSHOWS)
+    else if (content == ContentType::TVSHOWS)
     {
       if (pItem->IsFolder())
       {
@@ -1658,7 +1670,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         }
       }
     }
-    else if (content == CONTENT_MUSICVIDEOS)
+    else if (content == ContentType::MUSICVIDEOS)
     {
       lResult = m_database.SetDetailsForMusicVideo(movieDetails, art);
       movieDetails.m_iDbId = lResult;
@@ -1688,30 +1700,32 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return lResult;
   }
 
-  std::string ContentToMediaType(CONTENT_TYPE content, bool folder)
+  std::string ContentToMediaType(ContentType content, bool folder)
   {
     switch (content)
     {
-      case CONTENT_MOVIES:
+      using enum ContentType;
+      case MOVIES:
         return MediaTypeMovie;
-      case CONTENT_MUSICVIDEOS:
+      case MUSICVIDEOS:
         return MediaTypeMusicVideo;
-      case CONTENT_TVSHOWS:
+      case TVSHOWS:
         return folder ? MediaTypeTvShow : MediaTypeEpisode;
       default:
         return "";
     }
   }
 
-  VideoDbContentType ContentToVideoDbType(CONTENT_TYPE content)
+  VideoDbContentType ContentToVideoDbType(ContentType content)
   {
     switch (content)
     {
-      case CONTENT_MOVIES:
+      using enum ContentType;
+      case MOVIES:
         return VideoDbContentType::MOVIES;
-      case CONTENT_MUSICVIDEOS:
+      case MUSICVIDEOS:
         return VideoDbContentType::MUSICVIDEOS;
-      case CONTENT_TVSHOWS:
+      case TVSHOWS:
         return VideoDbContentType::EPISODES;
       default:
         return VideoDbContentType::UNKNOWN;
@@ -1836,7 +1850,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
-  void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal, const std::string &actorArtPath)
+  void CVideoInfoScanner::GetArtwork(CFileItem* pItem,
+                                     ContentType content,
+                                     bool bApplyToDir,
+                                     bool useLocal,
+                                     const std::string& actorArtPath)
   {
     int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
         CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
@@ -1852,7 +1870,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // get and cache thumb images
     std::string mediaType = ContentToMediaType(content, pItem->IsFolder());
     std::vector<std::string> artTypes = CVideoThumbLoader::GetArtTypes(mediaType);
-    bool moviePartOfSet = content == CONTENT_MOVIES && !movieDetails.m_set.title.empty();
+    bool moviePartOfSet = content == ContentType::MOVIES && !movieDetails.m_set.title.empty();
     std::vector<std::string> movieSetArtTypes;
     if (moviePartOfSet)
     {
@@ -1868,7 +1886,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (!pItem->SkipLocalArt())
       {
         bool useFolder = false;
-        if (bApplyToDir && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
+        if (bApplyToDir && (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
         {
           std::string filename = ART::GetLocalArtBaseFilename(*pItem, useFolder);
           std::string directory = URIUtils::GetDirectory(filename);
@@ -2046,7 +2064,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
           item.GetVideoInfoTag()->m_iSeason = file->iSeason;
         }
-        if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, true, &showInfo) < 0)
+        if (AddVideo(&item, ContentType::TVSHOWS, file->isFolder, true, &showInfo) < 0)
           return InfoRet::INFO_ERROR;
         continue;
       }
@@ -2195,7 +2213,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (item.GetVideoInfoTag()->m_iEpisode == -1)
           item.GetVideoInfoTag()->m_iEpisode = guide->iEpisode;
 
-        if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
+        if (AddVideo(&item, ContentType::TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
           return InfoRet::INFO_ERROR;
       }
       else
@@ -2211,7 +2229,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   }
 
   bool CVideoInfoScanner::GetDetails(CFileItem* pItem,
-                                     const std::unordered_map<std::string, std::string>& uniqueIDs,
+                                     const ADDON::CScraper::UniqueIDs& uniqueIDs,
                                      CScraperUrl& url,
                                      const ScraperPtr& scraper,
                                      IVideoInfoTagLoader* loader,
@@ -2526,7 +2544,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   }
 
   bool CVideoInfoScanner::AddVideoExtras(CFileItemList& items,
-                                         const CONTENT_TYPE& content,
+                                         ContentType content,
                                          const std::string& path)
   {
     int dbId = -1;
@@ -2534,7 +2552,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // get the library item which was added previously with the specified content type
     for (const auto& item : items)
     {
-      if (content == CONTENT_MOVIES && !item->IsFolder())
+      if (content == ContentType::MOVIES && !item->IsFolder())
       {
         dbId = m_database.GetMovieId(item->GetPath());
         if (dbId != -1)

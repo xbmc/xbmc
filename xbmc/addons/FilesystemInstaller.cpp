@@ -19,73 +19,9 @@
 
 using namespace XFILE;
 
-CFilesystemInstaller::CFilesystemInstaller()
-  : m_addonFolder(CSpecialProtocol::TranslatePath("special://home/addons/")),
-    m_tempFolder(CSpecialProtocol::TranslatePath("special://home/addons/temp/"))
+namespace
 {
-}
-
-bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const std::string& addonId)
-{
-  auto addonFolder = URIUtils::AddFileToFolder(m_addonFolder, addonId);
-  auto newAddonData = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
-  auto oldAddonData = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
-
-  if (!CDirectory::Create(newAddonData))
-    return false;
-
-  if (!UnpackArchive(archive, newAddonData))
-  {
-    CLog::Log(LOGERROR, "Failed to unpack archive '{}' to '{}'", archive, newAddonData);
-    return false;
-  }
-
-  bool hasOldData = CDirectory::Exists(addonFolder);
-  if (hasOldData)
-  {
-    if (!CFile::Rename(addonFolder, oldAddonData))
-    {
-      CLog::Log(LOGERROR, "Failed to move old addon files from '{}' to '{}'", addonFolder,
-                oldAddonData);
-      return false;
-    }
-  }
-
-  if (!CFile::Rename(newAddonData, addonFolder))
-  {
-    CLog::Log(LOGERROR, "Failed to move new addon files from '{}' to '{}'", newAddonData,
-              addonFolder);
-    return false;
-  }
-
-  if (hasOldData)
-  {
-    if (!CDirectory::RemoveRecursive(oldAddonData))
-    {
-      CLog::Log(LOGWARNING, "Failed to delete old addon files in '{}'", oldAddonData);
-    }
-  }
-  return true;
-}
-
-bool CFilesystemInstaller::UnInstallFromFilesystem(const std::string& addonFolder)
-{
-  auto tempFolder = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
-  if (!CFile::Rename(addonFolder, tempFolder))
-  {
-    CLog::Log(LOGERROR, "Failed to move old addon files from '{}' to '{}'", addonFolder,
-              tempFolder);
-    return false;
-  }
-
-  if (!CDirectory::RemoveRecursive(tempFolder))
-  {
-    CLog::Log(LOGWARNING, "Failed to delete old addon files in '{}'", tempFolder);
-  }
-  return true;
-}
-
-bool CFilesystemInstaller::UnpackArchive(std::string path, const std::string& dest)
+bool UnpackArchive(std::string path, const std::string& dest)
 {
   if (!URIUtils::IsProtocol(path, "zip"))
     path = URIUtils::CreateArchivePath("zip", CURL(path), "").Get();
@@ -108,4 +44,68 @@ bool CFilesystemInstaller::UnpackArchive(std::string path, const std::string& de
 
   CFileOperationJob job(CFileOperationJob::ActionCopy, files, dest);
   return job.DoWork();
+}
+} // unnamed namespace
+
+CFilesystemInstaller::CFilesystemInstaller()
+  : m_addonFolder(CSpecialProtocol::TranslatePath("special://home/addons/")),
+    m_tempFolder(CSpecialProtocol::TranslatePath("special://home/addons/temp/"))
+{
+}
+
+bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive,
+                                               const std::string& addonId) const
+{
+  const std::string addonFolder = URIUtils::AddFileToFolder(m_addonFolder, addonId);
+  const std::string newAddonData =
+      URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
+  const std::string oldAddonData =
+      URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
+
+  if (!CDirectory::Create(newAddonData))
+    return false;
+
+  if (!UnpackArchive(archive, newAddonData))
+  {
+    CLog::Log(LOGERROR, "Failed to unpack archive '{}' to '{}'", archive, newAddonData);
+    return false;
+  }
+
+  const bool hasOldData = CDirectory::Exists(addonFolder);
+  if (hasOldData && !CFile::Rename(addonFolder, oldAddonData))
+  {
+    CLog::Log(LOGERROR, "Failed to move old addon files from '{}' to '{}'", addonFolder,
+              oldAddonData);
+    return false;
+  }
+
+  if (!CFile::Rename(newAddonData, addonFolder))
+  {
+    CLog::Log(LOGERROR, "Failed to move new addon files from '{}' to '{}'", newAddonData,
+              addonFolder);
+    return false;
+  }
+
+  if (hasOldData && !CDirectory::RemoveRecursive(oldAddonData))
+  {
+    CLog::Log(LOGWARNING, "Failed to delete old addon files in '{}'", oldAddonData);
+  }
+  return true;
+}
+
+bool CFilesystemInstaller::UnInstallFromFilesystem(const std::string& addonFolder) const
+{
+  const std::string tempFolder = URIUtils::AddFileToFolder(m_tempFolder, StringUtils::CreateUUID());
+  if (!CFile::Rename(addonFolder, tempFolder))
+  {
+    CLog::Log(LOGERROR, "Failed to move old addon files from '{}' to '{}'", addonFolder,
+              tempFolder);
+    return false;
+  }
+
+  if (!CDirectory::RemoveRecursive(tempFolder))
+  {
+    CLog::Log(LOGWARNING, "Failed to delete old addon files in '{}'", tempFolder);
+  }
+  return true;
 }
