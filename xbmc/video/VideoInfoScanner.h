@@ -14,6 +14,7 @@
 #include "guilib/GUIListItem.h"
 #include "utils/Artwork.h"
 
+#include <functional>
 #include <set>
 #include <string>
 #include <vector>
@@ -315,5 +316,17 @@ namespace KODI::VIDEO
              is at least 1:4, "thumb" otherwise.
      */
     static std::string GetArtTypeFromSize(unsigned int width, unsigned int height);
+
+    /*!
+     * \brief Removes the sub directories of the provided directory from the set of paths to be
+     * scanned. Takes advantage of the nature of an ordered set to limit the number of tested paths.
+     * \param first First subdirectory in the set
+     * \param directory Directory path
+     * \param f function to execute before removal on paths determined to be subdirectories.
+     * \return number of elements removed
+     */
+    size_t RemoveSubDirectories(std::set<std::string>::iterator first,
+                                const std::string_view directory,
+                                std::function<void(const std::string&)> f);
   };
   } // namespace KODI::VIDEO
