@@ -642,7 +642,9 @@ bool CMediaManager::HasMediaBlurayPlaylist(const std::string& devicePath)
 
 void CMediaManager::ResetBlurayPlaylistStatus()
 {
+#ifdef HAVE_LIBBLURAY
   m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
+#endif
 }
 
 std::string CMediaManager::GetDiscPath()
