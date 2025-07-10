@@ -592,8 +592,8 @@ void CFileItem::Archive(CArchive& ar)
     if (iType == 1)
       ar >> *GetGameInfoTag();
 
-    m_curlPath.reset();
-    m_curlDynPath.reset();
+    m_urlPath.reset();
+    m_urlDynPath.reset();
     SetInvalid();
   }
 }
@@ -1196,7 +1196,7 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
     if (m_strDynPath.empty())
       SetDynPath(m_strPath);
 
-    auto temp = m_strDynPath;
+    std::string temp = m_strDynPath;
     StringUtils::Replace(temp, "http:", "mms:");
     SetDynPath(temp);
   }
@@ -1607,7 +1607,7 @@ const std::string& CFileItem::GetPath() const
 void CFileItem::SetPath(std::string_view path)
 {
   m_strPath = path;
-  m_curlPath.reset();
+  m_urlPath.reset();
 }
 
 void CFileItem::SetURL(const CURL& url)
@@ -1617,9 +1617,9 @@ void CFileItem::SetURL(const CURL& url)
 
 const CURL& CFileItem::GetURL() const
 {
-  if (!m_curlPath)
-    m_curlPath = CURL(m_strPath);
-  return *m_curlPath;
+  if (!m_urlPath)
+    m_urlPath = CURL(m_strPath);
+  return *m_urlPath;
 }
 
 bool CFileItem::IsURL(const CURL& url) const
@@ -1641,15 +1641,15 @@ const CURL& CFileItem::GetDynURL() const
 {
   if (!m_strDynPath.empty())
   {
-    if (!m_curlDynPath)
-      m_curlDynPath = CURL(m_strDynPath);
-    return *m_curlDynPath;
+    if (!m_urlDynPath)
+      m_urlDynPath = CURL(m_strDynPath);
+    return *m_urlDynPath;
   }
   else
   {
-    if (!m_curlPath)
-      m_curlPath = CURL(m_strPath);
-    return *m_curlPath;
+    if (!m_urlPath)
+      m_urlPath = CURL(m_strPath);
+    return *m_urlPath;
   }
 }
 
@@ -1664,7 +1664,7 @@ const std::string &CFileItem::GetDynPath() const
 void CFileItem::SetDynPath(std::string_view path)
 {
   m_strDynPath = path;
-  m_curlDynPath.reset();
+  m_urlDynPath.reset();
 }
 
 void CFileItem::SetCueDocument(const std::shared_ptr<CCueDocument>& cuePtr)

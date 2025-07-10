@@ -38,7 +38,6 @@ class CGenre;
 class CMediaSource;
 class CPictureInfoTag;
 class CSong;
-class CURL;
 class CVariant;
 class CVideoInfoTag;
 class IEvent;
@@ -557,8 +556,8 @@ private:
    */
   void FillMusicInfoTag(const std::shared_ptr<const PVR::CPVREpgInfoTag>& tag);
 
-  mutable std::optional<CURL> m_curlPath;
-  mutable std::optional<CURL> m_curlDynPath;
+  mutable std::optional<CURL> m_urlPath;
+  mutable std::optional<CURL> m_urlDynPath;
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
 
