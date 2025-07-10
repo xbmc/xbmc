@@ -93,6 +93,94 @@ void ProcessEpisodeRange(int first,
     episodeList.pop_back();
   }
 }
+
+/*! \brief Retrieve the art type for an image from the given size.
+ \param width the width of the image.
+ \param height the height of the image.
+ \return "poster" if the aspect ratio is at most 4:5, "banner" if the aspect ratio
+         is at least 1:4, "thumb" otherwise.
+ */
+std::string GetArtTypeFromSize(unsigned int width, unsigned int height)
+{
+  std::string type = "thumb";
+  if (width * 5 < height * 4)
+    type = "poster";
+  else if (width > height * 4)
+    type = "banner";
+  return type;
+}
+
+void AddLocalItemArtwork(KODI::ART::Artwork& itemArt,
+                         const std::vector<std::string>& wantedArtTypes,
+                         const std::string& itemPath,
+                         bool addAll,
+                         bool exactName)
+{
+  std::string path = URIUtils::GetDirectory(itemPath);
+  if (path.empty())
+    return;
+
+  CFileItemList availableArtFiles;
+  CDirectory::GetDirectory(path, availableArtFiles,
+                           CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
+                           DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+
+  std::string baseFilename = URIUtils::GetFileName(itemPath);
+  if (!baseFilename.empty())
+  {
+    URIUtils::RemoveExtension(baseFilename);
+    baseFilename.append("-");
+  }
+
+  const bool caseSensitive{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_caseSensitiveLocalArtMatch};
+
+  for (const auto& artFile : availableArtFiles)
+  {
+    std::string candidate{URIUtils::GetFileName(artFile->GetPath())};
+    const bool matchesFilename{!baseFilename.empty() &&
+                               (caseSensitive
+                                    ? StringUtils::StartsWith(candidate, baseFilename)
+                                    : StringUtils::StartsWithNoCase(candidate, baseFilename))};
+
+    if (!baseFilename.empty() && !matchesFilename)
+      continue;
+
+    if (matchesFilename)
+      candidate.erase(0, baseFilename.length());
+    URIUtils::RemoveExtension(candidate);
+    StringUtils::ToLower(candidate);
+
+    // move 'folder' to thumb / poster / banner based on aspect ratio
+    // if such artwork doesn't already exist
+    if (!matchesFilename && StringUtils::EqualsNoCase(candidate, "folder") &&
+        !CVideoThumbLoader::IsArtTypeInWhitelist("folder", wantedArtTypes, exactName))
+    {
+      // cache the image to determine sizing
+      CTextureDetails details;
+      if (CServiceBroker::GetTextureCache()->CacheImage(artFile->GetPath(), details))
+      {
+        candidate = GetArtTypeFromSize(details.width, details.height);
+        if (itemArt.contains(candidate))
+          continue;
+      }
+    }
+
+    if ((addAll && CVideoThumbLoader::IsValidArtType(candidate)) ||
+        CVideoThumbLoader::IsArtTypeInWhitelist(candidate, wantedArtTypes, exactName))
+    {
+      itemArt[candidate] = artFile->GetPath();
+    }
+  }
+}
+
+void OnDirectoryScanned(const std::string& strDirectory)
+{
+  CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
+  msg.SetStringParam(strDirectory);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+}
+
 } // namespace
 
 namespace KODI::VIDEO
@@ -229,7 +317,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
   void CVideoInfoScanner::Start(const std::string& strDirectory, bool scanAll)
   {
-    m_strStartDir = strDirectory;
     m_scanAll = scanAll;
     m_pathsToScan.clear();
     m_pathsToClean.clear();
@@ -270,13 +357,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
       m_database.Interrupt();
 
     m_bStop = true;
-  }
-
-  static void OnDirectoryScanned(const std::string& strDirectory)
-  {
-    CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
-    msg.SetStringParam(strDirectory);
-    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
 
   bool CVideoInfoScanner::DoScan(const std::string& strDirectory)
@@ -1732,16 +1812,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
-  std::string CVideoInfoScanner::GetArtTypeFromSize(unsigned int width, unsigned int height)
-  {
-    std::string type = "thumb";
-    if (width*5 < height*4)
-      type = "poster";
-    else if (width*1 > height*4)
-      type = "banner";
-    return type;
-  }
-
   std::pair<CVideoInfoScanner::InfoType, std::unique_ptr<IVideoInfoTagLoader>> CVideoInfoScanner::
       ReadInfoTag(CFileItem& item,
                   const ADDON::ScraperPtr& scraper,
@@ -1783,71 +1853,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
         setTitle,
         CURL::GetRedacted(path));
     return CDirectory::Exists(path) ? path : "";
-  }
-
-  void CVideoInfoScanner::AddLocalItemArtwork(KODI::ART::Artwork& itemArt,
-                                              const std::vector<std::string>& wantedArtTypes,
-                                              const std::string& itemPath,
-                                              bool addAll,
-                                              bool exactName)
-  {
-    std::string path = URIUtils::GetDirectory(itemPath);
-    if (path.empty())
-      return;
-
-    CFileItemList availableArtFiles;
-    CDirectory::GetDirectory(path, availableArtFiles,
-        CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
-        DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
-
-    std::string baseFilename = URIUtils::GetFileName(itemPath);
-    if (!baseFilename.empty())
-    {
-      URIUtils::RemoveExtension(baseFilename);
-      baseFilename.append("-");
-    }
-
-    const bool caseSensitive{CServiceBroker::GetSettingsComponent()
-                                 ->GetAdvancedSettings()
-                                 ->m_caseSensitiveLocalArtMatch};
-
-    for (const auto& artFile : availableArtFiles)
-    {
-      std::string candidate{URIUtils::GetFileName(artFile->GetPath())};
-      const bool matchesFilename{!baseFilename.empty() &&
-                                 (caseSensitive
-                                      ? StringUtils::StartsWith(candidate, baseFilename)
-                                      : StringUtils::StartsWithNoCase(candidate, baseFilename))};
-
-      if (!baseFilename.empty() && !matchesFilename)
-        continue;
-
-      if (matchesFilename)
-        candidate.erase(0, baseFilename.length());
-      URIUtils::RemoveExtension(candidate);
-      StringUtils::ToLower(candidate);
-
-      // move 'folder' to thumb / poster / banner based on aspect ratio
-      // if such artwork doesn't already exist
-      if (!matchesFilename && StringUtils::EqualsNoCase(candidate, "folder") &&
-        !CVideoThumbLoader::IsArtTypeInWhitelist("folder", wantedArtTypes, exactName))
-      {
-        // cache the image to determine sizing
-        CTextureDetails details;
-        if (CServiceBroker::GetTextureCache()->CacheImage(artFile->GetPath(), details))
-        {
-          candidate = GetArtTypeFromSize(details.width, details.height);
-          if (itemArt.contains(candidate))
-            continue;
-        }
-      }
-
-      if ((addAll && CVideoThumbLoader::IsValidArtType(candidate)) ||
-        CVideoThumbLoader::IsArtTypeInWhitelist(candidate, wantedArtTypes, exactName))
-      {
-        itemArt[candidate] = artFile->GetPath();
-      }
-    }
   }
 
   void CVideoInfoScanner::GetArtwork(CFileItem* pItem,
