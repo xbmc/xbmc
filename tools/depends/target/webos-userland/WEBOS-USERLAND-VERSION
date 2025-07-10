@@ -1,4 +1,6 @@
 LIBNAME=webos-userland
 VERSION=0.0.12
-ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+ARCHIVE=$(VERSION).tar.gz
 SHA512=9fdbdc798b224956285426ff40d6b09ce74f793c25e22f1400047f5a5c7f9d71571fc4f2d3f68412d028ac18dfb9d82c250ed25d93f570285897a70634f75149
+
+BASE_URL=https://github.com/webosbrew/webos-userland/archive/refs/tags/
