@@ -58,7 +58,6 @@ protected:
 
   // Helper functions
   bool Update();
-  void UpdateViewPort();
   void UpdateViewPort(CRect viewPort);
   void UpdateMVPs();
   void PrepareParameters(const CPoint dest[], IShaderTexture& source, IShaderTexture& target);
