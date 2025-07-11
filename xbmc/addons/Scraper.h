@@ -199,7 +199,7 @@ template<>
 struct fmt::formatter<ADDON::ContentType> : fmt::formatter<std::string_view>
 {
   template<typename FormatContext>
-  constexpr auto format(const ADDON::ContentType& type, FormatContext& ctx)
+  constexpr auto format(const ADDON::ContentType& type, FormatContext& ctx) const
   {
     return fmt::formatter<std::string_view>::format(enumToSV(type), ctx);
   }
