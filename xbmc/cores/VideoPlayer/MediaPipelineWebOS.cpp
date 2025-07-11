@@ -23,6 +23,7 @@
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/VideoPlayer/Interface/DemuxCrypto.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -74,22 +75,25 @@ constexpr unsigned int MIN_SRC_BUFFER_LEVEL_VIDEO = 1 * 1024 * 1024; // 1 MB
 constexpr unsigned int MAX_SRC_BUFFER_LEVEL_AUDIO = 2 * 1024 * 1024; // 2 MB
 constexpr unsigned int MAX_SRC_BUFFER_LEVEL_VIDEO = 8 * 1024 * 1024; // 8 MB
 
+constexpr unsigned int SVP_VERSION_30 = 30;
+constexpr unsigned int SVP_VERSION_40 = 40;
+
 constexpr auto LUNA_GET_CONFIG = "luna://com.webos.service.config/getConfigs";
 
-auto ms_codecMap = std::map<AVCodecID, std::string_view>({
-    {AV_CODEC_ID_VP8, "VP8"},
-    {AV_CODEC_ID_VP9, "VP9"},
-    {AV_CODEC_ID_AVS, "H264"},
-    {AV_CODEC_ID_CAVS, "H264"},
-    {AV_CODEC_ID_H264, "H264"},
-    {AV_CODEC_ID_HEVC, "H265"},
-    {AV_CODEC_ID_AV1, "AV1"},
-    {AV_CODEC_ID_AC3, "AC3"},
-    {AV_CODEC_ID_EAC3, "AC3 PLUS"},
-    {AV_CODEC_ID_AC4, "AC4"},
-    {AV_CODEC_ID_OPUS, "OPUS"},
-    {AV_CODEC_ID_MP3, "MP3"},
-});
+struct CodecEntry
+{
+  std::string_view name;
+  bool isSecure{false};
+};
+
+std::map<AVCodecID, CodecEntry> ms_codecMap = {
+    {AV_CODEC_ID_VP8, {"VP8"}},       {AV_CODEC_ID_VP9, {"VP9"}},
+    {AV_CODEC_ID_AVS, {"H264"}},      {AV_CODEC_ID_CAVS, {"H264"}},
+    {AV_CODEC_ID_H264, {"H264"}},     {AV_CODEC_ID_HEVC, {"H265"}},
+    {AV_CODEC_ID_AV1, {"AV1"}},       {AV_CODEC_ID_AC3, {"AC3"}},
+    {AV_CODEC_ID_EAC3, {"AC3 PLUS"}}, {AV_CODEC_ID_AC4, {"AC4"}},
+    {AV_CODEC_ID_OPUS, {"OPUS"}},     {AV_CODEC_ID_MP3, {"MP3"}},
+    {AV_CODEC_ID_AAC, {"AAC", true}}, {AV_CODEC_ID_AAC_LATM, {"AAC", true}}};
 
 const auto ms_hdrInfoMap = std::map<AVColorTransferCharacteristic, std::string_view>({
     {AVCOL_TRC_SMPTE2084, "HDR10"},
@@ -267,9 +271,11 @@ std::string CMediaPipelineWebOS::GetVideoInfo()
   return m_videoInfo;
 }
 
-bool CMediaPipelineWebOS::Supports(const AVCodecID codec)
+bool CMediaPipelineWebOS::Supports(const AVCodecID codec, const bool includeSecure)
 {
-  return ms_codecMap.contains(codec);
+  if (const auto it = ms_codecMap.find(codec); it != ms_codecMap.end())
+    return includeSecure || !it->second.isSecure;
+  return false;
 }
 
 void CMediaPipelineWebOS::AcbCallback(
@@ -312,9 +318,9 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
       m_processInfo.SetAudioChannels(CAEUtil::GetAEChannelLayout(audioHint.channellayout));
       m_processInfo.SetAudioSampleRate(audioHint.samplerate);
       m_processInfo.SetAudioBitsPerSample(audioHint.bitspersample);
-      if (ms_codecMap.contains(audioHint.codec))
-        m_processInfo.SetAudioDecoderName(std::string("starfish-") +
-                                          ms_codecMap.at(audioHint.codec).data());
+      if (Supports(audioHint.codec, audioHint.cryptoSession != nullptr))
+        m_processInfo.SetAudioDecoderName("starfish-" +
+                                          std::string(ms_codecMap.at(audioHint.codec).name));
       else if (m_audioEncoder)
         m_processInfo.SetAudioDecoderName("starfish-AC3 (transcoding)");
 
@@ -341,12 +347,11 @@ bool CMediaPipelineWebOS::OpenVideoStream(CDVDStreamInfo hint)
 
   if (m_loaded)
   {
-    if (m_videoHint.codec == hint.codec)
+    if (m_videoHint.codec == hint.codec && m_videoHint.hdrType == hint.hdrType)
     {
       std::scoped_lock lock(m_videoCriticalSection);
       SetupBitstreamConverter(hint);
       m_videoHint = hint;
-      Flush(true);
 
       m_processInfo.SetVideoInterlaced(hint.interlaced);
       m_processInfo.SetVideoDimensions(hint.width, hint.height);
@@ -520,12 +525,40 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   std::scoped_lock audioLock(m_audioCriticalSection);
 
   CVariant p;
-  CVariant payloadArgs;
 
   if (videoHint.cryptoSession || audioHint.cryptoSession)
   {
-    CLog::LogF(LOGERROR, "CryptoSessions unsupported");
-    return false;
+    const CryptoSessionSystem keySystem = videoHint.cryptoSession
+                                              ? videoHint.cryptoSession->keySystem
+                                              : audioHint.cryptoSession->keySystem;
+
+    const int svpVersion = m_webOSVersion > 4 ? SVP_VERSION_40 : SVP_VERSION_30;
+
+    switch (keySystem)
+    {
+      case CRYPTO_SESSION_SYSTEM_NONE:
+        break;
+      case CRYPTO_SESSION_SYSTEM_CLEARKEY:
+        break;
+      case CRYPTO_SESSION_SYSTEM_WIDEVINE:
+        CLog::Log(LOGDEBUG, "Setting drm type to WIDEVINE_MODULAR with svpVersion {}", svpVersion);
+        p["option"]["externalStreamingInfo"]["svpVersion"] = svpVersion;
+        p["option"]["drm"]["type"] = "WIDEVINE_MODULAR";
+        break;
+      case CRYPTO_SESSION_SYSTEM_PLAYREADY:
+        CLog::Log(LOGDEBUG, "Setting drm type to PLAYREADY with svpVersion {}", svpVersion);
+        p["option"]["externalStreamingInfo"]["svpVersion"] = svpVersion;
+        p["option"]["drm"]["type"] = "PLAYREADY";
+        break;
+      default:
+        if (audioHint.cryptoSession && !videoHint.cryptoSession)
+          CLog::LogF(LOGERROR, "CryptoSession (audio) unsupported: {}",
+                     audioHint.cryptoSession->keySystem);
+        else if (videoHint.cryptoSession)
+          CLog::LogF(LOGERROR, "CryptoSession (video) unsupported: {}",
+                     videoHint.cryptoSession->keySystem);
+        return false;
+    }
   }
 
   if (!videoHint.width || !videoHint.height)
@@ -551,7 +584,7 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   CVariant& contents = p["option"]["externalStreamingInfo"]["contents"];
   if (videoHint.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
   {
-    contents["DolbyHdrInfo"]["encryptionType"] = "clear"; //"clear", "bl", "el", "all"
+    contents["DolbyHdrInfo"]["encryptionType"] = videoHint.cryptoSession ? "all" : "clear";
     contents["DolbyHdrInfo"]["profileId"] = videoHint.dovi.dv_profile;
     contents["DolbyHdrInfo"]["trackType"] = videoHint.dovi.el_present_flag ? "dual" : "single";
   }
@@ -576,7 +609,7 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   }
 
   p["option"]["appId"] = CCompileInfo::GetPackage();
-  contents["codec"]["video"] = ms_codecMap.at(videoHint.codec).data();
+  contents["codec"]["video"] = std::string(ms_codecMap.at(videoHint.codec).name);
 
   if (audioHint.codec == AV_CODEC_ID_NONE)
   {
@@ -631,13 +664,14 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   int32_t maxWidth = 0;
   int32_t maxHeight = 0;
   int32_t maxFramerate = 0;
-  smp::util::getMaxVideoResolution(ms_codecMap.at(videoHint.codec).data(), &maxWidth, &maxHeight,
-                                   &maxFramerate);
+  smp::util::getMaxVideoResolution(ms_codecMap.at(videoHint.codec).name.data(), &maxWidth,
+                                   &maxHeight, &maxFramerate);
   p["option"]["adaptiveStreaming"]["adaptiveResolution"] = true;
   p["option"]["adaptiveStreaming"]["maxWidth"] = maxWidth;
   p["option"]["adaptiveStreaming"]["maxHeight"] = maxHeight;
   p["option"]["adaptiveStreaming"]["maxFrameRate"] = maxFramerate;
 
+  CVariant payloadArgs;
   payloadArgs["args"] = CVariant(CVariant::VariantTypeArray);
   payloadArgs["args"].push_back(std::move(p));
 
@@ -691,7 +725,7 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   m_droppedFrames = 0;
   std::string formatName = fmt::format(
       "starfish-{}{}", videoHint.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION ? "d" : "",
-      StringUtils::ToLower(ms_codecMap.at(videoHint.codec)));
+      StringUtils::ToLower(ms_codecMap.at(videoHint.codec).name.data()));
   m_processInfo.SetVideoDecoderName(formatName, true);
   m_processInfo.SetVideoPixelFormat("Surface");
   m_processInfo.SetVideoDimensions(videoHint.width, videoHint.height);
@@ -707,9 +741,9 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
       m_processInfo.SetAudioChannels(CAEUtil::GuessChLayout(audioHint.channels));
     m_processInfo.SetAudioSampleRate(audioHint.samplerate);
     m_processInfo.SetAudioBitsPerSample(audioHint.bitspersample);
-    if (ms_codecMap.contains(audioHint.codec))
+    if (Supports(audioHint.codec, audioHint.cryptoSession != nullptr))
       m_processInfo.SetAudioDecoderName(std::string("starfish-") +
-                                        ms_codecMap.at(audioHint.codec).data());
+                                        std::string(ms_codecMap.at(audioHint.codec).name));
     else if (m_audioEncoder)
       m_processInfo.SetAudioDecoderName("starfish-AC3 (transcoding)");
   }
@@ -749,7 +783,7 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
   m_encoderBuffers = nullptr;
 
   std::string codecName = "AC3";
-  if (!ms_codecMap.contains(audioHint.codec))
+  if (!Supports(audioHint.codec, audioHint.cryptoSession != nullptr))
   {
     m_audioCodec = std::make_unique<CDVDAudioCodecFFmpeg>(m_processInfo);
     CDVDCodecOptions options;
@@ -758,7 +792,7 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
     return codecName;
   }
 
-  codecName = ms_codecMap.at(audioHint.codec);
+  codecName = ms_codecMap.at(audioHint.codec).name;
   if (audioHint.codec == AV_CODEC_ID_EAC3)
   {
     optInfo["ac3PlusInfo"]["channels"] = audioHint.channels;
@@ -793,7 +827,13 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
         Base64::Encode(reinterpret_cast<const char*>(audioHint.extradata.GetData()),
                        audioHint.extradata.GetSize());
   }
-
+  else if (audioHint.codec == AV_CODEC_ID_AAC || audioHint.codec == AV_CODEC_ID_AAC_LATM)
+  {
+    optInfo["aacInfo"]["channels"] = audioHint.channels;
+    optInfo["aacInfo"]["frequency"] = audioHint.samplerate / 1000.0;
+    optInfo["aacInfo"]["profile"] = audioHint.profile;
+    optInfo["aacInfo"]["format"] = audioHint.extradata ? "MP4" : "adts";
+  }
   return codecName;
 }
 

@@ -74,9 +74,10 @@ public:
   /**
    * @brief Check if a codec is supported by the pipeline.
    * @param codec AVCodecID to check.
+   * @param includeSecure If true, include secure codecs in the check.
    * @return True if supported, false otherwise.
    */
-  static bool Supports(AVCodecID codec);
+  static bool Supports(AVCodecID codec, bool includeSecure = false);
 
   /**
    * @brief Flush all pending video messages.
