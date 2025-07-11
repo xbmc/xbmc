@@ -506,33 +506,6 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
       CLog::Log(LOGDEBUG, "PYTHONPATH -> {}",
                 CSpecialProtocol::TranslatePath("special://frameworks"));
     }
-#elif defined(TARGET_WINDOWS)
-
-#ifdef TARGET_WINDOWS_STORE
-#ifdef _DEBUG
-    CEnvironment::putenv("PYTHONCASEOK=1");
-#endif
-    CEnvironment::putenv("OS=win10");
-#else // TARGET_WINDOWS_DESKTOP
-    CEnvironment::putenv("OS=win32");
-#endif
-
-    std::wstring pythonHomeW;
-    CCharsetConverter::utf8ToW(CSpecialProtocol::TranslatePath("special://xbmc/system/python"),
-                           pythonHomeW);
-    Py_SetPythonHome(pythonHomeW.c_str());
-
-    std::string pythonPath = CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs");
-    pythonPath += ";";
-    pythonPath += CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib");
-    pythonPath += ";";
-    pythonPath += CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib/site-packages");
-    std::wstring pythonPathW;
-    CCharsetConverter::utf8ToW(pythonPath, pythonPathW);
-
-    Py_SetPath(pythonPathW.c_str());
-
-    Py_OptimizeFlag = 1;
 #endif
 
     // *::GlobalInitializeModules() functions call PyImport_ExtendInittab(). PyImport_ExtendInittab() should
