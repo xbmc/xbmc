@@ -12,7 +12,7 @@
 				<height>$PARAM[height]</height>
 				<centertop>50%</centertop>
 				<width>$PARAM[width]</width>
-				<include condition="String.IsEqual(window(home).Property(settingsdialog_content),osd) | String.IsEqual(window(home).Property(settingsdialog_content),3d) | String.IsEqual(window(home).Property(settingsdialog_content),games)">SettingsDialogOSDVisible</include>
+				<include condition="String.IsEqual(window(home).Property(settingsdialog_content),osd) | String.IsEqual(window(home).Property(settingsdialog_content),3d) | String.IsEqual(window(home).Property(settingsdialog_content),games) | String.IsEqual(window(home).Property(settingsdialog_content),videosettings)">SettingsDialogOSDVisible</include>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="$PARAM[width]" />
