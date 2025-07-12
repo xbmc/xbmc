@@ -407,7 +407,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       CLog::Log(
           LOGINFO,
           "VideoInfoScanner: Plugin '{}' does not support media library scanning for '{}' content",
-          CURL::GetRedacted(strDirectory), TranslateContent(content));
+          CURL::GetRedacted(strDirectory), content);
       return true;
     }
 
@@ -919,7 +919,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return retVal < 0 ? InfoRet::CANCELLED : InfoRet::NOT_FOUND;
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
-              url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
+              url.GetFirstThumbUrl(), info2->Name(), info2->Content());
     const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
 
     if (GetDetails(pItem, {}, url, info2,
@@ -1022,7 +1022,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return retVal < 0 ? InfoRet::CANCELLED : InfoRet::NOT_FOUND;
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
-              url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
+              url.GetFirstThumbUrl(), info2->Name(), info2->Content());
 
     if (GetDetails(pItem, {}, url, info2,
                    (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
@@ -1115,7 +1115,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return retVal < 0 ? InfoRet::CANCELLED : InfoRet::NOT_FOUND;
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
-              url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
+              url.GetFirstThumbUrl(), info2->Name(), info2->Content());
 
     if (GetDetails(pItem, {}, url, info2,
                    (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
@@ -1786,7 +1786,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
     }
 
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", TranslateContent(content), CURL::GetRedacted(pItem->GetPath()));
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,
+              CURL::GetRedacted(pItem->GetPath()));
     long lResult = -1;
 
     if (content == ContentType::MOVIES)

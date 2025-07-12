@@ -936,7 +936,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
 
   CLog::LogF(LOGDEBUG,
              "Searching for '{}' using {} scraper (path: '{}', content: '{}', version: '{}')",
-             sTitle, Name(), Path(), ADDON::TranslateContent(Content()), Version().asString());
+             sTitle, Name(), Path(), Content(), Version().asString());
 
   std::vector<CScraperUrl> vcscurl;
   if (IsNoop())
@@ -1077,8 +1077,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
 {
   CLog::LogF(LOGDEBUG,
              "Searching for '{} - {}' using {} scraper (path: '{}', content: '{}', version: '{}')",
-             sArtist, sAlbum, Name(), Path(), ADDON::TranslateContent(Content()),
-             Version().asString());
+             sArtist, sAlbum, Name(), Path(), Content(), Version().asString());
 
   std::vector<CMusicAlbumInfo> vcali;
   if (IsNoop())
@@ -1177,7 +1176,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
 {
   CLog::LogF(LOGDEBUG,
              "Searching for '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
-             sArtist, Name(), Path(), ADDON::TranslateContent(Content()), Version().asString());
+             sArtist, Name(), Path(), Content(), Version().asString());
 
   std::vector<CMusicArtistInfo> vcari;
   if (IsNoop())
@@ -1265,8 +1264,7 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile& fcurl, const CScra
     return vcep;
 
   CLog::LogF(LOGDEBUG, "Searching '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
-             scurl.GetFirstThumbUrl(), Name(), Path(), ADDON::TranslateContent(Content()),
-             Version().asString());
+             scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
   if (m_isPython)
   {
@@ -1365,7 +1363,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
   CLog::LogF(LOGDEBUG,
              "Reading {} '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              fMovie ? MediaTypeMovie : MediaTypeEpisode, scurl.GetFirstThumbUrl(), Name(), Path(),
-             ADDON::TranslateContent(Content()), Version().asString());
+             Content(), Version().asString());
 
   video.Reset();
 
@@ -1409,8 +1407,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
 bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbum &album)
 {
   CLog::LogF(LOGDEBUG, "Reading '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
-             scurl.GetFirstThumbUrl(), Name(), Path(), ADDON::TranslateContent(Content()),
-             Version().asString());
+             scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
   if (m_isPython)
     return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
@@ -1446,8 +1443,7 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl,
 
   CLog::LogF(LOGDEBUG,
              "Reading '{}' ('{}') using {} scraper (file: '{}', content: '{}', version: '{}')",
-             scurl.GetFirstThumbUrl(), sSearch, Name(), Path(), ADDON::TranslateContent(Content()),
-             Version().asString());
+             scurl.GetFirstThumbUrl(), sSearch, Name(), Path(), Content(), Version().asString());
 
   if (m_isPython)
     return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
@@ -1484,8 +1480,7 @@ bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
 
   CLog::LogF(LOGDEBUG,
              "Reading artwork for '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
-             details.GetUniqueID(), Name(), Path(), ADDON::TranslateContent(Content()),
-             Version().asString());
+             details.GetUniqueID(), Name(), Path(), Content(), Version().asString());
 
   if (m_isPython)
     return PythonDetails(ID(), "id", details.GetUniqueID(),
