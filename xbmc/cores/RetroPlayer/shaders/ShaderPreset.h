@@ -65,6 +65,7 @@ protected:
   void UpdateMVPs();
   void PrepareParameters(const CPoint dest[], IShaderTexture& source, IShaderTexture& target);
   void DisposeShaders();
+  void DisposeShaderTextures();
   bool HasPathFailed(const std::string& path) const;
   ShaderParameterMap GetShaderParameters(const std::vector<ShaderParameter>& parameters,
                                          const std::string& sourceStr) const;

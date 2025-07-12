@@ -199,24 +199,34 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   CRect destRect;
   CRenderUtils::CalcNormalRenderRect(viewRect, sourceFrameRatio * pixelRatio, zoomAmount, destRect);
 
-  // Save destination rectangle size for the fullscreen game window (exclude thumbnail views)
-  if (m_context.IsFullScreenVideo())
+  // Calculate destination rectangle size for the fullscreen game window
+  CRect fullDestRect;
+  CRect viewPort;
+  m_context.GetViewPort(viewPort);
+
+  if (viewPort == viewRect)
   {
-    switch (rotationDegCCW)
+    fullDestRect = destRect;
+  }
+  else
+  {
+    CRenderUtils::CalcNormalRenderRect(viewPort, sourceFrameRatio * pixelRatio, zoomAmount, fullDestRect);
+  }
+
+  switch (rotationDegCCW)
+  {
+    case 90:
+    case 270:
     {
-      case 90:
-      case 270:
-      {
-        m_fullDestWidth = destRect.Height();
-        m_fullDestHeight = destRect.Width();
-        break;
-      }
-      default:
-      {
-        m_fullDestWidth = destRect.Width();
-        m_fullDestHeight = destRect.Height();
-        break;
-      }
+      m_fullDestWidth = fullDestRect.Height();
+      m_fullDestHeight = fullDestRect.Width();
+      break;
+    }
+    default:
+    {
+      m_fullDestWidth = fullDestRect.Width();
+      m_fullDestHeight = fullDestRect.Height();
+      break;
     }
   }
 

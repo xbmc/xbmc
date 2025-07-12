@@ -27,10 +27,6 @@ CShaderPreset::CShaderPreset(RETRO::CRenderContext& context,
                              unsigned videoHeight)
   : m_context(context), m_videoSize(videoWidth, videoHeight)
 {
-  CRect viewPort;
-  m_context.GetViewPort(viewPort);
-  m_outputSize = {viewPort.Width(), viewPort.Height()};
-  m_fullDestSize = m_outputSize;
 }
 
 CShaderPreset::~CShaderPreset()
@@ -99,7 +95,30 @@ bool CShaderPreset::SetShaderPreset(const std::string& shaderPresetPath)
 {
   m_presetPath = shaderPresetPath;
   m_bPresetNeedsUpdate = true;
-  return Update();
+
+  if (m_presetPath.empty())
+    // No preset should load, just return false, we shouldn't add "" to the failed paths
+    return false;
+
+  if (!ReadPresetFile(m_presetPath))
+  {
+    CLog::Log(
+      LOGERROR,
+      "CShaderPreset::SetShaderPreset: Couldn't load shader preset {} or the shaders it references",
+      m_presetPath);
+    return false;
+  }
+
+  if (!HasPathFailed(m_presetPath))
+    if (!CreateShaders())
+    {
+      m_failedPaths.insert(m_presetPath);
+      CLog::Log(LOGWARNING, "CShaderPreset::SetShaderPreset: Failed to initialize shaders");
+      DisposeShaders();
+      return false;
+    }
+
+  return true;
 }
 
 const std::string& CShaderPreset::GetShaderPreset() const
@@ -113,29 +132,13 @@ bool CShaderPreset::Update()
   {
     m_failedPaths.insert(m_presetPath);
     CLog::Log(LOGWARNING, "CShaderPreset::Update: {}", msg);
-    DisposeShaders();
+    DisposeShaderTextures();
     return false;
   };
 
   if (m_bPresetNeedsUpdate && !HasPathFailed(m_presetPath))
   {
-    DisposeShaders();
-
-    if (m_presetPath.empty())
-      // No preset should load, just return false, we shouldn't add "" to the failed paths
-      return false;
-
-    if (!ReadPresetFile(m_presetPath))
-    {
-      CLog::Log(
-          LOGERROR,
-          "CShaderPreset::Update: Couldn't load shader preset {} or the shaders it references",
-          m_presetPath);
-      return false;
-    }
-
-    if (!CreateShaders())
-      return updateFailed("Failed to initialize shaders");
+    DisposeShaderTextures();
 
     if (!CreateLayouts())
       return updateFailed("Failed to create layouts");
@@ -164,8 +167,7 @@ bool CShaderPreset::Update()
 void CShaderPreset::UpdateViewPort(CRect viewPort, const float2 fullDestSize)
 {
   const float2 currentViewPortSize = {viewPort.Width(), viewPort.Height()};
-  if (currentViewPortSize != m_outputSize ||
-      (fullDestSize != m_fullDestSize && fullDestSize.x > 0.0f && fullDestSize.y > 0.0f))
+  if (currentViewPortSize != m_outputSize || fullDestSize != m_fullDestSize)
   {
     m_outputSize = currentViewPortSize;
     m_fullDestSize = fullDestSize;
@@ -197,8 +199,12 @@ void CShaderPreset::PrepareParameters(const CPoint dest[],
 void CShaderPreset::DisposeShaders()
 {
   m_pShaders.clear();
-  m_pShaderTextures.clear();
   m_passes.clear();
+}
+
+void CShaderPreset::DisposeShaderTextures()
+{
+  m_pShaderTextures.clear();
   m_bPresetNeedsUpdate = true;
 }
 
