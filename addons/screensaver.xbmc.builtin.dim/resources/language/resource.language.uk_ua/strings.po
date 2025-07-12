@@ -7,23 +7,23 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-05-15 15:14+0000\n"
-"Last-Translator: A. <artem+weblate@molotov.work>\n"
+"PO-Revision-Date: 2025-07-06 14:12+0000\n"
+"Last-Translator: Pavlo Marianov <acid@jack.kyiv.ua>\n"
 "Language-Team: Ukrainian <https://kodi.weblate.cloud/projects/kodi-core/screensaver-xbmc-builtin-dim/uk_ua/>\n"
 "Language: uk_ua\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 5.12.2\n"
 
 msgctxt "Addon Summary"
 msgid "Screensaver that dims your screen"
-msgstr "Проста заставка, що затемняє екран"
+msgstr "Проста заставка, що затемнює екран"
 
 msgctxt "Addon Description"
 msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
-msgstr "Ця заставка затемняє екран (зменшує яскравість) на встановлене значення в межах від 20% до 100%."
+msgstr "Ця заставка затемнює екран (зменшує яскравість) до вказаного значення в межах від 20% до 100%."
 
 #. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
 msgctxt "#30000"
@@ -33,7 +33,7 @@ msgstr "Рівень яскравості"
 #. Setting help text
 msgctxt "#30001"
 msgid "Level in percent of how strongly the screen remains illuminated."
-msgstr "Рівень у відсотках того, наскільки сильно освітлений екран."
+msgstr "Рівень (у відсотках) підсвітки екрану."
 
 #. Setting category name
 msgctxt "#30002"
