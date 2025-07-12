@@ -47,7 +47,8 @@ public:
   void SetSizes(const float2& prevSize,
                 const float2& prevTextureSize,
                 const float2& nextSize) override;
-  void PrepareParameters(CPoint dest[4],
+  void PrepareParameters(const CPoint dest[4],
+                         const float2 fullDestSize,
                          IShaderTexture& sourceTexture,
                          const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
                          const std::vector<std::unique_ptr<IShader>>& pShaders,
