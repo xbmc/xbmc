@@ -17,6 +17,7 @@
 #include "application/Application.h"
 #include "cores/IPlayer.h"
 #include "guilib/Texture.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "settings/AdvancedSettings.h"
@@ -43,7 +44,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
 #if defined (GL_UNPACK_ROW_LENGTH_EXT)
-  if (m_renderSystem->IsExtSupported("GL_EXT_unpack_subimage"))
+  if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_unpack_subimage))
   {
     m_pixelStoreKey = GL_UNPACK_ROW_LENGTH_EXT;
   }
