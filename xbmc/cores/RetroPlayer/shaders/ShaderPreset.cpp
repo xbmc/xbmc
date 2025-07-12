@@ -27,9 +27,6 @@ CShaderPreset::CShaderPreset(RETRO::CRenderContext& context,
                              unsigned videoHeight)
   : m_context(context), m_videoSize(videoWidth, videoHeight)
 {
-  CRect viewPort;
-  m_context.GetViewPort(viewPort);
-  m_outputSize = {viewPort.Width(), viewPort.Height()};
 }
 
 CShaderPreset::~CShaderPreset()
@@ -43,6 +40,7 @@ bool CShaderPreset::ReadPresetFile(const std::string& presetPath)
 }
 
 bool CShaderPreset::RenderUpdate(const CPoint dest[],
+                                 const float2 fullDestSize,
                                  IShaderTexture& source,
                                  IShaderTexture& target)
 {
@@ -51,7 +49,7 @@ bool CShaderPreset::RenderUpdate(const CPoint dest[],
   m_context.GetViewPort(viewPort);
 
   // Handle resizing of the viewport (window)
-  UpdateViewPort(viewPort);
+  UpdateViewPort(viewPort, fullDestSize);
 
   // Update shaders/shader textures if required
   if (!Update())
@@ -97,7 +95,30 @@ bool CShaderPreset::SetShaderPreset(const std::string& shaderPresetPath)
 {
   m_presetPath = shaderPresetPath;
   m_bPresetNeedsUpdate = true;
-  return Update();
+
+  if (m_presetPath.empty())
+    // No preset should load, just return false, we shouldn't add "" to the failed paths
+    return false;
+
+  if (!ReadPresetFile(m_presetPath))
+  {
+    CLog::Log(
+      LOGERROR,
+      "CShaderPreset::SetShaderPreset: Couldn't load shader preset {} or the shaders it references",
+      m_presetPath);
+    return false;
+  }
+
+  if (!HasPathFailed(m_presetPath))
+    if (!CreateShaders())
+    {
+      m_failedPaths.insert(m_presetPath);
+      CLog::Log(LOGWARNING, "CShaderPreset::SetShaderPreset: Failed to initialize shaders");
+      DisposeShaders();
+      return false;
+    }
+
+  return true;
 }
 
 const std::string& CShaderPreset::GetShaderPreset() const
@@ -111,29 +132,13 @@ bool CShaderPreset::Update()
   {
     m_failedPaths.insert(m_presetPath);
     CLog::Log(LOGWARNING, "CShaderPreset::Update: {}", msg);
-    DisposeShaders();
+    DisposeShaderTextures();
     return false;
   };
 
   if (m_bPresetNeedsUpdate && !HasPathFailed(m_presetPath))
   {
-    DisposeShaders();
-
-    if (m_presetPath.empty())
-      // No preset should load, just return false, we shouldn't add "" to the failed paths
-      return false;
-
-    if (!ReadPresetFile(m_presetPath))
-    {
-      CLog::Log(
-          LOGERROR,
-          "CShaderPreset::Update: Couldn't load shader preset {} or the shaders it references",
-          m_presetPath);
-      return false;
-    }
-
-    if (!CreateShaders())
-      return updateFailed("Failed to initialize shaders");
+    DisposeShaderTextures();
 
     if (!CreateLayouts())
       return updateFailed("Failed to create layouts");
@@ -159,12 +164,13 @@ bool CShaderPreset::Update()
   return true;
 }
 
-void CShaderPreset::UpdateViewPort(CRect viewPort)
+void CShaderPreset::UpdateViewPort(CRect viewPort, const float2 fullDestSize)
 {
   const float2 currentViewPortSize = {viewPort.Width(), viewPort.Height()};
-  if (currentViewPortSize != m_outputSize)
+  if (currentViewPortSize != m_outputSize || fullDestSize != m_fullDestSize)
   {
     m_outputSize = currentViewPortSize;
+    m_fullDestSize = fullDestSize;
     m_bPresetNeedsUpdate = true;
   }
 }
@@ -179,19 +185,13 @@ void CShaderPreset::PrepareParameters(const CPoint dest[],
                                       IShaderTexture& source,
                                       IShaderTexture& target)
 {
-  if (m_dest[0] != dest[0] || m_dest[1] != dest[1] || m_dest[2] != dest[2] || m_dest[3] != dest[3])
-  {
-    for (size_t i = 0; i < 4; ++i)
-      m_dest[i] = dest[i];
-  }
-
   const unsigned int numPasses = static_cast<unsigned int>(m_pShaders.size());
 
   // Prepare parameters for all shader passes
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     std::unique_ptr<IShader>& videoShader = m_pShaders[shaderIdx];
-    videoShader->PrepareParameters(m_dest, source, m_pShaderTextures, m_pShaders,
+    videoShader->PrepareParameters(dest, m_fullDestSize, source, m_pShaderTextures, m_pShaders,
                                    static_cast<uint64_t>(m_frameCount));
   }
 }
@@ -199,8 +199,12 @@ void CShaderPreset::PrepareParameters(const CPoint dest[],
 void CShaderPreset::DisposeShaders()
 {
   m_pShaders.clear();
-  m_pShaderTextures.clear();
   m_passes.clear();
+}
+
+void CShaderPreset::DisposeShaderTextures()
+{
+  m_pShaderTextures.clear();
   m_bPresetNeedsUpdate = true;
 }
 

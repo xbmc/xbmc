@@ -40,7 +40,10 @@ public:
 
   // Implementation of IShaderPreset
   bool ReadPresetFile(const std::string& presetPath) override;
-  bool RenderUpdate(const CPoint dest[], IShaderTexture& source, IShaderTexture& target) override;
+  bool RenderUpdate(const CPoint dest[],
+                    const float2 fullDestSize,
+                    IShaderTexture& source,
+                    IShaderTexture& target) override;
   void SetSpeed(double speed) override { m_speed = speed; }
   void SetVideoSize(unsigned int videoWidth, unsigned int videoHeight) override;
   bool SetShaderPreset(const std::string& shaderPresetPath) override;
@@ -58,10 +61,11 @@ protected:
 
   // Helper functions
   bool Update();
-  void UpdateViewPort(CRect viewPort);
+  void UpdateViewPort(CRect viewPort, const float2 fullDestSize);
   void UpdateMVPs();
   void PrepareParameters(const CPoint dest[], IShaderTexture& source, IShaderTexture& target);
   void DisposeShaders();
+  void DisposeShaderTextures();
   bool HasPathFailed(const std::string& path) const;
   ShaderParameterMap GetShaderParameters(const std::vector<ShaderParameter>& parameters,
                                          const std::string& sourceStr) const;
@@ -89,14 +93,14 @@ protected:
   // Was the shader preset changed during the last frame?
   bool m_bPresetNeedsUpdate = true;
 
-  // Size of the viewport
+  // Resolution of the output viewport
   float2 m_outputSize;
+
+  // Resolution of the destination rectangle for the fullscreen game window
+  float2 m_fullDestSize;
 
   // Size of the actual source video data (ie. 160x144 for the Game Boy)
   float2 m_videoSize;
-
-  // Array of vertices that comprise the full viewport
-  CPoint m_dest[4];
 
   // Number of frames that have passed
   float m_frameCount = 0.0f;

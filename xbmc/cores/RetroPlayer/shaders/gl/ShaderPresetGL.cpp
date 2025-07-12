@@ -58,7 +58,7 @@ bool CShaderPresetGL::CreateShaders()
     // Get only the parameters belonging to this specific shader
     ShaderParameterMap passParameters = GetShaderParameters(pass.parameters, pass.vertexSource);
 
-    if (!videoShader->Create(shaderSource, shaderPath, passParameters, passLUTsGL, m_outputSize,
+    if (!videoShader->Create(shaderSource, shaderPath, passParameters, passLUTsGL,
                              shaderIdx, pass.frameCountMod))
     {
       CLog::Log(LOGERROR, "CShaderPresetGL::CreateShaders: Couldn't create a video shader");
@@ -95,7 +95,7 @@ bool CShaderPresetGL::CreateShaderTextures()
         break;
       case ScaleType::VIEWPORT:
         scaledSize.x =
-            pass.fbo.scaleX.scale ? pass.fbo.scaleX.scale * m_outputSize.x : m_outputSize.x;
+            pass.fbo.scaleX.scale ? pass.fbo.scaleX.scale * m_fullDestSize.x : m_fullDestSize.x;
         break;
       case ScaleType::INPUT:
       default:
@@ -109,7 +109,7 @@ bool CShaderPresetGL::CreateShaderTextures()
         break;
       case ScaleType::VIEWPORT:
         scaledSize.y =
-            pass.fbo.scaleY.scale ? pass.fbo.scaleY.scale * m_outputSize.y : m_outputSize.y;
+            pass.fbo.scaleY.scale ? pass.fbo.scaleY.scale * m_fullDestSize.y : m_fullDestSize.y;
         break;
       case ScaleType::INPUT:
       default:

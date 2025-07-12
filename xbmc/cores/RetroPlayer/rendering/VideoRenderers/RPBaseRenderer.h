@@ -95,6 +95,8 @@ protected:
 
   // Geometry properties
   CRect m_sourceRect;
+  float m_fullDestWidth = 0.0f;
+  float m_fullDestHeight = 0.0f;
   std::array<CPoint, 4> m_rotatedDestCoords{};
 
   // Video shaders

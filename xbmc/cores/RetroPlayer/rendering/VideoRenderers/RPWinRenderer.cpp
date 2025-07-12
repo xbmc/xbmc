@@ -295,8 +295,8 @@ bool CRPWinRenderer::SupportsScalingMethod(SCALINGMETHOD method)
 
 void CRPWinRenderer::Render(CD3DTexture& target)
 {
-  const CPoint destPoints[4] = {m_rotatedDestCoords[0], m_rotatedDestCoords[1],
-                                m_rotatedDestCoords[2], m_rotatedDestCoords[3]};
+  const CPoint dest[4] = {m_rotatedDestCoords[0], m_rotatedDestCoords[1],
+                          m_rotatedDestCoords[2], m_rotatedDestCoords[3]};
 
   CWinRenderBuffer* renderBuffer = static_cast<CWinRenderBuffer*>(m_renderBuffer);
   if (renderBuffer == nullptr)
@@ -333,7 +333,8 @@ void CRPWinRenderer::Render(CD3DTexture& target)
     SHADER::CShaderTextureDXRef targetTexture{target};
 
     // Render shaders and ouput to display
-    if (!m_shaderPreset->RenderUpdate(destPoints, *renderBufferTarget, targetTexture))
+    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight},
+                                      *renderBufferTarget, targetTexture))
     {
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;
@@ -356,7 +357,7 @@ void CRPWinRenderer::Render(CD3DTexture& target)
     // Use the picked output shader to render to the target
     if (outputShader != nullptr)
     {
-      outputShader->Render(intermediateTarget, m_sourceRect, destPoints, viewPort, target,
+      outputShader->Render(intermediateTarget, m_sourceRect, dest, viewPort, target,
                            m_context.UseLimitedColor() ? 1 : 0);
     }
   }
