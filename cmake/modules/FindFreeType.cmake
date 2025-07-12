@@ -44,6 +44,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(NOT TARGET Freetype::Freetype)
       add_library(Freetype::Freetype ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
+
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   else()
     if(Freetype_FIND_REQUIRED)
       message(FATAL_ERROR "Freetype libraries were not found.")

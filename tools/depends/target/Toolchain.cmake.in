@@ -59,6 +59,9 @@ endif()
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
   set(CMAKE_OSX_SYSROOT @use_sdk_path@)
   set(CMAKE_XCODE_ATTRIBUTE_ARCHS ${CPU})
+
+  # SDK path
+  set(SDKROOT @use_sdk_path@)
 endif()
 set(CMAKE_SYSTEM_VERSION 1)
 
