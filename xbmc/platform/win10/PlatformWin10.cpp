@@ -27,7 +27,14 @@ bool CPlatformWin10::InitStageOne()
   if (!CPlatform::InitStageOne())
     return false;
 
+  CEnvironment::setenv("PYTHONHOME", "system\\python");
+  CEnvironment::setenv("PYTHONPATH", "system\\python\\DLLs;system\\python\\Lib;system\\python\\Lib\\site-packages");
   CEnvironment::setenv("OS", "win10"); // for python scripts that check the OS
+  CEnvironment::setenv("PYTHONOPTIMIZE", "1");
+
+#ifdef _DEBUG
+  CEnvironment::setenv("PYTHONCASEOK", "1");
+#endif
 
   // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
   CWIN32Util::SetThreadLocalLocale(true);
