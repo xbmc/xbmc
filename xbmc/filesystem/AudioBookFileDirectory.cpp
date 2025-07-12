@@ -17,6 +17,8 @@
 #include "imagefiles/ImageFileURL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/log.h"
+#include "utils/Mp4ChplReader.h"
 #include "utils/StringUtils.h"
 
 using namespace XFILE;
@@ -165,6 +167,30 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   if (m_fctx->nb_chapters > 1)
     thumb = IMAGE_FILES::URLFromFile(url.Get(), "music");
 
+  ChplChapterResult result{chplError};
+  std::vector<ChplChapter> nero;
+
+  if (isAudioBook)
+  {
+    result = CChplChapterReader::scan_nero_chapters(url, nero);
+    if (result == chplError)
+    {
+      CLog::Log(LOGERROR,
+                "AudioBookFileDirectory: Error scanning for Nero style chapters in file {}",
+                url.GetRedacted());
+    }
+    else if (result == chplNone)
+    { // can't get here without some form of chapter so it's either nero (chpl) or QT (chap) or both
+      CLog::Log(
+          LOGDEBUG,
+          "AudioBookFileDirectory: Scanned for nero style chapters but didn't find any in {}, "
+          "using QT chapters",
+          url.GetRedacted());
+    }
+  }
+  // result == chapterFound - no detection error and found some chapters
+  const uint32_t ns = nero.size();
+
   for (size_t i=0;i<m_fctx->nb_chapters;++i)
   {
     tag=nullptr;
@@ -191,6 +217,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
           chapauthor = tag->value;
         else if (StringUtils::CompareNoCase(tag->key, "album") == 0)
           chapalbum = tag->value;
+        // Prefer nero titles if we have them over QT titles and they are different
+        if (result == chplFound && (i <= ns) && (nero[i].title != chaptitle))
+          chaptitle = nero[i].title;
       }
       else
       {
