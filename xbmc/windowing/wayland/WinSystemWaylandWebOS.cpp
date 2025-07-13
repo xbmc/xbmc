@@ -62,6 +62,19 @@ bool CWinSystemWaylandWebOS::InitWindowSystem()
   return true;
 }
 
+bool CWinSystemWaylandWebOS::DestroyWindowSystem()
+{
+  m_exportedSurface = wayland::webos_exported_t{};
+  m_webosForeign = wayland::webos_foreign_t{};
+
+  if (m_webosRegistry)
+  {
+    m_webosRegistry->UnbindSingletons();
+  }
+  m_webosRegistry.reset();
+  return CWinSystemWayland::DestroyWindowSystem();
+}
+
 bool CWinSystemWaylandWebOS::CreateNewWindow(const std::string& name,
                                              bool fullScreen,
                                              RESOLUTION_INFO& res)
@@ -83,18 +96,6 @@ bool CWinSystemWaylandWebOS::CreateNewWindow(const std::string& name,
   }
 
   return true;
-}
-
-CWinSystemWaylandWebOS::~CWinSystemWaylandWebOS() noexcept
-{
-  m_exportedSurface = wayland::webos_exported_t{};
-  m_webosForeign = wayland::webos_foreign_t{};
-
-  if (m_webosRegistry)
-  {
-    m_webosRegistry->UnbindSingletons();
-  }
-  m_webosRegistry.reset();
 }
 
 bool CWinSystemWaylandWebOS::HasCursor()
