@@ -27,6 +27,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 
 #include <functional>
 #include <limits>
@@ -327,7 +328,7 @@ bool CDVDInputStreamBluray::Open()
   }
   else if (resumable && m_item.GetStartOffset() == STARTOFFSET_RESUME && m_item.IsResumable())
   {
-    // resuming a bluray for which we have a saved state - the playlist will be open later on SetState
+    SetState(m_item.GetVideoInfoTag()->GetResumePoint().playerState);
     m_navmode = false;
     return true;
   }
