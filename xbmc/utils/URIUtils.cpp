@@ -31,6 +31,8 @@
 #include "platform/win32/CharsetConverter.h"
 #endif
 
+#include "DVDInputStreams/BlurayStateSerializer.h"
+
 #include <algorithm>
 #include <cassert>
 #include <ranges>
@@ -563,9 +565,19 @@ std::string URIUtils::GetBlurayAllEpisodesPath(const std::string& path)
   return AddFileToFolder(GetBlurayPath(path), "root", "episode", "all");
 }
 
-std::string URIUtils::GetBlurayPlaylistPath(const std::string& path)
+std::string URIUtils::GetBlurayPlaylistPath(const std::string& path, int playlist /* = -1 */)
 {
-  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST", "");
+  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST",
+                         playlist != -1 ? StringUtils::Format("{:05}.mpls", playlist) : "");
+}
+
+std::string URIUtils::GetBlurayPlaylistPath(const std::string& path, const std::string& xmlState)
+{
+  CBlurayStateSerializer blurayStateSerializer;
+  BlurayState blurayState;
+  if (blurayStateSerializer.XMLToBlurayState(blurayState, xmlState))
+    return GetBlurayPlaylistPath(path, blurayState.playlistId);
+  return {};
 }
 
 std::string URIUtils::GetBlurayPath(const std::string& path)

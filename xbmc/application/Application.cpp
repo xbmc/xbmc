@@ -125,6 +125,7 @@
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DiscSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -2500,34 +2501,54 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     }
   }
 
-  // a disc image might be Blu-Ray disc
-  if ((!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-       (VIDEO::IsBDFile(item) || ::UTILS::DISCS::IsBlurayDiscImage(item))) ||
-      (item.GetProperty("force_playlist_selection").asBoolean(false) &&
-       URIUtils::IsBlurayPath(item.GetDynPath())))
+  // See if disc image is a Blu-ray (as an image could be a DVD as well) or if the path is a BDMV folder
+  const bool isBluray{::UTILS::DISCS::IsBlurayDiscImage(item) ||
+                      URIUtils::IsBDFile(item.GetDynPath())};
+
+  // See if choose (new) playlist has been selected from context menu
+  const bool forceSelection{item.GetProperty("force_playlist_selection").asBoolean(false)};
+  const bool forceBlurayPlaylistSelection{forceSelection &&
+                                          URIUtils::IsBlurayPath(item.GetDynPath())};
+
+  if ((isBluray && !(options.startpercent > 0.0 || options.starttime > 0.0)) ||
+      forceBlurayPlaylistSelection)
   {
-    // No video selection when using external or remote players (they handle it if supported)
-    const bool isSimpleMenuAllowed = [&]()
-    {
-      const std::string defaulPlayer{
-          player.empty() ? m_ServiceManager->GetPlayerCoreFactory().GetDefaultPlayer(item)
-                         : player};
-      const bool isExternalPlayer{
-          m_ServiceManager->GetPlayerCoreFactory().IsExternalPlayer(defaulPlayer)};
-      const bool isRemotePlayer{
-          m_ServiceManager->GetPlayerCoreFactory().IsRemotePlayer(defaulPlayer)};
-      return !isExternalPlayer && !isRemotePlayer;
-    }();
+    const bool isSimpleMenuAllowed{
+        [&]()
+        {
+          const std::string defaulPlayer{
+              player.empty() ? m_ServiceManager->GetPlayerCoreFactory().GetDefaultPlayer(item)
+                             : player};
+
+          // No video selection when using external or remote players (they handle it if supported)
+          const bool isExternalPlayer{
+              m_ServiceManager->GetPlayerCoreFactory().IsExternalPlayer(defaulPlayer)};
+          const bool isRemotePlayer{
+              m_ServiceManager->GetPlayerCoreFactory().IsRemotePlayer(defaulPlayer)};
+
+          // Check if simple menu is enabled or if we are forced to select a playlist
+          const bool isSimpleMenu{forceSelection ||
+                                  CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                      CSettings::SETTING_DISC_PLAYBACK) == BD_PLAYBACK_SIMPLE_MENU};
+
+          return !isExternalPlayer && !isRemotePlayer && isSimpleMenu;
+        }()};
 
     if (isSimpleMenuAllowed)
     {
-      // Check if we must show the simplified bd menu.
       if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(item))
         return true;
 
       // Reset any resume state as new playlist chosen
       options = {};
+      item.ClearProperty("force_playlist_selection");
     }
+  }
+  else if (isBluray && item.IsResumable())
+  {
+    // Convert dynpath to bluray://
+    item.SetDynPath(URIUtils::GetBlurayPlaylistPath(
+        item.GetDynPath(), item.GetVideoInfoTag()->GetResumePoint().playerState));
   }
 
   // this really aught to be inside !bRestart, but since PlayStack

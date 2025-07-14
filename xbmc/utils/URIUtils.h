@@ -140,9 +140,17 @@ public:
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
    \param path the ISO/index.BDMV path.
-   \return the bluray:// playlist path - BDMV/PLAYLIST
+   \param playlist (optional) the .mpls playlist
+   \return the bluray:// playlist path - BDMV/PLAYLIST(/xxxxx.mpls)
    */
-  static std::string GetBlurayPlaylistPath(const std::string& path);
+  static std::string GetBlurayPlaylistPath(const std::string& path, int playlist = -1);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
+   \param path the ISO/index.BDMV path.
+   \param xmlState the XML state string containing the playlist information
+   \return the bluray:// playlist path - BDMV/PLAYLIST(/xxxxx.mpls)
+   */
+  static std::string GetBlurayPlaylistPath(const std::string& path, const std::string& xmlState);
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path.
    \param path the ISO/index.BDMV path.
