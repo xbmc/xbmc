@@ -3177,6 +3177,7 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpis
   try
   {
     m_pDS->exec(PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", idFile, idEpisode));
+    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idFile, oldIdFile));
     return DeleteFile(oldIdFile) ? idFile : -1;
   }
   catch (...)
@@ -3215,6 +3216,9 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie,
                      idFile, oldIdFile, idFile);
     m_pDS->exec(sql);
 
+    sql = PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idFile, oldIdFile);
+    m_pDS->exec(sql);
+
     return DeleteFile(oldIdFile) ? idFile : -1;
   }
   catch (...)
@@ -3239,6 +3243,9 @@ int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdF
         PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
                    "FROM streamdetails WHERE idFile=%i)",
                    idFile, oldIdFile, idFile)};
+    m_pDS->exec(sql);
+
+    sql = PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idFile, oldIdFile);
     m_pDS->exec(sql);
 
     return DeleteFile(oldIdFile) ? idFile : -1;
