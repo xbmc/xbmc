@@ -37,11 +37,11 @@ CCPUInfoWin10::CCPUInfoWin10()
   m_cpuCount = siSysInfo.dwNumberOfProcessors;
   m_cpuModel = "Unknown";
 
-  int CPUInfo[4] = {}; // receives EAX, EBX, ECD and EDX in that order
+  int CPUInfo[4]{}; // receives EAX, EBX, ECX and EDX in that order
 
 #ifndef _M_ARM
   __cpuid(CPUInfo, 0);
-  int MaxStdInfoType = CPUInfo[0];
+  const int MaxStdInfoType = CPUInfo[0];
 
   if (MaxStdInfoType >= CPUID_INFOTYPE_STANDARD)
   {
@@ -62,8 +62,8 @@ CCPUInfoWin10::CCPUInfoWin10()
       m_cpuFeatures |= CPU_FEATURE_SSE42;
   }
 
-  __cpuid(CPUInfo, 0x80000000);
-  int MaxExtInfoType = CPUInfo[0];
+  __cpuid(CPUInfo, CPUID_INFOTYPE_EXTENDED_IMPLEMENTED);
+  const int MaxExtInfoType = CPUInfo[0];
 
   if (MaxExtInfoType >= CPUID_INFOTYPE_EXTENDED)
   {
@@ -77,6 +77,21 @@ CCPUInfoWin10::CCPUInfoWin10()
       m_cpuFeatures |= CPU_FEATURE_3DNOW;
     if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_3DNOWEXT)
       m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
+  }
+
+  // Get CPU brand string
+  if (MaxExtInfoType >= CPUID_INFOTYPE_PROCESSOR_3)
+  {
+    std::string CPUName;
+    __cpuid(CPUInfo, CPUID_INFOTYPE_PROCESSOR_1);
+    CPUName.append(reinterpret_cast<char*>(CPUInfo), 16);
+    __cpuid(CPUInfo, CPUID_INFOTYPE_PROCESSOR_2);
+    CPUName.append(reinterpret_cast<char*>(CPUInfo), 16);
+    __cpuid(CPUInfo, CPUID_INFOTYPE_PROCESSOR_3);
+    CPUName.append(reinterpret_cast<char*>(CPUInfo), 16);
+
+    // Trim trailing spaces
+    m_cpuModel = CPUName.substr(0, CPUName.find(char(0)));
   }
 #endif
 
