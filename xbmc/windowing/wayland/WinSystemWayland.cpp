@@ -139,10 +139,7 @@ CWinSystemWayland::CWinSystemWayland()
   m_winEvents = std::make_unique<CWinEventsWayland>();
 }
 
-CWinSystemWayland::~CWinSystemWayland() noexcept
-{
-  DestroyWindowSystem();
-}
+CWinSystemWayland::~CWinSystemWayland() noexcept = default;
 
 bool CWinSystemWayland::InitWindowSystem()
 {
