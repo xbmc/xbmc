@@ -10,6 +10,7 @@
 
 #include "Autorun.h"
 #include "CompileInfo.h"
+#include "DVDInputStreams/BlurayStateSerializer.h"
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
@@ -129,6 +130,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/ContentUtils.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
 #include "utils/JobManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/PlayerUtils.h"
@@ -2504,8 +2506,19 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   }
 
   // a disc image might be Blu-Ray disc
-  if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-      (item.IsBDFile() || item.IsDiscImage()))
+  const bool isBluray{[&item]
+                      {
+                        if (item.IsDiscImage())
+                        {
+                          CURL url("udf://");
+                          url.SetHostName(item.GetDynPath());
+                          url.SetFileName("BDMV/index.bdmv");
+                          return CFileUtils::Exists(url.Get());
+                        }
+                        return item.IsBDFile();
+                      }()};
+
+  if (isBluray && !(options.startpercent > 0.0 || options.starttime > 0.0))
   {
     // No video selection when using external or remote players (they handle it if supported)
     const bool isSimpleMenuAllowed = [&]()
@@ -2525,6 +2538,33 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       // Check if we must show the simplified bd menu.
       if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
         return true;
+    }
+  }
+  else if (isBluray && item.IsResumable())
+  {
+    // Update dynpath to bluray://
+    // For correct path resolution for external subtitles and correct initialisation of bluray in CVideoPlayer
+    CBlurayStateSerializer m_blurayStateSerializer;
+    BlurayState blurayState;
+    if (m_blurayStateSerializer.XMLToBlurayState(
+            blurayState, item.GetVideoInfoTag()->GetResumePoint().playerState))
+    {
+      CURL url("bluray://");
+      if (item.IsBDFile())
+      {
+        std::string root = URIUtils::GetParentPath(item.GetDynPath());
+        URIUtils::RemoveSlashAtEnd(root);
+        url.SetHostName(URIUtils::GetParentPath(root));
+      }
+      else if (item.IsDiscImage())
+      {
+        CURL url2("udf://");
+        url2.SetHostName(item.GetDynPath());
+        url.SetHostName(url2.Get());
+      }
+      url.SetFileName(URIUtils::AddFileToFolder(
+          "BDMV", "PLAYLIST", StringUtils::Format("{:05}.mpls", blurayState.playlistId)));
+      item.SetDynPath(url.Get());
     }
   }
 
