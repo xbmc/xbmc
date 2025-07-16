@@ -48,21 +48,6 @@ RESOLUTION_INFO::RESOLUTION_INFO(int width, int height, float aspect, const std:
   dwFlags = iSubtitles = 0;
 }
 
-RESOLUTION_INFO::RESOLUTION_INFO(const RESOLUTION_INFO& res)
-  : Overscan(res.Overscan),
-    guiInsets(res.guiInsets),
-    strMode(res.strMode),
-    strOutput(res.strOutput),
-    strId(res.strId)
-{
-  bFullScreen = res.bFullScreen;
-  iWidth = res.iWidth; iHeight = res.iHeight;
-  iScreenWidth = res.iScreenWidth; iScreenHeight = res.iScreenHeight;
-  iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
-  fPixelRatio = res.fPixelRatio; fRefreshRate = res.fRefreshRate;
-  iBlanking = res.iBlanking;
-}
-
 float RESOLUTION_INFO::DisplayRatio() const
 {
   return iWidth * fPixelRatio / iHeight;
