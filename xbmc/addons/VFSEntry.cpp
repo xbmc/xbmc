@@ -67,10 +67,10 @@ void CVFSAddonCache::Init()
     auto vfs = std::make_shared<CVFSEntry>(addonInfo);
     vfs->Addon()->RegisterInformer(this);
 
-    m_addonsInstances.emplace_back(std::move(vfs));
-
     if (!vfs->GetZeroconfType().empty())
       CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
+
+    m_addonsInstances.emplace_back(std::move(vfs));
   }
 }
 
