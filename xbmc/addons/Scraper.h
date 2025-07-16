@@ -44,6 +44,7 @@ using ScraperPtr = std::shared_ptr<CScraper>;
 enum class ContentType
 {
   MOVIES,
+  MOVIE_VERSIONS,
   TVSHOWS,
   MUSICVIDEOS,
   ALBUMS,
@@ -212,6 +213,8 @@ private:
     {
       case ADDON::ContentType::MOVIES:
         return "movies"sv;
+      case ADDON::ContentType::MOVIE_VERSIONS:
+        return "movie versions"sv;
       case ADDON::ContentType::TVSHOWS:
         return "TV shows"sv;
       case ADDON::ContentType::MUSICVIDEOS:

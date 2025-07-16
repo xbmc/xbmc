@@ -479,7 +479,8 @@ enum class ArtFallbackOptions
 enum class DeleteMovieCascadeAction
 {
   DEFAULT_VERSION,
-  ALL_ASSETS
+  ALL_ASSETS,
+  ALL_ASSETS_NOT_STREAMDETAILS
 };
 
 enum class DeleteMovieHashAction
@@ -491,8 +492,31 @@ enum class DeleteMovieHashAction
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
+enum class AllowNonFileNameMatch : bool
+{
+  NO_MATCH,
+  YES_MATCH
+};
+
+struct EpisodeInformation
+{
+  int index{0};
+  unsigned int duration{0};
+};
+
+using EpisodeFileMap = std::multimap<std::string, EpisodeInformation>;
+using EpisodeFileMapEntry = std::pair<std::string, EpisodeInformation>;
+
 class CVideoDatabase : public CDatabase
 {
+  struct FileInformation
+  {
+    std::string path;
+    int fileId{0};
+    int vvId{0};
+    std::string hash;
+  };
+
 public:
 
   class CActor    // used for actor retrieval for non-master users
@@ -691,6 +715,9 @@ public:
                               int idMVideo = -1);
   bool SetStreamDetailsForFile(const CStreamDetails& details,
                                const std::string& strFileNameAndPath);
+
+  int AddMovieVersion(CFileItem& item, int idMovie, const KODI::ART::Artwork& art);
+
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
    * \param[in] details New stream details
@@ -1077,6 +1104,7 @@ public:
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
   void ExportActorThumbs(const std::string& path,
+                         const std::string& singlePath,
                          const CVideoInfoTag& tag,
                          bool singleFiles,
                          bool overwrite = false,
@@ -1229,13 +1257,31 @@ public:
    * \param dbIdTarget id that the video will be attached to
    * \param idVideoVersion new versiontype of the default version of the video
    * \param assetType new asset type of the default version of the video
+   * \param cascadeAction action to take on the assets of the video being converted
+   *        (used to preserve streamdetails for bluray playlists)
    * \return true for success, false otherwise
    */
   bool ConvertVideoToVersion(VideoDbContentType itemType,
                              int dbIdSource,
                              int dbIdTarget,
                              int idVideoVersion,
-                             VideoAssetType assetType);
+                             VideoAssetType assetType,
+                             DeleteMovieCascadeAction cascadeAction);
+
+  /*!
+   * \brief Adds a version of an existing movie to the database
+   * \param itemType type of the video being converted
+   * \param dbIdSource id of the video being converted
+   * \param idVideoVersion new versiontype of the default version of the video
+   * \param assetType new asset type of the default version of the video
+   * \return dbId in the videoversion table, -1 if failure
+   */
+  int AddVideoVersion(VideoDbContentType itemType,
+                      int dbIdSource,
+                      int idFile,
+                      int idVideoVersion,
+                      VideoAssetType assetType);
+
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
@@ -1271,8 +1317,10 @@ public:
   VideoAssetInfo GetVideoVersionInfo(const std::string& filenameAndPath);
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
-  int GetMovieId(const std::string& strFilenameAndPath);
+  int GetMovieId(const std::string& strFilenameAndPath,
+                 AllowNonFileNameMatch allowNonFileNameMatch = AllowNonFileNameMatch::NO_MATCH);
   std::string GetMovieTitle(int idMovie);
+  int GetMovieIdByTitle(const std::string& title);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
   int GetFileIdByMovie(int idMovie);
   int GetFileIdByFile(const std::string& fullpath);

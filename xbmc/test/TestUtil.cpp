@@ -40,9 +40,9 @@ TEST(TestUtil, MakeLegalPath)
   EXPECT_EQ(CUtil::MakeLegalPath(path), "C:\\foo_\\bar\\");
 #else
   path = "/foo/bar/";
-  EXPECT_EQ(CUtil::MakeLegalPath(path),"/foo/bar/");
+  EXPECT_EQ(CUtil::MakeLegalPath(path), "/foo/bar/");
   path = "/foo?/bar";
-  EXPECT_EQ(CUtil::MakeLegalPath(path),"/foo_/bar");
+  EXPECT_EQ(CUtil::MakeLegalPath(path), "/foo_/bar");
 #endif
   path = "smb://foo/bar";
   EXPECT_EQ(CUtil::MakeLegalPath(path), "smb://foo/bar");
@@ -59,7 +59,8 @@ TEST(TestUtil, MakeShortenPath)
   EXPECT_EQ(true, CUtil::MakeShortenPath("smb://test/string/is/long/and/very/much/so", result, 30));
   EXPECT_EQ("smb://../../../../../../../so", result);
 
-  EXPECT_EQ(true, CUtil::MakeShortenPath("smb://test//string/is/long/and/very//much/so", result, 30));
+  EXPECT_EQ(true,
+            CUtil::MakeShortenPath("smb://test//string/is/long/and/very//much/so", result, 30));
   EXPECT_EQ("smb:/../../../../../so", result);
 
   EXPECT_EQ(true, CUtil::MakeShortenPath("//test//string/is/long/and/very//much/so", result, 30));
@@ -301,7 +302,8 @@ const TestDiscData BaseFiles[] = {{"/home/user/movies/movie/video_ts/VIDEO_TS.IF
                                   {"/home/user/movies/movie/disc 1/file.avi", "1"},
                                   {"/home/user/movies/movie/disk 1/file.avi", "1"},
                                   {"/home/user/movies/movie/cd 1/file.avi", "1"},
-                                  {"/home/user/movies/movie/dvd 1/file.avi", "1"}};
+                                  {"/home/user/movies/movie/dvd 1/file.avi", "1"},
+                                  {"smb://home/user/movies/movie/disc 1/file.avi", "1"}};
 
 TEST_P(TestDiscNumbers, GetDiscNumbers)
 {
@@ -333,7 +335,8 @@ const TestRemoveData BasePaths[] = {
     {"/home/user/movies/movie/disc 1/file.avi", "/home/user/movies/movie/"},
     {"/home/user/movies/movie/disk 1/file.avi", "/home/user/movies/movie/"},
     {"/home/user/movies/movie/cd 1/file.avi", "/home/user/movies/movie/"},
-    {"/home/user/movies/movie/dvd 1/file.avi", "/home/user/movies/movie/"}};
+    {"/home/user/movies/movie/dvd 1/file.avi", "/home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/disc 1/file.avi", "smb://home/user/movies/movie/"}};
 
 TEST_P(TestRemoveDiscNumbers, RemoveDiscNumbers)
 {
@@ -344,3 +347,53 @@ TEST_P(TestRemoveDiscNumbers, RemoveDiscNumbers)
 }
 
 INSTANTIATE_TEST_SUITE_P(RemoveDiscNumbers, TestRemoveDiscNumbers, ValuesIn(BasePaths));
+
+struct TestBaseData
+{
+  const char* path;
+  const char* base;
+  const char* file;
+};
+
+class TestVideoBasePathAndFileName : public Test, public WithParamInterface<TestBaseData>
+{
+};
+
+const TestBaseData Paths[] = {
+    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", "smb://somepath/movie/",
+     "movie"},
+    {"c:\\dir\\movie.avi", "c:\\dir\\", "movie"},
+    {"/dir/movie.avi", "/dir/", "movie"},
+    {"smb://somepath/movie.avi", "smb://somepath/", "movie"},
+    {"smb://somepath/disc 1/movie.avi", "smb://somepath/disc 1/", "movie"},
+    {"/home/user/movies/movie/video_ts/video_ts.ifo", "/home/user/movies/movie/", "movie"},
+    {"/home/user/movies/movie/disc 1/video_ts/video_ts.ifo", "/home/user/movies/movie/disc 1/",
+     "movie"},
+    {"/home/user/movies/movie/BDMV/index.bdmv", "/home/user/movies/movie/", "movie"},
+    {"/home/user/movies/movie/disc 1/BDMV/index.bdmv", "/home/user/movies/movie/disc 1/", "movie"},
+    {"/home/user/movies/movie/file.iso", "/home/user/movies/movie/", "file"},
+    {"/home/user/movies/movie/disc 1/file.iso", "/home/user/movies/movie/disc 1/", "file"},
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/", "movie"},
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fdisc%201%252fmovie.iso%2f/BDMV/PLAYLIST/"
+     "00800.mpls",
+     "smb://somepath/disc 1/", "movie"},
+    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", "smb://somepath/movie/",
+     "movie"},
+    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/movie/disc 1/", "movie"}};
+
+TEST_P(TestVideoBasePathAndFileName, GetVideoBasePathAndFileName)
+{
+  std::string base;
+  std::string file;
+  CUtil::GetVideoBasePathAndFileName(GetParam().path, base, file);
+  std::string compare = GetParam().base;
+  EXPECT_EQ(compare, base);
+  compare = GetParam().file;
+  EXPECT_EQ(compare, file);
+}
+
+INSTANTIATE_TEST_SUITE_P(GetVideoBasePathAndFileName,
+                         TestVideoBasePathAndFileName,
+                         ValuesIn(Paths));
