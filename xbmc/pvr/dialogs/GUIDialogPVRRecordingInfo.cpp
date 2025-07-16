@@ -66,7 +66,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(const CGUIMessage& message)
     {
       KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{m_recordItem};
       proc.ProcessDefaultAction();
-      if (proc.UserCancelled())
+      if (proc.GetUserCancelled())
         Open();
     }
 

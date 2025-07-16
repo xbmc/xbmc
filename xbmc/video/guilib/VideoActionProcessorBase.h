@@ -25,7 +25,7 @@ public:
   bool ProcessDefaultAction();
   bool ProcessAction(Action action);
 
-  bool UserCancelled() const { return m_userCancelled; }
+  bool GetUserCancelled() const { return m_userCancelled; }
   void SetUserCancelled(bool set) { m_userCancelled = set; }
 
   std::shared_ptr<CFileItem> GetItem() { return m_item; }

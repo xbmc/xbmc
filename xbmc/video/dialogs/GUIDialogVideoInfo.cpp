@@ -791,7 +791,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
       // play button acts according to default play action setting
       KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{m_movieItem};
       proc.ProcessDefaultAction();
-      if (proc.UserCancelled())
+      if (proc.GetUserCancelled())
       {
         // The Resume dialog was closed without any choice
         SetMovie(m_movieItem.get()); // restore cast list, which was cleared on dialog close
