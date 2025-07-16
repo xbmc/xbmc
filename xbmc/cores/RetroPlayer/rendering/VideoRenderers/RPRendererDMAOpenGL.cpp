@@ -97,8 +97,7 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    const CPoint destPoints[4] = {m_rotatedDestCoords[0], m_rotatedDestCoords[1],
-                                  m_rotatedDestCoords[2], m_rotatedDestCoords[3]};
+    const ViewportCoordinates destPoints{m_rotatedDestCoords};
 
     SHADER::CShaderTextureGL source(sourceTexture, false);
     SHADER::CShaderTextureGL target(targetTexture, false);
@@ -171,7 +170,7 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
                 (colour[3] / 255.0f));
     glUniform1f(depthLoc, -1.0f);
 
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

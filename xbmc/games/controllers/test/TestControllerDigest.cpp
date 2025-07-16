@@ -48,9 +48,9 @@ TEST(TestControllerDigest, SimpleTree)
   const UTILITY::CDigest::Type type = UTILITY::CDigest::Type::MD5;
 
   // Build controller
-  ADDON::AddonInfoPtr addonInfo = std::make_shared<ADDON::CAddonInfo>(
-      "game.controller.test", ADDON::AddonType::GAME_CONTROLLER);
-  ControllerPtr controller = std::make_shared<CController>(addonInfo);
+  auto addonInfo = std::make_shared<ADDON::CAddonInfo>("game.controller.test",
+                                                       ADDON::AddonType::GAME_CONTROLLER);
+  auto controller = std::make_shared<CController>(addonInfo);
 
   // Controller node containing the controller and an empty hub
   CControllerNode node;
@@ -104,13 +104,13 @@ TEST(TestControllerDigest, MultiControllerPort)
   const UTILITY::CDigest::Type type = UTILITY::CDigest::Type::MD5;
 
   // Build controllers
-  ADDON::AddonInfoPtr addonInfo1 =
+  auto addonInfo1 =
       std::make_shared<ADDON::CAddonInfo>("game.controller.one", ADDON::AddonType::GAME_CONTROLLER);
-  ControllerPtr controller1 = std::make_shared<CController>(addonInfo1);
+  auto controller1 = std::make_shared<CController>(addonInfo1);
 
-  ADDON::AddonInfoPtr addonInfo2 =
+  auto addonInfo2 =
       std::make_shared<ADDON::CAddonInfo>("game.controller.two", ADDON::AddonType::GAME_CONTROLLER);
-  ControllerPtr controller2 = std::make_shared<CController>(addonInfo2);
+  auto controller2 = std::make_shared<CController>(addonInfo2);
 
   // Controller nodes containing the controllers and empty hubs
   CControllerNode node1;
@@ -176,13 +176,13 @@ TEST(TestControllerDigest, NestedHub)
   const UTILITY::CDigest::Type type = UTILITY::CDigest::Type::MD5;
 
   // Build controllers for both levels
-  ADDON::AddonInfoPtr addonInfo1 = std::make_shared<ADDON::CAddonInfo>(
-      "game.controller.parent", ADDON::AddonType::GAME_CONTROLLER);
-  ControllerPtr controller1 = std::make_shared<CController>(addonInfo1);
+  auto addonInfo1 = std::make_shared<ADDON::CAddonInfo>("game.controller.parent",
+                                                        ADDON::AddonType::GAME_CONTROLLER);
+  auto controller1 = std::make_shared<CController>(addonInfo1);
 
-  ADDON::AddonInfoPtr addonInfo2 = std::make_shared<ADDON::CAddonInfo>(
-      "game.controller.child", ADDON::AddonType::GAME_CONTROLLER);
-  ControllerPtr controller2 = std::make_shared<CController>(addonInfo2);
+  auto addonInfo2 = std::make_shared<ADDON::CAddonInfo>("game.controller.child",
+                                                        ADDON::AddonType::GAME_CONTROLLER);
+  auto controller2 = std::make_shared<CController>(addonInfo2);
 
   // Leaf node with controller2 and empty hub
   CControllerNode nodeChild;

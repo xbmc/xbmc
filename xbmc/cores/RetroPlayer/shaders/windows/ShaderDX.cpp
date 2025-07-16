@@ -116,7 +116,7 @@ void CShaderDX::SetSizes(const float2& prevSize,
 }
 
 void CShaderDX::PrepareParameters(
-    CPoint dest[4],
+    const RETRO::ViewportCoordinates& dest,
     IShaderTexture& sourceTexture,
     const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
     const std::vector<std::unique_ptr<IShader>>& pShaders,

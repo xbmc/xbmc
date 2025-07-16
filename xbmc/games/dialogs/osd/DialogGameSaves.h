@@ -87,7 +87,7 @@ private:
   /*!
   * \brief Called when "Delete" is selected from the context menu
   */
-  void OnDelete(CFileItem& item);
+  void OnDelete(const CFileItem& item);
 
   /*!
    * \brief Called every frame with the caption to set

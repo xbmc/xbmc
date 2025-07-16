@@ -30,27 +30,26 @@ CShaderPresetGLES::CShaderPresetGLES(RETRO::CRenderContext& context,
 
 bool CShaderPresetGLES::CreateShaders()
 {
-  const unsigned int numPasses = static_cast<unsigned int>(m_passes.size());
+  const auto numPasses = static_cast<unsigned int>(m_passes.size());
 
   //! @todo Is this pass specific?
   std::vector<std::shared_ptr<IShaderLut>> passLUTsGL;
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     const ShaderPass& pass = m_passes[shaderIdx];
-    const unsigned int numPassLuts = static_cast<unsigned int>(pass.luts.size());
+    const auto numPassLuts = static_cast<unsigned int>(pass.luts.size());
 
     for (unsigned int i = 0; i < numPassLuts; ++i)
     {
       const ShaderLut& lutStruct = pass.luts[i];
 
-      std::shared_ptr<CShaderLutGLES> passLut =
-          std::make_shared<CShaderLutGLES>(lutStruct.strId, lutStruct.path);
-      if (passLut->Create(m_context, lutStruct))
+      auto passLut = std::make_shared<CShaderLutGLES>(lutStruct.strId, lutStruct.path);
+      if (passLut->Create(lutStruct))
         passLUTsGL.emplace_back(std::move(passLut));
     }
 
     // Create the shader
-    std::unique_ptr<CShaderGLES> videoShader = std::make_unique<CShaderGLES>(m_context);
+    auto videoShader = std::make_unique<CShaderGLES>(m_context);
 
     const std::string& shaderSource = pass.vertexSource; // Also contains fragment source
     const std::string& shaderPath = pass.sourcePath;
@@ -80,7 +79,7 @@ bool CShaderPresetGLES::CreateShaderTextures()
   float2 prevSize = m_videoSize;
   float2 prevTextureSize = m_videoSize;
 
-  const unsigned int numPasses = static_cast<unsigned int>(m_passes.size());
+  const auto numPasses = static_cast<unsigned int>(m_passes.size());
 
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
@@ -166,9 +165,9 @@ bool CShaderPresetGLES::CreateShaderTextures()
       //
       textureSize = scaledSize; // CShaderUtils::GetOptimalTextureSize(scaledSize)
 
-      std::shared_ptr<CGLESTexture> textureGL = std::make_shared<CGLESTexture>(
-          static_cast<unsigned int>(textureSize.x), static_cast<unsigned int>(textureSize.y),
-          XB_FMT_A8R8G8B8); // Format is not used
+      auto textureGL = std::make_shared<CGLESTexture>(static_cast<unsigned int>(textureSize.x),
+                                                      static_cast<unsigned int>(textureSize.y),
+                                                      XB_FMT_A8R8G8B8); // Format is not used
 
       textureGL->CreateTextureObject();
 

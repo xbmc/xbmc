@@ -10,6 +10,7 @@
 
 #include "cores/GameSettings.h"
 #include "cores/RetroPlayer/rendering/RenderSettings.h"
+#include "cores/RetroPlayer/rendering/RenderUtils.h"
 #include "utils/Geometry.h"
 
 extern "C"
@@ -17,7 +18,6 @@ extern "C"
 #include <libavutil/pixfmt.h>
 }
 
-#include <array>
 #include <memory>
 #include <stdint.h>
 
@@ -95,7 +95,7 @@ protected:
 
   // Geometry properties
   CRect m_sourceRect;
-  std::array<CPoint, 4> m_rotatedDestCoords{};
+  ViewportCoordinates m_rotatedDestCoords{};
 
   // Video shaders
   void Updateshaders();

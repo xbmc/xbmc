@@ -11,9 +11,7 @@
 #include <map>
 #include <string>
 
-namespace KODI
-{
-namespace GAME
+namespace KODI::GAME
 {
 class CController;
 
@@ -35,7 +33,6 @@ public:
     float x;
     float y;
     bool operator==(const AnalogStick& rhs) const = default;
-    bool operator!=(const AnalogStick& rhs) const = default;
   };
   struct Accelerometer
   {
@@ -43,10 +40,12 @@ public:
     float y;
     float z;
     bool operator==(const Accelerometer& rhs) const = default;
-    bool operator!=(const Accelerometer& rhs) const = default;
   };
   using Throttle = float;
   using Wheel = float;
+
+  template<typename CONTROL>
+  using ControlMap = std::map<std::string, CONTROL, std::less<>>;
 
   // Constructors
   explicit CControllerState() = default;
@@ -58,18 +57,17 @@ public:
 
   // Operators
   bool operator==(const CControllerState& rhs) const = default;
-  bool operator!=(const CControllerState& rhs) const = default;
 
   // Controller state
   const std::string& ID() const { return m_controllerId; }
 
   // Input state (const accessors)
-  const std::map<std::string, DigitalButton>& DigitalButtons() const { return m_digitalButtons; }
-  const std::map<std::string, AnalogButton>& AnalogButtons() const { return m_analogButtons; }
-  const std::map<std::string, AnalogStick>& AnalogSticks() const { return m_analogSticks; }
-  const std::map<std::string, Accelerometer>& Accelerometers() const { return m_accelerometers; }
-  const std::map<std::string, Throttle>& Throttles() const { return m_throttles; }
-  const std::map<std::string, Wheel>& Wheels() const { return m_wheels; }
+  const ControlMap<DigitalButton>& DigitalButtons() const { return m_digitalButtons; }
+  const ControlMap<AnalogButton>& AnalogButtons() const { return m_analogButtons; }
+  const ControlMap<AnalogStick>& AnalogSticks() const { return m_analogSticks; }
+  const ControlMap<Accelerometer>& Accelerometers() const { return m_accelerometers; }
+  const ControlMap<Throttle>& Throttles() const { return m_throttles; }
+  const ControlMap<Wheel>& Wheels() const { return m_wheels; }
 
   // Input state (mutable accessors)
   DigitalButton GetDigitalButton(const std::string& featureName) const;
@@ -92,13 +90,12 @@ private:
   std::string m_controllerId;
 
   // Input state
-  std::map<std::string, DigitalButton> m_digitalButtons;
-  std::map<std::string, AnalogButton> m_analogButtons;
-  std::map<std::string, AnalogStick> m_analogSticks;
-  std::map<std::string, Accelerometer> m_accelerometers;
-  std::map<std::string, Throttle> m_throttles;
-  std::map<std::string, Wheel> m_wheels;
+  ControlMap<DigitalButton> m_digitalButtons;
+  ControlMap<AnalogButton> m_analogButtons;
+  ControlMap<AnalogStick> m_analogSticks;
+  ControlMap<Accelerometer> m_accelerometers;
+  ControlMap<Throttle> m_throttles;
+  ControlMap<Wheel> m_wheels;
 };
 
-} // namespace GAME
-} // namespace KODI
+} // namespace KODI::GAME

@@ -21,14 +21,12 @@
 using namespace KODI;
 using namespace SHADER;
 
-CShaderGL::CShaderGL(RETRO::CRenderContext& context)
-{
-}
+CShaderGL::CShaderGL() = default;
 
 CShaderGL::~CShaderGL()
 {
   glDeleteBuffers(1, &m_shaderIndexVBO);
-  glDeleteBuffers(3, m_shaderVertexVBO);
+  glDeleteBuffers(3, m_shaderVertexVBO.data());
 
   glDeleteVertexArrays(1, &m_shaderVAO);
 }
@@ -70,7 +68,7 @@ bool CShaderGL::Create(std::string shaderSource,
   GLuint fShader;
 
   vShader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vShader, 1, &vertexShaderSource, NULL);
+  glShaderSource(vShader, 1, &vertexShaderSource, nullptr);
   glCompileShader(vShader);
   glGetShaderiv(vShader, GL_COMPILE_STATUS, &status);
 
@@ -85,7 +83,7 @@ bool CShaderGL::Create(std::string shaderSource,
   }
 
   fShader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fShader, 1, &fragmentShaderSource, NULL);
+  glShaderSource(fShader, 1, &fragmentShaderSource, nullptr);
   glCompileShader(fShader);
   glGetShaderiv(fShader, GL_COMPILE_STATUS, &status);
 
@@ -132,19 +130,19 @@ bool CShaderGL::Create(std::string shaderSource,
   glGenVertexArrays(1, &m_shaderVAO);
   glBindVertexArray(m_shaderVAO);
 
-  glGenBuffers(3, m_shaderVertexVBO);
+  glGenBuffers(3, m_shaderVertexVBO.data());
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[0]);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[1]);
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[2]);
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 
   glGenBuffers(1, &m_shaderIndexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_shaderIndexVBO);
@@ -157,7 +155,7 @@ bool CShaderGL::Create(std::string shaderSource,
 
 void CShaderGL::Render(IShaderTexture& source, IShaderTexture& target)
 {
-  CShaderTextureGL& sourceGL = static_cast<CShaderTextureGL&>(source);
+  auto& sourceGL = static_cast<CShaderTextureGL&>(source);
 
   glUseProgram(m_shaderProgram);
 
@@ -166,18 +164,18 @@ void CShaderGL::Render(IShaderTexture& source, IShaderTexture& target)
   glBindVertexArray(m_shaderVAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_VertexCoords), m_VertexCoords, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(m_VertexCoords), m_VertexCoords.data(), GL_STATIC_DRAW);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[1]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors.data(), GL_STATIC_DRAW);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[2]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoords), m_TexCoords, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoords), m_TexCoords.data(), GL_STATIC_DRAW);
 
   // No need to bind the index VBO, it's part of VAO state
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices.data(), GL_STATIC_DRAW);
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -195,7 +193,7 @@ void CShaderGL::SetSizes(const float2& prevSize,
 }
 
 void CShaderGL::PrepareParameters(
-    CPoint dest[4],
+    const RETRO::ViewportCoordinates& dest,
     IShaderTexture& sourceTexture,
     const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
     const std::vector<std::unique_ptr<IShader>>& pShaders,
@@ -295,8 +293,7 @@ void CShaderGL::UpdateUniformInputs(
 
   if (m_passIdx > 0) // Not first pass
   {
-    CShaderTextureGL& shaderTextureGL =
-        static_cast<CShaderTextureGL&>(*pShaderTextures[m_passIdx - 1]);
+    auto& shaderTextureGL = static_cast<CShaderTextureGL&>(*pShaderTextures[m_passIdx - 1]);
     m_uniformFrameInputs = GetFrameInputData(shaderTextureGL.GetTexture().GetTextureID());
   }
   else // First pass
@@ -382,8 +379,8 @@ void CShaderGL::SetShaderParameters(CGLTexture& sourceTexture)
   // Set lookup textures
   for (const std::shared_ptr<IShaderLut>& lut : m_luts)
   {
-    CGLTexture* texture = static_cast<CGLTexture*>(lut->GetTexture());
-    if (texture != nullptr)
+    auto* texture = static_cast<CGLTexture*>(lut->GetTexture());
+    if (texture)
     {
       const GLint paramLoc = glGetUniformLocation(m_shaderProgram, lut->GetID().c_str());
       glUniform1i(paramLoc, textureUnit);

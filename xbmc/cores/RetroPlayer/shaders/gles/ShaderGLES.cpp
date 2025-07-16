@@ -159,7 +159,7 @@ void CShaderGLES::Render(IShaderTexture& source, IShaderTexture& target)
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_shaderIndexVBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices, GL_STATIC_DRAW);
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
 
   glDisableVertexAttribArray(0);
   glDisableVertexAttribArray(1);
@@ -181,7 +181,7 @@ void CShaderGLES::SetSizes(const float2& prevSize,
 }
 
 void CShaderGLES::PrepareParameters(
-    CPoint dest[4],
+    const RETRO::ViewportCoordinates& dest,
     IShaderTexture& sourceTexture,
     const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
     const std::vector<std::unique_ptr<IShader>>& pShaders,

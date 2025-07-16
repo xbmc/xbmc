@@ -41,13 +41,12 @@ using namespace KODI;
 using namespace GAME;
 using namespace std::chrono_literals;
 
-#define PRESETS_ADDON_NAME "game.shader.presets"
-
 namespace
 {
 
-constexpr auto ICON_VIDEO = "DefaultVideo.png";
-constexpr auto ICON_GET_MORE = "DefaultAddSource.png";
+constexpr const char* PRESETS_ADDON_NAME = "game.shader.presets";
+constexpr const char* ICON_VIDEO = "DefaultVideo.png";
+constexpr const char* ICON_GET_MORE = "DefaultAddSource.png";
 
 struct ScalingMethodProperties
 {
@@ -199,10 +198,10 @@ void CDialogGameVideoFilter::InitVideoFilters()
     if (!canLoadPreset)
       continue;
 
-    CFileItem item{videoFilter.name};
-    item.SetLabel2(videoFilter.folder);
-    item.SetProperty("game.videofilter", CVariant{videoFilter.path});
-    item.SetArt("icon", ICON_VIDEO);
+    auto item{std::make_shared<CFileItem>(videoFilter.name)};
+    item->SetLabel2(videoFilter.folder);
+    item->SetProperty("game.videofilter", CVariant{videoFilter.path});
+    item->SetArt("icon", ICON_VIDEO);
 
     m_items.Add(std::move(item));
   }
@@ -269,7 +268,7 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
 
 unsigned int CDialogGameVideoFilter::GetFocusedItem() const
 {
-  ::CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+  const ::CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
   for (int i = 0; i < m_items.Size(); i++)
   {

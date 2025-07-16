@@ -50,7 +50,7 @@ TEST(TestControllerTreeXML, TranslatePortType)
 TEST(TestControllerTreeXML, SerializeSimpleTree)
 {
   // Load the default controller add-on
-  ADDON::CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
+  const ADDON::CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
   ADDON::AddonPtr addon;
   ASSERT_TRUE(addonManager.GetAddon(DEFAULT_CONTROLLER_ID, addon, ADDON::AddonType::GAME_CONTROLLER,
                                     ADDON::OnlyEnabled::CHOICE_YES));
@@ -97,11 +97,11 @@ TEST(TestControllerTreeXML, SerializeSimpleTree)
 TEST(TestControllerTreeXML, DeserializeSimpleTree)
 {
   // Build an XML document representing a controller tree
-  const char* xml = "<controller>"
-                    "<port type=\"controller\" id=\"1\">"
-                    "<accepts controller=\"game.controller.default\"/>"
-                    "</port>"
-                    "</controller>";
+  const char* xml = R"(<controller>
+                         <port type="controller" id="1">
+                           <accepts controller="game.controller.default"/>
+                         </port>
+                       </controller>)";
   std::string xmlStr{xml};
   CXBMCTinyXML2 doc;
   ASSERT_TRUE(doc.Parse(xmlStr));
@@ -129,7 +129,7 @@ TEST(TestControllerTreeXML, DeserializeSimpleTree)
 TEST(TestControllerTreeXML, SerializeDeserializeRoundTrip)
 {
   // Load the default controller add-on
-  ADDON::CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
+  const ADDON::CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
   ADDON::AddonPtr addon;
   ASSERT_TRUE(addonManager.GetAddon(DEFAULT_CONTROLLER_ID, addon, ADDON::AddonType::GAME_CONTROLLER,
                                     ADDON::OnlyEnabled::CHOICE_YES));
@@ -180,7 +180,7 @@ TEST(TestControllerTreeXML, SerializeDeserializeRoundTrip)
 TEST(TestControllerTreeXML, SerializePortInvalidType)
 {
   // Load the default controller add-on
-  ADDON::CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
+  const ADDON::CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
   ADDON::AddonPtr addon;
   ASSERT_TRUE(addonManager.GetAddon(DEFAULT_CONTROLLER_ID, addon, ADDON::AddonType::GAME_CONTROLLER,
                                     ADDON::OnlyEnabled::CHOICE_YES));
@@ -206,7 +206,7 @@ TEST(TestControllerTreeXML, SerializePortInvalidType)
 TEST(TestControllerTreeXML, SerializePortMissingID)
 {
   // Load the default controller add-on
-  ADDON::CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
+  const ADDON::CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
   ADDON::AddonPtr addon;
   ASSERT_TRUE(addonManager.GetAddon(DEFAULT_CONTROLLER_ID, addon, ADDON::AddonType::GAME_CONTROLLER,
                                     ADDON::OnlyEnabled::CHOICE_YES));
@@ -260,9 +260,9 @@ TEST(TestControllerTreeXML, SerializeControllerNodeMissingController)
 TEST(TestControllerTreeXML, DeserializePortMissingID)
 {
   // XML representing a port with a type but no id
-  const char* xml = "<port type=\"controller\">"
-                    "<accepts controller=\"game.controller.default\"/>"
-                    "</port>";
+  const char* xml = R"(<port type="controller">
+                         <accepts controller="game.controller.default"/>
+                       </port>)";
   std::string xmlStr{xml};
   CXBMCTinyXML2 doc;
   ASSERT_TRUE(doc.Parse(xmlStr));

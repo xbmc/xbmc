@@ -121,12 +121,12 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
 
           if (screenWidth / (sourceFrameRatio * pixelRatio) > screenHeight)
           {
-            const int zoomFactor = static_cast<int>(screenHeight / sourceWidth);
+            const auto zoomFactor = static_cast<int>(screenHeight / sourceWidth);
             zoomAmount = (zoomFactor * sourceWidth) / screenHeight;
           }
           else
           {
-            const int zoomFactor = static_cast<int>(screenWidth / (sourceHeight * pixelRatio));
+            const auto zoomFactor = static_cast<int>(screenWidth / (sourceHeight * pixelRatio));
             zoomAmount = (zoomFactor * sourceHeight * pixelRatio) / screenWidth;
           }
 
@@ -137,12 +137,12 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
 
           if (screenWidth / (sourceFrameRatio * pixelRatio) > screenHeight)
           {
-            const int zoomFactor = static_cast<int>(screenHeight / sourceHeight);
+            const auto zoomFactor = static_cast<int>(screenHeight / sourceHeight);
             zoomAmount = (zoomFactor * sourceHeight) / screenHeight;
           }
           else
           {
-            const int zoomFactor = static_cast<int>(screenWidth / (sourceWidth * pixelRatio));
+            const auto zoomFactor = static_cast<int>(screenWidth / (sourceWidth * pixelRatio));
             zoomAmount = (zoomFactor * sourceWidth * pixelRatio) / screenWidth;
           }
 
@@ -162,12 +162,12 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
 
           if (screenWidth / (sourceFrameRatio * pixelRatio) > screenHeight)
           {
-            const int zoomFactor = static_cast<int>(screenHeight / sourceWidth);
+            const auto zoomFactor = static_cast<int>(screenHeight / sourceWidth);
             zoomAmount = (zoomFactor * sourceWidth) / screenHeight;
           }
           else
           {
-            const int zoomFactor = static_cast<int>(screenWidth / (sourceHeight * pixelRatio));
+            const auto zoomFactor = static_cast<int>(screenWidth / (sourceHeight * pixelRatio));
             zoomAmount = (zoomFactor * sourceHeight * pixelRatio) / screenWidth;
           }
 
@@ -179,12 +179,12 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
 
           if (screenWidth / (sourceFrameRatio * pixelRatio) > screenHeight)
           {
-            const int zoomFactor = static_cast<int>(screenHeight / sourceHeight);
+            const auto zoomFactor = static_cast<int>(screenHeight / sourceHeight);
             zoomAmount = (zoomFactor * sourceHeight) / screenHeight;
           }
           else
           {
-            const int zoomFactor = static_cast<int>(screenWidth / (sourceWidth * pixelRatio));
+            const auto zoomFactor = static_cast<int>(screenWidth / (sourceWidth * pixelRatio));
             zoomAmount = (zoomFactor * sourceWidth * pixelRatio) / screenWidth;
           }
 
@@ -357,10 +357,10 @@ void CRenderUtils::CropSource(CRect& sourceRect,
   }
 }
 
-std::array<CPoint, 4> CRenderUtils::ReorderDrawPoints(const CRect& destRect,
-                                                      unsigned int orientationDegCCW)
+ViewportCoordinates CRenderUtils::ReorderDrawPoints(const CRect& destRect,
+                                                    unsigned int orientationDegCCW)
 {
-  std::array<CPoint, 4> rotatedDestCoords{};
+  ViewportCoordinates rotatedDestCoords{};
 
   switch (orientationDegCCW)
   {

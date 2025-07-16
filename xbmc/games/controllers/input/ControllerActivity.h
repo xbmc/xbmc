@@ -60,8 +60,8 @@ private:
   float m_lastActivation{0.0f};
   float m_currentActivation{0.0f};
   KEYBOARD::KeyName m_activeKey;
-  std::map<MOUSE::PointerName, MousePointer> m_mousePointers;
-  std::set<MOUSE::ButtonName> m_activeMouseButtons;
+  std::map<MOUSE::PointerName, MousePointer, std::less<>> m_mousePointers;
+  std::set<MOUSE::ButtonName, std::less<>> m_activeMouseButtons;
   bool m_bKeyPressed{false};
 };
 } // namespace GAME

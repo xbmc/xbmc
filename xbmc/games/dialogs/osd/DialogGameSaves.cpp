@@ -431,7 +431,7 @@ void CDialogGameSaves::OnRename(CFileItem& item)
   }
 }
 
-void CDialogGameSaves::OnDelete(CFileItem& item)
+void CDialogGameSaves::OnDelete(const CFileItem& item)
 {
   // "Confirm delete"
   // "Would you like to delete the selected file(s)?[CR]Warning - this action can't be undone!"
