@@ -174,7 +174,7 @@ unsigned int CVideoPlayActionProcessor::ChooseStackPart() const
   return dialog->GetSelectedItem() + 1; // part numbers are 1-based
 }
 
-void CVideoPlayActionProcessor::SetResumeData() const
+void CVideoPlayActionProcessor::SetResumeData()
 {
   const auto item{GetItem()};
   if (m_chosenStackPart)
@@ -189,7 +189,7 @@ void CVideoPlayActionProcessor::SetResumeData() const
   }
 }
 
-void CVideoPlayActionProcessor::SetStartData() const
+void CVideoPlayActionProcessor::SetStartData()
 {
   const auto item{GetItem()};
   if (m_chosenStackPart)
@@ -229,7 +229,7 @@ bool CVideoPlayActionProcessor::OnPlaySelected()
   return true;
 }
 
-void CVideoPlayActionProcessor::Play(const std::string& player) const
+void CVideoPlayActionProcessor::Play(const std::string& player)
 {
   auto item{GetItem()};
   if (item->IsFolder() && item->HasVideoVersions())

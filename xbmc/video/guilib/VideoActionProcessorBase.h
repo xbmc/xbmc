@@ -28,7 +28,8 @@ public:
   bool UserCancelled() const { return m_userCancelled; }
   void SetUserCancelled(bool set) { m_userCancelled = set; }
 
-  std::shared_ptr<CFileItem> GetItem() const { return m_item; }
+  std::shared_ptr<CFileItem> GetItem() { return m_item; }
+  std::shared_ptr<const CFileItem> GetItem() const { return m_item; }
 
 protected:
   virtual Action GetDefaultAction() = 0;
