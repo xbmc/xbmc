@@ -100,7 +100,7 @@ link_directories(${DEPENDS_PATH}/lib)
 
 # Additional libraries
 list(APPEND DEPLIBS bcrypt.lib d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib WS2_32.lib
-                    PowrProf.lib setupapi.lib Shlwapi.lib dwmapi.lib dxguid.lib DelayImp.lib)
+                    PowrProf.lib setupapi.lib Shlwapi.lib dwmapi.lib dxguid.lib DelayImp.lib WindowsApp.lib)
 
 # NODEFAULTLIB option
 set(_nodefaultlibs_RELEASE libcmt)
