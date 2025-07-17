@@ -18,11 +18,6 @@
 
 namespace KODI
 {
-namespace RETRO
-{
-class CRenderContext;
-}
-
 namespace SHADER
 {
 class CTextureBase;
@@ -38,7 +33,7 @@ public:
   ~CShaderLutDX() override;
 
   // Implementation of IShaderLut
-  bool Create(RETRO::CRenderContext& context, const ShaderLut& lut) override;
+  bool Create(const ShaderLut& lut) override;
   CTexture* GetTexture() override { return m_texture.get(); }
 
 private:

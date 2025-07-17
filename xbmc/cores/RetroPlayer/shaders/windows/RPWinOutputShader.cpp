@@ -186,7 +186,7 @@ bool CRPWinOutputShader::Create(RETRO::SCALINGMETHOD scalingMethod)
 
 void CRPWinOutputShader::Render(CD3DTexture& sourceTexture,
                                 CRect sourceRect,
-                                const CPoint points[4],
+                                const KODI::RETRO::ViewportCoordinates& points,
                                 CRect& viewPort,
                                 CD3DTexture& target,
                                 unsigned int range /* = 0 */)
@@ -199,7 +199,7 @@ void CRPWinOutputShader::Render(CD3DTexture& sourceTexture,
 void CRPWinOutputShader::PrepareParameters(unsigned int sourceWidth,
                                            unsigned int sourceHeight,
                                            CRect sourceRect,
-                                           const CPoint points[4])
+                                           const KODI::RETRO::ViewportCoordinates& points)
 {
   bool changed = false;
   for (unsigned int i = 0; i < 4 && !changed; ++i)

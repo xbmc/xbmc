@@ -295,8 +295,7 @@ bool CRPWinRenderer::SupportsScalingMethod(SCALINGMETHOD method)
 
 void CRPWinRenderer::Render(CD3DTexture& target)
 {
-  const CPoint destPoints[4] = {m_rotatedDestCoords[0], m_rotatedDestCoords[1],
-                                m_rotatedDestCoords[2], m_rotatedDestCoords[3]};
+  const ViewportCoordinates destPoints{m_rotatedDestCoords};
 
   CWinRenderBuffer* renderBuffer = static_cast<CWinRenderBuffer*>(m_renderBuffer);
   if (renderBuffer == nullptr)
@@ -313,7 +312,7 @@ void CRPWinRenderer::Render(CD3DTexture& target)
   {
     //! @todo Orientation?
     /*
-    CPoint destPoints[4];
+    ViewportCoordinates destPoints = {};
     // select destination rectangle
     if (m_renderOrientation)
     {

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ShaderTypes.h"
-#include "utils/Geometry.h"
+#include "cores/RetroPlayer/RetroPlayerTypes.h"
 
 #include <string>
 #include <vector>
@@ -46,7 +46,7 @@ public:
    *
    * \return Returns false if updating or rendering failed, true if both succeeded
    */
-  virtual bool RenderUpdate(const CPoint dest[],
+  virtual bool RenderUpdate(const RETRO::ViewportCoordinates& dest,
                             IShaderTexture& source,
                             IShaderTexture& target) = 0;
 

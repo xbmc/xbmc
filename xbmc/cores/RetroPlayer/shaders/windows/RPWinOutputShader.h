@@ -9,8 +9,8 @@
 #pragma once
 
 #include "cores/GameSettings.h"
+#include "cores/RetroPlayer/RetroPlayerTypes.h"
 #include "guilib/D3DResource.h"
-#include "utils/Geometry.h"
 
 #include <memory>
 #include <string>
@@ -59,7 +59,7 @@ public:
   bool Create(RETRO::SCALINGMETHOD scalingMethod);
   void Render(CD3DTexture& sourceTexture,
               CRect sourceRect,
-              const CPoint points[4],
+              const KODI::RETRO::ViewportCoordinates& points,
               CRect& viewPort,
               CD3DTexture& target,
               unsigned int range = 0);
@@ -68,18 +68,13 @@ private:
   void PrepareParameters(unsigned int sourceWidth,
                          unsigned int sourceHeight,
                          CRect sourceRect,
-                         const CPoint points[4]);
+                         const KODI::RETRO::ViewportCoordinates& points);
   void SetShaderParameters(CD3DTexture& sourceTexture, unsigned int range, CRect& viewPort);
 
   unsigned int m_sourceWidth{0};
   unsigned int m_sourceHeight{0};
-  CRect m_sourceRect{0.f, 0.f, 0.f, 0.f};
-  CPoint m_destPoints[4] = {
-      {0.f, 0.f},
-      {0.f, 0.f},
-      {0.f, 0.f},
-      {0.f, 0.f},
-  };
+  CRect m_sourceRect{};
+  KODI::RETRO::ViewportCoordinates m_destPoints{};
 };
 
 } // namespace SHADER

@@ -11,6 +11,7 @@
 #include "cores/GameSettings.h"
 
 #include <string>
+#include <string_view>
 
 namespace KODI
 {
@@ -44,7 +45,7 @@ public:
   void SetRenderStretchMode(STRETCHMODE mode) { m_stretchMode = mode; }
 
   const std::string& GetShaderPreset() const { return m_shaderPreset; }
-  void SetShaderPreset(const std::string& shaderPreset) { m_shaderPreset = shaderPreset; }
+  void SetShaderPreset(std::string_view shaderPreset) { m_shaderPreset = shaderPreset; }
   void ResetShaderPreset();
 
   unsigned int GetRenderRotation() const { return m_rotationDegCCW; }

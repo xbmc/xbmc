@@ -130,7 +130,7 @@ void CControllerActivity::OnInputFrame()
       m_currentActivation = 1.0f;
 
     // Process mouse motion
-    for (auto& it : m_mousePointers)
+    for (const auto& it : m_mousePointers)
     {
       const MousePointer& pointer = it.second;
       if (pointer.active && !pointer.timer.IsTimePast())

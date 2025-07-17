@@ -305,7 +305,7 @@ void CGUIPortList::OnControllerSelected(const CPortNode& port, const ControllerP
         break;
       case PORT_TYPE::UNKNOWN:
       default:
-        CLog::Log(LOGERROR, "Unknown port type \"{}\" for port ID \"{}\"",
+        CLog::Log(LOGERROR, R"(Unknown port type "{}" for port ID "{}")",
                   static_cast<int>(port.GetPortType()), port.GetAddress());
         break;
     }

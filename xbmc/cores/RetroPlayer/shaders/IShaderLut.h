@@ -19,11 +19,6 @@ class CTexture;
 
 namespace KODI
 {
-namespace RETRO
-{
-class CRenderContext;
-}
-
 namespace SHADER
 {
 /*!
@@ -38,12 +33,11 @@ public:
   /*!
    * \brief Create the LUT and allocate resources
    *
-   * \param context The render context
    * \param lut The LUT information structure
    *
    * \return Returns true if successful and the LUT can be used, false otherwise
    */
-  virtual bool Create(RETRO::CRenderContext& context, const ShaderLut& lut) = 0;
+  virtual bool Create(const ShaderLut& lut) = 0;
 
   /*!
    * \brief Gets ID of LUT

@@ -30,7 +30,7 @@ CGameServices::CGameServices(CControllerManager& controllerManager,
     m_profileManager(profileManager),
     m_gameSettings(new CGameSettings()),
     m_agentInput(std::make_unique<CAgentInput>(peripheralManager, inputManager)),
-    m_videoShaders(new SHADER::CShaderPresetFactory(addons))
+    m_videoShaders(std::make_unique<SHADER::CShaderPresetFactory>(addons))
 {
   // Load the add-ons from the database asynchronously
   m_initializationTask =

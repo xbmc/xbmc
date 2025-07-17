@@ -171,7 +171,7 @@ INPUT_TYPE CControllerTranslator::TranslateInputType(const std::string& strType)
   return INPUT_TYPE::UNKNOWN;
 }
 
-PORT_TYPE CControllerTranslator::TranslatePortType(const std::string& strPortType)
+PORT_TYPE CControllerTranslator::TranslatePortType(std::string_view strPortType)
 {
   if (strPortType == KEYBOARD_PORT_TYPE)
     return PORT_TYPE::KEYBOARD;

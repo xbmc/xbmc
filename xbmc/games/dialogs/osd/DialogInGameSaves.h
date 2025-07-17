@@ -49,7 +49,7 @@ protected:
   void OnLoad(CFileItem& focusedItem);
   void OnOverwrite(CFileItem& focusedItem);
   void OnRename(CFileItem& focusedItem);
-  void OnDelete(CFileItem& focusedItem);
+  void OnDelete(const CFileItem& focusedItem);
 
 private:
   void InitSavedGames();

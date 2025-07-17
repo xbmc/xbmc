@@ -26,9 +26,9 @@ CShaderLutGL::CShaderLutGL(std::string id, std::string path)
 {
 }
 
-bool CShaderLutGL::Create(RETRO::CRenderContext& context, const ShaderLut& lut)
+bool CShaderLutGL::Create(const ShaderLut& lut)
 {
-  std::unique_ptr<CTexture> lutTexture(CreateLUTTexture(context, lut));
+  std::unique_ptr<CTexture> lutTexture(CreateLUTTexture(lut));
   if (!lutTexture)
   {
     CLog::Log(LOGWARNING, "CShaderLutGL::Create: Couldn't create texture for LUT: {}", lut.strId);
@@ -39,11 +39,10 @@ bool CShaderLutGL::Create(RETRO::CRenderContext& context, const ShaderLut& lut)
   return true;
 }
 
-std::unique_ptr<CTexture> CShaderLutGL::CreateLUTTexture(RETRO::CRenderContext& context,
-                                                         const ShaderLut& lut)
+std::unique_ptr<CTexture> CShaderLutGL::CreateLUTTexture(const ShaderLut& lut)
 {
   std::unique_ptr<CTexture> texture = CTexture::LoadFromFile(lut.path);
-  CGLTexture* textureGL = static_cast<CGLTexture*>(texture.get());
+  auto* textureGL = static_cast<CGLTexture*>(texture.get());
 
   if (textureGL == nullptr)
   {

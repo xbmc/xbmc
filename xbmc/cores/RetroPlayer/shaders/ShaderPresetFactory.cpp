@@ -149,7 +149,7 @@ void CShaderPresetFactory::UpdateAddons()
     }
     else
     {
-      m_failedAddons.emplace(std::move(addonId), std::move(addonPtr));
+      m_failedAddons.try_emplace(std::move(addonId), std::move(addonPtr));
     }
   }
 }

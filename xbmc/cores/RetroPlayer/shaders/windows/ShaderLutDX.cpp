@@ -27,7 +27,7 @@ CShaderLutDX::CShaderLutDX(std::string id, std::string path)
 
 CShaderLutDX::~CShaderLutDX() = default;
 
-bool CShaderLutDX::Create(RETRO::CRenderContext& context, const ShaderLut& lut)
+bool CShaderLutDX::Create(const ShaderLut& lut)
 {
   std::unique_ptr<CTexture> lutTexture{CreateLUTexture(lut)};
   if (!lutTexture)

@@ -18,17 +18,12 @@
 
 namespace KODI
 {
-namespace RETRO
-{
-class CRenderContext;
-}
-
 namespace SHADER
 {
 class CShaderGL : public IShader
 {
 public:
-  CShaderGL(RETRO::CRenderContext& context);
+  CShaderGL();
   ~CShaderGL() override;
 
   // Implementation of IShader
@@ -43,7 +38,7 @@ public:
   void SetSizes(const float2& prevSize,
                 const float2& prevTextureSize,
                 const float2& nextSize) override;
-  void PrepareParameters(CPoint dest[4],
+  void PrepareParameters(const RETRO::ViewportCoordinates& dest,
                          IShaderTexture& sourceTexture,
                          const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
                          const std::vector<std::unique_ptr<IShader>>& pShaders,
@@ -73,7 +68,7 @@ private:
                            uint64_t frameCount);
   UniformInputs GetInputData(uint64_t frameCount = 0) const;
   UniformFrameInputs GetFrameInputData(GLuint texture) const;
-  UniformFrameInputs GetFrameUniformInputs() { return m_uniformFrameInputs; }
+  UniformFrameInputs GetFrameUniformInputs() const { return m_uniformFrameInputs; }
   void GetUniformLocs();
   void SetShaderParameters(CGLTexture& sourceTexture);
 
@@ -115,10 +110,10 @@ private:
   unsigned int m_frameCountMod{0};
 
   GLuint m_shaderProgram{0};
-  GLubyte m_indices[4];
-  float m_VertexCoords[4][3];
-  float m_colors[4][3];
-  float m_TexCoords[4][2];
+  std::array<GLubyte, 4> m_indices;
+  std::array<std::array<float, 3>, 4> m_VertexCoords;
+  std::array<std::array<float, 3>, 4> m_colors;
+  std::array<std::array<float, 2>, 4> m_TexCoords;
 
   UniformInputs m_uniformInputs;
   UniformFrameInputs m_uniformFrameInputs;
@@ -132,7 +127,7 @@ private:
   GLint m_MVPMatrixLoc{-1};
 
   GLuint m_shaderVAO = GL_NONE;
-  GLuint m_shaderVertexVBO[3]{GL_NONE};
+  std::array<GLuint, 3> m_shaderVertexVBO{GL_NONE};
   GLuint m_shaderIndexVBO = GL_NONE;
 };
 } // namespace SHADER

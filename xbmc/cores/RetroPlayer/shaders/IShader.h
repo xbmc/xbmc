@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ShaderTypes.h"
-#include "utils/Geometry.h"
+#include "cores/RetroPlayer/RetroPlayerTypes.h"
 
 #include <map>
 #include <stdint.h>
@@ -81,7 +81,7 @@ public:
    * \param frameCount Number of frames that have passed
    */
   virtual void PrepareParameters(
-      CPoint dest[4],
+      const RETRO::ViewportCoordinates& dest,
       IShaderTexture& sourceTexture,
       const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
       const std::vector<std::unique_ptr<IShader>>& pShaders,

@@ -52,11 +52,8 @@ bool CShaderTextureGL::BindFBO()
   if (renderTargetID == 0)
     return false;
 
-  if (FBO == 0)
-  {
-    if (!CreateFBO())
-      return false;
-  }
+  if (FBO == 0 && !CreateFBO())
+    return false;
 
   glBindFramebuffer(GL_FRAMEBUFFER, FBO);
   glBindTexture(GL_TEXTURE_2D, renderTargetID);
@@ -64,7 +61,7 @@ bool CShaderTextureGL::BindFBO()
 
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
-    CLog::Log(LOGERROR, "{}: Framebuffer is not complete!", __func__);
+    CLog::LogF(LOGERROR, "Framebuffer is not complete!");
     UnbindFBO();
     return false;
   }
@@ -75,7 +72,7 @@ bool CShaderTextureGL::BindFBO()
   return true;
 }
 
-void CShaderTextureGL::UnbindFBO()
+void CShaderTextureGL::UnbindFBO() const
 {
   if (IsSRGBFramebuffer())
     glDisable(GL_FRAMEBUFFER_SRGB);

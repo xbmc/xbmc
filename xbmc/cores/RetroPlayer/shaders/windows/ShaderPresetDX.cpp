@@ -30,7 +30,7 @@ CShaderPresetDX::CShaderPresetDX(RETRO::CRenderContext& context,
 
 bool CShaderPresetDX::CreateShaders()
 {
-  const unsigned int numPasses = static_cast<unsigned int>(m_passes.size());
+  const auto numPasses = static_cast<unsigned int>(m_passes.size());
 
   //! @todo Is this pass specific?
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
@@ -38,20 +38,19 @@ bool CShaderPresetDX::CreateShaders()
     std::vector<std::shared_ptr<IShaderLut>> passLUTsDX;
 
     const ShaderPass& pass = m_passes[shaderIdx];
-    const unsigned int numPassLuts = static_cast<unsigned int>(pass.luts.size());
+    const auto numPassLuts = static_cast<unsigned int>(pass.luts.size());
 
     for (unsigned int i = 0; i < numPassLuts; ++i)
     {
       const ShaderLut& lutStruct = pass.luts[i];
 
-      std::shared_ptr<CShaderLutDX> passLut =
-          std::make_shared<CShaderLutDX>(lutStruct.strId, lutStruct.path);
-      if (passLut->Create(m_context, lutStruct))
+      auto passLut = std::make_shared<CShaderLutDX>(lutStruct.strId, lutStruct.path);
+      if (passLut->Create(lutStruct))
         passLUTsDX.emplace_back(std::move(passLut));
     }
 
     // Create the shader
-    std::unique_ptr<CShaderDX> videoShader = std::make_unique<CShaderDX>(m_context);
+    auto videoShader = std::make_unique<CShaderDX>(m_context);
 
     const std::string& shaderSource = pass.vertexSource; // Also contains fragment source
     const std::string& shaderPath = pass.sourcePath;
@@ -124,7 +123,7 @@ bool CShaderPresetDX::CreateShaderTextures()
   float2 prevSize = m_videoSize;
   float2 prevTextureSize = m_videoSize;
 
-  const unsigned int numPasses = static_cast<unsigned int>(m_passes.size());
+  const auto numPasses = static_cast<unsigned int>(m_passes.size());
 
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
@@ -203,7 +202,7 @@ bool CShaderPresetDX::CreateShaderTextures()
       //
       textureSize = scaledSize; // CShaderUtils::GetOptimalTextureSize(scaledSize)
 
-      std::shared_ptr<CD3DTexture> textureDX = std::make_shared<CD3DTexture>();
+      auto textureDX = std::make_shared<CD3DTexture>();
 
       if (!textureDX->Create(static_cast<UINT>(textureSize.x), static_cast<UINT>(textureSize.y), 1,
                              D3D11_USAGE_DEFAULT, textureFormat, nullptr, 0))
