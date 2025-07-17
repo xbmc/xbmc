@@ -447,7 +447,7 @@ bool DatabaseUtils::GetDatabaseResults(const MediaType& mediaType,
     return true;
 
   const dbiplus::result_set& resultSet = dataset.get_result_set();
-  const unsigned int offset = static_cast<unsigned int>(results.size());
+  const auto offset = static_cast<unsigned int>(results.size());
 
   if (fields.empty())
   {

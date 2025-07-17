@@ -57,7 +57,7 @@ protected:
                                           int label = -1,
                                           int help = -1,
                                           bool separatorBelowLabel = true,
-                                          bool hideSeparator = false);
+                                          bool hideSeparator = false) const;
   // checkmark control
   std::shared_ptr<CSettingBool> AddToggle(const std::shared_ptr<CSettingGroup>& group,
                                           const std::string& id,

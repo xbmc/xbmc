@@ -141,9 +141,9 @@ public:
   /*! Returns installed add-ons, including disabled, with given type. */
   bool GetInstalledAddons(VECADDONS& addons, AddonType type) const;
 
-  bool GetDisabledAddons(VECADDONS& addons);
+  bool GetDisabledAddons(VECADDONS& addons) const;
 
-  bool GetDisabledAddons(VECADDONS& addons, AddonType type);
+  bool GetDisabledAddons(VECADDONS& addons, AddonType type) const;
 
   /*! Get all installable addons */
   bool GetInstallableAddons(VECADDONS& addons);
@@ -288,7 +288,7 @@ public:
      */
   bool CanAddonBeDisabled(const std::string& ID);
 
-  bool CanAddonBeEnabled(const std::string& id);
+  bool CanAddonBeEnabled(const std::string& id) const;
 
   /* \brief Checks whether an addon is installed.
      \param ID id of the addon
@@ -319,7 +319,7 @@ public:
   /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
     \param addon addon to be checked
     */
-  bool CanAddonBeInstalled(const AddonPtr& addon);
+  bool CanAddonBeInstalled(const AddonPtr& addon) const;
 
   bool CanUninstall(const AddonPtr& addon);
 

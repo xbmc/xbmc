@@ -86,7 +86,9 @@ constexpr auto ColorimetryMap = make_map<KODI::UTILS::Colorimetry, std::string_v
 } // namespace
 
 CWinSystemGbm::CWinSystemGbm()
-  : m_DRM(nullptr), m_GBM(new CGBMUtils), m_libinput(new CLibInputHandler)
+  : m_DRM(nullptr),
+    m_GBM(std::make_unique<CGBMUtils>()),
+    m_libinput(std::make_unique<CLibInputHandler>())
 {
   m_dpms = std::make_shared<CGBMDPMSSupport>();
   m_libinput->Start();

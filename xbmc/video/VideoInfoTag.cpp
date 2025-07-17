@@ -767,14 +767,14 @@ void CVideoInfoTag::Serialize(CVariant& value) const
 
   value["rating"] = GetRating().rating;
   CVariant ratings{CVariant::VariantTypeObject};
-  for (const auto& [name, value] : m_ratings)
+  for (const auto& [ratingname, ratingvalue] : m_ratings)
   {
     CVariant rating;
-    rating["rating"] = value.rating;
-    rating["votes"] = value.votes;
-    rating["default"] = (name == m_strDefaultRating);
+    rating["rating"] = ratingvalue.rating;
+    rating["votes"] = ratingvalue.votes;
+    rating["default"] = (ratingname == m_strDefaultRating);
 
-    ratings[name] = rating;
+    ratings[ratingname] = rating;
   }
   value["ratings"] = ratings;
   value["userrating"] = m_iUserRating;

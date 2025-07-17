@@ -375,12 +375,12 @@ bool CAddonMgr::GetInstalledAddons(VECADDONS& addons, AddonType type) const
   return GetAddonsInternal(type, addons, OnlyEnabled::CHOICE_NO, CheckIncompatible::CHOICE_NO);
 }
 
-bool CAddonMgr::GetDisabledAddons(VECADDONS& addons)
+bool CAddonMgr::GetDisabledAddons(VECADDONS& addons) const
 {
   return CAddonMgr::GetDisabledAddons(addons, AddonType::UNKNOWN);
 }
 
-bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, AddonType type)
+bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, AddonType type) const
 {
   VECADDONS all;
   if (GetInstalledAddons(all, type))
@@ -964,7 +964,7 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
   return true;
 }
 
-bool CAddonMgr::CanAddonBeEnabled(const std::string& id)
+bool CAddonMgr::CanAddonBeEnabled(const std::string& id) const
 {
   return !id.empty() && IsAddonInstalled(id);
 }
@@ -1013,7 +1013,7 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID,
   return false;
 }
 
-bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
+bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon) const
 {
   return addon != nullptr && addon->LifecycleState() != AddonLifecycleState::BROKEN &&
          !IsAddonInstalled(addon->ID());

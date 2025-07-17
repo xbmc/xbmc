@@ -115,8 +115,8 @@ VFSEntryPtr CVFSAddonCache::GetAddonInstance(const std::string& strId)
 
   std::unique_lock lock(m_critSection);
 
-  const auto itAddon = std::ranges::find_if(m_addonsInstances, [&strId](const VFSEntryPtr& addon)
-                                            { return addon->ID() == strId; });
+  const auto itAddon = std::ranges::find_if(m_addonsInstances, [&strId](const VFSEntryPtr& a)
+                                            { return a->ID() == strId; });
 
   if (itAddon != m_addonsInstances.end())
     addon = *itAddon;
@@ -170,35 +170,36 @@ void CVFSAddonCache::Update(const std::string& id)
 class CVFSURLWrapper
 {
   public:
-    explicit CVFSURLWrapper(const CURL& url2)
+    explicit CVFSURLWrapper(const CURL& url)
     {
-      m_strings.push_back(url2.Get());
-      m_strings.push_back(url2.GetDomain());
-      m_strings.push_back(url2.GetHostName());
-      m_strings.push_back(url2.GetFileName());
-      m_strings.push_back(url2.GetOptions());
-      m_strings.push_back(url2.GetUserName());
-      m_strings.push_back(url2.GetPassWord());
-      m_strings.push_back(url2.GetRedacted());
-      m_strings.push_back(url2.GetShareName());
-      m_strings.push_back(url2.GetProtocol());
+      m_strings.emplace_back(url.Get());
+      m_strings.emplace_back(url.GetDomain());
+      m_strings.emplace_back(url.GetHostName());
+      m_strings.emplace_back(url.GetFileName());
+      m_strings.emplace_back(url.GetOptions());
+      m_strings.emplace_back(url.GetUserName());
+      m_strings.emplace_back(url.GetPassWord());
+      m_strings.emplace_back(url.GetRedacted());
+      m_strings.emplace_back(url.GetShareName());
+      m_strings.emplace_back(url.GetProtocol());
 
-      url.url = m_strings[0].c_str();
-      url.domain = m_strings[1].c_str();
-      url.hostname = m_strings[2].c_str();
-      url.filename = m_strings[3].c_str();
-      url.port = url2.GetPort();
-      url.options = m_strings[4].c_str();
-      url.username = m_strings[5].c_str();
-      url.password = m_strings[6].c_str();
-      url.redacted = m_strings[7].c_str();
-      url.sharename = m_strings[8].c_str();
-      url.protocol = m_strings[9].c_str();
+      m_url.url = m_strings[0].c_str();
+      m_url.domain = m_strings[1].c_str();
+      m_url.hostname = m_strings[2].c_str();
+      m_url.filename = m_strings[3].c_str();
+      m_url.port = url.GetPort();
+      m_url.options = m_strings[4].c_str();
+      m_url.username = m_strings[5].c_str();
+      m_url.password = m_strings[6].c_str();
+      m_url.redacted = m_strings[7].c_str();
+      m_url.sharename = m_strings[8].c_str();
+      m_url.protocol = m_strings[9].c_str();
     }
 
-    VFSURL url;
+    const VFSURL& GetURL() const { return m_url; }
 
   private:
+    VFSURL m_url;
     std::vector<std::string> m_strings;
 };
 
@@ -256,7 +257,7 @@ void* CVFSEntry::Open(const CURL& url)
     return nullptr;
 
   CVFSURLWrapper url2(url);
-  return m_ifc.vfs->toAddon->open(m_ifc.vfs, &url2.url);
+  return m_ifc.vfs->toAddon->open(m_ifc.vfs, &url2.GetURL());
 }
 
 void* CVFSEntry::OpenForWrite(const CURL& url, bool bOverWrite)
@@ -265,7 +266,7 @@ void* CVFSEntry::OpenForWrite(const CURL& url, bool bOverWrite)
     return nullptr;
 
   CVFSURLWrapper url2(url);
-  return m_ifc.vfs->toAddon->open_for_write(m_ifc.vfs, &url2.url, bOverWrite);
+  return m_ifc.vfs->toAddon->open_for_write(m_ifc.vfs, &url2.GetURL(), bOverWrite);
 }
 
 bool CVFSEntry::Exists(const CURL& url) const
@@ -274,7 +275,7 @@ bool CVFSEntry::Exists(const CURL& url) const
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_ifc.vfs->toAddon->exists(m_ifc.vfs, &url2.url);
+  return m_ifc.vfs->toAddon->exists(m_ifc.vfs, &url2.GetURL());
 }
 
 int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer) const
@@ -285,7 +286,7 @@ int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer) const
 
   CVFSURLWrapper url2(url);
   STAT_STRUCTURE statBuffer = {};
-  ret = m_ifc.vfs->toAddon->stat(m_ifc.vfs, &url2.url, &statBuffer);
+  ret = m_ifc.vfs->toAddon->stat(m_ifc.vfs, &url2.GetURL(), &statBuffer);
 
   *buffer = {};
   buffer->st_dev = statBuffer.deviceId;
@@ -438,7 +439,7 @@ bool CVFSEntry::Delete(const CURL& url) const
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_ifc.vfs->toAddon->delete_it(m_ifc.vfs, &url2.url);
+  return m_ifc.vfs->toAddon->delete_it(m_ifc.vfs, &url2.GetURL());
 }
 
 bool CVFSEntry::Rename(const CURL& url, const CURL& url2) const
@@ -448,7 +449,7 @@ bool CVFSEntry::Rename(const CURL& url, const CURL& url2) const
 
   CVFSURLWrapper url3(url);
   CVFSURLWrapper url4(url2);
-  return m_ifc.vfs->toAddon->rename(m_ifc.vfs, &url3.url, &url4.url);
+  return m_ifc.vfs->toAddon->rename(m_ifc.vfs, &url3.GetURL(), &url4.GetURL());
 }
 
 void CVFSEntry::ClearOutIdle() const
@@ -469,7 +470,7 @@ bool CVFSEntry::DirectoryExists(const CURL& url) const
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_ifc.vfs->toAddon->directory_exists(m_ifc.vfs, &url2.url);
+  return m_ifc.vfs->toAddon->directory_exists(m_ifc.vfs, &url2.GetURL());
 }
 
 bool CVFSEntry::RemoveDirectory(const CURL& url) const
@@ -478,7 +479,7 @@ bool CVFSEntry::RemoveDirectory(const CURL& url) const
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_ifc.vfs->toAddon->remove_directory(m_ifc.vfs, &url2.url);
+  return m_ifc.vfs->toAddon->remove_directory(m_ifc.vfs, &url2.GetURL());
 }
 
 bool CVFSEntry::CreateDirectory(const CURL& url) const
@@ -487,7 +488,7 @@ bool CVFSEntry::CreateDirectory(const CURL& url) const
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_ifc.vfs->toAddon->create_directory(m_ifc.vfs, &url2.url);
+  return m_ifc.vfs->toAddon->create_directory(m_ifc.vfs, &url2.GetURL());
 }
 
 namespace
@@ -535,8 +536,8 @@ bool CVFSEntry::GetDirectory(const CURL& url, CFileItemList& items, void* ctx) c
   VFSDirEntry* entries = nullptr;
   int num_entries = 0;
   CVFSURLWrapper url2(url);
-  bool ret =
-      m_ifc.vfs->toAddon->get_directory(m_ifc.vfs, &url2.url, &entries, &num_entries, &callbacks);
+  bool ret = m_ifc.vfs->toAddon->get_directory(m_ifc.vfs, &url2.GetURL(), &entries, &num_entries,
+                                               &callbacks);
   if (ret)
   {
     VFSDirEntriesToCFileItemList(num_entries, entries, items);
@@ -557,8 +558,8 @@ bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items) const
   CVFSURLWrapper url2(url);
   char rootpath[ADDON_STANDARD_STRING_LENGTH];
   rootpath[0] = 0;
-  bool ret =
-      m_ifc.vfs->toAddon->contains_files(m_ifc.vfs, &url2.url, &entries, &num_entries, rootpath);
+  bool ret = m_ifc.vfs->toAddon->contains_files(m_ifc.vfs, &url2.GetURL(), &entries, &num_entries,
+                                                rootpath);
   if (!ret)
     return false;
 

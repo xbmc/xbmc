@@ -2690,7 +2690,7 @@ int CVideoDatabase::SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::A
 }
 
 int CVideoDatabase::SetDetailsForItem(int id,
-                                      const MediaType& mediaType,
+                                      MediaType_view mediaType,
                                       CVideoInfoTag& details,
                                       const KODI::ART::Artwork& artwork)
 {
@@ -2977,7 +2977,7 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details,
   return -1;
 }
 
-int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag &details)
+int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag& details) const
 {
   // first try matching on uniqueid, then on title + year
   int id = -1;
@@ -4587,7 +4587,7 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record,
                                       int max,
                                       const T& offsets,
                                       CSetInfoTag& details,
-                                      int idxOffset)
+                                      int idxOffset) const
 {
   for (int i = min + 1; i < max; i++)
   {
@@ -4599,6 +4599,9 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record,
         break;
       case VIDEODB_TYPE_UNUSED: // Skip the unused field to avoid populating unused data
         continue;
+      default:
+        CLog::LogF(LOGERROR, "Unhandled VIDEODB_TYPE value ({})", offsets[i].type);
+        break;
     }
   }
 }
@@ -4895,7 +4898,7 @@ CSetInfoTag CVideoDatabase::GetDetailsForSet(const dbiplus::sql_record* const re
 {
   CSetInfoTag details;
 
-  if (record == NULL)
+  if (!record)
     return details;
 
   int idSet = record->at(0).get_asInt();
@@ -4987,12 +4990,13 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   return details;
 }
 
-CVideoInfoTag CVideoDatabase::GetBasicDetailsForEpisode(dbiplus::Dataset& pDS)
+CVideoInfoTag CVideoDatabase::GetBasicDetailsForEpisode(dbiplus::Dataset& pDS) const
 {
   return GetBasicDetailsForEpisode(pDS.get_sql_record());
 }
 
-CVideoInfoTag CVideoDatabase::GetBasicDetailsForEpisode(const dbiplus::sql_record* const record)
+CVideoInfoTag CVideoDatabase::GetBasicDetailsForEpisode(
+    const dbiplus::sql_record* const record) const
 {
   CVideoInfoTag details;
 
@@ -6033,7 +6037,8 @@ void CVideoDatabase::RemoveContentForPath(const std::string& strPath,
       if (progress)
       {
         progress->SetPercentage(
-            static_cast<int>(static_cast<float>((iCurr++)) / paths.size() * 100.f));
+            static_cast<int>(static_cast<float>(iCurr) / static_cast<float>(paths.size()) * 100.f));
+        iCurr++;
         progress->Progress();
       }
 
@@ -7616,11 +7621,9 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
           {
             if (idContent == VideoDbContentType::MOVIES ||
                 idContent == VideoDbContentType::MUSICVIDEOS)
-              mapItems.try_emplace(id,
-                                   std::pair<std::string, int>(
-                                       str, m_pDS->fv(3).get_asInt())); //fv(3) is file.playCount
+              mapItems.try_emplace(id, str, m_pDS->fv(3).get_asInt()); //fv(3) is file.playCount
             else if (idContent == VideoDbContentType::TVSHOWS)
-              mapItems.try_emplace(id, std::pair<std::string, int>(str, 0));
+              mapItems.try_emplace(id, str, 0);
           }
         }
         m_pDS->next();
@@ -7629,7 +7632,7 @@ bool CVideoDatabase::GetNavCommon(const std::string& strBaseDir,
 
       for (const auto& [dbId, details] : mapItems)
       {
-        const auto [label, playcount] = details;
+        const auto& [label, playcount] = details;
 
         auto pItem = std::make_shared<CFileItem>(label);
         pItem->GetVideoInfoTag()->m_iDbId = dbId;
@@ -8357,10 +8360,9 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir,
             std::string year = std::to_string(lYear);
             if (idContent == VideoDbContentType::MOVIES ||
                 idContent == VideoDbContentType::MUSICVIDEOS)
-              mapYears.try_emplace(lYear,
-                                   std::pair<std::string, int>(year, m_pDS->fv(2).get_asInt()));
+              mapYears.try_emplace(lYear, year, m_pDS->fv(2).get_asInt());
             else
-              mapYears.try_emplace(lYear, std::pair<std::string, int>(year, 0));
+              mapYears.try_emplace(lYear, year, 0);
           }
         }
         m_pDS->next();
@@ -8372,7 +8374,7 @@ bool CVideoDatabase::GetYearsNav(const std::string& strBaseDir,
         if (year == 0)
           continue;
 
-        const auto [yearAsString, playCount] = details;
+        const auto& [yearAsString, playCount] = details;
 
         auto pItem = std::make_shared<CFileItem>(yearAsString);
 
@@ -8474,7 +8476,7 @@ bool CVideoDatabase::GetSeasonsNav(const std::string& strBaseDir, CFileItemList&
     GetMoviesByWhere("videodb://movies/titles/", movieFilter, movieItems);
 
     if (!movieItems.IsEmpty())
-      items.Append(std::move(movieItems));
+      items.Append(movieItems);
   }
 
   return true;
@@ -9097,7 +9099,7 @@ bool CVideoDatabase::GetEpisodesNav(const std::string& strBaseDir, CFileItemList
     GetMoviesByWhere("videodb://movies/titles/", movieFilter, movieItems);
 
     if (!movieItems.IsEmpty())
-      items.Append(std::move(movieItems));
+      items.Append(movieItems);
   }
 
   return ret;
@@ -11496,40 +11498,37 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             std::erase_if(artwork, [](const auto& art) { return !URIUtils::IsRemote(art.second); });
             set.SetArt(artwork);
           }
-          set.Save(pMain, "set", singleFile);
+          set.Save(pMain, "set");
 
           // write set.nfo
           if (!singleFile && CUtil::SupportsWriteFileOperations(itemPath))
           {
             const std::string nfoFile{URIUtils::AddFileToFolder(itemPath, "set.nfo")};
-            if (overwrite || !CFile::Exists(nfoFile, false))
+            if ((overwrite || !CFile::Exists(nfoFile, false)) && !xmlDoc.SaveFile(nfoFile))
             {
-              if (!xmlDoc.SaveFile(nfoFile))
-              {
-                CLog::LogF(LOGERROR, "Set nfo export failed! ('{}')", nfoFile);
-                CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                      g_localizeStrings.Get(20302),
-                                                      CURL::GetRedacted(nfoFile));
-                iFailCount++;
-              }
+              CLog::LogF(LOGERROR, "Set nfo export failed! ('{}')", nfoFile);
+              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                                    g_localizeStrings.Get(20302),
+                                                    CURL::GetRedacted(nfoFile));
+              iFailCount++;
             }
           }
           if (!singleFile)
           {
             xmlDoc.Clear();
-            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-            xmlDoc.InsertEndChild(decl);
+            TiXmlDeclaration decl1("1.0", "UTF-8", "yes");
+            xmlDoc.InsertEndChild(decl1);
           }
 
           // Write images to MSIF
           if (images)
           {
-            KODI::ART::Artwork artwork;
-            GetArtForItem(m_pDS->fv("idSet").get_asInt(), MediaTypeVideoCollection, artwork);
-            for (const auto& art : artwork)
+            KODI::ART::Artwork aw;
+            GetArtForItem(m_pDS->fv("idSet").get_asInt(), MediaTypeVideoCollection, aw);
+            for (const auto& [arttype, arturl] : aw)
             {
-              std::string savedThumb = URIUtils::AddFileToFolder(itemPath, art.first);
-              CServiceBroker::GetTextureCache()->Export(art.second, savedThumb, overwrite);
+              const std::string savedThumb = URIUtils::AddFileToFolder(itemPath, arttype);
+              CServiceBroker::GetTextureCache()->Export(arturl, savedThumb, overwrite);
             }
           }
         }
@@ -12117,7 +12116,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
       {
         CSetInfoTag info;
         info.Load(movie);
-        scanner.AddSet(&info);
+        scanner.AddSet(info);
         currentTitle = info.GetTitle();
         current++;
       }
@@ -12350,8 +12349,8 @@ bool CVideoDatabase::GetItemsForPath(const std::string &content, const std::stri
     std::vector<std::string> paths;
     CMultiPathDirectory::GetPaths(path, paths);
 
-    for (const auto& path : paths)
-      GetItemsForPath(content, path, items);
+    for (const auto& p : paths)
+      GetItemsForPath(content, p, items);
 
     return !items.IsEmpty();
   }
@@ -13505,8 +13504,8 @@ bool CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, const Media
     return std::ranges::all_of(art,
                                [this, dbId](const auto& artdetails)
                                {
-                                 const auto [type, url] = artdetails;
-                                 return SetArtForItem(dbId, MediaTypeVideoVersion, type, url);
+                                 const auto& [arttype, arturl] = artdetails;
+                                 return SetArtForItem(dbId, MediaTypeVideoVersion, arttype, arturl);
                                });
   }
   return false;

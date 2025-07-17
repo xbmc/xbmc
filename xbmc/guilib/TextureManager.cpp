@@ -90,7 +90,7 @@ void CTextureArray::SetScalingMethod(TEXTURE_SCALING scalingMethod)
 {
   m_scalingMethod = scalingMethod;
 
-  for (std::shared_ptr<CTexture>& texture : m_textures)
+  for (const std::shared_ptr<CTexture>& texture : m_textures)
     texture->SetScalingMethod(m_scalingMethod);
 }
 

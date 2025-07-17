@@ -42,7 +42,6 @@ CGUIImage::CGUIImage(const CGUIImage& left)
     m_info(left.m_info),
     m_textureCurrent(left.m_textureCurrent->Clone()),
     m_textureNext(left.m_textureNext->Clone()),
-    m_currentFallback(),
     m_imageFilterInfo(left.m_imageFilterInfo),
     m_imageFilter(left.m_imageFilter),
     m_diffuseFilterInfo(left.m_diffuseFilterInfo),

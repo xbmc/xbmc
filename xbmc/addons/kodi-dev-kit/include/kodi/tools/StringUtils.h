@@ -1465,7 +1465,8 @@ public:
   /// --------------------------------------------------------------------------
   /// Example:
   /// ~~~~~~~~~~~~~{.cpp}
-  /// std::string ref, var;
+  /// std::string ref;
+  /// std::string var;
   ///
   /// ref = "8378 787464";
   /// var = "test string";
@@ -2925,7 +2926,8 @@ public:
   /// ~~~~~~~~~~~~~{.cpp}
   /// #include <kodi/tools/StringUtils.h>
   ///
-  /// std::string ref, var;
+  /// std::string ref;
+  /// std::string var;
   ///
   /// ref = "21:30:55";
   /// var = kodi::tools::StringUtils::SecondsToTimeString(77455);

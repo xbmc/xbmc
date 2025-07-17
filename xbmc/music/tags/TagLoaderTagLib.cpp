@@ -1124,7 +1124,7 @@ void CTagLoaderTagLib::SetDiscSubtitle(CMusicInfoTag& tag, const std::vector<std
   if (values.size() == 1)
     tag.SetDiscSubtitle(values[0]);
   else
-    tag.SetDiscSubtitle(std::string());
+    tag.SetDiscSubtitle(std::string_view());
 }
 
 void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::string> &values)

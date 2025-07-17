@@ -946,7 +946,7 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
             if (optionElement->QueryStringAttribute(SETTING_XML_ATTR_LABEL, &label) ==
                 TIXML_SUCCESS)
             {
-              const int val =
+              const auto val =
                   static_cast<int>(std::strtol(optionElement->FirstChild()->Value(), nullptr, 10));
               m_options.emplace_back(label, val);
             }

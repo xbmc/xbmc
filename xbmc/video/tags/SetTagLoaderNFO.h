@@ -16,7 +16,7 @@
 class CSetTagLoaderNFO : public KODI::VIDEO::ISetInfoTagLoader
 {
 public:
-  CSetTagLoaderNFO(const std::string& title);
+  explicit CSetTagLoaderNFO(const std::string& title);
 
   ~CSetTagLoaderNFO() override = default;
 
@@ -25,7 +25,7 @@ public:
 
   //! \brief Load "tag" from nfo file.
   //! \brief tag Tag to load info into
-  CInfoScanner::InfoType Load(CSetInfoTag& tag, bool prioritise = false) override;
+  CInfoScanner::InfoType Load(CSetInfoTag& tag, bool prioritise) override;
 
 protected:
   std::string m_path; //!< Path to nfo file

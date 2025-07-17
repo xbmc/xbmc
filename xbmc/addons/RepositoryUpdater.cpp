@@ -225,8 +225,8 @@ void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool 
     return;
   }
 
-  const auto job = std::ranges::find_if(m_jobs, [&](CRepositoryUpdateJob* job)
-                                        { return job->GetAddon()->ID() == repo->ID(); });
+  const auto job = std::ranges::find_if(m_jobs, [&repo](const CRepositoryUpdateJob* updateJob)
+                                        { return updateJob->GetAddon()->ID() == repo->ID(); });
 
   if (job == m_jobs.end())
   {

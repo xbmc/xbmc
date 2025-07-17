@@ -162,6 +162,61 @@ int64_t EnumeratePackageFolder(
 
   return size;
 }
+
+void PrunePackageCache()
+{
+  std::map<std::string, std::unique_ptr<CFileItemList>, std::less<>> packs;
+  int64_t size = EnumeratePackageFolder(packs);
+  const auto limit =
+      static_cast<int64_t>(
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_addonPackageFolderSize) *
+      1024 * 1024;
+  if (size < limit)
+    return;
+
+  // Prune packages
+  // 1. Remove the largest packages, leaving at least 2 for each add-on
+  CFileItemList items;
+  CAddonDatabase db;
+  db.Open();
+  for (const auto& [_, files] : packs)
+  {
+    files->Sort(SortByLabel, SortOrderDescending);
+    for (int j = 2; j < files->Size(); j++)
+      items.Add(std::make_shared<CFileItem>(*files->Get(j)));
+  }
+
+  items.Sort(SortBySize, SortOrderDescending);
+  int i = 0;
+  while (size > limit && i < items.Size())
+  {
+    size -= items[i]->GetSize();
+    db.RemovePackage(items[i]->GetPath());
+    CFileUtils::DeleteItem(items[i]);
+    i++;
+  }
+
+  if (size > limit)
+  {
+    // 2. Remove the oldest packages (leaving least 1 for each add-on)
+    items.Clear();
+    for (const auto& [_, files] : packs)
+    {
+      if (files->Size() > 1)
+        items.Add(std::make_shared<CFileItem>(*files->Get(1)));
+    }
+
+    items.Sort(SortByDate, SortOrderAscending);
+    i = 0;
+    while (size > limit && i < items.Size())
+    {
+      size -= items[i]->GetSize();
+      db.RemovePackage(items[i]->GetPath());
+      CFileUtils::DeleteItem(items[i]);
+      i++;
+    }
+  }
+}
 } // unnamed namespace
 
 CAddonInstaller::CAddonInstaller() : m_idle(true)
@@ -556,58 +611,6 @@ bool CAddonInstaller::HasJob(const std::string& ID) const
 {
   std::unique_lock lock(m_critSection);
   return m_downloadJobs.contains(ID);
-}
-
-void CAddonInstaller::PrunePackageCache()
-{
-  std::map<std::string, std::unique_ptr<CFileItemList>, std::less<>> packs;
-  int64_t size = EnumeratePackageFolder(packs);
-  int64_t limit = static_cast<int64_t>(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_addonPackageFolderSize) * 1024 * 1024;
-  if (size < limit)
-    return;
-
-  // Prune packages
-  // 1. Remove the largest packages, leaving at least 2 for each add-on
-  CFileItemList items;
-  CAddonDatabase db;
-  db.Open();
-  for (const auto& [_, files] : packs)
-  {
-    files->Sort(SortByLabel, SortOrderDescending);
-    for (int j = 2; j < files->Size(); j++)
-      items.Add(std::make_shared<CFileItem>(*files->Get(j)));
-  }
-
-  items.Sort(SortBySize, SortOrderDescending);
-  int i = 0;
-  while (size > limit && i < items.Size())
-  {
-    size -= items[i]->GetSize();
-    db.RemovePackage(items[i]->GetPath());
-    CFileUtils::DeleteItem(items[i]);
-    i++;
-  }
-
-  if (size > limit)
-  {
-    // 2. Remove the oldest packages (leaving least 1 for each add-on)
-    items.Clear();
-    for (const auto& [_, files] : packs)
-    {
-      if (files->Size() > 1)
-        items.Add(std::make_shared<CFileItem>(*files->Get(1)));
-    }
-
-    items.Sort(SortByDate, SortOrderAscending);
-    i = 0;
-    while (size > limit && i < items.Size())
-    {
-      size -= items[i]->GetSize();
-      db.RemovePackage(items[i]->GetPath());
-      CFileUtils::DeleteItem(items[i]);
-      i++;
-    }
-  }
 }
 
 void CAddonInstaller::InstallAddons(const VECADDONS& addons,
@@ -1157,7 +1160,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
   }
 
   SetText(g_localizeStrings.Get(24086));
-  SetProgress(100.0f * (totalSteps - 1.0f) / totalSteps);
+  SetProgress(100.0f * (static_cast<float>(totalSteps) - 1.0f) / static_cast<float>(totalSteps));
 
   CFilesystemInstaller fsInstaller;
   if (!fsInstaller.InstallToFilesystem(installFrom, m_addon->ID()))

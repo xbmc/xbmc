@@ -82,104 +82,100 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   // determine the scraper for the item's path
   VIDEO::SScanSettings scanSettings;
   ScraperPtr scraper = db.GetScraperForPath(m_item->GetPath(), scanSettings);
-  if (scraper == nullptr)
+  if (!scraper && m_item->GetVideoContentType() == VideoDbContentType::MOVIE_SETS)
   {
-    if (m_item->GetVideoContentType() == VideoDbContentType::MOVIE_SETS)
+    // Deal with refreshing movie set
+    // Get movies in set
+    CVideoInfoTag tag{*m_item->GetVideoInfoTag()};
+    const int dbId{tag.m_iDbId};
+    std::string setTitle{tag.GetTitle()};
+    const std::string originalSetTitle{db.GetOriginalSetById(dbId)};
+    CFileItemList movies;
+    CVideoInfoTag movieTag;
+    bool localFound{false};
+    bool onlineFound{false};
+    std::string overview{};
+
+    if (db.GetMoviesBySet(m_item->GetPath(), movies, dbId))
     {
-      // Deal with refreshing movie set
-      // Get movies in set
-      CVideoInfoTag tag{*m_item->GetVideoInfoTag()};
-      const int dbId{tag.m_iDbId};
-      std::string setTitle{tag.GetTitle()};
-      const std::string originalSetTitle{db.GetOriginalSetById(dbId)};
-      CFileItemList movies;
-      CVideoInfoTag movieTag;
-      bool localFound{false};
-      bool onlineFound{false};
-      std::string overview{};
-
-      if (db.GetMoviesBySet(m_item->GetPath(), movies, dbId))
+      // Scan each movie folder for an NFO file and get online information for a movie in the set
+      for (const auto& movie : movies)
       {
-        // Scan each movie folder for an NFO file and get online information for a movie in the set
-        for (const auto& movie : movies)
+        // Check not plugin
+        if (!URIUtils::IsPlugin(movie->GetDynPath()))
         {
-          // Check not plugin
-          if (!URIUtils::IsPlugin(movie->GetDynPath()))
+          // Use local scraper
+          AddonPtr addon{};
+          CServiceBroker::GetAddonMgr().GetAddon("metadata.local", addon, OnlyEnabled::CHOICE_YES);
+          scraper = std::dynamic_pointer_cast<CScraper>(addon);
+
+          // See if Movie NFO
+          movie->SetPath(movie->GetDynPath());
+          const auto nfo{std::make_unique<CVideoTagLoaderNFO>(*movie, scraper, true)};
+          if (nfo->HasInfo())
           {
-            // Use local scraper
-            AddonPtr addon{};
-            CServiceBroker::GetAddonMgr().GetAddon("metadata.local", addon,
-                                                   OnlyEnabled::CHOICE_YES);
-            scraper = std::dynamic_pointer_cast<CScraper>(addon);
+            // Movie NFO found - see if it has set overview
+            nfo->Load(tag, false);
 
-            // See if Movie NFO
-            movie->SetPath(movie->GetDynPath());
-            const auto nfo{std::make_unique<CVideoTagLoaderNFO>(*movie, scraper, true)};
-            if (nfo->HasInfo())
+            // Check set matches
+            if (tag.m_set.GetTitle() == originalSetTitle)
             {
-              // Movie NFO found - see if it has set overview
-              nfo->Load(tag, false);
-
-              // Check set matches
-              if (tag.m_set.GetTitle() == originalSetTitle)
-              {
-                localFound = true;
-                if (tag.m_set.HasOverview())
-                  overview = tag.m_set.GetOverview();
-              }
+              localFound = true;
+              if (tag.m_set.HasOverview())
+                overview = tag.m_set.GetOverview();
             }
+          }
 
-            // Get online details (only if no movie.nfo containing set details found locally)
-            if (!onlineFound && overview.empty() && !movie->GetVideoInfoTag()->GetTitle().empty())
+          // Get online details (only if no movie.nfo containing set details found locally)
+          if (!onlineFound && overview.empty() && !movie->GetVideoInfoTag()->GetTitle().empty())
+          {
+            scraper = db.GetScraperForPath(movie->GetDynPath(), scanSettings);
+            CVideoInfoDownloader infoDownloader{scraper};
+            MOVIELIST itemResultList;
+            infoDownloader.FindMovie(movie->GetVideoInfoTag()->GetTitle(),
+                                     movie->GetVideoInfoTag()->GetYear(), itemResultList);
+            if (!itemResultList.empty())
             {
-              scraper = db.GetScraperForPath(movie->GetDynPath(), scanSettings);
-              CVideoInfoDownloader infoDownloader{scraper};
-              MOVIELIST itemResultList;
-              infoDownloader.FindMovie(movie->GetVideoInfoTag()->GetTitle(),
-                                       movie->GetVideoInfoTag()->GetYear(), itemResultList);
-              if (!itemResultList.empty())
+              CScraper::UniqueIDs uniqueIDs;
+              if (infoDownloader.GetDetails(uniqueIDs, itemResultList.at(0), tag) &&
+                  tag.m_set.HasTitle())
               {
-                CScraper::UniqueIDs uniqueIDs;
-                if (infoDownloader.GetDetails(uniqueIDs, itemResultList.at(0), tag))
-                  if (tag.m_set.HasTitle())
-                  {
-                    onlineFound = true;
-                    if (overview.empty())
-                      overview = tag.m_set.GetOverview();
-                  }
+                onlineFound = true;
+                if (overview.empty())
+                  overview = tag.m_set.GetOverview();
               }
             }
           }
         }
       }
-
-      // UpdateSetInTag will update set art using the following:
-      // 1 Local files
-      // 2 Set.nfo <art> tag
-      // 3 Online scraper (already populated above)
-      bool setUpdated{CVideoInfoScanner::UpdateSetInTag(tag)};
-
-      // Nothing found to update with
-      if (!localFound && !onlineFound && !setUpdated)
-        return false;
-
-      // tag now contains up-to-date set title
-      if (tag.m_set.HasTitle())
-        overview = tag.m_set.GetOverview();
-      db.AddSet(tag.m_set.GetTitle(), overview, tag.m_set.GetOriginalTitle());
-
-      // Update set art
-      ART::Artwork movieSetArt;
-      if (tag.m_set.HasArt())
-        movieSetArt = tag.m_set.GetArt();
-      db.SetArtForItem(dbId, MediaTypeVideoCollection, movieSetArt);
-
-      // Refresh (for video info dialog)
-      m_item->ClearArt();
-      db.GetSetInfo(dbId, tag);
-      m_item->SetFromVideoInfoTag(tag);
-      return true;
     }
+
+    // UpdateSetInTag will update set art using the following:
+    // 1 Local files
+    // 2 Set.nfo <art> tag
+    // 3 Online scraper (already populated above)
+    bool setUpdated{CVideoInfoScanner::UpdateSetInTag(tag)};
+
+    // Nothing found to update with
+    if (!localFound && !onlineFound && !setUpdated)
+      return false;
+
+    // tag now contains up-to-date set title
+    if (tag.m_set.HasTitle())
+      overview = tag.m_set.GetOverview();
+    db.AddSet(tag.m_set.GetTitle(), overview, tag.m_set.GetOriginalTitle());
+
+    // Update set art
+    ART::Artwork movieSetArt;
+    if (tag.m_set.HasArt())
+      movieSetArt = tag.m_set.GetArt();
+    db.SetArtForItem(dbId, MediaTypeVideoCollection, movieSetArt);
+
+    // Refresh (for video info dialog)
+    m_item->ClearArt();
+    db.GetSetInfo(dbId, tag);
+    m_item->SetFromVideoInfoTag(tag);
+    return true;
   }
 
   if (URIUtils::IsPlugin(m_item->GetPath()) &&

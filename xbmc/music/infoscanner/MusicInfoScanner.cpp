@@ -625,7 +625,9 @@ static bool SortSongsByTrack(const CSong& song, const CSong& song2)
   return song.iTrack < song2.iTrack;
 }
 
-void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& albums, MAPSONGS* songsMap /* = NULL */)
+void CMusicInfoScanner::FileItemsToAlbums(const CFileItemList& items,
+                                          VECALBUMS& albums,
+                                          MAPSONGS* songsMap /* = nullptr */)
 {
   /*
    * Step 1: Convert the FileItems into Songs.

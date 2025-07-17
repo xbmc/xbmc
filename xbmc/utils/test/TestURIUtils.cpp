@@ -84,7 +84,8 @@ TEST_F(TestURIUtils, GetFileName)
 
 TEST_F(TestURIUtils, RemoveExtension)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   /* NOTE: CSettings need to be set to find other extensions. */
   ref = "/path/to/file";
@@ -95,7 +96,8 @@ TEST_F(TestURIUtils, RemoveExtension)
 
 TEST_F(TestURIUtils, ReplaceExtension)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "/path/to/file.xsd";
   var = URIUtils::ReplaceExtension("/path/to/file.xml", ".xsd");
@@ -104,7 +106,10 @@ TEST_F(TestURIUtils, ReplaceExtension)
 
 TEST_F(TestURIUtils, Split)
 {
-  std::string refpath, reffile, varpath, varfile;
+  std::string refpath;
+  std::string reffile;
+  std::string varpath;
+  std::string varfile;
 
   refpath = "/path/to/";
   reffile = "movie.avi";
@@ -162,7 +167,8 @@ TEST_F(TestURIUtils, SplitPathLocal)
 
 TEST_F(TestURIUtils, GetCommonPath)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "/path/";
   var = "/path/2/movie.avi";
@@ -172,7 +178,8 @@ TEST_F(TestURIUtils, GetCommonPath)
 
 TEST_F(TestURIUtils, GetParentPath)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "/path/to/";
   var = URIUtils::GetParentPath("/path/to/movie.avi");
@@ -185,7 +192,8 @@ TEST_F(TestURIUtils, GetParentPath)
 
 TEST_F(TestURIUtils, GetBasePath)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "smb://somepath/path/";
 
@@ -215,7 +223,10 @@ TEST_F(TestURIUtils, GetBasePath)
 
 TEST_F(TestURIUtils, SubstitutePath)
 {
-  std::string from, to, ref, var;
+  std::string from;
+  std::string to;
+  std::string ref;
+  std::string var;
 
   from = "C:\\My Videos";
   to = "https://myserver/some%20other%20path";
@@ -480,7 +491,8 @@ TEST_F(TestURIUtils, IsBlurayPath)
 
 TEST_F(TestURIUtils, AddSlashAtEnd)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "bluray://path/to/file/";
   var = "bluray://path/to/file/";
@@ -496,7 +508,8 @@ TEST_F(TestURIUtils, HasSlashAtEnd)
 
 TEST_F(TestURIUtils, RemoveSlashAtEnd)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "bluray://path/to/file";
   var = "bluray://path/to/file/";
@@ -506,7 +519,8 @@ TEST_F(TestURIUtils, RemoveSlashAtEnd)
 
 TEST_F(TestURIUtils, CreateArchivePath)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "zip://%2fpath%2fto%2f/file";
   var = URIUtils::CreateArchivePath("zip", CURL("/path/to/"), "file").Get();

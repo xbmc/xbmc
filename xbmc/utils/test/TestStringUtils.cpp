@@ -468,7 +468,8 @@ TEST(TestStringUtils, utf8_strlen)
 
 TEST(TestStringUtils, SecondsToTimeString)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "21:30:55";
   var = StringUtils::SecondsToTimeString(77455);
@@ -513,7 +514,8 @@ TEST(TestStringUtils, IsInteger)
 
 TEST(TestStringUtils, SizeToString)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "2.00 GB";
   var = StringUtils::SizeToString(2147483647);
@@ -587,7 +589,8 @@ TEST(TestStringUtils, DateStringToYYYYMMDD)
 
 TEST(TestStringUtils, WordToDigits)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "8378 787464";
   var = "test string";

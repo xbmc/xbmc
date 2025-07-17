@@ -64,14 +64,14 @@ namespace KODI::VIDEO
      \param set CSetInfoTag to add to the database.
      \return true if successful, false otherwise.
      */
-    bool AddSet(CSetInfoTag* set);
+    bool AddSet(const CSetInfoTag& set);
 
     /*! \brief Add an item to the database.
      \param pItem item to add to the database.
      \param content content type of the item.
      \param videoFolder whether the video is represented by a folder (single movie per folder). Defaults to false.
      \param useLocal whether to use local information for artwork etc.
-     \param showInfo pointer to CVideoInfoTag details for the show if this is an episode. Defaults to NULL.
+     \param showInfo pointer to CVideoInfoTag details for the show if this is an episode. Defaults to nullptr.
      \param libraryImport Whether this call belongs to a full library import or not. Defaults to false.
      \return database id of the added item, or -1 on failure.
      */
@@ -79,7 +79,7 @@ namespace KODI::VIDEO
                   ADDON::ContentType content,
                   bool videoFolder = false,
                   bool useLocal = true,
-                  const CVideoInfoTag* showInfo = NULL,
+                  const CVideoInfoTag* showInfo = nullptr,
                   bool libraryImport = false);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
@@ -87,18 +87,18 @@ namespace KODI::VIDEO
      \param bDirNames whether we should use folder or file names for lookups.
      \param content type of content to retrieve.
      \param useLocal should local data (.nfo and art) be used. Defaults to true.
-     \param pURL an optional URL to use to retrieve online info.  Defaults to NULL.
+     \param pURL an optional URL to use to retrieve online info.  Defaults to nullptr.
      \param fetchEpisodes whether we are fetching episodes with shows. Defaults to true.
-     \param pDlgProgress progress dialog to update and check for cancellation during processing.  Defaults to NULL.
+     \param pDlgProgress progress dialog to update and check for cancellation during processing.  Defaults to nullptr.
      \return true if we successfully found information for some items, false otherwise
      */
-    bool RetrieveVideoInfo(CFileItemList& items,
+    bool RetrieveVideoInfo(const CFileItemList& items,
                            bool bDirNames,
                            ADDON::ContentType content,
                            bool useLocal = true,
-                           CScraperUrl* pURL = NULL,
+                           CScraperUrl* pURL = nullptr,
                            bool fetchEpisodes = true,
-                           CGUIDialogProgress* pDlgProgress = NULL);
+                           CGUIDialogProgress* pDlgProgress = nullptr);
 
     static void ApplyThumbToFolder(const std::string &folder, const std::string &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
@@ -201,8 +201,8 @@ namespace KODI::VIDEO
      \param uniqueIDs Unique IDs for additional information for scrapers.
      \param url URL to use to retrieve online details.
      \param scraper Scraper that handles parsing the online data.
-     \param nfoFile if set, we override the online data with the locally supplied data. Defaults to NULL.
-     \param pDialog progress dialog to update and check for cancellation during processing. Defaults to NULL.
+     \param nfoFile if set, we override the online data with the locally supplied data. Defaults to nullptr.
+     \param pDialog progress dialog to update and check for cancellation during processing. Defaults to nullptr.
      \return true if information is found, false if an error occurred, the lookup was cancelled, or no information was found.
      */
     bool GetDetails(CFileItem* pItem,
@@ -284,7 +284,7 @@ namespace KODI::VIDEO
      \param files the episode files to process.
      \param scraper scraper to use for finding online info
      \param showInfo information for the show.
-     \param pDlgProcess progress dialog to update during processing.  Defaults to NULL.
+     \param pDlgProcess progress dialog to update during processing.  Defaults to nullptr.
      \return InfoRet::ERROR on failure, InfoRet::CANCELLED on cancellation,
      InfoRet::NOT_FOUND if an episode isn't found, or InfoRet::ADDED if all episodes are added.
      */

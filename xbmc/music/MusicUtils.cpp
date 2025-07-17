@@ -76,7 +76,7 @@ public:
   bool HasSongExtraArtChanged(const CFileItemPtr& pSongItem,
                               const std::string& type,
                               const int itemID,
-                              CMusicDatabase& db)
+                              const CMusicDatabase& db)
   {
     if (!pSongItem->HasMusicInfoTag())
       return false;

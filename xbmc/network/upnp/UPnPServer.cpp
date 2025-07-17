@@ -792,7 +792,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     return NPT_FAILURE;
   }
 
-  items.SetPath(std::string(parent_id));
+  items.SetPath(std::string_view(parent_id));
 
   // guard against loading while saving to the same cache file
   // as CArchive currently performs no locking itself

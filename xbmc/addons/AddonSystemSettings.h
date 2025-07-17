@@ -44,7 +44,7 @@ public:
 
   bool GetActive(AddonType type, AddonPtr& addon) const;
   bool SetActive(AddonType type, const std::string& addonID) const;
-  bool IsActive(const IAddon& addon);
+  bool IsActive(const IAddon& addon) const;
 
   /*!
    * Gets Kodi addon auto update mode
