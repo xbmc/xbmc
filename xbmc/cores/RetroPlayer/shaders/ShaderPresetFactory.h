@@ -21,9 +21,7 @@ class CBinaryAddonManager;
 class CShaderPresetAddon;
 } // namespace ADDON
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 class IShaderPresetLoader;
 
@@ -89,5 +87,4 @@ private:
   std::map<std::string, std::unique_ptr<ADDON::CShaderPresetAddon>> m_shaderAddons;
   std::map<std::string, std::unique_ptr<ADDON::CShaderPresetAddon>> m_failedAddons;
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

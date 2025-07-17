@@ -13,8 +13,7 @@
 
 #include <cassert>
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderTextureGL::CShaderTextureGL(std::shared_ptr<CGLTexture> texture, bool sRgbFramebuffer)
   : m_texture(std::move(texture)), m_sRgbFramebuffer(sRgbFramebuffer)

@@ -13,8 +13,7 @@
 #include <cassert>
 #include <utility>
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderTextureDX::CShaderTextureDX(std::shared_ptr<CD3DTexture> texture)
   : m_texture(std::move(texture))

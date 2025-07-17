@@ -18,8 +18,7 @@
 
 #include <regex>
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderPresetDX::CShaderPresetDX(RETRO::CRenderContext& context,
                                  unsigned videoWidth,
@@ -50,7 +49,7 @@ bool CShaderPresetDX::CreateShaders()
     }
 
     // Create the shader
-    auto videoShader = std::make_unique<CShaderDX>(m_context);
+    auto videoShader = std::make_unique<CShaderDX>();
 
     const std::string& shaderSource = pass.vertexSource; // Also contains fragment source
     const std::string& shaderPath = pass.sourcePath;
@@ -84,7 +83,7 @@ bool CShaderPresetDX::CreateLayouts()
 {
   for (std::unique_ptr<IShader>& videoShader : m_pShaders)
   {
-    CShaderDX* videoShaderDX = static_cast<CShaderDX*>(videoShader.get());
+    auto* videoShaderDX = static_cast<CShaderDX*>(videoShader.get());
     videoShaderDX->CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
 
     // Create input layout
@@ -109,7 +108,7 @@ bool CShaderPresetDX::CreateBuffers()
 {
   for (std::unique_ptr<IShader>& videoShader : m_pShaders)
   {
-    CShaderDX* videoShaderDX = static_cast<CShaderDX*>(videoShader.get());
+    auto* videoShaderDX = static_cast<CShaderDX*>(videoShader.get());
     videoShaderDX->CreateInputBuffer();
   }
 
@@ -139,11 +138,12 @@ bool CShaderPresetDX::CreateShaderTextures()
         break;
       case ScaleType::VIEWPORT:
         scaledSize.x =
-            pass.fbo.scaleX.scale ? pass.fbo.scaleX.scale * m_outputSize.x : m_outputSize.x;
+            pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * m_outputSize.x : m_outputSize.x;
         break;
       case ScaleType::INPUT:
       default:
-        scaledSize.x = pass.fbo.scaleX.scale ? pass.fbo.scaleX.scale * prevSize.x : prevSize.x;
+        scaledSize.x =
+            pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * prevSize.x : prevSize.x;
         break;
     }
     switch (pass.fbo.scaleY.scaleType)
@@ -153,11 +153,12 @@ bool CShaderPresetDX::CreateShaderTextures()
         break;
       case ScaleType::VIEWPORT:
         scaledSize.y =
-            pass.fbo.scaleY.scale ? pass.fbo.scaleY.scale * m_outputSize.y : m_outputSize.y;
+            pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * m_outputSize.y : m_outputSize.y;
         break;
       case ScaleType::INPUT:
       default:
-        scaledSize.y = pass.fbo.scaleY.scale ? pass.fbo.scaleY.scale * prevSize.y : prevSize.y;
+        scaledSize.y =
+            pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * prevSize.y : prevSize.y;
         break;
     }
 

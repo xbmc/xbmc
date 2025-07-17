@@ -17,8 +17,7 @@
 
 #include <utility>
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderLutDX::CShaderLutDX(std::string id, std::string path)
   : IShaderLut(std::move(id), std::move(path))
@@ -43,7 +42,7 @@ bool CShaderLutDX::Create(const ShaderLut& lut)
 std::unique_ptr<CTexture> CShaderLutDX::CreateLUTexture(const ShaderLut& lut)
 {
   std::unique_ptr<CTexture> texture = CTexture::LoadFromFile(lut.path);
-  CDXTexture* textureDX = static_cast<CDXTexture*>(texture.get());
+  auto* textureDX = static_cast<CDXTexture*>(texture.get());
 
   if (textureDX == nullptr)
   {

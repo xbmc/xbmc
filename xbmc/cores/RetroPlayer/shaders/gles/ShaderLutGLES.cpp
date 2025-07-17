@@ -18,8 +18,7 @@
 
 #include <utility>
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderLutGLES::CShaderLutGLES(std::string id, std::string path)
   : IShaderLut(std::move(id), std::move(path))

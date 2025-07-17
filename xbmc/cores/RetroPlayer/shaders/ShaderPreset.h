@@ -97,9 +97,6 @@ protected:
   // Size of the actual source video data (ie. 160x144 for the Game Boy)
   float2 m_videoSize;
 
-  // Array of vertices that comprise the full viewport
-  RETRO::ViewportCoordinates m_dest{};
-
   // Number of frames that have passed
   float m_frameCount = 0.0f;
 

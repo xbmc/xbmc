@@ -8,14 +8,11 @@
 
 #pragma once
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 class IShaderSampler
 {
 public:
   virtual ~IShaderSampler() = default;
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

@@ -11,8 +11,7 @@
 #include "ServiceBroker.h"
 #include "rendering/gl/RenderSystemGL.h"
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 GLint CShaderUtilsGL::TranslateWrapType(WrapType wrapType)
 {

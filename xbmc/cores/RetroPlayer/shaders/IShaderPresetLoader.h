@@ -10,9 +10,7 @@
 
 #include <string>
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 class IShaderPreset;
 
@@ -34,5 +32,4 @@ public:
    */
   virtual bool LoadPreset(const std::string& presetPath, IShaderPreset& shaderPreset) = 0;
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

@@ -18,8 +18,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderGL::CShaderGL() = default;
 
@@ -298,7 +297,7 @@ void CShaderGL::UpdateUniformInputs(
   }
   else // First pass
   {
-    CShaderTextureGL& shaderTextureGL = static_cast<CShaderTextureGL&>(sourceTexture);
+    auto& shaderTextureGL = static_cast<CShaderTextureGL&>(sourceTexture);
     m_uniformFrameInputs = GetFrameInputData(shaderTextureGL.GetTexture().GetTextureID());
   }
 
@@ -307,7 +306,7 @@ void CShaderGL::UpdateUniformInputs(
 
   for (unsigned int i = 0; i < m_passIdx + 1; ++i)
   {
-    CShaderGL& shader = static_cast<CShaderGL&>(*pShaders[i]);
+    const auto& shader = static_cast<const CShaderGL&>(*pShaders[i]);
     UniformFrameInputs frameInput = shader.GetFrameUniformInputs();
     m_passesUniformFrameInputs.emplace_back(frameInput);
   }

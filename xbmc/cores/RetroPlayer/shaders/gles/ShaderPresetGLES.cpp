@@ -18,8 +18,7 @@
 
 #include <regex>
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderPresetGLES::CShaderPresetGLES(RETRO::CRenderContext& context,
                                      unsigned int videoWidth,
@@ -49,7 +48,7 @@ bool CShaderPresetGLES::CreateShaders()
     }
 
     // Create the shader
-    auto videoShader = std::make_unique<CShaderGLES>(m_context);
+    auto videoShader = std::make_unique<CShaderGLES>();
 
     const std::string& shaderSource = pass.vertexSource; // Also contains fragment source
     const std::string& shaderPath = pass.sourcePath;
@@ -73,7 +72,8 @@ bool CShaderPresetGLES::CreateShaderTextures()
 {
   m_pShaderTextures.clear();
 
-  unsigned int major, minor;
+  unsigned int major{0};
+  unsigned int minor{0};
   CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
 
   float2 prevSize = m_videoSize;
@@ -86,7 +86,8 @@ bool CShaderPresetGLES::CreateShaderTextures()
     const auto& pass = m_passes[shaderIdx];
 
     // Resolve final texture resolution, taking scale type and scale multiplier into account
-    float2 scaledSize, textureSize;
+    float2 scaledSize;
+    float2 textureSize;
     switch (pass.fbo.scaleX.scaleType)
     {
       case ScaleType::ABSOLUTE_SCALE:
@@ -94,11 +95,12 @@ bool CShaderPresetGLES::CreateShaderTextures()
         break;
       case ScaleType::VIEWPORT:
         scaledSize.x =
-            pass.fbo.scaleX.scale ? pass.fbo.scaleX.scale * m_outputSize.x : m_outputSize.x;
+            pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * m_outputSize.x : m_outputSize.x;
         break;
       case ScaleType::INPUT:
       default:
-        scaledSize.x = pass.fbo.scaleX.scale ? pass.fbo.scaleX.scale * prevSize.x : prevSize.x;
+        scaledSize.x =
+            pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * prevSize.x : prevSize.x;
         break;
     }
     switch (pass.fbo.scaleY.scaleType)
@@ -108,11 +110,12 @@ bool CShaderPresetGLES::CreateShaderTextures()
         break;
       case ScaleType::VIEWPORT:
         scaledSize.y =
-            pass.fbo.scaleY.scale ? pass.fbo.scaleY.scale * m_outputSize.y : m_outputSize.y;
+            pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * m_outputSize.y : m_outputSize.y;
         break;
       case ScaleType::INPUT:
       default:
-        scaledSize.y = pass.fbo.scaleY.scale ? pass.fbo.scaleY.scale * prevSize.y : prevSize.y;
+        scaledSize.y =
+            pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * prevSize.y : prevSize.y;
         break;
     }
 
@@ -203,7 +206,7 @@ bool CShaderPresetGLES::CreateShaderTextures()
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapType);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapType);
       glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, textureSize.x, textureSize.y, 0, pixelFormat,
-                   internalFormat == GL_RGBA32F ? GL_FLOAT : GL_UNSIGNED_BYTE, (void*)0);
+                   internalFormat == GL_RGBA32F ? GL_FLOAT : GL_UNSIGNED_BYTE, nullptr);
 
       m_pShaderTextures.emplace_back(
           std::make_unique<CShaderTextureGLES>(std::move(textureGL), pass.fbo.sRgbFramebuffer));

@@ -19,8 +19,7 @@
 
 #include <regex>
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderPreset::CShaderPreset(RETRO::CRenderContext& context,
                              unsigned videoWidth,
@@ -178,15 +177,13 @@ void CShaderPreset::UpdateMVPs()
 void CShaderPreset::PrepareParameters(const RETRO::ViewportCoordinates& dest,
                                       IShaderTexture& source)
 {
-  m_dest = dest;
-
   const auto numPasses = static_cast<unsigned int>(m_pShaders.size());
 
   // Prepare parameters for all shader passes
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     std::unique_ptr<IShader>& videoShader = m_pShaders[shaderIdx];
-    videoShader->PrepareParameters(m_dest, source, m_pShaderTextures, m_pShaders,
+    videoShader->PrepareParameters(dest, source, m_pShaderTextures, m_pShaders,
                                    static_cast<uint64_t>(m_frameCount));
   }
 }

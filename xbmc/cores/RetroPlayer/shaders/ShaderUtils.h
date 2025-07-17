@@ -10,9 +10,7 @@
 
 #include "ShaderTypes.h"
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 class CShaderUtils
 {
@@ -27,5 +25,4 @@ public:
    */
   static float2 GetOptimalTextureSize(float2 videoSize);
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

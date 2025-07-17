@@ -16,9 +16,7 @@
 
 class CD3DTexture;
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 
 /*!
@@ -44,5 +42,4 @@ private:
   const std::shared_ptr<CD3DTexture> m_texture;
 };
 
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

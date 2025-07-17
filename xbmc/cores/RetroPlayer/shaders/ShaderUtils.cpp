@@ -8,8 +8,7 @@
 
 #include "ShaderUtils.h"
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 std::string CShaderUtils::StripParameterPragmas(std::string source)
 {

@@ -8,9 +8,7 @@
 
 #pragma once
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 /*!
  * \brief Interface for a shader texture
@@ -37,5 +35,4 @@ public:
    */
   virtual float GetHeight() const = 0;
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

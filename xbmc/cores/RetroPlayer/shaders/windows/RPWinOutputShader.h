@@ -19,9 +19,7 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 
 class CRPWinShader
@@ -77,5 +75,4 @@ private:
   KODI::RETRO::ViewportCoordinates m_destPoints{};
 };
 
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER
