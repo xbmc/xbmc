@@ -67,26 +67,25 @@ CPVRGUIActionListener::~CPVRGUIActionListener()
 
 void CPVRGUIActionListener::Init(CPVRManager& mgr)
 {
-  mgr.Events().Subscribe(this, &CPVRGUIActionListener::OnPVRManagerEvent);
+  mgr.Events().Subscribe(this,
+                         [](const PVREvent& event)
+                         {
+                           if (event == PVREvent::AnnounceReminder)
+                           {
+                             if (g_application.IsInitialized())
+                             {
+                               // if GUI is ready, dispatch to GUI thread and handle the action there
+                               CServiceBroker::GetAppMessenger()->PostMsg(
+                                   TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                   static_cast<void*>(new CAction(ACTION_PVR_ANNOUNCE_REMINDERS)));
+                             }
+                           }
+                         });
 }
 
 void CPVRGUIActionListener::Deinit(CPVRManager& mgr)
 {
   mgr.Events().Unsubscribe(this);
-}
-
-void CPVRGUIActionListener::OnPVRManagerEvent(const PVREvent& event)
-{
-  if (event == PVREvent::AnnounceReminder)
-  {
-    if (g_application.IsInitialized())
-    {
-      // if GUI is ready, dispatch to GUI thread and handle the action there
-      CServiceBroker::GetAppMessenger()->PostMsg(
-          TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-          static_cast<void*>(new CAction(ACTION_PVR_ANNOUNCE_REMINDERS)));
-    }
-  }
 }
 
 ChannelSwitchMode CPVRGUIActionListener::GetChannelSwitchMode(int iAction)

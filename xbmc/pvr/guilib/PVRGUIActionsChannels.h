@@ -72,12 +72,6 @@ public:
   void DeregisterChannelNumberInputHandler(CPVRChannelNumberInputHandler* handler);
 
   /*!
-   * @brief CEventStream callback for channel number input changes.
-   * @param event The event.
-   */
-  void Notify(const PVRChannelNumberInputChangedEvent& event);
-
-  /*!
    * @brief Hide a channel, always showing a confirmation dialog.
    * @param item containing a channel or an epg tag.
    * @return true on success, false otherwise.

@@ -20,8 +20,6 @@
 
 namespace ADDON
 {
-struct AddonEvent;
-
 class CVFSEntry;
 using VFSEntryPtr = std::shared_ptr<CVFSEntry>;
 
@@ -36,7 +34,6 @@ public:
 
 private:
   void Update(const std::string& id);
-  void OnEvent(const AddonEvent& event);
   bool IsInUse(const std::string& id) override;
 
   CCriticalSection m_critSection;
@@ -316,4 +313,4 @@ private:
     CFileItemList m_items; //!< Internal list of items, used for cache purposes.
   };
 
-} /*namespace ADDON*/
+  } /*namespace ADDON*/

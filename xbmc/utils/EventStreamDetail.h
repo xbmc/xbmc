@@ -10,6 +10,7 @@
 
 #include "threads/CriticalSection.h"
 
+#include <functional>
 #include <mutex>
 
 namespace detail
@@ -29,21 +30,21 @@ template<typename Event, typename Owner>
 class CSubscription : public ISubscription<Event>
 {
 public:
-  typedef void (Owner::*Fn)(const Event&);
-  CSubscription(Owner* owner, Fn fn);
+  using EventHandler = std::function<void(const Event&)>;
+  CSubscription(Owner* owner, const EventHandler& eventHandler);
   void HandleEvent(const Event& event) override;
   void Cancel() override;
   bool IsOwnedBy(void *obj) override;
 
 private:
   Owner* m_owner;
-  Fn m_eventHandler;
+  EventHandler m_eventHandler;
   CCriticalSection m_criticalSection;
 };
 
 template<typename Event, typename Owner>
-CSubscription<Event, Owner>::CSubscription(Owner* owner, Fn fn)
-    : m_owner(owner), m_eventHandler(fn)
+CSubscription<Event, Owner>::CSubscription(Owner* owner, const EventHandler& eventHandler)
+  : m_owner(owner), m_eventHandler(eventHandler)
 {}
 
 template<typename Event, typename Owner>
@@ -65,6 +66,6 @@ void CSubscription<Event, Owner>::HandleEvent(const Event& event)
 {
   std::unique_lock lock(m_criticalSection);
   if (m_owner)
-    (m_owner->*m_eventHandler)(event);
+    m_eventHandler(event);
 }
 }

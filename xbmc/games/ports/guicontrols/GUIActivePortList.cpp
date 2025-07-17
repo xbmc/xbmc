@@ -58,7 +58,20 @@ bool CGUIActivePortList::Initialize(GameClientPtr gameClient)
 
   // Register observers
   m_gameClient->Input().RegisterObserver(this);
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIActivePortList::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(
+      this,
+      [this](const ADDON::AddonEvent& event)
+      {
+        if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // Also called on install
+            typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // Not called on uninstall
+            typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+            typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
+        {
+          CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), m_controlId);
+          msg.SetStringParam(event.addonId);
+          CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
+        }
+      });
 
   return true;
 }
@@ -113,19 +126,6 @@ void CGUIActivePortList::Notify(const Observable& obs, const ObservableMessage m
     break;
     default:
       break;
-  }
-}
-
-void CGUIActivePortList::OnEvent(const ADDON::AddonEvent& event)
-{
-  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // Also called on install
-      typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // Not called on uninstall
-      typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
-      typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
-  {
-    CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), m_controlId);
-    msg.SetStringParam(event.addonId);
-    CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
   }
 }
 

@@ -55,7 +55,31 @@ CVFSAddonCache::~CVFSAddonCache()
 
 void CVFSAddonCache::Init()
 {
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CVFSAddonCache::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(
+      this,
+      [this](const AddonEvent& event)
+      {
+        if (typeid(event) == typeid(AddonEvents::Disabled))
+        {
+          for (const auto& vfs : m_addonsInstances)
+          {
+            if (vfs->ID() == event.addonId && !vfs->GetZeroconfType().empty())
+              CZeroconfBrowser::GetInstance()->RemoveServiceType(vfs->GetZeroconfType());
+          }
+        }
+
+        if (typeid(event) == typeid(AddonEvents::Enabled) ||
+            typeid(event) == typeid(AddonEvents::Disabled) ||
+            typeid(event) == typeid(AddonEvents::ReInstalled))
+        {
+          if (CServiceBroker::GetAddonMgr().HasType(event.addonId, AddonType::VFS))
+            Update(event.addonId);
+        }
+        else if (typeid(event) == typeid(AddonEvents::UnInstalled))
+        {
+          Update(event.addonId);
+        }
+      });
 
   // Load all available VFS addons during Kodi start
   std::vector<AddonInfoPtr> addonInfos;
@@ -98,30 +122,6 @@ VFSEntryPtr CVFSAddonCache::GetAddonInstance(const std::string& strId)
     addon = *itAddon;
 
   return addon;
-}
-
-void CVFSAddonCache::OnEvent(const AddonEvent& event)
-{
-  if (typeid(event) == typeid(AddonEvents::Disabled))
-  {
-    for (const auto& vfs : m_addonsInstances)
-    {
-      if (vfs->ID() == event.addonId && !vfs->GetZeroconfType().empty())
-        CZeroconfBrowser::GetInstance()->RemoveServiceType(vfs->GetZeroconfType());
-    }
-  }
-
-  if (typeid(event) == typeid(AddonEvents::Enabled) ||
-      typeid(event) == typeid(AddonEvents::Disabled) ||
-      typeid(event) == typeid(AddonEvents::ReInstalled))
-  {
-    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, AddonType::VFS))
-      Update(event.addonId);
-  }
-  else if (typeid(event) == typeid(AddonEvents::UnInstalled))
-  {
-    Update(event.addonId);
-  }
 }
 
 bool CVFSAddonCache::IsInUse(const std::string& id)

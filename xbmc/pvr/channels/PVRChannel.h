@@ -28,8 +28,6 @@ class CDateTime;
 
 namespace PVR
 {
-enum class PVREvent;
-
 class CPVRProvider;
 class CPVREpg;
 class CPVREpgInfoTag;
@@ -450,12 +448,6 @@ public:
    * @return the client uid of the provider or PVR_PROVIDER_INVALID_UID
    */
   int ClientProviderUid() const { return m_iClientProviderUid; }
-
-  /*!
-   * @brief CEventStream callback for PVR events.
-   * @param event The event.
-   */
-  void Notify(const PVREvent& event);
 
   /*!
    * @brief Lock the instance. No other thread gets access to this channel until Unlock was called.

@@ -27,7 +27,29 @@ CBinaryAddonCache::~CBinaryAddonCache()
 
 void CBinaryAddonCache::Init()
 {
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CBinaryAddonCache::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(
+      this,
+      [this](const AddonEvent& event)
+      {
+        if (typeid(event) == typeid(AddonEvents::Enabled) ||
+            typeid(event) == typeid(AddonEvents::Disabled) ||
+            typeid(event) == typeid(AddonEvents::ReInstalled))
+        {
+          for (auto& type : ADDONS_TO_CACHE)
+          {
+            if (CServiceBroker::GetAddonMgr().HasType(event.addonId, type))
+            {
+              Update();
+              break;
+            }
+          }
+        }
+        else if (typeid(event) == typeid(AddonEvents::UnInstalled))
+        {
+          Update();
+        }
+      });
+
   Update();
 }
 
@@ -86,27 +108,6 @@ AddonPtr CBinaryAddonCache::GetAddonInstance(const std::string& strId, AddonType
   }
 
   return addon;
-}
-
-void CBinaryAddonCache::OnEvent(const AddonEvent& event)
-{
-  if (typeid(event) == typeid(AddonEvents::Enabled) ||
-      typeid(event) == typeid(AddonEvents::Disabled) ||
-      typeid(event) == typeid(AddonEvents::ReInstalled))
-  {
-    for (auto &type : ADDONS_TO_CACHE)
-    {
-      if (CServiceBroker::GetAddonMgr().HasType(event.addonId, type))
-      {
-        Update();
-        break;
-      }
-    }
-  }
-  else if (typeid(event) == typeid(AddonEvents::UnInstalled))
-  {
-    Update();
-  }
 }
 
 void CBinaryAddonCache::Update()

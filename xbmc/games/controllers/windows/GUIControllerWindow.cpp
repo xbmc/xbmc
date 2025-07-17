@@ -12,6 +12,7 @@
 #include "GUIControllerList.h"
 #include "GUIFeatureList.h"
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonType.h"
@@ -197,27 +198,6 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
   return bHandled;
 }
 
-void CGUIControllerWindow::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
-{
-  UpdateButtons();
-}
-
-void CGUIControllerWindow::OnEvent(const ADDON::AddonEvent& event)
-{
-  using namespace ADDON;
-
-  if (typeid(event) == typeid(AddonEvents::Enabled) || // also called on install,
-      typeid(event) == typeid(AddonEvents::Disabled) || // not called on uninstall
-      typeid(event) == typeid(AddonEvents::UnInstalled) ||
-      typeid(event) == typeid(AddonEvents::ReInstalled))
-  {
-    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, AddonType::GAME_CONTROLLER))
-    {
-      UpdateButtons();
-    }
-  }
-}
-
 void CGUIControllerWindow::OnInitWindow(void)
 {
   // Get active game add-on
@@ -267,8 +247,23 @@ void CGUIControllerWindow::OnInitWindow(void)
   UpdateButtons();
 
   // subscribe to events
-  CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
+  CServiceBroker::GetRepositoryUpdater().Events().Subscribe(
+      this, [this](const ADDON::CRepositoryUpdater::RepositoryUpdated& event) { UpdateButtons(); });
+  CServiceBroker::GetAddonMgr().Events().Subscribe(
+      this,
+      [this](const ADDON::AddonEvent& event)
+      {
+        using namespace ADDON;
+
+        if (typeid(event) == typeid(AddonEvents::Enabled) || // also called on install,
+            typeid(event) == typeid(AddonEvents::Disabled) || // not called on uninstall
+            typeid(event) == typeid(AddonEvents::UnInstalled) ||
+            typeid(event) == typeid(AddonEvents::ReInstalled))
+        {
+          if (CServiceBroker::GetAddonMgr().HasType(event.addonId, AddonType::GAME_CONTROLLER))
+            UpdateButtons();
+        }
+      });
 }
 
 void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)

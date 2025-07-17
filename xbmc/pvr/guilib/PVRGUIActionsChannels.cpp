@@ -187,7 +187,8 @@ void CPVRGUIActionsChannels::RegisterChannelNumberInputHandler(
     CPVRChannelNumberInputHandler* handler)
 {
   if (handler)
-    handler->Events().Subscribe(this, &CPVRGUIActionsChannels::Notify);
+    handler->Events().Subscribe(this, [this](const PVRChannelNumberInputChangedEvent& event)
+                                { m_events.Publish(event); });
 }
 
 void CPVRGUIActionsChannels::DeregisterChannelNumberInputHandler(
@@ -195,11 +196,6 @@ void CPVRGUIActionsChannels::DeregisterChannelNumberInputHandler(
 {
   if (handler)
     handler->Events().Unsubscribe(this);
-}
-
-void CPVRGUIActionsChannels::Notify(const PVRChannelNumberInputChangedEvent& event)
-{
-  m_events.Publish(event);
 }
 
 bool CPVRGUIActionsChannels::HideChannel(const CFileItem& item) const

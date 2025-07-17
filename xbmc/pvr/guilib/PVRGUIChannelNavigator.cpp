@@ -119,7 +119,14 @@ void CPVRGUIChannelNavigator::SubscribeToShowInfoEventStream()
       .GetInfoProviders()
       .GetPlayerInfoProvider()
       .Events()
-      .Subscribe(this, &CPVRGUIChannelNavigator::Notify);
+      .Subscribe(this,
+                 [this](const PlayerShowInfoChangedEvent& event)
+                 {
+                   std::unique_lock lock(m_critSection);
+
+                   m_playerShowInfo = event.m_showInfo;
+                   CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
+                 });
 }
 
 void CPVRGUIChannelNavigator::CheckAndPublishPreviewAndPlayerShowInfoChangedEvent()
@@ -134,14 +141,6 @@ void CPVRGUIChannelNavigator::CheckAndPublishPreviewAndPlayerShowInfoChangedEven
     // inform subscribers
     m_events.Publish(PVRPreviewAndPlayerShowInfoChangedEvent(currentValue));
   }
-}
-
-void CPVRGUIChannelNavigator::Notify(const PlayerShowInfoChangedEvent& event)
-{
-  std::unique_lock lock(m_critSection);
-
-  m_playerShowInfo = event.m_showInfo;
-  CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
 }
 
 void CPVRGUIChannelNavigator::SelectNextChannel(ChannelSwitchMode eSwitchMode)
