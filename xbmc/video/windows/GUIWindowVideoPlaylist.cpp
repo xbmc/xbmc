@@ -396,8 +396,9 @@ protected:
 
     const auto playlistItem{playlistPlayer.GetPlaylist(PLAYLIST::Id::TYPE_VIDEO)[m_itemIndex]};
     playlistItem->SetStartOffset(STARTOFFSET_RESUME);
-    if (playlistItem->HasVideoInfoTag() && m_item->HasVideoInfoTag())
-      playlistItem->GetVideoInfoTag()->SetResumePoint(m_item->GetVideoInfoTag()->GetResumePoint());
+    if (playlistItem->HasVideoInfoTag() && GetItem()->HasVideoInfoTag())
+      playlistItem->GetVideoInfoTag()->SetResumePoint(
+          GetItem()->GetVideoInfoTag()->GetResumePoint());
 
     playlistPlayer.Play(m_itemIndex, m_player);
     return true;

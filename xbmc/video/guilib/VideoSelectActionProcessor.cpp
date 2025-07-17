@@ -52,9 +52,10 @@ bool CVideoSelectActionProcessor::Process(Action action)
 
     case ACTION_INFO:
     {
-      if (GetDefaultAction() == ACTION_INFO && !KODI::VIDEO::IsVideoDb(*m_item) &&
-          !m_item->IsPlugin() && !m_item->IsScript() && !m_item->IsPVR() &&
-          !KODI::VIDEO::UTILS::HasItemVideoDbInformation(*m_item))
+      const auto item{GetItem()};
+      if (GetDefaultAction() == ACTION_INFO && !KODI::VIDEO::IsVideoDb(*item) &&
+          !item->IsPlugin() && !item->IsScript() && !item->IsPVR() &&
+          !KODI::VIDEO::UTILS::HasItemVideoDbInformation(*item))
       {
         // For items without info fall back to default play action.
         return Process(ACTION_PLAY);
@@ -72,24 +73,24 @@ bool CVideoSelectActionProcessor::Process(Action action)
 bool CVideoSelectActionProcessor::OnPlaySelected()
 {
   // Execute default play action.
-  CVideoPlayActionProcessor proc(m_item);
+  CVideoPlayActionProcessor proc(GetItem());
   return proc.ProcessDefaultAction();
 }
 
 bool CVideoSelectActionProcessor::OnQueueSelected()
 {
-  VIDEO::UTILS::QueueItem(m_item, VIDEO::UTILS::QueuePosition::POSITION_END);
+  VIDEO::UTILS::QueueItem(GetItem(), VIDEO::UTILS::QueuePosition::POSITION_END);
   return true;
 }
 
 bool CVideoSelectActionProcessor::OnInfoSelected()
 {
-  return KODI::UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*m_item);
+  return KODI::UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*GetItem());
 }
 
 bool CVideoSelectActionProcessor::OnChooseSelected()
 {
-  CONTEXTMENU::ShowFor(m_item, CContextMenuManager::MAIN);
+  CONTEXTMENU::ShowFor(GetItem(), CContextMenuManager::MAIN);
   return true;
 }
 

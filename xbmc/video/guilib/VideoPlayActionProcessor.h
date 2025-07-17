@@ -38,9 +38,9 @@ private:
   unsigned int ChooseStackPart() const;
   Action ChoosePlayOrResume() const;
   static Action ChoosePlayOrResume(const std::string& resumeString);
-  void SetResumeData() const;
-  void SetStartData() const;
-  void Play(const std::string& player) const;
+  void SetResumeData();
+  void SetStartData();
+  void Play(const std::string& player);
 
   bool m_chooseStackPart{false};
   bool m_choosePlayer{false};

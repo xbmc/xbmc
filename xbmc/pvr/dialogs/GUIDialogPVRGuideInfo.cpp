@@ -147,7 +147,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
           KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{
               std::make_shared<CFileItem>(recording)};
           proc.ProcessDefaultAction();
-          if (proc.UserCancelled())
+          if (proc.GetUserCancelled())
             Open();
         }
       }

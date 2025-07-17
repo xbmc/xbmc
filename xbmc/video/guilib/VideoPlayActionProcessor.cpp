@@ -49,7 +49,7 @@ bool CVideoPlayActionProcessor::Process(Action action)
 {
   if (m_chooseStackPart && m_chosenStackPart == 0)
   {
-    if (!URIUtils::IsStack(m_item->GetDynPath()))
+    if (!URIUtils::IsStack(GetItem()->GetDynPath()))
     {
       CLog::LogF(LOGERROR, "Invalid item (not a stack)!");
       return true; // done
@@ -58,7 +58,7 @@ bool CVideoPlayActionProcessor::Process(Action action)
     m_chosenStackPart = ChooseStackPart();
     if (m_chosenStackPart < 1)
     {
-      m_userCancelled = true;
+      SetUserCancelled(true);
       return true; // User cancelled the select menu. We're done.
     }
   }
@@ -70,7 +70,7 @@ bool CVideoPlayActionProcessor::Process(Action action)
       const Action selectedAction = ChoosePlayOrResume();
       if (selectedAction < 0)
       {
-        m_userCancelled = true;
+        SetUserCancelled(true);
         return true; // User cancelled the select menu. We're done.
       }
 
@@ -99,20 +99,20 @@ Action CVideoPlayActionProcessor::ChoosePlayOrResume() const
 {
   if (m_chosenStackPart)
   {
-    const int64_t offset{VIDEO::UTILS::GetStackPartResumeOffset(*m_item, m_chosenStackPart)};
+    const int64_t offset{VIDEO::UTILS::GetStackPartResumeOffset(*GetItem(), m_chosenStackPart)};
     if (offset > 0)
       return ChoosePlayOrResume(VIDEO::UTILS::GetResumeString(offset, m_chosenStackPart));
   }
-  else if (URIUtils::IsStack(m_item->GetDynPath()))
+  else if (URIUtils::IsStack(GetItem()->GetDynPath()))
   {
-    const auto [offset, partNumber] = VIDEO::UTILS::GetStackResumeOffsetAndPartNumber(*m_item);
+    const auto [offset, partNumber] = VIDEO::UTILS::GetStackResumeOffsetAndPartNumber(*GetItem());
     if (offset > 0)
       return ChoosePlayOrResume(VIDEO::UTILS::GetResumeString(offset, partNumber));
   }
   else
   {
     const VIDEO::UTILS::ResumeInformation resumeInfo{
-        VIDEO::UTILS::GetItemResumeInformation(*m_item)};
+        VIDEO::UTILS::GetItemResumeInformation(*GetItem())};
     if (resumeInfo.isResumable)
       return ChoosePlayOrResume(
           VIDEO::UTILS::GetResumeString(resumeInfo.startOffset, resumeInfo.partNumber));
@@ -147,7 +147,7 @@ Action CVideoPlayActionProcessor::ChoosePlayOrResume(const CFileItem& item)
 unsigned int CVideoPlayActionProcessor::ChooseStackPart() const
 {
   CFileItemList parts;
-  XFILE::CDirectory::GetDirectory(m_item->GetDynPath(), parts, "", XFILE::DIR_FLAG_DEFAULTS);
+  XFILE::CDirectory::GetDirectory(GetItem()->GetDynPath(), parts, "", XFILE::DIR_FLAG_DEFAULTS);
 
   if (parts.IsEmpty())
   {
@@ -174,31 +174,33 @@ unsigned int CVideoPlayActionProcessor::ChooseStackPart() const
   return dialog->GetSelectedItem() + 1; // part numbers are 1-based
 }
 
-void CVideoPlayActionProcessor::SetResumeData() const
+void CVideoPlayActionProcessor::SetResumeData()
 {
+  const auto item{GetItem()};
   if (m_chosenStackPart)
   {
-    m_item->SetStartPartNumber(m_chosenStackPart);
-    m_item->SetStartOffset(VIDEO::UTILS::GetStackPartResumeOffset(*m_item, m_chosenStackPart));
+    item->SetStartPartNumber(m_chosenStackPart);
+    item->SetStartOffset(VIDEO::UTILS::GetStackPartResumeOffset(*item, m_chosenStackPart));
   }
   else
   {
-    m_item->SetStartPartNumber(1);
-    m_item->SetStartOffset(STARTOFFSET_RESUME);
+    item->SetStartPartNumber(1);
+    item->SetStartOffset(STARTOFFSET_RESUME);
   }
 }
 
-void CVideoPlayActionProcessor::SetStartData() const
+void CVideoPlayActionProcessor::SetStartData()
 {
+  const auto item{GetItem()};
   if (m_chosenStackPart)
   {
-    m_item->SetStartPartNumber(m_chosenStackPart);
-    m_item->SetStartOffset(VIDEO::UTILS::GetStackPartStartOffset(*m_item, m_chosenStackPart));
+    item->SetStartPartNumber(m_chosenStackPart);
+    item->SetStartOffset(VIDEO::UTILS::GetStackPartStartOffset(*item, m_chosenStackPart));
   }
   else
   {
-    m_item->SetStartPartNumber(1);
-    m_item->SetStartOffset(0);
+    item->SetStartPartNumber(1);
+    item->SetStartOffset(0);
   }
 }
 
@@ -213,12 +215,12 @@ bool CVideoPlayActionProcessor::OnPlaySelected()
   std::string player;
   if (m_choosePlayer)
   {
-    const std::vector<std::string> players{CPlayerUtils::GetPlayersForItem(*m_item)};
+    const std::vector<std::string> players{CPlayerUtils::GetPlayersForItem(*GetItem())};
     const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
     player = playerCoreFactory.SelectPlayerDialog(players);
     if (player.empty())
     {
-      m_userCancelled = true;
+      SetUserCancelled(true);
       return true; // User cancelled player selection. We're done.
     }
   }
@@ -227,9 +229,9 @@ bool CVideoPlayActionProcessor::OnPlaySelected()
   return true;
 }
 
-void CVideoPlayActionProcessor::Play(const std::string& player) const
+void CVideoPlayActionProcessor::Play(const std::string& player)
 {
-  auto item{m_item};
+  auto item{GetItem()};
   if (item->IsFolder() && item->HasVideoVersions())
   {
     //! @todo get rid of "videos with versions as folder" hack!
