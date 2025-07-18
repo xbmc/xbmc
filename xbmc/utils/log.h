@@ -59,6 +59,9 @@ struct formatter<std::atomic<T>, Char> : formatter<T, Char>
 class CLog : public ISettingsHandler, public ISettingCallback
 {
 public:
+  // id of the "general" log component
+  static constexpr uint32_t LOG_COMPONENT_GENERAL = 0;
+
   CLog();
   ~CLog() override;
 
@@ -95,7 +98,7 @@ public:
     if (!GetInstance().CanLogComponent(component))
       return;
 
-    Log(level, format, std::forward<Args>(args)...);
+    Log(MapLogLevel(level), component, format, std::forward<Args>(args)...);
   }
 
   template<typename... Args>
@@ -103,7 +106,7 @@ public:
                   fmt::format_string<Args...> format,
                   Args&&... args)
   {
-    GetInstance().FormatAndLogInternal(level, format, fmt::make_format_args(args...));
+    Log(level, LOG_COMPONENT_GENERAL, format, std::forward<Args>(args)...);
   }
 
   template<typename... Args>
@@ -115,7 +118,7 @@ public:
     if (!GetInstance().CanLogComponent(component))
       return;
 
-    Log(level, format, std::forward<Args>(args)...);
+    GetInstance().FormatAndLogInternal(level, component, format, fmt::make_format_args(args...));
   }
 
 #define LogF(level, format, ...) \
@@ -130,10 +133,13 @@ private:
   static spdlog::level::level_enum MapLogLevel(int level);
 
   void FormatAndLogInternal(spdlog::level::level_enum level,
+                            uint32_t component,
                             fmt::string_view format,
                             fmt::format_args args);
 
   Logger CreateLogger(const std::string& loggerName);
+
+  Logger GetLoggerById(uint32_t component);
 
   void SetComponentLogLevel(const std::vector<CVariant>& components);
 

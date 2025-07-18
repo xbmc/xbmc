@@ -18,6 +18,7 @@
 #include "settings/SettingsContainer.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -33,7 +34,51 @@ namespace
 constexpr unsigned char Utf8Bom[3] = {0xEF, 0xBB, 0xBF};
 const std::string LogFileExtension = ".log";
 const std::string LogPattern = "%Y-%m-%d %T.%e T:%-5t %7l <%n>: %v";
-} // namespace
+
+struct ComponentInfo
+{
+  const char* name{nullptr};
+  uint32_t stringId{0};
+};
+
+// clang-format off
+constexpr auto componentMap = make_map<int, ComponentInfo>({
+  // component id,  component name, component setting value string id
+  {LOGSAMBA,        {"samba",       669}},
+  {LOGCURL,         {"curl",        670}},
+  {LOGFFMPEG,       {"ffmpeg",      672}},
+#ifdef HAS_DBUS
+  {LOGDBUS,         {"dbus",        674}},
+#endif
+  {LOGJSONRPC,      {"jsonrpc",     675}},
+  {LOGAUDIO,        {"audio",       676}},
+#ifdef HAS_AIRTUNES
+  {LOGAIRTUNES,     {"airtunes",    677}},
+#endif
+#ifdef HAS_UPNP
+  {LOGUPNP,         {"upnp",        678}},
+#endif
+#ifdef HAVE_LIBCEC
+  {LOGCEC,          {"cec",         679}},
+#endif
+  {LOGVIDEO,        {"video",       680}},
+#ifdef HAS_WEB_SERVER
+  {LOGWEBSERVER,    {"webserver",   681}},
+#endif
+  {LOGDATABASE,     {"database",    682}},
+  {LOGAVTIMING,     {"avtiming",    683}},
+  {LOGWINDOWING,    {"windowing",   684}},
+  {LOGPVR,          {"pvr",         685}},
+  {LOGEPG,          {"epg",         686}},
+  {LOGANNOUNCE,     {"announce",    39117}},
+#if defined(HAS_FILESYSTEM_SMB)
+  {LOGWSDISCOVERY,  {"wsdiscovery", 37050}},
+#endif
+  {LOGADDONS,       {"addons",      39124}},
+});
+// clang-format on
+
+} // unnamed namespace
 
 CLog::CLog()
   : m_platform(IPlatformLog::CreatePlatformLog()),
@@ -172,7 +217,7 @@ void CLog::SetLogLevel(int level)
     return;
 
   spdlog::set_level(spdLevel);
-  FormatAndLogInternal(spdlog::level::info, "Log level changed to \"{}\"",
+  FormatAndLogInternal(spdlog::level::info, LOG_COMPONENT_GENERAL, "Log level changed to \"{}\"",
                        fmt::make_format_args(spdlog::level::to_string_view(spdLevel)));
 }
 
@@ -188,7 +233,10 @@ bool CLog::IsLogLevelLogged(int loglevel) const
 
 bool CLog::CanLogComponent(uint32_t component) const
 {
-  if (!m_componentLogEnabled || component == 0)
+  if (component == LOG_COMPONENT_GENERAL)
+    return true;
+
+  if (!m_componentLogEnabled)
     return false;
 
   return ((m_componentLogLevels & component) == component);
@@ -198,37 +246,23 @@ void CLog::SettingOptionsLoggingComponentsFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
                                                  int& current)
 {
-  list.emplace_back(g_localizeStrings.Get(669), LOGSAMBA);
-  list.emplace_back(g_localizeStrings.Get(670), LOGCURL);
-  list.emplace_back(g_localizeStrings.Get(672), LOGFFMPEG);
-  list.emplace_back(g_localizeStrings.Get(675), LOGJSONRPC);
-  list.emplace_back(g_localizeStrings.Get(676), LOGAUDIO);
-  list.emplace_back(g_localizeStrings.Get(680), LOGVIDEO);
-  list.emplace_back(g_localizeStrings.Get(683), LOGAVTIMING);
-  list.emplace_back(g_localizeStrings.Get(684), LOGWINDOWING);
-  list.emplace_back(g_localizeStrings.Get(685), LOGPVR);
-  list.emplace_back(g_localizeStrings.Get(686), LOGEPG);
-  list.emplace_back(g_localizeStrings.Get(39117), LOGANNOUNCE);
-  list.emplace_back(g_localizeStrings.Get(39124), LOGADDONS);
-#ifdef HAS_DBUS
-  list.emplace_back(g_localizeStrings.Get(674), LOGDBUS);
-#endif
-#ifdef HAS_WEB_SERVER
-  list.emplace_back(g_localizeStrings.Get(681), LOGWEBSERVER);
-#endif
-#ifdef HAS_AIRTUNES
-  list.emplace_back(g_localizeStrings.Get(677), LOGAIRTUNES);
-#endif
-#ifdef HAS_UPNP
-  list.emplace_back(g_localizeStrings.Get(678), LOGUPNP);
-#endif
-#ifdef HAVE_LIBCEC
-  list.emplace_back(g_localizeStrings.Get(679), LOGCEC);
-#endif
-  list.emplace_back(g_localizeStrings.Get(682), LOGDATABASE);
-#if defined(HAS_FILESYSTEM_SMB)
-  list.emplace_back(g_localizeStrings.Get(37050), LOGWSDISCOVERY);
-#endif
+  for (const auto& [id, names] : componentMap)
+  {
+    // localized component setting name, component id
+    list.emplace_back(g_localizeStrings.Get(names.stringId), id);
+  }
+}
+
+Logger CLog::GetLoggerById(uint32_t component)
+{
+  if (component != LOG_COMPONENT_GENERAL)
+  {
+    const auto it{componentMap.find(component)};
+    if (it != componentMap.cend())
+      return GetLogger((*it).second.name);
+  }
+  // default and fallback
+  return m_defaultLogger;
 }
 
 Logger CLog::GetLogger(const std::string& loggerName)
@@ -270,6 +304,7 @@ spdlog::level::level_enum CLog::MapLogLevel(int level)
 }
 
 void CLog::FormatAndLogInternal(spdlog::level::level_enum level,
+                                uint32_t component,
                                 fmt::string_view format,
                                 fmt::format_args args)
 {
@@ -280,8 +315,7 @@ void CLog::FormatAndLogInternal(spdlog::level::level_enum level,
 
   // fixup newline alignment, number of spaces should equal prefix length
   FormatLineBreaks(message);
-
-  m_defaultLogger->log(level, message);
+  GetLoggerById(component)->log(level, message);
 }
 
 Logger CLog::CreateLogger(const std::string& loggerName)
