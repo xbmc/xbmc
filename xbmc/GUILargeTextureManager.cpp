@@ -30,12 +30,14 @@ CImageLoader::CImageLoader(const std::string& path,
                            unsigned int targetWidth,
                            unsigned int targetHeight,
                            CAspectRatio::AspectRatio aspectRatio,
-                           const bool useCache)
+                           const bool useCache,
+                           TEXTURE_SCALING scalingMethod)
   : m_path(path),
     m_texture(nullptr),
     m_targetWidth(targetWidth),
     m_targetHeight(targetHeight),
-    m_aspectRatio(aspectRatio)
+    m_aspectRatio(aspectRatio),
+    m_scalingMethod(scalingMethod)
 {
   m_use_cache = useCache;
 }
@@ -60,7 +62,8 @@ bool CImageLoader::DoWork()
   {
     // direct route - load the image
     auto start = std::chrono::steady_clock::now();
-    m_texture = CTexture::LoadFromFile(loadPath, m_targetWidth, m_targetHeight, m_aspectRatio);
+    m_texture = CTexture::LoadFromFile(loadPath, m_targetWidth, m_targetHeight, m_aspectRatio, "",
+                                       m_scalingMethod);
 
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -102,11 +105,13 @@ bool CImageLoader::DoWork()
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string& path,
                                                       unsigned int targetWidth,
                                                       unsigned int targetHeight,
-                                                      CAspectRatio::AspectRatio aspectRatio)
+                                                      CAspectRatio::AspectRatio aspectRatio,
+                                                      TEXTURE_SCALING scalingMethod)
   : m_path(path),
     m_targetWidth(targetWidth),
     m_targetHeight(targetHeight),
-    m_aspectRatio(aspectRatio)
+    m_aspectRatio(aspectRatio),
+    m_scalingMethod(scalingMethod)
 {
   m_refCount = 1;
   m_timeToDelete = 0;
@@ -186,14 +191,16 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
                                        unsigned int height,
                                        CAspectRatio::AspectRatio aspectRatio,
                                        bool firstRequest,
-                                       const bool useCache)
+                                       const bool useCache,
+                                       TEXTURE_SCALING scalingMethod)
 {
   std::unique_lock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
     if (image->GetPath() == path && image->GetTargetWidth() == width &&
-        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio)
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio &&
+        image->GetScalingMethod() == scalingMethod)
     {
       if (firstRequest)
         image->AddRef();
@@ -203,7 +210,7 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
   }
 
   if (firstRequest)
-    QueueImage(path, width, height, aspectRatio, useCache);
+    QueueImage(path, width, height, aspectRatio, useCache, scalingMethod);
 
   return true;
 }
@@ -212,14 +219,16 @@ void CGUILargeTextureManager::ReleaseImage(const std::string& path,
                                            unsigned int width,
                                            unsigned int height,
                                            CAspectRatio::AspectRatio aspectRatio,
-                                           bool immediately)
+                                           bool immediately,
+                                           TEXTURE_SCALING scalingMethod)
 {
   std::unique_lock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
     if (image->GetPath() == path && image->GetTargetWidth() == width &&
-        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio)
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio &&
+        image->GetScalingMethod() == scalingMethod)
     {
       if (image->DecrRef(immediately) && immediately)
         m_allocated.erase(it);
@@ -232,7 +241,7 @@ void CGUILargeTextureManager::ReleaseImage(const std::string& path,
     CLargeTexture *image = it->second;
     if (image->GetPath() == path && image->GetTargetWidth() == width &&
         image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio &&
-        image->DecrRef(true))
+        image->GetScalingMethod() == scalingMethod && image->DecrRef(true))
     {
       // cancel this job
       CServiceBroker::GetJobManager()->CancelJob(id);
@@ -247,7 +256,8 @@ void CGUILargeTextureManager::QueueImage(const std::string& path,
                                          unsigned int width,
                                          unsigned int height,
                                          CAspectRatio::AspectRatio aspectRatio,
-                                         bool useCache)
+                                         bool useCache,
+                                         TEXTURE_SCALING scalingMethod)
 {
   if (path.empty())
     return;
@@ -257,7 +267,8 @@ void CGUILargeTextureManager::QueueImage(const std::string& path,
   {
     CLargeTexture *image = it->second;
     if (image->GetPath() == path && image->GetTargetWidth() == width &&
-        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio)
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio &&
+        image->GetScalingMethod() == scalingMethod)
     {
       image->AddRef();
       return; // already queued
@@ -265,9 +276,10 @@ void CGUILargeTextureManager::QueueImage(const std::string& path,
   }
 
   // queue the item
-  CLargeTexture* image = new CLargeTexture(path, width, height, aspectRatio);
+  CLargeTexture* image = new CLargeTexture(path, width, height, aspectRatio, scalingMethod);
   unsigned int jobID = CServiceBroker::GetJobManager()->AddJob(
-      new CImageLoader(path, width, height, aspectRatio, useCache), this, CJob::PRIORITY_NORMAL);
+      new CImageLoader(path, width, height, aspectRatio, useCache, scalingMethod), this,
+      CJob::PRIORITY_NORMAL);
   m_queued.emplace_back(jobID, image);
 }
 
