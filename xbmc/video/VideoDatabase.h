@@ -635,7 +635,9 @@ public:
 
   int GetPathId(const std::string& strPath);
   int GetTvShowId(const std::string& strPath);
-  int GetEpisodeId(const std::string& strFilenameAndPath, int idEpisode=-1, int idSeason=-1); // idEpisode, idSeason are used for multipart episodes as hints
+  int GetEpisodeId(const std::string& strFilenameAndPath,
+                   int episode = -1,
+                   int season = -1); // episode, season are used for multipart episodes as hints
   int GetSeasonId(int idShow, int season) const;
 
   void GetEpisodesByBlurayPath(const std::string& path, std::vector<CVideoInfoTag>& episodes);
