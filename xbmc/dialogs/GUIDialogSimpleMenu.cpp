@@ -62,9 +62,6 @@ protected:
 bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
 {
   const bool forceSelection{item.GetProperty("force_playlist_selection").asBoolean(false)};
-  if (!forceSelection && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                             CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
-    return true;
 
   const std::string originalDynPath{
       item.GetDynPath()}; // Overwritten by dialog selection. Needed for screen refresh.

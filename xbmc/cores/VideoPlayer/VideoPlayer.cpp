@@ -1130,6 +1130,9 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
       }
     }
   }
+
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+    SynchronizeDemuxer();
 }
 
 bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
@@ -1357,9 +1360,9 @@ void CVideoPlayer::Prepare()
   bool discStateRestored = false;
   if (std::shared_ptr<CDVDInputStream::IMenus> ptr = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
   {
-    CLog::Log(LOGINFO, "VideoPlayer: playing a file with menu's");
+    CLog::Log(LOGINFO, "VideoPlayer: playing a file with menus");
 
-    if (!m_playerOptions.state.empty())
+    if (!m_playerOptions.state.empty() && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
     {
       discStateRestored = ptr->SetState(m_playerOptions.state);
     }
