@@ -65,7 +65,6 @@ void CURL::Parse(std::string strURL1)
   // first need 2 check if this is a protocol or just a normal drive & path
   if (strURL.empty())
     return;
-  if (strURL == "?") return;
 
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
