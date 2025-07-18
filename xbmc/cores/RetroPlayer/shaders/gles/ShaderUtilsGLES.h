@@ -12,9 +12,7 @@
 
 #include "system_gl.h"
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 
 class CShaderUtilsGLES
@@ -24,5 +22,4 @@ public:
   static std::string GetGLSLVersion(std::string& source);
 };
 
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

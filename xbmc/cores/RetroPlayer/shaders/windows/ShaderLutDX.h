@@ -16,9 +16,7 @@
 
 #include <d3d11.h>
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 class CTextureBase;
 struct ShaderLut;
@@ -42,5 +40,4 @@ private:
   std::unique_ptr<CTexture> m_texture;
 };
 
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

@@ -8,7 +8,6 @@
 
 #include "IShaderTexture.h"
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 IShaderTexture::~IShaderTexture() = default;

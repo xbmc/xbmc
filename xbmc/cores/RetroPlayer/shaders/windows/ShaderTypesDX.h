@@ -10,9 +10,7 @@
 
 #include <minwindef.h>
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 struct CUSTOMVERTEX
 {
@@ -23,5 +21,4 @@ struct CUSTOMVERTEX
   FLOAT tu;
   FLOAT tv;
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

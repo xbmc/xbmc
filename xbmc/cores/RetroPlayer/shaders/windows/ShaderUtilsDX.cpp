@@ -8,8 +8,7 @@
 
 #include "ShaderUtilsDX.h"
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 D3D11_TEXTURE_ADDRESS_MODE CShaderUtilsDX::TranslateWrapType(WrapType wrapType)
 {

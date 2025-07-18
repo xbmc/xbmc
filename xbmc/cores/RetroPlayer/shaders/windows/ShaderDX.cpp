@@ -21,12 +21,9 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
-CShaderDX::CShaderDX(RETRO::CRenderContext& context) : m_context(context)
-{
-}
+CShaderDX::CShaderDX() = default;
 
 CShaderDX::~CShaderDX()
 {
@@ -88,18 +85,11 @@ void CShaderDX::Render(IShaderTexture& source, IShaderTexture& target)
   const CD3DTexture& sourceTexture = sourceDX.GetTexture();
 
   //! @todo Handle ref textures better
-  CShaderTextureDX* targetDX = dynamic_cast<CShaderTextureDX*>(&target);
-  CShaderTextureDXRef* targetDXRef = dynamic_cast<CShaderTextureDXRef*>(&target);
+  auto* targetDX = dynamic_cast<CShaderTextureDX*>(&target);
+  auto* targetDXRef = dynamic_cast<CShaderTextureDXRef*>(&target);
 
   CD3DTexture& targetTexture =
       targetDX != nullptr ? targetDX->GetTexture() : targetDXRef->GetTexture();
-
-  //! @todo Doesn't work. Another PSSetSamplers gets called by FX11 right before rendering
-  // overriding this.
-  /*
-  CRenderSystemDX *renderingDX = static_cast<CRenderSystemDX*>(m_context.Rendering());
-  renderingDX->Get3D11Context()->PSSetSamplers(2, 1, &m_pSampler);
-  */
 
   //! @todo Check for nullptr
   SetShaderParameters(sourceTexture);
@@ -267,7 +257,7 @@ void CShaderDX::SetShaderParameters(const CD3DTexture& sourceTexture)
 
   for (const std::shared_ptr<IShaderLut>& lut : m_luts)
   {
-    CDXTexture* texture = dynamic_cast<CDXTexture*>(lut->GetTexture());
+    auto* texture = dynamic_cast<CDXTexture*>(lut->GetTexture());
     if (texture != nullptr)
       m_effect.SetTexture(lut->GetID().c_str(), texture->GetShaderResource());
   }

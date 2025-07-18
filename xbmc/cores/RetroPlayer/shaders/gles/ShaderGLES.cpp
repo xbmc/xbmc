@@ -18,17 +18,14 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
-CShaderGLES::CShaderGLES(RETRO::CRenderContext& context)
-{
-}
+CShaderGLES::CShaderGLES() = default;
 
 CShaderGLES::~CShaderGLES()
 {
   glDeleteBuffers(1, &m_shaderIndexVBO);
-  glDeleteBuffers(3, m_shaderVertexVBO);
+  glDeleteBuffers(3, m_shaderVertexVBO.data());
 }
 
 bool CShaderGLES::Create(std::string shaderSource,
@@ -68,7 +65,7 @@ bool CShaderGLES::Create(std::string shaderSource,
   GLuint fShader;
 
   vShader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vShader, 1, &vertexShaderSource, NULL);
+  glShaderSource(vShader, 1, &vertexShaderSource, nullptr);
   glCompileShader(vShader);
   glGetShaderiv(vShader, GL_COMPILE_STATUS, &status);
 
@@ -83,7 +80,7 @@ bool CShaderGLES::Create(std::string shaderSource,
   }
 
   fShader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fShader, 1, &fragmentShaderSource, NULL);
+  glShaderSource(fShader, 1, &fragmentShaderSource, nullptr);
   glCompileShader(fShader);
   glGetShaderiv(fShader, GL_COMPILE_STATUS, &status);
 
@@ -127,7 +124,7 @@ bool CShaderGLES::Create(std::string shaderSource,
 
   GetUniformLocs();
 
-  glGenBuffers(3, m_shaderVertexVBO);
+  glGenBuffers(3, m_shaderVertexVBO.data());
   glGenBuffers(1, &m_shaderIndexVBO);
 
   return true;
@@ -135,29 +132,29 @@ bool CShaderGLES::Create(std::string shaderSource,
 
 void CShaderGLES::Render(IShaderTexture& source, IShaderTexture& target)
 {
-  CShaderTextureGLES& sourceGL = static_cast<CShaderTextureGLES&>(source);
+  auto& sourceGL = static_cast<CShaderTextureGLES&>(source);
 
   glUseProgram(m_shaderProgram);
 
   SetShaderParameters(sourceGL.GetTexture());
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_VertexCoords), m_VertexCoords, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(m_VertexCoords), m_VertexCoords.data(), GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[1]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors.data(), GL_STATIC_DRAW);
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[2]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoords), m_TexCoords, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoords), m_TexCoords.data(), GL_STATIC_DRAW);
   glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_shaderIndexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices.data(), GL_STATIC_DRAW);
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
 
@@ -281,13 +278,12 @@ void CShaderGLES::UpdateUniformInputs(
 
   if (m_passIdx > 0) // Not first pass
   {
-    CShaderTextureGLES& shaderTextureGL =
-        static_cast<CShaderTextureGLES&>(*pShaderTextures[m_passIdx - 1]);
+    auto& shaderTextureGL = static_cast<CShaderTextureGLES&>(*pShaderTextures[m_passIdx - 1]);
     m_uniformFrameInputs = GetFrameInputData(shaderTextureGL.GetTexture().GetTextureID());
   }
   else // First pass
   {
-    CShaderTextureGLES& sourceTextureGL = static_cast<CShaderTextureGLES&>(sourceTexture);
+    auto& sourceTextureGL = static_cast<CShaderTextureGLES&>(sourceTexture);
     m_uniformFrameInputs = GetFrameInputData(sourceTextureGL.GetTexture().GetTextureID());
   }
 
@@ -296,7 +292,7 @@ void CShaderGLES::UpdateUniformInputs(
 
   for (unsigned int i = 0; i < m_passIdx + 1; ++i)
   {
-    CShaderGLES& shader = static_cast<CShaderGLES&>(*pShaders[i]);
+    const auto& shader = static_cast<const CShaderGLES&>(*pShaders[i]);
     UniformFrameInputs frameInput = shader.GetFrameUniformInputs();
     m_passesUniformFrameInputs.emplace_back(frameInput);
   }
@@ -368,7 +364,7 @@ void CShaderGLES::SetShaderParameters(CGLESTexture& sourceTexture)
   // Set lookup textures
   for (const std::shared_ptr<IShaderLut>& lut : m_luts)
   {
-    CGLESTexture* texture = static_cast<CGLESTexture*>(lut->GetTexture());
+    auto* texture = static_cast<CGLESTexture*>(lut->GetTexture());
     if (texture != nullptr)
     {
       const GLint paramLoc = glGetUniformLocation(m_shaderProgram, lut->GetID().c_str());

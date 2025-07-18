@@ -18,8 +18,7 @@
 
 #include <regex>
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderPresetGL::CShaderPresetGL(RETRO::CRenderContext& context,
                                  unsigned int videoWidth,

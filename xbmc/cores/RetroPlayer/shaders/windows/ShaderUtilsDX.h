@@ -13,9 +13,7 @@
 #include <DirectXMath.h>
 #include <d3d11.h>
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 class CShaderUtilsDX
 {
@@ -23,5 +21,4 @@ public:
   static D3D11_TEXTURE_ADDRESS_MODE TranslateWrapType(WrapType wrapType);
   static DirectX::XMFLOAT2 ToDXVector(const float2& vec);
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

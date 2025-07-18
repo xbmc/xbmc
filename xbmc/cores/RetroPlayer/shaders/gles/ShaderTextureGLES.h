@@ -16,9 +16,7 @@
 
 class CGLESTexture;
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 
 class CShaderTextureGLES : public IShaderTexture
@@ -39,12 +37,11 @@ public:
   // Frame buffer interface
   bool CreateFBO();
   bool BindFBO();
-  void UnbindFBO();
+  void UnbindFBO() const;
 
 private:
   std::shared_ptr<CGLESTexture> m_texture;
   bool m_sRgbFramebuffer{false};
   GLuint FBO{0};
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

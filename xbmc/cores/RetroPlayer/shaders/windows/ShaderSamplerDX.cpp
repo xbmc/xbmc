@@ -8,8 +8,7 @@
 
 #include "ShaderSamplerDX.h"
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 CShaderSamplerDX::CShaderSamplerDX(ID3D11SamplerState* sampler) : m_sampler(sampler)
 {

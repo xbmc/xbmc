@@ -14,9 +14,7 @@
 #include <string>
 #include <vector>
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 class IShaderTexture;
 
@@ -88,5 +86,4 @@ public:
    */
   virtual std::vector<ShaderPass>& GetPasses() = 0;
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

@@ -12,9 +12,7 @@
 
 #include <d3d11.h>
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 
 class CShaderSamplerDX : public IShaderSampler
@@ -27,5 +25,4 @@ private:
   ID3D11SamplerState* const m_sampler;
 };
 
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

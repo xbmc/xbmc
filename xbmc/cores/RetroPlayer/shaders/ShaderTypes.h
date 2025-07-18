@@ -15,9 +15,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 using ShaderParameterMap = std::map<std::string, float>;
 
@@ -120,5 +118,4 @@ struct float2
   float x;
   float y;
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

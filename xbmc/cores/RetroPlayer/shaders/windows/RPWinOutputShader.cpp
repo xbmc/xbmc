@@ -13,8 +13,7 @@
 #include "rendering/dx/DeviceResources.h"
 #include "utils/log.h"
 
-using namespace KODI;
-using namespace SHADER;
+using namespace KODI::SHADER;
 
 bool CRPWinShader::CreateVertexBuffer(unsigned int count, unsigned int size)
 {

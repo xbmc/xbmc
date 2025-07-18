@@ -16,9 +16,7 @@
 #include <string>
 #include <vector>
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 class IShaderLut;
 class IShaderTexture;
@@ -94,5 +92,4 @@ public:
    */
   virtual void UpdateMVP() = 0;
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER

@@ -17,9 +17,7 @@
 
 class CTexture;
 
-namespace KODI
-{
-namespace SHADER
+namespace KODI::SHADER
 {
 /*!
  * \brief A lookup table to apply color transforms in a shader
@@ -64,5 +62,4 @@ protected:
   std::string m_id;
   std::string m_path;
 };
-} // namespace SHADER
-} // namespace KODI
+} // namespace KODI::SHADER
