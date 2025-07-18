@@ -181,7 +181,7 @@ void Interface_Base::addon_log_msg(const KODI_ADDON_BACKEND_HDL hdl,
       break;
   }
 
-  CLog::Log(logLevel, "AddOnLog: {}: {}", addon->ID(), strMessage);
+  CLog::Log(addon->ID(), logLevel, "{}", strMessage);
 }
 
 char* Interface_Base::get_type_version(const KODI_ADDON_BACKEND_HDL hdl, int type)
