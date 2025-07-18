@@ -29,10 +29,9 @@ def discogs_albumfind(data, artist, album):
     return albums
 
 def discogs_albummain(data):
-    if data:
-        if 'main_release_url' in data:
-            url = data['main_release_url'].rsplit('/', 1)[1]
-            return url
+    if data and 'main_release_url' in data:
+        url = data['main_release_url'].rsplit('/', 1)[1]
+        return url
 
 def discogs_albumdetails(data):
     albumdata = {}
