@@ -48,7 +48,11 @@ protected:
   static void AddArtistInstrument(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   static int POPMtoXBMC(int popm);
 
-template<typename T>
-   static bool ParseTag(T *tag, EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& infoTag);
+  template<typename T>
+  static bool ParseTag(T* tag,
+                       EmbeddedArt* art,
+                       MUSIC_INFO::CMusicInfoTag& infoTag,
+                       // time in ms to the end of the current file.  Used to ensure the final
+                       // chapter (if any) extends to the end of the file.
+                       unsigned int totalLenMs = 0);
 };
-
