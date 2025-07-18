@@ -1,0 +1,32 @@
+From 4abddec81efcbf4272c53ac98d9b80e40ff0ae9e Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Sun, 16 Feb 2025 16:56:06 -0800
+Subject: [PATCH] Conditionally define BOOST_ALL_NO_EMBEDDED_GDB_SCRIPTS in
+ Boost.JSON
+
+Modify Boost.JSON's CMake configuration to only define
+BOOST_ALL_NO_EMBEDDED_GDB_SCRIPTS if it is already set.
+
+This ensures the flag is applied consistently when explicitly enabled
+while avoiding unnecessary modifications for builds that do not require it.
+---
+ libs/json/CMakeLists.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/libs/json/CMakeLists.txt b/libs/json/CMakeLists.txt
+index da991910..fc3b539c 100644
+--- a/libs/json/CMakeLists.txt
++++ b/libs/json/CMakeLists.txt
+@@ -69,6 +69,9 @@ function(boost_json_setup_properties target)
+     endif()
+     target_compile_features(${target} PUBLIC cxx_constexpr)
+     target_compile_definitions(${target} PUBLIC BOOST_JSON_NO_LIB=1)
++    if(BOOST_ALL_NO_EMBEDDED_GDB_SCRIPTS)
++        target_compile_definitions(${target} PUBLIC BOOST_ALL_NO_EMBEDDED_GDB_SCRIPTS)
++    endif()
+ 
+     if(BOOST_SUPERPROJECT_VERSION)
+         target_include_directories(${target} PUBLIC "${PROJECT_SOURCE_DIR}/include")
+-- 
+2.48.1
+
