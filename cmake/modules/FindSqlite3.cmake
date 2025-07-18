@@ -6,6 +6,7 @@
 # This will define the following target:
 #
 #   ${APP_NAME_LC}::Sqlite3 - The SQLite3 library
+#   LIBRARY::Sqlite3 - ALIAS TARGET for the SQLite3 library
 #
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
@@ -37,6 +38,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                      IMPORTED_LOCATION "${SQLITE3_LIBRARY}"
                                                                      INTERFACE_INCLUDE_DIRECTORIES "${SQLITE3_INCLUDE_DIR}")
+
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   else()
     if(Sqlite3_FIND_REQUIRED)
       message(FATAL_ERROR "SQLite3 library not found.")

@@ -18,6 +18,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-all-enable_docs_pc.patch")
 
     generate_patchcommand("${patches}")
+    unset(patches)
 
     if(CORE_SYSTEM_NAME STREQUAL darwin_embedded OR WINDOWS_STORE)
       set(EXTRA_ARGS -DPCRE2_SUPPORT_JIT=OFF)

@@ -42,6 +42,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(NOT TARGET harfbuzz::harfbuzz)
       add_library(harfbuzz::harfbuzz ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
+
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   else()
     if(HarfBuzz_FIND_REQUIRED)
       message(FATAL_ERROR "Harfbuzz libraries were not found.")
