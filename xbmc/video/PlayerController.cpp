@@ -52,7 +52,7 @@ CPlayerController& CPlayerController::GetInstance()
   return instance;
 }
 
-bool CPlayerController::OnAction(const CAction& action)
+bool CPlayerController::OnAction(const CAction &action)
 {
   const unsigned int MsgTime = 300;
   const unsigned int DisplTime = 2000;
@@ -92,21 +92,8 @@ bool CPlayerController::OnAction(const CAction& action)
         }
         else
           sub = g_localizeStrings.Get(1223);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287),
-                                              sub, DisplTime, false, MsgTime);
-        return true;
-      }
-
-      case ACTION_DOWNLOAD_SUBTITLES:
-      {
-        CGUIDialogSubtitles* dialog =
-            CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSubtitles>(
-                WINDOW_DIALOG_SUBTITLES);
-        if (dialog)
-        {
-          dialog->Open();
-        }
-
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                              g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
         return true;
       }
 
@@ -170,14 +157,7 @@ bool CPlayerController::OnAction(const CAction& action)
         }
         else
           sub = g_localizeStrings.Get(1223);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287),
-                                              sub, DisplTime, false, MsgTime);
-        return true;
-      }
-
-      case ACTION_DIALOG_SELECT_SUBTITLE:
-      {
-        VIDEO::GUILIB::OpenDialogSelectSubtitleStream();
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
         return true;
       }
 
@@ -323,14 +303,7 @@ bool CPlayerController::OnAction(const CAction& action)
         appPlayer->GetVideoStreamInfo(currentVideo, info);
         std::string caption = g_localizeStrings.Get(38031);
         caption += StringUtils::Format(" ({}/{})", currentVideo + 1, videoStreamCount);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, info.name,
-                                              DisplTime, false, MsgTime);
-        return true;
-      }
-
-      case ACTION_DIALOG_SELECT_VIDEO:
-      {
-        VIDEO::GUILIB::OpenDialogSelectVideoStream();
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, info.name, DisplTime, false, MsgTime);
         return true;
       }
 
@@ -510,9 +483,10 @@ bool CPlayerController::OnAction(const CAction& action)
         // Don't allow change with passthrough audio
         if (appPlayer->IsPassthrough())
         {
-          CGUIDialogKaiToast::QueueNotification(
-              CGUIDialogKaiToast::Warning, g_localizeStrings.Get(660), g_localizeStrings.Get(29802),
-              TOAST_DISPLAY_TIME, false);
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning,
+                                                g_localizeStrings.Get(660),
+                                                g_localizeStrings.Get(29802),
+                                                TOAST_DISPLAY_TIME, false);
           return false;
         }
 
@@ -526,7 +500,7 @@ bool CPlayerController::OnAction(const CAction& action)
           vs.m_VolumeAmplification -= 1.0f;
 
         vs.m_VolumeAmplification =
-            std::max(std::min(vs.m_VolumeAmplification, sliderMax), sliderMin);
+          std::max(std::min(vs.m_VolumeAmplification, sliderMax), sliderMin);
 
         appPlayer->SetDynamicRangeCompression((long)(vs.m_VolumeAmplification * 100));
 
@@ -547,9 +521,7 @@ bool CPlayerController::OnAction(const CAction& action)
       {
         std::vector<ProgramInfo> programs;
         appPlayer->GetPrograms(programs);
-        CGUIDialogSelect* dialog =
-            CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
-                WINDOW_DIALOG_SELECT);
+        CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
         if (dialog)
         {
           int playing = 0;
@@ -573,23 +545,18 @@ bool CPlayerController::OnAction(const CAction& action)
 
       case ACTION_PLAYER_RESOLUTION_SELECT:
       {
-        std::vector<CVariant> indexList =
-            CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
-                CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+        std::vector<CVariant> indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
 
-        CGUIDialogSelect* dialog =
-            CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
-                WINDOW_DIALOG_SELECT);
+        CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
         if (dialog)
         {
           int current = 0;
           int idx = 0;
           auto currentRes = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
-          for (const CVariant& mode : indexList)
+          for (const CVariant &mode : indexList)
           {
             auto res = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
-            const RESOLUTION_INFO info =
-                CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res);
+            const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res);
             dialog->Add(info.strMode);
             if (res == currentRes)
               current = idx;
@@ -615,8 +582,7 @@ bool CPlayerController::OnAction(const CAction& action)
   return false;
 }
 
-void CPlayerController::ShowSlider(
-    int action, int label, float value, float min, float delta, float max, bool modal)
+void CPlayerController::ShowSlider(int action, int label, float value, float min, float delta, float max, bool modal)
 {
   m_sliderAction = action;
   if (modal)
@@ -625,7 +591,7 @@ void CPlayerController::ShowSlider(
     CGUIDialogSlider::Display(label, value, min, delta, max, this);
 }
 
-void CPlayerController::OnSliderChange(void* data, CGUISliderControl* slider)
+void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
 {
   if (!slider)
     return;
@@ -643,8 +609,9 @@ void CPlayerController::OnSliderChange(void* data, CGUISliderControl* slider)
     std::string strValue = StringUtils::Format("{:.0f}px", slider->GetFloatValue());
     slider->SetTextValue(strValue);
   }
-  else if (m_sliderAction == ACTION_VOLAMP_UP || m_sliderAction == ACTION_VOLAMP_DOWN ||
-           m_sliderAction == ACTION_VOLAMP)
+  else if (m_sliderAction == ACTION_VOLAMP_UP ||
+          m_sliderAction == ACTION_VOLAMP_DOWN ||
+          m_sliderAction == ACTION_VOLAMP)
     slider->SetTextValue(CGUIDialogAudioSettings::FormatDecibel(slider->GetFloatValue()));
   else if (m_sliderAction == ACTION_SUBTITLE_DELAY || m_sliderAction == ACTION_SUBTITLE_DELAY_MIN ||
            m_sliderAction == ACTION_SUBTITLE_DELAY_PLUS)
