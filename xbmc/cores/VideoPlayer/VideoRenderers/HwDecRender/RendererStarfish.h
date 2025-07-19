@@ -10,6 +10,15 @@
 
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 
+class CStarfishVideoBuffer : public CVideoBuffer
+{
+public:
+  explicit CStarfishVideoBuffer() : CVideoBuffer(0) {}
+  AVPixelFormat GetFormat() override { return AV_PIX_FMT_NONE; }
+  long m_acbId{0};
+  long m_taskId{0};
+};
+
 class CRendererStarfish : public CBaseRenderer
 {
 public:
@@ -48,5 +57,5 @@ private:
   CRect m_exportedSourceRect;
   CRect m_exportedDestRect;
   bool m_configured{false};
-  long m_acbId{0};
+  CStarfishVideoBuffer* m_videoBuffer{nullptr};
 };
