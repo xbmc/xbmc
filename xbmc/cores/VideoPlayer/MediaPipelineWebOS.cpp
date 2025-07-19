@@ -36,6 +36,7 @@
 #include <cmath>
 #include <cstdint>
 #include <exception>
+#include <format>
 #include <iomanip>
 #include <map>
 #include <ratio>
@@ -190,30 +191,23 @@ int CMediaPipelineWebOS::GetVideoBitrate() const
 
 void CMediaPipelineWebOS::UpdateAudioInfo()
 {
-  std::ostringstream s;
-  s << "aq:" << std::setw(2) << std::min(99, m_messageQueueAudio.GetLevel());
-  s << "% " << std::fixed << std::setprecision(3) << m_messageQueueAudio.GetTimeSize();
-  s << "s, Kb/s:" << std::fixed << std::setprecision(2) << m_audioStats.GetBitrate() / 1024.0;
-  if (m_audioEncoder)
-  {
-    s << ", transcoded ac3";
-  }
+  int level = std::min(99, m_messageQueueAudio.GetLevel());
+  double ts = m_messageQueueAudio.GetTimeSize();
+  double kbps = m_audioStats.GetBitrate() / 1024.0;
 
-  m_audioInfo = s.str();
+  m_audioInfo = std::format("aq:{:02}% {:.3f}s, Kb/s:{:.2f}{}", level, ts, kbps,
+                            m_audioEncoder ? ", transcoded ac3" : "");
 }
 
 void CMediaPipelineWebOS::UpdateVideoInfo()
 {
-  std::ostringstream s;
-  s << "vq:" << std::setw(2) << std::min(99, m_processInfo.GetLevelVQ());
-  s << "% " << std::fixed << std::setprecision(3) << m_messageQueueVideo.GetTimeSize();
-  s << "s, Mb/s:" << std::fixed << std::setprecision(2)
-    << static_cast<double>(GetVideoBitrate()) / (1024.0 * 1024.0);
-  s << ", fr:" << std::fixed << std::setprecision(3)
-    << static_cast<double>(m_videoHint.fpsrate) / static_cast<double>(m_videoHint.fpsscale);
-  s << ", drop:" << m_droppedFrames;
+  int level = std::min(99, m_processInfo.GetLevelVQ());
+  double ts = m_messageQueueVideo.GetTimeSize();
+  double mbps = static_cast<double>(GetVideoBitrate()) / (1024.0 * 1024.0);
+  double fps = static_cast<double>(m_videoHint.fpsrate) / static_cast<double>(m_videoHint.fpsscale);
 
-  m_videoInfo = s.str();
+  m_videoInfo = std::format("vq:{:02}% {:.3f}s, Mb/s:{:.2f}, fr:{:.3f}, drop:{}", level, ts, mbps,
+                            fps, m_droppedFrames.load());
 }
 
 std::string CMediaPipelineWebOS::GetAudioInfo() const
@@ -255,7 +249,7 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
   {
     if (m_webOSVersion >= 6)
     {
-      std::unique_lock lock(m_audioCriticalSection);
+      std::scoped_lock lock(m_audioCriticalSection);
       std::string codecName = "AC3";
       m_audioCodec = nullptr;
       m_audioEncoder = nullptr;
@@ -277,6 +271,11 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
       {
         optInfo["ac3PlusInfo"]["channels"] = audioHint.channels;
         optInfo["ac3PlusInfo"]["frequency"] = audioHint.samplerate / 1000.0;
+
+        if (audioHint.profile == AV_PROFILE_EAC3_DDP_ATMOS)
+        {
+          optInfo["ac3PlusInfo"]["channels"] = audioHint.channels + 2;
+        }
       }
       else if (audioHint.codec == AV_CODEC_ID_DTS && ms_codecMap.contains(AV_CODEC_ID_DTS))
       {
@@ -625,8 +624,7 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   const auto winSystem = dynamic_cast<CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem());
   if (winSystem->SupportsExportedWindow())
   {
-    std::string exportedWindowName = winSystem->GetExportedWindowName();
-    p["option"]["windowId"] = exportedWindowName;
+    p["option"]["windowId"] = winSystem->GetExportedWindowName();
   }
   else
   {
@@ -656,7 +654,7 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
     p["option"]["needAudio"] = false;
   else if (!ms_codecMap.contains(audioHint.codec))
   {
-    std::unique_lock lock(m_audioCriticalSection);
+    std::scoped_lock lock(m_audioCriticalSection);
     m_audioCodec = std::make_unique<CDVDAudioCodecFFmpeg>(m_processInfo);
     CDVDCodecOptions options;
     m_audioCodec->Open(audioHint, options);
@@ -706,7 +704,7 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
 
     if (audioHint.profile == AV_PROFILE_EAC3_DDP_ATMOS)
     {
-      ac3PlusInfo["channels"] = audioHint.channels - 2;
+      ac3PlusInfo["channels"] = audioHint.channels + 2;
       contents["immersive"] = "ATMOS";
     }
   }
@@ -791,7 +789,7 @@ void CMediaPipelineWebOS::SetHDR(const CDVDStreamInfo& hint) const
   CVariant sei;
 
   if (ms_hdrInfoMap.contains(hint.colorTransferCharacteristic))
-    hdrData["hdrType"] = ms_hdrInfoMap.at(hint.colorTransferCharacteristic).data();
+    hdrData["hdrType"] = std::string(ms_hdrInfoMap.at(hint.colorTransferCharacteristic));
   else
     hdrData["hdrType"] = "none";
 
@@ -866,7 +864,7 @@ void CMediaPipelineWebOS::FeedAudioData(const std::shared_ptr<CDVDMsg>& msg)
       std::chrono::duration<double, std::ratio<1, DVD_TIME_BASE>>(packet->pts));
 
   CVariant payload;
-  payload["bufferAddr"] = fmt::format("{:#x}", reinterpret_cast<std::uintptr_t>(packet->pData));
+  payload["bufferAddr"] = std::format("{:#x}", reinterpret_cast<std::uintptr_t>(packet->pData));
   payload["bufferSize"] = packet->iSize;
   payload["pts"] = pts.count();
   payload["esData"] = 2;
@@ -935,19 +933,18 @@ void CMediaPipelineWebOS::FeedVideoData(const std::shared_ptr<CDVDMsg>& msg)
     time["position"] = pts.count();
     std::string payload;
     CJSONVariantWriter::Write(time, payload, true);
+
+    auto player = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
+    auto pipeline = static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
     if (!m_mediaAPIs->setTimeToDecode(payload.c_str()))
     {
       CLog::LogF(LOGERROR, "setTimeToDecode failed");
-      auto player = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
-      auto pipeline = static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
       MEDIA_CUSTOM_CONTENT_INFO_T contentInfo;
       pipeline->loadSpi_getInfo(&contentInfo);
       contentInfo.ptsToDecode = pts.count();
       pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
     }
 
-    auto player = static_cast<mediapipeline::CustomPlayer*>(m_mediaAPIs->player.get());
-    auto pipeline = static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
     pipeline->sendSegmentEvent();
 
     m_pts = pts;
@@ -967,7 +964,7 @@ void CMediaPipelineWebOS::FeedVideoData(const std::shared_ptr<CDVDMsg>& msg)
   if (data && size)
   {
     CVariant payload;
-    payload["bufferAddr"] = fmt::format("{:#x}", reinterpret_cast<std::uintptr_t>(data));
+    payload["bufferAddr"] = std::format("{:#x}", reinterpret_cast<std::uintptr_t>(data));
     payload["bufferSize"] = size;
     payload["pts"] = (pts - std::chrono::milliseconds(m_renderManager.GetDelay())).count();
     payload["esData"] = 1;
