@@ -114,8 +114,28 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
 
   m_CodecCtx->bit_rate = m_BitRate;
   m_CodecCtx->sample_rate = format.m_sampleRate;
+
+  uint64_t channelLayout = AV_CH_LAYOUT_5POINT1_BACK;
+  if (format.m_channelLayout.IsLayoutValid())
+  {
+    const AVChannelLayout* channelLayouts = nullptr;
+    int numLayouts = 0;
+    avcodec_get_supported_config(m_CodecCtx, codec, AV_CODEC_CONFIG_CHANNEL_LAYOUT, 0,
+                                 reinterpret_cast<const void**>(&channelLayouts), &numLayouts);
+
+    std::vector<CAEChannelInfo> layouts;
+    for (int i = 0; i < numLayouts; ++i)
+    {
+      layouts.emplace_back(CAEUtil::GetAEChannelLayout(channelLayouts[i].u.mask));
+    }
+
+    const int best = format.m_channelLayout.BestMatch(layouts);
+    format.m_channelLayout = layouts[best];
+    channelLayout = CAEUtil::GetAVChannelLayout(format.m_channelLayout);
+  }
+
   av_channel_layout_uninit(&m_CodecCtx->ch_layout);
-  av_channel_layout_from_mask(&m_CodecCtx->ch_layout, AV_CH_LAYOUT_5POINT1_BACK);
+  av_channel_layout_from_mask(&m_CodecCtx->ch_layout, channelLayout);
 
   const AVSampleFormat* sampleFmts = nullptr;
   int numFmts = 0;
