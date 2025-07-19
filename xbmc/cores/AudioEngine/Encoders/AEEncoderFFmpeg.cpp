@@ -37,7 +37,6 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
   swr_free(&m_SwrCtx);
-  av_channel_layout_uninit(&m_CodecCtx->ch_layout);
   avcodec_free_context(&m_CodecCtx);
 }
 
