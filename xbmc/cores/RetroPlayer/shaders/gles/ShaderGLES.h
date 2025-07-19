@@ -29,7 +29,6 @@ public:
               std::string shaderPath,
               ShaderParameterMap shaderParameters,
               std::vector<std::shared_ptr<IShaderLut>> luts,
-              float2 viewPortSize,
               unsigned int passIdx,
               unsigned int frameCountMod = 0) override;
   void Render(IShaderTexture& source, IShaderTexture& target) override;
@@ -37,6 +36,7 @@ public:
                 const float2& prevTextureSize,
                 const float2& nextSize) override;
   void PrepareParameters(const RETRO::ViewportCoordinates& dest,
+                         const float2 fullDestSize,
                          IShaderTexture& sourceTexture,
                          const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
                          const std::vector<std::unique_ptr<IShader>>& pShaders,
@@ -94,9 +94,6 @@ private:
   // Resolution of the destination rectangle of the shader
   float2 m_destSize;
 
-  // Resolution of the viewport/window
-  float2 m_viewportSize;
-
   // Projection matrix
   std::array<std::array<GLfloat, 4>, 4> m_MVP;
 
@@ -125,6 +122,6 @@ private:
   GLint m_MVPMatrixLoc{-1};
 
   std::array<GLuint, 3> m_shaderVertexVBO{GL_NONE};
-  GLuint m_shaderIndexVBO = GL_NONE;
+  GLuint m_shaderIndexVBO{GL_NONE};
 };
 } // namespace KODI::SHADER

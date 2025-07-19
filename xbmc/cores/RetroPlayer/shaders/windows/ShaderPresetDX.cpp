@@ -58,7 +58,7 @@ bool CShaderPresetDX::CreateShaders()
     ShaderParameterMap passParameters = GetShaderParameters(pass.parameters, pass.vertexSource);
 
     if (!videoShader->Create(shaderSource, shaderPath, std::move(passParameters),
-                             std::move(passLUTsDX), m_outputSize, shaderIdx, pass.frameCountMod))
+                             std::move(passLUTsDX), shaderIdx, pass.frameCountMod))
     {
       CLog::Log(LOGERROR, "CShaderPresetDX::CreateShaders: Couldn't create a video shader");
       return false;
@@ -126,7 +126,7 @@ bool CShaderPresetDX::CreateShaderTextures()
 
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
-    const ShaderPass& pass = m_passes[shaderIdx];
+    const auto& pass = m_passes[shaderIdx];
 
     // Resolve final texture resolution, taking scale type and scale multiplier into account
     float2 scaledSize;
@@ -137,13 +137,15 @@ bool CShaderPresetDX::CreateShaderTextures()
         scaledSize.x = static_cast<float>(pass.fbo.scaleX.abs);
         break;
       case ScaleType::VIEWPORT:
-        scaledSize.x =
-            pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * m_outputSize.x : m_outputSize.x;
+        scaledSize.x = pass.fbo.scaleX.scale != 0.0f
+            ? pass.fbo.scaleX.scale * m_fullDestSize.x
+            : m_fullDestSize.x;
         break;
       case ScaleType::INPUT:
       default:
-        scaledSize.x =
-            pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * prevSize.x : prevSize.x;
+        scaledSize.x = pass.fbo.scaleX.scale != 0.0f
+            ? pass.fbo.scaleX.scale * prevSize.x
+            : prevSize.x;
         break;
     }
     switch (pass.fbo.scaleY.scaleType)
@@ -152,13 +154,15 @@ bool CShaderPresetDX::CreateShaderTextures()
         scaledSize.y = static_cast<float>(pass.fbo.scaleY.abs);
         break;
       case ScaleType::VIEWPORT:
-        scaledSize.y =
-            pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * m_outputSize.y : m_outputSize.y;
+        scaledSize.y = pass.fbo.scaleY.scale != 0.0f
+            ? pass.fbo.scaleY.scale * m_fullDestSize.y
+            : m_fullDestSize.y;
         break;
       case ScaleType::INPUT:
       default:
-        scaledSize.y =
-            pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * prevSize.y : prevSize.y;
+        scaledSize.y = pass.fbo.scaleY.scale != 0.0f
+            ? pass.fbo.scaleY.scale * prevSize.y
+            : prevSize.y;
         break;
     }
 

@@ -56,7 +56,7 @@ bool CShaderPresetGL::CreateShaders()
     // Get only the parameters belonging to this specific shader
     ShaderParameterMap passParameters = GetShaderParameters(pass.parameters, pass.vertexSource);
 
-    if (!videoShader->Create(shaderSource, shaderPath, passParameters, passLUTsGL, m_outputSize,
+    if (!videoShader->Create(shaderSource, shaderPath, passParameters, passLUTsGL,
                              shaderIdx, pass.frameCountMod))
     {
       CLog::Log(LOGERROR, "CShaderPresetGL::CreateShaders: Couldn't create a video shader");
@@ -94,13 +94,15 @@ bool CShaderPresetGL::CreateShaderTextures()
         scaledSize.x = static_cast<float>(pass.fbo.scaleX.abs);
         break;
       case ScaleType::VIEWPORT:
-        scaledSize.x =
-            pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * m_outputSize.x : m_outputSize.x;
+        scaledSize.x = pass.fbo.scaleX.scale != 0.0f
+            ? pass.fbo.scaleX.scale * m_fullDestSize.x
+            : m_fullDestSize.x;
         break;
       case ScaleType::INPUT:
       default:
-        scaledSize.x =
-            pass.fbo.scaleX.scale != 0.0f ? pass.fbo.scaleX.scale * prevSize.x : prevSize.x;
+        scaledSize.x = pass.fbo.scaleX.scale != 0.0f
+            ? pass.fbo.scaleX.scale * prevSize.x
+            : prevSize.x;
         break;
     }
     switch (pass.fbo.scaleY.scaleType)
@@ -109,13 +111,15 @@ bool CShaderPresetGL::CreateShaderTextures()
         scaledSize.y = static_cast<float>(pass.fbo.scaleY.abs);
         break;
       case ScaleType::VIEWPORT:
-        scaledSize.y =
-            pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * m_outputSize.y : m_outputSize.y;
+        scaledSize.y = pass.fbo.scaleY.scale != 0.0f
+            ? pass.fbo.scaleY.scale * m_fullDestSize.y
+            : m_fullDestSize.y;
         break;
       case ScaleType::INPUT:
       default:
-        scaledSize.y =
-            pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * prevSize.y : prevSize.y;
+        scaledSize.y = pass.fbo.scaleY.scale != 0.0f
+            ? pass.fbo.scaleY.scale * prevSize.y
+            : prevSize.y;
         break;
     }
 
