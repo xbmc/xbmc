@@ -100,10 +100,14 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_DOWNLOAD_SUBTITLES:
       {
         auto& windowManager = CServiceBroker::GetGUI()->GetWindowManager();
-        CGUIDialogSubtitles *dialog = windowManager.GetWindow<CGUIDialogSubtitles>(WINDOW_DIALOG_SUBTITLES);
-        if (dialog)
+
+        if (windowManager)
         {
-          dialog->Open();
+          CGUIDialogSubtitles *dialog = windowManager.GetWindow<CGUIDialogSubtitles>(WINDOW_DIALOG_SUBTITLES);
+          if (dialog)
+          {
+            dialog->Open();
+          }
         }
 
         return true;
