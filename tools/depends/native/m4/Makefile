@@ -9,6 +9,7 @@ VERSION=1.4.20
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 SHA512=dc7b4f61452e564b095010029bf6ce4246e5a03959989cd76b09eb8012db7424c52819143020fab21a3471ff57ab026d3eccbd00dd3969819208980565a9fec0
+FULL_URL=https://ftp.gnu.org/gnu/m4/m4-1.4.20.tar.xz
 include ../../download-files.include
 
 # configuration settings
