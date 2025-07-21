@@ -51,7 +51,12 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder);
  */
 std::string GetLocalFanart(const CFileItem& item);
 
-//! \brief Get the .tbn file associated with an item
+/*! \brief Get the .tbn file associated with an item.
+ Note this is used to derive the .nfo path in CVideoDatabase::ExportToXML() and for
+ bluray/dvd this is not the same as the thumbnail/art directory.
+ \param item CFileItem containing the item path.
+ \return the path to the .tbn file
+*/
 std::string GetTBNFile(const CFileItem& item);
 
 } // namespace KODI::ART

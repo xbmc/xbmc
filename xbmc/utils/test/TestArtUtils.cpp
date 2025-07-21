@@ -88,9 +88,17 @@ const auto local_art_filename_tests = std::array{
     ArtFilenameTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "/home/user/foo.avi"},
     ArtFilenameTest{"multipath://%2fhome%2fuser%2fbar%2f/%2fhome%2fuser%2ffoo%2f",
                     "/home/user/bar/", true, true},
+    ArtFilenameTest{"/home/user/foo/foo.iso", "/home/user/foo/foo.iso"},
     ArtFilenameTest{"/home/user/VIDEO_TS/VIDEO_TS.IFO", "/home/user/", false, true},
     ArtFilenameTest{"/home/user/BDMV/index.bdmv", "/home/user/", false, true},
     ArtFilenameTest{"/home/user/foo.avi", "/home/user/", false, true, true},
+    ArtFilenameTest{
+        "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
+        "smb://somepath/movie.iso"},
+    ArtFilenameTest{"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls", "smb://somepath/",
+                    false, true},
+    ArtFilenameTest{"bluray://smb%3a%2f%2fsomepath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls",
+                    "smb://somepath/disc 1/", false, true},
 };
 
 struct FanartTest
@@ -197,7 +205,7 @@ struct LocalArtTest
 {
   std::string file;
   std::string art;
-  bool use_folder;
+  bool use_folder{false};
   std::string base;
 };
 
@@ -286,6 +294,7 @@ TEST_P(GetLocalArtBaseFilenameTest, GetLocalArtBaseFilename)
 {
   CFileItem item(GetParam().path, GetParam().isFolder);
   bool useFolder = GetParam().force_use_folder ? true : GetParam().isFolder;
+
   const std::string res = ART::GetLocalArtBaseFilename(item, useFolder);
   EXPECT_EQ(res, GetParam().result);
   EXPECT_EQ(useFolder, GetParam().result_folder);
@@ -354,7 +363,15 @@ const auto tbn_tests = std::array{
     TbnTest{"/home/user/video/", "/home/user/video.tbn", true},
     TbnTest{"/home/user/bar.xbt", "/home/user/bar.tbn", true},
     TbnTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "/home/user/foo.tbn"},
-    TbnTest{"stack:///home/user/foo-cd1.avi , /home/user/foo-cd2.avi", "/home/user/foo.tbn"}};
+    TbnTest{"stack:///home/user/foo-cd1.avi , /home/user/foo-cd2.avi", "/home/user/foo.tbn"},
+    TbnTest{"/home/user/BDMV/index.bdmv", "/home/user/BDMV/index.tbn"},
+    TbnTest{"/home/user/movie.iso", "/home/user/movie.tbn"},
+    TbnTest{"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls",
+            "smb://somepath/BDMV/index.tbn"},
+    TbnTest{
+        "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
+        "smb://somepath/movie.tbn"},
+};
 
 INSTANTIATE_TEST_SUITE_P(TestArtUtils, GetTbnTest, testing::ValuesIn(tbn_tests));
 
