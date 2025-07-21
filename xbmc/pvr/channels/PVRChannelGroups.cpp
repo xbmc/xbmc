@@ -491,7 +491,7 @@ bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRC
             // Update group client priorities
             std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
             {
-              std::unique_lock lock(m_critSection);
+              std::unique_lock l(m_critSection);
               groups = m_groups;
             }
 

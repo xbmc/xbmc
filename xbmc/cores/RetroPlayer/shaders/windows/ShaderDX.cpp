@@ -252,8 +252,8 @@ void CShaderDX::SetShaderParameters(const CD3DTexture& sourceTexture)
   //! @todo(optimization) Add frame_count to separate cbuffer
   m_effect.SetConstantBuffer("input", m_pInputBuffer);
 
-  for (const auto& paramIt : m_shaderParameters)
-    m_effect.SetFloatArray(paramIt.first.c_str(), &paramIt.second, 1);
+  for (const auto& [paramName, paramValue] : m_shaderParameters)
+    m_effect.SetFloatArray(paramName.c_str(), &paramValue, 1);
 
   for (const std::shared_ptr<IShaderLut>& lut : m_luts)
   {

@@ -75,14 +75,14 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
     {
       CServiceBroker::GetRepositoryUpdater().Events().Subscribe(
           this,
-          [](const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
+          [](const ADDON::CRepositoryUpdater::RepositoryUpdated& /*event*/)
           {
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
             CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
           });
       CServiceBroker::GetAddonMgr().Events().Subscribe(
           this,
-          [](const ADDON::AddonEvent& event)
+          [](const ADDON::AddonEvent& /*event*/)
           {
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
             CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);

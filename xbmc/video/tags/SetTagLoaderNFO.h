@@ -27,6 +27,6 @@ public:
   //! \brief tag Tag to load info into
   CInfoScanner::InfoType Load(CSetInfoTag& tag, bool prioritise) override;
 
-protected:
+private:
   std::string m_path; //!< Path to nfo file
 };

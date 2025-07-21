@@ -208,7 +208,7 @@ ShaderParameterMap CShaderPreset::GetShaderParameters(
   std::smatch matches;
 
   std::vector<std::string> validParams;
-  std::string::const_iterator searchStart(sourceStr.cbegin());
+  auto searchStart(sourceStr.cbegin());
   while (regex_search(searchStart, sourceStr.cend(), matches, pragmaParamRegex))
   {
     validParams.push_back(matches[1].str());

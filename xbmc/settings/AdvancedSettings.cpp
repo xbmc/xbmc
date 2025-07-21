@@ -965,7 +965,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     GetCustomRegexps(pPictureExcludes, m_pictureExcludeFromListingRegExps);
 
   // picture extensions
-  TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
+  const TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
   if (pExts)
     GetCustomExtensions(pExts, m_pictureExtensions);
 
@@ -1025,19 +1025,19 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetString(pRootElement, "tvmultipartmatching", m_tvshowMultiPartEnumRegExp);
 
   // path substitutions
-  TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
+  const TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
   if (pPathSubstitution)
   {
     m_pathSubstitutions.clear();
     CLog::Log(LOGDEBUG,"Configuring path substitutions");
-    TiXmlNode* pSubstitute = pPathSubstitution->FirstChildElement("substitute");
+    const TiXmlNode* pSubstitute = pPathSubstitution->FirstChildElement("substitute");
     while (pSubstitute)
     {
       std::string strFrom, strTo;
-      TiXmlNode* pFrom = pSubstitute->FirstChild("from");
+      const TiXmlNode* pFrom = pSubstitute->FirstChild("from");
       if (pFrom && !pFrom->NoChildren())
         strFrom = CSpecialProtocol::TranslatePath(pFrom->FirstChild()->Value()).c_str();
-      TiXmlNode* pTo = pSubstitute->FirstChild("to");
+      const TiXmlNode* pTo = pSubstitute->FirstChild("to");
       if (pTo && !pTo->NoChildren())
         strTo = pTo->FirstChild()->Value();
 
@@ -1075,17 +1075,17 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetBoolean(pRootElement, "detectasudf", m_detectAsUdf);
 
   // music thumbs
-  TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
+  const TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
   if (pThumbs)
     GetCustomExtensions(pThumbs,m_musicThumbs);
 
   // show art for shoutcast v2 streams (set to false for devices with limited storage)
   XMLUtils::GetBoolean(pRootElement, "shoutcastart", m_bShoutcastArt);
   // music filename->tag filters
-  TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");
+  const TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");
   if (filters)
   {
-    TiXmlNode* filter = filters->FirstChild("filter");
+    const TiXmlNode* filter = filters->FirstChild("filter");
     while (filter)
     {
       if (filter->FirstChild())
@@ -1094,10 +1094,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     }
   }
 
-  TiXmlElement* pHostEntries = pRootElement->FirstChildElement("hosts");
+  const TiXmlElement* pHostEntries = pRootElement->FirstChildElement("hosts");
   if (pHostEntries)
   {
-    TiXmlElement* element = pHostEntries->FirstChildElement("entry");
+    const TiXmlElement* element = pHostEntries->FirstChildElement("entry");
     while(element)
     {
       if(!element->NoChildren())
@@ -1116,7 +1116,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetBoolean(pRootElement, "alwaysontop", m_alwaysOnTop);
 
-  TiXmlElement *pPVR = pRootElement->FirstChildElement("pvr");
+  const TiXmlElement* pPVR = pRootElement->FirstChildElement("pvr");
   if (pPVR)
   {
     XMLUtils::GetInt(pPVR, "timecorrection", m_iPVRTimeCorrection, 0, 1440);

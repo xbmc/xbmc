@@ -32,8 +32,8 @@ float CControllerActivity::GetActivation() const
   if (!m_mousePointers.empty() && m_activeMouseButtons.empty())
   {
     const bool anyPointerActive =
-        std::any_of(m_mousePointers.begin(), m_mousePointers.end(), [](const auto& it)
-                    { return it.second.active && !it.second.timer.IsTimePast(); });
+        std::ranges::any_of(m_mousePointers, [](const auto& it)
+                            { return it.second.active && !it.second.timer.IsTimePast(); });
     if (!anyPointerActive)
       return 0.0f;
   }
@@ -99,8 +99,8 @@ void CControllerActivity::OnKeyRelease(const KEYBOARD::KeyName& key)
 }
 
 void CControllerActivity::OnMouseMotion(const MOUSE::PointerName& relpointer,
-                                        int differenceX,
-                                        int differenceY)
+                                        int /*differenceX*/,
+                                        int /*differenceY*/)
 {
   auto& pointer = m_mousePointers[relpointer];
   pointer.active = true;

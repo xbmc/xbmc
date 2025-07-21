@@ -24,7 +24,7 @@ bool CMediaSource::IsWritable() const
   return CUtil::SupportsWriteFileOperations(strPath);
 }
 
-void CMediaSource::FromNameAndPaths(const std::string& name, const std::vector<std::string>& paths)
+void CMediaSource::FromNameAndPaths(std::string_view name, const std::vector<std::string>& paths)
 {
   vecPaths = paths;
   if (paths.empty())
@@ -61,6 +61,7 @@ void CMediaSource::FromNameAndPaths(const std::string& name, const std::vector<s
     m_iDriveType = SourceType::LOCAL;
   else
     m_iDriveType = SourceType::UNKNOWN;
+
   // check - convert to url and back again to make sure strPath is accurate
   // in terms of what we expect
   strPath = CURL(strPath).Get();

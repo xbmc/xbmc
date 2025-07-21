@@ -898,7 +898,7 @@ void CGUIDialogPVRTimerSettings::AddCondition(const std::shared_ptr<CSetting>& s
                                               const std::string& identifier,
                                               const SettingConditionCheck& condition,
                                               SettingDependencyType depType,
-                                              const std::string& settingId)
+                                              const std::string& settingId) const
 {
   GetSettingsManager()->AddDynamicCondition(identifier, condition);
   CSettingDependency dep(depType, GetSettingsManager());
@@ -1051,7 +1051,7 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
 
 void CGUIDialogPVRTimerSettings::TypesFiller(const SettingConstPtr& setting,
                                              std::vector<IntegerSettingOption>& list,
-                                             int& current)
+                                             int& current) const
 {
   list.clear();
   current = 0;
@@ -1139,7 +1139,7 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
 
 void CGUIDialogPVRTimerSettings::DaysFiller(const SettingConstPtr& setting,
                                             std::vector<IntegerSettingOption>& list,
-                                            int& current)
+                                            int& current) const
 {
   list.clear();
   current = 0;
@@ -1181,7 +1181,7 @@ void CGUIDialogPVRTimerSettings::DaysFiller(const SettingConstPtr& setting,
 
 void CGUIDialogPVRTimerSettings::DupEpisodesFiller(const SettingConstPtr& setting,
                                                    std::vector<IntegerSettingOption>& list,
-                                                   int& current)
+                                                   int& current) const
 {
   list.clear();
 
@@ -1194,7 +1194,7 @@ void CGUIDialogPVRTimerSettings::DupEpisodesFiller(const SettingConstPtr& settin
 
 void CGUIDialogPVRTimerSettings::WeekdaysFiller(const SettingConstPtr& setting,
                                                 std::vector<IntegerSettingOption>& list,
-                                                int& current)
+                                                int& current) const
 {
   list.clear();
   list.emplace_back(g_localizeStrings.Get(831), PVR_WEEKDAY_MONDAY); // "Mondays"
@@ -1210,7 +1210,7 @@ void CGUIDialogPVRTimerSettings::WeekdaysFiller(const SettingConstPtr& setting,
 
 void CGUIDialogPVRTimerSettings::PrioritiesFiller(const SettingConstPtr& setting,
                                                   std::vector<IntegerSettingOption>& list,
-                                                  int& current)
+                                                  int& current) const
 {
   list.clear();
 
@@ -1238,7 +1238,7 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(const SettingConstPtr& setting
 
 void CGUIDialogPVRTimerSettings::LifetimesFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
-                                                 int& current)
+                                                 int& current) const
 {
   list.clear();
 
@@ -1267,7 +1267,7 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(const SettingConstPtr& setting,
 
 void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(const SettingConstPtr& setting,
                                                      std::vector<IntegerSettingOption>& list,
-                                                     int& current)
+                                                     int& current) const
 {
   list.clear();
 
@@ -1295,7 +1295,7 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(const SettingConstPtr& sett
 
 void CGUIDialogPVRTimerSettings::RecordingGroupFiller(const SettingConstPtr& setting,
                                                       std::vector<IntegerSettingOption>& list,
-                                                      int& current)
+                                                      int& current) const
 {
   list.clear();
 
@@ -1308,7 +1308,7 @@ void CGUIDialogPVRTimerSettings::RecordingGroupFiller(const SettingConstPtr& set
 
 void CGUIDialogPVRTimerSettings::MarginTimeFiller(const SettingConstPtr& setting,
                                                   std::vector<IntegerSettingOption>& list,
-                                                  int& current)
+                                                  int& current) const
 {
   list.clear();
 
@@ -1344,7 +1344,7 @@ void CGUIDialogPVRTimerSettings::MarginTimeFiller(const SettingConstPtr& setting
 void CGUIDialogPVRTimerSettings::CustomIntSettingDefinitionsFiller(
     const std::shared_ptr<const CSetting>& setting,
     std::vector<IntegerSettingOption>& list,
-    int& current)
+    int& current) const
 {
   list.clear();
 
@@ -1356,7 +1356,7 @@ void CGUIDialogPVRTimerSettings::CustomIntSettingDefinitionsFiller(
 void CGUIDialogPVRTimerSettings::CustomStringSettingDefinitionsFiller(
     const std::shared_ptr<const CSetting>& setting,
     std::vector<StringSettingOption>& list,
-    std::string& current)
+    std::string& current) const
 {
   list.clear();
 
@@ -1371,7 +1371,7 @@ std::string CGUIDialogPVRTimerSettings::WeekdaysValueFormatter(const SettingCons
 }
 
 void CGUIDialogPVRTimerSettings::AddTypeDependentEnableCondition(
-    const std::shared_ptr<CSetting>& setting, const std::string& identifier)
+    const std::shared_ptr<CSetting>& setting, const std::string& identifier) const
 {
   // Enable setting depending on read-only attribute of the selected timer type
   std::string id(identifier);
@@ -1385,7 +1385,7 @@ void CGUIDialogPVRTimerSettings::AddTypeDependentEnableCondition(
 
 bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condition,
                                                        const std::string& value,
-                                                       const SettingConstPtr& setting)
+                                                       const SettingConstPtr& setting) const
 {
   if (!setting)
     return false;
@@ -1445,7 +1445,7 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
 }
 
 void CGUIDialogPVRTimerSettings::AddTypeDependentVisibilityCondition(
-    const std::shared_ptr<CSetting>& setting, const std::string& identifier)
+    const std::shared_ptr<CSetting>& setting, const std::string& identifier) const
 {
   // Show or hide setting depending on attributes of the selected timer type
   std::string id(identifier);
@@ -1459,7 +1459,7 @@ void CGUIDialogPVRTimerSettings::AddTypeDependentVisibilityCondition(
 
 bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condition,
                                                        const std::string& value,
-                                                       const SettingConstPtr& setting)
+                                                       const SettingConstPtr& setting) const
 {
   if (!setting)
     return false;
@@ -1527,7 +1527,7 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condit
 }
 
 void CGUIDialogPVRTimerSettings::AddStartAnytimeDependentVisibilityCondition(
-    const std::shared_ptr<CSetting>& setting, const std::string& identifier)
+    const std::shared_ptr<CSetting>& setting, const std::string& identifier) const
 {
   // Show or hide setting depending on value of setting "any time"
   std::string id(identifier);
@@ -1541,7 +1541,7 @@ void CGUIDialogPVRTimerSettings::AddStartAnytimeDependentVisibilityCondition(
 
 bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string& condition,
                                                           const std::string& value,
-                                                          const SettingConstPtr& setting)
+                                                          const SettingConstPtr& setting) const
 {
   if (!setting)
     return false;
@@ -1569,7 +1569,7 @@ bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string& con
 }
 
 void CGUIDialogPVRTimerSettings::AddEndAnytimeDependentVisibilityCondition(
-    const std::shared_ptr<CSetting>& setting, const std::string& identifier)
+    const std::shared_ptr<CSetting>& setting, const std::string& identifier) const
 {
   // Show or hide setting depending on value of setting "any time"
   std::string id(identifier);
@@ -1583,7 +1583,7 @@ void CGUIDialogPVRTimerSettings::AddEndAnytimeDependentVisibilityCondition(
 
 bool CGUIDialogPVRTimerSettings::EndAnytimeSetCondition(const std::string& condition,
                                                         const std::string& value,
-                                                        const SettingConstPtr& setting)
+                                                        const SettingConstPtr& setting) const
 {
   if (!setting)
     return false;

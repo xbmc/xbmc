@@ -54,11 +54,11 @@ void CShaderPresetFactory::RegisterLoader(IShaderPresetLoader* loader, const std
     if (extension[0] != '.')
       strExtension.insert(strExtension.begin(), '.');
 
-    m_loaders.insert(std::make_pair(std::move(strExtension), loader));
+    m_loaders.try_emplace(std::move(strExtension), loader);
   }
 }
 
-void CShaderPresetFactory::UnregisterLoader(IShaderPresetLoader* loader)
+void CShaderPresetFactory::UnregisterLoader(const IShaderPresetLoader* loader)
 {
   for (auto it = m_loaders.begin(); it != m_loaders.end();)
   {
@@ -89,7 +89,7 @@ bool CShaderPresetFactory::LoadPreset(const std::string& presetPath, IShaderPres
   return bSuccess;
 }
 
-bool CShaderPresetFactory::CanLoadPreset(const std::string& presetPath)
+bool CShaderPresetFactory::CanLoadPreset(const std::string& presetPath) const
 {
   bool bSuccess = false;
 
@@ -109,25 +109,22 @@ void CShaderPresetFactory::UpdateAddons()
 
   // Look for removed/disabled add-ons
   auto oldAddons = std::move(m_shaderAddons);
-  for (auto it = oldAddons.begin(); it != oldAddons.end(); ++it)
+  for (auto& [addonId, shaderAddon] : oldAddons)
   {
-    const std::string& addonId = it->first;
-    std::unique_ptr<ADDON::CShaderPresetAddon>& shaderAddon = it->second;
-
     const bool bIsDisabled =
-        std::find_if(addonInfo.begin(), addonInfo.end(), [&addonId](const AddonInfoPtr& addon)
-                     { return addonId == addon->ID(); }) == addonInfo.end();
+        std::ranges::find_if(addonInfo, [&addonId](const AddonInfoPtr& addon)
+                             { return addonId == addon->ID(); }) == addonInfo.end();
 
     if (bIsDisabled)
       UnregisterLoader(shaderAddon.get());
     else
-      m_shaderAddons.emplace(addonId, std::move(shaderAddon));
+      m_shaderAddons.try_emplace(addonId, std::move(shaderAddon));
   }
 
   // Look for new add-ons
   for (const AddonInfoPtr& shaderAddon : addonInfo)
   {
-    std::string addonId = shaderAddon->ID();
+    const std::string& addonId = shaderAddon->ID();
 
     const bool bIsNew = (!m_shaderAddons.contains(addonId));
     if (!bIsNew)
@@ -137,8 +134,7 @@ void CShaderPresetFactory::UpdateAddons()
     if (bIsFailed)
       continue;
 
-    std::unique_ptr<CShaderPresetAddon> addonPtr =
-        std::make_unique<CShaderPresetAddon>(shaderAddon);
+    auto addonPtr = std::make_unique<CShaderPresetAddon>(shaderAddon);
 
     if (addonPtr->CreateAddon())
     {

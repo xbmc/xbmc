@@ -37,7 +37,7 @@ protected:
 
 private:
   std::string GetLockModeLabel();
-  void SetDetailSettingsEnabled(bool enabled);
+  void SetDetailSettingsEnabled(bool enabled) const;
   void SetSettingLockCodeLabel();
 
   bool m_changed = false;

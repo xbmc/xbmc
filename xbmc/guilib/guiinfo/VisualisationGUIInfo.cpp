@@ -41,7 +41,7 @@ bool CVisualisationGUIInfo::GetLabel(std::string& value, const CFileItem *item, 
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       if (msg.GetPointer())
       {
-        auto* viz{static_cast<CGUIVisualisationControl*>(msg.GetPointer())};
+        const auto* viz{static_cast<const CGUIVisualisationControl*>(msg.GetPointer())};
         value = viz->GetActivePresetName();
         URIUtils::RemoveExtension(value);
         return true;
@@ -85,7 +85,7 @@ bool CVisualisationGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int 
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       if (msg.GetPointer())
       {
-        auto* viz{static_cast<CGUIVisualisationControl*>(msg.GetPointer())};
+        const auto* viz{static_cast<const CGUIVisualisationControl*>(msg.GetPointer())};
         value = viz->IsLocked();
         return true;
       }
@@ -102,7 +102,7 @@ bool CVisualisationGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int 
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       if (msg.GetPointer())
       {
-        auto* viz{static_cast<CGUIVisualisationControl*>(msg.GetPointer())};
+        const auto* viz{static_cast<const CGUIVisualisationControl*>(msg.GetPointer())};
         value = viz->HasPresets();
         return true;
       }

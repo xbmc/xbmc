@@ -77,7 +77,7 @@ protected:
 
   // Set of paths of presets that are known to not load correctly
   // Should not contain "" (empty path) because this signifies that a preset is not loaded
-  std::set<std::string> m_failedPaths;
+  std::set<std::string, std::less<>> m_failedPaths;
 
   // All video shader passes of the currently loaded preset
   std::vector<ShaderPass> m_passes;
