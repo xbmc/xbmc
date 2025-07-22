@@ -158,6 +158,6 @@ private:
   bool m_autoClose = true;
   bool m_updateProgress = true;
   bool m_updateInformation = true;
-  CGUIDialogProgressBarHandle* m_progress;
-  CGUIDialogProgress* m_progressDialog;
+  CGUIDialogProgressBarHandle* m_progress = nullptr;
+  CGUIDialogProgress* m_progressDialog = nullptr;
 };
