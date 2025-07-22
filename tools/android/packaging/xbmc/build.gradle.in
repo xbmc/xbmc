@@ -1,41 +1,41 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace '@APP_PACKAGE@'
-    compileSdk @TARGET_SDK@
-    ndkPath "@NDKROOT@"
-    ndkVersion "@NDKVERSION@"
+    namespace = '@APP_PACKAGE@'
+    compileSdk = @TARGET_SDK@
+    ndkPath = "@NDKROOT@"
+    ndkVersion = "@NDKVERSION@"
     defaultConfig {
-        applicationId "@APP_PACKAGE@"
-        minSdk @TARGET_MINSDK@
-        targetSdk @TARGET_SDK@
-        versionCode @APP_VERSION_CODE_ANDROID@
-        versionName "@APP_VERSION@"
+        applicationId = "@APP_PACKAGE@"
+        minSdk = @TARGET_MINSDK@
+        targetSdk = @TARGET_SDK@
+        versionCode = @APP_VERSION_CODE_ANDROID@
+        versionName = "@APP_VERSION@"
     }
     signingConfigs {
         release {
-            keyAlias System.getenv("KODI_ANDROID_KEY_ALIAS")
-            keyPassword System.getenv("KODI_ANDROID_KEY_PASSWORD")
-            storeFile file(System.getenv("KODI_ANDROID_STORE_FILE"))
-            storePassword System.getenv("KODI_ANDROID_STORE_PASSWORD")
-            enableV1Signing true
-            enableV2Signing true
-            enableV3Signing true
+            keyAlias = System.getenv("KODI_ANDROID_KEY_ALIAS")
+            keyPassword = System.getenv("KODI_ANDROID_KEY_PASSWORD")
+            storeFile = file(System.getenv("KODI_ANDROID_STORE_FILE"))
+            storePassword = System.getenv("KODI_ANDROID_STORE_PASSWORD")
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
         }
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.release
         }
         relwithdebinfo {
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.release
         }
         release {
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.release
         }
     }
     aaptOptions {
-        ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
     sourceSets {
         main {
