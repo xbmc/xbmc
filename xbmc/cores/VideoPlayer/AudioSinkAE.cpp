@@ -19,6 +19,11 @@
 
 #include <mutex>
 
+extern "C"
+{
+#include <libavcodec/defs.h>
+}
+
 using namespace std::chrono_literals;
 
 CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
@@ -353,10 +358,10 @@ CAEStreamInfo::DataType CAudioSinkAE::GetPassthroughStreamType(AVCodecID codecId
       break;
 
     case AV_CODEC_ID_DTS:
-      if (profile == FF_PROFILE_DTS_HD_HRA)
+      if (profile == AV_PROFILE_DTS_HD_HRA)
         format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
-      else if (profile == FF_PROFILE_DTS_HD_MA || profile == FF_PROFILE_DTS_HD_MA_X ||
-               profile == FF_PROFILE_DTS_HD_MA_X_IMAX)
+      else if (profile == AV_PROFILE_DTS_HD_MA || profile == AV_PROFILE_DTS_HD_MA_X ||
+               profile == AV_PROFILE_DTS_HD_MA_X_IMAX)
         format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_MA;
       else
         format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;

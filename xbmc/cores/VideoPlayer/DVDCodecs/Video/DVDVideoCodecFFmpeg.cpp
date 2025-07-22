@@ -28,6 +28,7 @@
 #include <mutex>
 
 extern "C" {
+#include <libavcodec/defs.h>
 #include <libavfilter/avfilter.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
@@ -257,8 +258,8 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
   // 2nd condition:
   // fix an ffmpeg issue here, it calls us with an invalid profile
   // then a 2nd call with a valid one
-  if(ctx->m_decoderState != STATE_HW_SINGLE ||
-     (avctx->codec_id == AV_CODEC_ID_VC1 && avctx->profile == FF_PROFILE_UNKNOWN))
+  if (ctx->m_decoderState != STATE_HW_SINGLE ||
+      (avctx->codec_id == AV_CODEC_ID_VC1 && avctx->profile == AV_PROFILE_UNKNOWN))
   {
     AVPixelFormat defaultFmt = avcodec_default_get_format(avctx, fmt);
     pixFmtName = av_get_pix_fmt_name(defaultFmt);
@@ -1037,11 +1038,11 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   else if (m_pCodecContext->pix_fmt == AV_PIX_FMT_YUV420P10)
     pVideoPicture->colorBits = 10;
   else if (m_pCodecContext->codec_id == AV_CODEC_ID_HEVC &&
-           m_pCodecContext->profile == FF_PROFILE_HEVC_MAIN_10)
+           m_pCodecContext->profile == AV_PROFILE_HEVC_MAIN_10)
     pVideoPicture->colorBits = 10;
   else if (m_pCodecContext->codec_id == AV_CODEC_ID_H264 &&
-           (m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10||
-            m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10_INTRA))
+           (m_pCodecContext->profile == AV_PROFILE_H264_HIGH_10 ||
+            m_pCodecContext->profile == AV_PROFILE_H264_HIGH_10_INTRA))
     pVideoPicture->colorBits = 10;
   else if ((m_pCodecContext->codec_id == AV_CODEC_ID_VP9 ||
             m_pCodecContext->codec_id == AV_CODEC_ID_AV1) &&
