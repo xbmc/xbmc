@@ -22,7 +22,7 @@ namespace
 constexpr int BLURAYSTATESERIALIZER_VERSION = 1;
 } // namespace
 
-bool CBlurayStateSerializer::BlurayStateToXML(std::string& xmlstate, const BlurayState& state)
+bool CBlurayStateSerializer::BlurayStateToXML(std::string& xmlstate, const BlurayState& state) const
 {
   CXBMCTinyXML2 xmlDoc;
 
@@ -49,7 +49,7 @@ bool CBlurayStateSerializer::BlurayStateToXML(std::string& xmlstate, const Blura
   return true;
 }
 
-bool CBlurayStateSerializer::XMLToBlurayState(BlurayState& state, const std::string& xmlstate)
+bool CBlurayStateSerializer::XMLToBlurayState(BlurayState& state, const std::string& xmlstate) const
 {
   CXBMCTinyXML2 xmlDoc;
 

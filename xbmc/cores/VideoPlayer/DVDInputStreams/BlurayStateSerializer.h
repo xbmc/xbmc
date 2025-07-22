@@ -34,12 +34,12 @@ public:
   * \param xmlstate a string describing the Bluray state (XML)
   * \return true if it was possible to fill the state struct based on the XML content, false otherwise
   */
-  bool XMLToBlurayState(BlurayState& state, const std::string& xmlstate);
+  bool XMLToBlurayState(BlurayState& state, const std::string& xmlstate) const;
 
   /*! \brief Provided the BlurayState struct of the current playing dvd, serializes the struct to XML
   * \param[in,out] xmlstate a string describing the Bluray state (XML)
   * \param state the Bluray state struct
   * \return true if it was possible to serialize the struct into XML, false otherwise
   */
-  bool BlurayStateToXML(std::string& xmlstate, const BlurayState& state);
+  bool BlurayStateToXML(std::string& xmlstate, const BlurayState& state) const;
 };
