@@ -131,6 +131,7 @@ public:
   void OverlayCallbackARGB(const struct bd_argb_overlay_s * const);
 #endif
 
+  BLURAY_TITLE_INFO* GetTitleFromState(const std::string& xmlstate);
   BLURAY_TITLE_INFO* GetTitleLongest();
   BLURAY_TITLE_INFO* GetTitleFile(const std::string& name);
 
