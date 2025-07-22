@@ -154,10 +154,10 @@ protected:
   bool IsCancelled() const;
 
 private:
-  bool m_modal = false;
-  bool m_autoClose = true;
-  bool m_updateProgress = true;
-  bool m_updateInformation = true;
-  mutable CGUIDialogProgressBarHandle* m_progress;
-  mutable CGUIDialogProgress* m_progressDialog;
+  bool m_modal{false};
+  bool m_autoClose{true};
+  bool m_updateProgress{true};
+  bool m_updateInformation{true};
+  CGUIDialogProgressBarHandle* m_progress{nullptr};
+  CGUIDialogProgress* m_progressDialog{nullptr};
 };
