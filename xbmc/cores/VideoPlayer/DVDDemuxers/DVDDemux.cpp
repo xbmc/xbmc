@@ -23,7 +23,7 @@ std::string CDemuxStreamAudio::GetStreamType()
       break;
     case AV_CODEC_ID_EAC3:
     {
-      if (profile == FF_PROFILE_EAC3_DDP_ATMOS)
+      if (profile == AV_PROFILE_EAC3_DDP_ATMOS)
         strInfo = "DD+ ATMOS";
       else
         strInfo = "DD+";
@@ -33,25 +33,25 @@ std::string CDemuxStreamAudio::GetStreamType()
     {
       switch (profile)
       {
-        case FF_PROFILE_DTS_96_24:
+        case AV_PROFILE_DTS_96_24:
           strInfo = "DTS 96/24";
           break;
-        case FF_PROFILE_DTS_ES:
+        case AV_PROFILE_DTS_ES:
           strInfo = "DTS ES";
           break;
-        case FF_PROFILE_DTS_EXPRESS:
+        case AV_PROFILE_DTS_EXPRESS:
           strInfo = "DTS EXPRESS";
           break;
-        case FF_PROFILE_DTS_HD_MA:
+        case AV_PROFILE_DTS_HD_MA:
           strInfo = "DTS-HD MA";
           break;
-        case FF_PROFILE_DTS_HD_HRA:
+        case AV_PROFILE_DTS_HD_HRA:
           strInfo = "DTS-HD HRA";
           break;
-        case FF_PROFILE_DTS_HD_MA_X:
+        case AV_PROFILE_DTS_HD_MA_X:
           strInfo = "DTS-HD MA X";
           break;
-        case FF_PROFILE_DTS_HD_MA_X_IMAX:
+        case AV_PROFILE_DTS_HD_MA_X_IMAX:
           strInfo = "DTS-HD MA X (IMAX)";
           break;
         default:
@@ -67,7 +67,7 @@ std::string CDemuxStreamAudio::GetStreamType()
       strInfo = "MP3";
       break;
     case AV_CODEC_ID_TRUEHD:
-      if (profile == FF_PROFILE_TRUEHD_ATMOS)
+      if (profile == AV_PROFILE_TRUEHD_ATMOS)
         strInfo = "TrueHD ATMOS";
       else
         strInfo = "TrueHD";
@@ -76,21 +76,21 @@ std::string CDemuxStreamAudio::GetStreamType()
     {
       switch (profile)
       {
-        case FF_PROFILE_AAC_LOW:
-        case FF_PROFILE_MPEG2_AAC_LOW:
+        case AV_PROFILE_AAC_LOW:
+        case AV_PROFILE_MPEG2_AAC_LOW:
           strInfo = "AAC-LC";
           break;
-        case FF_PROFILE_AAC_HE:
-        case FF_PROFILE_MPEG2_AAC_HE:
+        case AV_PROFILE_AAC_HE:
+        case AV_PROFILE_MPEG2_AAC_HE:
           strInfo = "HE-AAC";
           break;
-        case FF_PROFILE_AAC_HE_V2:
+        case AV_PROFILE_AAC_HE_V2:
           strInfo = "HE-AACv2";
           break;
-        case FF_PROFILE_AAC_SSR:
+        case AV_PROFILE_AAC_SSR:
           strInfo = "AAC-SSR";
           break;
-        case FF_PROFILE_AAC_LTP:
+        case AV_PROFILE_AAC_LTP:
           strInfo = "AAC-LTP";
           break;
         default:

@@ -11,7 +11,7 @@
 extern "C"
 {
 #include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
+#include <libavcodec/defs.h>
 }
 
 int StreamUtils::GetCodecPriority(const std::string &codec)
@@ -43,13 +43,13 @@ std::string StreamUtils::GetCodecName(int codecId, int profile)
 
   if (codecId == AV_CODEC_ID_DTS)
   {
-    if (profile == FF_PROFILE_DTS_HD_MA)
+    if (profile == AV_PROFILE_DTS_HD_MA)
       codecName = "dtshd_ma";
-    else if (profile == FF_PROFILE_DTS_HD_MA_X)
+    else if (profile == AV_PROFILE_DTS_HD_MA_X)
       codecName = "dtshd_ma_x";
-    else if (profile == FF_PROFILE_DTS_HD_MA_X_IMAX)
+    else if (profile == AV_PROFILE_DTS_HD_MA_X_IMAX)
       codecName = "dtshd_ma_x_imax";
-    else if (profile == FF_PROFILE_DTS_HD_HRA)
+    else if (profile == AV_PROFILE_DTS_HD_HRA)
       codecName = "dtshd_hra";
     else
       codecName = "dca";
@@ -61,21 +61,21 @@ std::string StreamUtils::GetCodecName(int codecId, int profile)
   {
     switch (profile)
     {
-      case FF_PROFILE_AAC_LOW:
-      case FF_PROFILE_MPEG2_AAC_LOW:
+      case AV_PROFILE_AAC_LOW:
+      case AV_PROFILE_MPEG2_AAC_LOW:
         codecName = "aac_lc";
         break;
-      case FF_PROFILE_AAC_HE:
-      case FF_PROFILE_MPEG2_AAC_HE:
+      case AV_PROFILE_AAC_HE:
+      case AV_PROFILE_MPEG2_AAC_HE:
         codecName = "he_aac";
         break;
-      case FF_PROFILE_AAC_HE_V2:
+      case AV_PROFILE_AAC_HE_V2:
         codecName = "he_aac_v2";
         break;
-      case FF_PROFILE_AAC_SSR:
+      case AV_PROFILE_AAC_SSR:
         codecName = "aac_ssr";
         break;
-      case FF_PROFILE_AAC_LTP:
+      case AV_PROFILE_AAC_LTP:
         codecName = "aac_ltp";
         break;
       default:

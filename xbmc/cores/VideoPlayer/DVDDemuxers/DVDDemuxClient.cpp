@@ -20,6 +20,11 @@
 #include <type_traits>
 #include <utility>
 
+extern "C"
+{
+#include <libavcodec/defs.h>
+}
+
 class CDemuxStreamClientInternal
 {
 public:
@@ -207,7 +212,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
   if (len >= 0)
   {
     if (stream->m_context->profile != st->profile &&
-        stream->m_context->profile != FF_PROFILE_UNKNOWN)
+        stream->m_context->profile != AV_PROFILE_UNKNOWN)
     {
       CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - ({}) profile changed from {} to {}", st->uniqueId, st->profile, stream->m_context->profile);
       st->profile = stream->m_context->profile;
@@ -215,8 +220,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
       st->disabled = false;
     }
 
-    if (stream->m_context->level != st->level &&
-        stream->m_context->level != FF_LEVEL_UNKNOWN)
+    if (stream->m_context->level != st->level && stream->m_context->level != AV_LEVEL_UNKNOWN)
     {
       CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - ({}) level changed from {} to {}", st->uniqueId, st->level, stream->m_context->level);
       st->level = stream->m_context->level;

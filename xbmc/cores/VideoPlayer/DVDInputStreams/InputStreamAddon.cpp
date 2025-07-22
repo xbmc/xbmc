@@ -26,6 +26,11 @@
 
 #include <memory>
 
+extern "C"
+{
+#include <libavcodec/defs.h>
+}
+
 CInputStreamProvider::CInputStreamProvider(const ADDON::AddonInfoPtr& addonInfo,
                                            KODI_HANDLE parentInstance)
   : m_addonInfo(addonInfo), m_parentInstance(parentInstance)
@@ -707,35 +712,35 @@ int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
   switch (profile)
   {
   case H264CodecProfileBaseline:
-    return FF_PROFILE_H264_BASELINE;
+    return AV_PROFILE_H264_BASELINE;
   case H264CodecProfileMain:
-    return FF_PROFILE_H264_MAIN;
+    return AV_PROFILE_H264_MAIN;
   case H264CodecProfileExtended:
-    return FF_PROFILE_H264_EXTENDED;
+    return AV_PROFILE_H264_EXTENDED;
   case H264CodecProfileHigh:
-    return FF_PROFILE_H264_HIGH;
+    return AV_PROFILE_H264_HIGH;
   case H264CodecProfileHigh10:
-    return FF_PROFILE_H264_HIGH_10;
+    return AV_PROFILE_H264_HIGH_10;
   case H264CodecProfileHigh422:
-    return FF_PROFILE_H264_HIGH_422;
+    return AV_PROFILE_H264_HIGH_422;
   case H264CodecProfileHigh444Predictive:
-    return FF_PROFILE_H264_HIGH_444_PREDICTIVE;
+    return AV_PROFILE_H264_HIGH_444_PREDICTIVE;
   case VP9CodecProfile0:
-    return FF_PROFILE_VP9_0;
+    return AV_PROFILE_VP9_0;
   case VP9CodecProfile1:
-    return FF_PROFILE_VP9_1;
+    return AV_PROFILE_VP9_1;
   case VP9CodecProfile2:
-    return FF_PROFILE_VP9_2;
+    return AV_PROFILE_VP9_2;
   case VP9CodecProfile3:
-    return FF_PROFILE_VP9_3;
+    return AV_PROFILE_VP9_3;
   case AV1CodecProfileMain:
-    return FF_PROFILE_AV1_MAIN;
+    return AV_PROFILE_AV1_MAIN;
   case AV1CodecProfileHigh:
-    return FF_PROFILE_AV1_HIGH;
+    return AV_PROFILE_AV1_HIGH;
   case AV1CodecProfileProfessional:
-    return FF_PROFILE_AV1_PROFESSIONAL;
+    return AV_PROFILE_AV1_PROFESSIONAL;
   default:
-    return FF_PROFILE_UNKNOWN;
+    return AV_PROFILE_UNKNOWN;
   }
 }
 
@@ -744,45 +749,45 @@ int CInputStreamAddon::ConvertAudioCodecProfile(STREAMCODEC_PROFILE profile)
   switch (profile)
   {
     case AACCodecProfileMAIN:
-      return FF_PROFILE_AAC_MAIN;
+      return AV_PROFILE_AAC_MAIN;
     case AACCodecProfileLOW:
-      return FF_PROFILE_AAC_LOW;
+      return AV_PROFILE_AAC_LOW;
     case AACCodecProfileSSR:
-      return FF_PROFILE_AAC_SSR;
+      return AV_PROFILE_AAC_SSR;
     case AACCodecProfileLTP:
-      return FF_PROFILE_AAC_LTP;
+      return AV_PROFILE_AAC_LTP;
     case AACCodecProfileHE:
-      return FF_PROFILE_AAC_HE;
+      return AV_PROFILE_AAC_HE;
     case AACCodecProfileHEV2:
-      return FF_PROFILE_AAC_HE_V2;
+      return AV_PROFILE_AAC_HE_V2;
     case AACCodecProfileLD:
-      return FF_PROFILE_AAC_LD;
+      return AV_PROFILE_AAC_LD;
     case AACCodecProfileELD:
-      return FF_PROFILE_AAC_ELD;
+      return AV_PROFILE_AAC_ELD;
     case MPEG2AACCodecProfileLOW:
-      return FF_PROFILE_MPEG2_AAC_LOW;
+      return AV_PROFILE_MPEG2_AAC_LOW;
     case MPEG2AACCodecProfileHE:
-      return FF_PROFILE_MPEG2_AAC_HE;
+      return AV_PROFILE_MPEG2_AAC_HE;
     case DTSCodecProfile:
-      return FF_PROFILE_DTS;
+      return AV_PROFILE_DTS;
     case DTSCodecProfileES:
-      return FF_PROFILE_DTS_ES;
+      return AV_PROFILE_DTS_ES;
     case DTSCodecProfile9624:
-      return FF_PROFILE_DTS_96_24;
+      return AV_PROFILE_DTS_96_24;
     case DTSCodecProfileHDHRA:
-      return FF_PROFILE_DTS_HD_HRA;
+      return AV_PROFILE_DTS_HD_HRA;
     case DTSCodecProfileHDMA:
-      return FF_PROFILE_DTS_HD_MA;
+      return AV_PROFILE_DTS_HD_MA;
     case DTSCodecProfileHDExpress:
-      return FF_PROFILE_DTS_EXPRESS;
+      return AV_PROFILE_DTS_EXPRESS;
     case DTSCodecProfileHDMAX:
-      return FF_PROFILE_DTS_HD_MA_X;
+      return AV_PROFILE_DTS_HD_MA_X;
     case DTSCodecProfileHDMAIMAX:
-      return FF_PROFILE_DTS_HD_MA_X_IMAX;
+      return AV_PROFILE_DTS_HD_MA_X_IMAX;
     case DDPlusCodecProfileAtmos:
-      return FF_PROFILE_EAC3_DDP_ATMOS;
+      return AV_PROFILE_EAC3_DDP_ATMOS;
     default:
-      return FF_PROFILE_UNKNOWN;
+      return AV_PROFILE_UNKNOWN;
   }
 }
 
