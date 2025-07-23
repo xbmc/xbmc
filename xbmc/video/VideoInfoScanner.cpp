@@ -1033,10 +1033,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                     : nullptr,
                      pDlgProgress))
       {
-        if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
-          if (!AddSet(pItem->GetVideoInfoTag()->m_set))
-            return InfoRet::INFO_ERROR;
-        const int dbId = AddVideo(pItem, info2, bDirNames, useLocal);
+        if (UpdateSetInTag(*pItem->GetVideoInfoTag()) && !AddSet(pItem->GetVideoInfoTag()->m_set))
+          return InfoRet::INFO_ERROR;
+        const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
         if (dbId < 0)
           return InfoRet::INFO_ERROR;
         if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
@@ -1058,10 +1057,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                   : nullptr,
                    pDlgProgress))
     {
-      if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
-        if (!AddSet(pItem->GetVideoInfoTag()->m_set))
-          return InfoRet::INFO_ERROR;
-      const int dbId = AddVideo(pItem, info2, bDirNames, useLocal);
+      if (UpdateSetInTag(*pItem->GetVideoInfoTag()) && !AddSet(pItem->GetVideoInfoTag()->m_set))
+        return InfoRet::INFO_ERROR;
+      const int dbId{static_cast<int>(AddVideo(pItem, info2, bDirNames, useLocal))};
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
       if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
@@ -1203,7 +1201,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                         useLocal && !item->IsPlugin(), useRemoteArt);
         for (const auto& [season, art] : seasonArt)
         {
-          const int seasonID{m_database.AddSeason(showID, season)};
+          const int seasonID{m_database.AddSeason(static_cast<int>(showID), season)};
           m_database.SetArtForItem(seasonID, MediaTypeSeason, art);
         }
       }
@@ -1910,7 +1908,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (idMovie != -1)
       {
         lResult = m_database.AddMovieVersion(*pItem, idMovie, art);
-        movieDetails.m_iDbId = lResult;
+        movieDetails.m_iDbId = static_cast<int>(lResult);
         movieDetails.m_type = MediaTypeMovie;
       }
     }
@@ -2698,9 +2696,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(std::vector<SActorInfo>& actors,
-                                           const std::string& strPath,
-                                           UseRemoteArtWithLocalScraper useRemoteArt /* = yes */)
+  void CVideoInfoScanner::FetchActorThumbs(
+      std::vector<SActorInfo>& actors,
+      const std::string& strPath,
+      UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
   {
     CFileItemList items;
     // don't try to fetch anything local with plugin source

@@ -59,8 +59,15 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
     if (m_type == AddonType::SCRAPER_MOVIES)
     {
       m_headPos = m_doc.find("<movies>");
-      while (index-- > 0 && (m_headPos = m_doc.find("<movie", m_headPos + 1)) != std::string::npos)
-        ;
+      if (m_headPos != std::string::npos)
+      {
+        while (index-- > 0)
+        {
+          m_headPos = m_doc.find("<movie", m_headPos + 1);
+          if (m_headPos == std::string::npos)
+            break;
+        }
+      }
     }
     bNfo = m_headPos != std::string::npos ? GetDetails(details) : false;
     overrideNfo = details.GetOverride();
@@ -70,7 +77,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
 
   // search ..
   int res = -1;
-  for (auto& scraper : vecScrapers)
+  for (const auto& scraper : vecScrapers)
     if ((res = Scrape(scraper, m_scurl, m_doc)) == 0 || res == 2)
       break;
 

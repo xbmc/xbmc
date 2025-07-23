@@ -506,7 +506,7 @@ struct EpisodeInformation
   unsigned int duration{0};
 };
 
-using EpisodeFileMap = std::multimap<std::string, EpisodeInformation>;
+using EpisodeFileMap = std::multimap<std::string, EpisodeInformation, std::less<>>;
 using EpisodeFileMapEntry = std::pair<std::string, EpisodeInformation>;
 
 class CVideoDatabase : public CDatabase
@@ -669,8 +669,8 @@ public:
   void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
   bool GetEpisodeMap(int idShow,
                      EpisodeFileMap& fileMap,
-                     std::unique_ptr<dbiplus::Dataset>& pDS,
-                     int idFile = -1 /* = -1 */);
+                     const std::unique_ptr<dbiplus::Dataset>& pDS,
+                     int idFile = -1 /* = -1 */) const;
 
   int SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork);
   int SetDetailsForItem(int id,
@@ -1109,7 +1109,7 @@ public:
   void UpdateFileDateAdded(CVideoInfoTag& details);
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
-  void ExportArt(const CFileItem& item, const KODI::ART::Artwork& artwork, bool overwrite);
+  void ExportArt(const CFileItem& item, const KODI::ART::Artwork& artwork, bool overwrite) const;
   void ExportActorThumbs(const std::string& path,
                          const std::string& singlePath,
                          const CVideoInfoTag& tag,

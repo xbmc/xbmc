@@ -201,7 +201,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     const std::string strPath{item.IsFolder() ? item.GetPath()
                                               : URIUtils::GetDirectory(item.GetPath())};
     CFileItemList items;
-    if (CDirectory::GetDirectory(strPath, items, ".nfo", DIR_FLAG_DEFAULTS) && items.Size() > 0)
+    if (CDirectory::GetDirectory(strPath, items, ".nfo", DIR_FLAG_DEFAULTS) && !items.IsEmpty())
     {
       const CVideoInfoTag* tag{item.GetVideoInfoTag()};
       auto nfoItems{items | std::views::filter(

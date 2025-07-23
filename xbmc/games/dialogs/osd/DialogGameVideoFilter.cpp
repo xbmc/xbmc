@@ -115,6 +115,18 @@ void CDialogGameVideoFilter::InitScalingMethods()
   }
 }
 
+namespace
+{
+TiXmlNode* GetFirstChildOfNode(TiXmlNode& node, const char* childName)
+{
+  TiXmlNode* ret{node.FirstChild(childName)};
+  if (ret)
+    return ret->FirstChild();
+
+  return ret;
+}
+} // unnamed namespace
+
 void CDialogGameVideoFilter::InitVideoFilters()
 {
 
@@ -168,17 +180,17 @@ void CDialogGameVideoFilter::InitVideoFilters()
     if (child->FirstChild() == nullptr)
       continue;
 
-    TiXmlNode* pathNode;
-    if ((pathNode = child->FirstChild("path")) && (pathNode = pathNode->FirstChild()))
+    const TiXmlNode* pathNode{GetFirstChildOfNode(*child, "path")};
+    if (pathNode)
       videoFilter.path =
           URIUtils::AddFileToFolder(URIUtils::GetBasePath(xmlPath), pathNode->Value());
 
-    TiXmlNode* nameNode;
-    if ((nameNode = child->FirstChild("name")) && (nameNode = nameNode->FirstChild()))
+    const TiXmlNode* nameNode{GetFirstChildOfNode(*child, "name")};
+    if (nameNode)
       videoFilter.name = nameNode->Value();
 
-    TiXmlNode* folderNode;
-    if ((folderNode = child->FirstChild("folder")) && (folderNode = folderNode->FirstChild()))
+    const TiXmlNode* folderNode{GetFirstChildOfNode(*child, "folder")};
+    if (folderNode)
       videoFilter.folder = folderNode->Value();
 
     videoFilters.emplace_back(videoFilter);
