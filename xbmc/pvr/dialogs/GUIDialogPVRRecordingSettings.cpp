@@ -195,7 +195,7 @@ bool CGUIDialogPVRRecordingSettings::Save()
 
 void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& setting,
                                                      std::vector<IntegerSettingOption>& list,
-                                                     int& current)
+                                                     int& current) const
 {
   list.clear();
 

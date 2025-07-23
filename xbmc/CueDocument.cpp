@@ -229,7 +229,7 @@ void CCueDocument::UpdateMediaFile(const std::string& oldMediaFile, const std::s
 
 void CCueDocument::GetMediaFiles(std::vector<std::string>& mediaFiles)
 {
-  std::set<std::string> uniqueFiles;
+  std::set<std::string, std::less<>> uniqueFiles;
   std::ranges::transform(m_tracks, std::inserter(uniqueFiles, uniqueFiles.end()),
                          [](const auto& track) { return track.strFile; });
 

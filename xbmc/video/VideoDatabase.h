@@ -205,19 +205,21 @@ private:
     using namespace std::literals::string_view_literals;
     switch (type)
     {
-      case VideoDbContentType::UNKNOWN:
+      using enum VideoDbContentType;
+
+      case UNKNOWN:
         return "unknown"sv;
-      case VideoDbContentType::MOVIES:
+      case MOVIES:
         return "movies"sv;
-      case VideoDbContentType::TVSHOWS:
+      case TVSHOWS:
         return "TV shows"sv;
-      case VideoDbContentType::MUSICVIDEOS:
+      case MUSICVIDEOS:
         return "music videos"sv;
-      case VideoDbContentType::EPISODES:
+      case EPISODES:
         return "episodes"sv;
-      case VideoDbContentType::MOVIE_SETS:
+      case MOVIE_SETS:
         return "movie sets"sv;
-      case VideoDbContentType::MUSICALBUMS:
+      case MUSICALBUMS:
         return "music albums"sv;
     };
     throw std::invalid_argument("no videodb content string found");
@@ -1367,8 +1369,8 @@ protected:
 
   CVideoInfoTag GetDetailsForMovie(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForMovie(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
-  CSetInfoTag GetDetailsForSet(dbiplus::Dataset& pDS);
-  CSetInfoTag GetDetailsForSet(const dbiplus::sql_record* const record);
+  CSetInfoTag GetDetailsForSet(dbiplus::Dataset& pDS) const;
+  CSetInfoTag GetDetailsForSet(const dbiplus::sql_record* const record) const;
   CVideoInfoTag GetDetailsForTvShow(dbiplus::Dataset& pDS,
                                     int getDetails = VideoDbDetailsNone,
                                     CFileItem* item = nullptr);

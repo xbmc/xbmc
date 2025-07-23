@@ -3154,11 +3154,13 @@ int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
 
   switch (type)
   {
-    case VideoDbContentType::MOVIES:
+    using enum VideoDbContentType;
+
+    case MOVIES:
       return SetFileForMovie(fileAndPath, mediaId, oldIdFile);
-    case VideoDbContentType::EPISODES:
+    case EPISODES:
       return SetFileForEpisode(fileAndPath, mediaId, oldIdFile);
-    case VideoDbContentType::UNKNOWN:
+    case UNKNOWN:
       return SetFileForUnknown(fileAndPath, oldIdFile); // Used for removable blurays
     default:
       CLog::LogF(LOGDEBUG, "unsupported media type {}", type);
@@ -4889,12 +4891,12 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   return details;
 }
 
-CSetInfoTag CVideoDatabase::GetDetailsForSet(dbiplus::Dataset& pDS)
+CSetInfoTag CVideoDatabase::GetDetailsForSet(dbiplus::Dataset& pDS) const
 {
   return GetDetailsForSet(pDS.get_sql_record());
 }
 
-CSetInfoTag CVideoDatabase::GetDetailsForSet(const dbiplus::sql_record* const record)
+CSetInfoTag CVideoDatabase::GetDetailsForSet(const dbiplus::sql_record* const record) const
 {
   CSetInfoTag details;
 

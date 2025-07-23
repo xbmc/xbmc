@@ -31,7 +31,7 @@ CGUIWindowFavourites::CGUIWindowFavourites()
   m_loadType = KEEP_IN_MEMORY;
   CServiceBroker::GetFavouritesService().Events().Subscribe(
       this,
-      [this](const CFavouritesService::FavouritesUpdated& event)
+      [this](const CFavouritesService::FavouritesUpdated& /*event*/)
       {
         CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 0);
         CServiceBroker::GetAppMessenger()->SendGUIMessage(m);

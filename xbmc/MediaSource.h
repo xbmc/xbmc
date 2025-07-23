@@ -12,6 +12,7 @@
 #include "utils/LockInfo.h"
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 /*!
@@ -24,7 +25,7 @@ class CMediaSource final
 public:
   bool operator==(const CMediaSource &right) const;
 
-  void FromNameAndPaths(const std::string& name, const std::vector<std::string>& paths);
+  void FromNameAndPaths(std::string_view name, const std::vector<std::string>& paths);
   bool IsWritable() const;
 
   KODI::UTILS::CLockInfo& GetLockInfo() { return m_lockInfo; }

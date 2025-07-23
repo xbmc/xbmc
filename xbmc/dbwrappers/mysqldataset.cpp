@@ -976,8 +976,8 @@ void CStrAccum::VXPrintf(MYSQL* conn,
     }
     /* Find out what flags are present */
     flag_leftjustify = flag_plussign = flag_blanksign = flag_alternateform = flag_altform2 =
-        flag_zeropad = 0;
-    done = 0;
+        flag_zeropad = false;
+    done = false;
     do
     {
       switch (c)
@@ -1181,7 +1181,7 @@ void CStrAccum::VXPrintf(MYSQL* conn,
           prefix = 0;
         }
         if (longvalue == 0)
-          flag_alternateform = 0;
+          flag_alternateform = false;
         if (flag_zeropad && precision < width - (prefix != 0))
         {
           precision = width - (prefix != 0);
@@ -1330,7 +1330,7 @@ void CStrAccum::VXPrintf(MYSQL* conn,
         }
         else
         {
-          flag_rtz = 0;
+          flag_rtz = false;
         }
         if (xtype == etEXP)
         {
@@ -1341,7 +1341,7 @@ void CStrAccum::VXPrintf(MYSQL* conn,
           e2 = exp;
         }
         nsd = 0;
-        flag_dp = (precision > 0 ? 1 : 0) | flag_alternateform | flag_altform2;
+        flag_dp = (precision > 0 ? 1 : 0) || flag_alternateform || flag_altform2;
         /* The sign in front of the number */
         if (prefix)
         {

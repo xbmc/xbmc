@@ -298,7 +298,7 @@ std::string CGUIDialogLockSettings::GetLockModeLabel()
       m_locks.mode == LockMode::EVERYONE ? 1223 : 12336 + static_cast<int>(m_locks.mode));
 }
 
-void CGUIDialogLockSettings::SetDetailSettingsEnabled(bool enabled)
+void CGUIDialogLockSettings::SetDetailSettingsEnabled(bool enabled) const
 {
   if (!m_details)
     return;

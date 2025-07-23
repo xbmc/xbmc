@@ -17,7 +17,7 @@
 
 namespace KODI::SHADER
 {
-using ShaderParameterMap = std::map<std::string, float>;
+using ShaderParameterMap = std::map<std::string, float, std::less<>>;
 
 enum class FilterType
 {
@@ -98,11 +98,10 @@ struct float2
   template<typename T>
   float2(T x_, T y_) : x(static_cast<float>(x_)), y(static_cast<float>(y_))
   {
-    static_assert(std::is_arithmetic<T>::value, "Not an arithmetic type");
+    static_assert(std::is_arithmetic_v<T>, "Not an arithmetic type");
   }
 
-  bool operator==(const float2& rhs) const { return x == rhs.x && y == rhs.y; }
-  bool operator!=(const float2& rhs) const { return !(*this == rhs); }
+  bool operator==(const float2& rhs) const = default;
 
   template<typename T>
   T Max()

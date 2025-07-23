@@ -357,7 +357,7 @@ std::string ByEpisodeNumber(SortAttribute attributes, const SortItem &values)
 
 std::string BySeason(SortAttribute attributes, const SortItem &values)
 {
-  int season = static_cast<int>(values.at(FieldSeason).asInteger());
+  auto season = static_cast<int>(values.at(FieldSeason).asInteger());
 
   if (season == 0)
     season = std::numeric_limits<int>::max();

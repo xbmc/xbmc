@@ -272,8 +272,8 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
   // Split the input into multiple values and validate every value separately
   const std::vector<std::string> values{StringUtils::Split(input, RULE_VALUE_SEPARATOR)};
 
-  return (std::all_of(values.begin(), values.end(),
-                      [data, validator](const auto& s) { return validator(s, data); }));
+  return (
+      std::ranges::all_of(values, [data, validator](const auto& s) { return validator(s, data); }));
 }
 
 bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
@@ -318,7 +318,7 @@ bool CSmartPlaylistRule::ValidateDate(const std::string& input, void* data)
   if (!data)
     return false;
 
-  CSmartPlaylistRule* rule = static_cast<CSmartPlaylistRule*>(data);
+  const auto* rule = static_cast<CSmartPlaylistRule*>(data);
 
   //! @todo implement a validation for relative dates
   if (rule->m_operator == OPERATOR_IN_THE_LAST || rule->m_operator == OPERATOR_NOT_IN_THE_LAST)

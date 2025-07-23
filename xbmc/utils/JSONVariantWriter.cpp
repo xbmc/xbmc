@@ -76,7 +76,7 @@ bool CJSONVariantWriter::Write(const CVariant &value, std::string& output, bool 
       output = json.dump(1, '\t');
     }
   }
-  catch (nlohmann::json::exception& e)
+  catch (nlohmann::json::exception&)
   {
     return false;
   }

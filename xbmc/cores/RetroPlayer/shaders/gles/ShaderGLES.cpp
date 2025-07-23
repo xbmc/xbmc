@@ -346,10 +346,10 @@ void CShaderGLES::SetShaderParameters(CGLESTexture& sourceTexture)
   glUniformMatrix4fv(m_MVPMatrixLoc, 1, GL_FALSE, reinterpret_cast<const GLfloat*>(&m_MVP));
 
   // Set #pragma parameters
-  for (const auto& param : m_shaderParameters)
+  for (const auto& [paramName, paramValue] : m_shaderParameters)
   {
-    GLint paramLoc = glGetUniformLocation(m_shaderProgram, param.first.c_str());
-    glUniform1f(paramLoc, param.second);
+    GLint paramLoc = glGetUniformLocation(m_shaderProgram, paramName.c_str());
+    glUniform1f(paramLoc, paramValue);
   }
 
   // Set source texture

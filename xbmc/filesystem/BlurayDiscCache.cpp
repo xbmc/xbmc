@@ -22,8 +22,7 @@ CacheMap::iterator CBlurayDiscCache::SetDisc(const std::string& path)
   std::string storedPath{CURL(path).GetWithoutOptions()};
   URIUtils::RemoveSlashAtEnd(storedPath);
 
-  Disc disc;
-  const auto [it, _]{m_cache.try_emplace(storedPath, disc)};
+  const auto [it, _]{m_cache.try_emplace(storedPath)};
   return it;
 }
 

@@ -141,7 +141,7 @@ bool CAutoSwitch::ByThumbPercent(bool bHideParentDirItems, int iPercent, const C
 /// \param iPercent Percent of non-default thumbs to autoswitch on
 bool CAutoSwitch::ByFileCount(const CFileItemList& vecItems)
 {
-  if (vecItems.Size() == 0)
+  if (vecItems.IsEmpty())
     return false;
   return static_cast<float>(vecItems.GetFileCount()) / vecItems.Size() > 0.25f;
 }

@@ -183,7 +183,7 @@ bool CShaderPresetGLES::CreateShaderTextures()
         return false;
       }
 
-      ShaderPass& nextPass = m_passes[shaderIdx + 1];
+      const ShaderPass& nextPass = m_passes[shaderIdx + 1];
 
       if (nextPass.mipmap)
         textureGL->SetMipmapping();

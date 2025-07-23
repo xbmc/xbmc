@@ -248,7 +248,8 @@ void CGUIControllerWindow::OnInitWindow(void)
 
   // subscribe to events
   CServiceBroker::GetRepositoryUpdater().Events().Subscribe(
-      this, [this](const ADDON::CRepositoryUpdater::RepositoryUpdated& event) { UpdateButtons(); });
+      this,
+      [this](const ADDON::CRepositoryUpdater::RepositoryUpdated& /*event*/) { UpdateButtons(); });
   CServiceBroker::GetAddonMgr().Events().Subscribe(
       this,
       [this](const ADDON::AddonEvent& event)

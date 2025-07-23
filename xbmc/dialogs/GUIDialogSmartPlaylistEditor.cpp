@@ -271,10 +271,11 @@ void CGUIDialogSmartPlaylistEditor::OnCancel()
 void CGUIDialogSmartPlaylistEditor::OnMatch()
 {
   // toggle between AND and OR setting
-  if (m_playlist.m_ruleCombination.GetType() == CDatabaseQueryRuleCombination::Type::COMBINATION_OR)
-    m_playlist.m_ruleCombination.SetType(CDatabaseQueryRuleCombination::Type::COMBINATION_AND);
+  using enum CDatabaseQueryRuleCombination::Type;
+  if (m_playlist.m_ruleCombination.GetType() == COMBINATION_OR)
+    m_playlist.m_ruleCombination.SetType(COMBINATION_AND);
   else
-    m_playlist.m_ruleCombination.SetType(CDatabaseQueryRuleCombination::Type::COMBINATION_OR);
+    m_playlist.m_ruleCombination.SetType(COMBINATION_OR);
   UpdateButtons();
 }
 

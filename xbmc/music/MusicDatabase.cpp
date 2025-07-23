@@ -13214,7 +13214,7 @@ std::vector<CScraperUrl::SUrlEntry> CMusicDatabase::GetAvailableArtForItem(
 
 int CMusicDatabase::GetOrderFilter(const std::string& type,
                                    const SortDescription& sorting,
-                                   Filter& filter)
+                                   Filter& filter) const
 {
   // Populate filter with ORDER BY clause and any extra scalar query fields needed for sort
   int iFieldsAdded = 0;
