@@ -226,10 +226,14 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
   if (item.IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(item.GetPath());
 
-  if (item.IsOpticalMediaFile())
-  { // optical media files should be treated like folders
-    useFolder = true;
-    strFile = item.GetLocalMetadataPath();
+  if (URIUtils::IsBlurayPath(file))
+    file = strFile = URIUtils::GetDiscFile(file);
+
+  if (URIUtils::IsOpticalMediaFile(file))
+  {
+    // Optical media files (VIDEO_TS.IFO/INDEX.BDMV) should be treated like folders
+    useFolder = true; // ByRef so changes behaviour in GetLocalArt()
+    strFile = URIUtils::GetBasePath(file);
   }
   else if (useFolder && !(item.IsFolder() && !item.IsFileFolder()))
   {
@@ -334,19 +338,19 @@ std::string GetLocalFanart(const CFileItem& item)
 std::string GetTBNFile(const CFileItem& item)
 {
   std::string thumbFile;
-  std::string file = item.GetPath();
+  std::string file{item.GetPath()};
 
   if (item.IsStack())
   {
-    std::string path, returnPath;
+    std::string path;
     URIUtils::GetParentPath(item.GetPath(), path);
     CFileItem item(CStackDirectory::GetFirstStackedFile(file), false);
-    const std::string TBNFile = GetTBNFile(item);
-    returnPath = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(TBNFile));
+    const std::string TBNFile{GetTBNFile(item)};
+    const std::string returnPath{URIUtils::AddFileToFolder(path, URIUtils::GetFileName(TBNFile))};
     if (CFile::Exists(returnPath))
       return returnPath;
 
-    const std::string& stackPath = CStackDirectory::GetStackedTitlePath(file);
+    const std::string& stackPath{CStackDirectory::GetStackedTitlePath(file)};
     file = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(stackPath));
   }
 
@@ -357,6 +361,9 @@ std::string GetTBNFile(const CFileItem& item)
     URIUtils::GetParentPath(path, parent);
     file = URIUtils::AddFileToFolder(parent, URIUtils::GetFileName(item.GetPath()));
   }
+
+  if (URIUtils::IsBlurayPath(file))
+    file = URIUtils::GetDiscFile(file);
 
   CURL url(file);
   file = url.GetFileName();
@@ -370,6 +377,7 @@ std::string GetTBNFile(const CFileItem& item)
       thumbFile = file + ".tbn"; // folder, so just add ".tbn"
     else
       thumbFile = URIUtils::ReplaceExtension(file, ".tbn");
+
     url.SetFileName(thumbFile);
     thumbFile = url.Get();
   }

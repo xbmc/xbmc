@@ -89,30 +89,32 @@ public:
 
   static bool IsDiscPath(const std::string& path);
 
-  /*! \brief Given a bluray:// path, return the base .ISO or folder containing the bluray file structure.
-   \param path bluray:// path.
-   \return the base .ISO or folder containing the bluray file structure.
+  /*! \brief Given a bluray:// path or disc file path (index.bdmv/video_ts.ifo), return the base .ISO or folder
+   containing the disc file structure.
+   \param path source path.
+   \return the base .ISO or folder containing the disc file structure.
    \note Used to determine file/folder to delete
    */
   static std::string GetDiscBase(const std::string& file);
 
-  /*! \brief Given a bluray:// path, return the folder containing the .ISO or bluray file structure.
-   \param path bluray:// path.
-   \return the folder containing the .ISO or bluray file structure.
+  /*! \brief Given a bluray:// path or disc file path (index.bdmv/video_ts.ifo), return the folder
+   containing the disc file structure or ISO.
+   \param path source path.
+   \return the folder containing the .ISO or disc file structure.
    */
   static std::string GetDiscBasePath(const std::string& file);
+
+  /*! \brief Given a bluray:// path, return the base .ISO or index.BDMV.
+   \param path bluray:// path.
+   \return the base .ISO or index.BDMV.
+   */
+  static std::string GetDiscFile(const std::string& path);
 
   /*! \brief Given a bluray:// path, return the underlying file path (eg. smb://, udf:// etc..)
    \param url CURL containing bluray:// path.
    \return return the underlying file path.
    */
   static std::string GetDiscUnderlyingFile(const CURL& url);
-
-  /*! \brief Given a bluray:// path, return the base .ISO or index.BDMV.
-   \param path bluray:// path.
-   \return the base .ISO or index.BDMV.
-   */
-  static std::string GetBlurayFile(const std::string& path);
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to root.
    \param path the ISO/index.BDMV path.
@@ -140,21 +142,16 @@ public:
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
    \param path the ISO/index.BDMV path.
-   \return the bluray:// playlist path - BDMV/PLAYLIST
+   \param playlist (optional) the .mpls playlist
+   \return the bluray:// playlist path - BDMV/PLAYLIST(/xxxxx.mpls)
    */
-  static std::string GetBlurayPlaylistPath(const std::string& path);
+  static std::string GetBlurayPlaylistPath(const std::string& path, int playlist = -1);
 
-  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path.
-   \param path the ISO/index.BDMV path.
-   \return the bluray:// path.
+  /*! \brief Given a path to bluray playlist (bluray://.../xxxxx.mpls), returns the playlist number.
+   \param path the bluray:// path
+   \return the playlist number
    */
-  static std::string GetBlurayPath(const std::string& path);
-
-  /*! \brief Determines if a file is from optical media (ie. index.bdmv, video_ts.ifo etc..)
-   \param file file path for determination.
-   \return true if file is from optical media
-   */
-  static bool IsOpticalMediaFile(const std::string& file);
+  static int GetBlurayPlaylistFromPath(const std::string& path);
 
   /*! \brief Get the regex for matching trailing part numbers.
    \return the regex
@@ -253,6 +250,13 @@ public:
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
   static bool IsBlurayPath(const std::string& strFile);
+
+  /*! \brief Determines if a file is from optical media (ie. index.bdmv, video_ts.ifo etc..)
+   \param file file path for determination.
+   \return true if file is from optical media
+   */
+  static bool IsOpticalMediaFile(const std::string& file);
+
   static bool IsBDFile(const std::string& file);
   static bool IsDVDFile(const std::string& file);
   static bool IsAndroidApp(const std::string& strFile);
@@ -330,6 +334,12 @@ public:
 
 private:
   static std::string resolvePath(const std::string &path);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// path.
+   */
+  static std::string GetBlurayPath(const std::string& path);
 
   static const CAdvancedSettings* m_advancedSettings;
 };

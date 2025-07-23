@@ -36,6 +36,6 @@ std::string CBlurayFile::TranslatePath(const CURL& url)
 bool CBlurayFile::Exists(const CURL& url)
 {
   if (url.GetFileName() == "menu")
-    return CFile::Exists(URIUtils::GetBlurayFile(url.Get()));
+    return CFile::Exists(URIUtils::GetDiscFile(url.Get()));
   return CFile::Exists(TranslatePath(url));
 }

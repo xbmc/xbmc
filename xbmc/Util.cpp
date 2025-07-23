@@ -1222,6 +1222,10 @@ int CUtil::GetMatchingSource(const std::string& strPath1,
   if (checkURL.IsProtocol("stack"))
     strPath.erase(0, 8); // remove the stack protocol
 
+  // bluray://
+  if (checkURL.IsProtocol("bluray"))
+    strPath = URIUtils::GetDiscBase(checkURL.Get()); // get the actual path on disc
+
   if (checkURL.IsProtocol("shout"))
     strPath = checkURL.GetHostName();
 
@@ -1890,12 +1894,13 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
                                         std::string& basePath,
                                         std::string& videoFileName)
 {
-  const CFileItem item(videoPath, false);
-
-  if (item.IsOpticalMediaFile() || URIUtils::IsBlurayPath(item.GetDynPath()))
+  if (URIUtils::IsOpticalMediaFile(videoPath) || URIUtils::IsBlurayPath(videoPath))
   {
+    const std::string path{URIUtils::IsBlurayPath(videoPath) ? URIUtils::GetDiscFile(videoPath)
+                                                             : videoPath};
+    CFileItem item(path, false);
+    videoFileName = item.GetMovieName();
     basePath = item.GetLocalMetadataPath();
-    videoFileName = URIUtils::ReplaceExtension(GetTitleFromPath(basePath), "");
   }
   else
   {

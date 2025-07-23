@@ -150,7 +150,7 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
 
           std::string base{originalDynPath};
           if (URIUtils::IsBlurayPath(base))
-            base = URIUtils::GetBlurayFile(base);
+            base = URIUtils::GetDiscFile(base);
 
           for (const auto& it : matchingPlaylists)
           {
