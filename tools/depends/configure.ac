@@ -295,7 +295,7 @@ if test "x$LD" = "x"; then
   AC_MSG_ERROR(No linker found with name ${use_linker}. You may want to provide using --with-linker=<linker>)
 fi
 
-case $build in
+case $host in
   *darwin*)
     # MacOS 11 requires explicit isysroot for autoconf compiler tests
     # However we do not want to pollute CFLAGS/CXXFLAGS once compiler tests are complete
@@ -305,7 +305,7 @@ esac
 
 AC_PROG_CPP
 
-case $build in
+case $host in
   *darwin*)
     CFLAGS=$(echo "$CFLAGS" | sed "s|$host_includes||")
     CXXFLAGS=$(echo "$CXXFLAGS" | sed "s|$host_includes||")
