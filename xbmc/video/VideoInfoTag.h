@@ -170,6 +170,9 @@ public:
   void SetNamedSeasons(std::map<int, std::string> namedSeasons);
   void SetUserrating(int userrating);
 
+  void SetOverride(bool override) { m_override = override; }
+  bool GetOverride() const { return m_override; }
+
   /*!
    * @brief Get this videos's play count.
    * @return the play count.
@@ -441,4 +444,5 @@ private:
   bool m_isDefaultVideoVersion{false};
 
   bool m_updateSetOverview{true};
+  bool m_override{false};
 };

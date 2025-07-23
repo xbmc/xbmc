@@ -2365,7 +2365,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                     pDlgProgress))
           return InfoRet::NOT_FOUND; //! @todo should we just skip to the next episode?
 
-        if (result == InfoType::COMBINED)
+        if (result == InfoType::COMBINED || result == InfoType::OVERRIDE)
           scraperItem.GetVideoInfoTag()->Merge(*item.GetVideoInfoTag());
 
         // Only set season/epnum from filename when it is not already set by a scraper

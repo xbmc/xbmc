@@ -38,6 +38,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
 
   CFileItemList items;
   bool bNfo=false;
+  bool overrideNfo{false};
 
   if (m_type == AddonType::SCRAPER_ALBUMS)
   {
@@ -54,6 +55,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
   {
     CVideoInfoTag details;
     bNfo = GetDetails(details);
+    overrideNfo = details.GetOverride();
   }
 
   std::vector<ScraperPtr> vecScrapers = GetScrapers(m_type, m_info);
@@ -70,7 +72,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
   {
     if (!m_scurl.HasUrls())
     {
-      if (m_doc.find("[scrape url]") != std::string::npos)
+      if (overrideNfo || m_doc.find("[scrape url]") != std::string::npos)
         return CInfoScanner::InfoType::OVERRIDE;
       else
         return CInfoScanner::InfoType::FULL;

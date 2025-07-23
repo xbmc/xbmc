@@ -52,7 +52,8 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
   else if (m_info)
     result = nfoReader.Create(m_path, m_info);
 
-  if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED)
+  if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED ||
+      result == CInfoScanner::InfoType::OVERRIDE)
     nfoReader.GetDetails(tag, nullptr, prioritise);
 
   if (result == CInfoScanner::InfoType::URL || result == CInfoScanner::InfoType::COMBINED)

@@ -1004,6 +1004,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   std::string value;
   float fValue;
 
+  if (StringUtils::ToLower(XMLUtils::GetAttribute(movie, "override")) == "true")
+    SetOverride(true);
+
   if (XMLUtils::GetString(movie, "title", value))
     SetTitle(value);
 
