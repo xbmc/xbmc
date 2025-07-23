@@ -1054,6 +1054,8 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
 
 int CVideoDatabase::AddFile(const CFileItem& item)
 {
+  if (URIUtils::IsBlurayPath(item.GetDynPath()))
+    return AddFile(item.GetDynPath());
   if (IsVideoDb(item) && item.HasVideoInfoTag())
   {
     const auto videoInfoTag = item.GetVideoInfoTag();
@@ -1244,6 +1246,10 @@ int CVideoDatabase::GetFileId(const std::string& strFilenameAndPath)
 int CVideoDatabase::GetFileId(const CFileItem &item)
 {
   int fileId = -1;
+
+  if (URIUtils::IsBlurayPath(item.GetDynPath()))
+    return GetFileId(item.GetDynPath());
+
   if (item.HasVideoInfoTag())
     fileId = GetFileId(*item.GetVideoInfoTag());
 
@@ -3179,6 +3185,7 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpis
   try
   {
     m_pDS->exec(PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", idFile, idEpisode));
+    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idFile, oldIdFile));
     return DeleteFile(oldIdFile) ? idFile : -1;
   }
   catch (...)
@@ -3217,6 +3224,9 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie,
                      idFile, oldIdFile, idFile);
     m_pDS->exec(sql);
 
+    sql = PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idFile, oldIdFile);
+    m_pDS->exec(sql);
+
     return DeleteFile(oldIdFile) ? idFile : -1;
   }
   catch (...)
@@ -3241,6 +3251,9 @@ int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdF
         PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
                    "FROM streamdetails WHERE idFile=%i)",
                    idFile, oldIdFile, idFile)};
+    m_pDS->exec(sql);
+
+    sql = PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idFile, oldIdFile);
     m_pDS->exec(sql);
 
     return DeleteFile(oldIdFile) ? idFile : -1;
@@ -7163,8 +7176,6 @@ int CVideoDatabase::GetPlayCount(const std::string& strFilenameAndPath)
 
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
-  if (URIUtils::IsBlurayPath(item.GetDynPath()))
-    return GetPlayCount(GetFileId(item.GetDynPath()));
   return GetPlayCount(GetFileId(item));
 }
 
@@ -7236,10 +7247,8 @@ void CVideoDatabase::UpdateFanart(const CFileItem& item, VideoDbContentType type
 CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const CDateTime& date)
 {
   int id{-1};
-  if (URIUtils::IsBlurayPath(item.GetDynPath()))
-    id = AddFile(item.GetDynPath());
-  else if (item.HasProperty("original_listitem_url") &&
-           URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+  if (!URIUtils::IsBlurayPath(item.GetDynPath()) && item.HasProperty("original_listitem_url") &&
+      URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
   {
     CFileItem item2(item);
     item2.SetPath(item.GetProperty("original_listitem_url").asString());
