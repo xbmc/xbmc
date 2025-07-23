@@ -27,7 +27,7 @@
 namespace ADDON
 {
 
-typedef struct
+struct TypeMapping
 {
   std::string_view name;
   std::string_view old_name;
@@ -35,7 +35,7 @@ typedef struct
   int pretty;
   AddonInstanceSupport instance_support;
   std::string_view icon;
-} TypeMapping;
+};
 
 // clang-format off
 static constexpr const std::array<TypeMapping, 41> types =
@@ -138,7 +138,7 @@ std::string CAddonInfo::TranslateIconType(AddonType type)
   return "";
 }
 
-AddonType CAddonInfo::TranslateSubContent(const std::string& content)
+AddonType CAddonInfo::TranslateSubContent(std::string_view content)
 {
   if (content == "audio")
     return AddonType::AUDIO;
@@ -156,8 +156,8 @@ AddonType CAddonInfo::TranslateSubContent(const std::string& content)
 
 AddonInstanceSupport CAddonInfo::InstanceSupportType(AddonType type)
 {
-  const auto it = std::find_if(types.begin(), types.end(),
-                               [type](const TypeMapping& entry) { return entry.type == type; });
+  const auto it =
+      std::ranges::find_if(types, [type](const TypeMapping& entry) { return entry.type == type; });
   if (it != types.end())
     return it->instance_support;
 
@@ -199,14 +199,13 @@ bool CAddonInfo::ProvidesSubContent(AddonType content, AddonType mainType) const
   if (content == AddonType::UNKNOWN)
     return false;
 
-  for (const auto& addonType : m_types)
-  {
-    if ((mainType == AddonType::UNKNOWN || addonType.Type() == mainType) &&
-        addonType.ProvidesSubContent(content))
-      return true;
-  }
-
-  return false;
+  return std::ranges::any_of(m_types,
+                             [content, mainType](const auto& addonType)
+                             {
+                               return (mainType == AddonType::UNKNOWN ||
+                                       mainType == addonType.Type()) &&
+                                      addonType.ProvidesSubContent(content);
+                             });
 }
 
 bool CAddonInfo::ProvidesSeveralSubContents() const
@@ -224,8 +223,8 @@ bool CAddonInfo::MeetsVersion(const CAddonVersion& versionMin, const CAddonVersi
 
 const CAddonVersion& CAddonInfo::DependencyMinVersion(const std::string& dependencyID) const
 {
-  auto it = std::find_if(m_dependencies.begin(), m_dependencies.end(),
-                         [&](const DependencyInfo& other) { return other.id == dependencyID; });
+  auto it = std::ranges::find_if(m_dependencies, [&dependencyID](const DependencyInfo& other)
+                                 { return other.id == dependencyID; });
 
   if (it != m_dependencies.end())
     return it->versionMin;
@@ -236,7 +235,8 @@ const CAddonVersion& CAddonInfo::DependencyMinVersion(const std::string& depende
 
 const CAddonVersion& CAddonInfo::DependencyVersion(const std::string& dependencyID) const
 {
-  auto it = std::find_if(m_dependencies.begin(), m_dependencies.end(), [&](const DependencyInfo& other) { return other.id == dependencyID; });
+  auto it = std::ranges::find_if(m_dependencies, [&dependencyID](const DependencyInfo& other)
+                                 { return other.id == dependencyID; });
 
   if (it != m_dependencies.end())
     return it->version;
@@ -245,7 +245,7 @@ const CAddonVersion& CAddonInfo::DependencyVersion(const std::string& dependency
   return emptyVersion;
 }
 
-const std::string& CAddonInfo::GetTranslatedText(const std::unordered_map<std::string, std::string>& locales) const
+const std::string& CAddonInfo::GetTranslatedText(const CLocale::LocalizedStringsMap& locales) const
 {
   if (locales.size() == 1)
     return locales.begin()->second;
@@ -267,12 +267,14 @@ bool CAddonInfo::SupportsMultipleInstances() const
 {
   switch (m_addonInstanceSupportType)
   {
-    case AddonInstanceSupport::SUPPORT_MANDATORY:
-    case AddonInstanceSupport::SUPPORT_OPTIONAL:
+    using enum AddonInstanceSupport;
+
+    case SUPPORT_MANDATORY:
+    case SUPPORT_OPTIONAL:
       return true;
-    case AddonInstanceSupport::SUPPORT_SETTINGS:
+    case SUPPORT_SETTINGS:
       return m_supportsInstanceSettings;
-    case AddonInstanceSupport::SUPPORT_NONE:
+    case SUPPORT_NONE:
     default:
       return false;
   }

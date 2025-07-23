@@ -131,6 +131,18 @@ public:
   */
   std::string FindBestMatch(const std::set<std::string>& locales) const;
 
+  struct StringHash
+  {
+    using is_transparent = void; // Enables heterogeneous operations.
+    std::size_t operator()(std::string_view sv) const
+    {
+      std::hash<std::string_view> hasher;
+      return hasher(sv);
+    }
+  };
+  using LocalizedStringsMap =
+      std::unordered_map<std::string, std::string, StringHash, std::equal_to<>>;
+
   /*!
   \brief Tries to find the locale in the given list that matches this locale
          best.
@@ -142,7 +154,7 @@ public:
   \remark Used from \ref CAddonInfo::GetTranslatedText to prevent copy from map
           to set.
   */
-  std::string FindBestMatch(const std::unordered_map<std::string, std::string>& locales) const;
+  std::string FindBestMatch(const LocalizedStringsMap& locales) const;
 
 private:
   static bool CheckValidity(const std::string& language, const std::string& territory, const std::string& codeset, const std::string& modifier);
