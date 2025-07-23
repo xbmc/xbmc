@@ -297,18 +297,24 @@ fi
 
 case $build in
   *darwin*)
-    # MacOS 11 requires explicit isysroot for autoconf compiler tests
-    # However we do not want to pollute CFLAGS/CXXFLAGS once compiler tests are complete
-    CFLAGS="${CFLAGS} $host_includes"
-    CXXFLAGS="${CXXFLAGS} $host_includes"
+    case $host in
+      *darwin*)
+        # MacOS 11 requires explicit isysroot for autoconf compiler tests
+        # However we do not want to pollute CFLAGS/CXXFLAGS once compiler tests are complete
+        CFLAGS="${CFLAGS} $host_includes"
+        CXXFLAGS="${CXXFLAGS} $host_includes"
+    esac
 esac
 
 AC_PROG_CPP
 
 case $build in
   *darwin*)
-    CFLAGS=$(echo "$CFLAGS" | sed "s|$host_includes||")
-    CXXFLAGS=$(echo "$CXXFLAGS" | sed "s|$host_includes||")
+    case $host in
+      *darwin*)
+        CFLAGS=$(echo "$CFLAGS" | sed "s|$host_includes||")
+        CXXFLAGS=$(echo "$CXXFLAGS" | sed "s|$host_includes||")
+    esac
 esac
 
 case $host in
