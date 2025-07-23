@@ -328,6 +328,11 @@ const std::string& CMusicInfoTag::GetSongVideoURL() const
   return m_songVideoURL;
 }
 
+const ChapterMarks& CMusicInfoTag::GetChapterMarks() const
+{
+  return m_chapters;
+}
+
 void CMusicInfoTag::SetURL(std::string_view strURL)
 {
   m_strURL = strURL;
@@ -784,6 +789,11 @@ void CMusicInfoTag::SetSongVideoURL(std::string_view songVideoURL)
   m_songVideoURL = songVideoURL;
 }
 
+void CMusicInfoTag::SetChapterMarks(const ChapterMarks& chapters)
+{
+  m_chapters = chapters;
+}
+
 void CMusicInfoTag::SetArtist(const CArtist& artist)
 {
   SetArtist(artist.strArtist);
@@ -1208,6 +1218,7 @@ void CMusicInfoTag::Clear()
   m_stationName.clear();
   m_stationArt.clear();
   m_songVideoURL.clear();
+  m_chapters.clear();
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)

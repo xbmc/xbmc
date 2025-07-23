@@ -19,6 +19,7 @@
 #include "utils/EmbeddedArt.h"
 #include "utils/ISerializable.h"
 
+#include <chrono>
 #include <map>
 #include <string>
 #include <vector>
@@ -39,6 +40,16 @@ public:
 };
 
 class CFileItem;
+
+// Struct to store chapter information from mp3 files (could be used for m4b or mka files too)
+struct ChapterDetails
+{
+  std::string name;
+  std::chrono::milliseconds startTimeMs{0}; // All chapter timings are in milliseconds
+  std::chrono::milliseconds endTimeMs{0};
+};
+
+using ChapterMarks = std::map<int, ChapterDetails>;
 
 /*!
  \ingroup music
@@ -195,6 +206,7 @@ public:
   std::string strRecordLabel; // Record label from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
   std::string strAlbumType; // (Musicbrainz release type) album type from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
   std::string songVideoURL; // url to song video
+  ChapterMarks m_chapters; // map of chapter names and start and end times
 
   ReplayGain replayGain;
 private:
