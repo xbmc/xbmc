@@ -64,3 +64,9 @@ dependencies {
     implementation 'androidx.tvprovider:tvprovider:1.1.0-alpha01'
     implementation 'com.google.code.gson:gson:2.11.0'
 }
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
