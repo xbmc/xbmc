@@ -151,3 +151,4 @@ private:
 
 typedef std::vector<CRegExp> VECCREGEXP;
 
+VECCREGEXP CompileRegexes(const std::vector<std::string>& regExpPatterns);

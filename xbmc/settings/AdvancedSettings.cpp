@@ -36,6 +36,29 @@
 
 using namespace ADDON;
 
+namespace
+{
+
+bool validateVideoStackRegex(const CRegExp& regex)
+{
+  if (regex.GetCaptureTotal() != 4)
+  {
+    CLog::Log(LOGERROR, "Invalid video stack RE ({}). Must have exactly 4 captures.",
+              regex.GetPattern());
+    return false;
+  }
+  return true;
+};
+
+VECCREGEXP CompileRegexesFromXML(TiXmlElement* pFolderStacking)
+{
+  std::vector<std::string> patterns;
+  CAdvancedSettings::GetCustomRegexps(pFolderStacking, patterns);
+  return CompileRegexes(patterns);
+}
+
+} // unnamed namespace
+
 void CAdvancedSettings::OnSettingsLoaded()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -236,16 +259,18 @@ void CAdvancedSettings::Initialize()
                                         m_allExcludeFromScanRegExps.begin(),
                                         m_allExcludeFromScanRegExps.end());
 
-  m_folderStackRegExps.clear();
-  m_folderStackRegExps.emplace_back("((cd|dvd|dis[ck])[0-9]+)$");
+  m_folderStackRegExps = CompileRegexes({
+      "((cd|dvd|dis[ck])[0-9]+)$",
+  });
 
-  m_videoStackRegExps.clear();
-  m_videoStackRegExps.emplace_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.emplace_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.emplace_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
-  // This one is a bit too greedy to enable by default.  It will stack sequels
-  // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
-  //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps = CompileRegexes({
+      "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$",
+      "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-d])(.*?)(\\.[^.]+)$",
+      "(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$",
+      // This one is a bit too greedy to enable by default.  It will stack sequels
+      // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
+      // "(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$",
+  });
 
   m_tvshowEnumRegExps.clear();
   // foo.s01.e01, foo.s01_e01, S01E02 foo, S01 - E02, S01xE02
@@ -1009,12 +1034,20 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   // video stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
-    GetCustomRegexps(pVideoStacking, m_videoStackRegExps);
+  {
+    auto regexes = CompileRegexesFromXML(pVideoStacking);
+    regexes.erase(std::remove_if(regexes.begin(), regexes.end(), validateVideoStackRegex),
+                  regexes.end());
+    std::move(regexes.begin(), regexes.end(), std::back_inserter(m_videoStackRegExps));
+  }
 
   // folder stacking regexps
   TiXmlElement* pFolderStacking = pRootElement->FirstChildElement("folderstacking");
   if (pFolderStacking)
-    GetCustomRegexps(pFolderStacking, m_folderStackRegExps);
+  {
+    auto regexes = CompileRegexesFromXML(pFolderStacking);
+    std::move(regexes.begin(), regexes.end(), std::back_inserter(m_folderStackRegExps));
+  }
 
   //tv stacking regexps
   TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
