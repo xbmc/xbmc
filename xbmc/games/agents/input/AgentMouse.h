@@ -56,12 +56,6 @@ private:
   // Input properties
   std::unique_ptr<CControllerActivity> m_mouseActivity;
   ControllerPtr m_controllerAppearance;
-
-  // Input state
-  bool m_bStarted{false};
-  int m_startX{0};
-  int m_startY{0};
-  int m_frameCount{0};
 };
 } // namespace GAME
 } // namespace KODI
