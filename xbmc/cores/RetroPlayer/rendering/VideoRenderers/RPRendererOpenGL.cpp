@@ -274,8 +274,9 @@ void CRPRendererOpenGL::DrawBlackBars()
 
 void CRPRendererOpenGL::Render(uint8_t alpha)
 {
-  CRenderBufferOpenGL* renderBuffer = static_cast<CRenderBufferOpenGL*>(m_renderBuffer);
+  const ViewportCoordinates dest{m_rotatedDestCoords};
 
+  auto renderBuffer = static_cast<CRenderBufferOpenGL*>(m_renderBuffer);
   if (renderBuffer == nullptr)
     return;
 
@@ -318,11 +319,9 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    const ViewportCoordinates destPoints{m_rotatedDestCoords};
-
     SHADER::CShaderTextureGL source(sourceTexture, false);
     SHADER::CShaderTextureGL target(targetTexture, false);
-    if (!m_shaderPreset->RenderUpdate(destPoints, source, target))
+    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight}, source, target))
     {
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;

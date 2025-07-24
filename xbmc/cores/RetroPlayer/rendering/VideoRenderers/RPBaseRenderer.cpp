@@ -183,7 +183,7 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   float screenPixelRatio;
   GetScreenDimensions(screenWidth, screenHeight, screenPixelRatio);
 
-  // Entire target rendering area for the video (including black bars)
+  // Get target rendering area for the game view window (including black bars)
   const CRect viewRect = m_context.GetViewWindow();
 
   // Calculate pixel ratio and zoom amount
@@ -192,9 +192,41 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   CRenderUtils::CalculateStretchMode(stretchMode, rotationDegCCW, sourceWidth, sourceHeight,
                                      screenWidth, screenHeight, pixelRatio, zoomAmount);
 
-  // Calculate destination dimensions
+  // Calculate destination rectangle for the game view window
   CRect destRect;
   CRenderUtils::CalcNormalRenderRect(viewRect, sourceFrameRatio * pixelRatio, zoomAmount, destRect);
+
+  // Calculate destination rectangle size for the fullscreen game window (needed for video shaders)
+  CRect fullDestRect;
+  CRect viewPort;
+  m_context.GetViewPort(viewPort);
+
+  if (viewPort == viewRect)
+  {
+    fullDestRect = destRect;
+  }
+  else
+  {
+    CRenderUtils::CalcNormalRenderRect(viewPort, sourceFrameRatio * pixelRatio, zoomAmount,
+                                       fullDestRect);
+  }
+
+  switch (rotationDegCCW)
+  {
+    case 90:
+    case 270:
+    {
+      m_fullDestWidth = fullDestRect.Height();
+      m_fullDestHeight = fullDestRect.Width();
+      break;
+    }
+    default:
+    {
+      m_fullDestWidth = fullDestRect.Width();
+      m_fullDestHeight = fullDestRect.Height();
+      break;
+    }
+  }
 
   m_sourceRect.x1 = 0.0f;
   m_sourceRect.y1 = 0.0f;
