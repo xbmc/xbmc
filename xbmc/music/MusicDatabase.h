@@ -17,6 +17,7 @@
 #include "MediaSource.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
+#include "music/AudioType.h"
 #include "settings/LibExportSettings.h"
 #include "utils/Artwork.h"
 #include "utils/SortUtils.h"
@@ -288,7 +289,7 @@ public:
                const std::string& strType,
                const std::string& strReleaseStatus,
                bool bCompilation,
-               CAlbum::ReleaseType releaseType);
+               AudioType::Type releaseType);
 
   /*! \brief retrieve an album, optionally with all songs.
    \param idAlbum the database id of the album.
@@ -319,7 +320,7 @@ public:
                   const std::string& strOrigReleaseDate,
                   bool bBoxedSet,
                   bool bCompilation,
-                  CAlbum::ReleaseType releaseType,
+                  AudioType::Type releaseType,
                   bool bScrapedMBID);
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum) const;

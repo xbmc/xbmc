@@ -11,6 +11,7 @@
 #include "ReplayGain.h"
 #include "XBDateTime.h"
 #include "music/Album.h"
+#include "music/AudioType.h"
 #include "music/Song.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
@@ -89,7 +90,7 @@ public:
   const std::string& GetSongVideoURL() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
-  CAlbum::ReleaseType GetAlbumReleaseType() const;
+  AudioType::Type GetAlbumReleaseType() const;
   const ChapterMarks& GetChapterMarks() const;
 
   void SetURL(std::string_view strURL);
@@ -149,7 +150,7 @@ public:
   void SetBoxset(bool boxset);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
-  void SetAlbumReleaseType(CAlbum::ReleaseType releaseType);
+  void SetAlbumReleaseType(AudioType::Type releaseType);
   void SetType(MediaType_view mediaType);
   void SetDiscSubtitle(std::string_view strDiscSubtitle);
   void SetTotalDiscs(int iDiscTotal);
@@ -253,7 +254,7 @@ private:
   int m_iDiscTotal;
   bool m_bBoxset;
   int m_iBPM;
-  CAlbum::ReleaseType m_albumReleaseType;
+  AudioType::Type m_albumReleaseType;
   std::string m_strReleaseStatus;
   int m_samplerate;
   int m_channels;
