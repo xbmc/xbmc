@@ -78,7 +78,7 @@ std::string FindTrailer(const CFileItem& item)
   std::string strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");
 
   // Precompile our REs
-  VECCREGEXP matchRegExps;
+  std::vector<CRegExp> matchRegExps;
   CRegExp tmpRegExp(true, CRegExp::autoUtf8);
   const std::vector<std::string>& strMatchRegExps =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_trailerMatchRegExps;

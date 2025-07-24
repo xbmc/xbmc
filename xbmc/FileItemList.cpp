@@ -658,23 +658,10 @@ void CFileItemList::Stack(bool stackFiles /* = true */)
 void CFileItemList::StackFolders()
 {
   // Precompile our REs
-  VECCREGEXP folderRegExps;
-  CRegExp folderRegExp(true, CRegExp::autoUtf8);
-  const std::vector<std::string>& strFolderRegExps =
+  std::vector<CRegExp> folderRegExps =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_folderStackRegExps;
 
-  auto strExpression = strFolderRegExps.begin();
-  while (strExpression != strFolderRegExps.end())
-  {
-    if (!folderRegExp.RegComp(*strExpression))
-      CLog::LogF(LOGERROR, "Invalid folder stack RegExp:'{}'", strExpression->c_str());
-    else
-      folderRegExps.emplace_back(folderRegExp);
-
-    ++strExpression;
-  }
-
-  if (!folderRegExp.IsCompiled())
+  if (folderRegExps.empty())
   {
     CLog::LogF(LOGDEBUG, "No stack expressions available. Skipping folder stacking");
     return;
@@ -752,22 +739,13 @@ void CFileItemList::StackFolders()
 
 void CFileItemList::StackFiles()
 {
-  // Precompile our REs
-  VECCREGEXP stackRegExps;
-  CRegExp tmpRegExp(true, CRegExp::autoUtf8);
-  const std::vector<std::string>& strStackRegExps =
+  std::vector<CRegExp> stackRegExps =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps;
-  auto strRegExp = strStackRegExps.begin();
-  while (strRegExp != strStackRegExps.end())
+
+  if (stackRegExps.empty())
   {
-    if (tmpRegExp.RegComp(*strRegExp))
-    {
-      if (tmpRegExp.GetCaptureTotal() == 4)
-        stackRegExps.emplace_back(tmpRegExp);
-      else
-        CLog::Log(LOGERROR, "Invalid video stack RE ({}). Must have 4 captures.", *strRegExp);
-    }
-    ++strRegExp;
+    CLog::LogF(LOGDEBUG, "No stack expressions available. Skipping file stacking");
+    return;
   }
 
   // now stack the files, some of which may be from the previous stack iteration

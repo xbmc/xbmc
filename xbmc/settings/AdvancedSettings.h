@@ -12,6 +12,7 @@
 #include "pictures/PictureScalingAlgorithm.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
+#include "utils/RegExp.h"
 #include "utils/SortUtils.h"
 
 #include <cstdint>
@@ -218,8 +219,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_audioExcludeFromListingRegExps;
     std::vector<std::string> m_audioExcludeFromScanRegExps;
     std::vector<std::string> m_pictureExcludeFromListingRegExps;
-    std::vector<std::string> m_videoStackRegExps;
-    std::vector<std::string> m_folderStackRegExps;
+    std::vector<CRegExp> m_videoStackRegExps;
+    std::vector<CRegExp> m_folderStackRegExps;
     std::vector<std::string> m_trailerMatchRegExps;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     std::string m_tvshowMultiPartEnumRegExp;

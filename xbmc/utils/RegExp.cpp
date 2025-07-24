@@ -626,3 +626,18 @@ bool CRegExp::IsJitSupported(void)
 
   return m_JitSupported == 1;
 }
+
+std::vector<CRegExp> CompileRegexes(const std::vector<std::string>& regExpPatterns)
+{
+  std::vector<CRegExp> regExps;
+  CRegExp regEx(true, CRegExp::autoUtf8);
+
+  for (const auto& expression : regExpPatterns)
+  {
+    if (regEx.RegComp(expression))
+      regExps.emplace_back(regEx);
+    else
+      CLog::LogF(LOGERROR, "Invalid RegExp:'{}'", expression.c_str());
+  }
+  return regExps;
+}
