@@ -128,13 +128,13 @@ bool CSavestateDatabase::GetSavestatesNav(CFileItemList& items,
 
   if (!gameClient.empty())
   {
-    for (int i = items.Size() - 1; i >= 0; i--)
-    {
-      std::unique_ptr<ISavestate> save = AllocateSavestate();
-      GetSavestate(items[i]->GetPath(), *save);
-      if (save->GameClientID() != gameClient)
-        items.Remove(i);
-    }
+    items.erase_if(
+        [this, &gameClient](const CFileItemPtr& item)
+        {
+          std::unique_ptr<ISavestate> save = AllocateSavestate();
+          GetSavestate(item->GetPath(), *save);
+          return save->GameClientID() != gameClient;
+        });
   }
 
   for (int i = 0; i < items.Size(); i++)

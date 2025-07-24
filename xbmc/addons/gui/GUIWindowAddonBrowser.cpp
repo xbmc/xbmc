@@ -312,30 +312,25 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
         CServiceBroker::GetSettingsComponent()->GetSettings();
     if (settings->GetBool(CSettings::SETTING_GENERAL_ADDONFOREIGNFILTER))
     {
-      int i = 0;
-      while (i < items.Size())
-      {
-        auto prop = items[i]->GetProperty("Addon.Language");
-        if (!prop.isNull() && IsForeign(prop.asString()))
-          items.Remove(i);
-        else
-          ++i;
-      }
+      items.erase_if(
+          [](const CFileItemPtr& item)
+          {
+            auto prop = item->GetProperty("Addon.Language");
+            return !prop.isNull() && IsForeign(prop.asString());
+          });
     }
     if (settings->GetBool(CSettings::SETTING_GENERAL_ADDONBROKENFILTER))
     {
-      for (int i = items.Size() - 1; i >= 0; i--)
-      {
-        if (items[i]->GetAddonInfo() &&
-            items[i]->GetAddonInfo()->LifecycleState() == AddonLifecycleState::BROKEN)
-        {
-          //check if it's installed
-          AddonPtr addon;
-          if (!CServiceBroker::GetAddonMgr().GetAddon(items[i]->GetProperty("Addon.ID").asString(),
-                                                      addon, OnlyEnabled::CHOICE_YES))
-            items.Remove(i);
-        }
-      }
+      items.erase_if(
+          [](const CFileItemPtr& item)
+          {
+            AddonPtr addon;
+            //check if it's installed
+            return item->GetAddonInfo() &&
+                   item->GetAddonInfo()->LifecycleState() == AddonLifecycleState::BROKEN &&
+                   !CServiceBroker::GetAddonMgr().GetAddon(item->GetProperty("Addon.ID").asString(),
+                                                           addon, OnlyEnabled::CHOICE_YES);
+          });
     }
   }
 

@@ -599,11 +599,8 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
           playlistId = PLAYLIST::Id::TYPE_MUSIC;
         else
         {
-          for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
-          {
-            if (!VIDEO::IsVideo(*items[i]))
-              items.Remove(i);
-          }
+          //remove music entries
+          items.erase_if([](const CFileItemPtr& item) { return !VIDEO::IsVideo(*item); });
         }
       }
 
