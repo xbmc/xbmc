@@ -807,16 +807,8 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   if (iWindow == WINDOW_PICTURES)
     regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pictureExcludeFromListingRegExps;
 
-  if (!regexps.empty())
-  {
-    for (int i=0; i < items.Size();)
-    {
-      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
-        items.Remove(i);
-      else
-        i++;
-    }
-  }
+  items.Erase_If([&regexps](const CFileItemPtr& item)
+                 { return CUtil::ExcludeFileOrFolder(item->GetPath(), regexps); });
 
   // clear the filter
   SetProperty("filter", "");
