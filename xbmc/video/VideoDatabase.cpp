@@ -3174,11 +3174,33 @@ int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
   }
 }
 
+int CVideoDatabase::AddFilePreserveDateAdded(const std::string& fileAndPath, int oldIdFile)
+{
+  try
+  {
+    // Preserve date added
+    m_pDS->query(PrepareSQL("SELECT dateAdded FROM files WHERE idFile=%i", oldIdFile));
+    if (m_pDS->eof())
+      return -1;
+
+    CDateTime dateAdded;
+    dateAdded.SetFromDBDateTime(m_pDS->fv("dateAdded").get_asString());
+
+    return AddFile(fileAndPath, "", dateAdded);
+  }
+  catch (const std::exception& e)
+  {
+    CLog::LogF(LOGERROR, "failed - oldIdFile {}, fileAndPath {} - error {}", oldIdFile, fileAndPath,
+               e.what());
+  }
+  return -1;
+}
+
 int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile)
 {
   assert(m_pDB->in_transaction());
 
-  const int idFile = AddFile(fileAndPath);
+  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
   if (idFile < 0)
     return -1;
 
@@ -3200,7 +3222,7 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie,
 {
   assert(m_pDB->in_transaction());
 
-  const int idFile{AddFile(fileAndPath)};
+  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
   if (idFile < 0)
     return -1;
 
@@ -3241,7 +3263,7 @@ int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdF
 {
   assert(m_pDB->in_transaction());
 
-  const int idFile{AddFile(fileAndPath)};
+  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
   if (idFile < 0)
     return -1;
 
