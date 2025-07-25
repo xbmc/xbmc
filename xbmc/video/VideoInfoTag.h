@@ -150,8 +150,8 @@ public:
   void SetPremieredFromDBDate(const std::string& premieredString);
   virtual void SetYear(int year);
   void SetArtist(std::vector<std::string> artist);
-  void SetSet(std::string set);
-  void SetSetOverview(std::string setOverview);
+  void SetSet(std::string_view set);
+  void SetSetOverview(std::string_view setOverview);
   void SetTags(std::vector<std::string> tags);
   void SetFile(std::string file);
   void SetPath(std::string path);
