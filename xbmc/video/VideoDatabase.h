@@ -1515,4 +1515,11 @@ private:
   static void AnnounceUpdate(const std::string& content, int id);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
+
+  /*! \brief Create a new file to replace an old one (ie. for bluray playlists), preserving the date the original file was added.
+   \param fileAndPath the full path of the new file to add
+   \param oldIdFile file id of the file to replace
+   \return the new fileId, -1 on error
+   */
+  int AddFilePreserveDateAdded(const std::string& fileAndPath, int oldIdFile);
 };
