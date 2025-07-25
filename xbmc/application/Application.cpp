@@ -2527,6 +2527,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
       // Reset any resume state as new playlist chosen
       options = {};
+      item.ClearProperty("force_playlist_selection");
     }
   }
 
