@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.43"
+        version="1.0.45"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -40,6 +40,7 @@
         <summary lang="sk_SK">Predvolený Ovládač</summary>
         <summary lang="sv_SE">Standard handkontroll</summary>
         <summary lang="tr_TR">Varsayılan Oyun Kumandası</summary>
+        <summary lang="uk_UA">Стандартний контролер</summary>
         <summary lang="zh_CN">默认控制器</summary>
         <summary lang="zh_TW">預設控制器</summary>
         <description lang="af_ZA">Die bestek media sentrum beheerder is gebaseer op die Xbox 360 beheerder.</description>
@@ -69,7 +70,9 @@
         <description lang="pt_BR">O controlador do media center padrão é baseado no controlador do Xbox 360.</description>
         <description lang="ru_RU">Стандартный контроллер, основанный на контроллере Xbox 360.</description>
         <description lang="sk_SK">Predvolený ovládač media centra je založený na ovládači Xbox 360.</description>
+        <description lang="sv_SE">Standardkontrollen för mediecentret är baserad på Xbox 360-kontrollen.</description>
         <description lang="tr_TR">Varsayılan ortam merkezi denetleyicisi, Xbox 360 oyun kumandasını temel alır.</description>
+        <description lang="uk_UA">Стандартний контролер мультимедійного центру засновано на контролері Xbox 360.</description>
         <description lang="zh_CN">默认媒体中心控制器基于 Xbox 360 控制器。</description>
         <description lang="zh_TW">預設的媒體中心控制器佈局是以Xbox 360控制器為基礎。</description>
         <disclaimer lang="af_ZA">Beeld krediet: Wikipedia (wikipedia.org)</disclaimer>
@@ -101,7 +104,9 @@
         <disclaimer lang="pt_BR">Crédito da imagem: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="ru_RU">Источник изображения: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="sk_SK">Zdroj obrázku: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="sv_SE">Bildreferens: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="tr_TR">Görsel kaynağı: Vikipedi (wikipedia.org)</disclaimer>
+        <disclaimer lang="uk_UA">Автор зображення: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="zh_CN">图片来源：维基百科（Wikipedia.org）</disclaimer>
         <disclaimer lang="zh_TW">圖片來源：維基百科 (wikipedia.org)</disclaimer>
     </extension>
