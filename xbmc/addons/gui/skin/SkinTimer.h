@@ -106,10 +106,10 @@ public:
 
 private:
   /*! \brief Called when this timer is started */
-  void OnStart();
+  void OnStart() const;
 
   /*! \brief Called when this timer is stopped */
-  void OnStop();
+  void OnStop() const;
 
   /*! The name of the skin timer */
   std::string m_name;
