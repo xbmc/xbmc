@@ -124,7 +124,7 @@ void CShaderPresetFactory::UpdateAddons()
   // Look for new add-ons
   for (const AddonInfoPtr& shaderAddon : addonInfo)
   {
-    const std::string& addonId = shaderAddon->ID();
+    std::string addonId = shaderAddon->ID();
 
     const bool bIsNew = (!m_shaderAddons.contains(addonId));
     if (!bIsNew)
