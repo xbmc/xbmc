@@ -16,6 +16,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-all-fix-cxx-standard.patch")
 
     generate_patchcommand("${patches}")
+    unset(patches)
 
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF)
 

@@ -24,6 +24,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-win-change_libxml.patch")
 
       generate_patchcommand("${patches}")
+      unset(patches)
 
       if(WINDOWS_STORE)
         # Required for UWP
