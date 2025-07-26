@@ -4,7 +4,7 @@ set(APP_RENDER_SYSTEM gles)
 list(APPEND PLATFORM_OPTIONAL_DEPS LibDovi)
 
 # Store SDK compile version
-set(TARGET_SDK 35)
+set(TARGET_SDK 36)
 # Minimum supported SDK version
 set(TARGET_MINSDK 24)
 
