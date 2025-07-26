@@ -16,10 +16,16 @@
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 
+#include <concepts>
 #include <map>
 #include <string>
 #include <string_view>
 #include <vector>
+
+template<typename Pred, typename T>
+concept Predicate = requires(T t, Pred p) {
+  { p(t) } -> std::convertible_to<bool>;
+};
 
 /*!
   \brief Represents a list of files
@@ -48,6 +54,8 @@ public:
   void AddFront(const CFileItemPtr& pItem, int itemPosition);
   void Remove(const CFileItem* pItem);
   void Remove(int iItem);
+  template<Predicate<CFileItemPtr> Pred>
+  void Erase_If(const Pred& predicate);
   CFileItemPtr Get(int iItem) const;
   const auto& GetList() const { return m_items; }
   CFileItemPtr Get(const std::string& strPath) const;
@@ -210,4 +218,20 @@ private:
   std::vector<GUIViewSortDetails> m_sortDetails;
 
   mutable CCriticalSection m_lock;
+};
+
+template<Predicate<CFileItemPtr> Pred>
+void CFileItemList::Erase_If(const Pred& predicate)
+{
+  std::unique_lock lock(m_lock);
+
+  for (int i = 0; i < Size(); ++i)
+  {
+    CFileItemPtr item = Get(i);
+    if (predicate(item))
+    {
+      Remove(i);
+      --i; // don't confuse loop
+    }
+  }
 };

@@ -371,17 +371,9 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
       itemsForRemove.push_back(pItem->GetPath());
     }
   }
-  for (size_t i = 0; i < itemsForRemove.size(); ++i)
-  {
-    for (int j = 0; j < m_vecItems->Size(); ++j)
-    {
-      if ((*m_vecItems)[j]->GetPath() == itemsForRemove[i])
-      {
-        m_vecItems->Remove(j);
-        break;
-      }
-    }
-  }
+  m_vecItems->Erase_If(
+      [&itemsForRemove](const CFileItemPtr& item)
+      { return std::ranges::find(itemsForRemove, item->GetPath()) != itemsForRemove.end(); });
   m_vecItems->Append(itemsForAdd);
 
   auto end = std::chrono::steady_clock::now();

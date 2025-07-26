@@ -661,24 +661,11 @@ bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
 bool CGUIDialogVideoManagerVersions::PostProcessList(CFileItemList& list, int dbId)
 {
   // Exclude the provided dbId and decorate the items
+  list.Erase_If([&dbId](const CFileItemPtr& item)
+                { return item->GetVideoInfoTag()->m_iDbId == dbId; });
 
-  int i = 0;
-  while (i < list.Size())
-  {
-    const auto item{list[i]};
-    const auto itemtag{item->GetVideoInfoTag()};
-
-    if (itemtag->m_iDbId == dbId)
-    {
-      list.Remove(i);
-      // i is not incremented for the next iteration because the removal shifted what would have
-      // been the next item into the current position.
-      continue;
-    }
-
-    item->SetLabel2(itemtag->m_strFileNameAndPath);
-    ++i;
-  }
+  for (int i = 0; i < list.Size(); ++i)
+    list[i]->SetLabel2(list[i]->GetVideoInfoTag()->m_strFileNameAndPath);
 
   return true;
 }
