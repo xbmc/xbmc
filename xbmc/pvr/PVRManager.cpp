@@ -355,12 +355,14 @@ void CPVRManager::Init() const
 {
   m_addons->DestroyClients();
 
-  // initial check for enabled addons
-  // if at least one pvr addon is enabled, PVRManager start up
-  CServiceBroker::GetJobManager()->Submit([this] {
-    Clients()->Start();
-    return true;
-  });
+  // Initialize PVR client addons and start PVR manager thread.
+  CServiceBroker::GetJobManager()->Submit(
+      [this]
+      {
+        m_addons->Start();
+        return true;
+      },
+      CJob::PRIORITY_DEDICATED);
 }
 
 void CPVRManager::Start()
