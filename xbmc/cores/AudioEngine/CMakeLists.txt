@@ -8,6 +8,7 @@ set(SOURCES AEResampleFactory.cpp
             Engines/ActiveAE/ActiveAEStream.cpp
             Engines/ActiveAE/ActiveAESound.cpp
             Engines/ActiveAE/ActiveAESettings.cpp
+            Sinks/AENullSink.cpp
             Utils/AEBitstreamPacker.cpp
             Utils/AEChannelInfo.cpp
             Utils/AEDeviceInfo.cpp
@@ -156,6 +157,11 @@ endif()
 if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
   list(APPEND SOURCES Sinks/AESinkStarfish.cpp)
   list(APPEND HEADERS Sinks/AESinkStarfish.h)
+endif()
+
+if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
+  list(APPEND SOURCES Sinks/AENullSink.cpp)
+  list(APPEND HEADERS Sinks/AENullSink.h)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL freebsd)
