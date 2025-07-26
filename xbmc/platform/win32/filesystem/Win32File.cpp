@@ -466,6 +466,11 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
     return -1;
   }
 
+  // -- BP PR-26921
+  // stat of directories requires the removal of the trailing slash
+  if (pathnameW.back() == L'\\')
+    pathnameW.pop_back();
+
   if (pathnameW.length() <= 6) // 6 is length of "\\?\x:"
     return -1; // pathnameW is empty or points to device ("\\?\x:"), on win32 stat() for devices is not supported
 
