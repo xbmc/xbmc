@@ -74,7 +74,8 @@ struct ArtFilenameTest
   bool isFolder = false;
   bool result_folder = false;
   bool force_use_folder = false;
-  ART::UseSeasonAndEpisode useSeasonAndEpisode{ART::UseSeasonAndEpisode::NO};
+  ART::AdditionalIdentifiers additionalIdentifiers{ART::AdditionalIdentifiers::NONE};
+  int playlist{-1};
   int season{-1};
   int episode{-1};
 };
@@ -103,11 +104,15 @@ const auto local_art_filename_tests = std::array{
     ArtFilenameTest{"bluray://smb%3a%2f%2fsomepath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls",
                     "smb://somepath/disc 1/", false, true},
     ArtFilenameTest{"/home/user/foo.avi", "/home/user/foo-S03E04.avi", false, false, false,
-                    ART::UseSeasonAndEpisode::YES, 3, 4},
+                    ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
     ArtFilenameTest{"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252ftvshow.iso%2f/BDMV/"
                     "PLAYLIST/00800.mpls",
                     "smb://somepath/tvshow-S03E04.iso", false, false, false,
-                    ART::UseSeasonAndEpisode::YES, 3, 4},
+                    ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
+    ArtFilenameTest{"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/"
+                    "PLAYLIST/00800.mpls",
+                    "smb://somepath/movie-00800.iso", false, false, false,
+                    ART::AdditionalIdentifiers::PLAYLIST, 800},
 };
 
 struct FanartTest
@@ -220,7 +225,8 @@ struct LocalArtTest
   std::string base;
   int season{-1};
   int episode{-1};
-  ART::UseSeasonAndEpisode useSeasonAndEpisode{ART::UseSeasonAndEpisode::NO};
+  int playlist{-1};
+  ART::AdditionalIdentifiers additionalIdentifiers{ART::AdditionalIdentifiers::NONE};
 };
 
 const auto local_art_tests = std::array{
@@ -261,11 +267,17 @@ const auto local_art_tests = std::array{
     LocalArtTest{"zip://g%3a%5cmultimedia%5cmovies%5cSphere%2ezip/Sphere.avi", "", false,
                  "g:\\multimedia\\movies\\Sphere.tbn"},
     LocalArtTest{"/home/user/movies/movie_name/BDMV/index.bdmv", "thumb.jpg", false,
-                 "/home/user/movies/movie_name/BDMV/index-S03E04-thumb.jpg", 3, 4,
-                 ART::UseSeasonAndEpisode::YES},
+                 "/home/user/movies/movie_name/BDMV/index-S03E04-thumb.jpg", 3, 4, -1,
+                 ART::AdditionalIdentifiers::SEASON_AND_EPISODE},
     LocalArtTest{"/home/user/tv_show/tv_show.iso", "thumb.jpg", false,
-                 "/home/user/tv_show/tv_show-S03E04-thumb.jpg", 3, 4,
-                 ART::UseSeasonAndEpisode::YES},
+                 "/home/user/tv_show/tv_show-S03E04-thumb.jpg", 3, 4, -1,
+                 ART::AdditionalIdentifiers::SEASON_AND_EPISODE},
+    LocalArtTest{"/home/user/movies/movie_name/BDMV/index.bdmv", "thumb.jpg", false,
+                 "/home/user/movies/movie_name/BDMV/index-00800-thumb.jpg", -1, -1, 800,
+                 ART::AdditionalIdentifiers::PLAYLIST},
+    LocalArtTest{"/home/user/movie/movie.iso", "thumb.jpg", false,
+                 "/home/user/movie/movie-00800-thumb.jpg", -1, -1, 800,
+                 ART::AdditionalIdentifiers::PLAYLIST},
 };
 
 class TestLocalArt : public AdvancedSettingsResetBase,
@@ -306,8 +318,9 @@ TEST_P(TestLocalArt, GetLocalArt)
   CVideoInfoTag* tag{item.GetVideoInfoTag()};
   tag->m_iSeason = GetParam().season;
   tag->m_iEpisode = GetParam().episode;
+  tag->m_iTrack = GetParam().playlist;
   std::string path = CURL(ART::GetLocalArt(item, GetParam().art, GetParam().use_folder,
-                                           GetParam().useSeasonAndEpisode))
+                                           GetParam().additionalIdentifiers))
                          .Get();
   std::string compare = CURL(GetParam().base).Get();
   EXPECT_EQ(compare, path);
@@ -321,10 +334,11 @@ TEST_P(GetLocalArtBaseFilenameTest, GetLocalArtBaseFilename)
   CVideoInfoTag* tag{item.GetVideoInfoTag()};
   tag->m_iSeason = GetParam().season;
   tag->m_iEpisode = GetParam().episode;
+  tag->m_iTrack = GetParam().playlist;
   bool useFolder = GetParam().force_use_folder ? true : GetParam().isFolder;
 
   const std::string res =
-      ART::GetLocalArtBaseFilename(item, useFolder, GetParam().useSeasonAndEpisode);
+      ART::GetLocalArtBaseFilename(item, useFolder, GetParam().additionalIdentifiers);
   EXPECT_EQ(res, GetParam().result);
   EXPECT_EQ(useFolder, GetParam().result_folder);
 }

@@ -15,10 +15,11 @@ class CFileItem;
 namespace KODI::ART
 {
 
-enum class UseSeasonAndEpisode : bool
+enum class AdditionalIdentifiers : uint8_t
 {
-  NO,
-  YES
+  NONE,
+  SEASON_AND_EPISODE, // Append SxxEyy to the file name
+  PLAYLIST, // Append playlist number to the file name
 };
 
 //! \brief Set default icon for item.
@@ -36,27 +37,29 @@ std::string GetFolderThumb(const CFileItem& item, const std::string& folderJPG =
            No file existence check is typically performed.
  \param artFile the art file to search for.
  \param useFolder whether to look in the folder for the art file. Defaults to false.
- \param useSeasonAndEpisode for multi-episode files. Append SxxEyy to the file name. Defaults to no.
+ \param additionalIdentifiers for multi-episode/multi-movie files. Append SxxEyy or playlist number to the file name.
+                              Defaults to none.
  \return the path to the local artwork.
  \sa FindLocalArt
  */
 std::string GetLocalArt(const CFileItem& item,
                         const std::string& artFile,
                         bool useFolder = false,
-                        UseSeasonAndEpisode useSeasonAndEpisode = UseSeasonAndEpisode::NO);
+                        AdditionalIdentifiers useSeasonAndEpisode = AdditionalIdentifiers::NONE);
 
 /*!
  \brief Assemble the base filename of local artwork for an item,
  accounting for archives, stacks and multi-paths, and BDMV/VIDEO_TS folders.
  \param useFolder whether to look in the folder for the art file. Defaults to false.
- \param useSeasonAndEpisode for multi-episode files. Append SxxEyy to the file name. Defaults to no.
+ \param additionalIdentifiers for multi-episode/multi-movie files. Append SxxEyy or playlist number to the file name.
+                              Defaults to none.
  \return the path to the base filename for artwork lookup.
  \sa GetLocalArt
  */
 std::string GetLocalArtBaseFilename(
     const CFileItem& item,
     bool& useFolder,
-    UseSeasonAndEpisode useSeasonAndEpisode = UseSeasonAndEpisode::NO);
+    AdditionalIdentifiers additionalIdentifiers = AdditionalIdentifiers::NONE);
 
 /*!
  \brief Get the local fanart for item if it exists
