@@ -284,6 +284,9 @@ enum XBMCKey
   XBMCK_FASTFORWARD = 343,
   XBMCK_EJECT = 344,
 
+  /* Remote control keys */
+  XBMCK_SUBTITLE = 400,
+
   /*
    * Extended keypad key symbols for Num Lock state-specific behaviors
    *
