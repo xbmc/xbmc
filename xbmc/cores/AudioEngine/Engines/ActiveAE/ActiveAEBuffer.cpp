@@ -160,7 +160,7 @@ bool CActiveAEBufferPoolResample::Create(
   if (m_inputFormat.m_channelLayout != m_format.m_channelLayout ||
       m_inputFormat.m_sampleRate != m_format.m_sampleRate ||
       m_inputFormat.m_dataFormat != m_format.m_dataFormat ||
-      m_changeResampler)
+      m_inputFormat.m_frames != m_format.m_frames || m_changeResampler)
   {
     ChangeResampler();
   }

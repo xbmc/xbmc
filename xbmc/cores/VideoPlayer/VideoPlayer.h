@@ -387,7 +387,7 @@ protected:
   void UpdateGuiRender(bool gui) override;
   void UpdateVideoRender(bool video) override;
 
-  void CreatePlayers();
+  virtual void CreatePlayers();
   void DestroyPlayers();
 
   void Prepare();
@@ -540,8 +540,8 @@ protected:
   CDVDMessageQueue m_messenger;
   std::unique_ptr<CJobQueue> m_outboundEvents;
 
-  IDVDStreamPlayerVideo *m_VideoPlayerVideo;
-  IDVDStreamPlayerAudio *m_VideoPlayerAudio;
+  IDVDStreamPlayerVideo* m_VideoPlayerVideo{nullptr};
+  IDVDStreamPlayerAudio* m_VideoPlayerAudio{nullptr};
   CVideoPlayerSubtitle *m_VideoPlayerSubtitle;
   CDVDTeletextData *m_VideoPlayerTeletext;
   CDVDRadioRDSData *m_VideoPlayerRadioRDS;
