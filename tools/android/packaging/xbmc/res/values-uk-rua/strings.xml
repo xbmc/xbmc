@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Пропозиції</string>
+    <string name="error_title">Помилка</string>
+    <string name="info_title">Інформація</string>
+    <string name="exit_button">Вихід</string>
+    <string name="clearing_cache">Очищення кешу…</string>
+    <string name="waiting_external">Очікую на зовнішнє сховище…</string>
+    <string name="external_ok">Зовнішнє сховище в порядку…</string>
+    <string name="starting">Запуск %1$s…</string>
+    <string name="first_run">Йде підготовка до першого запуску. Зачекайте…</string>
+    <string name="asking_permissions">Запит прав доступу…</string>
+    <string name="no_find_apk">Не вдається знайти пакет.</string>
+    <string name="no_read_apk">Не вдається прочитати пакет.</string>
+    <string name="continue_button">Продовжити</string>
+    <string name="notice_dialog">%1$s для роботи потрібен доступ до медіафайлів на вашому пристрої. Надайте цей доступ в наступному вікні або %1$s буде закрито.</string>
+    <string name="permission_denied">В доступі відмовлено! Завершення роботи…</string>
 </resources>
