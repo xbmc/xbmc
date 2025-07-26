@@ -1905,7 +1905,10 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath, std::strin
     basePath = item.GetVideoInfoTag()->m_basePath;
 
   if (basePath.empty() && item.IsOpticalMediaFile())
+  {
+    videoFileName = item.GetMovieName();
     basePath = item.GetLocalMetadataPath();
+  }
 
   CURL url(videoPath);
   if (basePath.empty() && url.IsProtocol("bluray"))
