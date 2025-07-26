@@ -49,6 +49,7 @@ set(SOURCES md5.cpp
             decoder/GIFDecoder.cpp
             decoder/GifHelper.cpp
             decoder/JPGDecoder.cpp
+            decoder/KTXDecoder.cpp
             decoder/PNGDecoder.cpp
             ${KODI_SOURCE_DIR}/xbmc/guilib/XBTF.cpp)
 
