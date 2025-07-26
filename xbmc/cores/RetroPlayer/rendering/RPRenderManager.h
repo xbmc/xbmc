@@ -101,6 +101,7 @@ public:
                 float displayAspectRatio,
                 unsigned int orientationDegCW);
   void Flush();
+  void DestroyContext();
 
   // Hardware rendering functions
   //! @todo These are only examples pulled from the history of the OpenGL
