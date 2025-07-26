@@ -302,6 +302,9 @@ void CVideoDatabase::CreateAnalytics()
 
   m_pDS->exec(PrepareSQL("CREATE INDEX ix_movie_title ON movie (c%02d(255))", VIDEODB_ID_TITLE));
 
+  m_pDS->exec(PrepareSQL("CREATE INDEX ix_tvshow_title ON tvshow (c%02d(255), c%02d(10))",
+                         VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED));
+
   CreateLinkIndex("tag");
   CreateForeignLinkIndex("director", "actor");
   CreateForeignLinkIndex("writer", "actor");
@@ -2987,10 +2990,23 @@ int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag& details) const
 {
   // first try matching on uniqueid, then on title + year
   int id = -1;
-  if (!details.HasUniqueID())
-    id = GetDbId(PrepareSQL("SELECT idShow FROM tvshow JOIN uniqueid ON uniqueid.media_id=tvshow.idShow AND uniqueid.media_type='tvshow' WHERE uniqueid.value='%s'", details.GetUniqueID().c_str()));
+  if (details.HasUniqueID())
+  {
+    //! @todo better handling when no default uniqueid is defined ("unknown" - legacy nfo)
+    //! @todo loop through the non-default uniqueid when no match is found
+
+    id = GetDbId(PrepareSQL("SELECT uniqueid.media_id FROM uniqueid "
+                            "JOIN tvshow ON uniqueid.media_id=tvshow.idShow "
+                            "WHERE uniqueid.media_type='%s' "
+                            "AND uniqueid.value='%s' "
+                            "AND uniqueid.type='%s' ",
+                            MediaTypeTvShow, details.GetUniqueID().c_str(),
+                            details.GetDefaultUniqueID().c_str()));
+  }
   if (id < 0)
-    id = GetDbId(PrepareSQL("SELECT idShow FROM tvshow WHERE c%02d='%s' AND c%02d='%s'", VIDEODB_ID_TV_TITLE, details.m_strTitle.c_str(), VIDEODB_ID_TV_PREMIERED, details.GetPremiered().GetAsDBDate().c_str()));
+    id = GetDbId(PrepareSQL("SELECT idShow FROM tvshow WHERE c%02d='%s' AND c%02d='%s'",
+                            VIDEODB_ID_TV_TITLE, details.m_strTitle.c_str(),
+                            VIDEODB_ID_TV_PREMIERED, details.GetPremiered().GetAsDBDate().c_str()));
   return id;
 }
 
@@ -7075,7 +7091,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 136;
+  return 137;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
