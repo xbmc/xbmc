@@ -16,6 +16,7 @@
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonVersion.h"
 #include "addons/Skin.h"
@@ -130,7 +131,7 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
   CServiceBroker::GetWinSystem()->GetGfxContext().SetMediaDir(skin->Path());
-  g_directoryCache.ClearSubPaths(skin->Path());
+  g_directoryCache.ClearSubPaths(CURL(skin->Path()));
 
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   CServiceBroker::GetGUI()->GetColorManager().Load(

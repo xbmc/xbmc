@@ -172,14 +172,15 @@ bool CDirectory::GetDirectory(const CURL& url,
       return false;
 
     // check our cache for this path
-    if (g_directoryCache.GetDirectory(realURL.Get(), items, (hints.flags & DIR_FLAG_READ_CACHE) == DIR_FLAG_READ_CACHE))
+    if (g_directoryCache.GetDirectory(realURL, items,
+                                      (hints.flags & DIR_FLAG_READ_CACHE) == DIR_FLAG_READ_CACHE))
       items.SetURL(url);
     else
     {
       // need to clear the cache (in case the directory fetch fails)
       // and (re)fetch the folder
       if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
-        g_directoryCache.ClearDirectory(realURL.Get());
+        g_directoryCache.ClearDirectory(realURL);
 
       pDirectory->SetFlags(hints.flags);
 
@@ -254,7 +255,7 @@ bool CDirectory::GetDirectory(const CURL& url,
 
       // cache the directory, if necessary
       if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
-        g_directoryCache.SetDirectory(realURL.Get(), items, pDirectory->GetCacheType(url));
+        g_directoryCache.SetDirectory(realURL, items, pDirectory->GetCacheType(url));
     }
 
     // now filter for allowed files
@@ -390,7 +391,7 @@ bool CDirectory::Exists(const CURL& url, bool bUseCache /* = true */)
       bool bPathInCache;
       std::string realPath(realURL.Get());
       URIUtils::AddSlashAtEnd(realPath);
-      if (g_directoryCache.FileExists(realPath, bPathInCache))
+      if (g_directoryCache.FileExists(CURL(realPath), bPathInCache))
         return true;
       if (bPathInCache)
         return false;
@@ -433,7 +434,7 @@ bool CDirectory::Remove(const CURL& url)
     if (pDirectory)
       if(pDirectory->Remove(authUrl))
       {
-        g_directoryCache.ClearFile(realURL.Get());
+        g_directoryCache.ClearFile(realURL);
         return true;
       }
   }
@@ -456,7 +457,7 @@ bool CDirectory::RemoveRecursive(const CURL& url)
     if (pDirectory)
       if(pDirectory->RemoveRecursive(authUrl))
       {
-        g_directoryCache.ClearFile(realURL.Get());
+        g_directoryCache.ClearFile(realURL);
         return true;
       }
   }
