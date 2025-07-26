@@ -974,9 +974,9 @@ namespace XBMCAddon
       return item->GetMusicInfoTag();
     }
 
-    void ListItem::setTitleRaw(std::string title)
+    void ListItem::setTitleRaw(const std::string& title)
     {
-      item->SetTitle(std::move(title));
+      item->SetTitle(title);
     }
 
     void ListItem::setPathRaw(const std::string& path)
