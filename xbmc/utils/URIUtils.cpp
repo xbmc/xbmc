@@ -916,7 +916,8 @@ bool URIUtils::IsHD(const std::string& strFileName)
   if (HasParentInHostname(url))
     return IsHD(url.GetHostName());
 
-  return url.GetProtocol().empty() || url.IsProtocol("file") || url.IsProtocol("win-lib");
+  return url.GetProtocol().empty() || url.IsProtocol("file") || url.IsProtocol("win-lib") ||
+         url.IsProtocol("resource");
 }
 
 bool URIUtils::IsDVD(const std::string& strFile)
