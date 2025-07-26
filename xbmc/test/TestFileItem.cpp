@@ -186,3 +186,67 @@ TEST_P(TestFileItemLocalMetadataPath, GetLocalMetadataPath)
 }
 
 INSTANTIATE_TEST_SUITE_P(NameMovies, TestFileItemLocalMetadataPath, ValuesIn(BasePaths));
+
+TEST(TestFileItem, TestSimplePathSet)
+{
+  CFileItem item;
+  item.SetPath("/local/path/regular/file.txt");
+  item.SetDynPath("/local/path/dynamic/file.txt");
+
+  EXPECT_EQ("/local/path/regular/file.txt", item.GetURL().Get());
+  EXPECT_EQ("/local/path/dynamic/file.txt", item.GetDynURL().Get());
+}
+
+TEST(TestFileItem, TestLabel)
+{
+  CFileItem item("My Item Label");
+  item.SetPath("/local/path/file.txt");
+
+  EXPECT_EQ("My Item Label", item.GetLabel());
+  EXPECT_EQ("/local/path/file.txt", item.GetURL().Get());
+  EXPECT_EQ("/local/path/file.txt", item.GetDynURL().Get());
+}
+
+TEST(TestFileItem, TestCURLConstructor)
+{
+  CFileItem folderItem(CURL("/local/path/file.txt"), true);
+
+  EXPECT_EQ("", folderItem.GetLabel());
+  EXPECT_EQ("/local/path/file.txt/", folderItem.GetURL().Get());
+  EXPECT_EQ("/local/path/file.txt/", folderItem.GetDynURL().Get());
+
+  CFileItem fileItem(CURL("/local/path/file.txt"), false);
+
+  EXPECT_EQ("", fileItem.GetLabel());
+  EXPECT_EQ("/local/path/file.txt", fileItem.GetURL().Get());
+  EXPECT_EQ("/local/path/file.txt", fileItem.GetDynURL().Get());
+}
+
+TEST(TestFileItem, TestAssignment)
+{
+  CFileItem itemToCopy("My Item Label");
+  itemToCopy.SetPath("/local/path/file.txt");
+
+  CFileItem item("Alternative Label");
+  item = itemToCopy;
+
+  EXPECT_EQ("My Item Label", item.GetLabel());
+  EXPECT_EQ("/local/path/file.txt", item.GetURL().Get());
+  EXPECT_EQ("/local/path/file.txt", item.GetDynURL().Get());
+}
+
+TEST(TestFileItem, MimeType)
+{
+  CFileItem item("Internet Movies List");
+  item.SetPath("http://testdomain.com/api/movies");
+
+  item.FillInMimeType(true);
+  EXPECT_EQ("Internet Movies List", item.GetLabel());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetURL().Get());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetDynURL().Get());
+
+  item.FillInMimeType(false);
+  EXPECT_EQ("Internet Movies List", item.GetLabel());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetURL().Get());
+  EXPECT_EQ("http://testdomain.com/api/movies", item.GetDynURL().Get());
+}

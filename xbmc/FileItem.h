@@ -14,6 +14,7 @@
  */
 
 #include "SourceType.h"
+#include "URL.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
 #include "utils/IArchivable.h"
@@ -24,6 +25,7 @@
 #include "utils/XTimeUtils.h"
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -36,7 +38,6 @@ class CGenre;
 class CMediaSource;
 class CPictureInfoTag;
 class CSong;
-class CURL;
 class CVariant;
 class CVideoInfoTag;
 class IEvent;
@@ -119,14 +120,14 @@ public:
   ~CFileItem() override;
   CGUIListItem* Clone() const override { return new CFileItem(*this); }
 
-  CURL GetURL() const;
+  const CURL& GetURL() const;
   void SetURL(const CURL& url);
   bool IsURL(const CURL& url) const;
-  const std::string& GetPath() const { return m_strPath; }
-  void SetPath(std::string_view path) { m_strPath = path; }
+  const std::string& GetPath() const;
+  void SetPath(std::string_view path);
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
-  CURL GetDynURL() const;
+  const CURL& GetDynURL() const;
   void SetDynURL(const CURL& url);
   const std::string &GetDynPath() const;
   void SetDynPath(std::string_view path);
@@ -555,6 +556,8 @@ private:
    */
   void FillMusicInfoTag(const std::shared_ptr<const PVR::CPVREpgInfoTag>& tag);
 
+  mutable std::optional<CURL> m_urlPath;
+  mutable std::optional<CURL> m_urlDynPath;
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
 
