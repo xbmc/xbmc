@@ -31,6 +31,7 @@ set(SOURCES TestAlarmClock.cpp
             TestMap.cpp
             TestMathUtils.cpp
             TestMime.cpp
+            TestMp4ChplReader.cpp
             TestPOUtils.cpp
             TestRegExp.cpp
             TestRingBuffer.cpp
