@@ -351,16 +351,30 @@ void CPVRManager::ResetProperties()
   m_knownClients.clear();
 }
 
+namespace
+{
+class CClientsInitThread : private CThread
+{
+public:
+  explicit CClientsInitThread(const std::shared_ptr<CPVRClients>& clients)
+    : CThread("PVRClientsInitThread"), m_clients(clients)
+  {
+    Create(true);
+  }
+
+private:
+  void Process() override { m_clients->Start(); }
+
+  std::shared_ptr<CPVRClients> m_clients;
+};
+} // unnamed namespace
+
 void CPVRManager::Init() const
 {
   m_addons->DestroyClients();
 
-  // initial check for enabled addons
-  // if at least one pvr addon is enabled, PVRManager start up
-  CServiceBroker::GetJobManager()->Submit([this] {
-    Clients()->Start();
-    return true;
-  });
+  // Initialize pvr addons, then start up PVR Manager.
+  new CClientsInitThread(m_addons);
 }
 
 void CPVRManager::Start()
