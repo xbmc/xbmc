@@ -38,6 +38,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
 
   CFileItemList items;
   bool bNfo=false;
+  bool overrideNfo{false};
 
   if (m_type == AddonType::SCRAPER_ALBUMS)
   {
@@ -52,30 +53,9 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
   else if (m_type == AddonType::SCRAPER_TVSHOWS || m_type == AddonType::SCRAPER_MOVIES ||
            m_type == AddonType::SCRAPER_MUSICVIDEOS)
   {
-    // first check if it's an XML file with the info we need
     CVideoInfoTag details;
     bNfo = GetDetails(details);
-    if (episode > -1 && bNfo && m_type == AddonType::SCRAPER_TVSHOWS)
-    {
-      int infos=0;
-      while (m_headPos != std::string::npos && details.m_iEpisode != episode)
-      {
-        m_headPos = m_doc.find("<episodedetails", m_headPos + 1);
-        if (m_headPos == std::string::npos)
-          break;
-
-        bNfo  = GetDetails(details);
-        infos++;
-      }
-      if (details.m_iEpisode != episode)
-      {
-        bNfo = false;
-        details.Reset();
-        m_headPos = 0;
-        if (infos == 1) // still allow differing nfo/file numbers for single ep nfo's
-          bNfo = GetDetails(details);
-      }
-    }
+    overrideNfo = details.GetOverride();
   }
 
   std::vector<ScraperPtr> vecScrapers = GetScrapers(m_type, m_info);
@@ -92,7 +72,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
   {
     if (!m_scurl.HasUrls())
     {
-      if (m_doc.find("[scrape url]") != std::string::npos)
+      if (overrideNfo || m_doc.find("[scrape url]") != std::string::npos)
         return CInfoScanner::InfoType::OVERRIDE;
       else
         return CInfoScanner::InfoType::FULL;

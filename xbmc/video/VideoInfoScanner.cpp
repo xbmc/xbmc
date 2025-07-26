@@ -127,7 +127,7 @@ void AddLocalItemArtwork(KODI::ART::Artwork& itemArt,
                            CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
                            DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
 
-  std::string baseFilename = URIUtils::GetFileName(itemPath);
+  std::string baseFilename{URIUtils::GetFileName(itemPath)};
   if (!baseFilename.empty())
   {
     URIUtils::RemoveExtension(baseFilename);
@@ -140,10 +140,10 @@ void AddLocalItemArtwork(KODI::ART::Artwork& itemArt,
   for (const auto& artFile : availableArtFiles)
   {
     std::string candidate{URIUtils::GetFileName(artFile->GetPath())};
-    const bool matchesFilename{!baseFilename.empty() &&
-                               (caseSensitive
-                                    ? StringUtils::StartsWith(candidate, baseFilename)
-                                    : StringUtils::StartsWithNoCase(candidate, baseFilename))};
+
+    bool matchesFilename{!baseFilename.empty() &&
+                         (caseSensitive ? StringUtils::StartsWith(candidate, baseFilename)
+                                        : StringUtils::StartsWithNoCase(candidate, baseFilename))};
 
     if (!baseFilename.empty() && !matchesFilename)
       continue;
@@ -1752,12 +1752,28 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     if (movieDetails.m_basePath.empty())
       movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
-    movieDetails.m_parentPathID = m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
+    if (movieDetails.m_iTrack > -1)
+    {
+      // Relative path (eg. bluray://) with playlist/title
+      const std::string fileandpath{
+          URIUtils::GetBlurayPlaylistPath(pItem->GetPath(), movieDetails.m_iTrack)};
+      const std::string path{URIUtils::GetDirectory(fileandpath)};
 
-    movieDetails.m_strFileNameAndPath = pItem->GetPath();
+      movieDetails.m_parentPathID = m_database.AddPath(path);
+      movieDetails.m_strPath = path;
+      movieDetails.m_strFileNameAndPath = fileandpath;
+      pItem->SetDynPath(fileandpath); // Needed for SetPlayCount() later
+    }
+    else
+    {
+      movieDetails.m_parentPathID =
+          m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
 
-    if (pItem->IsFolder())
-      movieDetails.m_strPath = pItem->GetPath();
+      movieDetails.m_strFileNameAndPath = pItem->GetPath();
+
+      if (pItem->IsFolder())
+        movieDetails.m_strPath = pItem->GetPath();
+    }
 
     std::string strTitle(movieDetails.m_strTitle);
 
@@ -1897,7 +1913,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportResumePoint) &&
           movieDetails.GetResumePoint().IsSet())
-        m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
+        m_database.AddBookMarkToFile(pItem->GetVideoInfoTag()->m_strFileNameAndPath,
+                                     movieDetails.GetResumePoint(), CBookmark::RESUME);
     }
 
     m_database.Close();
@@ -2035,8 +2052,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // the previous call.
         useFolder = false;
 
-        AddLocalItemArtwork(art, artTypes, ART::GetLocalArtBaseFilename(*pItem, useFolder), addAll,
-                            exactName);
+        AddLocalItemArtwork(
+            art, artTypes,
+            ART::GetLocalArtBaseFilename(*pItem, useFolder, ART::UseSeasonAndEpisode::YES), addAll,
+            exactName);
       }
 
       if (moviePartOfSet)
@@ -2183,6 +2202,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       else
       {
         item.SetPath(file->strPath);
+        item.GetVideoInfoTag()->m_iSeason = file->iSeason;
         item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
       }
 
@@ -2339,18 +2359,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (bFound)
       {
         CVideoInfoDownloader imdb(scraper);
-        CFileItem item;
-        item.SetPath(file->strPath);
-        if (!imdb.GetEpisodeDetails(guide->cScraperUrl, *item.GetVideoInfoTag(), pDlgProgress))
+        CFileItem scraperItem;
+        scraperItem.SetPath(file->strPath);
+        if (!imdb.GetEpisodeDetails(guide->cScraperUrl, *scraperItem.GetVideoInfoTag(),
+                                    pDlgProgress))
           return InfoRet::NOT_FOUND; //! @todo should we just skip to the next episode?
 
-        // Only set season/epnum from filename when it is not already set by a scraper
-        if (item.GetVideoInfoTag()->m_iSeason == -1)
-          item.GetVideoInfoTag()->m_iSeason = guide->iSeason;
-        if (item.GetVideoInfoTag()->m_iEpisode == -1)
-          item.GetVideoInfoTag()->m_iEpisode = guide->iEpisode;
+        if (result == InfoType::COMBINED || result == InfoType::OVERRIDE)
+          scraperItem.GetVideoInfoTag()->Merge(*item.GetVideoInfoTag());
 
-        if (AddVideo(&item, ContentType::TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
+        // Only set season/epnum from filename when it is not already set by a scraper
+        if (scraperItem.GetVideoInfoTag()->m_iSeason == -1)
+          scraperItem.GetVideoInfoTag()->m_iSeason = guide->iSeason;
+        if (scraperItem.GetVideoInfoTag()->m_iEpisode == -1)
+          scraperItem.GetVideoInfoTag()->m_iEpisode = guide->iEpisode;
+
+        if (AddVideo(&scraperItem, ContentType::TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
           return InfoRet::INFO_ERROR;
       }
       else

@@ -15,6 +15,12 @@ class CFileItem;
 namespace KODI::ART
 {
 
+enum class UseSeasonAndEpisode : bool
+{
+  NO,
+  YES
+};
+
 //! \brief Set default icon for item.
 void FillInDefaultIcon(CFileItem& item);
 
@@ -30,19 +36,27 @@ std::string GetFolderThumb(const CFileItem& item, const std::string& folderJPG =
            No file existence check is typically performed.
  \param artFile the art file to search for.
  \param useFolder whether to look in the folder for the art file. Defaults to false.
+ \param useSeasonAndEpisode for multi-episode files. Append SxxEyy to the file name. Defaults to no.
  \return the path to the local artwork.
  \sa FindLocalArt
  */
-std::string GetLocalArt(const CFileItem& item, const std::string& artFile, bool useFolder = false);
+std::string GetLocalArt(const CFileItem& item,
+                        const std::string& artFile,
+                        bool useFolder = false,
+                        UseSeasonAndEpisode useSeasonAndEpisode = UseSeasonAndEpisode::NO);
 
 /*!
  \brief Assemble the base filename of local artwork for an item,
  accounting for archives, stacks and multi-paths, and BDMV/VIDEO_TS folders.
  \param useFolder whether to look in the folder for the art file. Defaults to false.
+ \param useSeasonAndEpisode for multi-episode files. Append SxxEyy to the file name. Defaults to no.
  \return the path to the base filename for artwork lookup.
  \sa GetLocalArt
  */
-std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder);
+std::string GetLocalArtBaseFilename(
+    const CFileItem& item,
+    bool& useFolder,
+    UseSeasonAndEpisode useSeasonAndEpisode = UseSeasonAndEpisode::NO);
 
 /*!
  \brief Get the local fanart for item if it exists
@@ -52,11 +66,11 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder);
 std::string GetLocalFanart(const CFileItem& item);
 
 /*! \brief Get the .tbn file associated with an item.
- Note this is used to derive the .nfo path in CVideoDatabase::ExportToXML() and for
- bluray/dvd this is not the same as the thumbnail/art directory.
  \param item CFileItem containing the item path.
+ \param season For multi-episode files. Append SxxEyy to the file name.
+ \param episode For multi-episode files. Append SxxEyy to the file name.
  \return the path to the .tbn file
 */
-std::string GetTBNFile(const CFileItem& item);
+std::string GetTBNFile(const CFileItem& item, int season = -1, int episode = -1);
 
 } // namespace KODI::ART

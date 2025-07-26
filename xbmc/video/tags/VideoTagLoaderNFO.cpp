@@ -20,6 +20,7 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 
+#include <ranges>
 #include <utility>
 
 using namespace XFILE;
@@ -51,7 +52,8 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
   else if (m_info)
     result = nfoReader.Create(m_path, m_info);
 
-  if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED)
+  if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED ||
+      result == CInfoScanner::InfoType::OVERRIDE)
     nfoReader.GetDetails(tag, nullptr, prioritise);
 
   if (result == CInfoScanner::InfoType::URL || result == CInfoScanner::InfoType::COMBINED)
@@ -142,7 +144,23 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
         nfoFile = item.GetPath();
       // no, create .nfo file
       else
+      {
         nfoFile = URIUtils::ReplaceExtension(item.GetPath(), ".nfo");
+
+        // Look for specific SxxEyy nfo and use this if present
+        if (item.HasVideoInfoTag())
+        {
+          const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+          if (tag->m_iSeason >= 0 && tag->m_iEpisode >= 0)
+          {
+            std::string file{item.GetPath()};
+            URIUtils::RemoveExtension(file);
+            file = fmt::format("{}-S{:02}E{:02}.nfo", file, tag->m_iSeason, tag->m_iEpisode);
+            if (CFileUtils::Exists(file))
+              nfoFile = file;
+          }
+        }
+      }
     }
 
     // test file existence
@@ -167,36 +185,39 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
       nfoFile = FindNFO(parentDirectory, true);
     }
   }
+
   // folders (or stacked dvds) can take any nfo file if there's a unique one
-  if (item.IsFolder() || item.IsOpticalMediaFile() || (movieFolder && nfoFile.empty()))
+  if (nfoFile.empty() && (item.IsFolder() || item.IsOpticalMediaFile() || movieFolder))
   {
     // see if there is a unique nfo file in this folder, and if so, use that
+    // if we are looking for a specific episode nfo the file name must end with SxxEyy
+    // (otherwise it could match the wrong episode nfo)
+    const std::string strPath{item.IsFolder() ? item.GetPath()
+                                              : URIUtils::GetDirectory(item.GetPath())};
     CFileItemList items;
-    CDirectory dir;
-    std::string strPath;
-    if (item.IsFolder())
-      strPath = item.GetPath();
-    else
-      strPath = URIUtils::GetDirectory(item.GetPath());
-
-    if (dir.GetDirectory(strPath, items, ".nfo", DIR_FLAG_DEFAULTS) && items.Size())
+    if (CDirectory::GetDirectory(strPath, items, ".nfo", DIR_FLAG_DEFAULTS) && items.Size() > 0)
     {
-      int numNFO = -1;
-      for (int i = 0; i < items.Size(); i++)
-      {
-        if (items[i]->IsNFO())
-        {
-          if (numNFO == -1)
-            numNFO = i;
-          else
-          {
-            numNFO = -1;
-            break;
-          }
-        }
-      }
-      if (numNFO > -1)
-        return items[numNFO]->GetPath();
+      const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+      auto nfoItems{items | std::views::filter(
+                                [&tag](const auto& nfoItem)
+                                {
+                                  if (!nfoItem->IsNFO())
+                                    return false;
+
+                                  if (tag && tag->m_iSeason >= 0 && tag->m_iEpisode >= 0)
+                                  {
+                                    std::string path{nfoItem->GetPath()};
+                                    const std::string extension{URIUtils::GetExtension(path)};
+                                    if (!extension.empty())
+                                      path.erase(path.size() - extension.size());
+                                    return path.ends_with(fmt::format(
+                                        "S{:02}E{:02}", tag->m_iSeason, tag->m_iEpisode));
+                                  }
+
+                                  return true;
+                                })};
+      if (std::ranges::distance(nfoItems) == 1)
+        return (*nfoItems.begin())->GetPath();
     }
   }
 

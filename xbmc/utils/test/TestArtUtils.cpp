@@ -74,6 +74,9 @@ struct ArtFilenameTest
   bool isFolder = false;
   bool result_folder = false;
   bool force_use_folder = false;
+  ART::UseSeasonAndEpisode useSeasonAndEpisode{ART::UseSeasonAndEpisode::NO};
+  int season{-1};
+  int episode{-1};
 };
 
 class GetLocalArtBaseFilenameTest : public testing::WithParamInterface<ArtFilenameTest>,
@@ -99,6 +102,12 @@ const auto local_art_filename_tests = std::array{
                     false, true},
     ArtFilenameTest{"bluray://smb%3a%2f%2fsomepath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls",
                     "smb://somepath/disc 1/", false, true},
+    ArtFilenameTest{"/home/user/foo.avi", "/home/user/foo-S03E04.avi", false, false, false,
+                    ART::UseSeasonAndEpisode::YES, 3, 4},
+    ArtFilenameTest{"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252ftvshow.iso%2f/BDMV/"
+                    "PLAYLIST/00800.mpls",
+                    "smb://somepath/tvshow-S03E04.iso", false, false, false,
+                    ART::UseSeasonAndEpisode::YES, 3, 4},
 };
 
 struct FanartTest
@@ -171,6 +180,8 @@ struct TbnTest
   std::string path;
   std::string result;
   bool isFolder = false;
+  int season{-1};
+  int episode{-1};
 };
 
 class GetTbnTest : public testing::WithParamInterface<TbnTest>, public testing::Test
@@ -207,6 +218,9 @@ struct LocalArtTest
   std::string art;
   bool use_folder{false};
   std::string base;
+  int season{-1};
+  int episode{-1};
+  ART::UseSeasonAndEpisode useSeasonAndEpisode{ART::UseSeasonAndEpisode::NO};
 };
 
 const auto local_art_tests = std::array{
@@ -246,6 +260,12 @@ const auto local_art_tests = std::array{
                  "/home/user/TV Shows/Dexter/S1/1x01.tbn"},
     LocalArtTest{"zip://g%3a%5cmultimedia%5cmovies%5cSphere%2ezip/Sphere.avi", "", false,
                  "g:\\multimedia\\movies\\Sphere.tbn"},
+    LocalArtTest{"/home/user/movies/movie_name/BDMV/index.bdmv", "thumb.jpg", false,
+                 "/home/user/movies/movie_name/BDMV/index-S03E04-thumb.jpg", 3, 4,
+                 ART::UseSeasonAndEpisode::YES},
+    LocalArtTest{"/home/user/tv_show/tv_show.iso", "thumb.jpg", false,
+                 "/home/user/tv_show/tv_show-S03E04-thumb.jpg", 3, 4,
+                 ART::UseSeasonAndEpisode::YES},
 };
 
 class TestLocalArt : public AdvancedSettingsResetBase,
@@ -283,7 +303,12 @@ TEST_P(TestLocalArt, GetLocalArt)
 {
   CFileItem item;
   item.SetPath(GetParam().file);
-  std::string path = CURL(ART::GetLocalArt(item, GetParam().art, GetParam().use_folder)).Get();
+  CVideoInfoTag* tag{item.GetVideoInfoTag()};
+  tag->m_iSeason = GetParam().season;
+  tag->m_iEpisode = GetParam().episode;
+  std::string path = CURL(ART::GetLocalArt(item, GetParam().art, GetParam().use_folder,
+                                           GetParam().useSeasonAndEpisode))
+                         .Get();
   std::string compare = CURL(GetParam().base).Get();
   EXPECT_EQ(compare, path);
 }
@@ -293,9 +318,13 @@ INSTANTIATE_TEST_SUITE_P(TestArtUtils, TestLocalArt, testing::ValuesIn(local_art
 TEST_P(GetLocalArtBaseFilenameTest, GetLocalArtBaseFilename)
 {
   CFileItem item(GetParam().path, GetParam().isFolder);
+  CVideoInfoTag* tag{item.GetVideoInfoTag()};
+  tag->m_iSeason = GetParam().season;
+  tag->m_iEpisode = GetParam().episode;
   bool useFolder = GetParam().force_use_folder ? true : GetParam().isFolder;
 
-  const std::string res = ART::GetLocalArtBaseFilename(item, useFolder);
+  const std::string res =
+      ART::GetLocalArtBaseFilename(item, useFolder, GetParam().useSeasonAndEpisode);
   EXPECT_EQ(res, GetParam().result);
   EXPECT_EQ(useFolder, GetParam().result_folder);
 }
@@ -355,7 +384,9 @@ INSTANTIATE_TEST_SUITE_P(TestArtUtils, GetLocalFanartTest, testing::ValuesIn(loc
 
 TEST_P(GetTbnTest, TbnTest)
 {
-  EXPECT_EQ(ART::GetTBNFile(CFileItem(GetParam().path, GetParam().isFolder)), GetParam().result);
+  EXPECT_EQ(ART::GetTBNFile(CFileItem(GetParam().path, GetParam().isFolder), GetParam().season,
+                            GetParam().episode),
+            GetParam().result);
 }
 
 const auto tbn_tests = std::array{
@@ -371,6 +402,14 @@ const auto tbn_tests = std::array{
     TbnTest{
         "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
         "smb://somepath/movie.tbn"},
+    TbnTest{"/home/user/video.avi", "/home/user/video-S03E04.tbn", false, 3, 4},
+    TbnTest{"/home/user/BDMV/index.bdmv", "/home/user/BDMV/index-S03E04.tbn", false, 3, 4},
+    TbnTest{"/home/user/movie.iso", "/home/user/movie-S03E04.tbn", false, 3, 4},
+    TbnTest{"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls",
+            "smb://somepath/BDMV/index-S03E04.tbn", false, 3, 4},
+    TbnTest{
+        "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
+        "smb://somepath/movie-S03E04.tbn", false, 3, 4},
 };
 
 INSTANTIATE_TEST_SUITE_P(TestArtUtils, GetTbnTest, testing::ValuesIn(tbn_tests));
