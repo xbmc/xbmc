@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "guilib/TextureFormats.h"
 #include "guilib/TextureManager.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -206,7 +207,7 @@ void CGLTexture::LoadToGPU()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_filter_anisotropic"))
+  if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_filter_anisotropic))
   {
     int32_t aniso =
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAnisotropicFiltering;
@@ -299,14 +300,14 @@ void CGLTexture::SetSwizzle()
   // token, but just to be sure...
 #if defined(GL_VERSION_3_3) || (GL_ARB_texture_swizzle)
   if (m_isOglVersion33orNewer ||
-      CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_swizzle"))
+      CGLExtensions::IsExtensionSupported(CGLExtensions::ARB_texture_swizzle))
   {
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swiz.r);
     return;
   }
 #endif
 #if defined(GL_EXT_texture_swizzle)
-  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_swizzle"))
+  if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_swizzle))
   {
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA_EXT, &swiz.r);
     return;
