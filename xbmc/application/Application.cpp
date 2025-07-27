@@ -598,9 +598,12 @@ bool CApplication::Initialize()
   int iDots = 1;
   while (!event.Wait(1000ms))
   {
-    CServiceBroker::GetRenderSystem()->ShowSplash(
-        std::string(iDots, ' ') + (databaseManager.IsConnecting() ? connecting : updating) +
-        std::string(iDots, '.'));
+    if (databaseManager.IsConnecting() || databaseManager.IsUpgrading())
+    {
+      CServiceBroker::GetRenderSystem()->ShowSplash(
+          std::string(iDots, ' ') + (databaseManager.IsUpgrading() ? updating : connecting) +
+          std::string(iDots, '.'));
+    }
 
     if (iDots == 3)
       iDots = 1;
