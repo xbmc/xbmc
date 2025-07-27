@@ -68,27 +68,25 @@ void Interface_General::DeInit(AddonGlobalInterface* addonInterface)
 
 char* Interface_General::unknown_to_utf8(void* kodiBase, const char* source, bool* ret, bool failOnBadChar)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
   if (!addon || !source || !ret)
   {
-    CLog::Log(LOGERROR, "Interface_General::{} - invalid data (addon='{}', source='{}', ret='{}')",
-              __FUNCTION__, kodiBase, static_cast<const void*>(source), static_cast<void*>(ret));
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', source='{}', ret='{}')", kodiBase,
+               static_cast<const void*>(source), static_cast<void*>(ret));
     return nullptr;
   }
 
   std::string string;
-  *ret = g_charsetConverter.unknownToUTF8(source, string, failOnBadChar);
-  char* buffer = strdup(string.c_str());
-  return buffer;
+  *ret = CCharsetConverter::unknownToUTF8(source, string, failOnBadChar);
+  return strdup(string.c_str());
 }
 
 char* Interface_General::get_language(void* kodiBase, int format, bool region)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_General::{} - invalid data (addon='{}')", __FUNCTION__,
-              kodiBase);
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}')", kodiBase);
     return nullptr;
   }
 
@@ -132,8 +130,7 @@ char* Interface_General::get_language(void* kodiBase, int format, bool region)
     }
   }
 
-  char* buffer = strdup(string.c_str());
-  return buffer;
+  return strdup(string.c_str());
 }
 
 bool Interface_General::queue_notification(void* kodiBase, int type, const char* header,
@@ -141,11 +138,11 @@ bool Interface_General::queue_notification(void* kodiBase, int type, const char*
                                            unsigned int displayTime, bool withSound,
                                            unsigned int messageTime)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || message == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon || !message)
   {
-    CLog::Log(LOGERROR, "Interface_General::{} - invalid data (addon='{}', message='{}')",
-              __FUNCTION__, kodiBase, static_cast<const void*>(message));
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', message='{}')", kodiBase,
+               static_cast<const void*>(message));
     return false;
   }
 
@@ -165,30 +162,27 @@ bool Interface_General::queue_notification(void* kodiBase, int type, const char*
     case QueueMsg::QUEUE_WARNING:
       usedType = CGUIDialogKaiToast::Warning;
       withSound = true;
-      CLog::Log(LOGDEBUG, "Interface_General::{} - {} - Warning Message: '{}'", __FUNCTION__,
-                addon->Name(), message);
+      CLog::LogF(LOGDEBUG, "{} - Warning Message: '{}'", addon->Name(), message);
       break;
     case QueueMsg::QUEUE_ERROR:
       usedType = CGUIDialogKaiToast::Error;
       withSound = true;
-      CLog::Log(LOGDEBUG, "Interface_General::{} - {} - Error Message : '{}'", __FUNCTION__,
-                addon->Name(), message);
+      CLog::LogF(LOGDEBUG, "{} - Error Message : '{}'", addon->Name(), message);
       break;
     case QueueMsg::QUEUE_INFO:
     default:
       usedType = CGUIDialogKaiToast::Info;
       withSound = false;
-      CLog::Log(LOGDEBUG, "Interface_General::{} - {} - Info Message : '{}'", __FUNCTION__,
-                addon->Name(), message);
+      CLog::LogF(LOGDEBUG, "{} - Info Message : '{}'", addon->Name(), message);
       break;
     }
 
     if (imageFile && strlen(imageFile) > 0)
     {
-      CLog::Log(LOGERROR,
-                "Interface_General::{} - To use given image file '{}' must be type value set to "
-                "'QUEUE_OWN_STYLE'",
-                __FUNCTION__, imageFile);
+      CLog::LogF(LOGERROR,
+                 "To use given image file '{}' must be type value set to "
+                 "'QUEUE_OWN_STYLE'",
+                 imageFile);
     }
 
     CGUIDialogKaiToast::QueueNotification(usedType, usedHeader, message, 3000, withSound);
@@ -202,11 +196,11 @@ bool Interface_General::queue_notification(void* kodiBase, int type, const char*
 
 void Interface_General::get_md5(void* kodiBase, const char* text, char* md5)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || text == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon || !text)
   {
-    CLog::Log(LOGERROR, "Interface_General::{} - invalid data (addon='{}', text='{}')",
-              __FUNCTION__, kodiBase, static_cast<const void*>(text));
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', text='{}')", kodiBase,
+               static_cast<const void*>(text));
     return;
   }
 
@@ -216,11 +210,11 @@ void Interface_General::get_md5(void* kodiBase, const char* text, char* md5)
 
 char* Interface_General::get_region(void* kodiBase, const char* id)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon || !id)
   {
-    CLog::Log(LOGERROR, "Interface_General::{} - invalid data (addon='{}', id='{}')", __FUNCTION__,
-              kodiBase, static_cast<const void*>(id));
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', id='{}')", kodiBase,
+               static_cast<const void*>(id));
     return nullptr;
   }
 
@@ -265,22 +259,20 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
                                  g_langInfo.GetMeridiemSymbol(MeridiemSymbol::PM));
   else
   {
-    CLog::Log(LOGERROR, "Interface_General::{} -  add-on '{}' requests invalid id '{}'",
-              __FUNCTION__, addon->Name(), id);
+    CLog::LogF(LOGERROR, "Add-on '{}' requests invalid id '{}'", addon->Name(), id);
     return nullptr;
   }
 
-  char* buffer = strdup(result.c_str());
-  return buffer;
+  return strdup(result.c_str());
 }
 
 void Interface_General::get_free_mem(void* kodiBase, long* free, long* total, bool as_bytes)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || free == nullptr || total == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon || !free || !total)
   {
-    CLog::Log(LOGERROR, "Interface_General::{} - invalid data (addon='{}', free='{}', total='{}')",
-              __FUNCTION__, kodiBase, static_cast<void*>(free), static_cast<void*>(total));
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', free='{}', total='{}')", kodiBase,
+               static_cast<void*>(free), static_cast<void*>(total));
     return;
   }
 
@@ -297,11 +289,10 @@ void Interface_General::get_free_mem(void* kodiBase, long* free, long* total, bo
 
 int Interface_General::get_global_idle_time(void* kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_General::{} - invalid data (addon='{}')", __FUNCTION__,
-              kodiBase);
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}')", kodiBase);
     return -1;
   }
 
@@ -315,14 +306,12 @@ bool Interface_General::is_addon_avilable(void* kodiBase,
                                           char** version,
                                           bool* enabled)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || id == nullptr || version == nullptr || enabled == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon || !id || !version || !enabled)
   {
-    CLog::Log(
-        LOGERROR,
-        "Interface_General::{} - invalid data (addon='{}', id='{}', version='{}', enabled='{}')",
-        __FUNCTION__, kodiBase, static_cast<const void*>(id), static_cast<void*>(version),
-        static_cast<void*>(enabled));
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', id='{}', version='{}', enabled='{}')", kodiBase,
+               static_cast<const void*>(id), static_cast<void*>(version),
+               static_cast<void*>(enabled));
     return false;
   }
 
@@ -337,16 +326,15 @@ bool Interface_General::is_addon_avilable(void* kodiBase,
 
 void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || compile_name == nullptr || major == nullptr || minor == nullptr ||
-     revision == nullptr || tag == nullptr || tagversion == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon || !compile_name || !major || !minor || !revision || !tag || !tagversion)
   {
-    CLog::Log(LOGERROR,
-              "Interface_General::{} - invalid data (addon='{}', compile_name='{}', major='{}', "
-              "minor='{}', revision='{}', tag='{}', tagversion='{}')",
-              __FUNCTION__, kodiBase, static_cast<void*>(compile_name), static_cast<void*>(major),
-              static_cast<void*>(minor), static_cast<void*>(revision), static_cast<void*>(tag),
-              static_cast<void*>(tagversion));
+    CLog::LogF(LOGERROR,
+               "Invalid data (addon='{}', compile_name='{}', major='{}', "
+               "minor='{}', revision='{}', tag='{}', tagversion='{}')",
+               kodiBase, static_cast<void*>(compile_name), static_cast<void*>(major),
+               static_cast<void*>(minor), static_cast<void*>(revision), static_cast<void*>(tag),
+               static_cast<void*>(tagversion));
     return;
   }
 
@@ -354,7 +342,7 @@ void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* m
   *major = CCompileInfo::GetMajor();
   *minor = CCompileInfo::GetMinor();
   *revision = strdup(CCompileInfo::GetSCMID());
-  std::string tagStr = CCompileInfo::GetSuffix();
+  const std::string tagStr{CCompileInfo::GetSuffix()};
   if (StringUtils::StartsWithNoCase(tagStr, "alpha"))
   {
     *tag = strdup("alpha");
@@ -378,11 +366,10 @@ void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* m
 
 char* Interface_General::get_current_skin_id(void* kodiBase)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_General::{} - invalid data (addon='{}')", __FUNCTION__,
-              kodiBase);
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}')", kodiBase);
     return nullptr;
   }
 
@@ -391,17 +378,16 @@ char* Interface_General::get_current_skin_id(void* kodiBase)
 
 bool Interface_General::get_keyboard_layout(void* kodiBase, char** layout_name, int modifier_key, AddonKeyboardKeyTable* c_layout)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || c_layout == nullptr || layout_name == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon || !c_layout || !layout_name)
   {
-    CLog::Log(LOGERROR,
-              "Interface_General::{} - invalid data (addon='{}', c_layout='{}', layout_name='{}')",
-              __FUNCTION__, kodiBase, static_cast<void*>(c_layout),
-              static_cast<void*>(layout_name));
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', c_layout='{}', layout_name='{}')", kodiBase,
+               static_cast<void*>(c_layout), static_cast<void*>(layout_name));
     return false;
   }
 
-  std::string activeLayout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT);
+  const std::string activeLayout{CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT)};
 
   KEYBOARD::CKeyboardLayout layout;
   if (!CServiceBroker::GetKeyboardLayoutManager()->GetLayout(activeLayout, layout))
@@ -419,7 +405,7 @@ bool Interface_General::get_keyboard_layout(void* kodiBase, char** layout_name, 
   {
     for (unsigned int column = 0; column < STD_KB_BUTTONS_PER_ROW; column++)
     {
-      std::string label = layout.GetCharAt(row, column, modifiers);
+      const std::string label{layout.GetCharAt(row, column, modifiers)};
       c_layout->keys[row][column] = strdup(label.c_str());
     }
   }
@@ -429,22 +415,24 @@ bool Interface_General::get_keyboard_layout(void* kodiBase, char** layout_name, 
 
 bool Interface_General::change_keyboard_layout(void* kodiBase, char** layout_name)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr || layout_name == nullptr)
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  if (!addon || !layout_name)
   {
-    CLog::Log(LOGERROR, "Interface_General::{} - invalid data (addon='{}', layout_name='{}')",
-              __FUNCTION__, kodiBase, static_cast<void*>(layout_name));
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', layout_name='{}')", kodiBase,
+               static_cast<void*>(layout_name));
     return false;
   }
 
   std::vector<KEYBOARD::CKeyboardLayout> layouts;
   unsigned int currentLayout = 0;
 
-  const KEYBOARD::KeyboardLayouts& keyboardLayouts =
-      CServiceBroker::GetKeyboardLayoutManager()->GetLayouts();
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  std::vector<CVariant> layoutNames = settings->GetList(CSettings::SETTING_LOCALE_KEYBOARDLAYOUTS);
-  std::string activeLayout = settings->GetString(CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT);
+  const KEYBOARD::KeyboardLayouts& keyboardLayouts{
+      CServiceBroker::GetKeyboardLayoutManager()->GetLayouts()};
+  const std::shared_ptr<CSettings> settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  const std::vector<CVariant> layoutNames{
+      settings->GetList(CSettings::SETTING_LOCALE_KEYBOARDLAYOUTS)};
+  const std::string activeLayout{
+      settings->GetString(CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT)};
 
   for (const auto& layoutName : layoutNames)
   {
@@ -453,7 +441,7 @@ bool Interface_General::change_keyboard_layout(void* kodiBase, char** layout_nam
     {
       layouts.emplace_back(keyboardLayout->second);
       if (layoutName.asString() == activeLayout)
-        currentLayout = layouts.size() - 1;
+        currentLayout = static_cast<unsigned int>(layouts.size() - 1);
     }
   }
 
