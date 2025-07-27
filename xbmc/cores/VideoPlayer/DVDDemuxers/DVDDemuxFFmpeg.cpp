@@ -1545,6 +1545,14 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       return nullptr;
     }
 
+    // FFmpeg adds the image attachments as video streams
+    if ((pStream->disposition & AV_DISPOSITION_ATTACHED_PIC) != 0)
+    {
+      CLog::LogF(LOGDEBUG, "discarding image attachment");
+      pStream->discard = AVDISCARD_ALL;
+      return nullptr;
+    }
+
     CDemuxStream* stream = nullptr;
 
     switch (pStream->codecpar->codec_type)
