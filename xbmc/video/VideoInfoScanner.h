@@ -311,7 +311,5 @@ namespace KODI::VIDEO
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
-
-    void UpdateSet(const std::shared_ptr<CFileItem>& item);
   };
   } // namespace KODI::VIDEO

@@ -537,10 +537,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (m_bStop)
         break;
 
-      // See if set needs updating
-      if (content == ContentType::MOVIES)
-        UpdateSet(pItem);
-
       // add video extras to library
       if (foundSomething && content == ContentType::MOVIES && settings.parent_name &&
           !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
@@ -567,42 +563,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
     }
     return !m_bStop;
-  }
-
-  void CVideoInfoScanner::UpdateSet(const std::shared_ptr<CFileItem>& item)
-  {
-    bool update{false};
-    CVideoInfoTag movieDetails;
-    int dbId{-1};
-
-    // If set information not already updated, see if movie set.nfo preset and/or artwork empty and
-    // could be updated locally from the movie set information folder
-    if (!item->GetProperty("set_updated").asBoolean(false))
-    {
-      if (!URIUtils::GetFileName(item->GetPath()).empty() &&
-          !URIUtils::IsPlugin(item->GetDynPath()) &&
-          m_database.GetMovieInfo(item->GetPath(), movieDetails) && movieDetails.m_set.HasTitle())
-      {
-        dbId = movieDetails.m_set.GetID();
-        movieDetails.m_set.SetTitle(m_database.GetOriginalSetById(dbId)); // Original title
-        update = UpdateSetInTag(movieDetails); // Returned in tag
-      }
-    }
-    else
-    {
-      // Set information already updated
-      movieDetails = *item->GetVideoInfoTag();
-      update = true;
-      dbId = movieDetails.m_set.GetID();
-    }
-
-    if (update)
-    {
-      m_database.AddSet(movieDetails.m_set.GetTitle(), movieDetails.m_set.GetOverview(),
-                        movieDetails.m_set.GetOriginalTitle(),
-                        movieDetails.GetUpdateSetOverview()); // Update set
-      m_database.SetArtForItem(dbId, MediaTypeVideoCollection, movieDetails.m_set.GetArt());
-    }
   }
 
   bool CVideoInfoScanner::UpdateSetInTag(CVideoInfoTag& tag)
@@ -968,8 +928,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (result == InfoType::FULL)
     {
       if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
-        pItem->SetProperty("set_updated", true);
-
+        if (!AddSet(pItem->GetVideoInfoTag()->m_set))
+          return InfoRet::INFO_ERROR;
       const int dbId = AddVideo(pItem, info2->Content(), bDirNames, true);
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
@@ -1005,8 +965,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                      pDlgProgress))
       {
         if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
-          pItem->SetProperty("set_updated", true);
-
+          if (!AddSet(pItem->GetVideoInfoTag()->m_set))
+            return InfoRet::INFO_ERROR;
         const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
         if (dbId < 0)
           return InfoRet::INFO_ERROR;
@@ -1030,8 +990,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                    pDlgProgress))
     {
       if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
-        pItem->SetProperty("set_updated", true);
-
+        if (!AddSet(pItem->GetVideoInfoTag()->m_set))
+          return InfoRet::INFO_ERROR;
       const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
