@@ -3153,56 +3153,56 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
 int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
                                     VideoDbContentType type,
                                     int mediaId,
-                                    int oldIdFile)
+                                    int oldIdFile,
+                                    const CDateTime& dateAdded,
+                                    int playcount,
+                                    const CDateTime& lastPlayed)
 {
   if ((mediaId < 0 && type != VideoDbContentType::UNKNOWN) || oldIdFile < 0)
     return -1;
+
+  const int idFile{AddFile(fileAndPath)};
+  if (idFile < 0)
+    return -1;
+
+  assert(m_pDB->in_transaction());
+
+  try
+  {
+    // Update here as new file id may already exist (from updating playcount etc.) and AddFile() will not update it
+    m_pDS->exec(PrepareSQL(
+        "UPDATE files SET playCount=%i, lastPlayed='%s', dateAdded='%s' WHERE idFile=%i", playcount,
+        lastPlayed.GetAsDBDateTime().c_str(), dateAdded.GetAsDBDateTime().c_str(), idFile));
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, mediaId {}, oldIdFile {} - failed", idFile,
+               fileAndPath, mediaId, oldIdFile);
+    return -1;
+  }
 
   switch (type)
   {
     using enum VideoDbContentType;
 
     case MOVIES:
-      return SetFileForMovie(fileAndPath, mediaId, oldIdFile);
+      return SetFileForMovie(fileAndPath, mediaId, oldIdFile, idFile);
     case EPISODES:
-      return SetFileForEpisode(fileAndPath, mediaId, oldIdFile);
+      return SetFileForEpisode(fileAndPath, mediaId, oldIdFile, idFile);
     case UNKNOWN:
-      return SetFileForUnknown(fileAndPath, oldIdFile); // Used for removable blurays
+      return SetFileForUnknown(fileAndPath, oldIdFile, idFile); // Used for removable blurays
     default:
       CLog::LogF(LOGDEBUG, "unsupported media type {}", type);
       return -1;
   }
 }
 
-int CVideoDatabase::AddFilePreserveDateAdded(const std::string& fileAndPath, int oldIdFile)
-{
-  try
-  {
-    // Preserve date added
-    m_pDS->query(PrepareSQL("SELECT dateAdded FROM files WHERE idFile=%i", oldIdFile));
-    if (m_pDS->eof())
-      return -1;
-
-    CDateTime dateAdded;
-    dateAdded.SetFromDBDateTime(m_pDS->fv("dateAdded").get_asString());
-
-    return AddFile(fileAndPath, "", dateAdded);
-  }
-  catch (const std::exception& e)
-  {
-    CLog::LogF(LOGERROR, "failed - oldIdFile {}, fileAndPath {} - error {}", oldIdFile, fileAndPath,
-               e.what());
-  }
-  return -1;
-}
-
-int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile)
+int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
+                                      int idEpisode,
+                                      int oldIdFile,
+                                      int idFile)
 {
   assert(m_pDB->in_transaction());
-
-  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
-  if (idFile < 0)
-    return -1;
 
   try
   {
@@ -3218,13 +3218,12 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpis
   return -1;
 }
 
-int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile)
+int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
+                                    int idMovie,
+                                    int oldIdFile,
+                                    int idFile)
 {
   assert(m_pDB->in_transaction());
-
-  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
-  if (idFile < 0)
-    return -1;
 
   try
   {
@@ -3259,13 +3258,9 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie,
   return -1;
 }
 
-int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdFile)
+int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int idFile)
 {
   assert(m_pDB->in_transaction());
-
-  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
-  if (idFile < 0)
-    return -1;
 
   try
   {

@@ -700,7 +700,10 @@ public:
   int SetFileForMedia(const std::string& fileAndPath,
                       VideoDbContentType type,
                       int mediaId,
-                      int oldIdFile);
+                      int oldIdFile,
+                      const CDateTime& dateAdded = CDateTime(),
+                      int playcount = 0,
+                      const CDateTime& lastPlayed = CDateTime());
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const KODI::ART::Artwork& artwork,
                               int idMVideo = -1);
@@ -1436,9 +1439,9 @@ protected:
                              int max,
                              const T& offsets) const;
 
-  int SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
-  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
-  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
+  int SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile, int idFile);
+  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile, int idFile);
+  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int idFile);
 
 private:
   void CreateTables() override;
@@ -1530,11 +1533,4 @@ private:
   static void AnnounceUpdate(const std::string& content, int id);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
-
-  /*! \brief Create a new file to replace an old one (ie. for bluray playlists), preserving the date the original file was added.
-   \param fileAndPath the full path of the new file to add
-   \param oldIdFile file id of the file to replace
-   \return the new fileId, -1 on error
-   */
-  int AddFilePreserveDateAdded(const std::string& fileAndPath, int oldIdFile);
 };
