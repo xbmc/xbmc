@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Suggeriments</string>
+    <string name="error_title">Error</string>
+    <string name="exit_button">Surt</string>
+    <string name="asking_permissions">Sol·licitant permisos…</string>
+    <string name="clearing_cache">Esborrant memòria cau…</string>
+    <string name="waiting_external">Esperant l\'emmagatzematge extern…</string>
+    <string name="external_ok">Emmagatzematge extern correcte…</string>
+    <string name="starting">Iniciant %1$s…</string>
+    <string name="permission_denied">Permís denegat!! Sortint…</string>
+    <string name="no_find_apk">Paquet no trobat.</string>
+    <string name="no_read_apk">No es pot llegir el paquet.</string>
+    <string name="first_run">Preparant el primer inici. Espereu…</string>
 </resources>
