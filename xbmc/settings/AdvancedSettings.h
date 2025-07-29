@@ -214,6 +214,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_videoExcludeFromListingRegExps;
     std::vector<std::string> m_allExcludeFromScanRegExps;
     std::vector<std::string> m_moviesExcludeFromScanRegExps;
+    std::vector<std::string> m_setExcludeFromScanRegExps;
     std::vector<std::string> m_tvshowExcludeFromScanRegExps;
     std::vector<std::string> m_audioExcludeFromListingRegExps;
     std::vector<std::string> m_audioExcludeFromScanRegExps;
