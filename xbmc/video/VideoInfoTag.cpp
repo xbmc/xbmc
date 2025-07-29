@@ -1655,14 +1655,14 @@ void CVideoInfoTag::SetUniqueIDs(std::map<std::string, std::string, std::less<>>
   m_uniqueIDs = std::move(uniqueIDs);
 }
 
-void CVideoInfoTag::SetSet(std::string set)
+void CVideoInfoTag::SetSet(std::string_view set)
 {
-  m_set.SetTitle(std::move(set));
+  m_set.SetTitle(set);
 }
 
-void CVideoInfoTag::SetSetOverview(std::string setOverview)
+void CVideoInfoTag::SetSetOverview(std::string_view setOverview)
 {
-  m_set.SetOverview(std::move(setOverview));
+  m_set.SetOverview(setOverview);
 }
 
 void CVideoInfoTag::SetTags(std::vector<std::string> tags)
