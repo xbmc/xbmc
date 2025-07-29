@@ -2593,6 +2593,28 @@ bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* it
   return false;
 }
 
+bool CVideoDatabase::GetSetInfoTag(const std::string& title, CSetInfoTag& tag) const
+{
+  if (!m_pDB || !m_pDS)
+    return false;
+
+  try
+  {
+    m_pDS->query(PrepareSQL("SELECT * FROM sets WHERE strOriginalSet='%s' LIMIT 1", title.c_str()));
+    if (!m_pDS->eof())
+    {
+      tag = GetDetailsForSet(*m_pDS);
+      return true;
+    }
+    return false;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", title);
+  }
+  return false;
+}
+
 bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idFile /* = -1 */)
 {
   try

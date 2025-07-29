@@ -254,6 +254,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       m_bCanInterrupt = false;
 
       bool bCancelled = false;
+      const bool updateSets{!m_pathsToScan.empty()};
       while (!bCancelled && !m_pathsToScan.empty())
       {
         /*
@@ -288,6 +289,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_database.CleanDatabase(m_handle, m_pathsToClean, false);
         else
         {
+          if (updateSets)
+            UpdateSets();
           if (m_handle)
             m_handle->SetTitle(g_localizeStrings.Get(331));
           m_database.Compress(false);
@@ -565,6 +568,114 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return !m_bStop;
   }
 
+  void CVideoInfoScanner::UpdateSets()
+  {
+    // Check to see if there is a MSIF specified in settings
+    const std::string msifPath{CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+        CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER)};
+    if (msifPath.empty())
+    {
+      CLog::LogF(LOGDEBUG, "No Movie Set Information Folder to scan");
+      return;
+    }
+
+    // Get regexp to exclude folders that match our exclude regexps
+    const auto& regexps{m_advancedSettings->m_setExcludeFromScanRegExps};
+
+    // Get subfolders
+    CFileItemList items;
+    CDirectory::GetDirectory(msifPath, items, "", DIR_FLAG_DEFAULTS);
+
+    // Remove non-subfolders, folders flagged as no media and excluded folders
+    items.erase(std::remove_if(items.begin(), items.end(),
+                               [&regexps](const CFileItemPtr& item)
+                               {
+                                 return !item->IsFolder() || HasNoMedia(item->GetPath()) ||
+                                        CUtil::ExcludeFileOrFolder(item->GetPath(), regexps);
+                               }),
+                items.end());
+
+    // No folders to process
+    if (items.IsEmpty())
+    {
+      CLog::LogF(LOGDEBUG, "No directories to scan in the Movie Set Information Folder");
+      return;
+    }
+
+    if (m_handle)
+      m_handle->SetTitle(g_localizeStrings.Get(408)); // 'Updating sets'
+
+    for (int i = 0; const auto& item : items)
+    {
+      // Folder name is the set title
+      std::string path{item->GetPath()};
+      std::string setTitle{path};
+      URIUtils::RemoveSlashAtEnd(setTitle);
+      setTitle = URIUtils::GetFileName(setTitle);
+
+      i++;
+      if (m_handle)
+      {
+        m_handle->SetPercentage(static_cast<float>(i) * 100.0f / static_cast<float>(items.Size()));
+        m_handle->SetText(setTitle);
+      }
+
+      CFileItemList nfos;
+      CDirectory::GetDirectory(path, nfos, "", DIR_FLAG_DEFAULTS);
+
+      // Force sorting consistency to avoid hash mismatch between platforms
+      // Sort by filename as always present for any files, but keep case sensitivity
+      nfos.Sort(SortByFile, SortOrderAscending, SortAttributeNone);
+
+      // Get hash for the folder
+      // (Not using fast hash as file changes are not reflected in the fast hash)
+      std::string hash;
+      std::string dbHash;
+      GetPathHash(nfos, hash);
+      m_database.GetPathHash(path, dbHash);
+      if (StringUtils::EqualsNoCase(hash, dbHash))
+      {
+        CLog::LogF(LOGDEBUG, "Skipping directory {} as no change", CURL::GetRedacted(path));
+        continue; // Hashes match - no need to process anything
+      }
+
+      // Save hash
+      m_database.SetPathHash(path, hash);
+
+      // Remove folders, non-NFO files and excluded files
+      nfos.erase(std::remove_if(nfos.begin(), nfos.end(),
+                                [&regexps](const CFileItemPtr& item)
+                                {
+                                  return item->IsFolder() || !item->IsNFO() ||
+                                         CUtil::ExcludeFileOrFolder(item->GetPath(), regexps);
+                                }),
+                 nfos.end());
+
+      // Set.nfo is an override set, so get existing set
+      CSetInfoTag setTag;
+      if (!m_database.GetSetInfoTag(setTitle, setTag))
+      {
+        CLog::LogF(LOGDEBUG, "Skipping directory {} as there is no existing set {}",
+                   CURL::GetRedacted(path), setTitle);
+        continue; // No existing set
+      }
+
+      // Get art
+      m_database.GetArtForItem(setTag.GetID(), MediaTypeVideoCollection, setTag.m_art);
+
+      // Load the set information from the MSIF set.nfo file and art
+      CVideoInfoTag tag;
+      tag.m_set = std::move(setTag);
+      tag.m_set.SetTitle(tag.m_set.GetOriginalTitle()); // Search by original title
+      if (UpdateSetInTag(tag))
+      {
+        CLog::LogF(LOGDEBUG, "Updating set {} from directory {}", tag.m_set.GetTitle(),
+                   CURL::GetRedacted(path));
+        AddSet(tag.m_set);
+      }
+    }
+  }
+
   bool CVideoInfoScanner::UpdateSetInTag(CVideoInfoTag& tag)
   {
     // Uses the set information in m_set from a tag of a movie
@@ -606,6 +717,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       const std::vector<std::string> movieSetArtTypes =
           CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
       AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, true, false);
+      if (!movieSetArt.empty())
+        setUpdated = true;
 
       // If art specified in set.nfo use that next
       if (movieSetArt.empty() && tag.m_set.HasArt())

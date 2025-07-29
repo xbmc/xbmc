@@ -303,6 +303,8 @@ namespace KODI::VIDEO
     std::pair<InfoType, std::unique_ptr<IVideoInfoTagLoader>> ReadInfoTag(
         CFileItem& item, const ADDON::ScraperPtr& scraper, bool lookInFolder, bool resetTag);
 
+    void UpdateSets();
+
     bool m_bStop;
     bool m_scanAll;
     bool m_ignoreVideoVersions{false};

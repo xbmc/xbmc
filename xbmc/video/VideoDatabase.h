@@ -642,6 +642,7 @@ public:
   bool GetEpisodeInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idEpisode = -1, int getDetails = VideoDbDetailsAll);
   bool GetMusicVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMVideo = -1, int getDetails = VideoDbDetailsAll);
   bool GetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* item = nullptr);
+  bool GetSetInfoTag(const std::string& title, CSetInfoTag& tag) const;
   bool GetFileInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idFile = -1);
 
   int GetPathId(const std::string& strPath);

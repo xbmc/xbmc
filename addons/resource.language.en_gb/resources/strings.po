@@ -1975,7 +1975,11 @@ msgctxt "#407"
 msgid "Hardware keyboard layouts"
 msgstr ""
 
-#empty strings from id 408 to 408
+#. Shown during library scan
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#408"
+msgid "Updating sets"
+msgstr ""
 
 msgctxt "#409"
 msgid "Defaults"
