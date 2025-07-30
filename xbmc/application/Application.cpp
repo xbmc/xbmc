@@ -601,7 +601,7 @@ bool CApplication::Initialize()
     if (databaseManager.IsConnecting() || databaseManager.IsUpgrading())
     {
       CServiceBroker::GetRenderSystem()->ShowSplash(
-          std::string(iDots, ' ') + (databaseManager.IsUpgrading() ? updating : connecting) +
+          std::string(iDots, ' ') + (databaseManager.IsConnecting() ? connecting : updating) +
           std::string(iDots, '.'));
     }
 
