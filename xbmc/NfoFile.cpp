@@ -29,7 +29,7 @@ using namespace ADDON;
 
 CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
                                         const ScraperPtr& info,
-                                        int episode)
+                                        int index)
 {
   m_info = info; // assume we can use these settings
   m_type = ScraperTypeFromContent(info->Content());
@@ -54,7 +54,15 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
            m_type == AddonType::SCRAPER_MUSICVIDEOS)
   {
     CVideoInfoTag details;
-    bNfo = GetDetails(details);
+    // Find nth <movie> tag (index is 1 based)
+    // If it doesn't exist then set bNfo to false
+    if (m_type == AddonType::SCRAPER_MOVIES)
+    {
+      m_headPos = m_doc.find("<movies>");
+      while (index-- > 0 && (m_headPos = m_doc.find("<movie", m_headPos + 1)) != std::string::npos)
+        ;
+    }
+    bNfo = m_headPos != std::string::npos ? GetDetails(details) : false;
     overrideNfo = details.GetOverride();
   }
 
@@ -62,8 +70,8 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
 
   // search ..
   int res = -1;
-  for (unsigned int i=0; i<vecScrapers.size(); ++i)
-    if ((res = Scrape(vecScrapers[i], m_scurl, m_doc)) == 0 || res == 2)
+  for (auto& scraper : vecScrapers)
+    if ((res = Scrape(scraper, m_scurl, m_doc)) == 0 || res == 2)
       break;
 
   if (res == 2)
@@ -84,8 +92,7 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
 }
 
 // return value: 0 - success; 1 - no result; skip; 2 - error
-int CNfoFile::Scrape(ScraperPtr& scraper, CScraperUrl& url,
-                     const std::string& content)
+int CNfoFile::Scrape(const ScraperPtr& scraper, CScraperUrl& url, const std::string& content)
 {
   if (scraper->IsNoop())
   {

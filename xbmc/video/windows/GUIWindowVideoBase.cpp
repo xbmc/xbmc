@@ -819,8 +819,11 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
       if (PLAYLIST::IsSmartPlayList(*item) || PLAYLIST::IsSmartPlayList(*m_vecItems))
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
-      if (URIUtils::IsBlurayPath(item->GetDynPath()))
+
+      if (URIUtils::IsBlurayPath(item->GetDynPath()) && !item->IsFolder())
+      {
         buttons.Add(CONTEXT_BUTTON_CHOOSE_PLAYLIST, 13424);
+      }
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
