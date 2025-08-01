@@ -30,7 +30,7 @@ bool CGameClientStreamHwFramebuffer::OpenStream(RETRO::IRetroPlayerStream* strea
       dynamic_cast<RETRO::CRetroPlayerRendering*>(stream);
   if (renderingStream == nullptr)
   {
-    CLog::Log(LOGERROR, "GAME: RetroPlayer stream is not an audio stream");
+    CLog::Log(LOGERROR, "GAME: RetroPlayer stream is not a rendering stream");
     return false;
   }
 

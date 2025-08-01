@@ -95,6 +95,9 @@ void CGameLoop::Process(void)
       }
     }
   }
+
+  // Notify the callback that the loop has finished processing
+  m_callback->EndEvent();
 }
 
 double CGameLoop::FrameTimeMs() const
