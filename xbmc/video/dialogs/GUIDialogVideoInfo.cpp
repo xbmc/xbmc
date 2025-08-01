@@ -282,12 +282,11 @@ void CGUIDialogVideoInfo::OnInitWindow()
 
   // @todo add support to edit video asset art. Until then edit art through Versions Manager.
   if (!VIDEO::IsVideoAssetFile(*m_movieItem))
-    CONTROL_ENABLE_ON_CONDITION(
-        CONTROL_BTN_GET_THUMB,
-        (profileManager->GetCurrentProfile().canWriteDatabases() ||
-         g_passwordManager.bMasterUser) &&
-            !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID().c_str(),
-                                           "plugin"));
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB,
+                                (profileManager->GetCurrentProfile().canWriteDatabases() ||
+                                 g_passwordManager.bMasterUser) &&
+                                    !StringUtils::StartsWithNoCase(
+                                        m_movieItem->GetVideoInfoTag()->GetUniqueID(), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_THUMB);
 
@@ -296,10 +295,11 @@ void CGUIDialogVideoInfo::OnInitWindow()
 
   VideoDbContentType type = m_movieItem->GetVideoContentType();
   if (type == VideoDbContentType::TVSHOWS || type == VideoDbContentType::MOVIES)
-    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (profileManager->
-        GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
-        !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->
-        GetUniqueID().c_str(), "plugin"));
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART,
+                                (profileManager->GetCurrentProfile().canWriteDatabases() ||
+                                 g_passwordManager.bMasterUser) &&
+                                    !StringUtils::StartsWithNoCase(
+                                        m_movieItem->GetVideoInfoTag()->GetUniqueID(), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 

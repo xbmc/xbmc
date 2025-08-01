@@ -37,20 +37,20 @@ public:
 
   void SetOverview(std::string_view overview);
   bool HasOverview() const { return !m_overview.empty(); }
-  std::string GetOverview() const { return m_overview; }
+  const std::string& GetOverview() const { return m_overview; }
   bool GetUpdateSetOverview() const { return m_updateSetOverview; }
 
   void SetTitle(std::string_view title);
   bool HasTitle() const { return !m_title.empty(); }
-  std::string GetTitle() const { return m_title; }
+  const std::string& GetTitle() const { return m_title; }
 
   void SetOriginalTitle(std::string_view title);
   bool HasOriginalTitle() const { return !m_originalTitle.empty(); }
-  std::string GetOriginalTitle() const { return m_originalTitle; }
+  const std::string& GetOriginalTitle() const { return m_originalTitle; }
 
   void SetArt(const KODI::ART::Artwork& art);
   bool HasArt() const { return !m_art.empty(); }
-  KODI::ART::Artwork GetArt() const { return m_art; }
+  const KODI::ART::Artwork& GetArt() const { return m_art; }
 
   void Merge(const CSetInfoTag& other);
   void Copy(const CSetInfoTag& other);
