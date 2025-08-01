@@ -10,7 +10,6 @@
 
 #include "CueDocument.h"
 #include "ServiceBroker.h"
-#include "URL.h"
 #include "Util.h"
 #include "events/IEvent.h"
 #include "filesystem/CurlFile.h"
@@ -400,8 +399,8 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   CGUIListItem::operator=(item);
   m_bLabelPreformatted=item.m_bLabelPreformatted;
   FreeMemory();
-  m_strPath = item.m_strPath;
-  m_strDynPath = item.m_strDynPath;
+  SetPath(item.m_strPath);
+  SetDynPath(item.m_strDynPath);
   m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
@@ -593,6 +592,8 @@ void CFileItem::Archive(CArchive& ar)
     if (iType == 1)
       ar >> *GetGameInfoTag();
 
+    m_urlPath.reset();
+    m_urlDynPath.reset();
     SetInvalid();
   }
 }
@@ -1193,9 +1194,11 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
      StringUtils::StartsWithNoCase(m_mimetype, "application/x-mms-framed"))
   {
     if (m_strDynPath.empty())
-      m_strDynPath = m_strPath;
+      SetDynPath(m_strPath);
 
-    StringUtils::Replace(m_strDynPath, "http:", "mms:");
+    std::string temp = m_strDynPath;
+    StringUtils::Replace(temp, "http:", "mms:");
+    SetDynPath(temp);
   }
 }
 
@@ -1459,13 +1462,14 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
     SetLabel(video.m_strTitle);
   if (video.m_strFileNameAndPath.empty())
   {
-    m_strPath = video.m_strPath;
-    URIUtils::AddSlashAtEnd(m_strPath);
+    std::string videoPath = video.m_strPath;
+    URIUtils::AddSlashAtEnd(videoPath);
+    SetPath(videoPath);
     SetFolder(true);
   }
   else
   {
-    m_strPath = video.m_strFileNameAndPath;
+    SetPath(video.m_strFileNameAndPath);
     SetFolder(false);
   }
 
@@ -1573,10 +1577,12 @@ void CFileItem::SetFromSong(const CSong &song)
   if (song.idSong > 0)
   {
     std::string strExt = URIUtils::GetExtension(song.strFileName);
-    m_strPath = StringUtils::Format("musicdb://songs/{}{}", song.idSong, strExt);
+    SetPath(StringUtils::Format("musicdb://songs/{}{}", song.idSong, strExt));
   }
   else if (!song.strFileName.empty())
-    m_strPath = song.strFileName;
+  {
+    SetPath(song.strFileName);
+  }
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lStartPartNumber = 1;
@@ -1594,15 +1600,27 @@ void CFileItem::SetFromSong(const CSong &song)
 * construction, and also allowing CFileItemList to have its own (public)
 * SetURL() function, so for now we give direct access.
 */
-void CFileItem::SetURL(const CURL& url)
+const std::string& CFileItem::GetPath() const
 {
-  m_strPath = url.Get();
+  return m_strPath;
 }
 
-CURL CFileItem::GetURL() const
+void CFileItem::SetPath(std::string_view path)
 {
-  CURL url(m_strPath);
-  return url;
+  m_strPath = path;
+  m_urlPath.reset();
+}
+
+void CFileItem::SetURL(const CURL& url)
+{
+  SetPath(url.Get());
+}
+
+const CURL& CFileItem::GetURL() const
+{
+  if (!m_urlPath)
+    m_urlPath = CURL(m_strPath);
+  return *m_urlPath;
 }
 
 bool CFileItem::IsURL(const CURL& url) const
@@ -1617,20 +1635,22 @@ bool CFileItem::IsPath(const std::string& path, bool ignoreURLOptions /* = false
 
 void CFileItem::SetDynURL(const CURL& url)
 {
-  m_strDynPath = url.Get();
+  SetDynPath(url.Get());
 }
 
-CURL CFileItem::GetDynURL() const
+const CURL& CFileItem::GetDynURL() const
 {
   if (!m_strDynPath.empty())
   {
-    CURL url(m_strDynPath);
-    return url;
+    if (!m_urlDynPath)
+      m_urlDynPath = CURL(m_strDynPath);
+    return *m_urlDynPath;
   }
   else
   {
-    CURL url(m_strPath);
-    return url;
+    if (!m_urlPath)
+      m_urlPath = CURL(m_strPath);
+    return *m_urlPath;
   }
 }
 
@@ -1645,6 +1665,7 @@ const std::string &CFileItem::GetDynPath() const
 void CFileItem::SetDynPath(std::string_view path)
 {
   m_strDynPath = path;
+  m_urlDynPath.reset();
 }
 
 void CFileItem::SetCueDocument(const std::shared_ptr<CCueDocument>& cuePtr)
@@ -1878,7 +1899,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     if (URIUtils::IsInArchive(m_strPath))
     {
       // Try to get archive itself, if empty take path before
-      name2 = CURL(m_strPath).GetHostName();
+      name2 = GetURL().GetHostName();
       if (name2.empty())
         name2 = strMovieName;
 
