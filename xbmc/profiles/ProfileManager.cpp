@@ -411,15 +411,12 @@ void CProfileManager::FinalizeLoadProfile()
   // Restart context menu manager
   contextMenuManager.Init();
 
-  // Restart PVR services if we are not just loading the master profile for the login screen
-  if (m_previousProfileLoadedForLogin || m_currentProfile != 0 || m_lastUsedProfile == 0)
-    pvrManager.Init();
-
   favouritesManager.ReInit(GetProfileUserDataFolder());
 
   // Start these operations only when a profile is loaded, not on the login screen
   if (!m_profileLoadedForLogin || (m_profileLoadedForLogin && m_lastUsedProfile == 0))
   {
+    pvrManager.Init();
     serviceAddons.Start();
     g_application.UpdateLibraries();
   }
