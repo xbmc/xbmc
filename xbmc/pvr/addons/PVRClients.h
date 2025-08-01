@@ -66,6 +66,11 @@ public:
   void Continue();
 
   /*!
+   * @brief Destroy all clients.
+   */
+  void DestroyClients();
+
+  /*!
    * @brief Update all clients, sync with Addon Manager state (start, restart, shutdown clients).
    * @param changedAddonId The id of the changed addon, empty string denotes 'any addon'.
    */

@@ -353,6 +353,8 @@ void CPVRManager::ResetProperties()
 
 void CPVRManager::Init() const
 {
+  m_addons->DestroyClients();
+
   // initial check for enabled addons
   // if at least one pvr addon is enabled, PVRManager start up
   CServiceBroker::GetJobManager()->Submit([this] {

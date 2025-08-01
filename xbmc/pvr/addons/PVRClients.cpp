@@ -72,10 +72,7 @@ CPVRClients::~CPVRClients()
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
   CServiceBroker::GetAddonMgr().UnregisterAddonMgrCallback(AddonType::PVRDLL);
 
-  for (const auto& [_, client] : m_clientMap)
-  {
-    client->Destroy();
-  }
+  DestroyClients();
 }
 
 void CPVRClients::Start()
@@ -101,6 +98,18 @@ void CPVRClients::Continue()
   {
     client->Continue();
   }
+}
+
+void CPVRClients::DestroyClients()
+{
+  std::unique_lock lock(m_critSection);
+  for (const auto& [_, client] : m_clientMap)
+  {
+    CLog::LogF(LOGINFO, "Destroying PVR client: addonId={}, instanceId={}, clientId={}",
+               client->ID(), client->InstanceId(), client->GetID());
+    client->Destroy();
+  }
+  m_clientMap.clear();
 }
 
 CPVRClients::UpdateClientAction CPVRClients::GetUpdateClientAction(
