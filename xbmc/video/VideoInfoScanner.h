@@ -311,5 +311,6 @@ namespace KODI::VIDEO
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
+    bool m_preservePlayCount{true};
   };
   } // namespace KODI::VIDEO

@@ -2707,7 +2707,7 @@ int CVideoDatabase::SetDetailsForItem(int id,
     return -1;
 
   if (mediaType == MediaTypeMovie)
-    return SetDetailsForMovie(details, artwork, id);
+    return SetDetailsForMovie(details, artwork, id, MediaUpgradeAction::NONE);
   else if (mediaType == MediaTypeVideoCollection)
     return SetDetailsForMovieSet(details, artwork, id);
   else if (mediaType == MediaTypeTvShow)
@@ -2721,7 +2721,7 @@ int CVideoDatabase::SetDetailsForItem(int id,
   else if (mediaType == MediaTypeSeason)
     return SetDetailsForSeason(details, artwork, details.m_iIdShow, id);
   else if (mediaType == MediaTypeEpisode)
-    return SetDetailsForEpisode(details, artwork, details.m_iIdShow, id);
+    return SetDetailsForEpisode(details, artwork, details.m_iIdShow, id, MediaUpgradeAction::NONE);
   else if (mediaType == MediaTypeMusicVideo)
     return SetDetailsForMusicVideo(details, artwork, id);
 
@@ -2730,7 +2730,8 @@ int CVideoDatabase::SetDetailsForItem(int id,
 
 int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
                                        const KODI::ART::Artwork& artwork,
-                                       int idMovie /* = -1 */)
+                                       int idMovie,
+                                       MediaUpgradeAction upgradeAction)
 {
   const auto filePath = details.GetPath();
 
@@ -2793,7 +2794,8 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
 
     SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
-    if (!details.HasUniqueID() && details.HasYear())
+    if (upgradeAction == MediaUpgradeAction::PRESERVE_PLAYCOUNT && !details.HasUniqueID() &&
+        details.HasYear())
     { // query DB for any movies matching online id and year
       std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
                                       "FROM movie "
@@ -3355,7 +3357,8 @@ bool CVideoDatabase::DeleteFile(int idFile)
 int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
                                          const KODI::ART::Artwork& artwork,
                                          int idShow,
-                                         int idEpisode /* = -1 */)
+                                         int idEpisode,
+                                         MediaUpgradeAction upgradeAction)
 {
   const auto filePath = details.GetPath();
 
@@ -3402,7 +3405,8 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
 
     SetArtForItem(idEpisode, MediaTypeEpisode, artwork);
 
-    if (details.m_iEpisode != -1 && details.m_iSeason != -1)
+    if (upgradeAction == MediaUpgradeAction::PRESERVE_PLAYCOUNT && details.m_iEpisode != -1 &&
+        details.m_iSeason != -1)
     { // query DB for any episodes matching idShow, Season and Episode
       std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
                                       "FROM episode INNER JOIN files ON files.idFile=episode.idFile "

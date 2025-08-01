@@ -490,6 +490,12 @@ enum class DeleteMovieHashAction
   HASH_PRESERVE
 };
 
+enum class MediaUpgradeAction
+{
+  NONE,
+  PRESERVE_PLAYCOUNT
+};
+
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
@@ -665,7 +671,8 @@ public:
 
   int SetDetailsForMovie(CVideoInfoTag& details,
                          const KODI::ART::Artwork& artwork,
-                         int idMovie = -1);
+                         int idMovie,
+                         MediaUpgradeAction upgradeAction);
   int SetDetailsForMovieSet(const CVideoInfoTag& details,
                             const KODI::ART::Artwork& artwork,
                             int idSet = -1);
@@ -696,7 +703,8 @@ public:
   int SetDetailsForEpisode(CVideoInfoTag& details,
                            const KODI::ART::Artwork& artwork,
                            int idShow,
-                           int idEpisode = -1);
+                           int idEpisode,
+                           MediaUpgradeAction upgradeAction);
   int SetFileForMedia(const std::string& fileAndPath,
                       VideoDbContentType type,
                       int mediaId,

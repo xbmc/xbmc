@@ -198,6 +198,7 @@ CVideoInfoScanner::CVideoInfoScanner()
 
   m_ignoreVideoVersions = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS);
   m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
+  m_preservePlayCount = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_PRESERVEPLAYCOUNT);
 }
 
 CVideoInfoScanner::~CVideoInfoScanner()
@@ -1799,7 +1800,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
             StringUtils::Format(g_localizeStrings.Get(29995), movieDetails.m_strTitle, discNum);
       }
 
-      lResult = m_database.SetDetailsForMovie(movieDetails, art);
+      lResult = m_database.SetDetailsForMovie(
+          movieDetails, art, -1,
+          m_preservePlayCount ? MediaUpgradeAction::PRESERVE_PLAYCOUNT : MediaUpgradeAction::NONE);
       movieDetails.m_iDbId = lResult;
       movieDetails.m_type = MediaTypeMovie;
 
@@ -1843,9 +1846,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         // we add episode then set details, as otherwise set details will delete the
         // episode then add, which breaks multi-episode files.
-        int idShow = showInfo ? showInfo->m_iDbId : -1;
-        int idEpisode = m_database.AddNewEpisode(idShow, movieDetails);
-        lResult = m_database.SetDetailsForEpisode(movieDetails, art, idShow, idEpisode);
+        const int idShow = showInfo ? showInfo->m_iDbId : -1;
+        const int idEpisode = m_database.AddNewEpisode(idShow, movieDetails);
+        lResult = m_database.SetDetailsForEpisode(movieDetails, art, idShow, idEpisode,
+                                                  m_preservePlayCount
+                                                      ? MediaUpgradeAction::PRESERVE_PLAYCOUNT
+                                                      : MediaUpgradeAction::NONE);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = MediaTypeEpisode;
         movieDetails.m_strShowTitle = showInfo ? showInfo->m_strTitle : "";
