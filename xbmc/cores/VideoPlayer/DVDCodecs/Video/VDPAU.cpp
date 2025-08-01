@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/TextureManager.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -535,7 +536,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
   }
 
-  if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_NV_vdpau_interop"))
+  if (!CGLExtensions::IsExtensionSupported(CGLExtensions::NV_vdpau_interop))
   {
     CLog::Log(LOGINFO, "VDPAU::Open: required extension GL_NV_vdpau_interop not found");
     return false;

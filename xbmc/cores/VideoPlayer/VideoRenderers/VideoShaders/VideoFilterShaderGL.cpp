@@ -11,6 +11,7 @@
 
 #include "ConvolutionKernels.h"
 #include "ServiceBroker.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/RenderSystem.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
@@ -58,7 +59,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method,
   std::string shadername;
   std::string defines;
 
-  m_floattex = CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_float");
+  m_floattex = CGLExtensions::IsExtensionSupported(CGLExtensions::ARB_texture_float);
 
   if (m_method == VS_SCALINGMETHOD_CUBIC_B_SPLINE ||
       m_method == VS_SCALINGMETHOD_CUBIC_MITCHELL ||
