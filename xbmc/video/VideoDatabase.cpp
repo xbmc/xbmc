@@ -1031,23 +1031,57 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
     }
     m_pDS->close();
 
-    std::string strPlaycount = "NULL";
-    if (playcount > 0)
-      strPlaycount = std::to_string(playcount);
-    std::string strLastPlayed = "NULL";
-    if (lastPlayed.IsValid())
-      strLastPlayed = "'" + lastPlayed.GetAsDBDateTime() + "'";
-
-    strSQL = PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed, dateAdded) "
-                        "VALUES(NULL, %i, '%s', " + strPlaycount + ", " + strLastPlayed + ", '%s')",
-                        idPath, strFileName.c_str(), finalDateAdded.GetAsDBDateTime().c_str());
-    m_pDS->exec(strSQL);
-    idFile = static_cast<int>(m_pDS->lastinsertid());
-    return idFile;
+    return DoInsertOrUpdateFile({.dateAdded = finalDateAdded,
+                                 .playcount = playcount,
+                                 .lastPlayed = lastPlayed,
+                                 .fileName = strFileName,
+                                 .idPath = idPath},
+                                INSERT);
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "unable to addfile ({})", strSQL);
+  }
+  return -1;
+}
+
+int CVideoDatabase::DoInsertOrUpdateFile(const FileInfo& fileInfo,
+                                         UpdateOrInsert updateOrInsert) const
+{
+  std::string sql;
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return -1;
+
+    const std::string strPlaycount{fileInfo.playcount > 0 ? std::to_string(fileInfo.playcount)
+                                                          : "NULL"};
+    const std::string strLastPlayed{
+        fileInfo.lastPlayed.IsValid() ? "'" + fileInfo.lastPlayed.GetAsDBDateTime() + "'" : "NULL"};
+
+    using enum UpdateOrInsert;
+    if (updateOrInsert == INSERT)
+    {
+      sql = PrepareSQL(
+          "INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed, dateAdded) "
+          "VALUES(NULL, %i, '%s', " +
+              strPlaycount + ", " + strLastPlayed + ", '%s')",
+          fileInfo.idPath, fileInfo.fileName.c_str(), fileInfo.dateAdded.GetAsDBDateTime().c_str());
+      m_pDS->exec(sql);
+      return static_cast<int>(m_pDS->lastinsertid());
+    }
+    else
+    {
+      sql = PrepareSQL("UPDATE files SET playCount=" + strPlaycount +
+                           ", lastPlayed=" + strLastPlayed + ", dateAdded='%s' WHERE idFile=%i",
+                       fileInfo.dateAdded.GetAsDBDateTime().c_str(), fileInfo.idFile);
+      m_pDS->exec(sql);
+      return fileInfo.idFile;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "unable to insert/update file ({})", sql);
   }
   return -1;
 }
@@ -3165,21 +3199,12 @@ int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
   if (idFile < 0)
     return -1;
 
-  assert(m_pDB->in_transaction());
-
-  try
-  {
-    // Update here as new file id may already exist (from updating playcount etc.) and AddFile() will not update it
-    m_pDS->exec(PrepareSQL(
-        "UPDATE files SET playCount=%i, lastPlayed='%s', dateAdded='%s' WHERE idFile=%i", playcount,
-        lastPlayed.GetAsDBDateTime().c_str(), dateAdded.GetAsDBDateTime().c_str(), idFile));
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, mediaId {}, oldIdFile {} - failed", idFile,
-               fileAndPath, mediaId, oldIdFile);
+  if (DoInsertOrUpdateFile({.dateAdded = dateAdded,
+                            .playcount = playcount,
+                            .lastPlayed = lastPlayed,
+                            .idFile = idFile},
+                           UPDATE) < 0)
     return -1;
-  }
 
   switch (type)
   {

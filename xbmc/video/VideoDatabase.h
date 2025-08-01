@@ -1533,4 +1533,22 @@ private:
   static void AnnounceUpdate(const std::string& content, int id);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
+
+  enum UpdateOrInsert : bool
+  {
+    INSERT,
+    UPDATE
+  };
+
+  typedef struct FileInfo
+  {
+    CDateTime dateAdded{};
+    int playcount = 0;
+    CDateTime lastPlayed{};
+    std::string fileName{};
+    int idPath = -1;
+    int idFile = -1;
+  } FileInfo;
+
+  int DoInsertOrUpdateFile(const FileInfo& fileInfo, UpdateOrInsert updateOrInsert) const;
 };
