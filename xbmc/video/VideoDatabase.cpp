@@ -1034,23 +1034,57 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
     }
     m_pDS->close();
 
-    std::string strPlaycount = "NULL";
-    if (playcount > 0)
-      strPlaycount = std::to_string(playcount);
-    std::string strLastPlayed = "NULL";
-    if (lastPlayed.IsValid())
-      strLastPlayed = "'" + lastPlayed.GetAsDBDateTime() + "'";
-
-    strSQL = PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed, dateAdded) "
-                        "VALUES(NULL, %i, '%s', " + strPlaycount + ", " + strLastPlayed + ", '%s')",
-                        idPath, strFileName.c_str(), finalDateAdded.GetAsDBDateTime().c_str());
-    m_pDS->exec(strSQL);
-    idFile = static_cast<int>(m_pDS->lastinsertid());
-    return idFile;
+    return DoInsertOrUpdateFile({.dateAdded = finalDateAdded,
+                                 .playcount = playcount,
+                                 .lastPlayed = lastPlayed,
+                                 .fileName = strFileName,
+                                 .idPath = idPath},
+                                INSERT);
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "unable to addfile ({})", strSQL);
+  }
+  return -1;
+}
+
+int CVideoDatabase::DoInsertOrUpdateFile(const FileInfo& fileInfo,
+                                         UpdateOrInsert updateOrInsert) const
+{
+  std::string sql;
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return -1;
+
+    const std::string strPlaycount{fileInfo.playcount > 0 ? std::to_string(fileInfo.playcount)
+                                                          : "NULL"};
+    const std::string strLastPlayed{
+        fileInfo.lastPlayed.IsValid() ? "'" + fileInfo.lastPlayed.GetAsDBDateTime() + "'" : "NULL"};
+
+    using enum UpdateOrInsert;
+    if (updateOrInsert == INSERT)
+    {
+      sql = PrepareSQL(
+          "INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed, dateAdded) "
+          "VALUES(NULL, %i, '%s', " +
+              strPlaycount + ", " + strLastPlayed + ", '%s')",
+          fileInfo.idPath, fileInfo.fileName.c_str(), fileInfo.dateAdded.GetAsDBDateTime().c_str());
+      m_pDS->exec(sql);
+      return static_cast<int>(m_pDS->lastinsertid());
+    }
+    else
+    {
+      sql = PrepareSQL("UPDATE files SET playCount=" + strPlaycount +
+                           ", lastPlayed=" + strLastPlayed + ", dateAdded='%s' WHERE idFile=%i",
+                       fileInfo.dateAdded.GetAsDBDateTime().c_str(), fileInfo.idFile);
+      m_pDS->exec(sql);
+      return fileInfo.idFile;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "unable to insert/update file ({})", sql);
   }
   return -1;
 }
@@ -3169,9 +3203,23 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
 int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
                                     VideoDbContentType type,
                                     int mediaId,
-                                    int oldIdFile)
+                                    int oldIdFile,
+                                    const CDateTime& dateAdded,
+                                    int playcount,
+                                    const CDateTime& lastPlayed)
 {
   if ((mediaId < 0 && type != VideoDbContentType::UNKNOWN) || oldIdFile < 0)
+    return -1;
+
+  const int idFile{AddFile(fileAndPath)};
+  if (idFile < 0)
+    return -1;
+
+  if (DoInsertOrUpdateFile({.dateAdded = dateAdded,
+                            .playcount = playcount,
+                            .lastPlayed = lastPlayed,
+                            .idFile = idFile},
+                           UPDATE) < 0)
     return -1;
 
   switch (type)
@@ -3179,46 +3227,23 @@ int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
     using enum VideoDbContentType;
 
     case MOVIES:
-      return SetFileForMovie(fileAndPath, mediaId, oldIdFile);
+      return SetFileForMovie(fileAndPath, mediaId, oldIdFile, idFile);
     case EPISODES:
-      return SetFileForEpisode(fileAndPath, mediaId, oldIdFile);
+      return SetFileForEpisode(fileAndPath, mediaId, oldIdFile, idFile);
     case UNKNOWN:
-      return SetFileForUnknown(fileAndPath, oldIdFile); // Used for removable blurays
+      return SetFileForUnknown(fileAndPath, oldIdFile, idFile); // Used for removable blurays
     default:
       CLog::LogF(LOGDEBUG, "unsupported media type {}", type);
       return -1;
   }
 }
 
-int CVideoDatabase::AddFilePreserveDateAdded(const std::string& fileAndPath, int oldIdFile)
-{
-  try
-  {
-    // Preserve date added
-    m_pDS->query(PrepareSQL("SELECT dateAdded FROM files WHERE idFile=%i", oldIdFile));
-    if (m_pDS->eof())
-      return -1;
-
-    CDateTime dateAdded;
-    dateAdded.SetFromDBDateTime(m_pDS->fv("dateAdded").get_asString());
-
-    return AddFile(fileAndPath, "", dateAdded);
-  }
-  catch (const std::exception& e)
-  {
-    CLog::LogF(LOGERROR, "failed - oldIdFile {}, fileAndPath {} - error {}", oldIdFile, fileAndPath,
-               e.what());
-  }
-  return -1;
-}
-
-int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile)
+int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
+                                      int idEpisode,
+                                      int oldIdFile,
+                                      int idFile)
 {
   assert(m_pDB->in_transaction());
-
-  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
-  if (idFile < 0)
-    return -1;
 
   try
   {
@@ -3234,13 +3259,12 @@ int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpis
   return -1;
 }
 
-int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile)
+int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
+                                    int idMovie,
+                                    int oldIdFile,
+                                    int idFile)
 {
   assert(m_pDB->in_transaction());
-
-  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
-  if (idFile < 0)
-    return -1;
 
   try
   {
@@ -3275,13 +3299,9 @@ int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie,
   return -1;
 }
 
-int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdFile)
+int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int idFile)
 {
   assert(m_pDB->in_transaction());
-
-  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
-  if (idFile < 0)
-    return -1;
 
   try
   {
