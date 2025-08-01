@@ -12,6 +12,7 @@
 #include "threads/Thread.h"
 
 #include <atomic>
+#include <chrono>
 
 namespace KODI
 {
@@ -54,15 +55,14 @@ protected:
   void Process() override;
 
 private:
-  double FrameTimeMs() const;
-  double SleepTimeMs() const;
-  double NowMs() const;
+  std::chrono::microseconds FrameTimeUs() const;
+  std::chrono::microseconds NowUs() const;
 
   IGameLoopCallback* const m_callback;
   const double m_fps;
   std::atomic<double> m_speedFactor;
-  double m_lastFrameMs = 0.0;
-  mutable double m_adjustTime = 0.0;
+  double m_loopSpeedFactor{0};
+  std::chrono::microseconds m_lastFrameUs{std::chrono::microseconds::zero()};
   CEvent m_sleepEvent;
 };
 } // namespace RETRO
