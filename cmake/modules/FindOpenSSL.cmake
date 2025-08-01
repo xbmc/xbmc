@@ -5,6 +5,7 @@
 # This will define the following target:
 #
 #   ${APP_NAME_LC}::OpenSSL - Alias of OpenSSL::SSL target
+#   LIBRARY::OpenSSL - Alias of OpenSSL::SSL target
 #   OpenSSL::SSL - standard Openssl SSL target from system find package
 #   OpenSSL::Crypto - standard Openssl Crypto target from system find package
 
@@ -32,6 +33,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   if(OPENSSL_FOUND)
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS OpenSSL::SSL)
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS OpenSSL::SSL)
 
     # Add Crypto as a link library to easily propagate both targets to our custom target
     set_target_properties(OpenSSL::SSL PROPERTIES
