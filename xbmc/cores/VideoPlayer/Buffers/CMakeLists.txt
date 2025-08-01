@@ -10,4 +10,10 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
                       VideoBufferPoolDMA.h)
 endif()
 
+if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
+    list(APPEND SOURCES VideoBufferStarfish.cpp)
+    list(APPEND HEADERS VideoBufferStarfish.h)
+endif()
+
+
 core_add_library(videoplayer-buffers)

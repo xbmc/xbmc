@@ -345,6 +345,8 @@ double CDVDMessageQueue::GetTimeSize() const
 
 bool CDVDMessageQueue::IsDataBased() const
 {
+  std::unique_lock lock(m_section);
+
   return (m_TimeBack == DVD_NOPTS_VALUE  ||
           m_TimeFront == DVD_NOPTS_VALUE ||
           m_TimeFront <= m_TimeBack);

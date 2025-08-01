@@ -9,7 +9,6 @@
 #include "RendererStarfish.h"
 
 #include "../RenderFactory.h"
-#include "DVDCodecs/Video/DVDVideoCodecStarfish.h"
 #include "ServiceBroker.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "settings/MediaSettings.h"
@@ -32,11 +31,12 @@ CBaseRenderer* CRendererStarfish::Create(CVideoBuffer* buffer)
   return nullptr;
 }
 
-bool CRendererStarfish::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
+bool CRendererStarfish::Configure(const VideoPicture& picture,
+                                  float fps,
+                                  const unsigned int orientation)
 {
-  auto buffer = static_cast<CStarfishVideoBuffer*>(picture.videoBuffer);
-  m_acbId = buffer->m_acbId;
-  if (m_acbId)
+  m_videoBuffer = static_cast<CStarfishVideoBuffer*>(picture.videoBuffer);
+  if (m_videoBuffer->GetAcbHandle())
   {
     EnableAlwaysClip();
   }
@@ -84,7 +84,8 @@ bool CRendererStarfish::Register()
 void CRendererStarfish::ManageRenderArea()
 {
   // this hack is needed to get the 2D mode of a 3D movie going
-  RENDER_STEREO_MODE stereoMode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
+  const RENDER_STEREO_MODE stereoMode =
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   if (stereoMode == RENDER_STEREO_MODE_MONO)
     CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RENDER_STEREO_VIEW_LEFT);
 
@@ -108,7 +109,7 @@ void CRendererStarfish::ManageRenderArea()
   if ((m_exportedDestRect != m_destRect || m_exportedSourceRect != m_sourceRect) &&
       !m_sourceRect.IsEmpty() && !m_destRect.IsEmpty())
   {
-    auto origRect =
+    const auto origRect =
         CRect{0, 0, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight)};
     using namespace KODI::WINDOWING::WAYLAND;
     auto winSystem = static_cast<CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem());
@@ -116,18 +117,21 @@ void CRendererStarfish::ManageRenderArea()
     {
       winSystem->SetExportedWindow(origRect, m_sourceRect, m_destRect);
     }
-    else if (m_acbId)
+    else if (m_videoBuffer->GetAcbHandle())
     {
-      AcbAPI_setCustomDisplayWindow(m_acbId, m_sourceRect.x1, m_sourceRect.y1, m_sourceRect.Width(),
-                                    m_sourceRect.Height(), m_destRect.x1, m_destRect.y1,
-                                    m_destRect.Width(), m_destRect.Height(), false, nullptr);
+      AcbAPI_setCustomDisplayWindow(
+          m_videoBuffer->GetAcbHandle()->Id(), static_cast<long>(m_sourceRect.x1),
+          static_cast<long>(m_sourceRect.y1), static_cast<long>(m_sourceRect.Width()),
+          static_cast<long>(m_sourceRect.Height()), static_cast<long>(m_destRect.x1),
+          static_cast<long>(m_destRect.y1), static_cast<long>(m_destRect.Width()),
+          static_cast<long>(m_destRect.Height()), false, &m_videoBuffer->GetAcbHandle()->TaskId());
     }
     m_exportedSourceRect = m_sourceRect;
     m_exportedDestRect = m_destRect;
   }
 }
 
-bool CRendererStarfish::Supports(ERENDERFEATURE feature) const
+bool CRendererStarfish::Supports(const ERENDERFEATURE feature) const
 {
   return (feature == RENDERFEATURE_ZOOM || feature == RENDERFEATURE_STRETCH ||
           feature == RENDERFEATURE_PIXEL_RATIO || feature == RENDERFEATURE_VERTICAL_SHIFT ||
@@ -155,7 +159,7 @@ void CRendererStarfish::ReleaseBuffer(int idx)
 CRenderInfo CRendererStarfish::GetRenderInfo()
 {
   CRenderInfo info;
-  info.max_buffer_size = 4;
+  info.max_buffer_size = 2;
   return info;
 }
 
@@ -176,10 +180,6 @@ void CRendererStarfish::UnInit()
 
 void CRendererStarfish::Update()
 {
-  if (!m_configured)
-  {
-    return;
-  }
 }
 
 void CRendererStarfish::RenderUpdate(
