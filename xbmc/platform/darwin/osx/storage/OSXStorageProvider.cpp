@@ -108,6 +108,12 @@ void COSXStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removabl
       mountpoint = buf[i].f_mntonname;
       devicepath = buf[i].f_mntfromname;
 
+      // Xcode simulators mount disk images under the user's
+      // CoreSimulator directory. These are not actual removable
+      // drives, so skip them.
+      if (mountpoint.find("CoreSimulator") != std::string::npos)
+        continue;
+
       DADiskRef disk = DADiskCreateFromBSDName(kCFAllocatorDefault, session, devicepath.c_str());
       if (disk)
       {
