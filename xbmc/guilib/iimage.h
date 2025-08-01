@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -25,6 +25,16 @@ public:
    \return true if the image could be loaded
    */
   virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)=0;
+  /*!
+   \brief The decoder can offer a more suiting Kodi texture format (for example KD_TEX_FMT_SDR_R8), in addition to the legacy XB_FMT_A8R8G8B8. 
+   \return The Kodi texture format.
+   */
+  virtual unsigned int GetKDFormat() { return 0; }
+  /*!
+   \brief Specifies how the decoded texture has to be swizzled (default KD_TEX_SWIZ_RGBA).
+   \return The Kodi texture swizzle.
+   */
+  virtual unsigned int GetKDSwizzle() { return 0; }
   /*!
    \brief Decodes the previously loaded image data to the output buffer in 32 bit raw bits
    \param pixels The output buffer
