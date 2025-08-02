@@ -37,23 +37,19 @@ int Interface_GUIDialogContextMenu::open(KODI_HANDLE kodiBase,
                                          const char* entries[],
                                          unsigned int size)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "Interface_GUIDialogContextMenu::{} - invalid data", __func__);
+    CLog::LogF(LOGERROR, "Invalid data");
     return -1;
   }
 
-  CGUIDialogContextMenu* dialog =
-      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogContextMenu>(
-          WINDOW_DIALOG_CONTEXT_MENU);
-  if (!heading || !entries || !dialog)
+  if (!heading || !entries)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIDialogContextMenu::{} - invalid handler data (heading='{}', "
-              "entries='{}', dialog='{}') on addon '{}'",
-              __func__, static_cast<const void*>(heading), static_cast<const void*>(entries),
-              kodiBase, addon->ID());
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (heading='{}', "
+               "entries='{}') on addon '{}'",
+               static_cast<const void*>(heading), static_cast<const void*>(entries), addon->ID());
     return -1;
   }
 
@@ -61,7 +57,7 @@ int Interface_GUIDialogContextMenu::open(KODI_HANDLE kodiBase,
   for (unsigned int i = 0; i < size; ++i)
     choices.Add(i, entries[i]);
 
-  return dialog->Show(choices);
+  return CGUIDialogContextMenu::Show(choices);
 }
 
 } /* namespace ADDON */

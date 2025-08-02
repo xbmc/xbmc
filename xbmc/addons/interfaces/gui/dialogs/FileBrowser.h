@@ -11,6 +11,7 @@
 #include "addons/kodi-dev-kit/include/kodi/c-api/gui/dialogs/filebrowser.h"
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CMediaSource;
@@ -106,7 +107,7 @@ extern "C"
 
   private:
     static void GetVECShares(std::vector<CMediaSource>& vecShares,
-                             const std::string& strShares,
+                             std::string_view strShares,
                              const std::string& strPath);
   };
 
