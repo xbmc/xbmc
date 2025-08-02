@@ -13,6 +13,8 @@ IF EXIST %WORKSPACE%\project\Win32BuildSetup\BUILD_WIN32 rmdir %WORKSPACE%\proje
 rem also clean 'build' dir used to build ffmpeg as git clean has trouble to remove some times
 IF EXIST %WORKSPACE%\project\BuildDependencies\build rmdir %WORKSPACE%\project\BuildDependencies\build /S /Q
 
+IF EXIST %WORKSPACE%\project\BuildDependencies\downloads rmdir %WORKSPACE%\project\BuildDependencies\downloads /S /Q
+
 rem daemonized executables block mingw from being cleaned with git
 TASKKILL /IM "dirmngr.exe" /F >nul 2>&1
 TASKKILL /IM "gpg-agent.exe" /F >nul 2>&1
