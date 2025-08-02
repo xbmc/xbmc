@@ -91,7 +91,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
   std::string profilename = parameterObject["profile"].asString();
   int index = profileManager->GetProfileIndex(profilename);
 
-  if (index < 0)
+  if (index <= INVALID_PROFILE_ID)
     return InvalidParams;
 
   // get the profile

@@ -194,26 +194,27 @@ bool CProfileManager::Load()
 
   if (m_profiles.empty())
   { // add the master user
-    CProfile profile("special://masterprofile/", "Master user", 0);
+    CProfile profile("special://masterprofile/", "Master user", MASTER_PROFILE_ID);
     AddProfile(profile);
   }
 
   // check the validity of the previous profile index
   if (m_lastUsedProfile >= m_profiles.size())
-    m_lastUsedProfile = 0;
+    m_lastUsedProfile = MASTER_PROFILE_ID;
 
   SetCurrentProfileId(m_lastUsedProfile);
 
   // check the validity of the auto login profile index
-  if (m_autoLoginProfile < -1 || m_autoLoginProfile >= (int)m_profiles.size())
-    m_autoLoginProfile = -1;
-  else if (m_autoLoginProfile >= 0)
+  if (m_autoLoginProfile < INVALID_PROFILE_ID ||
+      m_autoLoginProfile >= static_cast<int>(m_profiles.size()))
+    m_autoLoginProfile = INVALID_PROFILE_ID;
+  else if (m_autoLoginProfile > INVALID_PROFILE_ID)
     SetCurrentProfileId(m_autoLoginProfile);
 
   // the login screen runs as the master profile, so if we're using this, we need to ensure
   // we switch to the master profile
   if (m_usingLoginScreen)
-    SetCurrentProfileId(0);
+    SetCurrentProfileId(MASTER_PROFILE_ID);
 
   return ret;
 }
@@ -248,9 +249,9 @@ void CProfileManager::Clear()
   m_usingLoginScreen = false;
   m_profileLoadedForLogin = false;
   m_previousProfileLoadedForLogin = false;
-  m_lastUsedProfile = 0;
-  m_nextProfileId = 0;
-  SetCurrentProfileId(0);
+  m_lastUsedProfile = MASTER_PROFILE_ID;
+  m_nextProfileId = MASTER_PROFILE_ID;
+  SetCurrentProfileId(MASTER_PROFILE_ID);
   m_profiles.clear();
 }
 
@@ -268,7 +269,7 @@ void CProfileManager::PrepareLoadProfile(unsigned int profileIndex)
   // stop PVR related services
   pvrManager.Stop();
 
-  if (profileIndex != 0 || !IsMasterProfile())
+  if (profileIndex != MASTER_PROFILE_ID || !IsMasterProfile())
     networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
 }
 
@@ -285,7 +286,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
   PrepareLoadProfile(index);
 
-  if (index == 0 && IsMasterProfile())
+  if (index == MASTER_PROFILE_ID && IsMasterProfile())
   {
     CGUIWindow* pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_HOME);
     if (pWindow)
@@ -336,7 +337,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
     infoMgr.GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
   }
 
-  if (m_currentProfile != 0)
+  if (m_currentProfile != MASTER_PROFILE_ID)
   {
     CXBMCTinyXML doc;
     if (doc.LoadFile(URIUtils::AddFileToFolder(GetUserDataFolder(), "guisettings.xml")))
@@ -414,7 +415,8 @@ void CProfileManager::FinalizeLoadProfile()
   favouritesManager.ReInit(GetProfileUserDataFolder());
 
   // Start these operations only when a profile is loaded, not on the login screen
-  if (!m_profileLoadedForLogin || (m_profileLoadedForLogin && m_lastUsedProfile == 0))
+  if (!m_profileLoadedForLogin ||
+      (m_profileLoadedForLogin && m_lastUsedProfile == MASTER_PROFILE_ID))
   {
     pvrManager.Init();
     serviceAddons.Start();
@@ -485,8 +487,8 @@ bool CProfileManager::DeleteProfile(unsigned int index)
     return false;
 
   // fall back to master profile if necessary
-  if ((int)index == m_autoLoginProfile)
-    m_autoLoginProfile = 0;
+  if (static_cast<int>(index) == m_autoLoginProfile)
+    m_autoLoginProfile = MASTER_PROFILE_ID;
 
   // delete profile
   std::string strDirectory = profile->getDirectory();
@@ -495,7 +497,7 @@ bool CProfileManager::DeleteProfile(unsigned int index)
   // fall back to master profile if necessary
   if (index == m_currentProfile)
   {
-    LoadProfile(0);
+    LoadProfile(MASTER_PROFILE_ID);
     m_settings->Save();
   }
 
@@ -535,7 +537,7 @@ const CProfile& CProfileManager::GetMasterProfile() const
 {
   std::unique_lock lock(m_critical);
   if (!m_profiles.empty())
-    return m_profiles[0];
+    return m_profiles[MASTER_PROFILE_ID];
 
   CLog::Log(LOGERROR, "{}: master profile doesn't exist", __FUNCTION__);
   return EmptyProfile;
@@ -578,7 +580,7 @@ int CProfileManager::GetProfileIndex(const std::string &name) const
       return i;
   }
 
-  return -1;
+  return INVALID_PROFILE_ID;
 }
 
 void CProfileManager::AddProfile(const CProfile &profile)
@@ -610,12 +612,12 @@ void CProfileManager::LoadMasterProfileForLogin()
   std::unique_lock lock(m_critical);
   // save the previous user
   m_lastUsedProfile = m_currentProfile;
-  if (m_currentProfile != 0)
+  if (m_currentProfile != MASTER_PROFILE_ID)
   {
     // determines that the (master) profile has only been loaded for login
     m_profileLoadedForLogin = true;
 
-    LoadProfile(0);
+    LoadProfile(MASTER_PROFILE_ID);
 
     // remember that the (master) profile has only been loaded for login
     m_previousProfileLoadedForLogin = true;
@@ -640,7 +642,7 @@ std::string CProfileManager::GetUserDataFolder() const
 
 std::string CProfileManager::GetProfileUserDataFolder() const
 {
-  if (m_currentProfile == 0)
+  if (m_currentProfile == MASTER_PROFILE_ID)
     return GetUserDataFolder();
 
   return URIUtils::AddFileToFolder(GetUserDataFolder(), GetCurrentProfile().getDirectory());
@@ -695,7 +697,7 @@ std::string CProfileManager::GetSavestatesFolder() const
 
 std::string CProfileManager::GetSettingsFile() const
 {
-  if (m_currentProfile == 0)
+  if (m_currentProfile == MASTER_PROFILE_ID)
     return "special://masterprofile/guisettings.xml";
 
   return "special://profile/guisettings.xml";

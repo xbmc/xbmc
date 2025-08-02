@@ -93,7 +93,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           if (bOkay)
           {
-            if (iItem >= 0)
+            if (iItem > INVALID_PROFILE_ID)
               CServiceBroker::GetAppMessenger()->PostMsg(TMSG_LOADPROFILE, iItem);
           }
           else

@@ -60,7 +60,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     return false;
 
   dialog->m_needsSaving = false;
-  dialog->m_isDefault = iProfile == 0;
+  dialog->m_isDefault = (iProfile == MASTER_PROFILE_ID);
   dialog->m_showDetails = !firstLogin;
 
   const CProfile *profile = profileManager->GetProfile(iProfile);

@@ -64,7 +64,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   // popup the context menu
   CContextButtons choices;
   choices.Add(1, 20092); // Load profile
-  if (iItem > 0)
+  if (iItem > MASTER_PROFILE_ID)
     choices.Add(2, 117); // Delete
 
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
