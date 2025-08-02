@@ -274,6 +274,21 @@ void CProfileManager::PrepareLoadProfile(unsigned int profileIndex)
 
 bool CProfileManager::LoadProfile(unsigned int index)
 {
+  std::unique_lock lock(m_critical);
+  // check if the index is valid or not
+  if (index >= m_profiles.size())
+  {
+    CLog::LogF(LOGERROR, "Invalid profile id {}", index);
+    return false;
+  }
+
+  // check if the profile is already active
+  if (m_currentProfile == index)
+  {
+    CLog::LogF(LOGWARNING, "Profile with id {} already active. Nothing to do.", index);
+    return true;
+  }
+
   PrepareLoadProfile(index);
 
   if (index == 0 && IsMasterProfile())
@@ -287,15 +302,6 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
     return true;
   }
-
-  std::unique_lock lock(m_critical);
-  // check if the index is valid or not
-  if (index >= m_profiles.size())
-    return false;
-
-  // check if the profile is already active
-  if (m_currentProfile == index)
-    return true;
 
   // save any settings of the currently used skin but only if the (master)
   // profile hasn't just been loaded as a temporary profile for login
