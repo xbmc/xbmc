@@ -219,8 +219,8 @@ extern "C"
     void RemoveItem(CFileItemPtr* fileItem);
     void ClearList();
     CFileItemPtr* GetListItem(int position);
-    int GetListSize();
-    int GetCurrentListPosition();
+    int GetListSize() const;
+    int GetCurrentListPosition() const;
     void SetCurrentListPosition(int item);
     void SetContainerProperty(const std::string& key, const std::string& value);
     void SetContainerContent(const std::string& value);
@@ -248,16 +248,16 @@ extern "C"
                               int itemNumber,
                               unsigned int button) = nullptr;
 
-    const int m_windowId;
-    int m_oldWindowId = 0;
+    const int m_windowId{0};
+    int m_oldWindowId{0};
 
   private:
     void WaitForActionEvent(unsigned int timeout);
 
-    CEvent m_actionEvent;
-    ADDON::CAddonDll* m_addon;
+    CEvent m_actionEvent{true};
+    ADDON::CAddonDll* m_addon{nullptr};
     std::string m_mediaDir;
-    bool m_isMedia;
+    bool m_isMedia{false};
   };
 
   class CGUIAddonWindowDialog : public CGUIAddonWindow
