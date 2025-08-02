@@ -2794,7 +2794,7 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
 
     SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
-    if (upgradeAction == MediaUpgradeAction::PRESERVE_PLAYCOUNT && !details.HasUniqueID() &&
+    if (upgradeAction == MediaUpgradeAction::PRESERVE_PLAYCOUNT && details.HasUniqueID() &&
         details.HasYear())
     { // query DB for any movies matching online id and year
       std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
