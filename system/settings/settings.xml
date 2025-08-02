@@ -1150,6 +1150,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.preserveplaycount" type="boolean" label="14251" help="36159">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2" label="744">
         <setting id="myvideos.stackvideos" type="boolean" label="20435" help="36182">

@@ -99,6 +99,7 @@ public:
   static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS =
       "videolibrary.ignorevideoversions";
   static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS = "videolibrary.ignorevideoextras";
+  static constexpr auto SETTING_VIDEOLIBRARY_PRESERVEPLAYCOUNT = "videolibrary.preserveplaycount";
   static constexpr auto SETTING_LOCALE_AUDIOLANGUAGE = "locale.audiolanguage";
   static constexpr auto SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG = "videoplayer.preferdefaultflag";
   static constexpr auto SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM = "videoplayer.autoplaynextitem";
