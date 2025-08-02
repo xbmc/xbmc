@@ -17,7 +17,8 @@ namespace ADDON
   class CSettingUrlEncodedString : public CSettingString
   {
   public:
-    CSettingUrlEncodedString(const std::string& id, CSettingsManager* settingsManager = nullptr);
+    explicit CSettingUrlEncodedString(const std::string& id,
+                                      CSettingsManager* settingsManager = nullptr);
     CSettingUrlEncodedString(const std::string& id,
                              int label,
                              const std::string& value,
