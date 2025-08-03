@@ -117,6 +117,7 @@ set(CMAKE_C_FLAGS_DEBUG_INIT "@platform_cflags_debug@ @platform_includes@ -isyst
 set(CMAKE_CXX_FLAGS_DEBUG_INIT "@platform_cxxflags_debug@ @platform_includes@ -isystem @prefix@/@deps_dir@/include")
 set(CMAKE_CPP_FLAGS_INIT "@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include")
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-L@prefix@/@deps_dir@/lib @platform_ldflags@")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-L@prefix@/@deps_dir@/lib @platform_ldflags@")
 set(ENV{CFLAGS} ${CMAKE_C_FLAGS})
 set(ENV{CXXFLAGS} ${CMAKE_CXX_FLAGS})
 set(ENV{CPPFLAGS} ${CMAKE_CPP_FLAGS})
