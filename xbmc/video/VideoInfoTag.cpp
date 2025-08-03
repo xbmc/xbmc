@@ -1147,6 +1147,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "filenameandpath", value))
     SetFileNameAndPath(value);
   XMLUtils::GetInt(movie, "playlist", m_iTrack);
+  XMLUtils::GetBoolean(movie, "hasvideoversions", m_hasVideoVersions);
+  XMLUtils::GetBoolean(movie, "isdefaultvideoversion", m_isDefaultVideoVersion);
 
   if (XMLUtils::GetDate(movie, "premiered", m_premiered))
   {
@@ -1873,6 +1875,7 @@ void CVideoInfoTag::CAssetInfo::ParseNative(const TiXmlElement* movie)
   if (XMLUtils::GetString(movie, "videoassettitle", value))
     m_title = value;
 
+  m_id = VIDEO_VERSION_ID_BEGIN;
   XMLUtils::GetInt(movie, "videoassetid", m_id);
 
   int assetType{-1};

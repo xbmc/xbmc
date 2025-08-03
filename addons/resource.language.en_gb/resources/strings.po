@@ -24563,7 +24563,11 @@ msgctxt "#40032"
 msgid "No similar movies were found in the library."
 msgstr ""
 
-#empty string id 40033
+#. Add version: Add another version from this disc - for Blurays
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40033"
+msgid "Add another version from this disc?"
+msgstr ""
 
 #. Addition of new extra: a movie with multiple versions cannot be turned into an extra of another movie.
 #: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
@@ -24607,7 +24611,13 @@ msgctxt "#40040"
 msgid "Are you sure to remove the extra \"{0:s}\"?"
 msgstr ""
 
-#empty strings with id 40041 to 40201
+#. Prompt to assign playlist to current movie version
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40041"
+msgid "Assign playlist to current movie version?"
+msgstr ""
+
+#empty strings with id 40042 to 40201
 
 #. Ignore different video versions settting
 #: system/settings/settings.xml
