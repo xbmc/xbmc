@@ -49,7 +49,7 @@ std::string FindTrailer(const CFileItem& item)
     URIUtils::GetParentPath(item.GetPath(), strPath);
     XFILE::CStackDirectory dir;
     std::string strPath2;
-    strPath2 = dir.GetStackedTitlePath(strFile);
+    strPath2 = dir.GetStackTitlePath(strFile);
     strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strPath2));
     CFileItem sitem(dir.GetFirstStackedFile(item.GetPath()), false);
     std::string strTBNFile(URIUtils::ReplaceExtension(ART::GetTBNFile(sitem), "-trailer"));

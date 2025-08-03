@@ -214,12 +214,7 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
 {
   std::string strFile;
   if (item.IsStack())
-  {
-    std::string strPath;
-    URIUtils::GetParentPath(item.GetPath(), strPath);
-    strFile = URIUtils::AddFileToFolder(
-        strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(item.GetPath())));
-  }
+    strFile = CStackDirectory::GetStackTitlePath(item.GetPath());
 
   std::string file = strFile.empty() ? item.GetPath() : strFile;
   if (URIUtils::IsInRAR(file) || URIUtils::IsInZIP(file))
@@ -313,7 +308,7 @@ std::string GetLocalFanart(const CFileItem& item)
     URIUtils::GetParentPath(item.GetPath(), path);
     CStackDirectory dir;
     std::string path2;
-    path2 = dir.GetStackedTitlePath(file);
+    path2 = dir.GetStackTitlePath(file);
     file = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(path2));
     CFileItem fan_item(dir.GetFirstStackedFile(item.GetPath()), false);
     std::string TBNFile(URIUtils::ReplaceExtension(GetTBNFile(fan_item), "-fanart"));
@@ -396,7 +391,7 @@ std::string GetTBNFile(const CFileItem& item, int season /* = - 1 */, int episod
     if (CFile::Exists(returnPath))
       return returnPath;
 
-    const std::string& stackPath{CStackDirectory::GetStackedTitlePath(file)};
+    const std::string& stackPath{CStackDirectory::GetStackTitlePath(file)};
     file = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(stackPath));
   }
 

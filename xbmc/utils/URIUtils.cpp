@@ -442,26 +442,8 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   }
   else if (url.IsProtocol("stack"))
   {
-    CStackDirectory dir;
-    CFileItemList items;
-    if (!dir.GetDirectory(url, items))
-      return false;
-    CURL url2(GetDirectory(items[0]->GetPath()));
-    if (url2.HasParentInHostname())
-      GetParentPath(url2.Get(), strParent);
-    else
-      strParent = url2.Get();
-    for (const auto& item : items)
-    {
-      item->SetDVDLabel(GetDirectory(item->GetPath()));
-      if (url2.HasParentInHostname())
-        item->SetPath(GetParentPath(item->GetDVDLabel()));
-      else
-        item->SetPath(item->GetDVDLabel());
-
-      GetCommonPath(strParent, item->GetPath());
-    }
-    return true;
+    strParent = CStackDirectory::GetParentPath(url.Get());
+    return !strParent.empty();
   }
   else if (url.IsProtocol("multipath"))
   {
@@ -1134,7 +1116,15 @@ bool URIUtils::IsDiscImage(const std::string& file)
 
 bool URIUtils::IsDiscImageStack(const std::string& file)
 {
-  return IsStack(file) && IsDiscImage(CStackDirectory::GetFirstStackedFile(file));
+  if (IsStack(file))
+  {
+    std::vector<std::string> paths;
+    CStackDirectory::GetPaths(file, paths);
+    for (const std::string& path : paths)
+      if (IsDiscImage(path) || IsDVDFile(path) || IsBDFile(path))
+        return true;
+  }
+  return false;
 }
 
 bool URIUtils::IsSpecial(const std::string& strFile)
