@@ -598,7 +598,7 @@ void CSavestateFlatBuffer::Finalize()
 
   savestateBuilder.add_nominal_height(m_nominalHeight);
 
-  savestateBuilder.add_display_aspect_ratio(m_nominalDisplayAspectRatio);
+  savestateBuilder.add_nominal_display_aspect_ratio(m_nominalDisplayAspectRatio);
 
   savestateBuilder.add_max_width(m_maxWidth);
 
