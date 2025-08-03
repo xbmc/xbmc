@@ -88,6 +88,13 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
 
   if (choice == 2)
   {
+    const std::string msg{StringUtils::Format(g_localizeStrings.Get(13201),
+                                              profileManager->GetProfile(iItem)->getName())};
+    using namespace KODI::MESSAGING::HELPERS;
+    if (ShowYesNoDialogText(CVariant{13200} /* Profiles */, CVariant{msg} /* Delete profile?*/) !=
+        DialogResponse::CHOICE_YES)
+      return;
+
     if (profileManager->DeleteProfile(iItem))
       iItem--;
   }
