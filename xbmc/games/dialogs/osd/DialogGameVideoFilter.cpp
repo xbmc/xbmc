@@ -125,10 +125,12 @@ void CDialogGameVideoFilter::InitVideoFilters()
 
   //! @todo Have the add-on give us the xml as a string (or parse it)
   std::string xmlFilename;
-#ifdef TARGET_WINDOWS
-  xmlFilename = "ShaderPresetsHLSLP.xml";
-#else
+#if defined(HAS_GLES)
+  xmlFilename = "ShaderPresetsGLSLP_GLES.xml";
+#elif defined(HAS_GL)
   xmlFilename = "ShaderPresetsGLSLP.xml";
+#else
+  xmlFilename = "ShaderPresetsHLSLP.xml";
 #endif
 
   const std::string homeAddonPath = CSpecialProtocol::TranslatePath(
