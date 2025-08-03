@@ -1879,7 +1879,7 @@ std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   std::string strMovieName;
   if (URIUtils::IsStack(m_strPath))
-    strMovieName = CStackDirectory::GetStackedTitlePath(m_strPath);
+    strMovieName = CStackDirectory::GetStackTitlePath(m_strPath);
   else
     strMovieName = GetBaseMoviePath(bUseFolderNames);
 
