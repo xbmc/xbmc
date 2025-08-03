@@ -152,7 +152,11 @@ jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleR
     CLog::Log(LOGINFO, "AESinkAUDIOTRACK - AudioTrack creation (channelMask {:#08x}): {}",
               channelMask, e.what());
   }
-
+  if (jniAt)
+  {
+    jniAt->pause();
+    jniAt->flush();
+  }
   return jniAt;
 }
 
