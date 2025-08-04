@@ -70,7 +70,7 @@ void CJobQueue::CJobPointer::CancelJob()
 struct CJobQueue::JobFinder
 {
   explicit JobFinder(const CJob* job) : m_job(job) {}
-  bool operator()(const CJobPointer& jobPtr) { return jobPtr.GetJob()->Equals(m_job); }
+  bool operator()(const CJobPointer& jobPtr) { return jobPtr.GetJob() == m_job; }
 
   const CJob* m_job{nullptr};
 };
@@ -117,10 +117,12 @@ void CJobQueue::CancelJob(const CJob* job)
 
 bool CJobQueue::AddJob(CJob* job)
 {
+  const auto jobMatcher = [job](const CJobPointer& jobPtr) { return jobPtr.GetJob()->Equals(job); };
+
   std::unique_lock lock(m_section);
   // check if we have this job already.  If so, we're done.
-  if (std::ranges::find_if(m_jobQueue, JobFinder(job)) != m_jobQueue.cend() ||
-      std::ranges::find_if(m_processing, JobFinder(job)) != m_processing.cend())
+  if (std::ranges::find_if(m_jobQueue, jobMatcher) != m_jobQueue.cend() ||
+      std::ranges::find_if(m_processing, jobMatcher) != m_processing.cend())
   {
     delete job;
     return false;
