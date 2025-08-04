@@ -37,9 +37,11 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
+#include <chrono>
 #include <memory>
 
 using namespace KODI;
+using namespace std::chrono_literals;
 
 CApplicationPlayerCallback::CApplicationPlayerCallback()
 {
@@ -78,7 +80,7 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   auto& components = CServiceBroker::GetAppComponents();
   const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
 
-  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
+  if (stackHelper->IsPlayingStack())
     itemCurrentFile = std::make_shared<CFileItem>(*stackHelper->GetRegisteredStack(file));
   else
     itemCurrentFile = std::make_shared<CFileItem>(file);
@@ -161,7 +163,7 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
 
   if (stackHelper->GetRegisteredStack(fileItem) != nullptr)
   {
-    if (stackHelper->GetRegisteredStackTotalTimeMs(fileItem) > 0)
+    if (stackHelper->GetRegisteredStackTotalTimeMs(fileItem) > 0ms)
     {
       // Regular (not disc image) stack case: We have to save the bookmark on the stack.
       fileItem = *stackHelper->GetRegisteredStack(file);
@@ -169,11 +171,13 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
       // The bookmark coming from the player is only relative to the current part, thus needs
       // to be corrected with these attributes (start time will be 0 for non-stackparts).
       bookmark.timeInSeconds +=
-          static_cast<double>(stackHelper->GetRegisteredStackPartStartTimeMs(file)) / 1000.0;
+          static_cast<double>(stackHelper->GetRegisteredStackPartStartTimeMs(file).count()) /
+          1000.0;
 
-      const uint64_t registeredStackTotalTimeMs{stackHelper->GetRegisteredStackTotalTimeMs(file)};
-      if (registeredStackTotalTimeMs > 0)
-        bookmark.totalTimeInSeconds = static_cast<double>(registeredStackTotalTimeMs) / 1000.0;
+      const auto registeredStackTotalTimeMs{stackHelper->GetRegisteredStackTotalTimeMs(file)};
+      if (registeredStackTotalTimeMs > 0ms)
+        bookmark.totalTimeInSeconds =
+            static_cast<double>(registeredStackTotalTimeMs.count()) / 1000.0;
     }
     // Any stack case: We need to save the part number.
     bookmark.partNumber =
