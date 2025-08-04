@@ -1034,6 +1034,13 @@ int64_t CDVDInputStreamBluray::GetLength()
   return static_cast<int64_t>(bd_get_title_size(m_bd));
 }
 
+int64_t CDVDInputStreamBluray::GetDuration()
+{
+  if (m_titleInfo)
+    return static_cast<int64_t>(m_titleInfo->duration / 90);
+  return 0;
+}
+
 static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, std::string &language)
 {
   int i=0;
