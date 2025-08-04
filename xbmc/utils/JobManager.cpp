@@ -21,20 +21,19 @@ using namespace std::chrono_literals;
 
 bool CJob::ShouldCancel(unsigned int progress, unsigned int total) const
 {
-  if (m_callback)
-    return m_callback->OnJobProgress(progress, total, this);
+  if (m_progressCallback)
+    return m_progressCallback->OnJobProgress(progress, total, this);
   return false;
 }
 
-CJobWorker::CJobWorker(CJobManager* manager) : CThread("JobWorker")
+CJobWorker::CJobWorker(CJobManager& manager) : CThread("JobWorker"), m_jobManager(manager)
 {
-  m_jobManager = manager;
   Create(true); // start work immediately, and kill ourselves when we're done
 }
 
 CJobWorker::~CJobWorker()
 {
-  m_jobManager->RemoveWorker(this);
+  m_jobManager.RemoveWorker(this);
   if (!IsAutoDelete())
     StopThread();
 }
@@ -45,7 +44,7 @@ void CJobWorker::Process()
   while (true)
   {
     // request an item from our manager (this call is blocking)
-    CJob* job = m_jobManager->GetNextJob();
+    CJob* job = m_jobManager.GetNextJob();
     if (!job)
       break;
 
@@ -56,9 +55,9 @@ void CJobWorker::Process()
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "{} error processing job {}", __FUNCTION__, job->GetType());
+      CLog::LogF(LOGERROR, "Error processing job {}", job->GetType());
     }
-    m_jobManager->OnJobComplete(success, job);
+    m_jobManager.OnJobComplete(success, job);
   }
 }
 
@@ -67,6 +66,18 @@ void CJobQueue::CJobPointer::CancelJob()
   CServiceBroker::GetJobManager()->CancelJob(m_id);
   m_id = 0;
 }
+
+struct CJobQueue::JobFinder
+{
+  explicit JobFinder(const CJob* job) : m_job(job) {}
+  bool operator()(const CJobPointer& jobPtr)
+  {
+    // Note: Calls virtual CJob::operator==(const CJob*)
+    return *(jobPtr.GetJob()) == m_job;
+  }
+
+  const CJob* m_job{nullptr};
+};
 
 CJobQueue::CJobQueue(bool lifo, unsigned int jobsAtOnce, CJob::PRIORITY priority)
   : m_jobsAtOnce(jobsAtOnce),
@@ -93,15 +104,15 @@ void CJobQueue::OnJobAbort(unsigned int jobID, CJob* job)
 void CJobQueue::CancelJob(const CJob* job)
 {
   std::unique_lock lock(m_section);
-  Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
-  if (i != m_processing.end())
+  const auto i = std::ranges::find_if(m_processing, JobFinder(job));
+  if (i != m_processing.cend())
   {
     i->CancelJob();
     m_processing.erase(i);
     return;
   }
-  Queue::iterator j = find(m_jobQueue.begin(), m_jobQueue.end(), job);
-  if (j != m_jobQueue.end())
+  const auto j = std::ranges::find_if(m_jobQueue, JobFinder(job));
+  if (j != m_jobQueue.cend())
   {
     j->FreeJob();
     m_jobQueue.erase(j);
@@ -112,8 +123,8 @@ bool CJobQueue::AddJob(CJob* job)
 {
   std::unique_lock lock(m_section);
   // check if we have this job already.  If so, we're done.
-  if (find(m_jobQueue.begin(), m_jobQueue.end(), job) != m_jobQueue.end() ||
-      find(m_processing.begin(), m_processing.end(), job) != m_processing.end())
+  if (std::ranges::find_if(m_jobQueue, JobFinder(job)) != m_jobQueue.cend() ||
+      std::ranges::find_if(m_processing, JobFinder(job)) != m_processing.cend())
   {
     delete job;
     return false;
@@ -133,8 +144,8 @@ void CJobQueue::OnJobNotify(CJob* job)
   std::unique_lock lock(m_section);
 
   // check if this job is in our processing list
-  const auto it = std::find(m_processing.begin(), m_processing.end(), job);
-  if (it != m_processing.end())
+  const auto it = std::ranges::find_if(m_processing, JobFinder(job));
+  if (it != m_processing.cend())
     m_processing.erase(it);
   // request a new job be queued
   QueueNextJob();
@@ -146,8 +157,8 @@ void CJobQueue::QueueNextJob()
   while (!m_jobQueue.empty() && m_processing.size() < m_jobsAtOnce)
   {
     CJobPointer& job = m_jobQueue.back();
-    job.m_id = CServiceBroker::GetJobManager()->AddJob(job.m_job, this, m_priority);
-    if (job.m_id > 0)
+    job.SetId(CServiceBroker::GetJobManager()->AddJob(job.GetJob(), this, m_priority));
+    if (job.GetId() > 0)
     {
       m_processing.emplace_back(job);
       m_jobQueue.pop_back();
@@ -160,15 +171,15 @@ void CJobQueue::QueueNextJob()
 void CJobQueue::CancelJobs()
 {
   std::unique_lock lock(m_section);
-  for_each(m_processing.begin(), m_processing.end(), [](CJobPointer& jp) { jp.CancelJob(); });
-  for_each(m_jobQueue.begin(), m_jobQueue.end(), [](CJobPointer& jp) { jp.FreeJob(); });
+  std::ranges::for_each(m_processing, [](CJobPointer& jp) { jp.CancelJob(); });
+  std::ranges::for_each(m_jobQueue, [](CJobPointer& jp) { jp.FreeJob(); });
   m_jobQueue.clear();
   m_processing.clear();
 }
 
 bool CJobQueue::IsProcessing() const
 {
-  return CServiceBroker::GetJobManager()->m_running &&
+  return CServiceBroker::GetJobManager()->IsRunning() &&
          (!m_processing.empty() || !m_jobQueue.empty());
 }
 
@@ -178,11 +189,18 @@ bool CJobQueue::QueueEmpty() const
   return m_jobQueue.empty();
 }
 
-CJobManager::CJobManager()
+struct CJobManager::JobFinder
 {
-  m_jobCounter = 0;
-  m_running = true;
-  m_pauseJobs = false;
+  explicit JobFinder(const CJob* job) : m_job(job) {}
+  bool operator()(const CWorkItem& workItem) { return workItem.GetJob() == m_job; }
+
+  const CJob* m_job{nullptr};
+};
+
+bool CJobManager::IsRunning() const
+{
+  std::unique_lock lock(m_section);
+  return m_running;
 }
 
 void CJobManager::Restart()
@@ -203,24 +221,24 @@ void CJobManager::CancelJobs()
   for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_DEDICATED;
        ++priority)
   {
-    std::for_each(m_jobQueue[priority].begin(), m_jobQueue[priority].end(),
-                  [](CWorkItem& wi)
-                  {
-                    if (wi.m_callback)
-                      wi.m_callback->OnJobAbort(wi.m_id, wi.m_job);
-                    wi.FreeJob();
-                  });
+    std::ranges::for_each(m_jobQueue[priority],
+                          [](CWorkItem& wi)
+                          {
+                            if (wi.GetCallback())
+                              wi.GetCallback()->OnJobAbort(wi.GetId(), wi.GetJob());
+                            wi.FreeJob();
+                          });
     m_jobQueue[priority].clear();
   }
 
   // cancel any callbacks on jobs still processing
-  std::for_each(m_processing.begin(), m_processing.end(),
-                [](CWorkItem& wi)
-                {
-                  if (wi.m_callback)
-                    wi.m_callback->OnJobAbort(wi.m_id, wi.m_job);
-                  wi.Cancel();
-                });
+  std::ranges::for_each(m_processing,
+                        [](CWorkItem& wi)
+                        {
+                          if (wi.GetCallback())
+                            wi.GetCallback()->OnJobAbort(wi.GetId(), wi.GetJob());
+                          wi.Cancel();
+                        });
 
   // tell our workers to finish
   while (!m_workers.empty())
@@ -249,10 +267,10 @@ unsigned int CJobManager::AddJob(CJob* job, IJobCallback* callback, CJob::PRIORI
 
   // create a work item for this job
   CWorkItem work(job, m_jobCounter, priority, callback);
-  m_jobQueue[priority].push_back(work);
+  m_jobQueue[priority].emplace_back(work);
 
   StartWorkers(priority);
-  return work.m_id;
+  return work.GetId();
 }
 
 void CJobManager::CancelJob(unsigned int jobID)
@@ -263,18 +281,20 @@ void CJobManager::CancelJob(unsigned int jobID)
   for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_DEDICATED;
        ++priority)
   {
-    JobQueue::iterator i = find(m_jobQueue[priority].begin(), m_jobQueue[priority].end(), jobID);
-    if (i != m_jobQueue[priority].end())
+    const auto i = std::ranges::find_if(m_jobQueue[priority],
+                                        [jobID](const auto& wi) { return wi.GetId() == jobID; });
+    if (i != m_jobQueue[priority].cend())
     {
-      delete i->m_job;
+      i->FreeJob();
       m_jobQueue[priority].erase(i);
       return;
     }
   }
   // or if we're processing it
-  Processing::iterator it = find(m_processing.begin(), m_processing.end(), jobID);
-  if (it != m_processing.end())
-    it->m_callback = NULL; // job is in progress, so only thing to do is to remove callback
+  const auto it =
+      std::ranges::find_if(m_processing, [jobID](const auto& wi) { return wi.GetId() == jobID; });
+  if (it != m_processing.cend())
+    it->SetCallback(nullptr); // job is in progress, so only thing to do is to remove callback
 }
 
 void CJobManager::StartWorkers(CJob::PRIORITY priority)
@@ -293,7 +313,7 @@ void CJobManager::StartWorkers(CJob::PRIORITY priority)
   }
 
   // everyone is busy - we need more workers
-  m_workers.push_back(new CJobWorker(this));
+  m_workers.emplace_back(new CJobWorker(*this));
 }
 
 CJob* CJobManager::PopJob()
@@ -309,16 +329,16 @@ CJob* CJobManager::PopJob()
         m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
     {
       // pop the job off the queue
-      CWorkItem job = m_jobQueue[priority].front();
+      const CWorkItem job{m_jobQueue[priority].front()};
       m_jobQueue[priority].pop_front();
 
       // add to the processing vector
-      m_processing.push_back(job);
-      job.m_job->m_callback = this;
-      return job.m_job;
+      m_processing.emplace_back(job);
+      job.GetJob()->SetProgressCallback(this);
+      return job.GetJob();
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 void CJobManager::PauseJobs()
@@ -340,28 +360,20 @@ bool CJobManager::IsProcessing(const CJob::PRIORITY& priority) const
   if (m_pauseJobs)
     return false;
 
-  for (Processing::const_iterator it = m_processing.begin(); it < m_processing.end(); ++it)
-  {
-    if (priority == it->m_priority)
-      return true;
-  }
-  return false;
+  return std::ranges::any_of(m_processing,
+                             [priority](const auto& wi) { return wi.GetPriority() == priority; });
 }
 
 int CJobManager::IsProcessing(const std::string& type) const
 {
-  int jobsMatched = 0;
   std::unique_lock lock(m_section);
 
   if (m_pauseJobs)
     return 0;
 
-  for (Processing::const_iterator it = m_processing.begin(); it < m_processing.end(); ++it)
-  {
-    if (type == std::string(it->m_job->GetType()))
-      jobsMatched++;
-  }
-  return jobsMatched;
+  return static_cast<int>(
+      std::ranges::count_if(m_processing, [type](const auto& wi)
+                            { return std::string(wi.GetJob()->GetType()) == type; }));
 }
 
 CJob* CJobManager::GetNextJob()
@@ -389,14 +401,14 @@ bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const
 {
   std::unique_lock lock(m_section);
   // find the job in the processing queue, and check whether it's cancelled (no callback)
-  Processing::const_iterator i = find(m_processing.begin(), m_processing.end(), job);
-  if (i != m_processing.end())
+  const auto i = std::ranges::find_if(m_processing, JobFinder(job));
+  if (i != m_processing.cend())
   {
     CWorkItem item(*i);
     lock.unlock(); // leave section prior to call
-    if (item.m_callback)
+    if (item.GetCallback())
     {
-      item.m_callback->OnJobProgress(item.m_id, progress, total, job);
+      item.GetCallback()->OnJobProgress(item.GetId(), progress, total, job);
       return false;
     }
   }
@@ -407,24 +419,24 @@ void CJobManager::OnJobComplete(bool success, CJob* job)
 {
   std::unique_lock lock(m_section);
   // remove the job from the processing queue
-  Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
-  if (i != m_processing.end())
+  const auto i = std::ranges::find_if(m_processing, JobFinder(job));
+  if (i != m_processing.cend())
   {
     // tell any listeners we're done with the job, then delete it
     CWorkItem item(*i);
     lock.unlock();
     try
     {
-      if (item.m_callback)
-        item.m_callback->OnJobComplete(item.m_id, success, item.m_job);
+      if (item.GetCallback())
+        item.GetCallback()->OnJobComplete(item.GetId(), success, item.GetJob());
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "{} error processing job {}", __FUNCTION__, item.m_job->GetType());
+      CLog::LogF(LOGERROR, "Error processing job {}", item.GetJob()->GetType());
     }
     lock.lock();
-    Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);
-    if (j != m_processing.end())
+    const auto j = std::ranges::find_if(m_processing, JobFinder(job));
+    if (j != m_processing.cend())
       m_processing.erase(j);
     lock.unlock();
     item.FreeJob();
@@ -435,8 +447,8 @@ void CJobManager::RemoveWorker(const CJobWorker* worker)
 {
   std::unique_lock lock(m_section);
   // remove our worker
-  Workers::iterator i = find(m_workers.begin(), m_workers.end(), worker);
-  if (i != m_workers.end())
+  const auto i = std::ranges::find(m_workers, worker);
+  if (i != m_workers.cend())
     m_workers.erase(i); // workers auto-delete
 }
 

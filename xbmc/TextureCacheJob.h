@@ -53,10 +53,12 @@ public:
 class CTextureCacheJob : public CJob
 {
 public:
+  static constexpr const char* JOB_TYPE_CACHE_IMAGE = "cacheimage";
+
   CTextureCacheJob(const std::string &url, const std::string &oldHash = "");
   ~CTextureCacheJob() override;
 
-  const char* GetType() const override { return kJobTypeCacheImage; }
+  const char* GetType() const override { return JOB_TYPE_CACHE_IMAGE; }
   bool operator==(const CJob *job) const override;
   bool DoWork() override;
 

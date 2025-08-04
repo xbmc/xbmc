@@ -8,13 +8,9 @@
 
 #pragma once
 
-class CJob;
-
 #include <stddef.h>
 
-#define kJobTypeMediaFlags "mediaflags"
-#define kJobTypeCacheImage "cacheimage"
-#define kJobTypeDDSCompress "ddscompress"
+class CJob;
 
 /*!
  \ingroup jobs
@@ -121,7 +117,8 @@ public:
     PRIORITY_HIGH,
     PRIORITY_DEDICATED, // will create a new worker if no worker is available at queue time
   };
-  CJob() { m_callback = NULL; }
+
+  CJob() = default;
 
   /*!
    \brief Destructor for job objects.
@@ -159,6 +156,15 @@ public:
   virtual bool operator==(const CJob* job) const { return false; }
 
   /*!
+   \brief Function to set a callback for jobs to report progress.
+
+   \param callback the callback to use to report progress.
+
+   \sa IJobCallback::OnJobProgress()
+   */
+  void SetProgressCallback(CJobManager* callback) { m_progressCallback = callback; }
+
+  /*!
    \brief Function for longer jobs to report progress and check whether they have been cancelled.
 
    Jobs that contain loops that may take time should check this routine each iteration of the loop,
@@ -173,6 +179,5 @@ public:
   virtual bool ShouldCancel(unsigned int progress, unsigned int total) const;
 
 private:
-  friend class CJobManager;
-  CJobManager* m_callback;
+  CJobManager* m_progressCallback{nullptr};
 };
