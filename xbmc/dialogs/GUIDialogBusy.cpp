@@ -80,14 +80,16 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
         CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_DIALOG_BUSY));
     if (dialog)
     {
-      if (++dialog->m_waiters == 1)
+      const uint32_t level = ++dialog->m_waiters;
+      if (level == 1)
       {
         dialog->Open();
       }
 
       while (!event.Wait(1ms))
       {
-        dialog->ProcessRenderLoop(false);
+        if (level == dialog->m_waiters)
+          dialog->ProcessRenderLoop(false);
         if (allowCancel && dialog->m_cancelled)
         {
           cancelled = true;
