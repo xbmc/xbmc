@@ -21,7 +21,7 @@ CMusicLibraryCleaningJob::CMusicLibraryCleaningJob(CGUIDialogProgress* progressD
 
 CMusicLibraryCleaningJob::~CMusicLibraryCleaningJob() = default;
 
-bool CMusicLibraryCleaningJob::operator==(const CJob* job) const
+bool CMusicLibraryCleaningJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;

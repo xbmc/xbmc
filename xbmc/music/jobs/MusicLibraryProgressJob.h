@@ -21,8 +21,7 @@ public:
 
   // implementation of CJob
   bool DoWork() override;
-  const char *GetType() const override { return "CMusicLibraryProgressJob"; }
-  bool operator==(const CJob* job) const override { return false; }
+  const char* GetType() const override { return "CMusicLibraryProgressJob"; }
 
 protected:
   explicit CMusicLibraryProgressJob(CGUIDialogProgressBarHandle* progressBar);

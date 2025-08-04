@@ -31,7 +31,7 @@ CVideoLibraryResetResumePointJob::CVideoLibraryResetResumePointJob(
 {
 }
 
-bool CVideoLibraryResetResumePointJob::operator==(const CJob* job) const
+bool CVideoLibraryResetResumePointJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;

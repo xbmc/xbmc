@@ -145,7 +145,7 @@ public:
    \brief Function that returns the type of job.
 
    CJob subclasses may optionally implement this function to specify the type of job.
-   This is useful for the CJobManager::AddLIFOJob() routine, which preempts similar jobs
+   This is useful for the CJobManager::AddJob() routine, which preempts similar jobs
    with the new job.
 
    \return a unique character string describing the job.
@@ -153,7 +153,19 @@ public:
    */
   virtual const char* GetType() const { return ""; }
 
-  virtual bool operator==(const CJob* job) const { return false; }
+  /*!
+   \brief Function that compares this job instance with the given job instance.
+
+   CJob subclasses may optionally implement this to provide customized comparison functionality.
+   This is useful for the CJobManager::AddJob() routine, which preempts similar jobs
+   with the new job.
+
+   \param job the job to compared with this CJob instance.
+   \return if true, the two jobs are equal.
+
+   \sa CJobManager::AddJob()
+   */
+  virtual bool Equals(const CJob* job) const { return false; }
 
   /*!
    \brief Function to set a callback for jobs to report progress.

@@ -50,7 +50,7 @@ public:
   ~CCDDARipJob() override;
 
   const char* GetType() const override { return "cdrip"; }
-  bool operator==(const CJob* job) const override;
+  bool Equals(const CJob* job) const override;
   bool DoWork() override;
   const std::string& GetOutput() const { return m_output; }
 

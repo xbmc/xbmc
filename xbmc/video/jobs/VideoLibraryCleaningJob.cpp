@@ -25,7 +25,7 @@ CVideoLibraryCleaningJob::CVideoLibraryCleaningJob(const std::set<int>& paths, C
 
 CVideoLibraryCleaningJob::~CVideoLibraryCleaningJob() = default;
 
-bool CVideoLibraryCleaningJob::operator==(const CJob* job) const
+bool CVideoLibraryCleaningJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;

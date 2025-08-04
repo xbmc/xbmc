@@ -70,11 +70,7 @@ void CJobQueue::CJobPointer::CancelJob()
 struct CJobQueue::JobFinder
 {
   explicit JobFinder(const CJob* job) : m_job(job) {}
-  bool operator()(const CJobPointer& jobPtr)
-  {
-    // Note: Calls virtual CJob::operator==(const CJob*)
-    return *(jobPtr.GetJob()) == m_job;
-  }
+  bool operator()(const CJobPointer& jobPtr) { return jobPtr.GetJob()->Equals(m_job); }
 
   const CJob* m_job{nullptr};
 };

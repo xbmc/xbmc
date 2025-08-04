@@ -28,7 +28,7 @@ bool CMusicLibraryScanningJob::Cancel()
   return true;
 }
 
-bool CMusicLibraryScanningJob::operator==(const CJob* job) const
+bool CMusicLibraryScanningJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;

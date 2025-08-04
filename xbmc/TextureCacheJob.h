@@ -59,7 +59,7 @@ public:
   ~CTextureCacheJob() override;
 
   const char* GetType() const override { return JOB_TYPE_CACHE_IMAGE; }
-  bool operator==(const CJob *job) const override;
+  bool Equals(const CJob* job) const override;
   bool DoWork() override;
 
   /*! \brief retrieve a hash for the given image
@@ -108,7 +108,7 @@ public:
   explicit CTextureUseCountJob(const std::vector<CTextureDetails> &textures);
 
   const char* GetType() const override { return "usecount"; }
-  bool operator==(const CJob *job) const override;
+  bool Equals(const CJob* job) const override;
   bool DoWork() override;
 
 private:

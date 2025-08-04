@@ -236,7 +236,7 @@ public:
   ~CDirectoryJob() override = default;
 
   const char* GetType() const override { return "directory"; }
-  bool operator==(const CJob* job) const override
+  bool Equals(const CJob* job) const override
   {
     if (strcmp(job->GetType(), GetType()) == 0)
     {

@@ -44,7 +44,7 @@ public:
     return true;
   }
 
-  bool operator==(const CJob* job) const override { return this == job; }
+  bool Equals(const CJob* job) const override { return this == job; }
 
 private:
   CLambdaJob() = delete;
@@ -58,7 +58,7 @@ private:
 
  Holds a queue of jobs to be processed sequentially, either first in,first out
  or last in, first out.  Jobs are unique, so queueing multiple copies of the same job
- (based on the CJob::operator==) will not add additional jobs.
+ (based on result of virtual CJob::Equals()) will not add additional jobs.
 
  Classes should subclass this class and override OnJobCallback should they require
  information from the job.

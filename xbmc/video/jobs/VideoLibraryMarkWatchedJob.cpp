@@ -33,7 +33,7 @@ CVideoLibraryMarkWatchedJob::CVideoLibraryMarkWatchedJob(const std::shared_ptr<C
 
 CVideoLibraryMarkWatchedJob::~CVideoLibraryMarkWatchedJob() = default;
 
-bool CVideoLibraryMarkWatchedJob::operator==(const CJob* job) const
+bool CVideoLibraryMarkWatchedJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;

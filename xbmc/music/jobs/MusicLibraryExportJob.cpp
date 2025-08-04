@@ -23,7 +23,7 @@ CMusicLibraryExportJob::CMusicLibraryExportJob(const CLibExportSettings& setting
 
 CMusicLibraryExportJob::~CMusicLibraryExportJob() = default;
 
-bool CMusicLibraryExportJob::operator==(const CJob* job) const
+bool CMusicLibraryExportJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;
