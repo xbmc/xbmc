@@ -184,10 +184,14 @@
 #include "platform/win32/threads/Win32Exception.h"
 #endif
 
+#include <charconv>
 #include <chrono>
 #include <cmath>
 #include <memory>
 #include <mutex>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include <tinyxml.h>
 
@@ -3556,12 +3560,14 @@ void CApplication::SeekTime( double dTime )
           std::chrono::milliseconds(static_cast<int64_t>(dTime * 1000.0)));
       uint64_t startOfNewFile = stackHelper->GetStackPartStartTimeMs(partNumberToPlay).count();
       if (partNumberToPlay == stackHelper->GetCurrentPartNumber())
-        appPlayer->SeekTime(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
+        appPlayer->SeekTime(static_cast<int64_t>(dTime * 1000.0) -
+                            static_cast<int64_t>(startOfNewFile));
       else
       { // seeking to a new file
         stackHelper->SetStackPartCurrentFileItem(partNumberToPlay);
         CFileItem* item = new CFileItem(stackHelper->GetCurrentStackPartFileItem());
-        item->SetStartOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
+        item->SetStartOffset(static_cast<int64_t>(dTime * 1000.0) -
+                             static_cast<int64_t>(startOfNewFile));
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));
