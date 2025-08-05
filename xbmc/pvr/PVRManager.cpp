@@ -1005,8 +1005,11 @@ void CPVRManager::ConnectionStateChange(const CPVRClient* client,
                                         PVR_CONNECTION_STATE state,
                                         const std::string& message) const
 {
-  CServiceBroker::GetJobManager()->Submit([this, client, connectString, state, message] {
-    Clients()->ConnectionStateChange(client, connectString, state, message);
-    return true;
-  });
+  CServiceBroker::GetJobManager()->Submit(
+      [this, client, connectString, state, message]
+      {
+        m_addons->ConnectionStateChange(client, connectString, state, message);
+        return true;
+      },
+      CJob::PRIORITY_DEDICATED);
 }
