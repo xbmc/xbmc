@@ -32,6 +32,8 @@ public class XBMCProperties
   public static void initializeProperties()
   {
     String propfn = Storage.getPrimaryStorageVolumePath(mContext) + "/xbmc_env.properties";
+    Log.i(TAG, "XBMCProperties: Expected at " + propfn);
+
     File fProp = new File(propfn);
     if (fProp.exists())
     {
