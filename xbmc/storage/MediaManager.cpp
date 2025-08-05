@@ -38,6 +38,7 @@
 #ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDiscCache.h"
 #endif
+#include "filesystem/File.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -86,22 +87,35 @@ void CMediaManager::Initialize()
   m_platformStorage->Initialize();
 }
 
-bool CMediaManager::LoadSources()
+void CMediaManager::LoadSources()
 {
   // clear our location list
   m_locations.clear();
 
+  // Add-on sources are always present (and marked as "ignored" when saving XML)
+  LoadAddonSources();
+
+  // No more work to do if mediasources.xml doesn't exist
+  if (!XFILE::CFile::Exists(MEDIA_SOURCES_XML))
+  {
+    CLog::Log(LOGDEBUG, "No media sources file at {}", MEDIA_SOURCES_XML);
+    return;
+  }
+
   // load xml file...
   CXBMCTinyXML2 xmlDoc;
-  if ( !xmlDoc.LoadFile( MEDIA_SOURCES_XML ) )
-    return false;
+  if (!xmlDoc.LoadFile(MEDIA_SOURCES_XML))
+  {
+    CLog::Log(LOGERROR, "Error loading {}, Line {} ({})", MEDIA_SOURCES_XML, xmlDoc.ErrorLineNum(),
+              xmlDoc.ErrorStr());
+    return;
+  }
 
   auto* pRootElement = xmlDoc.RootElement();
   if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "mediasources") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading {}, Line {} ({})", MEDIA_SOURCES_XML, xmlDoc.ErrorLineNum(),
-              xmlDoc.ErrorStr());
-    return false;
+    CLog::Log(LOGERROR, "Error loading {}, missing root <mediasources> element", MEDIA_SOURCES_XML);
+    return;
   }
 
   // load the <network> block
@@ -121,8 +135,6 @@ bool CMediaManager::LoadSources()
       pLocation = pLocation->NextSiblingElement("location");
     }
   }
-  LoadAddonSources();
-  return true;
 }
 
 bool CMediaManager::SaveSources()
