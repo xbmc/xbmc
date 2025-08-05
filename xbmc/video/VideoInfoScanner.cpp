@@ -58,6 +58,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <ranges>
 #include <set>
 #include <string>
 #include <unordered_map>
@@ -73,29 +74,68 @@ using KODI::UTILITY::CDigest;
 
 namespace
 {
+
+/**
+ * \brief Maximum allowed number of episodes in a single episode range.
+ *
+ * The value 50 was chosen as a safety limit to prevent accidental processing of
+ * extremely large episode ranges, which could be caused by malformed filenames or
+ * incorrect regular expression matches. Note this is a per-file number and not the
+ * total number of episodes in a season.
+ */
+constexpr int MAX_EPISODE_RANGE = 50;
+
+// Character following season/episode range must be one of these for range to be valid.
+constexpr std::string_view allowed{"-_.esx "};
+
+/*! \brief Perform checks, then add episodes in a given range to the episode list
+ \param first first episode in the range to add.
+ \param last last episode in the range.
+ \param episode the first episode in the range (already added to the list).
+ \param episodeList the list (vector) of episodes to add to.
+ \param regex the regex used to match the episode range.
+ \param remainder the remainder of the filename after the episode range.
+*/
 void ProcessEpisodeRange(int first,
                          int last,
                          VIDEO::EPISODE& episode,
                          VIDEO::EPISODELIST& episodeList,
-                         const std::string& regex)
+                         const std::string& regex,
+                         const std::string& remainder)
 {
-  if (first <= last)
-  {
-    for (int e = first; e <= last; ++e)
-    {
-      episode.iEpisode = e;
-      CLog::LogF(LOGDEBUG, "VideoInfoScanner: Adding multipart episode {} [{}]", episode.iEpisode,
-                 regex);
-      episodeList.push_back(episode);
-    }
-  }
-  else if (!episodeList.empty())
+  if (first > last && !episodeList.empty())
   {
     // SxxEaa-SxxEbb or Eaa-Ebb is backwards - bb<aa
     CLog::LogF(LOGDEBUG,
                "VideoInfoScanner: Removing season {}, episode {} as range {}-{} is backwards",
                episode.iSeason, episode.iEpisode, episodeList.back().iEpisode, last);
     episodeList.pop_back();
+    return;
+  }
+  if ((last - first + 1) > MAX_EPISODE_RANGE && !episodeList.empty())
+  {
+    CLog::LogF(LOGDEBUG,
+               "VideoInfoScanner: Removing season {}, episode {} as range is too large {} (maximum "
+               "allowed {})",
+               episode.iSeason, episode.iEpisode, last - first + 1, MAX_EPISODE_RANGE);
+    episodeList.pop_back();
+    return;
+  }
+  if (!remainder.empty() && allowed.find(static_cast<char>(std::tolower(static_cast<unsigned char>(
+                                remainder.front())))) == std::string_view::npos)
+  {
+    CLog::LogF(LOGDEBUG,
+               "VideoInfoScanner:Last episode in range {} is not part of an episode string ({}) "
+               "- ignoring",
+               last, remainder);
+    return;
+  }
+  for (int e = first; e <= last; ++e)
+  {
+    episode.iEpisode = e;
+    CLog::LogF(LOGDEBUG, "VideoInfoScanner: Adding multipart episode {} [{}]", episode.iEpisode,
+               regex);
+    episodeList.push_back(episode);
   }
 }
 
@@ -1611,7 +1651,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   disableEpisodeRanges || !remainder.starts_with("-") ? last : currentEpisode + 1};
 
               ProcessEpisodeRange(next, last, episode, episodeList,
-                                  m_advancedSettings->m_tvshowMultiPartEnumRegExp);
+                                  m_advancedSettings->m_tvshowMultiPartEnumRegExp, remainder);
 
               currentEpisode = episode.iEpisode;
               remainder = reg.GetMatch(3);
@@ -1653,15 +1693,18 @@ CVideoInfoScanner::~CVideoInfoScanner()
           else if ((regexp2pos < regexppos && regexp2pos != -1) || // episode match
                    (regexp2pos >= 0 && regexppos == -1))
           {
-            const int last{std::stoi(reg2.GetMatch(1))};
-            const int next{remainder.starts_with("-") && !disableEpisodeRanges ? currentEpisode + 1
-                                                                               : last};
+            const std::string result{reg2.GetMatch(2)};
+            const int last{std::stoi(result)};
+            const std::string prefix{StringUtils::ToLower(remainder.substr(0, 2))};
+            const int next{(prefix == "-e" || prefix == "-s") && !disableEpisodeRanges
+                               ? currentEpisode + 1
+                               : last};
 
             ProcessEpisodeRange(next, last, episode, episodeList,
-                                m_advancedSettings->m_tvshowMultiPartEnumRegExp);
+                                m_advancedSettings->m_tvshowMultiPartEnumRegExp, reg2.GetMatch(3));
 
             currentEpisode = episode.iEpisode;
-            offset += regexp2pos + reg2.GetFindLen();
+            offset += regexp2pos + static_cast<int>(reg2.GetMatch(1).length() + result.length());
           }
         }
       }
