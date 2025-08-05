@@ -32,6 +32,7 @@
 #include "storage/MediaManager.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
+#include "utils/JobManager.h"
 
 using namespace KODI;
 

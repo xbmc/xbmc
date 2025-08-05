@@ -12,7 +12,7 @@
 #include "guilib/GUIStaticItem.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
-#include "utils/Job.h"
+#include "utils/IJobCallback.h"
 
 #include <chrono>
 #include <memory>

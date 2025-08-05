@@ -51,7 +51,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/FontUtils.h"
-#include "utils/JobManager.h"
+#include "utils/JobQueue.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StreamDetails.h"
 #include "utils/StreamUtils.h"

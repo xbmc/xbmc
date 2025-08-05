@@ -13,7 +13,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
-#include "utils/Job.h"
+#include "utils/IJobCallback.h"
 
 #include <string>
 #include <vector>

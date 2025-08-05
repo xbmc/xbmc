@@ -9,8 +9,8 @@
 #pragma once
 
 #include "EventStreamDetail.h"
-#include "JobManager.h"
 #include "threads/CriticalSection.h"
+#include "utils/JobQueue.h"
 
 #include <algorithm>
 #include <functional>

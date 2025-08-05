@@ -9,7 +9,7 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
-#include "utils/JobManager.h"
+#include "utils/JobQueue.h"
 
 #include <map>
 #include <memory>

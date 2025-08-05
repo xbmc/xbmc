@@ -13,7 +13,7 @@
 #include "storage/discs/IDiscDriveHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/DiscsUtils.h"
-#include "utils/Job.h"
+#include "utils/IJobCallback.h"
 
 #include <map>
 #include <memory>

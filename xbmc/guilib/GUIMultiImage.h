@@ -15,6 +15,7 @@
 
 #include "GUIImage.h"
 #include "threads/CriticalSection.h"
+#include "utils/IJobCallback.h"
 #include "utils/Job.h"
 #include "utils/Stopwatch.h"
 

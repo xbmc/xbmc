@@ -13,7 +13,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 #include "utils/EventStream.h"
-#include "utils/Job.h"
+#include "utils/IJobCallback.h"
 
 #include <memory>
 #include <vector>

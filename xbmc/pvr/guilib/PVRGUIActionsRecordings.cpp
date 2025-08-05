@@ -33,6 +33,7 @@
 #include "pvr/settings/PVRSettings.h"
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
+#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"

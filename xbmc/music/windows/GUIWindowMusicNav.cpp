@@ -47,6 +47,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
+#include "utils/JobManager.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

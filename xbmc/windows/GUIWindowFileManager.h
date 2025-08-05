@@ -11,7 +11,7 @@
 #include "filesystem/DirectoryHistory.h"
 #include "filesystem/VirtualDirectory.h"
 #include "guilib/GUIWindow.h"
-#include "utils/JobManager.h"
+#include "utils/JobQueue.h"
 
 #include <atomic>
 #include <string>

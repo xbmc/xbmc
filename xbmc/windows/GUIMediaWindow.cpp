@@ -58,6 +58,7 @@
 #include "storage/MediaManager.h"
 #include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
+#include "utils/JobManager.h"
 #include "utils/LabelFormatter.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"

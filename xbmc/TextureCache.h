@@ -15,7 +15,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Timer.h"
-#include "utils/JobManager.h"
+#include "utils/JobQueue.h"
 
 #include <atomic>
 #include <chrono>

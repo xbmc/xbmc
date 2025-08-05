@@ -38,6 +38,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
+#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"

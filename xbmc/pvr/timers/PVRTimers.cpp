@@ -23,6 +23,7 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerRuleMatcher.h"
 #include "settings/Settings.h"
+#include "utils/JobManager.h"
 #include "utils/log.h"
 
 #include <algorithm>

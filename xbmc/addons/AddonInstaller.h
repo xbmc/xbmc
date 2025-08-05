@@ -9,7 +9,7 @@
 #pragma once
 
 #include "threads/Event.h"
-#include "utils/Job.h"
+#include "utils/IJobCallback.h"
 
 #include <map>
 #include <memory>
