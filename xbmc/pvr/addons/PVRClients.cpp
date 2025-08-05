@@ -14,6 +14,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/LocalizeStrings.h"
+#include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVREventLogJob.h"
@@ -22,7 +23,6 @@
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClientUID.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
-#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 

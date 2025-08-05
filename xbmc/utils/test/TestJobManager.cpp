@@ -7,9 +7,9 @@
  */
 
 #include "ServiceBroker.h"
+#include "jobs/Job.h"
+#include "jobs/JobManager.h"
 #include "test/MtTestUtils.h"
-#include "utils/Job.h"
-#include "utils/JobManager.h"
 #include "utils/XTimeUtils.h"
 
 #include <atomic>

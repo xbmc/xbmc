@@ -8,8 +8,8 @@
 
 #include "JobManager.h"
 
+#include "jobs/IJobCallback.h"
 #include "threads/Thread.h"
-#include "utils/IJobCallback.h"
 #include "utils/log.h"
 
 #include <algorithm>

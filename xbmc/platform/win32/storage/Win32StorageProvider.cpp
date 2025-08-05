@@ -10,8 +10,8 @@
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
+#include "jobs/JobManager.h"
 #include "storage/MediaManager.h"
-#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 

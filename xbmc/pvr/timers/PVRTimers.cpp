@@ -9,6 +9,7 @@
 #include "PVRTimers.h"
 
 #include "ServiceBroker.h"
+#include "jobs/JobManager.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVREventLogJob.h"
@@ -23,7 +24,6 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerRuleMatcher.h"
 #include "settings/Settings.h"
-#include "utils/JobManager.h"
 #include "utils/log.h"
 
 #include <algorithm>

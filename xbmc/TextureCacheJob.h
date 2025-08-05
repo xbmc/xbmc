@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include "jobs/Job.h"
 #include "pictures/PictureScalingAlgorithm.h"
-#include "utils/Job.h"
 
 #include <memory>
 #include <string>

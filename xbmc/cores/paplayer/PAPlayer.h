@@ -12,9 +12,9 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include "cores/IPlayer.h"
+#include "jobs/IJobCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
-#include "utils/IJobCallback.h"
 
 #include <atomic>
 #include <list>

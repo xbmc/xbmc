@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "jobs/Job.h"
+#include "jobs/LambdaJob.h"
 #include "threads/CriticalSection.h"
-#include "threads/Event.h"
-#include "utils/Job.h"
-#include "utils/LambdaJob.h"
+#include "threads/Thread.h"
 
 #include <array>
 #include <queue>
@@ -19,6 +19,19 @@
 #include <vector>
 
 class IJobCallback;
+class CJobManager;
+
+class CJobWorker : public CThread
+{
+public:
+  explicit CJobWorker(CJobManager* manager);
+  ~CJobWorker() override;
+
+  void Process() override;
+
+private:
+  CJobManager* m_jobManager{nullptr};
+};
 
 /*!
  \ingroup jobs
@@ -33,16 +46,48 @@ class IJobCallback;
  */
 class CJobManager final
 {
-public:
-  CJobManager() = default;
+  struct JobFinder;
 
-  /*!
-   \brief Returns whether the job manager is currently running.
-   \return True if the job manager is running and able to process jobs, false if it has been stopped or not started.
-   The method will return false after the job manager has been shut down or before it has been started.
-   \sa CJob
-   */
-  bool IsRunning() const;
+  class CWorkItem
+  {
+  public:
+    CWorkItem(CJob* job, unsigned int id, CJob::PRIORITY priority, IJobCallback* callback)
+      : m_job(job),
+        m_id(id),
+        m_callback(callback),
+        m_priority(priority)
+    {
+    }
+
+    void FreeJob()
+    {
+      delete m_job;
+      m_job = nullptr;
+    }
+
+    void Cancel() { m_callback = nullptr; }
+
+    CJob* GetJob() const { return m_job; }
+
+    unsigned int GetId() const { return m_id; }
+
+    IJobCallback* GetCallback() const { return m_callback; }
+    void SetCallback(IJobCallback* callback) { m_callback = callback; }
+
+    CJob::PRIORITY GetPriority() const { return m_priority; }
+
+  private:
+    CJob* m_job{nullptr};
+    unsigned int m_id{0};
+    IJobCallback* m_callback{nullptr};
+    CJob::PRIORITY m_priority{CJob::PRIORITY::PRIORITY_LOW};
+  };
+
+public:
+  CJobManager();
+
+  //! @todo doxy
+  bool IsRunning() const { return m_running; }
 
   /*!
    \brief Add a job to the threaded job manager.
@@ -160,42 +205,10 @@ public:
   CJob* GetNextJob();
 
 private:
+  friend class CJobWorker; // for access to RemoveWorker()
+
   CJobManager(const CJobManager&) = delete;
   CJobManager const& operator=(CJobManager const&) = delete;
-
-  class CJobWorker;
-  struct JobFinder;
-
-  class CWorkItem
-  {
-  public:
-    CWorkItem(CJob* job, unsigned int id, CJob::PRIORITY priority, IJobCallback* callback)
-      : m_job(job),
-        m_id(id),
-        m_callback(callback),
-        m_priority(priority)
-    {
-    }
-
-    void FreeJob()
-    {
-      delete m_job;
-      m_job = nullptr;
-    }
-
-    void Cancel() { m_callback = nullptr; }
-    CJob* GetJob() const { return m_job; }
-    unsigned int GetId() const { return m_id; }
-    IJobCallback* GetCallback() const { return m_callback; }
-    void SetCallback(IJobCallback* callback) { m_callback = callback; }
-    CJob::PRIORITY GetPriority() const { return m_priority; }
-
-  private:
-    CJob* m_job{nullptr};
-    unsigned int m_id{0};
-    IJobCallback* m_callback{nullptr};
-    CJob::PRIORITY m_priority{CJob::PRIORITY::PRIORITY_LOW};
-  };
 
   /*! \brief Pop a job off the job queue and add to the processing queue ready to process
    \return the job to process, nullptr if no jobs are available

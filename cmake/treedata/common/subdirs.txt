@@ -19,6 +19,7 @@ xbmc/guilib/guiinfo                             guilib_guiinfo
 xbmc/guilib/handlers                            guilib_announcement_handlers
 xbmc/guilib/listproviders                       guilib_listproviders
 xbmc/imagefiles                                 imagefiles
+xbmc/jobs                                       jobs
 xbmc/messaging                                  messaging
 xbmc/messaging/helpers                          messagingHelpers
 xbmc/pictures                                   pictures

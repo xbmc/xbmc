@@ -9,7 +9,7 @@
 #include "JobQueue.h"
 
 #include "ServiceBroker.h"
-#include "utils/JobManager.h"
+#include "jobs/JobManager.h"
 
 #include <algorithm>
 #include <mutex>

@@ -9,8 +9,8 @@
 #pragma once
 
 #include "InfoLoader.h"
+#include "jobs/Job.h"
 #include "settings/ISubSettings.h"
-#include "utils/Job.h"
 
 #include <string>
 #include <vector>

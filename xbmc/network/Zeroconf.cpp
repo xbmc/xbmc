@@ -13,10 +13,10 @@
 #if defined(HAS_MDNS)
 #include "mdns/ZeroconfMDNS.h"
 #endif
+#include "jobs/JobManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/CriticalSection.h"
-#include "utils/JobManager.h"
 
 #if defined(TARGET_ANDROID)
 #include "platform/android/network/ZeroconfAndroid.h"

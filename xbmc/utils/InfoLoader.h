@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/IJobCallback.h"
+#include "jobs/IJobCallback.h"
 
 #include <string>
 

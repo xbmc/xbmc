@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "jobs/IJobCallback.h"
+#include "jobs/Job.h"
+#include "jobs/LambdaJob.h"
 #include "threads/CriticalSection.h"
-#include "utils/IJobCallback.h"
-#include "utils/Job.h"
-#include "utils/LambdaJob.h"
 
 #include <queue>
 #include <vector>

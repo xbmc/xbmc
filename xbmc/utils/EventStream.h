@@ -9,15 +9,14 @@
 #pragma once
 
 #include "EventStreamDetail.h"
+#include "jobs/JobQueue.h"
 #include "threads/CriticalSection.h"
-#include "utils/JobQueue.h"
 
 #include <algorithm>
 #include <functional>
 #include <memory>
 #include <mutex>
 #include <vector>
-
 
 template<typename Event>
 class CEventStream

@@ -21,6 +21,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "jobs/JobManager.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
@@ -32,7 +33,6 @@
 #include "storage/MediaManager.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
-#include "utils/JobManager.h"
 
 using namespace KODI;
 

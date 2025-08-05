@@ -25,10 +25,10 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "jobs/JobManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include "utils/JobManager.h"
 #include "utils/ProgressJob.h"
 #include "utils/log.h"
 

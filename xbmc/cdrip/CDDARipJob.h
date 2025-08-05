@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include "jobs/Job.h"
 #include "music/tags/MusicInfoTag.h"
-#include "utils/Job.h"
 
 namespace XFILE
 {
