@@ -268,12 +268,12 @@ void CAdvancedSettings::Initialize()
   m_tvshowEnumRegExps.emplace_back(false, "[\\\\/]([^\\\\/]+)\\.special\\.[a-z0-9]+$", 0, true);
 
   // foo.103*, 103 foo
-  // XXX: This regex is greedy and will match years in show names.  It should always be last.
+  // This regex is greedy and will match years in show names.  It should always be last.
   m_tvshowEnumRegExps.emplace_back(
       false,
       "[\\\\/\\._ -]([0-9]+)([0-9][0-9](?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([\\._ -][^\\\\/]*)$");
 
-  m_tvshowMultiPartEnumRegExp = "^[-_ex]+([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)";
+  m_tvshowMultiPartEnumRegExp = "^([-_ex]+)([0-9]+)(.*)";
 
   m_remoteDelay = 3;
   m_bScanIRServer = true;
