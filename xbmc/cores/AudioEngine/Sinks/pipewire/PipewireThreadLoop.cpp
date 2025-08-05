@@ -57,3 +57,8 @@ void CPipewireThreadLoop::Signal(bool accept)
 {
   pw_thread_loop_signal(m_mainloop.get(), accept);
 }
+
+void CPipewireThreadLoop::Accept()
+{
+  pw_thread_loop_accept(m_mainloop.get());
+}
