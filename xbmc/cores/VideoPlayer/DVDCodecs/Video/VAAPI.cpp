@@ -2971,16 +2971,30 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
     return false;
   }
 
-  if (avfilter_graph_create_filter(&m_pFilterOut, outFilter, "out", NULL, NULL, m_pFilterGraph) < 0)
+  if (!((m_pFilterOut = avfilter_graph_alloc_filter(m_pFilterGraph, outFilter, "out"))))
   {
-    CLog::Log(LOGERROR, "CFFmpegPostproc::Init  - avfilter_graph_create_filter: out");
+    CLog::LogF(LOGERROR, "unable to alloc filter out");
     return false;
   }
 
+#if LIBAVFILTER_BUILD >= AV_VERSION_INT(10, 6, 100)
+  constexpr std::array<AVPixelFormat, 1> pixFmts = {{AV_PIX_FMT_NV12}};
+  if (av_opt_set_array(m_pFilterOut, "pixel_formats", pixFmts, AV_OPT_SEARCH_CHILDREN, 0,
+                       pixFmts.size(), AV_OPT_TYPE_PIXEL_FMT, pixFmts.data()) < 0)
+#else
   enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_NV12, AV_PIX_FMT_NONE };
-  if (av_opt_set_int_list(m_pFilterOut, "pix_fmts", pix_fmts,  AV_PIX_FMT_NONE, AV_OPT_SEARCH_CHILDREN) < 0)
+  if (av_opt_set_int_list(m_pFilterOut, "pix_fmts", pix_fmts, AV_PIX_FMT_NONE,
+                          AV_OPT_SEARCH_CHILDREN) < 0)
+#endif
   {
     CLog::Log(LOGERROR, "VAAPI::CFFmpegPostproc::Init  - failed settings pix formats");
+    return false;
+  }
+
+  if ((avfilter_init_str(m_pFilterOut, nullptr) < 0))
+  {
+    CLog::LogF(LOGERROR, "failed to initialize filter out");
+    avfilter_free(m_pFilterOut);
     return false;
   }
 
