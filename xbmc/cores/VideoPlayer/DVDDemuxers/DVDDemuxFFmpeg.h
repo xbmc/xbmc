@@ -20,6 +20,7 @@ extern "C" {
 }
 
 class CDVDDemuxFFmpeg;
+class CDVDInputStream;
 class CURL;
 
 enum class TRANSPORT_STREAM_STATE

@@ -225,7 +225,7 @@ bool CDVDDemuxVobsub::ParseId(SState& state, std::string& line)
   stream->codec = AV_CODEC_ID_DVD_SUBTITLE;
   stream->uniqueId = m_Streams.size();
   stream->source = m_source;
-  stream->demuxerId = m_demuxerId;
+  stream->demuxerId = GetDemuxerId();
 
   state.id = stream->uniqueId;
   m_Streams.push_back(stream.release());

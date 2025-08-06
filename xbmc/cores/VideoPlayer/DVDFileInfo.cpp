@@ -131,7 +131,7 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
     if (pStream)
     {
       // ignore if it's a picture attachment (e.g. jpeg artwork)
-      if (pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
+      if (pStream->type == StreamType::VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
       {
         nVideoStream = pStream->uniqueId;
         demuxerId = pStream->demuxerId;
@@ -358,7 +358,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   const CURL pathToUrl(path);
   for (CDemuxStream* stream : pDemux->GetStreams())
   {
-    if (stream->type == STREAM_VIDEO && !(stream->flags & AV_DISPOSITION_ATTACHED_PIC))
+    if (stream->type == StreamType::VIDEO && !(stream->flags & AV_DISPOSITION_ATTACHED_PIC))
     {
       CStreamDetailVideo *p = new CStreamDetailVideo();
       CDemuxStreamVideo* vstream = static_cast<CDemuxStreamVideo*>(stream);
@@ -397,7 +397,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       retVal = true;
     }
 
-    else if (stream->type == STREAM_AUDIO)
+    else if (stream->type == StreamType::AUDIO)
     {
       CStreamDetailAudio *p = new CStreamDetailAudio();
       p->m_iChannels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
@@ -407,7 +407,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       retVal = true;
     }
 
-    else if (stream->type == STREAM_SUBTITLE)
+    else if (stream->type == StreamType::SUBTITLE)
     {
       CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
       p->m_strLanguage = stream->language;

@@ -1032,7 +1032,7 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
 
           pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
           pPacket->iStreamId = DMX_SPECIALID_STREAMCHANGE;
-          pPacket->demuxerId = m_demuxerId;
+          pPacket->demuxerId = GetDemuxerId();
 
           return pPacket;
         }
@@ -1146,7 +1146,7 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
       stream = AddStream(pPacket->iStreamId);
     }
     // we already check for a valid m_streams[pPacket->iStreamId] above
-    else if (stream->type == STREAM_AUDIO)
+    else if (stream->type == StreamType::AUDIO)
     {
       CDemuxStreamAudioFFmpeg* audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
       int codecparChannels =
@@ -1159,7 +1159,7 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
         stream = AddStream(pPacket->iStreamId);
       }
     }
-    else if (stream->type == STREAM_VIDEO)
+    else if (stream->type == StreamType::VIDEO)
     {
       if (static_cast<CDemuxStreamVideo*>(stream)->iWidth != m_pFormatContext->streams[pPacket->iStreamId]->codecpar->width ||
           static_cast<CDemuxStreamVideo*>(stream)->iHeight != m_pFormatContext->streams[pPacket->iStreamId]->codecpar->height)
@@ -1179,7 +1179,7 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
     }
 
     pPacket->iStreamId = stream->uniqueId;
-    pPacket->demuxerId = m_demuxerId;
+    pPacket->demuxerId = GetDemuxerId();
   }
   return pPacket;
 }
@@ -1736,7 +1736,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       case AVMEDIA_TYPE_DATA:
       {
         stream = new CDemuxStream();
-        stream->type = STREAM_DATA;
+        stream->type = StreamType::DATA;
         break;
       }
       case AVMEDIA_TYPE_SUBTITLE:
@@ -1745,7 +1745,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
           stream = st;
-          stream->type = STREAM_TELETEXT;
+          stream->type = StreamType::TELETEXT;
           break;
         }
         else
@@ -1797,7 +1797,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           }
         }
         stream = new CDemuxStream();
-        stream->type = STREAM_NONE;
+        stream->type = StreamType::NONE;
         break;
       }
       default:
@@ -1810,7 +1810,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           return nullptr;
         }
         stream = new CDemuxStream();
-        stream->type = STREAM_NONE;
+        stream->type = StreamType::NONE;
       }
     }
 
@@ -1866,7 +1866,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       }
     }
 
-    if (stream->type != STREAM_NONE && pStream->codecpar->extradata && pStream->codecpar->extradata_size > 0)
+    if (stream->type != StreamType::NONE && pStream->codecpar->extradata &&
+        pStream->codecpar->extradata_size > 0)
     {
       stream->extraData =
           FFmpegExtraData(pStream->codecpar->extradata, pStream->codecpar->extradata_size);
@@ -1934,7 +1935,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
     }
 
     stream->uniqueId = pStream->index;
-    stream->demuxerId = m_demuxerId;
+    stream->demuxerId = GetDemuxerId();
 
     AddStream(stream->uniqueId, stream);
     return stream;

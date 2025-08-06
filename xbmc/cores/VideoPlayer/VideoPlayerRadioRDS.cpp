@@ -513,7 +513,7 @@ CDVDRadioRDSData::~CDVDRadioRDSData()
 
 bool CDVDRadioRDSData::CheckStream(const CDVDStreamInfo& hints)
 {
-  if (hints.type == STREAM_RADIO_RDS)
+  if (hints.type == StreamType::RADIO_RDS)
     return true;
 
   return false;
@@ -524,7 +524,7 @@ bool CDVDRadioRDSData::OpenStream(CDVDStreamInfo hints)
   CloseStream(true);
 
   m_messageQueue.Init();
-  if (hints.type == STREAM_RADIO_RDS)
+  if (hints.type == StreamType::RADIO_RDS)
   {
     Flush();
     CLog::Log(LOGINFO, "Creating UECP (RDS) data thread");

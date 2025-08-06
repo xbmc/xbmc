@@ -176,7 +176,7 @@ public:
 //------------------------------------------------------------------------------
 struct SelectionStream
 {
-  StreamType type = STREAM_NONE;
+  StreamType type = StreamType::NONE;
   int type_index = 0;
   std::string filename;
   std::string filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)

@@ -10,7 +10,7 @@
 
 #include "utils/StringUtils.h"
 
-std::string CDemuxStreamAudio::GetStreamType()
+std::string CDemuxStreamAudio::GetStreamType() const
 {
   std::string strInfo;
   switch (codec)
@@ -138,7 +138,7 @@ std::string CDemuxStreamAudio::GetStreamType()
   return strInfo;
 }
 
-int CDVDDemux::GetNrOfStreams(StreamType streamType)
+int CDVDDemux::GetNrOfStreams(StreamType streamType) const
 {
   int iCounter = 0;
 
@@ -151,9 +151,9 @@ int CDVDDemux::GetNrOfStreams(StreamType streamType)
   return iCounter;
 }
 
-int CDVDDemux::GetNrOfSubtitleStreams()
+int CDVDDemux::GetNrOfSubtitleStreams() const
 {
-  return GetNrOfStreams(STREAM_SUBTITLE);
+  return GetNrOfStreams(StreamType::SUBTITLE);
 }
 
 std::string CDemuxStream::GetStreamName()

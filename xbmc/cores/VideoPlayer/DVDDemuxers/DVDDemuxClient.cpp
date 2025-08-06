@@ -230,7 +230,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
 
     switch (st->type)
     {
-      case STREAM_AUDIO:
+      case StreamType::AUDIO:
       {
         CDemuxStreamClientInternalTpl<CDemuxStreamAudio>* sta = static_cast<CDemuxStreamClientInternalTpl<CDemuxStreamAudio>*>(st);
         int streamChannels = stream->m_context->ch_layout.nb_channels;
@@ -254,7 +254,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
           st->changes = -1; // stop parsing
         break;
       }
-      case STREAM_VIDEO:
+      case StreamType::VIDEO:
       {
         CDemuxStreamClientInternalTpl<CDemuxStreamVideo>* stv = static_cast<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>*>(st);
         if (stream->m_parser->width != stv->iWidth && stream->m_parser->width != 0)
@@ -344,7 +344,7 @@ DemuxPacket* CDVDDemuxClient::Read()
       RequestStreams();
       DemuxPacket *pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
       pPacket->iStreamId = DMX_SPECIALID_STREAMCHANGE;
-      pPacket->demuxerId = m_demuxerId;
+      pPacket->demuxerId = GetDemuxerId();
       return pPacket;
     }
   }
@@ -353,7 +353,7 @@ DemuxPacket* CDVDDemuxClient::Read()
   {
     CDVDDemuxUtils::FreeDemuxPacket(m_packet.release());
     DemuxPacket *pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
-    pPacket->demuxerId = m_demuxerId;
+    pPacket->demuxerId = GetDemuxerId();
     return pPacket;
   }
 
@@ -420,7 +420,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   std::shared_ptr<CDemuxStream> currentStream(GetStreamInternal(stream->uniqueId));
   std::shared_ptr<CDemuxStream> toStream;
 
-  if (stream->type == STREAM_AUDIO)
+  if (stream->type == StreamType::AUDIO)
   {
     CDemuxStreamAudio *source = dynamic_cast<CDemuxStreamAudio*>(stream);
     if (!source)
@@ -456,7 +456,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     map[stream->uniqueId] = streamAudio;
     toStream = streamAudio;
   }
-  else if (stream->type == STREAM_VIDEO)
+  else if (stream->type == StreamType::VIDEO)
   {
     CDemuxStreamVideo *source = dynamic_cast<CDemuxStreamVideo*>(stream);
 
@@ -501,7 +501,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     map[stream->uniqueId] = streamVideo;
     toStream = streamVideo;
   }
-  else if (stream->type == STREAM_SUBTITLE)
+  else if (stream->type == StreamType::SUBTITLE)
   {
     CDemuxStreamSubtitle *source = dynamic_cast<CDemuxStreamSubtitle*>(stream);
 
@@ -531,7 +531,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     map[stream->uniqueId] = streamSubtitle;
     toStream = streamSubtitle;
   }
-  else if (stream->type == STREAM_TELETEXT)
+  else if (stream->type == StreamType::TELETEXT)
   {
     CDemuxStreamTeletext *source = dynamic_cast<CDemuxStreamTeletext*>(stream);
 
@@ -554,7 +554,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     map[stream->uniqueId] = streamTeletext;
     toStream = streamTeletext;
   }
-  else if (stream->type == STREAM_RADIO_RDS)
+  else if (stream->type == StreamType::RADIO_RDS)
   {
     CDemuxStreamRadioRDS *source = dynamic_cast<CDemuxStreamRadioRDS*>(stream);
 
@@ -577,7 +577,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     map[stream->uniqueId] = streamRDS;
     toStream = streamRDS;
   }
-  else if (stream->type == STREAM_AUDIO_ID3)
+  else if (stream->type == StreamType::AUDIO_ID3)
   {
     CDemuxStreamAudioID3* source = dynamic_cast<CDemuxStreamAudioID3*>(stream);
 
@@ -651,7 +651,7 @@ bool CDVDDemuxClient::IsVideoReady()
 {
   for (const auto& stream : m_streams)
   {
-    if (stream.first == m_videoStreamPlaying && stream.second->type == STREAM_VIDEO &&
+    if (stream.first == m_videoStreamPlaying && stream.second->type == StreamType::VIDEO &&
         CodecHasExtraData(stream.second->codec) && !stream.second->extraData)
       return false;
   }
@@ -720,7 +720,7 @@ void CDVDDemuxClient::OpenStream(int id)
     bool bOpenStream = m_IDemux->OpenStream(id);
 
     CDemuxStream *stream(m_IDemux->GetStream(id));
-    if (stream && stream->type == STREAM_VIDEO)
+    if (stream && stream->type == StreamType::VIDEO)
       m_videoStreamPlaying = id;
 
     if (bOpenStream)

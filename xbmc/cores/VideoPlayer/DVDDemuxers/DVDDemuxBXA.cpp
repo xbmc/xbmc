@@ -68,7 +68,7 @@ bool CDVDDemuxBXA::Open(const std::shared_ptr<CDVDInputStream>& pInput)
   m_stream->iBitsPerSample  = m_header.bitsPerSample;
   m_stream->iBitRate        = m_header.sampleRate * m_header.channels * m_header.bitsPerSample;
   m_stream->iChannels       = m_header.channels;
-  m_stream->type            = STREAM_AUDIO;
+  m_stream->type = StreamType::AUDIO;
   m_stream->codec           = AV_CODEC_ID_PCM_S16LE;
 
   return true;

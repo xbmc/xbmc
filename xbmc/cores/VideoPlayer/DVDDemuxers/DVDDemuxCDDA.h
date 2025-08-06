@@ -17,6 +17,7 @@
 #endif
 
 class CDemuxStreamAudioCDDA;
+class CDVDInputStream;
 
 class CDVDDemuxCDDA : public CDVDDemux
 {

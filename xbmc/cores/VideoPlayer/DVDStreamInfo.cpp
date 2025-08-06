@@ -33,7 +33,7 @@ CDVDStreamInfo::~CDVDStreamInfo() = default;
 void CDVDStreamInfo::Clear()
 {
   codec = AV_CODEC_ID_NONE;
-  type = STREAM_NONE;
+  type = StreamType::NONE;
   uniqueId = -1;
   source = STREAM_SOURCE_NONE;
   codecOptions = 0;
@@ -271,7 +271,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   cryptoSession = right.cryptoSession;
   externalInterfaces = right.externalInterfaces;
 
-  if (right.type == STREAM_AUDIO)
+  if (right.type == StreamType::AUDIO)
   {
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
     channels      = stream->iChannels;
@@ -281,7 +281,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     bitspersample = stream->iBitsPerSample;
     channellayout = stream->iChannelLayout;
   }
-  else if (right.type == STREAM_VIDEO)
+  else if (right.type == StreamType::VIDEO)
   {
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     fpsscale  = stream->iFpsScale;
@@ -306,7 +306,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     stereo_mode = stream->stereo_mode;
     dovi = stream->dovi;
   }
-  else if (right.type == STREAM_SUBTITLE)
+  else if (right.type == StreamType::SUBTITLE)
   {
   }
 }
