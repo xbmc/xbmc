@@ -474,17 +474,15 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag* id3v2,
       }
     else if (it->first == "CHAP")
     {
-      using namespace std::ranges::views;
-
       constexpr auto toChapterFrame = [](auto* f) { return dynamic_cast<ID3v2::ChapterFrame*>(f); };
 
       // Produce a view of ChapterFrame pointers.
       auto chapterFrames = it->second // original FrameList
-                           | transform(toChapterFrame) // cast
-                           | filter([](auto* p) { return p; }); // keep non‑null
+                           | std::ranges::views::transform(toChapterFrame) // cast
+                           | std::ranges::views::filter([](auto* p) { return p; }); // keep non‑null
 
-      std::size_t chapNumber = 0;
-      for (auto* chapFrame : chapterFrames)
+      auto chapNumber{0};
+      for (const auto* chapFrame : chapterFrames)
       {
         ChapterDetails& chapter = chapters[chapNumber];
 
@@ -497,7 +495,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag* id3v2,
         std::chrono::milliseconds endTimeMs(chapFrame->endTime());
 
         // Make sure the very last chapter runs to EOF
-        if (chapNumber == static_cast<std::size_t>(std::ranges::distance(chapterFrames) - 1))
+        if (chapNumber == std::ranges::distance(chapterFrames) - 1)
           endTimeMs = totalLenMs;
 
         chapter.startTimeMs = startTimeMs;

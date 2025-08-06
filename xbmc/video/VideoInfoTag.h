@@ -170,7 +170,7 @@ public:
   void SetNamedSeasons(std::map<int, std::string> namedSeasons);
   void SetUserrating(int userrating);
 
-  void SetOverride(bool override) { m_override = override; }
+  void SetOverride(bool setOverride) { m_override = setOverride; }
   bool GetOverride() const { return m_override; }
 
   /*!

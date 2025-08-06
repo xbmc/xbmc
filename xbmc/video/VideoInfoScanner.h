@@ -257,7 +257,7 @@ namespace KODI::VIDEO
     void FetchActorThumbs(
         std::vector<SActorInfo>& actors,
         const std::string& strPath,
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES);
+        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
 
     static int GetPathHash(const CFileItemList &items, std::string &hash);
 

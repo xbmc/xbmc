@@ -709,7 +709,7 @@ TEST_F(TestURIUtils, GetDiscFile)
 
 TEST_F(TestURIUtils, GetDiscUnderlyingFile)
 {
-  CURL url = CURL("bluray://smb%3a%2f%2fsomepath%2fpath%2f/file.ext");
+  CURL url{"bluray://smb%3a%2f%2fsomepath%2fpath%2f/file.ext"};
   EXPECT_EQ("smb://somepath/path/file.ext", URIUtils::GetDiscUnderlyingFile(url));
 
   url = CURL("bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/file.ext");
