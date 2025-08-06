@@ -72,10 +72,7 @@ CPVRClients::~CPVRClients()
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
   CServiceBroker::GetAddonMgr().UnregisterAddonMgrCallback(AddonType::PVRDLL);
 
-  for (const auto& [_, client] : m_clientMap)
-  {
-    client->Destroy();
-  }
+  DestroyClients();
 }
 
 void CPVRClients::Start()
@@ -101,6 +98,18 @@ void CPVRClients::Continue()
   {
     client->Continue();
   }
+}
+
+void CPVRClients::DestroyClients()
+{
+  std::unique_lock lock(m_critSection);
+  for (const auto& [_, client] : m_clientMap)
+  {
+    CLog::Log(LOGINFO, "Destroying PVR client: addonId={}, instanceId={}, clientId={}",
+              client->ID(), client->InstanceId(), client->GetID());
+    client->Destroy();
+  }
+  m_clientMap.clear();
 }
 
 CPVRClients::UpdateClientAction CPVRClients::GetUpdateClientAction(
@@ -185,22 +194,22 @@ void CPVRClients::UpdateClients(const std::string& changedAddonId /* = "" */)
             else
               client = std::make_shared<CPVRClient>(addon, instanceId, clientId);
 
-            CLog::LogF(LOGINFO, "Creating PVR client: addonId={}, instanceId={}, clientId={}",
-                       addon->ID(), instanceId, clientId);
+            CLog::Log(LOGINFO, "Creating PVR client: addonId={}, instanceId={}, clientId={}",
+                      addon->ID(), instanceId, clientId);
             clientsToCreate.emplace_back(client);
             break;
           }
           case RECREATE:
           {
-            CLog::LogF(LOGINFO, "Recreating PVR client: addonId={}, instanceId={}, clientId={}",
-                       addon->ID(), instanceId, clientId);
+            CLog::Log(LOGINFO, "Recreating PVR client: addonId={}, instanceId={}, clientId={}",
+                      addon->ID(), instanceId, clientId);
             clientsToReCreate.emplace_back(clientId, addon->Name());
             break;
           }
           case DESTROY:
           {
-            CLog::LogF(LOGINFO, "Destroying PVR client: addonId={}, instanceId={}, clientId={}",
-                       addon->ID(), instanceId, clientId);
+            CLog::Log(LOGINFO, "Destroying PVR client: addonId={}, instanceId={}, clientId={}",
+                      addon->ID(), instanceId, clientId);
             clientsToDestroy.emplace_back(clientId);
             break;
           }

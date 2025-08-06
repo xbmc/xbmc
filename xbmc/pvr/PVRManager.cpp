@@ -353,12 +353,16 @@ void CPVRManager::ResetProperties()
 
 void CPVRManager::Init() const
 {
-  // initial check for enabled addons
-  // if at least one pvr addon is enabled, PVRManager start up
-  CServiceBroker::GetJobManager()->Submit([this] {
-    Clients()->Start();
-    return true;
-  });
+  m_addons->DestroyClients();
+
+  // Initialize PVR client addons and start PVR manager thread.
+  CServiceBroker::GetJobManager()->Submit(
+      [this]
+      {
+        m_addons->Start();
+        return true;
+      },
+      CJob::PRIORITY_DEDICATED);
 }
 
 void CPVRManager::Start()
@@ -1001,8 +1005,11 @@ void CPVRManager::ConnectionStateChange(const CPVRClient* client,
                                         PVR_CONNECTION_STATE state,
                                         const std::string& message) const
 {
-  CServiceBroker::GetJobManager()->Submit([this, client, connectString, state, message] {
-    Clients()->ConnectionStateChange(client, connectString, state, message);
-    return true;
-  });
+  CServiceBroker::GetJobManager()->Submit(
+      [this, client, connectString, state, message]
+      {
+        m_addons->ConnectionStateChange(client, connectString, state, message);
+        return true;
+      },
+      CJob::PRIORITY_DEDICATED);
 }

@@ -1716,7 +1716,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_LOADPROFILE:
     {
       const int profile = pMsg->param1;
-      if (profile >= 0)
+      if (profile > INVALID_PROFILE_ID)
         CServiceBroker::GetSettingsComponent()->GetProfileManager()->LoadProfile(static_cast<unsigned int>(profile));
     }
 

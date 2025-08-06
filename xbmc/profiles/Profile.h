@@ -15,6 +15,9 @@
 
 class TiXmlNode;
 
+constexpr int INVALID_PROFILE_ID = -1;
+constexpr int MASTER_PROFILE_ID = 0; // id of the master profile
+
 class CProfile
 {
 public:
@@ -38,7 +41,9 @@ public:
     bool games;
   };
 
-  CProfile(const std::string &directory = "", const std::string &name = "", const int id = -1);
+  CProfile(const std::string& directory = "",
+           const std::string& name = "",
+           const int id = INVALID_PROFILE_ID);
   ~CProfile(void);
 
   void Load(const TiXmlNode *node, int nextIdProfile);

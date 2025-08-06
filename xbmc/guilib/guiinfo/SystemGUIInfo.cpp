@@ -261,7 +261,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     {
       const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
       int iProfileId = profileManager->GetAutoLoginProfileId();
-      if ((iProfileId < 0) || !profileManager->GetProfileName(iProfileId, value))
+      if ((iProfileId < MASTER_PROFILE_ID) || !profileManager->GetProfileName(iProfileId, value))
         value = g_localizeStrings.Get(37014); // Last used profile
       return true;
     }
