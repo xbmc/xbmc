@@ -336,7 +336,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_formats.clear();
   m_formats = m_processInfo.GetPixFormats();
+#if LIBAVFILTER_BUILD < AV_VERSION_INT(10, 6, 100)
   m_formats.push_back(AV_PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
+#endif
   m_processInfo.SetSwDeinterlacingMethods();
   m_processInfo.SetVideoInterlaced(false);
 
@@ -1208,12 +1210,20 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_create_filter: out");
     return result;
   }
+#if LIBAVFILTER_BUILD >= AV_VERSION_INT(10, 6, 100)
+  if ((result = av_opt_set_array(m_pFilterOut, "pixel_formats", AV_OPT_SEARCH_CHILDREN, 0,
+                                 m_formats.size(), AV_OPT_TYPE_PIXEL_FMT, m_formats.data())) < 0)
+  {
+    CLog::LogF(LOGERROR, "failed settings pix formats");
+  }
+#else
   if ((result = av_opt_set_int_list(m_pFilterOut, "pix_fmts", m_formats.data(), AV_PIX_FMT_NONE,
                                     AV_OPT_SEARCH_CHILDREN)) < 0)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - failed settings pix formats");
+    CLog::LogF(LOGERROR, "failed settings pix formats");
     return result;
   }
+#endif
 
   if (!filters.empty())
   {
