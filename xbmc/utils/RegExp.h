@@ -149,5 +149,4 @@ private:
   static int  m_JitSupported;
 };
 
-typedef std::vector<CRegExp> VECCREGEXP;
-
+std::vector<CRegExp> CompileRegexes(const std::vector<std::string>& regExpPatterns);
