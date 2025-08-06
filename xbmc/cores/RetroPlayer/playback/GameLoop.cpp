@@ -25,35 +25,46 @@ CGameLoop::CGameLoop(IGameLoopCallback* callback, double fps)
 
 CGameLoop::~CGameLoop()
 {
+  // Ensure the game loop is stopped when the object is destroyed
   Stop();
 }
 
 void CGameLoop::Start()
 {
+  // Start the thread by invoking the base class's Create method
   Create();
 }
 
 void CGameLoop::Stop()
 {
+  // Request to stop the thread
   StopThread(false);
+
+  // Wake up the thread if it's waiting on the sleep event
   m_sleepEvent.Set();
+
+  // Wait until the thread is fully stopped
   StopThread(true);
 }
 
 void CGameLoop::SetSpeed(double speedFactor)
 {
+  // Set the new speed factor
   m_speedFactor = speedFactor;
 
+  // Wake up the thread to apply the new speed immediately
   m_sleepEvent.Set();
 }
 
 void CGameLoop::PauseAsync()
 {
+  // Pause the game loop asynchronously by setting speed to 0
   SetSpeed(0.0);
 }
 
 void CGameLoop::Process(void)
 {
+  // Main game loop that runs until the thread is requested to stop
   while (!m_bStop)
   {
     if (m_speedFactor == 0.0)
