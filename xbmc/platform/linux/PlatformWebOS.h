@@ -20,6 +20,9 @@ public:
 protected:
   void RegisterPowerManagement() override;
 
+public:
+  bool IsConfigureAddonsAtStartupEnabled() override;
+
 private:
   std::string GetHomePath();
 };
