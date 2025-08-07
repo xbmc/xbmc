@@ -1136,9 +1136,12 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     query = db.PrepareSQL(negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND streamdetails.iStreamType = %i GROUP BY streamdetails.idFile HAVING COUNT(streamdetails.iStreamType) " + parameter + ")",CStreamDetail::SUBTITLE);
   else if (m_field == FieldHdrType)
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strHdrType " + parameter + ")";
-  if (m_field == FieldPlaycount && strType != "songs" && strType != "albums" && strType != "tvshows")
-  { // playcount IS stored as NULL OR number IN video db
-    const std::string field = GetField(FieldPlaycount, strType);
+  if ((m_field == FieldPlaycount && strType != "songs" && strType != "albums" &&
+       strType != "tvshows") ||
+      m_field == FieldUserRating)
+  {
+    // playcount and userrating are stored as NULL or > 0 number IN video db
+    const std::string field = GetField(m_field, strType);
 
     if ((m_operator == OPERATOR_EQUALS && param == "0") ||
         (m_operator == OPERATOR_DOES_NOT_EQUAL && param != "0") ||
