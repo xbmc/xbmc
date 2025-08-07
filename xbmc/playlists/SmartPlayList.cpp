@@ -1137,12 +1137,17 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strHdrType " + parameter + ")";
   if (m_field == FieldPlaycount && strType != "songs" && strType != "albums" && strType != "tvshows")
   { // playcount IS stored as NULL OR number IN video db
+    const std::string field = GetField(FieldPlaycount, strType);
+
     if ((m_operator == OPERATOR_EQUALS && param == "0") ||
         (m_operator == OPERATOR_DOES_NOT_EQUAL && param != "0") ||
         (m_operator == OPERATOR_LESS_THAN))
     {
-      std::string field = GetField(FieldPlaycount, strType);
       query = field + " IS NULL OR " + field + parameter;
+    }
+    else
+    {
+      query = field + " IS NOT NULL AND " + field + parameter;
     }
   }
   if (query.empty())
