@@ -215,6 +215,8 @@ void CShaderPresetAddon::TranslateShaderPass(const video_shader_pass& pass,
   shaderFbo.sRgbFramebuffer = fbo.srgb_fbo;
 
   shaderPass.mipmap = pass.mipmap;
+
+  shaderPass.alias = pass.alias ? pass.alias : "";
 }
 
 void CShaderPresetAddon::TranslateShaderLut(const video_shader_lut& lut,

@@ -180,6 +180,11 @@ extern "C"
      * \brief Mipmapping
      */
     bool mipmap;
+
+    /*!
+     * \brief Aliased pass name
+     */
+    char* alias;
   } video_shader_pass;
 
   typedef struct video_shader_lut
