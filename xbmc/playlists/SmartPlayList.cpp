@@ -945,6 +945,18 @@ std::string FormatNullableDate(const std::string& field,
   else
     return field + " IS NOT NULL AND " + field + parameter;
 }
+
+std::string FormatNullableNumber(const std::string& field,
+                                 CDatabaseQueryRule::SearchOperator oper,
+                                 const std::string& param,
+                                 const std::string& parameter)
+{
+  if ((oper == OPERATOR_EQUALS && param == "0") ||
+      (oper == OPERATOR_DOES_NOT_EQUAL && param != "0") || (oper == OPERATOR_LESS_THAN))
+    return field + " IS NULL OR " + field + parameter;
+  else
+    return field + " IS NOT NULL AND " + field + parameter;
+}
 } // namespace
 
 std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, const std::string &oper, const std::string &param,
@@ -1136,26 +1148,15 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     query = db.PrepareSQL(negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND streamdetails.iStreamType = %i GROUP BY streamdetails.idFile HAVING COUNT(streamdetails.iStreamType) " + parameter + ")",CStreamDetail::SUBTITLE);
   else if (m_field == FieldHdrType)
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table + ".idFile AND strHdrType " + parameter + ")";
+
   if ((m_field == FieldPlaycount && strType != "songs" && strType != "albums" &&
        strType != "tvshows") ||
       m_field == FieldUserRating)
-  {
-    // playcount and userrating are stored as NULL or > 0 number IN video db
-    const std::string field = GetField(m_field, strType);
+    query = FormatNullableNumber(GetField(m_field, strType), m_operator, param, parameter);
 
-    if ((m_operator == OPERATOR_EQUALS && param == "0") ||
-        (m_operator == OPERATOR_DOES_NOT_EQUAL && param != "0") ||
-        (m_operator == OPERATOR_LESS_THAN))
-    {
-      query = field + " IS NULL OR " + field + parameter;
-    }
-    else
-    {
-      query = field + " IS NOT NULL AND " + field + parameter;
-    }
-  }
   if (query.empty())
     query = CDatabaseQueryRule::FormatWhereClause(negate, oper, param, db, strType);
+
   return query;
 }
 
