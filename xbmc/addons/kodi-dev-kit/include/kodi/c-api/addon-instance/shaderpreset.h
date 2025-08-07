@@ -275,7 +275,7 @@ extern "C"
     bool(__cdecl* VideoShaderRead)(const struct AddonInstance_ShaderPreset*,
                                    preset_file,
                                    struct video_shader*);
-    void(__cdecl* VideoShaderWrite)(const struct AddonInstance_ShaderPreset*,
+    bool(__cdecl* VideoShaderWrite)(const struct AddonInstance_ShaderPreset*,
                                     preset_file,
                                     const struct video_shader*);
     bool(__cdecl* VideoShaderResolveParameters)(const struct AddonInstance_ShaderPreset*,

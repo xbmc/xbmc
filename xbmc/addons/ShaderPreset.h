@@ -42,8 +42,10 @@ public:
    * etc) to disk
    *
    * \param shader Shader passes handle
+   *
+   * \return True if successful, otherwise false
    */
-  void WriteShaderPreset(const video_shader& shader);
+  bool WriteShaderPreset(const video_shader& shader);
 
   /*!
    * \brief Resolve all shader parameters belonging to the shader preset

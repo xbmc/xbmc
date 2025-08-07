@@ -37,7 +37,7 @@ bool CShaderPreset::ReadShaderPreset(video_shader& shader)
   return m_struct.toAddon->VideoShaderRead(&m_struct, m_file, &shader);
 }
 
-void CShaderPreset::WriteShaderPreset(const video_shader& shader)
+bool CShaderPreset::WriteShaderPreset(const video_shader& shader)
 {
   return m_struct.toAddon->VideoShaderWrite(&m_struct, m_file, &shader);
 }
