@@ -16,6 +16,9 @@
 #ifdef HAS_UPNP
 #include "network/upnp/UPnPPlayer.h"
 #endif
+#ifdef TARGET_WEBOS
+#include "VideoPlayerWebOS.h"
+#endif
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -46,7 +49,11 @@ std::shared_ptr<IPlayer> CPlayerCoreConfig::CreatePlayer(IPlayerCallback& callba
 
   if (m_type.compare("video") == 0)
   {
+#ifdef TARGET_WEBOS
+    player = std::make_shared<CVideoPlayerWebOS>(callback);
+#else
     player = std::make_shared<CVideoPlayer>(callback);
+#endif
   }
   else if (m_type.compare("music") == 0)
   {

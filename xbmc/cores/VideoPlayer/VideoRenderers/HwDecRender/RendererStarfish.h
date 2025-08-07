@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/VideoPlayer/Buffers/VideoBufferStarfish.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 
 class CRendererStarfish : public CBaseRenderer
@@ -48,5 +49,5 @@ private:
   CRect m_exportedSourceRect;
   CRect m_exportedDestRect;
   bool m_configured{false};
-  long m_acbId{0};
+  CStarfishVideoBuffer* m_videoBuffer{nullptr};
 };
