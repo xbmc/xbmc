@@ -76,3 +76,8 @@ void CPlatformWebOS::RegisterPowerManagement()
 {
   CLunaPowerManagement::Register();
 }
+
+bool CPlatformWebOS::IsConfigureAddonsAtStartupEnabled()
+{
+  return false;
+}
