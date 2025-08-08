@@ -152,7 +152,11 @@ jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleR
     CLog::Log(LOGINFO, "AESinkAUDIOTRACK - AudioTrack creation (channelMask {:#08x}): {}",
               channelMask, e.what());
   }
-
+  if (jniAt)
+  {
+    jniAt->pause();
+    jniAt->flush();
+  }
   return jniAt;
 }
 
@@ -643,8 +647,11 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   uint32_t head_pos = (uint32_t)m_at_jni->getPlaybackHeadPosition();
 
-  // Wraparound
-  if ((uint32_t)(m_headPos & UINT64_LOWER_BYTES) > head_pos) // need to compute wraparound
+  // Wraparound - but only if we were not more than 0.1 seconds from wraparound away: samplerate / 10
+  // we add max 50 ms packages - so should be sane that way
+  const uint32_t minwrapvalue = UINT32_MAX - m_sink_sampleRate / 10;
+  const uint32_t remain = static_cast<uint32_t>(m_headPos & UINT64_LOWER_BYTES);
+  if ((remain > head_pos) && (remain >= minwrapvalue))
     m_headPos += (1ULL << 32); // add wraparound, e.g. 0x0000 FFFF FFFF -> 0x0001 FFFF FFFF
   // clear lower 32 bit values, e.g. 0x0001 FFFF FFFF -> 0x0001 0000 0000
   // and add head_pos which wrapped around, e.g. 0x0001 0000 0000 -> 0x0001 0000 0004
