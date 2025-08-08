@@ -848,6 +848,7 @@ namespace XBMCAddon
       ///
       ///-----------------------------------------------------------------------
       /// @python_v18 New function added.
+      /// @python_v22 Deprecated. Use **InfoTagVideo.setAvailableFanart()** instead.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
