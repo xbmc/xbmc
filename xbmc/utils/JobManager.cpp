@@ -358,7 +358,7 @@ bool CJobManager::IsProcessing(const CJob::PRIORITY& priority) const
 {
   std::unique_lock lock(m_section);
 
-  if (m_pauseJobs)
+  if (m_pauseJobs && priority == CJob::PRIORITY::PRIORITY_LOW_PAUSABLE)
     return false;
 
   return std::ranges::any_of(m_processing,
@@ -369,12 +369,13 @@ int CJobManager::IsProcessing(const std::string& type) const
 {
   std::unique_lock lock(m_section);
 
-  if (m_pauseJobs)
-    return 0;
-
-  return static_cast<int>(
-      std::ranges::count_if(m_processing, [type](const auto& wi)
-                            { return std::string(wi.GetJob()->GetType()) == type; }));
+  return static_cast<int>(std::ranges::count_if(
+      m_processing,
+      [this, type](const auto& wi)
+      {
+        return (!m_pauseJobs || wi.GetPriority() != CJob::PRIORITY::PRIORITY_LOW_PAUSABLE) &&
+               (std::string(wi.GetJob()->GetType()) == type);
+      }));
 }
 
 CJob* CJobManager::GetNextJob()
