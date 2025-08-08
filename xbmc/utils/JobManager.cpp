@@ -252,7 +252,10 @@ unsigned int CJobManager::AddJob(CJob* job, IJobCallback* callback, CJob::PRIORI
 {
   std::unique_lock lock(m_section);
 
-  if (!m_running)
+  // Check if we are not running or have this job already.  In either case, we're done.
+  if (!m_running ||
+      std::ranges::find_if(m_jobQueue[priority], [job](const CWorkItem& wi)
+                           { return wi.GetJob()->Equals(job); }) != m_jobQueue[priority].cend())
   {
     delete job;
     return 0;
