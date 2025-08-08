@@ -1276,7 +1276,7 @@ ssize_t CCurlFile::Write(const void* lpBuf, size_t uiBufSize)
 
 CCurlFile::ReadLineResult CCurlFile::CReadState::ReadLine(char* buffer, std::size_t bufferSize)
 {
-  unsigned int want = (unsigned int)bufferSize;
+  unsigned int want = (unsigned int)bufferSize - 1; // leave one byte for '\0'
 
   if((m_fileSize == 0 || m_filePos < m_fileSize) && FillBuffer(want) != FILLBUFFER_OK)
     return {ReadLineResult::FAILURE, 0};
@@ -1299,7 +1299,7 @@ CCurlFile::ReadLineResult CCurlFile::CReadState::ReadLine(char* buffer, std::siz
   std::size_t bytesRead = 0;
   bool foundNewline = false;
   bool reachedEnd = false;
-  for (; bytesRead < want - 1 && !foundNewline; ++bytesRead)
+  for (; bytesRead < want && !foundNewline; ++bytesRead)
   {
     reachedEnd = m_buffer.ReadData(buffer + bytesRead, 1) == 0;
     if (reachedEnd)
