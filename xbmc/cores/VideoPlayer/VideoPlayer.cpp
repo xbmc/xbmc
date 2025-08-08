@@ -689,13 +689,14 @@ void CVideoPlayer::CreatePlayers()
     return;
 
   m_VideoPlayerVideo =
-      new CVideoPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager,
-                            *m_processInfo, m_messageQueueTimeSize);
-  m_VideoPlayerAudio =
-      new CVideoPlayerAudio(&m_clock, m_messenger, *m_processInfo, m_messageQueueTimeSize);
-  m_VideoPlayerSubtitle = new CVideoPlayerSubtitle(&m_overlayContainer, *m_processInfo);
-  m_VideoPlayerTeletext = new CDVDTeletextData(*m_processInfo);
-  m_VideoPlayerRadioRDS = new CDVDRadioRDSData(*m_processInfo);
+      std::make_unique<CVideoPlayerVideo>(&m_clock, &m_overlayContainer, m_messenger,
+                                          m_renderManager, *m_processInfo, m_messageQueueTimeSize);
+  m_VideoPlayerAudio = std::make_unique<CVideoPlayerAudio>(&m_clock, m_messenger, *m_processInfo,
+                                                           m_messageQueueTimeSize);
+  m_VideoPlayerSubtitle =
+      std::make_unique<CVideoPlayerSubtitle>(&m_overlayContainer, *m_processInfo);
+  m_VideoPlayerTeletext = std::make_unique<CDVDTeletextData>(*m_processInfo);
+  m_VideoPlayerRadioRDS = std::make_unique<CDVDRadioRDSData>(*m_processInfo);
   m_VideoPlayerAudioID3 = std::make_unique<CVideoPlayerAudioID3>(*m_processInfo);
   m_players_created = true;
 }
@@ -705,11 +706,11 @@ void CVideoPlayer::DestroyPlayers()
   if (!m_players_created)
     return;
 
-  delete m_VideoPlayerVideo;
-  delete m_VideoPlayerAudio;
-  delete m_VideoPlayerSubtitle;
-  delete m_VideoPlayerTeletext;
-  delete m_VideoPlayerRadioRDS;
+  m_VideoPlayerVideo.reset();
+  m_VideoPlayerAudio.reset();
+  m_VideoPlayerSubtitle.reset();
+  m_VideoPlayerTeletext.reset();
+  m_VideoPlayerRadioRDS.reset();
   m_VideoPlayerAudioID3.reset();
 
   m_players_created = false;
@@ -2624,15 +2625,15 @@ void CVideoPlayer::SynchronizeDemuxer()
 IDVDStreamPlayer* CVideoPlayer::GetStreamPlayer(unsigned int target)
 {
   if(target == VideoPlayer_AUDIO)
-    return m_VideoPlayerAudio;
+    return m_VideoPlayerAudio.get();
   if(target == VideoPlayer_VIDEO)
-    return m_VideoPlayerVideo;
+    return m_VideoPlayerVideo.get();
   if(target == VideoPlayer_SUBTITLE)
-    return m_VideoPlayerSubtitle;
+    return m_VideoPlayerSubtitle.get();
   if(target == VideoPlayer_TELETEXT)
-    return m_VideoPlayerTeletext;
+    return m_VideoPlayerTeletext.get();
   if(target == VideoPlayer_RDS)
-    return m_VideoPlayerRadioRDS;
+    return m_VideoPlayerRadioRDS.get();
   if (target == VideoPlayer_ID3)
     return m_VideoPlayerAudioID3.get();
   return NULL;

@@ -540,11 +540,11 @@ protected:
   CDVDMessageQueue m_messenger;
   std::unique_ptr<CJobQueue> m_outboundEvents;
 
-  IDVDStreamPlayerVideo* m_VideoPlayerVideo{nullptr};
-  IDVDStreamPlayerAudio* m_VideoPlayerAudio{nullptr};
-  CVideoPlayerSubtitle *m_VideoPlayerSubtitle;
-  CDVDTeletextData *m_VideoPlayerTeletext;
-  CDVDRadioRDSData *m_VideoPlayerRadioRDS;
+  std::unique_ptr<IDVDStreamPlayerVideo> m_VideoPlayerVideo;
+  std::unique_ptr<IDVDStreamPlayerAudio> m_VideoPlayerAudio;
+  std::unique_ptr<CVideoPlayerSubtitle> m_VideoPlayerSubtitle;
+  std::unique_ptr<CDVDTeletextData> m_VideoPlayerTeletext;
+  std::unique_ptr<CDVDRadioRDSData> m_VideoPlayerRadioRDS;
   std::unique_ptr<CVideoPlayerAudioID3> m_VideoPlayerAudioID3;
 
   CDVDClock m_clock;

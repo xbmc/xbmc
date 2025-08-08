@@ -41,12 +41,12 @@ void CVideoPlayerWebOS::CreatePlayers()
   {
     bool hasAudio = m_SelectionStreams.CountType(StreamType::AUDIO);
 
-    delete m_VideoPlayerVideo;
-    delete m_VideoPlayerAudio;
     m_mediaPipelineWebOS = std::make_unique<CMediaPipelineWebOS>(
         *m_processInfo, m_renderManager, m_clock, m_messenger, m_overlayContainer, hasAudio);
-    m_VideoPlayerVideo = new CVideoPlayerVideoWebOS(*m_mediaPipelineWebOS, *m_processInfo);
-    m_VideoPlayerAudio = new CVideoPlayerAudioWebOS(*m_mediaPipelineWebOS, *m_processInfo);
+    m_VideoPlayerVideo =
+        std::make_unique<CVideoPlayerVideoWebOS>(*m_mediaPipelineWebOS, *m_processInfo);
+    m_VideoPlayerAudio =
+        std::make_unique<CVideoPlayerAudioWebOS>(*m_mediaPipelineWebOS, *m_processInfo);
 
     const CVideoSettings settings = m_processInfo->GetVideoSettings();
     m_VideoPlayerVideo->EnableSubtitle(settings.m_SubtitleOn);
@@ -55,22 +55,21 @@ void CVideoPlayerWebOS::CreatePlayers()
   }
   else if (m_mediaPipelineWebOS || (!m_VideoPlayerVideo && !m_VideoPlayerAudio))
   {
-    delete m_VideoPlayerVideo;
-    delete m_VideoPlayerAudio;
     m_mediaPipelineWebOS = nullptr;
-    m_VideoPlayerVideo =
-        new CVideoPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager,
-                              *m_processInfo, m_messageQueueTimeSize);
-    m_VideoPlayerAudio =
-        new CVideoPlayerAudio(&m_clock, m_messenger, *m_processInfo, m_messageQueueTimeSize);
+    m_VideoPlayerVideo = std::make_unique<CVideoPlayerVideo>(
+        &m_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo,
+        m_messageQueueTimeSize);
+    m_VideoPlayerAudio = std::make_unique<CVideoPlayerAudio>(&m_clock, m_messenger, *m_processInfo,
+                                                             m_messageQueueTimeSize);
   }
 
   if (m_players_created)
     return;
 
-  m_VideoPlayerSubtitle = new CVideoPlayerSubtitle(&m_overlayContainer, *m_processInfo);
-  m_VideoPlayerTeletext = new CDVDTeletextData(*m_processInfo);
-  m_VideoPlayerRadioRDS = new CDVDRadioRDSData(*m_processInfo);
+  m_VideoPlayerSubtitle =
+      std::make_unique<CVideoPlayerSubtitle>(&m_overlayContainer, *m_processInfo);
+  m_VideoPlayerTeletext = std::make_unique<CDVDTeletextData>(*m_processInfo);
+  m_VideoPlayerRadioRDS = std::make_unique<CDVDRadioRDSData>(*m_processInfo);
   m_VideoPlayerAudioID3 = std::make_unique<CVideoPlayerAudioID3>(*m_processInfo);
   m_players_created = true;
 }
