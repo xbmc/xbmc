@@ -17,6 +17,7 @@
 
 #include <map>
 #include <memory>
+#include <stdint.h>
 #include <string>
 #include <string_view>
 
