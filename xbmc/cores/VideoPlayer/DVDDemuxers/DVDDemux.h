@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+#include <fmt/format.h>
+
 #ifndef __GNUC__
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -50,6 +52,43 @@ enum class StreamType
   TELETEXT, // Teletext data stream
   RADIO_RDS, // Radio RDS data stream
   AUDIO_ID3 // Audio ID3 data stream
+};
+
+template<>
+struct fmt::formatter<StreamType> : fmt::formatter<std::string_view>
+{
+  template<typename FormatContext>
+  constexpr auto format(const StreamType& type, FormatContext& ctx) const
+  {
+    return fmt::formatter<std::string_view>::format(enumToStreamType(type), ctx);
+  }
+
+private:
+  static constexpr std::string_view enumToStreamType(StreamType type)
+  {
+    using namespace std::literals::string_view_literals;
+    switch (type)
+    {
+      using enum StreamType;
+      case NONE:
+        return "none"sv;
+      case AUDIO:
+        return "audio"sv;
+      case VIDEO:
+        return "video"sv;
+      case DATA:
+        return "data"sv;
+      case SUBTITLE:
+        return "subtitle"sv;
+      case TELETEXT:
+        return "teletext"sv;
+      case RADIO_RDS:
+        return "radio rds"sv;
+      case AUDIO_ID3:
+        return "audio id3"sv;
+    }
+    throw std::invalid_argument("no streamtype string found");
+  }
 };
 
 enum StreamSource
