@@ -48,6 +48,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         add_library(FriBidi::FriBidi ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endif()
     endif()
+
+    get_target_property(_ALIASTARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIASED_TARGET)
+    if(NOT _ALIASTARGET)
+      set(_ALIASTARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+    endif()
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_ALIASTARGET})
+
   else()
     if(FriBidi_FIND_REQUIRED)
       message(FATAL_ERROR "FriBidi library was not found.")
