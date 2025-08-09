@@ -11,7 +11,7 @@ diff --git a/configure b/configure
 index 28dcf462dd..ffa96e283d 100755
 --- a/configure
 +++ b/configure
-@@ -6884,7 +6884,7 @@ enabled libcelt           && require libcelt celt/celt.h celt_decode -lcelt0 &&
+@@ -7037,7 +7041,7 @@ enabled libcelt           && require libcelt celt/celt.h celt_decode -lcelt0 &&
                                 die "ERROR: libcelt must be installed and version must be >= 0.11.0."; }
  enabled libcaca           && require_pkg_config libcaca caca caca.h caca_create_canvas
  enabled libcodec2         && require libcodec2 codec2/codec2.h codec2_create -lcodec2
