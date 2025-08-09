@@ -999,8 +999,8 @@ extern "C"
         strncpy(entry->d_name, "..\0", 3);
       else
       {
-        strncpy(entry->d_name, dirData->items[dirData->curr_index - 2]->GetLabel().c_str(), sizeof(entry->d_name));
-        entry->d_name[sizeof(entry->d_name)-1] = '\0'; // null-terminate any truncated paths
+        snprintf(entry->d_name, sizeof(entry->d_name), "%s",
+                 dirData->items[dirData->curr_index - 2]->GetLabel().c_str());
       }
       dirData->last_entry = entry;
       dirData->curr_index++;
@@ -1881,19 +1881,14 @@ extern "C"
 
           if (free_position != NULL)
           {
-            // free position, copy value
             size = strlen(var) + strlen(value) + 2;
-            *free_position = (char*)malloc(size); // for '=' and 0 termination
-            if ((*free_position))
+            *free_position = static_cast<char*>(malloc(size));
+            if (*free_position)
             {
-              strncpy(*free_position, var, size);
-              (*free_position)[size - 1] = '\0';
-              strncat(*free_position, "=", size - strlen(*free_position));
-              strncat(*free_position, value, size - strlen(*free_position));
+              snprintf(*free_position, size, "%s=%s", var, value);
               added = true;
             }
           }
-
         }
 
         free(value);
