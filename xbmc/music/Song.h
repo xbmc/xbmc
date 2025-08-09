@@ -49,7 +49,7 @@ struct ChapterDetails
   std::chrono::milliseconds endTimeMs{0};
 };
 
-using ChapterMarks = std::map<int, ChapterDetails>;
+using ChapterMarks = std::vector<ChapterDetails>;
 
 /*!
  \ingroup music
