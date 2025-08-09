@@ -86,6 +86,7 @@ struct ShaderPass
   unsigned int frameCountMod{0};
   FboScale fbo;
   bool mipmap{false};
+  std::string alias;
 
   std::vector<ShaderLut> luts;
   std::vector<ShaderParameter> parameters;
