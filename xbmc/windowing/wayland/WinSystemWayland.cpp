@@ -201,12 +201,14 @@ bool CWinSystemWayland::InitWindowSystem()
       ->GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE)
       ->SetVisible(true);
 
+  m_colorManager = std::make_unique<CColorManager>(*m_connection);
   return CWinSystemBase::InitWindowSystem();
 }
 
 bool CWinSystemWayland::DestroyWindowSystem()
 {
   DestroyWindow();
+  m_colorManager.reset();
   // wl_display_disconnect frees all proxy objects, so we have to make sure
   // all stuff is gone on the C++ side before that
   m_cursorSurface = wayland::surface_t{};
@@ -359,6 +361,8 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   //   stopped then.
   CWinEventsWayland::SetDisplay(&m_connection->GetDisplay());
 
+  m_colorManager->SetSurface(m_surface);
+
   return true;
 }
 
@@ -384,6 +388,8 @@ IShellSurface* CWinSystemWayland::CreateShellSurface(const std::string& name)
 
 bool CWinSystemWayland::DestroyWindow()
 {
+  m_colorManager->UnsetSurface();
+
   // Make sure no more events get processed when we kill the instances
   CWinEventsWayland::SetDisplay(nullptr);
 
@@ -1525,6 +1531,21 @@ std::string CWinSystemWayland::GetClipboardText()
     }
   }
   return "";
+}
+
+bool CWinSystemWayland::SetHDR(const VideoPicture* videoPicture)
+{
+  return m_colorManager->SetHDR(videoPicture);
+}
+
+bool CWinSystemWayland::IsHDRDisplay()
+{
+  return m_colorManager->IsHDRDisplay();
+}
+
+CHDRCapabilities CWinSystemWayland::GetDisplayHDRCapabilities() const
+{
+  return m_colorManager->GetDisplayHDRCapabilities();
 }
 
 void CWinSystemWayland::OnWindowMove(const wayland::seat_t& seat, std::uint32_t serial)
