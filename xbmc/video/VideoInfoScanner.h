@@ -126,12 +126,13 @@ namespace KODI::VIDEO
      \param actorArtPath the path to search for actor thumbs. Defaults to empty.
      \param useRemoteArt use remote art if also using local scraper. Defaults to yes.
      */
-    void GetArtwork(CFileItem* pItem,
-                    ADDON::ContentType content,
-                    bool bApplyToDir = false,
-                    bool useLocal = true,
-                    const std::string& actorArtPath = "",
-                    UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES);
+    void GetArtwork(
+        CFileItem* pItem,
+        ADDON::ContentType content,
+        bool bApplyToDir = false,
+        bool useLocal = true,
+        const std::string& actorArtPath = "",
+        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
 
     /*! \brief Get season thumbs for a tvshow.
      All seasons (regardless of whether the user has episodes) are added to the art map.

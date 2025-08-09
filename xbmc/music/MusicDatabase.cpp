@@ -765,7 +765,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
     {
       if (!song->m_chapters.empty())
       {
-        ChapterDetails& chapter = song->m_chapters[index];
+        const ChapterDetails& chapter{song->m_chapters[index]};
         // no title or just numbers  (1, 02, 003 etc) - generate a better one
         if (StringUtils::IsNaturalNumber(chapter.name) || chapter.name.empty())
           song->strTitle = StringUtils::Format(
@@ -775,7 +775,8 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
 
         song->iStartOffset = static_cast<int>(chapter.startTimeMs.count());
         song->iEndOffset = static_cast<int>(chapter.endTimeMs.count());
-        song->iDuration = CUtil::ConvertMilliSecsToSecsInt(song->iEndOffset - song->iStartOffset);
+        song->iDuration = static_cast<int>(
+            CUtil::ConvertMilliSecsToSecsInt(song->iEndOffset - song->iStartOffset));
         // disc number is in top 16 bits, track in bottom 16 bits (disc << 16 | track)
         song->iTrack = (1 << 16) + index + 1; // disc 1 + track number
         song->idSong = -1; // make sure this is a new song to add

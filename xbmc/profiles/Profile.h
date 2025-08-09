@@ -41,9 +41,9 @@ public:
     bool games;
   };
 
-  CProfile(const std::string& directory = "",
-           const std::string& name = "",
-           const int id = INVALID_PROFILE_ID);
+  explicit CProfile(const std::string& directory = "",
+                    const std::string& name = "",
+                    const int id = INVALID_PROFILE_ID);
   ~CProfile(void);
 
   void Load(const TiXmlNode *node, int nextIdProfile);

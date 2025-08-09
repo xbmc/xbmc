@@ -537,9 +537,9 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
     for(int i=0;i<count;i++)
     {
       const auto stream =
-          std::find_if(demuxStreams.begin(), demuxStreams.end(), [i](const auto& stream)
-                       { return stream->type == StreamType::AUDIO && stream->dvdNavId == i; });
-      CDemuxStreamAudio* aStream =
+          std::find_if(demuxStreams.begin(), demuxStreams.end(), [i](const auto& strm)
+                       { return strm->type == StreamType::AUDIO && strm->dvdNavId == i; });
+      const CDemuxStreamAudio* aStream =
           (stream != demuxStreams.end()) ? static_cast<CDemuxStreamAudio*>(*stream) : nullptr;
 
       SelectionStream s;

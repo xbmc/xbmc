@@ -56,7 +56,8 @@ KODI_GUI_LISTITEM_HANDLE Interface_GUIListItem::create(KODI_HANDLE kodiBase,
     return nullptr;
   }
 
-  auto* item{new std::shared_ptr<CFileItem>(new CFileItem())};
+  auto* fileItem{new CFileItem()};
+  auto* item{new std::shared_ptr<CFileItem>(fileItem)};
   if (label)
     item->get()->SetLabel(label);
   if (label2)

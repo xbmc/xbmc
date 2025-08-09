@@ -669,7 +669,7 @@ public:
   void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
   bool GetEpisodeMap(int idShow,
                      EpisodeFileMap& fileMap,
-                     const std::unique_ptr<dbiplus::Dataset>& pDS,
+                     dbiplus::Dataset& pDS,
                      int idFile = -1 /* = -1 */) const;
 
   int SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork);

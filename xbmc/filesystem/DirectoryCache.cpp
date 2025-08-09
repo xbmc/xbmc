@@ -153,12 +153,11 @@ void CDirectoryCache::AddFile(const CURL& url)
   std::string path = URIUtils::GetDirectory(url.GetWithoutOptions());
   URIUtils::RemoveSlashAtEnd(path);
 
-  auto i = m_cache.find(path);
-  if (i != m_cache.end())
+  const auto i{m_cache.find(path)};
+  if (i != m_cache.cend())
   {
-    CDir& dir = i->second;
-    CFileItemPtr item(new CFileItem(url.Get(), false));
-    dir.m_Items->Add(item);
+    CDir& dir{i->second};
+    dir.m_Items->Add(std::make_shared<CFileItem>(url.Get(), false));
     dir.SetLastAccess(m_accessCounter);
   }
 }

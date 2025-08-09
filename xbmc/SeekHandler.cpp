@@ -52,8 +52,8 @@ void CSeekHandler::Configure()
   m_backwardSeekSteps.clear();
 
   std::map<SeekType, std::string> seekTypeSettingMap;
-  seekTypeSettingMap.emplace(SeekType::VIDEO, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
-  seekTypeSettingMap.emplace(SeekType::MUSIC, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS);
+  seekTypeSettingMap.try_emplace(SeekType::VIDEO, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
+  seekTypeSettingMap.try_emplace(SeekType::MUSIC, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS);
 
   std::ranges::for_each(seekTypeSettingMap,
                         [&settings, &forwardSteps = m_forwardSeekSteps,
@@ -65,8 +65,8 @@ void CSeekHandler::Configure()
                           std::ranges::for_each(settings->GetList(seekDef.second),
                                                 [&backward, &forward](const auto& seekStep)
                                                 {
-                                                  const int stepSeconds =
-                                                      static_cast<int>(seekStep.asInteger());
+                                                  const auto stepSeconds{
+                                                      static_cast<int>(seekStep.asInteger())};
                                                   if (stepSeconds < 0)
                                                     backward.insert(backward.begin(), stepSeconds);
                                                   else
@@ -94,18 +94,18 @@ int CSeekHandler::GetSeekStepSize(SeekType type, int step)
 
   if (seekSteps.empty())
   {
-    CLog::Log(LOGERROR, "SeekHandler - {} - No {} {} seek steps configured.", __FUNCTION__,
-              (type == SeekType::VIDEO ? "video" : "music"), (step > 0 ? "forward" : "backward"));
+    CLog::LogF(LOGERROR, "No {} {} seek steps configured.",
+               (type == SeekType::VIDEO ? "video" : "music"), (step > 0 ? "forward" : "backward"));
     return 0;
   }
 
   int seconds = 0;
 
   // when exceeding the selected amount of steps repeat/sum up the last step size
-  if (static_cast<size_t>(abs(step)) <= seekSteps.size())
-    seconds = seekSteps.at(abs(step) - 1);
+  if (static_cast<size_t>(std::abs(step)) <= seekSteps.size())
+    seconds = seekSteps.at(std::abs(step) - 1);
   else
-    seconds = seekSteps.back() * (abs(step) - seekSteps.size() + 1);
+    seconds = static_cast<int>(seekSteps.back() * (std::abs(step) - seekSteps.size() + 1));
 
   return seconds;
 }
@@ -194,8 +194,8 @@ void CSeekHandler::SetSeekSize(double seekSize)
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   const int64_t playTime = appPlayer->GetTime();
-  const double minSeekSize = (appPlayer->GetMinTime() - playTime) / 1000.0;
-  const double maxSeekSize = (appPlayer->GetMaxTime() - playTime) / 1000.0;
+  const double minSeekSize{static_cast<double>(appPlayer->GetMinTime() - playTime) / 1000.0};
+  const double maxSeekSize{static_cast<double>(appPlayer->GetMaxTime() - playTime) / 1000.0};
 
   m_seekSize = seekSize > 0
     ? std::min(seekSize, maxSeekSize)
@@ -404,7 +404,10 @@ void CSeekHandler::ChangeTimeCode(int remote)
     m_timerTimeCode.StartZero();
 
     if (m_timeCodePosition < 6)
-      m_timeCodeStamp[m_timeCodePosition++] = remote - REMOTE_0;
+    {
+      m_timeCodeStamp[m_timeCodePosition] = remote - REMOTE_0;
+      m_timeCodePosition++;
+    }
     else
     {
       // rotate around
@@ -424,9 +427,11 @@ int CSeekHandler::GetTimeCodeSeconds() const
                         [](const int acc, const int timeCode) { return acc * 10 + timeCode; });
 
     // Interpret result as HHMMSS
-    int s = tot % 100; tot /= 100;
-    int m = tot % 100; tot /= 100;
-    int h = tot % 100;
+    const int s{tot % 100};
+    tot /= 100;
+    const int m{tot % 100};
+    tot /= 100;
+    const int h{tot % 100};
 
     return h * 3600 + m * 60 + s;
   }

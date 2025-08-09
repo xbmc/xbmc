@@ -310,7 +310,7 @@ void CSkinInfo::LoadTimers()
   m_skinTimerManager->LoadTimers(timersPath);
 }
 
-void CSkinInfo::ProcessTimers()
+void CSkinInfo::ProcessTimers() const
 {
   m_skinTimerManager->Process();
 }

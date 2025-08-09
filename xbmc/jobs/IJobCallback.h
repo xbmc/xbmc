@@ -59,7 +59,7 @@ public:
    \param job the job that has been aborted.
    \sa CJobManager and CJob
    */
-  virtual void OnJobAbort(unsigned int jobID, CJob* job) {}
+  virtual void OnJobAbort(unsigned int jobID, CJob* job) { /* intentionally empty */ }
 
   /*!
    \brief An optional callback function that a job may call while processing.
@@ -78,5 +78,6 @@ public:
                              unsigned int total,
                              const CJob* job)
   {
+    /* intentionally empty */
   }
 };
