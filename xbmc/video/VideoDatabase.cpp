@@ -63,6 +63,7 @@
 #include "video/VideoThumbLoader.h"
 
 #include <algorithm>
+#include <chrono>
 #include <map>
 #include <memory>
 #include <ranges>
@@ -78,6 +79,7 @@ using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace KODI::GUILIB;
 using namespace KODI::VIDEO;
+using namespace std::chrono_literals;
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase() = default;
@@ -3767,56 +3769,47 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
 {
   try
   {
-    if (URIUtils::IsDiscImageStack(strFilenameAndPath))
-    {
-      CStackDirectory dir;
-      CFileItemList fileList;
-      const CURL pathToUrl(strFilenameAndPath);
-      dir.GetDirectory(pathToUrl, fileList);
-      if (!bAppend)
-        bookmarks.clear();
-      for (int i = fileList.Size() - 1; i >= 0; i--) // put the bookmarks of the highest part first in the list
-        GetBookMarksForFile(fileList[i]->GetPath(), bookmarks, type, true, (i+1));
-    }
-    else
-    {
-      int idFile = GetFileId(strFilenameAndPath);
-      if (idFile < 0) return ;
-      if (!bAppend)
-        bookmarks.erase(bookmarks.begin(), bookmarks.end());
-      if (nullptr == m_pDB)
-        return;
-      if (nullptr == m_pDS)
-        return;
+    int idFile = GetFileId(strFilenameAndPath);
+    if (idFile < 0)
+      return;
+    if (!bAppend)
+      bookmarks.erase(bookmarks.begin(), bookmarks.end());
+    if (nullptr == m_pDB)
+      return;
+    if (nullptr == m_pDS)
+      return;
 
-      std::string strSQL =
-          PrepareSQL("select * from bookmark where idFile=%i and type=%i order by timeInSeconds",
-                     idFile, static_cast<int>(type));
-      m_pDS->query( strSQL );
-      while (!m_pDS->eof())
+    std::string strSQL =
+        PrepareSQL("select * from bookmark where idFile=%i and type=%i order by timeInSeconds",
+                   idFile, static_cast<int>(type));
+    m_pDS->query(strSQL);
+    while (!m_pDS->eof())
+    {
+      CBookmark bookmark;
+      bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
+      bookmark.partNumber = partNumber;
+      bookmark.totalTimeInSeconds = m_pDS->fv("totalTimeInSeconds").get_asDouble();
+      bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
+      bookmark.playerState = m_pDS->fv("playerState").get_asString();
+      bookmark.player = m_pDS->fv("player").get_asString();
+      bookmark.type = type;
+      if (type == CBookmark::EPISODE)
       {
-        CBookmark bookmark;
-        bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
-        bookmark.partNumber = partNumber;
-        bookmark.totalTimeInSeconds = m_pDS->fv("totalTimeInSeconds").get_asDouble();
-        bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
-        bookmark.playerState = m_pDS->fv("playerState").get_asString();
-        bookmark.player = m_pDS->fv("player").get_asString();
-        bookmark.type = type;
-        if (type == CBookmark::EPISODE)
-        {
-          std::string strSQL2=PrepareSQL("select c%02d, c%02d from episode where c%02d=%i order by c%02d, c%02d", VIDEODB_ID_EPISODE_EPISODE, VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_BOOKMARK, m_pDS->fv("idBookmark").get_asInt(), VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
-          m_pDS2->query(strSQL2);
-          bookmark.episodeNumber = m_pDS2->fv(0).get_asInt();
-          bookmark.seasonNumber = m_pDS2->fv(1).get_asInt();
-          m_pDS2->close();
-        }
-        bookmarks.emplace_back(bookmark);
-        m_pDS->next();
+        std::string strSQL2 =
+            PrepareSQL("select c%02d, c%02d from episode where c%02d=%i order by c%02d, c%02d",
+                       VIDEODB_ID_EPISODE_EPISODE, VIDEODB_ID_EPISODE_SEASON,
+                       VIDEODB_ID_EPISODE_BOOKMARK, m_pDS->fv("idBookmark").get_asInt(),
+                       VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
+        m_pDS2->query(strSQL2);
+        bookmark.episodeNumber = m_pDS2->fv(0).get_asInt();
+        bookmark.seasonNumber = m_pDS2->fv(1).get_asInt();
+        m_pDS2->close();
       }
-      //sort(bookmarks.begin(), bookmarks.end(), SortBookmarks);
-      m_pDS->close();
+      bookmarks.emplace_back(bookmark);
+      m_pDS->next();
     }
+    //sort(bookmarks.begin(), bookmarks.end(), SortBookmarks);
+    m_pDS->close();
   }
   catch (...)
   {
@@ -6064,7 +6057,8 @@ std::vector<std::string> CVideoDatabase::GetAvailableArtTypesForItem(int mediaId
 
 /// \brief GetStackTimes() obtains any saved video times for the stacked file
 /// \retval Returns true if the stack times exist, false otherwise.
-bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint64_t> &times)
+bool CVideoDatabase::GetStackTimes(const std::string& filePath,
+                                   std::vector<std::chrono::milliseconds>& times)
 {
   try
   {
@@ -6080,17 +6074,17 @@ bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint
     m_pDS->query( strSQL );
     if (m_pDS->num_rows() > 0)
     { // get the video settings info
-      uint64_t timeTotal = 0;
+      std::chrono::milliseconds timeTotal{0ms};
       std::vector<std::string> timeString = StringUtils::Split(m_pDS->fv("times").get_asString(), ",");
       times.clear();
       for (const auto &i : timeString)
       {
-        const auto partTime = static_cast<uint64_t>(atof(i.c_str()) * 1000.0);
+        const std::chrono::milliseconds partTime{static_cast<long long>(std::stod(i) * 1000.0)};
         times.emplace_back(partTime); // db stores in secs, convert to msecs
         timeTotal += partTime;
       }
       m_pDS->close();
-      return (timeTotal > 0);
+      return (timeTotal > 0ms);
     }
     m_pDS->close();
   }
@@ -6102,7 +6096,8 @@ bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint
 }
 
 /// \brief Sets the stack times for a particular video file
-void CVideoDatabase::SetStackTimes(const std::string& filePath, const std::vector<uint64_t> &times)
+void CVideoDatabase::SetStackTimes(const std::string& filePath,
+                                   const std::vector<std::chrono::milliseconds>& times)
 {
   try
   {
@@ -6118,9 +6113,10 @@ void CVideoDatabase::SetStackTimes(const std::string& filePath, const std::vecto
     m_pDS->exec( PrepareSQL("delete from stacktimes where idFile=%i", idFile) );
 
     // add the items
-    std::string timeString = StringUtils::Format("{:.3f}", times[0] / 1000.0f);
-    for (unsigned int i = 1; i < times.size(); i++)
-      timeString += StringUtils::Format(",{:.3f}", times[i] / 1000.0f);
+    std::string timeString;
+    for (auto time : times)
+      timeString += StringUtils::Format("{:.3f},", static_cast<float>(time.count()) / 1000.0f);
+    timeString.pop_back(); // remove trailing comma
 
     m_pDS->exec( PrepareSQL("insert into stacktimes (idFile,times) values (%i,'%s')\n", idFile, timeString.c_str()) );
   }

@@ -57,6 +57,7 @@ public:
   int Read(uint8_t* buf, int buf_size) override;
   int64_t Seek(int64_t offset, int whence) override;
   int64_t GetLength() override;
+  int64_t GetDuration() override { return 0; }
   int GetBlockSize() override;
   bool IsEOF() override;
   bool CanSeek() override; //! @todo drop this

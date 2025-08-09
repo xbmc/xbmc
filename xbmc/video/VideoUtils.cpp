@@ -33,7 +33,9 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstdint>
+#include <ranges>
 #include <vector>
 
 namespace KODI::VIDEO::UTILS
@@ -189,12 +191,13 @@ std::tuple<int64_t, unsigned int> GetStackResumeOffsetAndPartNumber(const CFileI
 {
   int64_t offset{-1};
   unsigned int partNumber{0};
-  if (item.IsStack())
+  if (item.IsStack() && item.HasVideoInfoTag())
   {
     const std::string& path{item.GetDynPath()};
-    if (URIUtils::IsDiscImageStack(path))
+    const CBookmark bookmark{item.GetVideoInfoTag()->GetResumePoint()};
+    if (bookmark.IsPartWay())
     {
-      // disc image stacks - every part can have its own resume point
+      offset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
       CVideoDatabase db;
       if (!db.Open())
       {
@@ -202,48 +205,17 @@ std::tuple<int64_t, unsigned int> GetStackResumeOffsetAndPartNumber(const CFileI
         return {};
       }
 
-      CBookmark bookmark;
-      if (db.GetResumeBookMark(path, bookmark))
+      partNumber = 1;
+      std::vector<std::chrono::milliseconds> times;
+      if (db.GetStackTimes(path, times))
       {
-        offset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
-        partNumber = static_cast<unsigned int>(bookmark.partNumber);
-      }
-    }
-    else
-    {
-      // all other stacks - there is only one resume point for the whole stack
-      if (item.HasVideoInfoTag())
-      {
-        const CBookmark bookmark{item.GetVideoInfoTag()->GetResumePoint()};
-        if (bookmark.IsPartWay())
-        {
-          offset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
-
-          //! @todo Should the part number be set when loading/setting tags's bookmark from db,
-          //!       like done for disc image stacks?
-          //partNumber = static_cast<unsigned int>(bookmark.partNumber);
-
-          CVideoDatabase db;
-          if (!db.Open())
-          {
-            CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
-            return {};
-          }
-
-          partNumber = 1;
-          std::vector<uint64_t> times;
-          if (db.GetStackTimes(path, times))
-          {
-            for (size_t i = times.size(); i > 0; i--)
-            {
-              if (times[i - 1] <= static_cast<uint64_t>(offset))
-              {
-                partNumber = static_cast<unsigned int>(i + 1);
-                break;
-              }
-            }
-          }
-        }
+        // Look backwards through the parts to find the part we are in
+        const auto index{std::ranges::distance(
+            std::ranges::find_if(times | std::views::reverse, [offset](auto t)
+                                 { return t <= std::chrono::milliseconds(offset); }),
+            times.rend())};
+        if (index >= 0 && index < static_cast<int>(times.size()))
+          partNumber = static_cast<unsigned int>(index + 1);
       }
     }
   }
@@ -301,12 +273,13 @@ int64_t GetStackPartResumeOffset(const CFileItem& item, unsigned int partNumber)
 
           offset = 0;
 
-          std::vector<uint64_t> times;
+          std::vector<std::chrono::milliseconds> times;
           if (db.GetStackTimes(path, times))
           {
             const int64_t offsetToCheck{CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)};
-            const uint64_t partBegin{partNumber == 1 ? 0 : times[partNumber - 2]};
-            const uint64_t partEnd{times[partNumber - 1]};
+            const uint64_t partBegin{
+                partNumber == 1 ? 0 : static_cast<uint64_t>(times[partNumber - 2].count())};
+            const uint64_t partEnd{static_cast<uint64_t>(times[partNumber - 1].count())};
             if (static_cast<uint64_t>(offsetToCheck) <= partEnd &&
                 static_cast<uint64_t>(offsetToCheck) > partBegin)
             {
@@ -347,9 +320,9 @@ int64_t GetStackPartStartOffset(const CFileItem& item, unsigned int partNumber)
           return {};
         }
 
-        std::vector<uint64_t> times;
+        std::vector<std::chrono::milliseconds> times;
         if (db.GetStackTimes(path, times) && partNumber <= times.size())
-          offset = times[partNumber - 2];
+          offset = times[partNumber - 2].count();
       }
     }
   }
