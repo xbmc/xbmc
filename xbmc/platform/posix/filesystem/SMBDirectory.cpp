@@ -115,61 +115,58 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     atLeastOneEntry = true;
     // We use UTF-8 internally, as does SMB
-    std::string strFile = fi->name;
+    std::string name = fi->name;
 
-    if (strFile == "." || strFile == ".." || strFile == "lost+found")
+    if (name == "." || name == ".." || name == "lost+found")
       continue;
 
-    int64_t iSize = 0;
-    bool bIsDir = S_ISDIR(st.st_mode);
-    int64_t lTimeDate = 0;
-    bool hidden = false;
-
-    if (StringUtils::StartsWith(strFile, "."))
-      hidden = true;
+    int64_t size = 0;
+    const bool isDir = S_ISDIR(st.st_mode);
+    int64_t timeDate = 0;
+    bool hidden = StringUtils::StartsWith(name, ".");
 
     // only stat files that can give proper responses
-    if (S_ISREG(st.st_mode) || bIsDir)
+    if (S_ISREG(st.st_mode) || isDir)
     {
       nstats++;
       // This is also present in stuct stat using S_IXOTH but given the potential for confusion
       // let's be explicit.
       hidden = hidden || fi->attrs & SMBC_DOS_MODE_HIDDEN;
 
-      lTimeDate = st.st_mtime;
-      if (lTimeDate == 0) // if modification date is missing, use create date
-        lTimeDate = st.st_ctime;
-      iSize = st.st_size;
+      timeDate = st.st_mtime;
+      if (timeDate == 0) // if modification date is missing, use create date
+        timeDate = st.st_ctime;
+      size = st.st_size;
     }
 
     KODI::TIME::FileTime fileTime, localTime;
-    KODI::TIME::TimeTToFileTime(lTimeDate, &fileTime);
+    KODI::TIME::TimeTToFileTime(timeDate, &fileTime);
     KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
 
-    if (bIsDir)
+    if (isDir)
     {
-      CFileItemPtr pItem(new CFileItem(strFile));
+      std::shared_ptr<CFileItem> item(new CFileItem(name));
       std::string path(strRoot);
 
       path = URIUtils::AddFileToFolder(path, fi->name);
       URIUtils::AddSlashAtEnd(path);
-      pItem->SetPath(path);
-      pItem->SetFolder(true);
-      pItem->SetDateTime(localTime);
+      item->SetPath(path);
+      item->SetFolder(true);
+      item->SetDateTime(localTime);
       if (hidden)
-        pItem->SetProperty("file:hidden", true);
-      items.Add(pItem);
+        item->SetProperty("file:hidden", true);
+      items.Add(item);
     }
     else
     {
-      CFileItemPtr pItem(new CFileItem(strFile));
-      pItem->SetPath(strRoot + fi->name);
-      pItem->SetFolder(false);
-      pItem->SetSize(iSize);
-      pItem->SetDateTime(localTime);
+      std::shared_ptr<CFileItem> item(new CFileItem(name));
+      item->SetPath(strRoot + fi->name);
+      item->SetFolder(false);
+      item->SetSize(size);
+      item->SetDateTime(localTime);
       if (hidden)
-        pItem->SetProperty("file:hidden", true);
-      items.Add(pItem);
+        item->SetProperty("file:hidden", true);
+      items.Add(item);
     }
   }
 
@@ -185,7 +182,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if (dirent->smbc_type != SMBC_FILE_SHARE && dirent->smbc_type != SMBC_SERVER)
         continue;
 
-      CFileItemPtr pItem(new CFileItem(dirent->name));
+      std::shared_ptr<CFileItem> item(new CFileItem(dirent->name));
       std::string path(strRoot);
       // needed for network / workgroup browsing
       // skip if root if we are given a server
@@ -199,9 +196,9 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       }
       path = URIUtils::AddFileToFolder(path, dirent->name);
       URIUtils::AddSlashAtEnd(path);
-      pItem->SetPath(path);
-      pItem->SetFolder(true);
-      items.Add(pItem);
+      item->SetPath(path);
+      item->SetFolder(true);
+      items.Add(item);
     }
   }
 
