@@ -23,6 +23,10 @@ if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
                     "${WAYLAND_PROTOCOLS_DIR}/unstable/xdg-shell/xdg-shell-unstable-v6.xml"
                     "${WAYLAND_PROTOCOLS_DIR}/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml")
 
+  if(PC_WAYLAND_PROTOCOLS_VERSION VERSION_GREATER_EQUAL 1.41)
+    list(APPEND PROTOCOL_XMLS "${WAYLAND_PROTOCOLS_DIR}/staging/color-management/color-management-v1.xml")
+  endif()
+
   add_custom_command(OUTPUT "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp"
                      COMMAND wayland::waylandppscanner
                      ARGS ${PROTOCOL_XMLS} "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp"
