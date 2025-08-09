@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "ColorManager.h"
 #include "Connection.h"
 #include "Output.h"
 #include "Seat.h"
@@ -80,6 +81,10 @@ public:
   void ShowOSMouse(bool show) override;
 
   std::string GetClipboardText() override;
+
+  bool SetHDR(const VideoPicture* videoPicture) override;
+  bool IsHDRDisplay() override;
+  CHDRCapabilities GetDisplayHDRCapabilities() const override;
 
   float GetSyncOutputRefreshRate();
   float GetDisplayLatency() override;
@@ -299,6 +304,8 @@ private:
   std::uint32_t m_lastAckedSerial{0u};
   /// Whether this is the first call to SetFullScreen
   bool m_isInitialSetFullScreen{true};
+
+  std::unique_ptr<CColorManager> m_colorManager;
 };
 
 
