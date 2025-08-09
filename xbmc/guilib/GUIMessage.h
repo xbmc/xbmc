@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 /*!
 \file GUIMessage.h
 \brief
