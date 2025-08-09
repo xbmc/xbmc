@@ -34,6 +34,8 @@
 
 #include "platform/posix/filesystem/SMBWSDiscovery.h"
 
+#include <chrono>
+#include <iostream>
 #include <mutex>
 
 #include <libsmbclient.h>
@@ -114,6 +116,11 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   lock.lock();
   if (!smb.IsSmbValid())
     return false;
+
+  int nstats = 0;
+  int ngetattr = 0;
+  std::cout << "Reading directory" << std::endl;
+  auto start = std::chrono::steady_clock::now();
   while ((dirEnt = smbc_readdir(fd)))
   {
     CachedDirEntry aDir;
@@ -166,6 +173,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             return false;
           }
 
+          nstats++;
           if( smbc_stat(strFullName.c_str(), &info) == 0 )
           {
 
@@ -175,6 +183,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             // But before Samba 4.17.5 it seems to return the length of the returned value
             // (which is 4), see https://bugzilla.samba.org/show_bug.cgi?id=14808.
             // Checking for >= 0 should work both for the old erroneous and the correct behaviour.
+            ngetattr++;
             if (smbc_getxattr(strFullName.c_str(), "system.dos_attr.mode", value, sizeof(value)) >= 0)
             {
               long longvalue = strtol(value, NULL, 16);
@@ -243,6 +252,10 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     }
   }
 
+  auto end = std::chrono::steady_clock::now();
+  std::cout << "Done reading directory, duration: "
+            << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
+            << " us, stat: " << nstats << " getattr: " << ngetattr << std::endl;
   return true;
 }
 
