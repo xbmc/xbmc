@@ -121,7 +121,14 @@ public class Splash extends Activity
                   RECORDAUDIO_RESULT_CODE);
           break;
         case CheckingPermissions:
-          if (Build.VERSION.SDK_INT >= 33 || (Build.VERSION.SDK_INT >= 30 && !isAndroidTV()))
+          if (Build.VERSION.SDK_INT >= 33)
+          {
+            requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_IMAGES},
+                    PERMISSION_RESULT_CODE);
+          }
+          else if (Build.VERSION.SDK_INT >= 30 && !isAndroidTV())
           {
             try
             {
@@ -505,7 +512,17 @@ public class Splash extends Activity
   private boolean CheckPermissions()
   {
     boolean retVal = false;
-    if (Build.VERSION.SDK_INT >= 33 || (Build.VERSION.SDK_INT >= 30 && !isAndroidTV()))
+    if (Build.VERSION.SDK_INT >= 33)
+    {
+      int audioCheck = checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO);
+      int videoCheck = checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO);
+      int imageCheck = checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES);
+      if (audioCheck == PERMISSION_GRANTED &&
+          videoCheck == PERMISSION_GRANTED &&
+          imageCheck == PERMISSION_GRANTED)
+        retVal = true;
+    }
+    else if (Build.VERSION.SDK_INT >= 30 && !isAndroidTV())
     {
       if (Environment.isExternalStorageManager())
       {
@@ -530,10 +547,24 @@ public class Splash extends Activity
       case PERMISSION_RESULT_CODE:
       {
         // If request is cancelled, the result arrays are empty.
-        if (grantResults.length > 0
-                && grantResults[0] == PERMISSION_GRANTED)
+        if (grantResults.length > 0)
         {
-          mPermissionOK = true;
+          if (Build.VERSION.SDK_INT >= 33)
+          {
+            mPermissionOK = true;
+            for (int result : grantResults)
+            {
+              if (result != PERMISSION_GRANTED)
+              {
+                mPermissionOK = false;
+                break;
+              }
+            }
+          }
+          else if (grantResults[0] == PERMISSION_GRANTED)
+          {
+            mPermissionOK = true;
+          }
         }
         mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
         break;
