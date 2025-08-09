@@ -6743,7 +6743,13 @@ msgctxt "#13201"
 msgid "Delete profile '{0:s}'?"
 msgstr ""
 
-#empty strings from id 13202 to 13203
+#. Label for reload profile confirmation dialog
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
+msgctxt "#13202"
+msgid "Reload profile '{0:s}'?"
+msgstr ""
+
+#empty string with id 13203
 
 #. used by several skins
 msgctxt "#13204"

@@ -24,7 +24,6 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "events/EventLog.h"
 #include "events/EventLogManager.h"
 #include "favourites/FavouritesService.h" //! @todo Remove me
@@ -469,22 +468,11 @@ bool CProfileManager::DeleteProfile(unsigned int index)
 {
   std::unique_lock lock(m_critical);
   const CProfile *profile = GetProfile(index);
-  if (profile == NULL)
+  if (!profile)
+  {
+    CLog::LogF(LOGERROR, "Profile not deleted. Invalid profile id {}", index);
     return false;
-
-  CGUIDialogYesNo* dlgYesNo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-  if (dlgYesNo == NULL)
-    return false;
-
-  const std::string& str = g_localizeStrings.Get(13201);
-  dlgYesNo->SetHeading(CVariant{13200});
-  dlgYesNo->SetLine(0, CVariant{StringUtils::Format(str, profile->getName())});
-  dlgYesNo->SetLine(1, CVariant{""});
-  dlgYesNo->SetLine(2, CVariant{""});
-  dlgYesNo->Open();
-
-  if (!dlgYesNo->IsConfirmed())
-    return false;
+  }
 
   // fall back to master profile if necessary
   if (static_cast<int>(index) == m_autoLoginProfile)
