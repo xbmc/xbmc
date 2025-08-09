@@ -73,8 +73,8 @@ sudo apt install autoconf bison build-essential curl default-jdk flex gawk git g
 **[back to top](#table-of-contents)**
 
 ## 3. Prerequisites
-Building Kodi for Android requires Android NDK revision 27c (27.2.12479018). For the SDK just use the latest available.
-Kodi CI/CD platforms currently use r27c for build testing and releases, so we recommend using r27c for the most tested build experience
+Building Kodi for Android requires Android NDK revision 28c (28.2.13676358). For the SDK just use the latest available.
+Kodi CI/CD platforms currently use r28c for build testing and releases, so we recommend using r28c for the most tested build experience
 
 * **[Android SDK](https://developer.android.com/studio/index.html)** (Look for `Get just the command line tools`)
 
@@ -100,7 +100,7 @@ cd $HOME/android-tools/android-sdk-linux/cmdline-tools/bin
 ./sdkmanager --sdk_root=$(pwd)/../.. platform-tools
 ./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-36"
 ./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;36.0.0"
-./sdkmanager --sdk_root=$(pwd)/../.. "ndk;27.2.12479018"
+./sdkmanager --sdk_root=$(pwd)/../.. "ndk;28.2.13676358"
 ```
 
 ### 3.3. Create a key to sign debug APKs
@@ -243,7 +243,7 @@ make -j$(getconf _NPROCESSORS_ONLN)
 ```
 --with-ndk-path=<path>
 ```
-  specify path to ndk (optional for android), default is sdk_path/ndk/27.2.12479018
+  specify path to ndk (optional for android), default is sdk_path/ndk/28.2.13676358
 
 ```
 --with-sdk-path=<path>
