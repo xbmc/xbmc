@@ -78,6 +78,7 @@ public:
             const std::string& tag,
             bool savePathInfo = true,
             const TiXmlElement* additionalNode = nullptr);
+  bool SaveTvShowSeasons(TiXmlNode* node) const;
   void Merge(CVideoInfoTag& other);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
@@ -171,6 +172,11 @@ public:
   {
     std::string m_name;
     std::string m_plot;
+    bool operator==(const SeasonAttributes& other) const
+    {
+      return m_name == other.m_name && m_plot == other.m_plot;
+    }
+    bool IsEmpty() const { return m_name.empty() && m_plot.empty(); }
   };
   void SetSeasons(std::map<int, SeasonAttributes> seasons);
   void SetUserrating(int userrating);
