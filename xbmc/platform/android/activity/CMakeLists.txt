@@ -48,6 +48,8 @@ set(HEADERS AndroidJoyStick.h
             JNIXBMCBroadcastReceiver.h
             XBMCApp.h)
 
+set_source_files_properties(${NDKROOT}/sources/android/native_app_glue/android_native_app_glue.c PROPERTIES
+                            SKIP_LINTING ON)
 core_add_library(platform_android_activity)
 target_include_directories(${CORE_LIBRARY} SYSTEM
                            PRIVATE ${NDKROOT}/sources/android/native_app_glue)
