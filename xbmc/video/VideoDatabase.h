@@ -715,7 +715,10 @@ public:
   int SetFileForMedia(const std::string& fileAndPath,
                       VideoDbContentType type,
                       int mediaId,
-                      int oldIdFile);
+                      int oldIdFile,
+                      const CDateTime& dateAdded = CDateTime(),
+                      int playcount = 0,
+                      const CDateTime& lastPlayed = CDateTime());
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const KODI::ART::Artwork& artwork,
                               int idMVideo = -1);
@@ -1474,9 +1477,9 @@ protected:
                              int max,
                              const T& offsets) const;
 
-  int SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
-  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
-  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
+  int SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile, int idFile);
+  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile, int idFile);
+  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int idFile);
 
 private:
   void CreateTables() override;
@@ -1569,10 +1572,21 @@ private:
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
 
-  /*! \brief Create a new file to replace an old one (ie. for bluray playlists), preserving the date the original file was added.
-   \param fileAndPath the full path of the new file to add
-   \param oldIdFile file id of the file to replace
-   \return the new fileId, -1 on error
-   */
-  int AddFilePreserveDateAdded(const std::string& fileAndPath, int oldIdFile);
+  enum UpdateOrInsert : bool
+  {
+    INSERT,
+    UPDATE
+  };
+
+  typedef struct FileInfo
+  {
+    CDateTime dateAdded{};
+    int playcount = 0;
+    CDateTime lastPlayed{};
+    std::string fileName{};
+    int idPath = -1;
+    int idFile = -1;
+  } FileInfo;
+
+  int DoInsertOrUpdateFile(const FileInfo& fileInfo, UpdateOrInsert updateOrInsert) const;
 };
