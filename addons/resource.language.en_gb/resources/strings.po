@@ -8803,7 +8803,10 @@ msgctxt "#14250"
 msgid "Audio Decoder"
 msgstr ""
 
-#empty string with id 14251
+#: system/settings/settings.xml
+msgctxt "#14251"
+msgid "Preserve play count / last played on media upgrade"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14252"
@@ -19936,7 +19939,11 @@ msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
 msgstr ""
 
-#empty string with id 36159
+#. Description of setting with label #14251 "Preserve play count / last played on media upgrade"
+#: system/settings/settings.xml
+msgctxt "#36159"
+msgid "Disabled: additional copies of movies and episodes are initially unwatched.[CR]Enabled: the play count and last played date of the original media are copied to additional copies scanned into the library."
+msgstr ""
 
 #. Description of setting with label #13429 "Allow hardware acceleration (VDADecoder)"
 #: system/settings/settings.xml

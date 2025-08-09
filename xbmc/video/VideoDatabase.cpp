@@ -2731,7 +2731,7 @@ int CVideoDatabase::SetDetailsForItem(int id,
     return -1;
 
   if (mediaType == MediaTypeMovie)
-    return SetDetailsForMovie(details, artwork, id);
+    return SetDetailsForMovie(details, artwork, id, MediaUpgradeAction::NONE);
   else if (mediaType == MediaTypeVideoCollection)
     return SetDetailsForMovieSet(details, artwork, id);
   else if (mediaType == MediaTypeTvShow)
@@ -2745,7 +2745,7 @@ int CVideoDatabase::SetDetailsForItem(int id,
   else if (mediaType == MediaTypeSeason)
     return SetDetailsForSeason(details, artwork, details.m_iIdShow, id);
   else if (mediaType == MediaTypeEpisode)
-    return SetDetailsForEpisode(details, artwork, details.m_iIdShow, id);
+    return SetDetailsForEpisode(details, artwork, details.m_iIdShow, id, MediaUpgradeAction::NONE);
   else if (mediaType == MediaTypeMusicVideo)
     return SetDetailsForMusicVideo(details, artwork, id);
 
@@ -2754,7 +2754,8 @@ int CVideoDatabase::SetDetailsForItem(int id,
 
 int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
                                        const KODI::ART::Artwork& artwork,
-                                       int idMovie /* = -1 */)
+                                       int idMovie,
+                                       MediaUpgradeAction upgradeAction)
 {
   const auto filePath = details.GetPath();
 
@@ -2817,29 +2818,37 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
 
     SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
-    if (!details.HasUniqueID() && details.HasYear())
+    if (upgradeAction == MediaUpgradeAction::PRESERVE_PLAYCOUNT && details.HasUniqueID() &&
+        details.HasYear())
     { // query DB for any movies matching online id and year
-      std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
-                                      "FROM movie "
-                                      "  INNER JOIN files "
-                                      "    ON files.idFile=movie.idFile "
-                                      "  JOIN uniqueid "
-                                      "    ON movie.idMovie=uniqueid.media_id AND uniqueid.media_type='movie' AND uniqueid.value='%s'"
-                                      "WHERE movie.premiered LIKE '%i%%' AND movie.idMovie!=%i AND files.playCount > 0",
-                                      details.GetUniqueID().c_str(), details.GetYear(), idMovie);
+      std::string strSQL =
+          PrepareSQL("SELECT files.playCount, files.lastPlayed "
+                     "FROM movie "
+                     "  INNER JOIN files "
+                     "    ON files.idFile = movie.idFile "
+                     "  JOIN uniqueid "
+                     "    ON movie.idMovie = uniqueid.media_id AND uniqueid.media_type = '%s' "
+                     "WHERE uniqueid.value = '%s' "
+                     "AND movie.premiered LIKE '%i%%' "
+                     "AND movie.idMovie != %i "
+                     "AND files.lastPlayed IS NOT NULL "
+                     "ORDER BY files.dateAdded DESC "
+                     "LIMIT 1",
+                     MediaTypeMovie, details.GetUniqueID().c_str(), details.GetYear(), idMovie);
       m_pDS->query(strSQL);
 
       if (!m_pDS->eof())
       {
-        int playCount = m_pDS->fv("files.playCount").get_asInt();
+        const int playCount = m_pDS->fv("files.playCount").get_asInt();
+        const std::string strPlayCount = playCount > 0 ? std::to_string(playCount) : "NULL";
 
         CDateTime lastPlayed;
         lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
 
         // update with playCount and lastPlayed
-        strSQL =
-            PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount,
-                       lastPlayed.GetAsDBDateTime().c_str(), GetAndFillFileId(details));
+        strSQL = PrepareSQL("UPDATE files SEt playCount = " + strPlayCount +
+                                ", lastPlayed = '%s' WHERE idFile = %i",
+                            lastPlayed.GetAsDBDateTime().c_str(), GetAndFillFileId(details));
         m_pDS->exec(strSQL);
       }
 
@@ -3404,7 +3413,8 @@ bool CVideoDatabase::DeleteFile(int idFile)
 int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
                                          const KODI::ART::Artwork& artwork,
                                          int idShow,
-                                         int idEpisode /* = -1 */)
+                                         int idEpisode,
+                                         MediaUpgradeAction upgradeAction)
 {
   const auto filePath = details.GetPath();
 
@@ -3451,27 +3461,37 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
 
     SetArtForItem(idEpisode, MediaTypeEpisode, artwork);
 
-    if (details.m_iEpisode != -1 && details.m_iSeason != -1)
+    if (upgradeAction == MediaUpgradeAction::PRESERVE_PLAYCOUNT && details.m_iEpisode != -1 &&
+        details.m_iSeason != -1)
     { // query DB for any episodes matching idShow, Season and Episode
-      std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
-                                      "FROM episode INNER JOIN files ON files.idFile=episode.idFile "
-                                      "WHERE episode.c%02d=%i AND episode.c%02d=%i AND episode.idShow=%i "
-                                      "AND episode.idEpisode!=%i AND files.playCount > 0",
-                                      VIDEODB_ID_EPISODE_SEASON, details.m_iSeason, VIDEODB_ID_EPISODE_EPISODE,
-                                      details.m_iEpisode, idShow, idEpisode);
+      std::string strSQL =
+          PrepareSQL("SELECT files.playCount, files.lastPlayed "
+                     "FROM episode "
+                     "  INNER JOIN files "
+                     "    ON files.idFile = episode.idFile "
+                     "WHERE episode.c%02d = %i "
+                     "AND episode.c%02d = %i "
+                     "AND episode.idShow = %i "
+                     "AND episode.idEpisode != %i "
+                     "AND files.lastPlayed IS NOT NULL "
+                     "ORDER BY files.dateAdded DESC "
+                     "LIMIT 1",
+                     VIDEODB_ID_EPISODE_SEASON, details.m_iSeason, VIDEODB_ID_EPISODE_EPISODE,
+                     details.m_iEpisode, idShow, idEpisode);
       m_pDS->query(strSQL);
 
       if (!m_pDS->eof())
       {
-        int playCount = m_pDS->fv("files.playCount").get_asInt();
+        const int playCount = m_pDS->fv("files.playCount").get_asInt();
+        const std::string strPlayCount = playCount > 0 ? std::to_string(playCount) : "NULL";
 
         CDateTime lastPlayed;
         lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
 
-        // update with playCount and lastPlayed
-        strSQL =
-            PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount,
-                       lastPlayed.GetAsDBDateTime().c_str(), GetAndFillFileId(details));
+        strSQL = PrepareSQL("UPDATE files SET playCount = " + strPlayCount +
+                                ", lastPlayed = '%s' WHERE idFile = %i",
+                            lastPlayed.GetAsDBDateTime().c_str(), GetAndFillFileId(details));
+
         m_pDS->exec(strSQL);
       }
 
