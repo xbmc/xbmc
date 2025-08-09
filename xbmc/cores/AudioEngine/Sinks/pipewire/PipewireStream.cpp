@@ -21,7 +21,11 @@ using namespace KODI;
 using namespace PIPEWIRE;
 
 CPipewireStream::CPipewireStream(CPipewireCore& core)
-  : m_core(core), m_streamEvents(CreateStreamEvents())
+  : m_core(core),
+    m_streamEvents(CreateStreamEvents()),
+    m_buffer(nullptr),
+    m_waiting(false),
+    m_running(false)
 {
   m_stream.reset(pw_stream_new(core.Get(), nullptr, pw_properties_new(nullptr, nullptr)));
   if (!m_stream)
@@ -33,9 +37,27 @@ CPipewireStream::CPipewireStream(CPipewireCore& core)
   pw_stream_add_listener(m_stream.get(), &m_streamListener, &m_streamEvents, this);
 }
 
+void CPipewireStream::Stop()
+{
+  using namespace std::chrono_literals;
+  auto& loop = GetCore().GetContext().GetThreadLoop();
+
+  // Stop blocking in Process(), nothing produces samples any more
+  m_running = false;
+
+  // If Process() is blocking, wake it up
+  if (m_waiting)
+  {
+    loop.Accept();
+    while (m_waiting)
+      loop.Wait(1s);
+  }
+}
+
 CPipewireStream::~CPipewireStream()
 {
   spa_hook_remove(&m_streamListener);
+  Stop();
 }
 
 bool CPipewireStream::Connect(uint32_t id,
@@ -60,38 +82,48 @@ pw_stream_state CPipewireStream::GetState()
 
 void CPipewireStream::SetActive(bool active)
 {
+  if (!active)
+    Stop();
   pw_stream_set_active(m_stream.get(), active);
+  m_running = active;
 }
 
-pw_buffer* CPipewireStream::DequeueBuffer()
+pw_buffer* CPipewireStream::GetBuffer()
 {
-  return pw_stream_dequeue_buffer(m_stream.get());
-}
-
-void CPipewireStream::QueueBuffer(pw_buffer* buffer)
-{
-  pw_stream_queue_buffer(m_stream.get(), buffer);
-}
-
-bool CPipewireStream::IsDriving() const
-{
-  return pw_stream_is_driving(m_stream.get());
-}
-
-bool CPipewireStream::TriggerProcess() const
-{
-  int ret = pw_stream_trigger_process(m_stream.get());
-  if (ret < 0)
+  if (!m_buffer)
   {
-    CLog::Log(LOGERROR, "CPipewireStream: failed to trigger process: {}", spa_strerror(errno));
-    return false;
+    m_buffer = pw_stream_dequeue_buffer(m_stream.get());
+    if (m_buffer)
+      m_buffer->size = 0;
   }
+  return m_buffer;
+}
 
-  return true;
+void CPipewireStream::QueueBuffer()
+{
+  auto& loop = GetCore().GetContext().GetThreadLoop();
+
+  if (!m_buffer)
+    return;
+
+  pw_stream_queue_buffer(m_stream.get(), m_buffer);
+  m_buffer = nullptr;
+
+  if (m_waiting)
+  {
+    m_waiting = false;
+    loop.Accept();
+  }
+}
+
+bool CPipewireStream::NeedsData() const
+{
+  return m_waiting;
 }
 
 void CPipewireStream::Flush(bool drain)
 {
+  Stop();
   pw_stream_flush(m_stream.get(), drain);
 }
 
@@ -139,7 +171,21 @@ void CPipewireStream::Process(void* userdata)
   auto& stream = *reinterpret_cast<CPipewireStream*>(userdata);
   auto& loop = stream.GetCore().GetContext().GetThreadLoop();
 
-  loop.Signal(false);
+  // Block thread loop until there is enough data.
+  // This is allowed since we are running without PW_STREAM_FLAG_RT_PROCESS.
+  stream.m_waiting = stream.m_running;
+  while (stream.m_waiting)
+  {
+    if (!stream.m_running)
+    {
+      stream.m_waiting = false;
+      loop.Signal(false);
+      return;
+    }
+
+    // Wake up AddPackets() and wait for notify from QueueBuffer()
+    loop.Signal(true);
+  }
 }
 
 void CPipewireStream::Drained(void* userdata)
