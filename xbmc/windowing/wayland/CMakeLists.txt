@@ -3,7 +3,8 @@ set_source_files_properties(${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extr
                             ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp
                             PROPERTIES GENERATED TRUE)
 
-set(SOURCES Connection.cpp
+set(SOURCES ColorManager.cpp
+            Connection.cpp
             OptionalsReg.cpp
             Output.cpp
             InputProcessorKeyboard.h
@@ -26,7 +27,8 @@ set(SOURCES Connection.cpp
             WinSystemWayland.cpp
             XkbcommonKeymap.cpp)
 
-set(HEADERS Connection.h
+set(HEADERS ColorManager.h
+            Connection.h
             OptionalsReg.h
             Output.h
             InputProcessorKeyboard.cpp
