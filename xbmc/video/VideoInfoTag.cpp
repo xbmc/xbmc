@@ -297,13 +297,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetStringArray(movie, "artist", m_artist);
   XMLUtils::SetStringArray(movie, "showlink", m_showLink);
 
-  for (const auto& [number, value] : m_seasons)
-  {
-    TiXmlElement season("namedseason");
-    season.SetAttribute("number", number);
-    season.InsertEndChild(TiXmlText(value.m_name));
-    movie->InsertEndChild(season);
-  }
+  SaveTvShowSeasons(movie);
 
   TiXmlElement resume("resume");
   XMLUtils::SetDouble(&resume, "position", m_resumePoint.timeInSeconds);
@@ -323,6 +317,31 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   if (additionalNode)
     movie->InsertEndChild(*additionalNode);
 
+  return true;
+}
+
+bool CVideoInfoTag::SaveTvShowSeasons(TiXmlNode* root) const
+{
+  for (const auto& [number, value] : m_seasons)
+  {
+    if (!value.m_name.empty())
+    {
+      TiXmlElement season("namedseason");
+      season.SetAttribute("number", number);
+      season.InsertEndChild(TiXmlText(value.m_name));
+      if (nullptr == root->InsertEndChild(season))
+        return false;
+    }
+
+    if (!value.m_plot.empty())
+    {
+      TiXmlElement season("seasonplot");
+      season.SetAttribute("number", number);
+      season.InsertEndChild(TiXmlText(value.m_plot));
+      if (nullptr == root->InsertEndChild(season))
+        return false;
+    }
+  }
   return true;
 }
 
@@ -1229,6 +1248,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetStringArray(movie, "showlink", showLink, prioritise, itemSeparator))
     SetShowLink(showLink);
 
+  if (nullptr != movie->FirstChildElement("namedseason") ||
+      nullptr != movie->FirstChildElement("seasonplot"))
+    m_seasons.clear();
+
   const TiXmlElement* namedSeason = movie->FirstChildElement("namedseason");
   while (namedSeason != nullptr)
   {
@@ -1237,10 +1260,32 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       int seasonNumber;
       std::string seasonName = namedSeason->FirstChild()->ValueStr();
       if (!seasonName.empty() && namedSeason->Attribute("number", &seasonNumber) != nullptr)
-        m_seasons.try_emplace(seasonNumber, CVideoInfoTag::SeasonAttributes{.m_name = seasonName});
+        m_seasons.try_emplace(seasonNumber,
+                              CVideoInfoTag::SeasonAttributes{.m_name = seasonName, .m_plot = ""});
     }
 
     namedSeason = namedSeason->NextSiblingElement("namedseason");
+  }
+
+  const TiXmlElement* seasonPlot = movie->FirstChildElement("seasonplot");
+  while (seasonPlot != nullptr)
+  {
+    if (seasonPlot->FirstChild() != nullptr)
+    {
+      int seasonNumber;
+      std::string plot = seasonPlot->FirstChild()->ValueStr();
+      if (!plot.empty() && seasonPlot->Attribute("number", &seasonNumber) != nullptr)
+      {
+        // executed after reading the season names so an entry for the season number may already
+        // exist and the data has to be combined.
+        auto [it, inserted] = m_seasons.try_emplace(
+            seasonNumber, CVideoInfoTag::SeasonAttributes{.m_name = "", .m_plot = plot});
+        if (!inserted)
+          it->second.m_plot = plot;
+      }
+    }
+
+    seasonPlot = seasonPlot->NextSiblingElement("seasonplot");
   }
 
   // cast

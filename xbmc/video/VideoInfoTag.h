@@ -171,6 +171,8 @@ public:
   {
     std::string m_name;
     std::string m_plot;
+    bool operator==(const SeasonAttributes& other) const = default;
+    bool IsEmpty() const { return m_name.empty() && m_plot.empty(); }
   };
   void SetSeasons(std::map<int, SeasonAttributes> seasons);
   void SetUserrating(int userrating);
@@ -422,6 +424,14 @@ public:
 
   // TODO: cannot be private, because of 'struct SDbTableOffsets'
   unsigned int m_duration; ///< duration in seconds
+
+protected:
+  /*!
+   * \brief Add the seasons information to an XML node
+   * \param element  the root XML element to append to
+   * \return true for success, false otherwise.
+   */
+  bool SaveTvShowSeasons(TiXmlNode* node) const;
 
 private:
   /* \brief Parse our native XML format for video info.
