@@ -551,11 +551,11 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
 
   pVideoPicture->colorBits = 8;
   if (m_pCodecContext->codec_id == AV_CODEC_ID_HEVC &&
-      m_pCodecContext->profile == FF_PROFILE_HEVC_MAIN_10)
+      m_pCodecContext->profile == AV_PROFILE_HEVC_MAIN_10)
     pVideoPicture->colorBits = 10;
   else if (m_pCodecContext->codec_id == AV_CODEC_ID_H264 &&
-           (m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10 ||
-            m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10_INTRA))
+           (m_pCodecContext->profile == AV_PROFILE_H264_HIGH_10 ||
+            m_pCodecContext->profile == AV_PROFILE_H264_HIGH_10_INTRA))
     pVideoPicture->colorBits = 10;
 
   pVideoPicture->hasDisplayMetadata = false;
