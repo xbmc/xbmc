@@ -371,15 +371,6 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   return size;
 }
 
-int CAEEncoderFFmpeg::GetData(uint8_t **data)
-{
-  int size;
-  *data = m_Buffer;
-  size = m_BufferSize;
-  m_BufferSize = 0;
-  return size;
-}
-
 double CAEEncoderFFmpeg::GetDelay(unsigned int bufferSize)
 {
   if (!m_CodecCtx)

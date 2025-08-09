@@ -31,8 +31,7 @@ public:
   AVCodecID GetCodecID() override;
   unsigned int GetFrames() override;
 
-  int Encode(uint8_t *in, int in_size, uint8_t *out, int out_size) override;
-  int GetData(uint8_t **data) override;
+  int Encode(uint8_t* in, int in_size, uint8_t* out, int out_size) override;
   double GetDelay(unsigned int bufferSize) override;
 private:
   unsigned int BuildChannelLayout(const int64_t ffmap, CAEChannelInfo& layout);
@@ -44,7 +43,6 @@ private:
   AVCodecContext *m_CodecCtx;
   SwrContext *m_SwrCtx;
   CAEChannelInfo m_Layout;
-  uint8_t m_Buffer[8 + AV_INPUT_BUFFER_MIN_SIZE];
   int m_BufferSize = 0;
   int m_OutputSize = 0;
   double m_OutputRatio = 0.0;
