@@ -94,6 +94,9 @@ namespace XFILE
       /* static function that will get cookies stored by CURL in RFC 2109 format */
       static bool GetCookies(const CURL &url, std::string &cookies);
 
+      /* load CA certs file into memory for later use */
+      static void PreloadCaCertsBlob();
+
       class CReadState
       {
       public:
