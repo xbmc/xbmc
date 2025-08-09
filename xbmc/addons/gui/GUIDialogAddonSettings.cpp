@@ -36,14 +36,14 @@
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
-#define CONTROL_BTN_LEVELS 20
-
 using namespace ADDON;
 using namespace KODI;
 using namespace MESSAGING;
 
 namespace
 {
+constexpr int CONTROL_BTN_LEVELS = 20;
+
 // Fallback icon shown when no add-on icon is available
 constexpr const char* DEFAULT_ADDON_ICON = "DefaultAddon.png";
 } // namespace
@@ -75,10 +75,10 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 
       if (instanceId != m_instanceId)
       {
-        CLog::Log(LOGERROR,
-                  "CGUIDialogAddonSettings::{}: Set value \"{}\" from add-on \"{}\" called with "
-                  "invalid instance id (given: {}, needed: {})",
-                  __func__, m_addon->ID(), settingId, instanceId, m_instanceId);
+        CLog::LogF(
+            LOGERROR,
+            R"(Set value "{}" from add-on "{}" called with invalid instance id (given: {}, needed: {}))",
+            m_addon->ID(), settingId, instanceId, m_instanceId);
         break;
       }
 
@@ -229,7 +229,7 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
   while (true)
   {
     std::vector<ADDON::AddonInstanceId> ids = addon->GetKnownInstanceIds();
-    std::sort(ids.begin(), ids.end(), [](const auto& a, const auto& b) { return a < b; });
+    std::ranges::sort(ids, [](const auto& a, const auto& b) { return a < b; });
 
     dialog->Reset();
     dialog->SetHeading(10012); // Add-on configurations and settings
@@ -265,37 +265,37 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
     const ADDON::AddonInstanceId addInstanceId = highestId + 1;
     const ADDON::AddonInstanceId removeInstanceId = highestId + 2;
 
-    CFileItemPtr item =
-        std::make_shared<CFileItem>(g_localizeStrings.Get(10014)); // Add add-on configuration
+    auto item{
+        std::make_shared<CFileItem>(g_localizeStrings.Get(10014))}; // Add add-on configuration
     item->SetProperty("id", addInstanceId);
-    itemsGeneral.Add(item);
+    itemsGeneral.Add(std::move(item));
 
     if (ids.size() > 1) // Forbid removal of last instance
     {
       item =
           std::make_shared<CFileItem>(g_localizeStrings.Get(10015)); // Remove add-on configuration
       item->SetProperty("id", removeInstanceId);
-      itemsGeneral.Add(item);
+      itemsGeneral.Add(std::move(item));
     }
 
     if (addon->HasSettings(ADDON_SETTINGS_ID))
     {
       item = std::make_shared<CFileItem>(g_localizeStrings.Get(10013)); // Edit Add-on settings
       item->SetProperty("id", ADDON_SETTINGS_ID);
-      itemsGeneral.Add(item);
+      itemsGeneral.Add(std::move(item));
     }
 
-    for (auto& it : itemsGeneral)
+    for (const auto& it : itemsGeneral)
       dialog->Add(*it);
 
-    for (auto& it : itemsInstances)
+    for (const auto& it : itemsInstances)
       dialog->Add(*it);
 
     // Select last selected item, first instance config item or first item
     if (lastSelected >= 0)
       dialog->SetSelected(lastSelected);
     else
-      dialog->SetSelected(itemsInstances.Size() > 0 ? itemsGeneral.Size() : 0);
+      dialog->SetSelected(itemsInstances.IsEmpty() ? 0 : itemsGeneral.Size());
 
     dialog->Open();
 
@@ -332,11 +332,11 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
       dialog->SetHeading(10010); // Select add-on configuration to remove
       dialog->SetUseDetails(false);
 
-      for (auto& it : itemsInstances)
+      for (const auto& it : itemsInstances)
       {
-        CFileItem item(*it);
-        item.SetLabel((*it).GetProperty("name").asString());
-        dialog->Add(item);
+        CFileItem instanceItem(*it);
+        instanceItem.SetLabel((*it).GetProperty("name").asString());
+        dialog->Add(instanceItem);
       }
 
       dialog->SetSelected(0);

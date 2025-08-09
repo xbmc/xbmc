@@ -106,6 +106,6 @@ protected:
 
 private:
   void SetProperties();
-  void UpdateStatus(const CFileItemPtr& item);
+  void UpdateStatus(const CFileItemPtr& item) const;
   CProgramThumbLoader m_thumbLoader;
 };

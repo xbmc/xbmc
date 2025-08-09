@@ -35,7 +35,7 @@ using namespace KODI::MESSAGING;
 namespace ADDON
 {
 
-CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase)
+CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, std::shared_ptr<CBinaryAddonBase> addonBase)
   : CAddon(addonInfo, addonInfo->MainType()), m_binaryAddonBase(std::move(addonBase))
 {
 }
@@ -145,13 +145,12 @@ bool CAddonDll::LoadDll()
     return false;
 
   /* Load the Dll */
-  m_pDll = new DllAddon;
+  m_pDll = std::make_unique<DllAddon>();
   m_pDll->SetFile(strFileName);
   m_pDll->EnableDelayedUnload(false);
   if (!m_pDll->Load())
   {
-    delete m_pDll;
-    m_pDll = nullptr;
+    m_pDll.reset();
 
     std::string heading =
         StringUtils::Format("{}: {}", CAddonInfo::TranslateType(Type(), true), Name());
@@ -233,8 +232,7 @@ void CAddonDll::Destroy()
 
   if (m_pDll)
   {
-    delete m_pDll;
-    m_pDll = nullptr;
+    m_pDll.reset();
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - {}", Name());
   }
 
@@ -271,7 +269,7 @@ ADDON_STATUS CAddonDll::CreateInstance(KODI_ADDON_INSTANCE_STRUCT* instance)
   return status;
 }
 
-void CAddonDll::DestroyInstance(KODI_ADDON_INSTANCE_STRUCT* instance)
+void CAddonDll::DestroyInstance(const KODI_ADDON_INSTANCE_STRUCT* instance)
 {
   if (m_usedInstances.empty())
     return;
@@ -367,13 +365,12 @@ ADDON_STATUS CAddonDll::TransferSettings(AddonInstanceId instanceId)
   auto settings = GetSettings(instanceId);
   if (settings != nullptr)
   {
-    KODI_ADDON_INSTANCE_FUNC* instanceTarget{nullptr};
+    const KODI_ADDON_INSTANCE_FUNC* instanceTarget{nullptr};
     KODI_ADDON_INSTANCE_HDL instanceHandle{nullptr};
     if (instanceId != ADDON_SETTINGS_ID)
     {
-      const auto it = std::find_if(
-          m_usedInstances.begin(), m_usedInstances.end(),
-          [instanceId](const auto& data) { return data.second->info->number == instanceId; });
+      const auto it = std::ranges::find_if(m_usedInstances, [instanceId](const auto& data)
+                                           { return data.second->info->number == instanceId; });
       if (it == m_usedInstances.end())
         return ADDON_STATUS_UNKNOWN;
 
@@ -435,7 +432,8 @@ ADDON_STATUS CAddonDll::TransferSettings(AddonInstanceId instanceId)
 
               case SettingType::Number:
               {
-                float tmpf = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
+                const auto tmpf = static_cast<float>(
+                    std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
                 if (instanceId == ADDON_SETTINGS_ID)
                 {
                   if (m_interface.toAddon->setting_change_float)
@@ -543,7 +541,7 @@ bool CAddonDll::CheckAPIVersion(int type)
       CEventLog* eventLog = CServiceBroker::GetEventLog();
       if (eventLog)
         eventLog->AddWithNotification(
-            EventPtr(new CNotificationEvent(Name(), 24152, EventLevel::Error)));
+            std::make_shared<CNotificationEvent>(Name(), 24152, EventLevel::Error));
     }
 
     return false;

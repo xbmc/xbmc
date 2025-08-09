@@ -41,14 +41,14 @@ void Interface_GUIControlButton::set_visible(KODI_HANDLE kodiBase,
                                              KODI_GUI_CONTROL_HANDLE handle,
                                              bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  auto* control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlButton::{} - invalid handler data (kodiBase='{}', handle='{}') "
-              "on addon '{}'",
-              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', handle='{}') "
+               "on addon '{}'",
+               kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -59,14 +59,14 @@ void Interface_GUIControlButton::set_enabled(KODI_HANDLE kodiBase,
                                              KODI_GUI_CONTROL_HANDLE handle,
                                              bool enabled)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  auto* control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlButton::{} - invalid handler data (kodiBase='{}', handle='{}') "
-              "on addon '{}'",
-              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', handle='{}') "
+               "on addon '{}'",
+               kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -77,15 +77,14 @@ void Interface_GUIControlButton::set_label(KODI_HANDLE kodiBase,
                                            KODI_GUI_CONTROL_HANDLE handle,
                                            const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  auto* control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control || !label)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlButton::{} - invalid handler data (kodiBase='{}', handle='{}', "
-              "label='{}') on addon '{}'",
-              __func__, kodiBase, handle, static_cast<const void*>(label),
-              addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', handle='{}', "
+               "label='{}') on addon '{}'",
+               kodiBase, handle, static_cast<const void*>(label), addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -94,14 +93,14 @@ void Interface_GUIControlButton::set_label(KODI_HANDLE kodiBase,
 
 char* Interface_GUIControlButton::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  const CGUIButtonControl* control = static_cast<const CGUIButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlButton::{} - invalid handler data (kodiBase='{}', handle='{}') "
-              "on addon '{}'",
-              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', handle='{}') "
+               "on addon '{}'",
+               kodiBase, handle, addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
@@ -112,15 +111,14 @@ void Interface_GUIControlButton::set_label2(KODI_HANDLE kodiBase,
                                             KODI_GUI_CONTROL_HANDLE handle,
                                             const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  auto* control = static_cast<CGUIButtonControl*>(handle);
   if (!addon || !control || !label)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlButton::{} - invalid handler data (kodiBase='{}', handle='{}', "
-              "label='{}') on addon '{}'",
-              __func__, kodiBase, handle, static_cast<const void*>(label),
-              addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', handle='{}', "
+               "label='{}') on addon '{}'",
+               kodiBase, handle, static_cast<const void*>(label), addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -129,14 +127,14 @@ void Interface_GUIControlButton::set_label2(KODI_HANDLE kodiBase,
 
 char* Interface_GUIControlButton::get_label2(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIButtonControl* control = static_cast<CGUIButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  const auto* control = static_cast<const CGUIButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlButton::{} - invalid handler data (kodiBase='{}', handle='{}') "
-              "on addon '{}'",
-              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', handle='{}') "
+               "on addon '{}'",
+               kodiBase, handle, addon ? addon->ID() : "unknown");
     return nullptr;
   }
 

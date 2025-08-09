@@ -38,12 +38,11 @@ void Interface_GUIDialogOK::show_and_get_input_single_text(KODI_HANDLE kodiBase,
                                                            const char* heading,
                                                            const char* text)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
   if (!addon || !heading || !text)
   {
-    CLog::Log(
-        LOGERROR, "Interface_GUIDialogOK:{} - invalid data (addon='{}', heading='{}', text='{}')",
-        __func__, kodiBase, static_cast<const void*>(heading), static_cast<const void*>(text));
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', heading='{}', text='{}')", kodiBase,
+               static_cast<const void*>(heading), static_cast<const void*>(text));
     return;
   }
 
@@ -56,15 +55,14 @@ void Interface_GUIDialogOK::show_and_get_input_line_text(KODI_HANDLE kodiBase,
                                                          const char* line1,
                                                          const char* line2)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
   if (!addon || !heading || !line0 || !line1 || !line2)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIDialogOK::{} - invalid data (addon='{}', heading='{}', line0='{}', "
-              "line1='{}', line2='{}')",
-              __func__, kodiBase, static_cast<const void*>(heading),
-              static_cast<const void*>(line0), static_cast<const void*>(line1),
-              static_cast<const void*>(line2));
+    CLog::LogF(LOGERROR,
+               "Invalid data (addon='{}', heading='{}', line0='{}', "
+               "line1='{}', line2='{}')",
+               kodiBase, static_cast<const void*>(heading), static_cast<const void*>(line0),
+               static_cast<const void*>(line1), static_cast<const void*>(line2));
     return;
   }
   HELPERS::ShowOKDialogLines(CVariant{heading}, CVariant{line0}, CVariant{line1}, CVariant{line2});

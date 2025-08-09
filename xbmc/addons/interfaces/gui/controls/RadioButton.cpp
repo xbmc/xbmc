@@ -40,14 +40,14 @@ void Interface_GUIControlRadioButton::set_visible(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle,
                                                   bool visible)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  auto* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlRadioButton::{} - invalid handler data (kodiBase='{}', "
-              "handle='{}') on addon '{}'",
-              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', "
+               "handle='{}') on addon '{}'",
+               kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -58,14 +58,14 @@ void Interface_GUIControlRadioButton::set_enabled(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle,
                                                   bool enabled)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  auto* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlRadioButton::{} - invalid handler data (kodiBase='{}', "
-              "handle='{}') on addon '{}'",
-              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', "
+               "handle='{}') on addon '{}'",
+               kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -76,15 +76,14 @@ void Interface_GUIControlRadioButton::set_label(KODI_HANDLE kodiBase,
                                                 KODI_GUI_CONTROL_HANDLE handle,
                                                 const char* label)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  auto* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control || !label)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlRadioButton::{} - invalid handler data (kodiBase='{}', "
-              "handle='{}', label='{}') on addon '{}'",
-              __func__, kodiBase, handle, static_cast<const void*>(label),
-              addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', "
+               "handle='{}', label='{}') on addon '{}'",
+               kodiBase, handle, static_cast<const void*>(label), addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -94,14 +93,14 @@ void Interface_GUIControlRadioButton::set_label(KODI_HANDLE kodiBase,
 char* Interface_GUIControlRadioButton::get_label(KODI_HANDLE kodiBase,
                                                  KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  const auto* control = static_cast<const CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlRadioButton::{} - invalid handler data (kodiBase='{}', "
-              "handle='{}') on addon '{}'",
-              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', "
+               "handle='{}') on addon '{}'",
+               kodiBase, handle, addon ? addon->ID() : "unknown");
     return nullptr;
   }
 
@@ -112,14 +111,14 @@ void Interface_GUIControlRadioButton::set_selected(KODI_HANDLE kodiBase,
                                                    KODI_GUI_CONTROL_HANDLE handle,
                                                    bool selected)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  auto* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlRadioButton::{} - invalid handler data (kodiBase='{}', "
-              "handle='{}') on addon '{}'",
-              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', "
+               "handle='{}') on addon '{}'",
+               kodiBase, handle, addon ? addon->ID() : "unknown");
     return;
   }
 
@@ -129,14 +128,14 @@ void Interface_GUIControlRadioButton::set_selected(KODI_HANDLE kodiBase,
 bool Interface_GUIControlRadioButton::is_selected(KODI_HANDLE kodiBase,
                                                   KODI_GUI_CONTROL_HANDLE handle)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
+  const auto* addon = static_cast<const CAddonDll*>(kodiBase);
+  const auto* control = static_cast<const CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR,
-              "Interface_GUIControlRadioButton::{} - invalid handler data (kodiBase='{}', "
-              "handle='{}') on addon '{}'",
-              __func__, kodiBase, handle, addon ? addon->ID() : "unknown");
+    CLog::LogF(LOGERROR,
+               "Invalid handler data (kodiBase='{}', "
+               "handle='{}') on addon '{}'",
+               kodiBase, handle, addon ? addon->ID() : "unknown");
     return false;
   }
 

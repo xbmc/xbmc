@@ -17,13 +17,14 @@
 
 using namespace ADDON;
 
-BinaryAddonBasePtr CBinaryAddonManager::GetAddonBase(const AddonInfoPtr& addonInfo,
-                                                     IAddonInstanceHandler* handler,
-                                                     AddonDllPtr& addon)
+std::shared_ptr<CBinaryAddonBase> CBinaryAddonManager::GetAddonBase(
+    const AddonInfoPtr& addonInfo,
+    IAddonInstanceHandler* handler,
+    std::shared_ptr<CAddonDll>& addon)
 {
   std::unique_lock lock(m_critSection);
 
-  BinaryAddonBasePtr addonBase;
+  std::shared_ptr<CBinaryAddonBase> addonBase;
 
   const auto& addonInstances = m_runningAddons.find(addonInfo->ID());
   if (addonInstances != m_runningAddons.end())
@@ -43,14 +44,13 @@ BinaryAddonBasePtr CBinaryAddonManager::GetAddonBase(const AddonInfoPtr& addonIn
   }
   if (!addon)
   {
-    CLog::Log(LOGFATAL, "CBinaryAddonManager::{}: Tried to get add-on '{}' who not available!",
-              __func__, addonInfo->ID());
+    CLog::LogF(LOGFATAL, "Unable to get add-on '{}'!", addonInfo->ID());
   }
 
   return addonBase;
 }
 
-void CBinaryAddonManager::ReleaseAddonBase(const BinaryAddonBasePtr& addonBase,
+void CBinaryAddonManager::ReleaseAddonBase(const std::shared_ptr<CBinaryAddonBase>& addonBase,
                                            IAddonInstanceHandler* handler)
 {
   const auto& addon = m_runningAddons.find(addonBase->ID());
@@ -65,7 +65,8 @@ void CBinaryAddonManager::ReleaseAddonBase(const BinaryAddonBasePtr& addonBase,
   m_runningAddons.erase(addon);
 }
 
-BinaryAddonBasePtr CBinaryAddonManager::GetRunningAddonBase(const std::string& addonId) const
+std::shared_ptr<CBinaryAddonBase> CBinaryAddonManager::GetRunningAddonBase(
+    const std::string& addonId) const
 {
   std::unique_lock lock(m_critSection);
 
@@ -80,7 +81,7 @@ AddonPtr CBinaryAddonManager::GetRunningAddon(const std::string& addonId) const
 {
   std::unique_lock lock(m_critSection);
 
-  const BinaryAddonBasePtr base = GetRunningAddonBase(addonId);
+  const std::shared_ptr<CBinaryAddonBase> base = GetRunningAddonBase(addonId);
   if (base)
     return base->GetActiveAddon();
 

@@ -33,7 +33,7 @@ public:
   /*! \brief Skin timer manager constructor
    *  \param infoMgr reference to the infomanager
    */
-  CSkinTimerManager(CGUIInfoManager& infoMgr);
+  explicit CSkinTimerManager(CGUIInfoManager& infoMgr);
   CSkinTimerManager() = delete;
 
   /*! \brief Default skin timer manager destructor */
@@ -89,7 +89,7 @@ public:
   // CThread methods
 
   /*! \brief Run the main manager processing loop */
-  void Process();
+  void Process() const;
 
 private:
   /*! \brief Loads a specific timer
@@ -99,6 +99,6 @@ private:
   void LoadTimerInternal(const tinyxml2::XMLNode* node);
 
   /*! Container for the skin timers */
-  std::map<std::string, std::unique_ptr<CSkinTimer>> m_timers;
+  std::map<std::string, std::unique_ptr<CSkinTimer>, std::less<>> m_timers;
   CGUIInfoManager& m_infoMgr;
 };

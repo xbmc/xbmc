@@ -11,12 +11,14 @@
 #include "addons/IAddon.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon_base.h"
 
+#include <functional>
+
 extern "C"
 {
 namespace ADDON
 {
 
-typedef void* (*ADDON_GET_INTERFACE_FN)(const std::string& name, const std::string& version);
+using AddonGetInterface = std::function<void*(const std::string& name, const std::string& version)>;
 
 class CAddonDll;
 
@@ -34,13 +36,13 @@ struct Interface_Base
                             AddonGlobalInterface& addonInterface,
                             KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance);
   static void DeInitInterface(AddonGlobalInterface& addonInterface);
-  static void RegisterInterface(ADDON_GET_INTERFACE_FN fn);
-  static bool UpdateSettingInActiveDialog(CAddonDll* addon,
+  static void RegisterInterface(const AddonGetInterface& fn);
+  static bool UpdateSettingInActiveDialog(const CAddonDll* addon,
                                           AddonInstanceId instanceId,
                                           const char* id,
                                           const std::string& value);
 
-  static std::vector<ADDON_GET_INTERFACE_FN> s_registeredInterfaces;
+  static std::vector<AddonGetInterface> s_registeredInterfaces;
 
   /*!
    * @brief callback functions from add-on to kodi

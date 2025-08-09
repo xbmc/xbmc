@@ -85,7 +85,7 @@ protected:
   bool InitializeDefinitions() override { return false; }
 
 private:
-  bool AddInstanceSettings();
+  bool AddInstanceSettings() const;
   bool InitializeDefinitions(const CXBMCTinyXML& doc);
 
   bool ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const;
@@ -93,11 +93,12 @@ private:
   std::shared_ptr<CSettingGroup> ParseOldSettingElement(
       const TiXmlElement* categoryElement,
       const std::shared_ptr<CSettingCategory>& category,
-      std::set<std::string>& settingIds);
+      std::set<std::string, std::less<>>& settingIds);
 
-  std::shared_ptr<CSettingCategory> ParseOldCategoryElement(uint32_t& categoryId,
-                                                            const TiXmlElement* categoryElement,
-                                                            std::set<std::string>& settingIds);
+  std::shared_ptr<CSettingCategory> ParseOldCategoryElement(
+      uint32_t& categoryId,
+      const TiXmlElement* categoryElement,
+      std::set<std::string, std::less<>>& settingIds);
 
   bool InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc);
   std::shared_ptr<CSetting> InitializeFromOldSettingAction(const std::string& settingId,
@@ -165,7 +166,7 @@ private:
       std::string source);
 
   bool LoadOldSettingValues(const CXBMCTinyXML& doc,
-                            std::map<std::string, std::string>& settings) const;
+                            std::map<std::string, std::string, std::less<>>& settings) const;
 
   struct ConditionExpression
   {

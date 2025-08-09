@@ -100,7 +100,7 @@ bool CSkinTimer::ResetsOnStart() const
   return m_resetOnStart;
 }
 
-void CSkinTimer::OnStart()
+void CSkinTimer::OnStart() const
 {
   if (m_startActions.HasAnyActions())
   {
@@ -108,7 +108,7 @@ void CSkinTimer::OnStart()
   }
 }
 
-void CSkinTimer::OnStop()
+void CSkinTimer::OnStop() const
 {
   if (m_stopActions.HasAnyActions())
   {

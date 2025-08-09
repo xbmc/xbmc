@@ -46,9 +46,9 @@ void CAddonType::SetProvides(const std::string& content)
 
     for (const auto& provide : StringUtils::Split(content, ' '))
     {
-      AddonType content = CAddonInfo::TranslateSubContent(provide);
-      if (content != AddonType::UNKNOWN)
-        m_providedSubContent.insert(content);
+      AddonType subContent = CAddonInfo::TranslateSubContent(provide);
+      if (subContent != AddonType::UNKNOWN)
+        m_providedSubContent.insert(subContent);
     }
   }
 }

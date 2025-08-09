@@ -92,10 +92,11 @@ private:
   void OnInstall();
   void OnUninstall();
   void OnEnableDisable();
-  void OnSettings();
+  void OnSettings() const;
   void OnSelect();
   void OnToggleAutoUpdates();
-  int AskForVersion(std::vector<std::pair<ADDON::CAddonVersion, std::string>>& versions);
+  int AskForVersion(
+      const std::vector<std::pair<ADDON::CAddonVersion, std::string>>& versions) const;
 
   /*!
    * @brief Returns true if current addon can be opened (i.e is a plugin)
@@ -125,7 +126,7 @@ private:
    * @param[in] line2 the action that could not be completed.
    * @return true if prompted, false otherwise.
    */
-  bool PromptIfDependency(int heading, int line2);
+  bool PromptIfDependency(int heading, int line2) const;
 
   /*!
    * @brief Show a dialog with the addon's dependencies.
@@ -139,7 +140,7 @@ private:
   /*!
    * @brief Show a dialog with the addon's supported extensions and mimetypes.
    */
-  void ShowSupportList();
+  void ShowSupportList() const;
 
   /*!
    * @brief Used to build up the dependency list shown by @ref ShowDependencyList()

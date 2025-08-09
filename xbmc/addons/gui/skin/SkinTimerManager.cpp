@@ -50,7 +50,7 @@ void CSkinTimerManager::LoadTimers(const std::string& path)
 
 void CSkinTimerManager::LoadTimerInternal(const tinyxml2::XMLNode* node)
 {
-  if ((!node->FirstChildElement("name") || !node->FirstChildElement("name")->FirstChild()))
+  if (!node->FirstChildElement("name") || !node->FirstChildElement("name")->FirstChild())
   {
     CLog::LogF(LOGERROR, "Missing required field 'name' for valid skin timer. Ignoring timer.");
     return;
@@ -126,8 +126,8 @@ void CSkinTimerManager::LoadTimerInternal(const tinyxml2::XMLNode* node)
     onStopElement = onStopElement->NextSiblingElement("onstop");
   }
 
-  m_timers[timerName] = std::make_unique<CSkinTimer>(CSkinTimer(
-      timerName, startInfo, resetInfo, stopInfo, startActions, stopActions, resetOnStart));
+  m_timers[timerName] = std::make_unique<CSkinTimer>(timerName, startInfo, resetInfo, stopInfo,
+                                                     startActions, stopActions, resetOnStart);
 }
 
 bool CSkinTimerManager::TimerIsRunning(const std::string& timer) const
@@ -215,7 +215,7 @@ void CSkinTimerManager::Stop()
   m_timers.clear();
 }
 
-void CSkinTimerManager::Process()
+void CSkinTimerManager::Process() const
 {
   for (const auto& [key, val] : m_timers)
   {
