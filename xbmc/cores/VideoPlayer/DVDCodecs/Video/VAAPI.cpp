@@ -611,7 +611,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       break;
     case AV_CODEC_ID_H264:
     {
-      if (avctx->profile == FF_PROFILE_H264_CONSTRAINED_BASELINE)
+      if (avctx->profile == AV_PROFILE_H264_CONSTRAINED_BASELINE)
       {
         profile = VAProfileH264ConstrainedBaseline;
         if (!m_vaapiConfig.context->SupportsProfile(profile))
@@ -619,7 +619,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       }
       else
       {
-        if(avctx->profile == FF_PROFILE_H264_MAIN)
+        if (avctx->profile == AV_PROFILE_H264_MAIN)
         {
           profile = VAProfileH264Main;
           if (m_vaapiConfig.context->SupportsProfile(profile))
@@ -633,14 +633,14 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_HEVC:
     {
-      if (avctx->profile == FF_PROFILE_HEVC_MAIN_10)
+      if (avctx->profile == AV_PROFILE_HEVC_MAIN_10)
       {
         if (!m_capDeepColor)
           return false;
 
         profile = VAProfileHEVCMain10;
       }
-      else if (avctx->profile == FF_PROFILE_HEVC_MAIN)
+      else if (avctx->profile == AV_PROFILE_HEVC_MAIN)
         profile = VAProfileHEVCMain;
       else
         profile = VAProfileNone;
@@ -657,9 +657,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_VP9:
     {
-      if (avctx->profile == FF_PROFILE_VP9_0)
+      if (avctx->profile == AV_PROFILE_VP9_0)
         profile = VAProfileVP9Profile0;
-      else if (avctx->profile == FF_PROFILE_VP9_2)
+      else if (avctx->profile == AV_PROFILE_VP9_2)
         profile = VAProfileVP9Profile2;
       else
         profile = VAProfileNone;
@@ -680,9 +680,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 #if VA_CHECK_VERSION(1, 8, 0)
     case AV_CODEC_ID_AV1:
     {
-      if (avctx->profile == FF_PROFILE_AV1_MAIN)
+      if (avctx->profile == AV_PROFILE_AV1_MAIN)
         profile = VAProfileAV1Profile0;
-      else if (avctx->profile == FF_PROFILE_AV1_HIGH)
+      else if (avctx->profile == AV_PROFILE_AV1_HIGH)
         profile = VAProfileAV1Profile1;
       else
         profile = VAProfileNone;
