@@ -11,7 +11,7 @@ diff --git a/configure b/configure
 index c4fe14568a..9bebb75093 100755
 --- a/configure
 +++ b/configure
-@@ -8234,6 +8234,9 @@ print_config HAVE_   "$config_files" $HAVE_LIST
+@@ -8432,6 +8434,9 @@ print_config HAVE_   "$config_files" $HAVE_LIST
  print_config CONFIG_ "$config_files" $CONFIG_LIST       \
                                       $CONFIG_EXTRA      \
  
