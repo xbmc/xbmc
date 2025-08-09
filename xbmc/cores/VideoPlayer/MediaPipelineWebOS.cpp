@@ -1277,15 +1277,16 @@ void CMediaPipelineWebOS::ProcessAudio()
               m_processInfo.SetAudioBitsPerSample(frame.bits_per_sample);
             }
 
+            using dvdTime = std::ratio<1, DVD_TIME_BASE>;
             if (frame.pts == DVD_NOPTS_VALUE)
             {
               frame.pts = m_audioClock.count();
               // guess next pts
-              m_audioClock += std::chrono::duration<double, std::milli>(frame.duration);
+              m_audioClock += std::chrono::duration<double, dvdTime>(frame.duration);
             }
             else
             {
-              m_audioClock = std::chrono::duration<double, std::milli>(frame.pts);
+              m_audioClock = std::chrono::duration<double, dvdTime>(frame.pts);
             }
 
             ActiveAE::CSampleBuffer* buffer = m_encoderBuffers->GetFreeBuffer();
