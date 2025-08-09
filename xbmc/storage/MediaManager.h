@@ -46,7 +46,7 @@ public:
   void Initialize();
   void Stop();
 
-  bool LoadSources();
+  void LoadSources();
   bool SaveSources();
 
   void GetLocalDrives(std::vector<CMediaSource>& localDrives, bool includeQ = true);
