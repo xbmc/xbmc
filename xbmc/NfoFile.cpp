@@ -39,9 +39,11 @@ const TiXmlElement* CNfoFile::GetRootElement() const
 {
   if (!m_xmlParsed)
   {
-    if (m_headPos < m_doc.size())
-      m_xmlDoc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
+    // Try only once - read errors are not transient
     m_xmlParsed = true;
+
+    if (m_headPos < m_doc.size())
+      IngestXml(m_xmlDoc, m_doc.substr(m_headPos));
   }
   return m_xmlDoc.RootElement();
 }

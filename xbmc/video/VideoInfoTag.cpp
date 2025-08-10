@@ -8,6 +8,7 @@
 
 #include "VideoInfoTag.h"
 
+#include "NfoUtils.h"
 #include "ServiceBroker.h"
 #include "imagefiles/ImageFileURL.h"
 #include "resources/LocalizeStrings.h"
@@ -108,6 +109,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
 
   // we start with a <tag> tag
   TiXmlElement movieElement(tag.c_str());
+  CNfoUtils::SetVersion(movieElement, tag);
+
   TiXmlNode *movie = node->InsertEndChild(movieElement);
 
   if (!movie) return false;
