@@ -29,14 +29,14 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
-#define LOCALIZED_TOKEN_FIRSTID    370
-#define LOCALIZED_TOKEN_LASTID     395
-#define LOCALIZED_TOKEN_FIRSTID2  1350
-#define LOCALIZED_TOKEN_LASTID2   1449
-#define LOCALIZED_TOKEN_FIRSTID3    11
-#define LOCALIZED_TOKEN_LASTID3     17
-#define LOCALIZED_TOKEN_FIRSTID4    71
-#define LOCALIZED_TOKEN_LASTID4     97
+#define LOCALIZED_TOKEN_FIRSTID 370
+#define LOCALIZED_TOKEN_LASTID 395
+#define LOCALIZED_TOKEN_FIRSTID2 1350
+#define LOCALIZED_TOKEN_LASTID2 1449
+#define LOCALIZED_TOKEN_FIRSTID3 11
+#define LOCALIZED_TOKEN_LASTID3 17
+#define LOCALIZED_TOKEN_FIRSTID4 71
+#define LOCALIZED_TOKEN_LASTID4 97
 
 using namespace ADDON;
 
@@ -83,7 +83,7 @@ bool CWeatherJob::DoWork()
     SetFromProperties();
 
     // and send a message that we're done
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WEATHER_FETCHED);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
   else
@@ -92,12 +92,12 @@ bool CWeatherJob::DoWork()
   return true;
 }
 
-const CWeatherInfo &CWeatherJob::GetInfo() const
+const CWeatherInfo& CWeatherJob::GetInfo() const
 {
   return m_info;
 }
 
-void CWeatherJob::LocalizeOverviewToken(std::string &token)
+void CWeatherJob::LocalizeOverviewToken(std::string& token)
 {
   // This routine is case-insensitive.
   std::string strLocStr;
@@ -115,7 +115,7 @@ void CWeatherJob::LocalizeOverviewToken(std::string &token)
   token = strLocStr;
 }
 
-void CWeatherJob::LocalizeOverview(std::string &str)
+void CWeatherJob::LocalizeOverview(std::string& str)
 {
   std::vector<std::string> words = StringUtils::Split(str, " ");
   for (std::vector<std::string>::iterator i = words.begin(); i != words.end(); ++i)
@@ -123,7 +123,7 @@ void CWeatherJob::LocalizeOverview(std::string &str)
   str = StringUtils::Join(words, " ");
 }
 
-void CWeatherJob::FormatTemperature(std::string &text, double temp)
+void CWeatherJob::FormatTemperature(std::string& text, double temp)
 {
   CTemperature temperature = CTemperature::CreateFromCelsius(temp);
   text = StringUtils::Format("{:.0f}", temperature.To(g_langInfo.GetTemperatureUnit()));
@@ -133,7 +133,9 @@ void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
   std::string language = LANGUAGE_DEFAULT;
-  std::shared_ptr<CSettingString> languageSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
+  std::shared_ptr<CSettingString> languageSetting = std::static_pointer_cast<CSettingString>(
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+          CSettings::SETTING_LOCALE_LANGUAGE));
   if (languageSetting != NULL)
     language = languageSetting->GetDefault();
 
@@ -151,8 +153,9 @@ void CWeatherJob::LoadLocalizedToken()
       uint32_t id = PODoc.GetEntryID();
       PODoc.ParseEntry(ISSOURCELANG);
 
-      if (id > LOCALIZED_TOKEN_LASTID2) break;
-      if ((LOCALIZED_TOKEN_FIRSTID  <= id && id <= LOCALIZED_TOKEN_LASTID)  ||
+      if (id > LOCALIZED_TOKEN_LASTID2)
+        break;
+      if ((LOCALIZED_TOKEN_FIRSTID <= id && id <= LOCALIZED_TOKEN_LASTID) ||
           (LOCALIZED_TOKEN_FIRSTID2 <= id && id <= LOCALIZED_TOKEN_LASTID2) ||
           (LOCALIZED_TOKEN_FIRSTID3 <= id && id <= LOCALIZED_TOKEN_LASTID3) ||
           (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))
@@ -194,13 +197,15 @@ void CWeatherJob::SetFromProperties()
     m_info.currentConditions = window->GetProperty("Current.Condition").asString();
     m_info.currentIcon = ConstructPath(window->GetProperty("Current.OutlookIcon").asString());
     LocalizeOverview(m_info.currentConditions);
-    FormatTemperature(m_info.currentTemperature,
-                      strtod(window->GetProperty("Current.Temperature").asString().c_str(), nullptr));
+    FormatTemperature(
+        m_info.currentTemperature,
+        strtod(window->GetProperty("Current.Temperature").asString().c_str(), nullptr));
     FormatTemperature(m_info.currentFeelsLike,
                       strtod(window->GetProperty("Current.FeelsLike").asString().c_str(), nullptr));
     m_info.currentUVIndex = window->GetProperty("Current.UVIndex").asString();
     LocalizeOverview(m_info.currentUVIndex);
-    CSpeed speed = CSpeed::CreateFromKilometresPerHour(strtol(window->GetProperty("Current.Wind").asString().c_str(),0,10));
+    CSpeed speed = CSpeed::CreateFromKilometresPerHour(
+        strtol(window->GetProperty("Current.Wind").asString().c_str(), 0, 10));
     std::string direction = window->GetProperty("Current.WindDirection").asString();
     if (direction == "CALM")
       m_info.currentWind = g_localizeStrings.Get(1410);
@@ -213,7 +218,7 @@ void CWeatherJob::SetFromProperties()
     }
     std::string windspeed = StringUtils::Format("{} {}", (int)speed.To(g_langInfo.GetSpeedUnit()),
                                                 g_langInfo.GetSpeedUnitString());
-    window->SetProperty("Current.WindSpeed",windspeed);
+    window->SetProperty("Current.WindSpeed", windspeed);
     FormatTemperature(m_info.currentDewPoint,
                       strtod(window->GetProperty("Current.DewPoint").asString().c_str(), nullptr));
     if (window->GetProperty("Current.Humidity").asString().empty())
@@ -222,7 +227,7 @@ void CWeatherJob::SetFromProperties()
       m_info.currentHumidity =
           StringUtils::Format("{}%", window->GetProperty("Current.Humidity").asString());
     m_info.location = window->GetProperty("Current.Location").asString();
-    for (int i=0;i<NUM_DAYS;++i)
+    for (int i = 0; i < NUM_DAYS; ++i)
     {
       std::string strDay = StringUtils::Format("Day{}.Title", i);
       m_info.forecast[i].m_day = window->GetProperty(strDay).asString();

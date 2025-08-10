@@ -59,7 +59,8 @@ std::string CWeatherManager::BusyInfo(int info) const
 
 std::string CWeatherManager::TranslateInfo(int info) const
 {
-  switch (info) {
+  switch (info)
+  {
     case WEATHER_LABEL_CURRENT_COND:
       return m_info.currentConditions;
     case WEATHER_IMAGE_CURRENT_ICON:
@@ -111,7 +112,7 @@ bool CWeatherManager::IsFetched()
   return !m_info.lastUpdateTime.empty();
 }
 
-const ForecastDay &CWeatherManager::GetForecast(int day) const
+const ForecastDay& CWeatherManager::GetForecast(int day) const
 {
   return m_info.forecast[day];
 }
@@ -134,15 +135,16 @@ void CWeatherManager::SetArea(int iLocation)
  */
 int CWeatherManager::GetArea() const
 {
-  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_WEATHER_CURRENTLOCATION);
 }
 
-CJob *CWeatherManager::GetJob() const
+CJob* CWeatherManager::GetJob() const
 {
   return new CWeatherJob(GetArea());
 }
 
-void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   m_info = static_cast<CWeatherJob*>(job)->GetInfo();
   CInfoLoader::OnJobComplete(jobID, success, job);
@@ -184,4 +186,3 @@ void CWeatherManager::OnSettingAction(const std::shared_ptr<const CSetting>& set
     }
   }
 }
-

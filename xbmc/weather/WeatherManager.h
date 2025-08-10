@@ -13,7 +13,7 @@
 
 #include <string>
 
-#define WEATHER_LABEL_LOCATION   10
+#define WEATHER_LABEL_LOCATION 10
 #define WEATHER_IMAGE_CURRENT_ICON 21
 #define WEATHER_LABEL_CURRENT_COND 22
 #define WEATHER_LABEL_CURRENT_TEMP 23
@@ -77,32 +77,31 @@ public:
   std::string naIcon;
 };
 
-class CWeatherManager
-: public CInfoLoader, public ISettingCallback
+class CWeatherManager : public CInfoLoader, public ISettingCallback
 {
 public:
   CWeatherManager(void);
   ~CWeatherManager(void) override;
-  static bool GetSearchResults(const std::string &strSearch, std::string &strResult);
+  static bool GetSearchResults(const std::string& strSearch, std::string& strResult);
 
   std::string GetLocation(int iLocation);
   const std::string& GetLastUpdateTime() const { return m_info.lastUpdateTime; }
-  const ForecastDay &GetForecast(int day) const;
+  const ForecastDay& GetForecast(int day) const;
   bool IsFetched();
   void Reset();
 
   void SetArea(int iLocation);
   int GetArea() const;
+
 protected:
-  CJob *GetJob() const override;
+  CJob* GetJob() const override;
   std::string TranslateInfo(int info) const override;
   std::string BusyInfo(int info) const override;
-  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job) override;
 
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
-
   CWeatherInfo m_info;
 };
