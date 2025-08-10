@@ -13,6 +13,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "InfoScanner.h"
+#include "NfoUtils.h"
 #include "addons/Scraper.h"
 #include "utils/XBMCTinyXML.h"
 
@@ -41,6 +42,9 @@ public:
     else if (m_headPos < m_doc.size())
       doc.Parse(m_doc.substr(m_headPos), TIXML_ENCODING_UNKNOWN);
     else
+      return false;
+
+    if (!CNfoUtils::Upgrade(doc.RootElement()))
       return false;
 
     return details.Load(doc.RootElement(), true, prioritise);
