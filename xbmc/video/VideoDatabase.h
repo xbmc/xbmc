@@ -1217,8 +1217,20 @@ public:
   bool RemoveArtForItem(int mediaId,
                         const MediaType& mediaType,
                         const std::set<std::string, std::less<>>& artTypes);
+  /*!
+   * \brief Retrieve season information of a TV show.
+   * \param[in] showId ID of the show
+   * \param[out] seasons Map of the season information. Key = ID of the season, values = season number
+   * \return true for success, false otherwise
+   */
   bool GetTvShowSeasons(int showId, std::map<int, int> &seasons);
-  bool GetTvShowNamedSeasons(int showId, std::map<int, std::string> &seasons);
+  /*!
+   * \brief Retrieve season information of a TV show.
+   * \param[in] showId ID of the show
+   * \param[out] seasons Map of the season information. Key = season number, values = SeasonAttributes structure
+   * \return true for success, false otherwise
+   */
+  bool GetTvShowSeasons(int showId, std::map<int, CVideoInfoTag::SeasonAttributes>& seasons);
 
   /*!
    * \brief Get the custom named season.

@@ -3180,11 +3180,11 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
     return false;
   }
 
-  // add any named seasons
-  for (const auto& [seasonNumber, seasonName] : details.m_namedSeasons)
+  // add any season
+  for (const auto& [seasonNumber, details] : details.m_seasons)
   {
     // make sure the named season exists
-    const int seasonId = AddSeason(idTvShow, seasonNumber, seasonName);
+    const int seasonId = AddSeason(idTvShow, seasonNumber, details.m_name, details.m_plot);
     if (seasonId == -1)
     {
       if (!inTransaction)
@@ -3194,10 +3194,12 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
 
     // get any existing details for the named season
     CVideoInfoTag season;
-    if (!GetSeasonInfo(seasonId, season, false) || season.m_strSortTitle == seasonName)
+    if (!GetSeasonInfo(seasonId, season, false) ||
+        (season.m_strSortTitle == details.m_name && season.m_strPlot == details.m_plot))
       continue;
 
-    season.SetSortTitle(seasonName);
+    season.SetSortTitle(details.m_name);
+    season.m_strPlot = details.m_plot;
 
     if (SetDetailsForSeason(season, KODI::ART::Artwork(), idTvShow, seasonId) == -1)
     {
@@ -3282,6 +3284,7 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
 
     // and insert the new row
     std::string sql = PrepareSQL("UPDATE seasons SET season = %i", details.m_iSeason);
+
     if (!details.m_strSortTitle.empty())
       sql += PrepareSQL(", name = '%s'", details.m_strSortTitle.c_str());
 
@@ -5840,7 +5843,9 @@ bool CVideoDatabase::GetTvShowSeasons(int showId, std::map<int, int> &seasons)
   return false;
 }
 
-bool CVideoDatabase::GetTvShowNamedSeasons(int showId, std::map<int, std::string> &seasons)
+//! @todo combine the two GetTvShowSeasons() overloads
+bool CVideoDatabase::GetTvShowSeasons(int showId,
+                                      std::map<int, CVideoInfoTag::SeasonAttributes>& seasons)
 {
   try
   {
@@ -5849,14 +5854,22 @@ bool CVideoDatabase::GetTvShowNamedSeasons(int showId, std::map<int, std::string
     if (nullptr == m_pDS2)
       return false; // using dataset 2 as we're likely called in loops on dataset 1
 
-    // get all named seasons for this show
-    std::string sql = PrepareSQL("select season, name from seasons where season > 0 and name is not null and name <> '' and idShow = %i", showId);
+    // Specials excluded as their name is generated/translated and don't have a plot
+    const std::string sql = PrepareSQL("SELECT season, name, plot "
+                                       "FROM seasons "
+                                       "WHERE season > 0 "
+                                       "AND ((name IS NOT NULL AND name <> '') "
+                                       "  OR (plot IS NOT NULL AND plot <> '')) "
+                                       "AND idShow = %i",
+                                       showId);
     m_pDS2->query(sql);
 
     seasons.clear();
     while (!m_pDS2->eof())
     {
-      seasons.try_emplace(m_pDS2->fv(0).get_asInt(), m_pDS2->fv(1).get_asString());
+      seasons.try_emplace(m_pDS2->fv(0).get_asInt(),
+                          CVideoInfoTag::SeasonAttributes{.m_name = m_pDS2->fv(1).get_asString(),
+                                                          .m_plot = m_pDS2->fv(2).get_asString()});
       m_pDS2->next();
     }
     m_pDS2->close();
@@ -11970,7 +11983,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     while (!pDS2->eof())
     {
       CVideoInfoTag tvshow = GetDetailsForTvShow(*pDS2, VideoDbDetailsAll);
-      GetTvShowNamedSeasons(tvshow.m_iDbId, tvshow.m_namedSeasons);
+      GetTvShowSeasons(tvshow.m_iDbId, tvshow.m_seasons);
 
       KODI::ART::SeasonsArtwork seasonArt;
       GetTvShowSeasonArt(tvshow.m_iDbId, seasonArt);
