@@ -167,7 +167,12 @@ public:
   void SetShowLink(std::vector<std::string> showLink);
   void SetUniqueID(std::string_view uniqueid, const std::string& type = "", bool def = false);
   void RemoveUniqueID(const std::string& type);
-  void SetNamedSeasons(std::map<int, std::string> namedSeasons);
+  struct SeasonAttributes
+  {
+    std::string m_name;
+    std::string m_plot;
+  };
+  void SetSeasons(std::map<int, SeasonAttributes> seasons);
   void SetUserrating(int userrating);
 
   void SetOverride(bool setOverride) { m_override = setOverride; }
@@ -389,7 +394,7 @@ public:
   std::string m_strAlbum;
   CDateTime m_lastPlayed;
   std::vector<std::string> m_showLink;
-  std::map<int, std::string> m_namedSeasons;
+  std::map<int, SeasonAttributes> m_seasons;
   int m_iTop250;
   int m_year;
   int m_iSeason;

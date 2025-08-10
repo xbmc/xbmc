@@ -1036,7 +1036,7 @@ namespace XBMCAddon
 
     void InfoTagVideo::addSeasonRaw(CVideoInfoTag* infoTag, int number, std::string name /* = "" */)
     {
-      infoTag->m_namedSeasons[number] = std::move(name);
+      infoTag->m_seasons[number].m_name = std::move(name);
     }
 
     void InfoTagVideo::addSeasonsRaw(CVideoInfoTag* infoTag,
