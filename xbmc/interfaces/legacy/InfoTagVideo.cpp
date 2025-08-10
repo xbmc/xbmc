@@ -685,16 +685,18 @@ namespace XBMCAddon
       setResumePointRaw(infoTag, time, totalTime);
     }
 
-    void InfoTagVideo::addSeason(int number, std::string name /* = "" */)
+    void InfoTagVideo::addSeason(int number,
+                                 std::string name /* = "" */,
+                                 std::string plot /* = "" */)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
-      addSeasonRaw(infoTag, number, std::move(name));
+      addSeasonRaw(infoTag, number, std::move(name), std::move(plot));
     }
 
-    void InfoTagVideo::addSeasons(const std::vector<Tuple<int, std::string>>& namedSeasons)
+    void InfoTagVideo::addSeasons(const std::vector<Tuple<int, std::string, std::string>>& seasons)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
-      addSeasonsRaw(infoTag, namedSeasons);
+      addSeasonsRaw(infoTag, seasons);
     }
 
     void InfoTagVideo::addVideoStream(const VideoStreamDetail* stream)
@@ -1034,16 +1036,20 @@ namespace XBMCAddon
       infoTag->SetResumePoint(resumePoint);
     }
 
-    void InfoTagVideo::addSeasonRaw(CVideoInfoTag* infoTag, int number, std::string name /* = "" */)
+    void InfoTagVideo::addSeasonRaw(CVideoInfoTag* infoTag,
+                                    int number,
+                                    std::string name /* = "" */,
+                                    std::string plot /* = "" */)
     {
       infoTag->m_seasons[number].m_name = std::move(name);
+      infoTag->m_seasons[number].m_plot = std::move(plot);
     }
 
-    void InfoTagVideo::addSeasonsRaw(CVideoInfoTag* infoTag,
-                                     const std::vector<Tuple<int, std::string>>& namedSeasons)
+    void InfoTagVideo::addSeasonsRaw(
+        CVideoInfoTag* infoTag, const std::vector<Tuple<int, std::string, std::string>>& seasons)
     {
-      for (const auto& season : namedSeasons)
-        addSeasonRaw(infoTag, season.first(), season.second());
+      for (const auto& season : seasons)
+        addSeasonRaw(infoTag, season.first(), season.second(), season.third());
     }
 
     void InfoTagVideo::addStreamRaw(CVideoInfoTag* infoTag, CStreamDetail* stream)
