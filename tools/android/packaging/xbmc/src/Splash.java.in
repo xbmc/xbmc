@@ -7,8 +7,6 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -37,7 +35,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.System;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.ZipEntry;
@@ -620,19 +617,11 @@ public class Splash extends Activity
     // Be sure properties are initialized for native
     XBMCProperties.initialize(getApplicationContext());
 
-    // Check if @APP_NAME@ is not already running
-    ActivityManager activityManager = (ActivityManager) getBaseContext()
-            .getSystemService(Context.ACTIVITY_SERVICE);
-    List<RunningTaskInfo> tasks = activityManager
-            .getRunningTasks(Integer.MAX_VALUE);
-    for (RunningTaskInfo task : tasks)
-      if (task.topActivity != null && task.topActivity.toString().equalsIgnoreCase(
-              "ComponentInfo{@APP_PACKAGE@/@APP_PACKAGE@.Main}"))
-      {
-        // @APP_NAME@ already running; just activate it
-        startXBMC();
-        return;
-      }
+    if (Main.isActivityRunning()) {
+      Log.d(TAG, "@APP_NAME@ already running; just activate it");
+      startXBMC();
+      return;
+    }
 
     mStateMachine.sendEmptyMessage(Checking);
 
