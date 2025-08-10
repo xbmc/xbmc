@@ -8,11 +8,13 @@
 
 #pragma once
 
-#include "WeatherManager.h"
 #include "jobs/Job.h"
+#include "weather/WeatherManager.h"
 
+#include <algorithm>
 #include <map>
 #include <string>
+#include <string_view>
 
 class CWeatherJob : public CJob
 {
@@ -21,45 +23,28 @@ public:
 
   bool DoWork() override;
 
-  const CWeatherInfo& GetInfo() const;
+  const WeatherInfo& GetInfo() const;
 
 private:
-  static std::string ConstructPath(std::string in);
   void LocalizeOverview(std::string& str);
   void LocalizeOverviewToken(std::string& str);
   void LoadLocalizedToken();
-  static int ConvertSpeed(int speed);
 
   void SetFromProperties();
 
-  /*! \brief Formats a celsius temperature into a string based on the users locale
-   \param text the string to format
-   \param temp the temperature (in degrees celsius).
-   */
-  static void FormatTemperature(std::string& text, double temp);
-
-  struct ci_less
+  struct CaseInsensitiveCompare
   {
-    // case-independent (ci) compare_less binary function
-    struct nocase_compare
+    using is_transparent = void; // Enables heterogeneous operations.
+
+    bool operator()(const std::string_view& lhs, const std::string_view& rhs) const
     {
-      bool operator()(const unsigned char& c1, const unsigned char& c2) const
-      {
-        return tolower(c1) < tolower(c2);
-      }
-    };
-    bool operator()(const std::string& s1, const std::string& s2) const
-    {
-      return std::lexicographical_compare(s1.begin(), s1.end(), s2.begin(), s2.end(),
-                                          nocase_compare());
+      return std::ranges::lexicographical_compare(lhs, rhs, [](char l, char r)
+                                                  { return std::tolower(l) < std::tolower(r); });
     }
   };
 
-  std::map<std::string, int, ci_less> m_localizedTokens;
-  typedef std::map<std::string, int, ci_less>::const_iterator ilocalizedTokens;
+  std::map<std::string, int, CaseInsensitiveCompare> m_localizedTokens;
 
-  CWeatherInfo m_info;
-  int m_location;
-
-  static bool m_imagesOkay;
+  WeatherInfo m_info;
+  int m_location{-1};
 };

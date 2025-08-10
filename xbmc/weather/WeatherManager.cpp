@@ -28,15 +28,13 @@
 
 using namespace ADDON;
 
-CWeatherManager::CWeatherManager(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
+CWeatherManager::CWeatherManager() : CInfoLoader(30 * 60 * 1000) // 30 minutes
 {
   CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(
       this, {CSettings::SETTING_WEATHER_ADDON, CSettings::SETTING_WEATHER_ADDONSETTINGS});
-
-  Reset();
 }
 
-CWeatherManager::~CWeatherManager(void)
+CWeatherManager::~CWeatherManager()
 {
   const auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
@@ -84,17 +82,12 @@ std::string CWeatherManager::TranslateInfo(int info) const
   }
 }
 
-/*!
- \brief Retrieve the city name for the specified location from the settings
- \param iLocation the location index (can be in the range [1..MAXLOCATION])
- \return the city name (without the accompanying region area code)
- */
-std::string CWeatherManager::GetLocation(int iLocation)
+std::string CWeatherManager::GetLocation(int iLocation) const
 {
-  CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER);
+  const CGUIWindow* window{CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER)};
   if (window)
   {
-    std::string setting = StringUtils::Format("Location{}", iLocation);
+    const std::string setting{StringUtils::Format("Location{}", iLocation)};
     return window->GetProperty(setting).asString();
   }
   return "";
@@ -102,7 +95,7 @@ std::string CWeatherManager::GetLocation(int iLocation)
 
 void CWeatherManager::Reset()
 {
-  m_info.Reset();
+  m_info = {};
 }
 
 bool CWeatherManager::IsFetched()
@@ -117,11 +110,6 @@ const ForecastDay& CWeatherManager::GetForecast(int day) const
   return m_info.forecast[day];
 }
 
-/*!
- \brief Saves the specified location index to the settings. Call Refresh()
-        afterwards to update weather info for the new location.
- \param iLocation the new location index (can be in the range [1..MAXLOCATION])
- */
 void CWeatherManager::SetArea(int iLocation)
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -129,11 +117,7 @@ void CWeatherManager::SetArea(int iLocation)
   settings->Save();
 }
 
-/*!
- \brief Retrieves the current location index from the settings
- \return the active location index (will be in the range [1..MAXLOCATION])
- */
-int CWeatherManager::GetArea() const
+int CWeatherManager::GetArea()
 {
   return CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_WEATHER_CURRENTLOCATION);
@@ -152,7 +136,7 @@ void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 
 void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string settingId = setting->GetId();
@@ -168,7 +152,7 @@ void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& se
 
 void CWeatherManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string settingId = setting->GetId();
@@ -179,8 +163,9 @@ void CWeatherManager::OnSettingAction(const std::shared_ptr<const CSetting>& set
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
                 CSettings::SETTING_WEATHER_ADDON),
             addon, AddonType::SCRIPT_WEATHER, OnlyEnabled::CHOICE_YES) &&
-        addon != NULL)
-    { //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
+        addon)
+    {
+      //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowForAddon(addon);
       Refresh();
     }
