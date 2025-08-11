@@ -159,7 +159,9 @@ public:
   /// @param file Preset file to read from
   /// @param shader Shader passes handle
   ///
-  virtual void ShaderPresetWrite(preset_file file, const video_shader& shader) {}
+  /// @return True if successful, otherwise false
+  ///
+  virtual bool ShaderPresetWrite(preset_file file, const video_shader& shader) { return false; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -232,13 +234,15 @@ private:
     return false;
   }
 
-  inline static void ADDON_video_shader_write_file(const AddonInstance_ShaderPreset* addonInstance,
+  inline static bool ADDON_video_shader_write_file(const AddonInstance_ShaderPreset* addonInstance,
                                                    preset_file file,
                                                    const video_shader* shader)
   {
     if (shader != nullptr)
-      static_cast<CInstanceShaderPreset*>(addonInstance->toAddon->addonInstance)
+      return static_cast<CInstanceShaderPreset*>(addonInstance->toAddon->addonInstance)
           ->ShaderPresetWrite(file, *shader);
+
+    return false;
   }
 
   inline static bool ADDON_video_shader_resolve_parameters(

@@ -180,6 +180,11 @@ extern "C"
      * \brief Mipmapping
      */
     bool mipmap;
+
+    /*!
+     * \brief Aliased pass name
+     */
+    char* alias;
   } video_shader_pass;
 
   typedef struct video_shader_lut
@@ -275,7 +280,7 @@ extern "C"
     bool(__cdecl* VideoShaderRead)(const struct AddonInstance_ShaderPreset*,
                                    preset_file,
                                    struct video_shader*);
-    void(__cdecl* VideoShaderWrite)(const struct AddonInstance_ShaderPreset*,
+    bool(__cdecl* VideoShaderWrite)(const struct AddonInstance_ShaderPreset*,
                                     preset_file,
                                     const struct video_shader*);
     bool(__cdecl* VideoShaderResolveParameters)(const struct AddonInstance_ShaderPreset*,

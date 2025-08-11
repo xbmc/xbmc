@@ -163,8 +163,8 @@
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "c-api/addon-instance/screensaver.h" \
                                                       "addon-instance/Screensaver.h"
 
-#define ADDON_INSTANCE_VERSION_SHADERPRESET           "1.0.0"
-#define ADDON_INSTANCE_VERSION_SHADERPRESET_MIN       "1.0.0"
+#define ADDON_INSTANCE_VERSION_SHADERPRESET           "1.1.0"
+#define ADDON_INSTANCE_VERSION_SHADERPRESET_MIN       "1.1.0"
 #define ADDON_INSTANCE_VERSION_SHADERPRESET_XML_ID    "kodi.binary.instance.shaderpreset"
 #define ADDON_INSTANCE_VERSION_SHADERPRESET_DEPENDS   "addon-instance/ShaderPreset.h"
 

@@ -37,7 +37,7 @@ bool CShaderPreset::ReadShaderPreset(video_shader& shader)
   return m_struct.toAddon->VideoShaderRead(&m_struct, m_file, &shader);
 }
 
-void CShaderPreset::WriteShaderPreset(const video_shader& shader)
+bool CShaderPreset::WriteShaderPreset(const video_shader& shader)
 {
   return m_struct.toAddon->VideoShaderWrite(&m_struct, m_file, &shader);
 }
@@ -215,6 +215,8 @@ void CShaderPresetAddon::TranslateShaderPass(const video_shader_pass& pass,
   shaderFbo.sRgbFramebuffer = fbo.srgb_fbo;
 
   shaderPass.mipmap = pass.mipmap;
+
+  shaderPass.alias = pass.alias ? pass.alias : "";
 }
 
 void CShaderPresetAddon::TranslateShaderLut(const video_shader_lut& lut,
