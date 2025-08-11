@@ -111,6 +111,12 @@ def theaudiodb_albumdetails(data):
             extradata['preview'] = item['strAlbum3DFace'] + '/preview'
             extradata['aspect'] = '3dface'
             extras.append(extradata)
+        if item.get('strAlbum3DThumb',''):
+            extradata = {}
+            extradata['image'] = item['strAlbum3DThumb']
+            extradata['preview'] = item['strAlbum3DThumb'] + '/preview'
+            extradata['aspect'] = '3dthumb'
+            extras.append(extradata)
         if thumbs:
             albumdata['thumb'] = thumbs
         if extras:
