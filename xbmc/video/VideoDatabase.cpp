@@ -12049,10 +12049,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         }
 
         // Write art/actor images
-        ExportArt(fileItem, episodeArtwork, overwrite);
-        if (actorThumbs)
-          ExportActorThumbs(actorsDir, singlePath, episode, !singleFile, overwrite, tvshowDir);
+        if (images)
+        {
+          ExportArt(fileItem, episodeArtwork, overwrite);
+          if (actorThumbs)
+            ExportActorThumbs(actorsDir, singlePath, episode, !singleFile, overwrite, tvshowDir);
+        }
       }
+
       pDS->close();
       pDS2->next();
       current++;
