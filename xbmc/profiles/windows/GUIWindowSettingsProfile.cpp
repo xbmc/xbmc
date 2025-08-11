@@ -20,10 +20,12 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "profiles/Profile.h"
 #include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "windows/GUIWindowFileManager.h"
@@ -58,7 +60,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (iItem == (int)profileManager->GetNumberOfProfiles())
+  if (iItem == static_cast<int>(profileManager->GetNumberOfProfiles()))
     return;
 
   // popup the context menu
@@ -70,12 +72,29 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 1)
   {
+    // Reload of active profile?
+    if (iItem == static_cast<int>(profileManager->GetCurrentProfileIndex()))
+    {
+      const std::string msg{StringUtils::Format(g_localizeStrings.Get(13202),
+                                                profileManager->GetProfile(iItem)->getName())};
+      using namespace KODI::MESSAGING::HELPERS;
+      if (ShowYesNoDialogText(CVariant{13200} /* Profiles */, CVariant{msg} /* Reload profile?*/) !=
+          DialogResponse::CHOICE_YES)
+        return;
+    }
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_LOADPROFILE, iItem);
     return;
   }
 
   if (choice == 2)
   {
+    const std::string msg{StringUtils::Format(g_localizeStrings.Get(13201),
+                                              profileManager->GetProfile(iItem)->getName())};
+    using namespace KODI::MESSAGING::HELPERS;
+    if (ShowYesNoDialogText(CVariant{13200} /* Profiles */, CVariant{msg} /* Delete profile?*/) !=
+        DialogResponse::CHOICE_YES)
+      return;
+
     if (profileManager->DeleteProfile(iItem))
       iItem--;
   }
