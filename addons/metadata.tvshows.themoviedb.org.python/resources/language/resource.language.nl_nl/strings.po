@@ -1,0 +1,166 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-02-19 14:01+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Dutch <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-tvshows-themoviedb-org-python/nl_nl/>\n"
+"Language: nl_nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Fetch TV Show metadata from themoviedb.org"
+msgstr "Haal metadata van tv-programma's op van themoviedb.org"
+
+msgctxt "Addon Description"
+msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgstr "De Movie Database (TMDb) is een door de gemeenschap gebouwde film- en tv-database. Elk stukje data is toegevoegd door onze geweldige community die teruggaat tot 2008. TMDb's sterke internationale focus en brede waaier aan data is grotendeels ongeëvenaard en iets waar we ongelooflijk trots op zijn. Simpel gezegd, we leven en ademen gemeenschap en dat is precies wat ons anders maakt."
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr "Taalvoorkeur"
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr "Voorkeur certificatieland"
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr "Gebruik certificatieprefix"
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr "Prefix"
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr "Behoud originele titel"
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr "Categoriseer fanart met tekst als achtergrond art"
+
+msgctxt "#30006"
+msgid "Include country code with studio"
+msgstr "Gebruik landcode met studio"
+
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr "Voeg sleutelwoorden als tags toe"
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr ""
+
+# empty strings from 30007 to 30099
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr "Klantsleutel (optioneel)"
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr "Fanart inschakelen"
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr "Poster inschakelen"
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr "Banner inschakelen"
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr "Clearlogo inschakelen"
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr "Clearart inschakelen"
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr "Achtergrond inschakelen"
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr "Karakterart inschakelen"
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr "Gebruik afbeeldingen van Fanart.tv"
+
+# empty strings from 30110 to 30149
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr "Seizoensposter inschakelen"
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr "Seizoensbanner inschakelen"
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr "Achtergrond inschakelen"
+
+# empty strings from 30153 to 30200
+msgctxt "#30200"
+msgid "Advanced"
+msgstr "Geavanceerd"
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr "Toon debug logging"
+
+# emptry strings from 30202 to 30299
+msgctxt "#30300"
+msgid "Ratings"
+msgstr "Waardering"
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr "Standaardwaardering van"
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr "Voeg ook IMDb-waardering toe"
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr "Voeg ook Trakt.tv-waardering toe"
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr "Voeg ook TMDb-waardering toe"
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr "Trailer inschakelen"
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr "Add-on speler"
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr "Youtube"
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr "Tubed"

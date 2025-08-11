@@ -1,0 +1,166 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-02-19 14:01+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Belarusian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-tvshows-themoviedb-org-python/be_by/>\n"
+"Language: be_by\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Fetch TV Show metadata from themoviedb.org"
+msgstr "Атрымліваць метаданыя серыялаў з themoviedb.org"
+
+msgctxt "Addon Description"
+msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgstr "The Movie Database (TMDb) - база даных фільмаў і серыялаў, створаная супольнасцю. Усе даныя дадавалі ўдзельнікі гэтай цудоўнай супольнасці, пачынаючы з 2008. Шматнацыянасць і разнастайнасць даных - тое, чым мы вельмі ганарымся. Калі сказаць прасцей, то мы жывем супольнасцю, і гэта адрознівае нас ад іншых."
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr "Пераважная мова"
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr "Пераважная краіна сертыфікацыі"
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr "Выкарыстоўваць прэфікс сертыфікацыі"
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr "Прэфікс"
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr "Захоўваць арыгінальную назву"
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr "Вызначаць ілюстрацыі з тэкстам як пейзаж"
+
+msgctxt "#30006"
+msgid "Include country code with studio"
+msgstr "Уключаць код краіны разам са студыяй"
+
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr "Выкарыстоўваць ключавыя словы як пазнакі"
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr ""
+
+# empty strings from 30007 to 30099
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr "Ключ кліента (неабавязкова)"
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr "Дазволіць аматарскія ілюстрацыі"
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr "Дазволіць постары"
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr "Дазволіць банеры"
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr "Дазволіць лагатыпы"
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr "Дазволіць ілюстрацыі"
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr "Дазволіць пейзажы"
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr "Уключыць выявы персанажаў"
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr "Выкарыстоўваць ілюстрацыі з fanart.tv"
+
+# empty strings from 30110 to 30149
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr "Дазволіць постары да сезонаў"
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr "Дазволіць банеры для сезонаў"
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr "Дазволіць пейзажы да сезонаў"
+
+# empty strings from 30153 to 30200
+msgctxt "#30200"
+msgid "Advanced"
+msgstr "Дадаткова"
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr "Журнал адладкі"
+
+# emptry strings from 30202 to 30299
+msgctxt "#30300"
+msgid "Ratings"
+msgstr "Рэйтынгі"
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr "Прадвызначаны рэйтынг з"
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr "Таксама дадаваць рэйтынг IMDb"
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr "Таксама дадаваць рэйтынг з Trakt.tv"
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr "Таксама дадаваць рэйтынг з TMDb"
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr "Дазволіць трэйлеры"
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr "Прайгравальнік"
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr "YouTube"
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr "Tubed"
