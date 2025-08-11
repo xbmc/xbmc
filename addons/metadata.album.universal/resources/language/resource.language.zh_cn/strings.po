@@ -1,0 +1,94 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2025-06-23 04:29+0000\n"
+"Last-Translator: wabisabi926 <liwenliang926@163.com>\n"
+"Language-Team: Chinese (Simplified Han script) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-album-universal/zh_Hans/>\n"
+"Language: zh_cn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.12.2\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Albums"
+msgstr "通用音乐专辑信息刮削器"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: MusicBrainz, last.fm, allmusic.com and amazon.de, while grabs artwork from: fanart.tv, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic and/or amazon.de links are not added on the MusicBrainz site, fields from allmusic.com and/or amazon.de cannot be fetched (very easy to add those missing links though)."
+msgstr "本刮削器支持从以下网站获取信息：MusicBrainz、last.fm、allmusic.com 和 amazon.de，并从以下网站获取艺术图片：fanart.tv、last.fm 和 allmusic.com。你可以指定每一项内容的来源网站。[CR][CR]初始结果总是先从 MusicBrainz 获取。如果 MusicBrainz 网站没有到 allmusic 和/或 amazon.de 的外部链接，则无法获取 allmusic.com 的/或 amazon.de 的信息（当然你能很容易地加入缺失的链接）。"
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "启用 fanart.tv 专辑图片"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "启用 Last.fm 专辑图片"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "专辑评论获取于"
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "     首选语言"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "专辑评分获取于"
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "专辑风格获取于"
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "专辑心情获取于"
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "专辑主题获取于"
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "从 allmusic.com 获取专辑图片"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "艺术图片"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "从 theaudiodb.com 获取专辑图片"
+
+msgctxt "#30011"
+msgid "MB Mirror"
+msgstr "MB 镜像"
+
+msgctxt "#30012"
+msgid "MusicBrainz Mirror"
+msgstr "MusicBrainz 镜像"
+
+msgctxt "#30013"
+msgid "Grab Album Discart from fanart.tv"
+msgstr "从 fanart.tv 获取专辑光盘艺术图"
+
+msgctxt "#30014"
+msgid "Grab Album Back Cover from theaudiodb.com"
+msgstr "从 theaudiodb.com 获取专辑封底"
+
+msgctxt "#30015"
+msgid "Grab Album Discart from theaudiodb.com"
+msgstr "从 theaudiodb.com 获取专辑光盘艺术图"
+
+msgctxt "#30016"
+msgid "Grab Album Spine from theaudiodb.com"
+msgstr "从 theaudiodb.com 获取专辑书脊"

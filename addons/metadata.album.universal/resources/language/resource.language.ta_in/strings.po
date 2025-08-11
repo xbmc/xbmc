@@ -1,0 +1,94 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2021-07-29 19:41+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Tamil (India) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-album-universal/ta_in/>\n"
+"Language: ta_in\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7.2\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Albums"
+msgstr "ஆல்பங்களின் ஒட்டு மொத்தமான சுரண்டி"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: MusicBrainz, last.fm, allmusic.com and amazon.de, while grabs artwork from: fanart.tv, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic and/or amazon.de links are not added on the MusicBrainz site, fields from allmusic.com and/or amazon.de cannot be fetched (very easy to add those missing links though)."
+msgstr "இந்த சுரண்டியானது MusicBrainz, last.fm, allmusic.com மற்றும் amazon.de ஆகிய இணையதளத்தில் இருந்து தகவல்களை சேகரிக்கும். திரை குறும்படங்களை fanart.tv, last.fm மற்றும் allmusic.com ஆகிய இணையதளத்தில் இருந்து தகவல்களை சேகரிக்கும். ⏎ ⏎ முதன்மை தேடல் எப்போதும் MusicBrainz தான் நடக்கும். allmusic மற்றும் amazon.de சேர்க்கபடாவிட்டால் அவற்றில் இருந்து தகவல்கள் செமிக்கபடமாட்டது (தவறிய இணைப்புகளை சேர்ப்பது மிகவும் எளிது)."
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "ஆல்பம் குருபடங்களை fanart.tv இருந்து கைப்பற்று"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "ஆல்பம் குருபடங்களை Last.fm இருந்து கைப்பற்று"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "ஆல்பம் விமர்சனத்தை கைப்பற்று"
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "     விரும்பிய மொழி"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "ஆல்பம் தரத்தை கைப்பற்று"
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "ஆல்பம் பாணி கைப்பற்று"
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "ஆல்பம் விதம்கள் கைப்பற்று"
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "ஆல்பம் அலங்காரங்கள் கைப்பற்று"
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "ஆல்பம் குருபடங்களை allmusic.com இருந்து கைப்பற்று"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "குறுப்படம்"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "ஆல்பம் குருபடங்களை theaudiodb.com இருந்து கைப்பற்று"
+
+msgctxt "#30011"
+msgid "MB Mirror"
+msgstr ""
+
+msgctxt "#30012"
+msgid "MusicBrainz Mirror"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Grab Album Discart from fanart.tv"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Grab Album Back Cover from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Grab Album Discart from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Grab Album Spine from theaudiodb.com"
+msgstr ""

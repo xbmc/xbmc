@@ -1,0 +1,94 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2024-06-11 16:26+0000\n"
+"Last-Translator: Simon <dolenec@gmail.com>\n"
+"Language-Team: Slovenian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-album-universal/sl_si/>\n"
+"Language: sl_si\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 5.5.5\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Albums"
+msgstr "Univerzalni ponudnik informacij o albumih"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: MusicBrainz, last.fm, allmusic.com and amazon.de, while grabs artwork from: fanart.tv, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic and/or amazon.de links are not added on the MusicBrainz site, fields from allmusic.com and/or amazon.de cannot be fetched (very easy to add those missing links though)."
+msgstr "Ta ponudnik združuje informacije s sledečih strani: MusicBrainz, last.fm, allmusic.com in amazon.de; grafike prenaša z: fanart.tv, last.fm in allmusic.com. Vsako informacijo lahko prenesete z različne strani.[CR][CR]Začeno iskanje je vedno na MusicBrainz. V primeru, da na MusicBrainz ni povezave do allmusic.com in/ali amazon.de, informacij od tam ne morete prenesti (a to težavo hitro lahko odpravite)."
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "Prenesi sličice albumov s fanart.tv"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "Prenesi sličice albumov z Last.fm"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "Prenesi recenzije albuma z"
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "     Privzeti jezik"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "Prenesi ocene albuma z"
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "Prenesi stil albuma z"
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "Prenesi razpoloženja albuma z"
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "Prenesi teme albuma z"
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "Prenesi sličice albumov z allmusic.com"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "Grafike"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "Prenesi sličice albumov z theaudiodb.com"
+
+msgctxt "#30011"
+msgid "MB Mirror"
+msgstr "MB ogledalo"
+
+msgctxt "#30012"
+msgid "MusicBrainz Mirror"
+msgstr "MusicBrainz ogledalo"
+
+msgctxt "#30013"
+msgid "Grab Album Discart from fanart.tv"
+msgstr "Zgrabi album Discart na fanart.tv"
+
+msgctxt "#30014"
+msgid "Grab Album Back Cover from theaudiodb.com"
+msgstr "Zgrabi zadnjo platnico albuma iz theaudiodb.com"
+
+msgctxt "#30015"
+msgid "Grab Album Discart from theaudiodb.com"
+msgstr "grabi album Discart na theaudiodb.com"
+
+msgctxt "#30016"
+msgid "Grab Album Spine from theaudiodb.com"
+msgstr "Zgrabite album Spine iz theaudiodb.com"
