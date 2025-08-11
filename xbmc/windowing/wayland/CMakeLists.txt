@@ -80,3 +80,7 @@ if(TARGET_WEBOS)
 endif()
 
 core_add_library(windowing_WAYLAND)
+
+if(PC_WAYLAND_PROTOCOLS_VERSION VERSION_GREATER_EQUAL 1.41)
+  target_compile_definitions(windowing_WAYLAND PRIVATE HAS_WAYLAND_COLOR_MANAGEMENT)
+endif()
