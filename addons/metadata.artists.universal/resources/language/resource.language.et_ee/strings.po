@@ -1,0 +1,155 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-03 08:15+0000\n"
+"Last-Translator: rimasx <riks_12@hot.ee>\n"
+"Language-Team: Estonian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/et_ee/>\n"
+"Language: et_ee\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "Universaalne esitajate kaabits"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "See kraabits kogub infot järgmistelt lehtedelt: TheAudioDb.com, MusicBrainz, last.fm ja allmusic.com, pilte: fanart.tv, htbackdrops.com, last.fm ja allmusic.com. Saad välja kaupa määrata, milliselt lehelt mis infot soovid.[CR][CR]Esmane otsing tehakse alati saidilt MusicBrainz. Kui MusicBrainz lehele pole allmusic linki lisatud, siis allmusic.com lehelt sisu hankida ei saa (puuduvaid linke saad ise lihtsalt lisada)."
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Võimalda HTBackdrops.com esitaja fännikunst"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Võimalda allmusic.com esitaja pisipildid"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Võimalda last.fm esitaja pisipildid"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Võimalda HTBackdrops.com esitaja pisipildid"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Võimalda fanart.tv esitaja fännikunst"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Võimalda fanart.tv esitaja pisipildid"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Hangi esitaja elulugu"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Pildid"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Hangi esitaja diskograafia allikast"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Hangi esitaja žanr allikast"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Hangi esitaja stiilid allikast"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Hangi esitaja eluiga allikast"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Hangi esitaja meeleolud allikast"
+
+# empty string with id 30013
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Hangi esitaja aktiivsed aastad allikast"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "     Eelistatud keel"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Esitaja eluloo alternatiivne allikas"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Esitaja diskograafia alternatiivne allikas"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Esitaja žanri alternatiivne allikas"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Esitaja stiili alternatiivne allikas"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Esitaja eluea alternatiivne allikas"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Aternatiivsed allikad"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Hangi esitaja pisipildid allikast theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Võimalda esitaja fännipildid allikast theaudiodb.com"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr "Esitaja meeleolude alternatiivne allikas"
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr "MB peegelserver"
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr "MusicBrainz peegelserver"
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr "Luba esitaja clearlogo allikast fanart.tv"
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr "Luba esitaja bänner allikast fanart.tv"
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr "Võimalda esitaja clearlogo fännipildid allikast theaudiodb.com"
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr "Võimalda esitaja clearart fännipildid allikast theaudiodb.com"
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr "Võimalda esitaja lansdcape fännipildid allikast theaudiodb.com"
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr "Võimalda esitaja bännerid allikast theaudiodb.com"

@@ -1,0 +1,154 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2021-11-20 17:11+0000\n"
+"Last-Translator: Nao3Line Prez <n.yazawa6932@gmail.com>\n"
+"Language-Team: Indonesian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/id_id/>\n"
+"Language: id_id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.9\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "Pengais Universal untuk Artis"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "Pengais ini mengambil informasi dari berbagai situs yang mendukung: TheAudioDb.com, MusicBrainz, last.fm dan allmusic.com, sembari mengambil artwork dari: fanart.tv, htbackdrops.com. last.fm dan allmusic.com. Ini dapat diatur perbagian dari situ mana informasi tertentu akan diambil.[CR][CR]Pencarian awal akan dilakukan di MusicBrainz. Apabila tautan dari allmusic belum ditambahkan di situs MusicBrainz, bagian dari allmusic.com tidak dapat ditarik (Namun sangatlah mudah menambahkan tautan tersebut)."
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Aktifkan Fanart Artis dari HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Aktifkan Thumb Artis dari allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Aktifkan Thumb Artis dari last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Aktifkan Thumb Artis dari HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Aktifkan Fanart Artis dari fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Aktifkan Thumb Artis dari fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Ambil Biografi Artis dari"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Ambil Diskografi Artis dari"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Ambil Genre Artis dari"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Ambil Gaya Artis dari"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Ambil rentang-hidup Artis dari"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Ambil nuansa Artis dari"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Ambil tahun aktif Artis dari"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "     Bahasa Pilihan"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Kembali ke Biografi Artis dari"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Kembali ke Diskografi Artis dari"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Kembali ke Genre Artis dari"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Kembali ke Gaya Artis dari"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Kembali ke Masa Hidup Artis dari"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Balikkan"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Aktifkan Thumb Artis dari theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Aktifkan Fanart Artis dari theaudiodb.com"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr "Kembali ke Suasana Artis dari"
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr "MB Mirror"
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr "MusicBrainz Mirror"
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr "Aktifkan Logo Artis dari fanart.tv"
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr "Aktifkan Spanduk Artis dari fanart.tv"
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr "Aktifkan Logo Artist dari theaudiodb.com"
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr "Aktifkan Seni Artis dari theaudiodb.com"
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr "Aktifkan Lanskap Artis dari theaudiodb.com"
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr "Aktifkan Spanduk Artis dari theaudiodb.com"

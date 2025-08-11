@@ -1,0 +1,154 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2025-07-11 11:29+0000\n"
+"Last-Translator: Pavlo Marianov <acid@jack.kyiv.ua>\n"
+"Language-Team: Ukrainian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/uk_ua/>\n"
+"Language: uk_ua\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.12.2\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "Універсальний екстрактор для виконавців"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "Цей екстрактор витягує загальну інформацію з веб-сайтів TheAudioDb.com, MusicBrainz, last.fm та allmusic.com, а зображення — з fanart.tv, htbackdrops.com, last.fm та allmusic.com. Для кожного поля можна вказати з якого веб-сайту потрібно брати інформацію.[CR][CR]Початковий пошук завжди робиться на MusicBrainz. Якщо на веб-сайті MusicBrainz не додано посилання на allmusic, тоді поля з allmusic.com неможливо отримати (проте ці пропущені посилання дуже легко додати)."
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Отримати обкладинки виконавця з HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Включити ескізи виконавця з allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Включити ескізи виконавця з last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Включити ескізи виконавця з HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Отримати обкладинки виконавця з fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Включити ескізи виконавця з fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Отримати біографію виконавця з"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Обкладинка"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Отримати дискографію виконавця з"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Отримати жанри виконавця з"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Отримати стилі виконавця з"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Отримувати вік виконавця з"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Отримати настрої виконавця з"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Отримати роки активності виконавця з"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "     Бажана мова"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Посилатись до біографії виконавця з"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Посилатись до дискографії виконавця з"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Посилатись до жанрів виконавця з"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Посилатись до стилів виконавця з"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Посилатись до віку виконавця з"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Посилання"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Включити ескізи виконавця з theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Отримати обкладинки виконавця з theaudiodb.com"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr "Посилатись до настроїв виконавця з"
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr "Дзеркало MB"
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr "Дзеркало сайта MusicBrainz"
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr "Увімкнути чистий логотип виконавця з fanart.tv"
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr "Увімкнути банер виконавця з fanart.tv"
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr "Увімкнути чистий логотип виконавця з theaudiodb.com"
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr "Увімкнути чисте зображення виконавця з theaudiodb.com"
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr "Увімкнути пейзаж виконавця з theaudiodb.com"
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr "Увімкнути банер виконавця з theaudiodb.com"
