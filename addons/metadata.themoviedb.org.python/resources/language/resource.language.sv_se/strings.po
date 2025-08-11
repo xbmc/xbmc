@@ -7,18 +7,27 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Swedish (http://www.transifex.com/projects/p/xbmc-addons/language/sv/)\n"
+"PO-Revision-Date: 2023-08-03 16:11+0000\n"
+"Last-Translator: Andreas Bolin <bolin.andreas@gmail.com>\n"
+"Language-Team: Swedish <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/sv_se/>\n"
+"Language: sv_se\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sv\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.18.2\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "Pyton TMDB Filmskrapa"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org är en gratis och öppen filmdatabas. Den drivs helt av människor som du. TMDb används för närvarande av miljoner människor varje månad och med deras kraftfulla API används den även av många populära mediacenter som t.ex. Kodi för att hämta metadata om filmer, affischer och fanart för att berika användarens upplevelse."
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "Aktivera fanart"
+msgid "Enable fanart from TMDb"
+msgstr "Aktivera fanart från TMDb"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
@@ -26,11 +35,11 @@ msgstr "Aktivera trailers från HD-Trailers.net"
 
 msgctxt "#30002"
 msgid "Preferred Language"
-msgstr "Föredraget språk"
+msgstr "Föredraget Språk"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Hämta betyg från"
+msgid "Default Rating from"
+msgstr "Standardbetyg från"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
@@ -43,3 +52,67 @@ msgstr "Behåll orginaltitel"
 msgctxt "#30006"
 msgid "Preferred Certification Country"
 msgstr "Önskat certifieringsland"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "Lägg även till betyg från IMDb"
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "Prefix för certifikat"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr "Lägg till flera studior"
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr "Lägg även till betyg från Trakt.tv"
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr "Lägg till nyckelord som taggar"
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr "Använd TMDb-fanart med titlar som landscape art"
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr "Sök språk"
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr "Aktivera affischer från TMDb"
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr "Språk för bakgrunder från Fanart.tv"
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr "Personlig API-nyckel för Fanart.tv (valfritt)"
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr "Aktivera bakgrunder från Fanart.tv"
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr "Prioritera bakgrunder från Fanart.TV över föredraget språk"
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "Aktivera fanart"
+
+#~ msgctxt "#30003"
+#~ msgid "Get Rating from"
+#~ msgstr "Hämta betyg från"

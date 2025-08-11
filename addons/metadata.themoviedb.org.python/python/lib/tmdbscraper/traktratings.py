@@ -36,7 +36,6 @@ HEADERS = (
     ('trakt-api-version', '2'),
     ('Content-Type', 'application/json'),
 )
-api_utils.set_headers(dict(HEADERS))
 
 MOVIE_URL = 'https://api.trakt.tv/movies/{}'
 
@@ -46,6 +45,7 @@ def get_trakt_ratinginfo(uniqueids):
     result = {}
     url = MOVIE_URL.format(imdb_id)
     params = {'extended': 'full'}
+    api_utils.set_headers(dict(HEADERS))
     movie_info = api_utils.load_info(url, params=params, default={})
     if(movie_info):
         if 'votes' in movie_info and 'rating' in movie_info:

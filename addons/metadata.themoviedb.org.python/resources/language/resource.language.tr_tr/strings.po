@@ -7,30 +7,39 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Turkish (http://www.transifex.com/projects/p/xbmc-addons/language/tr/)\n"
+"PO-Revision-Date: 2022-04-19 17:52+0000\n"
+"Last-Translator: queeup <queeup@zoho.com>\n"
+"Language-Team: Turkish <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/tr_tr/>\n"
+"Language: tr_tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: tr\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11.2\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "Python TMDB Film Bilgi Sağlayıcısı"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org ücretsiz ve herkese açık bir film veri tabanıdır. Tamamen kullanıcılar tarafından oluşturulmakta ve yönetilmektedir. TMDb her ay milyonlarca kullanıcı tarafından kullanılmakta ve güçlü API'si sayesinde Kodi gibi bir çok popüler medya merkezi tarafından Film Veritabanı, Poster ve Fanart bilgilerini kullanarak kullanıcı deneyimini zenginleştirmektedir."
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "Fanart Etkinleştir"
+msgid "Enable fanart from TMDb"
+msgstr "TMDb fanartlarını etkinleştir"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
-msgstr "Fragmanlar için HD-Trailers.net'i tercih et"
+msgstr "Fragmanlar için HD-Trailers.net sitesini tercih et"
 
 msgctxt "#30002"
 msgid "Preferred Language"
 msgstr "Tercih Edilen Dil"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Değerlendirmeyi şuradan al"
+msgid "Default Rating from"
+msgstr "Derecelendirmenin alınacağı yer:"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
@@ -43,3 +52,67 @@ msgstr "Özgün Başlığı Koru"
 msgctxt "#30006"
 msgid "Preferred Certification Country"
 msgstr "Tercih Edilen Sertifika Ülkesi"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "IMDb derecelendirmesini de ekle"
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "Sertifika Öneki"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr "Birden çok stüdyo ekle"
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr "Trakt.tv derecelendirmesini de ekle"
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr "Anahtar kelimeleri etiket olarak ekle"
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr "Arama dili"
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr "Fanart.tv resim dili"
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr "Fanart.tv kişisel API anahtarı (isteğe bağlı)"
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr "Fanart.tv resimlerini etkinleştir"
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr "Fanart.TV resimlerine tercih edilen dile göre öncelik ver"
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "Fanart Etkinleştir"
+
+#~ msgctxt "#30003"
+#~ msgid "Get Rating from"
+#~ msgstr "Değerlendirmeyi şuradan al"

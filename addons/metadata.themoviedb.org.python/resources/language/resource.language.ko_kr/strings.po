@@ -5,20 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Korean (http://www.transifex.com/projects/p/xbmc-addons/language/ko/)\n"
+"PO-Revision-Date: 2024-12-29 11:09+0000\n"
+"Last-Translator: Minho Park <parkmino@gmail.com>\n"
+"Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/ko_kr/>\n"
+"Language: ko_kr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.9.2\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "TMDB 영화 정보수집기"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org 는 전적으로 여러분 같은 이용자가 주도하는 무료 공개 영화 데이터베이스입니다. TMDb 는 현재 매월 수백만의 사람들이 강력한 API와 함께 사용하고 있을 뿐만 아니라 Kodi 같은 많은 미디어 센터가 영화 정보, 포스터, 팬아트를 가져와 풍성한 사용자 경험을 제공하는데 이용되고 있습니다."
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "팬아트 사용"
+msgid "Enable fanart from TMDb"
+msgstr "TMDb에서 팬아트 가져오기"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
@@ -29,8 +38,8 @@ msgid "Preferred Language"
 msgstr "선호 언어"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "평점 가져오기"
+msgid "Default Rating from"
+msgstr "기본 평점"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
@@ -43,3 +52,67 @@ msgstr "원 제목 유지"
 msgctxt "#30006"
 msgid "Preferred Certification Country"
 msgstr "등급 기준 국가"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "IMDb 평점도 추가"
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "인증 접두어"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr "복수 스튜디오 추가"
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr "Trakt.tv 평점도 추가"
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr "키워드를 태그로 추가"
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr "제목이 있는 TMDb 팬아트를 가로형으로 분리"
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr "검색 언어"
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr "TMDb의 포스터 사용"
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr "각 아트워크 유형의 최대 수 - 많은 아트워크는 MySQL 데이터베이스의 스크래핑에 오류를 일으킬 수 있음"
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr "Fanart.tv 아트웍 언어"
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr "Fanart.tv 개인 API 키 (옵션)"
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr "Fanart.tv에서 아트웍 가져오기"
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr "선호하는 언어보다 Fanart.TV 아트워크 우선 순위 지정"
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "팬아트 사용"
+
+#~ msgctxt "#30003"
+#~ msgid "Get Rating from"
+#~ msgstr "평점 가져오기"

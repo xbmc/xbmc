@@ -7,18 +7,27 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Bulgarian (http://www.transifex.com/projects/p/xbmc-addons/language/bg/)\n"
+"PO-Revision-Date: 2022-03-07 02:13+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Bulgarian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/bg_bg/>\n"
+"Language: bg_bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: bg\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "Сваля инф. за филми от TMDB"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org е безплатна и отворена филмова база данни. Задвижва се изцяло от потребителите си, от хора като вас. Милиони хора по света всеки месец ползват TMDb. Благодарение на многофункционално API може да се ползва от най-различни и популярни медийни центрове като Kodi, които извличат метаданни, постери и фанарт за филми с цел за красивото оформяне на интерфейса."
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "Ползвай фанарт"
+msgid "Enable fanart from TMDb"
+msgstr ""
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
@@ -29,8 +38,8 @@ msgid "Preferred Language"
 msgstr "Предпочитан език"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Получавай рейтинга от"
+msgid "Default Rating from"
+msgstr ""
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
@@ -43,3 +52,67 @@ msgstr "Запазвай оригиналното заглавие"
 msgctxt "#30006"
 msgid "Preferred Certification Country"
 msgstr "Категоризирай според стандарта в"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "Представка за категорията"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr ""
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr ""
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "Ползвай фанарт"
+
+#~ msgctxt "#30003"
+#~ msgid "Get Rating from"
+#~ msgstr "Получавай рейтинга от"

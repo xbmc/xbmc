@@ -5,36 +5,45 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Afrikaans (http://www.transifex.com/projects/p/xbmc-addons/language/af/)\n"
+"PO-Revision-Date: 2025-01-07 23:55+0000\n"
+"Last-Translator: Heiko Berner <berner.h@gmail.com>\n"
+"Language-Team: Afrikaans (South Africa) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/af_za/>\n"
+"Language: af_za\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: af\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.9.2\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "TMDB Fliek Skraper"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org is 'n verniet en oop fliek databasis. Dit is totaal gebruiker gedryf deur mense soos jy. TMDB word huidiglik deur miljoene mense elke maand gebruik, en met hulle kragtige API word dit ook deur baie gewilde media sentrums soos Kodi gebruik om Fliek Metadata, Plakkate en Ondersteunerkuns te onttrek om die gebruiker se ondervinding te verryk."
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "Stel Ondersteunerkuns in staat"
+msgid "Enable fanart from TMDb"
+msgstr "Stel ondersteunerkuns vanaf TMDB in staat"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
-msgstr "Verkies Voorskou van HD-Trailers.net"
+msgstr "Verkies Lokprent vanaf HD-Trailers.net"
 
 msgctxt "#30002"
 msgid "Preferred Language"
 msgstr "Verkose Taal"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Kry Gradering vanaf"
+msgid "Default Rating from"
+msgstr "Verstek Gradering vanaf"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
-msgstr "Stel Voorskou in staat (YouTube)"
+msgstr "Stel Lokprent in staat (YouTube)"
 
 msgctxt "#30005"
 msgid "Keep Original Title"
@@ -43,3 +52,67 @@ msgstr "Hou Oorspronklike Titel"
 msgctxt "#30006"
 msgid "Preferred Certification Country"
 msgstr "Verkose Sertifiserings Land"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "Voeg ook IMDB graderings by"
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "Sertifikasie Voorvoegsel"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr "Voeg veelvuldige ateljees by"
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr "Voeg ook Trak.tv graderings by"
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr "Voeg sleutelwoorde as etikette by"
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr "Aparte TMDb ondersteunerkuns met titel na landskap"
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr "Soek taal"
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr "Stel plakkate vanaf TMDb in staat"
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr "Maksimum hoeveelheid van elke kunswerk tipe - baie kunswerke kan 'n fout veroorsaak wanneer na MySQL databasis skraap"
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr "Taal vir Fanart.tv kunswerke"
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr "Fanart.tv persoonlike API sleutel (opsioneel)"
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr "Stel kunswerke vanaf Fanart.tv in staat"
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr "Prioritiseer Fanart.tv kunswerke bo verkose taal"
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "Stel Ondersteunerkuns in staat"
+
+#~ msgctxt "#30003"
+#~ msgid "Get Rating from"
+#~ msgstr "Kry Gradering vanaf"

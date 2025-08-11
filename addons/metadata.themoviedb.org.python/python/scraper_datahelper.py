@@ -27,15 +27,21 @@ def combine_scraped_details_info_and_ratings(original_details, additional_detail
             update_or_set(original_details, 'ratings', additional_details['ratings'])
     return original_details
 
-def combine_scraped_details_available_artwork(original_details, additional_details):
+def combine_scraped_details_available_artwork(original_details, additional_details, language, settings):
+    if language:
+        # Image languages don't have regional variants
+        language = language.split('-')[0]
     if additional_details and additional_details.get('available_art'):
         available_art = additional_details['available_art']
         if not original_details.get('available_art'):
-            original_details['available_art'] = available_art
-        else:
-            for arttype, artlist in available_art.items():
-                original_details['available_art'][arttype] = \
-                    artlist + original_details['available_art'].get(arttype, [])
+            original_details['available_art'] = {}
+        for arttype, artlist in available_art.items():
+            artlist = sorted(artlist, key=lambda x:x['lang']==language, reverse=True)
+            combinlist = artlist + original_details['available_art'].get(arttype, [])
+            original_details['available_art'][arttype] = combinlist
+
+            if not settings.getSettingBool('prioritize_fanarttv_artwork'):
+                original_details['available_art'][arttype] = sorted(combinlist, key=lambda x:x['lang']==language, reverse=True)
 
     return original_details
 

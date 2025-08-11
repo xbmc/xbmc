@@ -12,6 +12,11 @@ def configure_tmdb_artwork(details, settings):
         return details
 
     art = details['available_art']
+    if not settings.getSettingBool('fetch_posters'):
+        if 'poster' in art:
+            del art['poster']
+        if 'set.poster' in art:
+            del art['set.poster']
     fanart_enabled = settings.getSettingBool('fanart')
     if not fanart_enabled:
         if 'fanart' in art:
