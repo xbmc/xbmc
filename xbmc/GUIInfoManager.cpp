@@ -10484,21 +10484,21 @@ namespace
 std::string TranslateListSeparator(const std::string& param)
 {
   if (StringUtils::EqualsNoCase(param, "comma"))
-    return ",";
+    return ", ";
   else if (StringUtils::EqualsNoCase(param, "pipe"))
-    return "|";
+    return " | ";
   else if (StringUtils::EqualsNoCase(param, "slash"))
-    return "/";
+    return " / ";
   else if (StringUtils::EqualsNoCase(param, "cr"))
     return "\n";
   else if (StringUtils::EqualsNoCase(param, "dash"))
-    return "-";
+    return " - ";
   else if (StringUtils::EqualsNoCase(param, "colon"))
-    return ":";
+    return " : ";
   else if (StringUtils::EqualsNoCase(param, "semicolon"))
-    return ";";
+    return "; ";
   else if (StringUtils::EqualsNoCase(param, "fullstop"))
-    return ".";
+    return ". ";
   else
   {
     CLog::Log(LOGERROR, "unhandled separator param {}", param);
