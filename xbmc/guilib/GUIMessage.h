@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 /*!
 \file GUIMessage.h
 \brief

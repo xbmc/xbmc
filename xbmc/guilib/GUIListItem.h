@@ -15,6 +15,7 @@
 
 #include "utils/Artwork.h"
 
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
