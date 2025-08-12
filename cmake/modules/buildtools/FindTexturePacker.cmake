@@ -89,6 +89,22 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
       string(REPLACE ";" "|" string_ARCH_DEFINES "${ARCH_DEFINES}")
 
       list(APPEND CMAKE_ARGS -DARCH_DEFINES=${string_ARCH_DEFINES})
+      if(ENABLE_CLANGTIDY)
+        string(REPLACE ";" "|" string_CMAKE_CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY}")
+        list(APPEND CMAKE_ARGS "-DCMAKE_CXX_CLANG_TIDY=${string_CMAKE_CXX_CLANG_TIDY}")
+      else()
+        list(APPEND CMAKE_ARGS -UCMAKE_CXX_CLANG_TIDY)
+      endif()
+      if(ENABLE_CPPCHECK)
+        list(APPEND CMAKE_ARGS "-DCMAKE_CXX_CPPCHECK:FILEPATH=${CMAKE_CXX_CPPCHECK}")
+      else()
+        list(APPEND CMAKE_ARGS -UCMAKE_CXX_CPPCHECK)
+      endif()
+      if(ENABLE_INCLUDEWHATYOUUSE)
+        list(APPEND CMAKE_ARGS "-DCMAKE_CXX_INCLUDE_WHAT_YOU_USE:FILEPATH=${CMAKE_CXX_INCLUDE_WHAT_YOU_USE}")
+      else()
+        list(APPEND CMAKE_ARGS -UCMAKE_CXX_INCLUDE_WHAT_YOU_USE)
+      endif()
 
       externalproject_add(buildtexturepacker
                           SOURCE_DIR ${CMAKE_SOURCE_DIR}/tools/depends/native/TexturePacker/src
@@ -96,6 +112,7 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
                           LIST_SEPARATOR |
                           INSTALL_DIR ${CMAKE_BINARY_DIR}/build
                           CMAKE_ARGS ${CMAKE_ARGS}
+                          BUILD_ALWAYS ON
                           BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/build/bin/TexturePacker)
 
       ExternalProject_Get_Property(buildtexturepacker INSTALL_DIR)
