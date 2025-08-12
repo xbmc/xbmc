@@ -65,7 +65,7 @@
 ## 1. Motivation
 When working in a large group, the two most important values are readability and maintainability. We code for other people, not computers. To accomplish these goals, we have created a unified set of code conventions.
 
-In the repository root directory, there is a [`.clang-format`](https://github.com/xbmc/xbmc/blob/master/.clang-format) file that implements the rules as specified here. You are encouraged to run [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) on any newly created files. It is currently not recommended to do so on preexisting files because all the formatting changes will clutter your commits and pull request.
+In the repository root directory, there is a [`.clang-format`](https://github.com/xbmc/xbmc/blob/master/.clang-format) file that implements the rules as specified here. You are encouraged to run [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) on any newly created files. It is currently not recommended to do so on preexisting files because all the formatting changes will clutter your commits and pull request. Note that the version of `clang-format` needs to be at least verson 9.0.
 
 When you create a pull request, the PR build job will run `clang-format` on your commits and provide patches for any parts that don't satisfy the current `.clang-format` rules. You should apply these patches and amend your pull request accordingly.
 
@@ -266,7 +266,7 @@ void Test(void);
 ```
 
 ### 3.7. Exceptions to the Formatting Rules For Better Readability
-There are some special situations where vertical alignment and longer lines does greatly aid readability, for example the initialization of some table-like multiple row structures. In these **rare** cases exceptions can be made to the formatting rules on vertical alignment, and the defined line length can be exceeded. 
+There are some special situations where vertical alignment and longer lines does greatly aid readability, for example the initialization of some table-like multiple row structures. In these **rare** cases exceptions can be made to the formatting rules on vertical alignment, and the defined line length can be exceeded.
 
 To prevent the layout from being reformatted, tell `clang-format` to [disable formatting](https://clang.llvm.org/docs/ClangFormatStyleOptions.html#disabling-formatting-on-a-piece-of-code) on that section of code by surrounding it with the special comments `// clang-format off` and `// clang-format on`.
 For example:
@@ -278,11 +278,11 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
   { "movies",       FieldUserRating,    38018,  SettingType::Integer, "range",  "integer",  CDatabaseQueryRule::OPERATOR_BETWEEN },
   ...
   { "songs",        FieldSource,        39030,  SettingType::List,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS },
-};  
+};
 // clang-format on
  ```
 The other code guidelines will still need to be applied within the delimited lines of code, but with `clang-format` off care will be needed to check these manually. Using vertical alignment means that sometimes the entire block of code may need to be realigned, good judgement should be used in each case with the objective of preserving readability yet minimising impact.
- 
+
 This is to be used with discretion, marking large amounts of code to be left unformatted by `clang-format` without reasonable justification will be rejected.
 
 **[back to top](#table-of-contents)**
