@@ -268,7 +268,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     if (url2.IsProtocol("apk") || url2.IsProtocol("zip") )
       url2.SetOptions("");
 
-    if (!g_directoryCache.FileExists(url2.Get(), bPathInCache) )
+    if (!g_directoryCache.FileExists(url2, bPathInCache))
     {
       if (bPathInCache)
         return false;
@@ -421,7 +421,7 @@ bool CFile::OpenForWrite(const CURL& file, bool bOverWrite)
     if (m_pFile && m_pFile->OpenForWrite(authUrl, bOverWrite))
     {
       // add this file to our directory cache (if it's stored)
-      g_directoryCache.AddFile(url.Get());
+      g_directoryCache.AddFile(url);
       return true;
     }
     return false;
@@ -460,7 +460,7 @@ bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
     if (bUseCache)
     {
       bool bPathInCache;
-      if (g_directoryCache.FileExists(url.Get(), bPathInCache))
+      if (g_directoryCache.FileExists(url, bPathInCache))
         return true;
       if (bPathInCache)
         return false;
@@ -491,7 +491,7 @@ bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
           if (bUseCache)
           {
             bool bPathInCache;
-            if (g_directoryCache.FileExists(pNewUrl->Get(), bPathInCache))
+            if (g_directoryCache.FileExists(*pNewUrl, bPathInCache))
               return true;
             if (bPathInCache)
               return false;
@@ -908,7 +908,7 @@ bool CFile::Delete(const CURL& file)
 
     if(pFile->Delete(authUrl))
     {
-      g_directoryCache.ClearFile(url.Get());
+      g_directoryCache.ClearFile(url);
       return true;
     }
   }
@@ -946,8 +946,8 @@ bool CFile::Rename(const CURL& file, const CURL& newFile)
 
     if(pFile->Rename(authUrl, authUrlNew))
     {
-      g_directoryCache.ClearFile(url.Get());
-      g_directoryCache.AddFile(urlnew.Get());
+      g_directoryCache.ClearFile(url);
+      g_directoryCache.AddFile(urlnew);
       return true;
     }
   }
