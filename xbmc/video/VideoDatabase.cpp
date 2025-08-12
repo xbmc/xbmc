@@ -997,61 +997,93 @@ bool CVideoDatabase::GetSourcePath(const std::string &path, std::string &sourceP
   return false;
 }
 
-//********************************************************************************************************************************
 int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
                             const std::string& parentPath /* = "" */,
                             const CDateTime& dateAdded /* = CDateTime() */,
-                            int playcount /* = 0 */,
+                            int playCount /* = 0 */,
                             const CDateTime& lastPlayed /* = CDateTime() */)
 {
-  std::string strSQL = "";
+  return AddOrUpdateFile(strFileNameAndPath, parentPath,
+                         FileRecord{
+                             .m_playCount = playCount,
+                             .m_lastPlayed = lastPlayed,
+                             .m_dateAdded = dateAdded,
+                         },
+                         FileExistsAction::ACTION_NONE);
+}
+
+//********************************************************************************************************************************
+//! @todo for more future flexibility add the rest of the fields to the struct and provide a mask to specify which fields to update
+int CVideoDatabase::AddOrUpdateFile(const std::string& fileAndPath,
+                                    const std::string& parentPath,
+                                    const FileRecord& fileInfo,
+                                    FileExistsAction existsAction)
+{
+  if (nullptr == m_pDB || nullptr == m_pDS)
+    return -1;
+
+  std::string sql;
   try
   {
-    int idFile;
-    if (nullptr == m_pDB)
-      return -1;
-    if (nullptr == m_pDS)
-      return -1;
-
-    const CDateTime finalDateAdded = GetDateAdded(strFileNameAndPath, dateAdded);
+    const CDateTime finalDateAdded{GetDateAdded(fileAndPath, fileInfo.m_dateAdded)};
 
     std::string strFileName;
     std::string strPath;
-    SplitPath(strFileNameAndPath,strPath,strFileName);
+    SplitPath(fileAndPath, strPath, strFileName);
 
-    int idPath = AddPath(strPath, parentPath, finalDateAdded);
+    const int idPath{AddPath(strPath, parentPath, finalDateAdded)};
     if (idPath < 0)
       return -1;
 
-    strSQL = PrepareSQL("select idFile from files where strFileName='%s' and idPath=%i",
-                        strFileName.c_str(), idPath);
+    const std::string playCount{fileInfo.m_playCount > 0 ? std::to_string(fileInfo.m_playCount)
+                                                         : "NULL"};
+    const std::string lastPlayed{fileInfo.m_lastPlayed.IsValid()
+                                     ? "'" + fileInfo.m_lastPlayed.GetAsDBDateTime() + "'"
+                                     : "NULL"};
 
-    m_pDS->query(strSQL);
+    sql = PrepareSQL("SELECT idFile FROM files WHERE strFileName = '%s' AND idPath=%i",
+                     strFileName.c_str(), idPath);
+
+    m_pDS->query(sql);
     if (m_pDS->num_rows() > 0)
     {
-      idFile = m_pDS->fv("idFile").get_asInt() ;
+      const int idFile{m_pDS->fv("idFile").get_asInt()};
       m_pDS->close();
+
+      if (existsAction == FileExistsAction::ACTION_UPDATE)
+      {
+        sql = PrepareSQL("UPDATE files "
+                         "SET playCount = " +
+                             playCount +
+                             ", "
+                             "lastPlayed = " +
+                             lastPlayed +
+                             ", "
+                             "dateAdded = '%s' "
+                             "WHERE idFile = %i",
+                         finalDateAdded.GetAsDBDateTime().c_str(), idFile);
+
+        m_pDS->exec(sql);
+      }
+
       return idFile;
     }
+
     m_pDS->close();
 
-    std::string strPlaycount = "NULL";
-    if (playcount > 0)
-      strPlaycount = std::to_string(playcount);
-    std::string strLastPlayed = "NULL";
-    if (lastPlayed.IsValid())
-      strLastPlayed = "'" + lastPlayed.GetAsDBDateTime() + "'";
+    sql = PrepareSQL(
+        "INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed, dateAdded) "
+        "VALUES(NULL, %i, '%s', " +
+            playCount + ", " + lastPlayed + ", '%s')",
+        idPath, strFileName.c_str(), finalDateAdded.GetAsDBDateTime().c_str());
 
-    strSQL = PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed, dateAdded) "
-                        "VALUES(NULL, %i, '%s', " + strPlaycount + ", " + strLastPlayed + ", '%s')",
-                        idPath, strFileName.c_str(), finalDateAdded.GetAsDBDateTime().c_str());
-    m_pDS->exec(strSQL);
-    idFile = static_cast<int>(m_pDS->lastinsertid());
-    return idFile;
+    m_pDS->exec(sql);
+
+    return static_cast<int>(m_pDS->lastinsertid());
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "unable to addfile ({})", strSQL);
+    CLog::LogF(LOGERROR, "unable to add or update file ({})", sql);
   }
   return -1;
 }
@@ -3218,9 +3250,13 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
 int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
                                     VideoDbContentType type,
                                     int mediaId,
-                                    int oldIdFile)
+                                    FileRecord oldFile)
 {
-  if ((mediaId < 0 && type != VideoDbContentType::UNKNOWN) || oldIdFile < 0)
+  if ((mediaId < 0 && type != VideoDbContentType::UNKNOWN) || oldFile.m_idFile < 0)
+    return -1;
+
+  const int newIdFile = AddOrUpdateFile(fileAndPath, "", oldFile, FileExistsAction::ACTION_UPDATE);
+  if (newIdFile < 0)
     return -1;
 
   switch (type)
@@ -3228,127 +3264,100 @@ int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
     using enum VideoDbContentType;
 
     case MOVIES:
-      return SetFileForMovie(fileAndPath, mediaId, oldIdFile);
+      return SetFileForMovie(fileAndPath, mediaId, oldFile.m_idFile, newIdFile);
     case EPISODES:
-      return SetFileForEpisode(fileAndPath, mediaId, oldIdFile);
+      return SetFileForEpisode(fileAndPath, mediaId, oldFile.m_idFile, newIdFile);
     case UNKNOWN:
-      return SetFileForUnknown(fileAndPath, oldIdFile); // Used for removable blurays
+      // Used for removable blurays
+      return SetFileForUnknown(fileAndPath, oldFile.m_idFile, newIdFile);
     default:
       CLog::LogF(LOGDEBUG, "unsupported media type {}", type);
       return -1;
   }
 }
 
-int CVideoDatabase::AddFilePreserveDateAdded(const std::string& fileAndPath, int oldIdFile)
-{
-  try
-  {
-    // Preserve date added
-    m_pDS->query(PrepareSQL("SELECT dateAdded FROM files WHERE idFile=%i", oldIdFile));
-    if (m_pDS->eof())
-      return -1;
-
-    CDateTime dateAdded;
-    dateAdded.SetFromDBDateTime(m_pDS->fv("dateAdded").get_asString());
-
-    return AddFile(fileAndPath, "", dateAdded);
-  }
-  catch (const std::exception& e)
-  {
-    CLog::LogF(LOGERROR, "failed - oldIdFile {}, fileAndPath {} - error {}", oldIdFile, fileAndPath,
-               e.what());
-  }
-  return -1;
-}
-
-int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile)
+int CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
+                                      int idEpisode,
+                                      int oldIdFile,
+                                      int newIdFile)
 {
   assert(m_pDB->in_transaction());
 
-  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
-  if (idFile < 0)
+  if (newIdFile < 0)
     return -1;
 
   try
   {
-    m_pDS->exec(PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", idFile, idEpisode));
-    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idFile, oldIdFile));
-    return DeleteFile(oldIdFile) ? idFile : -1;
+    m_pDS->exec(
+        PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", newIdFile, idEpisode));
+    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
+    return DeleteFile(oldIdFile) ? newIdFile : -1;
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idEpisode {}, oldIdFile {} - failed", idFile,
-               fileAndPath, idEpisode, oldIdFile);
+    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idEpisode {}, oldIdFile {} - failed",
+               newIdFile, fileAndPath, idEpisode, oldIdFile);
   }
   return -1;
 }
 
-int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile)
+int CVideoDatabase::SetFileForMovie(const std::string& fileAndPath,
+                                    int idMovie,
+                                    int oldIdFile,
+                                    int newIdFile)
 {
   assert(m_pDB->in_transaction());
 
-  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
-  if (idFile < 0)
+  if (newIdFile < 0)
     return -1;
 
   try
   {
-    std::string sql = PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i AND idMovie=%i",
-                                 idFile, oldIdFile, idMovie);
-    m_pDS->exec(sql);
-
-    sql = PrepareSQL(
+    m_pDS->exec(PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i AND idMovie=%i", newIdFile,
+                           oldIdFile, idMovie));
+    m_pDS->exec(PrepareSQL(
         "UPDATE videoversion SET idFile=%i WHERE idFile=%i AND media_type='movie' AND idMedia=%i",
-        idFile, oldIdFile, idMovie);
-    m_pDS->exec(sql);
+        newIdFile, oldIdFile, idMovie));
+    m_pDS->exec(
+        PrepareSQL("UPDATE art SET media_id=%i WHERE media_id=%i AND media_type='videoversion'",
+                   newIdFile, oldIdFile));
+    m_pDS->exec(
+        PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
+                   "FROM streamdetails WHERE idFile=%i)",
+                   newIdFile, oldIdFile, newIdFile));
+    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
 
-    sql = PrepareSQL("UPDATE art SET media_id=%i WHERE media_id=%i AND media_type='videoversion'",
-                     idFile, oldIdFile);
-    m_pDS->exec(sql);
-
-    sql = PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
-                     "FROM streamdetails WHERE idFile=%i)",
-                     idFile, oldIdFile, idFile);
-    m_pDS->exec(sql);
-
-    sql = PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idFile, oldIdFile);
-    m_pDS->exec(sql);
-
-    return DeleteFile(oldIdFile) ? idFile : -1;
+    return DeleteFile(oldIdFile) ? newIdFile : -1;
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idMovie {}, oldIdFile {} - failed", idFile,
+    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idMovie {}, oldIdFile {} - failed", newIdFile,
                fileAndPath, idMovie, oldIdFile);
   }
   return -1;
 }
 
-int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdFile)
+int CVideoDatabase::SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int newIdFile)
 {
   assert(m_pDB->in_transaction());
 
-  const int idFile{AddFilePreserveDateAdded(fileAndPath, oldIdFile)};
-  if (idFile < 0)
+  if (newIdFile < 0)
     return -1;
 
   try
   {
-    std::string sql{
+    m_pDS->exec(
         PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
                    "FROM streamdetails WHERE idFile=%i)",
-                   idFile, oldIdFile, idFile)};
-    m_pDS->exec(sql);
+                   newIdFile, oldIdFile, newIdFile));
+    m_pDS->exec(PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", newIdFile, oldIdFile));
 
-    sql = PrepareSQL("UPDATE settings SET idFile=%i WHERE idFile=%i", idFile, oldIdFile);
-    m_pDS->exec(sql);
-
-    return DeleteFile(oldIdFile) ? idFile : -1;
+    return DeleteFile(oldIdFile) ? newIdFile : -1;
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, oldIdFile {} - failed", idFile, fileAndPath,
-               oldIdFile);
+    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, oldIdFile {} - failed", newIdFile,
+               fileAndPath, oldIdFile);
   }
   return -1;
 }
