@@ -11541,6 +11541,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       pDS3->first();
     }
 
+    CLog::LogF(LOGDEBUG, "Starting...");
     while (!pDS3->eof())
     {
       // reset old skip state
@@ -11555,6 +11556,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         TiXmlElement xmlMainElement("movies");
         pMain = xmlDoc.InsertEndChild(xmlMainElement);
         multiMovie = true;
+        CLog::Log(LOGDEBUG, "Exporting multiple movies for file {}", versions[current].path);
       }
 
       do
@@ -11595,8 +11597,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         {
           if (!item.Exists(false))
           {
-            CLog::LogF(LOGINFO, "Not exporting item {} as it does not exist",
-                       movie.m_strFileNameAndPath);
+            CLog::Log(LOGINFO, "Not exporting item {} as it does not exist",
+                      movie.m_strFileNameAndPath);
             bSkip = true;
           }
           else if (nfoFile.empty())
@@ -11643,6 +11645,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           {
             std::string savedThumb = ART::GetLocalArt(item, type, false);
             CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite);
+            CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", type, savedThumb,
+                      overwrite);
           }
           if (actorThumbs)
             ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
@@ -11655,12 +11659,20 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       if (!singleFile)
       {
         if (CUtil::SupportsWriteFileOperations(nfoFile) &&
-            (overwrite || !CFile::Exists(nfoFile, false)) && !xmlDoc.SaveFile(nfoFile))
+            (overwrite || !CFile::Exists(nfoFile, false)))
         {
-          CLog::LogF(LOGERROR, "Movie nfo export failed! ('{}')", nfoFile);
-          CGUIDialogKaiToast::QueueNotification(
-              CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), CURL::GetRedacted(nfoFile));
-          iFailCount++;
+          if (xmlDoc.SaveFile(nfoFile))
+          {
+            CLog::Log(LOGDEBUG, "Movie nfo exported ('{}')", nfoFile);
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "Movie nfo export failed! ('{}')", nfoFile);
+            CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                                  g_localizeStrings.Get(20302),
+                                                  CURL::GetRedacted(nfoFile));
+            iFailCount++;
+          }
         }
         xmlDoc.Clear();
         TiXmlDeclaration decl1("1.0", "UTF-8", "yes");
@@ -11717,13 +11729,20 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           if (!singleFile && CUtil::SupportsWriteFileOperations(itemPath))
           {
             const std::string nfoFile{URIUtils::AddFileToFolder(itemPath, "set.nfo")};
-            if ((overwrite || !CFile::Exists(nfoFile, false)) && !xmlDoc.SaveFile(nfoFile))
+            if (overwrite || !CFile::Exists(nfoFile, false))
             {
-              CLog::LogF(LOGERROR, "Set nfo export failed! ('{}')", nfoFile);
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                    g_localizeStrings.Get(20302),
-                                                    CURL::GetRedacted(nfoFile));
-              iFailCount++;
+              if (xmlDoc.SaveFile(nfoFile))
+              {
+                CLog::Log(LOGDEBUG, "Set nfo exported ('{}')", nfoFile);
+              }
+              else
+              {
+                CLog::Log(LOGERROR, "Set nfo export failed! ('{}')", nfoFile);
+                CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                                      g_localizeStrings.Get(20302),
+                                                      CURL::GetRedacted(nfoFile));
+                iFailCount++;
+              }
             }
           }
           if (!singleFile)
@@ -11742,12 +11761,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             {
               const std::string savedThumb = URIUtils::AddFileToFolder(itemPath, arttype);
               CServiceBroker::GetTextureCache()->Export(arturl, savedThumb, overwrite);
+              CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", arturl,
+                        savedThumb, overwrite);
             }
           }
         }
         else
-          CLog::LogF(LOGDEBUG, "Not exporting movie set '{}' as could not create folder '{}'",
-                     title, itemPath);
+          CLog::Log(LOGDEBUG, "Not exporting movie set '{}' as could not create folder '{}'", title,
+                    itemPath);
         m_pDS->next();
         current++;
       }
@@ -11804,12 +11825,15 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         else
         {
           std::string nfoFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo"));
-
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
-            if(!xmlDoc.SaveFile(nfoFile))
+            if (xmlDoc.SaveFile(nfoFile))
             {
-              CLog::LogF(LOGERROR, "Musicvideo nfo export failed! ('{}')", nfoFile);
+              CLog::Log(LOGDEBUG, "Musicvideo nfo exported ('{}')", nfoFile);
+            }
+            else
+            {
+              CLog::Log(LOGERROR, "Musicvideo nfo export failed! ('{}')", nfoFile);
               CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
                                                     g_localizeStrings.Get(20302),
                                                     CURL::GetRedacted(nfoFile));
@@ -11837,6 +11861,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         {
           const std::string savedThumb = ART::GetLocalArt(item, type, false);
           CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite);
+          CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", url, savedThumb,
+                    overwrite);
         }
       }
       m_pDS->next();
@@ -11909,9 +11935,13 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
-            if (!xmlDoc.SaveFile(nfoFile))
+            if (xmlDoc.SaveFile(nfoFile))
             {
-              CLog::LogF(LOGERROR, "TVShow nfo export failed! ('{}')", nfoFile);
+              CLog::Log(LOGDEBUG, "TVShow nfo exported ('{}')", nfoFile);
+            }
+            else
+            {
+              CLog::Log(LOGERROR, "TVShow nfo export failed! ('{}')", nfoFile);
               CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
                                                     g_localizeStrings.Get(20302),
                                                     CURL::GetRedacted(nfoFile));
@@ -11958,6 +11988,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             const std::string savedThumb(ART::GetLocalArt(item, seasonThumb + "-" + type, true));
             if (!art.empty())
               CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite);
+            CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", url, savedThumb,
+                      overwrite);
           }
         }
       }
@@ -11969,7 +12001,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       EpisodeFileMap fileMap;
       if (!GetEpisodeMap(tvshow.m_iDbId, fileMap, pDS))
       {
-        CLog::LogF(LOGERROR, "Failed to generate episode map for TV show ID {}", tvshow.m_iDbId);
+        CLog::Log(LOGERROR, "Failed to generate episode map for TV show ID {}", tvshow.m_iDbId);
         continue; // Skip processing for this TV show
       }
 
@@ -12012,9 +12044,13 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
             // Save NFO file
-            if (!xmlDoc.SaveFile(nfoFile))
+            if (xmlDoc.SaveFile(nfoFile))
             {
-              CLog::LogF(LOGERROR, "Episode nfo export failed! ('{}')", nfoFile);
+              CLog::Log(LOGDEBUG, "Episode nfo exported ('{}')", nfoFile);
+            }
+            else
+            {
+              CLog::Log(LOGERROR, "Episode nfo export failed! ('{}')", nfoFile);
               CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
                                                     g_localizeStrings.Get(20302),
                                                     CURL::GetRedacted(nfoFile));
@@ -12095,6 +12131,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       xmlDoc.SaveFile(xmlFile);
     }
     CVariant data;
+
+    CLog::LogF(LOGDEBUG, "... Finished");
+
     if (singleFile)
     {
       data["root"] = exportRoot;
@@ -12131,6 +12170,8 @@ void CVideoDatabase::ExportArt(const CFileItem& item,
                              ? ART::AdditionalIdentifiers::SEASON_AND_EPISODE
                              : ART::AdditionalIdentifiers::NONE)};
     CServiceBroker::GetTextureCache()->Export(artPath, savedThumb, overwrite);
+    CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", artPath, savedThumb,
+              overwrite);
   }
 }
 
@@ -12162,6 +12203,8 @@ void CVideoDatabase::ExportActorThumbs(const std::string& path,
     {
       std::string thumbFile(GetSafeFile(strPath, i.strName));
       CServiceBroker::GetTextureCache()->Export(i.thumb, thumbFile, overwrite);
+      CLog::Log(LOGDEBUG, "Exported actor thumb '{}' to '{}' - overwrite {}", i.thumb, thumbFile,
+                overwrite);
     }
   }
 }
