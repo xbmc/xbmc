@@ -5,10 +5,10 @@ DEPS = ../../Makefile.include Makefile ../../download-files.include
 
 # lib name, version
 LIBNAME=m4
-VERSION=1.4.19
+VERSION=1.4.20
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-SHA512=47f595845c89709727bda0b3fc78e3188ef78ec818965b395532e7041cabe9e49677ee4aca3d042930095a7f8df81de3da1026b23b6897be471f6cf13ddd512b
+SHA512=dc7b4f61452e564b095010029bf6ce4246e5a03959989cd76b09eb8012db7424c52819143020fab21a3471ff57ab026d3eccbd00dd3969819208980565a9fec0
 include ../../download-files.include
 
 # configuration settings
