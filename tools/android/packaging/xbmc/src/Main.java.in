@@ -51,6 +51,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   }
   private ArrayList<DelayedIntent> mDelayedIntents = new ArrayList<>();
   private boolean mPaused = true;
+  private static boolean mActivityRunning = false;
 
   // Launchers that support the Recommended Content API
   private final Set<String> mRecommendedLaunchers = new HashSet<String>() {{
@@ -213,6 +214,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public void onStart()
   {
     super.onStart();
+    mActivityRunning = true;
 
     Choreographer.getInstance().removeFrameCallback(this);
     Choreographer.getInstance().postFrameCallback(this);
@@ -301,6 +303,11 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     getApplicationContext().getContentResolver().unregisterContentObserver(mSettingsContentObserver);
     super.onDestroy();
+    mActivityRunning = false;
+  }
+
+  public static boolean isActivityRunning() {
+    return mActivityRunning;
   }
 
   @Override
