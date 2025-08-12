@@ -1,5 +1,5 @@
-xbmc/addons/test                  test/addons
 xbmc/addons/gui/skin/test         test/skin
+xbmc/addons/test                  test/addons
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
 xbmc/cores/VideoPlayer/test/edl   test/edl
 xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
@@ -12,8 +12,8 @@ xbmc/guilib/test                  test/guilib
 xbmc/imagefiles/test              test/imagefiles
 xbmc/input/keyboard/test          test/input/keyboard
 xbmc/interfaces/python/test       test/python
-xbmc/music/test                   test/music
 xbmc/music/tags/test              test/music_tags
+xbmc/music/test                   test/music
 xbmc/network/test                 test/network
 xbmc/pictures/metadata/test       test/pictures/metadata
 xbmc/playlists/test               test/playlists
