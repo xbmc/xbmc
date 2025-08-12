@@ -47,6 +47,43 @@ CWeatherManager::~CWeatherManager()
   settings->GetSettingsManager()->UnregisterCallback(this);
 }
 
+std::string CWeatherManager::GetProperty(const std::string& property)
+{
+  const std::string prop{StringUtils::ToLower(property)};
+  if (prop == "conditions")
+  {
+    return GetInfo(WEATHER_LABEL_CURRENT_COND);
+  }
+  else if (prop == "temperature")
+  {
+    return StringUtils::Format("{}{}", GetInfo(WEATHER_LABEL_CURRENT_TEMP),
+                               g_langInfo.GetTemperatureUnitString());
+  }
+  else if (prop == "location")
+  {
+    return GetInfo(WEATHER_LABEL_LOCATION);
+  }
+  else if (prop == "fanartcode")
+  {
+    std::string value{URIUtils::GetFileName(GetInfo(WEATHER_IMAGE_CURRENT_ICON))};
+    URIUtils::RemoveExtension(value);
+    return value;
+  }
+  else if (prop == "conditionsicon")
+  {
+    return GetInfo(WEATHER_IMAGE_CURRENT_ICON);
+  }
+
+  CGUIComponent* gui{CServiceBroker::GetGUI()};
+  if (gui)
+  {
+    const CGUIWindow* window{gui->GetWindowManager().GetWindow(WINDOW_WEATHER)};
+    if (window)
+      return window->GetProperty(property).asString();
+  }
+  return {};
+}
+
 std::string CWeatherManager::BusyInfo(int info) const
 {
   if (info == WEATHER_IMAGE_CURRENT_ICON)
