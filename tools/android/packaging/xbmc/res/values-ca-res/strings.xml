@@ -12,4 +12,7 @@
     <string name="no_find_apk">Paquet no trobat.</string>
     <string name="no_read_apk">No es pot llegir el paquet.</string>
     <string name="first_run">Preparant el primer inici. Espereu…</string>
+    <string name="continue_button">Continúa</string>
+    <string name="info_title">Info</string>
+    <string name="notice_dialog">%1$s necessita accés als mitjans i fitxers del vostre dispositiu per poder funcionar. Permeteu-ho a través del següent quadre de diàleg o bé %1$s es tancarà.</string>
 </resources>
