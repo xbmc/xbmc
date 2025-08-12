@@ -33,6 +33,9 @@ bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int co
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // WEATHER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    case WEATHER_DATA:
+      value = CServiceBroker::GetWeatherManager().GetProperty(info.GetData3());
+      return true;
     case WEATHER_CONDITIONS_TEXT:
       value = CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_COND);
       StringUtils::Trim(value);

@@ -1171,18 +1171,23 @@ constexpr std::array<InfoMap, 13> player_process = {{
 ///     @return **True** if the weather data has been downloaded.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Weather.Data(property)`</b>,
+///                  \anchor Weather_Data
+///                  _string_,
+///     @return Weather data, as specified by the parameter.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Weather_Data `Weather.Data(property)`\endlink
+///   }
 ///   \table_row3{   <b>`Weather.Conditions`</b>,
 ///                  \anchor Weather_Conditions
 ///                  _string_,
 ///     @return The current weather conditions as textual description.
-///     @note This is looked up in a background process.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Weather.ConditionsIcon`</b>,
 ///                  \anchor Weather_ConditionsIcon
 ///                  _string_,
 ///     @return The current weather conditions as an icon.
-///     @note This is looked up in a background process.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Weather.Temperature`</b>,
@@ -1213,9 +1218,10 @@ constexpr std::array<InfoMap, 13> player_process = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 7> weather = {{
+constexpr std::array<InfoMap, 8> weather = {{
     {"isfetched",       WEATHER_IS_FETCHED},
-    {"conditions",      WEATHER_CONDITIONS_TEXT}, // labels from here
+    {"data",            WEATHER_DATA}, // labels from here
+    {"conditions",      WEATHER_CONDITIONS_TEXT},
     {"temperature",     WEATHER_TEMPERATURE},
     {"location",        WEATHER_LOCATION},
     {"fanartcode",      WEATHER_FANART_CODE},
@@ -10635,10 +10641,18 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.Name() == "weather")
     {
-      for (const auto& i : weather)
+      if (prop.num_params() == 0)
       {
-        if (prop.Name() == i.str)
-          return i.val;
+        for (const auto& i : weather)
+        {
+          if (prop.Name() == i.str)
+            return i.val;
+        }
+      }
+      else if (prop.num_params() == 1)
+      {
+        if (prop.Name() == "data")
+          return AddMultiInfo(CGUIInfo(WEATHER_DATA, prop.param(), 0));
       }
     }
     else if (cat.Name() == "network")
