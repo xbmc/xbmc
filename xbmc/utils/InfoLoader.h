@@ -25,6 +25,7 @@ public:
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 protected:
+  bool RefreshIfNeeded();
   virtual CJob *GetJob() const=0;
   virtual std::string TranslateInfo(int info) const;
   virtual std::string BusyInfo(int info) const;

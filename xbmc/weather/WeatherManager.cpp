@@ -8,7 +8,7 @@
 
 #include "WeatherManager.h"
 
-#include "LangInfo.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "WeatherJob.h"
 #include "addons/AddonManager.h"
@@ -16,6 +16,7 @@
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -24,11 +25,12 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/XMLUtils.h"
+#include "weather/WeatherProperties.h"
 
 using namespace ADDON;
+using namespace KODI::WEATHER;
 
-CWeatherManager::CWeatherManager() : CInfoLoader(30 * 60 * 1000) // 30 minutes
+CWeatherManager::CWeatherManager() : CInfoLoader(WEATHER_REFRESH_INTERVAL_MS)
 {
   CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(
       this, {CSettings::SETTING_WEATHER_ADDON, CSettings::SETTING_WEATHER_ADDONSETTINGS});
@@ -47,41 +49,40 @@ CWeatherManager::~CWeatherManager()
   settings->GetSettingsManager()->UnregisterCallback(this);
 }
 
-std::string CWeatherManager::GetProperty(const std::string& property)
+std::string CWeatherManager::GetProperty(const std::string& property) const
 {
-  const std::string prop{StringUtils::ToLower(property)};
-  if (prop == "conditions")
-  {
-    return GetInfo(WEATHER_LABEL_CURRENT_COND);
-  }
-  else if (prop == "temperature")
-  {
-    return StringUtils::Format("{}{}", GetInfo(WEATHER_LABEL_CURRENT_TEMP),
-                               g_langInfo.GetTemperatureUnitString());
-  }
-  else if (prop == "location")
-  {
-    return GetInfo(WEATHER_LABEL_LOCATION);
-  }
-  else if (prop == "fanartcode")
-  {
-    std::string value{URIUtils::GetFileName(GetInfo(WEATHER_IMAGE_CURRENT_ICON))};
-    URIUtils::RemoveExtension(value);
-    return value;
-  }
-  else if (prop == "conditionsicon")
-  {
-    return GetInfo(WEATHER_IMAGE_CURRENT_ICON);
-  }
+  // Trigger refresh of data if outdated
+  const_cast<CWeatherManager*>(this)->RefreshIfNeeded();
 
-  CGUIComponent* gui{CServiceBroker::GetGUI()};
-  if (gui)
+  std::lock_guard lock(m_critSection);
+
+  // Check whether this is a known property and in case return respective value.
+  const auto it{m_infoV2.find(property)};
+  if (it != m_infoV2.cend())
+    return (*it).second;
+
+  if (!IsUpdating()) // window properties are in undefined state while updating.
   {
-    const CGUIWindow* window{gui->GetWindowManager().GetWindow(WINDOW_WEATHER)};
-    if (window)
-      return window->GetProperty(property).asString();
+    CGUIComponent* gui{CServiceBroker::GetGUI()};
+    if (gui != nullptr)
+    {
+      // Fetch the value from respective weather window property and store.
+      const CGUIWindow* window{gui->GetWindowManager().GetWindow(WINDOW_WEATHER)};
+      if (window != nullptr)
+      {
+        const std::string val{window->GetProperty(property).asString()};
+        m_infoV2.try_emplace(property, val);
+        return val;
+      }
+    }
   }
   return {};
+}
+
+std::string CWeatherManager::GetDayProperty(unsigned int index, const std::string& property) const
+{
+  // Note: No '.' after 'Day'. This is different from 'Daily' and 'Hourly' syntax.
+  return GetProperty(StringUtils::Format(DAY_WITH_INDEX_AND_NAME, index, property));
 }
 
 std::string CWeatherManager::BusyInfo(int info) const
@@ -120,27 +121,33 @@ std::string CWeatherManager::TranslateInfo(int info) const
   }
 }
 
+std::vector<std::string> CWeatherManager::GetLocations() const
+{
+  const int locations{std::atoi(GetProperty(GENERAL_LOCATIONS).c_str())};
+  std::vector<std::string> ret;
+  ret.reserve(locations);
+  for (int i = 1; i <= locations; ++i)
+    ret.emplace_back(GetLocation(i));
+
+  return ret;
+}
+
 std::string CWeatherManager::GetLocation(int iLocation) const
 {
-  const CGUIWindow* window{CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER)};
-  if (window)
-  {
-    const std::string setting{StringUtils::Format("Location{}", iLocation)};
-    return window->GetProperty(setting).asString();
-  }
-  return "";
+  return GetProperty(StringUtils::Format(GENERAL_LOCATION_WITH_INDEX, iLocation));
 }
 
 void CWeatherManager::Reset()
 {
   std::lock_guard lock(m_critSection);
   m_info = {};
+  m_infoV2 = {};
 }
 
 bool CWeatherManager::IsFetched()
 {
-  // call GetInfo() to make sure that we actually start up
-  GetInfo(0);
+  // Make sure that we actually start up
+  RefreshIfNeeded();
 
   std::lock_guard lock(m_critSection);
   return !m_info.lastUpdateTime.empty();
@@ -180,7 +187,17 @@ void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   std::lock_guard lock(m_critSection);
   m_info = static_cast<CWeatherJob*>(job)->GetInfo();
+  m_infoV2 = static_cast<CWeatherJob*>(job)->GetInfoV2();
+
   CInfoLoader::OnJobComplete(jobID, success, job);
+
+  CGUIComponent* gui{CServiceBroker::GetGUI()};
+  if (gui)
+  {
+    // Send a message that we're done.
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WEATHER_FETCHED);
+    gui->GetWindowManager().SendThreadMessage(msg);
+  }
 }
 
 void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
@@ -219,4 +236,10 @@ void CWeatherManager::OnSettingAction(const std::shared_ptr<const CSetting>& set
       Refresh();
     }
   }
+}
+
+bool CWeatherManager::CaseInsensitiveCompare::operator()(std::string_view s1,
+                                                         std::string_view s2) const
+{
+  return StringUtils::CompareNoCase(s1, s2) < 0;
 }

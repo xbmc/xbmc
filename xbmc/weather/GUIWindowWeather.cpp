@@ -9,15 +9,17 @@
 #include "GUIWindowWeather.h"
 
 #include "GUIUserMessages.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "guilib/WindowIDs.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "weather/WeatherManager.h"
+#include "weather/WeatherProperties.h"
 
 #include <utility>
+
+using namespace KODI::WEATHER;
 
 namespace
 {
@@ -125,14 +127,15 @@ void CGUIWindowWeather::UpdateLocations()
   if (!IsActive())
     return;
 
-  m_maxLocation = static_cast<unsigned int>(
-      std::strtol(GetProperty("Locations").asString().c_str(), nullptr, 10));
-  if (m_maxLocation < 1)
+  CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
+
+  const std::vector<std::string> locations{wmgr.GetLocations()};
+  if (locations.empty())
     return;
 
-  CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
-  unsigned int iCurWeather{static_cast<unsigned int>(wmgr.GetArea())};
+  m_maxLocation = static_cast<unsigned int>(locations.size());
 
+  unsigned int iCurWeather{static_cast<unsigned int>(wmgr.GetArea())};
   if (iCurWeather > m_maxLocation)
   {
     wmgr.SetArea(m_maxLocation);
@@ -142,9 +145,10 @@ void CGUIWindowWeather::UpdateLocations()
   }
 
   std::vector<std::pair<std::string, int>> labels;
+  labels.reserve(m_maxLocation);
   for (unsigned int i = 1; i <= m_maxLocation; ++i)
   {
-    std::string strLabel = wmgr.GetLocation(i);
+    std::string strLabel{locations.at(i - 1)};
     if (strLabel.size() > 1) //got the location string yet?
     {
       const size_t iPos{strLabel.rfind(", ")};
@@ -153,13 +157,13 @@ void CGUIWindowWeather::UpdateLocations()
         std::string strLabel2(strLabel);
         strLabel = strLabel2.substr(0, iPos);
       }
-      labels.emplace_back(strLabel, i);
     }
     else
     {
       strLabel = StringUtils::Format("AreaCode {}", i);
-      labels.emplace_back(strLabel, i);
     }
+    labels.emplace_back(strLabel, i);
+
     // in case it's a button, set the label
     if (i == iCurWeather)
       SET_CONTROL_LABEL(CONTROL_SELECTLOCATION, strLabel);
@@ -179,17 +183,14 @@ void CGUIWindowWeather::UpdateButtons()
   SET_CONTROL_LABEL(WEATHER_LABEL_LOCATION, wmgr.GetLocation(wmgr.GetArea()));
   SET_CONTROL_LABEL(CONTROL_LABELUPDATED, wmgr.GetLastUpdateTime());
 
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_COND, wmgr.GetInfo(WEATHER_LABEL_CURRENT_COND));
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_TEMP, wmgr.GetInfo(WEATHER_LABEL_CURRENT_TEMP) +
-                                                    g_langInfo.GetTemperatureUnitString());
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_FEEL, wmgr.GetInfo(WEATHER_LABEL_CURRENT_FEEL) +
-                                                    g_langInfo.GetTemperatureUnitString());
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_UVID, wmgr.GetInfo(WEATHER_LABEL_CURRENT_UVID));
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_WIND, wmgr.GetInfo(WEATHER_LABEL_CURRENT_WIND));
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_DEWP, wmgr.GetInfo(WEATHER_LABEL_CURRENT_DEWP) +
-                                                    g_langInfo.GetTemperatureUnitString());
-  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_HUMI, wmgr.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
-  SET_CONTROL_FILENAME(WEATHER_IMAGE_CURRENT_ICON, wmgr.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_COND, wmgr.GetProperty(CURRENT_CONDITION));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_TEMP, wmgr.GetProperty(CURRENT_TEMPERATURE));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_FEEL, wmgr.GetProperty(CURRENT_FEELS_LIKE));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_UVID, wmgr.GetProperty(CURRENT_UV_INDEX));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_WIND, wmgr.GetProperty(CURRENT_WIND));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_DEWP, wmgr.GetProperty(CURRENT_DEW_POINT));
+  SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_HUMI, wmgr.GetProperty(CURRENT_HUMIDITY));
+  SET_CONTROL_FILENAME(WEATHER_IMAGE_CURRENT_ICON, wmgr.GetProperty(CURRENT_OUTLOOK_ICON));
 
   //static labels
   SET_CONTROL_LABEL(CONTROL_STATICTEMP, 401); //Temperature
@@ -201,13 +202,11 @@ void CGUIWindowWeather::UpdateButtons()
 
   for (unsigned int i = 0; i < WeatherInfo::NUM_DAYS; ++i)
   {
-    SET_CONTROL_LABEL(CONTROL_LABELD0DAY + (i * 10), wmgr.GetForecast(i).m_day);
-    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i * 10),
-                      wmgr.GetForecast(i).m_high + g_langInfo.GetTemperatureUnitString());
-    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i * 10),
-                      wmgr.GetForecast(i).m_low + g_langInfo.GetTemperatureUnitString());
-    SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i * 10), wmgr.GetForecast(i).m_overview);
-    SET_CONTROL_FILENAME(CONTROL_IMAGED0IMG + (i * 10), wmgr.GetForecast(i).m_icon);
+    SET_CONTROL_LABEL(CONTROL_LABELD0DAY + (i * 10), wmgr.GetDayProperty(i, DAY_TITLE));
+    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i * 10), wmgr.GetDayProperty(i, DAY_HIGH_TEMP));
+    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i * 10), wmgr.GetDayProperty(i, DAY_LOW_TEMP));
+    SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i * 10), wmgr.GetDayProperty(i, DAY_OUTLOOK));
+    SET_CONTROL_FILENAME(CONTROL_IMAGED0IMG + (i * 10), wmgr.GetDayProperty(i, DAY_OUTLOOK_ICON));
   }
 }
 

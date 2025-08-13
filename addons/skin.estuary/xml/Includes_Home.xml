@@ -935,7 +935,7 @@
 	<include name="WeatherDayItem">
 		<item>
 			<label>$INFO[Weather.Data(Day$PARAM[item_index].Title)]</label>
-			<label2>[COLOR blue]$INFO[Weather.Data(Day$PARAM[item_index].LowTemp)]$INFO[System.TemperatureUnits][/COLOR] ∙ [COLOR red]$INFO[Weather.Data(Day$PARAM[item_index].HighTemp)]$INFO[System.TemperatureUnits][/COLOR]</label2>
+			<label2>[COLOR blue]$INFO[Weather.Data(Day$PARAM[item_index].LowTemp)][/COLOR] ∙ [COLOR red]$INFO[Weather.Data(Day$PARAM[item_index].HighTemp)][/COLOR]</label2>
 			<property name="LongDay"></property>
 			<property name="TempDay"></property>
 			<property name="Cloudiness"></property>
