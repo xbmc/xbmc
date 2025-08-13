@@ -59,14 +59,11 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
     if (m_type == AddonType::SCRAPER_MOVIES)
     {
       m_headPos = m_doc.find("<movies>");
-      if (m_headPos != std::string::npos)
+      while (index-- > 0)
       {
-        while (index-- > 0)
-        {
-          m_headPos = m_doc.find("<movie", m_headPos + 1);
-          if (m_headPos == std::string::npos)
-            break;
-        }
+        m_headPos = m_doc.find("<movie", m_headPos + 1);
+        if (m_headPos == std::string::npos)
+          break;
       }
     }
     bNfo = m_headPos != std::string::npos ? GetDetails(details) : false;
