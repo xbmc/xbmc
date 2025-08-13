@@ -1131,8 +1131,8 @@
 						<height>50</height>
 						<width>auto</width>
 						<aligny>center</aligny>
-						<label>$INFO[Weather.Data(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-						<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched + ![String.IsEmpty(Weather.Data(Current.Temperature))]</visible>
+						<label>$INFO[Weather.Data(Current.Temperature)]</label>
+						<visible>Skin.HasSetting(show_weatherinfo) + Weather.IsFetched</visible>
 					</control>
 					<control type="image">
 						<top>1</top>

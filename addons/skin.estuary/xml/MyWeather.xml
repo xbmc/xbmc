@@ -116,14 +116,13 @@
 					<width>300</width>
 					<align>right</align>
 					<font>WeatherTemp</font>
-					<label>$INFO[Weather.Data(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-					<visible>![String.IsEmpty(Weather.Data(Current.Temperature))]</visible>
+					<label>$INFO[Weather.Data(Current.Temperature)]</label>
 				</control>
 				<control type="label">
 					<right>400</right>
 					<top>164</top>
 					<align>right</align>
-					<label>[I]$LOCALIZE[402]: $INFO[Weather.Data(Current.FeelsLike)]$INFO[System.TemperatureUnits][/I][CR]$INFO[Weather.Data(Current.Condition)]</label>
+					<label>[I]$LOCALIZE[402]: $INFO[Weather.Data(Current.FeelsLike)][/I][CR]$INFO[Weather.Data(Current.Condition)]</label>
 					<font>font14</font>
 					<width>630</width>
 				</control>
@@ -201,7 +200,7 @@
 			</include>
 		</control>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[8]$INFO[Weather.Data(Location), / ]" />
+			<param name="breadcrumbs_label" value="$LOCALIZE[8]$INFO[Weather.Data(Current.Location), / ]" />
 			<param name="sublabel" value="$INFO[Weather.Data(WeatherProvider)]" />
 		</include>
 		<include>BottomBar</include>

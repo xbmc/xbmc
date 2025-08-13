@@ -632,7 +632,7 @@
 								<right>60</right>
 								<align>right</align>
 								<font>font30_title</font>
-								<label>$INFO[Weather.Data(Location)]</label>
+								<label>$INFO[Weather.Data(Current.Location)]</label>
 							</control>
 							<control type="label">
 								<left>840</left>
@@ -652,8 +652,7 @@
 								<right>60</right>
 								<align>right</align>
 								<font>font14</font>
-								<label>$INFO[Weather.Data(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-								<visible>![String.IsEmpty(Weather.Data(Current.Temperature))]</visible>
+								<label>$INFO[Weather.Data(Current.Temperature)]</label>
 							</control>
 							<control type="grouplist">
 								<top>50</top>
