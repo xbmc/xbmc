@@ -396,3 +396,22 @@ TEST(TestVariant, asBoolean)
   EXPECT_FALSE(CVariant(CVariant::VariantTypeArray).asBoolean());
   EXPECT_FALSE(CVariant(CVariant::VariantTypeObject).asBoolean());
 }
+
+TEST(TestVariant, ConstNullVariant_cant_be_changed)
+{
+  CVariant c1 = CVariant::ConstNullVariant;
+  EXPECT_EQ(CVariant::VariantTypeConstNull, CVariant::ConstNullVariant.type());
+
+  CVariant c2 = std::move(CVariant::ConstNullVariant);
+  EXPECT_EQ(CVariant::VariantTypeConstNull, CVariant::ConstNullVariant.type());
+
+  CVariant c3(CVariant::VariantTypeInteger);
+  CVariant::ConstNullVariant = c3;
+  EXPECT_EQ(CVariant::VariantTypeConstNull, CVariant::ConstNullVariant.type());
+  CVariant::ConstNullVariant = std::move(c3);
+  EXPECT_EQ(CVariant::VariantTypeConstNull, CVariant::ConstNullVariant.type());
+
+  CVariant::ConstNullVariant.swap(c3);
+  EXPECT_EQ(CVariant::VariantTypeConstNull, CVariant::ConstNullVariant.type());
+  EXPECT_EQ(CVariant::VariantTypeConstNull, c3.type());
+}
