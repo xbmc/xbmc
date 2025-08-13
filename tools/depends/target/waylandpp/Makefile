@@ -1,6 +1,6 @@
 -include ../../Makefile.include
 include WAYLANDPP-VERSION ../../download-files.include
-DEPS =Makefile ../../download-files.include WAYLANDPP-VERSION 001-fix-gcc13-build.patch
+DEPS =Makefile ../../download-files.include WAYLANDPP-VERSION
 
 LIBDYLIB=$(PLATFORM)/build/libwayland-client++.so
 
@@ -36,7 +36,6 @@ ifeq ($(PREFIX),)
 endif
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../001-fix-gcc13-build.patch
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(CMAKE) $(CMAKE_OPTIONS) ..
 
