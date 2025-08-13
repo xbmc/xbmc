@@ -61,9 +61,12 @@ public class XBMCClient
 			iconType = Packet.ICON_GIF;
 
 		// Read the icon file to the byte array...
-		FileInputStream iconFileStream = new FileInputStream(iconFile);
-		byte[] iconData = new byte[iconFileStream.available()];
-		iconFileStream.read(iconData);
+		byte[] iconData;
+    	// Read the icon file to the byte array...
+    	try (FileInputStream iconFileStream = new FileInputStream(iconFile)) {
+        	iconData = new byte[iconFileStream.available()];
+        	iconFileStream.read(iconData);
+    	}
 
 		hasIcon = true;
 
