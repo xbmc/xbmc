@@ -77,9 +77,9 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([ndk-path],
   [AS_HELP_STRING([--with-ndk-path],
-  [specify path to ndk (optional for android), default is sdk_path/ndk/27.2.12479018])],
+  [specify path to ndk (optional for android), default is sdk_path/ndk/28.2.13676358])],
   [use_ndk_path=$withval],
-  [use_ndk_path=$use_sdk_path/ndk/27.2.12479018])
+  [use_ndk_path=$use_sdk_path/ndk/28.2.13676358])
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
