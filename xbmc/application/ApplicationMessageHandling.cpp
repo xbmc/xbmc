@@ -646,7 +646,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       const auto stackHelper = m_app.GetComponent<CApplicationStackHelper>();
       if (stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
       { // just play the next item in the stack
-        m_app.PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
+        m_app.PlayFile(stackHelper->SetNextStackPartAsCurrent(), "", true);
         return true;
       }
 
