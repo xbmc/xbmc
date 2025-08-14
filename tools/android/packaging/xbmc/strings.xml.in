@@ -12,6 +12,7 @@
     <string name="info_title">Info</string>
     <string name="exit_button">Exit</string>
     <string name="notice_dialog">%1$s requires access to your device media and files to function. Please allow this via the following dialogue box or %1$s will exit.</string>
+    <string name="record_audio_dialog">%1$s asks for permission to record audio. This is only used for voice search. Please allow or deny this in the following dialogue box.</string>
     <string name="asking_permissions">Asking for permissions…</string>
     <string name="clearing_cache">Clearing cache…</string>
     <string name="waiting_external">Waiting for external storage…</string>
