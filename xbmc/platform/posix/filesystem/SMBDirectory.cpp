@@ -285,10 +285,8 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   if (fd < 0)
   {
     // write error to logfile
-    CLog::Log(
-        LOGERROR,
-        "SMBDirectory->GetDirectory: Unable to open directory : '{}'\nunix_err:'{:x}' error : '{}'",
-        CURL::GetRedacted(strAuth), errno, strerror(errno));
+    CLog::LogF(LOGERROR, "Unable to open directory : '{}'\nunix_err:'{:x}' error : '{}'",
+               CURL::GetRedacted(strAuth), errno, strerror(errno));
   }
 
   return fd;
@@ -306,7 +304,7 @@ bool CSMBDirectory::Create(const CURL& url2)
   int result = smbc_mkdir(strFileName.c_str(), 0);
   bool success = (result == 0 || EEXIST == errno);
   if(!success)
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
 
   return success;
 }
@@ -324,7 +322,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
 
   if(result != 0 && errno != ENOENT)
   {
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
     return false;
   }
 
