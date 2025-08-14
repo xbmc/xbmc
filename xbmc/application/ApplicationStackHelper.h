@@ -8,13 +8,17 @@
 
 #pragma once
 
+#include "FileItemList.h"
 #include "application/IApplicationComponent.h"
 #include "threads/CriticalSection.h"
 
+#include <chrono>
 #include <map>
 #include <memory>
 #include <optional>
 #include <string>
+
+using namespace std::chrono_literals;
 
 class CFileItem;
 class CFileItemList;
@@ -22,9 +26,6 @@ class CFileItemList;
 class CApplicationStackHelper : public IApplicationComponent
 {
 public:
-  CApplicationStackHelper(void);
-  ~CApplicationStackHelper() = default;
-
   void Clear();
   void OnPlayBackStarted(const CFileItem& item);
 
@@ -47,9 +48,20 @@ public:
   int GetCurrentPartNumber() const { return m_currentStackPosition; }
 
   /*!
-  \brief Returns true if Application is currently playing an ISO stack
+  \brief returns the total number of parts
   */
-  bool IsPlayingISOStack() const;
+  int GetTotalPartNumbers() const { return m_currentStack->Size(); }
+
+  /*!
+  \brief Returns true if Application is currently playing any stack
+  \return true if Application is currently playing a stack, false otherwise
+  */
+  bool IsPlayingStack() const;
+
+  /*!
+  \brief Returns true if Application is currently playing an disc (ISO/BMDV/VIDEO_TS) stack
+  */
+  bool IsPlayingDiscStack() const;
 
   /*!
   \brief Returns true if Application is currently playing a Regular (non-ISO) stack
@@ -64,125 +76,138 @@ public:
   /*!
   \brief sets the next stack part as the current and returns a reference to it
   */
-  const CFileItem& SetNextStackPartCurrentFileItem()
-  {
-    return GetStackPartFileItem(++m_currentStackPosition);
-  }
+  CFileItem& SetNextStackPartAsCurrent();
 
   /*!
   \brief sets a given stack part as the current and returns a reference to it
   \param partNumber the number of the part that needs to become the current one
   */
-  const CFileItem& SetStackPartCurrentFileItem(int partNumber)
+  CFileItem& SetStackPartAsCurrent(int partNumber);
+
+  /*!
+  \brief Returns the FileItem currently playing back as part of a stack playback
+  */
+  CFileItem& GetCurrentStackPart();
+
+  /*!
+  \brief Returns the end time of a FileItem part of a stack playback
+  \param partNumber the requested part number in the stack
+  */
+  std::chrono::milliseconds GetStackPartEndTime(int partNumber) const;
+
+  /*!
+  \brief Returns the start time of a FileItem part of a stack playback
+  \param partNumber the requested part number in the stack
+  */
+  std::chrono::milliseconds GetStackPartStartTime(int partNumber) const
   {
-    return GetStackPartFileItem(m_currentStackPosition = partNumber);
+    return (partNumber > 0) ? GetStackPartEndTime(partNumber - 1) : 0ms;
   }
 
   /*!
-  \brief Returns the FileItem currently playing back as part of a (non-ISO) stack playback
+  \brief Returns the start time of the current FileItem part of a stack playback
   */
-  const CFileItem& GetCurrentStackPartFileItem() const
+  std::chrono::milliseconds GetCurrentStackPartStartTime() const
   {
-    return GetStackPartFileItem(m_currentStackPosition);
+    return GetStackPartStartTime(m_currentStackPosition);
   }
 
   /*!
-  \brief Returns the end time of a FileItem part of a (non-ISO) stack playback
-  \param partNumber the requested part number in the stack
+  \brief Returns the total time of a stack playback
   */
-  uint64_t GetStackPartEndTimeMs(int partNumber) const;
+  std::chrono::milliseconds GetStackTotalTime() const;
 
   /*!
-  \brief Returns the start time of a FileItem part of a (non-ISO) stack playback
-  \param partNumber the requested part number in the stack
-  */
-  uint64_t GetStackPartStartTimeMs(int partNumber) const { return (partNumber > 0) ? GetStackPartEndTimeMs(partNumber - 1) : 0; }
-
-  /*!
-  \brief Returns the start time of the current FileItem part of a (non-ISO) stack playback
-  */
-  uint64_t GetCurrentStackPartStartTimeMs() const { return GetStackPartStartTimeMs(m_currentStackPosition); }
-
-  /*!
-  \brief Returns the total time of a (non-ISO) stack playback
-  */
-  uint64_t GetStackTotalTimeMs() const;
-
-  /*!
-  \brief Returns the stack part number corresponding to the given timestamp in a (non-ISO) stack playback
+  \brief Returns the stack part number corresponding to the given timestamp in a stack playback
   \param msecs the requested timestamp in the stack (in milliseconds)
   */
-  int GetStackPartNumberAtTimeMs(uint64_t msecs);
+  int GetStackPartNumberAtTime(std::chrono::milliseconds msecs) const;
 
   // Stack information registration methods
 
   /*!
   \brief Clear all entries in the item-stack map. To be called upon playback stopped.
   */
-  void ClearAllRegisteredStackInformation();
+  void ClearAllStackInformation();
 
   /*!
   \brief Returns a smart pointer to the stack CFileItem.
   */
-  std::shared_ptr<const CFileItem> GetRegisteredStack(const CFileItem& item) const;
+  std::shared_ptr<const CFileItem> GetStack(const CFileItem& item) const;
 
   /*!
-  \brief Returns true if there is a registered stack for the given CFileItem part.
+  \brief Returns true if there is a stack for the given CFileItem part.
   \param item the reference to the item that is part of a stack
   */
-  bool HasRegisteredStack(const CFileItem& item) const;
-
-  /*!
-  \brief Stores a smart pointer to the stack CFileItem in the item-stack map.
-  \param item the reference to the item that is part of a stack
-  \param stackItem the smart pointer to the stack CFileItem
-  */
-  void SetRegisteredStack(const CFileItem& item, std::shared_ptr<CFileItem> stackItem);
+  bool IsInStack(const CFileItem& item) const;
 
   /*!
   \brief Returns the part number of the part in the parameter
   \param item the reference to the item that is part of a stack
   */
-  int GetRegisteredStackPartNumber(const CFileItem& item);
-
-  /*!
-  \brief Stores the part number in the item-stack map.
-  \param item the reference to the item that is part of a stack
-  \param partNumber the part number of the part in other parameter
-  */
-  void SetRegisteredStackPartNumber(const CFileItem& item, int partNumber);
+  int GetStackPartNumber(const CFileItem& item);
 
   /*!
   \brief Returns the start time of the part in the parameter
   \param item the reference to the item that is part of a stack
   */
-  uint64_t GetRegisteredStackPartStartTimeMs(const CFileItem& item) const;
+  std::chrono::milliseconds GetStackPartStartTime(const CFileItem& item) const;
 
   /*!
   \brief Stores the part start time in the item-stack map.
   \param item the reference to the item that is part of a stack
   \param startTime the start time of the part in other parameter
   */
-  void SetRegisteredStackPartStartTimeMs(const CFileItem& item, uint64_t startTimeMs);
+  void SetStackPartStartTime(const CFileItem& item, std::chrono::milliseconds startTimeMs);
 
   /*!
   \brief Returns the total time of the stack associated to the part in the parameter
   \param item the reference to the item that is part of a stack
   */
-  uint64_t GetRegisteredStackTotalTimeMs(const CFileItem& item) const;
+  std::chrono::milliseconds GetStackTotalTime(const CFileItem& item) const;
 
   /*!
-  \brief Stores the stack's total time associated to the part in the item-stack map.
-  \param item the reference to the item that is part of a stack
-  \param totalTime the total time of the stack
+  \brief Updates the DynPath (which contains the entire stack://) of each part in the stack.
+  \param newPath the updated stack:// path
   */
-  void SetRegisteredStackTotalTimeMs(const CFileItem& item, uint64_t totalTimeMs);
+  void SetStackDynPaths(const std::string& newPath) const;
+
+  /*!
+  \brief Updates the stack:// with the DynPath of the given item and then updates all parts in the stack.
+  \param item the FileItem in the stack that has an updated DynPath (eg. bluray://)
+  \sa SetStackDynPaths
+  */
+  void SetStackPartDynPath(const CFileItem& item);
+
+  /*!
+  \brief Sets the total time of the stack in each stack part.
+  \param item the FileItem in the stack that has an updated DynPath (eg. bluray://)
+  */
+  void SetStackTotalTime(std::chrono::milliseconds totalTime);
+
+  /*!
+  \brief Sets the starting andending offsets of a stack part.
+  \param item the FileItem in the stack that has an updated DynPath (eg. bluray://)
+  */
+  void SetStackPartOffsets(const CFileItem& item,
+                           const std::chrono::milliseconds startOffset,
+                           const std::chrono::milliseconds endOffset);
+
+  int GetKnownStackParts() const { return m_knownStackParts; }
+  void IncreaseKnownStackParts() { m_knownStackParts += 1; }
+
+  bool HasDiscParts() const;
+
+  bool WasPlayingDiscStack() const { return m_wasDiscStack; }
+
+  bool IsCurrentPartFinished() const { return m_partFinished; }
+  void SetCurrentPartFinished(bool finished) { m_partFinished = finished; }
 
   CCriticalSection m_critSection;
 
-protected:
+private:
   /*!
-  \brief Returns a FileItem part of a (non-ISO) stack playback
+  \brief Returns a FileItem part of a stack playback
   \param partNumber the requested part number in the stack
   */
   CFileItem& GetStackPartFileItem(int partNumber);
@@ -191,25 +216,20 @@ protected:
   class StackPartInformation
   {
   public:
-    StackPartInformation()
-    {
-      m_lStackPartNumber = 0;
-      m_lStackPartStartTimeMs = 0;
-      m_lStackTotalTimeMs = 0;
-    };
-    uint64_t m_lStackPartStartTimeMs;
-    uint64_t m_lStackTotalTimeMs;
-    int m_lStackPartNumber;
-    std::shared_ptr<CFileItem> m_pStack;
+    std::chrono::milliseconds m_stackPartStartTimeMs{0ms};
+    std::chrono::milliseconds m_stackTotalTimeMs{0ms};
+    int m_stackPartNumber{0};
+    std::shared_ptr<CFileItem> m_stackItem;
   };
 
-  typedef std::shared_ptr<StackPartInformation> StackPartInformationPtr;
-  typedef std::map<std::string, StackPartInformationPtr> Stackmap;
-  Stackmap m_stackmap;
-  StackPartInformationPtr GetStackPartInformation(const std::string& key);
-  StackPartInformationPtr GetStackPartInformation(const std::string& key) const;
+  using StackMap = std::map<std::string, std::shared_ptr<StackPartInformation>, std::less<>>;
+  StackMap m_stackMap;
+  std::shared_ptr<StackPartInformation> GetStackPartInformation(const std::string& key);
+  std::shared_ptr<StackPartInformation> GetStackPartInformation(const std::string& key) const;
 
-  std::unique_ptr<CFileItemList> m_currentStack;
-  int m_currentStackPosition = 0;
-  bool m_currentStackIsDiscImageStack = false;
+  std::unique_ptr<CFileItemList> m_currentStack{std::make_unique<CFileItemList>()};
+  int m_currentStackPosition{0};
+  int m_knownStackParts{0};
+  bool m_wasDiscStack{false};
+  bool m_partFinished{false};
 };
