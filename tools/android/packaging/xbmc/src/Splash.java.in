@@ -42,7 +42,6 @@ import java.util.zip.ZipFile;
 
 public class Splash extends Activity
 {
-
   private static final int Uninitialized = 0;
   private static final int InError = 1;
   private static final int Checking = 2;
@@ -57,6 +56,7 @@ public class Splash extends Activity
   private static final int CheckingPermissionsInfo = 11;
   private static final int CheckExternalStorage = 12;
   private static final int RecordAudioPermission = 13;
+  private static final int RecordAudioInfo = 14;
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
@@ -102,18 +102,13 @@ public class Splash extends Activity
           showErrorDialog(mSplash, getString(R.string.error_title), mErrorMsg);
           break;
         case CheckingPermissionsInfo:
-          AlertDialog dialog = new AlertDialog.Builder(mSplash).create();
-          dialog.setCancelable(false);
-          dialog.setTitle(getString(R.string.info_title));
-          dialog.setMessage(getString(R.string.notice_dialog, "@APP_NAME@"));
-          dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.continue_button),
-                  (dialog1, which) -> mStateMachine.sendEmptyMessage(RecordAudioPermission));
-          dialog.show();
+          mSplash.mTextView.setText(getString(R.string.asking_permissions));
+          showInfoDialog(getString(R.string.notice_dialog, "@APP_NAME@"), CheckingPermissions);
+          break;
+        case RecordAudioInfo:
+          showInfoDialog(getString(R.string.record_audio_dialog, "@APP_NAME@"), RecordAudioPermission);
           break;
         case RecordAudioPermission:
-          mSplash.mTextView.setText(getString(R.string.asking_permissions));
-          mSplash.mProgress.setVisibility(View.INVISIBLE);
-
           requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
                   RECORDAUDIO_RESULT_CODE);
           break;
@@ -367,7 +362,7 @@ public class Splash extends Activity
       switch (mState)
       {
         case Caching:
-          mSplash.mTextView.setText(getString(R.string.first_run, "@APP_NAME@"));
+          mSplash.mTextView.setText(getString(R.string.first_run));
           mSplash.mProgress.setVisibility(View.VISIBLE);
           mSplash.mProgress.setProgress(value);
           break;
@@ -408,6 +403,23 @@ public class Splash extends Activity
     // Make links actually clickable
     ((TextView) myAlertDialog.findViewById(android.R.id.message))
             .setMovementMethod(LinkMovementMethod.getInstance());
+  }
+
+  /**
+   * Displays an info dialog with a specified message and a button to continue.
+   *
+   * @param message The message to be displayed in the dialog.
+   * @param state   The next state to be sent to the state machine.
+   */
+  private void showInfoDialog(final String message, int state)
+  {
+    AlertDialog dialog = new AlertDialog.Builder(this).create();
+    dialog.setCancelable(false);
+    dialog.setTitle(getString(R.string.info_title));
+    dialog.setMessage(message);
+    dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.continue_button),
+            (dialog1, which) -> mStateMachine.sendEmptyMessage(state));
+    dialog.show();
   }
 
   private void SetupEnvironment()
@@ -532,12 +544,12 @@ public class Splash extends Activity
         {
           mPermissionOK = true;
         }
-        mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
+        mStateMachine.sendEmptyMessage(RecordAudioInfo);
         break;
       }
       case RECORDAUDIO_RESULT_CODE:
       {
-        mStateMachine.sendEmptyMessage(CheckingPermissions);
+        mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
       }
     }
   }
@@ -552,7 +564,7 @@ public class Splash extends Activity
       {
         mPermissionOK = true;
       }
-      mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
+      mStateMachine.sendEmptyMessage(RecordAudioInfo);
     }
   }
 
@@ -660,6 +672,7 @@ public class Splash extends Activity
 
     setContentView(R.layout.activity_splash);
     mProgress = findViewById(R.id.progressBar1);
+    mProgress.setVisibility(View.INVISIBLE);
     mTextView = findViewById(R.id.textView1);
 
     if (mState == InError || mState == CheckingPermissionsInfo)
