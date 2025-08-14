@@ -189,8 +189,6 @@ bool CDirectory::GetDirectory(const CURL& url,
 
       while (!result)
       {
-        const std::string pathToUrl(url.Get());
-
         // don't change auth if it's set explicitly
         if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
           CPasswordManager::GetInstance().AuthenticateURL(authUrl);
