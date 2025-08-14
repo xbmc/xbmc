@@ -13599,7 +13599,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
       songArtistSub.AppendJoin("JOIN artist ON artist.idArtist = song_artist.idArtist");
       songArtistSub.AppendWhere(PrepareSQL("artist.strArtist like '%s'", artistname.c_str()));
 
-      albumArtistSub.AppendJoin("JOIN artist ON artist.idArtist = song_artist.idArtist");
+      albumArtistSub.AppendJoin("JOIN artist ON artist.idArtist = album_artist.idArtist");
       albumArtistSub.AppendWhere(PrepareSQL("artist.strArtist like '%s'", artistname.c_str()));
     }
     if (idRole > 0)
