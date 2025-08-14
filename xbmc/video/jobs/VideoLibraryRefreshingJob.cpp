@@ -62,7 +62,7 @@ CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(std::shared_ptr<CFileItem
 
 CVideoLibraryRefreshingJob::~CVideoLibraryRefreshingJob() = default;
 
-bool CVideoLibraryRefreshingJob::operator==(const CJob* job) const
+bool CVideoLibraryRefreshingJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;

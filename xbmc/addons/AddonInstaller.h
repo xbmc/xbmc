@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include "jobs/IJobCallback.h"
 #include "threads/Event.h"
-#include "utils/Job.h"
 
 #include <map>
 #include <memory>

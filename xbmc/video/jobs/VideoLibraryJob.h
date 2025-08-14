@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/Job.h"
+#include "jobs/Job.h"
 
 class CVideoDatabase;
 
@@ -35,8 +35,7 @@ public:
 
   // implementation of CJob
   bool DoWork() override;
-  const char *GetType() const override { return "VideoLibraryJob"; }
-  bool operator==(const CJob* job) const override { return false; }
+  const char* GetType() const override { return "VideoLibraryJob"; }
 
 protected:
   CVideoLibraryJob();

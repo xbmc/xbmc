@@ -247,7 +247,7 @@ std::string CCDDARipJob::SetupTempFile()
   return tmp;
 }
 
-bool CCDDARipJob::operator==(const CJob* job) const
+bool CCDDARipJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) == 0)
   {

@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include "jobs/Job.h"
 #include "storage/IStorageProvider.h"
-#include "utils/Job.h"
 
 #include <vector>
 

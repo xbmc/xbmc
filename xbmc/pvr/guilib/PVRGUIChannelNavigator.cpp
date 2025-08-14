@@ -12,6 +12,9 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
+#include "jobs/IJobCallback.h"
+#include "jobs/Job.h"
+#include "jobs/JobManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -19,8 +22,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
-#include "utils/Job.h"
-#include "utils/JobManager.h"
 #include "utils/XTimeUtils.h"
 
 #include <memory>

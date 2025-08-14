@@ -335,7 +335,7 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
   return !data->base->ShouldCancel((unsigned)current, 100);
 }
 
-bool CFileOperationJob::operator==(const CJob* job) const
+bool CFileOperationJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;

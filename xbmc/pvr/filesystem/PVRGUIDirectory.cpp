@@ -17,6 +17,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"
+#include "jobs/Job.h"
+#include "jobs/JobManager.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
@@ -43,8 +45,6 @@
 #include "pvr/utils/PVRPathUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/Job.h"
-#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"

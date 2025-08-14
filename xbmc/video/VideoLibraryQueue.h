@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include "jobs/JobQueue.h"
 #include "threads/CriticalSection.h"
-#include "utils/JobManager.h"
 
 #include <map>
 #include <memory>

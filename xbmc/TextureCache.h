@@ -11,11 +11,11 @@
 #include "TextureCacheJob.h"
 #include "TextureDatabase.h"
 #include "guilib/AspectRatio.h"
+#include "jobs/JobQueue.h"
 #include "powermanagement/PowerState.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Timer.h"
-#include "utils/JobManager.h"
 
 #include <atomic>
 #include <chrono>

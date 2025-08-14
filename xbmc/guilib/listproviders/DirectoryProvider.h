@@ -10,9 +10,9 @@
 
 #include "IListProvider.h"
 #include "guilib/GUIStaticItem.h"
+#include "jobs/IJobCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
-#include "utils/Job.h"
 
 #include <chrono>
 #include <memory>

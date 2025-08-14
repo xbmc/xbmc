@@ -19,6 +19,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/IAnnouncer.h"
+#include "jobs/JobManager.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
@@ -27,7 +28,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ExecString.h"
-#include "utils/JobManager.h"
 #include "utils/PlayerUtils.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
@@ -236,7 +236,7 @@ public:
   ~CDirectoryJob() override = default;
 
   const char* GetType() const override { return "directory"; }
-  bool operator==(const CJob* job) const override
+  bool Equals(const CJob* job) const override
   {
     if (strcmp(job->GetType(), GetType()) == 0)
     {

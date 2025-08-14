@@ -14,8 +14,9 @@
 */
 
 #include "GUIImage.h"
+#include "jobs/IJobCallback.h"
+#include "jobs/Job.h"
 #include "threads/CriticalSection.h"
-#include "utils/Job.h"
 #include "utils/Stopwatch.h"
 
 #include <vector>

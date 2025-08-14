@@ -34,10 +34,10 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/actions/ActionIDs.h"
+#include "jobs/Job.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include "utils/JobManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -85,7 +85,7 @@ public:
     CDirectory::GetDirectory(m_url.Get(), *m_items, "", DIR_FLAG_DEFAULTS);
     return true;
   }
-  bool operator==(const CJob *job) const override
+  bool Equals(const CJob* job) const override
   {
     if (strcmp(job->GetType(),GetType()) == 0)
     {

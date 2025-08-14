@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/Job.h"
+#include "jobs/Job.h"
 
 #include <string>
 
@@ -25,8 +25,7 @@ public:
   ~CProgressJob() override;
 
   // implementation of CJob
-  const char *GetType() const override { return "ProgressJob"; }
-  bool operator==(const CJob* job) const override { return false; }
+  const char* GetType() const override { return "ProgressJob"; }
   bool ShouldCancel(unsigned int progress, unsigned int total) const override;
 
   /*!

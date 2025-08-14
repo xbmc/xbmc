@@ -39,7 +39,7 @@ public:
 
   // specialization of CJob
   const char *GetType() const override { return "VideoLibraryCleaningJob"; }
-  bool operator==(const CJob* job) const override;
+  bool Equals(const CJob* job) const override;
 
 protected:
   // implementation of CVideoLibraryJob

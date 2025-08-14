@@ -13,12 +13,12 @@
 #include "Util.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
+#include "jobs/JobManager.h"
 #include "pictures/Picture.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/windows/GUIControlSettings.h"
-#include "utils/JobManager.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 

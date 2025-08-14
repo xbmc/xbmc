@@ -8,12 +8,12 @@
 
 #pragma once
 
+#include "jobs/IJobCallback.h"
 #include "powermanagement/PowerState.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 #include "utils/EventStream.h"
-#include "utils/Job.h"
 
 #include <memory>
 #include <vector>

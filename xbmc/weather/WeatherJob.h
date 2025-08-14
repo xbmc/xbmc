@@ -9,6 +9,7 @@
 #pragma once
 
 #include "WeatherManager.h"
+#include "jobs/Job.h"
 
 #include <map>
 #include <string>

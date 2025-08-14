@@ -42,7 +42,7 @@ CTextureCacheJob::CTextureCacheJob(const std::string &url, const std::string &ol
 
 CTextureCacheJob::~CTextureCacheJob() = default;
 
-bool CTextureCacheJob::operator==(const CJob* job) const
+bool CTextureCacheJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(),GetType()) == 0)
   {
@@ -230,7 +230,7 @@ CTextureUseCountJob::CTextureUseCountJob(const std::vector<CTextureDetails> &tex
 {
 }
 
-bool CTextureUseCountJob::operator==(const CJob* job) const
+bool CTextureUseCountJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(),GetType()) == 0)
   {

@@ -10,10 +10,10 @@
 
 #include "IStorageProvider.h"
 #include "MediaSource.h" // for std::vector<CMediaSource>
+#include "jobs/IJobCallback.h"
 #include "storage/discs/IDiscDriveHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/DiscsUtils.h"
-#include "utils/Job.h"
 
 #include <map>
 #include <memory>

@@ -8,10 +8,10 @@
 
 #include "InfoLoader.h"
 
-#include "JobManager.h"
 #include "ServiceBroker.h"
 #include "TimeUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "jobs/JobManager.h"
 
 CInfoLoader::CInfoLoader(unsigned int timeToRefresh)
 {

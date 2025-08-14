@@ -9,8 +9,8 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
+#include "jobs/JobQueue.h"
 #include "threads/CriticalSection.h"
-#include "utils/JobManager.h"
 
 #include <string>
 

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "events/EventLog.h"
-#include "utils/Job.h"
+#include "jobs/Job.h"
 
 #include <string>
 #include <vector>

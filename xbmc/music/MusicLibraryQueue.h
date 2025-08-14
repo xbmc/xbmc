@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include "jobs/JobQueue.h"
 #include "settings/LibExportSettings.h"
 #include "threads/CriticalSection.h"
-#include "utils/JobManager.h"
 
 #include <map>
 #include <set>

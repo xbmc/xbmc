@@ -22,7 +22,7 @@ CMusicLibraryImportJob::CMusicLibraryImportJob(const std::string& xmlFile, CGUID
 
 CMusicLibraryImportJob::~CMusicLibraryImportJob() = default;
 
-bool CMusicLibraryImportJob::operator==(const CJob* job) const
+bool CMusicLibraryImportJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;

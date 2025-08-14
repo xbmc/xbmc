@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Job.h"
+#include "jobs/Job.h"
 
 enum ERecentlyAddedFlag
 {

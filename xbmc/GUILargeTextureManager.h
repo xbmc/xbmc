@@ -10,8 +10,9 @@
 
 #include "guilib/AspectRatio.h"
 #include "guilib/TextureManager.h"
+#include "jobs/IJobCallback.h"
+#include "jobs/Job.h"
 #include "threads/CriticalSection.h"
-#include "utils/Job.h"
 
 #include <memory>
 #include <string>

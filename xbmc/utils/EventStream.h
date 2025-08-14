@@ -9,7 +9,7 @@
 #pragma once
 
 #include "EventStreamDetail.h"
-#include "JobManager.h"
+#include "jobs/JobQueue.h"
 #include "threads/CriticalSection.h"
 
 #include <algorithm>
@@ -17,7 +17,6 @@
 #include <memory>
 #include <mutex>
 #include <vector>
-
 
 template<typename Event>
 class CEventStream

@@ -40,7 +40,7 @@ public:
   // implementations of CJob
   bool DoWork() override;
   const char* GetType() const override { return m_displayProgress ? "filemanager" : ""; }
-  bool operator==(const CJob *job) const override;
+  bool Equals(const CJob* job) const override;
 
   void SetFileOperation(FileAction action,
                         const CFileItemList& items,

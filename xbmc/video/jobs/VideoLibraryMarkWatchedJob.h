@@ -30,7 +30,7 @@ public:
   ~CVideoLibraryMarkWatchedJob() override;
 
   const char *GetType() const override { return "CVideoLibraryMarkWatchedJob"; }
-  bool operator==(const CJob* job) const override;
+  bool Equals(const CJob* job) const override;
 
 protected:
   bool Work(CVideoDatabase &db) override;

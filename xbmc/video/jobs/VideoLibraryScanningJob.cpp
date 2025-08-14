@@ -28,7 +28,7 @@ bool CVideoLibraryScanningJob::Cancel()
   return true;
 }
 
-bool CVideoLibraryScanningJob::operator==(const CJob* job) const
+bool CVideoLibraryScanningJob::Equals(const CJob* job) const
 {
   if (strcmp(job->GetType(), GetType()) != 0)
     return false;

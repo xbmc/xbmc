@@ -113,6 +113,7 @@
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
 #endif
+#include "jobs/JobManager.h"
 #include "peripherals/Peripherals.h"
 #include "pictures/SlideShowDelegator.h"
 #include "platform/Environment.h"
@@ -138,7 +139,6 @@
 #include "utils/CharsetConverter.h"
 #include "utils/ContentUtils.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/JobManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/PlayerUtils.h"
 #include "utils/RegExp.h"
