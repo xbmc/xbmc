@@ -182,6 +182,7 @@
 #include "platform/win32/threads/Win32Exception.h"
 #endif
 
+#include <chrono>
 #include <cmath>
 #include <memory>
 #include <mutex>
@@ -2330,7 +2331,7 @@ bool CApplication::PlayStack(CFileItem& item, bool bRestart)
     return false;
   }
 
-  CFileItem selectedStackPart = stackHelper->GetCurrentStackPartFileItem();
+  CFileItem selectedStackPart = stackHelper->GetCurrentStackPart();
   selectedStackPart.SetStartOffset(startoffset.value());
 
   if (item.HasProperty("savedplayerstate"))
@@ -2418,7 +2419,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     if (item.HasVideoInfoTag())
       options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
   }
-  if (!bRestart || stackHelper->IsPlayingISOStack())
+  if (!bRestart || stackHelper->IsPlayingDiscStack())
   {
     // the following code block is only applicable when bRestart is false OR to ISO stacks
 
@@ -2557,7 +2558,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   {
     //! @todo - this will fail if user seeks back to first file in stack
     if (stackHelper->GetCurrentPartNumber() == 0 ||
-        stackHelper->GetRegisteredStack(item)->GetStartOffset() != 0)
+        stackHelper->GetStack(item)->GetStartOffset() != 0)
       options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->
           m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesMediaStartWindowed();
     else
@@ -2963,7 +2964,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     const auto stackHelper = GetComponent<CApplicationStackHelper>();
     if (stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
     { // just play the next item in the stack
-      PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
+      PlayFile(stackHelper->SetNextStackPartAsCurrent(), "", true);
       return true;
     }
 
@@ -3421,8 +3422,8 @@ const CFileItem& CApplication::CurrentUnstackedItem()
 {
   const auto stackHelper = GetComponent<CApplicationStackHelper>();
 
-  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
-    return stackHelper->GetCurrentStackPartFileItem();
+  if (stackHelper->IsPlayingStack())
+    return stackHelper->GetCurrentStackPart();
   else
     return *m_itemCurrentFile;
 }
@@ -3441,9 +3442,9 @@ double CApplication::GetTotalTime() const
   if (appPlayer->IsPlaying())
   {
     if (stackHelper->IsPlayingRegularStack())
-      rc = stackHelper->GetStackTotalTimeMs() * 0.001;
+      rc = static_cast<double>(stackHelper->GetStackTotalTime().count()) / 1000.0;
     else
-      rc = appPlayer->GetTotalTime() * 0.001;
+      rc = static_cast<double>(appPlayer->GetTotalTime()) / 1000.0;
   }
 
   return rc;
@@ -3463,7 +3464,8 @@ double CApplication::GetTime() const
   {
     if (stackHelper->IsPlayingRegularStack())
     {
-      uint64_t startOfCurrentFile = stackHelper->GetCurrentStackPartStartTimeMs();
+      uint64_t startOfCurrentFile =
+          static_cast<uint64_t>(stackHelper->GetCurrentStackPartStartTime().count());
       rc = (startOfCurrentFile + appPlayer->GetTime()) * 0.001;
     }
     else
@@ -3494,15 +3496,15 @@ void CApplication::SeekTime( double dTime )
       // file if necessary, and calculate the correct seek within the new
       // file.  Otherwise, just fall through to the usual routine if the
       // time is higher than our total time.
-      int partNumberToPlay =
-          stackHelper->GetStackPartNumberAtTimeMs(static_cast<uint64_t>(dTime * 1000.0));
-      uint64_t startOfNewFile = stackHelper->GetStackPartStartTimeMs(partNumberToPlay);
+      int partNumberToPlay = stackHelper->GetStackPartNumberAtTime(
+          std::chrono::milliseconds(static_cast<int64_t>(dTime * 1000.0)));
+      uint64_t startOfNewFile = stackHelper->GetStackPartStartTime(partNumberToPlay).count();
       if (partNumberToPlay == stackHelper->GetCurrentPartNumber())
         appPlayer->SeekTime(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
       else
       { // seeking to a new file
-        stackHelper->SetStackPartCurrentFileItem(partNumberToPlay);
-        CFileItem* item = new CFileItem(stackHelper->GetCurrentStackPartFileItem());
+        stackHelper->SetStackPartAsCurrent(partNumberToPlay);
+        CFileItem* item = new CFileItem(stackHelper->GetCurrentStackPart());
         item->SetStartOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
