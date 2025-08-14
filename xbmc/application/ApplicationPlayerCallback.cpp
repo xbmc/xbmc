@@ -39,9 +39,11 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
+#include <chrono>
 #include <memory>
 
 using namespace KODI;
+using namespace std::chrono_literals;
 
 void CApplicationPlayerCallback::OnPlayBackEnded()
 {
@@ -83,8 +85,8 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   auto& components = CServiceBroker::GetAppComponents();
   const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
 
-  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
-    itemCurrentFile = std::make_shared<CFileItem>(*stackHelper->GetRegisteredStack(file));
+  if (stackHelper->IsPlayingStack())
+    itemCurrentFile = std::make_shared<CFileItem>(*stackHelper->GetStack(file));
   else
     itemCurrentFile = std::make_shared<CFileItem>(file);
 
@@ -97,7 +99,7 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
     CServiceBroker::GetJobManager()->PauseJobs();
   }
 
-  stackHelper->OnPlayBackStarted(file);
+  stackHelper->OnPlayBackStarted();
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, itemCurrentFile);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -164,23 +166,23 @@ void UpdateStackAndItem(const CFileItem& file,
                         CBookmark& bookmark,
                         const std::shared_ptr<CApplicationStackHelper>& stackHelper)
 {
-  if (stackHelper->GetRegisteredStackTotalTimeMs(fileItem) > 0)
+  if (stackHelper->GetStackTotalTime() > 0ms)
   {
     // Regular (not disc image) stack case: We have to save the bookmark on the stack.
-    fileItem = *stackHelper->GetRegisteredStack(file);
+    fileItem = *stackHelper->GetStack(file);
 
     // The bookmark coming from the player is only relative to the current part, thus needs
     // to be corrected with these attributes (start time will be 0 for non-stackparts).
     bookmark.timeInSeconds +=
-        static_cast<double>(stackHelper->GetRegisteredStackPartStartTimeMs(file)) / 1000.0;
+        static_cast<double>(stackHelper->GetStackPartStartTime(file).count()) / 1000.0;
 
-    const uint64_t registeredStackTotalTimeMs{stackHelper->GetRegisteredStackTotalTimeMs(file)};
-    if (registeredStackTotalTimeMs > 0)
-      bookmark.totalTimeInSeconds = static_cast<double>(registeredStackTotalTimeMs) / 1000.0;
+    const auto StackTotalTimeMs{stackHelper->GetStackTotalTime()};
+    if (StackTotalTimeMs > 0ms)
+      bookmark.totalTimeInSeconds = static_cast<double>(StackTotalTimeMs.count()) / 1000.0;
   }
   // Any stack case: We need to save the part number.
   bookmark.partNumber =
-      stackHelper->GetRegisteredStackPartNumber(file) + 1; // CBookmark part numbers are 1-based
+      stackHelper->GetStackPartNumber(file) + 1; // CBookmark part numbers are 1-based
 }
 
 bool WithinPercentOfEnd(const CBookmark& bookmark, float ignorePercentAtEnd)
@@ -232,17 +234,10 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   UpdateRemovableBlurayPath(fileItem, file.GetProperty("update_stream_details").asBoolean(false));
 #endif
 
-  bool isStack{false};
-  {
-    auto& components{CServiceBroker::GetAppComponents()};
-    const auto stackHelper{components.GetComponent<CApplicationStackHelper>()};
-
-    std::unique_lock lock(stackHelper->m_critSection);
-
-    isStack = (stackHelper->GetRegisteredStack(file) != nullptr);
-    if (isStack)
-      UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
-  }
+  // Update the stack
+  const bool isStack{stackHelper->GetStack(file) != nullptr};
+  if (isStack)
+    UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
 
   if (const std::shared_ptr<CAdvancedSettings> advancedSettings{
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};

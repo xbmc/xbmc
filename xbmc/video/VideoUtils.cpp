@@ -33,7 +33,9 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstdint>
+#include <ranges>
 #include <vector>
 
 namespace KODI::VIDEO::UTILS
@@ -231,17 +233,15 @@ std::tuple<int64_t, unsigned int> GetStackResumeOffsetAndPartNumber(const CFileI
           }
 
           partNumber = 1;
-          std::vector<uint64_t> times;
+          std::vector<std::chrono::milliseconds> times;
           if (db.GetStackTimes(path, times))
           {
-            for (size_t i = times.size(); i > 0; i--)
-            {
-              if (times[i - 1] <= static_cast<uint64_t>(offset))
-              {
-                partNumber = static_cast<unsigned int>(i + 1);
-                break;
-              }
-            }
+            auto index{std::ranges::distance(
+                std::ranges::find_if(times | std::views::reverse, [offset](auto t)
+                                     { return t <= std::chrono::milliseconds(offset); }),
+                times.rend())};
+            if (index < static_cast<int>(times.size()))
+              partNumber = static_cast<unsigned int>(index + 1);
           }
         }
       }
@@ -301,12 +301,13 @@ int64_t GetStackPartResumeOffset(const CFileItem& item, unsigned int partNumber)
 
           offset = 0;
 
-          std::vector<uint64_t> times;
+          std::vector<std::chrono::milliseconds> times;
           if (db.GetStackTimes(path, times))
           {
             const int64_t offsetToCheck{CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)};
-            const uint64_t partBegin{partNumber == 1 ? 0 : times[partNumber - 2]};
-            const uint64_t partEnd{times[partNumber - 1]};
+            const uint64_t partBegin{
+                partNumber == 1 ? 0 : static_cast<uint64_t>(times[partNumber - 2].count())};
+            const uint64_t partEnd{static_cast<uint64_t>(times[partNumber - 1].count())};
             if (static_cast<uint64_t>(offsetToCheck) <= partEnd &&
                 static_cast<uint64_t>(offsetToCheck) > partBegin)
             {
@@ -347,9 +348,9 @@ int64_t GetStackPartStartOffset(const CFileItem& item, unsigned int partNumber)
           return {};
         }
 
-        std::vector<uint64_t> times;
+        std::vector<std::chrono::milliseconds> times;
         if (db.GetStackTimes(path, times) && partNumber <= times.size())
-          offset = times[partNumber - 2];
+          offset = times[partNumber - 2].count();
       }
     }
   }

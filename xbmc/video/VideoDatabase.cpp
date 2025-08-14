@@ -63,6 +63,8 @@
 #include "video/VideoThumbLoader.h"
 
 #include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <ranges>
@@ -78,6 +80,7 @@ using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace KODI::GUILIB;
 using namespace KODI::VIDEO;
+using namespace std::chrono_literals;
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase() = default;
@@ -6192,7 +6195,8 @@ std::vector<std::string> CVideoDatabase::GetAvailableArtTypesForItem(int mediaId
 
 /// \brief GetStackTimes() obtains any saved video times for the stacked file
 /// \retval Returns true if the stack times exist, false otherwise.
-bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint64_t> &times)
+bool CVideoDatabase::GetStackTimes(const std::string& filePath,
+                                   std::vector<std::chrono::milliseconds>& times)
 {
   try
   {
@@ -6208,17 +6212,18 @@ bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint
     m_pDS->query( strSQL );
     if (m_pDS->num_rows() > 0)
     { // get the video settings info
-      uint64_t timeTotal = 0;
+      std::chrono::milliseconds timeTotal{0ms};
       std::vector<std::string> timeString = StringUtils::Split(m_pDS->fv("times").get_asString(), ",");
       times.clear();
       for (const auto &i : timeString)
       {
-        const auto partTime = static_cast<uint64_t>(atof(i.c_str()) * 1000.0);
-        times.emplace_back(partTime); // db stores in secs, convert to msecs
+        const std::chrono::milliseconds partTime{static_cast<int64_t>(
+            std::stod(i) * 1000.0)}; // Convert from seconds to milliseconds keeping fractional part
+        times.emplace_back(partTime);
         timeTotal += partTime;
       }
       m_pDS->close();
-      return (timeTotal > 0);
+      return (timeTotal > 0ms);
     }
     m_pDS->close();
   }
@@ -6230,7 +6235,8 @@ bool CVideoDatabase::GetStackTimes(const std::string &filePath, std::vector<uint
 }
 
 /// \brief Sets the stack times for a particular video file
-void CVideoDatabase::SetStackTimes(const std::string& filePath, const std::vector<uint64_t> &times)
+void CVideoDatabase::SetStackTimes(const std::string& filePath,
+                                   const std::vector<std::chrono::milliseconds>& times)
 {
   try
   {
@@ -6246,9 +6252,10 @@ void CVideoDatabase::SetStackTimes(const std::string& filePath, const std::vecto
     m_pDS->exec( PrepareSQL("delete from stacktimes where idFile=%i", idFile) );
 
     // add the items
-    std::string timeString = StringUtils::Format("{:.3f}", times[0] / 1000.0f);
-    for (unsigned int i = 1; i < times.size(); i++)
-      timeString += StringUtils::Format(",{:.3f}", times[i] / 1000.0f);
+    std::string timeString;
+    for (auto time : times)
+      timeString += StringUtils::Format("{:.3f},", static_cast<float>(time.count()) / 1000.0f);
+    timeString.pop_back(); // remove trailing comma
 
     m_pDS->exec( PrepareSQL("insert into stacktimes (idFile,times) values (%i,'%s')\n", idFile, timeString.c_str()) );
   }

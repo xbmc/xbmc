@@ -665,11 +665,12 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
                                                          m_app.CurrentFileItemPtr(), data);
 
       m_app.m_playerEvent.Set();
+
       if (const auto stackHelper{m_app.GetComponent<CApplicationStackHelper>()};
           stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
       {
-        // just play the next item in the stack
-        m_app.PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
+        // Just play the next item in the stack
+        m_app.PlayFile(stackHelper->SetNextStackPartAsCurrent(), "", true);
         return true;
       }
 

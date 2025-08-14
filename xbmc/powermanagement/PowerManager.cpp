@@ -272,10 +272,10 @@ void CPowerManager::StorePlayerState()
     const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
     if (stackHelper->IsPlayingRegularStack())
       m_lastPlayedFileItem->SetStartOffset(m_lastPlayedFileItem->GetStartOffset() +
-                                           stackHelper->GetCurrentStackPartStartTimeMs());
+                                           stackHelper->GetCurrentStackPartStartTime().count());
     // in case of iso stack, keep track of part number
     m_lastPlayedFileItem->SetStartPartNumber(
-        stackHelper->IsPlayingISOStack() ? stackHelper->GetCurrentPartNumber() + 1 : 1);
+        stackHelper->IsPlayingDiscStack() ? stackHelper->GetCurrentPartNumber() + 1 : 1);
     // for iso and iso stacks, keep track of playerstate
     m_lastPlayedFileItem->SetProperty("savedplayerstate", appPlayer->GetPlayerState());
     CLog::Log(LOGDEBUG,

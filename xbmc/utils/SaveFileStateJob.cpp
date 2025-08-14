@@ -31,8 +31,11 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 
+#include <chrono>
+
 using namespace KODI;
 using namespace KODI::VIDEO;
+using namespace std::chrono_literals;
 
 void CSaveFileState::DoWork(CFileItem& item,
                             CBookmark& bookmark,
@@ -240,8 +243,7 @@ void CSaveFileState::DoWork(CFileItem& item,
           // In order to properly update the list, we need to refresh the stack's resume point
           const auto& components = CServiceBroker::GetAppComponents();
           const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
-          if (stackHelper->HasRegisteredStack(item) &&
-              stackHelper->GetRegisteredStackTotalTimeMs(item) == 0)
+          if (stackHelper->IsInStack(item) && stackHelper->GetStackTotalTime(item) == 0ms)
             videodatabase.GetResumePoint(*(msgItem->GetVideoInfoTag()));
 
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
