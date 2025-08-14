@@ -22,7 +22,7 @@ msgid "SNES controller"
 msgstr "SNES-Controller"
 
 msgctxt "Addon Description"
-msgid "The SNES (akso known as Super NES or Super Nintendo) is a 16-bit console released in 1990. The controller design served as inspiration for the PlayStation, Dreamcast, Xbox and Wii Classic controllers."
+msgid "The SNES (also known as Super NES or Super Nintendo) is a 16-bit console released in 1990. The controller design served as inspiration for the PlayStation, Dreamcast, Xbox and Wii Classic controllers."
 msgstr "SNES (auch bekannt als Super NES oder Super Nintendo) ist eine 1990 veröffentlichte 16-bit Konsole. Das Controller-Design diente als Inspiration für die Controller von Playstation, Dreamcast, Xbox und Wii Classic."
 
 msgctxt "Addon Disclaimer"
