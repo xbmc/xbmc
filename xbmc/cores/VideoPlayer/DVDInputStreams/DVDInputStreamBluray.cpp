@@ -27,6 +27,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 
 #include <functional>
 #include <limits>
@@ -84,6 +85,17 @@ void CDVDInputStreamBluray::Abort()
 bool CDVDInputStreamBluray::IsEOF()
 {
   return false;
+}
+
+BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFromState(const std::string& xmlstate)
+{
+  BlurayState blurayState;
+  if (!m_blurayStateSerializer.XMLToBlurayState(blurayState, xmlstate))
+  {
+    CLog::LogF(LOGWARNING, "Failed to deserialize Bluray state");
+    return nullptr;
+  }
+  return bd_get_playlist_info(m_bd, blurayState.playlistId, 0);
 }
 
 BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleLongest()
@@ -327,9 +339,8 @@ bool CDVDInputStreamBluray::Open()
   }
   else if (resumable && m_item.GetStartOffset() == STARTOFFSET_RESUME && m_item.IsResumable())
   {
-    // resuming a bluray for which we have a saved state - the playlist will be open later on SetState
     m_navmode = false;
-    return true;
+    m_titleInfo = GetTitleFromState(m_item.GetVideoInfoTag()->GetResumePoint().playerState);
   }
   else
   {

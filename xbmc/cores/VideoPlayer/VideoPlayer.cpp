@@ -877,8 +877,10 @@ void CVideoPlayer::CloseDemuxer()
 void CVideoPlayer::OpenDefaultStreams(bool reset)
 {
   // if input stream dictate, we will open later
-  if (m_dvd.iSelectedAudioStream >= 0 ||
-      m_dvd.iSelectedSPUStream >= 0)
+  // unless we are loading a bluray playlist directly in which case set now
+  const bool noBlurayMenu{m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) &&
+                          m_State.menuType == MenuType::NONE};
+  if (!noBlurayMenu && (m_dvd.iSelectedAudioStream >= 0 || m_dvd.iSelectedSPUStream >= 0))
     return;
 
   bool valid;
@@ -1016,6 +1018,9 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
       }
     }
   }
+
+  if (noBlurayMenu)
+    SynchronizeDemuxer();
 }
 
 bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
@@ -1243,9 +1248,10 @@ void CVideoPlayer::Prepare()
   bool discStateRestored = false;
   if (std::shared_ptr<CDVDInputStream::IMenus> ptr = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
   {
-    CLog::Log(LOGINFO, "VideoPlayer: playing a file with menu's");
+    CLog::Log(LOGINFO, "VideoPlayer: playing a file with menus");
 
-    if (!m_playerOptions.state.empty())
+    if (!m_playerOptions.state.empty() && !(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) &&
+                                            m_State.menuType == MenuType::NONE))
     {
       discStateRestored = ptr->SetState(m_playerOptions.state);
     }
@@ -5225,6 +5231,15 @@ void CVideoPlayer::UpdateContentState()
       m_content.m_subtitleIndex = m_SelectionStreams.TypeIndexOf(
           STREAM_SUBTITLE, STREAM_SOURCE_NAV, -1, nav->GetActiveSubtitleStream());
     }
+  }
+
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) && m_State.menuType == MenuType::NATIVE)
+  {
+    // Update settings with changes made in bluray menu
+    CVideoSettings settings{m_processInfo->GetVideoSettings()};
+    settings.m_AudioStream = m_content.m_audioIndex;
+    settings.m_SubtitleStream = m_content.m_subtitleIndex;
+    m_processInfo->SetVideoSettings(settings);
   }
 }
 
