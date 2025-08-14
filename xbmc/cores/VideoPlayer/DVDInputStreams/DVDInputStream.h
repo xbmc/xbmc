@@ -47,6 +47,8 @@ namespace XFILE
 
 struct DemuxPacket;
 class CDemuxStream;
+class CStreamDetails;
+struct SPlayerState;
 
 class CDVDInputStream
 {
@@ -205,6 +207,10 @@ public:
   virtual IChapter* GetIChapter() { return nullptr; }
 
   const CVariant& GetProperty(const std::string& key) { return m_item.GetProperty(key); }
+
+  virtual void SaveCurrentState(const SPlayerState& state, const CStreamDetails& details) {}
+  virtual void UpdateCurrentState(SPlayerState& state, CFileItem& item) {}
+  virtual void UpdateStack(CFileItem& item) {}
 
 protected:
   DVDStreamType m_streamType;

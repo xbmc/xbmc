@@ -11,6 +11,8 @@
 #include "../DVDDemuxSPU.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationStackHelper.h"
 #include "filesystem/IFileTypes.h"
 #if defined(TARGET_WINDOWS_STORE)
 #include "filesystem/SpecialProtocol.h"
@@ -31,7 +33,14 @@
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif
 
+#include <chrono>
 #include <memory>
+#include <ranges>
+#include <string>
+#include <vector>
+
+using namespace XFILE;
+using namespace std::chrono_literals;
 
 namespace
 {
@@ -293,6 +302,9 @@ bool CDVDInputStreamNavigator::Open()
   m_iTitle = m_iTitleCount = 0;
   m_iPart = m_iPartCount = 0;
   m_iTime = m_iTotalTime = 0;
+
+  // For playlist/chapter watch time
+  m_startWatchTime = std::chrono::steady_clock::now();
 
   return true;
 }
@@ -1584,4 +1596,154 @@ int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blo
     }
   }
   return i_total;
+}
+
+void CDVDInputStreamNavigator::UpdateStack(CFileItem& item)
+{
+  auto& components{CServiceBroker::GetAppComponents()};
+  const auto& stackHelper{components.GetComponent<CApplicationStackHelper>()};
+  if (stackHelper->GetStack(item) != nullptr &&
+      stackHelper->GetStackPartNumber(item) >= stackHelper->GetKnownStackParts())
+    stackHelper->IncreaseKnownStackParts();
+}
+
+void CDVDInputStreamNavigator::SaveCurrentState(const SPlayerState& state,
+                                                const CStreamDetails& details)
+{
+  std::unique_lock lock(m_statesLock);
+
+  // Save stream (for DVDs and Blurays played through menu) and playlist information
+  DVDState DVDState;
+  CDVDStateSerializer serializer;
+  if (serializer.XMLToDVDState(DVDState, state.player_state))
+  {
+    // Details for this playlist
+    const int playlist{DVDState.title};
+    const std::chrono::steady_clock::time_point timeNow{std::chrono::steady_clock::now()};
+    const auto watchedTime{
+        std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - m_startWatchTime)};
+
+    // See if updating last playlist entry
+    if (!m_playedPlaylists.empty() && m_playedPlaylists.back().playlist == playlist)
+    {
+      // Update last playlist entry
+      auto& lastPlaylist = m_playedPlaylists.back();
+      lastPlaylist.watchedTime += watchedTime;
+      lastPlaylist.duration = std::chrono::milliseconds(static_cast<long long>(state.timeMax));
+      lastPlaylist.state = state;
+      CLog::LogF(LOGDEBUG, "Updated title {} - watched time {} seconds", playlist,
+                 lastPlaylist.watchedTime.count() / 1000);
+    }
+    else
+    {
+      // Changed playlist
+      // Update previous playlist with watched time
+      if (!m_playedPlaylists.empty())
+      {
+        auto& lastPlaylist = m_playedPlaylists.back();
+        lastPlaylist.watchedTime += watchedTime;
+        CLog::LogF(LOGDEBUG, "Updated title {} - watched time {} seconds", lastPlaylist.playlist,
+                   lastPlaylist.watchedTime.count() / 1000);
+      }
+      // New playlist
+      const PlaylistInformation currentPlaylistInformation{
+          .playlist = playlist,
+          .inMenu = m_bInMenu,
+          .duration = std::chrono::milliseconds(static_cast<long long>(state.timeMax)),
+          .watchedTime = 0ms,
+          .details = details,
+          .state = state};
+      m_playedPlaylists.emplace_back(currentPlaylistInformation);
+      CLog::LogF(LOGDEBUG,
+                 "Playing title {} - menu {}, duration {} seconds, watched time {} seconds",
+                 playlist, currentPlaylistInformation.inMenu,
+                 currentPlaylistInformation.duration.count() / 1000,
+                 currentPlaylistInformation.watchedTime.count() / 1000);
+    }
+
+    // Reset watch timer for next playlist
+    m_startWatchTime = std::chrono::steady_clock::now();
+  }
+}
+
+void CDVDInputStreamNavigator::UpdateCurrentState(SPlayerState& state, CFileItem& item)
+{
+  std::unique_lock lock(m_statesLock);
+
+  // First add current state to the list of playlist states
+  SaveCurrentState(state, item.GetVideoInfoTag()->m_streamDetails);
+
+  if (m_playedPlaylists.empty())
+  {
+    // Menus have no player_state so aren't saved in SaveCurrentState
+    CLog::LogF(LOGDEBUG, "Played title list is empty");
+  }
+  else
+  {
+    // List playlists
+    for (const auto& playlist : m_playedPlaylists)
+      CLog::LogF(LOGDEBUG, "Title {} - menu {}, duration {} seconds, watched time {} seconds",
+                 playlist.playlist, playlist.inMenu, playlist.duration.count() / 1000,
+                 playlist.watchedTime.count() / 1000);
+  }
+
+  // Decide if main title ever played
+  static constexpr std::chrono::minutes MIN_PLAYLIST_DURATION{5min};
+  const bool mainTitlePlayed{
+      [playedPlaylists = m_playedPlaylists]
+      {
+        if (playedPlaylists.empty())
+          return false; // No playlists played
+        if (std::ranges::none_of(playedPlaylists, [](const PlaylistInformation& p)
+                                 { return !p.inMenu && p.duration > MIN_PLAYLIST_DURATION; }))
+          return false; // No playlists with sufficient duration
+        return true;
+      }()};
+
+  if (!mainTitlePlayed)
+  {
+    item.GetVideoInfoTag()->m_streamDetails.Reset();
+    item.SetDynPath("");
+    item.SetProperty("no_main_title", true); // Not continuing to play if in stack
+    CLog::LogF(LOGDEBUG, "No main title playlist played");
+    return;
+  }
+
+  // Find the playlist that was played the longest (of those that remain)
+  auto filteredPlaylists{m_playedPlaylists |
+                         std::views::filter([](const PlaylistInformation& p)
+                                            { return p.duration > MIN_PLAYLIST_DURATION; })};
+  const auto& it{std::ranges::max_element(filteredPlaylists, std::less<>{},
+                                          &PlaylistInformation::watchedTime)};
+
+  // Consider if watched main playlist completely
+  const int count{
+      static_cast<int>(std::ranges::count_if(m_playedPlaylists, [&it](const PlaylistInformation& p)
+                                             { return p.playlist == it->playlist; }))};
+  constexpr double CLOSE_TO_END{5 * 1000.0}; // 5 seconds
+  const bool stoppedBeforeEnd{
+      [&]
+      {
+        if (count > 1)
+          return false; // If watched main title more than once then assume finished (as some discs repeat automatically)
+        if (state.isInMenu)
+          return false; // If in menu when stopped then assume finished main title
+        if (m_playedPlaylists.back().playlist != it->playlist)
+          return false; // If the main title is not the last title watched then assume main title watched completely
+        if (state.timeMax - state.time < CLOSE_TO_END)
+          return false; // If within 5 seconds of the end then assume watched (as sometimes slight mismatch between .time and .timeMax)
+        return true;
+      }()};
+
+  if (stoppedBeforeEnd)
+    item.SetProperty("stopped_before_end", true);
+  else
+  {
+    // Update state to show that main title finished
+    state.timeMax = state.time = it->state.timeMax;
+  }
+
+  item.GetVideoInfoTag()->m_streamDetails = it->details;
+  const int playlist{it->playlist};
+  CLog::LogF(LOGDEBUG, "Main title {}", playlist);
 }
