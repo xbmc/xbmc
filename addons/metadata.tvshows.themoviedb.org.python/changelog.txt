@@ -1,3 +1,39 @@
+1.7.3
+fix to properly using English videos as fallback
+
+1.7.2
+fix for inability to scrape IMDB ratings
+
+1.7.1
+fix for crash when getting config from TMDb website
+fix for TMDb config never getting updated from website without restart
+
+1.7.0
+change method for getting source settings to account for different sources
+  in one run having different settings
+
+1.6.6
+option to get images in different language than descriptions
+support for tv show IDs in TV show folder name
+updated YouTube addon URL
+
+1.6.5
+made search of NFO file for a UniqueID less agressive
+updated language files
+
+1.6.4
+added TMDb keywords as tag with option to disable function
+updated translations
+
+1.6.3
+set scraper to resue Python interpreter to increase speed of scraping
+
+1.6.2
+fix for episode groupings being ignored
+
+1.6.1
+fix for logic error when looking for episodeguide using external ID
+
 1.6.0
 change to use new JSON based episodeguide format to handle multiple providers
 fixes for last minute changes to new Nexus Python bindings

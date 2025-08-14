@@ -16,6 +16,14 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr ""
+
 msgctxt "#30000"
 msgid "Enable fanart from TMDb"
 msgstr ""
@@ -68,6 +76,18 @@ msgctxt "#30012"
 msgid "Separate TMDb fanart with title to landscape"
 msgstr ""
 
+msgctxt "#30013"
+msgid "Search language"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr ""
+
 msgctxt "#30100"
 msgid "Language for Fanart.tv artwork"
 msgstr ""
@@ -79,3 +99,11 @@ msgstr ""
 msgctxt "#30102"
 msgid "Enable artwork from Fanart.tv"
 msgstr ""
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr ""
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"

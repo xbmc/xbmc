@@ -7,18 +7,27 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Slovak (http://www.transifex.com/projects/p/xbmc-addons/language/sk/)\n"
+"PO-Revision-Date: 2023-05-17 20:42+0000\n"
+"Last-Translator: Patrik Špaňo <patrik.spano@gmail.com>\n"
+"Language-Team: Slovak <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/sk_sk/>\n"
+"Language: sk_sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sk\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Weblate 4.17\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "Phyton TheMovieDB sťahovač filmových metadát"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org je voľná a otvorená databáza filmov. Je výlučne vedená užívateľmi ako si ty. TMDb je každý mesiac používaná miliónmi ľudí, a vďaka svojmu výkonnému API je veľmi populárna medzi 'media centrami' ako Kodi pre sťahovanie filmových metadát, plagátov a fanartov pre obohatenie zážitkov."
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "Povoliť umeleckú grafiku"
+msgid "Enable fanart from TMDb"
+msgstr "Povoliť fanart z TMDb"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
@@ -29,12 +38,12 @@ msgid "Preferred Language"
 msgstr "Uprednostňovaný jazyk"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Hodnotenie získaj z "
+msgid "Default Rating from"
+msgstr "Predvolené hodnotenie z"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
-msgstr "Povoliť upútavky (YouTube)"
+msgstr "Povoliť upútavku (YouTube)"
 
 msgctxt "#30005"
 msgid "Keep Original Title"
@@ -43,3 +52,67 @@ msgstr "Ponechať pôvodný názov"
 msgctxt "#30006"
 msgid "Preferred Certification Country"
 msgstr "Uprednostňovaný pôvod hodnotenia prístupnosti pre mládež"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "Pridať tiež hodnotenie z IMDb"
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "Prefix Prístupnosti mládeže"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr "Pridať viacero štúdií"
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr "Pridať tiež hodnotenie z Trakt.tv"
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr "Pridať kľúčové slová ako štítky"
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr "Jazyk vyhľadávania"
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr "Povoliť plagáty z TMDb"
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr "Jazyk pre grafiku z Fanart.tv"
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr "Fanart.tv osobný API kľúč (nepovinné)"
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr "Povoliť grafiku z Fanart.tv"
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr "Uprednostniť grafiku z Fanart.TV pred uprednostneným jazykom"
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "Povoliť umeleckú grafiku"
+
+#~ msgctxt "#30003"
+#~ msgid "Get Rating from"
+#~ msgstr "Hodnotenie získaj z"

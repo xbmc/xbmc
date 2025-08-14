@@ -1,0 +1,153 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: French (Canada) (http://www.transifex.com/projects/p/xbmc-addons/language/fr_CA/)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "Extracteur universel pour les artistes"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "Cet extracteur recueille des informations depuis les sites pris en charge suivants : TheAudioDb.com, MusicBrainz, last.fm et allmusic.com, alors qu'il récupère les illustrations depuis : fanart.tv, htbackdrops.com, last.fm et allmusic.com. Il est possible de configurer champ par champ depuis quel site l'information doit être récupérée.[CR][CR]La recherche initiale est toujours faite sur MusicBrainz. Dans le cas où les liens allmusic ne sont pas ajoutés sur le site de MusicBrainz, les champs provenant de allmusic.com ne peuvent pas être récupérés (il est par contre très simple d'ajouter ces liens manquants)."
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Activer les fanarts pour les artistes provenant de HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Activer les imagettes d'artistes provenant de allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Activer les imagettes d'artistes provenant de last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Activer les imagettes d'artistes provenant de HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Activer les fanarts d'artistes provenant de fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Activer les imagettes d'artistes provenant de fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Obtenir la biographie de l'artiste sur"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Illustrations"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Obtenir la discographie de l'artiste sur"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Obtenir les genres de l'artiste sur"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Obtenir les styles de l'artiste sur"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Obtenir la durée de vie de l'artiste sur"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Obtenir les humeurs de l'artiste sur"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Obtenir les années actives de l'artiste sur"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "Langue préférée"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Se replier sur la biographie de l'artiste sur"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Se replier sur la discographie de l'artiste sur"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Se replier sur les genres de l'artiste sur"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Se replier sur les styles de l'artiste sur"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Se replier sur la durée de vie de l'artiste sur"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Replis"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Activer les imagettes d'artiste provenant de theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Activer les fanarts d'artiste provenant de theaudiodb.com"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr ""
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr ""
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr ""

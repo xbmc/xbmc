@@ -1,0 +1,94 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2022-06-30 11:14+0000\n"
+"Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
+"Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-album-universal/fi_fi/>\n"
+"Language: fi_fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Albums"
+msgstr "Universaali tietolähde albumeille"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: MusicBrainz, last.fm, allmusic.com and amazon.de, while grabs artwork from: fanart.tv, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic and/or amazon.de links are not added on the MusicBrainz site, fields from allmusic.com and/or amazon.de cannot be fetched (very easy to add those missing links though)."
+msgstr "Noutaa tietoja TheAudioDB.com, MusicBrainz, Last.fm, AllMusic ja Amazon.de -verkkopalveluista ja mediakuvituksia Fanart.tv, Last.fm ja AllMusic -palveluista. Voit valita, mistä palveluista tietoja noudetaan.[CR][CR]Ensimmäinen nouto tehdään aina MusicBrainz-palvelusta ja jollei MusicBrainz tarjoa AllMusic- ja/tai Amazon.de-linkkiä, ei niiden tukemien kenttien nouto onnistu (joskin puuttuvat linkit on varsin helppo lisätä itsekin)."
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "Nouda albumien pienoiskuvia Fanart.tv-palvelusta"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "Nouda albumien pienoiskuvia Last.fm-palvelusta"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "Nouda albumien arvostelut lähteestä"
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "     Ensisijainen kieli"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "Nouda albumien arviot lähteestä"
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "Nouda albumien tyylit lähteestä"
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "Nouda albumien tunnelmat lähteestä"
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "Nouda albumien teemat lähteestä"
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "Nouda albumien pienoiskuvia AllMusic-palvelusta"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "Mediakuvitukset"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "Nouda albumien pienoiskuvia TheAudioDB-palvelusta"
+
+msgctxt "#30011"
+msgid "MB Mirror"
+msgstr "MB-peilipalvelin"
+
+msgctxt "#30012"
+msgid "MusicBrainz Mirror"
+msgstr "MusicBrainz-peilipalvelin"
+
+msgctxt "#30013"
+msgid "Grab Album Discart from fanart.tv"
+msgstr "Nouda albumien levyetikettejä Fanart.tv-palvelusta"
+
+msgctxt "#30014"
+msgid "Grab Album Back Cover from theaudiodb.com"
+msgstr "Nouda albumien takakansia TheAudioDB-palvelusta"
+
+msgctxt "#30015"
+msgid "Grab Album Discart from theaudiodb.com"
+msgstr "Nouda albumien levyetikettejä TheAudioDB-palvelusta"
+
+msgctxt "#30016"
+msgid "Grab Album Spine from theaudiodb.com"
+msgstr "Nouda albumien selkiä Fanart.tv-palvelusta"

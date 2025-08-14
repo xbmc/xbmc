@@ -7,34 +7,43 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: French (http://www.transifex.com/projects/p/xbmc-addons/language/fr/)\n"
+"PO-Revision-Date: 2023-03-26 20:16+0000\n"
+"Last-Translator: skypichat <skypichat@hotmail.fr>\n"
+"Language-Team: French (France) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/fr_fr/>\n"
+"Language: fr_fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "Collecteur de Films TMDB"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org est une base de données de films gratuite et libre d'accès. Elle est totalement gérée par les utilisateurs. TMDb est actuellement utilisée par des millions de personnes chaque mois et, grâce à ses puissantes fonctions et routines, elle est également utilisée par de nombreux Media Centers populaires comme Kodi afin de récupérer les Métadonnées, Posters et Fanarts des films en vue d'améliorer l'expérience de l'utilisateur."
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "Activer les Fanarts"
+msgid "Enable fanart from TMDb"
+msgstr "Activer les fanarts de TMDb"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
-msgstr "Préférer les bandes-annonces de HD-Trailers.net"
+msgstr "Préférer les bande-annonces de HD-Trailers.net"
 
 msgctxt "#30002"
 msgid "Preferred Language"
 msgstr "Langue préférée"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Obtenir la note à partir de"
+msgid "Default Rating from"
+msgstr "Notes par défaut de"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
-msgstr "Activer les bandes-annonces (You Tube)"
+msgstr "Activer les bandes-annonces (YouTube)"
 
 msgctxt "#30005"
 msgid "Keep Original Title"
@@ -43,3 +52,67 @@ msgstr "Garder le titre original"
 msgctxt "#30006"
 msgid "Preferred Certification Country"
 msgstr "Pays favori de certification"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "Ajouter aussi les notes d'IMDb"
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "Préfixe de certification"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr "Ajouter plusieurs studios"
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr "Ajouter aussi les notes de Trakt.tv"
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr "Ajouter les mots clés comme étiquettes"
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr "Séparer le fanart TMDb avec le titre en paysage"
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr "Langue de recherche"
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr "Activer les affiches de TMDb"
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr "Langue pour les illustrations Fanart.tv"
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr "Clé API personnelle pour Fanart.tv (optionnel)"
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr "Activer les illustrations de Fanart.tv"
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr "Donner la priorité aux artworks de Fanart.TV par rapport à la langue préférée"
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "Activer les Fanarts"
+
+#~ msgctxt "#30003"
+#~ msgid "Get Rating from"
+#~ msgstr "Obtenir la note à partir de"

@@ -1,0 +1,166 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-02-19 14:01+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Chinese (China) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-tvshows-themoviedb-org-python/zh_cn/>\n"
+"Language: zh_cn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Fetch TV Show metadata from themoviedb.org"
+msgstr "从 themoviedb.org 获取剧集信息"
+
+msgctxt "Addon Description"
+msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgstr "TMDb 是一个由网络社区创建的影视数据库。每一条数据都是由我们令人惊叹的社区添加的，可以追溯到2008年。TMDb 强大的国际关注度和数据广度在很大程度上是无与伦比的，我们对此感到无比自豪。简单地说，我们生活在社区中，呼吸着社区的气息，这正是我们与众不同的原因。"
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr "首选语言"
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr "首选电影分级国别"
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr "包含分级前缀"
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr "前缀"
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr "使用未翻译片名"
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr "将含文字的同人画归入场景贴画"
+
+msgctxt "#30006"
+msgid "Include country code with studio"
+msgstr "制片公司包含国别码"
+
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr "关键字添加为标签"
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr ""
+
+# empty strings from 30007 to 30099
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr "客户密钥（可选）"
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr "启用同人画"
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr "启用海报"
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr "启用横幅"
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr "启用徽标贴画"
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr "启用剪贴画"
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr "启用场景贴画"
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr "启用角色贴画"
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr "包含来自 fanart.tv 的艺术图片"
+
+# empty strings from 30110 to 30149
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr "启用季海报"
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr "启用季横幅"
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr "启用季场景贴画"
+
+# empty strings from 30153 to 30200
+msgctxt "#30200"
+msgid "Advanced"
+msgstr "高级"
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr "详细调试日志"
+
+# emptry strings from 30202 to 30299
+msgctxt "#30300"
+msgid "Ratings"
+msgstr "评分"
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr "默认评分来自"
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr "同时获取 IMDb 评分"
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr "同时获取 Trakt.tv 评分"
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr "同时获取 TMDb 评分"
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr "启用预告片"
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr "插件播放器"
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr "YouTube"
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr "Tubed"

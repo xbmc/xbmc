@@ -1,0 +1,154 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2022-03-10 13:27+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Chinese (Taiwan) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/zh_tw/>\n"
+"Language: zh_tw\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11.2\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "通用演出者訊息搜括器"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "本搜刮器支援從以下網站取得資訊：TheAudioDb.com、MusicBrainz、last.fm和allmusic.com，並從以下網站取得專輯圖片：fanart.tv、htbackdrops.com、last.fm和allmusic.com。您可以指定每一項內容的來源網站。[CR][CR]初始搜尋結果總是先從MusicBrainz取得，如果MusicBrainz網站未加入到allmusic的外部連結，則無法取得allmusic.com的資訊 (當然您能很輕易地加入遺失的連結)。"
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "啟用HTBackdrops.com演出者資訊"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "啟用allmusic.com演出者縮圖"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "啟用last.fm演出者縮圖"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "啟用HTBackdrops.com演出者縮圖"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "啟用fanart.tv演出者資料庫"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "啟用 fanart.tv演出者縮圖"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "演出者簡介取得於"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "圖片"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "演出者專輯目錄取得於"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "演出者類型取得於"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "演出者風格取得於"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "演出者生日資訊取得於"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "演出者意境取得於"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "演出者活躍的年代取得於"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "     偏好的語言"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "備選演出者簡介取得於"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "備選演出者專輯目錄取得於"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "備選演出者類型取得於"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "備選演出者風格取得於"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "備選演出者生日資訊取得於"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "備選"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "啟用theaudiaodb.com演出者縮圖"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "啟用theaudiaodb.com演出者專輯資訊"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr ""
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr "MB備援站"
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr "MusicBrainz備援站"
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr ""

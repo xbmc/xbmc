@@ -26,7 +26,6 @@ try:
 except ImportError:
     pass
 
-
 HEADERS = (
     ('User-Agent', 'Kodi TV Show scraper by Team Kodi; contact pkscout@kodi.tv'),
     ('Accept', 'application/json'),
@@ -34,7 +33,6 @@ HEADERS = (
     ('trakt-api-version', '2'),
     ('Content-Type', 'application/json'),
 )
-api_utils.set_headers(dict(HEADERS))
 
 SHOW_URL = 'https://api.trakt.tv/shows/{}'
 EP_URL = SHOW_URL + '/seasons/{}/episodes/{}/ratings'
@@ -50,6 +48,8 @@ def get_details(imdb_id, season=None, episode=None):
     :param episode:
     :return: trackt ratings
     """
+    source_settings = settings.getSourceSettings()
+    api_utils.set_headers(dict(HEADERS))
     result = {}
     if season and episode:
         url = EP_URL.format(imdb_id, season, episode)
@@ -58,9 +58,10 @@ def get_details(imdb_id, season=None, episode=None):
         url = SHOW_URL.format(imdb_id)
         params = {'extended': 'full'}
     resp = api_utils.load_info(
-        url, params=params, default={}, verboselog=settings.VERBOSELOG)
+        url, params=params, default={}, verboselog=source_settings["VERBOSELOG"])
     rating = resp.get('rating')
     votes = resp.get('votes')
     if votes and rating:
         result['ratings'] = {'trakt': {'votes': votes, 'rating': rating}}
+    api_utils.set_headers({})
     return result

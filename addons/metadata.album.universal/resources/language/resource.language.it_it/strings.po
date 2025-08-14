@@ -1,0 +1,94 @@
+# Kodi Media Center language file
+# Addon Name: Universal Album Scraper
+# Addon id: metadata.album.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2022-11-22 19:15+0000\n"
+"Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
+"Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-album-universal/it_it/>\n"
+"Language: it_it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.2\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Albums"
+msgstr "Scraper universale per album"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: MusicBrainz, last.fm, allmusic.com and amazon.de, while grabs artwork from: fanart.tv, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic and/or amazon.de links are not added on the MusicBrainz site, fields from allmusic.com and/or amazon.de cannot be fetched (very easy to add those missing links though)."
+msgstr "Questo scraper raccoglie informazioni dai seguenti siti supportati: MusicBrainz, last.fm, allmusic.com e amazon.de, mentre prende la grafica da: fanart.tv, last.fm e allmusic.com. Si può impostare campo per campo da quale sito si vuole quella specifica informazione.[CR][CR]La ricerca iniziale viene sempre fatta su MusicBrainz. Nel caso in cui i collegamenti allmusic e/o amazon.de non vengano aggiunti sul sito MusicBrainz, i campi da allmusic.com e/o amazon.de non possono essere recuperati (è molto facile aggiungere i collegamenti mancanti)."
+
+msgctxt "#30000"
+msgid "Grab Album Thumbs from fanart.tv"
+msgstr "Prendi le miniature dell'album da fanart.tv"
+
+msgctxt "#30001"
+msgid "Grab Album Thumbs from Last.fm"
+msgstr "Prendi le miniature dell'album da Last.fm"
+
+msgctxt "#30002"
+msgid "Get Album Review from"
+msgstr "Prendi le recensioni dell'album da"
+
+msgctxt "#30003"
+msgid "     Preferred Language"
+msgstr "     Lingua preferita"
+
+msgctxt "#30004"
+msgid "Get Album Rating from"
+msgstr "Prendi le valutazioni dell'album da"
+
+msgctxt "#30005"
+msgid "Get Album Styles from"
+msgstr "Prendi gli stili musicali dell'album da"
+
+msgctxt "#30006"
+msgid "Get Album Moods from"
+msgstr "Prendi gli stati d'animo dell'album da"
+
+msgctxt "#30007"
+msgid "Get Album Themes from"
+msgstr "Prendi i temi dell'album da"
+
+msgctxt "#30008"
+msgid "Grab Album Thumbs from allmusic.com"
+msgstr "Prendi le anteprime dell'album da allmusic.com"
+
+msgctxt "#30009"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#30010"
+msgid "Grab Album Thumbs from theaudiodb.com"
+msgstr "Prendi le miniature dell'album da theaudiodb.org"
+
+msgctxt "#30011"
+msgid "MB Mirror"
+msgstr "MB mirror"
+
+msgctxt "#30012"
+msgid "MusicBrainz Mirror"
+msgstr "MusicBrainz mirror"
+
+msgctxt "#30013"
+msgid "Grab Album Discart from fanart.tv"
+msgstr "Prendi la discart dell'album da fanart.tv"
+
+msgctxt "#30014"
+msgid "Grab Album Back Cover from theaudiodb.com"
+msgstr "Prendi la copertina posteriore dell'album da theaudiodb.com"
+
+msgctxt "#30015"
+msgid "Grab Album Discart from theaudiodb.com"
+msgstr "Prendi la discart dell'album da theaudiodb.com"
+
+msgctxt "#30016"
+msgid "Grab Album Spine from theaudiodb.com"
+msgstr "Prendi il dorso dell'album da theaudiodb.com"

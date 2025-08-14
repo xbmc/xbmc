@@ -1,0 +1,154 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2021-08-12 09:29+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Welsh (United Kingdom) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/cy_gb/>\n"
+"Language: cy_gb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
+"X-Generator: Weblate 4.7.2\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "Crafwr Cyffredinol ar gyfer Artistiaid"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "Mae'r crafwr yn casglu gwybodaeth o'r gwefannau canlynol: TheAudioDb.com, MusicBrainz, last.fm, a allmusic.com, tra'n cipio gwaith celf o: fanart.tv, htbackdrops.com, last.fm a allmusic.com. Mae modd ei osod fesul maes i ddewis pa wefan i gasglu gwybodaeth benodol.[CR][CR]Bydd y chwilio cychwynnol yn cael ei wneud ar MusicBrainz. Rhag ofn nad yw dolen allmusic wedi ei osod ar wefan MusicBrainz nid oes modd estyn meysydd o allmusic.com (mae'n hawdd gosod y dolenni coll hynny)."
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Galluogi celf artisiaid o HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Galluogi lluniau bach artistiaid o allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Galluogi lluniau bach artistiaid o last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Galluogi lluniau bach artistiaid o HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Galluogi celf artistiaid o fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Galluogi lluniau bach artistiaid o fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Estyn bywgraffiad artist o"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Gwaith Celf"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Estyn disgograffeg artist o"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Estyn Genres Artistiaid o"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Estyn Arddulliau Artistiaid o"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Estyn Hyd Oes Artistiaid o"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Estyn Naws Artistiaid o"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Estyn Blynyddoedd Cynhyrchiol Artistiaid o"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "Dewis Iaith"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Camu nol Bywgraffiad Artist o"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Cammu nol i Ddisgograffeg Artist o"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Cammu nol i Genres Artistiaid o"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Cammu nol i Arddulliau Artistiaid o"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Cammu nol i Hyd Oes Artisitiaid o"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Cammu nol"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Galluogi lluniau bach artistiaid o theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Galluogi Celf Artistiaid o theaudiodb.com"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr ""
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr ""
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr ""

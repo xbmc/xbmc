@@ -1,0 +1,166 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-08-31 22:11+0000\n"
+"Last-Translator: Wanilton Campos <campos.wanilton@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-tvshows-themoviedb-org-python/pt_br/>\n"
+"Language: pt_br\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.18.2\n"
+
+msgctxt "Addon Summary"
+msgid "Fetch TV Show metadata from themoviedb.org"
+msgstr "Obter metadados de Séries em themoviedb.org"
+
+msgctxt "Addon Description"
+msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgstr "The Movie Database (TMDb) é um banco de dados de filmes e séries criado pela comunidade. Cada um dos pedaços de dados foram adicionados por nossa incrível comunidade desde 2008. O forte foco internacional e a amplitude de dados do TMDb são incomparáveis, algo do qual temos muito orgulho. Resumindo, vivemos e respiramos comunidade e é precisamente isso que nos torna diferentes."
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr "Idioma preferido"
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr "País de certificação preferido"
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr "Incluir prefixo de certificação"
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr "Prefixo"
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr "Manter o título original"
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr "Categorizar fanart com texto como landscape art"
+
+msgctxt "#30006"
+msgid "Include country code with studio"
+msgstr "Incluir o código do país com o estúdio"
+
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr "Adicionar palavras-chave como tags"
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr "Linguagem Preferida (Imagens)"
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr "Use diferentes linguagens para imagens"
+
+# empty strings from 30007 to 30099
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr "Chave do cliente (opcional)"
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr "Ativar fanart"
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr "Ativar pôster"
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr "Ativar banner"
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr "Ativar clearlogo"
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr "Ativar clearart"
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr "Ativar landscape"
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr "Ativar character art"
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr "Incluir arte de fanart.tv"
+
+# empty strings from 30110 to 30149
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr "Ativar pôster de temporada"
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr "Ativar banner de temporada"
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr "Ativar landscape de temporada"
+
+# empty strings from 30153 to 30200
+msgctxt "#30200"
+msgid "Advanced"
+msgstr "Avançado"
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr "Registro detalhado de depuração"
+
+# emptry strings from 30202 to 30299
+msgctxt "#30300"
+msgid "Ratings"
+msgstr "Avaliações"
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr "Classificação padrão de"
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr "Adicionar também classificações IMDb"
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr "Adicionar também classificações Trakt.tv"
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr "Adicionar também classificações TMDb"
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr "Ativar Trailer"
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr "Player Add-on"
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr "YouTube"
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr "Tubed"

@@ -1,0 +1,154 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-01-03 11:15+0000\n"
+"Last-Translator: gogogogi <trebelnik2@gmail.com>\n"
+"Language-Team: Croatian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/hr_hr/>\n"
+"Language: hr_hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "Univerzalni sakupljač informacija izvođača"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "Ovaj sakupljač prikuplja informacije sa sljedećih podržanih stranica: TheAudioDb.com, MusicBrainz, last.fm i allmusic.com, dok preuzima omote filmova sa: fanart.tv, last.fm i allmusic.com. Može poredati popis stranica iz kojih želite sakupiti informacije jednu iza druge.[CR][CR]Pretraga uvijek započinje na MusicBrainzu. U slučaju da allmusic poveznica nije dodana na MusicBrainz stranicu, polja sa allmusic.com ne mogu se nabaviti (ali je vrlo jednostavno moguće dodati te nedostajuće poveznice)."
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Omogući slike omota izvođača s HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Omogući minijature izvođača s allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Omogući minijature izvođača s last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Omogući minijature izvođača s HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Omogući slike omota Izvođača s fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Omogućite minijature izvođača s fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Nabavi životopis izvođača s"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Slika omota"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Nabavi diskografiju izvođača s"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Nabavi žanrove izvođača s"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Nabavi stilove izvođača s"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Nabavi životni vijek izvođača s"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Nabavi raspoloženje izvođača s"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Nabavi aktivne godine izvođača s"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "     Željeni jezik"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Zamijeni životopis izvođača s"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Zamijeni diskografiju izvođača s"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Zamijeni žanr izvođača s"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Zamijeni stilove izvođača s"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Zamijeni životni vijek izvođača s"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Zamjene"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Omogući minijature izvođača s theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Omogući slike omota Izvođača s theaudiodb.com"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr "Zamijeni raspoloženje izvođača s"
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr "MB zrcalni poslužitelj"
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr "MusicBrainz zrcalni poslužitelj"
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr "Omogući logotip bez pozadine izvođača s fanart.tv"
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr "Omogući transparent izvođača s fanart.tv"
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr "Omogući logotip bez pozadine izvođača s theaudiodb.com"
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr "Omogući sliku bez pozadine izvođača s theaudiodb.com"
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr "Omogući pejzažnu sliku izvođača s theaudiodb.com"
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr "Omogući transparent izvođača s theaudiodb.com"

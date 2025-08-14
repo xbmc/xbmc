@@ -1,3 +1,45 @@
+[B]v4.3.18[/B]
+- Removed bad strings file
+
+[B]v4.3.17[/B]
+- Translations updates from Weblate
+
+[B]v4.3.16[/B]
+- Translations updates from Weblate
+
+[B]v4.3.15[/B]
+- Translations updates from Weblate
+
+[B]v4.3.14[/B]
+- Translations updates from Weblate
+
+[B]v4.3.13[/B]
+- Translations updates from Weblate
+
+[B]v4.3.12[/B]
+- Translations updates from Weblate
+
+[B]v4.3.11[/B]
+- Translations updates from Weblate
+
+[B]v4.3.10[/B]
+- Translations updates from Weblate
+
+[B]v4.3.9[/B]
+- Translations updates from Weblate
+
+[B]v4.3.8[/B]
+- Translations updates from Weblate
+
+[B]v4.3.7[/B]
+- Translations updates from Weblate
+
+[B]v4.3.6[/B]
+- Translations updates from Weblate
+
+[B]v4.3.5[/B]
+- Translations updates from Weblate
+
 [B]4.3.3[/B]
 fixed: artist type scraping
 

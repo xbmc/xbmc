@@ -1,0 +1,154 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2021-08-12 09:29+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Hungarian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/hu_hu/>\n"
+"Language: hu_hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7.2\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "Univerzális előadó leolvasó"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "Ez a leolvasó a következő weboldalakról gyűjti be az adatokat: TheAudioDb.com, MusicBrainz, last.fm és allmusic.com, míg képeket a következő oldalakról gyűjt: fanart.tv, htbackdrops.com, last.fm és allmusic.com. Egyenként beállítható, hogy az adott mezőt melyik weboldalról töltse fel[CR][CR]A kiinduló keresés mindig a MusicBrainz. Amennyiben az allmusic utalás nincs hozzáadva MusicBrainz oldalhoz, a mezők nem tölthetők le az allmusic.com oldalról (a hiányzó utalások hozzáadása azonban nagyon egyszerű)."
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Előadó fanartképek letöltése a HTBackdrops.com-ról"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Előadó miniképek letöltése az allmusic.com-ról"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Előadó miniképek letöltése a Last.fm-ről"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Előadó miniképek letöltése a HTBackdrops.com-ról"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Előadó fanartképek letöltése a fanart.tv-ről"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Előadó miniképek letöltése a fanart.tv-ről"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Előadó életrajzok letöltése innen:"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Grafika"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Előadó diszkográfiák forrása:"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Előadó műfajok forrása:"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Előadó stílusok forrása:"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Előadó életpályák forrása:"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Előadó hangulatok forrása:"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Előadó aktív éveinek forrása:"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "Használni kívánt nyelv"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Előadó életrajzok tartalék forrása:"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Előadó diszkográfiák tartalék forrása:"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Előadó műfajok tartalék forrása"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Előadó stílusok tartalék forrása:"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Előadó életpályák tartalék forrása:"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Tartalékok"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Előadó miniképek engedélyezése a theaudiodb.com-ról"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Előadó fanart engedélyezése a theaudiodb.com-ról"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr ""
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr ""
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr ""

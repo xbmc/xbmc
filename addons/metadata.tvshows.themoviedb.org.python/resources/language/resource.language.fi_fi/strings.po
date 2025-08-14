@@ -1,0 +1,166 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-08-06 08:11+0000\n"
+"Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
+"Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-tvshows-themoviedb-org-python/fi_fi/>\n"
+"Language: fi_fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.18.2\n"
+
+msgctxt "Addon Summary"
+msgid "Fetch TV Show metadata from themoviedb.org"
+msgstr "The Movie Database (TMDB) -tietolähde televisiosarjoille"
+
+msgctxt "Addon Description"
+msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgstr "The Movie Database (TMDB) on yhteisön ylläpitämä, ilmainen ja avoin tietokanta elokuville ja televisiosarjoille. Palvelulla on miljoonia kuukausittaisia käyttäjiä ja sen tehokkaan rajapinnan avulla Kodi ja monet muut mediasovellukset voivat hyödyntää palvelun metatietoja ja mediakuvituksia käyttökokemuksen parantamiseen. Tietokannan vahva painotus kansaivälisyyteen ja kattava tietomäärä on suurelta osin ylivertainen ja olemme tästä erittäin ylpeitä. Yksinkertaisesti sanoen, elämme ja hengitämme yhteisönä ja juuri se tekee meistä erilaisia."
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr "Ensisijainen kieli"
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr "Ensisijainen sisältöluokitusten maa"
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr "Sisällytä sisältöluokitusten etuliitteet"
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr "Etuliite"
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr "Säilytä alkuperäinen nimi"
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr "Luokittele tekstiä sisältävät fanart-kuvat landscape-kuviksi"
+
+msgctxt "#30006"
+msgid "Include country code with studio"
+msgstr "Sisällytä maakoodi studioon"
+
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr "Lisää avainsanat tunnisteiksi"
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr "Ensisijainen kieli (kuvat)"
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr "Käytä kuville eri kieltä"
+
+# empty strings from 30007 to 30099
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr "Client-avain (valinnainen)"
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr "Käytä mediakuvituksia"
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr "Käytä poster-kuvia"
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr "Käytä banner-kuvia"
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr "Käytä clearlogo-kuvia"
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr "Käytä clearart-kuvia"
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr "Käytä landscape-kuvia"
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr "Käytä characterart-kuvia"
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr "Sisällytä kuvia Fanart.tv-palvelusta"
+
+# empty strings from 30110 to 30149
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr "Käytä kausille poster-kuvia"
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr "Käytä kausille banner-kuvia"
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr "Käytä kausille landscape-kuvia"
+
+# empty strings from 30153 to 30200
+msgctxt "#30200"
+msgid "Advanced"
+msgstr "Lisäasetukset"
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr "Laaja vianselvitysloki"
+
+# emptry strings from 30202 to 30299
+msgctxt "#30300"
+msgid "Ratings"
+msgstr "Arviot"
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr "Oletusarviot lähteestä"
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr "Nouda myös IMDb-arviot"
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr "Nouda myös Trakt.tv-arviot"
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr "Nouda myös TMDB-arviot"
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr "Käytä trailereita"
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr "Soitinlisäosa"
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr "YouTube"
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr "Tubed"

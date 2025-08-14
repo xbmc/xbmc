@@ -1,0 +1,154 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2022-08-12 17:14+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Danish <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/da_dk/>\n"
+"Language: da_dk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.13\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "Universel scraper til kunstnere"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "Denne scraper indsamler information fra følgende websteder: TheAudioDb.com, MusicBrainz, last.fm og allmusic.com, og henter illustrationer fra: fanart.tv, htbackdrops.com, last.fm og allmusic.com. Det kan indstilles felt for felt, fra hvilket websted du ønsker den specifikke information.[CR][CR]Den indledende søgning udføres altid på MusicBrainz. I tilfælde af, at allmusic-linket ikke er tilføjet på MusicBrainz-webstedet, kan felter fra allmusic.com ikke hentes ((men det er helt enkelt at tilføje de manglende links)."
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Aktiver fankunst til kunstnere fra HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Aktiver miniaturebilleder af kunstnere fra allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Aktiver miniaturebilleder af kunstnere fra last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Aktiver miniaturebilleder af kunstnere fra HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Aktiver fankunst til kunstnere fra fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Aktiver miniaturebilleder af kunstnere fra fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Hent kunstnerbiografi fra"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Illustrationer"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Hent kunstnerdiskografi fra"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Hent kunstnergenrer fra"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Hent kunstner-stilarter fra"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Hent kunstners levetid fra"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Hent kunstner-stemninger fra"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Hent kunstners aktive år fra"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "     Foretrukket sprog"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Reserve til kunstnerbiografi fra"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Reserve til kunstnerdiskografi fra"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Reserve til kunstnergenrer fra"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Reserve til kunstner-stilarter fra"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Reserve til kunstners levetid fra"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Reserver"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Aktiver miniaturebilleder af kunstnere fra theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Aktiver fankunst til kunstnere fra theaudiodb.com"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr "Reserve til kunstner-stemninger fra"
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr "MB Mirror"
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr "MusicBrainz Mirror"
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr "Aktiver clearlogo til kunstnere fra fanart.tv"
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr "Aktiver banner til kunstnere fra fanart.tv"
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr "Aktiver clearlogo til kunstnere fra theaudiodb.com"
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr "Aktiver clearart til kunstnere fra theaudiodb.com"
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr "Aktiver landskab til kunstnere fra theaudiodb.com"
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr "Aktiver banner til kunstnere fra theaudiodb.com"

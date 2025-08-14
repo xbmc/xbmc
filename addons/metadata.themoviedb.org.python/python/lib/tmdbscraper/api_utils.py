@@ -19,7 +19,14 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import json, xbmc
+import json
+
+try:
+    import xbmc
+except ModuleNotFoundError:
+    # only used for logging HTTP calls, not available nor needed for testing
+    xbmc = None
+
 # from pprint import pformat
 try: #PY2 / PY3
     from urllib2 import Request, urlopen
@@ -39,6 +46,7 @@ HEADERS = {}
 
 
 def set_headers(headers):
+    HEADERS.clear()
     HEADERS.update(headers)
 
 
@@ -56,7 +64,10 @@ def load_info(url, params=None, default=None, resp_type = 'json'):
     theerror = ''
     if params:
         url = url + '?' + urlencode(params)
-    xbmc.log('Calling URL "{}"'.format(url), xbmc.LOGDEBUG)
+    if xbmc:
+        xbmc.log('Calling URL "{}"'.format(url), xbmc.LOGDEBUG)
+    if HEADERS:
+        xbmc.log(str(HEADERS), xbmc.LOGDEBUG)
     req = Request(url, headers=HEADERS)
     try:
         response = urlopen(req)

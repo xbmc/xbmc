@@ -7,18 +7,27 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Burmese (http://www.transifex.com/projects/p/xbmc-addons/language/my/)\n"
+"PO-Revision-Date: 2023-01-19 19:15+0000\n"
+"Last-Translator: zinko layboy <zinkolayboy@gmail.com>\n"
+"Language-Team: Burmese <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/my_mm/>\n"
+"Language: my_mm\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: my\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.15.1\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "TMDB Movie Scraper"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org သည် အခမဲ့ဖြစ်ပြီး ပွင့်လင်းသော ရုပ်ရှင်ဒေတာဘေ့စ်တစ်ခုဖြစ်သည်။ TMDb ကို ၎င်း၏အားကောင်းသော API ဖြင့် လစဉ်လတိုင်း လူသန်းပေါင်းများစွာက အသုံးပြုလျက်ရှိပြီး Kodi ကဲ့သို့ နာမည်ကြီး မီဒီယာစင်တာများတွင်လည်း ရုပ်ရှင်အချက်အလက်၊ ရုပ်ရှင်ပိုစတာများ၊ ရုပ်ရှင်ကာဗာများကို စုဆောင်းကာ နောက်ဆုံးတွင် သုံးစွဲသူအတွေ့အကြုံကို ကြွယ်ဝစေပါသည်။"
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "Fanart ကို လုပ်ဆောင်ခွင့်"
+msgid "Enable fanart from TMDb"
+msgstr "TMDB မှ ဖန်အက် ကိုဖွင့်ပါ"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
@@ -28,6 +37,10 @@ msgctxt "#30002"
 msgid "Preferred Language"
 msgstr "သင့်လျှော်သော ဘာသာစကား"
 
+msgctxt "#30003"
+msgid "Default Rating from"
+msgstr "နဂို အဆင့်သက်မှတ်ချက်မှ"
+
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
 msgstr "ကြော်ငြာများရယူမည်(You Tube)"
@@ -35,3 +48,67 @@ msgstr "ကြော်ငြာများရယူမည်(You Tube)"
 msgctxt "#30005"
 msgid "Keep Original Title"
 msgstr "မူလခေါင်းစဉ်အတိုင်းထားမည်"
+
+msgctxt "#30006"
+msgid "Preferred Certification Country"
+msgstr "နှစ်သက်သောနိုင်ငံ"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "IMDB အဆင့်သက်မှတ်ချက်များကိုထည့်ပါ"
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "အမည်အညွှန်းများ"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr "စတူဒီယိုများစွာကိုထည့်ပါ"
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr "Trakt.tv အဆင့်သတ်မှတ်ချက်များကိုလည်း ထည့်ပါ"
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr "စာကားလုံးများကို တွဲထည့်ပါ"
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr "TMDb fanart ကို အခင်းအကျင်းအဖြစ် ခေါင်းစဉ်ဖြင့် ခွဲခြားပါ"
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr "ဘာသာစကားရှာဖွေပါ"
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr "Fanart.tv အနုပညာလက်ရာအတွက် ဘာသာစကား"
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr "Fanart.tv ကိုယ်ပိုင် API key (optional)"
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr "Fanart.tv မှ artwork ကိုဖွင့်ပါ"
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr "နှစ်သက်ရာ ဘာသာစကားထက် Fanart.TV artworks ကိုဦးစားပေးပါ"
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "Fanart ကို လုပ်ဆောင်ခွင့်"

@@ -32,6 +32,11 @@ IMDB_RATINGS_URL = 'https://www.imdb.com/title/{}/'
 IMDB_JSON_REGEX = re.compile(
     r'<script type="application\/ld\+json">(.*?)<\/script>')
 
+HEADERS = (
+    ('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'),
+    ('Accept', 'application/json'),
+)
+
 
 def get_details(imdb_id):
     # type: (Text) -> Dict
@@ -45,8 +50,11 @@ def get_details(imdb_id):
 def _get_ratinginfo(imdb_id):
     # type: (Text) -> Tuple[Text, Text]
     """get the IMDB ratings details"""
+    source_settings = settings.getSourceSettings()
+    api_utils.set_headers(dict(HEADERS))
     response = api_utils.load_info(IMDB_RATINGS_URL.format(
-        imdb_id), default='', resp_type='text', verboselog=settings.VERBOSELOG)
+        imdb_id), default='', resp_type='text', verboselog=source_settings["VERBOSELOG"])
+    api_utils.set_headers({})
     return _parse_imdb_result(response)
 
 

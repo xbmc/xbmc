@@ -7,34 +7,43 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Romanian (http://www.transifex.com/projects/p/xbmc-addons/language/ro/)\n"
+"PO-Revision-Date: 2024-09-02 07:26+0000\n"
+"Last-Translator: Daniel <danny3@tutanota.com>\n"
+"Language-Team: Romanian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/ro_ro/>\n"
+"Language: ro_ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
-"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
+"X-Generator: Weblate 5.7.1\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "Catalog de filme TMDb"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org este o bază de date de filme gratuită și deschisă. Este actualizată de oameni ca și tine. TMDb este actual folosită de milioane de oameni în fiecare lună și datorită API-ului puternic, este de asemenea folosită de multe centre media populare ca Kodi pentru a obține informații despre filme, afișe, decoruri și imagini produse de fani (Fanart), care îmbogățesc experiența utilizatorului."
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "Activează Fanart"
+msgid "Enable fanart from TMDb"
+msgstr "Activează decor de la TMDb"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
-msgstr "Activează trailere de la HD-Trailers.net"
+msgstr "Activează secvențe de la HD-Trailers.net"
 
 msgctxt "#30002"
 msgid "Preferred Language"
-msgstr "Limbă preferată"
+msgstr "Limba preferată"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Ia rating de la "
+msgid "Default Rating from"
+msgstr "Nota implicită de la"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
-msgstr "Activează trailer (YouTube)"
+msgstr "Activează secvențe (YouTube)"
 
 msgctxt "#30005"
 msgid "Keep Original Title"
@@ -42,4 +51,68 @@ msgstr "Păstrează titlul original"
 
 msgctxt "#30006"
 msgid "Preferred Certification Country"
-msgstr "Ţară certificare preferată"
+msgstr "Ţara preferată pentru clasificarea audiovizuală pentru protecția minorilor"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "Adaugă și notele de la IMDb"
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "Prefix clasificare audiovizuală"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr "Adaugă studiouri multiple"
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr "Adaugă și notele de la Trakt.tv"
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr "Adaugă cuvintele cheie ca etichete"
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr "Separă decorul TMDb fanart cu titlu în peisaj"
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr "Limba de căutare"
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr "Activează afișele de la TMDb"
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr "Limba pentru lucrările artistice de la Fanart.tv"
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr "Cheie API personală pentru Fanart.tv (opțională)"
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr "Activează lucrările artistice de la Fanart.tv"
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr "Prioritizează lucrările artistice de la Fanart.tv peste limba preferată"
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "Activează Fanart"
+
+#~ msgctxt "#30003"
+#~ msgid "Get Rating from"
+#~ msgstr "Ia rating de la"

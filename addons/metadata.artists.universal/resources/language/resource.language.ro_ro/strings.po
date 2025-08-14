@@ -1,0 +1,154 @@
+# Kodi Media Center language file
+# Addon Name: Universal Artist Scraper
+# Addon id: metadata.artists.universal
+# Addon Provider: Olympia, XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2021-07-29 19:41+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Romanian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-artists-universal/ro_ro/>\n"
+"Language: ro_ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
+"X-Generator: Weblate 4.7.2\n"
+
+msgctxt "Addon Summary"
+msgid "Universal Scraper for Artists"
+msgstr "Scraper universal pentru artisti"
+
+msgctxt "Addon Description"
+msgid "This scraper collects information from the following supported sites: TheAudioDb.com, MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.[CR][CR]The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though)."
+msgstr "Acest scraper colectează informații de la următoarele site-uri suportate: TheAudioDb.com, MusicBrainz, last.fm, și allmusic.com, și opere de artă de la: fanart.tv, htbackdrops.com, last.fm și allmusic.com. Poate fi setat câmp cu câmp de pe care site-ul doriți informații specifice ⏎ ⏎ căutarea inițială se face întotdeauna face pe MusicBrainz.. În cazul în care link-ul Allmusic nu este adăugat la MusicBrainz, allmusic.com nu poate fi folosit (însă este relativ ușor să adăugați aceste link-uri lipsă)."
+
+msgctxt "#30000"
+msgid "Enable Artist Fanarts from HTBackdrops.com"
+msgstr "Activează Artist Fanarts de la HTBackdrops.com"
+
+msgctxt "#30001"
+msgid "Enable Artist Thumbs from allmusic.com"
+msgstr "Activează Artist Thumbs de la allmusic.com"
+
+msgctxt "#30002"
+msgid "Enable Artist Thumbs from last.fm"
+msgstr "Activează Artist Thumbs de la last.fm"
+
+msgctxt "#30003"
+msgid "Enable Artist Thumbs from HTBackdrops.com"
+msgstr "Activează Artist Thumbs de la HTBackdrops.com"
+
+msgctxt "#30004"
+msgid "Enable Artist Fanarts from fanart.tv"
+msgstr "Activează Artist Fanarts de la fanart.tv"
+
+msgctxt "#30005"
+msgid "Enable Artist Thumbs from fanart.tv"
+msgstr "Activează Artist Thumbs de la fanart.tv"
+
+msgctxt "#30006"
+msgid "Get Artist Biography from"
+msgstr "Descarcă biografia artistului de la"
+
+msgctxt "#30007"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#30008"
+msgid "Get Artist Discography from"
+msgstr "Descarcă discografia artistului de la"
+
+msgctxt "#30009"
+msgid "Get Artist Genres from"
+msgstr "Descarcă genul artistului de la"
+
+msgctxt "#30010"
+msgid "Get Artist Styles from"
+msgstr "Descarcă stilul artistului de la"
+
+msgctxt "#30011"
+msgid "Get Artist Life-Span from"
+msgstr "Descarcă Artist Life-Span de la"
+
+msgctxt "#30012"
+msgid "Get Artist Moods from"
+msgstr "Descarcă Artist Moods de la"
+
+msgctxt "#30014"
+msgid "Get Artist Years Active from"
+msgstr "Descarcă numărul de ani activi ai artistului de la"
+
+msgctxt "#30015"
+msgid "     Preferred Language"
+msgstr "Limba preferata"
+
+msgctxt "#30016"
+msgid "Fallback to Artist Biography from"
+msgstr "Revine la biografia artistului de la"
+
+msgctxt "#30017"
+msgid "Fallback to Artist Discography from"
+msgstr "Revine la discografia artistului de la"
+
+msgctxt "#30018"
+msgid "Fallback to Artist Genres from"
+msgstr "Revine la genul artistului de la"
+
+msgctxt "#30019"
+msgid "Fallback to Artist Styles from"
+msgstr "Revine la stilul artistului de la"
+
+msgctxt "#30020"
+msgid "Fallback to Artist Life-Span from"
+msgstr "Revine la Artist Life-Span de la"
+
+msgctxt "#30021"
+msgid "Fallbacks"
+msgstr "Setări de rezervă"
+
+msgctxt "#30022"
+msgid "Enable Artist Thumbs from theaudiodb.com"
+msgstr "Activează descărcarea pictogramelor artiștilor de la theaudiodb.com"
+
+msgctxt "#30023"
+msgid "Enable Artist Fanarts from theaudiodb.com"
+msgstr "Activează descărcarea Artist Fanarts de la theaudiodb.com"
+
+msgctxt "#30024"
+msgid "Fallback to Artist Moods from"
+msgstr ""
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr ""
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Enable Artist Banner from fanart.tv"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Enable Artist Clearlogo from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Enable Artist Clearart from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Enable Artist Landscape from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Enable Artist Banner from theaudiodb.com"
+msgstr ""

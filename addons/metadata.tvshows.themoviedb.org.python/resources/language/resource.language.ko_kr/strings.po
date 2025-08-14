@@ -1,0 +1,166 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-02-19 14:01+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-tvshows-themoviedb-org-python/ko_kr/>\n"
+"Language: ko_kr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Fetch TV Show metadata from themoviedb.org"
+msgstr "themoviedb.org에서 TV쇼 메타데이터를 가져옵니다"
+
+msgctxt "Addon Description"
+msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgstr "The Movie Database (TMDb)는 영화와 TV 데이터베이스를 구축한 커뮤니티입니다. 모든 자료들은 우리 놀라운 커뮤니티에서 2008년부터 추가돼 온 것들입니다. TMDb의 강력한 국제적 초점과 광범위한 데이터는 타의 추종을 불허하며 우리가 자랑스러워하는 점입니다. 간단히 말해, 우리는 커뮤니티와 살고 호흡하며 그것이 우리가 다른 점입니다."
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr "선호 언어"
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr "선호 인증 국가"
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr "인증 접두어 포함"
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr "접두어"
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr "원제목 유지"
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr "문자 있는 팬아트를 가로형으로 분류"
+
+msgctxt "#30006"
+msgid "Include country code with studio"
+msgstr "스튜디오에 국가 코드 포함"
+
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr "키워드를 태그로 추가"
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr ""
+
+# empty strings from 30007 to 30099
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr "클라이언트 키 (옵션)"
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr "팬아트 사용함"
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr "포스터 사용함"
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr "배너 사용함"
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr "투명 로고 사용함"
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr "투명 아트 사용함"
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr "랜드스케이프 사용함"
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr "캐릭터 아트 사용함"
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr "fanart.tv의 아트 포함"
+
+# empty strings from 30110 to 30149
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr "시즌 포스터 사용함"
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr "시즌 배너 사용함"
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr "시즌 랜드스케이프 사용함"
+
+# empty strings from 30153 to 30200
+msgctxt "#30200"
+msgid "Advanced"
+msgstr "고급"
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr "상세한 디버그 로그"
+
+# emptry strings from 30202 to 30299
+msgctxt "#30300"
+msgid "Ratings"
+msgstr "등급"
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr "기본 등급"
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr "IMDb 등급도 추가"
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr "Trakt.tv 등급도 추가"
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr "TMDb 등급도 추가"
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr "예고편 사용함"
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr "애드온 플레이어"
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr "유튜브"
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr "Tubed"

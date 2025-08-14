@@ -77,7 +77,7 @@ def get_show_id_from_nfo(nfo):
     logger.debug('Parsing NFO file:\n{}'.format(nfo))
     parse_result, named_seasons = data_utils.parse_nfo_url(nfo)
     if parse_result:
-        if parse_result.provider == 'themoviedb':
+        if parse_result.provider == 'tmdb':
             show_info = tmdb.load_show_info(
                 parse_result.show_id, ep_grouping=parse_result.ep_grouping, named_seasons=named_seasons)
         else:
@@ -92,6 +92,24 @@ def get_show_id_from_nfo(nfo):
                 listitem=list_item,
                 isFolder=True
             )
+
+
+def get_show_id(unique_ids):
+    """
+    Get show ID by unique IDs
+
+    In case there is a tmdb identifier in the unique IDs, use that.
+    Else use the find_by_id method to get the show ID by an external ID.
+
+    :param unique_ids: dictionary of unique IDs
+    """
+    if unique_ids.get('tmdb'):
+        return unique_ids['tmdb']
+    else:
+        res = tmdb.find_by_id(unique_ids)
+        if len(res) > 0:
+            return res[0].get('id')
+    return None
 
 
 def get_details(show_id):
@@ -120,8 +138,9 @@ def get_episode_list(show_ids):  # pylint: disable=missing-docstring
         show_id = all_ids.get('tmdb')
         if not show_id:
             for key, value in all_ids.items():
-                show_id = str(data_utils._convert_ext_id(key, value))
+                show_id = data_utils._convert_ext_id(key, value)
                 if show_id:
+                    show_id = str(show_id)
                     break
             if not show_id:
                 show_id = str(show_ids)
@@ -225,7 +244,9 @@ def router(paramstring):
         get_show_id_from_nfo(params['nfo'])
     elif params['action'] == 'getdetails':
         logger.debug('performing getdetails action')
-        get_details(params['url'])
+        show_id = params.get('url') or get_show_id(json.loads(params.get('uniqueIDs')))
+        if show_id:
+            get_details(show_id)
     elif params['action'] == 'getepisodelist':
         logger.debug('performing getepisodelist action')
         get_episode_list(params['url'])

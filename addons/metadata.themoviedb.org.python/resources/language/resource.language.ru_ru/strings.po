@@ -5,20 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Russian (http://www.transifex.com/projects/p/xbmc-addons/language/ru/)\n"
+"PO-Revision-Date: 2025-01-07 23:55+0000\n"
+"Last-Translator: vgbsd <vg72i@protonmail.com>\n"
+"Language-Team: Russian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-themoviedb-org-python/ru_ru/>\n"
+"Language: ru_ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.9.2\n"
+
+msgctxt "Addon Summary"
+msgid "Python TMDB Movie Scraper"
+msgstr "Инфоресурс на базе TMDB"
+
+msgctxt "Addon Description"
+msgid "themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like Kodi to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience."
+msgstr "themoviedb.org — это бесплатная и открытая база данных фильмов. Она полностью поддерживается обычными людьми. В данный момент сайт TMDb используют миллионы людей каждый месяц, и благодаря мощному API его могут использовать различные популярные медиацентры, такие как Kodi, чтобы получать метаданные, постеры и фанарт для фильмов с целью красивого оформления интерфейса."
 
 msgctxt "#30000"
-msgid "Enable Fanart"
-msgstr "Использовать фанарт"
+msgid "Enable fanart from TMDb"
+msgstr "Разрешить фанарт с TMDb"
 
 msgctxt "#30001"
 msgid "Prefer Trailer from HD-Trailers.net"
@@ -29,8 +38,8 @@ msgid "Preferred Language"
 msgstr "Предпочтительный язык"
 
 msgctxt "#30003"
-msgid "Get Rating from"
-msgstr "Сайт рейтинга"
+msgid "Default Rating from"
+msgstr "Рейтинг от (по умолчанию)"
 
 msgctxt "#30004"
 msgid "Enable Trailer (YouTube)"
@@ -42,4 +51,68 @@ msgstr "Использовать оригинальные названия"
 
 msgctxt "#30006"
 msgid "Preferred Certification Country"
-msgstr "Страна сертификации"
+msgstr "Предпочитаемая страна сертификации"
+
+msgctxt "#30007"
+msgid "Add also IMDb ratings"
+msgstr "Добавить рейтинг от IMDb"
+
+msgctxt "#30008"
+msgid "Certification Prefix"
+msgstr "Префикс сертификации"
+
+msgctxt "#30009"
+msgid "Add multiple studios"
+msgstr "Добавлять несколько студий"
+
+msgctxt "#30010"
+msgid "Add also Trakt.tv ratings"
+msgstr "Добавить рейтинг от Trakt.tv"
+
+msgctxt "#30011"
+msgid "Add keywords as tags"
+msgstr "Использовать теги"
+
+msgctxt "#30012"
+msgid "Separate TMDb fanart with title to landscape"
+msgstr "Фанарт TMDb с названием – как landscape"
+
+msgctxt "#30013"
+msgid "Search language"
+msgstr "Язык для поиска"
+
+msgctxt "#30014"
+msgid "Enable posters from TMDb"
+msgstr "Разрешить постеры с TMDb"
+
+msgctxt "#30015"
+msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
+msgstr "Максимальное количество каждого типа изображений (большое количество изображений может привести к ошибке при скраппинге в базу данных MySQL)"
+
+msgctxt "#30100"
+msgid "Language for Fanart.tv artwork"
+msgstr "Выбрать язык для иллюстраций с Fanart.tv"
+
+msgctxt "#30101"
+msgid "Fanart.tv personal API key (optional)"
+msgstr "Персональный API-ключ Fanart.tv (необязательно)"
+
+msgctxt "#30102"
+msgid "Enable artwork from Fanart.tv"
+msgstr "Разрешить иллюстрации с Fanart.tv"
+
+msgctxt "#30103"
+msgid "Prioritize Fanart.TV artworks over preferred language"
+msgstr "Выбирать иллюстрации Fanart.TV, игнорируя предпочитаемый язык"
+
+msgctxt "#30999"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+#~ msgctxt "#30000"
+#~ msgid "Enable Fanart"
+#~ msgstr "Использовать фанарт"
+
+#~ msgctxt "#30003"
+#~ msgid "Get Rating from"
+#~ msgstr "Сайт рейтинга"
