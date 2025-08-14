@@ -49,7 +49,7 @@
       <group id="2" label="19177">
         <setting id="videoplayer.adjustrefreshrate" type="integer" label="170" help="36164">
           <level>1</level>
-          <default>0</default> <!-- ADJUST_REFRESHRATE_OFF -->
+          <default>2</default> <!-- ADJUST_REFRESHRATE_ON_STARTSTOP -->
           <constraints>
             <options>
               <option label="351">0</option> <!-- ADJUST_REFRESHRATE_OFF -->
