@@ -16,9 +16,14 @@
 #include "DVDStateSerializer.h"
 #include "DllDvdNav.h"
 #include "cores/MenuType.h"
+#include "cores/VideoPlayer/PlayerState.h"
+#include "threads/CriticalSection.h"
 #include "utils/Geometry.h"
+#include "video/VideoInfoTag.h"
 
+#include <chrono>
 #include <string>
+#include <vector>
 
 #define DVD_VIDEO_BLOCKSIZE         DVD_VIDEO_LB_LEN // 2048 bytes
 
@@ -141,6 +146,9 @@ public:
 
   VideoStreamInfo GetVideoStreamInfo();
 
+  void SaveCurrentState(const SPlayerState& state, const CStreamDetails& details) override;
+  void UpdateCurrentState(SPlayerState& state, CFileItem& item, bool& closed) override;
+
 protected:
 
   int ProcessBlock(uint8_t* buffer, int* read);
@@ -192,5 +200,21 @@ protected:
 
   /*! DVD state serializer handler */
   CDVDStateSerializer m_dvdStateSerializer;
+
+  int m_currentPlaylist{-1};
+  std::chrono::steady_clock::time_point m_startWatchTime{};
+
+  struct PlaylistInformation
+  {
+    int playlist{-1};
+    bool inMenu{false};
+    std::chrono::milliseconds duration;
+    std::chrono::milliseconds watchedTime;
+    CStreamDetails details;
+    SPlayerState state;
+  };
+  std::vector<PlaylistInformation> m_playedPlaylists;
+
+  CCriticalSection m_statesLock;
 };
 
