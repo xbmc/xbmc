@@ -484,7 +484,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag* id3v2,
       auto chapNumber{0};
       for (const auto* chapFrame : chapterFrames)
       {
-        ChapterDetails& chapter = chapters[chapNumber];
+        ChapterDetails chapter;
 
         // Title - music db will generate a localised "chapter xx" if no title here
         if (auto list = chapFrame->embeddedFrameList("TIT2"); !list.isEmpty())
@@ -503,7 +503,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag* id3v2,
 
         CLog::Log(LOGDEBUG, "CTagLoaderTagLib - Chapter {}, {} start point {}, endpoint {}",
                   chapNumber + 1, chapter.name, startTimeMs.count(), endTimeMs.count());
-
+        chapters.emplace_back(std::move(chapter));
         ++chapNumber;
       }
 

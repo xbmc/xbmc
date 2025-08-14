@@ -758,51 +758,79 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
   {
     song->idAlbum = album.idAlbum;
 
-    song->idSong = AddSong(song->idSong, //
-                           song->dateNew, //
-                           song->idAlbum, //
-                           song->strTitle, //
-                           song->strMusicBrainzTrackID, //
-                           song->strFileName, //
-                           song->strComment, //
-                           song->strMood, //
-                           song->strThumb, //
-                           song->GetArtistString(), //
-                           song->GetArtistSort(), //
-                           song->genre, //
-                           song->iTrack, //
-                           song->iDuration, //
-                           song->strReleaseDate, //
-                           song->strOrigReleaseDate, //
-                           song->strDiscSubtitle, //
-                           song->iTimesPlayed, //
-                           song->iStartOffset, song->iEndOffset, //
-                           song->lastPlayed, //
-                           song->rating, //
-                           song->userrating, //
-                           song->votes, //
-                           song->iBPM, song->iBitRate, song->iSampleRate, song->iChannels, //
-                           song->songVideoURL, //
-                           song->replayGain);
+    bool finished = false; // Ensure loop runs at least once to add real songs not just virtual!
+    int index = 0;
 
-    // Song must have at least one artist so set artist to [Missing]
-    if (song->artistCredits.empty())
-      AddSongArtist(BLANKARTIST_ID, song->idSong, ROLE_ARTIST, BLANKARTIST_NAME, 0);
-
-    for (auto artistCredit = song->artistCredits.begin(); artistCredit != song->artistCredits.end();
-         ++artistCredit)
+    while (!finished)
     {
-      artistCredit->idArtist =
-          AddArtist(artistCredit->GetArtist(), artistCredit->GetMusicBrainzArtistID(),
-                    artistCredit->GetSortName());
-      AddSongArtist(
-          artistCredit->idArtist, song->idSong, ROLE_ARTIST,
-          artistCredit->GetArtist(), // we don't have song artist breakdowns from scrapers, yet
-          static_cast<int>(std::distance(song->artistCredits.begin(), artistCredit)));
-    }
-    // Having added artist credits (maybe with MBID) add the other contributing artists (no MBID)
-    // and use COMPOSERSORT tag data to provide sort names for artists that are composers
-    AddSongContributors(song->idSong, song->GetContributors(), song->GetComposerSort());
+      if (!song->m_chapters.empty())
+      {
+        ChapterDetails& chapter = song->m_chapters[index];
+        // no title or just numbers  (1, 02, 003 etc) - generate a better one
+        if (StringUtils::IsNaturalNumber(chapter.name) || chapter.name.empty())
+          song->strTitle = StringUtils::Format(
+              "{} {:03}", g_localizeStrings.Get(21396) /* Chapter */, index + 1);
+        else
+          song->strTitle = chapter.name;
+
+        song->iStartOffset = static_cast<int>(chapter.startTimeMs.count());
+        song->iEndOffset = static_cast<int>(chapter.endTimeMs.count());
+        song->iDuration = CUtil::ConvertMilliSecsToSecsInt(song->iEndOffset - song->iStartOffset);
+        // disc number is in top 16 bits, track in bottom 16 bits (disc << 16 | track)
+        song->iTrack = (1 << 16) + index + 1; // disc 1 + track number
+        song->idSong = -1; // make sure this is a new song to add
+      }
+
+      ++index;
+      song->idSong = AddSong(song->idSong, //
+                             song->dateNew, //
+                             song->idAlbum, //
+                             song->strTitle, //
+                             song->strMusicBrainzTrackID, //
+                             song->strFileName, //
+                             song->strComment, //
+                             song->strMood, //
+                             song->strThumb, //
+                             song->GetArtistString(), //
+                             song->GetArtistSort(), //
+                             song->genre, //
+                             song->iTrack, //
+                             song->iDuration, //
+                             song->strReleaseDate, //
+                             song->strOrigReleaseDate, //
+                             song->strDiscSubtitle, //
+                             song->iTimesPlayed, //
+                             song->iStartOffset, song->iEndOffset, //
+                             song->lastPlayed, //
+                             song->rating, //
+                             song->userrating, //
+                             song->votes, //
+                             song->iBPM, song->iBitRate, song->iSampleRate, song->iChannels, //
+                             song->songVideoURL, //
+                             song->replayGain);
+
+      // Song must have at least one artist so set artist to [Missing]
+      if (song->artistCredits.empty())
+        AddSongArtist(BLANKARTIST_ID, song->idSong, ROLE_ARTIST, BLANKARTIST_NAME, 0);
+
+      for (auto artistCredit = song->artistCredits.begin();
+           artistCredit != song->artistCredits.end(); ++artistCredit)
+      {
+        artistCredit->idArtist =
+            AddArtist(artistCredit->GetArtist(), artistCredit->GetMusicBrainzArtistID(),
+                      artistCredit->GetSortName());
+        AddSongArtist(
+            artistCredit->idArtist, song->idSong, ROLE_ARTIST,
+            artistCredit->GetArtist(), // we don't have song artist breakdowns from scrapers, yet
+            static_cast<int>(std::distance(song->artistCredits.begin(), artistCredit)));
+      }
+      // Having added artist credits (maybe with MBID) add the other contributing artists (no MBID)
+      // and use COMPOSERSORT tag data to provide sort names for artists that are composers
+      AddSongContributors(song->idSong, song->GetContributors(), song->GetComposerSort());
+
+      // we're finished if we've reached or passed the number of chapters
+      finished = index >= static_cast<int>(song->m_chapters.size());
+    } // while
   }
 
   // Set album duration as total of all songs on album.
