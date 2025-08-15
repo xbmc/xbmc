@@ -697,10 +697,22 @@ public:
                            const KODI::ART::Artwork& artwork,
                            int idShow,
                            int idEpisode = -1);
+
+  /*!
+   * @brief The FileInfo structure represents a DB record of the files table.
+   */
+  struct FileRecord
+  {
+    int m_idFile{-1};
+    int m_playCount{-1};
+    CDateTime m_lastPlayed;
+    CDateTime m_dateAdded;
+  };
+
   int SetFileForMedia(const std::string& fileAndPath,
                       VideoDbContentType type,
                       int mediaId,
-                      int oldIdFile);
+                      FileRecord oldFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const KODI::ART::Artwork& artwork,
                               int idMVideo = -1);
@@ -1044,6 +1056,17 @@ public:
   void CleanDatabase(CGUIDialogProgressBarHandle* handle = nullptr,
                      const std::set<int>& paths = std::set<int>(),
                      bool showProgress = true);
+
+  enum class FileExistsAction
+  {
+    NONE,
+    UPDATE
+  };
+
+  int AddOrUpdateFile(const std::string& fileAndPath,
+                      const std::string& parentPath,
+                      FileRecord fileInfo,
+                      FileExistsAction existsAction);
 
   /*! \brief Add a file to the database, if necessary
    If the file is already in the database, we simply return its id.
@@ -1436,9 +1459,12 @@ protected:
                              int max,
                              const T& offsets) const;
 
-  int SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
-  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
-  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
+  int SetFileForEpisode(const std::string& fileAndPath,
+                        int idEpisode,
+                        int oldIdFile,
+                        int newIdFile);
+  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile, int newIdFile);
+  int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int newIdFile);
 
 private:
   void CreateTables() override;
@@ -1530,11 +1556,4 @@ private:
   static void AnnounceUpdate(const std::string& content, int id);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
-
-  /*! \brief Create a new file to replace an old one (ie. for bluray playlists), preserving the date the original file was added.
-   \param fileAndPath the full path of the new file to add
-   \param oldIdFile file id of the file to replace
-   \return the new fileId, -1 on error
-   */
-  int AddFilePreserveDateAdded(const std::string& fileAndPath, int oldIdFile);
 };

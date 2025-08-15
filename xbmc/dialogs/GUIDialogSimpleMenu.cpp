@@ -156,7 +156,9 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
           {
             // Revert file to base file (BDMV/ISO)
             database.BeginTransaction();
-            if (database.SetFileForMedia(base, it.mediaType, it.idMedia, it.idFile) > 0)
+            //! @todo preserve the other attributes of files .m_playCount, .m_lastPlayed, .m_dateAdded
+            if (database.SetFileForMedia(base, it.mediaType, it.idMedia,
+                                         CVideoDatabase::FileRecord{.m_idFile = it.idFile}) > 0)
               database.CommitTransaction();
             else
               database.RollbackTransaction();
