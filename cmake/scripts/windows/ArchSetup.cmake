@@ -83,7 +83,7 @@ if(CMAKE_GENERATOR MATCHES "Visual Studio")
     set(MP_FLAG "/MP")
   endif()
 
-  set(CMAKE_CXX_FLAGS "/permissive- ${MP_FLAG} ${CMAKE_CXX_FLAGS}")
+  set(CMAKE_CXX_FLAGS "/bigobj /permissive- ${MP_FLAG} ${CMAKE_CXX_FLAGS}")
 endif()
 
 # Google Test needs to use shared version of runtime libraries
