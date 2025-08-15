@@ -68,7 +68,7 @@
 			<scrolltime tween="cubic" easing="out">500</scrolltime>
 			<include>OpenClose_Right</include>
 			<itemgap>-160</itemgap>
-			<visible>!String.StartsWith(Weather.Data(Current.Temperature),$LOCALIZE[503])</visible>
+			<visible>!Weather.IsUpdating</visible>
 			<control type="group" id="567">
 				<description>Weather info</description>
 				<height>410</height>
@@ -206,7 +206,7 @@
 		</include>
 		<include>BottomBar</include>
 		<control type="group">
-			<visible>String.StartsWith(Weather.Data(Current.Temperature),$LOCALIZE[503])</visible>
+			<visible>Weather.IsUpdating</visible>
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<control type="image">
 				<texture>colors/black.png</texture>

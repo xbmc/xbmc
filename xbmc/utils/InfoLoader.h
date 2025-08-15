@@ -10,6 +10,7 @@
 
 #include "jobs/IJobCallback.h"
 
+#include <atomic>
 #include <string>
 
 class CInfoLoader : public IJobCallback
@@ -20,6 +21,7 @@ public:
 
   std::string GetInfo(int info);
   void Refresh();
+  bool IsUpdating() const { return m_busy; }
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 protected:
@@ -29,5 +31,5 @@ protected:
 private:
   unsigned int m_refreshTime;
   unsigned int m_timeToRefresh;
-  bool m_busy;
+  std::atomic<bool> m_busy{false};
 };

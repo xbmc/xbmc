@@ -80,6 +80,9 @@ bool CWeatherGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
     case WEATHER_IS_FETCHED:
       value = CServiceBroker::GetWeatherManager().IsFetched();
       return true;
+    case WEATHER_IS_UPDATING:
+      value = CServiceBroker::GetWeatherManager().IsUpdating();
+      return true;
     default:
       break;
   }
