@@ -34,6 +34,31 @@ using namespace XFILE;
 
 using KODI::PLATFORM::WINDOWS::FromW;
 
+namespace
+{
+
+uint64_t GetEntrySize(const WIN32_FIND_DATAW& findData)
+{
+  return (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
+}
+
+KODI::TIME::FileTime GetEntryTime(CFileItemPtr& item, const WIN32_FIND_DATAW& findData)
+{
+  KODI::TIME::FileTime fileTime{};
+  fileTime.lowDateTime = findData.ftLastWriteTime.dwLowDateTime;
+  fileTime.highDateTime = findData.ftLastWriteTime.dwHighDateTime;
+
+  KODI::TIME::FileTime localTime{};
+  if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
+    return localTime;
+
+  CDateTime dt{item->GetDateTime()};
+  dt.SetValid(false);
+  return dt;
+}
+
+} // Unnamed namespace
+
 // local helper
 static inline bool worthTryToConnect(const DWORD lastErr)
 {
@@ -108,9 +133,9 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     searchMask += L"\\*";
 
   HANDLE hSearch;
-  WIN32_FIND_DATAW findData = {};
   CURL authUrl(url); // ConnectAndAuthenticate may update url with username and password
 
+  WIN32_FIND_DATAW findData = {};
   hSearch = FindFirstFileExW(searchMask.c_str(), FindExInfoBasic, &findData, FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH);
 
   if (hSearch == INVALID_HANDLE_VALUE)
@@ -144,6 +169,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   if (pathWithSlash.back() != '/')
     pathWithSlash.push_back('/');
 
+  std::vector<CFileItemPtr> fileItems;
   do
   {
     std::wstring itemNameW(findData.cFileName);
@@ -157,37 +183,28 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       continue;
     }
 
-    CFileItemPtr pItem(new CFileItem(itemName));
+    const bool isDir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    const bool isHidden =
+        (findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0 ||
+        itemName.front() == '.'; // mark files starting from dot as hidden
 
-    pItem->SetFolder((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    if (pItem->IsFolder())
-      pItem->SetPath(pathWithSlash + itemName + '/');
-    else
-      pItem->SetPath(pathWithSlash + itemName);
-
-    if ((findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0
-          || itemName.front() == '.') // mark files starting from dot as hidden
-      pItem->SetProperty("file:hidden", true);
+    std::string itemPath(pathWithSlash + itemName);
+    if (isDir)
+      itemPath += '/';
 
     // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
-    KODI::TIME::FileTime fileTime;
-    fileTime.lowDateTime = findData.ftLastWriteTime.dwLowDateTime;
-    fileTime.highDateTime = findData.ftLastWriteTime.dwHighDateTime;
-    KODI::TIME::FileTime localTime;
-    if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
-      pItem->SetDateTime(localTime);
-    else
-    {
-      CDateTime dt{pItem->GetDateTime()};
-      dt.SetValid(false);
-      pItem->SetDateTime(dt);
-    }
-    if (!pItem->IsFolder())
-      pItem->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
+    CFileItemPtr& item = fileItems.emplace_back(std::make_shared<CFileItem>(itemName));
+    item->SetFolder(isDir);
+    item->SetPath(itemPath);
+    item->SetDateTime(GetEntryTime(item, findData));
+    if (!isDir)
+      item->SetSize(GetEntrySize(findData));
+    if (isHidden)
+      item->SetProperty("file:hidden", true);
 
-    items.Add(pItem);
   } while (FindNextFileW(hSearch, &findData));
+  items.AddItems(std::move(fileItems));
 
   FindClose(hSearch);
 
