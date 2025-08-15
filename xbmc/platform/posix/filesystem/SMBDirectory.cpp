@@ -40,6 +40,40 @@
 
 using namespace XFILE;
 
+namespace
+{
+
+KODI::TIME::FileTime GetDirEntryTime(const struct stat& st)
+{
+  int64_t timeDate = 0;
+
+  // only stat files that can give proper responses
+  if (S_ISREG(st.st_mode) || S_ISDIR(st.st_mode))
+  {
+    // if modification date is missing, use create date
+    timeDate = (st.st_mtime == 0) ? st.st_ctime : st.st_mtime;
+  }
+
+  KODI::TIME::FileTime fileTime{};
+  KODI::TIME::FileTime localTime{};
+  KODI::TIME::TimeTToFileTime(timeDate, &fileTime);
+  KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
+
+  return localTime;
+}
+
+bool CanDiscoverServers()
+{
+  if (const auto settingsComponent = CServiceBroker::GetSettingsComponent(); settingsComponent)
+    if (const auto settings = settingsComponent->GetSettings(); settings)
+      // Check WS-Discovery daemon enabled, if not return as smb:// cant be handled further
+      return settings->GetBool(CSettings::SETTING_SERVICES_WSDISCOVERY);
+
+  return false;
+}
+
+} // Unnamed namespace
+
 CSMBDirectory::CSMBDirectory(void)
 {
   smb.AddActiveConnection();
@@ -56,46 +90,28 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   /* samba isn't thread safe with old interface, always lock */
   std::unique_lock lock(smb);
-
   smb.Init();
-
-  //Separate roots for the authentication and the containing items to allow browsing to work correctly
-  std::string strRoot = url.Get();
-  std::string strAuth;
-
   lock.unlock(); // OpenDir is locked
 
   // if url provided does not having anything except smb protocol
   // Do a WS-Discovery search to find possible smb servers to mimic smbv1 behaviour
+  std::string strRoot = url.Get();
   if (strRoot == "smb://")
   {
-    auto settingsComponent = CServiceBroker::GetSettingsComponent();
-    if (!settingsComponent)
-      return false;
-
-    auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    if (!settings)
-      return false;
-
-    // Check WS-Discovery daemon enabled, if not return as smb:// cant be handled further
-    if (settings->GetBool(CSettings::SETTING_SERVICES_WSDISCOVERY))
+    if (CanDiscoverServers())
     {
       WSDiscovery::CWSDiscoveryPosix& WSInstance =
           dynamic_cast<WSDiscovery::CWSDiscoveryPosix&>(CServiceBroker::GetWSDiscovery());
       return WSInstance.GetServerList(items);
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
 
+  std::string strAuth;
   int fd = OpenDir(url, strAuth);
   if (fd < 0)
     return false;
-
-  URIUtils::AddSlashAtEnd(strRoot);
-  URIUtils::AddSlashAtEnd(strAuth);
 
   lock.lock();
   if (!smb.IsSmbValid())
@@ -103,63 +119,48 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   const libsmb_file_info* fi;
   struct stat st;
-  bool atLeastOneEntry = false;
+  std::vector<CFileItemPtr> fileItems;
   while ((fi = smbc_readdirplus2(fd, &st)))
   {
-    atLeastOneEntry = true;
     // We use UTF-8 internally, as does SMB
     std::string name = fi->name;
 
     if (name == "." || name == ".." || name == "lost+found")
       continue;
 
+    URIUtils::AddSlashAtEnd(strRoot);
+    std::string path = strRoot + name;
+
     int64_t size = 0;
     const bool isDir = S_ISDIR(st.st_mode);
-    int64_t timeDate = 0;
     bool hidden = name.starts_with('.');
 
     // only stat files that can give proper responses
     if (S_ISREG(st.st_mode) || isDir)
     {
-      // This is also present in stuct stat using S_IXOTH but given the potential for confusion
-      // let's be explicit.
-      hidden = hidden || fi->attrs & SMBC_DOS_MODE_HIDDEN;
+      // This is also present in stuct stat using S_IXOTH but given
+      // the potential for confusion, let's be explicit.
+      hidden = hidden || (fi->attrs & SMBC_DOS_MODE_HIDDEN);
 
-      timeDate = st.st_mtime;
-      if (timeDate == 0) // if modification date is missing, use create date
-        timeDate = st.st_ctime;
       size = st.st_size;
     }
 
-    KODI::TIME::FileTime fileTime, localTime;
-    KODI::TIME::TimeTToFileTime(timeDate, &fileTime);
-    KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
+    if (isDir)
+      URIUtils::AddSlashAtEnd(path);
 
-    const auto item = std::make_shared<CFileItem>(name);
-    item->SetDateTime(localTime);
+    auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(name));
+    item->SetPath(path);
+    item->SetDateTime(GetDirEntryTime(st));
+    item->SetFolder(isDir);
+    if (!isDir)
+      item->SetSize(size);
     if (hidden)
       item->SetProperty("file:hidden", true);
-    if (isDir)
-    {
-      std::string path(strRoot);
-
-      path = URIUtils::AddFileToFolder(path, name);
-      URIUtils::AddSlashAtEnd(path);
-      item->SetPath(path);
-      item->SetFolder(true);
-    }
-    else
-    {
-      item->SetPath(strRoot + name);
-      item->SetFolder(false);
-      item->SetSize(size);
-    }
-    items.Add(item);
   }
 
   // No results from smbc_readdirplus2() suggests server or share browsing.
   // Use smbclient's legacy API for this.
-  if (!atLeastOneEntry)
+  if (fileItems.empty())
   {
     if (smbc_lseekdir(fd, 0) < 0)
     {
@@ -174,8 +175,8 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if (dirent->smbc_type != SMBC_FILE_SHARE && dirent->smbc_type != SMBC_SERVER)
         continue;
 
-      const auto item = std::make_shared<CFileItem>(dirent->name);
       std::string path(strRoot);
+
       // needed for network / workgroup browsing
       // skip if root if we are given a server
       if (dirent->smbc_type == SMBC_SERVER)
@@ -188,11 +189,13 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       }
       path = URIUtils::AddFileToFolder(path, dirent->name);
       URIUtils::AddSlashAtEnd(path);
+
+      auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(dirent->name));
       item->SetPath(path);
       item->SetFolder(true);
-      items.Add(item);
     }
   }
+  items.AddItems(std::move(fileItems));
 
   if (smbc_closedir(fd) < 0)
   {
