@@ -55,3 +55,8 @@ set(SOURCES TestAlarmClock.cpp
 set(HEADERS TestGlobalsHandlingPattern1.h)
 
 core_add_test_library(utils_test)
+
+# Add /bigobj flag for Windows to handle large object files
+if(MSVC)
+  target_compile_options(utils_test PRIVATE /bigobj)
+endif()
