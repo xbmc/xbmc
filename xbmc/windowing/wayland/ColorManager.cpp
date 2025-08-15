@@ -102,7 +102,7 @@ constexpr double MIN_LUM_FACTOR = 10'000.0;
 
 #define CASE(VAL) \
   case VAL: \
-    return "#VAL"sv
+    return std::string_view(#VAL)
 
 template<>
 struct fmt::formatter<wayland::color_manager_v1_render_intent> : fmt::formatter<std::string_view>
