@@ -2828,13 +2828,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       const auto appPlayer = GetComponent<CApplicationPlayer>();
       if (!m_itemCurrentFile->IsLiveTV() ||
           (!appPlayer->IsPlayingVideo() && !appPlayer->IsPlayingAudio()))
-      {
-        CGUIDialogBusy* dialog =
-            CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(
-                WINDOW_DIALOG_BUSY);
-        if (dialog && !dialog->IsDialogRunning())
-          dialog->WaitOnEvent(m_playerEvent);
-      }
+        CGUIDialogBusy::WaitOnEvent(m_playerEvent);
 
       return true;
     }
