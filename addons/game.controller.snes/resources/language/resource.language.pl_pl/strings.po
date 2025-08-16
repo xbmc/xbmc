@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2021-11-10 20:25+0000\n"
 "Last-Translator: bkiziuk <kiziuk@gmail.com>\n"
@@ -22,7 +22,7 @@ msgid "SNES controller"
 msgstr "Kontroler SNES"
 
 msgctxt "Addon Description"
-msgid "The SNES (akso known as Super NES or Super Nintendo) is a 16-bit console released in 1990. The controller design served as inspiration for the PlayStation, Dreamcast, Xbox and Wii Classic controllers."
+msgid "The SNES (also known as Super NES or Super Nintendo) is a 16-bit console released in 1990. The controller design served as inspiration for the PlayStation, Dreamcast, Xbox and Wii Classic controllers."
 msgstr "SNES (znana również jako Super NES lub Super Nintendo) to 16-bitowa konsola wydana w 1990 roku. Wzór kontrolera był inspiracją dla kontrolerów PlayStation, Dreamcast, Xbox i Wii Classic."
 
 msgctxt "Addon Disclaimer"
