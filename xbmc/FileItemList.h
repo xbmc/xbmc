@@ -46,6 +46,8 @@ public:
   void Add(CFileItemPtr item);
   void Add(CFileItem&& item);
   void AddFront(const CFileItemPtr& pItem, int itemPosition);
+  void AddItems(const std::vector<CFileItemPtr>& items);
+  void AddItems(std::vector<CFileItemPtr>&& items);
   void Remove(const CFileItem* pItem);
   void Remove(int iItem);
   CFileItemPtr Get(int iItem) const;
@@ -196,6 +198,9 @@ private:
    \sa Stack
    */
   void StackFolders();
+
+  void AddFastLookupItem(const CFileItemPtr& item);
+  void AddFastLookupItems(const std::vector<CFileItemPtr>& items);
 
   std::vector<std::shared_ptr<CFileItem>> m_items;
   std::map<std::string, std::shared_ptr<CFileItem>, std::less<>> m_map;
