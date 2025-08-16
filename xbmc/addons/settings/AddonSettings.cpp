@@ -128,7 +128,7 @@ SettingPtr AddSettingWithoutDefinition(ADDON::CAddonSettings& settings,
     group = groups.back();
 
   // create a new setting on-the-fly
-  const SettingPtr setting{
+  SettingPtr setting{
       InitializeFromOldSettingWithoutDefinition<TSetting>(settings, settingId, defaultValue)};
   if (!setting)
   {
