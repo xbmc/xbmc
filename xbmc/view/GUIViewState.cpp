@@ -62,7 +62,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == 0)
     return GetViewState(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(),items);
 
-  const CURL url=items.GetURL();
+  const CURL& url = items.GetURL();
 
   if (items.IsAddonsPath())
     return new CGUIViewStateAddonBrowser(items);
