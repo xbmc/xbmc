@@ -56,19 +56,19 @@ void CAddonInfoBuilderFromDB::SetLicense(std::string license)
   m_addonInfo->m_license = std::move(license);
 }
 
-void CAddonInfoBuilderFromDB::SetSummary(std::string summary)
+void CAddonInfoBuilderFromDB::SetSummary(const std::string& summary)
 {
-  m_addonInfo->m_summary.try_emplace("unk", std::move(summary));
+  m_addonInfo->m_summary.try_emplace("unk", summary);
 }
 
-void CAddonInfoBuilderFromDB::SetDescription(std::string description)
+void CAddonInfoBuilderFromDB::SetDescription(const std::string& description)
 {
-  m_addonInfo->m_description.try_emplace("unk", std::move(description));
+  m_addonInfo->m_description.try_emplace("unk", description);
 }
 
-void CAddonInfoBuilderFromDB::SetDisclaimer(std::string disclaimer)
+void CAddonInfoBuilderFromDB::SetDisclaimer(const std::string& disclaimer)
 {
-  m_addonInfo->m_disclaimer.try_emplace("unk", std::move(disclaimer));
+  m_addonInfo->m_disclaimer.try_emplace("unk", disclaimer);
 }
 
 void CAddonInfoBuilderFromDB::SetAuthor(std::string author)
@@ -116,9 +116,9 @@ void CAddonInfoBuilderFromDB::SetScreenshots(std::vector<std::string> screenshot
   m_addonInfo->m_screenshots = std::move(screenshots);
 }
 
-void CAddonInfoBuilderFromDB::SetChangelog(std::string changelog)
+void CAddonInfoBuilderFromDB::SetChangelog(const std::string& changelog)
 {
-  m_addonInfo->m_changelog.try_emplace("unk", std::move(changelog));
+  m_addonInfo->m_changelog.try_emplace("unk", changelog);
 }
 
 void CAddonInfoBuilderFromDB::SetLifecycleState(AddonLifecycleState state, std::string description)

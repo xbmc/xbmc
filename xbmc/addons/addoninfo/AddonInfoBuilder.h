@@ -85,9 +85,9 @@ public:
   void SetId(std::string id);
   void SetName(std::string name);
   void SetLicense(std::string license);
-  void SetSummary(std::string summary);
-  void SetDescription(std::string description);
-  void SetDisclaimer(std::string disclaimer);
+  void SetSummary(const std::string& summary);
+  void SetDescription(const std::string& description);
+  void SetDisclaimer(const std::string& disclaimer);
   void SetAuthor(std::string author);
   void SetSource(std::string source);
   void SetWebsite(std::string website);
@@ -97,7 +97,7 @@ public:
   void SetArt(const std::string& type, std::string value);
   void SetArt(KODI::ART::Artwork art);
   void SetScreenshots(std::vector<std::string> screenshots);
-  void SetChangelog(std::string changelog);
+  void SetChangelog(const std::string& changelog);
   void SetLifecycleState(AddonLifecycleState state, std::string description);
   void SetPath(std::string path);
   void SetLibName(std::string libname);

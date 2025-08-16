@@ -128,7 +128,7 @@ SettingPtr AddSettingWithoutDefinition(ADDON::CAddonSettings& settings,
     group = groups.back();
 
   // create a new setting on-the-fly
-  const SettingPtr setting{
+  SettingPtr setting{
       InitializeFromOldSettingWithoutDefinition<TSetting>(settings, settingId, defaultValue)};
   if (!setting)
   {
@@ -1254,7 +1254,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
       IntegerSettingOptions options;
       for (uint32_t i = 0; i < values.size(); ++i)
       {
-        const std::string label{values[i]};
+        const std::string& label{values[i]};
         int value = i;
         if (settingEntries.size() > i)
           value = static_cast<int>(std::strtol(settingEntries[i].c_str(), nullptr, 0));
