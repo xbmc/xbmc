@@ -21,12 +21,12 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/remote/IRRemote.h"
+#include "interfaces/AnnouncementManager.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "xbmc/interfaces/AnnouncementManager.h"
 
 #include <mutex>
 

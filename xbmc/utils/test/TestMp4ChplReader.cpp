@@ -7,9 +7,10 @@
  */
 
 #include "URL.h"
-#include "gtest/gtest.h"
 #include "test/TestUtils.h"
 #include "utils/Mp4ChplReader.h"
+
+#include <gtest/gtest.h>
 
 class TestMp4ChplReader : public ::testing::Test
 {

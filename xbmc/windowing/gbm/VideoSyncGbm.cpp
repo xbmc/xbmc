@@ -16,14 +16,14 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 #include "windowing/gbm/WinSystemGbm.h"
-#include "xf86drm.h"
-#include "xf86drmMode.h"
 
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 
 #include <unistd.h>
+#include <xf86drm.h>
+#include <xf86drmMode.h>
 
 CVideoSyncGbm::CVideoSyncGbm(CVideoReferenceClock* clock)
   : CVideoSync(clock), m_winSystem(CServiceBroker::GetWinSystem())

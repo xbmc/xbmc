@@ -175,9 +175,7 @@ add_custom_target(${APP_NAME_LC}-libraries)
 set(LIBRARY_FILES "" CACHE STRING "" FORCE)
 mark_as_advanced(LIBRARY_FILES)
 
-set(INCLUDES ${CMAKE_SOURCE_DIR}
-             ${CMAKE_SOURCE_DIR}/lib
-             ${CMAKE_SOURCE_DIR}/xbmc
+set(INCLUDES ${CMAKE_SOURCE_DIR}/xbmc
              ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORM_DIR}
              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer
              ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
