@@ -357,10 +357,14 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
                                            item->GetDynPath());
 
         // Notify all windows to update the file item
-        std::shared_ptr<CFileItem> oldItem{item};
-        oldItem->SetPath(oldPath);
-        CGUIMessage msg{GUI_MSG_NOTIFY_ALL,        0,      0, GUI_MSG_UPDATE_ITEM,
-                        GUI_MSG_FLAG_FORCE_UPDATE, oldItem};
+        CFileItem oldItem{*item};
+        oldItem.SetPath(oldPath);
+        CGUIMessage msg{GUI_MSG_NOTIFY_ALL,
+                        0,
+                        0,
+                        GUI_MSG_UPDATE_ITEM,
+                        GUI_MSG_FLAG_FORCE_UPDATE,
+                        std::make_shared<CFileItem>(oldItem)};
         CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       }
     }
