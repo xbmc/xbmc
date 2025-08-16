@@ -630,7 +630,7 @@ void* Interface_Base::get_interface(const KODI_ADDON_BACKEND_HDL /*hdl*/,
 
   void* retval(nullptr);
 
-  for (auto fn : s_registeredInterfaces)
+  for (const auto& fn : s_registeredInterfaces)
     if ((retval = fn(name, version)))
       break;
 
