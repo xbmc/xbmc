@@ -34,7 +34,6 @@ list(APPEND ffmpeg_conf --disable-doc
                         --disable-sdl2
                         --disable-vulkan
                         --enable-gpl
-                        --enable-postproc
                         --enable-runtime-cpudetect
                         --enable-pthreads
                         --extra-version="Kodi"
@@ -152,6 +151,7 @@ endif()
 include(ExternalProject)
 externalproject_add(ffmpeg
                     SOURCE_DIR ${CMAKE_SOURCE_DIR}
+                    PATCH_COMMAND patch -p1 -i <SOURCE_DIR>/../0001-libpostproc-plugin.patch
                     CONFIGURE_COMMAND ${pkgconf} ${pkgconf_path} <SOURCE_DIR>/configure
                       --prefix=${CMAKE_INSTALL_PREFIX}
                       --extra-version="kodi-${FFMPEG_VER}"
