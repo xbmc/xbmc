@@ -332,6 +332,9 @@ public:
    */
   static bool UpdateUrlEncoding(std::string &strFilename);
 
+  static CURL AddCredentials(const CURL& url);
+  static CURL AddCredentials(CURL&& url);
+
 private:
   static std::string resolvePath(const std::string &path);
 
