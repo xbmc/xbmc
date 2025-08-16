@@ -92,6 +92,10 @@ if(NOT TARGET libnfs::nfs)
       set(CMAKE_REQUIRED_INCLUDES "${LIBNFS_INCLUDE_DIR}")
       set(CMAKE_REQUIRED_LIBRARIES ${LIBNFS_LIBRARY})
 
+      if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+        set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} "ws2_32.lib")
+      endif()
+
       # Check for nfs_set_timeout
       check_cxx_source_compiles("
          ${LIBNFS_CXX_INCLUDE}
@@ -106,7 +110,7 @@ if(NOT TARGET libnfs::nfs)
         list(APPEND _nfs_definitions HAS_NFS_SET_TIMEOUT)
       endif()
 
-      # Check for mount_getexports_timeout
+      # Check for mount_getexports_timeout libnfs>5.0.0
       check_cxx_source_compiles("
          ${LIBNFS_CXX_INCLUDE}
          #include <nfsc/libnfs.h>
