@@ -25,6 +25,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                 "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/003-add-cstdint-include.patch")
 
     generate_patchcommand("${patches}")
+    unset(patches)
 
     set(CMAKE_ARGS -DCROSSGUID_TESTS=OFF
                    -DDISABLE_WALL=ON)
