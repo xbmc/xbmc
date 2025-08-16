@@ -11,9 +11,9 @@
 #include "IDirectory.h"
 #include "threads/CriticalSection.h"
 
-#include <map>
 #include <memory>
 #include <set>
+#include <unordered_map>
 
 class CURL;
 
@@ -59,7 +59,7 @@ namespace XFILE
     void ClearCache(std::set<std::string>& dirs);
     void CheckIfFull();
 
-    std::map<std::string, CDir> m_cache;
+    std::unordered_map<std::string, CDir> m_cache;
 
     mutable CCriticalSection m_cs;
 
