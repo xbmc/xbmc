@@ -1037,8 +1037,9 @@ JSONRPC_STATUS CAudioLibrary::Scan(const std::string &method, ITransportLayer *t
 {
   std::string directory = parameterObject["directory"].asString();
   std::string cmd =
-      StringUtils::Format("updatelibrary(music, {}, {})", StringUtils::Paramify(directory),
-                          parameterObject["showdialogs"].asBoolean() ? "true" : "false");
+      StringUtils::Format("updatelibrary(music, {}, {}, {})", StringUtils::Paramify(directory),
+                          parameterObject["showdialogs"].asBoolean() ? "true" : "false",
+                          parameterObject["rescan"].asBoolean() ? "true" : "false");
 
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
