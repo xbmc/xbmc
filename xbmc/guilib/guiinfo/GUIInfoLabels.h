@@ -99,7 +99,8 @@ constexpr uint32_t PLAYER_IS_LIVE                    = 87;
 
 constexpr uint32_t WEATHER_DATA                      = 95;
 constexpr uint32_t WEATHER_IS_UPDATING               = 96;
-// unused id 97 to 99
+constexpr uint32_t WEATHER_LAST_UPDATED              = 97;
+// unused id 98 to 99
 constexpr uint32_t WEATHER_CONDITIONS_TEXT           = 100;
 constexpr uint32_t WEATHER_TEMPERATURE               = 101;
 constexpr uint32_t WEATHER_LOCATION                  = 102;

@@ -125,6 +125,18 @@
 					<font>font14</font>
 					<width>630</width>
 				</control>
+				<control type="label">
+					<right>100</right>
+					<top>265</top>
+					<aligny>center</aligny>
+					<height>24</height>
+					<width>1000</width>
+					<align>right</align>
+					<font>font10</font>
+					<label>$LOCALIZE[12014]: $INFO[Weather.LastUpdated]</label>
+					<visible>Control.HasFocus(20) + !String.IsEmpty(Weather.LastUpdated)</visible>
+					<animation effect="fade" time="400">VisibleChange</animation>
+				</control>
 				<control type="grouplist">
 					<top>154</top>
 					<left>90</left>
