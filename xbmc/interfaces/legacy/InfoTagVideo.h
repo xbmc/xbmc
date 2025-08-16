@@ -2573,45 +2573,48 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ addSeason(number, [name]) }
-      /// Add a season with name. It needs at least the season number.
+      /// @brief \python_func{ addSeason(number, [name], [plot]) }
+      /// Add a season with name and a plot. It needs at least the season number.
       ///
       /// @param number     int - the number of the season.
       /// @param name       string - the name of the season. Default "".
+      /// @param plot       string - the plot of the season. Default "".
       ///
       ///
       ///-----------------------------------------------------------------------
       ///
       /// @python_v20 New function added.
+      /// @python_v22 Added plot parameter
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// # addSeason(number, name))
-      /// infotagvideo.addSeason(1, "Murder House")
+      /// # addSeason(number, name, plot))
+      /// infotagvideo.addSeason(1, "Murder House", "The first installment revolves around...")
       /// ...
       /// ~~~~~~~~~~~~~
       ///
       addSeason(...);
 #else
-      void addSeason(int number, std::string name = "");
+      void addSeason(int number, std::string name = "", std::string plot = "");
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ addSeasons(namedseasons) }
-      /// Add named seasons to the TV show.
+      /// @brief \python_func{ addSeasons(seasons) }
+      /// Add seasons to the TV show.
       ///
-      /// @param namedseasons       list - `[ (season, name) ]`.
+      /// @param seasons       list - `[ (season, name, plot) ]`.
       ///
       ///
       ///-----------------------------------------------------------------------
       /// @python_v20 New function added.
+      /// @python_v22 Added third element to the tuple for the season plot
       ///
       addSeasons(...);
 #else
-      void addSeasons(const std::vector<Tuple<int, std::string>>& namedseasons);
+      void addSeasons(const std::vector<Tuple<int, std::string, std::string>>& seasons);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2768,9 +2771,12 @@ namespace XBMCAddon
       static void setCastRaw(CVideoInfoTag* infoTag, std::vector<SActorInfo> cast);
       static void setResumePointRaw(CVideoInfoTag* infoTag, double time, double totalTime = 0.0);
 
-      static void addSeasonRaw(CVideoInfoTag* infoTag, int number, std::string name = "");
+      static void addSeasonRaw(CVideoInfoTag* infoTag,
+                               int number,
+                               std::string name = "",
+                               std::string plot = "");
       static void addSeasonsRaw(CVideoInfoTag* infoTag,
-                                const std::vector<Tuple<int, std::string>>& namedSeasons);
+                                const std::vector<Tuple<int, std::string, std::string>>& seasons);
 
       static void addStreamRaw(CVideoInfoTag* infoTag, CStreamDetail* stream);
       static void finalizeStreamsRaw(CVideoInfoTag* infoTag);
