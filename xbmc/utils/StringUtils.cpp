@@ -69,6 +69,22 @@ T NumberFromSS(std::string_view str, T fallback) noexcept
   iss >> result;
   return result;
 }
+
+/*!
+ * Locale unaware version of tolower
+ */
+[[nodiscard]] constexpr char ToLowerAscii(char c)
+{
+  return 'A' <= c && c <= 'Z' ? c - 'A' + 'a' : c;
+}
+
+/*!
+ * Locale unaware version of toupper
+ */
+[[nodiscard]] constexpr char ToUpperAscii(char c)
+{
+  return 'a' <= c && c <= 'z' ? c - 'a' + 'A' : c;
+}
 } // unnamed namespace
 
 static constexpr const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
@@ -363,7 +379,7 @@ void transformString(const Str& input, Str& output, Fn fn)
 std::string StringUtils::ToUpper(const std::string& str)
 {
   std::string result(str.size(), '\0');
-  transformString(str, result, ::toupper);
+  transformString(str, result, ToUpperAscii);
   return result;
 }
 
@@ -376,7 +392,7 @@ std::wstring StringUtils::ToUpper(const std::wstring& str)
 
 void StringUtils::ToUpper(std::string &str)
 {
-  transformString(str, str, ::toupper);
+  transformString(str, str, ToUpperAscii);
 }
 
 void StringUtils::ToUpper(std::wstring &str)
@@ -387,7 +403,7 @@ void StringUtils::ToUpper(std::wstring &str)
 std::string StringUtils::ToLower(const std::string& str)
 {
   std::string result(str.size(), '\0');
-  transformString(str, result, ::tolower);
+  transformString(str, result, ToLowerAscii);
   return result;
 }
 
@@ -400,7 +416,7 @@ std::wstring StringUtils::ToLower(const std::wstring& str)
 
 void StringUtils::ToLower(std::string &str)
 {
-  transformString(str, str, ::tolower);
+  transformString(str, str, ToLowerAscii);
 }
 
 void StringUtils::ToLower(std::wstring &str)
@@ -454,7 +470,10 @@ bool StringUtils::EqualsNoCase(const char *s1, const char *s2)
   {
     const char c1 = *s1++; // const local variable should help compiler to optimize
     c2 = *s2++;
-    if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
+    if (c1 != c2 &&
+        ToLowerAscii(c1) !=
+            ToLowerAscii(
+                c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
       return false;
   } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
   return true;
@@ -474,8 +493,11 @@ int StringUtils::CompareNoCase(const char* s1, const char* s2, size_t n /* = 0 *
     const char c1 = *s1++; // const local variable should help compiler to optimize
     c2 = *s2++;
     index++;
-    if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
-      return ::tolower(c1) - ::tolower(c2);
+    if (c1 != c2 &&
+        ToLowerAscii(c1) !=
+            ToLowerAscii(
+                c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
+      return ToLowerAscii(c1) - ToLowerAscii(c2);
   } while (c2 != '\0' &&
            index != n); // At this point, we know c1 == c2, so there's no need to test them both.
   return 0;
@@ -711,7 +733,7 @@ bool StringUtils::StartsWithNoCase(const char *s1, const char *s2)
 {
   while (*s2 != '\0')
   {
-    if (::tolower(*s1) != ::tolower(*s2))
+    if (ToLowerAscii(*s1) != ToLowerAscii(*s2))
       return false;
     s1++;
     s2++;
@@ -742,7 +764,7 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const std::string &str
   const char *s2 = str2.c_str();
   while (*s2 != '\0')
   {
-    if (::tolower(*s1) != ::tolower(*s2))
+    if (ToLowerAscii(*s1) != ToLowerAscii(*s2))
       return false;
     s1++;
     s2++;
@@ -758,7 +780,7 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
   const char *s1 = str1.c_str() + str1.size() - len2;
   while (*s2 != '\0')
   {
-    if (::tolower(*s1) != ::tolower(*s2))
+    if (ToLowerAscii(*s1) != ToLowerAscii(*s2))
       return false;
     s1++;
     s2++;
@@ -1928,10 +1950,9 @@ bool StringUtils::Contains(std::string_view str,
 {
   if (isCaseInsensitive)
   {
-    auto itStr = std::search(str.begin(), str.end(), keyword.begin(), keyword.end(),
-                             [](unsigned char ch1, unsigned char ch2) {
-                               return std::toupper(ch1) == std::toupper(ch2);
-                             });
+    auto itStr =
+        std::search(str.begin(), str.end(), keyword.begin(), keyword.end(),
+                    [](char ch1, char ch2) { return ToUpperAscii(ch1) == ToUpperAscii(ch2); });
     return (itStr != str.end());
   }
 
