@@ -183,6 +183,7 @@ bool CDirectory::GetDirectory(const CURL& url,
         g_directoryCache.ClearDirectory(realURL);
 
       pDirectory->SetFlags(hints.flags);
+      items.SetURL(url);
 
       bool result = false;
       CURL authUrl = realURL;
@@ -190,10 +191,7 @@ bool CDirectory::GetDirectory(const CURL& url,
       while (!result)
       {
         // don't change auth if it's set explicitly
-        if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
-          CPasswordManager::GetInstance().AuthenticateURL(authUrl);
-
-        items.SetURL(url);
+        authUrl = URIUtils::AddCredentials(std::move(authUrl));
         result = pDirectory->GetDirectory(authUrl, items);
 
         if (!result)
@@ -357,14 +355,11 @@ bool CDirectory::Create(const CURL& url)
 {
   try
   {
-    CURL realURL = URIUtils::SubstitutePath(url);
+    CURL authURL = URIUtils::AddCredentials(URIUtils::SubstitutePath(url));
 
-    if (CPasswordManager::GetInstance().IsURLSupported(realURL) && realURL.GetUserName().empty())
-      CPasswordManager::GetInstance().AuthenticateURL(realURL);
-
-    std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+    std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(authURL));
     if (pDirectory)
-      if(pDirectory->Create(realURL))
+      if (pDirectory->Create(authURL))
         return true;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
@@ -395,12 +390,11 @@ bool CDirectory::Exists(const CURL& url, bool bUseCache /* = true */)
         return false;
     }
 
-    if (CPasswordManager::GetInstance().IsURLSupported(realURL) && realURL.GetUserName().empty())
-      CPasswordManager::GetInstance().AuthenticateURL(realURL);
+    CURL authURL = URIUtils::AddCredentials(std::move(realURL));
+    std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(authURL));
 
-    std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
     if (pDirectory)
-      return pDirectory->Exists(realURL);
+      return pDirectory->Exists(authURL);
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
@@ -424,11 +418,10 @@ bool CDirectory::Remove(const CURL& url)
   try
   {
     CURL realURL = URIUtils::SubstitutePath(url);
-    CURL authUrl = realURL;
-    if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
-      CPasswordManager::GetInstance().AuthenticateURL(authUrl);
-
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+
+    CURL authUrl = URIUtils::AddCredentials(realURL);
+
     if (pDirectory)
       if(pDirectory->Remove(authUrl))
       {
@@ -447,11 +440,10 @@ bool CDirectory::RemoveRecursive(const CURL& url)
   try
   {
     CURL realURL = URIUtils::SubstitutePath(url);
-    CURL authUrl = realURL;
-    if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
-      CPasswordManager::GetInstance().AuthenticateURL(authUrl);
-
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+
+    CURL authUrl = URIUtils::AddCredentials(realURL);
+
     if (pDirectory)
       if(pDirectory->RemoveRecursive(authUrl))
       {
