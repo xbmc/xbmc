@@ -18,14 +18,16 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
+#include <algorithm>
+#include <chrono>
+#include <map>
+#include <ranges>
+#include <string>
+#include <vector>
 #include <utility>
 
 using namespace XFILE;
-
-CApplicationStackHelper::CApplicationStackHelper(void)
-  : m_currentStack(new CFileItemList)
-{
-}
+using namespace std::chrono_literals;
 
 void CApplicationStackHelper::Clear()
 {
@@ -38,23 +40,12 @@ void CApplicationStackHelper::OnPlayBackStarted(const CFileItem& item)
   std::unique_lock lock(m_critSection);
 
   // time to clean up stack map
-  if (!HasRegisteredStack(item))
-    m_stackmap.clear();
+  if (!IsInStack(item))
+    m_stackMap.clear();
   else
   {
-    auto stack = GetRegisteredStack(item);
-    Stackmap::iterator itr = m_stackmap.begin();
-    while (itr != m_stackmap.end())
-    {
-      if (itr->second->m_pStack != stack)
-      {
-        itr = m_stackmap.erase(itr);
-      }
-      else
-      {
-        ++itr;
-      }
-    }
+    const auto stack{GetStack(item)};
+    std::erase_if(m_stackMap, [&](const auto& pair) { return pair.second->m_stackItem != stack; });
   }
 }
 
@@ -63,9 +54,9 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
   if (!item.IsStack())
     return false;
 
-  auto stack = std::make_shared<CFileItem>(item);
-
+  const auto stack{std::make_shared<CFileItem>(item)};
   Clear();
+
   // read and determine kind of stack
   CStackDirectory dir;
   CURL path{item.GetDynPath()};
@@ -74,152 +65,111 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
   for (int i = 0; i < m_currentStack->Size(); i++)
   {
     // keep cross-references between stack parts and the stack
-    SetRegisteredStack(GetStackPartFileItem(i), stack);
-    SetRegisteredStackPartNumber(GetStackPartFileItem(i), i);
+    GetStackPartInformation(GetStackPartFileItem(i).GetPath())->m_stackItem = stack;
+    GetStackPartInformation(GetStackPartFileItem(i).GetPath())->m_stackPartNumber = i;
   }
-  m_currentStackIsDiscImageStack = URIUtils::IsDiscImageStack(item.GetDynPath());
 
   return true;
 }
+
+static constexpr std::chrono::milliseconds STARTOFFSET_RESUME_MS = -1ms;
 
 std::optional<int64_t> CApplicationStackHelper::InitializeStackStartPartAndOffset(
     const CFileItem& item)
 {
   CVideoDatabase dbs;
-  int64_t startoffset = 0;
+  std::vector<std::chrono::milliseconds> times;
+  std::chrono::milliseconds totalTime{0ms};
+  bool haveTimes{false};
 
-  // case 1: stacked ISOs
-  if (m_currentStackIsDiscImageStack)
+  if (dbs.Open())
+    haveTimes = dbs.GetStackTimes(item.GetDynPath(), times);
+
+  // If not times and is a regular (file) stack then get times from files
+  // Not possible for BD/DVD (folder) stacks due to playlist/title not known
+  if (!haveTimes && !IsPlayingDiscStack())
   {
-    // first assume values passed to the stack
-    int selectedFile = item.GetStartPartNumber();
-    startoffset = item.GetStartOffset();
-
-    // check if we instructed the stack to resume from default
-    if (startoffset == STARTOFFSET_RESUME) // selected file is not specified, pick the 'last' resume point
+    for (int i = 0; i < m_currentStack->Size(); ++i)
     {
-      if (dbs.Open())
+      int duration;
+      if (!CDVDFileInfo::GetFileDuration(GetStackPartFileItem(i).GetDynPath(), duration))
       {
-        CBookmark bookmark;
-        std::string path = item.GetDynPath();
-        if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-          path = item.GetProperty("original_listitem_url").asString();
-        if (dbs.GetResumeBookMark(path, bookmark))
-        {
-          startoffset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
-          selectedFile = bookmark.partNumber;
-        }
-        dbs.Close();
+        m_currentStack->Clear();
+        return std::nullopt;
       }
-      else
-        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+      totalTime += std::chrono::milliseconds{duration};
+      times.emplace_back(totalTime);
     }
-
-    // make sure that the selected part is within the boundaries
-    if (selectedFile <= 0)
-    {
-      CLog::LogF(LOGWARNING, "Selected part {} out of range, playing part 1", selectedFile);
-      selectedFile = 1;
-    }
-    else if (selectedFile > m_currentStack->Size())
-    {
-      CLog::LogF(LOGWARNING, "Selected part {} out of range, playing part {}", selectedFile,
-                 m_currentStack->Size());
-      selectedFile = m_currentStack->Size();
-    }
-
-    // set startoffset in selected item, track stack item for updating purposes, and finally play disc part
-    m_currentStackPosition = selectedFile - 1;
-    startoffset = startoffset > 0 ? STARTOFFSET_RESUME : 0;
+    dbs.SetStackTimes(item.GetDynPath(), times);
+    haveTimes = true;
   }
-  // case 2: all other stacks
-  else
+
+  // If have times (saved or found above) then update stack
+  if (haveTimes)
   {
-    // see if we have the info in the database
-    //! @todo If user changes the time speed (FPS via framerate conversion stuff)
-    //!       then these times will be wrong.
-    //!       Also, this is really just a hack for the slow load up times we have
-    //!       A much better solution is a fast reader of FPS and fileLength
-    //!       that we can use on a file to get it's time.
-    std::vector<uint64_t> times;
-    bool haveTimes(false);
-
-    if (dbs.Open())
+    totalTime = times.back();
+    for (int i = 0; i < static_cast<int>(times.size()); ++i)
     {
-      haveTimes = dbs.GetStackTimes(item.GetDynPath(), times);
-      dbs.Close();
+      CFileItem& part{GetStackPartFileItem(i)};
+      // set end time in known parts
+      part.SetEndOffset(times[i].count());
+      // set start time in known parts
+      SetStackPartStartTime(part, i == 0 ? 0ms : times[i - 1]);
     }
-
-    // calculate the total time of the stack
-    uint64_t totalTimeMs = 0;
-    for (int i = 0; i < m_currentStack->Size(); i++)
-    {
-      if (haveTimes)
-      {
-        // set end time in every part
-        GetStackPartFileItem(i).SetEndOffset(times[i]);
-      }
-      else
-      {
-        int duration;
-        if (!CDVDFileInfo::GetFileDuration(GetStackPartFileItem(i).GetDynPath(), duration))
-        {
-          m_currentStack->Clear();
-          return std::nullopt;
-        }
-        totalTimeMs += duration;
-        // set end time in every part
-        GetStackPartFileItem(i).SetEndOffset(totalTimeMs);
-        times.push_back(totalTimeMs);
-      }
-      // set start time in every part
-      SetRegisteredStackPartStartTimeMs(GetStackPartFileItem(i), GetStackPartStartTimeMs(i));
-    }
-    // set total time in every part
-    totalTimeMs = GetStackTotalTimeMs();
-    for (int i = 0; i < m_currentStack->Size(); i++)
-      SetRegisteredStackTotalTimeMs(GetStackPartFileItem(i), totalTimeMs);
-
-    uint64_t msecs = item.GetStartOffset();
-
-    if (!haveTimes || item.GetStartOffset() == STARTOFFSET_RESUME)
-    {
-      if (dbs.Open())
-      {
-        // have our times now, so update the dB
-        if (!haveTimes && !times.empty())
-          dbs.SetStackTimes(item.GetDynPath(), times);
-
-        if (item.GetStartOffset() == STARTOFFSET_RESUME)
-        {
-          // can only resume seek here, not dvdstate
-          CBookmark bookmark;
-          std::string path = item.GetDynPath();
-          if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-            path = item.GetProperty("original_listitem_url").asString();
-          if (dbs.GetResumeBookMark(path, bookmark))
-            msecs = static_cast<uint64_t>(bookmark.timeInSeconds * 1000);
-          else
-            msecs = 0;
-        }
-        dbs.Close();
-      }
-    }
-
-    m_currentStackPosition = GetStackPartNumberAtTimeMs(msecs);
-    startoffset = msecs - GetStackPartStartTimeMs(m_currentStackPosition);
+    // set total time
+    SetStackTotalTime(totalTime);
+    m_knownStackParts = static_cast<int>(times.size());
   }
-  return startoffset;
+
+  auto msecs{std::chrono::milliseconds{item.GetStartOffset()}};
+  if (msecs == STARTOFFSET_RESUME_MS)
+  {
+    CBookmark bookmark;
+    std::string path = item.GetDynPath();
+    if (item.HasProperty("original_listitem_url") &&
+        URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+      path = item.GetProperty("original_listitem_url").asString();
+    if (dbs.GetResumeBookMark(path, bookmark))
+      msecs = std::chrono::milliseconds{static_cast<int64_t>(bookmark.timeInSeconds * 1000)};
+    else
+      msecs = 0ms;
+  }
+
+  dbs.Close();
+
+  // Adjust absolute position to stack
+  m_currentStackPosition = GetStackPartNumberAtTime(msecs);
+
+  // Remember if this was a disc stack
+  m_wasDiscStack = HasDiscParts();
+
+  return std::optional{(msecs - GetStackPartStartTime(m_currentStackPosition)).count()};
 }
 
-bool CApplicationStackHelper::IsPlayingISOStack() const
+bool CApplicationStackHelper::IsPlayingStack() const
 {
-  return m_currentStack->Size() > 0 && m_currentStackIsDiscImageStack;
+  return m_currentStack->Size() > 0;
+}
+
+bool CApplicationStackHelper::IsPlayingDiscStack() const
+{
+  return !m_currentStack->IsEmpty() && !IsPlayingRegularStack();
 }
 
 bool CApplicationStackHelper::IsPlayingRegularStack() const
 {
-  return m_currentStack->Size() > 0 && !m_currentStackIsDiscImageStack;
+  return !m_currentStack->IsEmpty() && !HasDiscParts();
+}
+
+bool CApplicationStackHelper::HasDiscParts() const
+{
+  return std::any_of(m_currentStack->begin(), m_currentStack->end(),
+                     [](const std::shared_ptr<CFileItem>& item)
+                     {
+                       const std::string& path{item->GetDynPath()};
+                       return URIUtils::IsDiscImage(path) || URIUtils::IsDVDFile(path) ||
+                              URIUtils::IsBDFile(path);
+                     });
 }
 
 bool CApplicationStackHelper::HasNextStackPartFileItem() const
@@ -227,51 +177,68 @@ bool CApplicationStackHelper::HasNextStackPartFileItem() const
   return m_currentStackPosition < m_currentStack->Size() - 1;
 }
 
-uint64_t CApplicationStackHelper::GetStackPartEndTimeMs(int partNumber) const
+CFileItem& CApplicationStackHelper::SetNextStackPartAsCurrent()
 {
-  return GetStackPartFileItem(partNumber).GetEndOffset();
+  ++m_currentStackPosition;
+  return GetStackPartFileItem(m_currentStackPosition);
 }
 
-uint64_t CApplicationStackHelper::GetStackTotalTimeMs() const
+CFileItem& CApplicationStackHelper::SetStackPartAsCurrent(int partNumber)
 {
-  return GetStackPartEndTimeMs(m_currentStack->Size() - 1);
+  m_currentStackPosition = partNumber;
+  return GetStackPartFileItem(m_currentStackPosition);
 }
 
-int CApplicationStackHelper::GetStackPartNumberAtTimeMs(uint64_t msecs)
+CFileItem& CApplicationStackHelper::GetCurrentStackPart()
 {
-  if (msecs > 0)
+  return GetStackPartFileItem(m_currentStackPosition);
+}
+
+std::chrono::milliseconds CApplicationStackHelper::GetStackPartEndTime(int partNumber) const
+{
+  return std::chrono::milliseconds(GetStackPartFileItem(partNumber).GetEndOffset());
+}
+
+std::chrono::milliseconds CApplicationStackHelper::GetStackTotalTime() const
+{
+  for (int i = m_currentStack->Size() - 1; i >= 0; --i)
+  {
+    const auto endTime{GetStackPartEndTime(i)};
+    if (endTime > 0ms)
+      return endTime;
+  }
+  return 0ms;
+}
+
+int CApplicationStackHelper::GetStackPartNumberAtTime(std::chrono::milliseconds msecs) const
+{
+  if (msecs > 0ms)
   {
     // work out where to seek to
     for (int partNumber = 0; partNumber < m_currentStack->Size(); partNumber++)
     {
-      if (msecs < GetStackPartEndTimeMs(partNumber))
+      if (msecs < GetStackPartEndTime(partNumber))
         return partNumber;
     }
   }
   return 0;
 }
 
-void CApplicationStackHelper::ClearAllRegisteredStackInformation()
+void CApplicationStackHelper::ClearAllStackInformation()
 {
-  m_stackmap.clear();
+  m_stackMap.clear();
 }
 
-std::shared_ptr<const CFileItem> CApplicationStackHelper::GetRegisteredStack(
+std::shared_ptr<const CFileItem> CApplicationStackHelper::GetStack(
     const CFileItem& item) const
 {
-  return GetStackPartInformation(item.GetDynPath())->m_pStack;
+  return GetStackPartInformation(item.GetPath())->m_stackItem;
 }
 
-bool CApplicationStackHelper::HasRegisteredStack(const CFileItem& item) const
+bool CApplicationStackHelper::IsInStack(const CFileItem& item) const
 {
-  const auto it = m_stackmap.find(item.GetDynPath());
-  return it != m_stackmap.end() && it->second != nullptr;
-}
-
-void CApplicationStackHelper::SetRegisteredStack(const CFileItem& item,
-                                                 std::shared_ptr<CFileItem> stackItem)
-{
-  GetStackPartInformation(item.GetDynPath())->m_pStack = std::move(stackItem);
+  const auto it = m_stackMap.find(item.GetPath());
+  return it != m_stackMap.end() && it->second != nullptr;
 }
 
 CFileItem& CApplicationStackHelper::GetStackPartFileItem(int partNumber)
@@ -284,52 +251,74 @@ const CFileItem& CApplicationStackHelper::GetStackPartFileItem(int partNumber) c
   return *(*m_currentStack)[partNumber];
 }
 
-int CApplicationStackHelper::GetRegisteredStackPartNumber(const CFileItem& item)
+int CApplicationStackHelper::GetStackPartNumber(const CFileItem& item)
 {
-  return GetStackPartInformation(item.GetDynPath())->m_lStackPartNumber;
+  return GetStackPartInformation(item.GetPath())->m_stackPartNumber;
 }
 
-void CApplicationStackHelper::SetRegisteredStackPartNumber(const CFileItem& item, int partNumber)
+std::chrono::milliseconds CApplicationStackHelper::GetStackPartStartTime(
+    const CFileItem& item) const
 {
-  GetStackPartInformation(item.GetDynPath())->m_lStackPartNumber = partNumber;
+  return GetStackPartInformation(item.GetPath())->m_stackPartStartTimeMs;
 }
 
-uint64_t CApplicationStackHelper::GetRegisteredStackPartStartTimeMs(const CFileItem& item) const
+void CApplicationStackHelper::SetStackPartStartTime(const CFileItem& item,
+                                                                std::chrono::milliseconds startTime)
 {
-  return GetStackPartInformation(item.GetDynPath())->m_lStackPartStartTimeMs;
+  GetStackPartInformation(item.GetPath())->m_stackPartStartTimeMs = startTime;
 }
 
-void CApplicationStackHelper::SetRegisteredStackPartStartTimeMs(const CFileItem& item, uint64_t startTime)
+std::chrono::milliseconds CApplicationStackHelper::GetStackTotalTime(
+    const CFileItem& item) const
 {
-  GetStackPartInformation(item.GetDynPath())->m_lStackPartStartTimeMs = startTime;
+  return GetStackPartInformation(item.GetPath())->m_stackTotalTimeMs;
 }
 
-uint64_t CApplicationStackHelper::GetRegisteredStackTotalTimeMs(const CFileItem& item) const
+void CApplicationStackHelper::SetStackDynPaths(const std::string& newPath) const
 {
-  return GetStackPartInformation(item.GetDynPath())->m_lStackTotalTimeMs;
+  for (const auto& stackmapitem : m_stackMap | std::views::values)
+    stackmapitem->m_stackItem->SetDynPath(newPath);
 }
 
-void CApplicationStackHelper::SetRegisteredStackTotalTimeMs(const CFileItem& item, uint64_t totalTime)
+void CApplicationStackHelper::SetStackPartDynPath(const CFileItem& item)
 {
-  GetStackPartInformation(item.GetDynPath())->m_lStackTotalTimeMs = totalTime;
+  // Need to build stack://
+  std::vector<std::string> paths{};
+  CStackDirectory::GetPaths(item.GetDynPath(), paths);
+  const int partNumber{GetStackPartNumber(item)};
+  paths[partNumber] = item.GetDynPath();
+  std::string stackedPath;
+  CStackDirectory::ConstructStackPath(paths, stackedPath);
+  SetStackDynPaths(stackedPath);
 }
 
-CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetStackPartInformation(
-    const std::string& key)
+void CApplicationStackHelper::SetStackTotalTime(const std::chrono::milliseconds totalTime)
 {
-  if (!m_stackmap.contains(key))
-  {
-    StackPartInformationPtr value(new StackPartInformation());
-    m_stackmap[key] = value;
-  }
-  return m_stackmap[key];
+  std::ranges::for_each(m_stackMap | std::views::values,
+                        [totalTime](const auto& part) { part->m_stackTotalTimeMs = totalTime; });
 }
 
-CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetStackPartInformation(
-    const std::string& key) const
+void CApplicationStackHelper::SetStackPartOffsets(const CFileItem& item,
+                                                  const std::chrono::milliseconds startOffset,
+                                                  const std::chrono::milliseconds endOffset)
 {
-  const auto it = m_stackmap.find(key);
-  if (it == m_stackmap.end())
-    return std::make_shared<StackPartInformation>();
-  return it->second;
+  CFileItem& stackItem(GetStackPartFileItem(GetStackPartNumber(item)));
+  stackItem.SetStartOffset(startOffset.count());
+  stackItem.SetEndOffset(endOffset.count());
+}
+
+std::shared_ptr<CApplicationStackHelper::StackPartInformation> CApplicationStackHelper::
+    GetStackPartInformation(const std::string& key)
+{
+  if (!m_stackMap.contains(key))
+    m_stackMap[key] = std::make_shared<StackPartInformation>();
+  return m_stackMap[key];
+}
+
+std::shared_ptr<CApplicationStackHelper::StackPartInformation> CApplicationStackHelper::
+    GetStackPartInformation(const std::string& key) const
+{
+  if (const auto it{m_stackMap.find(key)}; it != m_stackMap.end())
+    return it->second;
+  return std::make_shared<StackPartInformation>();
 }
