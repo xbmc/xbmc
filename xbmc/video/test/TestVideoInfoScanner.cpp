@@ -83,6 +83,9 @@ static const TestEntry TestData[] = {
     {"foo.S00E01-E04S05E03-E06.mkv",
      {{0, 1}, {0, 2}, {0, 3}, {0, 4}, {5, 3}, {5, 4}, {5, 5}, {5, 6}},
      {{0, 1}, {0, 4}, {5, 3}, {5, 6}}},
+    {"foo.S02E01S03E05E09-E12.mkv",
+     {{2, 1}, {3, 5}, {3, 9}, {3, 10}, {3, 11}, {3, 12}},
+     {{2, 1}, {3, 5}, {3, 9}, {3, 12}}},
     // expected (partial) range failures
     {"foo.S01E01-E100.mkv", {}, {{1, 1}, {1, 100}}}, // episode range too large
     {"foo.S01E01-S02E03.mkv", {}, {{1, 1}, {2, 3}}}, // cannot determine number of episodes in S01

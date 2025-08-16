@@ -1705,7 +1705,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           {
             const std::string result{reg2.GetMatch(2)};
             const int last{std::stoi(result)};
-            const std::string prefix{StringUtils::ToLower(remainder.substr(0, 2))};
+            const std::string prefix{StringUtils::ToLower(remainder.substr(offset, 2))};
             const int next{(prefix == "-e" || prefix == "-s") && !disableEpisodeRanges
                                ? currentEpisode + 1
                                : last};
