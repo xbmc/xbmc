@@ -12,6 +12,7 @@
 #include "URL.h"
 #include "guilib/GUITextureGL.h"
 #include "platform/MessagePrinter.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -100,7 +101,7 @@ bool CRenderSystemGL::InitRenderSystem()
 #if defined(GL_KHR_debug) && defined(TARGET_LINUX)
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_openGlDebugging)
   {
-    if (IsExtSupported("GL_KHR_debug"))
+    if (CGLExtensions::IsExtensionSupported(CGLExtensions::KHR_debug))
     {
       auto glDebugMessageCallback =
           CEGLUtils::GetRequiredProcAddress<PFNGLDEBUGMESSAGECALLBACKPROC>(
@@ -204,7 +205,7 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
   glMatrixTexture->LoadIdentity();
   glMatrixTexture.Load();
 
-  if (IsExtSupported("GL_ARB_multitexture"))
+  if (CGLExtensions::IsExtensionSupported(CGLExtensions::ARB_multitexture))
   {
     //clear error flags
     ResetGLErrors();
