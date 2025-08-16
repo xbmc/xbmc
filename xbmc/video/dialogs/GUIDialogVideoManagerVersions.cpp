@@ -346,8 +346,11 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
     m_database.BeginTransaction();
     if (replaceExistingFile == ReplaceExistingFile::YES)
     {
-      videoDbSuccess = m_database.SetFileForMedia(item->GetDynPath(), item->GetVideoContentType(),
-                                                  idMovie, item->GetVideoInfoTag()->m_iFileId);
+      videoDbSuccess =
+          m_database.SetFileForMedia(
+              item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
+              CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
+                                         .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded}) > 0;
       if (videoDbSuccess)
       {
         m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
@@ -368,7 +371,8 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
       if (idVideoVersion < 0)
         return false;
 
-      const int idFile{m_database.AddFile(item->GetDynPath())};
+      const int idFile{
+          m_database.AddFile(item->GetDynPath(), "", item->GetVideoInfoTag()->m_dateAdded)};
       if (idFile > 0)
       {
         videoDbSuccess = true;
