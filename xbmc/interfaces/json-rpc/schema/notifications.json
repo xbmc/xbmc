@@ -266,6 +266,32 @@
     ],
     "returns": null
   },
+  "Playlist.OnPropertyChanged": {
+    "type": "notification",
+    "description": "A property of the playlist items has changed.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "object",
+        "required": true,
+        "properties": {
+          "property": {
+            "$ref": "Playlist.Property.Value"
+          },
+          "playlist": {
+            "$ref": "Playlist.Notifications.Playlist",
+            "required": true
+          }
+        }
+      }
+    ],
+    "returns": null
+  },
   "AudioLibrary.OnUpdate": {
     "type": "notification",
     "description": "An audio item has been updated.",
