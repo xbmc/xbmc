@@ -1865,8 +1865,8 @@ bool MysqlDataset::query(const std::string& query)
   if (!handle())
     throw DbErrors("No Database Connection");
 
-  if (query.find("SELECT") == std::string::npos && query.find("select") == std::string::npos)
-    throw DbErrors("MUST be select SQL!");
+  // Must be a SELECT SQL query
+  assert(query.find("SELECT") != std::string::npos || query.find("select") != std::string::npos);
 
   close();
 
