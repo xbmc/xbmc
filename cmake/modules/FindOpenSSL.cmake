@@ -37,6 +37,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set_target_properties(OpenSSL::SSL PROPERTIES
                                        INTERFACE_LINK_LIBRARIES "OpenSSL::Crypto")
 
+    if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
+      set_target_properties(OpenSSL::SSL PROPERTIES
+                                         INTERFACE_LINK_OPTIONS "-Wl,--exclude-libs,$<TARGET_FILE_NAME:OpenSSL::SSL>")
+
+      set_target_properties(OpenSSL::Crypto PROPERTIES
+                                            INTERFACE_LINK_OPTIONS "-Wl,--exclude-libs,$<TARGET_FILE_NAME:OpenSSL::Crypto>")
+    endif()
+
     # Required for external searches. Not used internally
     set(OpenSSL_FOUND ON CACHE BOOL "OpenSSL found")
     mark_as_advanced(OpenSSL_FOUND)
