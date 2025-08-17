@@ -624,6 +624,24 @@
 								<width>100%</width>
 								<texture border="21">dialogs/dialog-bg.png</texture>
 							</control>
+							<control type="group">
+								<visible>!Weather.IsFetched + Weather.IsUpdating</visible>
+								<top>90</top>
+								<left>600</left>
+								<control type="image">
+									<width>100</width>
+									<height>100</height>
+									<aspectratio aligny="center">keep</aspectratio>
+									<texture colordiffuse="black">dialogs/extendedprogress/loading-back.png</texture>
+								</control>
+								<control type="image">
+									<width>100</width>
+									<height>100</height>
+									<aspectratio aligny="center">keep</aspectratio>
+									<texture>dialogs/extendedprogress/loading.png</texture>
+									<animation effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true">Conditional</animation>
+								</control>
+							</control>
 							<control type="label">
 								<left>840</left>
 								<top>60</top>
