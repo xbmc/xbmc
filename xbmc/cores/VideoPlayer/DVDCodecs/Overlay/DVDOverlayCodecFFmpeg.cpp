@@ -271,7 +271,7 @@ std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->y = rect.y;
     overlay->width = rect.w;
     overlay->height = rect.h;
-    overlay->bForced = rect.flags != 0;
+    overlay->bForced = (rect.flags & AV_SUBTITLE_FLAG_FORCED);
     overlay->source_width = m_width;
     overlay->source_height = m_height;
 

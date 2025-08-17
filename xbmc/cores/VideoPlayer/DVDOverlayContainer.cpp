@@ -85,7 +85,11 @@ void CDVDOverlayContainer::CleanUp(double pts)
       while (!bNewer && ++it2 != m_overlays.end())
       {
         const std::shared_ptr<CDVDOverlay>& pOverlay2 = *it2;
-        if (pOverlay2->bForced && pOverlay2->iPTSStartTime <= pts) bNewer = true;
+        // There can be multiple overlays queued at same start point.
+        // Skip them to find a new start point.
+        if (pOverlay2->bForced && pOverlay2->iPTSStartTime <= pts &&
+            pOverlay->iPTSStartTime != pOverlay2->iPTSStartTime)
+          bNewer = true;
       }
 
       if (bNewer)
