@@ -649,9 +649,9 @@ bool MysqlDatabase::exists()
 
 // methods for formatting
 // ---------------------------------------------
-std::string MysqlDatabase::vprepare(const char* format, va_list args)
+std::string MysqlDatabase::vprepare(std::string_view format, va_list args)
 {
-  std::string strFormat = format;
+  std::string strFormat = std::string(format);
   std::string strResult = "";
   size_t pos;
 

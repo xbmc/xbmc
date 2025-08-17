@@ -111,14 +111,7 @@ public:
   void CopyDB(const std::string& latestDb);
   void DropAnalytics();
 
-  std::string PrepareSQL(const char* sqlFormat, ...) const;
-
-  template<typename String, typename... Args>
-    requires std::same_as<std::decay_t<String>, std::string>
-  std::string PrepareSQL(String&& sqlFormat, Args&&... args) const
-  {
-    return PrepareSQL(sqlFormat.c_str(), std::forward<Args>(args)...);
-  }
+  std::string PrepareSQL(std::string_view sqlFormat, ...) const;
 
   /*!
    * @brief Get a single value from a table.

@@ -257,7 +257,7 @@ void CDatabase::Split(const std::string& strFileNameAndPath,
   strFileName = strFileNameAndPath.substr(i);
 }
 
-std::string CDatabase::PrepareSQL(const char* sqlFormat, ...) const
+std::string CDatabase::PrepareSQL(std::string_view sqlFormat, ...) const
 {
   std::string strResult = "";
 
