@@ -11,7 +11,6 @@
 #include "OptionalsReg.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
-#include "drm/DRMAtomic.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;
@@ -62,14 +61,14 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
   if (CEGLUtils::HasExtension(m_eglContext.GetEGLDisplay(), "EGL_ANDROID_native_fence_sync") &&
       CEGLUtils::HasExtension(m_eglContext.GetEGLDisplay(), "EGL_KHR_fence_sync"))
   {
-    if (std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
+    if (m_DRM->SupportsFencing())
     {
       m_eglFence = std::make_unique<KODI::UTILS::EGL::CEGLFence>(m_eglContext.GetEGLDisplay());
     }
     else
     {
       CLog::Log(LOGWARNING, "[GBM] EGL_KHR_fence_sync and EGL_ANDROID_native_fence_sync supported"
-                            ", but atomic DRM not initialized");
+                            ", but DRM backend doesn't support fencing");
     }
   }
   else
