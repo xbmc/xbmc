@@ -199,9 +199,17 @@ std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
     return GetFileName(url.GetFileName());
   }
 
-  /* find the last slash */
-  const size_t slash = strFileNameAndPath.find_last_of("/\\");
-  return strFileNameAndPath.substr(slash+1);
+  int i = strFileNameAndPath.size() - 1;
+  while (i >= 0)
+  {
+    const char ch = strFileNameAndPath[i];
+    // Only break on ':' if it's a drive separator for DOS (ie d:foo)
+    if (ch == '/' || ch == '\\' || (ch == ':' && i == 1))
+      break;
+    else
+      i--;
+  }
+  return strFileNameAndPath.substr(i + 1);
 }
 
 std::string URIUtils::GetFileOrFolderName(const std::string& path)
@@ -223,18 +231,16 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   //Splits a full filename in path and file.
   //ex. smb://computer/share/directory/filename.ext -> strPath:smb://computer/share/directory/ and strFileName:filename.ext
   //Trailing slash will be preserved
-  strFileName = "";
-  strPath = "";
   int i = strFileNameAndPath.size() - 1;
-  while (i > 0)
+  while (i >= 0)
   {
-    char ch = strFileNameAndPath[i];
+    const char ch = strFileNameAndPath[i];
     // Only break on ':' if it's a drive separator for DOS (ie d:foo)
-    if (ch == '/' || ch == '\\' || (ch == ':' && i == 1)) break;
-    else i--;
+    if (ch == '/' || ch == '\\' || (ch == ':' && i == 1))
+      break;
+    else
+      i--;
   }
-  if (i == 0)
-    i--;
 
   // take left including the directory separator
   strPath = strFileNameAndPath.substr(0, i+1);
@@ -244,15 +250,9 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   // if actual uri, ignore options
   if (IsURL(strFileNameAndPath))
   {
-    i = strFileName.size() - 1;
-    while (i > 0)
-    {
-      char ch = strFileName[i];
-      if (ch == '?' || ch == '|') break;
-      else i--;
-    }
-    if (i > 0)
-      strFileName.resize(i);
+    size_t extras = strFileName.find_last_of("?|");
+    if (extras != std::string::npos)
+      strFileName.resize(extras);
   }
 }
 
