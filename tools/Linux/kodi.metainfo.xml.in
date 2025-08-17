@@ -78,6 +78,7 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2025-08-18" version="22.0~a1-Piers" type="development"><url>https://kodi.tv/article/kodi-22-0-piers-alpha-1/</url></release>
         <release date="2025-01-15" version="21.2-Omega" type="stable"><url>https://kodi.tv/article/kodi-21-2-omega-release/</url></release>
         <release date="2024-08-17" version="21.1-Omega" type="stable"><url>https://kodi.tv/article/kodi-21-1-omega-release/</url></release>
         <release date="2024-04-06" version="21.0-Omega" type="stable"><url>https://kodi.tv/article/kodi-21-0-omega-release/</url></release>
