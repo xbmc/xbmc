@@ -1641,7 +1641,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // check the remainder of the string for any further episodes.
       if (!byDate && reg2.RegComp(m_advancedSettings->m_tvshowMultiPartEnumRegExp))
       {
-        int offset{0};
+        size_t offset{0};
         int currentSeason{episode.iSeason};
         int currentEpisode{episode.iEpisode};
 
@@ -1705,7 +1705,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
           {
             const std::string result{reg2.GetMatch(2)};
             const int last{std::stoi(result)};
-            const std::string prefix{StringUtils::ToLower(remainder.substr(0, 2))};
+            const std::string prefix{offset < remainder.length()
+                                         ? StringUtils::ToLower(remainder.substr(offset, 2))
+                                         : std::string{}};
             const int next{(prefix == "-e" || prefix == "-s") && !disableEpisodeRanges
                                ? currentEpisode + 1
                                : last};
@@ -1714,7 +1716,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                 m_advancedSettings->m_tvshowMultiPartEnumRegExp, reg2.GetMatch(3));
 
             currentEpisode = episode.iEpisode;
-            offset += regexp2pos + static_cast<int>(reg2.GetMatch(1).length() + result.length());
+            offset += regexp2pos + reg2.GetMatch(1).length() + result.length();
           }
         }
       }
