@@ -649,9 +649,9 @@ bool MysqlDatabase::exists()
 
 // methods for formatting
 // ---------------------------------------------
-std::string MysqlDatabase::vprepare(const char* format, va_list args)
+std::string MysqlDatabase::vprepare(std::string_view format, va_list args)
 {
-  std::string strFormat = format;
+  std::string strFormat = std::string(format);
   std::string strResult = "";
   size_t pos;
 
@@ -1865,8 +1865,8 @@ bool MysqlDataset::query(const std::string& query)
   if (!handle())
     throw DbErrors("No Database Connection");
 
-  if (query.find("SELECT") == std::string::npos && query.find("select") == std::string::npos)
-    throw DbErrors("MUST be select SQL!");
+  // Must be a SELECT SQL query
+  assert(query.find("SELECT") != std::string::npos || query.find("select") != std::string::npos);
 
   close();
 

@@ -81,7 +81,7 @@ public:
   void rollback_transaction() override;
 
   /* virtual methods for formatting */
-  std::string vprepare(const char* format, va_list args) override;
+  std::string vprepare(std::string_view format, va_list args) override;
 
   bool in_transaction() override { return _in_transaction; }
 };
