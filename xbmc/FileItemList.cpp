@@ -79,11 +79,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
   if (fastLookup && !m_fastLookup)
   { // generate the map
     m_map.clear();
-    for (const auto& pItem : m_items)
-    {
-      m_map.try_emplace(m_ignoreURLOptions ? pItem->GetURL().GetWithoutOptions() : pItem->GetPath(),
-                        pItem);
-    }
+    AddFastLookupItems(m_items);
   }
   if (!fastLookup && m_fastLookup)
     m_map.clear();
@@ -127,14 +123,23 @@ void CFileItemList::ClearItems()
   m_map.clear();
 }
 
+void CFileItemList::AddFastLookupItem(const CFileItemPtr& item)
+{
+  m_map.try_emplace(
+      m_ignoreURLOptions ? CURL(item->GetPath()).GetWithoutOptions() : item->GetPath(), item);
+}
+
+void CFileItemList::AddFastLookupItems(const std::vector<CFileItemPtr>& items)
+{
+  for (const auto& item : items)
+    AddFastLookupItem(item);
+}
+
 void CFileItemList::Add(CFileItemPtr pItem)
 {
   std::unique_lock lock(m_lock);
   if (m_fastLookup)
-  {
-    m_map.try_emplace(m_ignoreURLOptions ? pItem->GetURL().GetWithoutOptions() : pItem->GetPath(),
-                      pItem);
-  }
+    AddFastLookupItem(pItem);
   m_items.emplace_back(std::move(pItem));
 }
 
@@ -143,10 +148,30 @@ void CFileItemList::Add(CFileItem&& item)
   std::unique_lock lock(m_lock);
   auto ptr = std::make_shared<CFileItem>(std::move(item));
   if (m_fastLookup)
-  {
-    m_map.try_emplace(m_ignoreURLOptions ? ptr->GetURL().GetWithoutOptions() : ptr->GetPath(), ptr);
-  }
+    AddFastLookupItem(ptr);
   m_items.emplace_back(std::move(ptr));
+}
+
+void CFileItemList::AddItems(const std::vector<CFileItemPtr>& items)
+{
+  std::unique_lock lock(m_lock);
+
+  if (m_fastLookup)
+    AddFastLookupItems(items);
+
+  m_items.reserve(m_items.size() + items.size());
+  std::ranges::copy(items, std::back_inserter(m_items));
+}
+
+void CFileItemList::AddItems(std::vector<CFileItemPtr>&& items)
+{
+  std::unique_lock lock(m_lock);
+
+  if (m_fastLookup)
+    AddFastLookupItems(items);
+
+  m_items.reserve(m_items.size() + items.size());
+  std::ranges::move(items, std::back_inserter(m_items));
 }
 
 void CFileItemList::AddFront(const CFileItemPtr& pItem, int itemPosition)
@@ -160,11 +185,9 @@ void CFileItemList::AddFront(const CFileItemPtr& pItem, int itemPosition)
   {
     m_items.insert(m_items.begin() + (m_items.size() + itemPosition), pItem);
   }
+
   if (m_fastLookup)
-  {
-    m_map.try_emplace(m_ignoreURLOptions ? pItem->GetURL().GetWithoutOptions() : pItem->GetPath(),
-                      pItem);
-  }
+    AddFastLookupItem(pItem);
 }
 
 void CFileItemList::Remove(const CFileItem* pItem)
