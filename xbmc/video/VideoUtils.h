@@ -62,22 +62,6 @@ std::optional<int> GetNextPartFromBookmark(const CBookmark& bookmark);
 std::optional<std::tuple<int64_t, unsigned int>> GetStackResumeOffsetAndPartNumber(
     const CFileItem& item);
 
-/*!
- \brief Get the resume offset for a part of a stack item.
- \param item The stack item to retrieve the offset for
- \param partNumber The number of the part (1-based)
- \return The offset or -1 if not found
- */
-int64_t GetStackPartResumeOffset(const CFileItem& item, unsigned int partNumber);
-
-/*!
- \brief Get the start offset for a part of a stack item.
- \param item The stack item to retrieve the offset for
- \param partNumber The number of the part (1-based)
- \return The offset or -1 if not found
- */
-int64_t GetStackPartStartOffset(const CFileItem& item, unsigned int partNumber);
-
 struct ResumeInformation
 {
   bool isResumable{false}; // the playback of the item can be resumed

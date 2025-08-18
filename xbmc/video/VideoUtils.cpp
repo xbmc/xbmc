@@ -249,52 +249,6 @@ std::optional<std::tuple<int64_t, unsigned int>> GetStackResumeOffsetAndPartNumb
   return std::nullopt;
 }
 
-int64_t GetStackPartResumeOffset(const CFileItem& item, unsigned int partNumber)
-{
-  int64_t offset{-1};
-  if (item.IsStack() && item.HasVideoInfoTag() && partNumber > 0)
-  {
-    const std::string& path{item.GetDynPath()};
-    const CBookmark bookmark{item.GetVideoInfoTag()->GetResumePoint()};
-    if (bookmark.IsPartWay())
-    {
-      std::vector<std::chrono::milliseconds> times;
-      if (GetStackTimes(path, times))
-      {
-        offset = 0;
-        const int64_t offsetToCheck{CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)};
-        const uint64_t partBegin{
-            partNumber == 1 ? 0 : static_cast<uint64_t>(times[partNumber - 2].count())};
-        const uint64_t partEnd{static_cast<uint64_t>(times[partNumber - 1].count())};
-        if (static_cast<uint64_t>(offsetToCheck) <= partEnd &&
-            static_cast<uint64_t>(offsetToCheck) > partBegin)
-        {
-          offset = offsetToCheck;
-        }
-      }
-    }
-  }
-  return offset;
-}
-
-int64_t GetStackPartStartOffset(const CFileItem& item, unsigned int partNumber)
-{
-  int64_t offset{-1};
-  if (item.IsStack() && partNumber > 0)
-  {
-    const std::string& path{item.GetDynPath()};
-    if (partNumber == 1)
-      offset = 0;
-    else
-    {
-      std::vector<std::chrono::milliseconds> times;
-      if (GetStackTimes(path, times) && partNumber <= times.size())
-        offset = times[partNumber - 2].count();
-    }
-  }
-  return offset;
-}
-
 ResumeInformation GetItemResumeInformation(const CFileItem& item)
 {
   // do not resume nfo files
