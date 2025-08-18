@@ -55,7 +55,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
-#include "favourites/FavouritesService.h"
 #ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDiscCache.h"
 #endif
@@ -1994,14 +1993,16 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CUtil::ClearSubtitles();
   }
 
-  using enum CApplicationPlay::GatherPlaybackDetailsResult;
-
   CApplicationPlay appPlay{*stackHelper};
   const auto result{appPlay.GatherPlaybackDetails(item, player, bRestart)};
+  using enum CApplicationPlay::GatherPlaybackDetailsResult;
   if (result == RESULT_ERROR)
     return false;
-  else if (result == RESULT_NO_PLAYLIST_SELECTED)
+  if (result == RESULT_NO_PLAYLIST_SELECTED)
+  {
+    m_cancelPlayback = true;
     return true; // Special case; not to be treated as error.
+  }
 
   // Special handling for disc stubs.
   //! @todo Shouldn't disc stubs also be handled via appPlayer->OpenFile()?
@@ -2016,15 +2017,15 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   // pushed some delay message into the threadmessage list, they are not
   // expected be processed after or during the new item playback starting.
   // so we clean up previous playing item's playback callback delay messages here.
-  static constexpr const std::array previousMsgsIgnoredByNewPlaying{GUI_MSG_PLAYBACK_STARTED,
-                                                                    GUI_MSG_PLAYBACK_ENDED,
-                                                                    GUI_MSG_PLAYBACK_STOPPED,
-                                                                    GUI_MSG_PLAYLIST_CHANGED,
-                                                                    GUI_MSG_PLAYLISTPLAYER_STOPPED,
-                                                                    GUI_MSG_PLAYLISTPLAYER_STARTED,
-                                                                    GUI_MSG_PLAYLISTPLAYER_CHANGED,
-                                                                    GUI_MSG_QUEUE_NEXT_ITEM,
-                                                                    0};
+  static constexpr std::array previousMsgsIgnoredByNewPlaying{GUI_MSG_PLAYBACK_STARTED,
+                                                              GUI_MSG_PLAYBACK_ENDED,
+                                                              GUI_MSG_PLAYBACK_STOPPED,
+                                                              GUI_MSG_PLAYLIST_CHANGED,
+                                                              GUI_MSG_PLAYLISTPLAYER_STOPPED,
+                                                              GUI_MSG_PLAYLISTPLAYER_STARTED,
+                                                              GUI_MSG_PLAYLISTPLAYER_CHANGED,
+                                                              GUI_MSG_QUEUE_NEXT_ITEM,
+                                                              0};
   if (const int dMsgCount{
           CServiceBroker::GetGUI()->GetWindowManager().RemoveThreadMessageByMessageIds(
               &previousMsgsIgnoredByNewPlaying[0])};
@@ -2563,12 +2564,16 @@ void CApplication::SeekTime( double dTime )
           std::chrono::milliseconds(static_cast<int64_t>(dTime * 1000.0)));
       uint64_t startOfNewFile = stackHelper->GetStackPartStartTime(partNumberToPlay).count();
       if (partNumberToPlay == stackHelper->GetCurrentPartNumber())
-        appPlayer->SeekTime(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
+        appPlayer->SeekTime(static_cast<int64_t>(dTime * 1000.0) -
+                            static_cast<int64_t>(startOfNewFile));
       else
-      { // seeking to a new file
+      {
+        // seeking to a new file
         stackHelper->SetStackPartAsCurrent(partNumberToPlay);
+        stackHelper->SetSeekingParts(true);
         CFileItem* item = new CFileItem(stackHelper->GetCurrentStackPart());
-        item->SetStartOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
+        item->SetStartOffset(static_cast<int64_t>(dTime * 1000.0) -
+                             static_cast<int64_t>(startOfNewFile));
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));

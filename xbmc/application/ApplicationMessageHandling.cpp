@@ -643,26 +643,37 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
                                                          m_app.CurrentFileItemPtr(), data);
 
       m_app.m_playerEvent.Set();
-      const auto stackHelper = m_app.GetComponent<CApplicationStackHelper>();
-      if (stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
-      { // just play the next item in the stack
-        m_app.PlayFile(stackHelper->SetNextStackPartAsCurrent(), "", true);
-        return true;
-      }
 
       // For EPG playlist items we keep the player open to ensure continuous viewing experience.
       const bool isEpgPlaylistItem{
           m_app.CurrentFileItem().GetProperty("epg_playlist_item").asBoolean(false)};
 
-      m_app.ResetCurrentItem();
-
       if (!isEpgPlaylistItem)
       {
+        const auto stackHelper{m_app.GetComponent<CApplicationStackHelper>()};
+        if (stackHelper->IsPlayingStack() && stackHelper->HasNextStackPartFileItem())
+        {
+          // If current stack part finished then play the next part
+          if (stackHelper->IsCurrentPartFinished())
+          {
+            m_app.PlayFile(stackHelper->SetNextStackPartAsCurrent(), "", true);
+            if (!m_app.WasPlaybackCancelled())
+              return true;
+
+            // Selection of next part playlist cancelled so create bookmark for next part
+            stackHelper->SetNextPartBookmark(m_app.CurrentFileItem().GetDynPath());
+          }
+        }
+
+        m_app.ResetCurrentItem();
+
         if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
           m_app.GetComponent<CApplicationPlayer>()->ClosePlayer();
 
         m_app.PlaybackCleanup();
       }
+      else
+        m_app.ResetCurrentItem();
 
 #ifdef HAS_PYTHON
       CServiceBroker::GetXBPython().OnPlayBackEnded();

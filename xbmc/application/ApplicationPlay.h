@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "cores/IPlayer.h"
 
+#include <cstdint>
 #include <string>
 
 class CApplicationStackHelper;
@@ -23,8 +24,9 @@ class CApplicationPlay
 {
 public:
   explicit CApplicationPlay(CApplicationStackHelper& stackHelper) : m_stackHelper(stackHelper) {}
+  CApplicationPlay() = delete;
 
-  enum class GatherPlaybackDetailsResult
+  enum class GatherPlaybackDetailsResult : uint8_t
   {
     RESULT_SUCCESS, // all details gathered
     RESULT_ERROR, // not all details gathered
@@ -64,8 +66,6 @@ public:
   const CPlayerOptions& GetPlayerOptions() const { return m_options; }
 
 private:
-  CApplicationPlay() = delete;
-
   /*!
    * \brief Resolves m_item's vfs dynpath to an actual file path.
    * \return true if resolved successfully, false otherwise
@@ -73,17 +73,10 @@ private:
   bool ResolvePath();
 
   /*!
-   * \brief Extracts a specific playable part from m_item's path, if m_item has a stack:// path.
-   * \return true if resolved successfully, false otherwise
-   */
-  bool ResolveStack();
-
-  /*!
    * \brief Determines if there is a resume point for m_item, updates the player options accordingly.
    * Also resolves a removable media path if needed
-   * \param restart Set to true if playback should restart from beginning
    */
-  void GetOptionsAndUpdateItem(bool restart);
+  void GetOptionsAndUpdateItem();
 
   /*!
    * \brief If m_item is a bluray that has not been played before and simple menu is enabled, then
