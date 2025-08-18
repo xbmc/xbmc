@@ -605,8 +605,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       // if we have a directory item (non-playlist) we then recurse into that folder
       // do not recurse for tv shows - we have already looked recursively for episodes
-      if (pItem->IsFolder() && !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem) &&
-          settings.recurse > 0 && content != ContentType::TVSHOWS)
+      if (content != ContentType::TVSHOWS && settings.recurse > 0 && pItem->IsFolder() &&
+          !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
       {
         if (!DoScan(pItem->GetPath()))
         {
