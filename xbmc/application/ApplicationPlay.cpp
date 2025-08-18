@@ -12,7 +12,6 @@
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
-#include "ServiceManager.h"
 #include "Util.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -26,7 +25,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "storage/MediaManager.h"
 #include "utils/DiscsUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -71,33 +69,6 @@ bool CApplicationPlay::ResolvePath()
   return true;
 }
 
-bool CApplicationPlay::ResolveStack()
-{
-  if (!m_stackHelper.InitializeStack(m_item))
-    return false;
-
-  // Particularly inefficient on startup as, if times are not saved in the database, each video
-  // is opened in turn to determine its length. A faster calculation of video time would improve
-  // this substantially.
-  const auto startOffset{m_stackHelper.InitializeStackStartPartAndOffset(m_item)};
-  if (!startOffset.has_value())
-  {
-    CLog::LogF(LOGERROR, "Failed to obtain start offset for stack {}. Aborting playback.",
-               m_item.GetDynPath());
-    return false;
-  }
-  const std::string savedPlayerState{m_item.GetProperty("savedplayerstate").asString("")};
-
-  // Replace stack:// FileItem with the individual stack part FileItem
-  m_item = m_stackHelper.GetCurrentStackPartFileItem();
-
-  m_item.SetStartOffset(startOffset.value());
-  if (!savedPlayerState.empty())
-    m_item.SetProperty("savedplayerstate", savedPlayerState);
-
-  return true;
-}
-
 namespace
 {
 bool GetEpisodeBookmark(const CFileItem& item, CPlayerOptions& options, CVideoDatabase& db)
@@ -118,7 +89,7 @@ bool GetEpisodeBookmark(const CFileItem& item, CPlayerOptions& options, CVideoDa
 }
 } // namespace
 
-void CApplicationPlay::GetOptionsAndUpdateItem(bool restart)
+void CApplicationPlay::GetOptionsAndUpdateItem()
 {
   if (m_item.HasProperty("StartPercent"))
   {
@@ -127,10 +98,7 @@ void CApplicationPlay::GetOptionsAndUpdateItem(bool restart)
   }
   m_options.starttime = CUtil::ConvertMilliSecsToSecs(m_item.GetStartOffset());
 
-  if (restart && m_item.HasVideoInfoTag())
-    m_options.state = m_item.GetVideoInfoTag()->GetResumePoint().playerState;
-
-  if (VIDEO::IsVideo(m_item) && (!restart || m_stackHelper.IsPlayingISOStack()))
+  if (VIDEO::IsVideo(m_item))
   {
     if (m_item.HasProperty("savedplayerstate"))
     {
@@ -196,6 +164,29 @@ void CApplicationPlay::GetOptionsAndUpdateItem(bool restart)
   }
 }
 
+namespace
+{
+bool IsSimpleMenuAllowed(const CFileItem& item,
+                         const std::string& player,
+                         const bool forceSelection)
+{
+  const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
+  const std::string defaultPlayer{player.empty() ? playerCoreFactory.GetDefaultPlayer(item)
+                                                 : player};
+
+  // No video selection when using external or remote players (they handle it if supported)
+  const bool isExternalPlayer{playerCoreFactory.IsExternalPlayer(defaultPlayer)};
+  const bool isRemotePlayer{playerCoreFactory.IsRemotePlayer(defaultPlayer)};
+
+  // Check if simple menu is enabled or if we are forced to select a playlist
+  const bool isSimpleMenu{forceSelection ||
+                          CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                              CSettings::SETTING_DISC_PLAYBACK) == BD_PLAYBACK_SIMPLE_MENU};
+
+  return !isExternalPlayer && !isRemotePlayer && isSimpleMenu;
+}
+} // namespace
+
 bool CApplicationPlay::GetPlaylistIfDisc()
 {
   // See if disc image is a Blu-ray (as an image could be a DVD as well) or if the path is a BDMV folder
@@ -207,38 +198,17 @@ bool CApplicationPlay::GetPlaylistIfDisc()
   const bool forceBlurayPlaylistSelection{forceSelection &&
                                           URIUtils::IsBlurayPath(m_item.GetDynPath())};
 
-  if ((isBluray && !(m_options.startpercent > 0.0 || m_options.starttime > 0.0)) ||
-      forceBlurayPlaylistSelection)
+  if (((isBluray && !(m_options.startpercent > 0.0 || m_options.starttime > 0.0)) ||
+       forceBlurayPlaylistSelection) &&
+      IsSimpleMenuAllowed(m_item, m_player, forceSelection))
   {
-    const bool isSimpleMenuAllowed{
-        [this, forceSelection]()
-        {
-          const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
-          const std::string defaultPlayer{
-              m_player.empty() ? playerCoreFactory.GetDefaultPlayer(m_item) : m_player};
+    if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(m_item))
+      return false;
 
-          // No video selection when using external or remote players (they handle it if supported)
-          const bool isExternalPlayer{playerCoreFactory.IsExternalPlayer(defaultPlayer)};
-          const bool isRemotePlayer{playerCoreFactory.IsRemotePlayer(defaultPlayer)};
-
-          // Check if simple menu is enabled or if we are forced to select a playlist
-          const bool isSimpleMenu{forceSelection ||
-                                  CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                                      CSettings::SETTING_DISC_PLAYBACK) == BD_PLAYBACK_SIMPLE_MENU};
-
-          return !isExternalPlayer && !isRemotePlayer && isSimpleMenu;
-        }()};
-
-    if (isSimpleMenuAllowed)
-    {
-      if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(m_item))
-        return false;
-
-      // Reset any resume state as new playlist chosen
-      m_options.starttime = m_options.startpercent = 0.0;
-      m_options.state = {};
-      m_item.ClearProperty("force_playlist_selection");
-    }
+    // Reset any resume state as new playlist chosen
+    m_options.starttime = m_options.startpercent = 0.0;
+    m_options.state = {};
+    m_item.ClearProperty("force_playlist_selection");
   }
 
   return true;
@@ -296,14 +266,6 @@ void CApplicationPlay::DetermineFullScreen()
   {
     m_options.fullscreen = ShouldGoFullScreen(VIDEO_PLAYLIST);
   }
-  else if (m_stackHelper.IsPlayingRegularStack())
-  {
-    if (m_stackHelper.GetCurrentPartNumber() == 0 ||
-        m_stackHelper.GetRegisteredStack(m_item)->GetStartOffset() != 0)
-      m_options.fullscreen = ShouldGoFullScreen(VIDEO);
-    else
-      m_options.fullscreen = false;
-  }
   else
     m_options.fullscreen = ShouldGoFullScreen(VIDEO);
 }
@@ -314,13 +276,19 @@ CApplicationPlay::GatherPlaybackDetailsResult CApplicationPlay::GatherPlaybackDe
   m_item = item;
   m_player = std::move(player);
 
-  if (m_item.IsStack())
+  // Deal with stacks
+  // This retrieves the individual stack part FileItem from the stack
+  //  and also generates the PlayerOptions for the stack part.
+  bool isStack{item.IsStack()};
+  if (isStack)
   {
-    if (!ResolveStack())
+    if (!m_stackHelper.InitializeStack(item))
+    {
+      CLog::LogF(LOGERROR, "Failed to initialise stack for {}. Aborting playback.",
+                 item.GetDynPath());
       return GatherPlaybackDetailsResult::RESULT_ERROR;
-
-    m_player.clear();
-    restart = true;
+    }
+    m_stackHelper.GetStackPartAndOptions(m_item, m_options, restart);
   }
 
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
@@ -336,11 +304,18 @@ CApplicationPlay::GatherPlaybackDetailsResult CApplicationPlay::GatherPlaybackDe
   if (!ResolvePath())
     return GatherPlaybackDetailsResult::RESULT_ERROR;
 
-  m_options = {};
-  GetOptionsAndUpdateItem(restart);
+  if (!isStack)
+  {
+    // May be set even if restarting (eg. moving between stack parts)
+    m_options = {};
+    m_options.starttime = CUtil::ConvertMilliSecsToSecs(item.GetStartOffset());
+
+    GetOptionsAndUpdateItem();
+  }
 
   if (!GetPlaylistIfDisc())
-    return GatherPlaybackDetailsResult::RESULT_NO_PLAYLIST_SELECTED;
+    return GatherPlaybackDetailsResult::
+        RESULT_NO_PLAYLIST_SELECTED; // Playlist needed but none selected (ie. user cancelled) so abort playback
 
   DetermineFullScreen();
 

@@ -667,11 +667,18 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       m_app.m_playerEvent.Set();
 
       if (const auto stackHelper{m_app.GetComponent<CApplicationStackHelper>()};
-          stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
+          stackHelper->IsPlayingStack() && stackHelper->HasNextStackPartFileItem())
       {
-        // Just play the next item in the stack
-        m_app.PlayFile(stackHelper->SetNextStackPartAsCurrent(), "", true);
-        return true;
+        // If current stack part finished then play the next part
+        if (stackHelper->IsCurrentPartFinished())
+        {
+          m_app.PlayFile(stackHelper->SetNextStackPartAsCurrent(), "", true);
+          if (!m_app.WasPlaybackCancelled())
+            return true;
+
+          // Selection of next part playlist cancelled so create bookmark for next part
+          stackHelper->SetNextPartBookmark(m_app.CurrentFileItem().GetDynPath());
+        }
       }
 
       // For EPG playlist items we keep the player open to ensure continuous viewing experience.
