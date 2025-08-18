@@ -181,9 +181,9 @@ CBuiltins::CommandMap CGUIContainerBuiltins::GetOperations() const
            {"container.previoussortmethod", {"Change to the previous sort method", 0, ChangeSortMethod<-1>}},
            {"container.previousviewmode",   {"Move to the previous view type (and refresh the listing)", 0, ChangeViewMode<-1>}},
            {"container.refresh",            {"Refresh current listing", 0, Refresh}},
-           {"container.setsortdirection",   {"Toggle the sort direction", 0, ToggleSortDirection}},
            {"container.setsortmethod",      {"Change to the specified sort method", 1, SetSortMethod}},
            {"container.setviewmode",        {"Move to the view with the given id", 1, SetViewMode}},
+           {"container.sortdirection",      {"Toggle the sort direction", 0, ToggleSortDirection}},
            {"container.update",             {"Update current listing. Send Container.Update(path,replace) to reset the path history", 1, Update}}
          };
 }
