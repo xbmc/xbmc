@@ -2789,10 +2789,12 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
                                        int idMovie /* = -1 */)
 {
   const auto filePath = details.GetPath();
+  const bool inTransaction{m_pDB->in_transaction()};
 
   try
   {
-    BeginTransaction();
+    if (!inTransaction)
+      BeginTransaction();
 
     if (idMovie < 0)
       idMovie = GetMovieId(filePath);
@@ -2803,7 +2805,8 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       idMovie = AddNewMovie(details);
       if (idMovie < 0)
       {
-        RollbackTransaction();
+        if (!inTransaction)
+          RollbackTransaction();
         return idMovie;
       }
     }
@@ -2838,19 +2841,35 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       {
         for (const auto& [type, url] : artwork)
         {
-          if (StringUtils::StartsWith(type, "set."))
-            SetArtForItem(idSet, MediaTypeVideoCollection, type.substr(4), url);
+          if (StringUtils::StartsWith(type, "set.") &&
+              !SetArtForItem(idSet, MediaTypeVideoCollection, type.substr(4), url))
+          {
+            if (!inTransaction)
+              RollbackTransaction();
+            return -1;
+          }
         }
       }
     }
 
-    if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
+    if (details.HasStreamDetails() &&
+        !SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details)))
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return -1;
+    }
 
-    SetArtForItem(idMovie, MediaTypeMovie, artwork);
+    if (!SetArtForItem(idMovie, MediaTypeMovie, artwork))
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return -1;
+    }
 
-   // Update all non-key fields of the movie record
-   std::string sql = "UPDATE movie SET " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
+    // Update all non-key fields of the movie record
+    std::string sql = "UPDATE movie SET " +
+                      GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
     if (idSet > 0)
       sql += PrepareSQL(", idSet = %i", idSet);
     else
@@ -2865,7 +2884,9 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       sql += PrepareSQL(", premiered = '%i'", details.GetYear());
     sql += PrepareSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql);
-    CommitTransaction();
+
+    if (!inTransaction)
+      CommitTransaction();
 
     return idMovie;
   }
@@ -2873,7 +2894,8 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
   {
     CLog::LogF(LOGERROR, "({}) failed", filePath);
   }
-  RollbackTransaction();
+  if (!inTransaction)
+    RollbackTransaction();
   return -1;
 }
 
@@ -2983,25 +3005,37 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details,
   if (details.m_strTitle.empty())
     return -1;
 
+  const bool inTransaction{m_pDB->in_transaction()};
+
   try
   {
-    BeginTransaction();
+    if (!inTransaction)
+      BeginTransaction();
+
     if (idSet < 0)
     {
       idSet = AddSet(details.m_strTitle, details.m_strPlot);
       if (idSet < 0)
       {
-        RollbackTransaction();
+        if (!inTransaction)
+          RollbackTransaction();
         return -1;
       }
     }
 
-    SetArtForItem(idSet, MediaTypeVideoCollection, artwork);
+    if (!SetArtForItem(idSet, MediaTypeVideoCollection, artwork))
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return -1;
+    }
 
     // and insert the new row
     std::string sql = PrepareSQL("UPDATE sets SET strSet='%s', strOverview='%s' WHERE idSet=%i", details.m_strTitle.c_str(), details.m_strPlot.c_str(), idSet);
     m_pDS->exec(sql);
-    CommitTransaction();
+
+    if (!inTransaction)
+      CommitTransaction();
 
     return idSet;
   }
@@ -3009,7 +3043,8 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details,
   {
     CLog::LogF(LOGERROR, "({}) failed", idSet);
   }
-  RollbackTransaction();
+  if (!inTransaction)
+    RollbackTransaction();
   return -1;
 }
 
@@ -3111,7 +3146,10 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
                                             const KODI::ART::Artwork& artwork,
                                             const KODI::ART::SeasonsArtwork& seasonArt)
 {
-  BeginTransaction();
+  const bool inTransaction{m_pDB->in_transaction()};
+
+  if (!inTransaction)
+    BeginTransaction();
 
   DeleteDetailsForTvShow(idTvShow);
 
@@ -3128,13 +3166,24 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
   details.m_iIdUniqueID = AddUniqueIDs(idTvShow, MediaTypeTvShow, details);
 
   // add "all seasons" - the rest are added in SetDetailsForEpisode
-  AddSeason(idTvShow, -1);
+  if (AddSeason(idTvShow, -1) == -1)
+  {
+    if (!inTransaction)
+      RollbackTransaction();
+    return false;
+  }
 
   // add any named seasons
   for (const auto& [seasonNumber, seasonName] : details.m_namedSeasons)
   {
     // make sure the named season exists
-    int seasonId = AddSeason(idTvShow, seasonNumber, seasonName);
+    const int seasonId = AddSeason(idTvShow, seasonNumber, seasonName);
+    if (seasonId == -1)
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return false;
+    }
 
     // get any existing details for the named season
     CVideoInfoTag season;
@@ -3142,18 +3191,34 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
       continue;
 
     season.SetSortTitle(seasonName);
-    SetDetailsForSeason(season, KODI::ART::Artwork(), idTvShow, seasonId);
+
+    if (SetDetailsForSeason(season, KODI::ART::Artwork(), idTvShow, seasonId) == -1)
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return false;
+    }
   }
 
-  SetArtForItem(idTvShow, MediaTypeTvShow, artwork);
+  if (!SetArtForItem(idTvShow, MediaTypeTvShow, artwork))
+  {
+    if (!inTransaction)
+      RollbackTransaction();
+    return false;
+  }
+
   for (const auto& [seasonNumber, art] : seasonArt)
   {
     int idSeason = AddSeason(idTvShow, seasonNumber);
-    if (idSeason > -1)
-      SetArtForItem(idSeason, MediaTypeSeason, art);
+    if (idSeason > -1 && !SetArtForItem(idSeason, MediaTypeSeason, art))
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return false;
+    }
   }
 
-  // and insert the new row
+  // and update the row
   std::string sql = "UPDATE tvshow SET " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
   if (details.m_iUserRating > 0 && details.m_iUserRating < 11)
     sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
@@ -3166,10 +3231,12 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
   sql += PrepareSQL(" WHERE idShow=%i", idTvShow);
   if (ExecuteQuery(sql))
   {
-    CommitTransaction();
+    if (!inTransaction)
+      CommitTransaction();
     return true;
   }
-  RollbackTransaction();
+  if (!inTransaction)
+    RollbackTransaction();
   return false;
 }
 
@@ -3181,20 +3248,30 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
   if (idShow < 0 || details.m_iSeason < -1)
     return -1;
 
-   try
+  const bool inTransaction{m_pDB->in_transaction()};
+
+  try
   {
-    BeginTransaction();
+    if (!inTransaction)
+      BeginTransaction();
+
     if (idSeason < 0)
     {
       idSeason = AddSeason(idShow, details.m_iSeason);
       if (idSeason < 0)
       {
-        RollbackTransaction();
+        if (!inTransaction)
+          RollbackTransaction();
         return -1;
       }
     }
 
-    SetArtForItem(idSeason, MediaTypeSeason, artwork);
+    if (!SetArtForItem(idSeason, MediaTypeSeason, artwork))
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return -1;
+    }
 
     // and insert the new row
     std::string sql = PrepareSQL("UPDATE seasons SET season=%i", details.m_iSeason);
@@ -3206,7 +3283,9 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
       sql += ", userrating = NULL";
     sql += PrepareSQL(" WHERE idSeason=%i", idSeason);
     m_pDS->exec(sql);
-    CommitTransaction();
+
+    if (!inTransaction)
+      CommitTransaction();
 
     return idSeason;
   }
@@ -3214,7 +3293,8 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
   {
     CLog::LogF(LOGERROR, "({}) failed", idSeason);
   }
-  RollbackTransaction();
+  if (!inTransaction)
+    RollbackTransaction();
   return -1;
 }
 
@@ -3387,10 +3467,13 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
                                          int idEpisode /* = -1 */)
 {
   const auto filePath = details.GetPath();
+  const bool inTransaction{m_pDB->in_transaction()};
 
   try
   {
-    BeginTransaction();
+    if (!inTransaction)
+      BeginTransaction();
+
     if (idEpisode < 0)
       idEpisode = GetEpisodeId(filePath);
 
@@ -3404,7 +3487,8 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
       idEpisode = AddNewEpisode(idShow, details);
       if (idEpisode < 0)
       {
-        RollbackTransaction();
+        if (!inTransaction)
+          RollbackTransaction();
         return -1;
       }
     }
@@ -3423,13 +3507,23 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
     // add unique ids
     details.m_iIdUniqueID = AddUniqueIDs(idEpisode, MediaTypeEpisode, details);
 
-    if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
+    if (details.HasStreamDetails() &&
+        !SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details)))
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return -1;
+    }
 
     // ensure we have this season already added
     int idSeason = AddSeason(idShow, details.m_iSeason);
 
-    SetArtForItem(idEpisode, MediaTypeEpisode, artwork);
+    if (!SetArtForItem(idEpisode, MediaTypeEpisode, artwork))
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return -1;
+    }
 
     // Update all non-key fields of the episode record
     std::string sql = "UPDATE episode SET " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
@@ -3440,7 +3534,9 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
     sql += PrepareSQL(", idSeason = %i", idSeason);
     sql += PrepareSQL(" where idEpisode=%i", idEpisode);
     m_pDS->exec(sql);
-    CommitTransaction();
+
+    if (!inTransaction)
+      CommitTransaction();
 
     return idEpisode;
   }
@@ -3448,7 +3544,8 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
   {
     CLog::LogF(LOGERROR, "({}) failed", filePath);
   }
-  RollbackTransaction();
+  if (!inTransaction)
+    RollbackTransaction();
   return -1;
 }
 
@@ -3477,10 +3574,12 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
                                             int idMVideo /* = -1 */)
 {
   const auto filePath = details.GetPath();
+  const bool inTransaction{m_pDB->in_transaction()};
 
   try
   {
-    BeginTransaction();
+    if (!inTransaction)
+      BeginTransaction();
 
     if (idMVideo < 0)
       idMVideo = GetMusicVideoId(filePath);
@@ -3495,7 +3594,8 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
       idMVideo = AddNewMusicVideo(details);
       if (idMVideo < 0)
       {
-        RollbackTransaction();
+        if (!inTransaction)
+          RollbackTransaction();
         return -1;
       }
     }
@@ -3514,10 +3614,20 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
     // add unique ids
     details.m_iIdUniqueID = UpdateUniqueIDs(idMVideo, MediaTypeMusicVideo, details);
 
-    if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
+    if (details.HasStreamDetails() &&
+        !SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details)))
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return -1;
+    }
 
-    SetArtForItem(idMVideo, MediaTypeMusicVideo, artwork);
+    if (!SetArtForItem(idMVideo, MediaTypeMusicVideo, artwork))
+    {
+      if (!inTransaction)
+        RollbackTransaction();
+      return -1;
+    }
 
     // update our movie table (we know it was added already above)
     // and insert the new row
@@ -3532,7 +3642,9 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
       sql += PrepareSQL(", premiered = '%i'", details.GetYear());
     sql += PrepareSQL(" where idMVideo=%i", idMVideo);
     m_pDS->exec(sql);
-    CommitTransaction();
+
+    if (!inTransaction)
+      CommitTransaction();
 
     return idMVideo;
   }
@@ -3540,7 +3652,8 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
   {
     CLog::LogF(LOGERROR, "({}) failed", filePath);
   }
-  RollbackTransaction();
+  if (!inTransaction)
+    RollbackTransaction();
   return -1;
 }
 
