@@ -23,7 +23,7 @@
   template<int Dir>
 static int ChangeSortMethod(const std::vector<std::string>& params)
 {
-  CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, 0, Dir);
+  CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, -1, Dir);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
 
   return 0;
@@ -64,7 +64,11 @@ static int Refresh(const std::vector<std::string>& params)
  */
 static int SetSortMethod(const std::vector<std::string>& params)
 {
-  CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, atoi(params[0].c_str()));
+  CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, -1);
+  if (!params.empty() && !params[0].empty())
+  {
+    message.SetParam1(atoi(params[0].c_str()));
+  }
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
 
   return 0;
