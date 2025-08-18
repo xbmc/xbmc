@@ -78,13 +78,23 @@
         </screenshot>
     </screenshots>
     <releases>
-        <release date="2024-03-07" version="21.0~rc1-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-rc-1/</url></release>
-        <release date="2024-02-15" version="21.0~b3-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-beta-3/</url></release>
-        <release date="2023-12-09" version="21.0~b2-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-beta-2/</url></release>
+        <release date="2025-08-18" version="22.0~a1-Piers" type="development"><url>https://kodi.tv/article/kodi-22-0-piers-alpha-1/</url></release>
+        <release date="2025-01-15" version="21.2-Omega" type="stable"><url>https://kodi.tv/article/kodi-21-2-omega-release/</url></release>
+        <release date="2024-08-17" version="21.1-Omega" type="stable"><url>https://kodi.tv/article/kodi-21-1-omega-release/</url></release>
+        <release date="2024-04-06" version="21.0-Omega" type="stable"><url>https://kodi.tv/article/kodi-21-0-omega-release/</url></release>
+        <release date="2024-03-18" version="21.0~rc2-Omega" type="development"/>
+        <release date="2024-03-07" version="21.0~rc1-Omega" type="development"><url>https://kodi.tv/article/kodi-21-0-omega-rc1/</url></release>
+        <release date="2024-02-15" version="21.0~b3-Omega" type="development"><url>https://kodi.tv/article/kodi-21-0-omega-beta-3/</url></release>
+        <release date="2023-12-09" version="21.0~b2-Omega" type="development"><url>https://kodi.tv/article/kodi-21-0-omega-beta-2/</url></release>
         <release date="2023-10-17" version="21.0~b1-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-beta-1/</url></release>
         <release date="2023-09-07" version="21.0~a3-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-alpha-3/</url></release>
         <release date="2023-06-17" version="21.0~a2-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-alpha-2/</url></release>
         <release date="2023-04-16" version="21.0~a1-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-alpha-1/</url></release>
+        <release date="2024-03-02" version="20.5-Nexus" type="stable"><url>https://kodi.tv/article/kodi-20-5-nexus-release/</url></release>
+        <release date="2024-02-10" version="20.4-Nexus" type="stable"><url>https://kodi.tv/article/kodi-20-4-nexus-release/</url></release>
+        <release date="2024-01-09" version="20.3-Nexus" type="stable"><url>https://kodi.tv/article/kodi-20-3-nexus-release/</url></release>
+        <release date="2023-06-28" version="20.2-Nexus" type="stable"><url>https://kodi.tv/article/kodi-20-2-nexus-release/</url></release>
+        <release date="2023-03-11" version="20.1-Nexus" type="stable"><url>https://kodi.tv/article/kodi-20-1-nexus-release/</url></release>
         <release date="2023-01-15" version="20.0-Nexus" type="stable"><url>https://kodi.tv/article/kodi-20-0-nexus-release/</url></release>
         <release date="2022-12-21" version="20.0~rc2-Nexus" type="development"><url>https://kodi.tv/article/kodi-nexus-rc-2/</url></release>
         <release date="2022-12-10" version="20.0~rc1-Nexus" type="development"><url>https://kodi.tv/article/kodi-nexus-rc-1/</url></release>
@@ -92,20 +102,22 @@
         <release date="2022-09-08" version="20.0~a3-Nexus" type="development"><url>https://kodi.tv/article/kodi-nexus-alpha-3/</url></release>
         <release date="2022-07-09" version="20.0~a2-Nexus" type="development"><url>https://kodi.tv/article/kodi-nexus-alpha-2/</url></release>
         <release date="2022-05-16" version="20.0~a1-Nexus" type="development"><url>https://kodi.tv/article/kodi-nexus-alpha-1/</url></release>
-        <release date="2022-03-03" version="19.4-Matrix"/>
-        <release date="2021-10-24" version="19.3-Matrix"/>
-        <release date="2021-10-08" version="19.2-Matrix"/>
-        <release date="2021-05-09" version="19.1-Matrix"/>
-        <release date="2021-02-19" version="19.0-Matrix"/>
-        <release date="2020-10-24" version="18.9-Leia"/>
-        <release date="2020-07-28" version="18.8-Leia"/>
-        <release date="2020-05-21" version="18.7-Leia"/>
-        <release date="2020-02-29" version="18.6-Leia"/>
-        <release date="2019-11-18" version="18.5-Leia"/>
-        <release date="2019-08-31" version="18.4-Leia"/>
-        <release date="2019-06-27" version="18.3-Leia"/>
-        <release date="2019-04-22" version="18.2-Leia"/>
-        <release date="2019-02-17" version="18.1-Leia"/>
+        <release date="2022-12-24" version="19.5-Matrix" type="stable"><url>https://kodi.tv/article/kodi-matrix-19-5-release/</url></release>
+        <release date="2022-03-03" version="19.4-Matrix" type="stable"><url>https://kodi.tv/article/kodi-matrix-19-4-release/</url></release>
+        <release date="2021-10-24" version="19.3-Matrix" type="stable"><url>https://kodi.tv/article/kodi-matrix-19-3-release/</url></release>
+        <release date="2021-10-08" version="19.2-Matrix" type="stable"><url>https://kodi.tv/article/kodi-matrix-19-2-release/</url></release>
+        <release date="2021-05-09" version="19.1-Matrix" type="stable"><url>https://kodi.tv/article/kodi-matrix-19-1-release/</url></release>
+        <release date="2021-02-19" version="19.0-Matrix" type="stable"><url>https://kodi.tv/article/kodi-19-0-matrix-release/</url></release>
+        <release date="2020-10-24" version="18.9-Leia" type="stable"><url>https://kodi.tv/article/kodi-leia-189-release/</url></release>
+        <release date="2020-07-28" version="18.8-Leia" type="stable"><url>https://kodi.tv/article/kodi-leia-188-release/</url></release>
+        <release date="2020-05-21" version="18.7-Leia" type="stable"><url>https://kodi.tv/article/kodi-leia-187-release/</url></release>
+        <release date="2020-02-29" version="18.6-Leia" type="stable"><url>https://kodi.tv/article/kodi-leia-186-release/</url></release>
+        <release date="2019-11-18" version="18.5-Leia" type="stable"><url>https://kodi.tv/article/kodi-leia-185-release/</url></release>
+        <release date="2019-08-31" version="18.4-Leia" type="stable"><url>https://kodi.tv/article/kodi-leia-184-release/</url></release>
+        <release date="2019-06-27" version="18.3-Leia" type="stable"><url>https://kodi.tv/article/kodi-leia-183-release/</url></release>
+        <release date="2019-04-22" version="18.2-Leia" type="stable"><url>https://kodi.tv/article/kodi-leia-182-release/</url></release>
+        <release date="2019-02-17" version="18.1-Leia" type="stable"/>
+        <release date="2019-01-28" version="18.0-Leia" type="stable"><url>https://kodi.tv/article/kodi-180/</url></release>
     </releases>
     <content_rating type="oars-1.0">
         <content_attribute id="violence-cartoon">none</content_attribute>
