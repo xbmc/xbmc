@@ -2849,37 +2849,8 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
 
     SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
-    if (!details.HasUniqueID() && details.HasYear())
-    { // query DB for any movies matching online id and year
-      std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
-                                      "FROM movie "
-                                      "  INNER JOIN files "
-                                      "    ON files.idFile=movie.idFile "
-                                      "  JOIN uniqueid "
-                                      "    ON movie.idMovie=uniqueid.media_id AND uniqueid.media_type='movie' AND uniqueid.value='%s'"
-                                      "WHERE movie.premiered LIKE '%i%%' AND movie.idMovie!=%i AND files.playCount > 0",
-                                      details.GetUniqueID().c_str(), details.GetYear(), idMovie);
-      m_pDS->query(strSQL);
-
-      if (!m_pDS->eof())
-      {
-        int playCount = m_pDS->fv("files.playCount").get_asInt();
-
-        CDateTime lastPlayed;
-        lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
-
-        // update with playCount and lastPlayed
-        strSQL =
-            PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount,
-                       lastPlayed.GetAsDBDateTime().c_str(), GetAndFillFileId(details));
-        m_pDS->exec(strSQL);
-      }
-
-      m_pDS->close();
-    }
-    // update our movie table (we know it was added already above)
-    // and insert the new row
-    std::string sql = "UPDATE movie SET " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
+   // Update all non-key fields of the movie record
+   std::string sql = "UPDATE movie SET " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
     if (idSet > 0)
       sql += PrepareSQL(", idSet = %i", idSet);
     else
@@ -3460,33 +3431,7 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
 
     SetArtForItem(idEpisode, MediaTypeEpisode, artwork);
 
-    if (details.m_iEpisode != -1 && details.m_iSeason != -1)
-    { // query DB for any episodes matching idShow, Season and Episode
-      std::string strSQL = PrepareSQL("SELECT files.playCount, files.lastPlayed "
-                                      "FROM episode INNER JOIN files ON files.idFile=episode.idFile "
-                                      "WHERE episode.c%02d=%i AND episode.c%02d=%i AND episode.idShow=%i "
-                                      "AND episode.idEpisode!=%i AND files.playCount > 0",
-                                      VIDEODB_ID_EPISODE_SEASON, details.m_iSeason, VIDEODB_ID_EPISODE_EPISODE,
-                                      details.m_iEpisode, idShow, idEpisode);
-      m_pDS->query(strSQL);
-
-      if (!m_pDS->eof())
-      {
-        int playCount = m_pDS->fv("files.playCount").get_asInt();
-
-        CDateTime lastPlayed;
-        lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
-
-        // update with playCount and lastPlayed
-        strSQL =
-            PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", playCount,
-                       lastPlayed.GetAsDBDateTime().c_str(), GetAndFillFileId(details));
-        m_pDS->exec(strSQL);
-      }
-
-      m_pDS->close();
-    }
-    // and insert the new row
+    // Update all non-key fields of the episode record
     std::string sql = "UPDATE episode SET " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
     if (details.m_iUserRating > 0 && details.m_iUserRating < 11)
       sql += PrepareSQL(", userrating = %i", details.m_iUserRating);
