@@ -822,16 +822,24 @@ void CPlayListPlayer::AnnouncePropertyChanged(Id playlistId,
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  if (strProperty.empty() || value.isNull() ||
-      (playlistId == Id::TYPE_VIDEO && !appPlayer->IsPlayingVideo()) ||
+  if (strProperty.empty() || value.isNull())
+    return;
+
+  CVariant dataPlaylist;
+  dataPlaylist["playlist"]["playlistid"] = static_cast<int>(playlistId);
+  dataPlaylist["property"][strProperty] = value;
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnPropertyChanged",
+                                                     dataPlaylist);
+
+  if ((playlistId == Id::TYPE_VIDEO && !appPlayer->IsPlayingVideo()) ||
       (playlistId == Id::TYPE_MUSIC && !appPlayer->IsPlayingAudio()))
     return;
 
-  CVariant data;
-  data["player"]["playerid"] = static_cast<int>(playlistId);
-  data["property"][strProperty] = value;
+  CVariant dataPlayer;
+  dataPlayer["player"]["playerid"] = static_cast<int>(playlistId);
+  dataPlayer["property"][strProperty] = value;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                     data);
+                                                     dataPlayer);
 }
 
 int PLAYLIST::CPlayListPlayer::GetMessageMask()
@@ -910,9 +918,23 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     SetShuffle(Id{pMsg->param1}, pMsg->param2 > 0);
     break;
 
+  case TMSG_PLAYLISTPLAYER_IS_SHUFFLED:
+  {
+    auto shuffled = static_cast<bool*>(pMsg->lpVoid);
+    *shuffled = IsShuffled(pMsg->param1);
+    break;
+  }
+
   case TMSG_PLAYLISTPLAYER_REPEAT:
     SetRepeat(Id{pMsg->param1}, static_cast<RepeatState>(pMsg->param2));
     break;
+
+  case TMSG_PLAYLISTPLAYER_GET_REPEAT:
+  {
+    auto state = static_cast<REPEAT_STATE*>(pMsg->lpVoid);
+    *state = GetRepeat(pMsg->param1);
+    break;
+  }
 
   case TMSG_PLAYLISTPLAYER_GET_ITEMS:
     if (pMsg->lpVoid)

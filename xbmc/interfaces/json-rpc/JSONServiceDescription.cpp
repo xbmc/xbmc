@@ -89,6 +89,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Playlist.Insert",                              CPlaylistOperations::Insert },
   { "Playlist.Clear",                               CPlaylistOperations::Clear },
   { "Playlist.Remove",                              CPlaylistOperations::Remove },
+  { "Playlist.SetRepeat",                           CPlaylistOperations::SetRepeat },
+  { "Playlist.SetShuffle",                          CPlaylistOperations::SetShuffle },
   { "Playlist.Swap",                                CPlaylistOperations::Swap },
 
 // Files

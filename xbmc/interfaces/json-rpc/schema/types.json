@@ -315,7 +315,9 @@
     "type": "string",
     "enum": [
       "type",
-      "size"
+      "size",
+      "repeat",
+      "shuffled"
     ]
   },
   "Playlist.Property.Value": {
@@ -327,6 +329,12 @@
       "size": {
         "type": "integer",
         "minimum": 0
+      },
+      "repeat": {
+        "$ref": "Player.Repeat"
+      },
+      "shuffled": {
+        "type": "boolean"
       }
     }
   },
@@ -1040,6 +1048,15 @@
       },
       "player": {
         "$ref": "Player.Notifications.Player",
+        "required": true
+      }
+    }
+  },
+  "Playlist.Notifications.Playlist": {
+    "type": "object",
+    "properties": {
+      "playlistid": {
+        "$ref": "Player.Id",
         "required": true
       }
     }
