@@ -141,4 +141,11 @@ struct CVideoPlayAndQueue : IContextMenuItem
   bool Execute(const std::shared_ptr<CFileItem>& item) const override;
 };
 
-}
+struct CTVShowScanForNewContent : CStaticContextMenuAction
+{
+  CTVShowScanForNewContent() : CStaticContextMenuAction(13349) {} // Scan for new content
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+} // namespace CONTEXTMENU

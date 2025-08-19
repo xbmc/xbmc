@@ -94,6 +94,7 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CVideoMarkWatched>(),
       std::make_shared<CONTEXTMENU::CVideoMarkUnWatched>(),
       std::make_shared<CONTEXTMENU::CVideoRemoveResumePoint>(),
+      std::make_shared<CONTEXTMENU::CTVShowScanForNewContent>(),
       std::make_shared<CONTEXTMENU::CEjectDisk>(),
       std::make_shared<CONTEXTMENU::CEjectDrive>(),
       std::make_shared<CONTEXTMENU::CFavouritesTargetBrowse>(),

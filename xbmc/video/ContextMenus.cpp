@@ -24,6 +24,7 @@
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoLibraryQueue.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
@@ -445,4 +446,20 @@ bool CVideoPlayAndQueue::Execute(const std::shared_ptr<CFileItem>& item) const
 
   return true; //! @todo implement
 }
+
+bool CTVShowScanForNewContent::IsVisible(const CFileItem& item) const
+{
+  return !item.IsParentFolder() && item.HasVideoInfoTag() &&
+         item.GetVideoInfoTag()->m_type == MediaTypeTvShow;
 }
+
+bool CTVShowScanForNewContent::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  const std::string strPath{VIDEO::IsVideoDb(*item) ? item->GetVideoInfoTag()->m_strPath
+                                                    : item->GetPath()};
+  CVideoLibraryQueue::GetInstance().ScanLibrary(strPath, true /* scanAll */,
+                                                true /* showProgress */);
+  return true;
+}
+
+} // namespace CONTEXTMENU

@@ -838,11 +838,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
         }
-        if (node == NodeType::TITLE_TVSHOWS || node == NodeType::INPROGRESS_TVSHOWS)
-        {
-          buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-        }
-        else if (node == NodeType::ACTOR)
+        if (node == NodeType::ACTOR)
         {
           // Add 'Choose art' for all not 'all items' folders
           if (item->IsFolder() && !CVideoDatabaseDirectory::IsAllItem(item->GetPath()))
