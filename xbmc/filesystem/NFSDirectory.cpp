@@ -6,24 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "NFSDirectory.h"
+
+#include "FileItemList.h"
+#include "utils/URIUtils.h"
+#include "utils/XTimeUtils.h"
+#include "utils/log.h"
+
 #ifdef TARGET_WINDOWS
 #include <mutex>
 
 #include <sys\stat.h>
 #endif
 
-#include "FileItem.h"
-#include "FileItemList.h"
-#include "NFSDirectory.h"
-#include "utils/URIUtils.h"
-#include "utils/XTimeUtils.h"
-#include "utils/log.h"
-
-#ifdef TARGET_WINDOWS
-#include <sys\stat.h>
-#endif
-
-using namespace XFILE;
 #include <limits.h>
 
 #include <nfsc/libnfs-raw-nfs.h>
@@ -39,6 +34,8 @@ using namespace XFILE;
 #define S_ISFIFO(m) ((m & _S_IFIFO) != 0)
 #define S_ISREG(m) ((m & _S_IFREG) != 0)
 #endif
+
+using namespace XFILE;
 
 namespace
 {
@@ -75,7 +72,8 @@ CNFSDirectory::~CNFSDirectory(void)
   gNfsConnection.AddIdleConnection();
 }
 
-std::vector<CFileItemPtr> CNFSDirectory::GetDirectoryFromExportList(const CURL& inputURL)
+std::vector<std::shared_ptr<CFileItem>> CNFSDirectory::GetDirectoryFromExportList(
+    const CURL& inputURL)
 {
   std::string pathWithSlash(inputURL.Get());
   URIUtils::AddSlashAtEnd(pathWithSlash); //be sure the dir ends with a slash
@@ -87,7 +85,7 @@ std::vector<CFileItemPtr> CNFSDirectory::GetDirectoryFromExportList(const CURL& 
 
   std::list<std::string> exportList=gNfsConnection.GetExportList(url);
 
-  std::vector<CFileItemPtr> fileItems;
+  std::vector<std::shared_ptr<CFileItem>> fileItems;
   for (const std::string& currentExport : exportList)
   {
     std::string path(pathWithoutSlash + currentExport);
@@ -101,10 +99,10 @@ std::vector<CFileItemPtr> CNFSDirectory::GetDirectoryFromExportList(const CURL& 
   return fileItems;
 }
 
-std::vector<CFileItemPtr> CNFSDirectory::GetServerList()
+std::vector<std::shared_ptr<CFileItem>> CNFSDirectory::GetServerList()
 {
   struct nfs_server_list* srvrs = nfs_find_local_servers();
-  std::vector<CFileItemPtr> fileItems;
+  std::vector<std::shared_ptr<CFileItem>> fileItems;
   for (struct nfs_server_list* srv = srvrs; srv; srv = srv->next)
   {
     std::string serverAddress = srv->addr;
@@ -165,8 +163,8 @@ bool CNFSDirectory::ResolveSymlink(const std::string& dirName,
 
     if (ret != 0)
     {
-      CLog::Log(LOGERROR, "NFS: Failed to stat({}) on link resolve {}", fullpath,
-                nfs_get_error(gNfsConnection.GetNfsContext()));
+      CLog::LogF(LOGERROR, "Failed to stat '{}' on link resolve ({})", fullpath,
+                 nfs_get_error(gNfsConnection.GetNfsContext()));
       retVal = false;
     }
     else
@@ -213,8 +211,8 @@ bool CNFSDirectory::ResolveSymlink(const std::string& dirName,
   }
   else
   {
-    CLog::Log(LOGERROR, "Failed to readlink({}) {}", fullpath,
-              nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::LogF(LOGERROR, "Failed to readlink '{}' ({})", fullpath,
+               nfs_get_error(gNfsConnection.GetNfsContext()));
     retVal = false;
   }
   return retVal;
@@ -231,7 +229,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     //connect has failed - so try to get the exported filesystems if no path is given to the url
     if (url.GetShareName().empty())
     {
-      std::vector<CFileItemPtr> fileItems =
+      std::vector<std::shared_ptr<CFileItem>> fileItems =
           url.GetHostName().empty() ? GetServerList() : GetDirectoryFromExportList(url);
       bool ret = !fileItems.empty();
       items.AddItems(std::move(fileItems));
@@ -243,8 +241,8 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   struct nfsdir* nfsdir = nullptr;
   if (nfs_opendir(gNfsConnection.GetNfsContext(), strDirName.c_str(), &nfsdir) != 0)
   {
-    CLog::Log(LOGERROR, "Failed to open({}) {}", strDirName,
-              nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::LogF(LOGERROR, "Failed to open '{}' ({})", strDirName,
+               nfs_get_error(gNfsConnection.GetNfsContext()));
     return false;
   }
   lock.unlock();
@@ -254,7 +252,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   URIUtils::AddSlashAtEnd(strDirName);
 
   std::string resolvedPath;
-  std::vector<CFileItemPtr> fileItems;
+  std::vector<std::shared_ptr<CFileItem>> fileItems;
   struct nfsdirent* dirent = nullptr;
   while ((dirent = nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != nullptr)
   {
@@ -309,9 +307,9 @@ bool CNFSDirectory::Create(const CURL& url2)
   ret = nfs_mkdir(gNfsConnection.GetNfsContext(), folderName.c_str());
 
   success = (ret == 0 || -EEXIST == ret);
-  if(!success)
-    CLog::Log(LOGERROR, "NFS: Failed to create({}) {}", folderName,
-              nfs_get_error(gNfsConnection.GetNfsContext()));
+  if (!success)
+    CLog::LogF(LOGERROR, "Failed to create '{}' ({})", folderName,
+               nfs_get_error(gNfsConnection.GetNfsContext()));
   return success;
 }
 
@@ -330,10 +328,10 @@ bool CNFSDirectory::Remove(const CURL& url2)
 
   ret = nfs_rmdir(gNfsConnection.GetNfsContext(), folderName.c_str());
 
-  if(ret != 0 && errno != ENOENT)
+  if (ret != 0 && errno != ENOENT)
   {
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__,
-              nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::LogF(LOGERROR, "Failed to remove '{}' ({})", folderName,
+               nfs_get_error(gNfsConnection.GetNfsContext()));
     return false;
   }
   return true;
