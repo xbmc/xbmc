@@ -979,7 +979,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (result == InfoType::FULL)
     {
       // Add the movie entry
-      // If there is an existing idMovie then this must be a version is a separate nfo file
       // Try with title first
       int existingMovieId{-1};
       const CVideoInfoTag* tag{item.GetVideoInfoTag()};
@@ -993,26 +992,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
       int movieId{-1};
       item.SetProperty("from_nfo", true);
 
-      if (existingMovieId > -1)
-      {
-        // Add as version
-        movieId = existingMovieId;
-        item.SetProperty("idMovie", movieId);
-        const int versionId{static_cast<int>(AddVideo(&item, nullptr, bDirNames, true, nullptr,
-                                                      false, ContentType::MOVIE_VERSIONS))};
-        if (versionId < 0)
+      if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
+        if (!AddSet(pItem->GetVideoInfoTag()->m_set))
           return InfoRet::INFO_ERROR;
-      }
-      else
-      {
-        if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
-          if (!AddSet(pItem->GetVideoInfoTag()->m_set))
-            return InfoRet::INFO_ERROR;
-        movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
-        if (movieId < 0)
-          return InfoRet::INFO_ERROR;
-        item.SetProperty("idMovie", movieId);
-      }
+      movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
+      if (movieId < 0)
+        return InfoRet::INFO_ERROR;
+      item.SetProperty("idMovie", movieId);
 
       // Set version (AddVideo() ultimately uses CVideoDatabase::AddNewMovie() which defaults to standard version)
       m_database.SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
@@ -1023,6 +1009,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         defaultVersionFileId = tag->m_iFileId; // Updated in AddMovie()
 
       // Look for versions (ie. subsequent <movie> entries in the .nfo file)
+      // These must be versions
       int index{1};
       do
       {
@@ -1917,29 +1904,33 @@ CVideoInfoScanner::~CVideoInfoScanner()
                       });
 
       // Deal with 'Disc n' subdirectories
-      const std::string discNum{CUtil::GetPartNumberFromPath(movieDetails.m_strFileNameAndPath)};
-      if (!discNum.empty() && !pItem->GetProperty("from_nfo").asBoolean(false))
+      // Unless dealing with a full nfo in which case details are taken from there already
+      if (!pItem->GetProperty("from_nfo").asBoolean(false))
       {
-        if (!movieDetails.m_set.HasTitle())
+        const std::string discNum{CUtil::GetPartNumberFromPath(movieDetails.m_strFileNameAndPath)};
+        if (!discNum.empty())
         {
-          const std::string setName{m_database.GetSetByNameLike(movieDetails.m_strTitle)};
-          if (!setName.empty())
+          if (!movieDetails.m_set.HasTitle())
           {
-            // Add movie to existing set
-            movieDetails.SetSet(setName);
+            const std::string setName{m_database.GetSetByNameLike(movieDetails.m_strTitle)};
+            if (!setName.empty())
+            {
+              // Add movie to existing set
+              movieDetails.SetSet(setName);
+            }
+            else
+            {
+              // Create set, then add movie to the set
+              const int idSet{m_database.AddSet(movieDetails.m_strTitle)};
+              m_database.SetArtForItem(idSet, MediaTypeVideoCollection, art);
+              movieDetails.SetSet(movieDetails.m_strTitle);
+            }
           }
-          else
-          {
-            // Create set, then add movie to the set
-            const int idSet{m_database.AddSet(movieDetails.m_strTitle)};
-            m_database.SetArtForItem(idSet, MediaTypeVideoCollection, art);
-            movieDetails.SetSet(movieDetails.m_strTitle);
-          }
-        }
 
-        // Add '(Disc n)' to title (in local language)
-        movieDetails.m_strTitle =
-            StringUtils::Format(g_localizeStrings.Get(29995), movieDetails.m_strTitle, discNum);
+          // Add '(Disc n)' to title (in local language)
+          movieDetails.m_strTitle =
+              StringUtils::Format(g_localizeStrings.Get(29995), movieDetails.m_strTitle, discNum);
+        }
       }
 
       lResult = m_database.SetDetailsForMovie(movieDetails, art);
@@ -1965,7 +1956,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (idMovie != -1)
       {
         lResult = m_database.AddMovieVersion(*pItem, idMovie, art);
-        movieDetails.m_iDbId = static_cast<int>(lResult);
+        movieDetails.m_iDbId = idMovie;
         movieDetails.m_type = MediaTypeMovie;
       }
     }

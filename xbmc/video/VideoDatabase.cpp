@@ -3026,16 +3026,14 @@ int CVideoDatabase::AddMovieVersion(CFileItem& item, int idMovie, const ART::Art
   if (tag->HasStreamDetails() && !SetStreamDetailsForFileId(tag->m_streamDetails, idFile))
     return -1;
 
-  const int idVersion{AddVideoVersion(item.GetVideoContentType(), idMovie, idFile,
-                                      tag->GetAssetInfo().GetId(), VideoAssetType::VERSION)};
-  if (idVersion == -1)
+  if (!AddOrUpdateVideoVersion(item.GetVideoContentType(), idMovie, idFile,
+                               tag->GetAssetInfo().GetId(), VideoAssetType::VERSION))
     return -1;
 
-  for (const auto& [type, url] : art)
-    if (!SetArtForItem(idVersion, MediaTypeVideoVersion, type, url))
-      return -1;
+  if (!SetArtForItem(idFile, MediaTypeVideoVersion, art))
+    return -1;
 
-  return idVersion;
+  return idFile;
 }
 
 int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag& details) const
@@ -13425,31 +13423,51 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
   return true;
 }
 
-int CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
-                                    int dbIdSource,
-                                    int idFile,
-                                    int idVideoVersion,
-                                    VideoAssetType assetType)
+bool CVideoDatabase::AddOrUpdateVideoVersion(VideoDbContentType itemType,
+                                             int dbIdSource,
+                                             int idFile,
+                                             int idVideoVersion,
+                                             VideoAssetType assetType)
 {
   if (!m_pDB || !m_pDS)
-    return -1;
+    return false;
 
-  const std::string sql{PrepareSQL(
-      "INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
-      "VALUES(%i, %i, '%s', %i, %i)",
-      idFile, dbIdSource, VideoContentTypeToString(itemType).c_str(), assetType, idVideoVersion)};
-
+  std::string sql;
   try
   {
+    sql = PrepareSQL("SELECT 1 FROM videoversion WHERE idFile=%i", idFile);
+    m_pDS->query(sql);
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+
+      sql = PrepareSQL("UPDATE videoversion "
+                       "SET idMedia = %i, media_type = '%s', itemType = %i, idType = %i "
+                       "WHERE idFile=%i",
+                       dbIdSource, VideoContentTypeToString(itemType).c_str(), assetType,
+                       idVideoVersion, idFile);
+
+      m_pDS->exec(sql);
+
+      return true;
+    }
+
+    m_pDS->close();
+
+    sql = PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                     "VALUES(%i, %i, '%s', %i, %i)",
+                     idFile, dbIdSource, VideoContentTypeToString(itemType).c_str(), assetType,
+                     idVideoVersion);
+
     m_pDS->exec(sql);
 
-    return static_cast<int>(m_pDS->lastinsertid());
+    return true;
   }
   catch (const std::exception& e)
   {
-    CLog::LogF(LOGERROR, "Unable to add version ({}) - error {}", sql, e.what());
+    CLog::LogF(LOGERROR, "Unable to add/update version ({}) - error {}", sql, e.what());
   }
-  return -1;
+  return false;
 }
 
 void CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile)
