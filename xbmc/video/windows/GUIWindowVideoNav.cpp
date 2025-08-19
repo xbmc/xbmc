@@ -838,7 +838,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
         }
-        if (node == NodeType::TITLE_TVSHOWS)
+        if (node == NodeType::TITLE_TVSHOWS || node == NodeType::INPROGRESS_TVSHOWS)
         {
           buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
