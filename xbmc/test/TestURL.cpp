@@ -14,6 +14,35 @@ using ::testing::Test;
 using ::testing::WithParamInterface;
 using ::testing::ValuesIn;
 
+class TestCURL : public testing::Test
+{
+};
+
+TEST_F(TestCURL, TestComparison)
+{
+  CURL url1;
+  CURL url2;
+  CURL url3("http://www.aol.com/index.html?t=9");
+  CURL url4(url3);
+
+  EXPECT_FALSE(url1 == url3);
+  EXPECT_FALSE(url2 == url3);
+
+  EXPECT_TRUE(url1 == url1);
+  EXPECT_TRUE(url2 == url2);
+  EXPECT_TRUE(url3 == url3);
+  EXPECT_TRUE(url4 == url4);
+
+  EXPECT_TRUE(url1 == url2);
+  EXPECT_TRUE(url3 == url4);
+
+  EXPECT_TRUE(url3 == "http://www.aol.com/index.html?t=9");
+  EXPECT_TRUE("http://www.aol.com/index.html?t=9" == url3);
+
+  EXPECT_FALSE(url3 == "http://www.microsoft.com/index.html?t=9");
+  EXPECT_FALSE("http://www.microsoft.com/index.html?t=9" == url3);
+}
+
 struct TestURLGetWithoutUserDetailsData
 {
   std::string input;
