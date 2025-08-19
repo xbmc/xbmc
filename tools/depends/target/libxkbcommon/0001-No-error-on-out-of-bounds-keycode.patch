@@ -1,0 +1,11 @@
+--- a/src/xkbcomp/keycodes.c
++++ b/src/xkbcomp/keycodes.c
+@@ -206,7 +206,7 @@ AddKeyName(KeyNamesInfo *info, xkb_keycode_t kc, xkb_atom_t name,
+         log_err(info->ctx, XKB_LOG_MESSAGE_NO_ID,
+                 "Keycode too big: must be < %#"PRIx32", got %#"PRIx32"; "
+                 "Key ignored\n", XKB_KEYCODE_MAX_IMPL, kc);
+-        return false;
++        return true;
+     }
+ 
+     const xkb_atom_t old_name =
