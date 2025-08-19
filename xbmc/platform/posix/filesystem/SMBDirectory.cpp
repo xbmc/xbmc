@@ -27,7 +27,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -36,6 +35,7 @@
 
 #include <mutex>
 
+#include <fmt/format.h>
 #include <libsmbclient.h>
 
 using namespace XFILE;
@@ -116,7 +116,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     int64_t size = 0;
     const bool isDir = S_ISDIR(st.st_mode);
     int64_t timeDate = 0;
-    bool hidden = StringUtils::StartsWith(name, ".");
+    bool hidden = name.starts_with('.');
 
     // only stat files that can give proper responses
     if (S_ISREG(st.st_mode) || isDir)
@@ -273,7 +273,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     }
 
     if (errno == ENODEV || errno == ENOENT)
-      cError = StringUtils::Format(g_localizeStrings.Get(770), errno);
+      cError = fmt::format(fmt::runtime(g_localizeStrings.Get(770)), errno);
     else
       cError = strerror(errno);
 
@@ -285,10 +285,8 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   if (fd < 0)
   {
     // write error to logfile
-    CLog::Log(
-        LOGERROR,
-        "SMBDirectory->GetDirectory: Unable to open directory : '{}'\nunix_err:'{:x}' error : '{}'",
-        CURL::GetRedacted(strAuth), errno, strerror(errno));
+    CLog::LogF(LOGERROR, "Unable to open directory : '{}'\nunix_err:'{:x}' error : '{}'",
+               CURL::GetRedacted(strAuth), errno, strerror(errno));
   }
 
   return fd;
@@ -306,7 +304,7 @@ bool CSMBDirectory::Create(const CURL& url2)
   int result = smbc_mkdir(strFileName.c_str(), 0);
   bool success = (result == 0 || EEXIST == errno);
   if(!success)
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
 
   return success;
 }
@@ -324,7 +322,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
 
   if(result != 0 && errno != ENOENT)
   {
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
     return false;
   }
 
