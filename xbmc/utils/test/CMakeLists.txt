@@ -57,6 +57,6 @@ set(HEADERS TestGlobalsHandlingPattern1.h)
 core_add_test_library(utils_test)
 
 # Add /bigobj flag for Windows to handle large object files
-if(MSVC)
+if(MSVC AND TARGET utils_test)
   target_compile_options(utils_test PRIVATE /bigobj)
 endif()
