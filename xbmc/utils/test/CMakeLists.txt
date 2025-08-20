@@ -58,5 +58,5 @@ core_add_test_library(utils_test)
 
 # Add /bigobj flag for Windows to handle large object files
 if(MSVC AND TARGET utils_test)
-  target_compile_options(kodi-test PRIVATE /bigobj)
+  target_compile_options(xbmc_test PRIVATE /bigobj)
 endif()
