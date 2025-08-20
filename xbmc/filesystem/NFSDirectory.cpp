@@ -19,8 +19,6 @@
 #include <sys\stat.h>
 #endif
 
-#include <limits.h>
-
 #include <nfsc/libnfs-raw-nfs.h>
 #include <nfsc/libnfs.h>
 
@@ -39,6 +37,7 @@ using namespace XFILE;
 
 namespace
 {
+constexpr int NFS_MAX_PATH = 4096;
 
 KODI::TIME::FileTime GetDirEntryTime(struct nfsdirent* dirent)
 {
@@ -130,8 +129,8 @@ bool CNFSDirectory::ResolveSymlink(const std::string& dirName,
 
   std::string fullpath = dirName + dirent->name;
 
-  char resolvedLink[MAX_PATH];
-  ret = nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), resolvedLink, MAX_PATH);
+  char resolvedLink[NFS_MAX_PATH];
+  ret = nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), resolvedLink, NFS_MAX_PATH);
 
   if(ret == 0)
   {
