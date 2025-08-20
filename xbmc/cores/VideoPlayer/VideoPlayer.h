@@ -197,6 +197,12 @@ class CJobQueue;
 class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer,
                      public IDispResource, public IRenderLoop, public IRenderMsg
 {
+  enum class UpdateStreamDetails : bool
+  {
+    UPDATE_IF_FLAGGED,
+    ALWAYS_UPDATE
+  };
+
 public:
   explicit CVideoPlayer(IPlayerCallback& callback);
   ~CVideoPlayer() override;
@@ -423,7 +429,7 @@ protected:
   void UpdateContent();
   void UpdateContentState();
 
-  void UpdateFileItemStreamDetails(CFileItem& item);
+  void UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDetails update);
   int GetPreviousChapter();
 
   bool m_players_created;
