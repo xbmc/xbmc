@@ -23,7 +23,8 @@
   template<int Dir>
 static int ChangeSortMethod(const std::vector<std::string>& params)
 {
-  CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, -1, Dir);
+  CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD,
+                      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, -1, Dir);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
 
   return 0;
@@ -64,7 +65,8 @@ static int Refresh(const std::vector<std::string>& params)
  */
 static int SetSortMethod(const std::vector<std::string>& params)
 {
-  CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, -1);
+  CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD,
+                      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, -1);
   if (!params.empty() && !params[0].empty())
   {
     message.SetParam1(atoi(params[0].c_str()));
@@ -179,15 +181,18 @@ static int Update(const std::vector<std::string>& params)
 
 CBuiltins::CommandMap CGUIContainerBuiltins::GetOperations() const
 {
-  return {
-           {"container.nextsortmethod",     {"Change to the next sort method", 0, ChangeSortMethod<1>}},
-           {"container.nextviewmode",       {"Move to the next view type (and refresh the listing)", 0, ChangeViewMode<1>}},
-           {"container.previoussortmethod", {"Change to the previous sort method", 0, ChangeSortMethod<-1>}},
-           {"container.previousviewmode",   {"Move to the previous view type (and refresh the listing)", 0, ChangeViewMode<-1>}},
-           {"container.refresh",            {"Refresh current listing", 0, Refresh}},
-           {"container.setsortmethod",      {"Change to the specified sort method", 1, SetSortMethod}},
-           {"container.setviewmode",        {"Move to the view with the given id", 1, SetViewMode}},
-           {"container.sortdirection",      {"Toggle the sort direction", 0, ToggleSortDirection}},
-           {"container.update",             {"Update current listing. Send Container.Update(path,replace) to reset the path history", 1, Update}}
-         };
+  return {{"container.nextsortmethod", {"Change to the next sort method", 0, ChangeSortMethod<1>}},
+          {"container.nextviewmode",
+           {"Move to the next view type (and refresh the listing)", 0, ChangeViewMode<1>}},
+          {"container.previoussortmethod",
+           {"Change to the previous sort method", 0, ChangeSortMethod<-1>}},
+          {"container.previousviewmode",
+           {"Move to the previous view type (and refresh the listing)", 0, ChangeViewMode<-1>}},
+          {"container.refresh", {"Refresh current listing", 0, Refresh}},
+          {"container.setsortmethod", {"Change to the specified sort method", 1, SetSortMethod}},
+          {"container.setviewmode", {"Move to the view with the given id", 1, SetViewMode}},
+          {"container.sortdirection", {"Toggle the sort direction", 0, ToggleSortDirection}},
+          {"container.update",
+           {"Update current listing. Send Container.Update(path,replace) to reset the path history",
+            1, Update}}};
 }

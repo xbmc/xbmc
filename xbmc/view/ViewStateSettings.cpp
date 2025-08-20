@@ -103,7 +103,8 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
     else
     {
       int sortMethod;
-      if (XMLUtils::GetInt(pViewState, XML_SORTMETHOD, sortMethod, SortByStartMarker + 1, SortByEndMarker - 1))
+      if (XMLUtils::GetInt(pViewState, XML_SORTMETHOD, sortMethod, SortByStartMarker + 1,
+                           SortByEndMarker - 1))
         viewState->second->m_sortDescription.sortBy = (SortBy)sortMethod;
       if (XMLUtils::GetInt(pViewState, XML_SORTATTRIBUTES, sortMethod, SortAttributeNone, SortAttributeIgnoreFolders))
         viewState->second->m_sortDescription.sortAttributes = (SortAttribute)sortMethod;
