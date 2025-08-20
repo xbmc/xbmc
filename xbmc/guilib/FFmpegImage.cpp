@@ -297,18 +297,24 @@ AVFrame* CFFmpegImage::ExtractFrame()
 
   AVPacket pkt;
   AVFrame* frame = av_frame_alloc();
-  int frame_decoded = 0;
-  int ret = 0;
-  ret = av_read_frame(m_fctx, &pkt);
-  if (ret < 0)
+  int frame_decoded = -1;
+  int ret = AVERROR(EAGAIN);
+  while (ret == AVERROR(EAGAIN))
   {
-    CLog::Log(LOGDEBUG, "Error [{}] while reading frame: {}", ret, strerror(AVERROR(ret)));
-    av_frame_free(&frame);
-    av_packet_unref(&pkt);
-    return nullptr;
-  }
+    if (frame_decoded == 0)
+      av_packet_unref(&pkt);
 
-  ret = DecodeFFmpegFrame(m_codec_ctx, frame, &frame_decoded, &pkt);
+    ret = av_read_frame(m_fctx, &pkt);
+    if (ret < 0)
+    {
+      CLog::Log(LOGDEBUG, "Error [{}] while reading frame: {}", ret, strerror(AVERROR(ret)));
+      av_frame_free(&frame);
+      av_packet_unref(&pkt);
+      return nullptr;
+    }
+
+    ret = DecodeFFmpegFrame(m_codec_ctx, frame, &frame_decoded, &pkt);
+  }
   if (ret < 0 || frame_decoded == 0 || !frame)
   {
     CLog::Log(LOGDEBUG, "Error [{}] while decoding frame: {}", ret, strerror(AVERROR(ret)));
@@ -437,10 +443,10 @@ int CFFmpegImage::DecodeFFmpegFrame(AVCodecContext *avctx, AVFrame *frame, int *
   }
 
   ret = avcodec_receive_frame(avctx, frame);
-  if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
+  if (ret < 0 && ret != AVERROR_EOF)
     return ret;
   if (ret >= 0) // static code analysers would complain
-   *got_frame = 1;
+    *got_frame = 1;
 
   return 0;
 }
