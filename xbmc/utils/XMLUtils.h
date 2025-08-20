@@ -175,6 +175,10 @@ public:
   static bool RemoveNode(TiXmlNode* node);
   static bool RemoveNode(tinyxml2::XMLNode* node);
 
+  static TiXmlNode* RemoveAndReturnNextSibling(TiXmlNode* node, const char* tag = nullptr);
+  static tinyxml2::XMLNode* RemoveAndReturnNextSibling(tinyxml2::XMLNode* node,
+                                                       const char* tag = nullptr);
+
   static const int path_version = 1;
 };
 
