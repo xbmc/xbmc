@@ -77,3 +77,21 @@ TEST(TestURLGetWithoutOptions, PreserveSlashesBetweenProtocolAndPath)
   CURL input{url};
   EXPECT_EQ(input.GetWithoutOptions(), url);
 }
+
+TEST(TestURL, TestWithoutFilenameEncodingDecoding)
+{
+  std::string decoded_with_path{
+      "smb://dom^inName;u$ername:pa$$word@example.com/stream/example/index.m3u8"};
+
+  CURL input{decoded_with_path};
+  EXPECT_EQ("smb://dom%5einName;u%24ername:pa%24%24word@example.com/", input.GetWithoutFilename());
+  EXPECT_EQ("dom^inName", input.GetDomain());
+  EXPECT_EQ("u$ername", input.GetUserName());
+  EXPECT_EQ("pa$$word", input.GetPassWord());
+
+  CURL decoded(input.GetWithoutFilename());
+  EXPECT_EQ("smb://dom%5einName;u%24ername:pa%24%24word@example.com/", decoded.Get());
+  EXPECT_EQ("dom^inName", decoded.GetDomain());
+  EXPECT_EQ("u$ername", decoded.GetUserName());
+  EXPECT_EQ("pa$$word", decoded.GetPassWord());
+}
