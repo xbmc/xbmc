@@ -725,3 +725,40 @@ void XMLUtils::SetDateTime(tinyxml2::XMLNode* rootNode, const char* tag, const C
 {
   SetString(rootNode, tag, dateTime.IsValid() ? dateTime.GetAsDBDateTime() : "");
 }
+
+TiXmlNode* XMLUtils::RemoveAndReturnNextSibling(TiXmlNode* node, const char* tag)
+{
+  if (node == nullptr)
+    return nullptr;
+
+  TiXmlNode* parent = node->Parent();
+  // TinyXml doesn't allow removal of the root of the document and does nothing.
+  // Skip unnecessary work and avoid infinite loop if caller relies on nullptr output to stop looping.
+  if (parent->Type() == TiXmlNode::TINYXML_DOCUMENT)
+    return nullptr;
+
+  TiXmlNode* next = node->NextSiblingElement(tag);
+
+  if (!parent->RemoveChild(node))
+    return nullptr;
+
+  return next;
+}
+
+tinyxml2::XMLNode* XMLUtils::RemoveAndReturnNextSibling(tinyxml2::XMLNode* node, const char* tag)
+{
+  if (node == nullptr)
+    return nullptr;
+
+  tinyxml2::XMLNode* parent = node->Parent();
+  // TinyXml doesn't allow removal of the root of the document and does nothing.
+  // Skip unnecessary work and avoid infinite loop if caller relies on nullptr output to stop looping.
+  if (parent->ToDocument() != nullptr)
+    return nullptr;
+
+  tinyxml2::XMLNode* next = node->NextSiblingElement(tag);
+
+  parent->DeleteChild(node);
+
+  return next;
+}

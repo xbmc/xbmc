@@ -150,6 +150,10 @@ public:
   static void SetDate(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& date);
   static void SetDateTime(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& dateTime);
 
+  static TiXmlNode* RemoveAndReturnNextSibling(TiXmlNode* node, const char* tag = nullptr);
+  static tinyxml2::XMLNode* RemoveAndReturnNextSibling(tinyxml2::XMLNode* node,
+                                                       const char* tag = nullptr);
+
   static const int path_version = 1;
 };
 
