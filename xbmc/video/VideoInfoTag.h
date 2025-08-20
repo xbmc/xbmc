@@ -433,6 +433,13 @@ protected:
    */
   bool SaveTvShowSeasons(TiXmlNode* node) const;
 
+  /*!
+   * \brief Add the uniqueid information to an XML node
+   * \param element  the root XML element to append to
+   * \return true for success, false otherwise.
+   */
+  bool SaveUniqueId(TiXmlNode* node) const;
+
 private:
   /* \brief Parse our native XML format for video info.
    See Load for a description of the available tag types.

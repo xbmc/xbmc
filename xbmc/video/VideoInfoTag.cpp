@@ -213,17 +213,9 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
   }
 
-  XMLUtils::SetString(movie, "id", GetUniqueID());
-  for (const auto& [type, value] : m_uniqueIDs)
-  {
-    TiXmlElement uniqueID("uniqueid");
-    uniqueID.SetAttribute("type", type);
-    if (type == m_strDefaultUniqueID)
-      uniqueID.SetAttribute("default", "true");
-    uniqueID.InsertEndChild(TiXmlText(value));
+  if (!SaveUniqueId(movie))
+    return false;
 
-    movie->InsertEndChild(uniqueID);
-  }
   XMLUtils::SetStringArray(movie, "genre", m_genre);
   XMLUtils::SetStringArray(movie, "country", m_country);
   if (m_set.HasTitle())
@@ -344,6 +336,23 @@ bool CVideoInfoTag::SaveTvShowSeasons(TiXmlNode* root) const
       if (nullptr == root->InsertEndChild(season))
         return false;
     }
+  }
+  return true;
+}
+
+bool CVideoInfoTag::SaveUniqueId(TiXmlNode* node) const
+{
+  for (const auto& [type, value] : m_uniqueIDs)
+  {
+    TiXmlElement uniqueID("uniqueid");
+    uniqueID.SetAttribute("type", type);
+    if (type == m_strDefaultUniqueID)
+      uniqueID.SetAttribute("default", "true");
+    if (nullptr == uniqueID.InsertEndChild(TiXmlText(value)))
+      return false;
+
+    if (nullptr == node->InsertEndChild(uniqueID))
+      return false;
   }
   return true;
 }
@@ -1142,28 +1151,20 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "path", value))
     SetPath(value);
 
-  const TiXmlElement* uniqueid = movie->FirstChildElement("uniqueid");
-  if (uniqueid == nullptr)
+  for (const TiXmlElement* uniqueid = movie->FirstChildElement("uniqueid"); uniqueid != nullptr;
+       uniqueid = uniqueid->NextSiblingElement("uniqueid"))
   {
-    if (XMLUtils::GetString(movie, "id", value))
-      SetUniqueID(value);
-  }
-  else
-  {
-    for (; uniqueid != nullptr; uniqueid = uniqueid->NextSiblingElement("uniqueid"))
+    if (uniqueid->FirstChild())
     {
-      if (uniqueid->FirstChild())
+      if (uniqueid->QueryStringAttribute("type", &value) == TIXML_SUCCESS)
+        SetUniqueID(uniqueid->FirstChild()->ValueStr(), value);
+      else
+        SetUniqueID(uniqueid->FirstChild()->ValueStr());
+      bool isDefault;
+      if (m_strDefaultUniqueID == "unknown" &&
+          (uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
       {
-        if (uniqueid->QueryStringAttribute("type", &value) == TIXML_SUCCESS)
-          SetUniqueID(uniqueid->FirstChild()->ValueStr(), value);
-        else
-          SetUniqueID(uniqueid->FirstChild()->ValueStr());
-        bool isDefault;
-        if (m_strDefaultUniqueID == "unknown" &&
-            (uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
-        {
-          m_strDefaultUniqueID = value;
-        }
+        m_strDefaultUniqueID = value;
       }
     }
   }
