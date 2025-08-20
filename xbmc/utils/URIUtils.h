@@ -29,6 +29,15 @@ enum class LanCheckMode
 class URIUtils
 {
 public:
+  // Don't URL encode "-_.!()" according to RFC1738
+  //! @todo Update it to "-_.~" after Gotham according to RFC3986
+  static constexpr std::string_view RFC1738{"-._!()"};
+  static constexpr std::string_view RFC3986{"-_.~"};
+
+  static std::string URLEncode(std::string_view strURLData,
+                               const std::string_view& URLSpec = RFC1738);
+  static std::string URLDecode(std::string_view strURLData);
+
   static void RegisterAdvancedSettings(const CAdvancedSettings& advancedSettings);
   static void UnregisterAdvancedSettings();
 
