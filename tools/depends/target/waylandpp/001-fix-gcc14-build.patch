@@ -1,0 +1,11 @@
+--- a/include/wayland-server.hpp
++++ b/include/wayland-server.hpp
+@@ -27,6 +27,7 @@
+ #define WAYLAND_SERVER_HPP
+
+ #include <atomic>
++#include <cstdint>
+ #include <functional>
+ #include <list>
+ #include <memory>
+
