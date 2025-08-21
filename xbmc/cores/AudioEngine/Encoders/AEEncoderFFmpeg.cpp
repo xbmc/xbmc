@@ -123,6 +123,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
                                  reinterpret_cast<const void**>(&channelLayouts), &numLayouts);
 
     std::vector<CAEChannelInfo> layouts;
+    layouts.reserve(numLayouts);
     for (int i = 0; i < numLayouts; ++i)
     {
       layouts.emplace_back(CAEUtil::GetAEChannelLayout(channelLayouts[i].u.mask));
