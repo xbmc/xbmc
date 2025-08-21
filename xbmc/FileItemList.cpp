@@ -125,8 +125,8 @@ void CFileItemList::ClearItems()
 
 void CFileItemList::AddFastLookupItem(const CFileItemPtr& item)
 {
-  m_map.try_emplace(
-      m_ignoreURLOptions ? CURL(item->GetPath()).GetWithoutOptions() : item->GetPath(), item);
+  m_map.try_emplace(m_ignoreURLOptions ? item->GetURL().GetWithoutOptions() : item->GetPath(),
+                    item);
 }
 
 void CFileItemList::AddFastLookupItems(const std::vector<CFileItemPtr>& items)
