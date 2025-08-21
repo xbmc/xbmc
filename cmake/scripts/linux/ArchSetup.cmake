@@ -180,6 +180,10 @@ if("x11" IN_LIST CORE_PLATFORM_NAME_LC AND ENABLE_VDPAU)
   set(ENABLE_GLX ON CACHE BOOL "Enabling GLX" FORCE)
 endif()
 
+if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
+  set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
+endif ()
+
 # Architecture endianness detector
 include(TestBigEndian)
 TEST_BIG_ENDIAN(ARCH_IS_BIGENDIAN)
