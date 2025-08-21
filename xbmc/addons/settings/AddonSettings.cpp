@@ -1254,7 +1254,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
       IntegerSettingOptions options;
       for (uint32_t i = 0; i < values.size(); ++i)
       {
-        const std::string label{values[i]};
+        const std::string& label{values[i]};
         int value = i;
         if (settingEntries.size() > i)
           value = static_cast<int>(std::strtol(settingEntries[i].c_str(), nullptr, 0));
