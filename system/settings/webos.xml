@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings version="1">
+  <section id="player">
+    <category id="videoplayer">
+      <group id="2" label="19177">
+        <setting id="videoplayer.adjustrefreshrate">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoplayer.usedisplayasclock">
+          <visible>false</visible>
+        </setting>
+      </group>
+      <group id="3">
+        <setting id="videoplayer.usestarfishdecoder" type="boolean" label="39207" help="39208">
+          <visible>true</visible>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="system">
+    <category id="display">
+      <group id="1">
+        <setting id="videoscreen.fakefullscreen">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.blankdisplays">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.delayrefreshchange">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.screen">
+          <visible>false</visible>
+        </setting>
+        <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+    <category id="input">
+      <group id="4" label="35150">
+        <setting id="input.libinputkeyboardlayout" type="string" label="407" help="36436">
+          <level>0</level>
+          <default>us</default>
+          <visible>false</visible>
+          <constraints>
+            <options>libinputkeyboardlayout</options>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>false</multiselect>
+          </control>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>
