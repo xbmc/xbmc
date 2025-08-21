@@ -3301,7 +3301,7 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details,
 int CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
                                     VideoDbContentType type,
                                     int mediaId,
-                                    FileRecord oldFile)
+                                    const FileRecord& oldFile)
 {
   if ((mediaId < 0 && type != VideoDbContentType::UNKNOWN) || oldFile.m_idFile < 0)
     return -1;
