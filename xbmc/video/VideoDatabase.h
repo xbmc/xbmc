@@ -727,7 +727,7 @@ public:
   int SetFileForMedia(const std::string& fileAndPath,
                       VideoDbContentType type,
                       int mediaId,
-                      FileRecord oldFile);
+                      const FileRecord& oldFile);
 
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const KODI::ART::Artwork& artwork,
