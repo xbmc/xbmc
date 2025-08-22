@@ -9,10 +9,11 @@
 #include "CPUInfoAndroid.h"
 
 #include "URL.h"
-#include "cpu-features.h"
 #include "utils/StringUtils.h"
 
 #include <array>
+
+#include <cpu-features.h>
 
 std::shared_ptr<CCPUInfo> CCPUInfo::GetCPUInfo()
 {
