@@ -4647,12 +4647,13 @@ void CVideoDatabase::GetSameVideoItems(const CFileItem& item, CFileItemList& ite
     // note 2: for type 'tmdb' the same value may be used for a movie and a tv episode, only
     // distinguished by media_type.
     // @todo make the (value,type) pairs truly unique
-    m_pDS->query(PrepareSQL("SELECT DISTINCT media_id "
-                            "FROM uniqueid "
-                            "WHERE (media_type, value, type) IN "
-                            "  (SELECT media_type, value, type "
-                            "  FROM uniqueid WHERE media_id = %i AND media_type = '%s') ",
-                            dbId, mediaType.c_str()));
+    m_pDS->query(
+        PrepareSQL("SELECT DISTINCT media_id "
+                   "FROM uniqueid "
+                   "WHERE (media_type, value, type) IN "
+                   "  (SELECT media_type, value, type "
+                   "  FROM uniqueid WHERE media_id = %i AND media_type = '%s' AND value != '') ",
+                   dbId, mediaType.c_str()));
 
     while (!m_pDS->eof())
     {
