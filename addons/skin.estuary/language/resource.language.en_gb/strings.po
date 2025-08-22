@@ -713,7 +713,7 @@ msgstr ""
 
 #: /xml/SkinSettings.xml
 msgctxt "#31149"
-msgid "Select genre fanart pack"
+msgid "Choose genre fanart pack"
 msgstr ""
 
 #: /xml/DialogAddonInfo.xml
