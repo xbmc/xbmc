@@ -69,6 +69,8 @@ std::unique_ptr<IListProvider> CStaticListProvider::Clone()
 bool CStaticListProvider::Update(bool forceRefresh)
 {
   bool changed = forceRefresh;
+  bool updatedProperties{false};
+
   if (!m_updateTime)
   {
     m_updateTime = CTimeUtils::GetFrameTime();
@@ -78,11 +80,24 @@ bool CStaticListProvider::Update(bool forceRefresh)
     m_updateTime = CTimeUtils::GetFrameTime();
     for (const auto& i : m_items)
       i->UpdateProperties(GetParentId());
+    updatedProperties = true;
   }
 
+  bool visibilityChanged{false};
   for (const auto& i : m_items)
-    changed |= i->UpdateVisibility(GetParentId());
+  {
+    if (i->UpdateVisibility(GetParentId()))
+    {
+      visibilityChanged = true;
+      if (!updatedProperties)
+        i->UpdateProperties(GetParentId());
+    }
+  }
 
+  if (visibilityChanged)
+    m_updateTime = CTimeUtils::GetFrameTime();
+
+  changed |= visibilityChanged;
   return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 
