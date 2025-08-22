@@ -3112,7 +3112,6 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
   m_pFilterFrameIn->linesize[1] = image.pitches[1];
   m_pFilterFrameIn->data[2] = NULL;
   m_pFilterFrameIn->data[3] = NULL;
-  m_pFilterFrameIn->pkt_size = image.data_size;
 
   CheckSuccess(vaUnmapBuffer(m_config.dpy, image.buf), "vaUnmapBuffer");
   CheckSuccess(vaDestroyImage(m_config.dpy, image.image_id), "vaDestroyImage");
