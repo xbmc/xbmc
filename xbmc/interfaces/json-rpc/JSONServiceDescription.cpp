@@ -100,6 +100,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Files.Download",                               CFileOperations::Download },
 
 // Music Library
+  { "AudioLibrary.GetDatabaseName",                 CAudioLibrary::GetDatabaseName },
   { "AudioLibrary.GetProperties",                   CAudioLibrary::GetProperties },
   { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists },
   { "AudioLibrary.GetArtistDetails",                CAudioLibrary::GetArtistDetails },
@@ -126,6 +127,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.Clean",                           CAudioLibrary::Clean },
 
 // Video Library
+  { "VideoLibrary.GetDatabaseName",                 CVideoLibrary::GetDatabaseName },
   { "VideoLibrary.GetGenres",                       CVideoLibrary::GetGenres },
   { "VideoLibrary.GetTags",                         CVideoLibrary::GetTags },
   { "VideoLibrary.GetAvailableArtTypes",            CVideoLibrary::GetAvailableArtTypes },

@@ -1601,6 +1601,14 @@
     ],
     "returns": "string"
   },
+  "AudioLibrary.GetDatabaseName": {
+    "type": "method",
+    "description": "Get current music database name",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": "string"
+  },
   "AudioLibrary.GetProperties": {
     "type": "method",
     "description": "Retrieves the values of the music library properties",
@@ -3168,6 +3176,14 @@
         "description": "Whether or not to show the progress bar or any other GUI dialog"
       }
     ],
+    "returns": "string"
+  },
+  "VideoLibrary.GetDatabaseName": {
+    "type": "method",
+    "description": "Get current video database name",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
     "returns": "string"
   },
   "VideoLibrary.GetMovies": {

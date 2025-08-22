@@ -1407,3 +1407,10 @@ void CVideoLibrary::UpdateVideoTag(const CVariant& parameterObject,
     updatedDetails.insert("dateadded");
   }
 }
+
+JSONRPC_STATUS CVideoLibrary::GetDatabaseName(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVideoDatabase videodatabase;
+  result = videodatabase.GetDatabaseName();
+  return OK;
+}

@@ -1426,3 +1426,10 @@ bool CAudioLibrary::CheckForAdditionalProperties(const CVariant &properties, con
 
   return !foundProperties.empty();
 }
+
+JSONRPC_STATUS CAudioLibrary::GetDatabaseName(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CMusicDatabase audiodatabase;
+  result = audiodatabase.GetDatabaseName();
+  return OK;
+}

@@ -73,6 +73,8 @@ namespace JSONRPC
     static JSONRPC_STATUS Export(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Clean(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
+    static JSONRPC_STATUS GetDatabaseName(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+
     static bool FillFileItem(
         const std::string& strFilename,
         std::shared_ptr<CFileItem>& item,
