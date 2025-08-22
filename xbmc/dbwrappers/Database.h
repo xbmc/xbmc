@@ -112,6 +112,7 @@ public:
   void DropAnalytics();
 
   std::string PrepareSQL(std::string_view sqlFormat, ...) const;
+  std::string GetDatabaseName(const DatabaseSettings& db);
 
   /*!
    * @brief Get a single value from a table.

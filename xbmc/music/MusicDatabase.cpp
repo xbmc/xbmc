@@ -122,6 +122,12 @@ CMusicDatabase::~CMusicDatabase()
   EmptyCache();
 }
 
+std::string CMusicDatabase::GetDatabaseName()
+{
+  return CDatabase::GetDatabaseName(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic);
+}
+
 bool CMusicDatabase::Open()
 {
   return CDatabase::Open(

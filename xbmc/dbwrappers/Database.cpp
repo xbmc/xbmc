@@ -874,3 +874,13 @@ bool CDatabase::BuildSQL(const std::string& strBaseDir,
 
   return BuildSQL(strQuery, filter, strSQL);
 }
+
+std::string CDatabase::GetDatabaseName(const DatabaseSettings& settings)
+{
+  DatabaseSettings dbSettings = settings;
+  std::string dbName = dbSettings.name;
+  if (dbName.empty())
+    dbName = GetBaseDBName();
+  dbName += std::to_string(GetSchemaVersion());
+  return dbName;
+}

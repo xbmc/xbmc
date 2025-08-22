@@ -86,6 +86,12 @@ CVideoDatabase::CVideoDatabase() = default;
 CVideoDatabase::~CVideoDatabase() = default;
 
 //********************************************************************************************************************************
+std::string CVideoDatabase::GetDatabaseName()
+{
+  return CDatabase::GetDatabaseName(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo);
+}
+
 bool CVideoDatabase::Open()
 {
   return CDatabase::Open(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo);

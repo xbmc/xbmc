@@ -91,6 +91,8 @@ public:
   CMusicDatabase();
   ~CMusicDatabase() override;
 
+  std::string GetDatabaseName();
+
   bool Open() override;
   bool CommitTransaction() override;
   void EmptyCache();

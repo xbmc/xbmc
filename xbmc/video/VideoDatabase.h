@@ -551,6 +551,8 @@ public:
   CVideoDatabase();
   ~CVideoDatabase() override;
 
+  std::string GetDatabaseName();
+
   bool Open() override;
   bool CommitTransaction() override;
 
