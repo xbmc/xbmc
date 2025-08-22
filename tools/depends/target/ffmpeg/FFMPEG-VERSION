@@ -4,3 +4,4 @@ ARCHIVE=$(LIBNAME)-$(VERSION).tar.xz
 SHA512=96f01fc3b881e208e8d35d858b2f60627f298b06103195e3e753b1c6429810d7a484d4daeebad6d0810172616383d103dfb5fcadc4512726c3719800d24a3fde
 
 BASE_URL=https://ffmpeg.org/releases/
+FULL_URL=https://ffmpeg.org/releases/ffmpeg-8.0.tar.xz
