@@ -10264,10 +10264,32 @@ constexpr std::array<InfoMap, 63> slideshow = {{
 ///     @skinning_v19 **[New Boolean Condition]** \link Library_HasNode `Library.HasNode(path)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Library.MusicDBName`</b>,
+///                  \anchor Library_MusicDBName
+///                  _string_,
+///     @return The name of the music database currently in use.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Library_MusicDBName `Library.MusicDBName`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.VideoDBName`</b>,
+///                  \anchor Library_VideoDBName
+///                  _string_,
+///     @return The name of the video database currently in use.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Library_VideoDBName `Library.VideoDBName`\endlink
+///     <p>
+///   }
 /// \table_end
 /// @todo Make this annotate an array of infobools/labels to make it easier to track
 ///
 /// -----------------------------------------------------------------------------
+// clang-format off
+constexpr std::array<InfoMap, 2> library_labels = {{
+    {"musicdbname",     LIBRARY_MUSICDB_NAME},
+    {"videodbname",     LIBRARY_VIDEODB_NAME}, // labels from here
+}};
+// clang-format on
 
 /// \page modules__infolabels_boolean_conditions
 /// \section modules_rm_infolabels_booleans Additional revision history for Infolabels and Boolean Conditions
@@ -10803,6 +10825,10 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         StringUtils::ToLower(node);
         return AddMultiInfo(CGUIInfo(LIBRARY_HAS_NODE, prop.param(), 0));
       }
+      else if (prop.Name() == "musicdbname")
+        return LIBRARY_MUSICDB_NAME;
+      else if (prop.Name() == "videodbname")
+        return LIBRARY_VIDEODB_NAME;
     }
     else if (cat.Name() == "musicplayer")
     {

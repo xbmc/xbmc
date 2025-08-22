@@ -503,6 +503,8 @@ constexpr uint32_t LIBRARY_IS_SCANNING_MUSIC         = 730;
 constexpr uint32_t LIBRARY_HAS_ROLE                  = 735;
 constexpr uint32_t LIBRARY_HAS_BOXSETS               = 736;
 constexpr uint32_t LIBRARY_HAS_NODE                  = 737;
+constexpr uint32_t LIBRARY_MUSICDB_NAME              = 738;
+constexpr uint32_t LIBRARY_VIDEODB_NAME              = 739;
 
 constexpr uint32_t SYSTEM_PLATFORM_LINUX             = 741;
 constexpr uint32_t SYSTEM_PLATFORM_WINDOWS           = 742;

@@ -92,6 +92,22 @@ bool CLibraryGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CLibraryGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
+  switch (info.GetInfo())
+  {
+    case LIBRARY_MUSICDB_NAME:
+    {
+      CMusicDatabase db;
+      value = db.GetDatabaseName();
+      return true;
+    }
+    case LIBRARY_VIDEODB_NAME:
+    {
+      CVideoDatabase db;
+      value = db.GetDatabaseName();
+      return true;
+    }
+  }
+
   return false;
 }
 
