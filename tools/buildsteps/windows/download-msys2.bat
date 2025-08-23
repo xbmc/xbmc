@@ -28,13 +28,13 @@ PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
 
-set msysver=20231026
+set msysver=20250622
 set msys2=msys64
 set arch=x86_64
 set instdir=%WORKSPACE%\project\BuildDependencies
-set msyspackages=diffutils gcc make patch perl tar yasm
+set msyspackages=diffutils gcc make nasm patch perl tar yasm
 set gaspreprocurl=https://github.com/FFmpeg/gas-preprocessor/archive/master.tar.gz
-set usemirror=yes
+set usemirror=no
 set opt=mintty
 
 :: if KODI_MIRROR is not set externally to this script, set it to the default mirror URL
