@@ -343,7 +343,7 @@ bool CPVRPlaybackState::OnPlaybackStopped(const CFileItem& item)
     if (bUpdateLastWatched)
     {
       // If last watched timer is not running (any more), channel was watched long enough to store the value.
-      UpdateLastWatched(m_playingChannel, CDateTime::GetUTCDateTime());
+      UpdateLastWatched(item.GetPVRChannelGroupMemberInfoTag(), CDateTime::GetUTCDateTime());
     }
 
     bChanged = true;
