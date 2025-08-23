@@ -56,9 +56,9 @@ std::optional<char> DecodeOctlet(std::string_view& encoded)
     return {};
 
   uint8_t decimal{};
-  const auto res = std::from_chars(&encoded[0], &encoded[2], decimal, 16);
+  const auto res = std::from_chars(encoded.data(), encoded.data() + 2, decimal, 16);
 
-  if (res.ec != std::errc() || res.ptr != &encoded[2])
+  if (res.ec != std::errc() || res.ptr != encoded.data() + 2)
     return {};
 
   encoded = encoded.substr(2);
@@ -81,21 +81,19 @@ std::string URIUtils::URLDecode(std::string_view encoded)
     if (special == std::string::npos)
       break;
 
-    const char& specialChar = encoded[special];
+    const char specialChar = encoded[special];
     encoded = encoded.substr(special + 1);
 
     if (specialChar == '+')
       decodedUrl += ' ';
-    else if (auto decoded = DecodeOctlet(encoded); decoded)
-      decodedUrl += *decoded; // Decoded octet triplet '%2f'
     else
-      decodedUrl += '%';
+      decodedUrl += DecodeOctlet(encoded).value_or('%'); // Decoded octet triplet '%2f'
   }
 
   return decodedUrl;
 }
 
-std::string URIUtils::URLEncode(std::string_view decoded, const std::string_view& URLSpec)
+std::string URIUtils::URLEncode(std::string_view decoded, std::string_view URLSpec)
 {
   std::ostringstream oss;
   for (const auto& ch : decoded)
@@ -103,7 +101,7 @@ std::string URIUtils::URLEncode(std::string_view decoded, const std::string_view
     if (StringUtils::isasciialphanum(ch) || URLSpec.find(ch) != std::string::npos)
       oss << ch;
     else
-      oss << fmt::format("%{:02x}", ch);
+      fmt::format_to(std::ostreambuf_iterator(oss), "%{:02x}", ch);
   }
   return oss.str();
 }

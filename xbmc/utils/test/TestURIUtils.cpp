@@ -647,11 +647,11 @@ TEST_F(TestURIUtils, UpdateUrlEncoding)
 
 struct URLEncodings
 {
-  std::string input;
-  std::string encoded;
+  std::string_view input;
+  std::string_view encoded;
 };
 
-URLEncodings EncodingTestData[] = {
+constinit URLEncodings EncodingTestData[] = {
     // No crash
     {"", ""},
 
@@ -715,15 +715,15 @@ URLEncodings EncodingTestData[] = {
     {"%0c", "%250c"},
 };
 
-URLEncodings RFC1738EncodingTestData[] = {
+constinit URLEncodings RFC1738EncodingTestData[] = {
     {"-", "-"}, {"_", "_"}, {".", "."}, {"!", "!"}, {"(", "("}, {")", ")"}, {"~", "%7e"},
 };
 
-URLEncodings RFC3986EncodingTestData[] = {
+constinit URLEncodings RFC3986EncodingTestData[] = {
     {"-", "-"}, {"_", "_"}, {".", "."}, {"!", "%21"}, {"(", "%28"}, {")", "%29"}, {"~", "~"},
 };
 
-URLEncodings InvalidEncodingTestData[] = {
+constinit URLEncodings InvalidEncodingTestData[] = {
     // Incomplete or Invalid encoding
     {"%", "%"},
     {"%%", "%%"},

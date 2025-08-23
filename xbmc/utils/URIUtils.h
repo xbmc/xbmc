@@ -34,8 +34,7 @@ public:
   static constexpr std::string_view RFC1738{"-._!()"};
   static constexpr std::string_view RFC3986{"-_.~"};
 
-  static std::string URLEncode(std::string_view strURLData,
-                               const std::string_view& URLSpec = RFC1738);
+  static std::string URLEncode(std::string_view strURLData, std::string_view URLSpec = RFC1738);
   static std::string URLDecode(std::string_view strURLData);
 
   static void RegisterAdvancedSettings(const CAdvancedSettings& advancedSettings);
