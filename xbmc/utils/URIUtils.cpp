@@ -103,7 +103,7 @@ std::string URIUtils::URLEncode(std::string_view decoded, std::string_view URLSp
     else
       fmt::format_to(std::ostreambuf_iterator(oss), "%{:02x}", ch);
   }
-  return oss.str();
+  return std::move(oss).str();
 }
 
 void URIUtils::RegisterAdvancedSettings(const CAdvancedSettings& advancedSettings)
