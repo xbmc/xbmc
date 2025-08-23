@@ -42,7 +42,8 @@ uint64_t GetEntrySize(const WIN32_FIND_DATAW& findData)
   return (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
 }
 
-KODI::TIME::FileTime GetEntryTime(CFileItemPtr& item, const WIN32_FIND_DATAW& findData)
+KODI::TIME::FileTime GetEntryTime(std::shared_ptr<CFileItem>& item,
+                                  const WIN32_FIND_DATAW& findData)
 {
   KODI::TIME::FileTime fileTime{};
   fileTime.lowDateTime = findData.ftLastWriteTime.dwLowDateTime;
@@ -169,7 +170,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   if (pathWithSlash.back() != '/')
     pathWithSlash.push_back('/');
 
-  std::vector<CFileItemPtr> fileItems;
+  std::vector<std::shared_ptr<CFileItem>> fileItems;
   do
   {
     std::wstring itemNameW(findData.cFileName);
@@ -194,7 +195,8 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
-    CFileItemPtr& item = fileItems.emplace_back(std::make_shared<CFileItem>(itemName));
+    std::shared_ptr<CFileItem>& item =
+        fileItems.emplace_back(std::make_shared<CFileItem>(itemName));
     item->SetFolder(isDir);
     item->SetPath(itemPath);
     item->SetDateTime(GetEntryTime(item, findData));
@@ -486,7 +488,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
               std::string remoteNameUtf8;
               if (g_charsetConverter.wToUTF8(remoteName.substr(2), remoteNameUtf8, true) && !remoteNameUtf8.empty())
               {
-                CFileItemPtr pItem(new CFileItem(remoteNameUtf8));
+                std::shared_ptr<CFileItem> pItem(new CFileItem(remoteNameUtf8));
                 pItem->SetPath(urlPrefixForItems + remoteNameUtf8 + '/');
                 pItem->SetFolder(true);
                 items.Add(pItem);
@@ -520,7 +522,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
                 std::string shareNameUtf8;
                 if (g_charsetConverter.wToUTF8(serverShareName.substr(slashPos + 1), shareNameUtf8, true) && !shareNameUtf8.empty())
                 {
-                  CFileItemPtr pItem(new CFileItem(shareNameUtf8));
+                  std::shared_ptr<CFileItem> pItem(new CFileItem(shareNameUtf8));
                   pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
                   pItem->SetFolder(true);
                   if (curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SHAREADMIN)
@@ -632,7 +634,7 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
           if (curShare.shi1_netname && curShare.shi1_netname[0] &&
               g_charsetConverter.wToUTF8(curShare.shi1_netname, shareNameUtf8, true) && !shareNameUtf8.empty())
           {
-            CFileItemPtr pItem(new CFileItem(shareNameUtf8));
+            std::shared_ptr<CFileItem> pItem(new CFileItem(shareNameUtf8));
             pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
             pItem->SetFolder(true);
             if ((curShare.shi1_type & STYPE_SPECIAL) != 0 || shareNameUtf8.back() == '$')
@@ -670,7 +672,7 @@ static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList&
       std::string shareNameUtf8;
       if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
       {
-        CFileItemPtr pItem = std::make_shared<CFileItem>(shareNameUtf8);
+        std::shared_ptr<CFileItem> pItem = std::make_shared<CFileItem>(shareNameUtf8);
         pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
         pItem->SetFolder(true);
         items.Add(pItem);

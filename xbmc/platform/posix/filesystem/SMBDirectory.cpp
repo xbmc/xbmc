@@ -64,16 +64,12 @@ KODI::TIME::FileTime GetDirEntryTime(const struct stat& st)
 
 bool CanDiscoverServers()
 {
-  auto settingsComponent = CServiceBroker::GetSettingsComponent();
-  if (!settingsComponent)
-    return false;
+  if (const auto settingsComponent = CServiceBroker::GetSettingsComponent(); settingsComponent)
+    if (const auto settings = settingsComponent->GetSettings(); settings)
+      // Check WS-Discovery daemon enabled, if not return as smb:// cant be handled further
+      return settings->GetBool(CSettings::SETTING_SERVICES_WSDISCOVERY);
 
-  auto settings = settingsComponent->GetSettings();
-  if (!settings)
-    return false;
-
-  // Check WS-Discovery daemon enabled, if not return as smb:// cant be handled further
-  return settings->GetBool(CSettings::SETTING_SERVICES_WSDISCOVERY);
+  return false;
 }
 
 } // Unnamed namespace
