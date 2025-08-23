@@ -21,7 +21,8 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "vector"
+
+#include <vector>
 
 using namespace KODI;
 using namespace RETRO;
