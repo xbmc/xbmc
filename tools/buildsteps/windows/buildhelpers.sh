@@ -147,7 +147,8 @@ do_loaddeps() {
   LIBNAME=$(grep "LIBNAME=" $file | sed 's/LIBNAME=//g;s/#.*$//g;/^$/d')
   VERSION=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
   SHA512=$(grep "SHA512=" $file | sed 's/SHA512=//g;s/#.*$//g;/^$/d')
-  ARCHIVE=$LIBNAME-$VERSION.tar.gz
+  EXT=$(grep "ARCHIVE=" $file | sed 's/ARCHIVE=//g;s/#.*$//g;/^$/d' | cut -d'.' -f2-3)
+  ARCHIVE=$LIBNAME-$VERSION.$EXT
 
   BASE_URL=$(grep "BASE_URL=" $file | sed 's/BASE_URL=//g;s/#.*$//g;/^$/d')
   if [ -z "$BASE_URL" ]; then
