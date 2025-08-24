@@ -157,17 +157,17 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       continue;
     }
 
-    CFileItemPtr pItem(new CFileItem(itemName));
+    std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(itemName);
 
-    pItem->SetFolder((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    if (pItem->IsFolder())
-      pItem->SetPath(pathWithSlash + itemName + '/');
+    item->SetFolder((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
+    if (item->IsFolder())
+      item->SetPath(pathWithSlash + itemName + '/');
     else
-      pItem->SetPath(pathWithSlash + itemName);
+      item->SetPath(pathWithSlash + itemName);
 
     if ((findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0
           || itemName.front() == '.') // mark files starting from dot as hidden
-      pItem->SetProperty("file:hidden", true);
+      item->SetProperty("file:hidden", true);
 
     // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
@@ -176,17 +176,17 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     fileTime.highDateTime = findData.ftLastWriteTime.dwHighDateTime;
     KODI::TIME::FileTime localTime;
     if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
-      pItem->SetDateTime(localTime);
+      item->SetDateTime(localTime);
     else
     {
-      CDateTime dt{pItem->GetDateTime()};
+      CDateTime dt{item->GetDateTime()};
       dt.SetValid(false);
-      pItem->SetDateTime(dt);
+      item->SetDateTime(dt);
     }
-    if (!pItem->IsFolder())
-      pItem->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
+    if (!item->IsFolder())
+      item->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
 
-    items.Add(pItem);
+    items.Add(item);
   } while (FindNextFileW(hSearch, &findData));
 
   FindClose(hSearch);
@@ -469,10 +469,10 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
               std::string remoteNameUtf8;
               if (g_charsetConverter.wToUTF8(remoteName.substr(2), remoteNameUtf8, true) && !remoteNameUtf8.empty())
               {
-                CFileItemPtr pItem(new CFileItem(remoteNameUtf8));
-                pItem->SetPath(urlPrefixForItems + remoteNameUtf8 + '/');
-                pItem->SetFolder(true);
-                items.Add(pItem);
+                std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(remoteNameUtf8);
+                item->SetPath(urlPrefixForItems + remoteNameUtf8 + '/');
+                item->SetFolder(true);
+                items.Add(item);
               }
               else
                 CLog::LogF(LOGERROR,
@@ -503,13 +503,13 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
                 std::string shareNameUtf8;
                 if (g_charsetConverter.wToUTF8(serverShareName.substr(slashPos + 1), shareNameUtf8, true) && !shareNameUtf8.empty())
                 {
-                  CFileItemPtr pItem(new CFileItem(shareNameUtf8));
-                  pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
-                  pItem->SetFolder(true);
+                  std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(shareNameUtf8);
+                  item->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
+                  item->SetFolder(true);
                   if (curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SHAREADMIN)
-                    pItem->SetProperty("file:hidden", true);
+                    item->SetProperty("file:hidden", true);
 
-                  items.Add(pItem);
+                  items.Add(item);
                 }
                 else
                 {
@@ -615,13 +615,13 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
           if (curShare.shi1_netname && curShare.shi1_netname[0] &&
               g_charsetConverter.wToUTF8(curShare.shi1_netname, shareNameUtf8, true) && !shareNameUtf8.empty())
           {
-            CFileItemPtr pItem(new CFileItem(shareNameUtf8));
-            pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
-            pItem->SetFolder(true);
+            std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(shareNameUtf8);
+            item->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
+            item->SetFolder(true);
             if ((curShare.shi1_type & STYPE_SPECIAL) != 0 || shareNameUtf8.back() == '$')
-              pItem->SetProperty("file:hidden", true);
+              item->SetProperty("file:hidden", true);
 
-            items.Add(pItem);
+            items.Add(item);
           }
           else
             errorFlag = true;
@@ -653,10 +653,10 @@ static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList&
       std::string shareNameUtf8;
       if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
       {
-        CFileItemPtr pItem = std::make_shared<CFileItem>(shareNameUtf8);
-        pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
-        pItem->SetFolder(true);
-        items.Add(pItem);
+        std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(shareNameUtf8);
+        item->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
+        item->SetFolder(true);
+        items.Add(item);
       }
     }
     return true;
