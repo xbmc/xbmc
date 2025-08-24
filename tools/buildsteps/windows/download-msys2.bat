@@ -36,6 +36,16 @@ set msyspackages=diffutils gcc make nasm patch perl tar yasm
 set gaspreprocurl=https://github.com/FFmpeg/gas-preprocessor/archive/master.tar.gz
 set usemirror=no
 set opt=mintty
+set ver_file=%instdir%\%msys2%\version.txt
+
+:: remove MSYS2 install if the installed version is unknown (version.txt not found)
+if not exist %ver_file% if exist "%instdir%\%msys2%" rmdir "%instdir%\%msys2%" /S /Q
+
+:: remove MSYS2 install if the installed version is different from the required version (msysver)
+if exist %ver_file% (
+  set /p installed_ver=<%ver_file%
+  if not !installed_ver!==%msysver% rmdir "%instdir%\%msys2%" /S /Q
+)
 
 :: if KODI_MIRROR is not set externally to this script, set it to the default mirror URL
 if "%KODI_MIRROR%"=="" set KODI_MIRROR=https://mirrors.kodi.tv
@@ -454,6 +464,8 @@ IF ERRORLEVEL == 1 (
     ECHO Something goes wrong...
     exit /B 1
   )
+
+echo %msysver%>%ver_file%
 
 echo.-------------------------------------------------------------------------------
 echo.install msys2 system done
