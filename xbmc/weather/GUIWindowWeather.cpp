@@ -105,7 +105,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       if (message.GetSenderId() == 0 && m_maxLocation > 0) //handle only message from builtin
       {
         // Clamp location between 1 and m_maxLocation
-        CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
+        const CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
         int v = (wmgr.GetLocation() + message.GetParam1() - 1) % m_maxLocation + 1;
         if (v < 1)
           v += m_maxLocation;
@@ -184,7 +184,7 @@ void CGUIWindowWeather::UpdateButtons()
 
   SET_CONTROL_LABEL(CONTROL_BTNREFRESH, 184); //Refresh
 
-  CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
+  const CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
 
   SET_CONTROL_LABEL(WEATHER_LABEL_LOCATION, wmgr.GetLocation(wmgr.GetLocation()));
   SET_CONTROL_LABEL(CONTROL_LABELUPDATED, wmgr.GetLastUpdateTime());

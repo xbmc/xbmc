@@ -73,7 +73,7 @@ enum class LocalizationType
 
 struct PropertyDetails
 {
-  using FormatterPtr = std::add_pointer<std::string(const std::string&)>::type;
+  using FormatterPtr = std::add_pointer_t<std::string(const std::string&)>;
   FormatterPtr formatter;
   LocalizationType l10n{LocalizationType::NONE};
 };
@@ -117,7 +117,7 @@ CWeatherPropertyHelper::Property CWeatherPropertyHelper::GetProperty(const std::
     // match via last token?
     const size_t pos{prop.find_last_of('.')};
     if (pos != std::string::npos && pos < (prop.size() - 1))
-      it = propertyDetails.find(prop.substr(pos + 1));
+      it = propertyDetails.find(std::string_view(prop).substr(pos + 1));
   }
 
   if (it != propertyDetails.cend())

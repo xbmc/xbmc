@@ -358,9 +358,8 @@ bool CDirectory::Create(const CURL& url)
     CURL authURL = URIUtils::AddCredentials(URIUtils::SubstitutePath(url));
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(authURL));
-    if (pDirectory)
-      if (pDirectory->Create(authURL))
-        return true;
+    if (pDirectory && pDirectory->Create(authURL))
+      return true;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }

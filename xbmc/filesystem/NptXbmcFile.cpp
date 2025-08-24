@@ -296,8 +296,8 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
         }
 
         bool result;
-        CURL url = CURL(name);
-        CURL authUrl = URIUtils::AddCredentials(URIUtils::SubstitutePath(url));
+        const CURL url{name};
+        const CURL authUrl{URIUtils::AddCredentials(URIUtils::SubstitutePath(url))};
 
         // compute mode
         if (mode & NPT_FILE_OPEN_MODE_WRITE)

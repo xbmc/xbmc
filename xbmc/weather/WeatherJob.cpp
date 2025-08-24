@@ -54,9 +54,7 @@ bool CWeatherJob::DoWork()
   // initialize our sys.argv variables
   std::vector<std::string> argv;
   argv.emplace_back(addon->LibPath());
-
-  const std::string strSetting{std::to_string(m_location)};
-  argv.emplace_back(strSetting);
+  argv.emplace_back(std::to_string(m_location));
 
   // Clear all add-on supplied window properties.
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WEATHER_RESET);

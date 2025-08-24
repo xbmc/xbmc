@@ -65,7 +65,7 @@ struct WeatherInfo
 class CWeatherManager : public CInfoLoader, public ISettingCallback
 {
 public:
-  CWeatherManager(ADDON::CAddonMgr& addonManager);
+  explicit CWeatherManager(ADDON::CAddonMgr& addonManager);
   ~CWeatherManager() override;
 
   /*!
@@ -137,6 +137,7 @@ protected:
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
+  CWeatherManager() = delete;
   void Reset();
 
   // Construction parameters

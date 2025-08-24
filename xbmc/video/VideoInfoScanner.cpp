@@ -985,8 +985,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (!title.empty())
         existingMovieId = m_database.GetMovieIdByTitle(title);
       if (existingMovieId < 0)
-        existingMovieId =
-            m_database.GetMovieId(pItem->GetDynPath(), AllowNonFileNameMatch::YES_MATCH);
+        m_database.GetMovieId(pItem->GetDynPath(), AllowNonFileNameMatch::YES_MATCH);
 
       int movieId{-1};
       item.SetProperty("from_nfo", true);

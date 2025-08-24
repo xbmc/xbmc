@@ -190,7 +190,7 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
       if (haveParamTags && !definitionTag)
         CLog::Log(LOGWARNING, "Skin has invalid include definition: {}", tagName);
       else
-        m_includes.try_emplace(tagName, std::make_pair(*includeBody, std::move(defaultParams)));
+        m_includes.try_emplace(tagName, *includeBody, std::move(defaultParams));
     }
     else if (child->Attribute("file"))
     {
@@ -653,14 +653,15 @@ std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
 std::string CGUIIncludes::ResolveExpressions(const std::string &expression) const
 {
   std::string work(expression);
-  GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(work, "EXP",
-                                                          [&](const std::string& str) -> std::string
-                                                          {
-                                                            const auto it = m_expressions.find(str);
-                                                            if (it != m_expressions.end())
-                                                              return it->second;
-                                                            return "";
-                                                          });
+  GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(
+      work, "EXP",
+      [this](const std::string& str) -> std::string
+      {
+        const auto it = m_expressions.find(str);
+        if (it != m_expressions.end())
+          return it->second;
+        return "";
+      });
 
   return work;
 }

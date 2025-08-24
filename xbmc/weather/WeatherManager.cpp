@@ -61,17 +61,16 @@ CWeatherManager::CWeatherManager(ADDON::CAddonMgr& addonManager)
       // Handle add-on becoming unavailable
       m_addonManager.Events().Subscribe(
           this,
-          [settings = std::move(settings)](const AddonEvent& event)
+          [s = std::move(settings)](const AddonEvent& event)
           {
             if (typeid(event) == typeid(AddonEvents::Disabled) || // not called on uninstall
                 typeid(event) == typeid(AddonEvents::UnInstalled))
             {
               // If add-on was the current weather add-on, reset the setting
-              const std::string addonId = event.addonId;
-              if (addonId == settings->GetString(CSettings::SETTING_WEATHER_ADDON))
+              if (event.addonId == s->GetString(CSettings::SETTING_WEATHER_ADDON))
               {
-                settings->SetString(CSettings::SETTING_WEATHER_ADDON, "");
-                settings->Save();
+                s->SetString(CSettings::SETTING_WEATHER_ADDON, "");
+                s->Save();
               }
             }
           });
