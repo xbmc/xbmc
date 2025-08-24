@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "PasswordManager.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URL.h"
@@ -1720,4 +1721,11 @@ bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
 
   strFilename = newFilename;
   return true;
+}
+
+CURL URIUtils::AddCredentials(CURL url)
+{
+  if (CPasswordManager::GetInstance().IsURLSupported(url) && url.GetUserName().empty())
+    CPasswordManager::GetInstance().AuthenticateURL(url);
+  return url;
 }

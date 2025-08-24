@@ -296,16 +296,14 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
         }
 
         bool result;
-        CURL url(URIUtils::SubstitutePath(name));
-
-        if (CPasswordManager::GetInstance().IsURLSupported(url) && url.GetUserName().empty())
-          CPasswordManager::GetInstance().AuthenticateURL(url);
+        CURL url = CURL(name);
+        CURL authUrl = URIUtils::AddCredentials(URIUtils::SubstitutePath(url));
 
         // compute mode
         if (mode & NPT_FILE_OPEN_MODE_WRITE)
-          result = file->OpenForWrite(url, (mode & NPT_FILE_OPEN_MODE_TRUNCATE) ? true : false);
+          result = file->OpenForWrite(authUrl, (mode & NPT_FILE_OPEN_MODE_TRUNCATE) ? true : false);
         else
-          result = file->Open(url);
+          result = file->Open(authUrl);
 
         if (!result) return NPT_ERROR_NO_SUCH_FILE;
     }

@@ -18,16 +18,16 @@
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
 #endif
 
-class CURL
+class CURL final
 {
 public:
-  explicit CURL(std::string strURL) { Parse(std::move(strURL)); }
-
   CURL() = default;
-  virtual ~CURL(void);
+  explicit CURL(std::string strURL);
 
+  bool operator==(const CURL& url) const;
   // explicit equals operator for std::string comparison
-  bool operator==(const std::string &url) const { return Get() == url; }
+  friend bool operator==(const CURL& url, const std::string& str);
+  friend bool operator==(const std::string& str, const CURL& url);
 
   void Reset();
   void Parse(std::string strURL);
