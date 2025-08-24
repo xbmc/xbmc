@@ -388,8 +388,6 @@ IShellSurface* CWinSystemWayland::CreateShellSurface(const std::string& name)
 
 bool CWinSystemWayland::DestroyWindow()
 {
-  m_colorManager->UnsetSurface();
-
   // Make sure no more events get processed when we kill the instances
   CWinEventsWayland::SetDisplay(nullptr);
 

@@ -272,6 +272,11 @@ CColorManager::CColorManager(CConnection& connection)
   };
 }
 
+CColorManager::~CColorManager()
+{
+  UnsetSurface();
+}
+
 void CColorManager::SetSurface(const wayland::surface_t& surface)
 {
   UnsetSurface();
@@ -461,6 +466,8 @@ using namespace KODI::WINDOWING::WAYLAND;
 CColorManager::CColorManager(CConnection& /*connection*/)
 {
 }
+
+CColorManager::~CColorManager() = default;
 
 void CColorManager::SetSurface(const wayland::surface_t& /*surface*/)
 {
