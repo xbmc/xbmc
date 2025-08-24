@@ -7160,6 +7160,9 @@ msgctxt "#13348"
 msgid "Search IMDb..."
 msgstr ""
 
+#. Label for context menu item entries for scanning new items to the video library, e.g. new episodes of a TV show.
+#: xbmc/video/ContextMenus.h
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#13349"
 msgid "Scan for new content"
 msgstr ""
