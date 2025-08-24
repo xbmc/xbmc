@@ -205,13 +205,6 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="videoplayer.usestarfishdecoder" type="boolean" label="39207" help="39208">
-          <requirement>HAVE_WEBOS</requirement>
-          <visible>true</visible>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
       </group>
     </category>
   </section>
