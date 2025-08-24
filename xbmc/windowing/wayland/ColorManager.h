@@ -23,6 +23,7 @@ class CColorManager
 {
 public:
   CColorManager(CConnection& connection);
+  ~CColorManager();
 
   void SetSurface(const wayland::surface_t& surface);
   void UnsetSurface();
