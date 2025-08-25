@@ -1915,10 +1915,9 @@ bool StringUtils::Contains(std::string_view str,
 {
   if (isCaseInsensitive)
   {
-    auto itStr =
-        std::search(str.begin(), str.end(), keyword.begin(), keyword.end(),
-                    [](char ch1, char ch2) { return ToUpperAscii(ch1) == ToUpperAscii(ch2); });
-    return (itStr != str.end());
+    const auto itStr{std::ranges::search(str, keyword, [](char ch1, char ch2)
+                                         { return ToUpperAscii(ch1) == ToUpperAscii(ch2); })};
+    return (!itStr.empty());
   }
 
   return str.find(keyword) != std::string_view::npos;

@@ -50,7 +50,7 @@ public:
   bool HasProgressIndicator() const;
 
 protected:
-  CProgressJob();
+  CProgressJob() = default;
   explicit CProgressJob(CGUIDialogProgressBarHandle* progressBar);
 
   /*!

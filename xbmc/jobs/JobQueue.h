@@ -39,9 +39,9 @@ public:
    \param priority priority of this queue.
    \sa CJob
    */
-  CJobQueue(bool lifo = false,
-            unsigned int jobsAtOnce = 1,
-            CJob::PRIORITY priority = CJob::PRIORITY_LOW);
+  explicit CJobQueue(bool lifo = false,
+                     unsigned int jobsAtOnce = 1,
+                     CJob::PRIORITY priority = CJob::PRIORITY_LOW);
 
   /*!
    \brief CJobQueue destructor
@@ -149,7 +149,7 @@ private:
     unsigned int m_id{0};
   };
 
-  void OnJobNotify(CJob* job);
+  void OnJobNotify(const CJob* job);
   void QueueNextJob();
 
   using Queue = std::deque<CJobPointer>;

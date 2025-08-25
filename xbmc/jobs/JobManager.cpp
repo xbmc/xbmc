@@ -72,7 +72,7 @@ private:
 struct CJobManager::JobFinder
 {
   explicit JobFinder(const CJob* job) : m_job(job) {}
-  bool operator()(const CWorkItem& workItem) { return workItem.GetJob() == m_job; }
+  bool operator()(const CWorkItem& workItem) const { return workItem.GetJob() == m_job; }
 
   const CJob* m_job{nullptr};
 };
@@ -253,7 +253,7 @@ int CJobManager::IsProcessing(const std::string& type) const
 
   return static_cast<int>(std::ranges::count_if(
       m_processing,
-      [this, type](const auto& wi)
+      [this, &type](const auto& wi)
       {
         return (!m_pauseJobs || wi.GetPriority() != CJob::PRIORITY::PRIORITY_LOW_PAUSABLE) &&
                (std::string(wi.GetJob()->GetType()) == type);

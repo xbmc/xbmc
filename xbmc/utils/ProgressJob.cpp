@@ -17,9 +17,6 @@
 
 #include <math.h>
 
-CProgressJob::CProgressJob()
-{ }
-
 CProgressJob::CProgressJob(CGUIDialogProgressBarHandle* progressBar) : m_progress(progressBar)
 { }
 

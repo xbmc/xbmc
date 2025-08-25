@@ -30,11 +30,9 @@ namespace XFILE
       bool Exists(const CURL& url) override;
       bool Remove(const CURL& url) override;
     private:
-      std::vector<std::shared_ptr<CFileItem>> GetServerList();
-      std::vector<std::shared_ptr<CFileItem>> GetDirectoryFromExportList(const CURL& inputURL);
-      bool ResolveSymlink(const std::string& dirName,
-                          struct nfsdirent* dirent,
-                          std::string& resolvedPath);
+      std::vector<std::shared_ptr<CFileItem>> GetServerList() const;
+      std::vector<std::shared_ptr<CFileItem>> GetDirectoryFromExportList(
+          const CURL& inputURL) const;
   };
 }
 

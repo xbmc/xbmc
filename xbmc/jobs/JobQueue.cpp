@@ -23,7 +23,7 @@ void CJobQueue::CJobPointer::CancelJob()
 struct CJobQueue::JobFinder
 {
   explicit JobFinder(const CJob* job) : m_job(job) {}
-  bool operator()(const CJobPointer& jobPtr) { return jobPtr.GetJob() == m_job; }
+  bool operator()(const CJobPointer& jobPtr) const { return jobPtr.GetJob() == m_job; }
 
   const CJob* m_job{nullptr};
 };
@@ -91,7 +91,7 @@ bool CJobQueue::AddJob(CJob* job)
   return true;
 }
 
-void CJobQueue::OnJobNotify(CJob* job)
+void CJobQueue::OnJobNotify(const CJob* job)
 {
   std::unique_lock lock(m_section);
 

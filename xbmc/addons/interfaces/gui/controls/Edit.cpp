@@ -152,7 +152,7 @@ void Interface_GUIControlEdit::set_label(KODI_HANDLE kodiBase,
 char* Interface_GUIControlEdit::get_label(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   const auto* addon = static_cast<const CAddonDll*>(kodiBase);
-  auto* control = static_cast<CGUIEditControl*>(handle);
+  const auto* control = static_cast<const CGUIEditControl*>(handle);
   if (!addon || !control)
   {
     CLog::LogF(LOGERROR,
@@ -186,7 +186,7 @@ void Interface_GUIControlEdit::set_text(KODI_HANDLE kodiBase,
 char* Interface_GUIControlEdit::get_text(KODI_HANDLE kodiBase, KODI_GUI_CONTROL_HANDLE handle)
 {
   const auto* addon = static_cast<const CAddonDll*>(kodiBase);
-  auto* control = static_cast<CGUIEditControl*>(handle);
+  const auto* control = static_cast<const CGUIEditControl*>(handle);
   if (!addon || !control)
   {
     CLog::LogF(LOGERROR,
@@ -221,7 +221,7 @@ unsigned int Interface_GUIControlEdit::get_cursor_position(KODI_HANDLE kodiBase,
                                                            KODI_GUI_CONTROL_HANDLE handle)
 {
   const auto* addon = static_cast<const CAddonDll*>(kodiBase);
-  auto* control = static_cast<CGUIEditControl*>(handle);
+  const auto* control = static_cast<const CGUIEditControl*>(handle);
   if (!addon || !control)
   {
     CLog::LogF(LOGERROR,

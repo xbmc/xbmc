@@ -34,6 +34,7 @@
 #include <optional>
 #include <set>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using enum CDatabaseQueryRule::FieldType;
@@ -948,7 +949,7 @@ std::string FormatNullableDate(const std::string& field,
 
 std::string FormatNullableNumber(const std::string& field,
                                  CDatabaseQueryRule::SearchOperator oper,
-                                 const std::string& param,
+                                 std::string_view param,
                                  const std::string& parameter)
 {
   if ((oper == OPERATOR_EQUALS && param == "0") ||

@@ -179,7 +179,7 @@ public:
 
   /*! \brief Starts evaluating timers
    */
-  void ProcessTimers();
+  void ProcessTimers() const;
 
   /*! \brief Called when unloading a skin, allows to cleanup specific
    * skin resources.

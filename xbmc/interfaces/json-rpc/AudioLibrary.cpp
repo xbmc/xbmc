@@ -1367,7 +1367,7 @@ JSONRPC_STATUS CAudioLibrary::RefreshArtist(const std::string& method,
 
   // Checking if artistID is a valid one
   const CVariant artistIdVariant{parameterObject["artistid"]};
-  const int artistID = static_cast<int>(artistIdVariant.asInteger());
+  const auto artistID{static_cast<int>(artistIdVariant.asInteger())};
   if (!musicdatabase.GetArtistExists(artistID))
     return InvalidParams;
 

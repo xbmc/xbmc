@@ -39,7 +39,7 @@ namespace
 {
 constexpr int NFS_MAX_PATH = 4096;
 
-KODI::TIME::FileTime GetDirEntryTime(struct nfsdirent* dirent)
+KODI::TIME::FileTime GetDirEntryTime(const struct nfsdirent* dirent)
 {
   // if modification date is missing, use create date
   const int64_t timeDate =
@@ -59,96 +59,34 @@ KODI::TIME::FileTime GetDirEntryTime(struct nfsdirent* dirent)
   return localTime;
 }
 
-} // Unnamed namespace
-
-CNFSDirectory::CNFSDirectory(void)
-{
-  gNfsConnection.AddActiveConnection();
-}
-
-CNFSDirectory::~CNFSDirectory(void)
-{
-  gNfsConnection.AddIdleConnection();
-}
-
-std::vector<std::shared_ptr<CFileItem>> CNFSDirectory::GetDirectoryFromExportList(
-    const CURL& inputURL)
-{
-  std::string pathWithSlash(inputURL.Get());
-  URIUtils::AddSlashAtEnd(pathWithSlash); //be sure the dir ends with a slash
-
-  CURL url(pathWithSlash);
-
-  std::string pathWithoutSlash(pathWithSlash);
-  URIUtils::RemoveSlashAtEnd(pathWithoutSlash);
-
-  std::list<std::string> exportList=gNfsConnection.GetExportList(url);
-
-  std::vector<std::shared_ptr<CFileItem>> fileItems;
-  for (const std::string& currentExport : exportList)
-  {
-    std::string path(pathWithoutSlash + currentExport);
-    URIUtils::AddSlashAtEnd(path);
-
-    auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(currentExport));
-    item->SetPath(path);
-    item->SetDateTime(0);
-    item->SetFolder(true);
-  }
-  return fileItems;
-}
-
-std::vector<std::shared_ptr<CFileItem>> CNFSDirectory::GetServerList()
-{
-  struct nfs_server_list* srvrs = nfs_find_local_servers();
-  std::vector<std::shared_ptr<CFileItem>> fileItems;
-  for (struct nfs_server_list* srv = srvrs; srv; srv = srv->next)
-  {
-    std::string serverAddress = srv->addr;
-
-    std::string path("nfs://" + serverAddress);
-    URIUtils::AddSlashAtEnd(path);
-
-    auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(serverAddress));
-    item->SetPath(path);
-    item->SetDateTime(0);
-    item->SetFolder(true);
-  }
-  free_nfs_srvr_list(srvrs);
-
-  return fileItems;
-}
-
-bool CNFSDirectory::ResolveSymlink(const std::string& dirName,
-                                   struct nfsdirent* dirent,
-                                   std::string& resolvedPath)
+bool ResolveSymlink(const std::string& dirName, struct nfsdirent* dirent, std::string& resolvedPath)
 {
   std::unique_lock lock(gNfsConnection);
-  int ret = 0;
-  bool retVal = true;
 
-  std::string fullpath = dirName + dirent->name;
+  bool retVal{true};
+  std::string fullpath{dirName + dirent->name};
 
   char resolvedLink[NFS_MAX_PATH];
-  ret = nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), resolvedLink, NFS_MAX_PATH);
+  int ret{
+      nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), resolvedLink, NFS_MAX_PATH)};
 
-  if(ret == 0)
+  if (ret == 0)
   {
-    nfs_stat_64 tmpBuffer = {};
+    nfs_stat_64 tmpBuffer{};
 
     CURL resolvedUrl;
     resolvedUrl.SetPort(2049);
     resolvedUrl.SetProtocol("nfs");
     resolvedUrl.SetHostName(gNfsConnection.GetConnectedIp());
 
-    //special case - if link target is absolute it could be even another export
-    //intervolume symlinks baby ...
-    if(resolvedLink[0] == '/')
+    // special case - if link target is absolute it could be even another export
+    // intervolume symlinks baby ...
+    if (resolvedLink[0] == '/')
     {
-      //use the special stat function for using an extra context
-      //because we are inside of a dir traversal
-      //and just can't change the global nfs context here
-      //without destroying something...
+      // use the special stat function for using an extra context
+      // because we are inside of a dir traversal
+      // and just can't change the global nfs context here
+      // without destroying something...
       fullpath = resolvedLink;
       resolvedUrl.SetFileName(fullpath);
       ret = gNfsConnection.stat(resolvedUrl, &tmpBuffer);
@@ -171,13 +109,13 @@ bool CNFSDirectory::ResolveSymlink(const std::string& dirName,
       resolvedPath = resolvedUrl.Get();
 
       dirent->inode = tmpBuffer.nfs_ino;
-      dirent->mode = tmpBuffer.nfs_mode;
+      dirent->mode = static_cast<uint32_t>(tmpBuffer.nfs_mode);
       dirent->size = tmpBuffer.nfs_size;
       dirent->atime.tv_sec = tmpBuffer.nfs_atime;
       dirent->mtime.tv_sec = tmpBuffer.nfs_mtime;
       dirent->ctime.tv_sec = tmpBuffer.nfs_ctime;
 
-      //map stat mode to nf3type
+      // map stat mode to nf3type
       if (S_ISBLK(tmpBuffer.nfs_mode))
       {
         dirent->type = NF3BLK;
@@ -215,6 +153,66 @@ bool CNFSDirectory::ResolveSymlink(const std::string& dirName,
     retVal = false;
   }
   return retVal;
+}
+
+} // Unnamed namespace
+
+CNFSDirectory::CNFSDirectory(void)
+{
+  gNfsConnection.AddActiveConnection();
+}
+
+CNFSDirectory::~CNFSDirectory(void)
+{
+  gNfsConnection.AddIdleConnection();
+}
+
+std::vector<std::shared_ptr<CFileItem>> CNFSDirectory::GetDirectoryFromExportList(
+    const CURL& inputURL) const
+{
+  std::string pathWithSlash(inputURL.Get());
+  URIUtils::AddSlashAtEnd(pathWithSlash); //be sure the dir ends with a slash
+
+  CURL url(pathWithSlash);
+
+  std::string pathWithoutSlash(pathWithSlash);
+  URIUtils::RemoveSlashAtEnd(pathWithoutSlash);
+
+  std::list<std::string> exportList = gNfsConnection.GetExportList(url);
+
+  std::vector<std::shared_ptr<CFileItem>> fileItems;
+  for (const std::string& currentExport : exportList)
+  {
+    std::string path(pathWithoutSlash + currentExport);
+    URIUtils::AddSlashAtEnd(path);
+
+    const auto& item{fileItems.emplace_back(std::make_shared<CFileItem>(currentExport))};
+    item->SetPath(path);
+    item->SetDateTime(0);
+    item->SetFolder(true);
+  }
+  return fileItems;
+}
+
+std::vector<std::shared_ptr<CFileItem>> CNFSDirectory::GetServerList() const
+{
+  struct nfs_server_list* srvrs = nfs_find_local_servers();
+  std::vector<std::shared_ptr<CFileItem>> fileItems;
+  for (struct nfs_server_list* srv = srvrs; srv; srv = srv->next)
+  {
+    std::string serverAddress = srv->addr;
+
+    std::string path("nfs://" + serverAddress);
+    URIUtils::AddSlashAtEnd(path);
+
+    const auto& item{fileItems.emplace_back(std::make_shared<CFileItem>(serverAddress))};
+    item->SetPath(path);
+    item->SetDateTime(0);
+    item->SetFolder(true);
+  }
+  free_nfs_srvr_list(srvrs);
+
+  return fileItems;
 }
 
 bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
@@ -272,7 +270,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     if (isDir)
       URIUtils::AddSlashAtEnd(path);
 
-    auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(name));
+    const auto& item{fileItems.emplace_back(std::make_shared<CFileItem>(name))};
     item->SetPath(path);
     item->SetDateTime(GetDirEntryTime(dirent));
     item->SetFolder(isDir);

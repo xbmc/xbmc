@@ -873,7 +873,7 @@ int Interface_GUIWindow::get_current_list_position(KODI_HANDLE kodiBase,
                                                    KODI_GUI_WINDOW_HANDLE handle)
 {
   const auto* addon = static_cast<const CAddonDll*>(kodiBase);
-  auto* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  const auto* pAddonWindow = static_cast<const CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::LogF(LOGERROR,
@@ -893,7 +893,7 @@ int Interface_GUIWindow::get_current_list_position(KODI_HANDLE kodiBase,
 int Interface_GUIWindow::get_list_size(KODI_HANDLE kodiBase, KODI_GUI_WINDOW_HANDLE handle)
 {
   const auto* addon = static_cast<const CAddonDll*>(kodiBase);
-  auto* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  const auto* pAddonWindow = static_cast<const CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::LogF(LOGERROR,
@@ -1060,7 +1060,7 @@ KODI_GUI_CONTROL_HANDLE Interface_GUIWindow::get_control_render_addon(KODI_HANDL
                                                                       KODI_GUI_WINDOW_HANDLE handle,
                                                                       int control_id)
 {
-  CGUIControl* pGUIControl = static_cast<CGUIControl*>(
+  auto* pGUIControl = static_cast<CGUIControl*>(
       GetControl(kodiBase, handle, control_id, std::source_location::current().function_name(),
                  CGUIControl::GUICONTROL_RENDERADDON, "renderaddon"));
   if (!pGUIControl)
@@ -1242,7 +1242,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl && iControl != GetID())
       {
-        CGUIControl* controlClicked = GetControl(iControl);
+        const CGUIControl* controlClicked = GetControl(iControl);
 
         // The old python way used to check list AND SELECITEM method or if its a button, checkmark.
         // Its done this way for now to allow other controls without a python version like togglebutton to still raise a onAction event
