@@ -381,8 +381,8 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
       {
         videoDbSuccess = true;
         m_database.SetStreamDetailsForFileId(item->GetVideoInfoTag()->m_streamDetails, idFile);
-        if (m_database.AddVideoVersion(item->GetVideoContentType(), idMovie, idFile, idVideoVersion,
-                                       VideoAssetType::VERSION) < 0)
+        if (!m_database.AddOrUpdateVideoVersion(item->GetVideoContentType(), idMovie, idFile,
+                                                idVideoVersion, VideoAssetType::VERSION))
           return false;
       }
     }
