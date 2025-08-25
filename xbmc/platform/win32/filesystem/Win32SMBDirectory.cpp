@@ -42,8 +42,7 @@ uint64_t GetEntrySize(const WIN32_FIND_DATAW& findData)
   return (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
 }
 
-KODI::TIME::FileTime GetEntryTime(std::shared_ptr<CFileItem>& item,
-                                  const WIN32_FIND_DATAW& findData)
+std::optional<KODI::TIME::FileTime> GetEntryTime(const WIN32_FIND_DATAW& findData)
 {
   KODI::TIME::FileTime fileTime{};
   fileTime.lowDateTime = findData.ftLastWriteTime.dwLowDateTime;
@@ -53,9 +52,7 @@ KODI::TIME::FileTime GetEntryTime(std::shared_ptr<CFileItem>& item,
   if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
     return localTime;
 
-  CDateTime dt{item->GetDateTime()};
-  dt.SetValid(false);
-  return dt;
+  return {};
 }
 
 } // Unnamed namespace
@@ -199,7 +196,14 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         fileItems.emplace_back(std::make_shared<CFileItem>(itemName));
     item->SetFolder(isDir);
     item->SetPath(itemPath);
-    item->SetDateTime(GetEntryTime(item, findData));
+    if (auto entryTime = GetEntryTime(findData); entryTime)
+      item->SetDateTime(entryTime);
+    else
+    {
+      CDateTime dt{item->GetDateTime()};
+      dt.SetValid(false);
+      item->SetDateTime(dt);
+    }
     if (!isDir)
       item->SetSize(GetEntrySize(findData));
     if (isHidden)
