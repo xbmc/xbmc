@@ -24,6 +24,7 @@
 
 #include <charconv>
 #include <iterator>
+#include <sstream>
 #include <string>
 #include <system_error>
 #include <vector>
@@ -81,17 +82,14 @@ void CURL::Parse(std::string strURL1)
      *   [input]  /foo/bar.zip/alice.rar/bob.avi
      *   [result] zip://rar:///foo/bar.zip/alice.rar/bob.avi
      */
-    const char* protocolReplacements[][2] = {
+    static constexpr const std::string_view protocolReplacements[][2] = {
         {".zip/", "zip://"},
         {".apk/", "apk://"},
         {".rar/", "rar://"},
     };
 
-    for (const auto& protocolReplacement : protocolReplacements)
+    for (const auto& [ext, proto] : protocolReplacements)
     {
-      const auto& ext = protocolReplacement[0];
-      const auto& proto = protocolReplacement[1];
-
       for (size_t extPos = strURL.find(ext); extPos != std::string::npos;
            extPos = strURL.find(ext, extPos))
       {
@@ -100,7 +98,9 @@ void CURL::Parse(std::string strURL1)
 
         if (XFILE::CFile::FileExists(archiveName))
         {
-          *this = CURL(proto + Encode(archiveName) + std::move(strURL).substr(extPos));
+          std::ostringstream oss;
+          oss << proto << Encode(archiveName) << std::move(strURL).substr(extPos);
+          *this = CURL(oss.str());
           return;
         }
       }
