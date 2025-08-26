@@ -69,6 +69,14 @@ void CGUIWindowPVRRecordingsBase::OnWindowLoaded()
   CONTROL_SELECT(CONTROL_BTNGROUPITEMS);
 }
 
+void CGUIWindowPVRRecordingsBase::OnInitWindow()
+{
+  const CURL url{m_vecItems->GetPath()};
+  const std::string viewMode{url.GetOption("view")};
+  m_forceUngrouped = (viewMode == "flat");
+  CGUIWindowPVRBase::OnInitWindow();
+}
+
 void CGUIWindowPVRRecordingsBase::OnDeinitWindow(int nextWindowID)
 {
   if (UTILS::HasClientAndProvider(m_vecItems->GetPath()))
@@ -228,8 +236,11 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(iStringId));
 
   const bool bGroupRecordings{
-      m_settings->GetBoolValue(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS)};
+      !m_forceUngrouped && m_settings->GetBoolValue(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS)};
+
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTNGROUPITEMS, bGroupRecordings);
+
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNGROUPITEMS, !m_forceUngrouped);
 
   auto* btnShowDeleted{static_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_BTNSHOWDELETED))};
   if (btnShowDeleted)
