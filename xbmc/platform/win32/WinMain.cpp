@@ -26,6 +26,8 @@
 #include <mmsystem.h>
 #include <shellapi.h>
 
+namespace
+{
 // Minidump creation function
 LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
 {
@@ -33,8 +35,6 @@ LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
   win32_exception::write_minidump(pEp);
   return pEp->ExceptionRecord->ExceptionCode;
 }
-
-static bool isConsoleAttached{false};
 
 /*!
  * \brief Basic error reporting before the log subsystem is initialized
@@ -45,7 +45,7 @@ static bool isConsoleAttached{false};
  * \param[in] ... optional parameters for the format string.
  */
 template<typename... Args>
-static void LogError(const wchar_t* format, Args&&... args)
+void LogError(const wchar_t* format, Args&&... args)
 {
   const int count = _snwprintf(nullptr, 0, format, args...);
   // terminating null character not included in count
@@ -53,6 +53,8 @@ static void LogError(const wchar_t* format, Args&&... args)
   swprintf(buf.get(), format, args...);
 
   OutputDebugString(buf.get());
+
+  static bool isConsoleAttached{false};
 
   if (!isConsoleAttached && AttachConsole(ATTACH_PARENT_PROCESS))
   {
@@ -63,7 +65,7 @@ static void LogError(const wchar_t* format, Args&&... args)
   wprintf(buf.get());
 }
 
-static std::shared_ptr<CAppParams> ParseCommandLine()
+std::shared_ptr<CAppParams> ParseCommandLine()
 {
   int argc = 0;
   LPWSTR* argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
@@ -89,8 +91,6 @@ static std::shared_ptr<CAppParams> ParseCommandLine()
   return appParamParser.GetAppParams();
 }
 
-namespace
-{
 /*!
  * \brief Detect another running instance using the same data directory, using a flag file exclusion
  * mechanism.
