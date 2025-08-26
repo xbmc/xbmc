@@ -770,7 +770,13 @@ TEST_F(TestURIUtils, URLDecode)
   for (const auto& [expected, encoded] : RFC3986EncodingTestData)
     EXPECT_EQ(expected, URIUtils::URLDecode(encoded));
 
+  // Test '+' is converted to ' '
   EXPECT_EQ(" ", URIUtils::URLDecode("+"));
+
+  // Test decoding uppercase hex digits
+  EXPECT_EQ("{", URIUtils::URLDecode("%7B"));
+  EXPECT_EQ("|", URIUtils::URLDecode("%7C"));
+  EXPECT_EQ("}", URIUtils::URLDecode("%7D"));
 }
 
 TEST_F(TestURIUtils, URLEncodeDecode)
