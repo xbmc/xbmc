@@ -71,3 +71,50 @@ TEST(TestVideoInfoTag, SaveTVShowSeasons)
 
   EXPECT_EQ(result, referenceXml);
 }
+
+TEST(TestVideoInfoTag, SetUniqueIDs)
+{
+  // initial state: no default, empty list.
+  CVideoInfoTag details;
+  std::map<std::string, std::string, std::less<>> reference = {};
+
+  EXPECT_EQ(details.GetDefaultUniqueID(), "unknown");
+  EXPECT_EQ(details.GetUniqueIDs(), reference);
+
+  // usual flow: initialize from initial state with a list.
+  // entries with blank type or uniqueid are ignored
+  std::map<std::string, std::string, std::less<>> test = {
+      {"imdb", "tt4577466"}, {"tmdb", "64043"}, {"tvdb", "299350"}, {"", "123456"}, {"foo", ""}};
+  reference = {{"imdb", "tt4577466"}, {"tmdb", "64043"}, {"tvdb", "299350"}};
+
+  details.SetUniqueIDs(test);
+  details.SetUniqueID("64043", "tmdb", true);
+
+  EXPECT_EQ(details.GetDefaultUniqueID(), "tmdb");
+  EXPECT_EQ(details.GetUniqueIDs(), reference);
+
+  // current update behavior, not sure why:
+  // the former default type and value from the previous list of uniqueids are added back when
+  // omitted from the new list - instead of reverting to "unknown" default and setting the list as provided.
+  test = {{"imdb", "tt4577466"}, {"tvdb", "299350"}};
+  details.SetUniqueIDs(test);
+
+  EXPECT_EQ(details.GetDefaultUniqueID(), "tmdb");
+  EXPECT_EQ(details.GetUniqueIDs(), reference);
+
+  // setting a blank list clears all except the previous default
+  test = {};
+  reference = {{"tmdb", "64043"}};
+  details.SetUniqueIDs(test);
+
+  EXPECT_EQ(details.GetDefaultUniqueID(), "tmdb");
+  EXPECT_EQ(details.GetUniqueIDs(), reference);
+
+  // except when there is no explicit default, then setting a blank list clears the list.
+  CVideoInfoTag details2;
+  details2.SetUniqueIDs(reference);
+  details2.SetUniqueIDs(test);
+
+  EXPECT_EQ(details2.GetDefaultUniqueID(), "unknown");
+  EXPECT_EQ(details2.GetUniqueIDs(), test);
+}
