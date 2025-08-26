@@ -566,8 +566,8 @@ msgid "Categories"
 msgstr "Категории"
 
 msgctxt "#31149"
-msgid "Select genre fanart pack"
-msgstr "Выбрать набор фанарта жанров"
+msgid "Choose genre fanart pack"
+msgstr ""
 
 msgctxt "#31150"
 msgid "Origin"
@@ -771,6 +771,10 @@ msgstr "Система"
 msgctxt "#31612"
 msgid "channels"
 msgstr ""
+
+#~ msgctxt "#31149"
+#~ msgid "Select genre fanart pack"
+#~ msgstr "Выбрать набор фанарта жанров"
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"

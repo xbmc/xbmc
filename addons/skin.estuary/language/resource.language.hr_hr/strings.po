@@ -566,8 +566,8 @@ msgid "Categories"
 msgstr "Kategorije"
 
 msgctxt "#31149"
-msgid "Select genre fanart pack"
-msgstr "Odaberite paket slika obožavatelja za žanrove"
+msgid "Choose genre fanart pack"
+msgstr ""
 
 msgctxt "#31150"
 msgid "Origin"
@@ -771,6 +771,10 @@ msgstr "Sustav"
 msgctxt "#31612"
 msgid "channels"
 msgstr ""
+
+#~ msgctxt "#31149"
+#~ msgid "Select genre fanart pack"
+#~ msgstr "Odaberite paket slika obožavatelja za žanrove"
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"

@@ -566,8 +566,8 @@ msgid "Categories"
 msgstr "Flokkar"
 
 msgctxt "#31149"
-msgid "Select genre fanart pack"
-msgstr "Veldu pakka með aðdáendamyndum fyrir flokkun"
+msgid "Choose genre fanart pack"
+msgstr ""
 
 msgctxt "#31150"
 msgid "Origin"
@@ -771,6 +771,10 @@ msgstr "Kerfi"
 msgctxt "#31612"
 msgid "channels"
 msgstr "rásir"
+
+#~ msgctxt "#31149"
+#~ msgid "Select genre fanart pack"
+#~ msgstr "Veldu pakka með aðdáendamyndum fyrir flokkun"
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"

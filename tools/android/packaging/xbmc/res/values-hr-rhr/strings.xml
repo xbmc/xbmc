@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Prijedlozi</string>
+    <string name="continue_button">Nastavi</string>
+    <string name="error_title">Greška</string>
+    <string name="info_title">Info</string>
+    <string name="exit_button">Izađi iz</string>
+    <string name="notice_dialog">%1$s zahtijeva pristup medijima i datotekama vašeg uređaja da bi funkcionirao. Molimo vas da to dozvolite putem sljedećeg dijaloškog okvira ili će se %1$s zatvoriti.</string>
+    <string name="asking_permissions">Traži se dozvola…</string>
+    <string name="clearing_cache">Briše se keš memorija…</string>
+    <string name="waiting_external">Čeka se vanjska pohrana…</string>
+    <string name="external_ok">Vanjska pohrana je u redu…</string>
+    <string name="starting">Započinje %1$s…</string>
+    <string name="first_run">Priprema za prvo pokretanje. Molimo pričekajte…</string>
+    <string name="permission_denied">Dozvola odbijena!! Izlazi se…</string>
+    <string name="no_find_apk">Nije moguće pronaći paket.</string>
+    <string name="no_read_apk">Nije moguće pročitati paket.</string>
 </resources>

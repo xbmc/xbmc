@@ -578,8 +578,8 @@ msgid "Categories"
 msgstr "الفئات"
 
 msgctxt "#31149"
-msgid "Select genre fanart pack"
-msgstr "حدد حزمة fanart للنوع \"Genre\""
+msgid "Choose genre fanart pack"
+msgstr ""
 
 msgctxt "#31150"
 msgid "Origin"
@@ -783,6 +783,10 @@ msgstr "النظام"
 msgctxt "#31612"
 msgid "channels"
 msgstr ""
+
+#~ msgctxt "#31149"
+#~ msgid "Select genre fanart pack"
+#~ msgstr "حدد حزمة fanart للنوع \"Genre\""
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"
