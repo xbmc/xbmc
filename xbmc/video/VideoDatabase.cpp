@@ -1347,8 +1347,7 @@ std::string CVideoDatabase::GetRemovableBlurayPath(std::string originalPath)
 }
 
 //********************************************************************************************************************************
-int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath,
-                               AllowNonFileNameMatch allowNonFileNameMatch)
+int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
 {
   try
   {
@@ -1379,8 +1378,7 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath,
         return -1;
     }
 
-    if (idFile == -1 && strPath != strFilenameAndPath && !isDisc &&
-        allowNonFileNameMatch == AllowNonFileNameMatch::NO_MATCH)
+    if (idFile == -1 && strPath != strFilenameAndPath && !isDisc)
       return -1;
 
     std::string strSQL;

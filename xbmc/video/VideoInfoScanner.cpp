@@ -979,28 +979,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (result == InfoType::FULL)
     {
       // Add the movie entry
-      // Try with title first
-      int existingMovieId{-1};
-      const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-      const std::string title{tag->GetTitle()};
-      if (!title.empty())
-        existingMovieId = m_database.GetMovieIdByTitle(title);
-      if (existingMovieId < 0)
-        existingMovieId =
-            m_database.GetMovieId(pItem->GetDynPath(), AllowNonFileNameMatch::YES_MATCH);
-
-      int movieId{-1};
       item.SetProperty("from_nfo", true);
 
       if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
         if (!AddSet(pItem->GetVideoInfoTag()->m_set))
           return InfoRet::INFO_ERROR;
-      movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
+
+      const int movieId{static_cast<int>(AddVideo(&item, info2, bDirNames, true))};
       if (movieId < 0)
         return InfoRet::INFO_ERROR;
       item.SetProperty("idMovie", movieId);
 
       // Set version (AddVideo() ultimately uses CVideoDatabase::AddNewMovie() which defaults to standard version)
+      const CVideoInfoTag* tag{item.GetVideoInfoTag()};
       m_database.SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
 
       // Look for default version

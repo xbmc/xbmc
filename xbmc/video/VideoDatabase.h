@@ -494,12 +494,6 @@ enum class DeleteMovieHashAction
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
-enum class AllowNonFileNameMatch : bool
-{
-  NO_MATCH,
-  YES_MATCH
-};
-
 struct EpisodeInformation
 {
   int index{0};
@@ -1348,8 +1342,7 @@ public:
   VideoAssetInfo GetVideoVersionInfo(const std::string& filenameAndPath);
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
-  int GetMovieId(const std::string& strFilenameAndPath,
-                 AllowNonFileNameMatch allowNonFileNameMatch = AllowNonFileNameMatch::NO_MATCH);
+  int GetMovieId(const std::string& strFilenameAndPath);
   std::string GetMovieTitle(int idMovie);
   int GetMovieIdByTitle(const std::string& title);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
