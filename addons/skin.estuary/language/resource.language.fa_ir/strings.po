@@ -577,8 +577,8 @@ msgid "Categories"
 msgstr "دسته‌ها"
 
 msgctxt "#31149"
-msgid "Select genre fanart pack"
-msgstr "گزینش بستهٔ هنر هواداری سبک"
+msgid "Choose genre fanart pack"
+msgstr ""
 
 msgctxt "#31150"
 msgid "Origin"
@@ -782,6 +782,10 @@ msgstr "سیستم"
 msgctxt "#31612"
 msgid "channels"
 msgstr ""
+
+#~ msgctxt "#31149"
+#~ msgid "Select genre fanart pack"
+#~ msgstr "گزینش بستهٔ هنر هواداری سبک"
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"

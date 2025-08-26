@@ -566,8 +566,8 @@ msgid "Categories"
 msgstr "Kategorieë"
 
 msgctxt "#31149"
-msgid "Select genre fanart pack"
-msgstr "Kies genre ondersteunerkuns pak"
+msgid "Choose genre fanart pack"
+msgstr ""
 
 msgctxt "#31150"
 msgid "Origin"
@@ -771,6 +771,10 @@ msgstr "Stelsel"
 msgctxt "#31612"
 msgid "channels"
 msgstr "kanale"
+
+#~ msgctxt "#31149"
+#~ msgid "Select genre fanart pack"
+#~ msgstr "Kies genre ondersteunerkuns pak"
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"
