@@ -651,7 +651,7 @@ struct URLEncodings
   std::string_view encoded;
 };
 
-constinit URLEncodings EncodingTestData[] = {
+constexpr URLEncodings EncodingTestData[] = {
     // No crash
     {"", ""},
 
@@ -715,15 +715,15 @@ constinit URLEncodings EncodingTestData[] = {
     {"%0c", "%250c"},
 };
 
-constinit URLEncodings RFC1738EncodingTestData[] = {
+constexpr URLEncodings RFC1738EncodingTestData[] = {
     {"-", "-"}, {"_", "_"}, {".", "."}, {"!", "!"}, {"(", "("}, {")", ")"}, {"~", "%7e"},
 };
 
-constinit URLEncodings RFC3986EncodingTestData[] = {
+constexpr URLEncodings RFC3986EncodingTestData[] = {
     {"-", "-"}, {"_", "_"}, {".", "."}, {"!", "%21"}, {"(", "%28"}, {")", "%29"}, {"~", "~"},
 };
 
-constinit URLEncodings InvalidEncodingTestData[] = {
+constexpr URLEncodings InvalidEncodingTestData[] = {
     // Incomplete or Invalid encoding
     {"%", "%"},
     {"%%", "%%"},
