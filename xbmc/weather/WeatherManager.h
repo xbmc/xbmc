@@ -9,21 +9,24 @@
 #pragma once
 
 #include "settings/lib/ISettingCallback.h"
+#include "threads/CriticalSection.h"
 #include "utils/InfoLoader.h"
 
+#include <array>
+#include <memory>
 #include <string>
 
-#define WEATHER_LABEL_LOCATION   10
-#define WEATHER_IMAGE_CURRENT_ICON 21
-#define WEATHER_LABEL_CURRENT_COND 22
-#define WEATHER_LABEL_CURRENT_TEMP 23
-#define WEATHER_LABEL_CURRENT_FEEL 24
-#define WEATHER_LABEL_CURRENT_UVID 25
-#define WEATHER_LABEL_CURRENT_WIND 26
-#define WEATHER_LABEL_CURRENT_DEWP 27
-#define WEATHER_LABEL_CURRENT_HUMI 28
+constexpr unsigned int WEATHER_LABEL_LOCATION = 10;
+constexpr unsigned int WEATHER_IMAGE_CURRENT_ICON = 21;
+constexpr unsigned int WEATHER_LABEL_CURRENT_COND = 22;
+constexpr unsigned int WEATHER_LABEL_CURRENT_TEMP = 23;
+constexpr unsigned int WEATHER_LABEL_CURRENT_FEEL = 24;
+constexpr unsigned int WEATHER_LABEL_CURRENT_UVID = 25;
+constexpr unsigned int WEATHER_LABEL_CURRENT_WIND = 26;
+constexpr unsigned int WEATHER_LABEL_CURRENT_DEWP = 27;
+constexpr unsigned int WEATHER_LABEL_CURRENT_HUMI = 28;
 
-inline const std::string ICON_ADDON_PATH = "resource://resource.images.weathericons.default";
+constexpr const char* ICON_ADDON_PATH = "resource://resource.images.weathericons.default";
 
 struct ForecastDay
 {
@@ -34,34 +37,10 @@ struct ForecastDay
   std::string m_low;
 };
 
-#define NUM_DAYS 7
-
-class CWeatherInfo
+struct WeatherInfo
 {
-public:
-  ForecastDay forecast[NUM_DAYS];
-
-  void Reset()
-  {
-    lastUpdateTime.clear();
-    currentIcon.clear();
-    currentConditions.clear();
-    currentTemperature.clear();
-    currentFeelsLike.clear();
-    currentWind.clear();
-    currentHumidity.clear();
-    currentUVIndex.clear();
-    currentDewPoint.clear();
-
-    for (ForecastDay& f : forecast)
-    {
-      f.m_icon.clear();
-      f.m_overview.clear();
-      f.m_day.clear();
-      f.m_high.clear();
-      f.m_low.clear();
-    }
-  };
+  static constexpr unsigned int NUM_DAYS = 7;
+  std::array<ForecastDay, NUM_DAYS> forecast;
 
   std::string lastUpdateTime;
   std::string location;
@@ -73,36 +52,49 @@ public:
   std::string currentWind;
   std::string currentDewPoint;
   std::string currentHumidity;
-  std::string busyString;
-  std::string naIcon;
 };
 
-class CWeatherManager
-: public CInfoLoader, public ISettingCallback
+class CWeatherManager : public CInfoLoader, public ISettingCallback
 {
 public:
-  CWeatherManager(void);
-  ~CWeatherManager(void) override;
-  static bool GetSearchResults(const std::string &strSearch, std::string &strResult);
+  CWeatherManager();
+  ~CWeatherManager() override;
 
-  std::string GetLocation(int iLocation);
-  const std::string& GetLastUpdateTime() const { return m_info.lastUpdateTime; }
-  const ForecastDay &GetForecast(int day) const;
+  /*!
+   \brief Retrieve the city name for the specified location from the settings
+   \param iLocation the location index (can be in the range [1..MAXLOCATION])
+   \return the city name (without the accompanying region area code)
+   */
+  std::string GetLocation(int iLocation) const;
+
+  std::string GetLastUpdateTime() const;
+  ForecastDay GetForecast(int day) const;
   bool IsFetched();
   void Reset();
 
-  void SetArea(int iLocation);
-  int GetArea() const;
+  /*!
+   \brief Saves the specified location index to the settings. Call Refresh()
+          afterwards to update weather info for the new location.
+   \param iLocation the new location index (can be in the range [1..MAXLOCATION])
+   */
+  static void SetArea(int iLocation);
+
+  /*!
+   \brief Retrieves the current location index from the settings
+   \return the active location index (will be in the range [1..MAXLOCATION])
+   */
+  static int GetArea();
+
 protected:
-  CJob *GetJob() const override;
+  CJob* GetJob() const override;
   std::string TranslateInfo(int info) const override;
   std::string BusyInfo(int info) const override;
-  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job) override;
 
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
-
-  CWeatherInfo m_info;
+  mutable CCriticalSection m_critSection;
+  WeatherInfo m_info{};
 };
