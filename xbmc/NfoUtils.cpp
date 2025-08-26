@@ -12,10 +12,26 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <array>
+#include <optional>
 #include <string>
 
 namespace
 {
+using namespace std::literals::string_view_literals;
+
+struct nfoDetails
+{
+  std::string_view m_tagName;
+  int m_version;
+  bool (*m_upgradeFn)(TiXmlElement*, int); //! @todo C++23 convert to std::function
+};
+
+bool UpgradeMovie(TiXmlElement* root, int currentVersion);
+bool UpgradeTvShow(TiXmlElement* root, int currentVersion);
+bool UpgradeEpisodeDetails(TiXmlElement* root, int currentVersion);
+bool UpgradeMusicVideos(TiXmlElement* root, int currentVersion);
+
 constexpr int VERSION_LEGACY = 0; // nfo has no version attribute and predates version support
 
 // Current nfo versions
@@ -24,16 +40,31 @@ constexpr int VERSION_TVSHOW = 1;
 constexpr int VERSION_EPISODEDETAILS = 1;
 constexpr int VERSION_MUSICVIDEOS = 1;
 
+// clang-format off
+constexpr std::array<struct nfoDetails, 4> nfos{{
+    {"movie"sv,                   VERSION_MOVIE,                   UpgradeMovie},
+    {"tvshow"sv,                  VERSION_TVSHOW,                  UpgradeTvShow},
+    {"episodedetails"sv,          VERSION_EPISODEDETAILS,          UpgradeEpisodeDetails},
+    {"musicvideos"sv,             VERSION_MUSICVIDEOS,             UpgradeMusicVideos},
+}};
+// clang-format on
+
+std::optional<nfoDetails> FindNfoParameters(std::string_view tag)
+{
+  auto it{std::find_if(nfos.begin(), nfos.end(),
+                       [tag](const auto& nfo) { return nfo.m_tagName == tag; })};
+
+  if (it != nfos.end())
+    return *it;
+  else
+    return std::nullopt;
+}
+
 int CurrentNfoVersion(std::string_view tag)
 {
-  if (tag == "movie")
-    return VERSION_MOVIE;
-  if (tag == "tvshow")
-    return VERSION_TVSHOW;
-  if (tag == "episodedetails")
-    return VERSION_EPISODEDETAILS;
-  if (tag == "musicvideos")
-    return VERSION_EPISODEDETAILS;
+  const auto& param{FindNfoParameters(tag)};
+  if (param)
+    return param->m_version;
 
   return VERSION_LEGACY;
 }
@@ -173,28 +204,22 @@ void CNfoUtils::SetVersion(TiXmlElement& elem, std::string_view tag)
 
 bool CNfoUtils::Upgrade(TiXmlElement* root)
 {
-  const std::string type = root->ValueStr();
+  const std::string type{root->ValueStr()};
   int version;
   if (root->QueryIntAttribute("version", &version) != TIXML_SUCCESS)
     version = VERSION_LEGACY;
 
   const int targetVersion = CurrentNfoVersion(type);
 
-  //! @todo refactor in a generic manner once more than one tag type has to be handled
   if (targetVersion > VERSION_LEGACY && version < targetVersion)
   {
     CLog::LogF(LOGDEBUG, "upgrading {} from version {} to {}", type, version, targetVersion);
 
     root->SetAttribute("version", targetVersion);
 
-    if (type == "movie")
-      return UpgradeMovie(root, version);
-    if (type == "tvshow")
-      return UpgradeTvShow(root, version);
-    if (type == "episodedetails")
-      return UpgradeEpisodeDetails(root, version);
-    if (type == "musicvideos")
-      return UpgradeMusicVideos(root, version);
+    const auto& param{FindNfoParameters(type)};
+    if (param)
+      return param->m_upgradeFn(root, version);
   }
 
   return true;
