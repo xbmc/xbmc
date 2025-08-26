@@ -1689,11 +1689,9 @@ void CVideoInfoTag::SetArtist(std::vector<std::string> artist)
 
 void CVideoInfoTag::SetUniqueIDs(std::map<std::string, std::string, std::less<>> uniqueIDs)
 {
-  for (const auto& uniqueid : uniqueIDs)
-  {
-    if (uniqueid.first.empty())
-      uniqueIDs.erase(uniqueid.first);
-  }
+  std::erase_if(uniqueIDs, [](const auto& uniqueid)
+                { return uniqueid.first.empty() || uniqueid.second.empty(); });
+
   if (!uniqueIDs.contains(m_strDefaultUniqueID))
   {
     const auto defaultUniqueId = GetUniqueID();
