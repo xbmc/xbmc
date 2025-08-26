@@ -219,10 +219,10 @@ public:
   SourceType GetDriveType() const { return m_iDriveType; }
   void SetDriveType(SourceType driveType) { m_iDriveType = driveType; }
   const CDateTime& GetDateTime() const { return m_dateTime; }
-  void SetDateTime(const CDateTime& dateTime) { m_dateTime = dateTime; }
-  void SetDateTime(time_t dateTime) { m_dateTime = dateTime; }
-  void SetDateTime(KODI::TIME::SystemTime dateTime) { m_dateTime = dateTime; }
-  void SetDateTime(KODI::TIME::FileTime dateTime) { m_dateTime = dateTime; }
+  void SetDateTime(CDateTime dateTime) { m_dateTime = std::move(dateTime); }
+  void SetDateTime(time_t dateTime) { m_dateTime = std::move(dateTime); }
+  void SetDateTime(KODI::TIME::SystemTime dateTime) { m_dateTime = std::move(dateTime); }
+  void SetDateTime(KODI::TIME::FileTime dateTime) { m_dateTime = std::move(dateTime); }
   int64_t GetSize() const { return m_dwSize; }
   void SetSize(int64_t size) { m_dwSize = size; }
   const std::string& GetTitle() const { return m_strTitle; }
