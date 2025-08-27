@@ -23,56 +23,56 @@ using ::testing::WithParamInterface;
 
 struct TestURLParseDetailsData
 {
-  std::string input = "";
-  std::string expectedGet = "";
+  std::string_view input = "";
+  std::string_view expectedGet = "";
   int expectedGetPort = 0;
-  std::string expectedGetHostName = "";
-  std::string expectedGetDomain = "";
-  std::string expectedGetUserName = "";
-  std::string expectedGetPassWord = "";
-  std::string expectedGetFileName = "";
-  std::string expectedGetFileNameUtil = "";
-  std::string expectedGetProtocol = "";
-  std::string expectedGetTranslatedProtocol = "";
-  std::string expectedGetShareName = "";
-  std::string expectedGetOptions = "";
-  std::string expectedGetProtocolOptions = "";
-  std::string expectedGetFileNameWithoutPath = "";
-  std::string expectedGetWithoutOptions = "";
-  std::string expectedGetWithoutUserDetails_redacted = "";
-  std::string expectedGetWithoutUserDetails_removed = "";
-  std::string expectedGetWithoutFilename = "";
-  std::string expectedGetRedacted = "";
+  std::string_view expectedGetHostName = "";
+  std::string_view expectedGetDomain = "";
+  std::string_view expectedGetUserName = "";
+  std::string_view expectedGetPassWord = "";
+  std::string_view expectedGetFileName = "";
+  std::string_view expectedGetFileNameUtil = "";
+  std::string_view expectedGetProtocol = "";
+  std::string_view expectedGetTranslatedProtocol = "";
+  std::string_view expectedGetShareName = "";
+  std::string_view expectedGetOptions = "";
+  std::string_view expectedGetProtocolOptions = "";
+  std::string_view expectedGetFileNameWithoutPath = "";
+  std::string_view expectedGetWithoutOptions = "";
+  std::string_view expectedGetWithoutUserDetails_redacted = "";
+  std::string_view expectedGetWithoutUserDetails_removed = "";
+  std::string_view expectedGetWithoutFilename = "";
+  std::string_view expectedGetRedacted = "";
   bool expectedIsLocal = false;
   bool expectedIsLocalHost = false;
   bool expectedIsFileOnly = false;
   bool expectedIsFullPath = false;
-  std::string expectedDecode = "";
-  std::string expectedDecodeFileName = "";
-  std::string expectedEncode = "";
-  std::string expectedExtension = "";
+  std::string_view expectedDecode = "";
+  std::string_view expectedDecodeFileName = "";
+  std::string_view expectedEncode = "";
+  std::string_view expectedExtension = "";
   bool expectedHasExtension = false;
   bool expectedHasSetExtension = false;
-  std::string expectedRemovedExtension = "";
-  std::string expectedReplacedExtension = "";
-  std::string expectedFileOrFolder = "";
-  std::string expectedSplitPath = "";
-  std::string expectedSplitFileName = "";
+  std::string_view expectedRemovedExtension = "";
+  std::string_view expectedReplacedExtension = "";
+  std::string_view expectedFileOrFolder = "";
+  std::string_view expectedSplitPath = "";
+  std::string_view expectedSplitFileName = "";
   bool expectedHasParentInHostname = false;
   bool expectedHasEncodedHostname = false;
   bool expectedHasEncodedFilename = false;
-  std::string expectedHasParentPath = "";
-  std::string expectedGetParentPath = "";
-  std::string expectedGetBasePath = "";
-  std::string expectedGetDiscBase = "";
-  std::string expectedGetDiscBasePath = "";
-  std::string expectedGetDiscUnderlyingFile = "";
-  std::string expectedGetBlurayFile = "";
-  std::string expectedGetBlurayRootPath = "";
-  std::string expectedGetBlurayTitlesPath = "";
-  std::string expectedGetBlurayEpisodePath = "";
-  std::string expectedGetBlurayAllEpisodesPath = "";
-  std::string expectedGetBlurayPlaylistPath = "";
+  std::string_view expectedHasParentPath = "";
+  std::string_view expectedGetParentPath = "";
+  std::string_view expectedGetBasePath = "";
+  std::string_view expectedGetDiscBase = "";
+  std::string_view expectedGetDiscBasePath = "";
+  std::string_view expectedGetDiscUnderlyingFile = "";
+  std::string_view expectedGetBlurayFile = "";
+  std::string_view expectedGetBlurayRootPath = "";
+  std::string_view expectedGetBlurayTitlesPath = "";
+  std::string_view expectedGetBlurayEpisodePath = "";
+  std::string_view expectedGetBlurayAllEpisodesPath = "";
+  std::string_view expectedGetBlurayPlaylistPath = "";
   bool expectedIsMusicDBProtocol = false;
   bool expectedIsUDFProtocol = false;
   bool expectedIsRemote = false;
@@ -133,21 +133,21 @@ struct TestURLParseDetailsData
   bool expectedIsLibraryFolder = false;
   bool expectedIsLibraryContent = false;
   bool expectedIsDOSPath = false;
-  std::string expectedAppendSlash = "";
+  std::string_view expectedAppendSlash = "";
   bool expectedHasSlashAtEnd = false;
   bool expectedHasSlashAtEndURL = false;
-  std::string expectedRemovedEndSlash = "";
-  std::string expectedIsFixSlashesAndDupsUnix = "";
-  std::string expectedIsFixSlashesAndDupsWin = "";
-  std::string expectedCanonicalizePathUnix = "";
-  std::string expectedCanonicalizePathWin = "";
-  std::string expectedAddFileToFolder = "";
-  std::string expectedGetDirectory = "";
-  std::string expectedCreateZIPArchivePath = "";
-  std::string expectedCreateRARArchivePath = "";
-  std::string expectedCreateAPKArchivePath = "";
-  std::string expectedGetRealPath = "";
-  std::string expectedUpdateUrlEncoding = "";
+  std::string_view expectedRemovedEndSlash = "";
+  std::string_view expectedIsFixSlashesAndDupsUnix = "";
+  std::string_view expectedIsFixSlashesAndDupsWin = "";
+  std::string_view expectedCanonicalizePathUnix = "";
+  std::string_view expectedCanonicalizePathWin = "";
+  std::string_view expectedAddFileToFolder = "";
+  std::string_view expectedGetDirectory = "";
+  std::string_view expectedCreateZIPArchivePath = "";
+  std::string_view expectedCreateRARArchivePath = "";
+  std::string_view expectedCreateAPKArchivePath = "";
+  std::string_view expectedGetRealPath = "";
+  std::string_view expectedUpdateUrlEncoding = "";
 };
 
 std::ostream& operator<<(std::ostream& os, const TestURLParseDetailsData& rhs)
@@ -197,8 +197,8 @@ void write(std::ostream& f, const std::string& key, const std::string& value)
 TEST_P(TestURLParseDetails, ParseURLResults)
 {
   auto& param = GetParam();
-  const auto& p = param.input;
-  const CURL curl(param.input);
+  const std::string p{param.input};
+  const CURL curl(p);
 
   std::string tmp1, tmp2;
 
@@ -519,7 +519,7 @@ TEST_P(TestURLParseDetails, ParseURLResults)
 	*/
 }
 
-const TestURLParseDetailsData values[] = {
+constexpr TestURLParseDetailsData values[] = {
 #include "test_case_results.inc"
 };
 
