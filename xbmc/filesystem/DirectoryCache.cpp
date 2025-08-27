@@ -25,6 +25,27 @@
 
 using namespace XFILE;
 
+namespace
+{
+
+std::string getKey(const CURL& url)
+{
+  // Get rid of any URL options, else the compare may be wrong
+  std::string path = url.GetWithoutOptions();
+  URIUtils::RemoveSlashAtEnd(path);
+  return path;
+}
+
+std::string getDirKey(const CURL& url)
+{
+  const std::string filePath = getKey(url);
+  std::string dirPath = URIUtils::GetDirectory(filePath);
+  URIUtils::RemoveSlashAtEnd(dirPath);
+  return dirPath;
+}
+
+} // Unnamed namespace
+
 CDirectoryCache::CDir::CDir(CacheType cacheType) : m_Items(std::make_unique<CFileItemList>())
 {
   m_cacheType = cacheType;
@@ -55,9 +76,7 @@ bool CDirectoryCache::GetDirectory(const CURL& url, CFileItemList& items, bool r
 {
   std::unique_lock lock(m_cs);
 
-  // Get rid of any URL options, else the compare may be wrong
-  std::string storedPath = url.GetWithoutOptions();
-  URIUtils::RemoveSlashAtEnd(storedPath);
+  const std::string storedPath = getKey(url);
 
   auto i = m_cache.find(storedPath);
   if (i != m_cache.end())
@@ -68,7 +87,7 @@ bool CDirectoryCache::GetDirectory(const CURL& url, CFileItemList& items, bool r
       items.Copy(*dir.m_Items);
       dir.SetLastAccess(m_accessCounter);
 #ifdef _DEBUG
-      m_cacheHits+=items.Size();
+      m_cacheHits += items.Size();
 #endif
       return true;
     }
@@ -94,11 +113,8 @@ void CDirectoryCache::SetDirectory(const CURL& url, const CFileItemList& items, 
   // this is the best solution for now.
   std::unique_lock lock(m_cs);
 
-  // Get rid of any URL options, else the compare may be wrong
-  std::string storedPath = url.GetWithoutOptions();
-  URIUtils::RemoveSlashAtEnd(storedPath);
-
-  ClearDirectory(CURL(storedPath));
+  const std::string storedPath = getKey(url);
+  m_cache.erase(storedPath);
 
   CheckIfFull();
 
@@ -110,21 +126,15 @@ void CDirectoryCache::SetDirectory(const CURL& url, const CFileItemList& items, 
 
 void CDirectoryCache::ClearFile(const CURL& url)
 {
-  // Get rid of any URL options, else the compare may be wrong
-  std::string path = url.GetWithoutOptions();
-  URIUtils::RemoveSlashAtEnd(path);
-
-  ClearDirectory(CURL(URIUtils::GetDirectory(path)));
+  const std::string dirPath = getDirKey(url);
+  m_cache.erase(dirPath);
 }
 
 void CDirectoryCache::ClearDirectory(const CURL& url)
 {
   std::unique_lock lock(m_cs);
 
-  // Get rid of any URL options, else the compare may be wrong
-  std::string storedPath = url.GetWithoutOptions();
-  URIUtils::RemoveSlashAtEnd(storedPath);
-
+  const std::string storedPath = getKey(url);
   m_cache.erase(storedPath);
 }
 
@@ -132,28 +142,18 @@ void CDirectoryCache::ClearSubPaths(const CURL& url)
 {
   std::unique_lock lock(m_cs);
 
-  // Get rid of any URL options, else the compare may be wrong
-  std::string storedPath = url.GetWithoutOptions();
-
-  auto i = m_cache.begin();
-  while (i != m_cache.end())
-  {
-    if (URIUtils::PathHasParent(i->first, storedPath))
-      m_cache.erase(i++);
-    else
-      i++;
-  }
+  const std::string storedPath = getKey(url);
+  std::erase_if(m_cache, [&storedPath](const auto& i)
+                { return URIUtils::PathHasParent(i.first, storedPath); });
 }
 
 void CDirectoryCache::AddFile(const CURL& url)
 {
   std::unique_lock lock(m_cs);
 
-  // Get rid of any URL options, else the compare may be wrong
-  std::string path = URIUtils::GetDirectory(url.GetWithoutOptions());
-  URIUtils::RemoveSlashAtEnd(path);
+  const std::string dirPath = getDirKey(url);
 
-  const auto i{m_cache.find(path)};
+  const auto i{m_cache.find(dirPath)};
   if (i != m_cache.cend())
   {
     CDir& dir{i->second};
@@ -167,11 +167,8 @@ bool CDirectoryCache::FileExists(const CURL& url, bool& foundInCache)
   std::unique_lock lock(m_cs);
   foundInCache = false;
 
-  // Get rid of any URL options, else the compare may be wrong
-  std::string filePath = url.GetWithoutOptions();
-  URIUtils::RemoveSlashAtEnd(filePath);
-  std::string dirPath = URIUtils::GetDirectory(filePath);
-  URIUtils::RemoveSlashAtEnd(dirPath);
+  const std::string filePath = getKey(url);
+  const std::string dirPath = getDirKey(url);
 
   auto i = m_cache.find(dirPath);
   if (i != m_cache.end())
@@ -209,14 +206,7 @@ void CDirectoryCache::InitCache(const std::set<std::string>& dirs)
 
 void CDirectoryCache::ClearCache(std::set<std::string>& dirs)
 {
-  auto i = m_cache.begin();
-  while (i != m_cache.end())
-  {
-    if (dirs.contains(i->first))
-      m_cache.erase(i++);
-    else
-      i++;
-  }
+  std::erase_if(m_cache, [&dirs](const auto& i) { return dirs.contains(i.first); });
 }
 
 void CDirectoryCache::CheckIfFull()
@@ -226,18 +216,18 @@ void CDirectoryCache::CheckIfFull()
   // find the last accessed folder, and remove if the number of cached folders is too many
   auto lastAccessed = m_cache.end();
   unsigned int numCached = 0;
-  for (auto i = m_cache.begin(); i != m_cache.end(); i++)
+  const auto end = m_cache.end();
+  for (auto i = m_cache.begin(); i != end; ++i)
   {
     // ensure dirs that are always cached aren't cleared
     if (i->second.m_cacheType != CacheType::ALWAYS)
     {
-      if (lastAccessed == m_cache.end() ||
-          i->second.GetLastAccess() < lastAccessed->second.GetLastAccess())
+      if (lastAccessed == end || i->second.GetLastAccess() < lastAccessed->second.GetLastAccess())
         lastAccessed = i;
       numCached++;
     }
   }
-  if (lastAccessed != m_cache.end() && numCached >= MAX_CACHED_DIRS)
+  if (lastAccessed != end && numCached >= MAX_CACHED_DIRS)
     m_cache.erase(lastAccessed);
 }
 
