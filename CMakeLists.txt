@@ -577,6 +577,10 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
   copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/test-reference-data.txt NO_INSTALL)
   add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
 
+  if(MSVC)
+    target_compile_options(${APP_NAME_LC}-test PRIVATE "/bigobj")
+  endif()
+
   set_target_properties(PROPERTIES ENABLE_EXPORTS ON)
 
   whole_archive(_TEST_LIBRARIES ${core_DEPENDS} ${GTEST_LIBRARY})
