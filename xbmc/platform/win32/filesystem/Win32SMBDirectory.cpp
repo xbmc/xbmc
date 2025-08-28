@@ -197,7 +197,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     item->SetFolder(isDir);
     item->SetPath(itemPath);
     if (auto entryTime = GetEntryTime(findData); entryTime)
-      item->SetDateTime(*std::move(entryTime));
+      item->SetDateTime(std::move(*entryTime));
     else
     {
       CDateTime dt{item->GetDateTime()};
