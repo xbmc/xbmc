@@ -5082,7 +5082,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
     details.SetYear(record->at(VIDEODB_DETAILS_MOVIE_PREMIERED).get_asInt());
   else
     details.SetPremieredFromDBDate(premieredString);
-  details.SetOriginalLanguage(record->at(VIDEODB_DETAILS_MOVIE_ORIGINAL_LANGUAGE).get_asString());
+  details.SetOriginalLanguage(record->at(VIDEODB_DETAILS_MOVIE_ORIGINAL_LANGUAGE).get_asString(),
+                              CVideoInfoTag::LanguageProcessing::PROCESSING_NONE);
 
   if (getDetails)
   {
@@ -5181,7 +5182,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
                     record->at(VIDEODB_DETAILS_TVSHOW_RATING_TYPE).get_asString(), true);
   details.SetUniqueID(record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_VALUE).get_asString(), record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_TYPE).get_asString(), true);
   details.SetDuration(record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt());
-  details.SetOriginalLanguage(record->at(VIDEODB_DETAILS_TVSHOW_ORIGINAL_LANGUAGE).get_asString());
+  details.SetOriginalLanguage(record->at(VIDEODB_DETAILS_TVSHOW_ORIGINAL_LANGUAGE).get_asString(),
+                              CVideoInfoTag::LanguageProcessing::PROCESSING_NONE);
 
   //! @todo videotag member + guiinfo int needed?
   //! -- Currently not needed; having it available as item prop seems sufficient for skinning
@@ -5277,7 +5279,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_studio = StringUtils::Split(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   details.SetPremieredFromDBDate(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString());
   details.SetOriginalLanguage(
-      record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ORIGINAL_LANGUAGE).get_asString());
+      record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ORIGINAL_LANGUAGE).get_asString(),
+      CVideoInfoTag::LanguageProcessing::PROCESSING_NONE);
 
   details.SetResumePoint(record->at(VIDEODB_DETAILS_EPISODE_RESUME_TIME).get_asInt(),
                          record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt(),
