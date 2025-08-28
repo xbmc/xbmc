@@ -755,7 +755,7 @@ void CURL::RemoveProtocolOption(const std::string &key)
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
 }
 
-bool CURL::HasExtension(const std::string& strExtensions) const
+bool CURL::HasExtension(std::string_view extensions) const
 {
   const size_t pos = m_strFileName.find_last_of("./\\");
   if (pos == std::string::npos || m_strFileName[pos] != '.')
@@ -764,7 +764,7 @@ bool CURL::HasExtension(const std::string& strExtensions) const
   const std::string extensionLower = StringUtils::ToLower(m_strFileName.substr(pos));
 
   const std::vector<std::string> extensionsLower =
-      StringUtils::Split(StringUtils::ToLower(strExtensions), '|');
+      StringUtils::Split(StringUtils::ToLower(extensions), '|');
 
   for (const auto& ext : extensionsLower)
   {
