@@ -978,27 +978,47 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (result == InfoType::FULL)
     {
       // Add the movie entry
-      // Try with title first
-      int existingMovieId{-1};
-      CVideoInfoTag* tag{item.GetVideoInfoTag()};
-      const std::string title{tag->GetTitle()};
-      if (!title.empty())
-        existingMovieId = m_database.GetMovieIdByTitle(title);
-      if (existingMovieId < 0)
-        m_database.GetMovieId(pItem->GetDynPath(), AllowNonFileNameMatch::YES_MATCH);
-
       int movieId{-1};
-      item.SetProperty("from_nfo", true);
+      CVideoInfoTag* tag{item.GetVideoInfoTag()};
+      if (tag->HasVideoVersions())
+      {
+        // See if movie already in library
+        CFileItemList items;
+        using enum CVideoDatabase::MatchingMask;
+        m_database.GetSameVideoItems(item, items, UniqueId | (bDirNames ? Path : 0));
+        if (!items.IsEmpty())
+        {
+          // Movie already exists
+          movieId = items[0]->GetVideoInfoTag()->m_iDbId;
+          CLog::LogF(LOGDEBUG,
+                     "Movie '{}' already exists in the library as id {} - adding as version",
+                     tag->GetTitle(), movieId);
 
-      if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
-        if (!AddSet(pItem->GetVideoInfoTag()->m_set))
-          return InfoRet::INFO_ERROR;
-      movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
+          // Add as version
+          tag->m_iDbId = movieId;
+          if (AddVideo(&item, nullptr, bDirNames, true, nullptr, false,
+                       ContentType::MOVIE_VERSIONS) < 0)
+            return InfoRet::INFO_ERROR;
+        }
+      }
+
+      // Existing movie cannot be found or is not version - add it
       if (movieId < 0)
-        return InfoRet::INFO_ERROR;
+      {
+        movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
+        if (movieId < 0)
+          return InfoRet::INFO_ERROR;
 
-      // Set version (AddVideo() ultimately uses CVideoDatabase::AddNewMovie() which defaults to standard version)
-      m_database.SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
+        // Set version (AddVideo() ultimately uses CVideoDatabase::AddNewMovie() which defaults to standard version)
+        m_database.SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
+
+        // Deal with set
+        if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
+          if (!AddSet(pItem->GetVideoInfoTag()->m_set))
+            return InfoRet::INFO_ERROR;
+      }
+
+      item.SetProperty("from_nfo", true);
 
       // Look for default version
       int defaultVersionFileId{-1};

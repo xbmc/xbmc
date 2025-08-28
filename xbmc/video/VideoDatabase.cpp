@@ -1351,8 +1351,7 @@ std::string CVideoDatabase::GetRemovableBlurayPath(std::string originalPath)
 }
 
 //********************************************************************************************************************************
-int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath,
-                               AllowNonFileNameMatch allowNonFileNameMatch)
+int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
 {
   try
   {
@@ -1383,8 +1382,7 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath,
         return -1;
     }
 
-    if (idFile == -1 && strPath != strFilenameAndPath && !isDisc &&
-        allowNonFileNameMatch == AllowNonFileNameMatch::NO_MATCH)
+    if (idFile == -1 && strPath != strFilenameAndPath && !isDisc)
       return -1;
 
     std::string strSQL;
@@ -2382,27 +2380,6 @@ std::string CVideoDatabase::GetMovieTitle(int idMovie)
     return m_pDS->fv(0).get_asString();
   else
     return "";
-}
-
-int CVideoDatabase::GetMovieIdByTitle(const std::string& title)
-{
-  try
-  {
-    if (!m_pDB || !m_pDS)
-      return -1;
-
-    m_pDS->query(PrepareSQL("SELECT idMovie from movie where c%02d = '%s'", VIDEODB_ID_TITLE,
-                            title.c_str()));
-
-    if (!m_pDS->eof())
-      return m_pDS->fv(0).get_asInt();
-    return -1;
-  }
-  catch (const std::exception& e)
-  {
-    CLog::LogF(LOGERROR, "{} failed - error {}", title, e.what());
-  }
-  return -1;
 }
 
 //********************************************************************************************************************************
@@ -4663,15 +4640,16 @@ int CVideoDatabase::GetFileIdByMovie(int idMovie)
   return idFile;
 }
 
-void CVideoDatabase::GetSameVideoItems(const CFileItem& item, CFileItemList& items)
+void CVideoDatabase::GetSameVideoItems(const CFileItem& item,
+                                       CFileItemList& items,
+                                       int matchingMask /* = UniqueId & Title */)
 {
   if (!m_pDB || !m_pDS)
     return;
 
-  std::vector<int> itemIds;
-
   int dbId = item.GetVideoInfoTag()->m_iDbId;
-  MediaType mediaType = item.GetVideoInfoTag()->m_type;
+  VideoDbContentType itemType = item.GetVideoContentType();
+  MediaType mediaType = DatabaseUtils::MediaTypeFromVideoContentType(itemType);
 
   try
   {
@@ -4681,58 +4659,110 @@ void CVideoDatabase::GetSameVideoItems(const CFileItem& item, CFileItemList& ite
     // note 2: for type 'tmdb' the same value may be used for a movie and a tv episode, only
     // distinguished by media_type.
     // @todo make the (value,type) pairs truly unique
-    m_pDS->query(
-        PrepareSQL("SELECT DISTINCT media_id "
-                   "FROM uniqueid "
-                   "WHERE (media_type, value, type) IN "
-                   "  (SELECT media_type, value, type "
-                   "  FROM uniqueid WHERE media_id = %i AND media_type = '%s' AND value != '') ",
-                   dbId, mediaType.c_str()));
-
-    while (!m_pDS->eof())
+    std::unordered_set<int> itemIds;
+    itemIds.reserve(
+        10); // Arbitrary starting size - unlikely to be more than 10 versions of a movie
+    std::string sql;
+    if (matchingMask & UniqueId)
     {
-      itemIds.emplace_back(m_pDS->fv("media_id").get_asInt());
-      m_pDS->next();
+      if (dbId >= 0)
+      {
+        sql = PrepareSQL(
+            "SELECT DISTINCT media_id "
+            "FROM uniqueid "
+            "WHERE (media_type, value, type) IN "
+            "  (SELECT media_type, value, type "
+            "  FROM uniqueid WHERE media_id = %i AND media_type = '%s' AND value != '') ",
+            dbId, mediaType.c_str());
+      }
+      else
+      {
+        // If item not yet in database then use default uniqueid in the tag
+        const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+        if (tag->HasUniqueID())
+        {
+          const std::string idType{tag->GetDefaultUniqueID()};
+          const std::string idValue{tag->GetUniqueID(idType)};
+          sql = PrepareSQL("SELECT DISTINCT media_id "
+                           "FROM uniqueid "
+                           "WHERE media_type = '%s' AND value = '%s' AND type = '%s'",
+                           mediaType.c_str(), idValue.c_str(), idType.c_str());
+        }
+      }
+      if (!sql.empty())
+      {
+        m_pDS->query(sql);
+        while (!m_pDS->eof())
+        {
+          itemIds.insert(m_pDS->fv("media_id").get_asInt());
+          m_pDS->next();
+        }
+        m_pDS->close();
+      }
     }
 
-    m_pDS->close();
-
-    VideoDbContentType itemType = item.GetVideoContentType();
-
-    // get items with same title (and year if exists) as the specified item, these are
-    // potentially different versions of the item
     if (itemType == VideoDbContentType::MOVIES)
     {
-      if (item.GetVideoInfoTag()->HasYear())
-        m_pDS->query(
-            PrepareSQL("SELECT idMovie FROM movie WHERE c%02d = '%s' AND premiered LIKE '%i%%'",
-                       VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str(),
-                       item.GetVideoInfoTag()->GetYear()));
-      else
-        m_pDS->query(
-            PrepareSQL("SELECT idMovie FROM movie WHERE c%02d = '%s' AND LENGTH(premiered) < 4",
-                       VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str()));
-
-      while (!m_pDS->eof())
+      // If movies are in folders, get all items in the same folder as well
+      if (matchingMask & Path)
       {
-        int movieId = m_pDS->fv("idMovie").get_asInt();
+        const std::string& filenameAndPath{item.GetDynPath()};
+        std::string path;
 
-        // add movieId if not already in itemIds
-        if (std::ranges::find(itemIds, movieId) == itemIds.end())
-          itemIds.emplace_back(movieId);
+        if (URIUtils::IsBDFile(filenameAndPath) || URIUtils::IsDiscImage(filenameAndPath))
+          path = URIUtils::GetBlurayPlaylistPath(filenameAndPath);
+        else
+        {
+          std::string file;
+          SplitPath(filenameAndPath, path, file);
+        }
 
-        m_pDS->next();
+        if (const int idPath{GetPathId(path)}; idPath > 0)
+        {
+          sql = PrepareSQL("SELECT idMovie FROM movie "
+                           "JOIN files ON files.idFile = movie.idFile "
+                           "WHERE files.idPath = %i",
+                           idPath);
+
+          m_pDS->query(sql);
+          while (!m_pDS->eof())
+          {
+            itemIds.insert(m_pDS->fv("idMovie").get_asInt());
+            m_pDS->next();
+          }
+          m_pDS->close();
+        }
       }
 
-      m_pDS->close();
-    }
+      // If there are movies with same title (and year if exists) as the specified item, these are
+      //  potentially different versions of the item
+      if (matchingMask & Title)
+      {
+        if (item.GetVideoInfoTag()->HasYear())
+          sql = PrepareSQL("SELECT idMovie FROM movie WHERE c%02d = '%s' AND premiered LIKE '%i%%'",
+                           VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str(),
+                           item.GetVideoInfoTag()->GetYear());
+        else
+          sql = PrepareSQL("SELECT idMovie FROM movie WHERE c%02d = '%s' AND LENGTH(premiered) < 4",
+                           VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str());
 
-    // get video item details
-    for (const auto id : itemIds)
-    {
-      auto current = std::make_shared<CFileItem>();
-      if (GetDetailsByTypeAndId(*current.get(), itemType, id))
-        items.Add(current);
+        m_pDS->query(sql);
+        while (!m_pDS->eof())
+        {
+          itemIds.insert(m_pDS->fv("idMovie").get_asInt());
+          m_pDS->next();
+        }
+
+        m_pDS->close();
+      }
+
+      // get video item details
+      for (const auto id : itemIds)
+      {
+        auto current = std::make_shared<CFileItem>();
+        if (GetDetailsByTypeAndId(*current.get(), itemType, id))
+          items.Add(current);
+      }
     }
   }
   catch (...)
