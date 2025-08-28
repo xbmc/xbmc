@@ -14,6 +14,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -319,6 +320,13 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   movie->InsertEndChild(resume);
 
   XMLUtils::SetDateTime(movie, "dateadded", m_dateAdded);
+
+  {
+    const std::string lang{GetOriginalLanguage()};
+
+    if (!lang.empty() && (tag == "movie" || tag == "tvshow"))
+      XMLUtils::SetString(movie, "originallanguage", lang);
+  }
 
   if (additionalNode)
     movie->InsertEndChild(*additionalNode);
@@ -1440,6 +1448,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   }
 
   XMLUtils::GetDateTime(movie, "dateadded", m_dateAdded);
+
+  if (XMLUtils::GetString(movie, "originallanguage", value))
+    SetOriginalLanguage(std::move(value), LanguageProcessing::PROCESSING_NORMALIZE);
 }
 
 bool CVideoInfoTag::HasStreamDetails() const
@@ -1697,10 +1708,25 @@ void CVideoInfoTag::SetOriginalTitle(std::string originalTitle)
   m_strOriginalTitle = Trim(std::move(originalTitle));
 }
 
-bool CVideoInfoTag::SetOriginalLanguage(std::string language)
+bool CVideoInfoTag::SetOriginalLanguage(std::string language, LanguageProcessing proc)
 {
-  m_originalLanguage = language;
-  return true;
+  StringUtils::Trim(language);
+
+  if (proc == LanguageProcessing::PROCESSING_NONE)
+  {
+    m_originalLanguage = language;
+    return true;
+  }
+
+  std::string normalized;
+  if (proc == LanguageProcessing::PROCESSING_NORMALIZE &&
+      g_LangCodeExpander.ConvertToISO6392B(language, normalized))
+  {
+    m_originalLanguage = normalized;
+    return true;
+  }
+
+  return false;
 }
 
 void CVideoInfoTag::SetEpisodeGuide(std::string episodeGuide)

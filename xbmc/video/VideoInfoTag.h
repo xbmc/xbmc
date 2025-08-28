@@ -158,7 +158,19 @@ public:
   void SetMPAARating(std::string mpaaRating);
   void SetFileNameAndPath(std::string fileNameAndPath);
   void SetOriginalTitle(std::string originalTitle);
-  bool SetOriginalLanguage(std::string language);
+  enum class LanguageProcessing
+  {
+    PROCESSING_NONE,
+    PROCESSING_NORMALIZE
+  };
+  /*!
+   * \brief Set the original language, with optional preprocessing.
+   * \param language[in] ISO 639-2/T language code.
+   * The preprocessing can convert from ISO 639-1, ISO 639-2/B, ISO 639-2/T or full english name string.
+   * \param proc[in] processing type
+   * \return success of the preprocessing
+   */
+  bool SetOriginalLanguage(std::string language, LanguageProcessing proc);
   void SetEpisodeGuide(std::string episodeGuide);
   void SetStatus(std::string status);
   void SetProductionCode(std::string productionCode);
