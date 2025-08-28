@@ -1697,6 +1697,12 @@ void CVideoInfoTag::SetOriginalTitle(std::string originalTitle)
   m_strOriginalTitle = Trim(std::move(originalTitle));
 }
 
+bool CVideoInfoTag::SetOriginalLanguage(std::string language)
+{
+  m_originalLanguage = language;
+  return true;
+}
+
 void CVideoInfoTag::SetEpisodeGuide(std::string episodeGuide)
 {
   if (StringUtils::StartsWith(episodeGuide, "<episodeguide"))
