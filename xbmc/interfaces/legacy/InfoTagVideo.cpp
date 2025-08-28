@@ -301,6 +301,11 @@ namespace XBMCAddon
       return infoTag->m_strOriginalTitle;
     }
 
+    String InfoTagVideo::getOriginalLanguage()
+    {
+      return infoTag->GetOriginalLanguage();
+    }
+
     String InfoTagVideo::getPremiered()
     {
       CLog::Log(LOGWARNING, "InfoTagVideo.getPremiered() is deprecated and might be removed in "
@@ -498,6 +503,12 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
       setOriginalTitleRaw(infoTag, originalTitle);
+    }
+
+    bool InfoTagVideo::setOriginalLanguage(const String& language)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+      return setOriginalLanguageRaw(infoTag, language);
     }
 
     void InfoTagVideo::setSortTitle(const String& sortTitle)
@@ -869,6 +880,17 @@ namespace XBMCAddon
     void InfoTagVideo::setOriginalTitleRaw(CVideoInfoTag* infoTag, const String& originalTitle)
     {
       infoTag->SetOriginalTitle(originalTitle);
+    }
+
+    bool InfoTagVideo::setOriginalLanguageRaw(CVideoInfoTag* infoTag, const String& language)
+    {
+      if (!infoTag->SetOriginalLanguage(language,
+                                        CVideoInfoTag::LanguageProcessing::PROCESSING_NORMALIZE))
+      {
+        CLog::LogF(LOGWARNING, "the language {} is not recognized", language);
+        return false;
+      }
+      return true;
     }
 
     void InfoTagVideo::setSortTitleRaw(CVideoInfoTag* infoTag, const String& sortTitle)
