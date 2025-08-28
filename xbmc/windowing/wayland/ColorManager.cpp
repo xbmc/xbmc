@@ -250,6 +250,12 @@ CColorManager::CColorManager(CConnection& connection)
   registry.RequestSingleton(m_colorManager, 1, 1, false);
   registry.Bind();
 
+  if (!m_colorManager)
+  {
+    CLog::Log(LOGINFO, "Color management protocol not supported");
+    return;
+  }
+
   m_colorManager.on_supported_intent() = [&](wayland::color_manager_v1_render_intent intent)
   {
     CLog::Log(LOGDEBUG, "Supported render intent: {}", intent);
