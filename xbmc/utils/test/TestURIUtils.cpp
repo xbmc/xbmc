@@ -735,7 +735,6 @@ constexpr URLEncodings InvalidEncodingTestData[] = {
 
     // Incomplete or Invalid encoding recovers to decode future characters
     {"% ", "%%20"},
-    {"% ", "%%20"},
     {"%% ", "%%%20"},
     {"%; ", "%;%20"},
     {"%- ", "%-%20"},
