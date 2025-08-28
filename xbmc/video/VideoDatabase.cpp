@@ -2384,15 +2384,16 @@ std::string CVideoDatabase::GetMovieTitle(int idMovie)
     return "";
 }
 
-int CVideoDatabase::GetMovieIdByTitle(const std::string& title)
+int CVideoDatabase::GetMovieIdByTitleAndUniqueId(const std::string& title, int uniqueId) const
 {
   try
   {
     if (!m_pDB || !m_pDS)
       return -1;
 
-    m_pDS->query(PrepareSQL("SELECT idMovie from movie where c%02d = '%s'", VIDEODB_ID_TITLE,
-                            title.c_str()));
+    m_pDS->query(PrepareSQL("SELECT idMovie FROM movie_view "
+                            "WHERE c%02d = '%s' AND uniqueid_value = %i",
+                            VIDEODB_ID_TITLE, title.c_str(), uniqueId));
 
     if (!m_pDS->eof())
       return m_pDS->fv(0).get_asInt();
