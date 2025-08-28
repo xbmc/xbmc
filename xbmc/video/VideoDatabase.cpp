@@ -122,7 +122,7 @@ void CVideoDatabase::CreateTables()
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     columns += StringUtils::Format(",c{:02} text", i);
 
-  columns += ", idSet integer, userrating integer, premiered text)";
+  columns += ", idSet integer, userrating integer, premiered text, originalLanguage text)";
   m_pDS->exec(columns);
 
   CLog::Log(LOGINFO, "create actor table");
@@ -146,7 +146,7 @@ void CVideoDatabase::CreateTables()
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     columns += StringUtils::Format(",c{:02} text", i);
 
-  columns += ", userrating integer, duration INTEGER)";
+  columns += ", userrating integer, duration INTEGER, originalLanguage text)";
   m_pDS->exec(columns);
 
   CLog::Log(LOGINFO, "create episode table");
@@ -404,6 +404,7 @@ void CVideoDatabase::CreateViews()
       "  tvshow.c%02d AS studio,"
       "  tvshow.c%02d AS premiered,"
       "  tvshow.c%02d AS mpaa,"
+      "  tvshow.originalLanguage, "
       "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
       "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
       "  bookmark.playerState AS playerState, "
@@ -2889,6 +2890,13 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       sql += PrepareSQL(", premiered = '%s'", details.GetPremiered().GetAsDBDate().c_str());
     else
       sql += PrepareSQL(", premiered = '%i'", details.GetYear());
+    {
+      const std::string lang{details.GetOriginalLanguage()};
+      if (lang.size() > 0)
+        sql += PrepareSQL(", originalLanguage = '%s'", lang.c_str());
+      else
+        sql += ", originalLanguage = NULL";
+    }
     sql += PrepareSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql);
 
@@ -3235,6 +3243,13 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
     sql += PrepareSQL(", duration = %i", details.GetDuration());
   else
     sql += ", duration = NULL";
+  {
+    const std::string lang{details.GetOriginalLanguage()};
+    if (lang.size() > 0)
+      sql += PrepareSQL(", originalLanguage = '%s'", lang.c_str());
+    else
+      sql += ", originalLanguage = NULL";
+  }
   sql += PrepareSQL(" WHERE idShow=%i", idTvShow);
   if (ExecuteQuery(sql))
   {
@@ -5067,6 +5082,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
     details.SetYear(record->at(VIDEODB_DETAILS_MOVIE_PREMIERED).get_asInt());
   else
     details.SetPremieredFromDBDate(premieredString);
+  details.SetOriginalLanguage(record->at(VIDEODB_DETAILS_MOVIE_ORIGINAL_LANGUAGE).get_asString());
 
   if (getDetails)
   {
@@ -5165,6 +5181,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
                     record->at(VIDEODB_DETAILS_TVSHOW_RATING_TYPE).get_asString(), true);
   details.SetUniqueID(record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_VALUE).get_asString(), record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_TYPE).get_asString(), true);
   details.SetDuration(record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt());
+  details.SetOriginalLanguage(record->at(VIDEODB_DETAILS_TVSHOW_ORIGINAL_LANGUAGE).get_asString());
 
   //! @todo videotag member + guiinfo int needed?
   //! -- Currently not needed; having it available as item prop seems sufficient for skinning
@@ -5259,6 +5276,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_genre = StringUtils::Split(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_GENRE).get_asString(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   details.m_studio = StringUtils::Split(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   details.SetPremieredFromDBDate(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString());
+  details.SetOriginalLanguage(
+      record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ORIGINAL_LANGUAGE).get_asString());
 
   details.SetResumePoint(record->at(VIDEODB_DETAILS_EPISODE_RESUME_TIME).get_asInt(),
                          record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt(),
@@ -7239,11 +7258,17 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE seasons ADD plot TEXT");
   }
+
+  if (iVersion < 139)
+  {
+    m_pDS->exec("ALTER TABLE movie ADD originalLanguage TEXT");
+    m_pDS->exec("ALTER TABLE tvshow ADD originalLanguage TEXT");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 138;
+  return 139;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
