@@ -164,7 +164,7 @@ public:
   void SetProtocolOption(const std::string &key, const std::string &value);
   void RemoveProtocolOption(const std::string &key);
 
-  bool HasExtension(const std::string& strExtensions) const;
+  bool HasExtension(std::string_view extensions) const;
   std::string GetExtension() const;
   bool IsStack() const;
   bool IsMultiPath() const;
