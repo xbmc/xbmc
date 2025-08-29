@@ -18,71 +18,37 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 using namespace KODI::GUILIB;
 
-CGUIIncludes::CGUIIncludes()
-{
-  m_constantAttributes.insert("x");
-  m_constantAttributes.insert("y");
-  m_constantAttributes.insert("width");
-  m_constantAttributes.insert("height");
-  m_constantAttributes.insert("center");
-  m_constantAttributes.insert("max");
-  m_constantAttributes.insert("min");
-  m_constantAttributes.insert("w");
-  m_constantAttributes.insert("h");
-  m_constantAttributes.insert("time");
-  m_constantAttributes.insert("acceleration");
-  m_constantAttributes.insert("delay");
-  m_constantAttributes.insert("start");
-  m_constantAttributes.insert("end");
-  m_constantAttributes.insert("center");
-  m_constantAttributes.insert("border");
-  m_constantAttributes.insert("repeat");
+static constexpr std::array<std::string_view, 16> CONSTANT_ATTRIBUTES = {
+    "acceleration", "border", "center", "delay", "end", "h",     "height", "max",
+    "min",          "repeat", "start",  "time",  "w",   "width", "x",      "y",
+};
+static_assert(std::ranges::is_sorted(CONSTANT_ATTRIBUTES));
 
-  m_constantNodes.insert("posx");
-  m_constantNodes.insert("posy");
-  m_constantNodes.insert("left");
-  m_constantNodes.insert("centerleft");
-  m_constantNodes.insert("right");
-  m_constantNodes.insert("centerright");
-  m_constantNodes.insert("top");
-  m_constantNodes.insert("centertop");
-  m_constantNodes.insert("bottom");
-  m_constantNodes.insert("centerbottom");
-  m_constantNodes.insert("width");
-  m_constantNodes.insert("height");
-  m_constantNodes.insert("offsetx");
-  m_constantNodes.insert("offsety");
-  m_constantNodes.insert("textoffsetx");
-  m_constantNodes.insert("textoffsety");
-  m_constantNodes.insert("textwidth");
-  m_constantNodes.insert("spinposx");
-  m_constantNodes.insert("spinposy");
-  m_constantNodes.insert("spinwidth");
-  m_constantNodes.insert("spinheight");
-  m_constantNodes.insert("radioposx");
-  m_constantNodes.insert("radioposy");
-  m_constantNodes.insert("radiowidth");
-  m_constantNodes.insert("radioheight");
-  m_constantNodes.insert("sliderwidth");
-  m_constantNodes.insert("sliderheight");
-  m_constantNodes.insert("itemgap");
-  m_constantNodes.insert("bordersize");
-  m_constantNodes.insert("timeperimage");
-  m_constantNodes.insert("fadetime");
-  m_constantNodes.insert("pauseatend");
-  m_constantNodes.insert("depth");
-  m_constantNodes.insert("movement");
-  m_constantNodes.insert("focusposition");
+static constexpr std::array<std::string_view, 35> CONSTANT_NODES = {
+    "bordersize",  "bottom",     "centerbottom",  "centerleft", "centerright", "centertop",
+    "depth",       "fadetime",   "focusposition", "height",     "itemgap",     "left",
+    "movement",    "offsetx",    "offsety",       "pauseatend", "posx",        "posy",
+    "radioheight", "radioposx",  "radioposy",     "radiowidth", "right",       "sliderheight",
+    "sliderwidth", "spinheight", "spinposx",      "spinposy",   "spinwidth",   "textoffsetx",
+    "textoffsety", "textwidth",  "timeperimage",  "top",        "width",
+};
+static_assert(std::ranges::is_sorted(CONSTANT_NODES));
 
-  m_expressionAttributes.insert("condition");
+static constexpr std::string_view EXPRESSION_ATTRIBUTE = "condition";
 
-  m_expressionNodes.insert("visible");
-  m_expressionNodes.insert("enable");
-  m_expressionNodes.insert("usealttexture");
-  m_expressionNodes.insert("selected");
-}
+static constexpr std::array<std::string_view, 4> EXPRESSION_NODES = {
+    "enable",
+    "selected",
+    "usealttexture",
+    "visible",
+};
+static_assert(std::ranges::is_sorted(EXPRESSION_NODES));
+
+CGUIIncludes::CGUIIncludes() = default;
 
 CGUIIncludes::~CGUIIncludes() = default;
 
@@ -147,7 +113,7 @@ void CGUIIncludes::LoadDefaults(const TiXmlElement *node)
   {
     const char *type = child->Attribute("type");
     if (type && child->FirstChild())
-      m_defaults.insert(std::make_pair(type, *child));
+      m_defaults.try_emplace(type, *child);
 
     child = child->NextSiblingElement("default");
   }
@@ -163,7 +129,7 @@ void CGUIIncludes::LoadExpressions(const TiXmlElement *node)
   {
     const char *tagName = child->Attribute("name");
     if (tagName && child->FirstChild())
-      m_expressions.insert(std::make_pair(tagName, "[" + child->FirstChild()->ValueStr() + "]"));
+      m_expressions.try_emplace(tagName, "[" + child->FirstChild()->ValueStr() + "]");
 
     child = child->NextSiblingElement("expression");
   }
@@ -180,7 +146,7 @@ void CGUIIncludes::LoadConstants(const TiXmlElement *node)
   {
     const char *tagName = child->Attribute("name");
     if (tagName && child->FirstChild())
-      m_constants.insert(std::make_pair(tagName, child->FirstChild()->ValueStr()));
+      m_constants.try_emplace(tagName, child->FirstChild()->ValueStr());
 
     child = child->NextSiblingElement("constant");
   }
@@ -196,7 +162,7 @@ void CGUIIncludes::LoadVariables(const TiXmlElement *node)
   {
     const char *tagName = child->Attribute("name");
     if (tagName && child->FirstChild())
-      m_skinvariables.insert(std::make_pair(tagName, *child));
+      m_skinvariables.try_emplace(tagName, *child);
 
     child = child->NextSiblingElement("variable");
   }
@@ -224,7 +190,7 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
       if (haveParamTags && !definitionTag)
         CLog::Log(LOGWARNING, "Skin has invalid include definition: {}", tagName);
       else
-        m_includes.insert({ tagName, { *includeBody, std::move(defaultParams) } });
+        m_includes.try_emplace(tagName, std::make_pair(*includeBody, std::move(defaultParams)));
     }
     else if (child->Attribute("file"))
     {
@@ -246,11 +212,11 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
 
 void CGUIIncludes::FlattenExpressions()
 {
-  for (auto& expression : m_expressions)
+  std::vector<std::string> resolved(1);
+  for (auto& [key, value] : m_expressions)
   {
-    std::vector<std::string> resolved = std::vector<std::string>();
-    resolved.push_back(expression.first);
-    FlattenExpression(expression.second, resolved);
+    resolved[0] = key;
+    FlattenExpression(value, resolved);
   }
 }
 
@@ -358,7 +324,7 @@ void CGUIIncludes::ResolveConstants(TiXmlElement *node)
 
   TiXmlNode *child = node->FirstChild();
   if (child && child->Type() == TiXmlNode::TINYXML_TEXT &&
-      m_constantNodes.contains(node->ValueStr()))
+      std::ranges::binary_search(CONSTANT_NODES, node->ValueStr()))
   {
     child->SetValue(ResolveConstant(child->ValueStr()));
   }
@@ -367,7 +333,7 @@ void CGUIIncludes::ResolveConstants(TiXmlElement *node)
     TiXmlAttribute *attribute = node->FirstAttribute();
     while (attribute)
     {
-      if (m_constantAttributes.contains(attribute->Name()))
+      if (std::ranges::binary_search(CONSTANT_ATTRIBUTES, attribute->Name()))
         attribute->SetValue(ResolveConstant(attribute->ValueStr()));
 
       attribute = attribute->Next();
@@ -382,7 +348,7 @@ void CGUIIncludes::ResolveExpressions(TiXmlElement *node)
 
   TiXmlNode *child = node->FirstChild();
   if (child && child->Type() == TiXmlNode::TINYXML_TEXT &&
-      m_expressionNodes.contains(node->ValueStr()))
+      std::ranges::binary_search(EXPRESSION_NODES, node->ValueStr()))
   {
     child->SetValue(ResolveExpressions(child->ValueStr()));
   }
@@ -391,7 +357,7 @@ void CGUIIncludes::ResolveExpressions(TiXmlElement *node)
     TiXmlAttribute *attribute = node->FirstAttribute();
     while (attribute)
     {
-      if (m_expressionAttributes.contains(attribute->Name()))
+      if (EXPRESSION_ATTRIBUTE == attribute->Name())
         attribute->SetValue(ResolveExpressions(attribute->ValueStr()));
 
       attribute = attribute->Next();
@@ -677,7 +643,7 @@ std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
   std::vector<std::string> values = StringUtils::Split(constant, ",");
   for (auto& i : values)
   {
-    std::map<std::string, std::string>::const_iterator it = m_constants.find(i);
+    const auto it = m_constants.find(i);
     if (it != m_constants.end())
       i = it->second;
   }
@@ -687,19 +653,21 @@ std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
 std::string CGUIIncludes::ResolveExpressions(const std::string &expression) const
 {
   std::string work(expression);
-  GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(work, "EXP", [&](const std::string &str) -> std::string {
-    std::map<std::string, std::string>::const_iterator it = m_expressions.find(str);
-    if (it != m_expressions.end())
-      return it->second;
-    return "";
-  });
+  GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(work, "EXP",
+                                                          [&](const std::string& str) -> std::string
+                                                          {
+                                                            const auto it = m_expressions.find(str);
+                                                            if (it != m_expressions.end())
+                                                              return it->second;
+                                                            return "";
+                                                          });
 
   return work;
 }
 
 const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const std::string& name, int context)
 {
-  std::map<std::string, TiXmlElement>::const_iterator it = m_skinvariables.find(name);
+  const auto it = m_skinvariables.find(name);
   if (it != m_skinvariables.end())
     return INFO::CSkinVariable::CreateFromXML(it->second, context);
   return NULL;
