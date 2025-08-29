@@ -4029,7 +4029,7 @@ void CVideoDatabase::GetSameVideoItems(const CFileItem& item, CFileItemList& ite
                             "FROM uniqueid "
                             "WHERE (media_type, value, type) IN "
                             "  (SELECT media_type, value, type "
-                            "  FROM uniqueid WHERE media_id = %i AND media_type = '%s') ",
+                            "  FROM uniqueid WHERE media_id = %i AND media_type = '%s' AND value != '') ",
                             dbId, mediaType.c_str()));
 
     while (!m_pDS->eof())
