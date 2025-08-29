@@ -437,6 +437,8 @@ protected:
    */
   bool SaveRatings(TiXmlNode* node) const;
 
+  bool m_updateSetOverview{true};
+
 private:
   /* \brief Parse our native XML format for video info.
    See Load for a description of the available tag types.
@@ -462,6 +464,5 @@ private:
   bool m_hasVideoExtras{false};
   bool m_isDefaultVideoVersion{false};
 
-  bool m_updateSetOverview{true};
   bool m_override{false};
 };
