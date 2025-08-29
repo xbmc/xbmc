@@ -43,9 +43,9 @@ constexpr auto ffmpegToWaylandTFMap =
             {AVCOL_TRC_BT2020_10,    wayland::color_manager_v1_transfer_function::bt1886},
             {AVCOL_TRC_BT2020_12,    wayland::color_manager_v1_transfer_function::bt1886},
             {AVCOL_TRC_SMPTE2084,    wayland::color_manager_v1_transfer_function::st2084_pq},
-            {AVCOL_TRC_SMPTEST2084,  wayland::color_manager_v1_transfer_function::st2084_pq},
+          //{AVCOL_TRC_SMPTEST2084,  alias of AVCOL_TRC_SMPTE2084},
             {AVCOL_TRC_SMPTE428,     wayland::color_manager_v1_transfer_function::st428},
-            {AVCOL_TRC_SMPTEST428_1, wayland::color_manager_v1_transfer_function::st428},
+          //{AVCOL_TRC_SMPTEST428_1, alias of AVCOL_TRC_SMPTE428},
             {AVCOL_TRC_ARIB_STD_B67, wayland::color_manager_v1_transfer_function::hlg},
           //{AVCOL_TRC_NB,           not needed}
         } // clang-format on
@@ -76,7 +76,7 @@ constexpr auto ffmpegtoWaylandPrimariesMap =
           {AVCOL_PRI_FILM,         wayland::color_manager_v1_primaries::generic_film},
           {AVCOL_PRI_BT2020,       wayland::color_manager_v1_primaries::bt2020},
           {AVCOL_PRI_SMPTE428,     wayland::color_manager_v1_primaries::cie1931_xyz},
-          {AVCOL_PRI_SMPTEST428_1, wayland::color_manager_v1_primaries::cie1931_xyz},
+        //{AVCOL_PRI_SMPTEST428_1, alias of AVCOL_PRI_SMPTE428},
           {AVCOL_PRI_SMPTE431,     wayland::color_manager_v1_primaries::dci_p3},
           {AVCOL_PRI_SMPTE432,     wayland::color_manager_v1_primaries::display_p3},
         //{AVCOL_PRI_EBU3213,      ???},
