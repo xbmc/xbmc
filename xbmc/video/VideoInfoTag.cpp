@@ -120,22 +120,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(movie, "showtitle", m_strShowTitle);
   if (!m_strSortTitle.empty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
-  if (!m_ratings.empty())
-  {
-    TiXmlElement ratings("ratings");
-    for (const auto& [name, value] : m_ratings)
-    {
-      TiXmlElement rating("rating");
-      rating.SetAttribute("name", name.c_str());
-      XMLUtils::SetFloat(&rating, "value", value.rating);
-      XMLUtils::SetInt(&rating, "votes", value.votes);
-      rating.SetAttribute("max", 10);
-      if (name == m_strDefaultRating)
-        rating.SetAttribute("default", "true");
-      ratings.InsertEndChild(rating);
-    }
-    movie->InsertEndChild(ratings);
-  }
+
+  if (!SaveRatings(movie))
+    return false;
+
   XMLUtils::SetInt(movie, "userrating", m_iUserRating);
 
   if (m_EpBookmark.timeInSeconds > 0)
@@ -357,6 +345,31 @@ bool CVideoInfoTag::SaveUniqueId(TiXmlNode* node) const
   return true;
 }
 
+bool CVideoInfoTag::SaveRatings(TiXmlNode* node) const
+{
+  if (!m_ratings.empty())
+  {
+    TiXmlElement ratings("ratings");
+    for (const auto& [name, value] : m_ratings)
+    {
+      TiXmlElement rating("rating");
+      rating.SetAttribute("name", name.c_str());
+      if (nullptr == XMLUtils::SetFloat(&rating, "value", value.rating))
+        return false;
+      if (nullptr == XMLUtils::SetInt(&rating, "votes", value.votes))
+        return false;
+      rating.SetAttribute("max", 10);
+      if (name == m_strDefaultRating)
+        rating.SetAttribute("default", "true");
+      if (nullptr == ratings.InsertEndChild(rating))
+        return false;
+    }
+    if (nullptr == node->InsertEndChild(ratings))
+      return false;
+  }
+  return true;
+}
+
 bool CVideoInfoTag::Load(const TiXmlElement *element, bool append, bool prioritise)
 {
   if (!element)
@@ -453,8 +466,6 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
     m_ratings = other.m_ratings;
     m_strDefaultRating = other.m_strDefaultRating;
   }
-  if (other.m_iIdRating != -1)
-    m_iIdRating = other.m_iIdRating;
   if (other.m_iUserRating)
     m_iUserRating = other.m_iUserRating;
 
@@ -1035,7 +1046,6 @@ std::string CVideoInfoTag::GetCast(const std::string& separator,
 void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 {
   std::string value;
-  float fValue;
 
   if (StringUtils::ToLower(XMLUtils::GetAttribute(movie, "override")) == "true")
     SetOverride(true);
@@ -1076,19 +1086,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
           (child->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
         m_strDefaultRating = name;
     }
-  }
-  else if (XMLUtils::GetFloat(movie, "rating", fValue))
-  {
-    CRating r(fValue, 0);
-    if (XMLUtils::GetString(movie, "votes", value))
-      r.votes = StringUtils::ReturnDigits(value);
-    int max_value = 10;
-    const TiXmlElement* rElement = movie->FirstChildElement("rating");
-    if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
-      r.rating = r.rating / static_cast<float>(max_value) *
-                 10.0f; // Normalise the Movie Rating to between 1 and 10
-    SetRating(r, "default");
-    m_strDefaultRating = "default";
   }
   XMLUtils::GetInt(movie, "userrating", m_iUserRating);
 

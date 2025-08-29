@@ -8,6 +8,7 @@
 
 #include "NfoUtils.h"
 
+#include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -64,11 +65,59 @@ bool ConvertIdToUniqueId(TiXmlElement* root)
   return true;
 }
 
+// When there are no "ratings" tags, convert <rating max="zzz">xxx</rating><votes>yyy</votes> tags to
+// <ratings><rating max="zzz"><value>xxx</value><votes>yyy</votes></rating></ratings>
+// All <rating> and <votes> tags are removed regardless.
+bool ConvertRating(TiXmlElement* root)
+{
+  const bool hasRatings = (nullptr != root->FirstChildElement("ratings"));
+
+  TiXmlElement* ratingElement = root->FirstChildElement("rating");
+
+  if (!hasRatings && ratingElement != nullptr)
+  {
+    // Extract the information
+    const char* rating = ratingElement->FirstChild()->Value();
+
+    std::optional<int> votes;
+    std::string value;
+    if (XMLUtils::GetString(root, "votes", value))
+      votes = StringUtils::ReturnDigits(value);
+
+    std::string maxValue;
+    ratingElement->QueryStringAttribute("max", &maxValue);
+
+    // Create new node
+    TiXmlElement newRating("rating");
+    if (!maxValue.empty())
+      newRating.SetAttribute("max", maxValue);
+    XMLUtils::SetString(&newRating, "value", rating);
+    if (votes.has_value())
+      XMLUtils::SetInt(&newRating, "votes", votes.value());
+
+    TiXmlElement newRatings("ratings");
+    newRatings.InsertEndChild(newRating);
+
+    root->InsertEndChild(newRatings);
+  }
+
+  for (TiXmlNode* node = ratingElement; node != nullptr;)
+    node = XMLUtils::RemoveAndReturnNextSibling(node, "rating");
+
+  for (TiXmlNode* node = root->FirstChildElement("votes"); node != nullptr;)
+    node = XMLUtils::RemoveAndReturnNextSibling(node, "votes");
+
+  return true;
+}
+
 bool UpgradeMovie(TiXmlElement* root, int currentVersion)
 {
   if (currentVersion < 1)
   {
     if (!ConvertIdToUniqueId(root))
+      return false;
+
+    if (!ConvertRating(root))
       return false;
   }
   return true;
@@ -80,6 +129,9 @@ bool UpgradeTvShow(TiXmlElement* root, int currentVersion)
   {
     if (!ConvertIdToUniqueId(root))
       return false;
+
+    if (!ConvertRating(root))
+      return false;
   }
   return true;
 }
@@ -90,6 +142,9 @@ bool UpgradeEpisodeDetails(TiXmlElement* root, int currentVersion)
   {
     if (!ConvertIdToUniqueId(root))
       return false;
+
+    if (!ConvertRating(root))
+      return false;
   }
   return true;
 }
@@ -99,6 +154,9 @@ bool UpgradeMusicVideos(TiXmlElement* root, int currentVersion)
   if (currentVersion < 1)
   {
     if (!ConvertIdToUniqueId(root))
+      return false;
+
+    if (!ConvertRating(root))
       return false;
   }
   return true;

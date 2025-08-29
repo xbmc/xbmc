@@ -21,6 +21,7 @@ class CVideoInfoTagTest : public CVideoInfoTag
 public:
   bool CallSaveTvShowSeasons(TiXmlNode* node) { return SaveTvShowSeasons(node); }
   bool CallSaveUniqueId(TiXmlNode* node) { return SaveUniqueId(node); }
+  bool CallSaveRatings(TiXmlNode* node) { return SaveRatings(node); }
 };
 
 TEST(TestVideoInfoTag, ReadTVShowSeasons)
@@ -131,6 +132,85 @@ TEST(TestVideoInfoTag, SaveUniqueId)
 
   CXBMCTinyXML xmlDoc;
   details.CallSaveUniqueId(&xmlDoc);
+
+  //! @todo compare in TinyXml representation. Less sensitive to formatting (indentation, carriage returns...)
+  TiXmlPrinter printer;
+  xmlDoc.Accept(&printer);
+  std::string result = printer.Str();
+
+  EXPECT_EQ(result, expectedXml);
+}
+
+TEST(TestVideoInfoTag, LoadRatings)
+{
+  const std::string document =
+      R"(<tvshow version="1">
+         <ratings>
+           <rating name="foo" max="10" default="true">
+             <value>8.64</value>
+             <votes>123</votes>
+           </rating>
+           <rating name="bar" max="20">
+             <value>8.64</value>
+             <votes>234</votes>
+           </rating>
+         </ratings>
+       </tvshow>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+
+  EXPECT_EQ(details.GetDefaultRating(), "foo");
+
+  EXPECT_EQ(details.GetRating("foo"), CRating(8.64f, 123));
+  EXPECT_EQ(details.GetRating("bar"), CRating(4.32f, 234));
+}
+
+TEST(TestVideoInfoTag, LoadRatingsLegacy)
+{
+  const std::string document =
+      R"(<tvshow version="1">
+           <ratings>
+             <rating max="20">
+               <value>12</value>
+               <votes>234</votes>
+             </rating>
+           </ratings>
+         </tvshow>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+
+  EXPECT_EQ(details.GetDefaultRating(), "default");
+  EXPECT_EQ(details.GetRating("default"), CRating(6.0f, 234));
+}
+
+TEST(TestVideoInfoTag, SaveRatings)
+{
+  CVideoInfoTagTest details;
+  details.SetRating(1.23f, 1234, "foo", false);
+  details.SetRating(2.34f, 2345, "bar", true);
+
+  const std::string expectedXml = R"(<ratings>
+    <rating name="bar" max="10" default="true">
+        <value>2.340000</value>
+        <votes>2345</votes>
+    </rating>
+    <rating name="foo" max="10">
+        <value>1.230000</value>
+        <votes>1234</votes>
+    </rating>
+</ratings>
+)";
+
+  CXBMCTinyXML xmlDoc;
+  details.CallSaveRatings(&xmlDoc);
 
   //! @todo compare in TinyXml representation. Less sensitive to formatting (indentation, carriage returns...)
   TiXmlPrinter printer;
