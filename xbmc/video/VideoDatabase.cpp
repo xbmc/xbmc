@@ -1617,12 +1617,14 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
   return -1;
 }
 
-bool CVideoDatabase::AddPathToTvShow(int idShow, const std::string &path, const std::string &parentPath, const CDateTime& dateAdded /* = CDateTime() */)
+bool CVideoDatabase::AddPathToTvShow(int idShow,
+                                     const std::string& path,
+                                     const CDateTime& dateAdded)
 {
   // Check if this path is already added
   int idPath = GetPathId(path);
   if (idPath < 0)
-    idPath = AddPath(path, parentPath, GetDateAdded(path, dateAdded));
+    idPath = AddPath(path, URIUtils::GetParentPath(path), GetDateAdded(path, dateAdded));
 
   return ExecuteQuery(PrepareSQL("REPLACE INTO tvshowlinkpath(idShow, idPath) VALUES (%i,%i)", idShow, idPath));
 }
@@ -3097,12 +3099,11 @@ int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag& details) const
   return id;
 }
 
-int CVideoDatabase::SetDetailsForTvShow(
-    const std::vector<std::pair<std::string, std::string>>& paths,
-    CVideoInfoTag& details,
-    const KODI::ART::Artwork& artwork,
-    const KODI::ART::SeasonsArtwork& seasonArt,
-    int idTvShow /*= -1 */)
+int CVideoDatabase::SetDetailsForTvShow(const std::vector<std::string>& paths,
+                                        CVideoInfoTag& details,
+                                        const KODI::ART::Artwork& artwork,
+                                        const KODI::ART::SeasonsArtwork& seasonArt,
+                                        int idTvShow /*= -1 */)
 {
 
   /*
@@ -3116,7 +3117,7 @@ int CVideoDatabase::SetDetailsForTvShow(
 
   if (idTvShow < 0)
   {
-    for (const auto& [path, _] : paths)
+    for (const auto& path : paths)
     {
       idTvShow = GetTvShowId(path);
       if (idTvShow > -1)
@@ -3133,8 +3134,8 @@ int CVideoDatabase::SetDetailsForTvShow(
   }
 
   // add any paths to the tvshow
-  for (const auto& [path, parentpath] : paths)
-    AddPathToTvShow(idTvShow, path, parentpath, details.m_dateAdded);
+  for (const auto& path : paths)
+    AddPathToTvShow(idTvShow, path, details.m_dateAdded);
 
   UpdateDetailsForTvShow(idTvShow, details, artwork, seasonArt);
 

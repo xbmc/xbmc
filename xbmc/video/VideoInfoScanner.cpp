@@ -1980,9 +1980,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
         std::vector<std::string> multipath;
         if (!URIUtils::IsMultiPath(path) || !CMultiPathDirectory::GetPaths(path, multipath))
           multipath.push_back(path);
-        std::vector<std::pair<std::string, std::string> > paths;
-        for (std::vector<std::string>::const_iterator i = multipath.begin(); i != multipath.end(); ++i)
-          paths.emplace_back(*i, URIUtils::GetParentPath(*i));
 
         KODI::ART::SeasonsArtwork seasonArt;
 
@@ -1990,7 +1987,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason),
                           useLocal && !pItem->IsPlugin(), useRemoteArt);
 
-        lResult = m_database.SetDetailsForTvShow(paths, movieDetails, art, seasonArt);
+        lResult = m_database.SetDetailsForTvShow(multipath, movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = MediaTypeTvShow;
       }
