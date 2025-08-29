@@ -120,7 +120,7 @@ bool CGUIWindowMusicBase::OnBack(int actionID)
   - #GUI_MSG_WINDOW_DEINIT\n
    ...the last focused control is saved to m_iLastControl.
   - #GUI_MSG_WINDOW_INIT\n
-   ...the musicdatabase is opend and the music extensions and shares are set.
+   ...the musicdatabase is opened and the music extensions and shares are set.
    The last focused control is set.
   - #GUI_MSG_CLICKED\n
    ... the base class reacts on the following controls:\n

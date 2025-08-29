@@ -19,7 +19,7 @@ namespace KODI::ART
 using Artwork = std::map<std::string, std::string, std::less<>>;
 
 /*!
- * \brief A container for artwork for multipe seasons. key: season number, value: artwork
+ * \brief A container for artwork for multiple seasons. key: season number, value: artwork
  */
 using SeasonsArtwork = std::map<int, Artwork>;
 
