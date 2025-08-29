@@ -10,20 +10,21 @@
 
 #include "ActionIDs.h"
 #include "interfaces/builtins/Builtins.h"
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include <map>
+#include <string_view>
 
 using namespace KODI;
 using namespace ACTION;
 
 namespace
 {
-using ActionName = std::string;
+using ActionName = std::string_view;
 using ActionID = unsigned int;
 
-static const std::map<ActionName, ActionID> ActionMappings = {
+constexpr auto ActionMappings = make_map<ActionName, ActionID>({
     {"left", ACTION_MOVE_LEFT},
     {"right", ACTION_MOVE_RIGHT},
     {"up", ACTION_MOVE_UP},
@@ -261,14 +262,15 @@ static const std::map<ActionName, ActionID> ActionMappings = {
 
     // Do nothing / error action
     {"error", ACTION_ERROR},
-    {"noop", ACTION_NOOP}};
+    {"noop", ACTION_NOOP},
+});
 } // namespace
 
 void CActionTranslator::GetActions(std::vector<std::string>& actionList)
 {
   actionList.reserve(ActionMappings.size());
   for (auto& actionMapping : ActionMappings)
-    actionList.push_back(actionMapping.first);
+    actionList.emplace_back(actionMapping.first);
 }
 
 bool CActionTranslator::IsAnalog(unsigned int actionID)
