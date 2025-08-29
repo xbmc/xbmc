@@ -47,13 +47,110 @@ TEST(TestNfoUtils, UpgradeUniqueId2)
 {
   const std::string document =
       R"(<tvshow>
-         <id>64043</id>
-         <id>65048</id>
+         <id>12345</id>
          <uniqueid type="imdb">64043</uniqueid>
+         <id>23456</id>
          </tvshow>)";
 
   const std::string expectedXml = R"(<tvshow version="1">
     <uniqueid type="imdb">64043</uniqueid>
+</tvshow>
+)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  EXPECT_TRUE(CNfoUtils::Upgrade(doc.RootElement()));
+
+  //! @todo compare in TinyXml representation. Less sensitive to formatting (indentation, carriage returns...)
+  TiXmlPrinter printer;
+  doc.Accept(&printer);
+  std::string result = printer.Str();
+
+  EXPECT_EQ(result, expectedXml);
+}
+
+TEST(TestNfoUtils, UpgradeRating)
+{
+  // with all possible attributes
+  std::string document =
+      R"(<tvshow>
+           <rating max="12.34">1.23</rating>
+           <votes>234</votes>
+         </tvshow>)";
+
+  std::string expectedXml = R"(<tvshow version="1">
+    <ratings>
+        <rating max="12.34">
+            <value>1.23</value>
+            <votes>234</votes>
+        </rating>
+    </ratings>
+</tvshow>
+)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  EXPECT_TRUE(CNfoUtils::Upgrade(doc.RootElement()));
+
+  //! @todo compare in TinyXml representation. Less sensitive to formatting (indentation, carriage returns...)
+  std::string result;
+  {
+    TiXmlPrinter printer;
+    doc.Accept(&printer);
+    result = printer.Str();
+  }
+  EXPECT_EQ(result, expectedXml);
+
+  // with minimum attributes
+  document =
+      R"(<tvshow>
+           <rating>1.23</rating>
+         </tvshow>)";
+
+  expectedXml = R"(<tvshow version="1">
+    <ratings>
+        <rating>
+            <value>1.23</value>
+        </rating>
+    </ratings>
+</tvshow>
+)";
+
+  doc.Clear();
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  EXPECT_TRUE(CNfoUtils::Upgrade(doc.RootElement()));
+
+  //! @todo compare in TinyXml representation. Less sensitive to formatting (indentation, carriage returns...)
+  {
+    TiXmlPrinter printer;
+    doc.Accept(&printer);
+    result = printer.Str();
+  }
+  EXPECT_EQ(result, expectedXml);
+}
+
+TEST(TestNfoUtils, UpgradeRating2)
+{
+  // Presence of <ratings> node cancels conversion of existing <rating> or <votes> nodes.
+  const std::string document =
+      R"(<tvshow>
+           <ratings><rating max="12.34"><value>1.23</value><votes>234</votes></rating></ratings>
+           <rating max="12.34">1.23</rating>
+           <rating max="23.45">2.34</rating>
+           <votes>234</votes>
+           <votes>345</votes>
+         </tvshow>)";
+
+  const std::string expectedXml = R"(<tvshow version="1">
+    <ratings>
+        <rating max="12.34">
+            <value>1.23</value>
+            <votes>234</votes>
+        </rating>
+    </ratings>
 </tvshow>
 )";
 
