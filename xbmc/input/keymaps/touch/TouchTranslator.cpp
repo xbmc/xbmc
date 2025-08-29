@@ -11,6 +11,7 @@
 #include "input/WindowTranslator.h" //! @todo
 #include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -23,13 +24,10 @@ using namespace KEYMAP;
 
 namespace
 {
-using ActionName = std::string;
+using ActionName = std::string_view;
 using TouchCommandID = unsigned int;
-} // namespace
 
-#define TOUCH_COMMAND_NONE 0
-
-static const std::map<ActionName, TouchCommandID> TouchCommands = {
+constexpr auto TouchCommands = make_map<ActionName, TouchCommandID>({
     {"tap", ACTION_TOUCH_TAP},
     {"longpress", ACTION_TOUCH_LONGPRESS},
     {"pan", ACTION_GESTURE_PAN},
@@ -38,7 +36,11 @@ static const std::map<ActionName, TouchCommandID> TouchCommands = {
     {"swipeleft", ACTION_GESTURE_SWIPE_LEFT},
     {"swiperight", ACTION_GESTURE_SWIPE_RIGHT},
     {"swipeup", ACTION_GESTURE_SWIPE_UP},
-    {"swipedown", ACTION_GESTURE_SWIPE_DOWN}};
+    {"swipedown", ACTION_GESTURE_SWIPE_DOWN},
+});
+} // namespace
+
+#define TOUCH_COMMAND_NONE 0
 
 void CTouchTranslator::MapActions(int windowID, const tinyxml2::XMLNode* pTouch)
 {
@@ -164,10 +166,7 @@ unsigned int CTouchTranslator::TranslateTouchCommand(const tinyxml2::XMLElement*
     strTouchCommand += attrVal;
 
   // Lookup command
-  unsigned int touchCommandId = TOUCH_COMMAND_NONE;
-  auto it = TouchCommands.find(strTouchCommand);
-  if (it != TouchCommands.end())
-    touchCommandId = it->second;
+  unsigned int touchCommandId = TouchCommands.get(strTouchCommand).value_or(TOUCH_COMMAND_NONE);
 
   if (touchCommandId == TOUCH_COMMAND_NONE)
   {
