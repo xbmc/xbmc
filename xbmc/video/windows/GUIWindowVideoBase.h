@@ -124,7 +124,7 @@ protected:
 private:
   enum class ShowInfoResult
   {
-    RESULT_ERROR, // some error occured
+    RESULT_ERROR, // some error occurred
     RESULT_OK_UPDATED, // no error, data updated
     RESULT_OK_NOT_UPDATED, // no error, data not updated
   };
