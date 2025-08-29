@@ -1319,13 +1319,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     node = node->NextSiblingElement("actor");
   }
 
-  // Pre-Jarvis NFO file:
-  // <set>A set</set>
   m_updateSetOverview = false;
-  if (XMLUtils::GetString(movie, "set", value))
-    SetSet(value);
-  // Jarvis+:
-  // <set><name>A set</name><overview>A set with a number of movies...</overview></set>
   node = movie->FirstChildElement("set");
   if (node)
   {

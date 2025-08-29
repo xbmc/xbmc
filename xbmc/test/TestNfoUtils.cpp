@@ -166,3 +166,71 @@ TEST(TestNfoUtils, UpgradeRating2)
 
   EXPECT_EQ(result, expectedXml);
 }
+
+TEST(TestNfoUtils, UpgradeSet)
+{
+  // legacy-only tags
+  std::string document =
+      R"(<movie>
+           <set></set>
+           <set>set name</set>
+           <set>other set</set>
+         </movie>)";
+
+  std::string expectedXml = R"(<movie version="1">
+    <set>
+        <name>set name</name>
+    </set>
+</movie>
+)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  EXPECT_TRUE(CNfoUtils::Upgrade(doc.RootElement()));
+
+  //! @todo compare in TinyXml representation. Less sensitive to formatting (indentation, carriage returns...)
+  std::string result;
+  {
+    TiXmlPrinter printer;
+    doc.Accept(&printer);
+    result = printer.Str();
+  }
+  EXPECT_EQ(result, expectedXml);
+}
+
+TEST(TestNfoUtils, UpgradeSet2)
+{
+  // With both old and new style tags
+  std::string document =
+      R"(<movie>
+           <set>name</set>
+           <set><name>Set 1</name></set>
+           <set><name>Set 2</name></set>
+           <set>other set</set>
+         </movie>)";
+
+  std::string expectedXml = R"(<movie version="1">
+    <set>
+        <name>Set 1</name>
+    </set>
+    <set>
+        <name>Set 2</name>
+    </set>
+</movie>
+)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  EXPECT_TRUE(CNfoUtils::Upgrade(doc.RootElement()));
+
+  //! @todo compare in TinyXml representation. Less sensitive to formatting (indentation, carriage returns...)
+  std::string result;
+  {
+    TiXmlPrinter printer;
+    doc.Accept(&printer);
+    result = printer.Str();
+  }
+  EXPECT_EQ(result, expectedXml);
+}

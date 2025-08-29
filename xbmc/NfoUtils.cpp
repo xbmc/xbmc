@@ -141,6 +141,51 @@ bool ConvertRating(TiXmlElement* root)
   return true;
 }
 
+// Convert <set>Set Name</set> to <set><name>Set Name</name></set>
+// New tags (if any) are preserved and prevent the generation of a new style tag from a legacy tag.
+bool ConvertMovieSet(TiXmlElement* root)
+{
+  bool hasNewStyle{false};
+  std::string legacyName;
+  std::string dummy;
+
+  TiXmlNode* node = root->FirstChildElement("set");
+  while (node != nullptr)
+  {
+    // Identify new style <set><name>xxx</name></set>?
+    if (XMLUtils::GetString(node, "name", dummy) && !dummy.empty())
+    {
+      hasNewStyle = true;
+      // Keep and skip to next tag
+      node = node->NextSibling("set");
+      continue;
+    }
+
+    // No new style tag idenfied yet? Look for legacy <set>xxx</set> tag
+    if (!hasNewStyle)
+    {
+      const TiXmlNode* child = node->FirstChild();
+      if (child != nullptr && child->Type() == TiXmlNode::TINYXML_TEXT)
+      {
+        const std::string name = child->ValueStr();
+        if (!name.empty() && legacyName.empty())
+          legacyName = name;
+      }
+    }
+    node = XMLUtils::RemoveAndReturnNextSibling(node, "set");
+  }
+
+  // No new style tag and a legacy tag found? Create a new style tag from the legacy info.
+  if (!hasNewStyle && !legacyName.empty())
+  {
+    TiXmlElement set("set");
+    XMLUtils::SetString(&set, "name", legacyName);
+    root->InsertEndChild(set);
+  }
+
+  return true;
+}
+
 bool UpgradeMovie(TiXmlElement* root, int currentVersion)
 {
   if (currentVersion < 1)
@@ -149,6 +194,9 @@ bool UpgradeMovie(TiXmlElement* root, int currentVersion)
       return false;
 
     if (!ConvertRating(root))
+      return false;
+
+    if (!ConvertMovieSet(root))
       return false;
   }
   return true;
