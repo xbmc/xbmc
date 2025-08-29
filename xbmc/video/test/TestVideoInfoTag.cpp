@@ -317,3 +317,51 @@ TEST(TestVideoInfoTag, SaveRatings)
 
   EXPECT_EQ(result, expectedXml);
 }
+
+TEST(TestVideoInfoTag, LoadSet)
+{
+  // Legacy nfo converted to current version don't have overview, no need to test separately
+
+  std::string document = R"(<movie version="1"> <set> <name>Set 1</name> </set> </movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTagTest details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+  EXPECT_EQ(details.m_set.GetTitle(), "Set 1");
+  EXPECT_FALSE(details.m_set.GetUpdateSetOverview());
+
+  document = R"(<movie version="1"> <set> <name></name> </set> </movie>)";
+
+  doc.Clear();
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+  details.Reset();
+
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+  EXPECT_EQ(details.m_set.GetTitle(), "");
+  EXPECT_FALSE(details.m_set.GetUpdateSetOverview());
+
+  document = R"(<movie version="1"> <set> <overview>overview</overview> </set> </movie>)";
+
+  doc.Clear();
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+  details.Reset();
+
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+  EXPECT_EQ(details.m_set.GetTitle(), "");
+  EXPECT_EQ(details.m_set.GetOverview(), "");
+  EXPECT_FALSE(details.m_set.GetUpdateSetOverview());
+
+  document =
+      R"(<movie version="1"> <set> <name>Set 1</name> <overview>Overview</overview> </set> </movie>)";
+
+  doc.Clear();
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+  details.Reset();
+
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+  EXPECT_EQ(details.m_set.GetTitle(), "Set 1");
+  EXPECT_EQ(details.m_set.GetOverview(), "Overview");
+  EXPECT_TRUE(details.m_set.GetUpdateSetOverview());
+}
