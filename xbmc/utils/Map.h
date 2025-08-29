@@ -82,6 +82,7 @@ public:
     }
   }
 
+  constexpr bool contains(const Key& key) const { return find(key) != cend(); }
   constexpr size_t size() const { return Size; }
 
   constexpr auto cbegin() const { return m_map.cbegin(); }
