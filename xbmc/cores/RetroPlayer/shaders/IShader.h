@@ -34,7 +34,7 @@ public:
    * \param shaderParameters Struct with all parameters pertaining to the shader
    * \param luts Look-up textures pertaining to the shader
    * \param passIdx Index of the video shader pass
-   * \param frameCountMod Modulo applied to the frame count before sendign it to the shader
+   * \param frameCountMod Modulo applied to the frame count before sending it to the shader
    *
    * \return Returns false if creating the shader failed, true otherwise
    */

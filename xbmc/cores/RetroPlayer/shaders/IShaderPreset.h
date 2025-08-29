@@ -36,7 +36,7 @@ public:
   virtual bool ReadPresetFile(const std::string& presetPath) = 0;
 
   /*!
-   * \brief Updates state if needed and renderes the preset to the target texture
+   * \brief Updates state if needed and renders the preset to the target texture
    *
    * \param dest Coordinates of the 4 corners of the destination rectangle
    * \param fullDestSize Destination rectangle size for the fullscreen game window

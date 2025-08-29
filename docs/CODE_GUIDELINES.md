@@ -65,7 +65,7 @@
 ## 1. Motivation
 When working in a large group, the two most important values are readability and maintainability. We code for other people, not computers. To accomplish these goals, we have created a unified set of code conventions.
 
-In the repository root directory, there is a [`.clang-format`](https://github.com/xbmc/xbmc/blob/master/.clang-format) file that implements the rules as specified here. You are encouraged to run [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) on any newly created files. It is currently not recommended to do so on preexisting files because all the formatting changes will clutter your commits and pull request. Note that the version of `clang-format` needs to be at least verson 9.0.
+In the repository root directory, there is a [`.clang-format`](https://github.com/xbmc/xbmc/blob/master/.clang-format) file that implements the rules as specified here. You are encouraged to run [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) on any newly created files. It is currently not recommended to do so on preexisting files because all the formatting changes will clutter your commits and pull request. Note that the version of `clang-format` needs to be at least version 9.0.
 
 When you create a pull request, the PR build job will run `clang-format` on your commits and provide patches for any parts that don't satisfy the current `.clang-format` rules. You should apply these patches and amend your pull request accordingly.
 
