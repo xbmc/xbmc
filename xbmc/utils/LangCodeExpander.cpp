@@ -12,9 +12,11 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/i18n/TableISO3166_1.h"
 
 #include <algorithm>
 #include <array>
+#include <string_view>
 
 #define MAKECODE(a, b, c, d) \
   ((((long)(a)) << 24) | (((long)(b)) << 16) | (((long)(c)) << 8) | (long)(d))
@@ -37,15 +39,8 @@ struct ISO639
   const char* win_id;
 };
 
-struct ISO3166_1
-{
-  const char* alpha2;
-  const char* alpha3;
-};
-
 // declared as extern to allow forward declaration
 extern const std::array<ISO639, 192> LanguageCodes;
-extern const std::array<ISO3166_1, 245> RegionCodes;
 
 CLangCodeExpander::CLangCodeExpander() = default;
 
@@ -186,13 +181,10 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
       }
     }
 
-    for (const auto& codes : RegionCodes)
+    if (std::ranges::binary_search(TableISO3166_1ByAlpha3, charCode, {}, &ISO3166_1::alpha3))
     {
-      if (charCode == codes.alpha3)
-      {
-        strISO6392B = charCode;
-        return true;
-      }
+      strISO6392B = charCode;
+      return true;
     }
   }
   else if (strCharCode.size() > 3)
@@ -255,18 +247,16 @@ bool CLangCodeExpander::ConvertISO31661Alpha2ToISO31661Alpha3(const std::string&
   if (strISO31661Alpha2.length() != 2)
     return false;
 
-  std::string strLower(strISO31661Alpha2);
-  StringUtils::ToLower(strLower);
-  StringUtils::Trim(strLower);
-  for (const auto& codes : RegionCodes)
-  {
-    if (strLower == codes.alpha2)
-    {
-      strISO31661Alpha3 = codes.alpha3;
-      return true;
-    }
-  }
+  std::string lower(strISO31661Alpha2);
+  StringUtils::ToLower(lower);
+  StringUtils::Trim(lower);
 
+  auto it = std::ranges::lower_bound(TableISO3166_1, lower, {}, &ISO3166_1::alpha2);
+  if (it != TableISO3166_1.end() && it->alpha2 == lower)
+  {
+    strISO31661Alpha3 = it->alpha3;
+    return true;
+  }
   return true;
 }
 
@@ -322,13 +312,11 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
       }
     }
 
-    for (const auto& codes : RegionCodes)
+    auto it = std::ranges::lower_bound(TableISO3166_1ByAlpha3, lower, {}, &ISO3166_1::alpha3);
+    if (it != TableISO3166_1ByAlpha3.end() && it->alpha3 == lower)
     {
-      if (lower == codes.alpha3)
-      {
-        code = codes.alpha2;
-        return true;
-      }
+      code = it->alpha2;
+      return true;
     }
   }
 
@@ -1545,256 +1533,5 @@ const std::array<ISO639, 192> LanguageCodes = {{
     {"zy", "mis", NULL,
      NULL}, // Kodi intern mapping for missing "Miscellaneous languages" iso639-1 code
     {"zz", "mul", NULL, NULL} // Kodi intern mapping for missing "Multiple languages" iso639-1 code
-}};
-// clang-format on
-
-// Based on ISO 3166
-// clang-format off
-const std::array<ISO3166_1, 245> RegionCodes = {{
-    {"af", "afg"},
-    {"ax", "ala"},
-    {"al", "alb"},
-    {"dz", "dza"},
-    {"as", "asm"},
-    {"ad", "and"},
-    {"ao", "ago"},
-    {"ai", "aia"},
-    {"aq", "ata"},
-    {"ag", "atg"},
-    {"ar", "arg"},
-    {"am", "arm"},
-    {"aw", "abw"},
-    {"au", "aus"},
-    {"at", "aut"},
-    {"az", "aze"},
-    {"bs", "bhs"},
-    {"bh", "bhr"},
-    {"bd", "bgd"},
-    {"bb", "brb"},
-    {"by", "blr"},
-    {"be", "bel"},
-    {"bz", "blz"},
-    {"bj", "ben"},
-    {"bm", "bmu"},
-    {"bt", "btn"},
-    {"bo", "bol"},
-    {"ba", "bih"},
-    {"bw", "bwa"},
-    {"bv", "bvt"},
-    {"br", "bra"},
-    {"io", "iot"},
-    {"bn", "brn"},
-    {"bg", "bgr"},
-    {"bf", "bfa"},
-    {"bi", "bdi"},
-    {"kh", "khm"},
-    {"cm", "cmr"},
-    {"ca", "can"},
-    {"cv", "cpv"},
-    {"ky", "cym"},
-    {"cf", "caf"},
-    {"td", "tcd"},
-    {"cl", "chl"},
-    {"cn", "chn"},
-    {"cx", "cxr"},
-    {"co", "col"},
-    {"km", "com"},
-    {"cg", "cog"},
-    {"cd", "cod"},
-    {"ck", "cok"},
-    {"cr", "cri"},
-    {"ci", "civ"},
-    {"hr", "hrv"},
-    {"cu", "cub"},
-    {"cy", "cyp"},
-    {"cz", "cze"},
-    {"dk", "dnk"},
-    {"dj", "dji"},
-    {"dm", "dma"},
-    {"do", "dom"},
-    {"ec", "ecu"},
-    {"eg", "egy"},
-    {"sv", "slv"},
-    {"gq", "gnq"},
-    {"er", "eri"},
-    {"ee", "est"},
-    {"et", "eth"},
-    {"fk", "flk"},
-    {"fo", "fro"},
-    {"fj", "fji"},
-    {"fi", "fin"},
-    {"fr", "fra"},
-    {"gf", "guf"},
-    {"pf", "pyf"},
-    {"tf", "atf"},
-    {"ga", "gab"},
-    {"gm", "gmb"},
-    {"ge", "geo"},
-    {"de", "deu"},
-    {"gh", "gha"},
-    {"gi", "gib"},
-    {"gr", "grc"},
-    {"gl", "grl"},
-    {"gd", "grd"},
-    {"gp", "glp"},
-    {"gu", "gum"},
-    {"gt", "gtm"},
-    {"gg", "ggy"},
-    {"gn", "gin"},
-    {"gw", "gnb"},
-    {"gy", "guy"},
-    {"ht", "hti"},
-    {"hm", "hmd"},
-    {"va", "vat"},
-    {"hn", "hnd"},
-    {"hk", "hkg"},
-    {"hu", "hun"},
-    {"is", "isl"},
-    {"in", "ind"},
-    {"id", "idn"},
-    {"ir", "irn"},
-    {"iq", "irq"},
-    {"ie", "irl"},
-    {"im", "imn"},
-    {"il", "isr"},
-    {"it", "ita"},
-    {"jm", "jam"},
-    {"jp", "jpn"},
-    {"je", "jey"},
-    {"jo", "jor"},
-    {"kz", "kaz"},
-    {"ke", "ken"},
-    {"ki", "kir"},
-    {"kp", "prk"},
-    {"kr", "kor"},
-    {"kw", "kwt"},
-    {"kg", "kgz"},
-    {"la", "lao"},
-    {"lv", "lva"},
-    {"lb", "lbn"},
-    {"ls", "lso"},
-    {"lr", "lbr"},
-    {"ly", "lby"},
-    {"li", "lie"},
-    {"lt", "ltu"},
-    {"lu", "lux"},
-    {"mo", "mac"},
-    {"mk", "mkd"},
-    {"mg", "mdg"},
-    {"mw", "mwi"},
-    {"my", "mys"},
-    {"mv", "mdv"},
-    {"ml", "mli"},
-    {"mt", "mlt"},
-    {"mh", "mhl"},
-    {"mq", "mtq"},
-    {"mr", "mrt"},
-    {"mu", "mus"},
-    {"yt", "myt"},
-    {"mx", "mex"},
-    {"fm", "fsm"},
-    {"md", "mda"},
-    {"mc", "mco"},
-    {"mn", "mng"},
-    {"me", "mne"},
-    {"ms", "msr"},
-    {"ma", "mar"},
-    {"mz", "moz"},
-    {"mm", "mmr"},
-    {"na", "nam"},
-    {"nr", "nru"},
-    {"np", "npl"},
-    {"nl", "nld"},
-    {"an", "ant"},
-    {"nc", "ncl"},
-    {"nz", "nzl"},
-    {"ni", "nic"},
-    {"ne", "ner"},
-    {"ng", "nga"},
-    {"nu", "niu"},
-    {"nf", "nfk"},
-    {"mp", "mnp"},
-    {"no", "nor"},
-    {"om", "omn"},
-    {"pk", "pak"},
-    {"pw", "plw"},
-    {"ps", "pse"},
-    {"pa", "pan"},
-    {"pg", "png"},
-    {"py", "pry"},
-    {"pe", "per"},
-    {"ph", "phl"},
-    {"pn", "pcn"},
-    {"pl", "pol"},
-    {"pt", "prt"},
-    {"pr", "pri"},
-    {"qa", "qat"},
-    {"re", "reu"},
-    {"ro", "rou"},
-    {"ru", "rus"},
-    {"rw", "rwa"},
-    {"bl", "blm"},
-    {"sh", "shn"},
-    {"kn", "kna"},
-    {"lc", "lca"},
-    {"mf", "maf"},
-    {"pm", "spm"},
-    {"vc", "vct"},
-    {"ws", "wsm"},
-    {"sm", "smr"},
-    {"st", "stp"},
-    {"sa", "sau"},
-    {"sn", "sen"},
-    {"rs", "srb"},
-    {"sc", "syc"},
-    {"sl", "sle"},
-    {"sg", "sgp"},
-    {"sk", "svk"},
-    {"si", "svn"},
-    {"sb", "slb"},
-    {"so", "som"},
-    {"za", "zaf"},
-    {"gs", "sgs"},
-    {"es", "esp"},
-    {"lk", "lka"},
-    {"sd", "sdn"},
-    {"sr", "sur"},
-    {"sj", "sjm"},
-    {"sz", "swz"},
-    {"se", "swe"},
-    {"ch", "che"},
-    {"sy", "syr"},
-    {"tw", "twn"},
-    {"tj", "tjk"},
-    {"tz", "tza"},
-    {"th", "tha"},
-    {"tl", "tls"},
-    {"tg", "tgo"},
-    {"tk", "tkl"},
-    {"to", "ton"},
-    {"tt", "tto"},
-    {"tn", "tun"},
-    {"tr", "tur"},
-    {"tm", "tkm"},
-    {"tc", "tca"},
-    {"tv", "tuv"},
-    {"ug", "uga"},
-    {"ua", "ukr"},
-    {"ae", "are"},
-    {"gb", "gbr"},
-    {"us", "usa"},
-    {"um", "umi"},
-    {"uy", "ury"},
-    {"uz", "uzb"},
-    {"vu", "vut"},
-    {"ve", "ven"},
-    {"vn", "vnm"},
-    {"vg", "vgb"},
-    {"vi", "vir"},
-    {"wf", "wlf"},
-    {"eh", "esh"},
-    {"ye", "yem"},
-    {"zm", "zmb"},
-    {"zw", "zwe"}
 }};
 // clang-format on
