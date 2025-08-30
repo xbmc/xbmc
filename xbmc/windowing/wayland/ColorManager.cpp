@@ -51,18 +51,7 @@ constexpr auto ffmpegToWaylandTFMap =
         } // clang-format on
     );
 
-constexpr std::optional<wayland::color_manager_v1_transfer_function> mapFFmpegToWaylandTf(
-    AVColorTransferCharacteristic tf)
-{
-
-  auto mapped = ffmpegToWaylandTFMap.find(tf);
-  if (mapped != ffmpegToWaylandTFMap.end())
-    return mapped->second;
-  else
-    return {};
-}
-
-constexpr auto ffmpegtoWaylandPrimariesMap =
+constexpr auto ffmpegToWaylandPrimariesMap =
     make_map<AVColorPrimaries, wayland::color_manager_v1_primaries>({
         // clang-format off
         //{AVCOL_PRI_RESERVED0,    unused},
@@ -84,16 +73,6 @@ constexpr auto ffmpegtoWaylandPrimariesMap =
         //{AVCOL_PRI_NB,           unused},
         // clang-format on
     });
-
-constexpr std::optional<wayland::color_manager_v1_primaries> mapFFmpegtoWaylandPrimaries(
-    AVColorPrimaries primaries)
-{
-  const auto mapped = ffmpegtoWaylandPrimariesMap.find(primaries);
-  if (mapped != ffmpegtoWaylandPrimariesMap.end())
-    return mapped->second;
-  else
-    return {};
-}
 
 constexpr double COLOR_FACTOR = 1'000'000.0;
 constexpr double MIN_LUM_FACTOR = 10'000.0;
@@ -326,7 +305,7 @@ bool CColorManager::SetHDR(const VideoPicture* videoPicture)
   wayland::image_description_creator_params_v1_t descriptionCreator =
       m_colorManager.create_parametric_creator();
 
-  const auto transferFunction = mapFFmpegToWaylandTf(videoPicture->color_transfer);
+  const auto transferFunction = ffmpegToWaylandTFMap.get(videoPicture->color_transfer);
   if (transferFunction)
   {
     if (m_compositorTFs.IsSupported(*transferFunction))
@@ -347,7 +326,7 @@ bool CColorManager::SetHDR(const VideoPicture* videoPicture)
     return false;
   }
 
-  const auto primaries = mapFFmpegtoWaylandPrimaries(videoPicture->color_primaries);
+  const auto primaries = ffmpegToWaylandPrimariesMap.get(videoPicture->color_primaries);
   if (primaries)
   {
     if (m_compositorPrimaries.IsSupported(*primaries))
