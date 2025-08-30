@@ -41,6 +41,7 @@ public:
   void SetActive(bool active);
 
   pw_buffer* GetBuffer();
+  pw_buffer* PeekBuffer();
   void QueueBuffer();
 
   void Flush(bool drain);

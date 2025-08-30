@@ -624,6 +624,10 @@ void CAESinkPipewire::GetDelay(AEDelayStatus& status)
   if (state != PW_STREAM_STATE_STREAMING)
     return;
 
+  pw_buffer* buffer = m_stream->PeekBuffer();
+  if (buffer)
+    time.queued += buffer->size;
+
   const std::chrono::duration<double, std::ratio<1>> delay =
       PWTimeToAEDelay(time, m_format.m_sampleRate);
 

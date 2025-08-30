@@ -88,6 +88,11 @@ void CPipewireStream::SetActive(bool active)
   m_running = active;
 }
 
+pw_buffer* CPipewireStream::PeekBuffer()
+{
+  return m_buffer;
+}
+
 pw_buffer* CPipewireStream::GetBuffer()
 {
   if (!m_buffer)
