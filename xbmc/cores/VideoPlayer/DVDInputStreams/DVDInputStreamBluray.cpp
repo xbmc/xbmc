@@ -14,9 +14,11 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationStackHelper.h"
 #include "filesystem/BlurayCallback.h"
-#include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "filesystem/StackDirectory.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
 #include "settings/Settings.h"
@@ -30,9 +32,14 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
+#include <algorithm>
+#include <chrono>
 #include <functional>
 #include <limits>
 #include <memory>
+#include <ranges>
+#include <string>
+#include <vector>
 
 #include <libbluray/bluray.h>
 #include <libbluray/log_control.h>
@@ -41,7 +48,6 @@
 
 using namespace KODI;
 using namespace XFILE;
-
 using namespace std::chrono_literals;
 
 static int read_blocks(void* handle, void* buf, int lba, int num_blocks)
@@ -392,6 +398,9 @@ bool CDVDInputStreamBluray::Open()
     }
     m_clip = nullptr;
   }
+
+  // For playlist/chapter watch time
+  m_startWatchTime = std::chrono::steady_clock::now();
 
   // Process any events that occurred during opening
   while (bd_get_event(m_bd, &m_event))
@@ -1322,4 +1331,218 @@ bool CDVDInputStreamBluray::SetState(const std::string& xmlstate)
   }
 
   return true;
+}
+
+void CDVDInputStreamBluray::UpdateStack(CFileItem& item)
+{
+  auto& components{CServiceBroker::GetAppComponents()};
+  const auto& stackHelper{components.GetComponent<CApplicationStackHelper>()};
+  if (stackHelper->GetStack(item) != nullptr &&
+      stackHelper->GetStackPartNumber(item) >= stackHelper->GetKnownStackParts())
+  {
+    stackHelper->IncreaseKnownStackParts();
+
+    // Dynamically update stack for bluray://
+    if (URIUtils::IsProtocol(item.GetDynPath(), "bluray"))
+    {
+      std::chrono::milliseconds length{
+          m_titleInfo ? static_cast<int64_t>(m_titleInfo->duration / 90) : 0};
+      std::chrono::milliseconds time{stackHelper->GetStackTotalTime()};
+      stackHelper->SetStackTotalTime(time + length);
+      stackHelper->SetStackPartStartTime(item, time);
+      stackHelper->SetStackPartOffsets(item, time, time + length);
+      stackHelper->SetStackPartDynPath(item);
+      item.SetStartOffset(time.count());
+      item.SetEndOffset(time.count() + length.count());
+    }
+  }
+}
+
+void CDVDInputStreamBluray::SaveCurrentState(const SPlayerState& state,
+                                             const CStreamDetails& details)
+{
+  std::unique_lock lock(m_statesLock);
+
+  // Save stream (for DVDs and Blurays played through menu) and playlist information
+  BlurayState blurayState;
+  CBlurayStateSerializer serializer;
+  if (serializer.XMLToBlurayState(blurayState, state.player_state))
+  {
+    // Details for this playlist
+    const int playlist{blurayState.playlistId};
+    const std::chrono::steady_clock::time_point timeNow{std::chrono::steady_clock::now()};
+    const auto watchedTime{
+        std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - m_startWatchTime)};
+
+    // See if updating last playlist entry
+    if (!m_playedPlaylists.empty() && m_playedPlaylists.back().playlist == playlist)
+    {
+      // Update last playlist entry
+      auto& lastPlaylist = m_playedPlaylists.back();
+      lastPlaylist.watchedTime += watchedTime;
+      lastPlaylist.duration = std::chrono::milliseconds(static_cast<long long>(state.timeMax));
+      lastPlaylist.state = state;
+      CLog::LogF(LOGDEBUG, "Updated playlist {} - watched time {} seconds", playlist,
+                 lastPlaylist.watchedTime.count() / 1000);
+    }
+    else
+    {
+      // Update previous playlist with watched time
+      if (!m_playedPlaylists.empty())
+      {
+        auto& lastPlaylist = m_playedPlaylists.back();
+        lastPlaylist.watchedTime += watchedTime;
+        CLog::LogF(LOGDEBUG, "Updated playlist {} - watched time {} seconds", lastPlaylist.playlist,
+                   lastPlaylist.watchedTime.count() / 1000);
+      }
+      // New playlist
+      const PlaylistInformation currentPlaylistInformation{
+          .playlist = playlist,
+          .mightBeMenu = m_isInMainMenu,
+          .duration = std::chrono::milliseconds(static_cast<long long>(state.timeMax)),
+          .watchedTime = 0ms,
+          .details = details,
+          .state = state};
+      m_playedPlaylists.emplace_back(currentPlaylistInformation);
+      CLog::LogF(LOGDEBUG,
+                 "Playing playlist {} - menu {}, duration {} seconds, watched time {} seconds",
+                 playlist, currentPlaylistInformation.mightBeMenu,
+                 currentPlaylistInformation.duration.count() / 1000,
+                 currentPlaylistInformation.watchedTime.count() / 1000);
+    }
+
+    // Reset watch timer for next playlist
+    m_startWatchTime = std::chrono::steady_clock::now();
+  }
+}
+
+void CDVDInputStreamBluray::UpdateCurrentState(SPlayerState& state, CFileItem& item, bool& closed)
+{
+  std::unique_lock lock(m_statesLock);
+
+  // First add current state to the list of playlist states
+  SaveCurrentState(state, item.GetVideoInfoTag()->m_streamDetails);
+
+  if (m_playedPlaylists.empty())
+  {
+    CLog::LogF(LOGDEBUG, "Played playlists list is empty");
+    return;
+  }
+
+  // List playlists
+  for (const auto& playlist : m_playedPlaylists)
+    CLog::LogF(LOGDEBUG, "Playlist {} - menu {}, duration {} seconds, watched time {} seconds",
+               playlist.playlist, playlist.mightBeMenu, playlist.duration.count() / 1000,
+               playlist.watchedTime.count() / 1000);
+
+  // With BD-J discs often everything played through the menu is indistinguishable from the menu itself
+  // So all playlists could be tagged as mightBeMenu or there may be some pre-menu playlists that aren't
+  const auto& it{std::ranges::find_if(m_playedPlaylists, &PlaylistInformation::mightBeMenu)};
+  if (it != m_playedPlaylists.end())
+  {
+    // At least one playlist is menu
+    // Now see if any non-menu playlists after first menu playlist
+    const auto& it2{std::ranges::find_if(it, m_playedPlaylists.end(), [](const auto& playlist)
+                                         { return !playlist.mightBeMenu; })};
+
+    // If at least one playlist after first menu is not a menu
+    if (it2 != m_playedPlaylists.end())
+    {
+      // Remove all non-menu playlists (if any) before the first menu playlist
+      if (it != m_playedPlaylists.begin())
+        m_playedPlaylists.erase(m_playedPlaylists.begin(), it);
+
+      // So remove all menu playlists, as the main item will not be tagged as menu
+      std::erase_if(m_playedPlaylists, [](const auto& playlist) { return playlist.mightBeMenu; });
+    }
+  }
+
+  // Now potentially everything might be marked as a menu
+  // See if the last playlist is a menu and occurs more than once (ie. menu -> main item -> back to menu -> stopped)
+  // If so, remove that playlist
+  if (!m_playedPlaylists.empty() && m_playedPlaylists.back().mightBeMenu)
+  {
+    const int playlist{m_playedPlaylists.back().playlist};
+    if (std::ranges::count_if(m_playedPlaylists, [playlist](const PlaylistInformation& p)
+                              { return p.playlist == playlist; }) > 1)
+    {
+      // Remove all menu playlists
+      std::erase_if(m_playedPlaylists,
+                    [playlist](const PlaylistInformation& p) { return p.playlist == playlist; });
+    }
+  }
+
+  // Decide if main title ever played
+  static constexpr std::chrono::minutes MIN_PLAYLIST_DURATION{5min};
+  const bool mainTitlePlayed{
+      [playedPlaylists = m_playedPlaylists]
+      {
+        if (playedPlaylists.empty())
+          return false; // No playlists played
+        if (std::ranges::none_of(playedPlaylists, [](const PlaylistInformation& p)
+                                 { return p.duration > MIN_PLAYLIST_DURATION; }))
+          return false; // No playlists with sufficient duration
+        return true;
+      }()};
+
+  if (!mainTitlePlayed)
+  {
+    item.GetVideoInfoTag()->m_streamDetails.Reset();
+    item.SetDynPath("");
+    item.SetProperty("no_main_title", true); // Not continuing to play if in stack
+    CLog::LogF(LOGDEBUG, "No main title playlist played");
+    return;
+  }
+
+  // Find the playlist that was played the longest (of those that remain)
+  auto filteredPlaylists{m_playedPlaylists |
+                         std::views::filter([](const PlaylistInformation& p)
+                                            { return p.duration > MIN_PLAYLIST_DURATION; })};
+  const auto& it3{std::ranges::max_element(filteredPlaylists, std::less<>{},
+                                           &PlaylistInformation::watchedTime)};
+
+  // Consider if watched main playlist completely
+  const int count{
+      static_cast<int>(std::ranges::count_if(m_playedPlaylists, [&it3](const PlaylistInformation& p)
+                                             { return p.playlist == it3->playlist; }))};
+  constexpr double CLOSE_TO_END{5 * 1000.0}; // 5 seconds
+  const bool stoppedBeforeEnd{
+      [&]
+      {
+        if (count > 1)
+          return false; // If watched main playlist more than once then assume finished (as some discs repeat automatically)
+        if (m_playedPlaylists.back().playlist != it3->playlist)
+          return false; // If the main playlist is not the last playlist watched then assume main playlist watched completely
+        if (state.timeMax - state.time < CLOSE_TO_END)
+          return false; // If within 5 seconds of the end then assume watched (as sometimes slight mismatch between .time and .timeMax)
+        return true;
+      }()};
+
+  if (stoppedBeforeEnd)
+    item.SetProperty("stopped_before_end", true);
+  else
+  {
+    // Update state to show that main title finished
+    state.timeMax = state.time = it3->state.timeMax;
+    closed = false; // Feed back to VideoPlayer
+  }
+
+  item.GetVideoInfoTag()->m_streamDetails = it3->details;
+  const int playlist{it3->playlist};
+  item.GetVideoInfoTag()->m_iTrack = playlist;
+  const std::string path{item.GetDynPath()};
+  item.SetDynPath(URIUtils::GetBlurayPlaylistPath(path, playlist));
+  CLog::LogF(LOGDEBUG, "Main playlist {}", playlist);
+
+  // Update disc stack stack:// url and times if needed
+  // Need to update here (and not in OnPlayerCloseFile()) as settings are saved prior and the new stack:// path is needed
+  auto& components{CServiceBroker::GetAppComponents()};
+  const auto stackHelper{components.GetComponent<CApplicationStackHelper>()};
+  std::unique_lock stackLock(stackHelper->m_critSection);
+  std::optional<std::string> newStackedPath{stackHelper->UpdateStackAndItem(item)};
+  if (newStackedPath && !newStackedPath->empty())
+  {
+    item.SetDynPath(*newStackedPath);
+    item.SetProperty("new_stack_path", true);
+  }
 }
