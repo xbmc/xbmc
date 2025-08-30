@@ -11,6 +11,8 @@
 
 #include <algorithm>
 #include <array>
+#include <functional>
+#include <optional>
 #include <stdexcept>
 
 /*!
@@ -80,6 +82,15 @@ public:
       return std::find_if(m_map.cbegin(), m_map.cend(),
                           [&key](const auto& pair) { return pair.first == key; });
     }
+  }
+
+  std::optional<Value> get(const Key& key) const
+  {
+    auto iter = find(key);
+    if (iter != cend())
+      return iter->second;
+    else
+      return {};
   }
 
   constexpr bool contains(const Key& key) const { return find(key) != cend(); }
