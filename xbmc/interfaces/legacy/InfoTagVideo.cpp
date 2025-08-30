@@ -746,6 +746,12 @@ namespace XBMCAddon
       addAvailableArtworkRaw(infoTag, url, art_type, preview, referrer, cache, post, isgz, season);
     }
 
+    void InfoTagVideo::setAvailableFanart(const std::vector<Properties>& images)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+      setAvailableFanartRaw(infoTag, images);
+    }
+
     void InfoTagVideo::setDbIdRaw(CVideoInfoTag* infoTag, int dbId)
     {
       infoTag->m_iDbId = dbId;
@@ -1068,6 +1074,30 @@ namespace XBMCAddon
     {
       infoTag->m_strPictureURL.AddParsedUrl(url, art_type, preview, referrer, cache, post, isgz,
                                             season);
+    }
+
+    void InfoTagVideo::setAvailableFanartRaw(CVideoInfoTag* infoTag, const std::vector<Properties>& images)
+    {
+      infoTag->m_fanart.Clear();
+      for (const auto& dictionary : images)
+      {
+        std::string image;
+        std::string preview;
+        std::string colors;
+        for (const auto& it : dictionary)
+        {
+          const String& key = it.first;
+          const String& value = it.second;
+          if (key == "image")
+            image = value;
+          else if (key == "preview")
+            preview = value;
+          else if (key == "colors")
+            colors = value;
+        }
+        infoTag->m_fanart.AddFanart(image, preview, colors);
+      }
+      infoTag->m_fanart.Pack();
     }
   }
 }
