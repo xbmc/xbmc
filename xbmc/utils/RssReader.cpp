@@ -255,7 +255,7 @@ void CRssReader::GetNewsItems(tinyxml2::XMLNode* channelXmlNode, int iFeed)
           // This usually happens in right-to-left languages where they want to
           // specify in the RSS body that the text should be RTL.
           // <title>
-          //  <div dir="RTL">��� ����: ���� �� �����</div>
+          //  <div dir="RTL">פעילות הבינאום, W3C!</div>
           // </title>
           if (htmlText == "div" || htmlText == "span")
             htmlText = childNode->FirstChild()->FirstChild()->Value();
