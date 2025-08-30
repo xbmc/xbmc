@@ -695,7 +695,7 @@ public:
    \param idTvShow the database id of the tvshow if known (defaults to -1)
    \return the id of the tvshow.
    */
-  int SetDetailsForTvShow(const std::vector<std::pair<std::string, std::string>>& paths,
+  int SetDetailsForTvShow(const std::vector<std::string>& paths,
                           CVideoInfoTag& details,
                           const KODI::ART::Artwork& artwork,
                           const KODI::ART::SeasonsArtwork& seasonArt,
@@ -1411,11 +1411,10 @@ protected:
   /*! \brief Adds a path to the tvshow link table.
    \param idShow the id of the show.
    \param path the path to add.
-   \param parentPath the parent path of the path to add.
    \param dateAdded date/time when the path was added
    \return true if successfully added, false otherwise.
    */
-  bool AddPathToTvShow(int idShow, const std::string &path, const std::string &parentPath, const CDateTime& dateAdded = CDateTime());
+  bool AddPathToTvShow(int idShow, const std::string& path, const CDateTime& dateAdded);
 
   /*! \brief Check whether a show is already in the library.
    Matches on unique identifier or matching title and premiered date.
