@@ -632,7 +632,7 @@
 								<right>60</right>
 								<align>right</align>
 								<font>font30_title</font>
-								<label>$INFO[Weather.Location]</label>
+								<label>$INFO[Weather.Data(Location)]</label>
 							</control>
 							<control type="label">
 								<left>840</left>
@@ -642,7 +642,7 @@
 								<right>60</right>
 								<align>right</align>
 								<font>font14</font>
-								<label>$INFO[Weather.Conditions]</label>
+								<label>$INFO[Weather.Data(Current.Condition)]</label>
 							</control>
 							<control type="label">
 								<left>840</left>
@@ -652,7 +652,8 @@
 								<right>60</right>
 								<align>right</align>
 								<font>font14</font>
-								<label>$INFO[Weather.Temperature]</label>
+								<label>$INFO[Weather.Data(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
+								<visible>![String.IsEmpty(Weather.Data(Current.Temperature))]</visible>
 							</control>
 							<control type="grouplist">
 								<top>50</top>
@@ -662,27 +663,27 @@
 								<align>left</align>
 								<itemgap>-110</itemgap>
 								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
-									<param name="label" value="Window(weather).Property(Current.Wind)" />
+									<param name="label" value="Weather.Data(Current.Wind)" />
 									<param name="texture" value="icons/weather/wind.png" />
 									<param name="header" value="404" />
 								</include>
 								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
-									<param name="label" value="Window(weather).Property(Current.Humidity)" />
+									<param name="label" value="Weather.Data(Current.Humidity)" />
 									<param name="texture" value="icons/weather/humidity.png" />
 									<param name="header" value="406" />
 								</include>
 								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
-									<param name="label" value="Window(weather).Property(Current.Precipitation)" />
+									<param name="label" value="Weather.Data(Current.Precipitation)" />
 									<param name="texture" value="icons/weather/rain.png" />
 									<param name="header" value="33021" />
 								</include>
 								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
-									<param name="label" value="Window(weather).Property(Today.Sunrise)" />
+									<param name="label" value="Weather.Data(Today.Sunrise)" />
 									<param name="texture" value="icons/weather/sunrise.png" />
 									<param name="header" value="405" />
 								</include>
 								<include content="WeatherIconHome" condition="!String.IsEmpty(Weather.Plugin)">
-									<param name="label" value="Window(weather).Property(Today.Sunset)" />
+									<param name="label" value="Weather.Data(Today.Sunset)" />
 									<param name="texture" value="icons/weather/sunset.png" />
 									<param name="header" value="403" />
 								</include>
@@ -692,13 +693,13 @@
 							<param name="content_include" value="DailyItems" />
 							<param name="list_id" value="15200" />
 							<param name="widget_header" value="$LOCALIZE[31019]"/>
-							<param name="visible" value="!String.IsEmpty(Window(weather).Property(Daily.IsFetched))" />
+							<param name="visible" value="!String.IsEmpty(Weather.Data(Daily.IsFetched))" />
 						</include>
 						<include content="WeatherWidget" condition="!String.IsEmpty(Weather.Plugin)">
 							<param name="content_include" value="HourlyItems" />
 							<param name="list_id" value="15100" />
 							<param name="widget_header" value="$LOCALIZE[33036]"/>
-							<param name="visible" value="!String.IsEmpty(Window(weather).Property(Hourly.IsFetched))" />
+							<param name="visible" value="!String.IsEmpty(Weather.Data(Hourly.IsFetched))" />
 						</include>
 					</control>
 					<include content="ImageWidget" condition="String.IsEmpty(Weather.plugin)">
