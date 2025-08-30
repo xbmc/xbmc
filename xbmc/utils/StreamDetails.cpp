@@ -551,9 +551,11 @@ void CStreamDetails::DetermineBestStreams(void)
   m_pBestVideo = NULL;
   m_pBestAudio = NULL;
   m_pBestSubtitle = NULL;
-
+  std::string audio_language = g_langInfo.GetAudioLanguage();
+  std::string item_language;
   for (const auto &iter : m_vecItems)
   {
+    const auto& sda = static_cast<const CStreamDetailAudio&>(*iter); 
     const CStreamDetail **champion;
     switch (iter->m_eType)
     {
@@ -561,7 +563,11 @@ void CStreamDetails::DetermineBestStreams(void)
       champion = (const CStreamDetail **)&m_pBestVideo;
       break;
     case CStreamDetail::AUDIO:
-      champion = (const CStreamDetail **)&m_pBestAudio;
+      item_language = sda.m_strLanguage;
+      if (item_language == audio_language) 
+         champion = (const CStreamDetail **)&m_pBestAudio;
+      else
+         champion = NULL;
       break;
     case CStreamDetail::SUBTITLE:
       champion = (const CStreamDetail **)&m_pBestSubtitle;
