@@ -91,6 +91,8 @@ public:
   CMusicDatabase();
   ~CMusicDatabase() override;
 
+  static const char* GetDefaultBaseDBName() { return "MyMusic"; }
+
   bool Open() override;
   bool CommitTransaction() override;
   void EmptyCache();
@@ -876,7 +878,7 @@ protected:
   int GetMinSchemaVersion() const override { return 32; }
   int GetSchemaVersion() const override;
 
-  const char* GetBaseDBName() const override { return "MyMusic"; }
+  const char* GetBaseDBName() const override { return CMusicDatabase::GetDefaultBaseDBName(); }
 
 private:
   /*! \brief (Re)Create the generic database views for songs and albums

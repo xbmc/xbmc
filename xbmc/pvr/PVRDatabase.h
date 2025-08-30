@@ -40,6 +40,8 @@ namespace PVR
     CPVRDatabase() = default;
     ~CPVRDatabase() override = default;
 
+    static const char* GetDefaultBaseDBName() { return "TV"; }
+
     /*!
      * @brief Open the database.
      * @return True if it was opened successfully, false otherwise.
@@ -71,7 +73,7 @@ namespace PVR
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
-    const char* GetBaseDBName() const override { return "TV"; }
+    const char* GetBaseDBName() const override { return CPVRDatabase::GetDefaultBaseDBName(); }
 
     /*! @name Client methods */
     //@{
