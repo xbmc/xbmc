@@ -749,7 +749,7 @@ void CFileItemList::StackFolders()
           {
             // NOTE: should this be done for the CD# folders too?
             item->SetFolder(false);
-            item->SetPath(dvdPath);
+            item->SetPath(std::move(dvdPath));
             item->SetLabel2("");
             item->SetLabelPreformatted(true);
             m_sortDescription.sortBy = SortByNone; /* sorting is now broken */
@@ -907,7 +907,7 @@ void CFileItemList::StackFiles()
         {
           stackPath = CStackDirectory::ConstructStackPath(*this, stack);
         }
-        item1->SetPath(stackPath);
+        item1->SetPath(std::move(stackPath));
         // clean up list
         for (size_t k = 1; k < stack.size(); k++)
           Remove(i + 1);
