@@ -11,8 +11,6 @@
 #include "DVDClock.h"
 
 #include <string>
-#include <utility>
-#include <vector>
 
 #define VideoPlayer_AUDIO    1
 #define VideoPlayer_VIDEO    2
