@@ -84,25 +84,15 @@ void GetLocalTime(SystemTime* systemTime)
 
 int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime)
 {
-  FILETIME file{};
-  file.dwLowDateTime = fileTime->lowDateTime;
-  file.dwHighDateTime = fileTime->highDateTime;
-
   SYSTEMTIME systemTime{};
-  if (FALSE == ::FileTimeToSystemTime(&file, &systemTime))
+  if (FALSE == ::FileTimeToSystemTime(reinterpret_cast<const FILETIME*>(fileTime), &systemTime))
     return FALSE;
 
   SYSTEMTIME localSystemTime{};
   if (FALSE == ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localSystemTime))
     return FALSE;
 
-  FILETIME localFile{};
-  int ret = ::SystemTimeToFileTime(&localSystemTime, &localFile);
-
-  localFileTime->lowDateTime = localFile.dwLowDateTime;
-  localFileTime->highDateTime = localFile.dwHighDateTime;
-
-  return ret;
+  return ::SystemTimeToFileTime(&localSystemTime, reinterpret_cast<FILETIME*>(localFileTime));
 }
 
 int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
@@ -117,36 +107,19 @@ int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
   time.wSecond = systemTime->second;
   time.wMilliseconds = systemTime->milliseconds;
 
-  FILETIME file;
-  int ret = ::SystemTimeToFileTime(&time, &file);
-
-  fileTime->lowDateTime = file.dwLowDateTime;
-  fileTime->highDateTime = file.dwHighDateTime;
-
-  return ret;
+  return ::SystemTimeToFileTime(&time, reinterpret_cast<FILETIME*>(fileTime));
 }
 
 long CompareFileTime(const FileTime* fileTime1, const FileTime* fileTime2)
 {
-  FILETIME file1;
-  file1.dwLowDateTime = fileTime1->lowDateTime;
-  file1.dwHighDateTime = fileTime1->highDateTime;
-
-  FILETIME file2;
-  file2.dwLowDateTime = fileTime2->lowDateTime;
-  file2.dwHighDateTime = fileTime2->highDateTime;
-
-  return ::CompareFileTime(&file1, &file2);
+  return ::CompareFileTime(reinterpret_cast<const FILETIME*>(fileTime1),
+                           reinterpret_cast<const FILETIME*>(fileTime2));
 }
 
 int FileTimeToSystemTime(const FileTime* fileTime, SystemTime* systemTime)
 {
-  FILETIME file;
-  file.dwLowDateTime = fileTime->lowDateTime;
-  file.dwHighDateTime = fileTime->highDateTime;
-
-  SYSTEMTIME time;
-  int ret = ::FileTimeToSystemTime(&file, &time);
+  SYSTEMTIME time{};
+  int ret = ::FileTimeToSystemTime(reinterpret_cast<const FILETIME*>(fileTime), &time);
   SystemTimeToKodiTime(time, *systemTime);
 
   return ret;
@@ -154,18 +127,8 @@ int FileTimeToSystemTime(const FileTime* fileTime, SystemTime* systemTime)
 
 int LocalFileTimeToFileTime(const FileTime* localFileTime, FileTime* fileTime)
 {
-  FILETIME localFile;
-  localFile.dwLowDateTime = localFileTime->lowDateTime;
-  localFile.dwHighDateTime = localFileTime->highDateTime;
-
-  FILETIME file;
-
-  int ret = ::LocalFileTimeToFileTime(&localFile, &file);
-
-  fileTime->lowDateTime = file.dwLowDateTime;
-  fileTime->highDateTime = file.dwHighDateTime;
-
-  return ret;
+  return ::LocalFileTimeToFileTime(reinterpret_cast<const FILETIME*>(localFileTime),
+                                   reinterpret_cast<FILETIME*>(fileTime));
 }
 
 } // namespace TIME
