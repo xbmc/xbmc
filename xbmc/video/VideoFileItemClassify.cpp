@@ -35,8 +35,8 @@ bool IsDiscStub(const CFileItem& item)
     return IsDiscStub(dbItem);
   }
 
-  return URIUtils::HasExtension(item.GetPath(),
-                                CServiceBroker::GetFileExtensionProvider().GetDiscStubExtensions());
+  return item.GetURL().HasExtension(
+      CServiceBroker::GetFileExtensionProvider().GetDiscStubExtensions());
 }
 
 bool IsDVDFile(const CFileItem& item, bool bVobs /*= true*/, bool bIfos /*= true*/)
@@ -70,8 +70,8 @@ bool IsProtectedBlurayDisc(const CFileItem& item)
 
 bool IsSubtitle(const CFileItem& item)
 {
-  return URIUtils::HasExtension(item.GetPath(),
-                                CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions());
+  return item.GetURL().HasExtension(
+      CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions());
 }
 
 bool IsVideo(const CFileItem& item)
@@ -115,8 +115,8 @@ bool IsVideo(const CFileItem& item)
   //! @todo If the file is a zip file, ask the game clients if any support this
   // file before assuming it is video.
 
-  return URIUtils::HasExtension(item.GetPath(),
-                                CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
+  return item.GetURL().HasExtension(
+      CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
 }
 
 bool IsVideoAssetFile(const CFileItem& item)
