@@ -22,6 +22,8 @@
 
 using namespace XFILE;
 
+using KODI::TIME::FileTime;
+
 // check for empty string, remove trailing slash if any, convert to win32 form
 inline static std::wstring prepareWin32DirectoryName(const std::string& strPath)
 {
@@ -93,11 +95,9 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
 
     // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
-    KODI::TIME::FileTime fileTime;
-    fileTime.lowDateTime = findData.ftLastWriteTime.dwLowDateTime;
-    fileTime.highDateTime = findData.ftLastWriteTime.dwHighDateTime;
-    KODI::TIME::FileTime localTime;
-    if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
+    FileTime localTime{};
+    if (FileTimeToLocalFileTime(reinterpret_cast<FileTime*>(&findData.ftLastWriteTime),
+                                &localTime) == TRUE)
       pItem->SetDateTime(localTime);
     else
       pItem->SetDateTime(0);
