@@ -203,6 +203,10 @@ bool CWinSystemWaylandWebOS::OnAppLifecycleEvent(LSHandle* sh, LSMessage* reply)
   return true;
 }
 
+// The reported resolution is always 1080p even for 4K devices and 720p for HD devices
+// See: https://webostv.developer.lge.com/develop/specifications/app-resolution
+// So we need to adjust the reported resolution to match the actual screen resolution
+// Note: Should webOS ever change to support more resolutions we need to update this code
 void CWinSystemWaylandWebOS::UpdateResolutions()
 {
   CWinSystemWayland::UpdateResolutions();
@@ -210,14 +214,19 @@ void CWinSystemWaylandWebOS::UpdateResolutions()
   RESOLUTION_INFO& res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
   if (res.iWidth == WIDTH_1080P && res.iHeight == HEIGHT_1080P)
   {
+    // set supported video resolution to 4K for 1080p GUI resolution device
     res.iScreenHeight = SCREEN_HEIGHT_4K;
     res.iScreenWidth = SCREEN_WIDTH_4K;
   }
   else if (res.iWidth == WIDTH_720P && res.iHeight == HEIGHT_720P)
   {
+    // set supported video resolution to 1080p for 720p GUI resolution device
     res.iScreenHeight = SCREEN_HEIGHT_1080P;
     res.iScreenWidth = SCREEN_WIDTH_1080P;
   }
+  else
+    CLog::Log(LOGWARNING, "Cannot adjust resolution, due to unmapped w x h values: {} x {}",
+              res.iWidth, res.iHeight);
 }
 
 } // namespace KODI::WINDOWING::WAYLAND
