@@ -133,8 +133,6 @@ This page shows the window names, the window definition, the window ID and the s
 | Visualisation           | WINDOW_VISUALISATION                 | 12006     | MusicVisualisation.xml              |                                    |
 | Slideshow               | WINDOW_SLIDESHOW                     | 12007     | SlideShow.xml                       |                                    |
 | DialogColorPicker       | WINDOW_DIALOG_COLOR_PICKER           | 12008     | DialogColorPicker.xml               |                                    |
-| SelectVideoVersion      | WINDOW_DIALOG_SELECT_VIDEO_VERSION   | 12015     | DialogSelect.xml                    | @skinning_v21 **New window** SelectVideoVersion |
-| SelectVideoExtra        | WINDOW_DIALOG_SELECT_VIDEO_EXTRA     | 12016     | DialogSelect.xml                    | @skinning_v21 **New window** SelectVideoExtra |
 | ManageVideoVersions     | WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS  | 12004     | DialogVideoManager.xml              | @skinning_v21 **New window** ManageVideoVersions |
 | ManageVideoExtras       | WINDOW_DIALOG_MANAGE_VIDEO_EXTRAS    | 12017     | DialogVideoManager.xml              | @skinning_v21 **New window** ManageVideoExtras |
 | DialogSelectVideo       | WINDOW_DIALOG_SELECT_VIDEO_STREAM    | 12300     | DialogSelect.xml                    | @skinning_v22 **New window** DialogSelectVideo |
@@ -152,6 +150,11 @@ This page shows the window names, the window definition, the window ID and the s
 | FavouritesBrowser       | WINDOW_FAVOURITES                    | 10060     | MyFavourites.xml                    | @skinning_v20 **New window** FavouritesBrowser, replaces the old Favourites dialog.<p></p> |
 
 \section window_ids_rm Additional revision history
+
+\subsection modules_rm_windowids_v22 Kodi v22 (Piers)
+@skinning_v22 **[Removed Windows]** The following windows have been removed:
+- **SelectVideoVersion** - Window SelectVideoVersion (DialogSelect.xml with id 12015) has been removed.
+- **SelectVideoExtra** - Window SelectVideoExtra (DialogSelect.xml with id 12016) has been removed.
 
 \subsection modules_rm_windowids_v21 Kodi v21 (Omega)
 @skinning_v21 **[Removed Windows]** The following windows have been removed:
