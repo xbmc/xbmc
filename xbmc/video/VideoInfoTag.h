@@ -158,6 +158,19 @@ public:
   void SetMPAARating(std::string mpaaRating);
   void SetFileNameAndPath(std::string fileNameAndPath);
   void SetOriginalTitle(std::string originalTitle);
+  enum class LanguageProcessing
+  {
+    PROCESSING_NONE,
+    PROCESSING_NORMALIZE
+  };
+  /*!
+   * \brief Set the original language, with optional preprocessing.
+   * \param language[in] ISO 639-2/T language code.
+   * The preprocessing can convert from ISO 639-1, ISO 639-2/B, ISO 639-2/T or full english name string.
+   * \param proc[in] processing type
+   * \return success of the preprocessing
+   */
+  bool SetOriginalLanguage(std::string language, LanguageProcessing proc);
   void SetEpisodeGuide(std::string episodeGuide);
   void SetStatus(std::string status);
   void SetProductionCode(std::string productionCode);
@@ -356,6 +369,8 @@ public:
    */
   virtual bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState);
 
+  std::string GetOriginalLanguage() const { return m_originalLanguage; }
+
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
   std::vector<std::string> m_director;
@@ -433,6 +448,7 @@ private:
   std::map<std::string, std::string, std::less<>> m_uniqueIDs;
   std::string Trim(std::string&& value) const;
   std::vector<std::string> Trim(std::vector<std::string>&& items) const;
+  std::string m_originalLanguage;
 
   int m_playCount;
   CBookmark m_resumePoint;
