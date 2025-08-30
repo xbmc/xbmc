@@ -551,6 +551,8 @@ public:
   CVideoDatabase();
   ~CVideoDatabase() override;
 
+  static const char* GetDefaultBaseDBName() { return "MyVideos"; }
+
   bool Open() override;
   bool CommitTransaction() override;
 
@@ -1571,7 +1573,7 @@ private:
   int GetMinSchemaVersion() const override { return 75; }
   int GetSchemaVersion() const override;
   virtual int GetExportVersion() const { return 1; }
-  const char* GetBaseDBName() const override { return "MyVideos"; }
+  const char* GetBaseDBName() const override { return CVideoDatabase::GetDefaultBaseDBName(); }
 
   void ConstructPath(std::string& strDest,
                      const std::string& strPath,

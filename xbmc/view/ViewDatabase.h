@@ -19,6 +19,9 @@ class CViewDatabase : public CDatabase
 public:
   CViewDatabase();
   ~CViewDatabase() override;
+
+  static const char* GetDefaultBaseDBName() { return "ViewModes"; }
+
   bool Open() override;
 
   bool GetViewState(const std::string &path, int windowID, CViewState &state, const std::string &skin);
@@ -30,5 +33,5 @@ protected:
   void CreateAnalytics() override;
   void UpdateTables(int version) override;
   int GetSchemaVersion() const override { return 6; }
-  const char *GetBaseDBName() const override { return "ViewModes"; }
+  const char *GetBaseDBName() const override { return CViewDatabase::GetDefaultBaseDBName(); }
 };

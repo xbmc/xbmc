@@ -6959,5 +6959,28 @@
         }
       }
     }
+  },
+  "Database.GetDatabaseName": {
+    "type": "method",
+    "description": "Get the full database name currently in-use by its type",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "type",
+        "type": "string",
+        "enum": [
+          "addon",
+          "epg",
+          "music",
+          "pvr",
+          "texture",
+          "video",
+          "viewmode"
+        ],
+        "required": true
+      }
+    ],
+    "returns": "string"
   }
 }

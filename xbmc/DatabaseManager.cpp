@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <mutex>
 
+using namespace ADDON;
 using namespace PVR;
 
 CDatabaseManager::CDatabaseManager() :
@@ -64,7 +65,7 @@ bool CDatabaseManager::Initialize()
   m_connecting = false;
 
   return std::ranges::all_of(m_dbStatus,
-                             [](const auto& db) { return db.second == DBStatus::READY; });
+                             [](const auto& db) { return db.second.dbStatus == DBStatus::READY; });
 }
 
 bool CDatabaseManager::CanOpen(const std::string &name)
@@ -72,8 +73,39 @@ bool CDatabaseManager::CanOpen(const std::string &name)
   std::unique_lock lock(m_section);
   const auto i = m_dbStatus.find(name);
   if (i != m_dbStatus.end())
-    return i->second == DBStatus::READY;
+    return i->second.dbStatus == DBStatus::READY;
   return false; // db isn't even attempted to update yet
+}
+
+std::string CDatabaseManager::GetFullDatabaseNameByType(const std::string& dbType) const
+{
+  std::string defaultDbName;
+
+  if (dbType == "addon")
+    defaultDbName = CAddonDatabase::GetDefaultBaseDBName();
+  else if (dbType == "epg")
+    defaultDbName = CPVREpgDatabase::GetDefaultBaseDBName();
+  else if (dbType == "music")
+    defaultDbName = CMusicDatabase::GetDefaultBaseDBName();
+  else if (dbType == "pvr")
+    defaultDbName = CPVRDatabase::GetDefaultBaseDBName();
+  else if (dbType == "texture")
+    defaultDbName = CTextureDatabase::GetDefaultBaseDBName();
+  else if (dbType == "video")
+    defaultDbName = CVideoDatabase::GetDefaultBaseDBName();
+  else if (dbType == "viewmode")
+    defaultDbName = CViewDatabase::GetDefaultBaseDBName();
+
+  return GetFullDatabaseName(defaultDbName);
+}
+
+std::string CDatabaseManager::GetFullDatabaseName(const std::string& name) const
+{
+  std::unique_lock lock(m_section);
+  const auto i = m_dbStatus.find(name);
+  if (i != m_dbStatus.cend())
+    return i->second.dbFullName;
+  return {};
 }
 
 void CDatabaseManager::UpdateDatabase(CDatabase &db, DatabaseSettings *settings)
@@ -144,7 +176,10 @@ bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
 
       // yay - we have a copy of our db, now do our worst with it
       if (UpdateVersion(db, latestDb))
+      {
+        UpdateFullName(db.GetBaseDBName(), latestDb);
         return true;
+      }
 
       // update failed - loop around and see if we have another one available
       db.Close();
@@ -238,10 +273,18 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
   return bReturn;
 }
 
+void CDatabaseManager::UpdateFullName(const std::string& name, const std::string& fullName)
+{
+  std::unique_lock lock(m_section);
+  auto& entry{m_dbStatus[name]};
+  entry.dbFullName = fullName;
+}
+
 void CDatabaseManager::UpdateStatus(const std::string& name, DBStatus status)
 {
   std::unique_lock lock(m_section);
-  m_dbStatus[name] = status;
+  auto& entry{m_dbStatus[name]};
+  entry.dbStatus = status;
 }
 
 void CDatabaseManager::LocalizationChanged()

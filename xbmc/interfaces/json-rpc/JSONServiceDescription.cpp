@@ -11,6 +11,7 @@
 #include "AddonsOperations.h"
 #include "ApplicationOperations.h"
 #include "AudioLibrary.h"
+#include "DatabaseOperations.h"
 #include "FavouritesOperations.h"
 #include "FileOperations.h"
 #include "GUIOperations.h"
@@ -256,7 +257,10 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 
 // XBMC operations
   { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },
-  { "XBMC.GetInfoBooleans",                         CXBMCOperations::GetInfoBooleans }
+  { "XBMC.GetInfoBooleans",                         CXBMCOperations::GetInfoBooleans },
+
+// Database operations
+  { "Database.GetDatabaseName",                     CDatabaseOperations::GetFullDatabaseNameByType }
 };
 
 // clang-format on
