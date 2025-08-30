@@ -39,7 +39,9 @@ void CVideoPlayerWebOS::CreatePlayers()
   if (canStarfish && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                          CSettings::SETTING_VIDEOPLAYER_USESTARFISHDECODER))
   {
-    bool hasAudio = m_SelectionStreams.CountType(StreamType::AUDIO);
+    const bool hasAudio = m_SelectionStreams.CountType(StreamType::AUDIO);
+    const bool subtitlesEnabled = m_VideoPlayerVideo->IsSubtitleEnabled();
+    const double subtitleDelay = m_VideoPlayerVideo->GetSubtitleDelay();
 
     m_mediaPipelineWebOS = std::make_unique<CMediaPipelineWebOS>(
         *m_processInfo, m_renderManager, m_clock, m_messenger, m_overlayContainer, hasAudio);
@@ -48,10 +50,8 @@ void CVideoPlayerWebOS::CreatePlayers()
     m_VideoPlayerAudio =
         std::make_unique<CVideoPlayerAudioWebOS>(*m_mediaPipelineWebOS, *m_processInfo);
 
-    const CVideoSettings settings = m_processInfo->GetVideoSettings();
-    m_VideoPlayerVideo->EnableSubtitle(settings.m_SubtitleOn);
-    m_VideoPlayerVideo->SetSubtitleDelay(
-        static_cast<int>(-settings.m_SubtitleDelay * DVD_TIME_BASE));
+    m_VideoPlayerVideo->EnableSubtitle(subtitlesEnabled);
+    m_VideoPlayerVideo->SetSubtitleDelay(subtitleDelay);
   }
   else if (m_mediaPipelineWebOS || (!m_VideoPlayerVideo && !m_VideoPlayerAudio))
   {
