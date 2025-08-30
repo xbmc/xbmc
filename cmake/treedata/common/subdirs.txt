@@ -34,6 +34,7 @@ xbmc/storage                                    storage
 xbmc/threads                                    threads
 xbmc/utils                                      utils
 xbmc/utils/guilib                               utils_guilib
+xbmc/utils/i18n                                 utils_i18n
 xbmc/view                                       view
 xbmc/weather                                    weather
 xbmc/windowing                                  windowing
