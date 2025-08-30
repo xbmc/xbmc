@@ -917,12 +917,12 @@ NPT_Result CUPnPServer::BuildResponse(PLT_ActionReference& action,
   // this isn't pretty but needed to properly hide the addons node from clients
   if (StringUtils::StartsWith(items.GetPath(), "library"))
   {
-    for (int i = 0; i < items.Size(); i++)
-    {
-      if (StringUtils::StartsWith(items[i]->GetPath(), "addons") ||
-          StringUtils::EndsWith(items[i]->GetPath(), "/addons.xml/"))
-        items.Remove(i);
-    }
+    items.erase_if(
+        [](const CFileItemPtr& item)
+        {
+          return StringUtils::StartsWith(item->GetPath(), "addons") ||
+                 StringUtils::EndsWith(item->GetPath(), "/addons.xml/");
+        });
   }
 
   // won't return more than UPNP_MAX_RETURNED_ITEMS items at a time to keep things smooth
