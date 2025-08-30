@@ -13,6 +13,7 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/i18n/TableISO3166_1.h"
+#include "utils/i18n/TableLanguageCodes.h"
 
 #include <algorithm>
 #include <array>
@@ -30,17 +31,6 @@ typedef struct LCENTRY
 
 extern const std::array<struct LCENTRY, 188> g_iso639_1;
 extern const std::array<struct LCENTRY, 541> g_iso639_2;
-
-struct ISO639
-{
-  const char* iso639_1;
-  const char* iso639_2b;
-  const char* iso639_2t;
-  const char* win_id;
-};
-
-// declared as extern to allow forward declaration
-extern const std::array<ISO639, 192> LanguageCodes;
 
 CLangCodeExpander::CLangCodeExpander() = default;
 
@@ -137,21 +127,15 @@ bool CLangCodeExpander::ConvertISO6391ToISO6392B(const std::string& strISO6391,
   StringUtils::ToLower(strISO6391Lower);
   StringUtils::Trim(strISO6391Lower);
 
-  for (const auto& codes : LanguageCodes)
+  auto it = std::ranges::lower_bound(LanguageCodes, strISO6391Lower, {}, &ISO639::iso639_1);
+  if (it != LanguageCodes.end() && it->iso639_1 == strISO6391Lower)
   {
-    if (strISO6391Lower == codes.iso639_1)
-    {
-      if (checkWin32Locales && codes.win_id)
-      {
-        strISO6392B = codes.win_id;
-        return true;
-      }
-
-      strISO6392B = codes.iso639_2b;
-      return true;
-    }
+    if (checkWin32Locales && !it->win_id.empty())
+      strISO6392B = it->win_id;
+    else
+      strISO6392B = it->iso639_2b;
+    return true;
   }
-
   return false;
 }
 
@@ -171,17 +155,11 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
   {
     std::string charCode(strCharCode);
     StringUtils::ToLower(charCode);
-    for (const auto& codes : LanguageCodes)
-    {
-      if (charCode == codes.iso639_2b ||
-          (checkWin32Locales && codes.win_id != NULL && charCode == codes.win_id))
-      {
-        strISO6392B = charCode;
-        return true;
-      }
-    }
 
-    if (std::ranges::binary_search(TableISO3166_1ByAlpha3, charCode, {}, &ISO3166_1::alpha3))
+    if (std::ranges::binary_search(LanguageCodesByIso639_2b, charCode, {}, &ISO639::iso639_2b) ||
+        (checkWin32Locales &&
+         std::ranges::binary_search(LanguageCodesByWin_Id, charCode, {}, &ISO639::win_id)) ||
+        std::ranges::binary_search(TableISO3166_1ByAlpha3, charCode, {}, &ISO3166_1::alpha3))
     {
       strISO6392B = charCode;
       return true;
@@ -210,16 +188,27 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode,
                                           std::string& strISO6392T,
                                           bool checkWin32Locales /* = false */)
 {
-  if (!ConvertToISO6392B(strCharCode, strISO6392T, checkWin32Locales))
+  std::string strISO6392B;
+  if (!ConvertToISO6392B(strCharCode, strISO6392B, checkWin32Locales))
     return false;
 
-  for (const auto& codes : LanguageCodes)
   {
-    if (strISO6392T == codes.iso639_2b ||
-        (checkWin32Locales && codes.win_id != NULL && strISO6392T == codes.win_id))
+    auto it =
+        std::ranges::lower_bound(LanguageCodesByIso639_2b, strISO6392B, {}, &ISO639::iso639_2b);
+    if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == strISO6392B &&
+        !it->iso639_2t.empty())
     {
-      if (codes.iso639_2t != nullptr)
-        strISO6392T = codes.iso639_2t;
+      strISO6392T = it->iso639_2t;
+      return true;
+    }
+  }
+
+  if (checkWin32Locales)
+  {
+    auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, strISO6392B, {}, &ISO639::win_id);
+    if (it != LanguageCodesByWin_Id.end() && it->win_id == strISO6392B && !it->iso639_2t.empty())
+    {
+      strISO6392T = it->iso639_2t;
       return true;
     }
   }
@@ -266,17 +255,21 @@ bool CLangCodeExpander::ConvertWindowsLanguageCodeToISO6392B(
   if (strWindowsLanguageCode.length() != 3)
     return false;
 
-  std::string strLower(strWindowsLanguageCode);
-  StringUtils::ToLower(strLower);
-  for (const auto& codes : LanguageCodes)
+  std::string lower(strWindowsLanguageCode);
+  StringUtils::ToLower(lower);
+
+  auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
+  if (it != LanguageCodesByWin_Id.end() && it->win_id == lower)
   {
-    if ((codes.win_id && strLower == codes.win_id) || strLower == codes.iso639_2b)
-    {
-      strISO6392B = codes.iso639_2b;
-      return true;
-    }
+    strISO6392B = it->iso639_2b;
+    return true;
   }
 
+  if (std::ranges::binary_search(LanguageCodesByIso639_2b, lower, {}, &ISO639::iso639_2b))
+  {
+    strISO6392B = lower;
+    return true;
+  }
   return false;
 }
 #endif
@@ -303,20 +296,30 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
   {
     std::string lower(lang);
     StringUtils::ToLower(lower);
-    for (const auto& codes : LanguageCodes)
+
     {
-      if (lower == codes.iso639_2b || (codes.win_id && lower == codes.win_id))
+      auto it = std::ranges::lower_bound(LanguageCodesByIso639_2b, lower, {}, &ISO639::iso639_2b);
+      if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == lower)
       {
-        code = codes.iso639_1;
+        code = it->iso639_1;
         return true;
       }
     }
-
-    auto it = std::ranges::lower_bound(TableISO3166_1ByAlpha3, lower, {}, &ISO3166_1::alpha3);
-    if (it != TableISO3166_1ByAlpha3.end() && it->alpha3 == lower)
     {
-      code = it->alpha2;
-      return true;
+      auto it = std::ranges::lower_bound(LanguageCodesByWin_Id, lower, {}, &ISO639::win_id);
+      if (it != LanguageCodesByWin_Id.end() && it->win_id == lower)
+      {
+        code = it->iso639_1;
+        return true;
+      }
+    }
+    {
+      auto it = std::ranges::lower_bound(TableISO3166_1ByAlpha3, lower, {}, &ISO3166_1::alpha3);
+      if (it != TableISO3166_1ByAlpha3.end() && it->alpha3 == lower)
+      {
+        code = it->alpha2;
+        return true;
+      }
     }
   }
 
@@ -1331,207 +1334,5 @@ const std::array<struct LCENTRY, 541> g_iso639_2 = {{
     {MAKECODE('\0', 'z', 'h', 'a'), "Zhuang"},
     {MAKECODE('\0', 'z', 'u', 'l'), "Zulu"},
     {MAKECODE('\0', 'z', 'u', 'n'), "Zuni"},
-}};
-// clang-format on
-
-// clang-format off
-const std::array<ISO639, 192> LanguageCodes = {{
-    {"aa", "aar", NULL, NULL},
-    {"ab", "abk", NULL, NULL},
-    {"af", "afr", NULL, NULL},
-    {"ak", "aka", NULL, NULL},
-    {"am", "amh", NULL, NULL},
-    {"ar", "ara", NULL, NULL},
-    {"an", "arg", NULL, NULL},
-    {"as", "asm", NULL, NULL},
-    {"av", "ava", NULL, NULL},
-    {"ae", "ave", NULL, NULL},
-    {"ay", "aym", NULL, NULL},
-    {"az", "aze", NULL, NULL},
-    {"ba", "bak", NULL, NULL},
-    {"bm", "bam", NULL, NULL},
-    {"be", "bel", NULL, NULL},
-    {"bn", "ben", NULL, NULL},
-    {"bh", "bih", NULL, NULL},
-    {"bi", "bis", NULL, NULL},
-    {"bo", "tib", NULL, "bod"},
-    {"bs", "bos", NULL, NULL},
-    {"br", "bre", NULL, NULL},
-    {"bg", "bul", NULL, NULL},
-    {"ca", "cat", NULL, NULL},
-    {"cs", "cze", "ces", "ces"},
-    {"ch", "cha", NULL, NULL},
-    {"ce", "che", NULL, NULL},
-    {"cu", "chu", NULL, NULL},
-    {"cv", "chv", NULL, NULL},
-    {"kw", "cor", NULL, NULL},
-    {"co", "cos", NULL, NULL},
-    {"cr", "cre", NULL, NULL},
-    {"cy", "wel", NULL, "cym"},
-    {"da", "dan", NULL, NULL},
-    {"de", "ger", "deu", "deu"},
-    {"dv", "div", NULL, NULL},
-    {"dz", "dzo", NULL, NULL},
-    {"el", "gre", "ell", "ell"},
-    {"en", "eng", NULL, NULL},
-    {"eo", "epo", NULL, NULL},
-    {"et", "est", NULL, NULL},
-    {"eu", "baq", NULL, "eus"},
-    {"ee", "ewe", NULL, NULL},
-    {"fo", "fao", NULL, NULL},
-    {"fa", "per", NULL, "fas"},
-    {"fj", "fij", NULL, NULL},
-    {"fi", "fin", NULL, NULL},
-    {"fr", "fre", "fra", "fra"},
-    {"fy", "fry", NULL, NULL},
-    {"ff", "ful", NULL, NULL},
-    {"gd", "gla", NULL, NULL},
-    {"ga", "gle", NULL, NULL},
-    {"gl", "glg", NULL, NULL},
-    {"gv", "glv", NULL, NULL},
-    {"gn", "grn", NULL, NULL},
-    {"gu", "guj", NULL, NULL},
-    {"ht", "hat", NULL, NULL},
-    {"ha", "hau", NULL, NULL},
-    {"he", "heb", NULL, NULL},
-    {"hz", "her", NULL, NULL},
-    {"hi", "hin", NULL, NULL},
-    {"ho", "hmo", NULL, NULL},
-    {"hr", "hrv", NULL, NULL},
-    {"hu", "hun", NULL, NULL},
-    {"hy", "arm", NULL, "hye"},
-    {"ig", "ibo", NULL, NULL},
-    {"io", "ido", NULL, NULL},
-    {"ii", "iii", NULL, NULL},
-    {"iu", "iku", NULL, NULL},
-    {"ie", "ile", NULL, NULL},
-    {"ia", "ina", NULL, NULL},
-    {"id", "ind", NULL, NULL},
-    // in deprecated https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=207
-    {"in", "ind", NULL, NULL},
-    {"ik", "ipk", NULL, NULL},
-    {"is", "ice", "isl", "isl"},
-    {"it", "ita", NULL, NULL},
-    // iw deprecated https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=184
-    {"iw", "heb", NULL, NULL},
-    {"jv", "jav", NULL, NULL},
-    {"ja", "jpn", NULL, NULL},
-    {"kl", "kal", NULL, NULL},
-    {"kn", "kan", NULL, NULL},
-    {"ks", "kas", NULL, NULL},
-    {"ka", "geo", NULL, "kat"},
-    {"kr", "kau", NULL, NULL},
-    {"kk", "kaz", NULL, NULL},
-    {"km", "khm", NULL, NULL},
-    {"ki", "kik", NULL, NULL},
-    {"rw", "kin", NULL, NULL},
-    {"ky", "kir", NULL, NULL},
-    {"kv", "kom", NULL, NULL},
-    {"kg", "kon", NULL, NULL},
-    {"ko", "kor", NULL, NULL},
-    {"kj", "kua", NULL, NULL},
-    {"ku", "kur", NULL, NULL},
-    {"lo", "lao", NULL, NULL},
-    {"la", "lat", NULL, NULL},
-    {"lv", "lav", NULL, NULL},
-    {"li", "lim", NULL, NULL},
-    {"ln", "lin", NULL, NULL},
-    {"lt", "lit", NULL, NULL},
-    {"lb", "ltz", NULL, NULL},
-    {"lu", "lub", NULL, NULL},
-    {"lg", "lug", NULL, NULL},
-    {"mk", "mac", NULL, "mdk"},
-    {"mh", "mah", NULL, NULL},
-    {"ml", "mal", NULL, NULL},
-    {"mi", "mao", NULL, "mri"},
-    {"mr", "mar", NULL, NULL},
-    {"ms", "may", NULL, "msa"},
-    {"mg", "mlg", NULL, NULL},
-    {"mt", "mlt", NULL, NULL},
-    {"mn", "mon", NULL, NULL},
-    {"my", "bur", NULL, "mya"},
-    {"na", "nau", NULL, NULL},
-    {"nv", "nav", NULL, NULL},
-    {"nr", "nbl", NULL, NULL},
-    {"nd", "nde", NULL, NULL},
-    {"ng", "ndo", NULL, NULL},
-    {"ne", "nep", NULL, NULL},
-    {"nl", "dut", "nld", "nld"},
-    {"nn", "nno", NULL, NULL},
-    {"nb", "nob", NULL, NULL},
-    {"no", "nor", NULL, NULL},
-    {"ny", "nya", NULL, NULL},
-    {"oc", "oci", NULL, NULL},
-    {"oj", "oji", NULL, NULL},
-    {"or", "ori", NULL, NULL},
-    {"om", "orm", NULL, NULL},
-    {"os", "oss", NULL, NULL},
-    {"pa", "pan", NULL, NULL},
-    // pb / pob = unofficial language code for Brazilian Portuguese
-    {"pb", "pob", NULL, NULL},
-    {"pi", "pli", NULL, NULL},
-    {"pl", "pol", "plk", NULL},
-    {"pt", "por", "ptg", NULL},
-    {"ps", "pus", NULL, NULL},
-    {"qu", "que", NULL, NULL},
-    {"rm", "roh", NULL, NULL},
-    {"ro", "rum", "ron", "ron"},
-    {"rn", "run", NULL, NULL},
-    {"ru", "rus", NULL, NULL},
-    {"sh", "scr", NULL, NULL},
-    {"sg", "sag", NULL, NULL},
-    {"sa", "san", NULL, NULL},
-    {"si", "sin", NULL, NULL},
-    {"sk", "slo", "sky", "slk"},
-    {"sl", "slv", NULL, NULL},
-    {"se", "sme", NULL, NULL},
-    {"sm", "smo", NULL, NULL},
-    {"sn", "sna", NULL, NULL},
-    {"sd", "snd", NULL, NULL},
-    {"so", "som", NULL, NULL},
-    {"st", "sot", NULL, NULL},
-    {"es", "spa", "esp", NULL},
-    {"sq", "alb", NULL, "sqi"},
-    {"sc", "srd", NULL, NULL},
-    {"sr", "srp", NULL, NULL},
-    {"ss", "ssw", NULL, NULL},
-    {"su", "sun", NULL, NULL},
-    {"sw", "swa", NULL, NULL},
-    {"sv", "swe", "sve", NULL},
-    {"ty", "tah", NULL, NULL},
-    {"ta", "tam", NULL, NULL},
-    {"tt", "tat", NULL, NULL},
-    {"te", "tel", NULL, NULL},
-    {"tg", "tgk", NULL, NULL},
-    {"tl", "tgl", NULL, NULL},
-    {"th", "tha", NULL, NULL},
-    {"ti", "tir", NULL, NULL},
-    {"to", "ton", NULL, NULL},
-    {"tn", "tsn", NULL, NULL},
-    {"ts", "tso", NULL, NULL},
-    {"tk", "tuk", NULL, NULL},
-    {"tr", "tur", "trk", NULL},
-    {"tw", "twi", NULL, NULL},
-    {"ug", "uig", NULL, NULL},
-    {"uk", "ukr", NULL, NULL},
-    {"ur", "urd", NULL, NULL},
-    {"uz", "uzb", NULL, NULL},
-    {"ve", "ven", NULL, NULL},
-    {"vi", "vie", NULL, NULL},
-    {"vo", "vol", NULL, NULL},
-    {"wa", "wln", NULL, NULL},
-    {"wo", "wol", NULL, NULL},
-    {"xh", "xho", NULL, NULL},
-    {"yi", "yid", NULL, NULL},
-    {"yo", "yor", NULL, NULL},
-    {"za", "zha", NULL, NULL},
-    {"zh", "chi", "zho", "zho"},
-    {"zu", "zul", NULL, NULL},
-    {"zv", "und", NULL, NULL}, // Kodi intern mapping for missing "Undetermined" iso639-1 code
-    {"zx", "zxx", NULL,
-     NULL}, // Kodi intern mapping for missing "No linguistic content" iso639-1 code
-    {"zy", "mis", NULL,
-     NULL}, // Kodi intern mapping for missing "Miscellaneous languages" iso639-1 code
-    {"zz", "mul", NULL, NULL} // Kodi intern mapping for missing "Multiple languages" iso639-1 code
 }};
 // clang-format on
