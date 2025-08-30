@@ -241,6 +241,13 @@ public:
    */
   std::string GetVideoInfo();
 
+  /**
+   * @brief Get the resolution of the video stream
+   * @param width Stream width (output parameter)
+   * @param height Stream height (output parameter)
+   */
+  void GetVideoResolution(unsigned int& width, unsigned int& height) const;
+
 protected:
   /**
    * @brief Video processing thread loop.

@@ -19,6 +19,7 @@ class CVideoPlayerWebOS final : public CVideoPlayer
 public:
   explicit CVideoPlayerWebOS(IPlayerCallback& callback);
   ~CVideoPlayerWebOS() override;
+  void GetVideoResolution(unsigned int& width, unsigned int& height) override;
 
 protected:
   void CreatePlayers() override;

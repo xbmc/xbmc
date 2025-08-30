@@ -73,3 +73,13 @@ void CVideoPlayerWebOS::CreatePlayers()
   m_VideoPlayerAudioID3 = std::make_unique<CVideoPlayerAudioID3>(*m_processInfo);
   m_players_created = true;
 }
+
+void CVideoPlayerWebOS::GetVideoResolution(unsigned int& width, unsigned int& height)
+{
+  if (m_mediaPipelineWebOS)
+  {
+    m_mediaPipelineWebOS->GetVideoResolution(width, height);
+  }
+  else
+    CVideoPlayer::GetVideoResolution(width, height);
+}
