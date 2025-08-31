@@ -5083,5 +5083,17 @@
       }
     },
     "additionalProperties": false
+  },
+  "Database.Type": {
+    "type": "string",
+    "enum": [
+      "addon",
+      "epg",
+      "music",
+      "pvr",
+      "texture",
+      "video",
+      "viewmode"
+    ]
   }
 }
