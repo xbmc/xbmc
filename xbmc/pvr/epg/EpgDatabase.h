@@ -41,6 +41,8 @@ namespace PVR
      */
     ~CPVREpgDatabase() override = default;
 
+    static const char* GetDefaultBaseDBName() { return "Epg"; }
+
     /*!
      * @brief Open the database.
      * @return True if it was opened successfully, false otherwise.
@@ -72,7 +74,7 @@ namespace PVR
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
-    const char* GetBaseDBName() const override { return "Epg"; }
+    const char* GetBaseDBName() const override { return CPVREpgDatabase::GetDefaultBaseDBName(); }
 
     /*! @name EPG methods */
     //@{

@@ -50,6 +50,20 @@ public:
    */
   bool CanOpen(const std::string &name);
 
+  /*! \brief By reference of their database types, get the actual full database name in-use
+   with consideration of any custom naming set in advanced settings.
+   \param dbType the default type of the database: addon, epg, music, pvr, texture, video, viewmode
+   \return the full db name in-use (real db name + schema version)
+   */
+  static constexpr const char* DBTYPE_ADDON = "addon";
+  static constexpr const char* DBTYPE_EPG = "epg";
+  static constexpr const char* DBTYPE_MUSIC = "music";
+  static constexpr const char* DBTYPE_PVR = "pvr";
+  static constexpr const char* DBTYPE_TEXTURE = "texture";
+  static constexpr const char* DBTYPE_VIDEO = "video";
+  static constexpr const char* DBTYPE_VIEWMODE = "viewmode";
+  std::string GetFullDatabaseNameByType(const std::string& dbType) const;
+
   /*! \brief Check whether manager is connecting to the databases currently.
    \return true if connecting, false otherwise.
    */
@@ -74,10 +88,24 @@ private:
     FAILED
   };
   void UpdateStatus(const std::string& name, DBStatus status);
+  void UpdateFullName(const std::string& name, const std::string& fullName);
   void UpdateDatabase(CDatabase &db, DatabaseSettings *settings = NULL);
   bool Update(CDatabase &db, const DatabaseSettings &settings);
   bool UpdateVersion(CDatabase &db, const std::string &dbName);
 
-  CCriticalSection            m_section;     ///< Critical section protecting m_dbStatus.
-  std::map<std::string, DBStatus> m_dbStatus; ///< Our database status map.
+  /*! \brief By reference of their default names, get the actual full database name in-use
+   with consideration of any custom naming set in advanced settings.
+   \param name the default name of the database (e.g. "MyVideos").
+   \return the full db name (real db name + schema version)
+   */
+  std::string GetFullDatabaseName(const std::string& name) const;
+
+  mutable CCriticalSection m_section; ///< Critical section protecting m_dbStatus.
+
+  struct DBDetails
+  {
+    DBStatus dbStatus{DBStatus::CLOSED};
+    std::string dbFullName;
+  };
+  std::map<std::string, DBDetails> m_dbStatus; ///< Our database status map.
 };
