@@ -1381,6 +1381,15 @@ void CMediaPipelineWebOS::ProcessAudio()
   }
 }
 
+void CMediaPipelineWebOS::GetVideoResolution(unsigned int& width, unsigned int& height) const
+{
+  if (m_videoHint.codec)
+  {
+    width = m_videoHint.width;
+    height = m_videoHint.height;
+  }
+}
+
 void CMediaPipelineWebOS::PlayerCallback(int32_t type, const int64_t numValue, const char* strValue)
 {
   const std::string logStr = strValue != nullptr ? strValue : "";

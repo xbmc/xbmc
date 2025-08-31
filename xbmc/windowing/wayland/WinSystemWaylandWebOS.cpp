@@ -19,6 +19,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/DisplaySettings.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/log.h"
 
@@ -27,6 +28,16 @@
 namespace
 {
 constexpr const char* LUNA_REGISTER_APP = "luna://com.webos.service.applicationmanager/registerApp";
+
+constexpr unsigned int WIDTH_1080P = 1920;
+constexpr unsigned int HEIGHT_1080P = 1080;
+constexpr unsigned int SCREEN_WIDTH_4K = 3840;
+constexpr unsigned int SCREEN_HEIGHT_4K = 2160;
+
+constexpr unsigned int WIDTH_720P = 1280;
+constexpr unsigned int HEIGHT_720P = 720;
+constexpr unsigned int SCREEN_WIDTH_1080P = 1080;
+constexpr unsigned int SCREEN_HEIGHT_1080P = 1920;
 } // namespace
 
 namespace KODI::WINDOWING::WAYLAND
@@ -190,6 +201,23 @@ bool CWinSystemWaylandWebOS::OnAppLifecycleEvent(LSHandle* sh, LSMessage* reply)
     shellSurface->SetFullScreen(nullptr, 60.0f);
 
   return true;
+}
+
+void CWinSystemWaylandWebOS::UpdateResolutions()
+{
+  CWinSystemWayland::UpdateResolutions();
+
+  RESOLUTION_INFO& res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+  if (res.iWidth == WIDTH_1080P && res.iHeight == HEIGHT_1080P)
+  {
+    res.iScreenHeight = SCREEN_HEIGHT_4K;
+    res.iScreenWidth = SCREEN_WIDTH_4K;
+  }
+  else if (res.iWidth == WIDTH_720P && res.iHeight == HEIGHT_720P)
+  {
+    res.iScreenHeight = SCREEN_HEIGHT_1080P;
+    res.iScreenWidth = SCREEN_WIDTH_1080P;
+  }
 }
 
 } // namespace KODI::WINDOWING::WAYLAND
