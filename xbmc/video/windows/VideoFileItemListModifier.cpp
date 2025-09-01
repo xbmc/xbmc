@@ -102,12 +102,13 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
       {
         for (int i = 1; i < items.Size(); i++)
         {
-          if (items[i]->GetVideoInfoTag() &&
+          if (items[i]->HasVideoInfoTag() &&
               items[i]->GetVideoInfoTag()->m_type == MediaTypeSeason &&
               items[i]->GetVideoInfoTag()->m_iSeason > 0)
           {
             *pItem->GetVideoInfoTag() = *items[i]->GetVideoInfoTag();
             pItem->GetVideoInfoTag()->m_iSeason = -1;
+            pItem->GetVideoInfoTag()->m_strPlot = "";
             break;
           }
         }
