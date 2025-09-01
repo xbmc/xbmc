@@ -122,7 +122,7 @@
 					<right>400</right>
 					<top>164</top>
 					<align>right</align>
-					<label>[I]$LOCALIZE[402]: $INFO[Weather.Data(Current.FeelsLike)][/I][CR]$INFO[Weather.Data(Current.Condition)]</label>
+					<label>$INFO[Weather.Data(Current.FeelsLike),$LOCALIZE[402] ][CR]$INFO[Weather.Data(Current.Condition)]</label>
 					<font>font14</font>
 					<width>630</width>
 				</control>
