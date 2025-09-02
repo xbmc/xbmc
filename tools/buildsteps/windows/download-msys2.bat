@@ -36,6 +36,19 @@ set msyspackages=diffutils gcc make patch perl tar yasm
 set gaspreprocurl=https://github.com/FFmpeg/gas-preprocessor/archive/master.tar.gz
 set usemirror=yes
 set opt=mintty
+set hash_file=%instdir%\%msys2%\installed_hash.txt
+
+:: get current SHA256 hash of this script file (download-msys2.bat)
+for /f "delims=" %%a in ('PowerShell "Get-FileHash %~nx0 | Select-Object -ExpandProperty Hash"') do set hash=%%a
+
+:: remove MSYS2 install if the installed hash is unknown (installed_hash.txt not found)
+if not exist %hash_file% if exist "%instdir%\%msys2%" rmdir "%instdir%\%msys2%" /S /Q
+
+:: remove MSYS2 install if the installed hash is different from the current hash
+if exist %hash_file% (
+  set /p installed_hash=<%hash_file%
+  if not !installed_hash!==%hash% rmdir "%instdir%\%msys2%" /S /Q
+)
 
 :: if KODI_MIRROR is not set externally to this script, set it to the default mirror URL
 if "%KODI_MIRROR%"=="" set KODI_MIRROR=https://mirrors.kodi.tv
@@ -454,6 +467,8 @@ IF ERRORLEVEL == 1 (
     ECHO Something goes wrong...
     exit /B 1
   )
+
+echo %hash%>%hash_file%
 
 echo.-------------------------------------------------------------------------------
 echo.install msys2 system done
