@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "addons/AddonManager.h"
+#include "addons/IAddon.h"
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -21,26 +22,10 @@
 #include "network/Network.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/lib/Setting.h"
-#include "utils/POUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
-
-namespace
-{
-constexpr unsigned int LOCALIZED_TOKEN_FIRSTID = 370;
-constexpr unsigned int LOCALIZED_TOKEN_LASTID = 395;
-constexpr unsigned int LOCALIZED_TOKEN_FIRSTID2 = 1350;
-constexpr unsigned int LOCALIZED_TOKEN_LASTID2 = 1449;
-constexpr unsigned int LOCALIZED_TOKEN_FIRSTID3 = 11;
-constexpr unsigned int LOCALIZED_TOKEN_LASTID3 = 17;
-constexpr unsigned int LOCALIZED_TOKEN_FIRSTID4 = 71;
-constexpr unsigned int LOCALIZED_TOKEN_LASTID4 = 97;
-
-} // unnamed namespace
 
 using namespace ADDON;
 using namespace std::chrono_literals;
@@ -103,78 +88,6 @@ const WeatherInfo& CWeatherJob::GetInfo() const
   return m_info;
 }
 
-void CWeatherJob::LocalizeOverviewToken(std::string& token)
-{
-  // This routine is case-insensitive.
-  std::string strLocStr;
-  if (!token.empty())
-  {
-    const auto i{m_localizedTokens.find(token)};
-    if (i != m_localizedTokens.cend())
-      strLocStr = g_localizeStrings.Get(i->second);
-  }
-
-  if (strLocStr.empty())
-    strLocStr = token; //if not found, let fallback
-
-  token = strLocStr;
-}
-
-void CWeatherJob::LocalizeOverview(std::string& str)
-{
-  std::vector<std::string> words{StringUtils::Split(str, " ")};
-  for (std::string& word : words)
-    LocalizeOverviewToken(word);
-
-  str = StringUtils::Join(words, " ");
-}
-
-void CWeatherJob::LoadLocalizedToken()
-{
-  // We load the english strings in to get our tokens
-  std::string language = LANGUAGE_DEFAULT;
-  const std::shared_ptr<const CSettingString> languageSetting{
-      std::static_pointer_cast<const CSettingString>(
-          CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
-              CSettings::SETTING_LOCALE_LANGUAGE))};
-  if (languageSetting)
-    language = languageSetting->GetDefault();
-
-  // Load the strings.po file
-  CPODocument PODoc;
-  if (PODoc.LoadFile(URIUtils::AddFileToFolder(CLangInfo::GetLanguagePath(language), "strings.po")))
-  {
-    int counter = 0;
-
-    while (PODoc.GetNextEntry())
-    {
-      if (PODoc.GetEntryType() != ID_FOUND)
-        continue;
-
-      const uint32_t id{PODoc.GetEntryID()};
-      PODoc.ParseEntry(ISSOURCELANG);
-
-      if (id > LOCALIZED_TOKEN_LASTID2)
-        break;
-
-      if ((LOCALIZED_TOKEN_FIRSTID <= id && id <= LOCALIZED_TOKEN_LASTID) ||
-          (LOCALIZED_TOKEN_FIRSTID2 <= id && id <= LOCALIZED_TOKEN_LASTID2) ||
-          (LOCALIZED_TOKEN_FIRSTID3 <= id && id <= LOCALIZED_TOKEN_LASTID3) ||
-          (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))
-      {
-        if (!PODoc.GetMsgid().empty())
-        {
-          m_localizedTokens.try_emplace(PODoc.GetMsgid(), id);
-          counter++;
-        }
-      }
-    }
-
-    CLog::LogF(LOGDEBUG, "POParser: loaded {} weather tokens", counter);
-    return;
-  }
-}
-
 namespace
 {
 std::string ConstructPath(const std::string& in)
@@ -194,26 +107,22 @@ void FormatTemperature(std::string& text, double temp)
 
 void CWeatherJob::SetFromProperties()
 {
-  // Load in our tokens if necessary
-  if (m_localizedTokens.empty())
-    LoadLocalizedToken();
-
   CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER);
   if (window)
   {
     const CDateTime time{CDateTime::GetCurrentDateTime()};
     m_info.lastUpdateTime = time.GetAsLocalizedDateTime(false, false);
-    m_info.currentConditions = window->GetProperty("Current.Condition").asString();
+    m_info.currentConditions =
+        m_localizer.LocalizeOverview(window->GetProperty("Current.Condition").asString());
     m_info.currentIcon = ConstructPath(window->GetProperty("Current.OutlookIcon").asString());
-    LocalizeOverview(m_info.currentConditions);
     FormatTemperature(
         m_info.currentTemperature,
         std::strtod(window->GetProperty("Current.Temperature").asString().c_str(), nullptr));
     FormatTemperature(
         m_info.currentFeelsLike,
         std::strtod(window->GetProperty("Current.FeelsLike").asString().c_str(), nullptr));
-    m_info.currentUVIndex = window->GetProperty("Current.UVIndex").asString();
-    LocalizeOverview(m_info.currentUVIndex);
+    m_info.currentUVIndex =
+        m_localizer.LocalizeOverview(window->GetProperty("Current.UVIndex").asString());
     const CSpeed speed{CSpeed::CreateFromKilometresPerHour(
         std::strtod(window->GetProperty("Current.Wind").asString().c_str(), nullptr))};
     std::string direction = window->GetProperty("Current.WindDirection").asString();
@@ -221,7 +130,7 @@ void CWeatherJob::SetFromProperties()
       m_info.currentWind = g_localizeStrings.Get(1410);
     else
     {
-      LocalizeOverviewToken(direction);
+      direction = m_localizer.LocalizeOverviewToken(direction);
       m_info.currentWind = StringUtils::Format(
           g_localizeStrings.Get(434), direction,
           static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())), g_langInfo.GetSpeedUnitString());
@@ -242,8 +151,8 @@ void CWeatherJob::SetFromProperties()
     for (unsigned int i = 0; i < WeatherInfo::NUM_DAYS; ++i)
     {
       std::string strDay = StringUtils::Format("Day{}.Title", i);
-      m_info.forecast[i].m_day = window->GetProperty(strDay).asString();
-      LocalizeOverviewToken(m_info.forecast[i].m_day);
+      m_info.forecast[i].m_day =
+          m_localizer.LocalizeOverviewToken(window->GetProperty(strDay).asString());
       strDay = StringUtils::Format("Day{}.HighTemp", i);
       FormatTemperature(m_info.forecast[i].m_high,
                         std::strtod(window->GetProperty(strDay).asString().c_str(), nullptr));
@@ -253,8 +162,8 @@ void CWeatherJob::SetFromProperties()
       strDay = StringUtils::Format("Day{}.OutlookIcon", i);
       m_info.forecast[i].m_icon = ConstructPath(window->GetProperty(strDay).asString());
       strDay = StringUtils::Format("Day{}.Outlook", i);
-      m_info.forecast[i].m_overview = window->GetProperty(strDay).asString();
-      LocalizeOverview(m_info.forecast[i].m_overview);
+      m_info.forecast[i].m_overview =
+          m_localizer.LocalizeOverview(window->GetProperty(strDay).asString());
     }
   }
 }
