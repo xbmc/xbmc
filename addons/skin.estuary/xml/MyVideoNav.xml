@@ -49,8 +49,8 @@
 						<top>240</top>
 						<width>525</width>
 						<bottom>100</bottom>
-						<visible>![ListItem.IsCollection + String.IsEmpty(ListItem.Plot)]</visible>
-						<label>$INFO[ListItem.Tagline,[I],[/I][CR][CR]]$INFO[ListItem.Plot][CR][CR]</label>
+						<visible>![ListItem.IsCollection + String.IsEmpty(ListItem.Plot) + String.IsEqual(ListItem.DBType,season) + String.IsEmpty(Container.ShowPlot)]</visible>
+						<label>$INFO[ListItem.Tagline,[I],[/I][CR][CR]]$VAR[VideoInfoPlotVar][CR][CR]</label>
 						<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
 					</control>
 					<control type="textbox">
@@ -63,7 +63,7 @@
 						<font>font27</font>
 						<textcolor>80FFFFFF</textcolor>
 						<label>$LOCALIZE[19055]</label>
-						<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Tagline) + !ListItem.IsCollection + !ListItem.IsParentFolder</visible>
+						<visible>String.IsEmpty(Listitem.Plot) + String.IsEqual(ListItem.DBType,season) + String.IsEmpty(Container.ShowPlot) + String.IsEmpty(Listitem.Tagline) + !ListItem.IsCollection + !ListItem.IsParentFolder</visible>
 					</control>
 					<control type="group">
 						<left>20</left>
