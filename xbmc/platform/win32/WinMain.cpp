@@ -15,8 +15,10 @@
 #include "platform/xbmc.h"
 #include "threads/Thread.h"
 #include "utils/CharsetConverter.h" // Required to initialize converters before usage
+#include "utils/URIUtils.h"
 
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 #include "platform/win32/threads/Win32Exception.h"
 
 #include <Objbase.h>
@@ -25,6 +27,8 @@
 #include <mmsystem.h>
 #include <shellapi.h>
 
+namespace
+{
 // Minidump creation function
 LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
 {
@@ -32,8 +36,6 @@ LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
   win32_exception::write_minidump(pEp);
   return pEp->ExceptionRecord->ExceptionCode;
 }
-
-static bool isConsoleAttached{false};
 
 /*!
  * \brief Basic error reporting before the log subsystem is initialized
@@ -44,7 +46,7 @@ static bool isConsoleAttached{false};
  * \param[in] ... optional parameters for the format string.
  */
 template<typename... Args>
-static void LogError(const wchar_t* format, Args&&... args)
+void LogError(const wchar_t* format, Args&&... args)
 {
   const int count = _snwprintf(nullptr, 0, format, args...);
   // terminating null character not included in count
@@ -52,6 +54,8 @@ static void LogError(const wchar_t* format, Args&&... args)
   swprintf(buf.get(), format, args...);
 
   OutputDebugString(buf.get());
+
+  static bool isConsoleAttached{false};
 
   if (!isConsoleAttached && AttachConsole(ATTACH_PARENT_PROCESS))
   {
@@ -62,7 +66,7 @@ static void LogError(const wchar_t* format, Args&&... args)
   wprintf(buf.get());
 }
 
-static std::shared_ptr<CAppParams> ParseCommandLine()
+std::shared_ptr<CAppParams> ParseCommandLine()
 {
   int argc = 0;
   LPWSTR* argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
@@ -87,6 +91,54 @@ static std::shared_ptr<CAppParams> ParseCommandLine()
 
   return appParamParser.GetAppParams();
 }
+
+/*!
+ * \brief Detect another running instance using the same data directory, using a flag file exclusion
+ * mechanism.
+ * 
+ * Attempt to create the file. If it already exists, another instance using the same data
+ * directory is running. New in v22.
+ * 
+ * \param[in] usePlatformDirectories false for portable mode, true for non-portable mode
+ * \param[out] handle Windows handle for the flag file.  Close the handle on program exit, not earlier.
+ * \return true if the flag file already exists (ie another instance is running)
+ */
+bool CheckAndSetFileFlag(bool usePlatformDirectories, HANDLE& handle)
+{
+  const std::string file =
+      URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(usePlatformDirectories), ".running");
+
+  constexpr DWORD NO_DESIRED_ACCESS = 0;
+  constexpr DWORD NO_SHARING = 0;
+
+  using KODI::PLATFORM::WINDOWS::ToW;
+  handle = CreateFileW(ToW(file).c_str(), NO_DESIRED_ACCESS, NO_SHARING, nullptr, CREATE_NEW,
+                       FILE_FLAG_DELETE_ON_CLOSE, NULL);
+
+  if (handle == INVALID_HANDLE_VALUE && GetLastError() == ERROR_FILE_EXISTS)
+    return true;
+
+  return false;
+}
+
+/*!
+ * \brief Detect another running instance, using a global mutex.
+ * 
+ * Attempt to create the mutex. If it already exists, that means another instance created it and is
+ * running. This is the legacy pre-v22 exclusion mechanism.
+ * 
+ * \param[out] handle Windows handle for the mutex. Close the handle on program exit, not earlier.
+ * \return true if the mutex already exists (ie another instance is running)
+ */
+bool CheckAndSetMutex(HANDLE& handle)
+{
+  handle = CreateMutexW(nullptr, FALSE, L"Kodi Media Center");
+  if (handle != NULL && GetLastError() == ERROR_ALREADY_EXISTS)
+    return true;
+
+  return false;
+}
+} // namespace
 
 //-----------------------------------------------------------------------------
 // Name: WinMain()
@@ -122,13 +174,32 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
   int rcWinsock{WSANOTINITIALISED};
   WSADATA wd{};
 
-  // check if Kodi is already running
-  using KODI::PLATFORM::WINDOWS::ToW;
-  std::string appName = CCompileInfo::GetAppName();
-  HANDLE appRunningMutex = CreateMutex(nullptr, FALSE, ToW(appName + " Media Center").c_str());
-  if (appRunningMutex != nullptr && GetLastError() == ERROR_ALREADY_EXISTS)
+  // Detection of running Kodi instances
+  // (avoid conflicts and data corruption caused by two instances using the same data dir)
+  //
+  // * Non-portable mode. Interference with another Kodi on version < 22 may happen
+  // so use the legacy mutex mechanism it understands and abort if it already exists.
+  // There may be an older Kodi already running, or one may be started after us.
+  //! @todo in a few releases: remove that restriction and assume all Kodi installs understand the
+  //! file based protocol.
+  //
+  // * portable mode: most likely safe to allow multiple instances even if some are < v22
+  // because the user has to make special efforts to run two different installs with the same
+  // portable data dir.
+  //
+  // * Regardless of mode, v22 and higher implements a new file-based signal. Create a specific file
+  // in the data directory when starting up. If the file already exists, another Kodi >= 22
+  // instance is already running with that data directory, abort execution.
+
+  HANDLE appRunningMutex{NULL};
+  HANDLE appRunningFile{NULL};
+
+  // File-based method then mutex in non-portable mode for correct interaction with Kodi < v22 versions
+  if (CheckAndSetFileFlag(params->HasPlatformDirectories(), appRunningFile) ||
+      (params->HasPlatformDirectories() && CheckAndSetMutex(appRunningMutex)))
   {
-    auto appNameW = ToW(appName);
+    using KODI::PLATFORM::WINDOWS::ToW;
+    const auto appNameW = ToW(CCompileInfo::GetAppName());
     HWND hwnd = FindWindow(appNameW.c_str(), appNameW.c_str());
     if (hwnd != nullptr)
     {
@@ -182,6 +253,8 @@ cleanup:
     CoUninitialize();
   if (appRunningMutex)
     CloseHandle(appRunningMutex);
+  if (appRunningFile)
+    CloseHandle(appRunningFile);
 
   return status;
 }
