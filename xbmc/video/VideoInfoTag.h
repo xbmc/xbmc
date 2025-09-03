@@ -167,7 +167,14 @@ public:
   void SetShowLink(std::vector<std::string> showLink);
   void SetUniqueID(std::string_view uniqueid, const std::string& type = "", bool def = false);
   void RemoveUniqueID(const std::string& type);
-  void SetNamedSeasons(std::map<int, std::string> namedSeasons);
+  struct SeasonAttributes
+  {
+    std::string m_name;
+    std::string m_plot;
+    bool operator==(const SeasonAttributes& other) const = default;
+    bool IsEmpty() const { return m_name.empty() && m_plot.empty(); }
+  };
+  void SetSeasons(std::map<int, SeasonAttributes> seasons);
   void SetUserrating(int userrating);
 
   void SetOverride(bool setOverride) { m_override = setOverride; }
@@ -389,7 +396,7 @@ public:
   std::string m_strAlbum;
   CDateTime m_lastPlayed;
   std::vector<std::string> m_showLink;
-  std::map<int, std::string> m_namedSeasons;
+  std::map<int, SeasonAttributes> m_seasons;
   int m_iTop250;
   int m_year;
   int m_iSeason;
@@ -417,6 +424,14 @@ public:
 
   // TODO: cannot be private, because of 'struct SDbTableOffsets'
   unsigned int m_duration; ///< duration in seconds
+
+protected:
+  /*!
+   * \brief Add the seasons information to an XML node
+   * \param element  the root XML element to append to
+   * \return true for success, false otherwise.
+   */
+  bool SaveTvShowSeasons(TiXmlNode* node) const;
 
 private:
   /* \brief Parse our native XML format for video info.
