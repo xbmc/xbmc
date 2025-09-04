@@ -2384,6 +2384,22 @@ std::string CVideoDatabase::GetMovieTitle(int idMovie)
     return "";
 }
 
+void CVideoDatabase::SetMovieTitle(int idMovie, const std::string& title) const
+{
+  if (!m_pDB || !m_pDS)
+    return;
+
+  try
+  {
+    m_pDS->exec(PrepareSQL("UPDATE movie SET c%02d = '%s' WHERE idMovie = %i", VIDEODB_ID_TITLE,
+                           title.c_str(), idMovie));
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed to set movie {} - title ({})", idMovie, title);
+  }
+}
+
 int CVideoDatabase::GetMovieIdByTitle(const std::string& title)
 {
   try

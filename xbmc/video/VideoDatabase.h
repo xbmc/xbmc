@@ -1385,6 +1385,7 @@ public:
   int GetMovieId(const std::string& strFilenameAndPath,
                  AllowNonFileNameMatch allowNonFileNameMatch = AllowNonFileNameMatch::NO_MATCH);
   std::string GetMovieTitle(int idMovie);
+  void SetMovieTitle(int idMovie, const std::string& title) const;
   int GetMovieIdByTitle(const std::string& title);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
   int GetFileIdByMovie(int idMovie);
