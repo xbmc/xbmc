@@ -1383,6 +1383,7 @@ public:
 
   enum MatchingMask : uint8_t
   {
+    None = 0x00,
     UniqueId = 0x01,
     Path = 0x02,
     Title = 0x04

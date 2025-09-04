@@ -4660,8 +4660,6 @@ void CVideoDatabase::GetSameVideoItems(const CFileItem& item,
     // distinguished by media_type.
     // @todo make the (value,type) pairs truly unique
     std::unordered_set<int> itemIds;
-    itemIds.reserve(
-        10); // Arbitrary starting size - unlikely to be more than 10 versions of a movie
     std::string sql;
     if (matchingMask & UniqueId)
     {

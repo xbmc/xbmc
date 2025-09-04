@@ -985,7 +985,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // See if movie already in library
         CFileItemList items;
         using enum CVideoDatabase::MatchingMask;
-        m_database.GetSameVideoItems(item, items, UniqueId | (bDirNames ? Path : 0));
+        m_database.GetSameVideoItems(item, items, UniqueId | (bDirNames ? Path : None));
         if (!items.IsEmpty())
         {
           // Movie already exists
