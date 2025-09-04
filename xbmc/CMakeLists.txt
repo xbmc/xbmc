@@ -41,6 +41,7 @@ set(HEADERS AutoSwitch.h
             ContextMenus.h
             CueDocument.h
             DatabaseManager.h
+            DatabaseTypes.h
             DbUrl.h
             DllPaths.h
             DllPaths_win32.h

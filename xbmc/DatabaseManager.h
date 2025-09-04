@@ -50,6 +50,13 @@ public:
    */
   bool CanOpen(const std::string &name);
 
+  /*! \brief By reference of their database types, get the database name in-use
+   with consideration of any custom naming set in advanced settings.
+   \param dbType the type of the database, as defined in DatabaseTypes.h
+   \return the database name in-use (base name + schema version)
+   */
+  std::string GetDatabaseNameByType(const std::string& dbType) const;
+
   /*! \brief Check whether manager is connecting to the databases currently.
    \return true if connecting, false otherwise.
    */
@@ -73,11 +80,20 @@ private:
     READY,
     FAILED
   };
-  void UpdateStatus(const std::string& name, DBStatus status);
+  void UpdateStatus(const std::string& basename, DBStatus status);
+  void UpdateDetails(const std::string& basename, const std::string& type, const std::string& name);
   void UpdateDatabase(CDatabase &db, DatabaseSettings *settings = NULL);
   bool Update(CDatabase &db, const DatabaseSettings &settings);
   bool UpdateVersion(CDatabase &db, const std::string &dbName);
 
-  CCriticalSection            m_section;     ///< Critical section protecting m_dbStatus.
-  std::map<std::string, DBStatus> m_dbStatus; ///< Our database status map.
+  mutable CCriticalSection m_section; ///< Critical section protecting m_dbDetails.
+
+  using DBBaseName = std::string;
+  struct DBDetails
+  {
+    DBStatus m_status{DBStatus::CLOSED};
+    std::string m_type;
+    std::string m_name;
+  };
+  std::map<DBBaseName, DBDetails, std::less<>> m_dbDetails; ///< Our database details map.
 };
