@@ -21,29 +21,19 @@ namespace TIME
 {
 namespace
 {
-void SystemTimeToKodiTime(const SYSTEMTIME& sst, SystemTime& st)
-{
-  st.day = sst.wDay;
-  st.dayOfWeek = sst.wDayOfWeek;
-  st.hour = sst.wHour;
-  st.milliseconds = sst.wMilliseconds;
-  st.minute = sst.wMinute;
-  st.month = sst.wMonth;
-  st.second = sst.wSecond;
-  st.year = sst.wYear;
-}
+// Check binary compatibility of FileTime / FILETIME at compile time
+static_assert(sizeof(FileTime) == sizeof(FILETIME));
+static_assert(offsetof(FileTime, lowDateTime) == offsetof(FILETIME, dwLowDateTime));
 
-void KodiTimeToSystemTime(const SystemTime& st, SYSTEMTIME& sst)
-{
-  sst.wDay = st.day;
-  sst.wDayOfWeek = st.dayOfWeek;
-  sst.wHour = st.hour;
-  sst.wMilliseconds = st.milliseconds;
-  sst.wMinute = st.minute;
-  sst.wMonth = st.month;
-  sst.wSecond = st.second;
-  sst.wYear = st.year;
-}
+// Check binary compatibility of SystemTime / SYSTEMTIME at compile time
+static_assert(sizeof(SystemTime) == sizeof(SYSTEMTIME));
+static_assert(offsetof(SystemTime, year) == offsetof(SYSTEMTIME, wYear));
+static_assert(offsetof(SystemTime, month) == offsetof(SYSTEMTIME, wMonth));
+static_assert(offsetof(SystemTime, dayOfWeek) == offsetof(SYSTEMTIME, wDayOfWeek));
+static_assert(offsetof(SystemTime, day) == offsetof(SYSTEMTIME, wDay));
+static_assert(offsetof(SystemTime, hour) == offsetof(SYSTEMTIME, wHour));
+static_assert(offsetof(SystemTime, minute) == offsetof(SYSTEMTIME, wMinute));
+static_assert(offsetof(SystemTime, second) == offsetof(SYSTEMTIME, wSecond));
 } // namespace
 
 uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
@@ -51,17 +41,17 @@ uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
   if (!timeZoneInformation)
     return KODI_TIME_ZONE_ID_INVALID;
 
-  TIME_ZONE_INFORMATION tzi;
+  TIME_ZONE_INFORMATION tzi{};
   uint32_t result = ::GetTimeZoneInformation(&tzi);
-  if (result == KODI_TIME_ZONE_ID_INVALID)
-    return result;
+  if (result == TIME_ZONE_ID_INVALID)
+    return KODI_TIME_ZONE_ID_INVALID;
 
   timeZoneInformation->bias = tzi.Bias;
   timeZoneInformation->daylightBias = tzi.DaylightBias;
-  SystemTimeToKodiTime(tzi.DaylightDate, timeZoneInformation->daylightDate);
+  timeZoneInformation->daylightDate = *reinterpret_cast<const SystemTime*>(&tzi.DaylightDate);
   timeZoneInformation->daylightName = FromW(tzi.DaylightName);
   timeZoneInformation->standardBias = tzi.StandardBias;
-  SystemTimeToKodiTime(tzi.StandardDate, timeZoneInformation->standardDate);
+  timeZoneInformation->standardDate = *reinterpret_cast<const SystemTime*>(&tzi.StandardDate);
   timeZoneInformation->standardName = FromW(tzi.StandardName);
 
   return result;
@@ -69,103 +59,44 @@ uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
 
 void GetLocalTime(SystemTime* systemTime)
 {
-  SYSTEMTIME time;
-  ::GetLocalTime(&time);
-
-  systemTime->year = time.wYear;
-  systemTime->month = time.wMonth;
-  systemTime->dayOfWeek = time.wDayOfWeek;
-  systemTime->day = time.wDay;
-  systemTime->hour = time.wHour;
-  systemTime->minute = time.wMinute;
-  systemTime->second = time.wSecond;
-  systemTime->milliseconds = time.wMilliseconds;
+  ::GetLocalTime(reinterpret_cast<SYSTEMTIME*>(systemTime));
 }
 
 int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime)
 {
-  FILETIME file{};
-  file.dwLowDateTime = fileTime->lowDateTime;
-  file.dwHighDateTime = fileTime->highDateTime;
-
   SYSTEMTIME systemTime{};
-  if (FALSE == ::FileTimeToSystemTime(&file, &systemTime))
+  if (FALSE == ::FileTimeToSystemTime(reinterpret_cast<const FILETIME*>(fileTime), &systemTime))
     return FALSE;
 
   SYSTEMTIME localSystemTime{};
   if (FALSE == ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localSystemTime))
     return FALSE;
 
-  FILETIME localFile{};
-  int ret = ::SystemTimeToFileTime(&localSystemTime, &localFile);
-
-  localFileTime->lowDateTime = localFile.dwLowDateTime;
-  localFileTime->highDateTime = localFile.dwHighDateTime;
-
-  return ret;
+  return ::SystemTimeToFileTime(&localSystemTime, reinterpret_cast<FILETIME*>(localFileTime));
 }
 
 int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
 {
-  SYSTEMTIME time;
-  time.wYear = systemTime->year;
-  time.wMonth = systemTime->month;
-  time.wDayOfWeek = systemTime->dayOfWeek;
-  time.wDay = systemTime->day;
-  time.wHour = systemTime->hour;
-  time.wMinute = systemTime->minute;
-  time.wSecond = systemTime->second;
-  time.wMilliseconds = systemTime->milliseconds;
-
-  FILETIME file;
-  int ret = ::SystemTimeToFileTime(&time, &file);
-
-  fileTime->lowDateTime = file.dwLowDateTime;
-  fileTime->highDateTime = file.dwHighDateTime;
-
-  return ret;
+  return ::SystemTimeToFileTime(reinterpret_cast<const SYSTEMTIME*>(systemTime),
+                                reinterpret_cast<FILETIME*>(fileTime));
 }
 
 long CompareFileTime(const FileTime* fileTime1, const FileTime* fileTime2)
 {
-  FILETIME file1;
-  file1.dwLowDateTime = fileTime1->lowDateTime;
-  file1.dwHighDateTime = fileTime1->highDateTime;
-
-  FILETIME file2;
-  file2.dwLowDateTime = fileTime2->lowDateTime;
-  file2.dwHighDateTime = fileTime2->highDateTime;
-
-  return ::CompareFileTime(&file1, &file2);
+  return ::CompareFileTime(reinterpret_cast<const FILETIME*>(fileTime1),
+                           reinterpret_cast<const FILETIME*>(fileTime2));
 }
 
 int FileTimeToSystemTime(const FileTime* fileTime, SystemTime* systemTime)
 {
-  FILETIME file;
-  file.dwLowDateTime = fileTime->lowDateTime;
-  file.dwHighDateTime = fileTime->highDateTime;
-
-  SYSTEMTIME time;
-  int ret = ::FileTimeToSystemTime(&file, &time);
-  SystemTimeToKodiTime(time, *systemTime);
-
-  return ret;
+  return ::FileTimeToSystemTime(reinterpret_cast<const FILETIME*>(fileTime),
+                                reinterpret_cast<SYSTEMTIME*>(systemTime));
 }
 
 int LocalFileTimeToFileTime(const FileTime* localFileTime, FileTime* fileTime)
 {
-  FILETIME localFile;
-  localFile.dwLowDateTime = localFileTime->lowDateTime;
-  localFile.dwHighDateTime = localFileTime->highDateTime;
-
-  FILETIME file;
-
-  int ret = ::LocalFileTimeToFileTime(&localFile, &file);
-
-  fileTime->lowDateTime = file.dwLowDateTime;
-  fileTime->highDateTime = file.dwHighDateTime;
-
-  return ret;
+  return ::LocalFileTimeToFileTime(reinterpret_cast<const FILETIME*>(localFileTime),
+                                   reinterpret_cast<FILETIME*>(fileTime));
 }
 
 } // namespace TIME
