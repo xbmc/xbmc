@@ -80,9 +80,20 @@ bool CStaticListProvider::Update(bool forceRefresh)
       i->UpdateProperties(GetParentId());
   }
 
+  bool visibilityChanged{false};
   for (const auto& i : m_items)
-    changed |= i->UpdateVisibility(GetParentId());
+  {
+    if (i->UpdateVisibility(GetParentId()))
+    {
+      visibilityChanged = true;
+      i->UpdateProperties(GetParentId());
+    }
+  }
 
+  if (visibilityChanged)
+    m_updateTime = CTimeUtils::GetFrameTime();
+
+  changed |= visibilityChanged;
   return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 

@@ -129,6 +129,14 @@
 					<onclick condition="System.HasAddon(script.image.resource.select) + !System.AddonIsEnabled(script.image.resource.select)">EnableAddon(script.image.resource.select)</onclick>
 					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
 				</control>
+				<control type="button" id="6068">
+					<label>$LOCALIZE[31177]</label>
+					<label2>$INFO[Skin.String(WeatherOutlookIcon.name)]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="System.AddonIsEnabled(script.image.resource.select)">RunScript(script.image.resource.select,property=WeatherOutlookIcon&amp;type=resource.images.weathericons)</onclick>
+					<onclick condition="System.HasAddon(script.image.resource.select) + !System.AddonIsEnabled(script.image.resource.select)">EnableAddon(script.image.resource.select)</onclick>
+					<onclick condition="!System.HasAddon(script.image.resource.select)">InstallAddon(script.image.resource.select)</onclick>
+				</control>
 				<control type="radiobutton" id="6067">
 					<label>$LOCALIZE[31168]</label>
 					<include>DefaultSettingButton</include>

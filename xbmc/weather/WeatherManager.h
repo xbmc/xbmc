@@ -12,9 +12,13 @@
 #include "threads/CriticalSection.h"
 #include "utils/InfoLoader.h"
 
+#include <algorithm>
 #include <array>
+#include <map>
 #include <memory>
 #include <string>
+#include <string_view>
+#include <vector>
 
 constexpr unsigned int WEATHER_LABEL_LOCATION = 10;
 constexpr unsigned int WEATHER_IMAGE_CURRENT_ICON = 21;
@@ -65,7 +69,22 @@ public:
    \param property the full name of the property (e.g. Current.Temperature, Hourly.1.Temperature)
    \return the property value
    */
-  std::string GetProperty(const std::string& property);
+  std::string GetProperty(const std::string& property) const;
+
+  /*!
+   \brief Retrieve the value for the given "day" weather property
+   \param index the index for the day, (can be in the range [0..6])
+   \param property the name of the property (e.g. HighTemp)
+   \return the property value
+   */
+  std::string GetDayProperty(unsigned int index, const std::string& property) const;
+
+  /*!
+   \brief Get the city names of all available locations, sorted by location index.
+   \return the city names
+   \sa GetLocation
+   */
+  std::vector<std::string> GetLocations() const;
 
   /*!
    \brief Retrieve the city name for the specified location from the settings
@@ -92,6 +111,19 @@ public:
    */
   static int GetArea();
 
+  struct CaseInsensitiveWeatherCompare
+  {
+    using is_transparent = void; // Enables heterogeneous operations.
+
+    bool operator()(const std::string_view& lhs, const std::string_view& rhs) const
+    {
+      return std::ranges::lexicographical_compare(lhs, rhs, [](char l, char r)
+                                                  { return std::tolower(l) < std::tolower(r); });
+    }
+  };
+
+  using WeatherInfoV2 = std::map<std::string, std::string, CaseInsensitiveWeatherCompare>;
+
 protected:
   CJob* GetJob() const override;
   std::string TranslateInfo(int info) const override;
@@ -104,4 +136,5 @@ protected:
 private:
   mutable CCriticalSection m_critSection;
   WeatherInfo m_info{};
+  mutable WeatherInfoV2 m_infoV2{};
 };

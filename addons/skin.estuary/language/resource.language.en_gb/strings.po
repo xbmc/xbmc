@@ -864,7 +864,12 @@ msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
 msgstr ""
 
-#empty strings from id 31177 to 31596
+#: /xml/SkinSettings.xml
+msgctxt "#31177"
+msgid "Choose weather icon pack"
+msgstr ""
+
+#empty strings from id 31178 to 31596
 
 #: /xml/Includes_SettingsDialog.xml
 #. Button to select Player Process Info window

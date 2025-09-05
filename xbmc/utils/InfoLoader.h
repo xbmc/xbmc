@@ -20,6 +20,7 @@ public:
 
   std::string GetInfo(int info);
   void Refresh();
+  bool IsUpdating() const { return m_busy; }
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 protected:

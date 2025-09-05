@@ -988,4 +988,12 @@
 		<value condition="String.IsEqual(ListItem.Property(stream.isforced),true)">$LOCALIZE[39106]</value>
 		<value condition="String.IsEqual(ListItem.Property(stream.isoriginal),true)">$LOCALIZE[39111]</value>
 	</variable>
+	<variable name="WeatherOutlookIconPrefixVar">
+		<value condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path))">$INFO[Skin.String(WeatherOutlookIcon.path)]</value>
+		<value>resource://resource.images.weathericons.default/</value>
+	</variable>
+	<variable name="WeatherOutlookIconPostfixVar">
+		<value condition="!String.IsEmpty(Skin.String(WeatherOutlookIcon.path))">$INFO[Skin.String(WeatherOutlookIcon.ext)]</value>
+		<value>.png</value>
+	</variable>
 </includes>

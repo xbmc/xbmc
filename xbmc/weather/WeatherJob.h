@@ -20,11 +20,14 @@ public:
   bool DoWork() override;
 
   const WeatherInfo& GetInfo() const;
+  const CWeatherManager::WeatherInfoV2& GetInfoV2() const;
 
 private:
   void SetFromProperties();
+  void SetFromPropertiesV2();
 
-  WeatherInfo m_info;
+  WeatherInfo m_info{};
+  CWeatherManager::WeatherInfoV2 m_infoV2{};
   CWeatherTokenLocalizer m_localizer;
   int m_location{-1};
 };
