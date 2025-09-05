@@ -28,6 +28,7 @@ set(HEADERS AudioSinkAE.h
             DVDStreamInfo.h
             Edl.h
             IVideoPlayer.h
+		    PlayerState.h
             PTSTracker.h
             VideoPlayer.h
             VideoPlayerAudio.h
