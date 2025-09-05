@@ -40,6 +40,7 @@ enum RenderMethods
   RENDER_METHOD_SOFTWARE,
   RENDER_METHOD_D3D_PS,
   RENDER_METHOD_DXVA,
+  RENDER_METHOD_LIBPLACEBO,
   RENDER_OVERLAYS        = 99   // to retain compatibility
 };
 
