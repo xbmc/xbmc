@@ -646,23 +646,25 @@ std::string GetResumeString(const CFileItem& item)
 
 std::string GetResumeString(int64_t startOffset, unsigned int partNumber)
 {
+  std::string resumeString;
   if (startOffset > 0)
   {
-    std::string resumeString{StringUtils::Format(
+    resumeString = StringUtils::Format(
         g_localizeStrings.Get(12022),
         StringUtils::SecondsToTimeString(CUtil::ConvertMilliSecsToSecsInt(startOffset),
-                                         TIME_FORMAT_HH_MM_SS))};
-    if (partNumber > 0)
-    {
-      const std::string partString{StringUtils::Format(g_localizeStrings.Get(23051), partNumber)};
-      resumeString += " (" + partString + ")";
-    }
-    return resumeString;
+                                         TIME_FORMAT_HH_MM_SS)); // Resume from ##:##:##
   }
   else
   {
-    return g_localizeStrings.Get(13362); // Continue watching
+    resumeString = g_localizeStrings.Get(12023); // Resume from
   }
+  if (partNumber > 0)
+  {
+    const std::string partString{
+        StringUtils::Format(g_localizeStrings.Get(23051), partNumber)}; // Part #
+    resumeString += startOffset > 0 ? " (" + partString + ")" : " " + partString;
+  }
+  return resumeString;
 }
 
 } // namespace KODI::VIDEO::UTILS

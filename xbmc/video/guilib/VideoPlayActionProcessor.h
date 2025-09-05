@@ -22,8 +22,6 @@ public:
   using CVideoActionProcessorBase::CVideoActionProcessorBase;
 
   void SetChoosePlayer() { m_choosePlayer = true; }
-  void SetChooseStackPart() { m_chooseStackPart = true; }
-
   static Action ChoosePlayOrResume(const CFileItem& item);
 
 protected:
@@ -42,8 +40,6 @@ private:
   void SetStartData();
   void Play(const std::string& player);
 
-  bool m_chooseStackPart{false};
   bool m_choosePlayer{false};
-  unsigned int m_chosenStackPart{0};
 };
 } // namespace KODI::VIDEO::GUILIB

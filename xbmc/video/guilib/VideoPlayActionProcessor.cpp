@@ -47,22 +47,6 @@ Action CVideoPlayActionProcessor::GetDefaultAction()
 
 bool CVideoPlayActionProcessor::Process(Action action)
 {
-  if (m_chooseStackPart && m_chosenStackPart == 0)
-  {
-    if (!URIUtils::IsStack(GetItem()->GetDynPath()))
-    {
-      CLog::LogF(LOGERROR, "Invalid item (not a stack)!");
-      return true; // done
-    }
-
-    m_chosenStackPart = ChooseStackPart();
-    if (m_chosenStackPart < 1)
-    {
-      SetUserCancelled(true);
-      return true; // User cancelled the select menu. We're done.
-    }
-  }
-
   switch (action)
   {
     case ACTION_PLAY_OR_RESUME:
@@ -97,17 +81,13 @@ bool CVideoPlayActionProcessor::Process(Action action)
 
 Action CVideoPlayActionProcessor::ChoosePlayOrResume() const
 {
-  if (m_chosenStackPart)
+  if (URIUtils::IsStack(GetItem()->GetDynPath()))
   {
-    const int64_t offset{VIDEO::UTILS::GetStackPartResumeOffset(*GetItem(), m_chosenStackPart)};
-    if (offset > 0)
-      return ChoosePlayOrResume(VIDEO::UTILS::GetResumeString(offset, m_chosenStackPart));
-  }
-  else if (URIUtils::IsStack(GetItem()->GetDynPath()))
-  {
-    const auto [offset, partNumber] = VIDEO::UTILS::GetStackResumeOffsetAndPartNumber(*GetItem());
-    if (offset > 0)
+    if (const auto resume{UTILS::GetStackResumeOffsetAndPartNumber(*GetItem())}; resume)
+    {
+      const auto& [offset, partNumber] = *resume;
       return ChoosePlayOrResume(VIDEO::UTILS::GetResumeString(offset, partNumber));
+    }
   }
   else
   {
@@ -177,31 +157,15 @@ unsigned int CVideoPlayActionProcessor::ChooseStackPart() const
 void CVideoPlayActionProcessor::SetResumeData()
 {
   const auto item{GetItem()};
-  if (m_chosenStackPart)
-  {
-    item->SetStartPartNumber(m_chosenStackPart);
-    item->SetStartOffset(VIDEO::UTILS::GetStackPartResumeOffset(*item, m_chosenStackPart));
-  }
-  else
-  {
-    item->SetStartPartNumber(1);
-    item->SetStartOffset(STARTOFFSET_RESUME);
-  }
+  item->SetStartPartNumber(1);
+  item->SetStartOffset(STARTOFFSET_RESUME);
 }
 
 void CVideoPlayActionProcessor::SetStartData()
 {
   const auto item{GetItem()};
-  if (m_chosenStackPart)
-  {
-    item->SetStartPartNumber(m_chosenStackPart);
-    item->SetStartOffset(VIDEO::UTILS::GetStackPartStartOffset(*item, m_chosenStackPart));
-  }
-  else
-  {
-    item->SetStartPartNumber(1);
-    item->SetStartOffset(0);
-  }
+  item->SetStartPartNumber(1);
+  item->SetStartOffset(0);
 }
 
 bool CVideoPlayActionProcessor::OnResumeSelected()
