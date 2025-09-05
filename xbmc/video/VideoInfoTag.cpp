@@ -40,6 +40,7 @@ void CVideoInfoTag::Reset()
   m_strTitle.clear();
   m_strShowTitle.clear();
   m_strOriginalTitle.clear();
+  m_originalLanguage.clear();
   m_strSortTitle.clear();
   m_cast.clear();
   m_set.Reset();
@@ -387,6 +388,8 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
     m_strShowTitle = other.m_strShowTitle;
   if (!other.m_strOriginalTitle.empty())
     m_strOriginalTitle = other.m_strOriginalTitle;
+  if (!other.m_originalLanguage.empty())
+    m_originalLanguage = other.m_originalLanguage;
   if (!other.m_strSortTitle.empty())
     m_strSortTitle = other.m_strSortTitle;
   if (!other.m_cast.empty())
@@ -554,6 +557,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strMPAARating;
     ar << m_strFileNameAndPath;
     ar << m_strOriginalTitle;
+    ar << m_originalLanguage;
     ar << m_strEpisodeGuide;
     ar << m_premiered;
     ar << m_bHasPremiered;
@@ -660,6 +664,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strMPAARating;
     ar >> m_strFileNameAndPath;
     ar >> m_strOriginalTitle;
+    ar >> m_originalLanguage;
     ar >> m_strEpisodeGuide;
     ar >> m_premiered;
     ar >> m_bHasPremiered;
@@ -783,6 +788,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["mpaa"] = m_strMPAARating;
   value["filenameandpath"] = m_strFileNameAndPath;
   value["originaltitle"] = m_strOriginalTitle;
+  value["originallanguage"] = m_originalLanguage;
   value["sorttitle"] = m_strSortTitle;
   value["episodeguide"] = m_strEpisodeGuide;
   value["premiered"] = m_premiered.IsValid() ? m_premiered.GetAsDBDate() : StringUtils::Empty;
@@ -1771,6 +1777,7 @@ bool CVideoInfoTag::SetOriginalLanguage(std::string language, LanguageProcessing
     return true;
   }
 
+  CLog::LogF(LOGERROR, "{} is not recognized as a valid language tag or English name", language);
   return false;
 }
 
