@@ -43,7 +43,8 @@ enum RenderMethod
   RENDER_INVALID = 0,
   RENDER_DXVA = 1,
   RENDER_PS = 2,
-  RENDER_SW = 3
+  RENDER_SW = 3,
+  RENDER_LIBPLACEBO = 4
 };
 
 enum class HDR_TYPE
