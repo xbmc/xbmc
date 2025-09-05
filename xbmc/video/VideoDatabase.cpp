@@ -13664,8 +13664,27 @@ void CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
   try
   {
     if (itemType == VideoDbContentType::MOVIES)
-      m_pDS->exec(PrepareSQL("UPDATE movie SET idFile = %i, c%02d = '%s' WHERE idMovie = %i",
-                             idFile, VIDEODB_ID_BASEPATH, path.c_str(), dbId));
+    {
+      const int idOldFile{
+          GetSingleValueInt(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", dbId))};
+
+      if (idOldFile != idFile)
+      {
+        m_pDS->exec(PrepareSQL("UPDATE movie SET idFile = %i, c%02d = '%s' WHERE idMovie = %i",
+                               idFile, VIDEODB_ID_BASEPATH, path.c_str(), dbId));
+
+        // Swap art
+        // media_id is idMovie for movies and idFile for videoversions
+        // Convert current movie art to videoversion art
+        m_pDS->exec(PrepareSQL("UPDATE art SET media_type = '%s', media_id = %i "
+                               "WHERE media_id = %i AND media_type = '%s'",
+                               MediaTypeVideoVersion, idOldFile, dbId, MediaTypeMovie));
+        // Convert selected version art to movie art
+        m_pDS->exec(PrepareSQL("UPDATE art SET media_type = '%s', media_id = %i "
+                               "WHERE media_id = %i AND media_type = '%s'",
+                               MediaTypeMovie, dbId, idFile, MediaTypeVideoVersion));
+      }
+    }
   }
   catch (...)
   {
