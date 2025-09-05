@@ -584,3 +584,47 @@ TEST(TestXMLUtils, SetDateTime)
   EXPECT_TRUE(XMLUtils::GetDateTime(b.RootElement(), "node", val2));
   EXPECT_TRUE(ref == val2);
 }
+
+TEST(TestXMLUtils, RemoveAndReturnNextSibling)
+{
+  {
+    CXBMCTinyXML a;
+
+    a.Parse(std::string(
+        "<root><node>some string</node><other>string</other><node>other string</node></root>"));
+    TiXmlNode* node = a.RootElement()->FirstChildElement("node");
+    node = XMLUtils::RemoveAndReturnNextSibling(node, "node");
+
+    EXPECT_TRUE(node != nullptr);
+    EXPECT_EQ(node->FirstChild()->ValueStr(), "other string");
+
+    node = XMLUtils::RemoveAndReturnNextSibling(node, "node");
+
+    EXPECT_TRUE(node == nullptr);
+
+    a.Parse(std::string("<root>some string</root>"));
+    node = XMLUtils::RemoveAndReturnNextSibling(a.RootElement(), "node");
+
+    EXPECT_TRUE(node == nullptr);
+  }
+  {
+    CXBMCTinyXML2 a;
+    a.Parse(std::string(
+        "<root><node>some string</node><other>string</other><node>other string</node></root>"));
+    tinyxml2::XMLNode* root = a.RootElement();
+    tinyxml2::XMLNode* node = root->FirstChildElement("node");
+    node = XMLUtils::RemoveAndReturnNextSibling(node, "node");
+
+    EXPECT_TRUE(node != nullptr);
+    EXPECT_STREQ(node->FirstChild()->Value(), "other string");
+
+    node = XMLUtils::RemoveAndReturnNextSibling(node, "node");
+
+    EXPECT_TRUE(node == nullptr);
+
+    a.Parse(std::string("<root>some string</root>"));
+    node = XMLUtils::RemoveAndReturnNextSibling(a.RootElement(), "node");
+
+    EXPECT_TRUE(node == nullptr);
+  }
+}
