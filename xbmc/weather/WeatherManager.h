@@ -19,6 +19,11 @@
 #include <string_view>
 #include <vector>
 
+namespace ADDON
+{
+class CAddonMgr;
+} // namespace ADDON
+
 constexpr unsigned int WEATHER_LABEL_LOCATION = 10;
 constexpr unsigned int WEATHER_IMAGE_CURRENT_ICON = 21;
 constexpr unsigned int WEATHER_LABEL_CURRENT_COND = 22;
@@ -60,7 +65,7 @@ struct WeatherInfo
 class CWeatherManager : public CInfoLoader, public ISettingCallback
 {
 public:
-  CWeatherManager();
+  CWeatherManager(ADDON::CAddonMgr& addonManager);
   ~CWeatherManager() override;
 
   /*!
@@ -133,7 +138,13 @@ protected:
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
+  // Construction parameters
+  ADDON::CAddonMgr& m_addonManager;
+
+  // Synchronization parameters
   mutable CCriticalSection m_critSection;
+
+  // State parameters
   WeatherInfo m_info{};
   mutable WeatherInfoV2 m_infoV2{};
 };

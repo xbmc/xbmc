@@ -11,6 +11,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "WeatherJob.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
@@ -30,14 +31,54 @@
 using namespace ADDON;
 using namespace KODI::WEATHER;
 
-CWeatherManager::CWeatherManager() : CInfoLoader(WEATHER_REFRESH_INTERVAL_MS)
+CWeatherManager::CWeatherManager(ADDON::CAddonMgr& addonManager)
+  : CInfoLoader(WEATHER_REFRESH_INTERVAL_MS),
+    m_addonManager(addonManager)
 {
-  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(
-      this, {CSettings::SETTING_WEATHER_ADDON, CSettings::SETTING_WEATHER_ADDONSETTINGS});
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (settingsComponent)
+  {
+    std::shared_ptr<CSettings> settings = settingsComponent->GetSettings();
+    if (settings)
+    {
+      // Register settings callback
+      settings->GetSettingsManager()->RegisterCallback(
+          this, {CSettings::SETTING_WEATHER_ADDON, CSettings::SETTING_WEATHER_ADDONSETTINGS});
+
+      // At startup, if current weather add-on isn't available, reset the setting
+      const std::string addonId = settings->GetString(CSettings::SETTING_WEATHER_ADDON);
+      if (!addonId.empty() &&
+          (addonManager.IsAddonDisabled(addonId) || !addonManager.IsAddonInstalled(addonId)))
+      {
+        settings->SetString(CSettings::SETTING_WEATHER_ADDON, "");
+        settings->Save();
+      }
+
+      // Handle add-on becoming unavailable
+      m_addonManager.Events().Subscribe(
+          this,
+          [settings = std::move(settings)](const AddonEvent& event)
+          {
+            if (typeid(event) == typeid(AddonEvents::Disabled) || // not called on uninstall
+                typeid(event) == typeid(AddonEvents::UnInstalled))
+            {
+              // If add-on was the current weather add-on, reset the setting
+              const std::string addonId = event.addonId;
+              if (addonId == settings->GetString(CSettings::SETTING_WEATHER_ADDON))
+              {
+                settings->SetString(CSettings::SETTING_WEATHER_ADDON, "");
+                settings->Save();
+              }
+            }
+          });
+    }
+  }
 }
 
 CWeatherManager::~CWeatherManager()
 {
+  m_addonManager.Events().Unsubscribe(this);
+
   const auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
     return;
@@ -206,7 +247,7 @@ void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& se
     return;
 
   const std::string settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_WEATHER_ADDON)
+  if (settingId == CSettings::SETTING_WEATHER_ADDON && CServiceBroker::GetGUI() != nullptr)
   {
     // clear "WeatherProviderLogo" property that some weather addons set
     CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER);
