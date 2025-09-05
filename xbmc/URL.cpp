@@ -22,7 +22,6 @@
 #include <sys\stat.h>
 #endif
 
-#include <charconv>
 #include <iterator>
 #include <string>
 #include <system_error>
@@ -664,62 +663,13 @@ bool CURL::IsFullPath(const std::string &url)
 }
 
 std::string CURL::Decode(std::string_view strURLData)
-//modified to be more accommodating - if a non hex value follows a % take the characters directly and don't raise an error.
-// However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {
-  std::string strResult;
-
-  /* result will always be less than source */
-  strResult.reserve( strURLData.length() );
-
-  const char* const iterEnd = strURLData.data() + strURLData.size();
-  for (const char* iter = strURLData.data(); iter < iterEnd; ++iter)
-  {
-    if (*iter == '+')
-      strResult += ' ';
-    else if (*iter == '%')
-    {
-      if (std::distance(iter, iterEnd) >= 3)
-      {
-        uint8_t dec_num{};
-        const std::from_chars_result res = std::from_chars(iter + 1, iter + 3, dec_num, 16);
-        if (res.ec != std::errc() || res.ptr != iter + 3)
-          strResult += *iter;
-        else
-        {
-          strResult += (char)dec_num;
-          iter += 2;
-        }
-      }
-      else
-        strResult += *iter;
-    }
-    else
-      strResult += *iter;
-  }
-
-  return strResult;
+  return URIUtils::URLDecode(strURLData);
 }
 
 std::string CURL::Encode(std::string_view strURLData)
 {
-  std::string strResult;
-
-  /* wonder what a good value is here is, depends on how often it occurs */
-  strResult.reserve( strURLData.length() * 2 );
-
-  for (auto kar : strURLData)
-  {
-    // Don't URL encode "-_.!()" according to RFC1738
-    //! @todo Update it to "-_.~" after Gotham according to RFC3986
-    if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
-      strResult.push_back(kar);
-    else
-      fmt::format_to(std::back_insert_iterator(strResult), "%{:02x}",
-                     (unsigned int)((unsigned char)kar));
-  }
-
-  return strResult;
+  return URIUtils::URLEncode(strURLData);
 }
 
 bool CURL::IsProtocolEqual(const std::string& protocol, std::string_view type)
