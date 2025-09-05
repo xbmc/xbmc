@@ -168,7 +168,7 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
   m_powerManager->Initialize();
   m_powerManager->SetDefaults();
 
-  m_weatherManager = std::make_unique<CWeatherManager>();
+  m_weatherManager = std::make_unique<CWeatherManager>(*m_addonMgr);
 
   m_mediaManager = std::make_unique<CMediaManager>();
   m_mediaManager->Initialize();
