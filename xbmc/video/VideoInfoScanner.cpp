@@ -1044,7 +1044,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
           // Look for default version
           if (tag->IsDefaultVideoVersion())
-            defaultVersionFileId = tag->m_iFileId; // Updated in AddPlaylistMovieVersion()
+            defaultVersionFileId = tag->m_iFileId; // Updated in AddVideoAsset()
         }
       } while (result == InfoType::FULL);
 
@@ -1977,9 +1977,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
             tag->m_iDbId}; // Set in AddVideo() for movies and RetrieveInfoForMovie() for versions
         if (idMovie != -1)
         {
-          lResult = m_database.AddMovieVersion(*pItem, idMovie, art);
-          movieDetails.m_iDbId = idMovie;
-          movieDetails.m_type = MediaTypeMovie;
+          pItem->SetArt(art); // May have been filtered above
+          CVideoInfoTag* vtag{pItem->GetVideoInfoTag()};
+          lResult =
+              m_database.AddVideoAsset(VideoDbContentType::MOVIES, idMovie,
+                                       tag->GetAssetInfo().GetId(), VideoAssetType::VERSION, *pItem)
+                  ? vtag->m_iFileId
+                  : -1;
         }
       }
     }

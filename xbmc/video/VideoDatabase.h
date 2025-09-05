@@ -751,8 +751,6 @@ public:
   bool SetStreamDetailsForFile(const CStreamDetails& details,
                                const std::string& strFileNameAndPath);
 
-  int AddMovieVersion(CFileItem& item, int idMovie, const KODI::ART::Artwork& art);
-
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
    * \param[in] details New stream details

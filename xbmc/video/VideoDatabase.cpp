@@ -3040,29 +3040,6 @@ int CVideoDatabase::SetDetailsForMovieSet(const CVideoInfoTag& details,
   return -1;
 }
 
-int CVideoDatabase::AddMovieVersion(CFileItem& item, int idMovie, const ART::Artwork& art)
-{
-  CVideoInfoTag* tag{item.GetVideoInfoTag()};
-
-  const int idFile{
-      AddFile(item.GetDynPath(), "", tag->m_dateAdded, tag->GetPlayCount(), tag->m_lastPlayed)};
-  if (idFile < 0)
-    return -1;
-  item.GetVideoInfoTag()->m_iFileId = idFile;
-
-  if (tag->HasStreamDetails() && !SetStreamDetailsForFileId(tag->m_streamDetails, idFile))
-    return -1;
-
-  if (!AddOrUpdateVideoVersion(item.GetVideoContentType(), idMovie, idFile,
-                               tag->GetAssetInfo().GetId(), VideoAssetType::VERSION))
-    return -1;
-
-  if (!SetArtForItem(idFile, MediaTypeVideoVersion, art))
-    return -1;
-
-  return idFile;
-}
-
 int CVideoDatabase::GetMatchingTvShow(const CVideoInfoTag& details) const
 {
   // first try matching on uniqueid, then on title + year
@@ -13798,7 +13775,17 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
 
   MediaType mediaType = VideoContentTypeToString(itemType);
 
-  int idFile = AddFile(item.GetPath());
+  int idFile;
+  if (item.HasVideoInfoTag())
+  {
+    // DynPath may contain a disc (eg. bluray://) path
+    CVideoInfoTag* tag{item.GetVideoInfoTag()};
+    idFile =
+        AddFile(item.GetDynPath(), "", tag->m_dateAdded, tag->GetPlayCount(), tag->m_lastPlayed);
+    tag->m_iFileId = idFile;
+  }
+  else
+    idFile = AddFile(item.GetPath());
   if (idFile < 0)
     return false;
 
@@ -13806,29 +13793,10 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
   {
     BeginTransaction();
 
-    m_pDS->query(PrepareSQL(
-        "SELECT idMedia, media_type, itemType FROM videoversion WHERE idFile = %i", idFile));
-
-    if (m_pDS->num_rows() == 0)
+    if (!AddOrUpdateVideoVersion(itemType, dbId, idFile, idVideoAsset, videoAssetType))
     {
-      m_pDS->exec(
-          PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
-                     "VALUES(%i, %i, '%s', %i, %i)",
-                     idFile, dbId, mediaType.c_str(), videoAssetType, idVideoAsset));
-    }
-    else
-    {
-      const int assetIdMedia = m_pDS->fv("idMedia").get_asInt();
-      const std::string assetMediaType = m_pDS->fv("media_type").get_asString();
-      const auto assetType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt());
-
-      if (assetIdMedia != dbId || assetMediaType != mediaType || assetType != videoAssetType)
-      {
-        m_pDS->exec(PrepareSQL("UPDATE videoversion "
-                               "SET idMedia = %i, media_type = '%s', itemType = %i, idType = %i "
-                               "WHERE idFile = %i",
-                               dbId, mediaType.c_str(), videoAssetType, idVideoAsset, idFile));
-      }
+      RollbackTransaction();
+      return false;
     }
 
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
