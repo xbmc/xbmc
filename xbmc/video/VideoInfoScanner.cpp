@@ -1008,9 +1008,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (movieId < 0)
           return InfoRet::INFO_ERROR;
 
-        // Set version (AddVideo() ultimately uses CVideoDatabase::AddNewMovie() which defaults to standard version)
-        m_database.SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
-
         // Deal with set
         if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
           if (!AddSet(pItem->GetVideoInfoTag()->m_set))
