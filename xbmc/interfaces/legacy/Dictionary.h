@@ -29,7 +29,9 @@ namespace XBMCAddon
    * appropriate types.
    */
 template<class T>
-class Dictionary : public std::map<String, T, std::less<>> {};
+class Dictionary : public std::map<String, T, std::less<>>
+{
+};
 
   typedef Dictionary<StringOrInt> Properties;
 }
