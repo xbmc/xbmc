@@ -1109,21 +1109,21 @@ namespace XBMCAddon
       infoTag->m_fanart.Clear();
       for (const auto& dictionary : images)
       {
-        std::string image;
-        std::string preview;
-        std::string colors;
-        for (const auto& it : dictionary)
+        auto getValue = [&](std::string_view str) -> const std::string&
         {
-          const String& key = it.first;
-          const String& value = it.second;
-          if (key == "image")
-            image = value;
-          else if (key == "preview")
-            preview = value;
-          else if (key == "colors")
-            colors = value;
-        }
-        infoTag->m_fanart.AddFanart(image, preview, colors);
+          const auto iter = dictionary.find(str);
+          if (iter != dictionary.end())
+            return iter->second;
+          else
+            return StringUtils::Empty;
+        };
+
+        const std::string& image = getValue("image");
+        const std::string& preview = getValue("preview");
+        const std::string& colors = getValue("colors");
+
+        if (!image.empty())
+          infoTag->m_fanart.AddFanart(image, preview, colors);
       }
       infoTag->m_fanart.Pack();
     }
