@@ -109,7 +109,7 @@ void CRendererPL::CheckVideoParameters()
       };
     }
   }
-  CreateIntermediateTarget(m_viewWidth, m_viewHeight, false, DX::DeviceResources::Get()->GetBackBuffer().GetFormat());
+  CreateIntermediateTarget(m_viewWidth, m_viewHeight, false, DXGI_FORMAT_R10G10B10A2_UNORM);
 }
 
 void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags)
@@ -134,29 +134,16 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
     return;
   frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
   frameIn.color = m_colorSpace;
-  
-  /*reset the depth stencil*/
-  ID3D11DepthStencilState* dsState = nullptr;
-  D3D11_DEPTH_STENCIL_DESC dsDesc = {};
-  dsDesc.DepthEnable = FALSE;               // libplacebo doesn’t need depth test
-  dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-  dsDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-
-  DX::DeviceResources().Get()->GetD3DDevice()->CreateDepthStencilState(&dsDesc, &dsState);
-  DX::DeviceResources().Get()->GetD3DContext()->OMSetDepthStencilState(dsState, 0);
-  if (dsState)
-  { 
-    dsState->Release(); 
-    dsState = nullptr; 
-  }
-  
-
+  //todo
+  //Add icc profile
+  //add rotate
 
   outputParams.w = target.GetWidth();
   outputParams.h = target.GetHeight();
   outputParams.fmt = target.GetFormat();
   outputParams.tex = target.Get();
   outputParams.array_slice = 1;
+  
   pl_tex interTexture = pl_d3d11_wrap(PL::PLInstance::Get()->GetGpu(), &outputParams);
 
   frameOut.num_planes = 1;
@@ -166,6 +153,7 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
   frameOut.planes[0].component_mapping[1] = PL_CHANNEL_G;
   frameOut.planes[0].component_mapping[2] = PL_CHANNEL_B;
   frameOut.planes[0].component_mapping[3] = PL_CHANNEL_A;
+  
   frameOut.crop.x1 = dst.Width();
   frameOut.crop.y1 = dst.Height();
   frameOut.repr = frameIn.repr;
@@ -175,8 +163,8 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
 
   pl_render_params params;
   params = pl_render_default_params;
-  
-
+  //Would need to make the target clearable first
+  params.skip_target_clearing = true;
   pl_frame_set_chroma_location(&frameIn, m_chromaLocation);
   bool res = pl_render_image(PL::PLInstance::Get()->GetRenderer(), &frameIn, &frameOut, &params);
 
@@ -281,9 +269,6 @@ bool CRendererPL::CRenderBufferImpl::UploadToTexture()
   
   for (int n = 0; n < pl_plane_data_from_pixfmt(pdata, &bits, videoBuffer->GetFormat()); n++)
   {
-
-
-    
     pdata[n].pixels = src[n];
     pdata[n].row_stride = srcStrides[n];
     pdata[n].pixel_stride = 2;
