@@ -119,3 +119,23 @@ consteval auto make_map(std::pair<Key, Value> (&&m)[Size]) -> CMap<Key, Value, S
 {
   return CMap<Key, Value, Size>(std::begin(m), std::end(m));
 }
+
+/*!
+ * \brief Overload that is used when called with an empty initializer list
+ */
+template<typename Key, typename Value>
+consteval auto make_map(std::initializer_list<std::type_info>) -> CMap<Key, Value, 0>
+{
+  std::array<std::pair<Key, Value>, 0> empty{};
+  return CMap<Key, Value, 0>(std::begin(empty), std::end(empty));
+}
+
+/*!
+ * \brief Overload when called without function arguments
+ */
+template<typename Key, typename Value>
+consteval auto make_map() -> CMap<Key, Value, 0>
+{
+  std::array<std::pair<Key, Value>, 0> empty{};
+  return CMap<Key, Value, 0>(std::begin(empty), std::end(empty));
+}
