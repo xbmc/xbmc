@@ -11,11 +11,12 @@
 #include "ServiceBroker.h"
 #include "utils/DRMHelpers.h"
 #include "utils/EGLUtils.h"
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
-#include <map>
+#include <string_view>
 
 namespace
 {
@@ -57,51 +58,50 @@ namespace
 #endif
 
 #define X(VAL) std::make_pair(VAL, #VAL)
-std::map<EGLint, const char*> eglAttributes =
-{
-  X(EGL_WIDTH),
-  X(EGL_HEIGHT),
+  constexpr auto eglAttributes = make_map<EGLint, std::string_view>({
+      X(EGL_WIDTH),
+      X(EGL_HEIGHT),
 
-  // please keep attributes in accordance to:
-  // https://www.khronos.org/registry/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import.txt
-  X(EGL_LINUX_DRM_FOURCC_EXT),
-  X(EGL_DMA_BUF_PLANE0_FD_EXT),
-  X(EGL_DMA_BUF_PLANE0_OFFSET_EXT),
-  X(EGL_DMA_BUF_PLANE0_PITCH_EXT),
-  X(EGL_DMA_BUF_PLANE1_FD_EXT),
-  X(EGL_DMA_BUF_PLANE1_OFFSET_EXT),
-  X(EGL_DMA_BUF_PLANE1_PITCH_EXT),
-  X(EGL_DMA_BUF_PLANE2_FD_EXT),
-  X(EGL_DMA_BUF_PLANE2_OFFSET_EXT),
-  X(EGL_DMA_BUF_PLANE2_PITCH_EXT),
-  X(EGL_YUV_COLOR_SPACE_HINT_EXT),
-  X(EGL_SAMPLE_RANGE_HINT_EXT),
-  X(EGL_YUV_CHROMA_VERTICAL_SITING_HINT_EXT),
-  X(EGL_YUV_CHROMA_HORIZONTAL_SITING_HINT_EXT),
-  X(EGL_ITU_REC601_EXT),
-  X(EGL_ITU_REC709_EXT),
-  X(EGL_ITU_REC2020_EXT),
-  X(EGL_YUV_FULL_RANGE_EXT),
-  X(EGL_YUV_NARROW_RANGE_EXT),
-  X(EGL_YUV_CHROMA_SITING_0_EXT),
-  X(EGL_YUV_CHROMA_SITING_0_5_EXT),
+      // please keep attributes in accordance to:
+      // https://www.khronos.org/registry/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import.txt
+      X(EGL_LINUX_DRM_FOURCC_EXT),
+      X(EGL_DMA_BUF_PLANE0_FD_EXT),
+      X(EGL_DMA_BUF_PLANE0_OFFSET_EXT),
+      X(EGL_DMA_BUF_PLANE0_PITCH_EXT),
+      X(EGL_DMA_BUF_PLANE1_FD_EXT),
+      X(EGL_DMA_BUF_PLANE1_OFFSET_EXT),
+      X(EGL_DMA_BUF_PLANE1_PITCH_EXT),
+      X(EGL_DMA_BUF_PLANE2_FD_EXT),
+      X(EGL_DMA_BUF_PLANE2_OFFSET_EXT),
+      X(EGL_DMA_BUF_PLANE2_PITCH_EXT),
+      X(EGL_YUV_COLOR_SPACE_HINT_EXT),
+      X(EGL_SAMPLE_RANGE_HINT_EXT),
+      X(EGL_YUV_CHROMA_VERTICAL_SITING_HINT_EXT),
+      X(EGL_YUV_CHROMA_HORIZONTAL_SITING_HINT_EXT),
+      X(EGL_ITU_REC601_EXT),
+      X(EGL_ITU_REC709_EXT),
+      X(EGL_ITU_REC2020_EXT),
+      X(EGL_YUV_FULL_RANGE_EXT),
+      X(EGL_YUV_NARROW_RANGE_EXT),
+      X(EGL_YUV_CHROMA_SITING_0_EXT),
+      X(EGL_YUV_CHROMA_SITING_0_5_EXT),
 
 #if defined(EGL_EXT_image_dma_buf_import_modifiers)
-  // please keep attributes in accordance to:
-  // https://www.khronos.org/registry/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import_modifiers.txt
-  X(EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT),
-  X(EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT),
-  X(EGL_DMA_BUF_PLANE1_MODIFIER_LO_EXT),
-  X(EGL_DMA_BUF_PLANE1_MODIFIER_HI_EXT),
-  X(EGL_DMA_BUF_PLANE2_MODIFIER_LO_EXT),
-  X(EGL_DMA_BUF_PLANE2_MODIFIER_HI_EXT),
-  X(EGL_DMA_BUF_PLANE3_FD_EXT),
-  X(EGL_DMA_BUF_PLANE3_OFFSET_EXT),
-  X(EGL_DMA_BUF_PLANE3_PITCH_EXT),
-  X(EGL_DMA_BUF_PLANE3_MODIFIER_LO_EXT),
-  X(EGL_DMA_BUF_PLANE3_MODIFIER_HI_EXT),
+      // please keep attributes in accordance to:
+      // https://www.khronos.org/registry/EGL/extensions/EXT/EGL_EXT_image_dma_buf_import_modifiers.txt
+      X(EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT),
+      X(EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT),
+      X(EGL_DMA_BUF_PLANE1_MODIFIER_LO_EXT),
+      X(EGL_DMA_BUF_PLANE1_MODIFIER_HI_EXT),
+      X(EGL_DMA_BUF_PLANE2_MODIFIER_LO_EXT),
+      X(EGL_DMA_BUF_PLANE2_MODIFIER_HI_EXT),
+      X(EGL_DMA_BUF_PLANE3_FD_EXT),
+      X(EGL_DMA_BUF_PLANE3_OFFSET_EXT),
+      X(EGL_DMA_BUF_PLANE3_PITCH_EXT),
+      X(EGL_DMA_BUF_PLANE3_MODIFIER_LO_EXT),
+      X(EGL_DMA_BUF_PLANE3_MODIFIER_HI_EXT),
 #endif
-};
+  });
 
 } // namespace
 

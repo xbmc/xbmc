@@ -932,7 +932,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
               url.GetFirstThumbUrl(), info2->Name(), info2->Content());
-    const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
 
     if (GetDetails(pItem, {}, url, info2,
                    (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()

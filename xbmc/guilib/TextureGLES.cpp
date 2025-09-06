@@ -15,6 +15,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/GLUtils.h"
+#include "utils/Map.h"
 #include "utils/MemUtils.h"
 #include "utils/log.h"
 
@@ -26,7 +27,7 @@ namespace
 // GLES 2.0 texture formats.
 // Any extension used here is in the core 3.0 profile (except BGRA)
 // format = (unsized) internalFormat (with core 2.0)
-static const std::map<KD_TEX_FMT, TextureFormat> TextureMappingGLES20
+constexpr auto TextureMappingGLES20 = make_map<KD_TEX_FMT, TextureFormat>(
 {
 #if defined(GL_EXT_texture_rg)
   {KD_TEX_FMT_SDR_R8, {GL_RED_EXT}},
@@ -57,11 +58,11 @@ static const std::map<KD_TEX_FMT, TextureFormat> TextureMappingGLES20
 #if defined(GL_OES_compressed_ETC1_RGB8_texture)
   {KD_TEX_FMT_ETC1_RGB8, {GL_ETC1_RGB8_OES}},
 #endif
-};
+});
 
 // GLES 3.0 texture formats.
 #if defined(GL_ES_VERSION_3_0)
-std::map<KD_TEX_FMT, TextureFormat> TextureMappingGLES30
+constexpr auto TextureMappingGLES30 = make_map<KD_TEX_FMT, TextureFormat>(
 {
 #if defined(GL_EXT_texture_sRGB_R8) && (GL_EXT_texture_sRGB_RG8) // in gl2ext.h, but spec says >= 3.0
   {KD_TEX_FMT_SDR_R8, {GL_R8, GL_SR8_EXT, GL_RED}},
@@ -90,11 +91,11 @@ std::map<KD_TEX_FMT, TextureFormat> TextureMappingGLES30
   {KD_TEX_FMT_ETC2_RGB8, {GL_COMPRESSED_RGB8_ETC2, GL_COMPRESSED_SRGB8_ETC2}},
   {KD_TEX_FMT_ETC2_RGB8_A1, {GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2, GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2}},
   {KD_TEX_FMT_ETC2_RGBA8, {GL_COMPRESSED_RGBA8_ETC2_EAC, GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC}},
-};
+});
 #endif // GL_ES_VERSION_3_0
 
 // Common GLES extensions (texture compression)
-static const std::map<KD_TEX_FMT, TextureFormat> TextureMappingGLESExtensions
+constexpr auto TextureMappingGLESExtensions = make_map<KD_TEX_FMT, TextureFormat>(
 {
 #if defined(GL_EXT_texture_compression_s3tc) && (GL_EXT_texture_compression_s3tc_srgb)
   {KD_TEX_FMT_S3TC_RGB8, {GL_COMPRESSED_RGB_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_S3TC_DXT1_EXT}},
@@ -152,9 +153,9 @@ static const std::map<KD_TEX_FMT, TextureFormat> TextureMappingGLESExtensions
   {KD_TEX_FMT_ASTC_HDR_12x10, {GL_COMPRESSED_RGBA_ASTC_12x10_KHR}},
   {KD_TEX_FMT_ASTC_HDR_12x12, {GL_COMPRESSED_RGBA_ASTC_12x12_KHR}},
 #endif
-};
+});
 
-static const std::map<KD_TEX_SWIZ, TextureSwizzle> SwizzleMapGLES
+constexpr auto SwizzleMapGLES = make_map<KD_TEX_SWIZ, TextureSwizzle>(
 {
   {KD_TEX_SWIZ_RGBA, {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}},
   {KD_TEX_SWIZ_RGB1, {GL_RED, GL_GREEN, GL_BLUE, GL_ONE}},
@@ -166,7 +167,7 @@ static const std::map<KD_TEX_SWIZ, TextureSwizzle> SwizzleMapGLES
   {KD_TEX_SWIZ_111G, {GL_ONE, GL_ONE, GL_ONE, GL_GREEN}},
   {KD_TEX_SWIZ_GGGA, {GL_GREEN, GL_GREEN, GL_GREEN, GL_ALPHA}},
   {KD_TEX_SWIZ_GGGG, {GL_GREEN, GL_GREEN, GL_GREEN, GL_GREEN}},
-};
+});
 // clang-format on
 } // namespace
 

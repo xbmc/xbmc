@@ -14,10 +14,11 @@
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 
-#include <map>
 #include <stdexcept>
+#include <string_view>
 #include <utility>
 
 namespace
@@ -25,8 +26,7 @@ namespace
 
 // clang-format off
 #define X(VAL) std::make_pair(VAL, #VAL)
-std::map<GLenum, const char*> glErrors =
-{
+constexpr auto glErrors = make_map<GLenum, std::string_view>({
   // please keep attributes in accordance to:
   // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetError.xhtml
   X(GL_NO_ERROR),
@@ -39,9 +39,9 @@ std::map<GLenum, const char*> glErrors =
   X(GL_STACK_UNDERFLOW),
   X(GL_STACK_OVERFLOW),
 #endif
-};
+});
 
-std::map<GLenum, const char*> glErrorSource = {
+constexpr auto glErrorSource = make_map<GLenum, std::string_view>({
 #if defined(HAS_GLES) && defined(TARGET_LINUX)
     X(GL_DEBUG_SOURCE_API_KHR),
     X(GL_DEBUG_SOURCE_WINDOW_SYSTEM_KHR),
@@ -58,9 +58,9 @@ std::map<GLenum, const char*> glErrorSource = {
     X(GL_DEBUG_SOURCE_APPLICATION),
     X(GL_DEBUG_SOURCE_OTHER),
 #endif
-};
+});
 
-std::map<GLenum, const char*> glErrorType = {
+constexpr auto glErrorType = make_map<GLenum, std::string_view>({
 #if defined(HAS_GLES) && defined(TARGET_LINUX)
     X(GL_DEBUG_TYPE_ERROR_KHR),
     X(GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_KHR),
@@ -79,9 +79,9 @@ std::map<GLenum, const char*> glErrorType = {
     X(GL_DEBUG_TYPE_OTHER),
     X(GL_DEBUG_TYPE_MARKER),
 #endif
-};
+});
 
-std::map<GLenum, const char*> glErrorSeverity = {
+constexpr auto glErrorSeverity = make_map<GLenum, std::string_view>({
 #if defined(HAS_GLES) && defined(TARGET_LINUX)
     X(GL_DEBUG_SEVERITY_HIGH_KHR),
     X(GL_DEBUG_SEVERITY_MEDIUM_KHR),
@@ -94,7 +94,7 @@ std::map<GLenum, const char*> glErrorSeverity = {
     X(GL_DEBUG_SEVERITY_LOW),
     X(GL_DEBUG_SEVERITY_NOTIFICATION),
 #endif
-};
+});
 #undef X
 // clang-format on
 
@@ -102,27 +102,9 @@ std::map<GLenum, const char*> glErrorSeverity = {
 
 void KODI::UTILS::GL::GlErrorCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-  std::string sourceStr;
-  std::string typeStr;
-  std::string severityStr;
-
-  auto glSource = glErrorSource.find(source);
-  if (glSource != glErrorSource.end())
-  {
-    sourceStr = glSource->second;
-  }
-
-  auto glType = glErrorType.find(type);
-  if (glType != glErrorType.end())
-  {
-    typeStr = glType->second;
-  }
-
-  auto glSeverity = glErrorSeverity.find(severity);
-  if (glSeverity != glErrorSeverity.end())
-  {
-    severityStr = glSeverity->second;
-  }
+  const std::string_view sourceStr = glErrorSource.get(source).value_or("");
+  const std::string_view typeStr = glErrorType.get(type).value_or("");
+  const std::string_view severityStr = glErrorSeverity.get(severity).value_or("");
 
   CLog::Log(LOGDEBUG, "OpenGL(ES) Debugging:\nSource: {}\nType: {}\nSeverity: {}\nID: {}\nMessage: {}", sourceStr, typeStr, severityStr, id, message);
 }

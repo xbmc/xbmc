@@ -15,8 +15,9 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Geometry.h"
+#include "utils/Map.h"
 
-#include <map>
+#include <string_view>
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -26,72 +27,69 @@ namespace
 {
 
 #define X(VAL) std::make_pair(VAL, #VAL)
-std::map<EGLint, const char*> eglAttributes =
-{
-  // please keep attributes in accordance to:
-  // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglGetConfigAttrib.xhtml
-  X(EGL_ALPHA_SIZE),
-  X(EGL_ALPHA_MASK_SIZE),
-  X(EGL_BIND_TO_TEXTURE_RGB),
-  X(EGL_BIND_TO_TEXTURE_RGBA),
-  X(EGL_BLUE_SIZE),
-  X(EGL_BUFFER_SIZE),
-  X(EGL_COLOR_BUFFER_TYPE),
-  X(EGL_CONFIG_CAVEAT),
-  X(EGL_CONFIG_ID),
-  X(EGL_CONFORMANT),
-  X(EGL_DEPTH_SIZE),
-  X(EGL_GREEN_SIZE),
-  X(EGL_LEVEL),
-  X(EGL_LUMINANCE_SIZE),
-  X(EGL_MAX_PBUFFER_WIDTH),
-  X(EGL_MAX_PBUFFER_HEIGHT),
-  X(EGL_MAX_PBUFFER_PIXELS),
-  X(EGL_MAX_SWAP_INTERVAL),
-  X(EGL_MIN_SWAP_INTERVAL),
-  X(EGL_NATIVE_RENDERABLE),
-  X(EGL_NATIVE_VISUAL_ID),
-  X(EGL_NATIVE_VISUAL_TYPE),
-  X(EGL_RED_SIZE),
-  X(EGL_RENDERABLE_TYPE),
-  X(EGL_SAMPLE_BUFFERS),
-  X(EGL_SAMPLES),
-  X(EGL_STENCIL_SIZE),
-  X(EGL_SURFACE_TYPE),
-  X(EGL_TRANSPARENT_TYPE),
-  X(EGL_TRANSPARENT_RED_VALUE),
-  X(EGL_TRANSPARENT_GREEN_VALUE),
-  X(EGL_TRANSPARENT_BLUE_VALUE)
-};
+constexpr auto eglAttributes = make_map<EGLint, std::string_view>({
+    // please keep attributes in accordance to:
+    // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglGetConfigAttrib.xhtml
+    X(EGL_ALPHA_SIZE),
+    X(EGL_ALPHA_MASK_SIZE),
+    X(EGL_BIND_TO_TEXTURE_RGB),
+    X(EGL_BIND_TO_TEXTURE_RGBA),
+    X(EGL_BLUE_SIZE),
+    X(EGL_BUFFER_SIZE),
+    X(EGL_COLOR_BUFFER_TYPE),
+    X(EGL_CONFIG_CAVEAT),
+    X(EGL_CONFIG_ID),
+    X(EGL_CONFORMANT),
+    X(EGL_DEPTH_SIZE),
+    X(EGL_GREEN_SIZE),
+    X(EGL_LEVEL),
+    X(EGL_LUMINANCE_SIZE),
+    X(EGL_MAX_PBUFFER_WIDTH),
+    X(EGL_MAX_PBUFFER_HEIGHT),
+    X(EGL_MAX_PBUFFER_PIXELS),
+    X(EGL_MAX_SWAP_INTERVAL),
+    X(EGL_MIN_SWAP_INTERVAL),
+    X(EGL_NATIVE_RENDERABLE),
+    X(EGL_NATIVE_VISUAL_ID),
+    X(EGL_NATIVE_VISUAL_TYPE),
+    X(EGL_RED_SIZE),
+    X(EGL_RENDERABLE_TYPE),
+    X(EGL_SAMPLE_BUFFERS),
+    X(EGL_SAMPLES),
+    X(EGL_STENCIL_SIZE),
+    X(EGL_SURFACE_TYPE),
+    X(EGL_TRANSPARENT_TYPE),
+    X(EGL_TRANSPARENT_RED_VALUE),
+    X(EGL_TRANSPARENT_GREEN_VALUE),
+    X(EGL_TRANSPARENT_BLUE_VALUE),
+});
 
-std::map<EGLenum, const char*> eglErrors =
-{
-  // please keep errors in accordance to:
-  // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglGetError.xhtml
-  X(EGL_SUCCESS),
-  X(EGL_NOT_INITIALIZED),
-  X(EGL_BAD_ACCESS),
-  X(EGL_BAD_ALLOC),
-  X(EGL_BAD_ATTRIBUTE),
-  X(EGL_BAD_CONFIG),
-  X(EGL_BAD_CONTEXT),
-  X(EGL_BAD_CURRENT_SURFACE),
-  X(EGL_BAD_DISPLAY),
-  X(EGL_BAD_MATCH),
-  X(EGL_BAD_NATIVE_PIXMAP),
-  X(EGL_BAD_NATIVE_WINDOW),
-  X(EGL_BAD_PARAMETER),
-  X(EGL_BAD_SURFACE),
-  X(EGL_CONTEXT_LOST),
-};
+constexpr auto eglErrors = make_map<EGLenum, std::string_view>({
+    // please keep errors in accordance to:
+    // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglGetError.xhtml
+    X(EGL_SUCCESS),
+    X(EGL_NOT_INITIALIZED),
+    X(EGL_BAD_ACCESS),
+    X(EGL_BAD_ALLOC),
+    X(EGL_BAD_ATTRIBUTE),
+    X(EGL_BAD_CONFIG),
+    X(EGL_BAD_CONTEXT),
+    X(EGL_BAD_CURRENT_SURFACE),
+    X(EGL_BAD_DISPLAY),
+    X(EGL_BAD_MATCH),
+    X(EGL_BAD_NATIVE_PIXMAP),
+    X(EGL_BAD_NATIVE_WINDOW),
+    X(EGL_BAD_PARAMETER),
+    X(EGL_BAD_SURFACE),
+    X(EGL_CONTEXT_LOST),
+});
 
-std::map<EGLint, const char*> eglErrorType =
-{
-  X(EGL_DEBUG_MSG_CRITICAL_KHR),
-  X(EGL_DEBUG_MSG_ERROR_KHR),
-  X(EGL_DEBUG_MSG_WARN_KHR),
-  X(EGL_DEBUG_MSG_INFO_KHR),
-};
+constexpr auto eglErrorType = make_map<EGLint, std::string_view>({
+    X(EGL_DEBUG_MSG_CRITICAL_KHR),
+    X(EGL_DEBUG_MSG_ERROR_KHR),
+    X(EGL_DEBUG_MSG_WARN_KHR),
+    X(EGL_DEBUG_MSG_INFO_KHR),
+});
 #undef X
 
 } // namespace
@@ -103,20 +101,8 @@ void EglErrorCallback(EGLenum error,
                       EGLLabelKHR objectLabel,
                       const char* message)
 {
-  std::string errorStr;
-  std::string typeStr;
-
-  auto eglError = eglErrors.find(error);
-  if (eglError != eglErrors.end())
-  {
-    errorStr = eglError->second;
-  }
-
-  auto eglType = eglErrorType.find(messageType);
-  if (eglType != eglErrorType.end())
-  {
-    typeStr = eglType->second;
-  }
+  const std::string_view errorStr = eglErrors.get(error).value_or("");
+  const std::string_view typeStr = eglErrorType.get(messageType).value_or("");
 
   CLog::Log(LOGDEBUG, "EGL Debugging:\nError: {}\nCommand: {}\nType: {}\nMessage: {}", errorStr,
             command, typeStr, message ? message : "");

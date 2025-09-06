@@ -40,13 +40,13 @@
 #include "settings/lib/Setting.h"
 #include "utils/ExecString.h"
 #include "utils/Geometry.h"
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <math.h>
 #include <mutex>
-#include <unordered_map>
 
 using EVENTSERVER::CEventServer;
 
@@ -56,10 +56,11 @@ const std::string CInputManager::SETTING_INPUT_ENABLE_CONTROLLER = "input.enable
 
 namespace
 {
-const std::unordered_map<uint8_t, int> keyComposeactionEventMap = {
+constexpr auto keyComposeactionEventMap = make_map<uint8_t, int>({
     {XBMC_KEYCOMPOSING_COMPOSING, ACTION_KEYBOARD_COMPOSING_KEY},
     {XBMC_KEYCOMPOSING_CANCELLED, ACTION_KEYBOARD_COMPOSING_KEY_CANCELLED},
-    {XBMC_KEYCOMPOSING_FINISHED, ACTION_KEYBOARD_COMPOSING_KEY_FINISHED}};
+    {XBMC_KEYCOMPOSING_FINISHED, ACTION_KEYBOARD_COMPOSING_KEY_FINISHED},
+});
 }
 
 CInputManager::CInputManager()

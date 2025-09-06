@@ -10,7 +10,6 @@
 
 #include "settings/lib/ISettingCallback.h"
 
-#include <map>
 #include <memory>
 #include <string>
 
@@ -68,11 +67,9 @@ public:
   bool UnsetActive(const AddonInfoPtr& addon) const;
 
 private:
-  CAddonSystemSettings();
+  CAddonSystemSettings() = default;
   CAddonSystemSettings(const CAddonSystemSettings&) = delete;
   CAddonSystemSettings& operator=(const CAddonSystemSettings&) = delete;
   ~CAddonSystemSettings() override = default;
-
-  const std::map<AddonType, std::string> m_activeSettings;
 };
 };

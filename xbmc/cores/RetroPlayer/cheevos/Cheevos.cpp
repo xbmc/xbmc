@@ -18,10 +18,12 @@
 #include "games/tags/GameInfoTag.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/JSONVariantParser.h"
+#include "utils/Map.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <string_view>
 #include <vector>
 
 using namespace KODI;
@@ -41,6 +43,47 @@ constexpr auto GENRE = "Genre";
 constexpr auto CONSOLE_NAME = "ConsoleName";
 
 constexpr int RESPONSE_SIZE = 64;
+
+constexpr auto extensionToConsole = make_map<std::string_view, RConsoleID>({
+    {".a26", RConsoleID::RC_CONSOLE_ATARI_2600},
+    {".a78", RConsoleID::RC_CONSOLE_ATARI_7800},
+    {".agb", RConsoleID::RC_CONSOLE_GAMEBOY_ADVANCE},
+    {".cdi", RConsoleID::RC_CONSOLE_DREAMCAST},
+    {".cdt", RConsoleID::RC_CONSOLE_AMSTRAD_PC},
+    {".cgb", RConsoleID::RC_CONSOLE_GAMEBOY_COLOR},
+    {".chd", RConsoleID::RC_CONSOLE_DREAMCAST},
+    {".cpr", RConsoleID::RC_CONSOLE_AMSTRAD_PC},
+    {".d64", RConsoleID::RC_CONSOLE_COMMODORE_64},
+    {".gb", RConsoleID::RC_CONSOLE_GAMEBOY},
+    {".gba", RConsoleID::RC_CONSOLE_GAMEBOY_ADVANCE},
+    {".gbc", RConsoleID::RC_CONSOLE_GAMEBOY_COLOR},
+    {".gdi", RConsoleID::RC_CONSOLE_DREAMCAST},
+    {".j64", RConsoleID::RC_CONSOLE_ATARI_JAGUAR},
+    {".jag", RConsoleID::RC_CONSOLE_ATARI_JAGUAR},
+    {".lnx", RConsoleID::RC_CONSOLE_ATARI_LYNX},
+    {".mds", RConsoleID::RC_CONSOLE_SATURN},
+    {".min", RConsoleID::RC_CONSOLE_POKEMON_MINI},
+    {".mx1", RConsoleID::RC_CONSOLE_MSX},
+    {".mx2", RConsoleID::RC_CONSOLE_MSX},
+    {".n64", RConsoleID::RC_CONSOLE_NINTENDO_64},
+    {".ndd", RConsoleID::RC_CONSOLE_NINTENDO_64},
+    {".nds", RConsoleID::RC_CONSOLE_NINTENDO_DS},
+    {".nes", RConsoleID::RC_CONSOLE_NINTENDO},
+    {".o", RConsoleID::RC_CONSOLE_ATARI_LYNX},
+    {".pce", RConsoleID::RC_CONSOLE_PC_ENGINE},
+    {".sfc", RConsoleID::RC_CONSOLE_SUPER_NINTENDO},
+    {".sgx", RConsoleID::RC_CONSOLE_PC_ENGINE},
+    {".smc", RConsoleID::RC_CONSOLE_SUPER_NINTENDO},
+    {".sna", RConsoleID::RC_CONSOLE_AMSTRAD_PC},
+    {".tap", RConsoleID::RC_CONSOLE_AMSTRAD_PC},
+    {".u1", RConsoleID::RC_CONSOLE_NINTENDO_64},
+    {".v64", RConsoleID::RC_CONSOLE_NINTENDO_64},
+    {".vb", RConsoleID::RC_CONSOLE_VIRTUAL_BOY},
+    {".vboy", RConsoleID::RC_CONSOLE_VIRTUAL_BOY},
+    {".vec", RConsoleID::RC_CONSOLE_VECTREX},
+    {".voc", RConsoleID::RC_CONSOLE_AMSTRAD_PC},
+    {".z64", RConsoleID::RC_CONSOLE_NINTENDO_64},
+});
 } // namespace
 
 CCheevos::CCheevos(GAME::CGameClient* gameClient,
@@ -175,10 +218,5 @@ std::string CCheevos::GetRichPresenceEvaluation()
 RConsoleID CCheevos::ConsoleID()
 {
   const std::string extension = URIUtils::GetExtension(m_gameClient->GetGamePath());
-  auto it = m_extensionToConsole.find(extension);
-
-  if (it == m_extensionToConsole.end())
-    return RConsoleID::RC_INVALID_ID;
-
-  return it->second;
+  return extensionToConsole.get(extension).value_or(RConsoleID::RC_INVALID_ID);
 }
