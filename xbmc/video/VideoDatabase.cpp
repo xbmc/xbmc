@@ -1606,11 +1606,13 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
     m_pDS->exec(
         PrepareSQL("INSERT INTO movie (idMovie, idFile) VALUES (NULL, %i)", details.m_iFileId));
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
+
+    const int assetId{details.GetAssetInfo().GetId()};
     m_pDS->exec(
         PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
                    "VALUES(%i, %i, '%s', %i, %i)",
                    details.m_iFileId, details.m_iDbId, MediaTypeMovie, VideoAssetType::VERSION,
-                   VIDEO_VERSION_ID_DEFAULT));
+                   assetId > 0 ? assetId : VIDEO_VERSION_ID_DEFAULT));
 
     return details.m_iDbId;
   }
@@ -12468,11 +12470,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         }
         if (item.HasVideoVersions())
         {
-          // Set version (AddVideo() ultimately uses AddNewMovie() which defaults to standard version)
-          CVideoInfoTag* tag{item.GetVideoInfoTag()};
-          SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
-
           // Set default version
+          const CVideoInfoTag* tag{item.GetVideoInfoTag()};
           if (tag->IsDefaultVideoVersion())
             SetDefaultVideoVersion(VideoDbContentType::MOVIES, lastMovieId, tag->m_iFileId);
         }
