@@ -1104,7 +1104,8 @@ namespace XBMCAddon
                                             season);
     }
 
-    void InfoTagVideo::setAvailableFanartRaw(CVideoInfoTag* infoTag, const std::vector<Properties>& images)
+    void InfoTagVideo::setAvailableFanartRaw(CVideoInfoTag* infoTag,
+                                             const std::vector<Properties>& images)
     {
       infoTag->m_fanart.Clear();
       for (const auto& dictionary : images)
