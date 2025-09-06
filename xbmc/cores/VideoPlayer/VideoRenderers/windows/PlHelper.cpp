@@ -59,7 +59,7 @@ bool PL::PLInstance::Init()
 {
   pl_log_params log_param{};
   log_param.log_cb = pl_log_cb;
-  log_param.log_level = PL_LOG_TRACE;
+  log_param.log_level = PL_LOG_DEBUG;
   m_plLog = pl_log_create(PL_API_VER, &log_param);
   //d3d device
   pl_d3d11_params d3d_param{};
