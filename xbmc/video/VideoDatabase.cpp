@@ -1604,11 +1604,16 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
     m_pDS->exec(
         PrepareSQL("INSERT INTO movie (idMovie, idFile) VALUES (NULL, %i)", details.m_iFileId));
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
+
+    // Need to look up asset title in current table as, if importing, it may have a different id (primary key)
+    const std::string assetTitle{details.GetAssetInfo().GetTitle()};
+    const int assetId{AddOrValidateVideoVersionType(assetTitle)};
+
     m_pDS->exec(
         PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
                    "VALUES(%i, %i, '%s', %i, %i)",
                    details.m_iFileId, details.m_iDbId, MediaTypeMovie, VideoAssetType::VERSION,
-                   VIDEO_VERSION_ID_DEFAULT));
+                   assetId > 0 ? assetId : VIDEO_VERSION_ID_DEFAULT));
 
     return details.m_iDbId;
   }
@@ -12479,11 +12484,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         }
         if (item.HasVideoVersions())
         {
-          // Set version (AddVideo() ultimately uses AddNewMovie() which defaults to standard version)
-          CVideoInfoTag* tag{item.GetVideoInfoTag()};
-          SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
-
           // Set default version
+          const CVideoInfoTag* tag{item.GetVideoInfoTag()};
           if (tag->IsDefaultVideoVersion())
             SetDefaultVideoVersion(VideoDbContentType::MOVIES, lastMovieId, tag->m_iFileId);
         }
@@ -13367,6 +13369,22 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
   }
 }
 
+int CVideoDatabase::AddOrValidateVideoVersionType(const std::string& typeVideoVersion)
+{
+  int assetId{-1};
+  if (!typeVideoVersion.empty())
+  {
+    assetId = GetVideoVersionByTitle(typeVideoVersion);
+
+    // Needs adding - eg. importing from nfo
+    if (assetId < 0)
+      assetId =
+          AddVideoVersionType(typeVideoVersion, VideoAssetTypeOwner::USER, VideoAssetType::VERSION);
+  }
+
+  return assetId;
+}
+
 int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
                                         VideoAssetTypeOwner owner,
                                         VideoAssetType assetType)
@@ -14001,6 +14019,17 @@ std::string CVideoDatabase::GetVideoVersionById(int id)
     return {};
 
   return GetSingleValue(PrepareSQL("SELECT name FROM videoversiontype WHERE id=%i", id), *m_pDS2);
+}
+
+int CVideoDatabase::GetVideoVersionByTitle(const std::string& title) const
+{
+  if (!m_pDS2)
+    return {};
+
+  const std::string id{GetSingleValue(
+      PrepareSQL("SELECT id FROM videoversiontype WHERE name='%s'", title.c_str()), *m_pDS2)};
+
+  return id.empty() ? -1 : std::stoi(id);
 }
 
 bool CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, const MediaType& mediaType)

@@ -1302,6 +1302,7 @@ public:
 
   std::string GetVideoItemTitle(VideoDbContentType itemType, int dbId);
   std::string GetVideoVersionById(int id);
+  int GetVideoVersionByTitle(const std::string& title) const;
   void GetVideoVersions(VideoDbContentType itemType,
                         int dbId,
                         CFileItemList& items,
@@ -1343,6 +1344,7 @@ public:
 
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
+  int AddOrValidateVideoVersionType(const std::string& typeVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
                           VideoAssetType assetType);

@@ -1009,9 +1009,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (movieId < 0)
           return InfoRet::INFO_ERROR;
 
-        // Set version (AddVideo() ultimately uses CVideoDatabase::AddNewMovie() which defaults to standard version)
-        m_database.SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
-
         // Deal with set
         if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
           if (!AddSet(pItem->GetVideoInfoTag()->m_set))
@@ -1979,11 +1976,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
         {
           pItem->SetArt(art); // May have been filtered above
           CVideoInfoTag* vtag{pItem->GetVideoInfoTag()};
-          lResult =
-              m_database.AddVideoAsset(VideoDbContentType::MOVIES, idMovie,
-                                       tag->GetAssetInfo().GetId(), VideoAssetType::VERSION, *pItem)
-                  ? vtag->m_iFileId
-                  : -1;
+
+          // Need to look up asset title in current table as, if importing, it may have a different id (primary key)
+          const std::string assetTitle{vtag->GetAssetInfo().GetTitle()};
+          const int assetId{m_database.AddOrValidateVideoVersionType(assetTitle)};
+
+          lResult = m_database.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, assetId,
+                                             VideoAssetType::VERSION, *pItem)
+                        ? vtag->m_iFileId
+                        : -1;
         }
       }
     }
