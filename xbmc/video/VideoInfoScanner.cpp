@@ -981,7 +981,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // Add the movie entry
       // Try with title first
       int existingMovieId{-1};
-      const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+      CVideoInfoTag* tag{item.GetVideoInfoTag()};
       const std::string title{tag->GetTitle()};
       if (!title.empty())
         existingMovieId = m_database.GetMovieIdByTitle(title);
@@ -998,7 +998,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
       movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
       if (movieId < 0)
         return InfoRet::INFO_ERROR;
-      item.SetProperty("idMovie", movieId);
 
       // Set version (AddVideo() ultimately uses CVideoDatabase::AddNewMovie() which defaults to standard version)
       m_database.SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
@@ -1019,6 +1018,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (result == InfoType::FULL)
         {
           // Add the version entry
+          tag->m_iDbId = movieId;
           const int versionId{static_cast<int>(AddVideo(&item, nullptr, bDirNames, true, nullptr,
                                                         false, ContentType::MOVIE_VERSIONS))};
           if (versionId < 0)
@@ -1952,8 +1952,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     else if (content == ContentType::MOVIE_VERSIONS)
     {
-      const int idMovie{pItem->HasProperty("idMovie") ? pItem->GetProperty("idMovie").asInteger32()
-                                                      : -1};
+      const CVideoInfoTag* tag{pItem->GetVideoInfoTag()};
+      const int idMovie{
+          tag->m_iDbId}; // Set in AddVideo() for movies and RetrieveInfoForMovie() for versions
       if (idMovie != -1)
       {
         lResult = m_database.AddMovieVersion(*pItem, idMovie, art);
