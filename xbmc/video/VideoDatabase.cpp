@@ -12462,7 +12462,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         }
         if (lastTitle == currentTitle && item.HasVideoVersions())
         {
-          item.SetProperty("idMovie", lastMovieId);
+          item.GetVideoInfoTag()->m_iDbId = lastMovieId;
           scanner.AddVideo(&item, nullptr, useFolders, true, nullptr, true,
                            ContentType::MOVIE_VERSIONS);
         }
