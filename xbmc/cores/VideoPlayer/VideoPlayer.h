@@ -188,6 +188,8 @@ struct SelectionStream
   int64_t demuxerId = -1;
   std::string codec;
   std::string codecDesc;
+  AVCodecID codecId = AV_CODEC_ID_NONE;
+  int profile = AV_PROFILE_UNKNOWN;
   int channels = 0;
   int bitrate = 0;
   int width = 0;

@@ -635,6 +635,8 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       s.filename2 = filename2;
       s.name = stream->GetStreamName();
       s.codec    = demuxer->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
+      s.codecId = stream->codec;
+      s.profile = stream->profile;
       s.channels = 0; // Default to 0. Overwrite if STREAM_AUDIO below.
       if (stream->type == StreamType::VIDEO)
       {
