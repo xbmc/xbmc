@@ -32,7 +32,11 @@
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif
 
+#include <chrono>
 #include <memory>
+#include <string>
+
+using namespace std::chrono_literals;
 
 namespace
 {
@@ -294,6 +298,9 @@ bool CDVDInputStreamNavigator::Open()
   m_iTitle = m_iTitleCount = 0;
   m_iPart = m_iPartCount = 0;
   m_iTime = m_iTotalTime = 0;
+
+  // For playlist/chapter watch time
+  m_startWatchTime = std::chrono::steady_clock::now();
 
   return true;
 }
@@ -1569,4 +1576,32 @@ int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blo
     }
   }
   return i_total;
+}
+
+void CDVDInputStreamNavigator::SaveCurrentState(const CStreamDetails& details)
+{
+  std::unique_lock lock(m_statesLock);
+
+  // Details for this playlist
+  SavePlaylistDetails(m_playedPlaylists, m_startWatchTime,
+                      {.playlist = m_iTitle,
+                       .inMenu = m_bInMenu,
+                       .duration = std::chrono::milliseconds(GetTotalTime()),
+                       .details = details});
+
+  // Reset watch timer for next playlist
+  m_startWatchTime = std::chrono::steady_clock::now();
+}
+
+CDVDInputStream::UpdateState CDVDInputStreamNavigator::UpdateCurrentState(CFileItem& item,
+                                                                          double time,
+                                                                          bool& closed)
+{
+  std::unique_lock lock(m_statesLock);
+
+  // First add current state to the list of playlist states
+  if (item.HasVideoInfoTag())
+    SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails);
+
+  return UpdatePlaylistDetails(DVDSTREAM_TYPE_DVD, m_playedPlaylists, item, time, closed);
 }

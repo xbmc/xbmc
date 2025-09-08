@@ -14,7 +14,9 @@
 #include "filesystem/IFileTypes.h"
 #include "utils/BitstreamStats.h"
 #include "utils/Geometry.h"
+#include "video/VideoInfoTag.h"
 
+#include <chrono>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -47,6 +49,8 @@ namespace XFILE
 
 struct DemuxPacket;
 class CDemuxStream;
+class CStreamDetails;
+struct SPlayerState;
 
 class CDVDInputStream
 {
@@ -205,6 +209,39 @@ public:
   virtual IChapter* GetIChapter() { return nullptr; }
 
   const CVariant& GetProperty(const std::string& key) { return m_item.GetProperty(key); }
+
+  enum class UpdateState : uint8_t
+  {
+    NONE,
+    FINISHED,
+    NOT_PLAYED
+  };
+
+  virtual void SaveCurrentState(const CStreamDetails& details) {}
+  virtual UpdateState UpdateCurrentState(CFileItem& item, double time, bool& closed)
+  {
+    return UpdateState::NONE;
+  }
+
+  struct PlaylistInformation
+  {
+    int playlist{-1};
+    bool inMenu{false};
+    std::chrono::milliseconds duration{std::chrono::milliseconds::zero()};
+    std::chrono::milliseconds watchedTime{std::chrono::milliseconds::zero()};
+    std::chrono::milliseconds position{std::chrono::milliseconds::zero()};
+    CStreamDetails details;
+  };
+
+  static void SavePlaylistDetails(std::vector<PlaylistInformation>& playedPlaylists,
+                                  std::chrono::steady_clock::time_point startTime,
+                                  const PlaylistInformation& currentPlaylistInformation);
+
+  static UpdateState UpdatePlaylistDetails(DVDStreamType type,
+                                           std::vector<PlaylistInformation>& playedPlaylists,
+                                           CFileItem& item,
+                                           double time,
+                                           bool& closed);
 
 protected:
   DVDStreamType m_streamType;
