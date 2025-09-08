@@ -478,7 +478,7 @@ protected:
   int64_t GetTime();
   float GetPercentage();
 
-  void UpdateContent();
+  virtual void UpdateContent();
   void UpdateContentState();
 
   void UpdateFileItemStreamDetails(CFileItem& item);

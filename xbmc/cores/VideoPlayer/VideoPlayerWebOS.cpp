@@ -45,15 +45,17 @@ void CVideoPlayerWebOS::CreatePlayers()
     const bool subtitlesEnabled = m_VideoPlayerVideo->IsSubtitleEnabled();
     const double subtitleDelay = m_VideoPlayerVideo->GetSubtitleDelay();
 
-    m_mediaPipelineWebOS = std::make_unique<CMediaPipelineWebOS>(
-        *m_processInfo, m_renderManager, m_clock, m_messenger, m_overlayContainer, hasAudio);
-    m_VideoPlayerVideo =
-        std::make_unique<CVideoPlayerVideoWebOS>(*m_mediaPipelineWebOS, *m_processInfo);
-    m_VideoPlayerAudio =
-        std::make_unique<CVideoPlayerAudioWebOS>(*m_mediaPipelineWebOS, *m_processInfo);
-
-    m_VideoPlayerVideo->EnableSubtitle(subtitlesEnabled);
-    m_VideoPlayerVideo->SetSubtitleDelay(subtitleDelay);
+    if (!m_mediaPipelineWebOS)
+    {
+      m_mediaPipelineWebOS = std::make_unique<CMediaPipelineWebOS>(
+          *m_processInfo, m_renderManager, m_clock, m_messenger, m_overlayContainer, hasAudio);
+      m_VideoPlayerVideo =
+          std::make_unique<CVideoPlayerVideoWebOS>(*m_mediaPipelineWebOS, *m_processInfo);
+      m_VideoPlayerAudio =
+          std::make_unique<CVideoPlayerAudioWebOS>(*m_mediaPipelineWebOS, *m_processInfo);
+      m_VideoPlayerVideo->EnableSubtitle(subtitlesEnabled);
+      m_VideoPlayerVideo->SetSubtitleDelay(subtitleDelay);
+    }
   }
   else if (m_mediaPipelineWebOS || (!m_VideoPlayerVideo && !m_VideoPlayerAudio))
   {
@@ -84,4 +86,10 @@ void CVideoPlayerWebOS::GetVideoResolution(unsigned int& width, unsigned int& he
   }
   else
     CVideoPlayer::GetVideoResolution(width, height);
+}
+
+void CVideoPlayerWebOS::UpdateContent()
+{
+  CVideoPlayer::UpdateContent();
+  CreatePlayers();
 }
