@@ -42,7 +42,9 @@ constexpr unsigned int CONTROL_IMAGED0IMG = 35;
 
 } // unnamed namespace
 
-CGUIWindowWeather::CGUIWindowWeather() : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml")
+CGUIWindowWeather::CGUIWindowWeather()
+  : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml"),
+    m_windowProps(GetPropertyNames())
 {
   m_loadType = KEEP_IN_MEMORY;
 }
@@ -73,13 +75,19 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     {
       if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
       {
-        CServiceBroker::GetWeatherManager().Reset();
+        CServiceBroker::GetWeatherManager().Refresh(); // Do a complete update
+        return true;
+      }
+      else if (message.GetParam1() == GUI_MSG_WEATHER_RESET)
+      {
+        ClearProps();
         return true;
       }
       else if (message.GetParam1() == GUI_MSG_WEATHER_FETCHED)
       {
         UpdateLocations();
         SetProps();
+        return true;
       }
       break;
     }
@@ -97,9 +105,8 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       if (message.GetSenderId() == 0 && m_maxLocation > 0) //handle only message from builtin
       {
         // Clamp location between 1 and m_maxLocation
-        int v = (CServiceBroker::GetWeatherManager().GetArea() + message.GetParam1() - 1) %
-                    m_maxLocation +
-                1;
+        CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
+        int v = (wmgr.GetLocation() + message.GetParam1() - 1) % m_maxLocation + 1;
         if (v < 1)
           v += m_maxLocation;
         SetLocation(v);
@@ -135,13 +142,12 @@ void CGUIWindowWeather::UpdateLocations()
 
   m_maxLocation = static_cast<unsigned int>(locations.size());
 
-  unsigned int iCurWeather{static_cast<unsigned int>(wmgr.GetArea())};
+  unsigned int iCurWeather{static_cast<unsigned int>(wmgr.GetLocation())};
   if (iCurWeather > m_maxLocation)
   {
-    wmgr.SetArea(m_maxLocation);
     iCurWeather = m_maxLocation;
-    ClearProps();
-    wmgr.Refresh();
+    wmgr.SetLocation(iCurWeather);
+    return;
   }
 
   std::vector<std::pair<std::string, int>> labels;
@@ -180,7 +186,7 @@ void CGUIWindowWeather::UpdateButtons()
 
   CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
 
-  SET_CONTROL_LABEL(WEATHER_LABEL_LOCATION, wmgr.GetLocation(wmgr.GetArea()));
+  SET_CONTROL_LABEL(WEATHER_LABEL_LOCATION, wmgr.GetLocation(wmgr.GetLocation()));
   SET_CONTROL_LABEL(CONTROL_LABELUPDATED, wmgr.GetLastUpdateTime());
 
   SET_CONTROL_LABEL(WEATHER_LABEL_CURRENT_COND, wmgr.GetProperty(CURRENT_CONDITION));
@@ -227,21 +233,7 @@ void CGUIWindowWeather::SetLocation(int loc)
   if (loc < 1 || loc > static_cast<int>(m_maxLocation))
     return;
 
-  CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
-
-  // Avoid a settings write if old location == new location
-  if (wmgr.GetArea() != loc)
-  {
-    ClearProps();
-    wmgr.SetArea(loc);
-    std::string strLabel{wmgr.GetLocation(loc)};
-    const size_t iPos{strLabel.rfind(", ")};
-    if (iPos != std::string::npos)
-      strLabel.resize(iPos);
-
-    SET_CONTROL_LABEL(CONTROL_SELECTLOCATION, strLabel);
-  }
-  wmgr.Refresh();
+  CServiceBroker::GetWeatherManager().SetLocation(loc);
 }
 
 void CGUIWindowWeather::SetProps()
@@ -249,7 +241,7 @@ void CGUIWindowWeather::SetProps()
   CWeatherManager& wmgr{CServiceBroker::GetWeatherManager()};
 
   // Current weather
-  const int iCurWeather{wmgr.GetArea()};
+  const int iCurWeather{wmgr.GetLocation()};
   SetProperty("Location", wmgr.GetLocation(iCurWeather));
   SetProperty("LocationIndex", iCurWeather);
   SetProperty("Updated", wmgr.GetLastUpdateTime());
@@ -284,30 +276,21 @@ void CGUIWindowWeather::SetProps()
 
 void CGUIWindowWeather::ClearProps()
 {
-  // Current weather
-  SetProperty("Location", "");
-  SetProperty("LocationIndex", "");
-  SetProperty("Updated", "");
-  SetProperty("Current.ConditionIcon", "");
-  SetProperty("Current.Condition", "");
-  SetProperty("Current.Temperature", "");
-  SetProperty("Current.FeelsLike", "");
-  SetProperty("Current.UVIndex", "");
-  SetProperty("Current.Wind", "");
-  SetProperty("Current.DewPoint", "");
-  SetProperty("Current.Humidity", "");
-  SetProperty("Current.FanartCode", "");
+  // Erase all add-on supplied window properties, keep all others.
 
-  // Future weather
-  std::string day;
-  for (unsigned int i = 0; i < WeatherInfo::NUM_DAYS; ++i)
+  std::vector<std::pair<std::string, CVariant>> winProps;
+  winProps.reserve(m_windowProps.size());
+
+  for (const std::string& prop : m_windowProps)
   {
-    day = StringUtils::Format("Day{}.", i);
-    SetProperty(day + "Title", "");
-    SetProperty(day + "HighTemp", "");
-    SetProperty(day + "LowTemp", "");
-    SetProperty(day + "Outlook", "");
-    SetProperty(day + "OutlookIcon", "");
-    SetProperty(day + "FanartCode", "");
+    winProps.emplace_back(prop, GetProperty(prop));
+  }
+
+  ClearProperties();
+
+  for (const auto& [name, value] : winProps)
+  {
+    if (!value.isNull())
+      SetProperty(name, value);
   }
 }

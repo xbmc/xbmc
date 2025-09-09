@@ -19,6 +19,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -41,6 +42,9 @@ CWeatherManager::CWeatherManager(ADDON::CAddonMgr& addonManager)
     std::shared_ptr<CSettings> settings = settingsComponent->GetSettings();
     if (settings)
     {
+      m_location = settings->GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
+      m_newLocation = m_location;
+
       // Register settings callback
       settings->GetSettingsManager()->RegisterCallback(
           this, {CSettings::SETTING_WEATHER_ADDON, CSettings::SETTING_WEATHER_ADDONSETTINGS});
@@ -162,6 +166,23 @@ std::string CWeatherManager::TranslateInfo(int info) const
   }
 }
 
+int CWeatherManager::GetLocation() const
+{
+  std::lock_guard lock(m_critSection);
+  return m_location;
+}
+
+void CWeatherManager::SetLocation(int location)
+{
+  std::lock_guard lock(m_critSection);
+  if (m_location != location && m_newLocation != location)
+  {
+    // Remember new requested location, trigger refresh, set m_location once refresh is done.
+    m_newLocation = location;
+    Refresh();
+  }
+}
+
 std::vector<std::string> CWeatherManager::GetLocations() const
 {
   const int locations{std::atoi(GetProperty(GENERAL_LOCATIONS).c_str())};
@@ -183,6 +204,8 @@ void CWeatherManager::Reset()
   std::lock_guard lock(m_critSection);
   m_info = {};
   m_infoV2 = {};
+  m_location = 1;
+  m_newLocation = 1;
 }
 
 bool CWeatherManager::IsFetched()
@@ -206,39 +229,33 @@ std::string CWeatherManager::GetLastUpdateTime() const
   return m_info.lastUpdateTime;
 }
 
-void CWeatherManager::SetArea(int iLocation)
-{
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  settings->SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
-  settings->Save();
-}
-
-int CWeatherManager::GetArea()
-{
-  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-      CSettings::SETTING_WEATHER_CURRENTLOCATION);
-}
-
 CJob* CWeatherManager::GetJob() const
 {
-  return new CWeatherJob(GetArea());
+  std::lock_guard lock(m_critSection);
+  return new CWeatherJob(m_newLocation);
 }
 
 void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  std::lock_guard lock(m_critSection);
-  m_info = static_cast<CWeatherJob*>(job)->GetInfo();
-  m_infoV2 = static_cast<CWeatherJob*>(job)->GetInfoV2();
+  {
+    std::lock_guard lock(m_critSection);
+
+    const auto* wJob = static_cast<const CWeatherJob*>(job);
+    m_info = wJob->GetInfo();
+    m_infoV2 = wJob->GetInfoV2();
+    m_location = wJob->GetLocation();
+
+    const std::shared_ptr<CSettings> settings{
+        CServiceBroker::GetSettingsComponent()->GetSettings()};
+    settings->SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, m_location);
+    settings->Save();
+  }
 
   CInfoLoader::OnJobComplete(jobID, success, job);
 
-  CGUIComponent* gui{CServiceBroker::GetGUI()};
-  if (gui)
-  {
-    // Send a message that we're done.
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WEATHER_FETCHED);
-    gui->GetWindowManager().SendThreadMessage(msg);
-  }
+  // Send a message that we're done.
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WEATHER_FETCHED);
+  CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, WINDOW_INVALID, true);
 }
 
 void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
@@ -247,12 +264,10 @@ void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& se
     return;
 
   const std::string settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_WEATHER_ADDON && CServiceBroker::GetGUI() != nullptr)
+  if (settingId == CSettings::SETTING_WEATHER_ADDON)
   {
-    // clear "WeatherProviderLogo" property that some weather addons set
-    CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER);
-    if (window != nullptr)
-      window->SetProperty("WeatherProviderLogo", "");
+    // Weather add-on to be used has changed. Clear all weather data and refresh.
+    Reset();
     Refresh();
   }
 }
@@ -266,15 +281,17 @@ void CWeatherManager::OnSettingAction(const std::shared_ptr<const CSetting>& set
   if (settingId == CSettings::SETTING_WEATHER_ADDONSETTINGS)
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(
-            CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-                CSettings::SETTING_WEATHER_ADDON),
-            addon, AddonType::SCRIPT_WEATHER, OnlyEnabled::CHOICE_YES) &&
+    if (m_addonManager.GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+                                    CSettings::SETTING_WEATHER_ADDON),
+                                addon, AddonType::SCRIPT_WEATHER, OnlyEnabled::CHOICE_YES) &&
         addon)
     {
-      //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
-      CGUIDialogAddonSettings::ShowForAddon(addon);
-      Refresh();
+      if (CGUIDialogAddonSettings::ShowForAddon(addon))
+      {
+        // Weather add-on settings have changed. Clear all weather data and refresh.
+        Reset();
+        Refresh();
+      }
     }
   }
 }
