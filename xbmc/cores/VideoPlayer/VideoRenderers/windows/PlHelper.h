@@ -44,6 +44,7 @@ namespace PL
     virtual ~PLInstance();
     bool Init();
     void Reset();
+
     pl_d3d11 GetD3d11() { return m_plD3d11; }
     pl_swapchain GetSwapchain() { return m_plSwapchain; }
     pl_renderer GetRenderer() { return m_plRenderer; }
@@ -53,5 +54,9 @@ namespace PL
     pl_d3d11 m_plD3d11;
     pl_swapchain m_plSwapchain;
     pl_renderer m_plRenderer;
+    int CurrentPrim;
+    int Currenttransfer;
+    int CurrentMatrix;
+    void LogCurrent();
   };
 }

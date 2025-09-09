@@ -100,8 +100,6 @@
       <!-- PVR windows -->
       <e>ActivateWindow(TVGuide)</e>
       <epg>ActivateWindow(TVGuide)</epg>
-      <h>ActivateWindow(TVChannels)</h>
-      <j>ActivateWindow(RadioChannels)</j>
       <k>ActivateWindow(TVRecordings)</k>
       <b>ActivateWindow(TVTimers)</b>
       <!-- PVR -->
@@ -346,6 +344,9 @@
   </Music>
   <FullscreenVideo>
     <keyboard>
+      <g>textnextpl1</g>
+<h>textnextpl2</h>
+<j>textnextpl3</j>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>StepForward</period>

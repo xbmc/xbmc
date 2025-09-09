@@ -48,7 +48,10 @@ PL::PLInstance::PLInstance()
   : m_plD3d11(nullptr),
   m_plLog(nullptr),
   m_plRenderer(nullptr),
-  m_plSwapchain(nullptr)
+  m_plSwapchain(nullptr),
+  CurrentPrim(0),
+  CurrentMatrix(0),
+  Currenttransfer(0)
 {
 
 }
@@ -94,6 +97,22 @@ void PL::PLInstance::Reset()
   m_plLog = nullptr;
   m_plD3d11 = nullptr;
   m_plRenderer = nullptr;
+}
+
+void PL::PLInstance::LogCurrent()
+{
+  if (CurrentPrim == PL_COLOR_PRIM_COUNT)
+    CurrentPrim = 0;
+  if (CurrentMatrix == PL_COLOR_SYSTEM_COUNT)
+    CurrentMatrix = 0;
+  if (Currenttransfer == PL_COLOR_TRC_COUNT)
+    Currenttransfer = 0;
+  std::string sSys =  pl_color_system_name((pl_color_system)CurrentMatrix);
+  std::string sTrans = pl_color_transfer_name((pl_color_transfer)Currenttransfer);
+  std::string sPrim = pl_color_primaries_name((pl_color_primaries)CurrentPrim);
+  CLog::Log(LOGINFO, "LibPlaceboCurrent Color Settings: Primaries: {}", sPrim.c_str());
+  CLog::Log(LOGINFO, "LibPlaceboCurrent Color Settings: Transfer: {}", sTrans.c_str());
+  CLog::Log(LOGINFO, "LibPlaceboCurrent Color Settings: Matrix: {}", sSys.c_str());
 }
 
 #if 0

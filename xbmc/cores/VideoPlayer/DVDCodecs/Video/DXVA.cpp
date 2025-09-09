@@ -1140,7 +1140,7 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
 
 bool CDecoder::Register()
 {
-  //CDVDFactoryCodec::RegisterHWAccel("dxva", Create);
+  CDVDFactoryCodec::RegisterHWAccel("dxva", Create);
   return true;
 }
 
