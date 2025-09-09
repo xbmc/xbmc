@@ -130,7 +130,7 @@ void fill_all_tests(std::vector<pl_color_primaries>& prim, std::vector<pl_color_
       PL_COLOR_SYSTEM_BT_2020_C,   // ITU-R Rec. BT.2020 (constant luminance)
       PL_COLOR_SYSTEM_BT_2100_PQ,  // ITU-R Rec. BT.2100 ICtCp PQ variant
       PL_COLOR_SYSTEM_BT_2100_HLG, // ITU-R Rec. BT.2100 ICtCp HLG variant
-      PL_COLOR_SYSTEM_DOLBYVISION, // Dolby Vision (see pl_dovi_metadata)
+      PL_COLOR_SYSTEM_BT_2100_HLG, // Dolby Vision (see pl_dovi_metadata)
       PL_COLOR_SYSTEM_YCGCO,       // YCgCo (derived from RGB)
       // Other color systems:
       PL_COLOR_SYSTEM_RGB,         // Red, Green and Blue
@@ -220,8 +220,13 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
 
   if (!buffer->GetLibplaceboFrame(frameIn))
     return;
-  frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
-  frameIn.color = m_colorSpace;
+  frameIn.color.primaries = m_testprimaries.at(PL::PLInstance::Get()->CurrentPrim);
+  frameIn.color.transfer = m_testtransfer.at(PL::PLInstance::Get()->Currenttransfer);
+  if (plbuf->av_format == AV_PIX_FMT_YUV420P)
+    frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
+  else
+    m_testsystem.at(PL::PLInstance::Get()->CurrentMatrix);
+  
   //todo
   //Add icc profile
   //add rotate
@@ -244,11 +249,11 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
   
   frameOut.crop.x1 = dst.Width();
   frameOut.crop.y1 = dst.Height();
-  frameOut.repr = frameIn.repr;
+  
   frameOut.color = frameIn.color;
-  frameOut.color.primaries = m_testprimaries.at(PL::PLInstance::Get()->CurrentPrim);
-  frameOut.color.transfer = m_testtransfer.at(PL::PLInstance::Get()->Currenttransfer);
-  frameOut.repr.sys = m_testsystem.at(PL::PLInstance::Get()->CurrentMatrix);
+  frameOut.color.primaries = PL_COLOR_PRIM_UNKNOWN ;
+  frameOut.color.transfer = PL_COLOR_TRC_UNKNOWN;
+  frameOut.repr.sys = PL_COLOR_SYSTEM_RGB;
 
   pl_render_params params;
   params = pl_render_default_params;
@@ -309,16 +314,15 @@ bool CRendererPL::CRenderBufferImpl::GetLibplaceboFrame(pl_frame& frame)
 
   crpr.sys = PL_COLOR_SYSTEM_BT_709;
   crpr.levels = PL_COLOR_LEVELS_LIMITED;
-  crpr.bits.bit_shift = 0;
+  crpr.bits = plbits;
 
-  crpr.bits.color_depth = 16;
-  crpr.bits.sample_depth = 16;
 
   frame.repr = crpr;
   frame.num_planes = 3;
   frame.planes[0] = plplanes[0];
   frame.planes[1] = plplanes[1];
   frame.planes[2] = plplanes[2];
+  
   return true;
 }
 bool CRendererPL::CRenderBufferImpl::UploadBuffer()
@@ -347,8 +351,6 @@ bool CRendererPL::CRenderBufferImpl::UploadToTexture()
 
   //AV_PIX_FMT_YUV420P10LE
 
-  struct pl_bit_encoding bits;
-
   int out_map[4];
 
   const AVPixFmtDescriptor* fmtdesc = av_pix_fmt_desc_get(buffer_format);
@@ -356,11 +358,10 @@ bool CRendererPL::CRenderBufferImpl::UploadToTexture()
   videoBuffer->GetStrides(srcStrides);
   pl_plane_data pdata[4] = { };
   
-  for (int n = 0; n < pl_plane_data_from_pixfmt(pdata, &bits, videoBuffer->GetFormat()); n++)
+  for (int n = 0; n < pl_plane_data_from_pixfmt(pdata, &plbits, buffer_format); n++)
   {
     pdata[n].pixels = src[n];
     pdata[n].row_stride = srcStrides[n];
-    //pdata[n].pixel_stride = 2;
     pdata[n].width = n > 0 ? m_width >> 1: m_width;
     pdata[n].height = n > 0 ? m_height >> 1 : m_height;
 

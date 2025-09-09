@@ -153,7 +153,7 @@ public:
 private:
   bool UploadToTexture();
 
-  
+  pl_bit_encoding plbits;
   pl_plane plplanes[3] = {};
   pl_tex pltex[3] = {};
 };
