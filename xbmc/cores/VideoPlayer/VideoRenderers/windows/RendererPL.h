@@ -136,6 +136,9 @@ private:
   AVColorPrimaries m_lastPrimaries = AVCOL_PRI_UNSPECIFIED;
 
   AVPixelFormat m_format;
+  std::vector<pl_color_primaries> m_testprimaries;
+  std::vector<pl_color_transfer> m_testtransfer;
+  std::vector<pl_color_system> m_testsystem;
 };
 
 class CRendererPL::CRenderBufferImpl : public CRenderBuffer
