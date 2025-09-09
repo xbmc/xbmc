@@ -33,10 +33,14 @@ extern "C" {
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
 #include <libavutil/mastering_display_metadata.h>
+#include <libavutil/hdr_dynamic_metadata.h>
 #include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
 #include <libavutil/video_enc_params.h>
 }
+# define PL_LIBAV_IMPLEMENTATION 0
+#include <libplacebo/utils/libav.h>
+#include <libplacebo/utils/dolbyvision.h>
 
 #ifndef TARGET_POSIX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -1118,6 +1122,40 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   {
     pVideoPicture->lightMetadata = *m_hints.contentLightMetadata.get();
     pVideoPicture->hasLightMetadata = true;
+  }
+  /*hdrplus for libplacebo*/
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DYNAMIC_HDR_PLUS);
+  if (sd)
+  {
+    if (sd->size == sizeof(AVDynamicHDRPlus))
+    {
+      AVDynamicHDRPlus* metadata = (AVDynamicHDRPlus*)sd->data;
+      pVideoPicture->hdrMetadata = *metadata;
+      pVideoPicture->hasHDR10PlusMetadata = true;
+    }
+    else
+    {
+      CLog::Log(LOGERROR,"{} Found HDR10 + data of an unexpected size", __FUNCTION__);
+    }
+  }
+  /*dovi for libplacebo*/
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_METADATA);
+  if (sd)
+  {
+    AVDOVIMetadata* metadata = (AVDOVIMetadata*)sd->data;
+    AVDOVIRpuDataHeader* header = av_dovi_get_header(metadata);
+    pl_map_dovi_metadata(&pVideoPicture->doviPlMetadata, metadata);
+    if (header->disable_residual_flag)
+      pl_map_avdovi_metadata(&pVideoPicture->doviColorSpace, &pVideoPicture->doviColorRepr, &pVideoPicture->doviPlMetadata, metadata);
+    pVideoPicture->doviMetadata = *metadata;
+    pVideoPicture->hasDoviMetadata = true;
+  }
+
+  /*dovi rpu for libplacebo*/
+  AVFrameSideData* sdDOVIRPU = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_RPU_BUFFER);
+  if (sdDOVIRPU)
+  {
+    pl_hdr_metadata_from_dovi_rpu(&pVideoPicture->hdrDoviRpu, sd->buf->data, sd->buf->size);
   }
 
   if (pVideoPicture->iRepeatPicture)
