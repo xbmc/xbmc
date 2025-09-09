@@ -220,12 +220,12 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
 
   if (!buffer->GetLibplaceboFrame(frameIn))
     return;
-  frameIn.color.primaries = m_testprimaries.at(PL::PLInstance::Get()->CurrentPrim);
-  frameIn.color.transfer = m_testtransfer.at(PL::PLInstance::Get()->Currenttransfer);
+  //frameIn.color.primaries = m_testprimaries.at(PL::PLInstance::Get()->CurrentPrim);
+  //frameIn.color.transfer = m_testtransfer.at(PL::PLInstance::Get()->Currenttransfer);
   if (plbuf->av_format == AV_PIX_FMT_YUV420P)
     frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
-  else
-    m_testsystem.at(PL::PLInstance::Get()->CurrentMatrix);
+  //else
+  //  m_testsystem.at(PL::PLInstance::Get()->CurrentMatrix);
   
   //todo
   //Add icc profile
@@ -306,17 +306,54 @@ CRendererPL::CRenderBufferImpl::~CRenderBufferImpl()
   CRenderBufferImpl::ReleasePicture();
 }
 
+
+void CRendererPL::CRenderBufferImpl::AppendPicture(const VideoPicture& picture)
+{
+  __super::AppendPicture(picture);
+  hdrDoviRpu = picture.hdrDoviRpu;
+  hdrMetadata = picture.hdrMetadata;
+  doviMetadata = picture.doviMetadata;
+  doviColorSpace = picture.doviColorSpace;
+  doviColorRepr = picture.doviColorRepr;
+  doviPlMetadata = picture.doviPlMetadata;
+  hdrDoviRpu = picture.hdrDoviRpu;
+  hasDoviMetadata = picture.hasDoviMetadata;
+  hasDoviRpuMetadata = picture.hasDoviRpuMetadata;
+  hasHDR10PlusMetadata = picture.hasHDR10PlusMetadata;
+}
+
 bool CRendererPL::CRenderBufferImpl::GetLibplaceboFrame(pl_frame& frame)
 {
   if (!m_bLoaded)
     return false;
   pl_color_repr crpr{};
 
-  crpr.sys = PL_COLOR_SYSTEM_BT_709;
-  crpr.levels = PL_COLOR_LEVELS_LIMITED;
+  if (hasDoviMetadata)
+  {
+    crpr = doviColorRepr;
+    frame.color = doviColorSpace;
+    
+  }
+  else
+  {
+ 
+    crpr.sys = PL_COLOR_SYSTEM_BT_709;
+    crpr.levels = PL_COLOR_LEVELS_LIMITED;
+  }
+  if (hasHDR10PlusMetadata)
+  {
+    pl_av_hdr_metadata metadata = {};
+    pl_hdr_metadata out = {};
+    metadata.clm = &lightMetadata;
+    metadata.mdm = &displayMetadata;
+    metadata.dhp = &hdrMetadata;
+    
+    pl_map_hdr_metadata(&out, &metadata);
+    frame.color.hdr = out;
+
+    
+  }
   crpr.bits = plbits;
-
-
   frame.repr = crpr;
   frame.num_planes = 3;
   frame.planes[0] = plplanes[0];
