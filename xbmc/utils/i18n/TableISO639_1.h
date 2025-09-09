@@ -45,8 +45,8 @@ struct LCENTRY
 // ISO 639-1 table
 // Source: Library of Congress http://www.loc.gov/standards/iso639-2
 
-// 183 active ISO 639-1 codes + some non-conflicting deprecated + Kodi additions
-inline constexpr int ISO639_1_COUNT = 187;
+// 183 active ISO 639-1 codes + 1 Kodi addition. See deprecated codes further down.
+inline static constexpr int ISO639_1_COUNT = 184;
 
 // clang-format off
 constexpr std::array<struct LCENTRY, ISO639_1_COUNT> TableISO639_1 = {{
@@ -239,35 +239,6 @@ constexpr std::array<struct LCENTRY, ISO639_1_COUNT> TableISO639_1 = {{
 
     // ============================================================================================
     //
-    // Deprecated codes
-    // 
-    //! @todo refactor to allow recognition of deprecated codes without conflicts in name lookup
-
-    // ji Yiddish - replaced with yi Yiddish - conflicts in lookup by name
-    //{StringToLongCode("ji"), "Yiddish"},
-
-    // in Indonesian - replaced with id Indonesian - may conflict in lookup by name
-    // https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=207
-    //{StringToLongCode("in"), "Indonesian"},
-
-    // iw Hebrew - replaced with he - may conflict in lookup by name
-    // https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=184
-    //{StringToLongCode("iw"), "Hebrew"},
-
-    // sh Serbo-Croatian - no replacement in ISO 638-1 - split into sr hr bs mk
-    {StringToLongCode("sh"), "Serbo-Croatian"},
-
-    // jw Javanese - replaced with jv - conflicts in lookup by name
-    //{StringToLongCode("jw"sv), "Javanese"},
-
-    // mo Moldavian/Moldovan
-    {StringToLongCode("mo"), "Moldavian"},
-
-    // bh Bihari - no ISO 639-1 replacement
-    {StringToLongCode("bh"), "Bihari"},
-
-    // ============================================================================================
-    //
     // Kodi Additions
     //
 
@@ -276,19 +247,52 @@ constexpr std::array<struct LCENTRY, ISO639_1_COUNT> TableISO639_1 = {{
 }};
 // clang-format on
 
-constexpr auto CreateIso6391ByCode()
+inline constexpr int ISO639_1_DEPRECATED_COUNT = 7;
+
+// clang-format off
+inline constexpr std::array<struct LCENTRY, ISO639_1_DEPRECATED_COUNT> TableISO639_1_Depr = {{
+    // Deprecated codes in chronological order for ease of future maintenance
+
+    // 1989-03-11 ji replaced with yi
+    {StringToLongCode("ji"), "Yiddish"},
+
+    // 1989-03-11 in replaced with id
+    // https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=207
+    {StringToLongCode("in"), "Indonesian"},
+
+    // 1989-03-11 iw replaced with he
+    // https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=184
+    {StringToLongCode("iw"), "Hebrew"},
+
+    // 2000-02-18 sh Serbo-Croatian - split into sr hr bs mk
+    {StringToLongCode("sh"), "Serbo-Croatian"},
+
+    // 2001-08-13 jw replaced with jv
+    {StringToLongCode("jw"), "Javanese"},
+
+    // 2008-11-03 mo Moldavian/Moldovan - no ISO 639-1 replacement.
+    {StringToLongCode("mo"), "Moldavian"},
+
+    // 2021-05-25 bh Bihari - no ISO 639-1 replacement. ISO 639-2 bih is recommended
+    {StringToLongCode("bh"), "Bihari"},
+}};
+// clang-format on
+
+// Prepare sorted arrays to enable binary search
+
+template<typename T>
+constexpr auto CreateIso6391ByCode(T codes)
 {
-  auto codes{TableISO639_1};
-  //! @todo create the array with lower-cased names to avoid case-insentive comparison by users later.
   std::ranges::sort(codes, {}, &LCENTRY::code);
   return codes;
 }
 
-inline constexpr auto TableISO639_1ByCode = CreateIso6391ByCode();
+inline constexpr auto TableISO639_1ByCode = CreateIso6391ByCode(TableISO639_1);
+inline constexpr auto TableISO639_1_DeprByCode = CreateIso6391ByCode(TableISO639_1_Depr);
 
-constexpr auto CreateIso6391ByName()
+template<typename T>
+constexpr auto CreateIso6391ByName(T codes)
 {
-  auto codes{TableISO639_1};
   //! @todo create the array with lower-cased names to avoid case-insentive comparison by users later.
   std::ranges::sort(
       codes, [](std::string_view a, std::string_view b)
@@ -296,4 +300,5 @@ constexpr auto CreateIso6391ByName()
   return codes;
 }
 
-inline constexpr auto TableISO639_1ByName = CreateIso6391ByName();
+inline constexpr auto TableISO639_1ByName = CreateIso6391ByName(TableISO639_1);
+inline constexpr auto TableISO639_1_DeprByName = CreateIso6391ByName(TableISO639_1_Depr);
