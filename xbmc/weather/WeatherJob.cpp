@@ -8,6 +8,7 @@
 
 #include "WeatherJob.h"
 
+#include "GUIUserMessages.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
