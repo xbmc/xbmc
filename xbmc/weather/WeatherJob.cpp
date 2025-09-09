@@ -8,6 +8,7 @@
 
 #include "WeatherJob.h"
 
+#include "GUIUserMessages.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
@@ -18,6 +19,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -56,6 +58,10 @@ bool CWeatherJob::DoWork()
   const std::string strSetting{std::to_string(m_location)};
   argv.emplace_back(strSetting);
 
+  // Clear all add-on supplied window properties.
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WEATHER_RESET);
+  CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, WINDOW_INVALID, true);
+
   // Download our weather
   CLog::Log(LOGINFO, "WEATHER: Downloading weather");
 
@@ -83,6 +89,11 @@ bool CWeatherJob::DoWork()
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
 
   return true;
+}
+
+int CWeatherJob::GetLocation() const
+{
+  return m_location;
 }
 
 const WeatherInfo& CWeatherJob::GetInfo() const

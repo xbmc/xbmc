@@ -89,6 +89,19 @@ public:
   std::string GetDayProperty(unsigned int index, const std::string& property) const;
 
   /*!
+   \brief Get the index for currently active location
+   \return the id of the location
+   */
+  int GetLocation() const;
+
+  /*!
+   \brief Set the active location.
+   Will trigger a data refresh if current location is different from the given location.
+   \param location the location index (can be in the range [1..MAXLOCATION])
+   */
+  void SetLocation(int location);
+
+  /*!
    \brief Get the city names of all available locations, sorted by location index.
    \return the city names
    \sa GetLocation
@@ -105,20 +118,6 @@ public:
   std::string GetLastUpdateTime() const;
   ForecastDay GetForecast(int day) const;
   bool IsFetched();
-  void Reset();
-
-  /*!
-   \brief Saves the specified location index to the settings. Call Refresh()
-          afterwards to update weather info for the new location.
-   \param iLocation the new location index (can be in the range [1..MAXLOCATION])
-   */
-  static void SetArea(int iLocation);
-
-  /*!
-   \brief Retrieves the current location index from the settings
-   \return the active location index (will be in the range [1..MAXLOCATION])
-   */
-  static int GetArea();
 
   struct CaseInsensitiveCompare
   {
@@ -138,6 +137,8 @@ protected:
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
+  void Reset();
+
   // Construction parameters
   ADDON::CAddonMgr& m_addonManager;
 
@@ -147,4 +148,6 @@ private:
   // State parameters
   WeatherInfo m_info{};
   mutable WeatherInfoV2 m_infoV2{};
+  int m_location{1};
+  int m_newLocation{1};
 };

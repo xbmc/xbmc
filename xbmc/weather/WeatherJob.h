@@ -22,6 +22,7 @@ public:
 
   bool DoWork() override;
 
+  int GetLocation() const;
   const WeatherInfo& GetInfo() const;
   const CWeatherManager::WeatherInfoV2& GetInfoV2() const;
 

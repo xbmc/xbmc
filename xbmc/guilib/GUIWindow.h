@@ -184,6 +184,11 @@ public:
    */
   void ClearProperties();
 
+  /*! \brief Retrieve names of all properties of this window
+   \return the property names
+   */
+  std::vector<std::string> GetPropertyNames() const;
+
 #ifdef _DEBUG
   void DumpTextureUse() override;
 #endif
