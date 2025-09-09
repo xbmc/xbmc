@@ -123,22 +123,27 @@ void CWeatherJob::SetFromProperties()
         std::strtod(window->GetProperty("Current.FeelsLike").asString().c_str(), nullptr));
     m_info.currentUVIndex =
         m_localizer.LocalizeOverview(window->GetProperty("Current.UVIndex").asString());
-    const CSpeed speed{CSpeed::CreateFromKilometresPerHour(
-        std::strtod(window->GetProperty("Current.Wind").asString().c_str(), nullptr))};
-    std::string direction = window->GetProperty("Current.WindDirection").asString();
-    if (direction == "CALM")
-      m_info.currentWind = g_localizeStrings.Get(1410);
-    else
+    const CVariant wind{window->GetProperty("Current.Wind")};
+    if (!wind.isNull())
     {
-      direction = m_localizer.LocalizeOverviewToken(direction);
-      m_info.currentWind = StringUtils::Format(
-          g_localizeStrings.Get(434), direction,
-          static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())), g_langInfo.GetSpeedUnitString());
+      // Special casing: Combine window props Current.Wind and Current.WindDirection values.
+      const CSpeed speed{
+          CSpeed::CreateFromKilometresPerHour(std::strtod(wind.asString().c_str(), nullptr))};
+      std::string direction{window->GetProperty("Current.WindDirection").asString()};
+      if (direction == "CALM")
+        m_info.currentWind = g_localizeStrings.Get(1410);
+      else
+      {
+        direction = m_localizer.LocalizeOverviewToken(direction);
+        m_info.currentWind = StringUtils::Format(
+            g_localizeStrings.Get(434), direction,
+            static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())), g_langInfo.GetSpeedUnitString());
+      }
+      const std::string windspeed{
+          StringUtils::Format("{} {}", static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())),
+                              g_langInfo.GetSpeedUnitString())};
+      window->SetProperty("Current.WindSpeed", windspeed);
     }
-    const std::string windspeed{
-        StringUtils::Format("{} {}", static_cast<int>(speed.To(g_langInfo.GetSpeedUnit())),
-                            g_langInfo.GetSpeedUnitString())};
-    window->SetProperty("Current.WindSpeed", windspeed);
     FormatTemperature(
         m_info.currentDewPoint,
         std::strtod(window->GetProperty("Current.DewPoint").asString().c_str(), nullptr));
