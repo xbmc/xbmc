@@ -19,6 +19,7 @@
 //
 //------------------------------------------------------------------------
 
+#include <algorithm>
 #include <chrono>
 #include <locale>
 #include <span>
@@ -56,6 +57,34 @@ DEF_TO_STR_VALUE(foo) // outputs "4"
 
 #define DEF_TO_STR_NAME(x) #x
 #define DEF_TO_STR_VALUE(x) DEF_TO_STR_NAME(x)
+
+namespace
+{
+/*!
+ * Locale unaware version of tolower
+ */
+[[nodiscard]] constexpr char ToLowerAscii(char c)
+{
+  return 'A' <= c && c <= 'Z' ? c - 'A' + 'a' : c;
+}
+
+[[nodiscard]] constexpr int AnonCompareNoCase(std::string_view str1,
+                                              std::string_view str2,
+                                              size_t n) noexcept
+{
+  str1 = n ? str1.substr(0, std::min(n, str1.length())) : str1;
+  str2 = n ? str2.substr(0, std::min(n, str2.length())) : str2;
+  auto diff = std::ranges::mismatch(str1, str2, [](char c1, char c2)
+                                    { return c1 == c2 || ToLowerAscii(c1) == ToLowerAscii(c2); });
+  if (diff.in1 == str1.end() && diff.in2 == str2.end())
+    return 0;
+  if (diff.in1 == str1.end())
+    return '\0' - ToLowerAscii(*diff.in2);
+  if (diff.in2 == str2.end())
+    return ToLowerAscii(*diff.in1) - '\0';
+  return ToLowerAscii(*diff.in1) - ToLowerAscii(*diff.in2);
+}
+} // namespace
 
 namespace KODI::UTILS
 {
@@ -106,9 +135,12 @@ public:
   static void ToCapitalize(std::string& str) noexcept;
   static void ToCapitalize(std::wstring& str) noexcept;
   [[nodiscard]] static bool EqualsNoCase(std::string_view str1, std::string_view str2) noexcept;
-  [[nodiscard]] static int CompareNoCase(std::string_view str1,
-                                         std::string_view str2,
-                                         size_t n = 0) noexcept;
+  [[nodiscard]] static constexpr int CompareNoCase(std::string_view str1,
+                                                   std::string_view str2,
+                                                   size_t n = 0) noexcept
+  {
+    return AnonCompareNoCase(str1, str2, n);
+  }
   [[nodiscard]] static int ReturnDigits(std::string_view str) noexcept;
   [[nodiscard]] static std::string Left(std::string_view str, size_t count);
   [[nodiscard]] static std::string Mid(std::string_view str,
