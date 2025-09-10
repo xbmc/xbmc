@@ -141,14 +141,6 @@ public:
                                             LANG_LIST list = LANG_LIST::DEFAULT);
 
 protected:
-  /*
-   * \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
-   *        to its string representation.
-   * \param[in] code The language code given as a long, see #MAKECODE(a, b, c, d).
-   * \return The string representation of the given language code code.
-   */
-  static std::string CodeToString(long code);
-
   static bool LookupInISO639Tables(const std::string& code, std::string& desc);
 
   /*
