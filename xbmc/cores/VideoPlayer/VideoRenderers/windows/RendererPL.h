@@ -58,14 +58,9 @@ protected:
   void CheckVideoParameters() override;
   void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
   CRenderBuffer* CreateBuffer() override;
-
+  void ProcessHDR(CRenderBuffer* rb) override;
 
 private:
-  
-  // Color space conversion helpers
-  enum pl_color_primaries GetLibplaceboPrimaries(AVColorPrimaries primaries);
-  enum pl_color_transfer GetLibplaceboTransfer(AVColorTransferCharacteristic transfer);
-
   // Color space info
   pl_color_space m_colorSpace;
   pl_chroma_location m_chromaLocation;
@@ -76,9 +71,6 @@ private:
   AVColorPrimaries m_lastPrimaries = AVCOL_PRI_UNSPECIFIED;
 
   AVPixelFormat m_format;
-  std::vector<pl_color_primaries> m_testprimaries;
-  std::vector<pl_color_transfer> m_testtransfer;
-  std::vector<pl_color_system> m_testsystem;
 };
 
 class CRendererPL::CRenderBufferImpl : public CRenderBuffer
@@ -90,18 +82,20 @@ public:
   void AppendPicture(const VideoPicture& picture) override;
   bool UploadBuffer() override;
   bool GetLibplaceboFrame(pl_frame& frame);
-
+  pl_color_space hdrColorSpace; //< pl_color_space
+  pl_color_repr doviColorRepr;
+  pl_dovi_metadata doviPlMetadata;
+  pl_hdr_metadata hdrDoviRpu; //< pl_hdr_metadata
 private:
   bool UploadToTexture();
-  AVDynamicHDRPlus hdrMetadata;
-  AVDOVIMetadata doviMetadata;
-  pl_color_space doviColorSpace; //< pl_color_space
-  pl_color_repr doviColorRepr;
   bool hasHDR10PlusMetadata = false;
   bool hasDoviMetadata = false;
   bool hasDoviRpuMetadata = false;
-  pl_dovi_metadata doviPlMetadata;
-  pl_hdr_metadata hdrDoviRpu; //< pl_hdr_metadata
+  AVDynamicHDRPlus hdrMetadata;
+  AVDOVIMetadata doviMetadata;
+  
+  
+  
   pl_bit_encoding plbits;
   pl_plane plplanes[3] = {};
   pl_tex pltex[3] = {};

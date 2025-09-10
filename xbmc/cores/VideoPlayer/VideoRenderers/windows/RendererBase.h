@@ -153,7 +153,7 @@ protected:
   bool CreateRenderBuffer(int index);
   void DeleteRenderBuffer(int index);
 
-  void ProcessHDR(CRenderBuffer* rb);
+  virtual void ProcessHDR(CRenderBuffer* rb);
   /*!
    * \brief Call before rendering begins to find out if rendering will be attempted as SDR or HDR.
    * \param picture description of the source

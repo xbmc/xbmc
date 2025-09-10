@@ -22,7 +22,6 @@
 #include "windows/RendererShaders.h"
 #include "windows/RendererSoftware.h"
 #include "windows/RendererPL.h"
-#include "windows/rendererlibplacebo.h"
 
 #include <mutex>
 
