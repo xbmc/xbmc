@@ -163,7 +163,7 @@ if not exist "%instdir%\%msys2%\home\%USERNAME%" mkdir "%instdir%\%msys2%\home\%
         )>>"%instdir%\%msys2%\home\%USERNAME%\.minttyrc"
 
 :updatemirrors
-if not "%usemirror%"=="yes" GOTO rebase
+if not "%usemirror%"=="yes" GOTO preparedirs
     echo.-------------------------------------------------------------------------------
     echo.update pacman mirrors
     echo.-------------------------------------------------------------------------------
@@ -186,14 +186,6 @@ if not "%usemirror%"=="yes" GOTO rebase
         )
     endlocal
 
-:rebase
-if %msys2%==msys32 (
-    echo.-------------------------------------------------------------------------------
-    echo.rebase msys32 system
-    echo.-------------------------------------------------------------------------------
-    call %instdir%\msys32\autorebase.bat
-    )
-
 :preparedirs
 if not exist %instdir%\build mkdir %instdir%\build
 if not exist %instdir%\downloads2 mkdir %instdir%\downloads2
@@ -202,41 +194,19 @@ if not exist %instdir%\locals\win32 mkdir %instdir%\locals\win32
 if not exist %instdir%\locals\x64 mkdir %instdir%\locals\x64
 if not exist %instdir%\locals\arm64 mkdir %instdir%\locals\arm64
 
-if not exist %instdir%\locals\win32\share (
-    echo.-------------------------------------------------------------------------------
-    echo.create local win32 folders
-    echo.-------------------------------------------------------------------------------
-    mkdir %instdir%\locals\win32\bin
-    mkdir %instdir%\locals\win32\etc
-    mkdir %instdir%\locals\win32\include
-    mkdir %instdir%\locals\win32\lib
-    mkdir %instdir%\locals\win32\lib\pkgconfig
-    mkdir %instdir%\locals\win32\share
-    )
-
-if not exist %instdir%\locals\x64\share (
-    echo.-------------------------------------------------------------------------------
-    echo.create local x64 folders
-    echo.-------------------------------------------------------------------------------
-    mkdir %instdir%\locals\x64\bin
-    mkdir %instdir%\locals\x64\etc
-    mkdir %instdir%\locals\x64\include
-    mkdir %instdir%\locals\x64\lib
-    mkdir %instdir%\locals\x64\lib\pkgconfig
-    mkdir %instdir%\locals\x64\share
-    )
-
-if not exist %instdir%\locals\arm64\share (
-    echo.-------------------------------------------------------------------------------
-    echo.create local arm64 folders
-    echo.-------------------------------------------------------------------------------
-    mkdir %instdir%\locals\arm64\bin
-    mkdir %instdir%\locals\arm64\etc
-    mkdir %instdir%\locals\arm64\include
-    mkdir %instdir%\locals\arm64\lib
-    mkdir %instdir%\locals\arm64\lib\pkgconfig
-    mkdir %instdir%\locals\arm64\share
-    )
+for %%x in (win32 x64 arm64) do (
+  if not exist %instdir%\locals\%%x\share (
+      echo.-------------------------------------------------------------------------------
+      echo.create local %%x folders
+      echo.-------------------------------------------------------------------------------
+      mkdir %instdir%\locals\%%x\bin
+      mkdir %instdir%\locals\%%x\etc
+      mkdir %instdir%\locals\%%x\include
+      mkdir %instdir%\locals\%%x\lib
+      mkdir %instdir%\locals\%%x\lib\pkgconfig
+      mkdir %instdir%\locals\%%x\share
+      )
+)
 
 if not exist %instdir%\%msys2%\etc\fstab. GOTO writeFstab
 
