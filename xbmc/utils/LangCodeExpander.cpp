@@ -156,22 +156,22 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
   }
   else if (strCharCode.size() > 3)
   {
-    for (const auto& codes : TableISO639_2AllNames)
+    std::string_view name = strCharCode;
+
+    auto itt = std::ranges::lower_bound(
+        TableISO639_2AllNames, name, [](std::string_view a, std::string_view b)
+        { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
+    if (itt != TableISO639_2AllNames.end() && StringUtils::EqualsNoCase(itt->name, name))
     {
-      if (StringUtils::EqualsNoCase(strCharCode, codes.name))
-      {
-        // Map T to B code for the few languages that have differences
-        for (const auto& tb : ISO639_2_TB_Mappings)
-        {
-          if (tb.terminological == codes.code)
-          {
-            strISO6392B = LongCodeToString(tb.bibliographic);
-            return true;
-          }
-        }
-        strISO6392B = LongCodeToString(codes.code);
-        return true;
-      }
+      // Map T to B code for the few languages that have differences
+      auto itb = std::ranges::lower_bound(ISO639_2_TB_Mappings, itt->code, {},
+                                          &ISO639_2_TB::terminological);
+      if (itb != ISO639_2_TB_Mappings.end() && itb->terminological == itt->code)
+        strISO6392B = LongCodeToString(itb->bibliographic);
+      else
+        strISO6392B = LongCodeToString(itt->code);
+
+      return true;
     }
 
     // Try search on language addons
@@ -385,11 +385,13 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     }
   }
 
-  for (const auto& codes : TableISO639_2AllNames)
   {
-    if (StringUtils::EqualsNoCase(descTmp, codes.name))
+    auto it = std::ranges::lower_bound(
+        TableISO639_2AllNames, name, [](std::string_view a, std::string_view b)
+        { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
+    if (it != TableISO639_2AllNames.end() && StringUtils::EqualsNoCase(it->name, name))
     {
-      code = LongCodeToString(codes.code);
+      code = LongCodeToString(it->code);
       return true;
     }
   }
@@ -470,23 +472,17 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
     // Map B to T for the few codes that have differences
     uint32_t longTcode = longCode;
 
-    for (const auto& tb : ISO639_2_TB_MappingsByB)
-    {
-      if (tb.bibliographic == longCode)
-      {
-        longTcode = tb.terminological;
-        break;
-      }
-    }
+    auto itt = std::ranges::lower_bound(ISO639_2_TB_MappingsByB, longCode, {},
+                                        &ISO639_2_TB::bibliographic);
+    if (itt != ISO639_2_TB_MappingsByB.end() && longCode == itt->bibliographic)
+      longTcode = itt->terminological;
 
     // Lookup the T code
-    for (const auto& codes : TableISO639_2ByCode)
+    auto it = std::ranges::lower_bound(TableISO639_2ByCode, longTcode, {}, &LCENTRY::code);
+    if (it != TableISO639_2ByCode.end() && longTcode == it->code)
     {
-      if (codes.code == longTcode)
-      {
-        desc = codes.name;
-        return true;
-      }
+      desc = it->name;
+      return true;
     }
   }
   return false;
@@ -521,31 +517,31 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(
 
   if (format == CLangCodeExpander::ISO_639_2)
   {
-    // Avoid a temporary map + move by being first to populate langMap
-    assert(langMap.empty());
-
     // ISO 639-2/T codes
-    std::transform(TableISO639_2AllNames.begin(), TableISO639_2AllNames.end(),
-                   std::inserter(langMap, langMap.end()), [](const LCENTRY& e)
-                   { return std::make_pair(LongCodeToString(e.code), std::string(e.name)); });
+    std::ranges::transform(TableISO639_2AllNames, std::inserter(langMap, langMap.end()),
+                           [](const LCENTRY& e) {
+                             return std::make_pair(LongCodeToString(e.code), std::string{e.name});
+                           });
 
     // ISO 639-2/B codes that are different from the T code.
-    for (const auto& tb : ISO639_2_TB_Mappings)
+    for (const ISO639_2_TB& tb : ISO639_2_TB_Mappings)
     {
-      const std::string tCode = LongCodeToString(tb.terminological);
       const std::string bCode = LongCodeToString(tb.bibliographic);
 
-      // Lookup the matching 639-2/T code - hash lookup is faster than linear search
-      const auto it = langMap.find(tCode);
-      if (it != langMap.end())
+      // Lookup the 639-2/T code
+      //! @todo Maybe could be avoided by building a constexpr 639-2/B to name array at compile time.
+      //! Is it worth the effort and memory though.
+      auto it =
+          std::ranges::lower_bound(TableISO639_2ByCode, tb.terminological, {}, &LCENTRY::code);
+      if (it != TableISO639_2ByCode.end() && tb.terminological == it->code)
       {
-        langMap[bCode] = it->second + " (non-preferred)";
+        langMap[bCode] = std::string(it->name) + " (non-preferred)";
       }
       else
       {
         CLog::LogF(LOGERROR,
                    "unable to find a name for the ISO 639-2/B code {} using 639-2/T code {}", bCode,
-                   tCode);
+                   LongCodeToString(tb.terminological));
       }
     }
   }
