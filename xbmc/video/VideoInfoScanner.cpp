@@ -2180,8 +2180,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         std::string path;
         if (content == ContentType::TVSHOWS)
-          path = ART::GetLocalArtBaseFilename(*pItem, useFolder,
-                                              ART::AdditionalIdentifiers::SEASON_AND_EPISODE);
+          path =
+              ART::GetLocalArtBaseFilename(*pItem, useFolder,
+                                           pItem->GetProperty("multiple_episodes").asBoolean(false)
+                                               ? ART::AdditionalIdentifiers::SEASON_AND_EPISODE
+                                               : ART::AdditionalIdentifiers::NONE);
         else if (content == ContentType::MOVIE_VERSIONS || pItem->GetVideoInfoTag()->m_iTrack > -1)
           path =
               ART::GetLocalArtBaseFilename(*pItem, useFolder, ART::AdditionalIdentifiers::PLAYLIST);
@@ -2356,6 +2359,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
         {
           item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
           item.GetVideoInfoTag()->m_iSeason = file->iSeason;
+
+          // Add flag if multi-episode file
+          if (std::ranges::count_if(files, [&file](const EPISODE& e)
+                                    { return e.strPath == file->strPath; }) > 1)
+            item.SetProperty("multiple_episodes", true);
         }
         if (AddVideo(&item, info, file->isFolder, true, &showInfo, false, ContentType::TVSHOWS) < 0)
           return InfoRet::INFO_ERROR;
