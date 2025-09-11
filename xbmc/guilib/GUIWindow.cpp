@@ -33,6 +33,7 @@
 #include "utils/log.h"
 
 #include <mutex>
+#include <ranges>
 
 using namespace KODI;
 
@@ -1055,6 +1056,19 @@ void CGUIWindow::ClearProperties()
 {
   std::unique_lock<CCriticalSection> lock(*this);
   m_mapProperties.clear();
+}
+
+std::vector<std::string> CGUIWindow::GetPropertyNames() const
+{
+  std::vector<std::string> names;
+
+  std::lock_guard<CCriticalSection> lock{const_cast<CGUIWindow&>(*this)};
+  names.reserve(m_mapProperties.size());
+  for (const std::string& name : m_mapProperties | std::views::keys)
+  {
+    names.emplace_back(name);
+  }
+  return names;
 }
 
 void CGUIWindow::SetRunActionsManually()

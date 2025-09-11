@@ -10,6 +10,8 @@
 
 #include "guilib/GUIWindow.h"
 
+#include <vector>
+
 class CGUIWindowWeather : public CGUIWindow
 {
 public:
@@ -29,4 +31,5 @@ protected:
 
 private:
   unsigned int m_maxLocation{0};
+  const std::vector<std::string> m_windowProps;
 };

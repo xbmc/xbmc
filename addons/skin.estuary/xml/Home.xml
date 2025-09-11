@@ -624,6 +624,24 @@
 								<width>100%</width>
 								<texture border="21">dialogs/dialog-bg.png</texture>
 							</control>
+							<control type="group">
+								<visible>!Weather.IsFetched + Weather.IsUpdating</visible>
+								<top>90</top>
+								<left>600</left>
+								<control type="image">
+									<width>100</width>
+									<height>100</height>
+									<aspectratio aligny="center">keep</aspectratio>
+									<texture colordiffuse="black">dialogs/extendedprogress/loading-back.png</texture>
+								</control>
+								<control type="image">
+									<width>100</width>
+									<height>100</height>
+									<aspectratio aligny="center">keep</aspectratio>
+									<texture>dialogs/extendedprogress/loading.png</texture>
+									<animation effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true">Conditional</animation>
+								</control>
+							</control>
 							<control type="label">
 								<left>840</left>
 								<top>60</top>
@@ -632,7 +650,7 @@
 								<right>60</right>
 								<align>right</align>
 								<font>font30_title</font>
-								<label>$INFO[Weather.Data(Location)]</label>
+								<label>$INFO[Weather.Data(Current.Location)]</label>
 							</control>
 							<control type="label">
 								<left>840</left>
@@ -652,8 +670,7 @@
 								<right>60</right>
 								<align>right</align>
 								<font>font14</font>
-								<label>$INFO[Weather.Data(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-								<visible>![String.IsEmpty(Weather.Data(Current.Temperature))]</visible>
+								<label>$INFO[Weather.Data(Current.Temperature)]</label>
 							</control>
 							<control type="grouplist">
 								<top>50</top>

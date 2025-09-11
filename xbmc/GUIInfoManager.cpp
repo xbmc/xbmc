@@ -1171,6 +1171,20 @@ constexpr std::array<InfoMap, 13> player_process = {{
 ///     @return **True** if the weather data has been downloaded.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Weather.IsUpdating`</b>,
+///                  \anchor Weather_IsUpdating
+///                  _boolean_,
+///     @return **True** if weather data are currently updating.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Weather_IsUpdating `Weather.IsUpdating`\endlink
+///   }
+///   \table_row3{   <b>`Weather.LastUpdated`</b>,
+///                  \anchor Weather_LastUpdated
+///                  _string_,
+///     @return The localized date and time weather data were last updated\, empty string if not available.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Weather_LastUpdated `Weather.LastUpdated`\endlink
+///   }
 ///   \table_row3{   <b>`Weather.Data(property)`</b>,
 ///                  \anchor Weather_Data
 ///                  _string_,
@@ -1218,9 +1232,11 @@ constexpr std::array<InfoMap, 13> player_process = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 8> weather = {{
+constexpr std::array<InfoMap, 10> weather = {{
     {"isfetched",       WEATHER_IS_FETCHED},
-    {"data",            WEATHER_DATA}, // labels from here
+    {"isupdating",      WEATHER_IS_UPDATING},
+    {"lastupdated",     WEATHER_LAST_UPDATED}, // labels from here
+    {"data",            WEATHER_DATA},
     {"conditions",      WEATHER_CONDITIONS_TEXT},
     {"temperature",     WEATHER_TEMPERATURE},
     {"location",        WEATHER_LOCATION},

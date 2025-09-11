@@ -13,8 +13,16 @@
 #include "utils/InfoLoader.h"
 
 #include <array>
+#include <map>
 #include <memory>
 #include <string>
+#include <string_view>
+#include <vector>
+
+namespace ADDON
+{
+class CAddonMgr;
+} // namespace ADDON
 
 constexpr unsigned int WEATHER_LABEL_LOCATION = 10;
 constexpr unsigned int WEATHER_IMAGE_CURRENT_ICON = 21;
@@ -57,15 +65,48 @@ struct WeatherInfo
 class CWeatherManager : public CInfoLoader, public ISettingCallback
 {
 public:
-  CWeatherManager();
+  CWeatherManager(ADDON::CAddonMgr& addonManager);
   ~CWeatherManager() override;
+
+  /*!
+   \brief The intervall for refreshing weather data.
+   */
+  static constexpr int WEATHER_REFRESH_INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
 
   /*!
    \brief Retrieve the value for the given weather property
    \param property the full name of the property (e.g. Current.Temperature, Hourly.1.Temperature)
    \return the property value
    */
-  std::string GetProperty(const std::string& property);
+  std::string GetProperty(const std::string& property) const;
+
+  /*!
+   \brief Retrieve the value for the given "day" weather property
+   \param index the index for the day, (can be in the range [0..6])
+   \param property the name of the property (e.g. HighTemp)
+   \return the property value
+   */
+  std::string GetDayProperty(unsigned int index, const std::string& property) const;
+
+  /*!
+   \brief Get the index for currently active location
+   \return the id of the location
+   */
+  int GetLocation() const;
+
+  /*!
+   \brief Set the active location.
+   Will trigger a data refresh if current location is different from the given location.
+   \param location the location index (can be in the range [1..MAXLOCATION])
+   */
+  void SetLocation(int location);
+
+  /*!
+   \brief Get the city names of all available locations, sorted by location index.
+   \return the city names
+   \sa GetLocation
+   */
+  std::vector<std::string> GetLocations() const;
 
   /*!
    \brief Retrieve the city name for the specified location from the settings
@@ -77,20 +118,14 @@ public:
   std::string GetLastUpdateTime() const;
   ForecastDay GetForecast(int day) const;
   bool IsFetched();
-  void Reset();
 
-  /*!
-   \brief Saves the specified location index to the settings. Call Refresh()
-          afterwards to update weather info for the new location.
-   \param iLocation the new location index (can be in the range [1..MAXLOCATION])
-   */
-  static void SetArea(int iLocation);
+  struct CaseInsensitiveCompare
+  {
+    using is_transparent = void; // Enables heterogeneous operations.
+    bool operator()(std::string_view lhs, std::string_view rhs) const;
+  };
 
-  /*!
-   \brief Retrieves the current location index from the settings
-   \return the active location index (will be in the range [1..MAXLOCATION])
-   */
-  static int GetArea();
+  using WeatherInfoV2 = std::map<std::string, std::string, CaseInsensitiveCompare>;
 
 protected:
   CJob* GetJob() const override;
@@ -102,6 +137,17 @@ protected:
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
+  void Reset();
+
+  // Construction parameters
+  ADDON::CAddonMgr& m_addonManager;
+
+  // Synchronization parameters
   mutable CCriticalSection m_critSection;
+
+  // State parameters
   WeatherInfo m_info{};
+  mutable WeatherInfoV2 m_infoV2{};
+  int m_location{1};
+  int m_newLocation{1};
 };

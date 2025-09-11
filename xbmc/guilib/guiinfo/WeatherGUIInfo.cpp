@@ -36,6 +36,9 @@ bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int co
     case WEATHER_DATA:
       value = CServiceBroker::GetWeatherManager().GetProperty(info.GetData3());
       return true;
+    case WEATHER_LAST_UPDATED:
+      value = CServiceBroker::GetWeatherManager().GetLastUpdateTime();
+      return true;
     case WEATHER_CONDITIONS_TEXT:
       value = CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_COND);
       StringUtils::Trim(value);
@@ -79,6 +82,9 @@ bool CWeatherGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case WEATHER_IS_FETCHED:
       value = CServiceBroker::GetWeatherManager().IsFetched();
+      return true;
+    case WEATHER_IS_UPDATING:
+      value = CServiceBroker::GetWeatherManager().IsUpdating();
       return true;
     default:
       break;

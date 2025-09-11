@@ -68,7 +68,6 @@
 			<scrolltime tween="cubic" easing="out">500</scrolltime>
 			<include>OpenClose_Right</include>
 			<itemgap>-160</itemgap>
-			<visible>!String.StartsWith(Weather.Data(Current.Temperature),$LOCALIZE[503])</visible>
 			<control type="group" id="567">
 				<description>Weather info</description>
 				<height>410</height>
@@ -116,16 +115,27 @@
 					<width>300</width>
 					<align>right</align>
 					<font>WeatherTemp</font>
-					<label>$INFO[Weather.Data(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
-					<visible>![String.IsEmpty(Weather.Data(Current.Temperature))]</visible>
+					<label>$INFO[Weather.Data(Current.Temperature)]</label>
 				</control>
 				<control type="label">
 					<right>400</right>
 					<top>164</top>
 					<align>right</align>
-					<label>[I]$LOCALIZE[402]: $INFO[Weather.Data(Current.FeelsLike)]$INFO[System.TemperatureUnits][/I][CR]$INFO[Weather.Data(Current.Condition)]</label>
+					<label>$INFO[Weather.Data(Current.FeelsLike),$LOCALIZE[402] ][CR]$INFO[Weather.Data(Current.Condition)]</label>
 					<font>font14</font>
 					<width>630</width>
+				</control>
+				<control type="label">
+					<right>100</right>
+					<top>265</top>
+					<aligny>center</aligny>
+					<height>24</height>
+					<width>1000</width>
+					<align>right</align>
+					<font>font10</font>
+					<label>$LOCALIZE[12014]: $INFO[Weather.LastUpdated]</label>
+					<visible>Control.HasFocus(20) + !String.IsEmpty(Weather.LastUpdated)</visible>
+					<animation effect="fade" time="400">VisibleChange</animation>
 				</control>
 				<control type="grouplist">
 					<top>154</top>
@@ -201,12 +211,12 @@
 			</include>
 		</control>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[8]$INFO[Weather.Data(Location), / ]" />
+			<param name="breadcrumbs_label" value="$LOCALIZE[8]$INFO[Weather.Data(Current.Location), / ]" />
 			<param name="sublabel" value="$INFO[Weather.Data(WeatherProvider)]" />
 		</include>
 		<include>BottomBar</include>
 		<control type="group">
-			<visible>String.StartsWith(Weather.Data(Current.Temperature),$LOCALIZE[503])</visible>
+			<visible>Weather.IsUpdating</visible>
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<control type="image">
 				<texture>colors/black.png</texture>
