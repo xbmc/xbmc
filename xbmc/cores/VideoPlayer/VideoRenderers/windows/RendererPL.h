@@ -82,6 +82,7 @@ public:
   void AppendPicture(const VideoPicture& picture) override;
   bool UploadBuffer() override;
   bool GetLibplaceboFrame(pl_frame& frame);
+  bool HasHdrData();
   pl_color_space hdrColorSpace; //< pl_color_space
   pl_color_repr doviColorRepr;
   pl_dovi_metadata doviPlMetadata;

@@ -134,7 +134,9 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
   if (frameIn.color.primaries != PL_COLOR_SYSTEM_DOLBYVISION)
   {
     //if not dovi set the color space setted during config
-    frameIn.color = m_colorSpace;
+    frameIn.repr.levels = PL_COLOR_LEVELS_LIMITED;
+    frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
+    frameIn.color =m_colorSpace;
   }
   
 
@@ -162,7 +164,8 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
   
   frameOut.color = frameIn.color;
   
-  if (DX::DeviceResources::Get()->IsTransferPQ())
+
+  if (buffer->HasHdrData())
   {
     frameOut.color.transfer = PL_COLOR_TRC_PQ;
     frameOut.color.primaries = PL_COLOR_PRIM_BT_2020;
@@ -170,7 +173,8 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
   else
   {
     frameOut.color.primaries = PL_COLOR_PRIM_BT_709;
-    frameOut.color.transfer = PL_COLOR_TRC_UNKNOWN;
+    frameOut.color.transfer = PL_COLOR_TRC_BT_1886;
+    frameOut.repr.levels = PL_COLOR_LEVELS_FULL;
   }
   frameOut.repr.sys = PL_COLOR_SYSTEM_RGB;
 
@@ -204,7 +208,8 @@ void CRendererPL::ProcessHDR(CRenderBuffer* rb)
   }
   CRenderBufferImpl* rbpl = static_cast<CRenderBufferImpl*>(rb);
   
-  pl_swapchain_colorspace_hint(PL::PLInstance::Get()->GetSwapchain(), &rbpl->hdrColorSpace);
+  if (rbpl->HasHdrData())
+    pl_swapchain_colorspace_hint(PL::PLInstance::Get()->GetSwapchain(), &rbpl->hdrColorSpace);
 
 }
 
@@ -351,4 +356,9 @@ bool CRendererPL::CRenderBufferImpl::UploadToTexture()
   m_bLoaded = true;
   //m_bLoaded = m_texture.UnlockRect(0);
   return m_bLoaded;
+}
+
+bool CRendererPL::CRenderBufferImpl::HasHdrData()
+{
+  return (hasHDR10PlusMetadata || hasDoviMetadata || hasDoviRpuMetadata);
 }
