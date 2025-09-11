@@ -3,7 +3,7 @@
 [[ -f buildhelpers.sh ]] &&
     source buildhelpers.sh
 
-FFMPEG_CONFIG_FILE=/xbmc/tools/buildsteps/windows/ffmpeg_options.txt
+FFMPEG_CONFIG_FILE=/xbmc/tools/depends/target/ffmpeg/win_ffmpeg_options.txt
 FFMPEG_VERSION_FILE=/xbmc/tools/depends/target/ffmpeg/FFMPEG-VERSION
 FFMPEG_BASE_OPTS="--disable-debug --disable-doc --enable-gpl --enable-w32threads"
 FFMPEG_DEFAULT_OPTS=""
