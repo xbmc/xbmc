@@ -87,7 +87,7 @@ macro(buildFFMPEG)
                     ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
                     <SOURCE_DIR>
                     COMMAND ${CMAKE_COMMAND} -E copy
-                    ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/0001-libpostproc-plugin.patch
+                    ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/001-ffmpeg-all-libpostproc-plugin.patch
                     <SOURCE_DIR>
   )
 
