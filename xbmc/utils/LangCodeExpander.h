@@ -154,11 +154,11 @@ protected:
 
   bool LookupInUserMap(const std::string& code, std::string& desc);
 
-  /** \brief Looks up the ISO 639-1, ISO 639-2/T, or ISO 639-2/B, whichever it finds first,
-  *          code of the given english language name.
+  /** \brief Looks up the ISO 639-1 or ISO 639-2/T, whichever it finds first, code of the given
+             english language name.
   *   \param[in] desc The english language name for which a code is looked for.
-  *   \param[out] code The ISO 639-1, ISO 639-2/T, or ISO 639-2/B code of the given language desc.
-  *   \return true if the a code was found, false otherwise.
+  *   \param[out] code The ISO 639-1 or ISO 639-2/T code of the given language desc.
+  *   \return true if a code was found, false otherwise.
   */
   bool ReverseLookup(const std::string& desc, std::string& code);
 

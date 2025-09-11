@@ -8,39 +8,10 @@
 
 #pragma once
 
-#include "utils/StringUtils.h"
+#include "utils/i18n/TableISO639.h"
 
-#include <algorithm>
 #include <array>
-#include <cassert>
-#include <cstdint>
 #include <string_view>
-
-namespace
-{
-/*!
- * \brief Convert a language code from 2-3 letters string to a 4 bytes integer
- * \param[in] The string representation of the code
- * \return integer representation of the code
- */
-constexpr uint32_t StringToLongCode(std::string_view a)
-{
-  const size_t len = a.length();
-
-  assert(len <= 4);
-
-  return static_cast<uint32_t>(len >= 4 ? a[len - 4] : 0) << 24 |
-         static_cast<uint32_t>(len >= 3 ? a[len - 3] : 0) << 16 |
-         static_cast<uint32_t>(len >= 2 ? a[len - 2] : 0) << 8 |
-         static_cast<uint32_t>(len >= 1 ? a[len - 1] : 0);
-}
-} // namespace
-
-struct LCENTRY
-{
-  uint32_t code;
-  std::string_view name;
-};
 
 // ISO 639-1 table
 // Source: Library of Congress http://www.loc.gov/standards/iso639-2
@@ -280,25 +251,8 @@ inline constexpr std::array<struct LCENTRY, ISO639_1_DEPRECATED_COUNT> TableISO6
 
 // Prepare sorted arrays to enable binary search
 
-template<typename T>
-constexpr auto CreateIso6391ByCode(T codes)
-{
-  std::ranges::sort(codes, {}, &LCENTRY::code);
-  return codes;
-}
+inline constexpr auto TableISO639_1ByCode = CreateIso639ByCode(TableISO639_1);
+inline constexpr auto TableISO639_1_DeprByCode = CreateIso639ByCode(TableISO639_1_Depr);
 
-inline constexpr auto TableISO639_1ByCode = CreateIso6391ByCode(TableISO639_1);
-inline constexpr auto TableISO639_1_DeprByCode = CreateIso6391ByCode(TableISO639_1_Depr);
-
-template<typename T>
-constexpr auto CreateIso6391ByName(T codes)
-{
-  //! @todo create the array with lower-cased names to avoid case-insentive comparison by users later.
-  std::ranges::sort(
-      codes, [](std::string_view a, std::string_view b)
-      { return StringUtils::CompareNoCase(a, b, 0) < 0; }, &LCENTRY::name);
-  return codes;
-}
-
-inline constexpr auto TableISO639_1ByName = CreateIso6391ByName(TableISO639_1);
-inline constexpr auto TableISO639_1_DeprByName = CreateIso6391ByName(TableISO639_1_Depr);
+inline constexpr auto TableISO639_1ByName = CreateIso639ByName(TableISO639_1);
+inline constexpr auto TableISO639_1_DeprByName = CreateIso639ByName(TableISO639_1_Depr);
