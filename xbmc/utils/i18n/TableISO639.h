@@ -37,23 +37,25 @@ constexpr uint32_t StringToLongCode(std::string_view a)
 }
 
 /*!
- * \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
- *        to its string representation.
- * \param[in] code The language code given as a long, see #MAKECODE(a, b, c, d).
- * \return The string representation of the given language code code.
+ * \brief Converts a language code given as a 4-byte integer to its string representation.
+ * \param[in] code The language code coded as a 4-byte integer
+ * \return The string representation
  */
 std::string LongCodeToString(uint32_t code)
 {
+  // Build the string in reverse order since appending to a string is more efficient than inserting
+  // at position 0 and shifting the existing contents
   std::string ret;
   for (unsigned int j = 0; j < 4; j++)
   {
-    char c = (char)code & 0xFF;
+    char c = static_cast<char>(code) & 0xFF;
     if (c == '\0')
       break;
-
-    ret.insert(0, 1, c);
+    ret.push_back(c);
     code >>= 8;
   }
+  // Reverse the string for the final result
+  std::reverse(ret.begin(), ret.end());
   return ret;
 }
 
