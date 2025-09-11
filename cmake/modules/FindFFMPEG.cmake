@@ -42,105 +42,188 @@ macro(buildFFMPEG)
 
   SETUP_BUILD_VARS()
 
-  list(APPEND FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
-                             -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
-                             -DENABLE_VAAPI=${ENABLE_VAAPI}
-                             -DENABLE_VDPAU=${ENABLE_VDPAU}
-                             -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS})
+  if(WIN32 OR WINDOWS_STORE)
 
-  if(KODI_DEPENDSBUILD)
-    set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
-                   -DPKG_CONFIG_EXECUTABLE=${PKG_CONFIG_EXECUTABLE}
-                   -DCROSSCOMPILING=${CMAKE_CROSSCOMPILING}
-                   -DOS=${OS}
-                   -DCMAKE_AR=${CMAKE_AR})
+    find_package(Msys REQUIRED ${SEARCH_QUIET})
+    find_program(msys_BASH NAMES sh bash PATHS ${MSYS_INSTALL_PATH}/usr/bin REQUIRED)
+
+    set(msys_env MSYS2_PATH_TYPE=inherit
+                 "MSYS_INSTALL_PATH=${MSYS_INSTALL_PATH}")
+
+    # Todo: buildmode?
+    set(PROMPTLEVEL noprompt)
+    set(BUILDMODE clean)
+
+    set(build32 no)
+    set(build64 no)
+    set(buildArm no)
+    set(buildArm64 no)
+    set(win10 no)
+
+    if(ARCH STREQUAL arm64)
+      set(buildArm64 yes)
+    elseif(ARCH STREQUAL arm)
+      set(buildArm yes)
+    elseif(ARCH STREQUAL win32)
+      set(build32 yes)
+    elseif(ARCH STREQUAL x64)
+      set(build64 yes)
+    endif()
+
+    if(CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+      set(win10 yes)
+    endif()
+
+    # The msys script will install and do all patching, so point to that source path
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/build/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+    # We must create the directory, otherwise we get non-existant path errors
+    file(MAKE_DIRECTORY ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR})
+
+    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-ffmpeg-all-libpostproc-plugin.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-ffmpeg-windows-configure-detect-openssl.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-ffmpeg-windows-configure-fix-zlib-conflict.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-ffmpeg-windows-configure-allow-building-static.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/005-ffmpeg-windows-configure-detect-libdav1d.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/006-ffmpeg-windows-dxva2-check-nullptr-surface.patch")
+
+    generate_patchcommand("${patches}")
+
+    # We need the directory to be non-empty for externalproject_add, however we need to clean up the
+    # created EMPTYFILE for the msys script existence checks to download the archive if needed.
+    file(TOUCH ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR}/EMPTYFILE)
+    set(CONFIGURE_COMMAND ${CMAKE_COMMAND} -E rm -f ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR}/EMPTYFILE)
+
+    set(BUILD_COMMAND ${CMAKE_COMMAND} -E env ${msys_env} ${msys_BASH}
+                                        --login -i ${CMAKE_SOURCE_DIR}/tools/buildsteps/windows/make-mingwlibs.sh
+                                        --prompt=${PROMPTLEVEL}
+                                        --mode=${BUILDMODE}
+                                        --build32=${build32}
+                                        --build64=${build64}
+                                        --buildArm=${buildArm}
+                                        --buildArm64=${buildArm64}
+                                        --win10=${win10})
+    set(INSTALL_COMMAND ${CMAKE_COMMAND} -E true)
+
+    BUILD_DEP_TARGET()
+
+    set(FFMPEG_INCLUDE_DIRS ${MINGW_LIBS_DIR}/include)
+    # We must create the directory, otherwise we get non-existant path errors
+    file(MAKE_DIRECTORY ${FFMPEG_INCLUDE_DIRS})
+  else()
+
+    list(APPEND FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
+                               -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
+                               -DENABLE_VAAPI=${ENABLE_VAAPI}
+                               -DENABLE_VDPAU=${ENABLE_VDPAU}
+                               -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS})
+
+    if(KODI_DEPENDSBUILD)
+      set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
+                     -DPKG_CONFIG_EXECUTABLE=${PKG_CONFIG_EXECUTABLE}
+                     -DCROSSCOMPILING=${CMAKE_CROSSCOMPILING}
+                     -DOS=${OS}
+                     -DCMAKE_AR=${CMAKE_AR})
+    endif()
+
+    if(USE_LTO)
+      list(APPEND FFMPEG_OPTIONS -DUSE_LTO=ON)
+    endif()
+
+    set(LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
+    list(APPEND LINKER_FLAGS ${SYSTEM_LDFLAGS})
+
+    # Some list shenanigans not being passed through without stringify/listify
+    # externalproject_add allows declaring list separator to generate a list for the target
+    string(REPLACE ";" "|" ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_MODULE_PATH "${CMAKE_MODULE_PATH}")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIST_SEPARATOR LIST_SEPARATOR |)
+
+    set(CMAKE_ARGS -DCMAKE_MODULE_PATH=${FFMPEG_MODULE_PATH}
+                   -DFFMPEG_VER=${FFMPEG_VER}
+                   -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
+                   -DCORE_PLATFORM_NAME=${CORE_PLATFORM_NAME_LC}
+                   -DCPU=${CPU}
+                   -DENABLE_NEON=${ENABLE_NEON}
+                   -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+                   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+                   -DENABLE_CCACHE=${ENABLE_CCACHE}
+                   -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+                   -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+                   -DCMAKE_EXE_LINKER_FLAGS=${LINKER_FLAGS}
+                   ${CROSS_ARGS}
+                   ${FFMPEG_OPTIONS}
+                   -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig)
+    set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+                      ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
+                      <SOURCE_DIR>
+                      COMMAND ${CMAKE_COMMAND} -E copy
+                      ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/001-ffmpeg-all-libpostproc-plugin.patch
+                      <SOURCE_DIR>
+    )
+
+    if(CMAKE_GENERATOR STREQUAL Xcode)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
+    endif()
+
+    BUILD_DEP_TARGET()
+
+    find_program(BASH_COMMAND bash)
+    if(NOT BASH_COMMAND)
+      message(FATAL_ERROR "Internal FFmpeg requires bash.")
+    endif()
+    file(WRITE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
+  "#!${BASH_COMMAND}
+  if [[ $@ == *${APP_NAME_LC}.bin* || $@ == *${APP_NAME_LC}${APP_BINARY_SUFFIX}* || $@ == *${APP_NAME_LC}.so* || $@ == *${APP_NAME_LC}-test* || $@ == *MacOS/Kodi* ]]
+  then
+    avcodec=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavcodec`
+    avformat=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavformat`
+    avfilter=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavfilter`
+    avutil=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavutil`
+    postproc=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libpostproc`
+    swscale=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswscale`
+    swresample=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswresample`
+    gnutls=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors gnutls`
+    $@ $avcodec $avformat $avfilter $avutil $swscale $swresample $postproc $gnutls
+  else
+    $@
+  fi")
+    file(COPY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
+         DESTINATION ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+         FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
+
+    set(FFMPEG_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg-link-wrapper <CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>" PARENT_SCOPE)
+    set(FFMPEG_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   endif()
-
-  if(USE_LTO)
-    list(APPEND FFMPEG_OPTIONS -DUSE_LTO=ON)
-  endif()
-
-  set(LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
-  list(APPEND LINKER_FLAGS ${SYSTEM_LDFLAGS})
-
-  # Some list shenanigans not being passed through without stringify/listify
-  # externalproject_add allows declaring list separator to generate a list for the target
-  string(REPLACE ";" "|" ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_MODULE_PATH "${CMAKE_MODULE_PATH}")
-  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIST_SEPARATOR LIST_SEPARATOR |)
-
-  set(CMAKE_ARGS -DCMAKE_MODULE_PATH=${FFMPEG_MODULE_PATH}
-                 -DFFMPEG_VER=${FFMPEG_VER}
-                 -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
-                 -DCORE_PLATFORM_NAME=${CORE_PLATFORM_NAME_LC}
-                 -DCPU=${CPU}
-                 -DENABLE_NEON=${ENABLE_NEON}
-                 -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-                 -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-                 -DENABLE_CCACHE=${ENABLE_CCACHE}
-                 -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-                 -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
-                 -DCMAKE_EXE_LINKER_FLAGS=${LINKER_FLAGS}
-                 ${CROSS_ARGS}
-                 ${FFMPEG_OPTIONS}
-                 -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig)
-  set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-                    ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
-                    <SOURCE_DIR>
-                    COMMAND ${CMAKE_COMMAND} -E copy
-                    ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/001-ffmpeg-all-libpostproc-plugin.patch
-                    <SOURCE_DIR>
-  )
-
-  if(CMAKE_GENERATOR STREQUAL Xcode)
-    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
-  endif()
-
-  BUILD_DEP_TARGET()
 
   if(TARGET ${APP_NAME_LC}::Dav1d)
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} ${APP_NAME_LC}::Dav1d)
   endif()
 
-  find_program(BASH_COMMAND bash)
-  if(NOT BASH_COMMAND)
-    message(FATAL_ERROR "Internal FFmpeg requires bash.")
-  endif()
-  file(WRITE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
-"#!${BASH_COMMAND}
-if [[ $@ == *${APP_NAME_LC}.bin* || $@ == *${APP_NAME_LC}${APP_BINARY_SUFFIX}* || $@ == *${APP_NAME_LC}.so* || $@ == *${APP_NAME_LC}-test* || $@ == *MacOS/Kodi* ]]
-then
-  avcodec=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavcodec`
-  avformat=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavformat`
-  avfilter=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavfilter`
-  avutil=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavutil`
-  postproc=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libpostproc`
-  swscale=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswscale`
-  swresample=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswresample`
-  gnutls=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors gnutls`
-  $@ $avcodec $avformat $avfilter $avutil $swscale $swresample $postproc $gnutls
-else
-  $@
-fi")
-  file(COPY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
-       DESTINATION ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-       FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
-
-  set(FFMPEG_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg-link-wrapper <CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>" PARENT_SCOPE)
-  set(FFMPEG_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(FFMPEG_FOUND 1)
   set(FFMPEG_VERSION ${FFMPEG_VER})
 
-  # Whilst we use ffmpeg-link-wrapper, we only need INTERFACE at most, and possibly
-  # just not at all. However this gives target consistency with external FFMPEG usage
-  # The benefit and reason to continue to use the wrapper is to automate the collection
-  # of the actual linker flags from pkg-config lookup
+  if(WIN32 OR WINDOWS_STORE)
+    set(target_scope UNKNOWN)
+  else()
+    # Whilst we use ffmpeg-link-wrapper, we only need INTERFACE at most, and possibly
+    # just not at all. However this gives target consistency with external FFMPEG usage
+    # The benefit and reason to continue to use the wrapper is to automate the collection
+    # of the actual linker flags from pkg-config lookup
+    set(target_scope INTERFACE)
+  endif()
 
   foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
     string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
 
-    add_library(ffmpeg::${_libname} INTERFACE IMPORTED)
+    add_library(ffmpeg::${_libname} ${target_scope} IMPORTED)
     set_target_properties(ffmpeg::${_libname} PROPERTIES
-                                              INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
+                                              INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
+
+    if(WIN32 OR WINDOWS_STORE)
+      string(REPLACE "lib" "" name ${_libname})
+      set_target_properties(ffmpeg::${_libname} PROPERTIES
+                                                IMPORTED_LOCATION "${MINGW_LIBS_DIR}/lib/${name}.lib")
+    endif()
+
   endforeach()
 endmacro()
 
@@ -292,7 +375,7 @@ else()
       ffmpeg_create_target(${_libname})
     endforeach()
   else()
-    if(KODI_DEPENDSBUILD)
+    if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
       message(WARNING "Suitable FFmpeg version not found, consider explicitly using -DENABLE_INTERNAL_FFMPEG=ON. Internal FFMPEG will be built")
       buildFFMPEG()
     else()
