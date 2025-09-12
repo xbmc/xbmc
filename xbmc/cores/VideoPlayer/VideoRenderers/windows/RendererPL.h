@@ -29,6 +29,7 @@ extern "C"
 #include "libplacebo/colorspace.h"
 # define PL_LIBAV_IMPLEMENTATION 0
 #include <libplacebo/utils/libav.h>
+#include "VideoRenderers/LibPlacebo/PLD3D11Texture.h"
 
 #define MAX_FRAME_PASSES 256
 #define MAX_BLEND_PASSES 8
@@ -49,6 +50,8 @@ public:
   bool WantsDoublePass() override { return true; }
   bool Configure(const VideoPicture& picture, float fps, unsigned orientation) override;
 
+  DEBUG_INFO_VIDEO GetDebugInfo(int idx) override;
+
   static CRendererBase* Create(CVideoSettings& videoSettings);
   static void GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture);
   static DXGI_FORMAT GetDXGIFormat(AVPixelFormat format, DXGI_FORMAT default_fmt);
@@ -63,8 +66,12 @@ protected:
 private:
   // Color space info
   pl_color_space m_colorSpace;
+  
   pl_chroma_location m_chromaLocation;
 
+  pl_color_system m_videoMatrix;
+  pl_color_transfer m_displayTransfer;
+  pl_color_primaries m_displayPrimaries;
   // Tracking for parameter changes
   AVColorSpace m_lastColorSpace = AVCOL_SPC_UNSPECIFIED;
   AVColorTransferCharacteristic m_lastColorTransfer = AVCOL_TRC_UNSPECIFIED;
@@ -87,16 +94,14 @@ public:
   pl_color_repr doviColorRepr;
   pl_dovi_metadata doviPlMetadata;
   pl_hdr_metadata hdrDoviRpu; //< pl_hdr_metadata
-private:
-  bool UploadToTexture();
   bool hasHDR10PlusMetadata = false;
   bool hasDoviMetadata = false;
   bool hasDoviRpuMetadata = false;
+private:
+  bool UploadToTexture();
+
   AVDynamicHDRPlus hdrMetadata;
   AVDOVIMetadata doviMetadata;
-  
-  
-  
   pl_bit_encoding plbits;
   pl_plane plplanes[3] = {};
   pl_tex pltex[3] = {};

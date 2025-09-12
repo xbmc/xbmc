@@ -196,7 +196,7 @@
 #include <cdio/logging.h>
 #endif
 
-#include "cores/VideoPlayer/videorenderers/windows/PlHelper.h"
+#include "cores/VideoPlayer/videorenderers/Libplacebo/PlHelper.h"
 
 using namespace ADDON;
 using namespace XFILE;
