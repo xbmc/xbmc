@@ -12163,7 +12163,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
             // Art name is derived in GetLocalArt() which in turn calls GetTBNFile()
             // Need to set season/episode in VideoInfoTag
-            fileItem.SetProperty("is_multi_episode", true);
+            fileItem.SetProperty(MULTIPLE_EPISODES, true);
             CVideoInfoTag* tag{fileItem.GetVideoInfoTag()};
             tag->m_iSeason = episode.m_iSeason;
             tag->m_iEpisode = episode.m_iEpisode;
@@ -12296,7 +12296,7 @@ void CVideoDatabase::ExportArt(const CFileItem& item,
   {
     const std::string savedThumb{
         ART::GetLocalArt(item, artType, false,
-                         item.GetProperty("is_multi_episode").asBoolean(false)
+                         item.GetProperty(MULTIPLE_EPISODES).asBoolean(false)
                              ? ART::AdditionalIdentifiers::SEASON_AND_EPISODE
                              : ART::AdditionalIdentifiers::NONE)};
     CServiceBroker::GetTextureCache()->Export(artPath, savedThumb, overwrite);

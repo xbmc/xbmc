@@ -529,6 +529,8 @@ struct EpisodeInformation
 using EpisodeFileMap = std::multimap<std::string, EpisodeInformation, std::less<>>;
 using EpisodeFileMapEntry = std::pair<std::string, EpisodeInformation>;
 
+static constexpr const char* MULTIPLE_EPISODES{"multiple_episodes"};
+
 class CVideoDatabase : public CDatabase
 {
   struct FileInformation
