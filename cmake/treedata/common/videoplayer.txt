@@ -11,4 +11,5 @@ xbmc/cores/VideoPlayer/DVDSubtitles/webvtt         cores/VideoPlayer/subtitles/w
 xbmc/cores/VideoPlayer/Process                     cores/VideoPlayer/process
 xbmc/cores/VideoPlayer/VideoRenderers              cores/VideoPlayer/videorenderers
 xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender  cores/VideoPlayer/videorenderers/hwdec
+xbmc/cores/VideoPlayer/VideoRenderers/LibPlacebo   cores/VideoPlayer/videorenderers/LibPlacebo
 xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders cores/VideoPlayer/videorenderers/shaders

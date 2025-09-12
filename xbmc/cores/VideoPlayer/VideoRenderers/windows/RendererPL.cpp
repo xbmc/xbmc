@@ -16,8 +16,9 @@
 #include "utils/log.h"
 #include "utils/memcpy_sse2.h"
 #include "windowing/GraphicContext.h"
-#include "PLHelper.h"
+#include "VideoRenderers/Libplacebo/PLHelper.h"
 #include <ppl.h>
+
 
 
 using namespace Microsoft::WRL;
@@ -73,18 +74,53 @@ bool CRendererPL::Configure(const VideoPicture& picture, float fps, unsigned ori
   if (!__super::Configure(picture, fps, orientation))
     return false;
 
-    //Log initiation
-    
+  //Log initiation
 
-    PL::PLInstance::Get()->Init();
-    // Set up color space based on picture metadata
-    m_colorSpace = pl_color_space{
-      .primaries = pl_primaries_from_av(picture.color_primaries),
-      .transfer = pl_transfer_from_av(picture.color_transfer),
-    };
-    m_chromaLocation = pl_chroma_from_av(picture.chroma_position);
-  
+
+  PL::PLInstance::Get()->Init();
+  // Set up color space based on picture metadata
+  m_colorSpace = pl_color_space{
+    .primaries = pl_primaries_from_av(picture.color_primaries),
+    .transfer = pl_transfer_from_av(picture.color_transfer),
+  };
+  m_chromaLocation = pl_chroma_from_av(picture.chroma_position);
+  m_format = picture.videoBuffer->GetFormat();
   return true;
+}
+
+DEBUG_INFO_VIDEO CRendererPL::GetDebugInfo(int idx)
+{
+  
+  CRenderBuffer* rb = m_renderBuffers[idx];
+  CRenderBufferImpl* plbuffer = static_cast<CRenderBufferImpl*>(rb);
+  
+  DEBUG_INFO_VIDEO info;
+  pl_hdr_metadata hdr = plbuffer->hdrColorSpace.hdr;
+  
+  info.videoSource = StringUtils::Format("Display: Format: {} Levels: full, ColorMatrix:rgb", DX::DXGIFormatToShortString(m_IntermediateTarget.GetFormat()));
+
+  info.metaPrim = StringUtils::Format("Transfer: {} Primaries: {}", pl_color_transfer_name(m_displayTransfer), pl_color_primaries_name(m_displayPrimaries));
+
+
+  info.metaLight = StringUtils::Format("Video: Matrix:{} Primaries:{} Transfer:{}", pl_color_primaries_name(m_colorSpace.primaries)
+                                                                                  , pl_color_transfer_name(m_colorSpace.transfer)
+                                                                                  , pl_color_system_name(m_videoMatrix));
+  if (plbuffer->hasHDR10PlusMetadata)
+  {
+    info.shader = "Primaries (meta): ";
+    info.shader += StringUtils::Format(
+      "R({:.3f} {:.3f}), G({:.3f} {:.3f}), B({:.3f} {:.3f}), WP({:.3f} {:.3f})", hdr.prim.red.x, hdr.prim.red.y,
+      hdr.prim.green.x, hdr.prim.green.y, hdr.prim.blue.x, hdr.prim.blue.y, hdr.prim.white.x, hdr.prim.white.y);
+
+    info.render = StringUtils::Format("HDR light (meta): max ML: {:.0f}, min ML: {:.4f}", hdr.max_luma, hdr.min_luma);
+    info.render += StringUtils::Format(", max CLL: {}, max FALL: {}", hdr.max_cll, hdr.max_fall);
+  }
+  //line 1 std::string videoSource;
+  //2 std::string metaPrim;
+  //3 std::string metaLight;
+  //4 std::string shader;
+  //5 std::string render;
+  return info;
 }
 
 void CRendererPL::CheckVideoParameters()
@@ -116,43 +152,61 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
 
   CRect dst = CRect(destPoints[0], destPoints[2]);
   CPoint rotated[4];
-
+  pl_frame frameOut{};
+  pl_frame frameIn{};
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
   if (!buf || !buf->IsLoaded())
     return;
 
   CRenderBufferImpl* buffer = static_cast<CRenderBufferImpl*>(buf);
-
-  pl_frame frameOut{};
-  pl_frame frameIn{};
-
-  pl_d3d11_wrap_params outputParams{};
-
+  unsigned arrayIdx;
+  ComPtr<ID3D11Resource> pResource;
   if (!buffer->GetLibplaceboFrame(frameIn))
     return;
+  if (FAILED(buffer->GetResource(&pResource, &arrayIdx)))
+  {
+    CLog::LogF(LOGERROR, "unable to open d3d11va resource.");
+    return;
+  }
+  PL::CPLD3D11Texture wrapin(pResource.Get(), arrayIdx);
+  if (buffer->av_format == AV_PIX_FMT_D3D11VA_VLD)
+  {
+    
+    
+
+    frameIn.num_planes = 2;
+    frameIn.planes[0].texture = wrapin.getTexY();
+    frameIn.planes[0].components = 1;
+    frameIn.planes[0].component_mapping[0] = 0;
+    frameIn.planes[1].texture = wrapin.getTexUV();
+    frameIn.planes[1].components = 2;
+    frameIn.planes[1].component_mapping[0] = 1;
+    frameIn.planes[1].component_mapping[1] = 2;
+    
+
+  }
+
+
+
 
   if (frameIn.color.primaries != PL_COLOR_SYSTEM_DOLBYVISION)
   {
     //if not dovi set the color space setted during config
     frameIn.repr.levels = PL_COLOR_LEVELS_LIMITED;
     frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
-    frameIn.color =m_colorSpace;
+    frameIn.color = m_colorSpace;
   }
+  else
+    m_colorSpace = frameIn.color;
   
 
   //Add icc profile
   //add rotate
 
-  outputParams.w = target.GetWidth();
-  outputParams.h = target.GetHeight();
-  outputParams.fmt = target.GetFormat();
-  outputParams.tex = target.Get();
-  outputParams.array_slice = 1;
-  
-  pl_tex interTexture = pl_d3d11_wrap(PL::PLInstance::Get()->GetGpu(), &outputParams);
 
+  PL::CPLD3D11Texture wrapped(target.Get(), 1);
   frameOut.num_planes = 1;
-  frameOut.planes[0].texture = interTexture;
+  frameOut.planes[0].texture = wrapped.get();
   frameOut.planes[0].components = 4;
   frameOut.planes[0].component_mapping[0] = PL_CHANNEL_R;
   frameOut.planes[0].component_mapping[1] = PL_CHANNEL_G;
@@ -182,6 +236,9 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
   params = pl_render_default_params;
   //Would need to make the target clearable first
   params.skip_target_clearing = true;
+  m_displayTransfer = frameOut.color.transfer;
+  m_displayPrimaries = frameOut.color.primaries;
+  m_videoMatrix = frameIn.repr.sys;
   pl_frame_set_chroma_location(&frameIn, m_chromaLocation);
   bool res = pl_render_image(PL::PLInstance::Get()->GetRenderer(), &frameIn, &frameOut, &params);
 
@@ -268,6 +325,13 @@ void CRendererPL::CRenderBufferImpl::AppendPicture(const VideoPicture& picture)
   hasDoviMetadata = picture.hasDoviMetadata;
   hasDoviRpuMetadata = picture.hasDoviRpuMetadata;
   hasHDR10PlusMetadata = picture.hasHDR10PlusMetadata;
+
+  if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
+  {
+    const auto hw = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
+    m_widthTex = hw->width;
+    m_heightTex = hw->height;
+  }
 }
 
 bool CRendererPL::CRenderBufferImpl::GetLibplaceboFrame(pl_frame& frame)
@@ -312,7 +376,6 @@ bool CRendererPL::CRenderBufferImpl::UploadBuffer()
 
   if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
   {
-
     m_bLoaded = true;
     return true;
   }

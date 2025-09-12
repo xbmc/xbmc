@@ -134,7 +134,7 @@ public:
   bool Flush(bool saveBuffers);
   void SetBufferSize(int numBuffers) { m_iBuffersRequired = numBuffers; }
 
-  DEBUG_INFO_VIDEO GetDebugInfo(int idx);
+  virtual DEBUG_INFO_VIDEO GetDebugInfo(int idx);
 
   static DXGI_FORMAT GetDXGIFormat(const VideoPicture &picture);
   static DXGI_FORMAT GetDXGIFormat(CVideoBuffer* videoBuffer);

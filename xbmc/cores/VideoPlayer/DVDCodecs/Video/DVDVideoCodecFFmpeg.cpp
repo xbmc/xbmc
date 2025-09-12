@@ -1155,7 +1155,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   AVFrameSideData* sdDOVIRPU = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_RPU_BUFFER);
   if (sdDOVIRPU)
   {
-    pl_hdr_metadata_from_dovi_rpu(&pVideoPicture->hdrDoviRpu, sd->buf->data, sd->buf->size);
+    pl_hdr_metadata_from_dovi_rpu(&pVideoPicture->hdrDoviRpu, sdDOVIRPU->buf->data, sdDOVIRPU->buf->size);
   }
 
   if (pVideoPicture->iRepeatPicture)
