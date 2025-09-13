@@ -35,6 +35,17 @@ extern "C" {
 #define MAX_BLEND_FRAMES 8
 namespace PL
 {
+  typedef struct pl_d3d_format {
+    pl_bit_encoding bits;     // per picture
+    DXGI_FORMAT planes[4];      // DXGI format per plane
+    int components[4];          // number of components per plane
+    pl_channel component_mapping[4][4];
+    int width_div[4];       // divide full width by this for each plane
+    int height_div[4];      // divide full height by this for each plane
+    char description[16];       // short description
+    int num_planes;         // actual number of planes used
+  } pl_d3d_format;
+
   class PLInstance
   {
   public:
@@ -58,5 +69,6 @@ namespace PL
     int Currenttransfer;
     int CurrentMatrix;
     void LogCurrent();
+    void fill_d3d_format(pl_d3d_format* info, DXGI_FORMAT format);
   };
 }

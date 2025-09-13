@@ -114,3 +114,88 @@ void PL::PLInstance::LogCurrent()
   CLog::Log(LOGINFO, "LibPlaceboCurrent Color Settings: Transfer: {}", sTrans.c_str());
   CLog::Log(LOGINFO, "LibPlaceboCurrent Color Settings: Matrix: {}", sSys.c_str());
 }
+
+void PL::PLInstance::fill_d3d_format(pl_d3d_format* info, DXGI_FORMAT format)
+{
+  
+  memset(info, 0, sizeof(pl_d3d_format));
+  switch (format) {
+  case DXGI_FORMAT_NV12:
+    info->bits.color_depth = 8;
+    info->bits.sample_depth = 8;
+    info->bits.bit_shift = 0;
+    info->planes[0] = DXGI_FORMAT_R8_UNORM;      // Y plane
+    info->planes[1] = DXGI_FORMAT_R8G8_UNORM;    // UV plane
+    info->component_mapping[0][0] = PL_CHANNEL_Y;
+    info->component_mapping[1][0] = PL_CHANNEL_U;
+    info->component_mapping[1][1] = PL_CHANNEL_V;
+    info->components[0] = 1;
+    info->components[1] = 2;
+    info->width_div[0] = 1;   // full width
+    info->height_div[0] = 1;  // full height
+    info->width_div[1] = 2;   // half width
+    info->height_div[1] = 2;  // half height
+    info->num_planes = 2;
+    strcpy(info->description, "nv12");
+    break;
+
+  case DXGI_FORMAT_P010:
+    info->bits.color_depth = 10;
+    info->bits.sample_depth = 16;
+    info->bits.bit_shift = 6;
+    info->planes[0] = DXGI_FORMAT_R16_UNORM;     // Y plane
+    info->planes[1] = DXGI_FORMAT_R16G16_UNORM;  // UV plane
+    info->component_mapping[0][0] = PL_CHANNEL_Y;
+    info->component_mapping[1][0] = PL_CHANNEL_U;
+    info->component_mapping[1][1] = PL_CHANNEL_V;
+    info->components[0] = 1;
+    info->components[1] = 2;
+    info->width_div[0] = 1;
+    info->height_div[0] = 1;
+    info->width_div[1] = 2;
+    info->height_div[1] = 2;
+    info->num_planes = 2;
+    strcpy(info->description, "p010");
+    break;
+
+  case DXGI_FORMAT_P016:
+    info->bits.color_depth = 16;
+    info->bits.sample_depth = 16;
+    info->bits.bit_shift = 0;
+    info->planes[0] = DXGI_FORMAT_R16_UNORM;
+    info->planes[1] = DXGI_FORMAT_R16G16_UNORM;
+    info->component_mapping[0][0] = PL_CHANNEL_Y;
+    info->component_mapping[1][0] = PL_CHANNEL_U;
+    info->component_mapping[1][1] = PL_CHANNEL_V;
+    info->components[0] = 1;
+    info->components[1] = 2;
+    info->width_div[0] = 1;
+    info->height_div[0] = 1;
+    info->width_div[1] = 2;
+    info->height_div[1] = 2;
+    info->num_planes = 2;
+    strcpy(info->description, "p016");
+    break;
+
+  case DXGI_FORMAT_YUY2:
+    info->bits.color_depth = 8;
+    info->bits.sample_depth = 16; // packed 2 bytes per component pair
+    info->bits.bit_shift = 0;
+    info->planes[0] = DXGI_FORMAT_R8G8B8A8_UNORM; // pseudo-plane
+    info->component_mapping[0][0] = PL_CHANNEL_R;
+    info->component_mapping[0][1] = PL_CHANNEL_G;
+    info->component_mapping[0][2] = PL_CHANNEL_B;
+    info->component_mapping[0][3] = PL_CHANNEL_A;
+    info->width_div[0] = 1;
+    info->height_div[0] = 1;
+    info->num_planes = 1;
+    strcpy(info->description, "yuy2");
+    break;
+
+  default:
+    info->num_planes = 0;
+    strcpy(info->description, "unknown");
+    break;
+  }
+
+}
