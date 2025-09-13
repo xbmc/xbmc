@@ -111,7 +111,6 @@ Win32DllLoader::Win32DllLoader(const std::string& dll, bool isSystemDll)
   : LibraryLoader(dll)
   , bIsSystemDll(isSystemDll)
 {
-  m_dllHandle = NULL;
   DllLoaderContainer::RegisterDll(this);
 }
 
