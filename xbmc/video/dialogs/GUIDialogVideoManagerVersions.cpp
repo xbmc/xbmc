@@ -369,15 +369,16 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
   if (CGUIDialogSimpleMenu::ShowPlaylistSelection(*item) && oldPath != item->GetDynPath())
   {
     // Add playlist file as bluray://
+    int idFile;
     bool videoDbSuccess{false};
     m_database.BeginTransaction();
     if (replaceExistingFile == ReplaceExistingFile::YES)
     {
-      videoDbSuccess =
-          m_database.SetFileForMedia(
-              item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
-              CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
-                                         .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded}) > 0;
+      idFile = m_database.SetFileForMedia(
+          item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
+          CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
+                                     .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
+      videoDbSuccess = idFile > 0;
       if (videoDbSuccess)
       {
         m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
@@ -402,8 +403,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
       if (idVideoVersion < 0)
         return false;
 
-      const int idFile{
-          m_database.AddFile(item->GetDynPath(), "", item->GetVideoInfoTag()->m_dateAdded)};
+      idFile = m_database.AddFile(item->GetDynPath(), "", item->GetVideoInfoTag()->m_dateAdded);
       if (idFile > 0)
       {
         videoDbSuccess = true;
@@ -419,7 +419,11 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
     }
 
     if (videoDbSuccess)
+    {
+      // New disc video version will not have any art so use the art from the disc
+      m_database.SetArtForItem(idFile, MediaTypeVideoVersion, item->GetArt());
       m_database.CommitTransaction();
+    }
     else
       m_database.RollbackTransaction();
 
