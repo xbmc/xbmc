@@ -22,6 +22,8 @@ public:
   void GetVideoResolution(unsigned int& width, unsigned int& height) override;
 
 protected:
+  void UpdateContent() override;
+
   void CreatePlayers() override;
 
 private:

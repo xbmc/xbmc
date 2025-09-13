@@ -271,8 +271,13 @@ std::string CMediaPipelineWebOS::GetVideoInfo()
   return m_videoInfo;
 }
 
-bool CMediaPipelineWebOS::Supports(const AVCodecID codec, const bool includeSecure)
+bool CMediaPipelineWebOS::Supports(const AVCodecID codec,
+                                   const int profile,
+                                   const bool includeSecure)
 {
+  if ((codec == AV_CODEC_ID_H264 || codec == AV_CODEC_ID_AVS || codec == AV_CODEC_ID_CAVS) &&
+      profile == AV_PROFILE_H264_HIGH_10)
+    return false;
   if (const auto it = ms_codecMap.find(codec); it != ms_codecMap.end())
     return includeSecure || !it->second.isSecure;
   return false;
@@ -339,7 +344,7 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
 
 bool CMediaPipelineWebOS::OpenVideoStream(CDVDStreamInfo hint)
 {
-  if (!Supports(hint.codec))
+  if (!Supports(hint.codec, hint.profile))
   {
     CLog::LogF(LOGERROR, "Unsupported codec: {}", hint.codec);
     return false;
