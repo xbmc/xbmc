@@ -21,8 +21,10 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/i18n/TableLanguageCodes.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <functional>
 #include <map>
 #include <memory>
@@ -999,9 +1001,61 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE tvshow ADD tagLine TEXT");
   }
+
+  if (iVersion < 141)
+  {
+    // Convert the original language from ISO 639-2/B to BCP-47
+
+    m_pDS->query(
+        PrepareSQL("SELECT DISTINCT originalLanguage FROM movie WHERE originalLanguage <> '' "
+                   "UNION "
+                   "SELECT DISTINCT originalLanguage FROM tvshow WHERE originalLanguage <> ''"));
+    while (!m_pDS->eof())
+    {
+      std::string from = m_pDS->fv(0).get_asString();
+
+      // The current value is an ISO 639-2/B code or a code defined in AS.xml or a language Addon.
+      // Convert possible ISO 639-2/B to ISO 639-1 with minimal dependencies on external code
+      // The list of ISO 639-1 codes (and their mapping to ISO 639-2 code) is unlikely to change
+      // so the output of the dependency should be stable over time.
+      std::string iso6392Lower(from);
+      StringUtils::Trim(iso6392Lower);
+
+      // Anything with length <> 3 must have come from AS.xml or a language addon and will be left
+      // as is.
+      if (iso6392Lower.length() == 3)
+      {
+        StringUtils::ToLower(iso6392Lower);
+
+        // BCP 47 uses the alpha-2 639-1 codes when defined for a language and alpha-3 codes from
+        // 639-2/T 639-3 639-5 otherwise.
+        //
+        // Only few languages have different B and T forms.
+        // ALL ISO 639-2/B codes that have a ISO 639-2/T equivalent also have an ISO 639-1
+        // equivalent so conversion from B to T doesn't need to be considered - a conversion to
+        // ISO 639-1 will happen instead.
+        //
+        // ISO 639-2/B that do not have an ISO 639-1 equivalent are left alone, as they are either
+        // identical to the desired ISO 639-2/T code or unrecognized values that must have come
+        // from AS.xml or a language addon. There is no easy way to tell which situation applies.
+        const auto it = std::ranges::lower_bound(LanguageCodesByIso639_2b, iso6392Lower, {},
+                                                 &ISO639::iso639_2b);
+        if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == iso6392Lower)
+        {
+          const auto to = std::string{it->iso639_1};
+          m_pDS->exec(PrepareSQL("UPDATE movie SET originalLanguage='" + to +
+                                 "' WHERE originalLanguage='" + from + "'"));
+          m_pDS->exec(PrepareSQL("UPDATE tvshow SET originalLanguage='" + to +
+                                 "' WHERE originalLanguage='" + from + "'"));
+        }
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 140;
+  return 141;
 }
