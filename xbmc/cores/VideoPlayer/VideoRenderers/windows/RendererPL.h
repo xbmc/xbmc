@@ -29,7 +29,7 @@ extern "C"
 #include "libplacebo/colorspace.h"
 # define PL_LIBAV_IMPLEMENTATION 0
 #include <libplacebo/utils/libav.h>
-#include "VideoRenderers/LibPlacebo/PLD3D11Texture.h"
+#include "VideoRenderers/Libplacebo/PLHelper.h"
 
 #define MAX_FRAME_PASSES 256
 #define MAX_BLEND_PASSES 8
@@ -61,6 +61,8 @@ protected:
   void CheckVideoParameters() override;
   void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
   CRenderBuffer* CreateBuffer() override;
+
+  //important to override we need to let libplacebo set the swapchain csp or we would get issues with HDR
   void ProcessHDR(CRenderBuffer* rb) override;
 
 private:
@@ -69,11 +71,15 @@ private:
   
   pl_chroma_location m_chromaLocation;
 
+  //For debug info
   pl_color_system m_videoMatrix;
   pl_color_transfer m_displayTransfer;
   pl_color_primaries m_displayPrimaries;
+
   // Tracking for parameter changes
   AVColorSpace m_lastColorSpace = AVCOL_SPC_UNSPECIFIED;
+
+  //maybe remove those 2
   AVColorTransferCharacteristic m_lastColorTransfer = AVCOL_TRC_UNSPECIFIED;
   AVColorPrimaries m_lastPrimaries = AVCOL_PRI_UNSPECIFIED;
 
@@ -98,11 +104,21 @@ public:
   bool hasDoviMetadata = false;
   bool hasDoviRpuMetadata = false;
 private:
-  bool UploadToTexture();
-
+  //sw upload
+  bool UploadPlanes();
+  //When decoded with d3d11va
+  bool UploadWrapPlanes();
+  //move those to the video codec if linux start to use libplacebo
   AVDynamicHDRPlus hdrMetadata;
   AVDOVIMetadata doviMetadata;
-  pl_bit_encoding plbits;
+
+  //planes are used to create the frame
   pl_plane plplanes[3] = {};
+  // they are only kept for plane reference
+  // we could put them to null according to libplacebo doc but it crash right away
   pl_tex pltex[3] = {};
+  /* data info for dxva planes formating and bit encoding fill with plhelper
+  *  this include the bit format for the color conversion 
+  * */
+  PL::pl_d3d_format plFormat = {};
 };
