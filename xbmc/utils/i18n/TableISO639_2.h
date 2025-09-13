@@ -664,3 +664,21 @@ constexpr auto CreateTBMappingsByB()
 }
 
 inline constexpr auto ISO639_2_TB_MappingsByB = CreateTBMappingsByB();
+
+//-------------------------------------------------------------------------------------------------
+// Data integrity validations
+//
+
+static_assert(std::ranges::adjacent_find(TableISO639_2ByCode, {}, &LCENTRY::code) ==
+              TableISO639_2ByCode.end());
+
+static_assert(std::ranges::adjacent_find(TableISO639_2AllNames, {}, &LCENTRY::name) ==
+              TableISO639_2AllNames.end());
+
+static_assert(std::ranges::adjacent_find(ISO639_2_TB_Mappings, {}, &ISO639_2_TB::terminological) ==
+              ISO639_2_TB_Mappings.end());
+
+static_assert(std::ranges::adjacent_find(ISO639_2_TB_MappingsByB,
+                                         {},
+                                         &ISO639_2_TB::bibliographic) ==
+              ISO639_2_TB_MappingsByB.end());

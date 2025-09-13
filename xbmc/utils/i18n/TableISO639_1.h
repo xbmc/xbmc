@@ -256,3 +256,17 @@ inline constexpr auto TableISO639_1_DeprByCode = CreateIso639ByCode(TableISO639_
 
 inline constexpr auto TableISO639_1ByName = CreateIso639ByName(TableISO639_1);
 inline constexpr auto TableISO639_1_DeprByName = CreateIso639ByName(TableISO639_1_Depr);
+
+//-------------------------------------------------------------------------------------------------
+// Data integrity validations
+//
+
+static_assert(std::ranges::adjacent_find(TableISO639_1ByCode, {}, &LCENTRY::code) ==
+              TableISO639_1ByCode.end());
+static_assert(std::ranges::adjacent_find(TableISO639_1_DeprByCode, {}, &LCENTRY::code) ==
+              TableISO639_1_DeprByCode.end());
+
+static_assert(std::ranges::adjacent_find(TableISO639_1ByName, {}, &LCENTRY::name) ==
+              TableISO639_1ByName.end());
+static_assert(std::ranges::adjacent_find(TableISO639_1_DeprByName, {}, &LCENTRY::name) ==
+              TableISO639_1_DeprByName.end());

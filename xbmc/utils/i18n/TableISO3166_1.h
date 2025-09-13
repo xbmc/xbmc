@@ -292,3 +292,13 @@ constexpr auto CreateTableISO3166_1ByAlpha3()
 }
 
 inline constexpr auto TableISO3166_1ByAlpha3 = CreateTableISO3166_1ByAlpha3();
+
+//-------------------------------------------------------------------------------------------------
+// Data integrity validations
+//
+
+static_assert(std::ranges::adjacent_find(TableISO3166_1, {}, &ISO3166_1::alpha2) ==
+              TableISO3166_1.end());
+
+static_assert(std::ranges::adjacent_find(TableISO3166_1ByAlpha3, {}, &ISO3166_1::alpha3) ==
+              TableISO3166_1ByAlpha3.end());
