@@ -124,13 +124,13 @@ public:
   void SetURL(const CURL& url);
   bool IsURL(const CURL& url) const;
   const std::string& GetPath() const;
-  void SetPath(std::string_view path);
+  void SetPath(std::string path);
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
   const CURL& GetDynURL() const;
   void SetDynURL(const CURL& url);
   const std::string &GetDynPath() const;
-  void SetDynPath(std::string_view path);
+  void SetDynPath(std::string path);
 
   CFileItem& operator=(const CFileItem& item);
   void Archive(CArchive& ar) override;

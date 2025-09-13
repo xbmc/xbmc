@@ -1198,7 +1198,7 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
 
     std::string temp = m_strDynPath;
     StringUtils::Replace(temp, "http:", "mms:");
-    SetDynPath(temp);
+    SetDynPath(std::move(temp));
   }
 }
 
@@ -1605,9 +1605,9 @@ const std::string& CFileItem::GetPath() const
   return m_strPath;
 }
 
-void CFileItem::SetPath(std::string_view path)
+void CFileItem::SetPath(std::string path)
 {
-  m_strPath = path;
+  m_strPath = std::move(path);
   m_urlPath.reset();
 }
 
@@ -1662,9 +1662,9 @@ const std::string &CFileItem::GetDynPath() const
     return m_strPath;
 }
 
-void CFileItem::SetDynPath(std::string_view path)
+void CFileItem::SetDynPath(std::string path)
 {
-  m_strDynPath = path;
+  m_strDynPath = std::move(path);
   m_urlDynPath.reset();
 }
 
