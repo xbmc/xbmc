@@ -12,16 +12,17 @@
 
 #include "sqlitedataset.h"
 
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include <chrono>
-#include <map>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include <sqlite3.h>
@@ -32,7 +33,7 @@ namespace
 {
 #define X(VAL) std::make_pair(VAL, #VAL)
 //!@todo Remove ifdefs when sqlite version requirement has been bumped to at least 3.26.0
-const std::map<int, const char*> g_SqliteErrorStrings = {
+constexpr auto sqliteErrorStrings = make_map<int, std::string_view>({
     X(SQLITE_OK),
     X(SQLITE_ERROR),
     X(SQLITE_INTERNAL),
@@ -159,7 +160,7 @@ const std::map<int, const char*> g_SqliteErrorStrings = {
 #if defined(SQLITE_OK_LOAD_PERMANENTLY)
     X(SQLITE_OK_LOAD_PERMANENTLY),
 #endif
-};
+});
 #undef X
 
 //************* Callback function ***************************
@@ -289,8 +290,8 @@ int SqliteDatabase::setErr(int err_code, const char* qry)
 {
   std::stringstream ss;
   ss << "[" << db << "] ";
-  auto errorIt = g_SqliteErrorStrings.find(err_code);
-  if (errorIt != g_SqliteErrorStrings.end())
+  auto errorIt = sqliteErrorStrings.find(err_code);
+  if (errorIt != sqliteErrorStrings.end())
   {
     ss << "SQLite error " << errorIt->second;
   }

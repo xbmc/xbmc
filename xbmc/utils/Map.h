@@ -11,6 +11,8 @@
 
 #include <algorithm>
 #include <array>
+#include <functional>
+#include <optional>
 #include <stdexcept>
 
 /*!
@@ -42,6 +44,9 @@ public:
     {
       std::sort(m_map.begin(), m_map.end(),
                 [](const auto& a, const auto& b) { return std::less<>{}(a.first, b.first); });
+      if (std::ranges::adjacent_find(m_map.begin(), m_map.end(), {},
+                                     &std::pair<Key, Value>::first) != m_map.end())
+        throw std::runtime_error("Keys are not unique");
     }
   }
 
@@ -79,6 +84,16 @@ public:
     }
   }
 
+  std::optional<Value> get(const Key& key) const
+  {
+    auto iter = find(key);
+    if (iter != cend())
+      return iter->second;
+    else
+      return {};
+  }
+
+  constexpr bool contains(const Key& key) const { return find(key) != cend(); }
   constexpr size_t size() const { return Size; }
 
   constexpr auto cbegin() const { return m_map.cbegin(); }

@@ -47,6 +47,7 @@
 #include "threads/IRunnable.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
+#include "utils/Map.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -67,6 +68,7 @@
 #include <algorithm>
 #include <iterator>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -919,12 +921,12 @@ bool CArtTypeChooser::ChooseArtType()
     const std::vector<std::string> availableArtTypes = GetArtTypesList(*m_item->GetVideoInfoTag());
 
     // maps art types to resource ids
-    static const std::unordered_map<std::string, int> name2idMap = {
+    static constexpr auto name2idMap = make_map<std::string_view, int>({
         {"banner", 20020},
         {"fanart", 20445},
         {"poster", 20021},
         {"thumb", 21371},
-    };
+    });
 
     for (const auto& type : availableArtTypes)
     {

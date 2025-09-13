@@ -17,19 +17,19 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "pictures/PictureInfoTag.h"
 #include "pictures/SlideShowDelegator.h"
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
 
-#include <map>
 #include <memory>
 
 using namespace KODI::GUILIB::GUIINFO;
 using namespace KODI;
 
-static const std::map<int, int> listitem2slideshow_map =
-{
+constexpr auto listitem2slideshow_map = make_map<int, int>({
+    // clang-format off
   { LISTITEM_PICTURE_RESOLUTION       , SLIDESHOW_RESOLUTION },
   { LISTITEM_PICTURE_LONGDATE         , SLIDESHOW_EXIF_LONG_DATE },
   { LISTITEM_PICTURE_LONGDATETIME     , SLIDESHOW_EXIF_LONG_DATE_TIME },
@@ -83,7 +83,8 @@ static const std::map<int, int> listitem2slideshow_map =
   { LISTITEM_PICTURE_GPS_LAT          , SLIDESHOW_EXIF_GPS_LATITUDE },
   { LISTITEM_PICTURE_GPS_LON          , SLIDESHOW_EXIF_GPS_LONGITUDE },
   { LISTITEM_PICTURE_GPS_ALT          , SLIDESHOW_EXIF_GPS_ALTITUDE }
-};
+    // clang-format on
+});
 
 CPicturesGUIInfo::CPicturesGUIInfo() = default;
 
