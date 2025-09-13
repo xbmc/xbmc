@@ -19,6 +19,7 @@
 #include "platform/win32/CharsetConverter.h"
 
 #include <string>
+#include <utility>
 
 #include <winrt/Windows.Storage.FileProperties.h>
 
@@ -37,7 +38,7 @@ bool CWinLibraryDirectory::GetStoragePath(std::string library, std::string& path
 {
   CURL url;
   url.SetProtocol("win-lib");
-  url.SetHostName(library);
+  url.SetHostName(std::move(library));
 
   if (!IsValid(url))
     return false;

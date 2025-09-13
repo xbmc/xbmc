@@ -1583,7 +1583,7 @@ VideoDriverInfo CWIN32Util::FormatVideoDriverInfo(const UINT vendorId, uint64_t 
   return FormatVideoDriverInfo(vendorId, ss.str());
 }
 
-VideoDriverInfo CWIN32Util::FormatVideoDriverInfo(const UINT vendorId, const std::string version)
+VideoDriverInfo CWIN32Util::FormatVideoDriverInfo(const UINT vendorId, const std::string& version)
 {
   VideoDriverInfo info = {};
 
