@@ -377,7 +377,7 @@ public:
    */
   virtual bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState);
 
-  std::string GetOriginalLanguage() const { return m_originalLanguage; }
+  const std::string& GetOriginalLanguage() const { return m_originalLanguage; }
 
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
