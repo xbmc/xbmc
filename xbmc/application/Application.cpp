@@ -1608,7 +1608,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 #elif defined(TARGET_POSIX)
     CUtil::RunCommandLine(pMsg->strParam, (pMsg->param1 == 1));
 #elif defined(TARGET_WINDOWS)
-    CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->param1 == 1));
+    CWIN32Util::XBMCShellExecute(pMsg->strParam, (pMsg->param1 == 1));
 #endif
     // Resume AE processing of XBMC native audio
     if (audioengine)
