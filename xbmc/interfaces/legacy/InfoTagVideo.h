@@ -9,6 +9,7 @@
 #pragma once
 
 #include "AddonClass.h"
+#include "Dictionary.h"
 #include "Tuple.h"
 #include "utils/StreamDetails.h"
 #include "video/VideoInfoTag.h"
@@ -2742,6 +2743,38 @@ namespace XBMCAddon
 #endif
       /// @}
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ setAvailableFanart(images) }
+      /// Set available images (needed for video scrapers)
+      ///
+      /// @param images            list of dictionaries (see below for relevant keys)
+      ///
+      /// - Keys:
+      /// | Label         | Description                                     |
+      /// |--------------:|:------------------------------------------------|
+      /// | image         | string (http://www.someurl.com/someimage.png)
+      /// | preview       | [opt] string (http://www.someurl.com/somepreviewimage.png)
+      /// | colors        | [opt] string (either comma separated Kodi hex values ("FFFFFFFF,DDDDDDDD") or TVDB RGB Int Triplets ("|68,69,59|69,70,58|78,78,68|"))
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// fanart = [{"image": path_to_image_1, "preview": path_to_preview_1}, {"image": path_to_image_2, "preview": path_to_preview_2}]
+      /// info_tag.setAvailableFanart(fanart)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setAvailableFanart(...);
+#else
+      void setAvailableFanart(const std::vector<Properties>& images);
+#endif
+
 #ifndef SWIG
       static void setDbIdRaw(CVideoInfoTag* infoTag, int dbId);
       static void setUniqueIDRaw(CVideoInfoTag* infoTag,
@@ -2826,6 +2859,8 @@ namespace XBMCAddon
                                          bool post = false,
                                          bool isgz = false,
                                          int season = -1);
+      static void setAvailableFanartRaw(CVideoInfoTag* infoTag,
+                                        const std::vector<Properties>& images);
 #endif
     };
   }
