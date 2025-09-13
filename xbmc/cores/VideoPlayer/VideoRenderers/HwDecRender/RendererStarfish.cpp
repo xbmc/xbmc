@@ -159,7 +159,7 @@ void CRendererStarfish::ReleaseBuffer(int idx)
 CRenderInfo CRendererStarfish::GetRenderInfo()
 {
   CRenderInfo info;
-  info.max_buffer_size = 2;
+  info.max_buffer_size = 4;
   return info;
 }
 
