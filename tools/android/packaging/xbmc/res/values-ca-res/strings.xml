@@ -15,4 +15,5 @@
     <string name="continue_button">Continúa</string>
     <string name="info_title">Info</string>
     <string name="notice_dialog">%1$s necessita accés als mitjans i fitxers del vostre dispositiu per poder funcionar. Permeteu-ho a través del següent quadre de diàleg o bé %1$s es tancarà.</string>
+    <string name="record_audio_dialog">%1$s sol·licita permís per gravar àudio. Només s\'utilitza per a la cerca per veu. Si us plau, permeteu o denegueu-ho al següent quadre de diàleg.</string>
 </resources>
