@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2025-08-28 22:31+0000\n"
 "Last-Translator: Cutter <cutterx@free.fr>\n"
@@ -689,6 +689,10 @@ msgstr "Action par défaut lors de la sélection des séries TV sur l'écran d'a
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
 msgstr "Action par défaut lors de la sélection des sagas sur l'écran d'accueil"
+
+msgctxt "#31177"
+msgid "Choose weather icon pack"
+msgstr ""
 
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window

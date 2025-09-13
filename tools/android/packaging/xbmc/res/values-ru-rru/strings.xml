@@ -15,4 +15,5 @@
     <string name="permission_denied">В доступе отказано!! Выход…</string>
     <string name="no_find_apk">Не удалось найти пакет.</string>
     <string name="no_read_apk">Невозможно прочитать пакет.</string>
+    <string name="record_audio_dialog">%1$s запрашивает разрешение на запись звука. Это используется только для голосового поиска. Пожалуйста, разрешите или запретите это в следующем диалоговом окне.</string>
 </resources>

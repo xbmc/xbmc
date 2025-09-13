@@ -15,4 +15,5 @@
     <string name="first_run">正在为首次运行做准备。请稍等…</string>
     <string name="no_find_apk">找不到软件包。</string>
     <string name="no_read_apk">无法读取软件包。</string>
+    <string name="record_audio_dialog">%1$s 请求录制音频的权限。这仅用于语音搜索。请在以下对话框中允许或拒绝。</string>
 </resources>

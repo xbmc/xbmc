@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-08-26 17:01+0000\n"
+"PO-Revision-Date: 2025-09-13 06:55+0000\n"
 "Last-Translator: Kai Sommerfeld <ksooo@users.noreply.kodi.weblate.cloud>\n"
 "Language-Team: German <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/de_de/>\n"
 "Language: de_de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13\n"
+"X-Generator: Weblate 5.13.3\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -689,6 +689,10 @@ msgstr "Aktion bei Auswahl von Serien auf dem Hauptbildschirm"
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
 msgstr "Aktion bei Auswahl von Filmreihen auf dem Hauptbildschirm"
+
+msgctxt "#31177"
+msgid "Choose weather icon pack"
+msgstr "Icon-Pack für Wetterbedingungen auswählen"
 
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window

@@ -15,4 +15,5 @@
     <string name="permission_denied">Luba ei antud!! Sulgumine…</string>
     <string name="notice_dialog">%1$s vajab toimimiseks juurdepääsu seadme meediale ja failidele. Luba see järgnevas aknas või %1$s sulgub.</string>
     <string name="external_ok">Väline salvestusruum on korras…</string>
+    <string name="record_audio_dialog">%1$s küsib luba heli salvestamiseks. Seda kasutatakse ainult häälotsingu jaoks. Luba või keela see järgnevas dialoogiaknas.</string>
 </resources>

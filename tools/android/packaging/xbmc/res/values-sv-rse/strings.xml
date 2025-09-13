@@ -15,4 +15,5 @@
     <string name="no_find_apk">Kan inte hitta paket.</string>
     <string name="no_read_apk">Kan inte läsa paket.</string>
     <string name="first_run">Förbereder första körningen. Vänta…</string>
+    <string name="record_audio_dialog">%1$s ber om behörighet att spela in ljud. Detta används endast för röstsökning. Godkänn eller neka detta i följande dialogruta.</string>
 </resources>
