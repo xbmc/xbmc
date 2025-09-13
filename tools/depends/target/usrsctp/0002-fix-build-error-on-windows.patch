@@ -1,0 +1,33 @@
+From 0cb86b892611dcd999c21b8c8504e6190259275b Mon Sep 17 00:00:00 2001
+From: Aven <aven@ocr.one>
+Date: Thu, 4 May 2023 13:22:42 +0800
+Subject: [PATCH 2/3] fix build error on windows
+
+sctp_output.c
+L:\usrsctplib\netinet\sctp_output.c(14823): error C2220: the following warning is treated as an error
+L:\usrsctplib\netinet\sctp_output.c(14823): warning C4703: potentially uninitialized local pointer variable 'inp' used
+L:\usrsctplib\netinet\sctp_output.c(14827): warning C4703: potentially uninitialized local pointer variable 'asoc' used
+---
+ usrsctplib/netinet/sctp_output.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/usrsctplib/netinet/sctp_output.c b/usrsctplib/netinet/sctp_output.c
+index 0a3453b..2215b49 100755
+--- a/usrsctplib/netinet/sctp_output.c
++++ b/usrsctplib/netinet/sctp_output.c
+@@ -13555,10 +13555,10 @@ sctp_lower_sosend(struct socket *so,
+ #endif
+ 	struct timeval now;
+ 	struct sctp_block_entry be;
+-	struct sctp_inpcb *inp;
++	struct sctp_inpcb *inp = NULL;
+ 	struct sctp_tcb *stcb = NULL;
+ 	struct sctp_nets *net;
+-	struct sctp_association *asoc;
++	struct sctp_association *asoc = NULL;
+ 	struct sctp_inpcb *t_inp;
+ 	struct sctp_nonpad_sndrcvinfo *sndrcvninfo;
+ 	ssize_t sndlen = 0, max_len, local_add_more;
+-- 
+2.49.0
+
