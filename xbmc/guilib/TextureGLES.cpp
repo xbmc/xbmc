@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "guilib/TextureFormats.h"
 #include "guilib/TextureManager.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -240,7 +241,7 @@ void CGLESTexture::LoadToGPU()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_filter_anisotropic"))
+  if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_filter_anisotropic))
   {
     int32_t aniso =
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAnisotropicFiltering;
@@ -421,11 +422,11 @@ TextureFormat CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
     glFormat.format = glFormat.internalFormat = GL_LUMINANCE_ALPHA;
   }
   else if (m_textureFormat == KD_TEX_FMT_SDR_BGRA8 && m_textureSwizzle == KD_TEX_SWIZ_RGBA &&
-           !CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888") &&
-           !CServiceBroker::GetRenderSystem()->IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+           !CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_format_BGRA8888) &&
+           !CGLExtensions::IsExtensionSupported(CGLExtensions::IMG_texture_format_BGRA8888))
   {
 #if defined(GL_APPLE_texture_format_BGRA8888)
-    if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+    if (CGLExtensions::IsExtensionSupported(CGLExtensions::APPLE_texture_format_BGRA8888))
     {
       glFormat.internalFormat = GL_RGBA;
       glFormat.format = GL_BGRA_EXT;

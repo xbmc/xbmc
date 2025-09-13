@@ -14,6 +14,7 @@
 #include "Texture.h"
 #include "TextureManager.h"
 #include "gui3d.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "settings/AdvancedSettings.h"
@@ -102,7 +103,7 @@ bool CGUIFontTTFGL::FirstBegin()
                  pixformat, GL_UNSIGNED_BYTE, 0);
 
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-    if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_filter_anisotropic"))
+    if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_filter_anisotropic))
     {
       int32_t aniso =
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAnisotropicFiltering;

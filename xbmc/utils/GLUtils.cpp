@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "log.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
@@ -195,7 +196,7 @@ void LogGraphicsInfo()
 #define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX            0x904A
 #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX            0x904B
 
-  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_NVX_gpu_memory_info"))
+  if (CGLExtensions::IsExtensionSupported(CGLExtensions::NVX_gpu_memory_info))
   {
     GLint mem = 0;
 
