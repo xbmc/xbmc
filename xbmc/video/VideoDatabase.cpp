@@ -54,6 +54,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+#include "utils/i18n/TableLanguageCodes.h"
 #include "utils/log.h"
 #include "video/VideoDatabaseColumns.h"
 #include "video/VideoDbUrl.h"
