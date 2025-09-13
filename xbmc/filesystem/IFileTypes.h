@@ -90,7 +90,7 @@ enum class CURLOptionType
  * accept-charset: Set the "accept-charset" header
  * acceptencoding or encoding: Set the "accept-encoding" header
  * active-remote: Set the "active-remote" header
- * auth: Set the authentication method. Possible values: any, anysafe, digest, ntlm
+ * auth: Set the authentication method. Possible values: any, anysafe, digest, ntlm, basic
  * connection-timeout: Set the connection timeout in seconds
  * cookie: Set the "cookie" header
  * customrequest: Set a custom HTTP request like DELETE
