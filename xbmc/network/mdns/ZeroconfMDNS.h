@@ -67,5 +67,5 @@ private:
   };
   typedef std::map<std::string, struct tServiceRef> tServiceMap;
   tServiceMap m_services;
-  DNSServiceRef m_service;
+  DNSServiceRef m_service{NULL};
 };

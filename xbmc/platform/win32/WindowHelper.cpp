@@ -14,8 +14,6 @@ CWHelper g_windowHelper;
 
 CWHelper::CWHelper(void) : CThread("WindowHelper")
 {
-  m_hwnd = NULL;
-  m_hProcess = NULL;
 }
 
 CWHelper::~CWHelper(void)

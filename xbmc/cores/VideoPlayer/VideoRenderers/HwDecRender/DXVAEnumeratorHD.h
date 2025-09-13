@@ -124,10 +124,10 @@ struct SupportedConversionsArgs
   SupportedConversionsArgs() = default;
 
   SupportedConversionsArgs(const VideoPicture& picture, bool isHdrOutput)
+    : m_colorPrimaries(picture.color_primaries),
+      m_colorSpace(picture.color_space),
+      m_colorTransfer(picture.color_transfer)
   {
-    m_colorPrimaries = picture.color_primaries;
-    m_colorSpace = picture.color_space;
-    m_colorTransfer = picture.color_transfer;
     m_fullRange = picture.color_range == 1;
     m_hdrOutput = isHdrOutput;
   }
@@ -161,12 +161,12 @@ struct DXGIColorSpaceArgs
   AVChromaLocation chroma_location = AVCHROMA_LOC_UNSPECIFIED;
 
   DXGIColorSpaceArgs(const VideoPicture& picture)
+    : primaries(picture.color_primaries),
+      color_space(picture.color_space),
+      color_transfer(picture.color_transfer),
+      chroma_location(picture.chroma_position)
   {
-    primaries = picture.color_primaries;
-    color_space = picture.color_space;
-    color_transfer = picture.color_transfer;
     full_range = picture.color_range == 1;
-    chroma_location = picture.chroma_position;
   }
 
   DXGIColorSpaceArgs(AVColorPrimaries primaries,

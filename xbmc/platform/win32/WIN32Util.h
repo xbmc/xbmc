@@ -84,7 +84,7 @@ public:
   static VideoDriverInfo GetVideoDriverInfo(const UINT vendorId, const std::wstring& driverDesc);
   static VideoDriverInfo GetVideoDriverInfoDX(const UINT vendorId, LUID adapterLuid);
   static VideoDriverInfo FormatVideoDriverInfo(const UINT vendorId, uint64_t rawVersion);
-  static VideoDriverInfo FormatVideoDriverInfo(const UINT vendorId, const std::string version);
+  static VideoDriverInfo FormatVideoDriverInfo(const UINT vendorId, const std::string& version);
   static std::wstring GetDisplayFriendlyName(const std::wstring& GdiDeviceName);
   /*!
    * \brief Set the thread name using SetThreadDescription when available

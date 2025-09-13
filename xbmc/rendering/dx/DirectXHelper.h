@@ -131,8 +131,8 @@ namespace DX
 
   template <typename T> struct SizeGen
   {
-    SizeGen<T>() { Width = Height = 0; }
-    SizeGen<T>(T width, T height) { Width = width; Height = height; }
+    SizeGen<T>() = default;
+    SizeGen<T>(T width, T height) : Width(width), Height(height) {}
 
     bool operator !=(const SizeGen<T> &size) const
     {
@@ -167,7 +167,7 @@ namespace DX
       return *this;
     };
 
-    T Width, Height;
+    T Width{0}, Height{0};
   };
 
 #if defined(_DEBUG)

@@ -17,7 +17,6 @@ CInfoLoader::CInfoLoader(unsigned int timeToRefresh)
 {
   m_refreshTime = 0;
   m_timeToRefresh = timeToRefresh;
-  m_busy = false;
 }
 
 CInfoLoader::~CInfoLoader() = default;

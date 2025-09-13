@@ -69,7 +69,7 @@ CWinSystemWin32::CWinSystemWin32()
   {
     cacert = CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem");
     if (XFILE::CFile::Exists(cacert))
-      CEnvironment::setenv("SSL_CERT_FILE", cacert.c_str(), 1);
+      CEnvironment::setenv("SSL_CERT_FILE", cacert, 1);
   }
 
   m_winEvents.reset(new CWinEventsWin32());

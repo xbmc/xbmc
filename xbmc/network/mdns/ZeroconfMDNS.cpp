@@ -42,7 +42,6 @@ void CZeroconfMDNS::Process()
 
 CZeroconfMDNS::CZeroconfMDNS()  : CThread("ZeroconfEmbedded")
 {
-  m_service = NULL;
 #if defined(HAS_MDNS_EMBEDDED)
   embedded_mDNSInit();
   Create();

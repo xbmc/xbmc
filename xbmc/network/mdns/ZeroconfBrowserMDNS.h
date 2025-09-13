@@ -85,7 +85,7 @@ private:
   //ref-count is needed, because a service might pop up more than once, if there's more than one network-iface
   typedef std::map<DNSServiceRef, std::vector<std::pair<ZeroconfService, unsigned int> > > tDiscoveredServicesMap;
   tDiscoveredServicesMap m_discovered_services;
-  DNSServiceRef m_browser;
+  DNSServiceRef m_browser{NULL};
   CZeroconfBrowser::ZeroconfService m_resolving_service;
   CEvent m_resolved_event;
   CEvent m_addrinfo_event;

@@ -167,19 +167,9 @@ void ID3DResource::Unregister()
 
 CD3DTexture::CD3DTexture()
 {
-  m_width = 0;
-  m_height = 0;
-  m_mipLevels = 0;
-  m_usage = D3D11_USAGE_DEFAULT;
-  m_format = DXGI_FORMAT_B8G8R8A8_UNORM;
-  m_texture = nullptr;
   m_renderTargets[0] = nullptr;
   m_renderTargets[1] = nullptr;
   m_data = nullptr;
-  m_pitch = 0;
-  m_bindFlags = 0;
-  m_cpuFlags = 0;
-  m_viewIdx = 0;
   m_views.clear();
 }
 
@@ -573,9 +563,6 @@ void CD3DTexture::DrawQuad(const CRect& rect,
 
 CD3DEffect::CD3DEffect()
 {
-  m_effect = nullptr;
-  m_techniquie = nullptr;
-  m_currentPass = nullptr;
   m_includePaths.insert("special://xbmc/system/shaders/");
 }
 
@@ -856,11 +843,6 @@ bool CD3DEffect::CreateEffect()
 
 CD3DBuffer::CD3DBuffer()
 {
-  m_length = 0;
-  m_stride = 0;
-  m_usage  = D3D11_USAGE_DEFAULT;
-  m_format = DXGI_FORMAT_UNKNOWN;
-  m_buffer = nullptr;
   m_data   = nullptr;
 }
 
@@ -995,10 +977,7 @@ bool CD3DBuffer::CreateBuffer(const void* pData)
 /****************************************************/
 CD3DVertexShader::CD3DVertexShader()
 {
-  m_VS = nullptr;
   m_vertexLayout = nullptr;
-  m_VSBuffer = nullptr;
-  m_inputLayout = nullptr;
   m_vertexLayoutSize = 0;
   m_inited = false;
 }
@@ -1160,8 +1139,6 @@ void CD3DVertexShader::OnDestroyDevice(bool fatal)
 /****************************************************/
 CD3DPixelShader::CD3DPixelShader()
 {
-  m_PS = nullptr;
-  m_PSBuffer = nullptr;
   m_inited = false;
 }
 
