@@ -612,6 +612,23 @@ int URIUtils::GetBlurayPlaylistFromPath(const std::string& path)
   return playlist;
 }
 
+bool URIUtils::CompareDiscPaths(const std::string& path1, const std::string& path2)
+{
+  std::string base1{GetDiscBase(path1)};
+  std::string base2{GetDiscBase(path2)};
+  return PathEquals(base1, base2, true, true);
+}
+
+std::string URIUtils::GetTitleTrailingPartNumberRegex()
+{
+  // Build regex inserting local specific spelling of disc (xxx)
+  // [ _.-]*\((?:xxx|dis[ck])[ _.-]*\d{1,3}\)$
+  std::string localeDiscStr{StringUtils::Format("{} ", g_localizeStrings.Get(427))};
+  if (!localeDiscStr.empty())
+    localeDiscStr += "|";
+  return {R"([ _.-]*\((?:)" + localeDiscStr + R"(dis[ck])[ _.-]*\d{1,3}\)$)"};
+}
+
 std::string URIUtils::GetTrailingPartNumberRegex()
 {
   // Build regex inserting local specific spelling of disc (xxx)
