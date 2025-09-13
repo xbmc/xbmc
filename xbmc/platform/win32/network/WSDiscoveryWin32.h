@@ -35,7 +35,7 @@ public:
   ULONG STDMETHODCALLTYPE Release();
 
   bool ThereAreServers() { return m_serversIPs.size() > 0; }
-  std::vector<std::wstring> GetServersIPs() { return m_serversIPs; }
+  const std::vector<std::wstring>& GetServersIPs() const { return m_serversIPs; }
 
 private:
   std::vector<std::wstring> m_serversIPs;
