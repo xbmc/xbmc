@@ -8,21 +8,25 @@
 
 #include "ViewDatabase.h"
 
-#include <utility>
-
-#include "dbwrappers/dataset.h"
+#include "DatabaseTypes.h"
 #include "SortFileItem.h"
+#include "dbwrappers/dataset.h"
 #include "utils/LegacyPathTranslation.h"
-#include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 #include "view/ViewState.h"
+
+#include <utility>
 
 #ifdef TARGET_POSIX
 #include "platform/posix/ConvUtils.h"
 #endif
-CViewDatabase::CViewDatabase(void) = default;
+
+CViewDatabase::CViewDatabase() : CDatabase(KODI::DATABASE::TYPE_VIEWMODES)
+{
+}
 
 CViewDatabase::~CViewDatabase(void) = default;
 

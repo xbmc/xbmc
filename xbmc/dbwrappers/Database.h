@@ -96,14 +96,17 @@ public:
     std::string where;
   };
 
-  CDatabase();
-  virtual ~CDatabase(void);
+  explicit CDatabase(const std::string& dbType);
+  virtual ~CDatabase();
+
   bool IsOpen() const;
+  bool Open(const DatabaseSettings& db);
   virtual void Close();
+
+  const std::string& GetType() const { return m_type; }
+
   bool Compress(bool bForce = true);
   void Interrupt();
-
-  bool Open(const DatabaseSettings& db);
 
   void BeginTransaction();
   virtual bool CommitTransaction();
@@ -316,8 +319,12 @@ protected:
   const CProfileManager& m_profileManager;
 
 private:
+  CDatabase() = delete;
+
   void InitSettings(DatabaseSettings& dbSettings);
   void UpdateVersionNumber();
+
+  const std::string m_type;
 
   bool m_bMultiInsert{
       false}; /*!< True if there are any queries in the insert queue, false otherwise */

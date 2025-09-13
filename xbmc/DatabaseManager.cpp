@@ -39,11 +39,12 @@ bool CDatabaseManager::Initialize()
 {
   std::unique_lock lock(m_section);
 
-  m_dbStatus.clear();
+  m_dbDetails.clear();
 
   CLog::Log(LOGDEBUG, "{}, updating databases...", __FUNCTION__);
 
-  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 
   // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
   //       before CVideoDatabase.
@@ -63,17 +64,29 @@ bool CDatabaseManager::Initialize()
   m_bIsUpgrading = false;
   m_connecting = false;
 
-  return std::ranges::all_of(m_dbStatus,
-                             [](const auto& db) { return db.second == DBStatus::READY; });
+  return std::ranges::all_of(m_dbDetails,
+                             [](const auto& db) { return db.second.m_status == DBStatus::READY; });
 }
 
 bool CDatabaseManager::CanOpen(const std::string &name)
 {
   std::unique_lock lock(m_section);
-  const auto i = m_dbStatus.find(name);
-  if (i != m_dbStatus.end())
-    return i->second == DBStatus::READY;
+  const auto it{m_dbDetails.find(name)};
+  if (it != m_dbDetails.cend())
+    return (*it).second.m_status == DBStatus::READY;
+
   return false; // db isn't even attempted to update yet
+}
+
+std::string CDatabaseManager::GetDatabaseNameByType(const std::string& dbType) const
+{
+  std::unique_lock lock(m_section);
+  const auto it{std::ranges::find_if(m_dbDetails, [&dbType](const auto& db)
+                                     { return db.second.m_type == dbType; })};
+  if (it != m_dbDetails.cend())
+    return (*it).second.m_name;
+
+  return {};
 }
 
 void CDatabaseManager::UpdateDatabase(CDatabase &db, DatabaseSettings *settings)
@@ -144,7 +157,10 @@ bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
 
       // yay - we have a copy of our db, now do our worst with it
       if (UpdateVersion(db, latestDb))
+      {
+        UpdateDetails(db.GetBaseDBName(), db.GetType(), latestDb);
         return true;
+      }
 
       // update failed - loop around and see if we have another one available
       db.Close();
@@ -238,10 +254,20 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
   return bReturn;
 }
 
-void CDatabaseManager::UpdateStatus(const std::string& name, DBStatus status)
+void CDatabaseManager::UpdateStatus(const std::string& basename, DBStatus status)
 {
   std::unique_lock lock(m_section);
-  m_dbStatus[name] = status;
+  m_dbDetails[basename].m_status = status;
+}
+
+void CDatabaseManager::UpdateDetails(const std::string& basename,
+                                     const std::string& type,
+                                     const std::string& name)
+{
+  std::unique_lock lock(m_section);
+  auto& entry{m_dbDetails[basename]};
+  entry.m_type = type;
+  entry.m_name = name;
 }
 
 void CDatabaseManager::LocalizationChanged()
