@@ -682,3 +682,34 @@ static_assert(std::ranges::adjacent_find(ISO639_2_TB_MappingsByB,
                                          {},
                                          &ISO639_2_TB::bibliographic) ==
               ISO639_2_TB_MappingsByB.end());
+
+// All T codes of tb mapping must exist in the main ISO 639-2 table
+static_assert(std::ranges::all_of(
+    ISO639_2_TB_Mappings,
+    [](auto tCode)
+    { return std::ranges::binary_search(TableISO639_2ByCode, tCode, {}, &LCENTRY::code); },
+    &ISO639_2_TB::terminological));
+
+// None of the B codes can exist as T code of the main ISO 639-2 table
+static_assert(std::ranges::none_of(
+    ISO639_2_TB_Mappings,
+    [](auto bCode)
+    { return std::ranges::binary_search(TableISO639_2ByCode, bCode, {}, &LCENTRY::code); },
+    &ISO639_2_TB::bibliographic));
+
+// None of the B codes are mapped T codes
+static_assert(std::ranges::none_of(
+    ISO639_2_TB_Mappings,
+    [](auto bCode)
+    {
+      return std::ranges::binary_search(ISO639_2_TB_Mappings, bCode, {},
+                                        &ISO639_2_TB::terminological);
+    },
+    &ISO639_2_TB::bibliographic));
+
+// The T codes of all additional name entries exist in the main ISO 639-2 table
+static_assert(std::ranges::all_of(
+    TableISO639_2_Names,
+    [](auto tCode)
+    { return std::ranges::binary_search(TableISO639_2ByCode, tCode, {}, &LCENTRY::code); },
+    &LCENTRY::code));
