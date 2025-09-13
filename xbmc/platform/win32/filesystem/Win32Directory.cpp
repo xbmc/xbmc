@@ -18,11 +18,11 @@
 
 #include "platform/win32/WIN32Util.h"
 
+#include <cstdint>
+
 #include <Windows.h>
 
 using namespace XFILE;
-
-using KODI::TIME::FileTime;
 
 // check for empty string, remove trailing slash if any, convert to win32 form
 inline static std::wstring prepareWin32DirectoryName(const std::string& strPath)
@@ -68,6 +68,7 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
   if (hSearch == INVALID_HANDLE_VALUE)
     return GetLastError() == ERROR_FILE_NOT_FOUND ? Exists(url) : false; // return true if directory exist and empty
 
+  std::vector<std::shared_ptr<CFileItem>> fileItems;
   do
   {
     std::wstring itemNameW(findData.cFileName);
@@ -81,32 +82,38 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
       continue;
     }
 
-    CFileItemPtr pItem(new CFileItem(itemName));
+    const bool isDir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    const bool isHidden =
+        (findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0 ||
+        itemName.front() == '.'; // mark files starting from dot as hidden
 
-    pItem->SetFolder((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    if (pItem->IsFolder())
-      pItem->SetPath(pathWithSlash + itemName + '\\');
-    else
-      pItem->SetPath(pathWithSlash + itemName);
-
-    if ((findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0
-          || itemName.front() == '.') // mark files starting from dot as hidden
-      pItem->SetProperty("file:hidden", true);
+    std::string itemPath(pathWithSlash + itemName);
+    if (isDir)
+      itemPath.push_back('\\');
 
     // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
+    const auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(itemName));
+
+    item->SetFolder(isDir);
+    item->SetPath(itemPath);
+
+    using KODI::TIME::FileTime;
     FileTime localTime{};
-    if (FileTimeToLocalFileTime(reinterpret_cast<FileTime*>(&findData.ftLastWriteTime),
+
+    if (FileTimeToLocalFileTime(reinterpret_cast<const FileTime*>(&findData.ftLastWriteTime),
                                 &localTime) == TRUE)
-      pItem->SetDateTime(localTime);
-    else
-      pItem->SetDateTime(0);
+      item->SetDateTime(localTime);
 
-    if (!pItem->IsFolder())
-      pItem->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
+    if (!isDir)
+      item->SetSize((static_cast<int64_t>(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
 
-    items.Add(pItem);
+    if (isHidden)
+      item->SetProperty("file:hidden", true);
+
   } while (FindNextFileW(hSearch, &findData));
+
+  items.AddItems(std::move(fileItems));
 
   FindClose(hSearch);
 
