@@ -40,7 +40,7 @@ private:
   static bool ResolveOrdinal(const char *dllName, unsigned long ordinal, void **fixup);
   bool NeedsHooking(const char *dllName);
 
-  HMODULE m_dllHandle;
+  HMODULE m_dllHandle{NULL};
   bool bIsSystemDll;
 
   std::vector<Import> m_overriddenImports;

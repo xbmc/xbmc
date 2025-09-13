@@ -28,7 +28,6 @@ extern HWND g_hWnd;
 
 CZeroconfBrowserMDNS::CZeroconfBrowserMDNS()
 {
-  m_browser = NULL;
 }
 
 CZeroconfBrowserMDNS::~CZeroconfBrowserMDNS()
