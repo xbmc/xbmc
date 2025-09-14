@@ -707,6 +707,8 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   m_picture.iDisplayWidth = videoHint.width;
   m_picture.iDisplayHeight = videoHint.height;
   m_picture.stereoMode = videoHint.stereo_mode;
+  m_picture.hdrType = videoHint.hdrType;
+  m_picture.color_transfer = videoHint.colorTransferCharacteristic;
 
   const int sorient = m_processInfo.GetVideoSettings().m_Orientation;
   const int orientation =
