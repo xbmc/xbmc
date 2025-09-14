@@ -45,11 +45,9 @@ void CRenderCaptureDX::BeginRender()
     if (m_flags & CAPTUREFLAG_CONTINUOUS)
     {
       if (!m_asyncSupported)
-        CLog::Log(LOGWARNING, "{}: D3D11_QUERY_OCCLUSION not supported, performance might suffer.",
-                  __FUNCTION__);
+        CLog::LogF(LOGWARNING, "D3D11_QUERY_OCCLUSION not supported, performance might suffer.");
       if (!UseOcclusionQuery())
-        CLog::Log(LOGWARNING, "{}: D3D11_QUERY_OCCLUSION disabled, performance might suffer.",
-                  __FUNCTION__);
+        CLog::LogF(LOGWARNING, "D3D11_QUERY_OCCLUSION disabled, performance might suffer.");
     }
     m_asyncChecked = true;
   }
@@ -141,7 +139,7 @@ void CRenderCaptureDX::ReadOut()
     }
     else
     {
-      CLog::Log(LOGERROR, "{}: GetData failed.", __FUNCTION__);
+      CLog::LogF(LOGERROR, "GetData failed.");
       SurfaceToBuffer();
     }
   }
@@ -172,7 +170,7 @@ void CRenderCaptureDX::SurfaceToBuffer()
   }
   else
   {
-    CLog::Log(LOGERROR, "{}: locking m_copySurface failed.", __FUNCTION__);
+    CLog::LogF(LOGERROR, "locking m_copySurface failed.");
     SetState(CAPTURESTATE_FAILED);
   }
 }
