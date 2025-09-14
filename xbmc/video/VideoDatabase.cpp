@@ -1607,7 +1607,14 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
         PrepareSQL("INSERT INTO movie (idMovie, idFile) VALUES (NULL, %i)", details.m_iFileId));
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
 
-    const int assetId{details.GetAssetInfo().GetId()};
+    int assetId{details.GetAssetInfo().GetId()};
+    if (GetVideoVersionById(assetId).empty())
+    {
+      // May need adding - eg. importing from nfo
+      assetId = AddVideoVersionType(details.GetAssetInfo().GetTitle(), VideoAssetTypeOwner::USER,
+                                    VideoAssetType::VERSION);
+    }
+
     m_pDS->exec(
         PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
                    "VALUES(%i, %i, '%s', %i, %i)",
