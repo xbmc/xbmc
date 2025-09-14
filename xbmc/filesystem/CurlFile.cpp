@@ -47,7 +47,7 @@ using namespace std::chrono_literals;
 
 namespace
 {
-constexpr auto proxyType2CUrlProxyType{make_map<XFILE::CCurlFile::ProxyType, int>({
+constexpr auto proxyType2CUrlProxyType{make_map<XFILE::CCurlFile::ProxyType, long>({
     {CCurlFile::ProxyType::HTTP, CURLPROXY_HTTP},
     {CCurlFile::ProxyType::SOCKS4, CURLPROXY_SOCKS4},
     {CCurlFile::ProxyType::SOCKS4A, CURLPROXY_SOCKS4A},
