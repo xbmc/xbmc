@@ -1388,7 +1388,6 @@ public:
   int GetMovieIdByTitleAndUniqueId(const std::string& title, int uniqueId) const;
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
   int GetFileIdByMovie(int idMovie);
-  int GetFileIdByFile(const std::string& fullpath);
   std::string GetFileBasePathById(int idFile);
 
   /*!
