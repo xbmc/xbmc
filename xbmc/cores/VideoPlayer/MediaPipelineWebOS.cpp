@@ -36,6 +36,8 @@
 #include "utils/log.h"
 #include "windowing/wayland/WinSystemWaylandWebOS.h"
 
+#include "platform/linux/WebOSTVPlatformConfig.h"
+
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -78,8 +80,6 @@ constexpr unsigned int MAX_SRC_BUFFER_LEVEL_VIDEO = 8 * 1024 * 1024; // 8 MB
 constexpr unsigned int SVP_VERSION_30 = 30;
 constexpr unsigned int SVP_VERSION_40 = 40;
 
-constexpr auto LUNA_GET_CONFIG = "luna://com.webos.service.config/getConfigs";
-
 struct CodecEntry
 {
   std::string_view name;
@@ -100,23 +100,6 @@ const auto ms_hdrInfoMap = std::map<AVColorTransferCharacteristic, std::string_v
     {AVCOL_TRC_ARIB_STD_B67, "HLG"},
 });
 
-int GetWebOSVersion()
-{
-  const std::string version = CSysInfo::GetOsVersion();
-  int majorVersion = 0;
-  try
-  {
-    const size_t pos = version.find('.');
-    const std::string majorStr = (pos != std::string::npos) ? version.substr(0, pos) : version;
-    majorVersion = std::stoi(majorStr);
-  }
-  catch (const std::exception& e)
-  {
-    CLog::LogF(LOGERROR, "Failed to parse WebOS version '{}': {}", version, e.what());
-  }
-  return majorVersion;
-}
-
 unsigned int SelectTranscodingSampleRate(const unsigned int sampleRate)
 {
   switch (sampleRate)
@@ -133,44 +116,6 @@ unsigned int SelectTranscodingSampleRate(const unsigned int sampleRate)
     default:
       return 48000;
   }
-}
-
-void CheckDTSAvailability()
-{
-  static std::promise<void> promise;
-  static std::once_flag onceFlag;
-  static std::shared_future<void> future = promise.get_future().share();
-
-  std::call_once(onceFlag,
-                 []
-                 {
-                   CVariant request;
-                   request["configNames"] = std::vector<std::string>{"tv.model.edidType"};
-                   std::string payload;
-                   CJSONVariantWriter::Write(request, payload, true);
-
-                   HContext requestContext;
-                   requestContext.pub = true;
-                   requestContext.multiple = false;
-                   requestContext.callback = [](LSHandle* sh, LSMessage* msg, void* ctx)
-                   {
-                     CVariant config;
-                     CJSONVariantParser::Parse(HLunaServiceMessage(msg), config);
-                     if (config["configs"]["tv.model.edidType"].asString().find("dts") !=
-                         std::string::npos)
-                       ms_codecMap.emplace(AV_CODEC_ID_DTS, "DTS");
-                     promise.set_value();
-
-                     return false;
-                   };
-                   if (HLunaServiceCall(LUNA_GET_CONFIG, payload.c_str(), &requestContext))
-                   {
-                     CLog::LogF(LOGERROR, "Luna request call failed - Assuming no DTS support");
-                     promise.set_value();
-                   }
-                 });
-
-  future.wait();
 }
 } // namespace
 
@@ -201,8 +146,9 @@ CMediaPipelineWebOS::CMediaPipelineWebOS(CProcessInfo& processInfo,
   m_picture.Reset();
   m_picture.videoBuffer = new CStarfishVideoBuffer();
 
-  m_webOSVersion = GetWebOSVersion();
-  CheckDTSAvailability();
+  m_webOSVersion = WebOSTVPlatformConfig::GetWebOSVersion();
+  if (WebOSTVPlatformConfig::SupportsDTS())
+    ms_codecMap.emplace(AV_CODEC_ID_DTS, "DTS");
   m_processInfo.GetVideoBufferManager().ReleasePools();
 }
 

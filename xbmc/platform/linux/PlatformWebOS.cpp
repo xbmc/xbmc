@@ -14,6 +14,8 @@
 #include "powermanagement/LunaPowerManagement.h"
 #include "utils/log.h"
 
+#include "platform/linux/WebOSTVPlatformConfig.h"
+
 #include <filesystem>
 
 #include <sys/resource.h>
@@ -69,6 +71,7 @@ bool CPlatformWebOS::InitStageTwo()
   if (setrlimit(RLIMIT_CORE, &limit) != 0)
     CLog::Log(LOGERROR, "Failed to disable core dumps");
 
+  WebOSTVPlatformConfig::Load();
   return CPlatformLinux::InitStageTwo();
 }
 
