@@ -1393,7 +1393,6 @@ public:
                          CFileItemList& items,
                          int matchingMask = UniqueId | Title);
   int GetFileIdByMovie(int idMovie);
-  int GetFileIdByFile(const std::string& fullpath);
   std::string GetFileBasePathById(int idFile);
 
   /*!
