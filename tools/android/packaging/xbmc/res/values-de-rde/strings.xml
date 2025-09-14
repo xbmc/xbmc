@@ -15,4 +15,5 @@
     <string name="no_read_apk">Paket kann nicht gelesen werden.</string>
     <string name="continue_button">Fortsetzen</string>
     <string name="notice_dialog">%1$s benötigt Zugriff auf Medien und Dateien des Gerätes. Bitte diesen Zugriff in der folgenden Dialogbox bestätigen. Andernfalls wird %1$s beendet.</string>
+    <string name="record_audio_dialog">%1$s fragt nach Erlaubnis, Audio aufzunehmen. Dies wird ausschliesslich für Suche per Spracheingabe benötigt. Bitte die Erlaubnis im folgenden Dialog erteilen oder ablehnen.</string>
 </resources>
