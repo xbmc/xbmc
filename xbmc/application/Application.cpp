@@ -196,8 +196,6 @@
 #include <cdio/logging.h>
 #endif
 
-#include "cores/VideoPlayer/videorenderers/Libplacebo/PlHelper.h"
-
 using namespace ADDON;
 using namespace XFILE;
 #ifdef HAS_OPTICAL_DRIVE
@@ -1306,22 +1304,8 @@ bool CApplication::OnAction(const CAction &action)
       }
     }
   }
-  if (action.GetID() == ACTION_TEST_NEXT_PL1)
-  {
-    PL::PLInstance::Get()->CurrentPrim++;
-    PL::PLInstance::Get()->LogCurrent();
-  }
 
-  if (action.GetID() == ACTION_TEST_NEXT_PL2)
-  {
-    PL::PLInstance::Get()->Currenttransfer++;
-    PL::PLInstance::Get()->LogCurrent();
-  }
-  if (action.GetID() == ACTION_TEST_NEXT_PL3)
-  {
-    PL::PLInstance::Get()->CurrentMatrix++;
-    PL::PLInstance::Get()->LogCurrent();
-  }
+
   if (action.GetID() == ACTION_SWITCH_PLAYER)
   {
     const CPlayerCoreFactory &playerCoreFactory = m_ServiceManager->GetPlayerCoreFactory();
