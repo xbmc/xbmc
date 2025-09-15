@@ -20,16 +20,18 @@ extern "C"
 {
 #include <libavutil/pixfmt.h>
 }
+#include "libplacebo/colorspace.h"
+#include "libplacebo/d3d11.h"
 #include "libplacebo/log.h"
 #include "libplacebo/renderer.h"
-#include "libplacebo/d3d11.h"
-#include <libplacebo/options.h>
 #include "libplacebo/utils/frame_queue.h"
 #include "libplacebo/utils/upload.h"
-#include "libplacebo/colorspace.h"
-# define PL_LIBAV_IMPLEMENTATION 0
-#include <libplacebo/utils/libav.h>
+
+#include <libplacebo/options.h>
+#define PL_LIBAV_IMPLEMENTATION 0
 #include "VideoRenderers/Libplacebo/PLHelper.h"
+
+#include <libplacebo/utils/libav.h>
 
 #define MAX_FRAME_PASSES 256
 #define MAX_BLEND_PASSES 8
@@ -37,10 +39,10 @@ extern "C"
 
 enum RenderMethod;
 
-
 class CRendererPL : public CRendererHQ
 {
   class CRenderBufferImpl;
+
 public:
   ~CRendererPL() = default;
 
@@ -55,11 +57,15 @@ public:
   static CRendererBase* Create(CVideoSettings& videoSettings);
   static void GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture);
   static DXGI_FORMAT GetDXGIFormat(AVPixelFormat format, DXGI_FORMAT default_fmt);
+
 protected:
   explicit CRendererPL(CVideoSettings& videoSettings);
 
   void CheckVideoParameters() override;
-  void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
+  void RenderImpl(CD3DTexture& target,
+                  CRect& sourceRect,
+                  CPoint (&destPoints)[4],
+                  uint32_t flags) override;
   CRenderBuffer* CreateBuffer() override;
 
   //important to override we need to let libplacebo set the swapchain csp or we would get issues with HDR
@@ -68,7 +74,7 @@ protected:
 private:
   // Color space info
   pl_color_space m_colorSpace;
-  
+
   pl_chroma_location m_chromaLocation;
 
   //For debug info
@@ -103,6 +109,7 @@ public:
   bool hasHDR10PlusMetadata = false;
   bool hasDoviMetadata = false;
   bool hasDoviRpuMetadata = false;
+
 private:
   //sw upload
   bool UploadPlanes();

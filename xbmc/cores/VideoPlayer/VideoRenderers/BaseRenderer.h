@@ -35,13 +35,13 @@ enum EFIELDSYNC
 // Render Methods
 enum RenderMethods
 {
-  RENDER_METHOD_AUTO     = 0,
+  RENDER_METHOD_AUTO = 0,
   RENDER_METHOD_GLSL,
   RENDER_METHOD_SOFTWARE,
   RENDER_METHOD_D3D_PS,
   RENDER_METHOD_DXVA,
   RENDER_METHOD_LIBPLACEBO,
-  RENDER_OVERLAYS        = 99   // to retain compatibility
+  RENDER_OVERLAYS = 99 // to retain compatibility
 };
 
 struct VideoPicture;

@@ -32,13 +32,12 @@ extern "C" {
 #include <libavfilter/avfilter.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
-#include <libavutil/mastering_display_metadata.h>
 #include <libavutil/hdr_dynamic_metadata.h>
+#include <libavutil/mastering_display_metadata.h>
 #include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
 #include <libavutil/video_enc_params.h>
 }
-
 
 #ifndef TARGET_POSIX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -1105,7 +1104,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   AVFrameSideData* dhp = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DYNAMIC_HDR_PLUS);
   if (mdm)
   {
-    pVideoPicture->displayMetadata = *(AVMasteringDisplayMetadata *)mdm->data;
+    pVideoPicture->displayMetadata = *(AVMasteringDisplayMetadata*)mdm->data;
     pVideoPicture->hasDisplayMetadata = true;
   }
   else if (m_hints.masteringMetadata)
@@ -1116,7 +1115,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   clm = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_CONTENT_LIGHT_LEVEL);
   if (clm)
   {
-    pVideoPicture->lightMetadata = *(AVContentLightMetadata *)clm->data;
+    pVideoPicture->lightMetadata = *(AVContentLightMetadata*)clm->data;
     pVideoPicture->hasLightMetadata = true;
   }
   else if (m_hints.contentLightMetadata)
@@ -1128,11 +1127,9 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   //set to 0 hdr data in case ww dont have it
   memset(&pVideoPicture->plColorSpace, 0, sizeof(pl_color_space));
   memset(&pVideoPicture->plColorRepr, 0, sizeof(pl_color_repr));
-  struct pl_av_hdr_metadata plavhdr = {
-  .mdm = (AVMasteringDisplayMetadata*)(mdm ? mdm->data : NULL),
-  .clm = (AVContentLightMetadata*)(clm ? clm->data : NULL),
-  .dhp = (AVDynamicHDRPlus*)(dhp ? dhp->data : NULL)
-  };
+  struct pl_av_hdr_metadata plavhdr = {.mdm = (AVMasteringDisplayMetadata*)(mdm ? mdm->data : NULL),
+                                       .clm = (AVContentLightMetadata*)(clm ? clm->data : NULL),
+                                       .dhp = (AVDynamicHDRPlus*)(dhp ? dhp->data : NULL)};
 
   pl_map_hdr_metadata(&pVideoPicture->plColorSpace.hdr, &plavhdr);
 
@@ -1145,7 +1142,8 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     const AVDOVIRpuDataHeader* header = av_dovi_get_header(metadata);
     if (header->disable_residual_flag)
     {
-      pl_map_avdovi_metadata(&pVideoPicture->plColorSpace, &pVideoPicture->plColorRepr, &pVideoPicture->plDoviMetadata, metadata);
+      pl_map_avdovi_metadata(&pVideoPicture->plColorSpace, &pVideoPicture->plColorRepr,
+                             &pVideoPicture->plDoviMetadata, metadata);
     }
   }
 

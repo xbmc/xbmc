@@ -15,20 +15,19 @@
 
 extern "C" {
 #include <libavcodec/avcodec.h>
-#include <libavutil/mastering_display_metadata.h>
-#include <libavutil/hdr_dynamic_metadata.h>
 #include <libavutil/dovi_meta.h>
-
+#include <libavutil/hdr_dynamic_metadata.h>
+#include <libavutil/mastering_display_metadata.h>
 }
-
 
 #include <vector>
 #include <string>
 #include <map>
-# define PL_LIBAV_IMPLEMENTATION 0
-#include <libplacebo/utils/libav.h>
-#include <libplacebo/utils/dolbyvision.h>
+#define PL_LIBAV_IMPLEMENTATION 0
 #include "libplacebo/colorspace.h"
+
+#include <libplacebo/utils/dolbyvision.h>
+#include <libplacebo/utils/libav.h>
 
 class CSetting;
 
@@ -83,7 +82,6 @@ public:
   pl_color_space plColorSpace;
   pl_color_repr plColorRepr;
   pl_dovi_metadata plDoviMetadata;
-
 
   AVPixelFormat pixelFormat; //< source pixel format
 

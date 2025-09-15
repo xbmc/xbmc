@@ -19,9 +19,9 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 #include "windows/RendererDXVA.h"
+#include "windows/RendererPL.h"
 #include "windows/RendererShaders.h"
 #include "windows/RendererSoftware.h"
-#include "windows/RendererPL.h"
 
 #include <mutex>
 
@@ -43,12 +43,11 @@ struct render_details
   }
 };
 
-static std::vector<render_details> RenderMethodDetails =
-{
-  render_details::get<CRendererSoftware>(RENDER_SW, "Software"),
-  render_details::get<CRendererShaders>(RENDER_PS, "Pixel Shaders"),
-  render_details::get<CRendererDXVA>(RENDER_DXVA, "DXVA"),
-  render_details::get<CRendererPL>(RENDER_LIBPLACEBO, "LibPlacebo"),
+static std::vector<render_details> RenderMethodDetails = {
+    render_details::get<CRendererSoftware>(RENDER_SW, "Software"),
+    render_details::get<CRendererShaders>(RENDER_PS, "Pixel Shaders"),
+    render_details::get<CRendererDXVA>(RENDER_DXVA, "DXVA"),
+    render_details::get<CRendererPL>(RENDER_LIBPLACEBO, "LibPlacebo"),
 };
 
 CBaseRenderer* CWinRenderer::Create(CVideoBuffer*)

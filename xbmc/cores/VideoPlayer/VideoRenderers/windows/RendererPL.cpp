@@ -19,10 +19,7 @@
 
 #include <ppl.h>
 
-
-
 using namespace Microsoft::WRL;
-
 
 CRendererBase* CRendererPL::Create(CVideoSettings& videoSettings)
 {
@@ -35,12 +32,9 @@ void CRendererPL::GetWeight(std::map<RenderMethod, int>& weights, const VideoPic
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
 
   // Support common YUV formats for libplacebo
-  if (av_pixel_format == AV_PIX_FMT_YUV420P ||
-    av_pixel_format == AV_PIX_FMT_YUV420P10 ||
-    av_pixel_format == AV_PIX_FMT_YUV420P16 ||
-    av_pixel_format == AV_PIX_FMT_NV12 ||
-    av_pixel_format == AV_PIX_FMT_P010 ||
-    av_pixel_format == AV_PIX_FMT_P016)
+  if (av_pixel_format == AV_PIX_FMT_YUV420P || av_pixel_format == AV_PIX_FMT_YUV420P10 ||
+      av_pixel_format == AV_PIX_FMT_YUV420P16 || av_pixel_format == AV_PIX_FMT_NV12 ||
+      av_pixel_format == AV_PIX_FMT_P010 || av_pixel_format == AV_PIX_FMT_P016)
   {
     weight += 800; // High priority for libplacebo
   }
@@ -66,7 +60,7 @@ CRenderInfo CRendererPL::GetRenderInfo()
 
   info.m_deintMethods.push_back(VS_INTERLACEMETHOD_AUTO);
 
-  return  info;
+  return info;
 }
 
 bool CRendererPL::Configure(const VideoPicture& picture, float fps, unsigned orientation)
@@ -76,12 +70,11 @@ bool CRendererPL::Configure(const VideoPicture& picture, float fps, unsigned ori
 
   //Log initiation
 
-
   PL::PLInstance::Get()->Init();
   // Set up color space based on picture metadata
   m_colorSpace = pl_color_space{
-    .primaries = pl_primaries_from_av(picture.color_primaries),
-    .transfer = pl_transfer_from_av(picture.color_transfer),
+      .primaries = pl_primaries_from_av(picture.color_primaries),
+      .transfer = pl_transfer_from_av(picture.color_transfer),
   };
   m_chromaLocation = pl_chroma_from_av(picture.chroma_position);
   m_format = picture.videoBuffer->GetFormat();
@@ -90,29 +83,34 @@ bool CRendererPL::Configure(const VideoPicture& picture, float fps, unsigned ori
 
 DEBUG_INFO_VIDEO CRendererPL::GetDebugInfo(int idx)
 {
-  
+
   CRenderBuffer* rb = m_renderBuffers[idx];
   CRenderBufferImpl* plbuffer = static_cast<CRenderBufferImpl*>(rb);
-  
+
   DEBUG_INFO_VIDEO info;
   pl_hdr_metadata hdr = plbuffer->plColorSpace.hdr;
-  
-  info.videoSource = StringUtils::Format("Display: Format: {} Levels: full, ColorMatrix:rgb", DX::DXGIFormatToShortString(m_IntermediateTarget.GetFormat()));
 
-  info.metaPrim = StringUtils::Format("Transfer: {} Primaries: {}", pl_color_transfer_name(m_displayTransfer), pl_color_primaries_name(m_displayPrimaries));
+  info.videoSource =
+      StringUtils::Format("Display: Format: {} Levels: full, ColorMatrix:rgb",
+                          DX::DXGIFormatToShortString(m_IntermediateTarget.GetFormat()));
 
+  info.metaPrim =
+      StringUtils::Format("Transfer: {} Primaries: {}", pl_color_transfer_name(m_displayTransfer),
+                          pl_color_primaries_name(m_displayPrimaries));
 
-  info.metaLight = StringUtils::Format("Video: Matrix:{} Primaries:{} Transfer:{}", pl_color_primaries_name(m_colorSpace.primaries)
-                                                                                  , pl_color_transfer_name(m_colorSpace.transfer)
-                                                                                  , pl_color_system_name(m_videoMatrix));
+  info.metaLight = StringUtils::Format(
+      "Video: Matrix:{} Primaries:{} Transfer:{}", pl_color_primaries_name(m_colorSpace.primaries),
+      pl_color_transfer_name(m_colorSpace.transfer), pl_color_system_name(m_videoMatrix));
   if (plbuffer->hasHDR10PlusMetadata)
   {
     info.shader = "Primaries (meta): ";
     info.shader += StringUtils::Format(
-      "R({:.3f} {:.3f}), G({:.3f} {:.3f}), B({:.3f} {:.3f}), WP({:.3f} {:.3f})", hdr.prim.red.x, hdr.prim.red.y,
-      hdr.prim.green.x, hdr.prim.green.y, hdr.prim.blue.x, hdr.prim.blue.y, hdr.prim.white.x, hdr.prim.white.y);
+        "R({:.3f} {:.3f}), G({:.3f} {:.3f}), B({:.3f} {:.3f}), WP({:.3f} {:.3f})", hdr.prim.red.x,
+        hdr.prim.red.y, hdr.prim.green.x, hdr.prim.green.y, hdr.prim.blue.x, hdr.prim.blue.y,
+        hdr.prim.white.x, hdr.prim.white.y);
 
-    info.render = StringUtils::Format("HDR light (meta): max ML: {:.0f}, min ML: {:.4f}", hdr.max_luma, hdr.min_luma);
+    info.render = StringUtils::Format("HDR light (meta): max ML: {:.0f}, min ML: {:.4f}",
+                                      hdr.max_luma, hdr.min_luma);
     info.render += StringUtils::Format(", max CLL: {}, max FALL: {}", hdr.max_cll, hdr.max_fall);
   }
   //line 1 std::string videoSource;
@@ -131,23 +129,25 @@ void CRendererPL::CheckVideoParameters()
   if (buf)
   {
     // Check if color space parameters have changed
-    if (buf->color_space != m_lastColorSpace ||
-      buf->color_transfer != m_lastColorTransfer ||
-      buf->primaries != m_lastPrimaries)
+    if (buf->color_space != m_lastColorSpace || buf->color_transfer != m_lastColorTransfer ||
+        buf->primaries != m_lastPrimaries)
     {
       m_lastColorSpace = buf->color_space;
       m_lastColorTransfer = buf->color_transfer;
       m_lastPrimaries = buf->primaries;
       m_colorSpace = pl_color_space{
-        .primaries = pl_primaries_from_av(buf->primaries),
-        .transfer = pl_transfer_from_av(buf->color_transfer),
+          .primaries = pl_primaries_from_av(buf->primaries),
+          .transfer = pl_transfer_from_av(buf->color_transfer),
       };
     }
   }
   CreateIntermediateTarget(m_viewWidth, m_viewHeight, false, DXGI_FORMAT_R10G10B10A2_UNORM);
 }
 
-void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags)
+void CRendererPL::RenderImpl(CD3DTexture& target,
+                             CRect& sourceRect,
+                             CPoint (&destPoints)[4],
+                             uint32_t flags)
 {
 
   CRect dst = CRect(destPoints[0], destPoints[2]);
@@ -165,29 +165,25 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
   //Dovi color space is set when compiling hdr data
   if (frameIn.repr.sys != PL_COLOR_SYSTEM_DOLBYVISION)
   {
-    
+
     frameIn.repr.levels = PL_COLOR_LEVELS_LIMITED;
     frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
     frameIn.color = m_colorSpace;
   }
   else
     m_colorSpace = frameIn.color;
-  
+
   //TODO
   //Add icc profile
   //add rotate
   //add cache for saving time during the compiling of glsl shaders
 
-
   //wrap the intermediate texture onthe output frame
-  pl_d3d11_wrap_params d3dparams =
-  {
-  .tex = target.Get(),
-  .array_slice = 1,
-  .fmt = target.GetFormat(),
-  .w = (int)target.GetWidth(),
-  .h = (int)target.GetHeight()
-  };
+  pl_d3d11_wrap_params d3dparams = {.tex = target.Get(),
+                                    .array_slice = 1,
+                                    .fmt = target.GetFormat(),
+                                    .w = (int)target.GetWidth(),
+                                    .h = (int)target.GetHeight()};
   frameOut.num_planes = 1;
   frameOut.planes[0].texture = pl_d3d11_wrap(PL::PLInstance::Get()->GetGpu(), &d3dparams);
   frameOut.planes[0].components = 4;
@@ -195,12 +191,12 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
   frameOut.planes[0].component_mapping[1] = PL_CHANNEL_G;
   frameOut.planes[0].component_mapping[2] = PL_CHANNEL_B;
   frameOut.planes[0].component_mapping[3] = PL_CHANNEL_A;
-  
+
   frameOut.crop.x1 = dst.Width();
   frameOut.crop.y1 = dst.Height();
-  
+
   frameOut.color = frameIn.color;
-  
+
   //i know primaries for 2020 can be something else for the hdr we need to verify
   if (buffer->HasHdrData())
   {
@@ -237,8 +233,8 @@ void CRendererPL::ProcessHDR(CRenderBuffer* rb)
 {
   //todo fix this one sometimes it crash because we dont release texture correctly during the swap
   if (m_AutoSwitchHDR && rb->primaries == AVCOL_PRI_BT2020 &&
-    (rb->color_transfer == AVCOL_TRC_SMPTE2084 || rb->color_transfer == AVCOL_TRC_ARIB_STD_B67) &&
-    !DX::Windowing()->IsHDROutput())
+      (rb->color_transfer == AVCOL_TRC_SMPTE2084 || rb->color_transfer == AVCOL_TRC_ARIB_STD_B67) &&
+      !DX::Windowing()->IsHDROutput())
   {
     DX::Windowing()->ToggleHDR(); // Toggle display HDR ON
   }
@@ -254,10 +250,9 @@ void CRendererPL::ProcessHDR(CRenderBuffer* rb)
   }
 
   CRenderBufferImpl* rbpl = static_cast<CRenderBufferImpl*>(rb);
-  
+
   if (rbpl->HasHdrData())
     pl_swapchain_colorspace_hint(PL::PLInstance::Get()->GetSwapchain(), &rbpl->plColorSpace);
-
 }
 
 bool CRendererPL::Supports(ERENDERFEATURE feature) const
@@ -286,7 +281,9 @@ CRenderBuffer* CRendererPL::CreateBuffer()
   return new CRenderBufferImpl(m_format, m_sourceWidth, m_sourceHeight);
 }
 
-CRendererPL::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format, unsigned width, unsigned height)
+CRendererPL::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format,
+                                                  unsigned width,
+                                                  unsigned height)
   : CRenderBuffer(av_pix_format, width, height)
 {
   //Is this needed??
@@ -294,7 +291,6 @@ CRendererPL::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format, u
   m_heightTex = FFALIGN(height, 32);
   //will be set on first upload
   plFormat.num_planes = -1;
-  
 }
 
 CRendererPL::CRenderBufferImpl::~CRenderBufferImpl()
@@ -303,20 +299,17 @@ CRendererPL::CRenderBufferImpl::~CRenderBufferImpl()
   CRenderBufferImpl::ReleasePicture();
 }
 
-
 void CRendererPL::CRenderBufferImpl::AppendPicture(const VideoPicture& picture)
 {
   __super::AppendPicture(picture);
   plColorSpace = picture.plColorSpace;
   plColorRepr = picture.plColorRepr;
-  
 
   if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
   {
     const auto hw = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
     m_widthTex = hw->width;
     m_heightTex = hw->height;
-   
   }
 }
 
@@ -325,19 +318,18 @@ bool CRendererPL::CRenderBufferImpl::GetLibplaceboFrame(pl_frame& frame)
   if (!m_bLoaded)
     return false;
 
-
   //hdr data is in the frame color space
   frame.color = plColorSpace;
   //set sample dep and others
   plColorRepr.bits = plFormat.bits;
 
   frame.repr = plColorRepr;
-  
+
   frame.num_planes = plFormat.num_planes;
   frame.planes[0] = plplanes[0];
   frame.planes[1] = plplanes[1];
   frame.planes[2] = plplanes[2];
-  
+
   return true;
 }
 bool CRendererPL::CRenderBufferImpl::UploadBuffer()
@@ -347,7 +339,7 @@ bool CRendererPL::CRenderBufferImpl::UploadBuffer()
 
   if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
   {
-     return UploadWrapPlanes();
+    return UploadWrapPlanes();
   }
   else
   {
@@ -371,19 +363,18 @@ bool CRendererPL::CRenderBufferImpl::UploadPlanes()
   const AVPixFmtDescriptor* fmtdesc = av_pix_fmt_desc_get(buffer_format);
   videoBuffer->GetPlanes(src);
   videoBuffer->GetStrides(srcStrides);
-  pl_plane_data pdata[4] = { };
-  
+  pl_plane_data pdata[4] = {};
+
   for (int n = 0; n < pl_plane_data_from_pixfmt(pdata, &plFormat.bits, buffer_format); n++)
   {
     pdata[n].pixels = src[n];
     pdata[n].row_stride = srcStrides[n];
-    pdata[n].width = n > 0 ? m_width >> 1: m_width;
+    pdata[n].width = n > 0 ? m_width >> 1 : m_width;
     pdata[n].height = n > 0 ? m_height >> 1 : m_height;
 
     if (!pl_upload_plane(PL::PLInstance::Get()->GetGpu(), &plplanes[n], &pltex[n], &pdata[n]))
     {
       CLog::Log(LOGERROR, "pl_upload_plane failed");
-
     }
   }
   plFormat.num_planes = 3;
@@ -405,31 +396,26 @@ bool CRendererPL::CRenderBufferImpl::UploadWrapPlanes()
     CLog::LogF(LOGERROR, "unable to open d3d11va resource.");
     return false;
   }
-  
-  if (plFormat.num_planes==-1)
+
+  if (plFormat.num_planes == -1)
   {
     //fill the plane data information needed for the conversion only once
     const auto dxva_buf = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
     DXGI_FORMAT fmt = dxva_buf->format;
-    PL::PLInstance::Get()->fill_d3d_format(&plFormat,fmt);
+    PL::PLInstance::Get()->fill_d3d_format(&plFormat, fmt);
   }
 
-  
   hr = pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&pTexture);
   pTexture->GetDesc(&desc);
 
-  
-  
   // Wrap the plane of the D3D11 texture
   // TODO maybe reuse the srv
   for (int i = 0; i < plFormat.num_planes; i++)
   {
-    CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(
-      D3D11_SRV_DIMENSION_TEXTURE2DARRAY,
-      plFormat.planes[i],
-      0, 1, arrayIdx, 1
-    );
-    hr = DX::DeviceResources::Get()->GetD3DDevice()->CreateShaderResourceView(pTexture.Get(), &srvDesc, &srvY);
+    CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE2DARRAY, plFormat.planes[i],
+                                             0, 1, arrayIdx, 1);
+    hr = DX::DeviceResources::Get()->GetD3DDevice()->CreateShaderResourceView(pTexture.Get(),
+                                                                              &srvDesc, &srvY);
     pl_d3d11_wrap_params params = {};
     params.tex = pTexture.Get();
     params.w = desc.Width / plFormat.width_div[i];
@@ -446,14 +432,14 @@ bool CRendererPL::CRenderBufferImpl::UploadWrapPlanes()
     //mapping yuv planes to rgba channels
     for (int j = 0; j < 4; j++)
       plplanes[i].component_mapping[j] = plFormat.component_mapping[i][j];
-
   }
   m_bLoaded = true;
   return m_bLoaded;
 }
 
-bool is_memzero(void* ptr, size_t size) {
-  static const char zeros[1] = { 0 };
+bool is_memzero(void* ptr, size_t size)
+{
+  static const char zeros[1] = {0};
   return memcmp(ptr, zeros, size) == 0;
 }
 
@@ -463,6 +449,6 @@ bool CRendererPL::CRenderBufferImpl::HasHdrData()
     return true;
   if (!is_memzero(&plColorSpace.hdr, sizeof(plColorSpace.hdr)))
     return true;
-    // still all zeros
+  // still all zeros
   return false;
 }
