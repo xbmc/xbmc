@@ -170,10 +170,9 @@ void CWinEventsWin10::UpdateWindowSize()
 {
   auto size = DX::DeviceResources::Get()->GetOutputSize();
 
-  CLog::Log(LOGDEBUG, __FUNCTION__ ": window resize event {:f} x {:f} (as:{})", size.Width,
-            size.Height,
-            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen ? "true"
-                                                                                        : "false");
+  CLog::LogF(LOGDEBUG, "window resize event {:f} x {:f} (as:{})", size.Width, size.Height,
+             CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen ? "true"
+                                                                                         : "false");
 
   auto appView = ApplicationView::GetForCurrentView();
   appView.SetDesiredBoundsMode(ApplicationViewBoundsMode::UseCoreWindow);
@@ -194,7 +193,7 @@ void CWinEventsWin10::UpdateWindowSize()
 
 void CWinEventsWin10::OnResize(float width, float height)
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__": window size changed.");
+  CLog::LogF(LOGDEBUG, "window size changed.");
   m_logicalWidth = width;
   m_logicalHeight = height;
   m_bResized = true;
@@ -213,7 +212,7 @@ void CWinEventsWin10::OnWindowSizeChanged(const CoreWindow&, const WindowSizeCha
 
 void CWinEventsWin10::OnWindowResizeStarted(const CoreWindow& sender, const winrt::IInspectable&)
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__": window resize started.");
+  CLog::LogF(LOGDEBUG, "window resize started.");
   m_logicalPosX = sender.Bounds().X;
   m_logicalPosY = sender.Bounds().Y;
   m_sizeChanging = true;
@@ -221,7 +220,7 @@ void CWinEventsWin10::OnWindowResizeStarted(const CoreWindow& sender, const winr
 
 void CWinEventsWin10::OnWindowResizeCompleted(const CoreWindow& sender, const winrt::IInspectable&)
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__": window resize completed.");
+  CLog::LogF(LOGDEBUG, "window resize completed.");
   m_sizeChanging = false;
 
   if (m_logicalPosX != sender.Bounds().X || m_logicalPosY != sender.Bounds().Y)
@@ -232,7 +231,7 @@ void CWinEventsWin10::OnWindowResizeCompleted(const CoreWindow& sender, const wi
 
 void CWinEventsWin10::HandleWindowSizeChanged()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__": window size/move handled.");
+  CLog::LogF(LOGDEBUG, "window size/move handled.");
   if (m_bMoved)
   {
     // it will get position from CoreWindow
@@ -256,8 +255,7 @@ void CWinEventsWin10::OnVisibilityChanged(const CoreWindow& sender, const Visibi
 
   if (g_application.GetRenderGUI() != active)
     DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
-  CLog::Log(LOGDEBUG, __FUNCTION__ ": window is {}",
-            g_application.GetRenderGUI() ? "shown" : "hidden");
+  CLog::LogF(LOGDEBUG, "window is {}", g_application.GetRenderGUI() ? "shown" : "hidden");
 }
 
 void CWinEventsWin10::OnWindowActivationChanged(const CoreWindow& sender, const WindowActivatedEventArgs& args)
@@ -280,8 +278,7 @@ void CWinEventsWin10::OnWindowActivationChanged(const CoreWindow& sender, const 
     DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
 
   if (CServiceBroker::IsLoggingUp())
-    CLog::Log(LOGDEBUG, __FUNCTION__ ": window is {}",
-              g_application.GetRenderGUI() ? "active" : "inactive");
+    CLog::LogF(LOGDEBUG, "window is {}", g_application.GetRenderGUI() ? "active" : "inactive");
 }
 
 void CWinEventsWin10::OnWindowClosed(const CoreWindow& sender, const CoreWindowEventArgs& args)
@@ -546,7 +543,7 @@ void CWinEventsWin10::OnOrientationChanged(const DisplayInformation&, const winr
 
 void CWinEventsWin10::OnDisplayContentsInvalidated(const DisplayInformation&, const winrt::IInspectable&)
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__": onevent.");
+  CLog::LogF(LOGDEBUG, "on event");
   DX::DeviceResources::Get()->ValidateDevice();
 }
 

@@ -13,6 +13,6 @@
     <string name="starting">Démarrage de %1$s…</string>
     <string name="error_title">Erreur</string>
     <string name="exit_button">Quitter</string>
-    <string name="notice_dialog">%1$s nécessite l’accès aux médias et aux fichiers de votre périphérique pour fonctionner. Veuillez l’autoriser via la boîte de dialogue suivante ou %1$s se fermera.</string>
+    <string name="notice_dialog">%1$s nécessite l’accès aux médias et aux fichiers de votre appareil pour fonctionner. Veuillez l’autoriser via la boîte de dialogue suivante ou %1$s se fermera.</string>
     <string name="clearing_cache">Vidage du cache…</string>
 </resources>
