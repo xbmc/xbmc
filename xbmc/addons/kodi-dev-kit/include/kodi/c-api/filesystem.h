@@ -118,7 +118,7 @@ extern "C"
     /// | <b>`accept-charset`</b>             | Set the "accept-charset" header
     /// | <b>`acceptencoding or encoding`</b> | Set the "accept-encoding" header
     /// | <b>`active-remote`</b>              | Set the "active-remote" header
-    /// | <b>`auth`</b>                       | Set the authentication method. Possible values: any, anysafe, digest, ntlm
+    /// | <b>`auth`</b>                       | Set the authentication method. Possible values: any, anysafe, digest, ntlm, basic
     /// | <b>`connection-timeout`</b>         | Set the connection timeout in seconds
     /// | <b>`cookie`</b>                     | Set the "cookie" header
     /// | <b>`customrequest`</b>              | Set a custom HTTP request like DELETE
