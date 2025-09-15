@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-12-04 09:42+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2025-09-11 05:20+0000\n"
+"Last-Translator: Elvis Gallegos <elvis.gallegos@gmail.com>\n"
 "Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ca_es/>\n"
 "Language: ca_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.2.1\n"
+"X-Generator: Weblate 5.13.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -567,7 +567,7 @@ msgstr "Categories"
 
 msgctxt "#31149"
 msgid "Choose genre fanart pack"
-msgstr ""
+msgstr "Trieu el paquet de fanart de gènere"
 
 msgctxt "#31150"
 msgid "Origin"
@@ -688,6 +688,10 @@ msgstr ""
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
+msgstr ""
+
+msgctxt "#31177"
+msgid "Choose weather icon pack"
 msgstr ""
 
 # empty strings from id 31177 to 31596

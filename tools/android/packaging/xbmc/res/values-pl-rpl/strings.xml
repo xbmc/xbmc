@@ -15,4 +15,5 @@
     <string name="no_read_apk">Nie można odczytać pakietu.</string>
     <string name="notice_dialog">%1$s wymaga dostępu do multimediów i plików urządzenia, aby działać. Zezwól na to za pomocą następującego okna dialogowego lub %1$s zakończy działanie.</string>
     <string name="asking_permissions">Pytanie o uprawnienia…</string>
+    <string name="record_audio_dialog">%1$s prosi o pozwolenie na nagrywanie dźwięku. To polecenie jest używane tylko do wyszukiwania głosowego. Zezwól lub odmów w poniższym oknie dialogowym.</string>
 </resources>
