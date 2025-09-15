@@ -18,9 +18,9 @@ extern "C" {
 #include <libavutil/mastering_display_metadata.h>
 #include <libavutil/hdr_dynamic_metadata.h>
 #include <libavutil/dovi_meta.h>
-#include <libplacebo/colorspace.h>
-}
 
+}
+#include "libplacebo/colorspace.h"
 
 #include <vector>
 #include <string>
