@@ -29,7 +29,7 @@ if which tput >/dev/null 2>&1; then
 fi
 
 if [[ ! -d /build/src ]]; then
-  mkdir /build/src
+  mkdir -p /build/src
 fi
 
 do_wget() {
@@ -113,7 +113,7 @@ do_clean() {
 }
 
 do_download() {
-  if [ ! -d "$LOCALSRCDIR" ]; then
+  if [ ! -d "$LOCALSRCDIR" ] || [ -z $( ls -A "$LOCALSRCDIR" ) ]; then
     if [ -f /downloads/$ARCHIVE ]; then
       HASH_SUM=$(sha512sum /downloads/$ARCHIVE | cut -f 1 -d " ")
       if [ "$HASH_SUM" != "$SHA512" ]; then
@@ -129,7 +129,7 @@ do_download() {
     fi
 
     do_print_status "$LIBNAME-$VERSION" "$blue_color" "Extracting"
-    mkdir $LOCALSRCDIR && cd $LOCALSRCDIR
+    mkdir -p $LOCALSRCDIR && cd $LOCALSRCDIR
     tar -xf /downloads/$ARCHIVE --strip 1
   fi
   # applying patches
@@ -165,7 +165,7 @@ do_clean_get() {
   do_download
 
   if [[ ! -d "$LIBBUILDDIR" ]]; then
-    mkdir "$LIBBUILDDIR"
+    mkdir -p "$LIBBUILDDIR"
   fi
   cd "$LIBBUILDDIR"
 }
