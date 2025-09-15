@@ -11,6 +11,7 @@
 
 #include "ConvolutionKernels.h"
 #include "ServiceBroker.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
@@ -63,7 +64,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
   std::string shadername;
   std::string defines;
 
-  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_color_buffer_float"))
+  if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_color_buffer_float))
   {
     m_floattex = true;
   }
