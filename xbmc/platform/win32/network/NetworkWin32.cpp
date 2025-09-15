@@ -159,7 +159,7 @@ void CNetworkWin32::queryInterfaceList()
     }
   }
   else
-    CLog::Log(LOGDEBUG, "{} - GetAdaptersAddresses() failed ...", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "GetAdaptersAddresses() failed ...");
 }
 
 std::vector<std::string> CNetworkWin32::GetNameServers(void)
@@ -232,9 +232,9 @@ bool CNetworkWin32::PingHost(const struct sockaddr& host, unsigned int timeout_m
 
   DWORD lastErr = GetLastError();
   if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
-    CLog::Log(LOGERROR, "{} - {} failed - {}", __FUNCTION__,
-              host.sa_family == AF_INET ? "IcmpSendEcho2" : "Icmp6SendEcho2",
-              CWIN32Util::WUSysMsg(lastErr));
+    CLog::LogF(LOGERROR, "{} failed - {}",
+               host.sa_family == AF_INET ? "IcmpSendEcho2" : "Icmp6SendEcho2",
+               CWIN32Util::WUSysMsg(lastErr));
 
   IcmpCloseHandle (hIcmpFile);
 
