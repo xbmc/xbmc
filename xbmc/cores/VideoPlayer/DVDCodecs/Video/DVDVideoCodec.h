@@ -20,11 +20,15 @@ extern "C" {
 #include <libavutil/dovi_meta.h>
 
 }
-#include "libplacebo/colorspace.h"
+
 
 #include <vector>
 #include <string>
 #include <map>
+# define PL_LIBAV_IMPLEMENTATION 0
+#include <libplacebo/utils/libav.h>
+#include <libplacebo/utils/dolbyvision.h>
+#include "libplacebo/colorspace.h"
 
 class CSetting;
 
@@ -75,15 +79,10 @@ public:
   AVMasteringDisplayMetadata displayMetadata;
   bool hasLightMetadata = false;
   AVContentLightMetadata lightMetadata;
-  bool hasHDR10PlusMetadata = false;
-  AVDynamicHDRPlus hdrMetadata;
-  bool hasDoviMetadata = false;
-  AVDOVIMetadata doviMetadata;
-  pl_color_space doviColorSpace; //< pl_color_space
-  pl_color_repr doviColorRepr;
-  pl_dovi_metadata doviPlMetadata;
-  bool hasDoviRpuMetadata = false;
-  pl_hdr_metadata hdrDoviRpu; //< pl_hdr_metadata
+
+  pl_color_space plColorSpace;
+  pl_color_repr plColorRepr;
+  pl_dovi_metadata plDoviMetadata;
 
 
   AVPixelFormat pixelFormat; //< source pixel format
