@@ -645,6 +645,154 @@ TEST_F(TestURIUtils, UpdateUrlEncoding)
   EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
 }
 
+struct URLEncodings
+{
+  std::string_view input;
+  std::string_view encoded;
+};
+
+constexpr URLEncodings EncodingTestData[] = {
+    // No crash
+    {"", ""},
+
+    // No Encoding needed
+    {"a", "a"},
+    {"z", "z"},
+    {"A", "A"},
+    {"Z", "Z"},
+    {"0", "0"},
+    {"9", "9"},
+
+    // Encoding needed
+    {" ", "%20"},
+    {"\"", "%22"},
+    {"#", "%23"},
+    {"$", "%24"},
+    {"%", "%25"},
+    {"&", "%26"},
+    {"'", "%27"},
+    {"*", "%2a"},
+    {"+", "%2b"},
+    {",", "%2c"},
+    {"/", "%2f"},
+    {":", "%3a"},
+    {";", "%3b"},
+    {"<", "%3c"},
+    {"=", "%3d"},
+    {">", "%3e"},
+    {"?", "%3f"},
+    {"@", "%40"},
+    {"[", "%5b"},
+    {"\\", "%5c"},
+    {"]", "%5d"},
+    {"^", "%5e"},
+    {"`", "%60"},
+    {"{", "%7b"},
+    {"|", "%7c"},
+    {"}", "%7d"},
+
+    // Encoding needed (Non alpha)
+    {"\x1", "%01"},
+    {"\x2", "%02"},
+    {"\x6", "%06"},
+    {"\a", "%07"},
+    {"\b", "%08"},
+    {"\t", "%09"},
+    {"\n", "%0a"},
+    {"\v", "%0b"},
+    {"\f", "%0c"},
+    {"\r", "%0d"},
+
+    // Double Encoding
+    {"%20", "%2520"},
+    {"%22", "%2522"},
+    {"%2a", "%252a"},
+    {"%2b", "%252b"},
+    {"%2c", "%252c"},
+    {"%2f", "%252f"},
+    {"%0a", "%250a"},
+    {"%0b", "%250b"},
+    {"%0c", "%250c"},
+};
+
+constexpr URLEncodings RFC1738EncodingTestData[] = {
+    {"-", "-"}, {"_", "_"}, {".", "."}, {"!", "!"}, {"(", "("}, {")", ")"}, {"~", "%7e"},
+};
+
+constexpr URLEncodings RFC3986EncodingTestData[] = {
+    {"-", "-"}, {"_", "_"}, {".", "."}, {"!", "%21"}, {"(", "%28"}, {")", "%29"}, {"~", "~"},
+};
+
+constexpr URLEncodings InvalidEncodingTestData[] = {
+    // Incomplete or Invalid encoding
+    {"%", "%"},
+    {"%%", "%%"},
+    {"%;", "%;"},
+    {"%-", "%-"},
+    {"%2", "%2"},
+    {"%2-", "%2-"},
+    {"%2x", "%2x"},
+
+    // Incomplete or Invalid encoding recovers to decode future characters
+    {"% ", "%%20"},
+    {"%% ", "%%%20"},
+    {"%; ", "%;%20"},
+    {"%- ", "%-%20"},
+    {"%2 ", "%2%20"},
+    {"%2- ", "%2-%20"},
+    {"%2x ", "%2x%20"},
+};
+
+TEST_F(TestURIUtils, URLEncode)
+{
+  for (const auto& [toEncode, expected] : EncodingTestData)
+    EXPECT_EQ(expected, URIUtils::URLEncode(toEncode));
+
+  for (const auto& [toEncode, expected] : RFC1738EncodingTestData)
+    EXPECT_EQ(expected, URIUtils::URLEncode(toEncode));
+
+  for (const auto& [toEncode, expected] : RFC3986EncodingTestData)
+    EXPECT_EQ(expected, URIUtils::URLEncode(toEncode, URIUtils::RFC3986));
+}
+
+TEST_F(TestURIUtils, URLDecode)
+{
+  for (const auto& [expected, encoded] : EncodingTestData)
+    EXPECT_EQ(expected, URIUtils::URLDecode(encoded));
+
+  for (const auto& [expected, encoded] : InvalidEncodingTestData)
+    EXPECT_EQ(expected, URIUtils::URLDecode(encoded));
+
+  for (const auto& [expected, encoded] : RFC1738EncodingTestData)
+    EXPECT_EQ(expected, URIUtils::URLDecode(encoded));
+
+  for (const auto& [expected, encoded] : RFC3986EncodingTestData)
+    EXPECT_EQ(expected, URIUtils::URLDecode(encoded));
+
+  // Test '+' is converted to ' '
+  EXPECT_EQ(" ", URIUtils::URLDecode("+"));
+
+  // Test decoding uppercase hex digits
+  EXPECT_EQ("{", URIUtils::URLDecode("%7B"));
+  EXPECT_EQ("|", URIUtils::URLDecode("%7C"));
+  EXPECT_EQ("}", URIUtils::URLDecode("%7D"));
+}
+
+TEST_F(TestURIUtils, URLEncodeDecode)
+{
+  for (unsigned ch = 1; ch < 128; ++ch)
+  {
+    std::string str{char(ch)};
+    EXPECT_EQ(str, CURL::Decode(CURL::Encode(str)));
+  }
+
+  for (const auto& [toEncode, encoded] : EncodingTestData)
+  {
+    EXPECT_EQ(toEncode, URIUtils::URLDecode(CURL::Encode(toEncode)));
+    EXPECT_EQ(encoded, URIUtils::URLDecode(CURL::Encode(encoded)));
+  }
+}
+
 TEST_F(TestURIUtils, ContainersEncodeHostnamePaths)
 {
   CURL curl("/path/thing");

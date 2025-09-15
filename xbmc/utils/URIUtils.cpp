@@ -34,6 +34,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <charconv>
 #include <ranges>
 #include <vector>
 
@@ -44,6 +45,67 @@ using namespace PVR;
 using namespace XFILE;
 
 const CAdvancedSettings* URIUtils::m_advancedSettings = nullptr;
+
+namespace
+{
+
+constexpr std::string_view DecodeURLSpecialChars{"+%"};
+
+std::optional<char> DecodeOctlet(std::string_view& encoded)
+{
+  if (encoded.length() < 2)
+    return {};
+
+  uint8_t decimal{};
+  const auto res = std::from_chars(encoded.data(), encoded.data() + 2, decimal, 16);
+
+  if (res.ec != std::errc() || res.ptr != encoded.data() + 2)
+    return {};
+
+  encoded = encoded.substr(2);
+  return decimal;
+}
+
+} // Unnamed namespace
+
+std::string URIUtils::URLDecode(std::string_view encoded)
+{
+  /* result will always be less than or equal to source */
+  std::string decodedUrl{};
+  decodedUrl.reserve(encoded.length());
+
+  while (true)
+  {
+    const auto special = encoded.find_first_of(DecodeURLSpecialChars);
+    decodedUrl += encoded.substr(0, special);
+
+    if (special == std::string::npos)
+      break;
+
+    const char specialChar = encoded[special];
+    encoded = encoded.substr(special + 1);
+
+    if (specialChar == '+')
+      decodedUrl += ' ';
+    else
+      decodedUrl += DecodeOctlet(encoded).value_or('%'); // Decoded octet triplet '%2f'
+  }
+
+  return decodedUrl;
+}
+
+std::string URIUtils::URLEncode(std::string_view decoded, std::string_view URLSpec)
+{
+  std::ostringstream oss;
+  for (const auto& ch : decoded)
+  {
+    if (StringUtils::isasciialphanum(ch) || URLSpec.find(ch) != std::string::npos)
+      oss << ch;
+    else
+      fmt::format_to(std::ostreambuf_iterator(oss), "%{:02x}", ch);
+  }
+  return std::move(oss).str();
+}
 
 void URIUtils::RegisterAdvancedSettings(const CAdvancedSettings& advancedSettings)
 {
