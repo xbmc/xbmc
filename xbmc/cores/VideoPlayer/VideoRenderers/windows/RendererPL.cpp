@@ -95,7 +95,7 @@ DEBUG_INFO_VIDEO CRendererPL::GetDebugInfo(int idx)
   CRenderBufferImpl* plbuffer = static_cast<CRenderBufferImpl*>(rb);
   
   DEBUG_INFO_VIDEO info;
-  pl_hdr_metadata hdr = plbuffer->hdrColorSpace.hdr;
+  pl_hdr_metadata hdr = plbuffer->plColorSpace.hdr;
   
   info.videoSource = StringUtils::Format("Display: Format: {} Levels: full, ColorMatrix:rgb", DX::DXGIFormatToShortString(m_IntermediateTarget.GetFormat()));
 
@@ -163,7 +163,7 @@ void CRendererPL::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&des
     return;
 
   //Dovi color space is set when compiling hdr data
-  if (frameIn.color.primaries != PL_COLOR_SYSTEM_DOLBYVISION)
+  if (frameIn.repr.sys != PL_COLOR_SYSTEM_DOLBYVISION)
   {
     
     frameIn.repr.levels = PL_COLOR_LEVELS_LIMITED;
@@ -256,7 +256,7 @@ void CRendererPL::ProcessHDR(CRenderBuffer* rb)
   CRenderBufferImpl* rbpl = static_cast<CRenderBufferImpl*>(rb);
   
   if (rbpl->HasHdrData())
-    pl_swapchain_colorspace_hint(PL::PLInstance::Get()->GetSwapchain(), &rbpl->hdrColorSpace);
+    pl_swapchain_colorspace_hint(PL::PLInstance::Get()->GetSwapchain(), &rbpl->plColorSpace);
 
 }
 
@@ -307,16 +307,9 @@ CRendererPL::CRenderBufferImpl::~CRenderBufferImpl()
 void CRendererPL::CRenderBufferImpl::AppendPicture(const VideoPicture& picture)
 {
   __super::AppendPicture(picture);
-  hdrDoviRpu = picture.hdrDoviRpu;
-  hdrMetadata = picture.hdrMetadata;
-  doviMetadata = picture.doviMetadata;
-  hdrColorSpace = picture.doviColorSpace;
-  doviColorRepr = picture.doviColorRepr;
-  doviPlMetadata = picture.doviPlMetadata;
-  hdrDoviRpu = picture.hdrDoviRpu;
-  hasDoviMetadata = picture.hasDoviMetadata;
-  hasDoviRpuMetadata = picture.hasDoviRpuMetadata;
-  hasHDR10PlusMetadata = picture.hasHDR10PlusMetadata;
+  plColorSpace = picture.plColorSpace;
+  plColorRepr = picture.plColorRepr;
+  
 
   if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
   {
@@ -331,30 +324,14 @@ bool CRendererPL::CRenderBufferImpl::GetLibplaceboFrame(pl_frame& frame)
 {
   if (!m_bLoaded)
     return false;
-  pl_color_repr crpr{};
 
-  if (hasDoviMetadata)
-  {
-    crpr = doviColorRepr;
-    frame.color = hdrColorSpace;
-  }
 
-  if (hasHDR10PlusMetadata)
-  {
-    pl_av_hdr_metadata metadata = {};
-    pl_hdr_metadata out = {};
-    metadata.clm = &lightMetadata;
-    metadata.mdm = &displayMetadata;
-    metadata.dhp = &hdrMetadata;
-    
-    pl_map_hdr_metadata(&hdrColorSpace.hdr, &metadata);
-    frame.color.hdr = hdrColorSpace.hdr;
-
-    
-  }
+  //hdr data is in the frame color space
+  frame.color = plColorSpace;
   //set sample dep and others
-  crpr.bits = plFormat.bits;
-  frame.repr = crpr;
+  plColorRepr.bits = plFormat.bits;
+
+  frame.repr = plColorRepr;
   
   frame.num_planes = plFormat.num_planes;
   frame.planes[0] = plplanes[0];
@@ -475,7 +452,17 @@ bool CRendererPL::CRenderBufferImpl::UploadWrapPlanes()
   return m_bLoaded;
 }
 
+bool is_memzero(void* ptr, size_t size) {
+  static const char zeros[1] = { 0 };
+  return memcmp(ptr, zeros, size) == 0;
+}
+
 bool CRendererPL::CRenderBufferImpl::HasHdrData()
 {
-  return (hasHDR10PlusMetadata || hasDoviMetadata || hasDoviRpuMetadata);
+  if (!is_memzero(&plColorRepr.dovi, sizeof(plColorRepr.dovi)))
+    return true;
+  if (!is_memzero(&plColorSpace.hdr, sizeof(plColorSpace.hdr)))
+    return true;
+    // still all zeros
+  return false;
 }

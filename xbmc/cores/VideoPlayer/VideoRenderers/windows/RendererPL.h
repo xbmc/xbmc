@@ -96,10 +96,10 @@ public:
   bool UploadBuffer() override;
   bool GetLibplaceboFrame(pl_frame& frame);
   bool HasHdrData();
-  pl_color_space hdrColorSpace; //< pl_color_space
-  pl_color_repr doviColorRepr;
-  pl_dovi_metadata doviPlMetadata;
-  pl_hdr_metadata hdrDoviRpu; //< pl_hdr_metadata
+
+  pl_color_space plColorSpace; //< pl_color_space
+  pl_color_repr plColorRepr;
+
   bool hasHDR10PlusMetadata = false;
   bool hasDoviMetadata = false;
   bool hasDoviRpuMetadata = false;
