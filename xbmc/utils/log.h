@@ -131,11 +131,17 @@ public:
                                        fmt::make_format_args(args...));
   }
 
+#ifdef TARGET_WINDOWS
+#define LogF(level, format, ...) Log((level), ("{}: " format), __FUNCTION__, ##__VA_ARGS__)
+#define LogFC(level, component, format, ...) \
+  Log((level), (component), ("{}: " format), __FUNCTION__, ##__VA_ARGS__)
+#else
 #define LogF(level, format, ...) \
   Log((level), ("{}: " format), std::source_location::current().function_name(), ##__VA_ARGS__)
 #define LogFC(level, component, format, ...) \
   Log((level), (component), ("{}: " format), std::source_location::current().function_name(), \
       ##__VA_ARGS__)
+#endif
 
 private:
   static CLog& GetInstance();
