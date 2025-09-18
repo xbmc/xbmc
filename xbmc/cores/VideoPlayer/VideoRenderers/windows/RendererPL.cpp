@@ -195,21 +195,21 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
   frameOut.crop.x1 = dst.Width();
   frameOut.crop.y1 = dst.Height();
 
-  frameOut.color = frameIn.color;
-
-  //i know primaries for 2020 can be something else for the hdr we need to verify
-  if (buffer->HasHdrData())
+  if (ActualRenderAsHDR())
   {
-    frameOut.color.transfer = PL_COLOR_TRC_PQ;
     frameOut.color.primaries = PL_COLOR_PRIM_BT_2020;
+    frameOut.color.transfer = PL_COLOR_TRC_PQ;
   }
   else
   {
     frameOut.color.primaries = PL_COLOR_PRIM_BT_709;
     frameOut.color.transfer = PL_COLOR_TRC_BT_1886;
-    frameOut.repr.levels = PL_COLOR_LEVELS_FULL;
   }
+  //! @todo does frameOut.color.hdr make any difference in the rendering?
+  //! @todo copy frameIn.color.hdr or make up something from the display EDID?
   frameOut.repr.sys = PL_COLOR_SYSTEM_RGB;
+  frameOut.repr.levels =
+    DX::Windowing()->UseLimitedColor() ? PL_COLOR_LEVELS_LIMITED : PL_COLOR_LEVELS_FULL;
   //todo add advancedsettings for libplacebo params
   //or maybe just add the 3 level of scaling int he gui and the rest in advanced
   pl_render_params params;
