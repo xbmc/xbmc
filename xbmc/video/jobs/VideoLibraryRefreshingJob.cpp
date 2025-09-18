@@ -211,12 +211,12 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     if (!ignoreNfo)
     {
-      std::unique_ptr<VIDEO::IVideoInfoTagLoader> loader;
-      loader.reset(VIDEO::CVideoInfoTagLoaderFactory::CreateLoader(
-          *m_item, scraper, scanSettings.parent_name_root, m_forceRefresh));
       // check if there's an NFO for the item
       CInfoScanner::InfoType nfoResult = CInfoScanner::InfoType::NONE;
-      if (loader)
+      if (const std::unique_ptr<VIDEO::IVideoInfoTagLoader> loader{
+              VIDEO::CVideoInfoTagLoaderFactory::CreateLoader(
+                  *m_item, scraper, scanSettings.parent_name_root, m_forceRefresh)};
+          loader)
       {
         std::unique_ptr<CVideoInfoTag> tag(new CVideoInfoTag());
         nfoResult = loader->Load(*tag, false);

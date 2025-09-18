@@ -25,6 +25,39 @@
 
 using namespace XFILE;
 
+namespace
+{
+
+std::string InfoTypeToStr(CInfoScanner::InfoType infoType)
+{
+  using enum CInfoScanner::InfoType;
+  switch (infoType)
+  {
+    case COMBINED:
+      return "mixed";
+    case FULL:
+      return "full";
+    case URL:
+      return "URL";
+    case NONE:
+      return "";
+    case OVERRIDE:
+      return "override";
+    default:
+      return "malformed";
+  }
+}
+
+int GetNfoIndex(const CFileItem& item, const ADDON::ScraperPtr& scraper)
+{
+  if (scraper->Content() == ADDON::ContentType::MOVIES && !item.IsFolder() &&
+      item.HasProperty("nfo_index"))
+    return item.GetProperty("nfo_index").asInteger32(1); // multiple versions (playlists) in nfo
+  return 1;
+}
+
+} // Unnamed namespace
+
 CVideoTagLoaderNFO::CVideoTagLoaderNFO(const CFileItem& item,
                                        ADDON::ScraperPtr info,
                                        bool lookInFolder)
@@ -45,52 +78,26 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
                                                 bool prioritise,
                                                 std::vector<EmbeddedArt>*)
 {
-  CNfoFile nfoReader;
-  CInfoScanner::InfoType result = CInfoScanner::InfoType::NONE;
+  using enum CInfoScanner::InfoType;
+
+  CInfoScanner::InfoType result = NONE;
   if (m_info)
   {
-    if (m_info->Content() == ADDON::ContentType::MOVIES && !m_item.IsFolder() &&
-        m_item.HasProperty("nfo_index"))
-      result = nfoReader.Create(
-          m_path, m_info,
-          m_item.GetProperty("nfo_index").asInteger32(1)); // multiple versions (playlists) in nfo
-    else
-      result = nfoReader.Create(m_path, m_info);
+    CNfoFile nfoReader;
+    result = nfoReader.Create(m_path, m_info, GetNfoIndex(m_item, m_info));
+
+    if (result == FULL || result == COMBINED || result == OVERRIDE)
+      nfoReader.GetDetails(tag, nullptr, prioritise);
+
+    if (result == URL || result == COMBINED)
+    {
+      m_url = nfoReader.ScraperUrl();
+      m_info = nfoReader.GetScraperInfo();
+    }
   }
 
-  if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED ||
-      result == CInfoScanner::InfoType::OVERRIDE)
-    nfoReader.GetDetails(tag, nullptr, prioritise);
-
-  if (result == CInfoScanner::InfoType::URL || result == CInfoScanner::InfoType::COMBINED)
-  {
-    m_url = nfoReader.ScraperUrl();
-    m_info = nfoReader.GetScraperInfo();
-  }
-
-  std::string type;
-  switch(result)
-  {
-    case CInfoScanner::InfoType::COMBINED:
-      type = "mixed";
-      break;
-    case CInfoScanner::InfoType::FULL:
-      type = "full";
-      break;
-    case CInfoScanner::InfoType::URL:
-      type = "URL";
-      break;
-    case CInfoScanner::InfoType::NONE:
-      type = "";
-      break;
-    case CInfoScanner::InfoType::OVERRIDE:
-      type = "override";
-      break;
-    default:
-      type = "malformed";
-  }
-  if (result != CInfoScanner::InfoType::NONE)
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching {} NFO file: {}", type,
+  if (result != NONE)
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching {} NFO file: {}", InfoTypeToStr(result),
               CURL::GetRedacted(m_path));
   else
     CLog::Log(LOGDEBUG, "VideoInfoScanner: No NFO file found. Using title search for '{}'",
