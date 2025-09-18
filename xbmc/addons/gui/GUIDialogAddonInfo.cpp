@@ -394,6 +394,19 @@ void CGUIDialogAddonInfo::OnSelectVersion()
     HELPERS::ShowOKDialogText(CVariant{21341}, CVariant{21342});
   else
   {
+    // Sort first by origin, then by version - descending.
+    std::ranges::sort(versions,
+                      [](const auto& a, const auto& b)
+                      {
+                        const auto& [versionA, originA] = a;
+                        const auto& [versionB, originB] = b;
+
+                        if (originA == originB)
+                          return versionA > versionB;
+
+                        return originA > originB;
+                      });
+
     int i = AskForVersion(versions);
     if (i != -1)
     {
