@@ -9,19 +9,20 @@
 #include "AddonType.h"
 
 #include "addons/addoninfo/AddonInfo.h"
+#include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-namespace ADDON
+using namespace ADDON;
+
+namespace
 {
-static const std::set<AddonType> dependencyTypes = {
+constexpr CSet dependencyTypes{
     AddonType::SCRAPER_LIBRARY,
     AddonType::SCRIPT_LIBRARY,
     AddonType::SCRIPT_MODULE,
 };
-} /* namespace ADDON */
-
-using namespace ADDON;
+}
 
 std::string CAddonType::LibPath() const
 {
