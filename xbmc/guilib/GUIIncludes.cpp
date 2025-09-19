@@ -13,6 +13,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
 #include "interfaces/info/SkinVariable.h"
+#include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -20,33 +21,50 @@
 
 #include <algorithm>
 
-using namespace KODI::GUILIB;
+namespace
+{
 
-static constexpr std::array<std::string_view, 16> CONSTANT_ATTRIBUTES = {
-    "acceleration", "border", "center", "delay", "end", "h",     "height", "max",
-    "min",          "repeat", "start",  "time",  "w",   "width", "x",      "y",
-};
-static_assert(std::ranges::is_sorted(CONSTANT_ATTRIBUTES));
+constexpr auto CONSTANT_ATTRIBUTES = make_set<std::string_view>({
+    "acceleration",
+    "border",
+    "center",
+    "delay",
+    "end",
+    "h",
+    "height",
+    "max",
+    "min",
+    "repeat",
+    "start",
+    "time",
+    "w",
+    "width",
+    "x",
+    "y",
 
-static constexpr std::array<std::string_view, 35> CONSTANT_NODES = {
+});
+
+constexpr auto CONSTANT_NODES = make_set<std::string_view>({
     "bordersize",  "bottom",     "centerbottom",  "centerleft", "centerright", "centertop",
     "depth",       "fadetime",   "focusposition", "height",     "itemgap",     "left",
     "movement",    "offsetx",    "offsety",       "pauseatend", "posx",        "posy",
     "radioheight", "radioposx",  "radioposy",     "radiowidth", "right",       "sliderheight",
     "sliderwidth", "spinheight", "spinposx",      "spinposy",   "spinwidth",   "textoffsetx",
     "textoffsety", "textwidth",  "timeperimage",  "top",        "width",
-};
-static_assert(std::ranges::is_sorted(CONSTANT_NODES));
+});
 
 static constexpr std::string_view EXPRESSION_ATTRIBUTE = "condition";
 
-static constexpr std::array<std::string_view, 4> EXPRESSION_NODES = {
+constexpr auto EXPRESSION_NODES = make_set<std::string_view>({
     "enable",
     "selected",
     "usealttexture",
     "visible",
-};
-static_assert(std::ranges::is_sorted(EXPRESSION_NODES));
+});
+
+} // namespace
+
+using namespace KODI::GUILIB;
 
 CGUIIncludes::CGUIIncludes() = default;
 
@@ -324,7 +342,7 @@ void CGUIIncludes::ResolveConstants(TiXmlElement *node)
 
   TiXmlNode *child = node->FirstChild();
   if (child && child->Type() == TiXmlNode::TINYXML_TEXT &&
-      std::ranges::binary_search(CONSTANT_NODES, node->ValueStr()))
+      CONSTANT_NODES.contains(node->ValueStr()))
   {
     child->SetValue(ResolveConstant(child->ValueStr()));
   }
@@ -333,7 +351,7 @@ void CGUIIncludes::ResolveConstants(TiXmlElement *node)
     TiXmlAttribute *attribute = node->FirstAttribute();
     while (attribute)
     {
-      if (std::ranges::binary_search(CONSTANT_ATTRIBUTES, attribute->Name()))
+      if (CONSTANT_ATTRIBUTES.contains(attribute->Name()))
         attribute->SetValue(ResolveConstant(attribute->ValueStr()));
 
       attribute = attribute->Next();
@@ -348,7 +366,7 @@ void CGUIIncludes::ResolveExpressions(TiXmlElement *node)
 
   TiXmlNode *child = node->FirstChild();
   if (child && child->Type() == TiXmlNode::TINYXML_TEXT &&
-      std::ranges::binary_search(EXPRESSION_NODES, node->ValueStr()))
+      EXPRESSION_NODES.contains(node->ValueStr()))
   {
     child->SetValue(ResolveExpressions(child->ValueStr()));
   }
