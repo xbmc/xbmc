@@ -90,7 +90,7 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList& items)
       item->SetFolder(isDir);
       item->SetPath(itemPath);
 
-      if (name.starts_with("."))
+      if (name.starts_with('.'))
         item->SetProperty("file:hidden", true);
     }
   }
