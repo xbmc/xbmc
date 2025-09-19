@@ -1459,6 +1459,8 @@ msgstr ""
 #. Label of timers state in PVR timer/timer rule window
 #: system/peripherals.xml
 #: system/settings/settings.xml
+#: xbmc/addons/settings/AddonSettings.cpp
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
 #: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
@@ -16021,6 +16023,7 @@ msgid "Enable"
 msgstr ""
 
 #. Defines the state of the add-on in the add-on manager window
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 msgctxt "#24023"
 msgid "Disabled"
