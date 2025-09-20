@@ -85,10 +85,10 @@ bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem&
   CVariant oldAddonProp = fileitem.GetProperty("inputstreamaddon");
   if (!oldAddonProp.isNull())
   {
-    CLog::Log(LOGERROR,
-              "CInputStreamAddon::{} - 'inputstreamaddon' has been deprecated, "
-              "please use `#KODIPROP:inputstream={}` instead",
-              __func__, oldAddonProp.asString());
+    CLog::LogF(
+        LOGERROR,
+        "'inputstreamaddon' has been deprecated, please use `#KODIPROP:inputstream={}` instead",
+        oldAddonProp.asString());
   }
 
   // check if a specific inputstream addon is requested
@@ -174,10 +174,8 @@ bool CInputStreamAddon::Open()
 
     if (props.m_nCountInfoValues >= STREAM_MAX_PROPERTY_COUNT)
     {
-      CLog::Log(LOGERROR,
-                "CInputStreamAddon::{} - Hit max count of stream properties, "
-                "have {}, actual count: {}",
-                __func__, STREAM_MAX_PROPERTY_COUNT, propsMap.size());
+      CLog::LogF(LOGERROR, "Hit max count of stream properties, have {}, actual count: {}",
+                 STREAM_MAX_PROPERTY_COUNT, propsMap.size());
       break;
     }
   }

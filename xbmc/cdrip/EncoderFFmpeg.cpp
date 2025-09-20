@@ -210,15 +210,14 @@ bool CEncoderFFmpeg::Init()
     if (err != 0)
       throw FFMpegException("Failed to write the header (error '{}')", FFMpegErrorToString(err));
 
-    CLog::Log(LOGDEBUG, "CEncoderFFmpeg::{} - Successfully initialized with muxer {} and codec {}",
-              __func__,
-              m_formatCtx->oformat->long_name ? m_formatCtx->oformat->long_name
-                                              : m_formatCtx->oformat->name,
-              codec->long_name ? codec->long_name : codec->name);
+    CLog::LogF(LOGDEBUG, "Successfully initialized with muxer {} and codec {}",
+               m_formatCtx->oformat->long_name ? m_formatCtx->oformat->long_name
+                                               : m_formatCtx->oformat->name,
+               codec->long_name ? codec->long_name : codec->name);
   }
   catch (const FFMpegException& caught)
   {
-    CLog::Log(LOGERROR, "CEncoderFFmpeg::{} - {}", __func__, caught.what());
+    CLog::LogF(LOGERROR, "{}", caught.what());
 
     av_freep(&m_buffer);
     av_channel_layout_uninit(&m_bufferFrame->ch_layout);
@@ -251,7 +250,7 @@ int CEncoderFFmpeg::avio_write_callback(void* opaque, const uint8_t* buf, int bu
   CEncoderFFmpeg* enc = static_cast<CEncoderFFmpeg*>(opaque);
   if (enc->Write(buf, buf_size) != buf_size)
   {
-    CLog::Log(LOGERROR, "CEncoderFFmpeg::{} - Error writing FFmpeg buffer to file", __func__);
+    CLog::LogF(LOGERROR, "Error writing FFmpeg buffer to file");
     return -1;
   }
   return buf_size;
@@ -292,8 +291,7 @@ bool CEncoderFFmpeg::WriteFrame()
   AVPacket* pkt = av_packet_alloc();
   if (!pkt)
   {
-    CLog::Log(LOGERROR, "CEncoderFFmpeg::{} - av_packet_alloc failed: {}", __func__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "av_packet_alloc failed: {}", strerror(errno));
     return false;
   }
 
@@ -349,7 +347,7 @@ bool CEncoderFFmpeg::WriteFrame()
   }
   catch (const FFMpegException& caught)
   {
-    CLog::Log(LOGERROR, "CEncoderFFmpeg::{} - {}", __func__, caught.what());
+    CLog::LogF(LOGERROR, "{}", caught.what());
   }
 
   av_packet_free(&pkt);
