@@ -690,6 +690,7 @@ constexpr URLEncodings EncodingTestData[] = {
     {"{", "%7b"},
     {"|", "%7c"},
     {"}", "%7d"},
+    {"\u03A9", "%ce%a9"}, // Greek Capital Letter Omega
 
     // Encoding needed (Non alpha)
     {"\x1", "%01"},
