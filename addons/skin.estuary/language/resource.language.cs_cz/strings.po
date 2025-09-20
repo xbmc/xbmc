@@ -133,8 +133,8 @@ msgid "Choose rating to display for media items"
 msgstr "Zvolte hodnocení zobrazené pro položky médií"
 
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Nenalezeny žádné oblíbené. Pomocí místní nabídky můžete na tento seznam přidat jakoukoliv položku ze zobrazení médií."
+msgid "No favourites found. You can add items from media and other views by using the context menu."
+msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -775,6 +775,10 @@ msgstr "Systém"
 msgctxt "#31612"
 msgid "channels"
 msgstr ""
+
+#~ msgctxt "#31025"
+#~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+#~ msgstr "Nenalezeny žádné oblíbené. Pomocí místní nabídky můžete na tento seznam přidat jakoukoliv položku ze zobrazení médií."
 
 #~ msgctxt "#31149"
 #~ msgid "Select genre fanart pack"

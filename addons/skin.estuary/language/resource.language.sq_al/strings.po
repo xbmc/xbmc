@@ -133,7 +133,7 @@ msgid "Choose rating to display for media items"
 msgstr ""
 
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgid "No favourites found. You can add items from media and other views by using the context menu."
 msgstr ""
 
 msgctxt "#31026"

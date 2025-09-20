@@ -133,8 +133,8 @@ msgid "Choose rating to display for media items"
 msgstr "Escoger clasificación para mostrar en archivos multimedia"
 
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "No se han encontrado favoritos. Puedes agregar cualquier elemento en las vistas de medios a esta lista mediante el menú contextual."
+msgid "No favourites found. You can add items from media and other views by using the context menu."
+msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -775,6 +775,10 @@ msgstr "Sistema"
 msgctxt "#31612"
 msgid "channels"
 msgstr ""
+
+#~ msgctxt "#31025"
+#~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+#~ msgstr "No se han encontrado favoritos. Puedes agregar cualquier elemento en las vistas de medios a esta lista mediante el menú contextual."
 
 #~ msgctxt "#31149"
 #~ msgid "Select genre fanart pack"

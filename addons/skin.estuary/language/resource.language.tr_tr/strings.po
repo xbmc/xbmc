@@ -133,8 +133,8 @@ msgid "Choose rating to display for media items"
 msgstr "Medya ögeleri için gösterilecek derecelendirmeyi seçin"
 
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Hiçbir sık kullanılan bulunamadı. İçerik menüsünü kullanarak medya görünümlerindeki herhangi bir ögeyi bu listeye ekleyebilirsiniz."
+msgid "No favourites found. You can add items from media and other views by using the context menu."
+msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -775,6 +775,10 @@ msgstr "Sistem"
 msgctxt "#31612"
 msgid "channels"
 msgstr ""
+
+#~ msgctxt "#31025"
+#~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+#~ msgstr "Hiçbir sık kullanılan bulunamadı. İçerik menüsünü kullanarak medya görünümlerindeki herhangi bir ögeyi bu listeye ekleyebilirsiniz."
 
 #~ msgctxt "#31149"
 #~ msgid "Select genre fanart pack"

@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">建議</string>
+    <string name="error_title">錯誤</string>
+    <string name="info_title">資訊</string>
+    <string name="exit_button">離開</string>
+    <string name="continue_button">繼續</string>
+    <string name="notice_dialog">%1$s 需要存取您的設備媒體及檔案才能運作。請透過以下對話框中允許執行，否則 %1$s 將退出。</string>
+    <string name="record_audio_dialog">%1$s 要求錄製音訊的權限，這僅用於語音搜尋。請在以下對話框中允許或拒絕。</string>
+    <string name="asking_permissions">正在要求權限…</string>
+    <string name="clearing_cache">正在清除快取…</string>
+    <string name="waiting_external">正在等待外部儲存裝置…</string>
+    <string name="external_ok">外部儲存裝置正常…</string>
+    <string name="starting">正在啟動 %1$s…</string>
+    <string name="first_run">正在為首次執行做準備。請稍候…</string>
+    <string name="permission_denied">權限不足遭拒!! 退出中…</string>
+    <string name="no_find_apk">找不到封包。</string>
+    <string name="no_read_apk">無法讀取封包。</string>
 </resources>
