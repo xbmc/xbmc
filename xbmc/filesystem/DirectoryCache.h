@@ -11,6 +11,7 @@
 #include "IDirectory.h"
 #include "threads/CriticalSection.h"
 
+#include <functional>
 #include <memory>
 #include <set>
 #include <unordered_map>
@@ -54,12 +55,22 @@ namespace XFILE
 #ifdef _DEBUG
     void PrintStats() const;
 #endif
-  protected:
+  private:
     void InitCache(const std::set<std::string>& dirs);
     void ClearCache(std::set<std::string>& dirs);
     void CheckIfFull();
 
-    std::unordered_map<std::string, CDir> m_cache;
+    struct StringHash
+    {
+      using is_transparent = void; // Enables heterogeneous operations.
+      std::size_t operator()(std::string_view sv) const
+      {
+        std::hash<std::string_view> hasher;
+        return hasher(sv);
+      }
+    };
+    using DirCache = std::unordered_map<std::string, CDir, StringHash, std::equal_to<>>;
+    DirCache m_cache;
 
     mutable CCriticalSection m_cs;
 

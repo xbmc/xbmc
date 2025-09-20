@@ -3187,10 +3187,11 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
   }
 
   // add any season
-  for (const auto& [seasonNumber, details] : details.m_seasons)
+  for (const auto& [seasonNumber, seasonDetails] : details.m_seasons)
   {
     // make sure the named season exists
-    const int seasonId = AddSeason(idTvShow, seasonNumber, details.m_name, details.m_plot);
+    const int seasonId =
+        AddSeason(idTvShow, seasonNumber, seasonDetails.m_name, seasonDetails.m_plot);
     if (seasonId == -1)
     {
       if (!inTransaction)
@@ -3201,11 +3202,11 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
     // get any existing details for the named season
     CVideoInfoTag season;
     if (!GetSeasonInfo(seasonId, season, false) ||
-        (season.m_strSortTitle == details.m_name && season.m_strPlot == details.m_plot))
+        (season.m_strSortTitle == seasonDetails.m_name && season.m_strPlot == seasonDetails.m_plot))
       continue;
 
-    season.SetSortTitle(details.m_name);
-    season.m_strPlot = details.m_plot;
+    season.SetSortTitle(seasonDetails.m_name);
+    season.m_strPlot = seasonDetails.m_plot;
 
     if (SetDetailsForSeason(season, KODI::ART::Artwork(), idTvShow, seasonId) == -1)
     {

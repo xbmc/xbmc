@@ -20,7 +20,7 @@ namespace KODI::WEATHER
 class CWeatherPropertyHelper
 {
 public:
-  CWeatherPropertyHelper(CGUIWindow& window, CWeatherTokenLocalizer& localizer)
+  CWeatherPropertyHelper(const CGUIWindow& window, CWeatherTokenLocalizer& localizer)
     : m_window(window),
       m_localizer(localizer)
   {

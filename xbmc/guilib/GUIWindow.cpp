@@ -1062,7 +1062,7 @@ std::vector<std::string> CGUIWindow::GetPropertyNames() const
 {
   std::vector<std::string> names;
 
-  std::lock_guard<CCriticalSection> lock{const_cast<CGUIWindow&>(*this)};
+  std::scoped_lock<CCriticalSection> lock{const_cast<CGUIWindow&>(*this)};
   names.reserve(m_mapProperties.size());
   for (const std::string& name : m_mapProperties | std::views::keys)
   {

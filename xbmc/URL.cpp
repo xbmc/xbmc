@@ -29,26 +29,9 @@
 
 #include <fmt/xchar.h>
 
-using namespace ADDON;
-
 CURL::CURL(std::string strURL)
 {
   Parse(std::move(strURL));
-}
-
-bool CURL::operator==(const CURL& url) const
-{
-  return url == Get();
-}
-
-bool operator==(const CURL& url, const std::string& str)
-{
-  return url.Get() == str;
-}
-
-bool operator==(const std::string& str, const CURL& url)
-{
-  return url == str;
 }
 
 void CURL::Reset()
