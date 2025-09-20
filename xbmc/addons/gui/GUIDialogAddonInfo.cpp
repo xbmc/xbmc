@@ -610,7 +610,8 @@ void CGUIDialogAddonInfo::OnEnableDisable()
     if (PromptIfDependency(24075, 24091))
       return; //required. can't disable
 
-    CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID(), AddonDisabledReason::USER);
+    if (CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID(), AddonDisabledReason::USER))
+      m_item->SetProperty("Addon.Status", g_localizeStrings.Get(24023)); // Disabled
   }
   else
   {
@@ -618,7 +619,8 @@ void CGUIDialogAddonInfo::OnEnableDisable()
     if (!ADDON::GUI::CHelpers::DialogAddonLifecycleUseAsk(m_localAddon))
       return;
 
-    CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID());
+    if (CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID()))
+      m_item->SetProperty("Addon.Status", g_localizeStrings.Get(305)); // Enabled
   }
 
   UpdateControls(PerformButtonFocus::CHOICE_NO);
