@@ -35,6 +35,29 @@ using namespace XFILE;
 using KODI::PLATFORM::WINDOWS::FromW;
 using KODI::TIME::FileTime;
 
+namespace
+{
+
+uint64_t GetEntrySize(const WIN32_FIND_DATAW& findData)
+{
+  return (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
+}
+
+std::optional<KODI::TIME::FileTime> GetEntryTime(const WIN32_FIND_DATAW& findData)
+{
+  KODI::TIME::FileTime fileTime{};
+  fileTime.lowDateTime = findData.ftLastWriteTime.dwLowDateTime;
+  fileTime.highDateTime = findData.ftLastWriteTime.dwHighDateTime;
+
+  KODI::TIME::FileTime localTime{};
+  if (KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime) == TRUE)
+    return localTime;
+
+  return {};
+}
+
+} // Unnamed namespace
+
 // local helper
 static inline bool worthTryToConnect(const DWORD lastErr)
 {
@@ -109,9 +132,9 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     searchMask += L"\\*";
 
   HANDLE hSearch;
-  WIN32_FIND_DATAW findData = {};
   CURL authUrl(url); // ConnectAndAuthenticate may update url with username and password
 
+  WIN32_FIND_DATAW findData = {};
   hSearch = FindFirstFileExW(searchMask.c_str(), FindExInfoBasic, &findData, FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH);
 
   if (hSearch == INVALID_HANDLE_VALUE)
@@ -145,6 +168,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   if (pathWithSlash.back() != '/')
     pathWithSlash.push_back('/');
 
+  std::vector<std::shared_ptr<CFileItem>> fileItems;
   do
   {
     std::wstring itemNameW(findData.cFileName);
@@ -158,35 +182,36 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       continue;
     }
 
-    CFileItemPtr pItem(new CFileItem(itemName));
+    const bool isDir = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+    const bool isHidden =
+        (findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0 ||
+        itemName.front() == '.'; // mark files starting from dot as hidden
 
-    pItem->SetFolder((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    if (pItem->IsFolder())
-      pItem->SetPath(pathWithSlash + itemName + '/');
-    else
-      pItem->SetPath(pathWithSlash + itemName);
-
-    if ((findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0
-          || itemName.front() == '.') // mark files starting from dot as hidden
-      pItem->SetProperty("file:hidden", true);
+    std::string itemPath(pathWithSlash + itemName);
+    if (isDir)
+      itemPath += '/';
 
     // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
-    FileTime localTime{};
-    if (FileTimeToLocalFileTime(reinterpret_cast<FileTime*>(&findData.ftLastWriteTime),
-                                &localTime) == TRUE)
-      pItem->SetDateTime(localTime);
+    std::shared_ptr<CFileItem>& item =
+        fileItems.emplace_back(std::make_shared<CFileItem>(itemName));
+    item->SetFolder(isDir);
+    item->SetPath(itemPath);
+    if (auto entryTime = GetEntryTime(findData); entryTime)
+      item->SetDateTime(std::move(*entryTime));
     else
     {
-      CDateTime dt{pItem->GetDateTime()};
+      CDateTime dt{item->GetDateTime()};
       dt.SetValid(false);
-      pItem->SetDateTime(dt);
+      item->SetDateTime(std::move(dt));
     }
-    if (!pItem->IsFolder())
-      pItem->SetSize((__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow);
+    if (!isDir)
+      item->SetSize(GetEntrySize(findData));
+    if (isHidden)
+      item->SetProperty("file:hidden", true);
 
-    items.Add(pItem);
   } while (FindNextFileW(hSearch, &findData));
+  items.AddItems(std::move(fileItems));
 
   FindClose(hSearch);
 
@@ -468,7 +493,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
               std::string remoteNameUtf8;
               if (g_charsetConverter.wToUTF8(remoteName.substr(2), remoteNameUtf8, true) && !remoteNameUtf8.empty())
               {
-                CFileItemPtr pItem(new CFileItem(remoteNameUtf8));
+                std::shared_ptr<CFileItem> pItem(new CFileItem(remoteNameUtf8));
                 pItem->SetPath(urlPrefixForItems + remoteNameUtf8 + '/');
                 pItem->SetFolder(true);
                 items.Add(pItem);
@@ -502,7 +527,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
                 std::string shareNameUtf8;
                 if (g_charsetConverter.wToUTF8(serverShareName.substr(slashPos + 1), shareNameUtf8, true) && !shareNameUtf8.empty())
                 {
-                  CFileItemPtr pItem(new CFileItem(shareNameUtf8));
+                  std::shared_ptr<CFileItem> pItem(new CFileItem(shareNameUtf8));
                   pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
                   pItem->SetFolder(true);
                   if (curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SHAREADMIN)
@@ -614,7 +639,7 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
           if (curShare.shi1_netname && curShare.shi1_netname[0] &&
               g_charsetConverter.wToUTF8(curShare.shi1_netname, shareNameUtf8, true) && !shareNameUtf8.empty())
           {
-            CFileItemPtr pItem(new CFileItem(shareNameUtf8));
+            std::shared_ptr<CFileItem> pItem(new CFileItem(shareNameUtf8));
             pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
             pItem->SetFolder(true);
             if ((curShare.shi1_type & STYPE_SPECIAL) != 0 || shareNameUtf8.back() == '$')
@@ -652,7 +677,7 @@ static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList&
       std::string shareNameUtf8;
       if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
       {
-        CFileItemPtr pItem = std::make_shared<CFileItem>(shareNameUtf8);
+        std::shared_ptr<CFileItem> pItem = std::make_shared<CFileItem>(shareNameUtf8);
         pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
         pItem->SetFolder(true);
         items.Add(pItem);
