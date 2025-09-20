@@ -2071,23 +2071,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   bool lookInFolder,
                   bool resetTag)
   {
-    auto result = InfoType::NONE;
-    std::unique_ptr<IVideoInfoTagLoader> loader(
-        CVideoInfoTagLoaderFactory::CreateLoader(item, scraper, lookInFolder));
-    if (loader)
+    if (std::unique_ptr<IVideoInfoTagLoader> loader{
+            CVideoInfoTagLoaderFactory::CreateLoader(item, scraper, lookInFolder)};
+        loader)
     {
       CVideoInfoTag& infoTag = *item.GetVideoInfoTag();
       if (resetTag)
         infoTag.Reset();
-      result = loader->Load(infoTag, false);
+      auto result = loader->Load(infoTag, false);
 
       // keep some properties only if advancedsettings.xml says so
       if (!m_advancedSettings->m_bVideoLibraryImportWatchedState)
         infoTag.ResetPlayCount();
       if (!m_advancedSettings->m_bVideoLibraryImportResumePoint)
         infoTag.SetResumePoint(CBookmark());
+
+      return {result, std::move(loader)};
     }
-    return {result, std::move(loader)};
+    return {InfoType::NONE, nullptr};
   }
 
   std::string CVideoInfoScanner::GetMovieSetInfoFolder(const std::string& setTitle)
