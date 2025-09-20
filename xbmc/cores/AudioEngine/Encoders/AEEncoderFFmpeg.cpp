@@ -356,7 +356,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   }
   catch (const FFMpegException& caught)
   {
-    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - {}", __func__, caught.what());
+    CLog::LogF(LOGERROR, "{}", caught.what());
   }
 
   av_channel_layout_uninit(&frame->ch_layout);

@@ -87,10 +87,10 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
         std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
         if (!result->CreateDecoder() || !result->ContainsFiles(url))
         {
-          CLog::Log(LOGINFO,
-                    "CFileDirectoryFactory::{}: Addon '{}' support extension '{}' but creation "
-                    "failed (seems not supported), trying other addons and Kodi",
-                    __func__, addonInfo.second->ID(), strExtension);
+          CLog::LogF(LOGWARNING,
+                     "Addon '{}' support extension '{}' but creation failed (seems not supported), "
+                     "trying other addons and Kodi",
+                     addonInfo.second->ID(), strExtension);
           continue;
         }
         return result.release();
