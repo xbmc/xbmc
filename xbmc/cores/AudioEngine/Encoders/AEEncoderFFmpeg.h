@@ -41,15 +41,13 @@ private:
   AVCodecID m_CodecID;
   unsigned int m_BitRate = 0;
   AEAudioFormat m_CurrentFormat;
-  AVCodecContext *m_CodecCtx;
-  SwrContext *m_SwrCtx;
+  AVCodecContext* m_CodecCtx;
   CAEChannelInfo m_Layout;
   uint8_t m_Buffer[8 + AV_INPUT_BUFFER_MIN_SIZE];
   int m_BufferSize = 0;
   int m_OutputSize = 0;
   double m_OutputRatio = 0.0;
   double m_SampleRateMul = 0.0;
-  unsigned int  m_NeededFrames = 0;
-  bool m_NeedConversion = false;
+  unsigned int m_NeededFrames = 0;
 };
 
