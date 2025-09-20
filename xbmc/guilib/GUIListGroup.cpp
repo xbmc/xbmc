@@ -9,14 +9,13 @@
 #include "GUIListGroup.h"
 
 #include "GUIListLabel.h"
+#include "utils/Set.h"
 #include "utils/log.h"
-
-#include <set>
 
 namespace
 {
 // Supported control types. Keep sorted.
-const std::set<CGUIControl::GUICONTROLTYPES> supportedTypes = {
+constexpr CSet supportedTypes{
     // clang-format off
     CGUIControl::GUICONTROL_BORDEREDIMAGE,
     CGUIControl::GUICONTROL_GAME,
