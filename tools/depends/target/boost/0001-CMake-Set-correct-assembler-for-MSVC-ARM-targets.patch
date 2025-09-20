@@ -1,0 +1,29 @@
+From 0fcea49d677f000432aa85aaec32afae5164e5e1 Mon Sep 17 00:00:00 2001
+From: newyork_loki <137760120+lowkeyrossi@users.noreply.github.com>
+Date: Thu, 10 Jul 2025 18:15:18 +0530
+Subject: [PATCH] CMake: Set correct assembler for MSVC ARM targets
+
+---
+ libs/context/CMakeLists.txt | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/libs/context/CMakeLists.txt b/libs/context/CMakeLists.txt
+index 58705376b..1408856fa 100644
+--- a/libs/context/CMakeLists.txt
++++ b/libs/context/CMakeLists.txt
+@@ -146,7 +146,11 @@ if(BOOST_CONTEXT_IMPLEMENTATION STREQUAL "fcontext")
+       set(ASM_LANGUAGE ASM)
+     endif()
+   elseif(BOOST_CONTEXT_ASSEMBLER STREQUAL armasm)
+-    set(ASM_LANGUAGE ASM_ARMASM)
++    if(MSVC)
++      set(ASM_LANGUAGE ASM_MARMASM)
++    else()
++      set(ASM_LANGUAGE ASM_ARMASM)
++    endif()
+   else()
+     set(ASM_LANGUAGE ASM_MASM)
+   endif()
+-- 
+2.50.1
+
