@@ -26,7 +26,7 @@ public:
 
   bool operator==(const CURL& url) const { return url.Get() == Get(); }
   // explicit equals operator for std::string comparison
-  friend bool operator==(const CURL& url, const std::string& str) { return url.Get() == str; }
+  friend bool operator==(const CURL& url, const std::string_view str) { return url.Get() == str; }
 
   void Reset();
   void Parse(std::string strURL);

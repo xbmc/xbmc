@@ -148,7 +148,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     if (isDir)
       URIUtils::AddSlashAtEnd(path);
 
-    auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(name));
+    const auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(name));
     item->SetPath(path);
     item->SetDateTime(GetDirEntryTime(st));
     item->SetFolder(isDir);
@@ -190,7 +190,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       path = URIUtils::AddFileToFolder(path, dirent->name);
       URIUtils::AddSlashAtEnd(path);
 
-      auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(dirent->name));
+      const auto& item = fileItems.emplace_back(std::make_shared<CFileItem>(dirent->name));
       item->SetPath(path);
       item->SetFolder(true);
     }
