@@ -76,6 +76,7 @@ private:
   pl_color_space m_colorSpace;
 
   pl_chroma_location m_chromaLocation;
+  PL::pl_d3d_format m_plOutputFormat;
 
   //For debug info
   pl_color_system m_videoMatrix;
@@ -90,6 +91,8 @@ private:
   AVColorPrimaries m_lastPrimaries = AVCOL_PRI_UNSPECIFIED;
 
   AVPixelFormat m_format;
+
+
 };
 
 class CRendererPL::CRenderBufferImpl : public CRenderBuffer

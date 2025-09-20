@@ -91,16 +91,16 @@ DEBUG_INFO_VIDEO CRendererPL::GetDebugInfo(int idx)
   pl_hdr_metadata hdr = plbuffer->plColorSpace.hdr;
 
   info.videoSource =
-      StringUtils::Format("Display: Format: {} Levels: full, ColorMatrix:rgb",
+      StringUtils::Format("Output: Format: {} Levels: full, ColorMatrix:rgb",
                           DX::DXGIFormatToShortString(m_IntermediateTarget.GetFormat()));
 
   info.metaPrim =
-      StringUtils::Format("Transfer: {} Primaries: {}", pl_color_transfer_name(m_displayTransfer),
-                          pl_color_primaries_name(m_displayPrimaries));
+      StringUtils::Format("Transfer: {} Primaries: {}", PL::PLInstance::Get()->pl_color_transfer_short_name(m_displayTransfer),
+                          PL::PLInstance::Get()->pl_color_primaries_short_name(m_displayPrimaries));
 
   info.metaLight = StringUtils::Format(
-      "Video: Matrix:{} Primaries:{} Transfer:{}", pl_color_primaries_name(m_colorSpace.primaries),
-      pl_color_transfer_name(m_colorSpace.transfer), pl_color_system_name(m_videoMatrix));
+      "Input: Matrix:{} Primaries:{} Transfer:{}", PL::PLInstance::Get()->pl_color_primaries_short_name(m_colorSpace.primaries),
+      PL::PLInstance::Get()->pl_color_transfer_short_name(m_colorSpace.transfer), PL::PLInstance::Get()->pl_color_system_short_name(m_videoMatrix));
   if (plbuffer->hasHDR10PlusMetadata)
   {
     info.shader = "Primaries (meta): ";
@@ -141,7 +141,9 @@ void CRendererPL::CheckVideoParameters()
       };
     }
   }
-  CreateIntermediateTarget(m_viewWidth, m_viewHeight, false, DXGI_FORMAT_R10G10B10A2_UNORM);
+
+  CreateIntermediateTarget(m_viewWidth, m_viewHeight, false);
+  PL::PLInstance::Get()->fill_d3d_format(&m_plOutputFormat, m_IntermediateTarget.GetFormat());
 }
 
 void CRendererPL::RenderImpl(CD3DTexture& target,
@@ -165,10 +167,17 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
   //Dovi color space is set when compiling hdr data
   if (frameIn.repr.sys != PL_COLOR_SYSTEM_DOLBYVISION)
   {
-
-    frameIn.repr.levels = PL_COLOR_LEVELS_LIMITED;
-    frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
+    frameIn.repr.levels = buf->full_range ? PL_COLOR_LEVELS_FULL : PL_COLOR_LEVELS_LIMITED;
     frameIn.color = m_colorSpace;
+    if (buf->primaries == AVCOL_PRI_BT470BG || buf->primaries == AVCOL_PRI_SMPTE170M)
+      frameIn.repr.sys = PL_COLOR_SYSTEM_BT_601;
+    else if (buf->primaries == AVCOL_PRI_BT709)
+      frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
+    else if (buf->primaries == AVCOL_PRI_BT2020 && (buf->color_transfer == AVCOL_TRC_SMPTEST2084 ||
+      buf->color_transfer == AVCOL_TRC_ARIB_STD_B67))
+      frameIn.repr.sys = PL_COLOR_SYSTEM_BT_2020_NC;
+    else
+      frameIn.repr.sys = PL_COLOR_SYSTEM_UNKNOWN;
   }
   else
     m_colorSpace = frameIn.color;
@@ -184,16 +193,20 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
                                     .fmt = target.GetFormat(),
                                     .w = (int)target.GetWidth(),
                                     .h = (int)target.GetHeight()};
-  frameOut.num_planes = 1;
+  
+  //frameOut.repr.bits = m_plOutputFormat.bits;
+  frameOut.num_planes = m_plOutputFormat.num_planes;
   frameOut.planes[0].texture = pl_d3d11_wrap(PL::PLInstance::Get()->GetGpu(), &d3dparams);
-  frameOut.planes[0].components = 4;
-  frameOut.planes[0].component_mapping[0] = PL_CHANNEL_R;
-  frameOut.planes[0].component_mapping[1] = PL_CHANNEL_G;
-  frameOut.planes[0].component_mapping[2] = PL_CHANNEL_B;
-  frameOut.planes[0].component_mapping[3] = PL_CHANNEL_A;
+  frameOut.planes[0].components = m_plOutputFormat.components[0];
+  frameOut.planes[0].component_mapping[0] = m_plOutputFormat.component_mapping[0][0];
+  frameOut.planes[0].component_mapping[1] = m_plOutputFormat.component_mapping[0][1];
+  frameOut.planes[0].component_mapping[2] = m_plOutputFormat.component_mapping[0][2];
+  frameOut.planes[0].component_mapping[3] = m_plOutputFormat.component_mapping[0][3];
 
-  frameOut.crop.x1 = dst.Width();
-  frameOut.crop.y1 = dst.Height();
+  frameOut.crop.x0 = dst.x1;
+  frameOut.crop.x1 = dst.x2;
+  frameOut.crop.y0 = dst.y1;
+  frameOut.crop.y1 = dst.y2;
 
   if (ActualRenderAsHDR())
   {
@@ -210,6 +223,9 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
   frameOut.repr.sys = PL_COLOR_SYSTEM_RGB;
   frameOut.repr.levels =
     DX::Windowing()->UseLimitedColor() ? PL_COLOR_LEVELS_LIMITED : PL_COLOR_LEVELS_FULL;
+
+  
+  
   //todo add advancedsettings for libplacebo params
   //or maybe just add the 3 level of scaling int he gui and the rest in advanced
   pl_render_params params;

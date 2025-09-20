@@ -73,6 +73,14 @@ public:
   int Currenttransfer;
   int CurrentMatrix;
   void LogCurrent();
+
+  static const char* pl_color_primaries_short_names[PL_COLOR_PRIM_COUNT];
+  static const char* pl_color_primaries_short_name(pl_color_primaries prim);
+  static const char* pl_color_transfer_shorts_name[PL_COLOR_TRC_COUNT];
+  static const char* pl_color_transfer_short_name(pl_color_transfer trc);
+  static const char* pl_color_system_shorts_name[PL_COLOR_SYSTEM_COUNT];
+  static const char* pl_color_system_short_name(pl_color_system sys);
+
   void fill_d3d_format(pl_d3d_format* info, DXGI_FORMAT format);
 };
 } // namespace PL

@@ -114,87 +114,206 @@ void PL::PLInstance::LogCurrent()
   CLog::Log(LOGINFO, "LibPlaceboCurrent Color Settings: Matrix: {}", sSys.c_str());
 }
 
+const char* PL::PLInstance::pl_color_primaries_short_names[PL_COLOR_PRIM_COUNT] = {
+    "Auto",
+    "BT.601 NTSC",
+    "BT.601 PAL",
+    "BT.709",
+    "BT.470 M",
+    "EBU Tech.",
+    "BT.2020",
+    "Apple RGB",
+    "Adobe RGB (1998)",
+    "ProPhoto RGB (ROMM)",
+    "CIE 1931 RGB primaries",
+    "DCI-P3",
+    "DCI-P3 with D65",
+    "Panasonic V-Gamut",
+    "Sony S-Gamut",
+    "Traditional film primaries with Illuminant C",
+    "ACES Primaries #0",
+    "ACES Primaries #1"
+};
+
+const char* PL::PLInstance::pl_color_primaries_short_name(pl_color_primaries prim) {
+  assert(prim >= 0 && prim < PL_COLOR_PRIM_COUNT);
+  return pl_color_primaries_short_names[prim];
+}
+
+const char* pl_color_transfer_short_names[PL_COLOR_TRC_COUNT] = {
+    "Auto",                                          // PL_COLOR_TRC_UNKNOWN
+    "BT.1886",                   // PL_COLOR_TRC_BT_1886
+    "IEC 61966-2-4",                          // PL_COLOR_TRC_SRGB
+    "Linear light content",                                        // PL_COLOR_TRC_LINEAR
+    "Pure power gamma 1.8",                                        // PL_COLOR_TRC_GAMMA18
+    "Pure power gamma 2.0",                                        // PL_COLOR_TRC_GAMMA20
+    "Pure power gamma 2.2",                                        // PL_COLOR_TRC_GAMMA22
+    "Pure power gamma 2.4",                                        // PL_COLOR_TRC_GAMMA24
+    "Pure power gamma 2.6",                                        // PL_COLOR_TRC_GAMMA26
+    "Pure power gamma 2.8",                                        // PL_COLOR_TRC_GAMMA28
+    "ProPhoto RGB (ROMM)",                                         // PL_COLOR_TRC_PRO_PHOTO
+    "Digital Cinema Distribution",                    // PL_COLOR_TRC_ST428
+    "ITU-R BT.2100 PQ",   // PL_COLOR_TRC_PQ
+    "ITU-R BT.2100 HLG",      // PL_COLOR_TRC_HLG
+    "Panasonic V-Log",                                   // PL_COLOR_TRC_V_LOG
+    "Sony S-Log1",                                                 // PL_COLOR_TRC_S_LOG1
+    "Sony S-Log2"                                                  // PL_COLOR_TRC_S_LOG2
+};
+
+const char* PL::PLInstance::pl_color_transfer_short_name(pl_color_transfer trc) {
+  assert(trc >= 0 && trc < PL_COLOR_TRC_COUNT);
+  return pl_color_transfer_short_names[trc];
+}
+
+const char* pl_color_system_short_names[PL_COLOR_SYSTEM_COUNT] = {
+    "Auto",                                // PL_COLOR_SYSTEM_UNKNOWN
+    "BT.601 (SD)",                        // PL_COLOR_SYSTEM_BT_601
+    "BT.709 (HD)",                        // PL_COLOR_SYSTEM_BT_709
+    "SMPTE-240M",                                    // PL_COLOR_SYSTEM_SMPTE_240M
+    "BT.2020 N-C",   // PL_COLOR_SYSTEM_BT_2020_NC
+    "BT.2020 C",       // PL_COLOR_SYSTEM_BT_2020_C
+    "BT.2100 PQ",           // PL_COLOR_SYSTEM_BT_2100_PQ
+    "BT.2100 HLG",          // PL_COLOR_SYSTEM_BT_2100_HLG
+    "Dolby Vision",             // PL_COLOR_SYSTEM_DOLBYVISION
+    "YCgCo",                      // PL_COLOR_SYSTEM_YCGCO
+    "RGB",                           // PL_COLOR_SYSTEM_RGB
+    "XYZ"       // PL_COLOR_SYSTEM_XYZ
+};
+
+const char* PL::PLInstance::pl_color_system_short_name(pl_color_system sys) {
+  assert(sys >= 0 && sys < PL_COLOR_SYSTEM_COUNT);
+  return pl_color_system_short_names[sys];
+}
+
 void PL::PLInstance::fill_d3d_format(pl_d3d_format* info, DXGI_FORMAT format)
 {
-
   memset(info, 0, sizeof(pl_d3d_format));
+  //DXGI_FORMAT_R16G16B16A16_FLOAT, DXGI_FORMAT_R10G10B10A2_UNORM, DXGI_FORMAT_R32G32B32A32_FLOAT
   switch (format)
   {
-    case DXGI_FORMAT_NV12:
-      info->bits.color_depth = 8;
-      info->bits.sample_depth = 8;
-      info->bits.bit_shift = 0;
-      info->planes[0] = DXGI_FORMAT_R8_UNORM; // Y plane
-      info->planes[1] = DXGI_FORMAT_R8G8_UNORM; // UV plane
-      info->component_mapping[0][0] = PL_CHANNEL_Y;
-      info->component_mapping[1][0] = PL_CHANNEL_U;
-      info->component_mapping[1][1] = PL_CHANNEL_V;
-      info->components[0] = 1;
-      info->components[1] = 2;
-      info->width_div[0] = 1; // full width
-      info->height_div[0] = 1; // full height
-      info->width_div[1] = 2; // half width
-      info->height_div[1] = 2; // half height
-      info->num_planes = 2;
-      strcpy(info->description, "nv12");
-      break;
+  case DXGI_FORMAT_R10G10B10A2_UNORM:
+    info->bits.color_depth = 10;
+    info->bits.sample_depth = 10;
+    info->bits.bit_shift = 0;
+    info->planes[0] = DXGI_FORMAT_R10G10B10A2_UNORM;
+    info->component_mapping[0][0] = PL_CHANNEL_R;
+    info->component_mapping[0][1] = PL_CHANNEL_G;
+    info->component_mapping[0][2] = PL_CHANNEL_B;
+    info->component_mapping[0][3] = PL_CHANNEL_A;
+    info->components[0] = 4;
+    info->width_div[0] = 1;
+    info->height_div[0] = 1;
+    info->num_planes = 1;
+    strcpy(info->description, "rgba10");
+    break;
 
-    case DXGI_FORMAT_P010:
-      info->bits.color_depth = 10;
-      info->bits.sample_depth = 16;
-      info->bits.bit_shift = 6;
-      info->planes[0] = DXGI_FORMAT_R16_UNORM; // Y plane
-      info->planes[1] = DXGI_FORMAT_R16G16_UNORM; // UV plane
-      info->component_mapping[0][0] = PL_CHANNEL_Y;
-      info->component_mapping[1][0] = PL_CHANNEL_U;
-      info->component_mapping[1][1] = PL_CHANNEL_V;
-      info->components[0] = 1;
-      info->components[1] = 2;
-      info->width_div[0] = 1;
-      info->height_div[0] = 1;
-      info->width_div[1] = 2;
-      info->height_div[1] = 2;
-      info->num_planes = 2;
-      strcpy(info->description, "p010");
-      break;
+  case DXGI_FORMAT_R8G8B8A8_UNORM:
+    info->bits.color_depth = 8;
+    info->bits.sample_depth = 8;
+    info->bits.bit_shift = 0;
+    info->planes[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+    info->component_mapping[0][0] = PL_CHANNEL_R;
+    info->component_mapping[0][1] = PL_CHANNEL_G;
+    info->component_mapping[0][2] = PL_CHANNEL_B;
+    info->component_mapping[0][3] = PL_CHANNEL_A;
+    info->components[0] = 4;
+    info->width_div[0] = 1;
+    info->height_div[0] = 1;
+    info->num_planes = 1;
+    strcpy(info->description, "rgba");
+    break;
 
-    case DXGI_FORMAT_P016:
-      info->bits.color_depth = 16;
-      info->bits.sample_depth = 16;
-      info->bits.bit_shift = 0;
-      info->planes[0] = DXGI_FORMAT_R16_UNORM;
-      info->planes[1] = DXGI_FORMAT_R16G16_UNORM;
-      info->component_mapping[0][0] = PL_CHANNEL_Y;
-      info->component_mapping[1][0] = PL_CHANNEL_U;
-      info->component_mapping[1][1] = PL_CHANNEL_V;
-      info->components[0] = 1;
-      info->components[1] = 2;
-      info->width_div[0] = 1;
-      info->height_div[0] = 1;
-      info->width_div[1] = 2;
-      info->height_div[1] = 2;
-      info->num_planes = 2;
-      strcpy(info->description, "p016");
-      break;
+  case DXGI_FORMAT_B8G8R8A8_UNORM:
+    info->bits.color_depth = 8;
+    info->bits.sample_depth = 8;
+    info->bits.bit_shift = 0;
+    info->planes[0] = DXGI_FORMAT_B8G8R8A8_UNORM;
+    info->component_mapping[0][0] = PL_CHANNEL_B;
+    info->component_mapping[0][1] = PL_CHANNEL_G;
+    info->component_mapping[0][2] = PL_CHANNEL_R;
+    info->component_mapping[0][3] = PL_CHANNEL_A;
+    info->components[0] = 4;
+    info->width_div[0] = 1;
+    info->height_div[0] = 1;
+    info->num_planes = 1;
+    strcpy(info->description, "bgra");
+    break;
 
-    case DXGI_FORMAT_YUY2:
-      info->bits.color_depth = 8;
-      info->bits.sample_depth = 16; // packed 2 bytes per component pair
-      info->bits.bit_shift = 0;
-      info->planes[0] = DXGI_FORMAT_R8G8B8A8_UNORM; // pseudo-plane
-      info->component_mapping[0][0] = PL_CHANNEL_R;
-      info->component_mapping[0][1] = PL_CHANNEL_G;
-      info->component_mapping[0][2] = PL_CHANNEL_B;
-      info->component_mapping[0][3] = PL_CHANNEL_A;
-      info->width_div[0] = 1;
-      info->height_div[0] = 1;
-      info->num_planes = 1;
-      strcpy(info->description, "yuy2");
-      break;
+  case DXGI_FORMAT_NV12:
+    info->bits.color_depth = 8;
+    info->bits.sample_depth = 8;
+    info->bits.bit_shift = 0;
+    info->planes[0] = DXGI_FORMAT_R8_UNORM; // Y plane
+    info->planes[1] = DXGI_FORMAT_R8G8_UNORM; // UV plane
+    info->component_mapping[0][0] = PL_CHANNEL_Y;
+    info->component_mapping[1][0] = PL_CHANNEL_U;
+    info->component_mapping[1][1] = PL_CHANNEL_V;
+    info->components[0] = 1;
+    info->components[1] = 2;
+    info->width_div[0] = 1; // full width
+    info->height_div[0] = 1; // full height
+    info->width_div[1] = 2; // half width
+    info->height_div[1] = 2; // half height
+    info->num_planes = 2;
+    strcpy(info->description, "nv12");
+    break;
 
-    default:
-      info->num_planes = 0;
-      strcpy(info->description, "unknown");
-      break;
+  case DXGI_FORMAT_P010:
+    info->bits.color_depth = 10;
+    info->bits.sample_depth = 16;
+    info->bits.bit_shift = 6;
+    info->planes[0] = DXGI_FORMAT_R16_UNORM; // Y plane
+    info->planes[1] = DXGI_FORMAT_R16G16_UNORM; // UV plane
+    info->component_mapping[0][0] = PL_CHANNEL_Y;
+    info->component_mapping[1][0] = PL_CHANNEL_U;
+    info->component_mapping[1][1] = PL_CHANNEL_V;
+    info->components[0] = 1;
+    info->components[1] = 2;
+    info->width_div[0] = 1;
+    info->height_div[0] = 1;
+    info->width_div[1] = 2;
+    info->height_div[1] = 2;
+    info->num_planes = 2;
+    strcpy(info->description, "p010");
+    break;
+
+  case DXGI_FORMAT_P016:
+    info->bits.color_depth = 16;
+    info->bits.sample_depth = 16;
+    info->bits.bit_shift = 0;
+    info->planes[0] = DXGI_FORMAT_R16_UNORM;
+    info->planes[1] = DXGI_FORMAT_R16G16_UNORM;
+    info->component_mapping[0][0] = PL_CHANNEL_Y;
+    info->component_mapping[1][0] = PL_CHANNEL_U;
+    info->component_mapping[1][1] = PL_CHANNEL_V;
+    info->components[0] = 1;
+    info->components[1] = 2;
+    info->width_div[0] = 1;
+    info->height_div[0] = 1;
+    info->width_div[1] = 2;
+    info->height_div[1] = 2;
+    info->num_planes = 2;
+    strcpy(info->description, "p016");
+    break;
+
+  case DXGI_FORMAT_YUY2:
+    info->bits.color_depth = 8;
+    info->bits.sample_depth = 16; // packed 2 bytes per component pair
+    info->bits.bit_shift = 0;
+    info->planes[0] = DXGI_FORMAT_R8G8B8A8_UNORM; // pseudo-plane
+    info->component_mapping[0][0] = PL_CHANNEL_R;
+    info->component_mapping[0][1] = PL_CHANNEL_G;
+    info->component_mapping[0][2] = PL_CHANNEL_B;
+    info->component_mapping[0][3] = PL_CHANNEL_A;
+    info->width_div[0] = 1;
+    info->height_div[0] = 1;
+    info->num_planes = 1;
+    strcpy(info->description, "yuy2");
+    break;
+
+  default:
+    info->num_planes = 0;
+    strcpy(info->description, "unknown");
+    break;
   }
 }
