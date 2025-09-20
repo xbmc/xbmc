@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-12-04 09:42+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
-"Language-Team: Chinese (Taiwan) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/zh_tw/>\n"
+"PO-Revision-Date: 2025-09-20 04:29+0000\n"
+"Last-Translator: Jeremy Chen <jeremy@naviart.idv.tw>\n"
+"Language-Team: Chinese (Traditional Han script) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/zh_Hant/>\n"
 "Language: zh_tw\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.2.1\n"
+"X-Generator: Weblate 5.13.3\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -133,8 +133,8 @@ msgid "Choose rating to display for media items"
 msgstr "選擇欲顯示的評等類型"
 
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "沒有找到最愛項目。你可以使用快捷選單來將媒體檔檢視器中的物件加入此列表。"
+msgid "No favourites found. You can add items from media and other views by using the context menu."
+msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -195,7 +195,7 @@ msgstr "快轉"
 
 msgctxt "#31040"
 msgid "Edit widgets"
-msgstr ""
+msgstr "編輯小工具"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -316,7 +316,7 @@ msgstr "結束於"
 #. Label to highlight that live stream is being played
 msgctxt "#31081"
 msgid "Live"
-msgstr ""
+msgstr "現場直播"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -402,12 +402,12 @@ msgstr "寬版面列表"
 #. viewtype name
 msgctxt "#31108"
 msgid "MediaList"
-msgstr ""
+msgstr "媒體列表"
 
 # empty strings from id 31108 to 31108
 msgctxt "#31109"
 msgid "Video streams"
-msgstr ""
+msgstr "影像串流"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -419,7 +419,7 @@ msgstr "檢視你的個人圖片，或下載官方的眾多影像附加元件。
 
 msgctxt "#31112"
 msgid "Audio streams"
-msgstr ""
+msgstr "音訊串流"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -431,7 +431,7 @@ msgstr "搜尋YouTube"
 
 msgctxt "#31115"
 msgid "Subtitles streams"
-msgstr ""
+msgstr "字幕串流"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -567,7 +567,7 @@ msgstr "分類"
 
 msgctxt "#31149"
 msgid "Choose genre fanart pack"
-msgstr ""
+msgstr "選擇類型美術圖包"
 
 msgctxt "#31150"
 msgid "Origin"
@@ -658,57 +658,57 @@ msgstr "美術圖片相關的設定。"
 #. Label for OSD settings category
 msgctxt "#31170"
 msgid "On screen display"
-msgstr ""
+msgstr "螢幕選單"
 
 #. Helper text for the label of OSD settings category
 msgctxt "#31171"
 msgid "On screen display (OSD) related settings"
-msgstr ""
+msgstr "螢幕選單 (OSD) 相關設定"
 
 #. Setting Automatically close video OSD
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr ""
+msgstr "自動關閉影片 OSD"
 
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr ""
+msgstr "影片 OSD 自動關閉時間 (秒)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
 msgid "Default select action for albums on the home screen"
-msgstr ""
+msgstr "首頁中的音樂專輯預設選取動作"
 
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr ""
+msgstr "首頁中的電視劇集預設選取動作"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr ""
+msgstr "首頁中的電影集預設選取動作"
 
 msgctxt "#31177"
 msgid "Choose weather icon pack"
-msgstr ""
+msgstr "選擇天氣圖標包"
 
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window
 msgctxt "#31597"
 msgid "Player info"
-msgstr ""
+msgstr "播放器資訊"
 
 #. Label to show player cache
 msgctxt "#31598"
 msgid "Player cache"
-msgstr ""
+msgstr "播放器緩存"
 
 #. Label to show the video codec name
 msgctxt "#31599"
 msgid "Audio decoder"
-msgstr ""
+msgstr "音訊解碼器"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -774,7 +774,11 @@ msgstr "系統"
 #. Audio channels
 msgctxt "#31612"
 msgid "channels"
-msgstr ""
+msgstr "頻道"
+
+#~ msgctxt "#31025"
+#~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+#~ msgstr "沒有找到最愛項目。你可以使用快捷選單來將媒體檔檢視器中的物件加入此列表。"
 
 #~ msgctxt "#31149"
 #~ msgid "Select genre fanart pack"

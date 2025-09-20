@@ -133,8 +133,8 @@ msgid "Choose rating to display for media items"
 msgstr "Odaberite ocjenu koja će se prikazivati za medijske stavke"
 
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Nije pronađen nijedan favorit. Možete dodati bilo koju stavku iz medijskih prikaza na ovu listu pomoću kontekstnog menija."
+msgid "No favourites found. You can add items from media and other views by using the context menu."
+msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -787,6 +787,10 @@ msgstr "Sistem"
 msgctxt "#31612"
 msgid "channels"
 msgstr "kanali"
+
+#~ msgctxt "#31025"
+#~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+#~ msgstr "Nije pronađen nijedan favorit. Možete dodati bilo koju stavku iz medijskih prikaza na ovu listu pomoću kontekstnog menija."
 
 #~ msgctxt "#31149"
 #~ msgid "Select genre fanart pack"

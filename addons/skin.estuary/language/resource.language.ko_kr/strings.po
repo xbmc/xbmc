@@ -133,8 +133,8 @@ msgid "Choose rating to display for media items"
 msgstr "미디어 항목에서 보는 평점 선택"
 
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "즐겨찾기가 없습니다. 미디어 보기에서 컨텐스트 메뉴를 사용하여 항목을 추가할 수 있습니다."
+msgid "No favourites found. You can add items from media and other views by using the context menu."
+msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -775,6 +775,10 @@ msgstr "시스템"
 msgctxt "#31612"
 msgid "channels"
 msgstr "채널"
+
+#~ msgctxt "#31025"
+#~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+#~ msgstr "즐겨찾기가 없습니다. 미디어 보기에서 컨텐스트 메뉴를 사용하여 항목을 추가할 수 있습니다."
 
 #~ msgctxt "#31149"
 #~ msgid "Select genre fanart pack"

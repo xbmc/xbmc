@@ -133,8 +133,8 @@ msgid "Choose rating to display for media items"
 msgstr "Valitse mediakohteille näytettävä arvio"
 
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Suosikkeja ei löytynyt. Voit lisätä minkä tahansa medianäkymien kohteen tälle listalle käyttämällä sisältövalikkoa."
+msgid "No favourites found. You can add items from media and other views by using the context menu."
+msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -775,6 +775,10 @@ msgstr "Järjestelmä"
 msgctxt "#31612"
 msgid "channels"
 msgstr "kanavaa"
+
+#~ msgctxt "#31025"
+#~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+#~ msgstr "Suosikkeja ei löytynyt. Voit lisätä minkä tahansa medianäkymien kohteen tälle listalle käyttämällä sisältövalikkoa."
 
 #~ msgctxt "#31149"
 #~ msgid "Select genre fanart pack"

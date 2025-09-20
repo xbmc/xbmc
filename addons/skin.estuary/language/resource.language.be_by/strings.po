@@ -133,8 +133,8 @@ msgid "Choose rating to display for media items"
 msgstr "Абраць рэйтынг для паказу мультымедыйных элементаў"
 
 msgctxt "#31025"
-msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Спіс улюбёнага пусты. Вы можаце дадаць сюды медыяфайлы праз кантэкстнае меню."
+msgid "No favourites found. You can add items from media and other views by using the context menu."
+msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -775,6 +775,10 @@ msgstr "Сістэма"
 msgctxt "#31612"
 msgid "channels"
 msgstr ""
+
+#~ msgctxt "#31025"
+#~ msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+#~ msgstr "Спіс улюбёнага пусты. Вы можаце дадаць сюды медыяфайлы праз кантэкстнае меню."
 
 #~ msgctxt "#31149"
 #~ msgid "Select genre fanart pack"
