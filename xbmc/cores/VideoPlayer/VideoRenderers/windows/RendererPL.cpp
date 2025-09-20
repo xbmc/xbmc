@@ -194,7 +194,7 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
                                     .w = (int)target.GetWidth(),
                                     .h = (int)target.GetHeight()};
   
-  //frameOut.repr.bits = m_plOutputFormat.bits;
+  
   frameOut.num_planes = m_plOutputFormat.num_planes;
   frameOut.planes[0].texture = pl_d3d11_wrap(PL::PLInstance::Get()->GetGpu(), &d3dparams);
   frameOut.planes[0].components = m_plOutputFormat.components[0];
@@ -207,8 +207,14 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
   frameOut.crop.x1 = dst.x2;
   frameOut.crop.y0 = dst.y1;
   frameOut.crop.y1 = dst.y2;
+  //We skip rendererbase process hdr so its important to set it if its not valid
+  if (m_HdrType == HDR_TYPE::HDR_INVALID)
+  {
+    if (buf->hasDisplayMetadata)
+      m_HdrType = HDR_TYPE::HDR_HDR10;
+  }
 
-  if (ActualRenderAsHDR())
+  if (ActualRenderAsHDR() && !m_bTargetColorspaceHint)
   {
     frameOut.color.primaries = PL_COLOR_PRIM_BT_2020;
     frameOut.color.transfer = PL_COLOR_TRC_PQ;
@@ -267,7 +273,7 @@ void CRendererPL::ProcessHDR(CRenderBuffer* rb)
 
   CRenderBufferImpl* rbpl = static_cast<CRenderBufferImpl*>(rb);
 
-  if (rbpl->HasHdrData())
+  if (rbpl->HasHdrData() && !m_bTargetColorspaceHint)
     pl_swapchain_colorspace_hint(PL::PLInstance::Get()->GetSwapchain(), &rbpl->plColorSpace);
 }
 

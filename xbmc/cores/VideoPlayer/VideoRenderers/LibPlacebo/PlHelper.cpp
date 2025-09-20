@@ -188,7 +188,7 @@ const char* PL::PLInstance::pl_color_system_short_name(pl_color_system sys) {
 void PL::PLInstance::fill_d3d_format(pl_d3d_format* info, DXGI_FORMAT format)
 {
   memset(info, 0, sizeof(pl_d3d_format));
-  //DXGI_FORMAT_R16G16B16A16_FLOAT, DXGI_FORMAT_R10G10B10A2_UNORM, DXGI_FORMAT_R32G32B32A32_FLOAT
+  
   switch (format)
   {
   case DXGI_FORMAT_R10G10B10A2_UNORM:

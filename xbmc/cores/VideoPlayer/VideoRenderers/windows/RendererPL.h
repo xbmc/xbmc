@@ -78,6 +78,7 @@ private:
   pl_chroma_location m_chromaLocation;
   PL::pl_d3d_format m_plOutputFormat;
 
+  bool m_bTargetColorspaceHint = true;
   //For debug info
   pl_color_system m_videoMatrix;
   pl_color_transfer m_displayTransfer;
