@@ -7,6 +7,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
+			<visible>Integer.IsGreater(Container.NumItems,0)</visible>
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_50_List</include>
 			<include>View_52_IconWall</include>
@@ -36,6 +37,22 @@
 					<include>MediaMenuNowPlaying</include>
 				</control>
 			</control>
+		</control>
+		<control type="group">
+			<visible>Integer.IsEqual(Container.NumItems,0)</visible>
+			<control type="textbox">
+				<left>500</left>
+				<top>90</top>
+				<width>900</width>
+				<bottom>0</bottom>
+				<aligny>center</aligny>
+				<align>center</align>
+				<label>$LOCALIZE[31025]</label>
+			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$LOCALIZE[1036]" />
+				<param name="sublabel" value="" />
+			</include>
 		</control>
 	</controls>
 </window>
