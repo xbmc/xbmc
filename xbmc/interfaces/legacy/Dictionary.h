@@ -28,7 +28,10 @@ namespace XBMCAddon
    * native api handles these calls by converting the string to the
    * appropriate types.
    */
-  template<class T> class Dictionary : public std::map<String,T> {};
+  template<class T>
+  class Dictionary : public std::map<String, T, std::less<>>
+  {
+  };
 
   typedef Dictionary<StringOrInt> Properties;
 }
