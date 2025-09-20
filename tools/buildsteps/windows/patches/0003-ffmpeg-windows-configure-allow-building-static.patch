@@ -11,7 +11,7 @@ diff --git a/configure b/configure
 index 9bebb75093..28dcf462dd 100755
 --- a/configure
 +++ b/configure
-@@ -5827,6 +5827,8 @@ case $target_os in
+@@ -5951,6 +5951,8 @@ case $target_os in
          enabled x86_32 && check_ldflags -Wl,--large-address-aware
          add_cppflags -DWIN32_LEAN_AND_MEAN
          shlibdir_default="$bindir_default"
@@ -20,7 +20,7 @@ index 9bebb75093..28dcf462dd 100755
          SLIBPREF=""
          SLIBSUF=".dll"
          SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
-@@ -5878,6 +5880,8 @@ case $target_os in
+@@ -6002,6 +6004,8 @@ case $target_os in
          enabled x86_32 && check_ldflags -LARGEADDRESSAWARE
          add_cppflags -DWIN32_LEAN_AND_MEAN
          shlibdir_default="$bindir_default"
