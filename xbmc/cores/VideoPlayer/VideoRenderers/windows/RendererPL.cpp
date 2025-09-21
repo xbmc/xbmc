@@ -88,6 +88,7 @@ bool CRendererPL::Configure(const VideoPicture& picture, float fps, unsigned ori
 
 DEBUG_INFO_VIDEO CRendererPL::GetDebugInfo(int idx)
 {
+  
 
   CRenderBuffer* rb = m_renderBuffers[idx];
   CRenderBufferImpl* plbuffer = static_cast<CRenderBufferImpl*>(rb);
@@ -99,14 +100,16 @@ DEBUG_INFO_VIDEO CRendererPL::GetDebugInfo(int idx)
       StringUtils::Format("Output: Format: {} Levels: full, ColorMatrix:rgb",
                           DX::DXGIFormatToShortString(m_IntermediateTarget.GetFormat()));
 
-  info.metaPrim =
-      StringUtils::Format("Transfer: {} Primaries: {}", PL::PLInstance::Get()->pl_color_transfer_short_name(m_displayTransfer),
+  info.videoSource +=
+      StringUtils::Format(" Transfer: {} Primaries: {}", PL::PLInstance::Get()->pl_color_transfer_short_name(m_displayTransfer),
                           PL::PLInstance::Get()->pl_color_primaries_short_name(m_displayPrimaries));
 
   info.metaLight = StringUtils::Format(
       "Input: Matrix:{} Primaries:{} Transfer:{}", PL::PLInstance::Get()->pl_color_primaries_short_name(m_colorSpace.primaries),
       PL::PLInstance::Get()->pl_color_transfer_short_name(m_colorSpace.transfer), PL::PLInstance::Get()->pl_color_system_short_name(m_videoMatrix));
-  if (plbuffer->hasHDR10PlusMetadata)
+
+  //If we have metadata and we are sending it to the swapchain
+  if (plbuffer->hasDisplayMetadata && m_bTargetColorspaceHint)
   {
     info.shader = "Primaries (meta): ";
     info.shader += StringUtils::Format(
@@ -219,7 +222,7 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
       m_HdrType = HDR_TYPE::HDR_HDR10;
   }
 
-  if (ActualRenderAsHDR() && !m_bTargetColorspaceHint)
+  if (ActualRenderAsHDR() && m_bTargetColorspaceHint)
   {
     frameOut.color.primaries = PL_COLOR_PRIM_BT_2020;
     frameOut.color.transfer = PL_COLOR_TRC_PQ;
@@ -278,7 +281,7 @@ void CRendererPL::ProcessHDR(CRenderBuffer* rb)
 
   CRenderBufferImpl* rbpl = static_cast<CRenderBufferImpl*>(rb);
 
-  if (rbpl->HasHdrData() && !m_bTargetColorspaceHint)
+  if (rbpl->HasHdrData() && m_bTargetColorspaceHint)
     pl_swapchain_colorspace_hint(PL::PLInstance::Get()->GetSwapchain(), &rbpl->plColorSpace);
 }
 

@@ -164,8 +164,8 @@ const char* pl_color_transfer_short_names[PL_COLOR_TRC_COUNT] = {
     "Pure power gamma 2.8",                                        // PL_COLOR_TRC_GAMMA28
     "ProPhoto RGB (ROMM)",                                         // PL_COLOR_TRC_PRO_PHOTO
     "Digital Cinema Distribution",                    // PL_COLOR_TRC_ST428
-    "ITU-R BT.2100 PQ",   // PL_COLOR_TRC_PQ
-    "ITU-R BT.2100 HLG",      // PL_COLOR_TRC_HLG
+    "BT.2100 PQ",   // PL_COLOR_TRC_PQ
+    "BT.2100 HLG",      // PL_COLOR_TRC_HLG
     "Panasonic V-Log",                                   // PL_COLOR_TRC_V_LOG
     "Sony S-Log1",                                                 // PL_COLOR_TRC_S_LOG1
     "Sony S-Log2"                                                  // PL_COLOR_TRC_S_LOG2
