@@ -545,7 +545,7 @@ void CAutorun::HandleAutorun()
   if (mediadetect.m_evAutorun.Wait(0ms))
   {
     if (!ExecuteAutorun(""))
-      CLog::Log(LOGDEBUG, "{}: Could not execute autorun", __func__);
+      CLog::LogF(LOGDEBUG, "Could not execute autorun");
     mediadetect.m_evAutorun.Reset();
   }
 #endif

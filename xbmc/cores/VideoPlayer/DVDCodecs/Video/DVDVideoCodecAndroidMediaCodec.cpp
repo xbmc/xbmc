@@ -965,7 +965,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   if (!m_opened)
     return;
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}", __func__);
+  CLog::LogF(LOGDEBUG, "call");
 
   // invalidate any inflight outputbuffers
   FlushInternal();
@@ -1329,8 +1329,7 @@ void CDVDVideoCodecAndroidMediaCodec::SetCodecControl(int flags)
 {
   if (m_codecControlFlags != flags)
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::{} {:x}->{:x}", __func__,
-              m_codecControlFlags, flags);
+    CLog::LogFC(LOGDEBUG, LOGVIDEO, "{:x}->{:x}", m_codecControlFlags, flags);
     m_codecControlFlags = flags;
   }
 }
@@ -1351,14 +1350,13 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
 
 void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
 {
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}: state: {}", __func__, m_state);
+  CLog::LogF(LOGDEBUG, "state: {}", m_state);
   if (m_codec && (m_state == MEDIACODEC_STATE_RUNNING))
   {
     // Release all mediaodec output buffers to allow drain if we don't get inputbuffer early
     if (m_videoBufferPool)
     {
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}: ReleaseMediaCodecBuffers",
-                __func__);
+      CLog::LogF(LOGDEBUG, "ReleaseMediaCodecBuffers");
       m_videoBufferPool->ReleaseMediaCodecBuffers();
     }
 
@@ -1369,8 +1367,7 @@ void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
       {
         xbmc_jnienv()->ExceptionDescribe();
         xbmc_jnienv()->ExceptionClear();
-        CLog::Log(LOGERROR,
-                  "CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream: dequeueInputBuffer failed");
+        CLog::LogF(LOGERROR, "dequeueInputBuffer failed");
       }
     }
 
@@ -1384,19 +1381,16 @@ void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
       {
         xbmc_jnienv()->ExceptionDescribe();
         xbmc_jnienv()->ExceptionClear();
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::{}: queueInputBuffer failed",
-                  __func__);
+        CLog::LogF(LOGERROR, "queueInputBuffer failed");
       }
       else
       {
         m_indexInputBuffer = -1;
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}: BUFFER_FLAG_END_OF_STREAM send",
-                  __func__);
+        CLog::LogF(LOGDEBUG, "BUFFER_FLAG_END_OF_STREAM send");
       }
     }
     else
-      CLog::Log(LOGWARNING, "CDVDVideoCodecAndroidMediaCodec::{}: invalid index: {}", __func__,
-                m_indexInputBuffer);
+      CLog::LogF(LOGWARNING, "invalid index: {}", m_indexInputBuffer);
   }
 }
 
@@ -1405,7 +1399,7 @@ void CDVDVideoCodecAndroidMediaCodec::InjectExtraData(CJNIMediaFormat& mediaform
   if (!m_hints.extradata)
     return;
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}", __func__);
+  CLog::LogF(LOGDEBUG, "call");
   size_t size = m_hints.extradata.GetSize();
   void* src_ptr = m_hints.extradata.GetData();
   if (m_bitstream)

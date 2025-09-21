@@ -631,9 +631,8 @@ bool CGUIPassword::IsMediaFileUnlocked(const std::string& type, const std::strin
 
   if (!sources)
   {
-    CLog::Log(LOGERROR,
-              "{}: CMediaSourceSettings::GetInstance().GetSources(\"{}\") returned nullptr.",
-              __func__, type);
+    CLog::LogF(LOGERROR, "CMediaSourceSettings::GetInstance().GetSources(\"{}\") returned nullptr.",
+               type);
     return true;
   }
 
