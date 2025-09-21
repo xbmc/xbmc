@@ -196,6 +196,8 @@ const char* PL::PLInstance::pl_color_system_short_name(pl_color_system sys) {
   return pl_color_system_short_names[sys];
 }
 
+
+
 void PL::PLInstance::fill_d3d_format(pl_d3d_format* info, DXGI_FORMAT format)
 {
   memset(info, 0, sizeof(pl_d3d_format));
@@ -326,5 +328,27 @@ void PL::PLInstance::fill_d3d_format(pl_d3d_format* info, DXGI_FORMAT format)
     info->num_planes = 0;
     strcpy(info->description, "unknown");
     break;
+  }
+}
+
+/*Settings conversion*/
+const pl_tone_map_function* PL::PLInstance::GetToneMappingFunction(pl_tone_mapping method)
+{
+  switch (method)
+  {
+  case TONE_MAPPING_AUTO:      return &pl_tone_map_auto;
+  case TONE_MAPPING_CLIP:      return &pl_tone_map_clip;
+  case TONE_MAPPING_MOBIUS:    return &pl_tone_map_mobius;
+  case TONE_MAPPING_REINHARD:  return &pl_tone_map_reinhard;
+  case TONE_MAPPING_HABLE:     return &pl_tone_map_hable;
+  case TONE_MAPPING_GAMMA:     return &pl_tone_map_gamma;
+  case TONE_MAPPING_LINEAR:    return &pl_tone_map_linear;
+  case TONE_MAPPING_SPLINE:    return &pl_tone_map_spline;
+  case TONE_MAPPING_BT_2390:   return &pl_tone_map_bt2390;
+  case TONE_MAPPING_BT_2446A:  return &pl_tone_map_bt2446a;
+  case TONE_MAPPING_ST2094_40: return &pl_tone_map_st2094_40;
+  case TONE_MAPPING_ST2094_10: return &pl_tone_map_st2094_10;
+  default:
+    return nullptr;
   }
 }

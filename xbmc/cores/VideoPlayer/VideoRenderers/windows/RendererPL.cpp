@@ -149,9 +149,59 @@ void CRendererPL::CheckVideoParameters()
       };
     }
   }
-
+  //Create the intermediate target so far we use what the backbuffer is
+  //Would we use DXGI_FORMAT_R10G10B10A2_UNORM if IsHighPrecisionProcessingSettingEnabled is on with a 8 bits backbuffer?
   CreateIntermediateTarget(m_viewWidth, m_viewHeight, false);
   PL::PLInstance::Get()->fill_d3d_format(&m_plOutputFormat, m_IntermediateTarget.GetFormat());
+  //m_videoSettings.m_ToneMapMethod;
+  //m_videoSettings.m_ToneMapParam
+  //
+  m_plRenderParams = pl_render_default_params;
+  //m_videoSettings.m_ToneMapMethod
+  PL::pl_tone_mapping method;
+  switch (m_videoSettings.m_ToneMapMethod)
+  {
+    case VS_TONEMAPMETHOD_OFF:
+      method = PL::TONE_MAPPING_AUTO;
+      break;
+    case VS_TONEMAPMETHOD_REINHARD:
+      method = PL::TONE_MAPPING_REINHARD;
+      break;
+    case VS_TONEMAPMETHOD_ACES:
+      method = PL::TONE_MAPPING_SPLINE;
+      break;
+    case VS_TONEMAPMETHOD_HABLE:
+    default:
+      method = PL::TONE_MAPPING_AUTO;
+      break;
+
+  }
+  pl_color_map_params params = pl_color_map_high_quality_params;
+  params = {
+    //const struct pl_gamut_map_function *gamut_mapping;
+    //struct pl_gamut_map_constants gamut_constants;
+    //int lut3d_size[3];
+    //bool lut3d_tricubic;
+    //bool gamut_expansion;
+    .tone_mapping_function = PL::PLInstance::Get()->GetToneMappingFunction(method),
+    //struct pl_tone_map_constants tone_constants;
+    //bool inverse_tone_mapping;
+    //enum pl_hdr_metadata_type metadata;
+    //int lut_size;
+    //float contrast_recovery;
+    //float contrast_smoothness;
+    //bool force_tone_mapping_lut;
+    //bool visualize_lut;
+    //pl_rect2df visualize_rect;
+    //float visualize_hue;    // useful range [-pi, pi]
+    //float visualize_theta;  // useful range [0, pi/2]
+    //bool show_clipping;
+  };
+  m_plRenderParams.color_map_params = &params;
+  m_plRenderParams.border = PL_CLEAR_SKIP;
+  
+  
+
 }
 
 void CRendererPL::RenderImpl(CD3DTexture& target,
@@ -238,23 +288,18 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
   frameOut.repr.levels =
     DX::Windowing()->UseLimitedColor() ? PL_COLOR_LEVELS_LIMITED : PL_COLOR_LEVELS_FULL;
 
-  
-  
-  //todo add advancedsettings for libplacebo params
-  //or maybe just add the 3 level of scaling int he gui and the rest in advanced
-  pl_render_params params;
-  params = pl_render_default_params;
+
 
   //Without this recent version of libplacebo would spam the debug log like crazy
   //And its also set on an info level
-  params.skip_target_clearing = true;
+  
   //this data is used for the video debug renderer
   m_displayTransfer = frameOut.color.transfer;
   m_displayPrimaries = frameOut.color.primaries;
   m_videoMatrix = frameIn.repr.sys;
   pl_frame_set_chroma_location(&frameIn, m_chromaLocation);
 
-  bool res = pl_render_image(PL::PLInstance::Get()->GetRenderer(), &frameIn, &frameOut, &params);
+  bool res = pl_render_image(PL::PLInstance::Get()->GetRenderer(), &frameIn, &frameOut, &m_plRenderParams);
 
   sourceRect = dst;
 }
@@ -308,7 +353,7 @@ bool CRendererPL::Supports(ERENDERFEATURE feature) const
 
 bool CRendererPL::Supports(ESCALINGMETHOD method) const
 {
-  //Todo Fix those
+  //The scaling in kodi is only one libplacebo 
   if (method == VS_SCALINGMETHOD_AUTO)
     return true;
   return true;
