@@ -47,7 +47,7 @@ void CRendererPL::GetWeight(std::map<RenderMethod, int>& weights, const VideoPic
     weights[RENDER_LIBPLACEBO] = weight;
 }
 
-CRendererPL::CRendererPL(CVideoSettings& videoSettings) : CRendererHQ(videoSettings)
+CRendererPL::CRendererPL(CVideoSettings& videoSettings) : CRendererBase(videoSettings)
 {
   m_renderMethodName = "LibPlacebo";
   m_colorSpace = {};
@@ -279,22 +279,31 @@ void CRendererPL::ProcessHDR(CRenderBuffer* rb)
 
 bool CRendererPL::Supports(ERENDERFEATURE feature) const
 {
+  //3d lut
+  //use 10bit for sdr in the menu
+  // dithering
   //TODO
+  //Rotation is not done by libplacebo it expect a non rotated texture
+  //RENDERFEATURE_TONEMAP
   if (feature == RENDERFEATURE_BRIGHTNESS || feature == RENDERFEATURE_CONTRAST ||
-      feature == RENDERFEATURE_ROTATION)
+      feature == RENDERFEATURE_GAMMA || feature == RENDERFEATURE_NONLINSTRETCH ||
+      feature == RENDERFEATURE_ROTATION || feature == RENDERFEATURE_NOISE || 
+      feature ==RENDERFEATURE_STRETCH || feature == RENDERFEATURE_PIXEL_RATIO || 
+      feature == RENDERFEATURE_VERTICAL_SHIFT || feature == RENDERFEATURE_ZOOM )
   {
 
     return false;
   }
-
-  return CRendererBase::Supports(feature);
+  else
+    return true;
 }
 
 bool CRendererPL::Supports(ESCALINGMETHOD method) const
 {
-  //TODO
-
-  return __super::Supports(method);
+  //Todo Fix those
+  if (method == VS_SCALINGMETHOD_AUTO)
+    return true;
+  return true;
 }
 
 CRenderBuffer* CRendererPL::CreateBuffer()

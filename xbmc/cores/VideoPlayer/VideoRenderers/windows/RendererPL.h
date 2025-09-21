@@ -39,7 +39,7 @@ extern "C"
 
 enum RenderMethod;
 
-class CRendererPL : public CRendererHQ
+class CRendererPL : public CRendererBase
 {
   class CRenderBufferImpl;
 
