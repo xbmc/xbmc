@@ -54,6 +54,11 @@ CRendererPL::CRendererPL(CVideoSettings& videoSettings) : CRendererBase(videoSet
   m_chromaLocation = PL_CHROMA_UNKNOWN;
 }
 
+CRendererPL::~CRendererPL()
+{
+  PL::PLInstance::Get()->Reset();
+}
+
 CRenderInfo CRendererPL::GetRenderInfo()
 {
   auto info = __super::GetRenderInfo();

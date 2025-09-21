@@ -82,5 +82,8 @@ public:
   static const char* pl_color_system_short_name(pl_color_system sys);
 
   void fill_d3d_format(pl_d3d_format* info, DXGI_FORMAT format);
+
+private:
+  bool m_isInitialized{ false };
 };
 } // namespace PL

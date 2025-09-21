@@ -89,6 +89,9 @@ bool PL::PLInstance::Init()
     return false;
 
   m_plRenderer = pl_renderer_create(m_plLog, m_plD3d11->gpu);
+  m_isInitialized = true;
+  return true;
+
 }
 void PL::PLInstance::Reset()
 {
@@ -96,6 +99,14 @@ void PL::PLInstance::Reset()
   m_plLog = nullptr;
   m_plD3d11 = nullptr;
   m_plRenderer = nullptr;
+  if (m_isInitialized)
+  {
+    pl_renderer_destroy(&m_plRenderer);
+    pl_swapchain_destroy(&m_plSwapchain);
+    pl_d3d11_destroy(&m_plD3d11);
+    pl_log_destroy(&m_plLog);
+    m_isInitialized = false;
+  }
 }
 
 void PL::PLInstance::LogCurrent()

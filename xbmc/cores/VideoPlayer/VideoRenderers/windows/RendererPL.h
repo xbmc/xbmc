@@ -44,7 +44,7 @@ class CRendererPL : public CRendererBase
   class CRenderBufferImpl;
 
 public:
-  ~CRendererPL() = default;
+  ~CRendererPL();
 
   CRenderInfo GetRenderInfo() override;
   bool Supports(ESCALINGMETHOD method) const override;
