@@ -106,7 +106,8 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item) const
       parentItem->SetStartOffset(STARTOFFSET_RESUME);
 
     auto queuedItems{std::make_unique<CFileItemList>()};
-    VIDEO::UTILS::GetItemsForPlayList(parentItem, *queuedItems);
+    VIDEO::UTILS::GetItemsForPlayList(parentItem, *queuedItems,
+                                      ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM);
 
     // figure out where to start playback
     int pos{0};
