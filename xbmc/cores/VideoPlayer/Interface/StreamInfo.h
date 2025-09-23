@@ -49,6 +49,8 @@ struct StreamInfo
   std::string codecDesc;
   StreamFlags flags = StreamFlags::FLAG_NONE;
 
+  bool operator==(const StreamInfo&) const = default;
+
 protected:
   StreamInfo() = default;
   virtual ~StreamInfo() = default;

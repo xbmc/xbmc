@@ -15,7 +15,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
-#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <array>
@@ -29,9 +28,9 @@
 using namespace XFILE;
 using namespace std::chrono_literals;
 
-using PlaylistMapEntry = std::pair<unsigned int, PlaylistInfo>;
-using PlaylistVector = std::vector<std::pair<unsigned int, PlaylistInfo>>;
-using PlaylistVectorEntry = std::pair<unsigned int, PlaylistInfo>;
+using PlaylistMapEntry = std::pair<unsigned int, PlaylistInformation>;
+using PlaylistVector = std::vector<std::pair<unsigned int, PlaylistInformation>>;
+using PlaylistVectorEntry = std::pair<unsigned int, PlaylistInformation>;
 
 CDiscDirectoryHelper::CDiscDirectoryHelper()
 {
@@ -78,7 +77,8 @@ void CDiscDirectoryHelper::InitialisePlaylistSearch(
   }
 }
 
-bool CDiscDirectoryHelper::IsPotentialPlayAllPlaylist(const PlaylistInfo& playlistInformation) const
+bool CDiscDirectoryHelper::IsPotentialPlayAllPlaylist(
+    const PlaylistInformation& playlistInformation) const
 {
   return playlistInformation.clips.size() >= m_numEpisodes &&
          playlistInformation.clips.size() <= m_numEpisodes + 2;
@@ -86,7 +86,7 @@ bool CDiscDirectoryHelper::IsPotentialPlayAllPlaylist(const PlaylistInfo& playli
 
 bool CDiscDirectoryHelper::ClipQualifies(const ClipInfo& clipInformation,
                                          unsigned int clip,
-                                         const PlaylistInfo& playlistInformation,
+                                         const PlaylistInformation& playlistInformation,
                                          bool& allowBeginningOrEnd,
                                          bool allowBeginningAndEnd)
 {
@@ -111,7 +111,7 @@ bool CDiscDirectoryHelper::ClipQualifies(const ClipInfo& clipInformation,
 }
 
 bool CDiscDirectoryHelper::IsValidSingleEpisodePlaylist(
-    const PlaylistInfo& singleEpisodePlaylistInformation, unsigned int clip) const
+    const PlaylistInformation& singleEpisodePlaylistInformation, unsigned int clip) const
 {
   // See if potential single episode playlist contains too many clips
   // If there are 3 clips then expect the middle clip to be the main episode clip
@@ -152,7 +152,7 @@ bool CDiscDirectoryHelper::ProcessPlaylistClips(
     const ClipMap& clips,
     const PlaylistMap& playlists,
     unsigned int playlistNumber,
-    const PlaylistInfo& playlistInformation,
+    const PlaylistInformation& playlistInformation,
     std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap) const
 {
   bool allowBeginningOrEnd{playlistInformation.clips.size() == m_numEpisodes + 1};
@@ -184,7 +184,7 @@ bool CDiscDirectoryHelper::ProcessPlaylistClips(
 
 void CDiscDirectoryHelper::StorePlayAllPlaylist(
     unsigned int playlistNumber,
-    const PlaylistInfo& playlistInformation,
+    const PlaylistInformation& playlistInformation,
     const std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap)
 {
   CLog::LogF(LOGDEBUG, "Potential play all playlist {}", playlistNumber);
@@ -237,19 +237,18 @@ void CDiscDirectoryHelper::FindGroups(const PlaylistMap& playlists)
 
   // Get all playlists(s) >= MIN_EPISODE_DURATION and not a play all playlist
   PlaylistMap longPlaylists;
-  std::ranges::copy_if(playlists, std::inserter(longPlaylists, longPlaylists.end()),
-                       [&](const PlaylistMapEntry& p)
-                       {
-                         const auto& [playlist, playlistInformation] = p;
+  std::ranges::copy_if(
+      playlists, std::inserter(longPlaylists, longPlaylists.end()),
+      [&](const PlaylistMapEntry& p)
+      {
+        const auto& [playlist, playlistInformation] = p;
 
-                         const auto playAllPlaylistNumbers{
-                             m_playAllPlaylists |
-                             std::views::transform(&CandidatePlaylistInformation::playlist)};
+        const auto playAllPlaylistNumbers{
+            m_playAllPlaylists | std::views::transform(&CandidatePlaylistInformation::playlist)};
 
-                         return playlistInformation.duration >= MIN_EPISODE_DURATION &&
-                                std::ranges::find(playAllPlaylistNumbers, playlist) ==
-                                    playAllPlaylistNumbers.end();
-                       });
+        return playlistInformation.duration >= MIN_EPISODE_DURATION &&
+               std::ranges::find(playAllPlaylistNumbers, playlist) == playAllPlaylistNumbers.end();
+      });
 
   // Find groups
   if (m_numEpisodes > 1)
@@ -337,7 +336,7 @@ void CDiscDirectoryHelper::UsePlayAllPlaylistMethod(unsigned int episodeIndex,
           return;
         }
         // Get playlist information
-        const PlaylistInfo& singleEpisodePlaylistInformation{
+        const PlaylistInformation& singleEpisodePlaylistInformation{
             playlists.find(singleEpisodePlaylist)->second};
 
         CLog::LogF(LOGDEBUG, "Candidate playlist {} duration {}", singleEpisodePlaylist,
