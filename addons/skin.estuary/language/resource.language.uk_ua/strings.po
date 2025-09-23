@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-09-20 04:29+0000\n"
+"PO-Revision-Date: 2025-09-23 04:33+0000\n"
 "Last-Translator: Pavlo Marianov <acid@jack.kyiv.ua>\n"
 "Language-Team: Ukrainian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/uk_ua/>\n"
 "Language: uk_ua\n"
@@ -134,7 +134,7 @@ msgstr "Виберіть рейтинг для відображення меді
 
 msgctxt "#31025"
 msgid "No favourites found. You can add items from media and other views by using the context menu."
-msgstr ""
+msgstr "Улюблене не знайдено. Ви можете додати елементи зі списку медіафайлів та інших подань за допомогою контекстного меню."
 
 msgctxt "#31026"
 msgid "Timeshift"
