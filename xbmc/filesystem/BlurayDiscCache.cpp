@@ -9,6 +9,7 @@
 #include "BlurayDiscCache.h"
 
 #include "URL.h"
+#include "bluray/PlaylistStructure.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -28,7 +29,7 @@ CacheMap::iterator CBlurayDiscCache::SetDisc(const std::string& path)
 
 void CBlurayDiscCache::SetPlaylistInfo(const std::string& path,
                                        unsigned int playlist,
-                                       const PlaylistInformation& playlistInfo)
+                                       const BlurayPlaylistInformation& playlistInfo)
 {
   std::unique_lock lock(m_cs);
 
@@ -40,7 +41,7 @@ void CBlurayDiscCache::SetPlaylistInfo(const std::string& path,
   if (i == m_cache.end())
     i = SetDisc(path);
   auto& [_, disc] = *i;
-  disc.m_playlists[playlist] = playlistInfo;
+  disc.playlists[playlist] = playlistInfo;
 }
 
 void CBlurayDiscCache::SetMaps(const std::string& path,
@@ -57,14 +58,31 @@ void CBlurayDiscCache::SetMaps(const std::string& path,
   if (i == m_cache.end())
     i = SetDisc(path);
   auto& [_, disc] = *i;
-  disc.m_playlistmap = playlistmap;
-  disc.m_clipmap = clipmap;
-  disc.m_mapsSet = true;
+  disc.playlistMap = playlistmap;
+  disc.clipMap = clipmap;
+  disc.mapsSet = true;
+}
+
+void CBlurayDiscCache::SetPlaylistStreamInfo(const std::string& path,
+                                             unsigned int playlist,
+                                             const StreamMap& streams)
+{
+  std::unique_lock lock(m_cs);
+
+  // Get rid of any URL options, else the compare may be wrong
+  std::string storedPath{CURL(path).GetWithoutOptions()};
+  URIUtils::RemoveSlashAtEnd(storedPath);
+
+  auto i{m_cache.find(storedPath)};
+  if (i == m_cache.end())
+    i = SetDisc(path);
+  auto& [_, disc] = *i;
+  disc.streamMap[playlist] = streams;
 }
 
 bool CBlurayDiscCache::GetPlaylistInfo(const std::string& path,
                                        unsigned int playlist,
-                                       PlaylistInformation& playlistInfo) const
+                                       BlurayPlaylistInformation& playlistInfo) const
 {
   std::unique_lock lock(m_cs);
 
@@ -75,8 +93,8 @@ bool CBlurayDiscCache::GetPlaylistInfo(const std::string& path,
   if (const auto& i{m_cache.find(storedPath)}; i != m_cache.end())
   {
     const auto& [_, disc] = *i;
-    const auto& j{disc.m_playlists.find(playlist)};
-    if (j != disc.m_playlists.end())
+    const auto& j{disc.playlists.find(playlist)};
+    if (j != disc.playlists.end())
     {
       const auto& [_, info] = *j;
       playlistInfo = info;
@@ -99,10 +117,34 @@ bool CBlurayDiscCache::GetMaps(const std::string& path,
   if (const auto& i{m_cache.find(storedPath)}; i != m_cache.end())
   {
     const auto& [_, disc] = *i;
-    if (disc.m_mapsSet)
+    if (disc.mapsSet)
     {
-      clipmap = disc.m_clipmap;
-      playlistmap = disc.m_playlistmap;
+      clipmap = disc.clipMap;
+      playlistmap = disc.playlistMap;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CBlurayDiscCache::GetPlaylistStreamInfo(const std::string& path,
+                                             unsigned int playlist,
+                                             StreamMap& streams) const
+{
+  std::unique_lock lock(m_cs);
+
+  // Get rid of any URL options, else the compare may be wrong
+  std::string storedPath{CURL(path).GetWithoutOptions()};
+  URIUtils::RemoveSlashAtEnd(storedPath);
+
+  if (const auto& i{m_cache.find(storedPath)}; i != m_cache.end())
+  {
+    const auto& [_, disc] = *i;
+    const auto& j{disc.streamMap.find(playlist)};
+    if (j != disc.streamMap.end())
+    {
+      const auto& [_, info] = *j;
+      streams = info;
       return true;
     }
   }

@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "video/VideoInfoTag.h"
+
 #include <chrono>
 #include <cstdint>
 #include <map>
@@ -23,15 +25,14 @@ class CVideoInfoTag;
 
 namespace XFILE
 {
-
 using namespace std::chrono_literals;
 
-enum class GetTitles : uint8_t
+enum class GetTitle : int
 {
-  GET_TITLES_ONE = 0,
-  GET_TITLES_MAIN,
-  GET_TITLES_EPISODES,
-  GET_TITLES_ALL
+  GET_TITLES_ONE = -1,
+  GET_TITLES_MAIN = -2,
+  GET_TITLES_EPISODES = -3,
+  GET_TITLES_ALL = -4
 };
 
 enum class SortTitles : uint8_t
@@ -49,10 +50,14 @@ enum class AddMenuOption : bool
 
 enum class ENCODING_TYPE : uint8_t
 {
-  VIDEO_MPEG1 = 0x01,
+  // Video
   VIDEO_MPEG2 = 0x02,
-  AUDIO_MPEG1 = 0x03,
-  AUDIO_MPEG2 = 0x04,
+  VIDEO_VC1 = 0xea,
+  VIDEO_H264 = 0x1b,
+  VIDEO_H264_MVC = 0x20,
+  VIDEO_HEVC = 0x24,
+
+  // Audio
   AUDIO_LPCM = 0x80,
   AUDIO_AC3 = 0x81,
   AUDIO_DTS = 0x82,
@@ -60,14 +65,13 @@ enum class ENCODING_TYPE : uint8_t
   AUDIO_AC3PLUS = 0x84,
   AUDIO_DTSHD = 0x85,
   AUDIO_DTSHD_MASTER = 0x86,
-  VIDEO_VC1 = 0xea,
-  VIDEO_H264 = 0x1b,
-  VIDEO_HEVC = 0x24,
+  AUDIO_AC3PLUS_SECONDARY = 0xa1,
+  AUDIO_DTSHD_SECONDARY = 0xa2,
+
+  // Other
   SUB_PG = 0x90,
   SUB_IG = 0x91,
   SUB_TEXT = 0x92,
-  AUDIO_AC3PLUS_SECONDARY = 0xa1,
-  AUDIO_DTSHD_SECONDARY = 0xa2
 };
 
 enum class ASPECT_RATIO : uint8_t
@@ -76,28 +80,30 @@ enum class ASPECT_RATIO : uint8_t
   RATIO_16_9 = 3
 };
 
-struct DiscStreamInfo
-{
-  bool operator==(const DiscStreamInfo&) const = default;
-
-  ENCODING_TYPE coding{0};
-  unsigned int format{0};
-  unsigned int rate{0};
-  ASPECT_RATIO aspect{0};
-  std::string lang;
-};
-
-struct PlaylistInfo
+struct PlaylistInformation
 {
   unsigned int playlist{0};
   std::chrono::milliseconds duration{0ms};
   std::vector<unsigned int> clips;
   std::map<unsigned int, std::chrono::milliseconds> clipDuration;
   std::vector<std::chrono::milliseconds> chapters;
-  std::vector<DiscStreamInfo> videoStreams;
-  std::vector<DiscStreamInfo> audioStreams;
-  std::vector<DiscStreamInfo> pgStreams;
+  std::vector<VideoStreamInfo> videoStreams;
+  std::vector<AudioStreamInfo> audioStreams;
+  std::vector<SubtitleStreamInfo> pgStreams;
   std::string languages;
+
+  void clear()
+  {
+    playlist = 0;
+    duration = 0ms;
+    clips.clear();
+    clipDuration.clear();
+    chapters.clear();
+    videoStreams.clear();
+    audioStreams.clear();
+    pgStreams.clear();
+    languages.clear();
+  }
 };
 
 struct ClipInfo
@@ -106,7 +112,7 @@ struct ClipInfo
   std::vector<unsigned int> playlists;
 };
 
-using PlaylistMap = std::map<unsigned int, PlaylistInfo>;
+using PlaylistMap = std::map<unsigned int, PlaylistInformation>;
 using ClipMap = std::map<unsigned int, ClipInfo>;
 
 static constexpr std::chrono::milliseconds MIN_EPISODE_DURATION{10 * 60 * 1000}; // 10 minutes
@@ -199,13 +205,13 @@ public:
 
 private:
   void InitialisePlaylistSearch(int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc);
-  bool IsPotentialPlayAllPlaylist(const PlaylistInfo& playlistInformation) const;
+  bool IsPotentialPlayAllPlaylist(const PlaylistInformation& playlistInformation) const;
   static bool ClipQualifies(const ClipInfo& clipInformation,
                             unsigned int clip,
-                            const PlaylistInfo& playlistInformation,
+                            const PlaylistInformation& playlistInformation,
                             bool& allowBeginningOrEnd,
                             bool allowBeginningAndEnd);
-  bool IsValidSingleEpisodePlaylist(const PlaylistInfo& singleEpisodePlaylistInformation,
+  bool IsValidSingleEpisodePlaylist(const PlaylistInformation& singleEpisodePlaylistInformation,
                                     unsigned int clip) const;
   bool CheckClip(const PlaylistMap& playlists,
                  unsigned int playlistNumber,
@@ -216,11 +222,11 @@ private:
       const ClipMap& clips,
       const PlaylistMap& playlists,
       unsigned int playlistNumber,
-      const PlaylistInfo& playlistInformation,
+      const PlaylistInformation& playlistInformation,
       std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap) const;
   void StorePlayAllPlaylist(
       unsigned int playlistNumber,
-      const PlaylistInfo& playlistInformation,
+      const PlaylistInformation& playlistInformation,
       const std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap);
   void FindPlayAllPlaylists(const ClipMap& clips, const PlaylistMap& playlists);
   void FindGroups(const PlaylistMap& playlists);
