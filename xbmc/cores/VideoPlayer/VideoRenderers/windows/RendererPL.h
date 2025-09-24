@@ -68,9 +68,6 @@ protected:
                   uint32_t flags) override;
   CRenderBuffer* CreateBuffer() override;
 
-  //important to override we need to let libplacebo set the swapchain csp or we would get issues with HDR
-  void ProcessHDR(CRenderBuffer* rb) override;
-
 private:
   // Color space info
   pl_color_space m_colorSpace;

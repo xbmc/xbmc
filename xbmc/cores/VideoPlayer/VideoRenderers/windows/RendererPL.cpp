@@ -152,12 +152,10 @@ void CRendererPL::CheckVideoParameters()
   //Create the intermediate target so far we use what the backbuffer is
   //Would we use DXGI_FORMAT_R10G10B10A2_UNORM if IsHighPrecisionProcessingSettingEnabled is on with a 8 bits backbuffer?
   CreateIntermediateTarget(m_viewWidth, m_viewHeight, false);
+
   PL::PLInstance::Get()->fill_d3d_format(&m_plOutputFormat, m_IntermediateTarget.GetFormat());
-  //m_videoSettings.m_ToneMapMethod;
-  //m_videoSettings.m_ToneMapParam
-  //
+  
   m_plRenderParams = pl_render_default_params;
-  //m_videoSettings.m_ToneMapMethod
   PL::pl_tone_mapping method;
   switch (m_videoSettings.m_ToneMapMethod)
   {
@@ -176,6 +174,9 @@ void CRendererPL::CheckVideoParameters()
       break;
 
   }
+  //m_videoSettings.m_ToneMapParam
+  //This one was deprecated and should modify tone_constants
+  //it consist of 11 float settings 
   pl_color_map_params params = pl_color_map_high_quality_params;
   params = {
     //const struct pl_gamut_map_function *gamut_mapping;
@@ -198,6 +199,8 @@ void CRendererPL::CheckVideoParameters()
     //bool show_clipping;
   };
   m_plRenderParams.color_map_params = &params;
+
+  //To avoid spam on the debug log
   m_plRenderParams.border = PL_CLEAR_SKIP;
   
   
@@ -302,32 +305,6 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
   bool res = pl_render_image(PL::PLInstance::Get()->GetRenderer(), &frameIn, &frameOut, &m_plRenderParams);
 
   sourceRect = dst;
-}
-
-void CRendererPL::ProcessHDR(CRenderBuffer* rb)
-{
-  //todo fix this one sometimes it crash because we dont release texture correctly during the swap
-  if (m_AutoSwitchHDR && rb->primaries == AVCOL_PRI_BT2020 &&
-      (rb->color_transfer == AVCOL_TRC_SMPTE2084 || rb->color_transfer == AVCOL_TRC_ARIB_STD_B67) &&
-      !DX::Windowing()->IsHDROutput())
-  {
-    DX::Windowing()->ToggleHDR(); // Toggle display HDR ON
-  }
-
-  if (!DX::Windowing()->IsHDROutput())
-  {
-    if (m_HdrType != HDR_TYPE::HDR_NONE_SDR)
-    {
-      m_HdrType = HDR_TYPE::HDR_NONE_SDR;
-      m_lastHdr10 = {};
-    }
-    return;
-  }
-
-  CRenderBufferImpl* rbpl = static_cast<CRenderBufferImpl*>(rb);
-
-  if (rbpl->HasHdrData() && m_bTargetColorspaceHint)
-    pl_swapchain_colorspace_hint(PL::PLInstance::Get()->GetSwapchain(), &rbpl->plColorSpace);
 }
 
 bool CRendererPL::Supports(ERENDERFEATURE feature) const
