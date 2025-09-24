@@ -476,19 +476,41 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
 
   // don't re-open mpegts streams with hevc encoding as the params are not correctly detected again
   if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !url.IsProtocol("tcp") && !fileinfo &&
-      !isBluray && m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
-      m_pFormatContext->streams[0]->codecpar->codec_id != AV_CODEC_ID_HEVC)
+      !isBluray && m_pFormatContext->nb_streams > 0)
   {
-    av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
-    m_checkTransportStream = true;
-    skipCreateStreams = true;
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+    {
+      if (m_pFormatContext->streams[i])
+      {
+        if (m_pFormatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO &&
+            m_pFormatContext->streams[i]->codecpar->codec_id != AV_CODEC_ID_HEVC)
+        {
+          av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
+          m_checkTransportStream = true;
+          skipCreateStreams = true;
+          break;
+        }
+      }
+    }
   }
-  else if (!iformat || ((strcmp(iformat->name, "mpegts") != 0) ||
-                        ((strcmp(iformat->name, "mpegts") == 0) &&
-                         m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
-                         m_pFormatContext->streams[0]->codecpar->codec_id == AV_CODEC_ID_HEVC)))
+  else if (!iformat || (strcmp(iformat->name, "mpegts") != 0))
   {
     m_streaminfo = true;
+  }
+  else if ((strcmp(iformat->name, "mpegts") == 0) && m_pFormatContext->nb_streams > 0)
+  {
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+    {
+      if (m_pFormatContext->streams[i])
+      {
+        if (m_pFormatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO &&
+            m_pFormatContext->streams[i]->codecpar->codec_id == AV_CODEC_ID_HEVC)
+        {
+          m_streaminfo = true;
+          break;
+        }
+      }
+    }
   }
 
   // we need to know if this is matroska, avi or sup later
@@ -521,7 +543,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
         return false;
       }
     }
-    CLog::Log(LOGDEBUG, "{} - av_find_stream_info finished", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "{} - avformat_find_stream_info finished", __FUNCTION__);
 
     // print some extra information
     av_dump_format(m_pFormatContext, 0, CURL::GetRedacted(strFile).c_str(), 0);
