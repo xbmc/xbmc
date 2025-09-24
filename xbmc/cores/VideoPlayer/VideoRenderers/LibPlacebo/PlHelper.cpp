@@ -95,10 +95,6 @@ bool PL::PLInstance::Init()
 }
 void PL::PLInstance::Reset()
 {
-  m_plSwapchain = nullptr;
-  m_plLog = nullptr;
-  m_plD3d11 = nullptr;
-  m_plRenderer = nullptr;
   if (m_isInitialized)
   {
     pl_renderer_destroy(&m_plRenderer);
