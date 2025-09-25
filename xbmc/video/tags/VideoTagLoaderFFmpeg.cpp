@@ -19,13 +19,16 @@
 
 using namespace XFILE;
 
-static int vfs_file_read(void *h, uint8_t* buf, int size)
+namespace
+{
+
+int vfs_file_read(void* h, uint8_t* buf, int size)
 {
   CFile* pFile = static_cast<CFile*>(h);
   return pFile->Read(buf, size);
 }
 
-static int64_t vfs_file_seek(void *h, int64_t pos, int whence)
+int64_t vfs_file_seek(void* h, int64_t pos, int whence)
 {
   CFile* pFile = static_cast<CFile*>(h);
   if (whence == AVSEEK_SIZE)
@@ -33,6 +36,19 @@ static int64_t vfs_file_seek(void *h, int64_t pos, int whence)
   else
     return pFile->Seek(pos, whence & ~AVSEEK_FORCE);
 }
+
+std::string filenameToType(std::string_view filename)
+{
+  if (filename == "fanart.png" || filename == "fanart.jpg")
+    return "fanart";
+  else if (filename == "cover.png" || filename == "cover.jpg")
+    return "poster";
+  else if (filename == "small_cover.png" || filename == "small_cover.jpg")
+    return "thumb";
+  return {};
+}
+
+} // Unnamed namespace
 
 CVideoTagLoaderFFmpeg::CVideoTagLoaderFFmpeg(const CFileItem& item,
                                              const ADDON::ScraperPtr& info,
@@ -93,8 +109,8 @@ bool CVideoTagLoaderFFmpeg::HasInfo() const
 
   for (size_t i = 0; i < m_fctx->nb_streams; ++i)
   {
-    AVDictionaryEntry* avtag;
-    avtag = av_dict_get(m_fctx->streams[i]->metadata, "filename", nullptr, AV_DICT_IGNORE_SUFFIX);
+    const AVDictionaryEntry* avtag =
+        av_dict_get(m_fctx->streams[i]->metadata, "filename", nullptr, AV_DICT_IGNORE_SUFFIX);
     if (avtag && strcmp(avtag->value,"kodi-metadata") == 0)
     {
       m_metadata_stream = i;
@@ -108,18 +124,15 @@ bool CVideoTagLoaderFFmpeg::HasInfo() const
     }
   }
 
-  AVDictionaryEntry* avtag = nullptr;
   if (m_item.IsType(".mkv"))
   {
-    avtag = av_dict_get(m_fctx->metadata, "IMDBURL", nullptr, AV_DICT_IGNORE_SUFFIX);
-    if (!avtag)
-      avtag = av_dict_get(m_fctx->metadata, "TMDBURL", nullptr, AV_DICT_IGNORE_SUFFIX);
-    if (!avtag)
-      avtag = av_dict_get(m_fctx->metadata, "TITLE", nullptr, AV_DICT_IGNORE_SUFFIX);
+    return av_dict_get(m_fctx->metadata, "IMDBURL", nullptr, AV_DICT_IGNORE_SUFFIX) ||
+           av_dict_get(m_fctx->metadata, "TMDBURL", nullptr, AV_DICT_IGNORE_SUFFIX) ||
+           av_dict_get(m_fctx->metadata, "TITLE", nullptr, AV_DICT_IGNORE_SUFFIX);
   } else if (m_item.IsType(".mp4") || m_item.IsType(".avi"))
-    avtag = av_dict_get(m_fctx->metadata, "title", nullptr, AV_DICT_IGNORE_SUFFIX);
-
-  return avtag != nullptr;
+    return av_dict_get(m_fctx->metadata, "title", nullptr, AV_DICT_IGNORE_SUFFIX);
+  else
+    return false;
 }
 
 CInfoScanner::InfoType CVideoTagLoaderFFmpeg::Load(CVideoInfoTag& tag,
@@ -142,30 +155,27 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
   // embedded art
   for (size_t i = 0; i < m_fctx->nb_streams; ++i)
   {
-    if ((m_fctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) == 0)
+    const auto& stream = m_fctx->streams[i];
+    if ((stream->disposition & AV_DISPOSITION_ATTACHED_PIC) == 0)
       continue;
-    AVDictionaryEntry* avtag;
-    avtag = av_dict_get(m_fctx->streams[i]->metadata, "filename", nullptr, AV_DICT_IGNORE_SUFFIX);
-    std::string value;
-    if (avtag)
-      value =  avtag->value;
-    avtag = av_dict_get(m_fctx->streams[i]->metadata, "mimetype", nullptr, AV_DICT_IGNORE_SUFFIX);
-    if (!value.empty() && avtag)
+
+    const AVDictionaryEntry* filenameTag =
+        av_dict_get(stream->metadata, "filename", nullptr, AV_DICT_IGNORE_SUFFIX);
+    const AVDictionaryEntry* mimeTag =
+        av_dict_get(stream->metadata, "mimetype", nullptr, AV_DICT_IGNORE_SUFFIX);
+
+    if (filenameTag && strcmp(filenameTag->value, "") != 0 && mimeTag)
     {
-      std::string type;
-      if (value == "fanart.png" || value == "fanart.jpg")
-        type = "fanart";
-      else if (value == "cover.png" || value == "cover.jpg")
-        type = "poster";
-      else if (value == "small_cover.png" || value == "small_cover.jpg")
-        type = "thumb";
+      const std::string type = filenameToType(filenameTag->value);
+
       if (type.empty())
         continue;
-      size_t size = m_fctx->streams[i]->attached_pic.size;
+
+      const size_t size = stream->attached_pic.size;
       if (art)
-        art->emplace_back(m_fctx->streams[i]->attached_pic.data, size, avtag->value, type);
+        art->emplace_back(stream->attached_pic.data, size, mimeTag->value, type);
       else
-        tag.m_coverArt.emplace_back(size, avtag->value, type);
+        tag.m_coverArt.emplace_back(size, mimeTag->value, type);
     }
   }
 
@@ -254,7 +264,7 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
     if ((m_fctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) == 0)
       continue;
 
-    size_t size = m_fctx->streams[i]->attached_pic.size;
+    const size_t size = m_fctx->streams[i]->attached_pic.size;
     const std::string type = "poster";
     if (art)
       art->emplace_back(m_fctx->streams[i]->attached_pic.data, size, "image/png", type);

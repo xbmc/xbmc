@@ -30,12 +30,15 @@ namespace
 bool GetEmbeddedThumb(const std::string& path, const std::string& type, EmbeddedArt& art)
 {
   CFileItem item(path, false);
-  std::unique_ptr<IVideoInfoTagLoader> loader(
-      CVideoInfoTagLoaderFactory::CreateLoader(item, ADDON::ScraperPtr(), false));
-  CVideoInfoTag tag;
   std::vector<EmbeddedArt> artv;
-  if (loader)
+
+  if (const std::unique_ptr<IVideoInfoTagLoader> loader{
+          CVideoInfoTagLoaderFactory::CreateLoader(item, ADDON::ScraperPtr(), false)};
+      loader)
+  {
+    CVideoInfoTag tag;
     loader->Load(tag, false, &artv);
+  }
 
   for (const auto& it : artv)
   {
