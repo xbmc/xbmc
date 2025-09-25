@@ -161,7 +161,19 @@ public:
    */
   static int GetBlurayPlaylistFromPath(const std::string& path);
 
+  /*! \brief Resolve two paths to their disc base (if needed) and compare for equality.
+   \param path1 first path to resolve and compare
+   \param path2 second path to resolve and compare
+   \return the playlist number
+   */
+  static bool CompareDiscPaths(const std::string& path1, const std::string& path2);
+
   /*! \brief Get the regex for matching trailing part numbers.
+   \return the regex
+   */
+  static std::string GetTitleTrailingPartNumberRegex();
+
+  /*! \brief Get the regex for matching trailing part numbers including leading path separator.
    \return the regex
    */
   static std::string GetTrailingPartNumberRegex();

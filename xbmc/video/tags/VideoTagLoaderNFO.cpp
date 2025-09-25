@@ -90,11 +90,22 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
       type = "malformed";
   }
   if (result != CInfoScanner::InfoType::NONE)
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching {} NFO file: {}", type,
-              CURL::GetRedacted(m_path));
+  {
+    if (m_item.HasProperty("nfo_index"))
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found additional version ({}) in {} NFO file: {}",
+                m_item.GetProperty("nfo_index").asInteger32(), type, CURL::GetRedacted(m_path));
+    else
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching {} NFO file: {}", type,
+                CURL::GetRedacted(m_path));
+  }
   else
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: No NFO file found. Using title search for '{}'",
-              CURL::GetRedacted(m_item.GetPath()));
+  {
+    if (m_item.HasProperty("nfo_index"))
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: No additional versions found in NFO file.");
+    else
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: No NFO file found. Using title search for '{}'",
+                CURL::GetRedacted(m_item.GetPath()));
+  }
 
   return result;
 }

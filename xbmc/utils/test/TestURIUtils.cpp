@@ -927,6 +927,21 @@ TEST_F(TestURIUtils, GetBlurayPlaylistFromPath)
             800);
 }
 
+TEST_F(TestURIUtils, RemovePartNumberFromTitle)
+{
+  const std::string r{URIUtils::GetTitleTrailingPartNumberRegex()};
+  CRegExp regex{true, CRegExp::autoUtf8, r.c_str()};
+
+  std::string title{"Movie (Disc 1)"};
+  EXPECT_EQ(regex.RegFind(title), 5);
+
+  title = "Movie-(Disk 100)";
+  EXPECT_EQ(regex.RegFind(title), 5);
+
+  title = "Movie";
+  EXPECT_EQ(regex.RegFind(title), -1);
+}
+
 struct TestIsHostOnLANData
 {
   const static bool DONT_TEST_LOCAL_NETWORK = false;
