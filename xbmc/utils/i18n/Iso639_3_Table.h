@@ -6,65 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/i18n/TableISO639_3.h"
-
 #include "utils/i18n/TableISO639.h"
 
 #include <algorithm>
 #include <array>
 #include <string_view>
 
+namespace KODI::UTILS::I18N
+{
 // ISO 639-3 table
 // Source: www.iso639-3.sil.org
 
 // 7016 Individual/Living languages, 62 Macro/Living languages 4 Special/Special languages
 inline static constexpr int ISO639_3_COUNT = 7082;
-
-// declared as extern to allow forward declaration
-extern const std::array<struct LCENTRY, ISO639_3_COUNT> TableISO639_3;
-
-std::optional<std::string> CTableISO639_3::LookupByCode(std::string_view code)
-{
-  const uint32_t longCode = StringToLongCode(code);
-  return LookupByCode(longCode);
-}
-
-std::optional<std::string> CTableISO639_3::LookupByCode(uint32_t longCode)
-{
-  auto it = std::ranges::lower_bound(TableISO639_3, longCode, {}, &LCENTRY::code);
-  if (it != TableISO639_3.end() && longCode == it->code)
-  {
-    return std::string{it->name};
-  }
-  return std::nullopt;
-}
-
-namespace
-{
-std::array<struct LCENTRY, ISO639_3_COUNT> PrepareTableByName()
-{
-  std::array<struct LCENTRY, ISO639_3_COUNT> TableByName{TableISO639_3};
-  std::ranges::sort(
-      TableByName, [](std::string_view a, std::string_view b)
-      { return StringUtils::CompareNoCase(a, b, 0) < 0; }, &LCENTRY::name);
-  return TableByName;
-}
-} // namespace
-
-std::optional<std::string> CTableISO639_3::LookupByName(std::string_view name)
-{
-  // Cannot prepare the array sorted by name as constexpr, the compiler complains about excessive
-  // constexpr complexity due to the number of elements.
-  static const std::array<struct LCENTRY, ISO639_3_COUNT> TableISO639_3ByName =
-      PrepareTableByName();
-
-  auto it = std::ranges::lower_bound(TableISO639_3ByName, name, {}, &LCENTRY::name);
-  if (it != TableISO639_3ByName.end() && name == it->name)
-  {
-    return LongCodeToString(it->code);
-  }
-  return std::nullopt;
-}
 
 // clang-format off
 inline constexpr std::array<struct LCENTRY, ISO639_3_COUNT> TableISO639_3 = {{
@@ -7157,3 +7111,10 @@ inline constexpr std::array<struct LCENTRY, ISO639_3_COUNT> TableISO639_3 = {{
 // clang-format on
 
 static_assert(std::ranges::is_sorted(TableISO639_3, {}, &LCENTRY::code));
+
+// Cannot prepare the array sorted by name as constexpr, the compiler complains about excessive
+// constexpr complexity. That's due to the number of elements, the approach works for smaller arrays.
+// Prepare in two steps, allocate at compile time, sort at run time.
+constinit std::array<struct LCENTRY, ISO639_3_COUNT> TableISO639_3ByName{TableISO639_3};
+
+} // namespace KODI::UTILS::I18N

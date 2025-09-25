@@ -13,13 +13,16 @@
 #include <string>
 #include <string_view>
 
-class CTableISO639_3
+namespace KODI::UTILS::I18N
+{
+class CIso639_3
 {
 public:
-  CTableISO639_3() = delete;
+  CIso639_3() = delete;
 
   static std::optional<std::string> LookupByCode(std::string_view code);
   static std::optional<std::string> LookupByCode(uint32_t longCode);
 
   static std::optional<std::string> LookupByName(std::string_view name);
 };
+} // namespace KODI::UTILS::I18N
