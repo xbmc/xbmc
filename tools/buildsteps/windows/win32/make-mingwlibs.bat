@@ -7,5 +7,5 @@ IF ERRORLEVEL 1 (
   POPD
   EXIT /B 1
 )
-CALL make-mingwlibs.bat %*
+CALL make-mingwlibs.bat build32 %*
 POPD
