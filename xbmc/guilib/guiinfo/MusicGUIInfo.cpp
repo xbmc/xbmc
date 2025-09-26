@@ -21,6 +21,7 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoUtils.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicInfoLoader.h"
 #include "music/MusicThumbLoader.h"
@@ -352,10 +353,12 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       }
       case LISTITEM_MUSICCHANNELS:
       {
-        int channels = tag->GetNoOfChannels();
-        if (channels > 0)
+        const auto formatted{
+            CGUIInfoUtils::FormatAudioChannels(info.GetData3(), tag->GetNoOfChannels())};
+
+        if (formatted.has_value())
         {
-          value = std::to_string(channels);
+          value = formatted.value();
           return true;
         }
         break;
@@ -480,10 +483,12 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     }
     case MUSICPLAYER_CHANNELS:
     {
-      int iChannels = m_audioInfo.channels;
-      if (iChannels > 0)
+      const auto formatted{
+          CGUIInfoUtils::FormatAudioChannels(info.GetData3(), m_audioInfo.channels)};
+
+      if (formatted.has_value())
       {
-        value = std::to_string(iChannels);
+        value = formatted.value();
         return true;
       }
       break;
