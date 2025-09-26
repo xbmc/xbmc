@@ -67,7 +67,9 @@ using namespace std::chrono_literals;
 CPeripheralCecAdapter::CPeripheralCecAdapter(CPeripherals& manager,
                                              const PeripheralScanResult& scanResult,
                                              CPeripheralBus* bus)
-  : CPeripheralHID(manager, scanResult, bus), CThread("CECAdapter"), m_cecAdapter(NULL)
+  : CPeripheralHID(manager, scanResult, bus),
+    CThread("CECAdapter"),
+    m_cecAdapter(NULL)
 {
   ResetMembers();
   m_features.push_back(FEATURE_CEC);
@@ -1525,7 +1527,9 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
 
 CPeripheralCecAdapterUpdateThread::CPeripheralCecAdapterUpdateThread(
     CPeripheralCecAdapter* adapter, libcec_configuration* configuration)
-  : CThread("CECAdapterUpdate"), m_adapter(adapter), m_configuration(*configuration)
+  : CThread("CECAdapterUpdate"),
+    m_adapter(adapter),
+    m_configuration(*configuration)
 {
   m_nextConfiguration.Clear();
   m_event.Reset();
