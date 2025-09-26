@@ -17,9 +17,11 @@ set(HEADERS AppParamParserLinux.h
 
 if(TARGET_WEBOS)
   list(APPEND SOURCES AppParamParserWebOS.cpp
-                      PlatformWebOS.cpp)
+                      PlatformWebOS.cpp
+                      WebOSTVPlatformConfig.cpp)
   list(APPEND HEADERS AppParamParserWebOS.h
-                      PlatformWebOS.h)
+                      PlatformWebOS.h
+                      WebOSTVPlatformConfig.h)
 endif()
 
 if(TARGET ${APP_NAME_LC}::Alsa)

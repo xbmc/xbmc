@@ -22,7 +22,10 @@ CRendererStarfish::CRendererStarfish()
   CLog::LogF(LOGINFO, "Instanced");
 }
 
-CRendererStarfish::~CRendererStarfish() = default;
+CRendererStarfish::~CRendererStarfish()
+{
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(false);
+}
 
 CBaseRenderer* CRendererStarfish::Create(CVideoBuffer* buffer)
 {
@@ -54,6 +57,13 @@ bool CRendererStarfish::Configure(const VideoPicture& picture,
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(m_videoSettings.m_ViewMode);
   ManageRenderArea();
+
+  if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+      picture.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+  {
+    if (CServiceBroker::GetWinSystem()->IsHDRDisplay())
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(true);
+  }
 
   m_configured = true;
 
