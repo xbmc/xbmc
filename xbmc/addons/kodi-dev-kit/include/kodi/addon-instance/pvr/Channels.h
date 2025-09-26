@@ -228,7 +228,8 @@ public:
   /*! \cond PRIVATE */
   PVRChannelsResultSet() = delete;
   PVRChannelsResultSet(const AddonInstance_PVR* instance, PVR_HANDLE handle)
-    : m_instance(instance), m_handle(handle)
+    : m_instance(instance),
+      m_handle(handle)
   {
   }
   /*! \endcond */
