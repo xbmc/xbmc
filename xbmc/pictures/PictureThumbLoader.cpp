@@ -165,16 +165,11 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       // create the folder thumb by choosing 4 random thumbs within the folder and putting
       // them into one thumb.
       // count the number of images
-      for (int i=0; i < items.Size();)
-      {
-        if (!items[i]->IsPicture() || items[i]->IsZIP() || items[i]->IsRAR() ||
-            PLAYLIST::IsPlayList(*items[i]))
-        {
-          items.Remove(i);
-        }
-        else
-          i++;
-      }
+      items.erase_if(
+          [](const CFileItemPtr& item) {
+            return !item->IsPicture() || item->IsZIP() || item->IsRAR() ||
+                   PLAYLIST::IsPlayList(*item);
+          });
 
       if (items.IsEmpty())
       {

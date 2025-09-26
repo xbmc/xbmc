@@ -410,12 +410,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
   // some evil stuff don't work with the '/' mask, e.g. shoutcast directory - make sure no files are in there
   if (m_browsingForFolders)
   {
-    for (int i=0;i<m_vecItems->Size();++i)
-      if (!(*m_vecItems)[i]->IsFolder())
-      {
-        m_vecItems->Remove(i);
-        i--;
-      }
+    m_vecItems->erase_if([](const CFileItemPtr& item) { return !item->IsFolder(); });
   }
 
   // No need to set thumbs
