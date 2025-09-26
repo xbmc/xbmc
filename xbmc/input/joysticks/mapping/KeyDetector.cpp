@@ -14,7 +14,8 @@ using namespace KODI;
 using namespace JOYSTICK;
 
 CKeyDetector::CKeyDetector(CButtonMapping* buttonMapping, XBMCKey keycode)
-  : CPrimitiveDetector(buttonMapping), m_keycode(keycode)
+  : CPrimitiveDetector(buttonMapping),
+    m_keycode(keycode)
 {
 }
 
