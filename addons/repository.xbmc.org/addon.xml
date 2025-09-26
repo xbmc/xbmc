@@ -200,6 +200,6 @@
 		<disclaimer lang="uk_UA">Не всі додатки в цьому репозиторії були створені командою Kodi, і тому ми не несемо відповідальності за їх вміст</disclaimer>
 		<disclaimer lang="vi_VN">Đội ngũ Kodi không làm ra tất cả các add-on có trên kho chứa này và sẽ không chịu trách nhiệm về nội dung của các add-on đấy</disclaimer>
 		<disclaimer lang="zh_CN">此插件库中插件并不完全由 Kodi 团队制作，对相关内容不承担责任</disclaimer>
-		<disclaimer lang="zh_TW">這個附加元件庫的附加元件並非全部由 Kodi 團隊製作的，所以我們不對這些內容負責。</disclaimer>
+		<disclaimer lang="zh_TW">這個附加元件庫的內容並非全部由 Kodi 團隊製作，所以我們不對這些內容負責</disclaimer>
 	</extension>
 </addon>
