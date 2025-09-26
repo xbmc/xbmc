@@ -1356,6 +1356,56 @@
     ],
     "returns": "string"
   },
+  "Playlist.SetRepeat": {
+    "type": "method",
+    "description": "Set the repeat mode of the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      {
+        "name": "playlistid",
+        "$ref": "Playlist.Id",
+        "required": true
+      },
+      {
+        "name": "repeat",
+        "type": [
+          {
+            "$ref": "Player.Repeat",
+            "required": true
+          },
+          {
+            "type": "string",
+            "enum": [
+              "cycle"
+            ],
+            "required": true
+          }
+        ],
+        "required": true
+      }
+    ],
+    "returns": "string"
+  },
+  "Playlist.SetShuffle": {
+    "type": "method",
+    "description": "Shuffle/Unshuffle items in the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      {
+        "name": "playlistid",
+        "$ref": "Playlist.Id",
+        "required": true
+      },
+      {
+        "name": "shuffle",
+        "$ref": "Global.Toggle",
+        "required": true
+      }
+    ],
+    "returns": "string"
+  },
   "Playlist.Swap": {
     "type": "method",
     "description":
