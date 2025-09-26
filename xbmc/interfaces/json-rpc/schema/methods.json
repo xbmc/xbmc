@@ -6959,5 +6959,19 @@
         }
       }
     }
+  },
+  "Database.GetDatabaseName": {
+    "type": "method",
+    "description": "Get the full database name currently in-use by its type",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "type",
+        "$ref": "Database.Type",
+        "required": true
+      }
+    ],
+    "returns": "string"
   }
 }
