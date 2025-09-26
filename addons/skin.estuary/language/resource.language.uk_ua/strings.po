@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-09-23 04:33+0000\n"
+"PO-Revision-Date: 2025-09-26 00:44+0000\n"
 "Last-Translator: Pavlo Marianov <acid@jack.kyiv.ua>\n"
 "Language-Team: Ukrainian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/uk_ua/>\n"
 "Language: uk_ua\n"
@@ -126,7 +126,7 @@ msgstr "Сорт. за"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr "Вигляд"
+msgstr "Подання"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
@@ -291,7 +291,7 @@ msgstr "від"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "Налаштування живлення"
+msgstr "Параметри живлення"
 
 msgctxt "#31073"
 msgid "Total length"
@@ -361,22 +361,22 @@ msgstr "Виберіть профіль користувача Kodi,[CR]щоб �
 #. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
-msgstr "Піктограми"
+msgstr "піктограми"
 
 #. viewtype name
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Зміщення"
+msgstr "зміщення"
 
 #. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "Стіна з відомостями"
+msgstr "стіна з відомостями"
 
 #. viewtype name
 msgctxt "#31102"
 msgid "Wall"
-msgstr "Стіна"
+msgstr "стіна"
 
 msgctxt "#31103"
 msgid "Enter text here..."
@@ -397,12 +397,12 @@ msgstr "Телетекст"
 #. viewtype name
 msgctxt "#31107"
 msgid "WideList"
-msgstr "Широкий список"
+msgstr "широкий список"
 
 #. viewtype name
 msgctxt "#31108"
 msgid "MediaList"
-msgstr "Список медіафайлів"
+msgstr "список медіафайлів"
 
 # empty strings from id 31108 to 31108
 msgctxt "#31109"
