@@ -45,6 +45,7 @@ public:
   virtual bool SetActive(bool active) { return false; }
   virtual bool InitDrm();
   virtual void DestroyDrm();
+  virtual bool SupportsFencing() { return false; }
 
   int GetFileDescriptor() const { return m_fd; }
   int GetRenderNodeFileDescriptor() const { return m_renderFd; }
