@@ -18,7 +18,8 @@ using namespace KODI;
 using namespace GAME;
 
 CAgentKeyboard::CAgentKeyboard(PERIPHERALS::PeripheralPtr peripheral)
-  : m_peripheral(std::move(peripheral)), m_keyboardActivity(std::make_unique<CControllerActivity>())
+  : m_peripheral(std::move(peripheral)),
+    m_keyboardActivity(std::make_unique<CControllerActivity>())
 {
 }
 

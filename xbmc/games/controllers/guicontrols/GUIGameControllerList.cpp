@@ -47,7 +47,8 @@ CGUIGameControllerList::CGUIGameControllerList(int parentID,
 }
 
 CGUIGameControllerList::CGUIGameControllerList(const CGUIGameControllerList& other)
-  : CGUIListContainer(other), m_alignment(other.m_alignment)
+  : CGUIListContainer(other),
+    m_alignment(other.m_alignment)
 {
   // Initialize CGUIControl
   ControlType = GUICONTROL_GAMECONTROLLERLIST;

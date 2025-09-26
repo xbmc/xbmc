@@ -33,7 +33,9 @@ using namespace KODI;
 using namespace GAME;
 
 CGameClientController::CGameClientController(CGameClientInput& input, ControllerPtr controller)
-  : m_input(input), m_controller(std::move(controller)), m_controllerId(m_controller->ID())
+  : m_input(input),
+    m_controller(std::move(controller)),
+    m_controllerId(m_controller->ID())
 {
   // Generate arrays of features
   for (const CPhysicalFeature& feature : m_controller->Features())

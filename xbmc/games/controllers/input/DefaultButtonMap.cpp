@@ -20,7 +20,8 @@ using namespace KODI;
 using namespace GAME;
 
 CDefaultButtonMap::CDefaultButtonMap(PERIPHERALS::CPeripheral* device, std::string strControllerId)
-  : m_device(device), m_strControllerId(std::move(strControllerId))
+  : m_device(device),
+    m_strControllerId(std::move(strControllerId))
 {
 }
 

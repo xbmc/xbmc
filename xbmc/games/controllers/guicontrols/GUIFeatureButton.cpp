@@ -24,7 +24,9 @@ CGUIFeatureButton::CGUIFeatureButton(const CGUIButtonControl& buttonTemplate,
                                      IConfigurationWizard* wizard,
                                      const CPhysicalFeature& feature,
                                      unsigned int index)
-  : CGUIButtonControl(buttonTemplate), m_feature(feature), m_wizard(wizard)
+  : CGUIButtonControl(buttonTemplate),
+    m_feature(feature),
+    m_wizard(wizard)
 {
   // Initialize CGUIButtonControl
   SetLabel(m_feature.Label());
