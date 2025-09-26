@@ -24,7 +24,9 @@ class CRPProcessInfo;
 struct AudioStreamProperties : public StreamProperties
 {
   AudioStreamProperties(PCMFormat format, double sampleRate, AudioChannelMap channelMap)
-    : format(format), sampleRate(sampleRate), channelMap(channelMap)
+    : format(format),
+      sampleRate(sampleRate),
+      channelMap(channelMap)
   {
   }
 

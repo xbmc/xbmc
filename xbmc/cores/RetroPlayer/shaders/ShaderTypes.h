@@ -97,7 +97,8 @@ struct float2
   float2() : x(0.0f), y(0.0f) {}
 
   template<typename T>
-  float2(T x_, T y_) : x(static_cast<float>(x_)), y(static_cast<float>(y_))
+  float2(T x_, T y_) : x(static_cast<float>(x_)),
+                       y(static_cast<float>(y_))
   {
     static_assert(std::is_arithmetic_v<T>, "Not an arithmetic type");
   }
