@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Install Build Wrapper
-        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v5
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v6
       - name: Install dependencies
         # See docs/README.Ubuntu.md
         run: |
@@ -32,7 +32,7 @@ jobs:
           mkdir build
           cmake -S . -B build -D APP_RENDER_SYSTEM=gl -D ENABLE_INTERNAL_FFMPEG=ON -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
