@@ -53,6 +53,13 @@
   return self;
 }
 
+- (void)setGUIRenderingForPerformance:(BOOL)enabled
+{
+  const std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->SetRenderGUI(enabled);
+}
+
 - (void)windowDidResize:(NSNotification*)aNotification
 {
   if ((self.window.styleMask & NSWindowStyleMaskFullScreen) != NSWindowStyleMaskFullScreen)
@@ -80,36 +87,34 @@
 
 - (void)windowWillStartLiveResize:(NSNotification*)notification
 {
-  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
-  if (appPort)
-  {
-    appPort->SetRenderGUI(false);
-  }
+  [self setGUIRenderingForPerformance:NO];
 }
 
 - (void)windowDidEndLiveResize:(NSNotification*)notification
 {
-  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
-  if (appPort)
-  {
-    appPort->SetRenderGUI(true);
-  }
+  [self setGUIRenderingForPerformance:YES];
 }
 
 - (void)windowDidMiniaturize:(NSNotification*)aNotification
 {
   g_application.m_AppFocused = false;
+
+  [self setGUIRenderingForPerformance:NO];
 }
 
 - (void)windowDidDeminiaturize:(NSNotification*)aNotification
 {
   g_application.m_AppFocused = true;
+
+  [self setGUIRenderingForPerformance:YES];
 }
 
 - (void)windowDidBecomeKey:(NSNotification*)aNotification
 {
   g_application.m_AppFocused = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "WindowFocused");
+
+  [self setGUIRenderingForPerformance:YES];
 
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)
@@ -122,6 +127,8 @@
 {
   g_application.m_AppFocused = false;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "WindowUnfocused");
+
+  [self setGUIRenderingForPerformance:NO];
 
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)
@@ -141,6 +148,8 @@
 - (void)windowDidExpose:(NSNotification*)aNotification
 {
   g_application.m_AppFocused = true;
+
+  [self setGUIRenderingForPerformance:YES];
 }
 
 - (void)windowDidMove:(NSNotification*)aNotification
