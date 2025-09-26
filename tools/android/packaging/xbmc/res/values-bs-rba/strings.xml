@@ -15,4 +15,5 @@
     <string name="permission_denied">Dozvola odbijena!! Izlazi se…</string>
     <string name="no_find_apk">Nije moguće pronaći paket.</string>
     <string name="no_read_apk">Nije moguće pročitati paket.</string>
+    <string name="record_audio_dialog">%1$s traži dozvolu za snimanje zvuka. Ovo se koristi samo za glasovno pretraživanje. Molimo vas da ovo dozvolite ili odbijete u sljedećem dijaloškom okviru.</string>
 </resources>
