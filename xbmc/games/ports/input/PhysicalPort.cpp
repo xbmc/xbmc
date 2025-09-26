@@ -22,7 +22,8 @@ using namespace KODI;
 using namespace GAME;
 
 CPhysicalPort::CPhysicalPort(std::string portId, std::vector<std::string> accepts)
-  : m_portId(std::move(portId)), m_accepts(std::move(accepts))
+  : m_portId(std::move(portId)),
+    m_accepts(std::move(accepts))
 {
 }
 

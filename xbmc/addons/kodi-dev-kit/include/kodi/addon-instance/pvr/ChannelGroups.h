@@ -115,7 +115,8 @@ public:
   /*! \cond PRIVATE */
   PVRChannelGroupsResultSet() = delete;
   PVRChannelGroupsResultSet(const AddonInstance_PVR* instance, PVR_HANDLE handle)
-    : m_instance(instance), m_handle(handle)
+    : m_instance(instance),
+      m_handle(handle)
   {
   }
   /*! \endcond */
@@ -261,7 +262,8 @@ public:
   /*! \cond PRIVATE */
   PVRChannelGroupMembersResultSet() = delete;
   PVRChannelGroupMembersResultSet(const AddonInstance_PVR* instance, PVR_HANDLE handle)
-    : m_instance(instance), m_handle(handle)
+    : m_instance(instance),
+      m_handle(handle)
   {
   }
   /*! \endcond */

@@ -17,7 +17,8 @@ using namespace MOUSE;
 
 CMouseInputHandling::CMouseInputHandling(IMouseInputHandler* handler,
                                          JOYSTICK::IButtonMap* buttonMap)
-  : m_handler(handler), m_buttonMap(buttonMap)
+  : m_handler(handler),
+    m_buttonMap(buttonMap)
 {
 }
 

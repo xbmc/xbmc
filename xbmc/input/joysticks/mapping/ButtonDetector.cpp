@@ -14,7 +14,8 @@ using namespace KODI;
 using namespace JOYSTICK;
 
 CButtonDetector::CButtonDetector(CButtonMapping* buttonMapping, unsigned int buttonIndex)
-  : CPrimitiveDetector(buttonMapping), m_buttonIndex(buttonIndex)
+  : CPrimitiveDetector(buttonMapping),
+    m_buttonIndex(buttonIndex)
 {
 }
 

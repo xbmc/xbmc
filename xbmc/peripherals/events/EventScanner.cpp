@@ -24,7 +24,8 @@ using namespace PERIPHERALS;
 #define WATCHDOG_TIMEOUT_MS 80
 
 CEventScanner::CEventScanner(IEventScannerCallback& callback)
-  : CThread("PeripEventScan"), m_callback(callback)
+  : CThread("PeripEventScan"),
+    m_callback(callback)
 {
 }
 

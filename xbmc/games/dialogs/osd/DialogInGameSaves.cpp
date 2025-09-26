@@ -50,7 +50,8 @@ CFileItemPtr CreateNewSaveItem()
 } // namespace
 
 CDialogInGameSaves::CDialogInGameSaves()
-  : CDialogGameVideoSelect(WINDOW_DIALOG_IN_GAME_SAVES), m_newSaveItem(CreateNewSaveItem())
+  : CDialogGameVideoSelect(WINDOW_DIALOG_IN_GAME_SAVES),
+    m_newSaveItem(CreateNewSaveItem())
 {
 }
 

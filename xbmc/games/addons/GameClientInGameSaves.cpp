@@ -28,7 +28,8 @@ using namespace GAME;
 
 CGameClientInGameSaves::CGameClientInGameSaves(CGameClient* addon,
                                                const AddonInstance_Game* dllStruct)
-  : m_gameClient(addon), m_dllStruct(dllStruct)
+  : m_gameClient(addon),
+    m_dllStruct(dllStruct)
 {
   assert(m_gameClient != nullptr);
   assert(m_dllStruct != nullptr);

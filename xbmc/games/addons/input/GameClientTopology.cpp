@@ -39,7 +39,9 @@ bool ContainsOnlySeparator(const std::string& address,
 } // namespace
 
 CGameClientTopology::CGameClientTopology(GameClientPortVec ports, int playerLimit)
-  : m_ports(std::move(ports)), m_playerLimit(playerLimit), m_controllers(GetControllerTree(m_ports))
+  : m_ports(std::move(ports)),
+    m_playerLimit(playerLimit),
+    m_controllers(GetControllerTree(m_ports))
 {
 }
 

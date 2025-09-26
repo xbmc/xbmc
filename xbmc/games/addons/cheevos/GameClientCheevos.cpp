@@ -16,7 +16,8 @@ using namespace KODI;
 using namespace GAME;
 
 CGameClientCheevos::CGameClientCheevos(CGameClient& gameClient, AddonInstance_Game& addonStruct)
-  : m_gameClient(gameClient), m_struct(addonStruct)
+  : m_gameClient(gameClient),
+    m_struct(addonStruct)
 {
 }
 

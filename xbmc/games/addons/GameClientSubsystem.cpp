@@ -23,7 +23,9 @@ using namespace GAME;
 CGameClientSubsystem::CGameClientSubsystem(CGameClient& gameClient,
                                            AddonInstance_Game& addonStruct,
                                            CCriticalSection& clientAccess)
-  : m_gameClient(gameClient), m_struct(addonStruct), m_clientAccess(clientAccess)
+  : m_gameClient(gameClient),
+    m_struct(addonStruct),
+    m_clientAccess(clientAccess)
 {
 }
 

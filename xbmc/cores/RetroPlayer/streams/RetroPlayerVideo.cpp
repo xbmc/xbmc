@@ -17,7 +17,8 @@ using namespace KODI;
 using namespace RETRO;
 
 CRetroPlayerVideo::CRetroPlayerVideo(CRPRenderManager& renderManager, CRPProcessInfo& processInfo)
-  : m_renderManager(renderManager), m_processInfo(processInfo)
+  : m_renderManager(renderManager),
+    m_processInfo(processInfo)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Initializing video");
 

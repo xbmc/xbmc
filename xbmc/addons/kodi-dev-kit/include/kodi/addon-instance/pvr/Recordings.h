@@ -656,7 +656,8 @@ public:
   /*! \cond PRIVATE */
   PVRRecordingsResultSet() = delete;
   PVRRecordingsResultSet(const AddonInstance_PVR* instance, PVR_HANDLE handle)
-    : m_instance(instance), m_handle(handle)
+    : m_instance(instance),
+      m_handle(handle)
   {
   }
   /*! \endcond */

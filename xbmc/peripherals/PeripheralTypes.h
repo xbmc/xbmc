@@ -327,7 +327,8 @@ class PeripheralScanResult
 {
 public:
   explicit PeripheralScanResult(const PeripheralBusType busType)
-    : m_busType(busType), m_mappedBusType(busType)
+    : m_busType(busType),
+      m_mappedBusType(busType)
   {
   }
 

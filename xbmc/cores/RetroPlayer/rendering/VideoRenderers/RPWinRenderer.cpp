@@ -51,7 +51,9 @@ RenderBufferPoolVector CWinRendererFactory::CreateBufferPools(CRenderContext& co
 // --- CWinRenderBuffer --------------------------------------------------------
 
 CWinRenderBuffer::CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat)
-  : m_pixFormat(pixFormat), m_targetDxFormat(dxFormat), m_targetPixFormat(GetPixFormat())
+  : m_pixFormat(pixFormat),
+    m_targetDxFormat(dxFormat),
+    m_targetPixFormat(GetPixFormat())
 {
 }
 

@@ -24,7 +24,8 @@ using namespace KODI::SHADER;
 CShaderPreset::CShaderPreset(RETRO::CRenderContext& context,
                              unsigned videoWidth,
                              unsigned videoHeight)
-  : m_context(context), m_videoSize(videoWidth, videoHeight)
+  : m_context(context),
+    m_videoSize(videoWidth, videoHeight)
 {
 }
 

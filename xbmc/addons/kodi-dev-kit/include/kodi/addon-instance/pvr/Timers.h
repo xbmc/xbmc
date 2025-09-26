@@ -546,7 +546,8 @@ public:
   /*! \cond PRIVATE */
   PVRTimersResultSet() = delete;
   PVRTimersResultSet(const AddonInstance_PVR* instance, PVR_HANDLE handle)
-    : m_instance(instance), m_handle(handle)
+    : m_instance(instance),
+      m_handle(handle)
   {
   }
   /*! \endcond */

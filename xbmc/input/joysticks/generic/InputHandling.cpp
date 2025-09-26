@@ -25,7 +25,8 @@ using namespace JOYSTICK;
 CGUIDialogNewJoystick* const CInputHandling::m_dialog = new CGUIDialogNewJoystick;
 
 CInputHandling::CInputHandling(IInputHandler* handler, IButtonMap* buttonMap)
-  : m_handler(handler), m_buttonMap(buttonMap)
+  : m_handler(handler),
+    m_buttonMap(buttonMap)
 {
 }
 

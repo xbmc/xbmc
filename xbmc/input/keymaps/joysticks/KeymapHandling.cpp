@@ -25,7 +25,9 @@ using namespace KEYMAP;
 CKeymapHandling::CKeymapHandling(JOYSTICK::IInputProvider* inputProvider,
                                  bool pPromiscuous,
                                  const IKeymapEnvironment* environment)
-  : m_inputProvider(inputProvider), m_pPromiscuous(pPromiscuous), m_environment(environment)
+  : m_inputProvider(inputProvider),
+    m_pPromiscuous(pPromiscuous),
+    m_environment(environment)
 {
   LoadKeymaps();
   CServiceBroker::GetInputManager().RegisterObserver(this);

@@ -43,7 +43,8 @@ constexpr auto POST_MAPPING_WAIT_TIME_MS = 5000ms;
 } // namespace
 
 CGUIConfigurationWizard::CGUIConfigurationWizard()
-  : CThread("GUIConfigurationWizard"), m_actionMap(new KEYMAP::CKeyboardActionMap)
+  : CThread("GUIConfigurationWizard"),
+    m_actionMap(new KEYMAP::CKeyboardActionMap)
 {
   InitializeState();
 }

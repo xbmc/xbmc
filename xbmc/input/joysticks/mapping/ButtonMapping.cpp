@@ -37,7 +37,9 @@ constexpr unsigned int MAPPING_COOLDOWN_MS = 50;
 CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper,
                                IButtonMap* buttonMap,
                                KEYMAP::IKeymap* keymap)
-  : m_buttonMapper(buttonMapper), m_buttonMap(buttonMap), m_keymap(keymap)
+  : m_buttonMapper(buttonMapper),
+    m_buttonMap(buttonMap),
+    m_keymap(keymap)
 {
   assert(m_buttonMapper != nullptr);
   assert(m_buttonMap != nullptr);

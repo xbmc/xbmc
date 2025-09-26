@@ -208,12 +208,14 @@ public:
   CStructHdl() : m_cStructure(new C_STRUCT()), m_owner(true) {}
 
   CStructHdl(const CStructHdl& cppClass)
-    : m_cStructure(new C_STRUCT(*cppClass.m_cStructure)), m_owner(true)
+    : m_cStructure(new C_STRUCT(*cppClass.m_cStructure)),
+      m_owner(true)
   {
   }
 
   explicit CStructHdl(const C_STRUCT* cStructure)
-    : m_cStructure(new C_STRUCT(*cStructure)), m_owner(true)
+    : m_cStructure(new C_STRUCT(*cStructure)),
+      m_owner(true)
   {
   }
 
@@ -293,13 +295,15 @@ public:
   }
 
   DynamicCStructHdl(const DynamicCStructHdl& cppClass)
-    : m_cStructure(new C_STRUCT(*cppClass.m_cStructure)), m_owner(true)
+    : m_cStructure(new C_STRUCT(*cppClass.m_cStructure)),
+      m_owner(true)
   {
     CPP_CLASS::AllocResources(cppClass.m_cStructure, m_cStructure);
   }
 
   explicit DynamicCStructHdl(const C_STRUCT* cStructure)
-    : m_cStructure(new C_STRUCT(*cStructure)), m_owner(true)
+    : m_cStructure(new C_STRUCT(*cStructure)),
+      m_owner(true)
   {
     CPP_CLASS::AllocResources(cStructure, m_cStructure);
   }

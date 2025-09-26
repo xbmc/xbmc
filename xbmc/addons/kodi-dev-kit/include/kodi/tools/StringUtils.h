@@ -3026,15 +3026,9 @@ private:
     return 0;
   }
 
-  inline static char ToLowerAscii(char c)
-  {
-    return 'A' <= c && c <= 'Z' ? c - 'A' + 'a' : c;
-  }
+  inline static char ToLowerAscii(char c) { return 'A' <= c && c <= 'Z' ? c - 'A' + 'a' : c; }
 
-  inline static char ToUpperAscii(char c)
-  {
-    return 'a' <= c && c <= 'z' ? c - 'a' + 'A' : c;
-  }
+  inline static char ToUpperAscii(char c) { return 'a' <= c && c <= 'z' ? c - 'a' + 'A' : c; }
 
   inline static wchar_t tolowerUnicode(const wchar_t& c)
   {

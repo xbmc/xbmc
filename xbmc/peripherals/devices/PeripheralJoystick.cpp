@@ -39,7 +39,8 @@ using namespace PERIPHERALS;
 CPeripheralJoystick::CPeripheralJoystick(CPeripherals& manager,
                                          const PeripheralScanResult& scanResult,
                                          CPeripheralBus* bus)
-  : CPeripheral(manager, scanResult, bus), m_rumbleGenerator(new CRumbleGenerator)
+  : CPeripheral(manager, scanResult, bus),
+    m_rumbleGenerator(new CRumbleGenerator)
 {
   m_features.push_back(FEATURE_JOYSTICK);
   // FEATURE_RUMBLE conditionally added via SetMotorCount()

@@ -21,7 +21,8 @@ using namespace KODI;
 using namespace GAME;
 
 CPhysicalTopology::CPhysicalTopology(bool bProvidesInput, std::vector<CPhysicalPort> ports)
-  : m_bProvidesInput(bProvidesInput), m_ports(std::move(ports))
+  : m_bProvidesInput(bProvidesInput),
+    m_ports(std::move(ports))
 {
 }
 

@@ -38,7 +38,8 @@ CGameClientPort::CGameClientPort(const game_input_port& port)
 }
 
 CGameClientPort::CGameClientPort(const ControllerVector& controllers)
-  : m_type(PORT_TYPE::CONTROLLER), m_portId(DEFAULT_PORT_ID)
+  : m_type(PORT_TYPE::CONTROLLER),
+    m_portId(DEFAULT_PORT_ID)
 {
   for (const auto& controller : controllers)
     m_acceptedDevices.emplace_back(new CGameClientDevice(controller));

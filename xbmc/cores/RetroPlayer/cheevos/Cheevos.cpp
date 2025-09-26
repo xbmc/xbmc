@@ -89,7 +89,9 @@ constexpr auto extensionToConsole = make_map<std::string_view, RConsoleID>({
 CCheevos::CCheevos(GAME::CGameClient* gameClient,
                    const std::string& userName,
                    const std::string& loginToken)
-  : m_gameClient(gameClient), m_userName(userName), m_loginToken(loginToken)
+  : m_gameClient(gameClient),
+    m_userName(userName),
+    m_loginToken(loginToken)
 {
 }
 

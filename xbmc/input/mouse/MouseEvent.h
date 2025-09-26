@@ -21,7 +21,10 @@ class CMouseEvent
 {
 public:
   CMouseEvent(int actionID, int state = 0, float offsetX = 0, float offsetY = 0)
-    : m_id(actionID), m_state(state), m_offsetX(offsetX), m_offsetY(offsetY)
+    : m_id(actionID),
+      m_state(state),
+      m_offsetX(offsetX),
+      m_offsetY(offsetY)
   {
   }
 

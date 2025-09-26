@@ -251,7 +251,8 @@ public:
   ///                 as default
   /// @param[in] strName [optional] Name of related peripheral
   Peripheral(PERIPHERAL_TYPE type = PERIPHERAL_TYPE_UNKNOWN, const std::string& strName = "")
-    : m_type(type), m_strName(strName)
+    : m_type(type),
+      m_strName(strName)
   {
   }
 
@@ -838,7 +839,8 @@ protected:
    * @brief Construct a driver primitive of the specified type
    */
   DriverPrimitive(JOYSTICK_DRIVER_PRIMITIVE_TYPE type, unsigned int driverIndex)
-    : m_type(type), m_driverIndex(driverIndex)
+    : m_type(type),
+      m_driverIndex(driverIndex)
   {
   }
 
@@ -902,7 +904,8 @@ public:
   ///
   /// @param[in] keycode Keycode to use
   DriverPrimitive(std::string keycode)
-    : m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY), m_keycode(std::move(keycode))
+    : m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY),
+      m_keycode(std::move(keycode))
   {
   }
 
@@ -921,7 +924,8 @@ public:
   ///
   /// @param[in] direction With @ref JOYSTICK_DRIVER_RELPOINTER_DIRECTION defined direction
   DriverPrimitive(JOYSTICK_DRIVER_RELPOINTER_DIRECTION direction)
-    : m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_RELPOINTER_DIRECTION), m_relPointerDirection(direction)
+    : m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_RELPOINTER_DIRECTION),
+      m_relPointerDirection(direction)
   {
   }
 
@@ -1178,7 +1182,9 @@ public:
   ///                 as default
   JoystickFeature(const std::string& name = "",
                   JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN)
-    : m_name(name), m_type(type), m_primitives{}
+    : m_name(name),
+      m_type(type),
+      m_primitives{}
   {
   }
 
@@ -1272,7 +1278,8 @@ public:
   ///@}
 
   explicit JoystickFeature(const JOYSTICK_FEATURE& feature)
-    : m_name(feature.name ? feature.name : ""), m_type(feature.type)
+    : m_name(feature.name ? feature.name : ""),
+      m_type(feature.type)
   {
     for (unsigned int i = 0; i < JOYSTICK_PRIMITIVE_MAX; i++)
       m_primitives[i] = DriverPrimitive(feature.primitives[i]);

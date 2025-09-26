@@ -56,7 +56,11 @@ struct VideoStreamBuffer : public StreamBuffer
 
   VideoStreamBuffer(
       AVPixelFormat pixfmt, uint8_t* data, size_t size, DataAccess access, DataAlignment alignment)
-    : pixfmt(pixfmt), data(data), size(size), access(access), alignment(alignment)
+    : pixfmt(pixfmt),
+      data(data),
+      size(size),
+      access(access),
+      alignment(alignment)
   {
   }
 
