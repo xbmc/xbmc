@@ -229,16 +229,21 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
   if (frameIn.repr.sys != PL_COLOR_SYSTEM_DOLBYVISION)
   {
     frameIn.repr.levels = buf->full_range ? PL_COLOR_LEVELS_FULL : PL_COLOR_LEVELS_LIMITED;
+    frameIn.repr.sys = pl_system_from_av(buf->color_space);
+    if (frameIn.repr.sys == PL_COLOR_SYSTEM_UNKNOWN)
+    {
+      if (buf->primaries == AVCOL_PRI_BT470BG || buf->primaries == AVCOL_PRI_SMPTE170M)
+        frameIn.repr.sys = PL_COLOR_SYSTEM_BT_601;
+      else if (buf->primaries == AVCOL_PRI_BT709)
+        frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
+      else if (buf->primaries == AVCOL_PRI_BT2020 &&
+               (buf->color_transfer == AVCOL_TRC_SMPTEST2084 ||
+                buf->color_transfer == AVCOL_TRC_ARIB_STD_B67))
+        frameIn.repr.sys = PL_COLOR_SYSTEM_BT_2020_NC;
+      else
+        frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
+    }
     frameIn.color = m_colorSpace;
-    if (buf->primaries == AVCOL_PRI_BT470BG || buf->primaries == AVCOL_PRI_SMPTE170M)
-      frameIn.repr.sys = PL_COLOR_SYSTEM_BT_601;
-    else if (buf->primaries == AVCOL_PRI_BT709)
-      frameIn.repr.sys = PL_COLOR_SYSTEM_BT_709;
-    else if (buf->primaries == AVCOL_PRI_BT2020 && (buf->color_transfer == AVCOL_TRC_SMPTEST2084 ||
-      buf->color_transfer == AVCOL_TRC_ARIB_STD_B67))
-      frameIn.repr.sys = PL_COLOR_SYSTEM_BT_2020_NC;
-    else
-      frameIn.repr.sys = PL_COLOR_SYSTEM_UNKNOWN;
   }
   else
     m_colorSpace = frameIn.color;
@@ -426,7 +431,9 @@ bool CRendererPL::CRenderBufferImpl::UploadPlanes()
   videoBuffer->GetStrides(srcStrides);
   pl_plane_data pdata[4] = {};
 
-  for (int n = 0; n < pl_plane_data_from_pixfmt(pdata, &plFormat.bits, buffer_format); n++)
+  const int planes = pl_plane_data_from_pixfmt(pdata, &plFormat.bits, buffer_format);
+
+  for (int n = 0; n < planes; n++)
   {
     pdata[n].pixels = src[n];
     pdata[n].row_stride = srcStrides[n];
@@ -438,7 +445,7 @@ bool CRendererPL::CRenderBufferImpl::UploadPlanes()
       CLog::Log(LOGERROR, "pl_upload_plane failed");
     }
   }
-  plFormat.num_planes = 3;
+
   m_bLoaded = true;
   return m_bLoaded;
 }
