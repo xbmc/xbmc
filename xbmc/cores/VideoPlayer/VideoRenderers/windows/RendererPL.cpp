@@ -445,7 +445,8 @@ bool CRendererPL::CRenderBufferImpl::UploadPlanes()
       CLog::Log(LOGERROR, "pl_upload_plane failed");
     }
   }
-
+  plFormat.num_planes = planes;
+  
   m_bLoaded = true;
   return m_bLoaded;
 }
