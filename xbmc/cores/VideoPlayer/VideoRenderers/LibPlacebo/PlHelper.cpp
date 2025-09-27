@@ -237,9 +237,9 @@ void PL::PLInstance::fill_d3d_format(pl_d3d_format* info, DXGI_FORMAT format)
     info->bits.sample_depth = 8;
     info->bits.bit_shift = 0;
     info->planes[0] = DXGI_FORMAT_B8G8R8A8_UNORM;
-    info->component_mapping[0][0] = PL_CHANNEL_B;
+    info->component_mapping[0][0] = PL_CHANNEL_R;
     info->component_mapping[0][1] = PL_CHANNEL_G;
-    info->component_mapping[0][2] = PL_CHANNEL_R;
+    info->component_mapping[0][2] = PL_CHANNEL_B;
     info->component_mapping[0][3] = PL_CHANNEL_A;
     info->components[0] = 4;
     info->width_div[0] = 1;
