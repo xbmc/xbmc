@@ -19,6 +19,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 #include "windows/RendererDXVA.h"
+#include "windows/RendererPL.h"
 #include "windows/RendererShaders.h"
 #include "windows/RendererSoftware.h"
 
@@ -42,11 +43,11 @@ struct render_details
   }
 };
 
-static std::vector<render_details> RenderMethodDetails =
-{
-  render_details::get<CRendererSoftware>(RENDER_SW, "Software"),
-  render_details::get<CRendererShaders>(RENDER_PS, "Pixel Shaders"),
-  render_details::get<CRendererDXVA>(RENDER_DXVA, "DXVA"),
+static std::vector<render_details> RenderMethodDetails = {
+    render_details::get<CRendererSoftware>(RENDER_SW, "Software"),
+    render_details::get<CRendererShaders>(RENDER_PS, "Pixel Shaders"),
+    render_details::get<CRendererDXVA>(RENDER_DXVA, "DXVA"),
+    render_details::get<CRendererPL>(RENDER_LIBPLACEBO, "LibPlacebo"),
 };
 
 CBaseRenderer* CWinRenderer::Create(CVideoBuffer*)
@@ -101,6 +102,12 @@ CRendererBase* CWinRenderer::SelectRenderer(const VideoPicture& picture)
     if (weights[RENDER_DXVA])
     {
       method = RENDER_DXVA;
+      break;
+    }
+  case RENDER_METHOD_LIBPLACEBO:
+    if (weights[RENDER_LIBPLACEBO])
+    {
+      method = RENDER_LIBPLACEBO;
       break;
     }
     // fallback to AUTO
