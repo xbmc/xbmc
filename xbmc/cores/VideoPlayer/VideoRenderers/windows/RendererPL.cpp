@@ -94,7 +94,7 @@ DEBUG_INFO_VIDEO CRendererPL::GetDebugInfo(int idx)
   CRenderBufferImpl* plbuffer = static_cast<CRenderBufferImpl*>(rb);
 
   DEBUG_INFO_VIDEO info;
-  pl_hdr_metadata hdr = plbuffer->plColorSpace.hdr;
+  pl_hdr_metadata hdr = plbuffer->GetHdrMetadata();
 
   info.videoSource =
       StringUtils::Format("Output: Format: {} Levels: full, ColorMatrix:rgb",
@@ -356,7 +356,7 @@ CRendererPL::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format,
   m_widthTex = FFALIGN(width, 32);
   m_heightTex = FFALIGN(height, 32);
   //will be set on first upload
-  plFormat.num_planes = -1;
+  m_plFormat.num_planes = -1;
 }
 
 CRendererPL::CRenderBufferImpl::~CRenderBufferImpl()
@@ -368,8 +368,8 @@ CRendererPL::CRenderBufferImpl::~CRenderBufferImpl()
 void CRendererPL::CRenderBufferImpl::AppendPicture(const VideoPicture& picture)
 {
   __super::AppendPicture(picture);
-  plColorSpace = picture.plColorSpace;
-  plColorRepr = picture.plColorRepr;
+  m_plColorSpace = picture.plColorSpace;
+  m_plColorRepr = picture.plColorRepr;
 
   if (videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
   {
@@ -385,16 +385,16 @@ bool CRendererPL::CRenderBufferImpl::GetLibplaceboFrame(pl_frame& frame)
     return false;
 
   //hdr data is in the frame color space
-  frame.color = plColorSpace;
+  frame.color = m_plColorSpace;
   //set sample dep and others
-  plColorRepr.bits = plFormat.bits;
+  m_plColorRepr.bits = m_plFormat.bits;
 
-  frame.repr = plColorRepr;
+  frame.repr = m_plColorRepr;
 
-  frame.num_planes = plFormat.num_planes;
-  frame.planes[0] = plplanes[0];
-  frame.planes[1] = plplanes[1];
-  frame.planes[2] = plplanes[2];
+  frame.num_planes = m_plFormat.num_planes;
+  frame.planes[0] = m_plplanes[0];
+  frame.planes[1] = m_plplanes[1];
+  frame.planes[2] = m_plplanes[2];
 
   return true;
 }
@@ -431,21 +431,20 @@ bool CRendererPL::CRenderBufferImpl::UploadPlanes()
   videoBuffer->GetStrides(srcStrides);
   pl_plane_data pdata[4] = {};
 
-  const int planes = pl_plane_data_from_pixfmt(pdata, &plFormat.bits, buffer_format);
+  m_plFormat.num_planes = pl_plane_data_from_pixfmt(pdata, &m_plFormat.bits, buffer_format);
 
-  for (int n = 0; n < planes; n++)
+  for (int n = 0; n < m_plFormat.num_planes; n++)
   {
     pdata[n].pixels = src[n];
     pdata[n].row_stride = srcStrides[n];
     pdata[n].width = n > 0 ? m_width >> 1 : m_width;
     pdata[n].height = n > 0 ? m_height >> 1 : m_height;
 
-    if (!pl_upload_plane(PL::PLInstance::Get()->GetGpu(), &plplanes[n], &pltex[n], &pdata[n]))
+    if (!pl_upload_plane(PL::PLInstance::Get()->GetGpu(), &m_plplanes[n], &m_pltex[n], &pdata[n]))
     {
       CLog::Log(LOGERROR, "pl_upload_plane failed");
     }
   }
-  plFormat.num_planes = planes;
   
   m_bLoaded = true;
   return m_bLoaded;
@@ -466,12 +465,12 @@ bool CRendererPL::CRenderBufferImpl::UploadWrapPlanes()
     return false;
   }
 
-  if (plFormat.num_planes == -1)
+  if (m_plFormat.num_planes == -1)
   {
     //fill the plane data information needed for the conversion only once
     const auto dxva_buf = dynamic_cast<DXVA::CVideoBuffer*>(videoBuffer);
     DXGI_FORMAT fmt = dxva_buf->format;
-    PL::PLInstance::Get()->fill_d3d_format(&plFormat, fmt);
+    PL::PLInstance::Get()->fill_d3d_format(&m_plFormat, fmt);
   }
 
   hr = pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&pTexture);
@@ -479,28 +478,28 @@ bool CRendererPL::CRenderBufferImpl::UploadWrapPlanes()
 
   // Wrap the plane of the D3D11 texture
   // TODO maybe reuse the srv
-  for (int i = 0; i < plFormat.num_planes; i++)
+  for (int i = 0; i < m_plFormat.num_planes; i++)
   {
-    CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE2DARRAY, plFormat.planes[i],
+    CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE2DARRAY, m_plFormat.planes[i],
                                              0, 1, arrayIdx, 1);
     hr = DX::DeviceResources::Get()->GetD3DDevice()->CreateShaderResourceView(pTexture.Get(),
                                                                               &srvDesc, &srvY);
     pl_d3d11_wrap_params params = {};
     params.tex = pTexture.Get();
-    params.w = desc.Width / plFormat.width_div[i];
-    params.h = desc.Height / plFormat.height_div[i];
-    params.fmt = plFormat.planes[i];
+    params.w = desc.Width / m_plFormat.width_div[i];
+    params.h = desc.Height / m_plFormat.height_div[i];
+    params.fmt = m_plFormat.planes[i];
     params.array_slice = arrayIdx;
-    pltex[i] = pl_d3d11_wrap(PL::PLInstance::Get()->GetGpu(), &params);
+    m_pltex[i] = pl_d3d11_wrap(PL::PLInstance::Get()->GetGpu(), &params);
 
-    if (!pltex[i])
+    if (!m_pltex[i])
       return false;
-    plplanes[i].texture = pltex[i];
+    m_plplanes[i].texture = m_pltex[i];
     //number of components per plane example uv is 2 in d3d the alpha is always a component but not with libplacebo
-    plplanes[i].components = plFormat.components[i];
+    m_plplanes[i].components = m_plFormat.components[i];
     //mapping yuv planes to rgba channels
     for (int j = 0; j < 4; j++)
-      plplanes[i].component_mapping[j] = plFormat.component_mapping[i][j];
+      m_plplanes[i].component_mapping[j] = m_plFormat.component_mapping[i][j];
   }
   m_bLoaded = true;
   return m_bLoaded;
@@ -514,9 +513,9 @@ bool is_memzero(void* ptr, size_t size)
 
 bool CRendererPL::CRenderBufferImpl::HasHdrData()
 {
-  if (!is_memzero(&plColorRepr.dovi, sizeof(plColorRepr.dovi)))
+  if (!is_memzero(&m_plColorRepr.dovi, sizeof(m_plColorRepr.dovi)))
     return true;
-  if (!is_memzero(&plColorSpace.hdr, sizeof(plColorSpace.hdr)))
+  if (!is_memzero(&m_plColorSpace.hdr, sizeof(m_plColorSpace.hdr)))
     return true;
   // still all zeros
   return false;

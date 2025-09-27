@@ -106,29 +106,32 @@ public:
   bool GetLibplaceboFrame(pl_frame& frame);
   bool HasHdrData();
 
-  pl_color_space plColorSpace; //< pl_color_space
-  pl_color_repr plColorRepr;
-
-  bool hasHDR10PlusMetadata = false;
-  bool hasDoviMetadata = false;
-  bool hasDoviRpuMetadata = false;
+  pl_hdr_metadata GetHdrMetadata() { return m_plColorSpace.hdr; }
+  
 
 private:
+  pl_color_space m_plColorSpace; //< pl_color_space
+  pl_color_repr m_plColorRepr;
+
+  bool m_hasHDR10PlusMetadata = false;
+  bool m_hasDoviMetadata = false;
+  bool m_hasDoviRpuMetadata = false;
+
   //sw upload
   bool UploadPlanes();
   //When decoded with d3d11va
   bool UploadWrapPlanes();
   //move those to the video codec if linux start to use libplacebo
-  AVDynamicHDRPlus hdrMetadata;
-  AVDOVIMetadata doviMetadata;
+  AVDynamicHDRPlus m_hdrMetadata;
+  AVDOVIMetadata m_doviMetadata;
 
   //planes are used to create the frame
-  pl_plane plplanes[3] = {};
+  pl_plane m_plplanes[3] = {};
   // they are only kept for plane reference
   // we could put them to null according to libplacebo doc but it crash right away
-  pl_tex pltex[3] = {};
+  pl_tex m_pltex[3] = {};
   /* data info for dxva planes formating and bit encoding fill with plhelper
   *  this include the bit format for the color conversion 
   * */
-  PL::pl_d3d_format plFormat = {};
+  PL::pl_d3d_format m_plFormat = {};
 };
