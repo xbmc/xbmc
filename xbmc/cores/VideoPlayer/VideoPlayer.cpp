@@ -4206,6 +4206,15 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       m_overlayContainer.ProcessAndAddOverlayIfValid(
           *static_cast<std::shared_ptr<CDVDOverlay>*>(pData));
       break;
+    case BD_EVENT_MENU:
+      // Interactive menu visible?
+      if (*static_cast<uint32_t*>(pData) == false)
+      {
+        m_dvd.state = DVDSTATE_NORMAL;
+        m_dvd.iDVDStillTime = 0ms;
+        CLog::Log(LOGDEBUG, "BD_EVENT_MENU - libbluray leave menu (DVDSTATE_NORMAL)");
+      }
+      break;
     case BD_EVENT_PLAYLIST_STOP:
       m_dvd.state = DVDSTATE_NORMAL;
       m_dvd.iDVDStillTime = 0ms;
