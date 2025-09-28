@@ -283,7 +283,12 @@ void CRendererPL::RenderImpl(CD3DTexture& target,
   if (ActualRenderAsHDR() && m_bTargetColorspaceHint)
   {
     frameOut.color.primaries = PL_COLOR_PRIM_BT_2020;
-    frameOut.color.transfer = PL_COLOR_TRC_PQ;
+      // temporary until libplacebo output goes directly to back buffer
+      // and doesn't get processed by the output shader.
+      if (buf->color_transfer == AVCOL_TRC_ARIB_STD_B67)
+      frameOut.color.transfer = PL_COLOR_TRC_HLG;
+    else
+      frameOut.color.transfer = PL_COLOR_TRC_PQ;
   }
   else
   {

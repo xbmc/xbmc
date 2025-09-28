@@ -91,6 +91,7 @@ public:
   AVContentLightMetadata lightMetadata = {};
   std::string stereoMode;
   uint64_t frameIdx = 0;
+  bool m_isDolbyVision{false};
 
 protected:
   CRenderBuffer(AVPixelFormat av_pix_format, unsigned width, unsigned height);
