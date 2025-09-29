@@ -124,6 +124,7 @@ dependent_option(ENABLE_INTERNAL_LIBMICROHTTPD  "Enable internal libmicrohttpd?"
 dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
 dependent_option(ENABLE_INTERNAL_PCRE2 "Enable internal pcre2?")
 dependent_option(ENABLE_INTERNAL_NLOHMANNJSON "Enable internal nlohmannjson?")
+dependent_option(ENABLE_INTERNAL_UDFREAD "Enable internal libudfread?")
 dependent_option(ENABLE_INTERNAL_XSLT "Enable internal libxslt?")
 
 # If ENABLE_INTERNAL_FMT is ON, we force ENABLE_INTERNAL_SPDLOG ON as it has a hard
