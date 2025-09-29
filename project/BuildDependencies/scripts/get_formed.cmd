@@ -98,18 +98,38 @@ IF EXIST %1 (
 CALL :setSubStageName Extracting %1...
 copy /b "%1" "%TMP_PATH%" >NUL 2>NUL || EXIT /B 5
 PUSHD "%TMP_PATH%" || EXIT /B 10
-%ZIP% x %1 >NUL 2>NUL || (
-  IF %RetryDownload%==YES (
-    POPD || EXIT /B 5
-    ECHO WARNING! Can't extract files from archive %1!
-    ECHO WARNING! Deleting %1 and will retry downloading.
-    del /f "%1"
-    SET RetryDownload=NO
-    GOTO startDownloadingFile
+FOR /F  %%X IN ("%1") DO (
+  if "%%~xX" == ".msi" (
+    mkdir "%cd%\%%~nX"
+    msiexec /a "%cd%\%1" /qn TARGETDIR="%cd%\%%~nX" >NUL 2>NUL || (
+      IF %RetryDownload%==YES (
+        POPD || EXIT /B 5
+        ECHO WARNING! Can't extract files from archive %1!
+        ECHO WARNING! Deleting %1 and will retry downloading.
+        del /f "%1"
+        rmdir /S /Q "%cd%\%%~nX"
+        SET RetryDownload=NO
+        GOTO startDownloadingFile
+      ) ELSE (
+        ECHO %1^|Can't extract files from archive %1 >> %FORMED_FAILED_LIST%
+      )
+      exit /B 6
+    )
   ) ELSE (
-    ECHO %1^|Can't extract files from archive %1 >> %FORMED_FAILED_LIST%
+    %ZIP% x %1 >NUL 2>NUL || (
+      IF %RetryDownload%==YES (
+        POPD || EXIT /B 5
+        ECHO WARNING! Can't extract files from archive %1!
+        ECHO WARNING! Deleting %1 and will retry downloading.
+        del /f "%1"
+        SET RetryDownload=NO
+        GOTO startDownloadingFile
+      ) ELSE (
+        ECHO %1^|Can't extract files from archive %1 >> %FORMED_FAILED_LIST%
+      )
+      exit /B 6
+    )
   )
-  exit /B 6
 )
 
 dir /A:-D "%~n1\*.*" >NUL 2>NUL && (
@@ -136,6 +156,13 @@ dir /A:D "%~n1\system" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package cont
 dir /A:D "%~n1\Win32" >NUL 2>NUL && (
 ROBOCOPY "%~n1\Win32\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
 dir /A:D "%~n1\Win32" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
+)
+
+:: move PFiles64\*.* to bin (Meson msi extraction explicitly)
+:: Not common for all msi extractions
+dir /A:D "%~n1\PFiles64" >NUL 2>NUL && (
+ROBOCOPY "%~n1\PFiles64\\" "%~n1\bin" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
+dir /A:D "%~n1\PFiles64" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
 )
 
 :: move x64\*.* to root
