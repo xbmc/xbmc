@@ -20,8 +20,12 @@
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/log.h"
+
+#include "platform/linux/WebOSTVPlatformConfig.h"
 
 #include <CompileInfo.h>
 
@@ -227,6 +231,19 @@ void CWinSystemWaylandWebOS::UpdateResolutions()
   else
     CLog::Log(LOGWARNING, "Cannot adjust resolution, due to unmapped w x h values: {} x {}",
               res.iWidth, res.iHeight);
+}
+
+float CWinSystemWaylandWebOS::GetGuiSdrPeakLuminance() const
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const int guiSdrPeak = settings->GetInt(CSettings::SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE);
+
+  return (0.7f * guiSdrPeak + 30.0f) / 100.0f;
+}
+
+bool CWinSystemWaylandWebOS::IsHDRDisplay()
+{
+  return WebOSTVPlatformConfig::SupportsHDR();
 }
 
 } // namespace KODI::WINDOWING::WAYLAND

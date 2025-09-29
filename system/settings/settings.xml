@@ -3080,6 +3080,7 @@
           <or>
             <condition>HAS_DX</condition>
             <condition>HAS_MEDIACODEC</condition>
+            <condition>HAVE_WEBOS</condition>
           </or>
         </requirement>
         <dependencies>

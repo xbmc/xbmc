@@ -50,6 +50,9 @@ public:
   void OnConfigure(std::uint32_t serial, CSizeInt size, IShellSurface::StateBitset state) override;
   void UpdateResolutions() override;
 
+  float GetGuiSdrPeakLuminance() const override;
+  bool IsHDRDisplay() override;
+
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
   std::unique_ptr<CSeat> CreateSeat(std::uint32_t name, wayland::seat_t& seat) override;
