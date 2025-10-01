@@ -1391,6 +1391,13 @@ void CMediaPipelineWebOS::ProcessAudio()
             }
 
             ActiveAE::CSampleBuffer* buffer = m_encoderBuffers->GetFreeBuffer();
+
+            const double centerMixLevel = frame.hasDownmix ? frame.centerMixLevel : M_SQRT1_2;
+            const double curDB = 20.0 * std::log10(centerMixLevel);
+            frame.centerMixLevel =
+                std::pow(10.0, (curDB + m_processInfo.GetVideoSettings().m_CenterMixLevel) / 20.0);
+            frame.hasDownmix = true;
+            buffer->centerMixLevel = frame.centerMixLevel;
             buffer->timestamp = static_cast<int64_t>(frame.pts);
             buffer->pkt->nb_samples = static_cast<int>(frame.nb_frames);
 
