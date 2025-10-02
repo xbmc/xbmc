@@ -269,7 +269,7 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
       m_processInfo.SetAudioChannels(CAEUtil::GetAEChannelLayout(audioHint.channellayout));
       m_processInfo.SetAudioSampleRate(audioHint.samplerate);
       m_processInfo.SetAudioBitsPerSample(audioHint.bitspersample);
-      if (Supports(audioHint.codec, audioHint.cryptoSession != nullptr))
+      if (Supports(audioHint.codec, audioHint.profile, audioHint.cryptoSession != nullptr))
         m_processInfo.SetAudioDecoderName("starfish-" +
                                           std::string(ms_codecMap.at(audioHint.codec).name));
       else if (m_audioEncoder)
@@ -694,7 +694,7 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
       m_processInfo.SetAudioChannels(CAEUtil::GuessChLayout(audioHint.channels));
     m_processInfo.SetAudioSampleRate(audioHint.samplerate);
     m_processInfo.SetAudioBitsPerSample(audioHint.bitspersample);
-    if (Supports(audioHint.codec, audioHint.cryptoSession != nullptr))
+    if (Supports(audioHint.codec, audioHint.profile, audioHint.cryptoSession != nullptr))
       m_processInfo.SetAudioDecoderName(std::string("starfish-") +
                                         std::string(ms_codecMap.at(audioHint.codec).name));
     else if (m_audioEncoder)
@@ -736,7 +736,7 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
   m_encoderBuffers = nullptr;
 
   std::string codecName = "AC3";
-  if (!Supports(audioHint.codec, audioHint.cryptoSession != nullptr))
+  if (!Supports(audioHint.codec, audioHint.profile, audioHint.cryptoSession != nullptr))
   {
     m_audioCodec = std::make_unique<CDVDAudioCodecFFmpeg>(m_processInfo);
     CDVDCodecOptions options;
