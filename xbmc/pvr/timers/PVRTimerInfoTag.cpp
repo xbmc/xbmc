@@ -764,6 +764,15 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateTimerTag(
   return CreateFromDate(channel, start, iDuration, false);
 }
 
+std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromTimer(
+    const std::shared_ptr<CPVRTimerInfoTag>& tag)
+{
+  auto newTimer{std::make_shared<CPVRTimerInfoTag>()};
+  newTimer->UpdateEntry(tag);
+  newTimer->m_iClientIndex = PVR_TIMER_NO_CLIENT_INDEX;
+  return newTimer;
+}
+
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
     const std::shared_ptr<CPVRChannel>& channel,
     const CDateTime& start,
