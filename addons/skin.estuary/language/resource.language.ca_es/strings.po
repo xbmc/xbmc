@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-09-11 05:20+0000\n"
+"PO-Revision-Date: 2025-10-02 20:29+0000\n"
 "Last-Translator: Elvis Gallegos <elvis.gallegos@gmail.com>\n"
 "Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ca_es/>\n"
 "Language: ca_es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.1\n"
+"X-Generator: Weblate 5.13.3\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -134,7 +134,7 @@ msgstr "Trieu la puntuació a mostrar per als elements multimèdia"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add items from media and other views by using the context menu."
-msgstr ""
+msgstr "No s'han trobat preferits. Podeu afegir elements des del menú contextual de contingut multimèdia i altres vistes."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -692,7 +692,7 @@ msgstr ""
 
 msgctxt "#31177"
 msgid "Choose weather icon pack"
-msgstr ""
+msgstr "Trieu el paquet d'icones meteorològiques"
 
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window
