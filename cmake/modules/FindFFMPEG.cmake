@@ -197,14 +197,14 @@ else()
                   libavformat${_avformat_ver}
                   libavutil${_avutil_ver}
                   libswscale${_swscale_ver}
-                  libswresample${_swresample_ver}
-                  libpostproc${_postproc_ver})
+                  libswresample${_swresample_ver})
 
   if(NOT WIN32)
     find_package(PkgConfig REQUIRED ${SEARCH_QUIET})
 
     # explicitly set quiet, as another search that has output is run anyway
     pkg_check_modules(PC_FFMPEG ${FFMPEG_PKGS} QUIET)
+    pkg_check_modules(PC_FFMPEGPOSTPROC libpostproc${_postproc_ver} QUIET)
   endif()
 
   if((PC_FFMPEG_FOUND
@@ -213,8 +213,7 @@ else()
       AND PC_FFMPEG_libavformat_VERSION
       AND PC_FFMPEG_libavutil_VERSION
       AND PC_FFMPEG_libswscale_VERSION
-      AND PC_FFMPEG_libswresample_VERSION
-      AND PC_FFMPEG_libpostproc_VERSION)
+      AND PC_FFMPEG_libswresample_VERSION)
      OR WIN32)
     set(FFMPEG_VERSION ${REQUIRED_FFMPEG_VERSION})
 
@@ -232,7 +231,7 @@ else()
     endmacro()
 
     find_path(FFMPEG_INCLUDE_DIRS libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h
-                                  libavutil/avutil.h libswscale/swscale.h libpostproc/postprocess.h
+                                  libavutil/avutil.h libswscale/swscale.h
               PATH_SUFFIXES ffmpeg
               HINTS ${DEPENDS_PATH}/include
               ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
@@ -241,6 +240,12 @@ else()
       string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
       ffmpeg_find_lib(${_libname})
     endforeach()
+
+    find_library(FFMPEG_LIBPOSTPROC
+            NAMES postproc
+            PATH_SUFFIXES ffmpeg/libpostproc
+            HINTS ${DEPENDS_PATH}/lib ${PC_FFMPEG_LIBPOSTPROC_LIBDIR}
+            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
     if(NOT VERBOSE_FIND)
        set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
@@ -256,7 +261,6 @@ else()
                                                     FFMPEG_LIBAVUTIL
                                                     FFMPEG_LIBSWSCALE
                                                     FFMPEG_LIBSWRESAMPLE
-                                                    FFMPEG_LIBPOSTPROC
                                                     FFMPEG_VERSION
                                       FAIL_MESSAGE "FFmpeg ${REQUIRED_FFMPEG_VERSION} not found, please consider using -DENABLE_INTERNAL_FFMPEG=ON")
 
@@ -298,6 +302,10 @@ else()
       ffmpeg_create_target(${_libname})
     endforeach()
 
+    if (FFMPEG_LIBPOSTPROC)
+      ffmpeg_create_target(libpostproc)
+    endif()
+
   else()
     message(FATAL_ERROR "FFmpeg ${REQUIRED_FFMPEG_VERSION} not found, consider using -DENABLE_INTERNAL_FFMPEG=ON")
   endif()
@@ -319,7 +327,10 @@ if(FFMPEG_FOUND)
   target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libavutil)
   target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libswscale)
   target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libswresample)
-  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libpostproc)
+  if (TARGET ffmpeg::libpostproc)
+    set_property(TARGET ffmpeg::libpostproc APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS HAVE_LIBPOSTPROC)
+    target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libpostproc)
+  endif()
 
   if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})

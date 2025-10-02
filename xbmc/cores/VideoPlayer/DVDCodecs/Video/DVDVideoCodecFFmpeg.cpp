@@ -11,6 +11,9 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDStreamInfo.h"
+#ifdef HAVE_LIBPOSTPROC
+#include "DVDVideoPPFFmpeg.h"
+#endif
 #include "ServiceBroker.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
@@ -309,7 +312,9 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo& processInfo)
   : CDVDVideoCodec(processInfo),
     m_videoBufferPool(std::make_shared<CVideoBufferPoolFFmpeg>()),
-    m_postProc(processInfo)
+#ifdef HAVE_LIBPOSTPROC
+    m_postProc(std::make_unique<CDVDVideoPPFFmpeg>(processInfo))
+#endif
 {
   m_decoderState = STATE_NONE;
 }
@@ -919,10 +924,12 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
   buffer->SetRef(m_pFrame);
   pVideoPicture->videoBuffer = buffer;
 
-  if (m_processInfo.GetVideoSettings().m_PostProcess)
+  if (m_postProc && m_processInfo.GetVideoSettings().m_PostProcess)
   {
-    m_postProc.SetType(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoPPFFmpegPostProc, false);
-    m_postProc.Process(pVideoPicture);
+    m_postProc->SetType(
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoPPFFmpegPostProc,
+        false);
+    m_postProc->Process(pVideoPicture);
   }
 
   return true;
