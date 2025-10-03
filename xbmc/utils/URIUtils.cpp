@@ -80,6 +80,7 @@ std::string ResolveBlurayBasePath(const CURL& blurayUrl)
     if (discPath.empty())
       return {};
 
+    URIUtils::RemoveSlashAtEnd(discPath);
     return URIUtils::GetDirectory(discPath);
   }
 
