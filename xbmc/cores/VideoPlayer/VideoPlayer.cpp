@@ -4294,6 +4294,11 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
                                                          "OnBlurayEncryptedError");
     }
     break;
+    case BD_EVENT_DISCONTINUITY:
+      CLog::Log(LOGDEBUG,
+                "CVideoPlayer::OnDiscNavResult - libbluray discontinuity detected (DEMUXER_RESET)");
+      m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::DEMUXER_RESET));
+      break;
     default:
       break;
     }
