@@ -93,7 +93,7 @@ RetryExecutionResult CInitRetry::Execute(const std::string& component,
       result.succeeded = true;
       result.attemptsMade = attemptsMade;
   CInitStatusTracker::Record(component, InitComponentState::Succeeded, "", attemptsMade,
-                                maxRetries);
+                             maxRetries);
       return result;
     }
   }
