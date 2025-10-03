@@ -148,6 +148,11 @@ public:
   void ResetChildState();
 
   /*!
+   * @brief reset the client index of this timer.
+   */
+  void ResetClientIndex();
+
+  /*!
    * @brief Whether this timer is active.
    * @return True if this timer is active, false otherwise.
    */

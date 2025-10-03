@@ -61,8 +61,10 @@ class AsyncUpdateTimer : private IRunnable
 public:
   AsyncUpdateTimer(const CPVRGUIActionsTimers& guiActions,
                    const std::shared_ptr<CPVRTimerInfoTag>& oldTimer,
-                   const std::shared_ptr<CPVRTimerInfoTag>& newTimer)
-    : m_guiActions(guiActions), m_oldTimer(oldTimer), m_newTimer(newTimer)
+                   const std::shared_ptr<CPVRTimerInfoTag>& changedTimer)
+    : m_guiActions(guiActions),
+      m_oldTimer(oldTimer),
+      m_changedTimer(changedTimer)
   {
   }
 
@@ -78,10 +80,10 @@ private:
   {
     m_success = true;
 
-    if (m_newTimer->GetTimerType() == m_oldTimer->GetTimerType() &&
-        m_newTimer->ClientID() == m_oldTimer->ClientID())
+    if (m_changedTimer->GetTimerType() == m_oldTimer->GetTimerType() &&
+        m_changedTimer->ClientID() == m_oldTimer->ClientID())
     {
-      if (CServiceBroker::GetPVRManager().Timers()->UpdateTimer(m_newTimer))
+      if (CServiceBroker::GetPVRManager().Timers()->UpdateTimer(m_changedTimer))
         return;
 
       HELPERS::ShowOKDialogText(CVariant{257},
@@ -97,10 +99,12 @@ private:
       // and we would end up with one timer missing wrt to the rule defined by the new timer.
       if (m_guiActions.DeleteTimer(m_oldTimer, m_oldTimer->IsRecording(), false))
       {
-        if (m_newTimer->IsTimerRule())
-          m_newTimer->ResetChildState();
+        if (m_changedTimer->IsTimerRule())
+          m_changedTimer->ResetChildState();
 
-        m_success = m_guiActions.AddTimer(m_newTimer);
+        // Flag the changed timer as new so it can be detected as such by the add-on.
+        m_changedTimer->ResetClientIndex();
+        m_success = m_guiActions.AddTimer(m_changedTimer);
         if (!m_success)
         {
           // rollback.
@@ -112,7 +116,7 @@ private:
 
   const CPVRGUIActionsTimers& m_guiActions;
   std::shared_ptr<CPVRTimerInfoTag> m_oldTimer;
-  std::shared_ptr<CPVRTimerInfoTag> m_newTimer;
+  std::shared_ptr<CPVRTimerInfoTag> m_changedTimer;
   bool m_success{false};
 };
 } // unnamed namespace
@@ -656,14 +660,14 @@ bool CPVRGUIActionsTimers::EditTimer(const CFileItem& item) const
     return false;
   }
 
-  // clone the timer.
-  const auto newTimer{std::make_shared<CPVRTimerInfoTag>()};
-  newTimer->UpdateEntry(timer);
+  // Clone the timer so we can track changes.
+  const auto changedTimer{std::make_shared<CPVRTimerInfoTag>()};
+  changedTimer->UpdateEntry(timer);
 
-  if (ShowTimerSettings(newTimer) &&
+  if (ShowTimerSettings(changedTimer) &&
       (!timer->GetTimerType()->IsReadOnly() || timer->GetTimerType()->SupportsEnableDisable()))
   {
-    AsyncUpdateTimer asyncUpdate(*this, timer, newTimer);
+    AsyncUpdateTimer asyncUpdate(*this, timer, changedTimer);
     return asyncUpdate.Execute();
   }
   return false;

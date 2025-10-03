@@ -703,6 +703,12 @@ void CPVRTimerInfoTag::ResetChildState()
   m_iRadioChildTimersErrors = 0;
 }
 
+void CPVRTimerInfoTag::ResetClientIndex()
+{
+  std::unique_lock lock(m_critSection);
+  m_iClientIndex = PVR_TIMER_NO_CLIENT_INDEX;
+}
+
 bool CPVRTimerInfoTag::UpdateOnClient() const
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
