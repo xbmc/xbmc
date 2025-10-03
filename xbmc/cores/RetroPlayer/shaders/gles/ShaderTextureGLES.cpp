@@ -16,7 +16,8 @@
 using namespace KODI::SHADER;
 
 CShaderTextureGLES::CShaderTextureGLES(std::shared_ptr<CGLESTexture> texture, bool sRgbFramebuffer)
-  : m_texture(std::move(texture)), m_sRgbFramebuffer(sRgbFramebuffer)
+  : m_texture(std::move(texture)),
+    m_sRgbFramebuffer(sRgbFramebuffer)
 {
   assert(m_texture.get() != nullptr);
 }

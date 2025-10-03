@@ -26,7 +26,8 @@ using namespace KODI;
 using namespace GAME;
 
 CAgentInput::CAgentInput(PERIPHERALS::CPeripherals& peripheralManager, CInputManager& inputManager)
-  : m_peripheralManager(peripheralManager), m_inputManager(inputManager)
+  : m_peripheralManager(peripheralManager),
+    m_inputManager(inputManager)
 {
   // Register callbacks
   m_peripheralManager.RegisterObserver(this);

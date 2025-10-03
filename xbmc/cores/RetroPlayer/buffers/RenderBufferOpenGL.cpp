@@ -17,7 +17,10 @@ CRenderBufferOpenGL::CRenderBufferOpenGL(GLuint pixeltype,
                                          GLuint internalformat,
                                          GLuint pixelformat,
                                          GLuint bpp)
-  : m_pixeltype(pixeltype), m_internalformat(internalformat), m_pixelformat(pixelformat), m_bpp(bpp)
+  : m_pixeltype(pixeltype),
+    m_internalformat(internalformat),
+    m_pixelformat(pixelformat),
+    m_bpp(bpp)
 {
 }
 

@@ -19,7 +19,8 @@ using namespace KEYBOARD;
 
 CDefaultKeyboardHandling::CDefaultKeyboardHandling(PERIPHERALS::CPeripheral* peripheral,
                                                    IKeyboardInputHandler* handler)
-  : m_peripheral(peripheral), m_inputHandler(handler)
+  : m_peripheral(peripheral),
+    m_inputHandler(handler)
 {
 }
 

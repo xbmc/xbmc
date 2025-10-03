@@ -58,7 +58,8 @@ using namespace GAME;
 using namespace RETRO;
 
 CRetroPlayer::CRetroPlayer(IPlayerCallback& callback)
-  : IPlayer(callback), m_gameServices(CServiceBroker::GetGameServices())
+  : IPlayer(callback),
+    m_gameServices(CServiceBroker::GetGameServices())
 {
   ResetPlayback();
   CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);

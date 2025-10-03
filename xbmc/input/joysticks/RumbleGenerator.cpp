@@ -31,7 +31,8 @@ using namespace KODI;
 using namespace JOYSTICK;
 
 CRumbleGenerator::CRumbleGenerator()
-  : CThread("RumbleGenerator"), m_motors(GetMotors(ControllerID()))
+  : CThread("RumbleGenerator"),
+    m_motors(GetMotors(ControllerID()))
 {
 }
 

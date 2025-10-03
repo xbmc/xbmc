@@ -27,7 +27,10 @@ CAddonButtonMap::CAddonButtonMap(CPeripheral* device,
                                  const std::weak_ptr<CPeripheralAddon>& addon,
                                  const std::string& strControllerId,
                                  CPeripherals& manager)
-  : m_device(device), m_addon(addon), m_strControllerId(strControllerId), m_manager(manager)
+  : m_device(device),
+    m_addon(addon),
+    m_strControllerId(strControllerId),
+    m_manager(manager)
 {
   auto peripheralAddon = m_addon.lock();
   assert(peripheralAddon != nullptr);

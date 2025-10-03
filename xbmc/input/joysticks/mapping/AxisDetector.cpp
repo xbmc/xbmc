@@ -25,7 +25,9 @@ constexpr unsigned int TRIGGER_DELAY_MS = 200;
 CAxisDetector::CAxisDetector(CButtonMapping* buttonMapping,
                              unsigned int axisIndex,
                              const AxisConfiguration& config)
-  : CPrimitiveDetector(buttonMapping), m_axisIndex(axisIndex), m_config(config)
+  : CPrimitiveDetector(buttonMapping),
+    m_axisIndex(axisIndex),
+    m_config(config)
 {
 }
 

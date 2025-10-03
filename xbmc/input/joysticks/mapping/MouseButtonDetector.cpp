@@ -15,7 +15,8 @@ using namespace JOYSTICK;
 
 CMouseButtonDetector::CMouseButtonDetector(CButtonMapping* buttonMapping,
                                            MOUSE::BUTTON_ID buttonIndex)
-  : CPrimitiveDetector(buttonMapping), m_buttonIndex(buttonIndex)
+  : CPrimitiveDetector(buttonMapping),
+    m_buttonIndex(buttonIndex)
 {
 }
 

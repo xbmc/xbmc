@@ -19,12 +19,15 @@ using namespace JOYSTICK;
 CDriverPrimitive::CDriverPrimitive(void) = default;
 
 CDriverPrimitive::CDriverPrimitive(PRIMITIVE_TYPE type, unsigned int index)
-  : m_type(type), m_driverIndex(index)
+  : m_type(type),
+    m_driverIndex(index)
 {
 }
 
 CDriverPrimitive::CDriverPrimitive(unsigned int hatIndex, HAT_DIRECTION direction)
-  : m_type(PRIMITIVE_TYPE::HAT), m_driverIndex(hatIndex), m_hatDirection(direction)
+  : m_type(PRIMITIVE_TYPE::HAT),
+    m_driverIndex(hatIndex),
+    m_hatDirection(direction)
 {
 }
 
@@ -41,17 +44,20 @@ CDriverPrimitive::CDriverPrimitive(unsigned int axisIndex,
 }
 
 CDriverPrimitive::CDriverPrimitive(XBMCKey keycode)
-  : m_type(PRIMITIVE_TYPE::KEY), m_keycode(keycode)
+  : m_type(PRIMITIVE_TYPE::KEY),
+    m_keycode(keycode)
 {
 }
 
 CDriverPrimitive::CDriverPrimitive(MOUSE::BUTTON_ID index)
-  : m_type(PRIMITIVE_TYPE::MOUSE_BUTTON), m_driverIndex(static_cast<unsigned int>(index))
+  : m_type(PRIMITIVE_TYPE::MOUSE_BUTTON),
+    m_driverIndex(static_cast<unsigned int>(index))
 {
 }
 
 CDriverPrimitive::CDriverPrimitive(RELATIVE_POINTER_DIRECTION direction)
-  : m_type(PRIMITIVE_TYPE::RELATIVE_POINTER), m_pointerDirection(direction)
+  : m_type(PRIMITIVE_TYPE::RELATIVE_POINTER),
+    m_pointerDirection(direction)
 {
 }
 

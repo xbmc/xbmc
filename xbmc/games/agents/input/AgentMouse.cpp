@@ -18,7 +18,8 @@ using namespace KODI;
 using namespace GAME;
 
 CAgentMouse::CAgentMouse(PERIPHERALS::PeripheralPtr peripheral)
-  : m_peripheral(std::move(peripheral)), m_mouseActivity(std::make_unique<CControllerActivity>())
+  : m_peripheral(std::move(peripheral)),
+    m_mouseActivity(std::make_unique<CControllerActivity>())
 {
 }
 

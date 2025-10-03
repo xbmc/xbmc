@@ -18,7 +18,8 @@ using namespace KODI;
 using namespace RETRO;
 
 CGUIGameSettings::CGUIGameSettings(CRPProcessInfo& processInfo)
-  : m_processInfo(processInfo), m_guiSettings(processInfo.GetRenderContext().GetGameSettings())
+  : m_processInfo(processInfo),
+    m_guiSettings(processInfo.GetRenderContext().GetGameSettings())
 {
   // Reset game settings
   m_guiSettings = m_processInfo.GetRenderContext().GetDefaultGameSettings();

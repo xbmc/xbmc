@@ -18,7 +18,8 @@ using namespace RETRO;
 
 CRetroPlayerRendering::CRetroPlayerRendering(CRPRenderManager& renderManager,
                                              CRPProcessInfo& processInfo)
-  : m_renderManager(renderManager), m_processInfo(processInfo)
+  : m_renderManager(renderManager),
+    m_processInfo(processInfo)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[RENDERING]: Initializing rendering");
 }

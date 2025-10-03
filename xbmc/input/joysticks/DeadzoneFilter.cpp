@@ -29,7 +29,8 @@ const char* CDeadzoneFilter::SETTING_LEFT_STICK_DEADZONE = "left_stick_deadzone"
 const char* CDeadzoneFilter::SETTING_RIGHT_STICK_DEADZONE = "right_stick_deadzone";
 
 CDeadzoneFilter::CDeadzoneFilter(IButtonMap* buttonMap, PERIPHERALS::CPeripheral* peripheral)
-  : m_buttonMap(buttonMap), m_peripheral(peripheral)
+  : m_buttonMap(buttonMap),
+    m_peripheral(peripheral)
 {
   if (m_buttonMap->ControllerID() != GAME::DEFAULT_CONTROLLER_ID)
     CLog::Log(LOGERROR, "ERROR: Must use default controller profile instead of {}",

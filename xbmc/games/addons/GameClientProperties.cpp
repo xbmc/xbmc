@@ -40,7 +40,8 @@ using namespace GAME;
 using namespace XFILE;
 
 CGameClientProperties::CGameClientProperties(const CGameClient& parent, AddonProps_Game& props)
-  : m_parent(parent), m_properties(props)
+  : m_parent(parent),
+    m_properties(props)
 {
 }
 

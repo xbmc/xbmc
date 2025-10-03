@@ -14,7 +14,8 @@ using namespace KODI;
 using namespace JOYSTICK;
 
 CHatDetector::CHatDetector(CButtonMapping* buttonMapping, unsigned int hatIndex)
-  : CPrimitiveDetector(buttonMapping), m_hatIndex(hatIndex)
+  : CPrimitiveDetector(buttonMapping),
+    m_hatIndex(hatIndex)
 {
 }
 
