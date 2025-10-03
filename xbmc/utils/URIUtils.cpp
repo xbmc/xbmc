@@ -66,25 +66,48 @@ std::optional<char> DecodeOctlet(std::string_view& encoded)
   return decimal;
 }
 
+std::string DecodeNested(std::string_view encoded)
+{
+  std::string previous;
+  std::string current(encoded);
+
+  do
+  {
+    previous = std::move(current);
+    current = URIUtils::URLDecode(previous);
+  } while (current != previous);
+
+  return current;
+}
+
 std::string ResolveBlurayBasePath(const CURL& blurayUrl)
 {
-  std::string decodedHost = URIUtils::URLDecode(blurayUrl.GetHostName());
+  std::string decodedHost = DecodeNested(blurayUrl.GetHostName());
   if (decodedHost.empty())
     return {};
 
-  CURL decodedUrl(decodedHost);
-
-  if (decodedUrl.IsProtocol("udf") || decodedUrl.IsProtocol("iso9660"))
+  const auto schemeSeparator = decodedHost.find("://");
+  if (schemeSeparator != std::string::npos)
   {
-    std::string discPath = URIUtils::URLDecode(decodedUrl.GetHostName());
-    if (discPath.empty())
-      return {};
-
-    URIUtils::RemoveSlashAtEnd(discPath);
-    return URIUtils::GetDirectory(discPath);
+    const std::string protocol = StringUtils::ToLower(decodedHost.substr(0, schemeSeparator));
+    if (protocol == "udf" || protocol == "iso9660")
+      decodedHost = decodedHost.substr(schemeSeparator + 3);
   }
 
-  return decodedHost;
+  if (decodedHost.empty())
+    return {};
+
+  if (URIUtils::HasSlashAtEnd(decodedHost))
+  {
+    std::string potentialFile = decodedHost;
+    URIUtils::RemoveSlashAtEnd(potentialFile);
+    if (!URIUtils::IsDiscImage(potentialFile))
+      return decodedHost;
+
+    decodedHost = std::move(potentialFile);
+  }
+
+  return URIUtils::GetDirectory(decodedHost);
 }
 
 } // Unnamed namespace
