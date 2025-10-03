@@ -169,7 +169,7 @@ void CDeferredRetryManager::Worker(std::string component,
       CLog::Log(LOGINFO, "DeferredRetryManager - component '{}' recovered successfully",
                 component);
   CInitStatusTracker::Record(component, InitComponentState::Succeeded, "recovered after retry",
-                                 attemptIndex + 1, maxRetries);
+                             attemptIndex + 1, maxRetries);
       if (onSuccess)
         onSuccess();
       return;
