@@ -20,7 +20,6 @@
 #include <algorithm>
 #include <new> // for std::bad_alloc
 #include <sstream>
-#include <mutex>
 
 using namespace AE;
 using namespace ActiveAE;
