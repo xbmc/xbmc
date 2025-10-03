@@ -197,34 +197,41 @@ namespace XBMCAddon
           return lang;
         }
       case CLangCodeExpander::ISO_639_1:
+      {
+        if (region)
         {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6391(lang, langCode);
-          if (region)
-          {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region2Code;
-            g_LangCodeExpander.ConvertToISO6391(region, region2Code);
-            region2Code = "-" + region2Code;
-            return (langCode += region2Code);
-          }
-          return langCode;
+          return StringUtils::Format("{}-{}", g_langInfo.GetLanguageISO6391(),
+                                     g_langInfo.GetCurrentRegionISO31661Alpha2());
         }
+        else
+        {
+          return g_langInfo.GetLanguageISO6391();
+        }
+      }
       case CLangCodeExpander::ISO_639_2:
+      {
+        if (region)
         {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6392B(lang, langCode);
-          if (region)
-          {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region3Code;
-            g_LangCodeExpander.ConvertToISO6392B(region, region3Code);
-            region3Code = "-" + region3Code;
-            return (langCode += region3Code);
-          }
-
-          return langCode;
+          return StringUtils::Format("{}-{}", g_langInfo.GetLanguageISO6392(),
+                                     g_langInfo.GetCurrentRegionISO31661Alpha3());
         }
+        else
+        {
+          return g_langInfo.GetLanguageISO6392();
+        }
+      }
+      case CLangCodeExpander::ISO_NAME:
+      {
+        if (region)
+        {
+          return StringUtils::Format("{}-{}", g_langInfo.GetLanguageISOEnglishName(),
+                                     g_langInfo.GetCurrentRegionISO31661EnglishName());
+        }
+        else
+        {
+          return g_langInfo.GetLanguageISOEnglishName();
+        }
+      }
       default:
         return "";
       }
@@ -611,6 +618,10 @@ namespace XBMCAddon
     int getISO_639_1() { return CLangCodeExpander::ISO_639_1; }
     int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
     int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
+    int getISO_NAME()
+    {
+      return CLangCodeExpander::ISO_NAME;
+    }
 
     const int lLOGDEBUG = LOGDEBUG;
   }

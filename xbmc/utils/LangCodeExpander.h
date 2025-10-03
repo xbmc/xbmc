@@ -24,7 +24,8 @@ public:
   {
     ISO_639_1,
     ISO_639_2,
-    ENGLISH_NAME
+    ENGLISH_NAME,
+    ISO_NAME,
   };
 
   enum class LANG_LIST
@@ -139,6 +140,39 @@ public:
    */
   std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1,
                                             LANG_LIST list = LANG_LIST::DEFAULT);
+
+  /*!
+   * \brief Get an ISO 3166-1 Alpha-2 code.
+   *          Input can be alpha-2 (eg: "AU"), alpha-3 (eg: "AUS")
+   *          or country name (eg: "Australia").
+   *          If the input is a name, the test is case-blind,
+   *          otherwise the code must be upper case.
+   *   \param[in] searchString The code or name to be found.
+   *   \return The Alpha-2 string if found or empty string if not.
+   */
+  std::string GetISO31661Alpha2(std::string_view searchString) const;
+
+  /*!
+   * \brief Get an ISO 3166-1 Alpha-3 code.
+   *          Input can be alpha-2 (eg: "AU"), alpha-3 (eg: "AUS")
+   *          or country name (eg: "Australia").
+   *          If the input is a name, the test is case-blind,
+   *          otherwise the code must be upper case.
+   *   \param[in] searchString The code or name to be found.
+   *   \return The Alpha-3 string if found or empty string if not.
+   */
+  std::string GetISO31661Alpha3(std::string_view searchString) const;
+
+  /*!
+   * \brief Get an ISO 3166-1 name.
+   *          Input can be alpha-2 (eg: "AU"), alpha-3 (eg: "AUS")
+   *          or country name (eg: "Australia").
+   *          If the input is a name, the test is case-blind,
+   *          otherwise the code must be upper case.
+   *   \param[in] searchString The code or name to be found.
+   *   \return The name string if found or empty string if not.
+   */
+  std::string GetISO31661Name(std::string_view searchString) const;
 
 protected:
   /*
