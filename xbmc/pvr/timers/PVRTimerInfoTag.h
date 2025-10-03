@@ -93,14 +93,6 @@ public:
                                                          bool bCreateRule = false);
 
   /*!
-   * @brief create a timer from the given timer.
-   * @param tag the timer
-   * @return the timer or null if timer could not be created
-   */
-  static std::shared_ptr<CPVRTimerInfoTag> CreateFromTimer(
-      const std::shared_ptr<CPVRTimerInfoTag>& tag);
-
-  /*!
    * @brief create a reminder timer for the given start date.
    * @param start the start date
    * @param iDuration the duration the reminder is valid
