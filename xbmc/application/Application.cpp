@@ -139,6 +139,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/ContentUtils.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/InitRetry.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/PlayerUtils.h"
 #include "utils/RegExp.h"
@@ -282,9 +283,15 @@ bool CApplication::Create()
 
   CServiceBroker::RegisterDNSNameCache(std::make_shared<CDNSNameCache>());
 
-  m_ServiceManager = std::make_unique<CServiceManager>();
+  auto stageOneAttempt = [this]() -> bool {
+    m_ServiceManager = std::make_unique<CServiceManager>();
+    return m_ServiceManager->InitStageOne();
+  };
 
-  if (!m_ServiceManager->InitStageOne())
+  const RetryExecutionResult stageOneResult =
+      CInitRetry::Execute("Services.StageOne", stageOneAttempt, nullptr, 3, std::chrono::seconds(1));
+
+  if (!stageOneResult.succeeded)
   {
     return false;
   }
@@ -361,8 +368,22 @@ bool CApplication::Create()
   CServiceBroker::RegisterBlurayDiscCache(std::make_shared<CBlurayDiscCache>());
 #endif
 
-  if (!m_ServiceManager->InitStageTwo(
-          settingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
+  const std::string profileUserDataFolder =
+      settingsComponent->GetProfileManager()->GetProfileUserDataFolder();
+
+  auto stageTwoAttempt = [this, profileUserDataFolder]() -> bool {
+    if (!m_ServiceManager->InitStageTwo(profileUserDataFolder))
+    {
+      m_ServiceManager->DeinitStageTwo();
+      return false;
+    }
+    return true;
+  };
+
+  const RetryExecutionResult stageTwoResult =
+      CInitRetry::Execute("Services.StageTwo", stageTwoAttempt, nullptr, 3, std::chrono::seconds(1));
+
+  if (!stageTwoResult.succeeded)
   {
     return false;
   }
@@ -516,7 +537,10 @@ bool CApplication::CreateGUI()
 
   // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
-  if (!CServiceBroker::GetInputManager().LoadKeymaps())
+  auto keymapAttempt = []() -> bool { return CServiceBroker::GetInputManager().LoadKeymaps(); };
+  const RetryExecutionResult keymapResult =
+      CInitRetry::Execute("Input.Keymaps", keymapAttempt, nullptr, 3, std::chrono::milliseconds(500));
+  if (!keymapResult.succeeded)
     return false;
 
   RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
@@ -566,7 +590,10 @@ bool CApplication::Initialize()
 #endif
 
   // load the language and its translated strings
-  if (!LoadLanguage(false))
+  auto languageAttempt = [this]() -> bool { return LoadLanguage(false); };
+  const RetryExecutionResult languageResult =
+      CInitRetry::Execute("Localization", languageAttempt, nullptr, 3, std::chrono::seconds(1));
+  if (!languageResult.succeeded)
     return false;
 
   // load media manager sources (e.g. root addon type sources depend on language strings to be available)
@@ -582,40 +609,50 @@ bool CApplication::Initialize()
   m_ServiceManager->GetNetwork().WaitForNet();
 
   // initialize (and update as needed) our databases
-  CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
-
-  bool allDatabasesInitialized{false};
-  CEvent event(true);
-  CServiceBroker::GetJobManager()->Submit(
-      [&allDatabasesInitialized, &databaseManager, &event]()
-      {
-        allDatabasesInitialized = databaseManager.Initialize();
-        event.Set();
-      });
+  CDatabaseManager& databaseManager = m_ServiceManager->GetDatabaseManager();
 
   const std::string& connecting{g_localizeStrings.Get(24186)};
   const std::string& updating{g_localizeStrings.Get(24150)};
-  int iDots = 1;
-  while (!event.Wait(1000ms))
-  {
-    if (databaseManager.IsConnecting() || databaseManager.IsUpgrading())
+
+  auto databaseAttempt = [&databaseManager, &connecting, &updating]() -> bool {
+    bool allDatabasesInitialized{false};
+    CEvent event(true);
+    CServiceBroker::GetJobManager()->Submit(
+        [&allDatabasesInitialized, &databaseManager, &event]() {
+          allDatabasesInitialized = databaseManager.Initialize();
+          event.Set();
+        });
+
+    int localDots = 1;
+    while (!event.Wait(1000ms))
     {
-      CServiceBroker::GetRenderSystem()->ShowSplash(
-          std::string(iDots, ' ') + (databaseManager.IsConnecting() ? connecting : updating) +
-          std::string(iDots, '.'));
+      if (databaseManager.IsConnecting() || databaseManager.IsUpgrading())
+      {
+        CServiceBroker::GetRenderSystem()->ShowSplash(
+            std::string(localDots, ' ') +
+            (databaseManager.IsConnecting() ? connecting : updating) +
+            std::string(localDots, '.'));
+      }
+
+      if (localDots == 3)
+        localDots = 1;
+      else
+        ++localDots;
     }
 
-    if (iDots == 3)
-      iDots = 1;
-    else
-      ++iDots;
-  }
-  CServiceBroker::GetRenderSystem()->ShowSplash("");
+    CServiceBroker::GetRenderSystem()->ShowSplash("");
 
-  if (!allDatabasesInitialized)
+    return allDatabasesInitialized;
+  };
+
+  const RetryExecutionResult databaseResult =
+      CInitRetry::Execute("Databases", databaseAttempt, nullptr, 3, std::chrono::seconds(1));
+
+  if (!databaseResult.succeeded)
   {
     // Bail out if any of the databases failed to initialize properly.
-    CLog::Log(LOGFATAL, "Failed to initialize databases");
+    CLog::Log(LOGFATAL, "Failed to initialize databases after {} attempts",
+              databaseResult.maxRetries);
 
     const std::string& dbInitFailedExiting{g_localizeStrings.Get(24187)};
 
@@ -629,6 +666,8 @@ bool CApplication::Initialize()
     }
     return false;
   }
+
+  int iDots = 1;
 
   // Initialize GUI font manager to build/update fonts cache
   //! @todo Move GUIFontManager into service broker and drop the global reference
@@ -774,9 +813,21 @@ bool CApplication::Initialize()
 
   CServiceBroker::RegisterSpeechRecognition(speech::ISpeechRecognition::CreateInstance());
 
-  if (!m_ServiceManager->InitStageThree(profileManager))
+  auto stageThreeAttempt = [this, profileManager]() -> bool {
+    return m_ServiceManager->InitStageThree(profileManager);
+  };
+
+  const RetryExecutionResult stageThreeResult =
+      CInitRetry::Execute("Services.StageThree", stageThreeAttempt, nullptr, 3,
+                          std::chrono::seconds(1));
+
+  if (!stageThreeResult.succeeded)
   {
-    CLog::Log(LOGERROR, "Application - Init3 failed");
+    CLog::Log(LOGERROR, "Application - Init3 failed after {} attempts",
+              stageThreeResult.maxRetries);
+    CInitStatusTracker::Record("Services.StageThree", InitComponentState::Failed,
+                               "Some services may be unavailable.",
+                               stageThreeResult.attemptsMade, stageThreeResult.maxRetries);
   }
 
   g_sysinfo.Refresh();
@@ -803,6 +854,62 @@ bool CApplication::Initialize()
     CServiceBroker::GetServiceAddons().Start();
 
   CLog::Log(LOGINFO, "initialize done");
+
+  const auto initStatuses = CInitStatusTracker::GetStatuses();
+  for (const auto& entry : initStatuses)
+  {
+    const std::string& component = entry.first;
+    const auto& status = entry.second;
+    const std::string attemptDetails =
+        (status.attempts > 0 && status.maxAttempts > 0)
+            ? StringUtils::Format(" (attempt {}/{})", status.attempts, status.maxAttempts)
+            : "";
+    const std::string logMessageSuffix =
+        status.message.empty() ? "" : StringUtils::Format(" - {}", status.message);
+
+    switch (status.state)
+    {
+      case InitComponentState::Success:
+        CLog::Log(LOGDEBUG, "Initialization summary: {} ready{}{}", component, attemptDetails,
+                  logMessageSuffix);
+        break;
+      case InitComponentState::Fallback:
+      {
+        CLog::Log(LOGWARNING, "Initialization summary: {} running in fallback mode{}{}",
+                  component, attemptDetails, logMessageSuffix);
+        std::string toastBody = !status.message.empty()
+                                    ? status.message
+                                    : "Fallback is active; background retries are scheduled.";
+        if (status.maxAttempts > 0)
+        {
+          toastBody += StringUtils::Format(" (exhausted {}/{})", status.attempts,
+                                           status.maxAttempts);
+        }
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning,
+                                              StringUtils::Format("{} fallback active", component),
+                                              toastBody);
+        break;
+      }
+      case InitComponentState::Failed:
+      default:
+      {
+        CLog::Log(LOGERROR, "Initialization summary: {} failed to initialize{}{}", component,
+                  attemptDetails, logMessageSuffix);
+        std::string toastBody = !status.message.empty()
+                                    ? status.message
+                                    : "Component is unavailable. See the log for details.";
+        if (status.maxAttempts > 0 && status.attempts > 0)
+        {
+          toastBody += StringUtils::Format(" (attempted {}/{})", status.attempts,
+                                           status.maxAttempts);
+        }
+        CGUIDialogKaiToast::QueueNotification(
+            CGUIDialogKaiToast::Error,
+            StringUtils::Format("{} initialization failed", component), toastBody);
+        break;
+      }
+    }
+  }
 
   const auto appPower = GetComponent<CApplicationPowerHandling>();
   appPower->CheckOSScreenSaverInhibitionSetting();

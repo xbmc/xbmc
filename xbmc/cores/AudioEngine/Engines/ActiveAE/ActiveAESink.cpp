@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <new> // for std::bad_alloc
 #include <sstream>
+#include <mutex>
 
 using namespace AE;
 using namespace ActiveAE;
@@ -1215,4 +1216,24 @@ void CActiveAESink::SetSilenceTimer()
   }
 
   m_extSilenceTimer.Set(m_extSilenceTimeout);
+}
+
+void CActiveAESink::HotSwapSink(std::unique_ptr<IAESink> newSink)
+{
+  std::lock_guard<std::mutex> lock(m_sinkMutex); // ensure thread safety
+  if (m_sink)
+  {
+    m_sink->Drain();
+    m_sink->Deinitialize();
+  }
+  m_sink = std::move(newSink);
+  if (m_sink)
+  {
+    std::string device = m_sink->GetName();
+    m_device = device;
+    m_deviceFriendlyName = device;
+    AEAudioFormat format;
+    m_sink->Initialize(format, device);
+    CLog::Log(LOGINFO, "CActiveAESink::HotSwapSink - audio sink swapped to: {}", device);
+  }
 }

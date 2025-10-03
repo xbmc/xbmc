@@ -1,5 +1,6 @@
 set(SOURCES AEResampleFactory.cpp
             AESinkFactory.cpp
+            Sinks/AESinkDummy.cpp
             Encoders/AEEncoderFFmpeg.cpp
             Engines/ActiveAE/ActiveAE.cpp
             Engines/ActiveAE/ActiveAEBuffer.cpp
@@ -19,6 +20,7 @@ set(SOURCES AEResampleFactory.cpp
 
 set(HEADERS AEResampleFactory.h
             AESinkFactory.h
+            Sinks/AESinkDummy.h
             Encoders/AEEncoderFFmpeg.h
             Engines/ActiveAE/ActiveAE.h
             Engines/ActiveAE/ActiveAEBuffer.h
