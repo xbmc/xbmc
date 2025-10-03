@@ -703,6 +703,12 @@ void CPVRTimerInfoTag::ResetChildState()
   m_iRadioChildTimersErrors = 0;
 }
 
+void CPVRTimerInfoTag::ResetClientIndex()
+{
+  std::unique_lock lock(m_critSection);
+  m_iClientIndex = PVR_TIMER_NO_CLIENT_INDEX;
+}
+
 bool CPVRTimerInfoTag::UpdateOnClient() const
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
@@ -762,15 +768,6 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateTimerTag(
     const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration)
 {
   return CreateFromDate(channel, start, iDuration, false);
-}
-
-std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromTimer(
-    const std::shared_ptr<CPVRTimerInfoTag>& tag)
-{
-  auto newTimer{std::make_shared<CPVRTimerInfoTag>()};
-  newTimer->UpdateEntry(tag);
-  newTimer->m_iClientIndex = PVR_TIMER_NO_CLIENT_INDEX;
-  return newTimer;
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
