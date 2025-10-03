@@ -66,6 +66,26 @@ std::optional<char> DecodeOctlet(std::string_view& encoded)
   return decimal;
 }
 
+std::string ResolveBlurayBasePath(const CURL& blurayUrl)
+{
+  std::string decodedHost = URIUtils::URLDecode(blurayUrl.GetHostName());
+  if (decodedHost.empty())
+    return {};
+
+  CURL decodedUrl(decodedHost);
+
+  if (decodedUrl.IsProtocol("udf") || decodedUrl.IsProtocol("iso9660"))
+  {
+    std::string discPath = URIUtils::URLDecode(decodedUrl.GetHostName());
+    if (discPath.empty())
+      return {};
+
+    return URIUtils::GetDirectory(discPath);
+  }
+
+  return decodedHost;
+}
+
 } // Unnamed namespace
 
 std::string URIUtils::URLDecode(std::string_view encoded)
@@ -532,10 +552,20 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
   if (IsBDFile(strCheck) || IsDVDFile(strCheck))
     strDirectory = GetDiscBasePath(strCheck);
 
-#ifdef HAVE_LIBBLURAY
   if (IsBlurayPath(strCheck))
-    strDirectory = CBlurayDirectory::GetBasePath(CURL(strCheck));
+  {
+    const CURL blurayUrl(strCheck);
+    std::string basePath;
+#ifdef HAVE_LIBBLURAY
+    basePath = CBlurayDirectory::GetBasePath(blurayUrl);
 #endif
+    const std::string fallbackBasePath = ResolveBlurayBasePath(blurayUrl);
+
+    if (!fallbackBasePath.empty())
+      strDirectory = fallbackBasePath;
+    else if (!basePath.empty())
+      strDirectory = std::move(basePath);
+  }
 
   if (IsStack(strPath))
   {
