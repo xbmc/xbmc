@@ -154,23 +154,16 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
   {
     if (!m_threadState)
     {
-#if PY_VERSION_HEX < 0x03070000
-      // this is a TOTAL hack. We need the GIL but we need to borrow a PyThreadState in order to get it
-      // as of Python 3.2 since PyEval_AcquireLock is deprecated
-      extern PyThreadState* savestate;
-      PyEval_RestoreThread(savestate);
-#else
-      PyThreadState* ts = PyInterpreterState_ThreadHead(PyInterpreterState_Main());
-      PyEval_RestoreThread(ts);
-#endif
+      PyGILState_STATE gilState = PyGILState_Ensure();
       l_threadState = Py_NewInterpreter();
-      PyEval_ReleaseThread(l_threadState);
       if (l_threadState == NULL)
       {
+        PyGILState_Release(gilState);
         CLog::Log(LOGERROR, "CPythonInvoker({}, {}): FAILED to get thread m_threadState!", GetId(),
                   m_sourceFile);
         return false;
       }
+      PyGILState_Release(gilState);
       newInterp = true;
     }
     else
