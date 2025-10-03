@@ -657,8 +657,7 @@ bool CPVRGUIActionsTimers::EditTimer(const CFileItem& item) const
   }
 
   // clone the timer.
-  const auto newTimer{std::make_shared<CPVRTimerInfoTag>()};
-  newTimer->UpdateEntry(timer);
+  const std::shared_ptr<CPVRTimerInfoTag> newTimer{CPVRTimerInfoTag::CreateFromTimer(timer)};
 
   if (ShowTimerSettings(newTimer) &&
       (!timer->GetTimerType()->IsReadOnly() || timer->GetTimerType()->SupportsEnableDisable()))
