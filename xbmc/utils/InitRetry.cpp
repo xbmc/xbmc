@@ -19,7 +19,7 @@ constexpr const char* ToString(InitComponentState state)
 {
   switch (state)
   {
-    case InitComponentState::Success:
+  case InitComponentState::Succeeded:
       return "success";
     case InitComponentState::Fallback:
       return "fallback";
@@ -92,7 +92,7 @@ RetryExecutionResult CInitRetry::Execute(const std::string& component,
     {
       result.succeeded = true;
       result.attemptsMade = attemptsMade;
-      CInitStatusTracker::Record(component, InitComponentState::Success, "", attemptsMade,
+  CInitStatusTracker::Record(component, InitComponentState::Succeeded, "", attemptsMade,
                                 maxRetries);
       return result;
     }
@@ -168,7 +168,7 @@ void CDeferredRetryManager::Worker(std::string component,
     {
       CLog::Log(LOGINFO, "DeferredRetryManager - component '{}' recovered successfully",
                 component);
-      CInitStatusTracker::Record(component, InitComponentState::Success, "recovered after retry",
+  CInitStatusTracker::Record(component, InitComponentState::Succeeded, "recovered after retry",
                                  attemptIndex + 1, maxRetries);
       if (onSuccess)
         onSuccess();

@@ -671,16 +671,17 @@ bool CApplication::Initialize()
 
   // Initialize GUI font manager to build/update fonts cache
   //! @todo Move GUIFontManager into service broker and drop the global reference
-  event.Reset();
+  CEvent uiEvent(true);
+  uiEvent.Reset();
   GUIFontManager& guiFontManager = g_fontManager;
-  CServiceBroker::GetJobManager()->Submit([&guiFontManager, &event]() {
+  CServiceBroker::GetJobManager()->Submit([&guiFontManager, &uiEvent]() {
     guiFontManager.Initialize();
-    event.Set();
+    uiEvent.Set();
   });
 
   std::string localizedStr{g_localizeStrings.Get(39175)};
   iDots = 1;
-  while (!event.Wait(1000ms))
+  while (!uiEvent.Wait(1000ms))
   {
     if (g_fontManager.IsUpdating())
       CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr +
@@ -709,7 +710,7 @@ bool CApplication::Initialize()
     skinHandling->m_confirmSkinChange = false;
 
     std::vector<AddonInfoPtr> incompatibleAddons;
-    event.Reset();
+  uiEvent.Reset();
 
     // Addon migration
     if (CServiceBroker::GetAddonMgr().GetIncompatibleEnabledAddonInfos(incompatibleAddons))
@@ -717,17 +718,17 @@ bool CApplication::Initialize()
       if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_ON)
       {
         CServiceBroker::GetJobManager()->Submit(
-            [&event, &incompatibleAddons]() {
+            [&uiEvent, &incompatibleAddons]() {
               if (CServiceBroker::GetRepositoryUpdater().CheckForUpdates())
                 CServiceBroker::GetRepositoryUpdater().Await();
 
               incompatibleAddons = CServiceBroker::GetAddonMgr().MigrateAddons();
-              event.Set();
+              uiEvent.Set();
             },
             CJob::PRIORITY_DEDICATED);
         localizedStr = g_localizeStrings.Get(24151);
         iDots = 1;
-        while (!event.Wait(1000ms))
+        while (!uiEvent.Wait(1000ms))
         {
           CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr +
                                                         std::string(iDots, '.'));
@@ -869,7 +870,7 @@ bool CApplication::Initialize()
 
     switch (status.state)
     {
-      case InitComponentState::Success:
+      case InitComponentState::Succeeded:
         CLog::Log(LOGDEBUG, "Initialization summary: {} ready{}{}", component, attemptDetails,
                   logMessageSuffix);
         break;

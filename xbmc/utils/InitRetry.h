@@ -16,7 +16,7 @@
 
 enum class InitComponentState
 {
-  Success,
+  Succeeded,
   Fallback,
   Failed
 };

@@ -21,6 +21,7 @@ set(SOURCES TestAlarmClock.cpp
             TestHttpParser.cpp
             TestHttpRangeUtils.cpp
             TestHttpResponse.cpp
+            TestInitRetry.cpp
             TestJobManager.cpp
             TestJSONVariantParser.cpp
             TestJSONVariantWriter.cpp
