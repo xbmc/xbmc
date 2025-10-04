@@ -44,7 +44,9 @@ public:
    */
   void RefreshFavourites();
 
-  struct FavouritesUpdated { };
+  struct FavouritesUpdated
+  {
+  };
 
   CEventStream<FavouritesUpdated>& Events() { return m_events; }
 

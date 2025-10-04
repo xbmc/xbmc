@@ -123,8 +123,8 @@ bool LoadFromFile(const std::string& strPath, CFileItemList& items)
     // <favourite name="Cool Video" thumb="foo.jpg">PlayMedia(c:\videos\cool_video.avi)</favourite>
     // <favourite name="My Album" thumb="bar.tbn">ActivateWindow(MyMusic,c:\music\my album)</favourite>
     // <favourite name="Apple Movie Trailers" thumb="path_to_thumb.png">RunScript(special://xbmc/scripts/apple movie trailers/default.py)</favourite>
-    const char *name = favourite->Attribute("name");
-    const char *thumb = favourite->Attribute("thumb");
+    const char* name = favourite->Attribute("name");
+    const char* thumb = favourite->Attribute("thumb");
     if (name && favourite->FirstChild())
     {
       const std::string favURL(
