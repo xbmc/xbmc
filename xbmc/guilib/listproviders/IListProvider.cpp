@@ -15,10 +15,10 @@
 
 std::unique_ptr<IListProvider> IListProvider::Create(const TiXmlNode* node, int parentID)
 {
-  const TiXmlNode *root = node->FirstChild("content");
+  const TiXmlNode* root = node->FirstChild("content");
   if (root)
   {
-    const TiXmlNode *next = root->NextSibling("content");
+    const TiXmlNode* next = root->NextSibling("content");
     if (next)
       return std::make_unique<CMultiProvider>(root, parentID);
 
@@ -29,7 +29,7 @@ std::unique_ptr<IListProvider> IListProvider::Create(const TiXmlNode* node, int 
 
 std::unique_ptr<IListProvider> IListProvider::CreateSingle(const TiXmlNode* content, int parentID)
 {
-  const TiXmlElement *item = content->FirstChildElement("item");
+  const TiXmlElement* item = content->FirstChildElement("item");
   if (item)
     return std::make_unique<CStaticListProvider>(content->ToElement(), parentID);
 

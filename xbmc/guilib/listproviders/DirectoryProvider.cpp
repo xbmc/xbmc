@@ -361,7 +361,8 @@ private:
 } // unnamed namespace
 
 CDirectoryProvider::CDirectoryProvider(const TiXmlElement* element, int parentID)
-  : IListProvider(parentID), m_nextJobTimer(this)
+  : IListProvider(parentID),
+    m_nextJobTimer(this)
 {
   assert(element);
   if (!element->NoChildren())
