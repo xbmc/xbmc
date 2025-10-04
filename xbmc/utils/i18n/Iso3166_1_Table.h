@@ -12,6 +12,8 @@
 #include <array>
 #include <string_view>
 
+namespace KODI::UTILS::I18N
+{
 struct ISO3166_1
 {
   std::string_view alpha2; // alpha-2 code
@@ -302,3 +304,5 @@ static_assert(std::ranges::adjacent_find(TableISO3166_1, {}, &ISO3166_1::alpha2)
 
 static_assert(std::ranges::adjacent_find(TableISO3166_1ByAlpha3, {}, &ISO3166_1::alpha3) ==
               TableISO3166_1ByAlpha3.end());
+
+} // namespace KODI::UTILS::I18N
