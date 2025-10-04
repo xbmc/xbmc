@@ -18,6 +18,8 @@
 #include "cores/AudioEngine/Utils/AEStreamData.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "utils/InitRetry.h"
+#include "utils/StringUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
@@ -2727,22 +2729,77 @@ void CActiveAE::ValidateOutputDevices(bool saveChanges)
 void CActiveAE::Start()
 {
   Create();
-  Message *reply;
-  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT, &reply, 10s))
-  {
-    bool success = reply->signal == CActiveAEControlProtocol::ACC;
-    reply->Release();
-    if (!success)
+  constexpr int maxRetries = 3;
+  constexpr auto retryDelay = std::chrono::seconds(5);
+
+  auto initAttempt = [this]() -> bool {
+    Message* reply = nullptr;
+    bool success = false;
+    if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT, &reply, 10s))
     {
-      CLog::Log(LOGERROR, "ActiveAE::{} - returned error", __FUNCTION__);
+      success = reply->signal == CActiveAEControlProtocol::ACC;
+      if (!success)
+      {
+        CLog::Log(LOGERROR, "ActiveAE::{} - audio sink init returned error", __FUNCTION__);
+      }
+      reply->Release();
     }
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "ActiveAE::{} - failed to init", __FUNCTION__);
-  }
+    else
+    {
+      CLog::Log(LOGWARNING, "ActiveAE::{} - audio sink init timed out", __FUNCTION__);
+    }
+
+    return success;
+  };
+
+  auto fallbackToDummy = [this]() -> bool {
+    CLog::Log(LOGERROR, "ActiveAE::{} - falling back to dummy audio sink", __FUNCTION__);
+    AEAudioFormat dummyFormat;
+    dummyFormat.m_dataFormat = AE_FMT_INVALID;
+    auto dummySink = CAESinkFactory::CreateDummy(dummyFormat);
+    if (!dummySink)
+    {
+      CLog::Log(LOGERROR, "ActiveAE::{} - failed to create dummy audio sink", __FUNCTION__);
+      return false;
+    }
+    m_sink.HotSwapSink(std::move(dummySink));
+    return true;
+  };
+
+  const RetryExecutionResult initResult =
+      CInitRetry::Execute("AudioEngine", initAttempt, fallbackToDummy, maxRetries, retryDelay);
 
   m_inMsgEvent.Reset();
+
+  if (!initResult.succeeded && initResult.fallbackSucceeded)
+  {
+    CInitStatusTracker::Record(
+        "AudioEngine", InitComponentState::Fallback,
+        StringUtils::Format("Fallback sink active; background retries every {} seconds",
+                            retryDelay.count()),
+        initResult.attemptsMade, initResult.maxRetries);
+
+    auto deferredAttempt = [this, initAttempt]() -> bool { return initAttempt(); };
+
+    auto onRecovery = [this]() {
+      CLog::Log(LOGINFO,
+                "ActiveAE::{} - audio device recovered after deferred retry; triggering "
+                "reconfigure",
+                __FUNCTION__);
+      m_controlPort.SendOutMessage(CActiveAEControlProtocol::RECONFIGURE);
+    };
+
+    auto onPermanentFailure = [this]() {
+      CLog::Log(LOGERROR,
+                "ActiveAE::{} - audio device could not be recovered after deferred retries; "
+                "dummy sink remains active",
+                __FUNCTION__);
+    };
+
+    CDeferredRetryManager::GetInstance().Schedule("AudioEngine", deferredAttempt, onRecovery,
+                                                  onPermanentFailure, 5, retryDelay,
+                                                  std::chrono::seconds(10));
+  }
 }
 
 void CActiveAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
