@@ -162,6 +162,7 @@ set(HEADERS ActorProtocol.h
             ScraperParser.h
             ScraperUrl.h
             Screenshot.h
+            Set.h
             SortUtils.h
             Speed.h
             Stopwatch.h
