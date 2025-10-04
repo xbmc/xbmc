@@ -611,7 +611,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       break;
     case AV_CODEC_ID_H264:
     {
-      if (avctx->profile == FF_PROFILE_H264_CONSTRAINED_BASELINE)
+      if (avctx->profile == AV_PROFILE_H264_CONSTRAINED_BASELINE)
       {
         profile = VAProfileH264ConstrainedBaseline;
         if (!m_vaapiConfig.context->SupportsProfile(profile))
@@ -619,7 +619,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       }
       else
       {
-        if(avctx->profile == FF_PROFILE_H264_MAIN)
+        if (avctx->profile == AV_PROFILE_H264_MAIN)
         {
           profile = VAProfileH264Main;
           if (m_vaapiConfig.context->SupportsProfile(profile))
@@ -633,14 +633,14 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_HEVC:
     {
-      if (avctx->profile == FF_PROFILE_HEVC_MAIN_10)
+      if (avctx->profile == AV_PROFILE_HEVC_MAIN_10)
       {
         if (!m_capDeepColor)
           return false;
 
         profile = VAProfileHEVCMain10;
       }
-      else if (avctx->profile == FF_PROFILE_HEVC_MAIN)
+      else if (avctx->profile == AV_PROFILE_HEVC_MAIN)
         profile = VAProfileHEVCMain;
       else
         profile = VAProfileNone;
@@ -657,9 +657,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_VP9:
     {
-      if (avctx->profile == FF_PROFILE_VP9_0)
+      if (avctx->profile == AV_PROFILE_VP9_0)
         profile = VAProfileVP9Profile0;
-      else if (avctx->profile == FF_PROFILE_VP9_2)
+      else if (avctx->profile == AV_PROFILE_VP9_2)
         profile = VAProfileVP9Profile2;
       else
         profile = VAProfileNone;
@@ -680,9 +680,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 #if VA_CHECK_VERSION(1, 8, 0)
     case AV_CODEC_ID_AV1:
     {
-      if (avctx->profile == FF_PROFILE_AV1_MAIN)
+      if (avctx->profile == AV_PROFILE_AV1_MAIN)
         profile = VAProfileAV1Profile0;
-      else if (avctx->profile == FF_PROFILE_AV1_HIGH)
+      else if (avctx->profile == AV_PROFILE_AV1_HIGH)
         profile = VAProfileAV1Profile1;
       else
         profile = VAProfileNone;
@@ -2971,16 +2971,30 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
     return false;
   }
 
-  if (avfilter_graph_create_filter(&m_pFilterOut, outFilter, "out", NULL, NULL, m_pFilterGraph) < 0)
+  if (!((m_pFilterOut = avfilter_graph_alloc_filter(m_pFilterGraph, outFilter, "out"))))
   {
-    CLog::Log(LOGERROR, "CFFmpegPostproc::Init  - avfilter_graph_create_filter: out");
+    CLog::LogF(LOGERROR, "unable to alloc filter out");
     return false;
   }
 
+#if LIBAVFILTER_BUILD >= AV_VERSION_INT(10, 6, 100)
+  constexpr std::array<AVPixelFormat, 1> pixFmts = {{AV_PIX_FMT_NV12}};
+  if (av_opt_set_array(m_pFilterOut, "pixel_formats", AV_OPT_SEARCH_CHILDREN, 0, pixFmts.size(),
+                       AV_OPT_TYPE_PIXEL_FMT, pixFmts.data()) < 0)
+#else
   enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_NV12, AV_PIX_FMT_NONE };
-  if (av_opt_set_int_list(m_pFilterOut, "pix_fmts", pix_fmts,  AV_PIX_FMT_NONE, AV_OPT_SEARCH_CHILDREN) < 0)
+  if (av_opt_set_int_list(m_pFilterOut, "pix_fmts", pix_fmts, AV_PIX_FMT_NONE,
+                          AV_OPT_SEARCH_CHILDREN) < 0)
+#endif
   {
     CLog::Log(LOGERROR, "VAAPI::CFFmpegPostproc::Init  - failed settings pix formats");
+    return false;
+  }
+
+  if (avfilter_init_str(m_pFilterOut, nullptr) < 0)
+  {
+    CLog::LogF(LOGERROR, "failed to initialize filter out");
+    avfilter_free(m_pFilterOut);
     return false;
   }
 
@@ -3098,7 +3112,6 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
   m_pFilterFrameIn->linesize[1] = image.pitches[1];
   m_pFilterFrameIn->data[2] = NULL;
   m_pFilterFrameIn->data[3] = NULL;
-  m_pFilterFrameIn->pkt_size = image.data_size;
 
   CheckSuccess(vaUnmapBuffer(m_config.dpy, image.buf), "vaUnmapBuffer");
   CheckSuccess(vaDestroyImage(m_config.dpy, image.image_id), "vaDestroyImage");

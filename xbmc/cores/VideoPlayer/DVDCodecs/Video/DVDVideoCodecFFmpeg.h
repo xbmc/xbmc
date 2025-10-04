@@ -8,20 +8,22 @@
 
 #pragma once
 
+#include "DVDVideoCodec.h"
+#include "DVDVideoPP.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
-#include "DVDVideoCodec.h"
-#include "DVDVideoPPFFmpeg.h"
+
+#include <memory>
 #include <string>
 #include <vector>
 
-extern "C" {
-#include <libavfilter/avfilter.h>
+extern "C"
+{
 #include <libavcodec/avcodec.h>
+#include <libavfilter/avfilter.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libswscale/swscale.h>
-#include <libpostproc/postprocess.h>
 }
 
 class CVideoBufferPoolFFmpeg;
@@ -73,7 +75,7 @@ protected:
   bool m_filterEof = false;
   bool m_eof = false;
 
-  CDVDVideoPPFFmpeg m_postProc;
+  std::unique_ptr<IDVDVideoPP> m_postProc;
 
   int m_iPictureWidth = 0;
   int m_iPictureHeight = 0;

@@ -4,9 +4,10 @@ set(SOURCES AddonVideoCodec.cpp
 
 set(HEADERS AddonVideoCodec.h
             DVDVideoCodec.h
-            DVDVideoCodecFFmpeg.h)
+            DVDVideoCodecFFmpeg.h
+            DVDVideoPP.h)
 
-if(NOT ENABLE_EXTERNAL_LIBAV)
+if(TARGET ffmpeg::libpostproc)
   list(APPEND SOURCES DVDVideoPPFFmpeg.cpp)
   list(APPEND HEADERS DVDVideoPPFFmpeg.h)
 endif()

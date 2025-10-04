@@ -133,7 +133,7 @@ do_download() {
     tar -xf /downloads/$ARCHIVE --strip 1
   fi
   # applying patches
-  local patches=(/xbmc/tools/buildsteps/windows/patches/*-$LIBNAME-*.patch)
+  local patches=(/xbmc/tools/buildsteps/windows/patches/*-$LIBNAME-*.patch /xbmc/tools/depends/target/$LIBNAME/*.patch)
   for patch in ${patches[@]}; do
     echo "Applying patch ${patch}"
     if [[ -f $patch ]]; then
@@ -147,7 +147,8 @@ do_loaddeps() {
   LIBNAME=$(grep "LIBNAME=" $file | sed 's/LIBNAME=//g;s/#.*$//g;/^$/d')
   VERSION=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
   SHA512=$(grep "SHA512=" $file | sed 's/SHA512=//g;s/#.*$//g;/^$/d')
-  ARCHIVE=$LIBNAME-$VERSION.tar.gz
+  EXT=$(grep "ARCHIVE=" $file | sed 's/ARCHIVE=//g;s/#.*$//g;/^$/d' | cut -d'.' -f2-3)
+  ARCHIVE=$LIBNAME-$VERSION.$EXT
 
   BASE_URL=$(grep "BASE_URL=" $file | sed 's/BASE_URL=//g;s/#.*$//g;/^$/d')
   if [ -z "$BASE_URL" ]; then

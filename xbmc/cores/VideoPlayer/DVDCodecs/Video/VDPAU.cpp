@@ -923,7 +923,7 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   }
   else if (avctx->codec_id == AV_CODEC_ID_VP9)
   {
-    if (avctx->profile != FF_PROFILE_VP9_0)
+    if (avctx->profile != AV_PROFILE_VP9_0)
       return false;
 
     m_vdpauConfig.maxReferences = 8;

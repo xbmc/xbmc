@@ -4,13 +4,13 @@
 --disable-devices
 --disable-dxva2
 --disable-gnutls
+--disable-muxer=whip
 --disable-nvenc
 --disable-openssl
 --disable-programs
 --disable-shared
 --enable-encoder=ac3,aac,wmav2,png,mjpeg
 --enable-muxer=spdif,adts,asf,ipod
---enable-postproc
 --enable-protocol=http
 --enable-runtime-cpudetect
 --enable-static
