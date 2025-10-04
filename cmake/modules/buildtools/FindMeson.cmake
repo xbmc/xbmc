@@ -36,7 +36,11 @@ if(NOT TARGET Meson::Meson)
     # For now, we only have to generate a cross file for windows platforms
     # tools/depends platforms all create one as part of their configure
     if(WIN32 OR WINDOWS_STORE)
-      include(cmake/scripts/common/ModuleHelpers.cmake)
+      if(KODI_SOURCE_DIR)
+        set(base_path ${KODI_SOURCE_DIR}/)
+      endif()
+
+      include(${base_path}cmake/scripts/common/ModuleHelpers.cmake)
       generate_mesoncrossfile()
     endif()
   else()
