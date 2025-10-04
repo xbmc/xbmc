@@ -123,7 +123,7 @@ void FormatTemperature(std::string& text, double temp)
 class CWeatherPropertyWriter
 {
 public:
-  CWeatherPropertyWriter(CGUIWindow& window,
+  CWeatherPropertyWriter(const CGUIWindow& window,
                          CWeatherTokenLocalizer& localizer,
                          CWeatherManager::WeatherInfoV2& info)
     : m_propReader(window, localizer),
