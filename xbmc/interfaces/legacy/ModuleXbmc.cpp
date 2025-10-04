@@ -11,6 +11,7 @@
 #include "ModuleXbmc.h"
 
 #include "AddonUtils.h"
+#include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "LangInfo.h"
@@ -320,6 +321,12 @@ namespace XBMCAddon
       CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
       int ret = infoMgr.TranslateString(infotag);
       return infoMgr.GetImage(ret, WINDOW_INVALID);
+    }
+
+    String getDatabaseName(const char* dbType)
+    {
+      XBMC_TRACE;
+      return CServiceBroker::GetDatabaseManager().GetDatabaseNameByType(dbType);
     }
 
     void playSFX(const char* filename, bool useCached)

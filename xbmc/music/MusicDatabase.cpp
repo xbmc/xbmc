@@ -10,6 +10,7 @@
 
 #include "Album.h"
 #include "Artist.h"
+#include "DatabaseTypes.h"
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
@@ -115,7 +116,9 @@ void AnnounceUpdate(const std::string& content, int id, bool added = false)
 }
 } // unnamed namespace
 
-CMusicDatabase::CMusicDatabase() = default;
+CMusicDatabase::CMusicDatabase() : CDatabase(KODI::DATABASE::TYPE_MUSIC)
+{
+}
 
 CMusicDatabase::~CMusicDatabase()
 {

@@ -8,6 +8,7 @@
 
 #include "VideoDatabase.h"
 
+#include "DatabaseTypes.h"
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
@@ -80,7 +81,9 @@ using namespace KODI::GUILIB;
 using namespace KODI::VIDEO;
 
 //********************************************************************************************************************************
-CVideoDatabase::CVideoDatabase() = default;
+CVideoDatabase::CVideoDatabase() : CDatabase(KODI::DATABASE::TYPE_VIDEOS)
+{
+}
 
 //********************************************************************************************************************************
 CVideoDatabase::~CVideoDatabase() = default;
