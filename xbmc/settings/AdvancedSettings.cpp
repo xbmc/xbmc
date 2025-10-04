@@ -1167,16 +1167,19 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     {
       const char* XML_SORTMETHOD = "sortmethod";
       const char* XML_SORTORDER = "sortorder";
-      int sortMethod;
-      // ignore SortByTime for duration defaults
-      if (XMLUtils::GetInt(pSortDecription, XML_SORTMETHOD, sortMethod, SortByLabel, SortByFile))
+      int sortMethod = static_cast<int>(SortByNone);
+      static const std::set<SortBy> validSortMethods{
+          SortByLabel, SortByDate, SortBySize, SortByFile, SortByEpisodeNumber, SortByProvider};
+      XMLUtils::GetInt(pSortDecription, XML_SORTMETHOD, sortMethod, static_cast<int>(SortByNone),
+                       static_cast<int>(SortByUserPreference));
+      if (validSortMethods.contains(static_cast<SortBy>(sortMethod)))
       {
         int sortOrder;
         if (XMLUtils::GetInt(pSortDecription, XML_SORTORDER, sortOrder, SortOrderAscending,
                              SortOrderDescending))
         {
-          m_PVRDefaultSortOrder.sortBy = (SortBy)sortMethod;
-          m_PVRDefaultSortOrder.sortOrder = (SortOrder)sortOrder;
+          m_PVRDefaultSortOrder.sortBy = static_cast<SortBy>(sortMethod);
+          m_PVRDefaultSortOrder.sortOrder = static_cast<SortOrder>(sortOrder);
         }
       }
     }
