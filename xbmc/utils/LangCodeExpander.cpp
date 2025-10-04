@@ -13,8 +13,9 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/i18n/Iso639_1.h"
+#include "utils/i18n/Iso639_2.h"
 #include "utils/i18n/TableISO3166_1.h"
-#include "utils/i18n/TableISO639_2.h"
+#include "utils/i18n/TableISO639.h"
 #include "utils/i18n/TableLanguageCodes.h"
 #include "utils/log.h"
 
@@ -160,20 +161,19 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
   {
     std::string_view name = strCharCode;
 
-    auto itt = std::ranges::lower_bound(
-        TableISO639_2AllNames, name, [](std::string_view a, std::string_view b)
-        { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
-    if (itt != TableISO639_2AllNames.end() && StringUtils::EqualsNoCase(itt->name, name))
     {
-      // Map T to B code for the few languages that have differences
-      auto itb = std::ranges::lower_bound(ISO639_2_TB_Mappings, itt->code, {},
-                                          &ISO639_2_TB::terminological);
-      if (itb != ISO639_2_TB_Mappings.end() && itb->terminological == itt->code)
-        strISO6392B = LongCodeToString(itb->bibliographic);
-      else
-        strISO6392B = LongCodeToString(itt->code);
+      auto tCode = CIso639_2::LookupByName(name);
+      if (tCode)
+      {
+        // Map T to B code for the few languages that have differences
+        auto bCode = CIso639_2::TCodeToBCode(*tCode);
+        if (bCode)
+          strISO6392B = *bCode;
+        else
+          strISO6392B = *tCode;
 
-      return true;
+        return true;
+      }
     }
 
     // Try search on language addons
@@ -374,12 +374,10 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     }
   }
   {
-    auto it = std::ranges::lower_bound(
-        TableISO639_2AllNames, name, [](std::string_view a, std::string_view b)
-        { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
-    if (it != TableISO639_2AllNames.end() && StringUtils::EqualsNoCase(it->name, name))
+    auto ret = CIso639_2::LookupByName(name);
+    if (ret)
     {
-      code = LongCodeToString(it->code);
+      code = *ret;
       return true;
     }
   }
@@ -448,18 +446,15 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
   else if (sCode.length() == 3)
   {
     // Map B to T for the few codes that have differences
-    uint32_t longTcode = longCode;
-
-    auto itt = std::ranges::lower_bound(ISO639_2_TB_MappingsByB, longCode, {},
-                                        &ISO639_2_TB::bibliographic);
-    if (itt != ISO639_2_TB_MappingsByB.end() && longCode == itt->bibliographic)
-      longTcode = itt->terminological;
+    auto tCode = CIso639_2::BCodeToTCode(longCode);
+    if (tCode)
+      longCode = *tCode;
 
     // Lookup the T code
-    auto it = std::ranges::lower_bound(TableISO639_2ByCode, longTcode, {}, &LCENTRY::code);
-    if (it != TableISO639_2ByCode.end() && longTcode == it->code)
+    auto ret = CIso639_2::LookupByCode(longCode);
+    if (ret)
     {
-      desc = it->name;
+      desc = *ret;
       return true;
     }
   }
@@ -494,39 +489,9 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(
   std::map<std::string, std::string> langMap;
 
   if (format == CLangCodeExpander::ISO_639_2)
-  {
-    // ISO 639-2/T codes
-    std::ranges::transform(TableISO639_2AllNames, std::inserter(langMap, langMap.end()),
-                           [](const LCENTRY& e) {
-                             return std::make_pair(LongCodeToString(e.code), std::string{e.name});
-                           });
-
-    // ISO 639-2/B codes that are different from the T code.
-    for (const ISO639_2_TB& tb : ISO639_2_TB_Mappings)
-    {
-      const std::string bCode = LongCodeToString(tb.bibliographic);
-
-      // Lookup the 639-2/T code
-      //! @todo Maybe could be avoided by building a constexpr 639-2/B to name array at compile time.
-      //! Is it worth the effort and memory though.
-      auto it =
-          std::ranges::lower_bound(TableISO639_2ByCode, tb.terminological, {}, &LCENTRY::code);
-      if (it != TableISO639_2ByCode.end() && tb.terminological == it->code)
-      {
-        langMap[bCode] = std::string(it->name) + " (non-preferred)";
-      }
-      else
-      {
-        CLog::LogF(LOGERROR,
-                   "unable to find a name for the ISO 639-2/B code {} using 639-2/T code {}", bCode,
-                   LongCodeToString(tb.terminological));
-      }
-    }
-  }
+    CIso639_2::ListLanguages(langMap);
   else
-  {
     CIso639_1::ListLanguages(langMap);
-  }
 
   if (list == LANG_LIST::INCLUDE_ADDONS || list == LANG_LIST::INCLUDE_ADDONS_USERDEFINED)
   {

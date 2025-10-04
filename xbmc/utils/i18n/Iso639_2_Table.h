@@ -15,6 +15,8 @@
 #include <cstdint>
 #include <string_view>
 
+namespace KODI::UTILS::I18N
+{
 struct ISO639_2_TB
 {
   uint32_t terminological;
@@ -713,3 +715,5 @@ static_assert(std::ranges::all_of(
     [](auto tCode)
     { return std::ranges::binary_search(TableISO639_2ByCode, tCode, {}, &LCENTRY::code); },
     &LCENTRY::code));
+
+} // namespace KODI::UTILS::I18N
