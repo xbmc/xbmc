@@ -49,12 +49,16 @@ void CGUIControlsGUIInfo::ResetContainerMovingCache()
   m_containerMoves.clear();
 }
 
-bool CGUIControlsGUIInfo::InitCurrentItem(CFileItem *item)
+bool CGUIControlsGUIInfo::InitCurrentItem(CFileItem* item)
 {
   return false;
 }
 
-bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
+bool CGUIControlsGUIInfo::GetLabel(std::string& value,
+                                   const CFileItem* item,
+                                   int contextWindow,
+                                   const CGUIInfo& info,
+                                   std::string* fallback) const
 {
   switch (info.GetInfo())
   {
@@ -95,7 +99,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
       CGUIMediaWindow* window{GUIINFO::GetMediaWindow(contextWindow)};
       if (window)
       {
-        const CGUIControl *control = window->GetControl(window->GetViewContainerID());
+        const CGUIControl* control = window->GetControl(window->GetViewContainerID());
         if (control && control->IsContainer())
         {
           if (info.GetInfo() == CONTAINER_VIEWMODE)
@@ -118,7 +122,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
       const CGUIMediaWindow* window{GUIINFO::GetMediaWindow(contextWindow)};
       if (window)
       {
-        const CGUIViewState *viewState = window->GetViewState();
+        const CGUIViewState* viewState = window->GetViewState();
         if (viewState)
         {
           if (info.GetInfo() == CONTAINER_SORT_METHOD)
@@ -242,7 +246,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
     case CONTAINER_NUM_ALL_ITEMS:
     case CONTAINER_NUM_NONFOLDER_ITEMS:
     {
-      const CGUIControl *control = nullptr;
+      const CGUIControl* control = nullptr;
       if (info.GetData1())
       { // container specified
         CGUIWindow* window{GUIINFO::GetWindow(contextWindow)};
@@ -276,7 +280,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
       CGUIWindow* window{GUIINFO::GetWindow(contextWindow)};
       if (window)
       {
-        const CGUIControl *control = window->GetControl(info.GetData1());
+        const CGUIControl* control = window->GetControl(info.GetData1());
         if (control)
         {
           int data2 = info.GetData2();
@@ -316,7 +320,8 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
     // SYSTEM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case SYSTEM_CURRENT_WINDOW:
-      value = g_localizeStrings.Get(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
+      value = g_localizeStrings.Get(
+          CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
       return true;
     case SYSTEM_STARTUP_WINDOW:
       value = std::to_string(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
@@ -329,7 +334,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
           CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog())};
       if (window)
       {
-        CGUIControl *control = window->GetFocusedControl();
+        CGUIControl* control = window->GetFocusedControl();
         if (control)
         {
           if (info.GetInfo() == SYSTEM_CURRENT_CONTROL_ID)
@@ -401,7 +406,10 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
   return false;
 }
 
-bool CGUIControlsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CGUIControlsGUIInfo::GetInt(int& value,
+                                 const CGUIListItem* gitem,
+                                 int contextWindow,
+                                 const CGUIInfo& info) const
 {
   switch (info.GetInfo())
   {
@@ -424,7 +432,10 @@ bool CGUIControlsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int cont
   return false;
 }
 
-bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CGUIControlsGUIInfo::GetBool(bool& value,
+                                  const CGUIListItem* gitem,
+                                  int contextWindow,
+                                  const CGUIInfo& info) const
 {
   switch (info.GetInfo())
   {
@@ -506,7 +517,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       const CGUIMediaWindow* window{GUIINFO::GetMediaWindow(contextWindow)};
       if (window)
       {
-        const CGUIViewState *viewState = window->GetViewState();
+        const CGUIViewState* viewState = window->GetViewState();
         if (viewState)
         {
           value = (static_cast<int>(viewState->GetSortMethod().sortBy) == info.GetData2());
@@ -520,7 +531,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       const CGUIMediaWindow* window{GUIINFO::GetMediaWindow(contextWindow)};
       if (window)
       {
-        const CGUIViewState *viewState = window->GetViewState();
+        const CGUIViewState* viewState = window->GetViewState();
         if (viewState)
         {
           value = (static_cast<unsigned int>(viewState->GetSortOrder()) == info.GetData1());
@@ -566,7 +577,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
         CGUIWindow* window{GUIINFO::GetWindow(contextWindow)};
         if (window)
         {
-          const CGUIControl *control = window->GetControl(info.GetData1());
+          const CGUIControl* control = window->GetControl(info.GetData1());
           if (control)
           {
             value = control->GetCondition(info.GetInfo(), info.GetData2());
@@ -576,7 +587,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       }
       else
       {
-        const CGUIControl *activeContainer = GUIINFO::GetActiveContainer(0, contextWindow);
+        const CGUIControl* activeContainer = GUIINFO::GetActiveContainer(0, contextWindow);
         if (activeContainer)
         {
           value = activeContainer->GetCondition(info.GetInfo(), info.GetData2());
@@ -590,10 +601,11 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       CGUIWindow* window{GUIINFO::GetWindow(contextWindow)};
       if (window)
       {
-        const CGUIControl *control = window->GetControl(info.GetData1());
+        const CGUIControl* control = window->GetControl(info.GetData1());
         if (control && control->IsContainer())
         {
-          const CFileItemPtr item = std::static_pointer_cast<CFileItem>(static_cast<const IGUIContainer*>(control)->GetListItem(0));
+          const CFileItemPtr item = std::static_pointer_cast<CFileItem>(
+              static_cast<const IGUIContainer*>(control)->GetListItem(0));
           if (item &&
               item->GetProgramCount() ==
                   info.GetData2()) //! @todo remove hack to use programcount to store item id
@@ -625,7 +637,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       }
       if (containerId != -1)
       {
-        const std::map<int,int>::const_iterator it = m_containerMoves.find(containerId);
+        const std::map<int, int>::const_iterator it = m_containerMoves.find(containerId);
         if (it != m_containerMoves.end())
         {
           if (info.GetInfo() == CONTAINER_SCROLL_PREVIOUS)
@@ -651,7 +663,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       if (window)
       {
         // Note: This'll only work for unique id's
-        const CGUIControl *control = window->GetControl(info.GetData1());
+        const CGUIControl* control = window->GetControl(info.GetData1());
         if (control)
         {
           value = control->IsVisible();
@@ -666,7 +678,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       if (window)
       {
         // Note: This'll only work for unique id's
-        const CGUIControl *control = window->GetControl(info.GetData1());
+        const CGUIControl* control = window->GetControl(info.GetData1());
         if (control)
         {
           value = !control->IsDisabled();
@@ -777,7 +789,9 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       {
         const CGUIWindow* window{
             CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_nextWindowID)};
-        if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
+        if (window &&
+            StringUtils::EqualsNoCase(
+                URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
         {
           value = true;
           return true;
@@ -796,7 +810,9 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       {
         const CGUIWindow* window{
             CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_prevWindowID)};
-        if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
+        if (window &&
+            StringUtils::EqualsNoCase(
+                URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
         {
           value = true;
           return true;

@@ -21,12 +21,16 @@
 
 using namespace KODI::GUILIB::GUIINFO;
 
-bool CWeatherGUIInfo::InitCurrentItem(CFileItem *item)
+bool CWeatherGUIInfo::InitCurrentItem(CFileItem* item)
 {
   return false;
 }
 
-bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
+bool CWeatherGUIInfo::GetLabel(std::string& value,
+                               const CFileItem* item,
+                               int contextWindow,
+                               const CGUIInfo& info,
+                               std::string* fallback) const
 {
   switch (info.GetInfo())
   {
@@ -55,11 +59,13 @@ bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int co
       value = CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_LOCATION);
       return true;
     case WEATHER_FANART_CODE:
-      value = URIUtils::GetFileName(CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+      value = URIUtils::GetFileName(
+          CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON));
       URIUtils::RemoveExtension(value);
       return true;
     case WEATHER_PLUGIN:
-      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON);
+      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+          CSettings::SETTING_WEATHER_ADDON);
       return true;
     default:
       break;
@@ -68,12 +74,18 @@ bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int co
   return false;
 }
 
-bool CWeatherGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CWeatherGUIInfo::GetInt(int& value,
+                             const CGUIListItem* gitem,
+                             int contextWindow,
+                             const CGUIInfo& info) const
 {
   return false;
 }
 
-bool CWeatherGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CWeatherGUIInfo::GetBool(bool& value,
+                              const CGUIListItem* gitem,
+                              int contextWindow,
+                              const CGUIInfo& info) const
 {
   switch (info.GetInfo())
   {

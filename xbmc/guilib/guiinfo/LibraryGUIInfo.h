@@ -26,10 +26,20 @@ public:
   ~CLibraryGUIInfo() override = default;
 
   // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
-  bool InitCurrentItem(CFileItem *item) override;
-  bool GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const override;
-  bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
-  bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
+  bool InitCurrentItem(CFileItem* item) override;
+  bool GetLabel(std::string& value,
+                const CFileItem* item,
+                int contextWindow,
+                const CGUIInfo& info,
+                std::string* fallback) const override;
+  bool GetInt(int& value,
+              const CGUIListItem* item,
+              int contextWindow,
+              const CGUIInfo& info) const override;
+  bool GetBool(bool& value,
+               const CGUIListItem* item,
+               int contextWindow,
+               const CGUIInfo& info) const override;
 
   bool GetLibraryBool(int condition) const;
   void SetLibraryBool(int condition, bool value);

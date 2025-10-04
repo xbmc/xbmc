@@ -85,22 +85,32 @@ void CLibraryGUIInfo::ResetLibraryBools()
   m_libraryRoleCounts.clear();
 }
 
-bool CLibraryGUIInfo::InitCurrentItem(CFileItem *item)
+bool CLibraryGUIInfo::InitCurrentItem(CFileItem* item)
 {
   return false;
 }
 
-bool CLibraryGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
+bool CLibraryGUIInfo::GetLabel(std::string& value,
+                               const CFileItem* item,
+                               int contextWindow,
+                               const CGUIInfo& info,
+                               std::string* fallback) const
 {
   return false;
 }
 
-bool CLibraryGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CLibraryGUIInfo::GetInt(int& value,
+                             const CGUIListItem* gitem,
+                             int contextWindow,
+                             const CGUIInfo& info) const
 {
   return false;
 }
 
-bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CLibraryGUIInfo::GetBool(bool& value,
+                              const CGUIListItem* gitem,
+                              int contextWindow,
+                              const CGUIInfo& info) const
 {
   switch (info.GetInfo())
   {
@@ -256,7 +266,7 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
     {
       const CURL url(info.GetData3());
       const std::shared_ptr<CProfileManager> profileManager =
-            CServiceBroker::GetSettingsComponent()->GetProfileManager();
+          CServiceBroker::GetSettingsComponent()->GetProfileManager();
       CFileItemList items;
 
       std::string libDir = profileManager->GetLibraryFolder();

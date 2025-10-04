@@ -22,19 +22,29 @@ public:
   ~CMusicGUIInfo() override = default;
 
   // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
-  bool InitCurrentItem(CFileItem *item) override;
-  bool GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const override;
+  bool InitCurrentItem(CFileItem* item) override;
+  bool GetLabel(std::string& value,
+                const CFileItem* item,
+                int contextWindow,
+                const CGUIInfo& info,
+                std::string* fallback) const override;
   bool GetFallbackLabel(std::string& value,
                         const CFileItem* item,
                         int contextWindow,
                         const CGUIInfo& info,
                         std::string* fallback) override;
-  bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
-  bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
+  bool GetInt(int& value,
+              const CGUIListItem* item,
+              int contextWindow,
+              const CGUIInfo& info) const override;
+  bool GetBool(bool& value,
+               const CGUIListItem* item,
+               int contextWindow,
+               const CGUIInfo& info) const override;
 
 private:
-  bool GetPartyModeLabel(std::string& value, const CGUIInfo &info) const;
-  bool GetPlaylistInfo(std::string& value, const CGUIInfo &info) const;
+  bool GetPartyModeLabel(std::string& value, const CGUIInfo& info) const;
+  bool GetPlaylistInfo(std::string& value, const CGUIInfo& info) const;
 };
 
 } // namespace KODI::GUILIB::GUIINFO

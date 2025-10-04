@@ -90,7 +90,7 @@ CPicturesGUIInfo::CPicturesGUIInfo() = default;
 
 CPicturesGUIInfo::~CPicturesGUIInfo() = default;
 
-void CPicturesGUIInfo::SetCurrentSlide(CFileItem *item)
+void CPicturesGUIInfo::SetCurrentSlide(CFileItem* item)
 {
   if (m_currentSlide && item && m_currentSlide->GetPath() == item->GetPath())
     return;
@@ -116,12 +116,16 @@ const CFileItem* CPicturesGUIInfo::GetCurrentSlide() const
   return m_currentSlide.get();
 }
 
-bool CPicturesGUIInfo::InitCurrentItem(CFileItem *item)
+bool CPicturesGUIInfo::InitCurrentItem(CFileItem* item)
 {
   return false;
 }
 
-bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
+bool CPicturesGUIInfo::GetLabel(std::string& value,
+                                const CFileItem* item,
+                                int contextWindow,
+                                const CGUIInfo& info,
+                                std::string* fallback) const
 {
   if (item->IsPicture() && info.GetInfo() >= LISTITEM_PICTURE_START &&
       info.GetInfo() <= LISTITEM_PICTURE_END)
@@ -226,12 +230,18 @@ bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int c
   return false;
 }
 
-bool CPicturesGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CPicturesGUIInfo::GetInt(int& value,
+                              const CGUIListItem* gitem,
+                              int contextWindow,
+                              const CGUIInfo& info) const
 {
   return false;
 }
 
-bool CPicturesGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CPicturesGUIInfo::GetBool(bool& value,
+                               const CGUIListItem* gitem,
+                               int contextWindow,
+                               const CGUIInfo& info) const
 {
   switch (info.GetInfo())
   {
