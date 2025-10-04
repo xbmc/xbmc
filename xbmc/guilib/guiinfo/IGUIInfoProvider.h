@@ -31,7 +31,7 @@ public:
    * @param item The new item.
    * @return True if the item was inited by the provider, false otherwise.
    */
-  virtual bool InitCurrentItem(CFileItem *item) = 0;
+  virtual bool InitCurrentItem(CFileItem* item) = 0;
 
   /*!
    * @brief Get a GUIInfoManager label string.
@@ -42,7 +42,11 @@ public:
    * @param fallback A fallback value. Can be nullptr.
    * @return True if the value was filled successfully, false otherwise.
    */
-  virtual bool GetLabel(std::string &value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const = 0;
+  virtual bool GetLabel(std::string& value,
+                        const CFileItem* item,
+                        int contextWindow,
+                        const CGUIInfo& info,
+                        std::string* fallback) const = 0;
 
   /*!
    * @brief Get a GUIInfoManager label fallback string. Will be called if none of the registered
@@ -68,7 +72,10 @@ public:
    * @param info The GUI info (label id + additional data).
    * @return True if the value was filled successfully, false otherwise.
    */
-  virtual bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const = 0;
+  virtual bool GetInt(int& value,
+                      const CGUIListItem* item,
+                      int contextWindow,
+                      const CGUIInfo& info) const = 0;
 
   /*!
    * @brief Get a GUIInfoManager bool value.
@@ -78,14 +85,19 @@ public:
    * @param info The GUI info (label id + additional data).
    * @return True if the value was filled successfully, false otherwise.
    */
-  virtual bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const = 0;
+  virtual bool GetBool(bool& value,
+                       const CGUIListItem* item,
+                       int contextWindow,
+                       const CGUIInfo& info) const = 0;
 
   /*!
    * @brief Set new audio/video stream info data.
    * @param audioInfo New audio stream info.
    * @param videoInfo New video stream info.
    */
-  virtual void UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo, const SubtitleStreamInfo& subtitleInfo) = 0;
+  virtual void UpdateAVInfo(const AudioStreamInfo& audioInfo,
+                            const VideoStreamInfo& videoInfo,
+                            const SubtitleStreamInfo& subtitleInfo) = 0;
 };
 
 } // namespace KODI::GUILIB::GUIINFO

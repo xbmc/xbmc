@@ -29,5 +29,5 @@ uint32_t CGUIInfo::GetData1() const
 {
   // we strip out the top 8 bits, where we keep flags
   // and return the unflagged data
-  return m_data1 & ((1 << 24) -1);
+  return m_data1 & ((1 << 24) - 1);
 }
