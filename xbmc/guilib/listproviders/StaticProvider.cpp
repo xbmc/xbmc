@@ -17,7 +17,7 @@ CStaticListProvider::CStaticListProvider(const TiXmlElement* element, int parent
 {
   assert(element);
 
-  const TiXmlElement *item = element->FirstChildElement("item");
+  const TiXmlElement* item = element->FirstChildElement("item");
   while (item)
   {
     if (item->FirstChild())
@@ -28,14 +28,15 @@ CStaticListProvider::CStaticListProvider(const TiXmlElement* element, int parent
 
   if (XMLUtils::GetInt(element, "default", m_defaultItem))
   {
-    const char *always = element->FirstChildElement("default")->Attribute("always");
+    const char* always = element->FirstChildElement("default")->Attribute("always");
     if (always && StringUtils::CompareNoCase(always, "true", 4) == 0)
       m_defaultAlways = true;
   }
 }
 
 CStaticListProvider::CStaticListProvider(const std::vector<CGUIStaticItemPtr>& items)
-  : IListProvider(0), m_items(items)
+  : IListProvider(0),
+    m_items(items)
 {
 }
 
