@@ -18,6 +18,7 @@
 #include "utils/ActorProtocol.h"
 
 #include <memory>
+#include <mutex>
 #include <utility>
 
 class CAEBitstreamPacker;
@@ -108,6 +109,8 @@ public:
   CSinkControlProtocol m_controlPort;
   CSinkDataProtocol m_dataPort;
 
+  void HotSwapSink(std::unique_ptr<IAESink> newSink);
+
 protected:
   void Process() override;
   void StateMachine(int signal, Protocol *port, Message *msg);
@@ -155,6 +158,7 @@ protected:
   std::unique_ptr<CAEBitstreamPacker> m_packer;
   bool m_needIecPack{false};
   bool m_streamNoise;
+  std::mutex m_sinkMutex;
 };
 
 }

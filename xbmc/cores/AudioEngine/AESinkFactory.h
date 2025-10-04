@@ -65,6 +65,7 @@ public:
   static std::unique_ptr<IAESink> Create(const std::string& device, AEAudioFormat& desiredFormat);
   static void EnumerateEx(std::vector<AESinkInfo>& list, bool force, const std::string& driver);
   static void Cleanup();
+  static std::unique_ptr<IAESink> CreateDummy(AEAudioFormat& desiredFormat);
 
 protected:
   static std::map<std::string, AESinkRegEntry> m_AESinkRegEntry;
