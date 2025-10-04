@@ -34,13 +34,15 @@ using namespace PVR;
 
 void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
 {
-  const std::string iconPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_PVRMENU_ICONPATH);
+  const std::string iconPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_PVRMENU_ICONPATH);
   if (iconPath.empty())
     return;
 
   // fetch files in icon path for fast lookup
   CFileItemList fileItemList;
-  XFILE::CDirectory::GetDirectory(iconPath, fileItemList, ".jpg|.png|.tbn", XFILE::DIR_FLAG_DEFAULTS);
+  XFILE::CDirectory::GetDirectory(iconPath, fileItemList, ".jpg|.png|.tbn",
+                                  XFILE::DIR_FLAG_DEFAULTS);
 
   if (fileItemList.IsEmpty())
     return;

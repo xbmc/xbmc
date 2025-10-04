@@ -21,7 +21,8 @@ public:
   CPVRSignalStatus() = default;
 
   CPVRSignalStatus(const std::string& adapterName, const std::string& adapterStatus)
-    : m_adapterName(adapterName), m_adapterStatus(adapterStatus)
+    : m_adapterName(adapterName),
+      m_adapterStatus(adapterStatus)
   {
   }
 

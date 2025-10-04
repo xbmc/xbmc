@@ -14,23 +14,23 @@
 
 namespace PVR
 {
-  class CGUIWindowPVRTVTimers : public CGUIWindowPVRTimersBase
-  {
-  public:
-    CGUIWindowPVRTVTimers();
+class CGUIWindowPVRTVTimers : public CGUIWindowPVRTimersBase
+{
+public:
+  CGUIWindowPVRTVTimers();
 
-  protected:
-    std::string GetRootPath() override;
-    std::string GetDirectoryPath() override;
-  };
+protected:
+  std::string GetRootPath() override;
+  std::string GetDirectoryPath() override;
+};
 
-  class CGUIWindowPVRRadioTimers : public CGUIWindowPVRTimersBase
-  {
-  public:
-    CGUIWindowPVRRadioTimers();
+class CGUIWindowPVRRadioTimers : public CGUIWindowPVRTimersBase
+{
+public:
+  CGUIWindowPVRRadioTimers();
 
-  protected:
-    std::string GetRootPath() override;
-    std::string GetDirectoryPath() override;
-  };
-}
+protected:
+  std::string GetRootPath() override;
+  std::string GetDirectoryPath() override;
+};
+} // namespace PVR

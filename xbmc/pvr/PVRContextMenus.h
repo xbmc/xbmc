@@ -27,7 +27,8 @@ struct PVRContextMenuEvent
 {
   PVRContextMenuEvent(const PVRContextMenuEventAction& a,
                       const std::shared_ptr<IContextMenuItem>& i)
-    : action(a), item(i)
+    : action(a),
+      item(i)
   {
   }
 

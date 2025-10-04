@@ -55,7 +55,8 @@ class AsyncSearchAction : private IRunnable
 public:
   AsyncSearchAction() = delete;
   AsyncSearchAction(CFileItemList* items, CPVREpgSearchFilter* filter)
-    : m_items(items), m_filter(filter)
+    : m_items(items),
+      m_filter(filter)
   {
   }
   bool Execute();

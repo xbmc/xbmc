@@ -57,7 +57,8 @@ void CPVRGUITimesInfo::UpdatePlayingTag()
 {
   const std::shared_ptr<const CPVRChannel> currentChannel =
       CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
-  std::shared_ptr<CPVREpgInfoTag> currentTag = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingEpgTag();
+  std::shared_ptr<CPVREpgInfoTag> currentTag =
+      CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingEpgTag();
 
   if (currentChannel || currentTag)
   {
@@ -109,7 +110,8 @@ void CPVRGUITimesInfo::UpdatePlayingTag()
 
 void CPVRGUITimesInfo::UpdateTimeshiftData()
 {
-  if (!CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() && !CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
+  if (!CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() &&
+      !CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
   {
     // If nothing is playing (anymore), there is no need to update data.
     Reset();
@@ -246,7 +248,9 @@ void CPVRGUITimesInfo::Update()
   UpdateTimeshiftData();
 }
 
-std::string CPVRGUITimesInfo::TimeToTimeString(time_t datetime, TIME_FORMAT format, bool withSeconds)
+std::string CPVRGUITimesInfo::TimeToTimeString(time_t datetime,
+                                               TIME_FORMAT format,
+                                               bool withSeconds)
 {
   CDateTime time;
   time.SetFromUTCDateTime(datetime);
@@ -341,7 +345,8 @@ int CPVRGUITimesInfo::GetElapsedTime() const
   if (m_playingEpgTag || m_iTimeshiftStartTime)
   {
     CDateTime current(m_iTimeshiftPlayTime);
-    CDateTime start = m_playingEpgTag ? m_playingEpgTag->StartAsUTC() : CDateTime(m_iTimeshiftStartTime);
+    CDateTime start =
+        m_playingEpgTag ? m_playingEpgTag->StartAsUTC() : CDateTime(m_iTimeshiftStartTime);
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
     return time.GetSecondsTotal();
   }
@@ -463,5 +468,8 @@ int CPVRGUITimesInfo::GetEpgEventProgress(const std::shared_ptr<const CPVREpgInf
 bool CPVRGUITimesInfo::IsTimeshifting() const
 {
   std::unique_lock lock(m_critSection);
-  return (m_iTimeshiftOffset > static_cast<unsigned int>(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeshiftThreshold));
+  return (
+      m_iTimeshiftOffset >
+      static_cast<unsigned int>(
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeshiftThreshold));
 }

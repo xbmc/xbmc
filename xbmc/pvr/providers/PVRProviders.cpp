@@ -187,7 +187,8 @@ bool CPVRProviders::UpdateDefaultEntries(const CPVRProvidersContainer& newProvid
   const auto newProviderList = newProviders.GetProvidersList();
   bChanged = std::accumulate(
       newProviderList.cbegin(), newProviderList.cend(), false,
-      [this](bool changed, const auto& newProvider) {
+      [this](bool changed, const auto& newProvider)
+      {
         return (CheckAndPersistEntry(newProvider, ProviderUpdateMode::BY_CLIENT) != nullptr)
                    ? true
                    : changed;

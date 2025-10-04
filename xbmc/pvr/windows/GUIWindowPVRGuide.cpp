@@ -930,7 +930,8 @@ void CGUIWindowPVRGuideBase::GetChannelNumbers(std::vector<std::string>& channel
 }
 
 CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase* pGuideWindow)
-  : CThread("epg-grid-refresh-timeline-items"), m_pGuideWindow(pGuideWindow)
+  : CThread("epg-grid-refresh-timeline-items"),
+    m_pGuideWindow(pGuideWindow)
 {
 }
 

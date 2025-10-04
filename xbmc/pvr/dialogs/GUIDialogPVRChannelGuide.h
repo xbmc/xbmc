@@ -14,21 +14,21 @@
 
 namespace PVR
 {
-  class CPVRChannel;
+class CPVRChannel;
 
-  class CGUIDialogPVRChannelGuide : public CGUIDialogPVRItemsViewBase
-  {
-  public:
-    CGUIDialogPVRChannelGuide();
-    ~CGUIDialogPVRChannelGuide() override = default;
+class CGUIDialogPVRChannelGuide : public CGUIDialogPVRItemsViewBase
+{
+public:
+  CGUIDialogPVRChannelGuide();
+  ~CGUIDialogPVRChannelGuide() override = default;
 
-    void Open(const std::shared_ptr<const CPVRChannel>& channel);
+  void Open(const std::shared_ptr<const CPVRChannel>& channel);
 
-  protected:
-    void OnInitWindow() override;
-    void OnDeinitWindow(int nextWindowID) override;
+protected:
+  void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
 
-  private:
-    std::shared_ptr<const CPVRChannel> m_channel;
-  };
-}
+private:
+  std::shared_ptr<const CPVRChannel> m_channel;
+};
+} // namespace PVR

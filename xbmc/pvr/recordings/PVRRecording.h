@@ -45,7 +45,8 @@ class CPVRRecordingUid final
 {
 public:
   CPVRRecordingUid(int iClientId, const std::string& strRecordingId)
-    : m_iClientId(iClientId), m_strRecordingId(strRecordingId)
+    : m_iClientId(iClientId),
+      m_strRecordingId(strRecordingId)
   {
   }
 

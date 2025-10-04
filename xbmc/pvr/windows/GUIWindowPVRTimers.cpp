@@ -16,7 +16,7 @@
 using namespace PVR;
 
 CGUIWindowPVRTVTimers::CGUIWindowPVRTVTimers()
-: CGUIWindowPVRTimersBase(false, WINDOW_TV_TIMERS, "MyPVRTimers.xml")
+  : CGUIWindowPVRTimersBase(false, WINDOW_TV_TIMERS, "MyPVRTimers.xml")
 {
 }
 
@@ -28,11 +28,12 @@ std::string CGUIWindowPVRTVTimers::GetRootPath()
 std::string CGUIWindowPVRTVTimers::GetDirectoryPath()
 {
   const std::string basePath{CPVRTimersPath(false, false).AsString()};
-  return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
+  return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath()
+                                                                  : basePath;
 }
 
 CGUIWindowPVRRadioTimers::CGUIWindowPVRRadioTimers()
-: CGUIWindowPVRTimersBase(true, WINDOW_RADIO_TIMERS, "MyPVRTimers.xml")
+  : CGUIWindowPVRTimersBase(true, WINDOW_RADIO_TIMERS, "MyPVRTimers.xml")
 {
 }
 
@@ -44,5 +45,6 @@ std::string CGUIWindowPVRRadioTimers::GetRootPath()
 std::string CGUIWindowPVRRadioTimers::GetDirectoryPath()
 {
   const std::string basePath{CPVRTimersPath(true, false).AsString()};
-  return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath() : basePath;
+  return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath()
+                                                                  : basePath;
 }

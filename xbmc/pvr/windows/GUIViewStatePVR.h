@@ -18,7 +18,8 @@ class CGUIViewStatePVR : public CGUIViewState
 {
 public:
   CGUIViewStatePVR(const int windowId, const CFileItemList& items)
-    : CGUIViewState(items), m_windowId(windowId)
+    : CGUIViewState(items),
+      m_windowId(windowId)
   {
   }
 

@@ -17,26 +17,26 @@
 
 namespace PVR
 {
-  class CGUIDialogPVRClientPriorities : public CGUIDialogSettingsManualBase
-  {
-  public:
-    CGUIDialogPVRClientPriorities();
+class CGUIDialogPVRClientPriorities : public CGUIDialogSettingsManualBase
+{
+public:
+  CGUIDialogPVRClientPriorities();
 
-  protected:
-    // implementation of ISettingCallback
-    void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+protected:
+  // implementation of ISettingCallback
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
-    // specialization of CGUIDialogSettingsBase
-    std::string GetSettingsLabel(const std::shared_ptr<ISetting>& pSetting) override;
-    bool AllowResettingSettings() const override { return false; }
-    bool Save() override;
-    void SetupView() override;
+  // specialization of CGUIDialogSettingsBase
+  std::string GetSettingsLabel(const std::shared_ptr<ISetting>& pSetting) override;
+  bool AllowResettingSettings() const override { return false; }
+  bool Save() override;
+  void SetupView() override;
 
-    // specialization of CGUIDialogSettingsManualBase
-    void InitializeSettings() override;
+  // specialization of CGUIDialogSettingsManualBase
+  void InitializeSettings() override;
 
-  private:
-    CPVRClientMap m_clients;
-    std::map<std::string, int, std::less<>> m_changedValues;
-  };
+private:
+  CPVRClientMap m_clients;
+  std::map<std::string, int, std::less<>> m_changedValues;
+};
 } // namespace PVR

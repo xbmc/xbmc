@@ -88,7 +88,10 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted,
                                        const std::string& strChannelName,
                                        const CDateTime& recordingTime,
                                        const std::string& strId)
-  : m_bValid(true), m_bRoot(false), m_bActive(!bDeleted), m_bRadio(bRadio)
+  : m_bValid(true),
+    m_bRoot(false),
+    m_bActive(!bDeleted),
+    m_bRadio(bRadio)
 {
   std::string strDirectoryN(TrimSlashes(strDirectory));
   if (!strDirectoryN.empty())

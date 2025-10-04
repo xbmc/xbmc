@@ -19,7 +19,8 @@ CPVRCachedImage::CPVRCachedImage(const std::string& owner) : m_owner(owner)
 }
 
 CPVRCachedImage::CPVRCachedImage(const std::string& clientImage, const std::string& owner)
-  : m_clientImage(clientImage), m_owner(owner)
+  : m_clientImage(clientImage),
+    m_owner(owner)
 {
   UpdateLocalImage();
 }

@@ -25,7 +25,11 @@ namespace PVR
 struct GridItem
 {
   GridItem(const std::shared_ptr<CFileItem>& _item, float _width, int _startBlock, int _endBlock)
-    : item(_item), originWidth(_width), width(_width), startBlock(_startBlock), endBlock(_endBlock)
+    : item(_item),
+      originWidth(_width),
+      width(_width),
+      startBlock(_startBlock),
+      endBlock(_endBlock)
   {
   }
 

@@ -32,7 +32,8 @@ using namespace PVR;
 bool CPVREpgDatabase::Open()
 {
   std::unique_lock lock(m_critSection);
-  return CDatabase::Open(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseEpg);
+  return CDatabase::Open(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseEpg);
 }
 
 void CPVREpgDatabase::Close()
@@ -59,13 +60,11 @@ void CPVREpgDatabase::CreateTables()
 
   std::unique_lock lock(m_critSection);
 
-  m_pDS->exec(
-      "CREATE TABLE epg ("
-        "idEpg           integer primary key, "
-        "sName           varchar(64),"
-        "sScraperName    varchar(32)"
-      ")"
-  );
+  m_pDS->exec("CREATE TABLE epg ("
+              "idEpg           integer primary key, "
+              "sName           varchar(64),"
+              "sScraperName    varchar(32)"
+              ")");
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'epgtags'");
   m_pDS->exec("CREATE TABLE epgtags ("
@@ -104,10 +103,9 @@ void CPVREpgDatabase::CreateTables()
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'lastepgscan'");
   m_pDS->exec("CREATE TABLE lastepgscan ("
-        "idEpg integer primary key, "
-        "sLastScan varchar(20)"
-      ")"
-  );
+              "idEpg integer primary key, "
+              "sLastScan varchar(20)"
+              ")");
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'savedsearches'");
   m_pDS->exec("CREATE TABLE savedsearches ("
@@ -182,112 +180,105 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
     const bool isMySQL = StringUtils::EqualsNoCase(
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseEpg.type, "mysql");
 
-    m_pDS->exec(
-        "CREATE TABLE epgtags_new ("
-        "idBroadcast     integer primary key, "
-        "iBroadcastUid   integer, "
-        "idEpg           integer, "
-        "sTitle          varchar(128), "
-        "sPlotOutline    text, "
-        "sPlot           text, "
-        "sOriginalTitle  varchar(128), "
-        "sCast           varchar(255), "
-        "sDirector       varchar(255), "
-        "sWriter         varchar(255), "
-        "iYear           integer, "
-        "sIMDBNumber     varchar(50), "
-        "sIconPath       varchar(255), "
-        "iStartTime      integer, "
-        "iEndTime        integer, "
-        "iGenreType      integer, "
-        "iGenreSubType   integer, "
-        "sGenre          varchar(128), "
-        "sFirstAired     varchar(32), "
-        "iParentalRating integer, "
-        "iStarRating     integer, "
-        "iSeriesId       integer, "
-        "iEpisodeId      integer, "
-        "iEpisodePart    integer, "
-        "sEpisodeName    varchar(128), "
-        "iFlags          integer, "
-        "sSeriesLink     varchar(255)"
-        ")"
-    );
+    m_pDS->exec("CREATE TABLE epgtags_new ("
+                "idBroadcast     integer primary key, "
+                "iBroadcastUid   integer, "
+                "idEpg           integer, "
+                "sTitle          varchar(128), "
+                "sPlotOutline    text, "
+                "sPlot           text, "
+                "sOriginalTitle  varchar(128), "
+                "sCast           varchar(255), "
+                "sDirector       varchar(255), "
+                "sWriter         varchar(255), "
+                "iYear           integer, "
+                "sIMDBNumber     varchar(50), "
+                "sIconPath       varchar(255), "
+                "iStartTime      integer, "
+                "iEndTime        integer, "
+                "iGenreType      integer, "
+                "iGenreSubType   integer, "
+                "sGenre          varchar(128), "
+                "sFirstAired     varchar(32), "
+                "iParentalRating integer, "
+                "iStarRating     integer, "
+                "iSeriesId       integer, "
+                "iEpisodeId      integer, "
+                "iEpisodePart    integer, "
+                "sEpisodeName    varchar(128), "
+                "iFlags          integer, "
+                "sSeriesLink     varchar(255)"
+                ")");
 
-    m_pDS->exec(
-        "INSERT INTO epgtags_new ("
-        "idBroadcast, "
-        "iBroadcastUid, "
-        "idEpg, "
-        "sTitle, "
-        "sPlotOutline, "
-        "sPlot, "
-        "sOriginalTitle, "
-        "sCast, "
-        "sDirector, "
-        "sWriter, "
-        "iYear, "
-        "sIMDBNumber, "
-        "sIconPath, "
-        "iStartTime, "
-        "iEndTime, "
-        "iGenreType, "
-        "iGenreSubType, "
-        "sGenre, "
-        "sFirstAired, "
-        "iParentalRating, "
-        "iStarRating, "
-        "iSeriesId, "
-        "iEpisodeId, "
-        "iEpisodePart, "
-        "sEpisodeName, "
-        "iFlags, "
-        "sSeriesLink"
-        ") "
-        "SELECT "
-        "idBroadcast, "
-        "iBroadcastUid, "
-        "idEpg, "
-        "sTitle, "
-        "sPlotOutline, "
-        "sPlot, "
-        "sOriginalTitle, "
-        "sCast, "
-        "sDirector, "
-        "sWriter, "
-        "iYear, "
-        "sIMDBNumber, "
-        "sIconPath, "
-        "iStartTime, "
-        "iEndTime, "
-        "iGenreType, "
-        "iGenreSubType, "
-        "sGenre, "
-        "'' AS sFirstAired, "
-        "iParentalRating, "
-        "iStarRating, "
-        "iSeriesId, "
-        "iEpisodeId, "
-        "iEpisodePart, "
-        "sEpisodeName, "
-        "iFlags, "
-        "sSeriesLink "
-        "FROM epgtags"
-    );
+    m_pDS->exec("INSERT INTO epgtags_new ("
+                "idBroadcast, "
+                "iBroadcastUid, "
+                "idEpg, "
+                "sTitle, "
+                "sPlotOutline, "
+                "sPlot, "
+                "sOriginalTitle, "
+                "sCast, "
+                "sDirector, "
+                "sWriter, "
+                "iYear, "
+                "sIMDBNumber, "
+                "sIconPath, "
+                "iStartTime, "
+                "iEndTime, "
+                "iGenreType, "
+                "iGenreSubType, "
+                "sGenre, "
+                "sFirstAired, "
+                "iParentalRating, "
+                "iStarRating, "
+                "iSeriesId, "
+                "iEpisodeId, "
+                "iEpisodePart, "
+                "sEpisodeName, "
+                "iFlags, "
+                "sSeriesLink"
+                ") "
+                "SELECT "
+                "idBroadcast, "
+                "iBroadcastUid, "
+                "idEpg, "
+                "sTitle, "
+                "sPlotOutline, "
+                "sPlot, "
+                "sOriginalTitle, "
+                "sCast, "
+                "sDirector, "
+                "sWriter, "
+                "iYear, "
+                "sIMDBNumber, "
+                "sIconPath, "
+                "iStartTime, "
+                "iEndTime, "
+                "iGenreType, "
+                "iGenreSubType, "
+                "sGenre, "
+                "'' AS sFirstAired, "
+                "iParentalRating, "
+                "iStarRating, "
+                "iSeriesId, "
+                "iEpisodeId, "
+                "iEpisodePart, "
+                "sEpisodeName, "
+                "iFlags, "
+                "sSeriesLink "
+                "FROM epgtags");
 
     if (isMySQL)
       m_pDS->exec(
-        "UPDATE epgtags_new INNER JOIN epgtags ON epgtags_new.idBroadcast = epgtags.idBroadcast "
-        "SET epgtags_new.sFirstAired = DATE(FROM_UNIXTIME(epgtags.iFirstAired)) "
-        "WHERE epgtags.iFirstAired > 0"
-      );
+          "UPDATE epgtags_new INNER JOIN epgtags ON epgtags_new.idBroadcast = epgtags.idBroadcast "
+          "SET epgtags_new.sFirstAired = DATE(FROM_UNIXTIME(epgtags.iFirstAired)) "
+          "WHERE epgtags.iFirstAired > 0");
     else
-      m_pDS->exec(
-        "UPDATE epgtags_new SET sFirstAired = "
-        "COALESCE((SELECT STRFTIME('%Y-%m-%d', iFirstAired, 'UNIXEPOCH') "
-        "FROM epgtags WHERE epgtags.idBroadcast = epgtags_new.idBroadcast "
-        "AND epgtags.iFirstAired > 0), '')"
-      );
+      m_pDS->exec("UPDATE epgtags_new SET sFirstAired = "
+                  "COALESCE((SELECT STRFTIME('%Y-%m-%d', iFirstAired, 'UNIXEPOCH') "
+                  "FROM epgtags WHERE epgtags.idBroadcast = epgtags_new.idBroadcast "
+                  "AND epgtags.iFirstAired > 0), '')");
 
     m_pDS->exec("DROP TABLE epgtags");
     m_pDS->exec("ALTER TABLE epgtags_new RENAME TO epgtags");
@@ -1199,7 +1190,7 @@ bool CPVREpgDatabase::QueuePersistLastEpgScanTimeQuery(int iEpgId, const CDateTi
 {
   std::unique_lock lock(m_critSection);
   std::string strQuery = PrepareSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
-      iEpgId, lastScanTime.GetAsDBDateTime().c_str());
+                                    iEpgId, lastScanTime.GetAsDBDateTime().c_str());
 
   return QueueInsertQuery(strQuery);
 }
