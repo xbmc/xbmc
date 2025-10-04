@@ -5268,6 +5268,10 @@ bool CVideoPlayer::Supports(ESCALINGMETHOD method) const
 
 bool CVideoPlayer::Supports(ERENDERFEATURE feature) const
 {
+#ifndef HAVE_LIBPOSTPROC
+  if (feature == ERENDERFEATURE::RENDERFEATURE_POSTPROCESS)
+    return false;
+#endif
   return m_renderManager.Supports(feature);
 }
 
