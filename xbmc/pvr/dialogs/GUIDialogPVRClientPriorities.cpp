@@ -21,8 +21,8 @@
 
 using namespace PVR;
 
-CGUIDialogPVRClientPriorities::CGUIDialogPVRClientPriorities() :
-  CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES, "DialogSettings.xml")
+CGUIDialogPVRClientPriorities::CGUIDialogPVRClientPriorities()
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES, "DialogSettings.xml")
 {
   m_loadType = LOAD_EVERY_TIME;
 }
@@ -85,7 +85,8 @@ void CGUIDialogPVRClientPriorities::OnSettingChanged(const std::shared_ptr<const
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
-  m_changedValues[setting->GetId()] = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
+  m_changedValues[setting->GetId()] =
+      std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
 }
 
 bool CGUIDialogPVRClientPriorities::Save()

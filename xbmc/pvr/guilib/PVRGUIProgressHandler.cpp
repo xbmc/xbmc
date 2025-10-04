@@ -25,7 +25,8 @@ namespace PVR
 {
 
 CPVRGUIProgressHandler::CPVRGUIProgressHandler(const std::string& strTitle)
-  : CThread("PVRGUIProgressHandler"), m_strTitle(strTitle)
+  : CThread("PVRGUIProgressHandler"),
+    m_strTitle(strTitle)
 {
 }
 

@@ -125,7 +125,7 @@ public:
 
 private:
   CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag) = delete;
-  const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
+  const CPVRRadioRDSInfoTag& operator=(const CPVRRadioRDSInfoTag& tag) = delete;
 
   mutable CCriticalSection m_critSection;
 
@@ -199,4 +199,4 @@ private:
   bool m_bHaveRadioText;
   bool m_bHaveRadioTextPlus;
 };
-}
+} // namespace PVR

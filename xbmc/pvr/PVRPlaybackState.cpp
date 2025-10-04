@@ -44,7 +44,10 @@ public:
   CLastWatchedUpdateTimer(CPVRPlaybackState& state,
                           const std::shared_ptr<CPVRChannelGroupMember>& channel,
                           const CDateTime& time)
-    : CTimer(this), m_state(state), m_channel(channel), m_time(time)
+    : CTimer(this),
+      m_state(state),
+      m_channel(channel),
+      m_time(time)
   {
   }
 

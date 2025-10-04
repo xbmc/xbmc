@@ -24,7 +24,6 @@
 
 using namespace PVR;
 
-
 const std::string CPVRProvider::IMAGE_OWNER_PATTERN = "pvrprovider";
 
 CPVRProvider::CPVRProvider(int iUniqueId, int iClientId)

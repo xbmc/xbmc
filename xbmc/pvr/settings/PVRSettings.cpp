@@ -41,7 +41,8 @@ CPVRSettings::CPVRSettings(const SettingsContainer& settingNames)
   if (m_iInstances == 0)
   {
     // statics must only be registered once, not per instance
-    settings->GetSettingsManager()->RegisterSettingOptionsFiller("pvrrecordmargins", MarginTimeFiller);
+    settings->GetSettingsManager()->RegisterSettingOptionsFiller("pvrrecordmargins",
+                                                                 MarginTimeFiller);
     settings->GetSettingsManager()->AddDynamicCondition("pvrsettingvisible", IsSettingVisible);
     settings->GetSettingsManager()->AddDynamicCondition("checkpvrparentalpin", CheckParentalPin);
   }
@@ -80,7 +81,8 @@ void CPVRSettings::Init(const SettingsContainer& settingNames)
 {
   for (const auto& settingName : settingNames)
   {
-    SettingPtr setting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(settingName);
+    SettingPtr setting =
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(settingName);
     if (!setting)
     {
       CLog::LogF(LOGERROR, "Unknown PVR setting '{}'", settingName);
@@ -127,7 +129,8 @@ bool CPVRSettings::GetBoolValue(const std::string& settingName) const
   auto settingIt = m_settings.find(settingName);
   if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::Boolean)
   {
-    std::shared_ptr<const CSettingBool> setting = std::dynamic_pointer_cast<const CSettingBool>((*settingIt).second);
+    std::shared_ptr<const CSettingBool> setting =
+        std::dynamic_pointer_cast<const CSettingBool>((*settingIt).second);
     if (setting)
       return setting->GetValue();
   }
@@ -142,7 +145,8 @@ int CPVRSettings::GetIntValue(const std::string& settingName) const
   auto settingIt = m_settings.find(settingName);
   if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::Integer)
   {
-    std::shared_ptr<const CSettingInt> setting = std::dynamic_pointer_cast<const CSettingInt>((*settingIt).second);
+    std::shared_ptr<const CSettingInt> setting =
+        std::dynamic_pointer_cast<const CSettingInt>((*settingIt).second);
     if (setting)
       return setting->GetValue();
   }
@@ -157,7 +161,8 @@ std::string CPVRSettings::GetStringValue(const std::string& settingName) const
   auto settingIt = m_settings.find(settingName);
   if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::String)
   {
-    std::shared_ptr<const CSettingString> setting = std::dynamic_pointer_cast<const CSettingString>((*settingIt).second);
+    std::shared_ptr<const CSettingString> setting =
+        std::dynamic_pointer_cast<const CSettingString>((*settingIt).second);
     if (setting)
       return setting->GetValue();
   }

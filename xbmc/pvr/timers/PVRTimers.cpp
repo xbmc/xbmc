@@ -117,9 +117,8 @@ bool CPVRTimers::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>
     const std::vector<std::shared_ptr<CPVRTimerInfoTag>> timers{database->GetTimers(clients)};
 
     if (std::accumulate(timers.cbegin(), timers.cend(), false,
-                        [this](bool changed, const auto& timer) {
-                          return (UpdateEntry(timer) != nullptr) ? true : changed;
-                        }))
+                        [this](bool changed, const auto& timer)
+                        { return (UpdateEntry(timer) != nullptr) ? true : changed; }))
       NotifyTimersEvent();
   }
 

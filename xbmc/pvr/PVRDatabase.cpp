@@ -118,7 +118,8 @@ std::string GetClientIdsSQL(const std::vector<std::shared_ptr<CPVRClient>>& clie
 bool CPVRDatabase::Open()
 {
   std::unique_lock lock(m_critSection);
-  return CDatabase::Open(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseTV);
+  return CDatabase::Open(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseTV);
 }
 
 void CPVRDatabase::Close()
@@ -184,17 +185,15 @@ void CPVRDatabase::CreateTables()
               ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'map_channelgroups_channels'");
-  m_pDS->exec(
-      "CREATE TABLE map_channelgroups_channels ("
-        "idChannel         integer, "
-        "idGroup           integer, "
-        "iChannelNumber    integer, "
-        "iSubChannelNumber integer, "
-        "iOrder            integer, "
-        "iClientChannelNumber    integer, "
-        "iClientSubChannelNumber integer"
-      ")"
-  );
+  m_pDS->exec("CREATE TABLE map_channelgroups_channels ("
+              "idChannel         integer, "
+              "idGroup           integer, "
+              "iChannelNumber    integer, "
+              "iSubChannelNumber integer, "
+              "iOrder            integer, "
+              "iClientChannelNumber    integer, "
+              "iClientSubChannelNumber integer"
+              ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'clients'");
   m_pDS->exec("CREATE TABLE clients ("
@@ -218,9 +217,11 @@ void CPVRDatabase::CreateAnalytics()
 
   CLog::LogF(LOGINFO, "Creating PVR database indices");
   m_pDS->exec("CREATE INDEX idx_clients_idClient on clients(idClient);");
-  m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
+  m_pDS->exec(
+      "CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
   m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
-  m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
+  m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, "
+              "idChannel);");
   m_pDS->exec("CREATE INDEX idx_timers_iClientIndex on timers(iClientIndex);");
 }
 
@@ -650,8 +651,7 @@ bool CPVRDatabase::Persist(CPVRProvider& provider, bool updateRecord /* = false 
 
 bool CPVRDatabase::Delete(const CPVRProvider& provider)
 {
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting provider '{}' from the database",
-              provider.GetName());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting provider '{}' from the database", provider.GetName());
 
   std::unique_lock lock(m_critSection);
 
@@ -684,8 +684,7 @@ bool CPVRDatabase::Get(CPVRProviders& results,
 
         provider->SetDatabaseId(m_pDS->fv("idProvider").get_asInt());
         provider->SetName(m_pDS->fv("sName").get_asString());
-        provider->SetType(
-            static_cast<PVR_PROVIDER_TYPE>(m_pDS->fv("iType").get_asInt()));
+        provider->SetType(static_cast<PVR_PROVIDER_TYPE>(m_pDS->fv("iType").get_asInt()));
         provider->SetIconPath(m_pDS->fv("sIconPath").get_asString());
         provider->SetCountriesFromDBString(m_pDS->fv("sCountries").get_asString());
         provider->SetLanguagesFromDBString(m_pDS->fv("sLanguages").get_asString());
@@ -997,7 +996,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRDatabase::Get(
       }
       m_pDS->close();
     }
-    catch(...)
+    catch (...)
     {
       CLog::LogF(LOGERROR, "Failed to get channel group members");
     }
@@ -1352,33 +1351,47 @@ bool CPVRDatabase::Persist(CPVRTimerInfoTag& timer)
   // insert a new entry if this is a new timer, or replace the existing one otherwise
   std::string strQuery;
   if (timer.m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
-    strQuery = PrepareSQL("INSERT INTO timers "
-                          "(iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, sSeriesLink, sStartTime,"
-                          " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, iMarginStart, iMarginEnd,"
-                          " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, iLifetime, iMaxRecordings, iRecordingGroup) "
-                          "VALUES (%i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, %i, %i, '%s', %i, %i, %i, %i, %i, %i);",
-                          timer.m_iParentClientIndex, timer.m_iClientId, timer.GetTimerType()->GetTypeId(), timer.m_state,
-                          timer.Title().c_str(), timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
-                          timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
-                          timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
-                          timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays, timer.UniqueBroadcastID(),
-                          timer.m_iMarginStart, timer.m_iMarginEnd, timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
-                          timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime, timer.m_iMaxRecordings, timer.m_iRecordingGroup);
+    strQuery = PrepareSQL(
+        "INSERT INTO timers "
+        "(iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, "
+        "sSeriesLink, sStartTime,"
+        " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, iMarginStart, "
+        "iMarginEnd,"
+        " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, iLifetime, "
+        "iMaxRecordings, iRecordingGroup) "
+        "VALUES (%i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, %i, %i, '%s', "
+        "%i, %i, %i, %i, %i, %i);",
+        timer.m_iParentClientIndex, timer.m_iClientId, timer.GetTimerType()->GetTypeId(),
+        timer.m_state, timer.Title().c_str(), timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
+        timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
+        timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
+        timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays,
+        timer.UniqueBroadcastID(), timer.m_iMarginStart, timer.m_iMarginEnd,
+        timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
+        timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime, timer.m_iMaxRecordings,
+        timer.m_iRecordingGroup);
   else
-    strQuery = PrepareSQL("REPLACE INTO timers "
-                          "(iClientIndex,"
-                          " iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, sSeriesLink, sStartTime,"
-                          " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, iMarginStart, iMarginEnd,"
-                          " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, iLifetime, iMaxRecordings, iRecordingGroup) "
-                          "VALUES (%i, %i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, %i, %i, '%s', %i, %i, %i, %i, %i, %i);",
-                          -timer.m_iClientIndex,
-                          timer.m_iParentClientIndex, timer.m_iClientId, timer.GetTimerType()->GetTypeId(), timer.m_state,
-                          timer.Title().c_str(), timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
-                          timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
-                          timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
-                          timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays, timer.UniqueBroadcastID(),
-                          timer.m_iMarginStart, timer.m_iMarginEnd, timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
-                          timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime, timer.m_iMaxRecordings, timer.m_iRecordingGroup);
+    strQuery =
+        PrepareSQL("REPLACE INTO timers "
+                   "(iClientIndex,"
+                   " iParentClientIndex, iClientId, iTimerType, iState, sTitle, iClientChannelUid, "
+                   "sSeriesLink, sStartTime,"
+                   " bStartAnyTime, sEndTime, bEndAnyTime, sFirstDay, iWeekdays, iEpgUid, "
+                   "iMarginStart, iMarginEnd,"
+                   " sEpgSearchString, bFullTextEpgSearch, iPreventDuplicates, iPrority, "
+                   "iLifetime, iMaxRecordings, iRecordingGroup) "
+                   "VALUES (%i, %i, %i, %u, %i, '%s', %i, '%s', '%s', %i, '%s', %i, '%s', %i, %u, "
+                   "%i, %i, '%s', %i, %i, %i, %i, %i, %i);",
+                   -timer.m_iClientIndex, timer.m_iParentClientIndex, timer.m_iClientId,
+                   timer.GetTimerType()->GetTypeId(), timer.m_state, timer.Title().c_str(),
+                   timer.m_iClientChannelUid, timer.SeriesLink().c_str(),
+                   timer.StartAsUTC().GetAsDBDateTime().c_str(), timer.m_bStartAnyTime ? 1 : 0,
+                   timer.EndAsUTC().GetAsDBDateTime().c_str(), timer.m_bEndAnyTime ? 1 : 0,
+                   timer.FirstDayAsUTC().GetAsDBDateTime().c_str(), timer.m_iWeekdays,
+                   timer.UniqueBroadcastID(), timer.m_iMarginStart, timer.m_iMarginEnd,
+                   timer.m_strEpgSearchString.c_str(), timer.m_bFullTextEpgSearch ? 1 : 0,
+                   timer.m_iPreventDupEpisodes, timer.m_iPriority, timer.m_iLifetime,
+                   timer.m_iMaxRecordings, timer.m_iRecordingGroup);
 
   bool bReturn = ExecuteQuery(strQuery);
 

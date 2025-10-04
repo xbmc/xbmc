@@ -50,7 +50,8 @@ CPVRIntSettingValues::CPVRIntSettingValues(int defaultValue) : m_defaultValue(de
 
 CPVRIntSettingValues::CPVRIntSettingValues(const std::vector<SettingIntValue>& values,
                                            int defaultValue)
-  : m_values(values), m_defaultValue(defaultValue)
+  : m_values(values),
+    m_defaultValue(defaultValue)
 {
 }
 

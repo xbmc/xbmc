@@ -269,7 +269,9 @@ public:
   CVideoSelectActionProcessor(CGUIWindowPVRRecordingsBase& window,
                               const std::shared_ptr<CFileItem>& item,
                               int itemIndex)
-    : VIDEO::GUILIB::CVideoSelectActionProcessor(item), m_window(window), m_itemIndex(itemIndex)
+    : VIDEO::GUILIB::CVideoSelectActionProcessor(item),
+      m_window(window),
+      m_itemIndex(itemIndex)
   {
   }
 

@@ -21,7 +21,8 @@ using namespace PVR;
 
 CPVRTimerRuleMatcher::CPVRTimerRuleMatcher(const std::shared_ptr<CPVRTimerInfoTag>& timerRule,
                                            const CDateTime& start)
-  : m_timerRule(timerRule), m_start(CPVRTimerInfoTag::ConvertUTCToLocalTime(start))
+  : m_timerRule(timerRule),
+    m_start(CPVRTimerInfoTag::ConvertUTCToLocalTime(start))
 {
 }
 

@@ -27,7 +27,10 @@ public:
                    const std::shared_ptr<CPVREpgChannelData>& channelData,
                    const std::shared_ptr<CPVREpgDatabase>& database,
                    const std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>>& changedTags)
-    : m_iEpgID(iEpgID), m_channelData(channelData), m_database(database), m_changedTags(changedTags)
+    : m_iEpgID(iEpgID),
+      m_channelData(channelData),
+      m_database(database),
+      m_changedTags(changedTags)
   {
   }
 

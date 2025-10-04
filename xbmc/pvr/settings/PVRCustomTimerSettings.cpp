@@ -180,8 +180,7 @@ bool CPVRCustomTimerSettings::IntSettingDefinitionsFiller(const std::string& set
   }
 
   const std::vector<SettingIntValue>& values{def->GetIntDefinition().GetValues()};
-  std::ranges::transform(values, std::back_inserter(list),
-                         [](const auto& value)
+  std::ranges::transform(values, std::back_inserter(list), [](const auto& value)
                          { return IntegerSettingOption(value.first, value.second); });
 
   const auto it2{m_customProps.find(def->GetId())};
@@ -205,8 +204,7 @@ bool CPVRCustomTimerSettings::StringSettingDefinitionsFiller(const std::string& 
   }
 
   const std::vector<SettingStringValue>& values{def->GetStringDefinition().GetValues()};
-  std::ranges::transform(values, std::back_inserter(list),
-                         [](const auto& value)
+  std::ranges::transform(values, std::back_inserter(list), [](const auto& value)
                          { return StringSettingOption(value.first, value.second); });
 
   const auto it2{m_customProps.find(def->GetId())};

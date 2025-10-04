@@ -36,7 +36,8 @@ using namespace PVR;
 
 CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelsPath& path,
                                    const std::shared_ptr<const CPVRChannelGroup>& allChannelsGroup)
-  : m_allChannelsGroup(allChannelsGroup), m_path(path)
+  : m_allChannelsGroup(allChannelsGroup),
+    m_path(path)
 {
   GetSettings()->RegisterCallback(this);
 }
@@ -648,9 +649,8 @@ bool CPVRChannelGroup::AddAndUpdateGroupMembers(
     const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers)
 {
   return std::accumulate(groupMembers.cbegin(), groupMembers.cend(), false,
-                         [this](bool changed, const auto& groupMember) {
-                           return UpdateFromClient(groupMember) ? true : changed;
-                         });
+                         [this](bool changed, const auto& groupMember)
+                         { return UpdateFromClient(groupMember) ? true : changed; });
 }
 
 bool CPVRChannelGroup::HasValidDataForClient(int iClientId) const
@@ -809,7 +809,8 @@ bool CPVRChannelGroup::AppendToGroup(
   {
     unsigned int channelNumberMax =
         std::accumulate(m_sortedMembers.cbegin(), m_sortedMembers.cend(), 0,
-                        [](unsigned int last, const auto& member) {
+                        [](unsigned int last, const auto& member)
+                        {
                           return (member->ChannelNumber().GetChannelNumber() > last)
                                      ? member->ChannelNumber().GetChannelNumber()
                                      : last;
@@ -1191,8 +1192,7 @@ int CPVRChannelGroup::CleanupCachedImages()
   std::vector<std::string> urlsToCheck;
   {
     std::unique_lock lock(m_critSection);
-    std::ranges::transform(m_members, std::back_inserter(urlsToCheck),
-                           [](const auto& groupMember)
+    std::ranges::transform(m_members, std::back_inserter(urlsToCheck), [](const auto& groupMember)
                            { return groupMember.second->Channel()->ClientIconPath(); });
   }
 

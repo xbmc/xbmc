@@ -18,7 +18,8 @@ class CPVRClientUID final
 {
 public:
   CPVRClientUID(const std::string& addonID, ADDON::AddonInstanceId instanceID)
-    : m_addonID(addonID), m_instanceID(instanceID)
+    : m_addonID(addonID),
+      m_instanceID(instanceID)
   {
   }
 

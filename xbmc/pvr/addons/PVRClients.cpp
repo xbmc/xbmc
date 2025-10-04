@@ -626,8 +626,7 @@ bool CPVRClients::GetTimers(const std::vector<std::shared_ptr<CPVRClient>>& clie
   return ForClients(
              std::source_location::current().function_name(), clients,
              [timers](const std::shared_ptr<const CPVRClient>& client)
-             { return client->GetTimers(timers); },
-             failedClients) == PVR_ERROR_NO_ERROR;
+             { return client->GetTimers(timers); }, failedClients) == PVR_ERROR_NO_ERROR;
 }
 
 PVR_ERROR CPVRClients::UpdateTimerTypes(const std::vector<std::shared_ptr<CPVRClient>>& clients,
@@ -664,8 +663,7 @@ PVR_ERROR CPVRClients::GetRecordings(const std::vector<std::shared_ptr<CPVRClien
   return ForClients(
       std::source_location::current().function_name(), clients,
       [recordings, deleted](const std::shared_ptr<const CPVRClient>& client)
-      { return client->GetRecordings(recordings, deleted); },
-      failedClients);
+      { return client->GetRecordings(recordings, deleted); }, failedClients);
 }
 
 PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash() const
@@ -707,8 +705,7 @@ PVR_ERROR CPVRClients::GetProviders(const std::vector<std::shared_ptr<CPVRClient
   return ForClients(
       std::source_location::current().function_name(), clients,
       [providers](const std::shared_ptr<const CPVRClient>& client)
-      { return client->GetProviders(*providers); },
-      failedClients);
+      { return client->GetProviders(*providers); }, failedClients);
 }
 
 PVR_ERROR CPVRClients::GetChannelGroups(const std::vector<std::shared_ptr<CPVRClient>>& clients,
@@ -718,8 +715,7 @@ PVR_ERROR CPVRClients::GetChannelGroups(const std::vector<std::shared_ptr<CPVRCl
   return ForClients(
       std::source_location::current().function_name(), clients,
       [groups](const std::shared_ptr<const CPVRClient>& client)
-      { return client->GetChannelGroups(groups); },
-      failedClients);
+      { return client->GetChannelGroups(groups); }, failedClients);
 }
 
 PVR_ERROR CPVRClients::GetChannelGroupMembers(
@@ -731,8 +727,7 @@ PVR_ERROR CPVRClients::GetChannelGroupMembers(
   return ForClients(
       std::source_location::current().function_name(), clients,
       [&group, &groupMembers](const std::shared_ptr<const CPVRClient>& client)
-      { return client->GetChannelGroupMembers(group, groupMembers); },
-      failedClients);
+      { return client->GetChannelGroupMembers(group, groupMembers); }, failedClients);
 }
 
 std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChannelScan() const
@@ -750,7 +745,8 @@ std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChanne
   return possibleScanClients;
 }
 
-std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChannelSettings(bool bRadio) const
+std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChannelSettings(
+    bool bRadio) const
 {
   std::vector<std::shared_ptr<CPVRClient>> possibleSettingsClients;
 

@@ -41,16 +41,16 @@ constexpr unsigned int INFO_HOROSCOPE = 9;
 } // unnamed namespace
 
 CGUIDialogPVRRadioRDSInfo::CGUIDialogPVRRadioRDSInfo()
-  : CGUIDialog(WINDOW_DIALOG_PVR_RADIO_RDS_INFO, "DialogPVRRadioRDSInfo.xml")
-  , m_InfoNews(29916, INFO_NEWS)
-  , m_InfoNewsLocal(29917, INFO_NEWS_LOCAL)
-  , m_InfoSport(29918, INFO_SPORT)
-  , m_InfoWeather(400, INFO_WEATHER)
-  , m_InfoLottery(29919, INFO_LOTTERY)
-  , m_InfoStock(29920, INFO_STOCK)
-  , m_InfoOther(29921, INFO_OTHER)
-  , m_InfoCinema(19602, INFO_CINEMA)
-  , m_InfoHoroscope(29922, INFO_HOROSCOPE)
+  : CGUIDialog(WINDOW_DIALOG_PVR_RADIO_RDS_INFO, "DialogPVRRadioRDSInfo.xml"),
+    m_InfoNews(29916, INFO_NEWS),
+    m_InfoNewsLocal(29917, INFO_NEWS_LOCAL),
+    m_InfoSport(29918, INFO_SPORT),
+    m_InfoWeather(400, INFO_WEATHER),
+    m_InfoLottery(29919, INFO_LOTTERY),
+    m_InfoStock(29920, INFO_STOCK),
+    m_InfoOther(29921, INFO_OTHER),
+    m_InfoCinema(19602, INFO_CINEMA),
+    m_InfoHoroscope(29922, INFO_HOROSCOPE)
 {
 }
 
@@ -192,8 +192,8 @@ void CGUIDialogPVRRadioRDSInfo::UpdateInfoControls()
 }
 
 CGUIDialogPVRRadioRDSInfo::InfoControl::InfoControl(uint32_t iSpinLabelId, uint32_t iSpinControlId)
-: m_iSpinLabelId(iSpinLabelId),
-  m_iSpinControlId(iSpinControlId)
+  : m_iSpinLabelId(iSpinLabelId),
+    m_iSpinControlId(iSpinControlId)
 {
 }
 

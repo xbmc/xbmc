@@ -131,7 +131,9 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByStartDateTime(const CDateTime& 
   return m_tags.GetTag(start);
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTime, const CDateTime& endTime, bool bUpdateFromClient /* = false */)
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTime,
+                                                       const CDateTime& endTime,
+                                                       bool bUpdateFromClient /* = false */)
 {
   std::shared_ptr<CPVREpgInfoTag> tag;
 
@@ -422,7 +424,8 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end, bool bForceUpdate)
       {
         CLog::LogFC(LOGDEBUG, LOGEPG, "Updating EPG for channel '{}' from client '{}'",
                     m_channelData->ChannelName(), m_channelData->ClientId());
-        return (client->GetEPGForChannel(m_channelData->UniqueClientChannelId(), this, start, end) == PVR_ERROR_NO_ERROR);
+        return (client->GetEPGForChannel(m_channelData->UniqueClientChannelId(), this, start,
+                                         end) == PVR_ERROR_NO_ERROR);
       }
     }
     else

@@ -167,7 +167,9 @@ private:
     ChannelDescriptor(int _channelUid = PVR_CHANNEL_INVALID_UID,
                       int _clientId = PVR_CLIENT_INVALID_UID,
                       const std::string& _description = "")
-      : channelUid(_channelUid), clientId(_clientId), description(_description)
+      : channelUid(_channelUid),
+        clientId(_clientId),
+        description(_description)
     {
     }
 
