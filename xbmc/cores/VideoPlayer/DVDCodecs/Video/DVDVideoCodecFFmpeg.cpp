@@ -311,8 +311,9 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
 
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo& processInfo)
   : CDVDVideoCodec(processInfo),
-    m_videoBufferPool(std::make_shared<CVideoBufferPoolFFmpeg>()),
+    m_videoBufferPool(std::make_shared<CVideoBufferPoolFFmpeg>())
 #ifdef HAVE_LIBPOSTPROC
+    ,
     m_postProc(std::make_unique<CDVDVideoPPFFmpeg>(processInfo))
 #endif
 {
