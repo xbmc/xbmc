@@ -1,8 +1,10 @@
-set(SOURCES Iso639_3.cpp)
+set(SOURCES Iso639_1.cpp
+            Iso639_3.cpp)
 
-set(HEADERS TableISO3166_1.h
+set(HEADERS Iso639_1.h
+            Iso639_1_Table.h
+            TableISO3166_1.h
             TableISO639.h
-            TableISO639_1.h
             TableISO639_2.h
             Iso639_3.h
             Iso639_3_Table.h

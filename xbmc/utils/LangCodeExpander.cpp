@@ -12,14 +12,16 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/i18n/Iso639_1.h"
 #include "utils/i18n/TableISO3166_1.h"
-#include "utils/i18n/TableISO639_1.h"
 #include "utils/i18n/TableISO639_2.h"
 #include "utils/i18n/TableLanguageCodes.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <string_view>
+
+using namespace KODI::UTILS::I18N;
 
 CLangCodeExpander::CLangCodeExpander() = default;
 
@@ -364,27 +366,13 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
 
   std::string_view name = descTmp;
   {
-    auto it = std::ranges::lower_bound(
-        TableISO639_1ByName, name, [](std::string_view a, std::string_view b)
-        { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
-    if (it != TableISO639_1ByName.end() && StringUtils::EqualsNoCase(it->name, name))
+    auto ret = CIso639_1::LookupByName(name);
+    if (ret)
     {
-      code = LongCodeToString(it->code);
+      code = *ret;
       return true;
     }
   }
-
-  {
-    auto it = std::ranges::lower_bound(
-        TableISO639_1_DeprByName, name, [](std::string_view a, std::string_view b)
-        { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
-    if (it != TableISO639_1_DeprByName.end() && StringUtils::EqualsNoCase(it->name, name))
-    {
-      code = LongCodeToString(it->code);
-      return true;
-    }
-  }
-
   {
     auto it = std::ranges::lower_bound(
         TableISO639_2AllNames, name, [](std::string_view a, std::string_view b)
@@ -450,21 +438,11 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
 
   if (sCode.length() == 2)
   {
+    auto ret = CIso639_1::LookupByCode(longCode);
+    if (ret)
     {
-      auto it = std::ranges::lower_bound(TableISO639_1ByCode, longCode, {}, &LCENTRY::code);
-      if (it != TableISO639_1ByCode.end() && longCode == it->code)
-      {
-        desc = it->name;
-        return true;
-      }
-    }
-    {
-      auto it = std::ranges::lower_bound(TableISO639_1_DeprByCode, longCode, {}, &LCENTRY::code);
-      if (it != TableISO639_1_DeprByCode.end() && longCode == it->code)
-      {
-        desc = it->name;
-        return true;
-      }
+      desc = *ret;
+      return true;
     }
   }
   else if (sCode.length() == 3)
@@ -547,16 +525,7 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(
   }
   else
   {
-    std::ranges::transform(TableISO639_1ByName, std::inserter(langMap, langMap.end()),
-                           [](const LCENTRY& e) {
-                             return std::make_pair(LongCodeToString(e.code), std::string{e.name});
-                           });
-
-    std::ranges::transform(TableISO639_1_DeprByName, std::inserter(langMap, langMap.end()),
-                           [](const LCENTRY& e) {
-                             return std::make_pair(LongCodeToString(e.code),
-                                                   std::string{e.name} + " (Deprecated)");
-                           });
+    CIso639_1::ListLanguages(langMap);
   }
 
   if (list == LANG_LIST::INCLUDE_ADDONS || list == LANG_LIST::INCLUDE_ADDONS_USERDEFINED)
