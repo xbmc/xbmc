@@ -16,6 +16,28 @@
 
 using namespace KODI::UTILS::I18N;
 
+namespace
+{
+bool PrepareTableByName()
+{
+  std::ranges::sort(
+      TableISO639_3ByName, [](std::string_view a, std::string_view b)
+      { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
+  return true;
+}
+} // namespace
+
+CIso639_3::CIso639_3()
+{
+  PrepareTableByName();
+}
+
+CIso639_3& CIso639_3::GetInstance()
+{
+  static CIso639_3 instance;
+  return instance;
+}
+
 std::optional<std::string> CIso639_3::LookupByCode(std::string_view code)
 {
   const uint32_t longCode = StringToLongCode(code);
@@ -32,21 +54,8 @@ std::optional<std::string> CIso639_3::LookupByCode(uint32_t longCode)
   return std::nullopt;
 }
 
-namespace
-{
-bool PrepareTableByName()
-{
-  std::ranges::sort(
-      TableISO639_3ByName, [](std::string_view a, std::string_view b)
-      { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
-  return true;
-}
-} // namespace
-
 std::optional<std::string> CIso639_3::LookupByName(std::string_view name)
 {
-  static bool initialized = PrepareTableByName();
-
   auto it = std::ranges::lower_bound(
       TableISO639_3ByName, name, [](std::string_view a, std::string_view b)
       { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
