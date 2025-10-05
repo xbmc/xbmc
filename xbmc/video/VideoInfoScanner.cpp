@@ -2832,10 +2832,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (!thumbUrl.m_url.empty())
         {
           const std::string thumb{CScraperUrl::GetThumbUrl(thumbUrl)};
-          const bool useThisRemoteArt{useRemoteArt != UseRemoteArtWithLocalScraper::NO ||
-                                      !URIUtils::IsRemote(thumb)};
+          const bool useThisArt{useRemoteArt != UseRemoteArtWithLocalScraper::NO ||
+                                !URIUtils::IsRemote(thumb)};
 
-          if (useThisRemoteArt)
+          if (useThisArt)
           {
             if (actor.thumb.empty())
               actor.thumb = thumb;
