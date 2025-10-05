@@ -32,6 +32,7 @@ public:
   bool SetActive(bool active) override;
   bool InitDrm() override;
   void DestroyDrm() override;
+  bool SupportsFencing() override { return true; }
   bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
 
 private:
