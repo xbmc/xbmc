@@ -1991,6 +1991,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         int idShow = showInfo ? showInfo->m_iDbId : -1;
         int idEpisode = m_database.AddNewEpisode(idShow, movieDetails);
         lResult = m_database.SetDetailsForEpisode(movieDetails, art, idShow, idEpisode);
+        m_database.AddCast(lResult, "episode", movieDetails.m_cast, m_actorCache);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = MediaTypeEpisode;
         movieDetails.m_strShowTitle = showInfo ? showInfo->m_strTitle : "";

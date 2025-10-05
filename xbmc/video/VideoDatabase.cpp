@@ -2093,13 +2093,31 @@ void CVideoDatabase::RemoveTagsFromItem(int media_id, const std::string &type)
 //****Actors****
 void CVideoDatabase::AddCast(int mediaId, const char *mediaType, const std::vector< SActorInfo > &cast)
 {
+  std::unordered_map<std::string, int> unusedCache{};
+  AddCast(mediaId, mediaType, cast, unusedCache);
+}
+
+void CVideoDatabase::AddCast(int mediaId,
+                             const char* mediaType,
+                             const std::vector<SActorInfo>& cast,
+                             std::unordered_map<std::string, int>& actorCache)
+{
   if (cast.empty())
     return;
 
   int order = std::max_element(cast.begin(), cast.end())->order;
   for (const auto &i : cast)
   {
-    int idActor = AddActor(i.strName, i.thumbUrl.GetData(), i.thumb);
+    int idActor = -1;
+    if (auto found = actorCache.find(i.strName); found != actorCache.end())
+    {
+      idActor = found->second;
+    }
+    else
+    {
+      idActor = AddActor(i.strName, i.thumbUrl.GetData(), i.thumb);
+      actorCache.emplace(i.strName, idActor);
+    }
     AddLinkToActor(mediaId, mediaType, idActor, i.strRole, i.order >= 0 ? i.order : ++order);
   }
 }
@@ -2785,7 +2803,11 @@ int CVideoDatabase::SetDetailsForItem(int id,
   else if (mediaType == MediaTypeSeason)
     return SetDetailsForSeason(details, artwork, details.m_iIdShow, id);
   else if (mediaType == MediaTypeEpisode)
-    return SetDetailsForEpisode(details, artwork, details.m_iIdShow, id);
+  {
+    auto idEpisode = SetDetailsForEpisode(details, artwork, details.m_iIdShow, id);
+    AddCast(idEpisode, "episode", details.m_cast);
+    return idEpisode;
+  }
   else if (mediaType == MediaTypeMusicVideo)
     return SetDetailsForMusicVideo(details, artwork, id);
 
@@ -3526,7 +3548,6 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
     if (details.m_dateAdded.IsValid())
       UpdateFileDateAdded(details);
 
-    AddCast(idEpisode, "episode", details.m_cast);
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "director", details.m_director);
     AddActorLinksToItem(idEpisode, MediaTypeEpisode, "writer", details.m_writingCredits);
 

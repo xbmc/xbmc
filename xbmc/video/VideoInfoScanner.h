@@ -330,5 +330,6 @@ namespace KODI::VIDEO
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
+    std::unordered_map<std::string, int> m_actorCache{};
   };
   } // namespace KODI::VIDEO
