@@ -266,8 +266,7 @@ CDateTimeSpan GetCurrentTimezoneBias()
   std::unique_lock lock(critSection);
 
   // This method gets called very often and is expensive, so refresh info only every 5 mins.
-  static XbmcThreads::EndTime<> biasRefreshTimeout(0s);
-  if (biasRefreshTimeout.IsTimePast())
+  if (static XbmcThreads::EndTime<> biasRefreshTimeout(0s); biasRefreshTimeout.IsTimePast())
   {
     KODI::TIME::SystemTime now;
     KODI::TIME::GetLocalTime(&now);

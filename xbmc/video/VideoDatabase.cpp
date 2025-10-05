@@ -3553,13 +3553,11 @@ int CVideoDatabase::AddSeason(int showID,
                               const std::string& plot /* = "" */)
 {
   int seasonId = GetSeasonId(showID, season);
-  if (seasonId < 0)
-  {
-    if (ExecuteQuery(PrepareSQL("INSERT INTO seasons (idShow, season, name, plot) "
-                                "VALUES (%i, %i, '%s', '%s')",
-                                showID, season, name.c_str(), plot.c_str())))
-      seasonId = static_cast<int>(m_pDS->lastinsertid());
-  }
+  if (seasonId < 0 && ExecuteQuery(PrepareSQL("INSERT INTO seasons (idShow, season, name, plot) "
+                                              "VALUES (%i, %i, '%s', '%s')",
+                                              showID, season, name.c_str(), plot.c_str())))
+    seasonId = static_cast<int>(m_pDS->lastinsertid());
+
   return seasonId;
 }
 

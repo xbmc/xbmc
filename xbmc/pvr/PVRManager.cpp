@@ -877,7 +877,7 @@ void CPVRManager::TriggerRecordingsSizeInProgressUpdate()
 
 void CPVRManager::TriggerRecordingsUpdate(int clientId)
 {
-  m_pendingUpdates->Append("pvr-update-recordings-" + std::to_string(clientId),
+  m_pendingUpdates->Append(StringUtils::Format("pvr-update-recordings-{}", clientId),
                            [this, clientId]()
                            {
                              if (!IsKnownClient(clientId))
@@ -897,7 +897,7 @@ void CPVRManager::TriggerRecordingsUpdate()
 
 void CPVRManager::TriggerTimersUpdate(int clientId)
 {
-  m_pendingUpdates->Append("pvr-update-timers-" + std::to_string(clientId),
+  m_pendingUpdates->Append(StringUtils::Format("pvr-update-timers-{}", clientId),
                            [this, clientId]()
                            {
                              if (!IsKnownClient(clientId))
@@ -916,7 +916,7 @@ void CPVRManager::TriggerTimersUpdate()
 
 void CPVRManager::TriggerProvidersUpdate(int clientId)
 {
-  m_pendingUpdates->Append("pvr-update-channel-providers-" + std::to_string(clientId),
+  m_pendingUpdates->Append(StringUtils::Format("pvr-update-channel-providers-{}", clientId),
                            [this, clientId]()
                            {
                              if (!IsKnownClient(clientId))
@@ -936,7 +936,7 @@ void CPVRManager::TriggerProvidersUpdate()
 
 void CPVRManager::TriggerChannelsUpdate(int clientId)
 {
-  m_pendingUpdates->Append("pvr-update-channels-" + std::to_string(clientId),
+  m_pendingUpdates->Append(StringUtils::Format("pvr-update-channels-{}", clientId),
                            [this, clientId]()
                            {
                              if (!IsKnownClient(clientId))
@@ -956,7 +956,7 @@ void CPVRManager::TriggerChannelsUpdate()
 
 void CPVRManager::TriggerChannelGroupsUpdate(int clientId)
 {
-  m_pendingUpdates->Append("pvr-update-channelgroups-" + std::to_string(clientId),
+  m_pendingUpdates->Append(StringUtils::Format("pvr-update-channelgroups-{}", clientId),
                            [this, clientId]()
                            {
                              if (!IsKnownClient(clientId))
@@ -989,13 +989,14 @@ void CPVRManager::TriggerSearchMissingChannelIcons()
 
 void CPVRManager::TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRChannelGroup>& group)
 {
-  m_pendingUpdates->Append("pvr-search-missing-channel-icons-" + std::to_string(group->GroupID()),
-                           [group]()
-                           {
-                             CPVRGUIChannelIconUpdater updater({group}, false);
-                             updater.SearchAndUpdateMissingChannelIcons();
-                             return true;
-                           });
+  m_pendingUpdates->Append(
+      StringUtils::Format("pvr-search-missing-channel-icons-{}", group->GroupID()),
+      [group]()
+      {
+        CPVRGUIChannelIconUpdater updater({group}, false);
+        updater.SearchAndUpdateMissingChannelIcons();
+        return true;
+      });
 }
 
 void CPVRManager::TriggerCleanupCachedImages()

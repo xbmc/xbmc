@@ -21,7 +21,7 @@ using namespace GAME;
 
 CDialogGameOSD::CDialogGameOSD()
   : CGUIDialog(WINDOW_DIALOG_GAME_OSD, "GameOSD.xml"),
-    m_helpDialog(new CDialogGameOSDHelp(*this))
+    m_helpDialog(std::make_unique<CDialogGameOSDHelp>(*this))
 {
   // Initialize CGUIWindow
   m_loadType = KEEP_IN_MEMORY;

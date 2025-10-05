@@ -24,9 +24,7 @@ using namespace RETRO;
 
 const double MAX_DELAY = 0.3; // seconds
 
-CRetroPlayerAudio::CRetroPlayerAudio(CRPProcessInfo& processInfo)
-  : m_processInfo(processInfo),
-    m_pAudioStream(nullptr)
+CRetroPlayerAudio::CRetroPlayerAudio(CRPProcessInfo& processInfo) : m_processInfo(processInfo)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Initializing audio");
 }

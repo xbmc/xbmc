@@ -31,7 +31,7 @@ constexpr uint64_t GetBits64(uint64_t value, unsigned int firstBit, unsigned int
     throw std::out_of_range("Bit range out of bounds");
   if (numBits == 64)
     return value;
-  return (value >> (firstBit - numBits)) & ((1ull << numBits) - 1);
+  return (value >> (firstBit - numBits)) & ((1ULL << numBits) - 1);
 }
 
 constexpr uint64_t GetQWord(const std::span<std::byte> bytes, unsigned int offset)
@@ -84,17 +84,10 @@ inline std::string GetString(const std::span<std::byte> bytes,
 
 class BitReader
 {
-  const std::byte* data;
-  uint32_t size;
-  uint32_t offset;
-  uint32_t bitPosition;
-
 public:
-  BitReader(const std::span<std::byte>& buffer)
-    : data(buffer.data()),
-      size(static_cast<uint32_t>(buffer.size())),
-      offset(0),
-      bitPosition(0)
+  explicit BitReader(std::span<std::byte> buffer)
+    : m_data(buffer.data()),
+      m_size(static_cast<uint32_t>(buffer.size()))
   {
   }
 
@@ -105,22 +98,22 @@ public:
 
     uint32_t value{0};
 
-    while (n > 0 && offset < size)
+    while (n > 0 && m_offset < m_size)
     {
-      uint32_t bitsAvailable{8 - bitPosition};
+      uint32_t bitsAvailable{8 - m_bitPosition};
       uint32_t bitsToRead{(n < bitsAvailable) ? n : bitsAvailable};
 
       value = (value << bitsToRead) |
-              ((std::to_integer<uint32_t>(data[offset]) >> (bitsAvailable - bitsToRead)) &
+              ((std::to_integer<uint32_t>(m_data[m_offset]) >> (bitsAvailable - bitsToRead)) &
                ((1u << bitsToRead) - 1));
 
-      bitPosition += bitsToRead;
+      m_bitPosition += bitsToRead;
       n -= bitsToRead;
 
-      if (bitPosition == 8)
+      if (m_bitPosition == 8)
       {
-        bitPosition = 0;
-        offset++;
+        m_bitPosition = 0;
+        m_offset++;
       }
     }
 
@@ -131,22 +124,22 @@ public:
 
   void SkipBits(uint32_t n)
   {
-    uint32_t totalBits{n + bitPosition};
-    offset += totalBits >> 3;
-    bitPosition = totalBits & 7;
+    uint32_t totalBits{n + m_bitPosition};
+    m_offset += totalBits >> 3;
+    m_bitPosition = totalBits & 7;
   }
 
   uint32_t ReadUE()
   {
     int zeros{0};
-    while (offset < size && zeros < 32)
+    while (m_offset < m_size && zeros < 32)
     {
-      uint32_t bit{(std::to_integer<uint32_t>(data[offset]) >> (7 - bitPosition)) & 1};
-      bitPosition++;
-      if (bitPosition == 8)
+      uint32_t bit{(std::to_integer<uint32_t>(m_data[m_offset]) >> (7 - m_bitPosition)) & 1};
+      m_bitPosition++;
+      if (m_bitPosition == 8)
       {
-        bitPosition = 0;
-        offset++;
+        m_bitPosition = 0;
+        m_offset++;
       }
 
       if (bit)
@@ -172,7 +165,15 @@ public:
 
   void ByteAlign()
   {
-    offset += (bitPosition != 0);
-    bitPosition = 0;
+    if (m_bitPosition != 0)
+      m_offset += 1;
+
+    m_bitPosition = 0;
   }
+
+private:
+  const std::byte* m_data{nullptr};
+  uint32_t m_size{0};
+  uint32_t m_offset{0};
+  uint32_t m_bitPosition{0};
 };

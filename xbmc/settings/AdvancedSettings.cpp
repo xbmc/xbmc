@@ -1191,7 +1191,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     {
       const char* XML_SORTMETHOD = "sortmethod";
       const char* XML_SORTORDER = "sortorder";
-      int sortMethod = static_cast<int>(SortByNone);
+      auto sortMethod = static_cast<int>(SortByNone);
       static constexpr CSet validSortMethods{SortByLabel, SortByDate,          SortBySize,
                                              SortByFile,  SortByEpisodeNumber, SortByProvider};
       XMLUtils::GetInt(pSortDecription, XML_SORTMETHOD, sortMethod, static_cast<int>(SortByNone),

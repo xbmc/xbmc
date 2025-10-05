@@ -50,7 +50,7 @@ private:
   }
 };
 // Ensure initialization of the table when the program starts before any class function can run.
-static CIso639_2_Initializer g_initializer;
+CIso639_2_Initializer g_initializer;
 } // namespace
 } // namespace KODI::UTILS::I18N
 

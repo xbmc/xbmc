@@ -59,7 +59,7 @@ const ControllerPtr CController::EmptyPtr;
 
 CController::CController(const ADDON::AddonInfoPtr& addonInfo)
   : CAddon(addonInfo, ADDON::AddonType::GAME_CONTROLLER),
-    m_layout(new CControllerLayout)
+    m_layout(std::make_unique<CControllerLayout>())
 {
 }
 

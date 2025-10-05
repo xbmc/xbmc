@@ -42,7 +42,7 @@ public:
    * \return the result
    */
   GatherPlaybackDetailsResult GatherPlaybackDetails(const CFileItem& item,
-                                                    const std::string& player,
+                                                    std::string player,
                                                     bool restart);
 
   /*!

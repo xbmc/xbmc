@@ -1187,8 +1187,7 @@ bool URIUtils::IsSmb(const std::string& strFile)
   if (IsSpecial(strFile))
     return IsSmb(CSpecialProtocol::TranslatePath(strFile));
 
-  CURL url(strFile);
-  if (url.HasParentInHostname())
+  if (const CURL url{strFile}; url.HasParentInHostname())
     return IsSmb(url.GetHostName());
 
   return IsProtocol(strFile, "smb");
@@ -1207,8 +1206,7 @@ bool URIUtils::IsFTP(const std::string& strFile)
   if (IsSpecial(strFile))
     return IsFTP(CSpecialProtocol::TranslatePath(strFile));
 
-  CURL url(strFile);
-  if (url.HasParentInHostname())
+  if (const CURL url{strFile}; url.HasParentInHostname())
     return IsFTP(url.GetHostName());
 
   return IsProtocol(strFile, "ftp") ||
@@ -1301,8 +1299,7 @@ bool URIUtils::IsDAV(const std::string& strFile)
   if (IsSpecial(strFile))
     return IsDAV(CSpecialProtocol::TranslatePath(strFile));
 
-  CURL url(strFile);
-  if (url.HasParentInHostname())
+  if (const CURL url{strFile}; url.HasParentInHostname())
     return IsDAV(url.GetHostName());
 
   return IsProtocol(strFile, "dav") ||
@@ -1437,8 +1434,7 @@ bool URIUtils::IsNfs(const std::string& strFile)
   if (IsSpecial(strFile))
     return IsNfs(CSpecialProtocol::TranslatePath(strFile));
 
-  CURL url(strFile);
-  if (url.HasParentInHostname())
+  if (const CURL url{strFile}; url.HasParentInHostname())
     return IsNfs(url.GetHostName());
 
   return IsProtocol(strFile, "nfs");

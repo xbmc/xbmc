@@ -584,8 +584,7 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
 
 bool CFile::FileExists(const std::string& path)
 {
-  struct __stat64 s;
-  if (XFILE::CFile::Stat(path, &s) == 0)
+  if (struct __stat64 s; XFILE::CFile::Stat(path, &s) == 0)
     return !S_ISDIR(s.st_mode);
   return false;
 }

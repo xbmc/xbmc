@@ -27,7 +27,8 @@ namespace
 int64_t days_from_civil(int64_t y, unsigned m, unsigned d)
 {
   // y: full year (e.g., 2025), m: 1..12, d: 1..31
-  y -= (m <= 2);
+  if (m <= 2)
+    y -= 1;
   const int64_t era{(y >= 0 ? y : y - 399) / 400};
   const unsigned yoe{static_cast<unsigned>(y - era * 400)}; // [0, 399]
   const unsigned doy{(153u * (m + (m > 2 ? -3u : 9u)) + 2u) / 5u + d - 1u}; // [0, 365]
@@ -53,11 +54,10 @@ time_t SystemTimeToTimeT(const KODI::TIME::SystemTime& systemTime)
                         static_cast<int64_t>(systemTime.second)};
 
   // Validate range for time_t
-  if (seconds < static_cast<int64_t>(std::numeric_limits<time_t>::min()) ||
-      seconds > static_cast<int64_t>(std::numeric_limits<time_t>::max()))
+  if (seconds < std::numeric_limits<time_t>::min() || seconds > std::numeric_limits<time_t>::max())
     return static_cast<time_t>(-1); // error
 
-  return static_cast<time_t>(seconds);
+  return seconds;
 }
 } // unnamed namespace
 

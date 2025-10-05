@@ -165,7 +165,7 @@ private:
                                  const uint8_t activated);
   static void CecKeyPress(void* cbParam, const CEC::cec_keypress* key);
 
-  CEC::ICECAdapter* m_cecAdapter;
+  CEC::ICECAdapter* m_cecAdapter{nullptr};
   bool m_bStarted;
   bool m_bHasButton;
   bool m_bIsReady;

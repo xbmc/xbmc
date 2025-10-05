@@ -242,10 +242,9 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   if (isStack)
     UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
 
-  const std::shared_ptr<CAdvancedSettings> advancedSettings{
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
-
-  if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd))
+  if (const std::shared_ptr<CAdvancedSettings> advancedSettings{
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+      WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd))
     bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
   else if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart)
     bookmark.timeInSeconds = 0.0; // Not played enough to bookmark (bookmark cleared)

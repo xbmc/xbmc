@@ -23,6 +23,7 @@
 #include <sys\stat.h>
 #endif
 
+#include <array>
 #include <iterator>
 #include <string>
 #include <system_error>
@@ -81,11 +82,8 @@ void CURL::Parse(std::string strURL1)
      *   [input]  /foo/bar.zip/alice.rar/bob.avi
      *   [result] zip://rar:///foo/bar.zip/alice.rar/bob.avi
      */
-    static constexpr const std::string_view protocolReplacements[][2] = {
-        {".zip/", "zip://"},
-        {".apk/", "apk://"},
-        {".rar/", "rar://"},
-    };
+    static constexpr const std::array<std::array<std::string_view, 2>, 3> protocolReplacements{
+        {{{".zip/", "zip://"}}, {{".apk/", "apk://"}}, {{".rar/", "rar://"}}}};
 
     for (const auto& [ext, proto] : protocolReplacements)
     {
@@ -748,18 +746,14 @@ bool CURL::HasExtension(std::string_view extensions) const
   if (pos == std::string::npos || m_strFileName[pos] != '.')
     return false;
 
-  const std::string extensionLower = StringUtils::ToLower(m_strFileName.substr(pos));
+  const std::string extensionLower{
+      StringUtils::ToLower(std::string_view(m_strFileName).substr(pos))};
 
   const std::vector<std::string> extensionsLower =
       StringUtils::Split(StringUtils::ToLower(extensions), '|');
 
-  for (const auto& ext : extensionsLower)
-  {
-    if (StringUtils::EndsWith(ext, extensionLower))
-      return true;
-  }
-
-  return false;
+  return std::ranges::any_of(extensionsLower, [&extensionLower](const std::string& ext)
+                             { return StringUtils::EndsWith(ext, extensionLower); });
 }
 
 std::string CURL::GetExtension() const

@@ -246,7 +246,7 @@ void CWeatherJob::SetFromPropertiesV2()
   if (gui == nullptr)
     return;
 
-  CGUIWindow* window{gui->GetWindowManager().GetWindow(WINDOW_WEATHER)};
+  const CGUIWindow* window{gui->GetWindowManager().GetWindow(WINDOW_WEATHER)};
   if (window == nullptr)
     return;
 

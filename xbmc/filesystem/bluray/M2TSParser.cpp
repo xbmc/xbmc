@@ -502,7 +502,7 @@ bool ParsePAT(const std::span<std::byte>& PAT,
     {
       unsigned int pmPID{GetWord(PAT, offset + i + 2) & PID_MASK};
       pmtPIDs.insert(pmPID);
-      pidSection.try_emplace(pmPID, SectionAssembler{}); // Prepare assembler
+      pidSection.try_emplace(pmPID); // Prepare assembler
       CLog::LogFC(LOGDEBUG, LOGBLURAY, "Found pmPID {} for program {}",
                   fmt::format("{:04x}", pmPID), programNumber);
     }
@@ -566,7 +566,7 @@ void ProcessPMTEntry(std::vector<std::byte>& section,
     streams[elementaryPID]->streamType = streamType;
     streams[elementaryPID]->descriptors = std::move(descriptors);
 
-    pesSection.try_emplace(elementaryPID, PESAssembler{}); // Prepare assembler
+    pesSection.try_emplace(elementaryPID); // Prepare assembler
 
     CLog::LogFC(LOGDEBUG, LOGBLURAY,
                 "Found stream at offset 0x{} - type: {} (0x{}), pid: 0x{}, lang {}",

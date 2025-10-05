@@ -30,7 +30,7 @@ public:
   void SetType(const std::string& mType, bool deinterlace) override;
   void Process(VideoPicture* picture) override;
 
-protected:
+private:
   std::string m_sType;
   CProcessInfo &m_processInfo;
 

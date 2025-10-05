@@ -28,7 +28,7 @@ std::string LongCodeToString(uint32_t code)
     code >>= 8;
   }
   // Reverse the string for the final result
-  std::reverse(ret.begin(), ret.end());
+  std::ranges::reverse(ret);
   return ret;
 }
 } // namespace KODI::UTILS::I18N

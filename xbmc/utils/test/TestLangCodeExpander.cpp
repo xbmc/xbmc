@@ -22,7 +22,8 @@ public:
 
 TEST(TestLangCodeExpander, ConvertISO6391ToISO6392B)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
 
   refstr = "eng";
   EXPECT_TRUE(g_LangCodeExpander.ConvertISO6391ToISO6392B("en", varstr));
@@ -47,7 +48,8 @@ TEST(TestLangCodeExpander, ConvertISO6391ToISO6392B)
 
 TEST(TestLangCodeExpander, ConvertToISO6392B)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
 
   refstr = "eng";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("en", varstr));
@@ -92,7 +94,8 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
 
 TEST(TestLangCodeExpander, ConvertToISO6391)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
 
   refstr = "en";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6391("en", varstr));
@@ -131,7 +134,8 @@ TEST(TestLangCodeExpander, ConvertToISO6391)
 #ifdef TARGET_WINDOWS
 TEST(TestLangCodeExpander, ConvertWindowsLanguageCodeToISO6392B)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
 
   refstr = "slo";
   EXPECT_TRUE(g_LangCodeExpander.ConvertWindowsLanguageCodeToISO6392B("slk", varstr));
@@ -149,7 +153,8 @@ TEST(TestLangCodeExpander, ConvertWindowsLanguageCodeToISO6392B)
 
 TEST(TestLangCodeExpander, ConvertToISO6392T)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
 
   refstr = "deu";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392T("de", varstr));

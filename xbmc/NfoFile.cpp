@@ -160,8 +160,7 @@ int CNfoFile::Load(const CURL& nfoPath)
 {
   Close();
   XFILE::CFile file;
-  std::vector<uint8_t> buf;
-  if (file.LoadFile(nfoPath, buf) > 0)
+  if (std::vector<uint8_t> buf; file.LoadFile(nfoPath, buf) > 0)
   {
     m_doc.assign(reinterpret_cast<char*>(buf.data()), buf.size());
     m_headPos = 0;

@@ -1996,8 +1996,8 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   using enum CApplicationPlay::GatherPlaybackDetailsResult;
 
   CApplicationPlay appPlay{*stackHelper};
-  const auto result{appPlay.GatherPlaybackDetails(item, player, bRestart)};
-  if (result == RESULT_ERROR)
+  if (const auto result{appPlay.GatherPlaybackDetails(item, player, bRestart)};
+      result == RESULT_ERROR)
     return false;
   else if (result == RESULT_NO_PLAYLIST_SELECTED)
     return true; // Special case; not to be treated as error.

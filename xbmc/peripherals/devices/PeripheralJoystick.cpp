@@ -40,7 +40,7 @@ CPeripheralJoystick::CPeripheralJoystick(CPeripherals& manager,
                                          const PeripheralScanResult& scanResult,
                                          CPeripheralBus* bus)
   : CPeripheral(manager, scanResult, bus),
-    m_rumbleGenerator(new CRumbleGenerator)
+    m_rumbleGenerator(std::make_unique<CRumbleGenerator>())
 {
   m_features.push_back(FEATURE_JOYSTICK);
   // FEATURE_RUMBLE conditionally added via SetMotorCount()
