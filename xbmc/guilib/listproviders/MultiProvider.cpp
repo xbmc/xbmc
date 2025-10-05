@@ -12,10 +12,9 @@
 
 #include <mutex>
 
-CMultiProvider::CMultiProvider(const TiXmlNode *first, int parentID)
- : IListProvider(parentID)
+CMultiProvider::CMultiProvider(const TiXmlNode* first, int parentID) : IListProvider(parentID)
 {
-  for (const TiXmlNode *content = first; content; content = content->NextSiblingElement("content"))
+  for (const TiXmlNode* content = first; content; content = content->NextSiblingElement("content"))
   {
     std::unique_ptr<IListProvider> sub{IListProvider::CreateSingle(content, parentID)};
     if (sub)

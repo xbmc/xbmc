@@ -23,7 +23,7 @@ class TiXmlNode;
 class CMultiProvider : public IListProvider
 {
 public:
-  CMultiProvider(const TiXmlNode *first, int parentID);
+  CMultiProvider(const TiXmlNode* first, int parentID);
   explicit CMultiProvider(const CMultiProvider& other);
 
   // Implementation of IListProvider
