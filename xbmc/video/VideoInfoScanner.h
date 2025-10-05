@@ -47,6 +47,12 @@ namespace KODI::VIDEO
     bool m_allExtAudio; /* treat all audio files in video directory as external tracks */
   } SScanSettings;
 
+  struct TVShowContext
+  {
+    std::unordered_map<std::string, int> actorCache{};
+    std::map<std::string, std::string> actorImageCache{};
+  };
+
   class CVideoInfoScanner : public CInfoScanner
   {
 
@@ -255,9 +261,14 @@ namespace KODI::VIDEO
      \param strPath - path on filesystem to look for local thumbs
      \param useRemoteArt - use remote art (ie. http://) even if derived from local .nfo file. Defaults to yes.
      */
+    std::map<std::string, std::string> BuildActorThumbLookup(std::string_view strPath) const;
     void FetchActorThumbs(
         std::vector<SActorInfo>& actors,
-        const std::string& strPath,
+        std::string_view strPath,
+        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
+    void FetchActorThumbs(
+        std::vector<SActorInfo>& actors,
+        const std::map<std::string, std::string>& actorImageLookup,
         UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
 
     static int GetPathHash(const CFileItemList &items, std::string &hash);
@@ -330,6 +341,6 @@ namespace KODI::VIDEO
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
-    std::unordered_map<std::string, int> m_actorCache{};
+    TVShowContext m_tvshowContext;
   };
   } // namespace KODI::VIDEO

@@ -814,12 +814,18 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                  bool fetchEpisodes,
                                                                  CGUIDialogProgress* pDlgProgress)
   {
+    std::string strPath = pItem->GetPath();
+
+    // Reset the TV Show context when we are starting to scan a new TV show.
+    // This maintains memory usage for cache sizes.
+    m_tvshowContext = TVShowContext{};
+    m_tvshowContext.actorImageCache = BuildActorThumbLookup(strPath);
+
     const bool isSeason =
         pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_type == MediaTypeSeason;
 
     int idTvShow = -1;
     int idSeason = -1;
-    std::string strPath = pItem->GetPath();
     if (pItem->IsFolder())
     {
       idTvShow = m_database.GetTvShowId(strPath);
@@ -1991,7 +1997,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         int idShow = showInfo ? showInfo->m_iDbId : -1;
         int idEpisode = m_database.AddNewEpisode(idShow, movieDetails);
         lResult = m_database.SetDetailsForEpisode(movieDetails, art, idShow, idEpisode);
-        m_database.AddCast(lResult, "episode", movieDetails.m_cast, m_actorCache);
+        m_database.AddCast(lResult, "episode", movieDetails.m_cast, m_tvshowContext.actorCache);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = MediaTypeEpisode;
         movieDetails.m_strShowTitle = showInfo ? showInfo->m_strTitle : "";
@@ -2252,8 +2258,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string parentDir = URIUtils::GetBasePath(pItem->GetPath());
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
-      FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath,
-                       useRemoteArt);
+    {
+      if (content == ContentType::TVSHOWS)
+        FetchActorThumbs(movieDetails.m_cast, m_tvshowContext.actorImageCache, useRemoteArt);
+      else
+        FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath,
+                         useRemoteArt);
+    }
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
   }
@@ -2763,11 +2774,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(
-      std::vector<SActorInfo>& actors,
-      const std::string& strPath,
-      UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
+  std::map<std::string, std::string> CVideoInfoScanner::BuildActorThumbLookup(
+      std::string_view rootPath) const
   {
+    const std::string strPath{rootPath};
+
     CFileItemList items;
     // don't try to fetch anything local with plugin source
     if (!URIUtils::IsPlugin(strPath))
@@ -2777,34 +2788,63 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS |
                                  DIR_FLAG_NO_FILE_INFO);
     }
-    for (std::vector<SActorInfo>::iterator i = actors.begin(); i != actors.end(); ++i)
+
+    std::map<std::string, std::string> actorImageLookup{};
+    for (int j = 0; j < items.Size(); j++)
     {
-      if (i->thumb.empty())
+      const auto& fileItem = *items[j];
+      if (fileItem.IsFolder())
+        continue;
+
+      const auto& path = fileItem.GetPath();
+      std::string actorName = URIUtils::GetFileName(path);
+      URIUtils::RemoveExtension(actorName);
+      StringUtils::Replace(actorName, '_', ' ');
+      actorImageLookup.emplace(actorName, path);
+    }
+
+    return actorImageLookup;
+  }
+
+  void CVideoInfoScanner::FetchActorThumbs(
+      std::vector<SActorInfo>& actors,
+      std::string_view rootPath,
+      UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
+  {
+    auto actorImageLookup = BuildActorThumbLookup(rootPath);
+    FetchActorThumbs(actors, actorImageLookup, useRemoteArt);
+  }
+
+  void CVideoInfoScanner::FetchActorThumbs(
+      std::vector<SActorInfo>& actors,
+      const std::map<std::string, std::string>& actorImageLookup,
+      UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
+  {
+    for (auto& actor : actors)
+    {
+      if (actor.thumb.empty())
       {
-        std::string thumbFile = i->strName;
-        StringUtils::Replace(thumbFile, ' ', '_');
-        for (int j = 0; j < items.Size(); j++)
+        if (const auto found = actorImageLookup.find(actor.strName);
+            found != actorImageLookup.end())
+          actor.thumb = found->second;
+
+        const auto& thumbUrl = actor.thumbUrl.GetFirstUrlByType();
+        if (!thumbUrl.m_url.empty())
         {
-          std::string compare = URIUtils::GetFileName(items[j]->GetPath());
-          URIUtils::RemoveExtension(compare);
-          if (!items[j]->IsFolder() && compare == thumbFile)
+          const std::string thumb{CScraperUrl::GetThumbUrl(thumbUrl)};
+          const bool useThisRemoteArt{useRemoteArt != UseRemoteArtWithLocalScraper::NO ||
+                                      !URIUtils::IsRemote(thumb)};
+
+          if (useThisRemoteArt)
           {
-            i->thumb = items[j]->GetPath();
-            break;
+            if (actor.thumb.empty())
+              actor.thumb = thumb;
           }
+          else
+            actor.thumbUrl.Clear();
         }
-        if (!i->thumbUrl.GetFirstUrlByType().m_url.empty())
-        {
-          const std::string thumb{CScraperUrl::GetThumbUrl(i->thumbUrl.GetFirstUrlByType())};
-          const bool notUsingThisRemoteArt{useRemoteArt == UseRemoteArtWithLocalScraper::NO &&
-                                           URIUtils::IsRemote(thumb)};
-          if (i->thumb.empty() && !notUsingThisRemoteArt)
-            i->thumb = thumb;
-          if (notUsingThisRemoteArt)
-            i->thumbUrl.Clear();
-        }
-        if (!i->thumb.empty())
-          CServiceBroker::GetTextureCache()->BackgroundCacheImage(i->thumb);
+        if (!actor.thumb.empty())
+          CServiceBroker::GetTextureCache()->BackgroundCacheImage(actor.thumb);
       }
     }
   }
