@@ -20,12 +20,16 @@
 
 using namespace KODI::GUILIB::GUIINFO;
 
-bool CAddonsGUIInfo::InitCurrentItem(CFileItem *item)
+bool CAddonsGUIInfo::InitCurrentItem(CFileItem* item)
 {
   return false;
 }
 
-bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
+bool CAddonsGUIInfo::GetLabel(std::string& value,
+                              const CFileItem* item,
+                              int contextWindow,
+                              const CGUIInfo& info,
+                              std::string* fallback) const
 {
   const std::shared_ptr<const ADDON::IAddon> addonInfo = item->GetAddonInfo();
   if (addonInfo)
@@ -203,7 +207,10 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
   return false;
 }
 
-bool CAddonsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CAddonsGUIInfo::GetInt(int& value,
+                            const CGUIListItem* gitem,
+                            int contextWindow,
+                            const CGUIInfo& info) const
 {
   switch (info.GetInfo())
   {
@@ -226,7 +233,10 @@ bool CAddonsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
   return false;
 }
 
-bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CAddonsGUIInfo::GetBool(bool& value,
+                             const CGUIListItem* gitem,
+                             int contextWindow,
+                             const CGUIInfo& info) const
 {
   switch (info.GetInfo())
   {

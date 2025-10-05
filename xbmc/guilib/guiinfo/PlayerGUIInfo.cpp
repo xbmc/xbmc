@@ -144,7 +144,7 @@ bool CPlayerGUIInfo::ToggleShowInfo()
   return m_playerShowInfo;
 }
 
-bool CPlayerGUIInfo::InitCurrentItem(CFileItem *item)
+bool CPlayerGUIInfo::InitCurrentItem(CFileItem* item)
 {
   if (item && m_appPlayer->IsPlaying())
   {
@@ -158,7 +158,11 @@ bool CPlayerGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
+bool CPlayerGUIInfo::GetLabel(std::string& value,
+                              const CFileItem* item,
+                              int contextWindow,
+                              const CGUIInfo& info,
+                              std::string* fallback) const
 {
   switch (info.GetInfo())
   {
@@ -264,7 +268,8 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_SEEKSTEPSIZE:
     {
       int seekSize = m_appPlayer->GetSeekHandler().GetSeekSize();
-      std::string strSeekSize = StringUtils::SecondsToTimeString(abs(seekSize), static_cast<TIME_FORMAT>(info.GetData1()));
+      std::string strSeekSize = StringUtils::SecondsToTimeString(
+          abs(seekSize), static_cast<TIME_FORMAT>(info.GetData1()));
       if (seekSize < 0)
         value = "-" + strSeekSize;
       if (seekSize > 0)
@@ -358,7 +363,10 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
   return false;
 }
 
-bool CPlayerGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CPlayerGUIInfo::GetInt(int& value,
+                            const CGUIListItem* gitem,
+                            int contextWindow,
+                            const CGUIInfo& info) const
 {
   switch (info.GetInfo())
   {
@@ -399,9 +407,12 @@ bool CPlayerGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
   return false;
 }
 
-bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
+bool CPlayerGUIInfo::GetBool(bool& value,
+                             const CGUIListItem* gitem,
+                             int contextWindow,
+                             const CGUIInfo& info) const
 {
-  const CFileItem *item = nullptr;
+  const CFileItem* item = nullptr;
   if (gitem->IsFileItem())
     item = static_cast<const CFileItem*>(gitem);
 
@@ -611,7 +622,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
           if (!g_application.m_strPlayListFile.empty())
           {
             //playlist file that is currently playing or the playlistitem that is currently playing.
-            value = item->IsPath(g_application.m_strPlayListFile) || m_currentItem->IsSamePath(item);
+            value =
+                item->IsPath(g_application.m_strPlayListFile) || m_currentItem->IsSamePath(item);
           }
           else
           {

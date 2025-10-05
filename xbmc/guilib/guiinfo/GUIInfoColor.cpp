@@ -42,7 +42,7 @@ bool CGUIInfoColor::Update(const CGUIListItem* item /* = nullptr */)
     return false;
 }
 
-void CGUIInfoColor::Parse(const std::string &label, int context)
+void CGUIInfoColor::Parse(const std::string& label, int context)
 {
   if (label.empty())
     return;
@@ -61,7 +61,7 @@ void CGUIInfoColor::Parse(const std::string &label, int context)
   }
 
   if (StringUtils::StartsWithNoCase(label, "$info["))
-    label2 = label.substr(6, label.length()-7);
+    label2 = label.substr(6, label.length() - 7);
 
   m_info = infoMgr.TranslateString(label2);
   if (!m_info)
