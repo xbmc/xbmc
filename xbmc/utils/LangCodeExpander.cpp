@@ -13,9 +13,9 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/i18n/Iso3166_1.h"
+#include "utils/i18n/Iso639.h"
 #include "utils/i18n/Iso639_1.h"
 #include "utils/i18n/Iso639_2.h"
-#include "utils/i18n/TableISO639.h"
 #include "utils/i18n/TableLanguageCodes.h"
 #include "utils/log.h"
 
