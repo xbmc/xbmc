@@ -149,16 +149,22 @@ macro(buildFFMPEG)
                    -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
                    -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
                    -DCMAKE_EXE_LINKER_FLAGS=${LINKER_FLAGS}
+                   -DDISABLE_FFMPEG_SOURCE_PLUGINS=${DISABLE_FFMPEG_SOURCE_PLUGINS}
                    ${CROSS_ARGS}
                    ${FFMPEG_OPTIONS}
                    -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig)
     set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
                       ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
                       <SOURCE_DIR>
-                      COMMAND ${CMAKE_COMMAND} -E copy
-                      ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/001-ffmpeg-all-libpostproc-plugin.patch
-                      <SOURCE_DIR>
     )
+
+    if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
+      list(APPEND PATCH_COMMAND COMMAND ${CMAKE_COMMAND} -E copy
+                                ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/001-ffmpeg-all-libpostproc-plugin.patch
+                                <SOURCE_DIR>)
+
+      set(postproc_pkg_config_search "postproc=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libpostproc`")
+    endif()
 
     if(CMAKE_GENERATOR STREQUAL Xcode)
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
@@ -178,7 +184,7 @@ macro(buildFFMPEG)
     avformat=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavformat`
     avfilter=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavfilter`
     avutil=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavutil`
-    postproc=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libpostproc`
+    ${postproc_pkg_config_search}
     swscale=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswscale`
     swresample=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswresample`
     gnutls=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors gnutls`
@@ -259,8 +265,10 @@ set(FFMPEG_PKGS libavcodec${_avcodec_ver}
                 libswscale${_swscale_ver}
                 libswresample${_swresample_ver})
 
-# Optional ffmpeg sourceplugins
-list(APPEND FFMPEG_PKGS libpostproc${_postproc_ver})
+if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
+  # Optional ffmpeg sourceplugins
+  list(APPEND FFMPEG_PKGS libpostproc${_postproc_ver})
+endif()
 
 if(ENABLE_INTERNAL_FFMPEG)
   buildFFMPEG()
