@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/i18n/TableISO639.h"
+#include "utils/i18n/Iso639.h"
 
 #include <algorithm>
 #include <array>
