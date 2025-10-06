@@ -17,6 +17,17 @@
 #include <string>
 #include <string_view>
 
+namespace KODI::UTILS::I18N
+{
+/*!
+ * \brief Converts a language code given as a 4-byte integer to its string representation.
+ * \param[in] code The language code coded as a 4-byte integer
+ * \return The string representation
+ */
+std::string LongCodeToString(uint32_t code);
+
+} // namespace KODI::UTILS::I18N
+
 namespace
 {
 /*!
@@ -34,29 +45,6 @@ constexpr uint32_t StringToLongCode(std::string_view a)
          static_cast<uint32_t>(len >= 3 ? a[len - 3] : 0) << 16 |
          static_cast<uint32_t>(len >= 2 ? a[len - 2] : 0) << 8 |
          static_cast<uint32_t>(len >= 1 ? a[len - 1] : 0);
-}
-
-/*!
- * \brief Converts a language code given as a 4-byte integer to its string representation.
- * \param[in] code The language code coded as a 4-byte integer
- * \return The string representation
- */
-std::string LongCodeToString(uint32_t code)
-{
-  // Build the string in reverse order since appending to a string is more efficient than inserting
-  // at position 0 and shifting the existing contents
-  std::string ret;
-  for (unsigned int j = 0; j < 4; j++)
-  {
-    char c = static_cast<char>(code) & 0xFF;
-    if (c == '\0')
-      break;
-    ret.push_back(c);
-    code >>= 8;
-  }
-  // Reverse the string for the final result
-  std::reverse(ret.begin(), ret.end());
-  return ret;
 }
 
 struct LCENTRY

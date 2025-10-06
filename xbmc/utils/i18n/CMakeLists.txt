@@ -1,4 +1,5 @@
 set(SOURCES Iso3166_1.cpp
+            Iso639.cpp
             Iso639_1.cpp
             Iso639_2.cpp
             Iso639_3.cpp)
