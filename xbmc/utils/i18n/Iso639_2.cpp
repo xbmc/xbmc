@@ -13,6 +13,46 @@
 #include "utils/i18n/Iso639_2_Table.h"
 
 #include <algorithm>
+#include <array>
+#include <cassert>
+#include <mutex>
+
+namespace KODI::UTILS::I18N
+{
+namespace
+{
+// Array containing main + additional names, sorted by case-insensitive name
+std::array<LCENTRY, ISO639_2_COUNT + ISO639_2_ADDL_NAMES_COUNT> g_TableISO639_2AllNames;
+
+// Ensure initialization thread-safety
+std::once_flag g_initializeOnce;
+
+class CIso639_2_Initializer
+{
+public:
+  CIso639_2_Initializer() { std::call_once(g_initializeOnce, Initialize); }
+
+private:
+  static void Initialize()
+  {
+    // Prepare TableISO639_2AllNames at runtime - exceeds constexpr step limits on some compilers.
+    // Concatenation of main + additional names, sorted by name
+    std::ranges::copy(TableISO639_2ByCode, g_TableISO639_2AllNames.begin());
+    std::ranges::copy(TableISO639_2_Names, g_TableISO639_2AllNames.begin() + ISO639_2_COUNT);
+
+    std::ranges::sort(g_TableISO639_2AllNames, {},
+                      [](const auto& elem) { return StringUtils::ToLower(elem.name); });
+
+    // Check that names are unique
+    assert(std::ranges::adjacent_find(g_TableISO639_2AllNames, {}, [](const auto& elem)
+                                      { return StringUtils::ToLower(elem.name); }) ==
+           g_TableISO639_2AllNames.end());
+  }
+};
+// Ensure initialization of the table when the program starts before any class function can run.
+static CIso639_2_Initializer g_initializer;
+} // namespace
+} // namespace KODI::UTILS::I18N
 
 using namespace KODI::UTILS::I18N;
 
@@ -34,9 +74,9 @@ std::optional<std::string> CIso639_2::LookupByCode(uint32_t longTcode)
 std::optional<std::string> CIso639_2::LookupByName(std::string_view name)
 {
   auto it = std::ranges::lower_bound(
-      TableISO639_2AllNames, name, [](std::string_view a, std::string_view b)
+      g_TableISO639_2AllNames, name, [](std::string_view a, std::string_view b)
       { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
-  if (it != TableISO639_2AllNames.end() && StringUtils::EqualsNoCase(it->name, name))
+  if (it != g_TableISO639_2AllNames.end() && StringUtils::EqualsNoCase(it->name, name))
     return LongCodeToString(it->code);
 
   return std::nullopt;
@@ -45,7 +85,7 @@ std::optional<std::string> CIso639_2::LookupByName(std::string_view name)
 bool CIso639_2::ListLanguages(std::map<std::string, std::string>& langMap)
 {
   // ISO 639-2/T codes
-  std::ranges::transform(TableISO639_2AllNames, std::inserter(langMap, langMap.end()),
+  std::ranges::transform(g_TableISO639_2AllNames, std::inserter(langMap, langMap.end()),
                          [](const LCENTRY& e)
                          { return std::make_pair(LongCodeToString(e.code), std::string{e.name}); });
 

@@ -80,26 +80,4 @@ constexpr auto CreateIso639ByName(T codes)
   return codes;
 }
 
-/*!
- * \brief Concatenate arrays containing the same type of elements
- * \tparam T type of the common array element
- * \tparam ...Ns sizes of the arrays
- * \param[in] ...arrays arrays to concatenate
- * \return array containing the concatenation of all parameter arrays
- */
-template<typename T, std::size_t... Ns>
-constexpr auto ConcatenateArrays(const std::array<T, Ns>&... arrays)
-{
-  constexpr std::size_t totalSize = (Ns + ...); // Sum of sizes
-  std::array<T, totalSize> result{};
-  std::size_t currentIndex = 0;
-  (
-      [&](const auto& arr)
-      {
-        for (const T& elem : arr)
-          result[currentIndex++] = elem;
-      }(arrays),
-      ...); // Apply lambda to each array in the pack
-  return result;
-}
 } // namespace
