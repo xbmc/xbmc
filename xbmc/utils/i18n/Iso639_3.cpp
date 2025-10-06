@@ -18,25 +18,20 @@ using namespace KODI::UTILS::I18N;
 
 namespace
 {
-bool PrepareTableByName()
+class CIso639_3_Initializer
 {
-  std::ranges::sort(
-      TableISO639_3ByName, [](std::string_view a, std::string_view b)
-      { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
-  return true;
-}
+public:
+  CIso639_3_Initializer()
+  {
+    std::ranges::sort(
+        TableISO639_3ByName, [](std::string_view a, std::string_view b)
+        { return StringUtils::CompareNoCase(a, b) < 0; }, &LCENTRY::name);
+  }
+};
+// Static variable to ensure proper initialization of the table when the program starts.
+//[[maybe_unused]] to suppress clang warning?
+static CIso639_3_Initializer g_initializer;
 } // namespace
-
-CIso639_3::CIso639_3()
-{
-  PrepareTableByName();
-}
-
-CIso639_3& CIso639_3::GetInstance()
-{
-  static CIso639_3 instance;
-  return instance;
-}
 
 std::optional<std::string> CIso639_3::LookupByCode(std::string_view code)
 {
