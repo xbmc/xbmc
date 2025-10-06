@@ -622,10 +622,6 @@ constexpr std::array<struct LCENTRY, ISO639_2_ADDL_NAMES_COUNT> TableISO639_2_Na
 
 static_assert(std::ranges::is_sorted(TableISO639_2_Names, {}, &LCENTRY::code));
 
-// Concatenate and sort the main + additional names to enable lookup of 639-2/T code from any name
-inline constexpr auto TableISO639_2AllNames =
-    CreateIso639ByName(ConcatenateArrays(TableISO639_2ByCode, TableISO639_2_Names));
-
 // 20 pairs of active ISO 639-2/T and /B codes and 2 inactive pairs (deprecated B codes)
 inline static constexpr int ISO639_2_TB_COUNT = 22;
 
@@ -674,9 +670,6 @@ inline constexpr auto ISO639_2_TB_MappingsByB = CreateTBMappingsByB();
 static_assert(std::ranges::adjacent_find(TableISO639_2ByCode, {}, &LCENTRY::code) ==
               TableISO639_2ByCode.end());
 
-static_assert(std::ranges::adjacent_find(TableISO639_2AllNames, {}, &LCENTRY::name) ==
-              TableISO639_2AllNames.end());
-
 static_assert(std::ranges::adjacent_find(ISO639_2_TB_Mappings, {}, &ISO639_2_TB::terminological) ==
               ISO639_2_TB_Mappings.end());
 
@@ -684,6 +677,17 @@ static_assert(std::ranges::adjacent_find(ISO639_2_TB_MappingsByB,
                                          {},
                                          &ISO639_2_TB::bibliographic) ==
               ISO639_2_TB_MappingsByB.end());
+
+// All of the codes of the additional English names must exist in the main table
+static_assert(std::ranges::all_of(
+    TableISO639_2_Names,
+    [](auto tCode)
+    { return std::ranges::binary_search(TableISO639_2ByCode, tCode, {}, &LCENTRY::code); },
+    &LCENTRY::code));
+
+// Not possible to check at compile time the existence of duplicate names in the main table
+// or names of the main table duplicated as additional names - exceeds typical constexpr step limits
+// Checked at runtime instead.
 
 // All T codes of tb mapping must exist in the main ISO 639-2 table
 static_assert(std::ranges::all_of(
