@@ -478,10 +478,9 @@ bool CPluginDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   return success;
 }
 
-bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resume)
+bool CPluginDirectory::RunScriptWithParams(const CURL& url, bool resume)
 {
-  CURL url(strPath);
-  if (url.GetHostName().empty()) // called with no script - should never happen
+  if (url.Get().empty() || url.GetHostName().empty()) // called with no script - should never happen
     return false;
 
   AddonPtr addon;
@@ -493,9 +492,6 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
     CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName());
     return false;
   }
-
-  if (strPath.empty())
-    return false;
 
   return ExecuteScript(addon, url, resume) >= 0;
 }
