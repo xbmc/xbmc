@@ -96,13 +96,14 @@ std::string URIUtils::URLDecode(std::string_view encoded)
 
 std::string URIUtils::URLEncode(std::string_view decoded, std::string_view URLSpec)
 {
+  constexpr char hex_chars[] = "0123456789abcdef";
   std::ostringstream oss;
   for (const auto& ch : decoded)
   {
     if (StringUtils::isasciialphanum(ch) || URLSpec.find(ch) != std::string::npos)
       oss << ch;
     else
-      fmt::format_to(std::ostreambuf_iterator(oss), "%{:02x}", static_cast<unsigned char>(ch));
+      oss << '%' << hex_chars[(ch >> 4) & 0x0f] << hex_chars[(ch >> 0) & 0x0f];
   }
   return std::move(oss).str();
 }
