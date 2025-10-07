@@ -80,7 +80,7 @@ protected:
   bool IsCancelled() const override { return m_cancelled; }
 
 private:
-  bool StartScript(const std::string& strPath, bool resume);
+  bool StartScript(const CURL& url, bool resume);
 
   std::unique_ptr<CFileItemList> m_listItems;
   std::unique_ptr<CFileItem> m_fileResult;
