@@ -1131,7 +1131,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
   else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
   {
     bool resume = pItem->GetStartOffset() == STARTOFFSET_RESUME;
-    return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath(), resume);
+    return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetURL(), resume);
   }
 #if defined(TARGET_ANDROID)
   else if (pItem->IsAndroidApp())
