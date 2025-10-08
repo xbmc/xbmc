@@ -1,8 +1,11 @@
 include ../../Makefile.include PYTHON3-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.include \
                                  apple.patch \
+                                 process-vm-ready.patch \
+                                 static-compile.patch \
                                  10-android-modules.patch \
-                                 11-android-ctypes.patch
+                                 11-android-ctypes.patch \
+                                 12-android-arm.patch
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   ifeq ($(OS), darwin_embedded)
@@ -88,10 +91,13 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../apple.patch
+	cd $(PLATFORM); patch -p1 -i ../static-compile.patch
+	cd $(PLATFORM); patch -p1 -i ../process-vm-ready.patch
 
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../10-android-modules.patch
 	cd $(PLATFORM); patch -p1 -i ../11-android-ctypes.patch
+	cd $(PLATFORM); patch -p1 -i ../12-android-arm.patch
 endif
 	cd $(PLATFORM); $(AUTORECONF)
 	cd $(PLATFORM); $(CONFIGURE)
