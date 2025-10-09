@@ -46,6 +46,7 @@ public:
   bool IsActive() const;
   bool IsRunning() const;
   void Reset() { m_state = InvokerStateUninitialized; }
+  inline static void* m_mainThreadState{nullptr};
 
 protected:
   friend class CLanguageInvokerThread;
