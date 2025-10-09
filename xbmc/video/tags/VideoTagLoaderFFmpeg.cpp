@@ -191,6 +191,12 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
     }
     else
     {
+      /*! @todo Investigate if this is correct.
+       * The first parameter to `CNfoFile::Create` is the **path** to the NFO file.
+       * `content` here appears to be the __contents__ of an NFO file.
+       * If this assumption is correct the parsing will always fail and
+       * `nfo.ScraperUrl()` will always return an empty URL.
+       */
       nfo.Create(content, m_info);
       m_url = nfo.ScraperUrl();
       return CInfoScanner::InfoType::URL;
