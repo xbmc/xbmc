@@ -43,6 +43,8 @@
 #include <osdefs.h>
 // clang-format on
 
+#include "XBPython.h"
+
 #include <cassert>
 #include <iterator>
 
@@ -154,7 +156,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
   {
     if (!m_threadState)
     {
-      PyThreadState_Swap(static_cast<PyThreadState*>(m_mainThreadState));
+      PyThreadState_Swap(CServiceBroker::GetXBPython().GetMainThreadState());
 
       l_threadState = Py_NewInterpreter();
       PyEval_ReleaseThread(l_threadState);
@@ -576,7 +578,7 @@ void CPythonInvoker::onExecutionDone()
     // unregister the language hook
     m_languageHook->UnregisterMe();
 
-    PyThreadState_Swap(static_cast<PyThreadState*>(m_mainThreadState));
+    PyThreadState_Swap(CServiceBroker::GetXBPython().GetMainThreadState());
     PyEval_SaveThread();
 
     // set stopped event - this allows ::stop to run and kill remaining threads

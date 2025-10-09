@@ -21,6 +21,8 @@
 class CPythonInvoker;
 class CVariant;
 
+typedef struct _ts PyThreadState;
+
 typedef struct
 {
   int id;
@@ -100,13 +102,15 @@ public:
   void OnScriptFinalized(ILanguageInvoker* invoker) override;
   ILanguageInvoker* CreateInvoker() override;
 
+  PyThreadState* GetMainThreadState() const { return m_mainThreadState; }
+
   bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
 private:
   static bool m_bInitialized; // whether global python runtime was already initialized
 
   CCriticalSection m_critSection;
-  void* m_mainThreadState{nullptr};
+  PyThreadState* m_mainThreadState{nullptr};
   int m_iDllScriptCounter{0}; // to keep track of the total scripts running that need the dll
 
   //Vector with list of threads used for running scripts

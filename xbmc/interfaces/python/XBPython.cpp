@@ -49,7 +49,7 @@ XBPython::~XBPython()
   if (Py_IsInitialized())
   {
     // Switch to the main interpreter thread before finalizing
-    PyThreadState_Swap(static_cast<PyThreadState*>(m_mainThreadState));
+    PyThreadState_Swap(m_mainThreadState);
 
     // Clear all loaded modules to prevent circular references
     PyObject* modules = PyImport_GetModuleDict();
@@ -508,7 +508,6 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
 
     Py_Initialize();
     m_mainThreadState = PyEval_SaveThread();
-    invoker->m_mainThreadState = m_mainThreadState;
 
     m_bInitialized = true;
   }
