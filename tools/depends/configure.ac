@@ -818,6 +818,7 @@ c = $MESON_CC
 cpp = $MESON_CXX
 ar = '$AR'
 strip = '$STRIP'
+cmake = '$prefix/$tool_dir/bin/cmake'
 pkgconfig = '$prefix/$tool_dir/bin/pkg-config'
 pkg-config = '$prefix/$tool_dir/bin/pkg-config'
 
