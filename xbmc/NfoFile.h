@@ -13,6 +13,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "InfoScanner.h"
+#include "URL.h"
 #include "addons/Scraper.h"
 #include "utils/XBMCTinyXML.h"
 
@@ -51,17 +52,19 @@ public:
   ADDON::ScraperPtr GetScraperInfo() { return m_info; }
   const CScraperUrl &ScraperUrl() const { return m_scurl; }
 
-  static int Scrape(const ADDON::ScraperPtr& scraper, CScraperUrl& url, const std::string& content);
-
-  static std::vector<ADDON::ScraperPtr> GetScrapers(ADDON::AddonType type,
-                                                    const ADDON::ScraperPtr& selectedScraper);
-
 private:
+  CInfoScanner::InfoType TryParsing(ADDON::AddonType addonType);
+  CInfoScanner::InfoType TryParsing(const CURL& nfoPath,
+                                    ADDON::ContentType contentType,
+                                    int index = 1);
+  CInfoScanner::InfoType searchNfoForScraperUrls(CInfoScanner::InfoType bNfo,
+                                                 const ADDON::ScraperPtr& info);
+  bool seekToMovieIndex(int index);
+
   std::string m_doc;
   size_t m_headPos = 0;
   ADDON::ScraperPtr m_info;
-  ADDON::AddonType m_type{};
   CScraperUrl m_scurl;
 
-  int Load(const std::string&);
+  int Load(const CURL&);
 };
