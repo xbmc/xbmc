@@ -30,17 +30,37 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch PR ref for fork support
+      - name: Setup git wrapper for fork PR support
         if: github.event.issue.pull_request
         run: |
-          # GitHub exposes all PRs (even from forks) as refs/pull/NUMBER/head
-          # Fetch this ref and create a local branch that the action can use
+          # Get PR info
           PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
           HEAD_REF=$(echo "$PR_DATA" | jq -r '.head.ref')
+          PR_NUMBER=${{ github.event.issue.number }}
 
-          echo "Fetching PR #${{ github.event.issue.number }} as refs/pull/${{ github.event.issue.number }}/head"
-          git fetch origin +refs/pull/${{ github.event.issue.number }}/head:refs/remotes/origin/$HEAD_REF
-          echo "Successfully fetched PR ref as origin/$HEAD_REF"
+          # Pre-fetch the PR using GitHub's PR refs
+          echo "Pre-fetching PR #$PR_NUMBER"
+          git fetch origin +refs/pull/$PR_NUMBER/head:refs/remotes/origin/$HEAD_REF
+
+          # Create a git wrapper to intercept fetch commands
+          mkdir -p /tmp/git-wrapper
+          cat > /tmp/git-wrapper/git << 'EOF'
+#!/bin/bash
+# Wrapper to intercept git fetch for fork PRs
+if [[ "$1" == "fetch" && "$2" == "origin" ]]; then
+  BRANCH_NAME="${3#refs/remotes/origin/}"
+  echo "[git wrapper] Intercepting fetch for branch: $BRANCH_NAME"
+  # The branch already exists from our pre-fetch, just exit successfully
+  exit 0
+fi
+# Pass through all other git commands
+exec /usr/bin/git "$@"
+EOF
+          chmod +x /tmp/git-wrapper/git
+
+          # Add wrapper to PATH
+          echo "/tmp/git-wrapper" >> $GITHUB_PATH
+          echo "Git wrapper installed for fork PR support"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
