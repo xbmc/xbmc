@@ -383,6 +383,14 @@ private:
    */
   unsigned int GetQueueLevel(StreamType type) const;
 
+  /**
+   * @brief Parse the AudioSpecificConfig to determine the sample rate
+   * @param data Pointer to AudioSpecificConfig data
+   * @param size Size of the data buffer in bytes. Must be >= 2
+   * @return Sample rate in Hz, or 0 if not enough data or invalid
+  */
+  static unsigned int ParseAACSampleRate(const uint8_t* data, size_t size);
+
   std::condition_variable m_eventCondition;
   std::mutex m_eventMutex;
 
