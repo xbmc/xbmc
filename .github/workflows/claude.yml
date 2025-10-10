@@ -30,6 +30,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Configure git for fork PR
+        if: github.event.issue.pull_request
+        run: |
+          # Fetch PR details to get fork information
+          PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
+          FORK_OWNER=$(echo "$PR_DATA" | jq -r '.head.repo.owner.login')
+          FORK_REPO=$(echo "$PR_DATA" | jq -r '.head.repo.name')
+          HEAD_REF=$(echo "$PR_DATA" | jq -r '.head.ref')
+
+          if [ "$FORK_OWNER" != "${{ github.repository_owner }}" ]; then
+            echo "Adding fork remote: https://github.com/$FORK_OWNER/$FORK_REPO.git"
+            git remote add fork "https://github.com/$FORK_OWNER/$FORK_REPO.git"
+            git fetch fork "$HEAD_REF"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
