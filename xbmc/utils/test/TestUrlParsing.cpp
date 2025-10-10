@@ -17,62 +17,74 @@
 
 #include <gtest/gtest.h>
 
+// JSON Output
+#include <fstream>
+#include "test/TestUtils.h"
+#include "utils/JSONVariantParser.h"
+#include "utils/JSONVariantWriter.h"
+#include "utils/Variant.h"
+
 using ::testing::Test;
 using ::testing::ValuesIn;
 using ::testing::WithParamInterface;
 
+struct TestURLParseDetailsFilename
+{
+  size_t filename;
+};
+
 struct TestURLParseDetailsData
 {
-  std::string_view input = "";
-  std::string_view expectedGet = "";
+  std::string input = "";
+  std::string expectedGet = "";
   int expectedGetPort = 0;
-  std::string_view expectedGetHostName = "";
-  std::string_view expectedGetDomain = "";
-  std::string_view expectedGetUserName = "";
-  std::string_view expectedGetPassWord = "";
-  std::string_view expectedGetFileName = "";
-  std::string_view expectedGetFileNameUtil = "";
-  std::string_view expectedGetProtocol = "";
-  std::string_view expectedGetTranslatedProtocol = "";
-  std::string_view expectedGetShareName = "";
-  std::string_view expectedGetOptions = "";
-  std::string_view expectedGetProtocolOptions = "";
-  std::string_view expectedGetFileNameWithoutPath = "";
-  std::string_view expectedGetWithoutOptions = "";
-  std::string_view expectedGetWithoutUserDetails_redacted = "";
-  std::string_view expectedGetWithoutUserDetails_removed = "";
-  std::string_view expectedGetWithoutFilename = "";
-  std::string_view expectedGetRedacted = "";
+  std::string expectedGetHostName = "";
+  std::string expectedGetDomain = "";
+  std::string expectedGetUserName = "";
+  std::string expectedGetPassWord = "";
+  std::string expectedGetFileName = "";
+  std::string expectedGetFileNameUtil = "";
+  std::string expectedGetProtocol = "";
+  std::string expectedGetTranslatedProtocol = "";
+  std::string expectedGetShareName = "";
+  std::string expectedGetOptions = "";
+  std::string expectedGetProtocolOptions = "";
+  std::string expectedGetFileNameWithoutPath = "";
+  std::string expectedGetWithoutOptions = "";
+  std::string expectedGetWithoutUserDetails_redacted = "";
+  std::string expectedGetWithoutUserDetails_removed = "";
+  std::string expectedGetWithoutFilename = "";
+  std::string expectedGetRedacted = "";
   bool expectedIsLocal = false;
   bool expectedIsLocalHost = false;
   bool expectedIsFileOnly = false;
   bool expectedIsFullPath = false;
-  std::string_view expectedDecode = "";
-  std::string_view expectedDecodeFileName = "";
-  std::string_view expectedEncode = "";
-  std::string_view expectedExtension = "";
+  std::string expectedDecode = "";
+  std::string expectedDecodeFileName = "";
+  std::string expectedEncode = "";
+  std::string expectedExtension = "";
   bool expectedHasExtension = false;
   bool expectedHasSetExtension = false;
-  std::string_view expectedRemovedExtension = "";
-  std::string_view expectedReplacedExtension = "";
-  std::string_view expectedFileOrFolder = "";
-  std::string_view expectedSplitPath = "";
-  std::string_view expectedSplitFileName = "";
+  std::string expectedRemovedExtension = "";
+  std::string expectedReplacedExtension = "";
+  std::string expectedFileOrFolder = "";
+  std::string expectedSplitPath = "";
+  std::string expectedSplitFileName = "";
   bool expectedHasParentInHostname = false;
   bool expectedHasEncodedHostname = false;
   bool expectedHasEncodedFilename = false;
-  std::string_view expectedHasParentPath = "";
-  std::string_view expectedGetParentPath = "";
-  std::string_view expectedGetBasePath = "";
-  std::string_view expectedGetDiscBase = "";
-  std::string_view expectedGetDiscBasePath = "";
-  std::string_view expectedGetDiscUnderlyingFile = "";
-  std::string_view expectedGetBlurayFile = "";
-  std::string_view expectedGetBlurayRootPath = "";
-  std::string_view expectedGetBlurayTitlesPath = "";
-  std::string_view expectedGetBlurayEpisodePath = "";
-  std::string_view expectedGetBlurayAllEpisodesPath = "";
-  std::string_view expectedGetBlurayPlaylistPath = "";
+  std::string expectedHasParentPath = "";
+  std::string expectedGetParentPath = "";
+  std::string expectedGetBasePath = "";
+  std::string expectedGetDiscBase = "";
+  std::string expectedGetDiscBasePath = "";
+  std::string expectedGetDiscUnderlyingFile = "";
+  std::string expectedGetBlurayFile = "";
+  std::string expectedGetBlurayRootPath = "";
+  std::string expectedGetBlurayTitlesPath = "";
+  std::string expectedGetBlurayEpisodePath = "";
+  std::string expectedGetBlurayAllEpisodesPath = "";
+  std::string expectedGetBlurayPlaylistPath = "";
   bool expectedIsMusicDBProtocol = false;
   bool expectedIsUDFProtocol = false;
   bool expectedIsRemote = false;
@@ -133,70 +145,200 @@ struct TestURLParseDetailsData
   bool expectedIsLibraryFolder = false;
   bool expectedIsLibraryContent = false;
   bool expectedIsDOSPath = false;
-  std::string_view expectedAppendSlash = "";
+  std::string expectedAppendSlash = "";
   bool expectedHasSlashAtEnd = false;
   bool expectedHasSlashAtEndURL = false;
-  std::string_view expectedRemovedEndSlash = "";
-  std::string_view expectedIsFixSlashesAndDupsUnix = "";
-  std::string_view expectedIsFixSlashesAndDupsWin = "";
-  std::string_view expectedCanonicalizePathUnix = "";
-  std::string_view expectedCanonicalizePathWin = "";
-  std::string_view expectedAddFileToFolder = "";
-  std::string_view expectedGetDirectory = "";
-  std::string_view expectedCreateZIPArchivePath = "";
-  std::string_view expectedCreateRARArchivePath = "";
-  std::string_view expectedCreateAPKArchivePath = "";
-  std::string_view expectedGetRealPath = "";
-  std::string_view expectedUpdateUrlEncoding = "";
+  std::string expectedRemovedEndSlash = "";
+  std::string expectedIsFixSlashesAndDupsUnix = "";
+  std::string expectedIsFixSlashesAndDupsWin = "";
+  std::string expectedCanonicalizePathUnix = "";
+  std::string expectedCanonicalizePathWin = "";
+  std::string expectedAddFileToFolder = "";
+  std::string expectedGetDirectory = "";
+  std::string expectedCreateZIPArchivePath = "";
+  std::string expectedCreateRARArchivePath = "";
+  std::string expectedCreateAPKArchivePath = "";
+  std::string expectedGetRealPath = "";
+  std::string expectedUpdateUrlEncoding = "";
 };
 
-std::ostream& operator<<(std::ostream& os, const TestURLParseDetailsData& rhs)
+std::ostream& operator<<(std::ostream& os, const TestURLParseDetailsFilename& rhs)
 {
-  return os << "(Input: " << rhs.input << ")";
+  return os << "(Input: " << rhs.filename << ".json)";
 }
 
-class TestURLParseDetails : public Test, public WithParamInterface<TestURLParseDetailsData>
+class TestURLParseDetails : public Test, public WithParamInterface<TestURLParseDetailsFilename>
 {
 };
 
-/*
-#include <fstream>
-void write(std::ostream& f, const std::string& key, const int& value)
-{
-	if (value != 0)
-	  f << "  ." << key << " = " << value << ",\n";
-}
 
-void write(std::ostream& f, const std::string& key, const bool& value)
+namespace
 {
-	if (value)
-	  f << "  ." << key << " = " << (value ? "true":"false") << ",\n";
-}
-
-void write_escape(std::ostream& f, const std::string& value)
-{
-  for (const char ch: value)
+  void read(bool& output, const CVariant& json, const char* key)
   {
-  	if (ch == '\\')
-  		f << ch;
-  	f << ch;
+    if (json.isMember(key))
+      output = json[key].asBoolean();
+  }
+  void read(int& output, const CVariant& json, const char* key)
+  {
+    if (json.isMember(key))
+      output = json[key].asInteger();
+  }
+  void read(std::string& output, const CVariant& json, const char* key)
+  {
+    if (json.isMember(key))
+      output = json[key].asString();
+  }
+
+  TestURLParseDetailsData CreateParamFromJson(size_t filename)
+  {
+    CVariant json;
+    TestURLParseDetailsData param;
+  
+    std::ostringstream oss;
+    oss << "xbmc/utils/test/testdata/" << filename << ".json";
+  
+    std::ifstream reader(XBMC_REF_FILE_PATH(oss.str()));
+    std::stringstream buffer;
+    buffer << reader.rdbuf();
+    std::string inputJson = buffer.str();
+    reader.close();
+  
+    if (CJSONVariantParser::Parse(inputJson, json) && !json.isNull())
+    {
+      read(param.input, json, "input");
+      read(param.expectedGet, json, "expectedGet");
+      read(param.expectedGetPort, json, "expectedGetPort");
+      read(param.expectedGetHostName, json, "expectedGetHostName");
+      read(param.expectedGetDomain, json, "expectedGetDomain");
+      read(param.expectedGetUserName, json, "expectedGetUserName");
+      read(param.expectedGetPassWord, json, "expectedGetPassWord");
+      read(param.expectedGetFileName, json, "expectedGetFileName");
+      read(param.expectedGetFileNameUtil, json, "expectedGetFileNameUtil");
+      read(param.expectedGetProtocol, json, "expectedGetProtocol");
+      read(param.expectedGetTranslatedProtocol, json, "expectedGetTranslatedProtocol");
+      read(param.expectedGetShareName, json, "expectedGetShareName");
+      read(param.expectedGetOptions, json, "expectedGetOptions");
+      read(param.expectedGetProtocolOptions, json, "expectedGetProtocolOptions");
+      read(param.expectedGetFileNameWithoutPath, json, "expectedGetFileNameWithoutPath");
+      read(param.expectedGetWithoutOptions, json, "expectedGetWithoutOptions");
+      read(param.expectedGetWithoutUserDetails_redacted, json, "expectedGetWithoutUserDetails_redacted");
+      read(param.expectedGetWithoutUserDetails_removed, json, "expectedGetWithoutUserDetails_removed");
+      read(param.expectedGetWithoutFilename, json, "expectedGetWithoutFilename");
+      read(param.expectedGetRedacted, json, "expectedGetRedacted");
+      read(param.expectedIsLocal, json, "expectedIsLocal");
+      read(param.expectedIsLocalHost, json, "expectedIsLocalHost");
+      read(param.expectedIsFileOnly, json, "expectedIsFileOnly");
+      read(param.expectedIsFullPath, json, "expectedIsFullPath");
+      read(param.expectedDecode, json, "expectedDecode");
+      read(param.expectedDecodeFileName, json, "expectedDecodeFileName");
+      read(param.expectedEncode, json, "expectedEncode");
+      read(param.expectedExtension, json, "expectedExtension");
+      read(param.expectedHasExtension, json, "expectedHasExtension");
+      read(param.expectedHasSetExtension, json, "expectedHasSetExtension");
+      read(param.expectedRemovedExtension, json, "expectedRemovedExtension");
+      read(param.expectedReplacedExtension, json, "expectedReplacedExtension");
+      read(param.expectedFileOrFolder, json, "expectedFileOrFolder");
+      read(param.expectedSplitPath, json, "expectedSplitPath");
+      read(param.expectedSplitFileName, json, "expectedSplitFileName");
+      read(param.expectedHasParentInHostname, json, "expectedHasParentInHostname");
+      read(param.expectedHasEncodedHostname, json, "expectedHasEncodedHostname");
+      read(param.expectedHasEncodedFilename, json, "expectedHasEncodedFilename");
+      read(param.expectedHasParentPath, json, "expectedHasParentPath");
+      read(param.expectedGetParentPath, json, "expectedGetParentPath");
+      read(param.expectedGetBasePath, json, "expectedGetBasePath");
+      read(param.expectedGetDiscBase, json, "expectedGetDiscBase");
+      read(param.expectedGetDiscBasePath, json, "expectedGetDiscBasePath");
+      read(param.expectedGetDiscUnderlyingFile, json, "expectedGetDiscUnderlyingFile");
+      read(param.expectedGetBlurayFile, json, "expectedGetBlurayFile");
+      read(param.expectedGetBlurayRootPath, json, "expectedGetBlurayRootPath");
+      read(param.expectedGetBlurayTitlesPath, json, "expectedGetBlurayTitlesPath");
+      read(param.expectedGetBlurayEpisodePath, json, "expectedGetBlurayEpisodePath");
+      read(param.expectedGetBlurayAllEpisodesPath, json, "expectedGetBlurayAllEpisodesPath");
+      read(param.expectedGetBlurayPlaylistPath, json, "expectedGetBlurayPlaylistPath");
+      read(param.expectedIsMusicDBProtocol, json, "expectedIsMusicDBProtocol");
+      read(param.expectedIsUDFProtocol, json, "expectedIsUDFProtocol");
+      read(param.expectedIsRemote, json, "expectedIsRemote");
+      read(param.expectedIsOnDVD, json, "expectedIsOnDVD");
+      read(param.expectedIsOnLAN, json, "expectedIsOnLAN");
+      read(param.expectedIsHostOnLAN, json, "expectedIsHostOnLAN");
+      read(param.expectedIsMultiPath, json, "expectedIsMultiPath");
+      read(param.expectedIsHD, json, "expectedIsHD");
+      read(param.expectedIsStack, json, "expectedIsStack");
+      read(param.expectedIsFavourite, json, "expectedIsFavourite");
+      read(param.expectedIsRAR, json, "expectedIsRAR");
+      read(param.expectedIsInArchive, json, "expectedIsInArchive");
+      read(param.expectedIsInAPK, json, "expectedIsInAPK");
+      read(param.expectedIsInZIP, json, "expectedIsInZIP");
+      read(param.expectedIsInRAR, json, "expectedIsInRAR");
+      read(param.expectedIsAPK, json, "expectedIsAPK");
+      read(param.expectedIsZIP, json, "expectedIsZIP");
+      read(param.expectedIsArchive, json, "expectedIsArchive");
+      read(param.expectedIsDiscImage, json, "expectedIsDiscImage");
+      read(param.expectedIsDiscImageStack, json, "expectedIsDiscImageStack");
+      read(param.expectedIsSpecial, json, "expectedIsSpecial");
+      read(param.expectedIsPlugin, json, "expectedIsPlugin");
+      read(param.expectedIsScript, json, "expectedIsScript");
+      read(param.expectedIsAddonsPath, json, "expectedIsAddonsPath");
+      read(param.expectedIsSourcesPath, json, "expectedIsSourcesPath");
+      read(param.expectedIsCDDA, json, "expectedIsCDDA");
+      read(param.expectedIsISO9660, json, "expectedIsISO9660");
+      read(param.expectedIsSmb, json, "expectedIsSmb");
+      read(param.expectedIsURL, json, "expectedIsURL");
+      read(param.expectedIsFTP, json, "expectedIsFTP");
+      read(param.expectedIsHTTP, json, "expectedIsHTTP");
+      read(param.expectedIsUDP, json, "expectedIsUDP");
+      read(param.expectedIsTCP, json, "expectedIsTCP");
+      read(param.expectedIsPVR, json, "expectedIsPVR");
+      read(param.expectedIsPVRChannel, json, "expectedIsPVRChannel");
+      read(param.expectedIsPVRRadioChannel, json, "expectedIsPVRRadioChannel");
+      read(param.expectedIsPVRChannelGroup, json, "expectedIsPVRChannelGroup");
+      read(param.expectedIsPVRGuideItem, json, "expectedIsPVRGuideItem");
+      read(param.expectedIsDAV, json, "expectedIsDAV");
+      read(param.expectedIsInternetStream, json, "expectedIsInternetStream");
+      read(param.expectedIsInternetStreamStrict, json, "expectedIsInternetStreamStrict");
+      read(param.expectedIsStreamedFilesystem, json, "expectedIsStreamedFilesystem");
+      read(param.expectedIsNetworkFilesystem, json, "expectedIsNetworkFilesystem");
+      read(param.expectedIsUPnP, json, "expectedIsUPnP");
+      read(param.expectedIsLiveTV, json, "expectedIsLiveTV");
+      read(param.expectedIsPVRRecording, json, "expectedIsPVRRecording");
+      read(param.expectedIsPVRRecordingFileOrFolder, json, "expectedIsPVRRecordingFileOrFolder");
+      read(param.expectedIsPVRTVRecordingFileOrFolder, json, "expectedIsPVRTVRecordingFileOrFolder");
+      read(param.expectedIsPVRRadioRecordingFileOrFolder, json, "expectedIsPVRRadioRecordingFileOrFolder");
+      read(param.expectedIsMusicDb, json, "expectedIsMusicDb");
+      read(param.expectedIsNfs, json, "expectedIsNfs");
+      read(param.expectedIsVideoDb, json, "expectedIsVideoDb");
+      read(param.expectedIsBlurayPath, json, "expectedIsBlurayPath");
+      read(param.expectedIsOpticalMediaFile, json, "expectedIsOpticalMediaFile");
+      read(param.expectedIsBDFile, json, "expectedIsBDFile");
+      read(param.expectedIsDVDFile, json, "expectedIsDVDFile");
+      read(param.expectedIsAndroidApp, json, "expectedIsAndroidApp");
+      read(param.expectedIsLibraryFolder, json, "expectedIsLibraryFolder");
+      read(param.expectedIsLibraryContent, json, "expectedIsLibraryContent");
+      read(param.expectedIsDOSPath, json, "expectedIsDOSPath");
+      read(param.expectedAppendSlash, json, "expectedAppendSlash");
+      read(param.expectedHasSlashAtEnd, json, "expectedHasSlashAtEnd");
+      read(param.expectedHasSlashAtEndURL, json, "expectedHasSlashAtEndURL");
+      read(param.expectedRemovedEndSlash, json, "expectedRemovedEndSlash");
+      read(param.expectedIsFixSlashesAndDupsUnix, json, "expectedIsFixSlashesAndDupsUnix");
+      read(param.expectedIsFixSlashesAndDupsWin, json, "expectedIsFixSlashesAndDupsWin");
+      read(param.expectedCanonicalizePathUnix, json, "expectedCanonicalizePathUnix");
+      read(param.expectedCanonicalizePathWin, json, "expectedCanonicalizePathWin");
+      read(param.expectedAddFileToFolder, json, "expectedAddFileToFolder");
+      read(param.expectedGetDirectory, json, "expectedGetDirectory");
+      read(param.expectedCreateZIPArchivePath, json, "expectedCreateZIPArchivePath");
+      read(param.expectedCreateRARArchivePath, json, "expectedCreateRARArchivePath");
+      read(param.expectedCreateAPKArchivePath, json, "expectedCreateAPKArchivePath");
+      read(param.expectedGetRealPath, json, "expectedGetRealPath");
+      read(param.expectedUpdateUrlEncoding, json, "expectedUpdateUrlEncoding");
+    }
+    return param;
   }
 }
 
-void write(std::ostream& f, const std::string& key, const std::string& value)
-{
-	if (value != "")
-	{
-	  f << "  ." << key << " = \"" ;
-		write_escape(f, value);
-	  f << "\",\n";
-	}
-}
-*/
-
 TEST_P(TestURLParseDetails, ParseURLResults)
 {
-  auto& param = GetParam();
+  auto param = CreateParamFromJson(GetParam().filename);
   const std::string p{param.input};
   const CURL curl(p);
 
@@ -386,140 +528,147 @@ TEST_P(TestURLParseDetails, ParseURLResults)
   EXPECT_EQ(param.expectedUpdateUrlEncoding, updatedURLEncoding);
 
   /*
-	auto f = std::ofstream("foo.inc", std::ios_base::out | std::ios_base::app);
-	f << "{\n";
-	f << "  .input" << " = \"";
-	write_escape(f, p);
-	f << "\",\n";
-  write(f, "expectedGet", curl.Get());
-  write(f, "expectedGetPort", curl.GetPort());
-  write(f, "expectedGetHostName", curl.GetHostName());
-  write(f, "expectedGetDomain", curl.GetDomain());
-  write(f, "expectedGetUserName", curl.GetUserName());
-  write(f, "expectedGetPassWord", curl.GetPassWord());
-  write(f, "expectedGetFileName", curl.GetFileName());
-  write(f, "expectedGetFileNameUtil", URIUtils::GetFileName(p));
-  write(f, "expectedGetProtocol", curl.GetProtocol());
-  write(f, "expectedGetTranslatedProtocol", curl.GetTranslatedProtocol());
-  write(f, "expectedGetShareName", curl.GetShareName());
-  write(f, "expectedGetOptions", curl.GetOptions());
-  write(f, "expectedGetProtocolOptions", curl.GetProtocolOptions());
-  write(f, "expectedGetFileNameWithoutPath", curl.GetFileNameWithoutPath());
-  write(f, "expectedGetWithoutOptions", curl.GetWithoutOptions());
-  write(f, "expectedGetWithoutUserDetails_redacted", curl.GetWithoutUserDetails(true));
-  write(f, "expectedGetWithoutUserDetails_removed", curl.GetWithoutUserDetails(false));
-  write(f, "expectedGetWithoutFilename", curl.GetWithoutFilename());
-  write(f, "expectedGetRedacted", curl.GetRedacted());
-  write(f, "expectedIsLocal", curl.IsLocal());
-  write(f, "expectedIsLocalHost", curl.IsLocalHost());
-  write(f, "expectedIsFileOnly", CURL::IsFileOnly(p));
-  write(f, "expectedIsFullPath", CURL::IsFullPath(p));
-  write(f, "expectedDecode", CURL::Decode(p));
-  write(f, "expectedDecodeFileName", CURL::Decode(curl.GetFileName()));
-  write(f, "expectedEncode", CURL::Encode(p));
-  write(f, "expectedExtension", URIUtils::GetExtension(p));
-  write(f, "expectedHasExtension", URIUtils::HasExtension(p));
-  write(f, "expectedHasSetExtension", URIUtils::HasExtension(curl, "avi|txt"));
-  write(f, "expectedRemovedExtension", removedExtension);
-  write(f, "expectedReplacedExtension", URIUtils::ReplaceExtension(p, "xyz"));
-  write(f, "expectedFileOrFolder", URIUtils::GetFileOrFolderName(p));
-  write(f, "expectedSplitPath", splitPath);
-  write(f, "expectedSplitFileName", splitFileName);
-  write(f, "expectedHasParentInHostname", URIUtils::HasParentInHostname(curl));
-  write(f, "expectedHasEncodedHostname", URIUtils::HasEncodedHostname(curl));
-  write(f, "expectedHasEncodedFilename", URIUtils::HasEncodedFilename(curl));
-  write(f, "expectedHasParentPath", URIUtils::GetParentPath(p));
-  write(f, "expectedGetParentPath", parentPath);
-  write(f, "expectedGetBasePath", URIUtils::GetBasePath(p));
-  write(f, "expectedGetDiscBase", URIUtils::GetDiscBase(p));
-  write(f, "expectedGetDiscBasePath", URIUtils::GetDiscBasePath(p));
-  write(f, "expectedGetDiscUnderlyingFile", URIUtils::GetDiscUnderlyingFile(curl));
-  write(f, "expectedGetBlurayFile", URIUtils::GetDiscFile(p));
-  write(f, "expectedGetBlurayRootPath", URIUtils::GetBlurayRootPath(p));
-  write(f, "expectedGetBlurayTitlesPath", URIUtils::GetBlurayTitlesPath(p));
-  write(f, "expectedGetBlurayEpisodePath", URIUtils::GetBlurayEpisodePath(p, 1, 2));
-  write(f, "expectedGetBlurayAllEpisodesPath", URIUtils::GetBlurayAllEpisodesPath(p));
-  write(f, "expectedGetBlurayPlaylistPath", URIUtils::GetBlurayPlaylistPath(p));
-  write(f, "expectedIsMusicDBProtocol", URIUtils::IsProtocol(p, "musicdb"));
-  write(f, "expectedIsUDFProtocol", URIUtils::IsProtocol(p, "udf"));
-  write(f, "expectedIsRemote", URIUtils::IsRemote(p));
-  write(f, "expectedIsOnDVD", URIUtils::IsOnDVD(p));
-  write(f, "expectedIsOnLAN", URIUtils::IsOnLAN(p, LanCheckMode::ANY_PRIVATE_SUBNET));
-  write(f, "expectedIsHostOnLAN", URIUtils::IsHostOnLAN(p, LanCheckMode::ANY_PRIVATE_SUBNET));
-  write(f, "expectedIsMultiPath", URIUtils::IsMultiPath(p));
-  write(f, "expectedIsHD", URIUtils::IsHD(p));
-  write(f, "expectedIsStack", URIUtils::IsStack(p));
-  write(f, "expectedIsFavourite", URIUtils::IsFavourite(p));
-  write(f, "expectedIsRAR", URIUtils::IsRAR(p));
-  write(f, "expectedIsInArchive", URIUtils::IsInArchive(p));
-  write(f, "expectedIsInAPK", URIUtils::IsInAPK(p));
-  write(f, "expectedIsInZIP", URIUtils::IsInZIP(p));
-  write(f, "expectedIsInRAR", URIUtils::IsInRAR(p));
-  write(f, "expectedIsAPK", URIUtils::IsAPK(p));
-  write(f, "expectedIsZIP", URIUtils::IsZIP(p));
-  write(f, "expectedIsArchive", URIUtils::IsArchive(p));
-  write(f, "expectedIsDiscImage", URIUtils::IsDiscImage(p));
-  write(f, "expectedIsDiscImageStack", URIUtils::IsDiscImageStack(p));
-  write(f, "expectedIsSpecial", URIUtils::IsSpecial(p));
-  write(f, "expectedIsPlugin", URIUtils::IsPlugin(p));
-  write(f, "expectedIsScript", URIUtils::IsScript(p));
-  write(f, "expectedIsAddonsPath", URIUtils::IsAddonsPath(p));
-  write(f, "expectedIsSourcesPath", URIUtils::IsSourcesPath(p));
-  write(f, "expectedIsCDDA", URIUtils::IsCDDA(p));
-  write(f, "expectedIsISO9660", URIUtils::IsISO9660(p));
-  write(f, "expectedIsSmb", URIUtils::IsSmb(p));
-  write(f, "expectedIsURL", URIUtils::IsURL(p));
-  write(f, "expectedIsFTP", URIUtils::IsFTP(p));
-  write(f, "expectedIsHTTP", URIUtils::IsHTTP(p));
-  write(f, "expectedIsUDP", URIUtils::IsUDP(p));
-  write(f, "expectedIsTCP", URIUtils::IsTCP(p));
-  write(f, "expectedIsPVR", URIUtils::IsPVR(p));
-  write(f, "expectedIsPVRChannel", URIUtils::IsPVRChannel(p));
-  write(f, "expectedIsPVRRadioChannel", URIUtils::IsPVRRadioChannel(p));
-  write(f, "expectedIsPVRChannelGroup", URIUtils::IsPVRChannelGroup(p));
-  write(f, "expectedIsPVRGuideItem", URIUtils::IsPVRGuideItem(p));
-  write(f, "expectedIsDAV", URIUtils::IsDAV(p));
-  write(f, "expectedIsInternetStream", URIUtils::IsInternetStream(p, false));
-  write(f, "expectedIsInternetStreamStrict", URIUtils::IsInternetStream(p, true));
-  write(f, "expectedIsStreamedFilesystem", URIUtils::IsStreamedFilesystem(p));
-  write(f, "expectedIsNetworkFilesystem", URIUtils::IsNetworkFilesystem(p));
-  write(f, "expectedIsUPnP", URIUtils::IsUPnP(p));
-  write(f, "expectedIsLiveTV", URIUtils::IsLiveTV(p));
-  write(f, "expectedIsPVRRecording", URIUtils::IsPVRRecording(p));
-  write(f, "expectedIsPVRRecordingFileOrFolder", URIUtils::IsPVRRecordingFileOrFolder(p));
-  write(f, "expectedIsPVRTVRecordingFileOrFolder", URIUtils::IsPVRTVRecordingFileOrFolder(p));
-  write(f, "expectedIsPVRRadioRecordingFileOrFolder", URIUtils::IsPVRRadioRecordingFileOrFolder(p));
-  write(f, "expectedIsMusicDb", URIUtils::IsMusicDb(p));
-  write(f, "expectedIsNfs", URIUtils::IsNfs(p));
-  write(f, "expectedIsVideoDb", URIUtils::IsVideoDb(p));
-  write(f, "expectedIsBlurayPath", URIUtils::IsBlurayPath(p));
-  write(f, "expectedIsOpticalMediaFile", URIUtils::IsOpticalMediaFile(p));
-  write(f, "expectedIsBDFile", URIUtils::IsBDFile(p));
-  write(f, "expectedIsDVDFile", URIUtils::IsDVDFile(p));
-  write(f, "expectedIsAndroidApp", URIUtils::IsAndroidApp(p));
-  write(f, "expectedIsLibraryFolder", URIUtils::IsLibraryFolder(p));
-  write(f, "expectedIsLibraryContent", URIUtils::IsLibraryContent(p));
-  write(f, "expectedIsDOSPath", URIUtils::IsDOSPath(p));
-  write(f, "expectedAppendSlash", URIUtils::AppendSlash(p));
-  write(f, "expectedHasSlashAtEnd", URIUtils::HasSlashAtEnd(p, false));
-  write(f, "expectedHasSlashAtEndURL", URIUtils::HasSlashAtEnd(p, true));
-  write(f, "expectedRemovedEndSlash", removedEndSlash);
-  write(f, "expectedIsFixSlashesAndDupsUnix", URIUtils::FixSlashesAndDups(p, '/'));
-  write(f, "expectedIsFixSlashesAndDupsWin", URIUtils::FixSlashesAndDups(p, '\\'));
-  write(f, "expectedCanonicalizePathUnix", URIUtils::CanonicalizePath(p, '/'));
-  write(f, "expectedCanonicalizePathWin", URIUtils::CanonicalizePath(p, '\\'));
-  write(f, "expectedAddFileToFolder", URIUtils::AddFileToFolder(p, "NewFile.pdf"));
-  write(f, "expectedGetDirectory", URIUtils::GetDirectory(p));
-  write(f, "expectedCreateZIPArchivePath", URIUtils::CreateArchivePath("zip", curl, "/my/archived/path", "passwd").Get());
-  write(f, "expectedCreateRARArchivePath", URIUtils::CreateArchivePath("rar", curl, "/my/archived/path", "passwd").Get());
-  write(f, "expectedCreateAPKArchivePath", URIUtils::CreateArchivePath("apk", curl, "/my/archived/path", "passwd").Get());
-  write(f, "expectedGetRealPath", URIUtils::GetRealPath(p));
-  write(f, "expectedUpdateUrlEncoding", updatedURLEncoding);
-	f << "},\n";
-	*/
+  { // output json
+    static int test_index = 0;
+    std::ostringstream oss;
+    oss << "foo.json/" << ++test_index << ".json";
+    auto f = std::ofstream(oss.str(), std::ios_base::out | std::ios_base::app);
+
+    std::string jsonString;
+    CVariant jsonObj;
+
+    jsonObj["expectedGet"] = curl.Get();
+    jsonObj["expectedGetPort"] = curl.GetPort();
+    jsonObj["expectedGetHostName"] = curl.GetHostName();
+    jsonObj["expectedGetDomain"] = curl.GetDomain();
+    jsonObj["expectedGetUserName"] = curl.GetUserName();
+    jsonObj["expectedGetPassWord"] = curl.GetPassWord();
+    jsonObj["expectedGetFileName"] = curl.GetFileName();
+    jsonObj["expectedGetFileNameUtil"] = URIUtils::GetFileName(p);
+    jsonObj["expectedGetProtocol"] = curl.GetProtocol();
+    jsonObj["expectedGetTranslatedProtocol"] = curl.GetTranslatedProtocol();
+    jsonObj["expectedGetShareName"] = curl.GetShareName();
+    jsonObj["expectedGetOptions"] = curl.GetOptions();
+    jsonObj["expectedGetProtocolOptions"] = curl.GetProtocolOptions();
+    jsonObj["expectedGetFileNameWithoutPath"] = curl.GetFileNameWithoutPath();
+    jsonObj["expectedGetWithoutOptions"] = curl.GetWithoutOptions();
+    jsonObj["expectedGetWithoutUserDetails_redacted"] = curl.GetWithoutUserDetails(true);
+    jsonObj["expectedGetWithoutUserDetails_removed"] = curl.GetWithoutUserDetails(false);
+    jsonObj["expectedGetWithoutFilename"] = curl.GetWithoutFilename();
+    jsonObj["expectedGetRedacted"] = curl.GetRedacted();
+    jsonObj["expectedIsLocal"] = curl.IsLocal();
+    jsonObj["expectedIsLocalHost"] = curl.IsLocalHost();
+    jsonObj["expectedIsFileOnly"] = CURL::IsFileOnly(p);
+    jsonObj["expectedIsFullPath"] = CURL::IsFullPath(p);
+    jsonObj["expectedDecode"] = CURL::Decode(p);
+    jsonObj["expectedDecodeFileName"] = CURL::Decode(curl.GetFileName());
+    jsonObj["expectedEncode"] = CURL::Encode(p);
+    jsonObj["expectedExtension"] = URIUtils::GetExtension(p);
+    jsonObj["expectedHasExtension"] = URIUtils::HasExtension(p);
+    jsonObj["expectedHasSetExtension"] = URIUtils::HasExtension(curl, "avi|txt");
+    jsonObj["expectedRemovedExtension"] = removedExtension;
+    jsonObj["expectedReplacedExtension"] = URIUtils::ReplaceExtension(p, "xyz");
+    jsonObj["expectedFileOrFolder"] = URIUtils::GetFileOrFolderName(p);
+    jsonObj["expectedSplitPath"] = splitPath;
+    jsonObj["expectedSplitFileName"] = splitFileName;
+    jsonObj["expectedHasParentInHostname"] = URIUtils::HasParentInHostname(curl);
+    jsonObj["expectedHasEncodedHostname"] = URIUtils::HasEncodedHostname(curl);
+    jsonObj["expectedHasEncodedFilename"] = URIUtils::HasEncodedFilename(curl);
+    jsonObj["expectedHasParentPath"] = URIUtils::GetParentPath(p);
+    jsonObj["expectedGetParentPath"] = parentPath;
+    jsonObj["expectedGetBasePath"] = URIUtils::GetBasePath(p);
+    jsonObj["expectedGetDiscBase"] = URIUtils::GetDiscBase(p);
+    jsonObj["expectedGetDiscBasePath"] = URIUtils::GetDiscBasePath(p);
+    jsonObj["expectedGetDiscUnderlyingFile"] = URIUtils::GetDiscUnderlyingFile(curl);
+    jsonObj["expectedGetBlurayFile"] = URIUtils::GetDiscFile(p);
+    jsonObj["expectedGetBlurayRootPath"] = URIUtils::GetBlurayRootPath(p);
+    jsonObj["expectedGetBlurayTitlesPath"] = URIUtils::GetBlurayTitlesPath(p);
+    jsonObj["expectedGetBlurayEpisodePath"] = URIUtils::GetBlurayEpisodePath(p, 1, 2);
+    jsonObj["expectedGetBlurayAllEpisodesPath"] = URIUtils::GetBlurayAllEpisodesPath(p);
+    jsonObj["expectedGetBlurayPlaylistPath"] = URIUtils::GetBlurayPlaylistPath(p);
+    jsonObj["expectedIsMusicDBProtocol"] = URIUtils::IsProtocol(p, "musicdb");
+    jsonObj["expectedIsUDFProtocol"] = URIUtils::IsProtocol(p, "udf");
+    jsonObj["expectedIsRemote"] = URIUtils::IsRemote(p);
+    jsonObj["expectedIsOnDVD"] = URIUtils::IsOnDVD(p);
+    jsonObj["expectedIsOnLAN"] = URIUtils::IsOnLAN(p, LanCheckMode::ANY_PRIVATE_SUBNET);
+    jsonObj["expectedIsHostOnLAN"] = URIUtils::IsHostOnLAN(p, LanCheckMode::ANY_PRIVATE_SUBNET);
+    jsonObj["expectedIsMultiPath"] = URIUtils::IsMultiPath(p);
+    jsonObj["expectedIsHD"] = URIUtils::IsHD(p);
+    jsonObj["expectedIsStack"] = URIUtils::IsStack(p);
+    jsonObj["expectedIsFavourite"] = URIUtils::IsFavourite(p);
+    jsonObj["expectedIsRAR"] = URIUtils::IsRAR(p);
+    jsonObj["expectedIsInArchive"] = URIUtils::IsInArchive(p);
+    jsonObj["expectedIsInAPK"] = URIUtils::IsInAPK(p);
+    jsonObj["expectedIsInZIP"] = URIUtils::IsInZIP(p);
+    jsonObj["expectedIsInRAR"] = URIUtils::IsInRAR(p);
+    jsonObj["expectedIsAPK"] = URIUtils::IsAPK(p);
+    jsonObj["expectedIsZIP"] = URIUtils::IsZIP(p);
+    jsonObj["expectedIsArchive"] = URIUtils::IsArchive(p);
+    jsonObj["expectedIsDiscImage"] = URIUtils::IsDiscImage(p);
+    jsonObj["expectedIsDiscImageStack"] = URIUtils::IsDiscImageStack(p);
+    jsonObj["expectedIsSpecial"] = URIUtils::IsSpecial(p);
+    jsonObj["expectedIsPlugin"] = URIUtils::IsPlugin(p);
+    jsonObj["expectedIsScript"] = URIUtils::IsScript(p);
+    jsonObj["expectedIsAddonsPath"] = URIUtils::IsAddonsPath(p);
+    jsonObj["expectedIsSourcesPath"] = URIUtils::IsSourcesPath(p);
+    jsonObj["expectedIsCDDA"] = URIUtils::IsCDDA(p);
+    jsonObj["expectedIsISO9660"] = URIUtils::IsISO9660(p);
+    jsonObj["expectedIsSmb"] = URIUtils::IsSmb(p);
+    jsonObj["expectedIsURL"] = URIUtils::IsURL(p);
+    jsonObj["expectedIsFTP"] = URIUtils::IsFTP(p);
+    jsonObj["expectedIsHTTP"] = URIUtils::IsHTTP(p);
+    jsonObj["expectedIsUDP"] = URIUtils::IsUDP(p);
+    jsonObj["expectedIsTCP"] = URIUtils::IsTCP(p);
+    jsonObj["expectedIsPVR"] = URIUtils::IsPVR(p);
+    jsonObj["expectedIsPVRChannel"] = URIUtils::IsPVRChannel(p);
+    jsonObj["expectedIsPVRRadioChannel"] = URIUtils::IsPVRRadioChannel(p);
+    jsonObj["expectedIsPVRChannelGroup"] = URIUtils::IsPVRChannelGroup(p);
+    jsonObj["expectedIsPVRGuideItem"] = URIUtils::IsPVRGuideItem(p);
+    jsonObj["expectedIsDAV"] = URIUtils::IsDAV(p);
+    jsonObj["expectedIsInternetStream"] = URIUtils::IsInternetStream(p, false);
+    jsonObj["expectedIsInternetStreamStrict"] = URIUtils::IsInternetStream(p, true);
+    jsonObj["expectedIsStreamedFilesystem"] = URIUtils::IsStreamedFilesystem(p);
+    jsonObj["expectedIsNetworkFilesystem"] = URIUtils::IsNetworkFilesystem(p);
+    jsonObj["expectedIsUPnP"] = URIUtils::IsUPnP(p);
+    jsonObj["expectedIsLiveTV"] = URIUtils::IsLiveTV(p);
+    jsonObj["expectedIsPVRRecording"] = URIUtils::IsPVRRecording(p);
+    jsonObj["expectedIsPVRRecordingFileOrFolder"] = URIUtils::IsPVRRecordingFileOrFolder(p);
+    jsonObj["expectedIsPVRTVRecordingFileOrFolder"] = URIUtils::IsPVRTVRecordingFileOrFolder(p);
+    jsonObj["expectedIsPVRRadioRecordingFileOrFolder"] = URIUtils::IsPVRRadioRecordingFileOrFolder(p);
+    jsonObj["expectedIsMusicDb"] = URIUtils::IsMusicDb(p);
+    jsonObj["expectedIsNfs"] = URIUtils::IsNfs(p);
+    jsonObj["expectedIsVideoDb"] = URIUtils::IsVideoDb(p);
+    jsonObj["expectedIsBlurayPath"] = URIUtils::IsBlurayPath(p);
+    jsonObj["expectedIsOpticalMediaFile"] = URIUtils::IsOpticalMediaFile(p);
+    jsonObj["expectedIsBDFile"] = URIUtils::IsBDFile(p);
+    jsonObj["expectedIsDVDFile"] = URIUtils::IsDVDFile(p);
+    jsonObj["expectedIsAndroidApp"] = URIUtils::IsAndroidApp(p);
+    jsonObj["expectedIsLibraryFolder"] = URIUtils::IsLibraryFolder(p);
+    jsonObj["expectedIsLibraryContent"] = URIUtils::IsLibraryContent(p);
+    jsonObj["expectedIsDOSPath"] = URIUtils::IsDOSPath(p);
+    jsonObj["expectedAppendSlash"] = URIUtils::AppendSlash(p);
+    jsonObj["expectedHasSlashAtEnd"] = URIUtils::HasSlashAtEnd(p, false);
+    jsonObj["expectedHasSlashAtEndURL"] = URIUtils::HasSlashAtEnd(p, true);
+    jsonObj["expectedRemovedEndSlash"] = removedEndSlash;
+    jsonObj["expectedIsFixSlashesAndDupsUnix"] = URIUtils::FixSlashesAndDups(p, '/');
+    jsonObj["expectedIsFixSlashesAndDupsWin"] = URIUtils::FixSlashesAndDups(p, '\\');
+    jsonObj["expectedCanonicalizePathUnix"] = URIUtils::CanonicalizePath(p, '/');
+    jsonObj["expectedCanonicalizePathWin"] = URIUtils::CanonicalizePath(p, '\\');
+    jsonObj["expectedAddFileToFolder"] = URIUtils::AddFileToFolder(p, "NewFile.pdf");
+    jsonObj["expectedGetDirectory"] = URIUtils::GetDirectory(p);
+    jsonObj["expectedCreateZIPArchivePath"] = URIUtils::CreateArchivePath("zip", curl, "/my/archived/path", "passwd").Get();
+    jsonObj["expectedCreateRARArchivePath"] = URIUtils::CreateArchivePath("rar", curl, "/my/archived/path", "passwd").Get();
+    jsonObj["expectedCreateAPKArchivePath"] = URIUtils::CreateArchivePath("apk", curl, "/my/archived/path", "passwd").Get();
+    jsonObj["expectedGetRealPath"] = URIUtils::GetRealPath(p);
+    jsonObj["expectedUpdateUrlEncoding"] = updatedURLEncoding;
+
+    CJSONVariantWriter::Write(jsonObj, jsonString, false);
+    f << jsonString;
+  } // output json
+  */
 }
 
-constexpr TestURLParseDetailsData values[] = {
+constexpr TestURLParseDetailsFilename values[] = {
 #include "test_case_results.inc"
 };
 
