@@ -40,9 +40,10 @@ jobs:
           HEAD_REF=$(echo "$PR_DATA" | jq -r '.head.ref')
 
           if [ "$FORK_OWNER" != "${{ github.repository_owner }}" ]; then
-            echo "Adding fork remote: https://github.com/$FORK_OWNER/$FORK_REPO.git"
-            git remote add fork "https://github.com/$FORK_OWNER/$FORK_REPO.git"
-            git fetch fork "$HEAD_REF"
+            echo "Fetching fork branch from: https://github.com/$FORK_OWNER/$FORK_REPO.git"
+            # Fetch the fork branch directly into origin's namespace so the action can find it
+            git fetch "https://github.com/$FORK_OWNER/$FORK_REPO.git" "$HEAD_REF:refs/remotes/origin/$HEAD_REF"
+            echo "Successfully fetched $HEAD_REF from fork"
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
