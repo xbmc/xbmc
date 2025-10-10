@@ -25,44 +25,24 @@ jobs:
       id-token: write
       actions: read # Required for Claude to read CI results on PRs
     steps:
+      - name: Get PR info for fork support
+        if: github.event.issue.pull_request
+        id: pr-info
+        run: |
+          PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
+          echo "pr_head_owner=$(echo "$PR_DATA" | jq -r '.head.repo.owner.login')" >> $GITHUB_OUTPUT
+          echo "pr_head_repo=$(echo "$PR_DATA" | jq -r '.head.repo.name')" >> $GITHUB_OUTPUT
+          echo "pr_head_ref=$(echo "$PR_DATA" | jq -r '.head.ref')" >> $GITHUB_OUTPUT
+          echo "is_fork=$(echo "$PR_DATA" | jq -r '.head.repo.fork')" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          repository: ${{ github.event.issue.pull_request && steps.pr-info.outputs.is_fork == 'true' && format('{0}/{1}', steps.pr-info.outputs.pr_head_owner, steps.pr-info.outputs.pr_head_repo) || github.repository }}
+          ref: ${{ github.event.issue.pull_request && steps.pr-info.outputs.pr_head_ref || github.ref }}
           fetch-depth: 0
-
-      - name: Setup git wrapper for fork PR support
-        if: github.event.issue.pull_request
-        run: |
-          # Get PR info
-          PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
-          HEAD_REF=$(echo "$PR_DATA" | jq -r '.head.ref')
-          PR_NUMBER=${{ github.event.issue.number }}
-
-          # Pre-fetch the PR using GitHub's PR refs
-          echo "Pre-fetching PR #$PR_NUMBER"
-          git fetch origin +refs/pull/$PR_NUMBER/head:refs/remotes/origin/$HEAD_REF
-
-          # Create a git wrapper to intercept fetch commands
-          mkdir -p /tmp/git-wrapper
-          cat > /tmp/git-wrapper/git << 'EOF'
-#!/bin/bash
-# Wrapper to intercept git fetch for fork PRs
-if [[ "$1" == "fetch" && "$2" == "origin" ]]; then
-  BRANCH_NAME="${3#refs/remotes/origin/}"
-  echo "[git wrapper] Intercepting fetch for branch: $BRANCH_NAME"
-  # The branch already exists from our pre-fetch, just exit successfully
-  exit 0
-fi
-# Pass through all other git commands
-exec /usr/bin/git "$@"
-EOF
-          chmod +x /tmp/git-wrapper/git
-
-          # Add wrapper to PATH
-          echo "/tmp/git-wrapper" >> $GITHUB_PATH
-          echo "Git wrapper installed for fork PR support"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Claude Code
         id: claude
