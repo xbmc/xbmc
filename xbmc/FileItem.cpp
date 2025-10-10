@@ -1166,7 +1166,9 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
       if (!lookup)
         return;
 
-      CCurlFile::GetMimeType(GetDynURL(), m_mimetype);
+      m_mimetype = CMime::GetMimeType(*this);
+      if (m_mimetype.empty())
+        CCurlFile::GetMimeType(GetDynURL(), m_mimetype);
 
       // try to get mime-type again but with an NSPlayer User-Agent
       // in order for server to provide correct mime-type.  Allows us
