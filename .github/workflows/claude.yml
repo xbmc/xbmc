@@ -30,21 +30,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure git for fork PR
+      - name: Fetch PR ref for fork support
         if: github.event.issue.pull_request
         run: |
-          # Fetch PR details to get fork information
+          # GitHub exposes all PRs (even from forks) as refs/pull/NUMBER/head
+          # Fetch this ref and create a local branch that the action can use
           PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
-          FORK_OWNER=$(echo "$PR_DATA" | jq -r '.head.repo.owner.login')
-          FORK_REPO=$(echo "$PR_DATA" | jq -r '.head.repo.name')
           HEAD_REF=$(echo "$PR_DATA" | jq -r '.head.ref')
 
-          if [ "$FORK_OWNER" != "${{ github.repository_owner }}" ]; then
-            echo "Configuring git to fetch from fork: https://github.com/$FORK_OWNER/$FORK_REPO.git"
-            # Add the fork URL to origin so the action can fetch from it
-            git remote set-url origin --add "https://github.com/$FORK_OWNER/$FORK_REPO.git"
-            echo "Successfully configured origin to include fork repository"
-          fi
+          echo "Fetching PR #${{ github.event.issue.number }} as refs/pull/${{ github.event.issue.number }}/head"
+          git fetch origin +refs/pull/${{ github.event.issue.number }}/head:refs/remotes/origin/$HEAD_REF
+          echo "Successfully fetched PR ref as origin/$HEAD_REF"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
