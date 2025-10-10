@@ -614,7 +614,7 @@ void CDateTime::Archive(CArchive& ar)
 
 void CDateTime::Reset()
 {
-  SetDateTime(1601, 1, 1, 0, 0, 0);
+  m_time = {0, 0}; // Windows epoch 1601-01-01
   SetValid(false);
 }
 

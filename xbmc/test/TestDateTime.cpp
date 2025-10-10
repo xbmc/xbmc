@@ -697,19 +697,14 @@ TEST_F(TestDateTime, GetAsUTCDateTime)
   EXPECT_EQ(dateTime2.GetSecond(), 56);
 }
 
-// disabled on osx and freebsd as their mktime functions
-// don't work for dates before 1900
-#if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
-TEST_F(TestDateTime, DISABLED_Reset)
-#else
 TEST_F(TestDateTime, Reset)
-#endif
 {
   CDateTime dateTime;
   dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
 
   dateTime.Reset();
 
+  EXPECT_FALSE(dateTime.IsValid());
   EXPECT_EQ(dateTime.GetYear(), 1601);
   EXPECT_EQ(dateTime.GetMonth(), 1);
   EXPECT_EQ(dateTime.GetDay(), 1);
