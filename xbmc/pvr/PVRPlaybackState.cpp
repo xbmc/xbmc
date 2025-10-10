@@ -156,7 +156,10 @@ bool ResolveChannel(CFileItem& item,
   if (source == PVR_SOURCE::DEFAULT)
     client->StreamClosed();
 
-  client->GetChannelStreamProperties(item.GetPVRChannelInfoTag(), source, props);
+  const PVR_ERROR ret{
+      client->GetChannelStreamProperties(item.GetPVRChannelInfoTag(), source, props)};
+  if (ret != PVR_ERROR_NO_ERROR && ret != PVR_ERROR_NOT_IMPLEMENTED)
+    return false;
 
   if (props.LivePlaybackAsEPG())
   {
@@ -172,7 +175,10 @@ bool ResolveEPG(CFileItem& item,
                 const std::shared_ptr<const CPVRClient>& client)
 {
   client->StreamClosed();
-  client->GetEpgTagStreamProperties(item.GetEPGInfoTag(), props);
+
+  const PVR_ERROR ret{client->GetEpgTagStreamProperties(item.GetEPGInfoTag(), props)};
+  if (ret != PVR_ERROR_NO_ERROR && ret != PVR_ERROR_NOT_IMPLEMENTED)
+    return false;
 
   if (props.EPGPlaybackAsLive())
   {
@@ -195,7 +201,10 @@ bool ResolveRecording(const CFileItem& item,
                       CPVRStreamProperties& props,
                       const std::shared_ptr<const CPVRClient>& client)
 {
-  client->GetRecordingStreamProperties(item.GetPVRRecordingInfoTag(), props);
+  const PVR_ERROR ret{client->GetRecordingStreamProperties(item.GetPVRRecordingInfoTag(), props)};
+  if (ret != PVR_ERROR_NO_ERROR && ret != PVR_ERROR_NOT_IMPLEMENTED)
+    return false;
+
   return true;
 }
 } // unnamed namespace
