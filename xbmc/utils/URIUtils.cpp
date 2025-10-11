@@ -65,6 +65,50 @@ std::optional<char> DecodeOctlet(std::string_view& encoded)
   return decimal;
 }
 
+std::string DecodeNested(std::string_view encoded)
+{
+  std::string previous;
+  std::string current(encoded);
+
+  do
+  {
+    previous = std::move(current);
+    current = URIUtils::URLDecode(previous);
+  } while (current != previous);
+
+  return current;
+}
+
+std::string ResolveBlurayBasePath(const CURL& blurayUrl)
+{
+  std::string decodedHost = DecodeNested(blurayUrl.GetHostName());
+  if (decodedHost.empty())
+    return {};
+
+  const auto schemeSeparator = decodedHost.find("://");
+  if (schemeSeparator != std::string::npos)
+  {
+    const std::string protocol = StringUtils::ToLower(decodedHost.substr(0, schemeSeparator));
+    if (protocol == "udf" || protocol == "iso9660")
+      decodedHost = decodedHost.substr(schemeSeparator + 3);
+  }
+
+  if (decodedHost.empty())
+    return {};
+
+  if (URIUtils::HasSlashAtEnd(decodedHost))
+  {
+    std::string potentialFile = decodedHost;
+    URIUtils::RemoveSlashAtEnd(potentialFile);
+    if (!URIUtils::IsDiscImage(potentialFile))
+      return decodedHost;
+
+    decodedHost = std::move(potentialFile);
+  }
+
+  return URIUtils::GetDirectory(decodedHost);
+}
+
 } // Unnamed namespace
 
 std::string URIUtils::URLDecode(std::string_view encoded)
@@ -531,10 +575,20 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
   if (IsBDFile(strCheck) || IsDVDFile(strCheck))
     strDirectory = GetDiscBasePath(strCheck);
 
-#ifdef HAVE_LIBBLURAY
   if (IsBlurayPath(strCheck))
-    strDirectory = CBlurayDirectory::GetBasePath(CURL(strCheck));
+  {
+    const CURL blurayUrl(strCheck);
+    std::string basePath;
+#ifdef HAVE_LIBBLURAY
+    basePath = CBlurayDirectory::GetBasePath(blurayUrl);
 #endif
+    const std::string fallbackBasePath = ResolveBlurayBasePath(blurayUrl);
+
+    if (!fallbackBasePath.empty())
+      strDirectory = fallbackBasePath;
+    else if (!basePath.empty())
+      strDirectory = std::move(basePath);
+  }
 
   if (IsStack(strPath))
   {

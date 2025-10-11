@@ -18,8 +18,17 @@
 #include <EGL/eglext.h>
 #ifdef HAVE_EGLEXTANGLE
 #include <EGL/eglext_angle.h>
-#else
+#elif __has_include(<EGL/eglextchromium.h>)
 #include <EGL/eglextchromium.h>
+#else
+#ifndef EGL_CHROMIUM_sync_control
+#define EGL_CHROMIUM_sync_control 1
+typedef EGLBoolean(EGLAPIENTRYP PFNEGLGETSYNCVALUESCHROMIUMPROC)(EGLDisplay dpy,
+                                                                 EGLSurface surface,
+                                                                 EGLuint64KHR* ust,
+                                                                 EGLuint64KHR* msc,
+                                                                 EGLuint64KHR* sbc);
+#endif
 #endif
 #include <X11/Xutil.h>
 

@@ -13,6 +13,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include "Sinks/AESinkDummy.h"
+
 #include <algorithm>
 
 using namespace AE;
@@ -128,4 +130,10 @@ void CAESinkFactory::Cleanup()
     if (reg.second.cleanupFunc)
       reg.second.cleanupFunc();
   }
+}
+
+std::unique_ptr<IAESink> CAESinkFactory::CreateDummy(AEAudioFormat& desiredFormat)
+{
+  (void)desiredFormat;
+  return std::make_unique<CAESinkDummy>();
 }

@@ -78,6 +78,7 @@ set(SOURCES ActorProtocol.cpp
             XBMCTinyXML.cpp
             XBMCTinyXML2.cpp
             XMLUtils.cpp)
+list(APPEND SOURCES InitRetry.cpp)
 
 set(HEADERS ActorProtocol.h
             AlarmClock.h
@@ -185,6 +186,7 @@ set(HEADERS ActorProtocol.h
             XBMCTinyXML2.h
             XMLUtils.h
             XTimeUtils.h)
+list(APPEND HEADERS InitRetry.h)
 
 if(TARGET ${APP_NAME_LC}::XSLT)
   list(APPEND SOURCES XSLTUtils.cpp)
