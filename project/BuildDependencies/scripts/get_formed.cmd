@@ -31,8 +31,13 @@ echo Downloading from mirror %KODI_MIRROR%
 CALL :setStageName Starting downloads of Host (%NATIVEPLATFORM%) formed packages...
 SET SCRIPT_PATH=%CD%
 CD %DL_PATH% || EXIT /B 10
-FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.list) DO (
-  CALL :processFile %%f %NATIVE_PATH%
+FOR /F "eol=; tokens=1,2" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.list) DO (
+  IF "%%g" == "" (
+    set "BASE_URL=%KODI_MIRROR%/build-deps/win32"
+  ) ELSE (
+    set "BASE_URL=%%g"
+  )
+  CALL :processFile %%f %NATIVE_PATH% !BASE_URL!
   REM Apparently there's a quirk in cmd so this means if error level => 1
   IF ERRORLEVEL 1 (
     ECHO One or more packages failed to download
@@ -42,8 +47,13 @@ FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.
 
 CALL :setStageName Starting downloads of Target (%TARGETPLATFORM%) formed packages...
 CD %DL_PATH% || EXIT /B 10
-FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
-  CALL :processFile %%f %APP_PATH%
+FOR /F "eol=; tokens=1,2" %%f IN (%SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
+  IF "%%g" == "" (
+    set "BASE_URL=%KODI_MIRROR%/build-deps/win32"
+  ) ELSE (
+    set "BASE_URL=%%g"
+  )
+  CALL :processFile %%f %APP_PATH% !BASE_URL!
   REM Apparently there's a quirk in cmd so this means if error level => 1
   IF ERRORLEVEL 1 (
     ECHO One or more packages failed to download
@@ -73,8 +83,8 @@ SET RetryDownload=YES
 IF EXIST %1 (
   ECHO Using downloaded %1
 ) ELSE (
-  CALL :setSubStageName Downloading %1...
-  SET DOWNLOAD_URL=%KODI_MIRROR%/build-deps/win32/%1
+  CALL :setSubStageName Downloading %1 from %3...
+  SET DOWNLOAD_URL=%3/%1
   curl --retry 5 --retry-all-errors --retry-connrefused --retry-delay 5 --location --remote-name "!DOWNLOAD_URL!" 2>&1
   REM Apparently there's a quirk in cmd so this means if error level => 1
   IF ERRORLEVEL 1 (
