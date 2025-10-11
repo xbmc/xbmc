@@ -27,6 +27,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "weather/WeatherProperties.h"
 
 using namespace ADDON;
@@ -43,7 +44,6 @@ CWeatherManager::CWeatherManager(ADDON::CAddonMgr& addonManager)
     if (settings)
     {
       m_location = settings->GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
-      m_newLocation = m_location;
 
       // Register settings callback
       settings->GetSettingsManager()->RegisterCallback(
@@ -173,10 +173,25 @@ int CWeatherManager::GetLocation() const
 
 void CWeatherManager::SetLocation(int location)
 {
+  if (location == INVALID_LOCATION)
+  {
+    CLog::Log(LOGERROR, "Invalid location {}.", location);
+    return;
+  }
+
   std::lock_guard lock(m_critSection);
-  if (m_location != location && m_newLocation != location)
+
+  if (m_newLocation != INVALID_LOCATION)
+  {
+    // Prevent concurrent updates. First request wins, subsequent requests ignored until completion.
+    CLog::LogF(LOGWARNING,
+               "Ignoring request for location {}. Refresh for location {} already in progress.",
+               location, m_newLocation);
+  }
+  else
   {
     // Remember new requested location, trigger refresh, set m_location once refresh is done.
+    CLog::LogF(LOGDEBUG, "Initiating refresh for location {}", location);
     m_newLocation = location;
     Refresh();
   }
@@ -204,7 +219,7 @@ void CWeatherManager::Reset()
   m_info = {};
   m_infoV2 = {};
   m_location = 1;
-  m_newLocation = 1;
+  m_newLocation = INVALID_LOCATION;
 }
 
 bool CWeatherManager::IsFetched()
@@ -231,7 +246,7 @@ std::string CWeatherManager::GetLastUpdateTime() const
 CJob* CWeatherManager::GetJob() const
 {
   std::lock_guard lock(m_critSection);
-  return new CWeatherJob(m_newLocation);
+  return new CWeatherJob(m_newLocation != INVALID_LOCATION ? m_newLocation : m_location);
 }
 
 void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
@@ -243,6 +258,7 @@ void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     m_info = wJob->GetInfo();
     m_infoV2 = wJob->GetInfoV2();
     m_location = wJob->GetLocation();
+    m_newLocation = INVALID_LOCATION;
 
     const std::shared_ptr<CSettings> settings{
         CServiceBroker::GetSettingsComponent()->GetSettings()};

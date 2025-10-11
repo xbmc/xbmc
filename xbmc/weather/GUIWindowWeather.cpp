@@ -226,7 +226,7 @@ void CGUIWindowWeather::FrameMove()
 
 /*!
  \brief Sets the location to the specified index and refreshes the weather
- \param loc the location index (in the range [1..MAXLOCATION])
+ \param loc the location index (can be any value except WeatherManager::INVALID_LOCATION)
  */
 void CGUIWindowWeather::SetLocation(int loc)
 {
