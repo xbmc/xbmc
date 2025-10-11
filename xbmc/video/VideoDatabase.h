@@ -514,12 +514,6 @@ enum class DeleteMovieHashAction
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
-enum class AllowNonFileNameMatch : bool
-{
-  NO_MATCH,
-  YES_MATCH
-};
-
 struct EpisodeInformation
 {
   int index{0};
@@ -756,8 +750,6 @@ public:
                               int idMVideo = -1);
   bool SetStreamDetailsForFile(const CStreamDetails& details,
                                const std::string& strFileNameAndPath);
-
-  int AddMovieVersion(CFileItem& item, int idMovie, const KODI::ART::Artwork& art);
 
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
@@ -1310,6 +1302,7 @@ public:
 
   std::string GetVideoItemTitle(VideoDbContentType itemType, int dbId);
   std::string GetVideoVersionById(int id);
+  int GetVideoVersionByTitle(const std::string& title) const;
   void GetVideoVersions(VideoDbContentType itemType,
                         int dbId,
                         CFileItemList& items,
@@ -1351,6 +1344,7 @@ public:
 
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
+  int AddOrValidateVideoVersionType(const std::string& typeVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
                           VideoAssetType assetType);
@@ -1384,13 +1378,21 @@ public:
   VideoAssetInfo GetVideoVersionInfo(const std::string& filenameAndPath);
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
-  int GetMovieId(const std::string& strFilenameAndPath,
-                 AllowNonFileNameMatch allowNonFileNameMatch = AllowNonFileNameMatch::NO_MATCH);
+  int GetMovieId(const std::string& strFilenameAndPath);
   std::string GetMovieTitle(int idMovie);
-  int GetMovieIdByTitle(const std::string& title);
-  void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
+
+  enum MatchingMask : uint8_t
+  {
+    None = 0x00,
+    UniqueId = 0x01,
+    Path = 0x02,
+    Title = 0x04
+  };
+
+  void GetSameVideoItems(const CFileItem& item,
+                         CFileItemList& items,
+                         int matchingMask = UniqueId | Title);
   int GetFileIdByMovie(int idMovie);
-  int GetFileIdByFile(const std::string& fullpath);
   std::string GetFileBasePathById(int idFile);
 
   /*!

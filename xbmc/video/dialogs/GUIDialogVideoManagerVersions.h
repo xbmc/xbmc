@@ -137,5 +137,7 @@ private:
   bool ChoosePlaylist(const std::shared_ptr<CFileItem>& item,
                       ReplaceExistingFile replaceExistingFile);
 
+  void RemovePartNumberFromTitle();
+
   std::shared_ptr<CFileItem> m_defaultVideoVersion;
 };

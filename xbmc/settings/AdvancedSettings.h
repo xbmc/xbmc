@@ -222,6 +222,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<CRegExp> m_videoStackRegExps;
     std::vector<CRegExp> m_folderStackRegExps;
     std::vector<std::string> m_trailerMatchRegExps;
+    std::string m_titleTrailingPartNumberRegExp;
+    std::string m_trailingPartNumberRegExp;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     std::string m_tvshowMultiPartEnumRegExp;
     using StringMapping = std::vector<std::pair<std::string, std::string>>;
