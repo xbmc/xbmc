@@ -3827,6 +3827,12 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
       CLog::Log(LOGWARNING, "{} - Unsupported stream {}. Stream disabled.", __FUNCTION__,
                 stream->uniqueId);
       stream->disabled = true;
+
+      CCurrentStream failedStream = current;
+      failedStream.id = iStream;
+      failedStream.demuxerId = demuxerId;
+      failedStream.source = source;
+      SetEnableStream(failedStream, false);
     }
   }
 
