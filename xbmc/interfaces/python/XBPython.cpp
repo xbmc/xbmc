@@ -34,9 +34,6 @@
 
 #include <algorithm>
 
-// Only required for Py3 < 3.7
-PyThreadState* savestate;
-
 bool XBPython::m_bInitialized = false;
 
 XBPython::XBPython()
@@ -49,11 +46,10 @@ XBPython::~XBPython()
   XBMC_TRACE;
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 
-#if PY_VERSION_HEX >= 0x03070000
   if (Py_IsInitialized())
   {
     // Switch to the main interpreter thread before finalizing
-    PyThreadState_Swap(PyInterpreterState_ThreadHead(PyInterpreterState_Main()));
+    PyThreadState_Swap(m_mainThreadState);
 
     // Clear all loaded modules to prevent circular references
     PyObject* modules = PyImport_GetModuleDict();
@@ -61,7 +57,6 @@ XBPython::~XBPython()
 
     Py_Finalize();
   }
-#endif
 }
 
 #define LOCK_AND_COPY(type, dest, src) \
@@ -512,22 +507,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
 #endif
 
     Py_Initialize();
-
-#if PY_VERSION_HEX < 0x03070000
-    // Python >= 3.7 Py_Initialize implicitly calls PyEval_InitThreads
-    // Python < 3.7 we have to manually call initthreads.
-    // PyEval_InitThreads is a no-op on subsequent calls, No need to wrap in
-    // PyEval_ThreadsInitialized() check
-    PyEval_InitThreads();
-#endif
-
-    // Acquire GIL if thread doesn't currently hold.
-    if (!PyGILState_Check())
-      PyEval_RestoreThread((PyThreadState*)m_mainThreadState);
-
-    if (!(m_mainThreadState = PyThreadState_Get()))
-      CLog::Log(LOGERROR, "Python threadstate is NULL.");
-    savestate = PyEval_SaveThread();
+    m_mainThreadState = PyEval_SaveThread();
 
     m_bInitialized = true;
   }
