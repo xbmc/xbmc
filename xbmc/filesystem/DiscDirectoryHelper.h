@@ -49,10 +49,13 @@ enum class AddMenuOption : bool
 
 enum class ENCODING_TYPE : uint8_t
 {
-  VIDEO_MPEG1 = 0x01,
+  // Video
   VIDEO_MPEG2 = 0x02,
-  AUDIO_MPEG1 = 0x03,
-  AUDIO_MPEG2 = 0x04,
+  VIDEO_VC1 = 0xea,
+  VIDEO_H264 = 0x1b,
+  VIDEO_HEVC = 0x24,
+
+  // Audio
   AUDIO_LPCM = 0x80,
   AUDIO_AC3 = 0x81,
   AUDIO_DTS = 0x82,
@@ -60,14 +63,13 @@ enum class ENCODING_TYPE : uint8_t
   AUDIO_AC3PLUS = 0x84,
   AUDIO_DTSHD = 0x85,
   AUDIO_DTSHD_MASTER = 0x86,
-  VIDEO_VC1 = 0xea,
-  VIDEO_H264 = 0x1b,
-  VIDEO_HEVC = 0x24,
+  AUDIO_AC3PLUS_SECONDARY = 0xa1,
+  AUDIO_DTSHD_SECONDARY = 0xa2,
+
+  // Other
   SUB_PG = 0x90,
   SUB_IG = 0x91,
   SUB_TEXT = 0x92,
-  AUDIO_AC3PLUS_SECONDARY = 0xa1,
-  AUDIO_DTSHD_SECONDARY = 0xa2
 };
 
 enum class ASPECT_RATIO : uint8_t
