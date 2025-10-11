@@ -441,11 +441,22 @@ std::string CURL::Get() const
 
   std::string strURL = GetWithoutOptions();
 
-  if( !m_strOptions.empty() )
+  const bool hasProtocolOptions = !m_strProtocolOptions.empty();
+  if (!m_strOptions.empty())
     strURL += m_strOptions;
+  else if (hasProtocolOptions)
+  {
+    const std::string translatedProtocol = GetTranslatedProtocol();
+    if (StringUtils::EqualsNoCase(translatedProtocol, "http") ||
+        StringUtils::EqualsNoCase(translatedProtocol, "https"))
+    {
+      if (strURL.empty() || strURL.back() != '?')
+        strURL += '?';
+    }
+  }
 
-  if (!m_strProtocolOptions.empty())
-    strURL += "|"+m_strProtocolOptions;
+  if (hasProtocolOptions)
+    strURL += "|" + m_strProtocolOptions;
 
   return strURL;
 }
@@ -547,8 +558,18 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
 
   if (!m_strOptions.empty())
     strURL += m_strOptions;
+  else if (!m_strProtocolOptions.empty())
+  {
+    const std::string translatedProtocol = GetTranslatedProtocol();
+    if (StringUtils::EqualsNoCase(translatedProtocol, "http") ||
+        StringUtils::EqualsNoCase(translatedProtocol, "https"))
+    {
+      if (strURL.empty() || strURL.back() != '?')
+        strURL += '?';
+    }
+  }
   if (!m_strProtocolOptions.empty())
-    strURL += "|"+m_strProtocolOptions;
+    strURL += "|" + m_strProtocolOptions;
 
   return strURL;
 }
