@@ -3155,6 +3155,21 @@
     ],
     "returns": "string"
   },
+  "AudioLibrary.Import": {
+    "type": "method",
+    "description": "Imports all items from a single file into the audio library",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "directory",
+        "type": "string",
+        "default": "",
+        "description": "Path to the directory with the musicdb.xml to import from"
+      }
+    ],
+    "returns": "string"
+  },
   "AudioLibrary.Clean": {
     "type": "method",
     "description": "Cleans the audio library from non-existent items",
@@ -5295,6 +5310,21 @@
             }
           }
         ]
+      }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.Import": {
+    "type": "method",
+    "description": "Imports all items from a single file into the video library",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "directory",
+        "type": "string",
+        "default": "",
+        "description": "Path to the directory with the videodb.xml to import from"
       }
     ],
     "returns": "string"
