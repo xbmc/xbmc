@@ -25,26 +25,6 @@
 static const char *DAY_NAMES[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
-namespace
-{
-
-KODI::TIME::FileTime GetInvalidResetTime()
-{
-  KODI::TIME::SystemTime st = {};
-  st.year = 1601;
-  st.month = 1;
-  st.day = 1;
-  st.hour = 0;
-  st.minute = 0;
-  st.second = 0;
-
-  KODI::TIME::FileTime fileTime;
-  KODI::TIME::SystemTimeToFileTime(&st, &fileTime);
-  return fileTime;
-}
-
-} // Unnamed namespace
-
 /////////////////////////////////////////////////
 //
 // CDateTimeSpan
@@ -634,8 +614,7 @@ void CDateTime::Archive(CArchive& ar)
 
 void CDateTime::Reset()
 {
-  static const KODI::TIME::FileTime resetTime = GetInvalidResetTime();
-  m_time = resetTime;
+  m_time = {0, 0}; // Windows epoch 1601-01-01
   SetValid(false);
 }
 
