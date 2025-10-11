@@ -34,7 +34,7 @@ std::vector<ScraperPtr> GetScrapers(AddonType type, const ScraperPtr& selectedSc
 
 } // unnamed namespace
 
-CInfoScanner::InfoType CNfoFile::TryParsing(ADDON::AddonType addonType)
+CInfoScanner::InfoType CNfoFile::TryParsing(ADDON::AddonType addonType) const
 {
   using enum CInfoScanner::InfoType;
   using enum ADDON::AddonType;
@@ -75,23 +75,15 @@ CInfoScanner::InfoType CNfoFile::TryParsing(const CURL& nfoPath,
                                             ADDON::ContentType contentType,
                                             int index /* =1 */)
 {
-  using enum CInfoScanner::InfoType;
-  using enum ADDON::AddonType;
-
   if (Load(nfoPath) != 0) // Setup m_doc and m_headPos
-    return ERROR_NFO;
+    return CInfoScanner::InfoType::ERROR_NFO;
 
   auto addonType = ScraperTypeFromContent(contentType);
 
-  if (addonType == SCRAPER_MOVIES)
-  {
-    if (seekToMovieIndex(index))
-      return TryParsing(addonType);
-  }
-  else
-    return TryParsing(addonType);
+  if (addonType == ADDON::AddonType::SCRAPER_MOVIES && !seekToMovieIndex(index))
+    return CInfoScanner::InfoType::NONE;
 
-  return NONE;
+  return TryParsing(addonType);
 }
 
 CInfoScanner::InfoType CNfoFile::Create(const std::string& nfoPath,

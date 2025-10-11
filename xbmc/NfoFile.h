@@ -34,7 +34,7 @@ public:
   CInfoScanner::InfoType Create(const std::string&, const ADDON::ScraperPtr&, int index = 1);
 
   template<class T>
-  bool GetDetails(T& details, const char* document = nullptr, bool prioritise = false)
+  bool GetDetails(T& details, const char* document = nullptr, bool prioritise = false) const
   {
     CXBMCTinyXML doc;
     if (document)
@@ -53,11 +53,11 @@ public:
   const CScraperUrl &ScraperUrl() const { return m_scurl; }
 
 private:
-  CInfoScanner::InfoType TryParsing(ADDON::AddonType addonType);
+  CInfoScanner::InfoType TryParsing(ADDON::AddonType addonType) const;
   CInfoScanner::InfoType TryParsing(const CURL& nfoPath,
                                     ADDON::ContentType contentType,
                                     int index = 1);
-  CInfoScanner::InfoType searchNfoForScraperUrls(CInfoScanner::InfoType bNfo,
+  CInfoScanner::InfoType searchNfoForScraperUrls(CInfoScanner::InfoType parseResult,
                                                  const ADDON::ScraperPtr& info);
   bool seekToMovieIndex(int index);
 
