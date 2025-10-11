@@ -340,7 +340,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
           info->SetDuration(info->GetDuration());
 
           // store the updated information in the database
-          m_videoDatabase->SetDetailsForItem(info->m_iDbId, info->m_type, *info, pItem->GetArt());
+          SetDetailsForItem(*info, pItem->GetArt());
         }
 
         m_videoDatabase->CommitTransaction();
@@ -351,6 +351,36 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 
   m_videoDatabase->Close();
   return true;
+}
+
+int CVideoThumbLoader::SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork)
+{
+  int id = details.m_iDbId;
+  MediaType_view mediaType = details.m_type;
+
+  if (mediaType == MediaTypeNone)
+    return -1;
+
+  if (mediaType == MediaTypeMovie)
+    return m_videoDatabase->SetDetailsForMovie(details, artwork, id);
+  else if (mediaType == MediaTypeVideoCollection)
+    return m_videoDatabase->SetDetailsForMovieSet(details, artwork, id);
+  else if (mediaType == MediaTypeTvShow)
+  {
+    KODI::ART::SeasonsArtwork seasonArtwork;
+    if (!m_videoDatabase->UpdateDetailsForTvShow(id, details, artwork, seasonArtwork))
+      return -1;
+
+    return id;
+  }
+  else if (mediaType == MediaTypeSeason)
+    return m_videoDatabase->SetDetailsForSeason(details, artwork, details.m_iIdShow, id);
+  else if (mediaType == MediaTypeEpisode)
+    return m_videoDatabase->SetDetailsForEpisode(details, artwork, details.m_iIdShow, id);
+  else if (mediaType == MediaTypeMusicVideo)
+    return m_videoDatabase->SetDetailsForMusicVideo(details, artwork, id);
+
+  return -1;
 }
 
 bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
