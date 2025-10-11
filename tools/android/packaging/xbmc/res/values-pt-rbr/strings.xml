@@ -15,4 +15,5 @@
     <string name="permission_denied">Permissão negada !! Saindo …</string>
     <string name="no_find_apk">Não foi possível encontrar o pacote.</string>
     <string name="no_read_apk">Não foi possível ler o pacote.</string>
+    <string name="record_audio_dialog">%1$s solicita permissão para gravar áudio . Isso é usado apenas para pesquisa por voz. Permita ou negue isso na caixa de diálogo a seguir.</string>
 </resources>
