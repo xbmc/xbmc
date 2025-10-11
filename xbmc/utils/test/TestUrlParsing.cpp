@@ -18,11 +18,12 @@
 #include <gtest/gtest.h>
 
 // JSON Output
-#include <fstream>
 #include "test/TestUtils.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/Variant.h"
+
+#include <fstream>
 
 using ::testing::Test;
 using ::testing::ValuesIn;
@@ -171,170 +172,172 @@ class TestURLParseDetails : public Test, public WithParamInterface<TestURLParseD
 {
 };
 
-
 namespace
 {
-  void read(bool& output, const CVariant& json, const char* key)
-  {
-    if (json.isMember(key))
-      output = json[key].asBoolean();
-  }
-  void read(int& output, const CVariant& json, const char* key)
-  {
-    if (json.isMember(key))
-      output = json[key].asInteger();
-  }
-  void read(std::string& output, const CVariant& json, const char* key)
-  {
-    if (json.isMember(key))
-      output = json[key].asString();
-  }
-
-  TestURLParseDetailsData CreateParamFromJson(size_t filename)
-  {
-    CVariant json;
-    TestURLParseDetailsData param;
-  
-    std::ostringstream oss;
-    oss << "xbmc/utils/test/testdata/" << filename << ".json";
-  
-    std::ifstream reader(XBMC_REF_FILE_PATH(oss.str()));
-    std::stringstream buffer;
-    buffer << reader.rdbuf();
-    std::string inputJson = buffer.str();
-    reader.close();
-  
-    if (CJSONVariantParser::Parse(inputJson, json) && !json.isNull())
-    {
-      read(param.input, json, "input");
-      read(param.expectedGet, json, "expectedGet");
-      read(param.expectedGetPort, json, "expectedGetPort");
-      read(param.expectedGetHostName, json, "expectedGetHostName");
-      read(param.expectedGetDomain, json, "expectedGetDomain");
-      read(param.expectedGetUserName, json, "expectedGetUserName");
-      read(param.expectedGetPassWord, json, "expectedGetPassWord");
-      read(param.expectedGetFileName, json, "expectedGetFileName");
-      read(param.expectedGetFileNameUtil, json, "expectedGetFileNameUtil");
-      read(param.expectedGetProtocol, json, "expectedGetProtocol");
-      read(param.expectedGetTranslatedProtocol, json, "expectedGetTranslatedProtocol");
-      read(param.expectedGetShareName, json, "expectedGetShareName");
-      read(param.expectedGetOptions, json, "expectedGetOptions");
-      read(param.expectedGetProtocolOptions, json, "expectedGetProtocolOptions");
-      read(param.expectedGetFileNameWithoutPath, json, "expectedGetFileNameWithoutPath");
-      read(param.expectedGetWithoutOptions, json, "expectedGetWithoutOptions");
-      read(param.expectedGetWithoutUserDetails_redacted, json, "expectedGetWithoutUserDetails_redacted");
-      read(param.expectedGetWithoutUserDetails_removed, json, "expectedGetWithoutUserDetails_removed");
-      read(param.expectedGetWithoutFilename, json, "expectedGetWithoutFilename");
-      read(param.expectedGetRedacted, json, "expectedGetRedacted");
-      read(param.expectedIsLocal, json, "expectedIsLocal");
-      read(param.expectedIsLocalHost, json, "expectedIsLocalHost");
-      read(param.expectedIsFileOnly, json, "expectedIsFileOnly");
-      read(param.expectedIsFullPath, json, "expectedIsFullPath");
-      read(param.expectedDecode, json, "expectedDecode");
-      read(param.expectedDecodeFileName, json, "expectedDecodeFileName");
-      read(param.expectedEncode, json, "expectedEncode");
-      read(param.expectedExtension, json, "expectedExtension");
-      read(param.expectedHasExtension, json, "expectedHasExtension");
-      read(param.expectedHasSetExtension, json, "expectedHasSetExtension");
-      read(param.expectedRemovedExtension, json, "expectedRemovedExtension");
-      read(param.expectedReplacedExtension, json, "expectedReplacedExtension");
-      read(param.expectedFileOrFolder, json, "expectedFileOrFolder");
-      read(param.expectedSplitPath, json, "expectedSplitPath");
-      read(param.expectedSplitFileName, json, "expectedSplitFileName");
-      read(param.expectedHasParentInHostname, json, "expectedHasParentInHostname");
-      read(param.expectedHasEncodedHostname, json, "expectedHasEncodedHostname");
-      read(param.expectedHasEncodedFilename, json, "expectedHasEncodedFilename");
-      read(param.expectedHasParentPath, json, "expectedHasParentPath");
-      read(param.expectedGetParentPath, json, "expectedGetParentPath");
-      read(param.expectedGetBasePath, json, "expectedGetBasePath");
-      read(param.expectedGetDiscBase, json, "expectedGetDiscBase");
-      read(param.expectedGetDiscBasePath, json, "expectedGetDiscBasePath");
-      read(param.expectedGetDiscUnderlyingFile, json, "expectedGetDiscUnderlyingFile");
-      read(param.expectedGetBlurayFile, json, "expectedGetBlurayFile");
-      read(param.expectedGetBlurayRootPath, json, "expectedGetBlurayRootPath");
-      read(param.expectedGetBlurayTitlesPath, json, "expectedGetBlurayTitlesPath");
-      read(param.expectedGetBlurayEpisodePath, json, "expectedGetBlurayEpisodePath");
-      read(param.expectedGetBlurayAllEpisodesPath, json, "expectedGetBlurayAllEpisodesPath");
-      read(param.expectedGetBlurayPlaylistPath, json, "expectedGetBlurayPlaylistPath");
-      read(param.expectedIsMusicDBProtocol, json, "expectedIsMusicDBProtocol");
-      read(param.expectedIsUDFProtocol, json, "expectedIsUDFProtocol");
-      read(param.expectedIsRemote, json, "expectedIsRemote");
-      read(param.expectedIsOnDVD, json, "expectedIsOnDVD");
-      read(param.expectedIsOnLAN, json, "expectedIsOnLAN");
-      read(param.expectedIsHostOnLAN, json, "expectedIsHostOnLAN");
-      read(param.expectedIsMultiPath, json, "expectedIsMultiPath");
-      read(param.expectedIsHD, json, "expectedIsHD");
-      read(param.expectedIsStack, json, "expectedIsStack");
-      read(param.expectedIsFavourite, json, "expectedIsFavourite");
-      read(param.expectedIsRAR, json, "expectedIsRAR");
-      read(param.expectedIsInArchive, json, "expectedIsInArchive");
-      read(param.expectedIsInAPK, json, "expectedIsInAPK");
-      read(param.expectedIsInZIP, json, "expectedIsInZIP");
-      read(param.expectedIsInRAR, json, "expectedIsInRAR");
-      read(param.expectedIsAPK, json, "expectedIsAPK");
-      read(param.expectedIsZIP, json, "expectedIsZIP");
-      read(param.expectedIsArchive, json, "expectedIsArchive");
-      read(param.expectedIsDiscImage, json, "expectedIsDiscImage");
-      read(param.expectedIsDiscImageStack, json, "expectedIsDiscImageStack");
-      read(param.expectedIsSpecial, json, "expectedIsSpecial");
-      read(param.expectedIsPlugin, json, "expectedIsPlugin");
-      read(param.expectedIsScript, json, "expectedIsScript");
-      read(param.expectedIsAddonsPath, json, "expectedIsAddonsPath");
-      read(param.expectedIsSourcesPath, json, "expectedIsSourcesPath");
-      read(param.expectedIsCDDA, json, "expectedIsCDDA");
-      read(param.expectedIsISO9660, json, "expectedIsISO9660");
-      read(param.expectedIsSmb, json, "expectedIsSmb");
-      read(param.expectedIsURL, json, "expectedIsURL");
-      read(param.expectedIsFTP, json, "expectedIsFTP");
-      read(param.expectedIsHTTP, json, "expectedIsHTTP");
-      read(param.expectedIsUDP, json, "expectedIsUDP");
-      read(param.expectedIsTCP, json, "expectedIsTCP");
-      read(param.expectedIsPVR, json, "expectedIsPVR");
-      read(param.expectedIsPVRChannel, json, "expectedIsPVRChannel");
-      read(param.expectedIsPVRRadioChannel, json, "expectedIsPVRRadioChannel");
-      read(param.expectedIsPVRChannelGroup, json, "expectedIsPVRChannelGroup");
-      read(param.expectedIsPVRGuideItem, json, "expectedIsPVRGuideItem");
-      read(param.expectedIsDAV, json, "expectedIsDAV");
-      read(param.expectedIsInternetStream, json, "expectedIsInternetStream");
-      read(param.expectedIsInternetStreamStrict, json, "expectedIsInternetStreamStrict");
-      read(param.expectedIsStreamedFilesystem, json, "expectedIsStreamedFilesystem");
-      read(param.expectedIsNetworkFilesystem, json, "expectedIsNetworkFilesystem");
-      read(param.expectedIsUPnP, json, "expectedIsUPnP");
-      read(param.expectedIsLiveTV, json, "expectedIsLiveTV");
-      read(param.expectedIsPVRRecording, json, "expectedIsPVRRecording");
-      read(param.expectedIsPVRRecordingFileOrFolder, json, "expectedIsPVRRecordingFileOrFolder");
-      read(param.expectedIsPVRTVRecordingFileOrFolder, json, "expectedIsPVRTVRecordingFileOrFolder");
-      read(param.expectedIsPVRRadioRecordingFileOrFolder, json, "expectedIsPVRRadioRecordingFileOrFolder");
-      read(param.expectedIsMusicDb, json, "expectedIsMusicDb");
-      read(param.expectedIsNfs, json, "expectedIsNfs");
-      read(param.expectedIsVideoDb, json, "expectedIsVideoDb");
-      read(param.expectedIsBlurayPath, json, "expectedIsBlurayPath");
-      read(param.expectedIsOpticalMediaFile, json, "expectedIsOpticalMediaFile");
-      read(param.expectedIsBDFile, json, "expectedIsBDFile");
-      read(param.expectedIsDVDFile, json, "expectedIsDVDFile");
-      read(param.expectedIsAndroidApp, json, "expectedIsAndroidApp");
-      read(param.expectedIsLibraryFolder, json, "expectedIsLibraryFolder");
-      read(param.expectedIsLibraryContent, json, "expectedIsLibraryContent");
-      read(param.expectedIsDOSPath, json, "expectedIsDOSPath");
-      read(param.expectedAppendSlash, json, "expectedAppendSlash");
-      read(param.expectedHasSlashAtEnd, json, "expectedHasSlashAtEnd");
-      read(param.expectedHasSlashAtEndURL, json, "expectedHasSlashAtEndURL");
-      read(param.expectedRemovedEndSlash, json, "expectedRemovedEndSlash");
-      read(param.expectedIsFixSlashesAndDupsUnix, json, "expectedIsFixSlashesAndDupsUnix");
-      read(param.expectedIsFixSlashesAndDupsWin, json, "expectedIsFixSlashesAndDupsWin");
-      read(param.expectedCanonicalizePathUnix, json, "expectedCanonicalizePathUnix");
-      read(param.expectedCanonicalizePathWin, json, "expectedCanonicalizePathWin");
-      read(param.expectedAddFileToFolder, json, "expectedAddFileToFolder");
-      read(param.expectedGetDirectory, json, "expectedGetDirectory");
-      read(param.expectedCreateZIPArchivePath, json, "expectedCreateZIPArchivePath");
-      read(param.expectedCreateRARArchivePath, json, "expectedCreateRARArchivePath");
-      read(param.expectedCreateAPKArchivePath, json, "expectedCreateAPKArchivePath");
-      read(param.expectedGetRealPath, json, "expectedGetRealPath");
-      read(param.expectedUpdateUrlEncoding, json, "expectedUpdateUrlEncoding");
-    }
-    return param;
-  }
+void read(bool& output, const CVariant& json, const char* key)
+{
+  if (json.isMember(key))
+    output = json[key].asBoolean();
 }
+void read(int& output, const CVariant& json, const char* key)
+{
+  if (json.isMember(key))
+    output = json[key].asInteger();
+}
+void read(std::string& output, const CVariant& json, const char* key)
+{
+  if (json.isMember(key))
+    output = json[key].asString();
+}
+
+TestURLParseDetailsData CreateParamFromJson(size_t filename)
+{
+  CVariant json;
+  TestURLParseDetailsData param;
+
+  std::ostringstream oss;
+  oss << "xbmc/utils/test/testdata/" << filename << ".json";
+
+  std::ifstream reader(XBMC_REF_FILE_PATH(oss.str()));
+  std::stringstream buffer;
+  buffer << reader.rdbuf();
+  std::string inputJson = buffer.str();
+  reader.close();
+
+  if (CJSONVariantParser::Parse(inputJson, json) && !json.isNull())
+  {
+    read(param.input, json, "input");
+    read(param.expectedGet, json, "expectedGet");
+    read(param.expectedGetPort, json, "expectedGetPort");
+    read(param.expectedGetHostName, json, "expectedGetHostName");
+    read(param.expectedGetDomain, json, "expectedGetDomain");
+    read(param.expectedGetUserName, json, "expectedGetUserName");
+    read(param.expectedGetPassWord, json, "expectedGetPassWord");
+    read(param.expectedGetFileName, json, "expectedGetFileName");
+    read(param.expectedGetFileNameUtil, json, "expectedGetFileNameUtil");
+    read(param.expectedGetProtocol, json, "expectedGetProtocol");
+    read(param.expectedGetTranslatedProtocol, json, "expectedGetTranslatedProtocol");
+    read(param.expectedGetShareName, json, "expectedGetShareName");
+    read(param.expectedGetOptions, json, "expectedGetOptions");
+    read(param.expectedGetProtocolOptions, json, "expectedGetProtocolOptions");
+    read(param.expectedGetFileNameWithoutPath, json, "expectedGetFileNameWithoutPath");
+    read(param.expectedGetWithoutOptions, json, "expectedGetWithoutOptions");
+    read(param.expectedGetWithoutUserDetails_redacted, json,
+         "expectedGetWithoutUserDetails_redacted");
+    read(param.expectedGetWithoutUserDetails_removed, json,
+         "expectedGetWithoutUserDetails_removed");
+    read(param.expectedGetWithoutFilename, json, "expectedGetWithoutFilename");
+    read(param.expectedGetRedacted, json, "expectedGetRedacted");
+    read(param.expectedIsLocal, json, "expectedIsLocal");
+    read(param.expectedIsLocalHost, json, "expectedIsLocalHost");
+    read(param.expectedIsFileOnly, json, "expectedIsFileOnly");
+    read(param.expectedIsFullPath, json, "expectedIsFullPath");
+    read(param.expectedDecode, json, "expectedDecode");
+    read(param.expectedDecodeFileName, json, "expectedDecodeFileName");
+    read(param.expectedEncode, json, "expectedEncode");
+    read(param.expectedExtension, json, "expectedExtension");
+    read(param.expectedHasExtension, json, "expectedHasExtension");
+    read(param.expectedHasSetExtension, json, "expectedHasSetExtension");
+    read(param.expectedRemovedExtension, json, "expectedRemovedExtension");
+    read(param.expectedReplacedExtension, json, "expectedReplacedExtension");
+    read(param.expectedFileOrFolder, json, "expectedFileOrFolder");
+    read(param.expectedSplitPath, json, "expectedSplitPath");
+    read(param.expectedSplitFileName, json, "expectedSplitFileName");
+    read(param.expectedHasParentInHostname, json, "expectedHasParentInHostname");
+    read(param.expectedHasEncodedHostname, json, "expectedHasEncodedHostname");
+    read(param.expectedHasEncodedFilename, json, "expectedHasEncodedFilename");
+    read(param.expectedHasParentPath, json, "expectedHasParentPath");
+    read(param.expectedGetParentPath, json, "expectedGetParentPath");
+    read(param.expectedGetBasePath, json, "expectedGetBasePath");
+    read(param.expectedGetDiscBase, json, "expectedGetDiscBase");
+    read(param.expectedGetDiscBasePath, json, "expectedGetDiscBasePath");
+    read(param.expectedGetDiscUnderlyingFile, json, "expectedGetDiscUnderlyingFile");
+    read(param.expectedGetBlurayFile, json, "expectedGetBlurayFile");
+    read(param.expectedGetBlurayRootPath, json, "expectedGetBlurayRootPath");
+    read(param.expectedGetBlurayTitlesPath, json, "expectedGetBlurayTitlesPath");
+    read(param.expectedGetBlurayEpisodePath, json, "expectedGetBlurayEpisodePath");
+    read(param.expectedGetBlurayAllEpisodesPath, json, "expectedGetBlurayAllEpisodesPath");
+    read(param.expectedGetBlurayPlaylistPath, json, "expectedGetBlurayPlaylistPath");
+    read(param.expectedIsMusicDBProtocol, json, "expectedIsMusicDBProtocol");
+    read(param.expectedIsUDFProtocol, json, "expectedIsUDFProtocol");
+    read(param.expectedIsRemote, json, "expectedIsRemote");
+    read(param.expectedIsOnDVD, json, "expectedIsOnDVD");
+    read(param.expectedIsOnLAN, json, "expectedIsOnLAN");
+    read(param.expectedIsHostOnLAN, json, "expectedIsHostOnLAN");
+    read(param.expectedIsMultiPath, json, "expectedIsMultiPath");
+    read(param.expectedIsHD, json, "expectedIsHD");
+    read(param.expectedIsStack, json, "expectedIsStack");
+    read(param.expectedIsFavourite, json, "expectedIsFavourite");
+    read(param.expectedIsRAR, json, "expectedIsRAR");
+    read(param.expectedIsInArchive, json, "expectedIsInArchive");
+    read(param.expectedIsInAPK, json, "expectedIsInAPK");
+    read(param.expectedIsInZIP, json, "expectedIsInZIP");
+    read(param.expectedIsInRAR, json, "expectedIsInRAR");
+    read(param.expectedIsAPK, json, "expectedIsAPK");
+    read(param.expectedIsZIP, json, "expectedIsZIP");
+    read(param.expectedIsArchive, json, "expectedIsArchive");
+    read(param.expectedIsDiscImage, json, "expectedIsDiscImage");
+    read(param.expectedIsDiscImageStack, json, "expectedIsDiscImageStack");
+    read(param.expectedIsSpecial, json, "expectedIsSpecial");
+    read(param.expectedIsPlugin, json, "expectedIsPlugin");
+    read(param.expectedIsScript, json, "expectedIsScript");
+    read(param.expectedIsAddonsPath, json, "expectedIsAddonsPath");
+    read(param.expectedIsSourcesPath, json, "expectedIsSourcesPath");
+    read(param.expectedIsCDDA, json, "expectedIsCDDA");
+    read(param.expectedIsISO9660, json, "expectedIsISO9660");
+    read(param.expectedIsSmb, json, "expectedIsSmb");
+    read(param.expectedIsURL, json, "expectedIsURL");
+    read(param.expectedIsFTP, json, "expectedIsFTP");
+    read(param.expectedIsHTTP, json, "expectedIsHTTP");
+    read(param.expectedIsUDP, json, "expectedIsUDP");
+    read(param.expectedIsTCP, json, "expectedIsTCP");
+    read(param.expectedIsPVR, json, "expectedIsPVR");
+    read(param.expectedIsPVRChannel, json, "expectedIsPVRChannel");
+    read(param.expectedIsPVRRadioChannel, json, "expectedIsPVRRadioChannel");
+    read(param.expectedIsPVRChannelGroup, json, "expectedIsPVRChannelGroup");
+    read(param.expectedIsPVRGuideItem, json, "expectedIsPVRGuideItem");
+    read(param.expectedIsDAV, json, "expectedIsDAV");
+    read(param.expectedIsInternetStream, json, "expectedIsInternetStream");
+    read(param.expectedIsInternetStreamStrict, json, "expectedIsInternetStreamStrict");
+    read(param.expectedIsStreamedFilesystem, json, "expectedIsStreamedFilesystem");
+    read(param.expectedIsNetworkFilesystem, json, "expectedIsNetworkFilesystem");
+    read(param.expectedIsUPnP, json, "expectedIsUPnP");
+    read(param.expectedIsLiveTV, json, "expectedIsLiveTV");
+    read(param.expectedIsPVRRecording, json, "expectedIsPVRRecording");
+    read(param.expectedIsPVRRecordingFileOrFolder, json, "expectedIsPVRRecordingFileOrFolder");
+    read(param.expectedIsPVRTVRecordingFileOrFolder, json, "expectedIsPVRTVRecordingFileOrFolder");
+    read(param.expectedIsPVRRadioRecordingFileOrFolder, json,
+         "expectedIsPVRRadioRecordingFileOrFolder");
+    read(param.expectedIsMusicDb, json, "expectedIsMusicDb");
+    read(param.expectedIsNfs, json, "expectedIsNfs");
+    read(param.expectedIsVideoDb, json, "expectedIsVideoDb");
+    read(param.expectedIsBlurayPath, json, "expectedIsBlurayPath");
+    read(param.expectedIsOpticalMediaFile, json, "expectedIsOpticalMediaFile");
+    read(param.expectedIsBDFile, json, "expectedIsBDFile");
+    read(param.expectedIsDVDFile, json, "expectedIsDVDFile");
+    read(param.expectedIsAndroidApp, json, "expectedIsAndroidApp");
+    read(param.expectedIsLibraryFolder, json, "expectedIsLibraryFolder");
+    read(param.expectedIsLibraryContent, json, "expectedIsLibraryContent");
+    read(param.expectedIsDOSPath, json, "expectedIsDOSPath");
+    read(param.expectedAppendSlash, json, "expectedAppendSlash");
+    read(param.expectedHasSlashAtEnd, json, "expectedHasSlashAtEnd");
+    read(param.expectedHasSlashAtEndURL, json, "expectedHasSlashAtEndURL");
+    read(param.expectedRemovedEndSlash, json, "expectedRemovedEndSlash");
+    read(param.expectedIsFixSlashesAndDupsUnix, json, "expectedIsFixSlashesAndDupsUnix");
+    read(param.expectedIsFixSlashesAndDupsWin, json, "expectedIsFixSlashesAndDupsWin");
+    read(param.expectedCanonicalizePathUnix, json, "expectedCanonicalizePathUnix");
+    read(param.expectedCanonicalizePathWin, json, "expectedCanonicalizePathWin");
+    read(param.expectedAddFileToFolder, json, "expectedAddFileToFolder");
+    read(param.expectedGetDirectory, json, "expectedGetDirectory");
+    read(param.expectedCreateZIPArchivePath, json, "expectedCreateZIPArchivePath");
+    read(param.expectedCreateRARArchivePath, json, "expectedCreateRARArchivePath");
+    read(param.expectedCreateAPKArchivePath, json, "expectedCreateAPKArchivePath");
+    read(param.expectedGetRealPath, json, "expectedGetRealPath");
+    read(param.expectedUpdateUrlEncoding, json, "expectedUpdateUrlEncoding");
+  }
+  return param;
+}
+} // namespace
 
 TEST_P(TestURLParseDetails, ParseURLResults)
 {
