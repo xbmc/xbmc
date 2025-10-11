@@ -318,6 +318,7 @@ void CURL::Parse(std::string strURL1)
     SetHostName(m_strHostName);
   }
 
+  m_strDomain = Decode(m_strDomain);
   m_strUserName = Decode(m_strUserName);
   m_strPassword = Decode(m_strPassword);
 }
