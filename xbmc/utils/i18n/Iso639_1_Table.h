@@ -8,11 +8,14 @@
 
 #pragma once
 
-#include "utils/i18n/TableISO639.h"
+#include "utils/i18n/Iso639.h"
 
+#include <algorithm>
 #include <array>
 #include <string_view>
 
+namespace KODI::UTILS::I18N
+{
 // ISO 639-1 table
 // Source: Library of Congress http://www.loc.gov/standards/iso639-2
 
@@ -270,3 +273,5 @@ static_assert(std::ranges::adjacent_find(TableISO639_1ByName, {}, &LCENTRY::name
               TableISO639_1ByName.end());
 static_assert(std::ranges::adjacent_find(TableISO639_1_DeprByName, {}, &LCENTRY::name) ==
               TableISO639_1_DeprByName.end());
+
+} // namespace KODI::UTILS::I18N
