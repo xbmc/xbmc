@@ -581,7 +581,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     return false;
   }
 
-  m_vaapiConfig.driverIsMesa = StringUtils::StartsWith(vaQueryVendorString(m_vaapiConfig.context->GetDisplay()), "Mesa");
   m_vaapiConfig.vidWidth = avctx->width;
   m_vaapiConfig.vidHeight = avctx->height;
   m_vaapiConfig.outWidth = avctx->width;
@@ -1925,8 +1924,6 @@ bool COutput::Init()
   m_config.processInfo->UpdateDeinterlacingMethods(deintMethods);
   m_config.processInfo->SetDeinterlacingMethodDefault(EINTERLACEMETHOD::VS_INTERLACEMETHOD_VAAPI_BOB);
 
-  m_seenInterlaced = false;
-
   return true;
 }
 
@@ -2046,14 +2043,8 @@ void COutput::InitCycle()
 
   EINTERLACEMETHOD method = m_config.processInfo->GetVideoSettings().m_InterlaceMethod;
   bool interlaced = m_currentPicture.DVDPic.iFlags & DVP_FLAG_INTERLACED;
-  // Remember whether any interlaced frames were encountered already.
-  // If this is the case, the deinterlace method will never automatically be switched to NONE again in
-  // order to not change deint methods every few frames in PAFF streams.
-  m_seenInterlaced = m_seenInterlaced || interlaced;
 
-  if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
-      m_seenInterlaced &&
-      method != VS_INTERLACEMETHOD_NONE)
+  if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) && interlaced && method != VS_INTERLACEMETHOD_NONE)
   {
     if (!m_config.processInfo->Supports(method))
       method = VS_INTERLACEMETHOD_VAAPI_BOB;
@@ -2110,27 +2101,14 @@ void COutput::InitCycle()
     }
     if (!m_pp)
     {
-      const bool preferVaapiRender = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(SETTING_VIDEOPLAYER_PREFERVAAPIRENDER);
-      // For 1080p/i or below, always use CVppPostproc even when not deinterlacing
-      // Reason is: mesa cannot dynamically switch surfaces between use for VAAPI post-processing
-      // and use for direct export, so we run into trouble if we or the user want to switch
-      // deinterlacing on/off mid-stream.
-      // See also: https://bugs.freedesktop.org/show_bug.cgi?id=105145
-      const bool alwaysInsertVpp = m_config.driverIsMesa &&
-                                   ((m_config.vidWidth * m_config.vidHeight) <= (1920 * 1080)) &&
-                                   interlaced;
+      const bool preferVaapiRender = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          SETTING_VIDEOPLAYER_PREFERVAAPIRENDER);
 
       m_config.stats->SetVpp(false);
       if (!preferVaapiRender)
       {
         CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing ffmpeg postproc");
         m_pp = new CFFmpegPostproc();
-      }
-      else if (alwaysInsertVpp)
-      {
-        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing vaapi postproc");
-        m_pp = new CVppPostproc();
-        m_config.stats->SetVpp(true);
       }
       else
       {
