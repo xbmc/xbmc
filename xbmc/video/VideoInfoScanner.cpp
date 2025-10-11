@@ -978,28 +978,44 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (result == InfoType::FULL)
     {
       // Add the movie entry
-      // Try with title first
-      int existingMovieId{-1};
-      const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-      const std::string title{tag->GetTitle()};
-      if (!title.empty())
-        existingMovieId = m_database.GetMovieIdByTitle(title);
-      if (existingMovieId < 0)
-        m_database.GetMovieId(pItem->GetDynPath(), AllowNonFileNameMatch::YES_MATCH);
-
       int movieId{-1};
-      item.SetProperty("from_nfo", true);
+      CVideoInfoTag* tag{item.GetVideoInfoTag()};
+      if (tag->HasVideoVersions())
+      {
+        // See if movie already in library
+        CFileItemList items;
+        using enum CVideoDatabase::MatchingMask;
+        m_database.GetSameVideoItems(item, items, UniqueId | (bDirNames ? Path : None));
+        if (!items.IsEmpty())
+        {
+          // Movie already exists
+          movieId = items[0]->GetVideoInfoTag()->m_iDbId;
+          CLog::LogF(LOGDEBUG,
+                     "Movie '{}' already exists in the library as id {} - adding as version",
+                     tag->GetTitle(), movieId);
 
-      if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
-        if (!AddSet(pItem->GetVideoInfoTag()->m_set))
-          return InfoRet::INFO_ERROR;
-      movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
+          // Add as version
+          tag->m_iDbId = movieId;
+          if (AddVideo(&item, nullptr, bDirNames, true, nullptr, false,
+                       ContentType::MOVIE_VERSIONS) < 0)
+            return InfoRet::INFO_ERROR;
+        }
+      }
+
+      // Existing movie cannot be found or is not version - add it
       if (movieId < 0)
-        return InfoRet::INFO_ERROR;
-      item.SetProperty("idMovie", movieId);
+      {
+        movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
+        if (movieId < 0)
+          return InfoRet::INFO_ERROR;
 
-      // Set version (AddVideo() ultimately uses CVideoDatabase::AddNewMovie() which defaults to standard version)
-      m_database.SetVideoVersion(tag->m_iFileId, tag->GetAssetInfo().GetId());
+        // Deal with set
+        if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
+          if (!AddSet(pItem->GetVideoInfoTag()->m_set))
+            return InfoRet::INFO_ERROR;
+      }
+
+      item.SetProperty("from_nfo", true);
 
       // Look for default version
       int defaultVersionFileId{-1};
@@ -1017,6 +1033,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (result == InfoType::FULL)
         {
           // Add the version entry
+          tag->m_iDbId = movieId;
           const int versionId{static_cast<int>(AddVideo(&item, nullptr, bDirNames, true, nullptr,
                                                         false, ContentType::MOVIE_VERSIONS))};
           if (versionId < 0)
@@ -1024,7 +1041,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
           // Look for default version
           if (tag->IsDefaultVideoVersion())
-            defaultVersionFileId = tag->m_iFileId; // Updated in AddPlaylistMovieVersion()
+            defaultVersionFileId = tag->m_iFileId; // Updated in AddVideoAsset()
         }
       } while (result == InfoType::FULL);
 
@@ -1950,13 +1967,25 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     else if (content == ContentType::MOVIE_VERSIONS)
     {
-      const int idMovie{pItem->HasProperty("idMovie") ? pItem->GetProperty("idMovie").asInteger32()
-                                                      : -1};
-      if (idMovie != -1)
+      if (pItem->HasVideoInfoTag())
       {
-        lResult = m_database.AddMovieVersion(*pItem, idMovie, art);
-        movieDetails.m_iDbId = idMovie;
-        movieDetails.m_type = MediaTypeMovie;
+        const CVideoInfoTag* tag{pItem->GetVideoInfoTag()};
+        const int idMovie{
+            tag->m_iDbId}; // Set in AddVideo() for movies and RetrieveInfoForMovie() for versions
+        if (idMovie != -1)
+        {
+          pItem->SetArt(art); // May have been filtered above
+          CVideoInfoTag* vtag{pItem->GetVideoInfoTag()};
+
+          // Need to look up asset title in current table as, if importing, it may have a different id (primary key)
+          const std::string assetTitle{vtag->GetAssetInfo().GetTitle()};
+          const int assetId{m_database.AddOrValidateVideoVersionType(assetTitle)};
+
+          lResult = m_database.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, assetId,
+                                             VideoAssetType::VERSION, *pItem)
+                        ? vtag->m_iFileId
+                        : -1;
+        }
       }
     }
     else if (content == ContentType::TVSHOWS)

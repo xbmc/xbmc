@@ -97,11 +97,23 @@ CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
   }
 
   if (result != NONE)
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching {} NFO file: {}", InfoTypeToStr(result),
-              CURL::GetRedacted(m_path));
+  {
+    const std::string type{InfoTypeToStr(result)};
+    if (m_item.HasProperty("nfo_index"))
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found additional version ({}) in {} NFO file: {}",
+                m_item.GetProperty("nfo_index").asInteger32(), type, CURL::GetRedacted(m_path));
+    else
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching {} NFO file: {}", type,
+                CURL::GetRedacted(m_path));
+  }
   else
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: No NFO file found. Using title search for '{}'",
-              CURL::GetRedacted(m_item.GetPath()));
+  {
+    if (m_item.HasProperty("nfo_index"))
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: No additional versions found in NFO file.");
+    else
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: No NFO file found. Using title search for '{}'",
+                CURL::GetRedacted(m_item.GetPath()));
+  }
 
   return result;
 }

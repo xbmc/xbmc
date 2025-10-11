@@ -13,6 +13,7 @@
 #include "URL.h"
 #include "application/AppParams.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/LocalizeStrings.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
@@ -137,6 +138,15 @@ void CAdvancedSettings::Uninitialize(CSettingsManager& settingsMgr)
 
   m_initialized = false;
 }
+
+namespace
+{
+std::string EscapeSpecialChars(const std::string& str)
+{
+  static const std::regex specialChars{R"([-[\]{}()*+?.,\^$|#\s])"};
+  return std::regex_replace(str, specialChars, R"(\$&)");
+}
+} // namespace
 
 void CAdvancedSettings::Initialize()
 {
@@ -299,6 +309,19 @@ void CAdvancedSettings::Initialize()
       "[\\\\/\\._ -]([0-9]+)([0-9][0-9](?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([\\._ -][^\\\\/]*)$");
 
   m_tvshowMultiPartEnumRegExp = "^([-_ex]+)([0-9]+)(.*)";
+
+  // Build regex inserting local specific spelling of disc (xxx)
+  // [ _.-]*\((?:xxx|dis[ck])[ _.-]*\d{1,3}\)$
+  std::string localeDiscStr{g_localizeStrings.Get(427)};
+  if (!localeDiscStr.empty())
+    localeDiscStr = EscapeSpecialChars(localeDiscStr) + "|";
+  m_titleTrailingPartNumberRegExp =
+      R"([ _.-]*\((?:)" + localeDiscStr + R"(dis[ck])[ _.-]*\d{1,3}\)$)";
+
+  // Build regex inserting local specific spelling of disc (xxx)
+  // \/?:cd|dvd|xxx|dis[ck][ _.-]*([0-9]+)$
+  m_trailingPartNumberRegExp =
+      R"([\\\/](?:cd|dvd|)" + localeDiscStr + R"(dis[ck])[ _.-]*(\d{1,3})$)";
 
   m_remoteDelay = 3;
   m_bScanIRServer = true;
