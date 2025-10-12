@@ -127,6 +127,11 @@ namespace XFILE
 class CBlurayDiscCache;
 }
 
+namespace KODI::UTILS::I18N
+{
+class CSubTagRegistryManager;
+}
+
 class CServiceBroker
 {
 public:
@@ -264,6 +269,7 @@ private:
   std::shared_ptr<CSlideShowDelegator> m_slideshowDelegator;
   std::shared_ptr<CDNSNameCache> m_dnsNameCache;
   std::shared_ptr<XFILE::CBlurayDiscCache> m_blurayDiscCache;
+  std::shared_ptr<KODI::UTILS::I18N::CSubTagRegistryManager> m_subTagRegistry;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);
