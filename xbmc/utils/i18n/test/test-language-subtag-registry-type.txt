@@ -1,0 +1,25 @@
+File-Date: 2025-10-29
+%%
+Type: language
+Subtag: testlanguage
+%%
+Type: extlang
+Subtag: testextlang
+%%
+Type: script
+Subtag: testscript
+%%
+Type: region
+Subtag: testregion
+%%
+Type: variant
+Subtag: testvariant
+%%
+Type: grandfathered
+Tag: testgf
+%%
+Type: redundant
+Tag: testredundant
+%%
+Type: notinrfc
+Tag: foobar

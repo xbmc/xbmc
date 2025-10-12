@@ -1,0 +1,19 @@
+File-Date: 2025-10-29
+%%
+Type: language
+%%
+Type: language
+Scope: macrolanguage
+%%
+Type: language
+Scope: collection
+%%
+Type: language
+Scope: special
+%%
+Type: language
+Scope: private-use
+%%
+Type: language
+Scope: foo
+    

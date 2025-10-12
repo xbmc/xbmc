@@ -1,0 +1,17 @@
+File-Date: 2025-08-25
+%%
+Type: language
+Subtag: foo
+Added: 2005-10-16
+%%
+Type: language
+Subtag: bar
+Deprecated: 1989-01-01
+%%
+Type: language
+Subtag: baz
+Added: 2005-30-42
+%%
+Type: language
+Subtag: baz
+Deprecated: 2005-30-42
