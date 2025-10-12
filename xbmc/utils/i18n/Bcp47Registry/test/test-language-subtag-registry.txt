@@ -1,0 +1,135 @@
+File-Date: 2025-08-25
+%%
+Type: language
+Subtag: ab
+Description: Abkhazian
+Added: 2005-10-16
+Suppress-Script: Cyrl
+%%
+Type: language
+Subtag: ak
+Description: Akan
+Added: 2005-10-16
+Scope: macrolanguage
+%%
+Type: language
+Subtag: cu
+Description: Church Slavic
+Description: Church Slavonic
+Description: Old Bulgarian
+Description: Old Church Slavonic
+Description: Old Slavonic
+Added: 2005-10-16
+%%
+Type: language
+Subtag: ia
+Description: Interlingua (International Auxiliary Language
+  Association)
+Added: 2005-10-16
+%%
+Type: language
+Subtag: in
+Description: Indonesian
+Added: 2005-10-16
+Deprecated: 1989-01-01
+Preferred-Value: id
+Suppress-Script: Latn
+Macrolanguage: ms
+%%
+Type: language
+Subtag: jw
+Description: Javanese
+Added: 2005-10-16
+Deprecated: 2001-08-13
+Preferred-Value: jv
+Comments: published by error in Table 1 of ISO 639:1988
+%%
+Type: language
+Subtag: zxx
+Description: No linguistic content
+Description: Not applicable
+Added: 2006-03-08
+Scope: special
+%%
+Type: extlang
+Subtag: aao
+Description: Algerian Saharan Arabic
+Added: 2009-07-29
+Preferred-Value: aao
+Prefix: ar
+Macrolanguage: ar
+%%
+Type: script
+Subtag: Adlm
+Description: Adlam
+Added: 2014-12-11
+%%
+Type: region
+Subtag: AC
+Description: Ascension Island
+Added: 2009-07-29
+%%
+Type: region
+Subtag: AN
+Description: Netherlands Antilles
+Added: 2005-10-16
+Deprecated: 2011-01-07
+Comments: see BQ, CW, and SX
+%%
+Type: region
+Subtag: BU
+Description: Burma
+Added: 2005-10-16
+Deprecated: 1989-12-05
+Preferred-Value: MM
+%%
+Type: region
+Subtag: 419
+Description: Latin America and the Caribbean
+Added: 2005-10-16
+%%
+Type: variant
+Subtag: 1606nict
+Description: Late Middle French (to 1606)
+Added: 2007-03-20
+Prefix: frm
+Comments: 16th century French as in Jean Nicot, "Thresor de la langue
+  francoyse", 1606, but also including some French similar to that of
+  Rabelais
+%%
+Type: variant
+Subtag: 1994
+Description: Standardized Resian orthography
+Added: 2007-07-28
+Prefix: sl-rozaj
+Prefix: sl-rozaj-biske
+Prefix: sl-rozaj-njiva
+Prefix: sl-rozaj-osojs
+Prefix: sl-rozaj-solba
+Comments: For standardized Resian an orthography was published in 1994.
+%%
+Type: grandfathered
+Tag: art-lojban
+Description: Lojban
+Added: 2001-11-11
+Deprecated: 2003-09-02
+Preferred-Value: jbo
+%%
+Type: grandfathered
+Tag: i-ami
+Description: Amis
+Added: 1999-05-25
+Deprecated: 2009-07-29
+Preferred-Value: ami
+%%
+Type: redundant
+Tag: az-Arab
+Description: Azerbaijani in Arabic script
+Added: 2003-05-30
+%%
+Type: redundant
+Tag: sgn-BR
+Description: Brazilian Sign Language
+Added: 2001-11-11
+Deprecated: 2009-07-29
+Preferred-Value: bzs

@@ -36,6 +36,7 @@ xbmc/threads                                    threads
 xbmc/utils                                      utils
 xbmc/utils/guilib                               utils_guilib
 xbmc/utils/i18n                                 utils_i18n
+xbmc/utils/i18n/Bcp47Registry                   utils_i18n_Bcp47Registry
 xbmc/view                                       view
 xbmc/weather                                    weather
 xbmc/windowing                                  windowing

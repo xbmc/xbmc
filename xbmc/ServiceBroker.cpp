@@ -20,6 +20,7 @@
 #include <utility>
 
 using namespace KODI;
+using namespace KODI::UTILS::I18N;
 
 CServiceBroker::CServiceBroker()
 {
