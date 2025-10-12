@@ -8,6 +8,7 @@
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
 ; lessmsi is a prerequisite to extract any msi packages for CI. Keep first in list
 lessmsi-v2.10.3.zip
+apache-ant-1.10.15-bin.zip
 meson-1.9.1-64.msi
 nasm-3.01-win64.zip
 swig-4.0.1-win32-v141-20200105.7z
