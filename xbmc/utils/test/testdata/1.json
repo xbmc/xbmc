@@ -1,4 +1,5 @@
 {
+  "__input": "",
   "expectedAddFileToFolder": "NewFile.pdf",
   "expectedAppendSlash": "/",
   "expectedCreateAPKArchivePath": "apk://passwd@my/archived/path",
