@@ -33,7 +33,6 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../001-fix-gcc15-build.patch
 	cd $(PLATFORM); $(CONFIGURE)
-	cd $(PLATFORM); sed -ie "s|LN = ln|LN = ln -f|" Makefile
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
