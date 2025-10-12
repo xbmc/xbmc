@@ -155,9 +155,11 @@ FOR /F  %%X IN ("%1") DO (
   )
 )
 
-REM This only prepares lessmsi package into a folder structure that fits the rest of this system
-REM relocating the data from the lessmsi zip into a bin folder root
+REM START PACKAGE SPECIFIC COMMANDS
+
 if NOT exist %~n1\ (
+  REM This only prepares lessmsi package into a folder structure that fits the rest of this system
+  REM relocating the data from the lessmsi zip into a bin folder root
   FOR /F %%H IN ('dir /B /S *.zip ^| findstr /I /R "lessmsi.*zip"') do (
     CALL :setSubStageName Arrange package data for package %1...
     REM Relocate files in extracted ".\packagename\" to bin folder for lessmsi
@@ -169,7 +171,16 @@ if NOT exist %~n1\ (
       )
     )
   )
+
+  REM apache-ant doesnt extract into the same name as the archive. Move the extracted folder to match the same name
+  REM to allow the rest of the script to function
+  FOR /F %%I IN ('dir /B /A:D apache-ant*') do (
+    mkdir "%~n1\share"
+    move /y "%%I" "%~n1\share\ant" >NUL 2>NUL
+  )
 )
+
+REM END PACKAGE SPECIFIC COMMANDS
 
 dir /A:-D "%~n1\*.*" >NUL 2>NUL && (
 CALL :setSubStageName Pre-Cleaning %1...
