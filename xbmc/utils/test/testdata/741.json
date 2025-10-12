@@ -1,16 +1,76 @@
 {
-  "expectedAddFileToFolder": "NewFile.pdf",
-  "expectedAppendSlash": "/",
-  "expectedCreateAPKArchivePath": "apk://passwd@my/archived/path",
-  "expectedCreateRARArchivePath": "rar://passwd@my/archived/path",
-  "expectedCreateZIPArchivePath": "zip://passwd@my/archived/path",
+  "__input":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedAddFileToFolder":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi/NewFile.pdf",
+  "expectedAppendSlash":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi/",
+  "expectedCanonicalizePathUnix":
+      "stack:/path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedCanonicalizePathWin":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedCreateAPKArchivePath":
+      "apk://passwd@stack%3a%2f%2f%2fpath%2fto%2fmovie_name%2fcd1%2fsome_file1.avi%20%2c%20%2fpath%2fto%2fmovie_name%2fcd2%2fsome_file2.avi/my/archived/path",
+  "expectedCreateRARArchivePath":
+      "rar://passwd@stack%3a%2f%2f%2fpath%2fto%2fmovie_name%2fcd1%2fsome_file1.avi%20%2c%20%2fpath%2fto%2fmovie_name%2fcd2%2fsome_file2.avi/my/archived/path",
+  "expectedCreateZIPArchivePath":
+      "zip://passwd@stack%3a%2f%2f%2fpath%2fto%2fmovie_name%2fcd1%2fsome_file1.avi%20%2c%20%2fpath%2fto%2fmovie_name%2fcd2%2fsome_file2.avi/my/archived/path",
+  "expectedDecode":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedDecodeFileName":
+      "/path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedEncode":
+      "stack%3a%2f%2f%2fpath%2fto%2fmovie_name%2fcd1%2fsome_file1.avi%20%2c%20%2fpath%2fto%2fmovie_name%2fcd2%2fsome_file2.avi",
+  "expectedExtension": ".avi",
+  "expectedFileOrFolder": "some_file2.avi",
+  "expectedGet":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedGetBasePath": "/path/to/movie_name/",
   "expectedGetBlurayAllEpisodesPath": "root/episode/all",
   "expectedGetBlurayEpisodePath": "root/episode/1/2",
   "expectedGetBlurayPlaylistPath": "BDMV/PLAYLIST/",
   "expectedGetBlurayRootPath": "root",
   "expectedGetBlurayTitlesPath": "root/titles",
-  "expectedIsFileOnly": true,
+  "expectedGetDirectory":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/",
+  "expectedGetDiscBase": "/path/to/movie_name/",
+  "expectedGetDiscBasePath": "/path/to/movie_name/",
+  "expectedGetFileName":
+      "/path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedGetFileNameUtil": "some_file2.avi",
+  "expectedGetFileNameWithoutPath": "some_file2.avi",
+  "expectedGetParentPath": "/path/to/movie_name/",
+  "expectedGetProtocol": "stack",
+  "expectedGetRealPath":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedGetRedacted":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedGetTranslatedProtocol": "stack",
+  "expectedGetWithoutFilename": "stack://",
+  "expectedGetWithoutOptions":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedGetWithoutUserDetails_redacted":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedGetWithoutUserDetails_removed":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedHasExtension": true,
+  "expectedHasParentPath": "/path/to/movie_name/",
+  "expectedIsFixSlashesAndDupsUnix":
+      "stack:/path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedIsFixSlashesAndDupsWin":
+      "stack:\\path\\to\\movie_name\\cd1\\some_file1.avi , \\path\\to\\movie_name\\cd2\\some_file2.avi",
+  "expectedIsFullPath": true,
   "expectedIsHD": true,
-  "expectedIsLocal": true,
-  "expectedReplacedExtension": "xyz"
+  "expectedIsStack": true,
+  "expectedIsURL": true,
+  "expectedRemovedEndSlash":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+  "expectedRemovedExtension":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2",
+  "expectedReplacedExtension":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2xyz",
+  "expectedSplitFileName": "some_file2.avi",
+  "expectedSplitPath": "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/",
+  "expectedUpdateUrlEncoding":
+      "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi"
 }

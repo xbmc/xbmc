@@ -212,7 +212,7 @@ TestURLParseDetailsData CreateParamFromJson(std::string filename)
 
   if (CJSONVariantParser::Parse(inputJson, json) && !json.isNull())
   {
-    read(param.input, json, "input");
+    read(param.input, json, "__input");
     read(param.expectedGet, json, "expectedGet");
     read(param.expectedGetPort, json, "expectedGetPort");
     read(param.expectedGetHostName, json, "expectedGetHostName");
@@ -537,6 +537,7 @@ void run_parse_tests(const std::string& filename, const TestURLParseDetailsData&
 #ifdef GENERATE_JSON_TEST_FILES
   CVariant jsonObj;
 
+  jsonObj["__input"] = p;
   write(jsonObj, "expectedGet", curl.Get());
   write(jsonObj, "expectedGetPort", curl.GetPort());
   write(jsonObj, "expectedGetHostName", curl.GetHostName());
