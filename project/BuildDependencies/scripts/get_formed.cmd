@@ -27,6 +27,8 @@ REM If KODI_MIRROR is not set externally to this script, set it to the default m
 IF "%KODI_MIRROR%" == "" SET KODI_MIRROR=http://mirrors.kodi.tv
 echo Downloading from mirror %KODI_MIRROR%
 
+set USE_LESSMSI=YES
+
 REM If USE_LESSMSI is set to YES externally, disable msiexec. Primary usage is CI where
 REM the service is running without TRUSTED_INSTALLER permissions to allow execution of msiexec
 REM Usage: SET MSIEXEC=YES
