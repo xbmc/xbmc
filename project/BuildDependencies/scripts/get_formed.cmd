@@ -155,6 +155,8 @@ FOR /F  %%X IN ("%1") DO (
   )
 )
 
+REM START PACKAGE SPECIFIC COMMANDS
+
 REM This only prepares lessmsi package into a folder structure that fits the rest of this system
 REM relocating the data from the lessmsi zip into a bin folder root
 if NOT exist %~n1\ (
@@ -177,7 +179,16 @@ if NOT exist %~n1\ (
     ROBOCOPY "%%I" "%~n1\bin" *.* /MOV /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
     rmdir /S /Q %%I
   )
+
+  REM apache-ant doesnt extract into the same name as the archive. Move the extracted folder to match the same name
+  REM to allow the rest of the script to function
+  FOR /F %%I IN ('dir /B /A:D apache-ant*') do (
+    mkdir "%~n1\share"
+    move /y "%%I" "%~n1\share\ant" >NUL 2>NUL
+  )
 )
+
+REM END PACKAGE SPECIFIC COMMANDS
 
 dir /A:-D "%~n1\*.*" >NUL 2>NUL && (
 CALL :setSubStageName Pre-Cleaning %1...
