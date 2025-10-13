@@ -160,11 +160,6 @@ Download and setup the build environment for libraries:
 download-msys2.bat
 ```
 
-Build FFmpeg:
-```
-make-mingwlibs.bat
-```
-
 **[back to top](#table-of-contents)** | **[back to section top](#4-set-up-the-build-environment)**
 
 ## 5. Build Kodi automagically
