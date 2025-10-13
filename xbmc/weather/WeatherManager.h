@@ -95,9 +95,9 @@ public:
   int GetLocation() const;
 
   /*!
-   \brief Set the active location.
-   Will trigger a data refresh if current location is different from the given location.
-   \param location the location index (can be in the range [1..MAXLOCATION])
+   \brief Sets the location to the specified index and refreshes the weather data.
+   No concurrent updates. First request wins, subsequent requests ignored until completion.
+   \param location the location index (can be any value except INVALID_LOCATION)
    */
   void SetLocation(int location);
 
@@ -110,7 +110,7 @@ public:
 
   /*!
    \brief Retrieve the city name for the specified location from the settings
-   \param iLocation the location index (can be in the range [1..MAXLOCATION])
+   \param iLocation the location index (can be any value except INVALID_LOCATION)
    \return the city name (without the accompanying region area code)
    */
   std::string GetLocation(int iLocation) const;
@@ -149,6 +149,8 @@ private:
   // State parameters
   WeatherInfo m_info{};
   mutable WeatherInfoV2 m_infoV2{};
-  int m_location{1};
-  int m_newLocation{1};
+
+  static constexpr int INVALID_LOCATION{0};
+  int m_location{1}; // Current active location
+  int m_newLocation{INVALID_LOCATION}; // Pending location update, or INVALID_LOCATION if none
 };
