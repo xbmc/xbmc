@@ -48,7 +48,7 @@ macro(buildFFMPEG)
     find_program(msys_BASH NAMES sh bash PATHS ${MSYS_INSTALL_PATH}/usr/bin REQUIRED)
 
     set(msys_env MSYS2_PATH_TYPE=inherit
-                 "MSYS_INSTALL_PATH=${MSYS_INSTALL_PATH}")
+                 MSYS_INSTALL_PATH=${MSYS_INSTALL_PATH})
 
     # Todo: buildmode?
     set(PROMPTLEVEL noprompt)
@@ -79,19 +79,11 @@ macro(buildFFMPEG)
     # We must create the directory, otherwise we get non-existant path errors
     file(MAKE_DIRECTORY ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR})
 
-    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-ffmpeg-all-libpostproc-plugin.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-ffmpeg-windows-configure-detect-openssl.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-ffmpeg-windows-configure-fix-zlib-conflict.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-ffmpeg-windows-configure-allow-building-static.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/005-ffmpeg-windows-configure-detect-libdav1d.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/006-ffmpeg-windows-dxva2-check-nullptr-surface.patch")
-
-    generate_patchcommand("${patches}")
-
     # We need the directory to be non-empty for externalproject_add, however we need to clean up the
     # created EMPTYFILE for the msys script existence checks to download the archive if needed.
     file(TOUCH ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR}/EMPTYFILE)
-    set(CONFIGURE_COMMAND ${CMAKE_COMMAND} -E rm -f ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR}/EMPTYFILE)
+    set(CONFIGURE_COMMAND ${CMAKE_COMMAND} -E rm -rf ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR}
+                  COMMAND ${CMAKE_COMMAND} -E make_directory ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR})
 
     set(BUILD_COMMAND ${CMAKE_COMMAND} -E env ${msys_env} ${msys_BASH}
                                         --login -i ${CMAKE_SOURCE_DIR}/tools/buildsteps/windows/make-mingwlibs.sh

@@ -105,7 +105,7 @@ export LDFLAGS=""
 
 extra_cflags="-I$LOCALDESTDIR/include -I/depends/$TRIPLET/include -DWIN32_LEAN_AND_MEAN"
 extra_ldflags="-LIBPATH:\"$LOCALDESTDIR/lib\" -LIBPATH:\"$MINGW_PREFIX/lib\" -LIBPATH:\"/depends/$TRIPLET/lib\""
-if [ $win10 == "yes" ]; then
+if [ "$win10" == "yes" ]; then
   do_addOption "--enable-cross-compile"
   extra_cflags=$extra_cflags" -MD -DWINAPI_FAMILY=WINAPI_FAMILY_APP -D_WIN32_WINNT=0x0A00"
   extra_ldflags=$extra_ldflags" -APPCONTAINER WindowsApp.lib"
