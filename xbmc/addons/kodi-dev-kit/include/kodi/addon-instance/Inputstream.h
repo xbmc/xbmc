@@ -492,6 +492,95 @@ private:
 //------------------------------------------------------------------------------
 
 //==============================================================================
+/// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_InputstreamDvccMetadata class InputstreamDvccMetadata
+/// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
+/// @brief **Dolby Vision Configuration Constraint (DVCC) metadata**\n
+/// Describes the metadata used for Dolby Vision stream configuration.
+///
+/// Used on @ref kodi::addon::InputstreamInfo::SetDvccMetadata and @ref kodi::addon::InputstreamInfo::GetDvccMetadata.
+///
+/// ----------------------------------------------------------------------------
+///
+/// @copydetails cpp_kodi_addon_inputstream_Defs_Interface_InputstreamDvccMetadata_Help
+///
+///@{
+class ATTR_DLL_LOCAL InputstreamDvccMetadata
+  : public CStructHdl<InputstreamDvccMetadata, INPUTSTREAM_DVCC_METADATA>
+{
+  /*! \cond PRIVATE */
+  friend class CInstanceInputStream;
+  friend class InputstreamInfo;
+  /*! \endcond */
+
+public:
+  InputstreamDvccMetadata() = default;
+
+  InputstreamDvccMetadata(const InputstreamDvccMetadata& stream) : CStructHdl(stream) {}
+
+  InputstreamDvccMetadata& operator=(const InputstreamDvccMetadata&) = default;
+
+  /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_InputstreamDvccMetadata_Help Value Help
+  /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface_InputstreamDvccMetadata
+  ///
+  /// <b>The following table contains values that can be set with @ref cpp_kodi_addon_inputstream_Defs_Interface_InputstreamDvccMetadata :</b>
+  /// | Name | Type | Set call | Get call
+  /// |------|------|----------|----------
+  /// | **DVCC version major** | `uint8_t` | SetDvVersionMajor | GetDvVersionMajor
+  /// | **DVCC version minor** | `uint8_t` | SetDvVersionMinor | GetDvVersionMinor
+  /// | **Dolby Vision profile** | `uint8_t` | SetDvProfile | GetDvProfile
+  /// | **Dolby Vision level** | `uint8_t` | SetDvLevel | GetDvLevel
+  /// | **RPU present flag** | `bool` | SetRpuPresentFlag | GetRpuPresentFlag
+  /// | **Enhancement Layer present flag** | `bool` | SetElPresentFlag | GetElPresentFlag
+  /// | **Base Layer present flag** | `bool` | SetBlPresentFlag | GetBlPresentFlag
+  /// | **BL signal compatibility ID** | `uint8_t` | SetBlSignalCompatibilityId | GetBlSignalCompatibilityId
+  /// | **Compression method** | `uint8_t` | SetMdCompression | GetMdCompression
+
+  bool operator==(const kodi::addon::InputstreamDvccMetadata& right) const
+  {
+    if (memcmp(m_cStructure, right.m_cStructure, sizeof(INPUTSTREAM_DVCC_METADATA)) == 0)
+      return true;
+    return false;
+  }
+
+  void SetDvVersionMajor(uint8_t value) { m_cStructure->m_dvVersionMajor = value; }
+  uint8_t GetDvVersionMajor() const { return m_cStructure->m_dvVersionMajor; }
+
+  void SetDvVersionMinor(uint8_t value) { m_cStructure->m_dvVersionMinor = value; }
+  uint8_t GetDvVersionMinor() const { return m_cStructure->m_dvVersionMinor; }
+
+  void SetDvProfile(uint8_t value) { m_cStructure->m_dvProfile = value; }
+  uint8_t GetDvProfile() const { return m_cStructure->m_dvProfile; }
+
+  void SetDvLevel(uint8_t value) { m_cStructure->m_dvLevel = value; }
+  uint8_t GetDvLevel() const { return m_cStructure->m_dvLevel; }
+
+  void SetRpuPresentFlag(bool value) { m_cStructure->m_rpuPresentFlag = value; }
+  bool GetRpuPresentFlag() const { return m_cStructure->m_rpuPresentFlag; }
+
+  void SetElPresentFlag(bool value) { m_cStructure->m_elPresentFlag = value; }
+  bool GetElPresentFlag() const { return m_cStructure->m_elPresentFlag; }
+
+  void SetBlPresentFlag(bool value) { m_cStructure->m_blPresentFlag = value; }
+  bool GetBlPresentFlag() const { return m_cStructure->m_blPresentFlag; }
+
+  void SetBlSignalCompatibilityId(uint8_t value)
+  {
+    m_cStructure->m_dvBlSignalCompatibilityId = value;
+  }
+  uint8_t GetBlSignalCompatibilityId() const { return m_cStructure->m_dvBlSignalCompatibilityId; }
+
+  void SetMdCompression(uint8_t value) { m_cStructure->m_dvMdCompression = value; }
+  uint8_t GetMdCompression() const { return m_cStructure->m_dvMdCompression; }
+
+private:
+  InputstreamDvccMetadata(const INPUTSTREAM_DVCC_METADATA* stream) : CStructHdl(stream) {}
+
+  InputstreamDvccMetadata(INPUTSTREAM_DVCC_METADATA* stream) : CStructHdl(stream) {}
+};
+///@}
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_InputstreamInfo class InputstreamInfo
 /// @ingroup cpp_kodi_addon_inputstream_Defs_Interface
 /// @brief **Inputstream add-on stream info**\n
@@ -554,6 +643,7 @@ public:
   /// | **Color transfer characteristic** |  | no | @ref InputstreamInfo::SetColorTransferCharacteristic "SetColorTransferCharacteristic" | @ref InputstreamInfo::GetColorTransferCharacteristic "GetColorTransferCharacteristic"
   /// | **Mastering metadata** |  | no | @ref InputstreamInfo::SetMasteringMetadata "SetMasteringMetadata" | @ref InputstreamInfo::GetMasteringMetadata "GetMasteringMetadata"
   /// | **Content light metadata** |  | no | @ref InputstreamInfo::SetContentLightMetadata "SetContentLightMetadata" | @ref InputstreamInfo::GetContentLightMetadata "GetContentLightMetadata"
+  /// | **DVCC metadata** |  | no | @ref InputstreamInfo::SetDVCCMetadata "SetDVCCMetadata" | @ref InputstreamInfo::GetDVCCMetadata "GetDVCCMetadata"
   ///
 
   /// @addtogroup cpp_kodi_addon_inputstream_Defs_Interface_InputstreamInfo
@@ -902,6 +992,23 @@ public:
   /// @brief Clear content light static Metadata.
   void ClearContentLightMetadata() { m_cStructure->m_contentLightMetadata = nullptr; }
 
+  /// @brief Set Dolby Vision Configuration Constraint (DVCC) metadata.
+  ///
+  /// @param[in] dvccMetadata The settable metadata with @ref InputstreamDvccMetadata
+  void SetDvccMetadata(const kodi::addon::InputstreamDvccMetadata& dvccMetadata)
+  {
+    m_dvccMetadata = dvccMetadata;
+    m_cStructure->m_dvccMetadata = m_dvccMetadata;
+  }
+
+  /// @brief Get DVCC metadata previously set with @ref SetDvccMetadata.
+  ///
+  /// @return Reference to the DVCC metadata wrapper.
+  const kodi::addon::InputstreamDvccMetadata& GetDvccMetadata() const { return m_dvccMetadata; }
+
+  /// @brief Clear DVCC metadata.
+  void ClearDvccMetadata() { m_cStructure->m_dvccMetadata = nullptr; }
+
   ///@}
 
 private:
@@ -932,6 +1039,7 @@ private:
   StreamCryptoSession m_cryptoSession;
   InputstreamMasteringMetadata m_masteringMetadata;
   InputstreamContentlightMetadata m_contentLightMetadata;
+  InputstreamDvccMetadata m_dvccMetadata;
 };
 ///@}
 //------------------------------------------------------------------------------
