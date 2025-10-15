@@ -26,6 +26,7 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoUtils.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
@@ -499,10 +500,12 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
         return true;
       case LISTITEM_AUDIO_CHANNELS:
       {
-        int iChannels = tag->m_streamDetails.GetAudioChannels();
-        if (iChannels > 0)
+        const auto formatted{CGUIInfoUtils::FormatAudioChannels(
+            info.GetData3(), tag->m_streamDetails.GetAudioChannels())};
+
+        if (formatted.has_value())
         {
-          value = std::to_string(iChannels);
+          value = formatted.value();
           return true;
         }
         break;
@@ -657,10 +660,12 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       return true;
     case VIDEOPLAYER_AUDIO_CHANNELS:
     {
-      int iChannels = m_audioInfo.channels;
-      if (iChannels > 0)
+      const auto formatted{
+          CGUIInfoUtils::FormatAudioChannels(info.GetData3(), m_audioInfo.channels)};
+
+      if (formatted.has_value())
       {
-        value = std::to_string(iChannels);
+        value = formatted.value();
         return true;
       }
       break;

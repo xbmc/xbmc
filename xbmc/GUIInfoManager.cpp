@@ -2803,10 +2803,16 @@ constexpr std::array<InfoMap, 7> musicpartymode = {{
 ///     @return The bitrate of current song.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`MusicPlayer.Channels`</b>,
+///   \table_row3{   <b>`MusicPlayer.Channels(format)`</b>,
 ///                  \anchor MusicPlayer_Channels
 ///                  _string_,
-///     @return The number of channels of current song.
+///     @param[in] format (optional) format of the infolabel.
+///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels").
+///     @return The channel information of the current song\, formatted in the optional format.
+///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels").
+///     <p><hr>
+///     @skinning_v22 **[Infolabel Updated]** \link MusicPlayer_Channels `MusicPlayer.Channels`\endlink
+///     added optional format parameter
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.BitsPerSample`</b>,
@@ -3879,15 +3885,20 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     \ref ListItem_AudioCodec "ListItem.AudioCodec").
 ///     <p>
 ///   }
-///   \table_row3{   <b>`VideoPlayer.AudioChannels`</b>,
+///   \table_row3{   <b>`VideoPlayer.AudioChannels(format)`</b>,
 ///                  \anchor VideoPlayer_AudioChannels
 ///                  _string_,
-///     @return The number of audio channels of the currently playing video
+///     @param[in] format (optional) format of the infolabel.
+///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels").
+///     @return The audio channel information of the currently playing video\, formatted in the optional format
 ///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels").
 ///     <p><hr>
 ///     @skinning_v16 **[Infolabel Updated]** \link VideoPlayer_AudioChannels `VideoPlayer.AudioChannels`\endlink
 ///     if a video contains no audio\, these infolabels will now return empty.
 ///     (they used to return 0)
+///
+///     @skinning_v22 **[Infolabel Updated]** \link VideoPlayer_AudioChannels `VideoPlayer.AudioChannels`\endlink
+///     added optional format parameter
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioLanguage`</b>,
@@ -6379,10 +6390,17 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///       - <b>wmav2</b>
 ///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.AudioChannels`</b>,
+///   \table_row3{   <b>`ListItem.AudioChannels(format)`</b>,
 ///                  \anchor ListItem_AudioChannels
 ///                  _string_,
-///     @return The number of audio channels of the currently selected video. Possible values:
+///     @param[in] format (optional) format of the infolabel. Possible values for the format:
+///       - <b>(blank)</b> no format value: count of channels
+///       - <b>defaultlayout</b> return a default channel layout in the format x.y.z for the
+///         channel count (x=listener level speakers\, y=lfe channels\, z=overhead channels).
+///         If a default layout is not defined for the channel count then the text "x channels" is
+///         returned, with x replaced by the channel count and "channels" localized to the user language.
+///     @return The audio channel information of the currently selected video. Possible values
+///       for the default format:
 ///       - <b>1</b>
 ///       - <b>2</b>
 ///       - <b>4</b>
@@ -6390,10 +6408,23 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///       - <b>6</b>
 ///       - <b>8</b>
 ///       - <b>10</b>
+///
+///     Possible values for format "defaultlayout":
+///       - <b>1.0</b>
+///       - <b>2.0</b>
+///       - <b>5.1</b>
+///       - <b>6.1</b>
+///       - <b>7.1</b>
+///       - <b>9 channels</b>
+///       - <b>9.1.6</b>
+///
 ///     <p><hr>
 ///     @skinning_v16 **[Infolabel Updated]** \link ListItem_AudioChannels `ListItem.AudioChannels`\endlink
 ///     if a video contains no audio\, these infolabels will now return empty.
 ///     (they used to return 0)
+///
+///     @skinning_v22 **[Infolabel Updated]** \link ListItem_AudioChannels `ListItem.AudioChannels`\endlink
+///     added optional format parameter
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AudioLanguage`</b>,
@@ -7222,12 +7253,18 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_SampleRate `ListItem.SampleRate`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.MusicChannels`</b>,
+///   \table_row3{   <b>`ListItem.MusicChannels(format)`</b>,
 ///                  \anchor ListItem_MusicChannels
 ///                  _string_,
+///     @param[in] format (optional) format of the infolabel.
+///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels").
 ///     @return The number of audio channels of a song.
+///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels").
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_No_Of_Channels `ListItem.NoOfChannels`\endlink
+///
+///     @skinning_v22 **[Infolabel Updated]** \link ListItem_MusicChannels `ListItem.MusicChannels`\endlink
+///     added optional format parameter
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.TvShowDBID`</b>,
@@ -10856,6 +10893,11 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
 
         return AddMultiInfo(CGUIInfo(MUSICPLAYER_PROPERTY, prop.param()));
       }
+      else if (prop.Name() == "channels" && prop.num_params() == 1)
+      {
+        return AddMultiInfo(CGUIInfo(MUSICPLAYER_CHANNELS, prop.param()));
+      }
+
       return TranslateMusicPlayerString(prop.Name());
     }
     else if (cat.Name() == "videoplayer")
@@ -10908,6 +10950,10 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         return AddMultiInfo(
             CGUIInfo(VIDEOPLAYER_NEXT_GENRE, TranslateListSeparator(prop.param()), 0));
       }
+
+      if (prop.Name() == "audiochannels" && prop.num_params() == 1)
+        return AddMultiInfo(CGUIInfo(VIDEOPLAYER_AUDIO_CHANNELS, prop.param(), 0));
+
       return TranslateVideoPlayerString(prop.Name());
     }
     else if (cat.Name() == "retroplayer")
@@ -11238,6 +11284,10 @@ int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop
     else if (prop.Name() == "duration" || prop.Name() == "nextduration")
     {
       data4 = TranslateTimeFormat(prop.param());
+    }
+    else if (prop.Name() == "audiochannels" || prop.Name() == "musicchannels")
+    {
+      data3 = prop.param();
     }
   }
 
