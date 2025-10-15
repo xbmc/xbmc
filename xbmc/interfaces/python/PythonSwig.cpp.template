@@ -913,7 +913,7 @@ namespace PythonBindings
    // constants
    PyModule_AddStringConstant(module, "__author__", "Team Kodi <http://kodi.tv>");
    PyModule_AddStringConstant(module, "__date__", CCompileInfo::GetBuildDate().c_str());
-   PyModule_AddStringConstant(module, "__version__", "3.0.1");
+   PyModule_AddStringConstant(module, "__version__", "3.0.2");
    PyModule_AddStringConstant(module, "__credits__", "Team Kodi");
    PyModule_AddStringConstant(module, "__platform__", "ALL");
 
