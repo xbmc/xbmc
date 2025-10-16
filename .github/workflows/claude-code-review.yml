@@ -2,7 +2,7 @@ name: Claude Code Review
 
 on:
   pull_request_target:
-    types: [opened, synchronize]
+    types: [opened, ready_for_review]
     # Optional: Only run on specific file changes
     # paths:
     #   - "src/**/*.cpp"
@@ -44,14 +44,22 @@ jobs:
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
 
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Performance considerations
-            - Security concerns
-            - Test coverage
+            Review this pull request for any issues. Be concise and to the point.
 
-            Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
+            Check for:
+            - Bugs, crashes, undefined behavior
+            - Memory leaks, resource management issues
+            - Thread safety problems
+            - Security vulnerabilities
+            - Performance issues
+            - Logic errors
+            - Code style/guidelines violations (see docs/CONTRIBUTING.md)
+
+            IMPORTANT:
+            - Only list problems you find - don't mention what's good
+            - Be brief - one line per issue
+            - If everything looks fine, don't comment at all (check passes silently = code is good)
+            - Report all issues (critical and minor), but keep it concise
 
             Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
 
