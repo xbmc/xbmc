@@ -24,6 +24,7 @@ jobs:
       issues: write
       id-token: write
       actions: read
+      checks: write
 
     steps:
       - name: Checkout repository
@@ -58,11 +59,12 @@ jobs:
             IMPORTANT:
             - Only list problems you find - don't mention what's good
             - Be brief - one line per issue
-            - If everything looks fine, don't comment at all (check passes silently = code is good)
             - Report all issues (critical and minor), but keep it concise
 
-            Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
+            After your review:
+            1. If you found issues: Use `gh pr comment` to post them as a comment
+            2. If everything looks good: Use `gh pr review --approve` to explicitly approve the PR with message "Code review passed - no issues found."
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
-          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
+          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr review:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
