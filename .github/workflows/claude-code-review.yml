@@ -56,10 +56,11 @@ jobs:
             - Logic errors
             - Code style/guidelines violations (see docs/CONTRIBUTING.md)
 
-            IMPORTANT:
-            - Only list problems you find - don't mention what's good
-            - Be brief - one line per issue
-            - Report all issues (critical and minor), but keep it concise
+            IMPORTANT - Format your review concisely:
+            - Group issues by severity: **Critical**, **Must Fix**, **Medium**, **Low**, **Minor**
+            - For each issue: state the problem and solution only, nothing more
+            - Skip positive feedback and explanations of what's working well
+            - Report all issues you find (critical to minor), but keep each concise
 
             After your review:
             1. If you found issues: Use `gh pr comment` to post them as a comment
