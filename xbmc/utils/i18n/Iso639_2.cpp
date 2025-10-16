@@ -64,6 +64,9 @@ std::optional<std::string> CIso639_2::LookupByCode(std::string_view tCode)
 
 std::optional<std::string> CIso639_2::LookupByCode(uint32_t longTcode)
 {
+  if (longTcode == NO_INT_LANG_CODE)
+    return std::nullopt;
+
   auto it = std::ranges::lower_bound(TableISO639_2ByCode, longTcode, {}, &LCENTRY::code);
   if (it != TableISO639_2ByCode.end() && longTcode == it->code)
     return std::string{it->name};
@@ -107,6 +110,9 @@ bool CIso639_2::ListLanguages(std::map<std::string, std::string>& langMap)
 
 std::optional<uint32_t> CIso639_2::BCodeToTCode(uint32_t bCode)
 {
+  if (bCode == NO_INT_LANG_CODE)
+    return std::nullopt;
+
   auto it =
       std::ranges::lower_bound(ISO639_2_TB_MappingsByB, bCode, {}, &ISO639_2_TB::bibliographic);
   if (it != ISO639_2_TB_MappingsByB.end() && bCode == it->bibliographic)
@@ -118,6 +124,9 @@ std::optional<uint32_t> CIso639_2::BCodeToTCode(uint32_t bCode)
 std::optional<std::string> CIso639_2::TCodeToBCode(std::string_view tCode)
 {
   const uint32_t longCode = StringToLongCode(tCode);
+
+  if (longCode == NO_INT_LANG_CODE)
+    return std::nullopt;
 
   auto it =
       std::ranges::lower_bound(ISO639_2_TB_Mappings, longCode, {}, &ISO639_2_TB::terminological);

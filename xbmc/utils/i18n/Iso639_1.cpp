@@ -24,6 +24,9 @@ std::optional<std::string> CIso639_1::LookupByCode(std::string_view code)
 
 std::optional<std::string> CIso639_1::LookupByCode(uint32_t longCode)
 {
+  if (longCode == NO_INT_LANG_CODE)
+    return std::nullopt;
+
   {
     auto it = std::ranges::lower_bound(TableISO639_1ByCode, longCode, {}, &LCENTRY::code);
     if (it != TableISO639_1ByCode.end() && longCode == it->code)

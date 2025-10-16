@@ -40,6 +40,11 @@ TEST(TestI18nIso639_1, LookupByCode1)
   longCode = StringToLongCode("zz");
   result = CIso639_1::LookupByCode(longCode);
   EXPECT_FALSE(result.has_value());
+
+  // invalid case, must not match to any value
+  longCode = StringToLongCode("pt-br");
+  result = CIso639_1::LookupByCode(longCode);
+  EXPECT_FALSE(result.has_value());
 }
 
 TEST(TestI18nIso639_1, LookupByCode2)

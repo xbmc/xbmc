@@ -434,6 +434,9 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
   StringUtils::Trim(sCode);
   uint32_t longCode = StringToLongCode(sCode);
 
+  if (longCode == NO_INT_LANG_CODE)
+    return false;
+
   if (sCode.length() == 2)
   {
     auto ret = CIso639_1::LookupByCode(longCode);

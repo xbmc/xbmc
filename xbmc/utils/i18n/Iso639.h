@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
+#include <limits>
 #include <ranges>
 #include <string>
 #include <string_view>
@@ -30,16 +31,20 @@ std::string LongCodeToString(uint32_t code);
 
 namespace
 {
+// \brief The language code has no 4 bytes integer representation (StringToLongCode)
+constexpr uint32_t NO_INT_LANG_CODE{std::numeric_limits<uint32_t>::max()};
+
 /*!
  * \brief Convert a language code from 2-3 letters string to a 4 bytes integer
  * \param[in] The string representation of the code
- * \return integer representation of the code
+ * \return integer representation of the code, otherwise NO_INT_LANG_CODE if fails
  */
 constexpr uint32_t StringToLongCode(std::string_view a)
 {
   const size_t len = a.length();
 
-  assert(len <= 4);
+  if (len == 0 || len > 4)
+    return NO_INT_LANG_CODE;
 
   return static_cast<uint32_t>(len >= 4 ? a[len - 4] : 0) << 24 |
          static_cast<uint32_t>(len >= 3 ? a[len - 3] : 0) << 16 |
