@@ -62,10 +62,13 @@ jobs:
             - Skip positive feedback and explanations of what's working well
             - Report all issues you find (critical to minor), but keep each concise
 
+            Note: The PR branch is already checked out in the current working directory.
+
             After your review:
-            1. If you found issues: Use `gh pr comment` to post them as a comment
+            1. If you found issues: Use `gh pr comment` for top-level summary, and `mcp__github_inline_comment__create_inline_comment` to highlight specific code issues
             2. If everything looks good: Use `gh pr review --approve` to explicitly approve the PR with message "Code review passed - no issues found."
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
-          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr review:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr review:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"

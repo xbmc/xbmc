@@ -22,7 +22,7 @@
 #define INPUTSTREAM_VERSION_LEVEL 4
 
 #define INPUTSTREAM_MAX_INFO_COUNT 8
-#define INPUTSTREAM_MAX_STREAM_COUNT 256
+#define INPUTSTREAM_MAX_STREAM_COUNT 1024
 #define INPUTSTREAM_MAX_STRING_NAME_SIZE 256
 #define INPUTSTREAM_MAX_STRING_CODEC_SIZE 32
 #define INPUTSTREAM_MAX_STRING_LANGUAGE_SIZE 64
@@ -497,6 +497,40 @@ extern "C"
   ///@}
   //------------------------------------------------------------------------------
 
+  //! @brief Dolby Vision configuration metadata (dvcc)
+  typedef struct INPUTSTREAM_DVCC_METADATA
+  {
+    //! @brief dvcc version major
+    uint8_t m_dvVersionMajor;
+
+    //! @brief dvcc version minor
+    uint8_t m_dvVersionMinor;
+
+    //! @brief Dolby Vision profile identifier
+    uint8_t m_dvProfile;
+
+    //! @brief Dolby Vision level identifier
+    uint8_t m_dvLevel;
+
+    //! @brief RPU (Reference Processing Unit) present flag
+    bool m_rpuPresentFlag;
+
+    //! @brief Enhancement Layer present flag
+    bool m_elPresentFlag;
+
+    //! @brief Base Layer present flag
+    bool m_blPresentFlag;
+
+    //! @brief BL (Base Layer) signal compatibility ID
+    uint8_t m_dvBlSignalCompatibilityId;
+
+    //! @brief The compression method in use
+    uint8_t m_dvMdCompression;
+
+  } INPUTSTREAM_DVCC_METADATA;
+  ///@}
+  //------------------------------------------------------------------------------
+
   /*!
    * @brief stream properties
    */
@@ -590,6 +624,9 @@ extern "C"
 
     //! @brief content light static Metadata
     struct INPUTSTREAM_CONTENTLIGHT_METADATA* m_contentLightMetadata;
+
+    //! @brief Dolby Vision config metadata (dvcc atom)
+    struct INPUTSTREAM_DVCC_METADATA* m_dvccMetadata;
   };
 
   struct INPUTSTREAM_TIMES

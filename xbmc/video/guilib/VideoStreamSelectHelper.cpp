@@ -19,6 +19,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StreamDetails.h"
+#include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -404,7 +405,7 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectAudioStream()
     fileItem->SetProperty("stream.description", info.name);
     fileItem->SetProperty("stream.codec", info.codecName);
     fileItem->SetProperty("stream.codecdesc", info.codecDesc);
-    fileItem->SetProperty("stream.channels", info.channels);
+    fileItem->SetProperty("stream.channels", StreamUtils::GetLayout(info.channels));
 
     fileItem->SetProperty("stream.isdefault", info.isDefault);
     fileItem->SetProperty("stream.isforced", info.isForced);

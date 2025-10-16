@@ -497,6 +497,22 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
     }
     //@}
 
+    // Dolby Vision DVCC metadata mapping
+    if (stream->m_dvccMetadata)
+    {
+      videoStream->dovi.dv_version_major = stream->m_dvccMetadata->m_dvVersionMajor;
+      videoStream->dovi.dv_version_minor = stream->m_dvccMetadata->m_dvVersionMinor;
+      videoStream->dovi.dv_profile = stream->m_dvccMetadata->m_dvProfile;
+      videoStream->dovi.dv_level = stream->m_dvccMetadata->m_dvLevel;
+      videoStream->dovi.rpu_present_flag = stream->m_dvccMetadata->m_rpuPresentFlag;
+      videoStream->dovi.el_present_flag = stream->m_dvccMetadata->m_elPresentFlag;
+      videoStream->dovi.bl_present_flag = stream->m_dvccMetadata->m_blPresentFlag;
+      videoStream->dovi.dv_bl_signal_compatibility_id =
+          stream->m_dvccMetadata->m_dvBlSignalCompatibilityId;
+      videoStream->dovi.dv_md_compression = stream->m_dvccMetadata->m_dvMdCompression;
+    }
+    //@}
+
     /*
     // Way to include part on new API version
     if (Addon()->GetTypeVersionDll(ADDON_TYPE::ADDON_INSTANCE_INPUTSTREAM) >= AddonVersion("3.0.0")) // Set the version to your new
