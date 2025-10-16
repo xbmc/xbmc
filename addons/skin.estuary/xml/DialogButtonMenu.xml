@@ -40,11 +40,13 @@
 					</item>
 					<item>
 						<label>$LOCALIZE[13011]</label>
+						<onclick>Dialog.Close(shutdownmenu)</onclick>
 						<onclick>Suspend()</onclick>
 						<visible>System.CanSuspend</visible>
 					</item>
 					<item>
 						<label>$LOCALIZE[13010]</label>
+						<onclick>Dialog.Close(shutdownmenu)</onclick>
 						<onclick>Hibernate()</onclick>
 						<visible>System.CanHibernate</visible>
 					</item>
