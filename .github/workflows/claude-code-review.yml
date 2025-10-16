@@ -24,7 +24,6 @@ jobs:
       issues: write
       id-token: write
       actions: read
-      checks: write
 
     steps:
       - name: Checkout repository
@@ -54,7 +53,7 @@ jobs:
             - Security vulnerabilities
             - Performance issues
             - Logic errors
-            - Code style/guidelines violations (see docs/CONTRIBUTING.md)
+            - Code style/guidelines violations (see https://github.com/xbmc/xbmc/blob/master/docs/CODE_GUIDELINES.md)
 
             IMPORTANT - Format your review concisely:
             - Group issues by severity: **Critical**, **Must Fix**, **Medium**, **Low**, **Minor**
@@ -66,7 +65,7 @@ jobs:
 
             After your review:
             1. If you found issues: Use `gh pr comment` for top-level summary, and `mcp__github_inline_comment__create_inline_comment` to highlight specific code issues
-            2. If everything looks good: Use `gh pr review --approve` to explicitly approve the PR with message "Code review passed - no issues found."
+            2. If everything looks good: Use `gh pr review --approve` with NO message (just the approval checkmark)
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
