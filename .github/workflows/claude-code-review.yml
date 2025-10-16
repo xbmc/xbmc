@@ -42,7 +42,7 @@ jobs:
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
 
-            Review this pull request for any issues. Be concise and to the point.
+            Review this pull request for issues. Be extremely concise.
 
             Check for:
             - Bugs, crashes, undefined behavior
@@ -51,13 +51,17 @@ jobs:
             - Security vulnerabilities
             - Performance issues
             - Logic errors
-            - Code style/guidelines violations (see docs/CODE_GUIDELINES.md)
+            - Code style violations (see docs/CODE_GUIDELINES.md)
 
-            IMPORTANT - Format your review concisely:
-            - Group issues by severity: **Critical**, **Must Fix**, **Medium**, **Low**, **Minor**
-            - For each issue: state the problem and solution only, nothing more
-            - Skip positive feedback and explanations of what's working well
-            - Report all issues you find (critical to minor), but keep each concise
+            Format (issues only):
+            **Severity** (Critical/Must Fix/Medium/Low/Minor)
+            - File:line - Problem. Fix: solution.
+
+            Rules:
+            - NO positive feedback, NO "looks good", NO observations
+            - NO explanations beyond problem + fix
+            - Each issue: one line, location, problem, solution
+            - Skip section headers if no issues in that severity
 
             Note: The PR branch is already checked out in the current working directory.
 
