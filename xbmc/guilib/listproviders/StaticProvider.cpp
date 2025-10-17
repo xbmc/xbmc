@@ -80,7 +80,7 @@ bool CStaticListProvider::Update(bool forceRefresh)
   bool changed = forceRefresh;
   if (!m_updateTime)
     m_updateTime = CTimeUtils::GetFrameTime();
-  else if (CTimeUtils::GetFrameTime() - m_updateTime > 1000)
+  else if (CTimeUtils::GetFrameTime() - m_updateTime > 100)
   {
     m_updateTime = CTimeUtils::GetFrameTime();
     for (auto& i : m_items)
