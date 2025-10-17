@@ -336,7 +336,11 @@ CFileItem::CFileItem(const CURL& path, bool bIsFolder) : m_strPath(path.Get())
 {
   SetFolder(bIsFolder);
   if (bIsFolder && !m_strPath.empty() && !IsFileFolder())
-    URIUtils::AddSlashAtEnd(m_strPath);
+  {
+    std::string folderPath = m_strPath;
+    URIUtils::AddSlashAtEnd(folderPath);
+    SetPath(folderPath);
+  }
   FillInMimeType(false);
 }
 
@@ -344,7 +348,11 @@ CFileItem::CFileItem(std::string_view strPath, bool bIsFolder) : m_strPath(strPa
 {
   SetFolder(bIsFolder);
   if (bIsFolder && !m_strPath.empty() && !IsFileFolder())
-    URIUtils::AddSlashAtEnd(m_strPath);
+  {
+    std::string folderPath = m_strPath;
+    URIUtils::AddSlashAtEnd(folderPath);
+    SetPath(folderPath);
+  }
   FillInMimeType(false);
 }
 
@@ -353,7 +361,11 @@ CFileItem::CFileItem(const CMediaSource& share) : m_strPath(share.strPath)
   SetFolder(true);
   m_bIsShareOrDrive = true;
   if (!IsRSS()) // no slash at end for rss feeds
-    URIUtils::AddSlashAtEnd(m_strPath);
+  {
+    std::string folderPath = m_strPath;
+    URIUtils::AddSlashAtEnd(folderPath);
+    SetPath(folderPath);
+  }
   std::string label = share.strName;
   if (!share.strStatus.empty())
     label = StringUtils::Format("{} ({})", share.strName, share.strStatus);
@@ -863,7 +875,7 @@ bool CFileItem::IsPicture() const
     return false;
 
   if (!m_strPath.empty())
-    return CUtil::IsPicture(m_strPath);
+    return GetURL().IsPicture();
 
   return false;
 }
@@ -916,35 +928,32 @@ bool CFileItem::IsLibraryFolder() const
   if (HasProperty("library.filter") && GetProperty("library.filter").asBoolean())
     return true;
 
-  return URIUtils::IsLibraryFolder(m_strPath);
+  return GetURL().IsLibraryFolder();
 }
 
 bool CFileItem::IsPythonScript() const
 {
-  return URIUtils::HasExtension(m_strPath, ".py");
+  return GetURL().HasExtension(".py");
 }
 
 bool CFileItem::IsType(const char *ext) const
 {
-  if (!m_strDynPath.empty())
-    return URIUtils::HasExtension(m_strDynPath, ext);
-
-  return URIUtils::HasExtension(m_strPath, ext);
+  return GetDynURL().HasExtension(ext);
 }
 
 bool CFileItem::IsNFO() const
 {
-  return URIUtils::HasExtension(m_strPath, ".nfo");
+  return GetURL().HasExtension(".nfo");
 }
 
 bool CFileItem::IsDiscImage() const
 {
-  return URIUtils::IsDiscImage(GetDynPath());
+  return GetDynURL().IsDiscImage();
 }
 
 bool CFileItem::IsOpticalMediaFile() const
 {
-  return URIUtils::IsOpticalMediaFile(GetDynPath());
+  return GetDynURL().IsOpticalMediaFile();
 }
 
 bool CFileItem::IsRAR() const
@@ -954,69 +963,69 @@ bool CFileItem::IsRAR() const
 
 bool CFileItem::IsAPK() const
 {
-  return URIUtils::IsAPK(m_strPath);
+  return GetURL().IsAPK();
 }
 
 bool CFileItem::IsZIP() const
 {
-  return URIUtils::IsZIP(m_strPath);
+  return GetURL().IsZIP();
 }
 
 bool CFileItem::IsCBZ() const
 {
-  return URIUtils::HasExtension(m_strPath, ".cbz");
+  return GetURL().IsCBZ();
 }
 
 bool CFileItem::IsCBR() const
 {
-  return URIUtils::HasExtension(m_strPath, ".cbr");
+  return GetURL().IsCBR();
 }
 
 bool CFileItem::IsRSS() const
 {
-  return StringUtils::StartsWithNoCase(m_strPath, "rss://") || URIUtils::HasExtension(m_strPath, ".rss")
-      || StringUtils::StartsWithNoCase(m_strPath, "rsss://")
-      || m_mimetype == "application/rss+xml";
+  auto& curl = GetURL();
+  return curl.IsProtocol("rss") || curl.HasExtension(".rss") || curl.IsProtocol("rsss") ||
+         m_mimetype == "application/rss+xml";
 }
 
 bool CFileItem::IsAndroidApp() const
 {
-  return URIUtils::IsAndroidApp(m_strPath);
+  return GetURL().IsAndroidApp();
 }
 
 bool CFileItem::IsStack() const
 {
-  return URIUtils::IsStack(GetDynPath());
+  return GetDynURL().IsStack();
 }
 
 bool CFileItem::IsFavourite() const
 {
-  return URIUtils::IsFavourite(m_strPath);
+  return GetURL().IsFavourite();
 }
 
 bool CFileItem::IsPlugin() const
 {
-  return URIUtils::IsPlugin(m_strPath);
+  return GetURL().IsPlugin();
 }
 
 bool CFileItem::IsScript() const
 {
-  return URIUtils::IsScript(m_strPath);
+  return GetURL().IsScript();
 }
 
 bool CFileItem::IsAddonsPath() const
 {
-  return URIUtils::IsAddonsPath(m_strPath);
+  return GetURL().IsAddonsPath();
 }
 
 bool CFileItem::IsSourcesPath() const
 {
-  return URIUtils::IsSourcesPath(m_strPath);
+  return GetURL().IsSourcesPath();
 }
 
 bool CFileItem::IsMultiPath() const
 {
-  return URIUtils::IsMultiPath(m_strPath);
+  return GetURL().IsMultiPath();
 }
 
 bool CFileItem::IsBluray() const
@@ -1042,7 +1051,7 @@ bool CFileItem::IsNfs() const
 
 bool CFileItem::IsISO9660() const
 {
-  return URIUtils::IsISO9660(m_strPath);
+  return GetURL().IsISO9660();
 }
 
 bool CFileItem::IsSmb() const
