@@ -273,7 +273,7 @@ CActiveAE::CActiveAE() :
   m_vizInitialized = false;
   m_sinkHasVolume = false;
   m_aeGUISoundForce = false;
-  m_stats.Reset(44100, true);
+  m_stats.Reset(48000, true);
   m_streamIdGen = 0;
 
   m_settingsHandler = std::make_unique<CActiveAESettings>(*this);
@@ -1144,7 +1144,7 @@ AEAudioFormat CActiveAE::GetInputFormat(AEAudioFormat *desiredFmt)
   if (m_streams.empty())
   {
     inputFormat.m_dataFormat    = AE_FMT_FLOAT;
-    inputFormat.m_sampleRate    = 44100;
+    inputFormat.m_sampleRate    = 48000;
     inputFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
     inputFormat.m_frames        = 0;
     inputFormat.m_frameSize     = 0;
