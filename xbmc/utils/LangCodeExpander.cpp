@@ -432,11 +432,10 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
   std::string sCode(code);
   StringUtils::ToLower(sCode);
   StringUtils::Trim(sCode);
-  uint32_t longCode = StringToLongCode(sCode);
 
   if (sCode.length() == 2)
   {
-    auto ret = CIso639_1::LookupByCode(longCode);
+    auto ret = CIso639_1::LookupByCode(StringToLongCode(sCode));
     if (ret)
     {
       desc = *ret;
@@ -445,6 +444,8 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
   }
   else if (sCode.length() == 3)
   {
+    uint32_t longCode = StringToLongCode(sCode);
+
     // Map B to T for the few codes that have differences
     auto tCode = CIso639_2::BCodeToTCode(longCode);
     if (tCode)

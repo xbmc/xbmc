@@ -10,6 +10,16 @@
 
 #include <gtest/gtest.h>
 
+// Trick to make protected methods accessible for testing
+class CLangCodeExpanderTest : public CLangCodeExpander
+{
+public:
+  static bool CallLookupInISO639Tables(const std::string& code, std::string& desc)
+  {
+    return LookupInISO639Tables(code, desc);
+  }
+};
+
 TEST(TestLangCodeExpander, ConvertISO6391ToISO6392B)
 {
   std::string refstr, varstr;
@@ -159,4 +169,23 @@ TEST(TestLangCodeExpander, ConvertToISO6392T)
   varstr = "invalid";
   EXPECT_FALSE(g_LangCodeExpander.ConvertToISO6392T("deu", varstr));
   EXPECT_EQ(refstr, varstr);
+}
+
+TEST(TestLangCodeExpander, LookupInISO639Tables)
+{
+  std::string refstr, varstr;
+
+  refstr = "English";
+  EXPECT_TRUE(CLangCodeExpanderTest::CallLookupInISO639Tables("en", varstr));
+  EXPECT_EQ(refstr, varstr);
+
+  EXPECT_TRUE(CLangCodeExpanderTest::CallLookupInISO639Tables("eng", varstr));
+  EXPECT_EQ(refstr, varstr);
+
+  // There are no ISO 639-1 codes reserved for private use - use currently unassigned zz to test expected failure
+  EXPECT_FALSE(CLangCodeExpanderTest::CallLookupInISO639Tables("zz", varstr));
+
+  // Not alpha-2 or alpha-3 code format
+  EXPECT_FALSE(CLangCodeExpanderTest::CallLookupInISO639Tables("a", varstr));
+  EXPECT_FALSE(CLangCodeExpanderTest::CallLookupInISO639Tables("fr-CA", varstr));
 }

@@ -62,9 +62,9 @@ bool CIso639_1::ListLanguages(std::map<std::string, std::string>& langMap)
                          [](const LCENTRY& e)
                          { return std::make_pair(LongCodeToString(e.code), std::string{e.name}); });
 
-  std::ranges::transform(
-      TableISO639_1_DeprByName, std::inserter(langMap, langMap.end()), [](const LCENTRY& e)
-      { return std::make_pair(LongCodeToString(e.code), std::string{e.name} + " (Deprecated)"); });
+  std::ranges::transform(TableISO639_1_DeprByName, std::inserter(langMap, langMap.end()),
+                         [](const LCENTRY& e)
+                         { return std::make_pair(LongCodeToString(e.code), std::string{e.name}); });
 
   return true;
 }

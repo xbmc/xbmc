@@ -31,8 +31,8 @@ std::string LongCodeToString(uint32_t code);
 namespace
 {
 /*!
- * \brief Convert a language code from 2-3 letters string to a 4 bytes integer
- * \param[in] The string representation of the code
+ * \brief Convert a language code from 2-3 letter string to a 4-byte integer
+ * \param[in] a The string representation of the code
  * \return integer representation of the code
  */
 constexpr uint32_t StringToLongCode(std::string_view a)
