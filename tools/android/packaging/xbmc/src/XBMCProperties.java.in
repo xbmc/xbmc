@@ -53,7 +53,7 @@ public class XBMCProperties
     }
     
     //Fallback to define "xbmc.data" pointing to Kodi Installation Path in case of "xbmc.data" is not already defined
-    if(System.getProperty("xbmc.data")==null||System.getProperty("xbmc.data").isBlank()) {
+    if (System.getProperty("xbmc.data") == null || System.getProperty("xbmc.data").trim().isEmpty())
       Properties sysProp = new Properties(System.getProperties());
       System.setProperty("xbmc.data", mContext.getFilesDir()+"");
       System.setProperty("xbmc.proploaded", "yes");
