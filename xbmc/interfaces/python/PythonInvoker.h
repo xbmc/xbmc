@@ -61,6 +61,7 @@ private:
   FILE* PyFile_AsFileWithMode(PyObject* py_file, const char* mode);
 
   PyThreadState* m_threadState;
+  PyThreadState* m_mainThreadState{nullptr};
   bool m_stop = false;
   CEvent m_stoppedEvent;
 

@@ -43,6 +43,8 @@
 #include <osdefs.h>
 // clang-format on
 
+#include "XBPython.h"
+
 #include <cassert>
 #include <iterator>
 
@@ -154,21 +156,26 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
   {
     if (!m_threadState)
     {
-#if PY_VERSION_HEX < 0x03070000
-      // this is a TOTAL hack. We need the GIL but we need to borrow a PyThreadState in order to get it
-      // as of Python 3.2 since PyEval_AcquireLock is deprecated
-      extern PyThreadState* savestate;
-      PyEval_RestoreThread(savestate);
-#else
-      PyThreadState* ts = PyInterpreterState_ThreadHead(PyInterpreterState_Main());
-      PyEval_RestoreThread(ts);
-#endif
+      m_mainThreadState =
+          PyThreadState_New(CServiceBroker::GetXBPython().GetMainThreadState()->interp);
+
+      if (m_mainThreadState == nullptr)
+      {
+        CLog::LogF(LOGERROR, "({}, {}) PyThreadState_New failed", GetId(), m_sourceFile);
+        return false;
+      }
+
+      PyThreadState_Swap(m_mainThreadState);
       l_threadState = Py_NewInterpreter();
       PyEval_ReleaseThread(l_threadState);
       if (l_threadState == NULL)
       {
         CLog::Log(LOGERROR, "CPythonInvoker({}, {}): FAILED to get thread m_threadState!", GetId(),
                   m_sourceFile);
+        PyThreadState_Swap(m_mainThreadState);
+        PyThreadState_Clear(m_mainThreadState);
+        PyThreadState_DeleteCurrent();
+        m_mainThreadState = nullptr;
         return false;
       }
       newInterp = true;
@@ -462,7 +469,14 @@ bool CPythonInvoker::stop(bool abort)
       setState(InvokerStateStopping);
       lock.unlock();
 
-      PyEval_RestoreThread((PyThreadState*)m_threadState);
+      PyThreadState* ts = PyThreadState_New(m_threadState->interp);
+      if (ts == nullptr)
+      {
+        CLog::LogF(LOGERROR, "({}, {}) PyThreadState_New failed", GetId(), m_sourceFile);
+        return false;
+      }
+
+      PyEval_RestoreThread(ts);
 
       //tell xbmc.Monitor to call onAbortRequested()
       if (m_addon)
@@ -472,7 +486,8 @@ bool CPythonInvoker::stop(bool abort)
         AbortNotification();
       }
 
-      PyEval_ReleaseThread(m_threadState);
+      PyThreadState_Clear(ts);
+      PyThreadState_DeleteCurrent();
     }
     else
       //Release the lock while waiting for threads to finish
@@ -512,10 +527,17 @@ bool CPythonInvoker::stop(bool abort)
     // so we need to recheck for m_threadState == NULL
     if (m_threadState != NULL)
     {
+      PyThreadState* ts = PyThreadState_New(m_threadState->interp);
+      if (ts == nullptr)
+      {
+        CLog::LogF(LOGERROR, "({}, {}) PyThreadState_New failed", GetId(), m_sourceFile);
+        return false;
+      }
+
       {
         // grabbing the PyLock while holding the m_critical is asking for a deadlock
         CSingleExit ex2(m_critical);
-        PyEval_RestoreThread((PyThreadState*)m_threadState);
+        PyEval_RestoreThread(ts);
       }
 
 
@@ -532,7 +554,8 @@ bool CPythonInvoker::stop(bool abort)
       // If a dialog entered its doModal(), we need to wake it to see the exception
       pulseGlobalEvent();
 
-      PyEval_ReleaseThread(m_threadState);
+      PyThreadState_Clear(ts);
+      PyThreadState_DeleteCurrent();
     }
     lock.unlock();
 
@@ -583,12 +606,10 @@ void CPythonInvoker::onExecutionDone()
     // unregister the language hook
     m_languageHook->UnregisterMe();
 
-#if PY_VERSION_HEX < 0x03070000
-    PyEval_ReleaseLock();
-#else
-    PyThreadState_Swap(PyInterpreterState_ThreadHead(PyInterpreterState_Main()));
-    PyEval_SaveThread();
-#endif
+    PyThreadState_Swap(m_mainThreadState);
+    PyThreadState_Clear(m_mainThreadState);
+    PyThreadState_DeleteCurrent();
+    m_mainThreadState = nullptr;
 
     // set stopped event - this allows ::stop to run and kill remaining threads
     // this event has to be fired without holding m_critical
