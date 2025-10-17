@@ -99,7 +99,7 @@ bool CIso639_2::ListLanguages(std::map<std::string, std::string>& langMap)
     //! Is it worth the effort and memory though.
     auto it = std::ranges::lower_bound(TableISO639_2ByCode, tb.terminological, {}, &LCENTRY::code);
     if (it != TableISO639_2ByCode.end() && tb.terminological == it->code)
-      langMap[bCode] = std::string(it->name) + " (non-preferred)";
+      langMap[bCode] = std::string(it->name);
   }
 
   return true;
