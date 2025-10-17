@@ -1369,7 +1369,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
             (*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
         (*it)->m_processingBuffers->ForceResampler((*it)->m_forceResampler);
 
-        (*it)->m_processingBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix, m_settings.normalizelevels);
+        (*it)->m_processingBuffers->Create(MAX_CACHE_LEVEL * 1000, false, m_settings.stereoupmix,
+                                           m_settings.normalizelevels, m_settings.mixSubLevel);
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
         (*it)->m_processingBuffers->FillBuffer();
@@ -1641,7 +1642,9 @@ void CActiveAE::ChangeResamplers()
   std::list<CActiveAEStream*>::iterator it;
   for(it=m_streams.begin(); it!=m_streams.end(); ++it)
   {
-    (*it)->m_processingBuffers->ConfigureResampler(m_settings.normalizelevels, m_settings.stereoupmix, m_settings.resampleQuality);
+    (*it)->m_processingBuffers->ConfigureResampler(
+        m_settings.normalizelevels, m_settings.stereoupmix, m_settings.resampleQuality,
+        m_settings.mixSubLevel);
   }
 }
 
@@ -2666,6 +2669,7 @@ void CActiveAE::LoadSettings()
   m_settings.atempoThreshold = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD) / 100.0;
   m_settings.streamNoise = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE);
   m_settings.silenceTimeoutMinutes = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
+  m_settings.mixSubLevel = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_MIXSUBLEVEL) / 100.0;
 }
 
 void CActiveAE::ValidateOutputDevices(bool saveChanges)
@@ -3310,13 +3314,9 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
   std::unique_ptr<IAEResample> resampler =
       CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE);
 
-  resampler->Init(dst_config, orig_config,
-                  false,
-                  true,
-                  M_SQRT1_2,
-                  outChannels.Count() > 0 ? &outChannels : nullptr,
-                  m_settings.resampleQuality,
-                  false);
+  resampler->Init(dst_config, orig_config, false, true, M_SQRT1_2,
+                  outChannels.Count() > 0 ? &outChannels : nullptr, m_settings.resampleQuality,
+                  false, 0.0f);
 
   dst_samples = resampler->CalcDstSampleCount(sound->GetSound(true)->nb_samples,
                                               m_internalFormat.m_sampleRate,
