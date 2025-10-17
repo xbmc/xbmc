@@ -84,4 +84,7 @@ protected:
   void DetectAndAddMissingItemData(CFileItem &item);
 
   const KODI::ART::Artwork& GetArtFromCache(const std::string& mediaType, const int id);
+
+private:
+  int SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork);
 };
