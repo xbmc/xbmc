@@ -45,7 +45,8 @@ macro(buildFFMPEG)
   if(WIN32 OR WINDOWS_STORE)
 
     find_package(Msys REQUIRED ${SEARCH_QUIET})
-    find_program(msys_BASH NAMES sh bash PATHS ${MSYS_INSTALL_PATH}/usr/bin REQUIRED)
+    find_program(msys_BASH NAMES sh bash PATHS ${MSYS_INSTALL_PATH}/usr/bin REQUIRED
+                           ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     set(msys_env MSYS2_PATH_TYPE=inherit
                  MSYS_INSTALL_PATH=${MSYS_INSTALL_PATH})
