@@ -19,10 +19,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                        ${PC_FREETYPE_INCLUDEDIR}
                                        ${PC_FREETYPE_INCLUDE_DIRS}
                                  PATH_SUFFIXES freetype2
-                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   find_library(FREETYPE_LIBRARY NAMES freetype freetype246MT
                                 HINTS ${DEPENDS_PATH}/lib ${PC_FREETYPE_LIBDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   set(FREETYPE_VERSION ${PC_FREETYPE_VERSION})
 

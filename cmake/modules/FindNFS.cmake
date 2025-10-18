@@ -72,7 +72,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       # libnfs cmake config doesnt include INTERFACE_INCLUDE_DIRECTORIES
       find_path(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR NAMES nfsc/libnfs.h
                                                                  HINTS ${DEPENDS_PATH}/include
-                                                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
       # First item is the full path of the library file found
       # pkg_check_modules does not populate a variable of the found library explicitly

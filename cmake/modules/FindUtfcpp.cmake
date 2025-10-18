@@ -32,7 +32,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
   find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} CONFIG ${SEARCH_QUIET}
                                                          HINTS ${DEPENDS_PATH}/share/utf8cpp/cmake
-                                                         ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                                                         ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     # extract INTERFACE_INCLUDE_DIRECTORIES for find_package_handle_standard_args usage

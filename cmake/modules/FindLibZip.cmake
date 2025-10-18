@@ -17,7 +17,7 @@ SETUP_FIND_SPECS()
 # Check for existing lib
 find_package(libzip ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                     HINTS ${DEPENDS_PATH}/lib
-                    ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                    ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
 if(libzip_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   # Check for dependencies
