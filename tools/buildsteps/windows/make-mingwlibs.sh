@@ -130,6 +130,7 @@ run_builds() {
           echo "-------------------------------------------------------------------------------"
           echo " $TRIPLET build environment not configured, please run download-msys2.bat"
           echo "-------------------------------------------------------------------------------"
+          exit 1
         else
           source $profile_path
           buildProcess

@@ -29,7 +29,10 @@ if which tput >/dev/null 2>&1; then
 fi
 
 if [[ ! -d /build/src ]]; then
-  mkdir -p /build/src
+  if ! mkdir -p /build/src; then
+    echo "Unable to create src directory"
+    exit 1
+  fi
 fi
 
 do_wget() {
