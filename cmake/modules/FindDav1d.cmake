@@ -43,11 +43,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     find_library(DAV1D_LIBRARY NAMES dav1d libdav1d
                                HINTS ${DEPENDS_PATH}/lib ${PC_DAV1D_LIBDIR}
-                               ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                               ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     find_path(DAV1D_INCLUDE_DIR NAMES dav1d/dav1d.h
                                 HINTS ${DEPENDS_PATH}/include ${PC_DAV1D_INCLUDEDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     set(DAV1D_VERSION ${PC_DAV1D_VERSION})
   endif()

@@ -36,7 +36,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   find_package(flatbuffers CONFIG ${SEARCH_QUIET}
                            HINTS ${DEPENDS_PATH}/lib/cmake
-                           ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                           ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   # Check for existing Flatbuffers. If version >= FLATBUFFERS-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal flatbuffers, build anyway
@@ -48,7 +48,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   else()
     find_path(FLATBUFFERS_INCLUDE_DIR NAMES flatbuffers/flatbuffers.h
                                       HINTS ${DEPENDS_PATH}/include
-                                      ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                      ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG}
                                       NO_CACHE)
   endif()
 

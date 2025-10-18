@@ -70,7 +70,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # Taglib 2.0+ provides cmake configs
   find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                                                          HINTS ${DEPENDS_PATH}/lib/cmake
-                                                         ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                                         ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   # cmake config may not be available (taglib 1.x series)
   # fallback to pkgconfig for non windows platforms

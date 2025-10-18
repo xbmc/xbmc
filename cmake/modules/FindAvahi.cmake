@@ -16,16 +16,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   find_path(AVAHI_CLIENT_INCLUDE_DIR NAMES avahi-client/client.h
                                      HINTS ${DEPENDS_PATH}/include ${PC_AVAHI_INCLUDEDIR}
-                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                     ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   find_path(AVAHI_COMMON_INCLUDE_DIR NAMES avahi-common/defs.h
                                      HINTS ${DEPENDS_PATH}/include ${PC_AVAHI_INCLUDEDIR}
-                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                     ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   find_library(AVAHI_CLIENT_LIBRARY NAMES avahi-client
                                     HINTS ${DEPENDS_PATH}/lib ${PC_AVAHI_LIBDIR}
-                                    ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                    ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   find_library(AVAHI_COMMON_LIBRARY NAMES avahi-common
                                     HINTS ${DEPENDS_PATH}/lib ${PC_AVAHI_LIBDIR}
-                                    ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                    ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   set(AVAHI_VERSION ${PC_AVAHI_VERSION})
 

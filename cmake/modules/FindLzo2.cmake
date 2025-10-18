@@ -12,11 +12,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_path(LZO2_INCLUDE_DIR NAMES lzo1x.h
                              PATH_SUFFIXES lzo
                              HINTS ${DEPENDS_PATH}/include
-                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                             ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   find_library(LZO2_LIBRARY NAMES lzo2 liblzo2
                             HINTS ${DEPENDS_PATH}/lib
-                            ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                            ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   if(NOT VERBOSE_FIND)
      set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
