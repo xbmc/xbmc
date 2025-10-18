@@ -8,11 +8,14 @@
 #   ${APP_NAME_LC}::Detours - The Detours library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_path(DETOURS_INCLUDE_DIR NAMES detours.h)
+  find_path(DETOURS_INCLUDE_DIR NAMES detours.h
+                                HINTS ${DEPENDS_PATH}/include)
 
   find_library(DETOURS_LIBRARY_RELEASE NAMES detours
+                                       HINTS ${DEPENDS_PATH}/lib
                                        ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
   find_library(DETOURS_LIBRARY_DEBUG NAMES detoursd
+                                     HINTS ${DEPENDS_PATH}/lib
                                      ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
   include(SelectLibraryConfigurations)
