@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2025 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -15,7 +15,7 @@
 #include "platform/xbmc.h"
 #include "threads/Thread.h"
 #include "utils/CharsetConverter.h" // Required to initialize converters before usage
-#include "utils/URIUtils.h"
+#include "utils/Digest.h"
 
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
@@ -26,6 +26,8 @@
 #include <dbghelp.h>
 #include <mmsystem.h>
 #include <shellapi.h>
+
+using KODI::PLATFORM::WINDOWS::ToW;
 
 namespace
 {
@@ -92,47 +94,60 @@ std::shared_ptr<CAppParams> ParseCommandLine()
   return appParamParser.GetAppParams();
 }
 
+constexpr wchar_t MUTEXBASENAME[] = L"Kodi Media Center";
+
 /*!
- * \brief Detect another running instance using the same data directory, using a flag file exclusion
- * mechanism.
+ * \brief Detect another running instance, using a global mutex.
  * 
- * Attempt to create the file. If it already exists, another instance using the same data
- * directory is running. New in v22.
+ * Attempt to create the mutex. If it already exists, that means another instance created it and is
+ * running. This is the legacy pre-v22 exclusion mechanism with a constant mutex name that doesn't
+ * depend on the portable/non-portable or data directory used by the instance.
  * 
- * \param[in] usePlatformDirectories false for portable mode, true for non-portable mode
- * \param[out] handle Windows handle for the flag file.  Close the handle on program exit, not earlier.
- * \return true if the flag file already exists (ie another instance is running)
+ * \param[out] handle Windows handle for the mutex. Close the handle on program exit, not earlier.
+ * \return true if the mutex already exists (ie another instance is running)
  */
-bool CheckAndSetFileFlag(bool usePlatformDirectories, HANDLE& handle)
+bool CheckAndSetGlobalMutex(HANDLE& handle)
 {
-  const std::string file =
-      URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(usePlatformDirectories), ".running");
-
-  constexpr DWORD NO_DESIRED_ACCESS = 0;
-  constexpr DWORD NO_SHARING = 0;
-
-  using KODI::PLATFORM::WINDOWS::ToW;
-  handle = CreateFileW(ToW(file).c_str(), NO_DESIRED_ACCESS, NO_SHARING, nullptr, CREATE_NEW,
-                       FILE_FLAG_DELETE_ON_CLOSE, NULL);
-
-  if (handle == INVALID_HANDLE_VALUE && GetLastError() == ERROR_FILE_EXISTS)
+  handle = CreateMutexW(nullptr, FALSE, MUTEXBASENAME);
+  if (handle != NULL && GetLastError() == ERROR_ALREADY_EXISTS)
     return true;
 
   return false;
 }
 
 /*!
- * \brief Detect another running instance, using a global mutex.
+ * \brief Detect another running instance, using a mutex with a name derived from the data directory.
  * 
  * Attempt to create the mutex. If it already exists, that means another instance created it and is
- * running. This is the legacy pre-v22 exclusion mechanism.
+ * running.
  * 
  * \param[out] handle Windows handle for the mutex. Close the handle on program exit, not earlier.
- * \return true if the mutex already exists (ie another instance is running)
+ * \return true if the mutex already exists (ie another instance is running with the same data directory)
  */
-bool CheckAndSetMutex(HANDLE& handle)
+bool CheckAndSetProfileMutex(bool usePlatformDirectories, HANDLE& handle)
 {
-  handle = CreateMutexW(nullptr, FALSE, L"Kodi Media Center");
+  // Prepare a mutex name using a digest instead of the raw path to respect the mutex name
+  // MAX_PATH max length
+  std::wstring mutexName = MUTEXBASENAME;
+  mutexName.push_back(L' ');
+
+  const std::string path = CWIN32Util::GetProfilePath(usePlatformDirectories);
+
+  try
+  {
+    using KODI::UTILITY::CDigest;
+    CDigest digest{CDigest::Type::MD5};
+    digest.Update(path);
+
+    mutexName.append(ToW(digest.Finalize()));
+  }
+  catch (const std::exception& e)
+  {
+    LogError(L"Error creating the digest of the data directory %s, error %s\n", ToW(path).c_str(),
+             ToW(e.what()).c_str());
+  }
+
+  handle = CreateMutexW(nullptr, FALSE, mutexName.c_str());
   if (handle != NULL && GetLastError() == ERROR_ALREADY_EXISTS)
     return true;
 
@@ -178,7 +193,7 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
   // (avoid conflicts and data corruption caused by two instances using the same data dir)
   //
   // * Non-portable mode. Interference with another Kodi on version < 22 may happen
-  // so use the legacy mutex mechanism it understands and abort if it already exists.
+  // so use the legacy global mutex it supports and abort if it already exists.
   // There may be an older Kodi already running, or one may be started after us.
   //! @todo in a few releases: remove that restriction and assume all Kodi installs understand the
   //! file based protocol.
@@ -187,18 +202,18 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
   // because the user has to make special efforts to run two different installs with the same
   // portable data dir.
   //
-  // * Regardless of mode, v22 and higher implements a new file-based signal. Create a specific file
-  // in the data directory when starting up. If the file already exists, another Kodi >= 22
-  // instance is already running with that data directory, abort execution.
+  // * Regardless of mode, v22 and higher implements a new mutex with a name derived from the data
+  // directory. If the mutex already exists, another Kodi >= 22 instance is already running with
+  // that data directory, abort execution.
 
-  HANDLE appRunningMutex{NULL};
-  HANDLE appRunningFile{NULL};
+  HANDLE appGlobalMutex{NULL};
+  HANDLE appProfileMutex{NULL};
 
-  // File-based method then mutex in non-portable mode for correct interaction with Kodi < v22 versions
-  if (CheckAndSetFileFlag(params->HasPlatformDirectories(), appRunningFile) ||
-      (params->HasPlatformDirectories() && CheckAndSetMutex(appRunningMutex)))
+  // Profile-specific mutex then global mutex in non-portable mode for correct interaction with
+  // Kodi < v22
+  if (CheckAndSetProfileMutex(params->HasPlatformDirectories(), appProfileMutex) ||
+      (params->HasPlatformDirectories() && CheckAndSetGlobalMutex(appGlobalMutex)))
   {
-    using KODI::PLATFORM::WINDOWS::ToW;
     const auto appNameW = ToW(CCompileInfo::GetAppName());
     HWND hwnd = FindWindow(appNameW.c_str(), appNameW.c_str());
     if (hwnd != nullptr)
@@ -251,10 +266,10 @@ cleanup:
     WSACleanup();
   if (hrCOM == S_OK)
     CoUninitialize();
-  if (appRunningMutex)
-    CloseHandle(appRunningMutex);
-  if (appRunningFile)
-    CloseHandle(appRunningFile);
+  if (appGlobalMutex)
+    CloseHandle(appGlobalMutex);
+  if (appProfileMutex)
+    CloseHandle(appProfileMutex);
 
   return status;
 }
