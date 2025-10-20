@@ -9,6 +9,7 @@
 #include "ApplicationPlayerCallback.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
@@ -16,6 +17,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
+#include "filesystem/BlurayDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -53,22 +55,29 @@ void CApplicationPlayerCallback::OnPlayBackEnded()
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
+namespace
+{
+bool ShouldUpdateStreamDetails(const CFileItem& file)
+{
+  // If a title/playlist hasn't been selected for a bluray/dvds then the stream details may not be known
+  const bool isDiscOrStream{VIDEO::IsBDFile(file) || VIDEO::IsDVDFile(file) || file.IsDiscImage() ||
+                            NETWORK::IsInternetStream(file)};
+
+  // Stream details may be already set from a previous playback or nfo
+  const bool hasNoStreamDetails{!file.HasVideoInfoTag() ||
+                                !file.GetVideoInfoTag()->HasStreamDetails()};
+
+  return hasNoStreamDetails && isDiscOrStream;
+}
+} // namespace
+
 void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
 {
   CLog::LogF(LOGDEBUG, "call");
   std::shared_ptr<CFileItem> itemCurrentFile;
 
   // check if VideoPlayer should set file item stream details from its current streams
-  const bool isBlu_dvd_image_or_stream = VIDEO::IsBDFile(file) || VIDEO::IsDVDFile(file) ||
-                                         file.IsDiscImage() || NETWORK::IsInternetStream(file);
-
-  const bool hasNoStreamDetails =
-      (!file.HasVideoInfoTag() || !file.GetVideoInfoTag()->HasStreamDetails());
-
-  // Always update streamdetails for bluray:// paths as existing details may be been taken from BLURAY_TITLE_INFO
-  if (file.GetProperty("get_stream_details_from_player").asBoolean() ||
-      (hasNoStreamDetails && isBlu_dvd_image_or_stream) ||
-      URIUtils::IsBlurayPath(file.GetDynPath()))
+  if (ShouldUpdateStreamDetails(file))
   {
     auto& components = CServiceBroker::GetAppComponents();
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -154,6 +163,19 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
 #ifdef HAS_OPTICAL_DRIVE
         CServiceBroker::GetMediaManager().ResetBlurayPlaylistStatus();
 #endif
+      }
+
+      // Get streamdetails from file
+      if (file.GetProperty("update_stream_details").asBoolean(false))
+      {
+        XFILE::CBlurayDirectory dir;
+        CFileItemList items;
+        dir.GetDirectory(CURL(fileItem.GetDynPath()), items);
+        if (items.Size() == 1 && items.Get(0)->HasVideoInfoTag())
+        {
+          fileItem.GetVideoInfoTag()->m_streamDetails =
+              items.Get(0)->GetVideoInfoTag()->m_streamDetails;
+        }
       }
     }
   }
