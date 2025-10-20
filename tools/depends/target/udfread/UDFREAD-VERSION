@@ -4,3 +4,5 @@ ARCHIVE=lib$(LIBNAME)-$(VERSION).tar.bz2
 SHA512=53df39c207cadd742b4d4f78fd14159a6e4f45c97c9a7b97a39778fab4fdb5b0c087ebba04d27c28b8078681b82c3e903a4394f0d381cdadf23d2fd24956261f
 BYPRODUCT=libudfread.a
 BYPRODUCT_WIN=libudfread.a
+
+BASE_URL=https://code.videolan.org/videolan/libudfread/-/archive/1.2.0
