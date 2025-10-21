@@ -20,7 +20,8 @@ typedef __int64       __off64_t;
 typedef long          __off_t;
 
 #if !defined(_SSIZE_T_DEFINED) && !defined(HAVE_SSIZE_T)
-typedef intptr_t      ssize_t;
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
 #define _SSIZE_T_DEFINED
 #endif // !_SSIZE_T_DEFINED
 #ifndef SSIZE_MAX
