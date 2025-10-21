@@ -75,6 +75,9 @@ constexpr auto componentMap = make_map<int, ComponentInfo>({
   {LOGWSDISCOVERY,  {"wsdiscovery", 37050}},
 #endif
   {LOGADDONS,       {"addons",      39124}},
+#ifdef HAVE_LIBBLURAY
+  {LOGBLURAY,       {"bluray",      39126}},
+#endif
 });
 // clang-format on
 

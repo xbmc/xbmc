@@ -487,7 +487,7 @@ bool ParsePAT(const std::span<std::byte>& PAT,
               std::set<unsigned int>& pmtPIDs,
               std::unordered_map<unsigned int, SectionAssembler>& pidSection)
 {
-  CLog::LogF(LOGDEBUG, "Parsing PAT");
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing PAT");
 
   // Process common header
   TableInformation tableInformation;
@@ -505,8 +505,8 @@ bool ParsePAT(const std::span<std::byte>& PAT,
       unsigned int pmPID{GetWord(PAT, offset + i + 2) & PID_MASK};
       pmtPIDs.insert(pmPID);
       pidSection.emplace(pmPID, SectionAssembler{}); // Prepare assembler
-      CLog::LogF(LOGDEBUG, "Found pmPID {} for program {}", fmt::format("{:04x}", pmPID),
-                 programNumber);
+      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Found pmPID {} for program {}",
+                  fmt::format("{:04x}", pmPID), programNumber);
     }
   }
 
@@ -520,7 +520,7 @@ bool ParsePMT(unsigned int pid,
               std::unordered_map<unsigned int, PESAssembler>& pesSection,
               StreamMap& streams)
 {
-  CLog::LogF(LOGDEBUG, "Parsing PMT - PID 0x{}", fmt::format("{:04x}", pid));
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing PMT - PID 0x{}", fmt::format("{:04x}", pid));
 
   bool parsed{false};
   auto& sectionAssembler{pidSection[pid]};
@@ -587,10 +587,11 @@ bool ParsePMT(unsigned int pid,
 
         pesSection.emplace(elementaryPID, PESAssembler{}); // Prepare assembler
 
-        CLog::Log(LOGDEBUG, "Found stream at offset 0x{} - type: {} (0x{}), pid: 0x{}, lang {}",
-                  fmt::format("{:06x}", offset + i), streamTypeName,
-                  fmt::format("{:02x}", static_cast<int>(streamType)),
-                  fmt::format("{:04x}", elementaryPID), language);
+        CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                    "Found stream at offset 0x{} - type: {} (0x{}), pid: 0x{}, lang {}",
+                    fmt::format("{:06x}", offset + i), streamTypeName,
+                    fmt::format("{:02x}", static_cast<int>(streamType)),
+                    fmt::format("{:04x}", elementaryPID), language);
       }
 
       i += ELEMENTARY_STREAM_HEADER_SIZE + static_cast<int>(esInfoLength);
@@ -1214,7 +1215,7 @@ float ParseVUI(BitReader& br)
 
 bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
 {
-  CLog::LogF(LOGDEBUG, "Parsing H265 SPS");
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing H265 SPS");
 
   BitReader br(buffer);
 
@@ -1312,7 +1313,7 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
 
 bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
 {
-  CLog::LogF(LOGDEBUG, "Parsing H264 SPS");
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing H264 SPS");
 
   BitReader br(buffer);
 
@@ -1458,7 +1459,7 @@ bool ParseSEI(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
     else
       payloadSize = *i;
 
-    CLog::LogF(LOGDEBUG, "Parsing SEI - payload type {}", payloadType);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing SEI - payload type {}", payloadType);
 
     // Check for HDR SEI messages
     switch (payloadType)
@@ -1602,7 +1603,7 @@ bool ParseNAL(const std::span<std::byte>& buffer,
         return false;
     }
 
-    CLog::LogF(LOGDEBUG, "Parsing NAL - type {}", nal_unit_type);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing NAL - type {}", nal_unit_type);
 
     switch (nal_unit_type)
     {
@@ -1677,7 +1678,7 @@ bool ParseVC1(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
   if (result.empty() || buffer.end() - result.begin() < 8)
     return false;
 
-  CLog::LogF(LOGDEBUG, "Parsing VC1 Sequence Header");
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing VC1 Sequence Header");
 
   unsigned int offset{static_cast<unsigned int>(result.begin() - buffer.begin()) + 4};
 
@@ -1732,7 +1733,7 @@ bool ParseMPEG2(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInf
   if (result.empty() || buffer.end() - result.begin() < 8)
     return false;
 
-  CLog::LogF(LOGDEBUG, "Parsing MPEG2 Sequence Header");
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing MPEG2 Sequence Header");
 
   unsigned int header{GetDWord(buffer, 4)};
   unsigned int horizontal_size_value{GetBits(header, 32, 12)};
@@ -1761,7 +1762,7 @@ bool ParsePES(const TSPacket& tsPacket,
               std::unordered_map<unsigned int, PESAssembler>& pesSection,
               StreamMap& streams)
 {
-  CLog::LogF(LOGDEBUG, "Parsing PES - PID 0x{}", fmt::format("{:04x}", tsPacket.pid));
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing PES - PID 0x{}", fmt::format("{:04x}", tsPacket.pid));
 
   auto& pesAssembler{pesSection[tsPacket.pid]};
   for (auto& section : pesAssembler.push(tsPacket))
@@ -1772,9 +1773,9 @@ bool ParsePES(const TSPacket& tsPacket,
       continue; // May not contain audio
 
     auto& streamInfo{streams[tsPacket.pid]};
-    CLog::LogF(LOGDEBUG, "Parsing PES - Stream PID 0x{} - Type 0x{}",
-               fmt::format("{:04x}", streamInfo->pid),
-               fmt::format("{:02x}", static_cast<int>(streamInfo->streamType)));
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing PES - Stream PID 0x{} - Type 0x{}",
+                fmt::format("{:04x}", streamInfo->pid),
+                fmt::format("{:02x}", static_cast<int>(streamInfo->streamType)));
 
     switch (streamInfo->streamType)
     {
@@ -1879,7 +1880,7 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
       return false;
     }
 
-    CLog::Log(LOGDEBUG, "Analysing file {} for stream details.", clipFile);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Analysing file {} for stream details.", clipFile);
 
     std::vector<std::byte> buffer;
     buffer.resize(BUFFER_SIZE);
@@ -1907,7 +1908,8 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
     {
       if (offset + BDAV_PACKET_SIZE <= size)
       {
-        CLog::LogF(LOGDEBUG, "Parsing BDAV packet at offset 0x{}", fmt::format("{:06x}", offset));
+        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing BDAV packet at offset 0x{}",
+                    fmt::format("{:06x}", offset));
         std::span packet{buffer.data() + offset + TIMESTAMP_SIZE, TS_PACKET_SIZE};
         ParseTSPacket(packet, patParsed, pmtParsed, pmtPIDs, pidSection, pesSection, streams);
         packetCount++;
@@ -1941,12 +1943,12 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
     }
 
     if (!allStreamsComplete)
-      CLog::LogF(
-          LOGDEBUG,
+      CLog::LogFC(
+          LOGDEBUG, LOGBLURAY,
           "Not all stream details determined from {} - may need PACKETS_TO_PARSE ({}) increase.",
           clipFile, PACKETS_TO_PARSE);
 
-    CLog::Log(LOGDEBUG, "Finished analysing {} for stream details.", clipFile);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Finished analysing {} for stream details.", clipFile);
 
     return true;
   }

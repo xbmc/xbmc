@@ -190,9 +190,9 @@ StreamInformation ParseStream(const std::span<std::byte> buffer,
       break;
   }
 
-  CLog::Log(LOGDEBUG, "  Stream - type {}, coding 0x{}",
-            static_cast<unsigned int>(streamInformation.type),
-            fmt::format("{:02x}", static_cast<int>(streamInformation.coding)));
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "  Stream - type {}, coding 0x{}",
+              static_cast<unsigned int>(streamInformation.type),
+              fmt::format("{:02x}", static_cast<int>(streamInformation.coding)));
 
   return streamInformation;
 }
@@ -296,8 +296,8 @@ void ParseProgramInformation(std::vector<std::byte>& buffer,
     }
     programInformation.streams.emplace_back(streamInformation);
 
-    CLog::Log(LOGDEBUG, "  Stream - coding 0x{}",
-              fmt::format("{:02x}", static_cast<int>(streamInformation.coding)));
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "  Stream - coding 0x{}",
+                fmt::format("{:02x}", static_cast<int>(streamInformation.coding)));
 
     offset += streamLength + 1;
   }
@@ -308,7 +308,7 @@ bool ParseCLPI(std::vector<std::byte>& buffer, ClipInformation& clipInformation,
   // Check size
   if (buffer.size() < CLPI_HEADER_SIZE)
   {
-    CLog::Log(LOGDEBUG, "Invalid CLPI - header too small");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid CLPI - header too small");
     return false;
   }
 
@@ -317,10 +317,11 @@ bool ParseCLPI(std::vector<std::byte>& buffer, ClipInformation& clipInformation,
   const std::string version{GetString(buffer, OFFSET_CLPI_VERSION, 4)};
   if (header != "HDMV")
   {
-    CLog::Log(LOGDEBUG, "Invalid CLPI header");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid CLPI header");
     return false;
   }
-  CLog::Log(LOGDEBUG, "Valid CLPI header for clip {} header version {}", clip, version);
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Valid CLPI header for clip {} header version {}", clip,
+              version);
 
   clipInformation.version = version;
   clipInformation.clip = clip;
@@ -330,7 +331,7 @@ bool ParseCLPI(std::vector<std::byte>& buffer, ClipInformation& clipInformation,
   unsigned int offset{programInformationStartAddress};
   if (const unsigned int length{GetDWord(buffer, offset)}; buffer.size() < length + offset)
   {
-    CLog::Log(LOGDEBUG, "Invalid CLPI - too small for Program Information");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid CLPI - too small for Program Information");
     return false;
   }
 
@@ -341,7 +342,7 @@ bool ParseCLPI(std::vector<std::byte>& buffer, ClipInformation& clipInformation,
   for (unsigned int i = 0; i < numPrograms; ++i)
   {
     ProgramInformation programInformation;
-    CLog::Log(LOGDEBUG, " Program {}", i);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, " Program {}", i);
     ParseProgramInformation(buffer, offset, programInformation);
     clipInformation.programs.emplace_back(programInformation);
   }
@@ -397,12 +398,12 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
   const unsigned int length{GetWord(buffer, offset)};
   if (length < PLAYITEM_HEADER_SIZE)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - Playitem too small");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - Playitem too small");
     return false;
   }
   if (buffer.size() < length + offset)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for Playitem");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - too small for Playitem");
     return false;
   }
 
@@ -410,7 +411,8 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
   std::string codecId{GetString(buffer, offset + OFFSET_PLAYITEM_CODEC_ID, 4)};
   if (codecId != "M2TS" && codecId != "FMTS")
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem codec identifier - {}", codecId);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - invalid PlayItem codec identifier - {}",
+                codecId);
     return false;
   }
 
@@ -421,8 +423,8 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
       connectionCondition != BLURAY_CONNECTION::NONSEAMLESS &&
       connectionCondition != BLURAY_CONNECTION::BRANCHING)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem connection condition - {}",
-              static_cast<unsigned int>(connectionCondition));
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - invalid PlayItem connection condition - {}",
+                static_cast<unsigned int>(connectionCondition));
     return false;
   }
   playItem.isMultiAngle = isMultiAngle;
@@ -454,11 +456,11 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
   else
     offset += 34;
 
-  CLog::Log(LOGDEBUG,
-            "PlayItem entry - clip id {}, codec id {}, in time {}, out time {}, still mode "
-            "{} (still time {}), angles {}",
-            clipId, codecId, fmt::format("{:%H:%M:%S}", inTime),
-            fmt::format("{:%H:%M:%S}", outTime), stillMode, stillTime, angleCount);
+  CLog::LogFC(LOGDEBUG, LOGBLURAY,
+              "PlayItem entry - clip id {}, codec id {}, in time {}, out time {}, still mode "
+              "{} (still time {}), angles {}",
+              clipId, codecId, fmt::format("{:%H:%M:%S}", inTime),
+              fmt::format("{:%H:%M:%S}", outTime), stillMode, stillTime, angleCount);
 
   // First/only angle
   ClipInformation angleInformation;
@@ -474,12 +476,13 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
     const std::string angleCodecId{GetString(buffer, offset + OFFSET_ANGLE_CODEC_ID, 4)};
     if (angleCodecId != "M2TS" && angleCodecId != "FMTS")
     {
-      CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem angle {} codec identifier - {}", j,
-                angleCodecId);
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Invalid MPLS - invalid PlayItem angle {} codec identifier - {}", j,
+                  angleCodecId);
       return false;
     }
-    CLog::Log(LOGDEBUG, "  Additional angle {} - clip id {}, codec id {}", j, angleClipId,
-              angleCodecId);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "  Additional angle {} - clip id {}, codec id {}", j,
+                angleClipId, angleCodecId);
 
     additionalAngleInformation.clip = std::stoi(angleClipId);
     additionalAngleInformation.codec = angleCodecId;
@@ -490,7 +493,7 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
   // Parse stream number table
   if (const unsigned int stnLength{GetWord(buffer, offset)}; buffer.size() < stnLength + offset)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for Stream Number Table");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - too small for Stream Number Table");
     return false;
   }
 
@@ -511,13 +514,13 @@ bool ParsePlayItem(std::vector<std::byte>& buffer,
   const unsigned int numDolbyVisionStreams{
       GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_DV_STREAMS)};
 
-  CLog::Log(LOGDEBUG,
-            " Stream number table - video {}, audio {}, presentation graphic (subtitle) {}, "
-            "interactive graphic {}, "
-            "secondary video {}, secondary audio {}, PIP subtitle {}, dolby vision {}",
-            numVideoStreams, numAudioStreams, numPresentationGraphicStreams,
-            numInteractiveGraphicStreams, numSecondaryVideoStreams, numSecondaryAudioStreams,
-            numPictureInPictureSubtitleStreams, numDolbyVisionStreams);
+  CLog::LogFC(LOGDEBUG, LOGBLURAY,
+              " Stream number table - video {}, audio {}, presentation graphic (subtitle) {}, "
+              "interactive graphic {}, "
+              "secondary video {}, secondary audio {}, PIP subtitle {}, dolby vision {}",
+              numVideoStreams, numAudioStreams, numPresentationGraphicStreams,
+              numInteractiveGraphicStreams, numSecondaryVideoStreams, numSecondaryAudioStreams,
+              numPictureInPictureSubtitleStreams, numDolbyVisionStreams);
 
   offset += 16;
 
@@ -590,12 +593,12 @@ bool ParseSubPlayItem(std::vector<std::byte>& buffer,
   unsigned int length{GetWord(buffer, offset)};
   if (length < SUBPLAYITEM_HEADER_SIZE)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - SubPlayItem too small");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - SubPlayItem too small");
     return false;
   }
   if (buffer.size() < length + offset)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for SubPlayItem");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - too small for SubPlayItem");
     return false;
   }
 
@@ -603,7 +606,8 @@ bool ParseSubPlayItem(std::vector<std::byte>& buffer,
   std::string codecId{GetString(buffer, offset + OFFSET_SUBPLAYITEM_CODEC_ID, 4)};
   if (codecId != "M2TS" && codecId != "FMTS")
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem codec identifier - {}", codecId);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - invalid PlayItem codec identifier - {}",
+                codecId);
     return false;
   }
 
@@ -614,8 +618,8 @@ bool ParseSubPlayItem(std::vector<std::byte>& buffer,
       connectionCondition != BLURAY_CONNECTION::NONSEAMLESS &&
       connectionCondition != BLURAY_CONNECTION::BRANCHING)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem connection condition - {}",
-              static_cast<unsigned int>(connectionCondition));
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - invalid PlayItem connection condition - {}",
+                static_cast<unsigned int>(connectionCondition));
     return false;
   }
   subPlayItemInformation.isMultiClip = isMultiClip;
@@ -640,10 +644,10 @@ bool ParseSubPlayItem(std::vector<std::byte>& buffer,
   else
     offset += 26;
 
-  CLog::Log(LOGDEBUG,
-            " SubPlayItem entry - clip id {}, codec id {}, in time {}, out time {}, clips {}",
-            clipId, codecId, fmt::format("{:%H:%M:%S}", inTime),
-            fmt::format("{:%H:%M:%S}", outTime), numClips);
+  CLog::LogFC(LOGDEBUG, LOGBLURAY,
+              " SubPlayItem entry - clip id {}, codec id {}, in time {}, out time {}, clips {}",
+              clipId, codecId, fmt::format("{:%H:%M:%S}", inTime),
+              fmt::format("{:%H:%M:%S}", outTime), numClips);
 
   // First/only clip
   ClipInformation clipInformation;
@@ -660,12 +664,13 @@ bool ParseSubPlayItem(std::vector<std::byte>& buffer,
         GetString(buffer, offset + OFFSET_SUBPLAYITEM_CLIP_CODEC_ID, 4)};
     if (additionalCodecId != "M2TS" && additionalCodecId != "FMTS")
     {
-      CLog::Log(LOGDEBUG, "Invalid MPLS - invalid SubPlayItem clip {} codec identifier - {}", j,
-                additionalCodecId);
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Invalid MPLS - invalid SubPlayItem clip {} codec identifier - {}", j,
+                  additionalCodecId);
       return false;
     }
-    CLog::Log(LOGDEBUG, "  Additional clip {} - clip id {}, codec id {}", j, additionalClipId,
-              additionalCodecId);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "  Additional clip {} - clip id {}, codec id {}", j,
+                additionalClipId, additionalCodecId);
 
     additionalClipInformation.clip = std::stoi(additionalClipId);
     additionalClipInformation.codec = additionalCodecId;
@@ -725,7 +730,7 @@ bool ProcessClips(const CURL& url,
       ClipInformation clipInformation;
       if (!ReadCLPI(url, clip.clip, clipInformation))
       {
-        CLog::Log(LOGDEBUG, "Cannot read clip {} information", clip.clip);
+        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Cannot read clip {} information", clip.clip);
         return false;
       }
       playlistInformation.clips.emplace_back(clipInformation);
@@ -771,7 +776,7 @@ bool ParsePlaylist(const CURL& url,
   if (const unsigned int playlistSize{GetDWord(buffer, offset)};
       buffer.size() < playlistSize + offset)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for Playlist");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - too small for Playlist");
     return false;
   }
   const unsigned int numPlayItems{GetWord(buffer, offset + OFFSET_MPLS_NUM_PLAYITEMS)};
@@ -794,7 +799,7 @@ bool ParsePlaylist(const CURL& url,
     for (const auto& playItem : playlistInformation.playItems)
       duration += playItem.outTime - playItem.inTime;
     playlistInformation.duration = duration;
-    CLog::Log(LOGDEBUG, "Playlist duration {}", fmt::format("{:%H:%M:%S}", duration));
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Playlist duration {}", fmt::format("{:%H:%M:%S}", duration));
 
     // Process clips
     if (!ProcessClips(url, playlistInformation, clipCache))
@@ -815,14 +820,14 @@ bool ParsePlaylistMark(std::vector<std::byte>& buffer,
   if (const unsigned int playlistMarkSize{GetDWord(buffer, offset)};
       buffer.size() < playlistMarkSize + offset)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for PlayListMark");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - too small for PlayListMark");
     return false;
   }
 
   const unsigned int numPlaylistMarks{GetWord(buffer, offset + OFFSET_MPLS_NUM_PLAYLISTMARKS)};
   if (buffer.size() < (numPlaylistMarks * MPLS_PLAYLISTMARK_SIZE) + offset + 6)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for PlayListMark");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - too small for PlayListMark");
     return false;
   }
 
@@ -936,10 +941,10 @@ void DeriveChaptersAndTimings(BlurayPlaylistInformation& playlistInformation)
       ChapterInformation chapterInformation{
           .chapter = chapter, .start = start, .duration = playlistMark.duration};
       playlistInformation.chapters.emplace_back(chapterInformation);
-      CLog::Log(LOGDEBUG, "Chapter {} start {} duration {} end {}", chapter,
-                fmt::format("{:%H:%M:%S}", start),
-                fmt::format("{:%H:%M:%S}", chapterInformation.duration),
-                fmt::format("{:%H:%M:%S}", start + chapterInformation.duration));
+      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Chapter {} start {} duration {} end {}", chapter,
+                  fmt::format("{:%H:%M:%S}", start),
+                  fmt::format("{:%H:%M:%S}", chapterInformation.duration),
+                  fmt::format("{:%H:%M:%S}", start + chapterInformation.duration));
       start += chapterInformation.duration;
       ++chapter;
     }
@@ -955,7 +960,7 @@ bool ParseMPLS(const CURL& url,
   // Check size
   if (buffer.size() < MPLS_HEADER_SIZE)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - header too small");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - header too small");
     return false;
   }
 
@@ -964,10 +969,11 @@ bool ParseMPLS(const CURL& url,
   const std::string version{GetString(buffer, OFFSET_MPLS_VERSION, 4)};
   if (header != "MPLS")
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS header");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS header");
     return false;
   }
-  CLog::Log(LOGDEBUG, "*** Valid MPLS header for playlist {} version {}", playlist, version);
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "*** Valid MPLS header for playlist {} version {}", playlist,
+              version);
 
   playlistInformation.playlist = playlist;
   playlistInformation.version = version;
@@ -981,7 +987,7 @@ bool ParseMPLS(const CURL& url,
   if (const unsigned int appInfoSize{GetDWord(buffer, offset)};
       buffer.size() < appInfoSize + offset)
   {
-    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for AppInfoPlaylist");
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - too small for AppInfoPlaylist");
     return false;
   }
 

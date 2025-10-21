@@ -75,8 +75,8 @@ void CDVDInputStream::SavePlaylistDetails(std::vector<PlaylistInformation>& play
     lastPlaylist.watchedTime += watchedTime;
     lastPlaylist.duration = currentPlaylistInformation.duration;
     lastPlaylist.details = currentPlaylistInformation.details;
-    CLog::LogF(LOGDEBUG, "Updated playlist/title {} - watched time {} seconds",
-               currentPlaylistInformation.playlist, lastPlaylist.watchedTime.count() / 1000);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Updated playlist/title {} - watched time {} seconds",
+                currentPlaylistInformation.playlist, lastPlaylist.watchedTime.count() / 1000);
   }
   else
   {
@@ -85,16 +85,16 @@ void CDVDInputStream::SavePlaylistDetails(std::vector<PlaylistInformation>& play
     {
       auto& lastPlaylist = playedPlaylists.back();
       lastPlaylist.watchedTime += watchedTime;
-      CLog::LogF(LOGDEBUG, "Updated playlist/title {} - watched time {} seconds",
-                 lastPlaylist.playlist, lastPlaylist.watchedTime.count() / 1000);
+      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Updated playlist/title {} - watched time {} seconds",
+                  lastPlaylist.playlist, lastPlaylist.watchedTime.count() / 1000);
     }
     // New playlist
     playedPlaylists.emplace_back(currentPlaylistInformation);
-    CLog::LogF(LOGDEBUG,
-               "Playing playlist/title {} - menu {}, duration {} seconds, watched time {} seconds",
-               currentPlaylistInformation.playlist, currentPlaylistInformation.inMenu,
-               currentPlaylistInformation.duration.count() / 1000,
-               currentPlaylistInformation.watchedTime.count() / 1000);
+    CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                "Playing playlist/title {} - menu {}, duration {} seconds, watched time {} seconds",
+                currentPlaylistInformation.playlist, currentPlaylistInformation.inMenu,
+                currentPlaylistInformation.duration.count() / 1000,
+                currentPlaylistInformation.watchedTime.count() / 1000);
   }
 }
 
