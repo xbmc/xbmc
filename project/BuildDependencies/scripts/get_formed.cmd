@@ -27,12 +27,25 @@ REM If KODI_MIRROR is not set externally to this script, set it to the default m
 IF "%KODI_MIRROR%" == "" SET KODI_MIRROR=http://mirrors.kodi.tv
 echo Downloading from mirror %KODI_MIRROR%
 
+set USE_LESSMSI=YES
+
+REM If USE_LESSMSI is set to YES externally, disable msiexec. Primary usage is CI where
+REM the service is running without TRUSTED_INSTALLER permissions to allow execution of msiexec
+REM Usage: SET MSIEXEC=YES
+IF "%USE_LESSMSI%" == "YES" (
+  echo Using lessmsi for MSI extraction
+)
 
 CALL :setStageName Starting downloads of Host (%NATIVEPLATFORM%) formed packages...
 SET SCRIPT_PATH=%CD%
 CD %DL_PATH% || EXIT /B 10
-FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.list) DO (
-  CALL :processFile %%f %NATIVE_PATH%
+FOR /F "eol=; tokens=1,2" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.list) DO (
+  IF "%%g" == "" (
+    set "BASE_URL=%KODI_MIRROR%/build-deps/win32"
+  ) ELSE (
+    set "BASE_URL=%%g"
+  )
+  CALL :processFile %%f %NATIVE_PATH% !BASE_URL!
   REM Apparently there's a quirk in cmd so this means if error level => 1
   IF ERRORLEVEL 1 (
     ECHO One or more packages failed to download
@@ -42,8 +55,13 @@ FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.
 
 CALL :setStageName Starting downloads of Target (%TARGETPLATFORM%) formed packages...
 CD %DL_PATH% || EXIT /B 10
-FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
-  CALL :processFile %%f %APP_PATH%
+FOR /F "eol=; tokens=1,2" %%f IN (%SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
+  IF "%%g" == "" (
+    set "BASE_URL=%KODI_MIRROR%/build-deps/win32"
+  ) ELSE (
+    set "BASE_URL=%%g"
+  )
+  CALL :processFile %%f %APP_PATH% !BASE_URL!
   REM Apparently there's a quirk in cmd so this means if error level => 1
   IF ERRORLEVEL 1 (
     ECHO One or more packages failed to download
@@ -73,8 +91,8 @@ SET RetryDownload=YES
 IF EXIST %1 (
   ECHO Using downloaded %1
 ) ELSE (
-  CALL :setSubStageName Downloading %1...
-  SET DOWNLOAD_URL=%KODI_MIRROR%/build-deps/win32/%1
+  CALL :setSubStageName Downloading %1 from %3...
+  SET DOWNLOAD_URL=%3/%1
   curl --retry 5 --retry-all-errors --retry-connrefused --retry-delay 5 --location --remote-name "!DOWNLOAD_URL!" 2>&1
   REM Apparently there's a quirk in cmd so this means if error level => 1
   IF ERRORLEVEL 1 (
@@ -88,19 +106,83 @@ IF EXIST %1 (
 CALL :setSubStageName Extracting %1...
 copy /b "%1" "%TMP_PATH%" >NUL 2>NUL || EXIT /B 5
 PUSHD "%TMP_PATH%" || EXIT /B 10
-%ZIP% x %1 >NUL 2>NUL || (
-  IF %RetryDownload%==YES (
-    POPD || EXIT /B 5
-    ECHO WARNING! Can't extract files from archive %1!
-    ECHO WARNING! Deleting %1 and will retry downloading.
-    del /f "%1"
-    SET RetryDownload=NO
-    GOTO startDownloadingFile
+FOR /F  %%X IN ("%1") DO (
+  if "%%~xX" == ".msi" (
+    mkdir "%cd%\%%~nX"
+    if "!USE_LESSMSI!" == "YES" (
+      %NATIVE_PATH%\bin\lessmsi.exe x %1 %cd%\%%~nX\ >NUL 2>NUL || (
+        IF %RetryDownload%==YES (
+          POPD || EXIT /B 5
+          ECHO WARNING! Can't extract files from archive %1!
+          ECHO WARNING! Deleting %1 and will retry downloading.
+          del /f "%1"
+          rmdir /S /Q "%cd%\%%~nX"
+          SET RetryDownload=NO
+          GOTO startDownloadingFile
+        ) ELSE (
+          ECHO %1^|Can't extract files from archive %1 >> %FORMED_FAILED_LIST%
+        )
+        exit /B 6
+      )
+    ) else (
+      msiexec /a "%cd%\%1" /qn TARGETDIR="%cd%\%%~nX" >NUL 2>NUL || (
+        IF %RetryDownload%==YES (
+          POPD || EXIT /B 5
+          ECHO WARNING! Can't extract files from archive %1!
+          ECHO WARNING! Deleting %1 and will retry downloading.
+          del /f "%1"
+          rmdir /S /Q "%cd%\%%~nX"
+          SET RetryDownload=NO
+          GOTO startDownloadingFile
+        ) ELSE (
+          ECHO %1^|Can't extract files from archive %1 >> %FORMED_FAILED_LIST%
+        )
+        exit /B 6
+      )
+    )
   ) ELSE (
-    ECHO %1^|Can't extract files from archive %1 >> %FORMED_FAILED_LIST%
+    %ZIP% x %1 >NUL 2>NUL || (
+      IF %RetryDownload%==YES (
+        POPD || EXIT /B 5
+        ECHO WARNING! Can't extract files from archive %1!
+        ECHO WARNING! Deleting %1 and will retry downloading.
+        del /f "%1"
+        SET RetryDownload=NO
+        GOTO startDownloadingFile
+      ) ELSE (
+        ECHO %1^|Can't extract files from archive %1 >> %FORMED_FAILED_LIST%
+      )
+      exit /B 6
+    )
   )
-  exit /B 6
 )
+
+REM START PACKAGE SPECIFIC COMMANDS
+
+if NOT exist %~n1\ (
+  REM This only prepares lessmsi package into a folder structure that fits the rest of this system
+  REM relocating the data from the lessmsi zip into a bin folder root
+  FOR /F %%H IN ('dir /B /S *.zip ^| findstr /I /R "lessmsi.*zip"') do (
+    CALL :setSubStageName Arrange package data for package %1...
+    REM Relocate files in extracted ".\packagename\" to bin folder for lessmsi
+    ROBOCOPY "%TMP_PATH%" "%TMP_PATH%\%~n1\bin" /E /MOV /E /njh /njs /ndl /nc /ns /nfl /xf *.zip /xd %~n1 >NUL 2>NUL
+    :: This is a dumb cleanup, which is also the reason lessmsi should be first package in 0_package.native-win32.list
+    FOR /F %%f IN ('dir /B /A:D') DO (
+      if NOT "%~n1" == "%%f" (
+        rmdir /S /Q "%TMP_PATH%\%%f"
+      )
+    )
+  )
+
+  REM apache-ant doesnt extract into the same name as the archive. Move the extracted folder to match the same name
+  REM to allow the rest of the script to function
+  FOR /F %%I IN ('dir /B /A:D apache-ant*') do (
+    mkdir "%~n1\share"
+    move /y "%%I" "%~n1\share\ant" >NUL 2>NUL
+  )
+)
+
+REM END PACKAGE SPECIFIC COMMANDS
 
 dir /A:-D "%~n1\*.*" >NUL 2>NUL && (
 CALL :setSubStageName Pre-Cleaning %1...
@@ -126,6 +208,28 @@ dir /A:D "%~n1\system" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package cont
 dir /A:D "%~n1\Win32" >NUL 2>NUL && (
 ROBOCOPY "%~n1\Win32\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
 dir /A:D "%~n1\Win32" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
+)
+
+:: move PFiles64\*.* to bin (Meson msi extraction explicitly)
+:: Not common structure for all msi extractions
+:: limit to meson msi explicitly due to non standard folder structure extracted from msi
+dir /B /S *.msi >NUL 2>NUL && (
+  FOR /F %%H IN ('dir /B /S *.msi ^| findstr /I /R "meson.*msi"') do (
+    if "!USE_LESSMSI!" == "YES" (
+      :: lessmsi folder structure extracts to SourceDir in output folder
+      dir /A:D "%~n1\SourceDir\PFiles64" >NUL 2>NUL && (
+      ROBOCOPY "%~n1\SourceDir\PFiles64\\" "%~n1\bin" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
+      dir /A:D "%~n1\SourceDir\PFiles64" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange msi package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
+      rmdir /S /Q "%~n1\SourceDir"
+      )
+    ) else (
+      :: msiexec extracts directly to output folder
+      dir /A:D "%~n1\PFiles64" >NUL 2>NUL && (
+      ROBOCOPY "%~n1\PFiles64\\" "%~n1\bin" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>NUL
+      dir /A:D "%~n1\PFiles64" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange msi package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
+      )
+    )
+  )
 )
 
 :: move x64\*.* to root
