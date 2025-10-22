@@ -820,7 +820,7 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
   else if (audioHint.codec == AV_CODEC_ID_AAC || audioHint.codec == AV_CODEC_ID_AAC_LATM)
   {
     optInfo["aacInfo"]["channels"] = audioHint.channels;
-    optInfo["aacInfo"]["profile"] = audioHint.profile;
+    optInfo["aacInfo"]["profile"] = audioHint.profile + 1;
     optInfo["aacInfo"]["format"] = audioHint.extradata ? "raw" : "adts";
 
     const uint8_t* data = audioHint.extradata.GetData();
@@ -833,14 +833,6 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
       unsigned int parsedRate = ParseAACSampleRate(data, size);
       if (parsedRate > 0)
         audioHint.samplerate = parsedRate;
-
-      CVariant codecData;
-      codecData.reserve(size);
-      for (size_t i = 0; i < size; ++i)
-        codecData.append(static_cast<int>(data[i]));
-
-      optInfo["aacInfo"]["codecData"] = codecData;
-      optInfo["aacInfo"]["codecSize"] = static_cast<int>(size);
     }
 
     optInfo["aacInfo"]["frequency"] = audioHint.samplerate / 1000.0;
