@@ -509,6 +509,14 @@ macro(BUILD_DEP_TARGET)
   set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES FOLDER "External Projects")
 
   CLEAR_BUILD_VARS()
+
+  # Set both <UPPER>_FOUND and <lower>_FOUND as we have some legacy macros/functions that
+  # rely on <UPPER>_FOUND, but cmake has new policies that are heading towards <lower>_FOUND
+  set(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND ON CACHE BOOL "${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND" FORCE)
+
+  string(TOUPPER "${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}" _search_upper)
+  set(${_search_upper}_FOUND ON CACHE BOOL "${_search_upper}_FOUND" FORCE)
+  unset(_search_upper)
 endmacro()
 
 # Macro to test format of line endings of a patch
