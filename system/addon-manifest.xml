@@ -54,5 +54,5 @@
   <addon>xbmc.webinterface</addon>
   <addon optional="true">inputstream.adaptive</addon>
   <addon optional="true">peripheral.joystick</addon>
-  <addon optional="true">service.xbmc.versioncheck</addon>
+  <addon optional="true">service.oasis</addon>
 </addons>
