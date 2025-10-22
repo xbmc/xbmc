@@ -39,11 +39,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     find_path(MICROHTTPD_INCLUDE_DIR NAMES microhttpd.h
                                      HINTS ${DEPENDS_PATH}/include
-                                     ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                                     ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     find_library(MICROHTTPD_LIBRARY NAMES microhttpd libmicrohttpd
                                     HINTS ${DEPENDS_PATH}/lib
-                                    ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                                    ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   endif()
 
   if(NOT VERBOSE_FIND)

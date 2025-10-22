@@ -23,11 +23,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     find_path(BDPLUS_INCLUDEDIR NAMES libbdplus/bdplus.h
                                 HINTS ${DEPENDS_PATH}/include
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     find_library(BDPLUS_LIBRARY NAMES bdplus libbdplus
                               HINTS ${DEPENDS_PATH}/lib
-                              ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                              ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   endif()
 
   if(NOT BDPLUS_VERSION AND EXISTS ${BDPLUS_INCLUDEDIR}/libbdplus/bdplus-version.h)

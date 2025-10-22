@@ -15,10 +15,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   find_path(PLIST_INCLUDE_DIR plist/plist.h
                               HINTS ${DEPENDS_PATH}/include ${PC_PLIST_INCLUDEDIR}
-                              ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                              ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   find_library(PLIST_LIBRARY NAMES plist-2.0 plist libplist-2.0 libplist
                              HINTS ${DEPENDS_PATH}/lib ${PC_PLIST_LIBDIR}
-                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                             ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   set(PLIST_VERSION ${PC_PLIST_VERSION})
 

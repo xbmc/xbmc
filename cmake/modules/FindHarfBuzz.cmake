@@ -17,10 +17,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                  HINTS ${DEPENDS_PATH}/include
                                        ${PC_HARFBUZZ_INCLUDEDIR}
                                        ${PC_HARFBUZZ_INCLUDE_DIRS}
-                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   find_library(HARFBUZZ_LIBRARY NAMES harfbuzz
                                 HINTS ${DEPENDS_PATH}/lib ${PC_HARFBUZZ_LIBDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   set(HARFBUZZ_VERSION ${PC_HARFBUZZ_VERSION})
 
