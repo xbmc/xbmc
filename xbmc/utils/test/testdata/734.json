@@ -1,0 +1,78 @@
+{
+  "__input":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi",
+  "expectedAddFileToFolder":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi/NewFile.pdf",
+  "expectedAppendSlash":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi/",
+  "expectedCanonicalizePathUnix":
+      "stack:/zip:/%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip:/%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi",
+  "expectedCanonicalizePathWin":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi",
+  "expectedCreateAPKArchivePath":
+      "apk://passwd@stack%3a%2f%2fzip%3a%2f%2f%252fpath%252fto%252farchive%252fsome%252darchive%252dfile%252eCD1%252ezip%2fvideo.avi%20%2c%20zip%3a%2f%2f%252fpath%252fto%252farchive%252fsome%252darchive%252dfile%252eCD2%252ezip%2fvideo.avi/my/archived/path",
+  "expectedCreateRARArchivePath":
+      "rar://passwd@stack%3a%2f%2fzip%3a%2f%2f%252fpath%252fto%252farchive%252fsome%252darchive%252dfile%252eCD1%252ezip%2fvideo.avi%20%2c%20zip%3a%2f%2f%252fpath%252fto%252farchive%252fsome%252darchive%252dfile%252eCD2%252ezip%2fvideo.avi/my/archived/path",
+  "expectedCreateZIPArchivePath":
+      "zip://passwd@stack%3a%2f%2fzip%3a%2f%2f%252fpath%252fto%252farchive%252fsome%252darchive%252dfile%252eCD1%252ezip%2fvideo.avi%20%2c%20zip%3a%2f%2f%252fpath%252fto%252farchive%252fsome%252darchive%252dfile%252eCD2%252ezip%2fvideo.avi/my/archived/path",
+  "expectedDecode":
+      "stack://zip:///path/to/archive/some-archive-file.CD1.zip/video.avi , zip:///path/to/archive/some-archive-file.CD2.zip/video.avi",
+  "expectedDecodeFileName":
+      "zip:///path/to/archive/some-archive-file.CD1.zip/video.avi , zip:///path/to/archive/some-archive-file.CD2.zip/video.avi",
+  "expectedEncode":
+      "stack%3a%2f%2fzip%3a%2f%2f%252fpath%252fto%252farchive%252fsome%252darchive%252dfile%252eCD1%252ezip%2fvideo.avi%20%2c%20zip%3a%2f%2f%252fpath%252fto%252farchive%252fsome%252darchive%252dfile%252eCD2%252ezip%2fvideo.avi",
+  "expectedExtension": ".avi",
+  "expectedFileOrFolder": "video.avi",
+  "expectedGet":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi",
+  "expectedGetBasePath": "zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/",
+  "expectedGetBlurayAllEpisodesPath": "root/episode/all",
+  "expectedGetBlurayEpisodePath": "root/episode/1/2",
+  "expectedGetBlurayPlaylistPath": "BDMV/PLAYLIST/",
+  "expectedGetBlurayRootPath": "root",
+  "expectedGetBlurayTitlesPath": "root/titles",
+  "expectedGetDirectory":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/",
+  "expectedGetDiscBase": "/path/to/archive/",
+  "expectedGetDiscBasePath": "/path/to/archive/",
+  "expectedGetFileName":
+      "zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi",
+  "expectedGetFileNameUtil": "video.avi",
+  "expectedGetFileNameWithoutPath": "video.avi",
+  "expectedGetParentPath": "/path/to/archive/",
+  "expectedGetProtocol": "stack",
+  "expectedGetRealPath":
+      "stack://zip:/%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip:/%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi",
+  "expectedGetRedacted":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD2.zip/video.avi",
+  "expectedGetShareName": "zip:",
+  "expectedGetTranslatedProtocol": "stack",
+  "expectedGetWithoutFilename": "stack://",
+  "expectedGetWithoutOptions":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi",
+  "expectedGetWithoutUserDetails_redacted":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD2.zip/video.avi",
+  "expectedGetWithoutUserDetails_removed":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD2.zip/video.avi",
+  "expectedHasExtension": true,
+  "expectedHasParentPath": "/path/to/archive/",
+  "expectedIsFixSlashesAndDupsUnix":
+      "stack:/zip:/%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip:/%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi",
+  "expectedIsFixSlashesAndDupsWin":
+      "stack:\\zip:\\%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip\\video.avi , zip:\\%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip\\video.avi",
+  "expectedIsFullPath": true,
+  "expectedIsHD": true,
+  "expectedIsStack": true,
+  "expectedIsURL": true,
+  "expectedRemovedEndSlash":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi",
+  "expectedRemovedExtension":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video",
+  "expectedReplacedExtension":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/videoxyz",
+  "expectedSplitFileName": "video.avi",
+  "expectedSplitPath":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/",
+  "expectedUpdateUrlEncoding":
+      "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD2.zip/video.avi"
+}
