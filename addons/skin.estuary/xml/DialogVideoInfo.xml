@@ -704,13 +704,13 @@
 							<label>$LOCALIZE[40000]</label>
 							<icon>icons/infodialogs/versions.png</icon>
 							<onclick>SendClick(14)</onclick>
-							<visible>String.IsEqual(ListItem.DBType,movie)</visible>
+							<visible>ListItem.HasVideoVersions</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[40211]</label>
 							<icon>icons/infodialogs/extras.png</icon>
 							<onclick>SendClick(15)</onclick>
-							<visible>String.IsEqual(ListItem.DBType,movie)</visible>
+							<visible>ListItem.HasVideoExtras</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[20457]</label>
