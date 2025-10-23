@@ -45,6 +45,7 @@ xbmc/video/test/testdata/moviestack_subfolder_parts/Movie_(2001)/cd2/Movie_(2001
 xbmc/video/test/testdata/moviestack_subfolder_parts/Movie_(2001)/cd3/Movie_(2001)_part3.mkv
 xbmc/utils/test/CXBMCTinyXML-test.xml
 xbmc/utils/test/rss.xml
+xbmc/utils/test/data/bluray/BDMV/STREAM/00001.m2ts
 xbmc/utils/test/data/language/Spanish/strings.po
 xbmc/utils/test/resources/sample_chpl.mp4
 xbmc/utils/test/resources/no_chapters.mp4
