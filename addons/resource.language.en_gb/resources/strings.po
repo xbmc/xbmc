@@ -12809,7 +12809,7 @@ msgstr ""
 
 #: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20060"
-msgid "Media info"
+msgid "Media"
 msgstr ""
 
 msgctxt "#20061"
@@ -14452,8 +14452,18 @@ msgctxt "#20476"
 msgid "Has video extras"
 msgstr ""
 
-#empty strings from id 20477 to 21329
-#up to 21329 is reserved for the video db !! !
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.xml
+msgctxt "#20477"
+msgid "Choose custom profile directory?"
+msgstr ""
+
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.xml
+msgctxt "#20478"
+msgid "Profile needs reloading for changes to take effect. Reload now?"
+msgstr ""
+
+#empty strings from id 20479 to 21329
+#up to 21329 is reserved for the video db !!!
 
 #: system/settings/settings.xml
 msgctxt "#21330"
