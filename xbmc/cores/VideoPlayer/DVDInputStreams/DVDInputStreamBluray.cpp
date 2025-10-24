@@ -15,7 +15,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/BlurayCallback.h"
-#include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
@@ -30,9 +29,12 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
+#include <chrono>
 #include <functional>
 #include <limits>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include <libbluray/bluray.h>
 #include <libbluray/log_control.h>
@@ -40,8 +42,6 @@
 #define LIBBLURAY_BYTESEEK 0
 
 using namespace KODI;
-using namespace XFILE;
-
 using namespace std::chrono_literals;
 
 static int read_blocks(void* handle, void* buf, int lba, int num_blocks)
@@ -392,6 +392,9 @@ bool CDVDInputStreamBluray::Open()
     }
     m_clip = nullptr;
   }
+
+  // For playlist/chapter watch time
+  m_startWatchTime = std::chrono::steady_clock::now();
 
   // Process any events that occurred during opening
   while (bd_get_event(m_bd, &m_event))
@@ -1266,8 +1269,8 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
 
 bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
 {
-  m_pstream =
-      std::make_unique<CDVDInputStreamFile>(item, READ_TRUNCATED | READ_BITRATE | READ_NO_CACHE);
+  m_pstream = std::make_unique<CDVDInputStreamFile>(
+      item, XFILE::READ_TRUNCATED | XFILE::READ_BITRATE | XFILE::READ_NO_CACHE);
 
   if (!m_pstream->Open())
   {
@@ -1324,4 +1327,35 @@ bool CDVDInputStreamBluray::SetState(const std::string& xmlstate)
   }
 
   return true;
+}
+
+void CDVDInputStreamBluray::SaveCurrentState(const CStreamDetails& details)
+{
+  std::unique_lock lock(m_statesLock);
+
+  if (!m_titleInfo)
+    return;
+
+  // Details for this playlist
+  SavePlaylistDetails(m_playedPlaylists, m_startWatchTime,
+                      {.playlist = static_cast<int>(m_titleInfo->playlist),
+                       .inMenu = m_isInMainMenu,
+                       .duration = std::chrono::milliseconds(GetTotalTime()),
+                       .details = details});
+
+  // Reset watch timer for next playlist
+  m_startWatchTime = std::chrono::steady_clock::now();
+}
+
+CDVDInputStream::UpdateState CDVDInputStreamBluray::UpdateCurrentState(CFileItem& item,
+                                                                       double time,
+                                                                       bool& closed)
+{
+  std::unique_lock lock(m_statesLock);
+
+  // First add current state to the list of playlist states
+  if (item.HasVideoInfoTag())
+    SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails);
+
+  return UpdatePlaylistDetails(DVDSTREAM_TYPE_BLURAY, m_playedPlaylists, item, time, closed);
 }
