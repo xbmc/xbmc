@@ -24,13 +24,21 @@ int StreamUtils::GetCodecPriority(const std::string &codec)
    * Technically flac, truehd, and dtshd_ma are equivalently good as they're all lossless. However,
    * ffmpeg can't decode dtshd_ma losslessy yet.
    */
+  if (codec == "truehd_atmos") // Dolby TrueHD with Atmos
+    return 11;
+  if (codec == "dtshd_ma_x_imax") // DTS:X IMAX Enhanced
+    return 10;
+  if (codec == "dtshd_ma_x") // DTS:X
+    return 9;
   if (codec == "flac") // Lossless FLAC
-    return 7;
+    return 8;
   if (codec == "truehd") // Dolby TrueHD
-    return 6;
+    return 7;
   if (codec == "dtshd_ma") // DTS-HD Master Audio (previously known as DTS++)
-    return 5;
+    return 6;
   if (codec == "dtshd_hra") // DTS-HD High Resolution Audio
+    return 5;
+  if (codec == "eac3_ddp_atmos") // Dolby Digital Plus with Atmos
     return 4;
   if (codec == "eac3") // Dolby Digital Plus
     return 3;
