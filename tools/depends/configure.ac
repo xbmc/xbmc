@@ -370,7 +370,7 @@ case $host in
       use_cpu="armeabi-v7a"
     fi
     use_toolchain="${use_toolchain:-/usr}"
-    platform_cflags="-fPIC -DPIC -mcpu=cortex-a9 -mtune=cortex-a53 -mfloat-abi=softfp -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
+    platform_cflags="-fPIC -DPIC -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=softfp -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
     platform_cxxflags="$platform_cflags -static-libstdc++"
     optimize_flags="-Os"
     platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
