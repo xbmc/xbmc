@@ -30,7 +30,7 @@ public:
 
   /*!
    * \brief Retrieve the name of the language for the provided ISO 639-1 code.
-   * \param[in] code alpha-2 ISO 639-1 code, coded as a 32 bit unsigned integer
+   * \param[in] longCode alpha-2 ISO 639-1 code, coded as a 32 bit unsigned integer
    * \return English name of the language, nullopt if no language by that code exists.
    */
   static std::optional<std::string> LookupByCode(uint32_t longCode);
