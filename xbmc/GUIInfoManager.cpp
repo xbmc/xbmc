@@ -6393,7 +6393,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///   \table_row3{   <b>`ListItem.AudioChannels(format)`</b>,
 ///                  \anchor ListItem_AudioChannels
 ///                  _string_,
-///     @param[in] format (optional) format of the infolabel. Possible values for the format:
+///     @param format (optional) format of the infolabel. Possible values for the format:
 ///       - <b>(blank)</b> no format value: count of channels
 ///       - <b>defaultlayout</b> return a default channel layout in the format x.y.z for the
 ///         channel count (x=listener level speakers\, y=lfe channels\, z=overhead channels).
