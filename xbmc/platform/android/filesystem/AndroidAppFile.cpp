@@ -107,6 +107,8 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
   if (m_icon)
   {
     CJNIResources res = CJNIContext::GetPackageManager().getResourcesForApplication(m_packageName);
+    if (xbmc_jnienv()->ExceptionCheck())
+      xbmc_jnienv()->ExceptionClear();
     if (res)
     {
       for (int i=0; densities[i] != -1 && !bmp; ++i)
