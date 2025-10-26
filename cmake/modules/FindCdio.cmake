@@ -5,7 +5,7 @@
 #
 # This will define the following target:
 #
-# ${APP_NAME_LC}::Cdio - The LibCap library
+# ${APP_NAME_LC}::Cdio - The Cdio library
 #
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
@@ -17,10 +17,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   endif()
 
   find_path(CDIO_INCLUDE_DIR NAMES cdio/cdio.h
-                             HINTS ${PC_CDIO_INCLUDEDIR})
+                             HINTS ${PC_CDIO_INCLUDEDIR}
+                                   ${DEPENDS_PATH}/include)
 
   find_library(CDIO_LIBRARY NAMES cdio libcdio
-                            HINTS ${PC_CDIO_LIBDIR})
+                            HINTS ${PC_CDIO_LIBDIR}
+                                  ${DEPENDS_PATH}/lib)
 
   if(DEFINED PC_CDIO_VERSION AND DEFINED PC_CDIOPP_VERSION AND NOT "${PC_CDIO_VERSION}" VERSION_EQUAL "${PC_CDIOPP_VERSION}")
     message(WARNING "Detected libcdio (${PC_CDIO_VERSION}) and libcdio++ (${PC_CDIOPP_VERSION}) version mismatch. libcdio++ will not be used.")

@@ -15,9 +15,11 @@ if(NOT TARGET UUID::UUID)
   endif()
 
   find_path(UUID_INCLUDE_DIR uuid/uuid.h
-                             HINTS ${PC_UUID_INCLUDEDIR})
+                             HINTS ${PC_UUID_INCLUDEDIR}
+                                   ${DEPENDS_PATH}/include)
   find_library(UUID_LIBRARY uuid
-                            HINTS ${PC_UUID_LIBRARY})
+                            HINTS ${PC_UUID_LIBRARY}
+                                  ${DEPENDS_PATH}/lib)
   set(UUID_VERSION ${PC_UUID_VERSION})
 
   if(NOT VERBOSE_FIND)

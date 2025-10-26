@@ -15,13 +15,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   endif()
 
   find_path(MARIADBCLIENT_INCLUDE_DIR NAMES mariadb/mysql.h mariadb/server/mysql.h
-                                      HINTS ${PC_MARIADBCLIENT_INCLUDEDIR})
+                                      HINTS ${PC_MARIADBCLIENT_INCLUDEDIR}
+                                            ${DEPENDS_PATH}/include)
   find_library(MARIADBCLIENT_LIBRARY_RELEASE NAMES mariadbclient mariadb libmariadb
                                              HINTS ${PC_MARIADBCLIENT_LIBDIR}
+                                                   ${DEPENDS_PATH}/lib
                                              PATH_SUFFIXES mariadb
                                              ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   find_library(MARIADBCLIENT_LIBRARY_DEBUG NAMES mariadbclient mariadb libmariadbd
                                            HINTS ${PC_MARIADBCLIENT_LIBDIR}
+                                                 ${DEPENDS_PATH}/lib
                                            PATH_SUFFIXES mariadb
                                            ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
