@@ -23,14 +23,14 @@ public:
 
   /*!
    * \brief Retrieve the name of the language for the provided ISO 639-2 code.
-   * \param[in] code alpha-3 ISO 639-2/T code
+   * \param[in] tCode alpha-3 ISO 639-2/T code
    * \return English name of the language, nullopt if no language by that code exists.
    */
   static std::optional<std::string> LookupByCode(std::string_view tCode);
 
   /*!
    * \brief Retrieve the name of the language for the provided ISO 639-2 code.
-   * \param[in] code alpha-3 ISO 639-2/T code, coded as a 32 bit unsigned integer
+   * \param[in] longCode alpha-3 ISO 639-2/T code, coded as a 32 bit unsigned integer
    * \return English name of the language, nullopt if no language by that code exists.
    */
   static std::optional<std::string> LookupByCode(uint32_t longTcode);

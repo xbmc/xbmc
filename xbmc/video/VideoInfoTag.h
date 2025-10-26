@@ -165,10 +165,10 @@ public:
   };
   /*!
    * \brief Set the original language, with optional preprocessing.
-   * \param language[in] ISO 639-2/B language code or text to be preprocessed.
+   * \param[in] language ISO 639-2/B language code or text to be preprocessed.
    * The preprocessing can convert from ISO 639-1, ISO 639-2/B and ISO 639-2/T codes or a full
    * english name string to ISO-639-2/B.
-   * \param proc[in] processing type
+   * \param[in] proc processing type
    * \return success of the preprocessing
    */
   bool SetOriginalLanguage(std::string language, LanguageProcessing proc);
@@ -331,8 +331,8 @@ public:
   bool HasVideoVersions() const { return m_hasVideoVersions; }
 
   /*!
-   * @brief Set whether this video has video versions.
-   * @param hasVersion The versions flag.
+   * \brief Set whether this video has video versions.
+   * \param[in] hasVersions The versions flag.
    */
   void SetHasVideoVersions(bool hasVersions);
 
@@ -444,7 +444,7 @@ public:
 protected:
   /*!
    * \brief Add the seasons information to an XML node
-   * \param element  the root XML element to append to
+   * \param[in] node the XML node to append to
    * \return true for success, false otherwise.
    */
   bool SaveTvShowSeasons(TiXmlNode* node) const;
