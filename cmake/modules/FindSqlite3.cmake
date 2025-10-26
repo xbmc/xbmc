@@ -18,10 +18,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   find_path(SQLITE3_INCLUDE_DIR NAMES sqlite3.h
                              HINTS ${DEPENDS_PATH}/include ${PC_SQLITE3_INCLUDEDIR}
-                             ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                             ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   find_library(SQLITE3_LIBRARY NAMES sqlite3
                                HINTS ${DEPENDS_PATH}/lib ${PC_SQLITE3_LIBDIR}
-                               ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                               ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   if(NOT VERBOSE_FIND)
      set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)

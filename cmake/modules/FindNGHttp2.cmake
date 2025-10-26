@@ -39,7 +39,7 @@ if(NOT TARGET LIBRARY::NGHttp2)
   find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                                                          CONFIGS nghttp2-targets.cmake
                                                          HINTS ${DEPENDS_PATH}/lib/cmake
-                                                         ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                                                         ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   # cmake config may not be available (eg Debian libnghttp2-dev package)
   # fallback to pkgconfig for non windows platforms

@@ -19,11 +19,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_library(MARIADBCLIENT_LIBRARY_RELEASE NAMES mariadbclient mariadb libmariadb
                                              HINTS ${PC_MARIADBCLIENT_LIBDIR}
                                              PATH_SUFFIXES mariadb
-                                             ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                             ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   find_library(MARIADBCLIENT_LIBRARY_DEBUG NAMES mariadbclient mariadb libmariadbd
                                            HINTS ${PC_MARIADBCLIENT_LIBDIR}
                                            PATH_SUFFIXES mariadb
-                                           ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                           ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   if(PC_MARIADBCLIENT_VERSION)
     set(MARIADBCLIENT_VERSION_STRING ${PC_MARIADBCLIENT_VERSION})

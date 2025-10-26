@@ -21,11 +21,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # Current packaged windows libaacs cmake config has a fault, so we cant use find_package
     find_path(LIBAACS_INCLUDE_DIR NAMES libaacs/aacs.h
                                   HINTS ${DEPENDS_PATH}/include
-                                  ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                  ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     find_library(LIBAACS_LIBRARY NAMES aacs libaacs
                                  HINTS ${DEPENDS_PATH}/lib
-                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     if(EXISTS ${LIBAACS_INCLUDEDIR}/libaacs/aacs-version.h)
       file(STRINGS ${LIBAACS_INCLUDEDIR}/libaacs/aacs-version.h _aacs_version_str

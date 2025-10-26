@@ -45,7 +45,8 @@ macro(buildFFMPEG)
   if(WIN32 OR WINDOWS_STORE)
 
     find_package(Msys REQUIRED ${SEARCH_QUIET})
-    find_program(msys_BASH NAMES sh bash PATHS ${MSYS_INSTALL_PATH}/usr/bin REQUIRED)
+    find_program(msys_BASH NAMES sh bash PATHS ${MSYS_INSTALL_PATH}/usr/bin REQUIRED
+                           ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     set(msys_env MSYS2_PATH_TYPE=inherit
                  MSYS_INSTALL_PATH=${MSYS_INSTALL_PATH})
@@ -280,7 +281,7 @@ else()
                  NAMES ${name} ${libname}
                  PATH_SUFFIXES ffmpeg/${libname}
                  HINTS ${DEPENDS_PATH}/lib ${MINGW_LIBS_DIR}/lib
-                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
   endmacro()
 
   foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
@@ -316,7 +317,7 @@ else()
                                   libavutil/avutil.h libswscale/swscale.h ${source_plugin_headers}
               PATH_SUFFIXES ffmpeg
               HINTS ${DEPENDS_PATH}/include ${MINGW_LIBS_DIR}/include
-              ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+              ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     # Macro to populate target
     # arg1: lowercase libname (eg libavcodec, libpostproc, etc)

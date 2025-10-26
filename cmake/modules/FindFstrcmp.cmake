@@ -34,11 +34,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     find_path(FSTRCMP_INCLUDE_DIR NAMES fstrcmp.h
                                   HINTS ${DEPENDS_PATH}/include ${PC_FSTRCMP_INCLUDEDIR}
-                                  ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                  ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     find_library(FSTRCMP_LIBRARY NAMES fstrcmp
                                  HINTS ${DEPENDS_PATH}/lib ${PC_FSTRCMP_LIBDIR}
-                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
     set(FSTRCMP_VER ${PC_FSTRCMP_VERSION})
   endif()
