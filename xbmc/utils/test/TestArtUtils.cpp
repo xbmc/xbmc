@@ -70,6 +70,7 @@ AdvancedSettingsResetBase::AdvancedSettingsResetBase()
 struct ArtFilenameTest
 {
   std::string path;
+  std::string dynPath;
   std::string result;
   bool isFolder = false;
   bool result_folder = false;
@@ -86,32 +87,36 @@ class GetLocalArtBaseFilenameTest : public testing::WithParamInterface<ArtFilena
 };
 
 const auto local_art_filename_tests = std::array{
-    ArtFilenameTest{"/home/user/foo.avi", "/home/user/foo.avi"},
-    ArtFilenameTest{"stack:///home/user/foo-cd1.avi , /home/user/foo-cd2.avi",
+    ArtFilenameTest{"/home/user/foo.avi", "", "/home/user/foo.avi"},
+    ArtFilenameTest{"stack:///home/user/foo-cd1.avi , /home/user/foo-cd2.avi", "",
                     "/home/user/foo.avi"},
-    ArtFilenameTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "/home/user/foo.avi"},
-    ArtFilenameTest{"multipath://%2fhome%2fuser%2fbar%2f/%2fhome%2fuser%2ffoo%2f",
+    ArtFilenameTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "", "/home/user/foo.avi"},
+    ArtFilenameTest{"multipath://%2fhome%2fuser%2fbar%2f/%2fhome%2fuser%2ffoo%2f", "",
                     "/home/user/bar/", true, true},
-    ArtFilenameTest{"/home/user/foo/foo.iso", "/home/user/foo/foo.iso"},
-    ArtFilenameTest{"/home/user/VIDEO_TS/VIDEO_TS.IFO", "/home/user/", false, true},
-    ArtFilenameTest{"/home/user/BDMV/index.bdmv", "/home/user/", false, true},
-    ArtFilenameTest{"/home/user/foo.avi", "/home/user/", false, true, true},
+    ArtFilenameTest{"/home/user/foo/foo.iso", "", "/home/user/foo/foo.iso"},
+    ArtFilenameTest{"/home/user/VIDEO_TS/VIDEO_TS.IFO", "", "/home/user/", false, true},
+    ArtFilenameTest{"/home/user/BDMV/index.bdmv", "", "/home/user/", false, true},
+    ArtFilenameTest{"/home/user/foo.avi", "", "/home/user/", false, true, true},
     ArtFilenameTest{
+        "smb://somepath/movie.iso",
         "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
         "smb://somepath/movie.iso"},
-    ArtFilenameTest{"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls", "smb://somepath/",
-                    false, true},
-    ArtFilenameTest{"bluray://smb%3a%2f%2fsomepath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls",
+    ArtFilenameTest{
+        "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
+        "", "smb://somepath/movie.iso"},
+    ArtFilenameTest{"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls", "",
+                    "smb://somepath/", false, true},
+    ArtFilenameTest{"bluray://smb%3a%2f%2fsomepath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls", "",
                     "smb://somepath/disc 1/", false, true},
-    ArtFilenameTest{"/home/user/foo.avi", "/home/user/foo-S03E04.avi", false, false, false,
+    ArtFilenameTest{"/home/user/foo.avi", "", "/home/user/foo-S03E04.avi", false, false, false,
                     ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
     ArtFilenameTest{"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252ftvshow.iso%2f/BDMV/"
                     "PLAYLIST/00800.mpls",
-                    "smb://somepath/tvshow-S03E04.iso", false, false, false,
+                    "", "smb://somepath/tvshow-S03E04.iso", false, false, false,
                     ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
     ArtFilenameTest{"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/"
                     "PLAYLIST/00800.mpls",
-                    "smb://somepath/movie-00800.iso", false, false, false,
+                    "", "smb://somepath/movie-00800.iso", false, false, false,
                     ART::AdditionalIdentifiers::PLAYLIST, 800},
 };
 
@@ -331,6 +336,7 @@ INSTANTIATE_TEST_SUITE_P(TestArtUtils, TestLocalArt, testing::ValuesIn(local_art
 TEST_P(GetLocalArtBaseFilenameTest, GetLocalArtBaseFilename)
 {
   CFileItem item(GetParam().path, GetParam().isFolder);
+  item.SetDynPath(GetParam().dynPath);
   CVideoInfoTag* tag{item.GetVideoInfoTag()};
   tag->m_iSeason = GetParam().season;
   tag->m_iEpisode = GetParam().episode;
