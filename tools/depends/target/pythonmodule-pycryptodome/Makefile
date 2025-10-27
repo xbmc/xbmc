@@ -39,7 +39,6 @@ endif
 .installed-$(PLATFORM): $(PLATFORM)
 	cd $(PLATFORM); touch .separate_namespace && $(NATIVEPREFIX)/bin/python3 setup.py build_ext --plat-name $(OS)-$(CPU)
 	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
-	cd $(PYTHON_SITE_PKG); mkdir -p Cryptodome && cp -rf pycryptodomex*.egg/Cryptodome/* ./Cryptodome && rm -rf pycryptodomex*.egg
 	touch $@
 
 clean:
