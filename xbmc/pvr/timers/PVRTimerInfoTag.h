@@ -411,20 +411,6 @@ public:
   void SetFirstDayFromLocalTime(const CDateTime& firstDay);
 
   /*!
-   * @brief Helper function to convert a given CDateTime containing data as UTC to local time.
-   * @param utc A CDateTime instance carrying data as UTC.
-   * @return A CDateTime instance carrying data as local time.
-   */
-  static CDateTime ConvertUTCToLocalTime(const CDateTime& utc);
-
-  /*!
-   * @brief Helper function to convert a given CDateTime containing data as local time to UTC.
-   * @param local A CDateTime instance carrying data as local time.
-   * @return A CDateTime instance carrying data as UTC.
-   */
-  static CDateTime ConvertLocalTimeToUTC(const CDateTime& local);
-
-  /*!
    * @brief Get the duration of this timer in seconds, excluding padding times.
    * @return The duration.
    */
