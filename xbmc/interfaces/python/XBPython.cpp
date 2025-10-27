@@ -34,11 +34,44 @@
 
 #include <algorithm>
 
-bool XBPython::m_bInitialized = false;
-
 XBPython::XBPython()
 {
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+
+  CLog::Log(LOGDEBUG, "initializing python engine.");
+  // Darwin packs .pyo files, we need PYTHONOPTIMIZE on in order to load them.
+  // linux built with unified builds only packages the pyo files so need it
+#if defined(TARGET_DARWIN) || defined(TARGET_LINUX)
+  setenv("PYTHONOPTIMIZE", "1", 1);
+#endif
+  // Info about interesting python envvars available
+  // at http://docs.python.org/using/cmdline.html#environment-variables
+
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_ANDROID)
+  // check if we are running as real xbmc.app or just binary
+  if (!CUtil::GetFrameworksPath(true).empty())
+  {
+    // using external python, its build looking for xxx/lib/python3.8
+    // so point it to frameworks which is where python3.8 is located
+    setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
+    setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
+    CLog::Log(LOGDEBUG, "PYTHONHOME -> {}",
+              CSpecialProtocol::TranslatePath("special://frameworks"));
+    CLog::Log(LOGDEBUG, "PYTHONPATH -> {}",
+              CSpecialProtocol::TranslatePath("special://frameworks"));
+  }
+#endif
+
+  // *::GlobalInitializeModules() functions call PyImport_ExtendInittab(). PyImport_ExtendInittab() should
+  // be called before Py_Initialize() as required by the Python documentation.
+  CAddonPythonInvoker::GlobalInitializeModules();
+
+#ifdef HAS_WEB_INTERFACE
+  CHTTPPythonWsgiInvoker::GlobalInitializeModules();
+#endif
+
+  Py_Initialize();
+  m_mainThreadState = PyEval_SaveThread();
 }
 
 XBPython::~XBPython()
@@ -60,8 +93,6 @@ XBPython::~XBPython()
 }
 
 #define LOCK_AND_COPY(type, dest, src) \
-  if (!m_bInitialized) \
-    return; \
   std::unique_lock lock(src); \
   src.hadSomethingRemoved = false; \
   type dest; \
@@ -442,26 +473,23 @@ void XBPython::Uninitialize()
 
 void XBPython::Process()
 {
-  if (m_bInitialized)
+  PyList tmpvec;
+  std::unique_lock lock(m_vecPyList);
+  for (PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end();)
   {
-    PyList tmpvec;
-    std::unique_lock lock(m_vecPyList);
-    for (PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end();)
+    if (it->bDone)
     {
-      if (it->bDone)
-      {
-        tmpvec.push_back(*it);
-        it = m_vecPyList.erase(it);
-        m_vecPyList.hadSomethingRemoved = true;
-      }
-      else
-        ++it;
+      tmpvec.push_back(*it);
+      it = m_vecPyList.erase(it);
+      m_vecPyList.hadSomethingRemoved = true;
     }
-    lock.unlock();
-
-    //delete scripts which are done
-    tmpvec.clear();
+    else
+      ++it;
   }
+  lock.unlock();
+
+  //delete scripts which are done
+  tmpvec.clear();
 }
 
 bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
@@ -470,57 +498,16 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
     return false;
 
   XBMC_TRACE;
-  CLog::Log(LOGDEBUG, "initializing python engine.");
+  CLog::Log(LOGDEBUG, "initializing python script");
   std::unique_lock lock(m_critSection);
   m_iDllScriptCounter++;
-  if (!m_bInitialized)
-  {
-    // Darwin packs .pyo files, we need PYTHONOPTIMIZE on in order to load them.
-    // linux built with unified builds only packages the pyo files so need it
-#if defined(TARGET_DARWIN) || defined(TARGET_LINUX)
-    setenv("PYTHONOPTIMIZE", "1", 1);
-#endif
-    // Info about interesting python envvars available
-    // at http://docs.python.org/using/cmdline.html#environment-variables
 
-#if !defined(TARGET_WINDOWS) && !defined(TARGET_ANDROID)
-    // check if we are running as real xbmc.app or just binary
-    if (!CUtil::GetFrameworksPath(true).empty())
-    {
-      // using external python, it's build looking for xxx/lib/python3.8
-      // so point it to frameworks which is where python3.8 is located
-      setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
-      setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
-      CLog::Log(LOGDEBUG, "PYTHONHOME -> {}",
-                CSpecialProtocol::TranslatePath("special://frameworks"));
-      CLog::Log(LOGDEBUG, "PYTHONPATH -> {}",
-                CSpecialProtocol::TranslatePath("special://frameworks"));
-    }
-#endif
-
-    // *::GlobalInitializeModules() functions call PyImport_ExtendInittab(). PyImport_ExtendInittab() should
-    // be called before Py_Initialize() as required by the Python documentation.
-    CAddonPythonInvoker::GlobalInitializeModules();
-
-#ifdef HAS_WEB_INTERFACE
-    CHTTPPythonWsgiInvoker::GlobalInitializeModules();
-#endif
-
-    Py_Initialize();
-    m_mainThreadState = PyEval_SaveThread();
-
-    m_bInitialized = true;
-  }
-
-  return m_bInitialized;
+  return true;
 }
 
 void XBPython::OnScriptStarted(ILanguageInvoker* invoker)
 {
   if (invoker == NULL)
-    return;
-
-  if (!m_bInitialized)
     return;
 
   PyElem inf;
