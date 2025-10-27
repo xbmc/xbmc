@@ -9,8 +9,10 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_path(MYSQLCLIENT_INCLUDE_DIR NAMES mysql/mysql.h mysql/server/mysql.h)
+  find_path(MYSQLCLIENT_INCLUDE_DIR NAMES mysql/mysql.h mysql/server/mysql.h
+                                    HINTS ${DEPENDS_PATH}/include)
   find_library(MYSQLCLIENT_LIBRARY NAMES mysqlclient libmysql
+                                   HINTS ${DEPENDS_PATH}/lib
                                    PATH_SUFFIXES mysql
                                    ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 

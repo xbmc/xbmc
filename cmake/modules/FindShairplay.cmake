@@ -9,8 +9,10 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_path(SHAIRPLAY_INCLUDE_DIR shairplay/raop.h)
-  find_library(SHAIRPLAY_LIBRARY NAMES shairplay libshairplay)
+  find_path(SHAIRPLAY_INCLUDE_DIR shairplay/raop.h
+                                  HINTS ${DEPENDS_PATH}/include)
+  find_library(SHAIRPLAY_LIBRARY NAMES shairplay libshairplay
+                                 HINTS ${DEPENDS_PATH}/lib)
 
   if(NOT VERBOSE_FIND)
      set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
