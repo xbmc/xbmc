@@ -20,32 +20,69 @@
 
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
 
+namespace
+{
+// Helper: days_from_civil from Howard Hinnant (public domain).
+// Returns days since civil 1970-01-01 (1970-01-01 -> 0).
+int64_t days_from_civil(int64_t y, unsigned m, unsigned d)
+{
+  // y: full year (e.g., 2025), m: 1..12, d: 1..31
+  y -= (m <= 2);
+  const int64_t era{(y >= 0 ? y : y - 399) / 400};
+  const unsigned yoe{static_cast<unsigned>(y - era * 400)}; // [0, 399]
+  const unsigned doy{(153u * (m + (m > 2 ? -3u : 9u)) + 2u) / 5u + d - 1u}; // [0, 365]
+  const unsigned doe{yoe * 365u + yoe / 4u - yoe / 100u + doy}; // [0, 146096]
+  return era * 146097LL + static_cast<int64_t>(doe) - 719468LL;
+}
+
+time_t SystemTimeToTimeT(const KODI::TIME::SystemTime& systemTime)
+{
+  // Basic range validation
+  if (systemTime.month < 1 || systemTime.month > 12 || systemTime.day < 1 || systemTime.day > 31 ||
+      systemTime.hour > 23u || systemTime.minute > 59u ||
+      systemTime.second > 60u /* allow 60 for leap second */)
+    return static_cast<time_t>(-1); // error
+
+  // Compute days since epoch
+  const int64_t days{
+      days_from_civil(static_cast<int64_t>(systemTime.year), systemTime.month, systemTime.day)};
+
+  // Compute seconds since epoch
+  const int64_t seconds{days * 86400LL + static_cast<int64_t>(systemTime.hour) * 3600LL +
+                        static_cast<int64_t>(systemTime.minute) * 60LL +
+                        static_cast<int64_t>(systemTime.second)};
+
+  // Validate range for time_t
+  if (seconds < static_cast<int64_t>(std::numeric_limits<time_t>::min()) ||
+      seconds > static_cast<int64_t>(std::numeric_limits<time_t>::max()))
+    return static_cast<time_t>(-1); // error
+
+  return static_cast<time_t>(seconds);
+}
+} // unnamed namespace
+
 namespace KODI
 {
 namespace TIME
 {
+std::tuple<bool, int64_t> GetTimezoneBias(const SystemTime& time)
+{
+  const time_t t{SystemTimeToTimeT(time)};
+  if (t < 0)
+    return {false, 0}; // error
+
+  struct tm tms;
+  if (!localtime_r(&t, &tms))
+    return {false, 0}; // error
+
+  return {true, -tms.tm_gmtoff / 60};
+}
 
 /*
  * A Leap year is any year that is divisible by four, but not by 100 unless also
  * divisible by 400
  */
 #define IsLeapYear(y) ((!(y % 4)) ? (((!(y % 400)) && (y % 100)) ? 1 : 0) : 0)
-
-uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
-{
-  if (!timeZoneInformation)
-    return KODI_TIME_ZONE_ID_INVALID;
-
-  struct tm t;
-  time_t tt = time(NULL);
-  if (localtime_r(&tt, &t))
-    timeZoneInformation->bias = -t.tm_gmtoff / 60;
-
-  timeZoneInformation->standardName = tzname[0];
-  timeZoneInformation->daylightName = tzname[1];
-
-  return KODI_TIME_ZONE_ID_UNKNOWN;
-}
 
 void GetLocalTime(SystemTime* systemTime)
 {

@@ -13,8 +13,6 @@
 #include <FileAPI.h>
 #include <Windows.h>
 
-using KODI::PLATFORM::WINDOWS::FromW;
-
 namespace KODI
 {
 namespace TIME
@@ -36,25 +34,25 @@ static_assert(offsetof(SystemTime, minute) == offsetof(SYSTEMTIME, wMinute));
 static_assert(offsetof(SystemTime, second) == offsetof(SYSTEMTIME, wSecond));
 } // namespace
 
-uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
+std::tuple<bool, int64_t> GetTimezoneBias(const SystemTime& time)
 {
-  if (!timeZoneInformation)
-    return KODI_TIME_ZONE_ID_INVALID;
+  union FILETIME64
+  {
+    FILETIME ft;
+    LONGLONG ft64;
+  };
 
-  TIME_ZONE_INFORMATION tzi{};
-  uint32_t result = ::GetTimeZoneInformation(&tzi);
-  if (result == TIME_ZONE_ID_INVALID)
-    return KODI_TIME_ZONE_ID_INVALID;
+  // Compute offset = local_filetime - utc_filetime
+  FILETIME64 utc{};
+  if (FALSE == ::SystemTimeToFileTime(reinterpret_cast<const SYSTEMTIME*>(&time), &utc.ft))
+    return {false, 0}; // error
 
-  timeZoneInformation->bias = tzi.Bias;
-  timeZoneInformation->daylightBias = tzi.DaylightBias;
-  timeZoneInformation->daylightDate = *reinterpret_cast<const SystemTime*>(&tzi.DaylightDate);
-  timeZoneInformation->daylightName = FromW(tzi.DaylightName);
-  timeZoneInformation->standardBias = tzi.StandardBias;
-  timeZoneInformation->standardDate = *reinterpret_cast<const SystemTime*>(&tzi.StandardDate);
-  timeZoneInformation->standardName = FromW(tzi.StandardName);
+  FILETIME64 local{};
+  if (FALSE == ::FileTimeToLocalFileTime(&utc.ft, &local.ft))
+    return {false, 0}; // error
 
-  return result;
+  const int64_t gmtoff{(utc.ft64 - local.ft64) / 10000000LL / 60}; // 100-ns intervals -> minutes
+  return {true, gmtoff};
 }
 
 void GetLocalTime(SystemTime* systemTime)

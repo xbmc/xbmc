@@ -9,8 +9,10 @@
 #pragma once
 
 #include <chrono>
+#include <cstdint>
 #include <string>
 #include <thread>
+#include <tuple>
 
 #if !defined(TARGET_WINDOWS)
 #include "PlatformDefs.h"
@@ -39,22 +41,6 @@ struct SystemTime
   unsigned short milliseconds;
 };
 
-struct TimeZoneInformation
-{
-  long bias;
-  std::string standardName;
-  SystemTime standardDate;
-  long standardBias;
-  std::string daylightName;
-  SystemTime daylightDate;
-  long daylightBias;
-};
-
-constexpr int KODI_TIME_ZONE_ID_INVALID{-1};
-constexpr int KODI_TIME_ZONE_ID_UNKNOWN{0};
-constexpr int KODI_TIME_ZONE_ID_STANDARD{1};
-constexpr int KODI_TIME_ZONE_ID_DAYLIGHT{2};
-
 struct FileTime
 {
   unsigned int lowDateTime;
@@ -62,7 +48,12 @@ struct FileTime
 };
 
 void GetLocalTime(SystemTime* systemTime);
-uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation);
+
+/*! \brief Return bias in minutes for the system time zone and the given time value.
+ \param time The time value.
+ \return a tuple with a sucess flag and the the bias in minutes.
+*/
+std::tuple<bool, int64_t> GetTimezoneBias(const SystemTime& time);
 
 template<typename Rep, typename Period>
 void Sleep(std::chrono::duration<Rep, Period> duration)

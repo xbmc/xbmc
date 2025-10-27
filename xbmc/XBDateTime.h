@@ -196,8 +196,12 @@ public:
   void SetValid(bool yesNo);
   bool IsValid() const;
 
-  static void ResetTimezoneBias(void);
-  static CDateTimeSpan GetTimezoneBias(void);
+  /*! \brief Get system timezone bias for this datetime value.
+   \note This calculates the bias for this specific datetime, which may differ
+         from the timezone bias for 'now' if DST rules have changed.
+   \return The bias as time span.
+   */
+  CDateTimeSpan GetTimezoneBias() const;
 
 private:
   bool ToFileTime(const KODI::TIME::SystemTime& time, KODI::TIME::FileTime& fileTime) const;

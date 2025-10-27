@@ -238,10 +238,9 @@ TEST_F(TestDateTime, SetFromW3CDate)
 
 TEST_F(TestDateTime, SetFromW3CDateTime)
 {
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
   CDateTime dateTime;
   dateTime.SetFromDBDateTime("1994-11-05 13:15:30");
-  dateTime += bias;
+  dateTime += dateTime.GetTimezoneBias();
   std::string dateTimeStr = dateTime.GetAsDBDate() + "T" + dateTime.GetAsDBTime() + "Z";
 
   CDateTime dateTime1;
@@ -265,10 +264,9 @@ TEST_F(TestDateTime, SetFromW3CDateTime)
 
 TEST_F(TestDateTime, SetFromUTCDateTime)
 {
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
-
   CDateTime dateTime1;
   dateTime1.SetFromDBDateTime("1991-05-14 12:34:56");
+  const CDateTimeSpan bias{dateTime1.GetTimezoneBias()};
   dateTime1 += bias;
 
   CDateTime dateTime2;
@@ -357,13 +355,11 @@ TEST_F(TestDateTime, GetAsStrings)
 // there is no way to detect the direction of the offset
 TEST_F(TestDateTime, DISABLED_GetAsStringsWithBias)
 {
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
-
   CDateTime dateTime;
   dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
 
   CDateTime dateTimeWithBias(dateTime);
-  dateTimeWithBias += bias;
+  dateTimeWithBias += dateTime.GetTimezoneBias();
 
   EXPECT_EQ(dateTime.GetAsRFC1123DateTime(), "Tue, 14 May 1991 20:34:56 GMT");
   EXPECT_EQ(dateTime.GetAsW3CDateTime(false), "1991-05-14T12:34:56+08:00");
@@ -666,28 +662,24 @@ TEST_F(TestDateTime, GetAsTm)
 // Disabled pending std::chrono and std::date changes.
 TEST_F(TestDateTime, DISABLED_GetAsTimeStamp)
 {
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
-
   CDateTime dateTime;
   dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
 
   KODI::TIME::FileTime fileTime;
   dateTime.GetAsTimeStamp(fileTime);
-  dateTime += bias;
+  dateTime += dateTime.GetTimezoneBias();
 
   EXPECT_TRUE(dateTime == fileTime);
 }
 
 TEST_F(TestDateTime, GetAsUTCDateTime)
 {
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
-
   CDateTime dateTime1;
   dateTime1.SetDateTime(1991, 05, 14, 12, 34, 56);
 
   CDateTime dateTime2;
   dateTime2 = dateTime1.GetAsUTCDateTime();
-  dateTime2 -= bias;
+  dateTime2 -= dateTime1.GetTimezoneBias();
 
   EXPECT_EQ(dateTime2.GetYear(), 1991);
   EXPECT_EQ(dateTime2.GetMonth(), 5);
