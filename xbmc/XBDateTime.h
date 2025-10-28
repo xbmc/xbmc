@@ -163,6 +163,13 @@ public:
   bool SetFromUTCDateTime(const time_t &dateTime);
   bool SetFromRFC1123DateTime(const std::string &dateTime);
 
+  /*!
+   * @brief Set from RFC3339 full-date format YYYY-MM-DD only.
+   * @param[in] date input date.
+   * @return true when the parameter was in the expected format and represented a valid date.
+   */
+  bool SetFromRFC3339FullDate(std::string_view date);
+
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
    \sa GetAsDBDateTime()
    */

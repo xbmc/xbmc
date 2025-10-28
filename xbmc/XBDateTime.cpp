@@ -19,6 +19,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <charconv>
 #include <cstdlib>
 #include <mutex>
 
@@ -1121,6 +1122,47 @@ bool CDateTime::SetFromRFC1123DateTime(const std::string &dateTime)
   int sec  = strtol(date.substr(23, 2).c_str(), NULL, 10);
 
   return SetDateTime(year, month, day, hour, min, sec);
+}
+
+namespace
+{
+template<typename T>
+std::optional<T> ToNumeric(std::string_view str)
+{
+  const char* end{str.data() + str.size()};
+  T result{};
+
+  auto [ptr, ec] = std::from_chars(str.data(), end, result);
+
+  if (ec != std::errc{} || ptr != end || result < 0)
+    return std::nullopt;
+
+  return result;
+}
+} // namespace
+
+bool CDateTime::SetFromRFC3339FullDate(std::string_view date)
+{
+  // The date format must be YYYY-MM-DD
+  if (date.size() != 10)
+    return false;
+
+  if (date[4] != '-' || date[7] != '-')
+    return false;
+
+  const auto year{ToNumeric<int>(date.substr(0, 4))};
+  if (!year.has_value())
+    return false;
+
+  const auto month{ToNumeric<int>(date.substr(5, 2))};
+  if (!month.has_value())
+    return false;
+
+  const auto day{ToNumeric<int>(date.substr(8, 2))};
+  if (!day.has_value())
+    return false;
+
+  return SetDate(year.value(), month.value(), day.value());
 }
 
 CDateTime CDateTime::FromDateString(const std::string &date)
