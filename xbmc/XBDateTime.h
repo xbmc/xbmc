@@ -12,6 +12,7 @@
 #include "utils/TimeFormat.h"
 #include "utils/XTimeUtils.h"
 
+#include <optional>
 #include <string>
 
 #include "PlatformDefs.h"
@@ -203,6 +204,11 @@ public:
    */
   CDateTimeSpan GetTimezoneBias() const;
 
+  /*! \brief Set timezone bias for this datetime value (for testing purposes).
+   \param bias The bias to set.
+   */
+  void SetTimeZoneBias(const CDateTimeSpan& bias) { m_timeZoneBias = bias; }
+
 private:
   bool ToFileTime(const KODI::TIME::SystemTime& time, KODI::TIME::FileTime& fileTime) const;
   bool ToFileTime(const time_t& time, KODI::TIME::FileTime& fileTime) const;
@@ -221,4 +227,5 @@ private:
   };
 
   State m_state;
+  mutable std::optional<CDateTimeSpan> m_timeZoneBias;
 };

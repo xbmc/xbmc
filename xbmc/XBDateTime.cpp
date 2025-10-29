@@ -305,10 +305,7 @@ CDateTime::CDateTime(const KODI::TIME::FileTime& time) : m_time(time)
   SetValid(true);
 }
 
-CDateTime::CDateTime(const CDateTime& time) : m_time(time.m_time)
-{
-  m_state=time.m_state;
-}
+CDateTime::CDateTime(const CDateTime& time) = default;
 
 CDateTime::CDateTime(const time_t& time)
 {
@@ -344,7 +341,7 @@ CDateTime CDateTime::GetUTCDateTime()
 const CDateTime& CDateTime::operator=(const KODI::TIME::SystemTime& right)
 {
   m_state = ToFileTime(right, m_time) ? State::VALID : State::INVALID;
-
+  m_timeZoneBias.reset();
   return *this;
 }
 
@@ -359,14 +356,14 @@ const CDateTime& CDateTime::operator=(const KODI::TIME::FileTime& right)
 const CDateTime& CDateTime::operator =(const time_t& right)
 {
   m_state = ToFileTime(right, m_time) ? State::VALID : State::INVALID;
-
+  m_timeZoneBias.reset();
   return *this;
 }
 
 const CDateTime& CDateTime::operator =(const tm& right)
 {
   m_state = ToFileTime(right, m_time) ? State::VALID : State::INVALID;
-
+  m_timeZoneBias.reset();
   return *this;
 }
 
@@ -666,6 +663,7 @@ void CDateTime::Archive(CArchive& ar)
 void CDateTime::Reset()
 {
   m_time = {0, 0}; // Windows epoch 1601-01-01
+  m_timeZoneBias.reset();
   SetValid(false);
 }
 
@@ -838,6 +836,7 @@ bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, 
   st.second = second;
 
   m_state = ToFileTime(st, m_time) ? State::VALID : State::INVALID;
+  m_timeZoneBias.reset();
   return m_state == State::VALID;
 }
 
@@ -928,6 +927,7 @@ bool CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
 
   m_time = tmp.m_time;
   m_state = tmp.m_state;
+  m_timeZoneBias = tmp.GetTimezoneBias();
   return m_state == State::VALID;
 }
 
@@ -1636,10 +1636,14 @@ int CDateTime::MonthStringToMonthNum(const std::string& month)
 
 CDateTimeSpan CDateTime::GetTimezoneBias() const
 {
-  if (!IsValid())
-    return {};
+  if (!m_timeZoneBias.has_value())
+  {
+    if (!IsValid())
+      return {};
 
-  KODI::TIME::SystemTime time{};
-  GetAsSystemTime(time);
-  return GetTimezoneBiasForSystemTime(time);
+    KODI::TIME::SystemTime time{};
+    GetAsSystemTime(time);
+    m_timeZoneBias = GetTimezoneBiasForSystemTime(time);
+  }
+  return m_timeZoneBias.value();
 }
