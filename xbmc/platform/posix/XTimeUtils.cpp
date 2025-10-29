@@ -210,7 +210,12 @@ int LocalFileTimeToFileTime(const FileTime* localFileTime, FileTime* fileTime)
   l.u.LowPart = localFileTime->lowDateTime;
   l.u.HighPart = localFileTime->highDateTime;
 
-  l.QuadPart += (unsigned long long) timezone * 10000000;
+  time_t ft;
+  struct tm tm_ft;
+  FileTimeToTimeT(localFileTime, &ft);
+  localtime_r(&ft, &tm_ft);
+
+  l.QuadPart -= static_cast<unsigned long long>(tm_ft.tm_gmtoff) * 10000000;
 
   fileTime->lowDateTime = l.u.LowPart;
   fileTime->highDateTime = l.u.HighPart;

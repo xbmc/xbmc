@@ -659,8 +659,7 @@ TEST_F(TestDateTime, GetAsTm)
   }
 }
 
-// Disabled pending std::chrono and std::date changes.
-TEST_F(TestDateTime, DISABLED_GetAsTimeStamp)
+TEST_F(TestDateTime, GetAsTimeStamp)
 {
   CDateTime dateTime;
   dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
