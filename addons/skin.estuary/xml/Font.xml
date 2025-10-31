@@ -78,6 +78,12 @@
 			<style>lighten</style>
 		</font>
 		<font>
+			<name>font120</name>
+			<filename>NotoSans-Regular.ttf</filename>
+			<size>120</size>
+			<style>lighten</style>
+		</font>
+		<font>
 			<name>font_clock</name>
 			<filename>Roboto-Thin.ttf</filename>
 			<size>70</size>
