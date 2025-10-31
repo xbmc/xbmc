@@ -19,7 +19,7 @@ class CFileItem;
 class CApplicationPlayerCallback : public IPlayerCallback
 {
 public:
-  CApplicationPlayerCallback();
+  CApplicationPlayerCallback() = default;
 
   void OnPlayBackEnded() override;
   void OnPlayBackStarted(const CFileItem& file) override;
