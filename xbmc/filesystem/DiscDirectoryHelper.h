@@ -232,6 +232,9 @@ private:
   void GetPlaylistsFromGroup(unsigned int episodeIndex,
                              const std::vector<CandidatePlaylistInformation>& group);
   void UseGroupMethod(unsigned int episodeIndex, const std::vector<CVideoInfoTag>& episodesOnDisc);
+  void UseTotalMethod(unsigned int episodeIndex,
+                      const std::vector<CVideoInfoTag>& episodesOnDisc,
+                      const PlaylistMap& playlists);
   static int CalculateMultiple(std::chrono::milliseconds duration,
                                std::chrono::milliseconds averageShortest,
                                double multiplePercent);
