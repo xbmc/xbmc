@@ -10,12 +10,15 @@
 
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
+#include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include <cstdlib>
+#include <mutex>
 
 #define SECONDS_PER_DAY 86400L
 #define SECONDS_PER_HOUR 3600L
@@ -24,6 +27,8 @@
 
 static const char *DAY_NAMES[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+using namespace std::chrono_literals;
 
 /////////////////////////////////////////////////
 //
@@ -238,6 +243,52 @@ void CDateTimeSpan::SetFromPeriod(const std::string &period)
 // CDateTime
 //
 
+namespace
+{
+CDateTimeSpan GetTimezoneBiasForSystemTime(const KODI::TIME::SystemTime& time)
+{
+  CDateTimeSpan timezoneBias;
+
+  const auto [success, bias] = KODI::TIME::GetTimezoneBias(time);
+  if (success)
+    timezoneBias = CDateTimeSpan(0, 0, static_cast<int>(bias), 0);
+  else
+    CLog::Log(LOGERROR, "Unable to obtain time zone bias!");
+
+  return timezoneBias;
+}
+
+CDateTimeSpan GetCurrentTimezoneBias()
+{
+  static CCriticalSection critSection;
+  static CDateTimeSpan timezoneBias;
+
+  std::unique_lock lock(critSection);
+
+  // This method gets called very often and is expensive, so refresh info only every 5 mins.
+  static XbmcThreads::EndTime<> biasRefreshTimeout(0s);
+  if (biasRefreshTimeout.IsTimePast())
+  {
+    KODI::TIME::SystemTime now;
+    KODI::TIME::GetLocalTime(&now);
+
+    const CDateTimeSpan oldTimezoneBias{timezoneBias};
+    timezoneBias = GetTimezoneBiasForSystemTime(now);
+
+    if (oldTimezoneBias != timezoneBias)
+    {
+      CLog::Log(LOGINFO,
+                "Time zone bias changed from {} mins to {} mins (due to time zone or DST change).",
+                oldTimezoneBias.GetSecondsTotal() / 60, timezoneBias.GetSecondsTotal() / 60);
+    }
+
+    biasRefreshTimeout.Set(5min); // Arm for next refresh.
+  }
+
+  return timezoneBias;
+}
+} // unnamed namespace
+
 CDateTime::CDateTime()
 {
   Reset();
@@ -254,10 +305,7 @@ CDateTime::CDateTime(const KODI::TIME::FileTime& time) : m_time(time)
   SetValid(true);
 }
 
-CDateTime::CDateTime(const CDateTime& time) : m_time(time.m_time)
-{
-  m_state=time.m_state;
-}
+CDateTime::CDateTime(const CDateTime& time) = default;
 
 CDateTime::CDateTime(const time_t& time)
 {
@@ -286,14 +334,14 @@ CDateTime CDateTime::GetCurrentDateTime()
 CDateTime CDateTime::GetUTCDateTime()
 {
   CDateTime time(GetCurrentDateTime());
-  time += GetTimezoneBias();
+  time += GetCurrentTimezoneBias();
   return time;
 }
 
 const CDateTime& CDateTime::operator=(const KODI::TIME::SystemTime& right)
 {
   m_state = ToFileTime(right, m_time) ? State::VALID : State::INVALID;
-
+  m_timeZoneBias.reset();
   return *this;
 }
 
@@ -308,14 +356,14 @@ const CDateTime& CDateTime::operator=(const KODI::TIME::FileTime& right)
 const CDateTime& CDateTime::operator =(const time_t& right)
 {
   m_state = ToFileTime(right, m_time) ? State::VALID : State::INVALID;
-
+  m_timeZoneBias.reset();
   return *this;
 }
 
 const CDateTime& CDateTime::operator =(const tm& right)
 {
   m_state = ToFileTime(right, m_time) ? State::VALID : State::INVALID;
-
+  m_timeZoneBias.reset();
   return *this;
 }
 
@@ -615,6 +663,7 @@ void CDateTime::Archive(CArchive& ar)
 void CDateTime::Reset()
 {
   m_time = {0, 0}; // Windows epoch 1601-01-01
+  m_timeZoneBias.reset();
   SetValid(false);
 }
 
@@ -787,6 +836,7 @@ bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, 
   st.second = second;
 
   m_state = ToFileTime(st, m_time) ? State::VALID : State::INVALID;
+  m_timeZoneBias.reset();
   return m_state == State::VALID;
 }
 
@@ -873,43 +923,12 @@ std::string CDateTime::GetAsSaveString() const
 bool CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
 {
   CDateTime tmp(dateTime);
-  tmp -= GetTimezoneBias();
+  tmp -= tmp.GetTimezoneBias();
 
   m_time = tmp.m_time;
   m_state = tmp.m_state;
+  m_timeZoneBias = tmp.GetTimezoneBias();
   return m_state == State::VALID;
-}
-
-static bool bGotTimezoneBias = false;
-
-void CDateTime::ResetTimezoneBias(void)
-{
-  bGotTimezoneBias = false;
-}
-
-CDateTimeSpan CDateTime::GetTimezoneBias(void)
-{
-  static CDateTimeSpan timezoneBias;
-
-  if (!bGotTimezoneBias)
-  {
-    bGotTimezoneBias = true;
-    KODI::TIME::TimeZoneInformation tz;
-    switch (KODI::TIME::GetTimeZoneInformation(&tz))
-    {
-      case KODI::TIME::KODI_TIME_ZONE_ID_DAYLIGHT:
-        timezoneBias = CDateTimeSpan(0, 0, tz.bias + tz.daylightBias, 0);
-        break;
-      case KODI::TIME::KODI_TIME_ZONE_ID_STANDARD:
-        timezoneBias = CDateTimeSpan(0, 0, tz.bias + tz.standardBias, 0);
-        break;
-      case KODI::TIME::KODI_TIME_ZONE_ID_UNKNOWN:
-        timezoneBias = CDateTimeSpan(0, 0, tz.bias, 0);
-        break;
-    }
-  }
-
-  return timezoneBias;
 }
 
 bool CDateTime::SetFromUTCDateTime(const time_t &dateTime)
@@ -1613,4 +1632,18 @@ int CDateTime::MonthStringToMonthNum(const std::string& month)
   i++;
 
   return i;
+}
+
+CDateTimeSpan CDateTime::GetTimezoneBias() const
+{
+  if (!m_timeZoneBias.has_value())
+  {
+    if (!IsValid())
+      return {};
+
+    KODI::TIME::SystemTime time{};
+    GetAsSystemTime(time);
+    m_timeZoneBias = GetTimezoneBiasForSystemTime(time);
+  }
+  return m_timeZoneBias.value();
 }

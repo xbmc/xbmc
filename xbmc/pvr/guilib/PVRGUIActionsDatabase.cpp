@@ -204,8 +204,6 @@ bool CPVRGUIActionsDatabase::ResetDatabase(bool bResetEPGOnly) const
     bResetClients = selector.IsResetClientsSelected();
   }
 
-  CDateTime::ResetTimezoneBias();
-
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR clearing {} database", bResetEPGOnly ? "EPG" : "PVR and EPG");
 
   pDlgProgress->SetHeading(CVariant{313}); // "Cleaning database"

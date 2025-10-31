@@ -21,9 +21,9 @@ using namespace PVR;
 
 CPVRTimerRuleMatcher::CPVRTimerRuleMatcher(const std::shared_ptr<CPVRTimerInfoTag>& timerRule,
                                            const CDateTime& start)
-  : m_timerRule(timerRule),
-    m_start(CPVRTimerInfoTag::ConvertUTCToLocalTime(start))
+  : m_timerRule(timerRule)
 {
+  m_start.SetFromUTCDateTime(start);
 }
 
 CPVRTimerRuleMatcher::~CPVRTimerRuleMatcher() = default;
@@ -75,9 +75,9 @@ CDateTime CPVRTimerRuleMatcher::GetNextTimerStart() const
 
 bool CPVRTimerRuleMatcher::Matches(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
-  return epgTag && CPVRTimerInfoTag::ConvertUTCToLocalTime(epgTag->EndAsUTC()) > m_start &&
-         MatchSeriesLink(epgTag) && MatchChannel(epgTag) && MatchStart(epgTag) &&
-         MatchEnd(epgTag) && MatchDayOfWeek(epgTag) && MatchSearchText(epgTag);
+  return epgTag && epgTag->EndAsLocalTime() > m_start && MatchSeriesLink(epgTag) &&
+         MatchChannel(epgTag) && MatchStart(epgTag) && MatchEnd(epgTag) && MatchDayOfWeek(epgTag) &&
+         MatchSearchText(epgTag);
 }
 
 bool CPVRTimerRuleMatcher::MatchSeriesLink(
@@ -110,7 +110,7 @@ bool CPVRTimerRuleMatcher::MatchStart(const std::shared_ptr<const CPVREpgInfoTag
   if (m_timerRule->GetTimerType()->SupportsFirstDay())
   {
     // only year, month and day do matter here...
-    const CDateTime startEpgLocal = CPVRTimerInfoTag::ConvertUTCToLocalTime(epgTag->StartAsUTC());
+    const CDateTime startEpgLocal(epgTag->StartAsLocalTime());
     const CDateTime startEpg(startEpgLocal.GetYear(), startEpgLocal.GetMonth(),
                              startEpgLocal.GetDay(), 0, 0, 0);
     const CDateTime firstDayLocal = m_timerRule->FirstDayAsLocalTime();
@@ -126,7 +126,7 @@ bool CPVRTimerRuleMatcher::MatchStart(const std::shared_ptr<const CPVREpgInfoTag
   if (m_timerRule->GetTimerType()->SupportsStartTime())
   {
     // only hours and minutes do matter here...
-    const CDateTime startEpgLocal = CPVRTimerInfoTag::ConvertUTCToLocalTime(epgTag->StartAsUTC());
+    const CDateTime startEpgLocal(epgTag->StartAsLocalTime());
     const CDateTime startEpg(2000, 1, 1, startEpgLocal.GetHour(), startEpgLocal.GetMinute(), 0);
     const CDateTime startTimerLocal = m_timerRule->StartAsLocalTime();
     const CDateTime startTimer(2000, 1, 1, startTimerLocal.GetHour(), startTimerLocal.GetMinute(),
@@ -145,7 +145,7 @@ bool CPVRTimerRuleMatcher::MatchEnd(const std::shared_ptr<const CPVREpgInfoTag>&
   if (m_timerRule->GetTimerType()->SupportsEndTime())
   {
     // only hours and minutes do matter here...
-    const CDateTime endEpgLocal = CPVRTimerInfoTag::ConvertUTCToLocalTime(epgTag->EndAsUTC());
+    const CDateTime endEpgLocal(epgTag->EndAsLocalTime());
     const CDateTime endEpg(2000, 1, 1, endEpgLocal.GetHour(), endEpgLocal.GetMinute(), 0);
     const CDateTime endTimerLocal = m_timerRule->EndAsLocalTime();
     const CDateTime endTimer(2000, 1, 1, endTimerLocal.GetHour(), endTimerLocal.GetMinute(), 0);
@@ -160,7 +160,7 @@ bool CPVRTimerRuleMatcher::MatchDayOfWeek(const std::shared_ptr<const CPVREpgInf
   if (m_timerRule->GetTimerType()->SupportsWeekdays() &&
       m_timerRule->WeekDays() != PVR_WEEKDAY_ALLDAYS)
   {
-    const CDateTime startEpgLocal{CPVRTimerInfoTag::ConvertUTCToLocalTime(epgTag->StartAsUTC())};
+    const CDateTime startEpgLocal{epgTag->StartAsLocalTime()};
     int startWeekday{startEpgLocal.GetDayOfWeek()};
     if (startWeekday == 0)
       startWeekday = 7;

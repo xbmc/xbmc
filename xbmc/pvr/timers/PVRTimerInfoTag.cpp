@@ -28,8 +28,6 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
-#include <array>
-#include <ctime>
 #include <memory>
 #include <mutex>
 #include <stdexcept>
@@ -1000,122 +998,6 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
   return newTag;
 }
 
-//! @todo CDateTime class does not handle daylight saving timezone bias correctly (and cannot easily
-//  be changed to do so due to performance and platform specific issues). In most cases this only
-//  causes GUI presentation glitches, but reminder timer rules rely on correct local time values.
-
-namespace
-{
-#define IsLeapYear(y) ((y % 4 == 0) && (y % 100 != 0 || y % 400 == 0))
-
-int days_from_0(int year)
-{
-  year--;
-  return 365 * year + (year / 400) - (year / 100) + (year / 4);
-}
-
-int days_from_1970(int32_t year)
-{
-  static const int days_from_0_to_1970 = days_from_0(1970);
-  return days_from_0(year) - days_from_0_to_1970;
-}
-
-int days_from_1jan(int year, int month, int day)
-{
-  static constexpr std::array<std::array<int, 12>, 2> days = {
-      {{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
-       {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335}}};
-  return days[IsLeapYear(year)][month - 1] + day - 1;
-}
-
-time_t mytimegm(const struct tm* time)
-{
-  int year = time->tm_year + 1900;
-  int month = time->tm_mon;
-
-  if (month > 11)
-  {
-    year += month / 12;
-    month %= 12;
-  }
-  else if (month < 0)
-  {
-    int years_diff = (-month + 11) / 12;
-    year -= years_diff;
-    month += 12 * years_diff;
-  }
-
-  month++;
-
-  int day_of_year = days_from_1jan(year, month, time->tm_mday);
-  int days_since_epoch = days_from_1970(year) + day_of_year;
-
-  return 3600 * 24 * days_since_epoch + 3600 * time->tm_hour + 60 * time->tm_min + time->tm_sec;
-}
-} // namespace
-
-CDateTime CPVRTimerInfoTag::ConvertUTCToLocalTime(const CDateTime& utc)
-{
-  time_t time = 0;
-  utc.GetAsTime(time);
-
-  const struct tm* tms{nullptr};
-#ifdef HAVE_LOCALTIME_R
-  struct tm gbuf = {};
-  tms = localtime_r(&time, &gbuf);
-#else
-  tms = localtime(&time);
-#endif
-
-  if (!tms)
-  {
-    CLog::LogF(LOGWARNING, "localtime() returned NULL!");
-    return {};
-  }
-
-  return CDateTime(mytimegm(tms));
-}
-
-CDateTime CPVRTimerInfoTag::ConvertLocalTimeToUTC(const CDateTime& local)
-{
-  time_t time = 0;
-  local.GetAsTime(time);
-
-  struct tm* tms{nullptr};
-
-  // obtain dst flag for given datetime
-#ifdef HAVE_LOCALTIME_R
-  struct tm loc_buf = {};
-  tms = localtime_r(&time, &loc_buf);
-#else
-  tms = localtime(&time);
-#endif
-
-  if (!tms)
-  {
-    CLog::LogF(LOGWARNING, "localtime() returned NULL!");
-    return {};
-  }
-
-  int isdst = tms->tm_isdst;
-
-#ifdef HAVE_GMTIME_R
-  struct tm gm_buf = {};
-  tms = gmtime_r(&time, &gm_buf);
-#else
-  tms = gmtime(&time);
-#endif
-
-  if (!tms)
-  {
-    CLog::LogF(LOGWARNING, "gmtime() returned NULL!");
-    return {};
-  }
-
-  tms->tm_isdst = isdst;
-  return CDateTime(mktime(tms));
-}
-
 CDateTime CPVRTimerInfoTag::StartAsUTC() const
 {
   return m_StartTime;
@@ -1123,7 +1005,9 @@ CDateTime CPVRTimerInfoTag::StartAsUTC() const
 
 CDateTime CPVRTimerInfoTag::StartAsLocalTime() const
 {
-  return ConvertUTCToLocalTime(m_StartTime);
+  CDateTime ret;
+  ret.SetFromUTCDateTime(m_StartTime);
+  return ret;
 }
 
 void CPVRTimerInfoTag::SetStartFromUTC(const CDateTime& start)
@@ -1133,7 +1017,7 @@ void CPVRTimerInfoTag::SetStartFromUTC(const CDateTime& start)
 
 void CPVRTimerInfoTag::SetStartFromLocalTime(const CDateTime& start)
 {
-  m_StartTime = ConvertLocalTimeToUTC(start);
+  m_StartTime = start.GetAsUTCDateTime();
 }
 
 CDateTime CPVRTimerInfoTag::EndAsUTC() const
@@ -1143,7 +1027,9 @@ CDateTime CPVRTimerInfoTag::EndAsUTC() const
 
 CDateTime CPVRTimerInfoTag::EndAsLocalTime() const
 {
-  return ConvertUTCToLocalTime(m_StopTime);
+  CDateTime ret;
+  ret.SetFromUTCDateTime(m_StopTime);
+  return ret;
 }
 
 void CPVRTimerInfoTag::SetEndFromUTC(const CDateTime& end)
@@ -1153,7 +1039,7 @@ void CPVRTimerInfoTag::SetEndFromUTC(const CDateTime& end)
 
 void CPVRTimerInfoTag::SetEndFromLocalTime(const CDateTime& end)
 {
-  m_StopTime = ConvertLocalTimeToUTC(end);
+  m_StopTime = end.GetAsUTCDateTime();
 }
 
 int CPVRTimerInfoTag::GetDuration() const
@@ -1174,7 +1060,9 @@ CDateTime CPVRTimerInfoTag::FirstDayAsUTC() const
 
 CDateTime CPVRTimerInfoTag::FirstDayAsLocalTime() const
 {
-  return ConvertUTCToLocalTime(m_FirstDay);
+  CDateTime ret;
+  ret.SetFromUTCDateTime(m_FirstDay);
+  return ret;
 }
 
 void CPVRTimerInfoTag::SetFirstDayFromUTC(const CDateTime& firstDay)
@@ -1184,7 +1072,7 @@ void CPVRTimerInfoTag::SetFirstDayFromUTC(const CDateTime& firstDay)
 
 void CPVRTimerInfoTag::SetFirstDayFromLocalTime(const CDateTime& firstDay)
 {
-  m_FirstDay = ConvertLocalTimeToUTC(firstDay);
+  m_FirstDay = firstDay.GetAsUTCDateTime();
 }
 
 std::string CPVRTimerInfoTag::GetNotificationText() const
