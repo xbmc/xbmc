@@ -90,6 +90,31 @@ CJNIBitmap GetBitmapFromDrawable(CJNIDrawable& drawable)
   return bmp;
 }
 
+CJNIBitmap GetBitmap(CJNIDrawable& drawable)
+{
+  JNIEnv* env = xbmc_jnienv();
+  CJNIBitmap bmp;
+  jclass cBmpDrw = env->FindClass("android/graphics/drawable/BitmapDrawable");
+  jclass cAidDrw = CJNIBase::GetSDKVersion() >= 26
+                       ? env->FindClass("android/graphics/drawable/AdaptiveIconDrawable")
+                       : nullptr;
+
+  if (env->IsInstanceOf(drawable.get_raw(), cBmpDrw))
+  {
+    CJNIBitmapDrawable resbmp = drawable;
+    if (resbmp)
+      bmp = resbmp.getBitmap();
+  }
+  else if (cAidDrw && env->IsInstanceOf(drawable.get_raw(), cAidDrw))
+    bmp = GetBitmapFromDrawable(drawable);
+
+  env->DeleteLocalRef(cBmpDrw);
+  if (cAidDrw)
+    env->DeleteLocalRef(cAidDrw);
+
+  return bmp;
+}
+
 } // namespace
 
 unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* width, unsigned int* height)
@@ -99,10 +124,6 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
   int densities[] = { CJNIDisplayMetrics::DENSITY_XXXHIGH, CJNIDisplayMetrics::DENSITY_XXHIGH, CJNIDisplayMetrics::DENSITY_XHIGH, -1 };
 
   CJNIBitmap bmp;
-  jclass cBmpDrw = env->FindClass("android/graphics/drawable/BitmapDrawable");
-  jclass cAidDrw = CJNIBase::GetSDKVersion() >= 26
-                       ? env->FindClass("android/graphics/drawable/AdaptiveIconDrawable")
-                       : nullptr;
 
   if (m_icon)
   {
@@ -115,22 +136,10 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
       {
         int density = densities[i];
         CJNIDrawable drw = res.getDrawableForDensity(m_icon, density, CJNIContext::getTheme());
-        if (xbmc_jnienv()->ExceptionCheck())
-          xbmc_jnienv()->ExceptionClear();
-        else if (!drw);
-        else
-        {
-          if (env->IsInstanceOf(drw.get_raw(), cBmpDrw))
-          {
-            CJNIBitmapDrawable resbmp = drw;
-            if (resbmp)
-              bmp = resbmp.getBitmap();
-          }
-          else if (cAidDrw && env->IsInstanceOf(drw.get_raw(), cAidDrw))
-          {
-            bmp = GetBitmapFromDrawable(drw);
-          }
-        }
+        if (env->ExceptionCheck())
+          env->ExceptionClear();
+        if (drw)
+          bmp = GetBitmap(drw);
       }
     }
   }
@@ -138,22 +147,10 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
   if (!bmp)
   {
     CJNIDrawable drw = CJNIContext::GetPackageManager().getApplicationIcon(m_packageName);
-    if (xbmc_jnienv()->ExceptionCheck())
-      xbmc_jnienv()->ExceptionClear();
-    else if (!drw);
-    else
-    {
-      if (env->IsInstanceOf(drw.get_raw(), cBmpDrw))
-      {
-        CJNIBitmapDrawable resbmp = drw;
-        if (resbmp)
-          bmp = resbmp.getBitmap();
-      }
-      else if (cAidDrw && env->IsInstanceOf(drw.get_raw(), cAidDrw))
-      {
-        bmp = GetBitmapFromDrawable(drw);
-      }
-    }
+    if (env->ExceptionCheck())
+      env->ExceptionClear();
+    if (drw)
+      bmp = GetBitmap(drw);
   }
   if (!bmp)
     return 0;
