@@ -1,5 +1,5 @@
 include ../../Makefile.include LIBXKBCOMMON-VERSION ../../download-files.include
-DEPS =../../Makefile.include LIBXKBCOMMON-VERSION Makefile 0001-No-error-on-out-of-bounds-keycode.patch ../../download-files.include
+DEPS =../../Makefile.include LIBXKBCOMMON-VERSION Makefile ../../download-files.include
 
 # configuration settings
 MESON_BUILD_TYPE=release
@@ -31,7 +31,6 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../0001-No-error-on-out-of-bounds-keycode.patch
 	cd $(PLATFORM); $(CONFIGURE) . build
 
 $(LIBDYLIB): $(PLATFORM)
