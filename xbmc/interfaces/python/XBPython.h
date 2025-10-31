@@ -107,8 +107,6 @@ public:
   bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
 private:
-  static bool m_bInitialized; // whether global python runtime was already initialized
-
   CCriticalSection m_critSection;
   PyThreadState* m_mainThreadState{nullptr};
   int m_iDllScriptCounter{0}; // to keep track of the total scripts running that need the dll
