@@ -129,7 +129,7 @@ ifeq ($(OS),linux)
 
   ifeq ($(TARGET_PLATFORM),webos)
     DEPENDS += libdovi wayland waylandpp wayland-protocols webos-wayland-extensions webos-userland
-    EXCLUDED_DEPENDS += dbus linux-system-x11-libs pipewire mesa
+    EXCLUDED_DEPENDS += dbus mtdev libevdev libinput linux-system-x11-libs pipewire mesa
   endif
 
   ifneq (,$(findstring gbm,$(TARGET_PLATFORM)))
