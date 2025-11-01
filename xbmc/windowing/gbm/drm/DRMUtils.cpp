@@ -163,6 +163,15 @@ bool CDRMUtils::FindPlanes(uint32_t format, uint64_t modifier)
   if (m_gui_plane == nullptr)
     return false;
 
+  if (!m_gui_plane_alpha)
+  {
+    CLog::Log(
+        LOGWARNING,
+        "CDRMUtils::{} - GUI plane can not do alpha blending, video will be rendered through EGL",
+        __FUNCTION__);
+    return false;
+  }
+
   // current config already satisfies
   if (m_video_plane != nullptr && m_video_plane->SupportsFormatAndModifier(format, modifier))
     return true;
@@ -251,16 +260,24 @@ bool CDRMUtils::InitGuiPlane(CEGLContextUtils* eglContext, EGLint renderableType
   m_video_plane = nullptr;
   m_crtc = nullptr;
 
+  struct
+  {
+    uint32_t drmformat;
+    std::vector<uint32_t> eglformats;
+    bool alpha;
+  } typedef formatmap;
+
   // add more formats here in future
-  std::map<std::uint32_t, std::vector<uint32_t>> formats{
-      {DRM_FORMAT_ARGB8888, {DRM_FORMAT_ARGB8888, DRM_FORMAT_XRGB8888}},
+  std::vector<formatmap> formats{
+      {DRM_FORMAT_ARGB8888, {DRM_FORMAT_ARGB8888, DRM_FORMAT_XRGB8888}, true},
+      {DRM_FORMAT_XRGB8888, {DRM_FORMAT_ARGB8888, DRM_FORMAT_XRGB8888}, false},
   };
 
-  for (auto const& format : formats)
+  for (formatmap const& format : formats)
   {
     // check if EGL supports a format compatible with the DRM format
     uint32_t eglformat = DRM_FORMAT_INVALID;
-    for (uint32_t eformat : format.second)
+    for (uint32_t eformat : format.eglformats)
     {
       if (!eglContext->ChooseConfig(renderableType, eformat))
         continue;
@@ -271,7 +288,7 @@ bool CDRMUtils::InitGuiPlane(CEGLContextUtils* eglContext, EGLint renderableType
     if (eglformat == DRM_FORMAT_INVALID)
     {
       CLog::Log(LOGWARNING, "CDRMUtils::{} - No egl format found for plane format {}", __FUNCTION__,
-                DRMHELPERS::FourCCToString(format.first));
+                DRMHELPERS::FourCCToString(format.drmformat));
       continue;
     }
 
@@ -291,9 +308,9 @@ bool CDRMUtils::InitGuiPlane(CEGLContextUtils* eglContext, EGLint renderableType
         if (!(gui_plane->GetPossibleCrtcs() & (1 << crtc_offset)))
           continue;
         // format is not supported
-        if (!gui_plane->SupportsFormat(format.first))
+        if (!gui_plane->SupportsFormat(format.drmformat))
           continue;
-        num_modifiers = gui_plane->GetModifiersForFormat(format.first).size();
+        num_modifiers = gui_plane->GetModifiersForFormat(format.drmformat).size();
         // gui is compressed but there are planes with more modifier types
         if (useCompression && num_modifiers < best_modifiers)
           continue;
@@ -303,6 +320,7 @@ bool CDRMUtils::InitGuiPlane(CEGLContextUtils* eglContext, EGLint renderableType
         best_modifiers = num_modifiers;
         m_crtc = m_crtcs[crtc_offset].get();
         m_gui_plane = gui_plane.get();
+        m_gui_plane_alpha = format.alpha;
       }
     }
 
@@ -311,9 +329,9 @@ bool CDRMUtils::InitGuiPlane(CEGLContextUtils* eglContext, EGLint renderableType
       CLog::Log(LOGINFO,
                 "CDRMUtils::{} - Requested GUI plane is found with id: {} and plane format {}, egl "
                 "format {} over crtc id: {}",
-                __FUNCTION__, m_gui_plane->GetId(), DRMHELPERS::FourCCToString(format.first),
+                __FUNCTION__, m_gui_plane->GetId(), DRMHELPERS::FourCCToString(format.drmformat),
                 DRMHELPERS::FourCCToString(eglformat), m_crtc->GetId());
-      m_gui_plane->SetFormat(format.first);
+      m_gui_plane->SetFormat(format.drmformat);
       return true;
     }
   }

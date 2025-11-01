@@ -83,6 +83,7 @@ protected:
   CDRMPlane* m_video_plane{nullptr};
   CDRMPlane* m_gui_plane{nullptr};
   drmModeModeInfo* m_mode = nullptr;
+  bool m_gui_plane_alpha = false;
 
   int m_width = 0;
   int m_height = 0;
