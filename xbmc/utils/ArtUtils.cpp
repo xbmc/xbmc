@@ -233,8 +233,8 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
   if (item.IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(item.GetPath());
 
-  if (URIUtils::IsBlurayPath(file))
-    file = strFile = URIUtils::GetDiscFile(file);
+  if (URIUtils::IsBlurayPath(item.GetDynPath()))
+    file = strFile = URIUtils::GetDiscFile(item.GetDynPath());
 
   if (URIUtils::IsOpticalMediaFile(file))
   {
@@ -242,9 +242,6 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
     useFolder = true; // ByRef so changes behaviour in GetLocalArt()
     strFile = URIUtils::GetBasePath(file);
   }
-
-  if (URIUtils::IsBlurayPath(file))
-    strFile = URIUtils::GetDiscFile(file);
 
   if (!URIUtils::GetFileName(file).empty() && item.HasVideoInfoTag() &&
       additionalIdentifiers != AdditionalIdentifiers::NONE)

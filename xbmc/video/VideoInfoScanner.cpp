@@ -2186,13 +2186,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         std::string path;
         if (content == ContentType::TVSHOWS)
+        {
           path = ART::GetLocalArtBaseFilename(*pItem, useFolder,
                                               pItem->GetProperty(MULTIPLE_EPISODES).asBoolean(false)
                                                   ? ART::AdditionalIdentifiers::SEASON_AND_EPISODE
                                                   : ART::AdditionalIdentifiers::NONE);
-        else if (content == ContentType::MOVIE_VERSIONS || pItem->GetVideoInfoTag()->m_iTrack > -1)
+        }
+        else if (content == ContentType::MOVIE_VERSIONS ||
+                 (pItem->HasVideoVersions() && pItem->GetVideoInfoTag()->m_iTrack > -1))
+        {
+          // Add playlist identifier only when there are multiple versions of the movie on the same disc
           path =
               ART::GetLocalArtBaseFilename(*pItem, useFolder, ART::AdditionalIdentifiers::PLAYLIST);
+        }
         else
           path = ART::GetLocalArtBaseFilename(*pItem, useFolder);
         AddLocalItemArtwork(art, artTypes, path, addAll, exactName);
