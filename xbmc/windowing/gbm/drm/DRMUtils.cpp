@@ -168,7 +168,7 @@ bool CDRMUtils::FindPlanes(uint32_t format, uint64_t modifier)
     return true;
 
   uint32_t guiFormat = m_gui_plane->GetFormat();
-  uint32_t guiModifier = m_gui_plane->GetModifier();
+  uint64_t guiModifier = m_gui_plane->GetModifier();
   // loop over current crtc which is capable of rendering on the connected encoder (port)
   for (size_t crtc_offset = 0; crtc_offset < m_crtcs.size(); crtc_offset++)
   {
