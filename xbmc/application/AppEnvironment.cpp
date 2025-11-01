@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "settings/SettingsComponent.h"
+#include "utils/i18n/SubTagRegistry.h"
 #include "utils/log.h"
 
 void CAppEnvironment::SetUp(const std::shared_ptr<CAppParams>& appParams)
@@ -19,10 +20,12 @@ void CAppEnvironment::SetUp(const std::shared_ptr<CAppParams>& appParams)
   const auto settingsComponent = std::make_shared<CSettingsComponent>();
   settingsComponent->Initialize();
   CServiceBroker::RegisterSettingsComponent(settingsComponent);
+  g_subTagRegistry.Initialize();
 }
 
 void CAppEnvironment::TearDown()
 {
+  g_subTagRegistry.Deinitialize();
   CServiceBroker::GetLogging().UnregisterFromSettings();
   CServiceBroker::GetSettingsComponent()->Deinitialize();
   CServiceBroker::UnregisterSettingsComponent();
