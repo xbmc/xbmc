@@ -556,6 +556,17 @@ void CUtil::CleanString(const std::string& strFileName,
     strTitleAndYear += URIUtils::GetExtension(strFileName);
 }
 
+std::string CUtil::SQLTableCleanString(const std::string& table)
+{
+  std::string t = table.substr(0, 32);
+  for (char& c : t)
+  {
+    if (c == '.' || c == '/')
+      c = '_';
+  }
+  return t;
+}
+
 void CUtil::GetQualifiedFilename(const std::string &strBasePath, std::string &strFilename)
 {
   // Check if the filename is a fully qualified URL such as protocol://path/to/file
