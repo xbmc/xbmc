@@ -512,7 +512,7 @@ macro(BUILD_DEP_TARGET)
 
   # Set both <UPPER>_FOUND and <lower>_FOUND as we have some legacy macros/functions that
   # rely on <UPPER>_FOUND, but cmake has new policies that are heading towards <lower>_FOUND
-  set(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND ON CACHE BOOL "${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND" FORCE)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND 1)
 
   string(TOUPPER "${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}" _search_upper)
   set(${_search_upper}_FOUND ON CACHE BOOL "${_search_upper}_FOUND" FORCE)
