@@ -406,6 +406,7 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <enter>Enter</enter>
+      <select>Enter</select>
       <pageminus>CursorLeft</pageminus>
       <pageplus>CursorRight</pageplus>
     </remote>
@@ -433,6 +434,7 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <enter>Enter</enter>
+      <select>Enter</select>
       <back>Back</back>
     </remote>
   </NumericInput>
