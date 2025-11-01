@@ -1,0 +1,78 @@
+{
+  "__input": "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedAddFileToFolder":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file/NewFile.pdf",
+  "expectedAppendSlash":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file/",
+  "expectedCanonicalizePathUnix":
+      "zip:/zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedCanonicalizePathWin":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedCreateAPKArchivePath":
+      "apk://passwd@zip%3a%2f%2fzip%253a%252f%252f%25252Fpath%25252Fto%25252Fzip%252fpath%252fto%252fzip%2fsubpath%2fto%2ffile/my/archived/path",
+  "expectedCreateRARArchivePath":
+      "rar://passwd@zip%3a%2f%2fzip%253a%252f%252f%25252Fpath%25252Fto%25252Fzip%252fpath%252fto%252fzip%2fsubpath%2fto%2ffile/my/archived/path",
+  "expectedCreateZIPArchivePath":
+      "zip://passwd@zip%3a%2f%2fzip%253a%252f%252f%25252Fpath%25252Fto%25252Fzip%252fpath%252fto%252fzip%2fsubpath%2fto%2ffile/my/archived/path",
+  "expectedDecode": "zip://zip://%2Fpath%2Fto%2Fzip/path/to/zip/subpath/to/file",
+  "expectedDecodeFileName": "subpath/to/file",
+  "expectedEncode":
+      "zip%3a%2f%2fzip%253a%252f%252f%25252Fpath%25252Fto%25252Fzip%252fpath%252fto%252fzip%2fsubpath%2fto%2ffile",
+  "expectedFileOrFolder": "file",
+  "expectedGet": "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedGetBasePath": "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/",
+  "expectedGetBlurayAllEpisodesPath": "root/episode/all",
+  "expectedGetBlurayEpisodePath": "root/episode/1/2",
+  "expectedGetBlurayPlaylistPath": "BDMV/PLAYLIST/",
+  "expectedGetBlurayRootPath": "root",
+  "expectedGetBlurayTitlesPath": "root/titles",
+  "expectedGetDirectory":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/",
+  "expectedGetDiscBase": "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/",
+  "expectedGetDiscBasePath":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/",
+  "expectedGetFileName": "subpath/to/file",
+  "expectedGetFileNameUtil": "file",
+  "expectedGetFileNameWithoutPath": "file",
+  "expectedGetHostName": "zip://%2Fpath%2Fto%2Fzip/path/to/zip",
+  "expectedGetParentPath":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/",
+  "expectedGetProtocol": "zip",
+  "expectedGetRealPath":
+      "zip://zip%3a%2f%2f%252fpath%252fto%252fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedGetRedacted":
+      "zip://zip%3a%2f%2f%252fpath%252fto%252fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedGetShareName": "subpath",
+  "expectedGetTranslatedProtocol": "zip",
+  "expectedGetWithoutFilename": "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/",
+  "expectedGetWithoutOptions":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedGetWithoutUserDetails_redacted":
+      "zip://zip%3a%2f%2f%252fpath%252fto%252fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedGetWithoutUserDetails_removed":
+      "zip://zip%3a%2f%2f%252fpath%252fto%252fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedHasEncodedHostname": true,
+  "expectedHasParentInHostname": true,
+  "expectedHasParentPath":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/",
+  "expectedIsFixSlashesAndDupsUnix":
+      "zip:/zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedIsFixSlashesAndDupsWin":
+      "zip:\\zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip\\subpath\\to\\file",
+  "expectedIsFullPath": true,
+  "expectedIsHD": true,
+  "expectedIsHostOnLAN": true,
+  "expectedIsInArchive": true,
+  "expectedIsInZIP": true,
+  "expectedIsURL": true,
+  "expectedRemovedEndSlash":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedRemovedExtension":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file",
+  "expectedReplacedExtension":
+      "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/filexyz",
+  "expectedSplitFileName": "file",
+  "expectedSplitPath": "zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/",
+  "expectedUpdateUrlEncoding":
+      "zip://zip%3a%2f%2f%252fpath%252fto%252fzip%2fpath%2fto%2fzip/subpath/to/file"
+}

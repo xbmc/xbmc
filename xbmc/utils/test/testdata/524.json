@@ -1,0 +1,79 @@
+{
+  "__input":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedAddFileToFolder":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3/NewFile.pdf",
+  "expectedAppendSlash":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3/",
+  "expectedCanonicalizePathUnix":
+      "davs:/otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedCanonicalizePathWin":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedCreateAPKArchivePath":
+      "apk://passwd@davs%3a%2f%2fotherserver%2fmy%2520music%2520path%2fPhil%2520Collins%2fSome%2520CD%2f01%2520-%2520Two%2520Hearts.mp3/my/archived/path",
+  "expectedCreateRARArchivePath":
+      "rar://passwd@davs%3a%2f%2fotherserver%2fmy%2520music%2520path%2fPhil%2520Collins%2fSome%2520CD%2f01%2520-%2520Two%2520Hearts.mp3/my/archived/path",
+  "expectedCreateZIPArchivePath":
+      "zip://passwd@davs%3a%2f%2fotherserver%2fmy%2520music%2520path%2fPhil%2520Collins%2fSome%2520CD%2f01%2520-%2520Two%2520Hearts.mp3/my/archived/path",
+  "expectedDecode": "davs://otherserver/my music path/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedDecodeFileName": "my music path/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedEncode":
+      "davs%3a%2f%2fotherserver%2fmy%2520music%2520path%2fPhil%2520Collins%2fSome%2520CD%2f01%2520-%2520Two%2520Hearts.mp3",
+  "expectedExtension": ".mp3",
+  "expectedFileOrFolder": "01%20-%20Two%20Hearts.mp3",
+  "expectedGet":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedGetBasePath": "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/",
+  "expectedGetBlurayAllEpisodesPath": "root/episode/all",
+  "expectedGetBlurayEpisodePath": "root/episode/1/2",
+  "expectedGetBlurayPlaylistPath": "BDMV/PLAYLIST/",
+  "expectedGetBlurayRootPath": "root",
+  "expectedGetBlurayTitlesPath": "root/titles",
+  "expectedGetDirectory": "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/",
+  "expectedGetDiscBase": "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/",
+  "expectedGetDiscBasePath": "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/",
+  "expectedGetFileName": "my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedGetFileNameUtil": "01%20-%20Two%20Hearts.mp3",
+  "expectedGetFileNameWithoutPath": "01%20-%20Two%20Hearts.mp3",
+  "expectedGetHostName": "otherserver",
+  "expectedGetParentPath": "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/",
+  "expectedGetProtocol": "davs",
+  "expectedGetRealPath":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedGetRedacted":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedGetShareName": "my%20music%20path",
+  "expectedGetTranslatedProtocol": "https",
+  "expectedGetWithoutFilename": "davs://otherserver/",
+  "expectedGetWithoutOptions":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedGetWithoutUserDetails_redacted":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedGetWithoutUserDetails_removed":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedHasEncodedFilename": true,
+  "expectedHasExtension": true,
+  "expectedHasParentPath": "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/",
+  "expectedIsDAV": true,
+  "expectedIsFixSlashesAndDupsUnix":
+      "davs:/otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedIsFixSlashesAndDupsWin":
+      "davs:\\otherserver\\my%20music%20path\\Phil%20Collins\\Some%20CD\\01%20-%20Two%20Hearts.mp3",
+  "expectedIsFullPath": true,
+  "expectedIsInternetStreamStrict": true,
+  "expectedIsNetworkFilesystem": true,
+  "expectedIsOnLAN": true,
+  "expectedIsRemote": true,
+  "expectedIsStreamedFilesystem": true,
+  "expectedIsURL": true,
+  "expectedRemovedEndSlash":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3",
+  "expectedRemovedExtension":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts",
+  "expectedReplacedExtension":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Heartsxyz",
+  "expectedSplitFileName": "01%20-%20Two%20Hearts.mp3",
+  "expectedSplitPath": "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/",
+  "expectedUpdateUrlEncoding":
+      "davs://otherserver/my%20music%20path/Phil%20Collins/Some%20CD/01%20-%20Two%20Hearts.mp3"
+}

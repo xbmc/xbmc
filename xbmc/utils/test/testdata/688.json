@@ -1,0 +1,67 @@
+{
+  "__input": "zip://%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2ezip/video.avi",
+  "expectedAddFileToFolder":
+      "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi/NewFile.pdf",
+  "expectedAppendSlash": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi/",
+  "expectedCanonicalizePathUnix":
+      "zip:/%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2ezip/video.avi",
+  "expectedCanonicalizePathWin":
+      "zip://%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2ezip/video.avi",
+  "expectedCreateAPKArchivePath":
+      "apk://passwd@zip%3a%2f%2f%252fpath%252fto%252farchive%252fsome-archive.file.zip%2fvideo.avi/my/archived/path",
+  "expectedCreateRARArchivePath":
+      "rar://passwd@zip%3a%2f%2f%252fpath%252fto%252farchive%252fsome-archive.file.zip%2fvideo.avi/my/archived/path",
+  "expectedCreateZIPArchivePath":
+      "zip://passwd@zip%3a%2f%2f%252fpath%252fto%252farchive%252fsome-archive.file.zip%2fvideo.avi/my/archived/path",
+  "expectedDecode": "zip:///path/to/archive/some-archive.file.zip/video.avi",
+  "expectedDecodeFileName": "video.avi",
+  "expectedEncode":
+      "zip%3a%2f%2f%252fpath%252fto%252farchive%252fsome%252darchive%252efile%252ezip%2fvideo.avi",
+  "expectedExtension": ".avi",
+  "expectedFileOrFolder": "video.avi",
+  "expectedGet": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi",
+  "expectedGetBasePath": "zip://%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2ezip/",
+  "expectedGetBlurayAllEpisodesPath": "root/episode/all",
+  "expectedGetBlurayEpisodePath": "root/episode/1/2",
+  "expectedGetBlurayPlaylistPath": "BDMV/PLAYLIST/",
+  "expectedGetBlurayRootPath": "root",
+  "expectedGetBlurayTitlesPath": "root/titles",
+  "expectedGetDirectory": "zip://%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2ezip/",
+  "expectedGetDiscBase": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/",
+  "expectedGetDiscBasePath": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/",
+  "expectedGetFileName": "video.avi",
+  "expectedGetFileNameUtil": "video.avi",
+  "expectedGetFileNameWithoutPath": "video.avi",
+  "expectedGetHostName": "/path/to/archive/some-archive.file.zip",
+  "expectedGetParentPath": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/",
+  "expectedGetProtocol": "zip",
+  "expectedGetRealPath": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi",
+  "expectedGetRedacted": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi",
+  "expectedGetShareName": "video.avi",
+  "expectedGetTranslatedProtocol": "zip",
+  "expectedGetWithoutFilename": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/",
+  "expectedGetWithoutOptions": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi",
+  "expectedGetWithoutUserDetails_redacted":
+      "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi",
+  "expectedGetWithoutUserDetails_removed":
+      "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi",
+  "expectedHasEncodedHostname": true,
+  "expectedHasExtension": true,
+  "expectedHasParentInHostname": true,
+  "expectedHasParentPath": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/",
+  "expectedIsFixSlashesAndDupsUnix":
+      "zip:/%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2ezip/video.avi",
+  "expectedIsFixSlashesAndDupsWin":
+      "zip:\\%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2ezip\\video.avi",
+  "expectedIsFullPath": true,
+  "expectedIsHD": true,
+  "expectedIsInArchive": true,
+  "expectedIsInZIP": true,
+  "expectedIsURL": true,
+  "expectedRemovedEndSlash": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi",
+  "expectedRemovedExtension": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video",
+  "expectedReplacedExtension": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/videoxyz",
+  "expectedSplitFileName": "video.avi",
+  "expectedSplitPath": "zip://%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2ezip/",
+  "expectedUpdateUrlEncoding": "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi"
+}
