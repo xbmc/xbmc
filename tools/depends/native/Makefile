@@ -88,6 +88,7 @@ meson: python3 pythonmodule-setuptools
 ninja: meson
 openssl: zlib
 pcre2: cmake
+pkgconf: meson ninja
 pugixml: cmake
 python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
 pythonmodule-setuptools: python3
