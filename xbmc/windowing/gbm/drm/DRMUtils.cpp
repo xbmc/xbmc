@@ -225,9 +225,11 @@ bool CDRMUtils::FindPlanes(uint32_t format, uint64_t modifier)
     }
   }
 
-  CLog::Log(
-      LOGERROR, "CDRMUtils::{} - Can not find a Video Plane plane with format {}, modifier {}",
-      __FUNCTION__, DRMHELPERS::FourCCToString(format), DRMHELPERS::ModifierToString(modifier));
+  CLog::Log(LOGWARNING,
+            "CDRMUtils::{} - Can not find a Video Plane plane with format {}, modifier {}."
+            "Rendering will be done through EGL",
+            __FUNCTION__, DRMHELPERS::FourCCToString(format),
+            DRMHELPERS::ModifierToString(modifier));
   return false;
 
 success:
