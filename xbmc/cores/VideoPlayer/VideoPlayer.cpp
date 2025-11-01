@@ -66,6 +66,7 @@
 
 #include <chrono>
 #include <iterator>
+#include <limits>
 #include <memory>
 #include <mutex>
 #include <utility>
@@ -2660,7 +2661,30 @@ void CVideoPlayer::OnExit()
     CLog::Log(LOGINFO, "VideoPlayer: eof, waiting for queues to empty");
 
   CFileItem fileItem(m_item);
-  UpdateFileItemStreamDetails(fileItem);
+  UpdateFileItemStreamDetails(fileItem, UpdateStreamDetails::UPDATE_IF_FLAGGED);
+
+  // For blurays/DVDs played through the menu, the last stream may not be the main title
+  // In which case get the main title stream details
+  // If we determine it was stopped in a menu then m_bCloseRequest should be false (and the OnPlaybackEnded routines triggered)
+  //  and m_State can be set to show we are finished (so a bookmark isn't created) by setting time to timeMax
+  // If we decide nothing was played then the state is cleared
+  // For other input streams no action is taken (as NONE is returned by the default virtual function)
+  constexpr double STREAM_FINISHED{std::numeric_limits<double>::max()};
+  const CDVDInputStream::UpdateState updateState{
+      m_pInputStream->UpdateCurrentState(fileItem, m_State.time, m_bCloseRequest)};
+  switch (updateState)
+  {
+    using enum CDVDInputStream::UpdateState;
+    case FINISHED:
+      m_State.timeMax = m_State.time = STREAM_FINISHED;
+      break;
+    case NOT_PLAYED:
+      m_State.Clear();
+      break;
+    case NONE:
+    default:
+      break;
+  }
 
   CloseStream(m_CurrentAudio, !m_bAbortRequest);
   CloseStream(m_CurrentVideo, !m_bAbortRequest);
@@ -2738,7 +2762,7 @@ void CVideoPlayer::HandleMessages()
 
       IPlayerCallback *cb = &m_callback;
       CFileItem fileItem(m_item);
-      UpdateFileItemStreamDetails(fileItem);
+      UpdateFileItemStreamDetails(fileItem, UpdateStreamDetails::UPDATE_IF_FLAGGED);
       CVideoSettings vs = m_processInfo->GetVideoSettings();
       m_outboundEvents->Submit([=]() {
         cb->StoreVideoSettings(fileItem, vs);
@@ -5166,6 +5190,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   m_processInfo->SetPlayTimes(state.startTime, state.time, state.timeMin, state.timeMax);
 
+  // Save state of the current stream (for blurays/DVDs)
+  CFileItem item;
+  UpdateFileItemStreamDetails(item, UpdateStreamDetails::ALWAYS_UPDATE);
+  if (item.HasVideoInfoTag())
+    m_pInputStream->SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails);
+
   std::unique_lock lock(m_StateSection);
   m_State = state;
 }
@@ -5364,11 +5394,18 @@ void CVideoPlayer::OnResetDisplay()
   m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_DISPLAY_RESET), 1);
 }
 
-void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item)
+void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDetails update)
 {
-  if (!m_UpdateStreamDetails)
-    return;
-  m_UpdateStreamDetails = false;
+  if (update == UpdateStreamDetails::UPDATE_IF_FLAGGED)
+  {
+    if (!m_UpdateStreamDetails)
+      return;
+
+    // For blurays
+    item.SetProperty("update_stream_details", true);
+
+    m_UpdateStreamDetails = false;
+  }
 
   CLog::Log(LOGDEBUG, "CVideoPlayer: updating file item stream details with available streams");
 
