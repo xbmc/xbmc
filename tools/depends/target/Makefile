@@ -50,10 +50,8 @@ else
   DEPENDS+=samba libcdio
 endif
 
-FONTCONFIG=fontconfig
 ifeq ($(OS),darwin_embedded)
   EXCLUDED_DEPENDS = libusb gtest libcdio libcdio-gplv3
-  FONTCONFIG=
   ifeq ($(TARGET_PLATFORM),appletvos)
     EXCLUDED_DEPENDS += libshairplay libplist
   endif
@@ -61,7 +59,6 @@ ifeq ($(OS),darwin_embedded)
 endif
 
 ifeq ($(OS),osx)
-  FONTCONFIG=
   EXCLUDED_DEPENDS = libusb
   DEPENDS += smctemp libaacs libbdplus apache-ant
   LIBAACS = libaacs
@@ -163,7 +160,7 @@ gettext: $(ICONV)
 gnutls: nettle $(ZLIB)
 harfbuzz: freetype2-noharfbuzz $(ICONV)
 libaacs: libgcrypt libgpg-error
-libass: $(FONTCONFIG) fribidi harfbuzz freetype2 $(ICONV)
+libass: fontconfig fribidi harfbuzz freetype2 $(ICONV)
 libbdplus: libaacs libgcrypt libgpg-error
 libbluray: fontconfig freetype2 $(ICONV) udfread libxml2 $(LIBAACS) $(LIBDPLUS) $(APACHEANT)
 libcdio-gplv3: $(ICONV)

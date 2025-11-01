@@ -19,9 +19,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     find_package(FriBidi REQUIRED ${SEARCH_QUIET})
     find_package(Iconv REQUIRED ${SEARCH_QUIET})
 
-    # Posix platforms (except Apple) use fontconfig
-    if(NOT (WIN32 OR WINDOWS_STORE) AND
-       NOT (CMAKE_SYSTEM_NAME STREQUAL Darwin))
+    if(NOT (WIN32 OR WINDOWS_STORE))
       find_package(Fontconfig REQUIRED ${SEARCH_QUIET})
     endif()
 
@@ -64,6 +62,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                               --prefix=${DEPENDS_PATH}
                               --disable-shared
                               --disable-libunibreak
+                              --enable-fontconfig
                               ${DISABLE_ASM})
 
       set(BUILD_COMMAND ${MAKE_EXECUTABLE})
@@ -79,11 +78,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(WIN32 OR WINDOWS_STORE)
       # Directwrite dependency
       list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES dwrite.lib)
-    elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-      # Coretext dependencies
-      list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES "-framework CoreText"
-                                                                      "-framework CoreFoundation")
     else()
+      if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+        # Coretext dependencies
+        list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES "-framework CoreText"
+                                                                        "-framework CoreFoundation")
+      endif()
+
       list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES Fontconfig::Fontconfig)
       add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} Fontconfig::Fontconfig)
     endif()
