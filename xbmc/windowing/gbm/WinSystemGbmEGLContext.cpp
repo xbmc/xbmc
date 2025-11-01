@@ -9,12 +9,17 @@
 #include "WinSystemGbmEGLContext.h"
 
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;
 using namespace KODI::WINDOWING::LINUX;
+
+const std::string SETTING_VIDEOPLAYER_COMPRESSION = "videoplayer.compression";
 
 bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint apiType)
 {
@@ -33,25 +38,8 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  auto plane = m_DRM->GetGuiPlane();
-  uint32_t visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB2101010;
-
-  // prefer alpha visual id, fallback to non-alpha visual id
-  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-      !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
-  {
-    // fallback to 8bit format if no EGL config was found for 10bit
-    if (plane)
-      plane->SetFormat(DRM_FORMAT_XRGB8888);
-
-    visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB8888;
-
-    if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-        !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
-    {
-      return false;
-    }
-  }
+  if (!m_DRM->InitGuiPlane(&m_eglContext, renderableType))
+    return false;
 
   if (!CreateContext())
   {
@@ -101,9 +89,10 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
 
   std::vector<uint64_t> modifiers;
-
+  bool useCompression = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      SETTING_VIDEOPLAYER_COMPRESSION);
   auto plane = m_DRM->GetGuiPlane();
-  if (plane)
+  if (plane && useCompression)
     modifiers = plane->GetModifiersForFormat(format);
 
   if (!m_GBM->GetDevice().CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
