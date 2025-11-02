@@ -48,6 +48,11 @@ Selected GL interface not available: {}
     Available GL interfaces: {}
 )""";
 
+constexpr const char* cardIndexText =
+    R"""(
+Selected card index '{}' is not numeric
+)""";
+
 constexpr const char* helpText =
     R"""(
 Linux Specific Arguments:
@@ -59,6 +64,7 @@ Linux Specific Arguments:
                           Available audio backends are: {}
   --gl-interface=<interface> Select which GL interface to use (X11 only).
                           Available GL interfaces are: {}
+  --card-index=<digit>    Use a specific drm card (gbm only)
 )""";
 
 } // namespace
@@ -132,6 +138,22 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
 
       exit(0);
     }
+  }
+  else if (arg.find("--card-index=") != std::string::npos)
+  {
+    const auto argValue = arg.substr(13);
+    int cardIndex;
+    try
+    {
+      cardIndex = stoi(argValue);
+    }
+    catch (...)
+    {
+      std::cout << StringUtils::Format(cardIndexText, argValue);
+      exit(0);
+    }
+
+    GetAppParams()->SetCardIndex(cardIndex);
   }
 }
 
