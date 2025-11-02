@@ -310,10 +310,9 @@ public:
         needed = sectionLength + PSI_HEADER_SIZE;
       }
 
-      const unsigned int availableLength{static_cast<unsigned int>(payload.size()) - offset};
-
       // Add section part
-      if (availableLength >= needed)
+      if (const unsigned int availableLength{static_cast<unsigned int>(payload.size()) - offset};
+          availableLength >= needed)
       {
         // Complete section available
         buffer.insert(buffer.end(), payload.begin() + offset, payload.begin() + offset + needed);
@@ -461,8 +460,7 @@ bool ProcessCommonHeader(const std::span<std::byte>& packet,
   // Pointer field to identify skipped bytes
   int offset{payloadUnitStartIndicator ? GetByte(packet, 0) + 1 : 0};
 
-  const auto tableId{static_cast<TABLE_IDS>(GetByte(packet, offset))};
-  if (tableId != wantedTableId)
+  if (const auto tableId{static_cast<TABLE_IDS>(GetByte(packet, offset))}; tableId != wantedTableId)
     return false;
 
   const unsigned int header{GetWord(packet, offset + 1)};
@@ -504,13 +502,80 @@ bool ParsePAT(const std::span<std::byte>& PAT,
     {
       unsigned int pmPID{GetWord(PAT, offset + i + 2) & PID_MASK};
       pmtPIDs.insert(pmPID);
-      pidSection.emplace(pmPID, SectionAssembler{}); // Prepare assembler
+      pidSection.try_emplace(pmPID, SectionAssembler{}); // Prepare assembler
       CLog::LogFC(LOGDEBUG, LOGBLURAY, "Found pmPID {} for program {}",
                   fmt::format("{:04x}", pmPID), programNumber);
     }
   }
 
   return true;
+}
+
+void ProcessPMTEntry(std::vector<std::byte>& section,
+                     const int offset,
+                     int& indexOffset,
+                     std::unordered_map<unsigned int, PESAssembler>& pesSection,
+                     StreamMap& streams)
+{
+  const auto streamType{static_cast<ENCODING_TYPE>(GetByte(section, offset + indexOffset))};
+  const unsigned int elementaryPID{GetWord(section, offset + indexOffset + 1) & PID_MASK};
+  const int esInfoLength{
+      static_cast<int>(GetWord(section, offset + indexOffset + 3) & LENGTH_MASK)};
+  const std::string streamTypeName{GetStreamTypeName(streamType)};
+
+  if (!streams.contains(elementaryPID))
+  {
+    // Parse descriptors
+    int descriptorOffset{offset + indexOffset + 5};
+    int end{descriptorOffset + esInfoLength};
+    std::vector<Descriptor> descriptors;
+    std::string language{"und"};
+    while (descriptorOffset + 2 <= end && descriptorOffset < static_cast<int>(section.size()))
+    {
+      const unsigned int desc_tag{GetByte(section, descriptorOffset)};
+      const int desc_length{GetByte(section, descriptorOffset + 1)};
+      const std::string desc_data{GetString(section, descriptorOffset + 2, desc_length)};
+
+      if (descriptorOffset + 2 + desc_length > static_cast<int>(section.size()))
+        break;
+
+      descriptors.emplace_back(
+          Descriptor{.tag = desc_tag,
+                     .length = desc_length,
+                     .data = std::vector(section.begin() + descriptorOffset + 2,
+                                         section.begin() + descriptorOffset + 2 + desc_length)});
+
+      // ISO 639 language descriptor
+      if (desc_tag == 0x0A && desc_length >= 4)
+        language = GetString(section, descriptorOffset + 2, 3);
+
+      descriptorOffset += 2 + desc_length;
+    }
+
+    if (IsVideoStream(streamType))
+      streams[elementaryPID] = std::make_shared<TSVideoStreamInfo>();
+    else if (IsAudioStream(streamType))
+      streams[elementaryPID] = std::make_shared<TSAudioStreamInfo>();
+    else
+    {
+      streams[elementaryPID] = std::make_shared<TSStreamInfo>();
+      streams[elementaryPID]->completed = true; // No further parsing
+    }
+
+    streams[elementaryPID]->pid = elementaryPID;
+    streams[elementaryPID]->streamType = streamType;
+    streams[elementaryPID]->descriptors = std::move(descriptors);
+
+    pesSection.try_emplace(elementaryPID, PESAssembler{}); // Prepare assembler
+
+    CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                "Found stream at offset 0x{} - type: {} (0x{}), pid: 0x{}, lang {}",
+                fmt::format("{:06x}", offset + indexOffset), streamTypeName,
+                fmt::format("{:02x}", static_cast<int>(streamType)),
+                fmt::format("{:04x}", elementaryPID), language);
+  }
+
+  indexOffset += ELEMENTARY_STREAM_HEADER_SIZE + esInfoLength;
 }
 
 bool ParsePMT(unsigned int pid,
@@ -536,66 +601,7 @@ bool ParsePMT(unsigned int pid,
     offset += PMT_HEADER_SIZE;
 
     for (int i = programInfoLength; i < tableInformation.dataLength - PMT_HEADER_SIZE;)
-    {
-      const auto streamType{static_cast<ENCODING_TYPE>(GetByte(section, offset + i))};
-      const unsigned int elementaryPID{GetWord(section, offset + i + 1) & PID_MASK};
-      const int esInfoLength{static_cast<int>(GetWord(section, offset + i + 3) & LENGTH_MASK)};
-      const std::string streamTypeName{GetStreamTypeName(streamType)};
-
-      if (!streams.contains(elementaryPID))
-      {
-        // Parse descriptors
-        int descriptorOffset{offset + i + 5};
-        int end{descriptorOffset + esInfoLength};
-        std::vector<Descriptor> descriptors;
-        std::string language{"und"};
-        while (descriptorOffset + 2 <= end && descriptorOffset < static_cast<int>(section.size()))
-        {
-          const unsigned int desc_tag{GetByte(section, descriptorOffset)};
-          const int desc_length{GetByte(section, descriptorOffset + 1)};
-          const std::string desc_data{GetString(section, descriptorOffset + 2, desc_length)};
-
-          if (descriptorOffset + 2 + desc_length > static_cast<int>(section.size()))
-            break;
-
-          descriptors.emplace_back(Descriptor{
-              .tag = desc_tag,
-              .length = desc_length,
-              .data = std::vector(section.begin() + descriptorOffset + 2,
-                                  section.begin() + descriptorOffset + 2 + desc_length)});
-
-          // ISO 639 language descriptor
-          if (desc_tag == 0x0A && desc_length >= 4)
-            language = GetString(section, descriptorOffset + 2, 3);
-
-          descriptorOffset += 2 + desc_length;
-        }
-
-        if (IsVideoStream(streamType))
-          streams[elementaryPID] = std::make_shared<TSVideoStreamInfo>();
-        else if (IsAudioStream(streamType))
-          streams[elementaryPID] = std::make_shared<TSAudioStreamInfo>();
-        else
-        {
-          streams[elementaryPID] = std::make_shared<TSStreamInfo>();
-          streams[elementaryPID]->completed = true; // No further parsing
-        }
-
-        streams[elementaryPID]->pid = elementaryPID;
-        streams[elementaryPID]->streamType = streamType;
-        streams[elementaryPID]->descriptors = std::move(descriptors);
-
-        pesSection.emplace(elementaryPID, PESAssembler{}); // Prepare assembler
-
-        CLog::LogFC(LOGDEBUG, LOGBLURAY,
-                    "Found stream at offset 0x{} - type: {} (0x{}), pid: 0x{}, lang {}",
-                    fmt::format("{:06x}", offset + i), streamTypeName,
-                    fmt::format("{:02x}", static_cast<int>(streamType)),
-                    fmt::format("{:04x}", elementaryPID), language);
-      }
-
-      i += ELEMENTARY_STREAM_HEADER_SIZE + static_cast<int>(esInfoLength);
-    }
+      ProcessPMTEntry(section, offset, i, pesSection, streams);
     parsed = true;
   }
   return parsed;
@@ -616,13 +622,11 @@ bool ParseAC3Bitstream(const std::span<std::byte>& buffer,
   const unsigned int acmod{GetBits(header, 16, 3)};
 
   // Set sample rate
-  constexpr auto sampleRates = AC3_SAMPLE_RATES;
-  if (fscod < sampleRates.size())
+  if (constexpr auto sampleRates = AC3_SAMPLE_RATES; fscod < sampleRates.size())
     streamInfo->sampleRate = sampleRates[fscod];
 
   // Set channel count
-  constexpr auto channelCounts = AC3_CHANNEL_COUNTS;
-  if (acmod < channelCounts.size())
+  if (const auto channelCounts = AC3_CHANNEL_COUNTS; acmod < channelCounts.size())
     streamInfo->channels = channelCounts[acmod];
 
   // Check for LFE
@@ -635,8 +639,7 @@ bool ParseAC3Bitstream(const std::span<std::byte>& buffer,
   if (acmod & 0x02)
     bits += 2; // 2/0 mode - skip dsurmod
 
-  const bool lfeon{GetBits(header, 13 - bits, 1) == 1};
-  if (lfeon)
+  if (const bool lfeon{GetBits(header, 13 - bits, 1) == 1}; lfeon)
     streamInfo->channels++;
 
   streamInfo->completed = (++streamInfo->seen) >= HEADERS_PARSED_FOR_COMPLETE;
@@ -644,21 +647,28 @@ bool ParseAC3Bitstream(const std::span<std::byte>& buffer,
   return true;
 }
 
-bool ParseEAC3Bitstream(const std::span<std::byte>& buffer,
-                        int offset,
-                        TSAudioStreamInfo* streamInfo)
+struct EAC3BitStreamInfo
 {
-  BitReader br(buffer.subspan(2));
+  unsigned int strmtyp;
+  unsigned int fscod;
+  unsigned int fscod2_numblkscod;
+  unsigned int acmod;
+  bool lfeon;
+};
 
+bool GetEAC3ChannelCountAndSampleRate(BitReader& br,
+                                      EAC3BitStreamInfo& bsi,
+                                      TSAudioStreamInfo* streamInfo)
+{
   // Parse bsi
-  const unsigned int strmtyp{br.ReadBits(2)};
+  bsi.strmtyp = br.ReadBits(2);
   br.SkipBits(14); // substreamid, frmsiz
-  const unsigned int fscod{br.ReadBits(2)};
-  const unsigned int fscod2_numblkscod{br.ReadBits(2)};
-  const unsigned int acmod{br.ReadBits(3)};
-  const bool lfeon{br.ReadBits(1) == 1};
-  unsigned int bsid{br.ReadBits(5)};
-  if (bsid <= 10)
+  bsi.fscod = br.ReadBits(2);
+  bsi.fscod2_numblkscod = br.ReadBits(2);
+  bsi.acmod = br.ReadBits(3);
+  bsi.lfeon = br.ReadBits(1) == 1;
+
+  if (unsigned int bsid{br.ReadBits(5)}; bsid <= 10)
     return false; // Not EAC-3 stream
 
   br.SkipBits(5); // dialnorm
@@ -666,7 +676,7 @@ bool ParseEAC3Bitstream(const std::span<std::byte>& buffer,
   // Find potential position of channel map
   if (br.ReadBits(1) == 1) //  compre
     br.SkipBits(8); // compr
-  if (acmod == 0)
+  if (bsi.acmod == 0)
   {
     br.SkipBits(5);
     if (br.ReadBits(1) == 1) //  compr2e
@@ -676,25 +686,28 @@ bool ParseEAC3Bitstream(const std::span<std::byte>& buffer,
   // See if channel map present for dependant streams
   bool chanmape{false};
   uint32_t chanmap{0};
-  if (strmtyp == 1)
-    if (chanmape = br.ReadBits(1) == 1; chanmape)
+  if (bsi.strmtyp == 1)
+  {
+    chanmape = br.ReadBits(1) == 1;
+    if (chanmape)
       chanmap = br.ReadBits(16);
+  }
 
   // Set sample rate
   constexpr auto sampleRates = AC3_SAMPLE_RATES;
-  if (fscod < 3)
-    streamInfo->sampleRate = sampleRates[fscod];
-  else if (fscod == 3 && fscod2_numblkscod < 3)
-    streamInfo->sampleRate = sampleRates[fscod2_numblkscod] / 2;
+  if (bsi.fscod < 3)
+    streamInfo->sampleRate = sampleRates[bsi.fscod];
+  else if (bsi.fscod == 3 && bsi.fscod2_numblkscod < 3)
+    streamInfo->sampleRate = sampleRates[bsi.fscod2_numblkscod] / 2;
 
   // Set channel count
   unsigned int channelCount{0};
   if (!chanmape)
   {
     // If no channel map, then use the AC3 way
-    constexpr auto channelCounts = AC3_CHANNEL_COUNTS;
-    if (acmod < channelCounts.size())
-      channelCount = channelCounts[acmod] + (lfeon ? 1 : 0);
+    const auto channelCounts = AC3_CHANNEL_COUNTS;
+    if (bsi.acmod < channelCounts.size())
+      channelCount = channelCounts[bsi.acmod] + (bsi.lfeon ? 1 : 0);
   }
   else
   {
@@ -708,148 +721,153 @@ bool ParseEAC3Bitstream(const std::span<std::byte>& buffer,
     channelCount += std::popcount(chanmap1);
   }
 
-  if (strmtyp == 0)
+  if (bsi.strmtyp == 0)
     streamInfo->channels = channelCount;
-  else if (strmtyp == 1)
+  else if (bsi.strmtyp == 1)
   {
     streamInfo->channels += channelCount;
     streamInfo->hasDependantStream = true;
   }
 
-  // Continue to parse for JOC
-  // Mixing metadata exists
-  if (br.ReadBits(1)) // mixmdate
-  {
-    if (acmod > 2)
-      br.SkipBits(2); // dmixmod
-    if ((acmod & 1) && (acmod > 2))
-      br.SkipBits(6); // ltrctmixlev, lorocmixlev
-    if (acmod & 4)
-      br.SkipBits(6); // ltrtsurmixlev, lortsurmixlev
-    if (lfeon)
-    {
-      if (br.ReadBits(1) == 1) // lfemixlevcode
-        br.SkipBits(5); // lfemixlevcod
-    }
-    if (strmtyp == 0)
-    {
-      if (br.ReadBits(1) == 1) // pgmscle
-        br.SkipBits(6); // pgmscl
-      if (acmod == 0)
-        if (br.ReadBits(1) == 1) // pgmscl2e
-          br.SkipBits(6); // pgmscl2
-      if (br.ReadBits(1) == 1) // extpgmscle
-        br.SkipBits(6); // extpgmscl
+  return true;
+}
 
-      const unsigned int mixdef{br.ReadBits(2)};
-      switch (mixdef)
+void SkipEAC3MixingMetadata(BitReader& br, const EAC3BitStreamInfo& bsi)
+{
+  if (bsi.acmod > 2)
+    br.SkipBits(2); // dmixmod
+  if ((bsi.acmod & 1) && (bsi.acmod > 2))
+    br.SkipBits(6); // ltrctmixlev, lorocmixlev
+  if (bsi.acmod & 4)
+    br.SkipBits(6); // ltrtsurmixlev, lortsurmixlev
+  if (bsi.lfeon && br.ReadBits(1) == 1) // lfemixlevcode
+    br.SkipBits(5); // lfemixlevcod
+  if (bsi.strmtyp == 0)
+  {
+    if (br.ReadBits(1) == 1) // pgmscle
+      br.SkipBits(6); // pgmscl
+    if (bsi.acmod == 0 && br.ReadBits(1) == 1) // pgmscl2e
+      br.SkipBits(6); // pgmscl2
+    if (br.ReadBits(1) == 1) // extpgmscle
+      br.SkipBits(6); // extpgmscl
+
+    switch (const unsigned int mixdef{br.ReadBits(2)}; mixdef)
+    {
+      case 1:
+        br.SkipBits(5); // premixcmpsel, drcsrc, premixcmpscl
+        break;
+      case 2:
+        br.SkipBits(12); // mixdata
+        break;
+      case 3:
       {
-        case 1:
-          br.SkipBits(5); // premixcmpsel, drcsrc, premixcmpscl
-          break;
-        case 2:
-          br.SkipBits(12); // mixdata
-          break;
-        case 3:
+        unsigned int mixdeflen{br.ReadBits(5)};
+        if (br.ReadBits(1) == 1) // mixdata2e
         {
-          unsigned int mixdeflen{br.ReadBits(5)};
-          if (br.ReadBits(1) == 1) // mixdata2e
+          br.SkipBits(5); // premixcmpsel, drcsrc, premixcmpscl
+          for (int i = 0; i < 7; ++i)
           {
-            br.SkipBits(5); // premixcmpsel, drcsrc, premixcmpscl
-            for (int i = 0; i < 7; ++i)
+            if (br.ReadBits(1) == 1)
+              br.SkipBits(4);
+          }
+          if (br.ReadBits(1) == 1) // addche
+          {
+            for (int i = 0; i < 2; ++i)
             {
               if (br.ReadBits(1) == 1)
                 br.SkipBits(4);
             }
-            if (br.ReadBits(1) == 1) // addche
-            {
-              for (int i = 0; i < 2; ++i)
-              {
-                if (br.ReadBits(1) == 1)
-                  br.SkipBits(4);
-              }
-            }
           }
-          if (br.ReadBits(1) == 1) // mixdata3e
-          {
-            br.SkipBits(5); // spchdat
-            if (br.ReadBits(1) == 1) // addspchdate
-            {
-              br.SkipBits(7); // spchdat1, spchan1att
-              if (br.ReadBits(1) == 1) // addspchdat1e
-                br.SkipBits(8); // spchdat2, spchan2att
-            }
-          }
-          unsigned int mixdata{8 * (mixdeflen + 2)};
-          br.SkipBits(mixdata); // mixdata
-          br.ByteAlign();
-          break;
         }
-        default:
-          break;
-      }
-      if (acmod < 2)
-      {
-        if (br.ReadBits(1) == 1) // paninfoe
-          br.SkipBits(14); // panmean, paninfo
-        if (acmod == 0)
-          if (br.ReadBits(1) == 1) // paninfo2e
-            br.SkipBits(14); // panmean2, paninfo2
-      }
-      if (br.ReadBits(1) == 1) // frmmixcfginfoe
-      {
-        if (fscod2_numblkscod == 0)
-          br.SkipBits(5); // blkmixcfginfo[0]
-        else
+        if (br.ReadBits(1) == 1) // mixdata3e
         {
-          unsigned int number_of_blocks_per_syncframe{
-              NUM_AUDIO_BLOCK_PER_SYNCFRAME[fscod2_numblkscod]};
-          for (unsigned int blk = 0; blk < number_of_blocks_per_syncframe; blk++)
+          br.SkipBits(5); // spchdat
+          if (br.ReadBits(1) == 1) // addspchdate
           {
-            if (br.ReadBits(1) == 1) // blkmixcfginfoe
-              br.SkipBits(14); // blkmixcfginfo[blk]
+            br.SkipBits(7); // spchdat1, spchan1att
+            if (br.ReadBits(1) == 1) // addspchdat1e
+              br.SkipBits(8); // spchdat2, spchan2att
           }
+        }
+        unsigned int mixdata{8 * (mixdeflen + 2)};
+        br.SkipBits(mixdata); // mixdata
+        br.ByteAlign();
+        break;
+      }
+      default:
+        break;
+    }
+    if (bsi.acmod < 2)
+    {
+      if (br.ReadBits(1) == 1) // paninfoe
+        br.SkipBits(14); // panmean, paninfo
+      if (bsi.acmod == 0 && br.ReadBits(1) == 1) // paninfo2e
+        br.SkipBits(14); // panmean2, paninfo2
+    }
+    if (br.ReadBits(1) == 1) // frmmixcfginfoe
+    {
+      if (bsi.fscod2_numblkscod == 0)
+        br.SkipBits(5); // blkmixcfginfo[0]
+      else
+      {
+        unsigned int number_of_blocks_per_syncframe{
+            NUM_AUDIO_BLOCK_PER_SYNCFRAME[bsi.fscod2_numblkscod]};
+        for (unsigned int blk = 0; blk < number_of_blocks_per_syncframe; blk++)
+        {
+          if (br.ReadBits(1) == 1) // blkmixcfginfoe
+            br.SkipBits(14); // blkmixcfginfo[blk]
         }
       }
     }
   }
+}
+
+void SkipEAC3InfoMetadata(BitReader& br, const EAC3BitStreamInfo& bsi)
+{
+  br.SkipBits(3); // bsmod
+  br.SkipBits(1); // copyrightb
+  br.SkipBits(1); // origbs
+  if (bsi.acmod == 2)
+    br.SkipBits(4); // dsurmod, dheadphonmod
+  if (bsi.acmod >= 6)
+    br.SkipBits(2); // dsurexmod
+  if (br.ReadBits(1)) // audioprodie
+  {
+    br.SkipBits(5); // mixlevel
+    br.SkipBits(2); // roomtyp
+    br.SkipBits(1); // adconvtyp
+  }
+  if (bsi.acmod == 0 && br.ReadBits(1) == 1) // audprodi2e
+  {
+    br.SkipBits(5); // mixlevel2
+    br.SkipBits(2); // roomtyp2
+    br.SkipBits(1); // adconvtyp2
+  }
+
+  if (bsi.fscod < 3)
+    br.SkipBits(1); // sourcefscod
+}
+
+void SkipEAC3HeaderBits(BitReader& br, const EAC3BitStreamInfo& bsi)
+{
+  // Mixing metadata exists
+  if (br.ReadBits(1)) // mixmdate
+    SkipEAC3MixingMetadata(br, bsi);
 
   // Info metadata exists
   if (br.ReadBits(1)) // infomdate
-  {
-    br.SkipBits(3); // bsmod
-    br.SkipBits(1); // copyrightb
-    br.SkipBits(1); // origbs
-    if (acmod == 2)
-      br.SkipBits(4); // dsurmod, dheadphonmod
-    if (acmod >= 6)
-      br.SkipBits(2); // dsurexmod
-    if (br.ReadBits(1)) // audioprodie
-    {
-      br.SkipBits(5); // mixlevel
-      br.SkipBits(2); // roomtyp
-      br.SkipBits(1); // adconvtyp
-    }
-    if (acmod == 0)
-    {
-      if (br.ReadBits(1)) // audprodi2e
-      {
-        br.SkipBits(5); // mixlevel2
-        br.SkipBits(2); // roomtyp2
-        br.SkipBits(1); // adconvtyp2
-      }
-    }
-    if (fscod < 3)
-      br.SkipBits(1); // sourcefscod
-  }
+    SkipEAC3InfoMetadata(br, bsi);
 
-  if (strmtyp == 0 && fscod2_numblkscod != 3)
+  if (bsi.strmtyp == 0 && bsi.fscod2_numblkscod != 3)
     br.SkipBits(1); // convsync
 
-  if (strmtyp == 2)
-    if (fscod2_numblkscod == 3 || br.ReadBits(1)) // blkid
+  if (bsi.strmtyp == 2)
+    if (bsi.fscod2_numblkscod == 3 || br.ReadBits(1)) // blkid
       br.SkipBits(6); // frmsizecod
+}
 
+void GetAtmos(BitReader& br, TSAudioStreamInfo* streamInfo)
+{
   // Additional bitstream info exists (contains JOC/ATMOS)
   if (br.ReadBits(1)) // addbsie
   {
@@ -862,10 +880,23 @@ bool ParseEAC3Bitstream(const std::span<std::byte>& buffer,
       {
         // Has JOC
         streamInfo->isAtmos = true;
-        return true;
+        return;
       }
     }
   }
+}
+
+bool ParseEAC3Bitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* streamInfo)
+{
+  BitReader br(buffer.subspan(2));
+
+  EAC3BitStreamInfo bsi;
+  if (!GetEAC3ChannelCountAndSampleRate(br, bsi, streamInfo))
+    return false; // Not EAC3 bitstream
+
+  // Continue to parse for JOC (Atmos)
+  SkipEAC3HeaderBits(br, bsi);
+  GetAtmos(br, streamInfo);
 
   streamInfo->completed = (++streamInfo->seen) >= HEADERS_PARSED_FOR_COMPLETE;
 
@@ -891,8 +922,8 @@ bool ParseAC3Bitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   const unsigned int bsid{GetBits(header, 8, 5)};
 
   if (bsid == 16)
-    return ParseEAC3Bitstream(buffer, offset, streamInfo);
-  if (bsid == 6 or bsid == 8)
+    return ParseEAC3Bitstream(buffer, streamInfo);
+  if (bsid == 6 || bsid == 8)
     return ParseAC3Bitstream(buffer, offset, streamInfo);
   return false;
 }
@@ -907,7 +938,7 @@ std::optional<DTSFrame> ParseDTSFrame(const std::span<std::byte>& data)
     if (sync == CORE_16BIT_BE || sync == SUBSTREAM)
     {
       dtsFrame.syncPos = i;
-      dtsFrame.syncWord = static_cast<DTSSyncWords>(sync);
+      dtsFrame.syncWord = sync;
       dtsFrame.data = data.subspan(i);
       return dtsFrame;
     }
@@ -923,9 +954,7 @@ std::optional<unsigned int> FindDTSSyncWord(const std::span<std::byte>& buffer,
     return std::nullopt;
 
   const auto searchRange{buffer.subspan(start, buffer.size() - start)};
-  const auto result{std::ranges::search(searchRange, syncWord)};
-
-  if (!result.empty())
+  if (const auto result{std::ranges::search(searchRange, syncWord)}; !result.empty())
     return static_cast<unsigned int>(result.begin() - searchRange.begin());
   return std::nullopt;
 }
@@ -953,8 +982,8 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
     unsigned int lff{static_cast<unsigned int>(GetBits64(header, 11, 2))};
 
     // Set parameters
-    constexpr auto sampleRates = DTS_SAMPLE_RATES;
-    constexpr auto channelCounts = DTS_CHANNEL_COUNTS;
+    const auto sampleRates = DTS_SAMPLE_RATES;
+    const auto channelCounts = DTS_CHANNEL_COUNTS;
 
     if (sfreq < sampleRates.size())
       streamInfo->sampleRate = sampleRates[sfreq];
@@ -968,7 +997,7 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
     // See if there is a DTS substream header in this block
     if (auto substream{
             FindDTSSyncWord(buffer, dtsData->syncPos + DTS_HEADER_SIZE, DTS_SYNCWORD_SUBSTREAM)};
-        !substream)
+        !substream.has_value())
       return true;
     else
       offset = *substream;
@@ -978,14 +1007,15 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   {
     // Substream header found
     streamInfo->hasSubstream = true;
-    if (auto xll{FindDTSSyncWord(buffer, dtsData->syncPos + 10, DTS_SYNCWORD_XLL)}; xll)
+    if (auto xll{FindDTSSyncWord(buffer, dtsData->syncPos + 10, DTS_SYNCWORD_XLL)}; xll.has_value())
       streamInfo->isXLL = true;
 
-    if (auto xllx{FindDTSSyncWord(buffer, dtsData->syncPos + 10, DTS_SYNCWORD_XLL_X)}; xllx)
+    if (auto xllx{FindDTSSyncWord(buffer, dtsData->syncPos + 10, DTS_SYNCWORD_XLL_X)};
+        xllx.has_value())
       streamInfo->isXLLX = true;
 
     if (auto xllximax{FindDTSSyncWord(buffer, dtsData->syncPos + 10, DTS_SYNCWORD_XLL_X_IMAX)};
-        xllximax)
+        xllximax.has_value())
       streamInfo->isXLLXIMAX = true;
   }
 
@@ -1000,9 +1030,9 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   unsigned int flags{GetWord(buffer, 10)};
 
   // Set sample rate
-  unsigned int audio_sampling_frequency{GetBits(format_info, 32, 4)};
-  constexpr auto sampleRates = TRUEHD_SAMPLE_RATES;
-  if (audio_sampling_frequency < sampleRates.size())
+  const auto sampleRates = TRUEHD_SAMPLE_RATES;
+  if (unsigned int audio_sampling_frequency{GetBits(format_info, 32, 4)};
+      audio_sampling_frequency < sampleRates.size())
     streamInfo->sampleRate = sampleRates[audio_sampling_frequency];
 
   bool ch6_multichannel_type{GetBits(format_info, 28, 1) == 1};
@@ -1043,8 +1073,8 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   unsigned int substream_info{GetByte(buffer, 17)};
   bool ch16_present{GetBits(substream_info, 8, 1) == 1};
   uint64_t channel_meaning{GetQWord(buffer, 18)};
-  bool extra_channel_meaning_present{(GetBits64(channel_meaning, 1, 1) == 1)};
-  if (extra_channel_meaning_present && ch16_present)
+  if (bool extra_channel_meaning_present{(GetBits64(channel_meaning, 1, 1) == 1)};
+      extra_channel_meaning_present && ch16_present)
   {
     unsigned int extra{GetDWord(buffer, 26)};
     unsigned int ch16_channel_count{GetBits(extra, 17, 5)};
@@ -1076,8 +1106,7 @@ bool ParseTrueHDBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo*
     if (GetWord(buffer, offset + 8) != TRUEHD_HEADER_SIGNATURE)
       break;
 
-    const unsigned int flag{GetByte(buffer, offset + 3)};
-    if (flag == DOLBY_FLAG)
+    if (const unsigned int flag{GetByte(buffer, offset + 3)}; flag == DOLBY_FLAG)
       ParseTrueHDHeader(buffer.subspan(offset), streamInfo);
 
     offset += TRUEHD_MINIMUM_HEADER_SIZE;
@@ -1089,8 +1118,7 @@ bool ParseTrueHDBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo*
 bool ParseLPCMBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* streamInfo)
 {
   // Sub-stream ID (should be 0xA0-0xAF for LPCM)
-  unsigned int sub_stream_id{GetByte(buffer, 1)};
-  if ((sub_stream_id & 0xA0) != 0xA0)
+  if (unsigned int sub_stream_id{GetByte(buffer, 1)}; (sub_stream_id & 0xA0) != 0xA0)
     return false;
 
   unsigned int header{GetByte(buffer, 2)};
@@ -1165,16 +1193,13 @@ void ParseScalingListData(BitReader& br)
 
 void ParseShortTermRefPicSet(BitReader& br, unsigned int idx, unsigned int numSets)
 {
-  if (idx != 0)
+  if (idx != 0 && br.ReadBits(1) == 1) // inter_ref_pic_set_prediction_flag
   {
-    if (br.ReadBits(1) == 1) // inter_ref_pic_set_prediction_flag
-    {
-      if (idx == numSets)
-        br.SkipUE(); // delta_idx_minus1
-      br.SkipBits(1); // delta_rps_sign
-      br.SkipUE(); // abs_delta_rps_minus1
-      return;
-    }
+    if (idx == numSets)
+      br.SkipUE(); // delta_idx_minus1
+    br.SkipBits(1); // delta_rps_sign
+    br.SkipUE(); // abs_delta_rps_minus1
+    return;
   }
 
   unsigned int numNegative{br.ReadUE()};
@@ -1270,9 +1295,9 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
   br.SkipUE(); // max_transform_hierarchy_depth_inter
   br.SkipUE(); // max_transform_hierarchy_depth_intra
 
-  if (br.ReadBits(1) == 1) // scaling_list_enabled_flag
-    if (br.ReadBits(1) == 1) // sps_scaling_list_data_present_flag
-      ParseScalingListData(br);
+  if (br.ReadBits(1) == 1 && // scaling_list_enabled_flag
+      br.ReadBits(1) == 1) // sps_scaling_list_data_present_flag
+    ParseScalingListData(br);
 
   br.SkipBits(1); // amp_enabled_flag
   br.SkipBits(1); // sample_adaptive_offset_enabled_flag
@@ -1345,9 +1370,8 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
     streamInfo->bitDepth = 8;
 
   br.SkipUE(); // log2_max_frame_num_minus4
-  unsigned int pic_order_cnt_type{br.ReadUE()};
 
-  if (pic_order_cnt_type == 0)
+  if (unsigned int pic_order_cnt_type{br.ReadUE()}; pic_order_cnt_type == 0)
     br.SkipUE(); // log2_max_pic_order_cnt_lsb_minus4
   else if (pic_order_cnt_type == 1)
   {
@@ -1386,7 +1410,7 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
 
   streamInfo->width =
       pic_width_in_mbs * 16 - (frame_crop_left_offset + frame_crop_right_offset) * 2;
-  streamInfo->height = (2 - frame_mbs_only_flag) * pic_height_in_map_units * 16 -
+  streamInfo->height = (2 - (frame_mbs_only_flag ? 1 : 0)) * pic_height_in_map_units * 16 -
                        (frame_crop_top_offset + frame_crop_bottom_offset) * 2;
 
   if (br.ReadBits(1) == 1) // vui_parameters_present_flag
@@ -1399,8 +1423,7 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
 
 bool ParseITUT35UserData(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
 {
-  unsigned int length{static_cast<unsigned int>(buffer.size())};
-  if (length < 3)
+  if (unsigned int length{static_cast<unsigned int>(buffer.size())}; length < 3)
     return false;
 
   unsigned int countryCode{GetByte(buffer, 0)};
@@ -1436,6 +1459,15 @@ std::optional<unsigned int> GetCumulativeNumber(const std::span<std::byte>& buff
   return cumulative;
 }
 
+void CheckPayloadForDolbyVision(const std::span<std::byte>& buffer,
+                                unsigned int offset,
+                                TSVideoStreamInfo* streamInfo)
+{
+  auto uuid{buffer.subspan(offset, 16)};
+  if (std::ranges::equal(uuid, DOLBY_VISION_PROFILE_7_UUID))
+    streamInfo->dolbyVision = true;
+}
+
 bool ParseSEI(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
 {
   unsigned int length{static_cast<unsigned int>(buffer.size())};
@@ -1447,14 +1479,14 @@ bool ParseSEI(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
   {
     // Read payload type
     unsigned int payloadType{0};
-    if (const auto i{GetCumulativeNumber(buffer, offset)}; !i)
+    if (const auto i{GetCumulativeNumber(buffer, offset)}; !i.has_value())
       break;
     else
       payloadType = *i;
 
     // Read payload size
     unsigned int payloadSize{0};
-    if (const auto i{GetCumulativeNumber(buffer, offset)}; !i)
+    if (const auto i{GetCumulativeNumber(buffer, offset)}; !i.has_value())
       break;
     else
       payloadSize = *i;
@@ -1474,11 +1506,7 @@ bool ParseSEI(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
       {
         // User data unregistered - check for Dolby Vision
         if (offset + 16 <= length)
-        {
-          auto uuid{buffer.subspan(offset, 16)};
-          if (std::ranges::equal(uuid, DOLBY_VISION_PROFILE_7_UUID))
-            streamInfo->dolbyVision = true;
-        }
+          CheckPayloadForDolbyVision(buffer, offset, streamInfo);
         break;
       }
       case SEI_PAYLOAD_REGISTERED_ITU_T_T35:
@@ -1508,17 +1536,12 @@ std::vector<std::byte> RemoveEmulationPreventionBytes(const std::span<std::byte>
   // Copy NAL unit header
   unsigned int offset{1};
   unit.push_back(buffer[0]);
-  switch (videoCodec)
+  if (videoCodec == VideoCodec::H265)
   {
-    using enum VideoCodec;
-    case H265:
-      unit.push_back(buffer[1]);
-      offset += 1;
-      break;
-    case H264:
-    default:
-      break;
+    unit.push_back(buffer[1]);
+    offset += 1;
   }
+
   const std::byte* data{buffer.data()};
   const std::byte* end{data + buffer.size()};
   const std::byte* pos{data + offset};
@@ -1556,6 +1579,105 @@ std::vector<std::byte> RemoveEmulationPreventionBytes(const std::span<std::byte>
   return unit;
 }
 
+bool GetNALType(const std::span<std::byte>& data,
+                unsigned int& relativeOffset,
+                VideoCodec videoCodec,
+                unsigned int& nal_unit_type,
+                unsigned int& header,
+                TSVideoStreamInfo* streamInfo)
+{
+  switch (videoCodec)
+  {
+    using enum VideoCodec;
+    case H264:
+    {
+      header = GetByte(data, relativeOffset);
+      relativeOffset += 1;
+      nal_unit_type = GetBits(header, 5, 5);
+      break;
+    }
+    case H265:
+    {
+      header = GetWord(data, relativeOffset);
+      relativeOffset += 2;
+      nal_unit_type = GetBits(header, 15, 6);
+      if (unsigned int nuh_layer_id{GetBits(header, 9, 6)}; nuh_layer_id > 0)
+        streamInfo->isEnhancementLayer = true;
+      break;
+    }
+    default:
+      return false;
+  }
+
+  return true;
+}
+
+void CheckFor3D(const std::span<std::byte>& data,
+                unsigned int& relativeOffset,
+                unsigned int nal_unit_type,
+                TSVideoStreamInfo* streamInfo)
+{
+  switch (nal_unit_type)
+  {
+    case H264_PREFIX_NAL_UNIT:
+    case H264_CODED_SLICE_EXTENSION:
+    case H264_CODED_SLICE_EXTENSION_FOR_DEPTH_VIEW:
+    {
+      const unsigned int extension{GetByte(data, relativeOffset)};
+      if (const bool svc_or_avc_3d_extension_flag{GetBits(extension, 8, 1) == 1};
+          nal_unit_type == H264_CODED_SLICE_EXTENSION_FOR_DEPTH_VIEW &&
+          svc_or_avc_3d_extension_flag)
+      {
+        relativeOffset += 2;
+        streamInfo->is3d = true; // AVC 3D
+      }
+      else if (nal_unit_type != H264_CODED_SLICE_EXTENSION_FOR_DEPTH_VIEW &&
+               !svc_or_avc_3d_extension_flag)
+      {
+        relativeOffset += 3;
+        streamInfo->is3d = true; // MVC
+      }
+      else
+        relativeOffset += 3;
+
+      break;
+    }
+    default:
+      break;
+  }
+}
+
+void ProcessNALUnit(std::vector<std::byte>& unit,
+                    unsigned int nal_unit_type,
+                    unsigned int header,
+                    TSVideoStreamInfo* streamInfo)
+{
+  switch (nal_unit_type)
+  {
+    case H264_NAL_SPS:
+      ParseH264SPS(unit, streamInfo);
+      break;
+    case H265_NAL_SPS:
+      ParseH265SPS(unit, streamInfo);
+      break;
+    case H264_NAL_SEI:
+    case H265_NAL_SEI_PREFIX:
+    case H265_NAL_SEI_SUFFIX:
+      ParseSEI(unit, streamInfo);
+      break;
+    case DOLBY_VISION_RPU:
+      if (header == DOLBY_VISION_RPU_HEADER)
+        streamInfo->dolbyVision = true;
+      break;
+    case DOLBY_VISION_EL:
+      if (header == DOLBY_VISION_EL_HEADER)
+        streamInfo->dolbyVision = true;
+      break;
+    default:
+      break;
+  }
+}
+
 bool ParseNAL(const std::span<std::byte>& buffer,
               VideoCodec videoCodec,
               TSVideoStreamInfo* streamInfo)
@@ -1579,90 +1701,20 @@ bool ParseNAL(const std::span<std::byte>& buffer,
     // Extract NAL unit type from header
     unsigned int nal_unit_type{0};
     unsigned int header;
-    switch (videoCodec)
-    {
-      using enum VideoCodec;
-      case H264:
-      {
-        header = GetByte(data, relativeOffset);
-        relativeOffset += 1;
-        nal_unit_type = GetBits(header, 5, 5);
-        break;
-      }
-      case H265:
-      {
-        header = GetWord(data, relativeOffset);
-        relativeOffset += 2;
-        nal_unit_type = GetBits(header, 15, 6);
-        unsigned int nuh_layer_id{GetBits(header, 9, 6)};
-        if (nuh_layer_id > 0)
-          streamInfo->isEnhancementLayer = true;
-        break;
-      }
-      default:
-        return false;
-    }
+    if (!GetNALType(data, relativeOffset, videoCodec, nal_unit_type, header, streamInfo))
+      return false; // Not H264/5
 
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing NAL - type {}", nal_unit_type);
 
-    switch (nal_unit_type)
-    {
-      case H264_PREFIX_NAL_UNIT:
-      case H264_CODED_SLICE_EXTENSION:
-      case H264_CODED_SLICE_EXTENSION_FOR_DEPTH_VIEW:
-      {
-        const unsigned int extension{GetByte(data, relativeOffset)};
-        const bool svc_or_avc_3d_extension_flag{GetBits(extension, 8, 1) == 1};
-        if (nal_unit_type == H264_CODED_SLICE_EXTENSION_FOR_DEPTH_VIEW &&
-            svc_or_avc_3d_extension_flag)
-        {
-          relativeOffset += 2;
-          streamInfo->is3d = true; // AVC 3D
-        }
-        else if (nal_unit_type != H264_CODED_SLICE_EXTENSION_FOR_DEPTH_VIEW &&
-                 !svc_or_avc_3d_extension_flag)
-        {
-          relativeOffset += 3;
-          streamInfo->is3d = true; // MVC
-        }
-        else
-          relativeOffset += 3;
-
-        break;
-      }
-      default:
-        break;
-    }
+    // Look for markers of a 3D stream
+    CheckFor3D(data, relativeOffset, nal_unit_type, streamInfo);
 
     const size_t length{end.empty() ? data.size() - relativeOffset
                                     : end.data() - data.data() - relativeOffset};
     std::vector<std::byte> unit{
         RemoveEmulationPreventionBytes(data.subspan(relativeOffset, length), videoCodec)};
 
-    switch (nal_unit_type)
-    {
-      case H264_NAL_SPS:
-        ParseH264SPS(unit, streamInfo);
-        break;
-      case H265_NAL_SPS:
-        ParseH265SPS(unit, streamInfo);
-        break;
-      case H264_NAL_SEI:
-      case H265_NAL_SEI_PREFIX:
-      case H265_NAL_SEI_SUFFIX:
-        ParseSEI(unit, streamInfo);
-        break;
-      case DOLBY_VISION_RPU:
-        if (header == DOLBY_VISION_RPU_HEADER)
-          streamInfo->dolbyVision = true;
-        break;
-      case DOLBY_VISION_EL:
-        if (header == DOLBY_VISION_EL_HEADER)
-          streamInfo->dolbyVision = true;
-        break;
-      default:
-        break;
-    }
+    ProcessNALUnit(unit, nal_unit_type, header, streamInfo);
 
     if (end.empty())
       break;
@@ -1683,8 +1735,7 @@ bool ParseVC1(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
   unsigned int offset{static_cast<unsigned int>(result.begin() - buffer.begin()) + 4};
 
   unsigned int header{GetWord(buffer, offset)};
-  unsigned int profile{GetBits(header, 16, 2)};
-  if (profile != 3)
+  if (unsigned int profile{GetBits(header, 16, 2)}; profile != 3)
     return false; // Not Advanced Profile
 
   header = GetDWord(buffer, offset + 2);
@@ -1729,8 +1780,8 @@ bool ParseVC1(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
 
 bool ParseMPEG2(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
 {
-  auto result{std::ranges::search(buffer, MPEG2_SEQUENCE_HEADER_START_CODE)};
-  if (result.empty() || buffer.end() - result.begin() < 8)
+  if (auto result{std::ranges::search(buffer, MPEG2_SEQUENCE_HEADER_START_CODE)};
+      result.empty() || buffer.end() - result.begin() < 8)
     return false;
 
   CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing MPEG2 Sequence Header");
@@ -1741,8 +1792,7 @@ bool ParseMPEG2(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInf
   streamInfo->width = horizontal_size_value;
   streamInfo->height = vertical_size_value;
 
-  unsigned int aspect_ratio_information{GetBits(header, 8, 4)};
-  if (aspect_ratio_information < 2)
+  if (unsigned int aspect_ratio_information{GetBits(header, 8, 4)}; aspect_ratio_information < 2)
     streamInfo->aspectRatio = MPEG2_DISPLAY_ASPECT_RATIOS[aspect_ratio_information];
   else if (aspect_ratio_information < MPEG2_DISPLAY_ASPECT_RATIOS.size())
     streamInfo->aspectRatio = vertical_size_value > 0
@@ -1758,6 +1808,65 @@ bool ParseMPEG2(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInf
   return true;
 }
 
+void ProcessStream(const PESPacket& pesPacket, const std::shared_ptr<TSStreamInfo>& streamInfo)
+{
+  switch (streamInfo->streamType)
+  {
+    using enum ENCODING_TYPE;
+    case VIDEO_HEVC:
+      if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
+        ParseNAL(pesPacket.data, VideoCodec::H265, videoInfo);
+      break;
+    case VIDEO_H264:
+      if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
+        ParseNAL(pesPacket.data, VideoCodec::H264, videoInfo);
+      break;
+    case VIDEO_H264_MVC:
+      if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
+      {
+        ParseNAL(pesPacket.data, VideoCodec::H264, videoInfo);
+        videoInfo->is3d = true;
+      }
+      break;
+    case VIDEO_VC1:
+      if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
+        ParseVC1(pesPacket.data, videoInfo);
+      break;
+    case VIDEO_MPEG2:
+      if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
+        ParseMPEG2(pesPacket.data, videoInfo);
+      break;
+    case AUDIO_AC3:
+    case AUDIO_AC3PLUS:
+    case AUDIO_AC3PLUS_SECONDARY:
+      if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
+        ParseAC3Bitstream(pesPacket.data, audioInfo);
+      break;
+    case AUDIO_DTS:
+    case AUDIO_DTSHD:
+    case AUDIO_DTSHD_MASTER:
+    case AUDIO_DTSHD_SECONDARY:
+      if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
+        ParseDTSBitstream(pesPacket.data, audioInfo);
+      break;
+    case AUDIO_TRUHD:
+      if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
+        ParseTrueHDBitstream(pesPacket.data, audioInfo);
+      break;
+    case AUDIO_LPCM:
+      if (pesPacket.streamId == 0xBD)
+        if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
+          ParseLPCMBitstream(pesPacket.data, audioInfo);
+      break;
+    case SUB_PG:
+    case SUB_IG:
+    case SUB_TEXT:
+    default:
+      streamInfo->completed = true;
+      break;
+  }
+}
+
 bool ParsePES(const TSPacket& tsPacket,
               std::unordered_map<unsigned int, PESAssembler>& pesSection,
               StreamMap& streams)
@@ -1769,69 +1878,15 @@ bool ParsePES(const TSPacket& tsPacket,
   {
     // Parse PES packet
     auto pesPacket{ParsePESPacket(section)};
-    if (!pesPacket)
+    if (!pesPacket.has_value())
       continue; // May not contain audio
 
-    auto& streamInfo{streams[tsPacket.pid]};
+    const auto& streamInfo{streams[tsPacket.pid]};
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing PES - Stream PID 0x{} - Type 0x{}",
                 fmt::format("{:04x}", streamInfo->pid),
                 fmt::format("{:02x}", static_cast<int>(streamInfo->streamType)));
 
-    switch (streamInfo->streamType)
-    {
-      using enum ENCODING_TYPE;
-      case VIDEO_HEVC:
-        if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
-          ParseNAL(pesPacket->data, VideoCodec::H265, videoInfo);
-        break;
-      case VIDEO_H264:
-        if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
-          ParseNAL(pesPacket->data, VideoCodec::H264, videoInfo);
-        break;
-      case VIDEO_H264_MVC:
-        if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
-        {
-          ParseNAL(pesPacket->data, VideoCodec::H264, videoInfo);
-          videoInfo->is3d = true;
-        }
-        break;
-      case VIDEO_VC1:
-        if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
-          ParseVC1(pesPacket->data, videoInfo);
-        break;
-      case VIDEO_MPEG2:
-        if (auto* videoInfo{dynamic_cast<TSVideoStreamInfo*>(streamInfo.get())})
-          ParseMPEG2(pesPacket->data, videoInfo);
-        break;
-      case AUDIO_AC3:
-      case AUDIO_AC3PLUS:
-      case AUDIO_AC3PLUS_SECONDARY:
-        if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
-          ParseAC3Bitstream(pesPacket->data, audioInfo);
-        break;
-      case AUDIO_DTS:
-      case AUDIO_DTSHD:
-      case AUDIO_DTSHD_MASTER:
-      case AUDIO_DTSHD_SECONDARY:
-        if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
-          ParseDTSBitstream(pesPacket->data, audioInfo);
-        break;
-      case AUDIO_TRUHD:
-        if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
-          ParseTrueHDBitstream(pesPacket->data, audioInfo);
-        break;
-      case AUDIO_LPCM:
-        if (pesPacket->streamId == 0xBD)
-          if (auto* audioInfo{dynamic_cast<TSAudioStreamInfo*>(streamInfo.get())})
-            ParseLPCMBitstream(pesPacket->data, audioInfo);
-        break;
-      case SUB_PG:
-      case SUB_IG:
-      case SUB_TEXT:
-      default:
-        streamInfo->completed = true;
-        break;
-    }
+    ProcessStream(*pesPacket, streamInfo);
   }
 
   return true;
@@ -1930,8 +1985,8 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
     }
 
     // Deal with Dolby Vision enhancement streams
-    const auto videoStreamsVector{GetVideoStreams(streams)};
-    if (videoStreamsVector.size() == 2 && videoStreamsVector[1].get().dolbyVision)
+    if (const auto videoStreamsVector{GetVideoStreams(streams)};
+        videoStreamsVector.size() == 2 && videoStreamsVector[1].get().dolbyVision)
     {
       // If two video streams and second one is DV, set DV flag for first video stream
       videoStreamsVector[0].get().dolbyVision = true;
@@ -1951,6 +2006,11 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
     CLog::LogFC(LOGDEBUG, LOGBLURAY, "Finished analysing {} for stream details.", clipFile);
 
     return true;
+  }
+  catch (const std::out_of_range& e)
+  {
+    CLog::LogF(LOGERROR, "M2TS parsing failed - error {}", e.what());
+    return false;
   }
   catch (const std::exception& e)
   {
@@ -1979,9 +2039,7 @@ bool CM2TSParser::GetStreams(const CURL& url,
     return false;
 
   unsigned int clip{it->angleClips.begin()->clip};
-  const std::string clipExtension{it->angleClips.begin()->codec};
-
-  if (!GetStreamsFromFile(url.GetHostName(), clip, clipExtension, streams))
+  if (!GetStreamsFromFile(url.GetHostName(), clip, it->angleClips.begin()->codec, streams))
     return false;
 
   if (!playlistInformation.extensionSubPlayItems.empty() &&
@@ -1990,10 +2048,9 @@ bool CM2TSParser::GetStreams(const CURL& url,
     // May be a 3D bluray so parse the stereo M2TS file too
     StreamMap extraStreams;
     unsigned int stereoClip{playlistInformation.extensionSubPlayItems.begin()->clips.begin()->clip};
-    const std::string stereoClipExtension{
-        playlistInformation.extensionSubPlayItems.begin()->clips.begin()->codec};
-
-    if (!GetStreamsFromFile(url.GetHostName(), stereoClip, stereoClipExtension, extraStreams))
+    if (!GetStreamsFromFile(url.GetHostName(), stereoClip,
+                            playlistInformation.extensionSubPlayItems.begin()->clips.begin()->codec,
+                            extraStreams))
       return false;
 
     const auto extraVideoStreamsVector{GetVideoStreams(extraStreams)};

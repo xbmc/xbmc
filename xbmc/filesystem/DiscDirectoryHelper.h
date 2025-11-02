@@ -152,20 +152,6 @@ class CDiscDirectoryHelper
     }
   };
 
-  // For removing duplicates from a vector of CandidatePlaylistInformation
-  struct CandidatePlaylistInformationNotDuplicate
-  {
-    explicit CandidatePlaylistInformationNotDuplicate(std::set<int64_t>& seen) : m_seen(seen) {}
-
-    bool operator()(const CandidatePlaylistInformation& c) const noexcept
-    {
-      return m_seen.insert(c.duration.count()).second;
-    }
-
-  private:
-    std::set<int64_t>& m_seen;
-  };
-
 public:
   CDiscDirectoryHelper();
   CDiscDirectoryHelper(const CDiscDirectoryHelper&) = delete;
