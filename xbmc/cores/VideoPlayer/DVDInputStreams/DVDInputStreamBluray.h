@@ -12,8 +12,10 @@
 #include "DVDInputStream.h"
 #include "threads/CriticalSection.h"
 
+#include <chrono>
 #include <list>
 #include <memory>
+#include <string>
 
 extern "C"
 {
@@ -138,6 +140,9 @@ public:
 
   void ProcessEvent();
 
+  void SaveCurrentState(const CStreamDetails& details) override;
+  UpdateState UpdateCurrentState(CFileItem& item, double time, bool& closed) override;
+
 protected:
   struct SPlane;
 
@@ -195,4 +200,8 @@ protected:
 
     /* used during bd_open_stream read block*/
     CCriticalSection m_readBlocksLock;
+
+    std::chrono::steady_clock::time_point m_startWatchTime{};
+    std::vector<PlaylistInformation> m_playedPlaylists;
+    CCriticalSection m_statesLock;
 };

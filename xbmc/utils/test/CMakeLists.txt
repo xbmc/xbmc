@@ -51,6 +51,10 @@ set(SOURCES TestAlarmClock.cpp
             TestXBMCTinyXML2.cpp
             TestXMLUtils.cpp)
 
+if(TARGET ${APP_NAME_LC}::Bluray)
+  list(APPEND SOURCES TestBluray.cpp)
+endif()
+
 set(HEADERS TestGlobalsHandlingPattern1.h)
 
 core_add_test_library(utils_test)
