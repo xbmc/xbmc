@@ -198,6 +198,13 @@ function(add_addon_depends addon searchpath)
           set(deps)
         endif()
 
+        if (EXISTS "${dir}/${CORE_PLATFORM_NAME}-deps.txt" AND NOT "${CORE_PLATFORM_NAME}" STREQUAL "${CORE_SYSTEM_NAME}")
+          set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${dir}/${CORE_PLATFORM_NAME}-deps.txt")
+          file(STRINGS "${dir}/${CORE_PLATFORM_NAME}-deps.txt" platform_deps)
+          message(STATUS "${id} platform-specific depends: ${platform_deps}")
+          list(APPEND deps ${platform_deps})
+        endif()
+
         if(CROSS_AUTOCONF AND AUTOCONF_FILES)
           foreach(afile ${AUTOCONF_FILES})
             set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${afile})
