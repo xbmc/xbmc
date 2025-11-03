@@ -3816,7 +3816,17 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     m_pCCDemuxer = std::make_unique<CDVDDemuxCC>(hint.codec);
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_VIDEOMUX);
   }
-
+  
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+  {
+    CDVDInputStreamBluray* blurayStream = dynamic_cast<CDVDInputStreamBluray*>(m_pInputStream.get());
+    if (blurayStream && blurayStream->IsResuming())
+    {
+      SetAudioStream(1);
+      CLog::Log(LOGDEBUG, "CVideoPlayer::OpenVideoStream - use 1 audiotrackIndex as default");
+    }
+  }
+  
   return true;
 }
 
