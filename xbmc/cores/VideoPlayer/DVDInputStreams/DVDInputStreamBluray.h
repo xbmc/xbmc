@@ -156,6 +156,7 @@ protected:
   bool m_isInMainMenu = false;
   bool m_hasOverlay = false;
   bool m_navmode = false;
+  bool m_isResuming = false;
   int m_dispTimeBeforeRead = 0;
 
   typedef std::shared_ptr<CDVDOverlayImage> SOverlay;
