@@ -5,9 +5,9 @@
 #
 # This will define the following target:
 #
-#   ${APP_NAME_LC}::Dav1d   - The dav1d library
+#   LIBRARY::Dav1d   - The dav1d library
 
-if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
   if((ENABLE_INTERNAL_DAV1D AND ENABLE_INTERNAL_FFMPEG) AND NOT (WIN32 OR WINDOWS_STORE))
     include(cmake/scripts/common/ModuleHelpers.cmake)
 
@@ -62,13 +62,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR DAV1D_VERSION)
 
   if(DAV1D_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${DAV1D_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${DAV1D_INCLUDE_DIR}")
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                              IMPORTED_LOCATION "${DAV1D_LIBRARY}"
+                                                              INTERFACE_INCLUDE_DIRECTORIES "${DAV1D_INCLUDE_DIR}")
 
     if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   endif()
 endif()
