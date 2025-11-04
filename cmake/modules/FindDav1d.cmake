@@ -102,10 +102,19 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
     ")
+
+    # Meson uses pkgconfig, therefore we no longer need the windows cmake config.
+    # remove the cmake config, as otherwise our search order will constantly find the old
+    # cmake config lib rather than the new pkgconfig
+    if(TARGET dav1d::dav1d)
+      if(EXISTS "${DEPENDS_PATH}/lib/cmake/dav1d")
+        file(REMOVE_RECURSE "${DEPENDS_PATH}/lib/cmake/dav1d")
+      endif()
+    endif()
   endif()
 
   if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
-    # cmake target and not building internal
+    # dav1d::dav1d target is a legacy target from windows kodi-deps build of dav1d
     if(TARGET dav1d::dav1d AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS dav1d::dav1d)
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
