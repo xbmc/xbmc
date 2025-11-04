@@ -106,6 +106,7 @@ public:
   void SetConvertDovi(bool value) { m_convert_dovi = value; }
   void SetRemoveDovi(bool value) { m_removeDovi = value; }
   void SetRemoveHdr10Plus(bool value) { m_removeHdr10Plus = value; }
+  void SetDoviZeroLevel5(bool value) { m_setDoviZeroLevel5 = value; }
 
   static bool       mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence);
 
