@@ -157,4 +157,5 @@ protected:
   bool m_convert_dovi;
   bool m_removeDovi;
   bool m_removeHdr10Plus;
+  bool m_setDoviZeroLevel5;
 };
