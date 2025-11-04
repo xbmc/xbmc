@@ -84,10 +84,9 @@ bool GetPlaylistInfoFromCache(const CURL& url,
                               BlurayPlaylistInformation& bpi,
                               std::map<unsigned int, ClipInformation>& clipCache)
 {
-  const std::string path{GetCachePath(url, realPath)};
-
   // Check cache
-  if (!CServiceBroker::GetBlurayDiscCache()->GetPlaylistInfo(path, playlist, bpi))
+  if (const std::string path{GetCachePath(url, realPath)};
+      !CServiceBroker::GetBlurayDiscCache()->GetPlaylistInfo(path, playlist, bpi))
   {
     // Retrieve from disc
     if (!CMPLSParser::ReadMPLS(url, playlist, bpi, clipCache))
@@ -314,6 +313,82 @@ int GetMainPlaylistFromDisc(const CURL& url)
   return playlist;
 }
 
+bool FilterPlaylists(std::vector<PlaylistInformation>& playlists,
+                     GetTitle job,
+                     SortTitles sort,
+                     int mainPlaylist)
+{
+  // Remove playlists with no clips
+  std::erase_if(playlists,
+                [](const PlaylistInformation& playlist) { return playlist.clips.empty(); });
+
+  // Remove all clips less than a second in length
+  std::erase_if(playlists,
+                [](const PlaylistInformation& playlist) { return playlist.duration < 1s; });
+
+  // Remove playlists with duplicate clips
+  std::erase_if(playlists,
+                [](const PlaylistInformation& playlist)
+                {
+                  std::unordered_set<unsigned int> clips;
+                  for (const auto& clip : playlist.clips)
+                    clips.emplace(clip);
+                  return clips.size() < playlist.clips.size();
+                });
+
+  // Remove duplicate playlists
+  // For episodes playlist selection happens in CDiscDirectoryHelper
+  if (job != GetTitle::GET_TITLES_ALL && job != GetTitle::GET_TITLES_EPISODES &&
+      playlists.size() > 1)
+    RemoveDuplicatePlaylists(playlists);
+
+  // Remove playlists below minimum duration (default 5 minutes) unless that would leave no playlists
+  if (job != GetTitle::GET_TITLES_ALL)
+    RemoveShortPlaylists(playlists);
+
+  // No playlists found
+  if (playlists.empty())
+    return false;
+
+  // Sort
+  // Movies - placing main title - if present - first, then by duration
+  // Episodes - by playlist number
+  if (sort != SortTitles::SORT_TITLES_NONE)
+    SortPlaylists(playlists, sort, mainPlaylist);
+
+  return true;
+}
+
+void AddPlaylists(const CURL& url,
+                  const std::string& realPath,
+                  GetTitle job,
+                  CFileItemList& items,
+                  int mainPlaylist,
+                  std::vector<PlaylistInformation>& playlists,
+                  std::map<unsigned int, ClipInformation>& clipCache)
+{
+  if (playlists.empty())
+    return;
+
+  // Now we have curated playlists, find longest (for main title derivation)
+  const auto& it{std::ranges::max_element(playlists, {}, &PlaylistInformation::duration)};
+  const std::chrono::milliseconds maxDuration{it->duration};
+  const unsigned int maxPlaylist{it->playlist};
+
+  const std::chrono::milliseconds minDuration{maxDuration * MAIN_TITLE_LENGTH_PERCENT / 100};
+  for (auto& title : playlists)
+  {
+    if (IncludePlaylist(job, title, minDuration, mainPlaylist, maxPlaylist))
+    {
+      items.Add(GetFileItem(url, realPath, title,
+                            title.playlist == static_cast<unsigned int>(mainPlaylist)
+                                ? g_localizeStrings.Get(25004) /* Main Title */
+                                : g_localizeStrings.Get(25005) /* Title */,
+                            clipCache));
+    }
+  }
+}
+
 bool GetPlaylists(const CURL& url,
                   const std::string& realPath,
                   int flags,
@@ -367,61 +442,10 @@ bool GetPlaylists(const CURL& url,
       if (playlists.empty() && !GetPlaylistsFromDisc(url, realPath, flags, playlists, clipCache))
         return false;
 
-      // Remove playlists with no clips
-      std::erase_if(playlists,
-                    [](const PlaylistInformation& playlist) { return playlist.clips.empty(); });
+      if (!FilterPlaylists(playlists, job, sort, mainPlaylist))
+        return false; // No playlists remain
 
-      // Remove all clips less than a second in length
-      std::erase_if(playlists,
-                    [](const PlaylistInformation& playlist) { return playlist.duration < 1s; });
-
-      // Remove playlists with duplicate clips
-      std::erase_if(playlists,
-                    [](const PlaylistInformation& playlist)
-                    {
-                      std::unordered_set<unsigned int> clips;
-                      for (const auto& clip : playlist.clips)
-                        clips.emplace(clip);
-                      return clips.size() < playlist.clips.size();
-                    });
-
-      // Remove duplicate playlists
-      // For episodes playlist selection happens in CDiscDirectoryHelper
-      if (job != GetTitle::GET_TITLES_ALL && job != GetTitle::GET_TITLES_EPISODES &&
-          playlists.size() > 1)
-        RemoveDuplicatePlaylists(playlists);
-
-      // Remove playlists below minimum duration (default 5 minutes) unless that would leave no playlists
-      if (job != GetTitle::GET_TITLES_ALL)
-        RemoveShortPlaylists(playlists);
-
-      // No playlists found
-      if (playlists.empty())
-        return false;
-
-      // Now we have curated playlists, find longest (for main title derivation)
-      const auto& it{std::ranges::max_element(playlists, {}, &PlaylistInformation::duration)};
-      const std::chrono::milliseconds maxDuration{it->duration};
-      const unsigned int maxPlaylist{it->playlist};
-
-      // Sort
-      // Movies - placing main title - if present - first, then by duration
-      // Episodes - by playlist number
-      if (sort != SortTitles::SORT_TITLES_NONE)
-        SortPlaylists(playlists, sort, mainPlaylist);
-
-      const std::chrono::milliseconds minDuration{maxDuration * MAIN_TITLE_LENGTH_PERCENT / 100};
-      for (auto& title : playlists)
-      {
-        if (IncludePlaylist(job, title, minDuration, mainPlaylist, maxPlaylist))
-        {
-          items.Add(GetFileItem(url, realPath, title,
-                                title.playlist == static_cast<unsigned int>(mainPlaylist)
-                                    ? g_localizeStrings.Get(25004) /* Main Title */
-                                    : g_localizeStrings.Get(25005) /* Title */,
-                                clipCache));
-        }
-      }
+      AddPlaylists(url, realPath, job, items, mainPlaylist, playlists, clipCache);
     }
 
     return !items.IsEmpty();
@@ -434,6 +458,11 @@ bool GetPlaylists(const CURL& url,
   catch (const std::exception& e)
   {
     CLog::LogF(LOGERROR, "Exception getting playlists - error {}", e.what());
+    return false;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Exception getting playlists");
     return false;
   }
 }
@@ -544,9 +573,17 @@ bool GetPlaylistsInformation(const CURL& url,
 
     return true;
   }
+  catch (const std::out_of_range& e)
+  {
+    CLog::LogF(LOGERROR, "Error getting playlists information - error {}", e.what());
+  }
   catch (const std::exception& e)
   {
     CLog::LogF(LOGERROR, "Error getting playlists information - error {}", e.what());
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Error getting playlists information");
   }
   return false;
 }

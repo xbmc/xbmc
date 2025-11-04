@@ -424,8 +424,12 @@ std::vector<std::vector<CDiscDirectoryHelper::CandidatePlaylistInformation>> CDi
   for (const auto& playlistGroup : groups)
   {
     std::set<int64_t> seenDurations;
+    auto CandidatePlaylistInformationNotDuplicate{
+        [&seenDurations](const CandidatePlaylistInformation& c) noexcept
+        { return seenDurations.insert(c.duration.count()).second; }};
+
     std::ranges::copy_if(playlistGroup, std::back_inserter(uniqueGroups.emplace_back()),
-                         CandidatePlaylistInformationNotDuplicate(seenDurations));
+                         CandidatePlaylistInformationNotDuplicate);
   }
   return uniqueGroups;
 }

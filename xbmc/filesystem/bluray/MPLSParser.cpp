@@ -171,7 +171,7 @@ StreamInformation ParseStream(const std::span<std::byte> buffer,
       offset += numAudioReferences + OFFSET_STREAM_SECONDARY_REFERENCES +
                 (numAudioReferences % 2); // next word boundary
       const unsigned int numPGReferences{GetByte(buffer, offset)};
-      streamInformation.secondaryVideo_audioReferences.reserve(numPGReferences);
+      streamInformation.secondaryVideo_presentationGraphicReferences.reserve(numPGReferences);
       for (unsigned int i = 0; i < numPGReferences; ++i)
       {
         streamInformation.secondaryVideo_presentationGraphicReferences.emplace_back(
@@ -744,8 +744,8 @@ bool ParseSubPath(std::vector<std::byte>& buffer,
                   unsigned int& offset,
                   std::vector<SubPlayItemInformation>& subPlayItems)
 {
-  const unsigned int subPathSize{GetDWord(buffer, offset)};
-  if (buffer.size() < offset + subPathSize)
+  if (const unsigned int subPathSize{GetDWord(buffer, offset)};
+      buffer.size() < offset + subPathSize)
     return false;
 
   const unsigned int numSubPlayItems{
@@ -1010,9 +1010,8 @@ bool ParseMPLS(const CURL& url,
 
   // Parse extension data
   offset = extensionDataPosition;
-  if (offset != 0)
-    if (!ParseExtensionData(buffer, offset, playlistInformation))
-      return false;
+  if (offset != 0 && !ParseExtensionData(buffer, offset, playlistInformation))
+    return false;
 
   DeriveChaptersAndTimings(playlistInformation);
 
@@ -1052,6 +1051,11 @@ bool CMPLSParser::ReadMPLS(const CURL& url,
   catch (const std::exception& e)
   {
     CLog::LogF(LOGERROR, "MPLS parsing failed - error {}", e.what());
+    return false;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "MPLS parsing failed");
     return false;
   }
 }
