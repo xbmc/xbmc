@@ -11,6 +11,7 @@
 #include "guilib/TextureFormats.h"
 #include "guilib/TextureScaling.h"
 
+#include <cstdint>
 #include <memory>
 #include <string>
 
