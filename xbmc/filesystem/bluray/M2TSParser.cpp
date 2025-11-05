@@ -622,11 +622,11 @@ bool ParseAC3Bitstream(const std::span<std::byte>& buffer,
   const unsigned int acmod{GetBits(header, 16, 3)};
 
   // Set sample rate
-  if (constexpr auto sampleRates = AC3_SAMPLE_RATES; fscod < sampleRates.size())
+  if (const auto& sampleRates{AC3_SAMPLE_RATES}; fscod < sampleRates.size())
     streamInfo->sampleRate = sampleRates[fscod];
 
   // Set channel count
-  if (const auto channelCounts = AC3_CHANNEL_COUNTS; acmod < channelCounts.size())
+  if (const auto& channelCounts{AC3_CHANNEL_COUNTS}; acmod < channelCounts.size())
     streamInfo->channels = channelCounts[acmod];
 
   // Check for LFE
@@ -705,8 +705,7 @@ bool GetEAC3ChannelCountAndSampleRate(BitReader& br,
   if (!chanmape)
   {
     // If no channel map, then use the AC3 way
-    const auto channelCounts = AC3_CHANNEL_COUNTS;
-    if (bsi.acmod < channelCounts.size())
+    if (const auto& channelCounts{AC3_CHANNEL_COUNTS}; bsi.acmod < channelCounts.size())
       channelCount = channelCounts[bsi.acmod] + (bsi.lfeon ? 1 : 0);
   }
   else
@@ -861,9 +860,8 @@ void SkipEAC3HeaderBits(BitReader& br, const EAC3BitStreamInfo& bsi)
   if (bsi.strmtyp == 0 && bsi.fscod2_numblkscod != 3)
     br.SkipBits(1); // convsync
 
-  if (bsi.strmtyp == 2)
-    if (bsi.fscod2_numblkscod == 3 || br.ReadBits(1)) // blkid
-      br.SkipBits(6); // frmsizecod
+  if (bsi.strmtyp == 2 && (bsi.fscod2_numblkscod == 3 || br.ReadBits(1) == 1)) // blkid
+    br.SkipBits(6); // frmsizecod
 }
 
 void GetAtmos(BitReader& br, TSAudioStreamInfo* streamInfo)
@@ -982,8 +980,8 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
     unsigned int lff{static_cast<unsigned int>(GetBits64(header, 11, 2))};
 
     // Set parameters
-    const auto sampleRates = DTS_SAMPLE_RATES;
-    const auto channelCounts = DTS_CHANNEL_COUNTS;
+    const auto& sampleRates{DTS_SAMPLE_RATES};
+    const auto& channelCounts{DTS_CHANNEL_COUNTS};
 
     if (sfreq < sampleRates.size())
       streamInfo->sampleRate = sampleRates[sfreq];
@@ -1030,7 +1028,7 @@ bool ParseTrueHDHeader(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   unsigned int flags{GetWord(buffer, 10)};
 
   // Set sample rate
-  const auto sampleRates = TRUEHD_SAMPLE_RATES;
+  const auto& sampleRates{TRUEHD_SAMPLE_RATES};
   if (unsigned int audio_sampling_frequency{GetBits(format_info, 32, 4)};
       audio_sampling_frequency < sampleRates.size())
     streamInfo->sampleRate = sampleRates[audio_sampling_frequency];
@@ -1485,7 +1483,7 @@ bool ParseSEI(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
       payloadType = *i;
 
     // Read payload size
-    unsigned int payloadSize{0};
+    unsigned int payloadSize;
     if (const auto i{GetCumulativeNumber(buffer, offset)}; !i.has_value())
       break;
     else
@@ -2038,8 +2036,8 @@ bool CM2TSParser::GetStreams(const CURL& url,
   if (it == playlistInformation.playItems.end() || it->angleClips.empty())
     return false;
 
-  unsigned int clip{it->angleClips.begin()->clip};
-  if (!GetStreamsFromFile(url.GetHostName(), clip, it->angleClips.begin()->codec, streams))
+  if (unsigned int clip{it->angleClips.begin()->clip};
+      !GetStreamsFromFile(url.GetHostName(), clip, it->angleClips.begin()->codec, streams))
     return false;
 
   if (!playlistInformation.extensionSubPlayItems.empty() &&
@@ -2047,14 +2045,17 @@ bool CM2TSParser::GetStreams(const CURL& url,
   {
     // May be a 3D bluray so parse the stereo M2TS file too
     StreamMap extraStreams;
-    unsigned int stereoClip{playlistInformation.extensionSubPlayItems.begin()->clips.begin()->clip};
-    if (!GetStreamsFromFile(url.GetHostName(), stereoClip,
+    if (unsigned int stereoClip{
+            playlistInformation.extensionSubPlayItems.begin()->clips.begin()->clip};
+        !GetStreamsFromFile(url.GetHostName(), stereoClip,
                             playlistInformation.extensionSubPlayItems.begin()->clips.begin()->codec,
                             extraStreams))
+    {
       return false;
+    }
 
-    const auto extraVideoStreamsVector{GetVideoStreams(extraStreams)};
-    if (extraVideoStreamsVector.size() == 1 && extraVideoStreamsVector.front().get().is3d)
+    if (const auto extraVideoStreamsVector{GetVideoStreams(extraStreams)};
+        extraVideoStreamsVector.size() == 1 && extraVideoStreamsVector.front().get().is3d)
     {
       const auto videoStreamsVector{GetVideoStreams(streams)};
       if (!videoStreamsVector.empty())
