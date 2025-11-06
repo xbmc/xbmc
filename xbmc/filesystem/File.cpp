@@ -19,6 +19,9 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "commons/Exception.h"
+#ifdef TARGET_WINDOWS
+#include "platform/win32/dirent.h" // For S_ISDIR compatability macro
+#endif
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/BitstreamStats.h"
@@ -577,6 +580,14 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
   CLog::Log(LOGERROR, "{} - Error statting {}", __FUNCTION__, file.GetRedacted());
   return -1;
+}
+
+bool CFile::FileExists(const std::string& path)
+{
+  struct __stat64 s;
+  if (XFILE::CFile::Stat(path, &s) == 0)
+    return !S_ISDIR(s.st_mode);
+  return false;
 }
 
 ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)

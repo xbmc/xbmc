@@ -8,9 +8,11 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "test/TestUtils.h"
 #include "utils/URIUtils.h"
 
 #include <utility>
@@ -1081,5 +1083,162 @@ TEST_F(TestURIUtils, CheckConsistencyBetweenFileNameUtilities)
     EXPECT_EQ("a:b", URIUtils::GetFileName("/hello/there/a:b"));
     EXPECT_EQ("a:b", CURL_FileName_URIUtils_Split("/hello/there/a:b"));
     EXPECT_EQ("a:b", URIUtils_Split("/hello/there/a:b"));
+  }
+}
+
+TEST_F(TestURIUtils, ParsingArchiveFile)
+{
+  XFILE::CFile* file = XBMC_CREATETEMPFILE(".zip");
+  std::string archivePath = XBMC_TEMPFILEPATH(file);
+  std::string pathInArchive = archivePath + "/path/in/archive/info.txt";
+  file->Close();
+
+  CURL url(pathInArchive);
+
+  EXPECT_EQ("zip", url.GetProtocol());
+  EXPECT_EQ("path/in/archive/info.txt", url.GetFileName());
+  EXPECT_EQ(archivePath, CURL::Decode(url.GetHostName()));
+
+  XBMC_DELETETEMPFILE(file);
+}
+
+struct CURLArchiveConstructionTestData
+{
+  std::string input;
+  std::string protocol;
+  std::string filename;
+  std::string hostname;
+};
+
+TEST_F(TestURIUtils, CURLConstructionOfArchiveFile)
+{
+  const std::vector<CURLArchiveConstructionTestData> test_data{
+      // Zip file tests
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png"),
+          "",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png"),
+          "",
+      },
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/zipfile.zip/kodi-dev.png"),
+          "zip",
+          "kodi-dev.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/zipfile.zip"),
+      },
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip/does_not_exist.png"),
+          "zip",
+          "does_not_exist.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
+      },
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip"),
+          "zip",
+          "zipfile.zip",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
+      },
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar"),
+          "zip",
+          "rarfile.rar",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/does_not_exist.png"),
+          "zip",
+          "zipfile.zip/does_not_exist.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/kodi-dev.png"),
+          "zip",
+          "zipfile.zip/kodi-dev.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar/does_not_exist.png"),
+          "zip",
+          "rarfile.rar/does_not_exist.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar/kodi-dev.png"),
+          "zip",
+          "rarfile.rar/kodi-dev.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
+      },
+      // Rar file tests
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.rar/kodi-dev.png"),
+          "",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.rar/kodi-dev.png"),
+          "",
+      },
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/rarfile.rar/kodi-dev.png"),
+          "rar",
+          "kodi-dev.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/rarfile.rar"),
+      },
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar/does_not_exist.png"),
+          "rar",
+          "does_not_exist.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
+      },
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip"),
+          "rar",
+          "zipfile.zip",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
+      },
+      {
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar"),
+          "rar",
+          "rarfile.rar",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip/does_not_exist.png"),
+          "rar",
+          "zipfile.zip/does_not_exist.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip/kodi-dev.png"),
+          "rar",
+          "zipfile.zip/kodi-dev.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar/does_not_exist.png"),
+          "rar",
+          "rarfile.rar/does_not_exist.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar/kodi-dev.png"),
+          "rar",
+          "rarfile.rar/kodi-dev.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
+      },
+  };
+
+  for (const auto& param : test_data)
+  {
+    const CURL url(param.input);
+
+    EXPECT_EQ(param.protocol, url.GetProtocol());
+    EXPECT_EQ(param.filename, url.GetFileName());
+    EXPECT_EQ(param.hostname, CURL::Decode(url.GetHostName()));
   }
 }
