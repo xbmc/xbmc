@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -49,8 +50,8 @@ bool IsAudio(const CFileItem& item)
   //! @todo If the file is a zip file, ask the game clients if any support this
   // file before assuming it is audio
 
-  return URIUtils::HasExtension(item.GetPath(),
-                                CServiceBroker::GetFileExtensionProvider().GetMusicExtensions());
+  return item.GetURL().HasExtension(
+      CServiceBroker::GetFileExtensionProvider().GetMusicExtensions());
 }
 
 bool IsAudioBook(const CFileItem& item)
@@ -60,22 +61,22 @@ bool IsAudioBook(const CFileItem& item)
 
 bool IsCDDA(const CFileItem& item)
 {
-  return URIUtils::IsCDDA(item.GetPath());
+  return item.GetURL().IsCDDA();
 }
 
 bool IsCUESheet(const CFileItem& item)
 {
-  return URIUtils::HasExtension(item.GetPath(), ".cue");
+  return item.GetURL().HasExtension(".cue");
 }
 
 bool IsLyrics(const CFileItem& item)
 {
-  return URIUtils::HasExtension(item.GetPath(), ".cdg|.lrc");
+  return item.GetURL().HasExtension(".cdg|.lrc");
 }
 
 bool IsMusicDb(const CFileItem& item)
 {
-  return URIUtils::IsMusicDb(item.GetPath());
+  return item.GetURL().IsMusicDb();
 }
 
 } // namespace KODI::MUSIC

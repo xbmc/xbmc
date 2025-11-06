@@ -15,6 +15,7 @@
 #include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
 #include "network/Network.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -298,7 +299,7 @@ void CURL::Parse(std::string strURL1)
   SetFileName(m_strFileName);
 
   /* decode urlencoding on this stuff */
-  if(URIUtils::HasEncodedHostname(*this))
+  if (HasEncodedHostname())
   {
     m_strHostName = Decode(m_strHostName);
     SetHostName(m_strHostName);
@@ -517,7 +518,7 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
     else
       strHostName = m_strHostName;
 
-    if (URIUtils::HasEncodedHostname(*this))
+    if (HasEncodedHostname())
       strHostName = Encode(strHostName);
 
     if ( HasPort() )
@@ -578,7 +579,7 @@ std::string CURL::GetWithoutFilename() const
   {
     std::string hostname;
 
-    if( URIUtils::HasEncodedHostname(*this) )
+    if (HasEncodedHostname())
       hostname = Encode(m_strHostName);
     else
       hostname = m_strHostName;
@@ -739,4 +740,192 @@ void CURL::RemoveProtocolOption(const std::string &key)
 {
   m_protocolOptions.RemoveOption(key);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
+}
+
+bool CURL::HasExtension(std::string_view extensions) const
+{
+  const size_t pos = m_strFileName.find_last_of("./\\");
+  if (pos == std::string::npos || m_strFileName[pos] != '.')
+    return false;
+
+  const std::string extensionLower = StringUtils::ToLower(m_strFileName.substr(pos));
+
+  const std::vector<std::string> extensionsLower =
+      StringUtils::Split(StringUtils::ToLower(extensions), '|');
+
+  for (const auto& ext : extensionsLower)
+  {
+    if (StringUtils::EndsWith(ext, extensionLower))
+      return true;
+  }
+
+  return false;
+}
+
+std::string CURL::GetExtension() const
+{
+  size_t period = m_strFileName.find_last_of("./\\");
+  if (period == std::string::npos || m_strFileName[period] != '.')
+    return std::string();
+
+  return m_strFileName.substr(period);
+}
+
+bool CURL::IsStack() const
+{
+  return IsProtocol("stack");
+}
+
+bool CURL::IsMultiPath() const
+{
+  return IsProtocol("multipath");
+}
+
+bool CURL::IsFavourite() const
+{
+  return IsProtocol("favourites");
+}
+
+bool CURL::IsPlugin() const
+{
+  return IsProtocol("plugin");
+}
+
+bool CURL::IsScript() const
+{
+  return IsProtocol("script");
+}
+
+bool CURL::IsAddonsPath() const
+{
+  return IsProtocol("addons");
+}
+
+bool CURL::IsSourcesPath() const
+{
+  return IsProtocol("sources");
+}
+
+bool CURL::IsCDDA() const
+{
+  return IsProtocol("cdda");
+}
+
+bool CURL::IsISO9660() const
+{
+  return IsProtocol("iso9660");
+}
+
+bool CURL::IsMusicDb() const
+{
+  return IsProtocol("musicdb");
+}
+
+bool CURL::IsVideoDb() const
+{
+  return IsProtocol("videodb");
+}
+
+bool CURL::IsBlurayPath() const
+{
+  return IsProtocol("bluray");
+}
+
+bool CURL::IsAndroidApp() const
+{
+  return IsProtocol("androidapp");
+}
+
+bool CURL::IsLibraryFolder() const
+{
+  return IsProtocol("library");
+}
+
+bool CURL::IsUPnP() const
+{
+  return IsProtocol("upnp");
+}
+
+bool CURL::IsAPK() const
+{
+  return HasExtension(".apk");
+}
+
+bool CURL::IsZIP() const // also checks for comic books!
+{
+  return HasExtension(".zip|.cbz");
+}
+
+bool CURL::IsArchive() const
+{
+  return HasExtension(".zip|.rar|.apk|.cbz|.cbr");
+}
+
+bool CURL::IsCBZ() const
+{
+  return HasExtension(".cbz");
+}
+
+bool CURL::IsCBR() const
+{
+  return HasExtension(".cbr");
+}
+
+bool CURL::IsDiscImage() const
+{
+  return HasExtension(".img|.iso|.nrg|.udf");
+}
+
+bool CURL::IsPicture() const
+{
+  return HasExtension(CServiceBroker::GetFileExtensionProvider().GetPictureExtensions() +
+                      "|.tbn|.dds");
+}
+
+bool CURL::HasParentInHostname() const
+{
+  return IsProtocol("zip") || IsProtocol("apk") || IsProtocol("bluray") || IsProtocol("udf") ||
+         IsProtocol("iso9660") || IsProtocol("xbt") || IsProtocol("rar") ||
+         (CServiceBroker::IsAddonInterfaceUp() &&
+          CServiceBroker::GetFileExtensionProvider().EncodedHostName(GetProtocol()));
+}
+
+bool CURL::HasEncodedHostname() const
+{
+  return HasParentInHostname() || IsProtocol("musicsearch") || IsProtocol("image");
+}
+
+bool CURL::HasEncodedFilename() const
+{
+  const std::string prot2 = GetTranslatedProtocol();
+
+  // For now assume only (quasi) http internet streams use URL encoding
+  return IsProtocolEqual(prot2, "http") || IsProtocolEqual(prot2, "https");
+}
+
+bool CURL::IsLibraryContent() const
+{
+  return (IsLibraryFolder() || IsVideoDb() || IsMusicDb() || HasExtension(".xsp"));
+}
+
+bool CURL::IsBDFile() const
+{
+  const std::string fileName{URIUtils::GetFileName(m_strFileName)};
+  return StringUtils::EqualsNoCase(fileName, "index.bdmv") ||
+         StringUtils::EqualsNoCase(fileName, "MovieObject.bdmv") ||
+         StringUtils::EqualsNoCase(fileName, "INDEX.BDM") ||
+         StringUtils::EqualsNoCase(fileName, "MOVIEOBJ.BDM");
+}
+
+bool CURL::IsDVDFile() const
+{
+  const std::string fileName{URIUtils::GetFileName(m_strFileName)};
+  return StringUtils::EqualsNoCase(fileName, "video_ts.ifo") ||
+         (StringUtils::StartsWithNoCase(fileName, "vts_") &&
+          StringUtils::EndsWithNoCase(fileName, "_0.ifo") && fileName.length() == 12);
+}
+
+bool CURL::IsOpticalMediaFile() const
+{
+  return IsBDFile() || IsDVDFile();
 }

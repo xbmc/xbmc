@@ -19,7 +19,7 @@ bool IsInternetStream(const CFileItem& item)
   if (item.HasProperty("IsHTTPDirectory"))
     return false;
 
-  return URIUtils::IsInternetStream(item.GetDynPath());
+  return URIUtils::IsInternetStream(item.GetDynURL());
 }
 
 bool IsRemote(const CFileItem& item)

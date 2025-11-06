@@ -704,6 +704,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     bool FoundSomeInfo = false;
     std::vector<int> seenPaths;
+    seenPaths.reserve(items.Size());
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];

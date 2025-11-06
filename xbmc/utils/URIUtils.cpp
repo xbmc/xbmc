@@ -119,7 +119,7 @@ void URIUtils::UnregisterAdvancedSettings()
 /* returns filename extension including period of filename */
 std::string URIUtils::GetExtension(const CURL& url)
 {
-  return URIUtils::GetExtension(url.GetFileName());
+  return url.GetExtension();
 }
 
 std::string URIUtils::GetExtension(const std::string& strFileName)
@@ -127,7 +127,7 @@ std::string URIUtils::GetExtension(const std::string& strFileName)
   if (IsURL(strFileName))
   {
     CURL url(strFileName);
-    return GetExtension(url.GetFileName());
+    return url.GetExtension();
   }
 
   size_t period = strFileName.find_last_of("./\\");
@@ -156,7 +156,7 @@ bool URIUtils::HasExtension(const std::string& strFileName)
 
 bool URIUtils::HasExtension(const CURL& url, const std::string& strExtensions)
 {
-  return HasExtension(url.GetFileName(), strExtensions);
+  return url.HasExtension(strExtensions);
 }
 
 bool URIUtils::HasExtension(const std::string& strFileName, const std::string& strExtensions)
@@ -359,18 +359,12 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
 
 bool URIUtils::HasParentInHostname(const CURL& url)
 {
-  return url.IsProtocol("zip") || url.IsProtocol("apk") || url.IsProtocol("bluray") ||
-         url.IsProtocol("udf") || url.IsProtocol("iso9660") || url.IsProtocol("xbt") ||
-         url.IsProtocol("rar") ||
-         (CServiceBroker::IsAddonInterfaceUp() &&
-          CServiceBroker::GetFileExtensionProvider().EncodedHostName(url.GetProtocol()));
+  return url.HasParentInHostname();
 }
 
 bool URIUtils::HasEncodedHostname(const CURL& url)
 {
-  return HasParentInHostname(url)
-      || url.IsProtocol("musicsearch")
-      || url.IsProtocol( "image");
+  return url.HasEncodedHostname();
 }
 
 bool URIUtils::HasEncodedFilename(const CURL& url)
@@ -395,7 +389,7 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
 
   CURL url(strPath);
   std::string strFile = url.GetFileName();
-  if ( URIUtils::HasParentInHostname(url) && strFile.empty())
+  if (url.HasParentInHostname() && strFile.empty())
   {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
@@ -418,14 +412,14 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
     if (!dir.GetDirectory(url, items))
       return false;
     CURL url2(GetDirectory(items[0]->GetPath()));
-    if (HasParentInHostname(url2))
+    if (url2.HasParentInHostname())
       GetParentPath(url2.Get(), strParent);
     else
       strParent = url2.Get();
     for (const auto& item : items)
     {
       item->SetDVDLabel(GetDirectory(item->GetPath()));
-      if (HasParentInHostname(url2))
+      if (url2.HasParentInHostname())
         item->SetPath(GetParentPath(item->GetDVDLabel()));
       else
         item->SetPath(item->GetDVDLabel());
@@ -838,25 +832,25 @@ bool URIUtils::IsRemote(const std::string& strFile)
   }
 
   CURL url(strFile);
-  if(HasParentInHostname(url))
+  if (url.HasParentInHostname())
     return IsRemote(url.GetHostName());
 
-  if (IsAddonsPath(strFile))
+  if (url.IsAddonsPath())
     return false;
 
-  if (IsSourcesPath(strFile))
+  if (url.IsSourcesPath())
     return false;
 
-  if (IsVideoDb(strFile) || IsMusicDb(strFile))
+  if (url.IsVideoDb() || url.IsMusicDb())
     return false;
 
-  if (IsLibraryFolder(strFile))
+  if (url.IsLibraryFolder())
     return false;
 
-  if (IsPlugin(strFile))
+  if (url.IsPlugin())
     return false;
 
-  if (IsAndroidApp(strFile))
+  if (url.IsAndroidApp())
     return false;
 
   if (!url.IsLocal())
@@ -907,7 +901,7 @@ bool URIUtils::IsOnLAN(const std::string& strPath, LanCheckMode lanCheckMode)
     return true;
 
   CURL url(strPath);
-  if (HasParentInHostname(url))
+  if (url.HasParentInHostname())
     return IsOnLAN(url.GetHostName(), lanCheckMode);
 
   if(!IsRemote(strPath))
@@ -983,7 +977,7 @@ bool URIUtils::IsHD(const std::string& strFileName)
   if (IsSpecial(strFileName))
     return IsHD(CSpecialProtocol::TranslatePath(strFileName));
 
-  if (HasParentInHostname(url))
+  if (url.HasParentInHostname())
     return IsHD(url.GetHostName());
 
   return url.GetProtocol().empty() || url.IsProtocol("file") || url.IsProtocol("win-lib") ||
@@ -1159,7 +1153,7 @@ bool URIUtils::IsSmb(const std::string& strFile)
     return IsSmb(CSpecialProtocol::TranslatePath(strFile));
 
   CURL url(strFile);
-  if (HasParentInHostname(url))
+  if (url.HasParentInHostname())
     return IsSmb(url.GetHostName());
 
   return IsProtocol(strFile, "smb");
@@ -1179,7 +1173,7 @@ bool URIUtils::IsFTP(const std::string& strFile)
     return IsFTP(CSpecialProtocol::TranslatePath(strFile));
 
   CURL url(strFile);
-  if (HasParentInHostname(url))
+  if (url.HasParentInHostname())
     return IsFTP(url.GetHostName());
 
   return IsProtocol(strFile, "ftp") ||
@@ -1195,7 +1189,7 @@ bool URIUtils::IsHTTP(const std::string& strFile, bool bTranslate /* = false */)
     return IsHTTP(CSpecialProtocol::TranslatePath(strFile));
 
   CURL url(strFile);
-  if (HasParentInHostname(url))
+  if (url.HasParentInHostname())
     return IsHTTP(url.GetHostName());
 
   const std::string strProtocol = (bTranslate ? url.GetTranslatedProtocol() : url.GetProtocol());
@@ -1273,7 +1267,7 @@ bool URIUtils::IsDAV(const std::string& strFile)
     return IsDAV(CSpecialProtocol::TranslatePath(strFile));
 
   CURL url(strFile);
-  if (HasParentInHostname(url))
+  if (url.HasParentInHostname())
     return IsDAV(url.GetHostName());
 
   return IsProtocol(strFile, "dav") ||
@@ -1409,7 +1403,7 @@ bool URIUtils::IsNfs(const std::string& strFile)
     return IsNfs(CSpecialProtocol::TranslatePath(strFile));
 
   CURL url(strFile);
-  if (HasParentInHostname(url))
+  if (url.HasParentInHostname())
     return IsNfs(url.GetHostName());
 
   return IsProtocol(strFile, "nfs");
