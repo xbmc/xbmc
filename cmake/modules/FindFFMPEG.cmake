@@ -319,6 +319,12 @@ else()
               HINTS ${DEPENDS_PATH}/include ${MINGW_LIBS_DIR}/include
               ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
+    # Windows is still just a straight file search. Explicitly search for Dav1d for
+    # correct dependency linking
+    if(WIN32 OR WINDOWS_STORE)
+      find_package(Dav1d ${SEARCH_QUIET})
+    endif()
+
     # Macro to populate target
     # arg1: lowercase libname (eg libavcodec, libpostproc, etc)
     macro(ffmpeg_create_target libname)
@@ -404,6 +410,12 @@ if(FFMPEG_FOUND)
     string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
     if(TARGET ffmpeg::${_libname})
       target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::${_libname})
+
+      if("${_libname}" STREQUAL "libavcodec")
+        if(TARGET ${APP_NAME_LC}::Dav1d)
+          set_property(TARGET ffmpeg::${_libname} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${APP_NAME_LC}::Dav1d)
+        endif()
+      endif()
     endif()
   endforeach()
 
