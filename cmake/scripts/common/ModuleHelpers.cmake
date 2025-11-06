@@ -748,6 +748,10 @@ function(create_mesonbinaries)
                     "ar" "CMAKE_AR"
                     "cmake" "CMAKE_COMMAND")
 
+  if(TARGET GASPP::GASPP)
+    list(APPEND binariespairs "gas-preprocessor.pl" "GASPP_PL")
+  endif()
+
   if(NOT "${CMAKE_STRIP}" STREQUAL "")
     list(APPEND binariespairs "strip" "CMAKE_STRIP")
   endif()
