@@ -6,6 +6,62 @@
  *  See LICENSES/README.md for more information.
  */
 
+/**
+ * @file TestUrlParsing.cpp
+ * @brief Unit tests for verifying URL parsing into CURL objects.
+ *
+ * This test suite validates the correctness and robustness of Kodi's URL
+ * parsing implementation by ensuring that different types of URLs are
+ * correctly decomposed into their component parts (scheme, host, port,
+ * path, query, etc.) within CURL objects.
+ *
+ * ## Overview
+ * Each test loads URL test cases from JSON files that define the expected
+ * parse results. The tests then verify that the CURL object correctly
+ * represents each URL as expected. This provides a comprehensive regression
+ * suite to guard against changes or regressions in URL parsing logic.
+ *
+ * ## Test Data
+ * The input and expected output for these tests are stored as JSON files
+ * under `xbmc/utils/test/testdata/`. As there are many such test files, it
+ * is often easier to regenerate them rather than edit each file manually.
+ *
+ * To regenerate all test case JSON files, define the following symbol before
+ * building or running the tests:
+ *
+ * @code
+ * #define GENERATE_JSON_TEST_FILES
+ * @endcode
+ *
+ * This can be defined either inline in this test file or passed via the
+ * build system when building `kodi-test`. When defined, executing the tests
+ * will generate updated JSON test case files in your **CMake build
+ * directory**.
+ *
+ * After generation, the new JSON files should be reviewed and copied or moved
+ * into the `xbmc/utils/test/testdata/` directory before committing them with
+ * your branch.
+ *
+ * ## Running the Tests
+ * These tests are part of the `kodi-test` suite and are executed using
+ * GoogleTest. To run all URL parsing tests:
+ *
+ * @code
+ * kodi-test --gtest_filter=TestURLParseDetails.ParseAllURLResults
+ * @endcode
+ *
+ * ## Modifying or Adding Tests
+ * - To add a new test case, create or update a JSON file in the testdata
+ *   directory and ensure it follows the existing format.
+ * - When modifying the parsing logic in Kodi, regenerate the JSON test files
+ *   to reflect the new expected behavior.
+ * - Always run the full `TestURLParseDetails` suite after changes to confirm
+ *   no regressions were introduced.
+ *
+ * @see CURL
+ * @see xbmc/utils/test/testdata/
+ */
+
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/MultiPathDirectory.h"
