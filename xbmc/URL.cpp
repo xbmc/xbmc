@@ -357,6 +357,8 @@ void CURL::SetOptions(std::string strOptions)
 
 void CURL::SetProtocolOptions(std::string strOptions)
 {
+  if (AreProtocolOptionsProhibited())
+    return;
   m_strProtocolOptions.clear();
   m_protocolOptions.Clear();
   if (!strOptions.empty())
@@ -731,6 +733,8 @@ std::string CURL::GetProtocolOption(const std::string &key) const
 
 void CURL::SetProtocolOption(const std::string &key, const std::string &value)
 {
+  if (AreProtocolOptionsProhibited())
+    return;
   m_protocolOptions.AddOption(key, value);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
 }
@@ -739,4 +743,9 @@ void CURL::RemoveProtocolOption(const std::string &key)
 {
   m_protocolOptions.RemoveOption(key);
   m_strProtocolOptions = m_protocolOptions.GetOptionsString(false);
+}
+
+bool CURL::AreProtocolOptionsProhibited() const
+{
+  return IsProtocol("nfs");
 }
