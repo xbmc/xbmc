@@ -359,7 +359,7 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
   {
     if (connector->SupportsProperty("Colorspace"))
     {
-      std::optional<uint64_t> colorspace = connector->GetPropertyValue("Colorspace", "Default");
+      std::optional<uint64_t> colorspace = connector->GetPropertyEnumValue("Colorspace", "Default");
       if (colorspace)
       {
         CLog::LogF(LOGDEBUG, "setting connector colorspace to Default");
@@ -387,7 +387,7 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
       m_info->SupportsColorimetry(colorimetry))
   {
     std::optional<uint64_t> colorspace =
-        connector->GetPropertyValue("Colorspace", ColorimetryMap.at(colorimetry));
+        connector->GetPropertyEnumValue("Colorspace", ColorimetryMap.at(colorimetry));
     if (colorspace)
     {
       CLog::LogF(LOGDEBUG, "setting connector colorspace to {}", ColorimetryMap.at(colorimetry));
