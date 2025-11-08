@@ -7,6 +7,7 @@
   "title": "@APP_NAME@",
   "icon": "icon.png",
   "largeIcon": "largeIcon.png",
+  "iconColor": "#FFFFFF",
   "splashBackground": "media/applaunch_screen.png",
   "spinnerOnLaunch": false,
   "handlesRelaunch": true,
