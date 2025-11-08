@@ -42,6 +42,8 @@ macro(buildFFMPEG)
 
   SETUP_BUILD_VARS()
 
+  message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
+
   if(WIN32 OR WINDOWS_STORE)
 
     find_package(Msys REQUIRED ${SEARCH_QUIET})
