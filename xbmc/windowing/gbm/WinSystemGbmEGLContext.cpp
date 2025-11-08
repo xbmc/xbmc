@@ -42,25 +42,8 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
       ->GetSetting(CSettings::SETTING_VIDEOSCREEN_USEMODIFIERS)
       ->SetVisible(true);
 
-  auto plane = m_DRM->GetGuiPlane();
-  uint32_t visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB2101010;
-
-  // prefer alpha visual id, fallback to non-alpha visual id
-  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-      !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
-  {
-    // fallback to 8bit format if no EGL config was found for 10bit
-    if (plane)
-      plane->SetFormat(DRM_FORMAT_XRGB8888);
-
-    visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB8888;
-
-    if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-        !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
-    {
-      return false;
-    }
-  }
+  if (!m_DRM->InitGuiPlane(&m_eglContext, renderableType))
+    return false;
 
   if (!CreateContext())
   {

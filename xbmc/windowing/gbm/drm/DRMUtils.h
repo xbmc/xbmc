@@ -12,6 +12,7 @@
 #include "DRMCrtc.h"
 #include "DRMEncoder.h"
 #include "DRMPlane.h"
+#include "utils/EGLUtils.h"
 #include "windowing/Resolution.h"
 #include "windowing/gbm/GBMUtils.h"
 
@@ -54,15 +55,14 @@ public:
   CDRMPlane* GetGuiPlane() const { return m_gui_plane; }
   CDRMCrtc* GetCrtc() const { return m_crtc; }
   CDRMConnector* GetConnector() const { return m_connector; }
+  bool FindPlanes(uint32_t format, uint64_t modifier, uint64_t w, uint64_t h);
+  bool InitGuiPlane(CEGLContextUtils* eglContext, EGLint renderableType);
 
   std::vector<std::string> GetConnectedConnectorNames();
 
   virtual RESOLUTION_INFO GetCurrentMode();
   virtual std::vector<RESOLUTION_INFO> GetModes();
   virtual bool SetMode(const RESOLUTION_INFO& res);
-
-  static uint32_t FourCCWithAlpha(uint32_t fourcc);
-  static uint32_t FourCCWithoutAlpha(uint32_t fourcc);
 
   void SetInFenceFd(int fd) { m_inFenceFd = fd; }
   int TakeOutFenceFd()
@@ -83,6 +83,7 @@ protected:
   CDRMPlane* m_video_plane{nullptr};
   CDRMPlane* m_gui_plane{nullptr};
   drmModeModeInfo* m_mode = nullptr;
+  bool m_gui_plane_alpha = false;
 
   int m_width = 0;
   int m_height = 0;
@@ -96,11 +97,15 @@ private:
   bool FindConnector();
   bool FindEncoder();
   bool FindCrtc();
-  bool FindPlanes();
   bool FindPreferredMode();
   bool RestoreOriginalMode();
   RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
   void PrintDrmDeviceInfo(drmDevicePtr device);
+  bool CheckPlane(CDRMPlane* plane,
+                  uint64_t w,
+                  uint64_t h,
+                  uint32_t format,
+                  uint64_t modifier = DRM_FORMAT_MOD_LINEAR);
 
   int m_renderFd;
   const char* m_renderDevicePath{nullptr};
