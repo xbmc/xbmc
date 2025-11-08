@@ -43,6 +43,7 @@ public:
   bool SupportsProperty(const std::string& name);
   std::optional<uint64_t> GetPropertyValue(const std::string& name) const;
   bool CachePropertyValue(uint32_t propertyId, uint64_t value);
+  std::optional<bool> IsPropertyImmutable(const std::string& name) const;
 
 protected:
   explicit CDRMObject(int fd);
