@@ -222,6 +222,7 @@ public:
   {
     return UpdateState::NONE;
   }
+  virtual void UpdateStack(CFileItem& item) {}
 
   struct PlaylistInformation
   {
@@ -242,6 +243,8 @@ public:
                                            CFileItem& item,
                                            double time,
                                            bool& closed);
+
+  static void UpdateStackItem(CFileItem& item, std::chrono::milliseconds length);
 
 protected:
   DVDStreamType m_streamType;
