@@ -17,6 +17,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <span>
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -151,9 +152,9 @@ public:
                          float maxPixelWidth,
                          const CScrollInfo& scrollInfo);
 
-  bool UpdateScrollInfo(const vecText& text, CScrollInfo& scrollInfo);
+  bool UpdateScrollInfo(std::span<const character_t> text, CScrollInfo& scrollInfo);
 
-  float GetTextWidth(const vecText& text);
+  float GetTextWidth(std::span<const character_t> text);
   float GetCharWidth(character_t ch);
   float GetTextHeight(int numLines) const;
   float GetTextBaseLine() const;

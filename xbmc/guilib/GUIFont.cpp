@@ -126,7 +126,7 @@ void CGUIFont::DrawText(float x,
     context.RestoreClipRegion();
 }
 
-bool CGUIFont::UpdateScrollInfo(const vecText& text, CScrollInfo& scrollInfo)
+bool CGUIFont::UpdateScrollInfo(std::span<const character_t> text, CScrollInfo& scrollInfo)
 {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!winSystem)
@@ -262,7 +262,7 @@ bool CGUIFont::ClippedRegionIsEmpty(
   return !context.SetClipRegion(x, y, width, m_font->GetTextHeight(1, 2) * context.GetGUIScaleY());
 }
 
-float CGUIFont::GetTextWidth(const vecText& text)
+float CGUIFont::GetTextWidth(std::span<const character_t> text)
 {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!m_font || !winSystem)

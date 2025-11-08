@@ -147,10 +147,10 @@ protected:
   void AddReference();
   void RemoveReference();
 
-  std::vector<Glyph> GetHarfBuzzShapedGlyphs(const vecText& text);
+  std::vector<Glyph> GetHarfBuzzShapedGlyphs(std::span<const character_t> text);
 
-  float GetTextWidthInternal(const vecText& text);
-  float GetTextWidthInternal(const vecText& text, const std::vector<Glyph>& glyph);
+  float GetTextWidthInternal(std::span<const character_t> text);
+  float GetTextWidthInternal(std::span<const character_t> text, const std::vector<Glyph>& glyph);
   float GetCharWidthInternal(character_t ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetTextBaseLine() const { return static_cast<float>(m_cellBaseLine); }
