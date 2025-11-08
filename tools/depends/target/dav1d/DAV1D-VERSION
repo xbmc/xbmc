@@ -4,3 +4,5 @@ ARCHIVE=$(LIBNAME)-$(VERSION).tar.bz2
 SHA512=499310a1b8257e115eebc152921903f34e036bad6f5f24446efc0528bad210a66e794e5c467cd0ce7b98f2cec2bba82033e00cbbd51d5d3201e3a19ccab2eef1
 BYPRODUCT=libdav1d.a
 BYPRODUCT_WIN=libdav1d.lib
+
+BASE_URL=https://code.videolan.org/videolan/dav1d/-/archive/1.5.2/dav1d-1.5.2.tar.bz2
