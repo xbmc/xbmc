@@ -1,0 +1,67 @@
+{
+  "__input": "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3",
+  "expectedAddFileToFolder":
+      "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3\\NewFile.pdf",
+  "expectedAppendSlash":
+      "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3\\",
+  "expectedCanonicalizePathUnix":
+      "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3",
+  "expectedCanonicalizePathWin":
+      "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3",
+  "expectedCreateAPKArchivePath":
+      "apk://passwd@D%3a%2fLocal%20Music%2fMP3%20Collection%2fPhil%20Collins%2fSome%20CD%2f01%20-%20Two%20Hearts.mp3/my/archived/path",
+  "expectedCreateRARArchivePath":
+      "rar://passwd@D%3a%2fLocal%20Music%2fMP3%20Collection%2fPhil%20Collins%2fSome%20CD%2f01%20-%20Two%20Hearts.mp3/my/archived/path",
+  "expectedCreateZIPArchivePath":
+      "zip://passwd@D%3a%2fLocal%20Music%2fMP3%20Collection%2fPhil%20Collins%2fSome%20CD%2f01%20-%20Two%20Hearts.mp3/my/archived/path",
+  "expectedDecode": "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3",
+  "expectedDecodeFileName":
+      "D:/Local Music/MP3 Collection/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedEncode":
+      "D%3a%5cLocal%20Music%5cMP3%20Collection%5cPhil%20Collins%5cSome%20CD%5c01%20-%20Two%20Hearts.mp3",
+  "expectedExtension": ".mp3",
+  "expectedFileOrFolder": "01 - Two Hearts.mp3",
+  "expectedGet": "D:/Local Music/MP3 Collection/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedGetBasePath": "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\",
+  "expectedGetBlurayAllEpisodesPath": "root/episode/all",
+  "expectedGetBlurayEpisodePath": "root/episode/1/2",
+  "expectedGetBlurayPlaylistPath": "BDMV/PLAYLIST/",
+  "expectedGetBlurayRootPath": "root",
+  "expectedGetBlurayTitlesPath": "root/titles",
+  "expectedGetDirectory": "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\",
+  "expectedGetDiscBase": "D:/Local Music/MP3 Collection/Phil Collins/Some CD\\",
+  "expectedGetDiscBasePath": "D:/Local Music/MP3 Collection/Phil Collins/Some CD\\",
+  "expectedGetFileName": "D:/Local Music/MP3 Collection/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedGetFileNameUtil": "01 - Two Hearts.mp3",
+  "expectedGetFileNameWithoutPath": "01 - Two Hearts.mp3",
+  "expectedGetParentPath": "D:/Local Music/MP3 Collection/Phil Collins/Some CD\\",
+  "expectedGetRealPath": "D:/Local Music/MP3 Collection/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedGetRedacted": "D:/Local Music/MP3 Collection/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedGetShareName": "D:",
+  "expectedGetWithoutOptions":
+      "D:/Local Music/MP3 Collection/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedGetWithoutUserDetails_redacted":
+      "D:/Local Music/MP3 Collection/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedGetWithoutUserDetails_removed":
+      "D:/Local Music/MP3 Collection/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedHasExtension": true,
+  "expectedHasParentPath": "D:/Local Music/MP3 Collection/Phil Collins/Some CD\\",
+  "expectedIsDOSPath": true,
+  "expectedIsFixSlashesAndDupsUnix":
+      "D:/Local Music/MP3 Collection/Phil Collins/Some CD/01 - Two Hearts.mp3",
+  "expectedIsFixSlashesAndDupsWin":
+      "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3",
+  "expectedIsFullPath": true,
+  "expectedIsHD": true,
+  "expectedIsLocal": true,
+  "expectedRemovedEndSlash":
+      "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3",
+  "expectedRemovedExtension":
+      "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts",
+  "expectedReplacedExtension":
+      "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Heartsxyz",
+  "expectedSplitFileName": "01 - Two Hearts.mp3",
+  "expectedSplitPath": "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\",
+  "expectedUpdateUrlEncoding":
+      "D:\\Local Music\\MP3 Collection\\Phil Collins\\Some CD\\01 - Two Hearts.mp3"
+}

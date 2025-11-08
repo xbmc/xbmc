@@ -164,6 +164,41 @@ public:
   void SetProtocolOption(const std::string &key, const std::string &value);
   void RemoveProtocolOption(const std::string &key);
 
+  bool HasExtension(std::string_view extensions) const;
+  std::string GetExtension() const;
+  bool IsStack() const;
+  bool IsMultiPath() const;
+  bool IsFavourite() const;
+  bool IsPlugin() const;
+  bool IsScript() const;
+  bool IsAddonsPath() const;
+  bool IsSourcesPath() const;
+  bool IsCDDA() const;
+  bool IsISO9660() const;
+  bool IsMusicDb() const;
+  bool IsVideoDb() const;
+  bool IsBlurayPath() const;
+  bool IsAndroidApp() const;
+  bool IsLibraryFolder() const;
+  bool IsUPnP() const;
+  bool IsAPK() const;
+  bool IsZIP() const; // also checks for comic books!
+  bool IsArchive() const;
+  bool IsCBZ() const;
+  bool IsCBR() const;
+  bool IsDiscImage() const;
+  bool IsPicture() const;
+
+  bool HasParentInHostname() const;
+  bool HasEncodedHostname() const;
+  bool HasEncodedFilename() const;
+
+  bool IsLibraryContent() const;
+
+  bool IsBDFile() const;
+  bool IsDVDFile() const;
+  bool IsOpticalMediaFile() const;
+
 private:
   int m_iPort = 0;
   std::string m_strHostName;
