@@ -313,6 +313,18 @@ if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
   list(APPEND FFMPEG_PKGS libpostproc${_postproc_ver})
 endif()
 
+# Check for dav1d dep rebuild property
+if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+  find_package(Dav1d ${SEARCH_QUIET})
+  if(TARGET LIBRARY::Dav1d)
+    get_target_property(FFMPEG_DEP_BUILD LIBRARY::Dav1d LIB_BUILD)
+
+    if(FFMPEG_DEP_BUILD)
+      set(ENABLE_INTERNAL_FFMPEG ON)
+    endif()
+  endif()
+endif()
+
 if(ENABLE_INTERNAL_FFMPEG)
   buildFFMPEG()
 else()
