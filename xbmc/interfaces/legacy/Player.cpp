@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/MediaSettings.h"
+#include "interfaces/AnnouncementManager.h"
 
 using namespace KODI;
 
@@ -495,6 +496,10 @@ namespace XBMCAddon
       if (getAppPlayer()->HasPlayer())
       {
         getAppPlayerMut()->SetSubtitleVisible(bVisible != 0);
+        CVariant data;
+        data["player"]["playerid"] = static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+        data["property"]["subtitleenabled"] = (bVisible != 0);
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged", data);
       }
     }
 
@@ -546,6 +551,19 @@ namespace XBMCAddon
         {
           getAppPlayerMut()->SetSubtitle(iStream);
           getAppPlayerMut()->SetSubtitleVisible(true);
+          SubtitleStreamInfo info;
+          getAppPlayerMut()->GetSubtitleStreamInfo(CURRENT_STREAM, info);
+          CVariant data;
+          data["player"]["playerid"] = static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+          CVariant contentEntry(CVariant::VariantTypeObject);
+          contentEntry["index"] = iStream;
+          contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) == 1;
+          contentEntry["isforced"] = (info.flags & StreamFlags::FLAG_FORCED) == 1;
+          contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) == 1;
+          contentEntry["language"] = info.language;
+          contentEntry["name"] = info.name;
+          data["property"]["currentsubtitle"] = contentEntry;
+          CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged", data);
         }
       }
     }
@@ -577,8 +595,26 @@ namespace XBMCAddon
       if (getAppPlayer()->HasPlayer())
       {
         int streamCount = getAppPlayer()->GetAudioStreamCount();
-        if (iStream < streamCount)
+        if (iStream < streamCount) {
           getAppPlayerMut()->SetAudioStream(iStream);
+          AudioStreamInfo info;
+          getAppPlayerMut()->GetAudioStreamInfo(iStream, info);
+          CVariant data;
+          data["player"]["playerid"] = static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+          CVariant contentEntry(CVariant::VariantTypeObject);
+          contentEntry["bitrate"] = info.bitrate;
+          contentEntry["channels"] = info.channels;
+          contentEntry["codec"] = info.codecDesc;
+          contentEntry["index"] = iStream;
+          contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) == 1;
+          contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_HEARING_IMPAIRED) == 1;
+          contentEntry["isoriginal"] = (info.flags & StreamFlags::FLAG_ORIGINAL) == 1;
+          contentEntry["language"] = info.language;
+          contentEntry["name"] = info.name;
+          contentEntry["samplerate"] = info.samplerate;
+          data["property"]["currentaudiostream"] = contentEntry;
+          CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged", data);
+        }
       }
     }
 
@@ -602,8 +638,22 @@ namespace XBMCAddon
     void Player::setVideoStream(int iStream)
     {
       int streamCount = getAppPlayer()->GetVideoStreamCount();
-      if (iStream < streamCount)
+      if (iStream < streamCount){
         getAppPlayerMut()->SetVideoStream(iStream);
+        VideoStreamInfo info;
+        getAppPlayer()->GetVideoStreamInfo(iStream, info);
+        CVariant data;
+        data["player"]["playerid"] = static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+        CVariant contentEntry(CVariant::VariantTypeObject);
+        contentEntry["codec"] = info.codecName;
+        contentEntry["height"] = info.height;
+        contentEntry["width"] = info.width;
+        contentEntry["index"] = iStream;
+        contentEntry["language"] = info.language;
+        contentEntry["name"] = info.name;
+        data["property"]["currentvideostream"] = contentEntry;
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged", data);
+      }
     }
   }
 }
