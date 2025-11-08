@@ -16,6 +16,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/02-all-cmake-install-config.patch")
 
     generate_patchcommand("${patches}")
+    unset(patches)
 
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
                    -DBROTLI_DISABLE_TESTS=ON
