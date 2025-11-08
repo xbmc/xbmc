@@ -105,6 +105,17 @@ std::optional<uint64_t> CDRMObject::GetPropertyEnumValue(std::string_view name,
   return {};
 }
 
+std::optional<uint64_t> CDRMObject::GetPropertyValue(const std::string& name)
+{
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](const auto& prop) { return prop->name == name; });
+
+  if (property == m_propsInfo.end())
+    return {};
+
+  return m_props->prop_values[std::distance(m_propsInfo.begin(), property)];
+}
+
 bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
