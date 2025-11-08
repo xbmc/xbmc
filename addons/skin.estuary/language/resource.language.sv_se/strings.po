@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-10-11 09:29+0000\n"
+"PO-Revision-Date: 2025-11-08 09:13+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/sv_se/>\n"
 "Language: sv_se\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.3\n"
+"X-Generator: Weblate 5.14.3\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -531,7 +531,7 @@ msgstr "Videoavkodare"
 #. Label to show the video pixel format
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "Pixelformat"
+msgstr "Bildpunktsformat"
 
 msgctxt "#31141"
 msgid "Changes for version"
@@ -698,7 +698,7 @@ msgstr "Välj paket för väderikoner"
 #. Button to select Player Process Info window
 msgctxt "#31597"
 msgid "Player info"
-msgstr "Spelarinfo"
+msgstr "Uppspelarinformation"
 
 #. Label to show player cache
 msgctxt "#31598"
@@ -714,7 +714,7 @@ msgstr "Ljudavkodare"
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr "Videocodec"
+msgstr "Videokodek"
 
 #. Label to show the video resolution
 msgctxt "#31601"
@@ -734,7 +734,7 @@ msgstr "Videobitfrekvens"
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr "Ljudcodec"
+msgstr "Ljudkodek"
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
