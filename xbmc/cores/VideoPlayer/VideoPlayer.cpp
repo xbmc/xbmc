@@ -5549,10 +5549,10 @@ void CVideoPlayer::SetVideoStream(int iStream)
     CVariant data;
     data["player"]["playerid"] = static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
     CVariant contentEntry(CVariant::VariantTypeObject);
+    contentEntry["index"] = iStream;
     contentEntry["codec"] = info.codecName;
     contentEntry["height"] = info.height;
     contentEntry["width"] = info.width;
-    contentEntry["index"] = iStream;
     contentEntry["language"] = info.language;
     contentEntry["name"] = info.name;
     data["property"]["currentvideostream"] = contentEntry;
@@ -5612,10 +5612,10 @@ void CVideoPlayer::SetAudioStream(int iStream)
     CVariant data;
     data["player"]["playerid"] = static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
     CVariant contentEntry(CVariant::VariantTypeObject);
+    contentEntry["index"] = iStream;
     contentEntry["bitrate"] = info.bitrate;
     contentEntry["channels"] = info.channels;
     contentEntry["codec"] = info.codecDesc;
-    contentEntry["index"] = iStream;
     contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) == 1;
     contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_HEARING_IMPAIRED) == 1;
     contentEntry["isoriginal"] = (info.flags & StreamFlags::FLAG_ORIGINAL) == 1;
