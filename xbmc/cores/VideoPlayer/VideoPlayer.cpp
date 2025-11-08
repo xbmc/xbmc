@@ -5611,7 +5611,9 @@ void CVideoPlayer::SetAudioStream(int iStream)
   contentEntry["channels"] = info.channels;
   contentEntry["codec"] = info.codecDesc;
   contentEntry["index"] = iStream;
-  contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) == 1;
+  contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
+  contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0;
+  contentEntry["isoriginal"] = (info.flags & StreamFlags::FLAG_ORIGINAL) != 0;
   contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_HEARING_IMPAIRED) == 1;
   contentEntry["isoriginal"] = (info.flags & StreamFlags::FLAG_ORIGINAL) == 1;
   contentEntry["language"] = info.language;
