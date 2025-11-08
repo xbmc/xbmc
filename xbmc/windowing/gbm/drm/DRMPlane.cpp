@@ -82,12 +82,7 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
 
 void CDRMPlane::FindModifiers()
 {
-  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [](auto& prop)
-                               { return StringUtils::EqualsNoCase(prop->name, "IN_FORMATS"); });
-
-  uint64_t blob_id = 0;
-  if (property != m_propsInfo.end())
-    blob_id = m_props->prop_values[std::distance(m_propsInfo.begin(), property)];
+  uint64_t blob_id = GetPropertyValue("IN_FORMATS").value_or(0);
 
   if (blob_id == 0)
     return;
