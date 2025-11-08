@@ -32,7 +32,7 @@ macro(buildFFMPEG)
   # Check for dependencies - Must be done before SETUP_BUILD_VARS
   get_libversion_data("dav1d" "target")
   find_package(Dav1d ${LIB_DAV1D_VER} MODULE ${SEARCH_QUIET})
-  if(NOT TARGET ${APP_NAME_LC}::Dav1d)
+  if(NOT TARGET LIBRARY::Dav1d)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   else()
     set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
@@ -193,8 +193,8 @@ macro(buildFFMPEG)
     set(FFMPEG_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   endif()
 
-  if(TARGET ${APP_NAME_LC}::Dav1d)
-    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} ${APP_NAME_LC}::Dav1d)
+  if(TARGET LIBRARY::Dav1d)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Dav1d)
   endif()
 
   set(FFMPEG_FOUND 1)
@@ -319,6 +319,12 @@ else()
               HINTS ${DEPENDS_PATH}/include ${MINGW_LIBS_DIR}/include
               ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
+    # Windows is still just a straight file search. Explicitly search for Dav1d for
+    # correct dependency linking
+    if(WIN32 OR WINDOWS_STORE)
+      find_package(Dav1d ${SEARCH_QUIET})
+    endif()
+
     # Macro to populate target
     # arg1: lowercase libname (eg libavcodec, libpostproc, etc)
     macro(ffmpeg_create_target libname)
@@ -404,6 +410,12 @@ if(FFMPEG_FOUND)
     string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
     if(TARGET ffmpeg::${_libname})
       target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::${_libname})
+
+      if("${_libname}" STREQUAL "libavcodec")
+        if(TARGET LIBRARY::Dav1d)
+          set_property(TARGET ffmpeg::${_libname} APPEND PROPERTY INTERFACE_LINK_LIBRARIES LIBRARY::Dav1d)
+        endif()
+      endif()
     endif()
   endforeach()
 
