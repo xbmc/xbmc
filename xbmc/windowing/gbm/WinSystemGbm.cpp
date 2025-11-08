@@ -22,6 +22,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/DRMHelpers.h"
 #include "utils/DisplayInfo.h"
 #include "utils/Map.h"
 #include "utils/StringUtils.h"
@@ -95,6 +96,17 @@ CWinSystemGbm::CWinSystemGbm()
 }
 
 CWinSystemGbm::~CWinSystemGbm() = default;
+
+const std::string CWinSystemGbm::GetName()
+{
+  auto gui_plane = m_DRM->GetGuiPlane();
+  if (gui_plane == nullptr)
+    return "gbm";
+  return "gbm (" + DRMHELPERS::FourCCToString(gui_plane->GetFormat()) + " " +
+         DRMHELPERS::ModifierToString(gui_plane->GetModifier()) + ")";
+
+  return "gbm";
+}
 
 bool CWinSystemGbm::InitWindowSystem()
 {
