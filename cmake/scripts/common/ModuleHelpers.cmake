@@ -726,16 +726,16 @@ define_property(TARGET PROPERTY LIB_BUILD
 macro(generate_mesoncrossfile)
 
   create_mesonbinaries()
-  file(WRITE ${DEPENDS_PATH}/share/cross-file.meson "${meson_binaries_string}\n")
+  file(WRITE ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_binaries_string}\n")
 
   create_mesonhostmachine()
-  file(APPEND ${DEPENDS_PATH}/share/cross-file.meson "${meson_host_machine_string}\n")
+  file(APPEND ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_host_machine_string}\n")
 
   create_mesonproperties()
-  file(APPEND ${DEPENDS_PATH}/share/cross-file.meson "${meson_properties_string}\n")
+  file(APPEND ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_properties_string}\n")
 
   create_mesonbuiltin()
-  file(APPEND ${DEPENDS_PATH}/share/cross-file.meson "${meson_builtin_string}\n")
+  file(APPEND ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_builtin_string}\n")
 
 endmacro()
 
