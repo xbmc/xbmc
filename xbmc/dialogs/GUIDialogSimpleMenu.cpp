@@ -61,11 +61,6 @@ protected:
 
 bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
 {
-  const bool forceSelection{item.GetProperty("force_playlist_selection").asBoolean(false)};
-  if (!forceSelection && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                             CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
-    return true;
-
   const std::string originalDynPath{
       item.GetDynPath()}; // Overwritten by dialog selection. Needed for screen refresh.
 
@@ -92,7 +87,7 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
 
   // If replacing existing playlist (FORCE_PLAYLIST_SELECTION), remove it from exclude list
   // as user could choose the same playlist again
-  if (forceSelection)
+  if (item.GetProperty("force_playlist_selection").asBoolean(false))
   {
     CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
     if (regex.RegFind(originalDynPath) != -1)
