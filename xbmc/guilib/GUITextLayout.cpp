@@ -581,15 +581,12 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
       continue;
     }
 
-    std::vector<character_t> tmp;
-    tmp.reserve(line.m_text.size());
     auto widthOf = [&](const std::vector<character_t>::const_iterator start,
                        const std::vector<character_t>::const_iterator end) -> float
     {
       if (start == end)
         return 0.0f;
-      tmp.assign(start, end);
-      return m_font->GetTextWidth(tmp);
+      return m_font->GetTextWidth({start, end});
     };
 
     auto skipLeadingSpaces = [&](vecText::const_iterator& it)
@@ -663,13 +660,11 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
 
       // current line is empty and word is too long: split by character using a safe linear scan.
       // Do not assume monotonic width because shaping/kerning can make width shrink or grow non-linearly.
-      tmp.clear();
       size_t bestCount = 0;
       for (auto it = current; it != wordEnd; ++it)
       {
-        tmp.push_back(*it);
-        if (m_font->GetTextWidth(tmp) <= maxWidth)
-          bestCount = tmp.size();
+        if (m_font->GetTextWidth({current, it}) <= maxWidth)
+          bestCount = std::distance(current, it);
       }
       if (bestCount == 0)
         bestCount = 1; // ensure progress even if a single glyph is wider than maxWidth
