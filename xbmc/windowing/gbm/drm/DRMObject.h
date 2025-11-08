@@ -41,6 +41,7 @@ public:
 
   bool SetProperty(const std::string& name, uint64_t value);
   bool SupportsProperty(const std::string& name);
+  std::optional<uint64_t> GetPropertyValue(const std::string& name) const;
 
 protected:
   explicit CDRMObject(int fd);
