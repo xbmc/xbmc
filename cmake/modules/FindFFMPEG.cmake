@@ -274,122 +274,135 @@ else()
     list(APPEND CMAKE_PREFIX_PATH ${FFMPEG_PATH})
   endif()
 
-  # macro for find_library usage
-  # arg1: lowercase libname (eg libavcodec, libpostproc, etc)
-  macro(ffmpeg_find_lib libname)
-    string(TOUPPER ${libname} libname_UPPER)
-    string(REPLACE "lib" "" name ${libname})
+  # Windows is still just a straight file search. Explicitly search for Dav1d for
+  # correct dependency linking. KODI_DEPENDSBUILD platforms still currently
+  # build ffmpeg and supply as a "system" lib (ie before cmake generation)
+  if(WIN32 OR WINDOWS_STORE)
+    find_package(Dav1d ${SEARCH_QUIET})
+    if(TARGET LIBRARY::Dav1d)
+      get_target_property(FFMPEG_DEP_BUILD LIBRARY::Dav1d LIB_BUILD)
 
-    find_library(FFMPEG_${libname_UPPER}
-                 NAMES ${name} ${libname}
-                 PATH_SUFFIXES ffmpeg/${libname}
-                 HINTS ${DEPENDS_PATH}/lib ${MINGW_LIBS_DIR}/lib
-                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-  endmacro()
-
-  foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-    string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
-    ffmpeg_find_lib(${_libname})
-  endforeach()
-
-  # Check all libs are found, and set found.
-  # find_package_handle_standard_args isnt usable, as the libs may not exist, and it
-  # errors on not found.
-  if(FFMPEG_LIBAVCODEC AND
-     FFMPEG_LIBAVFILTER AND
-     FFMPEG_LIBAVFORMAT AND
-     FFMPEG_LIBAVUTIL AND
-     FFMPEG_LIBSWSCALE AND
-     FFMPEG_LIBSWRESAMPLE)
-    set(FFMPEG_FOUND 1)
-
-    # list of sourceplugin headers for find_path
-    if(FFMPEG_LIBPOSTPROC)
-      set(source_plugin_headers libpostproc/postprocess.h)
+      if(FFMPEG_DEP_BUILD)
+        # Force ffmpeg rebuild as a dependency requires rebuilding
+        buildFFMPEG()
+        # sentinel variable to not do searches if we are building ffmpeg
+        set(_ffmpeg_build 1)
+      endif()
     endif()
   endif()
 
-  if(FFMPEG_FOUND)
-    # There is no easily identifiable version number for ffmpeg, as all libs have their
-    # own versioning. We may not bump REQUIRED_FFMPEG_VERSION if there is not a hard
-    # lib version increase due to API/ABI changes in FFMPEG. Due to this, the FFMPEG_VERSION
-    # may actually indicate a different version than actually used.
-    set(FFMPEG_VERSION ${REQUIRED_FFMPEG_VERSION})
-
-    find_path(FFMPEG_INCLUDE_DIRS libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h
-                                  libavutil/avutil.h libswscale/swscale.h ${source_plugin_headers}
-              PATH_SUFFIXES ffmpeg
-              HINTS ${DEPENDS_PATH}/include ${MINGW_LIBS_DIR}/include
-              ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-
-    # Windows is still just a straight file search. Explicitly search for Dav1d for
-    # correct dependency linking
-    if(WIN32 OR WINDOWS_STORE)
-      find_package(Dav1d ${SEARCH_QUIET})
-    endif()
-
-    # Macro to populate target
+  if(NOT _ffmpeg_build)
+    # macro for find_library usage
     # arg1: lowercase libname (eg libavcodec, libpostproc, etc)
-    macro(ffmpeg_create_target libname)
+    macro(ffmpeg_find_lib libname)
       string(TOUPPER ${libname} libname_UPPER)
       string(REPLACE "lib" "" name ${libname})
 
-      if(FFMPEG_${libname_UPPER})
-        if(WIN32 OR WINDOWS_STORE)
-          add_library(ffmpeg::${libname} UNKNOWN IMPORTED)
-          set_target_properties(ffmpeg::${libname} PROPERTIES
-                                                   IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
-                                                   INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
-        else()
-          # We have to run the check against the single lib a second time, as when
-          # pkg_check_modules is run with a list, the only *_LDFLAGS set is a concatenated 
-          # list of all checked modules. Ideally we want each target to only have the LDFLAGS
-          # required for that specific module
-          pkg_check_modules(FFMPEG_${libname} ${libname}${_${name}_ver} ${SEARCH_QUIET})
-
-          # pkg-config LDFLAGS always seem to have -l<name> listed. We dont need that, as
-          # the target gets a direct path to the physical lib
-          list(REMOVE_ITEM FFMPEG_${libname}_LDFLAGS "-l${name}")
-
-          # Darwin platforms return a list that cmake splits "framework libname" into separate
-          # items, therefore the link arguments become -framework -libname causing link failures
-          # we just force concatenation of these instances, so cmake passes it as "-framework libname"
-          if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-            string(REGEX REPLACE "framework;" "framework " FFMPEG_${libname}_LDFLAGS "${FFMPEG_${libname}_LDFLAGS}")
-          endif()
-
-          foreach(ldflag IN LISTS FFMPEG_${libname}_LDFLAGS)
-            foreach(pkgname IN ITEMS ${FFMPEG_PKGS})
-              string(REGEX REPLACE ">=.*" "" _shortlibname ${pkgname})
-              string(TOUPPER ${_shortlibname} _shortlibname_UPPER)
-              string(REPLACE "lib" "" shortname ${_shortlibname})
-  
-              # replace -l<ffmpeglib> flag with ffmpeg target
-              # This provides correct link ordering and deduplication
-              string(REGEX REPLACE "-l${shortname}" "ffmpeg::${_shortlibname}" ldflag ${ldflag})
-            endforeach()
-            list(APPEND ${libname}_LDFLAGS ${ldflag})
-          endforeach()
-
-          add_library(ffmpeg::${libname} STATIC IMPORTED)
-          set_target_properties(ffmpeg::${libname} PROPERTIES
-                                                   IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
-                                                   INTERFACE_LINK_LIBRARIES "${${libname}_LDFLAGS}"
-                                                   INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
-        endif()
-      endif()
+      find_library(FFMPEG_${libname_UPPER}
+                   NAMES ${name} ${libname}
+                   PATH_SUFFIXES ffmpeg/${libname}
+                   HINTS ${DEPENDS_PATH}/lib ${MINGW_LIBS_DIR}/lib
+                   ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
     endmacro()
 
     foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
       string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
-      ffmpeg_create_target(${_libname})
+      ffmpeg_find_lib(${_libname})
     endforeach()
-  else()
-    if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
-      message(WARNING "Suitable FFmpeg version not found, consider explicitly using -DENABLE_INTERNAL_FFMPEG=ON. Internal FFMPEG will be built")
-      buildFFMPEG()
+
+    # Check all libs are found, and set found.
+    # find_package_handle_standard_args isnt usable, as the libs may not exist, and it
+    # errors on not found.
+    if(FFMPEG_LIBAVCODEC AND
+       FFMPEG_LIBAVFILTER AND
+       FFMPEG_LIBAVFORMAT AND
+       FFMPEG_LIBAVUTIL AND
+       FFMPEG_LIBSWSCALE AND
+       FFMPEG_LIBSWRESAMPLE)
+      set(FFMPEG_FOUND 1)
+
+      # list of sourceplugin headers for find_path
+      if(FFMPEG_LIBPOSTPROC)
+        set(source_plugin_headers libpostproc/postprocess.h)
+      endif()
+    endif()
+
+    if(FFMPEG_FOUND)
+      # There is no easily identifiable version number for ffmpeg, as all libs have their
+      # own versioning. We may not bump REQUIRED_FFMPEG_VERSION if there is not a hard
+      # lib version increase due to API/ABI changes in FFMPEG. Due to this, the FFMPEG_VERSION
+      # may actually indicate a different version than actually used.
+      set(FFMPEG_VERSION ${REQUIRED_FFMPEG_VERSION})
+
+      find_path(FFMPEG_INCLUDE_DIRS libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h
+                                    libavutil/avutil.h libswscale/swscale.h ${source_plugin_headers}
+                PATH_SUFFIXES ffmpeg
+                HINTS ${DEPENDS_PATH}/include ${MINGW_LIBS_DIR}/include
+                ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+
+      # Macro to populate target
+      # arg1: lowercase libname (eg libavcodec, libpostproc, etc)
+      macro(ffmpeg_create_target libname)
+        string(TOUPPER ${libname} libname_UPPER)
+        string(REPLACE "lib" "" name ${libname})
+
+        if(FFMPEG_${libname_UPPER})
+          if(WIN32 OR WINDOWS_STORE)
+            add_library(ffmpeg::${libname} UNKNOWN IMPORTED)
+            set_target_properties(ffmpeg::${libname} PROPERTIES
+                                                     IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
+                                                     INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
+          else()
+            # We have to run the check against the single lib a second time, as when
+            # pkg_check_modules is run with a list, the only *_LDFLAGS set is a concatenated 
+            # list of all checked modules. Ideally we want each target to only have the LDFLAGS
+            # required for that specific module
+            pkg_check_modules(FFMPEG_${libname} ${libname}${_${name}_ver} ${SEARCH_QUIET})
+
+            # pkg-config LDFLAGS always seem to have -l<name> listed. We dont need that, as
+            # the target gets a direct path to the physical lib
+            list(REMOVE_ITEM FFMPEG_${libname}_LDFLAGS "-l${name}")
+
+            # Darwin platforms return a list that cmake splits "framework libname" into separate
+            # items, therefore the link arguments become -framework -libname causing link failures
+            # we just force concatenation of these instances, so cmake passes it as "-framework libname"
+            if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+              string(REGEX REPLACE "framework;" "framework " FFMPEG_${libname}_LDFLAGS "${FFMPEG_${libname}_LDFLAGS}")
+            endif()
+
+            foreach(ldflag IN LISTS FFMPEG_${libname}_LDFLAGS)
+              foreach(pkgname IN ITEMS ${FFMPEG_PKGS})
+                string(REGEX REPLACE ">=.*" "" _shortlibname ${pkgname})
+                string(TOUPPER ${_shortlibname} _shortlibname_UPPER)
+                string(REPLACE "lib" "" shortname ${_shortlibname})
+
+                # replace -l<ffmpeglib> flag with ffmpeg target
+                # This provides correct link ordering and deduplication
+                string(REGEX REPLACE "-l${shortname}" "ffmpeg::${_shortlibname}" ldflag ${ldflag})
+              endforeach()
+              list(APPEND ${libname}_LDFLAGS ${ldflag})
+            endforeach()
+
+            add_library(ffmpeg::${libname} STATIC IMPORTED)
+            set_target_properties(ffmpeg::${libname} PROPERTIES
+                                                     IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
+                                                     INTERFACE_LINK_LIBRARIES "${${libname}_LDFLAGS}"
+                                                     INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
+          endif()
+        endif()
+      endmacro()
+
+      foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
+        string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
+        ffmpeg_create_target(${_libname})
+      endforeach()
     else()
-      message(FATAL_ERROR "Suitable FFmpeg version not found, consider using -DENABLE_INTERNAL_FFMPEG=ON")
+      if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+        message(WARNING "Suitable FFmpeg version not found, consider explicitly using -DENABLE_INTERNAL_FFMPEG=ON. Internal FFMPEG will be built")
+        buildFFMPEG()
+      else()
+        message(FATAL_ERROR "Suitable FFmpeg version not found, consider using -DENABLE_INTERNAL_FFMPEG=ON")
+      endif()
     endif()
   endif()
 endif()
