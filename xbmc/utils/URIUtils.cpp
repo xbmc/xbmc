@@ -304,6 +304,9 @@ std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
 
 std::string URIUtils::GetFileOrFolderName(const std::string& path)
 {
+  if (path.empty())
+    return {};
+
   std::string temp = path;
 
   char ch = path[path.size() - 1];
