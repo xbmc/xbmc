@@ -73,6 +73,7 @@ macro(buildFFMPEG)
 
     if(CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
       set(win10 yes)
+      list(APPEND msys_env win10=yes)
     endif()
 
     # The msys script will install and do all patching, so point to that source path
