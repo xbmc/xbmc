@@ -160,8 +160,8 @@ public:
 
   Value& Lookup(const CGraphicContext& context,
                 Position& pos,
-                const std::vector<KODI::UTILS::COLOR::Color>& colors,
-                const vecText& text,
+                std::span<const KODI::UTILS::COLOR::Color> colors,
+                std::span<const character_t> text,
                 uint32_t alignment,
                 float maxPixelWidth,
                 bool scrolling,
