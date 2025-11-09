@@ -9,6 +9,6 @@
 ; lessmsi is a prerequisite to extract any msi packages for CI. Keep first in list
 lessmsi-v2.10.3.zip https://github.com/activescott/lessmsi/releases/download/v2.10.3
 meson-1.9.1-64.msi https://github.com/mesonbuild/meson/releases/download/1.9.1
-nasm-3.01-win32.zip
+nasm-3.01-win32.zip https://www.nasm.us/pub/nasm/releasebuilds/3.01/win32
 swig-4.0.1-win32-v141-20200105.7z
 TexturePacker-win32-v141-20200105.7z
