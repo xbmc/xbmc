@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <iterator>
 #include <limits>
 
 CGUIString::CGUIString(iString start, iString end, bool carriageReturn)
@@ -161,11 +162,6 @@ void CGUITextLayout::RenderOutline(float x,
   if (!m_font)
     return;
 
-  // set the outline color
-  std::vector<KODI::UTILS::COLOR::Color> outlineColors;
-  if (!m_colors.empty())
-    outlineColors.push_back(outlineColor);
-
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
   {
@@ -197,7 +193,7 @@ void CGUITextLayout::RenderOutline(float x,
 
       // don't pass maxWidth through to the renderer for the same reason above: it will cause clipping
       // on the left.
-      m_borderFont->DrawText(bx, by, outlineColors, 0, string.m_text, align, 0);
+      m_borderFont->DrawText(bx, by, outlineColor, 0, string.m_text, align, 0);
       by += m_borderFont->GetLineHeight();
     }
     m_borderFont->End();
@@ -661,7 +657,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
       // current line is empty and word is too long: split by character using a safe linear scan.
       // Do not assume monotonic width because shaping/kerning can make width shrink or grow non-linearly.
       size_t bestCount = 0;
-      for (auto it = current; it != wordEnd; ++it)
+      for (auto it = std::next(current); it <= wordEnd; ++it)
       {
         if (m_font->GetTextWidth({current, it}) <= maxWidth)
           bestCount = std::distance(current, it);
