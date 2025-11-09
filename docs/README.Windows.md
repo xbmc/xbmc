@@ -54,7 +54,7 @@ Several different strategies are used to draw your attention to certain pieces o
 ## 2. Prerequisites
 To build Kodi:
 * **Windows** 64bit OS, Windows 10 or above (allows build of x64, win32, ARM64, UWP-64 and UWP-32)
-* **[CMake](https://cmake.org/download/)** version 3.28 or greater
+* **[CMake](https://cmake.org/download/)** version 3.30.6 or greater
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** version 3.04 or greater (Only needed if you want to generate an installer file)
