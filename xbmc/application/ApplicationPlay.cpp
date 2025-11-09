@@ -14,17 +14,19 @@
 #include "ServiceBroker.h"
 #include "ServiceManager.h"
 #include "Util.h"
-#include "cores/IPlayer.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogSimpleMenu.h"
 #include "filesystem/DirectoryFactory.h"
 #include "music/MusicFileItemClassify.h"
 #include "playlists/PlayList.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DiscSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/DiscsUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -33,34 +35,34 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
+#include <cstdint>
 #include <memory>
-#include <string>
 #include <utility>
 
 using namespace KODI;
 using namespace XFILE;
 
-bool CApplicationPlay::ResolvePath(CFileItem& item)
+bool CApplicationPlay::ResolvePath()
 {
   // Get bluray:// path for resolution if present
-  if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->GetPath().starts_with("bluray://"))
-    item.SetDynPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+  if (m_item.HasVideoInfoTag() && m_item.GetVideoInfoTag()->GetPath().starts_with("bluray://"))
+    m_item.SetDynPath(m_item.GetVideoInfoTag()->m_strFileNameAndPath);
 
   // Translate/Resolve the url if needed - recursively, but only limited times.
-  std::string lastDynPath{item.GetDynPath()};
+  std::string lastDynPath{m_item.GetDynPath()};
   size_t itemResolveAttempt{0};
   while (itemResolveAttempt < MAX_ITEM_RESOLVE_ATTEMPTS)
   {
     itemResolveAttempt++;
 
-    const std::unique_ptr<IDirectory> dir{CDirectoryFactory::Create(item)};
-    if (dir && !dir->Resolve(item))
+    if (const std::unique_ptr<IDirectory> dir{CDirectoryFactory::Create(m_item)};
+        dir && !dir->Resolve(m_item))
     {
-      CLog::LogF(LOGERROR, "Error resolving item. Item '{}' is not playable.", item.GetDynPath());
+      CLog::LogF(LOGERROR, "Error resolving item. Item '{}' is not playable.", m_item.GetDynPath());
       return false;
     }
 
-    std::string newDynPath{item.GetDynPath()};
+    std::string newDynPath{m_item.GetDynPath()};
     if (newDynPath == lastDynPath)
       break; // done
 
@@ -69,32 +71,30 @@ bool CApplicationPlay::ResolvePath(CFileItem& item)
   return true;
 }
 
-bool CApplicationPlay::ResolveStack(CFileItem& item,
-                                    std::string& player,
-                                    const std::shared_ptr<CApplicationStackHelper>& stackHelper,
-                                    bool& bRestart)
+bool CApplicationPlay::ResolveStack()
 {
+  if (!m_stackHelper.InitializeStack(m_item))
+    return false;
+
   // Particularly inefficient on startup as, if times are not saved in the database, each video
   // is opened in turn to determine its length. A faster calculation of video time would improve
   // this substantially.
-  const auto startOffset{stackHelper->InitializeStackStartPartAndOffset(item)};
-  if (!startOffset)
+  const auto startOffset{m_stackHelper.InitializeStackStartPartAndOffset(m_item)};
+  if (!startOffset.has_value())
   {
     CLog::LogF(LOGERROR, "Failed to obtain start offset for stack {}. Aborting playback.",
-               item.GetDynPath());
+               m_item.GetDynPath());
     return false;
   }
-  const std::string savedPlayerState{item.GetProperty("savedplayerstate").asString("")};
+  const std::string savedPlayerState{m_item.GetProperty("savedplayerstate").asString("")};
 
   // Replace stack:// FileItem with the individual stack part FileItem
-  item = stackHelper->GetCurrentStackPartFileItem();
+  m_item = m_stackHelper.GetCurrentStackPartFileItem();
 
-  item.SetStartOffset(startOffset.value());
+  m_item.SetStartOffset(startOffset.value());
   if (!savedPlayerState.empty())
-    item.SetProperty("savedplayerstate", savedPlayerState);
+    m_item.SetProperty("savedplayerstate", savedPlayerState);
 
-  player.clear();
-  bRestart = true;
   return true;
 }
 
@@ -118,30 +118,26 @@ bool GetEpisodeBookmark(const CFileItem& item, CPlayerOptions& options, CVideoDa
 }
 } // namespace
 
-void CApplicationPlay::GetOptionsAndUpdateItem(
-    CFileItem& item,
-    CPlayerOptions& options,
-    const std::shared_ptr<CApplicationStackHelper>& stackHelper,
-    bool bRestart)
+void CApplicationPlay::GetOptionsAndUpdateItem(bool restart)
 {
-  if (item.HasProperty("StartPercent"))
+  if (m_item.HasProperty("StartPercent"))
   {
-    options.startpercent = item.GetProperty("StartPercent").asDouble();
-    item.SetStartOffset(0);
+    m_options.startpercent = m_item.GetProperty("StartPercent").asDouble();
+    m_item.SetStartOffset(0);
   }
-  options.starttime = CUtil::ConvertMilliSecsToSecs(item.GetStartOffset());
+  m_options.starttime = CUtil::ConvertMilliSecsToSecs(m_item.GetStartOffset());
 
-  if (bRestart && item.HasVideoInfoTag())
-    options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
+  if (restart && m_item.HasVideoInfoTag())
+    m_options.state = m_item.GetVideoInfoTag()->GetResumePoint().playerState;
 
-  if (VIDEO::IsVideo(item) && (!bRestart || stackHelper->IsPlayingISOStack()))
+  if (VIDEO::IsVideo(m_item) && (!restart || m_stackHelper.IsPlayingISOStack()))
   {
-    if (item.HasProperty("savedplayerstate"))
+    if (m_item.HasProperty("savedplayerstate"))
     {
       // savedplayerstate is set in CPowerManager on sleep
-      options.starttime = CUtil::ConvertMilliSecsToSecs(item.GetStartOffset());
-      options.state = item.GetProperty("savedplayerstate").asString();
-      item.ClearProperty("savedplayerstate");
+      m_options.starttime = CUtil::ConvertMilliSecsToSecs(m_item.GetStartOffset());
+      m_options.state = m_item.GetProperty("savedplayerstate").asString();
+      m_item.ClearProperty("savedplayerstate");
       return;
     }
 
@@ -150,35 +146,35 @@ void CApplicationPlay::GetOptionsAndUpdateItem(
       return;
 
     // Get path
-    std::string path{item.GetPath()};
-    if (item.HasVideoInfoTag())
+    std::string path{m_item.GetPath()};
+    if (m_item.HasVideoInfoTag())
     {
-      const std::string videoInfoTagPath{item.GetVideoInfoTag()->m_strFileNameAndPath};
+      const std::string videoInfoTagPath{m_item.GetVideoInfoTag()->m_strFileNameAndPath};
       // removable:// may be embedded in bluray:// path
       if (CURL::Decode(videoInfoTagPath).find("removable://") != std::string::npos ||
-          VIDEO::IsVideoDb(item))
+          VIDEO::IsVideoDb(m_item))
         path = videoInfoTagPath;
     }
-    else if (item.HasProperty("original_listitem_url") &&
-             URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+    else if (m_item.HasProperty("original_listitem_url") &&
+             URIUtils::IsPlugin(m_item.GetProperty("original_listitem_url").asString()))
     {
-      path = item.GetProperty("original_listitem_url").asString();
+      path = m_item.GetProperty("original_listitem_url").asString();
     }
 
     // Note that we need to load the tag from database also if the item already has a tag,
     // because for example the (full) video info for strm files will be loaded here.
-    db.LoadVideoInfo(path, *item.GetVideoInfoTag());
+    db.LoadVideoInfo(path, *m_item.GetVideoInfoTag());
 
-    if (item.GetStartOffset() == STARTOFFSET_RESUME)
+    if (m_item.GetStartOffset() == STARTOFFSET_RESUME)
     {
-      options.starttime = 0.0;
+      m_options.starttime = 0.0;
 
       // See if resume point is set in the item
-      if (item.IsResumePointSet())
+      if (m_item.IsResumePointSet())
       {
-        options.starttime = item.GetCurrentResumeTime();
-        if (item.HasVideoInfoTag())
-          options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
+        m_options.starttime = m_item.GetCurrentResumeTime();
+        if (m_item.HasVideoInfoTag())
+          m_options.state = m_item.GetVideoInfoTag()->GetResumePoint().playerState;
       }
       else
       {
@@ -186,49 +182,44 @@ void CApplicationPlay::GetOptionsAndUpdateItem(
         CBookmark bookmark;
         if (db.GetResumeBookMark(path, bookmark))
         {
-          options.starttime = bookmark.timeInSeconds;
-          options.state = bookmark.playerState;
+          m_options.starttime = bookmark.timeInSeconds;
+          m_options.state = bookmark.playerState;
         }
-        else if (options.starttime == 0.0 && item.HasVideoInfoTag())
-          GetEpisodeBookmark(item, options, db);
+        else if (m_options.starttime == 0.0 && m_item.HasVideoInfoTag())
+          GetEpisodeBookmark(m_item, m_options, db);
       }
     }
-    else if (item.HasVideoInfoTag())
-      GetEpisodeBookmark(item, options, db);
+    else if (m_item.HasVideoInfoTag())
+      GetEpisodeBookmark(m_item, m_options, db);
 
     db.Close();
   }
 }
 
-bool CApplicationPlay::GetPlaylistIfDisc(CFileItem& item,
-                                         CPlayerOptions& options,
-                                         const std::string& player,
-                                         const std::unique_ptr<CServiceManager>& serviceManager)
+bool CApplicationPlay::GetPlaylistIfDisc()
 {
   // See if disc image is a Blu-ray (as an image could be a DVD as well) or if the path is a BDMV folder
-  const bool isBluray{::UTILS::DISCS::IsBlurayDiscImage(item) ||
-                      URIUtils::IsBDFile(item.GetDynPath())};
+  const bool isBluray{::UTILS::DISCS::IsBlurayDiscImage(m_item) ||
+                      URIUtils::IsBDFile(m_item.GetDynPath())};
 
   // See if choose (new) playlist has been selected from context menu
-  const bool forceSelection{item.GetProperty("force_playlist_selection").asBoolean(false)};
+  const bool forceSelection{m_item.GetProperty("force_playlist_selection").asBoolean(false)};
   const bool forceBlurayPlaylistSelection{forceSelection &&
-                                          URIUtils::IsBlurayPath(item.GetDynPath())};
+                                          URIUtils::IsBlurayPath(m_item.GetDynPath())};
 
-  if ((isBluray && !(options.startpercent > 0.0 || options.starttime > 0.0)) ||
+  if ((isBluray && !(m_options.startpercent > 0.0 || m_options.starttime > 0.0)) ||
       forceBlurayPlaylistSelection)
   {
     const bool isSimpleMenuAllowed{
-        [&]()
+        [this, forceSelection]()
         {
+          const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
           const std::string defaultPlayer{
-              player.empty() ? serviceManager->GetPlayerCoreFactory().GetDefaultPlayer(item)
-                             : player};
+              m_player.empty() ? playerCoreFactory.GetDefaultPlayer(m_item) : m_player};
 
           // No video selection when using external or remote players (they handle it if supported)
-          const bool isExternalPlayer{
-              serviceManager->GetPlayerCoreFactory().IsExternalPlayer(defaultPlayer)};
-          const bool isRemotePlayer{
-              serviceManager->GetPlayerCoreFactory().IsRemotePlayer(defaultPlayer)};
+          const bool isExternalPlayer{playerCoreFactory.IsExternalPlayer(defaultPlayer)};
+          const bool isRemotePlayer{playerCoreFactory.IsRemotePlayer(defaultPlayer)};
 
           // Check if simple menu is enabled or if we are forced to select a playlist
           const bool isSimpleMenu{forceSelection ||
@@ -240,13 +231,13 @@ bool CApplicationPlay::GetPlaylistIfDisc(CFileItem& item,
 
     if (isSimpleMenuAllowed)
     {
-      if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(item))
+      if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(m_item))
         return false;
 
       // Reset any resume state as new playlist chosen
-      options.starttime = options.startpercent = 0.0;
-      options.state = {};
-      item.ClearProperty("force_playlist_selection");
+      m_options.starttime = m_options.startpercent = 0.0;
+      m_options.state = {};
+      m_item.ClearProperty("force_playlist_selection");
     }
   }
 
@@ -255,6 +246,13 @@ bool CApplicationPlay::GetPlaylistIfDisc(CFileItem& item,
 
 namespace
 {
+enum class PlayMediaType : uint8_t
+{
+  MUSIC_PLAYLIST,
+  VIDEO,
+  VIDEO_PLAYLIST
+};
+
 bool ShouldGoFullScreen(PlayMediaType mediaType)
 {
   // Determine if we should go fullscreen based on the media type and settings
@@ -276,37 +274,80 @@ bool ShouldGoFullScreen(PlayMediaType mediaType)
              settings->GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_SELECTACTION);
     case VIDEO:
       return fullScreenOnMovieStart;
+    default:
+      break;
   }
 
   return false; // should never reach here
 }
 } // namespace
 
-void CApplicationPlay::DetermineFullScreen(
-    const CFileItem& item,
-    CPlayerOptions& options,
-    const std::shared_ptr<CApplicationStackHelper>& stackHelper)
+void CApplicationPlay::DetermineFullScreen()
 {
   // Get current playlist info
   const auto playlistId{CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()};
 
   // Determine fullscreen status based on media type and playlist
   using enum PlayMediaType;
-  if (MUSIC::IsAudio(item) && playlistId == PLAYLIST::Id::TYPE_MUSIC)
-    options.fullscreen = ShouldGoFullScreen(MUSIC_PLAYLIST);
-  else if (VIDEO::IsVideo(item) && playlistId == PLAYLIST::Id::TYPE_VIDEO &&
+  if (MUSIC::IsAudio(m_item) && playlistId == PLAYLIST::Id::TYPE_MUSIC)
+    m_options.fullscreen = ShouldGoFullScreen(MUSIC_PLAYLIST);
+  else if (VIDEO::IsVideo(m_item) && playlistId == PLAYLIST::Id::TYPE_VIDEO &&
            CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() > 1)
   {
-    options.fullscreen = ShouldGoFullScreen(VIDEO_PLAYLIST);
+    m_options.fullscreen = ShouldGoFullScreen(VIDEO_PLAYLIST);
   }
-  else if (stackHelper->IsPlayingRegularStack())
+  else if (m_stackHelper.IsPlayingRegularStack())
   {
-    if (stackHelper->GetCurrentPartNumber() == 0 ||
-        stackHelper->GetRegisteredStack(item)->GetStartOffset() != 0)
-      options.fullscreen = ShouldGoFullScreen(VIDEO);
+    if (m_stackHelper.GetCurrentPartNumber() == 0 ||
+        m_stackHelper.GetRegisteredStack(m_item)->GetStartOffset() != 0)
+      m_options.fullscreen = ShouldGoFullScreen(VIDEO);
     else
-      options.fullscreen = false;
+      m_options.fullscreen = false;
   }
   else
-    options.fullscreen = ShouldGoFullScreen(VIDEO);
+    m_options.fullscreen = ShouldGoFullScreen(VIDEO);
+}
+
+CApplicationPlay::GatherPlaybackDetailsResult CApplicationPlay::GatherPlaybackDetails(
+    const CFileItem& item, const std::string& player, bool restart)
+{
+  m_item = item;
+  m_player = player;
+
+  if (m_item.IsStack())
+  {
+    if (!ResolveStack())
+      return GatherPlaybackDetailsResult::RESULT_ERROR;
+
+    m_player.clear();
+    restart = true;
+  }
+
+  // Ensure the MIME type has been retrieved for http:// and shout:// streams
+  if (m_item.GetMimeType().empty())
+    m_item.FillInMimeType();
+
+  if (VIDEO::IsDiscStub(m_item))
+    return GatherPlaybackDetailsResult::RESULT_SUCCESS; // all done
+
+  if (PLAYLIST::IsPlayList(m_item))
+    return GatherPlaybackDetailsResult::RESULT_ERROR; // playlists not supported
+
+  if (!ResolvePath())
+    return GatherPlaybackDetailsResult::RESULT_ERROR;
+
+  m_options = {};
+  GetOptionsAndUpdateItem(restart);
+
+  if (!GetPlaylistIfDisc())
+    return GatherPlaybackDetailsResult::RESULT_NO_PLAYLIST_SELECTED;
+
+  DetermineFullScreen();
+
+  // Stereo streams may have lower quality, i.e. 32bit vs 16 bit
+  m_options.preferStereo =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoPreferStereoStream &&
+      CServiceBroker::GetActiveAE()->HasStereoAudioChannelCount();
+
+  return GatherPlaybackDetailsResult::RESULT_SUCCESS;
 }
