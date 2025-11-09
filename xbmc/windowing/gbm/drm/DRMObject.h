@@ -43,6 +43,7 @@ public:
   bool SupportsProperty(const std::string& name);
   std::optional<uint64_t> GetPropertyValue(const std::string& name);
   std::optional<bool> IsPropertyImmutable(const std::string& name);
+  std::optional<uint64_t*> GetRangePropertyLimits(const std::string& name);
 
 protected:
   explicit CDRMObject(int fd);
