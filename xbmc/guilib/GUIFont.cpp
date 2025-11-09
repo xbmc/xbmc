@@ -87,9 +87,9 @@ std::string& CGUIFont::GetFontName()
 
 void CGUIFont::DrawText(float x,
                         float y,
-                        const std::vector<KODI::UTILS::COLOR::Color>& colors,
+                        std::span<const KODI::UTILS::COLOR::Color> colors,
                         KODI::UTILS::COLOR::Color shadowColor,
-                        const vecText& text,
+                        std::span<const character_t> text,
                         uint32_t alignment,
                         float maxPixelWidth)
 {
@@ -179,9 +179,9 @@ bool CGUIFont::UpdateScrollInfo(std::span<const character_t> text, CScrollInfo& 
 
 void CGUIFont::DrawScrollingText(float x,
                                  float y,
-                                 const std::vector<KODI::UTILS::COLOR::Color>& colors,
+                                 std::span<const KODI::UTILS::COLOR::Color> colors,
                                  KODI::UTILS::COLOR::Color shadowColor,
-                                 const vecText& text,
+                                 std::span<const character_t> text,
                                  uint32_t alignment,
                                  float maxWidth,
                                  const CScrollInfo& scrollInfo)
