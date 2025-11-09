@@ -97,8 +97,6 @@ public:
 template<class Position, class Value>
 CGUIFontCacheEntry<Position, Value>::~CGUIFontCacheEntry()
 {
-  delete &m_key.m_colors;
-  delete &m_key.m_text;
   m_value.clear();
 }
 
@@ -106,9 +104,11 @@ template<class Position, class Value>
 void CGUIFontCacheEntry<Position, Value>::Assign(const CGUIFontCacheKey<Position>& key,
                                                  std::chrono::steady_clock::time_point now)
 {
+  m_color.assign(key.m_colors.begin(), key.m_colors.end());
+  m_text.assign(key.m_text.begin(), key.m_text.end());
   m_key.m_pos = key.m_pos;
-  m_key.m_colors.assign(key.m_colors.begin(), key.m_colors.end());
-  m_key.m_text.assign(key.m_text.begin(), key.m_text.end());
+  m_key.m_colors = m_color;
+  m_key.m_text = m_text;
   m_key.m_alignment = key.m_alignment;
   m_key.m_maxPixelWidth = key.m_maxPixelWidth;
   m_key.m_scrolling = key.m_scrolling;
