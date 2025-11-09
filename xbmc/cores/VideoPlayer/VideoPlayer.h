@@ -432,6 +432,10 @@ protected:
   void SetEnableStream(CCurrentStream& current, bool isEnabled);
 
   void SetSubtitleVisibleInternal(bool bVisible);
+  
+  void NotifySubtitleUpdate(bool bStatus, bool bStreamInfo);
+  void NotifyAudioUpdate();
+  void NotifyVideoUpdate();
 
   /**
    * one of the DVD_PLAYSPEED defines
