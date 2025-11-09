@@ -30,6 +30,7 @@
 #include "utils/Base64.h"
 #include "utils/ContentUtils.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -78,12 +79,20 @@ namespace UPNP
 //
 // main purpose of this array is to share supported real subtitle formats when kodi act as a UPNP
 // server or UPNP/DLNA media render
-constexpr std::array<std::string_view, 9> SupportedSubFormats = {
-    "txt", "srt", "ssa", "ass", "sub", "smi", "vtt",
+constexpr auto SupportedSubFormats = make_set<std::string_view>({
+    "txt",
+    "srt",
+    "ssa",
+    "ass",
+    "sub",
+    "smi",
+    "vtt",
     // "sup" subtitle is not a real TEXT,
     // and there is no real STD subtitle RFC of DLNA,
     // so we only match the extension of the "fake" content type
-    "sup", "idx"};
+    "sup",
+    "idx",
+});
 
 // Map defining extensions for mimetypes not available in Platinum mimetype map
 // or that the application wants to override. These definitions take precedence
@@ -843,12 +852,9 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
       /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
                subtitle extension (ex. rar or zip). There are the most popular extensions support by UPnP devices.*/
-      for (std::string_view type : SupportedSubFormats)
+      if (SupportedSubFormats.contains(ext))
       {
-        if (type == ext)
-        {
-          subtitles.push_back(filenames[i]);
-        }
+        subtitles.push_back(filenames[i]);
       }
     }
 
@@ -1382,17 +1388,14 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     const PLT_MediaItemResource& res = entry->m_Resources[r];
     const PLT_ProtocolInfo& info = res.m_ProtocolInfo;
 
-    for (std::string_view type : SupportedSubFormats)
+    const std::string type = info.GetContentType().Split("/").GetLastItem()->GetChars();
+    if (SupportedSubFormats.contains(type))
     {
-      if (type == info.GetContentType().Split("/").GetLastItem()->GetChars())
-      {
-        ++subIdx;
-        logger->info("adding subtitle: #{}, type '{}', URI '{}'", subIdx, type,
-                     res.m_Uri.GetChars());
+      ++subIdx;
+      logger->info("adding subtitle: #{}, type '{}', URI '{}'", subIdx, type, res.m_Uri.GetChars());
 
-        std::string prop = StringUtils::Format("subtitle:{}", subIdx);
-        item.SetProperty(prop, (const char*)res.m_Uri);
-      }
+      std::string prop = StringUtils::Format("subtitle:{}", subIdx);
+      item.SetProperty(prop, (const char*)res.m_Uri);
     }
   }
   return true;
