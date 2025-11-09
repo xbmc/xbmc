@@ -65,8 +65,10 @@ class CGUIFontCacheImpl
       {
         if (ageit->second == it)
         {
-          ageMap.erase(ageit);
-          ageMap.insert(typename AgeMap::value_type(now, it));
+          auto node = ageMap.extract(ageit);
+          node.key() = now;
+          node.mapped() = it;
+          ageMap.insert(std::move(node));
           it->second->m_lastUsed = now;
           return;
         }
