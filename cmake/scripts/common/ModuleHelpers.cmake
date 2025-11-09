@@ -752,6 +752,10 @@ function(create_mesonbinaries)
     list(APPEND binariespairs "gas-preprocessor.pl" "GASPP_PL")
   endif()
 
+  if(NASM_FOUND)
+    list(APPEND binariespairs "nasm" "NASM_EXECUTABLE")
+  endif()
+
   if(NOT "${CMAKE_STRIP}" STREQUAL "")
     list(APPEND binariespairs "strip" "CMAKE_STRIP")
   endif()
