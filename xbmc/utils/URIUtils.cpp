@@ -302,20 +302,24 @@ std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
   return strFileNameAndPath.substr(i + 1);
 }
 
-std::string URIUtils::GetFileOrFolderName(const std::string& path)
+std::string URIUtils::GetFileOrFolderName(std::string_view path)
 {
   if (path.empty())
     return {};
 
-  std::string temp = path;
+  constexpr char separators[] = "/\\";
 
-  char ch = path[path.size() - 1];
-  if (ch == '/' || ch == '\\')
+  auto idx = path.find_last_of(separators);
+  if (idx == path.size() - 1)
   {
-    temp = path.substr(0, path.size() - 1);
+    path.remove_suffix(1);
+    idx = path.find_last_of(separators);
   }
 
-  return temp.substr(temp.find_last_of("/\\") + 1);
+  if (idx == std::string_view::npos)
+    return std::string{path};
+  else
+    return std::string{path.substr(idx + 1)};
 }
 
 void URIUtils::Split(const std::string& strFileNameAndPath,

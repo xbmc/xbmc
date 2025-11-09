@@ -15,6 +15,7 @@
 #include "test/TestUtils.h"
 #include "utils/URIUtils.h"
 
+#include <array>
 #include <utility>
 
 #include <gtest/gtest.h>
@@ -1242,3 +1243,42 @@ TEST_F(TestURIUtils, CURLConstructionOfArchiveFile)
     EXPECT_EQ(param.hostname, CURL::Decode(url.GetHostName()));
   }
 }
+
+struct GetFileOrFolderNameTest
+{
+  std::string_view input;
+  std::string expected;
+};
+
+// The function was written for limited cases and has UB for inputs like D:\\ D:foo
+// clang-format off
+const auto GetFileOrFolderNameTests = std::array{
+    GetFileOrFolderNameTest{"foo", "foo"},
+    GetFileOrFolderNameTest{"foo/bar", "bar"},
+    GetFileOrFolderNameTest{"foo/bar/", "bar"},
+    GetFileOrFolderNameTest{"foo/", "foo"},
+    GetFileOrFolderNameTest{"/foo", "foo"},    
+    GetFileOrFolderNameTest{"/foo/", "foo"},
+    GetFileOrFolderNameTest{"/", ""},
+    GetFileOrFolderNameTest{"", ""},
+    GetFileOrFolderNameTest{"foo\\bar", "bar"},
+    GetFileOrFolderNameTest{"foo\\bar\\", "bar"},
+    GetFileOrFolderNameTest{"foo\\", "foo"},
+    GetFileOrFolderNameTest{"\\foo\\", "foo"},
+    GetFileOrFolderNameTest{"\\foo", "foo"},
+};
+//clang-format on
+
+class GetFileOrFolderNameTester : public testing::WithParamInterface<GetFileOrFolderNameTest>,
+                                  public testing::Test
+{
+};
+
+TEST_P(GetFileOrFolderNameTester, TestValue)
+{
+  EXPECT_EQ(GetParam().expected, URIUtils::GetFileOrFolderName(GetParam().input));
+}
+
+INSTANTIATE_TEST_SUITE_P(TestURIUtils,
+                         GetFileOrFolderNameTester,
+                         testing::ValuesIn(GetFileOrFolderNameTests));
