@@ -9,13 +9,15 @@
 #
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC fstrcmp)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
+
+  SETUP_BUILD_VARS()
+
   if(ENABLE_INTERNAL_FSTRCMP)
     find_program(LIBTOOL libtool REQUIRED)
-    include(cmake/scripts/common/ModuleHelpers.cmake)
-
-    set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC fstrcmp)
-
-    SETUP_BUILD_VARS()
 
     find_program(AUTORECONF autoreconf REQUIRED)
 
@@ -27,38 +29,18 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
   else()
-    find_package(PkgConfig ${SEARCH_QUIET})
-    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-      pkg_check_modules(PC_FSTRCMP fstrcmp ${SEARCH_QUIET})
-    endif()
-
-    find_path(FSTRCMP_INCLUDE_DIR NAMES fstrcmp.h
-                                  HINTS ${DEPENDS_PATH}/include ${PC_FSTRCMP_INCLUDEDIR}
-                                  ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-
-    find_library(FSTRCMP_LIBRARY NAMES fstrcmp
-                                 HINTS ${DEPENDS_PATH}/lib ${PC_FSTRCMP_LIBDIR}
-                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-
-    set(FSTRCMP_VER ${PC_FSTRCMP_VERSION})
+    SETUP_FIND_SPECS()
+  
+    SEARCH_EXISTING_PACKAGES()
   endif()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Fstrcmp
-                                    REQUIRED_VARS FSTRCMP_LIBRARY FSTRCMP_INCLUDE_DIR
-                                    VERSION_VAR FSTRCMP_VER)
-
-  if(FSTRCMP_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${FSTRCMP_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${FSTRCMP_INCLUDE_DIR}")
-
-    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    elseif(TARGET fstrcmp::fstrcmp)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS fstrcmp::fstrcmp)
+    else()
+      SETUP_BUILD_TARGET()
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   else()

@@ -9,34 +9,24 @@
 #
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig ${SEARCH_QUIET})
-  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(PC_SQLITE3 sqlite3 ${SEARCH_QUIET})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-    set(SQLITE3_VERSION ${PC_SQLITE3_VERSION})
-  endif()
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC sqlite3)
 
-  find_path(SQLITE3_INCLUDE_DIR NAMES sqlite3.h
-                             HINTS ${DEPENDS_PATH}/include ${PC_SQLITE3_INCLUDEDIR}
-                             ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-  find_library(SQLITE3_LIBRARY NAMES sqlite3
-                               HINTS ${DEPENDS_PATH}/lib ${PC_SQLITE3_LIBDIR}
-                               ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SETUP_BUILD_VARS()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Sqlite3
-                                    REQUIRED_VARS SQLITE3_LIBRARY SQLITE3_INCLUDE_DIR
-                                    VERSION_VAR SQLITE3_VERSION)
+  SETUP_FIND_SPECS()
 
-  if(Sqlite3_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${SQLITE3_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${SQLITE3_INCLUDE_DIR}")
+  SEARCH_EXISTING_PACKAGES()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET sqlite3::sqlite3)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS sqlite3::sqlite3)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    endif()
   else()
     if(Sqlite3_FIND_REQUIRED)
       message(FATAL_ERROR "SQLite3 library not found.")

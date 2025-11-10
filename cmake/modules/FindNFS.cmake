@@ -45,59 +45,22 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # A corner case, but if a linux/freebsd user WANTS to build internal libnfs, build anyway
   if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_NFS) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_NFS))
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
     ")
   else()
     if(TARGET libnfs::nfs)
-      # This is for the case where a distro provides a non standard (Debug/Release) config type
-      # convert this back to either DEBUG/RELEASE or just RELEASE
-      # we only do this because we use find_package_handle_standard_args for config time output
-      # and it isnt capable of handling TARGETS, so we have to extract the info
-      get_target_property(_LIBNFS_CONFIGURATIONS libnfs::nfs IMPORTED_CONFIGURATIONS)
-      if(_LIBNFS_CONFIGURATIONS)
-        foreach(_libnfs_config IN LISTS _LIBNFS_CONFIGURATIONS)
-          # Just set to RELEASE var so select_library_configurations can continue to work its magic
-          string(TOUPPER ${_libnfs_config} _libnfs_config_UPPER)
-          if((NOT ${_libnfs_config_UPPER} STREQUAL "RELEASE") AND
-             (NOT ${_libnfs_config_UPPER} STREQUAL "DEBUG"))
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE libnfs::nfs IMPORTED_LOCATION_${_libnfs_config_UPPER})
-          else()
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_${_libnfs_config_UPPER} libnfs::nfs IMPORTED_LOCATION_${_libnfs_config_UPPER})
-          endif()
-        endforeach()
-      else()
-        get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE libnfs::nfs IMPORTED_LOCATION)
-      endif()
-
       # libnfs cmake config doesnt include INTERFACE_INCLUDE_DIRECTORIES
       find_path(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR NAMES nfsc/libnfs.h
                                                                  HINTS ${DEPENDS_PATH}/include
                                                                  ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
-      # First item is the full path of the library file found
-      # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE)
-
       get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
-
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${libnfs_VERSION})
     endif()
   endif()
 
-  include(SelectLibraryConfigurations)
-  select_library_configurations(${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
-
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(NFS
-                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
-                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
-
-  if(NFS_FOUND)
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     # Pre existing lib, so we can run checks
     if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       set(CMAKE_REQUIRED_INCLUDES "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR}")

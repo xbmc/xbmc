@@ -8,32 +8,23 @@
 #   ${APP_NAME_LC}::Bluetooth   - The Bluetooth library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC bluetooth)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
+
+  SETUP_BUILD_VARS()
+
   find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_BLUETOOTH bluez bluetooth ${SEARCH_QUIET})
+    pkg_check_modules(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} bluez bluetooth IMPORTED_TARGET ${SEARCH_QUIET})
   endif()
 
-  find_path(BLUETOOTH_INCLUDE_DIR NAMES bluetooth/bluetooth.h
-                                  HINTS ${PC_BLUETOOTH_INCLUDEDIR})
-  find_library(BLUETOOTH_LIBRARY NAMES bluetooth libbluetooth
-                                 HINTS ${PC_BLUETOOTH_LIBDIR})
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
 
-  set(BLUETOOTH_VERSION ${PC_BLUETOOTH_VERSION})
-
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Bluetooth
-                                    REQUIRED_VARS BLUETOOTH_LIBRARY BLUETOOTH_INCLUDE_DIR
-                                    VERSION_VAR BLUETOOTH_VERSION)
-
-  if(BLUETOOTH_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${BLUETOOTH_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${BLUETOOTH_INCLUDE_DIR}"
-                                                                     INTERFACE_COMPILE_DEFINITIONS HAVE_LIBBLUETOOTH)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_LIBBLUETOOTH)
+    ADD_TARGET_COMPILE_DEFINITION()
   endif()
 endif()

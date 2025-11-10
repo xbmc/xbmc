@@ -6,35 +6,24 @@
 # This will define the following target:
 #
 #   UUID::UUID   - The libuuid library
+#   LIBRARY::UUID   - The libuuid library ALIAS
 #
 
 if(NOT TARGET UUID::UUID)
-  find_package(PkgConfig ${SEARCH_QUIET})
-  if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_UUID uuid ${SEARCH_QUIET})
-  endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_path(UUID_INCLUDE_DIR uuid/uuid.h
-                             HINTS ${PC_UUID_INCLUDEDIR}
-                                   ${DEPENDS_PATH}/include)
-  find_library(UUID_LIBRARY uuid
-                            HINTS ${PC_UUID_LIBRARY}
-                                  ${DEPENDS_PATH}/lib)
-  set(UUID_VERSION ${PC_UUID_VERSION})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC uuid)
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(UUID
-                                    REQUIRED_VARS UUID_LIBRARY UUID_INCLUDE_DIR
-                                    VERSION_VAR UUID_VERSION)
+  SETUP_BUILD_VARS()
 
-  if(UUID_FOUND)
-    add_library(UUID::UUID UNKNOWN IMPORTED)
-    set_target_properties(UUID::UUID PROPERTIES
-                                     IMPORTED_LOCATION "${UUID_LIBRARY}"
-                                     INTERFACE_INCLUDE_DIRECTORIES "${UUID_INCLUDE_DIR}")
+  SETUP_FIND_SPECS()
+
+  SEARCH_EXISTING_PACKAGES()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    add_library(UUID::UUID ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
   endif()
 endif()

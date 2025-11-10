@@ -112,69 +112,18 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CURL) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_CURL) OR
      (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
     ")
-  else()
-    # Maybe need to look explicitly for CURL::libcurl_static/shared?
-    if(TARGET CURL::libcurl)
-      # CURL::libcurl is an alias. We need to get the actual aias target, as we cant make an
-      # alias of an alias (ie our ${APP_NAME_LC}::Curl cant be an alias of Curl::libcurl)
-      get_target_property(_CURL_ALIASTARGET CURL::libcurl ALIASED_TARGET)
-
-      # This is for the case where a distro provides a non standard (Debug/Release) config type
-      # eg Debian's config file is CURLConfigTargets-none.cmake
-      # convert this back to either DEBUG/RELEASE or just RELEASE
-      # we only do this because we use find_package_handle_standard_args for config time output
-      # and it isnt capable of handling TARGETS, so we have to extract the info
-      get_target_property(_CURL_CONFIGURATIONS ${_CURL_ALIASTARGET} IMPORTED_CONFIGURATIONS)
-      if(_CURL_CONFIGURATIONS)
-        foreach(_curl_config IN LISTS _CURL_CONFIGURATIONS)
-          # Some non standard config (eg None on Debian)
-          # Just set to RELEASE var so select_library_configurations can continue to work its magic
-          string(TOUPPER ${_curl_config} _curl_config_UPPER)
-          if((NOT ${_curl_config_UPPER} STREQUAL "RELEASE") AND
-             (NOT ${_curl_config_UPPER} STREQUAL "DEBUG"))
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE ${_CURL_ALIASTARGET} IMPORTED_LOCATION_${_curl_config_UPPER})
-          else()
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_${_curl_config_UPPER} ${_CURL_ALIASTARGET} IMPORTED_LOCATION_${_curl_config_UPPER})
-          endif()
-        endforeach()
-      else()
-        get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE ${_CURL_ALIASTARGET} IMPORTED_LOCATION)
-      endif()
-
-      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR CURL::libcurl INTERFACE_INCLUDE_DIRECTORIES)
-    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
-      # First item is the full path of the library file found
-      # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE)
-
-      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
-    endif()
   endif()
 
-  include(SelectLibraryConfigurations)
-  select_library_configurations(${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
-  unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARIES)
-
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Curl
-                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
-                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
-
-  if(Curl_FOUND)
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     # cmake target and not building internal
     if(TARGET CURL::libcurl AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       # CURL::libcurl is an alias. We need to get the actual aias target, as we cant make an
       # alias of an alias (ie our ${APP_NAME_LC}::Curl cant be an alias of Curl::libcurl)
-      if(NOT _CURL_ALIASTARGET)
-        get_target_property(_CURL_ALIASTARGET CURL::libcurl ALIASED_TARGET)
-      endif()
+      get_target_property(_CURL_ALIASTARGET CURL::libcurl ALIASED_TARGET)
 
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_CURL_ALIASTARGET})
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})

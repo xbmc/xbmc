@@ -97,57 +97,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_TAGLIB) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_TAGLIB) OR
      (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
     ")
-  else()
-    if(TARGET TagLib::tag)
-      # This is for the case where a distro provides a non standard (Debug/Release) config type
-      # eg Debian's config file is taglib-targets-none.cmake
-      # convert this back to either DEBUG/RELEASE or just RELEASE
-      # we only do this because we use find_package_handle_standard_args for config time output
-      # and it isnt capable of handling TARGETS, so we have to extract the info
-      get_target_property(_TAGLIB_CONFIGURATIONS TagLib::tag IMPORTED_CONFIGURATIONS)
-      if(_TAGLIB_CONFIGURATIONS)
-        foreach(_taglib_config IN LISTS _TAGLIB_CONFIGURATIONS)
-          # Some non standard config (eg None on Debian)
-          # Just set to RELEASE var so select_library_configurations can continue to work its magic
-          string(TOUPPER ${_taglib_config} _taglib_config_UPPER)
-          if((NOT ${_taglib_config_UPPER} STREQUAL "RELEASE") AND
-             (NOT ${_taglib_config_UPPER} STREQUAL "DEBUG"))
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE TagLib::tag IMPORTED_LOCATION_${_taglib_config_UPPER})
-          else()
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_${_taglib_config_UPPER} TagLib::tag IMPORTED_LOCATION_${_taglib_config_UPPER})
-          endif()
-        endforeach()
-      else()
-        get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE TagLib::tag IMPORTED_LOCATION)
-      endif()
-
-      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR TagLib::tag INTERFACE_INCLUDE_DIRECTORIES)
-    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
-      # First item is the full path of the library file found
-      # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE)
-
-      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
-    endif()
   endif()
 
-  include(SelectLibraryConfigurations)
-  select_library_configurations(${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
-  unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARIES)
-
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(TagLib
-                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
-                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
-
-  if(TagLib_FOUND)
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     if(TARGET TagLib::tag AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS TagLib::tag)
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})

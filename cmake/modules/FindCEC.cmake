@@ -71,57 +71,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CEC) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_CEC) OR
      (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
     ")
-  else()
-    if(TARGET libcec::cec)
-      get_target_property(_CEC_CONFIGURATIONS libcec::cec IMPORTED_CONFIGURATIONS)
-      if(_CEC_CONFIGURATIONS)
-        foreach(_cec_config IN LISTS _CEC_CONFIGURATIONS)
-          # Some non standard config (eg None on Debian)
-          # Just set to RELEASE var so select_library_configurations can continue to work its magic
-          string(TOUPPER ${_cec_config} _cec_config_UPPER)
-          if((NOT ${_cec_config_UPPER} STREQUAL "RELEASE") AND
-             (NOT ${_cec_config_UPPER} STREQUAL "DEBUG"))
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE libcec::cec IMPORTED_LOCATION_${_cec_config_UPPER})
-          else()
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_${_cec_config_UPPER} libcec::cec IMPORTED_LOCATION_${_cec_config_UPPER})
-          endif()
-        endforeach()
-      else()
-        get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE libcec::cec IMPORTED_LOCATION)
-      endif()
-
-      # CEC cmake config doesnt include INTERFACE_INCLUDE_DIRECTORIES
-      find_path(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR NAMES libcec/cec.h libCEC/CEC.h
-                                                                 HINTS ${DEPENDS_PATH}/include
-                                                                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${libcec_VERSION})
-    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
-      # First item is the full path of the library file found
-      # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE)
-
-      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION})
-    endif()
   endif()
 
-  include(SelectLibraryConfigurations)
-  select_library_configurations(${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
-  unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARIES)
-
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(CEC
-                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
-                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
-
-  if(CEC_FOUND)
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_LIBCEC)
 
     if(TARGET libcec::cec AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})

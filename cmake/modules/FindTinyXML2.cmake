@@ -56,59 +56,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, build anyway
   if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_TINYXML2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_TINYXML2))
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
       buildmacro${CMAKE_FIND_PACKAGE_NAME}()
     ")
-  else()
-    if(TARGET tinyxml2::tinyxml2)
-      # This is for the case where a distro provides a non standard (Debug/Release) config type
-      # eg Debian's config file is tinyxml2ConfigTargets-none.cmake
-      # convert this back to either DEBUG/RELEASE or just RELEASE
-      # we only do this because we use find_package_handle_standard_args for config time output
-      # and it isnt capable of handling TARGETS, so we have to extract the info
-      get_target_property(_TINYXML2_CONFIGURATIONS tinyxml2::tinyxml2 IMPORTED_CONFIGURATIONS)
-      if(_TINYXML2_CONFIGURATIONS)
-        foreach(_tinyxml2_config IN LISTS _TINYXML2_CONFIGURATIONS)
-          # Some non standard config (eg None on Debian)
-          # Just set to RELEASE var so select_library_configurations can continue to work its magic
-          string(TOUPPER ${_tinyxml2_config} _tinyxml2_config_UPPER)
-          if((NOT ${_tinyxml2_config_UPPER} STREQUAL "RELEASE") AND
-             (NOT ${_tinyxml2_config_UPPER} STREQUAL "DEBUG"))
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE tinyxml2::tinyxml2 IMPORTED_LOCATION_${_tinyxml2_config_UPPER})
-          else()
-            get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_${_tinyxml2_config_UPPER} tinyxml2::tinyxml2 IMPORTED_LOCATION_${_tinyxml2_config_UPPER})
-          endif()
-        endforeach()
-      else()
-        get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE tinyxml2::tinyxml2 IMPORTED_LOCATION)
-      endif()
-
-      # Need this, as we may only get the existing TARGET from system and not build or use pkg-config
-      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
-    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
-      # First item is the full path of the library file found
-      # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES 0 ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE)
-
-      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} INTERFACE_INCLUDE_DIRECTORIES)
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION})
-    endif()
   endif()
 
-  include(SelectLibraryConfigurations)
-  select_library_configurations(${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
-  unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARIES)
-
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(TinyXML2
-                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
-                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
-
-  if(TinyXML2_FOUND)
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     if(TARGET tinyxml2::tinyxml2 AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS tinyxml2::tinyxml2)
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})

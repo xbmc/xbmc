@@ -8,31 +8,18 @@
 #   ${APP_NAME_LC}::CWiid   - The CWiid library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_CWIID cwiid ${SEARCH_QUIET})
-  endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_path(CWIID_INCLUDE_DIR NAMES cwiid.h
-                              PATHS ${PC_CWIID_INCLUDEDIR})
-  find_library(CWIID_LIBRARY NAMES cwiid
-                             PATHS ${PC_CWIID_LIBDIR})
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC cwiid)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
-  set(CWIID_VERSION ${PC_CWIID_VERSION})
+  SETUP_BUILD_VARS()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
+  SETUP_FIND_SPECS()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(CWiid
-                                    REQUIRED_VARS CWIID_LIBRARY CWIID_INCLUDE_DIR
-                                    VERSION_VAR CWIID_VERSION)
+  SEARCH_EXISTING_PACKAGES()
 
-  if(CWIID_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${CWIID_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${CWIID_INCLUDE_DIR}")
-
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
   endif()
 endif()

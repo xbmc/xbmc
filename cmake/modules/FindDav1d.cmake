@@ -8,13 +8,18 @@
 #   LIBRARY::Dav1d   - The dav1d library
 
 if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC dav1d)
+
+  SETUP_BUILD_VARS()
+
+  SETUP_FIND_SPECS()
+
+  SEARCH_EXISTING_PACKAGES()
+
   if((ENABLE_INTERNAL_DAV1D AND ENABLE_INTERNAL_FFMPEG) AND NOT (WIN32 OR WINDOWS_STORE))
-    include(cmake/scripts/common/ModuleHelpers.cmake)
-
-    set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC dav1d)
-
-    SETUP_BUILD_VARS()
-
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     set(DAV1D_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     find_program(NINJA_EXECUTABLE ninja REQUIRED)
@@ -34,40 +39,16 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
     set(INSTALL_COMMAND ${NINJA_EXECUTABLE} install)
 
     BUILD_DEP_TARGET()
-  else()
-    find_package(PkgConfig ${SEARCH_QUIET})
-    # Do not use pkgconfig on windows
-    if(PKG_CONFIG_FOUND AND NOT WIN32)
-      pkg_check_modules(PC_DAV1D dav1d ${SEARCH_QUIET})
-    endif()
-
-    find_library(DAV1D_LIBRARY NAMES dav1d libdav1d
-                               HINTS ${DEPENDS_PATH}/lib ${PC_DAV1D_LIBDIR}
-                               ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-
-    find_path(DAV1D_INCLUDE_DIR NAMES dav1d/dav1d.h
-                                HINTS ${DEPENDS_PATH}/include ${PC_DAV1D_INCLUDEDIR}
-                                ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
-
-    set(DAV1D_VERSION ${PC_DAV1D_VERSION})
   endif()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Dav1d
-                                    REQUIRED_VARS DAV1D_LIBRARY DAV1D_INCLUDE_DIR
-                                    VERSION_VAR DAV1D_VERSION)
-
-  if(DAV1D_FOUND)
-    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                              IMPORTED_LOCATION "${DAV1D_LIBRARY}"
-                                                              INTERFACE_INCLUDE_DIRECTORIES "${DAV1D_INCLUDE_DIR}")
-
-    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    elseif(TARGET dav1d::dav1d)
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS dav1d::dav1d)
+    else()
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_TYPE LIBRARY)
+      SETUP_BUILD_TARGET()
       add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
   endif()

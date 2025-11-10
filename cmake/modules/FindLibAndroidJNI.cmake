@@ -21,20 +21,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   BUILD_DEP_TARGET()
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(LibAndroidJNI
-                                    REQUIRED_VARS LIBANDROIDJNI_LIBRARY LIBANDROIDJNI_INCLUDE_DIR
-                                    VERSION_VAR LIBANDROIDJNI_VER)
-
-  add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} STATIC IMPORTED)
-  set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                   FOLDER "External Projects"
-                                                                   IMPORTED_LOCATION "${LIBANDROIDJNI_LIBRARY}"
-                                                                   INTERFACE_INCLUDE_DIRECTORIES "${LIBANDROIDJNI_INCLUDE_DIR}")
+  SETUP_BUILD_TARGET()
 
   add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+
+  set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                   FOLDER "External Projects")
 endif()

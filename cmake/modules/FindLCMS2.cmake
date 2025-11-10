@@ -11,34 +11,26 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC lcms2)
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC liblcms2)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
+
+  SETUP_BUILD_VARS()
+
   SETUP_FIND_SPECS()
 
-  find_package(PkgConfig ${SEARCH_QUIET})
-  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(PC_LCMS2 lcms2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
-  endif()
+  SEARCH_EXISTING_PACKAGES()
 
-  find_path(LCMS2_INCLUDE_DIR NAMES lcms2.h
-                              HINTS ${DEPENDS_PATH}/include ${PC_LCMS2_INCLUDEDIR})
-  find_library(LCMS2_LIBRARY NAMES lcms2 liblcms2
-                             HINTS ${DEPENDS_PATH}/lib ${PC_LCMS2_LIBDIR})
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC})
+    elseif(TARGET lcms2::lcms2)
+      # Kodi target - windows prebuilt lib
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS lcms2::lcms2)
+    endif()
 
-  set(LCMS2_VERSION ${PC_LCMS2_VERSION})
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_LCMS2;CMS_NO_REGISTER_KEYWORD)
 
-  if(NOT VERBOSE_FIND)
-     set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
-   endif()
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(LCMS2
-                                    REQUIRED_VARS LCMS2_LIBRARY LCMS2_INCLUDE_DIR
-                                    VERSION_VAR LCMS2_VERSION)
-
-  if(LCMS2_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${LCMS2_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${LCMS2_INCLUDE_DIR}"
-                                                                     INTERFACE_COMPILE_DEFINITIONS "HAVE_LCMS2;CMS_NO_REGISTER_KEYWORD")
+    ADD_TARGET_COMPILE_DEFINITION()
   endif()
 endif()
