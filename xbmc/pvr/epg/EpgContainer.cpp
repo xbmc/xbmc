@@ -124,12 +124,6 @@ std::shared_ptr<CPVREpgDatabase> CPVREpgContainer::GetEpgDatabase() const
   return m_database;
 }
 
-bool CPVREpgContainer::IsStarted() const
-{
-  std::unique_lock lock(m_critSection);
-  return m_bStarted;
-}
-
 int CPVREpgContainer::NextEpgId()
 {
   std::unique_lock lock(m_critSection);
@@ -146,19 +140,12 @@ void CPVREpgContainer::Start()
 
     Create();
     SetPriority(ThreadPriority::BELOW_NORMAL);
-
-    m_bStarted = true;
   }
 }
 
 void CPVREpgContainer::Stop()
 {
   StopThread();
-
-  {
-    std::unique_lock lock(m_critSection);
-    m_bStarted = false;
-  }
 }
 
 void CPVREpgContainer::Unload()
