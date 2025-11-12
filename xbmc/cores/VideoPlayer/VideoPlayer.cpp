@@ -5672,7 +5672,7 @@ void CVideoPlayer::NotifySubtitleUpdate(int flags)
   }
   if ((flags & SubtitleChange::FLAG_STREAMINFO_CHANGE) != 0)
   {
-    int stream = m_processInfo->GetVideoSettings().m_SubtitleStream;
+    const int stream = m_processInfo->GetVideoSettings().m_SubtitleStream;
     SubtitleStreamInfo info;
     GetSubtitleStreamInfo(stream, info);
     if (!info.valid && (flags & SubtitleChange::FLAG_STATUS_CHANGE) == 0) return;
@@ -5692,7 +5692,7 @@ void CVideoPlayer::NotifySubtitleUpdate(int flags)
 void CVideoPlayer::NotifyAudioUpdate()
 {
   AudioStreamInfo info;
-  int stream = m_processInfo->GetVideoSettings().m_AudioStream;
+  const int stream = m_processInfo->GetVideoSettings().m_AudioStream;
   GetAudioStreamInfo(stream, info);
   if (!info.valid) return;
   CVariant data;
@@ -5715,13 +5715,13 @@ void CVideoPlayer::NotifyAudioUpdate()
 void CVideoPlayer::NotifyVideoUpdate()
 {
   VideoStreamInfo info;
-  int iStream = m_processInfo->GetVideoSettings().m_VideoStream;
-  GetVideoStreamInfo(iStream, info);
+  const int stream = m_processInfo->GetVideoSettings().m_VideoStream;
+  GetVideoStreamInfo(stream, info);
   if (!info.valid) return;
   CVariant data;
   data["player"]["playerid"] = static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
   CVariant contentEntry(CVariant::VariantTypeObject);
-  contentEntry["index"] = iStream;
+  contentEntry["index"] = stream;
   contentEntry["codec"] = info.codecName;
   contentEntry["height"] = info.height;
   contentEntry["width"] = info.width;
