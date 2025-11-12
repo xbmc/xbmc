@@ -8,11 +8,11 @@
 
 #include "Application.h"
 
-#include "ApplicationPlay.h"
 #include "Autorun.h"
 #include "CompileInfo.h"
 #include "DatabaseManager.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIInfoManager.h"
 #include "GUILargeTextureManager.h"
 #include "GUIPassword.h"
@@ -40,6 +40,7 @@
 #include "application/AppInboundProtocol.h"
 #include "application/AppParams.h"
 #include "application/ApplicationActionListeners.h"
+#include "application/ApplicationPlay.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSkinHandling.h"
@@ -48,7 +49,6 @@
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
 #include "cores/FFmpeg.h"
-#include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogCache.h"
@@ -73,9 +73,6 @@
 #endif
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
-#ifdef HAS_UPNP
-#include "filesystem/UPnPDirectory.h"
-#endif
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControlProfiler.h"
@@ -110,6 +107,7 @@
 #include "network/Network.h"
 #include "network/ZeroconfBrowser.h"
 #ifdef HAS_UPNP
+#include "filesystem/UPnPDirectory.h"
 #include "network/upnp/UPnP.h"
 #endif
 #include "jobs/JobManager.h"
@@ -129,10 +127,9 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "speech/ISpeechRecognition.h"
 #include "storage/MediaManager.h"
-#include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
 #include "utils/CharsetConverter.h"
@@ -147,7 +144,6 @@
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "video/PlayerController.h"
 #include "video/VideoLibraryQueue.h"
@@ -155,9 +151,9 @@
 #ifdef TARGET_WINDOWS
 #include "win32util.h"
 #endif
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 #include "windowing/WindowSystemFactory.h"
-
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif
@@ -180,6 +176,7 @@
 #include "platform/win32/threads/Win32Exception.h"
 #endif
 
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <memory>
@@ -2324,43 +2321,20 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CUtil::ClearSubtitles();
   }
 
-  std::string resolvedPlayer{player};
-  if (item.IsStack())
-  {
-    if (!stackHelper->InitializeStack(item))
-      return false;
+  using enum CApplicationPlay::GatherPlaybackDetailsResult;
 
-    if (!CApplicationPlay::ResolveStack(item, resolvedPlayer, stackHelper, bRestart))
-      return false;
-  }
-
-  // Ensure the MIME type has been retrieved for http:// and shout:// streams
-  if (item.GetMimeType().empty())
-    item.FillInMimeType();
-
-  if (VIDEO::IsDiscStub(item))
-    return CServiceBroker::GetMediaManager().playStubFile(item);
-
-  if (PLAYLIST::IsPlayList(item))
+  CApplicationPlay appPlay{*stackHelper};
+  const auto result{appPlay.GatherPlaybackDetails(item, player, bRestart)};
+  if (result == RESULT_ERROR)
     return false;
+  else if (result == RESULT_NO_PLAYLIST_SELECTED)
+    return true; // Special case; not to be treated as error.
 
-  if (!CApplicationPlay::ResolvePath(item))
-    return false;
-
-  CPlayerOptions options;
-  CApplicationPlay::GetOptionsAndUpdateItem(item, options, stackHelper, bRestart);
-
-  if (const bool continuePlayback{
-          CApplicationPlay::GetPlaylistIfDisc(item, options, resolvedPlayer, m_ServiceManager)};
-      !continuePlayback)
-    return true; // Playlist needed but none selected (ie. user cancelled) so abort playback
-
-  CApplicationPlay::DetermineFullScreen(item, options, stackHelper);
-
-  // Stereo streams may have lower quality, i.e. 32bit vs 16 bit
-  options.preferStereo =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoPreferStereoStream &&
-      CServiceBroker::GetActiveAE()->HasStereoAudioChannelCount();
+  // Special handling for disc stubs.
+  //! @todo Shouldn't disc stubs also be handled via appPlayer->OpenFile()?
+  const CFileItem& resolvedItem{appPlay.GetResolvedItem()};
+  if (VIDEO::IsDiscStub(resolvedItem))
+    return CServiceBroker::GetMediaManager().playStubFile(resolvedItem);
 
   // Reset VideoStartWindowed as it's a temp setting
   CMediaSettings::GetInstance().SetMediaStartWindowed(false);
@@ -2369,23 +2343,25 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   // pushed some delay message into the threadmessage list, they are not
   // expected be processed after or during the new item playback starting.
   // so we clean up previous playing item's playback callback delay messages here.
-  int previousMsgsIgnoredByNewPlaying[] = {GUI_MSG_PLAYBACK_STARTED,
-                                           GUI_MSG_PLAYBACK_ENDED,
-                                           GUI_MSG_PLAYBACK_STOPPED,
-                                           GUI_MSG_PLAYLIST_CHANGED,
-                                           GUI_MSG_PLAYLISTPLAYER_STOPPED,
-                                           GUI_MSG_PLAYLISTPLAYER_STARTED,
-                                           GUI_MSG_PLAYLISTPLAYER_CHANGED,
-                                           GUI_MSG_QUEUE_NEXT_ITEM,
-                                           0};
-  const int dMsgCount{CServiceBroker::GetGUI()->GetWindowManager().RemoveThreadMessageByMessageIds(
-      &previousMsgsIgnoredByNewPlaying[0])};
-  if (dMsgCount > 0)
+  static constexpr const std::array previousMsgsIgnoredByNewPlaying{GUI_MSG_PLAYBACK_STARTED,
+                                                                    GUI_MSG_PLAYBACK_ENDED,
+                                                                    GUI_MSG_PLAYBACK_STOPPED,
+                                                                    GUI_MSG_PLAYLIST_CHANGED,
+                                                                    GUI_MSG_PLAYLISTPLAYER_STOPPED,
+                                                                    GUI_MSG_PLAYLISTPLAYER_STARTED,
+                                                                    GUI_MSG_PLAYLISTPLAYER_CHANGED,
+                                                                    GUI_MSG_QUEUE_NEXT_ITEM,
+                                                                    0};
+  if (const int dMsgCount{
+          CServiceBroker::GetGUI()->GetWindowManager().RemoveThreadMessageByMessageIds(
+              &previousMsgsIgnoredByNewPlaying[0])};
+      dMsgCount > 0)
     CLog::LogF(LOGDEBUG, "Ignored {} playback thread messages", dMsgCount);
 
+  appPlayer->OpenFile(resolvedItem, appPlay.GetPlayerOptions(),
+                      m_ServiceManager->GetPlayerCoreFactory(), appPlay.GetResolvedPlayer(), *this);
+
   const auto appVolume{GetComponent<CApplicationVolumeHandling>()};
-  appPlayer->OpenFile(item, options, m_ServiceManager->GetPlayerCoreFactory(), resolvedPlayer,
-                      *this);
   appPlayer->SetVolume(appVolume->GetVolumeRatio());
   appPlayer->SetMute(appVolume->IsMuted());
 
