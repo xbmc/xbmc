@@ -70,7 +70,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
   # Check for existing Brotli. If version >= BROTLI-VERSION file version, dont build
   # We only build for KODI_DEPENDSBUILD or Windows platforms. Other unix builds are expected to supply system package
-  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND
+  if("${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND
      (KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE)) AND
      Brotli_FIND_REQUIRED)
     message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")

@@ -31,17 +31,19 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   endmacro()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC flatbuffers)
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME FlatBuffers)
   SETUP_BUILD_VARS()
 
   set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INTERFACE_LIB TRUE)
 
-  find_package(flatbuffers CONFIG ${SEARCH_QUIET}
-                           HINTS ${DEPENDS_PATH}/lib/cmake
-                           ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+  find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} CONFIG ${SEARCH_QUIET}
+                                                         HINTS ${DEPENDS_PATH}/lib/cmake
+                                                         NAMES FlatBuffers flatbuffers
+                                                         ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   # Check for existing Flatbuffers. If version >= FLATBUFFERS-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal flatbuffers, build anyway
-  if((flatbuffers_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_FLATBUFFERS) OR
+  if(("${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_FLATBUFFERS) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_FLATBUFFERS))
     message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     cmake_language(EVAL CODE "
@@ -54,6 +56,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     find_path(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR NAMES flatbuffers/flatbuffers.h
                                                                HINTS ${DEPENDS_PATH}/include
                                                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+
+    if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND 1)
+    endif()
   endif()
 
   if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
