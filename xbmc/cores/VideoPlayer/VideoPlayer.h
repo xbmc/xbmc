@@ -433,7 +433,12 @@ protected:
 
   void SetSubtitleVisibleInternal(bool bVisible);
   
-  void NotifySubtitleUpdate(bool bStatus, bool bStreamInfo);
+  enum SubtitleChange
+  {
+    FLAG_STATUS_CHANGE = 0x0001,
+    FLAG_STREAMINFO_CHANGE = 0x0002,
+  };
+  void NotifySubtitleUpdate(int flags);
   void NotifyAudioUpdate();
   void NotifyVideoUpdate();
 
