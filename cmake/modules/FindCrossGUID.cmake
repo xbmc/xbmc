@@ -58,6 +58,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       if(EXISTS "${_crossguid_include_dir}/crossguid/guid.hpp")
         list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_NEW_CROSSGUID)
       endif()
+    elseif(TARGET crossguid AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS crossguid)
+
+      get_target_property(_crossguid_include_dir crossguid INTERFACE_INCLUDE_DIRECTORIES)
+
+      # NEW_CROSSGUID >= 0.2.0 release
+      if(EXISTS "${_crossguid_include_dir}/crossguid/guid.hpp")
+        list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_NEW_CROSSGUID)
+      endif()
     else()
       SETUP_BUILD_TARGET()
 
