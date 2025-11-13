@@ -28,7 +28,8 @@ enum StreamFlags
   FLAG_FORCED = 0x0040,
   FLAG_HEARING_IMPAIRED = 0x0080,
   FLAG_VISUAL_IMPAIRED = 0x0100,
-  FLAG_STILL_IMAGES = 0x100000
+  FLAG_STILL_IMAGES = 0x100000,
+  FLAG_WEBVTT_DATA_PACKETS = 0x200000, // WebVTT packages are derived from a data format
 };
 
 enum class StreamHdrType

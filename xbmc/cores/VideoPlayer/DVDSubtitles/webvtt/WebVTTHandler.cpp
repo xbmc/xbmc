@@ -258,6 +258,24 @@ bool CWebVTTHandler::CheckSignature(const std::string& data)
   return false;
 }
 
+void CWebVTTHandler::InitDecoderCue(double startTime, double endTime)
+{
+  // Prepare for a new subtitle data
+  m_subtitleData = subtitleData();
+
+  m_subtitleData.startTime = startTime + m_offset;
+  m_subtitleData.stopTime = endTime + m_offset;
+
+  // Load default settings by parsing an empty string
+  std::string settings;
+  GetCueSettings(settings);
+
+  // From the next lines we should have the text area
+  // so set the section to CUE_TEXT to prepare decoder
+  // to read the text area with DecodeLine method
+  m_currentSection = WebvttSection::CUE_TEXT;
+}
+
 void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* subList)
 {
   // Keep lines values history, needed to identify the cue ID
