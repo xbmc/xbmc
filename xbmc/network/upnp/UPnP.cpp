@@ -30,7 +30,10 @@
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "video/VideoInfoTag.h"
+#include "video/VideoInfoTag.h" // Corrected
+#include "music/MusicLibraryQueue.h"
+#include "video/VideoLibraryQueue.h"
+#include "input/InputManager.h" // Added
 
 #include <memory>
 #include <mutex>
@@ -180,6 +183,10 @@ public:
                                                        CVariant{"upnp://"});
 
     PLT_SyncMediaBrowser::OnMSRemoved(device);
+
+    // Remove the device's entry from m_lastUpdateIDs
+    NPT_String deviceUUID = device->GetUUID();
+    m_lastUpdateIDs.erase(deviceUUID);
   }
 
   // PLT_MediaContainerChangesListener methods
@@ -198,6 +205,20 @@ public:
     m_logger->debug("notified container update {}", (const char*)path);
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
                                                        CVariant{path.GetChars()});
+
+    // Check if the SystemUpdateID has changed for this device
+    NPT_String deviceUUID = device->GetUUID();
+    if (m_lastUpdateIDs.find(deviceUUID) == m_lastUpdateIDs.end() ||
+        m_lastUpdateIDs[deviceUUID] != update_id)
+    {
+      m_logger->debug("SystemUpdateID changed for device {}. Triggering library scan.", (const char*)deviceUUID);
+      CVideoLibraryQueue::GetInstance().ScanLibrary("", false, false);
+      CMusicLibraryQueue::GetInstance().ScanLibrary("", 0, false);
+      m_lastUpdateIDs[deviceUUID] = update_id;
+
+      // Trigger a UI refresh for the currently displayed content
+      CServiceBroker::GetInputManager().ExecuteBuiltin("Container.Refresh", {});
+    }
   }
 
   bool MarkWatched(const CFileItem& item, const bool watched)
@@ -358,6 +379,7 @@ public:
 
 private:
   Logger m_logger;
+  std::map<NPT_String, NPT_String> m_lastUpdateIDs; // Added to store last update IDs
 };
 
 /*----------------------------------------------------------------------

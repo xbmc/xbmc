@@ -16,6 +16,11 @@
 
 #include <string>
 
+#include "music/MusicLibraryQueue.h"
+#include "video/VideoLibraryQueue.h"
+
+#include <map>
+
 class NPT_LogHandler;
 class PLT_UPnP;
 class PLT_SyncMediaBrowser;
@@ -100,7 +105,6 @@ private:
     CDeviceHostReferenceHolder* m_ServerHolder;
     CRendererReferenceHolder*   m_RendererHolder;
     CCtrlPointReferenceHolder*  m_CtrlPointHolder;
-
 
     static CUPnP* upnp;
 };
