@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -185,6 +185,7 @@ public:
   static CEventLog* GetEventLog();
   static CMediaManager& GetMediaManager();
   static CComponentContainer<IApplicationComponent>& GetAppComponents();
+  static KODI::UTILS::I18N::CSubTagRegistryManager& GetSubTagRegistry();
 
   static CGUIComponent* GetGUI();
   static void RegisterGUI(CGUIComponent* gui);
@@ -269,7 +270,6 @@ private:
   std::shared_ptr<CSlideShowDelegator> m_slideshowDelegator;
   std::shared_ptr<CDNSNameCache> m_dnsNameCache;
   std::shared_ptr<XFILE::CBlurayDiscCache> m_blurayDiscCache;
-  std::shared_ptr<KODI::UTILS::I18N::CSubTagRegistryManager> m_subTagRegistry;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);
