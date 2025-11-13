@@ -432,7 +432,7 @@ protected:
   void SetEnableStream(CCurrentStream& current, bool isEnabled);
 
   void SetSubtitleVisibleInternal(bool bVisible);
-  
+
   enum SubtitleChange
   {
     FLAG_STATUS_CHANGE = 0x0001,
