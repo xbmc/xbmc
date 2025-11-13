@@ -47,12 +47,14 @@
  * GoogleTest. To run all URL parsing tests:
  *
  * @code
- * kodi-test --gtest_filter=TestURLParseDetails.ParseAllURLResults
+ * kodi-test --gtest_filter=TestURLParse*
  * @endcode
  *
  * ## Modifying or Adding Tests
  * - To add a new test case, create or update a JSON file in the testdata
  *   directory and ensure it follows the existing format.
+ *   Filename: increment the last json file number and the constant LAST_JSON_FILE_NUMBER
+ *   Do not create gaps in the file numbers sequence.
  * - When modifying the parsing logic in Kodi, regenerate the JSON test files
  *   to reflect the new expected behavior.
  * - Always run the full `TestURLParseDetails` suite after changes to confirm
@@ -80,6 +82,8 @@
 #include "utils/Variant.h"
 
 #include <fstream>
+
+constexpr int LAST_JSON_FILE_NUMBER = 748;
 
 using ::testing::Test;
 using ::testing::ValuesIn;
@@ -400,7 +404,7 @@ TestURLParseDetailsData CreateParamFromJson(std::string filename)
   return param;
 }
 
-void run_parse_tests(const std::string& filename, const TestURLParseDetailsData& param)
+void RunParseTest(const std::string& filename, const TestURLParseDetailsData& param)
 {
   const std::string p{param.input};
   const CURL curl(p);
@@ -733,22 +737,23 @@ void run_parse_tests(const std::string& filename, const TestURLParseDetailsData&
 
 } // namespace
 
-class TestURLParseDetails : public testing::Test
+class TestURLParseDetails : public testing::Test, public testing::WithParamInterface<int>
 {
-protected:
-  TestURLParseDetails() = default;
-  ~TestURLParseDetails() override = default;
 };
 
-TEST_F(TestURLParseDetails, ParseAllURLResults)
+TEST_P(TestURLParseDetails, RunTest)
 {
-  for (size_t n = 1; n <= 748; ++n)
-  {
-    std::ostringstream oss;
-    oss << "xbmc/utils/test/testdata/" << n << ".json";
-    std::string filename = XBMC_REF_FILE_PATH(oss.str());
+  std::string filename = "xbmc/utils/test/testdata/";
+  filename.append(std::to_string(GetParam()));
+  filename.append(".json");
+  filename = XBMC_REF_FILE_PATH(filename);
 
-    auto param = CreateParamFromJson(filename);
-    run_parse_tests(filename, param);
-  }
+  RunParseTest(filename, CreateParamFromJson(filename));
 }
+
+// The first test is 1.json
+INSTANTIATE_TEST_SUITE_P(TestURLParse,
+                         TestURLParseDetails,
+                         testing::Range(1, LAST_JSON_FILE_NUMBER + 1),
+                         [](const testing::TestParamInfo<int>& info)
+                         { return std::to_string(info.param) + "_json"; });
