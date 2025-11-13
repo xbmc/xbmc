@@ -64,6 +64,7 @@ jobs:
             - Keep each issue brief but clear
             - Use inline comments for code-specific issues
             - Skip severity sections if empty
+            - When listing items, use (1), (2), (3) format - NEVER use #1, #2, #3 to avoid GitHub treating them as issue links
 
             Note: The PR branch is already checked out in the current working directory.
 
