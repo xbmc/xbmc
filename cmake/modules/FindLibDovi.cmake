@@ -11,6 +11,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdovi)
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME dovi)
   set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
   SETUP_BUILD_VARS()
