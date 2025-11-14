@@ -20,6 +20,7 @@
 #include "UPnPSettings.h"
 #include "URL.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
@@ -163,7 +164,7 @@ class CMediaBrowser : public PLT_SyncMediaBrowser, public PLT_MediaContainerChan
 {
 public:
   explicit CMediaBrowser(PLT_CtrlPointReference& ctrlPoint)
-    : PLT_SyncMediaBrowser(ctrlPoint, true),
+    : PLT_SyncMediaBrowser(ctrlPoint, false),  // Disable caching to ensure fresh content
       m_logger(CServiceBroker::GetLogging().GetLogger("UPNP::CMediaBrowser"))
   {
     SetContainerListener(this);
@@ -184,9 +185,9 @@ public:
 
     PLT_SyncMediaBrowser::OnMSRemoved(device);
 
-    // Remove the device's entry from m_lastUpdateIDs
+    // Remove the device's entry from m_lastSystemUpdateIDs
     NPT_String deviceUUID = device->GetUUID();
-    m_lastUpdateIDs.erase(deviceUUID);
+    m_lastSystemUpdateIDs.erase(deviceUUID);
   }
 
   // PLT_MediaContainerChangesListener methods
@@ -194,6 +195,11 @@ public:
                           const char* item_id,
                           const char* update_id) override
   {
+    m_logger->info("OnContainerChanged called - device: {}, item_id: {}, update_id: {}", 
+                   (const char*)device->GetFriendlyName(), 
+                   item_id ? item_id : "NULL", 
+                   update_id ? update_id : "NULL");
+    
     NPT_String path = "upnp://" + device->GetUUID() + "/";
     if (!NPT_StringsEqual(item_id, "0"))
     {
@@ -206,18 +212,56 @@ public:
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
                                                        CVariant{path.GetChars()});
 
-    // Check if the SystemUpdateID has changed for this device
-    NPT_String deviceUUID = device->GetUUID();
-    if (m_lastUpdateIDs.find(deviceUUID) == m_lastUpdateIDs.end() ||
-        m_lastUpdateIDs[deviceUUID] != update_id)
-    {
-      m_logger->debug("SystemUpdateID changed for device {}. Triggering library scan.", (const char*)deviceUUID);
-      CVideoLibraryQueue::GetInstance().ScanLibrary("", false, false);
-      CMusicLibraryQueue::GetInstance().ScanLibrary("", 0, false);
-      m_lastUpdateIDs[deviceUUID] = update_id;
+    // Display toast notification for container update
+    std::string deviceName = device->GetFriendlyName().GetChars();
+    std::string message = "Container " + std::string(item_id) + " updated: " + std::string(update_id);
+    m_logger->info("Queueing toast notification: '{}' - '{}'", deviceName, message);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, 
+                                         deviceName, 
+                                         message, 
+                                         3000, false);
 
-      // Trigger a UI refresh for the currently displayed content
-      CServiceBroker::GetInputManager().ExecuteBuiltin("Container.Refresh", {});
+    // Trigger a UI refresh for the currently displayed content
+    CServiceBroker::GetInputManager().ExecuteBuiltin("Container.Refresh", {});
+  }
+  
+  // Override to handle SystemUpdateID state variable changes
+  void OnMSStateVariablesChanged(PLT_Service* service,
+                                 NPT_List<PLT_StateVariable*>* vars) override
+  {
+    // Call the parent implementation first to handle ContainerUpdateIDs normally
+    PLT_SyncMediaBrowser::OnMSStateVariablesChanged(service, vars);
+    
+    // Now check for SystemUpdateID changes
+    PLT_StateVariable* systemUpdateVar = PLT_StateVariable::Find(*vars, "SystemUpdateID");
+    if (systemUpdateVar)
+    {
+      NPT_String deviceUUID = service->GetDevice()->GetUUID();
+      NPT_String newUpdateID = systemUpdateVar->GetValue();
+      
+      if (m_lastSystemUpdateIDs.find(deviceUUID) == m_lastSystemUpdateIDs.end() ||
+          m_lastSystemUpdateIDs[deviceUUID] != newUpdateID)
+      {
+        m_logger->info("SystemUpdateID changed for device {} from '{}' to '{}'", 
+                       (const char*)deviceUUID,
+                       m_lastSystemUpdateIDs.find(deviceUUID) != m_lastSystemUpdateIDs.end() ? 
+                         (const char*)m_lastSystemUpdateIDs[deviceUUID] : "NONE",
+                       (const char*)newUpdateID);
+        
+        m_lastSystemUpdateIDs[deviceUUID] = newUpdateID;
+        
+        // Announce the update - this will trigger listeners
+        NPT_String path = "upnp://" + deviceUUID + "/";
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
+                                                           CVariant{path.GetChars()});
+        
+        // Trigger library scans
+        CVideoLibraryQueue::GetInstance().ScanLibrary("", false, false);
+        CMusicLibraryQueue::GetInstance().ScanLibrary("", 0, false);
+        
+        // Trigger a UI refresh for the currently displayed content
+        CServiceBroker::GetInputManager().ExecuteBuiltin("Container.Refresh", {});
+      }
     }
   }
 
@@ -379,7 +423,7 @@ public:
 
 private:
   Logger m_logger;
-  std::map<NPT_String, NPT_String> m_lastUpdateIDs; // Added to store last update IDs
+  std::map<NPT_String, NPT_String> m_lastSystemUpdateIDs; // Store last SystemUpdateID for each device
 };
 
 /*----------------------------------------------------------------------
