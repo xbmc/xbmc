@@ -25,26 +25,16 @@ SET vsver=
 
 SET vswhere="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
 
-FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% -latest -property installationPath`) do (
+SET "args=-latest -property installationPath"
+IF "%prerelease%"=="true" SET "args=%args% -prerelease"
+
+FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% %args%`) do (
   IF EXIST "%%i\VC\Auxiliary\Build\vcvarsall.bat" (
     SET vcvars="%%i\VC\Auxiliary\Build\vcvarsall.bat"
-    SET vsver=15 2017
-    ECHO %%i | findstr "2019" >NUL 2>NUL
-    IF NOT ERRORLEVEL 1 SET vsver=16 2019
-    ECHO %%i | findstr "2022" >NUL 2>NUL
-    IF NOT ERRORLEVEL 1 SET vsver=17 2022
-  )
-)
-
-IF %vcvars%==no (
-  FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% -legacy -property installationPath`) do (
-    ECHO %%i | findstr "14" >NUL 2>NUL
-    IF NOT ERRORLEVEL 1 (
-      IF EXIST "%%i\VC\vcvarsall.bat" (
-        SET vcvars="%%i\VC\vcvarsall.bat"
-        SET vsver=14 2015
-      )
-    )
+    SET vsver=17 2022
+    rem Default path for VS2026 does not include text 2026
+    ECHO %%i | findstr "\\18\\" >NUL 2>NUL
+    IF NOT ERRORLEVEL 1 SET vsver=18 2026
   )
 )
 
@@ -68,15 +58,8 @@ rem we set vcarch for AMD64 to x64 to work with our expected value
 if "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
   SET vcarch=x64
 ) else (
-  rem arm host tools are only really working in VS 17 2022+
-  rem fall back to x64 for older VS installations
-  if "%vsvernumber%" GEQ "17" (
-    rem PROCESSOR_ARCHITECTURE returns uppercase. Use powershell to
-    rem lowercase for comparison and usage with vcvarsall.bat
-    FOR /F "usebackq tokens=*" %%A IN (`powershell.exe -Command "('%PROCESSOR_ARCHITECTURE%').ToLower( )"`) DO SET vcarch=%%A
-  ) else (
-    SET vcarch=x64
-  )
+  rem arm host tools work in VS 17 2022+
+  FOR /F "usebackq tokens=*" %%A IN (`powershell.exe -Command "('%PROCESSOR_ARCHITECTURE%').ToLower( )"`) DO SET vcarch=%%A
 )
 
 IF "%arch%" NEQ "%vcarch%" (

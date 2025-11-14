@@ -19,6 +19,7 @@ rem noclean to force a build without clean
 rem noprompt to avoid all prompts
 rem nobinaryaddons to skip building binary addons
 rem sh to use sh shell instead rxvt
+rem prerelease to use pre-release/insider versions of visual studio to build
 CLS
 TITLE %APP_NAME% for Windows Build Script
 rem ----PURPOSE----
@@ -39,6 +40,7 @@ FOR %%b in (%*) DO (
   IF %%b==noprompt SET promptlevel=noprompt
   IF %%b==nobinaryaddons SET buildbinaryaddons=false
   IF %%b==sh SET useshell=sh
+  IF %%b==prerelease SET prerelease=true
 )
 
 IF DEFINED PreferredToolArchitecture (
@@ -228,7 +230,7 @@ IF DEFINED BUILDDIR (
   )
 
   IF NOT EXIST "%NSISExePath%" (
-    rem fails on localized windows (Default) becomes (Par D�faut)
+    rem fails on localized windows (Default) becomes (Par D faut)
     FOR /F "tokens=3* delims=  " %%A IN ('REG QUERY "%NSIS_REG_KEY%" /ve') DO SET NSISExePath=%%B
   )
 
