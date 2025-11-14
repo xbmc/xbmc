@@ -28,7 +28,7 @@
 #include <vector>
 
 class CAction;
-class CAppInboundProtocol;
+class CApplicationMessageHandling;
 class CBookmark;
 class CFileItem;
 class CFileItemList;
@@ -200,7 +200,7 @@ protected:
   std::unique_ptr<CGUIComponent> m_pGUI;
   std::unique_ptr<CWinSystemBase> m_pWinSystem;
   std::unique_ptr<ActiveAE::CActiveAE> m_pActiveAE;
-  std::shared_ptr<CAppInboundProtocol> m_pAppPort;
+  std::shared_ptr<CApplicationMessageHandling> m_pMsgHandling;
 
   // timer information
   CStopWatch m_restartPlayerTimer;

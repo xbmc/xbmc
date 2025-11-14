@@ -40,6 +40,7 @@
 #include "application/AppInboundProtocol.h"
 #include "application/AppParams.h"
 #include "application/ApplicationActionListeners.h"
+#include "application/ApplicationMessageHandling.h"
 #include "application/ApplicationPlay.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
@@ -349,9 +350,9 @@ bool CApplication::Create()
 
   update_emu_environ();//apply the GUI settings
 
-  // application inbound service
-  m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
-  CServiceBroker::RegisterAppPort(m_pAppPort);
+  // application message handling service
+  m_pMsgHandling = std::make_shared<CApplicationMessageHandling>(*this);
+  CServiceBroker::RegisterAppPort(std::static_pointer_cast<CAppInboundProtocol>(m_pMsgHandling));
 
 #ifdef HAVE_LIBBLURAY
   CServiceBroker::RegisterBlurayDiscCache(std::make_shared<CBlurayDiscCache>());
@@ -1428,335 +1429,7 @@ int CApplication::GetMessageMask()
 
 void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 {
-  uint32_t msg = pMsg->dwMessage;
-  if (msg == TMSG_SYSTEM_POWERDOWN)
-  {
-    if (CServiceBroker::GetPVRManager().Get<PVR::GUI::PowerManagement>().CanSystemPowerdown())
-      msg = pMsg->param1; // perform requested shutdown action
-    else
-      return; // no shutdown
-  }
-
-  const auto appPlayer = GetComponent<CApplicationPlayer>();
-
-  switch (msg)
-  {
-  case TMSG_POWERDOWN:
-    if (Stop(EXITCODE_POWERDOWN))
-      CServiceBroker::GetPowerManager().Powerdown();
-    break;
-
-  case TMSG_QUIT:
-    Stop(EXITCODE_QUIT);
-    break;
-
-  case TMSG_SHUTDOWN:
-    GetComponent<CApplicationPowerHandling>()->HandleShutdownMessage();
-    break;
-
-  case TMSG_RENDERER_FLUSH:
-    appPlayer->FlushRenderer();
-    break;
-
-  case TMSG_HIBERNATE:
-    CServiceBroker::GetPowerManager().Hibernate();
-    break;
-
-  case TMSG_SUSPEND:
-    CServiceBroker::GetPowerManager().Suspend();
-    break;
-
-  case TMSG_RESTART:
-  case TMSG_RESET:
-    if (Stop(EXITCODE_REBOOT))
-      CServiceBroker::GetPowerManager().Reboot();
-    break;
-
-  case TMSG_RESTARTAPP:
-#if defined(TARGET_WINDOWS) || defined(TARGET_LINUX)
-    Stop(EXITCODE_RESTARTAPP);
-#endif
-    break;
-
-  case TMSG_INHIBITIDLESHUTDOWN:
-    GetComponent<CApplicationPowerHandling>()->InhibitIdleShutdown(pMsg->param1 != 0);
-    break;
-
-  case TMSG_INHIBITSCREENSAVER:
-    GetComponent<CApplicationPowerHandling>()->InhibitScreenSaver(pMsg->param1 != 0);
-    break;
-
-  case TMSG_ACTIVATESCREENSAVER:
-    GetComponent<CApplicationPowerHandling>()->ActivateScreenSaver();
-    break;
-
-  case TMSG_RESETSCREENSAVER:
-    GetComponent<CApplicationPowerHandling>()->m_bResetScreenSaver = true;
-    break;
-
-  case TMSG_VOLUME_SHOW:
-  {
-    CAction action(pMsg->param1);
-    GetComponent<CApplicationVolumeHandling>()->ShowVolumeBar(&action);
-  }
-  break;
-
-#ifdef TARGET_ANDROID
-  case TMSG_DISPLAY_SETUP:
-    // We might come from a refresh rate switch destroying the native window; use the context resolution
-    *static_cast<bool*>(pMsg->lpVoid) = InitWindow(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
-    GetComponent<CApplicationPowerHandling>()->SetRenderGUI(true);
-    break;
-
-  case TMSG_DISPLAY_DESTROY:
-    *static_cast<bool*>(pMsg->lpVoid) = CServiceBroker::GetWinSystem()->DestroyWindow();
-    GetComponent<CApplicationPowerHandling>()->SetRenderGUI(false);
-    break;
-
-  case TMSG_RESUMEAPP:
-  {
-    CGUIComponent* gui = CServiceBroker::GetGUI();
-    if (gui)
-      gui->GetWindowManager().MarkDirty();
-    break;
-  }
-#endif
-
-  case TMSG_START_ANDROID_ACTIVITY:
-  {
-#if defined(TARGET_ANDROID)
-    if (!pMsg->params.empty())
-    {
-      CXBMCApp::StartActivity(pMsg->params[0], pMsg->params.size() > 1 ? pMsg->params[1] : "",
-                              pMsg->params.size() > 2 ? pMsg->params[2] : "",
-                              pMsg->params.size() > 3 ? pMsg->params[3] : "",
-                              pMsg->params.size() > 4 ? pMsg->params[4] : "",
-                              pMsg->params.size() > 5 ? pMsg->params[5] : "",
-                              pMsg->params.size() > 6 ? pMsg->params[6] : "",
-                              pMsg->params.size() > 7 ? pMsg->params[7] : "",
-                              pMsg->params.size() > 8 ? pMsg->params[8] : "");
-    }
-#endif
-  }
-  break;
-
-  case TMSG_NETWORKMESSAGE:
-    m_ServiceManager->GetNetwork().NetworkMessage(static_cast<CNetworkBase::EMESSAGE>(pMsg->param1),
-                                                  pMsg->param2);
-    break;
-
-  case TMSG_SETLANGUAGE:
-    SetLanguage(pMsg->strParam);
-    break;
-
-
-  case TMSG_SWITCHTOFULLSCREEN:
-  {
-    CGUIComponent* gui = CServiceBroker::GetGUI();
-    if (gui)
-      gui->GetWindowManager().SwitchToFullScreen(true);
-    break;
-  }
-  case TMSG_VIDEORESIZE:
-  {
-    XBMC_Event newEvent = {};
-    newEvent.type = XBMC_VIDEORESIZE;
-    newEvent.resize.width = pMsg->param1;
-    newEvent.resize.height = pMsg->param2;
-    newEvent.resize.scale = 1.0;
-    m_pAppPort->OnEvent(newEvent);
-    CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
-  }
-    break;
-
-  case TMSG_SETVIDEORESOLUTION:
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(static_cast<RESOLUTION>(pMsg->param1), pMsg->param2 == 1);
-    break;
-
-  case TMSG_TOGGLEFULLSCREEN:
-    CServiceBroker::GetWinSystem()->GetGfxContext().ToggleFullScreen();
-    appPlayer->TriggerUpdateResolution();
-    break;
-
-  case TMSG_MOVETOSCREEN:
-    CServiceBroker::GetWinSystem()->MoveToScreen(static_cast<int>(pMsg->param1));
-    break;
-
-  case TMSG_MINIMIZE:
-    CServiceBroker::GetWinSystem()->Minimize();
-    break;
-
-  case TMSG_EXECUTE_OS:
-    // Suspend AE temporarily so exclusive or hog-mode sinks
-    // don't block external player's access to audio device
-    IAE *audioengine;
-    audioengine = CServiceBroker::GetActiveAE();
-    if (audioengine)
-    {
-      if (!audioengine->Suspend())
-      {
-        CLog::Log(LOGINFO, "{}: Failed to suspend AudioEngine before launching external program",
-                  __FUNCTION__);
-      }
-    }
-#if defined(TARGET_DARWIN)
-    CLog::Log(LOGINFO, "ExecWait is not implemented on this platform");
-#elif defined(TARGET_POSIX)
-    CUtil::RunCommandLine(pMsg->strParam, (pMsg->param1 == 1));
-#elif defined(TARGET_WINDOWS)
-    CWIN32Util::XBMCShellExecute(pMsg->strParam, (pMsg->param1 == 1));
-#endif
-    // Resume AE processing of XBMC native audio
-    if (audioengine)
-    {
-      if (!audioengine->Resume())
-      {
-        CLog::Log(LOGFATAL, "{}: Failed to restart AudioEngine after return from external player",
-                  __FUNCTION__);
-      }
-    }
-    break;
-
-  case TMSG_EXECUTE_SCRIPT:
-    CScriptInvocationManager::GetInstance().ExecuteAsync(pMsg->strParam);
-    break;
-
-  case TMSG_EXECUTE_BUILT_IN:
-    CBuiltins::GetInstance().Execute(pMsg->strParam);
-    break;
-
-  case TMSG_PICTURE_SHOW:
-  {
-    CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
-
-    // stop playing file
-    if (appPlayer->IsPlayingVideo())
-      StopPlaying();
-
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-      CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
-
-    const auto appPower = GetComponent<CApplicationPowerHandling>();
-    appPower->ResetScreenSaver();
-    appPower->WakeUpScreenSaverAndDPMS();
-
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
-      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SLIDESHOW);
-    if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
-    {
-      CFileItemList items;
-      CURL pathToUrl;
-      if (URIUtils::IsZIP(pMsg->strParam))
-        pathToUrl = URIUtils::CreateArchivePath("zip", CURL(pMsg->strParam), "");
-      else
-        pathToUrl = URIUtils::CreateArchivePath("rar", CURL(pMsg->strParam), "");
-
-      CUtil::GetRecursiveListing(pathToUrl.Get(), items, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), XFILE::DIR_FLAG_NO_FILE_DIRS);
-      if (items.Size() > 0)
-      {
-        slideShow.Reset();
-        for (int i = 0; i<items.Size(); ++i)
-        {
-          slideShow.Add(items[i].get());
-        }
-        slideShow.Select(items[0]->GetPath());
-      }
-    }
-    else
-    {
-      CFileItem item(pMsg->strParam, false);
-      slideShow.Reset();
-      slideShow.Add(&item);
-      slideShow.Select(pMsg->strParam);
-    }
-  }
-  break;
-
-  case TMSG_PICTURE_SLIDESHOW:
-  {
-    CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
-
-    if (appPlayer->IsPlayingVideo())
-      StopPlaying();
-
-    slideShow.Reset();
-
-    CFileItemList items;
-    std::string strPath = pMsg->strParam;
-    std::string extensions = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
-    if (pMsg->param1)
-      extensions += "|.tbn";
-    CUtil::GetRecursiveListing(strPath, items, extensions);
-
-    if (items.Size() > 0)
-    {
-      for (int i = 0; i<items.Size(); ++i)
-        slideShow.Add(items[i].get());
-      slideShow.StartSlideShow(); //Start the slideshow!
-    }
-
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
-    {
-      if (items.Size() == 0)
-      {
-        CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_SCREENSAVER_MODE, "screensaver.xbmc.builtin.dim");
-        GetComponent<CApplicationPowerHandling>()->ActivateScreenSaver();
-      }
-      else
-        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SLIDESHOW);
-    }
-
-  }
-  break;
-
-  case TMSG_LOADPROFILE:
-    {
-      const int profile = pMsg->param1;
-      if (profile > INVALID_PROFILE_ID)
-        CServiceBroker::GetSettingsComponent()->GetProfileManager()->LoadProfile(static_cast<unsigned int>(profile));
-    }
-
-    break;
-
-  case TMSG_EVENT:
-  {
-    if (pMsg->lpVoid)
-    {
-      XBMC_Event* event = static_cast<XBMC_Event*>(pMsg->lpVoid);
-      m_pAppPort->OnEvent(*event);
-      delete event;
-    }
-  }
-  break;
-
-  case TMSG_UPDATE_PLAYER_ITEM:
-  {
-    std::unique_ptr<CFileItem> item{static_cast<CFileItem*>(pMsg->lpVoid)};
-    if (item)
-    {
-      m_itemCurrentFile->UpdateInfo(*item);
-      CServiceBroker::GetGUI()->GetInfoManager().UpdateCurrentItem(*m_itemCurrentFile);
-    }
-  }
-  break;
-
-  case TMSG_SET_VOLUME:
-  {
-    const float volumedB = static_cast<float>(pMsg->param3);
-    GetComponent<CApplicationVolumeHandling>()->SetVolume(volumedB);
-  }
-  break;
-
-  case TMSG_SET_MUTE:
-  {
-    GetComponent<CApplicationVolumeHandling>()->SetMute(pMsg->param3 == 1 ? true : false);
-  }
-  break;
-
-  default:
-    CLog::Log(LOGERROR, "{}: Unhandled threadmessage sent, {}", __FUNCTION__, msg);
-    break;
-  }
+  m_pMsgHandling->OnApplicationMessage(pMsg);
 }
 
 void CApplication::LockFrameMoveGuard()
@@ -1765,14 +1438,14 @@ void CApplication::LockFrameMoveGuard()
   m_frameMoveGuard.lock();
   ++m_ProcessedExternalCalls;
   CServiceBroker::GetWinSystem()->GetGfxContext().lock();
-};
+}
 
 void CApplication::UnlockFrameMoveGuard()
 {
   --m_WaitingExternalCalls;
   CServiceBroker::GetWinSystem()->GetGfxContext().unlock();
   m_frameMoveGuard.unlock();
-};
+}
 
 void CApplication::FrameMove(bool processEvents, bool processGUI)
 {
@@ -1801,7 +1474,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       }
     }
 
-    m_pAppPort->HandleEvents();
+    m_pMsgHandling->HandleEvents();
     CServiceBroker::GetInputManager().Process(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), frameTime);
 
     if (processGUI && renderGUI)
@@ -2068,7 +1741,7 @@ bool CApplication::Stop(int exitCode)
     // close inbound port
     CServiceBroker::UnregisterAppPort();
     XbmcThreads::EndTime<> timer(1000ms);
-    while (m_pAppPort.use_count() > 1)
+    while (m_pMsgHandling.use_count() > 1)
     {
       KODI::TIME::Sleep(100ms);
       if (timer.IsTimePast())
@@ -2077,7 +1750,7 @@ bool CApplication::Stop(int exitCode)
         break;
       }
     }
-    m_pAppPort->Close();
+    m_pMsgHandling->Close();
   }
 
   try

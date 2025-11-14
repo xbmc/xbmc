@@ -34,6 +34,7 @@ class CSetting;
 class CApplicationPowerHandling : public IApplicationComponent
 {
   friend class CApplication;
+  friend class CApplicationMessageHandling;
 
 public:
   bool IsInScreenSaver() const { return m_screensaverActive; }
