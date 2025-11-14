@@ -177,6 +177,7 @@
 #endif
 
 #include <array>
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <memory>
@@ -2321,13 +2322,12 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CUtil::ClearSubtitles();
   }
 
-  using enum CApplicationPlay::GatherPlaybackDetailsResult;
-
   CApplicationPlay appPlay{*stackHelper};
   const auto result{appPlay.GatherPlaybackDetails(item, player, bRestart)};
+  using enum CApplicationPlay::GatherPlaybackDetailsResult;
   if (result == RESULT_ERROR)
     return false;
-  else if (result == RESULT_NO_PLAYLIST_SELECTED)
+  if (result == RESULT_NO_PLAYLIST_SELECTED)
     return true; // Special case; not to be treated as error.
 
   // Special handling for disc stubs.
@@ -2343,15 +2343,15 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   // pushed some delay message into the threadmessage list, they are not
   // expected be processed after or during the new item playback starting.
   // so we clean up previous playing item's playback callback delay messages here.
-  static constexpr const std::array previousMsgsIgnoredByNewPlaying{GUI_MSG_PLAYBACK_STARTED,
-                                                                    GUI_MSG_PLAYBACK_ENDED,
-                                                                    GUI_MSG_PLAYBACK_STOPPED,
-                                                                    GUI_MSG_PLAYLIST_CHANGED,
-                                                                    GUI_MSG_PLAYLISTPLAYER_STOPPED,
-                                                                    GUI_MSG_PLAYLISTPLAYER_STARTED,
-                                                                    GUI_MSG_PLAYLISTPLAYER_CHANGED,
-                                                                    GUI_MSG_QUEUE_NEXT_ITEM,
-                                                                    0};
+  static constexpr std::array previousMsgsIgnoredByNewPlaying{GUI_MSG_PLAYBACK_STARTED,
+                                                              GUI_MSG_PLAYBACK_ENDED,
+                                                              GUI_MSG_PLAYBACK_STOPPED,
+                                                              GUI_MSG_PLAYLIST_CHANGED,
+                                                              GUI_MSG_PLAYLISTPLAYER_STOPPED,
+                                                              GUI_MSG_PLAYLISTPLAYER_STARTED,
+                                                              GUI_MSG_PLAYLISTPLAYER_CHANGED,
+                                                              GUI_MSG_QUEUE_NEXT_ITEM,
+                                                              0};
   if (const int dMsgCount{
           CServiceBroker::GetGUI()->GetWindowManager().RemoveThreadMessageByMessageIds(
               &previousMsgsIgnoredByNewPlaying[0])};
@@ -2724,12 +2724,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
                                                        m_itemCurrentFile, data);
 
     m_playerEvent.Set();
-    const auto stackHelper = GetComponent<CApplicationStackHelper>();
-    if (stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
-    { // just play the next item in the stack
-      PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
-      return true;
-    }
 
     // For EPG playlist items we keep the player open to ensure continuous viewing experience.
     const bool isEpgPlaylistItem{
@@ -2739,6 +2733,21 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
     if (!isEpgPlaylistItem)
     {
+      const auto stackHelper = GetComponent<CApplicationStackHelper>();
+      if (stackHelper->IsPlayingStack() && stackHelper->HasNextStackPartFileItem())
+      {
+        // If current stack part finished then play the next part
+        if (stackHelper->IsCurrentPartFinished())
+        {
+          PlayFile(stackHelper->SetNextStackPartAsCurrent(), "", true);
+          if (!m_cancelPlayback)
+            return true;
+
+          // Selection of next part playlist cancelled so create bookmark for next part
+          stackHelper->SetNextPartBookmark(m_itemCurrentFile->GetDynPath());
+        }
+      }
+
       if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
         GetComponent<CApplicationPlayer>()->ClosePlayer();
 
@@ -3185,8 +3194,8 @@ const CFileItem& CApplication::CurrentUnstackedItem()
 {
   const auto stackHelper = GetComponent<CApplicationStackHelper>();
 
-  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
-    return stackHelper->GetCurrentStackPartFileItem();
+  if (stackHelper->IsPlayingStack())
+    return stackHelper->GetCurrentStackPart();
   else
     return *m_itemCurrentFile;
 }
@@ -3205,9 +3214,9 @@ double CApplication::GetTotalTime() const
   if (appPlayer->IsPlaying())
   {
     if (stackHelper->IsPlayingRegularStack())
-      rc = stackHelper->GetStackTotalTimeMs() * 0.001;
+      rc = static_cast<double>(stackHelper->GetStackTotalTime().count()) / 1000.0;
     else
-      rc = appPlayer->GetTotalTime() * 0.001;
+      rc = static_cast<double>(appPlayer->GetTotalTime()) / 1000.0;
   }
 
   return rc;
@@ -3227,7 +3236,8 @@ double CApplication::GetTime() const
   {
     if (stackHelper->IsPlayingRegularStack())
     {
-      uint64_t startOfCurrentFile = stackHelper->GetCurrentStackPartStartTimeMs();
+      uint64_t startOfCurrentFile =
+          static_cast<uint64_t>(stackHelper->GetCurrentStackPartStartTime().count());
       rc = (startOfCurrentFile + appPlayer->GetTime()) * 0.001;
     }
     else
@@ -3258,16 +3268,20 @@ void CApplication::SeekTime( double dTime )
       // file if necessary, and calculate the correct seek within the new
       // file.  Otherwise, just fall through to the usual routine if the
       // time is higher than our total time.
-      int partNumberToPlay =
-          stackHelper->GetStackPartNumberAtTimeMs(static_cast<uint64_t>(dTime * 1000.0));
-      uint64_t startOfNewFile = stackHelper->GetStackPartStartTimeMs(partNumberToPlay);
+      int partNumberToPlay = stackHelper->GetStackPartNumberAtTime(
+          std::chrono::milliseconds(static_cast<int64_t>(dTime * 1000.0)));
+      uint64_t startOfNewFile = stackHelper->GetStackPartStartTime(partNumberToPlay).count();
       if (partNumberToPlay == stackHelper->GetCurrentPartNumber())
-        appPlayer->SeekTime(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
+        appPlayer->SeekTime(static_cast<int64_t>(dTime * 1000.0) -
+                            static_cast<int64_t>(startOfNewFile));
       else
-      { // seeking to a new file
-        stackHelper->SetStackPartCurrentFileItem(partNumberToPlay);
-        CFileItem* item = new CFileItem(stackHelper->GetCurrentStackPartFileItem());
-        item->SetStartOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
+      {
+        // seeking to a new file
+        stackHelper->SetStackPartAsCurrent(partNumberToPlay);
+        stackHelper->SetSeekingParts(true);
+        CFileItem* item = new CFileItem(stackHelper->GetCurrentStackPart());
+        item->SetStartOffset(static_cast<int64_t>(dTime * 1000.0) -
+                             static_cast<int64_t>(startOfNewFile));
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));

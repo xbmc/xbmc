@@ -1605,3 +1605,8 @@ CDVDInputStream::UpdateState CDVDInputStreamNavigator::UpdateCurrentState(CFileI
 
   return UpdatePlaylistDetails(DVDSTREAM_TYPE_DVD, m_playedPlaylists, item, time, closed);
 }
+
+void CDVDInputStreamNavigator::UpdateStack(CFileItem& item)
+{
+  return UpdateStackItem(item, 0ms);
+}

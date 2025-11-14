@@ -16,6 +16,7 @@
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 
+#include <compare>
 #include <map>
 #include <string>
 #include <string_view>
@@ -34,6 +35,31 @@ public:
     IF_SLOW,
     ALWAYS
   };
+
+  enum class StackCandidateType : uint8_t
+  {
+    FOLDER_CANDIDATE,
+    FILE_CANDIDATE
+  };
+
+  typedef struct StackCandidate
+  {
+    StackCandidateType type;
+    std::string title;
+    std::string volume;
+    int64_t size;
+    int index; // index in m_items
+
+    auto operator<=>(const StackCandidate&) const = default;
+  } StackCandidate;
+
+  typedef struct CountedStackCandidate
+  {
+    StackCandidateType type;
+    std::string title;
+
+    auto operator<=>(const CountedStackCandidate& other) const = default;
+  } CountedStackCandidate;
 
   CFileItemList();
   explicit CFileItemList(const std::string& strPath);
@@ -82,11 +108,9 @@ public:
   bool GetFastLookup() const { return m_fastLookup; }
 
   /*! \brief stack a CFileItemList
-   By default we stack all items (files and folders) in a CFileItemList
-   \param stackFiles whether to stack all items or just collapse folders (defaults to true)
-   \sa StackFiles,StackFolders
+   We stack all items (files and folders) in a CFileItemList
    */
-  void Stack(bool stackFiles = true);
+  void Stack();
 
   SortOrder GetSortOrder() const { return m_sortDescription.sortOrder; }
   SortBy GetSortMethod() const { return m_sortDescription.sortBy; }
