@@ -16,11 +16,6 @@
 
 #include <string>
 
-#include "music/MusicLibraryQueue.h"
-#include "video/VideoLibraryQueue.h"
-
-#include <map>
-
 class NPT_LogHandler;
 class PLT_UPnP;
 class PLT_SyncMediaBrowser;

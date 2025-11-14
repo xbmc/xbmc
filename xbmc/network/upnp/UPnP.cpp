@@ -20,7 +20,6 @@
 #include "UPnPSettings.h"
 #include "URL.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
@@ -31,10 +30,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "video/VideoInfoTag.h" // Corrected
-#include "music/MusicLibraryQueue.h"
-#include "video/VideoLibraryQueue.h"
-#include "input/InputManager.h" // Added
+#include "video/VideoInfoTag.h"
 
 #include <memory>
 #include <mutex>
@@ -187,6 +183,7 @@ public:
 
     // Remove the device's entry from m_lastSystemUpdateIDs
     NPT_String deviceUUID = device->GetUUID();
+    std::lock_guard<std::mutex> lock(m_systemUpdateMutex);
     m_lastSystemUpdateIDs.erase(deviceUUID);
   }
 
@@ -195,11 +192,6 @@ public:
                           const char* item_id,
                           const char* update_id) override
   {
-    m_logger->info("OnContainerChanged called - device: {}, item_id: {}, update_id: {}", 
-                   (const char*)device->GetFriendlyName(), 
-                   item_id ? item_id : "NULL", 
-                   update_id ? update_id : "NULL");
-    
     NPT_String path = "upnp://" + device->GetUUID() + "/";
     if (!NPT_StringsEqual(item_id, "0"))
     {
@@ -211,18 +203,6 @@ public:
     m_logger->debug("notified container update {}", (const char*)path);
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
                                                        CVariant{path.GetChars()});
-
-    // Display toast notification for container update
-    std::string deviceName = device->GetFriendlyName().GetChars();
-    std::string message = "Container " + std::string(item_id) + " updated: " + std::string(update_id);
-    m_logger->info("Queueing toast notification: '{}' - '{}'", deviceName, message);
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, 
-                                         deviceName, 
-                                         message, 
-                                         3000, false);
-
-    // Trigger a UI refresh for the currently displayed content
-    CServiceBroker::GetInputManager().ExecuteBuiltin("Container.Refresh", {});
   }
   
   // Override to handle SystemUpdateID state variable changes
@@ -239,28 +219,29 @@ public:
       NPT_String deviceUUID = service->GetDevice()->GetUUID();
       NPT_String newUpdateID = systemUpdateVar->GetValue();
       
-      if (m_lastSystemUpdateIDs.find(deviceUUID) == m_lastSystemUpdateIDs.end() ||
-          m_lastSystemUpdateIDs[deviceUUID] != newUpdateID)
+      bool changed = false;
       {
-        m_logger->info("SystemUpdateID changed for device {} from '{}' to '{}'", 
-                       (const char*)deviceUUID,
-                       m_lastSystemUpdateIDs.find(deviceUUID) != m_lastSystemUpdateIDs.end() ? 
-                         (const char*)m_lastSystemUpdateIDs[deviceUUID] : "NONE",
-                       (const char*)newUpdateID);
-        
-        m_lastSystemUpdateIDs[deviceUUID] = newUpdateID;
-        
+        std::lock_guard<std::mutex> lock(m_systemUpdateMutex);
+        if (m_lastSystemUpdateIDs.find(deviceUUID) == m_lastSystemUpdateIDs.end() ||
+            m_lastSystemUpdateIDs[deviceUUID] != newUpdateID)
+        {
+          m_logger->info("SystemUpdateID changed for device {} from '{}' to '{}'", 
+                         (const char*)deviceUUID,
+                         m_lastSystemUpdateIDs.find(deviceUUID) != m_lastSystemUpdateIDs.end() ? 
+                           (const char*)m_lastSystemUpdateIDs[deviceUUID] : "NONE",
+                         (const char*)newUpdateID);
+          
+          m_lastSystemUpdateIDs[deviceUUID] = newUpdateID;
+          changed = true;
+        }
+      }
+      
+      if (changed)
+      {
         // Announce the update - this will trigger listeners
         NPT_String path = "upnp://" + deviceUUID + "/";
         CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
                                                            CVariant{path.GetChars()});
-        
-        // Trigger library scans
-        CVideoLibraryQueue::GetInstance().ScanLibrary("", false, false);
-        CMusicLibraryQueue::GetInstance().ScanLibrary("", 0, false);
-        
-        // Trigger a UI refresh for the currently displayed content
-        CServiceBroker::GetInputManager().ExecuteBuiltin("Container.Refresh", {});
       }
     }
   }
@@ -423,6 +404,7 @@ public:
 
 private:
   Logger m_logger;
+  mutable std::mutex m_systemUpdateMutex;
   std::map<NPT_String, NPT_String> m_lastSystemUpdateIDs; // Store last SystemUpdateID for each device
 };
 
