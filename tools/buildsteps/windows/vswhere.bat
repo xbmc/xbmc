@@ -33,6 +33,8 @@ FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% -latest -property install
     IF NOT ERRORLEVEL 1 SET vsver=16 2019
     ECHO %%i | findstr "2022" >NUL 2>NUL
     IF NOT ERRORLEVEL 1 SET vsver=17 2022
+    ECHO %%i | findstr "18" >NUL 2>NUL
+    IF NOT ERRORLEVEL 1 SET vsver=18 2026
   )
 )
 
