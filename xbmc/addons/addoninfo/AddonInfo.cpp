@@ -90,9 +90,9 @@ const std::string& CAddonInfo::OriginName() const
   {
     ADDON::AddonPtr origin;
     if (CServiceBroker::GetAddonMgr().GetAddon(m_origin, origin, ADDON::OnlyEnabled::CHOICE_NO))
-      m_originName = std::make_unique<std::string>(origin->Name());
+      m_originName = origin->Name();
     else
-      m_originName = std::make_unique<std::string>(); // remember we tried to fetch the name
+      m_originName = ""; // remember we tried to fetch the name
   }
   return *m_originName;
 }
