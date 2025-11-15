@@ -22,9 +22,6 @@
 extern "C"
 {
 #include <libavutil/intreadwrite.h>
-#ifdef HAVE_LIBDOVI
-#include <libdovi/rpu_parser.h>
-#endif
 }
 
 enum {
@@ -264,32 +261,6 @@ static bool has_sei_recovery_point(const uint8_t *p, const uint8_t *end)
   return false;
 }
 
-#ifdef HAVE_LIBDOVI
-// The returned data must be freed with `dovi_data_free`
-// May be NULL if no conversion was done
-static const DoviData* convert_dovi_rpu_nal(uint8_t* buf, uint32_t nal_size)
-{
-  DoviRpuOpaque* rpu = dovi_parse_unspec62_nalu(buf, nal_size);
-  const DoviRpuDataHeader* header = dovi_rpu_get_header(rpu);
-  const DoviData* rpu_data = NULL;
-
-  if (header && header->guessed_profile == 7)
-  {
-    int ret = dovi_convert_rpu_with_mode(rpu, 2);
-    if (ret < 0)
-      goto done;
-
-    rpu_data = dovi_write_unspec62_nalu(rpu);
-  }
-
-done:
-  dovi_rpu_free_header(header);
-  dovi_rpu_free(rpu);
-
-  return rpu_data;
-}
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 CBitstreamParser::CBitstreamParser() = default;
@@ -358,6 +329,7 @@ CBitstreamConverter::CBitstreamConverter()
   m_convert_dovi = false;
   m_removeDovi = false;
   m_removeHdr10Plus = false;
+  m_setDoviZeroLevel5 = false;
 }
 
 CBitstreamConverter::~CBitstreamConverter()
@@ -1005,13 +977,13 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
         }
       }
 
-      if (write_buf && m_convert_dovi)
+      if (write_buf)
       {
         if (unit_type == HEVC_NAL_UNSPEC62)
         {
 #ifdef HAVE_LIBDOVI
           // Convert the RPU itself
-          rpu_data = convert_dovi_rpu_nal(buf, nal_size);
+          rpu_data = processDoviRpu(buf, nal_size);
           if (rpu_data)
           {
             buf_to_write = rpu_data->data;
@@ -1019,7 +991,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
           }
 #endif
         }
-        else if (unit_type == HEVC_NAL_UNSPEC63)
+        else if (m_convert_dovi && unit_type == HEVC_NAL_UNSPEC63)
         {
           // Ignore the enhancement layer, may or may not help
           write_buf = false;
@@ -1334,3 +1306,50 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t *data, const uint3
   return changed;
 }
 
+#ifdef HAVE_LIBDOVI
+// Processes Dolby Vision RPU
+//   - Converts to profile 8.1 if `m_convert_dovi` is enabled
+//   - Sets level 5 metadata to 0 offsets if `m_setDoviZeroLevel5` is enabled
+//
+// The returned data must be freed with `dovi_data_free`
+// May be NULL if no processing was done or if parsing errored
+const DoviData* CBitstreamConverter::processDoviRpu(uint8_t* buf, uint32_t nalSize)
+{
+  // early exit if no processing option is enabled
+  if (!m_convert_dovi && !m_setDoviZeroLevel5)
+    return NULL;
+
+  DoviRpuOpaque* rpu = dovi_parse_unspec62_nalu(buf, nalSize);
+  const DoviRpuDataHeader* header = dovi_rpu_get_header(rpu);
+  const DoviData* rpuData = NULL;
+
+  int ret = 0;
+  bool processed = false;
+
+  if (!header)
+  {
+    dovi_rpu_free(rpu);
+    return rpuData;
+  }
+
+  if (m_convert_dovi && header->guessed_profile == 7)
+  {
+    ret = dovi_convert_rpu_with_mode(rpu, 2);
+    processed = true;
+  }
+
+  if (ret == 0 && m_setDoviZeroLevel5)
+  {
+    ret = dovi_rpu_set_active_area_offsets(rpu, 0, 0, 0, 0);
+    processed = true;
+  }
+
+  if (ret == 0 && processed)
+    rpuData = dovi_write_unspec62_nalu(rpu);
+
+  dovi_rpu_free_header(header);
+  dovi_rpu_free(rpu);
+
+  return rpuData;
+}
+#endif

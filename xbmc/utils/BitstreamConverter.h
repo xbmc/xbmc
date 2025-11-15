@@ -17,6 +17,10 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavfilter/avfilter.h>
 #include <libavcodec/avcodec.h>
+
+#ifdef HAVE_LIBDOVI
+#include <libdovi/rpu_parser.h>
+#endif
 }
 
 typedef struct
@@ -102,6 +106,7 @@ public:
   void SetConvertDovi(bool value) { m_convert_dovi = value; }
   void SetRemoveDovi(bool value) { m_removeDovi = value; }
   void SetRemoveHdr10Plus(bool value) { m_removeHdr10Plus = value; }
+  void SetDoviZeroLevel5(bool value) { m_setDoviZeroLevel5 = value; }
 
   static bool       mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence);
 
@@ -122,6 +127,10 @@ protected:
                                     const uint8_t* in,
                                     uint32_t in_size,
                                     uint8_t nal_type);
+
+#ifdef HAVE_LIBDOVI
+  const DoviData* processDoviRpu(uint8_t* buf, uint32_t nalSize);
+#endif
 
   typedef struct omx_bitstream_ctx {
       uint8_t  length_size;
@@ -149,4 +158,5 @@ protected:
   bool m_convert_dovi;
   bool m_removeDovi;
   bool m_removeHdr10Plus;
+  bool m_setDoviZeroLevel5;
 };
