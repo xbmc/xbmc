@@ -22,6 +22,7 @@ class TiXmlNode;
 class CApplicationVolumeHandling : public IApplicationComponent
 {
   friend class CApplication;
+  friend class CApplicationMessageHandling;
 
 public:
   // replay gain settings struct for quick access by the player multiple

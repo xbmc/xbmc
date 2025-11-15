@@ -2,7 +2,8 @@ set(SOURCES AppEnvironment.cpp
             AppInboundProtocol.cpp
             Application.cpp
             ApplicationActionListeners.cpp
-  	        ApplicationPlay.cpp
+            ApplicationMessageHandling.cpp
+            ApplicationPlay.cpp
             ApplicationPlayer.cpp
             ApplicationPlayerCallback.cpp
             ApplicationPowerHandling.cpp
@@ -18,7 +19,8 @@ set(HEADERS AppEnvironment.h
             Application.h
             ApplicationActionListeners.h
             ApplicationEnums.h
-	        ApplicationPlay.h
+            ApplicationMessageHandling.h
+            ApplicationPlay.h
             ApplicationPlayer.h
             ApplicationPlayerCallback.h
             ApplicationPowerHandling.h
