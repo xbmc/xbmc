@@ -10,12 +10,14 @@
 
 #include "MediaSource.h" // Definition of std::vector<CMediaSource>
 #include "utils/Digest.h"
+#include "utils/RegExp.h"
 
 #include <climits>
 #include <cmath>
 #include <span>
 #include <stdint.h>
 #include <string.h>
+#include <unordered_map>
 #include <vector>
 
 //! \brief Enumeration of filesystem types for LegalPath/FileName
@@ -86,7 +88,10 @@ public:
   static void RunShortcut(const char* szPath);
   static std::string GetHomePath(
       const std::string& strTarget = "KODI_HOME"); // default target is "KODI_HOME"
-  static bool ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps);
+  using RegexCache = std::unordered_map<std::string, CRegExp>;
+  static bool ExcludeFileOrFolder(const std::string& strFileOrFolder,
+                                  const std::vector<std::string>& regexps,
+                                  RegexCache* regexCache = nullptr);
   static void GetFileAndProtocol(const std::string& strURL, std::string& strDir);
   static int GetDVDIfoTitle(const std::string& strPathFile);
 
