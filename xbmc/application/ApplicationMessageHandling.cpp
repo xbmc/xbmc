@@ -10,6 +10,9 @@
 
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
+#include "PartyModeManager.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "ServiceManager.h"
 #include "Util.h"
@@ -18,18 +21,33 @@
 #include "application/ApplicationEnums.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationSkinHandling.h"
+#include "application/ApplicationStackHelper.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/DataCacheCore.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "favourites/FavouritesService.h"
 #include "filesystem/IDirectory.h"
+#include "filesystem/PluginDirectory.h"
+#include "filesystem/UPnPDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
+#include "interfaces/AnnouncementManager.h"
 #include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "interfaces/json-rpc/JSONUtils.h"
+#include "interfaces/python/XBPython.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
+#include "messaging/helpers/DialogOKHelper.h"
+#include "music/MusicFileItemClassify.h"
 #include "network/Network.h"
 #include "pictures/SlideShowDelegator.h"
+#include "playlists/PlayList.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/Profile.h"
 #include "profiles/ProfileManager.h"
@@ -37,10 +55,15 @@
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/URIUtils.h"
+#include "video/VideoFileItemClassify.h"
 #ifdef TARGET_ANDROID
 #include "platform/android/activity/XBMCApp.h"
+#endif
+#ifdef TARGET_DARWIN_EMBEDDED
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #ifdef TARGET_WINDOWS
 #include "platform/win32/WIN32Util.h"
@@ -388,4 +411,382 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
       CLog::LogF(LOGERROR, "Unhandled threadmessage sent, {}", msg);
       break;
   }
+}
+
+bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
+{
+  switch (message.GetMessage())
+  {
+    case GUI_MSG_NOTIFY_ALL:
+    {
+      if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
+      {
+        // Update general playlist: Remove DVD playlist items
+        int nRemoved = CServiceBroker::GetPlaylistPlayer().RemoveDVDItems();
+        if (nRemoved > 0)
+        {
+          CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+        }
+        // stop the file if it's on dvd (will set the resume point etc)
+        if (m_app.CurrentFileItem().IsOnDVD())
+          m_app.StopPlaying();
+      }
+      else if (message.GetParam1() == GUI_MSG_UI_READY)
+      {
+        // remove splash window
+        CServiceBroker::GetGUI()->GetWindowManager().Delete(WINDOW_SPLASH);
+
+        // show the volumebar if the volume is muted
+        const auto appVolume = m_app.GetComponent<CApplicationVolumeHandling>();
+        if (appVolume->IsMuted() ||
+            appVolume->GetVolumeRatio() <= CApplicationVolumeHandling::VOLUME_MINIMUM)
+          appVolume->ShowVolumeBar();
+
+        // offer enabling addons at kodi startup that are disabled due to
+        // e.g. os package manager installation on linux
+        m_app.ConfigureAndEnableAddons();
+
+        m_app.DoneInitializing();
+
+        if (message.GetSenderId() == WINDOW_SETTINGS_PROFILES)
+          m_app.GetComponent<CApplicationSkinHandling>()->ReloadSkin(false);
+      }
+      else if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
+      {
+        CFileItemPtr item = std::static_pointer_cast<CFileItem>(message.GetItem());
+        if (m_app.CurrentFileItem().IsSamePath(item.get()))
+        {
+          m_app.CurrentFileItem().UpdateInfo(*item);
+          CServiceBroker::GetGUI()->GetInfoManager().UpdateCurrentItem(*item);
+        }
+      }
+    }
+    break;
+
+    case GUI_MSG_PLAYBACK_STARTED:
+    {
+#ifdef TARGET_DARWIN_EMBEDDED
+      // @TODO move this away to platform code
+      CDarwinUtils::SetScheduling(m_app.GetComponent<CApplicationPlayer>()->IsPlayingVideo());
+#endif
+      m_app.SetCurrentFileItem(
+          std::make_shared<CFileItem>(*std::static_pointer_cast<CFileItem>(message.GetItem())));
+      m_app.ResetPlayerEvent();
+
+      CServiceBroker::GetPVRManager().OnPlaybackStarted(m_app.CurrentFileItem());
+
+      PLAYLIST::CPlayList playList = CServiceBroker::GetPlaylistPlayer().GetPlaylist(
+          CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+
+      // Update our infoManager with the new details etc.
+      if (m_app.m_nextPlaylistItem >= 0)
+      {
+        // playing an item which is not in the list - player might be stopped already
+        // so do nothing
+        if (playList.size() <= m_app.m_nextPlaylistItem)
+          return true;
+
+        // we've started a previously queued item
+        CFileItemPtr item = playList[m_app.m_nextPlaylistItem];
+        // update the playlist manager
+        int currentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
+        int param = ((currentSong & 0xffff) << 16) | (m_app.m_nextPlaylistItem & 0xffff);
+        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0,
+                        static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()),
+                        param, item);
+        CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+        CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(m_app.m_nextPlaylistItem);
+        m_app.SetCurrentFileItem(std::make_shared<CFileItem>(*item));
+      }
+      CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_app.m_itemCurrentFile);
+      g_partyModeManager.OnSongChange(true);
+
+#ifdef HAS_PYTHON
+      // informs python script currently running playback has started
+      // (does nothing if python is not loaded)
+      CServiceBroker::GetXBPython().OnPlayBackStarted(*m_app.m_itemCurrentFile);
+#endif
+
+      CVariant param;
+      param["player"]["speed"] = 1;
+      param["player"]["playerid"] =
+          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay",
+                                                         m_app.CurrentFileItemPtr(), param);
+
+      // we don't want a busy dialog when switching channels
+      const auto appPlayer = m_app.GetComponent<CApplicationPlayer>();
+      if (!m_app.CurrentFileItem().IsLiveTV() ||
+          (!appPlayer->IsPlayingVideo() && !appPlayer->IsPlayingAudio()))
+        CGUIDialogBusy::WaitOnEvent(m_app.m_playerEvent);
+
+      return true;
+    }
+    break;
+
+    case GUI_MSG_QUEUE_NEXT_ITEM:
+    {
+      // Check to see if our playlist player has a new item for us,
+      // and if so, we check whether our current player wants the file
+      int iNext = CServiceBroker::GetPlaylistPlayer().GetNextItemIdx();
+      const PLAYLIST::CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(
+          CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      if (iNext < 0 || iNext >= playlist.size())
+      {
+        m_app.GetComponent<CApplicationPlayer>()->OnNothingToQueueNotify();
+        return true; // nothing to do
+      }
+
+      // ok, grab the next song
+      CFileItem file(*playlist[iNext]);
+      // handle plugin://
+      CURL url(file.GetDynPath());
+      if (url.IsProtocol("plugin"))
+        XFILE::CPluginDirectory::GetPluginResult(url.Get(), file, false);
+
+      // Don't queue if next media type is different from current one
+      bool bNothingToQueue = false;
+
+      const auto appPlayer = m_app.GetComponent<CApplicationPlayer>();
+      if (!VIDEO::IsVideo(file) && appPlayer->IsPlayingVideo())
+        bNothingToQueue = true;
+      else if ((!MUSIC::IsAudio(file) || VIDEO::IsVideo(file)) && appPlayer->IsPlayingAudio())
+        bNothingToQueue = true;
+
+      if (bNothingToQueue)
+      {
+        appPlayer->OnNothingToQueueNotify();
+        return true;
+      }
+
+#ifdef HAS_UPNP
+      if (URIUtils::IsUPnP(file.GetDynPath()))
+      {
+        if (!XFILE::CUPnPDirectory::GetResource(file.GetDynURL(), file))
+          return true;
+      }
+#endif
+
+      // ok - send the file to the player, if it accepts it
+      if (appPlayer->QueueNextFile(file))
+      {
+        // player accepted the next file
+        m_app.m_nextPlaylistItem = iNext;
+      }
+      else
+      {
+        /* Player didn't accept next file: *ALWAYS* advance playlist in this case so the player can
+            queue the next (if it wants to) and it doesn't keep looping on this song */
+        CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(iNext);
+      }
+
+      return true;
+    }
+    break;
+
+    case GUI_MSG_PLAY_TRAILER:
+    {
+      const CFileItem* item = dynamic_cast<CFileItem*>(message.GetItem().get());
+      if (item == nullptr)
+      {
+        CLog::LogF(LOGERROR, "Supplied item is not a CFileItem! Trailer cannot be played.");
+        return false;
+      }
+
+      std::unique_ptr<CFileItem> trailerItem =
+          ContentUtils::GeneratePlayableTrailerItem(*item, g_localizeStrings.Get(20410));
+
+      if (PLAYLIST::IsPlayList(*item))
+      {
+        std::unique_ptr<CFileItemList> fileitemList = std::make_unique<CFileItemList>();
+        fileitemList->Add(std::move(trailerItem));
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
+                                                   static_cast<void*>(fileitemList.release()));
+      }
+      else
+      {
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0,
+                                                   static_cast<void*>(trailerItem.release()));
+      }
+      break;
+    }
+
+    case GUI_MSG_PLAYBACK_STOPPED:
+    {
+      CServiceBroker::GetPVRManager().OnPlaybackStopped(m_app.CurrentFileItem());
+      CServiceBroker::GetFavouritesService().OnPlaybackStopped(m_app.CurrentFileItem());
+
+      CVariant data(CVariant::VariantTypeObject);
+      data["end"] = false;
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop",
+                                                         m_app.CurrentFileItemPtr(), data);
+
+      m_app.m_playerEvent.Set();
+      m_app.ResetCurrentItem();
+      m_app.PlaybackCleanup();
+#ifdef HAS_PYTHON
+      CServiceBroker::GetXBPython().OnPlayBackStopped();
+#endif
+      return true;
+    }
+
+    case GUI_MSG_PLAYBACK_ENDED:
+    {
+      CServiceBroker::GetPVRManager().OnPlaybackEnded(m_app.CurrentFileItem());
+      CServiceBroker::GetFavouritesService().OnPlaybackEnded(m_app.CurrentFileItem());
+
+      CVariant data(CVariant::VariantTypeObject);
+      data["end"] = true;
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop",
+                                                         m_app.CurrentFileItemPtr(), data);
+
+      m_app.m_playerEvent.Set();
+      const auto stackHelper = m_app.GetComponent<CApplicationStackHelper>();
+      if (stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
+      { // just play the next item in the stack
+        m_app.PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
+        return true;
+      }
+
+      // For EPG playlist items we keep the player open to ensure continuous viewing experience.
+      const bool isEpgPlaylistItem{
+          m_app.CurrentFileItem().GetProperty("epg_playlist_item").asBoolean(false)};
+
+      m_app.ResetCurrentItem();
+
+      if (!isEpgPlaylistItem)
+      {
+        if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
+          m_app.GetComponent<CApplicationPlayer>()->ClosePlayer();
+
+        m_app.PlaybackCleanup();
+      }
+
+#ifdef HAS_PYTHON
+      CServiceBroker::GetXBPython().OnPlayBackEnded();
+#endif
+      return true;
+    }
+
+    case GUI_MSG_PLAYLISTPLAYER_STOPPED:
+      m_app.ResetCurrentItem();
+      if (m_app.GetComponent<CApplicationPlayer>()->IsPlaying())
+        m_app.StopPlaying();
+      m_app.PlaybackCleanup();
+      return true;
+
+    case GUI_MSG_PLAYBACK_AVSTARTED:
+    {
+      CVariant param;
+      param["player"]["speed"] = 1;
+      param["player"]["playerid"] =
+          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnAVStart",
+                                                         m_app.CurrentFileItemPtr(), param);
+      m_app.m_playerEvent.Set();
+#ifdef HAS_PYTHON
+      // informs python script currently running playback has started
+      // (does nothing if python is not loaded)
+      CServiceBroker::GetXBPython().OnAVStarted(m_app.CurrentFileItem());
+#endif
+      return true;
+    }
+
+    case GUI_MSG_PLAYBACK_AVCHANGE:
+    {
+#ifdef HAS_PYTHON
+      // informs python script currently running playback has started
+      // (does nothing if python is not loaded)
+      CServiceBroker::GetXBPython().OnAVChange();
+#endif
+      CVariant param;
+      param["player"]["speed"] = 1;
+      param["player"]["playerid"] =
+          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnAVChange",
+                                                         m_app.CurrentFileItemPtr(), param);
+      return true;
+    }
+
+    case GUI_MSG_PLAYBACK_PAUSED:
+    {
+      CVariant param;
+      param["player"]["speed"] = 0;
+      param["player"]["playerid"] =
+          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPause",
+                                                         m_app.CurrentFileItemPtr(), param);
+      return true;
+    }
+
+    case GUI_MSG_PLAYBACK_RESUMED:
+    {
+      CVariant param;
+      param["player"]["speed"] = 1;
+      param["player"]["playerid"] =
+          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnResume",
+                                                         m_app.CurrentFileItemPtr(), param);
+      return true;
+    }
+
+    case GUI_MSG_PLAYBACK_SEEKED:
+    {
+      CVariant param;
+      const int64_t iTime = message.GetParam1AsI64();
+      const int64_t seekOffset = message.GetParam2AsI64();
+      JSONRPC::CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
+      JSONRPC::CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
+      param["player"]["playerid"] =
+          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      param["player"]["speed"] = static_cast<int>(appPlayer->GetPlaySpeed());
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnSeek",
+                                                         m_app.CurrentFileItemPtr(), param);
+
+      CDataCacheCore::GetInstance().SeekFinished(static_cast<int>(seekOffset));
+
+      return true;
+    }
+
+    case GUI_MSG_PLAYBACK_SPEED_CHANGED:
+    {
+      CVariant param;
+      param["player"]["speed"] = message.GetParam1();
+      param["player"]["playerid"] =
+          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnSpeedChanged",
+                                                         m_app.CurrentFileItemPtr(), param);
+
+      return true;
+    }
+
+    case GUI_MSG_PLAYBACK_ERROR:
+      MESSAGING::HELPERS::ShowOKDialogText(CVariant{16026}, CVariant{16027});
+      return true;
+
+    case GUI_MSG_PLAYLISTPLAYER_STARTED:
+    case GUI_MSG_PLAYLISTPLAYER_CHANGED:
+    {
+      return true;
+    }
+    break;
+    case GUI_MSG_FULLSCREEN:
+    { // Switch to fullscreen, if we can
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (gui)
+        gui->GetWindowManager().SwitchToFullScreen();
+
+      return true;
+    }
+    break;
+    case GUI_MSG_EXECUTE:
+      if (message.GetNumStringParams())
+        return m_app.ExecuteXBMCAction(message.GetStringParam(), message.GetItem());
+      break;
+  }
+  return false;
 }

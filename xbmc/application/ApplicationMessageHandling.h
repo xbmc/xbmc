@@ -11,6 +11,7 @@
 #include "application/AppInboundProtocol.h"
 
 class CApplication;
+class CGUIMessage;
 namespace KODI::MESSAGING
 {
 class ThreadMessage;
@@ -22,6 +23,7 @@ public:
   explicit CApplicationMessageHandling(CApplication& app);
 
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg);
+  bool OnMessage(const CGUIMessage& message);
 
 private:
   CApplication& m_app;
