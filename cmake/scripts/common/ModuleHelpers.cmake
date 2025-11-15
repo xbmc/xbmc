@@ -707,7 +707,7 @@ macro(SEARCH_EXISTING_PACKAGES)
   if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     find_package(PkgConfig ${SEARCH_QUIET})
 
-    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+    if(PKG_CONFIG_FOUND)
       pkg_check_modules(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC}${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
@@ -726,16 +726,16 @@ define_property(TARGET PROPERTY LIB_BUILD
 macro(generate_mesoncrossfile)
 
   create_mesonbinaries()
-  file(WRITE ${DEPENDS_PATH}/share/cross-file.meson "${meson_binaries_string}\n")
+  file(WRITE ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_binaries_string}\n")
 
   create_mesonhostmachine()
-  file(APPEND ${DEPENDS_PATH}/share/cross-file.meson "${meson_host_machine_string}\n")
+  file(APPEND ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_host_machine_string}\n")
 
   create_mesonproperties()
-  file(APPEND ${DEPENDS_PATH}/share/cross-file.meson "${meson_properties_string}\n")
+  file(APPEND ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_properties_string}\n")
 
   create_mesonbuiltin()
-  file(APPEND ${DEPENDS_PATH}/share/cross-file.meson "${meson_builtin_string}\n")
+  file(APPEND ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_builtin_string}\n")
 
 endmacro()
 
@@ -747,6 +747,14 @@ function(create_mesonbinaries)
                     "cpp" "CMAKE_CXX_COMPILER"
                     "ar" "CMAKE_AR"
                     "cmake" "CMAKE_COMMAND")
+
+  if(TARGET GASPP::GASPP)
+    list(APPEND binariespairs "gas-preprocessor.pl" "GASPP_PL")
+  endif()
+
+  if(NASM_FOUND)
+    list(APPEND binariespairs "nasm" "NASM_EXECUTABLE")
+  endif()
 
   if(NOT "${CMAKE_STRIP}" STREQUAL "")
     list(APPEND binariespairs "strip" "CMAKE_STRIP")
