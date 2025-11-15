@@ -270,7 +270,7 @@ protected:
 
   UITransform m_guiTransform;
   UITransform m_finalTransform;
-  std::stack<UITransform> m_transforms;
+  std::stack<UITransform, std::vector<UITransform>> m_transforms;
   RENDER_STEREO_VIEW m_stereoView = RENDER_STEREO_VIEW_OFF;
   RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
   RENDER_STEREO_MODE m_nextStereoMode = RENDER_STEREO_MODE_OFF;
