@@ -2,3 +2,5 @@ LIBNAME=harfbuzz
 VERSION=12.1.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.xz
 SHA512=94cbc3fe8fad30f4f7871bdddc8b129c486ab55329f9b48c6336fdf15d05f09c3c96cac51f68a0218db113b4783c07ce5d6bb455ccc875b31fd2261e3e8dc559
+
+FULL_URL=https://github.com/harfbuzz/harfbuzz/releases/download/12.1.0/harfbuzz-12.1.0.tar.xz
