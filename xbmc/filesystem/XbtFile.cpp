@@ -172,15 +172,14 @@ ssize_t CXbtFile::Read(void* lpBuf, size_t uiBufSize)
     if (m_unpackedFrames[m_frameIndex].empty())
     {
       // unpack the data from the current frame
-      std::vector<uint8_t> unpackedFrame =
-          CTextureBundleXBT::UnpackFrame(*m_xbtfReader.get(), frame);
-      if (unpackedFrame.empty())
+      auto unpackedFrame = CTextureBundleXBT::UnpackFrame(*m_xbtfReader.get(), frame);
+      if (!unpackedFrame)
       {
         Close();
         return -1;
       }
 
-      m_unpackedFrames[m_frameIndex] = std::move(unpackedFrame);
+      m_unpackedFrames[m_frameIndex] = std::move(*unpackedFrame);
     }
 
     // determine how many bytes we need to copy from the current frame
@@ -252,15 +251,14 @@ int64_t CXbtFile::Seek(int64_t iFilePosition, int iWhence)
     if (m_unpackedFrames[m_frameIndex].empty())
     {
       // unpack the data from the current frame
-      std::vector<uint8_t> unpackedFrame =
-          CTextureBundleXBT::UnpackFrame(*m_xbtfReader.get(), frame);
-      if (unpackedFrame.empty())
+      auto unpackedFrame = CTextureBundleXBT::UnpackFrame(*m_xbtfReader.get(), frame);
+      if (!unpackedFrame)
       {
         Close();
         return -1;
       }
 
-      m_unpackedFrames[m_frameIndex] = std::move(unpackedFrame);
+      m_unpackedFrames[m_frameIndex] = std::move(*unpackedFrame);
     }
 
     int64_t remainingBytesToSeek = newPosition - m_positionTotal;

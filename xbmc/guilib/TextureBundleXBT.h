@@ -58,8 +58,8 @@ public:
    */
   std::optional<Animation> LoadAnim(const std::string& filename);
 
-  //! @todo Change return to std::optional<std::vector<uint8_t>>> when c++17 is allowed
-  static std::vector<uint8_t> UnpackFrame(const CXBTFReader& reader, const CXBTFFrame& frame);
+  static std::optional<std::vector<uint8_t>> UnpackFrame(const CXBTFReader& reader,
+                                                         const CXBTFFrame& frame);
 
   void CloseBundle();
 
