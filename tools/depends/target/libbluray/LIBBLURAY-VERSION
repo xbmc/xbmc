@@ -4,3 +4,5 @@ ARCHIVE=$(LIBNAME)-$(VERSION).tar.bz2
 SHA512=91226ebdff608e9ebb7a5c6a92e4993c9cee2da95c176ea7b7fa6eff05d97025eb08feccedd7fb613e0de29747dee709c7686421fee95fa7af754f4c1c973f87
 BYPRODUCT=libbluray.a
 BYPRODUCT_WIN=bluray.lib
+
+BASE_URL=https://code.videolan.org/videolan/libbluray/-/archive/1.4.0
