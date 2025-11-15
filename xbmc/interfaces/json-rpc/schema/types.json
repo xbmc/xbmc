@@ -662,6 +662,10 @@
       "samplerate": {
         "type": "integer",
         "required": true
+      },
+      "bitspersample": {
+        "type": "integer",
+        "required": true
       }
     }
   },
