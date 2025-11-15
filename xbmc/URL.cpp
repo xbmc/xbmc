@@ -85,6 +85,9 @@ void CURL::Parse(std::string strURL1)
         {".zip/", "zip://"},
         {".apk/", "apk://"},
         {".rar/", "rar://"},
+        {".zip\\", "zip://"},
+        {".apk\\", "apk://"},
+        {".rar\\", "rar://"},
     };
 
     for (const auto& [ext, proto] : protocolReplacements)
