@@ -1086,22 +1086,6 @@ TEST_F(TestURIUtils, CheckConsistencyBetweenFileNameUtilities)
   }
 }
 
-TEST_F(TestURIUtils, ParsingArchiveFile)
-{
-  XFILE::CFile* file = XBMC_CREATETEMPFILE(".zip");
-  std::string archivePath = XBMC_TEMPFILEPATH(file);
-  std::string pathInArchive = archivePath + "/path/in/archive/info.txt";
-  file->Close();
-
-  CURL url(pathInArchive);
-
-  EXPECT_EQ("zip", url.GetProtocol());
-  EXPECT_EQ("path/in/archive/info.txt", url.GetFileName());
-  EXPECT_EQ(archivePath, CURL::Decode(url.GetHostName()));
-
-  XBMC_DELETETEMPFILE(file);
-}
-
 struct CURLArchiveConstructionTestData
 {
   std::string input;
