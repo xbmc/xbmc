@@ -204,6 +204,7 @@ using namespace PVR;
 using namespace PERIPHERALS;
 using namespace KODI;
 using namespace KODI::MESSAGING;
+using namespace KODI::UTILS::I18N;
 using namespace ActiveAE;
 
 using namespace XbmcThreads;

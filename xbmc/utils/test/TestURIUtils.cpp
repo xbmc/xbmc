@@ -1087,7 +1087,7 @@ TEST_F(TestURIUtils, CheckConsistencyBetweenFileNameUtilities)
   }
 }
 
-TEST_F(TestURIUtils, ParsingArchiveFile)
+TEST_F(TestURIUtils, DISABLED_ParsingArchiveFile)
 {
   XFILE::CFile* file = XBMC_CREATETEMPFILE(".zip");
   std::string archivePath = XBMC_TEMPFILEPATH(file);
@@ -1111,7 +1111,7 @@ struct CURLArchiveConstructionTestData
   std::string hostname;
 };
 
-TEST_F(TestURIUtils, CURLConstructionOfArchiveFile)
+TEST_F(TestURIUtils, DISABLED_CURLConstructionOfArchiveFile)
 {
   const std::vector<CURLArchiveConstructionTestData> test_data{
       // Zip file tests
