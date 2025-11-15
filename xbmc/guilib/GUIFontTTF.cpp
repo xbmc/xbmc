@@ -365,8 +365,8 @@ void CGUIFontTTF::End()
 void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                                    float x,
                                    float y,
-                                   const std::vector<KODI::UTILS::COLOR::Color>& colors,
-                                   const vecText& text,
+                                   std::span<const KODI::UTILS::COLOR::Color> colors,
+                                   std::span<const character_t> text,
                                    uint32_t alignment,
                                    float maxPixelWidth,
                                    bool scrolling,
@@ -742,15 +742,15 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   End();
 }
 
-
-float CGUIFontTTF::GetTextWidthInternal(const vecText& text)
+float CGUIFontTTF::GetTextWidthInternal(std::span<const character_t> text)
 {
   const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
   return GetTextWidthInternal(text, glyphs);
 }
 
 // this routine assumes a single line (i.e. it was called from GUITextLayout)
-float CGUIFontTTF::GetTextWidthInternal(const vecText& text, const std::vector<Glyph>& glyphs)
+float CGUIFontTTF::GetTextWidthInternal(std::span<const character_t> text,
+                                        const std::vector<Glyph>& glyphs)
 {
   float width = 0;
   for (auto it = glyphs.begin(); it != glyphs.end(); it++)
@@ -811,7 +811,8 @@ unsigned int CGUIFontTTF::GetMaxFontHeight() const
   return m_maxFontHeight + SPACING_BETWEEN_CHARACTERS_IN_TEXTURE;
 }
 
-std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecText& text)
+std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
+    std::span<const character_t> text)
 {
   std::vector<Glyph> glyphs;
   if (text.empty())
