@@ -224,8 +224,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
       {
         if (!audioengine->Suspend())
         {
-          CLog::Log(LOGINFO, "{}: Failed to suspend AudioEngine before launching external program",
-                    __FUNCTION__);
+          CLog::LogF(LOGINFO, "Failed to suspend AudioEngine before launching external program");
         }
       }
 #if defined(TARGET_DARWIN)
@@ -240,8 +239,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
       {
         if (!audioengine->Resume())
         {
-          CLog::Log(LOGFATAL, "{}: Failed to restart AudioEngine after return from external player",
-                    __FUNCTION__);
+          CLog::LogF(LOGFATAL, "Failed to restart AudioEngine after return from external player");
         }
       }
       break;
@@ -387,7 +385,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
     break;
 
     default:
-      CLog::Log(LOGERROR, "{}: Unhandled threadmessage sent, {}", __FUNCTION__, msg);
+      CLog::LogF(LOGERROR, "Unhandled threadmessage sent, {}", msg);
       break;
   }
 }
