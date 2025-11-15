@@ -75,17 +75,22 @@ void CURL::Parse(std::string strURL1)
   size_t iPos = strURL.find("://");
   if (iPos == std::string::npos)
   {
-    /* Consider files with the extensions {.zip .apk .rar} as special if they exist
-     * on the filesystem and convert the archive paths into archive protocols.
-     * Example:
-     *   [input]  /foo/bar.zip/alice.rar/bob.avi
-     *   [result] zip://rar:///foo/bar.zip/alice.rar/bob.avi
-     */
+    // Consider files with the extensions {.zip .apk .rar} as special if they exist
+    // on the filesystem and convert the archive paths into archive protocols.
+    // Example:
+    //   [input]  /foo/bar.zip/alice.rar/bob.avi
+    //   [result] zip://rar:///foo/bar.zip/alice.rar/bob.avi
+    //
+    // clang-format off
     static constexpr const std::string_view protocolReplacements[][2] = {
         {".zip/", "zip://"},
         {".apk/", "apk://"},
         {".rar/", "rar://"},
+        {".zip\\", "zip://"},
+        {".apk\\", "apk://"},
+        {".rar\\", "rar://"},
     };
+    // clang-format on
 
     for (const auto& [ext, proto] : protocolReplacements)
     {
@@ -97,7 +102,7 @@ void CURL::Parse(std::string strURL1)
 
         if (XFILE::CFile::FileExists(archiveName))
         {
-          *this = CURL(std::string(proto) + Encode(archiveName) + strURL.substr(extPos));
+          *this = CURL(std::string(proto) + Encode(archiveName) + '/' + strURL.substr(extPos + 1));
           return;
         }
       }
