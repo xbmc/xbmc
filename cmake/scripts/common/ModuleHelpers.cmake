@@ -874,7 +874,13 @@ function(create_mesonbuiltin)
     string(APPEND output_string "${tmp_string}\n")
   endforeach()
 
-  string(APPEND output_string "default_library = 'static'\n")
+  # allow a module to override the default_library type.
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_libType)
+    string(APPEND output_string "default_library = '${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_libType}'\n")
+  else()
+    string(APPEND output_string "default_library = 'static'\n")
+  endif()
+
   string(APPEND output_string "prefix = '${DEPENDS_PATH}'\n")
   string(APPEND output_string "libdir = 'lib'\n")
   string(APPEND output_string "bindir = 'bin'\n")
