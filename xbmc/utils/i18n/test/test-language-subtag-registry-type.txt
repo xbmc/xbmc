@@ -1,0 +1,10 @@
+File-Date: 2025-10-29
+%%
+Subtag: testlanguage
+Description: test description
+%%
+Type: language
+Subtag: testlanguage
+%%
+Type: notinrfc
+Tag: foobar

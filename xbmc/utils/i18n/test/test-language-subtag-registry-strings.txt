@@ -1,0 +1,37 @@
+File-Date: 2025-08-25
+%%
+Type: language
+Subtag: lang1
+%%
+Type: grandfathered
+Tag: gf1
+%%
+Type: language
+Subtag: lang2
+Description: desc1
+%%
+Type: language
+Subtag: lang3
+Description: desc2
+Description: desc3
+%%
+Type: language
+Subtag: lang4
+Preferred-Value: pref1
+%%
+Type: variant
+Subtag: var1
+Prefix: pref1
+%%
+Type: variant
+Subtag: var2
+Prefix: pref2
+Prefix: pref3
+%%
+Type: language
+Subtag: lang5
+Suppress-Script: script1
+%%
+Type: language
+Subtag: lang6
+Macrolanguage: macro1
