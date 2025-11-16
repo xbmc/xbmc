@@ -269,15 +269,15 @@ std::string CTextureBundleXBT::Normalize(std::string name)
   return name;
 }
 
-std::vector<uint8_t> CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader,
-                                                    const CXBTFFrame& frame)
+std::optional<std::vector<uint8_t>> CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader,
+                                                                   const CXBTFFrame& frame)
 {
   // load the compressed texture
   std::vector<uint8_t> packedBuffer(static_cast<size_t>(frame.GetPackedSize()));
   if (!reader.Load(frame, packedBuffer.data()))
   {
     CLog::Log(LOGERROR, "CTextureBundleXBT: error loading frame");
-    return {};
+    return std::nullopt;
   }
 
   // if the frame isn't packed there's nothing else to be done
@@ -288,7 +288,7 @@ std::vector<uint8_t> CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader,
   if (lzo_init() != LZO_E_OK)
   {
     CLog::Log(LOGERROR, "CTextureBundleXBT: failed to initialize lzo");
-    return {};
+    return std::nullopt;
   }
 
   lzo_uint size = static_cast<lzo_uint>(frame.GetUnpackedSize());
@@ -300,7 +300,7 @@ std::vector<uint8_t> CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader,
     CLog::Log(LOGERROR,
               "CTextureBundleXBT: failed to decompress frame with {} unpacked bytes to {} bytes",
               frame.GetPackedSize(), frame.GetUnpackedSize());
-    return {};
+    return std::nullopt;
   }
 
   return unpackedBuffer;

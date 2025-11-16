@@ -15,6 +15,7 @@
 
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -292,7 +293,7 @@ private:
   CDateTime m_lastUpdated;
   CDateTime m_lastUsed;
   std::string m_origin;
-  mutable std::unique_ptr<std::string> m_originName; // @todo use std::optional once we use c++17
+  mutable std::optional<std::string> m_originName;
   uint64_t m_packageSize = 0;
   std::string m_libname;
   InfoMap m_extrainfo;
