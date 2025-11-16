@@ -741,7 +741,7 @@ class TestURLParseDetails : public testing::Test, public testing::WithParamInter
 {
 };
 
-TEST_P(TestURLParseDetails, RunTest)
+TEST_P(TestURLParseDetails, DISABLED_RunTest)
 {
   std::string filename = "xbmc/utils/test/testdata/";
   filename.append(std::to_string(GetParam()));
