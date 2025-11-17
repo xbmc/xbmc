@@ -848,10 +848,14 @@ endfunction()
 # sets meson_builtin_string to PARENT_SCOPE
 function(create_mesonbuiltin)
 
-  set(builtinpairs "c_args" "CMAKE_C_FLAGS"
-                   "c_link_args" "CMAKE_EXE_LINKER_FLAGS"
-                   "cpp_args" "CMAKE_CXX_FLAGS"
-                   "cpp_link_args" "CMAKE_EXE_LINKER_FLAGS")
+  # Pair is of the format: <meson field> <cmake_equivalent>
+  # The cmake field is based on the name of the variable, but removing the CMAKE_ prefix
+  # This allows us to also provide a module specific additional variable if additions are required
+  # eg. CMAKE_C_FLAGS dav1d_C_FLAGS
+  set(builtinpairs "c_args" "C_FLAGS"
+                   "c_link_args" "EXE_LINKER_FLAGS"
+                   "cpp_args" "CXX_FLAGS"
+                   "cpp_link_args" "EXE_LINKER_FLAGS")
 
   # Get/set loop limit (Size - 1) from size of builtinpairs list
   list(LENGTH builtinpairs options_length)
@@ -864,7 +868,7 @@ function(create_mesonbuiltin)
     # cmake source variable name
     list(GET builtinpairs ${cmake_flag_arg} cmake_flag_name)
 
-    set(input "${${cmake_flag_name}}")
+    set(input "${CMAKE_${cmake_flag_name}} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_${cmake_flag_name}}")
     string(STRIP "${input}" input)
 
     # builtinpairs cmake source variables are specifically single strings, and not lists
