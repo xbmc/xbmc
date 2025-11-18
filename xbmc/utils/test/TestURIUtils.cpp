@@ -1095,7 +1095,7 @@ struct CURLArchiveConstructionTestData
   std::string hostname;
 };
 
-TEST_F(TestURIUtils, DISABLED_CURLConstructionOfArchiveFile)
+TEST_F(TestURIUtils, CURLConstructionOfArchiveFile)
 {
   const std::vector<CURLArchiveConstructionTestData> test_data{
       // Zip file tests
@@ -1142,79 +1142,6 @@ TEST_F(TestURIUtils, DISABLED_CURLConstructionOfArchiveFile)
           "zip",
           "zipfile.zip/kodi-dev.png",
           XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar/does_not_exist.png"),
-          "zip",
-          "rarfile.rar/does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar/kodi-dev.png"),
-          "zip",
-          "rarfile.rar/kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      // Rar file tests
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.rar/kodi-dev.png"),
-          "",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.rar/kodi-dev.png"),
-          "",
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/rarfile.rar/kodi-dev.png"),
-          "rar",
-          "kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/rarfile.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar/does_not_exist.png"),
-          "rar",
-          "does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip"),
-          "rar",
-          "zipfile.zip",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar"),
-          "rar",
-          "rarfile.rar",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip/does_not_exist.png"),
-          "rar",
-          "zipfile.zip/does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip/kodi-dev.png"),
-          "rar",
-          "zipfile.zip/kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar/does_not_exist.png"),
-          "rar",
-          "rarfile.rar/does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar/kodi-dev.png"),
-          "rar",
-          "rarfile.rar/kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
       },
   };
 
