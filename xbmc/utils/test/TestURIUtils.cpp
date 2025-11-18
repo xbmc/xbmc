@@ -1098,7 +1098,6 @@ struct CURLArchiveConstructionTestData
 TEST_F(TestURIUtils, CURLConstructionOfArchiveFile)
 {
   const std::vector<CURLArchiveConstructionTestData> test_data{
-      // Zip file tests
       {
           XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png"),
           "",
@@ -1141,6 +1140,20 @@ TEST_F(TestURIUtils, CURLConstructionOfArchiveFile)
               "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/kodi-dev.png"),
           "zip",
           "zipfile.zip/kodi-dev.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_zip.zip/directory/does_not_exist.png"),
+          "zip",
+          "directory/does_not_exist.png",
+          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
+      },
+      {
+          XBMC_REF_FILE_PATH(
+              "xbmc/utils/test/resources/archives_in_zip.zip/directory/kodi-dev.png"),
+          "zip",
+          "directory/kodi-dev.png",
           XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
       },
   };
