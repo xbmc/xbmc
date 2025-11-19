@@ -32,12 +32,13 @@ public:
     m_dir.CancelDirectory();
   }
 
-  bool m_result = false;
+  bool GetResult() const { return m_result; }
 
 protected:
   CVirtualDirectory& m_dir;
   CURL m_url;
   CFileItemList& m_items;
   bool m_useDir;
+  bool m_result = false;
 };
 } // namespace XFILE

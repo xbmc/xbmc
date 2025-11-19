@@ -438,6 +438,7 @@ CDirectoryProvider::CDirectoryProvider(const CDirectoryProvider& other)
     m_currentSort(other.m_currentSort),
     m_currentLimit(other.m_currentLimit),
     m_currentBrowse(other.m_currentBrowse),
+    m_lastNetworkSuccessAt(other.m_lastNetworkSuccessAt),
     m_skipDiskCache(other.m_skipDiskCache)
 {
 }
@@ -495,74 +496,6 @@ bool CDirectoryProvider::Update(bool forceRefresh)
       // We will start another update job once the currently running has finished.
       m_jobPending = true;
       changed = false;
-    }
-    else
-    {
-      if (m_jobPending)
-      {
-        // Ignore the update request.
-        // We already have scheduled another update job.
-        changed = false;
-      }
-      else
-      {
-        // Start a new update job.
-        bool skipDiskCache = false;
-        {
-          std::unique_lock lock(m_section);
-          skipDiskCache = m_skipDiskCache;
-          m_skipDiskCache = false;
-        }
-        StartDirectoryJob(skipDiskCache);
-      }
-    }
-  }
-
-  if (!changed)
-  {
-    for (const auto& i : m_items)
-      changed |= i->UpdateVisibility(GetParentId());
-  }
-  return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
-}
-
-void CDirectoryProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
-{
-  std::unique_lock lock(m_section);
-  items.clear();
-  for (const auto& i : m_items)
-  {
-    if (i->IsVisible())
-      items.push_back(i);
-  }
-}
-
-void CDirectoryProvider::Reset()
-{
-  {
-    std::unique_lock lock(m_section);
-    if (m_jobID)
-      CServiceBroker::GetJobManager()->CancelJob(m_jobID);
-    m_jobID = 0;
-    m_jobPending = false;
-    m_lastJobStartedAt = {};
-    m_nextJobTimer.Stop();
-    m_items.clear();
-    m_currentTarget.clear();
-    m_currentUrl.clear();
-    m_itemTypes.clear();
-    m_currentSort.sortBy = SortByNone;
-    m_currentSort.sortOrder = SortOrderAscending;
-    m_currentLimit = 0;
-    m_currentBrowse = BrowseMode::AUTO;
-    m_updateState = UpdateState::OK;
-    m_skipDiskCache = false;
-  }
-
-  {
-    std::unique_lock subscriptionLock(m_subscriptionSection);
-    m_subscriber.reset();
-  }
 }
 
 void CDirectoryProvider::FreeResources(bool immediately)
