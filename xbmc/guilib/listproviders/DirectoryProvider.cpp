@@ -224,13 +224,15 @@ public:
                 SortDescription sort,
                 int limit,
                 CDirectoryProvider::BrowseMode browse,
-                int parentID)
+                int parentID,
+                bool useCache)
     : m_url(url),
       m_target(target),
       m_sort(sort),
       m_limit(limit),
       m_browse(browse),
-      m_parentID(parentID)
+      m_parentID(parentID),
+      m_useCache(useCache)
   {
   }
   ~CDirectoryJob() override = default;
@@ -250,7 +252,34 @@ public:
   bool DoWork() override
   {
     CFileItemList items;
-    if (CDirectory::GetDirectory(m_url, items, "", DIR_FLAG_DEFAULTS))
+    bool success = false;
+
+    if (m_useCache)
+    {
+      CFileItemList cachedItems(m_url);
+      if (cachedItems.Load(m_parentID))
+      {
+        items.Assign(cachedItems);
+        success = true;
+        m_fromCache = true;
+      }
+    }
+
+    if (!success)
+    {
+      auto start = std::chrono::steady_clock::now();
+      if (CDirectory::GetDirectory(m_url, items, "", DIR_FLAG_DEFAULTS))
+      {
+        success = true;
+        auto end = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+        if (items.CacheToDiscAlways() || (duration.count() > 1000 && items.CacheToDiscIfSlow()))
+          items.Save(m_parentID);
+      }
+    }
+
+    if (success)
     {
       // sort the items if necessary
       if (m_sort.sortBy != SortByNone)
@@ -340,6 +369,7 @@ public:
 
   const std::vector<CGUIStaticItemPtr>& GetItems() const { return m_items; }
   const std::string& GetTarget() const { return m_target; }
+  bool IsFromCache() const { return m_fromCache; }
   std::vector<InfoTagType> GetItemTypes(std::vector<InfoTagType>& itemTypes) const
   {
     itemTypes.clear();
@@ -355,6 +385,8 @@ private:
   unsigned int m_limit{10};
   CDirectoryProvider::BrowseMode m_browse{CDirectoryProvider::BrowseMode::AUTO};
   int m_parentID;
+  bool m_useCache{false};
+  bool m_fromCache{false};
   std::vector<CGUIStaticItemPtr> m_items;
   std::map<InfoTagType, std::shared_ptr<CThumbLoader>> m_thumbloaders;
 };
@@ -429,7 +461,7 @@ void CDirectoryProvider::StartDirectoryJob()
   CLog::Log(LOGDEBUG, "CDirectoryProvider[{}]: refreshing...", m_currentUrl);
   m_jobID = CServiceBroker::GetJobManager()->AddJob(
       new CDirectoryJob(m_currentUrl, m_target.GetLabel(GetParentId(), false), m_currentSort,
-                        m_currentLimit, m_currentBrowse, GetParentId()),
+                        m_currentLimit, m_currentBrowse, GetParentId(), !m_skipDiskCache),
       this);
 }
 
@@ -537,11 +569,22 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob* j
   std::unique_lock lock(m_section);
   if (success)
   {
-    m_items = static_cast<CDirectoryJob*>(job)->GetItems();
-    m_currentTarget = static_cast<CDirectoryJob*>(job)->GetTarget();
-    static_cast<CDirectoryJob*>(job)->GetItemTypes(m_itemTypes);
+    auto dirJob = static_cast<CDirectoryJob*>(job);
+    m_items = dirJob->GetItems();
+    m_currentTarget = dirJob->GetTarget();
+    dirJob->GetItemTypes(m_itemTypes);
     if (m_updateState == UpdateState::OK)
       m_updateState = UpdateState::DONE;
+
+    if (dirJob->IsFromCache())
+    {
+      m_skipDiskCache = true;
+      m_jobPending = true;
+    }
+    else
+    {
+      m_skipDiskCache = false;
+    }
   }
   m_jobID = 0;
 
