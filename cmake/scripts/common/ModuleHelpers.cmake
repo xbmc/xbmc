@@ -784,9 +784,16 @@ endfunction()
 # sets meson_host_machine_string to PARENT_SCOPE
 function(create_mesonhostmachine)
 
+  # CMAKE_C_COMPILER_ARCHITECTURE_ID is only populated for MSVC prior to cmake 4.1
+  # cmake 4.1+ does populate for unix platforms
+  if(CMAKE_C_COMPILER_ARCHITECTURE_ID)
+    string(TOUPPER "${CMAKE_C_COMPILER_ARCHITECTURE_ID}" UPPER_C_ARCH)
+  else()
+    string(TOUPPER "${CPU}" UPPER_C_ARCH)
+  endif()
+
   # Non-exhaustive list to map cmake CPU to meson cpu names
   # https://mesonbuild.com/Reference-tables.html#cpu-families
-  string(TOUPPER ${CMAKE_C_COMPILER_ARCHITECTURE_ID} UPPER_C_ARCH)
   if("${UPPER_C_ARCH}" MATCHES "ARM64" OR "${UPPER_C_ARCH}" MATCHES "AARCH64")
     set(meson_cpu_family aarch64)
   elseif("${UPPER_C_ARCH}" MATCHES "ARMV.")
