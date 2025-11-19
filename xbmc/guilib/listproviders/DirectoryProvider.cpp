@@ -437,7 +437,8 @@ CDirectoryProvider::CDirectoryProvider(const CDirectoryProvider& other)
     m_currentTarget(other.m_currentTarget),
     m_currentSort(other.m_currentSort),
     m_currentLimit(other.m_currentLimit),
-    m_currentBrowse(other.m_currentBrowse)
+    m_currentBrowse(other.m_currentBrowse),
+    m_skipDiskCache(other.m_skipDiskCache)
 {
 }
 
@@ -451,7 +452,7 @@ std::unique_ptr<IListProvider> CDirectoryProvider::Clone()
   return std::make_unique<CDirectoryProvider>(*this);
 }
 
-void CDirectoryProvider::StartDirectoryJob()
+void CDirectoryProvider::StartDirectoryJob(bool skipDiskCache)
 {
   std::unique_lock lock(m_section);
   m_jobPending = false;
@@ -461,7 +462,7 @@ void CDirectoryProvider::StartDirectoryJob()
   CLog::Log(LOGDEBUG, "CDirectoryProvider[{}]: refreshing...", m_currentUrl);
   m_jobID = CServiceBroker::GetJobManager()->AddJob(
       new CDirectoryJob(m_currentUrl, m_target.GetLabel(GetParentId(), false), m_currentSort,
-                        m_currentLimit, m_currentBrowse, GetParentId(), !m_skipDiskCache),
+                        m_currentLimit, m_currentBrowse, GetParentId(), !skipDiskCache),
       this);
 }
 
@@ -506,7 +507,13 @@ bool CDirectoryProvider::Update(bool forceRefresh)
       else
       {
         // Start a new update job.
-        StartDirectoryJob();
+        bool skipDiskCache = false;
+        {
+          std::unique_lock lock(m_section);
+          skipDiskCache = m_skipDiskCache;
+          m_skipDiskCache = false;
+        }
+        StartDirectoryJob(skipDiskCache);
       }
     }
   }
@@ -549,6 +556,7 @@ void CDirectoryProvider::Reset()
     m_currentLimit = 0;
     m_currentBrowse = BrowseMode::AUTO;
     m_updateState = UpdateState::OK;
+    m_skipDiskCache = false;
   }
 
   {
@@ -581,10 +589,6 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob* j
       m_skipDiskCache = true;
       m_jobPending = true;
     }
-    else
-    {
-      m_skipDiskCache = false;
-    }
   }
   m_jobID = 0;
 
@@ -600,7 +604,13 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob* j
     if (now >= nextJobAllowedAt)
     {
       // Finished job ended after job schedule timeslice was over. Start a new update job now.
-      StartDirectoryJob();
+      bool skipDiskCache = false;
+      if (m_skipDiskCache)
+      {
+        skipDiskCache = true;
+        m_skipDiskCache = false;
+      }
+      StartDirectoryJob(skipDiskCache);
     }
     else
     {
@@ -618,7 +628,9 @@ void CDirectoryProvider::OnTimeout()
   if (m_jobPending)
   {
     // Start a new update job.
-    StartDirectoryJob();
+    bool skipDiskCache = m_skipDiskCache;
+    m_skipDiskCache = false;
+    StartDirectoryJob(skipDiskCache);
   }
 }
 

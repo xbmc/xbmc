@@ -92,7 +92,7 @@ private:
     DONE
   };
 
-  void StartDirectoryJob();
+  void StartDirectoryJob(bool skipDiskCache);
 
   // ITimerCallback implementation
   void OnTimeout() override;
