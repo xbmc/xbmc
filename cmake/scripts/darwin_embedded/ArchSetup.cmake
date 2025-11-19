@@ -51,6 +51,20 @@ set(CMAKE_XCODE_ATTRIBUTE_INLINES_ARE_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_COPY_PHASE_STRIP OFF)
 
+# Tahoe seems to be setting environment variables at the xcode project level that
+# causes issues on shell based build objects that we use. Forcefully blank the most
+# problematic variables
+set(CMAKE_XCODE_ATTRIBUTE_DRIVERKIT_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_WATCHOS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_XROS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "")
+
+if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
+  set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "")
+else()
+  set(CMAKE_XCODE_ATTRIBUTE_TVOS_DEPLOYMENT_TARGET "")
+endif()
+
 include(cmake/scripts/darwin/Macros.cmake)
 enable_arc()
 
