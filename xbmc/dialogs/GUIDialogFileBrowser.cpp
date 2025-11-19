@@ -19,8 +19,10 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/GetDirectoryRunnable.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -359,7 +361,13 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
     CFileItemList items;
     std::string strParentPath;
 
-    if (!m_rootDir.GetDirectory(pathToUrl, items, m_useFileDirectories, false))
+    CGetDirectoryRunnable runnable(m_rootDir, pathToUrl, items, m_useFileDirectories);
+    if (!CGUIDialogBusy::Wait(&runnable))
+    {
+      // cancelled
+      return;
+    }
+    else if (!runnable.m_result)
     {
       CLog::Log(LOGERROR, "CGUIDialogFileBrowser::GetDirectory({}) failed",
                 pathToUrl.GetRedacted());
