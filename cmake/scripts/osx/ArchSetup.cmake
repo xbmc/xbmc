@@ -24,6 +24,15 @@ else()
   endif()
 endif()
 
+# Tahoe seems to be setting environment variables at the xcode project level that
+# causes issues on shell based build objects that we use. Forcefully blank the most
+# problematic variables
+set(CMAKE_XCODE_ATTRIBUTE_DRIVERKIT_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_WATCHOS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_XROS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "")
+set(CMAKE_XCODE_ATTRIBUTE_TVOS_DEPLOYMENT_TARGET "")
+
 # xbmchelper (old apple IR remotes) only make sense for x86
 # last macs featuring the IR receiver are those of mid 2012
 # which are still able to run Mojave (10.14). Drop all together
