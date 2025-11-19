@@ -7,9 +7,7 @@ endif
 # Keep in alphabetical order
 DEPENDS = \
   bzip2 \
-  dav1d \
   expat \
-  ffmpeg \
   fontconfig \
   freetype2 \
   freetype2-noharfbuzz \
@@ -87,6 +85,10 @@ endif
 ALSA_LIB=
 ifeq ($(OS),linux)
   DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev pipewire
+
+  # CI purposes only. Use linux/webos targets to test tools/depends makefile builds
+  DEPENDS += dav1d ffmpeg
+
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
 
