@@ -39,6 +39,8 @@ protected:
   CURL m_url;
   CFileItemList& m_items;
   bool m_useDir;
+
+private:
   bool m_result = false;
 };
 } // namespace XFILE

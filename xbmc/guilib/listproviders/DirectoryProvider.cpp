@@ -496,6 +496,55 @@ bool CDirectoryProvider::Update(bool forceRefresh)
       // We will start another update job once the currently running has finished.
       m_jobPending = true;
       changed = false;
+    }
+  }
+
+  if (!changed)
+  {
+    for (const auto& i : m_items)
+      changed |= i->UpdateVisibility(GetParentId());
+  }
+  return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
+}
+
+void CDirectoryProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
+{
+  std::unique_lock lock(m_section);
+  items.clear();
+  for (const auto& i : m_items)
+  {
+    if (i->IsVisible())
+      items.push_back(i);
+  }
+}
+
+void CDirectoryProvider::Reset()
+{
+  {
+    std::unique_lock lock(m_section);
+    if (m_jobID)
+      CServiceBroker::GetJobManager()->CancelJob(m_jobID);
+    m_jobID = 0;
+    m_jobPending = false;
+    m_lastJobStartedAt = {};
+    m_nextJobTimer.Stop();
+    m_items.clear();
+    m_currentTarget.clear();
+    m_currentUrl.clear();
+    m_itemTypes.clear();
+    m_currentSort.sortBy = SortByNone;
+    m_currentSort.sortOrder = SortOrderAscending;
+    m_currentLimit = 0;
+    m_currentBrowse = BrowseMode::AUTO;
+    m_updateState = UpdateState::OK;
+    m_skipDiskCache = false;
+    m_lastNetworkSuccessAt = std::chrono::time_point<std::chrono::system_clock>();
+  }
+
+  {
+    std::unique_lock subscriptionLock(m_subscriptionSection);
+    m_subscriber.reset();
+  }
 }
 
 void CDirectoryProvider::FreeResources(bool immediately)
