@@ -34,4 +34,5 @@ private:
   bool m_isISOFormat{false};
   bool m_allowFlush{true};
   std::vector<int> m_previousSubIds;
+  bool m_isDataPacket{false};
 };
