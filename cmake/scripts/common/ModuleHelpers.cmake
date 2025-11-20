@@ -741,12 +741,19 @@ endmacro()
 
 # Creates the [binaries] block of a meson cross file
 # sets meson_binaries_string to PARENT_SCOPE
+# Format for binaries is <meson_app_name> <target_app_variable>
+# Additional module specific binaries can be supplied by setting
+# ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_BINARIES with suitable pairs
 function(create_mesonbinaries)
 
   set(binariespairs "c" "CMAKE_C_COMPILER"
                     "cpp" "CMAKE_CXX_COMPILER"
                     "ar" "CMAKE_AR"
                     "cmake" "CMAKE_COMMAND")
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_BINARIES)
+    list(APPEND binariespairs ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_BINARIES})
+  endif()
 
   if(NOT "${CMAKE_STRIP}" STREQUAL "")
     list(APPEND binariespairs "strip" "CMAKE_STRIP")
