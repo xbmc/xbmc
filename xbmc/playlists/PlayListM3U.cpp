@@ -145,34 +145,34 @@ bool CPlayListM3U::Load(const std::string& strFileName)
              !StringUtils::StartsWith(strLine, ArtistMarker) &&
              !StringUtils::StartsWith(strLine, AlbumMarker))
     {
-      std::string strFileName = strLine;
+      std::string filePath = strLine;
 
-      if (!strFileName.empty() && strFileName[0] == '#')
+      if (!filePath.empty() && filePath[0] == '#')
         continue; // assume a comment or something else we don't support
 
       // Skip self - do not load playlist recursively
       // We compare case-less in case user has input incorrect case of the current playlist
-      if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strFileName), m_strPlayListName))
+      if (StringUtils::EqualsNoCase(URIUtils::GetFileName(filePath), m_strPlayListName))
         continue;
 
-      if (!strFileName.empty())
+      if (!filePath.empty())
       {
         if (!utf8)
-          g_charsetConverter.unknownToUTF8(strFileName);
+          g_charsetConverter.unknownToUTF8(filePath);
 
         // If no info was read from from the extended tag information, use the file name
         if (strInfo.empty())
         {
-          strInfo = URIUtils::GetFileName(strFileName);
+          strInfo = URIUtils::GetFileName(filePath);
         }
 
         // should substitution occur before or after charset conversion??
-        strFileName = URIUtils::SubstitutePath(strFileName);
+        filePath = URIUtils::SubstitutePath(filePath);
 
         // Get the full path file name and add it to the the play list
-        CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
+        CUtil::GetQualifiedFilename(m_strBasePath, filePath);
         CFileItemPtr newItem(new CFileItem(strInfo));
-        newItem->SetPath(strFileName);
+        newItem->SetPath(filePath);
         if (iStartOffset != 0 || iEndOffset != 0)
         {
           newItem->SetStartOffset(iStartOffset);
