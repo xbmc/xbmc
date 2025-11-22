@@ -6,6 +6,7 @@
 # This will define the following target:
 #
 #   ${APP_NAME_LC}::Sqlite3 - The SQLite3 library
+#   LIBRARY::Sqlite3 - ALIAS TARGET for the SQLite3 library
 #
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
@@ -24,8 +25,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     if(TARGET sqlite3::sqlite3)
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS sqlite3::sqlite3)
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS sqlite3::sqlite3)
     elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
     endif()
   else()
     if(Sqlite3_FIND_REQUIRED)
