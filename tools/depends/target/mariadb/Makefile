@@ -1,7 +1,9 @@
 include ../../Makefile.include MARIADB-VERSION ../../download-files.include
 DEPS = ../../Makefile.include MARIADB-VERSION Makefile ../../download-files.include \
                                   01-android.patch \
-                                  02-linux-pthread.patch
+                                  02-linux-pthread.patch \
+                                  03-win-uwp.patch \
+                                  04-win-installpkgconfig.patch
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -40,6 +42,10 @@ ifeq ($(OS),android)
 endif
 ifeq ($(OS),linux)
 	cd $(PLATFORM); patch -p1 -i ../02-linux-pthread.patch
+endif
+ifeq ($(OS),windows)
+	cd $(PLATFORM); patch -p1 -i ../03-win-uwp.patch
+	cd $(PLATFORM); patch -p1 -i ../04-win-installpkgconfig.patch
 endif
 	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) $(CMAKE_OPTIONS) ..
 
