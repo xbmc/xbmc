@@ -586,7 +586,8 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob* j
     if (now >= nextJobAllowedAt)
     {
       // Finished job ended after job schedule timeslice was over. Start a new update job now.
-      bool skipDiskCache = false;
+      bool skipDiskCache = m_skipDiskCache;
+      m_skipDiskCache = false;
       if (m_skipDiskCache)
       {
         skipDiskCache = true;
