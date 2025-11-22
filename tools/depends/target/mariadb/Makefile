@@ -3,7 +3,8 @@ DEPS = ../../Makefile.include MARIADB-VERSION Makefile ../../download-files.incl
                                   01-android.patch \
                                   02-linux-pthread.patch \
                                   03-win-uwp.patch \
-                                  04-win-installpkgconfig.patch
+                                  04-win-installpkgconfig.patch \
+                                  05-all-installtargets.patch
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -30,7 +31,8 @@ CMAKE_OPTIONS=-DWITH_SSL=OPENSSL \
               -DWITH_UNIT_TESTS:BOOL=OFF \
               -DWITH_EXTERNAL_ZLIB:BOOL=ON \
               -DWITH_CURL:BOOL=OFF \
-              -DCMAKE_COMPILE_WARNING_AS_ERROR=OFF
+              -DCMAKE_COMPILE_WARNING_AS_ERROR=OFF \
+              -DINSTALL_STATIC=ON
 
 all: .installed-$(PLATFORM)
 
@@ -47,6 +49,7 @@ ifeq ($(OS),windows)
 	cd $(PLATFORM); patch -p1 -i ../03-win-uwp.patch
 	cd $(PLATFORM); patch -p1 -i ../04-win-installpkgconfig.patch
 endif
+	cd $(PLATFORM); patch -p1 -i ../05-all-installtargets.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
