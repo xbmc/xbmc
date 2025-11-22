@@ -209,12 +209,12 @@ cd kodi-build
 
 Configure build for 64bit (**recommended**):
 ```
-cmake -G "Visual Studio 17 2022" -A x64 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A x64 %userprofile%\kodi
 ```
 
 Or configure build for 32bit:
 ```
-cmake -G "Visual Studio 17 2022" -A Win32 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A Win32 %userprofile%\kodi
 ```
 
 Or configure build for ARM 64bit:
@@ -224,12 +224,12 @@ cmake -G "Visual Studio 17 2022" -A arm64 %userprofile%\kodi
 
 Or configure build for UWP 64bit:
 ```
-cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 %userprofile%\kodi
 ```
 
 Or configure build for UWP 32bit:
 ```
-cmake -G "Visual Studio 17 2022" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 %userprofile%\kodi
 ```
 
 Build Kodi:
