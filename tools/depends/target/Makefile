@@ -29,7 +29,6 @@ DEPENDS = \
   libshairplay \
   libusb \
   libxml2 \
-  mariadb \
   nettle \
   openssl \
   python3 \
