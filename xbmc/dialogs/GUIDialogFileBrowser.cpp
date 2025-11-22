@@ -9,32 +9,34 @@
 #include "GUIDialogFileBrowser.h"
 
 #include "AutoSwitch.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/GetDirectoryRunnable.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogYesNo.h"
-#include "GUIPassword.h"
-#include "GUIUserMessages.h"
-#include "ServiceBroker.h"
-#include "URL.h"
-#include "Util.h"
-#include "filesystem/Directory.h"
-#include "filesystem/File.h"
-#include "filesystem/MultiPathDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "network/GUIDialogNetworkSetup.h"
 #include "network/Network.h"
 #include "profiles/ProfileManager.h"
+#include "ServiceBroker.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "URL.h"
+#include "Util.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -359,7 +361,13 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
     CFileItemList items;
     std::string strParentPath;
 
-    if (!m_rootDir.GetDirectory(pathToUrl, items, m_useFileDirectories, false))
+    CGetDirectoryRunnable runnable(m_rootDir, pathToUrl, items, m_useFileDirectories);
+    if (!CGUIDialogBusy::Wait(&runnable, 100, true))
+    {
+      // cancelled
+      return;
+    }
+    else if (!runnable.GetResult())
     {
       CLog::Log(LOGERROR, "CGUIDialogFileBrowser::GetDirectory({}) failed",
                 pathToUrl.GetRedacted());

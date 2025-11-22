@@ -92,15 +92,17 @@ private:
     DONE
   };
 
-  void StartDirectoryJob();
+  void StartDirectoryJob(bool skipDiskCache);
 
   // ITimerCallback implementation
   void OnTimeout() override;
 
   UpdateState m_updateState{UpdateState::OK};
+  bool m_skipDiskCache{false};
   unsigned int m_jobID = 0;
   bool m_jobPending{false};
   std::chrono::time_point<std::chrono::system_clock> m_lastJobStartedAt;
+  std::chrono::time_point<std::chrono::system_clock> m_lastNetworkSuccessAt;
   CTimer m_nextJobTimer;
 
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_url;
