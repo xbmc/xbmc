@@ -8,8 +8,11 @@
 
 #pragma once
 
+#include "video/Bookmark.h"
+
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <tuple>
 
@@ -45,12 +48,19 @@ bool IsAutoPlayNextItem(const CFileItem& item);
   */
 bool IsAutoPlayNextItem(const std::string& content);
 
+/*! \brief Parses a playerState string from a bookmark and returns the next stack part number if available.
+  \param bookmark The bookmark to parse
+  \return std::nullopt if no nextpart tag, or the next part number if available.
+  */
+std::optional<int> GetNextPartFromBookmark(const CBookmark& bookmark);
+
 /*!
  \brief Get the resume offset and part number for the given stack item.
- \param item The stack item to retrieve the offset for
- \return The offset or -1 if not found and the part number or 0 if not available
+ \param item The stack item to retrieve the offset for.
+ \return std::nullopt if nothing found, or the part number and offset.
  */
-std::tuple<int64_t, unsigned int> GetStackResumeOffsetAndPartNumber(const CFileItem& item);
+std::optional<std::tuple<int64_t, unsigned int>> GetStackResumeOffsetAndPartNumber(
+    const CFileItem& item);
 
 /*!
  \brief Get the resume offset for a part of a stack item.
