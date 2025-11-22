@@ -24,7 +24,7 @@ public:
 
   void Run() override
   {
-    m_result = m_dir.GetDirectory(m_url, m_items, m_useDir, true);
+    m_result = m_dir.GetDirectory(m_url, m_items, m_useDir, false);
   }
 
   void Cancel() override
