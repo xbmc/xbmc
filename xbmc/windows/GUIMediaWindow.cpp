@@ -499,7 +499,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       if (m_guiState)
       {
-        if (message.GetParam1())
+        if (message.GetParam1() >= SortByNone)
           m_guiState->SetCurrentSortMethod(message.GetParam1());
         else if (message.GetParam2())
           m_guiState->SetNextSortMethod(message.GetParam2());
