@@ -36,10 +36,14 @@ public:
 
   uint32_t GetId() const { return m_id; }
   uint32_t GetPropertyId(const std::string& name) const;
-  std::optional<uint64_t> GetPropertyValue(std::string_view name, std::string_view valueName) const;
+  std::optional<uint64_t> GetPropertyEnumValue(std::string_view name,
+                                               std::string_view valueName) const;
 
   bool SetProperty(const std::string& name, uint64_t value);
   bool SupportsProperty(const std::string& name);
+  std::optional<uint64_t> GetPropertyValue(const std::string& name);
+  std::optional<bool> IsPropertyImmutable(const std::string& name);
+  std::optional<uint64_t*> GetRangePropertyLimits(const std::string& name);
 
 protected:
   explicit CDRMObject(int fd);
