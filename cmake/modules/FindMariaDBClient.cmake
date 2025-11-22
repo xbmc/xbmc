@@ -39,8 +39,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/02-linux-pthread.patch")
       endif()
 
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LOCATION_PATH lib/mariadb)
-
       list(APPEND BUILD_FLAGS -DWITH_MYSQLCOMPAT:BOOL=OFF)
     endif()
 
@@ -48,6 +46,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       generate_patchcommand("${patches}")
       unset(patches)
     endif()
+
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LOCATION_PATH lib/mariadb)
 
     if(WINDOWS_STORE)
       list(APPEND CLIENT_PLUGINS -DCLIENT_PLUGIN_DIALOG=OFF)
