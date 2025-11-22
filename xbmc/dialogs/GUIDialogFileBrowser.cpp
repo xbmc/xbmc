@@ -362,7 +362,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
     std::string strParentPath;
 
     CGetDirectoryRunnable runnable(m_rootDir, pathToUrl, items, m_useFileDirectories);
-    if (!CGUIDialogBusy::Wait(&runnable))
+    if (!CGUIDialogBusy::Wait(&runnable, 100, true))
     {
       // cancelled
       return;
