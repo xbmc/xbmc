@@ -92,6 +92,7 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
   endif()
 elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
   list(APPEND ffmpeg_conf --enable-videotoolbox
+                          --disable-filter=yadif_videotoolbox
                           --target-os=darwin
               )
 elseif(CORE_SYSTEM_NAME STREQUAL osx)
