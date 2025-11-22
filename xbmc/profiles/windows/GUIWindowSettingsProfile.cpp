@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
@@ -147,10 +148,16 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           {
             if (CGUIDialogProfileSettings::ShowForProfile(iItem))
             {
-              LoadList();
-              CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
-              CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-
+              // if current profile, ask user if wants to log out now (= yes)
+              if (profileManager->GetCurrentProfileId() == iItem &&
+                  CGUIDialogYesNo::ShowAndGetInput(CVariant{13200}, CVariant{20478}))
+                profileManager->LoadProfile(iItem); // Refresh profile now
+              else
+              {
+                LoadList();
+                CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2, iItem);
+                CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+              }
               return true;
             }
 
@@ -162,7 +169,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             if (CGUIDialogProfileSettings::ShowForProfile(profileManager->GetNumberOfProfiles()))
             {
               LoadList();
-              CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
+              CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2, iItem);
               CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
               return true;
             }
@@ -214,6 +221,8 @@ void CGUIWindowSettingsProfile::LoadList()
     item->SetOverlayImage(profile->getLockMode() == LockMode::EVERYONE
                               ? CGUIListItem::ICON_OVERLAY_NONE
                               : CGUIListItem::ICON_OVERLAY_LOCKED);
+    item->Select(i == static_cast<unsigned int>(
+                          profileManager->GetCurrentProfileId())); // Highlight current profile
     m_listItems->Add(item);
   }
   {
