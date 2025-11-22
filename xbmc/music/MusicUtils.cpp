@@ -732,7 +732,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
   {
     AddItemToPlayListAndPlay(item, nullptr, player);
   }
-  else if (item->HasMusicInfoTag())
+  else if (MUSIC::IsAudio(*item))
   {
     if (mode == ContentUtils::PlayMode::PLAY_FROM_HERE ||
         (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM && IsAutoPlayNextItem(*item)))
@@ -769,6 +769,10 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
       playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
       playlistPlayer.Play(item, player);
     }
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "Unable to play item {}", item->GetPath());
   }
 }
 
