@@ -140,6 +140,16 @@ public:
   std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1,
                                             LANG_LIST list = LANG_LIST::DEFAULT);
 
+  /*
+   * \brief Converts a language given as 2-Char (ISO 639-1),
+   *        3-Char (ISO 639-2/T, ISO 639-2/B), BCP 47 language tag
+   *        or full English name string to a BCP 47 tag describing audio content.
+   * \param[in] text The language to convert
+   * \param[out] bcp47 The BCP47 language tag
+   * \return true if the conversion succeeded, false otherwise.
+   */
+  bool ConvertToAudioBcp47(const std::string& text, std::string& bcp47);
+
 protected:
   static bool LookupInISO639Tables(const std::string& code, std::string& desc);
 
