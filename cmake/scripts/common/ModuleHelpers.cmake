@@ -726,27 +726,34 @@ define_property(TARGET PROPERTY LIB_BUILD
 macro(generate_mesoncrossfile)
 
   create_mesonbinaries()
-  file(WRITE ${DEPENDS_PATH}/share/cross-file.meson "${meson_binaries_string}\n")
+  file(WRITE ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_binaries_string}\n")
 
   create_mesonhostmachine()
-  file(APPEND ${DEPENDS_PATH}/share/cross-file.meson "${meson_host_machine_string}\n")
+  file(APPEND ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_host_machine_string}\n")
 
   create_mesonproperties()
-  file(APPEND ${DEPENDS_PATH}/share/cross-file.meson "${meson_properties_string}\n")
+  file(APPEND ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_properties_string}\n")
 
   create_mesonbuiltin()
-  file(APPEND ${DEPENDS_PATH}/share/cross-file.meson "${meson_builtin_string}\n")
+  file(APPEND ${DEPENDS_PATH}/share/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}-cross-file.meson "${meson_builtin_string}\n")
 
 endmacro()
 
 # Creates the [binaries] block of a meson cross file
 # sets meson_binaries_string to PARENT_SCOPE
+# Format for binaries is <meson_app_name> <target_app_variable>
+# Additional module specific binaries can be supplied by setting
+# ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_BINARIES with suitable pairs
 function(create_mesonbinaries)
 
   set(binariespairs "c" "CMAKE_C_COMPILER"
                     "cpp" "CMAKE_CXX_COMPILER"
                     "ar" "CMAKE_AR"
                     "cmake" "CMAKE_COMMAND")
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_BINARIES)
+    list(APPEND binariespairs ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_BINARIES})
+  endif()
 
   if(NOT "${CMAKE_STRIP}" STREQUAL "")
     list(APPEND binariespairs "strip" "CMAKE_STRIP")
@@ -784,9 +791,16 @@ endfunction()
 # sets meson_host_machine_string to PARENT_SCOPE
 function(create_mesonhostmachine)
 
+  # CMAKE_C_COMPILER_ARCHITECTURE_ID is only populated for MSVC prior to cmake 4.1
+  # cmake 4.1+ does populate for unix platforms
+  if(CMAKE_C_COMPILER_ARCHITECTURE_ID)
+    string(TOUPPER "${CMAKE_C_COMPILER_ARCHITECTURE_ID}" UPPER_C_ARCH)
+  else()
+    string(TOUPPER "${CPU}" UPPER_C_ARCH)
+  endif()
+
   # Non-exhaustive list to map cmake CPU to meson cpu names
   # https://mesonbuild.com/Reference-tables.html#cpu-families
-  string(TOUPPER ${CMAKE_C_COMPILER_ARCHITECTURE_ID} UPPER_C_ARCH)
   if("${UPPER_C_ARCH}" MATCHES "ARM64" OR "${UPPER_C_ARCH}" MATCHES "AARCH64")
     set(meson_cpu_family aarch64)
   elseif("${UPPER_C_ARCH}" MATCHES "ARMV.")
@@ -841,10 +855,14 @@ endfunction()
 # sets meson_builtin_string to PARENT_SCOPE
 function(create_mesonbuiltin)
 
-  set(builtinpairs "c_args" "CMAKE_C_FLAGS"
-                   "c_link_args" "CMAKE_EXE_LINKER_FLAGS"
-                   "cpp_args" "CMAKE_CXX_FLAGS"
-                   "cpp_link_args" "CMAKE_EXE_LINKER_FLAGS")
+  # Pair is of the format: <meson field> <cmake_equivalent>
+  # The cmake field is based on the name of the variable, but removing the CMAKE_ prefix
+  # This allows us to also provide a module specific additional variable if additions are required
+  # eg. CMAKE_C_FLAGS dav1d_C_FLAGS
+  set(builtinpairs "c_args" "C_FLAGS"
+                   "c_link_args" "EXE_LINKER_FLAGS"
+                   "cpp_args" "CXX_FLAGS"
+                   "cpp_link_args" "EXE_LINKER_FLAGS")
 
   # Get/set loop limit (Size - 1) from size of builtinpairs list
   list(LENGTH builtinpairs options_length)
@@ -857,7 +875,7 @@ function(create_mesonbuiltin)
     # cmake source variable name
     list(GET builtinpairs ${cmake_flag_arg} cmake_flag_name)
 
-    set(input "${${cmake_flag_name}}")
+    set(input "${CMAKE_${cmake_flag_name}} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_${cmake_flag_name}}")
     string(STRIP "${input}" input)
 
     # builtinpairs cmake source variables are specifically single strings, and not lists
@@ -867,7 +885,13 @@ function(create_mesonbuiltin)
     string(APPEND output_string "${tmp_string}\n")
   endforeach()
 
-  string(APPEND output_string "default_library = 'static'\n")
+  # allow a module to override the default_library type.
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_libType)
+    string(APPEND output_string "default_library = '${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_libType}'\n")
+  else()
+    string(APPEND output_string "default_library = 'static'\n")
+  endif()
+
   string(APPEND output_string "prefix = '${DEPENDS_PATH}'\n")
   string(APPEND output_string "libdir = 'lib'\n")
   string(APPEND output_string "bindir = 'bin'\n")
