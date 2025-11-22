@@ -249,7 +249,7 @@ else()
   # have latest version to properly track rebuiling.
   if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
     # required ffmpeg library versions - tools/depends/target/ffmpeg versions
-    set(REQUIRED_FFMPEG_VERSION 8.0.0)
+    set(REQUIRED_FFMPEG_VERSION 8.0.1)
     set(_avutil_ver "=60.8.100")
     set(_avcodec_ver "=62.11.100")
     set(_avformat_ver "=62.3.100")
