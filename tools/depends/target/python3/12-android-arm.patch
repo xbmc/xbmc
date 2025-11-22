@@ -1,0 +1,10 @@
+--- a/Lib/sysconfig/__init__.py
++++ b/Lib/sysconfig/__init__.py
+@@ -703,6 +703,7 @@
+             "i686": "x86",
+             "aarch64": "arm64_v8a",
+             "armv7l": "armeabi_v7a",
++            "arm": "armeabi_v7a",
+         }[machine]
+     elif osname == "linux":
+         # At least on Linux/Intel, 'machine' is the processor --

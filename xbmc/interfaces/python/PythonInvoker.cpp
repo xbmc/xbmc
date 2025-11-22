@@ -307,7 +307,11 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
       //  passing a FILE* to python from an fopen has the potential to crash.
 
       PyObject* pyRealFilename = Py_BuildValue("s", realFilename.c_str());
+#if PY_VERSION_HEX >= 0x030e0000
+      FILE* fp = Py_fopen(pyRealFilename, "rb");
+#else
       FILE* fp = _Py_fopen_obj(pyRealFilename, "rb");
+#endif
       Py_DECREF(pyRealFilename);
 
       if (fp != NULL)
