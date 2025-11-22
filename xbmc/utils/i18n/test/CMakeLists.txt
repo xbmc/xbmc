@@ -1,4 +1,6 @@
-set(SOURCES TestIso3166_1.cpp
+set(SOURCES TestBcp47.cpp
+            TestBcp47Parser.cpp
+            TestIso3166_1.cpp
             TestIso639_1.cpp
             TestIso639_2.cpp)
 

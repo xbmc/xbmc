@@ -158,20 +158,22 @@ public:
   void SetMPAARating(std::string mpaaRating);
   void SetFileNameAndPath(std::string fileNameAndPath);
   void SetOriginalTitle(std::string originalTitle);
-  enum class LanguageProcessing
+
+  enum class LanguageTagSource
   {
-    PROCESSING_NONE,
-    PROCESSING_NORMALIZE
+    SOURCE_INTERNAL,
+    SOURCE_EXTERNAL,
   };
+
   /*!
-   * \brief Set the original language, with optional preprocessing.
-   * \param[in] language ISO 639-2/B language code or text to be preprocessed.
-   * The preprocessing can convert from ISO 639-1, ISO 639-2/B and ISO 639-2/T codes or a full
-   * english name string to ISO-639-2/B.
-   * \param[in] proc processing type
-   * \return success of the preprocessing
+   * \brief Set the original audio language, with optional conversion.
+   * \param[in] language The original language.
+   * \param[in] type The language tag type.
+   *            For 'type' TYPE_ANY, the function will attempt to guess the encoding of 'language'
+   *            and recognizes ISO 639-1, ISO 639-2, BCP47 tags, and English names
+   * \return success of the conversion
    */
-  bool SetOriginalLanguage(std::string language, LanguageProcessing proc);
+  bool SetOriginalLanguage(std::string language, LanguageTagSource source);
   void SetEpisodeGuide(std::string episodeGuide);
   void SetStatus(std::string status);
   void SetProductionCode(std::string productionCode);

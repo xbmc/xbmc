@@ -12,6 +12,7 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/i18n/Bcp47.h"
 #include "utils/i18n/Iso3166_1.h"
 #include "utils/i18n/Iso639.h"
 #include "utils/i18n/Iso639_1.h"
@@ -20,7 +21,6 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <string_view>
 
 using namespace KODI::UTILS::I18N;
 
@@ -159,21 +159,16 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
   }
   else if (strCharCode.size() > 3)
   {
-    std::string_view name = strCharCode;
-
+    if (const auto tCode = CIso639_2::LookupByName(strCharCode); tCode.has_value())
     {
-      auto tCode = CIso639_2::LookupByName(name);
-      if (tCode)
-      {
-        // Map T to B code for the few languages that have differences
-        auto bCode = CIso639_2::TCodeToBCode(*tCode);
-        if (bCode)
-          strISO6392B = *bCode;
-        else
-          strISO6392B = *tCode;
+      // Map T to B code for the few languages that have differences
+      auto bCode = CIso639_2::TCodeToBCode(*tCode);
+      if (bCode)
+        strISO6392B = *bCode;
+      else
+        strISO6392B = *tCode;
 
-        return true;
-      }
+      return true;
     }
 
     // Try search on language addons
@@ -364,22 +359,16 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     }
   }
 
-  std::string_view name = descTmp;
+  if (const auto ret = CIso639_1::LookupByName(descTmp); ret.has_value())
   {
-    auto ret = CIso639_1::LookupByName(name);
-    if (ret)
-    {
-      code = *ret;
-      return true;
-    }
+    code = *ret;
+    return true;
   }
+
+  if (const auto ret = CIso639_2::LookupByName(descTmp); ret.has_value())
   {
-    auto ret = CIso639_2::LookupByName(name);
-    if (ret)
-    {
-      code = *ret;
-      return true;
-    }
+    code = *ret;
+    return true;
   }
 
   // Find on language addons
@@ -562,6 +551,69 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
   }
 
   return lang;
+}
+
+bool CLangCodeExpander::ConvertToAudioBcp47(const std::string& text, std::string& bcp47Lang)
+{
+  std::string code{text};
+  StringUtils::Trim(code);
+  StringUtils::ToLower(code);
+
+  // Search in the user defined map. Bypasses all other validations.
+  if (LookupUserCode(code, bcp47Lang))
+    return true;
+
+  auto tag = CBcp47::ParseTag(code);
+  if (tag.has_value() && tag->IsValid())
+  {
+    tag->Canonicalize();
+
+    bcp47Lang = tag->ToAudioLanguageTag().Format();
+    return true;
+  }
+
+  // Could be an alpha-3 ISO639 code but BCP47 requires the alpha-2
+  if (code.length() == 3)
+  {
+    auto bcode = CIso639_2::TCodeToBCode(code);
+    if (!bcode.has_value())
+      bcode = code;
+
+    if (g_LangCodeExpander.ConvertToISO6391(bcode.value(), bcp47Lang))
+      return true;
+  }
+
+  // Not formatted as BCP 47 / unknown code / inexistent registered language
+  // this could be an English language name
+  std::string iso639;
+  if (ReverseLookup(code, iso639))
+  {
+    tag = CBcp47::ParseTag(iso639);
+    if (tag.has_value() && tag->IsValid())
+    {
+      tag->Canonicalize();
+
+      bcp47Lang = tag->ToAudioLanguageTag().Format();
+      return true;
+    }
+    else
+    {
+      CLog::LogF(LOGERROR,
+                 "{} recognized as the English language name of ISO 639 code {}, but failed to "
+                 "parse the code for canonicalization",
+                 code, iso639);
+    }
+  }
+
+  // Try search on language addons
+  const std::string addonLang = g_langInfo.ConvertEnglishNameToAddonLocale(code);
+  if (!addonLang.empty())
+  {
+    bcp47Lang = addonLang;
+    return true;
+  }
+
+  return false;
 }
 
 std::string CLangCodeExpander::FindLanguageCodeWithSubtag(const std::string& str)

@@ -7,6 +7,7 @@
  */
 
 #include "utils/LangCodeExpander.h"
+#include "utils/StringUtils.h"
 
 #include <gtest/gtest.h>
 
