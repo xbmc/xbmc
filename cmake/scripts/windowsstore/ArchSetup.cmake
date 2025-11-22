@@ -11,9 +11,7 @@ endif()
 
 # -------- Host Settings ---------
 
-set(_gentoolset ${CMAKE_GENERATOR_TOOLSET})
-string(REPLACE "host=" "" HOSTTOOLSET ${_gentoolset})
-unset(_gentoolset)
+set(HOSTTOOLSET ${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE})
 
 # -------- Architecture settings ---------
 
