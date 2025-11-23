@@ -53,7 +53,7 @@ macro(buildFFMPEG)
 
     # Todo: buildmode?
     set(PROMPTLEVEL noprompt)
-    set(BUILDMODE clean)
+    set(BUILDMODE noclean)
 
     set(build32 no)
     set(build64 no)
