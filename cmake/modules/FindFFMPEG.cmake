@@ -215,16 +215,17 @@ macro(buildFFMPEG)
   foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
     string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
 
-    add_library(ffmpeg::${_libname} ${target_scope} IMPORTED)
-    set_target_properties(ffmpeg::${_libname} PROPERTIES
-                                              INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
-
-    if(WIN32 OR WINDOWS_STORE)
-      string(REPLACE "lib" "" name ${_libname})
+    if(NOT TARGET ffmpeg::${_libname})
+      add_library(ffmpeg::${_libname} ${target_scope} IMPORTED)
       set_target_properties(ffmpeg::${_libname} PROPERTIES
-                                                IMPORTED_LOCATION "${MINGW_LIBS_DIR}/lib/${name}.lib")
-    endif()
+                                                INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
 
+      if(WIN32 OR WINDOWS_STORE)
+        string(REPLACE "lib" "" name ${_libname})
+        set_target_properties(ffmpeg::${_libname} PROPERTIES
+                                                  IMPORTED_LOCATION "${MINGW_LIBS_DIR}/lib/${name}.lib")
+      endif()
+    endif()
   endforeach()
 endmacro()
 
@@ -420,6 +421,11 @@ if(FFMPEG_FOUND)
       endif()
     endif()
   endforeach()
+
+  # Always enable build job for windows. Msys scripts handle rebuild requirements
+  if((WIN32 OR WINDOWS_STORE) AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+    buildFFMPEG()
+  endif()
 
   if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
