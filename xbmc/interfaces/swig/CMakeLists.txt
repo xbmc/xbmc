@@ -143,7 +143,7 @@ set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
   set_target_properties(python_binding PROPERTIES STATIC_LIBRARY_FLAGS "/ignore:4264")
 endif()
-if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+if(CMAKE_CXX_COMPILER_ID STREQUAL GNU OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set_target_properties(python_binding PROPERTIES
                         COMPILE_FLAGS -Wno-cast-function-type) # from -Wextra
 endif()
