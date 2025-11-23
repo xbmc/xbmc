@@ -213,7 +213,7 @@ macro(buildFFMPEG)
   endif()
 
   foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-    string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
+    string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
 
     if(NOT TARGET ffmpeg::${_libname})
       add_library(ffmpeg::${_libname} ${target_scope} IMPORTED)
@@ -237,15 +237,29 @@ if(WITH_FFMPEG)
   message(STATUS "Warning: FFmpeg version checking disabled")
   set(REQUIRED_FFMPEG_VERSION undef)
 else()
-  # required ffmpeg library versions
-  set(REQUIRED_FFMPEG_VERSION 7.0.0)
-  set(_avcodec_ver ">=61.3.100")
-  set(_avfilter_ver ">=10.1.100")
-  set(_avformat_ver ">=61.1.100")
-  set(_avutil_ver ">=59.8.100")
-  set(_postproc_ver ">=58.1.100")
-  set(_swresample_ver ">=5.1.100")
-  set(_swscale_ver ">=8.1.100")
+  # We track multiple versions due to API changes. For dependsbuild or windows, we always
+  # have latest version to properly track rebuiling.
+  if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+    # required ffmpeg library versions - tools/depends/target/ffmpeg versions
+    set(REQUIRED_FFMPEG_VERSION 8.0.0)
+    set(_avutil_ver "=60.8.100")
+    set(_avcodec_ver "=62.11.100")
+    set(_avformat_ver "=62.3.100")
+    set(_avfilter_ver "=11.4.100")
+    set(_swscale_ver "=9.1.100")
+    set(_swresample_ver "=6.1.100")
+    set(_postproc_ver "=59.1.100")
+  else()
+    # required ffmpeg library versions - minimum supported API compat versions
+    set(REQUIRED_FFMPEG_VERSION 7.0.0)
+    set(_avutil_ver ">=59.8.100")
+    set(_avcodec_ver ">=61.3.100")
+    set(_avformat_ver ">=61.1.100")
+    set(_avfilter_ver ">=10.1.100")
+    set(_swscale_ver ">=8.1.100")
+    set(_swresample_ver ">=5.1.100")
+    set(_postproc_ver ">=58.1.100")
+  endif()
 endif()
 
 # Allows building with external ffmpeg not found in system paths,
@@ -288,7 +302,7 @@ else()
   endmacro()
 
   foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-    string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
+    string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
     ffmpeg_find_lib(${_libname})
   endforeach()
 
@@ -360,7 +374,7 @@ else()
 
           foreach(ldflag IN LISTS FFMPEG_${libname}_LDFLAGS)
             foreach(pkgname IN ITEMS ${FFMPEG_PKGS})
-              string(REGEX REPLACE ">=.*" "" _shortlibname ${pkgname})
+              string(REGEX REPLACE "[>]?=.*" "" _shortlibname ${pkgname})
               string(TOUPPER ${_shortlibname} _shortlibname_UPPER)
               string(REPLACE "lib" "" shortname ${_shortlibname})
   
@@ -381,7 +395,7 @@ else()
     endmacro()
 
     foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-      string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
+      string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
       ffmpeg_create_target(${_libname})
     endforeach()
   else()
@@ -410,7 +424,7 @@ if(FFMPEG_FOUND)
   endif()
 
   foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-    string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
+    string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
     if(TARGET ffmpeg::${_libname})
       target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::${_libname})
 
