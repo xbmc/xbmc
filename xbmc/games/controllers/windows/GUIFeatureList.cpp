@@ -31,14 +31,13 @@ using namespace GAME;
 CGUIFeatureList::CGUIFeatureList(CGUIWindow* window, GameClientPtr gameClient)
   : m_window(window),
     m_gameClient(std::move(gameClient)),
-    m_wizard(new CGUIConfigurationWizard)
+    m_wizard(std::make_unique<CGUIConfigurationWizard>())
 {
 }
 
 CGUIFeatureList::~CGUIFeatureList(void)
 {
   Deinitialize();
-  delete m_wizard;
 }
 
 bool CGUIFeatureList::Initialize(void)
@@ -264,8 +263,8 @@ std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(
   {
     BUTTON_TYPE buttonType = CGUIFeatureTranslator::GetButtonType(feature.Type());
 
-    CGUIButtonControl* pButton = CGUIFeatureFactory::CreateButton(buttonType, *m_guiButtonTemplate,
-                                                                  m_wizard, feature, buttonIndex);
+    CGUIButtonControl* pButton = CGUIFeatureFactory::CreateButton(
+        buttonType, *m_guiButtonTemplate, m_wizard.get(), feature, buttonIndex);
 
     // If successful, add button to result
     if (pButton != nullptr)
@@ -288,6 +287,6 @@ CGUIButtonControl* CGUIFeatureList::GetSelectKeyButton(
       m_wizard->RegisterKey(feature);
   }
 
-  return CGUIFeatureFactory::CreateButton(BUTTON_TYPE::SELECT_KEY, *m_guiButtonTemplate, m_wizard,
-                                          CPhysicalFeature(), buttonIndex);
+  return CGUIFeatureFactory::CreateButton(BUTTON_TYPE::SELECT_KEY, *m_guiButtonTemplate,
+                                          m_wizard.get(), CPhysicalFeature(), buttonIndex);
 }

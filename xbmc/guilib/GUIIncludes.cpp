@@ -53,7 +53,7 @@ constexpr auto CONSTANT_NODES = make_set<std::string_view>({
     "textoffsety", "textwidth",  "timeperimage",  "top",        "width",
 });
 
-static constexpr std::string_view EXPRESSION_ATTRIBUTE = "condition";
+constexpr std::string_view EXPRESSION_ATTRIBUTE = "condition";
 
 constexpr auto EXPRESSION_NODES = make_set<std::string_view>({
     "enable",

@@ -44,7 +44,7 @@ constexpr auto POST_MAPPING_WAIT_TIME_MS = 5000ms;
 
 CGUIConfigurationWizard::CGUIConfigurationWizard()
   : CThread("GUIConfigurationWizard"),
-    m_actionMap(new KEYMAP::CKeyboardActionMap)
+    m_actionMap(std::make_unique<KEYMAP::CKeyboardActionMap>())
 {
   InitializeState();
 }

@@ -14,6 +14,8 @@
 #include "games/controllers/input/PhysicalFeature.h"
 #include "input/joysticks/JoystickTypes.h"
 
+#include <memory>
+
 class CGUIButtonControl;
 class CGUIControlGroupList;
 class CGUIImage;
@@ -74,7 +76,7 @@ private:
   // Game window stuff
   GameClientPtr m_gameClient;
   ControllerPtr m_controller;
-  IConfigurationWizard* m_wizard;
+  std::unique_ptr<IConfigurationWizard> m_wizard;
 };
 } // namespace GAME
 } // namespace KODI

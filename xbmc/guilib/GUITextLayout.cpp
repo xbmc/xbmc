@@ -584,7 +584,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
     std::vector<character_t> tmp;
     tmp.reserve(line.m_text.size());
     auto widthOf = [&](const std::vector<character_t>::const_iterator start,
-                       const std::vector<character_t>::const_iterator end) -> float
+                       const std::vector<character_t>::const_iterator end)
     {
       if (start == end)
         return 0.0f;
@@ -613,10 +613,10 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
                                   std::bind_front(&CGUITextLayout::CanWrapAtLetter, this));
       const bool hasSpace = (wordEnd != line.m_text.end());
       const float wordWidth = widthOf(current, wordEnd);
-      const float spaceWidth = hasSpace ? widthOf(wordEnd, wordEnd + 1) : 0.0f;
 
       // Try to include word + trailing space
-      if (currentWidth + wordWidth + spaceWidth <= maxWidth)
+      if (const float spaceWidth = hasSpace ? widthOf(wordEnd, wordEnd + 1) : 0.0f;
+          currentWidth + wordWidth + spaceWidth <= maxWidth)
       {
         currentWidth += wordWidth + spaceWidth;
         lastNonSpaceInLine = wordEnd; // exclude trailing space

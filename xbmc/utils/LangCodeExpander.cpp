@@ -166,12 +166,8 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
       if (tCode)
       {
         // Map T to B code for the few languages that have differences
-        auto bCode = CIso639_2::TCodeToBCode(*tCode);
-        if (bCode)
-          strISO6392B = *bCode;
-        else
-          strISO6392B = *tCode;
-
+        const auto bCode{CIso639_2::TCodeToBCode(*tCode)};
+        strISO6392B = bCode.value_or(*tCode);
         return true;
       }
     }
@@ -448,7 +444,7 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
 
     // Map B to T for the few codes that have differences
     auto tCode = CIso639_2::BCodeToTCode(longCode);
-    if (tCode)
+    if (tCode.has_value())
       longCode = *tCode;
 
     // Lookup the T code

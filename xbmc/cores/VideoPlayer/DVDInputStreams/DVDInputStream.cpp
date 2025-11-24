@@ -258,9 +258,8 @@ CDVDInputStream::UpdateState CDVDInputStream::UpdatePlaylistDetails(
     case DVDSTREAM_TYPE_DVD:
     {
       // Only update streamdetails if not already set (ie. from NFO)
-      if (item.GetProperty("update_stream_details").asBoolean(false))
-        if (item.HasVideoInfoTag())
-          item.GetVideoInfoTag()->m_streamDetails = it3->details;
+      if (item.GetProperty("update_stream_details").asBoolean(false) && item.HasVideoInfoTag())
+        item.GetVideoInfoTag()->m_streamDetails = it3->details;
 
       break;
     }

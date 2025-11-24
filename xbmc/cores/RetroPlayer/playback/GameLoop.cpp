@@ -27,7 +27,7 @@ constexpr auto PAUSE_SLEEP = 5s;
 CGameLoop::CGameLoop(IGameLoopCallback* callback, double fps)
   : CThread("GameLoop"),
     m_callback(callback),
-    m_fps(fps ? fps : DEFAULT_FPS)
+    m_fps(fps != 0.0 ? fps : DEFAULT_FPS)
 {
 }
 

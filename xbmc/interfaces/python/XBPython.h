@@ -21,14 +21,14 @@
 class CPythonInvoker;
 class CVariant;
 
-typedef struct _ts PyThreadState;
+using PyThreadState = struct _ts;
 
-typedef struct
+struct PyElem
 {
   int id;
   bool bDone;
   CPythonInvoker* pyThread;
-} PyElem;
+};
 
 class LibraryLoader;
 

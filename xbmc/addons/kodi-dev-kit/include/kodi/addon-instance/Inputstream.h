@@ -515,7 +515,7 @@ class ATTR_DLL_LOCAL InputstreamDvccMetadata
 public:
   InputstreamDvccMetadata() = default;
 
-  InputstreamDvccMetadata(const InputstreamDvccMetadata& stream) : CStructHdl(stream) {}
+  InputstreamDvccMetadata(const InputstreamDvccMetadata& stream) = default;
 
   InputstreamDvccMetadata& operator=(const InputstreamDvccMetadata&) = default;
 
@@ -573,9 +573,9 @@ public:
   uint8_t GetMdCompression() const { return m_cStructure->m_dvMdCompression; }
 
 private:
-  InputstreamDvccMetadata(const INPUTSTREAM_DVCC_METADATA* stream) : CStructHdl(stream) {}
+  explicit InputstreamDvccMetadata(const INPUTSTREAM_DVCC_METADATA* stream) : CStructHdl(stream) {}
 
-  InputstreamDvccMetadata(INPUTSTREAM_DVCC_METADATA* stream) : CStructHdl(stream) {}
+  explicit InputstreamDvccMetadata(INPUTSTREAM_DVCC_METADATA* stream) : CStructHdl(stream) {}
 };
 ///@}
 //------------------------------------------------------------------------------

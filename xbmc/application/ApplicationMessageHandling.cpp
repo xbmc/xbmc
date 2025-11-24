@@ -203,8 +203,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
 
     case TMSG_SWITCHTOFULLSCREEN:
     {
-      CGUIComponent* gui = CServiceBroker::GetGUI();
-      if (gui)
+      if (CGUIComponent* gui = CServiceBroker::GetGUI(); gui)
         gui->GetWindowManager().SwitchToFullScreen(true);
       break;
     }
@@ -231,7 +230,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
       break;
 
     case TMSG_MOVETOSCREEN:
-      CServiceBroker::GetWinSystem()->MoveToScreen(static_cast<int>(pMsg->param1));
+      CServiceBroker::GetWinSystem()->MoveToScreen(pMsg->param1);
       break;
 
     case TMSG_MINIMIZE:
@@ -243,13 +242,9 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
       // don't block external player's access to audio device
       IAE* audioengine;
       audioengine = CServiceBroker::GetActiveAE();
-      if (audioengine)
-      {
-        if (!audioengine->Suspend())
-        {
-          CLog::LogF(LOGINFO, "Failed to suspend AudioEngine before launching external program");
-        }
-      }
+      if (audioengine && !audioengine->Suspend())
+        CLog::LogF(LOGINFO, "Failed to suspend AudioEngine before launching external program");
+
 #if defined(TARGET_DARWIN)
       CLog::Log(LOGINFO, "ExecWait is not implemented on this platform");
 #elif defined(TARGET_POSIX)
@@ -258,13 +253,9 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
       CWIN32Util::XBMCShellExecute(pMsg->strParam, (pMsg->param1 == 1));
 #endif
       // Resume AE processing of XBMC native audio
-      if (audioengine)
-      {
-        if (!audioengine->Resume())
-        {
-          CLog::LogF(LOGFATAL, "Failed to restart AudioEngine after return from external player");
-        }
-      }
+      if (audioengine && !audioengine->Resume())
+        CLog::LogF(LOGFATAL, "Failed to restart AudioEngine after return from external player");
+
       break;
 
     case TMSG_EXECUTE_SCRIPT:
@@ -305,7 +296,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
             pathToUrl.Get(), items,
             CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
             XFILE::DIR_FLAG_NO_FILE_DIRS);
-        if (items.Size() > 0)
+        if (!items.IsEmpty())
         {
           slideShow.Reset();
           for (const auto& item : items)
@@ -341,7 +332,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
         extensions += "|.tbn";
       CUtil::GetRecursiveListing(strPath, items, extensions);
 
-      if (items.Size() > 0)
+      if (!items.IsEmpty())
       {
         for (const auto& item : items)
           slideShow.Add(item.get());
@@ -350,7 +341,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
 
       if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
       {
-        if (items.Size() == 0)
+        if (items.IsEmpty())
         {
           CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
               CSettings::SETTING_SCREENSAVER_MODE, "screensaver.xbmc.builtin.dim");
@@ -376,7 +367,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
     {
       if (pMsg->lpVoid)
       {
-        XBMC_Event* event = static_cast<XBMC_Event*>(pMsg->lpVoid);
+        const auto* event{static_cast<XBMC_Event*>(pMsg->lpVoid)};
         this->OnEvent(*event);
         delete event;
       }
@@ -396,7 +387,7 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
 
     case TMSG_SET_VOLUME:
     {
-      const float volumedB = static_cast<float>(pMsg->param3);
+      const auto volumedB{static_cast<float>(pMsg->param3)};
       m_app.GetComponent<CApplicationVolumeHandling>()->SetVolume(volumedB);
     }
     break;
@@ -422,8 +413,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
       {
         // Update general playlist: Remove DVD playlist items
-        int nRemoved = CServiceBroker::GetPlaylistPlayer().RemoveDVDItems();
-        if (nRemoved > 0)
+        if (CServiceBroker::GetPlaylistPlayer().RemoveDVDItems() > 0)
         {
           CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
           CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
@@ -562,11 +552,9 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       }
 
 #ifdef HAS_UPNP
-      if (URIUtils::IsUPnP(file.GetDynPath()))
-      {
-        if (!XFILE::CUPnPDirectory::GetResource(file.GetDynURL(), file))
-          return true;
-      }
+      if (URIUtils::IsUPnP(file.GetDynPath()) &&
+          !XFILE::CUPnPDirectory::GetResource(file.GetDynURL(), file))
+        return true;
 #endif
 
       // ok - send the file to the player, if it accepts it
@@ -600,7 +588,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 
       if (PLAYLIST::IsPlayList(*item))
       {
-        std::unique_ptr<CFileItemList> fileitemList = std::make_unique<CFileItemList>();
+        auto fileitemList{std::make_unique<CFileItemList>()};
         fileitemList->Add(std::move(trailerItem));
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
                                                    static_cast<void*>(fileitemList.release()));
@@ -643,9 +631,10 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
                                                          m_app.CurrentFileItemPtr(), data);
 
       m_app.m_playerEvent.Set();
-      const auto stackHelper = m_app.GetComponent<CApplicationStackHelper>();
-      if (stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
-      { // just play the next item in the stack
+      if (const auto stackHelper{m_app.GetComponent<CApplicationStackHelper>()};
+          stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
+      {
+        // just play the next item in the stack
         m_app.PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
         return true;
       }
@@ -737,8 +726,10 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       CVariant param;
       const int64_t iTime = message.GetParam1AsI64();
       const int64_t seekOffset = message.GetParam2AsI64();
-      JSONRPC::CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
-      JSONRPC::CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
+      JSONRPC::CJSONUtils::MillisecondsToTimeObject(static_cast<int>(iTime),
+                                                    param["player"]["time"]);
+      JSONRPC::CJSONUtils::MillisecondsToTimeObject(static_cast<int>(seekOffset),
+                                                    param["player"]["seekoffset"]);
       param["player"]["playerid"] =
           static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
       const auto& components = CServiceBroker::GetAppComponents();
@@ -775,9 +766,9 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
     }
     break;
     case GUI_MSG_FULLSCREEN:
-    { // Switch to fullscreen, if we can
-      CGUIComponent* gui = CServiceBroker::GetGUI();
-      if (gui)
+    {
+      // Switch to fullscreen, if we can
+      if (CGUIComponent* gui = CServiceBroker::GetGUI(); gui)
         gui->GetWindowManager().SwitchToFullScreen();
 
       return true;
@@ -786,6 +777,8 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
     case GUI_MSG_EXECUTE:
       if (message.GetNumStringParams())
         return m_app.ExecuteXBMCAction(message.GetStringParam(), message.GetItem());
+      break;
+    default:
       break;
   }
   return false;
