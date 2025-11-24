@@ -169,8 +169,6 @@ public:
                       Bcp47Usage use = Bcp47Usage::USAGE_OTHER);
 
 protected:
-  static bool LookupInISO639Tables(const std::string& code, std::string& desc);
-
   /*
    * \brief Looks up the language description for given language code
    *        in to the installed language addons.
