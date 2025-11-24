@@ -1063,9 +1063,21 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
       valid = true;
       if(!psp.relevant(stream))
         visible = false;
+
+      // Image type subtitles (e.g. VOBSUB) can support "forced" flag on overlays (images)
+      // so you need to keep the stream open to parse "forced" flag on each image
+      // since we leave the stream open by default, it is necessary to close it
+      // if the language does not match the preferences.
+      if (!visible && StreamUtils::IsCodecSupportForcedOverlay(stream.codecId) &&
+          !g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
+      {
+        valid = false;
+      }
+
       break;
     }
   }
+
   if(!valid)
     CloseStream(m_CurrentSubtitle, false);
 
@@ -3078,11 +3090,31 @@ void CVideoPlayer::HandleMessages()
     {
       bool isVisible = std::static_pointer_cast<CDVDMsgBool>(pMsg)->m_value;
 
+      const auto& ss = m_SelectionStreams.Get(StreamType::SUBTITLE, GetSubtitle());
+      const auto& as = m_SelectionStreams.Get(StreamType::AUDIO, GetAudioStream());
+
+      // Image type subtitles (e.g. VOBSUB), ensure to have the stream opened to read overlays
+      if (isVisible && StreamUtils::IsCodecSupportForcedOverlay(ss.codecId) &&
+          m_CurrentSubtitle.id == -1)
+      {
+        SetSubtitle(GetSubtitle());
+      }
+
       // SetEnableStream only if not visible, when visible OpenStream already implied that stream is enabled
       if (!isVisible)
         SetEnableStream(m_CurrentSubtitle, false);
 
       SetSubtitleVisibleInternal(isVisible);
+
+      // Image type subtitles (e.g. VOBSUB) can support "forced" flag on overlays (images)
+      // so you need to keep the stream open to parse "forced" flag on each image
+      // since we leave the stream open by default, it is necessary to close it
+      // if the language does not match the preferences.
+      if (!isVisible && StreamUtils::IsCodecSupportForcedOverlay(ss.codecId) &&
+          !g_LangCodeExpander.CompareISO639Codes(ss.language, as.language))
+      {
+        CloseStream(m_CurrentSubtitle, false);
+      }
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_PROGRAM))
     {
