@@ -66,35 +66,14 @@ bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
   if (LookupInUserMap(code, desc))
     return true;
 
-  if (LookupInISO639Tables(code, desc))
-    return true;
-
   if (LookupInLangAddons(code, desc))
     return true;
 
-  // Language code with subtag is supported only with language addons
-  // or with user defined map, then if not found we fallback by obtaining
-  // the primary code description only and appending the remaining
-  int iSplit = code.find('-');
-  if (iSplit > 0)
+  if (auto tag = CBcp47::ParseTag(code); tag.has_value())
   {
-    std::string primaryTagDesc;
-    const bool hasPrimaryTagDesc = Lookup(code.substr(0, iSplit), primaryTagDesc);
-    std::string subtagCode = code.substr(iSplit + 1);
-    if (hasPrimaryTagDesc)
-    {
-      if (!primaryTagDesc.empty())
-        desc = primaryTagDesc;
-      else
-        desc = code.substr(0, iSplit);
-
-      if (!subtagCode.empty())
-        desc += " - " + subtagCode;
-
-      return true;
-    }
+    desc = tag.value().Format(Bcp47FormattingStyle::FORMAT_ENGLISH);
+    return true;
   }
-
   return false;
 }
 
@@ -236,7 +215,6 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode,
   }
   return false;
 }
-
 
 bool CLangCodeExpander::LookupUserCode(const std::string& desc, std::string& userCode)
 {
@@ -438,44 +416,6 @@ bool CLangCodeExpander::LookupInLangAddons(const std::string& code, std::string&
 
   desc = g_langInfo.GetEnglishLanguageName(sCode);
   return !desc.empty();
-}
-
-bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::string& desc)
-{
-  if (code.empty())
-    return false;
-
-  std::string sCode(code);
-  StringUtils::ToLower(sCode);
-  StringUtils::Trim(sCode);
-
-  if (sCode.length() == 2)
-  {
-    auto ret = CIso639_1::LookupByCode(StringToLongCode(sCode));
-    if (ret)
-    {
-      desc = *ret;
-      return true;
-    }
-  }
-  else if (sCode.length() == 3)
-  {
-    uint32_t longCode = StringToLongCode(sCode);
-
-    // Map B to T for the few codes that have differences
-    auto tCode = CIso639_2::BCodeToTCode(longCode);
-    if (tCode.has_value())
-      longCode = *tCode;
-
-    // Lookup the T code
-    auto ret = CIso639_2::LookupByCode(longCode);
-    if (ret)
-    {
-      desc = *ret;
-      return true;
-    }
-  }
-  return false;
 }
 
 bool CLangCodeExpander::CompareFullLanguageNames(const std::string& lang1, const std::string& lang2)
