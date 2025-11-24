@@ -1093,140 +1093,158 @@ struct CURLArchiveConstructionTestData
   std::string protocol;
   std::string filename;
   std::string hostname;
+  bool encodeFilename{false};
 };
 
-TEST_F(TestURIUtils, DISABLED_CURLConstructionOfArchiveFile)
+std::ostream& operator<<(std::ostream& os, const CURLArchiveConstructionTestData& data)
 {
-  const std::vector<CURLArchiveConstructionTestData> test_data{
-      // Zip file tests
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png"),
-          "",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png"),
-          "",
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/zipfile.zip/kodi-dev.png"),
-          "zip",
-          "kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/zipfile.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip/does_not_exist.png"),
-          "zip",
-          "does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip"),
-          "zip",
-          "zipfile.zip",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar"),
-          "zip",
-          "rarfile.rar",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/does_not_exist.png"),
-          "zip",
-          "zipfile.zip/does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/kodi-dev.png"),
-          "zip",
-          "zipfile.zip/kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar/does_not_exist.png"),
-          "zip",
-          "rarfile.rar/does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar/kodi-dev.png"),
-          "zip",
-          "rarfile.rar/kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      // Rar file tests
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.rar/kodi-dev.png"),
-          "",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.rar/kodi-dev.png"),
-          "",
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/rarfile.rar/kodi-dev.png"),
-          "rar",
-          "kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/rarfile.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar/does_not_exist.png"),
-          "rar",
-          "does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip"),
-          "rar",
-          "zipfile.zip",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar"),
-          "rar",
-          "rarfile.rar",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip/does_not_exist.png"),
-          "rar",
-          "zipfile.zip/does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip/kodi-dev.png"),
-          "rar",
-          "zipfile.zip/kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar/does_not_exist.png"),
-          "rar",
-          "rarfile.rar/does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar/kodi-dev.png"),
-          "rar",
-          "rarfile.rar/kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_rar.rar"),
-      },
-  };
+  return os << "CURLArchiveConstructionTestData { " << data.input << " }" << std::endl;
+}
 
-  for (const auto& param : test_data)
+const auto ArchiveFileParsingTests = std::array{
+    // Zip file tests
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png",
+        "",
+        "xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png",
+        "",
+        true,
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/zipfile.zip/kodi-dev.png",
+        "zip",
+        "kodi-dev.png",
+        "xbmc/utils/test/resources/zipfile.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/does_not_exist.png",
+        "zip",
+        "does_not_exist.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip",
+        "zip",
+        "zipfile.zip",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar",
+        "zip",
+        "rarfile.rar",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/does_not_exist.png",
+        "zip",
+        "zipfile.zip/does_not_exist.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/kodi-dev.png",
+        "zip",
+        "zipfile.zip/kodi-dev.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar/does_not_exist.png",
+        "zip",
+        "rarfile.rar/does_not_exist.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar/kodi-dev.png",
+        "zip",
+        "rarfile.rar/kodi-dev.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    // Rar file tests
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/does_not_exist.rar/kodi-dev.png",
+        "",
+        "xbmc/utils/test/resources/does_not_exist.rar/kodi-dev.png",
+        "",
+        true,
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/rarfile.rar/kodi-dev.png",
+        "rar",
+        "kodi-dev.png",
+        "xbmc/utils/test/resources/rarfile.rar",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_rar.rar/does_not_exist.png",
+        "rar",
+        "does_not_exist.png",
+        "xbmc/utils/test/resources/archives_in_rar.rar",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip",
+        "rar",
+        "zipfile.zip",
+        "xbmc/utils/test/resources/archives_in_rar.rar",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar",
+        "rar",
+        "rarfile.rar",
+        "xbmc/utils/test/resources/archives_in_rar.rar",
+    },
+    /* These tests are causing SEH exceptions on Win64
+		 */
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip/does_not_exist.png",
+        "rar",
+        "zipfile.zip/does_not_exist.png",
+        "xbmc/utils/test/resources/archives_in_rar.rar",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_rar.rar/zipfile.zip/kodi-dev.png",
+        "rar",
+        "zipfile.zip/kodi-dev.png",
+        "xbmc/utils/test/resources/archives_in_rar.rar",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar/does_not_exist.png",
+        "rar",
+        "rarfile.rar/does_not_exist.png",
+        "xbmc/utils/test/resources/archives_in_rar.rar",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_rar.rar/rarfile.rar/kodi-dev.png",
+        "rar",
+        "rarfile.rar/kodi-dev.png",
+        "xbmc/utils/test/resources/archives_in_rar.rar",
+    },
+};
+
+class ArchiveFileParsingTester : public testing::Test,
+                                 public testing::WithParamInterface<CURLArchiveConstructionTestData>
+{
+};
+
+TEST_P(ArchiveFileParsingTester, TestArchiveFileParsingNativeSlashes)
+{
+  const auto& param = GetParam();
+  const std::string path = XBMC_REF_FILE_PATH(param.input);
+  const CURL url(path);
+
+  EXPECT_EQ(param.protocol, url.GetProtocol());
+  if (param.encodeFilename)
   {
-    const CURL url(param.input);
-
-    EXPECT_EQ(param.protocol, url.GetProtocol());
-    EXPECT_EQ(param.filename, url.GetFileName());
+    EXPECT_EQ(XBMC_REF_FILE_PATH(param.filename), url.GetFileName());
     EXPECT_EQ(param.hostname, CURL::Decode(url.GetHostName()));
   }
+  else
+  {
+    EXPECT_EQ(param.filename, url.GetFileName());
+    EXPECT_EQ(XBMC_REF_FILE_PATH(param.hostname), CURL::Decode(url.GetHostName()));
+  }
 }
+
+INSTANTIATE_TEST_SUITE_P(TestURIUtils,
+                         ArchiveFileParsingTester,
+                         testing::ValuesIn(ArchiveFileParsingTests));
 
 struct GetFileOrFolderNameTest
 {
