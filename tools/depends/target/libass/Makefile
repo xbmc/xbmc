@@ -13,6 +13,11 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
                       --disable-shared
 
+# Android: Enable fontconfig explicitly for font fallback support
+ifeq ($(OS), android)
+  CONFIGURE += --enable-fontconfig
+endif
+
 LIBDYLIB=$(PLATFORM)/$(LIBNAME)/.libs/$(LIBNAME).a
 
 all: .installed-$(PLATFORM)

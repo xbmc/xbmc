@@ -92,11 +92,93 @@ void CDVDSubtitlesLibass::Configure()
   ass_set_margins(m_renderer, 0, 0, 0, 0);
   ass_set_use_margins(m_renderer, 0);
 
-  // Libass uses system font provider (like fontconfig) by default in some
-  // platforms (e.g. linux/windows), on some other systems like android the
-  // font provider is currently not supported, then an user can add his
-  // additional fonts only by using the user fonts folder.
-  ass_set_fonts_dir(m_library, CSpecialProtocol::TranslatePath(FONT::FONTPATH::USER).c_str());
+  std::string fontsDir = CSpecialProtocol::TranslatePath(FONT::FONTPATH::USER);
+  int fontProvider = ASS_FONTPROVIDER_AUTODETECT;
+  std::string fontconfigPath; // Keep string alive for lifetime of fontconfigConfig pointer
+  const char* fontconfigConfig = nullptr;
+
+#if defined(TARGET_ANDROID)
+  // Use fontconfig with custom config pointing to Android system fonts.
+  // Fontconfig provides automatic font fallback for all scripts (Malayalam, Tamil, Chinese, etc.).
+  fontProvider = ASS_FONTPROVIDER_FONTCONFIG;
+
+  // Create fontconfig cache directory
+  std::string fontconfigCacheDir = CSpecialProtocol::TranslatePath("special://temp/fontconfig");
+  XFILE::CDirectory::Create(fontconfigCacheDir);
+
+  // Create fontconfig configuration programmatically
+  // Escape XML special characters in paths to prevent XML injection
+  std::string escapedFontsDir = fontsDir;
+  StringUtils::Replace(escapedFontsDir, "&", "&amp;");
+  StringUtils::Replace(escapedFontsDir, "<", "&lt;");
+  StringUtils::Replace(escapedFontsDir, ">", "&gt;");
+  StringUtils::Replace(escapedFontsDir, "\"", "&quot;");
+  StringUtils::Replace(escapedFontsDir, "'", "&apos;");
+
+  std::string systemFontsDir = CSpecialProtocol::TranslatePath(FONT::FONTPATH::SYSTEM);
+  std::string escapedSystemFontsDir = systemFontsDir;
+  StringUtils::Replace(escapedSystemFontsDir, "&", "&amp;");
+  StringUtils::Replace(escapedSystemFontsDir, "<", "&lt;");
+  StringUtils::Replace(escapedSystemFontsDir, ">", "&gt;");
+  StringUtils::Replace(escapedSystemFontsDir, "\"", "&quot;");
+  StringUtils::Replace(escapedSystemFontsDir, "'", "&apos;");
+
+  std::string escapedCacheDir = fontconfigCacheDir;
+  StringUtils::Replace(escapedCacheDir, "&", "&amp;");
+  StringUtils::Replace(escapedCacheDir, "<", "&lt;");
+  StringUtils::Replace(escapedCacheDir, ">", "&gt;");
+  StringUtils::Replace(escapedCacheDir, "\"", "&quot;");
+  StringUtils::Replace(escapedCacheDir, "'", "&apos;");
+
+  std::string fontconfigXml = "<?xml version=\"1.0\"?>\n"
+                              "<!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">\n"
+                              "<fontconfig>\n"
+                              "  <dir>" +
+                              escapedFontsDir +
+                              "</dir>\n"
+                              "  <dir>" +
+                              escapedSystemFontsDir +
+                              "</dir>\n"
+                              "  <dir>/system/fonts</dir>\n"
+                              "  <dir>/product/fonts</dir>\n"
+                              "  <dir>/system_ext/fonts</dir>\n"
+                              "  <dir>/vendor/fonts</dir>\n"
+                              "  <cachedir>" +
+                              escapedCacheDir +
+                              "</cachedir>\n"
+                              "</fontconfig>\n";
+
+  // Write fontconfig configuration to temp directory (only if it doesn't exist)
+  fontconfigPath = CSpecialProtocol::TranslatePath("special://temp/fonts.conf");
+
+  if (!XFILE::CFile::Exists(fontconfigPath))
+  {
+    XFILE::CFile fontconfigFile;
+    if (fontconfigFile.OpenForWrite(fontconfigPath, true))
+    {
+      fontconfigFile.Write(fontconfigXml.c_str(), fontconfigXml.length());
+      fontconfigFile.Close();
+      fontconfigConfig = fontconfigPath.c_str();
+      CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Created fontconfig configuration at {}",
+                fontconfigPath);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CDVDSubtitlesLibass: Failed to create fontconfig configuration, falling "
+                          "back to AUTODETECT");
+      fontProvider = ASS_FONTPROVIDER_AUTODETECT;
+      fontconfigConfig = nullptr;
+    }
+  }
+  else
+  { 
+    fontconfigConfig = fontconfigPath.c_str();
+  }
+#endif
+
+  // Set additional fonts directory for libass to scan. This provides font lookup
+  // on platforms without a font provider, and supplements fontconfig on platforms that use it.
+  ass_set_fonts_dir(m_library, fontsDir.c_str());
 
   // Load additional fonts into Libass memory
   CFileItemList items;
@@ -148,7 +230,7 @@ void CDVDSubtitlesLibass::Configure()
   }
 
   ass_set_fonts(m_renderer, FONT::FONTPATH::GetSystemFontPath(FONT::FONT_DEFAULT_FILENAME).c_str(),
-                m_defaultFontFamilyName.c_str(), ASS_FONTPROVIDER_AUTODETECT, nullptr, 1);
+                m_defaultFontFamilyName.c_str(), fontProvider, fontconfigConfig, 1);
 
   // Extract font must be set before loading ASS/SSA data,
   // after that cannot be changed
