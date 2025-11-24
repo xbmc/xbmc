@@ -412,7 +412,7 @@ void PlayItem(
   {
     AddItemToPlayListAndPlay(item, nullptr, player, mode);
   }
-  else if (item->HasVideoInfoTag())
+  else if (VIDEO::IsVideo(*item))
   {
     if (mode == ContentUtils::PlayMode::PLAY_FROM_HERE ||
         (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM && IsAutoPlayNextItem(*item)))
@@ -451,6 +451,10 @@ void PlayItem(
       playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
       playlistPlayer.Play(item, player);
     }
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "Unable to play item {}", item->GetPath());
   }
 }
 
