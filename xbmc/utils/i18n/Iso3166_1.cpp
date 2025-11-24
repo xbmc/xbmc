@@ -14,20 +14,41 @@
 
 using namespace KODI::UTILS::I18N;
 
+namespace
+{
+std::optional<ISO3166_1> FindAlpha2(std::string_view code)
+{
+  const auto it = std::ranges::lower_bound(TableISO3166_1, code, {}, &ISO3166_1::alpha2);
+  if (it != TableISO3166_1.end() && it->alpha2 == code)
+    return *it;
+
+  return std::nullopt;
+}
+
+std::optional<ISO3166_1> FindAlpha3(std::string_view code)
+{
+  const auto it = std::ranges::lower_bound(TableISO3166_1ByAlpha3, code, {}, &ISO3166_1::alpha3);
+  if (it != TableISO3166_1ByAlpha3.end() && it->alpha3 == code)
+    return *it;
+
+  return std::nullopt;
+}
+} // namespace
+
 std::optional<std::string> CIso3166_1::Alpha2ToAlpha3(std::string_view code)
 {
-  auto it = std::ranges::lower_bound(TableISO3166_1, code, {}, &ISO3166_1::alpha2);
-  if (it != TableISO3166_1.end() && it->alpha2 == code)
-    return std::string{it->alpha3};
+  const auto entry = FindAlpha2(code);
+  if (entry.has_value())
+    return std::string{entry->alpha3};
 
   return std::nullopt;
 }
 
 std::optional<std::string> CIso3166_1::Alpha3ToAlpha2(std::string_view code)
 {
-  auto it = std::ranges::lower_bound(TableISO3166_1ByAlpha3, code, {}, &ISO3166_1::alpha3);
-  if (it != TableISO3166_1ByAlpha3.end() && it->alpha3 == code)
-    return std::string{it->alpha2};
+  const auto entry = FindAlpha3(code);
+  if (entry.has_value())
+    return std::string{entry->alpha2};
 
   return std::nullopt;
 }
@@ -40,4 +61,19 @@ bool CIso3166_1::ContainsAlpha3(std::string_view code)
 bool CIso3166_1::ContainsAlpha2(std::string_view code)
 {
   return std::ranges::binary_search(TableISO3166_1, code, {}, &ISO3166_1::alpha2);
+}
+
+std::optional<std::string> CIso3166_1::LookupByCode(std::string_view code)
+{
+  std::optional<ISO3166_1> entry;
+
+  if (code.size() == 2)
+    entry = FindAlpha2(code);
+  else if (code.size() == 3)
+    entry = FindAlpha3(code);
+
+  if (entry.has_value())
+    return std::string{entry->name};
+
+  return std::nullopt;
 }
