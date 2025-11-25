@@ -65,6 +65,13 @@ public:
   static constexpr auto SETTING_SCREENSAVER_TIME = "screensaver.time";
   static constexpr auto SETTING_SCREENSAVER_DISABLEFORAUDIO = "screensaver.disableforaudio";
   static constexpr auto SETTING_SCREENSAVER_USEDIMONPAUSE = "screensaver.usedimonpause";
+  static constexpr auto SETTING_SEMANTIC_ENABLED = "semanticsearch.enabled";
+  static constexpr auto SETTING_SEMANTIC_PROCESSMODE = "semanticsearch.processmode";
+  static constexpr auto SETTING_SEMANTIC_GROQ_APIKEY = "semanticsearch.groq.apikey";
+  static constexpr auto SETTING_SEMANTIC_AUTOTRANSCRIBE = "semanticsearch.autotranscribe";
+  static constexpr auto SETTING_SEMANTIC_MAXCOST = "semanticsearch.maxcost";
+  static constexpr auto SETTING_SEMANTIC_INDEX_SUBTITLES = "semanticsearch.index.subtitles";
+  static constexpr auto SETTING_SEMANTIC_INDEX_METADATA = "semanticsearch.index.metadata";
   static constexpr auto SETTING_WINDOW_WIDTH = "window.width";
   static constexpr auto SETTING_WINDOW_HEIGHT = "window.height";
   static constexpr auto SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS = "videolibrary.showunwatchedplots";

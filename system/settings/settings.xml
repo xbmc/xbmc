@@ -1689,6 +1689,71 @@
         </setting>
       </group>
     </category>
+    <category id="semanticsearch" label="39500">  <!-- "Semantic Search" -->
+      <group id="1" label="39501">  <!-- "General" -->
+        <setting id="semanticsearch.enabled" type="boolean" label="39502" help="39503">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+
+        <setting id="semanticsearch.processmode" type="string" label="39504" help="39509">
+          <level>1</level>
+          <default>idle</default>
+          <constraints>
+            <options>
+              <option label="39505">idle</option>      <!-- "When idle" -->
+              <option label="39506">background</option> <!-- "Background" -->
+              <option label="39507">manual</option>     <!-- "Manual only" -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+
+      <group id="2" label="39510">  <!-- "Transcription" -->
+        <setting id="semanticsearch.groq.apikey" type="string" label="39511" help="39512">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <hidden>true</hidden>
+          </control>
+        </setting>
+
+        <setting id="semanticsearch.autotranscribe" type="boolean" label="39513" help="39514">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+
+        <setting id="semanticsearch.maxcost" type="number" label="39515" help="39516">
+          <level>1</level>
+          <default>10.00</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>1</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="spinner" format="number" />
+        </setting>
+      </group>
+
+      <group id="3" label="39520">  <!-- "Indexing" -->
+        <setting id="semanticsearch.index.subtitles" type="boolean" label="39521" help="39522">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="semanticsearch.index.metadata" type="boolean" label="39523" help="39524">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
   </section>
   <section id="pvr" label="14204" help="36201">
     <category id="pvrmanager" label="128" help="36202">
