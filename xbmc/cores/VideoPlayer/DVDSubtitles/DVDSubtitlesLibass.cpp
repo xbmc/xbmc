@@ -21,6 +21,7 @@
 #include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -92,10 +93,82 @@ void CDVDSubtitlesLibass::Configure()
   ass_set_margins(m_renderer, 0, 0, 0, 0);
   ass_set_use_margins(m_renderer, 0);
 
-  // Libass uses system font provider (like fontconfig) by default in some
-  // platforms (e.g. linux/windows), on some other systems like android the
-  // font provider is currently not supported, then an user can add his
-  // additional fonts only by using the user fonts folder.
+  int fontProvider = ASS_FONTPROVIDER_AUTODETECT;
+  std::string fontconfigPath; // Keep string alive for lifetime of fontconfigConfig pointer
+  const char* fontconfigConfig = nullptr;
+
+#if defined(TARGET_ANDROID)
+  // Libass uses system font provider (like fontconfig) by default on some platforms (e.g. Linux/Windows),
+  // but on Android the font provider is currently not supported by libass.
+  // Workaround: Use fontconfig with a custom configuration pointing to Android system fonts,
+  // enabling automatic font fallback for subtitles with non-Latin scripts.
+  // This is a temporary workaround until libass implements native Android font provider support.
+  fontProvider = ASS_FONTPROVIDER_FONTCONFIG;
+
+  // Write fontconfig configuration to temp directory
+  fontconfigPath = CSpecialProtocol::TranslatePath("special://temp/fonts.conf");
+
+  if (!XFILE::CFile::Exists(fontconfigPath))
+  {
+    // Create fontconfig cache directory
+    const std::string fontconfigCacheDir =
+        CSpecialProtocol::TranslatePath("special://temp/fontconfig");
+    if (!XFILE::CDirectory::Exists(fontconfigCacheDir))
+      XFILE::CDirectory::Create(fontconfigCacheDir);
+
+    // Create fontconfig configuration using XML library
+    CXBMCTinyXML2 xmlDoc;
+    xmlDoc.InsertEndChild(xmlDoc.NewDeclaration("xml version=\"1.0\""));
+    xmlDoc.InsertEndChild(xmlDoc.NewUnknown("DOCTYPE fontconfig SYSTEM \"fonts.dtd\""));
+
+    tinyxml2::XMLElement* eRoot = xmlDoc.NewElement("fontconfig");
+    xmlDoc.InsertEndChild(eRoot);
+
+    auto addRootChildText = [&](const char* name, const std::string& value)
+    {
+      tinyxml2::XMLElement* elem = xmlDoc.NewElement(name);
+      elem->SetText(value.c_str());
+      eRoot->InsertEndChild(elem);
+    };
+
+    // Add Android system font directories
+    // Note: USER and SYSTEM dirs are handled by ass_set_fonts_dir below
+    const std::vector<std::string> fontDirs = {
+        "/system/fonts", // AOSP standard
+        "/product/fonts", // AOSP vendor-specific
+        "/system_ext/fonts" // OEM-specific (may not exist on all devices)
+    };
+
+    for (const auto& dir : fontDirs)
+    {
+      if (XFILE::CDirectory::Exists(dir))
+        addRootChildText("dir", dir);
+    }
+
+    addRootChildText("cachedir", fontconfigCacheDir);
+
+    if (xmlDoc.SaveFile(fontconfigPath))
+    {
+      fontconfigConfig = fontconfigPath.c_str();
+      CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Created fontconfig configuration at {}",
+                fontconfigPath);
+    }
+    else
+    {
+      CLog::LogF(LOGERROR, "Failed to create fontconfig configuration, falling back to "
+                           "ASS_FONTPROVIDER_AUTODETECT");
+      fontProvider = ASS_FONTPROVIDER_AUTODETECT;
+      fontconfigConfig = nullptr;
+    }
+  }
+  else
+  {
+    fontconfigConfig = fontconfigPath.c_str();
+  }
+#endif
+
+  // Set additional fonts directory for libass to scan. This provides font lookup
+  // on platforms without a font provider, and supplements fontconfig on platforms that use it.
   ass_set_fonts_dir(m_library, CSpecialProtocol::TranslatePath(FONT::FONTPATH::USER).c_str());
 
   // Load additional fonts into Libass memory
@@ -148,7 +221,7 @@ void CDVDSubtitlesLibass::Configure()
   }
 
   ass_set_fonts(m_renderer, FONT::FONTPATH::GetSystemFontPath(FONT::FONT_DEFAULT_FILENAME).c_str(),
-                m_defaultFontFamilyName.c_str(), ASS_FONTPROVIDER_AUTODETECT, nullptr, 1);
+                m_defaultFontFamilyName.c_str(), fontProvider, fontconfigConfig, 1);
 
   // Extract font must be set before loading ASS/SSA data,
   // after that cannot be changed
