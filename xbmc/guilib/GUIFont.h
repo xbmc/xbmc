@@ -17,6 +17,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <span>
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -125,35 +126,33 @@ public:
                 float y,
                 KODI::UTILS::COLOR::Color color,
                 KODI::UTILS::COLOR::Color shadowColor,
-                const vecText& text,
+                std::span<const character_t> text,
                 uint32_t alignment,
                 float maxPixelWidth)
   {
-    std::vector<KODI::UTILS::COLOR::Color> colors;
-    colors.push_back(color);
-    DrawText(x, y, colors, shadowColor, text, alignment, maxPixelWidth);
+    DrawText(x, y, std::span(&color, 1), shadowColor, text, alignment, maxPixelWidth);
   };
 
   void DrawText(float x,
                 float y,
-                const std::vector<KODI::UTILS::COLOR::Color>& colors,
+                std::span<const KODI::UTILS::COLOR::Color> colors,
                 KODI::UTILS::COLOR::Color shadowColor,
-                const vecText& text,
+                std::span<const character_t> text,
                 uint32_t alignment,
                 float maxPixelWidth);
 
   void DrawScrollingText(float x,
                          float y,
-                         const std::vector<KODI::UTILS::COLOR::Color>& colors,
+                         std::span<const KODI::UTILS::COLOR::Color> colors,
                          KODI::UTILS::COLOR::Color shadowColor,
-                         const vecText& text,
+                         std::span<const character_t> text,
                          uint32_t alignment,
                          float maxPixelWidth,
                          const CScrollInfo& scrollInfo);
 
-  bool UpdateScrollInfo(const vecText& text, CScrollInfo& scrollInfo);
+  bool UpdateScrollInfo(std::span<const character_t> text, CScrollInfo& scrollInfo);
 
-  float GetTextWidth(const vecText& text);
+  float GetTextWidth(std::span<const character_t> text);
   float GetCharWidth(character_t ch);
   float GetTextHeight(int numLines) const;
   float GetTextBaseLine() const;
