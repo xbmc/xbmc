@@ -20,6 +20,7 @@
 #include "PlayerOperations.h"
 #include "PlaylistOperations.h"
 #include "ProfilesOperations.h"
+#include "SemanticOperations.h"
 #include "ServiceDescription.h"
 #include "SettingsOperations.h"
 #include "SystemOperations.h"
@@ -256,7 +257,18 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 
 // XBMC operations
   { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },
-  { "XBMC.GetInfoBooleans",                         CXBMCOperations::GetInfoBooleans }
+  { "XBMC.GetInfoBooleans",                         CXBMCOperations::GetInfoBooleans },
+
+// Semantic operations
+  { "Semantic.Search",                              CSemanticOperations::Search },
+  { "Semantic.GetContext",                          CSemanticOperations::GetContext },
+  { "Semantic.FindSimilar",                         CSemanticOperations::FindSimilar },
+  { "Semantic.GetIndexState",                       CSemanticOperations::GetIndexState },
+  { "Semantic.QueueIndex",                          CSemanticOperations::QueueIndex },
+  { "Semantic.QueueTranscription",                  CSemanticOperations::QueueTranscription },
+  { "Semantic.GetStats",                            CSemanticOperations::GetStats },
+  { "Semantic.GetProviders",                        CSemanticOperations::GetProviders },
+  { "Semantic.EstimateCost",                        CSemanticOperations::EstimateCost }
 };
 
 // clang-format on

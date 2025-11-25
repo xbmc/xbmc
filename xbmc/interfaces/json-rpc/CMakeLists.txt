@@ -13,6 +13,7 @@ set(SOURCES AddonsOperations.cpp
             PlaylistOperations.cpp
             ProfilesOperations.cpp
             PVROperations.cpp
+            SemanticOperations.cpp
             SettingsOperations.cpp
             SystemOperations.cpp
             TextureOperations.cpp
@@ -38,6 +39,7 @@ set(HEADERS AddonsOperations.h
             PlaylistOperations.h
             ProfilesOperations.h
             PVROperations.h
+            SemanticOperations.h
             SettingsOperations.h
             SystemOperations.h
             TextureOperations.h
