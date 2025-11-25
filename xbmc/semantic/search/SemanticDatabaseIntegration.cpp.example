@@ -1,0 +1,255 @@
+/*
+ *  Copyright (C) 2005-2024 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
+ *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
+ */
+
+// This file shows example integration of VectorSearcher with SemanticDatabase
+// Add this code to SemanticDatabase.h and SemanticDatabase.cpp
+
+// ============================================================================
+// SemanticDatabase.h additions
+// ============================================================================
+
+#include "search/VectorSearcher.h"
+#include <memory>
+
+class CSemanticDatabase : public CDatabase
+{
+public:
+  // ... existing methods ...
+
+  /*!
+   * @brief Get the vector searcher instance for semantic similarity search
+   * @return Pointer to vector searcher, or nullptr if not initialized
+   */
+  CVectorSearcher* GetVectorSearcher() { return m_vectorSearcher.get(); }
+
+  /*!
+   * @brief Initialize vector search capabilities
+   * @return true if initialization succeeded, false otherwise
+   *
+   * Must be called after database is opened. Will initialize sqlite-vec
+   * extension and create vector table if it doesn't exist.
+   */
+  bool InitializeVectorSearch();
+
+private:
+  std::unique_ptr<CVectorSearcher> m_vectorSearcher;
+};
+
+// ============================================================================
+// SemanticDatabase.cpp additions
+// ============================================================================
+
+#include "dbwrappers/sqlitedataset.h"
+#include <sqlite3.h>
+
+bool CSemanticDatabase::Open()
+{
+  // Open database connection
+  if (!CDatabase::Open(
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo))
+  {
+    return false;
+  }
+
+  // Initialize vector search after database is open
+  if (!InitializeVectorSearch())
+  {
+    CLog::Log(LOGWARNING, "CSemanticDatabase::{}: Vector search initialization failed. "
+                          "Semantic similarity search will not be available.", __func__);
+    // Continue - vector search is optional, database can still function
+  }
+
+  return true;
+}
+
+bool CSemanticDatabase::InitializeVectorSearch()
+{
+  // Get SQLite connection handle from the database wrapper
+  // m_pDB is a dbiplus::Database*, for SQLite it's actually SqliteDatabase*
+  auto* sqliteDb = dynamic_cast<dbiplus::SqliteDatabase*>(m_pDB.get());
+  if (!sqliteDb)
+  {
+    CLog::Log(LOGERROR, "CSemanticDatabase::{}: Not a SQLite database", __func__);
+    return false;
+  }
+
+  sqlite3* db = sqliteDb->getHandle();
+  if (!db)
+  {
+    CLog::Log(LOGERROR, "CSemanticDatabase::{}: Failed to get database handle", __func__);
+    return false;
+  }
+
+  // Create vector searcher instance
+  m_vectorSearcher = std::make_unique<CVectorSearcher>();
+
+  // Initialize sqlite-vec extension
+  if (!m_vectorSearcher->InitializeExtension(db))
+  {
+    CLog::Log(LOGERROR, "CSemanticDatabase::{}: Failed to initialize sqlite-vec extension. "
+                        "Ensure sqlite-vec source files are present in lib/sqlite-vec/", __func__);
+    m_vectorSearcher.reset();
+    return false;
+  }
+
+  // Create vector table
+  if (!m_vectorSearcher->CreateVectorTable())
+  {
+    CLog::Log(LOGERROR, "CSemanticDatabase::{}: Failed to create vector table", __func__);
+    m_vectorSearcher.reset();
+    return false;
+  }
+
+  CLog::Log(LOGINFO, "CSemanticDatabase::{}: Vector search initialized successfully", __func__);
+  return true;
+}
+
+// ============================================================================
+// Example usage in embedding pipeline
+// ============================================================================
+
+// After inserting a chunk and generating its embedding:
+bool IndexChunkWithEmbedding(CSemanticDatabase* db, const SemanticChunk& chunk)
+{
+  // Insert chunk into database
+  int64_t chunkId = db->InsertChunk(chunk);
+  if (chunkId < 0)
+  {
+    CLog::Log(LOGERROR, "Failed to insert chunk");
+    return false;
+  }
+
+  // Generate embedding (384-dimensional vector)
+  // This would come from your embedding engine
+  std::array<float, 384> embedding = GenerateEmbedding(chunk.text);
+
+  // Insert vector for similarity search
+  CVectorSearcher* searcher = db->GetVectorSearcher();
+  if (searcher)
+  {
+    if (!searcher->InsertVector(chunkId, embedding))
+    {
+      CLog::Log(LOGERROR, "Failed to insert vector for chunk {}", chunkId);
+      return false;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "Vector search not available - chunk indexed without embedding");
+  }
+
+  return true;
+}
+
+// ============================================================================
+// Example semantic search query
+// ============================================================================
+
+std::vector<SemanticChunk> SemanticSearch(CSemanticDatabase* db, const std::string& query)
+{
+  std::vector<SemanticChunk> results;
+
+  CVectorSearcher* searcher = db->GetVectorSearcher();
+  if (!searcher)
+  {
+    CLog::Log(LOGWARNING, "Vector search not available");
+    return results;
+  }
+
+  // Convert query to embedding
+  std::array<float, 384> queryEmbedding = GenerateEmbedding(query);
+
+  // Search for top 50 similar vectors
+  auto vectorResults = searcher->SearchSimilar(queryEmbedding, 50);
+
+  // Retrieve full chunk data for each result
+  for (const auto& result : vectorResults)
+  {
+    SemanticChunk chunk;
+    if (db->GetChunk(result.chunkId, chunk))
+    {
+      // Filter by distance threshold (optional)
+      // Cosine distance: 0 = identical, 1 = orthogonal, 2 = opposite
+      if (result.distance < 1.0)  // Only keep good matches
+      {
+        results.push_back(chunk);
+      }
+    }
+  }
+
+  return results;
+}
+
+// ============================================================================
+// Example: Delete chunks with vector cleanup
+// ============================================================================
+
+bool CSemanticDatabase::DeleteChunksForMedia(int mediaId, const MediaType& mediaType)
+{
+  // Get chunk IDs before deleting
+  std::vector<SemanticChunk> chunks;
+  GetChunksForMedia(mediaId, mediaType, chunks);
+
+  // Delete vectors from vector search index
+  if (m_vectorSearcher)
+  {
+    for (const auto& chunk : chunks)
+    {
+      if (!m_vectorSearcher->DeleteVector(chunk.chunkId))
+      {
+        CLog::Log(LOGWARNING, "Failed to delete vector for chunk {}", chunk.chunkId);
+      }
+    }
+  }
+
+  // Delete chunks from database
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("media_id = %d AND media_type = '%s'",
+                                mediaId, mediaType.c_str()));
+  return DeleteValues("semantic_chunks", filter);
+}
+
+// ============================================================================
+// Example: Batch insertion with transaction
+// ============================================================================
+
+bool BatchIndexChunks(CSemanticDatabase* db, const std::vector<SemanticChunk>& chunks)
+{
+  CVectorSearcher* searcher = db->GetVectorSearcher();
+  if (!searcher)
+  {
+    CLog::Log(LOGERROR, "Vector search not available");
+    return false;
+  }
+
+  // Use transaction for efficiency
+  db->BeginTransaction();
+
+  for (const auto& chunk : chunks)
+  {
+    // Insert chunk
+    int64_t chunkId = db->InsertChunk(chunk);
+    if (chunkId < 0)
+    {
+      CLog::Log(LOGERROR, "Failed to insert chunk");
+      db->RollbackTransaction();
+      return false;
+    }
+
+    // Generate and insert embedding
+    std::array<float, 384> embedding = GenerateEmbedding(chunk.text);
+    if (!searcher->InsertVector(chunkId, embedding))
+    {
+      CLog::Log(LOGERROR, "Failed to insert vector for chunk {}", chunkId);
+      db->RollbackTransaction();
+      return false;
+    }
+  }
+
+  return db->CommitTransaction();
+}

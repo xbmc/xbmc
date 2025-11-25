@@ -103,6 +103,7 @@ option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
+option(ENABLE_ONNXRUNTIME "Enable ONNX Runtime for semantic embedding?" OFF)
 
 # Internal Depends - supported on all platforms
 
@@ -323,6 +324,16 @@ if(ENABLE_AIRTUNES)
   find_package(Shairplay ${SEARCH_QUIET})
   if(TARGET ${APP_NAME_LC}::Shairplay)
     core_require_dep(Shairplay)
+  endif()
+endif()
+
+if(ENABLE_ONNXRUNTIME)
+  find_package(ONNXRuntime ${SEARCH_QUIET})
+  if(TARGET ${APP_NAME_LC}::ONNXRuntime)
+    core_require_dep(ONNXRuntime)
+    list(APPEND DEP_DEFINES -DHAS_ONNXRUNTIME)
+  else()
+    message(STATUS "ONNX Runtime not found - semantic embedding features will be disabled")
   endif()
 endif()
 

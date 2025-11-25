@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<movie>
+  <title>Integration Test Movie</title>
+  <originaltitle>Integration Test Movie</originaltitle>
+  <plot>A thrilling adventure about semantic search integration testing. The protagonist must index subtitles, parse metadata, and search through vast amounts of content to save the day. Features dinosaurs, robots, and time travel.</plot>
+  <outline>Semantic search saves the day</outline>
+  <tagline>Search smarter, not harder</tagline>
+  <runtime>120</runtime>
+  <year>2025</year>
+  <genre>Science Fiction</genre>
+  <genre>Action</genre>
+  <director>Test Director</director>
+  <credits>Test Writer</credits>
+  <rating>8.5</rating>
+  <votes>1000</votes>
+  <studio>Kodi Foundation</studio>
+  <premiered>2025-01-15</premiered>
+  <status>Released</status>
+  <code>tt0123456</code>
+  <id>123456</id>
+  <actor>
+    <name>Test Actor 1</name>
+    <role>Hero</role>
+  </actor>
+  <actor>
+    <name>Test Actor 2</name>
+    <role>Villain</role>
+  </actor>
+</movie>

@@ -1,0 +1,50 @@
+Semantic Search Localization Strings
+=====================================
+
+These localization strings need to be added to Kodi's language files in the 39500-39599 range.
+
+String IDs and Definitions:
+----------------------------
+
+# Category and Group Labels
+39500: "Semantic Search"
+39501: "General"
+39510: "Transcription"
+39520: "Indexing"
+
+# General Settings
+39502: "Enable semantic search"
+39503: "Enable content indexing for semantic search. This allows you to search your media library using natural language queries."
+39504: "Processing mode"
+39505: "When idle"
+39506: "Background"
+39507: "Manual only"
+39509: "Choose when to process and index media content"
+
+# Transcription Settings
+39511: "Groq API Key"
+39512: "API key for Groq Whisper transcription service. Required for automatic subtitle generation."
+39513: "Auto-transcribe media"
+39514: "Automatically transcribe media files that don't have subtitles using Groq Whisper"
+39515: "Monthly budget cap (USD)"
+39516: "Maximum monthly cost limit for transcription services in US dollars"
+
+# Indexing Settings
+39521: "Index subtitles"
+39522: "Include subtitle content in semantic search index"
+39523: "Index metadata"
+39524: "Include movie/TV show metadata (titles, descriptions, cast) in semantic search index"
+
+Notes:
+------
+- These strings follow Kodi's existing localization patterns
+- String IDs 39500-39524 are allocated (25 strings used out of 100 available in the range)
+- Remaining IDs (39525-39599) are reserved for future semantic search features
+- Help text (39503, 39509, 39512, 39514, 39516, 39522, 39524) provides detailed user guidance
+
+Integration Points:
+-------------------
+- Settings XML: /home/user/xbmc/system/settings/settings.xml (lines 1692-1756)
+- Settings constants: /home/user/xbmc/xbmc/settings/Settings.h (lines 68-74)
+- To add these to Kodi's localization system, they need to be added to the appropriate
+  language resource files following Kodi's localization workflow

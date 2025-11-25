@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="10161">
+	<defaultcontrol always="true">2</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog</depth>
+	<controls>
+		<!-- Main dialog background -->
+		<control type="group">
+			<centerleft>50%</centerleft>
+			<centertop>50%</centertop>
+			<width>1200</width>
+			<height>800</height>
+
+			<!-- Background image -->
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1200</width>
+				<height>800</height>
+				<texture border="20">dialogs/dialog-bg.png</texture>
+			</control>
+
+			<!-- Heading -->
+			<control type="label" id="1">
+				<left>30</left>
+				<top>20</top>
+				<width>1140</width>
+				<height>40</height>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<label>Semantic Search</label>
+			</control>
+
+			<!-- Search input field -->
+			<control type="edit" id="2">
+				<left>30</left>
+				<top>70</top>
+				<width>900</width>
+				<height>50</height>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<label>Enter search query...</label>
+				<onup>10</onup>
+				<ondown>3</ondown>
+				<onleft>6</onleft>
+				<onright>6</onright>
+			</control>
+
+			<!-- Clear button -->
+			<control type="button" id="10">
+				<left>940</left>
+				<top>70</top>
+				<width>120</width>
+				<height>50</height>
+				<font>font12</font>
+				<label>Clear</label>
+				<texturefocus border="5">buttons/button-focus.png</texturefocus>
+				<texturenofocus border="5">buttons/button-nofocus.png</texturenofocus>
+				<onup>9</onup>
+				<ondown>3</ondown>
+				<onleft>2</onleft>
+				<onright>9</onright>
+			</control>
+
+			<!-- Close button -->
+			<control type="button" id="9">
+				<left>1070</left>
+				<top>70</top>
+				<width>100</width>
+				<height>50</height>
+				<font>font12</font>
+				<label>Close</label>
+				<texturefocus border="5">buttons/button-focus.png</texturefocus>
+				<texturenofocus border="5">buttons/button-nofocus.png</texturenofocus>
+				<onup>7</onup>
+				<ondown>3</ondown>
+				<onleft>10</onleft>
+				<onright>2</onright>
+			</control>
+
+			<!-- Search options row -->
+			<control type="group">
+				<left>30</left>
+				<top>130</top>
+				<width>1140</width>
+				<height>40</height>
+
+				<!-- Search mode toggle button -->
+				<control type="button" id="6">
+					<left>0</left>
+					<top>0</top>
+					<width>200</width>
+					<height>40</height>
+					<font>font12</font>
+					<label>Mode: Hybrid</label>
+					<texturefocus border="5">buttons/button-focus.png</texturefocus>
+					<texturenofocus border="5">buttons/button-nofocus.png</texturenofocus>
+					<onup>2</onup>
+					<ondown>3</ondown>
+					<onleft>7</onleft>
+					<onright>7</onright>
+				</control>
+
+				<!-- Media type filter button -->
+				<control type="button" id="7">
+					<left>210</left>
+					<top>0</top>
+					<width>200</width>
+					<height>40</height>
+					<font>font12</font>
+					<label>Filter: All</label>
+					<texturefocus border="5">buttons/button-focus.png</texturefocus>
+					<texturenofocus border="5">buttons/button-nofocus.png</texturenofocus>
+					<onup>2</onup>
+					<ondown>3</ondown>
+					<onleft>6</onleft>
+					<onright>9</onright>
+				</control>
+
+				<!-- Result count label -->
+				<control type="label" id="12">
+					<left>420</left>
+					<top>0</top>
+					<width>300</width>
+					<height>40</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>0 results</label>
+				</control>
+
+				<!-- Search status label -->
+				<control type="label" id="11">
+					<left>730</left>
+					<top>0</top>
+					<width>410</width>
+					<height>40</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+					<label>Ready</label>
+				</control>
+			</control>
+
+			<!-- Progress indicator -->
+			<control type="progress" id="8">
+				<left>30</left>
+				<top>175</top>
+				<width>1140</width>
+				<height>8</height>
+				<texturebg border="3">progress/texturebg.png</texturebg>
+				<midtexture border="3">progress/midtexture.png</midtexture>
+				<visible>false</visible>
+			</control>
+
+			<!-- Results list -->
+			<control type="panel" id="3">
+				<left>30</left>
+				<top>190</top>
+				<width>700</width>
+				<height>550</height>
+				<onup>6</onup>
+				<ondown>6</ondown>
+				<onleft>4</onleft>
+				<onright>4</onright>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<orientation>vertical</orientation>
+				<itemlayout height="110" width="700">
+					<!-- Result item layout (not focused) -->
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>700</width>
+						<height>110</height>
+						<texture border="5">lists/separator.png</texture>
+					</control>
+
+					<!-- Thumbnail -->
+					<control type="image">
+						<left>5</left>
+						<top>5</top>
+						<width>140</width>
+						<height>100</height>
+						<aspectratio>scale</aspectratio>
+						<texture>$INFO[ListItem.Art(thumb)]</texture>
+					</control>
+
+					<!-- Title -->
+					<control type="label">
+						<left>155</left>
+						<top>10</top>
+						<width>540</width>
+						<height>30</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+
+					<!-- Subtitle (season/episode or year) -->
+					<control type="label">
+						<left>155</left>
+						<top>40</top>
+						<width>540</width>
+						<height>25</height>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+						<label>$INFO[ListItem.Property(subtitle)]</label>
+					</control>
+
+					<!-- Snippet -->
+					<control type="textbox">
+						<left>155</left>
+						<top>65</top>
+						<width>540</width>
+						<height>40</height>
+						<font>font10</font>
+						<textcolor>lightgrey</textcolor>
+						<label>$INFO[ListItem.Label2]</label>
+					</control>
+
+					<!-- Relevance score -->
+					<control type="label">
+						<left>600</left>
+						<top>10</top>
+						<width>90</width>
+						<height>25</height>
+						<font>font10</font>
+						<textcolor>green</textcolor>
+						<align>right</align>
+						<label>$INFO[ListItem.Property(relevance_score)]</label>
+					</control>
+				</itemlayout>
+
+				<focusedlayout height="110" width="700">
+					<!-- Result item layout (focused) -->
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>700</width>
+						<height>110</height>
+						<texture border="5">lists/focus.png</texture>
+					</control>
+
+					<!-- Thumbnail -->
+					<control type="image">
+						<left>5</left>
+						<top>5</top>
+						<width>140</width>
+						<height>100</height>
+						<aspectratio>scale</aspectratio>
+						<texture>$INFO[ListItem.Art(thumb)]</texture>
+					</control>
+
+					<!-- Title -->
+					<control type="label">
+						<left>155</left>
+						<top>10</top>
+						<width>540</width>
+						<height>30</height>
+						<font>font13_title</font>
+						<textcolor>white</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+
+					<!-- Subtitle (season/episode or year) -->
+					<control type="label">
+						<left>155</left>
+						<top>40</top>
+						<width>540</width>
+						<height>25</height>
+						<font>font12</font>
+						<textcolor>lightgrey</textcolor>
+						<label>$INFO[ListItem.Property(subtitle)]</label>
+					</control>
+
+					<!-- Snippet -->
+					<control type="textbox">
+						<left>155</left>
+						<top>65</top>
+						<width>540</width>
+						<height>40</height>
+						<font>font10</font>
+						<textcolor>white</textcolor>
+						<label>$INFO[ListItem.Label2]</label>
+					</control>
+
+					<!-- Relevance score -->
+					<control type="label">
+						<left>600</left>
+						<top>10</top>
+						<width>90</width>
+						<height>25</height>
+						<font>font10</font>
+						<textcolor>green</textcolor>
+						<align>right</align>
+						<label>$INFO[ListItem.Property(relevance_score)]</label>
+					</control>
+				</focusedlayout>
+			</control>
+
+			<!-- Details panel (right side) -->
+			<control type="group" id="4">
+				<left>740</left>
+				<top>190</top>
+				<width>430</width>
+				<height>550</height>
+
+				<!-- Background -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>430</width>
+					<height>550</height>
+					<texture border="5">dialogs/dialog-bg-inner.png</texture>
+				</control>
+
+				<!-- Details heading -->
+				<control type="label">
+					<left>10</left>
+					<top>10</top>
+					<width>410</width>
+					<height>30</height>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<label>Result Details</label>
+				</control>
+
+				<!-- Context preview panel -->
+				<control type="textbox" id="5">
+					<left>10</left>
+					<top>50</top>
+					<width>410</width>
+					<height>490</height>
+					<font>font10</font>
+					<textcolor>lightgrey</textcolor>
+					<label>Select a result to view context</label>
+					<autoscroll time="3000" delay="2000" repeat="10000">true</autoscroll>
+					<visible>false</visible>
+				</control>
+
+				<!-- Placeholder when no result selected -->
+				<control type="label">
+					<left>10</left>
+					<top>250</top>
+					<width>410</width>
+					<height>50</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>Select a result to view details</label>
+					<visible>!Control.IsVisible(5)</visible>
+				</control>
+			</control>
+
+			<!-- Help text at bottom -->
+			<control type="label">
+				<left>30</left>
+				<top>750</top>
+				<width>1140</width>
+				<height>30</height>
+				<font>font10</font>
+				<textcolor>grey</textcolor>
+				<align>center</align>
+				<label>Press Enter/Select to jump to timestamp • Context menu for more options</label>
+			</control>
+		</control>
+	</controls>
+</window>

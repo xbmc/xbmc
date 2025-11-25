@@ -1,0 +1,43 @@
+1
+00:00:01,000 --> 00:00:04,500
+Hello, world!
+
+2
+00:00:05,000 --> 00:00:08,200
+This is a <i>test</i> subtitle with <b>HTML tags</b>.
+
+3
+00:00:10,000 --> 00:00:12,000
+Multi-line subtitle
+with two lines of text.
+
+4
+00:00:15,000 --> 00:00:17,500
+[music]
+
+5
+00:00:20,000 --> 00:00:25,000
+- Wait, what?
+- I said, "Welcome to Kodi!"
+
+6
+00:00:30,000 --> 00:00:33,000
+<font color="red">Colored text</font> should work.
+
+7
+00:00:35,000 --> 00:00:38,000
+Text with &nbsp; HTML entities &lt;like this&gt;.
+
+8
+00:00:40,000 --> 00:00:42,000
+♪ Music notes should be filtered ♪
+
+9
+00:00:45,000 --> 00:00:48,000
+[door opens]
+
+10
+00:00:50,000 --> 00:00:55,000
+This is normal dialogue that should be kept.
+It can span multiple lines
+and still be parsed correctly.

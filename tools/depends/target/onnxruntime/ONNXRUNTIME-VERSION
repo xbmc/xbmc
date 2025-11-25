@@ -1,0 +1,12 @@
+LIBNAME=onnxruntime
+VERSION=1.16.3
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+BASE_URL=https://github.com/microsoft/onnxruntime/releases/download/v$(VERSION)
+# Note: ONNX Runtime is typically distributed as pre-built binaries
+# For Linux x64: onnxruntime-linux-x64-$(VERSION).tgz
+# For Windows x64: onnxruntime-win-x64-$(VERSION).zip
+# For macOS: onnxruntime-osx-universal2-$(VERSION).tgz
+# For Android: onnxruntime-android-$(VERSION).aar
+SHA512=
+BYPRODUCT=libonnxruntime.so
+BYPRODUCT_WIN=onnxruntime.dll

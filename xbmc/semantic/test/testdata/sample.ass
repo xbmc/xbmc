@@ -1,0 +1,17 @@
+[Script Info]
+Title: Sample ASS Subtitle
+ScriptType: v4.00+
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,20,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,10,10,10,1
+Style: Speaker1,Arial,22,&H0000FFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,10,10,10,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:01.00,0:00:04.50,Default,,0,0,0,,Advanced SubStation Alpha format test.
+Dialogue: 0,0:00:05.00,0:00:08.20,Speaker1,,0,0,0,,{\an8}This line has top alignment.
+Dialogue: 0,0:00:10.00,0:00:12.00,Default,,0,0,0,,{\pos(100,200)}{\fad(300,300)}Formatted with position and fade.
+Dialogue: 0,0:00:15.00,0:00:18.50,Default,,0,0,0,,{\i1}Italic text{\i0} and {\b1}bold text{\b0}.
+Dialogue: 0,0:00:20.00,0:00:25.00,Speaker1,,0,0,0,,Speaker identification test.
+Dialogue: 0,0:00:26.00,0:00:30.00,Default,,0,0,0,,Multiple {\c&H00FF00&}color{\c} codes {\fs30}removed{\fs}.
