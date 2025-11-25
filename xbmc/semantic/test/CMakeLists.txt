@@ -18,3 +18,8 @@ set(SOURCES
 )
 
 core_add_test_library(semantic_test)
+
+# Add integration tests subdirectory
+if(ENABLE_INTERNAL_GTEST)
+  add_subdirectory(integration)
+endif()

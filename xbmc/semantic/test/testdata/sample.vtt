@@ -1,0 +1,26 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:04.500
+WebVTT format subtitle test.
+
+cue-2
+00:00:05.000 --> 00:00:08.200 align:start
+This cue has an identifier and alignment.
+
+NOTE This is a comment
+Comments should be ignored by the parser.
+
+00:00:10.000 --> 00:00:12.000
+<v Speaker>Voiced dialogue with speaker tag.</v>
+
+00:00:15.000 --> 00:00:18.500
+<c.className>Class-based styling test.</c>
+
+00:00:20.000 --> 00:00:25.000
+Standard dialogue without special formatting.
+
+00:00:26.000 --> 00:00:30.000
+<b>Bold</b> and <i>italic</i> HTML tags.
+
+00:00:35.000 --> 00:00:40.000
+♪ Musical notes should be filtered ♪
