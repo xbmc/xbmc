@@ -110,7 +110,128 @@ public:
    */
   bool ClearAllVectors();
 
+  // ===== Batch Operations =====
+
+  /*!
+   * \brief Insert multiple embeddings efficiently using a transaction
+   * \param vectors Vector of (chunkId, embedding) pairs to insert
+   * \return true if all insertions succeeded, false if any failed
+   *
+   * Uses a database transaction for better performance when inserting
+   * many vectors. If any insertion fails, all changes are rolled back.
+   */
+  bool InsertVectorBatch(
+      const std::vector<std::pair<int64_t, std::array<float, 384>>>& vectors);
+
+  /*!
+   * \brief Delete multiple vectors efficiently using a transaction
+   * \param chunkIds Vector of chunk IDs to delete
+   * \return true if all deletions succeeded, false if any failed
+   */
+  bool DeleteVectorBatch(const std::vector<int64_t>& chunkIds);
+
+  // ===== Filtered Search =====
+
+  /*!
+   * \brief Search for similar vectors among specific candidates
+   * \param queryVector The query embedding vector
+   * \param candidateChunkIds Vector of chunk IDs to search within
+   * \param topK Number of results to return (default: 50)
+   * \return Vector of results sorted by distance (closest first)
+   *
+   * This is useful for hybrid search where you want to combine
+   * keyword search results (candidateChunkIds) with vector similarity.
+   */
+  std::vector<VectorResult> SearchSimilarFiltered(
+      const std::array<float, 384>& queryVector,
+      const std::vector<int64_t>& candidateChunkIds,
+      int topK = 50);
+
+  /*!
+   * \brief Search for similar vectors filtered by media type
+   * \param queryVector The query embedding vector
+   * \param mediaType Media type to filter by (e.g., "movie", "episode")
+   * \param topK Number of results to return (default: 50)
+   * \return Vector of results sorted by distance (closest first)
+   *
+   * Performs a join with semantic_chunks to filter by media type.
+   */
+  std::vector<VectorResult> SearchSimilarByMediaType(
+      const std::array<float, 384>& queryVector,
+      const std::string& mediaType,
+      int topK = 50);
+
+  // ===== Similar Chunks =====
+
+  /*!
+   * \brief Find chunks similar to an existing chunk
+   * \param chunkId ID of the source chunk
+   * \param topK Number of results to return (default: 20)
+   * \param maxDistance Maximum distance threshold (default: 1.0)
+   * \return Vector of results sorted by distance (closest first)
+   *
+   * Useful for "more like this" features. The source chunk itself
+   * is excluded from results.
+   */
+  std::vector<VectorResult> FindSimilar(int64_t chunkId,
+                                        int topK = 20,
+                                        float maxDistance = 1.0f);
+
+  // ===== Statistics =====
+
+  /*!
+   * \brief Statistics about the vector index
+   */
+  struct VectorStats
+  {
+    int64_t totalVectors;        //!< Total number of vectors stored
+    int64_t vectorsWithMedia;    //!< Vectors linked to valid chunks
+    float avgDistance;           //!< Average distance in recent searches
+  };
+
+  /*!
+   * \brief Get statistics about the vector index
+   * \return VectorStats structure with current statistics
+   */
+  VectorStats GetStats();
+
+  // ===== Maintenance Operations =====
+
+  /*!
+   * \brief Rebuild the vector index
+   * \return true if rebuild succeeded, false otherwise
+   *
+   * Recreates the vector table and index structure. This can be useful
+   * for maintenance or after database corruption.
+   */
+  bool RebuildIndex();
+
+  /*!
+   * \brief Validate vector/chunk integrity
+   * \return Count of orphaned vectors (vectors without corresponding chunks)
+   *
+   * Checks for vectors that reference non-existent chunks.
+   */
+  int ValidateIntegrity();
+
+  /*!
+   * \brief Remove vectors for chunks that no longer exist
+   * \return Count of orphaned vectors removed
+   *
+   * Performs cleanup by deleting vectors whose chunk_id doesn't
+   * exist in the semantic_chunks table.
+   */
+  int CleanupOrphanedVectors();
+
 private:
+  /*!
+   * \brief Get the embedding vector for a chunk
+   * \param chunkId The ID of the chunk
+   * \param embedding Output parameter to store the embedding
+   * \return true if the embedding was found, false otherwise
+   */
+  bool GetVector(int64_t chunkId, std::array<float, 384>& embedding);
+
   struct Impl;
   std::unique_ptr<Impl> m_impl;
 };
