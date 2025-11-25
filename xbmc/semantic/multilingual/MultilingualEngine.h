@@ -34,6 +34,14 @@ struct MultilingualModelInfo
   std::string vocabPath;                //!< Vocabulary file path
   size_t estimatedMemoryMB;             //!< Estimated memory usage
   bool downloaded;                      //!< Whether model is available locally
+
+  // Download metadata
+  std::string modelUrl;                 //!< Download URL for model file
+  std::string vocabUrl;                 //!< Download URL for vocab file
+  std::string modelSha256;              //!< Expected SHA256 hash of model file
+  std::string vocabSha256;              //!< Expected SHA256 hash of vocab file
+  size_t modelSizeBytes;                //!< Size of model file in bytes
+  size_t vocabSizeBytes;                //!< Size of vocab file in bytes
 };
 
 /*!
@@ -306,6 +314,31 @@ private:
    * \return Hash value
    */
   size_t HashText(const std::string& text) const;
+
+  /*!
+   * \brief Download a single file with progress and verification
+   *
+   * \param url Download URL
+   * \param destPath Destination file path
+   * \param expectedSha256 Expected SHA256 hash (empty to skip verification)
+   * \param expectedSize Expected file size in bytes (0 to skip size check)
+   * \param progressCallback Progress callback (0.0 to 1.0)
+   * \return true if download and verification succeeded
+   */
+  bool DownloadFile(const std::string& url,
+                    const std::string& destPath,
+                    const std::string& expectedSha256,
+                    size_t expectedSize,
+                    std::function<void(float)> progressCallback);
+
+  /*!
+   * \brief Verify file integrity using SHA256
+   *
+   * \param filePath Path to file to verify
+   * \param expectedSha256 Expected SHA256 hash
+   * \return true if hash matches
+   */
+  bool VerifyFileHash(const std::string& filePath, const std::string& expectedSha256) const;
 
   bool m_initialized{false};
   bool m_multilingualEnabled{true};

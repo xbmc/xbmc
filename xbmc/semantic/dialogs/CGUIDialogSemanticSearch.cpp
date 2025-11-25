@@ -14,12 +14,16 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/WindowIDs.h"
 #include "input/actions/ActionIDs.h"
 #include "semantic/SemanticDatabase.h"
 #include "semantic/embedding/EmbeddingEngine.h"
@@ -1005,13 +1009,77 @@ void CGUIDialogSemanticSearch::ToggleDurationFilter()
 
 void CGUIDialogSemanticSearch::ShowGenreSelector()
 {
-  // This would show a multi-select dialog for genres
-  // Implementation would use CGUIDialogSelect or similar
-  // For now, just log that it was called
-  CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Genre selector requested");
+  if (m_availableGenres.empty())
+  {
+    CLog::Log(LOGWARNING, "CGUIDialogSemanticSearch: No genres available");
+    return;
+  }
 
-  // TODO: Implement genre selection dialog using available genres from m_availableGenres
-  // This would allow users to select multiple genres from the list
+  // Get the select dialog
+  CGUIDialogSelect* pDialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+
+  if (!pDialog)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogSemanticSearch: Failed to get select dialog");
+    return;
+  }
+
+  // Reset and configure dialog
+  pDialog->Reset();
+  pDialog->SetHeading(CVariant{"Select Genres"});
+  pDialog->SetMultiSelection(true);
+
+  // Get currently selected genres
+  const auto& currentGenres = m_filters.GetGenres();
+
+  // Add all available genres to the dialog
+  for (const auto& genre : m_availableGenres)
+  {
+    CFileItemPtr item = std::make_shared<CFileItem>(genre);
+
+    // Mark as selected if currently in filter
+    if (currentGenres.find(genre) != currentGenres.end())
+    {
+      item->Select(true);
+    }
+
+    pDialog->Add(*item);
+  }
+
+  // Show the dialog
+  pDialog->Open();
+
+  // Process selection if confirmed
+  if (pDialog->IsConfirmed())
+  {
+    const auto& selectedItems = pDialog->GetSelectedItems();
+
+    // Build new genre set from selected items
+    std::set<std::string> newGenres;
+    for (int index : selectedItems)
+    {
+      if (index >= 0 && index < static_cast<int>(m_availableGenres.size()))
+      {
+        newGenres.insert(m_availableGenres[index]);
+      }
+    }
+
+    // Update filter with new genre selection
+    m_filters.SetGenres(newGenres);
+    UpdateFilterControls();
+    UpdateFilterBadges();
+
+    CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Selected {} genres", newGenres.size());
+
+    // Re-run search with new genre filter
+    if (!m_currentQuery.empty())
+    {
+      m_needsUpdate = true;
+      if (!IsRunning())
+        Create();
+    }
+  }
 }
 
 void CGUIDialogSemanticSearch::UpdateYearRangeSliders()
@@ -1088,32 +1156,118 @@ void CGUIDialogSemanticSearch::ShowFilterPresetSelector()
     return;
   }
 
-  // TODO: Show selection dialog with preset names
-  // For now, just log available presets
-  CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Available presets: {}",
-            StringUtils::Join(presetNames, ", "));
+  // Get the select dialog
+  CGUIDialogSelect* pDialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
 
-  // Example: Apply first preset for demonstration
-  if (const FilterPreset* preset = m_presetManager->GetPreset(presetNames[0]))
+  if (!pDialog)
   {
-    ApplyFilterPreset(*preset);
+    CLog::Log(LOGERROR, "CGUIDialogSemanticSearch: Failed to get select dialog");
+    return;
+  }
+
+  // Reset and configure dialog
+  pDialog->Reset();
+  pDialog->SetHeading(CVariant{"Load Filter Preset"});
+  pDialog->SetMultiSelection(false);
+
+  // Add all available presets to the dialog
+  for (const auto& presetName : presetNames)
+  {
+    // Get preset to access description
+    const FilterPreset* preset = m_presetManager->GetPreset(presetName);
+    if (preset)
+    {
+      CFileItemPtr item = std::make_shared<CFileItem>(preset->name);
+      item->SetLabel2(preset->description);  // Show description as subtitle
+      pDialog->Add(*item);
+    }
+  }
+
+  // Show the dialog
+  pDialog->Open();
+
+  // Process selection if confirmed
+  if (pDialog->IsConfirmed())
+  {
+    int selectedIndex = pDialog->GetSelectedItem();
+    if (selectedIndex >= 0 && selectedIndex < static_cast<int>(presetNames.size()))
+    {
+      const std::string& selectedPresetName = presetNames[selectedIndex];
+      if (const FilterPreset* preset = m_presetManager->GetPreset(selectedPresetName))
+      {
+        ApplyFilterPreset(*preset);
+      }
+    }
   }
 }
 
 void CGUIDialogSemanticSearch::ShowSavePresetDialog()
 {
-  // TODO: Show dialog to enter preset name and description
-  // For now, save with a default name
-  std::string presetName = StringUtils::Format("Custom Preset {}",
-                                               m_presetManager->GetPresetCount() + 1);
+  if (!m_presetManager)
+    return;
 
-  if (m_presetManager->SavePreset(presetName, "User-created preset", m_filters))
+  // Prompt user for preset name
+  std::string presetName;
+  std::string defaultName = StringUtils::Format("Custom Preset {}",
+                                                 m_presetManager->GetPresetCount() + 1);
+
+  if (!CGUIKeyboardFactory::ShowAndGetInput(presetName, CVariant{"Enter preset name"}, false))
+  {
+    // User cancelled
+    return;
+  }
+
+  // Use default name if user didn't enter anything
+  if (presetName.empty())
+  {
+    presetName = defaultName;
+  }
+
+  // Trim whitespace
+  StringUtils::Trim(presetName);
+
+  // Check if preset with this name already exists
+  if (m_presetManager->GetPreset(presetName))
+  {
+    // Preset already exists - ask user to confirm overwrite
+    if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{"Preset Exists"},
+                                          CVariant{StringUtils::Format("A preset named '{}' already exists. Do you want to overwrite it?", presetName)}))
+    {
+      // User chose not to overwrite
+      return;
+    }
+  }
+
+  // Prompt user for preset description (optional)
+  std::string description;
+  if (CGUIKeyboardFactory::ShowAndGetInput(description, CVariant{"Enter description (optional)"}, false))
+  {
+    StringUtils::Trim(description);
+  }
+
+  // Use default description if none provided
+  if (description.empty())
+  {
+    description = "User-created filter preset";
+  }
+
+  // Save the preset
+  if (m_presetManager->SavePreset(presetName, description, m_filters))
   {
     CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Saved preset '{}'", presetName);
+
+    // Show confirmation to user
+    CGUIDialogOK::ShowAndGetInput(CVariant{"Success"},
+                                   CVariant{StringUtils::Format("Preset '{}' saved successfully", presetName)});
   }
   else
   {
     CLog::Log(LOGERROR, "CGUIDialogSemanticSearch: Failed to save preset");
+
+    // Show error to user
+    CGUIDialogOK::ShowAndGetInput(CVariant{"Error"},
+                                   CVariant{"Failed to save preset"});
   }
 }
 
@@ -1141,17 +1295,41 @@ std::vector<std::string> CGUIDialogSemanticSearch::LoadGenresFromDatabase()
   if (!m_videoDatabase)
     return genres;
 
-  // TODO: Query video database for available genres
-  // This would use CVideoDatabase::GetGenresNav or similar
-  // For now, return common genres as placeholders
+  try
+  {
+    // Open database if not already open
+    if (!m_videoDatabase->IsOpen())
+      m_videoDatabase->Open();
 
-  genres = {
-      "Action",       "Adventure", "Animation", "Comedy",   "Crime",  "Documentary",
-      "Drama",        "Family",    "Fantasy",   "History",  "Horror", "Music",
-      "Mystery",      "Romance",   "Sci-Fi",    "Thriller", "War",    "Western"
-  };
+    // Get genres for all video content types
+    CFileItemList genreItems;
+    if (m_videoDatabase->GetGenresNav("videodb://", genreItems, VideoDbContentType::UNKNOWN))
+    {
+      // Extract genre names from file items
+      for (int i = 0; i < genreItems.Size(); i++)
+      {
+        const CFileItemPtr& item = genreItems.Get(i);
+        if (item && !item->GetLabel().empty())
+        {
+          genres.push_back(item->GetLabel());
+        }
+      }
+    }
 
-  CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Loaded {} genres", genres.size());
+    CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Loaded {} genres from database", genres.size());
+  }
+  catch (const std::exception& ex)
+  {
+    CLog::Log(LOGERROR, "CGUIDialogSemanticSearch: Failed to load genres: {}", ex.what());
+
+    // Fallback to common genres if database query fails
+    genres = {
+        "Action",       "Adventure", "Animation", "Comedy",   "Crime",  "Documentary",
+        "Drama",        "Family",    "Fantasy",   "History",  "Horror", "Music",
+        "Mystery",      "Romance",   "Sci-Fi",    "Thriller", "War",    "Western"
+    };
+  }
+
   return genres;
 }
 

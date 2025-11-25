@@ -1,7 +1,13 @@
 {
   "name": "Kodi Semantic Search - Parallel Execution Plan",
-  "description": "Optimized parallel execution of Phase 1 (PRD-1: FTS5 Foundation) and Phase 2 (PRD-2: Vector Search) with maximum concurrency while respecting dependencies",
+  "description": "Optimized parallel execution of Phase 1 (PRD-1: FTS5 Foundation) and Phase 2 (PRD-2: Vector Search) with maximum concurrency while respecting dependencies. Waves 0-8 COMPLETE as of 2025-11-25. Wave 9 (Polish) in progress.",
   "created_at": "2025-11-25T03:00:00.000Z",
+  "updated_at": "2025-11-25T12:00:00.000Z",
+  "status": {
+    "waves_completed": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    "current_wave": 9,
+    "overall_progress": "95%"
+  },
   "cross_phase_dependencies": {
     "P2-4": "Extends semantic_index_state from P1-1 with embedding fields",
     "P2-6": "Uses FTS5 search from P1-8 for hybrid keyword+vector search",
@@ -411,31 +417,161 @@
           "dependencies": ["P2-15"]
         }
       ],
-      "max_parallel_agents": 2
+      "max_parallel_agents": 2,
+      "status": "complete"
+    },
+    {
+      "wave": 9,
+      "name": "Polish & Integration",
+      "description": "Complete remaining TODOs, fix build issues, run tests, prepare PR",
+      "status": "in_progress",
+      "parallel_tasks": [
+        {
+          "id": "P5-1",
+          "phase": 5,
+          "task_id": "5.1",
+          "title": "Complete QueryExpander word-level embedding search",
+          "description": "TODO at QueryExpander.cpp:337 - implement word embedding search",
+          "priority": "medium",
+          "estimated_hours": 4,
+          "dependencies": [],
+          "file_references": ["xbmc/semantic/expansion/QueryExpander.cpp:337"]
+        },
+        {
+          "id": "P5-2",
+          "phase": 5,
+          "task_id": "5.2",
+          "title": "Complete GPU metrics implementation",
+          "description": "TODOs at GPUAccelerator.cpp for GPU performance metrics",
+          "priority": "low",
+          "estimated_hours": 3,
+          "dependencies": [],
+          "file_references": ["xbmc/semantic/embedding/GPUAccelerator.cpp"]
+        },
+        {
+          "id": "P5-3",
+          "phase": 5,
+          "task_id": "5.3",
+          "title": "Complete GUI dialog implementations",
+          "description": "4 TODOs in CGUIDialogSemanticSearch.cpp for genre/preset dialogs",
+          "priority": "medium",
+          "estimated_hours": 6,
+          "dependencies": [],
+          "file_references": ["xbmc/semantic/dialogs/CGUIDialogSemanticSearch.cpp"]
+        },
+        {
+          "id": "P5-4",
+          "phase": 5,
+          "task_id": "5.4",
+          "title": "Implement multilingual model download",
+          "description": "TODO at MultilingualEngine.cpp:172 - implement model download",
+          "priority": "medium",
+          "estimated_hours": 4,
+          "dependencies": [],
+          "file_references": ["xbmc/semantic/multilingual/MultilingualEngine.cpp:172"]
+        },
+        {
+          "id": "P5-5",
+          "phase": 5,
+          "task_id": "5.5",
+          "title": "Fix CMake build configuration",
+          "description": "Fix macOS CMake errors, verify cross-platform builds",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": [],
+          "file_references": ["xbmc/semantic/CMakeLists.txt", "cmake/scripts/common/Platform.cmake"]
+        },
+        {
+          "id": "P5-6",
+          "phase": 5,
+          "task_id": "5.6",
+          "title": "Run full test suite",
+          "description": "Execute all 16 test files and fix failures",
+          "priority": "high",
+          "estimated_hours": 6,
+          "dependencies": ["P5-5"],
+          "file_references": ["xbmc/semantic/test/"]
+        },
+        {
+          "id": "P5-7",
+          "phase": 5,
+          "task_id": "5.7",
+          "title": "Performance benchmarking",
+          "description": "Verify <200ms search, <10ms embedding targets",
+          "priority": "medium",
+          "estimated_hours": 3,
+          "dependencies": ["P5-5", "P5-6"],
+          "file_references": []
+        },
+        {
+          "id": "P5-8",
+          "phase": 5,
+          "task_id": "5.8",
+          "title": "Code quality review",
+          "description": "Run clang-format, cppcheck, verify Kodi standards",
+          "priority": "medium",
+          "estimated_hours": 3,
+          "dependencies": [],
+          "file_references": ["xbmc/semantic/docs/PRChecklist.md"]
+        },
+        {
+          "id": "P5-9",
+          "phase": 5,
+          "task_id": "5.9",
+          "title": "Finalize PR checklist",
+          "description": "Complete PRChecklist.md items, prepare PR description",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": ["P5-1", "P5-2", "P5-3", "P5-4", "P5-5", "P5-6", "P5-7", "P5-8"],
+          "file_references": ["xbmc/semantic/docs/PRChecklist.md"]
+        }
+      ],
+      "max_parallel_agents": 5
     }
   ],
   "summary": {
-    "total_waves": 9,
+    "total_waves": 10,
     "phase1_tasks": 15,
     "phase2_tasks": 18,
-    "total_tasks": 33,
-    "estimated_total_hours": 168,
+    "phase5_tasks": 9,
+    "total_tasks": 42,
+    "completed_tasks": 33,
+    "remaining_tasks": 9,
+    "estimated_total_hours": 205,
+    "estimated_remaining_hours": 37,
     "max_parallelism": 7,
     "critical_path": [
-      "P1-1 -> P1-2 -> P1-8 -> P2-6 -> P2-7 -> P2-8 -> P2-9",
-      "P2-1 + P2-18 -> P2-2 -> P2-6 (joins with P1-8)",
-      "P2-3 -> P2-4 -> P2-5 -> P2-6 (joins above)"
+      "P1-1 -> P1-2 -> P1-8 -> P2-6 -> P2-7 -> P2-8 -> P2-9 (COMPLETE)",
+      "P2-1 + P2-18 -> P2-2 -> P2-6 (COMPLETE)",
+      "P2-3 -> P2-4 -> P2-5 -> P2-6 (COMPLETE)",
+      "P5-5 -> P5-6 -> P5-7 -> P5-9 (Polish critical path)"
     ],
     "parallelization_benefits": {
-      "wave_0": "7 tasks start immediately (both phases)",
-      "wave_1": "6 tasks build foundation in parallel",
+      "wave_0": "7 tasks start immediately (both phases) - COMPLETE",
+      "wave_1": "6 tasks build foundation in parallel - COMPLETE",
+      "wave_9": "5 polish tasks can run in parallel (P5-1 to P5-5)",
       "cross_phase_parallelism": "Phase 2 can start Wave 0 tasks before Phase 1 completes"
     }
   },
   "agent_recommendations": {
     "minimum_agents": 2,
     "optimal_agents": 4,
-    "maximum_useful_agents": 7,
-    "assignment_strategy": "Assign agents to waves; within each wave, prioritize high-priority tasks first"
+    "maximum_useful_agents": 5,
+    "assignment_strategy": "Wave 9: Assign agents to high-priority tasks first (P5-5 CMake, P5-6 Tests). P5-1 through P5-4 can run in parallel. P5-9 must wait for all others."
+  },
+  "completion_status": {
+    "waves_0_8": "COMPLETE - All 33 tasks from PRD-1 and PRD-2 implemented",
+    "wave_9": "IN PROGRESS - 9 polish tasks remaining",
+    "code_stats": {
+      "total_lines": "~24,000",
+      "total_files": "80+",
+      "test_files": 16
+    },
+    "remaining_todos": [
+      "QueryExpander.cpp:337 - word-level embedding search",
+      "GPUAccelerator.cpp - GPU metrics stubs (3 locations)",
+      "CGUIDialogSemanticSearch.cpp - 4 dialog TODOs",
+      "MultilingualEngine.cpp:172 - model download"
+    ]
   }
 }

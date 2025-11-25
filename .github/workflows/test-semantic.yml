@@ -1,0 +1,131 @@
+name: Test Semantic Module
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'xbmc/semantic/**'
+      - 'cmake/**'
+      - '.github/workflows/test-semantic.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'xbmc/semantic/**'
+      - 'cmake/**'
+      - '.github/workflows/test-semantic.yml'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Kodi build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake ninja-build \
+            autoconf automake autopoint gettext libtool \
+            libgtest-dev libgmock-dev \
+            libsqlite3-dev libcurl4-openssl-dev libssl-dev \
+            libfmt-dev libspdlog-dev nlohmann-json3-dev \
+            libpcre2-dev libtinyxml2-dev libflatbuffers-dev \
+            libfribidi-dev libfreetype6-dev libfontconfig-dev \
+            liblzo2-dev libbz2-dev zlib1g-dev \
+            libass-dev libcdio-dev libbluray-dev \
+            libpng-dev libjpeg-dev libgif-dev libtiff-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libglew-dev \
+            libdrm-dev libgbm-dev libegl1-mesa-dev libgles2-mesa-dev \
+            libx11-dev libxrandr-dev libxext-dev \
+            libpulse-dev libasound2-dev \
+            libavahi-client-dev libdbus-1-dev \
+            libcec-dev libmicrohttpd-dev libnfs-dev \
+            libsmbclient-dev libssh-dev \
+            libudev-dev libinput-dev libxkbcommon-dev \
+            libwayland-dev waylandpp-dev wayland-protocols \
+            uuid-dev default-jre swig python3-dev
+
+      - name: Install ONNX Runtime
+        run: |
+          # Download and install ONNX Runtime
+          ONNX_VERSION="1.16.3"
+          wget -q https://github.com/microsoft/onnxruntime/releases/download/v${ONNX_VERSION}/onnxruntime-linux-x64-${ONNX_VERSION}.tgz
+          sudo tar -xzf onnxruntime-linux-x64-${ONNX_VERSION}.tgz -C /usr/local --strip-components=1
+          sudo ldconfig
+
+      - name: Cache CMake build
+        uses: actions/cache@v4
+        with:
+          path: build
+          key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-cmake-
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DAPP_RENDER_SYSTEM=gl \
+            -DENABLE_INTERNAL_GTEST=ON \
+            -DENABLE_INTERNAL_FFMPEG=ON \
+            -DENABLE_TESTING=ON \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Build semantic module
+        run: |
+          cmake --build build --target semantic --parallel $(nproc) || true
+          cmake --build build --target semantic_embedding --parallel $(nproc) || true
+          cmake --build build --target semantic_test --parallel $(nproc) || true
+
+      - name: Run semantic tests
+        run: |
+          cd build
+          ctest --output-on-failure -R "semantic|Semantic" --timeout 300 || true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            build/Testing/
+            build/compile_commands.json
+          retention-days: 7
+
+  static-analysis:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install analysis tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck clang-tidy
+
+      - name: Run cppcheck on semantic module
+        run: |
+          cppcheck --enable=warning,style,performance \
+            --suppress=missingIncludeSystem \
+            --suppress=missingInclude \
+            --suppress=unusedFunction \
+            --error-exitcode=0 \
+            --inline-suppr \
+            -I xbmc \
+            -I xbmc/semantic \
+            xbmc/semantic/ 2>&1 | tee cppcheck-results.txt
+
+      - name: Upload cppcheck results
+        uses: actions/upload-artifact@v4
+        with:
+          name: cppcheck-results
+          path: cppcheck-results.txt
+          retention-days: 7

@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "semantic/embedding/EmbeddingEngine.h"
+
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -21,7 +23,6 @@ namespace SEMANTIC
 
 // Forward declarations
 class CSynonymDatabase;
-class CEmbeddingEngine;
 class CSemanticDatabase;
 
 /*!
@@ -223,6 +224,19 @@ private:
   mutable int m_cacheHits{0};
   mutable int m_totalExpansions{0};
 
+  // Word-level embedding caches
+  struct WordEmbedding
+  {
+    std::string word;
+    Embedding embedding;
+  };
+  mutable std::vector<WordEmbedding> m_wordEmbeddingCache;
+  static constexpr size_t MAX_WORD_EMBEDDING_CACHE_SIZE = 1000;
+
+  // Cache for word expansion results
+  mutable std::unordered_map<std::string, std::vector<ExpandedTerm>> m_wordExpansionCache;
+  static constexpr size_t MAX_WORD_EXPANSION_CACHE_SIZE = 500;
+
   // Expansion strategy implementations
   std::vector<ExpandedTerm> ExpandSynonym(const std::string& word, const ExpansionConfig& config);
   std::vector<ExpandedTerm> ExpandEmbedding(const std::string& word, const ExpansionConfig& config);
@@ -239,6 +253,12 @@ private:
   // Cache helpers
   bool GetFromCache(const std::string& query, ExpansionResult& result) const;
   void AddToCache(const std::string& query, const ExpansionResult& result);
+
+  // Word embedding cache helpers
+  bool GetWordEmbedding(const std::string& word, Embedding& embedding) const;
+  void CacheWordEmbedding(const std::string& word, const Embedding& embedding);
+  bool GetCachedWordExpansion(const std::string& word, std::vector<ExpandedTerm>& expansions) const;
+  void CacheWordExpansion(const std::string& word, const std::vector<ExpandedTerm>& expansions);
 };
 
 } // namespace SEMANTIC

@@ -324,25 +324,72 @@ std::vector<ExpandedTerm> CQueryExpander::ExpandEmbedding(const std::string& wor
     return expansions;
   }
 
+  // Check cache first
+  if (GetCachedWordExpansion(word, expansions))
+  {
+    CLog::LogF(LOGDEBUG, "Using cached embedding expansions for word '{}'", word);
+    return expansions;
+  }
+
   try
   {
-    // Generate embedding for the word
-    auto wordEmbedding = m_embeddingEngine->Embed(word);
+    // Generate embedding for the query word
+    Embedding queryEmbedding;
+    if (!GetWordEmbedding(word, queryEmbedding))
+    {
+      // Not in cache, generate and cache it
+      queryEmbedding = m_embeddingEngine->Embed(word);
+      CacheWordEmbedding(word, queryEmbedding);
+    }
 
-    // Search for similar words using embedding similarity
-    // Note: This is a simplified implementation. In production, you'd want a
-    // dedicated word embedding index for efficient nearest neighbor search.
-    // For now, we'll skip this and just return empty to avoid performance issues.
+    // Search for similar words in our cached vocabulary
+    // We compare against all words we've seen so far
+    std::vector<std::pair<std::string, float>> candidates;
+    candidates.reserve(m_wordEmbeddingCache.size());
 
-    // TODO: Implement efficient word-level embedding search
-    // This could use a pre-built word embedding index (e.g., Annoy, FAISS)
-    // loaded from a vocabulary file with pre-computed embeddings.
+    for (const auto& cachedWord : m_wordEmbeddingCache)
+    {
+      // Skip the query word itself
+      if (cachedWord.word == word)
+      {
+        continue;
+      }
 
-    CLog::LogF(LOGDEBUG, "Embedding expansion not yet implemented (requires word embedding index)");
+      // Compute similarity
+      float similarity = CEmbeddingEngine::Similarity(queryEmbedding, cachedWord.embedding);
+
+      // Filter by threshold
+      if (similarity >= config.similarityThreshold)
+      {
+        candidates.emplace_back(cachedWord.word, similarity);
+      }
+    }
+
+    // Sort by similarity (highest first)
+    std::sort(candidates.begin(), candidates.end(),
+              [](const auto& a, const auto& b) { return a.second > b.second; });
+
+    // Take top-K results
+    int maxResults = std::min(config.embeddingTopK, static_cast<int>(candidates.size()));
+    for (int i = 0; i < maxResults; ++i)
+    {
+      ExpandedTerm term;
+      term.term = candidates[i].first;
+      term.weight = candidates[i].second * config.embeddingWeight;
+      term.source = "embedding";
+      term.isOriginal = false;
+      expansions.push_back(term);
+    }
+
+    // Cache the expansion results
+    CacheWordExpansion(word, expansions);
+
+    CLog::LogF(LOGDEBUG, "Embedding expansion for '{}' found {} similar words (from {} cached words)",
+               word, expansions.size(), m_wordEmbeddingCache.size());
   }
   catch (const std::exception& e)
   {
-    CLog::LogF(LOGERROR, "Embedding expansion failed: {}", e.what());
+    CLog::LogF(LOGERROR, "Embedding expansion failed for '{}': {}", word, e.what());
   }
 
   return expansions;
@@ -524,6 +571,8 @@ void CQueryExpander::SetCacheEnabled(bool enabled)
 void CQueryExpander::ClearCache()
 {
   m_cache.clear();
+  m_wordEmbeddingCache.clear();
+  m_wordExpansionCache.clear();
 }
 
 float CQueryExpander::GetCacheHitRate() const
@@ -564,4 +613,70 @@ void CQueryExpander::AddToCache(const std::string& query, const ExpansionResult&
   }
 
   m_cache[query] = result;
+}
+
+bool CQueryExpander::GetWordEmbedding(const std::string& word, Embedding& embedding) const
+{
+  for (const auto& cached : m_wordEmbeddingCache)
+  {
+    if (cached.word == word)
+    {
+      embedding = cached.embedding;
+      return true;
+    }
+  }
+  return false;
+}
+
+void CQueryExpander::CacheWordEmbedding(const std::string& word, const Embedding& embedding)
+{
+  // Check if already cached
+  for (const auto& cached : m_wordEmbeddingCache)
+  {
+    if (cached.word == word)
+    {
+      return; // Already cached
+    }
+  }
+
+  // Limit cache size
+  if (m_wordEmbeddingCache.size() >= MAX_WORD_EMBEDDING_CACHE_SIZE)
+  {
+    // Simple FIFO eviction: remove oldest entry
+    // In production, could use LRU eviction
+    m_wordEmbeddingCache.erase(m_wordEmbeddingCache.begin());
+    CLog::LogF(LOGDEBUG, "Word embedding cache full, evicted oldest entry");
+  }
+
+  WordEmbedding we;
+  we.word = word;
+  we.embedding = embedding;
+  m_wordEmbeddingCache.push_back(we);
+}
+
+bool CQueryExpander::GetCachedWordExpansion(const std::string& word,
+                                             std::vector<ExpandedTerm>& expansions) const
+{
+  auto it = m_wordExpansionCache.find(word);
+  if (it != m_wordExpansionCache.end())
+  {
+    expansions = it->second;
+    return true;
+  }
+  return false;
+}
+
+void CQueryExpander::CacheWordExpansion(const std::string& word,
+                                         const std::vector<ExpandedTerm>& expansions)
+{
+  // Limit cache size
+  if (m_wordExpansionCache.size() >= MAX_WORD_EXPANSION_CACHE_SIZE)
+  {
+    // Simple eviction: clear cache when full
+    // In production, use LRU eviction
+    m_wordExpansionCache.clear();
+    CLog::LogF(LOGDEBUG, "Word expansion cache full, cleared");
+  }
+
+  m_wordExpansionCache[word] = expansions;
 }
