@@ -24,6 +24,7 @@ class CSemanticDatabase;
 class CEmbeddingEngine;
 class CSemanticSearch;
 class CVectorSearcher;
+class CQueryCache;
 
 /*!
  * @brief Search mode for hybrid search engine
@@ -51,6 +52,17 @@ struct HybridSearchOptions
   std::string mediaType;      //!< Filter by media type (empty = all)
   int mediaId{-1};            //!< Filter by specific media ID (-1 = all)
   float minConfidence{0.0f};  //!< Minimum confidence threshold
+
+  // Extended filtering options
+  std::vector<std::string> genres;     //!< Filter by genres (OR within list, empty = all)
+  int minYear{-1};                     //!< Minimum year filter (-1 = no filter)
+  int maxYear{-1};                     //!< Maximum year filter (-1 = no filter)
+  std::string mpaaRating;              //!< MPAA rating filter (empty = all)
+  int minDurationMinutes{-1};          //!< Minimum duration in minutes (-1 = no filter)
+  int maxDurationMinutes{-1};          //!< Maximum duration in minutes (-1 = no filter)
+  bool includeSubtitles{true};         //!< Include subtitle content
+  bool includeTranscription{true};     //!< Include transcription content
+  bool includeMetadata{true};          //!< Include metadata content
 };
 
 /*!
@@ -109,11 +121,13 @@ public:
    * @param database Pointer to semantic database (must remain valid)
    * @param embeddingEngine Pointer to embedding engine (must remain valid)
    * @param vectorSearcher Pointer to vector searcher (must remain valid)
+   * @param enableCache Enable query result caching (default: true)
    * @return true if initialization succeeded, false otherwise
    */
   bool Initialize(CSemanticDatabase* database,
                   CEmbeddingEngine* embeddingEngine,
-                  CVectorSearcher* vectorSearcher);
+                  CVectorSearcher* vectorSearcher,
+                  bool enableCache = true);
 
   /*!
    * @brief Check if the engine is initialized
@@ -159,6 +173,8 @@ private:
   CVectorSearcher* m_vectorSearcher{nullptr};
 
   std::unique_ptr<CSemanticSearch> m_keywordSearch;
+  std::unique_ptr<CQueryCache> m_cache;
+  bool m_cacheEnabled{false};
 
   // Search implementation methods
   std::vector<HybridSearchResult> SearchKeywordOnly(const std::string& query,
@@ -183,6 +199,12 @@ private:
   // Result enrichment
   HybridSearchResult EnrichResult(int64_t chunkId, float keywordScore, float vectorScore);
   std::string FormatTimestamp(int64_t ms);
+
+  // Filter application
+  std::vector<HybridSearchResult> ApplyExtendedFilters(
+      const std::vector<HybridSearchResult>& results,
+      const HybridSearchOptions& options);
+  bool PassesSourceFilter(const SemanticChunk& chunk, const HybridSearchOptions& options);
 };
 
 } // namespace SEMANTIC

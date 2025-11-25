@@ -90,6 +90,17 @@ void CSemanticDatabase::CreateTables()
       "  last_used_at TEXT"
       ")");
 
+  CLog::Log(LOGINFO, "SemanticDatabase: Creating semantic_search_history table");
+  m_pDS->exec(
+      "CREATE TABLE semantic_search_history ("
+      "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
+      "  profile_id INTEGER NOT NULL,"
+      "  query_text TEXT NOT NULL,"
+      "  result_count INTEGER DEFAULT 0,"
+      "  timestamp INTEGER NOT NULL,"
+      "  clicked_result_ids TEXT"
+      ")");
+
   CreateFTSTriggers();
 }
 
@@ -116,6 +127,16 @@ void CSemanticDatabase::CreateAnalytics()
   m_pDS->exec(
       "CREATE INDEX ix_semantic_index_state_status ON semantic_index_state "
       "(subtitle_status, transcription_status, metadata_status, priority)");
+
+  // Index for search history queries
+  m_pDS->exec(
+      "CREATE INDEX idx_history_query ON semantic_search_history(query_text)");
+
+  m_pDS->exec(
+      "CREATE INDEX idx_history_timestamp ON semantic_search_history(timestamp DESC)");
+
+  m_pDS->exec(
+      "CREATE INDEX idx_history_profile ON semantic_search_history(profile_id, timestamp DESC)");
 
   CLog::Log(LOGINFO, "SemanticDatabase: Creating triggers");
 
@@ -206,11 +227,47 @@ void CSemanticDatabase::UpdateTables(int version)
       CLog::LogF(LOGERROR, "Failed to migrate to version 2");
     }
   }
+
+  // Migrate to version 3: Add search history
+  if (version < 3)
+  {
+    CLog::Log(LOGINFO, "SemanticDatabase: Migrating to version 3 (search history)");
+
+    try
+    {
+      // Create search history table
+      m_pDS->exec(
+          "CREATE TABLE IF NOT EXISTS semantic_search_history ("
+          "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
+          "  profile_id INTEGER NOT NULL,"
+          "  query_text TEXT NOT NULL,"
+          "  result_count INTEGER DEFAULT 0,"
+          "  timestamp INTEGER NOT NULL,"
+          "  clicked_result_ids TEXT"
+          ")");
+
+      // Create indexes
+      m_pDS->exec(
+          "CREATE INDEX IF NOT EXISTS idx_history_query ON semantic_search_history(query_text)");
+
+      m_pDS->exec(
+          "CREATE INDEX IF NOT EXISTS idx_history_timestamp ON semantic_search_history(timestamp DESC)");
+
+      m_pDS->exec(
+          "CREATE INDEX IF NOT EXISTS idx_history_profile ON semantic_search_history(profile_id, timestamp DESC)");
+
+      CLog::Log(LOGINFO, "SemanticDatabase: Successfully migrated to version 3");
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Failed to migrate to version 3");
+    }
+  }
 }
 
 int CSemanticDatabase::GetSchemaVersion() const
 {
-  return 2; // Version 2: Added vector embedding support
+  return 3; // Version 3: Added search history and suggestions
 }
 
 int CSemanticDatabase::InsertChunk(const SemanticChunk& chunk)
@@ -1269,4 +1326,41 @@ int64_t CSemanticDatabase::GetEmbeddingCount()
     CLog::LogF(LOGERROR, "Failed to get embedding count");
   }
   return -1;
+}
+
+// ========== Search History Helper Methods ==========
+
+bool CSemanticDatabase::ExecuteSQLQuery(const std::string& sql)
+{
+  return ExecuteQuery(sql);
+}
+
+std::unique_ptr<dbiplus::Dataset> CSemanticDatabase::Query(const std::string& sql)
+{
+  try
+  {
+    if (m_pDB == nullptr)
+      return nullptr;
+
+    auto dataset = std::unique_ptr<dbiplus::Dataset>(m_pDB->CreateDataset());
+    if (dataset)
+    {
+      dataset->query(sql);
+      return dataset;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to execute query: {}", sql);
+  }
+  return nullptr;
+}
+
+int CSemanticDatabase::GetChanges() const
+{
+  if (m_pDB)
+  {
+    return static_cast<int>(m_pDB->getaffectedrows());
+  }
+  return 0;
 }

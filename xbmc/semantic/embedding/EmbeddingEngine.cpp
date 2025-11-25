@@ -9,11 +9,14 @@
 #include "EmbeddingEngine.h"
 
 #include "Tokenizer.h"
+#include "semantic/perf/MemoryManager.h"
+#include "semantic/perf/PerformanceMonitor.h"
 #include "utils/log.h"
 
 #include <cmath>
 #include <numeric>
 #include <stdexcept>
+#include <thread>
 
 #ifdef HAS_ONNXRUNTIME
 #include <onnxruntime_cxx_api.h>
@@ -29,7 +32,11 @@ class CEmbeddingEngine::Impl
 {
 public:
   Impl() = default;
-  ~Impl() = default;
+  ~Impl()
+  {
+    StopIdleTimer();
+    UnloadModel();
+  }
 
 #ifdef HAS_ONNXRUNTIME
   // ONNX Runtime environment and session
@@ -44,14 +51,85 @@ public:
   std::vector<const char*> m_outputNames = {"last_hidden_state"};
 
   bool m_initialized{false};
+  bool m_modelLoaded{false};
+  bool m_lazyLoad{true};
+  int m_idleTimeoutSec{300};
+
+  std::string m_modelPath;
+  std::string m_vocabPath;
+
+  // Idle timer management
+  std::atomic<bool> m_stopTimer{false};
+  std::thread m_idleTimer;
+  std::mutex m_timerMutex;
+  std::chrono::steady_clock::time_point m_lastUsed;
+
+  // Memory pressure callback ID
+  int m_memoryCallbackId{-1};
 #endif
 
-  bool Initialize(const std::string& modelPath, const std::string& vocabPath)
+  void StartIdleTimer()
   {
 #ifdef HAS_ONNXRUNTIME
+    if (m_idleTimeoutSec <= 0)
+      return;
+
+    StopIdleTimer();
+
+    m_stopTimer.store(false);
+    m_idleTimer = std::thread([this]() {
+      while (!m_stopTimer.load())
+      {
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+
+        if (!m_modelLoaded || m_stopTimer.load())
+          continue;
+
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - m_lastUsed).count();
+
+        if (elapsed >= m_idleTimeoutSec)
+        {
+          CLog::Log(LOGINFO, "EmbeddingEngine: Idle timeout reached, unloading model");
+          UnloadModel();
+        }
+      }
+    });
+#endif
+  }
+
+  void StopIdleTimer()
+  {
+#ifdef HAS_ONNXRUNTIME
+    m_stopTimer.store(true);
+    if (m_idleTimer.joinable())
+    {
+      m_idleTimer.join();
+    }
+#endif
+  }
+
+  void UpdateLastUsed()
+  {
+#ifdef HAS_ONNXRUNTIME
+    m_lastUsed = std::chrono::steady_clock::now();
+#endif
+  }
+
+  bool Initialize(const std::string& modelPath,
+                  const std::string& vocabPath,
+                  bool lazyLoad,
+                  int idleTimeoutSec)
+  {
+#ifdef HAS_ONNXRUNTIME
+    m_modelPath = modelPath;
+    m_vocabPath = vocabPath;
+    m_lazyLoad = lazyLoad;
+    m_idleTimeoutSec = idleTimeoutSec;
+
     try
     {
-      // Load tokenizer
+      // Always load tokenizer (small footprint)
       m_tokenizer = std::make_unique<CTokenizer>();
       if (!m_tokenizer->Load(vocabPath))
       {
@@ -63,23 +141,38 @@ public:
       CLog::Log(LOGINFO, "EmbeddingEngine: Loaded tokenizer with {} tokens",
                 m_tokenizer->GetVocabSize());
 
-      // Configure ONNX session options
-      Ort::SessionOptions sessionOptions;
-      sessionOptions.SetIntraOpNumThreads(2);
-      sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
-
-      // Load ONNX model
-      m_session = std::make_unique<Ort::Session>(m_env, modelPath.c_str(), sessionOptions);
-
-      CLog::Log(LOGINFO, "EmbeddingEngine: Successfully loaded ONNX model from '{}'", modelPath);
-
       m_initialized = true;
+
+      // Register memory pressure callback
+      auto& memMgr = CMemoryManager::GetInstance();
+      if (memMgr.IsInitialized())
+      {
+        m_memoryCallbackId = memMgr.RegisterPressureCallback(
+            [this](MemoryPressure pressure) -> size_t {
+              if (pressure >= MemoryPressure::Medium && m_modelLoaded)
+              {
+                CLog::Log(LOGINFO,
+                          "EmbeddingEngine: Unloading model due to memory pressure (level={})",
+                          static_cast<int>(pressure));
+                size_t freed = EstimateModelMemory();
+                UnloadModel();
+                return freed;
+              }
+              return 0;
+            },
+            "EmbeddingEngine");
+      }
+
+      // Load model immediately if not using lazy loading
+      if (!lazyLoad)
+      {
+        return LoadModel();
+      }
+
+      CLog::Log(LOGINFO,
+                "EmbeddingEngine: Initialized with lazy loading (idle timeout={}s)",
+                idleTimeoutSec);
       return true;
-    }
-    catch (const Ort::Exception& e)
-    {
-      CLog::Log(LOGERROR, "EmbeddingEngine: ONNX Runtime error: {}", e.what());
-      return false;
     }
     catch (const std::exception& e)
     {
@@ -93,10 +186,123 @@ public:
 #endif
   }
 
+  bool LoadModel()
+  {
+#ifdef HAS_ONNXRUNTIME
+    if (m_modelLoaded)
+      return true;
+
+    auto startTime = std::chrono::steady_clock::now();
+
+    try
+    {
+      CLog::Log(LOGINFO, "EmbeddingEngine: Loading ONNX model from '{}'", m_modelPath);
+
+      // Configure ONNX session options with optimizations
+      Ort::SessionOptions sessionOptions;
+      sessionOptions.SetIntraOpNumThreads(4); // Increased from 2
+      sessionOptions.SetInterOpNumThreads(2);
+      sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+
+      // Enable memory pattern optimization
+      sessionOptions.EnableMemPattern();
+      sessionOptions.EnableCpuMemArena();
+
+      // Load ONNX model
+      m_session = std::make_unique<Ort::Session>(m_env, m_modelPath.c_str(), sessionOptions);
+
+      m_modelLoaded = true;
+      m_lastUsed = std::chrono::steady_clock::now();
+
+      // Calculate load time
+      auto endTime = std::chrono::steady_clock::now();
+      double loadTimeMs =
+          std::chrono::duration<double, std::milli>(endTime - startTime).count();
+
+      // Update performance monitor
+      auto& perfMon = CPerformanceMonitor::GetInstance();
+      if (perfMon.IsEnabled())
+      {
+        perfMon.RecordModelLoad(loadTimeMs);
+      }
+
+      // Update memory manager
+      auto& memMgr = CMemoryManager::GetInstance();
+      if (memMgr.IsInitialized())
+      {
+        size_t modelMemory = EstimateModelMemory();
+        memMgr.UpdateComponentMemory(modelMemory, "model");
+      }
+
+      // Start idle timer
+      StartIdleTimer();
+
+      CLog::Log(LOGINFO, "EmbeddingEngine: Model loaded in {:.2f}ms", loadTimeMs);
+      return true;
+    }
+    catch (const Ort::Exception& e)
+    {
+      CLog::Log(LOGERROR, "EmbeddingEngine: ONNX Runtime error: {}", e.what());
+      m_modelLoaded = false;
+      return false;
+    }
+    catch (const std::exception& e)
+    {
+      CLog::Log(LOGERROR, "EmbeddingEngine: Model load error: {}", e.what());
+      m_modelLoaded = false;
+      return false;
+    }
+#else
+    return false;
+#endif
+  }
+
+  void UnloadModel()
+  {
+#ifdef HAS_ONNXRUNTIME
+    if (!m_modelLoaded)
+      return;
+
+    CLog::Log(LOGINFO, "EmbeddingEngine: Unloading model");
+
+    m_session.reset();
+    m_modelLoaded = false;
+
+    // Update performance monitor
+    auto& perfMon = CPerformanceMonitor::GetInstance();
+    if (perfMon.IsEnabled())
+    {
+      perfMon.RecordModelUnload();
+    }
+
+    // Update memory manager
+    auto& memMgr = CMemoryManager::GetInstance();
+    if (memMgr.IsInitialized())
+    {
+      memMgr.UpdateComponentMemory(0, "model");
+    }
+#endif
+  }
+
+  size_t EstimateModelMemory() const
+  {
+    // Rough estimate: all-MiniLM-L6-v2 is ~23MB on disk, ~80MB in memory
+    return 80 * 1024 * 1024;
+  }
+
   bool IsInitialized() const
   {
 #ifdef HAS_ONNXRUNTIME
     return m_initialized;
+#else
+    return false;
+#endif
+  }
+
+  bool IsModelLoaded() const
+  {
+#ifdef HAS_ONNXRUNTIME
+    return m_modelLoaded;
 #else
     return false;
 #endif
@@ -118,6 +324,22 @@ public:
 #ifdef HAS_ONNXRUNTIME
     if (!m_initialized || texts.empty())
       return {};
+
+    // Lazy load model if needed
+    if (!m_modelLoaded)
+    {
+      if (!LoadModel())
+      {
+        CLog::Log(LOGERROR, "EmbeddingEngine: Failed to load model for embedding");
+        return {};
+      }
+    }
+
+    // Update last used timestamp
+    UpdateLastUsed();
+
+    // Start performance timer
+    auto startTime = std::chrono::steady_clock::now();
 
     try
     {
@@ -248,6 +470,20 @@ public:
         }
       }
 
+      // Calculate elapsed time and update performance monitor
+      auto endTime = std::chrono::steady_clock::now();
+      double elapsedMs =
+          std::chrono::duration<double, std::milli>(endTime - startTime).count();
+
+      auto& perfMon = CPerformanceMonitor::GetInstance();
+      if (perfMon.IsEnabled())
+      {
+        perfMon.RecordEmbedding(elapsedMs, batchSize);
+      }
+
+      CLog::Log(LOGDEBUG, "EmbeddingEngine: Generated {} embeddings in {:.2f}ms ({:.2f}ms/item)",
+                batchSize, elapsedMs, elapsedMs / batchSize);
+
       return embeddings;
     }
     catch (const Ort::Exception& e)
@@ -275,14 +511,32 @@ CEmbeddingEngine::CEmbeddingEngine() : m_impl(std::make_unique<Impl>())
 
 CEmbeddingEngine::~CEmbeddingEngine() = default;
 
-bool CEmbeddingEngine::Initialize(const std::string& modelPath, const std::string& vocabPath)
+bool CEmbeddingEngine::Initialize(const std::string& modelPath,
+                                   const std::string& vocabPath,
+                                   bool lazyLoad,
+                                   int idleTimeoutSec)
 {
-  return m_impl->Initialize(modelPath, vocabPath);
+  return m_impl->Initialize(modelPath, vocabPath, lazyLoad, idleTimeoutSec);
 }
 
 bool CEmbeddingEngine::IsInitialized() const
 {
   return m_impl->IsInitialized();
+}
+
+bool CEmbeddingEngine::IsModelLoaded() const
+{
+  return m_impl->IsModelLoaded();
+}
+
+bool CEmbeddingEngine::LoadModel()
+{
+  return m_impl->LoadModel();
+}
+
+void CEmbeddingEngine::UnloadModel()
+{
+  m_impl->UnloadModel();
 }
 
 Embedding CEmbeddingEngine::Embed(const std::string& text)

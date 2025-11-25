@@ -78,9 +78,14 @@ public:
    *
    * \param modelPath Path to the ONNX model file (.onnx)
    * \param vocabPath Path to the tokenizer vocabulary file
+   * \param lazyLoad If true, model is loaded on first use (default: true)
+   * \param idleTimeoutSec Seconds of idle time before unloading model (0 = never, default: 300)
    * \return true if initialization succeeded, false otherwise
    */
-  bool Initialize(const std::string& modelPath, const std::string& vocabPath);
+  bool Initialize(const std::string& modelPath,
+                  const std::string& vocabPath,
+                  bool lazyLoad = true,
+                  int idleTimeoutSec = 300);
 
   /*!
    * \brief Check if the engine is properly initialized
@@ -88,6 +93,25 @@ public:
    * \return true if the engine is ready to generate embeddings
    */
   bool IsInitialized() const;
+
+  /*!
+   * \brief Check if the model is currently loaded in memory
+   *
+   * \return true if model is loaded, false if waiting for lazy load
+   */
+  bool IsModelLoaded() const;
+
+  /*!
+   * \brief Manually load the model (if lazy loading is enabled)
+   *
+   * \return true if load succeeded, false otherwise
+   */
+  bool LoadModel();
+
+  /*!
+   * \brief Manually unload the model to free memory
+   */
+  void UnloadModel();
 
   /*!
    * \brief Generate an embedding for a single text string

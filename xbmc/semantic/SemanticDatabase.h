@@ -271,6 +271,28 @@ public:
    */
   int64_t GetEmbeddingCount();
 
+  // ========== Search History Operations ==========
+
+  /*!
+   * @brief Execute a raw SQL query
+   * @param sql The SQL query to execute
+   * @return true if successful, false otherwise
+   */
+  bool ExecuteSQLQuery(const std::string& sql);
+
+  /*!
+   * @brief Execute a query and return the result dataset
+   * @param sql The SQL query to execute
+   * @return Pointer to dataset, or nullptr on error
+   */
+  std::unique_ptr<dbiplus::Dataset> Query(const std::string& sql);
+
+  /*!
+   * @brief Get the number of rows affected by the last operation
+   * @return Number of changes
+   */
+  int GetChanges() const;
+
 protected:
   // Database schema management
   void CreateTables() override;

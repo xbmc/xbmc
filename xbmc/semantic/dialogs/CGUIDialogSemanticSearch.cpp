@@ -23,6 +23,8 @@
 #include "input/actions/ActionIDs.h"
 #include "semantic/SemanticDatabase.h"
 #include "semantic/embedding/EmbeddingEngine.h"
+#include "semantic/history/SearchHistory.h"
+#include "semantic/history/SearchSuggestions.h"
 #include "semantic/search/ContextProvider.h"
 #include "semantic/search/VectorSearcher.h"
 #include "utils/StringUtils.h"
@@ -46,6 +48,20 @@
 #define CONTROL_CLEAR_BUTTON 10
 #define CONTROL_STATUS_LABEL 11
 #define CONTROL_RESULT_COUNT 12
+#define CONTROL_FILTER_PANEL 13
+#define CONTROL_GENRE_LIST 14
+#define CONTROL_YEAR_MIN_SLIDER 15
+#define CONTROL_YEAR_MAX_SLIDER 16
+#define CONTROL_RATING_BUTTON 17
+#define CONTROL_DURATION_BUTTON 18
+#define CONTROL_SOURCE_GROUP 19
+#define CONTROL_CLEAR_FILTERS_BUTTON 20
+#define CONTROL_FILTER_BADGES 21
+#define CONTROL_PRESET_BUTTON 22
+#define CONTROL_SAVE_PRESET_BUTTON 23
+#define CONTROL_SUBTITLE_TOGGLE 24
+#define CONTROL_TRANSCRIPTION_TOGGLE 25
+#define CONTROL_METADATA_TOGGLE 26
 
 // Window ID (needs to be added to WindowIDs.h)
 #define WINDOW_DIALOG_SEMANTIC_SEARCH 10161
@@ -67,6 +83,9 @@ CGUIDialogSemanticSearch::CGUIDialogSemanticSearch()
   m_searchOptions.maxResults = 50;
   m_searchOptions.keywordWeight = 0.4f;
   m_searchOptions.vectorWeight = 0.6f;
+
+  // Initialize filter preset manager
+  m_presetManager = std::make_unique<CFilterPresetManager>();
 }
 
 CGUIDialogSemanticSearch::~CGUIDialogSemanticSearch()
@@ -114,6 +133,31 @@ bool CGUIDialogSemanticSearch::Initialize(CSemanticDatabase* database,
     return false;
   }
 
+  // Load filter presets
+  if (m_presetManager)
+  {
+    m_presetManager->Load();
+  }
+
+  // Load available genres from database
+  m_availableGenres = LoadGenresFromDatabase();
+
+  // Initialize search history
+  m_searchHistory = std::make_unique<CSearchHistory>();
+  if (!m_searchHistory->Initialize(database))
+  {
+    CLog::Log(LOGERROR, "CGUIDialogSemanticSearch: Failed to initialize search history");
+    return false;
+  }
+
+  // Initialize search suggestions
+  m_searchSuggestions = std::make_unique<CSearchSuggestions>();
+  if (!m_searchSuggestions->Initialize(database, m_searchHistory.get()))
+  {
+    CLog::Log(LOGERROR, "CGUIDialogSemanticSearch: Failed to initialize search suggestions");
+    return false;
+  }
+
   CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Successfully initialized");
   return true;
 }
@@ -141,6 +185,10 @@ void CGUIDialogSemanticSearch::OnInitWindow()
   // Clear any previous results
   m_results->Clear();
   m_enrichedResults.clear();
+
+  // Initialize filter controls
+  UpdateFilterControls();
+  UpdateFilterBadges();
 
   // Focus search input
   SET_CONTROL_FOCUS(CONTROL_SEARCH_INPUT, 0);
@@ -204,6 +252,51 @@ bool CGUIDialogSemanticSearch::OnMessage(CGUIMessage& message)
       else if (controlId == CONTROL_CLOSE_BUTTON)
       {
         Close();
+        return true;
+      }
+      else if (controlId == CONTROL_RATING_BUTTON)
+      {
+        ToggleRatingFilter();
+        return true;
+      }
+      else if (controlId == CONTROL_DURATION_BUTTON)
+      {
+        ToggleDurationFilter();
+        return true;
+      }
+      else if (controlId == CONTROL_GENRE_LIST)
+      {
+        ShowGenreSelector();
+        return true;
+      }
+      else if (controlId == CONTROL_CLEAR_FILTERS_BUTTON)
+      {
+        ClearFilters();
+        return true;
+      }
+      else if (controlId == CONTROL_PRESET_BUTTON)
+      {
+        ShowFilterPresetSelector();
+        return true;
+      }
+      else if (controlId == CONTROL_SAVE_PRESET_BUTTON)
+      {
+        ShowSavePresetDialog();
+        return true;
+      }
+      else if (controlId == CONTROL_SUBTITLE_TOGGLE)
+      {
+        ToggleSourceFilter(SourceType::SUBTITLE);
+        return true;
+      }
+      else if (controlId == CONTROL_TRANSCRIPTION_TOGGLE)
+      {
+        ToggleSourceFilter(SourceType::TRANSCRIPTION);
+        return true;
+      }
+      else if (controlId == CONTROL_METADATA_TOGGLE)
+      {
+        ToggleSourceFilter(SourceType::METADATA);
         return true;
       }
       break;
@@ -406,6 +499,9 @@ void CGUIDialogSemanticSearch::PerformSearch()
 
   try
   {
+    // Apply current filters to search options
+    ApplyFiltersToOptions();
+
     // Perform search
     auto results = m_searchEngine->Search(m_currentQuery, m_searchOptions);
 
@@ -416,6 +512,9 @@ void CGUIDialogSemanticSearch::PerformSearch()
 
     CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Enriched {} results",
               m_enrichedResults.size());
+
+    // Record search in history
+    RecordSearchInHistory(m_currentQuery, static_cast<int>(m_enrichedResults.size()));
 
     // Update UI on main thread
     CGUIMessage msg(GUI_MSG_UPDATE, GetID(), 0);
@@ -476,6 +575,12 @@ void CGUIDialogSemanticSearch::OnResultSelected(const std::shared_ptr<CFileItem>
   {
     if (result.chunkId == chunkId)
     {
+      // Record clicked result in history
+      if (m_searchHistory && !m_currentQuery.empty())
+      {
+        m_searchHistory->UpdateClickedResult(m_currentQuery, chunkId);
+      }
+
       JumpToTimestamp(result);
       break;
     }
@@ -726,6 +831,369 @@ std::string CGUIDialogSemanticSearch::FormatMediaTypeFilter() const
   else
   {
     return "Filter: " + m_mediaTypeFilter;
+  }
+}
+
+void CGUIDialogSemanticSearch::ApplyFiltersToOptions()
+{
+  // Apply media type filter
+  m_searchOptions.mediaType = m_filters.GetMediaTypeString();
+
+  // Apply genre filter
+  const auto& genres = m_filters.GetGenres();
+  m_searchOptions.genres.clear();
+  m_searchOptions.genres.assign(genres.begin(), genres.end());
+
+  // Apply year range filter
+  const auto& yearRange = m_filters.GetYearRange();
+  m_searchOptions.minYear = yearRange.minYear;
+  m_searchOptions.maxYear = yearRange.maxYear;
+
+  // Apply rating filter
+  m_searchOptions.mpaaRating = m_filters.GetRatingString();
+
+  // Apply duration filter
+  auto durationRange = m_filters.GetDurationMinutesRange();
+  m_searchOptions.minDurationMinutes = durationRange.first;
+  m_searchOptions.maxDurationMinutes = durationRange.second;
+
+  // Apply source filters
+  const auto& sourceFilter = m_filters.GetSourceFilter();
+  m_searchOptions.includeSubtitles = sourceFilter.includeSubtitles;
+  m_searchOptions.includeTranscription = sourceFilter.includeTranscription;
+  m_searchOptions.includeMetadata = sourceFilter.includeMetadata;
+}
+
+void CGUIDialogSemanticSearch::UpdateFilterControls()
+{
+  // Update rating button
+  SET_CONTROL_LABEL(CONTROL_RATING_BUTTON, m_filters.GetRatingString());
+
+  // Update duration button
+  SET_CONTROL_LABEL(CONTROL_DURATION_BUTTON, m_filters.GetDurationString());
+
+  // Update year range labels (if controls exist)
+  const auto& yearRange = m_filters.GetYearRange();
+  if (yearRange.IsActive())
+  {
+    // Update slider controls if they exist
+    // This would require actual slider control implementation
+  }
+
+  // Update source toggles
+  const auto& sourceFilter = m_filters.GetSourceFilter();
+  if (sourceFilter.includeSubtitles)
+    SET_CONTROL_SELECTED(GetID(), CONTROL_SUBTITLE_TOGGLE, true);
+  else
+    SET_CONTROL_DESELECTED(GetID(), CONTROL_SUBTITLE_TOGGLE);
+
+  if (sourceFilter.includeTranscription)
+    SET_CONTROL_SELECTED(GetID(), CONTROL_TRANSCRIPTION_TOGGLE, true);
+  else
+    SET_CONTROL_DESELECTED(GetID(), CONTROL_TRANSCRIPTION_TOGGLE);
+
+  if (sourceFilter.includeMetadata)
+    SET_CONTROL_SELECTED(GetID(), CONTROL_METADATA_TOGGLE, true);
+  else
+    SET_CONTROL_DESELECTED(GetID(), CONTROL_METADATA_TOGGLE);
+}
+
+void CGUIDialogSemanticSearch::UpdateFilterBadges()
+{
+  // Get active filter badges
+  auto badges = m_filters.GetActiveFilterBadges();
+
+  // Build badge display string
+  std::string badgeText;
+  if (!badges.empty())
+  {
+    badgeText = StringUtils::Format("{} active filters: {}",
+                                    m_filters.GetActiveFilterCount(),
+                                    StringUtils::Join(badges, " • "));
+  }
+  else
+  {
+    badgeText = "No filters active";
+  }
+
+  // Update badge control label
+  SET_CONTROL_LABEL(CONTROL_FILTER_BADGES, badgeText);
+}
+
+void CGUIDialogSemanticSearch::ToggleRatingFilter()
+{
+  RatingFilter current = m_filters.GetRating();
+  RatingFilter next;
+
+  switch (current)
+  {
+    case RatingFilter::All:
+      next = RatingFilter::G;
+      break;
+    case RatingFilter::G:
+      next = RatingFilter::PG;
+      break;
+    case RatingFilter::PG:
+      next = RatingFilter::PG13;
+      break;
+    case RatingFilter::PG13:
+      next = RatingFilter::R;
+      break;
+    case RatingFilter::R:
+      next = RatingFilter::NC17;
+      break;
+    case RatingFilter::NC17:
+      next = RatingFilter::Unrated;
+      break;
+    case RatingFilter::Unrated:
+      next = RatingFilter::All;
+      break;
+    default:
+      next = RatingFilter::All;
+      break;
+  }
+
+  m_filters.SetRating(next);
+  UpdateFilterControls();
+  UpdateFilterBadges();
+
+  // Re-run search with new filter
+  if (!m_currentQuery.empty())
+  {
+    m_needsUpdate = true;
+    if (!IsRunning())
+      Create();
+  }
+}
+
+void CGUIDialogSemanticSearch::ToggleDurationFilter()
+{
+  DurationFilter current = m_filters.GetDuration();
+  DurationFilter next;
+
+  switch (current)
+  {
+    case DurationFilter::All:
+      next = DurationFilter::Short;
+      break;
+    case DurationFilter::Short:
+      next = DurationFilter::Medium;
+      break;
+    case DurationFilter::Medium:
+      next = DurationFilter::Long;
+      break;
+    case DurationFilter::Long:
+      next = DurationFilter::All;
+      break;
+    default:
+      next = DurationFilter::All;
+      break;
+  }
+
+  m_filters.SetDuration(next);
+  UpdateFilterControls();
+  UpdateFilterBadges();
+
+  // Re-run search with new filter
+  if (!m_currentQuery.empty())
+  {
+    m_needsUpdate = true;
+    if (!IsRunning())
+      Create();
+  }
+}
+
+void CGUIDialogSemanticSearch::ShowGenreSelector()
+{
+  // This would show a multi-select dialog for genres
+  // Implementation would use CGUIDialogSelect or similar
+  // For now, just log that it was called
+  CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Genre selector requested");
+
+  // TODO: Implement genre selection dialog using available genres from m_availableGenres
+  // This would allow users to select multiple genres from the list
+}
+
+void CGUIDialogSemanticSearch::UpdateYearRangeSliders()
+{
+  // Update year range slider controls
+  // This would be implemented when actual slider controls are added to the XML
+  const auto& yearRange = m_filters.GetYearRange();
+
+  if (yearRange.IsActive())
+  {
+    CLog::Log(LOGDEBUG, "CGUIDialogSemanticSearch: Year range filter: {} - {}",
+              yearRange.minYear, yearRange.maxYear);
+  }
+}
+
+void CGUIDialogSemanticSearch::ToggleSourceFilter(SourceType sourceType)
+{
+  SourceFilter sourceFilter = m_filters.GetSourceFilter();
+
+  switch (sourceType)
+  {
+    case SourceType::SUBTITLE:
+      sourceFilter.includeSubtitles = !sourceFilter.includeSubtitles;
+      break;
+    case SourceType::TRANSCRIPTION:
+      sourceFilter.includeTranscription = !sourceFilter.includeTranscription;
+      break;
+    case SourceType::METADATA:
+      sourceFilter.includeMetadata = !sourceFilter.includeMetadata;
+      break;
+  }
+
+  m_filters.SetSourceFilter(sourceFilter);
+  UpdateFilterControls();
+  UpdateFilterBadges();
+
+  // Re-run search with new filter
+  if (!m_currentQuery.empty())
+  {
+    m_needsUpdate = true;
+    if (!IsRunning())
+      Create();
+  }
+}
+
+void CGUIDialogSemanticSearch::ClearFilters()
+{
+  m_filters.Clear();
+  UpdateFilterControls();
+  UpdateFilterBadges();
+
+  // Re-run search without filters
+  if (!m_currentQuery.empty())
+  {
+    m_needsUpdate = true;
+    if (!IsRunning())
+      Create();
+  }
+
+  CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: All filters cleared");
+}
+
+void CGUIDialogSemanticSearch::ShowFilterPresetSelector()
+{
+  if (!m_presetManager)
+    return;
+
+  // Get available presets
+  auto presetNames = m_presetManager->GetPresetNames();
+
+  if (presetNames.empty())
+  {
+    CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: No filter presets available");
+    return;
+  }
+
+  // TODO: Show selection dialog with preset names
+  // For now, just log available presets
+  CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Available presets: {}",
+            StringUtils::Join(presetNames, ", "));
+
+  // Example: Apply first preset for demonstration
+  if (const FilterPreset* preset = m_presetManager->GetPreset(presetNames[0]))
+  {
+    ApplyFilterPreset(*preset);
+  }
+}
+
+void CGUIDialogSemanticSearch::ShowSavePresetDialog()
+{
+  // TODO: Show dialog to enter preset name and description
+  // For now, save with a default name
+  std::string presetName = StringUtils::Format("Custom Preset {}",
+                                               m_presetManager->GetPresetCount() + 1);
+
+  if (m_presetManager->SavePreset(presetName, "User-created preset", m_filters))
+  {
+    CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Saved preset '{}'", presetName);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CGUIDialogSemanticSearch: Failed to save preset");
+  }
+}
+
+void CGUIDialogSemanticSearch::ApplyFilterPreset(const FilterPreset& preset)
+{
+  m_filters = preset.filters;
+  UpdateFilterControls();
+  UpdateFilterBadges();
+
+  // Re-run search with preset filters
+  if (!m_currentQuery.empty())
+  {
+    m_needsUpdate = true;
+    if (!IsRunning())
+      Create();
+  }
+
+  CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Applied preset '{}'", preset.name);
+}
+
+std::vector<std::string> CGUIDialogSemanticSearch::LoadGenresFromDatabase()
+{
+  std::vector<std::string> genres;
+
+  if (!m_videoDatabase)
+    return genres;
+
+  // TODO: Query video database for available genres
+  // This would use CVideoDatabase::GetGenresNav or similar
+  // For now, return common genres as placeholders
+
+  genres = {
+      "Action",       "Adventure", "Animation", "Comedy",   "Crime",  "Documentary",
+      "Drama",        "Family",    "Fantasy",   "History",  "Horror", "Music",
+      "Mystery",      "Romance",   "Sci-Fi",    "Thriller", "War",    "Western"
+  };
+
+  CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Loaded {} genres", genres.size());
+  return genres;
+}
+
+void CGUIDialogSemanticSearch::RecordSearchInHistory(const std::string& query, int resultCount)
+{
+  if (m_searchHistory && !query.empty())
+  {
+    m_searchHistory->AddSearch(query, resultCount);
+  }
+}
+
+std::vector<std::string> CGUIDialogSemanticSearch::GetSuggestions(const std::string& partialQuery)
+{
+  std::vector<std::string> suggestionTexts;
+
+  if (m_searchSuggestions && !partialQuery.empty())
+  {
+    auto suggestions = m_searchSuggestions->GetSuggestions(partialQuery, 10);
+    for (const auto& suggestion : suggestions)
+    {
+      suggestionTexts.push_back(suggestion.GetDisplayLabel());
+    }
+  }
+
+  return suggestionTexts;
+}
+
+void CGUIDialogSemanticSearch::ClearSearchHistory()
+{
+  if (m_searchHistory)
+  {
+    m_searchHistory->ClearHistory();
+    CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Cleared search history");
+  }
+}
+
+void CGUIDialogSemanticSearch::SetPrivacyMode(bool enabled)
+{
+  if (m_searchHistory)
+  {
+    m_searchHistory->SetPrivacyMode(enabled);
+    CLog::Log(LOGINFO, "CGUIDialogSemanticSearch: Privacy mode {}", enabled ? "enabled" : "disabled");
   }
 }
 

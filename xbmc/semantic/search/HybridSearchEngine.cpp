@@ -12,10 +12,14 @@
 #include "VectorSearcher.h"
 #include "semantic/SemanticDatabase.h"
 #include "semantic/embedding/EmbeddingEngine.h"
+#include "semantic/perf/PerformanceMonitor.h"
+#include "semantic/perf/QueryCache.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <future>
+#include <sstream>
 #include <unordered_map>
 
 using namespace KODI::SEMANTIC;
@@ -26,7 +30,8 @@ CHybridSearchEngine::~CHybridSearchEngine() = default;
 
 bool CHybridSearchEngine::Initialize(CSemanticDatabase* database,
                                      CEmbeddingEngine* embeddingEngine,
-                                     CVectorSearcher* vectorSearcher)
+                                     CVectorSearcher* vectorSearcher,
+                                     bool enableCache)
 {
   if (database == nullptr)
   {
@@ -49,6 +54,7 @@ bool CHybridSearchEngine::Initialize(CSemanticDatabase* database,
   m_database = database;
   m_embeddingEngine = embeddingEngine;
   m_vectorSearcher = vectorSearcher;
+  m_cacheEnabled = enableCache;
 
   // Initialize keyword search component
   m_keywordSearch = std::make_unique<CSemanticSearch>();
@@ -56,6 +62,14 @@ bool CHybridSearchEngine::Initialize(CSemanticDatabase* database,
   {
     CLog::LogF(LOGERROR, "Failed to initialize keyword search component");
     return false;
+  }
+
+  // Initialize query cache if enabled
+  if (enableCache)
+  {
+    m_cache = std::make_unique<CQueryCache>();
+    m_cache->Initialize(50, 300, 3600); // 50MB cache, 5min TTL for results, 1hr for embeddings
+    CLog::LogF(LOGDEBUG, "HybridSearchEngine: Query cache enabled");
   }
 
   CLog::LogF(LOGDEBUG, "HybridSearchEngine initialized successfully");
@@ -132,7 +146,12 @@ std::vector<HybridSearchResult> CHybridSearchEngine::SearchKeywordOnly(
     results.push_back(std::move(hybridResult));
   }
 
-  CLog::LogF(LOGDEBUG, "Keyword search returned {} results", results.size());
+  CLog::LogF(LOGDEBUG, "Keyword search returned {} results before filtering", results.size());
+
+  // Apply extended filters (year, rating, duration, source type)
+  results = ApplyExtendedFilters(results, options);
+
+  CLog::LogF(LOGDEBUG, "Keyword search returned {} results after filtering", results.size());
   return results;
 }
 
@@ -190,7 +209,12 @@ std::vector<HybridSearchResult> CHybridSearchEngine::SearchSemanticOnly(
     results.push_back(EnrichResult(result.chunkId, 0.0f, similarity));
   }
 
-  CLog::LogF(LOGDEBUG, "Semantic search returned {} results", results.size());
+  CLog::LogF(LOGDEBUG, "Semantic search returned {} results before filtering", results.size());
+
+  // Apply extended filters (year, rating, duration, source type)
+  results = ApplyExtendedFilters(results, options);
+
+  CLog::LogF(LOGDEBUG, "Semantic search returned {} results after filtering", results.size());
   return results;
 }
 
@@ -310,7 +334,12 @@ std::vector<HybridSearchResult> CHybridSearchEngine::CombineResultsRRF(
     count++;
   }
 
-  CLog::LogF(LOGDEBUG, "Hybrid search returned {} final results", results.size());
+  CLog::LogF(LOGDEBUG, "Hybrid search returned {} final results before filtering", results.size());
+
+  // Apply extended filters (year, rating, duration, source type)
+  results = ApplyExtendedFilters(results, options);
+
+  CLog::LogF(LOGDEBUG, "Hybrid search returned {} final results after filtering", results.size());
   return results;
 }
 
@@ -420,4 +449,105 @@ float CHybridSearchEngine::CosineDistanceToSimilarity(float distance)
   // Convert cosine distance (0 = identical, 2 = opposite)
   // to similarity score (1 = identical, 0 = opposite)
   return 1.0f - (distance / 2.0f);
+}
+
+std::vector<HybridSearchResult> CHybridSearchEngine::ApplyExtendedFilters(
+    const std::vector<HybridSearchResult>& results,
+    const HybridSearchOptions& options)
+{
+  std::vector<HybridSearchResult> filtered;
+  filtered.reserve(results.size());
+
+  for (const auto& result : results)
+  {
+    // Apply source type filter
+    if (!PassesSourceFilter(result.chunk, options))
+    {
+      CLog::LogF(LOGDEBUG, "Result chunkId={} filtered by source type", result.chunkId);
+      continue;
+    }
+
+    // Apply genre filter (if genres specified)
+    // NOTE: This requires querying video database for media metadata
+    // TODO: Implement genre filtering by querying CVideoDatabase::GetMovieInfo or GetEpisodeInfo
+    if (!options.genres.empty())
+    {
+      // For now, accept all results as we don't have genre data in chunks
+      // In a full implementation, we would:
+      // 1. Query video database for media_id's genre
+      // 2. Check if any of the media's genres match options.genres
+      CLog::LogF(LOGDEBUG, "Genre filter active but not yet implemented for chunkId={}",
+                 result.chunkId);
+    }
+
+    // Apply year filter (if year range specified)
+    // NOTE: This requires querying video database for media metadata
+    // TODO: Implement year filtering by querying CVideoDatabase
+    if (options.minYear > 0 || options.maxYear > 0)
+    {
+      // For now, accept all results as we don't have year data in chunks
+      // In a full implementation, we would:
+      // 1. Query video database for media_id's year
+      // 2. Check if year falls within minYear/maxYear range
+      CLog::LogF(LOGDEBUG, "Year filter active but not yet implemented for chunkId={}",
+                 result.chunkId);
+    }
+
+    // Apply MPAA rating filter (if rating specified)
+    // NOTE: This requires querying video database for media metadata
+    // TODO: Implement rating filtering by querying CVideoDatabase
+    if (!options.mpaaRating.empty() && options.mpaaRating != "All Ratings")
+    {
+      // For now, accept all results as we don't have rating data in chunks
+      // In a full implementation, we would:
+      // 1. Query video database for media_id's MPAA rating
+      // 2. Check if rating matches options.mpaaRating
+      CLog::LogF(LOGDEBUG, "Rating filter active but not yet implemented for chunkId={}",
+                 result.chunkId);
+    }
+
+    // Apply duration filter (if duration range specified)
+    // NOTE: This requires querying video database for media metadata
+    // TODO: Implement duration filtering by querying CVideoDatabase
+    if (options.minDurationMinutes > 0 || options.maxDurationMinutes > 0)
+    {
+      // For now, accept all results as we don't have duration data in chunks
+      // In a full implementation, we would:
+      // 1. Query video database for media_id's runtime/duration
+      // 2. Check if duration falls within minDurationMinutes/maxDurationMinutes range
+      CLog::LogF(LOGDEBUG, "Duration filter active but not yet implemented for chunkId={}",
+                 result.chunkId);
+    }
+
+    // Result passed all filters
+    filtered.push_back(result);
+  }
+
+  CLog::LogF(LOGDEBUG, "Applied extended filters: {} -> {} results", results.size(),
+             filtered.size());
+
+  return filtered;
+}
+
+bool CHybridSearchEngine::PassesSourceFilter(const SemanticChunk& chunk,
+                                              const HybridSearchOptions& options)
+{
+  // Check if all source types are enabled (no filtering)
+  if (options.includeSubtitles && options.includeTranscription && options.includeMetadata)
+  {
+    return true;
+  }
+
+  // Check if the chunk's source type is enabled
+  switch (chunk.sourceType)
+  {
+    case SourceType::SUBTITLE:
+      return options.includeSubtitles;
+    case SourceType::TRANSCRIPTION:
+      return options.includeTranscription;
+    case SourceType::METADATA:
+      return options.includeMetadata;
+    default:
+      return true; // Unknown source types are allowed by default
+  }
 }

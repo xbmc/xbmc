@@ -9,6 +9,8 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
+#include "semantic/filters/FilterPreset.h"
+#include "semantic/filters/SearchFilters.h"
 #include "semantic/search/HybridSearchEngine.h"
 #include "semantic/search/ResultEnricher.h"
 #include "threads/CriticalSection.h"
@@ -32,6 +34,8 @@ class CSemanticDatabase;
 class CEmbeddingEngine;
 class CVectorSearcher;
 class CContextProvider;
+class CSearchHistory;
+class CSearchSuggestions;
 
 /*!
  * @brief GUI dialog for semantic search in Kodi
@@ -63,6 +67,20 @@ class CContextProvider;
  * - 10: Clear search button
  * - 11: Search status label
  * - 12: Result count label
+ * - 13: Filter panel group
+ * - 14: Genre filter list
+ * - 15: Year range slider min
+ * - 16: Year range slider max
+ * - 17: Rating filter button
+ * - 18: Duration filter button
+ * - 19: Source filter group
+ * - 20: Clear filters button
+ * - 21: Active filter badges container
+ * - 22: Filter presets button
+ * - 23: Save preset button
+ * - 24: Subtitle source toggle
+ * - 25: Transcription source toggle
+ * - 26: Metadata source toggle
  *
  * Example usage:
  * \code
@@ -118,6 +136,24 @@ public:
    */
   void SetSearchMode(SearchMode mode);
 
+  /*!
+   * @brief Get autocomplete suggestions for partial query
+   * @param partialQuery Partial search query
+   * @return Vector of suggestions
+   */
+  std::vector<std::string> GetSuggestions(const std::string& partialQuery);
+
+  /*!
+   * @brief Clear search history
+   */
+  void ClearSearchHistory();
+
+  /*!
+   * @brief Enable or disable privacy mode
+   * @param enabled true to enable privacy mode
+   */
+  void SetPrivacyMode(bool enabled);
+
 protected:
   // CThread implementation
   void Process() override;
@@ -161,6 +197,36 @@ protected:
   void ToggleMediaTypeFilter();
 
   /*!
+   * @brief Toggle rating filter
+   */
+  void ToggleRatingFilter();
+
+  /*!
+   * @brief Toggle duration filter
+   */
+  void ToggleDurationFilter();
+
+  /*!
+   * @brief Show genre selection dialog
+   */
+  void ShowGenreSelector();
+
+  /*!
+   * @brief Update year range sliders
+   */
+  void UpdateYearRangeSliders();
+
+  /*!
+   * @brief Toggle source filter (subtitle/transcription/metadata)
+   */
+  void ToggleSourceFilter(SourceType sourceType);
+
+  /*!
+   * @brief Clear all filters
+   */
+  void ClearFilters();
+
+  /*!
    * @brief Clear the search input and results
    */
   void ClearSearch();
@@ -195,11 +261,57 @@ protected:
    */
   std::string FormatMediaTypeFilter() const;
 
+  /*!
+   * @brief Apply search filters to search options
+   */
+  void ApplyFiltersToOptions();
+
+  /*!
+   * @brief Update filter UI controls based on current filter state
+   */
+  void UpdateFilterControls();
+
+  /*!
+   * @brief Update active filter badges display
+   */
+  void UpdateFilterBadges();
+
+  /*!
+   * @brief Show filter preset selector dialog
+   */
+  void ShowFilterPresetSelector();
+
+  /*!
+   * @brief Show save filter preset dialog
+   */
+  void ShowSavePresetDialog();
+
+  /*!
+   * @brief Apply a filter preset
+   * @param preset The preset to apply
+   */
+  void ApplyFilterPreset(const FilterPreset& preset);
+
+  /*!
+   * @brief Load available genres from video database
+   * @return Vector of genre names
+   */
+  std::vector<std::string> LoadGenresFromDatabase();
+
+  /*!
+   * @brief Record the search in history
+   * @param query Search query
+   * @param resultCount Number of results
+   */
+  void RecordSearchInHistory(const std::string& query, int resultCount);
+
 private:
   // Search components
   std::unique_ptr<CHybridSearchEngine> m_searchEngine;
   std::unique_ptr<CResultEnricher> m_enricher;
   std::unique_ptr<CContextProvider> m_contextProvider;
+  std::unique_ptr<CSearchHistory> m_searchHistory;
+  std::unique_ptr<CSearchSuggestions> m_searchSuggestions;
 
   // Database references
   CSemanticDatabase* m_database{nullptr};
@@ -212,6 +324,11 @@ private:
   SearchMode m_searchMode{SearchMode::Hybrid};
   std::string m_mediaTypeFilter; // empty = all
   HybridSearchOptions m_searchOptions;
+
+  // Filter management
+  CSearchFilters m_filters;
+  std::unique_ptr<CFilterPresetManager> m_presetManager;
+  std::vector<std::string> m_availableGenres;
 
   // Results
   std::unique_ptr<CFileItemList> m_results;
