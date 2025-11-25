@@ -53,7 +53,7 @@ macro(buildFFMPEG)
 
     # Todo: buildmode?
     set(PROMPTLEVEL noprompt)
-    set(BUILDMODE clean)
+    set(BUILDMODE noclean)
 
     set(build32 no)
     set(build64 no)
@@ -213,18 +213,19 @@ macro(buildFFMPEG)
   endif()
 
   foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-    string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
+    string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
 
-    add_library(ffmpeg::${_libname} ${target_scope} IMPORTED)
-    set_target_properties(ffmpeg::${_libname} PROPERTIES
-                                              INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
-
-    if(WIN32 OR WINDOWS_STORE)
-      string(REPLACE "lib" "" name ${_libname})
+    if(NOT TARGET ffmpeg::${_libname})
+      add_library(ffmpeg::${_libname} ${target_scope} IMPORTED)
       set_target_properties(ffmpeg::${_libname} PROPERTIES
-                                                IMPORTED_LOCATION "${MINGW_LIBS_DIR}/lib/${name}.lib")
-    endif()
+                                                INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
 
+      if(WIN32 OR WINDOWS_STORE)
+        string(REPLACE "lib" "" name ${_libname})
+        set_target_properties(ffmpeg::${_libname} PROPERTIES
+                                                  IMPORTED_LOCATION "${MINGW_LIBS_DIR}/lib/${name}.lib")
+      endif()
+    endif()
   endforeach()
 endmacro()
 
@@ -236,15 +237,29 @@ if(WITH_FFMPEG)
   message(STATUS "Warning: FFmpeg version checking disabled")
   set(REQUIRED_FFMPEG_VERSION undef)
 else()
-  # required ffmpeg library versions
-  set(REQUIRED_FFMPEG_VERSION 7.0.0)
-  set(_avcodec_ver ">=61.3.100")
-  set(_avfilter_ver ">=10.1.100")
-  set(_avformat_ver ">=61.1.100")
-  set(_avutil_ver ">=59.8.100")
-  set(_postproc_ver ">=58.1.100")
-  set(_swresample_ver ">=5.1.100")
-  set(_swscale_ver ">=8.1.100")
+  # We track multiple versions due to API changes. For dependsbuild or windows, we always
+  # have latest version to properly track rebuiling.
+  if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+    # required ffmpeg library versions - tools/depends/target/ffmpeg versions
+    set(REQUIRED_FFMPEG_VERSION 8.0.0)
+    set(_avutil_ver "=60.8.100")
+    set(_avcodec_ver "=62.11.100")
+    set(_avformat_ver "=62.3.100")
+    set(_avfilter_ver "=11.4.100")
+    set(_swscale_ver "=9.1.100")
+    set(_swresample_ver "=6.1.100")
+    set(_postproc_ver "=59.1.100")
+  else()
+    # required ffmpeg library versions - minimum supported API compat versions
+    set(REQUIRED_FFMPEG_VERSION 7.0.0)
+    set(_avutil_ver ">=59.8.100")
+    set(_avcodec_ver ">=61.3.100")
+    set(_avformat_ver ">=61.1.100")
+    set(_avfilter_ver ">=10.1.100")
+    set(_swscale_ver ">=8.1.100")
+    set(_swresample_ver ">=5.1.100")
+    set(_postproc_ver ">=58.1.100")
+  endif()
 endif()
 
 # Allows building with external ffmpeg not found in system paths,
@@ -275,20 +290,40 @@ else()
 
   # macro for find_library usage
   # arg1: lowercase libname (eg libavcodec, libpostproc, etc)
-  macro(ffmpeg_find_lib libname)
+  # arg2: version search specifier
+  macro(ffmpeg_find_lib libname libversion)
     string(TOUPPER ${libname} libname_UPPER)
     string(REPLACE "lib" "" name ${libname})
 
-    find_library(FFMPEG_${libname_UPPER}
-                 NAMES ${name} ${libname}
-                 PATH_SUFFIXES ffmpeg/${libname}
-                 HINTS ${DEPENDS_PATH}/lib ${MINGW_LIBS_DIR}/lib
-                 ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+    if(WIN32 OR WINDOWS_STORE)
+      find_library(FFMPEG_${libname_UPPER}
+                   NAMES ${name} ${libname}
+                   PATH_SUFFIXES ffmpeg/${libname}
+                   HINTS ${DEPENDS_PATH}/lib ${MINGW_LIBS_DIR}/lib
+                   ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+    else()
+      find_package(PkgConfig REQUIRED)
+
+      # ToDo: We cant use IMPORTED_TARGET yet.
+      # Linux CI fails with gmp related link issues when using the imported target
+      pkg_check_modules(FFMPEG_${libname_UPPER} ${libname}${libversion} REQUIRED ${SEARCH_QUIET})
+
+      # As windows does a simple find_library call, the output is a filename to the library
+      # for the pkgconfig search, we can get the full file path from _LINK_LIBRARIES first element
+      if(FFMPEG_${libname_UPPER}_FOUND)
+        # Retrieve full path name of lib (first element)
+        list(POP_FRONT FFMPEG_${libname_UPPER}_LINK_LIBRARIES FFMPEG_${libname_UPPER})
+      endif()
+    endif()
   endmacro()
 
   foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-    string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
-    ffmpeg_find_lib(${_libname})
+    string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
+
+    string(REGEX MATCH "[>]?=" _search_spec ${_ffmpeg_pkg})
+    string(REGEX REPLACE ".*[>]?=" "${_search_spec}" _version ${_ffmpeg_pkg})
+
+    ffmpeg_find_lib(${_libname} ${_version})
   endforeach()
 
   # Check all libs are found, and set found.
@@ -340,29 +375,23 @@ else()
                                                    IMPORTED_LOCATION "${FFMPEG_${libname_UPPER}}"
                                                    INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
         else()
-          # We have to run the check against the single lib a second time, as when
-          # pkg_check_modules is run with a list, the only *_LDFLAGS set is a concatenated 
-          # list of all checked modules. Ideally we want each target to only have the LDFLAGS
-          # required for that specific module
-          pkg_check_modules(FFMPEG_${libname} ${libname}${_${name}_ver} ${SEARCH_QUIET})
-
           # pkg-config LDFLAGS always seem to have -l<name> listed. We dont need that, as
           # the target gets a direct path to the physical lib
-          list(REMOVE_ITEM FFMPEG_${libname}_LDFLAGS "-l${name}")
+          list(REMOVE_ITEM FFMPEG_${libname_UPPER}_LDFLAGS "-l${name}")
 
           # Darwin platforms return a list that cmake splits "framework libname" into separate
           # items, therefore the link arguments become -framework -libname causing link failures
           # we just force concatenation of these instances, so cmake passes it as "-framework libname"
           if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-            string(REGEX REPLACE "framework;" "framework " FFMPEG_${libname}_LDFLAGS "${FFMPEG_${libname}_LDFLAGS}")
+            string(REGEX REPLACE "framework;" "framework " FFMPEG_${libname_UPPER}_LDFLAGS "${FFMPEG_${libname_UPPER}_LDFLAGS}")
           endif()
 
-          foreach(ldflag IN LISTS FFMPEG_${libname}_LDFLAGS)
+          foreach(ldflag IN LISTS FFMPEG_${libname_UPPER}_LDFLAGS)
             foreach(pkgname IN ITEMS ${FFMPEG_PKGS})
-              string(REGEX REPLACE ">=.*" "" _shortlibname ${pkgname})
+              string(REGEX REPLACE "[>]?=.*" "" _shortlibname ${pkgname})
               string(TOUPPER ${_shortlibname} _shortlibname_UPPER)
               string(REPLACE "lib" "" shortname ${_shortlibname})
-  
+
               # replace -l<ffmpeglib> flag with ffmpeg target
               # This provides correct link ordering and deduplication
               string(REGEX REPLACE "-l${shortname}" "ffmpeg::${_shortlibname}" ldflag ${ldflag})
@@ -380,7 +409,7 @@ else()
     endmacro()
 
     foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-      string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
+      string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
       ffmpeg_create_target(${_libname})
     endforeach()
   else()
@@ -409,7 +438,7 @@ if(FFMPEG_FOUND)
   endif()
 
   foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
-    string(REGEX REPLACE ">=.*" "" _libname ${_ffmpeg_pkg})
+    string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
     if(TARGET ffmpeg::${_libname})
       target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::${_libname})
 
@@ -420,6 +449,11 @@ if(FFMPEG_FOUND)
       endif()
     endif()
   endforeach()
+
+  # Always enable build job for windows. Msys scripts handle rebuild requirements
+  if((WIN32 OR WINDOWS_STORE) AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+    buildFFMPEG()
+  endif()
 
   if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
