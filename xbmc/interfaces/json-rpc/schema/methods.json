@@ -6959,5 +6959,307 @@
         }
       }
     }
+  },
+  "Semantic.Search": {
+    "type": "method",
+    "description": "Search indexed content using full-text search",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "query",
+        "type": "string",
+        "required": true,
+        "minLength": 1,
+        "description": "Search query string"
+      },
+      {
+        "name": "options",
+        "type": "object",
+        "required": false,
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "default": 50
+          },
+          "media_type": {
+            "type": "string",
+            "enum": ["movie", "episode", "musicvideo"]
+          },
+          "media_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "source_type": {
+            "type": "string",
+            "enum": ["subtitle", "transcription", "metadata"]
+          },
+          "min_confidence": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0
+          }
+        }
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "total_results": {
+          "type": "integer"
+        },
+        "query_time_ms": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "Semantic.GetContext": {
+    "type": "method",
+    "description": "Get context around a specific timestamp in a media item",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "media_id",
+        "type": "integer",
+        "required": true,
+        "minimum": 1
+      },
+      {
+        "name": "media_type",
+        "type": "string",
+        "required": true,
+        "enum": ["movie", "episode", "musicvideo"]
+      },
+      {
+        "name": "timestamp_ms",
+        "type": "integer",
+        "required": true,
+        "minimum": 0,
+        "description": "Timestamp in milliseconds"
+      },
+      {
+        "name": "window_ms",
+        "type": "integer",
+        "required": false,
+        "minimum": 0,
+        "default": 60000,
+        "description": "Context window size in milliseconds (default 60s)"
+      }
+    ],
+    "returns": {
+      "type": "object"
+    }
+  },
+  "Semantic.FindSimilar": {
+    "type": "method",
+    "description": "Find similar content using vector search (Wave 1 feature)",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "chunk_id",
+        "type": "integer",
+        "required": false,
+        "minimum": 1
+      },
+      {
+        "name": "media_id",
+        "type": "integer",
+        "required": false,
+        "minimum": 1
+      },
+      {
+        "name": "media_type",
+        "type": "string",
+        "required": false,
+        "enum": ["movie", "episode", "musicvideo"]
+      }
+    ],
+    "returns": {
+      "type": "object"
+    }
+  },
+  "Semantic.GetIndexState": {
+    "type": "method",
+    "description": "Get indexing status for a media item",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "media_id",
+        "type": "integer",
+        "required": true,
+        "minimum": 1
+      },
+      {
+        "name": "media_type",
+        "type": "string",
+        "required": true,
+        "enum": ["movie", "episode", "musicvideo"]
+      }
+    ],
+    "returns": {
+      "type": "object"
+    }
+  },
+  "Semantic.QueueIndex": {
+    "type": "method",
+    "description": "Queue a media item for indexing",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "media_id",
+        "type": "integer",
+        "required": true,
+        "minimum": 1
+      },
+      {
+        "name": "media_type",
+        "type": "string",
+        "required": true,
+        "enum": ["movie", "episode", "musicvideo"]
+      },
+      {
+        "name": "priority",
+        "type": "integer",
+        "required": false,
+        "minimum": 0,
+        "default": 0
+      }
+    ],
+    "returns": {
+      "type": "object"
+    }
+  },
+  "Semantic.QueueTranscription": {
+    "type": "method",
+    "description": "Queue a media item for transcription",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "media_id",
+        "type": "integer",
+        "required": true,
+        "minimum": 1
+      },
+      {
+        "name": "media_type",
+        "type": "string",
+        "required": true,
+        "enum": ["movie", "episode", "musicvideo"]
+      },
+      {
+        "name": "provider_id",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "returns": {
+      "type": "object"
+    }
+  },
+  "Semantic.GetStats": {
+    "type": "method",
+    "description": "Get overall semantic index statistics",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "total_media": {
+          "type": "integer"
+        },
+        "indexed_media": {
+          "type": "integer"
+        },
+        "total_chunks": {
+          "type": "integer"
+        },
+        "total_words": {
+          "type": "integer"
+        },
+        "queued_jobs": {
+          "type": "integer"
+        },
+        "total_cost_usd": {
+          "type": "number"
+        },
+        "monthly_cost_usd": {
+          "type": "number"
+        },
+        "budget_exceeded": {
+          "type": "boolean"
+        },
+        "remaining_budget_usd": {
+          "type": "number"
+        },
+        "embedding_count": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "Semantic.GetProviders": {
+    "type": "method",
+    "description": "Get list of available transcription providers",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "default_provider": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "Semantic.EstimateCost": {
+    "type": "method",
+    "description": "Estimate transcription cost for a media item",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "media_id",
+        "type": "integer",
+        "required": true,
+        "minimum": 1
+      },
+      {
+        "name": "media_type",
+        "type": "string",
+        "required": true,
+        "enum": ["movie", "episode", "musicvideo"]
+      },
+      {
+        "name": "provider_id",
+        "type": "string",
+        "required": false,
+        "description": "Provider ID (uses default if not specified)"
+      }
+    ],
+    "returns": {
+      "type": "object"
+    }
   }
 }
