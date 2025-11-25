@@ -30,6 +30,7 @@ class CSemanticDatabase;
 class CSubtitleParser;
 class CMetadataParser;
 class CTranscriptionProviderManager;
+class CVideoDatabase;
 
 /*!
  * @brief Main orchestrator for semantic indexing operations
@@ -67,6 +68,11 @@ public:
    * Stops the background thread, saves state, and unregisters callbacks.
    */
   void Stop();
+
+  /*!
+   * @brief Ensure settings callbacks are registered even if the service is stopped
+   */
+  void EnsureSettingsCallback();
 
   /*!
    * @brief Check if the service is running
@@ -267,6 +273,9 @@ private:
    * @return File path, or empty string on error
    */
   std::string GetMediaPath(int mediaId, const std::string& mediaType);
+  std::string GetMediaPathFromDatabase(CVideoDatabase& videoDb,
+                                       int mediaId,
+                                       const std::string& mediaType);
 
   /*!
    * @brief Check if item is already in queue
@@ -282,6 +291,15 @@ private:
    * @param mediaType The media type
    */
   void RemoveFromQueue(int mediaId, const std::string& mediaType);
+
+  /*!
+   * @brief Ensure semantic_index_state rows exist for all library items
+   */
+  void SeedMissingIndexStates();
+  std::vector<int> GetMissingMediaIds(const std::string& mediaType,
+                                      const std::string& viewName,
+                                      const std::string& idColumn);
+  void EnsureIndexState(int mediaId, const std::string& mediaType, const std::string& mediaPath);
 
   // ========== Member Variables ==========
 
@@ -307,6 +325,7 @@ private:
   // Settings cache
   std::string m_processMode; // "manual", "idle", "background"
   bool m_autoIndex{true};
+  bool m_callbacksRegistered{false};
 };
 
 } // namespace SEMANTIC

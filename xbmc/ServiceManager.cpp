@@ -8,6 +8,8 @@
 
 #include "ServiceManager.h"
 
+#include "ServiceBroker.h"
+
 #include "ContextMenuManager.h"
 #include "DatabaseManager.h"
 #include "PlayListPlayer.h"
@@ -45,6 +47,9 @@
 #endif
 #include "pictures/SlideShowDelegator.h"
 #include "storage/MediaManager.h"
+#include "semantic/SemanticIndexService.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
@@ -212,6 +217,17 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 
   m_playerCoreFactory = std::make_unique<CPlayerCoreFactory>(*profileManager);
 
+  m_semanticIndexService = std::make_unique<KODI::SEMANTIC::CSemanticIndexService>();
+  m_semanticIndexService->EnsureSettingsCallback();
+  if (const auto settingsComponent = CServiceBroker::GetSettingsComponent())
+  {
+    if (const auto settings = settingsComponent->GetSettings();
+        settings && settings->GetBool(CSettings::SETTING_SEMANTIC_ENABLED))
+    {
+      m_semanticIndexService->Start();
+    }
+  }
+
   if (!m_Platform->InitStageThree())
     return false;
 
@@ -231,6 +247,13 @@ void CServiceManager::DeinitStageThree()
   m_contextMenuManager->Deinit();
   m_gameServices.reset();
   m_peripherals->Clear();
+
+  if (m_semanticIndexService)
+  {
+    if (m_semanticIndexService->IsRunning())
+      m_semanticIndexService->Stop();
+    m_semanticIndexService.reset();
+  }
 
   m_Platform->DeinitStageThree();
 }
@@ -429,6 +452,11 @@ CDatabaseManager& CServiceManager::GetDatabaseManager()
 CMediaManager& CServiceManager::GetMediaManager()
 {
   return *m_mediaManager;
+}
+
+KODI::SEMANTIC::CSemanticIndexService* CServiceManager::GetSemanticIndexService()
+{
+  return m_semanticIndexService.get();
 }
 
 CSlideShowDelegator& CServiceManager::GetSlideShowDelegator()

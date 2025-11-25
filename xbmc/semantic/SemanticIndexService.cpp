@@ -12,7 +12,6 @@
 #include "SemanticDatabase.h"
 #include "SemanticTypes.h"
 #include "ServiceBroker.h"
-#include "embedding/EmbeddingProviderManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "ingest/MetadataParser.h"
@@ -30,17 +29,9 @@
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
+#include <array>
 
 using namespace KODI::SEMANTIC;
-
-namespace
-{
-// Setting IDs (from Settings.xml)
-constexpr const char* SETTING_SEMANTIC_ENABLED = "semantic.enabled";
-constexpr const char* SETTING_SEMANTIC_AUTOINDEX = "semantic.autoindex";
-constexpr const char* SETTING_SEMANTIC_PROCESSMODE = "semantic.processmode";
-constexpr const char* SETTING_SEMANTIC_TRANSCRIBE = "semantic.transcribe";
-} // namespace
 
 CSemanticIndexService::CSemanticIndexService() : CThread("SemanticIndexService")
 {
@@ -50,6 +41,15 @@ CSemanticIndexService::CSemanticIndexService() : CThread("SemanticIndexService")
 CSemanticIndexService::~CSemanticIndexService()
 {
   Stop();
+  if (m_callbacksRegistered)
+  {
+    if (const auto settingsComponent = CServiceBroker::GetSettingsComponent())
+    {
+      if (const auto settings = settingsComponent->GetSettings())
+        settings->UnregisterCallback(this);
+    }
+    m_callbacksRegistered = false;
+  }
   CLog::Log(LOGDEBUG, "SemanticIndexService: Destroyed");
 }
 
@@ -64,6 +64,8 @@ bool CSemanticIndexService::Start()
   }
 
   CLog::Log(LOGINFO, "SemanticIndexService: Starting...");
+
+  EnsureSettingsCallback();
 
   // Initialize database
   m_database = std::make_unique<CSemanticDatabase>();
@@ -87,17 +89,14 @@ bool CSemanticIndexService::Start()
   }
 
   // Load settings
-  auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  m_processMode = settings->GetString(SETTING_SEMANTIC_PROCESSMODE);
-  m_autoIndex = settings->GetBool(SETTING_SEMANTIC_AUTOINDEX);
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  auto settings = settingsComponent->GetSettings();
+  m_processMode = settings->GetString(CSettings::SETTING_SEMANTIC_PROCESSMODE);
+  m_autoIndex = !StringUtils::EqualsNoCase(m_processMode, "manual");
 
   // Register for announcements
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(
       this, ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::System);
-
-  // Register for settings changes
-  settings->RegisterCallback(this, {SETTING_SEMANTIC_ENABLED, SETTING_SEMANTIC_AUTOINDEX,
-                                    SETTING_SEMANTIC_PROCESSMODE, SETTING_SEMANTIC_TRANSCRIBE});
 
   // Start background thread
   m_running.store(true);
@@ -105,6 +104,25 @@ bool CSemanticIndexService::Start()
 
   CLog::Log(LOGINFO, "SemanticIndexService: Started successfully (mode: {})", m_processMode);
   return true;
+}
+
+void CSemanticIndexService::EnsureSettingsCallback()
+{
+  if (m_callbacksRegistered)
+    return;
+
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  settings->RegisterCallback(
+      this, {CSettings::SETTING_SEMANTIC_ENABLED, CSettings::SETTING_SEMANTIC_PROCESSMODE,
+             CSettings::SETTING_SEMANTIC_AUTOTRANSCRIBE});
+  m_callbacksRegistered = true;
 }
 
 void CSemanticIndexService::Stop()
@@ -121,14 +139,8 @@ void CSemanticIndexService::Stop()
   // Wait for thread to finish
   StopThread(true);
 
-  // Unregister callbacks
+  // Unregister announcements
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
-
-  auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (settings)
-  {
-    settings->UnregisterCallback(this);
-  }
 
   // Shutdown components
   if (m_transcriptionManager)
@@ -192,6 +204,8 @@ void CSemanticIndexService::QueueAllUnindexed()
   }
 
   CLog::Log(LOGINFO, "SemanticIndexService: Queueing all unindexed media...");
+
+  SeedMissingIndexStates();
 
   // Get pending items from database
   std::vector<SemanticIndexState> states;
@@ -371,7 +385,7 @@ void CSemanticIndexService::OnSettingChanged(const std::shared_ptr<const CSettin
   const std::string& settingId = setting->GetId();
   CLog::Log(LOGDEBUG, "SemanticIndexService: Setting changed: {}", settingId);
 
-  if (settingId == SETTING_SEMANTIC_ENABLED)
+  if (settingId == CSettings::SETTING_SEMANTIC_ENABLED)
   {
     bool enabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
     if (enabled && !m_running.load())
@@ -383,23 +397,26 @@ void CSemanticIndexService::OnSettingChanged(const std::shared_ptr<const CSettin
       Stop();
     }
   }
-  else if (settingId == SETTING_SEMANTIC_AUTOINDEX)
-  {
-    m_autoIndex = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
-    CLog::Log(LOGINFO, "SemanticIndexService: Auto-index: {}", m_autoIndex);
-
-    if (m_autoIndex)
-    {
-      QueueAllUnindexed();
-    }
-  }
-  else if (settingId == SETTING_SEMANTIC_PROCESSMODE)
+  else if (settingId == CSettings::SETTING_SEMANTIC_PROCESSMODE)
   {
     m_processMode = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
     CLog::Log(LOGINFO, "SemanticIndexService: Process mode changed to: {}", m_processMode);
+    bool previousAutoIndex = m_autoIndex;
+    m_autoIndex = !StringUtils::EqualsNoCase(m_processMode, "manual");
+    if (m_autoIndex && !previousAutoIndex)
+    {
+      CLog::Log(LOGINFO, "SemanticIndexService: Auto-index enabled via process mode");
+      QueueAllUnindexed();
+    }
 
     // Wake up thread to re-evaluate processing conditions
     m_queueCondition.notify_one();
+  }
+  else if (settingId == CSettings::SETTING_SEMANTIC_AUTOTRANSCRIBE)
+  {
+    bool transcribeEnabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
+    CLog::Log(LOGINFO, "SemanticIndexService: Auto-transcription {}", transcribeEnabled ? "enabled"
+                                                                                        : "disabled");
   }
 }
 
@@ -529,7 +546,7 @@ void CSemanticIndexService::ProcessItem(const QueueItem& item)
 
   // Transcription if requested and settings allow
   auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  bool transcribeEnabled = settings->GetBool(SETTING_SEMANTIC_TRANSCRIBE);
+  bool transcribeEnabled = settings->GetBool(CSettings::SETTING_SEMANTIC_AUTOTRANSCRIBE);
 
   if (item.transcribe && transcribeEnabled)
   {
@@ -962,34 +979,36 @@ std::string CSemanticIndexService::GetMediaPath(int mediaId, const std::string& 
     return "";
   }
 
+  std::string path = GetMediaPathFromDatabase(videoDB, mediaId, mediaType);
+  videoDB.Close();
+  return path;
+}
+
+std::string CSemanticIndexService::GetMediaPathFromDatabase(CVideoDatabase& videoDb,
+                                                            int mediaId,
+                                                            const std::string& mediaType)
+{
   std::string path;
 
   if (mediaType == "movie")
   {
     CVideoInfoTag tag;
-    if (videoDB.GetMovieInfo("", tag, mediaId))
-    {
+    if (videoDb.GetMovieInfo("", tag, mediaId))
       path = tag.m_strFileNameAndPath;
-    }
   }
   else if (mediaType == "episode")
   {
     CVideoInfoTag tag;
-    if (videoDB.GetEpisodeInfo("", tag, mediaId))
-    {
+    if (videoDb.GetEpisodeInfo("", tag, mediaId))
       path = tag.m_strFileNameAndPath;
-    }
   }
   else if (mediaType == "musicvideo")
   {
     CVideoInfoTag tag;
-    if (videoDB.GetMusicVideoInfo("", tag, mediaId))
-    {
+    if (videoDb.GetMusicVideoInfo("", tag, mediaId))
       path = tag.m_strFileNameAndPath;
-    }
   }
 
-  videoDB.Close();
   return path;
 }
 
@@ -1009,4 +1028,94 @@ void CSemanticIndexService::RemoveFromQueue(int mediaId, const std::string& medi
                                   return item.mediaId == mediaId && item.mediaType == mediaType;
                                 }),
                 m_queue.end());
+}
+
+std::vector<int> CSemanticIndexService::GetMissingMediaIds(const std::string& mediaType,
+                                                           const std::string& viewName,
+                                                           const std::string& idColumn)
+{
+  std::vector<int> ids;
+  if (!m_database)
+    return ids;
+
+  std::string sql = StringUtils::Format(
+      "SELECT DISTINCT %s FROM %s "
+      "WHERE NOT EXISTS (SELECT 1 FROM semantic_index_state s "
+      "WHERE s.media_id = %s AND s.media_type = '%s')",
+      idColumn.c_str(), viewName.c_str(), idColumn.c_str(), mediaType.c_str());
+
+  auto dataset = m_database->Query(sql);
+  if (!dataset)
+    return ids;
+
+  while (!dataset->eof())
+  {
+    ids.push_back(dataset->fv(idColumn.c_str()).get_asInt());
+    dataset->next();
+  }
+  dataset->close();
+  return ids;
+}
+
+void CSemanticIndexService::EnsureIndexState(int mediaId,
+                                             const std::string& mediaType,
+                                             const std::string& mediaPath)
+{
+  if (!m_database || mediaPath.empty())
+    return;
+
+  SemanticIndexState state;
+  state.mediaId = mediaId;
+  state.mediaType = mediaType;
+  state.mediaPath = mediaPath;
+  state.subtitleStatus = IndexStatus::PENDING;
+  state.transcriptionStatus = IndexStatus::PENDING;
+  state.metadataStatus = IndexStatus::PENDING;
+  state.embeddingStatus = IndexStatus::PENDING;
+  state.priority = 0;
+
+  if (m_database->UpdateIndexState(state))
+  {
+    CLog::Log(LOGDEBUG, "SemanticIndexService: Seeded index state for {} {}", mediaType, mediaId);
+  }
+}
+
+void CSemanticIndexService::SeedMissingIndexStates()
+{
+  if (!m_database)
+    return;
+
+  CVideoDatabase videoDb;
+  if (!videoDb.Open())
+  {
+    CLog::Log(LOGERROR, "SemanticIndexService: Failed to open video database for seeding");
+    return;
+  }
+
+  struct SeedInfo
+  {
+    const char* mediaType;
+    const char* viewName;
+    const char* idColumn;
+  };
+
+  const std::array<SeedInfo, 3> tables = {{
+      {"movie", "movie_view", "idMovie"},
+      {"episode", "episode_view", "idEpisode"},
+      {"musicvideo", "musicvideo_view", "idMVideo"},
+  }};
+
+  for (const auto& table : tables)
+  {
+    auto ids = GetMissingMediaIds(table.mediaType, table.viewName, table.idColumn);
+    for (int id : ids)
+    {
+      std::string path = GetMediaPathFromDatabase(videoDb, id, table.mediaType);
+      if (path.empty())
+        continue;
+      EnsureIndexState(id, table.mediaType, path);
+    }
+  }
+
+  videoDb.Close();
 }

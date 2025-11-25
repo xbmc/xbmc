@@ -12,7 +12,6 @@
 #include "dbwrappers/Database.h"
 #include "media/MediaType.h"
 
-#include <array>
 #include <memory>
 #include <string>
 #include <vector>
@@ -21,9 +20,6 @@ namespace KODI
 {
 namespace SEMANTIC
 {
-
-// Forward declaration
-class CVectorSearcher;
 
 /*!
  * @brief Database for semantic search indexing
@@ -213,64 +209,6 @@ public:
    */
   bool RollbackTransaction();
 
-  // ========== Vector/Embedding Operations (Schema v2) ==========
-
-  /*!
-   * @brief Insert or update an embedding for a chunk
-   * @param chunkId The chunk ID to associate with the embedding
-   * @param embedding The 384-dimensional embedding vector
-   * @return true if successful, false otherwise
-   *
-   * This will verify the chunk exists before inserting the embedding.
-   */
-  bool InsertEmbedding(int64_t chunkId, const std::array<float, 384>& embedding);
-
-  /*!
-   * @brief Delete an embedding for a chunk
-   * @param chunkId The chunk ID to delete the embedding for
-   * @return true if successful, false otherwise
-   */
-  bool DeleteEmbedding(int64_t chunkId);
-
-  /*!
-   * @brief Check if a chunk has an embedding
-   * @param chunkId The chunk ID to check
-   * @return true if the chunk has an embedding, false otherwise
-   */
-  bool HasEmbedding(int64_t chunkId);
-
-  /*!
-   * @brief Update embedding status for a media item
-   * @param mediaId The media item ID
-   * @param mediaType The media type
-   * @param status The embedding status (pending, in_progress, completed, failed)
-   * @param progress Optional progress value (0.0-1.0)
-   * @param error Optional error message (for failed status)
-   * @return true if successful, false otherwise
-   */
-  bool UpdateEmbeddingStatus(int mediaId,
-                             const MediaType& mediaType,
-                             IndexStatus status,
-                             float progress = 0.0f,
-                             const std::string& error = "");
-
-  /*!
-   * @brief Search for similar chunks using vector similarity
-   * @param queryEmbedding The query embedding vector
-   * @param topK Maximum number of results to return
-   * @return Vector of search results sorted by distance (closest first)
-   *
-   * This delegates to the VectorSearcher for k-NN search.
-   */
-  std::vector<VectorSearchResult> SearchSimilar(const std::array<float, 384>& queryEmbedding,
-                                                 int topK = 50);
-
-  /*!
-   * @brief Get the count of embeddings in the database
-   * @return Number of embeddings, or -1 on error
-   */
-  int64_t GetEmbeddingCount();
-
   // ========== Search History Operations ==========
 
   /*!
@@ -314,14 +252,6 @@ private:
   void RebuildFTSIndex();
 
   /*!
-   * @brief Create vector tables and initialize sqlite-vec extension
-   * @return true if successful, false otherwise
-   *
-   * This is called during schema creation or migration to v2.
-   */
-  bool CreateVectorTables();
-
-  /*!
    * @brief Helper to populate chunk from dataset
    */
   SemanticChunk GetChunkFromDataset();
@@ -330,9 +260,6 @@ private:
    * @brief Helper to populate index state from dataset
    */
   SemanticIndexState GetIndexStateFromDataset();
-
-  // Vector search wrapper (initialized when vector tables are created)
-  std::unique_ptr<CVectorSearcher> m_vectorSearcher;
 };
 
 } // namespace SEMANTIC

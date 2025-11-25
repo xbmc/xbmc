@@ -109,6 +109,11 @@ namespace RETRO
 {
 class CGUIGameRenderManager;
 }
+
+namespace SEMANTIC
+{
+class CSemanticIndexService;
+}
 } // namespace KODI
 
 namespace PERIPHERALS
@@ -178,6 +183,7 @@ public:
   static CDatabaseManager& GetDatabaseManager();
   static CEventLog* GetEventLog();
   static CMediaManager& GetMediaManager();
+  static KODI::SEMANTIC::CSemanticIndexService* GetSemanticIndexService();
   static CComponentContainer<IApplicationComponent>& GetAppComponents();
 
   static CGUIComponent* GetGUI();

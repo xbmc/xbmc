@@ -100,8 +100,6 @@ bool CGroqProvider::IsAvailable() const
 
 std::string CGroqProvider::GetApiKey() const
 {
-  // TODO: Update setting name when settings XML is created
-  // For now, return empty - will be configured via settings
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
     return "";
@@ -110,8 +108,7 @@ std::string CGroqProvider::GetApiKey() const
   if (!settings)
     return "";
 
-  // Setting will be added to settings XML: semantic.groq.apikey
-  std::string apiKey = settings->GetString("semantic.groq.apikey");
+  std::string apiKey = settings->GetString(CSettings::SETTING_SEMANTIC_GROQ_APIKEY);
   return apiKey;
 }
 

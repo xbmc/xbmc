@@ -67,6 +67,11 @@ namespace RETRO
 {
 class CGUIGameRenderManager;
 }
+
+namespace SEMANTIC
+{
+class CSemanticIndexService;
+}
 } // namespace KODI
 
 namespace MEDIA_DETECT
@@ -144,6 +149,7 @@ public:
   CDatabaseManager& GetDatabaseManager();
 
   CMediaManager& GetMediaManager();
+  KODI::SEMANTIC::CSemanticIndexService* GetSemanticIndexService();
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia& GetDetectDVDMedia();
@@ -181,6 +187,7 @@ protected:
   std::unique_ptr<CPlayerCoreFactory> m_playerCoreFactory;
   std::unique_ptr<CDatabaseManager> m_databaseManager;
   std::unique_ptr<CMediaManager> m_mediaManager;
+  std::unique_ptr<KODI::SEMANTIC::CSemanticIndexService> m_semanticIndexService;
 #if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   std::unique_ptr<MEDIA_DETECT::CDetectDVDMedia> m_DetectDVDType;
 #endif

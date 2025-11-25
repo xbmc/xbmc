@@ -293,6 +293,11 @@ CMediaManager& CServiceBroker::GetMediaManager()
   return g_application.m_ServiceManager->GetMediaManager();
 }
 
+KODI::SEMANTIC::CSemanticIndexService* CServiceBroker::GetSemanticIndexService()
+{
+  return g_application.m_ServiceManager->GetSemanticIndexService();
+}
+
 CApplicationComponents& CServiceBroker::GetAppComponents()
 {
   return g_application;
