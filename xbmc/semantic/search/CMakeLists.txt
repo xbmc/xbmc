@@ -4,10 +4,14 @@
 set(SOURCES VectorSearcher.cpp
             SemanticSearch.cpp
             ResultRanker.cpp
-            HybridSearchEngine.cpp)
+            HybridSearchEngine.cpp
+            ContextProvider.cpp
+            ResultEnricher.cpp)
 set(HEADERS VectorSearcher.h
             SemanticSearch.h
             ResultRanker.h
-            HybridSearchEngine.h)
+            HybridSearchEngine.h
+            ContextProvider.h
+            ResultEnricher.h)
 
 # No library target - these sources will be included in parent CMakeLists.txt
