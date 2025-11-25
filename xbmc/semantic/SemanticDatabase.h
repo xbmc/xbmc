@@ -12,6 +12,7 @@
 #include "dbwrappers/Database.h"
 #include "media/MediaType.h"
 
+#include <array>
 #include <memory>
 #include <string>
 #include <vector>
@@ -20,6 +21,9 @@ namespace KODI
 {
 namespace SEMANTIC
 {
+
+// Forward declaration
+class CVectorSearcher;
 
 /*!
  * @brief Database for semantic search indexing
@@ -134,6 +138,139 @@ public:
    */
   bool UpdateProviderUsage(const std::string& providerId, float minutesUsed);
 
+  // ========== Enhanced FTS5 Search Operations ==========
+
+  /*!
+   * @brief Perform full-text search with advanced options and BM25 ranking
+   * @param query The search query (FTS5 MATCH syntax)
+   * @param options Search options (filters, limits, etc.)
+   * @return Vector of search results with scores and snippets
+   */
+  std::vector<SearchResult> SearchChunks(const std::string& query, const SearchOptions& options);
+
+  /*!
+   * @brief Get a highlighted snippet for a specific chunk
+   * @param query The search query to highlight
+   * @param chunkId The chunk ID
+   * @param snippetLength Maximum number of tokens in snippet
+   * @return Highlighted snippet with <b></b> tags
+   */
+  std::string GetSnippet(const std::string& query, int64_t chunkId, int snippetLength = 50);
+
+  /*!
+   * @brief Get surrounding chunks by timestamp (context window)
+   * @param mediaId The media item ID
+   * @param mediaType The media type
+   * @param timestampMs Center timestamp in milliseconds
+   * @param windowMs Window size in milliseconds (default 60s)
+   * @return Vector of chunks within the time window
+   */
+  std::vector<SemanticChunk> GetContext(int mediaId,
+                                         const std::string& mediaType,
+                                         int64_t timestampMs,
+                                         int64_t windowMs = 60000);
+
+  // ========== Batch Operations ==========
+
+  /*!
+   * @brief Insert multiple chunks in a single transaction
+   * @param chunks Vector of chunks to insert
+   * @return true if all chunks inserted successfully, false otherwise
+   */
+  bool InsertChunks(const std::vector<SemanticChunk>& chunks);
+
+  /*!
+   * @brief Remove chunks for media items that no longer exist
+   * @return Number of chunks deleted
+   */
+  int CleanupOrphanedChunks();
+
+  // ========== Statistics ==========
+
+  /*!
+   * @brief Get statistics about the semantic index
+   * @return IndexStats structure with counts and metrics
+   */
+  IndexStats GetStats();
+
+  // ========== Transaction Support ==========
+
+  /*!
+   * @brief Begin a database transaction
+   * @return true if successful, false otherwise
+   */
+  bool BeginTransaction();
+
+  /*!
+   * @brief Commit the current transaction
+   * @return true if successful, false otherwise
+   */
+  bool CommitTransaction();
+
+  /*!
+   * @brief Rollback the current transaction
+   * @return true if successful, false otherwise
+   */
+  bool RollbackTransaction();
+
+  // ========== Vector/Embedding Operations (Schema v2) ==========
+
+  /*!
+   * @brief Insert or update an embedding for a chunk
+   * @param chunkId The chunk ID to associate with the embedding
+   * @param embedding The 384-dimensional embedding vector
+   * @return true if successful, false otherwise
+   *
+   * This will verify the chunk exists before inserting the embedding.
+   */
+  bool InsertEmbedding(int64_t chunkId, const std::array<float, 384>& embedding);
+
+  /*!
+   * @brief Delete an embedding for a chunk
+   * @param chunkId The chunk ID to delete the embedding for
+   * @return true if successful, false otherwise
+   */
+  bool DeleteEmbedding(int64_t chunkId);
+
+  /*!
+   * @brief Check if a chunk has an embedding
+   * @param chunkId The chunk ID to check
+   * @return true if the chunk has an embedding, false otherwise
+   */
+  bool HasEmbedding(int64_t chunkId);
+
+  /*!
+   * @brief Update embedding status for a media item
+   * @param mediaId The media item ID
+   * @param mediaType The media type
+   * @param status The embedding status (pending, in_progress, completed, failed)
+   * @param progress Optional progress value (0.0-1.0)
+   * @param error Optional error message (for failed status)
+   * @return true if successful, false otherwise
+   */
+  bool UpdateEmbeddingStatus(int mediaId,
+                             const MediaType& mediaType,
+                             IndexStatus status,
+                             float progress = 0.0f,
+                             const std::string& error = "");
+
+  /*!
+   * @brief Search for similar chunks using vector similarity
+   * @param queryEmbedding The query embedding vector
+   * @param topK Maximum number of results to return
+   * @return Vector of search results sorted by distance (closest first)
+   *
+   * This delegates to the VectorSearcher for k-NN search.
+   */
+  std::vector<VectorSearchResult> SearchSimilar(const std::array<float, 384>& queryEmbedding,
+                                                 int topK = 50);
+
+  /*!
+   * @brief Get the count of embeddings in the database
+   * @return Number of embeddings, or -1 on error
+   */
+  int64_t GetEmbeddingCount();
+
 protected:
   // Database schema management
   void CreateTables() override;
@@ -155,6 +292,14 @@ private:
   void RebuildFTSIndex();
 
   /*!
+   * @brief Create vector tables and initialize sqlite-vec extension
+   * @return true if successful, false otherwise
+   *
+   * This is called during schema creation or migration to v2.
+   */
+  bool CreateVectorTables();
+
+  /*!
    * @brief Helper to populate chunk from dataset
    */
   SemanticChunk GetChunkFromDataset();
@@ -163,6 +308,9 @@ private:
    * @brief Helper to populate index state from dataset
    */
   SemanticIndexState GetIndexStateFromDataset();
+
+  // Vector search wrapper (initialized when vector tables are created)
+  std::unique_ptr<CVectorSearcher> m_vectorSearcher;
 };
 
 } // namespace SEMANTIC

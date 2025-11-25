@@ -140,6 +140,62 @@ struct SemanticIndexState
   int chunkCount{0};
   std::string createdAt;
   std::string updatedAt;
+
+  // Embedding state (added in schema version 2)
+  IndexStatus embeddingStatus{IndexStatus::PENDING};
+  float embeddingProgress{0.0f};
+  std::string embeddingError;
+  int embeddingsCount{0};
+};
+
+/*!
+ * @brief Vector search result structure
+ */
+struct VectorSearchResult
+{
+  int64_t chunkId{-1};
+  float distance{0.0f};  // Cosine distance (0 = identical, 2 = opposite)
+
+  /*!
+   * @brief Convert distance to similarity score (0-1 range)
+   * @return Similarity score where 1.0 = identical, 0.0 = opposite
+   */
+  float similarity() const { return 1.0f - (distance / 2.0f); }
+};
+
+/*!
+ * @brief Options for search queries
+ */
+struct SearchOptions
+{
+  int maxResults{50};           //!< Maximum number of results to return
+  std::string mediaType;         //!< Filter by media type (empty = all)
+  int mediaId{-1};               //!< Filter by specific media ID (-1 = all)
+  SourceType sourceType{SourceType::SUBTITLE}; //!< Filter by source type
+  bool filterBySource{false};    //!< Whether to filter by source type
+  float minConfidence{0.0f};     //!< Minimum confidence threshold
+};
+
+/*!
+ * @brief Search result with ranking score
+ */
+struct SearchResult
+{
+  SemanticChunk chunk;           //!< The matching chunk
+  float score{0.0f};             //!< Relevance score (BM25)
+  std::string snippet;           //!< Highlighted snippet
+};
+
+/*!
+ * @brief Statistics about the semantic index
+ */
+struct IndexStats
+{
+  int totalMedia{0};             //!< Total media items in system
+  int indexedMedia{0};           //!< Media items with completed indexing
+  int totalChunks{0};            //!< Total number of chunks
+  int totalWords{0};             //!< Total word count (approximate)
+  int queuedJobs{0};             //!< Pending indexing jobs
 };
 
 } // namespace SEMANTIC

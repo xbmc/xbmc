@@ -1,0 +1,51 @@
+WEBVTT
+
+NOTE This is a WebVTT example subtitle file
+Created for Kodi semantic search testing
+
+00:00:01.000 --> 00:00:04.500
+Hello, world!
+
+cue-2
+00:00:05.000 --> 00:00:08.200 align:start
+This is a <i>test</i> subtitle with <b>HTML tags</b>.
+
+00:00:10.000 --> 00:00:12.000
+Multi-line subtitle
+with two lines of text.
+
+cue-music
+00:00:15.000 --> 00:00:17.500
+[music]
+
+00:00:20.000 --> 00:00:25.000 position:50% align:middle
+- Wait, what?
+- I said, "Welcome to Kodi!"
+
+NOTE Another comment block
+This will be ignored by the parser
+
+00:00:30.000 --> 00:00:33.000
+<c.color_red>Colored text</c> should work.
+
+cue-7
+00:00:35.000 --> 00:00:38.000 line:85%
+Text with HTML entities &amp; special chars.
+
+00:00:40.000 --> 00:00:42.000
+♪ Music notes should be filtered ♪
+
+00:00:45.000 --> 00:00:48.000
+[door opens]
+
+final-cue
+00:00:50.000 --> 00:00:55.000 size:80%
+This is normal dialogue that should be kept.
+It can span multiple lines
+and still be parsed correctly.
+
+01:00:00.000 --> 01:00:05.000
+Hour-long timestamp test.
+
+23:45.678 --> 25:30.123
+Short timestamp format (MM:SS.mmm).

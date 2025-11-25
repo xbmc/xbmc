@@ -1,0 +1,25 @@
+[Script Info]
+Title: Example ASS Subtitle
+ScriptType: v4.00+
+Collisions: Normal
+PlayDepth: 0
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,20,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,10,10,10,1
+Style: Speaker1,Arial,20,&H0000FFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,10,10,10,1
+Style: Speaker2,Arial,20,&H00FF00FF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,10,10,10,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:01.00,0:00:04.50,Default,,0,0,0,,Hello, world!
+Dialogue: 0,0:00:05.00,0:00:08.20,Speaker1,,0,0,0,,This is a test subtitle.
+Dialogue: 0,0:00:10.00,0:00:12.00,Speaker2,,0,0,0,,{\an8}Top aligned text with ASS codes.
+Dialogue: 0,0:00:15.00,0:00:17.50,Default,,0,0,0,,[music]
+Dialogue: 0,0:00:20.00,0:00:25.00,Speaker1,,0,0,0,,{\pos(100,200)}Positioned dialogue.
+Dialogue: 0,0:00:30.00,0:00:33.00,Default,,0,0,0,,{\fad(300,300)}Fading in and out.
+Dialogue: 0,0:00:35.00,0:00:38.00,Speaker2,,0,0,0,,{\i1}Italic text{\i0} and {\b1}bold text{\b0}.
+Dialogue: 0,0:00:40.00,0:00:42.00,Default,,0,0,0,,♪ Music ♪
+Dialogue: 0,0:00:45.00,0:00:48.00,Default,,0,0,0,,[door opens]
+Dialogue: 0,0:00:50.00,0:00:55.00,Speaker1,,0,0,0,,This is normal dialogue that should be kept.
+Dialogue: 0,0:01:00.00,0:01:05.00,Default,,0,0,0,,{\an7}{\fs30}Multi-line text\Nwith line breaks.

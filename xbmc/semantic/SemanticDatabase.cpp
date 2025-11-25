@@ -10,10 +10,14 @@
 
 #include "ServiceBroker.h"
 #include "dbwrappers/dataset.h"
+#include "dbwrappers/sqlitedataset.h"
+#include "search/VectorSearcher.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+
+#include <sqlite3.h>
 
 using namespace KODI::SEMANTIC;
 using namespace dbiplus;
@@ -162,13 +166,51 @@ void CSemanticDatabase::CreateFTSTriggers()
 
 void CSemanticDatabase::UpdateTables(int version)
 {
-  // Future schema updates will be handled here
   CLog::Log(LOGINFO, "SemanticDatabase: UpdateTables from version {}", version);
+
+  // Migrate to version 2: Add embedding support
+  if (version < 2)
+  {
+    CLog::Log(LOGINFO, "SemanticDatabase: Migrating to version 2 (embedding support)");
+
+    try
+    {
+      // Add embedding columns to semantic_index_state
+      m_pDS->exec(
+          "ALTER TABLE semantic_index_state ADD COLUMN embedding_status TEXT DEFAULT 'pending' "
+          "CHECK(embedding_status IN ('pending', 'in_progress', 'completed', 'failed'))");
+
+      m_pDS->exec(
+          "ALTER TABLE semantic_index_state ADD COLUMN embedding_progress REAL DEFAULT 0.0");
+
+      m_pDS->exec("ALTER TABLE semantic_index_state ADD COLUMN embedding_error TEXT");
+
+      m_pDS->exec("ALTER TABLE semantic_index_state ADD COLUMN embeddings_count INTEGER DEFAULT 0");
+
+      CLog::Log(LOGINFO, "SemanticDatabase: Added embedding columns to semantic_index_state");
+
+      // Create vector tables
+      if (CreateVectorTables())
+      {
+        CLog::Log(LOGINFO, "SemanticDatabase: Successfully migrated to version 2");
+      }
+      else
+      {
+        CLog::Log(LOGWARNING,
+                  "SemanticDatabase: Migration to version 2 completed but vector tables could not "
+                  "be initialized");
+      }
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Failed to migrate to version 2");
+    }
+  }
 }
 
 int CSemanticDatabase::GetSchemaVersion() const
 {
-  return 1; // Initial schema version
+  return 2; // Version 2: Added vector embedding support
 }
 
 int CSemanticDatabase::InsertChunk(const SemanticChunk& chunk)
@@ -609,5 +651,622 @@ SemanticIndexState CSemanticDatabase::GetIndexStateFromDataset()
   state.chunkCount = m_pDS->fv("chunk_count").get_asInt();
   state.createdAt = m_pDS->fv("created_at").get_asString();
   state.updatedAt = m_pDS->fv("updated_at").get_asString();
+
+  // Embedding fields (added in schema v2)
+  // Check if columns exist to support backwards compatibility
+  try
+  {
+    state.embeddingStatus = StringToIndexStatus(m_pDS->fv("embedding_status").get_asString());
+    state.embeddingProgress = m_pDS->fv("embedding_progress").get_asFloat();
+    state.embeddingError = m_pDS->fv("embedding_error").get_asString();
+    state.embeddingsCount = m_pDS->fv("embeddings_count").get_asInt();
+  }
+  catch (...)
+  {
+    // Columns don't exist yet (pre-migration), use defaults
+  }
+
   return state;
+}
+
+// ========== Enhanced FTS5 Search Operations ==========
+
+std::vector<SearchResult> CSemanticDatabase::SearchChunks(const std::string& query,
+                                                           const SearchOptions& options)
+{
+  std::vector<SearchResult> results;
+  try
+  {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return results;
+
+    if (query.empty())
+      return results;
+
+    // Build the WHERE clause with filters
+    std::string whereClause;
+    if (!options.mediaType.empty())
+      whereClause += PrepareSQL(" AND c.media_type = '%s'", options.mediaType.c_str());
+    if (options.mediaId > 0)
+      whereClause += PrepareSQL(" AND c.media_id = %i", options.mediaId);
+    if (options.filterBySource)
+      whereClause +=
+          PrepareSQL(" AND c.source_type = '%s'", SourceTypeToString(options.sourceType));
+    if (options.minConfidence > 0.0f)
+      whereClause += PrepareSQL(" AND c.confidence >= %f", options.minConfidence);
+
+    // Use FTS5 with BM25 ranking
+    std::string sql = PrepareSQL(
+        "SELECT c.*, bm25(semantic_fts) as score "
+        "FROM semantic_fts f "
+        "JOIN semantic_chunks c ON f.rowid = c.chunk_id "
+        "WHERE semantic_fts MATCH '%s'%s "
+        "ORDER BY score "
+        "LIMIT %i",
+        query.c_str(), whereClause.c_str(), options.maxResults);
+
+    if (!m_pDS->query(sql))
+      return results;
+
+    while (!m_pDS->eof())
+    {
+      SearchResult result;
+      result.chunk = GetChunkFromDataset();
+      result.score = m_pDS->fv("score").get_asFloat();
+
+      // Generate snippet for this result
+      result.snippet = GetSnippet(query, result.chunk.chunkId, 50);
+
+      results.push_back(result);
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    CLog::Log(LOGDEBUG, "SemanticDatabase: FTS5 search found {} results for '{}'", results.size(),
+              query);
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to search chunks for query '{}'", query);
+  }
+  return results;
+}
+
+std::string CSemanticDatabase::GetSnippet(const std::string& query,
+                                          int64_t chunkId,
+                                          int snippetLength)
+{
+  try
+  {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return "";
+
+    // Use FTS5 snippet() function: snippet(table, column, start, end, ellipsis, maxTokens)
+    std::string sql = PrepareSQL(
+        "SELECT snippet(semantic_fts, 0, '<b>', '</b>', '...', %i) as snippet "
+        "FROM semantic_fts f "
+        "JOIN semantic_chunks c ON f.rowid = c.chunk_id "
+        "WHERE c.chunk_id = %lld AND semantic_fts MATCH '%s'",
+        snippetLength, static_cast<long long>(chunkId), query.c_str());
+
+    if (!m_pDS->query(sql))
+      return "";
+
+    std::string snippet;
+    if (!m_pDS->eof())
+    {
+      snippet = m_pDS->fv("snippet").get_asString();
+    }
+    m_pDS->close();
+
+    return snippet;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to get snippet for chunk {}", chunkId);
+  }
+  return "";
+}
+
+std::vector<SemanticChunk> CSemanticDatabase::GetContext(int mediaId,
+                                                          const std::string& mediaType,
+                                                          int64_t timestampMs,
+                                                          int64_t windowMs)
+{
+  std::vector<SemanticChunk> chunks;
+  try
+  {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return chunks;
+
+    int64_t startMs = timestampMs - windowMs;
+    int64_t endMs = timestampMs + windowMs;
+
+    std::string sql = PrepareSQL(
+        "SELECT * FROM semantic_chunks "
+        "WHERE media_id = %i AND media_type = '%s' "
+        "AND start_ms BETWEEN %lld AND %lld "
+        "ORDER BY start_ms",
+        mediaId, mediaType.c_str(), static_cast<long long>(startMs),
+        static_cast<long long>(endMs));
+
+    if (!m_pDS->query(sql))
+      return chunks;
+
+    while (!m_pDS->eof())
+    {
+      chunks.push_back(GetChunkFromDataset());
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    CLog::Log(LOGDEBUG,
+              "SemanticDatabase: Retrieved {} context chunks for media {} ({}) around {}ms",
+              chunks.size(), mediaId, mediaType, timestampMs);
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to get context for media {} ({}) at {}ms", mediaId, mediaType,
+               timestampMs);
+  }
+  return chunks;
+}
+
+// ========== Batch Operations ==========
+
+bool CSemanticDatabase::InsertChunks(const std::vector<SemanticChunk>& chunks)
+{
+  try
+  {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return false;
+
+    if (chunks.empty())
+      return true;
+
+    // Use transaction for batch insert
+    BeginTransaction();
+
+    for (const auto& chunk : chunks)
+    {
+      int chunkId = InsertChunk(chunk);
+      if (chunkId < 0)
+      {
+        RollbackTransaction();
+        CLog::LogF(LOGERROR, "Failed to insert chunk in batch, rolling back");
+        return false;
+      }
+    }
+
+    if (!CommitTransaction())
+    {
+      RollbackTransaction();
+      return false;
+    }
+
+    CLog::Log(LOGINFO, "SemanticDatabase: Batch inserted {} chunks", chunks.size());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to batch insert chunks");
+    RollbackTransaction();
+  }
+  return false;
+}
+
+int CSemanticDatabase::CleanupOrphanedChunks()
+{
+  try
+  {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return -1;
+
+    // Delete chunks for movies that no longer exist
+    std::string sql =
+        "DELETE FROM semantic_chunks "
+        "WHERE media_type = 'movie' AND media_id NOT IN (SELECT idMovie FROM movie)";
+
+    if (!ExecuteQuery(sql))
+      return -1;
+
+    int moviesDeleted = static_cast<int>(m_pDB->getaffectedrows());
+
+    // Delete chunks for episodes that no longer exist
+    sql = "DELETE FROM semantic_chunks "
+          "WHERE media_type = 'episode' AND media_id NOT IN (SELECT idEpisode FROM episode)";
+
+    if (!ExecuteQuery(sql))
+      return -1;
+
+    int episodesDeleted = static_cast<int>(m_pDB->getaffectedrows());
+
+    // Delete chunks for music videos that no longer exist
+    sql = "DELETE FROM semantic_chunks "
+          "WHERE media_type = 'musicvideo' AND media_id NOT IN (SELECT idMVideo FROM musicvideo)";
+
+    if (!ExecuteQuery(sql))
+      return -1;
+
+    int musicvideosDeleted = static_cast<int>(m_pDB->getaffectedrows());
+
+    int totalDeleted = moviesDeleted + episodesDeleted + musicvideosDeleted;
+
+    CLog::Log(
+        LOGINFO,
+        "SemanticDatabase: Cleaned up {} orphaned chunks ({} movies, {} episodes, {} music videos)",
+        totalDeleted, moviesDeleted, episodesDeleted, musicvideosDeleted);
+
+    return totalDeleted;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to cleanup orphaned chunks");
+  }
+  return -1;
+}
+
+// ========== Statistics ==========
+
+IndexStats CSemanticDatabase::GetStats()
+{
+  IndexStats stats;
+  try
+  {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return stats;
+
+    // Get total chunks
+    std::string sql = "SELECT COUNT(*) as count FROM semantic_chunks";
+    stats.totalChunks = GetSingleValueInt(sql);
+
+    // Get total media items (count distinct media_id/media_type pairs)
+    sql = "SELECT COUNT(DISTINCT media_id || '-' || media_type) as count FROM semantic_chunks";
+    stats.totalMedia = GetSingleValueInt(sql);
+
+    // Get indexed media (items with completed status in all categories)
+    sql = "SELECT COUNT(*) as count FROM semantic_index_state "
+          "WHERE subtitle_status = 'completed' OR transcription_status = 'completed' OR "
+          "metadata_status = 'completed'";
+    stats.indexedMedia = GetSingleValueInt(sql);
+
+    // Get queued jobs (pending or in_progress)
+    sql = "SELECT COUNT(*) as count FROM semantic_index_state "
+          "WHERE subtitle_status IN ('pending', 'in_progress') OR "
+          "transcription_status IN ('pending', 'in_progress') OR "
+          "metadata_status IN ('pending', 'in_progress')";
+    stats.queuedJobs = GetSingleValueInt(sql);
+
+    // Estimate total words (approximate by counting spaces in text)
+    // This is expensive, so we do a rough estimate based on average chunk size
+    sql = "SELECT AVG(LENGTH(text) - LENGTH(REPLACE(text, ' ', '')) + 1) as avg_words "
+          "FROM semantic_chunks LIMIT 1000";
+
+    if (m_pDS->query(sql) && !m_pDS->eof())
+    {
+      int avgWords = m_pDS->fv("avg_words").get_asInt();
+      stats.totalWords = avgWords * stats.totalChunks;
+      m_pDS->close();
+    }
+
+    CLog::Log(LOGDEBUG,
+              "SemanticDatabase: Stats - {} media items, {} indexed, {} chunks, ~{} words, {} "
+              "queued jobs",
+              stats.totalMedia, stats.indexedMedia, stats.totalChunks, stats.totalWords,
+              stats.queuedJobs);
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to get index stats");
+  }
+  return stats;
+}
+
+// ========== Transaction Support ==========
+
+bool CSemanticDatabase::BeginTransaction()
+{
+  try
+  {
+    if (m_pDB != nullptr)
+    {
+      m_pDB->start_transaction();
+      CLog::Log(LOGDEBUG, "SemanticDatabase: Transaction started");
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to begin transaction");
+  }
+  return false;
+}
+
+bool CSemanticDatabase::CommitTransaction()
+{
+  try
+  {
+    if (m_pDB != nullptr)
+    {
+      m_pDB->commit_transaction();
+      CLog::Log(LOGDEBUG, "SemanticDatabase: Transaction committed");
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to commit transaction");
+  }
+  return false;
+}
+
+bool CSemanticDatabase::RollbackTransaction()
+{
+  try
+  {
+    if (m_pDB != nullptr)
+    {
+      m_pDB->rollback_transaction();
+      CLog::Log(LOGDEBUG, "SemanticDatabase: Transaction rolled back");
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to rollback transaction");
+  }
+  return false;
+}
+
+// ========== Vector/Embedding Operations ==========
+
+bool CSemanticDatabase::CreateVectorTables()
+{
+  CLog::Log(LOGINFO, "SemanticDatabase: Creating vector tables");
+
+  try
+  {
+    // Get raw SQLite handle
+    // Cast to SqliteDatabase to access getHandle()
+    auto* sqliteDb = dynamic_cast<dbiplus::SqliteDatabase*>(m_pDB.get());
+    if (!sqliteDb)
+    {
+      CLog::Log(LOGERROR, "SemanticDatabase: Database is not a SQLite database");
+      return false;
+    }
+
+    sqlite3* dbHandle = sqliteDb->getHandle();
+    if (!dbHandle)
+    {
+      CLog::Log(LOGERROR, "SemanticDatabase: Failed to get SQLite handle");
+      return false;
+    }
+
+    // Initialize VectorSearcher
+    m_vectorSearcher = std::make_unique<CVectorSearcher>();
+    if (!m_vectorSearcher->InitializeExtension(dbHandle))
+    {
+      CLog::Log(LOGERROR, "SemanticDatabase: Failed to initialize sqlite-vec extension");
+      m_vectorSearcher.reset();
+      return false;
+    }
+
+    // Create vector table
+    if (!m_vectorSearcher->CreateVectorTable())
+    {
+      CLog::Log(LOGERROR, "SemanticDatabase: Failed to create vector table");
+      m_vectorSearcher.reset();
+      return false;
+    }
+
+    CLog::Log(LOGINFO, "SemanticDatabase: Vector tables created successfully");
+
+    // Create trigger to update embeddings_count when vectors are inserted
+    m_pDS->exec(
+        "CREATE TRIGGER IF NOT EXISTS semantic_vectors_insert AFTER INSERT ON semantic_vectors "
+        "BEGIN "
+        "  UPDATE semantic_index_state "
+        "  SET embeddings_count = embeddings_count + 1, updated_at = datetime('now') "
+        "  WHERE media_id = (SELECT media_id FROM semantic_chunks WHERE chunk_id = NEW.chunk_id) "
+        "    AND media_type = (SELECT media_type FROM semantic_chunks WHERE chunk_id = "
+        "NEW.chunk_id); "
+        "END");
+
+    // Create trigger to update embeddings_count when vectors are deleted
+    m_pDS->exec(
+        "CREATE TRIGGER IF NOT EXISTS semantic_vectors_delete AFTER DELETE ON semantic_vectors "
+        "BEGIN "
+        "  UPDATE semantic_index_state "
+        "  SET embeddings_count = embeddings_count - 1, updated_at = datetime('now') "
+        "  WHERE media_id = (SELECT media_id FROM semantic_chunks WHERE chunk_id = OLD.chunk_id) "
+        "    AND media_type = (SELECT media_type FROM semantic_chunks WHERE chunk_id = "
+        "OLD.chunk_id); "
+        "END");
+
+    CLog::Log(LOGINFO, "SemanticDatabase: Created vector triggers");
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Exception while creating vector tables");
+    return false;
+  }
+}
+
+bool CSemanticDatabase::InsertEmbedding(int64_t chunkId, const std::array<float, 384>& embedding)
+{
+  try
+  {
+    if (!m_vectorSearcher)
+    {
+      CLog::Log(LOGERROR, "SemanticDatabase: Vector searcher not initialized");
+      return false;
+    }
+
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return false;
+
+    // First verify chunk exists
+    std::string sql = PrepareSQL("SELECT chunk_id FROM semantic_chunks WHERE chunk_id = %lld",
+                                  static_cast<long long>(chunkId));
+    if (!m_pDS->query(sql))
+      return false;
+
+    if (m_pDS->eof())
+    {
+      m_pDS->close();
+      CLog::Log(LOGWARNING, "SemanticDatabase: Chunk {} not found, cannot add embedding", chunkId);
+      return false;
+    }
+    m_pDS->close();
+
+    // Insert the embedding
+    if (m_vectorSearcher->InsertVector(chunkId, embedding))
+    {
+      CLog::Log(LOGDEBUG, "SemanticDatabase: Inserted embedding for chunk {}", chunkId);
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to insert embedding for chunk {}", chunkId);
+  }
+  return false;
+}
+
+bool CSemanticDatabase::DeleteEmbedding(int64_t chunkId)
+{
+  try
+  {
+    if (!m_vectorSearcher)
+    {
+      CLog::Log(LOGERROR, "SemanticDatabase: Vector searcher not initialized");
+      return false;
+    }
+
+    if (m_vectorSearcher->DeleteVector(chunkId))
+    {
+      CLog::Log(LOGDEBUG, "SemanticDatabase: Deleted embedding for chunk {}", chunkId);
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to delete embedding for chunk {}", chunkId);
+  }
+  return false;
+}
+
+bool CSemanticDatabase::HasEmbedding(int64_t chunkId)
+{
+  try
+  {
+    if (!m_vectorSearcher)
+      return false;
+
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return false;
+
+    std::string sql = PrepareSQL("SELECT 1 FROM semantic_vectors WHERE chunk_id = %lld LIMIT 1",
+                                  static_cast<long long>(chunkId));
+
+    if (!m_pDS->query(sql))
+      return false;
+
+    bool hasEmbedding = !m_pDS->eof();
+    m_pDS->close();
+    return hasEmbedding;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to check embedding for chunk {}", chunkId);
+  }
+  return false;
+}
+
+bool CSemanticDatabase::UpdateEmbeddingStatus(int mediaId,
+                                               const MediaType& mediaType,
+                                               IndexStatus status,
+                                               float progress,
+                                               const std::string& error)
+{
+  try
+  {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return false;
+
+    std::string sql = PrepareSQL(
+        "UPDATE semantic_index_state SET "
+        "embedding_status = '%s', "
+        "embedding_progress = %f, "
+        "embedding_error = '%s', "
+        "updated_at = datetime('now') "
+        "WHERE media_id = %i AND media_type = '%s'",
+        IndexStatusToString(status), progress, error.c_str(), mediaId, mediaType.c_str());
+
+    if (ExecuteQuery(sql))
+    {
+      CLog::Log(LOGDEBUG, "SemanticDatabase: Updated embedding status for media {} ({}) to {}",
+                mediaId, mediaType, IndexStatusToString(status));
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to update embedding status for media {} ({})", mediaId, mediaType);
+  }
+  return false;
+}
+
+std::vector<VectorSearchResult> CSemanticDatabase::SearchSimilar(
+    const std::array<float, 384>& queryEmbedding,
+    int topK)
+{
+  std::vector<VectorSearchResult> results;
+
+  try
+  {
+    if (!m_vectorSearcher)
+    {
+      CLog::Log(LOGERROR, "SemanticDatabase: Vector searcher not initialized");
+      return results;
+    }
+
+    // Delegate to VectorSearcher
+    auto vectorResults = m_vectorSearcher->SearchSimilar(queryEmbedding, topK);
+
+    // Convert to our result type
+    results.reserve(vectorResults.size());
+    for (const auto& vr : vectorResults)
+    {
+      VectorSearchResult result;
+      result.chunkId = vr.chunkId;
+      result.distance = vr.distance;
+      results.push_back(result);
+    }
+
+    CLog::Log(LOGDEBUG, "SemanticDatabase: Found {} similar vectors", results.size());
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to search similar vectors");
+  }
+
+  return results;
+}
+
+int64_t CSemanticDatabase::GetEmbeddingCount()
+{
+  try
+  {
+    if (!m_vectorSearcher)
+      return -1;
+
+    return m_vectorSearcher->GetVectorCount();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to get embedding count");
+  }
+  return -1;
 }
