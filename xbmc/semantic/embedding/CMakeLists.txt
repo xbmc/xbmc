@@ -1,10 +1,13 @@
 set(SOURCES
     EmbeddingEngine.cpp
+    GPUAccelerator.cpp
     Tokenizer.cpp
 )
 
 set(HEADERS
     EmbeddingEngine.h
+    GPUAccelerator.h
+    GPUTypes.h
     Tokenizer.h
 )
 

@@ -141,6 +141,33 @@ public:
   static std::vector<std::pair<int64_t, float>> NormalizeScores(
       const std::vector<std::pair<int64_t, float>>& scores);
 
+  /**
+   * @brief Apply cross-encoder re-ranking to improve accuracy
+   *
+   * Takes already ranked results and re-scores the top-N using a cross-encoder
+   * model for more accurate relevance scoring. Cross-encoders jointly encode
+   * query-passage pairs, capturing fine-grained interactions that bi-encoders miss.
+   *
+   * @param rankedResults Already ranked results (sorted by score, descending)
+   * @param query Original query text
+   * @param passages Map from ID to passage text
+   * @param topN Number of top results to re-rank (default: 20)
+   * @param scoreWeight Weight for cross-encoder score (0-1, default: 0.7)
+   * @return Re-ranked results with updated scores
+   *
+   * @note Requires cross-encoder to be enabled in settings
+   * @note Falls back to original ranking if cross-encoder unavailable
+   * @note Only re-ranks top-N results for efficiency (rest retain original order)
+   *
+   * Formula: finalScore = (1 - weight) * originalScore + weight * crossEncoderScore
+   */
+  std::vector<RankedItem> ApplyCrossEncoderReRanking(
+      const std::vector<RankedItem>& rankedResults,
+      const std::string& query,
+      const std::unordered_map<int64_t, std::string>& passages,
+      int topN = 20,
+      float scoreWeight = 0.7f);
+
 private:
   RankingConfig m_config;
 

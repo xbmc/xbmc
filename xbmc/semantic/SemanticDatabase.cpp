@@ -101,6 +101,18 @@ void CSemanticDatabase::CreateTables()
       "  clicked_result_ids TEXT"
       ")");
 
+  CLog::Log(LOGINFO, "SemanticDatabase: Creating semantic_synonyms table");
+  m_pDS->exec(
+      "CREATE TABLE semantic_synonyms ("
+      "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
+      "  word TEXT NOT NULL,"
+      "  synonym TEXT NOT NULL,"
+      "  weight REAL DEFAULT 1.0,"
+      "  source TEXT DEFAULT 'wordnet',"
+      "  created_at TEXT DEFAULT (datetime('now')),"
+      "  UNIQUE(word, synonym)"
+      ")");
+
   CreateFTSTriggers();
 }
 
@@ -137,6 +149,11 @@ void CSemanticDatabase::CreateAnalytics()
 
   m_pDS->exec(
       "CREATE INDEX idx_history_profile ON semantic_search_history(profile_id, timestamp DESC)");
+
+  // Index for synonym lookups
+  m_pDS->exec("CREATE INDEX idx_synonyms_word ON semantic_synonyms(word)");
+
+  m_pDS->exec("CREATE INDEX idx_synonyms_source ON semantic_synonyms(source)");
 
   CLog::Log(LOGINFO, "SemanticDatabase: Creating triggers");
 

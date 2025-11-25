@@ -13,9 +13,12 @@ core_add_library(semantic)
 
 # Core semantic components
 add_subdirectory(embedding)
+add_subdirectory(multilingual)
 add_subdirectory(transcription)
 add_subdirectory(ingest)
 add_subdirectory(search)
+add_subdirectory(ranking)
+add_subdirectory(expansion)
 
 # GUI components
 add_subdirectory(dialogs)

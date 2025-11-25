@@ -8,6 +8,7 @@
 
 #include "EmbeddingEngine.h"
 
+#include "GPUAccelerator.h"
 #include "Tokenizer.h"
 #include "semantic/perf/MemoryManager.h"
 #include "semantic/perf/PerformanceMonitor.h"
@@ -43,6 +44,7 @@ public:
   Ort::Env m_env{ORT_LOGGING_LEVEL_WARNING, "SemanticEmbedding"};
   std::unique_ptr<Ort::Session> m_session;
   std::unique_ptr<CTokenizer> m_tokenizer;
+  std::unique_ptr<CGPUAccelerator> m_gpuAccelerator;
 
   Ort::MemoryInfo m_memoryInfo =
       Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
@@ -54,6 +56,7 @@ public:
   bool m_modelLoaded{false};
   bool m_lazyLoad{true};
   int m_idleTimeoutSec{300};
+  bool m_enableGPU{false};
 
   std::string m_modelPath;
   std::string m_vocabPath;
@@ -119,13 +122,15 @@ public:
   bool Initialize(const std::string& modelPath,
                   const std::string& vocabPath,
                   bool lazyLoad,
-                  int idleTimeoutSec)
+                  int idleTimeoutSec,
+                  bool enableGPU)
   {
 #ifdef HAS_ONNXRUNTIME
     m_modelPath = modelPath;
     m_vocabPath = vocabPath;
     m_lazyLoad = lazyLoad;
     m_idleTimeoutSec = idleTimeoutSec;
+    m_enableGPU = enableGPU;
 
     try
     {
@@ -140,6 +145,42 @@ public:
 
       CLog::Log(LOGINFO, "EmbeddingEngine: Loaded tokenizer with {} tokens",
                 m_tokenizer->GetVocabSize());
+
+      // Initialize GPU acceleration if enabled
+      if (m_enableGPU)
+      {
+        m_gpuAccelerator = std::make_unique<CGPUAccelerator>();
+
+        GPUConfig gpuConfig;
+        gpuConfig.enabled = true;
+        gpuConfig.preferredBackend = CGPUAccelerator::DetectBestBackend();
+        gpuConfig.deviceId = 0; // Use default device
+        gpuConfig.memoryLimitMB = 0; // No limit (use all available)
+        gpuConfig.batchSize = 32; // Will be adjusted based on device
+        gpuConfig.enablePinnedMemory = true;
+        gpuConfig.enableAsyncTransfer = true;
+        gpuConfig.fallbackToCPU = true; // Always allow CPU fallback
+
+        if (m_gpuAccelerator->Initialize(gpuConfig))
+        {
+          CLog::Log(LOGINFO, "EmbeddingEngine: GPU acceleration initialized - {}",
+                    m_gpuAccelerator->GetStatusMessage());
+
+          if (m_gpuAccelerator->IsAvailable())
+          {
+            auto device = m_gpuAccelerator->GetActiveDevice();
+            CLog::Log(LOGINFO, "EmbeddingEngine: Using GPU: {} ({}, {}MB VRAM)",
+                      device.name, GPUBackendToString(device.backend), device.totalMemoryMB);
+          }
+        }
+        else
+        {
+          CLog::Log(LOGWARNING, "EmbeddingEngine: GPU initialization failed - {}",
+                    m_gpuAccelerator->GetStatusMessage());
+
+          // Keep the accelerator for status reporting even if init failed
+        }
+      }
 
       m_initialized = true;
 
@@ -207,6 +248,20 @@ public:
       // Enable memory pattern optimization
       sessionOptions.EnableMemPattern();
       sessionOptions.EnableCpuMemArena();
+
+      // Configure GPU execution provider if available
+      if (m_gpuAccelerator && m_gpuAccelerator->IsAvailable())
+      {
+        if (m_gpuAccelerator->ConfigureSessionOptions(sessionOptions))
+        {
+          CLog::Log(LOGINFO, "EmbeddingEngine: GPU execution provider configured");
+        }
+        else
+        {
+          CLog::Log(LOGWARNING,
+                    "EmbeddingEngine: Failed to configure GPU provider, using CPU fallback");
+        }
+      }
 
       // Load ONNX model
       m_session = std::make_unique<Ort::Session>(m_env, m_modelPath.c_str(), sessionOptions);
@@ -514,9 +569,10 @@ CEmbeddingEngine::~CEmbeddingEngine() = default;
 bool CEmbeddingEngine::Initialize(const std::string& modelPath,
                                    const std::string& vocabPath,
                                    bool lazyLoad,
-                                   int idleTimeoutSec)
+                                   int idleTimeoutSec,
+                                   bool enableGPU)
 {
-  return m_impl->Initialize(modelPath, vocabPath, lazyLoad, idleTimeoutSec);
+  return m_impl->Initialize(modelPath, vocabPath, lazyLoad, idleTimeoutSec, enableGPU);
 }
 
 bool CEmbeddingEngine::IsInitialized() const
@@ -575,6 +631,40 @@ float CEmbeddingEngine::Similarity(const Embedding& a, const Embedding& b)
   }
 
   return dotProduct / (normA * normB);
+}
+
+bool CEmbeddingEngine::IsGPUEnabled() const
+{
+#ifdef HAS_ONNXRUNTIME
+  return m_impl->m_gpuAccelerator && m_impl->m_gpuAccelerator->IsAvailable();
+#else
+  return false;
+#endif
+}
+
+std::string CEmbeddingEngine::GetGPUStatus() const
+{
+#ifdef HAS_ONNXRUNTIME
+  if (!m_impl->m_gpuAccelerator)
+  {
+    return "GPU acceleration not initialized";
+  }
+  return m_impl->m_gpuAccelerator->GetStatusMessage();
+#else
+  return "ONNX Runtime not available";
+#endif
+}
+
+int CEmbeddingEngine::GetOptimalBatchSize() const
+{
+#ifdef HAS_ONNXRUNTIME
+  if (m_impl->m_gpuAccelerator && m_impl->m_gpuAccelerator->IsAvailable())
+  {
+    return m_impl->m_gpuAccelerator->GetOptimalBatchSize();
+  }
+#endif
+  // CPU default
+  return 4;
 }
 
 } // namespace SEMANTIC

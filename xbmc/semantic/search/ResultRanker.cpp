@@ -8,6 +8,9 @@
 
 #include "ResultRanker.h"
 
+#include "semantic/ranking/CrossEncoder.h"
+#include "utils/log.h"
+
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
@@ -434,4 +437,138 @@ std::vector<RankedItem> CResultRanker::CombineCombMNZ(
     result.resize(m_config.topK);
 
   return result;
+}
+
+std::vector<RankedItem> CResultRanker::ApplyCrossEncoderReRanking(
+    const std::vector<RankedItem>& rankedResults,
+    const std::string& query,
+    const std::unordered_map<int64_t, std::string>& passages,
+    int topN,
+    float scoreWeight)
+{
+  // Return original results if empty
+  if (rankedResults.empty())
+    return rankedResults;
+
+  // Validate and clamp parameters
+  if (topN < 1)
+    topN = 1;
+  if (topN > 100)
+    topN = 100;
+  scoreWeight = std::max(0.0f, std::min(1.0f, scoreWeight));
+
+  // Determine how many results to re-rank (minimum of topN and actual results)
+  size_t numToReRank = std::min(static_cast<size_t>(topN), rankedResults.size());
+
+  // If no re-ranking needed or query is empty, return original results
+  if (numToReRank == 0 || query.empty())
+    return rankedResults;
+
+  try
+  {
+    // Create and configure cross-encoder
+    // Note: In a real implementation, this should be a singleton or cached instance
+    // to avoid repeated model loading. For now, we'll create a new instance.
+    CrossEncoderConfig config;
+    config.enabled = true;
+    config.topN = topN;
+    config.scoreWeight = scoreWeight;
+    config.lazyLoad = true;
+    config.idleTimeoutSec = 300;
+    config.batchSize = 8;
+
+    // TODO: Get model path from settings
+    // For now, use default path
+    config.modelPath = "special://home/semantic/models/cross-encoder.onnx";
+
+    CCrossEncoder crossEncoder(config);
+
+    // Try to initialize cross-encoder
+    if (!crossEncoder.Initialize())
+    {
+      CLog::Log(LOGWARNING,
+                "ResultRanker: Cross-encoder not available, falling back to original ranking");
+      return rankedResults;
+    }
+
+    // Prepare query-passage pairs for top-N results
+    std::vector<QueryPassagePair> pairs;
+    pairs.reserve(numToReRank);
+
+    for (size_t i = 0; i < numToReRank; ++i)
+    {
+      const auto& item = rankedResults[i];
+
+      // Look up passage text
+      auto it = passages.find(item.id);
+      if (it == passages.end())
+      {
+        CLog::Log(LOGWARNING, "ResultRanker: Passage not found for ID {}, skipping", item.id);
+        continue;
+      }
+
+      QueryPassagePair pair;
+      pair.query = query;
+      pair.passage = it->second;
+      pair.id = item.id;
+      pair.originalScore = item.combinedScore;
+      pairs.push_back(pair);
+    }
+
+    // If no valid pairs, return original results
+    if (pairs.empty())
+      return rankedResults;
+
+    // Perform cross-encoder re-ranking
+    auto rerankedResults = crossEncoder.ReRank(pairs);
+
+    // Create result vector with updated scores
+    std::vector<RankedItem> finalResults;
+    finalResults.reserve(rankedResults.size());
+
+    // Map reranked results by ID for quick lookup
+    std::unordered_map<int64_t, const CrossEncoderResult*> rerankedMap;
+    for (const auto& result : rerankedResults)
+    {
+      rerankedMap[result.id] = &result;
+    }
+
+    // Update top-N results with cross-encoder scores
+    for (size_t i = 0; i < numToReRank; ++i)
+    {
+      RankedItem item = rankedResults[i];
+
+      // Check if this item was re-ranked
+      auto it = rerankedMap.find(item.id);
+      if (it != rerankedMap.end())
+      {
+        // Update combined score with cross-encoder result
+        item.combinedScore = it->second->finalScore;
+      }
+
+      finalResults.push_back(item);
+    }
+
+    // Add remaining results unchanged
+    for (size_t i = numToReRank; i < rankedResults.size(); ++i)
+    {
+      finalResults.push_back(rankedResults[i]);
+    }
+
+    // Re-sort all results by updated combined score
+    std::sort(finalResults.begin(), finalResults.end(),
+              [](const RankedItem& a, const RankedItem& b) {
+                return a.combinedScore > b.combinedScore;
+              });
+
+    CLog::Log(LOGDEBUG, "ResultRanker: Applied cross-encoder re-ranking to {} results",
+              pairs.size());
+
+    return finalResults;
+  }
+  catch (const std::exception& e)
+  {
+    CLog::Log(LOGERROR, "ResultRanker: Cross-encoder re-ranking failed: {}", e.what());
+    return rankedResults; // Fallback to original ranking
+  }
 }

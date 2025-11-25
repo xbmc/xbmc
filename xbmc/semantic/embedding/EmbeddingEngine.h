@@ -80,12 +80,14 @@ public:
    * \param vocabPath Path to the tokenizer vocabulary file
    * \param lazyLoad If true, model is loaded on first use (default: true)
    * \param idleTimeoutSec Seconds of idle time before unloading model (0 = never, default: 300)
+   * \param enableGPU Enable GPU acceleration if available (default: false)
    * \return true if initialization succeeded, false otherwise
    */
   bool Initialize(const std::string& modelPath,
                   const std::string& vocabPath,
                   bool lazyLoad = true,
-                  int idleTimeoutSec = 300);
+                  int idleTimeoutSec = 300,
+                  bool enableGPU = false);
 
   /*!
    * \brief Check if the engine is properly initialized
@@ -145,6 +147,32 @@ public:
    * \return Cosine similarity score in range [-1, 1]
    */
   static float Similarity(const Embedding& a, const Embedding& b);
+
+  /*!
+   * \brief Check if GPU acceleration is enabled and available
+   *
+   * \return true if GPU is being used for inference
+   */
+  bool IsGPUEnabled() const;
+
+  /*!
+   * \brief Get GPU acceleration status message
+   *
+   * Returns information about GPU status, device, and backend.
+   *
+   * \return Status message string
+   */
+  std::string GetGPUStatus() const;
+
+  /*!
+   * \brief Get optimal batch size for current configuration
+   *
+   * Returns recommended batch size based on whether GPU is available.
+   * GPU: 16-64 items, CPU: 1-8 items
+   *
+   * \return Recommended batch size
+   */
+  int GetOptimalBatchSize() const;
 
 private:
   /*!
