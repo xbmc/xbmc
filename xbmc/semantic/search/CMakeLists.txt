@@ -1,17 +1,9 @@
 # Semantic Search Module
-# High-level search API and vector similarity search
+# Phase 1: Full-text search with SQLite FTS5
 
-set(SOURCES VectorSearcher.cpp
-            SemanticSearch.cpp
-            ResultRanker.cpp
-            HybridSearchEngine.cpp
-            ContextProvider.cpp
-            ResultEnricher.cpp)
-set(HEADERS VectorSearcher.h
-            SemanticSearch.h
-            ResultRanker.h
-            HybridSearchEngine.h
-            ContextProvider.h
-            ResultEnricher.h)
+set(SOURCES SemanticSearch.cpp
+            ContextProvider.cpp)
+set(HEADERS SemanticSearch.h
+            ContextProvider.h)
 
-# No library target - these sources will be included in parent CMakeLists.txt
+core_add_library(semantic_search)
