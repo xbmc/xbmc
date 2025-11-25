@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "current_phase": "ideation",
+  "active_epic": "phase2",
+  "phases": {
+    "implementation": {
+      "status": "pending",
+      "completed_at": null,
+      "agent": "tm-dev",
+      "description": "Task execution and development"
+    },
+    "retrospective": {
+      "status": "pending",
+      "completed_at": null,
+      "agent": "tm-retrospective",
+      "description": "Post-epic analysis and learning capture"
+    },
+    "planning": {
+      "status": "pending",
+      "completed_at": null,
+      "agent": "tm-sm",
+      "description": "Epic breakdown and task planning"
+    },
+    "architecture": {
+      "status": "pending",
+      "completed_at": null,
+      "agent": "tm-architect",
+      "description": "Technical design and architecture"
+    },
+    "ideation": {
+      "status": "active",
+      "completed_at": null,
+      "agent": "tm-pm",
+      "description": "Product definition and PRD creation"
+    }
+  },
+  "history": [],
+  "completed_epics": [],
+  "last_updated": "2025-11-25T01:58:42.143820+00:00"
+}

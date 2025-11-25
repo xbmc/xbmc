@@ -286,3 +286,5 @@ exclude_dll.txt
 
 # clangd index
 .cache/
+
+# SCUD Task Master

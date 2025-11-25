@@ -1,0 +1,2497 @@
+{
+  "phase1": {
+    "name": "phase1",
+    "tasks": [
+      {
+        "id": "1",
+        "title": "[PARENT] Create SemanticIndex database schema and tables",
+        "description": "Implement the SQLite database schema including semantic_chunks, semantic_fts (FTS5), semantic_index_state, semantic_job_queue, semantic_providers, and semantic_search_history tables. Include indexes, triggers for FTS5 synchronization, and initial data inserts. Success criteria: Database creates successfully and passes schema validation tests.\n\n[This task has been expanded into subtasks: 1.1, 1.2, 1.3, 1.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "high",
+        "dependencies": [],
+        "complexity_analysis": "The task involves creating a multi-table SQLite schema with FTS5 full-text search, indexes, synchronization triggers, and initial data inserts. It requires familiarity with SQLite specifics like FTS5 and trigger implementation, moderate research on FTS5 synchronization, and handling edge cases in schema validation testing. Estimated 2-4 hours for implementation and testing, with potential unknowns in FTS5 integration.",
+        "created_at": "2025-11-25T01:37:54.591678+00:00",
+        "updated_at": "2025-11-25T01:39:41.753708+00:00"
+      },
+      {
+        "id": "2",
+        "title": "[PARENT] Implement CSemanticDatabase class for database operations",
+        "description": "Create the CSemanticDatabase class to handle all SQLite operations including CRUD for chunks, FTS5 queries, state management, job queue operations, and migrations. Implement connection management and error handling. Success criteria: Class compiles and passes unit tests for basic insert/query operations.\n\n[This task has been expanded into subtasks: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6]",
+        "status": "pending",
+        "complexity": 13,
+        "priority": "high",
+        "dependencies": [
+          "1"
+        ],
+        "complexity_analysis": "The task requires implementing a comprehensive database class with multiple operations (CRUD, FTS5 queries, state management, job queues, migrations), connection handling, and error management. This involves technical unknowns like FTS5 specifics and migration strategies, affects multiple components, requires research on SQLite features, and demands handling edge cases such as concurrent access and data integrity. Testing goes beyond basic unit tests to ensure reliability. Overall, it's extremely complex, estimated at 1 day, and should be split into smaller tasks like basic CRUD, FTS implementation, and migrations.",
+        "created_at": "2025-11-25T01:37:54.591685+00:00",
+        "updated_at": "2025-11-25T01:39:47.669374+00:00"
+      },
+      {
+        "id": "3",
+        "title": "[PARENT] Create IContentParser interface and base implementations",
+        "description": "Define the IContentParser interface for parsing different content sources. Implement base classes for subtitle, transcription, and metadata parsers. Include chunk processing logic for text segmentation and deduplication. Success criteria: Interface defined and base classes compile without errors.\n\n[This task has been expanded into subtasks: 3.1, 3.2, 3.3, 3.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "high",
+        "dependencies": [],
+        "complexity_analysis": "The task involves defining an interface and implementing three base parser classes, each handling different content types (subtitles, transcriptions, metadata), which requires understanding various formats and potential parsing libraries. The addition of chunk processing logic for text segmentation and deduplication introduces algorithmic complexity, including edge cases like malformed inputs, encoding issues, and deduplication strategies. This affects multiple files (interface + 3 base classes + chunk logic), necessitates unit testing for compilation and basic functionality, and may require research into content formats and processing methods. Estimated effort: 2-4 hours, fitting the complex category.",
+        "created_at": "2025-11-25T01:37:54.591685+00:00",
+        "updated_at": "2025-11-25T01:39:50.961690+00:00"
+      },
+      {
+        "id": "4",
+        "title": "[PARENT] Implement SubtitleParser for SRT, ASS, VTT formats",
+        "description": "Build SubtitleParser class to parse SRT, ASS/SSA, VTT, and SUB subtitle formats. Extract timed text entries, strip HTML tags, filter sound effects, and handle character encoding. Support both external files and embedded tracks. Success criteria: Parses sample subtitle files correctly and extracts accurate timestamps/text.\n\n[This task has been expanded into subtasks: 4.1, 4.2, 4.3, 4.4, 4.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [
+          "3"
+        ],
+        "complexity_analysis": "The task involves parsing multiple subtitle formats with varying complexities (e.g., SRT is straightforward, ASS has styles and effects), handling encoding, HTML stripping, sound filtering, and embedded tracks, requiring research into specifications, integration with potential media libraries, and extensive testing for accuracy and edge cases across formats.",
+        "created_at": "2025-11-25T01:37:54.591686+00:00",
+        "updated_at": "2025-11-25T01:39:55.630219+00:00"
+      },
+      {
+        "id": "5",
+        "title": "[PARENT] Implement MetadataParser for NFO and plot data",
+        "description": "Create MetadataParser class to extract text from NFO files, plot summaries, taglines, and other metadata fields. Generate chunks without timestamps for searchable metadata. Success criteria: Parses sample NFO files and extracts relevant text content.\n\n[This task has been expanded into subtasks: 5.1, 5.2, 5.3, 5.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "medium",
+        "dependencies": [
+          "3"
+        ],
+        "complexity_analysis": "The task involves creating a MetadataParser class to parse XML-based NFO files, extract specific metadata fields like plot summaries and taglines, and generate searchable chunks. It requires some research into NFO file formats and schemas, handling XML parsing with potential variations and edge cases (e.g., malformed files, missing fields, different encodings). Testing with sample files adds complexity, and integration into a metadata system is implied. Estimated 2-4 hours due to technical unknowns and need for robust parsing.",
+        "created_at": "2025-11-25T01:37:54.591686+00:00",
+        "updated_at": "2025-11-25T01:39:58.705100+00:00"
+      },
+      {
+        "id": "6",
+        "title": "[PARENT] Implement GroqProvider for cloud transcription",
+        "description": "Build GroqProvider class to integrate with Groq Whisper API. Handle audio extraction (via FFmpeg), chunking for large files, API calls with authentication, and progress reporting. Support rate limiting and error recovery. Success criteria: Successfully transcribes sample audio file and returns accurate text with timestamps.\n\n[This task has been expanded into subtasks: 6.1, 6.2, 6.3, 6.4, 6.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [],
+        "complexity_analysis": "The task involves integrating multiple components like FFmpeg for audio extraction, chunking large files, authenticated API calls to Groq Whisper API, progress reporting, rate limiting, and error recovery. Technical unknowns include FFmpeg usage, Groq API specifics (e.g., timestamp handling), and edge cases like various audio formats or network failures. It affects at least one new class file and potentially integration points in the codebase. Research on API docs and FFmpeg is needed, and testing requires a sample audio file with accuracy verification. Overall, this is complex with several interdependent parts, estimated at 4-8 hours.",
+        "created_at": "2025-11-25T01:37:54.591687+00:00",
+        "updated_at": "2025-11-25T01:40:03.352455+00:00"
+      },
+      {
+        "id": "7",
+        "title": "[PARENT] Create TranscriptionProviderManager",
+        "description": "Implement TranscriptionProviderManager to handle provider selection, configuration storage, and switching between Groq, OpenAI (stub), and local (stub). Manage API keys securely and provide usage statistics. Success criteria: Can configure and switch providers via settings.\n\n[This task has been expanded into subtasks: 7.1, 7.2, 7.3, 7.4, 7.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "medium",
+        "dependencies": [
+          "6"
+        ],
+        "complexity_analysis": "The task involves implementing a manager with multiple provider integrations (one real, two stubs), secure API key management, configuration storage, provider switching via settings, and usage statistics tracking. This requires handling multiple components like provider interfaces, secure storage mechanisms, settings integration, and UI or API for configuration. Technical unknowns include secure key handling (e.g., encryption), API integrations for Groq and stubs for others, edge cases like key failures or switching during operations, and comprehensive testing for reliability. Estimated effort is 4-8 hours due to integration points, research on APIs and security, and potential dependencies on existing storage and settings systems.",
+        "created_at": "2025-11-25T01:37:54.591687+00:00",
+        "updated_at": "2025-11-25T01:40:07.491955+00:00"
+      },
+      {
+        "id": "8",
+        "title": "[PARENT] Implement CSemanticSearch class for query execution",
+        "description": "Create CSemanticSearch class to perform FTS5 searches, build queries with filters, generate snippets with highlighting, and rank results. Include context retrieval around timestamps. Success criteria: Executes sample queries and returns correctly ranked, formatted results.\n\n[This task has been expanded into subtasks: 8.1, 8.2, 8.3, 8.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "high",
+        "dependencies": [
+          "2"
+        ],
+        "complexity_analysis": "The task involves multiple components: FTS5 search implementation, dynamic query building with filters, snippet generation with highlighting, result ranking, and context retrieval around timestamps. This requires familiarity with SQLite FTS5 (potential research), handling edge cases like various filters and empty results, and thorough testing for correct ranking and formatting. Estimated at 2-4 hours for a developer with relevant experience.",
+        "created_at": "2025-11-25T01:37:54.591688+00:00",
+        "updated_at": "2025-11-25T01:40:13.869450+00:00"
+      },
+      {
+        "id": "9",
+        "title": "[PARENT] Build CSemanticIndexService for background processing",
+        "description": "Implement CSemanticIndexService as a background thread to orchestrate indexing operations. Handle library change notifications, manage job queues with priorities, and coordinate parsers/providers. Include idle detection to minimize UX impact. Success criteria: Service starts/stops correctly and processes queued jobs without blocking UI.\n\n[This task has been expanded into subtasks: 9.1, 9.2, 9.3, 9.4, 9.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [
+          "2",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "complexity_analysis": "This task involves multi-threading in C++, priority queue management, integration with parsers/providers and library notifications, idle detection, and ensuring no UI blocking. It requires careful handling of synchronization, edge cases like thread safety and system idle states, extensive testing for concurrency issues, and potential research into OS-specific idle detection APIs, making it very complex with a time estimate of 4-8 hours.",
+        "created_at": "2025-11-25T01:37:54.591688+00:00",
+        "updated_at": "2025-11-25T01:40:20.391902+00:00"
+      },
+      {
+        "id": "10",
+        "title": "[PARENT] Integrate SemanticServices into Kodi core",
+        "description": "Register the semantic indexing service in Kodi's service broker. Add necessary CMake configurations and module setup in xbmc/semantic/. Ensure proper initialization on Kodi startup. Success criteria: Service registers and initializes without errors on Kodi launch.\n\n[This task has been expanded into subtasks: 10.1, 10.2, 10.3, 10.4, 10.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [
+          "9"
+        ],
+        "complexity_analysis": "The task requires integrating a new service into Kodi's core, involving modifications to CMake build configurations, setting up a new module in xbmc/semantic/, registering with the service broker, and ensuring startup initialization. This includes technical unknowns like Kodi's service broker API, potential dependencies on other core components, and handling edge cases such as initialization failures. Multiple files and integration points are affected, requiring research into Kodi's codebase and architecture, followed by building and testing the application to verify error-free registration and launch. Estimated effort aligns with 4-8 hours for an experienced developer.",
+        "created_at": "2025-11-25T01:37:54.591689+00:00",
+        "updated_at": "2025-11-25T01:40:24.249555+00:00"
+      },
+      {
+        "id": "11",
+        "title": "[PARENT] Implement JSON-RPC API endpoints",
+        "description": "Create JSON-RPC handlers in interfaces/json-rpc/SemanticOperations.cpp for all semantic operations: Search, GetIndexState, QueueTranscription, GetStats, etc. Include proper error responses and parameter validation. Success criteria: All endpoints accept valid requests and return expected responses.\n\n[This task has been expanded into subtasks: 11.1, 11.2, 11.3, 11.4, 11.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [
+          "2",
+          "8"
+        ],
+        "complexity_analysis": "The task involves implementing multiple JSON-RPC handlers (likely 5-10+ based on listed operations and 'etc.') in a single file, each requiring parameter validation, error response handling, and integration with underlying semantic operations. This introduces moderate technical difficulty with JSON-RPC specifics, potential unknowns in existing codebase dependencies, and numerous edge cases for validation and errors. Testing each endpoint individually and for integration adds complexity, potentially requiring 4-8 hours of work due to the volume of components and thoroughness needed for success criteria.",
+        "created_at": "2025-11-25T01:37:54.591689+00:00",
+        "updated_at": "2025-11-25T01:40:28.555802+00:00"
+      },
+      {
+        "id": "12",
+        "title": "[PARENT] Add settings integration and configuration UI",
+        "description": "Implement settings XML in settings/semantic/settings.xml for enabling indexing, API keys, processing modes, and preferences. Add category registration in system/settings/settings.xml. Success criteria: Settings appear in Kodi's settings UI and values persist correctly.\n\n[This task has been expanded into subtasks: 12.1, 12.2, 12.3, 12.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "medium",
+        "dependencies": [],
+        "complexity_analysis": "The task involves modifying two specific XML files with Kodi's settings schema, requiring familiarity with Kodi addon development, integration with the settings UI, and ensuring persistence. It includes handling various setting types (e.g., booleans, strings, selects for API keys and modes), potential research on Kodi documentation if unfamiliar, testing in the Kodi environment for UI appearance and value persistence, and addressing edge cases like invalid inputs or sensitive data handling. This is complex due to technical unknowns and dependencies on Kodi's framework, estimated at 2-4 hours.",
+        "created_at": "2025-11-25T01:37:54.591689+00:00",
+        "updated_at": "2025-11-25T01:40:32.716284+00:00"
+      },
+      {
+        "id": "13",
+        "title": "[PARENT] Create minimal GUI info labels for index status",
+        "description": "Implement SemanticGUIInfo.cpp in guilib/guiinfo/ to provide skin variables for index status indicators. Update skin files (e.g., Includes_SemanticInfo.xml) for displaying indexing state in library views. Success criteria: Skins can display index status for media items.\n\n[This task has been expanded into subtasks: 13.1, 13.2, 13.3, 13.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "low",
+        "dependencies": [
+          "9"
+        ],
+        "complexity_analysis": "This task involves implementing C++ code in SemanticGUIInfo.cpp to expose index status variables, which requires understanding the GUI info system and potential unknowns in how indexing status is queried. It also requires updating XML skin files, affecting at least one file but possibly more for different views. Testing needs to cover display in library views with various index states, and there are integration points with the skinning engine and media library. Edge cases include different media types and indexing statuses, with moderate research needed on the existing codebase structure.",
+        "created_at": "2025-11-25T01:37:54.591690+00:00",
+        "updated_at": "2025-11-25T01:40:37.183233+00:00"
+      },
+      {
+        "id": "14",
+        "title": "[PARENT] Write unit and integration tests",
+        "description": "Create comprehensive tests for parsers, database operations, search functionality, and API endpoints. Include performance tests for search latency and memory usage. Use Kodi's testing framework. Success criteria: All tests pass with >80% coverage and performance targets met.\n\n[This task has been expanded into subtasks: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7, 14.8]",
+        "status": "pending",
+        "complexity": 21,
+        "priority": "high",
+        "dependencies": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "8",
+          "9",
+          "11"
+        ],
+        "complexity_analysis": "The task involves testing multiple complex components (parsers, database, search, APIs) with unit, integration, and performance tests, requiring high coverage (>80%) and meeting performance targets. It affects numerous files, has many dependencies, edge cases, and likely needs research on Kodi's framework. This is too large and must be split into smaller tasks for each component to be manageable.",
+        "created_at": "2025-11-25T01:37:54.591690+00:00",
+        "updated_at": "2025-11-25T01:40:49.807732+00:00"
+      },
+      {
+        "id": "15",
+        "title": "[PARENT] Update documentation and PR checklist",
+        "description": "Complete technical design document (tdd-1-semantic-index.md) with code samples. Ensure all code follows Kodi guidelines, internationalize strings, and verify PR checklist items. Success criteria: Documentation is complete and PR passes all checklist criteria.\n\n[This task has been expanded into subtasks: 15.1, 15.2, 15.3, 15.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "medium",
+        "dependencies": [
+          "14"
+        ],
+        "complexity_analysis": "The task involves completing a technical design document with code samples, which requires writing and ensuring code adheres to Kodi guidelines, internationalizing strings (potentially with edge cases for different languages), and verifying a PR checklist that may include multiple criteria like code quality, tests, and formatting. While not highly technical or involving many files, it demands research into Kodi-specific guidelines, handling i18n intricacies, and iterative checks to ensure PR compliance, making it complex enough for 2-4 hours of effort.",
+        "created_at": "2025-11-25T01:37:54.591694+00:00",
+        "updated_at": "2025-11-25T01:40:53.614060+00:00"
+      },
+      {
+        "id": "1.1",
+        "title": "Create Core Tables",
+        "description": "Define and create the basic SQLite tables: semantic_chunks, semantic_index_state, semantic_job_queue, semantic_providers, and semantic_search_history, including their columns and data types.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:39:41.753686+00:00",
+        "updated_at": "2025-11-25T01:39:41.753686+00:00"
+      },
+      {
+        "id": "1.2",
+        "title": "Implement FTS5 Virtual Table and Triggers",
+        "description": "Create the semantic_fts FTS5 virtual table and implement triggers to synchronize it with the semantic_chunks table for full-text search functionality.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "1.1"
+        ],
+        "created_at": "2025-11-25T01:39:41.753698+00:00",
+        "updated_at": "2025-11-25T01:39:41.753698+00:00"
+      },
+      {
+        "id": "1.3",
+        "title": "Add Indexes for Performance",
+        "description": "Create necessary indexes on the tables to optimize queries, such as on foreign keys and frequently queried columns.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "1.1"
+        ],
+        "created_at": "2025-11-25T01:39:41.753703+00:00",
+        "updated_at": "2025-11-25T01:39:41.753703+00:00"
+      },
+      {
+        "id": "1.4",
+        "title": "Insert Initial Data and Validate Schema",
+        "description": "Insert initial data into the tables where required, then run schema validation tests to ensure the database creates successfully and meets all success criteria.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "1.1",
+          "1.2",
+          "1.3"
+        ],
+        "created_at": "2025-11-25T01:39:41.753705+00:00",
+        "updated_at": "2025-11-25T01:39:41.753705+00:00"
+      },
+      {
+        "id": "2.1",
+        "title": "Define database schema and migrations",
+        "description": "Design and implement the SQLite database schema including tables for chunks, state, job queue, and FTS5 indices. Create migration scripts to handle schema updates.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:39:47.669347+00:00",
+        "updated_at": "2025-11-25T01:39:47.669347+00:00"
+      },
+      {
+        "id": "2.2",
+        "title": "Implement connection management",
+        "description": "Set up the CSemanticDatabase class constructor, connection pooling, and basic connection lifecycle methods (open, close). Include error handling for connection failures.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "2.1"
+        ],
+        "created_at": "2025-11-25T01:39:47.669353+00:00",
+        "updated_at": "2025-11-25T01:39:47.669353+00:00"
+      },
+      {
+        "id": "2.3",
+        "title": "Implement CRUD operations for chunks",
+        "description": "Add methods for creating, reading, updating, and deleting chunk records in the database. Ensure basic error handling for these operations.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "2.1",
+          "2.2"
+        ],
+        "created_at": "2025-11-25T01:39:47.669355+00:00",
+        "updated_at": "2025-11-25T01:39:47.669355+00:00"
+      },
+      {
+        "id": "2.4",
+        "title": "Implement FTS5 queries",
+        "description": "Develop methods for performing full-text search queries using FTS5 on chunk data, including query parsing and result handling.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "2.1",
+          "2.2",
+          "2.3"
+        ],
+        "created_at": "2025-11-25T01:39:47.669367+00:00",
+        "updated_at": "2025-11-25T01:39:47.669367+00:00"
+      },
+      {
+        "id": "2.5",
+        "title": "Implement state management and job queue operations",
+        "description": "Add methods for managing application state and handling job queue CRUD operations, including enqueue, dequeue, and status updates.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "2.1",
+          "2.2"
+        ],
+        "created_at": "2025-11-25T01:39:47.669369+00:00",
+        "updated_at": "2025-11-25T01:39:47.669369+00:00"
+      },
+      {
+        "id": "2.6",
+        "title": "Integrate error handling and unit tests",
+        "description": "Enhance the class with comprehensive error handling across all methods. Write unit tests for basic insert/query operations and ensure the class compiles and tests pass.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "2.1",
+          "2.2",
+          "2.3",
+          "2.4",
+          "2.5"
+        ],
+        "created_at": "2025-11-25T01:39:47.669371+00:00",
+        "updated_at": "2025-11-25T01:39:47.669371+00:00"
+      },
+      {
+        "id": "3.1",
+        "title": "Define IContentParser Interface",
+        "description": "Create the IContentParser interface with methods for parsing different content sources, ensuring it includes abstract methods for processing subtitles, transcriptions, and metadata.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:39:50.961676+00:00",
+        "updated_at": "2025-11-25T01:39:50.961676+00:00"
+      },
+      {
+        "id": "3.2",
+        "title": "Implement Base Parser Classes",
+        "description": "Implement base classes inheriting from IContentParser for subtitle, transcription, and metadata parsers, providing common functionality and abstract overrides.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "3.1"
+        ],
+        "created_at": "2025-11-25T01:39:50.961681+00:00",
+        "updated_at": "2025-11-25T01:39:50.961681+00:00"
+      },
+      {
+        "id": "3.3",
+        "title": "Add Chunk Processing Logic",
+        "description": "Integrate chunk processing logic into the base classes for text segmentation and deduplication, including methods to handle text chunks efficiently.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "3.2"
+        ],
+        "created_at": "2025-11-25T01:39:50.961684+00:00",
+        "updated_at": "2025-11-25T01:39:50.961684+00:00"
+      },
+      {
+        "id": "3.4",
+        "title": "Verify Compilation and Integration",
+        "description": "Ensure the interface and base classes compile without errors, and perform basic integration tests to confirm the implementations work together.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "low",
+        "dependencies": [
+          "3.3"
+        ],
+        "created_at": "2025-11-25T01:39:50.961686+00:00",
+        "updated_at": "2025-11-25T01:39:50.961686+00:00"
+      },
+      {
+        "id": "4.1",
+        "title": "Define Subtitle Data Models",
+        "description": "Create data structures and classes to represent subtitle entries, including timestamps, text, and metadata for SRT, ASS/SSA, VTT, and SUB formats.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:39:55.630206+00:00",
+        "updated_at": "2025-11-25T01:39:55.630206+00:00"
+      },
+      {
+        "id": "4.2",
+        "title": "Implement Core Parsing Logic",
+        "description": "Develop parsing methods for each subtitle format (SRT, ASS/SSA, VTT, SUB) to extract timed text entries from raw subtitle data.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "4.1"
+        ],
+        "created_at": "2025-11-25T01:39:55.630211+00:00",
+        "updated_at": "2025-11-25T01:39:55.630211+00:00"
+      },
+      {
+        "id": "4.3",
+        "title": "Add Text Processing Utilities",
+        "description": "Implement utilities to strip HTML tags, filter out sound effects, and handle character encoding issues across all formats.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "4.2"
+        ],
+        "created_at": "2025-11-25T01:39:55.630213+00:00",
+        "updated_at": "2025-11-25T01:39:55.630213+00:00"
+      },
+      {
+        "id": "4.4",
+        "title": "Integrate File and Track Support",
+        "description": "Add support for loading and parsing subtitles from external files and embedded tracks, integrating with the core parsing logic.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "4.3"
+        ],
+        "created_at": "2025-11-25T01:39:55.630214+00:00",
+        "updated_at": "2025-11-25T01:39:55.630214+00:00"
+      },
+      {
+        "id": "4.5",
+        "title": "Validate with Sample Files",
+        "description": "Test the SubtitleParser class with sample subtitle files to ensure correct parsing, accurate timestamps, and text extraction.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "4.4"
+        ],
+        "created_at": "2025-11-25T01:39:55.630216+00:00",
+        "updated_at": "2025-11-25T01:39:55.630216+00:00"
+      },
+      {
+        "id": "5.1",
+        "title": "Define Metadata Schema",
+        "description": "Create data models or schemas for metadata fields like plot summaries, taglines, and other relevant text content extracted from NFO files.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:39:58.705088+00:00",
+        "updated_at": "2025-11-25T01:39:58.705088+00:00"
+      },
+      {
+        "id": "5.2",
+        "title": "Implement NFO Parsing Logic",
+        "description": "Develop the core parsing methods in the MetadataParser class to extract text from NFO files into the defined metadata schema.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "5.1"
+        ],
+        "created_at": "2025-11-25T01:39:58.705093+00:00",
+        "updated_at": "2025-11-25T01:39:58.705093+00:00"
+      },
+      {
+        "id": "5.3",
+        "title": "Generate Searchable Chunks",
+        "description": "Add functionality to generate text chunks without timestamps from the extracted metadata for searchable purposes.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "5.2"
+        ],
+        "created_at": "2025-11-25T01:39:58.705095+00:00",
+        "updated_at": "2025-11-25T01:39:58.705095+00:00"
+      },
+      {
+        "id": "5.4",
+        "title": "Test with Sample Data",
+        "description": "Test the MetadataParser with sample NFO files, validate extraction of relevant content, and add basic documentation.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "5.3"
+        ],
+        "created_at": "2025-11-25T01:39:58.705097+00:00",
+        "updated_at": "2025-11-25T01:39:58.705097+00:00"
+      },
+      {
+        "id": "6.1",
+        "title": "Define data models and schemas",
+        "description": "Create TypeScript interfaces or classes for input audio data, transcription requests, API responses including text and timestamps, and error handling structures.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:03.352442+00:00",
+        "updated_at": "2025-11-25T01:40:03.352442+00:00"
+      },
+      {
+        "id": "6.2",
+        "title": "Implement audio extraction and chunking",
+        "description": "Build logic to extract audio from files using FFmpeg and split large audio files into manageable chunks for API processing.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "6.1"
+        ],
+        "created_at": "2025-11-25T01:40:03.352447+00:00",
+        "updated_at": "2025-11-25T01:40:03.352447+00:00"
+      },
+      {
+        "id": "6.3",
+        "title": "Develop Groq API client",
+        "description": "Implement the core API client for Groq Whisper, including authentication setup, making API calls to transcribe audio chunks, and handling basic responses.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "6.1"
+        ],
+        "created_at": "2025-11-25T01:40:03.352449+00:00",
+        "updated_at": "2025-11-25T01:40:03.352449+00:00"
+      },
+      {
+        "id": "6.4",
+        "title": "Add rate limiting and error recovery",
+        "description": "Integrate rate limiting to respect API limits and implement retry logic with exponential backoff for handling transient errors and API failures.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "6.3"
+        ],
+        "created_at": "2025-11-25T01:40:03.352450+00:00",
+        "updated_at": "2025-11-25T01:40:03.352450+00:00"
+      },
+      {
+        "id": "6.5",
+        "title": "Integrate components and add progress reporting",
+        "description": "Combine audio chunking, API calls, and error handling into the GroqProvider class, add progress callbacks for transcription status, and test with a sample audio file to ensure accurate text output with timestamps.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "6.2",
+          "6.3",
+          "6.4"
+        ],
+        "created_at": "2025-11-25T01:40:03.352452+00:00",
+        "updated_at": "2025-11-25T01:40:03.352452+00:00"
+      },
+      {
+        "id": "7.1",
+        "title": "Define Provider Models and Schemas",
+        "description": "Create data models or schemas for transcription providers (Groq, OpenAI stub, local stub), including configuration structures like API endpoints, model names, and settings options.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:07.491921+00:00",
+        "updated_at": "2025-11-25T01:40:07.491921+00:00"
+      },
+      {
+        "id": "7.2",
+        "title": "Implement Secure API Key Storage",
+        "description": "Develop a secure mechanism for storing and retrieving API keys for each provider, using encryption or environment variables to ensure security.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "7.1"
+        ],
+        "created_at": "2025-11-25T01:40:07.491935+00:00",
+        "updated_at": "2025-11-25T01:40:07.491935+00:00"
+      },
+      {
+        "id": "7.3",
+        "title": "Build Core TranscriptionProviderManager Logic",
+        "description": "Implement the TranscriptionProviderManager class to handle provider selection, configuration loading, and switching between providers (including stubs for OpenAI and local).",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "7.1",
+          "7.2"
+        ],
+        "created_at": "2025-11-25T01:40:07.491940+00:00",
+        "updated_at": "2025-11-25T01:40:07.491940+00:00"
+      },
+      {
+        "id": "7.4",
+        "title": "Add Usage Statistics Tracking",
+        "description": "Integrate functionality to track and provide usage statistics for each provider, such as API calls, tokens used, and costs.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "7.3"
+        ],
+        "created_at": "2025-11-25T01:40:07.491944+00:00",
+        "updated_at": "2025-11-25T01:40:07.491944+00:00"
+      },
+      {
+        "id": "7.5",
+        "title": "Create Settings UI/API for Configuration",
+        "description": "Develop a settings interface or API that allows users to configure providers, store settings, and switch between them, meeting the success criteria of configurable switching via settings.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "7.3"
+        ],
+        "created_at": "2025-11-25T01:40:07.491947+00:00",
+        "updated_at": "2025-11-25T01:40:07.491947+00:00"
+      },
+      {
+        "id": "8.1",
+        "title": "Define CSemanticSearch class structure and integrate FTS5",
+        "description": "Create the basic CSemanticSearch class with necessary imports, constructor, and initial integration with FTS5 for performing full-text searches. Set up the foundational structure to handle search inputs.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:13.869432+00:00",
+        "updated_at": "2025-11-25T01:40:13.869432+00:00"
+      },
+      {
+        "id": "8.2",
+        "title": "Implement query building with filters",
+        "description": "Add methods to the CSemanticSearch class for constructing FTS5 queries that incorporate various filters (e.g., date ranges, categories). Ensure the queries are dynamically built based on input parameters.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "8.1"
+        ],
+        "created_at": "2025-11-25T01:40:13.869439+00:00",
+        "updated_at": "2025-11-25T01:40:13.869439+00:00"
+      },
+      {
+        "id": "8.3",
+        "title": "Add result ranking and snippet generation with highlighting",
+        "description": "Implement functionality in the class to rank search results based on relevance and generate snippets with highlighting for matched terms. Use FTS5 features to format and highlight search results.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "8.2"
+        ],
+        "created_at": "2025-11-25T01:40:13.869442+00:00",
+        "updated_at": "2025-11-25T01:40:13.869442+00:00"
+      },
+      {
+        "id": "8.4",
+        "title": "Implement context retrieval around timestamps and test with sample queries",
+        "description": "Add methods for retrieving contextual information around specific timestamps in search results. Execute sample queries to verify correct ranking, formatting, and context retrieval, ensuring the class meets success criteria.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "8.3"
+        ],
+        "created_at": "2025-11-25T01:40:13.869445+00:00",
+        "updated_at": "2025-11-25T01:40:13.869445+00:00"
+      },
+      {
+        "id": "9.1",
+        "title": "Define data models and interfaces for CSemanticIndexService",
+        "description": "Create classes and interfaces for job representations, queue structures, priority levels, and service components (e.g., parsers, providers). This includes defining event handlers for notifications and idle states.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:20.391887+00:00",
+        "updated_at": "2025-11-25T01:40:20.391887+00:00"
+      },
+      {
+        "id": "9.2",
+        "title": "Implement background thread service lifecycle",
+        "description": "Develop the core CSemanticIndexService class with methods for starting, running, and stopping the background thread. Ensure it initializes properly and handles thread safety for non-blocking operations.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "9.1"
+        ],
+        "created_at": "2025-11-25T01:40:20.391892+00:00",
+        "updated_at": "2025-11-25T01:40:20.391892+00:00"
+      },
+      {
+        "id": "9.3",
+        "title": "Implement job queue management with priorities",
+        "description": "Add queue management logic to the service, including enqueuing jobs with priority levels, dequeuing based on priority, and handling queue overflow or errors.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "9.1",
+          "9.2"
+        ],
+        "created_at": "2025-11-25T01:40:20.391894+00:00",
+        "updated_at": "2025-11-25T01:40:20.391894+00:00"
+      },
+      {
+        "id": "9.4",
+        "title": "Integrate library change notifications",
+        "description": "Implement notification handling for library changes, registering listeners and triggering appropriate job queuing in response to events.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "9.1",
+          "9.2",
+          "9.3"
+        ],
+        "created_at": "2025-11-25T01:40:20.391896+00:00",
+        "updated_at": "2025-11-25T01:40:20.391896+00:00"
+      },
+      {
+        "id": "9.5",
+        "title": "Add idle detection and parser/provider coordination",
+        "description": "Incorporate idle detection logic to pause processing during high UX activity and coordinate the execution of parsers and providers for queued jobs.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "low",
+        "dependencies": [
+          "9.1",
+          "9.2",
+          "9.3",
+          "9.4"
+        ],
+        "created_at": "2025-11-25T01:40:20.391897+00:00",
+        "updated_at": "2025-11-25T01:40:20.391897+00:00"
+      },
+      {
+        "id": "10.1",
+        "title": "Set up SemanticServices module structure",
+        "description": "Create the necessary directory structure and initial files in xbmc/semantic/ for the SemanticServices module, including placeholders for service implementation.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:24.249542+00:00",
+        "updated_at": "2025-11-25T01:40:24.249542+00:00"
+      },
+      {
+        "id": "10.2",
+        "title": "Add CMake configurations for SemanticServices",
+        "description": "Update Kodi's CMakeLists.txt and related files to include the xbmc/semantic/ module, ensuring it builds correctly with dependencies.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "10.1"
+        ],
+        "created_at": "2025-11-25T01:40:24.249547+00:00",
+        "updated_at": "2025-11-25T01:40:24.249547+00:00"
+      },
+      {
+        "id": "10.3",
+        "title": "Implement service registration in service broker",
+        "description": "Modify the service broker code to register the SemanticServices instance, ensuring it integrates with Kodi's existing service architecture.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "10.1",
+          "10.2"
+        ],
+        "created_at": "2025-11-25T01:40:24.249548+00:00",
+        "updated_at": "2025-11-25T01:40:24.249548+00:00"
+      },
+      {
+        "id": "10.4",
+        "title": "Ensure proper initialization on Kodi startup",
+        "description": "Update Kodi's startup sequence to initialize the SemanticServices module, handling any required setup or error checking.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "10.3"
+        ],
+        "created_at": "2025-11-25T01:40:24.249550+00:00",
+        "updated_at": "2025-11-25T01:40:24.249550+00:00"
+      },
+      {
+        "id": "10.5",
+        "title": "Verify integration and handle errors",
+        "description": "Test the full integration by launching Kodi, confirming the service registers and initializes without errors, and address any issues found.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "10.4"
+        ],
+        "created_at": "2025-11-25T01:40:24.249552+00:00",
+        "updated_at": "2025-11-25T01:40:24.249552+00:00"
+      },
+      {
+        "id": "11.1",
+        "title": "Define JSON-RPC request and response schemas",
+        "description": "Create data structures or schemas in SemanticOperations.cpp for request and response formats for all semantic operations (Search, GetIndexState, QueueTranscription, GetStats, etc.), ensuring they match JSON-RPC specifications.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:28.555766+00:00",
+        "updated_at": "2025-11-25T01:40:28.555766+00:00"
+      },
+      {
+        "id": "11.2",
+        "title": "Implement core handler functions",
+        "description": "Write the core logic for each JSON-RPC handler function in SemanticOperations.cpp, integrating with underlying semantic operation logic (assuming business logic is available separately).",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "11.1"
+        ],
+        "created_at": "2025-11-25T01:40:28.555771+00:00",
+        "updated_at": "2025-11-25T01:40:28.555771+00:00"
+      },
+      {
+        "id": "11.3",
+        "title": "Add parameter validation",
+        "description": "Implement validation for incoming parameters in each handler, rejecting invalid requests with appropriate errors.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "11.2"
+        ],
+        "created_at": "2025-11-25T01:40:28.555773+00:00",
+        "updated_at": "2025-11-25T01:40:28.555773+00:00"
+      },
+      {
+        "id": "11.4",
+        "title": "Implement error responses",
+        "description": "Add comprehensive error handling and response generation for various failure scenarios in all handlers.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "11.3"
+        ],
+        "created_at": "2025-11-25T01:40:28.555796+00:00",
+        "updated_at": "2025-11-25T01:40:28.555796+00:00"
+      },
+      {
+        "id": "11.5",
+        "title": "Test and verify endpoints",
+        "description": "Create unit tests or manual verification to ensure all endpoints accept valid requests and return expected responses, covering success and error cases.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "low",
+        "dependencies": [
+          "11.4"
+        ],
+        "created_at": "2025-11-25T01:40:28.555798+00:00",
+        "updated_at": "2025-11-25T01:40:28.555798+00:00"
+      },
+      {
+        "id": "12.1",
+        "title": "Create semantic settings XML file",
+        "description": "Implement the settings XML structure in settings/semantic/settings.xml, defining options for enabling indexing, API keys, processing modes, and preferences with appropriate data types and defaults.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:32.716266+00:00",
+        "updated_at": "2025-11-25T01:40:32.716266+00:00"
+      },
+      {
+        "id": "12.2",
+        "title": "Register settings category in system settings",
+        "description": "Add the category registration to system/settings/settings.xml to integrate the semantic settings into Kodi's overall settings system.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "12.1"
+        ],
+        "created_at": "2025-11-25T01:40:32.716274+00:00",
+        "updated_at": "2025-11-25T01:40:32.716274+00:00"
+      },
+      {
+        "id": "12.3",
+        "title": "Verify settings UI integration",
+        "description": "Test that the new settings category and options appear correctly in Kodi's settings UI, ensuring they are accessible and navigable.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "12.1",
+          "12.2"
+        ],
+        "created_at": "2025-11-25T01:40:32.716277+00:00",
+        "updated_at": "2025-11-25T01:40:32.716277+00:00"
+      },
+      {
+        "id": "12.4",
+        "title": "Verify settings persistence",
+        "description": "Test that changes to the settings values are saved and persist across Kodi restarts, confirming data integrity and storage functionality.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "12.1",
+          "12.2",
+          "12.3"
+        ],
+        "created_at": "2025-11-25T01:40:32.716279+00:00",
+        "updated_at": "2025-11-25T01:40:32.716279+00:00"
+      },
+      {
+        "id": "13.1",
+        "title": "Implement index status variables in SemanticGUIInfo.cpp",
+        "description": "Add code to SemanticGUIInfo.cpp in guilib/guiinfo/ to define and expose skin variables for index status indicators, retrieving data from the media library indexing state.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:37.183218+00:00",
+        "updated_at": "2025-11-25T01:40:37.183218+00:00"
+      },
+      {
+        "id": "13.2",
+        "title": "Update skin files to include index status labels",
+        "description": "Modify Includes_SemanticInfo.xml and related skin files to integrate the new index status variables, enabling display of indexing state in library views.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "13.1"
+        ],
+        "created_at": "2025-11-25T01:40:37.183224+00:00",
+        "updated_at": "2025-11-25T01:40:37.183224+00:00"
+      },
+      {
+        "id": "13.3",
+        "title": "Test index status display in skins",
+        "description": "Verify that skins correctly display index status for media items by testing various indexing states (e.g., indexed, indexing, not indexed) in library views.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "13.1",
+          "13.2"
+        ],
+        "created_at": "2025-11-25T01:40:37.183227+00:00",
+        "updated_at": "2025-11-25T01:40:37.183227+00:00"
+      },
+      {
+        "id": "13.4",
+        "title": "Add documentation for index status GUI info",
+        "description": "Update relevant documentation or comments to describe the new index status skin variables and their usage in skins.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "low",
+        "dependencies": [
+          "13.1",
+          "13.2"
+        ],
+        "created_at": "2025-11-25T01:40:37.183229+00:00",
+        "updated_at": "2025-11-25T01:40:37.183229+00:00"
+      },
+      {
+        "id": "14.1",
+        "title": "Set up Kodi testing framework and environment",
+        "description": "Configure Kodi's testing framework, set up test directories, install dependencies, and prepare the testing environment for unit and integration tests.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:49.807711+00:00",
+        "updated_at": "2025-11-25T01:40:49.807711+00:00"
+      },
+      {
+        "id": "14.2",
+        "title": "Write unit tests for parsers",
+        "description": "Create unit tests for all parser functions, covering input validation, parsing logic, error handling, and edge cases using Kodi's framework.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "14.1"
+        ],
+        "created_at": "2025-11-25T01:40:49.807716+00:00",
+        "updated_at": "2025-11-25T01:40:49.807716+00:00"
+      },
+      {
+        "id": "14.3",
+        "title": "Write unit and integration tests for database operations",
+        "description": "Develop tests for database CRUD operations, including unit tests for individual functions and integration tests for database interactions, ensuring data integrity and error scenarios.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "14.1"
+        ],
+        "created_at": "2025-11-25T01:40:49.807718+00:00",
+        "updated_at": "2025-11-25T01:40:49.807718+00:00"
+      },
+      {
+        "id": "14.4",
+        "title": "Write unit and integration tests for search functionality",
+        "description": "Create tests for search algorithms, query handling, result accuracy, and integration with database, including unit tests for core search logic and integration tests for full search workflows.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "14.1",
+          "14.3"
+        ],
+        "created_at": "2025-11-25T01:40:49.807721+00:00",
+        "updated_at": "2025-11-25T01:40:49.807721+00:00"
+      },
+      {
+        "id": "14.5",
+        "title": "Write integration tests for API endpoints",
+        "description": "Develop integration tests for all API endpoints, covering request/response cycles, authentication, error responses, and interactions with parsers, database, and search functionality.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "14.1",
+          "14.2",
+          "14.3",
+          "14.4"
+        ],
+        "created_at": "2025-11-25T01:40:49.807723+00:00",
+        "updated_at": "2025-11-25T01:40:49.807723+00:00"
+      },
+      {
+        "id": "14.6",
+        "title": "Implement performance tests for search latency and memory usage",
+        "description": "Create performance tests to measure search latency under various loads and monitor memory usage, setting up benchmarks and thresholds for the defined targets.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "14.1",
+          "14.4"
+        ],
+        "created_at": "2025-11-25T01:40:49.807725+00:00",
+        "updated_at": "2025-11-25T01:40:49.807725+00:00"
+      },
+      {
+        "id": "14.7",
+        "title": "Measure and achieve >80% test coverage",
+        "description": "Run coverage tools with Kodi's framework, analyze coverage reports, and add additional tests as needed to reach at least 80% code coverage across all components.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "14.2",
+          "14.3",
+          "14.4",
+          "14.5",
+          "14.6"
+        ],
+        "created_at": "2025-11-25T01:40:49.807726+00:00",
+        "updated_at": "2025-11-25T01:40:49.807726+00:00"
+      },
+      {
+        "id": "14.8",
+        "title": "Run full test suite and verify success criteria",
+        "description": "Execute all tests, ensure they pass, verify >80% coverage is maintained, and confirm performance targets are met, documenting results and any fixes.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "low",
+        "dependencies": [
+          "14.2",
+          "14.3",
+          "14.4",
+          "14.5",
+          "14.6",
+          "14.7"
+        ],
+        "created_at": "2025-11-25T01:40:49.807728+00:00",
+        "updated_at": "2025-11-25T01:40:49.807728+00:00"
+      },
+      {
+        "id": "15.1",
+        "title": "Complete technical design document with code samples",
+        "description": "Fill in the missing sections of tdd-1-semantic-index.md, including relevant code samples to illustrate the design.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T01:40:53.614047+00:00",
+        "updated_at": "2025-11-25T01:40:53.614047+00:00"
+      },
+      {
+        "id": "15.2",
+        "title": "Ensure code follows Kodi guidelines",
+        "description": "Review all associated code for compliance with Kodi coding standards and make necessary adjustments.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "15.1"
+        ],
+        "created_at": "2025-11-25T01:40:53.614052+00:00",
+        "updated_at": "2025-11-25T01:40:53.614052+00:00"
+      },
+      {
+        "id": "15.3",
+        "title": "Internationalize strings in code",
+        "description": "Identify and internationalize all hardcoded strings in the code to support multiple languages.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "15.1"
+        ],
+        "created_at": "2025-11-25T01:40:53.614054+00:00",
+        "updated_at": "2025-11-25T01:40:53.614054+00:00"
+      },
+      {
+        "id": "15.4",
+        "title": "Verify PR checklist items",
+        "description": "Go through the PR checklist and confirm all items are met, including documentation completeness and code quality.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "15.2",
+          "15.3"
+        ],
+        "created_at": "2025-11-25T01:40:53.614056+00:00",
+        "updated_at": "2025-11-25T01:40:53.614056+00:00"
+      }
+    ]
+  },
+  "phase2": {
+    "name": "phase2",
+    "tasks": [
+      {
+        "id": "1",
+        "title": "[PARENT] Integrate ONNX Runtime Library",
+        "description": "Add ONNX Runtime as a dependency to Kodi's build system, ensuring it supports CPU inference. Verify the library loads correctly and handles model execution. Success criteria: ONNX Runtime builds and links without errors, and a basic model load test passes.\n\n[This task has been expanded into subtasks: 1.1, 1.2, 1.3, 1.4, 1.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [],
+        "complexity_analysis": "Integrating ONNX Runtime into Kodi's build system involves modifying build configurations (e.g., CMake), handling dependencies across multiple platforms, ensuring CPU inference support, and creating a basic test for model loading and execution. This requires research into Kodi's build process, ONNX Runtime's integration options, potential compatibility issues with existing dependencies, and addressing edge cases like different architectures or versions. The task affects multiple build files and components, with testing beyond compilation including runtime verification, making it more involved than a simple library addition.",
+        "created_at": "2025-11-25T01:50:07.718179+00:00",
+        "updated_at": "2025-11-25T02:00:59.179963+00:00"
+      },
+      {
+        "id": "2",
+        "title": "[PARENT] Implement Embedding Engine Class",
+        "description": "Create CEmbeddingEngine class to wrap ONNX Runtime, loading the all-MiniLM-L6-v2 model. Use HF tokenizers-cpp library for tokenization (like sentence-transformers/Chroma pattern) instead of custom WordPiece. Implement single and batch text embedding generation with mean pooling. Success criteria: Class initializes model on startup, generates 384-dim vectors for input text, tokenization via tokenizers-cpp matches HuggingFace reference, and handles errors gracefully.\n\n[This task has been expanded into subtasks: 2.1, 2.2, 2.3, 2.4, 2.5]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "high",
+        "dependencies": [
+          "1",
+          "18"
+        ],
+        "complexity_analysis": "The task involves integrating ONNX Runtime for model loading and inference in C++, using HF tokenizers-cpp for tokenization (simpler than custom WordPiece). Includes handling single and batch embeddings with mean pooling, error management, and generating 384-dim vectors. Dependency on tokenizers-cpp reduces custom code. Testing for various inputs and edge cases like batch variations and load failures. Estimated 2-4 hours effort.",
+        "created_at": "2025-11-25T01:50:07.718232+00:00",
+        "updated_at": "2025-11-25T02:01:04.783843+00:00"
+      },
+      {
+        "id": "3",
+        "title": "[PARENT] Bundle sqlite-vec Extension",
+        "description": "Integrate sqlite-vec as a SQLite extension in Kodi, compiling it into the build. Ensure it's loaded with Kodi's database connections. Success criteria: sqlite-vec is available for vector operations in SQLite queries, tested with basic vector insertion and similarity search.\n\n[This task has been expanded into subtasks: 3.1, 3.2, 3.3, 3.4, 3.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [],
+        "complexity_analysis": "Integrating sqlite-vec as a compiled extension into Kodi's build requires modifying the build system (likely CMake), ensuring compatibility with Kodi's SQLite version and platform-specific builds, researching Kodi's database initialization to load the extension, handling potential edge cases like dynamic loading failures or platform differences, and thorough testing of vector operations which may involve writing or adapting test cases. This combines technical unknowns, multiple affected components, and non-trivial integration points, fitting a very complex task likely taking 4-8 hours.",
+        "created_at": "2025-11-25T01:50:07.718232+00:00",
+        "updated_at": "2025-11-25T02:01:08.961796+00:00"
+      },
+      {
+        "id": "4",
+        "title": "[PARENT] Extend Database Schema for Vectors",
+        "description": "Add semantic_vectors, semantic_embedding_models, semantic_search_history, and semantic_suggestions tables to Kodi's database schema. Update semantic_index_state with embedding fields. Success criteria: Schema migrations run successfully, tables exist with correct columns, and foreign keys are enforced.\n\n[This task has been expanded into subtasks: 4.1, 4.2, 4.3, 4.4, 4.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [
+          "3"
+        ],
+        "complexity_analysis": "The task involves adding four new database tables and updating an existing one, which requires understanding Kodi's SQLite schema, designing appropriate columns and relationships, implementing migration scripts, and handling foreign key constraints. This affects multiple database-related files, involves integration with existing Kodi components, and necessitates thorough testing for migrations and compatibility, potentially uncovering edge cases in upgrades or rollbacks. Estimated effort is 4-8 hours due to technical unknowns in Kodi's codebase and the need for research on schema best practices.",
+        "created_at": "2025-11-25T01:50:07.718233+00:00",
+        "updated_at": "2025-11-25T02:01:13.815391+00:00"
+      },
+      {
+        "id": "5",
+        "title": "[PARENT] Implement Vector Storage and Retrieval",
+        "description": "Create CVectorSearcher class to handle storing embeddings in semantic_vectors table and performing cosine similarity queries via sqlite-vec. Success criteria: Embeddings are stored efficiently, top-k similarity searches return correct results under 100ms for 100k chunks.\n\n[This task has been expanded into subtasks: 5.1, 5.2, 5.3, 5.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "high",
+        "dependencies": [
+          "3",
+          "4"
+        ],
+        "complexity_analysis": "The task involves implementing a new class with database interactions using a specific vector extension (sqlite-vec), which may require research into its API and setup. It includes performance optimization for top-k similarity searches on 100k chunks under 100ms, necessitating testing for efficiency and accuracy. Edge cases like handling large datasets, database errors, and query optimization add to the complexity, affecting potentially new and existing files related to vector storage and retrieval.",
+        "created_at": "2025-11-25T01:50:07.718233+00:00",
+        "updated_at": "2025-11-25T02:01:17.574751+00:00"
+      },
+      {
+        "id": "6",
+        "title": "[PARENT] Build Hybrid Search Engine",
+        "description": "Implement CHybridSearchEngine class combining FTS5 keyword search and vector similarity search. Include query processing for embeddings and FTS5 queries. Success criteria: Supports Hybrid, KeywordOnly, and SemanticOnly modes, queries execute in under 200ms.\n\n[This task has been expanded into subtasks: 6.1, 6.2, 6.3, 6.4, 6.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [
+          "2",
+          "5"
+        ],
+        "complexity_analysis": "The task involves integrating FTS5 keyword search with vector similarity search, requiring query processing for embeddings and handling multiple modes (Hybrid, KeywordOnly, SemanticOnly). Technical difficulties include combining search results (e.g., scoring algorithms like reciprocal rank fusion), optimizing for under 200ms performance, and handling unknowns like embedding generation or loading. It affects multiple components: the class implementation, query parsing, potentially database schemas, and integration with ML/vector libraries. Testing needs to cover all modes, performance benchmarks, and edge cases (e.g., empty queries, no matches, large datasets). Research on hybrid search techniques and dependencies on external libraries add to the complexity, making it suitable for 4-8 hours but not trivially simple.",
+        "created_at": "2025-11-25T01:50:07.718235+00:00",
+        "updated_at": "2025-11-25T02:01:22.119282+00:00"
+      },
+      {
+        "id": "7",
+        "title": "[PARENT] Implement Result Ranker with RRF",
+        "description": "Create CResultRanker class using Reciprocal Rank Fusion to combine FTS5 and vector scores. Handle deduplication and sorting by combined score. Success criteria: Ranks results correctly with configurable weights (default FTS 0.4, Vector 0.6), tested with sample queries.\n\n[This task has been expanded into subtasks: 7.1, 7.2, 7.3, 7.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "high",
+        "dependencies": [
+          "6"
+        ],
+        "complexity_analysis": "The task involves implementing a new CResultRanker class with Reciprocal Rank Fusion (RRF), which requires understanding the RRF formula and algorithm. It includes combining scores from FTS5 and vector sources, handling deduplication (likely by unique identifiers), sorting, and configurable weights. Integration with existing FTS5 and vector search systems adds dependencies. Testing with sample queries to verify correct ranking introduces moderate testing requirements. Edge cases like empty results, score ties, and deduplication logic need handling. Minimal research on RRF if unfamiliar, but overall technical difficulty is notable for a single class implementation. Estimated 2-4 hours, affecting 1-2 files with some integration points.",
+        "created_at": "2025-11-25T01:50:07.718236+00:00",
+        "updated_at": "2025-11-25T02:01:25.997300+00:00"
+      },
+      {
+        "id": "8",
+        "title": "[PARENT] Add Result Enrichment Logic",
+        "description": "Implement logic to enrich search results with context (surrounding chunks), timestamps, thumbnails, and snippets with highlighting. Success criteria: Enriched results include readable timestamps (e.g., '1:23:45'), highlighted matched terms, and join with video database for metadata.\n\n[This task has been expanded into subtasks: 8.1, 8.2, 8.3, 8.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "high",
+        "dependencies": [
+          "7"
+        ],
+        "complexity_analysis": "The task involves implementing enrichment logic across multiple components (search results, database joins, snippet generation with highlighting), requiring careful handling of timestamps, highlighting algorithms, and integrations. It includes moderate technical difficulty with potential unknowns in database schemas and edge cases like formatting variations, needing 2-4 hours of work including testing.",
+        "created_at": "2025-11-25T01:50:07.718236+00:00",
+        "updated_at": "2025-11-25T02:01:30.049915+00:00"
+      },
+      {
+        "id": "9",
+        "title": "[PARENT] Create Search GUI Dialog",
+        "description": "Implement CGUIDialogSemanticSearch with input field, filters, recent searches, and results panel. Make it keyboard/remote navigable. Success criteria: Dialog loads with window ID 13500, handles search input, displays results with thumbnails and scores, and integrates playback options.\n\n[This task has been expanded into subtasks: 9.1, 9.2, 9.3, 9.4, 9.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [
+          "8"
+        ],
+        "complexity_analysis": "The task involves creating a new GUI dialog from scratch with multiple components (input field, filters, recent searches, results panel with thumbnails/scores), ensuring keyboard/remote navigation, and integrating with search and playback systems. This requires modifying several files (dialog class, XML layout, possibly backend hooks), handling edge cases like empty results or input validation, and thorough testing for UI behavior and integrations. Technical unknowns include semantic search logic and playback options, potentially needing research into existing Kodi patterns. Estimated at 4-8 hours for a developer familiar with the codebase.",
+        "created_at": "2025-11-25T01:50:07.718236+00:00",
+        "updated_at": "2025-11-25T02:01:35.089942+00:00"
+      },
+      {
+        "id": "10",
+        "title": "[PARENT] Implement Voice Search Support",
+        "description": "Add platform-specific voice input button to the search dialog, triggering device speech-to-text. Handle voice queries similarly to text input. Success criteria: Voice button appears on supported platforms, converts speech to text, and initiates search successfully.\n\n[This task has been expanded into subtasks: 10.1, 10.2, 10.3, 10.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "medium",
+        "dependencies": [
+          "9"
+        ],
+        "complexity_analysis": "The task involves integrating platform-specific speech-to-text APIs, which requires research into API usage and handling permissions, affects the search dialog UI and search logic, and includes testing for various edge cases like poor audio quality, user cancellation, and device compatibility, making it moderately complex (2-4 hours).",
+        "created_at": "2025-11-25T01:50:07.718237+00:00",
+        "updated_at": "2025-11-25T02:01:39.544073+00:00"
+      },
+      {
+        "id": "11",
+        "title": "[PARENT] Add Search Filters (Type, Genre, Year)",
+        "description": "Implement filter controls in the GUI for media type, genre, and year range. Persist filters during session. Success criteria: Filters narrow results correctly, UI updates dynamically, and selections are saved/restored.\n\n[This task has been expanded into subtasks: 11.1, 11.2, 11.3, 11.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "medium",
+        "dependencies": [
+          "9"
+        ],
+        "complexity_analysis": "The task involves implementing GUI filter controls for media type, genre, and year range, requiring dynamic UI updates, correct filtering logic, and session persistence. This affects multiple components (e.g., filter UI, state management, search results logic), with integration points for data fetching and persistence (e.g., local storage). Testing includes unit tests for filter logic, integration for UI dynamism, and edge cases like combined filters, empty results, and invalid inputs. Moderate technical difficulty with potential unknowns in UI frameworks or data structures, estimating 2-4 hours.",
+        "created_at": "2025-11-25T01:50:07.718237+00:00",
+        "updated_at": "2025-11-25T02:01:44.164692+00:00"
+      },
+      {
+        "id": "12",
+        "title": "[PARENT] Implement Search History and Suggestions",
+        "description": "Store last 20 searches locally in semantic_search_history and provide dropdown/quick select. Generate autocomplete suggestions from history and content. Success criteria: Recent searches display in dialog, suggestions appear as user types, no external data sent.\n\n[This task has been expanded into subtasks: 12.1, 12.2, 12.3, 12.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "medium",
+        "dependencies": [
+          "9"
+        ],
+        "complexity_analysis": "The task involves implementing local storage for search history, creating a dropdown UI for recent searches, and adding autocomplete suggestions from both history and content as the user types. This requires modifying search components, handling edge cases like limiting to 20 unique searches, filtering suggestions in real-time, and ensuring no external data is used. Technical difficulty includes potential unknowns in integrating autocomplete logic (possibly needing research on efficient filtering or libraries), affecting multiple files (search component, storage utility), and requiring thorough testing for UI interactions, data persistence, and edge cases like duplicates or empty states. Integration with existing search infrastructure could add dependencies, estimating 2-4 hours total.",
+        "created_at": "2025-11-25T01:50:07.718237+00:00",
+        "updated_at": "2025-11-25T02:01:48.844401+00:00"
+      },
+      {
+        "id": "13",
+        "title": "[PARENT] Extend JSON-RPC API for Semantic Search",
+        "description": "Add methods like Semantic.HybridSearch, Semantic.FindSimilar, Semantic.GetSuggestions, and Semantic.GetEmbeddingStatus to Kodi's API. Success criteria: API endpoints are callable, return correct data structures, and integrate with existing JSON-RPC framework.\n\n[This task has been expanded into subtasks: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6]",
+        "status": "pending",
+        "complexity": 13,
+        "priority": "medium",
+        "dependencies": [
+          "6"
+        ],
+        "complexity_analysis": "Adding multiple API methods (4) to Kodi's JSON-RPC framework involves significant technical unknowns, such as understanding and integrating with existing semantic search infrastructure, modifying multiple core files in C++ codebase, extensive testing for correct data structures and edge cases (e.g., empty results, invalid inputs, large datasets), dependencies on media database and search systems, and research into Kodi's internals. This exceeds a single session and should be split into implementing each method separately.",
+        "created_at": "2025-11-25T01:50:07.718238+00:00",
+        "updated_at": "2025-11-25T02:01:52.836566+00:00"
+      },
+      {
+        "id": "14",
+        "title": "[PARENT] Implement Migration for Embedding Generation",
+        "description": "Create migration logic to generate embeddings for existing chunks from PR #1, processing in batches with progress notifications. Success criteria: Migration runs automatically post-deployment, updates embedding_status fields, and completes without errors for large libraries.\n\n[This task has been expanded into subtasks: 14.1, 14.2, 14.3, 14.4, 14.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [
+          "2",
+          "4",
+          "5"
+        ],
+        "complexity_analysis": "The task involves integrating embedding generation with an external service or model, which may require research on API usage and handling rate limits. It affects database migrations, background job processing, and deployment scripts, necessitating robust batching logic, progress tracking, and error handling for large datasets. Testing requires simulating large-scale data processing and edge cases like network failures or partial completions, along with ensuring automatic execution post-deployment without disrupting existing systems.",
+        "created_at": "2025-11-25T01:50:07.718238+00:00",
+        "updated_at": "2025-11-25T02:01:57.826752+00:00"
+      },
+      {
+        "id": "15",
+        "title": "[PARENT] Write Unit Tests for Components",
+        "description": "Develop unit tests for EmbeddingEngine, HybridSearchEngine, ResultRanker, and GUI dialog. Cover embedding generation, search modes, ranking, and UI interactions. Success criteria: All tests pass, including performance benchmarks (e.g., <200ms search latency).\n\n[This task has been expanded into subtasks: 15.1, 15.2, 15.3, 15.4, 15.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "high",
+        "dependencies": [
+          "2",
+          "6",
+          "7",
+          "9"
+        ],
+        "complexity_analysis": "Involves writing unit tests for four distinct components (EmbeddingEngine, HybridSearchEngine, ResultRanker, GUI dialog) with coverage of specific functionalities, edge cases, and performance benchmarks. GUI testing introduces UI interaction complexities, dependencies require mocking, and integrating performance checks adds technical difficulty and unknowns, making it very complex (4-8h).",
+        "created_at": "2025-11-25T01:50:07.718240+00:00",
+        "updated_at": "2025-11-25T02:02:03.198823+00:00"
+      },
+      {
+        "id": "16",
+        "title": "[PARENT] Optimize Performance and Memory Usage",
+        "description": "Profile and optimize embedding generation, search latency, and memory usage to meet targets (<200MB additional RAM, <200ms p50 latency). Success criteria: Benchmarks meet or exceed targets, model loads in <3s, batch processing efficient.\n\n[This task has been expanded into subtasks: 16.1, 16.2, 16.3, 16.4, 16.5]",
+        "status": "pending",
+        "complexity": 8,
+        "priority": "medium",
+        "dependencies": [
+          "2",
+          "6",
+          "14",
+          "15"
+        ],
+        "complexity_analysis": "This optimization task involves profiling and tuning multiple performance aspects (embedding generation, search latency, memory usage, model loading, batch processing) to meet strict targets, requiring iterative testing, potential research into techniques like quantization or efficient inference, handling edge cases across different loads and hardware, and integration with existing dependencies. It affects multiple components, has unknowns in identifying bottlenecks, and demands thorough benchmarking, making it very complex (4-8h) but not extreme enough to split immediately.",
+        "created_at": "2025-11-25T01:50:07.718242+00:00",
+        "updated_at": "2025-11-25T02:02:07.408668+00:00"
+      },
+      {
+        "id": "17",
+        "title": "[PARENT] Update Documentation and TDD",
+        "description": "Update tdd-2-semantic-vector.md with implementation details, class diagrams, and code samples. Ensure all components are documented. Success criteria: Document is complete, accurate, and includes testing instructions.\n\n[This task has been expanded into subtasks: 17.1, 17.2, 17.3, 17.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "low",
+        "dependencies": [
+          "15"
+        ],
+        "complexity_analysis": "The task involves updating a single documentation file with implementation details, class diagrams, code samples, and testing instructions for all components. This requires moderate technical difficulty in accurately documenting existing implementations, creating diagrams, and ensuring completeness. While only one file is directly affected, it may involve research into multiple components, integration points, and testing scenarios, potentially taking 2-4 hours.",
+        "created_at": "2025-11-25T01:50:07.718243+00:00",
+        "updated_at": "2025-11-25T02:02:18.544231+00:00"
+      },
+      {
+        "id": "18",
+        "title": "[PARENT] Integrate HF tokenizers-cpp Library",
+        "description": "Add Hugging Face tokenizers-cpp as a dependency to Kodi's build system. Create CTokenizer class wrapping the library for text tokenization matching sentence-transformers pattern (like Chroma uses). This replaces custom WordPiece implementation with battle-tested library. Success criteria: tokenizers-cpp builds and links, CTokenizer produces identical token IDs to HuggingFace Python reference for test inputs.\n\n[This task has been expanded into subtasks: 18.1, 18.2, 18.3, 18.4]",
+        "status": "pending",
+        "complexity": 5,
+        "priority": "high",
+        "dependencies": [],
+        "complexity_analysis": "Integrating tokenizers-cpp follows the sentence-transformers pattern used by Chroma and other embedding libraries. Requires CMake configuration, wrapping the Rust-based library via C bindings, and creating CTokenizer class. Testing involves comparing output to HuggingFace Python reference. Simpler than custom WordPiece since tokenizers-cpp handles all edge cases. Estimated 2-4 hours.",
+        "created_at": "2025-11-25T01:50:07.718243+00:00",
+        "updated_at": "2025-11-25T02:02:18.544231+00:00"
+      },
+      {
+        "id": "1.1",
+        "title": "Add ONNX Runtime Dependency to Build System",
+        "description": "Modify Kodi's build configuration files (e.g., CMakeLists.txt) to include ONNX Runtime as an external dependency, specifying the required version and source.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:00:59.179704+00:00",
+        "updated_at": "2025-11-25T02:00:59.179704+00:00"
+      },
+      {
+        "id": "1.2",
+        "title": "Configure Build for CPU Inference Support",
+        "description": "Adjust build flags and options in the configuration to ensure ONNX Runtime is built with CPU inference capabilities enabled.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "1.1"
+        ],
+        "created_at": "2025-11-25T02:00:59.179735+00:00",
+        "updated_at": "2025-11-25T02:00:59.179735+00:00"
+      },
+      {
+        "id": "1.3",
+        "title": "Integrate Library Linking and Headers",
+        "description": "Update Kodi source files to include ONNX Runtime headers and ensure the library links correctly during compilation.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "1.1",
+          "1.2"
+        ],
+        "created_at": "2025-11-25T02:00:59.179742+00:00",
+        "updated_at": "2025-11-25T02:00:59.179742+00:00"
+      },
+      {
+        "id": "1.4",
+        "title": "Implement Basic Model Loading",
+        "description": "Add code to load the ONNX Runtime library and load a basic ONNX model into memory.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "1.3"
+        ],
+        "created_at": "2025-11-25T02:00:59.179747+00:00",
+        "updated_at": "2025-11-25T02:00:59.179747+00:00"
+      },
+      {
+        "id": "1.5",
+        "title": "Add Model Execution Test",
+        "description": "Create and run a basic test that verifies the library loads without errors and can execute a simple model inference.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "1.4"
+        ],
+        "created_at": "2025-11-25T02:00:59.179752+00:00",
+        "updated_at": "2025-11-25T02:00:59.179752+00:00"
+      },
+      {
+        "id": "2.1",
+        "title": "Define CEmbeddingEngine Class Structure",
+        "description": "Create the basic CEmbeddingEngine class with necessary includes for ONNX Runtime, define class members (e.g., for model session), and set up constructor/destructor for initialization.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:04.783774+00:00",
+        "updated_at": "2025-11-25T02:01:04.783774+00:00"
+      },
+      {
+        "id": "2.2",
+        "title": "Implement Model Loading on Startup",
+        "description": "Add code to the constructor to load the all-MiniLM-L6-v2 ONNX model using ONNX Runtime, ensuring the model is ready for inference and handling basic load errors.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "2.1"
+        ],
+        "created_at": "2025-11-25T02:01:04.783805+00:00",
+        "updated_at": "2025-11-25T02:01:04.783805+00:00"
+      },
+      {
+        "id": "2.3",
+        "title": "Implement Single Text Embedding Generation",
+        "description": "Create a method in CEmbeddingEngine to generate 384-dimensional embeddings for a single input text string, using the loaded model for inference.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "2.2"
+        ],
+        "created_at": "2025-11-25T02:01:04.783816+00:00",
+        "updated_at": "2025-11-25T02:01:04.783816+00:00"
+      },
+      {
+        "id": "2.4",
+        "title": "Implement Batch Embedding and Error Handling",
+        "description": "Extend the class with a method for batch text embedding generation (multiple texts at once), and add comprehensive error handling across all methods to manage inference failures, invalid inputs, and runtime exceptions gracefully.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "2.3"
+        ],
+        "created_at": "2025-11-25T02:01:04.783824+00:00",
+        "updated_at": "2025-11-25T02:01:04.783824+00:00"
+      },
+      {
+        "id": "2.5",
+        "title": "Integrate CTokenizer for Input Processing",
+        "description": "Connect CTokenizer (from Task 18) to preprocess text inputs before embedding. Use tokenizers-cpp to convert text to token IDs and attention masks. Apply mean pooling to model output following sentence-transformers pattern.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "2.2",
+          "18"
+        ],
+        "created_at": "2025-11-25T02:02:18.544231+00:00",
+        "updated_at": "2025-11-25T02:02:18.544231+00:00"
+      },
+      {
+        "id": "3.1",
+        "title": "Obtain sqlite-vec source code",
+        "description": "Download or clone the sqlite-vec repository from its official source to ensure we have the latest compatible version for integration.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:08.961745+00:00",
+        "updated_at": "2025-11-25T02:01:08.961745+00:00"
+      },
+      {
+        "id": "3.2",
+        "title": "Integrate sqlite-vec into Kodi's build system",
+        "description": "Modify Kodi's build configuration (e.g., CMake files) to include sqlite-vec as a subproject or dependency, ensuring it can be built alongside Kodi.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "3.1"
+        ],
+        "created_at": "2025-11-25T02:01:08.961760+00:00",
+        "updated_at": "2025-11-25T02:01:08.961760+00:00"
+      },
+      {
+        "id": "3.3",
+        "title": "Compile sqlite-vec extension into Kodi build",
+        "description": "Update build scripts to compile sqlite-vec as a shared library or extension module that links with Kodi's SQLite usage.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "3.2"
+        ],
+        "created_at": "2025-11-25T02:01:08.961764+00:00",
+        "updated_at": "2025-11-25T02:01:08.961764+00:00"
+      },
+      {
+        "id": "3.4",
+        "title": "Load sqlite-vec with Kodi database connections",
+        "description": "Modify Kodi's database initialization code to load the compiled sqlite-vec extension when establishing SQLite connections.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "3.3"
+        ],
+        "created_at": "2025-11-25T02:01:08.961767+00:00",
+        "updated_at": "2025-11-25T02:01:08.961767+00:00"
+      },
+      {
+        "id": "3.5",
+        "title": "Test vector operations and similarity search",
+        "description": "Create and run tests to verify sqlite-vec functionality, including inserting vectors and performing similarity searches within Kodi's database context.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "3.4"
+        ],
+        "created_at": "2025-11-25T02:01:08.961770+00:00",
+        "updated_at": "2025-11-25T02:01:08.961770+00:00"
+      },
+      {
+        "id": "4.1",
+        "title": "Design New Table Schemas",
+        "description": "Define the structure for semantic_vectors, semantic_embedding_models, semantic_search_history, semantic_suggestions tables, including columns, data types, and indexes. Also, specify updates to semantic_index_state table with embedding fields.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:13.814604+00:00",
+        "updated_at": "2025-11-25T02:01:13.814604+00:00"
+      },
+      {
+        "id": "4.2",
+        "title": "Create Migration Scripts",
+        "description": "Write SQL migration scripts to add the new tables and update the existing table, ensuring they can be executed in the correct order.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "4.1"
+        ],
+        "created_at": "2025-11-25T02:01:13.815342+00:00",
+        "updated_at": "2025-11-25T02:01:13.815342+00:00"
+      },
+      {
+        "id": "4.3",
+        "title": "Implement Foreign Key Constraints",
+        "description": "Define and add foreign key relationships between the new tables and existing Kodi database tables, ensuring referential integrity.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "4.2"
+        ],
+        "created_at": "2025-11-25T02:01:13.815367+00:00",
+        "updated_at": "2025-11-25T02:01:13.815367+00:00"
+      },
+      {
+        "id": "4.4",
+        "title": "Execute Schema Migrations",
+        "description": "Run the migration scripts on a test database instance to create the tables and apply updates, verifying they execute without errors.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "4.3"
+        ],
+        "created_at": "2025-11-25T02:01:13.815374+00:00",
+        "updated_at": "2025-11-25T02:01:13.815374+00:00"
+      },
+      {
+        "id": "4.5",
+        "title": "Verify Schema Integrity",
+        "description": "Check that all tables exist with the correct columns, data types, indexes, and foreign keys are properly enforced in the database.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "4.4"
+        ],
+        "created_at": "2025-11-25T02:01:13.815380+00:00",
+        "updated_at": "2025-11-25T02:01:13.815380+00:00"
+      },
+      {
+        "id": "5.1",
+        "title": "Set up Database Schema and sqlite-vec Integration",
+        "description": "Define the semantic_vectors table schema in the database and integrate sqlite-vec extension for vector operations. Ensure the table supports storing embeddings efficiently.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:17.574704+00:00",
+        "updated_at": "2025-11-25T02:01:17.574704+00:00"
+      },
+      {
+        "id": "5.2",
+        "title": "Implement Vector Storage in CVectorSearcher",
+        "description": "Create the CVectorSearcher class and implement the method to store embeddings in the semantic_vectors table, ensuring efficient insertion for large datasets.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "5.1"
+        ],
+        "created_at": "2025-11-25T02:01:17.574721+00:00",
+        "updated_at": "2025-11-25T02:01:17.574721+00:00"
+      },
+      {
+        "id": "5.3",
+        "title": "Implement Cosine Similarity Retrieval",
+        "description": "Add functionality to CVectorSearcher for performing top-k cosine similarity queries using sqlite-vec, focusing on accuracy and speed.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "5.2"
+        ],
+        "created_at": "2025-11-25T02:01:17.574730+00:00",
+        "updated_at": "2025-11-25T02:01:17.574730+00:00"
+      },
+      {
+        "id": "5.4",
+        "title": "Test and Optimize Performance",
+        "description": "Write unit tests for storage and retrieval, and optimize for the success criteria: correct results and under 100ms queries for 100k chunks.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "5.3"
+        ],
+        "created_at": "2025-11-25T02:01:17.574738+00:00",
+        "updated_at": "2025-11-25T02:01:17.574738+00:00"
+      },
+      {
+        "id": "6.1",
+        "title": "Define CHybridSearchEngine Class Structure",
+        "description": "Create the basic structure for the CHybridSearchEngine class, including constructors, member variables for FTS5 and vector search components, and method stubs for different search modes (Hybrid, KeywordOnly, SemanticOnly). Ensure it adheres to the required interface for query processing.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:22.119254+00:00",
+        "updated_at": "2025-11-25T02:01:22.119254+00:00"
+      },
+      {
+        "id": "6.2",
+        "title": "Implement FTS5 Keyword Search",
+        "description": "Integrate FTS5 full-text search functionality into the class, allowing for keyword-based queries. Implement methods to perform keyword searches and handle FTS5 query processing.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "6.1"
+        ],
+        "created_at": "2025-11-25T02:01:22.119265+00:00",
+        "updated_at": "2025-11-25T02:01:22.119265+00:00"
+      },
+      {
+        "id": "6.3",
+        "title": "Implement Vector Similarity Search",
+        "description": "Integrate vector similarity search using embeddings. Implement methods for generating and comparing embeddings, performing semantic searches, and processing vector-based queries.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "6.1"
+        ],
+        "created_at": "2025-11-25T02:01:22.119270+00:00",
+        "updated_at": "2025-11-25T02:01:22.119270+00:00"
+      },
+      {
+        "id": "6.4",
+        "title": "Combine Searches into Hybrid Modes",
+        "description": "Develop logic to combine FTS5 keyword and vector similarity searches into Hybrid mode, and ensure KeywordOnly and SemanticOnly modes work independently. Handle query routing based on selected mode.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "6.2",
+          "6.3"
+        ],
+        "created_at": "2025-11-25T02:01:22.119273+00:00",
+        "updated_at": "2025-11-25T02:01:22.119273+00:00"
+      },
+      {
+        "id": "6.5",
+        "title": "Add Query Processing and Performance Testing",
+        "description": "Implement overall query processing pipeline, including input validation and result merging. Add unit tests for each mode and performance tests to ensure queries execute in under 200ms.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "6.4"
+        ],
+        "created_at": "2025-11-25T02:01:22.119276+00:00",
+        "updated_at": "2025-11-25T02:01:22.119276+00:00"
+      },
+      {
+        "id": "7.1",
+        "title": "Define CResultRanker Class Structure",
+        "description": "Create the CResultRanker class with constructor accepting configurable weights for FTS and vector (defaults 0.4 and 0.6), and define the public method signature for ranking results, including input parameters for FTS5 scores, vector scores, and result list.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:25.997257+00:00",
+        "updated_at": "2025-11-25T02:01:25.997257+00:00"
+      },
+      {
+        "id": "7.2",
+        "title": "Implement Reciprocal Rank Fusion Logic",
+        "description": "Implement the core RRF algorithm within CResultRanker to combine FTS5 and vector scores into a unified rank, applying the configured weights to compute the combined score for each result.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "7.1"
+        ],
+        "created_at": "2025-11-25T02:01:25.997279+00:00",
+        "updated_at": "2025-11-25T02:01:25.997279+00:00"
+      },
+      {
+        "id": "7.3",
+        "title": "Add Deduplication and Sorting",
+        "description": "Extend CResultRanker to handle deduplication of results based on unique identifiers and sort the results by the combined RRF score in descending order.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "7.2"
+        ],
+        "created_at": "2025-11-25T02:01:25.997285+00:00",
+        "updated_at": "2025-11-25T02:01:25.997285+00:00"
+      },
+      {
+        "id": "7.4",
+        "title": "Create Unit Tests with Sample Queries",
+        "description": "Write unit tests for CResultRanker using sample queries to verify correct ranking, deduplication, and sorting with various weight configurations, ensuring the success criteria are met.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "7.3"
+        ],
+        "created_at": "2025-11-25T02:01:25.997289+00:00",
+        "updated_at": "2025-11-25T02:01:25.997289+00:00"
+      },
+      {
+        "id": "8.1",
+        "title": "Define Enriched Result Schema",
+        "description": "Create a data model or schema for enriched search results that includes fields for context chunks, readable timestamps, thumbnails, highlighted snippets, and video metadata.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:30.049886+00:00",
+        "updated_at": "2025-11-25T02:01:30.049886+00:00"
+      },
+      {
+        "id": "8.2",
+        "title": "Implement Core Enrichment Logic",
+        "description": "Develop functions to format timestamps into readable strings (e.g., '1:23:45'), generate snippets with highlighted matched terms, and add surrounding context chunks to results.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "8.1"
+        ],
+        "created_at": "2025-11-25T02:01:30.049897+00:00",
+        "updated_at": "2025-11-25T02:01:30.049897+00:00"
+      },
+      {
+        "id": "8.3",
+        "title": "Integrate Video Database Join",
+        "description": "Implement logic to join search results with the video database to fetch and include metadata such as thumbnails and other relevant details.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "8.1",
+          "8.2"
+        ],
+        "created_at": "2025-11-25T02:01:30.049901+00:00",
+        "updated_at": "2025-11-25T02:01:30.049901+00:00"
+      },
+      {
+        "id": "8.4",
+        "title": "Add Unit Tests and Validation",
+        "description": "Write unit tests to validate the enrichment logic, including timestamp formatting, highlighting, context addition, and database integration. Ensure success criteria are met.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "8.2",
+          "8.3"
+        ],
+        "created_at": "2025-11-25T02:01:30.049907+00:00",
+        "updated_at": "2025-11-25T02:01:30.049907+00:00"
+      },
+      {
+        "id": "9.1",
+        "title": "Initialize CGUIDialogSemanticSearch Class",
+        "description": "Create the basic CGUIDialogSemanticSearch class inheriting from CGUIDialog, set window ID to 13500, and define initial structure with placeholders for UI elements and logic.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:35.089902+00:00",
+        "updated_at": "2025-11-25T02:01:35.089902+00:00"
+      },
+      {
+        "id": "9.2",
+        "title": "Implement UI Layout and Elements",
+        "description": "Design and implement the XML skin layout for the dialog, including input field, filters dropdown, recent searches list, and results panel with placeholders for thumbnails.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "9.1"
+        ],
+        "created_at": "2025-11-25T02:01:35.089919+00:00",
+        "updated_at": "2025-11-25T02:01:35.089919+00:00"
+      },
+      {
+        "id": "9.3",
+        "title": "Develop Search Input Handling and Logic",
+        "description": "Implement the core logic to handle user search input, apply filters, manage recent searches list, and query the semantic search backend for results.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "9.1",
+          "9.2"
+        ],
+        "created_at": "2025-11-25T02:01:35.089924+00:00",
+        "updated_at": "2025-11-25T02:01:35.089924+00:00"
+      },
+      {
+        "id": "9.4",
+        "title": "Integrate Results Display and Playback",
+        "description": "Add functionality to display search results in the panel with thumbnails, scores, and integrate playback options (e.g., play buttons) for selected items.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "9.3"
+        ],
+        "created_at": "2025-11-25T02:01:35.089928+00:00",
+        "updated_at": "2025-11-25T02:01:35.089928+00:00"
+      },
+      {
+        "id": "9.5",
+        "title": "Add Navigation and Final Testing",
+        "description": "Implement keyboard and remote navigation controls for the dialog, ensure all elements are accessible, and perform integration testing to meet success criteria.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "9.2",
+          "9.4"
+        ],
+        "created_at": "2025-11-25T02:01:35.089932+00:00",
+        "updated_at": "2025-11-25T02:01:35.089932+00:00"
+      },
+      {
+        "id": "10.1",
+        "title": "Integrate Speech-to-Text API",
+        "description": "Research and integrate platform-specific speech-to-text API (e.g., Android SpeechRecognizer or iOS Speech framework) into the app to convert voice input to text. Ensure it handles permissions and errors gracefully.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:39.544014+00:00",
+        "updated_at": "2025-11-25T02:01:39.544014+00:00"
+      },
+      {
+        "id": "10.2",
+        "title": "Add Voice Input Button to Search Dialog",
+        "description": "Design and implement a platform-specific voice input button in the search dialog UI. The button should only appear on supported devices and be visually consistent with the app's design.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "10.1"
+        ],
+        "created_at": "2025-11-25T02:01:39.544042+00:00",
+        "updated_at": "2025-11-25T02:01:39.544042+00:00"
+      },
+      {
+        "id": "10.3",
+        "title": "Implement Voice Query Handling",
+        "description": "Connect the voice button to trigger speech-to-text, convert the result to text, and pass it to the search handler for processing, treating it identically to text input queries.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "10.1",
+          "10.2"
+        ],
+        "created_at": "2025-11-25T02:01:39.544051+00:00",
+        "updated_at": "2025-11-25T02:01:39.544051+00:00"
+      },
+      {
+        "id": "10.4",
+        "title": "Test Voice Search Functionality",
+        "description": "Test the voice search feature on supported platforms, including button visibility, speech recognition accuracy, search initiation, and error handling. Document the implementation for future reference.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "10.1",
+          "10.2",
+          "10.3"
+        ],
+        "created_at": "2025-11-25T02:01:39.544059+00:00",
+        "updated_at": "2025-11-25T02:01:39.544059+00:00"
+      },
+      {
+        "id": "11.1",
+        "title": "Define Filter Data Models",
+        "description": "Create data structures and schemas for media type, genre, and year range filters, including options for types (e.g., movie, TV), genres (e.g., action, drama), and year ranges. Ensure models support persistence.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:44.164498+00:00",
+        "updated_at": "2025-11-25T02:01:44.164498+00:00"
+      },
+      {
+        "id": "11.2",
+        "title": "Implement Filtering Logic",
+        "description": "Develop core logic to apply filters to media search results, narrowing down based on selected type, genre, and year range. Ensure logic is independently testable and returns filtered results accurately.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "11.1"
+        ],
+        "created_at": "2025-11-25T02:01:44.164508+00:00",
+        "updated_at": "2025-11-25T02:01:44.164508+00:00"
+      },
+      {
+        "id": "11.3",
+        "title": "Add GUI Filter Controls",
+        "description": "Implement UI components in the GUI for selecting media type, genre, and year range filters. Ensure the UI updates search results dynamically upon filter changes.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "11.2"
+        ],
+        "created_at": "2025-11-25T02:01:44.164580+00:00",
+        "updated_at": "2025-11-25T02:01:44.164580+00:00"
+      },
+      {
+        "id": "11.4",
+        "title": "Implement Filter Persistence",
+        "description": "Add functionality to save and restore filter selections during the user session, ensuring selections persist across interactions and meet success criteria for saving/restoring.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "11.3"
+        ],
+        "created_at": "2025-11-25T02:01:44.164679+00:00",
+        "updated_at": "2025-11-25T02:01:44.164679+00:00"
+      },
+      {
+        "id": "12.1",
+        "title": "Set up local storage for search history",
+        "description": "Configure local storage (e.g., using localStorage or IndexedDB) to store the last 20 searches in a key named 'semantic_search_history'. Ensure the storage can handle an array of strings and persist across sessions.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:48.844361+00:00",
+        "updated_at": "2025-11-25T02:01:48.844361+00:00"
+      },
+      {
+        "id": "12.2",
+        "title": "Implement search history management logic",
+        "description": "Create functions to add new searches to the history (ensuring only the last 20 are kept, removing duplicates if necessary) and retrieve the list of recent searches. This includes handling edge cases like empty history or exceeding the limit.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "12.1"
+        ],
+        "created_at": "2025-11-25T02:01:48.844378+00:00",
+        "updated_at": "2025-11-25T02:01:48.844378+00:00"
+      },
+      {
+        "id": "12.3",
+        "title": "Implement autocomplete suggestion generation",
+        "description": "Develop logic to generate suggestions based on partial user input, drawing from the search history and available content (e.g., matching prefixes or semantic similarities). Ensure suggestions are limited and ranked appropriately.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "12.2"
+        ],
+        "created_at": "2025-11-25T02:01:48.844384+00:00",
+        "updated_at": "2025-11-25T02:01:48.844384+00:00"
+      },
+      {
+        "id": "12.4",
+        "title": "Integrate UI for search history dropdown and autocomplete",
+        "description": "Add UI components for a dropdown dialog to display recent searches on focus/click and an autocomplete input that shows suggestions as the user types. Ensure no external data is sent and the UI updates dynamically based on history and suggestions.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "12.1",
+          "12.2",
+          "12.3"
+        ],
+        "created_at": "2025-11-25T02:01:48.844388+00:00",
+        "updated_at": "2025-11-25T02:01:48.844388+00:00"
+      },
+      {
+        "id": "13.1",
+        "title": "Define API schemas and data structures",
+        "description": "Create JSON schemas and data structure definitions for the new Semantic API methods (HybridSearch, FindSimilar, GetSuggestions, GetEmbeddingStatus), ensuring they align with Kodi's JSON-RPC standards.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:52.836440+00:00",
+        "updated_at": "2025-11-25T02:01:52.836440+00:00"
+      },
+      {
+        "id": "13.2",
+        "title": "Implement core semantic search logic",
+        "description": "Develop the underlying logic for semantic search operations, including hybrid search, similarity finding, and suggestion generation, independent of the API layer.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "13.1"
+        ],
+        "created_at": "2025-11-25T02:01:52.836506+00:00",
+        "updated_at": "2025-11-25T02:01:52.836506+00:00"
+      },
+      {
+        "id": "13.3",
+        "title": "Integrate semantic search with Kodi data sources",
+        "description": "Connect the core search logic to Kodi's media libraries and embedding systems to ensure data retrieval and processing work correctly.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "13.2"
+        ],
+        "created_at": "2025-11-25T02:01:52.836521+00:00",
+        "updated_at": "2025-11-25T02:01:52.836521+00:00"
+      },
+      {
+        "id": "13.4",
+        "title": "Add JSON-RPC method handlers",
+        "description": "Implement the JSON-RPC method handlers for Semantic.HybridSearch, Semantic.FindSimilar, Semantic.GetSuggestions, and Semantic.GetEmbeddingStatus, ensuring they return correct data structures.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "13.3"
+        ],
+        "created_at": "2025-11-25T02:01:52.836530+00:00",
+        "updated_at": "2025-11-25T02:01:52.836530+00:00"
+      },
+      {
+        "id": "13.5",
+        "title": "Test API endpoints and integration",
+        "description": "Write and run tests to verify that the new API endpoints are callable, return expected data, and integrate seamlessly with the existing JSON-RPC framework.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "13.4"
+        ],
+        "created_at": "2025-11-25T02:01:52.836539+00:00",
+        "updated_at": "2025-11-25T02:01:52.836539+00:00"
+      },
+      {
+        "id": "13.6",
+        "title": "Update API documentation",
+        "description": "Document the new Semantic API methods in Kodi's official documentation, including usage examples and parameter details.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "low",
+        "dependencies": [
+          "13.4"
+        ],
+        "created_at": "2025-11-25T02:01:52.836547+00:00",
+        "updated_at": "2025-11-25T02:01:52.836547+00:00"
+      },
+      {
+        "id": "14.1",
+        "title": "Update Database Schema for Embedding Status",
+        "description": "Ensure the database schema includes the embedding_status field for chunks, based on changes from PR #1. This includes any necessary migrations to add or modify the field.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:01:57.826693+00:00",
+        "updated_at": "2025-11-25T02:01:57.826693+00:00"
+      },
+      {
+        "id": "14.2",
+        "title": "Implement Batch Embedding Generation Logic",
+        "description": "Create the core logic for processing existing chunks in batches to generate embeddings, updating the embedding_status field upon completion for each batch.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "14.1"
+        ],
+        "created_at": "2025-11-25T02:01:57.826711+00:00",
+        "updated_at": "2025-11-25T02:01:57.826711+00:00"
+      },
+      {
+        "id": "14.3",
+        "title": "Add Progress Notifications",
+        "description": "Integrate progress notifications (e.g., logging or email alerts) to report batch processing status, including start, progress, and completion.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "14.2"
+        ],
+        "created_at": "2025-11-25T02:01:57.826720+00:00",
+        "updated_at": "2025-11-25T02:01:57.826720+00:00"
+      },
+      {
+        "id": "14.4",
+        "title": "Configure Automatic Post-Deployment Execution",
+        "description": "Set up the migration to run automatically after deployment, such as via a deployment script or hook, ensuring it handles large libraries without errors.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "14.2",
+          "14.3"
+        ],
+        "created_at": "2025-11-25T02:01:57.826728+00:00",
+        "updated_at": "2025-11-25T02:01:57.826728+00:00"
+      },
+      {
+        "id": "14.5",
+        "title": "Add Tests and Documentation",
+        "description": "Write unit and integration tests for the migration logic, and document the process, including how to monitor and troubleshoot the migration.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "14.1",
+          "14.2",
+          "14.3",
+          "14.4"
+        ],
+        "created_at": "2025-11-25T02:01:57.826736+00:00",
+        "updated_at": "2025-11-25T02:01:57.826736+00:00"
+      },
+      {
+        "id": "15.1",
+        "title": "Set up test environment and fixtures",
+        "description": "Prepare the testing framework, mock dependencies, and create shared test fixtures for EmbeddingEngine, HybridSearchEngine, ResultRanker, and GUI dialog components.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:02:03.198764+00:00",
+        "updated_at": "2025-11-25T02:02:03.198764+00:00"
+      },
+      {
+        "id": "15.2",
+        "title": "Write unit tests for EmbeddingEngine",
+        "description": "Develop unit tests specifically for the EmbeddingEngine component, focusing on embedding generation functionality, including edge cases and error handling.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "15.1"
+        ],
+        "created_at": "2025-11-25T02:02:03.198789+00:00",
+        "updated_at": "2025-11-25T02:02:03.198789+00:00"
+      },
+      {
+        "id": "15.3",
+        "title": "Write unit tests for HybridSearchEngine",
+        "description": "Develop unit tests for the HybridSearchEngine component, covering various search modes and integration with embeddings.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "15.1",
+          "15.2"
+        ],
+        "created_at": "2025-11-25T02:02:03.198796+00:00",
+        "updated_at": "2025-11-25T02:02:03.198796+00:00"
+      },
+      {
+        "id": "15.4",
+        "title": "Write unit tests for ResultRanker",
+        "description": "Develop unit tests for the ResultRanker component, ensuring ranking logic is tested across different scenarios.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "15.1",
+          "15.3"
+        ],
+        "created_at": "2025-11-25T02:02:03.198802+00:00",
+        "updated_at": "2025-11-25T02:02:03.198802+00:00"
+      },
+      {
+        "id": "15.5",
+        "title": "Write unit tests for GUI dialog and performance benchmarks",
+        "description": "Develop unit tests for the GUI dialog component covering UI interactions, and integrate performance benchmarks to ensure <200ms search latency across all components.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "15.1",
+          "15.2",
+          "15.3",
+          "15.4"
+        ],
+        "created_at": "2025-11-25T02:02:03.198807+00:00",
+        "updated_at": "2025-11-25T02:02:03.198807+00:00"
+      },
+      {
+        "id": "16.1",
+        "title": "Set Up Profiling and Establish Baselines",
+        "description": "Install and configure profiling tools (e.g., memory profilers, latency timers) to measure current performance metrics including RAM usage, latency, and load times. Run initial benchmarks to establish baseline data for embedding generation, search operations, and model loading.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:02:07.408604+00:00",
+        "updated_at": "2025-11-25T02:02:07.408604+00:00"
+      },
+      {
+        "id": "16.2",
+        "title": "Optimize Embedding Generation",
+        "description": "Identify and implement optimizations for embedding generation, such as efficient vectorization, caching, or algorithm tweaks, to reduce computation time and ensure it fits within latency targets.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "16.1"
+        ],
+        "created_at": "2025-11-25T02:02:07.408637+00:00",
+        "updated_at": "2025-11-25T02:02:07.408637+00:00"
+      },
+      {
+        "id": "16.3",
+        "title": "Optimize Search Latency",
+        "description": "Profile and refine search algorithms, indexing, and query processing to achieve <200ms p50 latency, including optimizations for batch processing efficiency.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "16.1",
+          "16.2"
+        ],
+        "created_at": "2025-11-25T02:02:07.408644+00:00",
+        "updated_at": "2025-11-25T02:02:07.408644+00:00"
+      },
+      {
+        "id": "16.4",
+        "title": "Optimize Memory Usage and Model Loading",
+        "description": "Reduce memory footprint through techniques like model quantization, lazy loading, or memory pooling to stay under 200MB additional RAM and ensure model loads in <3s.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "16.1"
+        ],
+        "created_at": "2025-11-25T02:02:07.408650+00:00",
+        "updated_at": "2025-11-25T02:02:07.408650+00:00"
+      },
+      {
+        "id": "16.5",
+        "title": "Conduct Final Benchmarks and Validation",
+        "description": "Run comprehensive benchmarks against all targets (<200MB RAM, <200ms latency, <3s load time, efficient batch processing) and validate optimizations. Document results and iterate if needed.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "16.2",
+          "16.3",
+          "16.4"
+        ],
+        "created_at": "2025-11-25T02:02:07.408655+00:00",
+        "updated_at": "2025-11-25T02:02:07.408655+00:00"
+      },
+      {
+        "id": "17.1",
+        "title": "Outline Document Structure",
+        "description": "Review the existing tdd-2-semantic-vector.md file and outline the required sections for implementation details, class diagrams, code samples, and testing instructions to ensure a logical structure.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:02:18.544178+00:00",
+        "updated_at": "2025-11-25T02:02:18.544178+00:00"
+      },
+      {
+        "id": "17.2",
+        "title": "Add Implementation Details",
+        "description": "Update the document with detailed descriptions of the implementation, including algorithms, processes, and any relevant technical specifications for all components.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "17.1"
+        ],
+        "created_at": "2025-11-25T02:02:18.544204+00:00",
+        "updated_at": "2025-11-25T02:02:18.544204+00:00"
+      },
+      {
+        "id": "17.3",
+        "title": "Incorporate Class Diagrams",
+        "description": "Generate and integrate class diagrams into the document to visually represent the architecture and relationships between classes and components.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "17.2"
+        ],
+        "created_at": "2025-11-25T02:02:18.544213+00:00",
+        "updated_at": "2025-11-25T02:02:18.544213+00:00"
+      },
+      {
+        "id": "17.4",
+        "title": "Add Code Samples and Testing Instructions",
+        "description": "Include code samples demonstrating the implementation and provide clear, step-by-step testing instructions to verify functionality, ensuring the document is complete and accurate.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "17.3"
+        ],
+        "created_at": "2025-11-25T02:02:18.544219+00:00",
+        "updated_at": "2025-11-25T02:02:18.544219+00:00"
+      },
+      {
+        "id": "18.1",
+        "title": "Add tokenizers-cpp Dependency to Build System",
+        "description": "Add Hugging Face tokenizers-cpp library to Kodi's CMake build configuration. Configure for static linking and ensure compatibility with Kodi's existing build infrastructure.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [],
+        "created_at": "2025-11-25T02:02:18.544231+00:00",
+        "updated_at": "2025-11-25T02:02:18.544231+00:00"
+      },
+      {
+        "id": "18.2",
+        "title": "Create CTokenizer Class Structure",
+        "description": "Define CTokenizer class with constructor that loads the all-MiniLM-L6-v2 tokenizer.json file. Include methods for Encode() returning token IDs and attention masks.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "18.1"
+        ],
+        "created_at": "2025-11-25T02:02:18.544231+00:00",
+        "updated_at": "2025-11-25T02:02:18.544231+00:00"
+      },
+      {
+        "id": "18.3",
+        "title": "Implement Batch Tokenization",
+        "description": "Add EncodeBatch() method for processing multiple texts efficiently. Handle padding and truncation to max sequence length (512 tokens). Return batched token IDs and attention masks.",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "medium",
+        "dependencies": [
+          "18.2"
+        ],
+        "created_at": "2025-11-25T02:02:18.544231+00:00",
+        "updated_at": "2025-11-25T02:02:18.544231+00:00"
+      },
+      {
+        "id": "18.4",
+        "title": "Verify Tokenization Against HuggingFace Reference",
+        "description": "Write unit tests comparing CTokenizer output to HuggingFace Python tokenizer for various test strings. Ensure identical token IDs for edge cases (unicode, punctuation, long texts).",
+        "status": "pending",
+        "complexity": 0,
+        "priority": "high",
+        "dependencies": [
+          "18.3"
+        ],
+        "created_at": "2025-11-25T02:02:18.544231+00:00",
+        "updated_at": "2025-11-25T02:02:18.544231+00:00"
+      }
+    ]
+  }
+}
