@@ -1,0 +1,441 @@
+{
+  "name": "Kodi Semantic Search - Parallel Execution Plan",
+  "description": "Optimized parallel execution of Phase 1 (PRD-1: FTS5 Foundation) and Phase 2 (PRD-2: Vector Search) with maximum concurrency while respecting dependencies",
+  "created_at": "2025-11-25T03:00:00.000Z",
+  "cross_phase_dependencies": {
+    "P2-4": "Extends semantic_index_state from P1-1 with embedding fields",
+    "P2-6": "Uses FTS5 search from P1-8 for hybrid keyword+vector search",
+    "P2-14": "Migrates chunks created by P1-9 to add embeddings"
+  },
+  "waves": [
+    {
+      "wave": 0,
+      "name": "Foundation - No Dependencies",
+      "description": "All tasks with no dependencies can start immediately in parallel",
+      "parallel_tasks": [
+        {
+          "id": "P1-1",
+          "phase": 1,
+          "task_id": "1",
+          "title": "Create SemanticIndex database schema and tables",
+          "description": "SQLite schema: semantic_chunks, semantic_fts (FTS5), semantic_index_state, semantic_job_queue, semantic_providers",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": []
+        },
+        {
+          "id": "P1-3",
+          "phase": 1,
+          "task_id": "3",
+          "title": "Create IContentParser interface and base implementations",
+          "description": "Define parser interface for subtitle/transcription/metadata parsing",
+          "priority": "high",
+          "estimated_hours": 3,
+          "dependencies": []
+        },
+        {
+          "id": "P1-6",
+          "phase": 1,
+          "task_id": "6",
+          "title": "Implement GroqProvider for cloud transcription",
+          "description": "Groq Whisper API integration with FFmpeg audio extraction",
+          "priority": "high",
+          "estimated_hours": 6,
+          "dependencies": []
+        },
+        {
+          "id": "P1-12",
+          "phase": 1,
+          "task_id": "12",
+          "title": "Add settings integration and configuration UI",
+          "description": "Settings XML for API keys, processing modes, preferences",
+          "priority": "medium",
+          "estimated_hours": 3,
+          "dependencies": []
+        },
+        {
+          "id": "P2-1",
+          "phase": 2,
+          "task_id": "1",
+          "title": "Integrate ONNX Runtime Library",
+          "description": "Add ONNX Runtime to Kodi's build system for CPU inference",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": []
+        },
+        {
+          "id": "P2-3",
+          "phase": 2,
+          "task_id": "3",
+          "title": "Bundle sqlite-vec Extension",
+          "description": "Integrate sqlite-vec for vector similarity search",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": []
+        },
+        {
+          "id": "P2-18",
+          "phase": 2,
+          "task_id": "18",
+          "title": "Integrate HF tokenizers-cpp Library",
+          "description": "Add tokenizers-cpp for sentence-transformers style tokenization (replaces custom WordPiece)",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": []
+        }
+      ],
+      "max_parallel_agents": 7
+    },
+    {
+      "wave": 1,
+      "name": "Core Components",
+      "description": "Build on foundation with database operations, parsers, and embedding engine",
+      "parallel_tasks": [
+        {
+          "id": "P1-2",
+          "phase": 1,
+          "task_id": "2",
+          "title": "Implement CSemanticDatabase class",
+          "description": "CRUD operations, FTS5 queries, migrations, connection management",
+          "priority": "high",
+          "estimated_hours": 8,
+          "dependencies": ["P1-1"]
+        },
+        {
+          "id": "P1-4",
+          "phase": 1,
+          "task_id": "4",
+          "title": "Implement SubtitleParser for SRT, ASS, VTT formats",
+          "description": "Parse subtitle formats, strip HTML, filter sound effects",
+          "priority": "high",
+          "estimated_hours": 6,
+          "dependencies": ["P1-3"]
+        },
+        {
+          "id": "P1-5",
+          "phase": 1,
+          "task_id": "5",
+          "title": "Implement MetadataParser for NFO and plot data",
+          "description": "Extract searchable text from NFO files and metadata",
+          "priority": "medium",
+          "estimated_hours": 4,
+          "dependencies": ["P1-3"]
+        },
+        {
+          "id": "P1-7",
+          "phase": 1,
+          "task_id": "7",
+          "title": "Create TranscriptionProviderManager",
+          "description": "Provider selection, API key storage, usage stats",
+          "priority": "medium",
+          "estimated_hours": 4,
+          "dependencies": ["P1-6"]
+        },
+        {
+          "id": "P2-2",
+          "phase": 2,
+          "task_id": "2",
+          "title": "Implement Embedding Engine Class",
+          "description": "CEmbeddingEngine with ONNX Runtime, tokenizers-cpp, mean pooling",
+          "priority": "high",
+          "estimated_hours": 6,
+          "dependencies": ["P2-1", "P2-18"]
+        },
+        {
+          "id": "P2-4",
+          "phase": 2,
+          "task_id": "4",
+          "title": "Extend Database Schema for Vectors",
+          "description": "Add semantic_vectors table, extend semantic_index_state with embedding fields",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": ["P2-3", "P1-1"],
+          "cross_phase_note": "Extends semantic_index_state from P1-1"
+        }
+      ],
+      "max_parallel_agents": 6
+    },
+    {
+      "wave": 2,
+      "name": "Search Infrastructure",
+      "description": "Build search capabilities on database layer",
+      "parallel_tasks": [
+        {
+          "id": "P1-8",
+          "phase": 1,
+          "task_id": "8",
+          "title": "Implement CSemanticSearch class for FTS5 query execution",
+          "description": "Query building, snippet generation, result ranking",
+          "priority": "high",
+          "estimated_hours": 5,
+          "dependencies": ["P1-2"]
+        },
+        {
+          "id": "P2-5",
+          "phase": 2,
+          "task_id": "5",
+          "title": "Implement Vector Storage and Retrieval",
+          "description": "CVectorSearcher for sqlite-vec cosine similarity queries",
+          "priority": "high",
+          "estimated_hours": 5,
+          "dependencies": ["P2-3", "P2-4"]
+        }
+      ],
+      "max_parallel_agents": 2
+    },
+    {
+      "wave": 3,
+      "name": "Orchestration Layer",
+      "description": "Background services, hybrid search, and API endpoints",
+      "parallel_tasks": [
+        {
+          "id": "P1-9",
+          "phase": 1,
+          "task_id": "9",
+          "title": "Build CSemanticIndexService for background processing",
+          "description": "Background thread, job queue, parser/provider coordination",
+          "priority": "high",
+          "estimated_hours": 8,
+          "dependencies": ["P1-2", "P1-4", "P1-5", "P1-6", "P1-7"]
+        },
+        {
+          "id": "P1-11",
+          "phase": 1,
+          "task_id": "11",
+          "title": "Implement JSON-RPC API endpoints",
+          "description": "SemanticOperations.cpp with Search, GetIndexState, QueueTranscription",
+          "priority": "high",
+          "estimated_hours": 5,
+          "dependencies": ["P1-2", "P1-8"]
+        },
+        {
+          "id": "P2-6",
+          "phase": 2,
+          "task_id": "6",
+          "title": "Build Hybrid Search Engine",
+          "description": "CHybridSearchEngine combining FTS5 + vector search",
+          "priority": "high",
+          "estimated_hours": 6,
+          "dependencies": ["P2-2", "P2-5", "P1-8"],
+          "cross_phase_note": "Uses FTS5 from P1-8 for hybrid keyword search"
+        }
+      ],
+      "max_parallel_agents": 3
+    },
+    {
+      "wave": 4,
+      "name": "Integration & Ranking",
+      "description": "Core integration, result ranking, and migration",
+      "parallel_tasks": [
+        {
+          "id": "P1-10",
+          "phase": 1,
+          "task_id": "10",
+          "title": "Integrate SemanticServices into Kodi core",
+          "description": "Service broker registration, CMake config, startup init",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": ["P1-9"]
+        },
+        {
+          "id": "P1-13",
+          "phase": 1,
+          "task_id": "13",
+          "title": "Create minimal GUI info labels for index status",
+          "description": "SemanticGUIInfo.cpp with skin variables for status indicators",
+          "priority": "low",
+          "estimated_hours": 3,
+          "dependencies": ["P1-9"]
+        },
+        {
+          "id": "P2-7",
+          "phase": 2,
+          "task_id": "7",
+          "title": "Implement Result Ranker with RRF",
+          "description": "CResultRanker with Reciprocal Rank Fusion algorithm",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": ["P2-6"]
+        },
+        {
+          "id": "P2-13",
+          "phase": 2,
+          "task_id": "13",
+          "title": "Extend JSON-RPC API for Semantic Search",
+          "description": "Semantic.HybridSearch, FindSimilar, GetSuggestions endpoints",
+          "priority": "medium",
+          "estimated_hours": 5,
+          "dependencies": ["P2-6"]
+        },
+        {
+          "id": "P2-14",
+          "phase": 2,
+          "task_id": "14",
+          "title": "Implement Migration for Embedding Generation",
+          "description": "Batch process existing chunks from P1 to add embeddings",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": ["P2-2", "P2-4", "P2-5"],
+          "cross_phase_note": "Processes chunks created by Phase 1 indexing"
+        }
+      ],
+      "max_parallel_agents": 5
+    },
+    {
+      "wave": 5,
+      "name": "Result Enrichment & Testing",
+      "description": "Enrich results with context and begin testing",
+      "parallel_tasks": [
+        {
+          "id": "P2-8",
+          "phase": 2,
+          "task_id": "8",
+          "title": "Add Result Enrichment Logic",
+          "description": "Context retrieval, timestamp formatting, snippet highlighting",
+          "priority": "high",
+          "estimated_hours": 4,
+          "dependencies": ["P2-7"]
+        },
+        {
+          "id": "P2-15",
+          "phase": 2,
+          "task_id": "15",
+          "title": "Write Unit Tests for Phase 2 Components",
+          "description": "Tests for EmbeddingEngine, HybridSearch, ResultRanker",
+          "priority": "high",
+          "estimated_hours": 6,
+          "dependencies": ["P2-2", "P2-6", "P2-7"]
+        }
+      ],
+      "max_parallel_agents": 2
+    },
+    {
+      "wave": 6,
+      "name": "GUI & Phase 1 Testing",
+      "description": "Search dialog and comprehensive Phase 1 tests",
+      "parallel_tasks": [
+        {
+          "id": "P1-14",
+          "phase": 1,
+          "task_id": "14",
+          "title": "Write unit and integration tests",
+          "description": "Comprehensive tests for parsers, database, search, API",
+          "priority": "high",
+          "estimated_hours": 10,
+          "dependencies": ["P1-1", "P1-2", "P1-3", "P1-4", "P1-5", "P1-6", "P1-8", "P1-9", "P1-11"]
+        },
+        {
+          "id": "P2-9",
+          "phase": 2,
+          "task_id": "9",
+          "title": "Create Search GUI Dialog",
+          "description": "CGUIDialogSemanticSearch with input, filters, results panel",
+          "priority": "high",
+          "estimated_hours": 8,
+          "dependencies": ["P2-8"]
+        }
+      ],
+      "max_parallel_agents": 2
+    },
+    {
+      "wave": 7,
+      "name": "GUI Features & Optimization",
+      "description": "Additional GUI features and performance tuning",
+      "parallel_tasks": [
+        {
+          "id": "P2-10",
+          "phase": 2,
+          "task_id": "10",
+          "title": "Implement Voice Search Support",
+          "description": "Platform-specific voice input integration",
+          "priority": "medium",
+          "estimated_hours": 4,
+          "dependencies": ["P2-9"]
+        },
+        {
+          "id": "P2-11",
+          "phase": 2,
+          "task_id": "11",
+          "title": "Add Search Filters (Type, Genre, Year)",
+          "description": "Filter controls with session persistence",
+          "priority": "medium",
+          "estimated_hours": 4,
+          "dependencies": ["P2-9"]
+        },
+        {
+          "id": "P2-12",
+          "phase": 2,
+          "task_id": "12",
+          "title": "Implement Search History and Suggestions",
+          "description": "Recent searches storage and autocomplete",
+          "priority": "medium",
+          "estimated_hours": 4,
+          "dependencies": ["P2-9"]
+        },
+        {
+          "id": "P2-16",
+          "phase": 2,
+          "task_id": "16",
+          "title": "Optimize Performance and Memory Usage",
+          "description": "Profile and tune for <200ms latency, <200MB RAM",
+          "priority": "medium",
+          "estimated_hours": 6,
+          "dependencies": ["P2-2", "P2-6", "P2-14", "P2-15"]
+        }
+      ],
+      "max_parallel_agents": 4
+    },
+    {
+      "wave": 8,
+      "name": "Documentation",
+      "description": "Final documentation for both phases",
+      "parallel_tasks": [
+        {
+          "id": "P1-15",
+          "phase": 1,
+          "task_id": "15",
+          "title": "Update documentation and PR checklist",
+          "description": "Complete tdd-1-semantic-index.md, code guidelines, i18n",
+          "priority": "medium",
+          "estimated_hours": 4,
+          "dependencies": ["P1-14"]
+        },
+        {
+          "id": "P2-17",
+          "phase": 2,
+          "task_id": "17",
+          "title": "Update Documentation and TDD",
+          "description": "Complete tdd-2-semantic-vector.md with implementation details",
+          "priority": "low",
+          "estimated_hours": 4,
+          "dependencies": ["P2-15"]
+        }
+      ],
+      "max_parallel_agents": 2
+    }
+  ],
+  "summary": {
+    "total_waves": 9,
+    "phase1_tasks": 15,
+    "phase2_tasks": 18,
+    "total_tasks": 33,
+    "estimated_total_hours": 168,
+    "max_parallelism": 7,
+    "critical_path": [
+      "P1-1 -> P1-2 -> P1-8 -> P2-6 -> P2-7 -> P2-8 -> P2-9",
+      "P2-1 + P2-18 -> P2-2 -> P2-6 (joins with P1-8)",
+      "P2-3 -> P2-4 -> P2-5 -> P2-6 (joins above)"
+    ],
+    "parallelization_benefits": {
+      "wave_0": "7 tasks start immediately (both phases)",
+      "wave_1": "6 tasks build foundation in parallel",
+      "cross_phase_parallelism": "Phase 2 can start Wave 0 tasks before Phase 1 completes"
+    }
+  },
+  "agent_recommendations": {
+    "minimum_agents": 2,
+    "optimal_agents": 4,
+    "maximum_useful_agents": 7,
+    "assignment_strategy": "Assign agents to waves; within each wave, prioritize high-priority tasks first"
+  }
+}
