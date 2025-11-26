@@ -9,6 +9,7 @@
 #include "semantic/transcription/TranscriptionProviderManager.h"
 #include "semantic/transcription/GroqProvider.h"
 #include "semantic/transcription/ITranscriptionProvider.h"
+#include "semantic/SemanticDatabase.h"
 
 #include <gtest/gtest.h>
 #include <memory>
@@ -50,7 +51,12 @@ private:
 class TranscriptionProviderManagerTest : public ::testing::Test
 {
 protected:
-  void SetUp() override { m_manager = std::make_unique<CTranscriptionProviderManager>(); }
+  void SetUp() override
+  {
+    m_database = std::make_unique<CSemanticDatabase>();
+    m_database->Open();
+    m_manager = std::make_unique<CTranscriptionProviderManager>();
+  }
 
   void TearDown() override
   {
@@ -58,20 +64,25 @@ protected:
     {
       m_manager->Shutdown();
     }
+    if (m_database)
+    {
+      m_database->Close();
+    }
   }
 
+  std::unique_ptr<CSemanticDatabase> m_database;
   std::unique_ptr<CTranscriptionProviderManager> m_manager;
 };
 
 TEST_F(TranscriptionProviderManagerTest, InitializeAndShutdown)
 {
-  EXPECT_TRUE(m_manager->Initialize());
+  EXPECT_TRUE(m_manager->Initialize(m_database.get()));
   EXPECT_NO_THROW({ m_manager->Shutdown(); });
 }
 
 TEST_F(TranscriptionProviderManagerTest, RegisterProvider)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   auto mockProvider = std::make_unique<CMockProvider>("mock", "Mock Provider", true, true);
   m_manager->RegisterProvider(std::move(mockProvider));
@@ -84,7 +95,7 @@ TEST_F(TranscriptionProviderManagerTest, RegisterProvider)
 
 TEST_F(TranscriptionProviderManagerTest, GetNonExistentProvider)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   auto* provider = m_manager->GetProvider("nonexistent");
   EXPECT_EQ(provider, nullptr);
@@ -92,7 +103,7 @@ TEST_F(TranscriptionProviderManagerTest, GetNonExistentProvider)
 
 TEST_F(TranscriptionProviderManagerTest, GetAvailableProviders)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   // Register some mock providers
   m_manager->RegisterProvider(
@@ -110,7 +121,7 @@ TEST_F(TranscriptionProviderManagerTest, GetAvailableProviders)
 
 TEST_F(TranscriptionProviderManagerTest, GetDefaultProvider)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   // Register configured and available provider
   m_manager->RegisterProvider(
@@ -127,7 +138,7 @@ TEST_F(TranscriptionProviderManagerTest, GetDefaultProvider)
 
 TEST_F(TranscriptionProviderManagerTest, SetDefaultProvider)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   m_manager->RegisterProvider(
       std::make_unique<CMockProvider>("provider1", "Provider 1", true, true));
@@ -142,7 +153,7 @@ TEST_F(TranscriptionProviderManagerTest, SetDefaultProvider)
 
 TEST_F(TranscriptionProviderManagerTest, GetProviderInfoList)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   m_manager->RegisterProvider(
       std::make_unique<CMockProvider>("test1", "Test Provider 1", true, true));
@@ -180,7 +191,7 @@ TEST_F(TranscriptionProviderManagerTest, GetProviderInfoList)
 
 TEST_F(TranscriptionProviderManagerTest, RecordUsage)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   m_manager->RegisterProvider(
       std::make_unique<CMockProvider>("test", "Test Provider", true, true));
@@ -198,7 +209,7 @@ TEST_F(TranscriptionProviderManagerTest, RecordUsage)
 
 TEST_F(TranscriptionProviderManagerTest, GetMonthlyUsage)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   m_manager->RegisterProvider(
       std::make_unique<CMockProvider>("test", "Test Provider", true, true));
@@ -211,7 +222,7 @@ TEST_F(TranscriptionProviderManagerTest, GetMonthlyUsage)
 
 TEST_F(TranscriptionProviderManagerTest, BudgetTracking)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   // Budget functions should not throw
   EXPECT_NO_THROW({
@@ -223,7 +234,7 @@ TEST_F(TranscriptionProviderManagerTest, BudgetTracking)
 
 TEST_F(TranscriptionProviderManagerTest, GetTotalCostAllProviders)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   m_manager->RegisterProvider(
       std::make_unique<CMockProvider>("provider1", "Provider 1", true, true));
@@ -240,7 +251,7 @@ TEST_F(TranscriptionProviderManagerTest, GetTotalCostAllProviders)
 
 TEST_F(TranscriptionProviderManagerTest, NoDefaultProviderWhenNoneAvailable)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   // Register only unavailable providers
   m_manager->RegisterProvider(
@@ -248,12 +259,13 @@ TEST_F(TranscriptionProviderManagerTest, NoDefaultProviderWhenNoneAvailable)
 
   auto* defaultProvider = m_manager->GetDefaultProvider();
   // May return nullptr or the unavailable provider depending on implementation
-  EXPECT_GE(defaultProvider, nullptr);
+  // Just verify it doesn't crash - either result is acceptable
+  (void)defaultProvider;
 }
 
 TEST_F(TranscriptionProviderManagerTest, BuiltInGroqProvider)
 {
-  m_manager->Initialize();
+  m_manager->Initialize(m_database.get());
 
   // After initialization, should have Groq provider registered
   auto* groq = m_manager->GetProvider("groq");
@@ -268,8 +280,8 @@ TEST_F(TranscriptionProviderManagerTest, BuiltInGroqProvider)
 TEST_F(TranscriptionProviderManagerTest, MultipleInitializationCalls)
 {
   // Should handle multiple initialization calls gracefully
-  EXPECT_TRUE(m_manager->Initialize());
-  EXPECT_TRUE(m_manager->Initialize()); // Second call should succeed or be no-op
+  EXPECT_TRUE(m_manager->Initialize(m_database.get()));
+  EXPECT_TRUE(m_manager->Initialize(m_database.get())); // Second call should succeed or be no-op
 }
 
 TEST_F(TranscriptionProviderManagerTest, ShutdownWithoutInitialization)

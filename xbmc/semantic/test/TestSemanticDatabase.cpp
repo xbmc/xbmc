@@ -85,7 +85,7 @@ TEST_F(SemanticDatabaseTest, IndexStateTracking)
   state.mediaId = 456;
   state.mediaType = "episode";
   state.subtitleStatus = IndexStatus::IN_PROGRESS;
-  state.subtitleProgress = 0.5f;
+  state.transcriptionProgress = 0.5f;
 
   ASSERT_TRUE(m_database->UpdateIndexState(state));
 
@@ -93,7 +93,7 @@ TEST_F(SemanticDatabaseTest, IndexStateTracking)
   ASSERT_TRUE(m_database->GetIndexState(456, "episode", retrieved));
 
   EXPECT_EQ(retrieved.subtitleStatus, IndexStatus::IN_PROGRESS);
-  EXPECT_FLOAT_EQ(retrieved.subtitleProgress, 0.5f);
+  EXPECT_FLOAT_EQ(retrieved.transcriptionProgress, 0.5f);
 }
 
 TEST_F(SemanticDatabaseTest, BatchInsert)
@@ -287,7 +287,7 @@ TEST_F(SemanticDatabaseTest, GetStats)
 
   auto stats = m_database->GetStats();
   EXPECT_GE(stats.totalChunks, 10);
-  EXPECT_GE(stats.totalMediaItems, 1);
+  EXPECT_GE(stats.totalMedia, 1);
 }
 
 TEST_F(SemanticDatabaseTest, GetSnippet)

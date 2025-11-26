@@ -49,6 +49,14 @@ public:
   void Cancel() override;
   float EstimateCost(int64_t durationMs) const override;
 
+  // Public constants for API configuration
+  static constexpr const char* API_ENDPOINT =
+      "https://api.groq.com/openai/v1/audio/transcriptions";
+  static constexpr const char* MODEL_NAME = "whisper-large-v3-turbo";
+  static constexpr const char* RESPONSE_FORMAT = "verbose_json";
+  static constexpr int64_t MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+  static constexpr float COST_PER_MINUTE = 0.0033f;          // $0.0033/min
+
 private:
   /*!
    * \brief Transcribe a single audio file (must be < 25MB)
@@ -99,12 +107,6 @@ private:
    */
   int64_t GetFileSize(const std::string& filePath) const;
 
-  static constexpr const char* API_ENDPOINT =
-      "https://api.groq.com/openai/v1/audio/transcriptions";
-  static constexpr const char* MODEL_NAME = "whisper-large-v3-turbo";
-  static constexpr const char* RESPONSE_FORMAT = "verbose_json";
-  static constexpr int64_t MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
-  static constexpr float COST_PER_MINUTE = 0.0033f;          // $0.0033/min
   static constexpr int CONNECT_TIMEOUT_SEC = 30;
   static constexpr int REQUEST_TIMEOUT_SEC = 300; // 5 minutes for large files
 

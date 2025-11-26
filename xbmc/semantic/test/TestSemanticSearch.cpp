@@ -235,7 +235,7 @@ TEST_F(SemanticSearchTest, GetSearchStats)
   auto stats = m_search->GetSearchStats();
 
   EXPECT_GT(stats.totalChunks, 0);
-  EXPECT_GT(stats.totalMediaItems, 0);
+  EXPECT_GT(stats.totalMedia, 0);
 }
 
 TEST_F(SemanticSearchTest, MultipleWordSearch)

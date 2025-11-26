@@ -7,6 +7,7 @@
  */
 
 #include "semantic/ingest/SubtitleParser.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/URIUtils.h"
