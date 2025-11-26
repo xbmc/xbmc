@@ -10,7 +10,9 @@
 
 #include "ServiceBroker.h"
 #include "filesystem/CurlFile.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/JSONVariantParser.h"
@@ -18,6 +20,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "AudioExtractor.h"
 
 #include <random>
 #include <sstream>
@@ -336,19 +339,101 @@ bool CGroqProvider::TranscribeLargeFile(const std::string& audioPath,
                                         ProgressCallback onProgress,
                                         ErrorCallback onError)
 {
-  // For now, reject large files
-  // TODO: Implement audio chunking using FFmpeg
-  // This would involve:
-  // 1. Split audio into ~45 minute chunks (to stay well under 25MB)
-  // 2. Transcribe each chunk
-  // 3. Adjust timestamps for subsequent chunks
-  // 4. Merge segments
+  CLog::LogF(LOGINFO, "Starting chunked transcription for large file: {}", audioPath);
 
-  CLog::LogF(LOGERROR, "Large file transcription not yet implemented");
-  if (onError)
-    onError("File too large (>25MB). Chunked transcription not yet implemented.");
+  // Create audio extractor with default config (45 min chunks, well under 25MB)
+  CAudioExtractor extractor;
 
-  return false;
+  // Get total duration for progress calculation
+  int64_t totalDurationMs = extractor.GetMediaDuration(audioPath);
+  if (totalDurationMs <= 0)
+  {
+    if (onError)
+      onError("Failed to get media duration for chunking");
+    return false;
+  }
+
+  // Create temp directory for chunks
+  std::string tempDir = URIUtils::AddFileToFolder(
+      CSpecialProtocol::TranslatePath("special://temp/"), "semantic_chunks/");
+
+  // Ensure directory exists
+  if (!CDirectory::Exists(tempDir))
+    CDirectory::Create(tempDir);
+
+  // Extract audio into chunks
+  CLog::LogF(LOGINFO, "Extracting audio chunks to: {}", tempDir);
+  std::vector<AudioSegment> segments = extractor.ExtractChunked(audioPath, tempDir);
+
+  if (segments.empty())
+  {
+    if (onError)
+      onError("Failed to extract audio chunks");
+    return false;
+  }
+
+  CLog::LogF(LOGINFO, "Extracted {} audio chunks for transcription", segments.size());
+
+  // Transcribe each chunk
+  bool success = true;
+  size_t completedChunks = 0;
+
+  for (const auto& segment : segments)
+  {
+    if (m_cancelled)
+    {
+      CLog::LogF(LOGINFO, "Transcription cancelled after {} chunks", completedChunks);
+      success = false;
+      break;
+    }
+
+    CLog::LogF(LOGINFO, "Transcribing chunk {}/{}: {} ({:.1f}-{:.1f} min)",
+               completedChunks + 1, segments.size(), segment.path,
+               segment.startMs / 60000.0, (segment.startMs + segment.durationMs) / 60000.0);
+
+    // Create a wrapper callback that adjusts timestamps
+    int64_t chunkOffsetMs = segment.startMs;
+    auto adjustedSegmentCallback = [&onSegment, chunkOffsetMs](const TranscriptSegment& seg) {
+      if (onSegment)
+      {
+        TranscriptSegment adjusted = seg;
+        adjusted.startMs += chunkOffsetMs;
+        adjusted.endMs += chunkOffsetMs;
+        onSegment(adjusted);
+      }
+    };
+
+    // Transcribe this chunk
+    if (!TranscribeFile(segment.path, adjustedSegmentCallback, onError))
+    {
+      CLog::LogF(LOGERROR, "Failed to transcribe chunk: {}", segment.path);
+      success = false;
+      break;
+    }
+
+    completedChunks++;
+
+    // Report progress based on chunks completed
+    if (onProgress)
+    {
+      float progress = static_cast<float>(completedChunks) / segments.size();
+      onProgress(progress);
+    }
+  }
+
+  // Cleanup temporary chunk files
+  CLog::LogF(LOGINFO, "Cleaning up {} temporary chunk files", segments.size());
+  extractor.CleanupSegments(segments);
+
+  // Try to remove temp directory (will fail silently if not empty)
+  CDirectory::Remove(tempDir);
+
+  if (success)
+  {
+    CLog::LogF(LOGINFO, "Large file transcription completed successfully ({} chunks)", segments.size());
+  }
+
+  return success;
 }
 
 } // namespace KODI::SEMANTIC

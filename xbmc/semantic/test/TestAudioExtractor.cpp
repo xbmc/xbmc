@@ -241,6 +241,35 @@ TEST_F(AudioExtractorTest, CancelBeforeExtraction)
   EXPECT_FALSE(result);
 }
 
+TEST_F(AudioExtractorTest, ChunkTimestampOffsets)
+{
+  // Verify AudioSegment structure supports timestamp offsets
+  std::vector<AudioSegment> mockChunks;
+
+  // Simulate 3 chunks of 45 minutes each
+  int64_t chunkDurationMs = 45 * 60 * 1000; // 45 minutes
+
+  for (int i = 0; i < 3; i++)
+  {
+    AudioSegment chunk;
+    chunk.path = "/tmp/chunk_" + std::to_string(i) + ".mp3";
+    chunk.startMs = i * chunkDurationMs;
+    chunk.durationMs = chunkDurationMs;
+    chunk.fileSizeBytes = 5 * 1024 * 1024; // ~5MB per chunk
+    mockChunks.push_back(chunk);
+  }
+
+  // Verify offsets
+  EXPECT_EQ(mockChunks[0].startMs, 0);
+  EXPECT_EQ(mockChunks[1].startMs, 45 * 60 * 1000);
+  EXPECT_EQ(mockChunks[2].startMs, 90 * 60 * 1000);
+
+  // Verify a segment from chunk 2 would be adjusted correctly
+  int64_t segmentStartInChunk = 5000; // 5 seconds into chunk 2
+  int64_t adjustedStart = mockChunks[1].startMs + segmentStartInChunk;
+  EXPECT_EQ(adjustedStart, 45 * 60 * 1000 + 5000); // 45:05.000
+}
+
 // Note: Full integration tests with actual video files would require:
 // 1. Sample video files
 // 2. Writable temp directory

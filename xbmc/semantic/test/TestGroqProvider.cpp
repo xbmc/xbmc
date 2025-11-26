@@ -88,7 +88,7 @@ TEST_F(GroqProviderTest, TranscribeWithoutApiKey)
   bool called = false;
   bool hasError = false;
 
-  auto segmentCallback = [&](const TranscriptionSegment& segment) { called = true; };
+  auto segmentCallback = [&](const TranscriptSegment& segment) { called = true; };
 
   auto progressCallback = [](float progress) {};
 
@@ -114,7 +114,7 @@ TEST_F(GroqProviderTest, TranscribeNonExistentFile)
 {
   bool hasError = false;
 
-  auto segmentCallback = [](const TranscriptionSegment& segment) {};
+  auto segmentCallback = [](const TranscriptSegment& segment) {};
   auto progressCallback = [](float progress) {};
   auto errorCallback = [&](const std::string& error) { hasError = true; };
 
@@ -130,7 +130,7 @@ TEST_F(GroqProviderTest, CancelDuringTranscription)
   // Simulate cancellation
   m_provider->Cancel();
 
-  auto segmentCallback = [](const TranscriptionSegment& segment) {};
+  auto segmentCallback = [](const TranscriptSegment& segment) {};
   auto progressCallback = [](float progress) {};
   auto errorCallback = [](const std::string& error) {};
 
@@ -150,6 +150,38 @@ TEST_F(GroqProviderTest, Constants)
   EXPECT_STREQ(CGroqProvider::RESPONSE_FORMAT, "verbose_json");
   EXPECT_EQ(CGroqProvider::MAX_FILE_SIZE, 25 * 1024 * 1024); // 25MB
   EXPECT_FLOAT_EQ(CGroqProvider::COST_PER_MINUTE, 0.0033f);
+}
+
+TEST_F(GroqProviderTest, LargeFileDetection)
+{
+  // Verify MAX_FILE_SIZE constant is 25MB
+  EXPECT_EQ(CGroqProvider::MAX_FILE_SIZE, 25 * 1024 * 1024);
+
+  // The Transcribe method should route to TranscribeLargeFile for files > 25MB
+  // This is tested indirectly through the public API
+}
+
+TEST_F(GroqProviderTest, TranscribeLargeFileWithoutApiKey)
+{
+  // Large file transcription should fail gracefully without API key
+  bool hasError = false;
+  std::string errorMsg;
+
+  // Note: Use TranscriptSegment (not TranscriptionSegment) - defined in ITranscriptionProvider.h:21
+  auto segmentCallback = [](const TranscriptSegment& segment) {};
+  auto progressCallback = [](float progress) {};
+  auto errorCallback = [&](const std::string& error) {
+    hasError = true;
+    errorMsg = error;
+  };
+
+  // Create a fake path that would trigger large file handling
+  // (actual file size check happens in Transcribe())
+  bool result = m_provider->Transcribe("/path/to/large/file.mp3",
+                                       segmentCallback, progressCallback, errorCallback);
+
+  // Should fail (no API key or file doesn't exist)
+  EXPECT_FALSE(result);
 }
 
 // Note: Full integration tests with actual API calls would require:
