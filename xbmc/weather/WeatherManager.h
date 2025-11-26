@@ -13,6 +13,7 @@
 #include "utils/InfoLoader.h"
 
 #include <array>
+#include <deque>
 #include <map>
 #include <memory>
 #include <string>
@@ -96,7 +97,7 @@ public:
 
   /*!
    \brief Sets the location to the specified index and refreshes the weather data.
-   No concurrent updates. First request wins, subsequent requests ignored until completion.
+   No concurrent updates. Queues request if another request was initiated already.
    \param location the location index (can be any value except INVALID_LOCATION)
    */
   void SetLocation(int location);
@@ -152,5 +153,5 @@ private:
 
   static constexpr int INVALID_LOCATION{0};
   int m_location{1}; // Current active location
-  int m_newLocation{INVALID_LOCATION}; // Pending location update, or INVALID_LOCATION if none
+  std::deque<int> m_pendingLocationUpdates;
 };

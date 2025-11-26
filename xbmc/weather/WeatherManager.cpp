@@ -181,18 +181,28 @@ void CWeatherManager::SetLocation(int location)
 
   std::lock_guard lock(m_critSection);
 
-  if (m_newLocation != INVALID_LOCATION)
+  if (!m_pendingLocationUpdates.empty())
   {
-    // Prevent concurrent updates. First request wins, subsequent requests ignored until completion.
-    CLog::LogF(LOGWARNING,
-               "Ignoring request for location {}. Refresh for location {} already in progress.",
-               location, m_newLocation);
+    // Prevent concurrent updates.
+    if (m_pendingLocationUpdates.front() == location)
+    {
+      // First request for this location wins, subsequent requests ignored until completion.
+      CLog::LogF(LOGWARNING,
+                 "Ignoring request. Another refresh for location {} was already initiated.",
+                 location);
+    }
+    else
+    {
+      // Queue request.
+      CLog::LogF(LOGDEBUG, "Queueing request for location {}", location);
+      m_pendingLocationUpdates.push_back(location);
+    }
   }
   else
   {
     // Remember new requested location, trigger refresh, set m_location once refresh is done.
     CLog::LogF(LOGDEBUG, "Initiating refresh for location {}", location);
-    m_newLocation = location;
+    m_pendingLocationUpdates.push_back(location);
     Refresh();
   }
 }
@@ -219,7 +229,7 @@ void CWeatherManager::Reset()
   m_info = {};
   m_infoV2 = {};
   m_location = 1;
-  m_newLocation = INVALID_LOCATION;
+  m_pendingLocationUpdates.clear();
 }
 
 bool CWeatherManager::IsFetched()
@@ -246,7 +256,8 @@ std::string CWeatherManager::GetLastUpdateTime() const
 CJob* CWeatherManager::GetJob() const
 {
   std::lock_guard lock(m_critSection);
-  return new CWeatherJob(m_newLocation != INVALID_LOCATION ? m_newLocation : m_location);
+  return new CWeatherJob(!m_pendingLocationUpdates.empty() ? m_pendingLocationUpdates.front()
+                                                           : m_location);
 }
 
 void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
@@ -258,12 +269,17 @@ void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     m_info = wJob->GetInfo();
     m_infoV2 = wJob->GetInfoV2();
     m_location = wJob->GetLocation();
-    m_newLocation = INVALID_LOCATION;
+    if (!m_pendingLocationUpdates.empty())
+      m_pendingLocationUpdates.pop_front();
 
     const std::shared_ptr<CSettings> settings{
         CServiceBroker::GetSettingsComponent()->GetSettings()};
     settings->SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, m_location);
     settings->Save();
+
+    // Schedule next pending data update.
+    if (!m_pendingLocationUpdates.empty())
+      Refresh();
   }
 
   CInfoLoader::OnJobComplete(jobID, success, job);
