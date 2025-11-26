@@ -7261,5 +7261,58 @@
     "returns": {
       "type": "object"
     }
+  },
+  "Semantic.Configure": {
+    "type": "method",
+    "description": "Configure semantic search settings including transcription provider API keys",
+    "transport": "Response",
+    "permission": "ControlSystem",
+    "params": [
+      {
+        "name": "groq_api_key",
+        "type": "string",
+        "required": false,
+        "description": "API key for Groq Whisper transcription service"
+      },
+      {
+        "name": "auto_transcribe",
+        "type": "boolean",
+        "required": false,
+        "description": "Enable automatic transcription of media without subtitles"
+      },
+      {
+        "name": "monthly_budget",
+        "type": "number",
+        "required": false,
+        "description": "Monthly budget cap in USD for transcription services"
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "configured": {
+          "type": "object",
+          "description": "Current configuration state after changes"
+        }
+      }
+    }
+  },
+  "Semantic.GetConfig": {
+    "type": "method",
+    "description": "Get current semantic search configuration status",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "groq_configured": { "type": "boolean" },
+        "auto_transcribe": { "type": "boolean" },
+        "monthly_budget": { "type": "number" },
+        "budget_used": { "type": "number" },
+        "budget_remaining": { "type": "number" }
+      }
+    }
   }
 }

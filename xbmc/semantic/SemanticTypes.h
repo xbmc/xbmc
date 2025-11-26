@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 namespace KODI
@@ -196,6 +197,22 @@ struct IndexStats
   int totalChunks{0};            //!< Total number of chunks
   int totalWords{0};             //!< Total word count (approximate)
   int queuedJobs{0};             //!< Pending indexing jobs
+};
+
+/*!
+ * @brief Result from hybrid (keyword + vector) search
+ */
+struct HybridSearchResult
+{
+  int64_t chunkId{-1};           //!< Database chunk ID
+  SemanticChunk chunk;           //!< Full chunk data
+
+  float combinedScore{0.0f};     //!< Total RRF score
+  float keywordScore{0.0f};      //!< BM25 contribution
+  float vectorScore{0.0f};       //!< Vector contribution
+
+  std::string snippet;           //!< Text preview
+  std::string formattedTimestamp; //!< "1:23:45" format
 };
 
 } // namespace SEMANTIC

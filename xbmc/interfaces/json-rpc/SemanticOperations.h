@@ -165,6 +165,38 @@ public:
                                      IClient* client,
                                      const CVariant& parameterObject,
                                      CVariant& result);
+
+  // Configuration
+
+  /*!
+   * \brief Configure semantic search settings including API keys
+   * \param method The method name
+   * \param transport Transport layer
+   * \param client Client information
+   * \param parameterObject Parameters including groq_api_key, auto_transcribe, monthly_budget
+   * \param result Output result containing configuration status
+   * \return JSONRPC_STATUS indicating success or failure
+   */
+  static JSONRPC_STATUS Configure(const std::string& method,
+                                  ITransportLayer* transport,
+                                  IClient* client,
+                                  const CVariant& parameterObject,
+                                  CVariant& result);
+
+  /*!
+   * \brief Get current semantic search configuration status
+   * \param method The method name
+   * \param transport Transport layer
+   * \param client Client information
+   * \param parameterObject Parameters (none required)
+   * \param result Output result containing current configuration
+   * \return JSONRPC_STATUS indicating success or failure
+   */
+  static JSONRPC_STATUS GetConfig(const std::string& method,
+                                  ITransportLayer* transport,
+                                  IClient* client,
+                                  const CVariant& parameterObject,
+                                  CVariant& result);
 };
 
 } // namespace JSONRPC

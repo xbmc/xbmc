@@ -268,7 +268,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Semantic.QueueTranscription",                  CSemanticOperations::QueueTranscription },
   { "Semantic.GetStats",                            CSemanticOperations::GetStats },
   { "Semantic.GetProviders",                        CSemanticOperations::GetProviders },
-  { "Semantic.EstimateCost",                        CSemanticOperations::EstimateCost }
+  { "Semantic.EstimateCost",                        CSemanticOperations::EstimateCost },
+  { "Semantic.Configure",                           CSemanticOperations::Configure },
+  { "Semantic.GetConfig",                           CSemanticOperations::GetConfig }
 };
 
 // clang-format on

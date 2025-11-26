@@ -36,13 +36,14 @@ public:
   ~CTranscriptionProviderManager();
 
   /*!
-   * \brief Initialize the provider manager
+   * \brief Initialize the provider manager with an existing database
+   * \param database Pointer to the semantic database (must remain valid)
    * \return true if initialization was successful
    *
    * Registers built-in providers (Groq, future: OpenAI, local Whisper)
    * and loads provider configuration from database and settings.
    */
-  bool Initialize();
+  bool Initialize(CSemanticDatabase* database);
 
   /*!
    * \brief Shutdown the provider manager

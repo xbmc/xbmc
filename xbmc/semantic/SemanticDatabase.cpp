@@ -288,11 +288,14 @@ int CSemanticDatabase::InsertChunk(const SemanticChunk& chunk)
         "VALUES (%i, '%s', '%s', '%s', %i, %i, '%s', '%s', %f)",
         chunk.mediaId, chunk.mediaType.c_str(), SourceTypeToString(chunk.sourceType),
         chunk.sourcePath.c_str(), chunk.startMs, chunk.endMs, chunk.text.c_str(),
-        chunk.language.c_str(), chunk.confidence);
+        chunk.language.c_str(), static_cast<double>(chunk.confidence));
 
     if (ExecuteQuery(sql))
     {
-      int chunkId = static_cast<int>(m_pDB->lastinsertid());
+      // Query for the last inserted rowid
+      m_pDS->query("SELECT last_insert_rowid()");
+      int chunkId = m_pDS->fv(0).get_asInt();
+      m_pDS->close();
       CLog::Log(LOGDEBUG, "SemanticDatabase: Inserted chunk {} for media {} ({})", chunkId,
                 chunk.mediaId, chunk.mediaType);
       return chunkId;
@@ -422,7 +425,7 @@ bool CSemanticDatabase::UpdateIndexState(const SemanticIndexState& state)
           "WHERE state_id = %i",
           state.mediaPath.c_str(), IndexStatusToString(state.subtitleStatus),
           IndexStatusToString(state.transcriptionStatus), state.transcriptionProvider.c_str(),
-          state.transcriptionProgress, IndexStatusToString(state.metadataStatus), state.priority,
+          static_cast<double>(state.transcriptionProgress), IndexStatusToString(state.metadataStatus), state.priority,
           existingStateId);
     }
     else
@@ -436,7 +439,7 @@ bool CSemanticDatabase::UpdateIndexState(const SemanticIndexState& state)
           state.mediaId, state.mediaType.c_str(), state.mediaPath.c_str(),
           IndexStatusToString(state.subtitleStatus),
           IndexStatusToString(state.transcriptionStatus), state.transcriptionProvider.c_str(),
-          state.transcriptionProgress, IndexStatusToString(state.metadataStatus), state.priority);
+          static_cast<double>(state.transcriptionProgress), IndexStatusToString(state.metadataStatus), state.priority);
     }
 
     if (ExecuteQuery(sql))
@@ -645,7 +648,7 @@ bool CSemanticDatabase::UpdateProviderUsage(const std::string& providerId, float
         "total_minutes_used = total_minutes_used + %f, "
         "last_used_at = datetime('now') "
         "WHERE provider_id = '%s'",
-        minutesUsed, providerId.c_str());
+        static_cast<double>(minutesUsed), providerId.c_str());
 
     if (ExecuteQuery(sql))
     {
@@ -739,10 +742,18 @@ std::vector<SearchResult> CSemanticDatabase::SearchChunks(const std::string& que
   try
   {
     if (m_pDB == nullptr || m_pDS == nullptr)
+    {
+      CLog::Log(LOGERROR, "SemanticDatabase: SearchChunks called with null database/dataset");
       return results;
+    }
 
     if (query.empty())
+    {
+      CLog::Log(LOGWARNING, "SemanticDatabase: SearchChunks called with empty query");
       return results;
+    }
+
+    CLog::Log(LOGINFO, "SemanticDatabase: SearchChunks query='{}' maxResults={}", query, options.maxResults);
 
     // Build the WHERE clause with filters
     std::string whereClause;
@@ -754,41 +765,56 @@ std::vector<SearchResult> CSemanticDatabase::SearchChunks(const std::string& que
       whereClause +=
           PrepareSQL(" AND c.source_type = '%s'", SourceTypeToString(options.sourceType));
     if (options.minConfidence > 0.0f)
-      whereClause += PrepareSQL(" AND c.confidence >= %f", options.minConfidence);
+      whereClause += PrepareSQL(" AND c.confidence >= %f", static_cast<double>(options.minConfidence));
 
     // Use FTS5 with BM25 ranking
-    std::string sql = PrepareSQL(
+    // Note: whereClause is already properly escaped via PrepareSQL, so we use
+    // StringUtils::Format to avoid double-escaping the quotes
+    std::string matchClause = PrepareSQL("WHERE semantic_fts MATCH '%s'", query.c_str());
+    std::string sql = StringUtils::Format(
         "SELECT c.*, bm25(semantic_fts) as score "
         "FROM semantic_fts f "
         "JOIN semantic_chunks c ON f.rowid = c.chunk_id "
-        "WHERE semantic_fts MATCH '%s'%s "
+        "{}{} "
         "ORDER BY score "
-        "LIMIT %i",
-        query.c_str(), whereClause.c_str(), options.maxResults);
+        "LIMIT {}",
+        matchClause, whereClause, options.maxResults);
+
+    CLog::Log(LOGINFO, "SemanticDatabase: Executing SQL: {}", sql);
 
     if (!m_pDS->query(sql))
+    {
+      CLog::Log(LOGERROR, "SemanticDatabase: Query failed");
       return results;
+    }
 
+    // First pass: collect all results (don't call GetSnippet here as it uses m_pDS)
     while (!m_pDS->eof())
     {
       SearchResult result;
       result.chunk = GetChunkFromDataset();
       result.score = m_pDS->fv("score").get_asFloat();
-
-      // Generate snippet for this result
-      result.snippet = GetSnippet(query, result.chunk.chunkId, 50);
-
       results.push_back(result);
       m_pDS->next();
     }
     m_pDS->close();
 
+    // Second pass: generate snippets (now safe to use m_pDS)
+    for (auto& result : results)
+    {
+      result.snippet = GetSnippet(query, result.chunk.chunkId, 50);
+    }
+
     CLog::Log(LOGDEBUG, "SemanticDatabase: FTS5 search found {} results for '{}'", results.size(),
               query);
   }
+  catch (const std::exception& e)
+  {
+    CLog::LogF(LOGERROR, "Exception searching chunks for query '{}': {}", query, e.what());
+  }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "Failed to search chunks for query '{}'", query);
+    CLog::LogF(LOGERROR, "Unknown exception searching chunks for query '{}'", query);
   }
   return results;
 }
@@ -923,33 +949,57 @@ int CSemanticDatabase::CleanupOrphanedChunks()
     if (m_pDB == nullptr || m_pDS == nullptr)
       return -1;
 
+    // Count orphaned chunks before deletion
+    int moviesDeleted = 0;
+    int episodesDeleted = 0;
+    int musicvideosDeleted = 0;
+
+    // Count movies
+    std::string countSql =
+        "SELECT COUNT(*) FROM semantic_chunks "
+        "WHERE media_type = 'movie' AND media_id NOT IN (SELECT idMovie FROM movie)";
+    if (m_pDS->query(countSql))
+    {
+      moviesDeleted = m_pDS->fv(0).get_asInt();
+      m_pDS->close();
+    }
+
+    // Count episodes
+    countSql = "SELECT COUNT(*) FROM semantic_chunks "
+               "WHERE media_type = 'episode' AND media_id NOT IN (SELECT idEpisode FROM episode)";
+    if (m_pDS->query(countSql))
+    {
+      episodesDeleted = m_pDS->fv(0).get_asInt();
+      m_pDS->close();
+    }
+
+    // Count music videos
+    countSql = "SELECT COUNT(*) FROM semantic_chunks "
+               "WHERE media_type = 'musicvideo' AND media_id NOT IN (SELECT idMVideo FROM musicvideo)";
+    if (m_pDS->query(countSql))
+    {
+      musicvideosDeleted = m_pDS->fv(0).get_asInt();
+      m_pDS->close();
+    }
+
     // Delete chunks for movies that no longer exist
     std::string sql =
         "DELETE FROM semantic_chunks "
         "WHERE media_type = 'movie' AND media_id NOT IN (SELECT idMovie FROM movie)";
-
     if (!ExecuteQuery(sql))
       return -1;
-
-    int moviesDeleted = static_cast<int>(m_pDB->getaffectedrows());
 
     // Delete chunks for episodes that no longer exist
     sql = "DELETE FROM semantic_chunks "
           "WHERE media_type = 'episode' AND media_id NOT IN (SELECT idEpisode FROM episode)";
-
     if (!ExecuteQuery(sql))
       return -1;
-
-    int episodesDeleted = static_cast<int>(m_pDB->getaffectedrows());
 
     // Delete chunks for music videos that no longer exist
     sql = "DELETE FROM semantic_chunks "
           "WHERE media_type = 'musicvideo' AND media_id NOT IN (SELECT idMVideo FROM musicvideo)";
-
     if (!ExecuteQuery(sql))
       return -1;
-
-    int musicvideosDeleted = static_cast<int>(m_pDB->getaffectedrows());
 
     int totalDeleted = moviesDeleted + episodesDeleted + musicvideosDeleted;
 
@@ -1109,9 +1159,7 @@ std::unique_ptr<dbiplus::Dataset> CSemanticDatabase::Query(const std::string& sq
 
 int CSemanticDatabase::GetChanges() const
 {
-  if (m_pDB)
-  {
-    return static_cast<int>(m_pDB->getaffectedrows());
-  }
+  // Note: Kodi's database wrapper doesn't expose affected rows count
+  // This method is a placeholder for future implementation
   return 0;
 }

@@ -8,10 +8,12 @@
 
 #pragma once
 
+#include "dbwrappers/dataset.h"
 #include "interfaces/IAnnouncer.h"
 #include "jobs/IJobCallback.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Thread.h"
+#include "video/VideoDatabase.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -30,7 +32,6 @@ class CSemanticDatabase;
 class CSubtitleParser;
 class CMetadataParser;
 class CTranscriptionProviderManager;
-class CVideoDatabase;
 
 /*!
  * @brief Main orchestrator for semantic indexing operations
@@ -146,6 +147,18 @@ public:
    * @return Queue length
    */
   int GetQueueLength() const;
+
+  /*!
+   * @brief Get the semantic database instance
+   * @return Pointer to the database, or nullptr if not initialized
+   */
+  CSemanticDatabase* GetDatabase() const { return m_database.get(); }
+
+  /*!
+   * @brief Get the transcription provider manager
+   * @return Pointer to the provider manager, or nullptr if not initialized
+   */
+  CTranscriptionProviderManager* GetTranscriptionManager() const { return m_transcriptionManager.get(); }
 
   // ========== Callbacks ==========
 
@@ -311,7 +324,7 @@ private:
 
   // Thread control
   std::atomic<bool> m_running{false};
-  std::mutex m_queueMutex;
+  mutable std::mutex m_queueMutex;
   std::condition_variable m_queueCondition;
 
   // Processing queue (priority queue - higher priority items first)

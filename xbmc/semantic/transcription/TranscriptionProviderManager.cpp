@@ -29,7 +29,7 @@ CTranscriptionProviderManager::~CTranscriptionProviderManager()
   Shutdown();
 }
 
-bool CTranscriptionProviderManager::Initialize()
+bool CTranscriptionProviderManager::Initialize(CSemanticDatabase* database)
 {
   if (m_initialized)
   {
@@ -39,15 +39,13 @@ bool CTranscriptionProviderManager::Initialize()
 
   CLog::LogF(LOGINFO, "Initializing transcription provider manager");
 
-  // Get database instance
-  m_database = new CSemanticDatabase();
-  if (!m_database || !m_database->Open())
+  // Use provided database instance
+  if (!database)
   {
-    CLog::LogF(LOGERROR, "Failed to open semantic database");
-    delete m_database;
-    m_database = nullptr;
+    CLog::LogF(LOGERROR, "No database provided");
     return false;
   }
+  m_database = database;
 
   // Register built-in providers
   CLog::LogF(LOGINFO, "Registering built-in providers");
@@ -101,13 +99,8 @@ void CTranscriptionProviderManager::Shutdown()
   m_providers.clear();
   m_defaultProviderId.clear();
 
-  // Close database
-  if (m_database)
-  {
-    m_database->Close();
-    delete m_database;
-    m_database = nullptr;
-  }
+  // Database is owned by SemanticIndexService, just clear the pointer
+  m_database = nullptr;
 
   m_initialized = false;
 }
