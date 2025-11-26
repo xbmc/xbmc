@@ -305,6 +305,15 @@ void CGUIDialogVideoInfo::OnInitWindow()
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
+  // Do not enable video versions and extras if database is read only
+  CONTROL_ENABLE_ON_CONDITION(
+      CONTROL_BTN_MANAGE_VIDEO_VERSIONS,
+      (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser));
+
+  CONTROL_ENABLE_ON_CONDITION(
+      CONTROL_BTN_MANAGE_VIDEO_EXTRAS,
+      (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser));
+
   Update();
 
   CGUIDialog::OnInitWindow();
