@@ -204,6 +204,7 @@ void CGUIWindowSettingsProfile::LoadList()
   ClearListItems();
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+  const int currentProfileId = profileManager->GetCurrentProfileId();
 
   for (unsigned int i = 0; i < profileManager->GetNumberOfProfiles(); i++)
   {
@@ -214,6 +215,7 @@ void CGUIWindowSettingsProfile::LoadList()
     item->SetOverlayImage(profile->getLockMode() == LockMode::EVERYONE
                               ? CGUIListItem::ICON_OVERLAY_NONE
                               : CGUIListItem::ICON_OVERLAY_LOCKED);
+    item->Select(profile->getId() == currentProfileId);
     m_listItems->Add(item);
   }
   {
