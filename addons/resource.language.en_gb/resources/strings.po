@@ -14452,7 +14452,13 @@ msgctxt "#20476"
 msgid "Has video extras"
 msgstr ""
 
-#empty strings from id 20477 to 21329
+#. When you create a new profile ask to user if wants to create it in a custom directory
+#: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
+msgctxt "#20477"
+msgid "Do you want to create the new profile in a custom directory?"
+msgstr ""
+
+#empty strings from id 20478 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
