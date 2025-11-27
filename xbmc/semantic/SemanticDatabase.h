@@ -68,6 +68,17 @@ public:
   bool DeleteChunksForMedia(int mediaId, const MediaType& mediaType);
 
   /*!
+   * @brief Delete chunks for a specific media item and source type
+   * @param mediaId The media item ID
+   * @param mediaType The media type
+   * @param sourceType The source type to delete (subtitle, transcription, metadata)
+   * @return true if successful, false otherwise
+   */
+  bool DeleteChunksForMediaBySourceType(int mediaId,
+                                        const MediaType& mediaType,
+                                        SourceType sourceType);
+
+  /*!
    * @brief Update or insert index state for a media item
    * @param state The index state to update
    * @return true if successful, false otherwise

@@ -688,6 +688,9 @@ bool CSemanticIndexService::IndexSubtitles(int mediaId, const std::string& media
       chunks.push_back(chunk);
     }
 
+    // Delete existing subtitle chunks for this media (handles re-indexing)
+    m_database->DeleteChunksForMediaBySourceType(mediaId, mediaType, SourceType::SUBTITLE);
+
     // Insert chunks into database
     if (!m_database->InsertChunks(chunks))
     {
@@ -814,6 +817,9 @@ bool CSemanticIndexService::IndexMetadata(int mediaId, const std::string& mediaT
 
       chunks.push_back(chunk);
     }
+
+    // Delete existing metadata chunks for this media (handles re-indexing)
+    m_database->DeleteChunksForMediaBySourceType(mediaId, mediaType, SourceType::METADATA);
 
     // Insert chunks into database
     if (!m_database->InsertChunks(chunks))
@@ -1052,6 +1058,9 @@ bool CSemanticIndexService::StartTranscription(int mediaId, const std::string& m
     }
     return false;
   }
+
+  // Delete existing transcription chunks for this media (handles re-indexing)
+  m_database->DeleteChunksForMediaBySourceType(mediaId, mediaType, SourceType::TRANSCRIPTION);
 
   // Store chunks in database
   CLog::Log(LOGINFO, "SemanticIndexService: Storing {} transcription chunks", chunks.size());

@@ -399,6 +399,34 @@ bool CSemanticDatabase::DeleteChunksForMedia(int mediaId, const MediaType& media
   return false;
 }
 
+bool CSemanticDatabase::DeleteChunksForMediaBySourceType(int mediaId,
+                                                          const MediaType& mediaType,
+                                                          SourceType sourceType)
+{
+  try
+  {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return false;
+
+    std::string sql = PrepareSQL(
+        "DELETE FROM semantic_chunks WHERE media_id = %i AND media_type = '%s' AND source_type = '%s'",
+        mediaId, mediaType.c_str(), SourceTypeToString(sourceType));
+
+    if (ExecuteQuery(sql))
+    {
+      CLog::Log(LOGDEBUG, "SemanticDatabase: Deleted {} chunks for media {} ({})",
+                SourceTypeToString(sourceType), mediaId, mediaType);
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to delete {} chunks for media {} ({})",
+               SourceTypeToString(sourceType), mediaId, mediaType);
+  }
+  return false;
+}
+
 bool CSemanticDatabase::UpdateIndexState(const SemanticIndexState& state)
 {
   try
