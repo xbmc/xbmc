@@ -95,6 +95,11 @@ CWeatherManager::~CWeatherManager()
 
 std::string CWeatherManager::GetProperty(const std::string& property) const
 {
+  // Note: We must not access window manager while holding our lock!
+  CGUIComponent* gui{CServiceBroker::GetGUI()};
+  const CGUIWindow* window{gui != nullptr ? gui->GetWindowManager().GetWindow(WINDOW_WEATHER)
+                                          : nullptr};
+
   // Trigger refresh of data if outdated
   const_cast<CWeatherManager*>(this)->RefreshIfNeeded();
 
@@ -105,20 +110,12 @@ std::string CWeatherManager::GetProperty(const std::string& property) const
   if (it != m_infoV2.cend())
     return (*it).second;
 
-  if (!IsUpdating()) // window properties are in undefined state while updating.
+  if (window != nullptr && !IsUpdating()) // window props are in undefined state while updating.
   {
-    CGUIComponent* gui{CServiceBroker::GetGUI()};
-    if (gui != nullptr)
-    {
-      // Fetch the value from respective weather window property and store.
-      const CGUIWindow* window{gui->GetWindowManager().GetWindow(WINDOW_WEATHER)};
-      if (window != nullptr)
-      {
-        const std::string val{window->GetProperty(property).asString()};
-        m_infoV2.try_emplace(property, val);
-        return val;
-      }
-    }
+    // Fetch the value from respective weather window property and store.
+    const std::string val{window->GetProperty(property).asString()};
+    m_infoV2.try_emplace(property, val);
+    return val;
   }
   return {};
 }
@@ -262,25 +259,29 @@ CJob* CWeatherManager::GetJob() const
 
 void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
+  int locationToSave{0};
   {
+    const auto* wJob{static_cast<const CWeatherJob*>(job)};
+
     std::lock_guard lock(m_critSection);
 
-    const auto* wJob = static_cast<const CWeatherJob*>(job);
     m_info = wJob->GetInfo();
     m_infoV2 = wJob->GetInfoV2();
     m_location = wJob->GetLocation();
+    locationToSave = m_location;
     if (!m_pendingLocationUpdates.empty())
+    {
       m_pendingLocationUpdates.pop_front();
 
-    const std::shared_ptr<CSettings> settings{
-        CServiceBroker::GetSettingsComponent()->GetSettings()};
-    settings->SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, m_location);
-    settings->Save();
-
-    // Schedule next pending data update.
-    if (!m_pendingLocationUpdates.empty())
-      Refresh();
+      // Schedule next pending data update.
+      if (!m_pendingLocationUpdates.empty())
+        Refresh();
+    }
   }
+
+  const std::shared_ptr<CSettings> settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  settings->SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, locationToSave);
+  settings->Save();
 
   CInfoLoader::OnJobComplete(jobID, success, job);
 
