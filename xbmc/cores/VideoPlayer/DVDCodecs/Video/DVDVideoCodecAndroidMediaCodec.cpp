@@ -500,10 +500,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       bool convertDovi{false};
       bool removeDovi{false};
       bool removeHdr10Plus{false};
+      bool doviZeroLevel5{false};
 
       if (settings)
       {
         convertDovi = settings->GetBool(CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI);
+        doviZeroLevel5 = settings->GetBool(CSettings::SETTING_VIDEOPLAYER_DOVIZEROLEVEL5);
 
         const std::shared_ptr<CSettingList> allowedHdrFormatsSetting(
             std::dynamic_pointer_cast<CSettingList>(
@@ -600,6 +602,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         {
           m_bitstream->SetRemoveDovi(removeDovi);
           m_bitstream->SetRemoveHdr10Plus(removeHdr10Plus);
+          m_bitstream->SetDoviZeroLevel5(doviZeroLevel5);
 
           // Only set for profile 7, container hint allows to skip parsing unnecessarily
           if (m_hints.dovi.dv_profile == 7)
