@@ -14,6 +14,7 @@
 #include <vector>
 
 class CVideoInfoTag;
+class TiXmlElement;
 
 namespace KODI::SEMANTIC
 {
@@ -32,7 +33,7 @@ namespace KODI::SEMANTIC
  * - <genre> - Genre tags (concatenated)
  * - <tag> - User-defined tags
  */
-class CMetadataParser : public CContentParserBase
+class CMetadataParser : public ContentParserBase
 {
 public:
   ~CMetadataParser() override = default;

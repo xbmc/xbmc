@@ -277,7 +277,8 @@ int64_t CAudioExtractor::ParseDurationFromFFprobe(const std::string& output)
   try
   {
     // Trim whitespace
-    std::string trimmed = StringUtils::Trim(output);
+    std::string trimmed = output;
+    StringUtils::Trim(trimmed);
 
     if (trimmed.empty() || trimmed == "N/A")
     {

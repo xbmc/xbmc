@@ -58,7 +58,7 @@ std::vector<ParsedEntry> CSubtitleParser::Parse(const std::string& path)
 
   // Determine format and parse
   std::string ext = URIUtils::GetExtension(path);
-  ext = StringUtils::ToLower(ext);
+  StringUtils::ToLower(ext);
 
   std::vector<ParsedEntry> entries;
 

@@ -443,7 +443,8 @@ std::vector<std::string> CChunkProcessor::SplitIntoSentences(const std::string& 
 std::string CChunkProcessor::GenerateContentHash(const std::string& text, int64_t startMs) const
 {
   // Normalize text for consistent hashing
-  std::string normalized = StringUtils::ToLower(text);
+  std::string normalized = text;
+  StringUtils::ToLower(normalized);
   StringUtils::RemoveDuplicatedSpacesAndTabs(normalized);
   StringUtils::Trim(normalized);
 

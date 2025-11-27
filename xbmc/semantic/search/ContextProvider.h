@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "HybridSearchEngine.h"
 #include "semantic/SemanticTypes.h"
 
 #include <optional>

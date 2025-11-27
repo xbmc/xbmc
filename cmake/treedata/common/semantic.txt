@@ -1,0 +1,2 @@
+# Core semantic search - subdirectories added by xbmc/semantic/CMakeLists.txt
+xbmc/semantic semantic

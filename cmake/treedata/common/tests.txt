@@ -25,5 +25,4 @@ xbmc/utils/i18n/test              test/utils/i18n
 xbmc/utils/test                   test/utils
 xbmc/video/test                   test/video
 xbmc/semantic/test                test/semantic
-xbmc/semantic/test/integration    test/semantic/integration
 xbmc/semantic/ingest/test         test/semantic/ingest

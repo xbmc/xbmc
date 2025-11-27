@@ -114,7 +114,8 @@ bool ContentParserBase::IsNonDialogue(const std::string& text)
   if (text.empty())
     return true;
 
-  std::string lowerText = StringUtils::ToLower(text);
+  std::string lowerText = text;
+  StringUtils::ToLower(lowerText);
   StringUtils::Trim(lowerText);
 
   // Check for empty or whitespace-only
@@ -179,7 +180,8 @@ bool ContentParserBase::HasSupportedExtension(const std::string& path,
   if (!ext.empty() && ext[0] == '.')
     ext = ext.substr(1); // Remove leading dot
 
-  std::string lowerExt = StringUtils::ToLower(ext);
+  std::string lowerExt = ext;
+  StringUtils::ToLower(lowerExt);
 
   return std::any_of(extensions.begin(), extensions.end(),
                      [&lowerExt](const std::string& supportedExt)
