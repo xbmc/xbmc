@@ -5614,6 +5614,7 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) co
   if (s.type == StreamType::NONE)
     info.name += "(Invalid)";
 
+  info.valid = true;
   info.language = s.language;
   info.codecName = s.codec;
   info.flags = s.flags;
