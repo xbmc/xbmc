@@ -106,6 +106,7 @@ public:
   int GetSubLength(int iSub) const;
   int GetCaptureTotal() const;
   std::string GetMatch(int iSub = 0) const;
+  std::string GetMatch(const char* name) const;
   const std::string& GetPattern() const { return m_pattern; }
   void DumpOvector(int iLog);
   /**

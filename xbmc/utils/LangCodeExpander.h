@@ -41,6 +41,12 @@ public:
     INCLUDE_ADDONS_USERDEFINED,
   };
 
+  enum class Bcp47Usage
+  {
+    USAGE_AUDIO,
+    USAGE_OTHER,
+  };
+
   void LoadUserCodes(const TiXmlElement* pRootElement);
   void Clear();
 
@@ -87,6 +93,14 @@ public:
   *   \return true if the conversion succeeded, false otherwise.
   */
   static bool ConvertISO6391ToISO6392B(const std::string& strISO6391, std::string& strISO6392B, bool checkWin32Locales = false);
+
+  /*!
+   * \brief Converts a language given as 3-Char (ISO 639-2/B or /T) to a 2-Char (ISO 639-1) code.
+   * \param[in] iso6392 The language that should be converted.
+   * \param[out] iso6391 The 2-Char (ISO 639-1) language code of the given language.
+   * \return true if the conversion succeeded, false otherwise.
+   */
+  static bool ConvertISO6392ToISO6391(const std::string& iso6392, std::string& iso6391);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
@@ -140,9 +154,21 @@ public:
   std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1,
                                             LANG_LIST list = LANG_LIST::DEFAULT);
 
-protected:
-  static bool LookupInISO639Tables(const std::string& code, std::string& desc);
+  /*
+   * \brief Converts a language given as 2-Char (ISO 639-1),
+   *        3-Char (ISO 639-2/T, ISO 639-2/B), BCP 47 language tag
+   *        or full English name string to a BCP 47 tag.
+   * \param[in] text The language to convert
+   * \param[out] bcp47 The BCP47 language tag
+   * \param[in] use Planned usage for the tag (ex. for audio media, a script is not relevant and
+   *            will be filtered out)
+   * \return true if the conversion succeeded, false otherwise.
+   */
+  bool ConvertToBcp47(const std::string& text,
+                      std::string& bcp47,
+                      Bcp47Usage use = Bcp47Usage::USAGE_OTHER);
 
+protected:
   /*
    * \brief Looks up the language description for given language code
    *        in to the installed language addons.

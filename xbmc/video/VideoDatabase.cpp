@@ -54,6 +54,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+#include "utils/i18n/TableLanguageCodes.h"
 #include "utils/log.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
@@ -5093,7 +5094,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   else
     details.SetPremieredFromDBDate(premieredString);
   details.SetOriginalLanguage(record->at(VIDEODB_DETAILS_MOVIE_ORIGINAL_LANGUAGE).get_asString(),
-                              CVideoInfoTag::LanguageProcessing::PROCESSING_NONE);
+                              CVideoInfoTag::LanguageTagSource::SOURCE_INTERNAL);
 
   if (getDetails)
   {
@@ -5193,7 +5194,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.SetUniqueID(record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_VALUE).get_asString(), record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_TYPE).get_asString(), true);
   details.SetDuration(record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt());
   details.SetOriginalLanguage(record->at(VIDEODB_DETAILS_TVSHOW_ORIGINAL_LANGUAGE).get_asString(),
-                              CVideoInfoTag::LanguageProcessing::PROCESSING_NONE);
+                              CVideoInfoTag::LanguageTagSource::SOURCE_INTERNAL);
 
   //! @todo videotag member + guiinfo int needed?
   //! -- Currently not needed; having it available as item prop seems sufficient for skinning
@@ -5290,7 +5291,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.SetPremieredFromDBDate(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString());
   details.SetOriginalLanguage(
       record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ORIGINAL_LANGUAGE).get_asString(),
-      CVideoInfoTag::LanguageProcessing::PROCESSING_NONE);
+      CVideoInfoTag::LanguageTagSource::SOURCE_INTERNAL);
 
   details.SetResumePoint(record->at(VIDEODB_DETAILS_EPISODE_RESUME_TIME).get_asInt(),
                          record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt(),
@@ -7277,11 +7278,53 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE movie ADD originalLanguage TEXT");
     m_pDS->exec("ALTER TABLE tvshow ADD originalLanguage TEXT");
   }
+
+  if (iVersion < 140)
+  {
+    // Convert the ISO 639-2/B codes to BCP-47
+    m_pDS->query(PrepareSQL("SELECT DISTINCT originalLanguage FROM movie "
+                            "UNION "
+                            "SELECT DISTINCT originalLanguage FROM tvshow"));
+    while (!m_pDS->eof())
+    {
+      std::string from = m_pDS->fv(0).get_asString();
+      std::string to = from;
+
+      // The current value is an ISO 639-2/B code or a code defined in AS.xml or an Addon
+      // Convert possible ISO 639-2/B to ISO 639-1 with minimal dependencies on external code
+      // The list of ISO 639-1 codes (and their mapping to ISO 639-2 code) is unlikely to change
+      // so the output of the dependency should be stable.
+      std::string iso6392Lower(from);
+      StringUtils::Trim(iso6392Lower);
+
+      if (iso6392Lower.length() == 3)
+      {
+        StringUtils::ToLower(iso6392Lower);
+
+        // BCP 47 uses the alpha2 639-1 codes when available for a language and alpha codes
+        // from 639-2/T 639-3 639-5 otherwise.
+        // ALL ISO 639-2/B codes that have a ISO 639-2/T equivalent also have a ISO 639-1 equivalent
+        // so conversion B to T doesn't need to be considered.
+        // ISO 639-2/B codes that have an ISO 639-1 equivalent will be found here, the rest must
+        // be codes without equivalent or from AS.xml/Addon and will be kept as they are.
+        const auto it = std::ranges::lower_bound(LanguageCodesByIso639_2b, iso6392Lower, {},
+                                                 &ISO639::iso639_2b);
+        if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == iso6392Lower)
+          to = it->iso639_1;
+      }
+
+      m_pDS->exec("UPDATE movie SET originalLanguage='" + to + "' WHERE originalLanguage='" + from +
+                  "'");
+      m_pDS->exec("UPDATE tvshow SET originalLanguage='" + to + "' WHERE originalLanguage='" +
+                  from + "'");
+    }
+    m_pDS->close();
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 139;
+  return 140;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

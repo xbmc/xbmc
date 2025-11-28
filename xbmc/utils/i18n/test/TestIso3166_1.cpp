@@ -47,3 +47,20 @@ TEST(TestI18nIso3166_1, ContainsAlpha3)
   EXPECT_TRUE(CIso3166_1::ContainsAlpha3("aia"));
   EXPECT_FALSE(CIso3166_1::ContainsAlpha3("zzz"));
 }
+
+TEST(TestI18nIso3166_1, LookupByCode)
+{
+  std::optional<std::string> result;
+
+  result = CIso3166_1::LookupByCode("ai");
+  EXPECT_TRUE(result.has_value());
+  EXPECT_EQ(*result, "Anguilla");
+
+  result = CIso3166_1::LookupByCode("aia");
+  EXPECT_TRUE(result.has_value());
+  EXPECT_EQ(*result, "Anguilla");
+
+  // zzz is reserved for private use and won't ever be allocated
+  result = CIso3166_1::LookupByCode("zzz");
+  EXPECT_FALSE(result.has_value());
+}
