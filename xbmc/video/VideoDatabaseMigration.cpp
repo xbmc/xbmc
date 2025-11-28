@@ -481,6 +481,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
       m_pDS->next();
     }
+    m_pDS->close();
   }
   if (iVersion < 101)
     m_pDS->exec("ALTER TABLE seasons ADD userrating INTEGER");
@@ -837,6 +838,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
               PrepareSQL("UPDATE videoversion SET idType = %i WHERE itemType = 1 AND idType = %i",
                          newId, idType));
         }
+        m_pDS2->close();
       }
       m_pDS->next();
     }
