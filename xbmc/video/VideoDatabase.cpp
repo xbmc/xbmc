@@ -6439,16 +6439,6 @@ bool CVideoDatabase::ScraperInUse(const std::string &scraperID) const
   return false;
 }
 
-class CArtItem
-{
-public:
-  int art_id{0};
-  std::string art_type;
-  std::string art_url;
-  int media_id{0};
-  std::string media_type;
-};
-
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
 {
   SScanSettings settings;
