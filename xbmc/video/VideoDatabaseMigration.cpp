@@ -18,10 +18,10 @@
 #include "VideoDatabase.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "video/VideoManagerTypes.h"
 
 #include <functional>
 #include <map>
@@ -57,6 +57,37 @@ public:
   int pathId;
   std::string path;
 };
+
+namespace KODI::DATABASE::MIGRATION
+{
+void InitializeVideoVersionTypeTableV123(CDatabase& db)
+{
+  assert(db.InTransaction());
+
+  constexpr int VIDEO_VERSION_ID_BEGIN = 40400;
+  constexpr int VIDEO_VERSION_ID_END = 40800;
+  constexpr int VideoAssetTypeOwner_SYSTEM = 0;
+
+  // The feature used localized text in the database. Avoiding the dependency on message
+  // translation is not practical. Changes in translations will alter the outcome.
+
+  try
+  {
+    for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
+    {
+      const std::string& type{g_localizeStrings.Get(id)};
+      db.ExecuteQuery(
+          db.PrepareSQL("INSERT INTO videoversiontype (id, name, owner) VALUES(%i, '%s', %i)", id,
+                        type.c_str(), VideoAssetTypeOwner_SYSTEM));
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed");
+    throw;
+  }
+}
+} // namespace KODI::DATABASE::MIGRATION
 
 void CVideoDatabase::UpdateTables(int iVersion)
 {
@@ -719,24 +750,32 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 123)
   {
+    constexpr int VideoAssetType_VERSION = 1;
+    constexpr int VIDEO_VERSION_ID_DEFAULT = 40400;
+
     // create videoversiontype table
     m_pDS->exec("CREATE TABLE videoversiontype (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)");
-    InitializeVideoVersionTypeTable(iVersion);
+    KODI::DATABASE::MIGRATION::InitializeVideoVersionTypeTableV123(*this);
 
     // create videoversion table
     m_pDS->exec("CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, mediaType "
                 "TEXT, itemType INTEGER, idType INTEGER)");
     m_pDS->exec(PrepareSQL(
         "INSERT INTO videoversion SELECT idFile, idMovie, 'movie', '%i', '%i' FROM movie",
-        VideoAssetType::VERSION, VIDEO_VERSION_ID_DEFAULT));
+        VideoAssetType_VERSION, VIDEO_VERSION_ID_DEFAULT));
   }
 
   if (iVersion < 127)
   {
+    constexpr int VideoAssetType_VERSION = 1;
+    constexpr int VideoAssetType_EXTRA = 2;
+    constexpr int VideoAssetTypeOwner_USER = 2;
+    constexpr int VIDEO_VERSION_ID_END = 40800;
+
     m_pDS->exec("ALTER TABLE videoversiontype ADD itemType INTEGER");
 
     // First, assume all types are video version types
-    m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i", VideoAssetType::VERSION));
+    m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i", VideoAssetType_VERSION));
 
     // Then, check current extras entries and their assigned item type and migrate it
 
@@ -749,7 +788,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
       {
         // user-added type for extras. change its item type to extras
         m_pDS2->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i WHERE id = %i",
-                                VideoAssetType::EXTRA, idType));
+                                VideoAssetType_EXTRA, idType));
       }
       else
       {
@@ -761,8 +800,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
           // currently a versions type, create a corresponding user-added type for extras
           m_pDS2->exec(PrepareSQL(
               "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(NULL, '%s', %i, %i)",
-              m_pDS2->fv(1).get_asString().c_str(), VideoAssetTypeOwner::USER,
-              VideoAssetType::EXTRA));
+              m_pDS2->fv(1).get_asString().c_str(), VideoAssetTypeOwner_USER,
+              VideoAssetType_EXTRA));
 
           // update the respective extras to use the new extras type
           const int newId{static_cast<int>(m_pDS2->lastinsertid())};
@@ -778,6 +817,9 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 128)
   {
+    constexpr int VideoAssetType_VERSION = 1;
+    constexpr int VideoAssetTypeOwner_USER = 2;
+
     m_pDS->exec("CREATE TABLE videoversion_new "
                 "(idFile INTEGER PRIMARY KEY, idMedia INTEGER, media_type TEXT, "
                 " itemType INTEGER, idType INTEGER)");
@@ -797,11 +839,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
                             "WHERE id NOT IN (SELECT idType FROM videoversion) "
                             "AND owner = %i "
                             "AND itemType = %i",
-                            VideoAssetTypeOwner::USER, VideoAssetType::VERSION));
+                            VideoAssetTypeOwner_USER, VideoAssetType_VERSION));
   }
 
   if (iVersion < 131)
   {
+    constexpr int VideoAssetType_VERSION = 1;
+    constexpr int VideoAssetTypeOwner_USER = 2;
+
     // Remove quality-like predefined version types
 
     // Retrieve current utilization per type
@@ -822,7 +867,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
         // type used by some versions, recreate as user type and link the versions to the new id
         m_pDS2->exec(PrepareSQL(
             "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(NULL, '%s', %i, %i)",
-            typeName.c_str(), VideoAssetTypeOwner::USER, VideoAssetType::VERSION));
+            typeName.c_str(), VideoAssetTypeOwner_USER, VideoAssetType_VERSION));
 
         const int newId{static_cast<int>(m_pDS2->lastinsertid())};
 

@@ -802,6 +802,20 @@ void CDatabase::RollbackTransaction()
   }
 }
 
+bool CDatabase::InTransaction() const
+{
+  try
+  {
+    if (nullptr != m_pDB)
+      return m_pDB->in_transaction();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "database:in_transaction failed");
+  }
+  return false;
+}
+
 bool CDatabase::CreateDatabase()
 {
   BeginTransaction();

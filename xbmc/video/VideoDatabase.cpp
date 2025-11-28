@@ -214,7 +214,7 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE videoversiontype (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER, "
               "itemType INTEGER)");
   CLog::Log(LOGINFO, "populate videoversiontype table");
-  InitializeVideoVersionTypeTable(GetSchemaVersion());
+  InitializeVideoVersionTypeTable();
 
   CLog::Log(LOGINFO, "create videoversion table");
   m_pDS->exec("CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, media_type "
@@ -12467,7 +12467,7 @@ std::string CVideoDatabase::GetVideoItemTitle(VideoDbContentType itemType, int d
   }
 }
 
-void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
+void CVideoDatabase::InitializeVideoVersionTypeTable()
 {
   assert(m_pDB->in_transaction());
 
@@ -12480,18 +12480,9 @@ void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
         continue;
 
       const std::string& type{g_localizeStrings.Get(id)};
-      if (schemaVersion < 127)
-      {
-        m_pDS->exec(
-            PrepareSQL("INSERT INTO videoversiontype (id, name, owner) VALUES(%i, '%s', %i)", id,
-                       type.c_str(), VideoAssetTypeOwner::SYSTEM));
-      }
-      else
-      {
-        m_pDS->exec(PrepareSQL(
-            "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(%i, '%s', %i, %i)", id,
-            type.c_str(), VideoAssetTypeOwner::SYSTEM, VideoAssetType::VERSION));
-      }
+      m_pDS->exec(PrepareSQL(
+          "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(%i, '%s', %i, %i)", id,
+          type.c_str(), VideoAssetTypeOwner::SYSTEM, VideoAssetType::VERSION));
     }
   }
   catch (...)
