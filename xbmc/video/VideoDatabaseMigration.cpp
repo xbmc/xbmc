@@ -121,10 +121,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
       std::string ident;
     };
 
-    std::string sql =
-        PrepareSQL("SELECT tvshow.idShow,idPath,c%02d,c%02d,c%02d FROM tvshow JOIN tvshowlinkpath "
-                   "ON tvshow.idShow = tvshowlinkpath.idShow",
-                   VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_IDENT_ID);
+    constexpr int LOCAL_VIDEODB_ID_TV_TITLE = 0;
+    constexpr int LOCAL_VIDEODB_ID_TV_PREMIERED = 5;
+    constexpr int LOCAL_VIDEODB_ID_TV_IDENT_ID = 12;
+
+    std::string sql = PrepareSQL(
+        "SELECT tvshow.idShow,idPath,c%02d,c%02d,c%02d FROM tvshow JOIN tvshowlinkpath "
+        "ON tvshow.idShow = tvshowlinkpath.idShow",
+        LOCAL_VIDEODB_ID_TV_TITLE, LOCAL_VIDEODB_ID_TV_PREMIERED, LOCAL_VIDEODB_ID_TV_IDENT_ID);
     m_pDS->query(sql);
     std::vector<CShowItem> shows;
     while (!m_pDS->eof())
@@ -330,11 +334,13 @@ void CVideoDatabase::UpdateTables(int iVersion)
   if (iVersion < 93)
   {
     // cleanup main tables
+    constexpr int LOCAL_VIDEODB_MAX_COLUMNS = 24;
+
     std::string valuesSql;
-    for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
+    for (int i = 0; i < LOCAL_VIDEODB_MAX_COLUMNS; i++)
     {
       valuesSql += StringUtils::Format("c{:02} = TRIM(c{:02})", i, i);
-      if (i < VIDEODB_MAX_COLUMNS - 1)
+      if (i < LOCAL_VIDEODB_MAX_COLUMNS - 1)
         valuesSql += ",";
     }
     m_pDS->exec("UPDATE episode SET " + valuesSql);
@@ -457,6 +463,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 99)
   {
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_SEASON = 12;
+
     // Add idSeason to episode table, so we don't have to join via idShow and season in the future
     m_pDS->exec("ALTER TABLE episode ADD idSeason integer");
 
@@ -469,7 +477,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
                               "episode.idShow = %d AND "
                               "episode.c%02d = %d",
                               m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asInt(),
-                              VIDEODB_ID_EPISODE_SEASON, m_pDS->fv(2).get_asInt()));
+                              LOCAL_VIDEODB_ID_EPISODE_SEASON, m_pDS->fv(2).get_asInt()));
 
       m_pDS->next();
     }
@@ -479,11 +487,18 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 102)
   {
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_VOTES = 2;
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_RATING_ID = 3;
+    constexpr int LOCAL_VIDEODB_ID_VOTES = 4;
+    constexpr int LOCAL_VIDEODB_ID_RATING_ID = 5;
+    constexpr int LOCAL_VIDEODB_ID_TV_VOTES = 3;
+    constexpr int LOCAL_VIDEODB_ID_TV_RATING_ID = 4;
+
     m_pDS->exec("CREATE TABLE rating (rating_id INTEGER PRIMARY KEY, media_id INTEGER, media_type "
                 "TEXT, rating_type TEXT, rating FLOAT, votes INTEGER)");
 
     std::string sql = PrepareSQL("SELECT DISTINCT idMovie, c%02d, c%02d FROM movie",
-                                 VIDEODB_ID_RATING_ID, VIDEODB_ID_VOTES);
+                                 LOCAL_VIDEODB_ID_RATING_ID, LOCAL_VIDEODB_ID_VOTES);
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
@@ -493,14 +508,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
                               std::strtod(m_pDS->fv(1).get_asString().c_str(), nullptr),
                               StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
       const auto idRating = static_cast<int>(m_pDS2->lastinsertid());
-      m_pDS2->exec(PrepareSQL("UPDATE movie SET c%02d=%i WHERE idMovie=%i", VIDEODB_ID_RATING_ID,
-                              idRating, m_pDS->fv(0).get_asInt()));
+      m_pDS2->exec(PrepareSQL("UPDATE movie SET c%02d=%i WHERE idMovie=%i",
+                              LOCAL_VIDEODB_ID_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
       m_pDS->next();
     }
     m_pDS->close();
 
-    sql = PrepareSQL("SELECT DISTINCT idShow, c%02d, c%02d FROM tvshow", VIDEODB_ID_TV_RATING_ID,
-                     VIDEODB_ID_TV_VOTES);
+    sql = PrepareSQL("SELECT DISTINCT idShow, c%02d, c%02d FROM tvshow",
+                     LOCAL_VIDEODB_ID_TV_RATING_ID, LOCAL_VIDEODB_ID_TV_VOTES);
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
@@ -510,14 +525,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
                               std::strtod(m_pDS->fv(1).get_asString().c_str(), nullptr),
                               StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
       const auto idRating = static_cast<int>(m_pDS2->lastinsertid());
-      m_pDS2->exec(PrepareSQL("UPDATE tvshow SET c%02d=%i WHERE idShow=%i", VIDEODB_ID_TV_RATING_ID,
-                              idRating, m_pDS->fv(0).get_asInt()));
+      m_pDS2->exec(PrepareSQL("UPDATE tvshow SET c%02d=%i WHERE idShow=%i",
+                              LOCAL_VIDEODB_ID_TV_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
       m_pDS->next();
     }
     m_pDS->close();
 
     sql = PrepareSQL("SELECT DISTINCT idEpisode, c%02d, c%02d FROM episode",
-                     VIDEODB_ID_EPISODE_RATING_ID, VIDEODB_ID_EPISODE_VOTES);
+                     LOCAL_VIDEODB_ID_EPISODE_RATING_ID, LOCAL_VIDEODB_ID_EPISODE_VOTES);
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
@@ -528,7 +543,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
                               StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
       const auto idRating = static_cast<int>(m_pDS2->lastinsertid());
       m_pDS2->exec(PrepareSQL("UPDATE episode SET c%02d=%i WHERE idEpisode=%i",
-                              VIDEODB_ID_EPISODE_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
+                              LOCAL_VIDEODB_ID_EPISODE_RATING_ID, idRating,
+                              m_pDS->fv(0).get_asInt()));
       m_pDS->next();
     }
     m_pDS->close();
@@ -542,19 +558,22 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 104)
   {
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_RUNTIME = 9;
+
     m_pDS->exec("ALTER TABLE tvshow ADD duration INTEGER");
 
-    std::string sql = PrepareSQL("SELECT episode.idShow, MAX(episode.c%02d) "
-                                 "FROM episode "
+    std::string sql =
+        PrepareSQL("SELECT episode.idShow, MAX(episode.c%02d) "
+                   "FROM episode "
 
-                                 "LEFT JOIN streamdetails "
-                                 "ON streamdetails.idFile = episode.idFile "
-                                 "AND streamdetails.iStreamType = 0 " // only grab video streams
+                   "LEFT JOIN streamdetails "
+                   "ON streamdetails.idFile = episode.idFile "
+                   "AND streamdetails.iStreamType = 0 " // only grab video streams
 
-                                 "WHERE episode.c%02d <> streamdetails.iVideoDuration "
-                                 "OR streamdetails.iVideoDuration IS NULL "
-                                 "GROUP BY episode.idShow",
-                                 VIDEODB_ID_EPISODE_RUNTIME, VIDEODB_ID_EPISODE_RUNTIME);
+                   "WHERE episode.c%02d <> streamdetails.iVideoDuration "
+                   "OR streamdetails.iVideoDuration IS NULL "
+                   "GROUP BY episode.idShow",
+                   LOCAL_VIDEODB_ID_EPISODE_RUNTIME, LOCAL_VIDEODB_ID_EPISODE_RUNTIME);
 
     m_pDS->query(sql);
     while (!m_pDS->eof())
@@ -568,14 +587,22 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 105)
   {
+    constexpr int LOCAL_VIDEODB_ID_YEAR = 7;
+    constexpr int LOCAL_VIDEODB_ID_MUSICVIDEO_YEAR = 7;
+
     m_pDS->exec("ALTER TABLE movie ADD premiered TEXT");
-    m_pDS->exec(PrepareSQL("UPDATE movie SET premiered=c%02d", VIDEODB_ID_YEAR));
+    m_pDS->exec(PrepareSQL("UPDATE movie SET premiered=c%02d", LOCAL_VIDEODB_ID_YEAR));
     m_pDS->exec("ALTER TABLE musicvideo ADD premiered TEXT");
-    m_pDS->exec(PrepareSQL("UPDATE musicvideo SET premiered=c%02d", VIDEODB_ID_MUSICVIDEO_YEAR));
+    m_pDS->exec(
+        PrepareSQL("UPDATE musicvideo SET premiered=c%02d", LOCAL_VIDEODB_ID_MUSICVIDEO_YEAR));
   }
 
   if (iVersion < 107)
   {
+    constexpr int LOCAL_VIDEODB_ID_IDENT_ID = 9;
+    constexpr int LOCAL_VIDEODB_ID_TV_IDENT_ID = 12;
+    constexpr int LOCAL_VIDEODB_ID_EPISODE_IDENT_ID = 20;
+
     // need this due to the nested GetScraperPath query
     std::unique_ptr<Dataset> pDS;
     pDS.reset(m_pDB->CreateDataset());
@@ -595,17 +622,17 @@ void CVideoDatabase::UpdateTables(int iVersion)
         case 0:
           mediatype = "movie";
           columnID = "idMovie";
-          columnUniqueID = VIDEODB_ID_IDENT_ID;
+          columnUniqueID = LOCAL_VIDEODB_ID_IDENT_ID;
           break;
         case 1:
           mediatype = "tvshow";
           columnID = "idShow";
-          columnUniqueID = VIDEODB_ID_TV_IDENT_ID;
+          columnUniqueID = LOCAL_VIDEODB_ID_TV_IDENT_ID;
           break;
         case 2:
           mediatype = "episode";
           columnID = "idEpisode";
-          columnUniqueID = VIDEODB_ID_EPISODE_IDENT_ID;
+          columnUniqueID = LOCAL_VIDEODB_ID_EPISODE_IDENT_ID;
           break;
         default:
           continue;
@@ -896,8 +923,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // former value 0 for versions becomes 1
     // former value 1 for extras becomes 2
 
-    static constexpr int VIDEOASSETTYPE_VERSION_OLD{0};
-    static constexpr int VIDEOASSETTYPE_EXTRA_OLD{1};
+    constexpr int VIDEOASSETTYPE_VERSION_OLD{0};
+    constexpr int VIDEOASSETTYPE_EXTRA_OLD{1};
 
     m_pDS->query(
         PrepareSQL("SELECT itemType FROM videoversion WHERE itemType NOT IN (%i, %i) UNION ALL "
