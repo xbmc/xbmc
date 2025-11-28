@@ -5,6 +5,7 @@ set(SOURCES Bookmark.cpp
             SetInfoTag.cpp
             Teletext.cpp
             VideoDatabase.cpp
+            VideoDatabaseMigration.cpp
             VideoDbUrl.cpp
             VideoEmbeddedImageFileLoader.cpp
             VideoFileItemClassify.cpp
