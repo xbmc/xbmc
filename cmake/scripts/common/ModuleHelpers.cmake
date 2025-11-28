@@ -897,7 +897,7 @@ function(create_mesonbuiltin)
     string(STRIP "${input}" input)
 
     # builtinpairs cmake source variables are specifically single strings, and not lists
-    string(REPLACE " " "', '" tmp_string "${input}")
+    string(REGEX REPLACE "[ ]+" "', '" tmp_string "${input}")
     string(PREPEND tmp_string "${meson_label_name} = ['")
     string(APPEND tmp_string "']")
     string(APPEND output_string "${tmp_string}\n")
