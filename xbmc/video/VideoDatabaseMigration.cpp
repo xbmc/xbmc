@@ -34,30 +34,6 @@
 using namespace dbiplus;
 using namespace XFILE;
 
-// used for database update to v83
-class CShowItem
-{
-public:
-  bool operator==(const CShowItem& r) const
-  {
-    return (!ident.empty() && ident == r.ident) || (title == r.title && year == r.year);
-  };
-  int id;
-  int path;
-  std::string title;
-  std::string year;
-  std::string ident;
-};
-
-// used for database update to v84
-class CShowLink
-{
-public:
-  int show;
-  int pathId;
-  std::string path;
-};
-
 namespace KODI::DATABASE::MIGRATION
 {
 void InitializeVideoVersionTypeTableV123(CDatabase& db)
@@ -130,6 +106,21 @@ void CVideoDatabase::UpdateTables(int iVersion)
   if (iVersion < 83)
   {
     // drop duplicates in tvshow table, and update tvshowlinkpath accordingly
+
+    class CShowItem
+    {
+    public:
+      bool operator==(const CShowItem& r) const
+      {
+        return (!ident.empty() && ident == r.ident) || (title == r.title && year == r.year);
+      };
+      int id;
+      int path;
+      std::string title;
+      std::string year;
+      std::string ident;
+    };
+
     std::string sql =
         PrepareSQL("SELECT tvshow.idShow,idPath,c%02d,c%02d,c%02d FROM tvshow JOIN tvshowlinkpath "
                    "ON tvshow.idShow = tvshowlinkpath.idShow",
@@ -179,7 +170,17 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
   }
   if (iVersion < 84)
-  { // replace any multipaths in tvshowlinkpath table
+  {
+    // replace any multipaths in tvshowlinkpath table
+
+    class CShowLink
+    {
+    public:
+      int show;
+      int pathId;
+      std::string path;
+    };
+
     m_pDS->query("SELECT idShow, tvshowlinkpath.idPath, strPath FROM tvshowlinkpath JOIN path ON "
                  "tvshowlinkpath.idPath=path.idPath WHERE path.strPath LIKE 'multipath://%'");
     std::vector<CShowLink> shows;
