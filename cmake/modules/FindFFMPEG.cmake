@@ -114,10 +114,28 @@ macro(buildFFMPEG)
     file(MAKE_DIRECTORY ${FFMPEG_INCLUDE_DIRS})
   else()
 
+    if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
+      if("VAAPI" IN_LIST PLATFORM_OPTIONAL_DEPS)
+        find_package(VAAPI)
+      endif()
+
+      if(TARGET ${APP_NAME_LC}::VAAPI)
+        set(FFMPEG_VAAPI TRUE)
+      endif()
+
+      if("VDPAU" IN_LIST PLATFORM_OPTIONAL_DEPS)
+        find_package(VDPAU)
+      endif()
+
+      if(TARGET ${APP_NAME_LC}::VDPAU)
+        set(FFMPEG_VDPAU TRUE)
+      endif()
+    endif()
+
     list(APPEND FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
                                -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
-                               -DENABLE_VAAPI=${ENABLE_VAAPI}
-                               -DENABLE_VDPAU=${ENABLE_VDPAU}
+                               -DENABLE_VAAPI=${FFMPEG_VAAPI}
+                               -DENABLE_VDPAU=${FFMPEG_VDPAU}
                                -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS})
 
     if(KODI_DEPENDSBUILD)
