@@ -4,7 +4,16 @@
 # order to bootstrap.
 DEPENDS=`dirname $0`
 export PATH="$DEPENDS/pre-build-deps/bin:$PATH"
-which m4 >/dev/null 2>/dev/null || make -C $DEPENDS/pre-depends/m4-pre-depends
+
+# Source - https://apple.stackexchange.com/a/123408
+# Posted by TJ Luoma, modified by community. See post 'Timeline' for change history
+# Retrieved 2025-11-29, License - CC BY-SA 4.0
+version() { echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }'; }
+
+M4_VERSION=$($(which m4) --version 2>/dev/null | awk 'NR==1{for(i=1;i<=NF;i++){ if($i ~ "[0-9].[0-9].[0-9]"){print $i} } }')
+if [ $(version $M4_VERSION) -lt $(version "1.4.8") ]; then
+  make -C $DEPENDS/pre-depends/m4-pre-depends
+fi
 which autoconf >/dev/null 2>/dev/null || make -C $DEPENDS/pre-depends/autoconf-pre-depends
 which autoconf >/dev/null 2>/dev/null || \
   (echo "autoconf was not found and could not be built. Aborting." && exit 1)
