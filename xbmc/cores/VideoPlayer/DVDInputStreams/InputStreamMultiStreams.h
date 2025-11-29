@@ -22,10 +22,12 @@ class InputStreamMultiStreams : public CDVDInputStream
 
 public:
   InputStreamMultiStreams(DVDStreamType type, const CFileItem& fileitem)
-    : CDVDInputStream(type, fileitem) {}
+    : CDVDInputStream(type, fileitem)
+  {
+  }
 
   ~InputStreamMultiStreams() override = default;
 
 protected:
-  std::vector<InputStreamPtr> m_InputStreams;    // input streams for current playing file
+  std::vector<InputStreamPtr> m_InputStreams; // input streams for current playing file
 };

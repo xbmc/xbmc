@@ -54,8 +54,13 @@ public:
   void SetFiltering(GLenum target, GLenum mode) const;
 
   // Create a new texture and bind to it
-  bool CreateAndBindToTexture(GLenum target, int width, int height, GLenum format, GLenum type=GL_UNSIGNED_BYTE,
-                              GLenum filter=GL_LINEAR, GLenum clampmode=GL_CLAMP_TO_EDGE);
+  bool CreateAndBindToTexture(GLenum target,
+                              int width,
+                              int height,
+                              GLenum format,
+                              GLenum type = GL_UNSIGNED_BYTE,
+                              GLenum filter = GL_LINEAR,
+                              GLenum clampmode = GL_CLAMP_TO_EDGE);
 
   // Return the internally created texture ID
   GLuint Texture() const { return m_texid; }
@@ -67,10 +72,8 @@ public:
 
 private:
   GLuint m_fbo = 0;
-  bool   m_valid;
-  bool   m_bound;
-  bool   m_supported;
+  bool m_valid;
+  bool m_bound;
+  bool m_supported;
   GLuint m_texid = 0;
 };
-
-

@@ -824,8 +824,7 @@ void CNFSFile::Close()
     // so keep alive code doesn't process it anymore
     gNfsConnection.removeFromKeepAliveList(m_pFileHandle);
     ret = nfs_close(m_pNfsContext, m_pFileHandle);
-
-	  if (ret < 0)
+    if (ret < 0)
     {
       CLog::Log(LOGERROR, "Failed to close({}) - {}", m_url.GetFileName(),
                 nfs_get_error(m_pNfsContext));

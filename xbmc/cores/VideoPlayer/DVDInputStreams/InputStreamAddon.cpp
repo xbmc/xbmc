@@ -61,7 +61,7 @@ CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
   std::string name(addonInfo->ID());
 
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
-  for (auto &key : m_fileItemProps)
+  for (auto& key : m_fileItemProps)
   {
     StringUtils::Trim(key);
     key = name + "." + key;
@@ -153,7 +153,7 @@ bool CInputStreamAddon::Open()
 
   INPUTSTREAM_PROPERTY props = {};
   std::map<std::string, std::string> propsMap;
-  for (auto &key : m_fileItemProps)
+  for (auto& key : m_fileItemProps)
   {
     if (m_item.GetProperty(key).isNull())
       continue;
@@ -161,7 +161,7 @@ bool CInputStreamAddon::Open()
   }
 
   props.m_nCountInfoValues = 0;
-  for (auto &pair : propsMap)
+  for (auto& pair : propsMap)
   {
     props.m_ListItemProperties[props.m_nCountInfoValues].m_strKey = pair.first.c_str();
     props.m_ListItemProperties[props.m_nCountInfoValues].m_strValue = pair.second.c_str();
@@ -298,7 +298,7 @@ CDVDInputStream::ITimes* CInputStreamAddon::GetITimes()
   return this;
 }
 
-bool CInputStreamAddon::GetTimes(Times &times)
+bool CInputStreamAddon::GetTimes(Times& times)
 {
   if (!m_ifc.inputstream->toAddon->get_times)
     return false;
@@ -600,7 +600,7 @@ bool CInputStreamAddon::SeekTime(double time, bool backward, double* startpts)
 
     FlushDemux();
 
-    if(startpts)
+    if (startpts)
       *startpts = DVD_NOPTS_VALUE;
     return true;
   }
@@ -636,7 +636,6 @@ bool CInputStreamAddon::IsRealtime()
     return m_ifc.inputstream->toAddon->is_real_time_stream(m_ifc.inputstream);
   return false;
 }
-
 
 // IChapter
 CDVDInputStream::IChapter* CInputStreamAddon::GetIChapter()
@@ -694,36 +693,36 @@ int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
 {
   switch (profile)
   {
-  case H264CodecProfileBaseline:
-    return FF_PROFILE_H264_BASELINE;
-  case H264CodecProfileMain:
-    return FF_PROFILE_H264_MAIN;
-  case H264CodecProfileExtended:
-    return FF_PROFILE_H264_EXTENDED;
-  case H264CodecProfileHigh:
-    return FF_PROFILE_H264_HIGH;
-  case H264CodecProfileHigh10:
-    return FF_PROFILE_H264_HIGH_10;
-  case H264CodecProfileHigh422:
-    return FF_PROFILE_H264_HIGH_422;
-  case H264CodecProfileHigh444Predictive:
-    return FF_PROFILE_H264_HIGH_444_PREDICTIVE;
-  case VP9CodecProfile0:
-    return FF_PROFILE_VP9_0;
-  case VP9CodecProfile1:
-    return FF_PROFILE_VP9_1;
-  case VP9CodecProfile2:
-    return FF_PROFILE_VP9_2;
-  case VP9CodecProfile3:
-    return FF_PROFILE_VP9_3;
-  case AV1CodecProfileMain:
-    return FF_PROFILE_AV1_MAIN;
-  case AV1CodecProfileHigh:
-    return FF_PROFILE_AV1_HIGH;
-  case AV1CodecProfileProfessional:
-    return FF_PROFILE_AV1_PROFESSIONAL;
-  default:
-    return FF_PROFILE_UNKNOWN;
+    case H264CodecProfileBaseline:
+      return FF_PROFILE_H264_BASELINE;
+    case H264CodecProfileMain:
+      return FF_PROFILE_H264_MAIN;
+    case H264CodecProfileExtended:
+      return FF_PROFILE_H264_EXTENDED;
+    case H264CodecProfileHigh:
+      return FF_PROFILE_H264_HIGH;
+    case H264CodecProfileHigh10:
+      return FF_PROFILE_H264_HIGH_10;
+    case H264CodecProfileHigh422:
+      return FF_PROFILE_H264_HIGH_422;
+    case H264CodecProfileHigh444Predictive:
+      return FF_PROFILE_H264_HIGH_444_PREDICTIVE;
+    case VP9CodecProfile0:
+      return FF_PROFILE_VP9_0;
+    case VP9CodecProfile1:
+      return FF_PROFILE_VP9_1;
+    case VP9CodecProfile2:
+      return FF_PROFILE_VP9_2;
+    case VP9CodecProfile3:
+      return FF_PROFILE_VP9_3;
+    case AV1CodecProfileMain:
+      return FF_PROFILE_AV1_MAIN;
+    case AV1CodecProfileHigh:
+      return FF_PROFILE_AV1_HIGH;
+    case AV1CodecProfileProfessional:
+      return FF_PROFILE_AV1_PROFESSIONAL;
+    default:
+      return FF_PROFILE_UNKNOWN;
   }
 }
 

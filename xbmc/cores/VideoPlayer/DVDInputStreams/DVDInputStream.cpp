@@ -30,7 +30,6 @@ bool CDVDInputStream::Open()
 
 void CDVDInputStream::Close()
 {
-
 }
 
 std::string CDVDInputStream::GetFileName()

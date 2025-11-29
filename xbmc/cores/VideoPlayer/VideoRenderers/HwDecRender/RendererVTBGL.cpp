@@ -21,9 +21,9 @@
 #include <CoreVideo/CoreVideo.h>
 #include <OpenGL/CGLIOSurface.h>
 
-CBaseRenderer* CRendererVTB::Create(CVideoBuffer *buffer)
+CBaseRenderer* CRendererVTB::Create(CVideoBuffer* buffer)
 {
-  VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buffer);
+  VTB::CVideoBufferVTB* vb = dynamic_cast<VTB::CVideoBufferVTB*>(buffer);
   if (vb)
     return new CRendererVTB();
 
@@ -47,10 +47,10 @@ CRendererVTB::~CRendererVTB()
 
 void CRendererVTB::ReleaseBuffer(int idx)
 {
-  CPictureBuffer &buf = m_buffers[idx];
+  CPictureBuffer& buf = m_buffers[idx];
   if (buf.videoBuffer)
   {
-    VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
+    VTB::CVideoBufferVTB* vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
     if (vb)
     {
       if (vb->m_fence && glIsFenceAPPLE(vb->m_fence))
@@ -78,28 +78,28 @@ bool CRendererVTB::LoadShadersHook()
 
 bool CRendererVTB::CreateTexture(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
-  YuvImage &im = buf.image;
-  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  CPictureBuffer& buf = m_buffers[index];
+  YuvImage& im = buf.image;
+  CYuvPlane(&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
 
   ReleaseBuffer(index);
   DeleteTexture(index);
 
-  memset(&im    , 0, sizeof(im));
+  memset(&im, 0, sizeof(im));
   memset(&planes, 0, sizeof(CYuvPlane[YuvImage::MAX_PLANES]));
 
-  im.bpp    = 1;
-  im.width  = m_sourceWidth;
+  im.bpp = 1;
+  im.width = m_sourceWidth;
   im.height = m_sourceHeight;
   im.cshift_x = 1;
   im.cshift_y = 1;
 
-  planes[0].texwidth  = im.width;
+  planes[0].texwidth = im.width;
   planes[0].texheight = im.height;
 
-  planes[1].texwidth  = planes[0].texwidth >> im.cshift_x;
+  planes[1].texwidth = planes[0].texwidth >> im.cshift_x;
   planes[1].texheight = planes[0].texheight >> im.cshift_y;
-  planes[2].texwidth  = planes[1].texwidth;
+  planes[2].texwidth = planes[1].texwidth;
   planes[2].texheight = planes[1].texheight;
 
   for (int p = 0; p < 3; p++)
@@ -118,7 +118,7 @@ bool CRendererVTB::CreateTexture(int index)
 void CRendererVTB::DeleteTexture(int index)
 {
   CPictureBuffer& buf = m_buffers[index];
-  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  CYuvPlane(&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
   buf.loaded = false;
 
   if (planes[0].id && glIsTexture(planes[0].id))
@@ -136,10 +136,10 @@ void CRendererVTB::DeleteTexture(int index)
 
 bool CRendererVTB::UploadTexture(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
-  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
+  CPictureBuffer& buf = m_buffers[index];
+  CYuvPlane(&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
 
-  VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
+  VTB::CVideoBufferVTB* vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
   if (!vb)
   {
     return false;
@@ -150,8 +150,8 @@ bool CRendererVTB::UploadTexture(int index)
   // It is the fastest way to render a CVPixelBuffer backed
   // with an IOSurface as there is no CPU -> GPU upload.
   CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  CGLContextObj cgl_ctx  = (CGLContextObj)winSystem->GetCGLContextObj();
-  IOSurfaceRef surface  = CVPixelBufferGetIOSurface(cvBufferRef);
+  CGLContextObj cgl_ctx = (CGLContextObj)winSystem->GetCGLContextObj();
+  IOSurfaceRef surface = CVPixelBufferGetIOSurface(cvBufferRef);
   OSType format_type = IOSurfaceGetPixelFormat(surface);
 
   if (format_type != kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)
@@ -173,8 +173,8 @@ bool CRendererVTB::UploadTexture(int index)
 
   glBindTexture(m_textureTarget, planes[0].id);
 
-  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RED,
-                         widthY, heightY, GL_RED, GL_UNSIGNED_BYTE, surface, 0);
+  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RED, widthY, heightY, GL_RED,
+                         GL_UNSIGNED_BYTE, surface, 0);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -182,8 +182,8 @@ bool CRendererVTB::UploadTexture(int index)
 
   glBindTexture(m_textureTarget, planes[1].id);
 
-  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RG,
-                         widthUV, heightUV, GL_RG, GL_UNSIGNED_BYTE, surface, 1);
+  CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RG, widthUV, heightUV, GL_RG,
+                         GL_UNSIGNED_BYTE, surface, 1);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -198,8 +198,8 @@ bool CRendererVTB::UploadTexture(int index)
 
 void CRendererVTB::AfterRenderHook(int idx)
 {
-  CPictureBuffer &buf = m_buffers[idx];
-  VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
+  CPictureBuffer& buf = m_buffers[idx];
+  VTB::CVideoBufferVTB* vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
   if (!vb)
   {
     return;
@@ -215,8 +215,8 @@ void CRendererVTB::AfterRenderHook(int idx)
 
 bool CRendererVTB::NeedBuffer(int idx)
 {
-  CPictureBuffer &buf = m_buffers[idx];
-  VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
+  CPictureBuffer& buf = m_buffers[idx];
+  VTB::CVideoBufferVTB* vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
   if (!vb)
   {
     return false;

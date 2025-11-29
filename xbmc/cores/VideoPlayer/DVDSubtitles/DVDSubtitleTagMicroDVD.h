@@ -21,7 +21,6 @@
 #define TAG_ONE_LINE 1
 #define TAG_ALL_LINE 2
 
-
 class CDVDSubtitleTagMicroDVD
 {
 public:

@@ -82,10 +82,10 @@ BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
-  m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
-  m_hYcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordY");
-  m_hUcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordU");
-  m_hVcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordV");
+  m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
+  m_hYcoord = glGetAttribLocation(ProgramHandle(), "m_attrcordY");
+  m_hUcoord = glGetAttribLocation(ProgramHandle(), "m_attrcordU");
+  m_hVcoord = glGetAttribLocation(ProgramHandle(), "m_attrcordV");
   m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
   m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
@@ -117,7 +117,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 
   Matrix4 yuvMat = m_convMatrix.GetYuvMat();
   glUniformMatrix4fv(m_hYuvMat, 1, GL_FALSE, yuvMat.ToRaw());
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
+  glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   glUniform1f(m_hAlpha, m_alpha);
 
@@ -187,8 +187,10 @@ void BaseYUV2RGBGLSLShader::Free()
 {
 }
 
-void BaseYUV2RGBGLSLShader::SetColParams(AVColorSpace colSpace, int bits, bool limited,
-                                        int textureBits)
+void BaseYUV2RGBGLSLShader::SetColParams(AVColorSpace colSpace,
+                                         int bits,
+                                         bool limited,
+                                         int textureBits)
 {
   if (colSpace == AVCOL_SPC_UNSPECIFIED)
   {
@@ -231,7 +233,6 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(EShaderFormat format,
   PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
 }
 
-
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBBobShader - YUV2RGB with Bob deinterlacing
 //////////////////////////////////////////////////////////////////////
@@ -258,7 +259,7 @@ void YUV2RGBBobShader::OnCompiledAndLinked()
 
 bool YUV2RGBBobShader::OnEnabled()
 {
-  if(!BaseYUV2RGBGLSLShader::OnEnabled())
+  if (!BaseYUV2RGBGLSLShader::OnEnabled())
     return false;
 
   glUniform1i(m_hField, m_field);

@@ -13,7 +13,8 @@
 
 #include "system_gl.h"
 
-namespace Shaders {
+namespace Shaders
+{
 
 namespace GLES
 {
@@ -64,39 +65,42 @@ protected:
   const GLfloat* m_proj;
   const GLfloat* m_model;
   GLfloat m_alpha = -1;
-  };
+};
 
-  class ConvolutionFilterShader : public BaseVideoFilterShader
+class ConvolutionFilterShader : public BaseVideoFilterShader
+{
+public:
+  ConvolutionFilterShader(ESCALINGMETHOD method);
+  ~ConvolutionFilterShader() override;
+  void OnCompiledAndLinked() override;
+  bool OnEnabled() override;
+  void OnDisabled() override;
+  void Free();
+
+  bool GetTextureFilter(GLint& filter) override
   {
-  public:
-    ConvolutionFilterShader(ESCALINGMETHOD method);
-    ~ConvolutionFilterShader() override;
-    void OnCompiledAndLinked() override;
-    bool OnEnabled() override;
-    void OnDisabled() override;
-    void Free();
+    filter = GL_NEAREST;
+    return true;
+  }
 
-    bool GetTextureFilter(GLint& filter) override { filter = GL_NEAREST; return true; }
+protected:
+  // kernel textures
+  GLuint m_kernelTex1 = 0;
 
-  protected:
-    // kernel textures
-    GLuint m_kernelTex1 = 0;
+  // shader handles to kernel textures
+  GLint m_hKernTex = -1;
 
-    // shader handles to kernel textures
-    GLint m_hKernTex = -1;
+  ESCALINGMETHOD m_method;
+  bool m_floattex; //if float textures are supported
+  GLint m_internalformat;
+};
 
-    ESCALINGMETHOD m_method;
-    bool m_floattex; //if float textures are supported
-    GLint m_internalformat;
-  };
+class DefaultFilterShader : public BaseVideoFilterShader
+{
+public:
+  void OnCompiledAndLinked() override;
+  bool OnEnabled() override;
+};
 
-  class DefaultFilterShader : public BaseVideoFilterShader
-  {
-    public:
-      void OnCompiledAndLinked() override;
-      bool OnEnabled() override;
-  };
-
-  } // namespace GLES
-} // end namespace
-
+} // namespace GLES
+} // namespace Shaders

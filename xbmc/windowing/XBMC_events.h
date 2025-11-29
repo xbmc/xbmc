@@ -37,34 +37,39 @@ typedef enum
 } XBMC_EventType;
 
 /* Keyboard event structure */
-typedef struct XBMC_KeyboardEvent {
-	XBMC_keysym keysym;
+typedef struct XBMC_KeyboardEvent
+{
+  XBMC_keysym keysym;
 } XBMC_KeyboardEvent;
 
 /* Mouse motion event structure */
-typedef struct XBMC_MouseMotionEvent {
-	uint16_t x, y;	/* The X/Y coordinates of the mouse */
+typedef struct XBMC_MouseMotionEvent
+{
+  uint16_t x, y; /* The X/Y coordinates of the mouse */
 } XBMC_MouseMotionEvent;
 
 /* Mouse button event structure */
-typedef struct XBMC_MouseButtonEvent {
-	unsigned char button;	/* The mouse button index */
-	uint16_t x, y;	/* The X/Y coordinates of the mouse at press time */
+typedef struct XBMC_MouseButtonEvent
+{
+  unsigned char button; /* The mouse button index */
+  uint16_t x, y; /* The X/Y coordinates of the mouse at press time */
 } XBMC_MouseButtonEvent;
 
 /* The "window resized" event
    When you get this event, you are responsible for setting a new video
    mode with the new width and height.
  */
-typedef struct XBMC_ResizeEvent {
+typedef struct XBMC_ResizeEvent
+{
   int width; /* New width */
   int height; /* New height */
   double scale; /* Scaling factor */
 } XBMC_ResizeEvent;
 
-typedef struct XBMC_MoveEvent {
-	int x;		/* New x position */
-	int y;		/* New y position */
+typedef struct XBMC_MoveEvent
+{
+  int x; /* New x position */
+  int y; /* New y position */
 } XBMC_MoveEvent;
 
 typedef struct XBMC_ScreenChangeEvent
@@ -82,10 +87,11 @@ typedef struct XBMC_QuitEvent {
 } XBMC_QuitEvent;
 
 /* A user-defined event type */
-typedef struct XBMC_UserEvent {
-	int code;	/* User defined event code */
-	void *data1;	/* User defined data pointer */
-	void *data2;	/* User defined data pointer */
+typedef struct XBMC_UserEvent
+{
+  int code; /* User defined event code */
+  void* data1; /* User defined data pointer */
+  void* data2; /* User defined data pointer */
 } XBMC_UserEvent;
 
 /* Multimedia keys on keyboards / remotes are mapped to APPCOMMAND events */
@@ -102,9 +108,10 @@ typedef struct XBMC_TouchEvent {
   int pointers;         /* number of touch pointers */
 } XBMC_TouchEvent;
 
-typedef struct XBMC_SetFocusEvent {
-	int x;		/* x position */
-	int y;		/* y position */
+typedef struct XBMC_SetFocusEvent
+{
+  int x; /* x position */
+  int y; /* y position */
 } XBMC_SetFocusEvent;
 
 /* Button event structure */

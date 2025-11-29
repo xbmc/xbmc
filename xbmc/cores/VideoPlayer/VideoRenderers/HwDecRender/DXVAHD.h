@@ -21,7 +21,8 @@
 
 class CRenderBuffer;
 
-namespace DXVA {
+namespace DXVA
+{
 
 using namespace Microsoft::WRL;
 
@@ -31,12 +32,20 @@ class CProcessorHD : public ID3DResource
 {
 public:
   explicit CProcessorHD();
- ~CProcessorHD();
+  ~CProcessorHD();
 
   void UnInit();
   bool Open(const VideoPicture& picture, std::shared_ptr<DXVA::CEnumeratorHD> enumerator);
   void Close();
-  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
+  bool Render(CRect src,
+              CRect dst,
+              ID3D11Resource* target,
+              CRenderBuffer** views,
+              DWORD flags,
+              UINT frameIdx,
+              UINT rotation,
+              float contrast,
+              float brightness);
   uint8_t PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
 
   /*!
@@ -47,11 +56,11 @@ public:
   bool SetConversion(const ProcessorConversion& conversion);
 
   // ID3DResource overrides
-  void OnCreateDevice() override  {}
+  void OnCreateDevice() override {}
   void OnDestroyDevice(bool) override
   {
     std::lock_guard lock(m_section);
-    
+
     UnInit();
   }
 
@@ -112,4 +121,4 @@ protected:
   AVColorSpace m_lastColorSpace{AVCOL_SPC_UNSPECIFIED};
   bool m_lastFullRange{false};
 };
-};
+}; // namespace DXVA

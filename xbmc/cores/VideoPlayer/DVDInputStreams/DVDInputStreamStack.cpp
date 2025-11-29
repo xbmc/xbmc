@@ -17,7 +17,8 @@
 
 using namespace XFILE;
 
-CDVDInputStreamStack::CDVDInputStreamStack(const CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_FILE, fileitem)
+CDVDInputStreamStack::CDVDInputStreamStack(const CFileItem& fileitem)
+  : CDVDInputStream(DVDSTREAM_TYPE_FILE, fileitem)
 {
   m_eof = true;
   m_pos = 0;
@@ -40,19 +41,19 @@ bool CDVDInputStreamStack::Open()
     return false;
 
   CStackDirectory dir;
-  CFileItemList   items;
+  CFileItemList items;
 
   const CURL pathToUrl(m_item.GetDynPath());
-  if(!dir.GetDirectory(pathToUrl, items))
+  if (!dir.GetDirectory(pathToUrl, items))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to get list of stacked items");
     return false;
   }
 
   m_length = 0;
-  m_eof    = false;
+  m_eof = false;
 
-  for(int index = 0; index < items.Size(); index++)
+  for (int index = 0; index < items.Size(); index++)
   {
     TFile file(new CFile());
 
@@ -63,10 +64,10 @@ bool CDVDInputStreamStack::Open()
       continue;
     }
     TSeg segment;
-    segment.file   = file;
+    segment.file = file;
     segment.length = file->GetLength();
 
-    if(segment.length <= 0)
+    if (segment.length <= 0)
     {
       CLog::Log(LOGERROR,
                 "CDVDInputStreamStack::Open - failed to get file length for '{}' - skipping",
@@ -79,11 +80,11 @@ bool CDVDInputStreamStack::Open()
     m_files.push_back(segment);
   }
 
-  if(m_files.empty())
+  if (m_files.empty())
     return false;
 
   m_file = m_files[0].file;
-  m_eof  = false;
+  m_eof = false;
 
   return true;
 }
@@ -99,21 +100,21 @@ void CDVDInputStreamStack::Close()
 
 int CDVDInputStreamStack::Read(uint8_t* buf, int buf_size)
 {
-  if(m_file == nullptr || m_eof)
+  if (m_file == nullptr || m_eof)
     return 0;
 
   unsigned int ret = m_file->Read(buf, buf_size);
 
-  if(ret > INT_MAX)
+  if (ret > INT_MAX)
     return -1;
 
-  if(ret == 0)
+  if (ret == 0)
   {
     m_eof = true;
-    if(Seek(m_pos, SEEK_SET) < 0)
+    if (Seek(m_pos, SEEK_SET) < 0)
     {
       CLog::Log(LOGERROR, "CDVDInputStreamStack::Read - failed to seek into next file");
-      m_eof  = true;
+      m_eof = true;
       m_file.reset();
       return -1;
     }
@@ -128,31 +129,31 @@ int64_t CDVDInputStreamStack::Seek(int64_t offset, int whence)
 {
   int64_t pos, len;
 
-  if     (whence == SEEK_SET)
+  if (whence == SEEK_SET)
     pos = offset;
-  else if(whence == SEEK_CUR)
+  else if (whence == SEEK_CUR)
     pos = offset + m_pos;
-  else if(whence == SEEK_END)
+  else if (whence == SEEK_END)
     pos = offset + m_length;
   else
     return -1;
 
   len = 0;
-  for(auto it = m_files.begin(); it != m_files.end(); ++it)
+  for (auto it = m_files.begin(); it != m_files.end(); ++it)
   {
-    if(len + it->length > pos)
+    if (len + it->length > pos)
     {
-      TFile   file     = it->file;
+      TFile file = it->file;
       int64_t file_pos = pos - len;
-      if(file->GetPosition() != file_pos)
+      if (file->GetPosition() != file_pos)
       {
-        if(file->Seek(file_pos, SEEK_SET) < 0)
+        if (file->Seek(file_pos, SEEK_SET) < 0)
           return false;
       }
 
       m_file = file;
-      m_pos  = pos;
-      m_eof  = false;
+      m_pos = pos;
+      m_eof = false;
       return pos;
     }
     len += it->length;
@@ -165,5 +166,3 @@ int64_t CDVDInputStreamStack::GetLength()
 {
   return m_length;
 }
-
-

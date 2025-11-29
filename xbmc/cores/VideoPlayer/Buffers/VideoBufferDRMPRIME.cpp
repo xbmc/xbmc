@@ -10,7 +10,6 @@
 
 #include <mutex>
 
-
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -106,11 +105,13 @@ CVideoBufferDRMPRIMEFFmpeg::~CVideoBufferDRMPRIMEFFmpeg()
   av_frame_free(&m_pFrame);
 }
 
-void CVideoBufferDRMPRIMEFFmpeg::SetRef(AVFrame* frame) const {
+void CVideoBufferDRMPRIMEFFmpeg::SetRef(AVFrame* frame) const
+{
   av_frame_move_ref(m_pFrame, frame);
 }
 
-void CVideoBufferDRMPRIMEFFmpeg::Unref() const {
+void CVideoBufferDRMPRIMEFFmpeg::Unref() const
+{
   av_frame_unref(m_pFrame);
 }
 

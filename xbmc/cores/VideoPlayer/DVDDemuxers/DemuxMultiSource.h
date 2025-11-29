@@ -19,14 +19,18 @@
 
 typedef std::shared_ptr<CDVDDemux> DemuxPtr;
 
-struct comparator{
+struct comparator
+{
   bool operator()(const std::pair<double, DemuxPtr>& x, const std::pair<double, DemuxPtr>& y) const
   {
     return x.first > y.first;
   }
 };
 
-typedef std::priority_queue<std::pair<double, DemuxPtr>, std::vector<std::pair<double, DemuxPtr>>, comparator> DemuxQueue;
+typedef std::priority_queue<std::pair<double, DemuxPtr>,
+                            std::vector<std::pair<double, DemuxPtr>>,
+                            comparator>
+    DemuxQueue;
 
 class CDemuxMultiSource : public CDVDDemux
 {

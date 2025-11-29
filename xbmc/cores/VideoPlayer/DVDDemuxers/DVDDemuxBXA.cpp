@@ -15,15 +15,12 @@
 
 // AirTunes audio Demuxer.
 
-class CDemuxStreamAudioBXA
-  : public CDemuxStreamAudio
+class CDemuxStreamAudioBXA : public CDemuxStreamAudio
 {
-  std::string    m_codec;
-public:
-  CDemuxStreamAudioBXA(CDVDDemuxBXA *parent, const std::string& codec)
-    : m_codec(codec)
+  std::string m_codec;
 
-  {}
+public:
+  CDemuxStreamAudioBXA(CDVDDemuxBXA* parent, const std::string& codec) : m_codec(codec) {}
 };
 
 CDVDDemuxBXA::CDVDDemuxBXA() : CDVDDemux()
@@ -44,10 +41,10 @@ bool CDVDDemuxBXA::Open(const std::shared_ptr<CDVDInputStream>& pInput)
 
   Dispose();
 
-  if(!pInput || !pInput->IsStreamType(DVDSTREAM_TYPE_FILE))
+  if (!pInput || !pInput->IsStreamType(DVDSTREAM_TYPE_FILE))
     return false;
 
-  if(pInput->Read((uint8_t *)&m_header, sizeof(Demux_BXA_FmtHeader)) < 1)
+  if (pInput->Read((uint8_t*)&m_header, sizeof(Demux_BXA_FmtHeader)) < 1)
     return false;
 
   // file valid?
@@ -61,15 +58,15 @@ bool CDVDDemuxBXA::Open(const std::shared_ptr<CDVDInputStream>& pInput)
 
   m_stream = new CDemuxStreamAudioBXA(this, "BXA");
 
-  if(!m_stream)
+  if (!m_stream)
     return false;
 
-  m_stream->iSampleRate     = m_header.sampleRate;
-  m_stream->iBitsPerSample  = m_header.bitsPerSample;
-  m_stream->iBitRate        = m_header.sampleRate * m_header.channels * m_header.bitsPerSample;
-  m_stream->iChannels       = m_header.channels;
-  m_stream->type            = STREAM_AUDIO;
-  m_stream->codec           = AV_CODEC_ID_PCM_S16LE;
+  m_stream->iSampleRate = m_header.sampleRate;
+  m_stream->iBitsPerSample = m_header.bitsPerSample;
+  m_stream->iBitRate = m_header.sampleRate * m_header.channels * m_header.bitsPerSample;
+  m_stream->iChannels = m_header.channels;
+  m_stream->type = STREAM_AUDIO;
+  m_stream->codec = AV_CODEC_ID_PCM_S16LE;
 
   return true;
 }
@@ -94,7 +91,7 @@ bool CDVDDemuxBXA::Reset()
 
 void CDVDDemuxBXA::Abort()
 {
-  if(m_pInput)
+  if (m_pInput)
     return m_pInput->Abort();
 }
 
@@ -105,7 +102,7 @@ void CDVDDemuxBXA::Flush()
 #define BXA_READ_SIZE 4096
 DemuxPacket* CDVDDemuxBXA::Read()
 {
-  if(!m_pInput)
+  if (!m_pInput)
     return nullptr;
 
   DemuxPacket* pPacket = CDVDDemuxUtils::AllocateDemuxPacket(BXA_READ_SIZE);
@@ -120,14 +117,14 @@ DemuxPacket* CDVDDemuxBXA::Read()
   pPacket->iSize = m_pInput->Read(pPacket->pData, BXA_READ_SIZE);
   pPacket->iStreamId = 0;
 
-  if(pPacket->iSize < 1)
+  if (pPacket->iSize < 1)
   {
     delete pPacket;
     pPacket = nullptr;
   }
   else
   {
-    int n = (m_header.channels * m_header.bitsPerSample * m_header.sampleRate)>>3;
+    int n = (m_header.channels * m_header.bitsPerSample * m_header.sampleRate) >> 3;
     if (n > 0)
     {
       m_bytes += pPacket->iSize;
@@ -146,7 +143,7 @@ DemuxPacket* CDVDDemuxBXA::Read()
 
 CDemuxStream* CDVDDemuxBXA::GetStream(int iStreamId) const
 {
-  if(iStreamId != 0)
+  if (iStreamId != 0)
     return nullptr;
 
   return m_stream;
@@ -171,7 +168,7 @@ int CDVDDemuxBXA::GetNrOfStreams() const
 
 std::string CDVDDemuxBXA::GetFileName()
 {
-  if(m_pInput)
+  if (m_pInput)
     return m_pInput->GetFileName();
   else
     return "";

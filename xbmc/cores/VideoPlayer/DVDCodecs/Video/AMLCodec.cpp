@@ -8,41 +8,42 @@
 
 #include "AMLCodec.h"
 
+#include "ServiceBroker.h"
+#include "aom_integer.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "obu_util.h"
 #include "settings/AdvancedSettings.h"
-#include "windowing/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/AMLUtils.h"
-#include "utils/log.h"
 #include "utils/StreamDetails.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 #include "platform/linux/SysfsPath.h"
 
 #include <algorithm>
-#include <unistd.h>
+#include <chrono>
 #include <queue>
-#include <vector>
 #include <signal.h>
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/ioctl.h>
-#include <sys/utsname.h>
-#include <linux/videodev2.h>
-#include <sys/poll.h>
-#include <chrono>
 #include <thread>
-#include "aom_integer.h"
-#include "obu_util.h"
+#include <vector>
+
+#include <fcntl.h>
+#include <linux/videodev2.h>
+#include <sys/ioctl.h>
+#include <sys/poll.h>
+#include <sys/utsname.h>
+#include <unistd.h>
 
 namespace
 {
@@ -54,23 +55,17 @@ CEvent g_aml_sync_event;
 class PosixFile
 {
 public:
-  PosixFile() :
-    m_fd(-1)
-  {
-  }
+  PosixFile() : m_fd(-1) {}
 
-  PosixFile(int fd) :
-    m_fd(fd)
-  {
-  }
+  PosixFile(int fd) : m_fd(fd) {}
 
   ~PosixFile()
   {
     if (m_fd >= 0)
-     close(m_fd);
+      close(m_fd);
   }
 
-  bool Open(const std::string &pathName, int flags)
+  bool Open(const std::string& pathName, int flags)
   {
     m_fd = open(pathName.c_str(), flags);
     return m_fd >= 0;
@@ -78,9 +73,7 @@ public:
 
   int GetDescriptor() const { return m_fd; }
 
-  int IOControl(unsigned long request, void *param) const {
-    return ioctl(m_fd, request, param);
-  }
+  int IOControl(unsigned long request, void* param) const { return ioctl(m_fd, request, param); }
 
 private:
   int m_fd;
@@ -89,67 +82,67 @@ private:
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 // AppContext - Application state
-#define MODE_3D_DISABLE         0x00000000
-#define MODE_3D_ENABLE          0x00000001
-#define MODE_3D_FA              0x00000020
-#define MODE_3D_LR              0x00000101
-#define MODE_3D_LR_SWITCH       0x00000501
-#define MODE_3D_BT              0x00000201
-#define MODE_3D_BT_SWITCH       0x00000601
-#define MODE_3D_TO_2D_L         0x00000200
-#define MODE_3D_TO_2D_R         0x00000400
-#define MODE_3D_TO_2D_T         0x00000202
-#define MODE_3D_TO_2D_B         0x00000a02
-#define MODE_3D_OUT_TB          0x00010000
-#define MODE_3D_OUT_LR          0x00020000
+#define MODE_3D_DISABLE 0x00000000
+#define MODE_3D_ENABLE 0x00000001
+#define MODE_3D_FA 0x00000020
+#define MODE_3D_LR 0x00000101
+#define MODE_3D_LR_SWITCH 0x00000501
+#define MODE_3D_BT 0x00000201
+#define MODE_3D_BT_SWITCH 0x00000601
+#define MODE_3D_TO_2D_L 0x00000200
+#define MODE_3D_TO_2D_R 0x00000400
+#define MODE_3D_TO_2D_T 0x00000202
+#define MODE_3D_TO_2D_B 0x00000a02
+#define MODE_3D_OUT_TB 0x00010000
+#define MODE_3D_OUT_LR 0x00020000
 
-#define PTS_FREQ        90000
-#define UNIT_FREQ       96000
-#define AV_SYNC_THRESH  PTS_FREQ*30
+#define PTS_FREQ 90000
+#define UNIT_FREQ 96000
+#define AV_SYNC_THRESH PTS_FREQ * 30
 
-#define TRICKMODE_NONE  0x00
-#define TRICKMODE_I     0x01
-#define TRICKMODE_FFFB  0x02
+#define TRICKMODE_NONE 0x00
+#define TRICKMODE_I 0x01
+#define TRICKMODE_FFFB 0x02
 
 static const uint64_t UINT64_0 = 0x8000000000000000ULL;
 
-#define EXTERNAL_PTS    (1)
-#define SYNC_OUTSIDE    (2)
+#define EXTERNAL_PTS (1)
+#define SYNC_OUTSIDE (2)
 #define KEYFRAME_PTS_ONLY 0x100
 
 // missing tags
 #ifndef CODEC_TAG_VC_1
-#define CODEC_TAG_VC_1  (0x312D4356)
+#define CODEC_TAG_VC_1 (0x312D4356)
 #endif
 
 #ifndef HAS_LIBAMCODEC_VP9
-#define VFORMAT_VP9           VFORMAT_UNSUPPORT
-#define VIDEO_DEC_FORMAT_VP9  VIDEO_DEC_FORMAT_MAX
+#define VFORMAT_VP9 VFORMAT_UNSUPPORT
+#define VIDEO_DEC_FORMAT_VP9 VIDEO_DEC_FORMAT_MAX
 #endif
 
-#define CODEC_TAG_RV30  (0x30335652)
-#define CODEC_TAG_RV40  (0x30345652)
+#define CODEC_TAG_RV30 (0x30335652)
+#define CODEC_TAG_RV40 (0x30345652)
 #define CODEC_TAG_MJPEG (0x47504a4d)
 #define CODEC_TAG_mjpeg (0x47504a4c)
-#define CODEC_TAG_jpeg  (0x6765706a)
-#define CODEC_TAG_mjpa  (0x61706a6d)
+#define CODEC_TAG_jpeg (0x6765706a)
+#define CODEC_TAG_mjpa (0x61706a6d)
 
-#define RW_WAIT_TIME    (5 * 1000) // 5ms
+#define RW_WAIT_TIME (5 * 1000) // 5ms
 
-#define P_PRE           (0x02000000)
-#define F_PRE           (0x03000000)
-#define PLAYER_SUCCESS          (0)
-#define PLAYER_FAILED           (-(P_PRE|0x01))
-#define PLAYER_NOMEM            (-(P_PRE|0x02))
-#define PLAYER_EMPTY_P          (-(P_PRE|0x03))
+#define P_PRE (0x02000000)
+#define F_PRE (0x03000000)
+#define PLAYER_SUCCESS (0)
+#define PLAYER_FAILED (-(P_PRE | 0x01))
+#define PLAYER_NOMEM (-(P_PRE | 0x02))
+#define PLAYER_EMPTY_P (-(P_PRE | 0x03))
 
-#define PLAYER_WR_FAILED        (-(P_PRE|0x21))
-#define PLAYER_WR_EMPTYP        (-(P_PRE|0x22))
-#define PLAYER_WR_FINISH        (P_PRE|0x1)
+#define PLAYER_WR_FAILED (-(P_PRE | 0x21))
+#define PLAYER_WR_EMPTYP (-(P_PRE | 0x22))
+#define PLAYER_WR_FINISH (P_PRE | 0x1)
 
-#define PLAYER_PTS_ERROR        (-(P_PRE|0x31))
-#define PLAYER_UNSUPPORT        (-(P_PRE|0x35))
-#define PLAYER_CHECK_CODEC_ERROR  (-(P_PRE|0x39))
+#define PLAYER_PTS_ERROR (-(P_PRE | 0x31))
+#define PLAYER_UNSUPPORT (-(P_PRE | 0x35))
+#define PLAYER_CHECK_CODEC_ERROR (-(P_PRE | 0x39))
 
 #define HDR_BUF_SIZE 1024
 
@@ -163,7 +156,7 @@ typedef struct vframe_states
 
 /*************************************************************************/
 /*************************************************************************/
-void dumpfile_open(am_private_t *para)
+void dumpfile_open(am_private_t* para)
 {
   if (para->dumpdemux)
   {
@@ -174,12 +167,12 @@ void dumpfile_open(am_private_t *para)
     para->dumpfile = open(dump_path, O_CREAT | O_RDWR, 0666);
   }
 }
-void dumpfile_close(am_private_t *para)
+void dumpfile_close(am_private_t* para)
 {
   if (para->dumpdemux && para->dumpfile != -1)
     close(para->dumpfile), para->dumpfile = -1;
 }
-void dumpfile_write(am_private_t *para, void* buf, int bufsiz)
+void dumpfile_write(am_private_t* para, void* buf, int bufsiz)
 {
   if (!buf)
   {
@@ -363,24 +356,24 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
 static void am_packet_init(am_packet_t& pkt)
 {
   memset(&pkt.avpkt, 0, sizeof(AVPacket));
-  pkt.avpts      = 0;
-  pkt.avdts      = 0;
+  pkt.avpts = 0;
+  pkt.avdts = 0;
   pkt.avduration = 0;
-  pkt.isvalid    = 0;
-  pkt.newflag    = 0;
-  pkt.lastpts    = UINT64_0;
-  pkt.data       = nullptr;
-  pkt.buf        = nullptr;
-  pkt.data_size  = 0;
-  pkt.buf_size   = 0;
-  pkt.hdr        = nullptr;
-  pkt.codec      = nullptr;
+  pkt.isvalid = 0;
+  pkt.newflag = 0;
+  pkt.lastpts = UINT64_0;
+  pkt.data = nullptr;
+  pkt.buf = nullptr;
+  pkt.data_size = 0;
+  pkt.buf_size = 0;
+  pkt.hdr = nullptr;
+  pkt.codec = nullptr;
 }
 
 void am_packet_release(am_packet_t& pkt)
 {
   if (pkt.buf != nullptr)
-    free(pkt.buf), pkt.buf= nullptr;
+    free(pkt.buf), pkt.buf = nullptr;
   if (pkt.hdr != nullptr)
   {
     if (pkt.hdr->data != nullptr)
@@ -391,10 +384,9 @@ void am_packet_release(am_packet_t& pkt)
   pkt.codec = nullptr;
 }
 
-int check_in_pts(am_private_t *para, am_packet_t& pkt)
+int check_in_pts(am_private_t* para, am_packet_t& pkt)
 {
-  if ((para->stream_type == AM_STREAM_ES) &&
-      (UINT64_0 != pkt.avpts) &&
+  if ((para->stream_type == AM_STREAM_ES) && (UINT64_0 != pkt.avpts) &&
       (para->m_dll->codec_checkin_pts_us64(pkt.codec, pkt.avpts) != 0))
   {
     logM(LOGERROR, "AMLCodec", "ERROR check in pts error!");
@@ -403,126 +395,162 @@ int check_in_pts(am_private_t *para, am_packet_t& pkt)
   return PLAYER_SUCCESS;
 }
 
-static int write_header(am_private_t *para, am_packet_t& pkt)
+static int write_header(am_private_t* para, am_packet_t& pkt)
 {
-    int write_bytes = 0, len = 0;
+  int write_bytes = 0, len = 0;
 
-    if (pkt.hdr && pkt.hdr->size > 0) {
-        if ((nullptr == pkt.codec) || (nullptr == pkt.hdr->data)) {
-            logM(LOGDEBUG, "AMLCodec", "codec null!");
-            return PLAYER_EMPTY_P;
-        }
-        //some wvc1 es data not need to add header
-        if (para->video_format == VFORMAT_VC1 && para->video_codec_type == VIDEO_DEC_FORMAT_WVC1) {
-            if ((pkt.data) && (pkt.data_size >= 4)
-              && (pkt.data[0] == 0) && (pkt.data[1] == 0)
-              && (pkt.data[2] == 1) && (pkt.data[3] == 0xd || pkt.data[3] == 0xf)) {
-                return PLAYER_SUCCESS;
-            }
-        }
-        while (1) {
-            write_bytes = para->m_dll->codec_write(pkt.codec, pkt.hdr->data + len, pkt.hdr->size - len);
-            if (write_bytes < 0 || write_bytes > (pkt.hdr->size - len)) {
-                if (-errno != AVERROR(EAGAIN)) {
-                    logM(LOGDEBUG, "AMLCodec", "ERROR:write header failed!");
-                    return PLAYER_WR_FAILED;
-                } else {
-                    continue;
-                }
-            } else {
-                dumpfile_write(para, pkt.hdr->data, write_bytes);
-                len += write_bytes;
-                if (len == pkt.hdr->size) {
-                    break;
-                }
-            }
-        }
+  if (pkt.hdr && pkt.hdr->size > 0)
+  {
+    if ((nullptr == pkt.codec) || (nullptr == pkt.hdr->data))
+    {
+      logM(LOGDEBUG, "AMLCodec", "codec null!");
+      return PLAYER_EMPTY_P;
     }
-    return PLAYER_SUCCESS;
+    //some wvc1 es data not need to add header
+    if (para->video_format == VFORMAT_VC1 && para->video_codec_type == VIDEO_DEC_FORMAT_WVC1)
+    {
+      if ((pkt.data) && (pkt.data_size >= 4) && (pkt.data[0] == 0) && (pkt.data[1] == 0) &&
+          (pkt.data[2] == 1) && (pkt.data[3] == 0xd || pkt.data[3] == 0xf))
+      {
+        return PLAYER_SUCCESS;
+      }
+    }
+    while (1)
+    {
+      write_bytes = para->m_dll->codec_write(pkt.codec, pkt.hdr->data + len, pkt.hdr->size - len);
+      if (write_bytes < 0 || write_bytes > (pkt.hdr->size - len))
+      {
+        if (-errno != AVERROR(EAGAIN))
+        {
+          logM(LOGDEBUG, "AMLCodec", "ERROR:write header failed!");
+          return PLAYER_WR_FAILED;
+        }
+        else
+        {
+          continue;
+        }
+      }
+      else
+      {
+        dumpfile_write(para, pkt.hdr->data, write_bytes);
+        len += write_bytes;
+        if (len == pkt.hdr->size)
+        {
+          break;
+        }
+      }
+    }
+  }
+  return PLAYER_SUCCESS;
 }
 
-int write_av_packet(am_private_t *para, am_packet_t& pkt)
+int write_av_packet(am_private_t* para, am_packet_t& pkt)
 {
-    int write_bytes = 0, len = 0, ret;
-    unsigned char *buf;
-    int size;
+  int write_bytes = 0, len = 0, ret;
+  unsigned char* buf;
+  int size;
 
-    // do we need to check in pts or write the header ?
-    if (pkt.newflag) {
-        if (pkt.isvalid) {
-            ret = check_in_pts(para, pkt);
-            if (ret != PLAYER_SUCCESS) {
-                logM(LOGERROR, "AMLCodec", "check in pts failed");
-                return PLAYER_WR_FAILED;
-            }
-        }
-        if (write_header(para, pkt) == PLAYER_WR_FAILED) {
-            logM(LOGERROR, "AMLCodec", "write header failed!");
-            return PLAYER_WR_FAILED;
-        }
-        pkt.newflag = 0;
+  // do we need to check in pts or write the header ?
+  if (pkt.newflag)
+  {
+    if (pkt.isvalid)
+    {
+      ret = check_in_pts(para, pkt);
+      if (ret != PLAYER_SUCCESS)
+      {
+        logM(LOGERROR, "AMLCodec", "check in pts failed");
+        return PLAYER_WR_FAILED;
+      }
     }
+    if (write_header(para, pkt) == PLAYER_WR_FAILED)
+    {
+      logM(LOGERROR, "AMLCodec", "write header failed!");
+      return PLAYER_WR_FAILED;
+    }
+    pkt.newflag = 0;
+  }
 
-    buf = pkt.data;
-    size = pkt.data_size;
-    if (size == 0 && pkt.isvalid) {
+  buf = pkt.data;
+  size = pkt.data_size;
+  if (size == 0 && pkt.isvalid)
+  {
+    pkt.isvalid = 0;
+    pkt.data_size = 0;
+  }
+
+  while (size > 0 && pkt.isvalid)
+  {
+    write_bytes = para->m_dll->codec_write(pkt.codec, buf, size);
+    if (write_bytes < 0 || write_bytes > size)
+    {
+      logM(LOGERROR, "AMLCodec",
+           "write codec data failed, write_bytes({:d}), errno({:d}), size({:d})", write_bytes,
+           errno, size);
+      if (-errno != AVERROR(EAGAIN))
+      {
+        logM(LOGDEBUG, "AMLCodec", "write codec data failed!");
+        return PLAYER_WR_FAILED;
+      }
+      else
+      {
+        // adjust for any data we already wrote into codec.
+        // we sleep a bit then exit as we will get called again
+        // with the same pkt because pkt.isvalid has not been cleared.
+        pkt.data += len;
+        pkt.data_size -= len;
+        usleep(RW_WAIT_TIME);
+        logM(LOGDEBUG, "AMLCodec", "Codec buffer full, try after {:d} ms, len({:d})",
+             RW_WAIT_TIME / 1000, len);
+        return PLAYER_SUCCESS;
+      }
+    }
+    else
+    {
+      dumpfile_write(para, buf, write_bytes);
+      // keep track of what we write into codec from this pkt
+      // in case we get hit with EAGAIN.
+      len += write_bytes;
+      if (len == pkt.data_size)
+      {
         pkt.isvalid = 0;
         pkt.data_size = 0;
+        break;
+      }
+      else if (len < pkt.data_size)
+      {
+        buf += write_bytes;
+        size -= write_bytes;
+      }
+      else
+      {
+        // writing more that we should is a failure.
+        return PLAYER_WR_FAILED;
+      }
     }
+  }
 
-    while (size > 0 && pkt.isvalid) {
-        write_bytes = para->m_dll->codec_write(pkt.codec, buf, size);
-        if (write_bytes < 0 || write_bytes > size) {
-            logM(LOGERROR, "AMLCodec", "write codec data failed, write_bytes({:d}), errno({:d}), size({:d})", write_bytes, errno, size);
-            if (-errno != AVERROR(EAGAIN)) {
-                logM(LOGDEBUG, "AMLCodec", "write codec data failed!");
-                return PLAYER_WR_FAILED;
-            } else {
-                // adjust for any data we already wrote into codec.
-                // we sleep a bit then exit as we will get called again
-                // with the same pkt because pkt.isvalid has not been cleared.
-                pkt.data += len;
-                pkt.data_size -= len;
-                usleep(RW_WAIT_TIME);
-                logM(LOGDEBUG, "AMLCodec", "Codec buffer full, try after {:d} ms, len({:d})", RW_WAIT_TIME / 1000, len);
-                return PLAYER_SUCCESS;
-            }
-        } else {
-            dumpfile_write(para, buf, write_bytes);
-            // keep track of what we write into codec from this pkt
-            // in case we get hit with EAGAIN.
-            len += write_bytes;
-            if (len == pkt.data_size) {
-                pkt.isvalid = 0;
-                pkt.data_size = 0;
-                break;
-            } else if (len < pkt.data_size) {
-                buf += write_bytes;
-                size -= write_bytes;
-            } else {
-                // writing more that we should is a failure.
-                return PLAYER_WR_FAILED;
-            }
-        }
-    }
-
-    return PLAYER_SUCCESS;
+  return PLAYER_SUCCESS;
 }
 
 /*************************************************************************/
-static int m4s2_dx50_mp4v_add_header(am_private_t *para, unsigned char *buf, int size, am_packet_t& pkt)
+static int m4s2_dx50_mp4v_add_header(am_private_t* para,
+                                     unsigned char* buf,
+                                     int size,
+                                     am_packet_t& pkt)
 {
-  hdr_buf_t *hdr = &para->hdr_buf;
+  hdr_buf_t* hdr = &para->hdr_buf;
 
-  if (size > hdr->size) {
-      free(hdr->data), hdr->data = nullptr;
-      hdr->size = 0;
+  if (size > hdr->size)
+  {
+    free(hdr->data), hdr->data = nullptr;
+    hdr->size = 0;
 
-      hdr->data = (char*)malloc(size);
-      if (!hdr->data) {
-          logM(LOGDEBUG, "AMLCodec", "NOMEM!");
-          return PLAYER_FAILED;
-      }
+    hdr->data = (char*)malloc(size);
+    if (!hdr->data)
+    {
+      logM(LOGDEBUG, "AMLCodec", "NOMEM!");
+      return PLAYER_FAILED;
+    }
   }
 
   hdr->size = size;
@@ -530,159 +558,159 @@ static int m4s2_dx50_mp4v_add_header(am_private_t *para, unsigned char *buf, int
   return PLAYER_SUCCESS;
 }
 
-static int m4s2_dx50_mp4v_write_header(am_private_t *para, am_packet_t& pkt)
+static int m4s2_dx50_mp4v_write_header(am_private_t* para, am_packet_t& pkt)
 {
-    logNoFormatM(LOGDEBUG, "AMLCodec");
-    return m4s2_dx50_mp4v_add_header(para, para->extradata.GetData(), para->extradata.GetSize(), pkt);
+  logNoFormatM(LOGDEBUG, "AMLCodec");
+  return m4s2_dx50_mp4v_add_header(para, para->extradata.GetData(), para->extradata.GetSize(), pkt);
 }
 
 static int mjpeg_data_prefeeding(am_packet_t& pkt)
 {
-    const unsigned char mjpeg_addon_data[] = {
-        0xff, 0xd8, 0xff, 0xc4, 0x01, 0xa2, 0x00, 0x00, 0x01, 0x05, 0x01, 0x01, 0x01,
-        0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02,
-        0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x01, 0x00, 0x03, 0x01,
-        0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x10,
-        0x00, 0x02, 0x01, 0x03, 0x03, 0x02, 0x04, 0x03, 0x05, 0x05, 0x04, 0x04, 0x00,
-        0x00, 0x01, 0x7d, 0x01, 0x02, 0x03, 0x00, 0x04, 0x11, 0x05, 0x12, 0x21, 0x31,
-        0x41, 0x06, 0x13, 0x51, 0x61, 0x07, 0x22, 0x71, 0x14, 0x32, 0x81, 0x91, 0xa1,
-        0x08, 0x23, 0x42, 0xb1, 0xc1, 0x15, 0x52, 0xd1, 0xf0, 0x24, 0x33, 0x62, 0x72,
-        0x82, 0x09, 0x0a, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x25, 0x26, 0x27, 0x28, 0x29,
-        0x2a, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x43, 0x44, 0x45, 0x46, 0x47,
-        0x48, 0x49, 0x4a, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x63, 0x64,
-        0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79,
-        0x7a, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x92, 0x93, 0x94, 0x95,
-        0x96, 0x97, 0x98, 0x99, 0x9a, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9,
-        0xaa, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xc2, 0xc3, 0xc4,
-        0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8,
-        0xd9, 0xda, 0xe1, 0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea, 0xf1,
-        0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0x11, 0x00, 0x02, 0x01,
-        0x02, 0x04, 0x04, 0x03, 0x04, 0x07, 0x05, 0x04, 0x04, 0x00, 0x01, 0x02, 0x77,
-        0x00, 0x01, 0x02, 0x03, 0x11, 0x04, 0x05, 0x21, 0x31, 0x06, 0x12, 0x41, 0x51,
-        0x07, 0x61, 0x71, 0x13, 0x22, 0x32, 0x81, 0x08, 0x14, 0x42, 0x91, 0xa1, 0xb1,
-        0xc1, 0x09, 0x23, 0x33, 0x52, 0xf0, 0x15, 0x62, 0x72, 0xd1, 0x0a, 0x16, 0x24,
-        0x34, 0xe1, 0x25, 0xf1, 0x17, 0x18, 0x19, 0x1a, 0x26, 0x27, 0x28, 0x29, 0x2a,
-        0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49,
-        0x4a, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x63, 0x64, 0x65, 0x66,
-        0x67, 0x68, 0x69, 0x6a, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x82,
-        0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x92, 0x93, 0x94, 0x95, 0x96,
-        0x97, 0x98, 0x99, 0x9a, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa,
-        0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xc2, 0xc3, 0xc4, 0xc5,
-        0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9,
-        0xda, 0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea, 0xf2, 0xf3, 0xf4,
-        0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa
-    };
+  const unsigned char mjpeg_addon_data[] = {
+      0xff, 0xd8, 0xff, 0xc4, 0x01, 0xa2, 0x00, 0x00, 0x01, 0x05, 0x01, 0x01, 0x01, 0x01, 0x01,
+      0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+      0x07, 0x08, 0x09, 0x0a, 0x0b, 0x01, 0x00, 0x03, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+      0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+      0x08, 0x09, 0x0a, 0x0b, 0x10, 0x00, 0x02, 0x01, 0x03, 0x03, 0x02, 0x04, 0x03, 0x05, 0x05,
+      0x04, 0x04, 0x00, 0x00, 0x01, 0x7d, 0x01, 0x02, 0x03, 0x00, 0x04, 0x11, 0x05, 0x12, 0x21,
+      0x31, 0x41, 0x06, 0x13, 0x51, 0x61, 0x07, 0x22, 0x71, 0x14, 0x32, 0x81, 0x91, 0xa1, 0x08,
+      0x23, 0x42, 0xb1, 0xc1, 0x15, 0x52, 0xd1, 0xf0, 0x24, 0x33, 0x62, 0x72, 0x82, 0x09, 0x0a,
+      0x16, 0x17, 0x18, 0x19, 0x1a, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x34, 0x35, 0x36, 0x37,
+      0x38, 0x39, 0x3a, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x53, 0x54, 0x55, 0x56,
+      0x57, 0x58, 0x59, 0x5a, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x73, 0x74, 0x75,
+      0x76, 0x77, 0x78, 0x79, 0x7a, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x92, 0x93,
+      0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9a, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9,
+      0xaa, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6,
+      0xc7, 0xc8, 0xc9, 0xca, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xe1, 0xe2,
+      0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7,
+      0xf8, 0xf9, 0xfa, 0x11, 0x00, 0x02, 0x01, 0x02, 0x04, 0x04, 0x03, 0x04, 0x07, 0x05, 0x04,
+      0x04, 0x00, 0x01, 0x02, 0x77, 0x00, 0x01, 0x02, 0x03, 0x11, 0x04, 0x05, 0x21, 0x31, 0x06,
+      0x12, 0x41, 0x51, 0x07, 0x61, 0x71, 0x13, 0x22, 0x32, 0x81, 0x08, 0x14, 0x42, 0x91, 0xa1,
+      0xb1, 0xc1, 0x09, 0x23, 0x33, 0x52, 0xf0, 0x15, 0x62, 0x72, 0xd1, 0x0a, 0x16, 0x24, 0x34,
+      0xe1, 0x25, 0xf1, 0x17, 0x18, 0x19, 0x1a, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x35, 0x36, 0x37,
+      0x38, 0x39, 0x3a, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x53, 0x54, 0x55, 0x56,
+      0x57, 0x58, 0x59, 0x5a, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x73, 0x74, 0x75,
+      0x76, 0x77, 0x78, 0x79, 0x7a, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x92,
+      0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9a, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8,
+      0xa9, 0xaa, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xc2, 0xc3, 0xc4, 0xc5,
+      0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xe2,
+      0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8,
+      0xf9, 0xfa};
 
-    if (pkt.hdr->data) {
-        memcpy(pkt.hdr->data, &mjpeg_addon_data, sizeof(mjpeg_addon_data));
-        pkt.hdr->size = sizeof(mjpeg_addon_data);
-    } else {
-        logM(LOGDEBUG, "AMLCodec", "Not enough memory!");
-        return PLAYER_FAILED;
-    }
-    return PLAYER_SUCCESS;
+  if (pkt.hdr->data)
+  {
+    memcpy(pkt.hdr->data, &mjpeg_addon_data, sizeof(mjpeg_addon_data));
+    pkt.hdr->size = sizeof(mjpeg_addon_data);
+  }
+  else
+  {
+    logM(LOGDEBUG, "AMLCodec", "Not enough memory!");
+    return PLAYER_FAILED;
+  }
+  return PLAYER_SUCCESS;
 }
 
-static int mjpeg_write_header(am_private_t *para, am_packet_t& pkt)
+static int mjpeg_write_header(am_private_t* para, am_packet_t& pkt)
 {
-    mjpeg_data_prefeeding(pkt);
-    pkt.codec = &para->vcodec;
-    pkt.newflag = 1;
-    write_av_packet(para, pkt);
-    return PLAYER_SUCCESS;
+  mjpeg_data_prefeeding(pkt);
+  pkt.codec = &para->vcodec;
+  pkt.newflag = 1;
+  write_av_packet(para, pkt);
+  return PLAYER_SUCCESS;
 }
 
 static int divx3_data_prefeeding(am_packet_t& pkt, unsigned w, unsigned h)
 {
-    unsigned i = (w << 12) | (h & 0xfff);
-    unsigned char divx311_add[10] = {
-        0x00, 0x00, 0x00, 0x01,
-        0x20, 0x00, 0x00, 0x00,
-        0x00, 0x00
-    };
-    divx311_add[5] = (i >> 16) & 0xff;
-    divx311_add[6] = (i >> 8) & 0xff;
-    divx311_add[7] = i & 0xff;
+  unsigned i = (w << 12) | (h & 0xfff);
+  unsigned char divx311_add[10] = {0x00, 0x00, 0x00, 0x01, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00};
+  divx311_add[5] = (i >> 16) & 0xff;
+  divx311_add[6] = (i >> 8) & 0xff;
+  divx311_add[7] = i & 0xff;
 
-    if (pkt.hdr->data) {
-        memcpy(pkt.hdr->data, divx311_add, sizeof(divx311_add));
-        pkt.hdr->size = sizeof(divx311_add);
-    } else {
-        logM(LOGDEBUG, "AMLCodec", "Not enough memory!");
-        return PLAYER_FAILED;
-    }
-    return PLAYER_SUCCESS;
+  if (pkt.hdr->data)
+  {
+    memcpy(pkt.hdr->data, divx311_add, sizeof(divx311_add));
+    pkt.hdr->size = sizeof(divx311_add);
+  }
+  else
+  {
+    logM(LOGDEBUG, "AMLCodec", "Not enough memory!");
+    return PLAYER_FAILED;
+  }
+  return PLAYER_SUCCESS;
 }
 
-static int divx3_write_header(am_private_t *para, am_packet_t& pkt)
+static int divx3_write_header(am_private_t* para, am_packet_t& pkt)
 {
-    logNoFormatM(LOGDEBUG, "AMLCodec");
-    divx3_data_prefeeding(pkt, para->video_width, para->video_height);
+  logNoFormatM(LOGDEBUG, "AMLCodec");
+  divx3_data_prefeeding(pkt, para->video_width, para->video_height);
+  pkt.codec = &para->vcodec;
+  pkt.newflag = 1;
+  write_av_packet(para, pkt);
+  return PLAYER_SUCCESS;
+}
+
+static int h264_add_header(unsigned char* buf, int size, am_packet_t& pkt)
+{
+  if (size > HDR_BUF_SIZE)
+  {
+    free(pkt.hdr->data);
+    pkt.hdr->data = (char*)malloc(size);
+    if (!pkt.hdr->data)
+      return PLAYER_NOMEM;
+  }
+
+  memcpy(pkt.hdr->data, buf, size);
+  pkt.hdr->size = size;
+  return PLAYER_SUCCESS;
+}
+
+static int h264_write_header(am_private_t* para, am_packet_t& pkt)
+{
+  int ret = h264_add_header(para->extradata.GetData(), para->extradata.GetSize(), pkt);
+  if (ret == PLAYER_SUCCESS)
+  {
+    pkt.codec = &para->vcodec;
+
+    pkt.newflag = 1;
+    ret = write_av_packet(para, pkt);
+  }
+  return ret;
+}
+
+static int hevc_add_header(unsigned char* buf, int size, am_packet_t& pkt)
+{
+  if (size > HDR_BUF_SIZE)
+  {
+    free(pkt.hdr->data);
+    pkt.hdr->data = (char*)malloc(size);
+    if (!pkt.hdr->data)
+      return PLAYER_NOMEM;
+  }
+
+  memcpy(pkt.hdr->data, buf, size);
+  pkt.hdr->size = size;
+  return PLAYER_SUCCESS;
+}
+
+static int hevc_write_header(am_private_t* para, am_packet_t& pkt)
+{
+  int ret = -1;
+
+  if (para->extradata)
+  {
+    ret = hevc_add_header(para->extradata.GetData(), para->extradata.GetSize(), pkt);
+  }
+  if (ret == PLAYER_SUCCESS)
+  {
     pkt.codec = &para->vcodec;
     pkt.newflag = 1;
-    write_av_packet(para, pkt);
-    return PLAYER_SUCCESS;
+    ret = write_av_packet(para, pkt);
+  }
+  return ret;
 }
 
-static int h264_add_header(unsigned char *buf, int size, am_packet_t& pkt)
-{
-    if (size > HDR_BUF_SIZE)
-    {
-        free(pkt.hdr->data);
-        pkt.hdr->data = (char *)malloc(size);
-        if (!pkt.hdr->data)
-            return PLAYER_NOMEM;
-    }
-
-    memcpy(pkt.hdr->data, buf, size);
-    pkt.hdr->size = size;
-    return PLAYER_SUCCESS;
-}
-
-static int h264_write_header(am_private_t *para, am_packet_t& pkt)
-{
-    int ret = h264_add_header(para->extradata.GetData(), para->extradata.GetSize(), pkt);
-    if (ret == PLAYER_SUCCESS) {
-        pkt.codec = &para->vcodec;
-
-        pkt.newflag = 1;
-        ret = write_av_packet(para, pkt);
-    }
-    return ret;
-}
-
-static int hevc_add_header(unsigned char *buf, int size, am_packet_t& pkt)
-{
-    if (size > HDR_BUF_SIZE)
-    {
-        free(pkt.hdr->data);
-        pkt.hdr->data = (char *)malloc(size);
-        if (!pkt.hdr->data)
-            return PLAYER_NOMEM;
-    }
-
-    memcpy(pkt.hdr->data, buf, size);
-    pkt.hdr->size = size;
-    return PLAYER_SUCCESS;
-}
-
-static int hevc_write_header(am_private_t *para, am_packet_t& pkt)
-{
-    int ret = -1;
-
-    if (para->extradata) {
-      ret = hevc_add_header(para->extradata.GetData(), para->extradata.GetSize(), pkt);
-    }
-    if (ret == PLAYER_SUCCESS) {
-      pkt.codec = &para->vcodec;
-      pkt.newflag = 1;
-      ret = write_av_packet(para, pkt);
-    }
-    return ret;
-}
-
-int mpeg12_add_frame_dec_info(am_private_t *para)
+int mpeg12_add_frame_dec_info(am_private_t* para)
 {
   am_packet_t& pkt = para->am_pkt;
   int ret;
@@ -701,7 +729,7 @@ int mpeg12_add_frame_dec_info(am_private_t *para)
   pkt.data = pkt.avpkt.data;
   pkt.data_size = pkt.avpkt.size;
 
-  uint8_t *fdata = pkt.data + pkt.data_size - 4;
+  uint8_t* fdata = pkt.data + pkt.data_size - 4;
   fdata[0] = 0x00;
   fdata[1] = 0x00;
   fdata[2] = 0x01;
@@ -710,256 +738,274 @@ int mpeg12_add_frame_dec_info(am_private_t *para)
   return PLAYER_SUCCESS;
 }
 
-char obu_type_name[16][32] = {
-  "UNKNOWN",
-  "OBU_SEQUENCE_HEADER",
-  "OBU_TEMPORAL_DELIMITER",
-  "OBU_FRAME_HEADER",
-  "OBU_TILE_GROUP",
-  "OBU_METADATA",
-  "OBU_FRAME",
-  "OBU_REDUNDANT_FRAME_HEADER",
-  "OBU_TILE_LIST",
-  "UNKNOWN",
-  "UNKNOWN",
-  "UNKNOWN",
-  "UNKNOWN",
-  "UNKNOWN",
-  "UNKNOWN",
-  "OBU_PADDING"
-};
+char obu_type_name[16][32] = {"UNKNOWN",
+                              "OBU_SEQUENCE_HEADER",
+                              "OBU_TEMPORAL_DELIMITER",
+                              "OBU_FRAME_HEADER",
+                              "OBU_TILE_GROUP",
+                              "OBU_METADATA",
+                              "OBU_FRAME",
+                              "OBU_REDUNDANT_FRAME_HEADER",
+                              "OBU_TILE_LIST",
+                              "UNKNOWN",
+                              "UNKNOWN",
+                              "UNKNOWN",
+                              "UNKNOWN",
+                              "UNKNOWN",
+                              "UNKNOWN",
+                              "OBU_PADDING"};
 
-char meta_type_name[6][32] = {
-  "OBU_METADATA_TYPE_RESERVED_0",
-  "OBU_METADATA_TYPE_HDR_CLL",
-  "OBU_METADATA_TYPE_HDR_MDCV",
-  "OBU_METADATA_TYPE_SCALABILITY",
-  "OBU_METADATA_TYPE_ITUT_T35",
-  "OBU_METADATA_TYPE_TIMECODE"
-};
+char meta_type_name[6][32] = {"OBU_METADATA_TYPE_RESERVED_0", "OBU_METADATA_TYPE_HDR_CLL",
+                              "OBU_METADATA_TYPE_HDR_MDCV",   "OBU_METADATA_TYPE_SCALABILITY",
+                              "OBU_METADATA_TYPE_ITUT_T35",   "OBU_METADATA_TYPE_TIMECODE"};
 
-typedef struct DataBuffer {
-    const uint8_t *data;
-    size_t size;
+typedef struct DataBuffer
+{
+  const uint8_t* data;
+  size_t size;
 } DataBuffer;
 
-int av1_parser_frame(
-    int is_annexb,
-    uint8_t *data,
-    const uint8_t *data_end,
-    uint8_t *dst_data,
-    uint32_t *frame_len,
-    uint8_t *meta_buf,
-    uint32_t *meta_len)
+int av1_parser_frame(int is_annexb,
+                     uint8_t* data,
+                     const uint8_t* data_end,
+                     uint8_t* dst_data,
+                     uint32_t* frame_len,
+                     uint8_t* meta_buf,
+                     uint32_t* meta_len)
 {
-    int frame_decoding_finished = 0;
-    uint32_t obu_size = 0;
-    ObuHeader obu_header;
-    memset(&obu_header, 0, sizeof(obu_header));
-    int seen_frame_header = 0;
-    uint8_t header[20] = {
-        0x00, 0x00, 0x01, 0x54,
-        0xFF, 0xFF, 0xFE, 0xAB,
-        0x00, 0x00, 0x00, 0x01,
-        0x41, 0x4D, 0x4C, 0x56,
-        0xD0, 0x82, 0x80, 0x00
-    };
-    uint8_t *p = nullptr;
-    uint32_t rpu_size = 0;
+  int frame_decoding_finished = 0;
+  uint32_t obu_size = 0;
+  ObuHeader obu_header;
+  memset(&obu_header, 0, sizeof(obu_header));
+  int seen_frame_header = 0;
+  uint8_t header[20] = {0x00, 0x00, 0x01, 0x54, 0xFF, 0xFF, 0xFE, 0xAB, 0x00, 0x00,
+                        0x00, 0x01, 0x41, 0x4D, 0x4C, 0x56, 0xD0, 0x82, 0x80, 0x00};
+  uint8_t* p = nullptr;
+  uint32_t rpu_size = 0;
 
-    // decode frame as a series of OBUs
-    while (!frame_decoding_finished) {
-        //      struct read_bit_buffer rb;
-        size_t payload_size = 0;
-        size_t header_size = 0;
-        size_t bytes_read = 0;
-        size_t bytes_written = 0;
-        const size_t bytes_available = data_end - data;
-        unsigned int i;
-        OBU_METADATA_TYPE meta_type;
-        uint64_t type;
+  // decode frame as a series of OBUs
+  while (!frame_decoding_finished)
+  {
+    //      struct read_bit_buffer rb;
+    size_t payload_size = 0;
+    size_t header_size = 0;
+    size_t bytes_read = 0;
+    size_t bytes_written = 0;
+    const size_t bytes_available = data_end - data;
+    unsigned int i;
+    OBU_METADATA_TYPE meta_type;
+    uint64_t type;
 
-        if ((bytes_available == 0) && !seen_frame_header) break;
+    if ((bytes_available == 0) && !seen_frame_header)
+      break;
 
-        int status = aom_read_obu_header_and_size(data, bytes_available, is_annexb,
-                                                  &obu_header, &payload_size, &bytes_read);
+    int status = aom_read_obu_header_and_size(data, bytes_available, is_annexb, &obu_header,
+                                              &payload_size, &bytes_read);
 
-        if (status != 0) return -1;
+    if (status != 0)
+      return -1;
 
-        // Note: aom_read_obu_header_and_size() takes care of checking that this
-        // doesn't cause 'data' to advance past 'data_end'.
+    // Note: aom_read_obu_header_and_size() takes care of checking that this
+    // doesn't cause 'data' to advance past 'data_end'.
 
-        if (data_end - data - bytes_read < payload_size)
-            return -1;
+    if (data_end - data - bytes_read < payload_size)
+      return -1;
 
-        logM(LOGDEBUG, "AMLCodec", "\tobu {} len {:d}+{:d}", obu_type_name[obu_header.type], bytes_read, payload_size);
+    logM(LOGDEBUG, "AMLCodec", "\tobu {} len {:d}+{:d}", obu_type_name[obu_header.type], bytes_read,
+         payload_size);
 
-        obu_size = bytes_read + payload_size + 4;
+    obu_size = bytes_read + payload_size + 4;
 
-        if (!is_annexb) {
-            obu_size = bytes_read + payload_size + 4;
-            header_size = 20;
-            aom_uleb_encode_fixed_size(obu_size, 4, 4, header + 16, &bytes_written);
-        }
-        else {
-            obu_size = bytes_read + payload_size;
-            header_size = 16;
-        }
-        header[0] = ((obu_size + 4) >> 24) & 0xff;
-        header[1] = ((obu_size + 4) >> 16) & 0xff;
-        header[2] = ((obu_size + 4) >> 8) & 0xff;
-        header[3] = ((obu_size + 4) >> 0) & 0xff;
-        header[4] = header[0] ^ 0xff;
-        header[5] = header[1] ^ 0xff;
-        header[6] = header[2] ^ 0xff;
-        header[7] = header[3] ^ 0xff;
-        memcpy(dst_data, header, header_size);
-        dst_data += header_size;
-        memcpy(dst_data, data, bytes_read + payload_size);
-        dst_data += bytes_read + payload_size;
+    if (!is_annexb)
+    {
+      obu_size = bytes_read + payload_size + 4;
+      header_size = 20;
+      aom_uleb_encode_fixed_size(obu_size, 4, 4, header + 16, &bytes_written);
+    }
+    else
+    {
+      obu_size = bytes_read + payload_size;
+      header_size = 16;
+    }
+    header[0] = ((obu_size + 4) >> 24) & 0xff;
+    header[1] = ((obu_size + 4) >> 16) & 0xff;
+    header[2] = ((obu_size + 4) >> 8) & 0xff;
+    header[3] = ((obu_size + 4) >> 0) & 0xff;
+    header[4] = header[0] ^ 0xff;
+    header[5] = header[1] ^ 0xff;
+    header[6] = header[2] ^ 0xff;
+    header[7] = header[3] ^ 0xff;
+    memcpy(dst_data, header, header_size);
+    dst_data += header_size;
+    memcpy(dst_data, data, bytes_read + payload_size);
+    dst_data += bytes_read + payload_size;
 
-        data += bytes_read;
-        *frame_len += 20 + bytes_read + payload_size;
+    data += bytes_read;
+    *frame_len += 20 + bytes_read + payload_size;
 
-        switch (obu_header.type)
+    switch (obu_header.type)
+    {
+      case OBU_TEMPORAL_DELIMITER:
+        seen_frame_header = 0;
+        break;
+
+      case OBU_SEQUENCE_HEADER:
+        // The sequence header should not change in the middle of a frame.
+        if (seen_frame_header)
         {
-        case OBU_TEMPORAL_DELIMITER:
-            seen_frame_header = 0;
-            break;
-
-        case OBU_SEQUENCE_HEADER:
-            // The sequence header should not change in the middle of a frame.
-            if (seen_frame_header) {
-                return -1;
-            }
-            break;
-
-        case OBU_FRAME_HEADER:
-            if (data_end == data + payload_size) {
-                frame_decoding_finished = 1;
-            }
-            else {
-                seen_frame_header = 1;
-            }
-            break;
-
-        case OBU_REDUNDANT_FRAME_HEADER:
-        case OBU_FRAME:
-            if (obu_header.type == OBU_REDUNDANT_FRAME_HEADER) {
-                if (!seen_frame_header) {
-                    return -1;
-                }
-            }
-            else {
-                // OBU_FRAME_HEADER or OBU_FRAME.
-                if (seen_frame_header) {
-                    return -1;
-                }
-            }
-            if (obu_header.type == OBU_FRAME) {
-                if (data_end == data + payload_size) {
-                    frame_decoding_finished = 1;
-                    seen_frame_header = 0;
-                }
-            }
-            break;
-
-        case OBU_TILE_GROUP:
-            if (!seen_frame_header) {
-                return -1;
-            }
-            if (data + payload_size == data_end)
-                frame_decoding_finished = 1;
-            if (frame_decoding_finished)
-                seen_frame_header = 0;
-            break;
-
-        case OBU_METADATA:
-            aom_uleb_decode(data, 8, &type, &bytes_read);
-
-            if (type < 6)
-                meta_type = static_cast<OBU_METADATA_TYPE>(type);
-            else
-                meta_type = OBU_METADATA_TYPE_AOM_RESERVED_0;
-
-            p = data + bytes_read;
-            logM(LOGDEBUG, "AMLCodec", "\tmeta type {} {:d}+{:d}", meta_type_name[type], bytes_read, payload_size - bytes_read);
-
-            if (meta_type == OBU_METADATA_TYPE_ITUT_T35 && meta_buf != nullptr) {
-                if ((p[0] == 0xb5) /* country code */
-                    && ((p[1] == 0x00) && (p[2] == 0x3b)) /* terminal_provider_code */
-                    && ((p[3] == 0x00) && (p[4] == 0x00) && (p[5] == 0x08) && (p[6] == 0x00))) { /* terminal_provider_oriented_code */
-                    logM(LOGDEBUG, "AMLCodec", "\t\tdolbyvison rpu");
-                    meta_buf[0] = meta_buf[1] = meta_buf[2] = 0;
-                    meta_buf[3] = 0x01;
-                    meta_buf[4] = 0x19;
-
-                    if (p[11] & 0x10) {
-                        rpu_size = 0x100;
-                        rpu_size |= (p[11] & 0x0f) << 4;
-                        rpu_size |= (p[12] >> 4) & 0x0f;
-                        if (p[12] & 0x08) {
-                            logM(LOGDEBUG, "AMLCodec", "\tmeta rpu in obu exceed 512 bytes");
-                            break;
-                        }
-                        for (i = 0; i < rpu_size; i++) {
-                            meta_buf[5 + i] = (p[12 + i] & 0x07) << 5;
-                            meta_buf[5 + i] |= (p[13 + i] >> 3) & 0x1f;
-                        }
-                        rpu_size += 5;
-                    }
-                    else {
-                        rpu_size = (p[10] & 0x1f) << 3;
-                        rpu_size |= (p[11] >> 5) & 0x07;
-                        for (i = 0; i < rpu_size; i++) {
-                            meta_buf[5 + i] = (p[11 + i] & 0x0f) << 4;
-                            meta_buf[5 + i] |= (p[12 + i] >> 4) & 0x0f;
-                        }
-                        rpu_size += 5;
-                    }
-                    *meta_len = rpu_size;
-                }
-            }
-            else if (meta_type == OBU_METADATA_TYPE_HDR_CLL) {
-                logM(LOGDEBUG, "AMLCodec", "\t\thdr10 cll:");
-                logM(LOGDEBUG, "AMLCodec", "\t\tmax_cll = {:x}", (p[0] << 8) | p[1]);
-                logM(LOGDEBUG, "AMLCodec", "\t\tmax_fall = {:x}", (p[2] << 8) | p[3]);
-            }
-            else if (meta_type == OBU_METADATA_TYPE_HDR_MDCV) {
-                logM(LOGDEBUG, "AMLCodec", "\t\thdr10 primaries[r,g,b] =");
-                for (i = 0; i < 3; i++) {
-                    logM(LOGDEBUG, "AMLCodec", "\t\t {:x}, {:x}",
-                        (p[i * 4] << 8) | p[i * 4 + 1],
-                        (p[i * 4 + 2] << 8) | p[i * 4 + 3]);
-                }
-                logM(LOGDEBUG, "AMLCodec", "\t\twhite point = {:x}, {:x}", (p[12] << 8) | p[13], (p[14] << 8) | p[15]);
-                logM(LOGDEBUG, "AMLCodec", "\t\tmaxl = {:x}", (p[16] << 24) | (p[17] << 16) | (p[18] << 8) | p[19]);
-                logM(LOGDEBUG, "AMLCodec", "\t\tminl = {:x}", (p[20] << 24) | (p[21] << 16) | (p[22] << 8) | p[23]);
-            }
-                break;
-        case OBU_TILE_LIST:
-            break;
-        case OBU_PADDING:
-            break;
-        default:
-            // Skip unrecognized OBUs
-            break;
+          return -1;
         }
+        break;
 
-        data += payload_size;
+      case OBU_FRAME_HEADER:
+        if (data_end == data + payload_size)
+        {
+          frame_decoding_finished = 1;
+        }
+        else
+        {
+          seen_frame_header = 1;
+        }
+        break;
+
+      case OBU_REDUNDANT_FRAME_HEADER:
+      case OBU_FRAME:
+        if (obu_header.type == OBU_REDUNDANT_FRAME_HEADER)
+        {
+          if (!seen_frame_header)
+          {
+            return -1;
+          }
+        }
+        else
+        {
+          // OBU_FRAME_HEADER or OBU_FRAME.
+          if (seen_frame_header)
+          {
+            return -1;
+          }
+        }
+        if (obu_header.type == OBU_FRAME)
+        {
+          if (data_end == data + payload_size)
+          {
+            frame_decoding_finished = 1;
+            seen_frame_header = 0;
+          }
+        }
+        break;
+
+      case OBU_TILE_GROUP:
+        if (!seen_frame_header)
+        {
+          return -1;
+        }
+        if (data + payload_size == data_end)
+          frame_decoding_finished = 1;
+        if (frame_decoding_finished)
+          seen_frame_header = 0;
+        break;
+
+      case OBU_METADATA:
+        aom_uleb_decode(data, 8, &type, &bytes_read);
+
+        if (type < 6)
+          meta_type = static_cast<OBU_METADATA_TYPE>(type);
+        else
+          meta_type = OBU_METADATA_TYPE_AOM_RESERVED_0;
+
+        p = data + bytes_read;
+        logM(LOGDEBUG, "AMLCodec", "\tmeta type {} {:d}+{:d}", meta_type_name[type], bytes_read,
+             payload_size - bytes_read);
+
+        if (meta_type == OBU_METADATA_TYPE_ITUT_T35 && meta_buf != nullptr)
+        {
+          if ((p[0] == 0xb5) /* country code */
+              && ((p[1] == 0x00) && (p[2] == 0x3b)) /* terminal_provider_code */
+              && ((p[3] == 0x00) && (p[4] == 0x00) && (p[5] == 0x08) && (p[6] == 0x00)))
+          { /* terminal_provider_oriented_code */
+            logM(LOGDEBUG, "AMLCodec", "\t\tdolbyvison rpu");
+            meta_buf[0] = meta_buf[1] = meta_buf[2] = 0;
+            meta_buf[3] = 0x01;
+            meta_buf[4] = 0x19;
+
+            if (p[11] & 0x10)
+            {
+              rpu_size = 0x100;
+              rpu_size |= (p[11] & 0x0f) << 4;
+              rpu_size |= (p[12] >> 4) & 0x0f;
+              if (p[12] & 0x08)
+              {
+                logM(LOGDEBUG, "AMLCodec", "\tmeta rpu in obu exceed 512 bytes");
+                break;
+              }
+              for (i = 0; i < rpu_size; i++)
+              {
+                meta_buf[5 + i] = (p[12 + i] & 0x07) << 5;
+                meta_buf[5 + i] |= (p[13 + i] >> 3) & 0x1f;
+              }
+              rpu_size += 5;
+            }
+            else
+            {
+              rpu_size = (p[10] & 0x1f) << 3;
+              rpu_size |= (p[11] >> 5) & 0x07;
+              for (i = 0; i < rpu_size; i++)
+              {
+                meta_buf[5 + i] = (p[11 + i] & 0x0f) << 4;
+                meta_buf[5 + i] |= (p[12 + i] >> 4) & 0x0f;
+              }
+              rpu_size += 5;
+            }
+            *meta_len = rpu_size;
+          }
+        }
+        else if (meta_type == OBU_METADATA_TYPE_HDR_CLL)
+        {
+          logM(LOGDEBUG, "AMLCodec", "\t\thdr10 cll:");
+          logM(LOGDEBUG, "AMLCodec", "\t\tmax_cll = {:x}", (p[0] << 8) | p[1]);
+          logM(LOGDEBUG, "AMLCodec", "\t\tmax_fall = {:x}", (p[2] << 8) | p[3]);
+        }
+        else if (meta_type == OBU_METADATA_TYPE_HDR_MDCV)
+        {
+          logM(LOGDEBUG, "AMLCodec", "\t\thdr10 primaries[r,g,b] =");
+          for (i = 0; i < 3; i++)
+          {
+            logM(LOGDEBUG, "AMLCodec", "\t\t {:x}, {:x}", (p[i * 4] << 8) | p[i * 4 + 1],
+                 (p[i * 4 + 2] << 8) | p[i * 4 + 3]);
+          }
+          logM(LOGDEBUG, "AMLCodec", "\t\twhite point = {:x}, {:x}", (p[12] << 8) | p[13],
+               (p[14] << 8) | p[15]);
+          logM(LOGDEBUG, "AMLCodec", "\t\tmaxl = {:x}",
+               (p[16] << 24) | (p[17] << 16) | (p[18] << 8) | p[19]);
+          logM(LOGDEBUG, "AMLCodec", "\t\tminl = {:x}",
+               (p[20] << 24) | (p[21] << 16) | (p[22] << 8) | p[23]);
+        }
+        break;
+      case OBU_TILE_LIST:
+        break;
+      case OBU_PADDING:
+        break;
+      default:
+        // Skip unrecognized OBUs
+        break;
     }
 
-    return 0;
+    data += payload_size;
+  }
+
+  return 0;
 }
 
-int av1_add_frame_dec_info(am_private_t *para)
+int av1_add_frame_dec_info(am_private_t* para)
 {
   int ret;
   am_packet_t& pkt = para->am_pkt;
 
   unsigned int dst_frame_size = 0;
-  auto dst_data = (uint8_t *)calloc(1, pkt.data_size + 4096);
-  av1_parser_frame(0, pkt.data, pkt.data + pkt.data_size, dst_data, &dst_frame_size, nullptr, nullptr);
+  auto dst_data = (uint8_t*)calloc(1, pkt.data_size + 4096);
+  av1_parser_frame(0, pkt.data, pkt.data + pkt.data_size, dst_data, &dst_frame_size, nullptr,
+                   nullptr);
 
   if (dst_frame_size - pkt.data_size > 0)
   {
@@ -986,13 +1032,13 @@ int av1_add_frame_dec_info(am_private_t *para)
 int vp9_update_frame_header(am_packet_t& pkt)
 {
   int dsize = pkt.data_size;
-  unsigned char *buf = pkt.data;
+  unsigned char* buf = pkt.data;
   unsigned char marker;
   int frame_number;
   int mag, index_sz, offset[9], size[8], tframesize[9];
   int mag_ptr;
   int ret;
-  unsigned char *old_header = nullptr;
+  unsigned char* old_header = nullptr;
   int total_datasize = 0;
 
   pkt.avpkt.data = pkt.data;
@@ -1008,7 +1054,8 @@ int vp9_update_frame_header(am_packet_t& pkt)
     frame_number = (marker & 0x7) + 1;
     mag = ((marker >> 3) & 0x3) + 1;
     index_sz = 2 + mag * frame_number;
-    logM(LOGDEBUG, "AMLCodec", "frame_number : {:d}, mag : {:d}; index_sz : {:d}", frame_number, mag, index_sz);
+    logM(LOGDEBUG, "AMLCodec", "frame_number : {:d}, mag : {:d}; index_sz : {:d}", frame_number,
+         mag, index_sz);
     offset[0] = 0;
     mag_ptr = dsize - mag * frame_number - 2;
     if (buf[mag_ptr] != marker)
@@ -1025,11 +1072,11 @@ int vp9_update_frame_header(am_packet_t& pkt)
 
       for (int cur_mag = 0; cur_mag < mag; cur_mag++)
       {
-        size[cur_frame] = size[cur_frame]|(buf[mag_ptr] << (cur_mag*8));
+        size[cur_frame] = size[cur_frame] | (buf[mag_ptr] << (cur_mag * 8));
         mag_ptr++;
       }
 
-      offset[cur_frame+1] = offset[cur_frame] + size[cur_frame];
+      offset[cur_frame + 1] = offset[cur_frame] + size[cur_frame];
 
       if (cur_frame == 0)
         tframesize[cur_frame] = size[cur_frame];
@@ -1075,24 +1122,24 @@ int vp9_update_frame_header(am_packet_t& pkt)
 
   for (int cur_frame = frame_number - 1; cur_frame >= 0; cur_frame--)
   {
-    AVPacket *avpkt = &(pkt.avpkt);
+    AVPacket* avpkt = &(pkt.avpkt);
     int framesize = size[cur_frame];
     int oldframeoff = tframesize[cur_frame] - framesize;
     int outheaderoff = oldframeoff + cur_frame * 16;
-    uint8_t *fdata = avpkt->data + outheaderoff;
-    uint8_t *old_framedata = avpkt->data + oldframeoff;
+    uint8_t* fdata = avpkt->data + outheaderoff;
+    uint8_t* old_framedata = avpkt->data + oldframeoff;
     memmove(fdata + 16, old_framedata, framesize);
-    framesize += 4;/*add 4. for shift.....*/
+    framesize += 4; /*add 4. for shift.....*/
 
     /*add amlogic frame headers.*/
     fdata[0] = (framesize >> 24) & 0xff;
     fdata[1] = (framesize >> 16) & 0xff;
     fdata[2] = (framesize >> 8) & 0xff;
     fdata[3] = (framesize >> 0) & 0xff;
-    fdata[4] = ((framesize >> 24) & 0xff) ^0xff;
-    fdata[5] = ((framesize >> 16) & 0xff) ^0xff;
-    fdata[6] = ((framesize >> 8) & 0xff) ^0xff;
-    fdata[7] = ((framesize >> 0) & 0xff) ^0xff;
+    fdata[4] = ((framesize >> 24) & 0xff) ^ 0xff;
+    fdata[5] = ((framesize >> 16) & 0xff) ^ 0xff;
+    fdata[6] = ((framesize >> 8) & 0xff) ^ 0xff;
+    fdata[7] = ((framesize >> 0) & 0xff) ^ 0xff;
     fdata[8] = 0;
     fdata[9] = 0;
     fdata[10] = 0;
@@ -1101,7 +1148,7 @@ int vp9_update_frame_header(am_packet_t& pkt)
     fdata[13] = 'M';
     fdata[14] = 'L';
     fdata[15] = 'V';
-    framesize -= 4;/*del 4 to real framesize for check.....*/
+    framesize -= 4; /*del 4 to real framesize for check.....*/
 
     if (!old_header)
     {
@@ -1113,7 +1160,8 @@ int vp9_update_frame_header(am_packet_t& pkt)
       memset(fdata + 16 + framesize, 0, (old_header - fdata + 16 + framesize));
     }
     else if (old_header < fdata + 16 + framesize)
-      logM(LOGDEBUG, "AMLCodec", "ERROR!!! data over writed!!!! over write {:d}", fdata + 16 + framesize - old_header);
+      logM(LOGDEBUG, "AMLCodec", "ERROR!!! data over writed!!!! over write {:d}",
+           fdata + 16 + framesize - old_header);
 
     old_header = fdata;
   }
@@ -1121,240 +1169,271 @@ int vp9_update_frame_header(am_packet_t& pkt)
   return PLAYER_SUCCESS;
 }
 
-static int wmv3_write_header(am_private_t *para, am_packet_t& pkt)
+static int wmv3_write_header(am_private_t* para, am_packet_t& pkt)
 {
-    logNoFormatM(LOGDEBUG, "AMLCodec");
+  logNoFormatM(LOGDEBUG, "AMLCodec");
 
-    unsigned check_sum = 0;
-    unsigned data_len = para->extrasize + 4;
+  unsigned check_sum = 0;
+  unsigned data_len = para->extrasize + 4;
 
-    pkt.hdr->data[0] = 0;
-    pkt.hdr->data[1] = 0;
-    pkt.hdr->data[2] = 1;
-    pkt.hdr->data[3] = 0x10;
+  pkt.hdr->data[0] = 0;
+  pkt.hdr->data[1] = 0;
+  pkt.hdr->data[2] = 1;
+  pkt.hdr->data[3] = 0x10;
 
-    pkt.hdr->data[4] = 0;
-    pkt.hdr->data[5] = (data_len >> 16) & 0xff;
-    pkt.hdr->data[6] = 0x88;
-    pkt.hdr->data[7] = (data_len >> 8) & 0xff;
-    pkt.hdr->data[8] = data_len & 0xff;
-    pkt.hdr->data[9] = 0x88;
+  pkt.hdr->data[4] = 0;
+  pkt.hdr->data[5] = (data_len >> 16) & 0xff;
+  pkt.hdr->data[6] = 0x88;
+  pkt.hdr->data[7] = (data_len >> 8) & 0xff;
+  pkt.hdr->data[8] = data_len & 0xff;
+  pkt.hdr->data[9] = 0x88;
 
-    pkt.hdr->data[10] = 0xff;
-    pkt.hdr->data[11] = 0xff;
-    pkt.hdr->data[12] = 0x88;
-    pkt.hdr->data[13] = 0xff;
-    pkt.hdr->data[14] = 0xff;
-    pkt.hdr->data[15] = 0x88;
+  pkt.hdr->data[10] = 0xff;
+  pkt.hdr->data[11] = 0xff;
+  pkt.hdr->data[12] = 0x88;
+  pkt.hdr->data[13] = 0xff;
+  pkt.hdr->data[14] = 0xff;
+  pkt.hdr->data[15] = 0x88;
 
-    for (unsigned i = 4 ; i < 16 ; i++) {
-        check_sum += pkt.hdr->data[i];
-    }
+  for (unsigned i = 4; i < 16; i++)
+  {
+    check_sum += pkt.hdr->data[i];
+  }
 
-    pkt.hdr->data[16] = (check_sum >> 8) & 0xff;
-    pkt.hdr->data[17] =  check_sum & 0xff;
-    pkt.hdr->data[18] = 0x88;
-    pkt.hdr->data[19] = (check_sum >> 8) & 0xff;
-    pkt.hdr->data[20] =  check_sum & 0xff;
-    pkt.hdr->data[21] = 0x88;
+  pkt.hdr->data[16] = (check_sum >> 8) & 0xff;
+  pkt.hdr->data[17] = check_sum & 0xff;
+  pkt.hdr->data[18] = 0x88;
+  pkt.hdr->data[19] = (check_sum >> 8) & 0xff;
+  pkt.hdr->data[20] = check_sum & 0xff;
+  pkt.hdr->data[21] = 0x88;
 
-    pkt.hdr->data[22] = (para->video_width >> 8) & 0xff;
-    pkt.hdr->data[23] =  para->video_width & 0xff;
-    pkt.hdr->data[24] = (para->video_height >> 8) & 0xff;
-    pkt.hdr->data[25] =  para->video_height & 0xff;
+  pkt.hdr->data[22] = (para->video_width >> 8) & 0xff;
+  pkt.hdr->data[23] = para->video_width & 0xff;
+  pkt.hdr->data[24] = (para->video_height >> 8) & 0xff;
+  pkt.hdr->data[25] = para->video_height & 0xff;
 
-    memcpy(pkt.hdr->data + 26, para->extradata.GetData(), para->extradata.GetSize());
-    pkt.hdr->size = para->extrasize + 26;
-    pkt.codec = &para->vcodec;
-    pkt.newflag = 1;
-    return write_av_packet(para, pkt);
+  memcpy(pkt.hdr->data + 26, para->extradata.GetData(), para->extradata.GetSize());
+  pkt.hdr->size = para->extrasize + 26;
+  pkt.codec = &para->vcodec;
+  pkt.newflag = 1;
+  return write_av_packet(para, pkt);
 }
 
-static int wvc1_write_header(am_private_t *para, am_packet_t& pkt)
+static int wvc1_write_header(am_private_t* para, am_packet_t& pkt)
 {
-    logNoFormatM(LOGDEBUG, "AMLCodec");
+  logNoFormatM(LOGDEBUG, "AMLCodec");
 
-    memcpy(pkt.hdr->data, para->extradata.GetData() + 1, para->extradata.GetSize() - 1);
-    pkt.hdr->size = para->extrasize - 1;
-    pkt.codec = &para->vcodec;
-    pkt.newflag = 1;
-    return write_av_packet(para, pkt);
+  memcpy(pkt.hdr->data, para->extradata.GetData() + 1, para->extradata.GetSize() - 1);
+  pkt.hdr->size = para->extrasize - 1;
+  pkt.codec = &para->vcodec;
+  pkt.newflag = 1;
+  return write_av_packet(para, pkt);
 }
 
-static int mpeg_add_header(am_private_t *para, am_packet_t& pkt)
+static int mpeg_add_header(am_private_t* para, am_packet_t& pkt)
 {
-    logNoFormatM(LOGDEBUG, "AMLCodec");
+  logNoFormatM(LOGDEBUG, "AMLCodec");
 
-#define STUFF_BYTES_LENGTH     (256)
-    int size;
-    unsigned char packet_wrapper[] = {
-        0x00, 0x00, 0x01, 0xe0,
-        0x00, 0x00,                   // pes packet length
-        0x81, 0xc0, 0x0d,
-        0x20, 0x00, 0x00, 0x00, 0x00, // PTS
-        0x1f, 0xff, 0xff, 0xff, 0xff, // DTS
-        0xff, 0xff, 0xff, 0xff, 0xff, 0xff
-    };
+#define STUFF_BYTES_LENGTH (256)
+  int size;
+  unsigned char packet_wrapper[] = {0x00, 0x00, 0x01, 0xe0, 0x00, 0x00, // pes packet length
+                                    0x81, 0xc0, 0x0d, 0x20, 0x00, 0x00, 0x00, 0x00, // PTS
+                                    0x1f, 0xff, 0xff, 0xff, 0xff, // DTS
+                                    0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
-    size = para->extrasize + sizeof(packet_wrapper);
-    packet_wrapper[4] = size >> 8 ;
-    packet_wrapper[5] = size & 0xff ;
-    memcpy(pkt.hdr->data, packet_wrapper, sizeof(packet_wrapper));
-    size = sizeof(packet_wrapper);
-    memcpy(pkt.hdr->data + size, para->extradata.GetData(), para->extradata.GetSize());
-    size += para->extrasize;
-    memset(pkt.hdr->data + size, 0xff, STUFF_BYTES_LENGTH);
-    size += STUFF_BYTES_LENGTH;
-    pkt.hdr->size = size;
-    pkt.codec = &para->vcodec;
-    pkt.newflag = 1;
-    return write_av_packet(para, pkt);
+  size = para->extrasize + sizeof(packet_wrapper);
+  packet_wrapper[4] = size >> 8;
+  packet_wrapper[5] = size & 0xff;
+  memcpy(pkt.hdr->data, packet_wrapper, sizeof(packet_wrapper));
+  size = sizeof(packet_wrapper);
+  memcpy(pkt.hdr->data + size, para->extradata.GetData(), para->extradata.GetSize());
+  size += para->extrasize;
+  memset(pkt.hdr->data + size, 0xff, STUFF_BYTES_LENGTH);
+  size += STUFF_BYTES_LENGTH;
+  pkt.hdr->size = size;
+  pkt.codec = &para->vcodec;
+  pkt.newflag = 1;
+  return write_av_packet(para, pkt);
 }
 
-int pre_header_feeding(am_private_t *para, am_packet_t& pkt)
+int pre_header_feeding(am_private_t* para, am_packet_t& pkt)
 {
-    int ret;
-    if (para->stream_type == AM_STREAM_ES) {
-        if (pkt.hdr == nullptr) {
-            pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
-            pkt.hdr->data = (char *)malloc(HDR_BUF_SIZE);
-            if (!pkt.hdr->data)
-                return PLAYER_NOMEM;
-        }
-
-        if (para->video_format == VFORMAT_H264 ||
-            para->video_format == VFORMAT_H264_4K2K ||
-            para->video_format == VFORMAT_H264MVC) {
-            ret = h264_write_header(para, pkt);
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        } else if ((VFORMAT_MPEG4 == para->video_format) && (VIDEO_DEC_FORMAT_MPEG4_3 == para->video_codec_type)) {
-            ret = divx3_write_header(para, pkt);
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        } else if ((CODEC_TAG_M4S2 == para->video_codec_tag)
-                || (CODEC_TAG_DX50 == para->video_codec_tag)
-                || (CODEC_TAG_mp4v == para->video_codec_tag)) {
-            ret = m4s2_dx50_mp4v_write_header(para, pkt);
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        } else if (CODEC_TAG_WMV3 == para->video_codec_tag) {
-            logM(LOGDEBUG, "AMLCodec", "CODEC_TAG_WMV3 == para->video_codec_tag");
-            ret = wmv3_write_header(para, pkt);
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        } else if ((CODEC_TAG_WVC1 == para->video_codec_tag)
-                || (CODEC_TAG_VC_1 == para->video_codec_tag)
-                || (CODEC_TAG_WMVA == para->video_codec_tag)) {
-            if (para->extradata.GetSize() > 4 && !para->extradata.GetData()[0] && !para->extradata.GetData()[1] &&
-                para->extradata.GetData()[2] == 0x01 && para->extradata.GetData()[3] == 0x0f && ((para->extradata.GetData()[4] & 0x03) == 0x03))
-            {
-                logM(LOGDEBUG, "AMLCodec", "CODEC_TAG_WVC1 == para->video_codec_tag, using wmv3_write_header");
-                ret = wmv3_write_header(para, pkt);
-            }
-            else
-            {
-                logM(LOGDEBUG, "AMLCodec", "CODEC_TAG_WVC1 == para->video_codec_tag");
-                ret = wvc1_write_header(para, pkt);
-            }
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        } else if (VFORMAT_MJPEG == para->video_format) {
-            ret = mjpeg_write_header(para, pkt);
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        } else if (VFORMAT_HEVC == para->video_format) {
-            ret = hevc_write_header(para, pkt);
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        }
-
-        if (pkt.hdr) {
-            if (pkt.hdr->data) {
-                free(pkt.hdr->data);
-                pkt.hdr->data = nullptr;
-            }
-            free(pkt.hdr);
-            pkt.hdr = nullptr;
-        }
+  int ret;
+  if (para->stream_type == AM_STREAM_ES)
+  {
+    if (pkt.hdr == nullptr)
+    {
+      pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
+      pkt.hdr->data = (char*)malloc(HDR_BUF_SIZE);
+      if (!pkt.hdr->data)
+        return PLAYER_NOMEM;
     }
-    else if (para->stream_type == AM_STREAM_PS) {
-        if (pkt.hdr == nullptr) {
-            pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
-            pkt.hdr->data = (char*)malloc(HDR_BUF_SIZE);
-            if (!pkt.hdr->data) {
-                logM(LOGDEBUG, "AMLCodec", "NOMEM!");
-                return PLAYER_NOMEM;
-            }
-        }
-        if (( AV_CODEC_ID_MPEG1VIDEO == para->video_codec_id)
-          || (AV_CODEC_ID_MPEG2VIDEO == para->video_codec_id)) {
-            ret = mpeg_add_header(para, pkt);
-            if (ret != PLAYER_SUCCESS) {
-                return ret;
-            }
-        }
-        if (pkt.hdr) {
-            if (pkt.hdr->data) {
-                free(pkt.hdr->data);
-                pkt.hdr->data = nullptr;
-            }
-            free(pkt.hdr);
-            pkt.hdr = nullptr;
-        }
+
+    if (para->video_format == VFORMAT_H264 || para->video_format == VFORMAT_H264_4K2K ||
+        para->video_format == VFORMAT_H264MVC)
+    {
+      ret = h264_write_header(para, pkt);
+      if (ret != PLAYER_SUCCESS)
+      {
+        return ret;
+      }
     }
-    return PLAYER_SUCCESS;
+    else if ((VFORMAT_MPEG4 == para->video_format) &&
+             (VIDEO_DEC_FORMAT_MPEG4_3 == para->video_codec_type))
+    {
+      ret = divx3_write_header(para, pkt);
+      if (ret != PLAYER_SUCCESS)
+      {
+        return ret;
+      }
+    }
+    else if ((CODEC_TAG_M4S2 == para->video_codec_tag) ||
+             (CODEC_TAG_DX50 == para->video_codec_tag) || (CODEC_TAG_mp4v == para->video_codec_tag))
+    {
+      ret = m4s2_dx50_mp4v_write_header(para, pkt);
+      if (ret != PLAYER_SUCCESS)
+      {
+        return ret;
+      }
+    }
+    else if (CODEC_TAG_WMV3 == para->video_codec_tag)
+    {
+      logM(LOGDEBUG, "AMLCodec", "CODEC_TAG_WMV3 == para->video_codec_tag");
+      ret = wmv3_write_header(para, pkt);
+      if (ret != PLAYER_SUCCESS)
+      {
+        return ret;
+      }
+    }
+    else if ((CODEC_TAG_WVC1 == para->video_codec_tag) ||
+             (CODEC_TAG_VC_1 == para->video_codec_tag) || (CODEC_TAG_WMVA == para->video_codec_tag))
+    {
+      if (para->extradata.GetSize() > 4 && !para->extradata.GetData()[0] &&
+          !para->extradata.GetData()[1] && para->extradata.GetData()[2] == 0x01 &&
+          para->extradata.GetData()[3] == 0x0f && ((para->extradata.GetData()[4] & 0x03) == 0x03))
+      {
+        logM(LOGDEBUG, "AMLCodec",
+             "CODEC_TAG_WVC1 == para->video_codec_tag, using wmv3_write_header");
+        ret = wmv3_write_header(para, pkt);
+      }
+      else
+      {
+        logM(LOGDEBUG, "AMLCodec", "CODEC_TAG_WVC1 == para->video_codec_tag");
+        ret = wvc1_write_header(para, pkt);
+      }
+      if (ret != PLAYER_SUCCESS)
+      {
+        return ret;
+      }
+    }
+    else if (VFORMAT_MJPEG == para->video_format)
+    {
+      ret = mjpeg_write_header(para, pkt);
+      if (ret != PLAYER_SUCCESS)
+      {
+        return ret;
+      }
+    }
+    else if (VFORMAT_HEVC == para->video_format)
+    {
+      ret = hevc_write_header(para, pkt);
+      if (ret != PLAYER_SUCCESS)
+      {
+        return ret;
+      }
+    }
+
+    if (pkt.hdr)
+    {
+      if (pkt.hdr->data)
+      {
+        free(pkt.hdr->data);
+        pkt.hdr->data = nullptr;
+      }
+      free(pkt.hdr);
+      pkt.hdr = nullptr;
+    }
+  }
+  else if (para->stream_type == AM_STREAM_PS)
+  {
+    if (pkt.hdr == nullptr)
+    {
+      pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
+      pkt.hdr->data = (char*)malloc(HDR_BUF_SIZE);
+      if (!pkt.hdr->data)
+      {
+        logM(LOGDEBUG, "AMLCodec", "NOMEM!");
+        return PLAYER_NOMEM;
+      }
+    }
+    if ((AV_CODEC_ID_MPEG1VIDEO == para->video_codec_id) ||
+        (AV_CODEC_ID_MPEG2VIDEO == para->video_codec_id))
+    {
+      ret = mpeg_add_header(para, pkt);
+      if (ret != PLAYER_SUCCESS)
+      {
+        return ret;
+      }
+    }
+    if (pkt.hdr)
+    {
+      if (pkt.hdr->data)
+      {
+        free(pkt.hdr->data);
+        pkt.hdr->data = nullptr;
+      }
+      free(pkt.hdr);
+      pkt.hdr = nullptr;
+    }
+  }
+  return PLAYER_SUCCESS;
 }
 
 int divx3_prefix(am_packet_t& pkt)
 {
 #define DIVX311_CHUNK_HEAD_SIZE 13
-    const unsigned char divx311_chunk_prefix[DIVX311_CHUNK_HEAD_SIZE] = {
-        0x00, 0x00, 0x00, 0x01, 0xb6, 'D', 'I', 'V', 'X', '3', '.', '1', '1'
-    };
-    if ((pkt.hdr != nullptr) && (pkt.hdr->data != nullptr)) {
-        free(pkt.hdr->data);
-        pkt.hdr->data = nullptr;
+  const unsigned char divx311_chunk_prefix[DIVX311_CHUNK_HEAD_SIZE] = {
+      0x00, 0x00, 0x00, 0x01, 0xb6, 'D', 'I', 'V', 'X', '3', '.', '1', '1'};
+  if ((pkt.hdr != nullptr) && (pkt.hdr->data != nullptr))
+  {
+    free(pkt.hdr->data);
+    pkt.hdr->data = nullptr;
+  }
+
+  if (pkt.hdr == nullptr)
+  {
+    pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
+    if (!pkt.hdr)
+    {
+      logM(LOGDEBUG, "AMLCodec", "[hdr] NOMEM!");
+      return PLAYER_FAILED;
     }
 
-    if (pkt.hdr == nullptr) {
-        pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
-        if (!pkt.hdr) {
-            logM(LOGDEBUG, "AMLCodec", "[hdr] NOMEM!");
-            return PLAYER_FAILED;
-        }
+    pkt.hdr->data = nullptr;
+    pkt.hdr->size = 0;
+  }
 
-        pkt.hdr->data = nullptr;
-        pkt.hdr->size = 0;
-    }
+  pkt.hdr->data = (char*)malloc(DIVX311_CHUNK_HEAD_SIZE + 4);
+  if (pkt.hdr->data == nullptr)
+  {
+    logM(LOGDEBUG, "AMLCodec", "[data] NOMEM!");
+    return PLAYER_FAILED;
+  }
 
-    pkt.hdr->data = (char*)malloc(DIVX311_CHUNK_HEAD_SIZE + 4);
-    if (pkt.hdr->data == nullptr) {
-        logM(LOGDEBUG, "AMLCodec", "[data] NOMEM!");
-        return PLAYER_FAILED;
-    }
+  memcpy(pkt.hdr->data, divx311_chunk_prefix, DIVX311_CHUNK_HEAD_SIZE);
 
-    memcpy(pkt.hdr->data, divx311_chunk_prefix, DIVX311_CHUNK_HEAD_SIZE);
+  pkt.hdr->data[DIVX311_CHUNK_HEAD_SIZE + 0] = (pkt.data_size >> 24) & 0xff;
+  pkt.hdr->data[DIVX311_CHUNK_HEAD_SIZE + 1] = (pkt.data_size >> 16) & 0xff;
+  pkt.hdr->data[DIVX311_CHUNK_HEAD_SIZE + 2] = (pkt.data_size >> 8) & 0xff;
+  pkt.hdr->data[DIVX311_CHUNK_HEAD_SIZE + 3] = pkt.data_size & 0xff;
 
-    pkt.hdr->data[DIVX311_CHUNK_HEAD_SIZE + 0] = (pkt.data_size >> 24) & 0xff;
-    pkt.hdr->data[DIVX311_CHUNK_HEAD_SIZE + 1] = (pkt.data_size >> 16) & 0xff;
-    pkt.hdr->data[DIVX311_CHUNK_HEAD_SIZE + 2] = (pkt.data_size >>  8) & 0xff;
-    pkt.hdr->data[DIVX311_CHUNK_HEAD_SIZE + 3] = pkt.data_size & 0xff;
+  pkt.hdr->size = DIVX311_CHUNK_HEAD_SIZE + 4;
+  pkt.newflag = 1;
 
-    pkt.hdr->size = DIVX311_CHUNK_HEAD_SIZE + 4;
-    pkt.newflag = 1;
-
-    return PLAYER_SUCCESS;
+  return PLAYER_SUCCESS;
 }
 
-int set_header_info(am_private_t *para, bool decStreamTypeFrame)
+int set_header_info(am_private_t* para, bool decStreamTypeFrame)
 {
   am_packet_t& pkt = para->am_pkt;
 
@@ -1371,141 +1450,156 @@ int set_header_info(am_private_t *para, bool decStreamTypeFrame)
   }
   else if (para->video_format == VFORMAT_VC1)
   {
-      if (para->video_codec_type == VIDEO_DEC_FORMAT_WMV3) {
-          unsigned i, check_sum = 0, data_len = 0;
+    if (para->video_codec_type == VIDEO_DEC_FORMAT_WMV3)
+    {
+      unsigned i, check_sum = 0, data_len = 0;
 
-          if ((pkt.hdr != nullptr) && (pkt.hdr->data != nullptr)) {
-              free(pkt.hdr->data);
-              pkt.hdr->data = nullptr;
-          }
-
-          if (pkt.hdr == nullptr) {
-              pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
-              if (!pkt.hdr) {
-                  return PLAYER_FAILED;
-              }
-
-              pkt.hdr->data = nullptr;
-              pkt.hdr->size = 0;
-          }
-
-          if (pkt.avpkt.flags) {
-              pkt.hdr->data = (char*)malloc(para->extrasize + 26 + 22);
-              if (pkt.hdr->data == nullptr) {
-                  return PLAYER_FAILED;
-              }
-
-              pkt.hdr->data[0] = 0;
-              pkt.hdr->data[1] = 0;
-              pkt.hdr->data[2] = 1;
-              pkt.hdr->data[3] = 0x10;
-
-              data_len = para->extrasize + 4;
-              pkt.hdr->data[4] = 0;
-              pkt.hdr->data[5] = (data_len >> 16) & 0xff;
-              pkt.hdr->data[6] = 0x88;
-              pkt.hdr->data[7] = (data_len >> 8) & 0xff;
-              pkt.hdr->data[8] =  data_len & 0xff;
-              pkt.hdr->data[9] = 0x88;
-
-              pkt.hdr->data[10] = 0xff;
-              pkt.hdr->data[11] = 0xff;
-              pkt.hdr->data[12] = 0x88;
-              pkt.hdr->data[13] = 0xff;
-              pkt.hdr->data[14] = 0xff;
-              pkt.hdr->data[15] = 0x88;
-
-              for (i = 4 ; i < 16 ; i++) {
-                  check_sum += pkt.hdr->data[i];
-              }
-
-              pkt.hdr->data[16] = (check_sum >> 8) & 0xff;
-              pkt.hdr->data[17] =  check_sum & 0xff;
-              pkt.hdr->data[18] = 0x88;
-              pkt.hdr->data[19] = (check_sum >> 8) & 0xff;
-              pkt.hdr->data[20] =  check_sum & 0xff;
-              pkt.hdr->data[21] = 0x88;
-
-              pkt.hdr->data[22] = (para->video_width  >> 8) & 0xff;
-              pkt.hdr->data[23] =  para->video_width  & 0xff;
-              pkt.hdr->data[24] = (para->video_height >> 8) & 0xff;
-              pkt.hdr->data[25] =  para->video_height & 0xff;
-
-              memcpy(pkt.hdr->data + 26, para->extradata.GetData(), para->extradata.GetSize());
-
-              check_sum = 0;
-              data_len = para->extrasize + 26;
-          } else {
-              pkt.hdr->data = (char*)malloc(22);
-              if (pkt.hdr->data == nullptr) {
-                  return PLAYER_FAILED;
-              }
-          }
-
-          pkt.hdr->data[data_len + 0]  = 0;
-          pkt.hdr->data[data_len + 1]  = 0;
-          pkt.hdr->data[data_len + 2]  = 1;
-          pkt.hdr->data[data_len + 3]  = 0xd;
-
-          pkt.hdr->data[data_len + 4]  = 0;
-          pkt.hdr->data[data_len + 5]  = (pkt.data_size >> 16) & 0xff;
-          pkt.hdr->data[data_len + 6]  = 0x88;
-          pkt.hdr->data[data_len + 7]  = (pkt.data_size >> 8) & 0xff;
-          pkt.hdr->data[data_len + 8]  =  pkt.data_size & 0xff;
-          pkt.hdr->data[data_len + 9]  = 0x88;
-
-          pkt.hdr->data[data_len + 10] = 0xff;
-          pkt.hdr->data[data_len + 11] = 0xff;
-          pkt.hdr->data[data_len + 12] = 0x88;
-          pkt.hdr->data[data_len + 13] = 0xff;
-          pkt.hdr->data[data_len + 14] = 0xff;
-          pkt.hdr->data[data_len + 15] = 0x88;
-
-          for (i = data_len + 4 ; i < data_len + 16 ; i++) {
-              check_sum += pkt.hdr->data[i];
-          }
-
-          pkt.hdr->data[data_len + 16] = (check_sum >> 8) & 0xff;
-          pkt.hdr->data[data_len + 17] =  check_sum & 0xff;
-          pkt.hdr->data[data_len + 18] = 0x88;
-          pkt.hdr->data[data_len + 19] = (check_sum >> 8) & 0xff;
-          pkt.hdr->data[data_len + 20] =  check_sum & 0xff;
-          pkt.hdr->data[data_len + 21] = 0x88;
-
-          pkt.hdr->size = data_len + 22;
-          pkt.newflag = 1;
-      }
-      else if (para->video_codec_type == VIDEO_DEC_FORMAT_WVC1)
+      if ((pkt.hdr != nullptr) && (pkt.hdr->data != nullptr))
       {
-          if ((pkt.hdr != nullptr) && (pkt.hdr->data != nullptr)) {
-              free(pkt.hdr->data);
-              pkt.hdr->data = nullptr;
-          }
-
-          if (pkt.hdr == nullptr) {
-              pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
-              if (!pkt.hdr) {
-                  logM(LOGDEBUG, "AMLCodec", "[wvc1] NOMEM!");
-                  return PLAYER_FAILED;
-              }
-
-              pkt.hdr->data = nullptr;
-              pkt.hdr->size = 0;
-          }
-
-          pkt.hdr->data = (char*)malloc(4);
-          if (pkt.hdr->data == nullptr) {
-              logM(LOGDEBUG, "AMLCodec", "[wvc1] NOMEM!");
-              return PLAYER_FAILED;
-          }
-
-          pkt.hdr->data[0] = 0;
-          pkt.hdr->data[1] = 0;
-          pkt.hdr->data[2] = 1;
-          pkt.hdr->data[3] = 0xd;
-          pkt.hdr->size = 4;
-          pkt.newflag = 1;
+        free(pkt.hdr->data);
+        pkt.hdr->data = nullptr;
       }
+
+      if (pkt.hdr == nullptr)
+      {
+        pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
+        if (!pkt.hdr)
+        {
+          return PLAYER_FAILED;
+        }
+
+        pkt.hdr->data = nullptr;
+        pkt.hdr->size = 0;
+      }
+
+      if (pkt.avpkt.flags)
+      {
+        pkt.hdr->data = (char*)malloc(para->extrasize + 26 + 22);
+        if (pkt.hdr->data == nullptr)
+        {
+          return PLAYER_FAILED;
+        }
+
+        pkt.hdr->data[0] = 0;
+        pkt.hdr->data[1] = 0;
+        pkt.hdr->data[2] = 1;
+        pkt.hdr->data[3] = 0x10;
+
+        data_len = para->extrasize + 4;
+        pkt.hdr->data[4] = 0;
+        pkt.hdr->data[5] = (data_len >> 16) & 0xff;
+        pkt.hdr->data[6] = 0x88;
+        pkt.hdr->data[7] = (data_len >> 8) & 0xff;
+        pkt.hdr->data[8] = data_len & 0xff;
+        pkt.hdr->data[9] = 0x88;
+
+        pkt.hdr->data[10] = 0xff;
+        pkt.hdr->data[11] = 0xff;
+        pkt.hdr->data[12] = 0x88;
+        pkt.hdr->data[13] = 0xff;
+        pkt.hdr->data[14] = 0xff;
+        pkt.hdr->data[15] = 0x88;
+
+        for (i = 4; i < 16; i++)
+        {
+          check_sum += pkt.hdr->data[i];
+        }
+
+        pkt.hdr->data[16] = (check_sum >> 8) & 0xff;
+        pkt.hdr->data[17] = check_sum & 0xff;
+        pkt.hdr->data[18] = 0x88;
+        pkt.hdr->data[19] = (check_sum >> 8) & 0xff;
+        pkt.hdr->data[20] = check_sum & 0xff;
+        pkt.hdr->data[21] = 0x88;
+
+        pkt.hdr->data[22] = (para->video_width >> 8) & 0xff;
+        pkt.hdr->data[23] = para->video_width & 0xff;
+        pkt.hdr->data[24] = (para->video_height >> 8) & 0xff;
+        pkt.hdr->data[25] = para->video_height & 0xff;
+
+        memcpy(pkt.hdr->data + 26, para->extradata.GetData(), para->extradata.GetSize());
+
+        check_sum = 0;
+        data_len = para->extrasize + 26;
+      }
+      else
+      {
+        pkt.hdr->data = (char*)malloc(22);
+        if (pkt.hdr->data == nullptr)
+        {
+          return PLAYER_FAILED;
+        }
+      }
+
+      pkt.hdr->data[data_len + 0] = 0;
+      pkt.hdr->data[data_len + 1] = 0;
+      pkt.hdr->data[data_len + 2] = 1;
+      pkt.hdr->data[data_len + 3] = 0xd;
+
+      pkt.hdr->data[data_len + 4] = 0;
+      pkt.hdr->data[data_len + 5] = (pkt.data_size >> 16) & 0xff;
+      pkt.hdr->data[data_len + 6] = 0x88;
+      pkt.hdr->data[data_len + 7] = (pkt.data_size >> 8) & 0xff;
+      pkt.hdr->data[data_len + 8] = pkt.data_size & 0xff;
+      pkt.hdr->data[data_len + 9] = 0x88;
+
+      pkt.hdr->data[data_len + 10] = 0xff;
+      pkt.hdr->data[data_len + 11] = 0xff;
+      pkt.hdr->data[data_len + 12] = 0x88;
+      pkt.hdr->data[data_len + 13] = 0xff;
+      pkt.hdr->data[data_len + 14] = 0xff;
+      pkt.hdr->data[data_len + 15] = 0x88;
+
+      for (i = data_len + 4; i < data_len + 16; i++)
+      {
+        check_sum += pkt.hdr->data[i];
+      }
+
+      pkt.hdr->data[data_len + 16] = (check_sum >> 8) & 0xff;
+      pkt.hdr->data[data_len + 17] = check_sum & 0xff;
+      pkt.hdr->data[data_len + 18] = 0x88;
+      pkt.hdr->data[data_len + 19] = (check_sum >> 8) & 0xff;
+      pkt.hdr->data[data_len + 20] = check_sum & 0xff;
+      pkt.hdr->data[data_len + 21] = 0x88;
+
+      pkt.hdr->size = data_len + 22;
+      pkt.newflag = 1;
+    }
+    else if (para->video_codec_type == VIDEO_DEC_FORMAT_WVC1)
+    {
+      if ((pkt.hdr != nullptr) && (pkt.hdr->data != nullptr))
+      {
+        free(pkt.hdr->data);
+        pkt.hdr->data = nullptr;
+      }
+
+      if (pkt.hdr == nullptr)
+      {
+        pkt.hdr = (hdr_buf_t*)malloc(sizeof(hdr_buf_t));
+        if (!pkt.hdr)
+        {
+          logM(LOGDEBUG, "AMLCodec", "[wvc1] NOMEM!");
+          return PLAYER_FAILED;
+        }
+
+        pkt.hdr->data = nullptr;
+        pkt.hdr->size = 0;
+      }
+
+      pkt.hdr->data = (char*)malloc(4);
+      if (pkt.hdr->data == nullptr)
+      {
+        logM(LOGDEBUG, "AMLCodec", "[wvc1] NOMEM!");
+        return PLAYER_FAILED;
+      }
+
+      pkt.hdr->data[0] = 0;
+      pkt.hdr->data[1] = 0;
+      pkt.hdr->data[2] = 1;
+      pkt.hdr->data[3] = 0xd;
+      pkt.hdr->size = 4;
+      pkt.newflag = 1;
+    }
   }
   else if (para->video_format == VFORMAT_VP9)
     vp9_update_frame_header(pkt);
@@ -1521,17 +1615,20 @@ int set_header_info(am_private_t *para, bool decStreamTypeFrame)
 static inline int calc_chunk_size(int size)
 {
 // arch/arm64/include/asm/cache.h
-#define L1_CACHE_SHIFT         (6)
-#define L1_CACHE_BYTES         (1 << L1_CACHE_SHIFT)
+#define L1_CACHE_SHIFT (6)
+#define L1_CACHE_BYTES (1 << L1_CACHE_SHIFT)
 //arch/arm64/include/asm/page-def.h
-#define PAGE_SIZE              (4096)
+#define PAGE_SIZE (4096)
 //drivers/frame_provider/decoder/utils/vdec_input.c
 #define MIN_FRAME_PADDING_SIZE ((int)(L1_CACHE_BYTES))
 
   auto need_padding_size = MIN_FRAME_PADDING_SIZE;
-  if (size < PAGE_SIZE) {
+  if (size < PAGE_SIZE)
+  {
     need_padding_size += PAGE_SIZE - ((size + need_padding_size) & (PAGE_SIZE - 1));
-  } else {
+  }
+  else
+  {
     /*to 64 bytes aligned;*/
     if (size & 0x3f)
       need_padding_size += 64 - (size & 0x3f);
@@ -1540,25 +1637,25 @@ static inline int calc_chunk_size(int size)
 }
 
 /*************************************************************************/
-CAMLCodec::CAMLCodec(CProcessInfo &processInfo, CDVDStreamInfo &hints)
-  : m_opened(false)
-  , m_speed(DVD_PLAYSPEED_NORMAL)
-  , m_cur_pts(DVD_NOPTS_VALUE)
-  , m_last_pts(DVD_NOPTS_VALUE)
-  , m_bufferIndex(-1)
-  , m_state(0)
-  , m_hints(hints)
-  , m_processInfo(processInfo)
-  , m_dataCacheCore(CServiceBroker::GetDataCacheCore())
+CAMLCodec::CAMLCodec(CProcessInfo& processInfo, CDVDStreamInfo& hints)
+  : m_opened(false),
+    m_speed(DVD_PLAYSPEED_NORMAL),
+    m_cur_pts(DVD_NOPTS_VALUE),
+    m_last_pts(DVD_NOPTS_VALUE),
+    m_bufferIndex(-1),
+    m_state(0),
+    m_hints(hints),
+    m_processInfo(processInfo),
+    m_dataCacheCore(CServiceBroker::GetDataCacheCore())
 {
   am_private = new am_private_t();
   m_dll = new DllLibAmCodec;
   if (!m_dll->Load())
     logM(LOGWARNING, "CAMLCodec", "libamcodec.so not found");
   am_private->m_dll = m_dll;
-  am_private->vcodec.handle             = -1; //init to invalid
-  am_private->vcodec.cntl_handle        = -1;
-  am_private->vcodec.sub_handle         = -1;
+  am_private->vcodec.handle = -1; //init to invalid
+  am_private->vcodec.cntl_handle = -1;
+  am_private->vcodec.sub_handle = -1;
   am_private->vcodec.audio_utils_handle = -1;
 }
 
@@ -1584,8 +1681,9 @@ std::string CAMLCodec::IntToFourCCString(unsigned int value) const
 
   std::string fourCCString(bytes, 4);
 
-  for (auto& c : fourCCString) {
-      c = std::tolower(c, std::locale());
+  for (auto& c : fourCCString)
+  {
+    c = std::tolower(c, std::locale());
   }
 
   return fourCCString;
@@ -1593,18 +1691,25 @@ std::string CAMLCodec::IntToFourCCString(unsigned int value) const
 
 std::string CAMLCodec::GetDoViCodecFourCC(unsigned int codec_tag) const
 {
-  if (codec_tag == 0) return "----";
+  if (codec_tag == 0)
+    return "----";
 
   std::string fourCC = IntToFourCCString(codec_tag);
 
   // some files don't have dvhe or dvh1 tag set up but have Dolby Vision side data
   // page 10, table 2 from https://professional.dolby.com/siteassets/content-creation/dolby-vision-for-content-creators/dolby-vision-streams-within-the-http-live-streaming-format-v2.0-13-november-2018.pdf
-  if (fourCC == "hev1") return "dvhe";
-  if (fourCC == "hvc1") return "dvh1";
-  if (fourCC == "avc3") return "dvav";
-  if (fourCC == "avc1") return "dva1";
-  if (fourCC == "vvc1") return "dvc1";
-  if (fourCC == "vvi1") return "dvi1";
+  if (fourCC == "hev1")
+    return "dvhe";
+  if (fourCC == "hvc1")
+    return "dvh1";
+  if (fourCC == "avc3")
+    return "dvav";
+  if (fourCC == "avc1")
+    return "dva1";
+  if (fourCC == "vvc1")
+    return "dvc1";
+  if (fourCC == "vvi1")
+    return "dvi1";
 
   return fourCC;
 }
@@ -1650,25 +1755,23 @@ bool CAMLCodec::OpenDecoder(bool restart)
   m_decoder_stream_buffer = advancedSettings->m_videoDecoderStreamBuffer;
   m_decoder_minimum_buffer = advancedSettings->m_videoDecoderMinimumBuffer;
   m_decoder_minimum_stream_buffer = advancedSettings->m_videoDecoderMinimumStreamBuffer;
-  m_decoder_stream_type_stream_offset = static_cast<uint64_t>(advancedSettings->m_videoDecoderStreamTypeStreamOffset * 1000);
+  m_decoder_stream_type_stream_offset =
+      static_cast<uint64_t>(advancedSettings->m_videoDecoderStreamTypeStreamOffset * 1000);
   m_decoder_h264_offset = static_cast<uint64_t>(advancedSettings->m_videoDecoderH264Offset * 1000);
-  m_decoder_stream_type_stream_min_queue_count = advancedSettings->m_videoDecoderStreamTypeStreamMinOrderedBufferQueueCount;
+  m_decoder_stream_type_stream_min_queue_count =
+      advancedSettings->m_videoDecoderStreamTypeStreamMinOrderedBufferQueueCount;
 
   m_buffer_level_ready = false;
 
-  logM(LOGINFO, "CAMLCodec", "Decoder settings: timeout:[{:d}s] "
-                             "buffer:[{:.1f}%] stream buffer:[{:.1f}%] "
-                             "minimum buffer:[{:.1f}%] minimum stream buffer:[{:.1f}%] "
-                             "stream type stream offset:[{:d}usec] h264 offset:[{:d}usec] "
-                             "stream type stream min queue count:[{:d}]",
-    m_decoder_timeout,
-    m_decoder_buffer,
-    m_decoder_stream_buffer,
-    m_decoder_minimum_buffer,
-    m_decoder_minimum_stream_buffer,
-    m_decoder_stream_type_stream_offset,
-    m_decoder_h264_offset,
-    m_decoder_stream_type_stream_min_queue_count);
+  logM(LOGINFO, "CAMLCodec",
+       "Decoder settings: timeout:[{:d}s] "
+       "buffer:[{:.1f}%] stream buffer:[{:.1f}%] "
+       "minimum buffer:[{:.1f}%] minimum stream buffer:[{:.1f}%] "
+       "stream type stream offset:[{:d}usec] h264 offset:[{:d}usec] "
+       "stream type stream min queue count:[{:d}]",
+       m_decoder_timeout, m_decoder_buffer, m_decoder_stream_buffer, m_decoder_minimum_buffer,
+       m_decoder_minimum_stream_buffer, m_decoder_stream_type_stream_offset, m_decoder_h264_offset,
+       m_decoder_stream_type_stream_min_queue_count);
 
   if (!OpenAmlVideo())
   {
@@ -1681,21 +1784,21 @@ bool CAMLCodec::OpenDecoder(bool restart)
   am_packet_init(am_private->am_pkt);
 
   // default stream type
-  am_private->stream_type      = AM_STREAM_ES;
+  am_private->stream_type = AM_STREAM_ES;
 
   // handle hints.
-  am_private->video_width      = m_hints.width;
-  am_private->video_height     = m_hints.height;
-  am_private->video_codec_id   = m_hints.codec;
-  am_private->video_codec_tag  = m_hints.codec_tag;
+  am_private->video_width = m_hints.width;
+  am_private->video_height = m_hints.height;
+  am_private->video_codec_id = m_hints.codec;
+  am_private->video_codec_tag = m_hints.codec_tag;
 
-  am_private->video_pid        = -1;
+  am_private->video_pid = -1;
 
   // handle video ratio
-  AVRational video_ratio       = av_d2q(1, SHRT_MAX);
+  AVRational video_ratio = av_d2q(1, SHRT_MAX);
 
-  am_private->video_ratio      = (video_ratio.num << 16) | video_ratio.den;
-  am_private->video_ratio64    = ((int64_t)video_ratio.num << 32) | video_ratio.den;
+  am_private->video_ratio = (video_ratio.num << 16) | video_ratio.den;
+  am_private->video_ratio64 = ((int64_t)video_ratio.num << 32) | video_ratio.den;
 
   // handle video rate
   if (m_hints.fpsrate > 0 && m_hints.fpsscale != 0)
@@ -1745,15 +1848,13 @@ bool CAMLCodec::OpenDecoder(bool restart)
   // handle extradata
   am_private->video_format = codecid_to_vformat(m_hints.codec);
 
-  if (IsH264() &&
-      ((m_hints.width > 1920) || (m_hints.height > 1088)) &&
+  if (IsH264() && ((m_hints.width > 1920) || (m_hints.height > 1088)) &&
       (aml_support_h264_4k2k() == AML_HAS_H264_4K2K))
   {
     am_private->video_format = VFORMAT_H264_4K2K;
   }
-  else if (IsH264() &&
-          ((am_private->video_codec_tag == CODEC_TAG_AMVC) ||
-           (am_private->video_codec_tag == CODEC_TAG_MVC1)))
+  else if (IsH264() && ((am_private->video_codec_tag == CODEC_TAG_AMVC) ||
+                        (am_private->video_codec_tag == CODEC_TAG_MVC1)))
   {
     am_private->video_format = VFORMAT_H264MVC;
   }
@@ -1774,11 +1875,12 @@ bool CAMLCodec::OpenDecoder(bool restart)
   if (am_private->video_codec_type == VIDEO_DEC_FORMAT_UNKNOW)
     am_private->video_codec_type = codec_tag_to_vdec_type(am_private->video_codec_id);
 
-  logM(LOGINFO, "CAMLCodec", "width({:d}), height({:d}), codec({:d}), codec_tag({:d}), bitdepth({:d})",
-       m_hints.width, m_hints.height, m_hints.codec, m_hints.codec_tag, m_hints.bitdepth);
+  logM(LOGINFO, "CAMLCodec",
+       "width({:d}), height({:d}), codec({:d}), codec_tag({:d}), bitdepth({:d})", m_hints.width,
+       m_hints.height, m_hints.codec, m_hints.codec_tag, m_hints.bitdepth);
 
-  logM(LOGINFO, "CAMLCodec", "fpsrate({:d}), fpsscale({:d}), video_rate({:d})",
-       m_hints.fpsrate, m_hints.fpsscale, am_private->video_rate);
+  logM(LOGINFO, "CAMLCodec", "fpsrate({:d}), fpsscale({:d}), video_rate({:d})", m_hints.fpsrate,
+       m_hints.fpsscale, am_private->video_rate);
 
   logM(LOGINFO, "CAMLCodec", "aspect({:f}), video_ratio.num({:d}), video_ratio.den({:d})",
        m_hints.aspect, video_ratio.num, video_ratio.den);
@@ -1791,26 +1893,28 @@ bool CAMLCodec::OpenDecoder(bool restart)
 
   if (m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
     logM(LOGINFO, "CAMLCodec", "DOVI: version[{:d}.{:d}] profile[{:d}], el type[{:d}]",
-         m_hints.dovi.dv_version_major, m_hints.dovi.dv_version_minor, m_hints.dovi.dv_profile, m_hints.dovi_el_type);
+         m_hints.dovi.dv_version_major, m_hints.dovi.dv_version_minor, m_hints.dovi.dv_profile,
+         m_hints.dovi_el_type);
 
   m_processInfo.SetVideoDAR(m_hints.aspect);
 
   // default video codec params
-  am_private->gcodec.noblock     = 0;
-  am_private->gcodec.video_pid   = am_private->video_pid;
-  am_private->gcodec.video_type  = am_private->video_format;
+  am_private->gcodec.noblock = 0;
+  am_private->gcodec.video_pid = am_private->video_pid;
+  am_private->gcodec.video_type = am_private->video_format;
   am_private->gcodec.stream_type = STREAM_TYPE_ES_VIDEO;
-  am_private->gcodec.format      = am_private->video_codec_type;
-  am_private->gcodec.width       = am_private->video_width;
-  am_private->gcodec.height      = am_private->video_height;
-  am_private->gcodec.rate        = am_private->video_rate;
-  am_private->gcodec.ratio       = am_private->video_ratio;
-  am_private->gcodec.ratio64     = am_private->video_ratio64;
-  am_private->gcodec.param       = nullptr;
-  am_private->gcodec.dec_mode    = STREAM_TYPE_FRAME;
-  am_private->gcodec.video_path  = FRAME_BASE_PATH_AMLVIDEO_AMVIDEO;
+  am_private->gcodec.format = am_private->video_codec_type;
+  am_private->gcodec.width = am_private->video_width;
+  am_private->gcodec.height = am_private->video_height;
+  am_private->gcodec.rate = am_private->video_rate;
+  am_private->gcodec.ratio = am_private->video_ratio;
+  am_private->gcodec.ratio64 = am_private->video_ratio64;
+  am_private->gcodec.param = nullptr;
+  am_private->gcodec.dec_mode = STREAM_TYPE_FRAME;
+  am_private->gcodec.video_path = FRAME_BASE_PATH_AMLVIDEO_AMVIDEO;
 
-  if (!restart) aml_dv_open(m_hints.hdrType, m_hints.bitdepth);
+  if (!restart)
+    aml_dv_open(m_hints.hdrType, m_hints.bitdepth);
 
   // Now have the HDRType resolved, ok to set the transfer pq - so renderer can set the shaders as needed.
   aml_set_transfer_pq(m_hints.hdrType, m_hints.bitdepth);
@@ -1821,9 +1925,10 @@ bool CAMLCodec::OpenDecoder(bool restart)
   if ((m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) && aml_is_dv_enable())
   {
     am_private->gcodec.dv_enable = 1;
-    if (((m_hints.dovi.dv_profile == 4) || (m_hints.dovi.dv_profile == 7)) && (m_hints.dovi_el_type == DOVIELType::TYPE_FEL))
+    if (((m_hints.dovi.dv_profile == 4) || (m_hints.dovi.dv_profile == 7)) &&
+        (m_hints.dovi_el_type == DOVIELType::TYPE_FEL))
     {
-      aml_dv_enable_fel();                              // Make sure enable fel is set.
+      aml_dv_enable_fel(); // Make sure enable fel is set.
       am_private->gcodec.dec_mode = STREAM_TYPE_STREAM; // Use stream path if FEL
     }
   }
@@ -1831,7 +1936,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   // DEC_CONTROL_FLAG_DISABLE_FAST_POC
   CSysfsPath("/sys/module/amvdec_h264/parameters/dec_control", 4);
 
-  switch(am_private->video_format)
+  switch (am_private->video_format)
   {
     default:
       break;
@@ -1845,14 +1950,14 @@ bool CAMLCodec::OpenDecoder(bool restart)
       [[fallthrough]];
     case VFORMAT_H264:
       am_private->gcodec.format = VIDEO_DEC_FORMAT_H264;
-      am_private->gcodec.param  = (void*)EXTERNAL_PTS;
+      am_private->gcodec.param = (void*)EXTERNAL_PTS;
       // h264 in an avi file
       if (m_hints.ptsinvalid)
         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
     case VFORMAT_H264_4K2K:
       am_private->gcodec.format = VIDEO_DEC_FORMAT_H264_4K2K;
-      am_private->gcodec.param  = (void*)EXTERNAL_PTS;
+      am_private->gcodec.param = (void*)EXTERNAL_PTS;
       // h264 in an avi file
       if (m_hints.ptsinvalid)
         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
@@ -1868,13 +1973,14 @@ bool CAMLCodec::OpenDecoder(bool restart)
         if (VIDEO_DEC_FORMAT_REAL_8 == am_private->video_codec_type)
         {
           am_private->gcodec.extra = am_private->extradata.GetData()[1] & 7;
-          tbl[0] = (((am_private->gcodec.width  >> 2) - 1) << 8)
-                 | (((am_private->gcodec.height >> 2) - 1) & 0xff);
+          tbl[0] = (((am_private->gcodec.width >> 2) - 1) << 8) |
+                   (((am_private->gcodec.height >> 2) - 1) & 0xff);
           unsigned int j;
           for (unsigned int i = 1; i <= am_private->gcodec.extra; i++)
           {
             j = 2 * (i - 1);
-            tbl[i] = ((am_private->extradata.GetData()[8 + j] - 1) << 8) | ((am_private->extradata.GetData()[8 + j + 1] - 1) & 0xff);
+            tbl[i] = ((am_private->extradata.GetData()[8 + j] - 1) << 8) |
+                     ((am_private->extradata.GetData()[8 + j + 1] - 1) & 0xff);
           }
         }
         am_private->gcodec.param = &tbl;
@@ -1888,26 +1994,26 @@ bool CAMLCodec::OpenDecoder(bool restart)
       break;
     case VFORMAT_HEVC:
       am_private->gcodec.format = VIDEO_DEC_FORMAT_HEVC;
-      am_private->gcodec.param  = (void*)EXTERNAL_PTS;
+      am_private->gcodec.param = (void*)EXTERNAL_PTS;
       if (m_hints.ptsinvalid)
         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
     case VFORMAT_VP9:
       am_private->gcodec.format = VIDEO_DEC_FORMAT_VP9;
-      am_private->gcodec.param  = (void*)EXTERNAL_PTS;
+      am_private->gcodec.param = (void*)EXTERNAL_PTS;
       if (m_hints.ptsinvalid)
         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
   }
-  am_private->gcodec.param = (void *)((std::uintptr_t)am_private->gcodec.param | (am_private->video_rotation_degree << 16));
+  am_private->gcodec.param =
+      (void*)((std::uintptr_t)am_private->gcodec.param | (am_private->video_rotation_degree << 16));
 
   // translate from generic to firmware version dependent
   m_dll->codec_init_para(&am_private->gcodec, &am_private->vcodec);
 
   logM(LOGINFO, "CAMLCodec", "dec mode stream type [{}]", GetDecStreamTypeName());
 
-  if (std::string config_data = GetHDRStaticMetadata();
-      !config_data.empty())
+  if (std::string config_data = GetHDRStaticMetadata(); !config_data.empty())
   {
     am_private->vcodec.config_len = static_cast<int>(config_data.size());
     am_private->vcodec.config = (char*)malloc(config_data.size() + 1);
@@ -1918,8 +2024,7 @@ bool CAMLCodec::OpenDecoder(bool restart)
   if (IsDecStreamTypeSingle())
     SetVfmMap("default", "decoder ppmgr deinterlace amlvideo amvideo");
 
-  if (int ret = m_dll->codec_init(&am_private->vcodec);
-      ret != CODEC_ERROR_NONE)
+  if (int ret = m_dll->codec_init(&am_private->vcodec); ret != CODEC_ERROR_NONE)
   {
     logM(LOGDEBUG, "CAMLCodec", "codec init failed, ret=0x{:x}", -ret);
     return false;
@@ -1945,12 +2050,15 @@ bool CAMLCodec::OpenDecoder(bool restart)
   am_private->hdr_buf.data = nullptr;
   pre_header_feeding(am_private, am_private->am_pkt);
 
-  m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
+  m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth,
+                         CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
 
   auto strScaler = CSysfsPath("/sys/class/ppmgr/ppscaler").GetOrDefault<std::string>();
 
-  if (strScaler.find("enabled") == std::string::npos)     // Scaler not enabled, use screen size
-    m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight);
+  if (strScaler.find("enabled") == std::string::npos) // Scaler not enabled, use screen size
+    m_display_rect =
+        CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth,
+              CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight);
 
   CSysfsPath("/sys/class/video/freerun_mode", 1);
 
@@ -1960,7 +2068,8 @@ bool CAMLCodec::OpenDecoder(bool restart)
   SetSpeed(m_speed);
   SetPollDevice(am_private->vcodec.cntl_handle);
 
-  m_minOrderedBufferQueueCount = IsDecStreamTypeStream() ? m_decoder_stream_type_stream_min_queue_count : 1;
+  m_minOrderedBufferQueueCount =
+      IsDecStreamTypeStream() ? m_decoder_stream_type_stream_min_queue_count : 1;
 
   StartDequeueToOrderedBufferQueue();
 
@@ -1972,7 +2081,8 @@ bool CAMLCodec::OpenAmlVideo()
   auto amlVideoFile = std::make_shared<PosixFile>();
   if (!amlVideoFile->Open("/dev/video10", O_RDONLY | O_NONBLOCK))
   {
-    logM(LOGERROR, "CAMLCodec", "cannot open V4L amlvideo device /dev/video10: {}", strerror(errno));
+    logM(LOGERROR, "CAMLCodec", "cannot open V4L amlvideo device /dev/video10: {}",
+         strerror(errno));
     return false;
   }
 
@@ -1982,7 +2092,7 @@ bool CAMLCodec::OpenAmlVideo()
   return true;
 }
 
-std::string CAMLCodec::GetVfmMap(const std::string &name) const
+std::string CAMLCodec::GetVfmMap(const std::string& name) const
 {
   auto vfmMap = CSysfsPath("/sys/class/vfm/map").GetOrDefault<std::string>();
 
@@ -2004,7 +2114,7 @@ std::string CAMLCodec::GetVfmMap(const std::string &name) const
   return sectionMap;
 }
 
-void CAMLCodec::SetVfmMap(const std::string &name, const std::string &map) const
+void CAMLCodec::SetVfmMap(const std::string& name, const std::string& map) const
 {
   CSysfsPath vfm_map{"/sys/class/vfm/map"};
   if (vfm_map.Exists())
@@ -2040,7 +2150,8 @@ void CAMLCodec::CloseDecoder(bool restart)
   // return tsync to default so external apps work
   CSysfsPath("/sys/class/tsync/enable", 1);
 
-  if (!restart) aml_dv_wait_video_off(m_decoder_timeout);
+  if (!restart)
+    aml_dv_wait_video_off(m_decoder_timeout);
 
   // restore the saved system blackout_policy value
   aml_blackout_policy(blackout_policy);
@@ -2049,7 +2160,8 @@ void CAMLCodec::CloseDecoder(bool restart)
 
   CloseAmlVideo();
 
-  if (!restart) aml_dv_close();
+  if (!restart)
+    aml_dv_close();
 }
 
 void CAMLCodec::CloseAmlVideo()
@@ -2104,38 +2216,34 @@ void CAMLCodec::Reset()
   SetPollDevice(am_private->vcodec.cntl_handle);
 }
 
-bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
+bool CAMLCodec::AddData(uint8_t* pData, size_t iSize, double dts, double pts)
 {
   int data_len, free_len;
   int chunk_size = calc_chunk_size(iSize);
   float new_buffer_level = GetBufferLevel(chunk_size, data_len, free_len);
 
-  if (!m_buffer_level_ready) {
-    m_buffer_level_ready = IsDecStreamTypeStream()
-                             ? (new_buffer_level > m_decoder_stream_buffer)
-                             : (new_buffer_level > m_decoder_buffer);
+  if (!m_buffer_level_ready)
+  {
+    m_buffer_level_ready = IsDecStreamTypeStream() ? (new_buffer_level > m_decoder_stream_buffer)
+                                                   : (new_buffer_level > m_decoder_buffer);
 
-    m_minimum_buffer_level = IsDecStreamTypeStream()
-                               ? m_decoder_minimum_stream_buffer
-                               : m_decoder_minimum_buffer;
+    m_minimum_buffer_level =
+        IsDecStreamTypeStream() ? m_decoder_minimum_stream_buffer : m_decoder_minimum_buffer;
   }
 
   if (!m_opened || !pData || free_len == 0 || new_buffer_level >= 100.0f)
   {
-    logComponentM(LOGDEBUG, LOGVIDEO, "CAMLCodec", "skip add data dl:{:d} fl:{:d} sz:{:d}({:d}) lv:{:.1f}% dts:{:.3f} pts:{:.3f}",
-                  data_len,
-                  free_len,
-                  iSize,
-                  chunk_size,
-                  new_buffer_level,
-                  dts / DVD_TIME_BASE,
+    logComponentM(LOGDEBUG, LOGVIDEO, "CAMLCodec",
+                  "skip add data dl:{:d} fl:{:d} sz:{:d}({:d}) lv:{:.1f}% dts:{:.3f} pts:{:.3f}",
+                  data_len, free_len, iSize, chunk_size, new_buffer_level, dts / DVD_TIME_BASE,
                   pts / DVD_TIME_BASE);
     return false;
   }
 
   if (am_private->hdr_buf.size > 0)
   {
-    logM(LOGDEBUG, "CAMLCodec", "feed extradata on first frame. extradata size: {:d}", am_private->hdr_buf.size);
+    logM(LOGDEBUG, "CAMLCodec", "feed extradata on first frame. extradata size: {:d}",
+         am_private->hdr_buf.size);
 
     am_packet_t& pkt = am_private->am_pkt;
     pkt.data = pData;
@@ -2145,8 +2253,7 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
 
     av_buffer_unref(&pkt.avpkt.buf);
 
-    if (int ret = av_grow_packet(&(pkt.avpkt), am_private->hdr_buf.size);
-        ret < 0)
+    if (int ret = av_grow_packet(&(pkt.avpkt), am_private->hdr_buf.size); ret < 0)
     {
       logM(LOGDEBUG, "CAMLCodec", "ERROR!!! grow_packet for apk failed.!!!");
       return ret;
@@ -2169,8 +2276,8 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
     am_private->am_pkt.data_size = iSize;
   }
 
-  am_private->am_pkt.newflag    = 1;
-  am_private->am_pkt.isvalid    = 1;
+  am_private->am_pkt.newflag = 1;
+  am_private->am_pkt.isvalid = 1;
   am_private->am_pkt.avduration = 0;
 
   // handle pts
@@ -2190,7 +2297,8 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
     am_private->am_pkt.avdts = dts;
 
     // For VC1 AML decoder uses PTS only on I-Frames
-    if (am_private->am_pkt.avpts == UINT64_0 && (((size_t)am_private->gcodec.param) & KEYFRAME_PTS_ONLY))
+    if (am_private->am_pkt.avpts == UINT64_0 &&
+        (((size_t)am_private->gcodec.param) & KEYFRAME_PTS_ONLY))
       am_private->am_pkt.avpts = am_private->am_pkt.avdts;
   }
 
@@ -2231,14 +2339,10 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
     usleep(2000); // wait 2ms to process larger packets
 
   if (iSize > 0)
-    logComponentM(LOGDEBUG, LOGVIDEO, "CAMLCodec", "dl:{:d} fl:{:d} sz:{:d}({:d}) lv:{:.1f}% dts:{:.3f} pts:{:.3f}",
-                  data_len + chunk_size,
-                  free_len - chunk_size,
-                  iSize,
-                  chunk_size,
-                  new_buffer_level,
-                  dts / DVD_TIME_BASE,
-                  pts / DVD_TIME_BASE);
+    logComponentM(LOGDEBUG, LOGVIDEO, "CAMLCodec",
+                  "dl:{:d} fl:{:d} sz:{:d}({:d}) lv:{:.1f}% dts:{:.3f} pts:{:.3f}",
+                  data_len + chunk_size, free_len - chunk_size, iSize, chunk_size, new_buffer_level,
+                  dts / DVD_TIME_BASE, pts / DVD_TIME_BASE);
 
   return true;
 }
@@ -2262,9 +2366,10 @@ int CAMLCodec::PollFrame()
 
   if (events > 0)
   {
-    logComponentM(LOGDEBUG, LOGAVTIMING, "CAMLCodec", "elapsed:[{:.3f}] events:[{:d}]",
-                                         std::chrono::duration<double, std::milli>(std::chrono::system_clock::now() - now).count(),
-                                         events);
+    logComponentM(
+        LOGDEBUG, LOGAVTIMING, "CAMLCodec", "elapsed:[{:.3f}] events:[{:d}]",
+        std::chrono::duration<double, std::milli>(std::chrono::system_clock::now() - now).count(),
+        events);
   }
 
   return 1;
@@ -2279,7 +2384,8 @@ void CAMLCodec::SetPollDevice(int dev)
 
 int CAMLCodec::ReleaseFrame(const uint32_t index, bool drop)
 {
-  if (!m_amlVideoFile) return 0;
+  if (!m_amlVideoFile)
+    return 0;
 
   int ret;
   auto vbuf = v4l2_buffer();
@@ -2296,7 +2402,8 @@ int CAMLCodec::ReleaseFrame(const uint32_t index, bool drop)
     ret = (m_amlVideoFile->IOControl(VIDIOC_QBUF, &vbuf) < 0) ? errno : 0;
   }
 
-  if (ret < 0) logM(LOGERROR, "CAMLCodec", "VIDIOC_QBUF failed: [{}] [{}]", ret, strerror(ret));
+  if (ret < 0)
+    logM(LOGERROR, "CAMLCodec", "VIDIOC_QBUF failed: [{}] [{}]", ret, strerror(ret));
 
   return ret;
 }
@@ -2307,7 +2414,7 @@ float CAMLCodec::GetBufferLevel()
   return GetBufferLevel(new_chunk, data_len, free_len);
 }
 
-float CAMLCodec::GetBufferLevel(int new_chunk, int &data_len, int &free_len) const
+float CAMLCodec::GetBufferLevel(int new_chunk, int& data_len, int& free_len) const
 {
   struct buf_status bs;
   float level = 0.0f;
@@ -2376,7 +2483,7 @@ void CAMLCodec::DequeueToOrderedBufferQueue()
       if (IsDecStreamTypeStream())
         pts += m_decoder_stream_type_stream_offset; // Offset for type STREAM (Used for FEL)
       else if (IsH264())
-        pts += m_decoder_h264_offset;               // Offset for H264
+        pts += m_decoder_h264_offset; // Offset for H264
 
       {
         std::scoped_lock lock(m_orderedBufferQueueMutex);
@@ -2409,7 +2516,8 @@ void CAMLCodec::StopDequeueToOrderedBufferQueue()
   logNoFormatM(LOGINFO, "CAMLCodec");
 
   m_orderedBufferQueueRunning = false;
-  if (m_dequeueToOrderedBufferQueueThread.joinable()) m_dequeueToOrderedBufferQueueThread.join();
+  if (m_dequeueToOrderedBufferQueueThread.joinable())
+    m_dequeueToOrderedBufferQueueThread.join();
 
   ClearOrderedBufferQueue();
 }
@@ -2453,7 +2561,8 @@ bool CAMLCodec::GetNextOrderedBuffer()
   m_cur_pts = orderedBuffer.pts;
   m_bufferIndex = orderedBuffer.buffer.index;
 
-  logM(LOGINFO, "CAMLCodec", "buffer size:[{}] index:[{}] pts:[{}]", size, m_bufferIndex, m_cur_pts);
+  logM(LOGINFO, "CAMLCodec", "buffer size:[{}] index:[{}] pts:[{}]", size, m_bufferIndex,
+       m_cur_pts);
 
   return true;
 }
@@ -2466,37 +2575,41 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
   if (m_drain)
     return CDVDVideoCodec::VC_EOF;
 
-  auto elapsed_since_last_frame = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() -
-                                                                                        m_tp_last_frame);
+  auto elapsed_since_last_frame = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::system_clock::now() - m_tp_last_frame);
   float buffer_level = GetBufferLevel();
 
   if (m_buffer_level_ready && (buffer_level > m_minimum_buffer_level) && GetNextOrderedBuffer())
   {
-     m_tp_last_frame = std::chrono::system_clock::now();
+    m_tp_last_frame = std::chrono::system_clock::now();
 
     videoPicture.iFlags = 0;
 
     m_minimum_buffer_level = (IsDecStreamTypeStream() ? m_minimum_buffer_level : 0.0f);
 
-    videoPicture.iDuration = static_cast<double>(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
+    videoPicture.iDuration =
+        static_cast<double>(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
     videoPicture.dts = DVD_NOPTS_VALUE;
     videoPicture.pts = static_cast<double>(m_cur_pts);
 
     struct vdec_info vi;
     m_dll->codec_get_vdec_info(&am_private->vcodec, &vi);
-    if (vi.ratio_control) {
+    if (vi.ratio_control)
+    {
       m_hints.aspect = 65536.0 / vi.ratio_control;
       m_processInfo.SetVideoDAR(m_hints.aspect);
     }
 
-    logM(LOGINFO, "CAMLCodec", "index:[{:d}] pts:[{:.3f}] dur:[{:.3f}ms] ar:[{:.2f}] elf:[{:d}ms] buffer level:[{:.1f}%]",
-                  m_bufferIndex, (videoPicture.pts / DVD_TIME_BASE), (videoPicture.iDuration / 1000), m_hints.aspect,
-                  elapsed_since_last_frame.count(), buffer_level);
+    logM(LOGINFO, "CAMLCodec",
+         "index:[{:d}] pts:[{:.3f}] dur:[{:.3f}ms] ar:[{:.2f}] elf:[{:d}ms] buffer level:[{:.1f}%]",
+         m_bufferIndex, (videoPicture.pts / DVD_TIME_BASE), (videoPicture.iDuration / 1000),
+         m_hints.aspect, elapsed_since_last_frame.count(), buffer_level);
 
     videoPicture.stereoMode = m_hints.stereo_mode;
     if ((videoPicture.stereoMode == "block_lr") && m_processInfo.GetVideoSettings().m_StereoInvert)
       videoPicture.stereoMode = "block_rl";
-    else if ((videoPicture.stereoMode == "block_rl") && m_processInfo.GetVideoSettings().m_StereoInvert)
+    else if ((videoPicture.stereoMode == "block_rl") &&
+             m_processInfo.GetVideoSettings().m_StereoInvert)
       videoPicture.stereoMode = "block_lr";
 
     return CDVDVideoCodec::VC_PICTURE;
@@ -2529,7 +2642,7 @@ void CAMLCodec::SetSpeed(int speed)
   if (!m_opened)
     return;
 
-  switch(speed)
+  switch (speed)
   {
     case DVD_PLAYSPEED_PAUSE:
       m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
@@ -2551,7 +2664,7 @@ void CAMLCodec::ShowMainVideo(const bool show)
 {
   static int saved_disable_video = -1;
 
-  int disable_video = show ? 0:1;
+  int disable_video = show ? 0 : 1;
   if (saved_disable_video == disable_video)
     return;
 
@@ -2559,7 +2672,7 @@ void CAMLCodec::ShowMainVideo(const bool show)
   saved_disable_video = disable_video;
 }
 
-void CAMLCodec::SetVideoRect(const CRect &DestRect)
+void CAMLCodec::SetVideoRect(const CRect& DestRect)
 {
   // this routine gets called every video frame
   // and is in the context of the renderer thread so
@@ -2570,20 +2683,21 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
   if (unsigned int video_rate = GetDecoderVideoRate();
       (video_rate > 0) && (video_rate != am_private->video_rate))
   {
-    logM(LOGDEBUG, "CAMLCodec", "decoder fps has changed, video_rate adjusted from {:d} to {:d}", am_private->video_rate, video_rate);
+    logM(LOGDEBUG, "CAMLCodec", "decoder fps has changed, video_rate adjusted from {:d} to {:d}",
+         am_private->video_rate, video_rate);
     am_private->video_rate = video_rate;
   }
 
   // video view mode
-  if (int view_mode = m_processInfo.GetVideoSettings().m_ViewMode;
-      m_view_mode != view_mode)
+  if (int view_mode = m_processInfo.GetVideoSettings().m_ViewMode; m_view_mode != view_mode)
   {
     m_view_mode = view_mode;
     update = true;
   }
 
   // GUI stereo mode
-  if (RENDER_STEREO_MODE guiStereoMode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
+  if (RENDER_STEREO_MODE guiStereoMode =
+          CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
       m_guiStereoMode != guiStereoMode)
   {
     m_guiStereoMode = guiStereoMode;
@@ -2591,7 +2705,8 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
   }
 
   // GUI stereo view
-  if (RENDER_STEREO_VIEW guiStereoView = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView();
+  if (RENDER_STEREO_VIEW guiStereoView =
+          CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView();
       m_guiStereoView != guiStereoView)
   {
     // left/right/top/bottom eye,
@@ -2612,16 +2727,16 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
 
     case 1:
     case 3:
-      {
-        float scale = dst_rect.Height() / dst_rect.Width();
-        auto diff = (int) ((dst_rect.Height()*scale - dst_rect.Width()) / 2);
-        dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
-      }
+    {
+      float scale = dst_rect.Height() / dst_rect.Width();
+      auto diff = (int)((dst_rect.Height() * scale - dst_rect.Width()) / 2);
+      dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
+    }
   }
 
   if (m_dst_rect != dst_rect)
   {
-    m_dst_rect  = dst_rect;
+    m_dst_rect = dst_rect;
     update = true;
   }
 
@@ -2641,7 +2756,8 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
 
   CRect gui, display;
 
-  const RESOLUTION_INFO& video_res_info = CDisplaySettings::GetInstance().GetResolutionInfo(video_res);
+  const RESOLUTION_INFO& video_res_info =
+      CDisplaySettings::GetInstance().GetResolutionInfo(video_res);
   display = m_display_rect = CRect(0, 0, video_res_info.iScreenWidth, video_res_info.iScreenHeight);
   gui = CRect(0, 0, video_res_info.iWidth, video_res_info.iHeight);
 
@@ -2685,46 +2801,45 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
     switch (am_private->video_format)
     {
       case VFORMAT_H264MVC:
+      {
+        mvc_view_mode = m_processInfo.GetVideoStereoMode() == "block_lr" ? 3 : 2;
+        switch (m_guiStereoMode)
         {
-          mvc_view_mode = m_processInfo.GetVideoStereoMode() == "block_lr" ? 3 : 2;
-          switch (m_guiStereoMode)
-          {
-            case RENDER_STEREO_MODE_HARDWAREBASED:
-              aml_set_3d_video_mode(MODE_3D_ENABLE | MODE_3D_FA, true, mvc_view_mode);
-              break;
-            case RENDER_STEREO_MODE_SPLIT_VERTICAL:
-              aml_set_3d_video_mode(MODE_3D_OUT_LR | MODE_3D_FA | MODE_3D_ENABLE, false, mvc_view_mode);
-              break;
-            case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
-              aml_set_3d_video_mode(MODE_3D_OUT_TB | MODE_3D_FA | MODE_3D_ENABLE, false, mvc_view_mode);
-              break;
-            default:
-              aml_set_3d_video_mode(MODE_3D_TO_2D_R | MODE_3D_FA | MODE_3D_ENABLE, false, mvc_view_mode);
-              break;
-          }
-          break;
+          case RENDER_STEREO_MODE_HARDWAREBASED:
+            aml_set_3d_video_mode(MODE_3D_ENABLE | MODE_3D_FA, true, mvc_view_mode);
+            break;
+          case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+            aml_set_3d_video_mode(MODE_3D_OUT_LR | MODE_3D_FA | MODE_3D_ENABLE, false,
+                                  mvc_view_mode);
+            break;
+          case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+            aml_set_3d_video_mode(MODE_3D_OUT_TB | MODE_3D_FA | MODE_3D_ENABLE, false,
+                                  mvc_view_mode);
+            break;
+          default:
+            aml_set_3d_video_mode(MODE_3D_TO_2D_R | MODE_3D_FA | MODE_3D_ENABLE, false,
+                                  mvc_view_mode);
+            break;
         }
+        break;
+      }
       default:
         aml_set_3d_video_mode(MODE_3D_DISABLE, false, mvc_view_mode);
         break;
     }
   }
 
-  logM(LOGDEBUG, "CAMLCodec", "display({:d},{:d},{:d},{:d})",
-                               (int)m_display_rect.x1,      (int)m_display_rect.y1,
-                               (int)m_display_rect.Width(), (int)m_display_rect.Height());
+  logM(LOGDEBUG, "CAMLCodec", "display({:d},{:d},{:d},{:d})", (int)m_display_rect.x1,
+       (int)m_display_rect.y1, (int)m_display_rect.Width(), (int)m_display_rect.Height());
 
-  logM(LOGDEBUG, "CAMLCodec", "gui({:d},{:d},{:d},{:d})",
-                               (int)gui.x1,      (int)gui.y1,
-                               (int)gui.Width(), (int)gui.Height());
+  logM(LOGDEBUG, "CAMLCodec", "gui({:d},{:d},{:d},{:d})", (int)gui.x1, (int)gui.y1,
+       (int)gui.Width(), (int)gui.Height());
 
-  logM(LOGDEBUG, "CAMLCodec", "m_dst_rect({:d},{:d},{:d},{:d})",
-                               (int)m_dst_rect.x1,      (int)m_dst_rect.y1,
-                               (int)m_dst_rect.Width(), (int)m_dst_rect.Height());
+  logM(LOGDEBUG, "CAMLCodec", "m_dst_rect({:d},{:d},{:d},{:d})", (int)m_dst_rect.x1,
+       (int)m_dst_rect.y1, (int)m_dst_rect.Width(), (int)m_dst_rect.Height());
 
-  logM(LOGDEBUG, "CAMLCodec", "dst_rect({:d},{:d},{:d},{:d})",
-                               (int)dst_rect.x1,      (int)dst_rect.y1,
-                               (int)dst_rect.Width(), (int)dst_rect.Height());
+  logM(LOGDEBUG, "CAMLCodec", "dst_rect({:d},{:d},{:d},{:d})", (int)dst_rect.x1, (int)dst_rect.y1,
+       (int)dst_rect.Width(), (int)dst_rect.Height());
 
   logM(LOGDEBUG, "CAMLCodec", "m_guiStereoMode({:d})", m_guiStereoMode);
   logM(LOGDEBUG, "CAMLCodec", "m_guiStereoView({:d})", m_guiStereoView);
@@ -2735,7 +2850,8 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
   dst_rect.y2--;
 
   char video_axis[256] = {};
-  sprintf(video_axis, "%d %d %d %d", (int)dst_rect.x1, (int)dst_rect.y1, (int)dst_rect.x2, (int)dst_rect.y2);
+  sprintf(video_axis, "%d %d %d %d", (int)dst_rect.x1, (int)dst_rect.y1, (int)dst_rect.x2,
+          (int)dst_rect.y2);
 
   int screen_mode = CDisplaySettings::GetInstance().IsNonLinearStretched() ? 4 : 1;
 
@@ -2747,7 +2863,8 @@ void CAMLCodec::SetVideoRect(const CRect &DestRect)
   ShowMainVideo(true);
 }
 
-unsigned int CAMLCodec::GetDecoderVideoRate() const {
+unsigned int CAMLCodec::GetDecoderVideoRate() const
+{
   if (m_speed != DVD_PLAYSPEED_NORMAL || m_pollDevice < 0)
     return 0;
 
@@ -2758,7 +2875,8 @@ unsigned int CAMLCodec::GetDecoderVideoRate() const {
     return 0;
 }
 
-std::string CAMLCodec::GetHDRStaticMetadata() const {
+std::string CAMLCodec::GetHDRStaticMetadata() const
+{
   // add static HDR metadata for VP9 content
   if (am_private->video_format == VFORMAT_VP9 && m_hints.masteringMetadata)
   {
@@ -2767,16 +2885,42 @@ std::string CAMLCodec::GetHDRStaticMetadata() const {
     static const double MAX_LUMINANCE = 10000;
     std::stringstream stream;
     stream << "HDRStaticInfo:1";
-    stream << ";mR.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[0][0]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mR.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[0][1]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mG.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[1][0]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mG.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[1][1]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mB.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[2][0]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mB.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[2][1]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mW.x:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->white_point[0]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mW.y:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->white_point[1]) * MAX_CHROMATICITY + 0.5);
-    stream << ";mMaxDL:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->max_luminance) * MAX_LUMINANCE + 0.5);
-    stream << ";mMinDL:" << static_cast<int>(av_q2d(m_hints.masteringMetadata->min_luminance) * MAX_LUMINANCE + 0.5);
+    stream << ";mR.x:"
+           << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[0][0]) *
+                                   MAX_CHROMATICITY +
+                               0.5);
+    stream << ";mR.y:"
+           << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[0][1]) *
+                                   MAX_CHROMATICITY +
+                               0.5);
+    stream << ";mG.x:"
+           << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[1][0]) *
+                                   MAX_CHROMATICITY +
+                               0.5);
+    stream << ";mG.y:"
+           << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[1][1]) *
+                                   MAX_CHROMATICITY +
+                               0.5);
+    stream << ";mB.x:"
+           << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[2][0]) *
+                                   MAX_CHROMATICITY +
+                               0.5);
+    stream << ";mB.y:"
+           << static_cast<int>(av_q2d(m_hints.masteringMetadata->display_primaries[2][1]) *
+                                   MAX_CHROMATICITY +
+                               0.5);
+    stream << ";mW.x:"
+           << static_cast<int>(
+                  av_q2d(m_hints.masteringMetadata->white_point[0]) * MAX_CHROMATICITY + 0.5);
+    stream << ";mW.y:"
+           << static_cast<int>(
+                  av_q2d(m_hints.masteringMetadata->white_point[1]) * MAX_CHROMATICITY + 0.5);
+    stream << ";mMaxDL:"
+           << static_cast<int>(av_q2d(m_hints.masteringMetadata->max_luminance) * MAX_LUMINANCE +
+                               0.5);
+    stream << ";mMinDL:"
+           << static_cast<int>(av_q2d(m_hints.masteringMetadata->min_luminance) * MAX_LUMINANCE +
+                               0.5);
     if (m_hints.contentLightMetadata)
     {
       stream << ";mCLLPresent:1";

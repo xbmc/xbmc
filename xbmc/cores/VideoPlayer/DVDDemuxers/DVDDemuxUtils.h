@@ -9,7 +9,8 @@
 #pragma once
 
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
-extern "C" {
+extern "C"
+{
 #include <libavcodec/avcodec.h>
 }
 
@@ -18,7 +19,7 @@ class CDVDDemuxUtils
 public:
   static void FreeDemuxPacket(DemuxPacket* pPacket);
   static DemuxPacket* AllocateDemuxPacket(int iDataSize = 0);
-  static DemuxPacket* AllocateDemuxPacket(unsigned int iDataSize, unsigned int encryptedSubsampleCount);
-  static void StoreSideData(DemuxPacket *pkt, AVPacket *src);
+  static DemuxPacket* AllocateDemuxPacket(unsigned int iDataSize,
+                                          unsigned int encryptedSubsampleCount);
+  static void StoreSideData(DemuxPacket* pkt, AVPacket* src);
 };
-

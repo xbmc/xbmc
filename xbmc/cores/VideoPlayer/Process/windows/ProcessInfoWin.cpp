@@ -29,13 +29,6 @@ EINTERLACEMETHOD CProcessInfoWin::GetFallbackDeintMethod()
 
 std::vector<AVPixelFormat> CProcessInfoWin::GetRenderFormats()
 {
-  return {
-    AV_PIX_FMT_D3D11VA_VLD,
-    AV_PIX_FMT_NV12,
-    AV_PIX_FMT_YUV420P,
-    AV_PIX_FMT_P010,
-    AV_PIX_FMT_YUV420P10,
-    AV_PIX_FMT_P016,
-    AV_PIX_FMT_YUV420P16
-  };
+  return {AV_PIX_FMT_D3D11VA_VLD, AV_PIX_FMT_NV12, AV_PIX_FMT_YUV420P,  AV_PIX_FMT_P010,
+          AV_PIX_FMT_YUV420P10,   AV_PIX_FMT_P016, AV_PIX_FMT_YUV420P16};
 }

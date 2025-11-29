@@ -12,8 +12,9 @@
 
 #include <string>
 
-template <typename T> class CRectGen;
-typedef CRectGen<float>  CRect;
+template<typename T>
+class CRectGen;
+typedef CRectGen<float> CRect;
 
 enum StreamFlags
 {
@@ -61,7 +62,8 @@ struct AudioStreamInfo : StreamInfo
 };
 
 struct SubtitleStreamInfo : StreamInfo
-{};
+{
+};
 
 struct VideoStreamInfo : StreamInfo
 {

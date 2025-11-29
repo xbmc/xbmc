@@ -204,12 +204,12 @@ int main(int argc, char** argv)
   {
   //Main Loop
   while (1)
-    {
+  {
     if (!connected) connected = (connectWiimote(wiimotes));
     wm = wiimotes[0]; // Only worry about 1 controller. No need for more?
     controller.m_buttonDownTime = getTicks() - timeout;
 
-//Handle ACC, Repeat, and IR outside of the Event loop so that buttons can be continuously sent
+    //Handle ACC, Repeat, and IR outside of the Event loop so that buttons can be continuously sent
     if (timeout)
     {
       if ((controller.m_buttonDownTime > g_hold_button_timeout) && controller.m_holdableHeld)
@@ -217,6 +217,7 @@ int main(int argc, char** argv)
       if ((controller.m_buttonDownTime  > g_repeat_rate) && controller.m_repeatableHeld)
         controller.handleRepeat();
     }
+
     if (wiiuse_poll(wiimotes, MAX_WIIMOTES))
     {
       for (int i = 0; i < MAX_WIIMOTES; ++i)
@@ -227,7 +228,7 @@ int main(int argc, char** argv)
         {
         case WIIUSE_EVENT:
 
-	  controller.get_keys(wm);  //Load up the CWiiController
+          controller.get_keys(wm);  //Load up the CWiiController
           controller.handleKeyPress();
           if (!controller.m_buttonHeld && (controller.m_holdableHeld || controller.m_repeatableHeld))
           {
@@ -243,18 +244,18 @@ int main(int argc, char** argv)
             DisableMotionSensing(wm);
             controller.m_currentAction = ACTION_NONE;
           }
-        break;
+          break;
         case WIIUSE_STATUS:
-        break;
+          break;
         case WIIUSE_DISCONNECT:
         case WIIUSE_UNEXPECTED_DISCONNECT:
-        handle_disconnect(wm);
-	connected = 0;
-        break;
+          handle_disconnect(wm);
+          connected = 0;
+          break;
         case WIIUSE_READ_DATA:
-        break;
+          break;
         default:
-        break;
+          break;
 	}
       }
     }

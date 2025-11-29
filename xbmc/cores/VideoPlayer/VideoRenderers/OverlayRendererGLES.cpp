@@ -53,8 +53,7 @@ static void LoadTexture(GLenum target,
   int bytesPerPixel = KODI::UTILS::GL::glFormatElementByteCount(externalFormat);
 
   bool bgraSupported = false;
-  auto renderSystem =
-      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  auto renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
   if (!alpha)
   {
@@ -119,7 +118,7 @@ static void LoadTexture(GLenum target,
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   glTexImage2D(target, 0, internalFormat, width2, height2, 0, externalFormat, GL_UNSIGNED_BYTE,
-  nullptr);
+               nullptr);
 
   glTexSubImage2D(target, 0, 0, 0, width, height, externalFormat, GL_UNSIGNED_BYTE, pixelData);
 
@@ -346,8 +345,7 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   glMatrixModview->Scalef(state.width, state.height, 1.0f);
   glMatrixModview.Load();
 
-  auto renderSystem =
-      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  auto renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint colLoc = renderSystem->GUIShaderGetCol();
@@ -436,8 +434,7 @@ void COverlayTextureGLES::Render(SRenderState& state)
     rd.SetRect(left, top, right, bottom);
   }
 
-  auto renderSystem =
-      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  auto renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint colLoc = renderSystem->GUIShaderGetCol();

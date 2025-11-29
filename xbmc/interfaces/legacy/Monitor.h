@@ -42,13 +42,13 @@ namespace XBMCAddon
       inline void    OnDPMSDeactivated() { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onDPMSDeactivated)); }
       inline void    OnScanStarted(const String &library)
       {
-	XBMC_TRACE;
+        XBMC_TRACE;
         invokeCallback(
             new CallbackFunction<Monitor, const String>(this, &Monitor::onScanStarted, library));
       }
       inline void    OnScanFinished(const String &library)
       {
-	XBMC_TRACE;
+        XBMC_TRACE;
         invokeCallback(
             new CallbackFunction<Monitor, const String>(this, &Monitor::onScanFinished, library));
       }

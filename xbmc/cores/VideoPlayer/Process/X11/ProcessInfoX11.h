@@ -23,4 +23,4 @@ public:
   std::vector<AVPixelFormat> GetRenderFormats() override;
 };
 
-}
+} // namespace VIDEOPLAYER

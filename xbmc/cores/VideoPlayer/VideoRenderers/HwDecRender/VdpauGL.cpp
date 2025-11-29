@@ -19,24 +19,36 @@ using namespace VDPAU;
 // interop state
 //-----------------------------------------------------------------------------
 
-bool CInteropState::Init(void *device, void *procFunc, int64_t ident)
+bool CInteropState::Init(void* device, void* procFunc, int64_t ident)
 {
   m_device = device;
   m_procFunc = procFunc;
   m_ident = ident;
 
-  m_interop.glVDPAUInitNV = (PFNGLVDPAUINITNVPROC)glXGetProcAddress((const GLubyte *) "glVDPAUInitNV");
-  m_interop.glVDPAUFiniNV = (PFNGLVDPAUFININVPROC)glXGetProcAddress((const GLubyte *) "glVDPAUFiniNV");
-  m_interop.glVDPAURegisterOutputSurfaceNV = (PFNGLVDPAUREGISTEROUTPUTSURFACENVPROC)glXGetProcAddress((const GLubyte *) "glVDPAURegisterOutputSurfaceNV");
-  m_interop.glVDPAURegisterVideoSurfaceNV = (PFNGLVDPAUREGISTERVIDEOSURFACENVPROC)glXGetProcAddress((const GLubyte *) "glVDPAURegisterVideoSurfaceNV");
-  m_interop.glVDPAUIsSurfaceNV = (PFNGLVDPAUISSURFACENVPROC)glXGetProcAddress((const GLubyte *) "glVDPAUIsSurfaceNV");
-  m_interop.glVDPAUUnregisterSurfaceNV = (PFNGLVDPAUUNREGISTERSURFACENVPROC)glXGetProcAddress((const GLubyte *) "glVDPAUUnregisterSurfaceNV");
-  m_interop.glVDPAUSurfaceAccessNV = (PFNGLVDPAUSURFACEACCESSNVPROC)glXGetProcAddress((const GLubyte *) "glVDPAUSurfaceAccessNV");
-  m_interop.glVDPAUMapSurfacesNV = (PFNGLVDPAUMAPSURFACESNVPROC)glXGetProcAddress((const GLubyte *) "glVDPAUMapSurfacesNV");
-  m_interop.glVDPAUUnmapSurfacesNV = (PFNGLVDPAUUNMAPSURFACESNVPROC)glXGetProcAddress((const GLubyte *) "glVDPAUUnmapSurfacesNV");
-  m_interop.glVDPAUGetSurfaceivNV = (PFNGLVDPAUGETSURFACEIVNVPROC)glXGetProcAddress((const GLubyte *) "glVDPAUGetSurfaceivNV");
+  m_interop.glVDPAUInitNV =
+      (PFNGLVDPAUINITNVPROC)glXGetProcAddress((const GLubyte*)"glVDPAUInitNV");
+  m_interop.glVDPAUFiniNV =
+      (PFNGLVDPAUFININVPROC)glXGetProcAddress((const GLubyte*)"glVDPAUFiniNV");
+  m_interop.glVDPAURegisterOutputSurfaceNV =
+      (PFNGLVDPAUREGISTEROUTPUTSURFACENVPROC)glXGetProcAddress(
+          (const GLubyte*)"glVDPAURegisterOutputSurfaceNV");
+  m_interop.glVDPAURegisterVideoSurfaceNV = (PFNGLVDPAUREGISTERVIDEOSURFACENVPROC)glXGetProcAddress(
+      (const GLubyte*)"glVDPAURegisterVideoSurfaceNV");
+  m_interop.glVDPAUIsSurfaceNV =
+      (PFNGLVDPAUISSURFACENVPROC)glXGetProcAddress((const GLubyte*)"glVDPAUIsSurfaceNV");
+  m_interop.glVDPAUUnregisterSurfaceNV = (PFNGLVDPAUUNREGISTERSURFACENVPROC)glXGetProcAddress(
+      (const GLubyte*)"glVDPAUUnregisterSurfaceNV");
+  m_interop.glVDPAUSurfaceAccessNV =
+      (PFNGLVDPAUSURFACEACCESSNVPROC)glXGetProcAddress((const GLubyte*)"glVDPAUSurfaceAccessNV");
+  m_interop.glVDPAUMapSurfacesNV =
+      (PFNGLVDPAUMAPSURFACESNVPROC)glXGetProcAddress((const GLubyte*)"glVDPAUMapSurfacesNV");
+  m_interop.glVDPAUUnmapSurfacesNV =
+      (PFNGLVDPAUUNMAPSURFACESNVPROC)glXGetProcAddress((const GLubyte*)"glVDPAUUnmapSurfacesNV");
+  m_interop.glVDPAUGetSurfaceivNV =
+      (PFNGLVDPAUGETSURFACEIVNVPROC)glXGetProcAddress((const GLubyte*)"glVDPAUGetSurfaceivNV");
 
-  while (glGetError() != GL_NO_ERROR);
+  while (glGetError() != GL_NO_ERROR)
+    ;
   m_interop.glVDPAUInitNV(m_device, m_procFunc);
   if (glGetError() != GL_NO_ERROR)
   {
@@ -57,12 +69,12 @@ void CInteropState::Finish()
   m_procFunc = nullptr;
 }
 
-InteropInfo &CInteropState::GetInterop()
+InteropInfo& CInteropState::GetInterop()
 {
   return m_interop;
 }
 
-bool CInteropState::NeedInit(void *device, void *procFunc, int64_t ident)
+bool CInteropState::NeedInit(void* device, void* procFunc, int64_t ident)
 {
   if (m_device != device)
     return true;
@@ -78,12 +90,12 @@ bool CInteropState::NeedInit(void *device, void *procFunc, int64_t ident)
 // textures
 //-----------------------------------------------------------------------------
 
-void CVdpauTexture::Init(InteropInfo &interop)
+void CVdpauTexture::Init(InteropInfo& interop)
 {
   m_interop = interop;
 }
 
-bool CVdpauTexture::Map(CVdpauRenderPicture *pic)
+bool CVdpauTexture::Map(CVdpauRenderPicture* pic)
 {
 
   if (m_vdpauPic)
@@ -127,7 +139,8 @@ void CVdpauTexture::Unmap()
 bool CVdpauTexture::MapNV12()
 {
   GLuint textures[4];
-  while (glGetError() != GL_NO_ERROR) ;
+  while (glGetError() != GL_NO_ERROR)
+    ;
   glGenTextures(4, textures);
   if (glGetError() != GL_NO_ERROR)
   {
@@ -135,9 +148,9 @@ bool CVdpauTexture::MapNV12()
     return false;
   }
 
-  const void *videoSurface = reinterpret_cast<void*>(m_vdpauPic->procPic.videoSurface);
-  m_glSurface.glVdpauSurface = m_interop.glVDPAURegisterVideoSurfaceNV(videoSurface,
-                                                                       m_interop.textureTarget, 4, textures);
+  const void* videoSurface = reinterpret_cast<void*>(m_vdpauPic->procPic.videoSurface);
+  m_glSurface.glVdpauSurface =
+      m_interop.glVDPAURegisterVideoSurfaceNV(videoSurface, m_interop.textureTarget, 4, textures);
   if (glGetError() != GL_NO_ERROR)
   {
     CLog::Log(LOGERROR, "CVdpauTexture::MapNV12 error register video surface");
@@ -183,9 +196,9 @@ void CVdpauTexture::UnmapNV12()
 bool CVdpauTexture::MapRGB()
 {
   glGenTextures(1, &m_texture);
-  const void *outSurface = reinterpret_cast<void*>(m_vdpauPic->procPic.outputSurface);
-  m_glSurface.glVdpauSurface = m_interop.glVDPAURegisterOutputSurfaceNV(outSurface,
-                                                                        m_interop.textureTarget, 1, &m_texture);
+  const void* outSurface = reinterpret_cast<void*>(m_vdpauPic->procPic.outputSurface);
+  m_glSurface.glVdpauSurface =
+      m_interop.glVDPAURegisterOutputSurfaceNV(outSurface, m_interop.textureTarget, 1, &m_texture);
   GLenum err = glGetError();
   if (err != GL_NO_ERROR)
   {
@@ -201,7 +214,8 @@ bool CVdpauTexture::MapRGB()
     return false;
   }
 
-  while (glGetError() != GL_NO_ERROR) ;
+  while (glGetError() != GL_NO_ERROR)
+    ;
   m_interop.glVDPAUMapSurfacesNV(1, &m_glSurface.glVdpauSurface);
   if (glGetError() != GL_NO_ERROR)
   {
@@ -219,4 +233,3 @@ void CVdpauTexture::UnmapRGB()
   m_interop.glVDPAUUnregisterSurfaceNV(m_glSurface.glVdpauSurface);
   glDeleteTextures(1, &m_texture);
 }
-

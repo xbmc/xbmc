@@ -21,13 +21,12 @@ struct PVR_STREAM_PROPERTIES;
 
 namespace PVR
 {
-  class CPVRClient;
+class CPVRClient;
 }
 
-class CInputStreamPVRBase
-  : public CDVDInputStream
-  , public CDVDInputStream::ITimes
-  , public CDVDInputStream::IDemux
+class CInputStreamPVRBase : public CDVDInputStream,
+                            public CDVDInputStream::ITimes,
+                            public CDVDInputStream::IDemux
 {
 public:
   CInputStreamPVRBase(IVideoPlayer* pPlayer, const CFileItem& fileitem);
@@ -44,7 +43,7 @@ public:
   bool IsRealtime() override;
 
   CDVDInputStream::ITimes* GetITimes() override { return this; }
-  bool GetTimes(Times &times) override;
+  bool GetTimes(Times& times) override;
 
   bool CanSeek() override; //! @todo drop this
   bool CanPause() override;

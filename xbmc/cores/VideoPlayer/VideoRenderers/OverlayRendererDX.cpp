@@ -34,11 +34,14 @@ using namespace DirectX;
 #define USE_PREMULTIPLIED_ALPHA 1
 #define ALPHA_CHANNEL_OFFSET 3
 
-static bool LoadTexture(int width, int height, int stride
-                      , DXGI_FORMAT format
-                      , const void* pixels
-                      , float* u, float* v
-                      , CD3DTexture* texture)
+static bool LoadTexture(int width,
+                        int height,
+                        int stride,
+                        DXGI_FORMAT format,
+                        const void* pixels,
+                        float* u,
+                        float* v,
+                        CD3DTexture* texture)
 {
   if (!texture->Create(width, height, 1, D3D11_USAGE_IMMUTABLE, format, pixels, stride))
   {
@@ -53,7 +56,8 @@ static bool LoadTexture(int width, int height, int stride
     texture->Release();
     return false;
   }
-  ASSERT(format == desc.Format || (format == DXGI_FORMAT_R8_UNORM && desc.Format == DXGI_FORMAT_B8G8R8A8_UNORM));
+  ASSERT(format == desc.Format ||
+         (format == DXGI_FORMAT_R8_UNORM && desc.Format == DXGI_FORMAT_B8G8R8A8_UNORM));
 
   *u = float(width) / desc.Width;
   *v = float(height) / desc.Height;
@@ -68,13 +72,13 @@ std::shared_ptr<COverlay> COverlay::Create(ASS_Image* images, float width, float
 
 COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
 {
-  m_width  = 1.0;
+  m_width = 1.0;
   m_height = 1.0;
   m_align = ALIGN_SCREEN;
-  m_pos    = POSITION_RELATIVE;
-  m_x      = 0.0f;
-  m_y      = 0.0f;
-  m_count  = 0;
+  m_pos = POSITION_RELATIVE;
+  m_x = 0.0f;
+  m_y = 0.0f;
+  m_count = 0;
 
   SQuads quads;
   if (!convert_quad(images, quads, static_cast<int>(width)))
@@ -152,7 +156,7 @@ COverlayQuadsDX::~COverlayQuadsDX()
 {
 }
 
-void COverlayQuadsDX::Render(SRenderState &state)
+void COverlayQuadsDX::Render(SRenderState& state)
 {
   if (m_count == 0)
     return;
@@ -167,14 +171,16 @@ void COverlayQuadsDX::Render(SRenderState &state)
   XMMATRIX world, view, proj;
   pGUIShader->GetWVP(world, view, proj);
 
-  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
-   || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
+          RENDER_STEREO_MODE_SPLIT_HORIZONTAL ||
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
+          RENDER_STEREO_MODE_SPLIT_VERTICAL)
   {
     CRect rect;
     DX::Windowing()->GetViewPort(rect);
     DX::Windowing()->SetCameraPosition(CPoint(rect.Width() * 0.5f, rect.Height() * 0.5f),
-                                  static_cast<int>(rect.Width()),
-                                  static_cast<int>(rect.Height()));
+                                       static_cast<int>(rect.Width()),
+                                       static_cast<int>(rect.Height()));
   }
 
   XMMATRIX trans = XMMatrixTranslation(state.x, state.y, 0.0f);
@@ -291,37 +297,32 @@ COverlayImageDX::COverlayImageDX(const CDVDOverlaySpu& o)
 void COverlayImageDX::Load(const uint32_t* rgba, int width, int height, int stride)
 {
   float u, v;
-  if(!LoadTexture(width
-                , height
-                , stride
-                , DXGI_FORMAT_B8G8R8A8_UNORM
-                , rgba
-                , &u, &v
-                , &m_texture))
+  if (!LoadTexture(width, height, stride, DXGI_FORMAT_B8G8R8A8_UNORM, rgba, &u, &v, &m_texture))
     return;
 
   Vertex vt[4];
 
   vt[0].texCoord = XMFLOAT2(u, 0.0f);
-  vt[0].pos      = XMFLOAT3(1.0f, 0.0f, 0.0f);
+  vt[0].pos = XMFLOAT3(1.0f, 0.0f, 0.0f);
 
   vt[1].texCoord = XMFLOAT2(u, v);
-  vt[1].pos      = XMFLOAT3(1.0f, 1.0f, 0.0f);
+  vt[1].pos = XMFLOAT3(1.0f, 1.0f, 0.0f);
 
   vt[2].texCoord = XMFLOAT2(0.0f, 0.0f);
-  vt[2].pos      = XMFLOAT3(0.0f, 0.0f, 0.0f);
+  vt[2].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
   vt[3].texCoord = XMFLOAT2(0.0f, v);
-  vt[3].pos      = XMFLOAT3(0.0f, 1.0f, 0.0f);
+  vt[3].pos = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 4, sizeof(Vertex), DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, vt))
+  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 4, sizeof(Vertex), DXGI_FORMAT_UNKNOWN,
+                       D3D11_USAGE_IMMUTABLE, vt))
   {
     CLog::Log(LOGERROR, "{} - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();
   }
 }
 
-void COverlayImageDX::Render(SRenderState &state)
+void COverlayImageDX::Render(SRenderState& state)
 {
   ID3D11Buffer* vertexBuffer = m_vertex.Get();
   if (vertexBuffer == nullptr)
@@ -333,19 +334,22 @@ void COverlayImageDX::Render(SRenderState &state)
   XMMATRIX world, view, proj;
   pGUIShader->GetWVP(world, view, proj);
 
-  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
-   || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
+          RENDER_STEREO_MODE_SPLIT_HORIZONTAL ||
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() ==
+          RENDER_STEREO_MODE_SPLIT_VERTICAL)
   {
     CRect rect;
     DX::Windowing()->GetViewPort(rect);
     DX::Windowing()->SetCameraPosition(CPoint(rect.Width() * 0.5f, rect.Height() * 0.5f),
-                                  static_cast<int>(rect.Width()),
-                                  static_cast<int>(rect.Height()));
+                                       static_cast<int>(rect.Width()),
+                                       static_cast<int>(rect.Height()));
   }
 
   XMMATRIX trans = m_pos == POSITION_RELATIVE
-                 ? XMMatrixTranslation(state.x - state.width  * 0.5f, state.y - state.height * 0.5f, 0.0f)
-                 : XMMatrixTranslation(state.x, state.y, 0.0f),
+                       ? XMMatrixTranslation(state.x - state.width * 0.5f,
+                                             state.y - state.height * 0.5f, 0.0f)
+                       : XMMatrixTranslation(state.x, state.y, 0.0f),
            scale = XMMatrixScaling(state.width, state.height, 1.0f);
 
   pGUIShader->SetWorld(XMMatrixMultiply(XMMatrixMultiply(world, scale), trans));

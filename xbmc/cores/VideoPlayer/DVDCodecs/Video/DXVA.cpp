@@ -148,80 +148,72 @@ static const std::vector<dxva2_mode_t> dxva2_modes = {
 // clang-format on
 
 // Preferred targets must be first
-static const DXGI_FORMAT render_targets_dxgi[] = {
-  DXGI_FORMAT_NV12,
-  DXGI_FORMAT_P010,
-  DXGI_FORMAT_P016,
-  DXGI_FORMAT_UNKNOWN
-};
+static const DXGI_FORMAT render_targets_dxgi[] = {DXGI_FORMAT_NV12, DXGI_FORMAT_P010,
+                                                  DXGI_FORMAT_P016, DXGI_FORMAT_UNKNOWN};
 
 // List of PCI Device ID of ATI cards with UVD or UVD+ decoding block.
-static DWORD UVDDeviceID [] = {
-  0x95C0, // ATI Radeon HD 3400 Series (and others)
-  0x95C5, // ATI Radeon HD 3400 Series (and others)
-  0x95C4, // ATI Radeon HD 3400 Series (and others)
-  0x94C3, // ATI Radeon HD 3410
-  0x9589, // ATI Radeon HD 3600 Series (and others)
-  0x9598, // ATI Radeon HD 3600 Series (and others)
-  0x9591, // ATI Radeon HD 3600 Series (and others)
-  0x9501, // ATI Radeon HD 3800 Series (and others)
-  0x9505, // ATI Radeon HD 3800 Series (and others)
-  0x9507, // ATI Radeon HD 3830
-  0x9513, // ATI Radeon HD 3850 X2
-  0x950F, // ATI Radeon HD 3850 X2
-  0x0000
-};
+static DWORD UVDDeviceID[] = {0x95C0, // ATI Radeon HD 3400 Series (and others)
+                              0x95C5, // ATI Radeon HD 3400 Series (and others)
+                              0x95C4, // ATI Radeon HD 3400 Series (and others)
+                              0x94C3, // ATI Radeon HD 3410
+                              0x9589, // ATI Radeon HD 3600 Series (and others)
+                              0x9598, // ATI Radeon HD 3600 Series (and others)
+                              0x9591, // ATI Radeon HD 3600 Series (and others)
+                              0x9501, // ATI Radeon HD 3800 Series (and others)
+                              0x9505, // ATI Radeon HD 3800 Series (and others)
+                              0x9507, // ATI Radeon HD 3830
+                              0x9513, // ATI Radeon HD 3850 X2
+                              0x950F, // ATI Radeon HD 3850 X2
+                              0x0000};
 
 // List of PCI Device ID of nVidia cards with the macroblock width issue. More or less the VP3 block.
 // Per NVIDIA Accelerated Linux Graphics Driver, Appendix A Supported NVIDIA GPU Products, cards with note 1.
-static DWORD VP3DeviceID [] = {
-  0x06E0, // GeForce 9300 GE
-  0x06E1, // GeForce 9300 GS
-  0x06E2, // GeForce 8400
-  0x06E4, // GeForce 8400 GS
-  0x06E5, // GeForce 9300M GS
-  0x06E6, // GeForce G100
-  0x06E8, // GeForce 9200M GS
-  0x06E9, // GeForce 9300M GS
-  0x06EC, // GeForce G 105M
-  0x06EF, // GeForce G 103M
-  0x06F1, // GeForce G105M
-  0x0844, // GeForce 9100M G
-  0x0845, // GeForce 8200M G
-  0x0846, // GeForce 9200
-  0x0847, // GeForce 9100
-  0x0848, // GeForce 8300
-  0x0849, // GeForce 8200
-  0x084A, // nForce 730a
-  0x084B, // GeForce 9200
-  0x084C, // nForce 980a/780a SLI
-  0x084D, // nForce 750a SLI
-  0x0860, // GeForce 9400
-  0x0861, // GeForce 9400
-  0x0862, // GeForce 9400M G
-  0x0863, // GeForce 9400M
-  0x0864, // GeForce 9300
-  0x0865, // ION
-  0x0866, // GeForce 9400M G
-  0x0867, // GeForce 9400
-  0x0868, // nForce 760i SLI
-  0x086A, // GeForce 9400
-  0x086C, // GeForce 9300 / nForce 730i
-  0x086D, // GeForce 9200
-  0x086E, // GeForce 9100M G
-  0x086F, // GeForce 8200M G
-  0x0870, // GeForce 9400M
-  0x0871, // GeForce 9200
-  0x0872, // GeForce G102M
-  0x0873, // GeForce G102M
-  0x0874, // ION
-  0x0876, // ION
-  0x087A, // GeForce 9400
-  0x087D, // ION
-  0x087E, // ION LE
-  0x087F, // ION LE
-  0x0000
-};
+static DWORD VP3DeviceID[] = {0x06E0, // GeForce 9300 GE
+                              0x06E1, // GeForce 9300 GS
+                              0x06E2, // GeForce 8400
+                              0x06E4, // GeForce 8400 GS
+                              0x06E5, // GeForce 9300M GS
+                              0x06E6, // GeForce G100
+                              0x06E8, // GeForce 9200M GS
+                              0x06E9, // GeForce 9300M GS
+                              0x06EC, // GeForce G 105M
+                              0x06EF, // GeForce G 103M
+                              0x06F1, // GeForce G105M
+                              0x0844, // GeForce 9100M G
+                              0x0845, // GeForce 8200M G
+                              0x0846, // GeForce 9200
+                              0x0847, // GeForce 9100
+                              0x0848, // GeForce 8300
+                              0x0849, // GeForce 8200
+                              0x084A, // nForce 730a
+                              0x084B, // GeForce 9200
+                              0x084C, // nForce 980a/780a SLI
+                              0x084D, // nForce 750a SLI
+                              0x0860, // GeForce 9400
+                              0x0861, // GeForce 9400
+                              0x0862, // GeForce 9400M G
+                              0x0863, // GeForce 9400M
+                              0x0864, // GeForce 9300
+                              0x0865, // ION
+                              0x0866, // GeForce 9400M G
+                              0x0867, // GeForce 9400
+                              0x0868, // nForce 760i SLI
+                              0x086A, // GeForce 9400
+                              0x086C, // GeForce 9300 / nForce 730i
+                              0x086D, // GeForce 9200
+                              0x086E, // GeForce 9100M G
+                              0x086F, // GeForce 8200M G
+                              0x0870, // GeForce 9400M
+                              0x0871, // GeForce 9200
+                              0x0872, // GeForce G102M
+                              0x0873, // GeForce G102M
+                              0x0874, // ION
+                              0x0876, // ION
+                              0x087A, // GeForce 9400
+                              0x087D, // ION
+                              0x087E, // ION LE
+                              0x087F, // ION LE
+                              0x0000};
 
 static std::string GUIDToString(const GUID& guid)
 {
@@ -438,7 +430,9 @@ void CContext::QueryCaps()
   }
 }
 
-bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DECODER_CONFIG &config) const
+bool CContext::GetFormatAndConfig(AVCodecContext* avctx,
+                                  D3D11_VIDEO_DECODER_DESC& format,
+                                  D3D11_VIDEO_DECODER_CONFIG& config) const
 {
   format.OutputFormat = DXGI_FORMAT_UNKNOWN;
 
@@ -491,7 +485,8 @@ bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DES
         continue;
 
       BOOL format_supported = FALSE;
-      HRESULT res = m_pD3D11Device->CheckVideoDecoderFormat(mode.guid, render_targets_dxgi[j], &format_supported);
+      HRESULT res = m_pD3D11Device->CheckVideoDecoderFormat(mode.guid, render_targets_dxgi[j],
+                                                            &format_supported);
       if (FAILED(res) || !format_supported)
       {
         CLog::Log(LOGINFO, "DXVA: Output format {} is not supported by '{}'",
@@ -518,7 +513,8 @@ bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DES
   return false;
 }
 
-bool CContext::GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DECODER_CONFIG &config) const
+bool CContext::GetConfig(const D3D11_VIDEO_DECODER_DESC& format,
+                         D3D11_VIDEO_DECODER_CONFIG& config) const
 {
   // find what decode configs are available
   UINT cfg_count = 0;
@@ -535,8 +531,9 @@ bool CContext::GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DEC
   }
 
   config = {};
-  const unsigned bitstream = 2; // ConfigBitstreamRaw = 2 is required for Poulsbo and handles skipping better with nVidia
-  for (unsigned i = 0; i< cfg_count; i++)
+  const unsigned bitstream =
+      2; // ConfigBitstreamRaw = 2 is required for Poulsbo and handles skipping better with nVidia
+  for (unsigned i = 0; i < cfg_count; i++)
   {
     D3D11_VIDEO_DECODER_CONFIG pConfig = {};
     if (FAILED(m_pD3D11Device->GetVideoDecoderConfig(&format, i, &pConfig)))
@@ -566,9 +563,12 @@ bool CContext::GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DEC
   return true;
 }
 
-bool CContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format, uint32_t count,
-                              uint32_t alignment, ID3D11VideoDecoderOutputView** surfaces,
-                              HANDLE* pHandle, bool trueShared) const
+bool CContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format,
+                              uint32_t count,
+                              uint32_t alignment,
+                              ID3D11VideoDecoderOutputView** surfaces,
+                              HANDLE* pHandle,
+                              bool trueShared) const
 {
   HRESULT hr = S_OK;
   ComPtr<ID3D11Device> pD3DDevice;
@@ -579,10 +579,9 @@ bool CContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format, uint32_t c
   pD3DDevice->GetImmediateContext(&pD3DDeviceContext);
   pD3DDeviceContext.As(&pD3DDeviceContext1);
 
-  CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat,
-                                FFALIGN(format.SampleWidth, alignment),
-                                FFALIGN(format.SampleHeight, alignment),
-                                count, 1, D3D11_BIND_DECODER);
+  CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat, FFALIGN(format.SampleWidth, alignment),
+                                FFALIGN(format.SampleHeight, alignment), count, 1,
+                                D3D11_BIND_DECODER);
   UINT supported;
   if (SUCCEEDED(pD3DDevice->CheckFormatSupport(format.OutputFormat, &supported)) &&
       (supported & D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
@@ -617,10 +616,7 @@ bool CContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format, uint32_t c
   }
 
   D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vdovDesc = {
-    format.Guid,
-    D3D11_VDOV_DIMENSION_TEXTURE2D,
-    { 0 }
-  };
+      format.Guid, D3D11_VDOV_DIMENSION_TEXTURE2D, {0}};
   // For video views with YUV or YCbBr formats, ClearView doesn't
   // convert color values but assumes UINT texture format
   float clearColor[] = {0.f, 127.f, 127.f, 255.f}; // black color in YUV
@@ -651,8 +647,10 @@ bool CContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format, uint32_t c
   return SUCCEEDED(hr);
 }
 
-bool CContext::CreateDecoder(const D3D11_VIDEO_DECODER_DESC &format, const D3D11_VIDEO_DECODER_CONFIG &config
-                               , ID3D11VideoDecoder **decoder, ID3D11VideoContext **context)
+bool CContext::CreateDecoder(const D3D11_VIDEO_DECODER_DESC& format,
+                             const D3D11_VIDEO_DECODER_CONFIG& config,
+                             ID3D11VideoDecoder** decoder,
+                             ID3D11VideoContext** context)
 {
   std::lock_guard lock(m_section);
 
@@ -713,7 +711,7 @@ bool CContext::Reset()
       ctxAdapter->GetDesc(&ctxDesc);
 
       if (appDesc.AdapterLuid.HighPart == ctxDesc.AdapterLuid.HighPart &&
-        appDesc.AdapterLuid.LowPart == ctxDesc.AdapterLuid.LowPart)
+          appDesc.AdapterLuid.LowPart == ctxDesc.AdapterLuid.LowPart)
       {
         // 1. we have valid device
         // 2. we are on the same adapter
@@ -730,8 +728,7 @@ bool CContext::Reset()
 // DXVA::CVideoBuffer
 //-----------------------------------------------------------------------------
 
-DXVA::CVideoBuffer::CVideoBuffer(int id)
-    : ::CVideoBuffer(id)
+DXVA::CVideoBuffer::CVideoBuffer(int id) : ::CVideoBuffer(id)
 {
   m_pixFormat = AV_PIX_FMT_D3D11VA_VLD;
   m_pFrame = av_frame_alloc();
@@ -761,7 +758,8 @@ HRESULT DXVA::CVideoBuffer::GetResource(ID3D11Resource** ppResource)
 unsigned DXVA::CVideoBuffer::GetIdx()
 {
   D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vpivd = {};
-  ComPtr<ID3D11VideoDecoderOutputView> pView = reinterpret_cast<ID3D11VideoDecoderOutputView*>(view);
+  ComPtr<ID3D11VideoDecoderOutputView> pView =
+      reinterpret_cast<ID3D11VideoDecoderOutputView*>(view);
   pView->GetDesc(&vpivd);
 
   return vpivd.Texture2D.ArraySlice;
@@ -1123,7 +1121,9 @@ bool CVideoBufferPool::HasFree()
 // DXVA::CDecoder
 //-----------------------------------------------------------------------------
 
-IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
+IHardwareDecoder* CDecoder::Create(CDVDStreamInfo& hint,
+                                   CProcessInfo& processInfo,
+                                   AVPixelFormat fmt)
 {
   if (Supports(fmt) && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                            CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
@@ -1138,12 +1138,12 @@ bool CDecoder::Register()
   return true;
 }
 
-CDecoder::CDecoder(CProcessInfo& processInfo)
-    : m_processInfo(processInfo)
+CDecoder::CDecoder(CProcessInfo& processInfo) : m_processInfo(processInfo)
 {
   m_event.Set();
   m_avD3D11Context = av_d3d11va_alloc_context();
-  m_avD3D11Context->cfg = reinterpret_cast<D3D11_VIDEO_DECODER_CONFIG*>(av_mallocz(sizeof(D3D11_VIDEO_DECODER_CONFIG)));
+  m_avD3D11Context->cfg =
+      reinterpret_cast<D3D11_VIDEO_DECODER_CONFIG*>(av_mallocz(sizeof(D3D11_VIDEO_DECODER_CONFIG)));
   m_avD3D11Context->surface = reinterpret_cast<ID3D11VideoDecoderOutputView**>(
       av_calloc(32, sizeof(ID3D11VideoDecoderOutputView*)));
   m_bufferPool.reset();
@@ -1188,7 +1188,7 @@ void CDecoder::Close()
 
 static bool CheckH264L41(AVCodecContext* avctx)
 {
-  unsigned widthmbs = (avctx->coded_width + 15) / 16;   // width in macroblocks
+  unsigned widthmbs = (avctx->coded_width + 15) / 16; // width in macroblocks
   unsigned heightmbs = (avctx->coded_height + 15) / 16; // height in macroblocks
   unsigned maxdpbmbs = 32768; // Decoded Picture Buffer (DPB) capacity in macroblocks for L4.1
 
@@ -1235,10 +1235,8 @@ static bool HasATIMP2Bug(AVCodecContext* avctx)
 
   // AMD/ATI card doesn't like some SD MPEG2 content
   // here are params of these videos
-  return avctx->height <= 576
-      && avctx->colorspace == AVCOL_SPC_BT470BG
-      && avctx->color_primaries == AVCOL_PRI_BT470BG
-      && avctx->color_trc == AVCOL_TRC_GAMMA28;
+  return avctx->height <= 576 && avctx->colorspace == AVCOL_SPC_BT470BG &&
+         avctx->color_primaries == AVCOL_PRI_BT470BG && avctx->color_trc == AVCOL_TRC_GAMMA28;
 }
 
 static bool HasAMDH264SDiBug(AVCodecContext* avctx)
@@ -1286,10 +1284,14 @@ static bool CheckCompatibility(AVCodecContext* avctx)
   // The advanced setting lets the user override the autodetection (in case of false positive or negative)
 
   bool checkcompat;
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_DXVACheckCompatibilityPresent)
-    checkcompat = IsL41LimitedATI();  // ATI UVD and UVD+ cards can only do L4.1 - corresponds roughly to series 3xxx
+  if (!CServiceBroker::GetSettingsComponent()
+           ->GetAdvancedSettings()
+           ->m_DXVACheckCompatibilityPresent)
+    checkcompat =
+        IsL41LimitedATI(); // ATI UVD and UVD+ cards can only do L4.1 - corresponds roughly to series 3xxx
   else
-    checkcompat = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_DXVACheckCompatibility;
+    checkcompat =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_DXVACheckCompatibility;
 
   if (checkcompat && !CheckH264L41(avctx))
   {
@@ -1356,47 +1358,47 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
 
   switch (avctx->codec_id)
   {
-  case AV_CODEC_ID_MPEG2VIDEO:
-    /* decoding MPEG-2 requires additional alignment on some Intel GPUs,
+    case AV_CODEC_ID_MPEG2VIDEO:
+      /* decoding MPEG-2 requires additional alignment on some Intel GPUs,
        but it causes issues for H.264 on certain AMD GPUs..... */
-    m_surface_alignment = 32;
-    m_refs += 2;
-    break;
-  case AV_CODEC_ID_HEVC:
-    /* the HEVC DXVA2 spec asks for 128 pixel aligned surfaces to ensure
+      m_surface_alignment = 32;
+      m_refs += 2;
+      break;
+    case AV_CODEC_ID_HEVC:
+      /* the HEVC DXVA2 spec asks for 128 pixel aligned surfaces to ensure
        all coding features have enough room to work with */
-    m_surface_alignment = 128;
-    // a driver may use multi-thread decoding internally
-    // on Xbox only add refs for <= Full HD due memory constraints (max 16 refs for 4K)
-    if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Xbox)
-    {
-      m_refs += CServiceBroker::GetCPUInfo()->GetCPUCount();
-    }
-    else
-    {
-      if (avctx->width <= 1920)
-        m_refs += CServiceBroker::GetCPUInfo()->GetCPUCount() / 2;
-    }
-    // by specification hevc decoder can hold up to 8 unique refs
-    // ffmpeg may report only 1 refs frame when is unknown or not present in headers
-    m_refs += (avctx->refs > 1) ? avctx->refs : 8;
-    break;
-  case AV_CODEC_ID_H264:
-    // by specification h264 decoder can hold up to 16 unique refs
-    // but use 8 at least to avoid potential issues in some rare streams
-    m_refs += std::max(8, avctx->refs ? avctx->refs : 16);
-    break;
-  case AV_CODEC_ID_VP9:
-    m_refs += 8;
-    break;
-  case AV_CODEC_ID_AV1:
-    // the AV1 DXVA2 spec asks for 128 pixel aligned surfaces
-    m_surface_alignment = 128;
-    // by specification AV1 decoder can hold up to 8 unique refs
-    m_refs += 8;
-    break;
-  default:
-    m_refs += 2;
+      m_surface_alignment = 128;
+      // a driver may use multi-thread decoding internally
+      // on Xbox only add refs for <= Full HD due memory constraints (max 16 refs for 4K)
+      if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Xbox)
+      {
+        m_refs += CServiceBroker::GetCPUInfo()->GetCPUCount();
+      }
+      else
+      {
+        if (avctx->width <= 1920)
+          m_refs += CServiceBroker::GetCPUInfo()->GetCPUCount() / 2;
+      }
+      // by specification hevc decoder can hold up to 8 unique refs
+      // ffmpeg may report only 1 refs frame when is unknown or not present in headers
+      m_refs += (avctx->refs > 1) ? avctx->refs : 8;
+      break;
+    case AV_CODEC_ID_H264:
+      // by specification h264 decoder can hold up to 16 unique refs
+      // but use 8 at least to avoid potential issues in some rare streams
+      m_refs += std::max(8, avctx->refs ? avctx->refs : 16);
+      break;
+    case AV_CODEC_ID_VP9:
+      m_refs += 8;
+      break;
+    case AV_CODEC_ID_AV1:
+      // the AV1 DXVA2 spec asks for 128 pixel aligned surfaces
+      m_surface_alignment = 128;
+      // by specification AV1 decoder can hold up to 8 unique refs
+      m_refs += 8;
+      break;
+    default:
+      m_refs += 2;
   }
 
   if (avctx->active_thread_type & FF_THREAD_FRAME)
@@ -1406,7 +1408,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   // new CPU's (Ryzen 5950x) this number may be higher than what the graphics card can handle.
   if (m_refs > 32)
   {
-    CLog::LogF(LOGWARNING, "The number of decoder surfaces has been limited from {} to 32.", m_refs);
+    CLog::LogF(LOGWARNING, "The number of decoder surfaces has been limited from {} to 32.",
+               m_refs);
     m_refs = 32;
   }
 
@@ -1415,7 +1418,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   {
     CLog::LogF(LOGWARNING,
                "Current available video memory ({} MB) is insufficient 4K video decoding (DXVA2) "
-               "using {} surfaces. Decoder surfaces has been limited to 16.", videoMem / MB, m_refs);
+               "using {} surfaces. Decoder surfaces has been limited to 16.",
+               videoMem / MB, m_refs);
     m_refs = 16;
   }
 
@@ -1593,7 +1597,8 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 
 #ifdef TARGET_WINDOWS_DESKTOP
   D3D11_VIDEO_DECODER_EXTENSION data = {};
-  union {
+  union
+  {
     DXVA_Status_H264 h264;
     DXVA_Status_VC1 vc1;
   } status = {};
@@ -1601,7 +1606,8 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   /* I'm not sure, but MSDN says nothing about extensions functions in D3D11, try to using with same way as in DX9 */
   data.Function = DXVA_STATUS_REPORTING_FUNCTION;
   data.pPrivateOutputData = &status;
-  data.PrivateOutputDataSize = avctx->codec_id == AV_CODEC_ID_H264 ? sizeof(DXVA_Status_H264) : sizeof(DXVA_Status_VC1);
+  data.PrivateOutputDataSize =
+      avctx->codec_id == AV_CODEC_ID_H264 ? sizeof(DXVA_Status_H264) : sizeof(DXVA_Status_VC1);
   HRESULT hr;
   if (FAILED(hr = m_pD3D11Context->DecoderExtension(m_pD3D11Decoder.Get(), &data)))
   {
@@ -1640,8 +1646,8 @@ bool CDecoder::OpenDecoder()
                                      m_avD3D11Context->surface, &m_sharedHandle, trueShared))
     return false;
 
-  if (!m_dxvaContext->CreateDecoder(m_format, *m_avD3D11Context->cfg, m_pD3D11Decoder.GetAddressOf(),
-                                     m_pD3D11Context.GetAddressOf()))
+  if (!m_dxvaContext->CreateDecoder(m_format, *m_avD3D11Context->cfg,
+                                    m_pD3D11Decoder.GetAddressOf(), m_pD3D11Context.GetAddressOf()))
     return false;
 
   if (m_dxvaContext->IsContextShared())
@@ -1739,6 +1745,6 @@ unsigned CDecoder::GetAllowedReferences()
 void CDecoder::CloseDXVADecoder()
 {
   std::lock_guard lock(m_section);
-  
+
   m_pD3D11Decoder = nullptr;
 }

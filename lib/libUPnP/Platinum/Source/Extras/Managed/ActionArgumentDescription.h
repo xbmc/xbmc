@@ -11,13 +11,13 @@
 | as published by the Free Software Foundation; either version 2
 | of the License, or (at your option) any later version.
 |
-| OEMs, ISVs, VARs and other distributors that combine and 
+| OEMs, ISVs, VARs and other distributors that combine and
 | distribute commercially licensed software with Platinum software
 | and do not wish to distribute the source code for the commercially
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+|
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,7 +25,7 @@
 |
 | You should have received a copy of the GNU General Public License
 | along with this program; see the file LICENSE.txt. If not, write to
-| the Free Software Foundation, Inc., 
+| the Free Software Foundation, Inc.,
 | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 | http://www.gnu.org/licenses/gpl-2.0.html
 |
@@ -40,9 +40,9 @@ namespace Platinum
 +---------------------------------------------------------------------*/
 public enum class ActionArgumentDirection
 {
-	In,
-	Out,
-	InOut
+  In,
+  Out,
+  InOut
 };
 
 ref class StateVariable;
@@ -54,96 +54,96 @@ public ref class ActionArgumentDescription
 {
 private:
 
-	PLT_ArgumentDesc* m_pHandle;
+  PLT_ArgumentDesc* m_pHandle;
 
 public:
 
-	property String^ Name
-	{
-		String^ get()
-		{
-			return gcnew String(m_pHandle->GetName());
-		}
-	}
+  property String^ Name
+  {
+    String^ get()
+    {
+      return gcnew String(m_pHandle->GetName());
+    }
+  }
 
-	property ActionArgumentDirection Direction
-	{
-		ActionArgumentDirection get()
-		{
-			return ParseArgumentDirection(m_pHandle->GetDirection());
-		}
-	}
+  property ActionArgumentDirection Direction
+  {
+    ActionArgumentDirection get()
+    {
+      return ParseArgumentDirection(m_pHandle->GetDirection());
+    }
+  }
 
-	property Boolean HasReturnValue
-	{
-		Boolean get()
-		{
-			return Boolean(m_pHandle->HasReturnValue());
-		}
-	}
+  property Boolean HasReturnValue
+  {
+    Boolean get()
+    {
+      return Boolean(m_pHandle->HasReturnValue());
+    }
+  }
 
-	property StateVariable^ RelatedStateVariable
-	{
-		StateVariable^ get();
-	}
+  property StateVariable^ RelatedStateVariable
+  {
+    StateVariable^ get();
+  }
 
 private:
 
-	static ActionArgumentDirection ParseArgumentDirection(const NPT_String& dir)
-	{
-		NPT_String s (dir);
+  static ActionArgumentDirection ParseArgumentDirection(const NPT_String& dir)
+  {
+    NPT_String s (dir);
 
-		s.MakeLowercase();
+    s.MakeLowercase();
 
-		if (s == "in")
-			return ActionArgumentDirection::In;
+    if (s == "in")
+      return ActionArgumentDirection::In;
 
-		if (s == "out")
-			return ActionArgumentDirection::Out;
+    if (s == "out")
+      return ActionArgumentDirection::Out;
 
-		if (s == "inout")
-			return ActionArgumentDirection::InOut;
+    if (s == "inout")
+      return ActionArgumentDirection::InOut;
 
-		if (s == "io")
-			return ActionArgumentDirection::InOut;
+    if (s == "io")
+      return ActionArgumentDirection::InOut;
 
-		throw gcnew ArgumentException("unknown direction");
-	}
+    throw gcnew ArgumentException("unknown direction");
+  }
 
 public:
 
-	virtual Boolean Equals(Object^ obj) override
-	{
-		if (obj == nullptr)
-			return false;
+  virtual Boolean Equals(Object^ obj) override
+  {
+    if (obj == nullptr)
+      return false;
 
-		if (!this->GetType()->IsInstanceOfType(obj))
-			return false;
+    if (!this->GetType()->IsInstanceOfType(obj))
+      return false;
 
-		return (m_pHandle == ((ActionArgumentDescription^)obj)->m_pHandle);
-	}
+    return (m_pHandle == ((ActionArgumentDescription^)obj)->m_pHandle);
+  }
 
 internal:
 
-	ActionArgumentDescription(PLT_ArgumentDesc& devData)
-	{
-		m_pHandle = &devData;
-	}
+  ActionArgumentDescription(PLT_ArgumentDesc& devData)
+  {
+    m_pHandle = &devData;
+  }
 
 public:
 
-	~ActionArgumentDescription()
-	{
-		// clean-up managed
+  ~ActionArgumentDescription()
+  {
+    // clean-up managed
 
-		// clean-up unmanaged
-		this->!ActionArgumentDescription();
-	}
+    // clean-up unmanaged
+    this->!ActionArgumentDescription();
+  }
 
-	!ActionArgumentDescription()
-	{
-		// clean-up unmanaged
-	}
+  !ActionArgumentDescription()
+  {
+    // clean-up unmanaged
+  }
 
 };
 

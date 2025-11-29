@@ -33,20 +33,24 @@ CRendererMediaCodecSurface::~CRendererMediaCodecSurface()
   Reset();
 }
 
-CBaseRenderer* CRendererMediaCodecSurface::Create(CVideoBuffer *buffer)
+CBaseRenderer* CRendererMediaCodecSurface::Create(CVideoBuffer* buffer)
 {
-  if (buffer && dynamic_cast<CMediaCodecVideoBuffer*>(buffer) && !dynamic_cast<CMediaCodecVideoBuffer*>(buffer)->HasSurfaceTexture())
+  if (buffer && dynamic_cast<CMediaCodecVideoBuffer*>(buffer) &&
+      !dynamic_cast<CMediaCodecVideoBuffer*>(buffer)->HasSurfaceTexture())
     return new CRendererMediaCodecSurface();
   return nullptr;
 }
 
 bool CRendererMediaCodecSurface::Register()
 {
-  VIDEOPLAYER::CRendererFactory::RegisterRenderer("mediacodec_surface", CRendererMediaCodecSurface::Create);
+  VIDEOPLAYER::CRendererFactory::RegisterRenderer("mediacodec_surface",
+                                                  CRendererMediaCodecSurface::Create);
   return true;
 }
 
-bool CRendererMediaCodecSurface::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
+bool CRendererMediaCodecSurface::Configure(const VideoPicture& picture,
+                                           float fps,
+                                           unsigned int orientation)
 {
   CLog::Log(LOGINFO, "CRendererMediaCodecSurface::Configure");
 
@@ -92,11 +96,11 @@ bool CRendererMediaCodecSurface::RenderCapture(int index, CRenderCapture* captur
   return true;
 }
 
-void CRendererMediaCodecSurface::AddVideoPicture(const VideoPicture &picture, int index)
+void CRendererMediaCodecSurface::AddVideoPicture(const VideoPicture& picture, int index)
 {
   ReleaseBuffer(index);
 
-  BUFFER &buf(m_buffers[index]);
+  BUFFER& buf(m_buffers[index]);
   if (picture.videoBuffer)
   {
     buf.videoBuffer = picture.videoBuffer;
@@ -106,10 +110,10 @@ void CRendererMediaCodecSurface::AddVideoPicture(const VideoPicture &picture, in
 
 void CRendererMediaCodecSurface::ReleaseVideoBuffer(int idx, bool render)
 {
-  BUFFER &buf(m_buffers[idx]);
+  BUFFER& buf(m_buffers[idx]);
   if (buf.videoBuffer)
   {
-    CMediaCodecVideoBuffer *mcvb(dynamic_cast<CMediaCodecVideoBuffer*>(buf.videoBuffer));
+    CMediaCodecVideoBuffer* mcvb(dynamic_cast<CMediaCodecVideoBuffer*>(buf.videoBuffer));
     if (mcvb)
     {
       if (render && m_bConfigured)
@@ -139,14 +143,15 @@ bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature) const
 
 void CRendererMediaCodecSurface::Reset()
 {
-  for (int i = 0 ; i < 4 ; ++i)
+  for (int i = 0; i < 4; ++i)
     ReleaseVideoBuffer(i, false);
   m_lastIndex = -1;
 
   CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(false);
 }
 
-void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
+void CRendererMediaCodecSurface::RenderUpdate(
+    int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   m_bConfigured = true;
 
@@ -200,7 +205,8 @@ void CRendererMediaCodecSurface::ReorderDrawPoints()
       int diff = static_cast<int>(static_cast<double>(m_surfDestRect.Height()) * scale -
                                   static_cast<double>(m_surfDestRect.Width())) /
                  2;
-      m_surfDestRect = CRect(m_surfDestRect.x1 - diff, m_surfDestRect.y1, m_surfDestRect.x2 + diff, m_surfDestRect.y2);
+      m_surfDestRect = CRect(m_surfDestRect.x1 - diff, m_surfDestRect.y1, m_surfDestRect.x2 + diff,
+                             m_surfDestRect.y2);
     }
     default:
       break;

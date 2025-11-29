@@ -122,8 +122,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
     char buffer1[513];
     char buffer2[513];
     int iAction;
-    int iFieldsRead = sscanf(strBuffer.c_str(), "%512s %512s %i", buffer1,
-                             buffer2, &iAction);
+    int iFieldsRead = sscanf(strBuffer.c_str(), "%512s %512s %i", buffer1, buffer2, &iAction);
     if (iFieldsRead != 2 && iFieldsRead != 3) // Make sure we read the right number of fields
     {
       bError = true;
@@ -219,45 +218,45 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
 
     switch (iAction)
     {
-    case 0:
-      edit.action = Action::CUT;
-      if (!AddEdit(edit))
-      {
-        CLog::Log(LOGWARNING, "{} - Error adding cut from line {} in EDL file: {}", __FUNCTION__,
-                  iLine, CURL::GetRedacted(edlFilename));
+      case 0:
+        edit.action = Action::CUT;
+        if (!AddEdit(edit))
+        {
+          CLog::Log(LOGWARNING, "{} - Error adding cut from line {} in EDL file: {}", __FUNCTION__,
+                    iLine, CURL::GetRedacted(edlFilename));
+          continue;
+        }
+        break;
+      case 1:
+        edit.action = Action::MUTE;
+        if (!AddEdit(edit))
+        {
+          CLog::Log(LOGWARNING, "{} - Error adding mute from line {} in EDL file: {}", __FUNCTION__,
+                    iLine, CURL::GetRedacted(edlFilename));
+          continue;
+        }
+        break;
+      case 2:
+        if (!AddSceneMarker(edit.end))
+        {
+          CLog::Log(LOGWARNING, "{} - Error adding scene marker from line {} in EDL file: {}",
+                    __FUNCTION__, iLine, CURL::GetRedacted(edlFilename));
+          continue;
+        }
+        break;
+      case 3:
+        edit.action = Action::COMM_BREAK;
+        if (!AddEdit(edit))
+        {
+          CLog::Log(LOGWARNING, "{} - Error adding commercial break from line {} in EDL file: {}",
+                    __FUNCTION__, iLine, CURL::GetRedacted(edlFilename));
+          continue;
+        }
+        break;
+      default:
+        CLog::Log(LOGWARNING, "{} - Invalid action on line {} in EDL file: {}", __FUNCTION__, iLine,
+                  CURL::GetRedacted(edlFilename));
         continue;
-      }
-      break;
-    case 1:
-      edit.action = Action::MUTE;
-      if (!AddEdit(edit))
-      {
-        CLog::Log(LOGWARNING, "{} - Error adding mute from line {} in EDL file: {}", __FUNCTION__,
-                  iLine, CURL::GetRedacted(edlFilename));
-        continue;
-      }
-      break;
-    case 2:
-      if (!AddSceneMarker(edit.end))
-      {
-        CLog::Log(LOGWARNING, "{} - Error adding scene marker from line {} in EDL file: {}",
-                  __FUNCTION__, iLine, CURL::GetRedacted(edlFilename));
-        continue;
-      }
-      break;
-    case 3:
-      edit.action = Action::COMM_BREAK;
-      if (!AddEdit(edit))
-      {
-        CLog::Log(LOGWARNING, "{} - Error adding commercial break from line {} in EDL file: {}",
-                  __FUNCTION__, iLine, CURL::GetRedacted(edlFilename));
-        continue;
-      }
-      break;
-    default:
-      CLog::Log(LOGWARNING, "{} - Invalid action on line {} in EDL file: {}", __FUNCTION__, iLine,
-                CURL::GetRedacted(edlFilename));
-      continue;
     }
   }
 
@@ -298,8 +297,8 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
   }
 
   char szBuffer[1024];
-  if (comskipFile.ReadString(szBuffer, 1023)
-  &&  strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0) // Line 1.
+  if (comskipFile.ReadString(szBuffer, 1023) &&
+      strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0) // Line 1.
   {
     CLog::Log(LOGERROR,
               "{} - Invalid Comskip file: {}. Error reading line 1 - expected '{}' at start.",
@@ -325,7 +324,8 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
     }
     else
     {
-      CLog::Log(LOGERROR, "Edl::ReadComskip - Frame rate is unavailable and also not in Comskip file (ts).");
+      CLog::Log(LOGERROR,
+                "Edl::ReadComskip - Frame rate is unavailable and also not in Comskip file (ts).");
       return false;
     }
   }
@@ -398,8 +398,8 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   }
 
   char szBuffer[1024];
-  if (videoReDoFile.ReadString(szBuffer, 1023)
-  &&  strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
+  if (videoReDoFile.ReadString(szBuffer, 1023) &&
+      strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
   {
     CLog::Log(LOGERROR,
               "{} - Invalid VideoReDo file: {}. Error reading line 1 - expected {}. Only version 2 "
@@ -434,7 +434,8 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
       else
         bValid = false;
     }
-    else if (strncmp(szBuffer, VIDEOREDO_TAG_SCENE, strlen(VIDEOREDO_TAG_SCENE)) == 0) // Found the <SceneMarker > tag
+    else if (strncmp(szBuffer, VIDEOREDO_TAG_SCENE, strlen(VIDEOREDO_TAG_SCENE)) ==
+             0) // Found the <SceneMarker > tag
     {
       int iScene;
       double dSceneMarker;
@@ -478,7 +479,8 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
 {
   Clear();
 
-  std::string beyondTVFilename(URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml"));
+  std::string beyondTVFilename(
+      URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml"));
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
@@ -558,7 +560,7 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
   }
 }
 
-bool CEdl::ReadPvr(const CFileItem &fileItem)
+bool CEdl::ReadPvr(const CFileItem& fileItem)
 {
   const std::vector<Edit> editlist = PVR::CPVREdl::GetEdits(fileItem);
   for (const auto& edit : editlist)
@@ -656,8 +658,12 @@ bool CEdl::AddEdit(const Edit& newEdit)
      * the start (autowait) and automatically rewind by a bit (autowind) at the end of the commercial
      * break.
      */
-    int autowait = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEdlCommBreakAutowait * 1000; // seconds -> ms
-    int autowind = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEdlCommBreakAutowind * 1000; // seconds -> ms
+    int autowait =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEdlCommBreakAutowait *
+        1000; // seconds -> ms
+    int autowind =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEdlCommBreakAutowind *
+        1000; // seconds -> ms
 
     if (edit.start > 0) // Only autowait if not at the start.
     {
@@ -839,7 +845,8 @@ bool CEdl::HasSceneMarker() const
   return !m_vecSceneMarkers.empty();
 }
 
-bool CEdl::InEdit(const int iSeek, Edit* pEdit) const {
+bool CEdl::InEdit(const int iSeek, Edit* pEdit) const
+{
   for (size_t i = 0; i < m_vecEdits.size(); ++i)
   {
     if (iSeek < m_vecEdits[i].start) // Early exit if not even up to the edit start time.
@@ -881,7 +888,7 @@ EDL::Action CEdl::GetLastEditActionType() const
   return m_lastEditActionType;
 }
 
-bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
+bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int* iSceneMarker)
 {
   if (!HasSceneMarker())
     return false;
@@ -929,7 +936,8 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
 
 std::string CEdl::MillisecondsToTimeString(const int iMilliseconds)
 {
-  std::string strTimeString = StringUtils::SecondsToTimeString(iMilliseconds / 1000, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
+  std::string strTimeString = StringUtils::SecondsToTimeString(
+      iMilliseconds / 1000, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
   strTimeString += StringUtils::Format(".{:03}", iMilliseconds % 1000);
   return strTimeString;
 }
@@ -951,7 +959,8 @@ void CEdl::MergeShortCommBreaks()
     m_vecEdits.erase(m_vecEdits.begin());
   }
 
-  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   if (advancedSettings->m_bEdlMergeShortCommBreaks)
   {
     for (size_t i = 0; i < m_vecEdits.size() - 1; ++i)

@@ -19,12 +19,12 @@
 
 using namespace VAAPI;
 
-void CVaapi1Texture::Init(InteropInfo &interop)
+void CVaapi1Texture::Init(InteropInfo& interop)
 {
   m_interop = interop;
 }
 
-bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
+bool CVaapi1Texture::Map(CVaapiRenderPicture* pic)
 {
   VAStatus status;
 
@@ -57,7 +57,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
 
   switch (m_glSurface.vaImage.format.fourcc)
   {
-    case VA_FOURCC('N','V','1','2'):
+    case VA_FOURCC('N', 'V', '1', '2'):
     {
       attrib = attribs;
       *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
@@ -73,9 +73,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = m_glSurface.vaImage.pitches[0];
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImageY = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
+      m_glSurface.eglImageY =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                      (EGLClientBuffer)NULL, attribs);
       if (!m_glSurface.eglImageY)
       {
         EGLint err = eglGetError();
@@ -97,9 +97,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = m_glSurface.vaImage.pitches[1];
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImageVU = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
+      m_glSurface.eglImageVU =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                      (EGLClientBuffer)NULL, attribs);
       if (!m_glSurface.eglImageVU)
       {
         EGLint err = eglGetError();
@@ -127,7 +127,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
 
       break;
     }
-    case VA_FOURCC('P','0','1','0'):
+    case VA_FOURCC('P', '0', '1', '0'):
     {
       attrib = attribs;
       *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
@@ -143,9 +143,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = m_glSurface.vaImage.pitches[0];
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImageY = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
+      m_glSurface.eglImageY =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                      (EGLClientBuffer)NULL, attribs);
       if (!m_glSurface.eglImageY)
       {
         EGLint err = eglGetError();
@@ -167,9 +167,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = m_glSurface.vaImage.pitches[1];
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImageVU = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
+      m_glSurface.eglImageVU =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                      (EGLClientBuffer)NULL, attribs);
       if (!m_glSurface.eglImageVU)
       {
         EGLint err = eglGetError();
@@ -197,7 +197,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
 
       break;
     }
-    case VA_FOURCC('B','G','R','A'):
+    case VA_FOURCC('B', 'G', 'R', 'A'):
     {
       attrib = attribs;
       *attrib++ = EGL_DRM_BUFFER_FORMAT_MESA;
@@ -209,10 +209,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DRM_BUFFER_STRIDE_MESA;
       *attrib++ = m_glSurface.vaImage.pitches[0] / 4;
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImage = m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT,
-                                         EGL_DRM_BUFFER_MESA,
-                                         (EGLClientBuffer)m_glSurface.vBufInfo.handle,
-                                         attribs);
+      m_glSurface.eglImage =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_DRM_BUFFER_MESA,
+                                      (EGLClientBuffer)m_glSurface.vBufInfo.handle, attribs);
       if (!m_glSurface.eglImage)
       {
         EGLint err = eglGetError();
@@ -290,13 +289,18 @@ CSizeInt CVaapi1Texture::GetTextureSize()
   return {m_texWidth, m_texHeight};
 }
 
-void CVaapi1Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor)
+void CVaapi1Texture::TestInterop(VADisplay vaDpy,
+                                 EGLDisplay eglDisplay,
+                                 bool& general,
+                                 bool& deepColor)
 {
   general = false;
   deepColor = false;
 
-  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
-  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
+  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR =
+      (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
+  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR =
+      (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
   if (!eglCreateImageKHR || !eglDestroyImageKHR)
   {
     return;
@@ -311,9 +315,8 @@ void CVaapi1Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &g
   VAImage image;
   VABufferInfo bufferInfo;
 
-  if (vaCreateSurfaces(vaDpy,  VA_RT_FORMAT_YUV420,
-                       width, height,
-                       &surface, 1, NULL, 0) != VA_STATUS_SUCCESS)
+  if (vaCreateSurfaces(vaDpy, VA_RT_FORMAT_YUV420, width, height, &surface, 1, NULL, 0) !=
+      VA_STATUS_SUCCESS)
   {
     return;
   }
@@ -329,19 +332,22 @@ void CVaapi1Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &g
     if (status == VA_STATUS_SUCCESS)
     {
       EGLImageKHR eglImage;
-      EGLint attribs[] = {
-        EGL_LINUX_DRM_FOURCC_EXT, DRM_FORMAT_R8,
-        EGL_WIDTH, image.width,
-        EGL_HEIGHT, image.height,
-        EGL_DMA_BUF_PLANE0_FD_EXT, static_cast<EGLint> (bufferInfo.handle),
-        EGL_DMA_BUF_PLANE0_OFFSET_EXT, static_cast<EGLint> (image.offsets[0]),
-        EGL_DMA_BUF_PLANE0_PITCH_EXT, static_cast<EGLint> (image.pitches[0]),
-        EGL_NONE
-      };
+      EGLint attribs[] = {EGL_LINUX_DRM_FOURCC_EXT,
+                          DRM_FORMAT_R8,
+                          EGL_WIDTH,
+                          image.width,
+                          EGL_HEIGHT,
+                          image.height,
+                          EGL_DMA_BUF_PLANE0_FD_EXT,
+                          static_cast<EGLint>(bufferInfo.handle),
+                          EGL_DMA_BUF_PLANE0_OFFSET_EXT,
+                          static_cast<EGLint>(image.offsets[0]),
+                          EGL_DMA_BUF_PLANE0_PITCH_EXT,
+                          static_cast<EGLint>(image.pitches[0]),
+                          EGL_NONE};
 
-      eglImage = eglCreateImageKHR(eglDisplay,
-                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                   attribs);
+      eglImage = eglCreateImageKHR(eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                   (EGLClientBuffer)NULL, attribs);
       if (eglImage)
       {
         eglDestroyImageKHR(eglDisplay, eglImage);
@@ -362,8 +368,10 @@ bool CVaapi1Texture::TestInteropDeepColor(VADisplay vaDpy, EGLDisplay eglDisplay
 {
   bool ret = false;
 
-  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
-  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
+  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR =
+      (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
+  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR =
+      (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
   if (!eglCreateImageKHR || !eglDestroyImageKHR)
   {
     return false;
@@ -384,9 +392,8 @@ bool CVaapi1Texture::TestInteropDeepColor(VADisplay vaDpy, EGLDisplay eglDisplay
   attribs.value.type = VAGenericValueTypeInteger;
   attribs.value.value.i = VA_FOURCC_P010;
 
-  if (vaCreateSurfaces(vaDpy,  VA_RT_FORMAT_YUV420_10BPP,
-                       width, height,
-                       &surface, 1, &attribs, 1) != VA_STATUS_SUCCESS)
+  if (vaCreateSurfaces(vaDpy, VA_RT_FORMAT_YUV420_10BPP, width, height, &surface, 1, &attribs, 1) !=
+      VA_STATUS_SUCCESS)
   {
     return false;
   }
@@ -401,25 +408,27 @@ bool CVaapi1Texture::TestInteropDeepColor(VADisplay vaDpy, EGLDisplay eglDisplay
     if (status == VA_STATUS_SUCCESS)
     {
       EGLImageKHR eglImage;
-      EGLint attribs[] = {
-        EGL_LINUX_DRM_FOURCC_EXT, DRM_FORMAT_GR1616,
-        EGL_WIDTH, (image.width + 1) >> 1,
-        EGL_HEIGHT, (image.height + 1) >> 1,
-        EGL_DMA_BUF_PLANE0_FD_EXT, static_cast<EGLint> (bufferInfo.handle),
-        EGL_DMA_BUF_PLANE0_OFFSET_EXT, static_cast<EGLint> (image.offsets[1]),
-        EGL_DMA_BUF_PLANE0_PITCH_EXT, static_cast<EGLint> (image.pitches[1]),
-        EGL_NONE
-      };
+      EGLint attribs[] = {EGL_LINUX_DRM_FOURCC_EXT,
+                          DRM_FORMAT_GR1616,
+                          EGL_WIDTH,
+                          (image.width + 1) >> 1,
+                          EGL_HEIGHT,
+                          (image.height + 1) >> 1,
+                          EGL_DMA_BUF_PLANE0_FD_EXT,
+                          static_cast<EGLint>(bufferInfo.handle),
+                          EGL_DMA_BUF_PLANE0_OFFSET_EXT,
+                          static_cast<EGLint>(image.offsets[1]),
+                          EGL_DMA_BUF_PLANE0_PITCH_EXT,
+                          static_cast<EGLint>(image.pitches[1]),
+                          EGL_NONE};
 
-      eglImage = eglCreateImageKHR(eglDisplay,
-                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                   attribs);
+      eglImage = eglCreateImageKHR(eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                   (EGLClientBuffer)NULL, attribs);
       if (eglImage)
       {
         eglDestroyImageKHR(eglDisplay, eglImage);
         ret = true;
       }
-
     }
     vaDestroyImage(vaDpy, image.image_id);
   }
@@ -432,7 +441,8 @@ bool CVaapi1Texture::TestInteropDeepColor(VADisplay vaDpy, EGLDisplay eglDisplay
 void CVaapi2Texture::Init(InteropInfo& interop)
 {
   m_interop = interop;
-  m_hasPlaneModifiers = CEGLUtils::HasExtension(m_interop.eglDisplay, "EGL_EXT_image_dma_buf_import_modifiers");
+  m_hasPlaneModifiers =
+      CEGLUtils::HasExtension(m_interop.eglDisplay, "EGL_EXT_image_dma_buf_import_modifiers");
 }
 
 bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
@@ -448,10 +458,9 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
 
   VADRMPRIMESurfaceDescriptor surface;
 
-  status = vaExportSurfaceHandle(pic->vadsp, pic->procPic.videoSurface,
-    VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2,
-    VA_EXPORT_SURFACE_READ_ONLY | VA_EXPORT_SURFACE_SEPARATE_LAYERS,
-    &surface);
+  status = vaExportSurfaceHandle(
+      pic->vadsp, pic->procPic.videoSurface, VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2,
+      VA_EXPORT_SURFACE_READ_ONLY | VA_EXPORT_SURFACE_SEPARATE_LAYERS, &surface);
 
   if (status != VA_STATUS_SUCCESS)
   {
@@ -506,7 +515,8 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
             break;
           case 1:
             texture = &m_vu;
-            if (surface.fourcc == VA_FOURCC_NV12 || surface.fourcc == VA_FOURCC_P010 || surface.fourcc == VA_FOURCC_P016)
+            if (surface.fourcc == VA_FOURCC_NV12 || surface.fourcc == VA_FOURCC_P010 ||
+                surface.fourcc == VA_FOURCC_P016)
             {
               // Adjust w/h for 4:2:0 subsampling on UV plane
               width = (width + 1) >> 1;
@@ -526,21 +536,22 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
 
     CEGLAttributes<8> attribs; // 6 static + 2 modifiers
     attribs.Add({{EGL_LINUX_DRM_FOURCC_EXT, static_cast<EGLint>(layer.drm_format)},
-      {EGL_WIDTH, width},
-      {EGL_HEIGHT, height},
-      {EGL_DMA_BUF_PLANE0_FD_EXT, object.fd},
-      {EGL_DMA_BUF_PLANE0_OFFSET_EXT, static_cast<EGLint>(layer.offset[plane])},
-      {EGL_DMA_BUF_PLANE0_PITCH_EXT, static_cast<EGLint>(layer.pitch[plane])}});
+                 {EGL_WIDTH, width},
+                 {EGL_HEIGHT, height},
+                 {EGL_DMA_BUF_PLANE0_FD_EXT, object.fd},
+                 {EGL_DMA_BUF_PLANE0_OFFSET_EXT, static_cast<EGLint>(layer.offset[plane])},
+                 {EGL_DMA_BUF_PLANE0_PITCH_EXT, static_cast<EGLint>(layer.pitch[plane])}});
 
     if (m_hasPlaneModifiers)
     {
-      attribs.Add({{EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT, static_cast<EGLint>(object.drm_format_modifier)},
-        {EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT, static_cast<EGLint>(object.drm_format_modifier >> 32)}});
+      attribs.Add(
+          {{EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT, static_cast<EGLint>(object.drm_format_modifier)},
+           {EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT,
+            static_cast<EGLint>(object.drm_format_modifier >> 32)}});
     }
 
-    texture->eglImage = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-      EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, nullptr,
-      attribs.Get());
+    texture->eglImage = m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT,
+                                                    EGL_LINUX_DMA_BUF_EXT, nullptr, attribs.Get());
     if (!texture->eglImage)
     {
       CEGLUtils::Log(LOGERROR, "Failed to import VA DRM surface into EGL image");
@@ -598,14 +609,19 @@ CSizeInt CVaapi2Texture::GetTextureSize()
   return m_textureSize;
 }
 
-bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32_t rtFormat, std::int32_t pixelFormat)
+bool CVaapi2Texture::TestEsh(VADisplay vaDpy,
+                             EGLDisplay eglDisplay,
+                             std::uint32_t rtFormat,
+                             std::int32_t pixelFormat)
 {
 #if HAVE_VAEXPORTSURFACHEHANDLE
   int width = 1920;
   int height = 1080;
 
-  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC) eglGetProcAddress("eglCreateImageKHR");
-  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC) eglGetProcAddress("eglDestroyImageKHR");
+  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR =
+      (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
+  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR =
+      (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
   if (!eglCreateImageKHR || !eglDestroyImageKHR)
   {
     return false;
@@ -621,19 +637,17 @@ bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32
   attribs.value.type = VAGenericValueTypeInteger;
   attribs.value.value.i = pixelFormat;
 
-  if (vaCreateSurfaces(vaDpy, rtFormat,
-        width, height,
-        &surface, 1, &attribs, 1) != VA_STATUS_SUCCESS)
+  if (vaCreateSurfaces(vaDpy, rtFormat, width, height, &surface, 1, &attribs, 1) !=
+      VA_STATUS_SUCCESS)
   {
     return false;
   }
 
   // check interop
   VADRMPRIMESurfaceDescriptor drmPrimeSurface;
-  status = vaExportSurfaceHandle(vaDpy, surface,
-    VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2,
-    VA_EXPORT_SURFACE_READ_ONLY | VA_EXPORT_SURFACE_SEPARATE_LAYERS,
-    &drmPrimeSurface);
+  status = vaExportSurfaceHandle(vaDpy, surface, VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME_2,
+                                 VA_EXPORT_SURFACE_READ_ONLY | VA_EXPORT_SURFACE_SEPARATE_LAYERS,
+                                 &drmPrimeSurface);
 
   bool result = false;
 
@@ -641,18 +655,22 @@ bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32
   {
     auto const& layer = drmPrimeSurface.layers[0];
     auto const& object = drmPrimeSurface.objects[layer.object_index[0]];
-    EGLint attribs[] = {
-      EGL_LINUX_DRM_FOURCC_EXT, static_cast<EGLint>(drmPrimeSurface.layers[0].drm_format),
-      EGL_WIDTH, width,
-      EGL_HEIGHT, height,
-      EGL_DMA_BUF_PLANE0_FD_EXT, static_cast<EGLint>(object.fd),
-      EGL_DMA_BUF_PLANE0_OFFSET_EXT, static_cast<EGLint>(layer.offset[0]),
-      EGL_DMA_BUF_PLANE0_PITCH_EXT, static_cast<EGLint>(layer.pitch[0]),
-      EGL_NONE};
+    EGLint attribs[] = {EGL_LINUX_DRM_FOURCC_EXT,
+                        static_cast<EGLint>(drmPrimeSurface.layers[0].drm_format),
+                        EGL_WIDTH,
+                        width,
+                        EGL_HEIGHT,
+                        height,
+                        EGL_DMA_BUF_PLANE0_FD_EXT,
+                        static_cast<EGLint>(object.fd),
+                        EGL_DMA_BUF_PLANE0_OFFSET_EXT,
+                        static_cast<EGLint>(layer.offset[0]),
+                        EGL_DMA_BUF_PLANE0_PITCH_EXT,
+                        static_cast<EGLint>(layer.pitch[0]),
+                        EGL_NONE};
 
-    EGLImageKHR eglImage = eglCreateImageKHR(eglDisplay,
-      EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, nullptr,
-      attribs);
+    EGLImageKHR eglImage =
+        eglCreateImageKHR(eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, nullptr, attribs);
     if (eglImage)
     {
       eglDestroyImageKHR(eglDisplay, eglImage);
@@ -673,7 +691,10 @@ bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32
 #endif
 }
 
-void CVaapi2Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool& general, bool& deepColor)
+void CVaapi2Texture::TestInterop(VADisplay vaDpy,
+                                 EGLDisplay eglDisplay,
+                                 bool& general,
+                                 bool& deepColor)
 {
   general = false;
   deepColor = false;

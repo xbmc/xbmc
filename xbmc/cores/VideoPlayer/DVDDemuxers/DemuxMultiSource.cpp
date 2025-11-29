@@ -15,7 +15,6 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
-
 CDemuxMultiSource::CDemuxMultiSource() = default;
 
 CDemuxMultiSource::~CDemuxMultiSource()
@@ -39,7 +38,6 @@ void CDemuxMultiSource::Dispose()
   m_demuxerMap.clear();
   m_DemuxerToInputStreamMap.clear();
   m_pInput = nullptr;
-
 }
 
 void CDemuxMultiSource::EnableStream(int64_t demuxerId, int id, bool enable)
@@ -187,7 +185,7 @@ DemuxPacket* CDemuxMultiSource::Read()
         CLog::Log(LOGDEBUG, "{} - Demuxer for file {} is at eof, removed it from the queue",
                   __FUNCTION__, CURL::GetRedacted(currentDemuxer->GetFileName()));
       }
-      else    //maybe add an error counter?
+      else //maybe add an error counter?
         m_demuxerQueue.emplace(-1.0, currentDemuxer);
     }
   }
@@ -216,7 +214,8 @@ bool CDemuxMultiSource::SeekTime(double time, bool backwards, double* startpts)
   return ret;
 }
 
-void CDemuxMultiSource::SetMissingStreamDetails(const DemuxPtr& demuxer) const {
+void CDemuxMultiSource::SetMissingStreamDetails(const DemuxPtr& demuxer) const
+{
   std::string baseFileName = m_pInput->GetFileName();
   std::string fileName = demuxer->GetFileName();
   for (auto& stream : demuxer->GetStreams())

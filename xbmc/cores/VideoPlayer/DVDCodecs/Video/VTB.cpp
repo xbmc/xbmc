@@ -18,7 +18,8 @@
 
 #include <mutex>
 
-extern "C" {
+extern "C"
+{
 #include <libavcodec/videotoolbox.h>
 }
 
@@ -28,8 +29,7 @@ using namespace VTB;
 // Video Buffers
 //------------------------------------------------------------------------------
 
-CVideoBufferVTB::CVideoBufferVTB(IVideoBufferPool &pool, int id)
-: CVideoBuffer(id)
+CVideoBufferVTB::CVideoBufferVTB(IVideoBufferPool& pool, int id) : CVideoBuffer(id)
 {
   m_pFrame = av_frame_alloc();
 }
@@ -39,7 +39,7 @@ CVideoBufferVTB::~CVideoBufferVTB()
   av_frame_free(&m_pFrame);
 }
 
-void CVideoBufferVTB::SetRef(AVFrame *frame)
+void CVideoBufferVTB::SetRef(AVFrame* frame)
 {
   av_frame_unref(m_pFrame);
   av_frame_ref(m_pFrame, frame);
@@ -84,7 +84,7 @@ CVideoBuffer* CVideoBufferPoolVTB::Get()
 {
   std::lock_guard lock(m_critSection);
 
-  CVideoBufferVTB *buf = nullptr;
+  CVideoBufferVTB* buf = nullptr;
   if (!m_free.empty())
   {
     int idx = m_free.front();
@@ -127,7 +127,9 @@ void CVideoBufferPoolVTB::Return(int id)
 // main class
 //------------------------------------------------------------------------------
 
-IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
+IHardwareDecoder* CDecoder::Create(CDVDStreamInfo& hint,
+                                   CProcessInfo& processInfo,
+                                   AVPixelFormat fmt)
 {
 #if defined(TARGET_DARWIN_EMBEDDED)
   // force disable HW acceleration for live streams
@@ -136,7 +138,9 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
     return nullptr;
 #endif
 
-  if (fmt == AV_PIX_FMT_VIDEOTOOLBOX && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+  if (fmt == AV_PIX_FMT_VIDEOTOOLBOX &&
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOPLAYER_USEVTB))
     return new VTB::CDecoder(processInfo);
 
   return nullptr;
@@ -163,17 +167,17 @@ CDecoder::~CDecoder()
 
 void CDecoder::Close()
 {
-
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt)
+bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt)
 {
-  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOPLAYER_USEVTB))
     return false;
 
-  AVBufferRef *deviceRef =  av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VIDEOTOOLBOX);
-  AVBufferRef *framesRef = av_hwframe_ctx_alloc(deviceRef);
-  AVHWFramesContext *framesCtx = (AVHWFramesContext*)framesRef->data;
+  AVBufferRef* deviceRef = av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VIDEOTOOLBOX);
+  AVBufferRef* framesRef = av_hwframe_ctx_alloc(deviceRef);
+  AVHWFramesContext* framesCtx = (AVHWFramesContext*)framesRef->data;
   framesCtx->format = AV_PIX_FMT_VIDEOTOOLBOX;
   framesCtx->sw_format = AV_PIX_FMT_NV12;
   avctx->hw_frames_ctx = framesRef;
@@ -191,10 +195,10 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
 CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
   CDVDVideoCodec::VCReturn status = Check(avctx);
-  if(status)
+  if (status)
     return status;
 
-  if(frame)
+  if (frame)
   {
     if (frame->interlaced_frame)
       return CDVDVideoCodec::VC_FATAL;

@@ -12,7 +12,6 @@
 
 class CCharArrayParser;
 
-
 class CWebVTTISOHandler : public CWebVTTHandler
 {
 public:

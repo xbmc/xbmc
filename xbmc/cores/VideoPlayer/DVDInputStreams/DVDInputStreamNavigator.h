@@ -20,12 +20,12 @@
 
 #include <string>
 
-#define DVD_VIDEO_BLOCKSIZE         DVD_VIDEO_LB_LEN // 2048 bytes
+#define DVD_VIDEO_BLOCKSIZE DVD_VIDEO_LB_LEN // 2048 bytes
 
-#define NAVRESULT_NOP               0x00000001 // keep processing messages
-#define NAVRESULT_DATA              0x00000002 // return data to demuxer
-#define NAVRESULT_ERROR             0x00000003 // return read error to demuxer
-#define NAVRESULT_HOLD              0x00000004 // return eof to demuxer
+#define NAVRESULT_NOP 0x00000001 // keep processing messages
+#define NAVRESULT_DATA 0x00000002 // return data to demuxer
+#define NAVRESULT_ERROR 0x00000003 // return read error to demuxer
+#define NAVRESULT_HOLD 0x00000004 // return eof to demuxer
 
 #define LIBDVDNAV_BUTTON_NORMAL 0
 #define LIBDVDNAV_BUTTON_CLICKED 1
@@ -38,12 +38,11 @@ class CDVDOverlayPicture;
 
 struct dvdnav_s;
 
-class CDVDInputStreamNavigator
-  : public CDVDInputStream
-  , public CDVDInputStream::IDisplayTime
-  , public CDVDInputStream::IChapter
-  , public CDVDInputStream::IPosTime
-  , public CDVDInputStream::IMenus
+class CDVDInputStreamNavigator : public CDVDInputStream,
+                                 public CDVDInputStream::IDisplayTime,
+                                 public CDVDInputStream::IChapter,
+                                 public CDVDInputStream::IPosTime,
+                                 public CDVDInputStream::IMenus
 {
 public:
   CDVDInputStreamNavigator(IVideoPlayer* player, const CFileItem& fileitem);
@@ -56,7 +55,7 @@ public:
   int GetBlockSize() override { return DVDSTREAM_BLOCK_SIZE_DVD; }
   bool IsEOF() override { return m_bEOF; }
   int64_t GetLength() override { return 0; }
-  ENextStream NextStream() override ;
+  ENextStream NextStream() override;
 
   void ActivateButton() override;
   void SelectButton(int iButton) override;
@@ -75,8 +74,8 @@ public:
   void OnBack() override;
   void OnNext() override;
   void OnPrevious() override;
-  bool OnMouseMove(const CPoint &point) override;
-  bool OnMouseClick(const CPoint &point) override;
+  bool OnMouseMove(const CPoint& point) override;
+  bool OnMouseClick(const CPoint& point) override;
 
   int GetCurrentButton() override;
   int GetTotalButtons() override;
@@ -108,13 +107,16 @@ public:
   bool SetActiveAudioStream(int iId);
   AudioStreamInfo GetAudioStreamInfo(const int iId);
 
-  bool GetState(std::string &xmlstate) override;
-  bool SetState(const std::string &xmlstate) override;
+  bool GetState(std::string& xmlstate) override;
+  bool SetState(const std::string& xmlstate) override;
 
   int GetChapter() override { return m_iPart; } // the current part in the current title
-  int GetChapterCount() override { return m_iPartCount; } // the number of parts in the current title
-  void GetChapterName(std::string& name, int idx=-1) override {};
-  int64_t GetChapterPos(int ch=-1) override;
+  int GetChapterCount() override
+  {
+    return m_iPartCount;
+  } // the number of parts in the current title
+  void GetChapterName(std::string& name, int idx = -1) override {};
+  int64_t GetChapterPos(int ch = -1) override;
   bool SeekChapter(int iChapter) override;
 
   CDVDInputStream::IDisplayTime* GetIDisplayTime() override { return this; }
@@ -142,14 +144,13 @@ public:
   VideoStreamInfo GetVideoStreamInfo();
 
 protected:
-
   int ProcessBlock(uint8_t* buffer, int* read);
 
-  static void SetAudioStreamName(AudioStreamInfo &info, const audio_attr_t &audio_attributes);
-  static void SetSubtitleStreamName(SubtitleStreamInfo &info, const subp_attr_t &subp_attributes);
+  static void SetAudioStreamName(AudioStreamInfo& info, const audio_attr_t& audio_attributes);
+  static void SetSubtitleStreamName(SubtitleStreamInfo& info, const subp_attr_t& subp_attributes);
 
   int GetAngleCount();
-  void GetVideoResolution(uint32_t * width, uint32_t * height);
+  void GetVideoResolution(uint32_t* width, uint32_t* height);
 
   /*! \brief Provided a pod DVDState struct, fill it with the current dvdnav state
   * \param[in,out] dvdstate the DVD state struct to be filled
@@ -193,4 +194,3 @@ protected:
   /*! DVD state serializer handler */
   CDVDStateSerializer m_dvdStateSerializer;
 };
-

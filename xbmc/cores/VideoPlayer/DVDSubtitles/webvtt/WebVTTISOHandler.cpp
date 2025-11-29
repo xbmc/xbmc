@@ -43,7 +43,6 @@ constexpr uint32_t ISO_BOX_TYPE_STTG = StreamUtils::MakeFourCC('s', 't', 't', 'g
 constexpr uint32_t ISO_BOX_TYPE_PAYL = StreamUtils::MakeFourCC('p', 'a', 'y', 'l');
 } // unnamed namespace
 
-
 void CWebVTTISOHandler::DecodeStream(const char* buffer,
                                      int bufferSize,
                                      double pts,

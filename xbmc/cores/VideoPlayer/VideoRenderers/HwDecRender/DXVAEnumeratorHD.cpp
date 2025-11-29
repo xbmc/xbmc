@@ -465,7 +465,7 @@ bool CEnumeratorHD::IsFormatSupportedInput(DXGI_FORMAT format)
 bool CEnumeratorHD::IsFormatSupportedOutput(DXGI_FORMAT format)
 {
   std::lock_guard lock(m_section);
-  
+
   return IsFormatSupportedInternal(format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT);
 }
 

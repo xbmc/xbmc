@@ -37,7 +37,7 @@ void CDVDStreamInfo::Clear()
   uniqueId = -1;
   source = STREAM_SOURCE_NONE;
   codecOptions = 0;
-  codec_tag  = 0;
+  codec_tag = 0;
   flags = 0;
   filename.clear();
   dvd = false;
@@ -48,15 +48,15 @@ void CDVDStreamInfo::Clear()
   externalInterfaces = nullptr;
 
   fpsscale = 0;
-  fpsrate  = 0;
+  fpsrate = 0;
   interlaced = false;
-  height   = 0;
-  width    = 0;
-  aspect   = 0.0;
-  vfr      = false;
-  stills   = false;
-  level    = 0;
-  profile  = 0;
+  height = 0;
+  width = 0;
+  aspect = 0.0;
+  vfr = false;
+  stills = false;
+  level = 0;
+  profile = 0;
   ptsinvalid = false;
   forced_aspect = false;
   bitsperpixel = 0;
@@ -70,10 +70,10 @@ void CDVDStreamInfo::Clear()
   stereo_mode.clear();
   dovi = {};
 
-  channels   = 0;
+  channels = 0;
   samplerate = 0;
   blockalign = 0;
-  bitrate    = 0;
+  bitrate = 0;
   bitspersample = 0;
   channellayout = 0;
 
@@ -82,7 +82,8 @@ void CDVDStreamInfo::Clear()
   m_3dSubtitlePlane = 0;
 }
 
-bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare) const {
+bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare) const
+{
   if (codec != right.codec || type != right.type ||
       ((compare & COMPARE_ID) && uniqueId != right.uniqueId) ||
       ((compare & COMPARE_ID) && demuxerId != right.demuxerId) || codec_tag != right.codec_tag ||
@@ -120,15 +121,16 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare) const {
 
   if (masteringMetadata && right.masteringMetadata)
   {
-    if (masteringMetadata->has_luminance != right.masteringMetadata->has_luminance
-      || masteringMetadata->has_primaries != right.masteringMetadata->has_primaries)
+    if (masteringMetadata->has_luminance != right.masteringMetadata->has_luminance ||
+        masteringMetadata->has_primaries != right.masteringMetadata->has_primaries)
       return false;
 
     if (masteringMetadata->has_primaries)
     {
       for (unsigned int i(0); i < 3; ++i)
         for (unsigned int j(0); j < 2; ++j)
-          if (av_cmp_q(masteringMetadata->display_primaries[i][j], right.masteringMetadata->display_primaries[i][j]))
+          if (av_cmp_q(masteringMetadata->display_primaries[i][j],
+                       right.masteringMetadata->display_primaries[i][j]))
             return false;
       for (unsigned int i(0); i < 2; ++i)
         if (av_cmp_q(masteringMetadata->white_point[i], right.masteringMetadata->white_point[i]))
@@ -137,8 +139,8 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare) const {
 
     if (masteringMetadata->has_luminance)
     {
-      if (av_cmp_q(masteringMetadata->min_luminance, right.masteringMetadata->min_luminance)
-      || av_cmp_q(masteringMetadata->max_luminance, right.masteringMetadata->max_luminance))
+      if (av_cmp_q(masteringMetadata->min_luminance, right.masteringMetadata->min_luminance) ||
+          av_cmp_q(masteringMetadata->max_luminance, right.masteringMetadata->max_luminance))
         return false;
     }
   }
@@ -147,8 +149,8 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare) const {
 
   if (contentLightMetadata && right.contentLightMetadata)
   {
-    if (contentLightMetadata->MaxCLL != right.contentLightMetadata->MaxCLL
-    || contentLightMetadata->MaxFALL != right.contentLightMetadata->MaxFALL)
+    if (contentLightMetadata->MaxCLL != right.contentLightMetadata->MaxCLL ||
+        contentLightMetadata->MaxFALL != right.contentLightMetadata->MaxFALL)
       return false;
   }
   else if (contentLightMetadata || right.contentLightMetadata)
@@ -158,12 +160,9 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare) const {
     return false;
 
   // AUDIO
-  if( channels      != right.channels
-  ||  samplerate    != right.samplerate
-  ||  blockalign    != right.blockalign
-  ||  bitrate       != right.bitrate
-  ||  bitspersample != right.bitspersample
-  ||  channellayout != right.channellayout)
+  if (channels != right.channels || samplerate != right.samplerate ||
+      blockalign != right.blockalign || bitrate != right.bitrate ||
+      bitspersample != right.bitspersample || channellayout != right.channellayout)
     return false;
 
   // SUBTITLE
@@ -186,7 +185,6 @@ bool CDVDStreamInfo::Equal(const CDemuxStream& right, bool withextradata)
   info.Assign(right, withextradata);
   return Equal(info, withextradata ? COMPARE_ALL : COMPARE_ALL & ~COMPARE_EXTRADATA);
 }
-
 
 // ASSIGNMENT
 void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
@@ -215,14 +213,14 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
 
   // VIDEO
   fpsscale = right.fpsscale;
-  fpsrate  = right.fpsrate;
+  fpsrate = right.fpsrate;
   interlaced = right.interlaced;
-  height   = right.height;
-  width    = right.width;
-  aspect   = right.aspect;
-  stills   = right.stills;
-  level    = right.level;
-  profile  = right.profile;
+  height = right.height;
+  width = right.width;
+  aspect = right.aspect;
+  stills = right.stills;
+  level = right.level;
+  profile = right.profile;
   ptsinvalid = right.ptsinvalid;
   forced_aspect = right.forced_aspect;
   orientation = right.orientation;
@@ -241,10 +239,10 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   dovi = right.dovi;
 
   // AUDIO
-  channels      = right.channels;
-  samplerate    = right.samplerate;
-  blockalign    = right.blockalign;
-  bitrate       = right.bitrate;
+  channels = right.channels;
+  samplerate = right.samplerate;
+  blockalign = right.blockalign;
+  bitrate = right.bitrate;
   bitspersample = right.bitspersample;
   channellayout = right.channellayout;
 
@@ -277,10 +275,10 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   if (right.type == STREAM_AUDIO)
   {
     auto stream = static_cast<const CDemuxStreamAudio*>(&right);
-    channels      = stream->iChannels;
-    samplerate    = stream->iSampleRate;
-    blockalign    = stream->iBlockAlign;
-    bitrate       = stream->iBitRate;
+    channels = stream->iChannels;
+    samplerate = stream->iSampleRate;
+    blockalign = stream->iBlockAlign;
+    bitrate = stream->iBitRate;
     bitspersample = stream->iBitsPerSample;
     channellayout = stream->iChannelLayout;
   }
@@ -293,13 +291,13 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     if (stream->bUnknownIP)
       codecOptions |= CODEC_UNKNOWN_I_P;
 
-    fpsscale  = stream->iFpsScale;
-    fpsrate   = stream->iFpsRate;
+    fpsscale = stream->iFpsScale;
+    fpsrate = stream->iFpsRate;
     interlaced = stream->interlaced;
-    height    = stream->iHeight;
-    width     = stream->iWidth;
-    aspect    = stream->fAspect;
-    vfr       = stream->bVFR;
+    height = stream->iHeight;
+    width = stream->iWidth;
+    aspect = stream->fAspect;
+    vfr = stream->bVFR;
     ptsinvalid = stream->bPTSInvalid;
     forced_aspect = stream->bForcedAspect;
     orientation = stream->iOrientation;

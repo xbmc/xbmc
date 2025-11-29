@@ -14,15 +14,14 @@
 
 // CDDA audio demuxer based on AirTunes audio Demuxer.
 
-class CDemuxStreamAudioCDDA
-  : public CDemuxStreamAudio
+class CDemuxStreamAudioCDDA : public CDemuxStreamAudio
 {
 };
 
 CDVDDemuxCDDA::CDVDDemuxCDDA() : CDVDDemux()
 {
   m_stream = nullptr;
-  m_bytes  = 0;
+  m_bytes = 0;
 }
 
 CDVDDemuxCDDA::~CDVDDemuxCDDA()
@@ -36,22 +35,22 @@ bool CDVDDemuxCDDA::Open(const std::shared_ptr<CDVDInputStream>& pInput)
 
   Dispose();
 
-  if(!pInput || !pInput->IsStreamType(DVDSTREAM_TYPE_FILE))
+  if (!pInput || !pInput->IsStreamType(DVDSTREAM_TYPE_FILE))
     return false;
 
   m_pInput = pInput;
 
   m_stream = new CDemuxStreamAudioCDDA();
 
-  if(!m_stream)
+  if (!m_stream)
     return false;
 
-  m_stream->iSampleRate     = 44100;
-  m_stream->iBitsPerSample  = 16;
-  m_stream->iBitRate        = 44100 * 2 * 16;
-  m_stream->iChannels       = 2;
-  m_stream->type            = STREAM_AUDIO;
-  m_stream->codec           = AV_CODEC_ID_PCM_S16LE;
+  m_stream->iSampleRate = 44100;
+  m_stream->iBitsPerSample = 16;
+  m_stream->iBitRate = 44100 * 2 * 16;
+  m_stream->iChannels = 2;
+  m_stream->type = STREAM_AUDIO;
+  m_stream->codec = AV_CODEC_ID_PCM_S16LE;
 
   return true;
 }
@@ -62,7 +61,7 @@ void CDVDDemuxCDDA::Dispose()
   m_stream = nullptr;
 
   m_pInput = nullptr;
-  m_bytes  = 0;
+  m_bytes = 0;
 }
 
 bool CDVDDemuxCDDA::Reset()
@@ -74,7 +73,7 @@ bool CDVDDemuxCDDA::Reset()
 
 void CDVDDemuxCDDA::Abort()
 {
-  if(m_pInput)
+  if (m_pInput)
     return m_pInput->Abort();
 }
 
@@ -85,7 +84,7 @@ void CDVDDemuxCDDA::Flush()
 #define CDDA_READ_SIZE 4096
 DemuxPacket* CDVDDemuxCDDA::Read()
 {
-  if(!m_pInput)
+  if (!m_pInput)
     return nullptr;
 
   DemuxPacket* pPacket = CDVDDemuxUtils::AllocateDemuxPacket(CDDA_READ_SIZE);
@@ -100,14 +99,14 @@ DemuxPacket* CDVDDemuxCDDA::Read()
   pPacket->iSize = m_pInput->Read(pPacket->pData, CDDA_READ_SIZE);
   pPacket->iStreamId = 0;
 
-  if(pPacket->iSize < 1)
+  if (pPacket->iSize < 1)
   {
     delete pPacket;
     pPacket = nullptr;
   }
   else
   {
-    int n = m_stream->iBitRate>>3;
+    int n = m_stream->iBitRate >> 3;
     if (n > 0)
     {
       m_bytes += pPacket->iSize;
@@ -126,12 +125,14 @@ DemuxPacket* CDVDDemuxCDDA::Read()
 
 bool CDVDDemuxCDDA::SeekTime(double time, bool backwards, double* startpts)
 {
-  int bytes_per_second = m_stream->iBitRate>>3;
+  int bytes_per_second = m_stream->iBitRate >> 3;
   // clamp seeks to bytes per full sample
-  int clamp_bytes = (m_stream->iBitsPerSample>>3) * m_stream->iChannels;
+  int clamp_bytes = (m_stream->iBitsPerSample >> 3) * m_stream->iChannels;
 
   // time is in milliseconds
-  int64_t seekPos = m_pInput->Seek((((int64_t)time * bytes_per_second / 1000) / clamp_bytes ) * clamp_bytes, SEEK_SET) > 0;
+  int64_t seekPos =
+      m_pInput->Seek((((int64_t)time * bytes_per_second / 1000) / clamp_bytes) * clamp_bytes,
+                     SEEK_SET) > 0;
   if (seekPos > 0)
     m_bytes = seekPos;
 
@@ -144,14 +145,14 @@ bool CDVDDemuxCDDA::SeekTime(double time, bool backwards, double* startpts)
 int CDVDDemuxCDDA::GetStreamLength()
 {
   int64_t num_track_bytes = m_pInput->GetLength();
-  int bytes_per_second = (m_stream->iBitRate>>3);
-  int64_t track_mseconds = num_track_bytes*1000 / bytes_per_second;
+  int bytes_per_second = (m_stream->iBitRate >> 3);
+  int64_t track_mseconds = num_track_bytes * 1000 / bytes_per_second;
   return (int)track_mseconds;
 }
 
 CDemuxStream* CDVDDemuxCDDA::GetStream(int iStreamId) const
 {
-  if(iStreamId != 0)
+  if (iStreamId != 0)
     return nullptr;
 
   return m_stream;
@@ -176,7 +177,7 @@ int CDVDDemuxCDDA::GetNrOfStreams() const
 
 std::string CDVDDemuxCDDA::GetFileName()
 {
-  if(m_pInput)
+  if (m_pInput)
     return m_pInput->GetFileName();
   else
     return "";

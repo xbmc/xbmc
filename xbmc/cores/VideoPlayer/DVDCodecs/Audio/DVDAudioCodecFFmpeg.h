@@ -10,13 +10,14 @@
 
 #include "DVDAudioCodec.h"
 
-extern "C" {
+extern "C"
+{
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/channel_layout.h>
-#include <libswresample/swresample.h>
 #include <libavutil/downmix_info.h>
+#include <libswresample/swresample.h>
 }
 
 class CProcessInfo;
@@ -24,13 +25,12 @@ class CProcessInfo;
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
 public:
-  explicit CDVDAudioCodecFFmpeg(CProcessInfo &processInfo);
+  explicit CDVDAudioCodecFFmpeg(CProcessInfo& processInfo);
   ~CDVDAudioCodecFFmpeg() override;
-  bool Open(CDVDStreamInfo &hints,
-                    CDVDCodecOptions &options) override;
+  bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;
   void Dispose() override;
-  bool AddData(const DemuxPacket &packet) override;
-  void GetData(DVDAudioFrame &frame) override;
+  bool AddData(const DemuxPacket& packet) override;
+  void GetData(DVDAudioFrame& frame) override;
   void Reset() override;
   AEAudioFormat GetFormat() override { return m_format; }
   std::string GetName() override { return m_codecName; }
@@ -61,4 +61,3 @@ protected:
   std::string m_codecName;
   uint64_t m_hint_layout;
 };
-

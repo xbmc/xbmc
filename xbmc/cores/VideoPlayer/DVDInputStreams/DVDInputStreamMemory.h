@@ -13,7 +13,7 @@
 class CDVDInputStreamMemory : public CDVDInputStream
 {
 public:
-  explicit CDVDInputStreamMemory(CFileItem &fileitem);
+  explicit CDVDInputStreamMemory(CFileItem& fileitem);
   ~CDVDInputStreamMemory() override;
   bool Open() override;
   void Close() override;
@@ -24,6 +24,6 @@ public:
 
 protected:
   uint8_t* m_pData;
-  int   m_iDataSize;
-  int   m_iDataPos;
+  int m_iDataSize;
+  int m_iDataPos;
 };

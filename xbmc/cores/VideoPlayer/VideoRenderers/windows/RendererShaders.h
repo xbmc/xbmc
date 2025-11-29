@@ -29,6 +29,7 @@ enum RenderMethod;
 class CRendererShaders : public CRendererHQ
 {
   class CRenderBufferImpl;
+
 public:
   ~CRendererShaders() = default;
 
@@ -40,14 +41,19 @@ public:
 
 protected:
   explicit CRendererShaders(CVideoSettings& videoSettings);
-  void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
+  void RenderImpl(CD3DTexture& target,
+                  CRect& sourceRect,
+                  CPoint (&destPoints)[4],
+                  uint32_t flags) override;
   void CheckVideoParameters() override;
   void UpdateVideoFilters() override;
   CRenderBuffer* CreateBuffer() override;
   static bool IsHWPicSupported(const VideoPicture& picture);
 
 private:
-  static AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
+  static AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries,
+                                          unsigned int width,
+                                          unsigned int height);
   DXGI_FORMAT CalcIntermediateTargetFormat() const;
 
   AVColorPrimaries m_srcPrimaries = AVCOL_PRI_BT709;

@@ -55,7 +55,7 @@
     delete device;
 }
 
-- (PLT_DeviceHostReference&)getDevice 
+- (PLT_DeviceHostReference&)getDevice
 {
     return *device;
 }
@@ -76,9 +76,10 @@
 
 - (id)init
 {
-    if ((self = [super init])) {
-        _upnp = new PLT_UPnP();
-		_devices = [NSMutableArray array];
+    if ((self = [super init]))
+    {
+      _upnp = new PLT_UPnP();
+      _devices = [NSMutableArray array];
     }
     return self;
 }
@@ -105,13 +106,13 @@
 
 - (NPT_Result)addDevice:(PLT_DeviceHostObject*)device
 {
-	[_devices addObject:device];
+    [_devices addObject:device];
     return _upnp->AddDevice([device getDevice]);
 }
 
 - (NPT_Result)removeDevice:(PLT_DeviceHostObject*)device
 {
-	[_devices removeObject:device];
+    [_devices removeObject:device];
     return _upnp->RemoveDevice([device getDevice]);
 }
 

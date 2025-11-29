@@ -28,14 +28,14 @@ void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(const std::shared_ptr<CDV
   // multiple overlays queued at same start
   // point so only stop them when we get a
   // new startpoint
-  for(int i = m_overlays.size();i>0;)
+  for (int i = m_overlays.size(); i > 0;)
   {
     i--;
-    if(m_overlays[i]->iPTSStopTime)
+    if (m_overlays[i]->iPTSStopTime)
     {
-      if(!m_overlays[i]->replace)
+      if (!m_overlays[i]->replace)
         break;
-      if(m_overlays[i]->iPTSStopTime <= pOverlay->iPTSStartTime)
+      if (m_overlays[i]->iPTSStopTime <= pOverlay->iPTSStartTime)
         break;
     }
 
@@ -85,7 +85,8 @@ void CDVDOverlayContainer::CleanUp(double pts)
       while (!bNewer && ++it2 != m_overlays.end())
       {
         const std::shared_ptr<CDVDOverlay>& pOverlay2 = *it2;
-        if (pOverlay2->bForced && pOverlay2->iPTSStartTime <= pts) bNewer = true;
+        if (pOverlay2->bForced && pOverlay2->iPTSStartTime <= pts)
+          bNewer = true;
       }
 
       if (bNewer)
@@ -96,7 +97,6 @@ void CDVDOverlayContainer::CleanUp(double pts)
     }
     ++it;
   }
-
 }
 
 void CDVDOverlayContainer::Flush()
@@ -105,9 +105,8 @@ void CDVDOverlayContainer::Flush()
 
   // Flush only the overlays marked as flushable
   m_overlays.erase(std::remove_if(m_overlays.begin(), m_overlays.end(),
-                                  [](const std::shared_ptr<CDVDOverlay>& ov) {
-                                    return ov->IsOverlayContainerFlushable();
-                                  }),
+                                  [](const std::shared_ptr<CDVDOverlay>& ov)
+                                  { return ov->IsOverlayContainerFlushable(); }),
                    m_overlays.end());
 }
 
@@ -117,7 +116,8 @@ void CDVDOverlayContainer::Clear()
   m_overlays.clear();
 }
 
-size_t CDVDOverlayContainer::GetSize() const {
+size_t CDVDOverlayContainer::GetSize() const
+{
   return m_overlays.size();
 }
 
@@ -130,7 +130,8 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
   auto it = m_overlays.begin();
   while (!result && it != m_overlays.end())
   {
-    if ((*it)->IsOverlayType(type)) result = true;
+    if ((*it)->IsOverlayType(type))
+      result = true;
     ++it;
   }
 
@@ -148,7 +149,7 @@ void CDVDOverlayContainer::UpdateOverlayInfo(
   pStream->CheckButtons();
 
   //Update any forced overlays.
-  for(auto it = m_overlays.begin(); it != m_overlays.end(); ++it )
+  for (auto it = m_overlays.begin(); it != m_overlays.end(); ++it)
   {
     if ((*it)->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     {
@@ -168,7 +169,6 @@ void CDVDOverlayContainer::UpdateOverlayInfo(
         {
           pOverlaySpu->m_textureid = 0;
         }
-
       }
     }
   }

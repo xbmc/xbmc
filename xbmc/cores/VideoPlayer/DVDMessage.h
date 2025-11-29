@@ -69,23 +69,16 @@ public:
   };
   // clang-format on
 
-  explicit CDVDMsg(Message msg)
-  {
-    m_message = msg;
-  }
+  explicit CDVDMsg(Message msg) { m_message = msg; }
 
   virtual ~CDVDMsg() = default;
 
   /**
    * checks for message type
    */
-  inline bool IsType(Message msg) const {
-    return (m_message == msg);
-  }
+  inline bool IsType(Message msg) const { return (m_message == msg); }
 
-  inline Message GetMessageType() const {
-    return m_message;
-  }
+  inline Message GetMessageType() const { return m_message; }
 
 private:
   Message m_message;
@@ -97,10 +90,10 @@ private:
 //////
 ////////////////////////////////////////////////////////////////////////////////
 
-#define SYNCSOURCE_AUDIO  0x01
-#define SYNCSOURCE_VIDEO  0x02
+#define SYNCSOURCE_AUDIO 0x01
+#define SYNCSOURCE_VIDEO 0x02
 #define SYNCSOURCE_PLAYER 0x04
-#define SYNCSOURCE_ANY    0x08
+#define SYNCSOURCE_ANY 0x08
 
 class CDVDMsgGeneralSynchronizePriv;
 class CDVDMsgGeneralSynchronize : public CDVDMsg
@@ -118,14 +111,11 @@ private:
   class CDVDMsgGeneralSynchronizePriv* m_p;
 };
 
-template <typename T>
+template<typename T>
 class CDVDMsgType : public CDVDMsg
 {
 public:
-  CDVDMsgType(Message type, const T &value)
-    : CDVDMsg(type)
-    , m_value(value)
-  {}
+  CDVDMsgType(Message type, const T& value) : CDVDMsg(type), m_value(value) {}
 
   ~CDVDMsgType() override = default;
 
@@ -146,10 +136,14 @@ typedef CDVDMsgType<double> CDVDMsgDouble;
 class CDVDMsgPlayerSetAudioStream : public CDVDMsg
 {
 public:
-  explicit CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
+  explicit CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM)
+  {
+    m_streamId = streamId;
+  }
   ~CDVDMsgPlayerSetAudioStream() override = default;
 
   int GetStreamId() const { return m_streamId; }
+
 private:
   int m_streamId;
 };
@@ -157,10 +151,14 @@ private:
 class CDVDMsgPlayerSetVideoStream : public CDVDMsg
 {
 public:
-  explicit CDVDMsgPlayerSetVideoStream(int streamId) : CDVDMsg(PLAYER_SET_VIDEOSTREAM) { m_streamId = streamId; }
+  explicit CDVDMsgPlayerSetVideoStream(int streamId) : CDVDMsg(PLAYER_SET_VIDEOSTREAM)
+  {
+    m_streamId = streamId;
+  }
   ~CDVDMsgPlayerSetVideoStream() override = default;
 
   int GetStreamId() const { return m_streamId; }
+
 private:
   int m_streamId;
 };
@@ -168,10 +166,14 @@ private:
 class CDVDMsgPlayerSetSubtitleStream : public CDVDMsg
 {
 public:
-  explicit CDVDMsgPlayerSetSubtitleStream(int streamId) : CDVDMsg(PLAYER_SET_SUBTITLESTREAM) { m_streamId = streamId; }
+  explicit CDVDMsgPlayerSetSubtitleStream(int streamId) : CDVDMsg(PLAYER_SET_SUBTITLESTREAM)
+  {
+    m_streamId = streamId;
+  }
   ~CDVDMsgPlayerSetSubtitleStream() override = default;
 
   int GetStreamId() const { return m_streamId; }
+
 private:
   int m_streamId;
 };
@@ -179,10 +181,14 @@ private:
 class CDVDMsgPlayerSetState : public CDVDMsg
 {
 public:
-  explicit CDVDMsgPlayerSetState(const std::string& state) : CDVDMsg(PLAYER_SET_STATE), m_state(state) {}
+  explicit CDVDMsgPlayerSetState(const std::string& state)
+    : CDVDMsg(PLAYER_SET_STATE), m_state(state)
+  {
+  }
   ~CDVDMsgPlayerSetState() override = default;
 
   std::string GetState() { return m_state; }
+
 private:
   std::string m_state;
 };
@@ -201,9 +207,7 @@ public:
     bool trickplay = false;
   };
 
-  explicit CDVDMsgPlayerSeek(CDVDMsgPlayerSeek::CMode mode) : CDVDMsg(PLAYER_SEEK),
-    m_mode(mode)
-  {}
+  explicit CDVDMsgPlayerSeek(CDVDMsgPlayerSeek::CMode mode) : CDVDMsg(PLAYER_SEEK), m_mode(mode) {}
   ~CDVDMsgPlayerSeek() override = default;
 
   double GetTime() const { return m_mode.time; }
@@ -220,18 +224,17 @@ private:
 
 class CDVDMsgPlayerSeekChapter : public CDVDMsg
 {
-  public:
-    explicit CDVDMsgPlayerSeekChapter(int iChapter)
-      : CDVDMsg(PLAYER_SEEK_CHAPTER)
-      , m_iChapter(iChapter)
-    {}
-    ~CDVDMsgPlayerSeekChapter() override = default;
+public:
+  explicit CDVDMsgPlayerSeekChapter(int iChapter)
+    : CDVDMsg(PLAYER_SEEK_CHAPTER), m_iChapter(iChapter)
+  {
+  }
+  ~CDVDMsgPlayerSeekChapter() override = default;
 
-    int GetChapter() const { return m_iChapter; }
+  int GetChapter() const { return m_iChapter; }
 
-  private:
-
-    int m_iChapter;
+private:
+  int m_iChapter;
 };
 
 class CDVDMsgPlayerSetSpeed : public CDVDMsg
@@ -243,19 +246,14 @@ public:
     bool m_isTempo;
   };
 
-  explicit CDVDMsgPlayerSetSpeed(SpeedParams params)
-  : CDVDMsg(PLAYER_SETSPEED)
-  , m_params(params)
-  {}
+  explicit CDVDMsgPlayerSetSpeed(SpeedParams params) : CDVDMsg(PLAYER_SETSPEED), m_params(params) {}
   ~CDVDMsgPlayerSetSpeed() override = default;
 
   int GetSpeed() const { return m_params.m_speed; }
   bool IsTempo() const { return m_params.m_isTempo; }
 
 private:
-
   SpeedParams m_params;
-
 };
 
 class CDVDMsgOpenFile : public CDVDMsg
@@ -267,17 +265,13 @@ public:
     CPlayerOptions m_options;
   };
 
-  explicit CDVDMsgOpenFile(const FileParams &params)
-  : CDVDMsg(PLAYER_OPENFILE)
-  , m_params(params)
-  {}
+  explicit CDVDMsgOpenFile(const FileParams& params) : CDVDMsg(PLAYER_OPENFILE), m_params(params) {}
   ~CDVDMsgOpenFile() override = default;
 
   CFileItem& GetItem() { return m_params.m_item; }
   CPlayerOptions& GetOptions() { return m_params.m_options; }
 
 private:
-
   FileParams m_params;
 };
 
@@ -302,18 +296,15 @@ public:
 class CDVDMsgDemuxerReset : public CDVDMsg
 {
 public:
-  CDVDMsgDemuxerReset() : CDVDMsg(DEMUXER_RESET)  {}
+  CDVDMsgDemuxerReset() : CDVDMsg(DEMUXER_RESET) {}
   ~CDVDMsgDemuxerReset() override = default;
 };
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //////
 ////// VIDEO_ Messages
 //////
 ////////////////////////////////////////////////////////////////////////////////
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //////
@@ -324,7 +315,10 @@ public:
 class CDVDMsgSubtitleClutChange : public CDVDMsg
 {
 public:
-  explicit CDVDMsgSubtitleClutChange(uint8_t* data) : CDVDMsg(SUBTITLE_CLUTCHANGE) { memcpy(m_data, data, 16*4); }
+  explicit CDVDMsgSubtitleClutChange(uint8_t* data) : CDVDMsg(SUBTITLE_CLUTCHANGE)
+  {
+    memcpy(m_data, data, 16 * 4);
+  }
   ~CDVDMsgSubtitleClutChange() override = default;
 
   uint8_t m_data[16][4];

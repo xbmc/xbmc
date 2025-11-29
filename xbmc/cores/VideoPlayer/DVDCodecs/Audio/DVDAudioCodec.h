@@ -14,7 +14,8 @@
 
 #include <vector>
 
-extern "C" {
+extern "C"
+{
 #include <libavcodec/avcodec.h>
 }
 
@@ -48,15 +49,16 @@ typedef struct stDVDAudioFrame
 class CDVDAudioCodec
 {
 public:
-
-  explicit CDVDAudioCodec(CProcessInfo &processInfo) : m_processInfo(processInfo), 
-                                                       m_dataCacheCore(CServiceBroker::GetDataCacheCore()) {}
+  explicit CDVDAudioCodec(CProcessInfo& processInfo)
+    : m_processInfo(processInfo), m_dataCacheCore(CServiceBroker::GetDataCacheCore())
+  {
+  }
   virtual ~CDVDAudioCodec() = default;
 
   /*
    * Open the decoder, returns true on success
    */
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) = 0;
+  virtual bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) = 0;
 
   /*
    * Dispose, Free all resources
@@ -67,12 +69,12 @@ public:
    * returns false on error
    *
    */
-  virtual bool AddData(const DemuxPacket &packet) = 0;
+  virtual bool AddData(const DemuxPacket& packet) = 0;
 
   /*
    * the data is valid until the next call
    */
-  virtual void GetData(DVDAudioFrame &frame) = 0;
+  virtual void GetData(DVDAudioFrame& frame) = 0;
 
   /*
    * resets the decoder
@@ -120,6 +122,6 @@ public:
   virtual int GetProfile() { return 0; }
 
 protected:
-  CProcessInfo &m_processInfo;
-  CDataCacheCore &m_dataCacheCore;
+  CProcessInfo& m_processInfo;
+  CDataCacheCore& m_dataCacheCore;
 };

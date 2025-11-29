@@ -22,8 +22,8 @@ namespace EGL
 {
 class CEGLFence;
 }
-}
-}
+} // namespace UTILS
+} // namespace KODI
 
 namespace VAAPI
 {
@@ -36,13 +36,17 @@ public:
   CRendererVAAPIGLES();
   ~CRendererVAAPIGLES() override;
 
-  static CBaseRenderer* Create(CVideoBuffer *buffer);
-  static void Register(VAAPI::IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor);
+  static CBaseRenderer* Create(CVideoBuffer* buffer);
+  static void Register(VAAPI::IVaapiWinSystem* winSystem,
+                       VADisplay vaDpy,
+                       EGLDisplay eglDisplay,
+                       bool& general,
+                       bool& deepColor);
 
-  bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
+  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
 
   // Player functions
-  bool ConfigChanged(const VideoPicture &picture) override;
+  bool ConfigChanged(const VideoPicture& picture) override;
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
 
@@ -61,5 +65,5 @@ protected:
   bool m_isVAAPIBuffer = true;
   std::unique_ptr<VAAPI::CVaapiTexture> m_vaapiTextures[NUM_BUFFERS];
   std::array<std::unique_ptr<KODI::UTILS::EGL::CEGLFence>, NUM_BUFFERS> m_fences;
-  static VAAPI::IVaapiWinSystem *m_pWinSystem;
+  static VAAPI::IVaapiWinSystem* m_pWinSystem;
 };

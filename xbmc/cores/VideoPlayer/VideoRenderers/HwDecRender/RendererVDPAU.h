@@ -17,14 +17,14 @@ public:
   CRendererVDPAU();
   ~CRendererVDPAU() override;
 
-  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static CBaseRenderer* Create(CVideoBuffer* buffer);
   static bool Register();
 
-  bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
+  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
 
   // Player functions
   void ReleaseBuffer(int idx) override;
-  bool ConfigChanged(const VideoPicture &picture) override;
+  bool ConfigChanged(const VideoPicture& picture) override;
   bool NeedBuffer(int idx) override;
   bool Flush(bool saveBuffers) override;
 

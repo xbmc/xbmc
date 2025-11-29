@@ -18,7 +18,8 @@
 
 #include "PlatformDefs.h"
 
-extern "C" {
+extern "C"
+{
 #include <libavcodec/avcodec.h>
 }
 
@@ -29,17 +30,17 @@ class CDVDClock;
 class CAudioSinkAE : IAEClockCallback
 {
 public:
-  explicit CAudioSinkAE(CDVDClock *clock);
+  explicit CAudioSinkAE(CDVDClock* clock);
   ~CAudioSinkAE() override;
 
   void SetVolume(float fVolume);
   void SetDynamicRangeCompression(long drc);
   void Pause();
   void Resume();
-  bool Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler);
-  bool IsValidFormat(const DVDAudioFrame &audioframe) const;
+  bool Create(const DVDAudioFrame& audioframe, AVCodecID codec, bool needresampler);
+  bool IsValidFormat(const DVDAudioFrame& audioframe) const;
   void Destroy(bool finish);
-  unsigned int AddPackets(const DVDAudioFrame &audioframe);
+  unsigned int AddPackets(const DVDAudioFrame& audioframe);
   double GetPlayingPts();
   double GetPlayingFramePts() const;
   double GetCacheTime();
@@ -84,5 +85,5 @@ protected:
   bool m_bPaused;
 
   std::atomic_bool m_bAbort;
-  CDVDClock *m_pClock;
+  CDVDClock* m_pClock;
 };

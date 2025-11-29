@@ -15,9 +15,12 @@
 
 using namespace XFILE;
 
-CInputStreamMultiSource::CInputStreamMultiSource(IVideoPlayer* pPlayer, const CFileItem& fileitem, const std::vector<std::string>& filenames) : InputStreamMultiStreams(DVDSTREAM_TYPE_MULTIFILES, fileitem),
-  m_pPlayer(pPlayer),
-  m_filenames(filenames)
+CInputStreamMultiSource::CInputStreamMultiSource(IVideoPlayer* pPlayer,
+                                                 const CFileItem& fileitem,
+                                                 const std::vector<std::string>& filenames)
+  : InputStreamMultiStreams(DVDSTREAM_TYPE_MULTIFILES, fileitem),
+    m_pPlayer(pPlayer),
+    m_filenames(filenames)
 {
 }
 
@@ -48,7 +51,7 @@ int CInputStreamMultiSource::GetBlockSize()
   return 0;
 }
 
-bool CInputStreamMultiSource::GetCacheStatus(XFILE::SCacheStatus *status)
+bool CInputStreamMultiSource::GetCacheStatus(XFILE::SCacheStatus* status)
 {
   return false;
 }
@@ -83,7 +86,6 @@ CDVDInputStream::ENextStream CInputStreamMultiSource::NextStream()
   bool eOF = IsEOF();
   if (m_InputStreams.empty() || eOF)
     return NEXTSTREAM_NONE;
-
 
   CDVDInputStream::ENextStream next;
   for (const auto& iter : m_InputStreams)

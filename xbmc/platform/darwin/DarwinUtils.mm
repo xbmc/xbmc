@@ -213,7 +213,7 @@ const std::string& CDarwinUtils::GetManufacturer(void)
   {
 #ifdef TARGET_DARWIN_EMBEDDED
     // to avoid dlloading of IOIKit, hardcode return value
-	// until other than Apple devices with iOS will be released
+    // until other than Apple devices with iOS will be released
     manufName = "Apple Inc.";
 #elif defined(TARGET_DARWIN_OSX)
     const CFMutableDictionaryRef matchExpDev = IOServiceMatching("IOPlatformExpertDevice");

@@ -63,7 +63,7 @@ enum StreamSource
   STREAM_SOURCE_VIDEOMUX = 0x500
 };
 
-#define STREAM_SOURCE_MASK(a) ((a)&0xf00)
+#define STREAM_SOURCE_MASK(a) ((a) & 0xf00)
 
 /*
  * CDemuxStream
@@ -177,8 +177,7 @@ public:
 class CDemuxStreamAudio : public CDemuxStream
 {
 public:
-  CDemuxStreamAudio()
-    : CDemuxStream()
+  CDemuxStreamAudio() : CDemuxStream()
   {
     iChannels = 0;
     iSampleRate = 0;
@@ -205,8 +204,7 @@ public:
 class CDemuxStreamSubtitle : public CDemuxStream
 {
 public:
-  CDemuxStreamSubtitle()
-    : CDemuxStream()
+  CDemuxStreamSubtitle() : CDemuxStream()
   {
     type = STREAM_SUBTITLE;
     m_3dSubtitlePlane = 0;
@@ -218,11 +216,7 @@ public:
 class CDemuxStreamTeletext : public CDemuxStream
 {
 public:
-  CDemuxStreamTeletext()
-    : CDemuxStream()
-  {
-    type = STREAM_TELETEXT;
-  }
+  CDemuxStreamTeletext() : CDemuxStream() { type = STREAM_TELETEXT; }
 };
 
 class CDemuxStreamAudioID3 : public CDemuxStream
@@ -234,22 +228,14 @@ public:
 class CDemuxStreamRadioRDS : public CDemuxStream
 {
 public:
-  CDemuxStreamRadioRDS()
-    : CDemuxStream()
-  {
-    type = STREAM_RADIO_RDS;
-  }
+  CDemuxStreamRadioRDS() : CDemuxStream() { type = STREAM_RADIO_RDS; }
 };
 
 class CDVDDemux
 {
 public:
-  CDVDDemux()
-    : m_demuxerId(NewGuid())
-  {
-  }
+  CDVDDemux() : m_demuxerId(NewGuid()) {}
   virtual ~CDVDDemux() = default;
-
 
   /*
    * Reset the entire demuxer (same result as closing and opening it)

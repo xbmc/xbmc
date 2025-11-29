@@ -22,4 +22,4 @@ public:
   void SetSwDeinterlacingMethods() override;
 };
 
-}
+} // namespace VIDEOPLAYER

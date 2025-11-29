@@ -62,7 +62,7 @@ void CVideoReferenceClock::Process()
   bool SetupSuccess = false;
   int64_t Now;
 
-  while(!m_bStop)
+  while (!m_bStop)
   {
     m_pVideoSync = CServiceBroker::GetWinSystem()->GetVideoSync(this);
 
@@ -84,8 +84,8 @@ void CVideoReferenceClock::Process()
 
     if (SetupSuccess)
     {
-      m_UseVblank = true;          //tell other threads we're using vblank as clock
-      m_VblankTime = Now;          //initialize the timestamp of the last vblank
+      m_UseVblank = true; //tell other threads we're using vblank as clock
+      m_VblankTime = Now; //initialize the timestamp of the last vblank
       SingleLock.unlock();
 
       // we might got signalled while we did not wait
@@ -99,11 +99,12 @@ void CVideoReferenceClock::Process()
     else
     {
       SingleLock.unlock();
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to CurrentHostCounter()");
+      CLog::Log(LOGDEBUG,
+                "CVideoReferenceClock: Setup failed, falling back to CurrentHostCounter()");
     }
 
     SingleLock.lock();
-    m_UseVblank = false;                       //we're back to using the systemclock
+    m_UseVblank = false; //we're back to using the systemclock
     SingleLock.unlock();
 
     //clean up the vblank clock
@@ -123,7 +124,8 @@ void CVideoReferenceClock::UpdateClockInternal(int NrVBlanks, bool CheckMissed)
 {
   if (CheckMissed) //set to true from the vblank run function, set to false from Wait and GetTime
   {
-    if (NrVBlanks < m_MissedVblanks) //if this is true the vblank detection in the run function is wrong
+    if (NrVBlanks <
+        m_MissedVblanks) //if this is true the vblank detection in the run function is wrong
       CLog::Log(
           LOGDEBUG,
           "CVideoReferenceClock: detected {} vblanks, missed {}, refreshrate might have changed",
@@ -134,21 +136,23 @@ void CVideoReferenceClock::UpdateClockInternal(int NrVBlanks, bool CheckMissed)
   }
   else
   {
-    m_MissedVblanks += NrVBlanks;      //tell the vblank clock how many vblanks it missed
+    m_MissedVblanks += NrVBlanks; //tell the vblank clock how many vblanks it missed
     m_TotalMissedVblanks += NrVBlanks; //for the codec information screen
-    m_VblankTime += m_SystemFrequency * static_cast<int64_t>(NrVBlanks) / MathUtils::round_int(m_RefreshRate); //set the vblank time forward
+    m_VblankTime += m_SystemFrequency * static_cast<int64_t>(NrVBlanks) /
+                    MathUtils::round_int(m_RefreshRate); //set the vblank time forward
   }
 
   if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
   {
     double increment = UpdateInterval() * NrVBlanks;
-    double integer   = floor(increment);
-    m_CurrTime      += static_cast<int64_t>(integer + 0.5); //make sure it gets correctly converted to int
+    double integer = floor(increment);
+    m_CurrTime +=
+        static_cast<int64_t>(integer + 0.5); //make sure it gets correctly converted to int
 
     //accumulate what we lost due to rounding in m_CurrTimeFract, then add the integer part of that to m_CurrTime
     m_CurrTimeFract += increment - integer;
-    integer          = floor(m_CurrTimeFract);
-    m_CurrTime      += static_cast<int64_t>(integer + 0.5);
+    integer = floor(m_CurrTimeFract);
+    m_CurrTime += static_cast<int64_t>(integer + 0.5);
     m_CurrTimeFract -= integer;
   }
 }
@@ -166,13 +170,13 @@ int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
   //when using vblank, get the time from that, otherwise use the systemclock
   if (m_UseVblank)
   {
-    int64_t  NextVblank;
-    int64_t  Now;
+    int64_t NextVblank;
+    int64_t Now;
 
-    Now = CurrentHostCounter();        //get current system time
-    NextVblank = TimeOfNextVblank();   //get time when the next vblank should happen
+    Now = CurrentHostCounter(); //get current system time
+    NextVblank = TimeOfNextVblank(); //get time when the next vblank should happen
 
-    while(Now >= NextVblank)  //keep looping until the next vblank is in the future
+    while (Now >= NextVblank) //keep looping until the next vblank is in the future
     {
       UpdateClockInternal(1, false); //update clock when next vblank should have happened already
       NextVblank = TimeOfNextVblank(); //get time when the next vblank should happen
@@ -218,7 +222,8 @@ void CVideoReferenceClock::SetSpeed(double Speed)
   }
 }
 
-double CVideoReferenceClock::GetSpeed() const {
+double CVideoReferenceClock::GetSpeed() const
+{
   std::lock_guard SingleLock(m_CritSection);
 
   //VideoPlayer needs to know the speed for the resampler
@@ -239,7 +244,8 @@ void CVideoReferenceClock::UpdateRefreshrate()
 }
 
 //VideoPlayer needs to know the refreshrate for matching the fps of the video playing to it
-double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/) const {
+double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/) const
+{
   std::lock_guard SingleLock(m_CritSection);
 
   if (m_UseVblank)
@@ -259,11 +265,14 @@ double CVideoReferenceClock::GetRefreshRate(double* interval /*= NULL*/) const {
 //increase that by 30% to allow for errors
 int64_t CVideoReferenceClock::TimeOfNextVblank() const
 {
-  return m_VblankTime + (m_SystemFrequency / MathUtils::round_int(m_RefreshRate) * MAXVBLANKDELAY / 10LL);
+  return m_VblankTime +
+         (m_SystemFrequency / MathUtils::round_int(m_RefreshRate) * MAXVBLANKDELAY / 10LL);
 }
 
 //for the codec information screen
-bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const
+bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks,
+                                        double& ClockSpeed,
+                                        double& RefreshRate) const
 {
   std::lock_guard SingleLock(m_CritSection);
 

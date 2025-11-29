@@ -93,7 +93,8 @@ bool CProcessorHD::InitProcessor()
   m_pVideoDevice = nullptr;
   m_pVideoContext = nullptr;
 
-  ComPtr<ID3D11DeviceContext1> pD3DDeviceContext = DX::DeviceResources::Get()->GetImmediateContext();
+  ComPtr<ID3D11DeviceContext1> pD3DDeviceContext =
+      DX::DeviceResources::Get()->GetImmediateContext();
   ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
   if (FAILED(hr = pD3DDeviceContext.As(&m_pVideoContext)))
@@ -148,7 +149,7 @@ bool CProcessorHD::Open(const VideoPicture& picture,
 bool CProcessorHD::ReInit()
 {
   std::lock_guard lock(m_section);
-  
+
   Close();
 
   if (!InitProcessor())
@@ -198,7 +199,7 @@ bool CProcessorHD::OpenProcessor()
 
   // Output background color (black)
   D3D11_VIDEO_COLOR color;
-  color.YCbCr = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
+  color.YCbCr = {0.0625f, 0.5f, 0.5f, 1.0f}; // black color
   m_pVideoContext->VideoProcessorSetOutputBackgroundColor(m_pVideoProcessor.Get(), TRUE, &color);
 
   // AMD/HDR (as of 2023-06-16): processor tone maps by default and modifies high code values
@@ -234,7 +235,8 @@ bool CProcessorHD::OpenProcessor()
   return true;
 }
 
-void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const
+void CProcessorHD::ApplyFilter(
+    D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const
 {
   if (filter >= static_cast<D3D11_VIDEO_PROCESSOR_FILTER>(NUM_FILTERS))
     return;
@@ -246,14 +248,15 @@ void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
   D3D11_VIDEO_PROCESSOR_FILTER_RANGE range = m_procCaps.m_Filters[filter].Range;
   int val;
 
-  if(value > def)
+  if (value > def)
     val = range.Default + (range.Maximum - range.Default) * (value - def) / (max - def);
-  else if(value < def)
+  else if (value < def)
     val = range.Default + (range.Minimum - range.Default) * (value - def) / (min - def);
   else
     val = range.Default;
 
-  m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
+  m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX,
+                                                 filter, val != range.Default, val);
 }
 
 ComPtr<ID3D11VideoProcessorInputView> CProcessorHD::GetInputView(CRenderBuffer* view) const
@@ -387,7 +390,15 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
   return updatedParameter;
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
+bool CProcessorHD::Render(CRect src,
+                          CRect dst,
+                          ID3D11Resource* target,
+                          CRenderBuffer** views,
+                          DWORD flags,
+                          UINT frameIdx,
+                          UINT rotation,
+                          float contrast,
+                          float brightness)
 {
   std::lock_guard lock(m_section);
 

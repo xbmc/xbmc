@@ -26,14 +26,17 @@ CRendererMediaCodec::CRendererMediaCodec()
 {
   CLog::Log(LOGINFO, "Instancing CRendererMediaCodec");
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
-  if (!eglCreateSyncKHR) {
-    eglCreateSyncKHR = (PFNEGLCREATESYNCKHRPROC) eglGetProcAddress("eglCreateSyncKHR");
+  if (!eglCreateSyncKHR)
+  {
+    eglCreateSyncKHR = (PFNEGLCREATESYNCKHRPROC)eglGetProcAddress("eglCreateSyncKHR");
   }
-  if (!eglDestroySyncKHR) {
-    eglDestroySyncKHR = (PFNEGLDESTROYSYNCKHRPROC) eglGetProcAddress("eglDestroySyncKHR");
+  if (!eglDestroySyncKHR)
+  {
+    eglDestroySyncKHR = (PFNEGLDESTROYSYNCKHRPROC)eglGetProcAddress("eglDestroySyncKHR");
   }
-  if (!eglClientWaitSyncKHR) {
-    eglClientWaitSyncKHR = (PFNEGLCLIENTWAITSYNCKHRPROC) eglGetProcAddress("eglClientWaitSyncKHR");
+  if (!eglClientWaitSyncKHR)
+  {
+    eglClientWaitSyncKHR = (PFNEGLCLIENTWAITSYNCKHRPROC)eglGetProcAddress("eglClientWaitSyncKHR");
   }
 #endif
 }
@@ -44,9 +47,10 @@ CRendererMediaCodec::~CRendererMediaCodec()
     ReleaseBuffer(i);
 }
 
-CBaseRenderer* CRendererMediaCodec::Create(CVideoBuffer *buffer)
+CBaseRenderer* CRendererMediaCodec::Create(CVideoBuffer* buffer)
 {
-  if (buffer && dynamic_cast<CMediaCodecVideoBuffer*>(buffer) && dynamic_cast<CMediaCodecVideoBuffer*>(buffer)->HasSurfaceTexture())
+  if (buffer && dynamic_cast<CMediaCodecVideoBuffer*>(buffer) &&
+      dynamic_cast<CMediaCodecVideoBuffer*>(buffer)->HasSurfaceTexture())
     return new CRendererMediaCodec();
   return nullptr;
 }
@@ -57,13 +61,14 @@ bool CRendererMediaCodec::Register()
   return true;
 }
 
-void CRendererMediaCodec::AddVideoPicture(const VideoPicture &picture, int index)
+void CRendererMediaCodec::AddVideoPicture(const VideoPicture& picture, int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
-  CMediaCodecVideoBuffer *videoBuffer;
-  if (picture.videoBuffer && (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(picture.videoBuffer)))
+  CPictureBuffer& buf = m_buffers[index];
+  CMediaCodecVideoBuffer* videoBuffer;
+  if (picture.videoBuffer &&
+      (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(picture.videoBuffer)))
   {
-    CPictureBuffer &buf = m_buffers[index];
+    CPictureBuffer& buf = m_buffers[index];
     buf.videoBuffer = picture.videoBuffer;
     buf.fields[0][0].id = videoBuffer->GetTextureId();
     videoBuffer->Acquire();
@@ -74,12 +79,12 @@ void CRendererMediaCodec::AddVideoPicture(const VideoPicture &picture, int index
     videoBuffer->ReleaseOutputBuffer(true, 0);
   }
   else
-   buf.fields[0][0].id = 0;
+    buf.fields[0][0].id = 0;
 }
 
 void CRendererMediaCodec::ReleaseBuffer(int idx)
 {
-  CPictureBuffer &buf = m_buffers[idx];
+  CPictureBuffer& buf = m_buffers[idx];
   CMediaCodecVideoBuffer* videoBuffer;
   if (buf.videoBuffer && (videoBuffer = dynamic_cast<CMediaCodecVideoBuffer*>(buf.videoBuffer)))
   {
@@ -109,46 +114,46 @@ bool CRendererMediaCodec::LoadShadersHook()
 
 bool CRendererMediaCodec::RenderHook(int index)
 {
-  CYuvPlane &plane = m_buffers[index].fields[0][0];
-  CYuvPlane &planef = m_buffers[index].fields[m_currentField][0];
+  CYuvPlane& plane = m_buffers[index].fields[0][0];
+  CYuvPlane& planef = m_buffers[index].fields[m_currentField][0];
 
   glDisable(GL_DEPTH_TEST);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, plane.id);
 
-  CRenderSystemGLES* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  CRenderSystemGLES* renderSystem =
+      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
   if (m_currentField != FIELD_FULL)
   {
     renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_RGBA_BOB_OES);
-    GLint   fieldLoc = renderSystem->GUIShaderGetField();
-    GLint   stepLoc = renderSystem->GUIShaderGetStep();
+    GLint fieldLoc = renderSystem->GUIShaderGetField();
+    GLint stepLoc = renderSystem->GUIShaderGetStep();
 
     // Y is inverted, so invert fields
-    if     (m_currentField == FIELD_TOP)
+    if (m_currentField == FIELD_TOP)
       glUniform1i(fieldLoc, 0);
-    else if(m_currentField == FIELD_BOT)
+    else if (m_currentField == FIELD_BOT)
       glUniform1i(fieldLoc, 1);
     glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
   }
   else
     renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_RGBA_OES);
 
-  GLint   contrastLoc = renderSystem->GUIShaderGetContrast();
+  GLint contrastLoc = renderSystem->GUIShaderGetContrast();
   glUniform1f(contrastLoc, m_videoSettings.m_Contrast * 0.02f);
-  GLint   brightnessLoc = renderSystem->GUIShaderGetBrightness();
+  GLint brightnessLoc = renderSystem->GUIShaderGetBrightness();
   glUniform1f(brightnessLoc, m_videoSettings.m_Brightness * 0.01f - 0.5f);
 
   glUniformMatrix4fv(renderSystem->GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
 
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLubyte idx[4] = {0, 1, 3, 2}; //determines order of triangle strip
   GLfloat ver[4][4];
   GLfloat tex[4][4];
 
-  GLint   posLoc = renderSystem->GUIShaderGetPos();
-  GLint   texLoc = renderSystem->GUIShaderGetCoord0();
-
+  GLint posLoc = renderSystem->GUIShaderGetPos();
+  GLint texLoc = renderSystem->GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(texLoc, 4, GL_FLOAT, 0, 0, tex);
@@ -157,11 +162,11 @@ bool CRendererMediaCodec::RenderHook(int index)
   glEnableVertexAttribArray(texLoc);
 
   // Set vertex coordinates
-  for(int i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
   {
     ver[i][0] = m_rotatedDestCoords[i].x;
     ver[i][1] = m_rotatedDestCoords[i].y;
-    ver[i][2] = 0.0f;        // set z to 0
+    ver[i][2] = 0.0f; // set z to 0
     ver[i][3] = 1.0f;
   }
 
@@ -181,7 +186,7 @@ bool CRendererMediaCodec::RenderHook(int index)
     tex[2][1] = tex[3][1] = planef.rect.y1 * 2.0f;
   }
 
-  for(int i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
   {
     tex[i][2] = 0.0f;
     tex[i][3] = 1.0f;
@@ -192,13 +197,9 @@ bool CRendererMediaCodec::RenderHook(int index)
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(texLoc);
 
-  const float identity[16] = {
-      1.0f, 0.0f, 0.0f, 0.0f,
-      0.0f, 1.0f, 0.0f, 0.0f,
-      0.0f, 0.0f, 1.0f, 0.0f,
-      0.0f, 0.0f, 0.0f, 1.0f
-  };
-  glUniformMatrix4fv(renderSystem->GUIShaderGetCoord0Matrix(),  1, GL_FALSE, identity);
+  const float identity[16] = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                              0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+  glUniformMatrix4fv(renderSystem->GUIShaderGetCoord0Matrix(), 1, GL_FALSE, identity);
 
   renderSystem->DisableGUIShader();
   VerifyGLState();
@@ -211,16 +212,16 @@ bool CRendererMediaCodec::RenderHook(int index)
 
 bool CRendererMediaCodec::CreateTexture(int index)
 {
-  CPictureBuffer &buf(m_buffers[index]);
+  CPictureBuffer& buf(m_buffers[index]);
 
   buf.image.height = m_sourceHeight;
-  buf.image.width  = m_sourceWidth;
+  buf.image.width = m_sourceWidth;
 
-  for (int f=0; f<3; ++f)
+  for (int f = 0; f < 3; ++f)
   {
-    CYuvPlane  &plane  = buf.fields[f][0];
+    CYuvPlane& plane = buf.fields[f][0];
 
-    plane.texwidth  = m_sourceWidth;
+    plane.texwidth = m_sourceWidth;
     plane.texheight = m_sourceHeight;
     plane.pixpertex_x = 1;
     plane.pixpertex_y = 1;

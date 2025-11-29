@@ -64,7 +64,7 @@ void VideoPicture::Reset()
   iDisplayHeight = 0;
 }
 
-VideoPicture& VideoPicture::CopyRef(const VideoPicture &pic)
+VideoPicture& VideoPicture::CopyRef(const VideoPicture& pic)
 {
   if (videoBuffer)
     videoBuffer->Release();
@@ -74,7 +74,7 @@ VideoPicture& VideoPicture::CopyRef(const VideoPicture &pic)
   return *this;
 }
 
-VideoPicture& VideoPicture::SetParams(const VideoPicture &pic)
+VideoPicture& VideoPicture::SetParams(const VideoPicture& pic)
 {
   if (videoBuffer)
     videoBuffer->Release();

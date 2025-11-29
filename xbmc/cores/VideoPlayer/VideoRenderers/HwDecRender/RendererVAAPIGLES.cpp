@@ -26,7 +26,7 @@ IVaapiWinSystem* CRendererVAAPIGLES::m_pWinSystem = nullptr;
 
 CBaseRenderer* CRendererVAAPIGLES::Create(CVideoBuffer* buffer)
 {
-  CVaapiRenderPicture *vb = dynamic_cast<CVaapiRenderPicture*>(buffer);
+  CVaapiRenderPicture* vb = dynamic_cast<CVaapiRenderPicture*>(buffer);
   if (vb)
     return new CRendererVAAPIGLES();
 
@@ -79,7 +79,7 @@ CRendererVAAPIGLES::~CRendererVAAPIGLES()
 
 bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
 {
-  CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
+  CVaapiRenderPicture* pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
   if (pic->procPic.videoSurface != VA_INVALID_ID)
     m_isVAAPIBuffer = true;
   else
@@ -89,13 +89,14 @@ bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsig
   interop.textureTarget = GL_TEXTURE_2D;
   interop.eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
   interop.eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
-  interop.glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
+  interop.glEGLImageTargetTexture2DOES =
+      (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
   interop.eglDisplay = m_pWinSystem->GetEGLDisplay();
 
   bool useVaapi2 = VAAPI::CVaapi2Texture::TestInteropGeneral(
       pic->vadsp, CRendererVAAPIGLES::m_pWinSystem->GetEGLDisplay());
 
-  for (auto &tex : m_vaapiTextures)
+  for (auto& tex : m_vaapiTextures)
   {
     if (useVaapi2)
     {
@@ -118,7 +119,7 @@ bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsig
 
 bool CRendererVAAPIGLES::ConfigChanged(const VideoPicture& picture)
 {
-  CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
+  CVaapiRenderPicture* pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
   if (pic->procPic.videoSurface != VA_INVALID_ID && !m_isVAAPIBuffer)
     return true;
 
@@ -154,16 +155,16 @@ bool CRendererVAAPIGLES::CreateTexture(int index)
     return CreateNV12Texture(index);
   }
 
-  CPictureBuffer &buf = m_buffers[index];
-  YuvImage &im = buf.image;
-  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  CPictureBuffer& buf = m_buffers[index];
+  YuvImage& im = buf.image;
+  CYuvPlane(&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
 
   DeleteTexture(index);
 
   im = {};
   std::fill(std::begin(planes), std::end(planes), CYuvPlane{});
   im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
+  im.width = m_sourceWidth;
   im.cshift_x = 1;
   im.cshift_y = 1;
 
@@ -182,7 +183,7 @@ void CRendererVAAPIGLES::DeleteTexture(int index)
     return;
   }
 
-  CPictureBuffer &buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
   buf.fields[FIELD_FULL][0].id = 0;
   buf.fields[FIELD_FULL][1].id = 0;
   buf.fields[FIELD_FULL][2].id = 0;
@@ -195,9 +196,9 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
     return UploadNV12Texture(index);
   }
 
-  CPictureBuffer &buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
 
-  CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(buf.videoBuffer);
+  CVaapiRenderPicture* pic = dynamic_cast<CVaapiRenderPicture*>(buf.videoBuffer);
 
   if (!pic || !pic->valid)
   {
@@ -206,16 +207,16 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
 
   m_vaapiTextures[index]->Map(pic);
 
-  YuvImage &im = buf.image;
-  CYuvPlane (&planes)[3] = buf.fields[0];
+  YuvImage& im = buf.image;
+  CYuvPlane(&planes)[3] = buf.fields[0];
 
   auto size = m_vaapiTextures[index]->GetTextureSize();
-  planes[0].texwidth  = size.Width();
+  planes[0].texwidth = size.Width();
   planes[0].texheight = size.Height();
 
-  planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
+  planes[1].texwidth = planes[0].texwidth >> im.cshift_x;
   planes[1].texheight = planes[0].texheight >> im.cshift_y;
-  planes[2].texwidth  = planes[1].texwidth;
+  planes[2].texwidth = planes[1].texwidth;
   planes[2].texheight = planes[1].texheight;
 
   for (int p = 0; p < 3; p++)
@@ -229,7 +230,7 @@ bool CRendererVAAPIGLES::UploadTexture(int index)
   planes[1].id = m_vaapiTextures[index]->GetTextureVU();
   planes[2].id = m_vaapiTextures[index]->GetTextureVU();
 
-  for (int p=0; p<2; p++)
+  for (int p = 0; p < 2; p++)
   {
     glBindTexture(m_textureTarget, planes[p].id);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

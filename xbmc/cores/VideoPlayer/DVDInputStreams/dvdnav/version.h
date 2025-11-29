@@ -17,7 +17,8 @@
 */
 #pragma once
 
-#define DVDNAV_VERSION_CODE(major, minor, micro) (((major)*10000) + ((minor)*100) + ((micro)*1))
+#define DVDNAV_VERSION_CODE(major, minor, micro) \
+  (((major) * 10000) + ((minor) * 100) + ((micro) * 1))
 
 #define DVDNAV_VERSION_MAJOR 6
 #define DVDNAV_VERSION_MINOR 1

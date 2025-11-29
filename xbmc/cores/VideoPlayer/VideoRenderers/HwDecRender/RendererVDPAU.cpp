@@ -18,9 +18,9 @@
 
 using namespace VDPAU;
 
-CBaseRenderer* CRendererVDPAU::Create(CVideoBuffer *buffer)
+CBaseRenderer* CRendererVDPAU::Create(CVideoBuffer* buffer)
 {
-  CVdpauRenderPicture *vb = dynamic_cast<CVdpauRenderPicture*>(buffer);
+  CVdpauRenderPicture* vb = dynamic_cast<CVdpauRenderPicture*>(buffer);
   if (vb)
     return new CRendererVDPAU();
 
@@ -44,9 +44,9 @@ CRendererVDPAU::~CRendererVDPAU()
   m_interopState.Finish();
 }
 
-bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
+bool CRendererVDPAU::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
 {
-  CVdpauRenderPicture *pic = dynamic_cast<CVdpauRenderPicture*>(picture.videoBuffer);
+  CVdpauRenderPicture* pic = dynamic_cast<CVdpauRenderPicture*>(picture.videoBuffer);
   if (pic->procPic.isYuv)
     m_isYuv = true;
   else
@@ -55,11 +55,11 @@ bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned 
   if (!m_interopState.Init(pic->device, pic->procFunc, pic->ident))
     return false;
 
-  for (auto &tex : m_vdpauTextures)
+  for (auto& tex : m_vdpauTextures)
   {
     tex.Init(m_interopState.GetInterop());
   }
-  for (auto &fence : m_fences)
+  for (auto& fence : m_fences)
   {
     fence = {};
   }
@@ -67,9 +67,9 @@ bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned 
   return CLinuxRendererGL::Configure(picture, fps, orientation);
 }
 
-bool CRendererVDPAU::ConfigChanged(const VideoPicture &picture)
+bool CRendererVDPAU::ConfigChanged(const VideoPicture& picture)
 {
-  CVdpauRenderPicture *pic = dynamic_cast<CVdpauRenderPicture*>(picture.videoBuffer);
+  CVdpauRenderPicture* pic = dynamic_cast<CVdpauRenderPicture*>(picture.videoBuffer);
   if (pic->procPic.isYuv && !m_isYuv)
     return true;
 
@@ -103,11 +103,10 @@ bool CRendererVDPAU::NeedBuffer(int idx)
 bool CRendererVDPAU::Flush(bool saveBuffers)
 {
   for (int i = 0; i < NUM_BUFFERS; i++)
-      m_vdpauTextures[i].Unmap();
+    m_vdpauTextures[i].Unmap();
 
   return CLinuxRendererGL::Flush(saveBuffers);
 }
-
 
 void CRendererVDPAU::ReleaseBuffer(int idx)
 {
@@ -122,26 +121,22 @@ void CRendererVDPAU::ReleaseBuffer(int idx)
 
 bool CRendererVDPAU::Supports(ERENDERFEATURE feature) const
 {
-  if(feature == RENDERFEATURE_BRIGHTNESS ||
-     feature == RENDERFEATURE_CONTRAST)
+  if (feature == RENDERFEATURE_BRIGHTNESS || feature == RENDERFEATURE_CONTRAST)
   {
-    if (!m_isYuv && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
+    if (!m_isYuv && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                        CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
       return true;
 
     return (m_renderMethod & RENDER_GLSL);
   }
-  else if (feature == RENDERFEATURE_NOISE ||
-           feature == RENDERFEATURE_SHARPNESS)
+  else if (feature == RENDERFEATURE_NOISE || feature == RENDERFEATURE_SHARPNESS)
   {
     if (!m_isYuv)
       return true;
   }
-  else if (feature == RENDERFEATURE_STRETCH         ||
-           feature == RENDERFEATURE_ZOOM            ||
-           feature == RENDERFEATURE_VERTICAL_SHIFT  ||
-           feature == RENDERFEATURE_PIXEL_RATIO     ||
-           feature == RENDERFEATURE_POSTPROCESS     ||
-           feature == RENDERFEATURE_ROTATION        ||
+  else if (feature == RENDERFEATURE_STRETCH || feature == RENDERFEATURE_ZOOM ||
+           feature == RENDERFEATURE_VERTICAL_SHIFT || feature == RENDERFEATURE_PIXEL_RATIO ||
+           feature == RENDERFEATURE_POSTPROCESS || feature == RENDERFEATURE_ROTATION ||
            feature == RENDERFEATURE_NONLINSTRETCH)
     return true;
 
@@ -156,25 +151,20 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method) const
   if (method == VS_SCALINGMETHOD_NEAREST)
     return true;
 
-  if (method == VS_SCALINGMETHOD_LINEAR ||
-      method == VS_SCALINGMETHOD_AUTO)
+  if (method == VS_SCALINGMETHOD_LINEAR || method == VS_SCALINGMETHOD_AUTO)
     return true;
 
-  if(method == VS_SCALINGMETHOD_CUBIC_B_SPLINE
-  || method == VS_SCALINGMETHOD_CUBIC_MITCHELL
-  || method == VS_SCALINGMETHOD_CUBIC_CATMULL
-  || method == VS_SCALINGMETHOD_CUBIC_0_075
-  || method == VS_SCALINGMETHOD_CUBIC_0_1
-  || method == VS_SCALINGMETHOD_LANCZOS2
-  || method == VS_SCALINGMETHOD_SPLINE36_FAST
-  || method == VS_SCALINGMETHOD_LANCZOS3_FAST
-  || method == VS_SCALINGMETHOD_SPLINE36
-  || method == VS_SCALINGMETHOD_LANCZOS3)
+  if (method == VS_SCALINGMETHOD_CUBIC_B_SPLINE || method == VS_SCALINGMETHOD_CUBIC_MITCHELL ||
+      method == VS_SCALINGMETHOD_CUBIC_CATMULL || method == VS_SCALINGMETHOD_CUBIC_0_075 ||
+      method == VS_SCALINGMETHOD_CUBIC_0_1 || method == VS_SCALINGMETHOD_LANCZOS2 ||
+      method == VS_SCALINGMETHOD_SPLINE36_FAST || method == VS_SCALINGMETHOD_LANCZOS3_FAST ||
+      method == VS_SCALINGMETHOD_SPLINE36 || method == VS_SCALINGMETHOD_LANCZOS3)
   {
     // if scaling is below level, avoid hq scaling
-    float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
-    float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-    int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoplayer.hqscalers");
+    float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width()) / m_sourceWidth) * 100;
+    float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height()) / m_sourceHeight) * 100;
+    int minScale =
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoplayer.hqscalers");
     return !(scaleX < minScale && scaleY < minScale);
   }
 
@@ -209,27 +199,27 @@ bool CRendererVDPAU::RenderHook(int idx)
 
   if (m_isYuv)
   {
-    switch(m_renderQuality)
+    switch (m_renderQuality)
     {
-    case RQ_LOW:
-    case RQ_SINGLEPASS:
-      if (m_currentField == FIELD_FULL)
-        RenderProgressiveWeave(idx, m_currentField);
-      else
-        RenderSinglePass(idx, m_currentField);
-      VerifyGLState();
-      break;
+      case RQ_LOW:
+      case RQ_SINGLEPASS:
+        if (m_currentField == FIELD_FULL)
+          RenderProgressiveWeave(idx, m_currentField);
+        else
+          RenderSinglePass(idx, m_currentField);
+        VerifyGLState();
+        break;
 
-    case RQ_MULTIPASS:
-      if (m_currentField == FIELD_FULL)
-        RenderProgressiveWeave(idx, m_currentField);
-      else
-      {
-        RenderToFBO(idx, m_currentField);
-        RenderFromFBO();
-      }
-      VerifyGLState();
-      break;
+      case RQ_MULTIPASS:
+        if (m_currentField == FIELD_FULL)
+          RenderProgressiveWeave(idx, m_currentField);
+        else
+        {
+          RenderToFBO(idx, m_currentField);
+          RenderFromFBO();
+        }
+        VerifyGLState();
+        break;
     }
   }
   else
@@ -278,9 +268,9 @@ bool CRendererVDPAU::UploadTexture(int index)
 
 bool CRendererVDPAU::CreateVDPAUTexture(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
-  YuvImage &im = buf.image;
-  CYuvPlane &plane = buf.fields[FIELD_FULL][0];
+  CPictureBuffer& buf = m_buffers[index];
+  YuvImage& im = buf.image;
+  CYuvPlane& plane = buf.fields[FIELD_FULL][0];
 
   DeleteVDPAUTexture(index);
 
@@ -301,18 +291,18 @@ bool CRendererVDPAU::CreateVDPAUTexture(int index)
 
 void CRendererVDPAU::DeleteVDPAUTexture(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
-  CYuvPlane &plane = buf.fields[FIELD_FULL][0];
+  CPictureBuffer& buf = m_buffers[index];
+  CYuvPlane& plane = buf.fields[FIELD_FULL][0];
 
   plane.id = 0;
 }
 
 bool CRendererVDPAU::UploadVDPAUTexture(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
-  VDPAU::CVdpauRenderPicture *pic = dynamic_cast<VDPAU::CVdpauRenderPicture*>(buf.videoBuffer);
+  CPictureBuffer& buf = m_buffers[index];
+  VDPAU::CVdpauRenderPicture* pic = dynamic_cast<VDPAU::CVdpauRenderPicture*>(buf.videoBuffer);
 
-  CYuvPlane &plane = buf.fields[FIELD_FULL][0];
+  CYuvPlane& plane = buf.fields[FIELD_FULL][0];
 
   if (!pic)
   {
@@ -337,7 +327,7 @@ bool CRendererVDPAU::UploadVDPAUTexture(int index)
     plane.rect.y2 = pic->crop.y2;
 
   plane.texheight = m_vdpauTextures[index].m_texHeight;
-  plane.texwidth  = m_vdpauTextures[index].m_texWidth;
+  plane.texwidth = m_vdpauTextures[index].m_texWidth;
 
   if (m_textureTarget == GL_TEXTURE_2D)
   {
@@ -355,10 +345,10 @@ bool CRendererVDPAU::UploadVDPAUTexture(int index)
 
 bool CRendererVDPAU::CreateVDPAUTexture420(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
-  YuvImage &im = buf.image;
-  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
-  GLuint *pbo = buf.pbo;
+  CPictureBuffer& buf = m_buffers[index];
+  YuvImage& im = buf.image;
+  CYuvPlane(&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  GLuint* pbo = buf.pbo;
 
   DeleteVDPAUTexture420(index);
 
@@ -372,7 +362,7 @@ bool CRendererVDPAU::CreateVDPAUTexture420(int index)
   im.plane[1] = nullptr;
   im.plane[2] = nullptr;
 
-  for(int p=0; p<3; p++)
+  for (int p = 0; p < 3; p++)
   {
     pbo[p] = None;
   }
@@ -384,7 +374,7 @@ bool CRendererVDPAU::CreateVDPAUTexture420(int index)
 
 void CRendererVDPAU::DeleteVDPAUTexture420(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
+  CPictureBuffer& buf = m_buffers[index];
 
   buf.fields[0][0].id = 0;
   buf.fields[1][0].id = 0;
@@ -395,10 +385,10 @@ void CRendererVDPAU::DeleteVDPAUTexture420(int index)
 
 bool CRendererVDPAU::UploadVDPAUTexture420(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
-  YuvImage &im = buf.image;
+  CPictureBuffer& buf = m_buffers[index];
+  YuvImage& im = buf.image;
 
-  VDPAU::CVdpauRenderPicture *pic = dynamic_cast<VDPAU::CVdpauRenderPicture*>(buf.videoBuffer);
+  VDPAU::CVdpauRenderPicture* pic = dynamic_cast<VDPAU::CVdpauRenderPicture*>(buf.videoBuffer);
 
   if (!pic)
   {
@@ -412,16 +402,16 @@ bool CRendererVDPAU::UploadVDPAUTexture420(int index)
   im.width = m_vdpauTextures[index].m_texWidth;
 
   // YUV
-  for (int f = FIELD_TOP; f<=FIELD_BOT ; f++)
+  for (int f = FIELD_TOP; f <= FIELD_BOT; f++)
   {
-    CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
+    CYuvPlane(&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
 
-    planes[0].texwidth  = im.width;
+    planes[0].texwidth = im.width;
     planes[0].texheight = im.height >> 1;
 
-    planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
+    planes[1].texwidth = planes[0].texwidth >> im.cshift_x;
     planes[1].texheight = planes[0].texheight >> im.cshift_y;
-    planes[2].texwidth  = planes[1].texwidth;
+    planes[2].texwidth = planes[1].texwidth;
     planes[2].texheight = planes[1].texheight;
 
     for (int p = 0; p < 3; p++)
@@ -431,10 +421,10 @@ bool CRendererVDPAU::UploadVDPAUTexture420(int index)
     }
   }
   // crop
-//  m_sourceRect.x1 += vdpau->crop.x1;
-//  m_sourceRect.x2 -= vdpau->crop.x2;
-//  m_sourceRect.y1 += vdpau->crop.y1;
-//  m_sourceRect.y2 -= vdpau->crop.y2;
+  //  m_sourceRect.x1 += vdpau->crop.x1;
+  //  m_sourceRect.x2 -= vdpau->crop.x2;
+  //  m_sourceRect.y1 += vdpau->crop.y1;
+  //  m_sourceRect.y2 -= vdpau->crop.y2;
 
   // set textures
   buf.fields[1][0].id = m_vdpauTextures[index].m_textureTopY;
@@ -446,7 +436,7 @@ bool CRendererVDPAU::UploadVDPAUTexture420(int index)
 
   for (int f = FIELD_TOP; f <= FIELD_BOT; f++)
   {
-    for (int p=0; p<2; p++)
+    for (int p = 0; p < 2; p++)
     {
       glBindTexture(m_textureTarget, buf.fields[f][p].id);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -454,7 +444,7 @@ bool CRendererVDPAU::UploadVDPAUTexture420(int index)
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-      glBindTexture(m_textureTarget,0);
+      glBindTexture(m_textureTarget, 0);
       VerifyGLState();
     }
   }

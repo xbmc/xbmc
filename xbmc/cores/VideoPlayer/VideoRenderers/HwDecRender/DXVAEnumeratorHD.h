@@ -204,7 +204,7 @@ public:
   void OnDestroyDevice(bool) override
   {
     std::lock_guard lock(m_section);
-    
+
     UnInit();
   }
 

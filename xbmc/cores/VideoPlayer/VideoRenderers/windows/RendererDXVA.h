@@ -24,6 +24,7 @@ enum RenderMethod;
 class CRendererDXVA : public CRendererHQ
 {
   class CRenderBufferImpl;
+
 public:
   ~CRendererDXVA() = default;
 
@@ -42,7 +43,10 @@ protected:
   explicit CRendererDXVA(CVideoSettings& videoSettings);
 
   void CheckVideoParameters() override;
-  void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
+  void RenderImpl(CD3DTexture& target,
+                  CRect& sourceRect,
+                  CPoint (&destPoints)[4],
+                  uint32_t flags) override;
   CRenderBuffer* CreateBuffer() override;
   virtual std::string GetRenderMethodDebugInfo() const;
 
@@ -72,7 +76,8 @@ public:
   bool UploadBuffer() override;
   HRESULT GetResource(ID3D11Resource** ppResource, unsigned* index) const override;
 
-  static DXGI_FORMAT GetDXGIFormat(AVPixelFormat format, DXGI_FORMAT default_fmt = DXGI_FORMAT_UNKNOWN);
+  static DXGI_FORMAT GetDXGIFormat(AVPixelFormat format,
+                                   DXGI_FORMAT default_fmt = DXGI_FORMAT_UNKNOWN);
 
 private:
   bool UploadToTexture();

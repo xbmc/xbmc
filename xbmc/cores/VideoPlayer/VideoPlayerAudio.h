@@ -30,12 +30,11 @@ class CDVDAudioCodec;
 class CVideoPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
-  CVideoPlayerAudio(
-    CDVDClock* pClock,
-    CDVDMessageQueue& parent,
-    CRenderManager& renderManager,
-    CProcessInfo &processInfo,
-    double messageQueueTimeSize);
+  CVideoPlayerAudio(CDVDClock* pClock,
+                    CDVDMessageQueue& parent,
+                    CRenderManager& renderManager,
+                    CProcessInfo& processInfo,
+                    double messageQueueTimeSize);
   ~CVideoPlayerAudio() override;
 
   bool OpenStream(CDVDStreamInfo hints) override;
@@ -47,7 +46,7 @@ public:
   // waits until all available data has been rendered
   bool AcceptsData() const override;
   bool HasData() const override { return m_messageQueue.GetDataSize() > 0; }
-  int  GetLevel() const override { return m_messageQueue.GetLevel(); }
+  int GetLevel() const override { return m_messageQueue.GetLevel(); }
   bool IsInited() const override { return m_messageQueue.IsInited(); }
   void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override
   {
@@ -55,7 +54,10 @@ public:
   }
   void FlushMessages() override { m_messageQueue.Flush(); }
 
-  void SetDynamicRangeCompression(long drc) override { m_audioSink.SetDynamicRangeCompression(drc); }
+  void SetDynamicRangeCompression(long drc) override
+  {
+    m_audioSink.SetDynamicRangeCompression(drc);
+  }
   float GetDynamicRangeAmplification() const override { return 0.0f; }
 
   std::string GetPlayerInfo() override;
@@ -75,7 +77,7 @@ public:
     return m_info.fpts;
   }
 
-  bool IsStalled() const override { return m_stalled;  }
+  bool IsStalled() const override { return m_stalled; }
   bool IsPassthrough() const override;
 
 protected:
@@ -83,7 +85,7 @@ protected:
   void OnExit() override;
   void Process() override;
 
-  bool ProcessDecoderOutput(DVDAudioFrame &audioframe);
+  bool ProcessDecoderOutput(DVDAudioFrame& audioframe);
   void UpdatePlayerInfo();
   void OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAudioCodec> codec);
   //! Switch codec if needed. Called when the sample rate gotten from the
@@ -116,23 +118,22 @@ protected:
   int m_synctype;
   int m_prevsynctype;
 
-  bool   m_prevskipped;
+  bool m_prevskipped;
   double m_maxspeedadjust;
 
   struct SInfo
   {
-    std::string      info;
-    double           pts = DVD_NOPTS_VALUE;
-    double           fpts = DVD_NOPTS_VALUE;
-    bool             passthrough = false;
+    std::string info;
+    double pts = DVD_NOPTS_VALUE;
+    double fpts = DVD_NOPTS_VALUE;
+    bool passthrough = false;
   };
 
   mutable CCriticalSection m_info_section;
-  SInfo                    m_info;
+  SInfo m_info;
 
   bool m_displayReset = false;
 
 private:
   void ClockAlign(double presentPts) const;
 };
-

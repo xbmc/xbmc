@@ -41,16 +41,16 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 
 void BaseVideoFilterShader::OnCompiledAndLinked()
 {
-  m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
-  m_hcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcord");
-  m_hAlpha  = glGetUniformLocation(ProgramHandle(), "m_alpha");
-  m_hProj  = glGetUniformLocation(ProgramHandle(), "m_proj");
+  m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
+  m_hcoord = glGetAttribLocation(ProgramHandle(), "m_attrcord");
+  m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
+  m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
 }
 
 bool BaseVideoFilterShader::OnEnabled()
 {
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
+  glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   glUniform1f(m_hAlpha, m_alpha);
   return true;
@@ -72,19 +72,14 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
     m_floattex = false;
   }
 
-  if (m_method == VS_SCALINGMETHOD_CUBIC_B_SPLINE ||
-      m_method == VS_SCALINGMETHOD_CUBIC_MITCHELL ||
-      m_method == VS_SCALINGMETHOD_CUBIC_CATMULL ||
-      m_method == VS_SCALINGMETHOD_CUBIC_0_075 ||
-      m_method == VS_SCALINGMETHOD_CUBIC_0_1 ||
-      m_method == VS_SCALINGMETHOD_LANCZOS2 ||
-      m_method == VS_SCALINGMETHOD_SPLINE36_FAST ||
-      m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
+  if (m_method == VS_SCALINGMETHOD_CUBIC_B_SPLINE || m_method == VS_SCALINGMETHOD_CUBIC_MITCHELL ||
+      m_method == VS_SCALINGMETHOD_CUBIC_CATMULL || m_method == VS_SCALINGMETHOD_CUBIC_0_075 ||
+      m_method == VS_SCALINGMETHOD_CUBIC_0_1 || m_method == VS_SCALINGMETHOD_LANCZOS2 ||
+      m_method == VS_SCALINGMETHOD_SPLINE36_FAST || m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
   {
     shadername = "gles_convolution-4x4.frag";
   }
-  else if (m_method == VS_SCALINGMETHOD_SPLINE36 ||
-           m_method == VS_SCALINGMETHOD_LANCZOS3)
+  else if (m_method == VS_SCALINGMETHOD_SPLINE36 || m_method == VS_SCALINGMETHOD_LANCZOS3)
   {
     shadername = "gles_convolution-6x6.frag";
   }
@@ -116,8 +111,8 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
 
   // obtain shader attribute handles on successful compilation
   m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
-  m_hStepXY    = glGetUniformLocation(ProgramHandle(), "stepxy");
-  m_hKernTex   = glGetUniformLocation(ProgramHandle(), "kernelTex");
+  m_hStepXY = glGetUniformLocation(ProgramHandle(), "stepxy");
+  m_hKernTex = glGetUniformLocation(ProgramHandle(), "kernelTex");
 
   CConvolutionKernel kernel(m_method, 256);
 
@@ -129,7 +124,7 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
 
   glGenTextures(1, &m_kernelTex1);
 
-  if ((m_kernelTex1<=0))
+  if ((m_kernelTex1 <= 0))
   {
     CLog::Log(LOGERROR, "GL: ConvolutionFilterShader: Error creating kernel texture");
     return;
@@ -145,17 +140,17 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
 
   //if float textures are supported, we can load the kernel as a float texture
   //if not we load it as 8 bit unsigned which gets converted back to float in the shader
-  GLenum  format;
+  GLenum format;
   GLvoid* data;
   if (m_floattex)
   {
     format = GL_FLOAT;
-    data   = (GLvoid*)kernel.GetFloatPixels();
+    data = (GLvoid*)kernel.GetFloatPixels();
   }
   else
   {
     format = GL_UNSIGNED_BYTE;
-    data   = (GLvoid*)kernel.GetUint8Pixels();
+    data = (GLvoid*)kernel.GetUint8Pixels();
   }
 
   //upload as 2D texture with height of 1

@@ -147,7 +147,7 @@ public:
   // FIXME: remove const modifier for iClock as it makes no sense as it means nothing
   // for the reader of the interface, but limits the implementation
   // to not modify the parameter on stack
-  bool GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker);
+  bool GetNextSceneMarker(bool bPlus, const int iClock, int* iSceneMarker);
 
   // FIXME: remove const modifier as it makes no sense as it means nothing
   // for the reader of the interface, but limits the implementation

@@ -8,20 +8,21 @@
 
 #pragma once
 
+#include "BaseRenderer.h"
+#include "FrameBufferObject.h"
+#include "RenderFlags.h"
+#include "RenderInfo.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoSettings.h"
+#include "guilib/Shader.h"
+#include "windowing/GraphicContext.h"
+
 #include <vector>
 
 #include "system_gl.h"
 
-#include "BaseRenderer.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "cores/VideoSettings.h"
-#include "FrameBufferObject.h"
-#include "guilib/Shader.h"
-#include "RenderFlags.h"
-#include "RenderInfo.h"
-#include "windowing/GraphicContext.h"
-
-extern "C" {
+extern "C"
+{
 #include <libavutil/mastering_display_metadata.h>
 }
 
@@ -35,7 +36,7 @@ namespace GLES
 {
 class BaseYUV2RGBGLSLShader;
 class BaseVideoFilterShader;
-}
+} // namespace GLES
 } // namespace Shaders
 
 enum RenderMethod
@@ -61,7 +62,7 @@ public:
   ~CLinuxRendererGLES() override;
 
   // Registration
-  static CBaseRenderer* Create(CVideoBuffer *buffer);
+  static CBaseRenderer* Create(CVideoBuffer* buffer);
   static bool Register();
 
   // Player functions
@@ -73,7 +74,8 @@ public:
   void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   bool IsGuiLayer() override;
   void ReleaseBuffer(int idx) override;
-  void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
+  void RenderUpdate(
+      int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void Update() override;
   bool RenderCapture(int index, CRenderCapture* capture) override;
   CRenderInfo GetRenderInfo() override;
@@ -96,12 +98,14 @@ protected:
 
   int NextYV12Texture() const;
   virtual bool ValidateRenderTarget();
-  virtual void LoadShaders(int field=FIELD_FULL);
+  virtual void LoadShaders(int field = FIELD_FULL);
   virtual void ReleaseShaders();
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
   void CheckVideoParameters(int index);
-  AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
+  AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries,
+                                   unsigned int width,
+                                   unsigned int height);
 
   // textures
   virtual bool UploadTexture(int index);
@@ -148,7 +152,7 @@ protected:
   // Raw data used by renderer
   int m_currentField{FIELD_FULL};
   int m_reloadShaders{0};
-  CRenderSystemGLES *m_renderSystem{nullptr};
+  CRenderSystemGLES* m_renderSystem{nullptr};
   GLenum m_pixelStoreKey{0};
 
   struct CYuvPlane
@@ -172,7 +176,7 @@ protected:
     CYuvPlane fields[MAX_FIELDS][YuvImage::MAX_PLANES];
     YuvImage image;
 
-    CVideoBuffer *videoBuffer{nullptr};
+    CVideoBuffer* videoBuffer{nullptr};
     bool loaded{false};
 
     AVColorPrimaries m_srcPrimaries;
@@ -193,9 +197,8 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   CPictureBuffer m_buffers[NUM_BUFFERS];
 
-  void LoadPlane(CYuvPlane& plane, int type,
-                 unsigned width,  unsigned height,
-                 int stride, int bpp, void* data);
+  void LoadPlane(
+      CYuvPlane& plane, int type, unsigned width, unsigned height, int stride, int bpp, void* data);
 
   Shaders::GLES::BaseYUV2RGBGLSLShader* m_pYUVProgShader{nullptr};
   Shaders::GLES::BaseYUV2RGBGLSLShader* m_pYUVBobShader{nullptr};

@@ -21,8 +21,7 @@ typedef struct SPUData
   unsigned int iNeededSize; // wanted packet size
   unsigned int iAllocatedSize;
   double pts;
-}
-SPUData;
+} SPUData;
 
 // upto 32 streams can exist
 #define DVD_MAX_SPUSTREAMS 32

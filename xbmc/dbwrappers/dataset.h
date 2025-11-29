@@ -448,11 +448,9 @@ public:
   const char* get_select_sql();
 };
 
-/******************** Class DbErrors definition *********************
-
-			   error handling
-
-******************************************************************/
+/******************** Class DbErrors definition *******************
+ * error handling
+ ******************************************************************/
 class DbErrors
 {
 

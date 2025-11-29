@@ -14,7 +14,8 @@
 #include <map>
 #include <vector>
 
-extern "C" {
+extern "C"
+{
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 }
@@ -22,7 +23,6 @@ extern "C" {
 class CDVDDemuxClient : public CDVDDemux
 {
 public:
-
   CDVDDemuxClient();
   ~CDVDDemuxClient() override;
 
@@ -46,7 +46,9 @@ public:
 
 protected:
   void RequestStreams();
-  void SetStreamProps(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream>> &map, bool forceInit);
+  void SetStreamProps(CDemuxStream* stream,
+                      std::map<int, std::shared_ptr<CDemuxStream>>& map,
+                      bool forceInit);
   bool ParsePacket(DemuxPacket* pPacket) const;
   void DisposeStreams();
   std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);
@@ -63,4 +65,3 @@ protected:
 private:
   static inline bool CodecHasExtraData(AVCodecID id);
 };
-

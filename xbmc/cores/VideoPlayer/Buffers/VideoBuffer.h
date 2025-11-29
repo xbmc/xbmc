@@ -9,6 +9,7 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
+
 #include <atomic>
 #include <deque>
 #include <list>
@@ -17,7 +18,8 @@
 #include <string>
 #include <vector>
 
-extern "C" {
+extern "C"
+{
 #include <libavutil/pixfmt.h>
 }
 
@@ -40,13 +42,13 @@ struct YuvImage
 //-----------------------------------------------------------------------------
 
 #define BUFFER_STATE_DECODER 0x01;
-#define BUFFER_STATE_RENDER  0x02;
+#define BUFFER_STATE_RENDER 0x02;
 
 class CVideoBuffer;
 class IVideoBufferPool;
 class CVideoBufferManager;
 
-typedef void (CVideoBufferManager::*ReadyToDispose)(IVideoBufferPool *pool);
+typedef void (CVideoBufferManager::*ReadyToDispose)(IVideoBufferPool* pool);
 
 class IVideoBufferPool : public std::enable_shared_from_this<IVideoBufferPool>
 {
@@ -105,9 +107,9 @@ public:
   {
   }
 
-  static bool CopyPicture(YuvImage* pDst, YuvImage *pSrc);
-  static bool CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc);
-  static bool CopyYUV422PackedPicture(YuvImage* pDst, YuvImage *pSrc);
+  static bool CopyPicture(YuvImage* pDst, YuvImage* pSrc);
+  static bool CopyNV12Picture(YuvImage* pDst, YuvImage* pSrc);
+  static bool CopyYUV422PackedPicture(YuvImage* pDst, YuvImage* pSrc);
 
 protected:
   explicit CVideoBuffer(int id);
@@ -120,21 +122,24 @@ protected:
 class CVideoBufferSysMem : public CVideoBuffer
 {
 public:
-  CVideoBufferSysMem(IVideoBufferPool &pool, int id, AVPixelFormat format, int size);
+  CVideoBufferSysMem(IVideoBufferPool& pool, int id, AVPixelFormat format, int size);
   ~CVideoBufferSysMem() override;
   uint8_t* GetMemPtr() override;
-  void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) override;
-  void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
+  void GetPlanes(uint8_t* (&planes)[YuvImage::MAX_PLANES]) override;
+  void GetStrides(int (&strides)[YuvImage::MAX_PLANES]) override;
   void SetPixelFormat(const AVPixelFormat pixFormat) override;
   void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]) override;
-  void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES]) override;
+  void SetDimensions(int width,
+                     int height,
+                     const int (&strides)[YuvImage::MAX_PLANES],
+                     const int (&planeOffsets)[YuvImage::MAX_PLANES]) override;
   bool Alloc();
 
 protected:
   int m_width = 0;
   int m_height = 0;
   int m_size = 0;
-  uint8_t *m_data = nullptr;
+  uint8_t* m_data = nullptr;
   YuvImage m_image;
 };
 
@@ -151,7 +156,7 @@ public:
   void Configure(AVPixelFormat format, int size) override;
   bool IsConfigured() override;
   bool IsCompatible(AVPixelFormat format, int size) override;
-  void Discard(CVideoBufferManager *bm, ReadyToDispose cb) override;
+  void Discard(CVideoBufferManager* bm, ReadyToDispose cb) override;
 
   static std::shared_ptr<IVideoBufferPool> CreatePool();
 
@@ -162,7 +167,7 @@ protected:
   AVPixelFormat m_pixFormat = AV_PIX_FMT_NONE;
   bool m_configured = false;
   CCriticalSection m_critSection;
-  CVideoBufferManager *m_bm = nullptr;
+  CVideoBufferManager* m_bm = nullptr;
   ReadyToDispose m_cbDispose;
 
   std::vector<CVideoBufferSysMem*> m_all;
@@ -183,9 +188,9 @@ public:
   void RegisterPool(const std::shared_ptr<IVideoBufferPool>& pool);
   void RegisterPoolFactory(const std::string& id, CreatePoolFunc createFunc);
   void ReleasePools();
-  void ReleasePool(IVideoBufferPool *pool);
-  CVideoBuffer* Get(AVPixelFormat format, int size, IVideoBufferPool **pPool);
-  void ReadyForDisposal(IVideoBufferPool *pool);
+  void ReleasePool(IVideoBufferPool* pool);
+  CVideoBuffer* Get(AVPixelFormat format, int size, IVideoBufferPool** pPool);
+  void ReadyForDisposal(IVideoBufferPool* pool);
 
 protected:
   CCriticalSection m_critSection;
@@ -194,6 +199,6 @@ protected:
   std::map<std::string, CreatePoolFunc> m_poolFactories;
 
 private:
-  CVideoBufferManager (const CVideoBufferManager&) = delete;
-  CVideoBufferManager& operator= (const CVideoBufferManager&) = delete;
+  CVideoBufferManager(const CVideoBufferManager&) = delete;
+  CVideoBufferManager& operator=(const CVideoBufferManager&) = delete;
 };

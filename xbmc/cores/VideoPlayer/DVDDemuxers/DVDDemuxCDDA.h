@@ -21,7 +21,6 @@ class CDemuxStreamAudioCDDA;
 class CDVDDemuxCDDA : public CDVDDemux
 {
 public:
-
   CDVDDemuxCDDA();
   ~CDVDDemuxCDDA() override;
 
@@ -44,5 +43,5 @@ protected:
   std::shared_ptr<CDVDInputStream> m_pInput;
   int64_t m_bytes;
 
-  CDemuxStreamAudioCDDA *m_stream;
+  CDemuxStreamAudioCDDA* m_stream;
 };

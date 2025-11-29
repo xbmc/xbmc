@@ -16,7 +16,8 @@
 #include <string>
 #include <vector>
 
-extern "C" {
+extern "C"
+{
 #include <libavutil/pixfmt.h>
 }
 
@@ -66,7 +67,6 @@ public:
   static void RegisterHWAudioCodec(const std::string& id, CreateHWAudioCodec createFunc);
   static void ClearHWAudioCodecs();
 
-
 protected:
   static std::unique_ptr<CDVDVideoCodec> CreateVideoCodecHW(const std::string& id,
                                                             CProcessInfo& processInfo);
@@ -77,4 +77,3 @@ protected:
   static std::map<std::string, CreateHWAccel> m_hwAccels;
   static std::map<std::string, CreateHWAudioCodec> m_hwAudioCodecs;
 };
-

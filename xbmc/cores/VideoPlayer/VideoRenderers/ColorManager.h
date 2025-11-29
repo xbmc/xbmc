@@ -44,12 +44,12 @@ enum CMS_WHITEPOINT
 enum CMS_PRIMARIES
 {
   CMS_PRIMARIES_AUTO,
-  CMS_PRIMARIES_BT709,    // HDTV
-  CMS_PRIMARIES_170M,     // SDTV
-  CMS_PRIMARIES_BT470M,   // old NTSC (1953)
-  CMS_PRIMARIES_BT470BG,  // old PAL/SECAM (1975)
-  CMS_PRIMARIES_240M,     // old HDTV (1988)
-  CMS_PRIMARIES_BT2020,   // UHDTV
+  CMS_PRIMARIES_BT709, // HDTV
+  CMS_PRIMARIES_170M, // SDTV
+  CMS_PRIMARIES_BT470M, // old NTSC (1953)
+  CMS_PRIMARIES_BT470BG, // old PAL/SECAM (1975)
+  CMS_PRIMARIES_240M, // old HDTV (1988)
+  CMS_PRIMARIES_BT2020, // UHDTV
   CMS_PRIMARIES_COUNT
 };
 
@@ -89,8 +89,11 @@ public:
    \param clutData pointer to CLUT data
    \return true on success, false otherwise
    */
-  bool GetVideo3dLut(AVColorPrimaries srcPrimaries, int* cmsToken, CMS_DATA_FORMAT format,
-                     int clutSize, uint16_t* clutData);
+  bool GetVideo3dLut(AVColorPrimaries srcPrimaries,
+                     int* cmsToken,
+                     CMS_DATA_FORMAT format,
+                     int clutSize,
+                     uint16_t* clutData);
 
   /*!
    \brief Check if a 3D LUT is still valid
@@ -107,7 +110,7 @@ public:
   \param dataSize pointer to CLUT data size
   \return true on success, false otherwise
   */
-  static bool Get3dLutSize(CMS_DATA_FORMAT format, int *clutSize, int *dataSize);
+  static bool Get3dLutSize(CMS_DATA_FORMAT format, int* clutSize, int* dataSize);
 
 private:
   /*! \brief Check .3dlut file validity
@@ -129,12 +132,10 @@ private:
                         int clutSize,
                         uint16_t* clutData);
 
-
 #if defined(HAVE_LCMS2)
   // ProbeIccDisplayProfile
 
   // ProbeIccDeviceLink (?)
-
 
   /* \brief Load an ICC display profile
    \param filename full path and filename
@@ -148,13 +149,13 @@ private:
    */
   // LoadIccDeviceLink (?)
 
-
   // create a gamma curve
   cmsToneCurve* CreateToneCurve(CMS_TRC_TYPE gammaType, double gammaValue, cmsCIEXYZ blackPoint);
 
   // create a source profile
-  cmsHPROFILE CreateSourceProfile(CMS_PRIMARIES primaries, cmsToneCurve *gamma, CMS_WHITEPOINT whitepoint);
-
+  cmsHPROFILE CreateSourceProfile(CMS_PRIMARIES primaries,
+                                  cmsToneCurve* gamma,
+                                  CMS_WHITEPOINT whitepoint);
 
   /* \brief Create 3D LUT
    Samples a cmsHTRANSFORM object to create a 3D LUT of specified resolution
@@ -163,17 +164,20 @@ private:
    \param resolution size of the 3D LUT to create
    \param clut pointer to LUT data
    */
-  void Create3dLut(cmsHTRANSFORM transform, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData);
+  void Create3dLut(cmsHTRANSFORM transform,
+                   CMS_DATA_FORMAT format,
+                   int clutSize,
+                   uint16_t* clutData);
 
   // keep current display profile loaded here
   cmsHPROFILE m_hProfile = nullptr;
-  cmsCIEXYZ   m_blackPoint = { 0, 0, 0 };
+  cmsCIEXYZ m_blackPoint = {0, 0, 0};
 
   // display parameters (gamma, input/output offset, primaries, whitepoint, intent?)
   CMS_WHITEPOINT m_curIccWhitePoint;
   CMS_PRIMARIES m_curIccPrimaries;
   CMS_TRC_TYPE m_m_curIccGammaMode;
-  int m_curIccGamma;  // gamma multiplied by 100
+  int m_curIccGamma; // gamma multiplied by 100
 #endif // defined(HAVE_LCMS2)
 
   // current configuration:
@@ -184,7 +188,4 @@ private:
   int m_curCmsMode;
   std::string m_cur3dlutFile;
   std::string m_curIccProfile;
-
 };
-
-

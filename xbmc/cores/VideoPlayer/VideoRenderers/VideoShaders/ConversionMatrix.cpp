@@ -141,10 +141,10 @@ CMatrix<Order>& CMatrix<Order>::operator=(
       m_mat[i][j] = other[i][j];
 
   for (int i = 0; i < Order; ++i)
-    m_mat[i][Order-1] = 0;
+    m_mat[i][Order - 1] = 0;
 
   for (int i = 0; i < Order; ++i)
-    m_mat[Order-1][i] = 0;
+    m_mat[Order - 1][i] = 0;
 
   return *this;
 }
@@ -243,15 +243,18 @@ CGlMatrix::CMatrix CGlMatrix::operator*(const std::array<std::array<float, 4>, 4
   ret.m_mat[0][0] = left[0][0] * right[0][0] + left[0][1] * right[1][0] + left[0][2] * right[2][0];
   ret.m_mat[0][1] = left[0][0] * right[0][1] + left[0][1] * right[1][1] + left[0][2] * right[2][1];
   ret.m_mat[0][2] = left[0][0] * right[0][2] + left[0][1] * right[1][2] + left[0][2] * right[2][2];
-  ret.m_mat[0][3] = left[0][0] * right[0][3] + left[0][1] * right[1][3] + left[0][2] * right[2][3] + left[0][3];
+  ret.m_mat[0][3] =
+      left[0][0] * right[0][3] + left[0][1] * right[1][3] + left[0][2] * right[2][3] + left[0][3];
   ret.m_mat[1][0] = left[1][0] * right[0][0] + left[1][1] * right[1][0] + left[1][2] * right[2][0];
   ret.m_mat[1][1] = left[1][0] * right[0][1] + left[1][1] * right[1][1] + left[1][2] * right[2][1];
   ret.m_mat[1][2] = left[1][0] * right[0][2] + left[1][1] * right[1][2] + left[1][2] * right[2][2];
-  ret.m_mat[1][3] = left[1][0] * right[0][3] + left[1][1] * right[1][3] + left[1][2] * right[2][3] + left[1][3];
+  ret.m_mat[1][3] =
+      left[1][0] * right[0][3] + left[1][1] * right[1][3] + left[1][2] * right[2][3] + left[1][3];
   ret.m_mat[2][0] = left[2][0] * right[0][0] + left[2][1] * right[1][0] + left[2][2] * right[2][0];
   ret.m_mat[2][1] = left[2][0] * right[0][1] + left[2][1] * right[1][1] + left[2][2] * right[2][1];
   ret.m_mat[2][2] = left[2][0] * right[0][2] + left[2][1] * right[1][2] + left[2][2] * right[2][2];
-  ret.m_mat[2][3] = left[2][0] * right[0][3] + left[2][1] * right[1][3] + left[2][2] * right[2][3] + left[2][3];
+  ret.m_mat[2][3] =
+      left[2][0] * right[0][3] + left[2][1] * right[1][3] + left[2][2] * right[2][3] + left[2][3];
 
   return ret;
 }
@@ -281,16 +284,22 @@ CTranslate::CTranslate(float x, float y, float z)
 
 ConversionToRGB::ConversionToRGB(float Kr, float Kb)
 {
-  float Kg = 1-Kr-Kb;
+  float Kg = 1 - Kr - Kb;
   a11 = Kr;
   a12 = Kg;
   a13 = Kb;
-  CbDen = 2*(1-Kb);
-  CrDen = 2*(1-Kr);
+  CbDen = 2 * (1 - Kb);
+  CrDen = 2 * (1 - Kr);
 
-  m_mat[0][0] = a11;       m_mat[0][1] = a12;       m_mat[0][2] = a13;
-  m_mat[1][0] = -Kr/CbDen; m_mat[1][1] = -Kg/CbDen; m_mat[1][2] = 0.5;
-  m_mat[2][0] = 0.5;       m_mat[2][1] = -Kg/CrDen; m_mat[2][2] = -Kb/CrDen;
+  m_mat[0][0] = a11;
+  m_mat[0][1] = a12;
+  m_mat[0][2] = a13;
+  m_mat[1][0] = -Kr / CbDen;
+  m_mat[1][1] = -Kg / CbDen;
+  m_mat[1][2] = 0.5;
+  m_mat[2][0] = 0.5;
+  m_mat[2][1] = -Kg / CrDen;
+  m_mat[2][2] = -Kb / CrDen;
 
   m_mat = Invert(m_mat);
 };
@@ -301,32 +310,35 @@ PrimaryToXYZ::PrimaryToXYZ(const float (&primaries)[3][2], const float (&whitepo
   float Gy = CalcGy(primaries, whitepoint, By);
   float Ry = CalcRy(By, Gy);
 
-  m_mat[0][0] = Ry*primaries[0][0]/primaries[0][1];
-  m_mat[0][1] = Gy*primaries[1][0]/primaries[1][1];
-  m_mat[0][2] = By*primaries[2][0]/primaries[2][1];
+  m_mat[0][0] = Ry * primaries[0][0] / primaries[0][1];
+  m_mat[0][1] = Gy * primaries[1][0] / primaries[1][1];
+  m_mat[0][2] = By * primaries[2][0] / primaries[2][1];
   m_mat[1][0] = Ry;
   m_mat[1][1] = Gy;
   m_mat[1][2] = By;
-  m_mat[2][0] = Ry/primaries[0][1] * (1- primaries[0][0] - primaries[0][1]);
-  m_mat[2][1] = Gy/primaries[1][1] * (1- primaries[1][0] - primaries[1][1]);
-  m_mat[2][2] = By/primaries[2][1] * (1- primaries[2][0] - primaries[2][1]);
+  m_mat[2][0] = Ry / primaries[0][1] * (1 - primaries[0][0] - primaries[0][1]);
+  m_mat[2][1] = Gy / primaries[1][1] * (1 - primaries[1][0] - primaries[1][1]);
+  m_mat[2][2] = By / primaries[2][1] * (1 - primaries[2][0] - primaries[2][1]);
 }
 
 float PrimaryToXYZ::CalcBy(const float p[3][2], const float w[2])
 {
-  float val = ((1-w[0])/w[1] - (1-p[0][0])/p[0][1]) * (p[1][0]/p[1][1] - p[0][0]/p[0][1]) -
-  (w[0]/w[1] - p[0][0]/p[0][1]) * ((1-p[1][0])/p[1][1] - (1-p[0][0])/p[0][1]);
+  float val =
+      ((1 - w[0]) / w[1] - (1 - p[0][0]) / p[0][1]) * (p[1][0] / p[1][1] - p[0][0] / p[0][1]) -
+      (w[0] / w[1] - p[0][0] / p[0][1]) * ((1 - p[1][0]) / p[1][1] - (1 - p[0][0]) / p[0][1]);
 
-  val /= ((1-p[2][0])/p[2][1] - (1-p[0][0])/p[0][1]) * (p[1][0]/p[1][1] - p[0][0]/p[0][1]) -
-  (p[2][0]/p[2][1] - p[0][0]/p[0][1]) * ((1-p[1][0])/p[1][1] - (1-p[0][0])/p[0][1]);
+  val /=
+      ((1 - p[2][0]) / p[2][1] - (1 - p[0][0]) / p[0][1]) *
+          (p[1][0] / p[1][1] - p[0][0] / p[0][1]) -
+      (p[2][0] / p[2][1] - p[0][0] / p[0][1]) * ((1 - p[1][0]) / p[1][1] - (1 - p[0][0]) / p[0][1]);
 
   return val;
 }
 
 float PrimaryToXYZ::CalcGy(const float p[3][2], const float w[2], const float By)
 {
-  float val = w[0]/w[1] - p[0][0]/p[0][1] - By * (p[2][0]/p[2][1] - p[0][0]/p[0][1]);
-  val /= p[1][0]/p[1][1] - p[0][0]/p[0][1];
+  float val = w[0] / w[1] - p[0][0] / p[0][1] - By * (p[2][0] / p[2][1] - p[0][0] / p[0][1]);
+  val /= p[1][0] / p[1][1] - p[0][0] / p[0][1];
 
   return val;
 }
@@ -336,7 +348,8 @@ float PrimaryToXYZ::CalcRy(const float By, const float Gy)
   return 1.0f - Gy - By;
 }
 
-PrimaryToRGB::PrimaryToRGB(float (&primaries)[3][2], float (&whitepoint)[2]) : PrimaryToXYZ(primaries, whitepoint)
+PrimaryToRGB::PrimaryToRGB(float (&primaries)[3][2], float (&whitepoint)[2])
+  : PrimaryToXYZ(primaries, whitepoint)
 {
   m_mat = Invert(m_mat);
 }
@@ -530,7 +543,7 @@ const CGlMatrix& CConvertMatrix::GenMat()
     else
     {
       CScale scale(255.0f / (235 - 16), 255.0f / (240 - 16), 255.0f / (240 - 16));
-      CTranslate trans(- 16.0f / 255, - 16.0f / 255, - 16.0f / 255);
+      CTranslate trans(-16.0f / 255, -16.0f / 255, -16.0f / 255);
       mat *= scale;
       mat *= trans;
     }
@@ -599,11 +612,13 @@ Matrix3 CConvertMatrix::GetPrimMat()
   return dst;
 }
 
-float CConvertMatrix::GetGammaSrc() const {
+float CConvertMatrix::GetGammaSrc() const
+{
   return m_gammaSrc;
 }
 
-float CConvertMatrix::GetGammaDst() const {
+float CConvertMatrix::GetGammaDst() const
+{
   return m_gammaDst;
 }
 

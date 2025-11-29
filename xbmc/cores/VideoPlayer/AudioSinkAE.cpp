@@ -23,7 +23,7 @@
 
 using namespace std::chrono_literals;
 
-CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
+CAudioSinkAE::CAudioSinkAE(CDVDClock* clock) : m_pClock(clock)
 {
   m_bPassthrough = false;
   m_iBitsPerSample = 0;
@@ -34,7 +34,8 @@ CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
   m_timeOfPts = 0.0; //silence coverity uninitialized warning, is set elsewhere
   m_syncError = 0.0;
   m_syncErrorTime = 0;
-  m_addPacketUnlockTime = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioAddPacketUnlockTime;
+  m_addPacketUnlockTime =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioAddPacketUnlockTime;
 }
 
 CAudioSinkAE::~CAudioSinkAE()
@@ -42,7 +43,7 @@ CAudioSinkAE::~CAudioSinkAE()
   std::lock_guard lock(m_critSection);
 }
 
-bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler)
+bool CAudioSinkAE::Create(const DVDAudioFrame& audioframe, AVCodecID codec, bool needresampler)
 {
   CLog::Log(LOGINFO, "Creating audio stream (codec id: {}, channels: {}, sample rate: {}, {})",
             codec, audioframe.format.m_channelLayout.Count(), audioframe.format.m_sampleRate,
@@ -55,11 +56,7 @@ bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool
   options |= AESTREAM_PAUSED;
 
   AEAudioFormat format = audioframe.format;
-  m_pAudioStream = CServiceBroker::GetActiveAE()->MakeStream(
-    format,
-    options,
-    this
-  );
+  m_pAudioStream = CServiceBroker::GetActiveAE()->MakeStream(format, options, this);
   if (!m_pAudioStream)
     return false;
 
@@ -92,7 +89,7 @@ void CAudioSinkAE::Destroy(bool finish)
   m_playingFramePts = DVD_NOPTS_VALUE;
 }
 
-unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
+unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame& audioframe)
 {
   m_bAbort = false;
 
@@ -120,7 +117,7 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
 
   // Calculate a timeout when this definitely should be done
   double timeout;
-  timeout  = DVD_SEC_TO_TIME(m_pAudioStream->GetDelay()) + audioframe.duration;
+  timeout = DVD_SEC_TO_TIME(m_pAudioStream->GetDelay()) + audioframe.duration;
   timeout += DVD_SEC_TO_TIME(1.0);
   timeout += m_pClock->GetAbsoluteClock();
   timeout *= m_pClock->GetClockSpeed();
@@ -194,7 +191,7 @@ void CAudioSinkAE::Pause()
 
   if (m_pAudioStream)
     m_pAudioStream->Pause();
-  CLog::Log(LOGDEBUG,"CDVDAudio::Pause - pausing audio stream");
+  CLog::Log(LOGDEBUG, "CDVDAudio::Pause - pausing audio stream");
   m_playingPts = DVD_NOPTS_VALUE;
   m_playingFramePts = DVD_NOPTS_VALUE;
 }
@@ -205,7 +202,7 @@ void CAudioSinkAE::Resume()
 
   if (m_pAudioStream)
     m_pAudioStream->Resume();
-  CLog::Log(LOGDEBUG,"CDVDAudio::Resume - resume audio stream");
+  CLog::Log(LOGDEBUG, "CDVDAudio::Resume - resume audio stream");
 }
 
 double CAudioSinkAE::GetDelay()
@@ -213,7 +210,7 @@ double CAudioSinkAE::GetDelay()
   std::lock_guard lock(m_critSection);
 
   double delay = 0.3;
-  if(m_pAudioStream)
+  if (m_pAudioStream)
     delay = m_pAudioStream->GetDelay();
 
   return delay * DVD_TIME_BASE;
@@ -228,7 +225,7 @@ void CAudioSinkAE::Flush()
   if (m_pAudioStream)
   {
     m_pAudioStream->Flush();
-    CLog::Log(LOGDEBUG,"CDVDAudio::Flush - flush audio stream");
+    CLog::Log(LOGDEBUG, "CDVDAudio::Flush - flush audio stream");
   }
   m_playingPts = DVD_NOPTS_VALUE;
   m_playingFramePts = DVD_NOPTS_VALUE;
@@ -241,7 +238,8 @@ void CAudioSinkAE::AbortAddPackets()
   m_bAbort = true;
 }
 
-bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe) const {
+bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame& audioframe) const
+{
   if (!m_pAudioStream)
     return false;
 
@@ -254,8 +252,7 @@ bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe) const {
       m_channelLayout != audioframe.format.m_channelLayout)
     return false;
 
-  if (m_bPassthrough &&
-      m_dataType != audioframe.format.m_streamInfo.m_type)
+  if (m_bPassthrough && m_dataType != audioframe.format.m_streamInfo.m_type)
     return false;
 
   return true;
@@ -309,14 +306,16 @@ double CAudioSinkAE::GetPlayingPts()
   return m_playingPts;
 }
 
-double CAudioSinkAE::GetPlayingFramePts() const {
+double CAudioSinkAE::GetPlayingFramePts() const
+{
   if (m_playingFramePts == DVD_NOPTS_VALUE)
     return 0.0;
 
   return m_playingFramePts;
 }
 
-double CAudioSinkAE::GetSyncError() const {
+double CAudioSinkAE::GetSyncError() const
+{
   return m_syncError;
 }
 
@@ -325,7 +324,8 @@ void CAudioSinkAE::SetSyncErrorCorrection(double correction)
   m_syncError += correction;
 }
 
-double CAudioSinkAE::GetResampleRatio() const {
+double CAudioSinkAE::GetResampleRatio() const
+{
   return m_resampleRatio;
 }
 
@@ -333,7 +333,7 @@ void CAudioSinkAE::SetResampleMode(int mode)
 {
   std::lock_guard lock(m_critSection);
 
-  if(m_pAudioStream)
+  if (m_pAudioStream)
   {
     m_pAudioStream->SetResampleMode(mode);
   }

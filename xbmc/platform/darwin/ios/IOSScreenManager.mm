@@ -230,11 +230,11 @@ static CEvent screenChangeEvent;
 //--------------------------------------------------------------
 + (id) sharedInstance
 {
-	static IOSScreenManager* sharedManager = nil;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-   sharedManager = [[self alloc] init];
-	});
-	return sharedManager;
+  static IOSScreenManager* sharedManager = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    sharedManager = [[self alloc] init];
+  });
+  return sharedManager;
 }
 @end

@@ -33,7 +33,7 @@ void CProcessInfoOSX::SetSwDeinterlacingMethods()
   {
     // get the current methods
     std::lock_guard lock(m_videoCodecSection);
-    
+
     methods = m_deintMethods;
   }
   // add bob and blend deinterlacer for osx
@@ -56,4 +56,3 @@ std::vector<AVPixelFormat> CProcessInfoOSX::GetRenderFormats()
 
   return formats;
 }
-

@@ -115,7 +115,7 @@ CWinSystemIOS::~CWinSystemIOS()
 
 bool CWinSystemIOS::InitWindowSystem()
 {
-	return CWinSystemBase::InitWindowSystem();
+  return CWinSystemBase::InitWindowSystem();
 }
 
 bool CWinSystemIOS::DestroyWindowSystem()

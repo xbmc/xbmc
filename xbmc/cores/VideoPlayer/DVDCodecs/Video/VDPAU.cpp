@@ -62,16 +62,17 @@ CDecoder::Desc decoder_profiles[] = {
 
 static struct SInterlaceMapping
 {
-  const EINTERLACEMETHOD     method;
+  const EINTERLACEMETHOD method;
   const VdpVideoMixerFeature feature;
-} g_interlace_mapping[] =
-{ {VS_INTERLACEMETHOD_VDPAU_TEMPORAL             , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL}
-, {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF        , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL}
-, {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL     , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL}
-, {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL}
-, {VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE     , VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE}
-, {VS_INTERLACEMETHOD_NONE                       , (VdpVideoMixerFeature)-1}
-};
+} g_interlace_mapping[] = {
+    {VS_INTERLACEMETHOD_VDPAU_TEMPORAL, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL},
+    {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL},
+    {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL,
+     VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL},
+    {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF,
+     VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL},
+    {VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE, VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE},
+    {VS_INTERLACEMETHOD_NONE, (VdpVideoMixerFeature)-1}};
 
 static float studioCSCKCoeffs601[3] = {0.299, 0.587, 0.114}; //BT601 {Kr, Kg, Kb}
 static float studioCSCKCoeffs709[3] = {0.2126, 0.7152, 0.0722}; //BT709 {Kr, Kg, Kb}
@@ -79,10 +80,10 @@ static float studioCSCKCoeffs709[3] = {0.2126, 0.7152, 0.0722}; //BT709 {Kr, Kg,
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-CVDPAUContext *CVDPAUContext::m_context = 0;
+CVDPAUContext* CVDPAUContext::m_context = 0;
 CCriticalSection CVDPAUContext::m_section;
-Display *CVDPAUContext::m_display = 0;
-void *CVDPAUContext::m_dlHandle = 0;
+Display* CVDPAUContext::m_display = 0;
+void* CVDPAUContext::m_dlHandle = 0;
 
 CVDPAUContext::CVDPAUContext()
 {
@@ -109,7 +110,7 @@ void CVDPAUContext::Close()
   DestroyContext();
 }
 
-bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
+bool CVDPAUContext::EnsureContext(CVDPAUContext** ctx)
 {
   std::lock_guard lock(m_section);
 
@@ -159,7 +160,7 @@ bool CVDPAUContext::LoadSymbols()
 {
   if (!m_dlHandle)
   {
-    m_dlHandle  = dlopen("libvdpau.so.1", RTLD_LAZY);
+    m_dlHandle = dlopen("libvdpau.so.1", RTLD_LAZY);
     if (!m_dlHandle)
     {
       const char* error = dlerror();
@@ -173,7 +174,9 @@ bool CVDPAUContext::LoadSymbols()
 
   char* error;
   (void)dlerror();
-  dl_vdp_device_create_x11 = (VdpStatus (*)(Display*, int, VdpDevice*, VdpStatus (**)(VdpDevice, VdpFuncId, void**)))dlsym(m_dlHandle, (const char*)"vdp_device_create_x11");
+  dl_vdp_device_create_x11 =
+      (VdpStatus(*)(Display*, int, VdpDevice*, VdpStatus (**)(VdpDevice, VdpFuncId, void**)))dlsym(
+          m_dlHandle, (const char*)"vdp_device_create_x11");
   error = dlerror();
   if (error)
   {
@@ -198,15 +201,14 @@ bool CVDPAUContext::CreateContext()
     if (!m_display)
       return false;
 
-    screen = static_cast<KODI::WINDOWING::X11::CWinSystemX11*>(CServiceBroker::GetWinSystem())->GetScreen();
+    screen = static_cast<KODI::WINDOWING::X11::CWinSystemX11*>(CServiceBroker::GetWinSystem())
+                 ->GetScreen();
   }
 
   VdpStatus vdp_st;
   // Create Device
-  vdp_st = dl_vdp_device_create_x11(m_display,
-                                    screen,
-                                   &m_vdpDevice,
-                                   &m_vdpProcs.vdp_get_proc_address);
+  vdp_st =
+      dl_vdp_device_create_x11(m_display, screen, &m_vdpDevice, &m_vdpProcs.vdp_get_proc_address);
 
   CLog::Log(LOGINFO, "vdp_device = {:#08x} vdp_st = {:#08x}", m_vdpDevice, vdp_st);
   if (vdp_st != VDP_STATUS_OK)
@@ -226,39 +228,51 @@ void CVDPAUContext::QueryProcs()
   VdpStatus vdp_st;
 
 #define VDP_PROC(id, proc) \
-  do { \
+  do \
+  { \
     vdp_st = m_vdpProcs.vdp_get_proc_address(m_vdpDevice, id, (void**)&proc); \
     if (vdp_st != VDP_STATUS_OK) \
     { \
       CLog::Log(LOGERROR, "CVDPAUContext::GetProcs - failed to get proc id"); \
     } \
-  } while(0);
+  } while (0);
 
-  VDP_PROC(VDP_FUNC_ID_GET_ERROR_STRING                    , m_vdpProcs.vdp_get_error_string);
-  VDP_PROC(VDP_FUNC_ID_DEVICE_DESTROY                      , m_vdpProcs.vdp_device_destroy);
-  VDP_PROC(VDP_FUNC_ID_GENERATE_CSC_MATRIX                 , m_vdpProcs.vdp_generate_csc_matrix);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_CREATE                , m_vdpProcs.vdp_video_surface_create);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_DESTROY               , m_vdpProcs.vdp_video_surface_destroy);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR      , m_vdpProcs.vdp_video_surface_put_bits_y_cb_cr);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR      , m_vdpProcs.vdp_video_surface_get_bits_y_cb_cr);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR     , m_vdpProcs.vdp_output_surface_put_bits_y_cb_cr);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE      , m_vdpProcs.vdp_output_surface_put_bits_native);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_CREATE               , m_vdpProcs.vdp_output_surface_create);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY              , m_vdpProcs.vdp_output_surface_destroy);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE      , m_vdpProcs.vdp_output_surface_get_bits_native);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE, m_vdpProcs.vdp_output_surface_render_output_surface);
-  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED     , m_vdpProcs.vdp_output_surface_put_bits_indexed);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_CREATE                  , m_vdpProcs.vdp_video_mixer_create);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES     , m_vdpProcs.vdp_video_mixer_set_feature_enables);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_DESTROY                 , m_vdpProcs.vdp_video_mixer_destroy);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_RENDER                  , m_vdpProcs.vdp_video_mixer_render);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES    , m_vdpProcs.vdp_video_mixer_set_attribute_values);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT , m_vdpProcs.vdp_video_mixer_query_parameter_support);
-  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT   , m_vdpProcs.vdp_video_mixer_query_feature_support);
-  VDP_PROC(VDP_FUNC_ID_DECODER_CREATE                      , m_vdpProcs.vdp_decoder_create);
-  VDP_PROC(VDP_FUNC_ID_DECODER_DESTROY                     , m_vdpProcs.vdp_decoder_destroy);
-  VDP_PROC(VDP_FUNC_ID_DECODER_RENDER                      , m_vdpProcs.vdp_decoder_render);
-  VDP_PROC(VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES          , m_vdpProcs.vdp_decoder_query_caps);
+  VDP_PROC(VDP_FUNC_ID_GET_ERROR_STRING, m_vdpProcs.vdp_get_error_string);
+  VDP_PROC(VDP_FUNC_ID_DEVICE_DESTROY, m_vdpProcs.vdp_device_destroy);
+  VDP_PROC(VDP_FUNC_ID_GENERATE_CSC_MATRIX, m_vdpProcs.vdp_generate_csc_matrix);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_CREATE, m_vdpProcs.vdp_video_surface_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_DESTROY, m_vdpProcs.vdp_video_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR,
+           m_vdpProcs.vdp_video_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR,
+           m_vdpProcs.vdp_video_surface_get_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR,
+           m_vdpProcs.vdp_output_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE,
+           m_vdpProcs.vdp_output_surface_put_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_CREATE, m_vdpProcs.vdp_output_surface_create);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY, m_vdpProcs.vdp_output_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE,
+           m_vdpProcs.vdp_output_surface_get_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE,
+           m_vdpProcs.vdp_output_surface_render_output_surface);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED,
+           m_vdpProcs.vdp_output_surface_put_bits_indexed);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_CREATE, m_vdpProcs.vdp_video_mixer_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES,
+           m_vdpProcs.vdp_video_mixer_set_feature_enables);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_DESTROY, m_vdpProcs.vdp_video_mixer_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_RENDER, m_vdpProcs.vdp_video_mixer_render);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES,
+           m_vdpProcs.vdp_video_mixer_set_attribute_values);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT,
+           m_vdpProcs.vdp_video_mixer_query_parameter_support);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT,
+           m_vdpProcs.vdp_video_mixer_query_feature_support);
+  VDP_PROC(VDP_FUNC_ID_DECODER_CREATE, m_vdpProcs.vdp_decoder_create);
+  VDP_PROC(VDP_FUNC_ID_DECODER_DESTROY, m_vdpProcs.vdp_decoder_destroy);
+  VDP_PROC(VDP_FUNC_ID_DECODER_RENDER, m_vdpProcs.vdp_decoder_render);
+  VDP_PROC(VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES, m_vdpProcs.vdp_decoder_query_caps);
 #undef VDP_PROC
 }
 
@@ -276,19 +290,20 @@ void CVDPAUContext::DestroyContext()
   m_vdpDevice = VDP_INVALID_HANDLE;
 }
 
-void CVDPAUContext::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der Laan  -- VDPInfo
+void CVDPAUContext::
+    SpewHardwareAvailable() //Copyright (c) 2008 Wladimir J. van der Laan  -- VDPInfo
 {
   VdpStatus rv;
   CLog::Log(LOGINFO, "VDPAU Decoder capabilities:");
   CLog::Log(LOGINFO, "name          level macbs width height");
   CLog::Log(LOGINFO, "------------------------------------");
-  for(const CDecoder::Desc& decoder_profile : decoder_profiles)
+  for (const CDecoder::Desc& decoder_profile : decoder_profiles)
   {
     VdpBool is_supported = false;
     uint32_t max_level, max_macroblocks, max_width, max_height;
-    rv = m_vdpProcs.vdp_decoder_query_caps(m_vdpDevice, decoder_profile.id,
-                                &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
-    if(rv == VDP_STATUS_OK && is_supported)
+    rv = m_vdpProcs.vdp_decoder_query_caps(m_vdpDevice, decoder_profile.id, &is_supported,
+                                           &max_level, &max_macroblocks, &max_width, &max_height);
+    if (rv == VDP_STATUS_OK && is_supported)
     {
       CLog::Log(LOGINFO, "{:<16} {:2} {:5} {:5} {:5}", decoder_profile.name, max_level,
                 max_macroblocks, max_width, max_height);
@@ -330,9 +345,9 @@ void CVDPAUContext::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. va
 
 bool CVDPAUContext::Supports(VdpVideoMixerFeature feature)
 {
-  for(int i = 0; i < m_featureCount; i++)
+  for (int i = 0; i < m_featureCount; i++)
   {
-    if(m_vdpFeatures[i] == feature)
+    if (m_vdpFeatures[i] == feature)
       return true;
   }
   return false;
@@ -343,7 +358,7 @@ bool CVDPAUContext::Supports(VdpVideoMixerFeature feature)
 //-----------------------------------------------------------------------------
 
 #define SURFACE_USED_FOR_REFERENCE 0x01
-#define SURFACE_USED_FOR_RENDER    0x02
+#define SURFACE_USED_FOR_RENDER 0x02
 
 void CVideoSurfaces::AddSurface(VdpVideoSurface surf)
 {
@@ -450,7 +465,7 @@ VdpVideoSurface CVideoSurfaces::RemoveNext(bool skiprender)
 
   VdpVideoSurface surf;
   std::map<VdpVideoSurface, int>::iterator it;
-  for(it = m_state.begin(); it != m_state.end(); ++it)
+  for (it = m_state.begin(); it != m_state.end(); ++it)
   {
     if (skiprender && it->second & SURFACE_USED_FOR_RENDER)
       continue;
@@ -487,8 +502,8 @@ int CVideoSurfaces::Size()
 
 bool CDecoder::m_capGeneral = false;
 
-CDecoder::CDecoder(CProcessInfo& processInfo) :
-    m_vdpauOutput(*this, &m_inMsgEvent), m_processInfo(processInfo)
+CDecoder::CDecoder(CProcessInfo& processInfo)
+  : m_vdpauOutput(*this, &m_inMsgEvent), m_processInfo(processInfo)
 {
   m_vdpauConfig.videoSurfaces = &m_videoSurfaces;
 
@@ -503,22 +518,22 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 {
   // this could be done better by querying actual hw capabilities
   // but since vdpau will be dropped anyway in v19, this should do
-  if (avctx->sw_pix_fmt != AV_PIX_FMT_YUV420P &&
-      avctx->sw_pix_fmt != AV_PIX_FMT_YUVJ420P)
+  if (avctx->sw_pix_fmt != AV_PIX_FMT_YUV420P && avctx->sw_pix_fmt != AV_PIX_FMT_YUVJ420P)
     return false;
 
   // check if user wants to decode this format with VDPAU
   std::string gpuvendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   // nvidia is whitelisted despite for mpeg-4 we need to query user settings
-  if ((gpuvendor.compare(0, 6, "nvidia") != 0)  || (avctx->codec_id == AV_CODEC_ID_MPEG4) || (avctx->codec_id == AV_CODEC_ID_H263))
+  if ((gpuvendor.compare(0, 6, "nvidia") != 0) || (avctx->codec_id == AV_CODEC_ID_MPEG4) ||
+      (avctx->codec_id == AV_CODEC_ID_H263))
   {
     std::map<AVCodecID, std::string> settings_map = {
-      { AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4 },
-      { AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4 },
-      { AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1 },
-      { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1 },
-      { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2 },
+        {AV_CODEC_ID_H263, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4},
+        {AV_CODEC_ID_MPEG4, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4},
+        {AV_CODEC_ID_WMV3, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1},
+        {AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1},
+        {AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2},
     };
 
     auto settingsComponent = CServiceBroker::GetSettingsComponent();
@@ -551,10 +566,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     return false;
   }
 
-  if (avctx->coded_width  == 0 ||
-     avctx->coded_height == 0)
+  if (avctx->coded_width == 0 || avctx->coded_height == 0)
   {
-    CLog::Log(LOGWARNING,"VDPAU::Open: no width/height available, can't init");
+    CLog::Log(LOGWARNING, "VDPAU::Open: no width/height available, can't init");
     return false;
   }
   m_vdpauConfig.numRenderBuffers = 5;
@@ -573,15 +587,16 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
     // convert FFMPEG codec ID to VDPAU profile.
     ReadFormatOf(avctx->codec_id, profile, m_vdpauConfig.vdpChromaType);
-    if(profile)
+    if (profile)
     {
       VdpStatus vdp_st;
       VdpBool is_supported = false;
       uint32_t max_level, max_macroblocks, max_width, max_height;
 
       // query device capabilities to ensure that VDPAU can handle the requested codec
-      vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_query_caps(m_vdpauConfig.context->GetDevice(),
-               profile, &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
+      vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_query_caps(
+          m_vdpauConfig.context->GetDevice(), profile, &is_supported, &max_level, &max_macroblocks,
+          &max_width, &max_height);
 
       // test to make sure there is a possibility the codec will work
       if (CheckStatus(vdp_st, __LINE__))
@@ -591,7 +606,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         return false;
       }
 
-      if (max_width < (uint32_t) avctx->coded_width || max_height < (uint32_t) avctx->coded_height)
+      if (max_width < (uint32_t)avctx->coded_width || max_height < (uint32_t)avctx->coded_height)
       {
         CLog::Log(LOGWARNING,
                   "VDPAU::Open: requested picture dimensions ({}, {}) exceed hardware capabilities "
@@ -605,7 +620,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
                   avctx->width);
 
       // attempt to create a decoder with this width/height, some sizes are not supported by hw
-      vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(m_vdpauConfig.context->GetDevice(), profile, avctx->coded_width, avctx->coded_height, 5, &m_vdpauConfig.vdpDecoder);
+      vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(
+          m_vdpauConfig.context->GetDevice(), profile, avctx->coded_width, avctx->coded_height, 5,
+          &m_vdpauConfig.vdpDecoder);
 
       if (CheckStatus(vdp_st, __LINE__))
       {
@@ -621,7 +638,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       memset(&m_hwContext, 0, sizeof(AVVDPAUContext));
       m_hwContext.render2 = CDecoder::Render;
       avctx->get_buffer2 = CDecoder::FFGetBuffer;
-      avctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
+      avctx->slice_flags = SLICE_FLAG_CODED_ORDER | SLICE_FLAG_ALLOW_FIELD;
       avctx->hwaccel_context = &m_hwContext;
 
       CServiceBroker::GetWinSystem()->Register(this);
@@ -662,7 +679,7 @@ long CDecoder::Release()
 
     CLog::Log(LOGINFO, "CVDPAU::Release pre-cleanup");
 
-    Message *reply;
+    Message* reply;
     if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP, &reply,
                                                        2s))
     {
@@ -681,7 +698,7 @@ long CDecoder::Release()
     }
 
     VdpVideoSurface surf;
-    while((surf = m_videoSurfaces.RemoveNext(true)) != VDP_INVALID_HANDLE)
+    while ((surf = m_videoSurfaces.RemoveNext(true)) != VDP_INVALID_HANDLE)
     {
       m_vdpauConfig.context->GetProcs().vdp_video_surface_destroy(surf);
     }
@@ -696,22 +713,28 @@ long CDecoder::ReleasePicReference()
 
 void CDecoder::SetWidthHeight(int width, int height)
 {
-  m_vdpauConfig.upscale = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUScaling;
+  m_vdpauConfig.upscale =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUScaling;
 
   //pick the smallest dimensions, so we downscale with vdpau and upscale with opengl when appropriate
   //this requires the least amount of gpu memory bandwidth
-  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() < width || CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() < height || m_vdpauConfig.upscale >= 0)
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() < width ||
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() < height ||
+      m_vdpauConfig.upscale >= 0)
   {
     //scale width to desktop size if the aspect ratio is the same or bigger than the desktop
-    if ((double)height * CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() / width <= (double)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight())
+    if ((double)height * CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() / width <=
+        (double)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight())
     {
       m_vdpauConfig.outWidth = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
-      m_vdpauConfig.outHeight = MathUtils::round_int((double)height * CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() / width);
+      m_vdpauConfig.outHeight = MathUtils::round_int(
+          (double)height * CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() / width);
     }
     else //scale height to the desktop size if the aspect ratio is smaller than the desktop
     {
       m_vdpauConfig.outHeight = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
-      m_vdpauConfig.outWidth = MathUtils::round_int((double)width * CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() / height);
+      m_vdpauConfig.outWidth = MathUtils::round_int(
+          (double)width * CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() / height);
     }
   }
   else
@@ -844,7 +867,7 @@ void CDecoder::FiniVDPAUOutput()
             m_videoSurfaces.Size());
 
   VdpVideoSurface surf;
-  while((surf = m_videoSurfaces.RemoveNext()) != VDP_INVALID_HANDLE)
+  while ((surf = m_videoSurfaces.RemoveNext()) != VDP_INVALID_HANDLE)
   {
     m_vdpauConfig.context->GetProcs().vdp_video_surface_destroy(surf);
     if (CheckStatus(vdp_st, __LINE__))
@@ -853,51 +876,51 @@ void CDecoder::FiniVDPAUOutput()
   m_videoSurfaces.Reset();
 }
 
-void CDecoder::ReadFormatOf( AVCodecID codec
-                           , VdpDecoderProfile &vdp_decoder_profile
-                           , VdpChromaType     &vdp_chroma_type)
+void CDecoder::ReadFormatOf(AVCodecID codec,
+                            VdpDecoderProfile& vdp_decoder_profile,
+                            VdpChromaType& vdp_chroma_type)
 {
   switch (codec)
   {
     case AV_CODEC_ID_MPEG1VIDEO:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG1;
-      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      vdp_chroma_type = VDP_CHROMA_TYPE_420;
       break;
     case AV_CODEC_ID_MPEG2VIDEO:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG2_MAIN;
-      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      vdp_chroma_type = VDP_CHROMA_TYPE_420;
       break;
     case AV_CODEC_ID_H264:
       vdp_decoder_profile = VDP_DECODER_PROFILE_H264_HIGH;
-      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      vdp_chroma_type = VDP_CHROMA_TYPE_420;
       break;
 #ifdef VDP_DECODER_PROFILE_HEVC_MAIN
     case AV_CODEC_ID_HEVC:
       vdp_decoder_profile = VDP_DECODER_PROFILE_HEVC_MAIN;
-      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      vdp_chroma_type = VDP_CHROMA_TYPE_420;
       break;
 #endif
 #ifdef VDP_DECODER_PROFILE_VP9_PROFILE_0
     case AV_CODEC_ID_VP9:
-    vdp_decoder_profile = VDP_DECODER_PROFILE_VP9_PROFILE_0;
-    vdp_chroma_type = VDP_CHROMA_TYPE_420;
-    break;
+      vdp_decoder_profile = VDP_DECODER_PROFILE_VP9_PROFILE_0;
+      vdp_chroma_type = VDP_CHROMA_TYPE_420;
+      break;
 #endif
     case AV_CODEC_ID_WMV3:
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_MAIN;
-      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      vdp_chroma_type = VDP_CHROMA_TYPE_420;
       break;
     case AV_CODEC_ID_VC1:
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
-      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      vdp_chroma_type = VDP_CHROMA_TYPE_420;
       break;
     case AV_CODEC_ID_MPEG4:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
-      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
+      vdp_chroma_type = VDP_CHROMA_TYPE_420;
       break;
     default:
       vdp_decoder_profile = 0;
-      vdp_chroma_type     = 0;
+      vdp_chroma_type = 0;
       break;
   }
 }
@@ -914,7 +937,7 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   m_vdpauConfig.surfaceWidth = avctx->coded_width;
   m_vdpauConfig.surfaceHeight = avctx->coded_height;
 
-  SetWidthHeight(avctx->width,avctx->height);
+  SetWidthHeight(avctx->width, avctx->height);
 
   CLog::Log(LOGINFO, " (VDPAU) screenWidth:{} vidWidth:{} surfaceWidth:{}", m_vdpauConfig.outWidth,
             m_vdpauConfig.vidWidth, m_vdpauConfig.surfaceWidth);
@@ -926,8 +949,10 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   if (avctx->codec_id == AV_CODEC_ID_H264)
   {
     m_vdpauConfig.maxReferences = ref_frames;
-    if (m_vdpauConfig.maxReferences > 16) m_vdpauConfig.maxReferences = 16;
-    if (m_vdpauConfig.maxReferences < 5)  m_vdpauConfig.maxReferences = 5;
+    if (m_vdpauConfig.maxReferences > 16)
+      m_vdpauConfig.maxReferences = 16;
+    if (m_vdpauConfig.maxReferences < 5)
+      m_vdpauConfig.maxReferences = 5;
   }
   else if (avctx->codec_id == AV_CODEC_ID_HEVC)
   {
@@ -945,12 +970,9 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   else
     m_vdpauConfig.maxReferences = 2;
 
-  vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(m_vdpauConfig.context->GetDevice(),
-                              vdp_decoder_profile,
-                              m_vdpauConfig.surfaceWidth,
-                              m_vdpauConfig.surfaceHeight,
-                              m_vdpauConfig.maxReferences,
-                              &m_vdpauConfig.vdpDecoder);
+  vdp_st = m_vdpauConfig.context->GetProcs().vdp_decoder_create(
+      m_vdpauConfig.context->GetDevice(), vdp_decoder_profile, m_vdpauConfig.surfaceWidth,
+      m_vdpauConfig.surfaceHeight, m_vdpauConfig.maxReferences, &m_vdpauConfig.vdpDecoder);
   if (CheckStatus(vdp_st, __LINE__))
     return false;
 
@@ -961,7 +983,7 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   m_vdpauConfig.vdpau = this;
   m_bufferStats.Reset();
   m_vdpauOutput.Start();
-  Message *reply;
+  Message* reply;
   if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::INIT, &reply, 2s,
                                                      &m_vdpauConfig, sizeof(m_vdpauConfig)))
   {
@@ -988,7 +1010,7 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   return true;
 }
 
-int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
+int CDecoder::FFGetBuffer(AVCodecContext* avctx, AVFrame* pic, int flags)
 {
   ICallbackHWAccel* cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
   CDecoder* vdp = static_cast<CDecoder*>(cb->GetHWAccel());
@@ -996,7 +1018,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   // while we are waiting to recover we can't do anything
   std::lock_guard lock(vdp->m_DecoderSection);
 
-  if(vdp->m_DisplayState != VDPAU_OPEN)
+  if (vdp->m_DisplayState != VDPAU_OPEN)
   {
     CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - returning due to awaiting recovery");
     return -1;
@@ -1012,11 +1034,9 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
     VdpDecoderProfile profile;
     ReadFormatOf(avctx->codec_id, profile, vdp->m_vdpauConfig.vdpChromaType);
 
-    vdp_st = vdp->m_vdpauConfig.context->GetProcs().vdp_video_surface_create(vdp->m_vdpauConfig.context->GetDevice(),
-                                         vdp->m_vdpauConfig.vdpChromaType,
-                                         avctx->coded_width,
-                                         avctx->coded_height,
-                                         &surf);
+    vdp_st = vdp->m_vdpauConfig.context->GetProcs().vdp_video_surface_create(
+        vdp->m_vdpauConfig.context->GetDevice(), vdp->m_vdpauConfig.vdpChromaType,
+        avctx->coded_width, avctx->coded_height, &surf);
     vdp->CheckStatus(vdp_st, __LINE__);
     if (vdp_st != VDP_STATUS_OK)
     {
@@ -1029,8 +1049,8 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   pic->data[1] = pic->data[2] = NULL;
   pic->data[0] = (uint8_t*)(uintptr_t)surf;
   pic->data[3] = (uint8_t*)(uintptr_t)surf;
-  pic->linesize[0] = pic->linesize[1] =  pic->linesize[2] = 0;
-  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, FFReleaseBuffer, vdp, 0);
+  pic->linesize[0] = pic->linesize[1] = pic->linesize[2] = 0;
+  AVBufferRef* buffer = av_buffer_create(pic->data[3], 0, FFReleaseBuffer, vdp, 0);
   if (!buffer)
   {
     CLog::Log(LOGERROR, "CVDPAU::{} - error creating buffer", __FUNCTION__);
@@ -1045,9 +1065,9 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   return 0;
 }
 
-void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
+void CDecoder::FFReleaseBuffer(void* opaque, uint8_t* data)
 {
-  CDecoder *vdp = static_cast<CDecoder*>(opaque);
+  CDecoder* vdp = static_cast<CDecoder*>(opaque);
 
   VdpVideoSurface surf;
 
@@ -1058,9 +1078,11 @@ void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
   vdp->m_videoSurfaces.ClearReference(surf);
 }
 
-int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
-                     const VdpPictureInfo *info, uint32_t buffers_used,
-                     const VdpBitstreamBuffer *buffers)
+int CDecoder::Render(struct AVCodecContext* s,
+                     struct AVFrame* src,
+                     const VdpPictureInfo* info,
+                     uint32_t buffers_used,
+                     const VdpBitstreamBuffer* buffers)
 {
   ICallbackHWAccel* ctx = static_cast<ICallbackHWAccel*>(s->opaque);
   CDecoder* vdp = static_cast<CDecoder*>(ctx->GetHWAccel());
@@ -1068,10 +1090,10 @@ int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
   // while we are waiting to recover we can't do anything
   std::lock_guard lock(vdp->m_DecoderSection);
 
-  if(vdp->m_DisplayState != VDPAU_OPEN)
+  if (vdp->m_DisplayState != VDPAU_OPEN)
     return -1;
 
-  if(src->linesize[0] || src->linesize[1] || src->linesize[2])
+  if (src->linesize[0] || src->linesize[1] || src->linesize[2])
   {
     CLog::Log(LOGERROR, "CVDPAU::FFDrawSlice - invalid linesizes or offsets provided");
     return -1;
@@ -1088,27 +1110,26 @@ int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
   }
 
   uint32_t max_refs = 0;
-  if(s->codec_id == AV_CODEC_ID_H264)
+  if (s->codec_id == AV_CODEC_ID_H264)
     max_refs = s->refs;
 
-  if(vdp->m_vdpauConfig.vdpDecoder == VDP_INVALID_HANDLE
-  || vdp->m_vdpauConfigured == false
-  || vdp->m_vdpauConfig.maxReferences < max_refs)
+  if (vdp->m_vdpauConfig.vdpDecoder == VDP_INVALID_HANDLE || vdp->m_vdpauConfigured == false ||
+      vdp->m_vdpauConfig.maxReferences < max_refs)
   {
-    if(!vdp->ConfigVDPAU(s, max_refs))
+    if (!vdp->ConfigVDPAU(s, max_refs))
       return -1;
   }
 
   uint64_t startTime = CurrentHostCounter();
   uint16_t decoded, processed, rend;
   vdp->m_bufferStats.Get(decoded, processed, rend);
-  vdp_st = vdp->m_vdpauConfig.context->GetProcs().vdp_decoder_render(vdp->m_vdpauConfig.vdpDecoder,
-                                                                     surf, info, buffers_used, buffers);
+  vdp_st = vdp->m_vdpauConfig.context->GetProcs().vdp_decoder_render(
+      vdp->m_vdpauConfig.vdpDecoder, surf, info, buffers_used, buffers);
   if (vdp->CheckStatus(vdp_st, __LINE__))
     return -1;
 
   uint64_t diff = CurrentHostCounter() - startTime;
-  if (diff*1000/CurrentHostFrequency() > 30)
+  if (diff * 1000 / CurrentHostFrequency() > 30)
     CLog::Log(
         LOGDEBUG, LOGVIDEO,
         "CVDPAU::DrawSlice - VdpDecoderRender long decoding: {} ms, dec: {}, proc: {}, rend: {}",
@@ -1126,7 +1147,7 @@ void CDecoder::SetCodecControl(int flags)
     m_bufferStats.SetDraining(false);
 }
 
-CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
+CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
 {
   CDVDVideoCodec::VCReturn result = Check(avctx);
   if (result != CDVDVideoCodec::VC_NONE)
@@ -1137,7 +1158,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame
   if (!m_vdpauConfigured)
     return CDVDVideoCodec::VC_ERROR;
 
-  if(pFrame)
+  if (pFrame)
   { // we have a new frame from decoder
 
     VdpVideoSurface surf = (VdpVideoSurface)(uintptr_t)pFrame->data[3];
@@ -1150,18 +1171,18 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame
     m_videoSurfaces.MarkRender(surf);
 
     // send frame to output for processing
-    CVdpauDecodedPicture *pic = new CVdpauDecodedPicture();
+    CVdpauDecodedPicture* pic = new CVdpauDecodedPicture();
     static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&(pic->DVDPic));
     m_codecControl = pic->DVDPic.iFlags & (DVD_CODEC_CTRL_HURRY | DVD_CODEC_CTRL_NO_POSTPROC);
     pic->videoSurface = surf;
     pic->DVDPic.color_space = avctx->colorspace;
     m_bufferStats.IncDecoded();
-    CPayloadWrap<CVdpauDecodedPicture> *payload = new CPayloadWrap<CVdpauDecodedPicture>(pic);
+    CPayloadWrap<CVdpauDecodedPicture>* payload = new CPayloadWrap<CVdpauDecodedPicture>(pic);
     m_vdpauOutput.m_dataPort.SendOutMessage(COutputDataProtocol::NEWFRAME, payload);
   }
 
   uint16_t decoded, processed, render;
-  Message *msg;
+  Message* msg;
   while (m_vdpauOutput.m_controlPort.ReceiveInMessage(&msg))
   {
     if (msg->signal == COutputControlProtocol::ERROR)
@@ -1271,7 +1292,7 @@ void CDecoder::Reset()
   if (!m_vdpauConfigured)
     return;
 
-  Message *reply;
+  Message* reply;
   if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::FLUSH, &reply, 2s))
   {
     bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
@@ -1296,9 +1317,10 @@ bool CDecoder::CanSkipDeint()
   return m_bufferStats.CanSkipDeint();
 }
 
-void CDecoder::ReturnRenderPicture(CVdpauRenderPicture *renderPic)
+void CDecoder::ReturnRenderPicture(CVdpauRenderPicture* renderPic)
 {
-  m_vdpauOutput.m_dataPort.SendOutMessage(COutputDataProtocol::RETURNPIC, &renderPic, sizeof(renderPic));
+  m_vdpauOutput.m_dataPort.SendOutMessage(COutputDataProtocol::RETURNPIC, &renderPic,
+                                          sizeof(renderPic));
 }
 
 bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
@@ -1311,7 +1333,7 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
 
     m_ErrorCount++;
 
-    if(m_DisplayState == VDPAU_OPEN)
+    if (m_DisplayState == VDPAU_OPEN)
     {
       if (vdp_st == VDP_STATUS_DISPLAY_PREEMPTED)
       {
@@ -1328,17 +1350,21 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
   return false;
 }
 
-IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
- {
-   if (CDecoder::IsVDPAUFormat(fmt) && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
-     return new VDPAU::CDecoder(processInfo);
+IHardwareDecoder* CDecoder::Create(CDVDStreamInfo& hint,
+                                   CProcessInfo& processInfo,
+                                   AVPixelFormat fmt)
+{
+  if (CDecoder::IsVDPAUFormat(fmt) &&
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
+    return new VDPAU::CDecoder(processInfo);
 
-   return nullptr;
- }
+  return nullptr;
+}
 
 void CDecoder::Register()
 {
-  CVDPAUContext *context;
+  CVDPAUContext* context;
   if (!CVDPAUContext::EnsureContext(&context))
     return;
 
@@ -1393,13 +1419,13 @@ void CDecoder::Register()
 class VDPAU::CVdpauBufferPool : public IVideoBufferPool
 {
 public:
-  explicit CVdpauBufferPool(CDecoder &decoder);
+  explicit CVdpauBufferPool(CDecoder& decoder);
   ~CVdpauBufferPool() override;
   CVideoBuffer* Get() override;
   void Return(int id) override;
   CVdpauRenderPicture* GetVdpau();
   bool HasFree();
-  void QueueReturnPicture(CVdpauRenderPicture *pic);
+  void QueueReturnPicture(CVdpauRenderPicture* pic);
   CVdpauRenderPicture* ProcessSyncPicture();
   void InvalidateUsed();
 
@@ -1416,13 +1442,12 @@ protected:
   std::deque<int> freeRenderPics;
   std::deque<int> syncRenderPics;
 
-  CDecoder &m_vdpau;
+  CDecoder& m_vdpau;
 };
 
-CVdpauBufferPool::CVdpauBufferPool(CDecoder &decoder)
-  : m_vdpau(decoder)
+CVdpauBufferPool::CVdpauBufferPool(CDecoder& decoder) : m_vdpau(decoder)
 {
-  CVdpauRenderPicture *pic;
+  CVdpauRenderPicture* pic;
   for (unsigned int i = 0; i < NUM_RENDER_PICS; i++)
   {
     pic = new CVdpauRenderPicture(i);
@@ -1433,7 +1458,7 @@ CVdpauBufferPool::CVdpauBufferPool(CDecoder &decoder)
 
 CVdpauBufferPool::~CVdpauBufferPool()
 {
-  CVdpauRenderPicture *pic;
+  CVdpauRenderPicture* pic;
   for (unsigned int i = 0; i < NUM_RENDER_PICS; i++)
   {
     pic = allRenderPics[i];
@@ -1451,7 +1476,7 @@ CVideoBuffer* CVdpauBufferPool::Get()
   freeRenderPics.pop_front();
   usedRenderPics.push_back(idx);
 
-  CVideoBuffer *retPic = allRenderPics[idx];
+  CVideoBuffer* retPic = allRenderPics[idx];
   retPic->Acquire(GetPtr());
 
   m_vdpau.Acquire();
@@ -1461,7 +1486,7 @@ CVideoBuffer* CVdpauBufferPool::Get()
 
 void CVdpauBufferPool::Return(int id)
 {
-  CVdpauRenderPicture *pic = allRenderPics[id];
+  CVdpauRenderPicture* pic = allRenderPics[id];
 
   m_vdpau.ReturnRenderPicture(pic);
   m_vdpau.ReleasePicReference();
@@ -1477,7 +1502,7 @@ bool CVdpauBufferPool::HasFree()
   return !freeRenderPics.empty();
 }
 
-void CVdpauBufferPool::QueueReturnPicture(CVdpauRenderPicture *pic)
+void CVdpauBufferPool::QueueReturnPicture(CVdpauRenderPicture* pic)
 {
   std::deque<int>::iterator it;
   for (it = usedRenderPics.begin(); it != usedRenderPics.end(); ++it)
@@ -1495,9 +1520,7 @@ void CVdpauBufferPool::QueueReturnPicture(CVdpauRenderPicture *pic)
   }
 
   // check if already queued
-  std::deque<int>::iterator it2 = find(syncRenderPics.begin(),
-                                       syncRenderPics.end(),
-                                       *it);
+  std::deque<int>::iterator it2 = find(syncRenderPics.begin(), syncRenderPics.end(), *it);
   if (it2 == syncRenderPics.end())
   {
     syncRenderPics.push_back(*it);
@@ -1506,18 +1529,16 @@ void CVdpauBufferPool::QueueReturnPicture(CVdpauRenderPicture *pic)
 
 CVdpauRenderPicture* CVdpauBufferPool::ProcessSyncPicture()
 {
-  CVdpauRenderPicture *retPic = nullptr;
+  CVdpauRenderPicture* retPic = nullptr;
 
   std::deque<int>::iterator it;
-  for (it = syncRenderPics.begin(); it != syncRenderPics.end(); )
+  for (it = syncRenderPics.begin(); it != syncRenderPics.end();)
   {
     retPic = allRenderPics[*it];
 
     freeRenderPics.push_back(*it);
 
-    std::deque<int>::iterator it2 = find(usedRenderPics.begin(),
-                                         usedRenderPics.end(),
-                                         *it);
+    std::deque<int>::iterator it2 = find(usedRenderPics.begin(), usedRenderPics.end(), *it);
     if (it2 == usedRenderPics.end())
     {
       CLog::Log(LOGERROR, "COutput::ProcessSyncPicture - pic not found in queue");
@@ -1546,10 +1567,10 @@ void CVdpauBufferPool::InvalidateUsed()
 //-----------------------------------------------------------------------------
 // Mixer
 //-----------------------------------------------------------------------------
-CMixer::CMixer(CEvent *inMsgEvent) :
-  CThread("Vdpau Mixer"),
-  m_controlPort("ControlPort", inMsgEvent, &m_outMsgEvent),
-  m_dataPort("DataPort", inMsgEvent, &m_outMsgEvent)
+CMixer::CMixer(CEvent* inMsgEvent)
+  : CThread("Vdpau Mixer"),
+    m_controlPort("ControlPort", inMsgEvent, &m_outMsgEvent),
+    m_dataPort("DataPort", inMsgEvent, &m_outMsgEvent)
 {
   m_inMsgEvent = inMsgEvent;
 }
@@ -1591,14 +1612,14 @@ void CMixer::OnExit()
 
 enum MIXER_STATES
 {
-  M_TOP = 0,                      // 0
-  M_TOP_ERROR,                    // 1
-  M_TOP_UNCONFIGURED,             // 2
-  M_TOP_CONFIGURED,               // 3
-  M_TOP_CONFIGURED_WAIT1,         // 4
-  M_TOP_CONFIGURED_STEP1,         // 5
-  M_TOP_CONFIGURED_WAIT2,         // 6
-  M_TOP_CONFIGURED_STEP2,         // 7
+  M_TOP = 0, // 0
+  M_TOP_ERROR, // 1
+  M_TOP_UNCONFIGURED, // 2
+  M_TOP_CONFIGURED, // 3
+  M_TOP_CONFIGURED_WAIT1, // 4
+  M_TOP_CONFIGURED_STEP1, // 5
+  M_TOP_CONFIGURED_WAIT2, // 6
+  M_TOP_CONFIGURED_STEP2, // 7
 };
 
 int MIXER_parentStates[] = {
@@ -1612,246 +1633,247 @@ int MIXER_parentStates[] = {
     3, //TOP_CONFIGURED_STEP2
 };
 
-void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
+void CMixer::StateMachine(int signal, Protocol* port, Message* msg)
 {
-  for (int state = m_state; ; state = MIXER_parentStates[state])
+  for (int state = m_state;; state = MIXER_parentStates[state])
   {
     switch (state)
     {
-    case M_TOP: // TOP
-      if (port == &m_controlPort)
-      {
-        switch (signal)
+      case M_TOP: // TOP
+        if (port == &m_controlPort)
         {
-        case CMixerControlProtocol::FLUSH:
-          Flush();
-          msg->Reply(CMixerControlProtocol::ACC);
-          return;
-        default:
-          break;
+          switch (signal)
+          {
+            case CMixerControlProtocol::FLUSH:
+              Flush();
+              msg->Reply(CMixerControlProtocol::ACC);
+              return;
+            default:
+              break;
+          }
         }
-      }
-      {
-        std::string portName = port == NULL ? "timer" : port->portName;
-        CLog::Log(LOGWARNING, "CMixer::{} - signal: {} form port: {} not handled for state: {}",
-                  __FUNCTION__, signal, portName, m_state);
-      }
-      return;
-
-    case M_TOP_ERROR: // TOP
-      break;
-
-    case M_TOP_UNCONFIGURED:
-      if (port == &m_controlPort)
-      {
-        switch (signal)
         {
-        case CMixerControlProtocol::INIT:
-          CVdpauConfig *data;
-          data = (CVdpauConfig*)msg->data;
-          if (data)
-          {
-            m_config = *data;
-          }
-          Init();
-          if (!m_vdpError)
-          {
-            m_state = M_TOP_CONFIGURED_WAIT1;
-            msg->Reply(CMixerControlProtocol::ACC);
-          }
-          else
-          {
-            msg->Reply(CMixerControlProtocol::ERROR);
-          }
-          return;
-        default:
-          break;
+          std::string portName = port == NULL ? "timer" : port->portName;
+          CLog::Log(LOGWARNING, "CMixer::{} - signal: {} form port: {} not handled for state: {}",
+                    __FUNCTION__, signal, portName, m_state);
         }
-      }
-      break;
+        return;
 
-    case M_TOP_CONFIGURED:
-      if (port == &m_controlPort)
-      {
-        switch (signal)
+      case M_TOP_ERROR: // TOP
+        break;
+
+      case M_TOP_UNCONFIGURED:
+        if (port == &m_controlPort)
         {
-        case CMixerControlProtocol::FLUSH:
-          Flush();
-          msg->Reply(CMixerControlProtocol::ACC);
-          m_state = M_TOP_CONFIGURED_WAIT1;
-          return;
-        default:
-          break;
+          switch (signal)
+          {
+            case CMixerControlProtocol::INIT:
+              CVdpauConfig* data;
+              data = (CVdpauConfig*)msg->data;
+              if (data)
+              {
+                m_config = *data;
+              }
+              Init();
+              if (!m_vdpError)
+              {
+                m_state = M_TOP_CONFIGURED_WAIT1;
+                msg->Reply(CMixerControlProtocol::ACC);
+              }
+              else
+              {
+                msg->Reply(CMixerControlProtocol::ERROR);
+              }
+              return;
+            default:
+              break;
+          }
         }
-      }
-      else if (port == &m_dataPort)
-      {
-        switch (signal)
+        break;
+
+      case M_TOP_CONFIGURED:
+        if (port == &m_controlPort)
         {
-        case CMixerDataProtocol::FRAME:
-          CPayloadWrap<CVdpauDecodedPicture> *payload;
-          payload = dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.get());
-          if (payload)
+          switch (signal)
           {
-            m_decodedPics.push(*(payload->GetPlayload()));
+            case CMixerControlProtocol::FLUSH:
+              Flush();
+              msg->Reply(CMixerControlProtocol::ACC);
+              m_state = M_TOP_CONFIGURED_WAIT1;
+              return;
+            default:
+              break;
           }
-          m_extTimeout = 0;
-          return;
-        case CMixerDataProtocol::BUFFER:
-          VdpOutputSurface *surf;
-          surf = (VdpOutputSurface*)msg->data;
-          if (surf)
-          {
-            m_outputSurfaces.push(*surf);
-          }
-          m_extTimeout = 0;
-          return;
-        default:
-          break;
         }
-      }
-      break;
-
-    case M_TOP_CONFIGURED_WAIT1:
-      if (port == NULL) // timeout
-      {
-        switch (signal)
+        else if (port == &m_dataPort)
         {
-        case CMixerControlProtocol::TIMEOUT:
-          if (!m_decodedPics.empty() && !m_outputSurfaces.empty())
+          switch (signal)
           {
-            m_state = M_TOP_CONFIGURED_STEP1;
-            m_bStateMachineSelfTrigger = true;
+            case CMixerDataProtocol::FRAME:
+              CPayloadWrap<CVdpauDecodedPicture>* payload;
+              payload = dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.get());
+              if (payload)
+              {
+                m_decodedPics.push(*(payload->GetPlayload()));
+              }
+              m_extTimeout = 0;
+              return;
+            case CMixerDataProtocol::BUFFER:
+              VdpOutputSurface* surf;
+              surf = (VdpOutputSurface*)msg->data;
+              if (surf)
+              {
+                m_outputSurfaces.push(*surf);
+              }
+              m_extTimeout = 0;
+              return;
+            default:
+              break;
           }
-          else if (!m_outputSurfaces.empty() &&
-                   m_config.stats->IsDraining() &&
-                   m_mixerInput.size() >= 1)
-          {
-            CVdpauDecodedPicture pic;
-            pic.DVDPic.SetParams(m_mixerInput[0].DVDPic);
-            pic.videoSurface = VDP_INVALID_HANDLE;
-            m_decodedPics.push(pic);
-            m_state = M_TOP_CONFIGURED_STEP1;
-            m_bStateMachineSelfTrigger = true;
-          }
-          else
-          {
-            m_extTimeout = 100;
-          }
-          return;
-        default:
-          break;
         }
-      }
-      break;
+        break;
 
-    case M_TOP_CONFIGURED_STEP1:
-      if (port == NULL) // timeout
-      {
-        switch (signal)
+      case M_TOP_CONFIGURED_WAIT1:
+        if (port == NULL) // timeout
         {
-        case CMixerControlProtocol::TIMEOUT:
-          m_mixerInput.push_front(m_decodedPics.front());
-          m_decodedPics.pop();
-          if (m_mixerInput.size() < 2)
+          switch (signal)
           {
-            m_state = M_TOP_CONFIGURED_WAIT1;
-            m_extTimeout = 0;
-            return;
+            case CMixerControlProtocol::TIMEOUT:
+              if (!m_decodedPics.empty() && !m_outputSurfaces.empty())
+              {
+                m_state = M_TOP_CONFIGURED_STEP1;
+                m_bStateMachineSelfTrigger = true;
+              }
+              else if (!m_outputSurfaces.empty() && m_config.stats->IsDraining() &&
+                       m_mixerInput.size() >= 1)
+              {
+                CVdpauDecodedPicture pic;
+                pic.DVDPic.SetParams(m_mixerInput[0].DVDPic);
+                pic.videoSurface = VDP_INVALID_HANDLE;
+                m_decodedPics.push(pic);
+                m_state = M_TOP_CONFIGURED_STEP1;
+                m_bStateMachineSelfTrigger = true;
+              }
+              else
+              {
+                m_extTimeout = 100;
+              }
+              return;
+            default:
+              break;
           }
-          InitCycle();
-          ProcessPicture();
-          if (m_vdpError)
-          {
-            m_state = M_TOP_CONFIGURED_WAIT1;
-            m_extTimeout = 1000;
-            return;
-          }
-          if (!m_processPicture.isYuv)
-            m_outputSurfaces.pop();
-          m_config.stats->IncProcessed();
-          m_config.stats->DecDecoded();
-          m_dataPort.SendInMessage(CMixerDataProtocol::PICTURE,&m_processPicture,sizeof(m_processPicture));
-          if (m_mixersteps > 1)
-          {
-            m_state = M_TOP_CONFIGURED_WAIT2;
-            m_extTimeout = 0;
-          }
-          else
-          {
-            FiniCycle();
-            m_state = M_TOP_CONFIGURED_WAIT1;
-            m_extTimeout = 0;
-          }
-          return;
-        default:
-          break;
         }
-      }
-      break;
+        break;
 
-    case M_TOP_CONFIGURED_WAIT2:
-      if (port == NULL) // timeout
-      {
-        switch (signal)
+      case M_TOP_CONFIGURED_STEP1:
+        if (port == NULL) // timeout
         {
-        case CMixerControlProtocol::TIMEOUT:
-          if (!m_outputSurfaces.empty())
+          switch (signal)
           {
-            m_state = M_TOP_CONFIGURED_STEP2;
-            m_bStateMachineSelfTrigger = true;
+            case CMixerControlProtocol::TIMEOUT:
+              m_mixerInput.push_front(m_decodedPics.front());
+              m_decodedPics.pop();
+              if (m_mixerInput.size() < 2)
+              {
+                m_state = M_TOP_CONFIGURED_WAIT1;
+                m_extTimeout = 0;
+                return;
+              }
+              InitCycle();
+              ProcessPicture();
+              if (m_vdpError)
+              {
+                m_state = M_TOP_CONFIGURED_WAIT1;
+                m_extTimeout = 1000;
+                return;
+              }
+              if (!m_processPicture.isYuv)
+                m_outputSurfaces.pop();
+              m_config.stats->IncProcessed();
+              m_config.stats->DecDecoded();
+              m_dataPort.SendInMessage(CMixerDataProtocol::PICTURE, &m_processPicture,
+                                       sizeof(m_processPicture));
+              if (m_mixersteps > 1)
+              {
+                m_state = M_TOP_CONFIGURED_WAIT2;
+                m_extTimeout = 0;
+              }
+              else
+              {
+                FiniCycle();
+                m_state = M_TOP_CONFIGURED_WAIT1;
+                m_extTimeout = 0;
+              }
+              return;
+            default:
+              break;
           }
-          else
-          {
-            m_extTimeout = 100;
-          }
-          return;
-        default:
-          break;
         }
-      }
-      break;
+        break;
 
-    case M_TOP_CONFIGURED_STEP2:
-       if (port == NULL) // timeout
-       {
-         switch (signal)
-         {
-         case CMixerControlProtocol::TIMEOUT:
-           m_processPicture.outputSurface = m_outputSurfaces.front();
-           m_mixerstep = 1;
-           ProcessPicture();
-           if (m_vdpError)
-           {
-             m_state = M_TOP_CONFIGURED_WAIT1;
-             m_extTimeout = 1000;
-             return;
-           }
-           if (!m_processPicture.isYuv)
-             m_outputSurfaces.pop();
-           m_config.stats->IncProcessed();
-           m_dataPort.SendInMessage(CMixerDataProtocol::PICTURE,&m_processPicture,sizeof(m_processPicture));
-           FiniCycle();
-           m_state = M_TOP_CONFIGURED_WAIT1;
-           m_extTimeout = 0;
-           return;
-         default:
-           break;
-         }
-       }
-       break;
+      case M_TOP_CONFIGURED_WAIT2:
+        if (port == NULL) // timeout
+        {
+          switch (signal)
+          {
+            case CMixerControlProtocol::TIMEOUT:
+              if (!m_outputSurfaces.empty())
+              {
+                m_state = M_TOP_CONFIGURED_STEP2;
+                m_bStateMachineSelfTrigger = true;
+              }
+              else
+              {
+                m_extTimeout = 100;
+              }
+              return;
+            default:
+              break;
+          }
+        }
+        break;
 
-    default: // we are in no state, should not happen
-      CLog::Log(LOGERROR, "CMixer::{} - no valid state: {}", __FUNCTION__, m_state);
-      return;
+      case M_TOP_CONFIGURED_STEP2:
+        if (port == NULL) // timeout
+        {
+          switch (signal)
+          {
+            case CMixerControlProtocol::TIMEOUT:
+              m_processPicture.outputSurface = m_outputSurfaces.front();
+              m_mixerstep = 1;
+              ProcessPicture();
+              if (m_vdpError)
+              {
+                m_state = M_TOP_CONFIGURED_WAIT1;
+                m_extTimeout = 1000;
+                return;
+              }
+              if (!m_processPicture.isYuv)
+                m_outputSurfaces.pop();
+              m_config.stats->IncProcessed();
+              m_dataPort.SendInMessage(CMixerDataProtocol::PICTURE, &m_processPicture,
+                                       sizeof(m_processPicture));
+              FiniCycle();
+              m_state = M_TOP_CONFIGURED_WAIT1;
+              m_extTimeout = 0;
+              return;
+            default:
+              break;
+          }
+        }
+        break;
+
+      default: // we are in no state, should not happen
+        CLog::Log(LOGERROR, "CMixer::{} - no valid state: {}", __FUNCTION__, m_state);
+        return;
     }
   } // for
 }
 
 void CMixer::Process()
 {
-  Message *msg = NULL;
-  Protocol *port = NULL;
+  Message* msg = NULL;
+  Protocol* port = NULL;
   bool gotMsg;
 
   m_state = M_TOP_UNCONFIGURED;
@@ -1927,34 +1949,27 @@ void CMixer::CreateVdpauMixer()
 
   InitCSCMatrix(m_config.vidWidth);
 
-  VdpVideoMixerParameter parameters[] = {
-    VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_WIDTH,
-    VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_HEIGHT,
-    VDP_VIDEO_MIXER_PARAMETER_CHROMA_TYPE};
+  VdpVideoMixerParameter parameters[] = {VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_WIDTH,
+                                         VDP_VIDEO_MIXER_PARAMETER_VIDEO_SURFACE_HEIGHT,
+                                         VDP_VIDEO_MIXER_PARAMETER_CHROMA_TYPE};
 
-  void const * parameter_values[] = {
-    &m_config.surfaceWidth,
-    &m_config.surfaceHeight,
-    &m_config.vdpChromaType};
+  void const* parameter_values[] = {&m_config.surfaceWidth, &m_config.surfaceHeight,
+                                    &m_config.vdpChromaType};
 
-  VdpStatus vdp_st = m_config.context->GetProcs().vdp_video_mixer_create(m_config.context->GetDevice(),
-                                m_config.context->GetFeatureCount(),
-                                m_config.context->GetFeatures(),
-                                ARSIZE(parameters),
-                                parameters,
-                                parameter_values,
-                                &m_videoMixer);
+  VdpStatus vdp_st = m_config.context->GetProcs().vdp_video_mixer_create(
+      m_config.context->GetDevice(), m_config.context->GetFeatureCount(),
+      m_config.context->GetFeatures(), ARSIZE(parameters), parameters, parameter_values,
+      &m_videoMixer);
   CheckStatus(vdp_st, __LINE__);
-
 }
 
 void CMixer::InitCSCMatrix(int Width)
 {
   m_Procamp.struct_version = VDP_PROCAMP_VERSION;
-  m_Procamp.brightness     = 0.0;
-  m_Procamp.contrast       = 1.0;
-  m_Procamp.saturation     = 1.0;
-  m_Procamp.hue            = 0;
+  m_Procamp.brightness = 0.0;
+  m_Procamp.contrast = 1.0;
+  m_Procamp.saturation = 1.0;
+  m_Procamp.hue = 0;
 }
 
 void CMixer::CheckFeatures()
@@ -1965,7 +1980,7 @@ void CMixer::CheckFeatures()
     m_Upscale = m_config.upscale;
   }
   if (m_Brightness != m_config.processInfo->GetVideoSettings().m_Brightness ||
-      m_Contrast   != m_config.processInfo->GetVideoSettings().m_Contrast ||
+      m_Contrast != m_config.processInfo->GetVideoSettings().m_Contrast ||
       m_ColorMatrix != m_mixerInput[1].DVDPic.color_space)
   {
     SetColor();
@@ -2014,100 +2029,103 @@ void CMixer::PostProcOff()
   if (m_videoMixer == VDP_INVALID_HANDLE)
     return;
 
-  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
-                                     VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
-                                     VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE};
+  VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
+                                    VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
+                                    VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE};
 
-  VdpBool enabled[]={0,0,0};
-  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+  VdpBool enabled[] = {0, 0, 0};
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+      m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION};
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION};
 
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_SHARPNESS))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_SHARPNESS))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS};
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_SHARPNESS};
 
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
   DisableHQScaling();
 }
 
-bool CMixer::GenerateStudioCSCMatrix(VdpColorStandard colorStandard, VdpCSCMatrix &studioCSCMatrix)
+bool CMixer::GenerateStudioCSCMatrix(VdpColorStandard colorStandard, VdpCSCMatrix& studioCSCMatrix)
 {
-   // instead use studioCSCKCoeffs601[3], studioCSCKCoeffs709[3] to generate float[3][4] matrix (float studioCSC[3][4])
-   // m00 = mRY = red: luma factor (contrast factor) (1.0)
-   // m10 = mGY = green: luma factor (contrast factor) (1.0)
-   // m20 = mBY = blue: luma factor (contrast factor) (1.0)
-   //
-   // m01 = mRB = red: blue color diff coeff (0.0)
-   // m11 = mGB = green: blue color diff coeff (-2Kb(1-Kb)/(Kg))
-   // m21 = mBB = blue: blue color diff coeff ((1-Kb)/0.5)
-   //
-   // m02 = mRR = red: red color diff coeff ((1-Kr)/0.5)
-   // m12 = mGR = green: red color diff coeff (-2Kr(1-Kr)/(Kg))
-   // m22 = mBR = blue: red color diff coeff (0.0)
-   //
-   // m03 = mRC = red: colour zero offset (brightness factor) (-(1-Kr)/0.5 * (128/255))
-   // m13 = mGC = green: colour zero offset (brightness factor) ((256/255) * (Kb(1-Kb) + Kr(1-Kr)) / Kg)
-   // m23 = mBC = blue: colour zero offset (brightness factor) (-(1-Kb)/0.5 * (128/255))
+  // instead use studioCSCKCoeffs601[3], studioCSCKCoeffs709[3] to generate float[3][4] matrix (float studioCSC[3][4])
+  // m00 = mRY = red: luma factor (contrast factor) (1.0)
+  // m10 = mGY = green: luma factor (contrast factor) (1.0)
+  // m20 = mBY = blue: luma factor (contrast factor) (1.0)
+  //
+  // m01 = mRB = red: blue color diff coeff (0.0)
+  // m11 = mGB = green: blue color diff coeff (-2Kb(1-Kb)/(Kg))
+  // m21 = mBB = blue: blue color diff coeff ((1-Kb)/0.5)
+  //
+  // m02 = mRR = red: red color diff coeff ((1-Kr)/0.5)
+  // m12 = mGR = green: red color diff coeff (-2Kr(1-Kr)/(Kg))
+  // m22 = mBR = blue: red color diff coeff (0.0)
+  //
+  // m03 = mRC = red: colour zero offset (brightness factor) (-(1-Kr)/0.5 * (128/255))
+  // m13 = mGC = green: colour zero offset (brightness factor) ((256/255) * (Kb(1-Kb) + Kr(1-Kr)) / Kg)
+  // m23 = mBC = blue: colour zero offset (brightness factor) (-(1-Kb)/0.5 * (128/255))
 
-   // columns
-   int Y = 0;
-   int Cb = 1;
-   int Cr = 2;
-   int C = 3;
-   // rows
-   int R = 0;
-   int G = 1;
-   int B = 2;
-   // colour standard coefficients for red, geen, blue
-   float Kr, Kg, Kb;
-   // colour diff zero position (use standard 8-bit coding precision)
-   float CDZ = 128; //256*0.5
-   // range excursion (use standard 8-bit coding precision)
-   float EXC = 255; //256-1
+  // columns
+  int Y = 0;
+  int Cb = 1;
+  int Cr = 2;
+  int C = 3;
+  // rows
+  int R = 0;
+  int G = 1;
+  int B = 2;
+  // colour standard coefficients for red, geen, blue
+  float Kr, Kg, Kb;
+  // colour diff zero position (use standard 8-bit coding precision)
+  float CDZ = 128; //256*0.5
+  // range excursion (use standard 8-bit coding precision)
+  float EXC = 255; //256-1
 
-   if (colorStandard == VDP_COLOR_STANDARD_ITUR_BT_601)
-   {
-      Kr = studioCSCKCoeffs601[0];
-      Kg = studioCSCKCoeffs601[1];
-      Kb = studioCSCKCoeffs601[2];
-   }
-   else // assume VDP_COLOR_STANDARD_ITUR_BT_709
-   {
-      Kr = studioCSCKCoeffs709[0];
-      Kg = studioCSCKCoeffs709[1];
-      Kb = studioCSCKCoeffs709[2];
-   }
-   // we keep luma unscaled to retain the levels present in source so that 16-235 luma is converted to RGB 16-235
-   studioCSCMatrix[R][Y] = 1.0f;
-   studioCSCMatrix[G][Y] = 1.0f;
-   studioCSCMatrix[B][Y] = 1.0f;
+  if (colorStandard == VDP_COLOR_STANDARD_ITUR_BT_601)
+  {
+    Kr = studioCSCKCoeffs601[0];
+    Kg = studioCSCKCoeffs601[1];
+    Kb = studioCSCKCoeffs601[2];
+  }
+  else // assume VDP_COLOR_STANDARD_ITUR_BT_709
+  {
+    Kr = studioCSCKCoeffs709[0];
+    Kg = studioCSCKCoeffs709[1];
+    Kb = studioCSCKCoeffs709[2];
+  }
+  // we keep luma unscaled to retain the levels present in source so that 16-235 luma is converted to RGB 16-235
+  studioCSCMatrix[R][Y] = 1.0f;
+  studioCSCMatrix[G][Y] = 1.0f;
+  studioCSCMatrix[B][Y] = 1.0f;
 
-   studioCSCMatrix[R][Cb] = 0.0f;
-   studioCSCMatrix[G][Cb] = -2 * Kb * (1 - Kb) / Kg;
-   studioCSCMatrix[B][Cb] = (1 - Kb) / 0.5f;
+  studioCSCMatrix[R][Cb] = 0.0f;
+  studioCSCMatrix[G][Cb] = -2 * Kb * (1 - Kb) / Kg;
+  studioCSCMatrix[B][Cb] = (1 - Kb) / 0.5f;
 
-   studioCSCMatrix[R][Cr] = (1 - Kr) / 0.5f;
-   studioCSCMatrix[G][Cr] = -2 * Kr * (1 - Kr) / Kg;
-   studioCSCMatrix[B][Cr] = 0.0f;
+  studioCSCMatrix[R][Cr] = (1 - Kr) / 0.5f;
+  studioCSCMatrix[G][Cr] = -2 * Kr * (1 - Kr) / Kg;
+  studioCSCMatrix[B][Cr] = 0.0f;
 
-   studioCSCMatrix[R][C] = -1 * studioCSCMatrix[R][Cr] * CDZ / EXC;
-   studioCSCMatrix[G][C] = -1 * (studioCSCMatrix[G][Cb] + studioCSCMatrix[G][Cr]) * CDZ / EXC;
-   studioCSCMatrix[B][C] = -1 * studioCSCMatrix[B][Cb] * CDZ / EXC;
+  studioCSCMatrix[R][C] = -1 * studioCSCMatrix[R][Cr] * CDZ / EXC;
+  studioCSCMatrix[G][C] = -1 * (studioCSCMatrix[G][Cb] + studioCSCMatrix[G][Cr]) * CDZ / EXC;
+  studioCSCMatrix[B][C] = -1 * studioCSCMatrix[B][Cb] * CDZ / EXC;
 
-   return true;
+  return true;
 }
 
 void CMixer::SetColor()
@@ -2115,12 +2133,13 @@ void CMixer::SetColor()
   VdpStatus vdp_st;
 
   if (m_Brightness != m_config.processInfo->GetVideoSettings().m_Brightness)
-    m_Procamp.brightness = (float)((m_config.processInfo->GetVideoSettings().m_Brightness)-50) / 100;
+    m_Procamp.brightness =
+        (float)((m_config.processInfo->GetVideoSettings().m_Brightness) - 50) / 100;
   if (m_Contrast != m_config.processInfo->GetVideoSettings().m_Contrast)
-    m_Procamp.contrast = (float)((m_config.processInfo->GetVideoSettings().m_Contrast)+50) / 100;
+    m_Procamp.contrast = (float)((m_config.processInfo->GetVideoSettings().m_Contrast) + 50) / 100;
 
   VdpColorStandard colorStandard;
-  switch(m_mixerInput[1].DVDPic.color_space)
+  switch (m_mixerInput[1].DVDPic.color_space)
   {
     case AVCOL_SPC_BT709:
       colorStandard = VDP_COLOR_STANDARD_ITUR_BT_709;
@@ -2136,27 +2155,31 @@ void CMixer::SetColor()
     case AVCOL_SPC_UNSPECIFIED:
     case AVCOL_SPC_RGB:
     default:
-      if(m_config.surfaceWidth > 1000)
+      if (m_config.surfaceWidth > 1000)
         colorStandard = VDP_COLOR_STANDARD_ITUR_BT_709;
       else
         colorStandard = VDP_COLOR_STANDARD_ITUR_BT_601;
   }
 
-  VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
+  VdpVideoMixerAttribute attributes[] = {VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX};
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
   {
     float studioCSC[3][4];
     GenerateStudioCSCMatrix(colorStandard, studioCSC);
-    void const * pm_CSCMatrix[] = { &studioCSC };
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatrix);
+    void const* pm_CSCMatrix[] = {&studioCSC};
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(
+        m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatrix);
   }
   else
   {
-    vdp_st = m_config.context->GetProcs().vdp_generate_csc_matrix(&m_Procamp, colorStandard, &m_CSCMatrix);
-    if(vdp_st != VDP_STATUS_ERROR)
+    vdp_st = m_config.context->GetProcs().vdp_generate_csc_matrix(&m_Procamp, colorStandard,
+                                                                  &m_CSCMatrix);
+    if (vdp_st != VDP_STATUS_ERROR)
     {
-      void const * pm_CSCMatrix[] = { &m_CSCMatrix };
-      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatrix);
+      void const* pm_CSCMatrix[] = {&m_CSCMatrix};
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(
+          m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatrix);
     }
   }
 
@@ -2165,55 +2188,61 @@ void CMixer::SetColor()
 
 void CMixer::SetNoiseReduction()
 {
-  if(!m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION))
+  if (!m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION))
     return;
 
-  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION };
-  VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
+  VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION};
+  VdpVideoMixerAttribute attributes[] = {VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL};
   VdpStatus vdp_st;
 
   if (!m_config.processInfo->GetVideoSettings().m_NoiseReduction)
   {
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
     return;
   }
-  VdpBool enabled[]={1};
-  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+  VdpBool enabled[] = {1};
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+      m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
   float noiseReduction = m_config.processInfo->GetVideoSettings().m_NoiseReduction;
-  void* nr[] = { &noiseReduction };
+  void* nr[] = {&noiseReduction};
   CLog::Log(LOGINFO, "Setting Noise Reduction to {:f}",
             m_config.processInfo->GetVideoSettings().m_NoiseReduction);
-  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, nr);
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(
+      m_videoMixer, ARSIZE(attributes), attributes, nr);
   CheckStatus(vdp_st, __LINE__);
 }
 
 void CMixer::SetSharpness()
 {
-  if(!m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_SHARPNESS))
+  if (!m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_SHARPNESS))
     return;
 
-  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS };
-  VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
+  VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_SHARPNESS};
+  VdpVideoMixerAttribute attributes[] = {VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL};
   VdpStatus vdp_st;
 
   if (!m_config.processInfo->GetVideoSettings().m_Sharpness)
   {
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
     return;
   }
-  VdpBool enabled[]={1};
-  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+  VdpBool enabled[] = {1};
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+      m_videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
   float sharpness = m_config.processInfo->GetVideoSettings().m_Sharpness;
-  void* sh[] = { &sharpness };
+  void* sh[] = {&sharpness};
   CLog::Log(LOGINFO, "Setting Sharpness to {:f}",
             m_config.processInfo->GetVideoSettings().m_Sharpness);
-  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, sh);
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(
+      m_videoMixer, ARSIZE(attributes), attributes, sh);
   CheckStatus(vdp_st, __LINE__);
 }
 
@@ -2226,14 +2255,15 @@ void CMixer::SetDeinterlacing()
 
   EINTERLACEMETHOD method = m_config.processInfo->GetVideoSettings().m_InterlaceMethod;
 
-  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
-                                     VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
-                                     VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE };
+  VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
+                                    VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
+                                    VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE};
 
   if (method == VS_INTERLACEMETHOD_NONE)
   {
-    VdpBool enabled[] = {0,0,0};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    VdpBool enabled[] = {0, 0, 0};
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
   }
   else
   {
@@ -2244,33 +2274,37 @@ void CMixer::SetDeinterlacing()
       m_Deint = VS_INTERLACEMETHOD_VDPAU_TEMPORAL;
     }
 
-    if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
-    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
+    if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL ||
+        method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
     {
-      VdpBool enabled[] = {1,0,0};
+      VdpBool enabled[] = {1, 0, 0};
       if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUtelecine)
         enabled[2] = 1;
-      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+          m_videoMixer, ARSIZE(feature), feature, enabled);
     }
-    else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
-         ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
+    else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL ||
+             method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
     {
-      VdpBool enabled[] = {1,1,0};
+      VdpBool enabled[] = {1, 1, 0};
       if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUtelecine)
         enabled[2] = 1;
-      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+          m_videoMixer, ARSIZE(feature), feature, enabled);
     }
     else
     {
-      VdpBool enabled[]={0,0,0};
-      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+      VdpBool enabled[] = {0, 0, 0};
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+          m_videoMixer, ARSIZE(feature), feature, enabled);
     }
   }
   CheckStatus(vdp_st, __LINE__);
 
   SetDeintSkipChroma();
 
-  m_config.useInteropYuv = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
+  m_config.useInteropYuv = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
 
   std::string deintStr = GetDeintStrFromInterlaceMethod(method);
   // update deinterlacing method used in processInfo (none if progressive)
@@ -2279,17 +2313,21 @@ void CMixer::SetDeinterlacing()
 
 void CMixer::SetDeintSkipChroma()
 {
-  VdpVideoMixerAttribute attribute[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SKIP_CHROMA_DEINTERLACE};
+  VdpVideoMixerAttribute attribute[] = {VDP_VIDEO_MIXER_ATTRIBUTE_SKIP_CHROMA_DEINTERLACE};
   VdpStatus vdp_st;
 
   uint8_t val;
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUdeintSkipChromaHD && m_config.outHeight >= 720)
+  if (CServiceBroker::GetSettingsComponent()
+          ->GetAdvancedSettings()
+          ->m_videoVDPAUdeintSkipChromaHD &&
+      m_config.outHeight >= 720)
     val = 1;
   else
     val = 0;
 
-  void const *values[]={&val};
-  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attribute), attribute, values);
+  void const* values[] = {&val};
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(
+      m_videoMixer, ARSIZE(attribute), attribute, values);
 
   CheckStatus(vdp_st, __LINE__);
 }
@@ -2299,84 +2337,93 @@ void CMixer::SetHWUpscaling()
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
 
   VdpStatus vdp_st;
-  VdpBool enabled[]={1};
+  VdpBool enabled[] = {1};
   switch (m_config.upscale)
   {
     case 9:
-       if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9))
-       {
-          VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9 };
-          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
-          break;
-       }
-       [[fallthrough]];
+      if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9))
+      {
+        VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9};
+        vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+            m_videoMixer, ARSIZE(feature), feature, enabled);
+        break;
+      }
+      [[fallthrough]];
     case 8:
-       if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8))
-       {
-          VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8 };
-          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
-          break;
-       }
-       [[fallthrough]];
+      if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8))
+      {
+        VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8};
+        vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+            m_videoMixer, ARSIZE(feature), feature, enabled);
+        break;
+      }
+      [[fallthrough]];
     case 7:
-       if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7))
-       {
-          VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7 };
-          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
-          break;
-       }
-       [[fallthrough]];
+      if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7))
+      {
+        VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7};
+        vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+            m_videoMixer, ARSIZE(feature), feature, enabled);
+        break;
+      }
+      [[fallthrough]];
     case 6:
-       if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6))
-       {
-          VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6 };
-          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
-          break;
-       }
-       [[fallthrough]];
+      if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6))
+      {
+        VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6};
+        vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+            m_videoMixer, ARSIZE(feature), feature, enabled);
+        break;
+      }
+      [[fallthrough]];
     case 5:
-       if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5))
-       {
-          VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5 };
-          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
-          break;
-       }
-       [[fallthrough]];
+      if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5))
+      {
+        VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5};
+        vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+            m_videoMixer, ARSIZE(feature), feature, enabled);
+        break;
+      }
+      [[fallthrough]];
     case 4:
-       if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4))
-       {
-          VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4 };
-          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
-          break;
-       }
-       [[fallthrough]];
+      if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4))
+      {
+        VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4};
+        vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+            m_videoMixer, ARSIZE(feature), feature, enabled);
+        break;
+      }
+      [[fallthrough]];
     case 3:
-       if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3))
-       {
-          VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3 };
-          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
-          break;
-       }
-       [[fallthrough]];
+      if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3))
+      {
+        VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3};
+        vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+            m_videoMixer, ARSIZE(feature), feature, enabled);
+        break;
+      }
+      [[fallthrough]];
     case 2:
-       if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2))
-       {
-          VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2 };
-          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
-          break;
-       }
-       [[fallthrough]];
+      if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2))
+      {
+        VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2};
+        vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+            m_videoMixer, ARSIZE(feature), feature, enabled);
+        break;
+      }
+      [[fallthrough]];
     case 1:
-       if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
-       {
-          VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
-          vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
-          break;
-       }
-       [[fallthrough]];
+      if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
+      {
+        VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1};
+        vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+            m_videoMixer, ARSIZE(feature), feature, enabled);
+        break;
+      }
+      [[fallthrough]];
     default:
-       DisableHQScaling();
-       return;
+      DisableHQScaling();
+      return;
   }
   CheckStatus(vdp_st, __LINE__);
 #endif
@@ -2389,75 +2436,84 @@ void CMixer::DisableHQScaling()
   if (m_videoMixer == VDP_INVALID_HANDLE)
     return;
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1};
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2 };
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2};
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3 };
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3};
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4 };
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4};
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5 };
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5};
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6 };
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6};
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7 };
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7};
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8 };
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8};
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 
-  if(m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9))
+  if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9))
   {
-    VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9 };
+    VdpVideoMixerFeature feature[] = {VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9};
     VdpBool enabled[] = {};
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(
+        m_videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
 }
@@ -2475,15 +2531,17 @@ void CMixer::Init()
   m_PostProc = false;
   m_vdpError = false;
 
-  m_config.upscale = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUScaling;
-  m_config.useInteropYuv = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
+  m_config.upscale =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUScaling;
+  m_config.useInteropYuv = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
 
   CreateVdpauMixer();
 
   // update deinterlacing methods in processInfo
   std::list<EINTERLACEMETHOD> deintMethods;
   deintMethods.push_back(VS_INTERLACEMETHOD_NONE);
-  for(SInterlaceMapping* p = g_interlace_mapping; p->method != VS_INTERLACEMETHOD_NONE; p++)
+  for (SInterlaceMapping* p = g_interlace_mapping; p->method != VS_INTERLACEMETHOD_NONE; p++)
   {
     if (p->method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
       continue;
@@ -2494,7 +2552,8 @@ void CMixer::Init()
   deintMethods.push_back(VS_INTERLACEMETHOD_VDPAU_BOB);
   deintMethods.push_back(VS_INTERLACEMETHOD_RENDER_BOB);
   m_config.processInfo->UpdateDeinterlacingMethods(deintMethods);
-  m_config.processInfo->SetDeinterlacingMethodDefault(EINTERLACEMETHOD::VS_INTERLACEMETHOD_VDPAU_TEMPORAL);
+  m_config.processInfo->SetDeinterlacingMethodDefault(
+      EINTERLACEMETHOD::VS_INTERLACEMETHOD_VDPAU_TEMPORAL);
 }
 
 void CMixer::Uninit()
@@ -2521,12 +2580,12 @@ void CMixer::Flush()
     m_decodedPics.pop();
     m_config.videoSurfaces->ClearRender(pic.videoSurface);
   }
-  Message *msg;
+  Message* msg;
   while (m_dataPort.ReceiveOutMessage(&msg))
   {
     if (msg->signal == CMixerDataProtocol::FRAME)
     {
-      CPayloadWrap<CVdpauDecodedPicture> *payload;
+      CPayloadWrap<CVdpauDecodedPicture>* payload;
       payload = dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.get());
       if (payload)
       {
@@ -2536,7 +2595,7 @@ void CMixer::Flush()
     }
     else if (msg->signal == CMixerDataProtocol::BUFFER)
     {
-      VdpOutputSurface *surf;
+      VdpOutputSurface* surf;
       surf = (VdpOutputSurface*)msg->data;
       m_outputSurfaces.push(*surf);
     }
@@ -2584,22 +2643,19 @@ void CMixer::InitCycle()
   bool interlaced = m_mixerInput[1].DVDPic.iFlags & DVP_FLAG_INTERLACED;
   m_SeenInterlaceFlag |= interlaced;
 
-  if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
-      interlaced &&
-      method != VS_INTERLACEMETHOD_NONE)
+  if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) && interlaced && method != VS_INTERLACEMETHOD_NONE)
   {
     if (!m_config.processInfo->Supports(method))
       method = VS_INTERLACEMETHOD_VDPAU_TEMPORAL;
 
-    if (method == VS_INTERLACEMETHOD_VDPAU_BOB ||
-        method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL ||
+    if (method == VS_INTERLACEMETHOD_VDPAU_BOB || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL ||
         method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF ||
         method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL ||
         method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
     {
-      if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF ||
-         method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF ||
-         !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo())
+      if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF ||
+          method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF ||
+          !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo())
         m_mixersteps = 1;
       else
       {
@@ -2612,14 +2668,13 @@ void CMixer::InitCycle()
         m_mixersteps = 1;
       }
 
-      if(m_mixerInput[1].DVDPic.iFlags & DVP_FLAG_TOP_FIELD_FIRST)
+      if (m_mixerInput[1].DVDPic.iFlags & DVP_FLAG_TOP_FIELD_FIRST)
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
       else
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
 
-      m_mixerInput[1].DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
-                                        DVP_FLAG_REPEAT_TOP_FIELD |
-                                        DVP_FLAG_INTERLACED);
+      m_mixerInput[1].DVDPic.iFlags &=
+          ~(DVP_FLAG_TOP_FIELD_FIRST | DVP_FLAG_REPEAT_TOP_FIELD | DVP_FLAG_INTERLACED);
       m_mixerInput[1].isYuv = false;
       m_config.useInteropYuv = false;
     }
@@ -2640,9 +2695,8 @@ void CMixer::InitCycle()
       m_mixerInput[1].isYuv = true;
     else
     {
-      m_mixerInput[1].DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
-                                        DVP_FLAG_REPEAT_TOP_FIELD |
-                                        DVP_FLAG_INTERLACED);
+      m_mixerInput[1].DVDPic.iFlags &=
+          ~(DVP_FLAG_TOP_FIELD_FIRST | DVP_FLAG_REPEAT_TOP_FIELD | DVP_FLAG_INTERLACED);
       m_mixerInput[1].isYuv = false;
     }
   }
@@ -2658,7 +2712,8 @@ void CMixer::InitCycle()
     if (m_SeenInterlaceFlag)
     {
       double ratio = (double)m_mixerInput[1].DVDPic.iDisplayHeight / m_mixerInput[1].DVDPic.iHeight;
-      m_mixerInput[1].DVDPic.iDisplayHeight = lrint(ratio*(m_mixerInput[1].DVDPic.iHeight-NUM_CROP_PIX*2));
+      m_mixerInput[1].DVDPic.iDisplayHeight =
+          lrint(ratio * (m_mixerInput[1].DVDPic.iHeight - NUM_CROP_PIX * 2));
       m_processPicture.crop = true;
     }
   }
@@ -2680,13 +2735,12 @@ void CMixer::FiniCycle()
   // NVidia recommends num_ref + 5
   size_t surfToKeep = 5;
 
-  if (m_mixerInput.size() > 0 &&
-      (m_mixerInput[0].videoSurface == VDP_INVALID_HANDLE))
+  if (m_mixerInput.size() > 0 && (m_mixerInput[0].videoSurface == VDP_INVALID_HANDLE))
     surfToKeep = 1;
 
   while (m_mixerInput.size() > surfToKeep)
   {
-    CVdpauDecodedPicture &tmp = m_mixerInput.back();
+    CVdpauDecodedPicture& tmp = m_mixerInput.back();
     if (!m_processPicture.isYuv)
     {
       m_config.videoSurfaces->ClearRender(tmp.videoSurface);
@@ -2707,18 +2761,19 @@ void CMixer::ProcessPicture()
 
   if (m_mixerstep == 1)
   {
-    if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD)
+    if (m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD)
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
     else
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
   }
 
-  VdpVideoSurface past_surfaces[4] = { VDP_INVALID_HANDLE, VDP_INVALID_HANDLE, VDP_INVALID_HANDLE, VDP_INVALID_HANDLE };
-  VdpVideoSurface futu_surfaces[2] = { VDP_INVALID_HANDLE, VDP_INVALID_HANDLE };
+  VdpVideoSurface past_surfaces[4] = {VDP_INVALID_HANDLE, VDP_INVALID_HANDLE, VDP_INVALID_HANDLE,
+                                      VDP_INVALID_HANDLE};
+  VdpVideoSurface futu_surfaces[2] = {VDP_INVALID_HANDLE, VDP_INVALID_HANDLE};
   uint32_t pastCount = 4;
   uint32_t futuCount = 2;
 
-  if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+  if (m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
   {
     // use only 2 past 1 future for progressive/weave
     // (only used for postproc anyway eg noise reduction)
@@ -2733,7 +2788,7 @@ void CMixer::ProcessPicture()
   }
   else
   {
-    if(m_mixerstep == 0)
+    if (m_mixerstep == 0)
     { // first field
       if (m_mixerInput.size() > 3)
       {
@@ -2767,8 +2822,7 @@ void CMixer::ProcessPicture()
           m_mixerInput[1].DVDPic.pts != DVD_NOPTS_VALUE)
       {
         m_processPicture.DVDPic.pts = m_mixerInput[1].DVDPic.pts +
-                                     (m_mixerInput[0].DVDPic.pts -
-                                      m_mixerInput[1].DVDPic.pts) / 2;
+                                      (m_mixerInput[0].DVDPic.pts - m_mixerInput[1].DVDPic.pts) / 2;
       }
       else
         m_processPicture.DVDPic.pts = DVD_NOPTS_VALUE;
@@ -2790,24 +2844,12 @@ void CMixer::ProcessPicture()
   destRect.y1 = m_config.outHeight;
 
   // start vdpau video mixer
-  vdp_st = m_config.context->GetProcs().vdp_video_mixer_render(m_videoMixer,
-                                VDP_INVALID_HANDLE,
-                                0,
-                                m_mixerfield,
-                                pastCount,
-                                past_surfaces,
-                                m_mixerInput[1].videoSurface,
-                                futuCount,
-                                futu_surfaces,
-                                &sourceRect,
-                                m_processPicture.outputSurface,
-                                &destRect,
-                                &destRect,
-                                0,
-                                NULL);
+  vdp_st = m_config.context->GetProcs().vdp_video_mixer_render(
+      m_videoMixer, VDP_INVALID_HANDLE, 0, m_mixerfield, pastCount, past_surfaces,
+      m_mixerInput[1].videoSurface, futuCount, futu_surfaces, &sourceRect,
+      m_processPicture.outputSurface, &destRect, &destRect, 0, NULL);
   CheckStatus(vdp_st, __LINE__);
 }
-
 
 bool CMixer::CheckStatus(VdpStatus vdp_st, int line)
 {
@@ -2868,12 +2910,12 @@ void COutput::OnExit()
 
 enum OUTPUT_STATES
 {
-  O_TOP = 0,                      // 0
-  O_TOP_ERROR,                    // 1
-  O_TOP_UNCONFIGURED,             // 2
-  O_TOP_CONFIGURED,               // 3
-  O_TOP_CONFIGURED_IDLE,          // 4
-  O_TOP_CONFIGURED_WORK,          // 5
+  O_TOP = 0, // 0
+  O_TOP_ERROR, // 1
+  O_TOP_UNCONFIGURED, // 2
+  O_TOP_CONFIGURED, // 3
+  O_TOP_CONFIGURED_IDLE, // 4
+  O_TOP_CONFIGURED_WORK, // 5
 };
 
 int VDPAU_OUTPUT_parentStates[] = {
@@ -2885,211 +2927,212 @@ int VDPAU_OUTPUT_parentStates[] = {
     3, //TOP_CONFIGURED_WORK
 };
 
-void COutput::StateMachine(int signal, Protocol *port, Message *msg)
+void COutput::StateMachine(int signal, Protocol* port, Message* msg)
 {
-  for (int state = m_state; ; state = VDPAU_OUTPUT_parentStates[state])
+  for (int state = m_state;; state = VDPAU_OUTPUT_parentStates[state])
   {
     switch (state)
     {
-    case O_TOP: // TOP
-      if (port == &m_controlPort)
-      {
-        switch (signal)
+      case O_TOP: // TOP
+        if (port == &m_controlPort)
         {
-        case COutputControlProtocol::FLUSH:
-          msg->Reply(COutputControlProtocol::ACC);
-          return;
-        case COutputControlProtocol::PRECLEANUP:
-          msg->Reply(COutputControlProtocol::ACC);
-          return;
-        default:
-          break;
+          switch (signal)
+          {
+            case COutputControlProtocol::FLUSH:
+              msg->Reply(COutputControlProtocol::ACC);
+              return;
+            case COutputControlProtocol::PRECLEANUP:
+              msg->Reply(COutputControlProtocol::ACC);
+              return;
+            default:
+              break;
+          }
         }
-      }
-      else if (port == &m_dataPort)
-      {
-        switch (signal)
+        else if (port == &m_dataPort)
         {
-        case COutputDataProtocol::RETURNPIC:
-          CVdpauRenderPicture *pic;
-          pic = *((CVdpauRenderPicture**)msg->data);
-          QueueReturnPicture(pic);
-          return;
-        default:
-          break;
+          switch (signal)
+          {
+            case COutputDataProtocol::RETURNPIC:
+              CVdpauRenderPicture* pic;
+              pic = *((CVdpauRenderPicture**)msg->data);
+              QueueReturnPicture(pic);
+              return;
+            default:
+              break;
+          }
         }
-      }
-      {
-        std::string portName = port == NULL ? "timer" : port->portName;
-        CLog::Log(LOGWARNING, "COutput::{} - signal: {} form port: {} not handled for state: {}",
-                  __FUNCTION__, signal, portName, m_state);
-      }
-      return;
+        {
+          std::string portName = port == NULL ? "timer" : port->portName;
+          CLog::Log(LOGWARNING, "COutput::{} - signal: {} form port: {} not handled for state: {}",
+                    __FUNCTION__, signal, portName, m_state);
+        }
+        return;
 
-    case O_TOP_ERROR:
-      break;
+      case O_TOP_ERROR:
+        break;
 
-    case O_TOP_UNCONFIGURED:
-      if (port == &m_controlPort)
-      {
-        switch (signal)
+      case O_TOP_UNCONFIGURED:
+        if (port == &m_controlPort)
         {
-        case COutputControlProtocol::INIT:
-          CVdpauConfig *data;
-          data = (CVdpauConfig*)msg->data;
-          if (data)
+          switch (signal)
           {
-            m_config = *data;
-          }
-          Init();
-          Message *reply;
-          if (m_mixer.m_controlPort.SendOutMessageSync(CMixerControlProtocol::INIT, &reply, 1s,
-                                                       &m_config, sizeof(m_config)))
-          {
-            if (reply->signal != CMixerControlProtocol::ACC)
-              m_vdpError = true;
-            reply->Release();
-          }
+            case COutputControlProtocol::INIT:
+              CVdpauConfig* data;
+              data = (CVdpauConfig*)msg->data;
+              if (data)
+              {
+                m_config = *data;
+              }
+              Init();
+              Message* reply;
+              if (m_mixer.m_controlPort.SendOutMessageSync(CMixerControlProtocol::INIT, &reply, 1s,
+                                                           &m_config, sizeof(m_config)))
+              {
+                if (reply->signal != CMixerControlProtocol::ACC)
+                  m_vdpError = true;
+                reply->Release();
+              }
 
-          // set initial number of
-          m_bufferPool->numOutputSurfaces = 4;
-          EnsureBufferPool();
-          if (!m_vdpError)
-          {
-            m_state = O_TOP_CONFIGURED_IDLE;
-            msg->Reply(COutputControlProtocol::ACC, &m_config, sizeof(m_config));
+              // set initial number of
+              m_bufferPool->numOutputSurfaces = 4;
+              EnsureBufferPool();
+              if (!m_vdpError)
+              {
+                m_state = O_TOP_CONFIGURED_IDLE;
+                msg->Reply(COutputControlProtocol::ACC, &m_config, sizeof(m_config));
+              }
+              else
+              {
+                m_state = O_TOP_ERROR;
+                msg->Reply(COutputControlProtocol::ERROR);
+              }
+              return;
+            default:
+              break;
           }
-          else
-          {
-            m_state = O_TOP_ERROR;
-            msg->Reply(COutputControlProtocol::ERROR);
-          }
-          return;
-        default:
-          break;
         }
-      }
-      break;
+        break;
 
-    case O_TOP_CONFIGURED:
-      if (port == &m_controlPort)
-      {
-        switch (signal)
+      case O_TOP_CONFIGURED:
+        if (port == &m_controlPort)
         {
-        case COutputControlProtocol::FLUSH:
-          Flush();
-          msg->Reply(COutputControlProtocol::ACC);
-          return;
-        case COutputControlProtocol::PRECLEANUP:
-          Flush();
-          PreCleanup();
-          msg->Reply(COutputControlProtocol::ACC);
-          return;
-        default:
-          break;
-        }
-      }
-      else if (port == &m_dataPort)
-      {
-        switch (signal)
-        {
-        case COutputDataProtocol::NEWFRAME:
-          CPayloadWrap<CVdpauDecodedPicture> *payload;
-          payload = dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.release());
-          if (payload)
+          switch (signal)
           {
-            m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::FRAME, payload);
+            case COutputControlProtocol::FLUSH:
+              Flush();
+              msg->Reply(COutputControlProtocol::ACC);
+              return;
+            case COutputControlProtocol::PRECLEANUP:
+              Flush();
+              PreCleanup();
+              msg->Reply(COutputControlProtocol::ACC);
+              return;
+            default:
+              break;
           }
-          return;
-        case COutputDataProtocol::RETURNPIC:
-          CVdpauRenderPicture *pic;
-          pic = *((CVdpauRenderPicture**)msg->data);
-          QueueReturnPicture(pic);
-          m_controlPort.SendInMessage(COutputControlProtocol::STATS);
-          m_state = O_TOP_CONFIGURED_WORK;
-          m_extTimeout = 0;
-          return;
-        default:
-          break;
         }
-      }
-      else if (port == &m_mixer.m_dataPort)
-      {
-        switch (signal)
+        else if (port == &m_dataPort)
         {
-        case CMixerDataProtocol::PICTURE:
-          CVdpauProcessedPicture *pic;
-          pic = (CVdpauProcessedPicture*)msg->data;
-          m_bufferPool->processedPics.push(*pic);
-          m_state = O_TOP_CONFIGURED_WORK;
-          m_extTimeout = 0;
-          return;
-        default:
-          break;
+          switch (signal)
+          {
+            case COutputDataProtocol::NEWFRAME:
+              CPayloadWrap<CVdpauDecodedPicture>* payload;
+              payload =
+                  dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.release());
+              if (payload)
+              {
+                m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::FRAME, payload);
+              }
+              return;
+            case COutputDataProtocol::RETURNPIC:
+              CVdpauRenderPicture* pic;
+              pic = *((CVdpauRenderPicture**)msg->data);
+              QueueReturnPicture(pic);
+              m_controlPort.SendInMessage(COutputControlProtocol::STATS);
+              m_state = O_TOP_CONFIGURED_WORK;
+              m_extTimeout = 0;
+              return;
+            default:
+              break;
+          }
         }
-      }
-      break;
+        else if (port == &m_mixer.m_dataPort)
+        {
+          switch (signal)
+          {
+            case CMixerDataProtocol::PICTURE:
+              CVdpauProcessedPicture* pic;
+              pic = (CVdpauProcessedPicture*)msg->data;
+              m_bufferPool->processedPics.push(*pic);
+              m_state = O_TOP_CONFIGURED_WORK;
+              m_extTimeout = 0;
+              return;
+            default:
+              break;
+          }
+        }
+        break;
 
-    case O_TOP_CONFIGURED_IDLE:
-      if (port == NULL) // timeout
-      {
-        switch (signal)
+      case O_TOP_CONFIGURED_IDLE:
+        if (port == NULL) // timeout
         {
-        case COutputControlProtocol::TIMEOUT:
-          m_extTimeout = 100;
-          if (HasWork())
+          switch (signal)
           {
-            m_state = O_TOP_CONFIGURED_WORK;
-            m_extTimeout = 0;
+            case COutputControlProtocol::TIMEOUT:
+              m_extTimeout = 100;
+              if (HasWork())
+              {
+                m_state = O_TOP_CONFIGURED_WORK;
+                m_extTimeout = 0;
+              }
+              return;
+            default:
+              break;
           }
-          return;
-        default:
-          break;
         }
-      }
-      break;
+        break;
 
-    case O_TOP_CONFIGURED_WORK:
-      if (port == NULL) // timeout
-      {
-        switch (signal)
+      case O_TOP_CONFIGURED_WORK:
+        if (port == NULL) // timeout
         {
-        case COutputControlProtocol::TIMEOUT:
-          if (HasWork())
+          switch (signal)
           {
-            CVdpauRenderPicture *pic;
-            pic = ProcessMixerPicture();
-            if (pic)
-            {
-              m_config.stats->DecProcessed();
-              m_config.stats->IncRender();
-              m_dataPort.SendInMessage(COutputDataProtocol::PICTURE, &pic, sizeof(pic));
-            }
-            m_extTimeout = 1;
+            case COutputControlProtocol::TIMEOUT:
+              if (HasWork())
+              {
+                CVdpauRenderPicture* pic;
+                pic = ProcessMixerPicture();
+                if (pic)
+                {
+                  m_config.stats->DecProcessed();
+                  m_config.stats->IncRender();
+                  m_dataPort.SendInMessage(COutputDataProtocol::PICTURE, &pic, sizeof(pic));
+                }
+                m_extTimeout = 1;
+              }
+              else
+              {
+                m_state = O_TOP_CONFIGURED_IDLE;
+                m_extTimeout = 0;
+              }
+              return;
+            default:
+              break;
           }
-          else
-          {
-            m_state = O_TOP_CONFIGURED_IDLE;
-            m_extTimeout = 0;
-          }
-          return;
-        default:
-          break;
         }
-      }
-      break;
+        break;
 
-    default: // we are in no state, should not happen
-      CLog::Log(LOGERROR, "COutput::{} - no valid state: {}", __FUNCTION__, m_state);
-      return;
+      default: // we are in no state, should not happen
+        CLog::Log(LOGERROR, "COutput::{} - no valid state: {}", __FUNCTION__, m_state);
+        return;
     }
   } // for
 }
 
 void COutput::Process()
 {
-  Message *msg = NULL;
-  Protocol *port = NULL;
+  Message* msg = NULL;
+  Protocol* port = NULL;
   bool gotMsg;
 
   m_state = O_TOP_UNCONFIGURED;
@@ -3185,7 +3228,7 @@ void COutput::Flush()
 {
   if (m_mixer.IsActive())
   {
-    Message *reply;
+    Message* reply;
     if (m_mixer.m_controlPort.SendOutMessageSync(CMixerControlProtocol::FLUSH, &reply, 2s))
     {
       reply->Release();
@@ -3194,13 +3237,13 @@ void COutput::Flush()
       CLog::Log(LOGERROR, "Coutput::{} - failed to flush mixer", __FUNCTION__);
   }
 
-  Message *msg;
+  Message* msg;
 
   while (m_dataPort.ReceiveInMessage(&msg))
   {
     if (msg->signal == COutputDataProtocol::PICTURE)
     {
-      CVdpauRenderPicture *pic;
+      CVdpauRenderPicture* pic;
       pic = *((CVdpauRenderPicture**)msg->data);
       pic->Release();
     }
@@ -3211,7 +3254,7 @@ void COutput::Flush()
   {
     if (msg->signal == COutputDataProtocol::NEWFRAME)
     {
-      CPayloadWrap<CVdpauDecodedPicture> *payload;
+      CPayloadWrap<CVdpauDecodedPicture>* payload;
       payload = dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.get());
       if (payload)
       {
@@ -3221,7 +3264,7 @@ void COutput::Flush()
     }
     else if (msg->signal == COutputDataProtocol::RETURNPIC)
     {
-      CVdpauRenderPicture *pic;
+      CVdpauRenderPicture* pic;
       pic = *((CVdpauRenderPicture**)msg->data);
       QueueReturnPicture(pic);
     }
@@ -3239,7 +3282,7 @@ void COutput::Flush()
   }
 
   // reset used render flag which was cleared on mixer flush
-  for (auto &awayPic : m_bufferPool->processedPicsAway)
+  for (auto& awayPic : m_bufferPool->processedPicsAway)
   {
     if (awayPic.isYuv)
     {
@@ -3248,12 +3291,13 @@ void COutput::Flush()
   }
 
   // clear processed pics
-  while(!m_bufferPool->processedPics.empty())
+  while (!m_bufferPool->processedPics.empty())
   {
     CVdpauProcessedPicture procPic = m_bufferPool->processedPics.front();
     if (!procPic.isYuv)
     {
-      m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &procPic.outputSurface, sizeof(procPic.outputSurface));
+      m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &procPic.outputSurface,
+                                        sizeof(procPic.outputSurface));
     }
     else
     {
@@ -3272,7 +3316,7 @@ bool COutput::HasWork()
 
 CVdpauRenderPicture* COutput::ProcessMixerPicture()
 {
-  CVdpauRenderPicture *retPic = NULL;
+  CVdpauRenderPicture* retPic = NULL;
 
   if (!m_bufferPool->processedPics.empty() && m_bufferPool->HasFree())
   {
@@ -3313,7 +3357,7 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
   return retPic;
 }
 
-void COutput::QueueReturnPicture(CVdpauRenderPicture *pic)
+void COutput::QueueReturnPicture(CVdpauRenderPicture* pic)
 {
   m_bufferPool->QueueReturnPicture(pic);
   ProcessSyncPicture();
@@ -3321,7 +3365,7 @@ void COutput::QueueReturnPicture(CVdpauRenderPicture *pic)
 
 void COutput::ProcessSyncPicture()
 {
-  CVdpauRenderPicture *pic;
+  CVdpauRenderPicture* pic;
 
   pic = m_bufferPool->ProcessSyncPicture();
 
@@ -3332,9 +3376,10 @@ void COutput::ProcessSyncPicture()
   }
 }
 
-void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
+void COutput::ProcessReturnPicture(CVdpauRenderPicture* pic)
 {
-  for (auto it=m_bufferPool->processedPicsAway.begin(); it!=m_bufferPool->processedPicsAway.end(); ++it)
+  for (auto it = m_bufferPool->processedPicsAway.begin();
+       it != m_bufferPool->processedPicsAway.end(); ++it)
   {
     if (it->id == pic->procPic.id)
     {
@@ -3364,17 +3409,14 @@ bool COutput::EnsureBufferPool()
   VdpOutputSurface outputSurface;
   for (int i = m_bufferPool->outputSurfaces.size(); i < m_bufferPool->numOutputSurfaces; i++)
   {
-    vdp_st = m_config.context->GetProcs().vdp_output_surface_create(m_config.context->GetDevice(),
-                                      VDP_RGBA_FORMAT_B8G8R8A8,
-                                      m_config.outWidth,
-                                      m_config.outHeight,
-                                      &outputSurface);
+    vdp_st = m_config.context->GetProcs().vdp_output_surface_create(
+        m_config.context->GetDevice(), VDP_RGBA_FORMAT_B8G8R8A8, m_config.outWidth,
+        m_config.outHeight, &outputSurface);
     if (CheckStatus(vdp_st, __LINE__))
       return false;
     m_bufferPool->outputSurfaces.push_back(outputSurface);
 
-    m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER,
-                                      &outputSurface,
+    m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &outputSurface,
                                       sizeof(VdpOutputSurface));
     CLog::Log(LOGINFO, "VDPAU::COutput::InitBufferPool - Output Surface created");
   }
@@ -3391,7 +3433,8 @@ void COutput::ReleaseBufferPool()
   {
     if (m_bufferPool->outputSurfaces[i] == VDP_INVALID_HANDLE)
       continue;
-    vdp_st = m_config.context->GetProcs().vdp_output_surface_destroy(m_bufferPool->outputSurfaces[i]);
+    vdp_st =
+        m_config.context->GetProcs().vdp_output_surface_destroy(m_bufferPool->outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
   }
   m_bufferPool->outputSurfaces.clear();
@@ -3414,7 +3457,7 @@ void COutput::PreCleanup()
 
     // check if output surface is in use
     bool used = false;
-    for (auto &picAway : m_bufferPool->processedPicsAway)
+    for (auto& picAway : m_bufferPool->processedPicsAway)
     {
       if (picAway.outputSurface == m_bufferPool->outputSurfaces[i])
       {
@@ -3425,21 +3468,20 @@ void COutput::PreCleanup()
     if (used)
       continue;
 
-    vdp_st = m_config.context->GetProcs().vdp_output_surface_destroy(m_bufferPool->outputSurfaces[i]);
+    vdp_st =
+        m_config.context->GetProcs().vdp_output_surface_destroy(m_bufferPool->outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
 
     m_bufferPool->outputSurfaces[i] = VDP_INVALID_HANDLE;
     CLog::Log(LOGDEBUG, LOGVIDEO, "VDPAU::PreCleanup - released output surface");
   }
-
 }
 
 void COutput::InitMixer()
 {
   for (unsigned int i = 0; i < m_bufferPool->outputSurfaces.size(); ++i)
   {
-    m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER,
-                                      &m_bufferPool->outputSurfaces[i],
+    m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &m_bufferPool->outputSurfaces[i],
                                       sizeof(VdpOutputSurface));
   }
 }

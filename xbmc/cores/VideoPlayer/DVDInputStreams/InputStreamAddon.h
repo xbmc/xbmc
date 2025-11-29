@@ -17,8 +17,7 @@
 #include <memory>
 #include <vector>
 
-class CInputStreamProvider
-  : public ADDON::IAddonProvider
+class CInputStreamProvider : public ADDON::IAddonProvider
 {
 public:
   CInputStreamProvider(const ADDON::AddonInfoPtr& addonInfo, KODI_HANDLE parentInstance);
@@ -33,14 +32,13 @@ private:
 };
 
 //! \brief Input stream class
-class CInputStreamAddon
-  : public ADDON::IAddonInstanceHandler
-  , public CDVDInputStream
-  , public CDVDInputStream::IDisplayTime
-  , public CDVDInputStream::ITimes
-  , public CDVDInputStream::IPosTime
-  , public CDVDInputStream::IDemux
-  , public CDVDInputStream::IChapter
+class CInputStreamAddon : public ADDON::IAddonInstanceHandler,
+                          public CDVDInputStream,
+                          public CDVDInputStream::IDisplayTime,
+                          public CDVDInputStream::ITimes,
+                          public CDVDInputStream::IPosTime,
+                          public CDVDInputStream::IDemux,
+                          public CDVDInputStream::IChapter
 {
 public:
   CInputStreamAddon(const ADDON::AddonInfoPtr& addonInfo,
@@ -69,7 +67,7 @@ public:
 
   // ITime
   CDVDInputStream::ITimes* GetITimes() override;
-  bool GetTimes(Times &times) override;
+  bool GetTimes(Times& times) override;
 
   // IPosTime
   CDVDInputStream::IPosTime* GetIPosTime() override;

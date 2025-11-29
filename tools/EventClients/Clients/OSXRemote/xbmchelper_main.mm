@@ -64,47 +64,48 @@ void usage(void)
 //----------------------------------------------------------------------------
 void ReadConfig()
 {
-	// Compute filename.
+  // Compute filename.
   std::string strFile = getenv("HOME");
   strFile += "/Library/Application Support/Kodi/XBMCHelper.conf";
 
-	// Open file.
+  // Open file.
   std::ifstream ifs(strFile.c_str());
-	if (!ifs)
-		return;
+  if (!ifs)
+    return;
 
-	// Read file.
-	stringstream oss;
-	oss << ifs.rdbuf();
+  // Read file.
+  stringstream oss;
+  oss << ifs.rdbuf();
 
-	if (!ifs && !ifs.eof())
-		return;
+  if (!ifs && !ifs.eof())
+    return;
 
-	// Tokenize.
-	string strData(oss.str());
-	istringstream is(strData);
-	vector<string> args = vector<string>(istream_iterator<string>(is), istream_iterator<string>());
+  // Tokenize.
+  string strData(oss.str());
+  istringstream is(strData);
+  vector<string> args = vector<string>(istream_iterator<string>(is), istream_iterator<string>());
 
-	// Convert to char**.
-	int argc = args.size() + 1;
-	char** argv = new char*[argc + 1];
-	int i = 0;
-	argv[i++] = (char*)"XBMCHelper";
+  // Convert to char**.
+  int argc = args.size() + 1;
+  char** argv = new char*[argc + 1];
+  int i = 0;
+  argv[i++] = (char*)"XBMCHelper";
 
-	for (vector<string>::iterator it = args.begin(); it != args.end(); ){
+
+  for (vector<string>::iterator it = args.begin(); it != args.end(); ){
     //fixup the arguments, here: remove '"' like bash would normally do
     std::string::size_type j = 0;
     while ((j = it->find("\"", j)) != std::string::npos )
       it->replace(j, 1, "");
-		argv[i++] = (char* )(*it++).c_str();
+    argv[i++] = (char* )(*it++).c_str();
   }
 
-	argv[i] = 0;
+  argv[i] = 0;
 
-	// Parse the arguments.
-	ParseOptions(argc, argv);
+  // Parse the arguments.
+  ParseOptions(argc, argv);
 
-	delete[] argv;
+  delete[] argv;
 }
 
 //----------------------------------------------------------------------------
@@ -113,7 +114,7 @@ void ParseOptions(int argc, char** argv)
   NSString *tmpStr = nil;
   int c, option_index = 0;
   //set the defaults
-	bool readExternal = false;
+  bool readExternal = false;
   g_server_address = "localhost";
   g_server_port = 9777;
   g_mode = DEFAULT_MODE;
@@ -124,7 +125,7 @@ void ParseOptions(int argc, char** argv)
   NSLog(@"ParseOptions - force VerboseMode on");
 
   while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1)
-	{
+  {
     switch (c) {
       case 'h':
         usage();
@@ -179,8 +180,8 @@ void ParseOptions(int argc, char** argv)
   optreset = 1;
   optind = 0;
 
-	if (readExternal == true)
-		ReadConfig();
+  if (readExternal == true)
+    ReadConfig();
 
 }
 

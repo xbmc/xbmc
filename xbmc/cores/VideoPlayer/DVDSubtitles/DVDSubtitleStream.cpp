@@ -28,14 +28,16 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
 {
   CFileItem item(strFile, false);
   item.SetContentLookup(false);
-  std::shared_ptr<CDVDInputStream> pInputStream(CDVDFactoryInputStream::CreateInputStream(nullptr, item));
+  std::shared_ptr<CDVDInputStream> pInputStream(
+      CDVDFactoryInputStream::CreateInputStream(nullptr, item));
   if (pInputStream && pInputStream->Open())
   {
     // prepare buffer
     size_t totalread = 0;
     std::vector<uint8_t> buf(1024);
 
-    if (URIUtils::HasExtension(strFile, ".sub") && IsIncompatible(pInputStream.get(), buf, &totalread))
+    if (URIUtils::HasExtension(strFile, ".sub") &&
+        IsIncompatible(pInputStream.get(), buf, &totalread))
     {
       CLog::Log(LOGDEBUG,
                 "{}: file {} seems to be a vob sub"
@@ -100,7 +102,7 @@ bool CDVDSubtitleStream::IsIncompatible(CDVDInputStream* pInputStream,
   if (!pInputStream)
     return true;
 
-  static const uint8_t vobsub[] = { 0x00, 0x00, 0x01, 0xBA };
+  static const uint8_t vobsub[] = {0x00, 0x00, 0x01, 0xBA};
 
   int read = pInputStream->Read(buf.data(), static_cast<int>(buf.size()));
 

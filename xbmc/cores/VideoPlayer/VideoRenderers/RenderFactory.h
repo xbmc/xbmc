@@ -17,7 +17,7 @@
 namespace VIDEOPLAYER
 {
 
-typedef CBaseRenderer* (*CreateRenderer)(CVideoBuffer *buffer);
+typedef CBaseRenderer* (*CreateRenderer)(CVideoBuffer* buffer);
 
 class CRendererFactory
 {
@@ -29,8 +29,7 @@ public:
   static void ClearRenderer();
 
 protected:
-
   static std::map<std::string, VIDEOPLAYER::CreateRenderer> m_renderers;
 };
 
-}
+} // namespace VIDEOPLAYER

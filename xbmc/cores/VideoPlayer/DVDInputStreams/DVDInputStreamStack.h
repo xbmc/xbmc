@@ -27,7 +27,6 @@ public:
   int64_t GetLength() override;
 
 protected:
-
   typedef std::shared_ptr<XFILE::CFile> TFile;
 
   struct TSeg
@@ -38,8 +37,8 @@ protected:
 
   typedef std::vector<TSeg> TSegVec;
 
-  TSegVec m_files;  ///< collection of open ptr's to all files in stack
-  TFile m_file;   ///< currently active file
+  TSegVec m_files; ///< collection of open ptr's to all files in stack
+  TFile m_file; ///< currently active file
   bool m_eof;
   int64_t m_pos;
   int64_t m_length;

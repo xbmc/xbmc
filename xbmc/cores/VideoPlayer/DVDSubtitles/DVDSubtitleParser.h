@@ -28,8 +28,7 @@ public:
   virtual const std::string& GetName() const = 0;
 };
 
-class CDVDSubtitleParserCollection
-  : public CDVDSubtitleParser
+class CDVDSubtitleParserCollection : public CDVDSubtitleParser
 {
 public:
   explicit CDVDSubtitleParserCollection(const std::string& strFile) : m_filename(strFile) {}
@@ -37,7 +36,7 @@ public:
   std::shared_ptr<CDVDOverlay> Parse(double iPts) override
   {
     std::shared_ptr<CDVDOverlay> o = m_collection.Get(iPts);
-    if(o == nullptr)
+    if (o == nullptr)
       return o;
     return o->Clone();
   }
@@ -48,8 +47,7 @@ protected:
   std::string m_filename;
 };
 
-class CDVDSubtitleParserText
-     : public CDVDSubtitleParserCollection
+class CDVDSubtitleParserText : public CDVDSubtitleParserCollection
 {
 public:
   CDVDSubtitleParserText(std::unique_ptr<CDVDSubtitleStream>&& stream,
@@ -70,7 +68,7 @@ protected:
   using CDVDSubtitleParserCollection::Open;
   bool Open()
   {
-    if(m_pStream)
+    if (m_pStream)
     {
       if (m_pStream->Seek(0))
         return true;
