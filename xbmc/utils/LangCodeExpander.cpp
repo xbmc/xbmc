@@ -606,7 +606,9 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
   return lang;
 }
 
-bool CLangCodeExpander::ConvertToAudioBcp47(const std::string& text, std::string& bcp47Lang)
+bool CLangCodeExpander::ConvertToBcp47(const std::string& text,
+                                       std::string& bcp47Lang,
+                                       CLangCodeExpander::Bcp47Usage use)
 {
   std::string code{text};
   StringUtils::Trim(code);
@@ -621,7 +623,10 @@ bool CLangCodeExpander::ConvertToAudioBcp47(const std::string& text, std::string
     if (tag->IsValid())
     {
       tag->Canonicalize();
-      tag->ToAudioLanguageTag();
+
+      if (use == CLangCodeExpander::Bcp47Usage::USAGE_AUDIO)
+        tag->ToAudioLanguageTag();
+
       bcp47Lang = tag->Format();
       return true;
     }

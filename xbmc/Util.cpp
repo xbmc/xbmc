@@ -2197,13 +2197,13 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
 
       if (info.language.empty())
       {
-        std::string langCode;
         // try to recognize language
-        if (g_LangCodeExpander.ConvertToISO6392B(*it, langCode))
-        {
-          info.language = langCode;
+        std::string langCode = *it;
+        // _ is used in BCP47 tags as subtag separator instead of - since - is a token separator.
+        // Convert back to - separator to parse.
+        std::ranges::replace(langCode, '_', '-');
+        if (g_LangCodeExpander.ConvertToBcp47(langCode, info.language))
           continue;
-        }
       }
 
       name = (*it) + " " + name;

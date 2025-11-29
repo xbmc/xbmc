@@ -41,6 +41,12 @@ public:
     INCLUDE_ADDONS_USERDEFINED,
   };
 
+  enum class Bcp47Usage
+  {
+    USAGE_AUDIO,
+    USAGE_OTHER,
+  };
+
   void LoadUserCodes(const TiXmlElement* pRootElement);
   void Clear();
 
@@ -151,12 +157,16 @@ public:
   /*
    * \brief Converts a language given as 2-Char (ISO 639-1),
    *        3-Char (ISO 639-2/T, ISO 639-2/B), BCP 47 language tag
-   *        or full English name string to a BCP 47 tag describing audio content.
+   *        or full English name string to a BCP 47 tag.
    * \param[in] text The language to convert
    * \param[out] bcp47 The BCP47 language tag
+   * \param[in] use Planned usage for the tag (ex. for audio media, a script is not relevant and
+   *            will be filtered out)
    * \return true if the conversion succeeded, false otherwise.
    */
-  bool ConvertToAudioBcp47(const std::string& text, std::string& bcp47);
+  bool ConvertToBcp47(const std::string& text,
+                      std::string& bcp47,
+                      Bcp47Usage use = Bcp47Usage::USAGE_OTHER);
 
 protected:
   static bool LookupInISO639Tables(const std::string& code, std::string& desc);
