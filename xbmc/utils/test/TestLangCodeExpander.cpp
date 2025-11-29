@@ -70,10 +70,11 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
   EXPECT_EQ(refstr, varstr);
 
   // win_id != iso639_2b
-  refstr = "fra";
+  refstr = "fre";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("fra", varstr, true));
   EXPECT_EQ(refstr, varstr);
 
+  //! \todo analyze, v.suspicious. What old situation required matching languages with regions?
   // Region code
   refstr = "bol";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("bol", varstr));
@@ -175,13 +176,7 @@ TEST(TestLangCodeExpander, ConvertToISO6392T)
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392T("deu", varstr, true));
   EXPECT_EQ(refstr, varstr);
 
-  // Should return deu instead of failing. Side effect of failure in Convert but maybe happens for historical reasons and something
-  // relies on that.
-  // For some reason, the function allows the language code to match with the region 'deu',
-  // but since it's not a valid ISO639-2/B code, it cannot be translated to its ISO-639-2/T code
-  refstr = "invalid";
-  varstr = "invalid";
-  EXPECT_FALSE(g_LangCodeExpander.ConvertToISO6392T("deu", varstr));
+  EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392T("deu", varstr));
   EXPECT_EQ(refstr, varstr);
 }
 

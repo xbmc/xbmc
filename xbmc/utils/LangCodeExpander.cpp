@@ -148,10 +148,7 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
     std::string charCode(strCharCode);
     StringUtils::ToLower(charCode);
 
-    if (std::ranges::binary_search(LanguageCodesByIso639_2b, charCode, {}, &ISO639::iso639_2b) ||
-        (checkWin32Locales &&
-         std::ranges::binary_search(LanguageCodesByWin_Id, charCode, {}, &ISO639::win_id)) ||
-        CIso3166_1::ContainsAlpha3(charCode))
+    if (std::ranges::binary_search(LanguageCodesByIso639_2b, charCode, {}, &ISO639::iso639_2b))
     {
       strISO6392B = charCode;
       return true;
@@ -160,6 +157,25 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
     if (const auto bCode{CIso639_2::TCodeToBCode(charCode)}; bCode.has_value())
     {
       strISO6392B = bCode.value();
+      return true;
+    }
+
+    if (checkWin32Locales)
+    {
+      const auto it =
+          std::ranges::lower_bound(LanguageCodesByWin_Id, charCode, {}, &ISO639::win_id);
+      if (it != LanguageCodesByWin_Id.end() && it->win_id == charCode)
+      {
+        strISO6392B = it->iso639_2b;
+        return true;
+      }
+    }
+
+    // Match against country last to avoid stealing possible matches from previous conditions
+    //! @todo what's this legacy logic for?
+    if (CIso3166_1::ContainsAlpha3(charCode))
+    {
+      strISO6392B = charCode;
       return true;
     }
   }
