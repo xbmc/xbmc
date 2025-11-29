@@ -1,15 +1,8 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile 01-static-lib.patch ../../download-files.include
+include ../../Makefile.include GIFLIB-VERSION ../../download-files.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-
-# lib name, version
-LIBNAME=giflib
-VERSION=5.2.1
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=4550e53c21cb1191a4581e363fc9d0610da53f7898ca8320f0d3ef6711e76bdda2609c2df15dc94c45e28bff8de441f1227ec2da7ea827cb3c0405af4faa4736
-include ../../download-files.include
+DEPS = ../../Makefile.include GIFLIB-VERSION Makefile ../../download-files.include \
+                          01-static-lib.patch
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
