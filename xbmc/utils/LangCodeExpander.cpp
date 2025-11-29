@@ -179,9 +179,12 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
     }
 
     // Try search on language addons
-    strISO6392B = g_langInfo.ConvertEnglishNameToAddonLocale(strCharCode);
-    if (!strISO6392B.empty())
+    if (const std::string addonLang = g_langInfo.ConvertEnglishNameToAddonLocale(strCharCode);
+        !addonLang.empty())
+    {
+      strISO6392B = addonLang;
       return true;
+    }
   }
   return false;
 }
@@ -385,10 +388,12 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
   }
 
   // Find on language addons
-  code = g_langInfo.ConvertEnglishNameToAddonLocale(descTmp);
-  if (!code.empty())
+  if (const std::string addonLang = g_langInfo.ConvertEnglishNameToAddonLocale(descTmp);
+      !addonLang.empty())
+  {
+    code = addonLang;
     return true;
-
+  }
   return false;
 }
 

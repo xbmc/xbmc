@@ -88,6 +88,9 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
   EXPECT_FALSE(g_LangCodeExpander.ConvertToISO6392B("aaa", varstr));
   EXPECT_EQ(refstr, varstr);
 
+  EXPECT_FALSE(g_LangCodeExpander.ConvertToISO6392B("en-US", varstr));
+  EXPECT_EQ(refstr, varstr);
+
   // Full english name, case insensitive
   refstr = "eng";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("English", varstr, true));
@@ -96,11 +99,6 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
   refstr = "eng";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("english", varstr, true));
   EXPECT_EQ(refstr, varstr);
-
-  // Existing bug
-  //refstr = "ger";
-  //EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("deu", varstr));
-  //EXPECT_EQ(refstr, varstr);
 }
 
 TEST(TestLangCodeExpander, ConvertToISO6391)
