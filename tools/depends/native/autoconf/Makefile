@@ -1,15 +1,7 @@
-include ../../Makefile.include
+include ../../Makefile.include AUTOCONF-VERSION ../../download-files.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile ../../download-files.include
-
-# lib name, version
-LIBNAME=autoconf
-VERSION=2.71
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.xz
-SHA512=73d32b4adcbe24e3bafa9f43f59ed3b6efbd3de0f194e5ec90375f35da1199c583f5d3e89139b7edbad35171403709270e339ffa56a2ecb9b3123e9285021ff0
-include ../../download-files.include
+DEPS = ../../Makefile.include Makefile AUTOCONF-VERSION ../../download-files.include
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
