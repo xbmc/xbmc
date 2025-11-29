@@ -1502,7 +1502,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   XMLUtils::GetDateTime(movie, "dateadded", m_dateAdded);
 
   if (XMLUtils::GetString(movie, "originallanguage", value) &&
-      !SetOriginalLanguage(value, LanguageProcessing::PROCESSING_NORMALIZE))
+      !SetOriginalLanguage(value, LanguageTagSource::SOURCE_EXTERNAL))
     CLog::LogF(LOGWARNING, "<originallanguage> tag value {} is not recognized", value);
 }
 
@@ -1759,21 +1759,18 @@ void CVideoInfoTag::SetOriginalTitle(std::string originalTitle)
   m_strOriginalTitle = Trim(std::move(originalTitle));
 }
 
-bool CVideoInfoTag::SetOriginalLanguage(std::string language, LanguageProcessing proc)
+bool CVideoInfoTag::SetOriginalLanguage(std::string language, LanguageTagSource source)
 {
-  StringUtils::Trim(language);
-
-  if (proc == LanguageProcessing::PROCESSING_NONE)
+  if (source == LanguageTagSource::SOURCE_INTERNAL)
   {
-    m_originalLanguage = language;
+    m_originalLanguage = std::move(language);
     return true;
   }
 
-  std::string normalized;
-  if (proc == LanguageProcessing::PROCESSING_NORMALIZE &&
-      g_LangCodeExpander.ConvertToISO6392B(language, normalized))
+  StringUtils::Trim(language);
+  if (g_LangCodeExpander.ConvertToAudioBcp47(language, language))
   {
-    m_originalLanguage = normalized;
+    m_originalLanguage = std::move(language);
     return true;
   }
 
