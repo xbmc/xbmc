@@ -657,7 +657,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
       // current line is empty and word is too long: split by character using a safe linear scan.
       // Do not assume monotonic width because shaping/kerning can make width shrink or grow non-linearly.
       size_t bestCount = 0;
-      for (auto it = std::next(current); it <= wordEnd; ++it)
+      for (auto it = std::next(current); it < wordEnd; ++it)
       {
         if (m_font->GetTextWidth({current, it}) <= maxWidth)
           bestCount = std::distance(current, it);
