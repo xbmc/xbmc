@@ -7,6 +7,7 @@
  */
 
 #include "utils/LangCodeExpander.h"
+#include "utils/StringUtils.h"
 
 #include <gtest/gtest.h>
 
@@ -198,3 +199,41 @@ TEST(TestLangCodeExpander, LookupInISO639Tables)
   EXPECT_FALSE(CLangCodeExpanderTest::CallLookupInISO639Tables("a", varstr));
   EXPECT_FALSE(CLangCodeExpanderTest::CallLookupInISO639Tables("fr-CA", varstr));
 }
+
+struct TestISO6392ToISO6391
+{
+  std::string input;
+  bool status;
+  std::string expected;
+};
+
+// clang-format off
+const TestISO6392ToISO6391 ISO6392ToISO6391Tests[] = {
+    {"", false, ""},
+    {"en", false, ""}, // ISO 639-1
+    {"eng", true, "en"},
+    {"tib", true, "bo"},
+    {"bod", true, "bo"},
+    {"zzz", false, ""},  // not assigned
+    {" eng ", true, "en"},
+    {"ENG", true, "en"}, // case-insensitive conversion
+};
+// clang-format on
+
+class ISO6392ToISO6391Tester : public testing::Test,
+                               public testing::WithParamInterface<TestISO6392ToISO6391>
+{
+};
+
+TEST_P(ISO6392ToISO6391Tester, Lookup)
+{
+  std::string output;
+
+  EXPECT_EQ(GetParam().status,
+            g_LangCodeExpander.ConvertISO6392ToISO6391(GetParam().input, output));
+  EXPECT_EQ(GetParam().expected, output);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestLangCodeExpander,
+                         ISO6392ToISO6391Tester,
+                         testing::ValuesIn(ISO6392ToISO6391Tests));
