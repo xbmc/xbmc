@@ -156,6 +156,12 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
       strISO6392B = charCode;
       return true;
     }
+
+    if (const auto bCode{CIso639_2::TCodeToBCode(charCode)}; bCode.has_value())
+    {
+      strISO6392B = bCode.value();
+      return true;
+    }
   }
   else if (strCharCode.size() > 3)
   {

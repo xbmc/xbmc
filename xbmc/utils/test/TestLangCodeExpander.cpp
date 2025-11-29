@@ -51,11 +51,22 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
   std::string refstr;
   std::string varstr;
 
+  // ISO 639-2 with identical B and T forms
   refstr = "eng";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("en", varstr));
   EXPECT_EQ(refstr, varstr);
 
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("eng", varstr));
+  EXPECT_EQ(refstr, varstr);
+
+  // ISO 639-2/B
+  refstr = "fre";
+  EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("fre", varstr));
+  EXPECT_EQ(refstr, varstr);
+
+  // ISO 639-2/T
+  refstr = "cze";
+  EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("ces", varstr));
   EXPECT_EQ(refstr, varstr);
 
   // win_id != iso639_2b
@@ -68,7 +79,7 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("bol", varstr));
   EXPECT_EQ(refstr, varstr);
 
-  // non existent
+  // non-existent or non-convertible
   refstr = "invalid";
   varstr = "invalid";
   EXPECT_FALSE(g_LangCodeExpander.ConvertToISO6392B("ac", varstr));
