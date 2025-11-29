@@ -453,6 +453,7 @@ protected:
 
   void HandleMessages();
   void HandlePlaySpeed();
+  void HandleRewindCadence();
   bool IsInMenuInternal() const;
   void SynchronizeDemuxer();
   void CheckAutoSceneSkip();
