@@ -57,9 +57,10 @@ CURL CDVDInputStream::GetURL()
   return m_item.GetDynURL();
 }
 
-void CDVDInputStream::SavePlaylistDetails(std::vector<PlaylistInformation>& playedPlaylists,
-                                          std::chrono::steady_clock::time_point startTime,
-                                          const PlaylistInformation& currentPlaylistInformation)
+CDVDInputStream::StreamDetailsStatus CDVDInputStream::SavePlaylistDetails(
+    std::vector<PlaylistInformation>& playedPlaylists,
+    std::chrono::steady_clock::time_point startTime,
+    const PlaylistInformation& currentPlaylistInformation)
 {
   // Details for this playlist/title
   const std::chrono::steady_clock::time_point timeNow{std::chrono::steady_clock::now()};
@@ -96,6 +97,12 @@ void CDVDInputStream::SavePlaylistDetails(std::vector<PlaylistInformation>& play
                 currentPlaylistInformation.duration.count() / 1000,
                 currentPlaylistInformation.watchedTime.count() / 1000);
   }
+
+  return (currentPlaylistInformation.details.GetStreamCount(CStreamDetail::VIDEO) > 0 &&
+          currentPlaylistInformation.details.GetVideoWidth() > 0 &&
+          currentPlaylistInformation.details.GetVideoHeight() > 0)
+             ? StreamDetailsStatus::STREAM_DETAILS_COMPLETE
+             : StreamDetailsStatus::STREAM_DETAILS_INCOMPLETE;
 }
 
 namespace

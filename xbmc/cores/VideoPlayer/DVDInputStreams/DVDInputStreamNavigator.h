@@ -145,7 +145,7 @@ public:
 
   VideoStreamInfo GetVideoStreamInfo();
 
-  void SaveCurrentState(const CStreamDetails& details) override;
+  std::optional<StreamDetailsStatus> SaveCurrentState(const CStreamDetails& details) override;
   UpdateState UpdateCurrentState(CFileItem& item, double time, bool& closed) override;
 
 protected:
