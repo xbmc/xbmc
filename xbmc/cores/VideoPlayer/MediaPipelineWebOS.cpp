@@ -22,6 +22,7 @@
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
 #include "settings/SettingUtils.h"
@@ -65,6 +66,7 @@ using namespace std::chrono_literals;
 namespace
 {
 constexpr unsigned int AC3_MAX_SYNC_FRAME_SIZE = 3840;
+constexpr unsigned int EAC3_MAX_SYNC_FRAME_SIZE = 6144;
 constexpr int RESAMPLED_STREAM_ID = -1000;
 constexpr unsigned int MIN_AUDIO_RESAMPLE_BUFFER_SIZE = 4096;
 
@@ -211,8 +213,16 @@ void CMediaPipelineWebOS::UpdateAudioInfo()
   const double kbps = m_audioStats.GetBitrate() / 1024.0;
 
   std::scoped_lock lock(m_audioInfoMutex);
-  m_audioInfo = fmt::format("aq:{:02}% {:.3f}s {:.3f}Kb, Kb/s:{:.2f}{}", level, ts, kb, kbps,
-                            m_audioEncoder ? ", transcoded ac3" : "");
+
+  std::string transcodedInfo;
+  if (m_audioEncoder)
+  {
+    transcodedInfo = fmt::format(
+        ", transcoded {}", (m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3) ? "eac3" : "ac3");
+  }
+
+  m_audioInfo =
+      fmt::format("aq:{:02}% {:.3f}s {:.3f}Kb, Kb/s:{:.2f}{}", level, ts, kb, kbps, transcodedInfo);
 }
 
 void CMediaPipelineWebOS::UpdateVideoInfo()
@@ -310,8 +320,11 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
         m_processInfo.SetAudioDecoderName("starfish-" +
                                           std::string(ms_codecMap.at(audioHint.codec).data()));
       else if (m_audioEncoder)
-        m_processInfo.SetAudioDecoderName("starfish-AC3 (transcoding)");
-
+      {
+        m_processInfo.SetAudioDecoderName((m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3)
+                                              ? "starfish-EAC3 (transcoding)"
+                                              : "starfish-AC3 (transcoding)");
+      }
       return true;
     }
     // API introduced in webOS 6.0, so we need to handle older versions differently
@@ -735,7 +748,11 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
       m_processInfo.SetAudioDecoderName(std::string("starfish-") +
                                         ms_codecMap.at(audioHint.codec).data());
     else if (m_audioEncoder)
-      m_processInfo.SetAudioDecoderName("starfish-AC3 (transcoding)");
+    {
+      m_processInfo.SetAudioDecoderName((m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3)
+                                            ? "starfish-EAC3 (transcoding)"
+                                            : "starfish-AC3 (transcoding)");
+    }
   }
 
   m_renderManager.ShowVideo(true);
@@ -772,6 +789,14 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
   m_audioResample = nullptr;
   m_encoderBuffers = nullptr;
 
+  auto setAC3PlusInfo = [&](const CDVDStreamInfo& hint, CVariant& optInfo)
+  {
+    optInfo["ac3PlusInfo"]["channels"] = hint.channels;
+    optInfo["ac3PlusInfo"]["frequency"] = hint.samplerate / 1000.0;
+    if (hint.profile == AV_PROFILE_EAC3_DDP_ATMOS)
+      optInfo["ac3PlusInfo"]["channels"] = hint.channels + 2;
+  };
+
   std::string codecName = "AC3";
   if (!Supports(audioHint.codec, audioHint.profile))
   {
@@ -779,19 +804,20 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
     CDVDCodecOptions options;
     m_audioCodec->Open(audioHint, options);
     m_audioEncoder = std::make_unique<CAEEncoderFFmpeg>();
+
+    if (WebOSTVPlatformConfig::SupportsEAC3())
+    {
+      codecName = "AC3 PLUS";
+      setAC3PlusInfo(audioHint, optInfo);
+    }
+
     return codecName;
   }
 
   codecName = ms_codecMap.at(audioHint.codec);
   if (audioHint.codec == AV_CODEC_ID_EAC3)
   {
-    optInfo["ac3PlusInfo"]["channels"] = audioHint.channels;
-    optInfo["ac3PlusInfo"]["frequency"] = audioHint.samplerate / 1000.0;
-
-    if (audioHint.profile == AV_PROFILE_EAC3_DDP_ATMOS)
-    {
-      optInfo["ac3PlusInfo"]["channels"] = audioHint.channels + 2;
-    }
+    setAC3PlusInfo(audioHint, optInfo);
   }
   if (audioHint.codec == AV_CODEC_ID_AC4)
   {
@@ -1298,6 +1324,9 @@ void CMediaPipelineWebOS::ProcessAudio()
               AEAudioFormat dstFormat = m_audioCodec->GetFormat();
               dstFormat.m_sampleRate = SelectTranscodingSampleRate(dstFormat.m_sampleRate);
               dstFormat.m_dataFormat = AE_FMT_FLOATP;
+              dstFormat.m_streamInfo.m_type = WebOSTVPlatformConfig::SupportsEAC3()
+                                                  ? CAEStreamInfo::DataType::STREAM_TYPE_EAC3
+                                                  : CAEStreamInfo::DataType::STREAM_TYPE_AC3;
               m_audioEncoder->Initialize(dstFormat, true);
               const std::shared_ptr<CSettings> settings =
                   CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -1319,6 +1348,9 @@ void CMediaPipelineWebOS::ProcessAudio()
               m_encoderBuffers->Create(0);
 
               // Update process info with audio details
+              m_processInfo.SetAudioDecoderName((m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3)
+                                                    ? "starfish-EAC3 (transcoding)"
+                                                    : "starfish-AC3 (transcoding)");
               m_processInfo.SetAudioChannels(frame.format.m_channelLayout);
               m_processInfo.SetAudioSampleRate(frame.format.m_sampleRate);
               m_processInfo.SetAudioBitsPerSample(frame.bits_per_sample);
@@ -1352,10 +1384,13 @@ void CMediaPipelineWebOS::ProcessAudio()
             {
               for (const auto& buf : m_audioResample->m_outputSamples)
               {
+                const unsigned int maxSize = (m_audioEncoder->GetCodecID() == AV_CODEC_ID_EAC3)
+                                                 ? EAC3_MAX_SYNC_FRAME_SIZE
+                                                 : AC3_MAX_SYNC_FRAME_SIZE;
                 auto p = std::make_shared<CDVDMsgDemuxerPacket>(
-                    CDVDDemuxUtils::AllocateDemuxPacket(AC3_MAX_SYNC_FRAME_SIZE));
+                    CDVDDemuxUtils::AllocateDemuxPacket(maxSize));
                 p->m_packet->pts = static_cast<double>(buf->timestamp);
-                p->m_packet->iSize = AC3_MAX_SYNC_FRAME_SIZE;
+                p->m_packet->iSize = maxSize;
                 p->m_packet->iStreamId = RESAMPLED_STREAM_ID;
                 p->m_packet->iSize =
                     m_audioEncoder->Encode(buf->pkt->data[0], buf->pkt->planes * buf->pkt->linesize,

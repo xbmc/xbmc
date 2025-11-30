@@ -13,8 +13,6 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
-#include <webos-helpers/libhelpers.h>
-
 namespace
 {
 constexpr const char* LUNA_GET_CONFIG = "luna://com.webos.service.config/getConfigs";
@@ -29,6 +27,14 @@ constexpr const char* SUPPORT_HDR = "tv.model.supportHDR";
 constexpr const char* PLATFORM_CODE = "tv.nyx.platformCode";
 
 constexpr const char* DTS = "dts";
+
+constexpr const char* LUNA_ARC_STATUS = "luna://com.webos.service.arccontroller/getARCState";
+
+constexpr const char* ARC_ACTIVATION = "arcActivation";
+constexpr const char* EARC_CAPABILITY = "earcCapability";
+constexpr const char* SUPPORT_EARCDDPlus = "eARCDDPlus";
+constexpr const char* EARC = "eARC";
+constexpr const char* DDPLUS = "DD+";
 
 CVariant ms_config;
 } // namespace
@@ -74,4 +80,45 @@ bool WebOSTVPlatformConfig::SupportsDTS()
 bool WebOSTVPlatformConfig::SupportsHDR()
 {
   return ms_config[SUPPORT_HDR].asBoolean();
+}
+
+void WebOSTVPlatformConfig::LoadARCStatus()
+{
+  m_requestContextARC->pub = true;
+  m_requestContextARC->multiple = true;
+  m_requestContextARC->callback = [](LSHandle* sh, LSMessage* msg, void* ctx) -> bool
+  {
+    auto* self = static_cast<WebOSTVPlatformConfig*>(ctx);
+    std::string message = HLunaServiceMessage(msg);
+    CLog::LogF(LOGDEBUG, "ARC controller: {}", message);
+
+    CVariant parsed;
+    if (!CJSONVariantParser::Parse(message, parsed))
+    {
+      CLog::LogF(LOGERROR, "Failed to parse ARC controller JSON");
+      return false;
+    }
+
+    const std::string arcActivation = parsed[ARC_ACTIVATION].asString();
+
+    if (arcActivation == EARC)
+    {
+      const CVariant& caps = parsed[EARC_CAPABILITY];
+      self->m_eAC3Supported =
+          caps.isArray() && std::any_of(caps.begin_array(), caps.end_array(),
+                                        [](const CVariant& v) { return v.asString() == DDPLUS; });
+    }
+
+    return true;
+  };
+
+  if (HLunaServiceCall(LUNA_ARC_STATUS, "{}", m_requestContextARC.get()))
+  {
+    CLog::LogF(LOGWARNING, "Luna ARC controller request call failed");
+  }
+}
+
+bool WebOSTVPlatformConfig::SupportsEAC3()
+{
+  return m_eAC3Supported;
 }
