@@ -417,6 +417,7 @@ private:
   CDVDClock& m_clock;
   CDVDOverlayContainer& m_overlayContainer;
   bool m_hasAudio{true};
+  bool m_eARCSupported{false};
 
   std::mutex m_audioInfoMutex;
   std::string m_audioInfo;

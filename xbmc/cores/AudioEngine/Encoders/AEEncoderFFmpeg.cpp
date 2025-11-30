@@ -7,6 +7,7 @@
  */
 
 #define AC3_ENCODE_BITRATE 640000
+#define EAC3_ENCODE_BITRATE 1024000
 #define DTS_ENCODE_BITRATE 1411200
 
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
@@ -90,13 +91,23 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
 {
   Reset();
 
-  bool ac3 = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
+  const bool ac3 = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
+  const bool eac3 = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_AUDIOOUTPUT_EAC3PASSTHROUGH);
 
   const AVCodec* codec = nullptr;
 
-  /* fallback to ac3 if we support it, we might not have DTS support */
-  if (ac3)
+  if (eac3)
   {
+    m_CodecName = "EAC3";
+    m_CodecID = AV_CODEC_ID_EAC3;
+    m_BitRate = EAC3_ENCODE_BITRATE;
+    codec = avcodec_find_encoder(m_CodecID);
+  }
+  else if (ac3)
+  {
+    /* fallback to ac3 if we support it, we might not have DTS support */
     m_CodecName = "AC3";
     m_CodecID = AV_CODEC_ID_AC3;
     m_BitRate = AC3_ENCODE_BITRATE;

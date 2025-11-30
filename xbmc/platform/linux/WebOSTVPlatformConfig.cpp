@@ -30,6 +30,12 @@ constexpr const char* PLATFORM_CODE = "tv.nyx.platformCode";
 
 constexpr const char* DTS = "dts";
 
+constexpr const char* EARC_ACTIVATION = "arcActivation";
+constexpr const char* EARC_CAPABILITY = "earcCapability";
+constexpr const char* SUPPORT_EARCDDPlus = "eARCDDPlus";
+constexpr const char* EARC = "eARC";
+constexpr const char* DDPLUS = "DD+";
+
 CVariant ms_config;
 } // namespace
 
@@ -74,4 +80,60 @@ bool WebOSTVPlatformConfig::SupportsDTS()
 bool WebOSTVPlatformConfig::SupportsHDR()
 {
   return ms_config[SUPPORT_HDR].asBoolean();
+}
+
+void WebOSTVPlatformConfig::LoadARCStatus()
+{
+  HContext requestContext;
+  requestContext.pub = true;
+  requestContext.multiple = false;
+  requestContext.callback = [](LSHandle* sh, LSMessage* msg, void* ctx) -> bool
+  {
+    std::string message = HLunaServiceMessage(msg);
+    CLog::LogF(LOGDEBUG, "ARC controller: {}", message);
+
+    CVariant parsed;
+    if (!CJSONVariantParser::Parse(message, parsed))
+    {
+      CLog::LogF(LOGERROR, "Failed to parse ARC controller JSON");
+      return false;
+    }
+
+    const std::string arcActivation = parsed[EARC_ACTIVATION].asString();
+    bool ddplusSupported = false;
+
+    if (arcActivation == EARC)
+    {
+      const CVariant& caps = parsed[EARC_CAPABILITY];
+      if (caps.isArray())
+      {
+        for (unsigned int i = 0; i < caps.size(); ++i)
+        {
+          if (caps[i].asString() == DDPLUS)
+          {
+            ddplusSupported = true;
+            break;
+          }
+        }
+      }
+    }
+
+    ms_config[SUPPORT_EARCDDPlus] = ddplusSupported;
+
+    return true;
+  };
+
+  std::string payload = "{}";
+  constexpr const char* LUNA_ARC_STATUS = "luna://com.webos.service.arccontroller/getARCState";
+
+  if (HLunaServiceCall(LUNA_ARC_STATUS, payload.c_str(), &requestContext))
+  {
+    CLog::LogF(LOGWARNING, "Luna ARC controller request call failed");
+  }
+}
+
+bool WebOSTVPlatformConfig::SupportsEARCDDPlus()
+{
+  LoadARCStatus();
+  return ms_config[SUPPORT_EARCDDPlus].asBoolean();
 }

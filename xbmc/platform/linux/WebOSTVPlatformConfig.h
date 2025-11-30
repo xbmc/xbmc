@@ -14,7 +14,9 @@ class WebOSTVPlatformConfig
 {
 public:
   static void Load();
+  static void LoadARCStatus();
   static int GetWebOSVersion();
   static bool SupportsDTS();
   static bool SupportsHDR();
+  static bool SupportsEARCDDPlus();
 };
