@@ -82,8 +82,7 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
                      "-DCMAKE_OBJDUMP=${CMAKE_OBJDUMP}"
                      "-DCMAKE_RANLIB=${CMAKE_RANLIB}"
                      "-DDEPENDS_PATH=${DEPENDS_PATH}"
-                     -DKODI_SOURCE_DIR=${CMAKE_SOURCE_DIR}
-                     -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/build)
+                     -DKODI_SOURCE_DIR=${CMAKE_SOURCE_DIR})
 
       # Create a list with an alternate separator e.g. pipe symbol
       string(REPLACE ";" "|" string_ARCH_DEFINES "${ARCH_DEFINES}")
@@ -110,15 +109,14 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
                           SOURCE_DIR ${CMAKE_SOURCE_DIR}/tools/depends/native/TexturePacker/src
                           PREFIX ${CORE_BUILD_DIR}/build-texturepacker
                           LIST_SEPARATOR |
-                          INSTALL_DIR ${CMAKE_BINARY_DIR}/build
+                          INSTALL_COMMAND ""
                           CMAKE_ARGS ${CMAKE_ARGS}
                           BUILD_ALWAYS ON
-                          BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/build/bin/TexturePacker)
+                          BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/build-texturepacker/src/buildtexturepacker-build/TexturePacker)
 
-      ExternalProject_Get_Property(buildtexturepacker INSTALL_DIR)
       add_executable(TexturePacker IMPORTED)
       set_target_properties(TexturePacker PROPERTIES
-                                          IMPORTED_LOCATION "${INSTALL_DIR}/bin/TexturePacker")
+                                          IMPORTED_LOCATION "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/build-texturepacker/src/buildtexturepacker-build/TexturePacker")
 
       add_dependencies(TexturePacker buildtexturepacker)
 
