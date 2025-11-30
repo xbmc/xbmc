@@ -12,11 +12,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC fstrcmp)
-  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_DISABLE_VERSION ON)
 
   SETUP_BUILD_VARS()
 
   if(ENABLE_INTERNAL_FSTRCMP)
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
     find_program(LIBTOOL libtool REQUIRED)
 
     find_program(AUTORECONF autoreconf REQUIRED)
