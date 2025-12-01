@@ -100,7 +100,7 @@ std::string CPlayerGUIInfo::GetAMLConfigInfo(std::string item) const
             if (cur_fractional_rate)
             {
               float refreshrate = static_cast<float>(atof(StringUtils::Mid(sub_items.at(1), sub_items.at(1).length() - 4, 2).c_str()));
-              item_value += fmt::format("{:.2f}", refreshrate / 1.001f) + "Hz";
+              item_value += fmt::format("{:.3f}", refreshrate / 1.001f) + "Hz";
             }
             else
               item_value += StringUtils::Mid(sub_items.at(1), sub_items.at(1).length() - 4, 2) + "Hz";
@@ -481,8 +481,13 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       value = CServiceBroker::GetDataCacheCore().GetVideoPixelFormat();
       return true;
     case PLAYER_PROCESS_VIDEOFPS:
-      value = StringUtils::Format("{:.3f}", CServiceBroker::GetDataCacheCore().GetVideoFps());
+    {
+      double video_fps_value = CServiceBroker::GetDataCacheCore().GetVideoFps();
+      value = (std::floor(video_fps_value) == video_fps_value) ?
+        StringUtils::Format("{}", video_fps_value) :
+        StringUtils::Format("{:.3f}", video_fps_value);
       return true;
+    }
     case PLAYER_PROCESS_VIDEODAR:
       value = StringUtils::Format("{:.2f}", CServiceBroker::GetDataCacheCore().GetVideoDAR());
       return true;
