@@ -385,22 +385,16 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     }
   }
 
-  std::string_view name = descTmp;
+  if (const auto ret = CIso639_1::LookupByName(descTmp); ret.has_value())
   {
-    auto ret = CIso639_1::LookupByName(name);
-    if (ret)
-    {
-      code = *ret;
-      return true;
-    }
+    code = *ret;
+    return true;
   }
+
+  if (const auto ret = CIso639_2::LookupByName(descTmp); ret.has_value())
   {
-    auto ret = CIso639_2::LookupByName(name);
-    if (ret)
-    {
-      code = *ret;
-      return true;
-    }
+    code = *ret;
+    return true;
   }
 
   // Find on language addons
