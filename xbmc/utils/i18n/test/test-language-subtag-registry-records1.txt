@@ -1,0 +1,11 @@
+record1
+%%
+record2-1
+record2-2
+
+record2-3
+
+%%
+%%
+record3
+%%
