@@ -51,6 +51,7 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
   std::string refstr;
   std::string varstr;
 
+  // ISO 639-2 with identical B and T forms
   refstr = "eng";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("en", varstr));
   EXPECT_EQ(refstr, varstr);
@@ -58,23 +59,37 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("eng", varstr));
   EXPECT_EQ(refstr, varstr);
 
+  // ISO 639-2/B
+  refstr = "fre";
+  EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("fre", varstr));
+  EXPECT_EQ(refstr, varstr);
+
+  // ISO 639-2/T
+  refstr = "cze";
+  EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("ces", varstr));
+  EXPECT_EQ(refstr, varstr);
+
   // win_id != iso639_2b
-  refstr = "fra";
+  refstr = "fre";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("fra", varstr, true));
   EXPECT_EQ(refstr, varstr);
 
+  //! \todo analyze, v.suspicious. What old situation required matching languages with regions?
   // Region code
   refstr = "bol";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("bol", varstr));
   EXPECT_EQ(refstr, varstr);
 
-  // non existent
+  // non-existent or non-convertible
   refstr = "invalid";
   varstr = "invalid";
   EXPECT_FALSE(g_LangCodeExpander.ConvertToISO6392B("ac", varstr));
   EXPECT_EQ(refstr, varstr);
 
   EXPECT_FALSE(g_LangCodeExpander.ConvertToISO6392B("aaa", varstr));
+  EXPECT_EQ(refstr, varstr);
+
+  EXPECT_FALSE(g_LangCodeExpander.ConvertToISO6392B("en-US", varstr));
   EXPECT_EQ(refstr, varstr);
 
   // Full english name, case insensitive
@@ -85,11 +100,6 @@ TEST(TestLangCodeExpander, ConvertToISO6392B)
   refstr = "eng";
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("english", varstr, true));
   EXPECT_EQ(refstr, varstr);
-
-  // Existing bug
-  //refstr = "ger";
-  //EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392B("deu", varstr));
-  //EXPECT_EQ(refstr, varstr);
 }
 
 TEST(TestLangCodeExpander, ConvertToISO6391)
@@ -166,13 +176,7 @@ TEST(TestLangCodeExpander, ConvertToISO6392T)
   EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392T("deu", varstr, true));
   EXPECT_EQ(refstr, varstr);
 
-  // Should return deu instead of failing. Side effect of failure in Convert but maybe happens for historical reasons and something
-  // relies on that.
-  // For some reason, the function allows the language code to match with the region 'deu',
-  // but since it's not a valid ISO639-2/B code, it cannot be translated to its ISO-639-2/T code
-  refstr = "invalid";
-  varstr = "invalid";
-  EXPECT_FALSE(g_LangCodeExpander.ConvertToISO6392T("deu", varstr));
+  EXPECT_TRUE(g_LangCodeExpander.ConvertToISO6392T("deu", varstr));
   EXPECT_EQ(refstr, varstr);
 }
 
