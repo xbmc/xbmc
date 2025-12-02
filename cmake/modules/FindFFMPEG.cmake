@@ -314,7 +314,7 @@ else()
 
       # ToDo: We cant use IMPORTED_TARGET yet.
       # Linux CI fails with gmp related link issues when using the imported target
-      pkg_check_modules(FFMPEG_${libname_UPPER} ${libname}${libversion} REQUIRED ${SEARCH_QUIET})
+      pkg_check_modules(FFMPEG_${libname_UPPER} ${libname}${libversion} ${SEARCH_QUIET})
 
       # As windows does a simple find_library call, the output is a filename to the library
       # for the pkgconfig search, we can get the full file path from _LINK_LIBRARIES first element
