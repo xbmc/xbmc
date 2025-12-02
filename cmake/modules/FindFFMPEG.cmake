@@ -30,8 +30,15 @@ macro(buildFFMPEG)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   # Check for dependencies - Must be done before SETUP_BUILD_VARS
-  get_libversion_data("dav1d" "target")
-  find_package(Dav1d ${LIB_DAV1D_VER} MODULE ${SEARCH_QUIET})
+  if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+    get_libversion_data("dav1d" "target")
+    set(DAV1D_REQUIRED REQUIRED)
+  else()
+    # FFMPEG 7+ currently only has a version requirement of Dav1d 1.0.0
+    set(LIB_DAV1D_VER 1.0.0)
+  endif()
+
+  find_package(Dav1d ${LIB_DAV1D_VER} ${DAV1D_REQUIRED} ${SEARCH_QUIET})
   if(NOT TARGET LIBRARY::Dav1d)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   else()
