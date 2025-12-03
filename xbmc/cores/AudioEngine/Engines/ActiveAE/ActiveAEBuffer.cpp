@@ -210,8 +210,7 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
   {
     if (m_changeResampler)
     {
-      if (m_changeResampler)
-        ChangeResampler();
+      ChangeResampler();
       return true;
     }
     while(!m_inputSamples.empty())
