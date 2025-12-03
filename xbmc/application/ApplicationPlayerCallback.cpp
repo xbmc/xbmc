@@ -215,11 +215,6 @@ bool UpdatePlayCount(const CFileItem& fileItem, const CBookmark& bookmark)
 void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
                                                    const CBookmark& bookmarkParam)
 {
-  auto& components{CServiceBroker::GetAppComponents()};
-  const auto stackHelper{components.GetComponent<CApplicationStackHelper>()};
-
-  std::unique_lock lock(stackHelper->m_critSection);
-
   CFileItem fileItem{file};
   CBookmark bookmark{bookmarkParam};
 
@@ -237,17 +232,28 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   UpdateRemovableBlurayPath(fileItem, file.GetProperty("update_stream_details").asBoolean(false));
 #endif
 
-  // Update the stack
-  const bool isStack{stackHelper->GetRegisteredStack(file) != nullptr};
-  if (isStack)
-    UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
+  bool isStack{false};
+  {
+    auto& components{CServiceBroker::GetAppComponents()};
+    const auto stackHelper{components.GetComponent<CApplicationStackHelper>()};
+
+    std::unique_lock lock(stackHelper->m_critSection);
+
+    isStack = (stackHelper->GetRegisteredStack(file) != nullptr);
+    if (isStack)
+      UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
+  }
 
   if (const std::shared_ptr<CAdvancedSettings> advancedSettings{
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
       WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd))
+  {
     bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
+  }
   else if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart)
+  {
     bookmark.timeInSeconds = 0.0; // Not played enough to bookmark (bookmark cleared)
+  }
   else if (isStack)
   {
     // Bookmark will be saved, so update total time from stack
