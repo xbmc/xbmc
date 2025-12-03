@@ -2134,13 +2134,9 @@ void CVideoPlayer::HandlePlaySpeed()
           else if (m_CurrentVideo.starttime > m_CurrentAudio.starttime &&
                    !m_pInputStream->IsRealtime())
           {
-            int audioLevel = m_VideoPlayerAudio->GetLevel();
-            //@todo hardcoded 8 seconds in message queue
-            double maxAudioTime = clock + DVD_MSEC_TO_TIME(40 * audioLevel);
-            if ((m_CurrentVideo.starttime - m_CurrentVideo.cachetotal) > maxAudioTime)
-              clock = maxAudioTime;
-            else
-              clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
+            // Sync to the later start time to avoid desync
+            const double videoClock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
+            clock = std::max(clock, videoClock);
           }
         }
       }
