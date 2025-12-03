@@ -296,6 +296,9 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
       CVariant optInfo = CVariant::VariantTypeObject;
       const std::string codecName = SetupAudio(audioHint, optInfo);
 
+      if (codecName.empty())
+        return false;
+
       std::string output;
       CJSONVariantWriter::Write(optInfo, output, true);
       CLog::LogF(LOGDEBUG, "changeAudioCodec: {}", output);
@@ -609,7 +612,11 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   }
   else
   {
-    contents["codec"]["audio"] = SetupAudio(audioHint, contents);
+    const std::string audioCodec = SetupAudio(audioHint, contents);
+    if (audioCodec.empty())
+      return false;
+
+    contents["codec"]["audio"] = audioCodec;
   }
 
   if (audioHint.codec == AV_CODEC_ID_EAC3 && audioHint.profile == AV_PROFILE_EAC3_DDP_ATMOS)
@@ -773,11 +780,26 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
   m_encoderBuffers = nullptr;
 
   std::string codecName = "AC3";
-  if (!Supports(audioHint.codec, audioHint.profile))
+  const bool allowPassthrough = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                                    CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH) ||
+                                audioHint.cryptoSession;
+  const bool supported = Supports(audioHint.codec, audioHint.profile);
+
+  if (!supported && audioHint.cryptoSession)
+  {
+    CLog::LogF(LOGERROR, "Cannot transcode encrypted audio stream");
+    return "";
+  }
+
+  if (!supported || !allowPassthrough)
   {
     m_audioCodec = std::make_unique<CDVDAudioCodecFFmpeg>(m_processInfo);
-    CDVDCodecOptions options;
-    m_audioCodec->Open(audioHint, options);
+    if (CDVDCodecOptions options; !m_audioCodec->Open(audioHint, options))
+    {
+      CLog::LogF(LOGERROR, "Failed to open audio codec for transcoding");
+      m_audioCodec = nullptr;
+      return "";
+    }
     m_audioEncoder = std::make_unique<CAEEncoderFFmpeg>();
     return codecName;
   }
