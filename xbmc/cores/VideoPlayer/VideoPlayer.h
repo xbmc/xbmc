@@ -524,6 +524,7 @@ protected:
   int m_playSpeed;
   int m_streamPlayerSpeed;
   int m_demuxerSpeed = DVD_PLAYSPEED_NORMAL;
+  double m_demuxSeekBasePts{DVD_NOPTS_VALUE};
   struct SSpeedState
   {
     double lastpts{0.0}; // holds last display pts during ff/rw operations
