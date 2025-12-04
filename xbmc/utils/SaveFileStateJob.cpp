@@ -25,8 +25,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/upnp/UPnP.h"
-#include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActionsRecordings.h"
+#include "utils/ComponentContainer.h"
 #include "utils/Variant.h"
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
@@ -120,11 +119,8 @@ void CSaveFileState::DoWork(CFileItem& item,
 
               if (item.HasVideoInfoTag())
               {
-                if (item.IsPVRRecording())
-                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().IncrementPlayCount(
-                      item);
-                else
-                  item.GetVideoInfoTag()->IncrementPlayCount();
+                if (item.GetVideoInfoTag()->IncrementPlayCount())
+                  item.SetProperty("playcount_incremented", CVariant{true});
 
                 if (newLastPlayed.IsValid())
                   item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
