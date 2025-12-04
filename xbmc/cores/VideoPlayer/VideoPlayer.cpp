@@ -65,6 +65,7 @@
 #include "video/VideoInfoTag.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <cmath>
 #include <iterator>
 #include <memory>
@@ -2250,59 +2251,91 @@ void CVideoPlayer::HandlePlaySpeed()
 
 void CVideoPlayer::HandleRewindCadence()
 {
-  static double cadenceNextAbs = 0.0; // absolute clock for next cadence tick
-  static bool cadenceEntered = false; // tracks entry into rewind across calls
+  static double cadenceLastAbs = 0.0; // absolute clock when the last rewind seek was scheduled
+  static bool cadenceActive = false; // enters rewind cadence mode when playback speed is negative
 
-  static const double cadenceIntervalMs = 800.0;
-  static const double correctionMs = 500.0;
+  constexpr double minIntervalMs = 140.0; // minimum time between cadence seeks to avoid thrash
+  constexpr double maxIntervalMs = 700.0; // keep cadence spacing under control on long stalls
+  constexpr double baseMarginMs = 90.0; // compensate decoder and render pipeline latency
+  constexpr double maxStepMs = 3500.0; // avoid requesting jumps that are too large for demuxers
+
+  auto ToMs = [](double pts) { return pts * 1000.0 / DVD_TIME_BASE; };
+  auto ToPts = [](double ms) { return ms * DVD_TIME_BASE / 1000.0; };
 
   if (m_playSpeed < 0)
   {
-    // Reset cadence schedule on first entry into rewind so we act immediately
-    if (!cadenceEntered)
+    const double absNow = m_clock.GetAbsoluteClock();
+
+    if (!cadenceActive)
     {
-      cadenceNextAbs = 0.0;
-      cadenceEntered = true;
+      cadenceActive = true;
+      cadenceLastAbs = absNow;
       m_SpeedState.lastseekpts = DVD_NOPTS_VALUE;
+      return; // wait until we have advanced a little before the first cadence step
     }
 
-    const double absClock = m_clock.GetAbsoluteClock();
+    double elapsedMs = ToMs(absNow - cadenceLastAbs);
+    if (elapsedMs < minIntervalMs)
+      return;
 
-    if (absClock >= cadenceNextAbs)
+    double currentPts = m_VideoPlayerVideo->GetCurrentPts();
+    if (currentPts == DVD_NOPTS_VALUE)
+      currentPts = m_clock.GetClock();
+
+    const double speedScale = std::clamp(static_cast<double>(std::abs(m_playSpeed)) / DVD_PLAYSPEED_NORMAL, 1.0, 32.0);
+
+    const double forwardAllowanceMs = std::clamp(40.0 * speedScale, 60.0, 260.0);
+    const double forwardProgressMs = std::max(0.0, ToMs(currentPts - m_SpeedState.lastpts));
+    if (forwardProgressMs < forwardAllowanceMs && elapsedMs < (minIntervalMs * 1.5))
+      return; // let a few more frames flow forward before rewinding again
+
+    elapsedMs = std::clamp(elapsedMs, minIntervalMs, maxIntervalMs);
+
+    double desiredStepMs = elapsedMs * speedScale;
+
+    const double driftMs = std::max(0.0, ToMs(currentPts - m_clock.GetClock()));
+    if (driftMs > 0.0)
+      desiredStepMs += std::min(driftMs * 0.8, 900.0);
+
+    desiredStepMs += baseMarginMs * speedScale;
+    desiredStepMs = std::min(desiredStepMs, maxStepMs);
+
+    double targetPts = currentPts - ToPts(desiredStepMs);
+    if (targetPts < 0.0)
+      targetPts = 0.0;
+
+    if (m_SpeedState.lastseekpts != DVD_NOPTS_VALUE &&
+        std::abs(targetPts - m_SpeedState.lastseekpts) < ToPts(25.0))
     {
-      const bool haveSeekAnchor = (m_SpeedState.lastseekpts != DVD_NOPTS_VALUE);
-
-      if (haveSeekAnchor && m_SpeedState.lastseekpts <= 0.0)
-        cadenceNextAbs = absClock + DVD_MSEC_TO_TIME(cadenceIntervalMs);
-      else
-      {
-        const double speedScale = std::min(32.0, std::max(1.0, static_cast<double>(std::abs(m_playSpeed)) / DVD_PLAYSPEED_NORMAL));
-        const double stepMs = (cadenceIntervalMs * speedScale) + correctionMs;
-
-        const double clock = m_clock.GetClock();
-        double baseRefPts = haveSeekAnchor ? m_SpeedState.lastseekpts : clock;
-        double targetPts = baseRefPts - DVD_MSEC_TO_TIME(stepMs);
-        if (targetPts < 0.0) targetPts = 0.0;
-        m_SpeedState.lastseekpts = targetPts;
-        const double iTimeMs = (targetPts + m_State.time_offset) / 1000.0;
-
-        logComponentM(LOGDEBUG, LOGVIDEO, "CVideoPlayer", "Cadence rewind seek: interval:{:.0f}ms step_ms:{:.0f} correction_ms:{:.0f} target:{:.3f}s baseRef:{:.3f} clock:{:.3f}",
-          cadenceIntervalMs, stepMs, correctionMs, (targetPts / DVD_TIME_BASE), PtsToSec(baseRefPts), PtsToSec(clock));
-
-        CDVDMsgPlayerSeek::CMode mode;
-        mode.time = iTimeMs;
-        mode.backward = true;
-        mode.accurate = true;
-        mode.restore = false;
-        mode.trickplay = true;
-        mode.sync = true;
-        m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
-
-        cadenceNextAbs = absClock + DVD_MSEC_TO_TIME(cadenceIntervalMs);
-      }
+      cadenceLastAbs = absNow;
+      return; // avoid spamming nearly identical seeks
     }
+
+    cadenceLastAbs = absNow;
+    m_SpeedState.lastseekpts = targetPts;
+
+    const double seekTimeMs = (targetPts + m_State.time_offset) / 1000.0;
+
+    logComponentM(LOGDEBUG, LOGVIDEO, "CVideoPlayer",
+                  "Cadence rewind seek: elapsed:{:.0f}ms step_ms:{:.0f} drift_ms:{:.0f} allow_ms:{:.0f} target:{:.3f}s pts:{:.3f} clock:{:.3f}",
+                  elapsedMs, desiredStepMs, driftMs, forwardAllowanceMs, targetPts / DVD_TIME_BASE,
+                  PtsToSec(currentPts), PtsToSec(m_clock.GetClock()));
+
+    CDVDMsgPlayerSeek::CMode mode;
+    mode.time = seekTimeMs;
+    mode.backward = true;
+    mode.accurate = true;
+    mode.restore = false;
+    mode.trickplay = true;
+    mode.sync = true;
+    m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
   }
-  else cadenceEntered = false; // Leaving rewind: allow immediate cadence action on next entry
+  else
+  {
+    cadenceActive = false;
+    cadenceLastAbs = 0.0;
+    m_SpeedState.lastseekpts = DVD_NOPTS_VALUE;
+  }
 }
 
 bool CVideoPlayer::CheckPlayerInit(CCurrentStream& current)
