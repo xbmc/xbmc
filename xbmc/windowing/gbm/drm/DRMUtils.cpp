@@ -8,6 +8,8 @@
 
 #include "DRMUtils.h"
 
+#include "ServiceBroker.h"
+#include "application/AppParams.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/DRMHelpers.h"
@@ -315,8 +317,14 @@ bool CDRMUtils::OpenDrm(bool needConnector)
     return false;
   }
 
-  for (const auto device : devices)
+  int devIndexApp = CServiceBroker::GetAppParams()->GetCardIndex();
+
+  for (int devIndex = 0; const auto device : devices)
   {
+    // use explicit card index in case argument is provided with --card-index
+    if (devIndex++ != devIndexApp && devIndexApp >= 0)
+      continue;
+
     if (!(device->available_nodes & 1 << DRM_NODE_PRIMARY))
       continue;
 
