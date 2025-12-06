@@ -276,12 +276,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     m_info = m_info_iec;
 
   m_format      = format;
-  m_headPos = 0;
-  m_stuckCounter = 0;
-  m_headPosOld = 0;
-  m_timestampPos = 0;
-  m_linearmovingaverage.clear();
-  m_pause_ms = 0.0;
+  Deinitialize();
   CLog::Log(LOGDEBUG,
             "CAESinkAUDIOTRACK::Initialize requested: sampleRate {}; format: {}; channels: {}",
             format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat),
@@ -555,6 +550,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
     if (!IsInitialized())
     {
+      delete m_at_jni;
+      m_at_jni = NULL;
       if (!m_passthrough)
       {
         if (atChannelMask != CJNIAudioFormat::CHANNEL_OUT_STEREO &&
@@ -603,10 +600,10 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
 void CAESinkAUDIOTRACK::Deinitialize()
 {
-  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Deinitialize");
-
   if (!m_at_jni)
     return;
+
+  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Deinitialize");
 
   if (IsInitialized())
   {
@@ -627,6 +624,8 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_at_jni = NULL;
   m_delay = 0.0;
   m_hw_delay = 0.0;
+  m_pause_ms = 0.0;
+  m_stuckCounter = 0;
 }
 
 bool CAESinkAUDIOTRACK::IsInitialized()
