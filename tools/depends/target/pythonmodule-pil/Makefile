@@ -74,7 +74,7 @@ else ifeq ($(OS),darwin_embedded)
 endif
 
 .installed-$(PLATFORM): $(PLATFORM) $(PILPATHLIB)
-	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build_py build_ext $(BUILD_OPTS) install --install-lib $(PILPATH) bdist_egg
+	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build build_py build_ext $(BUILD_OPTS) install --install-lib $(PILPATH) bdist_egg
 ifeq ($(OS),android)
 	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATHLIB)
 	cd $(PILPATHLIB)/PIL && \
