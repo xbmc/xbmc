@@ -1,10 +1,11 @@
 include ../../Makefile.include
 DEPS =../../Makefile.include Makefile ../../download-files.include
 
+BASE_URL=https://gitlab.freedesktop.org/emersion/libdisplay-info/-/archive/0.2.0
 LIBNAME=libdisplay-info
-VERSION=0.1.1
+VERSION=0.2.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-SHA512=8b11c35315f3f16f6853b2ba5daa39c622f2326cfa01d54574beb577efd38d25b8260f7d74c63924473a0487bffdbff727ddc05b12d36e2106b78aadc7d4ff42
+SHA512=ada2f7ff94a5b566475f1acf18356b4bec220673072ad5fb34f8da87156b2180ee9a4fafc9c148d847e8c707c25336dbd832d8c89e505cf97ad2c7cec1459f0b
 include ../../download-files.include
 
 MESON_BUILD_TYPE=release
