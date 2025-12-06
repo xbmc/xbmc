@@ -2277,7 +2277,7 @@ JSONRPC_STATUS CPlayerOperations::GetChapters(const std::string& method, ITransp
     // Chapter position in seconds
     int64_t position = appPlayer->GetChapterPos(i);
     if (position < 0) continue;
-    chapter["time"] = appPlayer->GetChapterPos(i);
+    chapter["time"] = position;
     chapters.push_back(chapter);
   }
 
