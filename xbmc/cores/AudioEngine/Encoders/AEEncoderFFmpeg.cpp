@@ -29,14 +29,13 @@ extern "C"
 using FFMPEG_HELP_TOOLS::FFMpegErrorToString;
 using FFMPEG_HELP_TOOLS::FFMpegException;
 
-CAEEncoderFFmpeg::CAEEncoderFFmpeg() : m_CodecCtx(NULL), m_SwrCtx(NULL)
+CAEEncoderFFmpeg::CAEEncoderFFmpeg() : m_CodecCtx(nullptr)
 {
 }
 
 CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
-  swr_free(&m_SwrCtx);
   avcodec_free_context(&m_CodecCtx);
 }
 
@@ -214,9 +213,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
     {
       m_CodecCtx->sample_fmt = sampleFmts[0];
       format.m_dataFormat = AE_FMT_FLOAT;
-      m_NeedConversion = true;
-      CLog::Log(LOGINFO,
-                "CAEEncoderFFmpeg::Initialize - Unknown audio format, it will be resampled.");
+      CLog::LogF(LOGWARNING, "Unknown audio format, trying first format ({})", sampleFmts[0]);
     }
     else
     {
@@ -253,20 +250,6 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
   m_OutputRatio   = (double)m_NeededFrames / m_OutputSize;
   m_SampleRateMul = 1.0 / (double)m_CodecCtx->sample_rate;
 
-  if (m_NeedConversion)
-  {
-    int ret = swr_alloc_set_opts2(&m_SwrCtx, &m_CodecCtx->ch_layout, m_CodecCtx->sample_fmt,
-                                  m_CodecCtx->sample_rate, &m_CodecCtx->ch_layout,
-                                  AV_SAMPLE_FMT_FLT, m_CodecCtx->sample_rate, 0, NULL);
-    if (ret || swr_init(m_SwrCtx) < 0)
-    {
-      CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Failed to initialise resampler.");
-      swr_free(&m_SwrCtx);
-      av_channel_layout_uninit(&m_CodecCtx->ch_layout);
-      avcodec_free_context(&m_CodecCtx);
-      return false;
-    }
-  }
   CLog::Log(LOGINFO, "CAEEncoderFFmpeg::Initialize - {} encoder ready", m_CodecName);
   return true;
 }

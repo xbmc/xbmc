@@ -10,10 +10,6 @@
 
 #include "cores/AudioEngine/Interfaces/AEEncoder.h"
 
-extern "C" {
-#include <libswresample/swresample.h>
-}
-
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict
 
@@ -40,14 +36,12 @@ private:
   AVCodecID m_CodecID;
   unsigned int m_BitRate = 0;
   AEAudioFormat m_CurrentFormat;
-  AVCodecContext *m_CodecCtx;
-  SwrContext *m_SwrCtx;
+  AVCodecContext* m_CodecCtx;
   CAEChannelInfo m_Layout;
   int m_BufferSize = 0;
   int m_OutputSize = 0;
   double m_OutputRatio = 0.0;
   double m_SampleRateMul = 0.0;
-  unsigned int  m_NeededFrames = 0;
-  bool m_NeedConversion = false;
+  unsigned int m_NeededFrames = 0;
 };
 
