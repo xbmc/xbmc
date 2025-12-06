@@ -2247,6 +2247,7 @@ std::shared_ptr<CPVREpgInfoTag> CPlayerOperations::GetCurrentEpg()
 
 JSONRPC_STATUS CPlayerOperations::GetChapters(const std::string& method, ITransportLayer* transport, IClient* client, const CVariant& parameterObject, CVariant& result)
 {
+  // Return the chapters list of the running video
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
@@ -2273,10 +2274,10 @@ JSONRPC_STATUS CPlayerOperations::GetChapters(const std::string& method, ITransp
     appPlayer->GetChapterName(name, i);
     if (!name.empty())
       chapter["name"] = name;
-    // Chapter position (from ms to s)
-    int64_t posMs = appPlayer->GetChapterPos(i);
-    double posSeconds = static_cast<double>(posMs) / 1000.0;
-    chapter["time"] = posSeconds;
+    // Chapter position in seconds
+    int64_t position = appPlayer->GetChapterPos(i);
+    if (position < 0) continue;
+    chapter["time"] = appPlayer->GetChapterPos(i);
     chapters.push_back(chapter);
   }
 
