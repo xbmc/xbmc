@@ -9,10 +9,10 @@ STRIP="${STRIP:-@STRIP_FOR_BUILD@}"
 READELF="${READELF:-@READELF_FOR_BUILD@}"
 OBJDUMP="${OBJDUMP:-@OBJDUMP_FOR_BUILD@}"
 
-CFLAGS="@host_includes@ -I@prefix@/@tool_dir@/include $CFLAGS"
-LDFLAGS="@host_includes@ -L@prefix@/@tool_dir@/lib $LDFLAGS"
-CPPFLAGS="@host_includes@ -I@prefix@/@tool_dir@/include $CPPFLAGS"
-CXXFLAGS="@host_includes@ -I@prefix@/@tool_dir@/include $CXXFLAGS"
+CFLAGS="-I@prefix@/@tool_dir@/include @host_includes@ $CFLAGS"
+LDFLAGS="-L@prefix@/@tool_dir@/lib @host_includes@ $LDFLAGS"
+CPPFLAGS="-I@prefix@/@tool_dir@/include @host_includes@ $CPPFLAGS"
+CXXFLAGS="-I@prefix@/@tool_dir@/include @host_includes@ $CXXFLAGS"
 
 PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config
 export PKG_CONFIG_LIBDIR=@prefix@/@tool_dir@/lib/pkgconfig

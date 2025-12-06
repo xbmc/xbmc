@@ -43,9 +43,9 @@ if(NOT "@use_ccache@" STREQUAL "")
   set(CMAKE_C_COMPILER_LAUNCHER @CCACHE@)
 endif()
 
-set(CMAKE_C_FLAGS "@host_includes@ -I@prefix@/@tool_dir@/include")
-set(CMAKE_CXX_FLAGS "@host_cxxflags@ @host_includes@ -I@prefix@/@tool_dir@/include")
-set(CMAKE_EXE_LINKER_FLAGS "@host_includes@ -L@prefix@/@tool_dir@/lib")
+set(CMAKE_C_FLAGS "-I@prefix@/@tool_dir@/include @host_includes@")
+set(CMAKE_CXX_FLAGS "-I@prefix@/@tool_dir@/include @host_cxxflags@ @host_includes@")
+set(CMAKE_EXE_LINKER_FLAGS "-L@prefix@/@tool_dir@/lib @host_includes@")
 
 # where is the target environment
 set(CMAKE_FIND_ROOT_PATH @prefix@/@tool_dir@)
