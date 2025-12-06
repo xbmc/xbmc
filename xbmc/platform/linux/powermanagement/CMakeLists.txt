@@ -1,6 +1,8 @@
-set(SOURCES LinuxPowerSyscall.cpp)
+set(SOURCES CustomPowerSyscall.cpp
+            LinuxPowerSyscall.cpp)
 
-set(HEADERS FallbackPowerSyscall.h
+set(HEADERS CustomPowerSyscall.h
+            FallbackPowerSyscall.h
             LinuxPowerSyscall.h)
 
 if(TARGET ${APP_NAME_LC}::DBus)
