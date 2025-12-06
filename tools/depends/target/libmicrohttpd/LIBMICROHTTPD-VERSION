@@ -2,3 +2,5 @@ LIBNAME=libmicrohttpd
 VERSION=1.0.1
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 SHA512=c99b8b93cae5feee8debcc5667ee3ff043412a84b30696fe852e6c138f3c890bb43c8fcd7199f1d2f809d522fef159e83b607c743d6cf3401a57050fbdf9b5c1
+BYPRODUCT=libmicrohttpd.a
+BYPRODUCT_WIN=libmicrohttpd.lib

@@ -1,0 +1,175 @@
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,138 @@
++cmake_minimum_required(VERSION 3.15)
++
++project(libmicrohttpd LANGUAGES C VERSION 1.0.1)
++
++if(MSVC)
++  set(CMAKE_DEBUG_POSTFIX "_d")
++endif()
++
++set(libmicrohttpd_headers
++  src/include/autoinit_funcs.h
++  src/include/microhttpd.h
++  src/include/mhd_options.h
++  src/include/platform.h
++  src/microhttpd/basicauth.h
++  src/microhttpd/connection.h
++  src/microhttpd/digestauth.h
++  src/microhttpd/gen_auth.h
++  src/microhttpd/internal.h
++  src/microhttpd/mhd_md5_wrap.h
++  src/microhttpd/md5.h
++  src/microhttpd/mhd_sha256_wrap.h
++  src/microhttpd/sha256.h
++  src/microhttpd/sha512_256.h
++  src/microhttpd/memorypool.h
++  src/microhttpd/mhd_assert.h
++  src/microhttpd/mhd_align.h
++  src/microhttpd/mhd_bithelpers.h
++  src/microhttpd/mhd_byteorder.h
++  src/microhttpd/mhd_limits.h
++  src/microhttpd/mhd_mono_clock.h
++  src/microhttpd/response.h
++  src/microhttpd/postprocessor.h
++  src/microhttpd/tsearch.h
++  src/microhttpd/sysfdsetsize.h
++  src/microhttpd/mhd_str.h
++  src/microhttpd/mhd_str_types.h
++  src/microhttpd/mhd_threads.h
++  src/microhttpd/mhd_locks.h
++  src/microhttpd/mhd_send.h
++  src/microhttpd/mhd_sockets.h
++  src/microhttpd/mhd_itc.h
++  src/microhttpd/mhd_itc_types.h
++  src/microhttpd/mhd_compat.h
++  src/microhttpd/mhd_panic.h
++  w32/common/MHD_config.h
++)
++
++add_library(libmicrohttpd
++  ${libmicrohttpd_headers}
++  src/microhttpd/basicauth.c
++  src/microhttpd/connection.c
++  src/microhttpd/daemon.c
++  src/microhttpd/digestauth.c
++  src/microhttpd/gen_auth.c
++  src/microhttpd/internal.c
++  src/microhttpd/md5.c
++  src/microhttpd/sha256.c
++  src/microhttpd/sha512_256.c
++  src/microhttpd/memorypool.c
++  src/microhttpd/mhd_mono_clock.c
++  src/microhttpd/postprocessor.c
++  src/microhttpd/reason_phrase.c
++  src/microhttpd/response.c
++  src/microhttpd/tsearch.c
++  src/microhttpd/sysfdsetsize.c
++  src/microhttpd/mhd_str.c
++  src/microhttpd/mhd_threads.c
++  src/microhttpd/mhd_send.c
++  src/microhttpd/mhd_sockets.c
++  src/microhttpd/mhd_panic.c
++)
++
++target_include_directories(
++  libmicrohttpd PRIVATE
++  $<BUILD_INTERFACE:src/include;src/microhttpd;src/platform;w32/common>
++  INTERFACE
++  $<INSTALL_INTERFACE:include>
++)
++
++target_compile_definitions(libmicrohttpd
++  PRIVATE
++    _CRT_SECURE_NO_WARNINGS
++    _CRT_NONSTDC_NO_WARNINGS
++    MHD_W32LIB
++    _WIN32_WINNT=0x0A00
++)
++
++if(WINDOWS_STORE)
++  target_compile_definitions(libmicrohttpd
++    PRIVATE
++      MS_APP
++  )
++endif()
++
++target_link_options(libmicrohttpd
++  PRIVATE
++    /debug:full
++)
++
++if(MSVC)
++  set_target_properties(libmicrohttpd PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} COMPILE_PDB_NAME libmicrohttpd COMPILE_PDB_NAME_DEBUG libmicrohttpd_d)
++  install(FILES ${PROJECT_BINARY_DIR}/RelWithDebInfo/libmicrohttpd.pdb DESTINATION lib CONFIGURATIONS RelWithDebInfo)
++  install(FILES ${PROJECT_BINARY_DIR}/Debug/libmicrohttpd_d.pdb DESTINATION lib CONFIGURATIONS Debug)
++endif()
++
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(
++  ${CMAKE_CURRENT_BINARY_DIR}/libmicrohttpd-config-version.cmake
++  VERSION ${libmicrohttpd_VERSION}
++  COMPATIBILITY AnyNewerVersion
++)
++
++install(TARGETS libmicrohttpd EXPORT libmicrohttpd
++  RUNTIME DESTINATION bin
++  ARCHIVE DESTINATION lib
++  LIBRARY DESTINATION lib
++)
++
++install(FILES
++  src/include/microhttpd.h
++  DESTINATION include)
++
++install(EXPORT libmicrohttpd
++  FILE
++    libmicrohttpd.cmake
++  NAMESPACE
++    libmicrohttpd::
++  DESTINATION
++    lib/cmake/libmicrohttpd
++)
++
++install(
++  FILES
++    cmake/libmicrohttpd-config.cmake
++    ${CMAKE_CURRENT_BINARY_DIR}/libmicrohttpd-config-version.cmake
++  DESTINATION
++    lib/cmake/libmicrohttpd
++)
+--- /dev/null
++++ b/cmake/libmicrohttpd-config.cmake
+@@ -0,0 +1 @@
++include(${CMAKE_CURRENT_LIST_DIR}/libmicrohttpd.cmake)
+--- a/src/microhttpd/memorypool.c
++++ b/src/microhttpd/memorypool.c
+@@ -296,7 +296,11 @@ MHD_pool_create (size_t max)
+                          -1,
+                          0);
+ #elif defined(_WIN32)
++#ifdef MS_APP
++    pool->memory = VirtualAllocFromApp (NULL,
++#else
+     pool->memory = VirtualAlloc (NULL,
++#endif
+                                  alloc_size,
+                                  MEM_COMMIT | MEM_RESERVE,
+                                  PAGE_READWRITE);
+diff --git a/src/microhttpd/mhd_sockets.c b/src/microhttpd/mhd_sockets.c
+index 31c2885e..0aa61f0f 100644
+--- a/src/microhttpd/mhd_sockets.c
++++ b/src/microhttpd/mhd_sockets.c
+@@ -465,9 +465,11 @@ MHD_socket_noninheritable_ (MHD_socket sock)
+                     flags | FD_CLOEXEC)) )
+     return 0;
+ #elif defined(MHD_WINSOCK_SOCKETS)
++#ifndef MS_APP
+   if (! SetHandleInformation ((HANDLE) sock,
+                               HANDLE_FLAG_INHERIT,
+                               0))
++#endif
+     return 0;
+ #endif /* MHD_WINSOCK_SOCKETS */
+   return ! 0;
