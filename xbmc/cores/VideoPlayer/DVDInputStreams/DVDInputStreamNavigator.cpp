@@ -547,11 +547,12 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 
           if (times)
           {
-            // the times array stores the end timestamps of the chapters, e.g., times[0] stores the position/beginning of chapter 2
+            // the times array stores the duration of the chapters
+            // e.g. times[0] stores the end timestamp of the 1st chapter / beginning of chapter 2
             m_mapTitleChapters[m_iTitle][1] = 0;
             for (int i = 0; i < entries - 1; ++i)
             {
-              m_mapTitleChapters[m_iTitle][i + 2] = times[i] / 90000;
+              m_mapTitleChapters[m_iTitle][i + 2] = times[i] / 90;
             }
             free(times);
           }
@@ -1433,7 +1434,7 @@ std::string CDVDInputStreamNavigator::GetDVDVolIdString()
   return "";
 }
 
-int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)
+std::chrono::milliseconds CDVDInputStreamNavigator::GetChapterPos(int ch)
 {
   if (ch == -1 || ch > GetChapterCount())
     ch = GetChapter();
@@ -1443,9 +1444,9 @@ int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)
   {
     std::map<int, int64_t>::iterator chapter = title->second.find(ch);
     if (chapter != title->second.end())
-      return chapter->second;
+      return std::chrono::milliseconds{chapter->second};
   }
-  return 0;
+  return std::chrono::milliseconds{0};
 }
 
 void CDVDInputStreamNavigator::GetVideoResolution(uint32_t* width, uint32_t* height)

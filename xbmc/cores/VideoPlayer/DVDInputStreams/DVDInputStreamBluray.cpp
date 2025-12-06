@@ -987,15 +987,15 @@ bool CDVDInputStreamBluray::SeekChapter(int ch)
   return true;
 }
 
-int64_t CDVDInputStreamBluray::GetChapterPos(int ch)
+std::chrono::milliseconds CDVDInputStreamBluray::GetChapterPos(int ch)
 {
   if (ch == -1 || ch > GetChapterCount())
     ch = GetChapter();
 
   if (m_titleInfo && m_titleInfo->chapters)
-    return m_titleInfo->chapters[ch - 1].start / 90000;
+    return std::chrono::milliseconds{m_titleInfo->chapters[ch - 1].start / 90};
   else
-    return 0;
+    return std::chrono::milliseconds{0};
 }
 
 int64_t CDVDInputStreamBluray::Seek(int64_t offset, int whence)

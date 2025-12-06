@@ -704,12 +704,13 @@ void CInputStreamAddon::GetChapterName(std::string& name, int ch)
   }
 }
 
-int64_t CInputStreamAddon::GetChapterPos(int ch)
+std::chrono::milliseconds CInputStreamAddon::GetChapterPos(int ch)
 {
+  //! @todo add API for ms precision
   if (m_ifc.inputstream->toAddon->get_chapter_pos)
-    return m_ifc.inputstream->toAddon->get_chapter_pos(m_ifc.inputstream, ch);
+    return std::chrono::seconds{m_ifc.inputstream->toAddon->get_chapter_pos(m_ifc.inputstream, ch)};
 
-  return 0;
+  return std::chrono::milliseconds{0};
 }
 
 bool CInputStreamAddon::SeekChapter(int ch)

@@ -5122,10 +5122,9 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       {
         for (int i = 0, ie = pChapter->GetChapterCount(); i < ie; ++i)
         {
-          std::string name;
-          pChapter->GetChapterName(name, i + 1);
-          //! @todo get better than second resolution
-          state.chapters.emplace_back(name, pChapter->GetChapterPos(i + 1) * 1000);
+          auto& p =
+              state.chapters.emplace_back(std::string{}, pChapter->GetChapterPos(i + 1).count());
+          pChapter->GetChapterName(p.first, i + 1);
         }
       }
     }
