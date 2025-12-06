@@ -434,6 +434,11 @@ void CAdvancedSettings::Initialize()
 
   m_cpuTempCmd = "";
   m_gpuTempCmd = "";
+
+  m_powerdownCommand = "";
+  m_rebootCommand = "";
+  m_suspendCommand = "";
+  m_hibernateCommand = "";
 #if defined(TARGET_DARWIN)
   // default for osx is fullscreen always on top
   m_alwaysOnTop = true;
@@ -1172,6 +1177,15 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetString(pRootElement, "cputempcommand", m_cpuTempCmd);
   XMLUtils::GetString(pRootElement, "gputempcommand", m_gpuTempCmd);
+
+  const TiXmlElement* pPowerManagement = pRootElement->FirstChildElement("powermanagement");
+  if (pPowerManagement)
+  {
+    XMLUtils::GetString(pPowerManagement, "powerdown", m_powerdownCommand);
+    XMLUtils::GetString(pPowerManagement, "reboot", m_rebootCommand);
+    XMLUtils::GetString(pPowerManagement, "suspend", m_suspendCommand);
+    XMLUtils::GetString(pPowerManagement, "hibernate", m_hibernateCommand);
+  }
 
   XMLUtils::GetBoolean(pRootElement, "alwaysontop", m_alwaysOnTop);
 

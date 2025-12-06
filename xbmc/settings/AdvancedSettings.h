@@ -327,6 +327,12 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_cpuTempCmd;
     std::string m_gpuTempCmd;
 
+    /* Power management command overrides */
+    std::string m_powerdownCommand;
+    std::string m_rebootCommand;
+    std::string m_suspendCommand;
+    std::string m_hibernateCommand;
+
     /* PVR/TV related advanced settings */
     int m_iPVRTimeCorrection;     /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. defaults to 0. */
     int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
