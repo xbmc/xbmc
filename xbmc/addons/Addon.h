@@ -38,6 +38,13 @@ public:
   ~CAddon() override = default;
 
   /**
+   * @brief Get all info for this add-on
+   *
+   * @return A CAddonInfo with all of the add-on's info, or empty if unknown
+   */
+  AddonInfoPtr AddonInfo() { return m_addonInfo; }
+
+  /**
    * @brief To get the main type of this addon
    *
    * This is the first type defined in **addon.xml** and can be different to the

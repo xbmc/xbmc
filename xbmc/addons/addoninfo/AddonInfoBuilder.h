@@ -46,6 +46,7 @@ public:
   static AddonInfoPtr Generate(const tinyxml2::XMLElement* baseElement,
                                const RepositoryDirInfo& repo,
                                bool platformCheck = true);
+  static AddonInfoPtr Generate(IAddon& addon);
 
   /*!
     * @brief Parts used from CAddonDatabase

@@ -70,6 +70,7 @@ const std::set<AddonType> lookAndFeelTypes = {
     AddonType::RESOURCE_LANGUAGE,
     AddonType::RESOURCE_UISOUNDS,
     AddonType::RESOURCE_FONT,
+    AddonType::RESOURCE_SKIN,
     AddonType::VISUALIZATION,
 };
 
