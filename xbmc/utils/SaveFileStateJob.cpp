@@ -15,7 +15,6 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
-#include "application/ApplicationStackHelper.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -31,24 +30,31 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 
+#include <chrono>
+
 using namespace KODI;
 using namespace KODI::VIDEO;
+using namespace std::chrono_literals;
 
 void CSaveFileState::DoWork(CFileItem& item,
                             CBookmark& bookmark,
                             bool updatePlayCount)
 {
   std::string progressTrackingFile = item.GetPath();
-
-  if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
-      (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
-       item.GetVideoContentType() == VideoDbContentType::EPISODES ||
-       item.GetVideoContentType() == VideoDbContentType::UNKNOWN /* Removable bluray */))
+  if (item.IsStack() ||
+      (URIUtils::IsBlurayPath(item.GetDynPath()) &&
+       (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
+        item.GetVideoContentType() == VideoDbContentType::EPISODES ||
+        item.GetVideoContentType() == VideoDbContentType::UNKNOWN /* Removable bluray */)))
+  {
     progressTrackingFile = item.GetDynPath();
+  }
   else if (item.HasVideoInfoTag() && IsVideoDb(item))
+  {
     progressTrackingFile =
         item.GetVideoInfoTag()
             ->m_strFileNameAndPath; // we need the file url of the video db item to create the bookmark
+  }
   else if (item.HasProperty("original_listitem_url"))
   {
     // only use original_listitem_url for Python, UPnP and Bluray sources
@@ -206,16 +212,29 @@ void CSaveFileState::DoWork(CFileItem& item,
         // See if idFile of library item needs updating
         const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
 
-        if (tag && tag->m_iFileId >= 0 &&
-            !(tag->m_iDbId < 0 && item.GetVideoContentType() != VideoDbContentType::UNKNOWN) &&
-            URIUtils::IsBlurayPath(item.GetDynPath()) &&
-            tag->m_strFileNameAndPath != item.GetDynPath())
+        const bool updateNeeded{
+            [&item, &tag]
+            {
+              if (!tag || tag->m_iFileId < 0)
+                return false; // No tag or file to update
+              if (tag->m_iDbId < 0 && item.GetVideoContentType() != VideoDbContentType::UNKNOWN)
+                return false; // No video db item to update
+              if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
+                  !URIUtils::IsStack(tag->m_strFileNameAndPath) &&
+                  tag->m_strFileNameAndPath != item.GetDynPath())
+                return true; // Bluray path to update
+              if (item.GetProperty("new_stack_path").asBoolean(false))
+                return true; // Stack path to update
+              return false;
+            }()};
+
+        if (updateNeeded)
         {
           videodatabase.BeginTransaction();
           // tag->m_iFileId contains the idFile originally played and may be different to the idFile
           // in the movie table entry if it's a non-default video version
           const int newFileId{videodatabase.SetFileForMedia(
-              item.GetDynPath(), item.GetVideoContentType(), tag->m_iDbId,
+              progressTrackingFile, item.GetVideoContentType(), tag->m_iDbId,
               CVideoDatabase::FileRecord{.m_idFile = tag->m_iFileId,
                                          .m_playCount = tag->GetPlayCount(),
                                          .m_lastPlayed = tag->m_lastPlayed,
@@ -235,14 +254,6 @@ void CSaveFileState::DoWork(CFileItem& item,
           CFileItemPtr msgItem(new CFileItem(item));
           if (item.HasProperty("original_listitem_url"))
             msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
-
-          // Could be part of an ISO stack. In this case the bookmark is saved onto the part.
-          // In order to properly update the list, we need to refresh the stack's resume point
-          const auto& components = CServiceBroker::GetAppComponents();
-          const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
-          if (stackHelper->HasRegisteredStack(item) &&
-              stackHelper->GetRegisteredStackTotalTimeMs(item) == 0)
-            videodatabase.GetResumePoint(*(msgItem->GetVideoInfoTag()));
 
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);

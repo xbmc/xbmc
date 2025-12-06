@@ -17,7 +17,6 @@
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "music/MusicFileItemClassify.h"
-#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -34,6 +33,9 @@
 #include "video/VideoUtils.h"
 
 #include <algorithm>
+#include <map>
+#include <ranges>
+#include <vector>
 
 using namespace KODI;
 using namespace XFILE;
@@ -659,7 +661,32 @@ void CFileItemList::RemoveExtensions()
   std::ranges::for_each(m_items, [](auto& item) { item->RemoveExtension(); });
 }
 
-void CFileItemList::Stack(bool stackFiles /* = true */)
+namespace
+{
+void ChangeFolderToFile(const std::shared_ptr<CFileItem>& item, const std::string& playPath)
+{
+  item->SetPath(playPath); // updated path (for DVD/Bluray files)
+  item->SetFolder(false);
+}
+
+void ConvertDiscFoldersToFiles(std::vector<std::shared_ptr<CFileItem>> items)
+{
+  auto folderItems{items | std::views::filter([](const std::shared_ptr<CFileItem>& item)
+                                              { return item->IsFolder(); })};
+  for (const auto& item : folderItems)
+  {
+    if (auto playPath{VIDEO::UTILS::GetOpticalMediaPath(*item)}; !playPath.empty())
+    {
+      CURL url(playPath);
+      if (url.IsProtocol("udf"))
+        playPath = url.GetHostName();
+      ChangeFolderToFile(item, playPath);
+    }
+  }
+}
+} // namespace
+
+void CFileItemList::Stack()
 {
   std::unique_lock lock(m_lock);
 
@@ -672,17 +699,17 @@ void CFileItemList::Stack(bool stackFiles /* = true */)
   // items needs to be sorted for stuff below to work properly
   Sort(SortByLabel, SortOrderAscending);
 
-  StackFolders();
+  // Convert folder paths containing disc images to files (INDEX.BDMV or VIDEO_TS.IFO)
+  ConvertDiscFoldersToFiles(m_items);
 
-  if (stackFiles)
-    StackFiles();
-}
+  // Cannot stack a single item
+  if (m_items.size() == 1)
+    return;
 
-void CFileItemList::StackFolders()
-{
+  // Get REs
   // Precompile our REs
-  std::vector<CRegExp> folderRegExps =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_folderStackRegExps;
+  std::vector<CRegExp> folderRegExps{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_folderStackRegExps};
 
   if (folderRegExps.empty())
   {
@@ -690,241 +717,149 @@ void CFileItemList::StackFolders()
     return;
   }
 
-  // stack folders
-  for (const auto& item : m_items)
-  {
-    // combined the folder checks
-    if (item->IsFolder())
-    {
-      // only check known fast sources?
-      // NOTES:
-      // 1. rars and zips may be on slow sources? is this supposed to be allowed?
-      if (!NETWORK::IsRemote(*item) || item->IsSmb() || item->IsNfs() ||
-          URIUtils::IsInRAR(item->GetPath()) || URIUtils::IsInZIP(item->GetPath()) ||
-          URIUtils::IsOnLAN(item->GetPath()))
-      {
-        // stack cd# folders if contains only a single video file
+  std::vector<CRegExp> fileRegExps{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps};
 
-        bool bMatch(false);
-
-        auto expr = folderRegExps.begin();
-        while (!bMatch && expr != folderRegExps.end())
-        {
-          //CLog::LogF(LOGDEBUG,"Running expression {} on {}", expr->GetPattern(), item->GetLabel());
-          bMatch = (expr->RegFind(item->GetLabel().c_str()) != -1);
-          if (bMatch)
-          {
-            CFileItemList items;
-            CDirectory::GetDirectory(
-                item->GetPath(), items,
-                CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
-            // optimized to only traverse listing once by checking for filecount
-            // and recording last file item for later use
-            int nFiles = 0;
-            int index = -1;
-            for (int j = 0; j < items.Size(); j++)
-            {
-              if (!items[j]->IsFolder())
-              {
-                nFiles++;
-                index = j;
-              }
-
-              if (nFiles > 1)
-                break;
-            }
-
-            if (nFiles == 1)
-              *item = *items[index];
-          }
-          ++expr;
-        }
-
-        // check for dvd folders
-        if (!bMatch)
-        {
-          std::string dvdPath = VIDEO::UTILS::GetOpticalMediaPath(*item);
-
-          if (!dvdPath.empty())
-          {
-            // NOTE: should this be done for the CD# folders too?
-            item->SetFolder(false);
-            item->SetPath(std::move(dvdPath));
-            item->SetLabel2("");
-            item->SetLabelPreformatted(true);
-            m_sortDescription.sortBy = SortByNone; /* sorting is now broken */
-          }
-        }
-      }
-    }
-  }
-}
-
-void CFileItemList::StackFiles()
-{
-  std::vector<CRegExp> stackRegExps =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps;
-
-  if (stackRegExps.empty())
+  if (fileRegExps.empty())
   {
     CLog::LogF(LOGDEBUG, "No stack expressions available. Skipping file stacking");
     return;
   }
 
-  // now stack the files, some of which may be from the previous stack iteration
-  int i = 0;
-  while (i < Size())
+  std::vector<StackCandidate> stackCandidates;
+  for (int i = 0; i < Size(); ++i)
   {
-    CFileItemPtr item1 = Get(i);
-
-    // skip folders, nfo files, playlists
-    if (item1->IsFolder() || item1->IsParentFolder() || item1->IsNFO() ||
-        PLAYLIST::IsPlayList(*item1))
+    const auto& item{m_items[i]};
+    if (item->IsFolder() || VIDEO::IsDVDFile(*item) || VIDEO::IsBDFile(*item))
     {
-      // increment index
-      i++;
-      continue;
-    }
+      // Folder stacking (for BD/DVD files/images)
+      std::string folder{StringUtils::ToLower(item->GetLabel())};
+      URIUtils::RemoveSlashAtEnd(folder);
 
-    int64_t size = 0;
-    size_t offset = 0;
-    std::string stackName;
-    std::string file1;
-    std::string filePath;
-    std::vector<int> stack;
-    auto expr = stackRegExps.begin();
-
-    URIUtils::Split(item1->GetPath(), filePath, file1);
-    if (URIUtils::HasEncodedFilename(CURL(filePath)))
-      file1 = CURL::Decode(file1);
-
-    int j;
-    while (expr != stackRegExps.end())
-    {
-      if (expr->RegFind(file1, offset) != -1)
+      // Test each item against each RegExp
+      for (auto& regExp : folderRegExps)
       {
-        std::string title1 = expr->GetMatch(1);
-        const std::string volume1 = expr->GetMatch(2);
-        const std::string ignore1 = expr->GetMatch(3);
-        const std::string extension1 = expr->GetMatch(4);
-        if (offset)
-          title1 = file1.substr(0, expr->GetSubStart(2));
-        j = i + 1;
-        while (j < Size())
-        {
-          const CFileItemPtr item2 = Get(j);
+        if (regExp.RegFind(folder) == -1)
+          continue;
 
-          // skip folders, nfo files, playlists
-          if (item2->IsFolder() || item2->IsParentFolder() || item2->IsNFO() ||
-              PLAYLIST::IsPlayList(*item2))
-          {
-            // increment index
-            j++;
+        bool fileFound{true};
+        if (item->IsFolder())
+        {
+          // Look for media files in the folder
+          CFileItemList items;
+          if (!CDirectory::GetDirectory(
+                  item->GetPath(), items,
+                  CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                  DIR_FLAG_DEFAULTS))
             continue;
-          }
 
-          std::string file2;
-          std::string filePath2;
-          URIUtils::Split(item2->GetPath(), filePath2, file2);
-          if (URIUtils::HasEncodedFilename(CURL(filePath2)))
-            file2 = CURL::Decode(file2);
-
-          if (expr->RegFind(file2, offset) != -1)
+          // Only expect one media file per folder (if >1 should be a file stack)
+          if (items.GetFileCount() == 1)
+            ChangeFolderToFile(item, items[0]->GetPath());
+          else
           {
-            std::string title2 = expr->GetMatch(1);
-            const std::string volume2 = expr->GetMatch(2);
-            const std::string ignore2 = expr->GetMatch(3);
-            const std::string extension2 = expr->GetMatch(4);
-            if (offset)
-              title2 = file2.substr(0, expr->GetSubStart(2));
-            if (StringUtils::EqualsNoCase(title1, title2))
-            {
-              if (!StringUtils::EqualsNoCase(volume1, volume2))
-              {
-                if (StringUtils::EqualsNoCase(ignore1, ignore2) &&
-                    StringUtils::EqualsNoCase(extension1, extension2))
-                {
-                  if (stack.empty())
-                  {
-                    stackName = title1 + ignore1 + extension1;
-                    stack.emplace_back(i);
-                    size += item1->GetSize();
-                  }
-                  stack.emplace_back(j);
-                  size += item2->GetSize();
-                }
-                else // Sequel
-                {
-                  offset = 0;
-                  ++expr;
-                  break;
-                }
-              }
-              else if (!StringUtils::EqualsNoCase(ignore1,
-                                                  ignore2)) // False positive, try again with offset
-              {
-                offset = expr->GetSubStart(3);
-                break;
-              }
-              else // Extension mismatch
-              {
-                offset = 0;
-                ++expr;
-                break;
-              }
-            }
-            else // Title mismatch
-            {
-              offset = 0;
-              ++expr;
-              break;
-            }
+            CLog::LogF(LOGDEBUG,
+                       "Skipping folder '{}' - expected 1 media file per folder for a folder "
+                       "stack, found {}",
+                       item->GetPath(), items.GetFileCount());
+            fileFound = false;
           }
-          else // No match 2, next expression
-          {
-            offset = 0;
-            ++expr;
-            break;
-          }
-          j++;
         }
-        if (j == Size())
-          expr = stackRegExps.end();
-      }
-      else // No match 1
-      {
-        offset = 0;
-        ++expr;
-      }
-      if (stack.size() > 1)
-      {
-        // have a stack, remove the items and add the stacked item
-        // dont actually stack a multipart rar set, just remove all items but the first
-        std::string stackPath;
-        if (Get(stack[0])->IsRAR())
-          stackPath = Get(stack[0])->GetPath();
-        else
+
+        if (fileFound)
         {
-          stackPath = CStackDirectory::ConstructStackPath(*this, stack);
+          // Add to stack vector
+          stackCandidates.emplace_back(StackCandidate{.type = StackCandidateType::FOLDER_CANDIDATE,
+                                                      .title = regExp.GetMatch(1),
+                                                      .volume = regExp.GetMatch(2),
+                                                      .size = item->GetSize(),
+                                                      .index = i});
+          break;
         }
-        item1->SetPath(std::move(stackPath));
-        // clean up list
-        for (size_t k = 1; k < stack.size(); k++)
-          Remove(i + 1);
-        // item->SetFolder(true);  // don't treat stacked files as folders
-        // the label may be in a different char set from the filename (eg over smb
-        // the label is converted from utf8, but the filename is not)
-        if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                CSettings::SETTING_FILELISTS_SHOWEXTENSIONS))
-          URIUtils::RemoveExtension(stackName);
+      }
+    }
+    else if (!item->IsFolder() && !item->IsParentFolder() && !item->IsNFO() &&
+             !PLAYLIST::IsPlayList(*item))
+    {
+      // File stacking
+      std::string file;
+      std::string filePath;
+      URIUtils::Split(StringUtils::ToLower(item->GetPath()), filePath, file);
+      if (URIUtils::HasEncodedFilename(CURL(filePath)))
+        file = CURL::Decode(file);
 
-        item1->SetLabel(stackName);
-        item1->SetSize(size);
+      // Test each item against each RegExp
+      for (auto& regExp : fileRegExps)
+      {
+        if (regExp.RegFind(file) == -1)
+          continue;
+
+        // Get components of file name
+        stackCandidates.emplace_back(StackCandidate{.type = StackCandidateType::FILE_CANDIDATE,
+                                                    .title = regExp.GetMatch(1),
+                                                    .volume = regExp.GetMatch(2),
+                                                    .size = item->GetSize(),
+                                                    .index = i});
         break;
       }
     }
-    i++;
   }
+
+  // Check we have stack candidates
+  if (stackCandidates.empty())
+    return;
+
+  // Sort stack candidates
+  std::ranges::sort(stackCandidates);
+
+  // Count stack candidates
+  std::map<CountedStackCandidate, int> countedCandidates;
+  for (const auto& s : stackCandidates)
+    ++countedCandidates[{s.type, s.title}];
+
+  // Find stacks
+  std::vector<int> deleteItems;
+  for (const auto& [candidate, count] :
+       countedCandidates | std::views::filter([](const auto& c) { return c.second > 1; }))
+  {
+    // Find all items in this stack
+    std::vector<int> stack;
+    int64_t size{0};
+    for (const auto& stackItem :
+         stackCandidates |
+             std::views::filter([type = candidate.type, title = candidate.title](const auto& item)
+                                { return item.type == type && item.title == title; }))
+    {
+      stack.emplace_back(stackItem.index);
+      size += stackItem.size;
+      if (stack.size() > 1)
+        deleteItems.emplace_back(stackItem.index); // delete all but first item in stack
+    }
+
+    // Generate combined stack path
+    // @todo - why is RAR a special case here? a RAR file could be part of a stack.
+    const auto& baseItem{Get(stack[0])};
+    const std::string stackPath{baseItem->IsRAR()
+                                    ? baseItem->GetPath()
+                                    : CStackDirectory::ConstructStackPath(*this, stack)};
+
+    // First item in stack becomes the stack
+    std::string stackName{candidate.title};
+    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_FILELISTS_SHOWEXTENSIONS))
+      URIUtils::RemoveExtension(stackName);
+
+    // Update item
+    baseItem->SetPath(stackPath);
+    baseItem->SetLabel(stackName);
+    baseItem->SetSize(size);
+  }
+
+  // Delete unneeded items
+  // Sort and delete from last to first (otherwise index is no longer correct)
+  std::ranges::sort(deleteItems, std::greater());
+  for (int i : deleteItems)
+    Remove(i);
 }
 
 bool CFileItemList::Load(int windowID)

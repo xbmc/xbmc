@@ -105,9 +105,11 @@ Action CVideoPlayActionProcessor::ChoosePlayOrResume() const
   }
   else if (URIUtils::IsStack(GetItem()->GetDynPath()))
   {
-    const auto [offset, partNumber] = VIDEO::UTILS::GetStackResumeOffsetAndPartNumber(*GetItem());
-    if (offset > 0)
+    if (const auto resume{UTILS::GetStackResumeOffsetAndPartNumber(*GetItem())}; resume)
+    {
+      const auto& [offset, partNumber] = *resume;
       return ChoosePlayOrResume(VIDEO::UTILS::GetResumeString(offset, partNumber));
+    }
   }
   else
   {
