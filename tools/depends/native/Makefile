@@ -26,6 +26,7 @@ NATIVE= \
   openssl \
   pcre2 \
   perlmodule-parseyapp \
+  pythonmodule-pybind11 \
   pythonmodule-setuptools \
   pkg-config \
   python3 \
@@ -90,6 +91,7 @@ openssl: zlib
 pcre2: cmake
 pugixml: cmake
 python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
+pythonmodule-pybind11: pythonmodule-setuptools python3
 pythonmodule-setuptools: python3
 swig: bison cmake pcre2
 tar: xz automake
