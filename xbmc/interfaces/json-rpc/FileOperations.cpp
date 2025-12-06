@@ -103,7 +103,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
     extensions = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
   }
 
-  if (CDirectory::GetDirectory(strPath, items, extensions, DIR_FLAG_DEFAULTS))
+  if (CDirectory::GetDirectory(strPath, items, extensions, DIR_FLAG_DEFAULTS | DIR_FLAG_READ_CACHE))
   {
     // we might need to get additional information for music items
     if (media == "music")
