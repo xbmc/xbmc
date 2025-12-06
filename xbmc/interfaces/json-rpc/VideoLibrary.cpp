@@ -1003,6 +1003,20 @@ JSONRPC_STATUS CVideoLibrary::Export(const std::string &method, ITransportLayer 
   return ACK;
 }
 
+JSONRPC_STATUS CVideoLibrary::Import(const std::string& method,
+                                     ITransportLayer* transport,
+                                     IClient* client,
+                                     const CVariant& parameterObject,
+                                     CVariant& result)
+{
+  std::string directory = parameterObject["directory"].asString();
+  std::string cmd =
+      StringUtils::Format("importlibrary(video, {})", StringUtils::Paramify(directory));
+
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  return ACK;
+}
+
 JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string directory = parameterObject["directory"].asString();
