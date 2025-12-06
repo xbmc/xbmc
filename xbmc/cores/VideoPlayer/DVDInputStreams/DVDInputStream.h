@@ -217,7 +217,16 @@ public:
     NOT_PLAYED
   };
 
-  virtual void SaveCurrentState(const CStreamDetails& details) {}
+  enum class StreamDetailsStatus : bool
+  {
+    STREAM_DETAILS_INCOMPLETE,
+    STREAM_DETAILS_COMPLETE
+  };
+
+  virtual std::optional<StreamDetailsStatus> SaveCurrentState(const CStreamDetails& details)
+  {
+    return std::nullopt;
+  }
   virtual UpdateState UpdateCurrentState(CFileItem& item, double time, bool& closed)
   {
     return UpdateState::NONE;
@@ -233,9 +242,10 @@ public:
     CStreamDetails details;
   };
 
-  static void SavePlaylistDetails(std::vector<PlaylistInformation>& playedPlaylists,
-                                  std::chrono::steady_clock::time_point startTime,
-                                  const PlaylistInformation& currentPlaylistInformation);
+  static StreamDetailsStatus SavePlaylistDetails(
+      std::vector<PlaylistInformation>& playedPlaylists,
+      std::chrono::steady_clock::time_point startTime,
+      const PlaylistInformation& currentPlaylistInformation);
 
   static UpdateState UpdatePlaylistDetails(DVDStreamType type,
                                            std::vector<PlaylistInformation>& playedPlaylists,

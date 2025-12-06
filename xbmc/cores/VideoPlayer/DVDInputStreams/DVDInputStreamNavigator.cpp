@@ -1578,19 +1578,22 @@ int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blo
   return i_total;
 }
 
-void CDVDInputStreamNavigator::SaveCurrentState(const CStreamDetails& details)
+std::optional<CDVDInputStream::StreamDetailsStatus> CDVDInputStreamNavigator::SaveCurrentState(
+    const CStreamDetails& details)
 {
   std::unique_lock lock(m_statesLock);
 
   // Details for this playlist
-  SavePlaylistDetails(m_playedPlaylists, m_startWatchTime,
-                      {.playlist = m_iTitle,
-                       .inMenu = m_bInMenu,
-                       .duration = std::chrono::milliseconds(GetTotalTime()),
-                       .details = details});
+  const auto status{SavePlaylistDetails(m_playedPlaylists, m_startWatchTime,
+                                        {.playlist = m_iTitle,
+                                         .inMenu = m_bInMenu,
+                                         .duration = std::chrono::milliseconds(GetTotalTime()),
+                                         .details = details})};
 
   // Reset watch timer for next playlist
   m_startWatchTime = std::chrono::steady_clock::now();
+
+  return status;
 }
 
 CDVDInputStream::UpdateState CDVDInputStreamNavigator::UpdateCurrentState(CFileItem& item,

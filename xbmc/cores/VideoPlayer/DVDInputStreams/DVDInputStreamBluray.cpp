@@ -548,6 +548,8 @@ void CDVDInputStreamBluray::ProcessEvent() {
     m_playlist = m_event.param;
     FreeTitleInfo();
     m_titleInfo = bd_get_playlist_info(m_bd, m_playlist, m_angle);
+
+    m_player->OnDiscNavResult(nullptr, BD_EVENT_PLAYLIST);
     break;
 
   case BD_EVENT_PLAYITEM:
@@ -1329,22 +1331,25 @@ bool CDVDInputStreamBluray::SetState(const std::string& xmlstate)
   return true;
 }
 
-void CDVDInputStreamBluray::SaveCurrentState(const CStreamDetails& details)
+std::optional<CDVDInputStream::StreamDetailsStatus> CDVDInputStreamBluray::SaveCurrentState(
+    const CStreamDetails& details)
 {
   std::unique_lock lock(m_statesLock);
 
   if (!m_titleInfo)
-    return;
+    return std::nullopt;
 
   // Details for this playlist
-  SavePlaylistDetails(m_playedPlaylists, m_startWatchTime,
-                      {.playlist = static_cast<int>(m_titleInfo->playlist),
-                       .inMenu = m_isInMainMenu,
-                       .duration = std::chrono::milliseconds(GetTotalTime()),
-                       .details = details});
+  const auto status{SavePlaylistDetails(m_playedPlaylists, m_startWatchTime,
+                                        {.playlist = static_cast<int>(m_titleInfo->playlist),
+                                         .inMenu = m_isInMainMenu,
+                                         .duration = std::chrono::milliseconds(GetTotalTime()),
+                                         .details = details})};
 
   // Reset watch timer for next playlist
   m_startWatchTime = std::chrono::steady_clock::now();
+
+  return status;
 }
 
 CDVDInputStream::UpdateState CDVDInputStreamBluray::UpdateCurrentState(CFileItem& item,

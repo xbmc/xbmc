@@ -748,7 +748,6 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_caching = CACHESTATE_DONE;
   m_HasVideo = false;
   m_HasAudio = false;
-  m_UpdateStreamDetails = false;
 
   const int tenthsSeconds = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_VIDEOPLAYER_QUEUETIMESIZE);
@@ -3256,7 +3255,7 @@ void CVideoPlayer::HandleMessages()
       m_bAbortRequest = true;
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_UPDATE_STREAM_DETAILS))
-      m_UpdateStreamDetails = true;
+      m_updateStreamDetails = true;
   }
 }
 
@@ -4232,105 +4231,117 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
   {
     switch (iMessage)
     {
-    case BD_EVENT_MENU_OVERLAY:
-      m_overlayContainer.ProcessAndAddOverlayIfValid(
-          *static_cast<std::shared_ptr<CDVDOverlay>*>(pData));
-      break;
-    case BD_EVENT_MENU:
-      // Interactive menu visible?
-      if (*static_cast<uint32_t*>(pData) == false)
-      {
-        m_dvd.state = DVDSTATE_NORMAL;
-        m_dvd.iDVDStillTime = 0ms;
-        CLog::Log(LOGDEBUG, "BD_EVENT_MENU - libbluray leave menu (DVDSTATE_NORMAL)");
-      }
-      break;
-    case BD_EVENT_PLAYLIST_STOP:
-      m_dvd.state = DVDSTATE_NORMAL;
-      m_dvd.iDVDStillTime = 0ms;
-      m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::GENERAL_FLUSH));
-      break;
-    case BD_EVENT_AUDIO_STREAM:
-      m_dvd.iSelectedAudioStream = *static_cast<int*>(pData);
-      break;
-
-    case BD_EVENT_PG_TEXTST_STREAM:
-      m_dvd.iSelectedSPUStream = *static_cast<int*>(pData);
-      break;
-    case BD_EVENT_PG_TEXTST:
-    {
-      bool enable = (*static_cast<int*>(pData) != 0);
-      m_VideoPlayerVideo->EnableSubtitle(enable);
-    }
-    break;
-    case BD_EVENT_STILL_TIME:
-    {
-      if (m_dvd.state != DVDSTATE_STILL)
-      {
-        // else notify the player we have received a still frame
-
-        m_dvd.iDVDStillTime = std::chrono::milliseconds(*static_cast<int*>(pData));
-        m_dvd.iDVDStillStartTime = std::chrono::steady_clock::now();
-
-        if (m_dvd.iDVDStillTime > 0ms)
-          m_dvd.iDVDStillTime *= 1000;
-
-        /* adjust for the output delay in the video queue */
-        std::chrono::milliseconds time = 0ms;
-        if (m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0ms)
+      case BD_EVENT_MENU_OVERLAY:
+        m_overlayContainer.ProcessAndAddOverlayIfValid(
+            *static_cast<std::shared_ptr<CDVDOverlay>*>(pData));
+        break;
+      case BD_EVENT_MENU:
+        // Interactive menu visible?
+        if (*static_cast<uint32_t*>(pData) == false)
         {
-          time = std::chrono::milliseconds(
-              static_cast<int>(m_VideoPlayerVideo->GetOutputDelay() / (DVD_TIME_BASE / 1000)));
-          if (time < 10000ms && time > 0ms)
-            m_dvd.iDVDStillTime += time;
+          m_dvd.state = DVDSTATE_NORMAL;
+          m_dvd.iDVDStillTime = 0ms;
+          CLog::Log(LOGDEBUG, "BD_EVENT_MENU - libbluray leave menu (DVDSTATE_NORMAL)");
         }
-        m_dvd.state = DVDSTATE_STILL;
-        CLog::Log(LOGDEBUG, "BD_EVENT_STILL_TIME - waiting {} msec, with delay of {} msec",
-                  m_dvd.iDVDStillTime.count(), time.count());
-      }
-    }
-    break;
-    case BD_EVENT_STILL:
-    {
-      bool on = static_cast<bool>(*static_cast<int*>(pData));
-      if (on && m_dvd.state != DVDSTATE_STILL)
-      {
-        m_dvd.state = DVDSTATE_STILL;
-        m_dvd.iDVDStillStartTime = std::chrono::steady_clock::now();
+        break;
+      case BD_EVENT_PLAYLIST_STOP:
+        m_dvd.state = DVDSTATE_NORMAL;
         m_dvd.iDVDStillTime = 0ms;
-        CLog::Log(LOGDEBUG, "CDVDPlayer::OnDVDNavResult - libbluray DVDSTATE_STILL start");
+        m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::GENERAL_FLUSH));
+        break;
+      case BD_EVENT_AUDIO_STREAM:
+        m_dvd.iSelectedAudioStream = *static_cast<int*>(pData);
+        break;
+
+      case BD_EVENT_PG_TEXTST_STREAM:
+        m_dvd.iSelectedSPUStream = *static_cast<int*>(pData);
+        break;
+      case BD_EVENT_PG_TEXTST:
+      {
+        bool enable = (*static_cast<int*>(pData) != 0);
+        m_VideoPlayerVideo->EnableSubtitle(enable);
       }
-      else if (!on && m_dvd.state == DVDSTATE_STILL)
+      break;
+      case BD_EVENT_STILL_TIME:
+      {
+        if (m_dvd.state != DVDSTATE_STILL)
+        {
+          // else notify the player we have received a still frame
+
+          m_dvd.iDVDStillTime = std::chrono::milliseconds(*static_cast<int*>(pData));
+          m_dvd.iDVDStillStartTime = std::chrono::steady_clock::now();
+
+          if (m_dvd.iDVDStillTime > 0ms)
+            m_dvd.iDVDStillTime *= 1000;
+
+          /* adjust for the output delay in the video queue */
+          std::chrono::milliseconds time = 0ms;
+          if (m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0ms)
+          {
+            time = std::chrono::milliseconds(
+                static_cast<int>(m_VideoPlayerVideo->GetOutputDelay() / (DVD_TIME_BASE / 1000)));
+            if (time < 10000ms && time > 0ms)
+              m_dvd.iDVDStillTime += time;
+          }
+          m_dvd.state = DVDSTATE_STILL;
+          CLog::Log(LOGDEBUG, "BD_EVENT_STILL_TIME - waiting {} msec, with delay of {} msec",
+                    m_dvd.iDVDStillTime.count(), time.count());
+        }
+      }
+      break;
+      case BD_EVENT_STILL:
+      {
+        bool on = static_cast<bool>(*static_cast<int*>(pData));
+        if (on && m_dvd.state != DVDSTATE_STILL)
+        {
+          m_dvd.state = DVDSTATE_STILL;
+          m_dvd.iDVDStillStartTime = std::chrono::steady_clock::now();
+          m_dvd.iDVDStillTime = 0ms;
+          CLog::Log(LOGDEBUG, "CDVDPlayer::OnDVDNavResult - libbluray DVDSTATE_STILL start");
+        }
+        else if (!on && m_dvd.state == DVDSTATE_STILL)
+        {
+          m_dvd.state = DVDSTATE_NORMAL;
+          m_dvd.iDVDStillStartTime = {};
+          m_dvd.iDVDStillTime = 0ms;
+          CLog::Log(LOGDEBUG, "CDVDPlayer::OnDVDNavResult - libbluray DVDSTATE_STILL end");
+        }
+      }
+      break;
+      case BD_EVENT_MENU_ERROR:
       {
         m_dvd.state = DVDSTATE_NORMAL;
-        m_dvd.iDVDStillStartTime = {};
-        m_dvd.iDVDStillTime = 0ms;
-        CLog::Log(LOGDEBUG, "CDVDPlayer::OnDVDNavResult - libbluray DVDSTATE_STILL end");
+        CLog::Log(LOGDEBUG,
+                  "CVideoPlayer::OnDiscNavResult - libbluray menu not supported (DVDSTATE_NORMAL)");
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player,
+                                                           "OnBlurayMenuError");
       }
-    }
-    break;
-    case BD_EVENT_MENU_ERROR:
-    {
-      m_dvd.state = DVDSTATE_NORMAL;
-      CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray menu not supported (DVDSTATE_NORMAL)");
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnBlurayMenuError");
-    }
-    break;
-    case BD_EVENT_ENC_ERROR:
-    {
-      m_dvd.state = DVDSTATE_NORMAL;
-      CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray the disc/file is encrypted and can't be played (DVDSTATE_NORMAL)");
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player,
-                                                         "OnBlurayEncryptedError");
-    }
-    break;
-    case BD_EVENT_DISCONTINUITY:
-      CLog::Log(LOGDEBUG,
-                "CVideoPlayer::OnDiscNavResult - libbluray discontinuity detected (DEMUXER_RESET)");
-      m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::DEMUXER_RESET));
       break;
-    default:
+      case BD_EVENT_ENC_ERROR:
+      {
+        m_dvd.state = DVDSTATE_NORMAL;
+        CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray the disc/file is encrypted "
+                            "and can't be played (DVDSTATE_NORMAL)");
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player,
+                                                           "OnBlurayEncryptedError");
+      }
       break;
+      case BD_EVENT_DISCONTINUITY:
+      {
+        CLog::Log(
+            LOGDEBUG,
+            "CVideoPlayer::OnDiscNavResult - libbluray discontinuity detected (DEMUXER_RESET)");
+        m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::DEMUXER_RESET));
+      }
+      break;
+      case BD_EVENT_PLAYLIST:
+      {
+        // Signal VideoPlayer we have changed title (saving per title streamdetails)
+        m_saveStreamDetails = true;
+      }
+      break;
+      default:
+        break;
     }
 
     return 0;
@@ -4339,15 +4350,16 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
 
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    std::shared_ptr<CDVDInputStreamNavigator> pStream = std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream);
+    std::shared_ptr<CDVDInputStreamNavigator> pStream =
+        std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream);
 
     switch (iMessage)
     {
-    case DVDNAV_STILL_FRAME:
+      case DVDNAV_STILL_FRAME:
       {
         //CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME");
 
-        dvdnav_still_event_t *still_event = static_cast<dvdnav_still_event_t*>(pData);
+        dvdnav_still_event_t* still_event = static_cast<dvdnav_still_event_t*>(pData);
         // should wait the specified time here while we let the player running
         // after that call dvdnav_still_skip(m_dvdnav);
 
@@ -4355,7 +4367,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
         {
           // else notify the player we have received a still frame
 
-          if(still_event->length < 0xff)
+          if (still_event->length < 0xff)
             m_dvd.iDVDStillTime = std::chrono::seconds(still_event->length);
           else
             m_dvd.iDVDStillTime = 0ms;
@@ -4378,15 +4390,16 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
         return NAVRESULT_HOLD;
       }
       break;
-    case DVDNAV_SPU_CLUT_CHANGE:
+      case DVDNAV_SPU_CLUT_CHANGE:
       {
         m_VideoPlayerSubtitle->SendMessage(
             std::make_shared<CDVDMsgSubtitleClutChange>((uint8_t*)pData));
       }
       break;
-    case DVDNAV_SPU_STREAM_CHANGE:
+      case DVDNAV_SPU_STREAM_CHANGE:
       {
-        dvdnav_spu_stream_change_event_t* event = static_cast<dvdnav_spu_stream_change_event_t*>(pData);
+        dvdnav_spu_stream_change_event_t* event =
+            static_cast<dvdnav_spu_stream_change_event_t*>(pData);
 
         int iStream = event->physical_wide;
         bool visible = !(iStream & 0x80);
@@ -4401,23 +4414,26 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
         m_CurrentSubtitle.stream = NULL;
       }
       break;
-    case DVDNAV_AUDIO_STREAM_CHANGE:
+      case DVDNAV_AUDIO_STREAM_CHANGE:
       {
-        dvdnav_audio_stream_change_event_t* event = static_cast<dvdnav_audio_stream_change_event_t*>(pData);
+        dvdnav_audio_stream_change_event_t* event =
+            static_cast<dvdnav_audio_stream_change_event_t*>(pData);
         // Tell system what audiostream should be opened by default
         m_dvd.iSelectedAudioStream = event->physical;
         m_CurrentAudio.stream = NULL;
       }
       break;
-    case DVDNAV_HIGHLIGHT:
+      case DVDNAV_HIGHLIGHT:
       {
         //dvdnav_highlight_event_t* pInfo = (dvdnav_highlight_event_t*)pData;
         int iButton = pStream->GetCurrentButton();
         CLog::Log(LOGDEBUG, "DVDNAV_HIGHLIGHT: Highlight button {}", iButton);
-        m_VideoPlayerSubtitle->UpdateOverlayInfo(std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream), LIBDVDNAV_BUTTON_NORMAL);
+        m_VideoPlayerSubtitle->UpdateOverlayInfo(
+            std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream),
+            LIBDVDNAV_BUTTON_NORMAL);
       }
       break;
-    case DVDNAV_VTS_CHANGE:
+      case DVDNAV_VTS_CHANGE:
       {
         //dvdnav_vts_change_event_t* vts_change_event = (dvdnav_vts_change_event_t*)pData;
         CLog::Log(LOGDEBUG, "DVDNAV_VTS_CHANGE");
@@ -4427,7 +4443,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
 
         //Force an aspect ratio that is set in the dvdheaders if available
         m_CurrentVideo.hint.aspect = static_cast<double>(pStream->GetVideoAspectRatio());
-        if( m_VideoPlayerVideo->IsInited() )
+        if (m_VideoPlayerVideo->IsInited())
           m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgDouble>(
               CDVDMsg::VIDEO_SET_ASPECT, m_CurrentVideo.hint.aspect));
 
@@ -4438,34 +4454,37 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
         return NAVRESULT_HOLD;
       }
       break;
-    case DVDNAV_CELL_CHANGE:
+      case DVDNAV_CELL_CHANGE:
       {
         //dvdnav_cell_change_event_t* cell_change_event = (dvdnav_cell_change_event_t*)pData;
         CLog::Log(LOGDEBUG, "DVDNAV_CELL_CHANGE");
 
         if (m_dvd.state != DVDSTATE_STILL)
           m_dvd.state = DVDSTATE_NORMAL;
-      }
-      break;
-    case DVDNAV_NAV_PACKET:
-      {
-          //pci_t* pci = (pci_t*)pData;
 
-          // this should be possible to use to make sure we get
-          // seamless transitions over these boundaries
-          // if we remember the old vobunits boundaries
-          // when a packet comes out of demuxer that has
-          // pts values outside that boundary, it belongs
-          // to the new vobunit, which has new timestamps
-          UpdatePlayState(0);
+        // Signal VideoPlayer we have changed title (saving per title streamdetails)
+        m_saveStreamDetails = true;
       }
       break;
-    case DVDNAV_HOP_CHANNEL:
+      case DVDNAV_NAV_PACKET:
+      {
+        //pci_t* pci = (pci_t*)pData;
+
+        // this should be possible to use to make sure we get
+        // seamless transitions over these boundaries
+        // if we remember the old vobunits boundaries
+        // when a packet comes out of demuxer that has
+        // pts values outside that boundary, it belongs
+        // to the new vobunit, which has new timestamps
+        UpdatePlayState(0);
+      }
+      break;
+      case DVDNAV_HOP_CHANNEL:
       {
         // This event is issued whenever a non-seamless operation has been executed.
         // Applications with fifos should drop the fifos content to speed up responsiveness.
         CLog::Log(LOGDEBUG, "DVDNAV_HOP_CHANNEL");
-        if(m_dvd.state == DVDSTATE_SEEK)
+        if (m_dvd.state == DVDSTATE_SEEK)
           m_dvd.state = DVDSTATE_NORMAL;
         else
         {
@@ -4480,13 +4499,13 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
         return NAVRESULT_ERROR;
       }
       break;
-    case DVDNAV_STOP:
+      case DVDNAV_STOP:
       {
         CLog::Log(LOGDEBUG, "DVDNAV_STOP");
         m_dvd.state = DVDSTATE_NORMAL;
       }
       break;
-    case DVDNAV_ERROR:
+      case DVDNAV_ERROR:
       {
         CLog::Log(LOGDEBUG, "DVDNAV_ERROR");
         m_dvd.state = DVDSTATE_NORMAL;
@@ -4494,9 +4513,8 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
                                                            "OnPlaybackFailed");
       }
       break;
-    default:
-    {}
-      break;
+      default:
+        break;
     }
   }
   return NAVRESULT_NOP;
@@ -5191,10 +5209,19 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   m_processInfo->SetPlayTimes(state.startTime, state.time, state.timeMin, state.timeMax);
 
   // Save state of the current stream (for blurays/DVDs)
-  CFileItem item;
-  UpdateFileItemStreamDetails(item, UpdateStreamDetails::ALWAYS_UPDATE);
-  if (item.HasVideoInfoTag())
-    m_pInputStream->SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails);
+  if (m_saveStreamDetails)
+  {
+    CFileItem item;
+    UpdateFileItemStreamDetails(item, UpdateStreamDetails::ALWAYS_UPDATE);
+    if (item.HasVideoInfoTag())
+    {
+      const auto streamDetailsStatus{
+          m_pInputStream->SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails)};
+      if (streamDetailsStatus.has_value() &&
+          *streamDetailsStatus == CDVDInputStream::StreamDetailsStatus::STREAM_DETAILS_COMPLETE)
+        m_saveStreamDetails = false;
+    }
+  }
 
   std::unique_lock lock(m_StateSection);
   m_State = state;
@@ -5398,13 +5425,13 @@ void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDeta
 {
   if (update == UpdateStreamDetails::UPDATE_IF_FLAGGED)
   {
-    if (!m_UpdateStreamDetails)
+    if (!m_updateStreamDetails)
       return;
 
     // For blurays
     item.SetProperty("update_stream_details", true);
 
-    m_UpdateStreamDetails = false;
+    m_updateStreamDetails = false;
   }
 
   CLog::Log(LOGDEBUG, "CVideoPlayer: updating file item stream details with available streams");
