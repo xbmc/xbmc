@@ -228,15 +228,15 @@ PLT_ProtocolInfo::ValidateField(const char*  val,
         return NPT_ERROR_INVALID_SYNTAX;
 
     while (val) {
-        char c = *val++;
+        const char c = *val++;
         if (c == '\0') return NPT_SUCCESS;
 
         // look for character in valid chars
         const char* p = valid_chars;
-        while (*p != c && ++p) {};
+        while ((*p != c) && (*(++p) != '\0')) {};
 
         // reached end of valid chars means we didn't find it
-        if (!p) break;
+        if (*p == '\0') break;
     }
 
     return NPT_ERROR_INVALID_SYNTAX;
