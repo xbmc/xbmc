@@ -500,7 +500,7 @@ bool Interface_Base::get_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
 bool Interface_Base::set_setting_bool(const KODI_ADDON_BACKEND_HDL hdl, const char* id, bool value)
 {
   auto* addon = static_cast<CAddonDll*>(hdl);
-  if (!addon || !id || !value)
+  if (!addon || !id)
   {
     CLog::LogF(LOGERROR, "Invalid data (addon='{}', id='{}')", hdl, static_cast<const void*>(id));
 
