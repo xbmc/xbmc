@@ -2257,7 +2257,6 @@ JSONRPC_STATUS CPlayerOperations::GetChapters(const std::string& method, ITransp
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-
   if (!appPlayer->IsPlayingVideo())
     return FailedToExecute; // No running video
 

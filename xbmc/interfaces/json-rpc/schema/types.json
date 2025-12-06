@@ -5090,7 +5090,7 @@
     "properties": {
       "index": {
         "type": "integer",
-        "description": "Zero-based chapter index"
+        "description": "One-based chapter index"
       },
       "name": {
         "type": "string",
