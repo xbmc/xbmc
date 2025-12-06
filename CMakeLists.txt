@@ -114,6 +114,7 @@ option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 
 # These are built for all platforms not using system libs or disabled by user
 dependent_option(ENABLE_INTERNAL_ASS "Enable internal libass?")
+dependent_option(ENABLE_INTERNAL_BLURAY "Enable internal libbluray?")
 dependent_option(ENABLE_INTERNAL_CEC "Enable internal libcec?")
 dependent_option(ENABLE_INTERNAL_CURL "Enable internal libcurl?")
 dependent_option(ENABLE_INTERNAL_EXIV2 "Enable internal exiv2?")
@@ -122,6 +123,7 @@ dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
 dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
 dependent_option(ENABLE_INTERNAL_PCRE2 "Enable internal pcre2?")
 dependent_option(ENABLE_INTERNAL_NLOHMANNJSON "Enable internal nlohmannjson?")
+dependent_option(ENABLE_INTERNAL_UDFREAD "Enable internal libudfread?")
 dependent_option(ENABLE_INTERNAL_XSLT "Enable internal libxslt?")
 
 # If ENABLE_INTERNAL_FMT is ON, we force ENABLE_INTERNAL_SPDLOG ON as it has a hard
@@ -185,7 +187,7 @@ if (NOT PLATFORMDEFS_DIR STREQUAL "")
   list(APPEND INCLUDES ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORMDEFS_DIR})
 endif()
 
-find_package(PkgConfig ${SEARCH_QUIET})
+find_package(PkgConfig ${SEARCH_QUIET} REQUIRED)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED ${SEARCH_QUIET})
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
