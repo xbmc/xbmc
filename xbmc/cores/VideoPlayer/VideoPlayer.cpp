@@ -64,6 +64,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <iterator>
@@ -4901,8 +4902,9 @@ int CVideoPlayer::SeekChapter(int iChapter)
 int64_t CVideoPlayer::GetChapterPos(int chapterIdx) const
 {
   std::unique_lock lock(m_StateSection);
-  if (chapterIdx > 0 && chapterIdx <= (int) m_State.chapters.size())
-    return m_State.chapters[chapterIdx - 1].second;
+  if (chapterIdx > 0 && chapterIdx <= static_cast<int>(m_State.chapters.size()))
+    return std::chrono::round<std::chrono::seconds>(m_State.chapters[chapterIdx - 1].second)
+        .count();
 
   return -1;
 }
@@ -5041,8 +5043,9 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
 
 namespace
 {
-int CalculateCurrentChapter(int64_t currentTime,
-                            const std::vector<std::pair<std::string, int64_t>>& chapters)
+int CalculateCurrentChapter(
+    std::chrono::milliseconds currentTime,
+    const std::vector<std::pair<std::string, std::chrono::milliseconds>>& chapters)
 {
   // Chapters are assumed to be sorted in increasing timestamp order
   if (chapters.empty() || currentTime < chapters[0].second)
@@ -5053,7 +5056,7 @@ int CalculateCurrentChapter(int64_t currentTime,
   for (std::size_t i = 0; i < end; ++i)
   {
     if (currentTime >= chapters[i].second && currentTime < chapters[i + 1].second)
-      return static_cast<int>(i + 1);
+      return i + 1;
   }
   if (currentTime >= chapters[end].second)
     return static_cast<int>(end + 1);
@@ -5098,7 +5101,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       for (int i = 0, ie = m_pDemuxer->GetChapterCount(); i < ie; ++i)
       {
         auto& p = state.chapters.emplace_back(
-            std::string{}, m_Edl.GetTimeWithoutCuts(m_pDemuxer->GetChapterPos(i + 1)).count());
+            std::string{}, m_Edl.GetTimeWithoutCuts(m_pDemuxer->GetChapterPos(i + 1)));
         m_pDemuxer->GetChapterName(p.first, i + 1);
       }
     }
@@ -5122,8 +5125,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       {
         for (int i = 0, ie = pChapter->GetChapterCount(); i < ie; ++i)
         {
-          auto& p =
-              state.chapters.emplace_back(std::string{}, pChapter->GetChapterPos(i + 1).count());
+          auto& p = state.chapters.emplace_back(std::string{}, pChapter->GetChapterPos(i + 1));
           pChapter->GetChapterName(p.first, i + 1);
         }
       }
@@ -5213,7 +5215,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   // The current chapter provided by the demuxer/inputstream is ahead by a cache duration most of the time.
   if (chapterNbEnabled)
   {
-    const int64_t currentTime = llrint(m_State.time);
+    const std::chrono::milliseconds currentTime{llrint(m_State.time)};
     const int playPosChapter = CalculateCurrentChapter(currentTime, state.chapters);
 
     // Successfully calculated a current chapter from the play position?
@@ -5222,16 +5224,16 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       state.chapter = playPosChapter;
   }
 
-  // transform the timestamps to rounded seconds per original code
-  // TODO
-  std::ranges::for_each(state.chapters,
-                        [](auto& chapter)
-                        {
-                          std::chrono::milliseconds ms{chapter.second};
-                          chapter.second = std::chrono::round<std::chrono::seconds>(ms).count();
-                        });
+  // Convert to second resolution used outside of VideoPlayer for chapter positions
+  std::vector<std::pair<std::string, int64_t>> chapters;
+  for (const auto& chapter : state.chapters)
+  {
+    chapters.emplace_back(
+        chapter.first,
+        static_cast<int64_t>(std::chrono::round<std::chrono::seconds>(chapter.second).count()));
+  };
 
-  CServiceBroker::GetDataCacheCore().SetChapters(state.chapters);
+  CServiceBroker::GetDataCacheCore().SetChapters(chapters);
 
   if (m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY)
     state.caching = true;
