@@ -2244,3 +2244,42 @@ std::shared_ptr<CPVREpgInfoTag> CPlayerOperations::GetCurrentEpg()
 
   return currentChannel->GetEPGNow();
 }
+
+JSONRPC_STATUS CPlayerOperations::GetChapters(const std::string& method, ITransportLayer* transport, IClient* client, const CVariant& parameterObject, CVariant& result)
+{
+  switch (GetPlayer(parameterObject["playerid"]))
+  {
+    case Video:
+      break;
+    default: return InvalidParams;
+  }
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+
+  if (!appPlayer->IsPlayingVideo())
+    return FailedToExecute; // No running video
+
+  // Extract chapters from CApplicationPlayer
+  int chapterCount = appPlayer->GetChapterCount();
+  CVariant chapters(CVariant::VariantTypeArray);
+
+  for (int i = 0; i < chapterCount; ++i)
+  {
+    CVariant chapter(CVariant::VariantTypeObject);
+    chapter["index"] = i;
+    // Chapter name
+    std::string name;
+    appPlayer->GetChapterName(name, i);
+    if (!name.empty())
+      chapter["name"] = name;
+    // Chapter position (from ms to s)
+    int64_t posMs = appPlayer->GetChapterPos(i);
+    double posSeconds = static_cast<double>(posMs) / 1000.0;
+    chapter["time"] = posSeconds;
+    chapters.push_back(chapter);
+  }
+
+  result["chapters"] = chapters;
+  return OK;
+}

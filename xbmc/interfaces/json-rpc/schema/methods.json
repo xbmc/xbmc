@@ -6959,5 +6959,27 @@
         }
       }
     }
+  },
+  "Player.GetChapters": {
+    "type": "method",
+    "description": "Returns the chapters of the currently playing item for the given player",
+    "params": [
+      {
+        "$ref": "Player.Id",
+        "name": "playerid",
+        "required": true
+      }
+    ],
+    "permission": "ReadData",
+    "returns": {
+      "type": "object",
+      "properties": {
+        "chapters": {
+          "type": "array",
+          "items": { "$ref": "Player.Chapter" },
+          "required": true
+        }
+      }
+    }
   }
 }

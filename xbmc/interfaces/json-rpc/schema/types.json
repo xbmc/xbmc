@@ -5083,5 +5083,25 @@
       }
     },
     "additionalProperties": false
+  },
+  "Player.Chapter": {
+  "type": "object",
+  "description": "Single chapter of the currently playing video",
+  "properties": {
+    "index": {
+      "type": "integer",
+      "description": "Zero-based chapter index"
+    },
+    "name": {
+      "type": "string",
+      "required": false,
+      "description": "Chapter name if available"
+    },
+    "time": {
+      "type": "number",
+      "description": "Chapter position in seconds from start"
+    }
   }
+}
+
 }
