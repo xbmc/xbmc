@@ -53,6 +53,7 @@
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
+#include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ContentUtils.h"
@@ -70,6 +71,26 @@
 #endif
 
 using namespace KODI;
+
+namespace
+{
+class CPlaycountIncrementedHandler
+{
+public:
+  explicit CPlaycountIncrementedHandler(const CFileItem& item) : m_item(item) {}
+
+  bool HandlePlaycountIncremented() const
+  {
+    return m_item.GetProperty("playcount_incremented").asBoolean(false) &&
+           m_item.IsPVRRecording() &&
+           CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ProcessDeleteAfterWatch(
+               m_item);
+  }
+
+private:
+  const CFileItem m_item;
+};
+} // unnamed namespace
 
 CApplicationMessageHandling::CApplicationMessageHandling(CApplication& app)
   : CAppInboundProtocol(app),
@@ -398,6 +419,14 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
     }
     break;
 
+    case TMSG_PROCESS_DELETE_AFTER_WATCH:
+    {
+      const std::unique_ptr<CFileItem> item{static_cast<CFileItem*>(pMsg->lpVoid)};
+      const CPlaycountIncrementedHandler playcountIncrementedHandler(*item);
+      playcountIncrementedHandler.HandlePlaycountIncremented();
+      break;
+    }
+
     default:
       CLog::LogF(LOGERROR, "Unhandled threadmessage sent, {}", msg);
       break;
@@ -611,12 +640,17 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop",
                                                          m_app.CurrentFileItemPtr(), data);
 
+      const CPlaycountIncrementedHandler playCountIncrementedHandler{m_app.CurrentFileItem()};
+
       m_app.m_playerEvent.Set();
       m_app.ResetCurrentItem();
       m_app.PlaybackCleanup();
+
 #ifdef HAS_PYTHON
       CServiceBroker::GetXBPython().OnPlayBackStopped();
 #endif
+
+      playCountIncrementedHandler.HandlePlaycountIncremented();
       return true;
     }
 
@@ -643,6 +677,8 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
       const bool isEpgPlaylistItem{
           m_app.CurrentFileItem().GetProperty("epg_playlist_item").asBoolean(false)};
 
+      const CPlaycountIncrementedHandler playCountIncrementedHandler{m_app.CurrentFileItem()};
+
       m_app.ResetCurrentItem();
 
       if (!isEpgPlaylistItem)
@@ -656,6 +692,8 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 #ifdef HAS_PYTHON
       CServiceBroker::GetXBPython().OnPlayBackEnded();
 #endif
+
+      playCountIncrementedHandler.HandlePlaycountIncremented();
       return true;
     }
 

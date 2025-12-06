@@ -13,12 +13,13 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "messaging/ApplicationMessenger.h"
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
 #endif
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActionsRecordings.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
@@ -70,8 +71,8 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
       continue;
 #endif
 
-    if (item->IsPVRRecording() &&
-        CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().MarkWatched(*item, m_mark))
+    if (item->IsPVRRecording() && CServiceBroker::GetPVRManager().Recordings()->MarkWatched(
+                                      item->GetPVRRecordingInfoTag(), m_mark))
     {
       CDateTime newLastPlayed;
       if (m_mark)
@@ -81,6 +82,14 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
 
       if (newLastPlayed.IsValid())
         item->GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
+
+      if (m_mark)
+      {
+        auto file{std::make_unique<CFileItem>(*item)};
+        file->SetProperty("playcount_incremented", CVariant{true});
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PROCESS_DELETE_AFTER_WATCH, -1, -1,
+                                                   static_cast<void*>(file.release()));
+      }
 
       continue;
     }
