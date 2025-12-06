@@ -86,19 +86,21 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
       return false;
     dialog->m_name = profileName;
 
-    // create a default path
-    std::string defaultDir = URIUtils::AddFileToFolder("profiles", CUtil::MakeLegalFileName(dialog->m_name));
-    URIUtils::AddSlashAtEnd(defaultDir);
-    XFILE::CDirectory::Create(URIUtils::AddFileToFolder("special://masterprofile/", defaultDir));
+    std::string profileDir;
+    // ask user if they want to select a custom profile directory
+    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20058}, CVariant{20477}))
+      GetProfilePath(profileDir, false); // can't be the master user
 
-    // prompt for the user to change it if they want
-    std::string userDir = defaultDir;
-    if (GetProfilePath(userDir, false)) // can't be the master user
+    if (profileDir.empty()) // use default directory
     {
-      if (!URIUtils::PathHasParent(userDir, defaultDir)) // user chose a different folder
-        XFILE::CDirectory::Remove(URIUtils::AddFileToFolder("special://masterprofile/", defaultDir));
+      // create a default path
+      profileDir = URIUtils::AddFileToFolder("profiles", CUtil::MakeLegalFileName(dialog->m_name));
+      URIUtils::AddSlashAtEnd(profileDir);
+
+      XFILE::CDirectory::Create(URIUtils::AddFileToFolder("special://masterprofile/", profileDir));
     }
-    dialog->m_directory = userDir;
+
+    dialog->m_directory = profileDir;
     dialog->m_needsSaving = true;
   }
   else
