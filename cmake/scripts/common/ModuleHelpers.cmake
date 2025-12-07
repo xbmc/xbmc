@@ -369,7 +369,25 @@ macro(BUILD_DEP_TARGET)
   endif()
 
   if(BUILD_COMMAND)
-    set(BUILD_COMMAND BUILD_COMMAND ${BUILD_COMMAND})
+    # DEP_BUILDENV is potentially populated in a toolchain file. We dont want to use it
+    # for host tool builds, so make sure to check _LIB_TYPE
+    if(NOT CMAKE_ARGS AND
+      (DEP_BUILDENV AND NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE STREQUAL "native"))
+      # DEP_BUILDENV only used for non cmake externalproject_add builds
+      # iterate through BUILD_COMMAND looking for multiple COMMAND, we need to
+      # add DEP_BUILDENV for each distinct COMMAND
+      set(tmp_build_command ${DEP_BUILDENV})
+      foreach(item ${BUILD_COMMAND})
+        list(APPEND tmp_build_command ${item})
+        if(item STREQUAL "COMMAND")
+          list(APPEND tmp_build_command ${DEP_BUILDENV})
+        endif()
+      endforeach()
+      set(BUILD_COMMAND BUILD_COMMAND ${tmp_build_command})
+      unset(tmp_build_command)
+    else()
+      set(BUILD_COMMAND BUILD_COMMAND ${BUILD_COMMAND})
+    endif()
   endif()
 
   if(INSTALL_COMMAND)
