@@ -994,9 +994,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE movie ADD originalLanguage TEXT");
     m_pDS->exec("ALTER TABLE tvshow ADD originalLanguage TEXT");
   }
+
+  if (iVersion < 140)
+  {
+    m_pDS->exec("ALTER TABLE tvshow ADD tagLine TEXT");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 139;
+  return 140;
 }
