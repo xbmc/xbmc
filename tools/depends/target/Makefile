@@ -26,7 +26,6 @@ DEPENDS = \
   libgpg-error \
   libjpeg-turbo \
   liblzo2 \
-  libmicrohttpd \
   libplist \
   libpng \
   libshairplay \
