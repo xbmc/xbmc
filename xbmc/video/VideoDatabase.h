@@ -769,6 +769,8 @@ public:
    */
   std::vector<PlaylistInfo> GetPlaylistsByPath(const std::string& path);
 
+  void SetTrailerForMovie(int idMovie, const std::string& trailer);
+
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
   bool SetSingleValue(VideoDbContentType type,
                       int dbId,

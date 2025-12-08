@@ -13288,3 +13288,8 @@ std::vector<std::string> CVideoDatabase::GetUsedImages(
   }
   return {};
 }
+
+void CVideoDatabase::SetTrailerForMovie(int idMovie, const std::string& trailer)
+{
+  SetSingleValue(VideoDbContentType::MOVIES, VIDEODB_ID_TRAILER, idMovie, trailer);
+}
