@@ -24,7 +24,7 @@ public:
   void ReadOut() override;
 
   void OnDestroyDevice(bool fatal) override;
-  void OnCreateDevice() override {};
+  void OnCreateDevice() override{};
   CD3DTexture& GetTarget() { return m_renderTex; }
 
 private:

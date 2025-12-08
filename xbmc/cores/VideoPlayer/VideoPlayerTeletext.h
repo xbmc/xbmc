@@ -18,10 +18,10 @@ class CDVDStreamInfo;
 class CDVDTeletextData : public CThread, public IDVDStreamPlayer
 {
 public:
-  explicit CDVDTeletextData(CProcessInfo& processInfo);
+  explicit CDVDTeletextData(CProcessInfo &processInfo);
   ~CDVDTeletextData() override;
 
-  bool CheckStream(CDVDStreamInfo& hints);
+  bool CheckStream(CDVDStreamInfo &hints);
   bool OpenStream(CDVDStreamInfo hints) override;
   void CloseStream(bool bWaitForBuffers) override;
   void Flush();
@@ -47,7 +47,7 @@ protected:
 
 private:
   void ResetTeletextCache() const;
-  void Decode_p2829(unsigned char* vtxt_row, TextExtData_t** ptExtData);
+  void Decode_p2829(unsigned char *vtxt_row, TextExtData_t **ptExtData);
   void SavePage(int p, int sp, unsigned char* buffer) const;
   void ErasePage(int magazine) const;
   void AllocateCache(int magazine);
@@ -56,3 +56,4 @@ private:
   std::shared_ptr<TextCacheStruct_t> m_TXTCache = std::make_shared<TextCacheStruct_t>();
   CDVDMessageQueue m_messageQueue;
 };
+

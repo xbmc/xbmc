@@ -131,7 +131,7 @@ void CGUIFeatureList::Load(const ControllerPtr& controller)
     for (CGUIButtonControl* pButton : buttons)
       m_guiList->AddControl(pButton);
 
-    m_buttonCount += buttons.size();
+    m_buttonCount += static_cast<unsigned int>(buttons.size());
   }
 }
 
@@ -162,7 +162,7 @@ void CGUIFeatureList::OnSelect(unsigned int buttonIndex)
 IFeatureButton* CGUIFeatureList::GetButtonControl(unsigned int buttonIndex) const {
   CGUIControl* control = m_guiList->GetControl(CONTROL_FEATURE_BUTTONS_START + buttonIndex);
 
-  return dynamic_cast<CGUIFeatureButton*>(control);
+  return static_cast<IFeatureButton*>(dynamic_cast<CGUIFeatureButton*>(control));
 }
 
 void CGUIFeatureList::CleanupButtons(void)

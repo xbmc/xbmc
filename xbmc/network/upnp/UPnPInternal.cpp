@@ -694,7 +694,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
           container->m_ObjectClass.type += ".album.videoAlbum.videoBroadcastSeason";
           if (item.HasVideoInfoTag())
           {
-            auto tag = item.GetVideoInfoTag();
+            auto tag = (CVideoInfoTag*)item.GetVideoInfoTag();
             PopulateObjectFromTag(*tag, *container, &file_path, &resource, quirks);
           }
           break;
@@ -702,7 +702,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
           container->m_ObjectClass.type += ".album.videoAlbum.videoBroadcastShow";
           if (item.HasVideoInfoTag())
           {
-            auto tag = item.GetVideoInfoTag();
+            auto tag = (CVideoInfoTag*)item.GetVideoInfoTag();
             PopulateObjectFromTag(*tag, *container, &file_path, &resource, quirks);
           }
           break;
@@ -1151,7 +1151,7 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
 
   CFileItemPtr pItem(new CFileItem((const char*)entry->m_Title));
   pItem->SetLabelPreformatted(true);
-  pItem->m_strTitle = entry->m_Title;
+  pItem->m_strTitle = (const char*)entry->m_Title;
   pItem->m_bIsFolder = entry->IsContainer();
 
   // if it's a container, format a string as upnp://uuid/object_id

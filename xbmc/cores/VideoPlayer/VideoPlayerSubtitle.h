@@ -24,7 +24,7 @@ class CDVDOverlayCodec;
 class CVideoPlayerSubtitle : public IDVDStreamPlayer
 {
 public:
-  CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo& processInfo);
+  CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo &processInfo);
   ~CVideoPlayerSubtitle() override;
 
   void Process(double pts, double offset);
@@ -41,27 +41,29 @@ public:
   void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override;
   void FlushMessages() override {}
   bool OpenStream(CDVDStreamInfo hints) override { return OpenStream(hints, hints.filename); }
-  bool OpenStream(CDVDStreamInfo& hints, std::string& filename);
+  bool OpenStream(CDVDStreamInfo &hints, std::string& filename);
   void CloseStream(bool bWaitForBuffers) override;
 
   bool IsInited() const override { return true; }
   bool IsStalled() const override { return m_pOverlayContainer->GetSize() == 0; }
-
 private:
   CDVDOverlayContainer* m_pOverlayContainer;
 
   std::unique_ptr<CDVDSubtitleParser> m_pSubtitleFileParser;
   std::unique_ptr<CDVDOverlayCodec> m_pOverlayCodec;
-  CDVDDemuxSPU m_dvdspus;
+  CDVDDemuxSPU        m_dvdspus;
 
-  CDVDStreamInfo m_streaminfo;
-  double m_lastPts;
+  CDVDStreamInfo      m_streaminfo;
+  double              m_lastPts;
 
-  CCriticalSection m_section;
+
+  CCriticalSection    m_section;
 };
+
 
 //typedef struct SubtitleInfo
 //{
 
 //
 //} SubtitleInfo;
+

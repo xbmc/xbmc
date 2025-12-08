@@ -25,6 +25,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include "utils/AMLUtils.h"
+
 #include <mutex>
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
@@ -51,8 +53,10 @@ bool CGUIWindowHome::OnAction(const CAction &action)
     {
       CGUIComponent* gui = CServiceBroker::GetGUI();
       if (gui)
+      {
+        aml_reset_audio_from_window_home();
         gui->GetWindowManager().SwitchToFullScreen();
-
+      }
       return true;
     }
   }

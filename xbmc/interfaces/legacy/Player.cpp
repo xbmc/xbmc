@@ -102,14 +102,14 @@ namespace XBMCAddon
           // set m_strPath to the passed url
           listitem->item->SetPath(item.c_str());
           CServiceBroker::GetAppMessenger()->PostMsg(
-              TMSG_MEDIA_PLAY, 0, 0, new CFileItem(*listitem->item));
+              TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*listitem->item)));
         }
         else
         {
           auto l = new CFileItemList; //don't delete,
           l->Add(std::make_shared<CFileItem>(item, false));
           CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
-                                                     l);
+                                                     static_cast<void*>(l));
         }
       }
       else

@@ -164,7 +164,7 @@ bool CPosixUDPSocket::CheckIPv6(int port, int range)
   int zero = 0;
 #endif
 
-  if (setsockopt(testSocket, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero)) ==
+  if (setsockopt(static_cast<SOCKET>(testSocket), IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero)) ==
       -1)
   {
     CLog::LogF(LOGDEBUG, "Could not disable IPV6_V6ONLY for socket: {}", strerror(errno));
@@ -175,7 +175,7 @@ bool CPosixUDPSocket::CheckIPv6(int port, int range)
   for (; port <= port + range; port++)
   {
     testaddr.saddr.saddr6.sin6_port = htons(port);
-    if (bind(testSocket, reinterpret_cast<struct sockaddr*>(&testaddr.saddr),
+    if (bind(static_cast<SOCKET>(testSocket), reinterpret_cast<struct sockaddr*>(&testaddr.saddr),
              testaddr.size) == 0)
     {
       CLog::LogF(LOGDEBUG, "IPv6 socket bound successfully");
@@ -205,15 +205,15 @@ int CPosixUDPSocket::Read(CAddress& addr, const int buffersize, void *buffer)
 {
   if (m_ipv6Socket)
     addr.SetAddress("::");
-  return recvfrom(m_iSock, buffer, (size_t)buffersize, 0,
-                  (struct sockaddr*)&addr.saddr, &addr.size);
+  return (int)recvfrom(m_iSock, (char*)buffer, (size_t)buffersize, 0,
+                       (struct sockaddr*)&addr.saddr, &addr.size);
 }
 
 int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize,
                           const void *buffer)
 {
-  return sendto(m_iSock, buffer, (size_t)buffersize, 0,
-                (const struct sockaddr*)&addr.saddr, addr.size);
+  return (int)sendto(m_iSock, (const char *)buffer, (size_t)buffersize, 0,
+                     (const struct sockaddr*)&addr.saddr, addr.size);
 }
 
 /**********************************************************************/

@@ -279,7 +279,7 @@ void CGameClientInput::SetControllerLayouts(const ControllerVector& controllers)
   try
   {
     m_struct.toAddon->SetControllerLayouts(&m_struct, controllerStructs.data(),
-                                           controllerStructs.size());
+                                           static_cast<unsigned int>(controllerStructs.size()));
   }
   catch (...)
   {

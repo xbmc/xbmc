@@ -103,7 +103,7 @@ bool CXBMCTinyXML2::ParseHelper(size_t pos, std::string&& inputdata)
              "^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
   do
   {
-    if (re.RegFind(inputdata, pos, MAX_ENTITY_LENGTH) < 0)
+    if (re.RegFind(inputdata, static_cast<unsigned int>(pos), MAX_ENTITY_LENGTH) < 0)
       inputdata.insert(pos + 1, "amp;");
     pos = inputdata.find('&', pos + 1);
   } while (pos != std::string::npos);

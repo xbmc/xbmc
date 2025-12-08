@@ -107,7 +107,6 @@ public:
   int GetAudioStreamCount(void) const;
   int GetSubtitleStreamCount(void) const;
   static std::string HdrTypeToString(StreamHdrType hdrType);
-  static std::string DynamicRangeToString(StreamHdrType hdrType);
   const CStreamDetail* GetNthStream(CStreamDetail::StreamType type, int idx) const;
 
   std::string GetVideoCodec(int idx = 0) const;

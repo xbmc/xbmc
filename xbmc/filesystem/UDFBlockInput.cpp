@@ -45,9 +45,9 @@ int CUDFBlockInput::Read(
   ssize_t size = blocks * UDF_BLOCK_SIZE;
   ssize_t read = m_bi->fp->Read(buf, size);
   if (read > 0)
-    return read / UDF_BLOCK_SIZE;
+    return static_cast<int>(read / UDF_BLOCK_SIZE);
 
-  return read;
+  return static_cast<int>(read);
 }
 
 udfread_block_input* CUDFBlockInput::GetBlockInput(const std::string& file)

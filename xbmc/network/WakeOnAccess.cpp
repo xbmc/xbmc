@@ -170,7 +170,7 @@ static std::string LookupUPnPHost(const std::string& uuid)
   PLT_DeviceDataReference device;
 
   if (browser && NPT_SUCCEEDED(browser->FindServer(uuid.c_str(), device)) && !device.IsNull())
-    return std::string(device->GetURLBase().GetHost());
+    return (const char*)device->GetURLBase().GetHost();
 #endif
 
   return "";

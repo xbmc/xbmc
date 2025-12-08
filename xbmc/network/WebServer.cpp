@@ -115,7 +115,8 @@ MHD_RESULT CWebServer::AskForAuthentication(const HTTPRequest& request) const
   // The return type of MHD_queue_basic_auth_fail_response was fixed for future versions
   // See
   // https://git.gnunet.org/libmicrohttpd.git/commit/?id=860b42e9180da4dcd7e8690a3fcdb4e37e5772c5
-  ret = MHD_queue_basic_auth_fail_response(request.connection, CCompileInfo::GetAppName(), response);
+  ret = static_cast<MHD_RESULT>(
+      MHD_queue_basic_auth_fail_response(request.connection, CCompileInfo::GetAppName(), response));
   MHD_destroy_response(response);
 
   return ret;
@@ -537,7 +538,7 @@ void CWebServer::SetupPostDataProcessing(const HTTPRequest& request,
   // otherwise we can use MHD's POST processor
   connectionHandler->postprocessor = MHD_create_post_processor(
       request.connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField,
-      connectionHandler);
+      static_cast<void*>(connectionHandler));
 
   // MHD doesn't seem to be able to handle this post request
   if (connectionHandler->postprocessor == nullptr)
@@ -950,7 +951,7 @@ MHD_RESULT CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection* conne
                                                     bool copy,
                                                     struct MHD_Response*& response) const
 {
-  response = create_response(size, data, free ? MHD_YES : MHD_NO,
+  response = create_response(size, const_cast<void*>(data), free ? MHD_YES : MHD_NO,
                              copy ? MHD_YES : MHD_NO);
   if (response == nullptr)
   {
@@ -1022,7 +1023,7 @@ ssize_t CWebServer::ContentReaderCallback(void* cls, uint64_t pos, char* buf, si
   {
     // put together the end-boundary
     std::string endBoundary = HttpRangeUtils::GenerateMultipartBoundaryEnd(context->boundary);
-    if (max != endBoundary.size())
+    if ((unsigned int)max != endBoundary.size())
       return -1;
 
     // copy the boundary into the buffer
@@ -1036,7 +1037,7 @@ ssize_t CWebServer::ContentReaderCallback(void* cls, uint64_t pos, char* buf, si
 
   uint64_t start = range.GetFirstPosition();
   uint64_t end = range.GetLastPosition();
-  uint64_t maximum = max;
+  uint64_t maximum = (uint64_t)max;
   int written = 0;
 
   if (context->rangeCountTotal > 1 && !context->boundaryWritten)

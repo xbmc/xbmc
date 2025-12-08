@@ -117,7 +117,7 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
       const size_t frameSize = m_pAudioStream->GetChannelCount() *
                                (CAEUtil::DataFormatToBits(m_pAudioStream->GetDataFormat()) >> 3);
 
-      const unsigned int frameCount = audioPacket.size / frameSize;
+      const unsigned int frameCount = static_cast<unsigned int>(audioPacket.size / frameSize);
 
       if (delaySecs > MAX_DELAY)
       {

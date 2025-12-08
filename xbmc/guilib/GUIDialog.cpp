@@ -196,7 +196,7 @@ void CGUIDialog::Open(bool bProcessRenderLoop, const std::string& param /* = "" 
     // make sure graphics lock is not held
     CSingleExit leaveIt(CServiceBroker::GetWinSystem()->GetGfxContext());
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_DIALOG_OPEN, -1, bProcessRenderLoop,
-                                               this, param);
+                                               static_cast<void*>(this), param);
   }
   else
     Open_Internal(bProcessRenderLoop, param);

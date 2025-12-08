@@ -530,7 +530,7 @@ namespace XBMCAddon
       int iControlId = ref(window)->GetFocusedControlID();
       if(iControlId == -1)
         throw WindowException("No control in this window has focus");
-      return iControlId;
+      return (long)iControlId;
     }
 
     void Window::removeControl(Control* pControl)

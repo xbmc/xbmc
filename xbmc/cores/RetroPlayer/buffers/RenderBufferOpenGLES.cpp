@@ -63,7 +63,7 @@ bool CRenderBufferOpenGLES::UploadTexture()
   {
     // XOR Swap RGBA -> BGRA
     // GLES 2.0 doesn't support strided textures (unless GL_UNPACK_ROW_LENGTH_EXT is supported)
-    auto pixels = m_data.data();
+    auto pixels = const_cast<uint8_t*>(m_data.data());
     for (unsigned int y = 0; y < m_height; ++y, pixels += stride)
     {
       for (int x = 0; x < stride; x += 4)
@@ -82,7 +82,7 @@ bool CRenderBufferOpenGLES::UploadTexture()
   }
   else
   {
-    auto pixels = m_data.data();
+    auto pixels = const_cast<uint8_t*>(m_data.data());
     for (unsigned int y = 0; y < m_height; ++y, pixels += stride)
       glTexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, m_pixelformat, m_pixeltype, pixels);
   }

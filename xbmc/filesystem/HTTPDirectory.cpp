@@ -148,7 +148,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       // encoding + and ; to URL encode if it is not already encoded by http server used on the remote server (example: Apache)
       // more characters may be added here when required when required by certain http servers
       pos = strLinkBase.find_first_of("+;");
-      while (pos != std::string::npos)
+      while (pos != std::string::npos) 
       {
         std::stringstream convert;
         convert << '%' << std::hex << int(strLinkBase.at(pos));
@@ -306,11 +306,13 @@ bool CHTTPDirectory::Exists(const CURL &url)
   CCurlFile http;
   struct __stat64 buffer;
 
-  if (http.Stat(url, &buffer) != 0)
+  if( http.Stat(url, &buffer) != 0 )
+  {
     return false;
+  }
 
   if (buffer.st_mode == _S_IFDIR)
-    return true;
+	  return true;
 
   return false;
 }

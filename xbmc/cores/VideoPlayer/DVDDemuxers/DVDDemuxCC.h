@@ -33,8 +33,8 @@ public:
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
 
-  DemuxPacket* Read(DemuxPacket* packet);
-  static void Handler(int service, void* userdata);
+  DemuxPacket* Read(DemuxPacket *packet);
+  static void Handler(int service, void *userdata);
 
 protected:
   bool OpenDecoder();
@@ -45,7 +45,7 @@ protected:
   {
     int streamIdx;
     int service;
-    bool hasData;
+    bool hasData ;
     double pts;
   };
   std::vector<streamdata> m_streamdata;

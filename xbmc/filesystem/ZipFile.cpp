@@ -452,7 +452,7 @@ int CZipFile::UnpackFromMemory(std::string& strDest, const std::string& strInput
     ssize_t toRead=0;
     if (isGZ)
     {
-      m_ZStream.avail_in = strInput.size();
+      m_ZStream.avail_in = static_cast<unsigned int>(strInput.size());
       m_ZStream.next_in = const_cast<Bytef*>((const Bytef*)strInput.data());
       temp = new char[8192];
       toRead = 8191;
@@ -467,7 +467,7 @@ int CZipFile::UnpackFromMemory(std::string& strDest, const std::string& strInput
       toRead = mZipItem.usize;
     }
     int iCurrResult;
-    while((iCurrResult = Read(temp, toRead)) > 0)
+    while((iCurrResult = static_cast<int>(Read(temp, toRead))) > 0)
     {
       strDest.append(temp,temp+iCurrResult);
       iResult += iCurrResult;
@@ -501,7 +501,7 @@ bool CZipFile::DecompressGzip(const std::string& in, std::string& out)
   const int bufferSize = 16384;
   unsigned char buffer[bufferSize];
 
-  strm.avail_in = in.size();
+  strm.avail_in = static_cast<unsigned int>(in.size());
   strm.next_in = reinterpret_cast<unsigned char*>(const_cast<char*>(in.c_str()));
 
   do

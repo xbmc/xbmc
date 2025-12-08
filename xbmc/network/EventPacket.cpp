@@ -23,7 +23,7 @@ bool CEventPacket::Parse(int datasize, const void *data)
     return false;
 
   // check signature
-  if (memcmp(data, HEADER_SIG, HEADER_SIG_LENGTH) != 0)
+  if (memcmp(data, (const void*)HEADER_SIG, HEADER_SIG_LENGTH) != 0)
     return false;
 
   buf += HEADER_SIG_LENGTH;

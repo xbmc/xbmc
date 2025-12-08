@@ -21,18 +21,23 @@ namespace OVERLAY
 
 static uint32_t build_rgba(int a, int r, int g, int b, bool mergealpha)
 {
-  if (mergealpha)
-    return a << PIXEL_ASHIFT | (r * a / 255) << PIXEL_RSHIFT | (g * a / 255) << PIXEL_GSHIFT |
-           (b * a / 255) << PIXEL_BSHIFT;
+  if(mergealpha)
+    return      a        << PIXEL_ASHIFT
+         | (r * a / 255) << PIXEL_RSHIFT
+         | (g * a / 255) << PIXEL_GSHIFT
+         | (b * a / 255) << PIXEL_BSHIFT;
   else
-    return a << PIXEL_ASHIFT | r << PIXEL_RSHIFT | g << PIXEL_GSHIFT | b << PIXEL_BSHIFT;
+    return a << PIXEL_ASHIFT
+         | r << PIXEL_RSHIFT
+         | g << PIXEL_GSHIFT
+         | b << PIXEL_BSHIFT;
 }
 
 #define clamp(x) (x) > 255.0 ? 255 : ((x) < 0.0 ? 0 : (int)(x + 0.5))
 static uint32_t build_rgba(const int yuv[3], int alpha, bool mergealpha)
 {
-  int a = alpha + ((alpha << 4) & 0xff);
-  double r = 1.164 * (yuv[0] - 16) + 1.596 * (yuv[2] - 128);
+  int    a = alpha + ( (alpha << 4) & 0xff );
+  double r = 1.164 * (yuv[0] - 16)                          + 1.596 * (yuv[2] - 128);
   double g = 1.164 * (yuv[0] - 16) - 0.391 * (yuv[1] - 128) - 0.813 * (yuv[2] - 128);
   double b = 1.164 * (yuv[0] - 16) + 2.018 * (yuv[1] - 128);
   return build_rgba(a, clamp(r), clamp(g), clamp(b), mergealpha);
@@ -67,13 +72,16 @@ void convert_rgba(const CDVDOverlaySpu& o,
     palette[i + 4] = build_rgba(o.highlight_color[i], o.highlight_alpha[i], mergealpha);
   }
 
-  uint32_t color;
+  uint32_t  color;
   uint32_t* trg;
   uint16_t* src;
 
   int len, idx, draw;
 
-  int btn_x_start = 0, btn_x_end = 0, btn_y_start = 0, btn_y_end = 0;
+  int btn_x_start = 0
+    , btn_x_end   = 0
+    , btn_y_start = 0
+    , btn_y_end   = 0;
 
   if (o.bForced)
   {
@@ -99,51 +107,52 @@ void convert_rgba(const CDVDOverlaySpu& o,
       idx = *src & 0x3;
       len = *src++ >> 2;
 
-      while (len > 0)
+      while( len > 0 )
       {
-        draw = len;
+        draw  = len;
         color = palette[idx];
 
         if (y >= btn_y_start && y <= btn_y_end)
         {
-          if (x < btn_x_start && x + len >= btn_x_start) // starts outside
+          if     ( x <  btn_x_start && x + len >= btn_x_start) // starts outside
             draw = btn_x_start - x;
-          else if (x >= btn_x_start && x <= btn_x_end) // starts inside
+          else if( x >= btn_x_start && x       <= btn_x_end)   // starts inside
           {
             color = palette[idx + 4];
-            draw = btn_x_end - x + 1;
+            draw  = btn_x_end - x + 1;
           }
         }
         /* make sure we are not requested to draw to far */
         /* that part will be taken care of in next pass */
-        if (draw > len)
+        if( draw > len )
           draw = len;
 
         /* calculate cropping */
-        if (color & 0xff000000)
+        if(color & 0xff000000)
         {
-          if (x < min_x)
+          if(x < min_x)
             min_x = x;
-          if (y < min_y)
+          if(y < min_y)
             min_y = y;
-          if (x + draw > max_x)
+          if(x + draw > max_x)
             max_x = x + draw;
-          if (y + 1 > max_y)
+          if(y + 1    > max_y)
             max_y = y + 1;
         }
 
-        for (int i = 0; i < draw; i++)
+        for(int i = 0; i < draw; i++)
           trg[x + i] = color;
 
         len -= draw;
-        x += draw;
+        x   += draw;
       }
     }
     trg += o.width;
   }
 
   /* if nothing visible, just output a dummy pixel */
-  if (max_x <= min_x || max_y <= min_y)
+  if(max_x <= min_x
+  || max_y <= min_y)
   {
     max_y = max_x = 1;
     min_y = min_x = 0;
@@ -160,10 +169,10 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 
   // first calculate how many glyph we have and the total x length
 
-  for (img = images; img; img = img->next)
+  for(img = images; img; img = img->next)
   {
     // fully transparent or width or height is 0 -> not displayed
-    if ((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
+    if((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
       continue;
 
     quads.size_x += img->w + 1;
@@ -181,9 +190,9 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 
   // calculate the y size of the texture
 
-  for (img = images; img; img = img->next)
+  for(img = images; img; img = img->next)
   {
-    if ((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
+    if((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
       continue;
 
     // check if we need to split to new line
@@ -232,7 +241,7 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 
     unsigned int r = ((color >> 24) & 0xff);
     unsigned int g = ((color >> 16) & 0xff);
-    unsigned int b = ((color >> 8) & 0xff);
+    unsigned int b = ((color >> 8 ) & 0xff);
 
     v->a = 255 - alpha;
     v->r = r;
@@ -257,7 +266,7 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
       y = img->h;
 
     curr_x += img->w + 1;
-    data += img->w + 1;
+    data   += img->w + 1;
   }
   return true;
 }
@@ -273,20 +282,16 @@ int GetStereoscopicDepth(bool isPgs, int subtitleDepth)
   }
 
   // get configured depth
-  int depth = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-      CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH);
+  int depth = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH);
 
   // in case of MVC playback and PGS subtitles, use the subtitle depth info additionally to the configured one
-  if (stereoMode == RENDER_STEREO_MODE_HARDWAREBASED && isPgs)
+  if(stereoMode == RENDER_STEREO_MODE_HARDWAREBASED && isPgs)
   {
     depth += subtitleDepth;
   }
 
   // correct depth according to the current left/right eye view
-  return depth *
-         (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView() == RENDER_STEREO_VIEW_LEFT
-              ? 1
-              : -1);
+  return depth * (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView() == RENDER_STEREO_VIEW_LEFT ? 1 : -1);
 }
 
-} // namespace OVERLAY
+}

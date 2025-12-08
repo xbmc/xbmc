@@ -55,8 +55,7 @@ std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInf
   {
     ADDON::AddonInfoPtr addonInfo;
     KODI_HANDLE parentInstance;
-    hint.externalInterfaces->GetAddonInstance(ADDON::IAddonProvider::INSTANCE_VIDEOCODEC, addonInfo,
-                                              parentInstance);
+    hint.externalInterfaces->GetAddonInstance(ADDON::IAddonProvider::INSTANCE_VIDEOCODEC, addonInfo, parentInstance);
     if (addonInfo && parentInstance)
     {
       pCodec = std::make_unique<CAddonVideoCodec>(processInfo, addonInfo, parentInstance);
@@ -71,7 +70,7 @@ std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInf
   // platform specifig video decoders
   if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))
   {
-    for (auto& codec : m_hwVideoCodecs)
+    for (auto &codec : m_hwVideoCodecs)
     {
       pCodec = CreateVideoCodecHW(codec.first, processInfo);
       if (pCodec && pCodec->Open(hint, options))
@@ -122,6 +121,7 @@ IHardwareDecoder* CDVDFactoryCodec::CreateVideoCodecHWAccel(const std::string& i
   return nullptr;
 }
 
+
 void CDVDFactoryCodec::RegisterHWVideoCodec(const std::string& id, CreateHWVideoCodec createFunc)
 {
   std::lock_guard lock(videoCodecSection);
@@ -142,7 +142,7 @@ std::vector<std::string> CDVDFactoryCodec::GetHWAccels()
 
   std::vector<std::string> ret;
   ret.reserve(m_hwAccels.size());
-  for (auto& hwaccel : m_hwAccels)
+  for (auto &hwaccel : m_hwAccels)
   {
     ret.push_back(hwaccel.first);
   }
@@ -184,7 +184,7 @@ std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodec(
     options.m_keys.emplace_back("allowdtshddecode", "0");
 
   // platform specifig audio decoders
-  for (auto& codec : m_hwAudioCodecs)
+  for (auto &codec : m_hwAudioCodecs)
   {
     pCodec = CreateAudioCodecHW(codec.first, processInfo);
     if (pCodec && pCodec->Open(hint, options))
@@ -286,3 +286,4 @@ std::unique_ptr<CDVDOverlayCodec> CDVDFactoryCodec::CreateOverlayCodec(CDVDStrea
 
   return nullptr;
 }
+

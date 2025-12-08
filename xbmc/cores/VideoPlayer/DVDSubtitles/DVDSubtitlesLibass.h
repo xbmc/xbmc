@@ -154,6 +154,7 @@ protected:
 
   friend class CSubtitlesAdapter;
 
+
 private:
   void ConfigureAssOverride(const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
                             ASS_Style* style) const;

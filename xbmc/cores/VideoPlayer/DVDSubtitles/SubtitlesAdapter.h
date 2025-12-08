@@ -85,7 +85,7 @@ protected:
   *        AddSubtitle method
   * \param text The subtitle text
   */
-  virtual void PostProcess(std::string& text) {};
+  virtual void PostProcess(std::string& text){};
 
 private:
   std::shared_ptr<CDVDSubtitlesLibass> m_libass;

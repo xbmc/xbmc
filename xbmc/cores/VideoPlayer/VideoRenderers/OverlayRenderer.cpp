@@ -59,7 +59,7 @@ void CRenderer::AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts, int index
 {
   std::lock_guard lock(m_section);
 
-  SElement e;
+  SElement   e;
   e.pts = pts;
   e.overlay_dvd = std::move(o);
   m_buffers[index].push_back(e);
@@ -86,7 +86,7 @@ void CRenderer::Flush()
 {
   std::lock_guard lock(m_section);
 
-  for (std::vector<SElement>& buffer : m_buffers)
+  for(std::vector<SElement>& buffer : m_buffers)
     Release(buffer);
 
   ReleaseCache();
@@ -114,7 +114,7 @@ void CRenderer::ReleaseCache()
 
 void CRenderer::ReleaseUnused()
 {
-  for (auto it = m_textureCache.begin(); it != m_textureCache.end();)
+  for (auto it = m_textureCache.begin(); it != m_textureCache.end(); )
   {
     bool found = false;
     for (auto& buffer : m_buffers)
@@ -144,7 +144,7 @@ void CRenderer::Render(int idx)
   std::lock_guard lock(m_section);
 
   std::vector<SElement>& list = m_buffers[idx];
-  for (auto it = list.begin(); it != list.end(); ++it)
+  for(auto it = list.begin(); it != list.end(); ++it)
   {
     if (it->overlay_dvd)
     {
@@ -158,8 +158,7 @@ void CRenderer::Render(int idx)
   ReleaseUnused();
 }
 
-void CRenderer::Render(COverlay* o) const
-{
+void CRenderer::Render(COverlay* o) const {
   SRenderState state;
   state.x = o->m_x;
   state.y = o->m_y;
@@ -254,7 +253,7 @@ bool CRenderer::HasOverlay(int idx)
   std::lock_guard lock(m_section);
 
   std::vector<SElement>& list = m_buffers[idx];
-  for (auto it = list.begin(); it != list.end(); ++it)
+  for(auto it = list.begin(); it != list.end(); ++it)
   {
     if (it->overlay_dvd)
     {
@@ -265,7 +264,7 @@ bool CRenderer::HasOverlay(int idx)
   return hasOverlay;
 }
 
-void CRenderer::SetVideoRect(CRect& source, CRect& dest, CRect& view)
+void CRenderer::SetVideoRect(CRect &source, CRect &dest, CRect &view)
 {
   if (m_rv != view) // Screen resolution is changed
   {
@@ -281,14 +280,9 @@ void CRenderer::OnViewChange()
   m_isSettingsChanged = true;
 }
 
-void CRenderer::SetStereoMode(const std::string& stereomode)
+void CRenderer::SetStereoMode(const std::string &stereomode)
 {
   m_stereomode = stereomode;
-}
-
-void CRenderer::SetForceInside(bool forceInside)
-{
-  m_forceInside = forceInside;
 }
 
 void CRenderer::SetSubtitleVerticalPosition(const int value, bool save)
@@ -328,7 +322,7 @@ void CRenderer::ResetSubtitlePosition()
   {
     // The position must be relative to the screen frame
     m_subtitleVerticalMargin = static_cast<int>(
-        m_rv.Height() / 100 *
+        static_cast<float>(m_rv.Height()) / 100 *
         CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc());
 
     m_subtitlePosResInfo = static_cast<int>(m_rv.Height());
@@ -464,9 +458,9 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
     // match the bar, this calculation compensates for the displacement.
     // Note also that the displacement compensation will cause a different
     // default position of the text, different from the other alignment positions
-    double posPx = m_subtitlePosition - resInfo.Overscan.top;
+    double posPx = static_cast<double>(m_subtitlePosition - resInfo.Overscan.top);
 
-    double frameHeight = rOpts.frameHeight;
+    double frameHeight = static_cast<double>(rOpts.frameHeight);
 
     if (m_stereomode == "top_bottom" || m_stereomode == "bottom_top")
     {
@@ -488,7 +482,8 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
   {
     // To keep consistent the position of text as other alignment positions
     // we avoid apply the displacement compensation
-    double posPx = m_subtitlePosition + m_subtitleVerticalMargin - resInfo.Overscan.top;
+    double posPx =
+        static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin - resInfo.Overscan.top);
     rOpts.position = 100 - posPx / static_cast<double>(rOpts.frameHeight) * 100;
   }
   else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE ||
@@ -509,17 +504,6 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
       rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::CENTER;
   }
 
-  // Force subs to be inside the video rect.
-  if (m_forceInside)
-  {
-    if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
-      m_subtitleAlign = SUBTITLES::Align::BOTTOM_INSIDE;
-    else if (m_subtitleAlign == SUBTITLES::Align::TOP_OUTSIDE)
-      m_subtitleAlign = SUBTITLES::Align::TOP_INSIDE;
-
-    rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::INSIDE_VIDEO;
-  }
-
   // changes: Detect changes from previously rendered images, if > 0 they are changed
   int changes = 0;
   ASS_Image* images =
@@ -533,7 +517,8 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
   {
     if (changes == 0)
     {
-      auto it = m_textureCache.find(o.m_textureid);
+      auto it =
+          m_textureCache.find(o.m_textureid);
       if (it != m_textureCache.end())
         return it->second;
     }
@@ -553,7 +538,7 @@ std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay& o, double pts)
 
   if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
   {
-    auto& ovAss = static_cast<CDVDOverlayLibass&>(o);
+    auto &ovAss = static_cast<CDVDOverlayLibass&>(o);
     if (!ovAss.GetLibassHandler())
       return nullptr;
     bool updateStyle = !m_overlayStyle || m_isSettingsChanged;
@@ -571,7 +556,8 @@ std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay& o, double pts)
   }
   else if (o.m_textureid)
   {
-    auto it = m_textureCache.find(o.m_textureid);
+    auto it =
+        m_textureCache.find(o.m_textureid);
     if (it != m_textureCache.end())
       r = it->second;
   }
@@ -605,7 +591,7 @@ void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)
     case ObservableMessagePositionChanged:
     {
       std::lock_guard lock(m_section);
-
+      
       m_subtitlePosResInfo = POSRESINFO_UNSET;
       break;
     }

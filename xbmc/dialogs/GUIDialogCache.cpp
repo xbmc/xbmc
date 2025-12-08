@@ -54,7 +54,7 @@ void CGUIDialogCache::Close(bool bForceClose)
   // as this might happen during player startup which leads to a deadlock
   if (m_pDlg && m_pDlg->IsDialogRunning())
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_WINDOW_CLOSE, -1, bForceClose ? 1 : 0,
-                                               m_pDlg);
+                                               static_cast<void*>(m_pDlg));
 
   //Set stop, this will kill this object, when thread stops
   CThread::m_bStop = true;

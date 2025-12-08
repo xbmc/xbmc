@@ -101,7 +101,7 @@ int CInputStreamPVRBase::GetBlockSize()
   return ret;
 }
 
-bool CInputStreamPVRBase::GetTimes(Times& times)
+bool CInputStreamPVRBase::GetTimes(Times &times)
 {
   PVR_STREAM_TIMES streamTimes = {};
   if (m_client && m_client->GetStreamTimes(&streamTimes) == PVR_ERROR_NO_ERROR)
@@ -133,8 +133,7 @@ bool CInputStreamPVRBase::CanSeek()
   return CanSeekPVRStream();
 }
 
-void CInputStreamPVRBase::Pause(bool bPaused) const
-{
+void CInputStreamPVRBase::Pause(bool bPaused) const {
   if (m_client)
     m_client->PauseStream(bPaused);
 }
@@ -225,7 +224,7 @@ void CInputStreamPVRBase::FillBuffer(bool mode)
     m_client->FillBuffer(mode);
 }
 
-bool CInputStreamPVRBase::SeekTime(double timems, bool backwards, double* startpts)
+bool CInputStreamPVRBase::SeekTime(double timems, bool backwards, double *startpts)
 {
   if (m_client)
     return m_client->SeekTime(timems, backwards, startpts) == PVR_ERROR_NO_ERROR;

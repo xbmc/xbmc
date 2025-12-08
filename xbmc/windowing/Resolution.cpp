@@ -489,7 +489,7 @@ bool CResolutionUtils::FindResolutionFromOverride(float fps, int width, bool is3
 float CResolutionUtils::RefreshWeight(float refresh, float fps)
 {
   float div   = refresh / fps;
-  int round = MathUtils::round_int(div);
+  int round = MathUtils::round_int(static_cast<double>(div));
 
   float weight = 0.0f;
 

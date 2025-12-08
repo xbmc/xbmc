@@ -131,15 +131,15 @@ bool CMusicDbUrl::parse()
 
   // add options based on the QueryParams
   if (queryParams.GetArtistId() != -1)
-    AddOption("artistid", queryParams.GetArtistId());
+    AddOption("artistid", (int)queryParams.GetArtistId());
   if (queryParams.GetAlbumId() != -1)
-    AddOption("albumid", queryParams.GetAlbumId());
+    AddOption("albumid", (int)queryParams.GetAlbumId());
   if (queryParams.GetGenreId() != -1)
-    AddOption("genreid", queryParams.GetGenreId());
+    AddOption("genreid", (int)queryParams.GetGenreId());
   if (queryParams.GetSongId() != -1)
-    AddOption("songid", queryParams.GetSongId());
+    AddOption("songid", (int)queryParams.GetSongId());
   if (queryParams.GetYear() != -1)
-    AddOption("year", queryParams.GetYear());
+    AddOption("year", (int)queryParams.GetYear());
 
   // Decode legacy use of "musicdb://compilations/" path for filtered albums
   if (m_url.GetFileName() == "compilations/")

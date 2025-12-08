@@ -20,21 +20,20 @@ public:
   CWinRenderer();
   ~CWinRenderer();
 
-  static CBaseRenderer* Create(CVideoBuffer* buffer);
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
   void Update() override;
   bool RenderCapture(int index, CRenderCapture* capture) override;
 
   // Player functions
-  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
-  void AddVideoPicture(const VideoPicture& picture, int index) override;
+  bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
+  void AddVideoPicture(const VideoPicture &picture, int index) override;
   void UnInit() override;
   bool IsConfigured() override { return m_bConfigured; }
   bool Flush(bool saveBuffers) override;
   CRenderInfo GetRenderInfo() override;
-  void RenderUpdate(
-      int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
+  void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void SetBufferSize(int numBuffers) override;
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
@@ -55,7 +54,7 @@ public:
 protected:
   void PreInit();
   int NextBuffer() const;
-  CRendererBase* SelectRenderer(const VideoPicture& picture);
+  CRendererBase* SelectRenderer(const VideoPicture &picture);
   CRect GetScreenRect() const;
 
   bool m_bConfigured = false;

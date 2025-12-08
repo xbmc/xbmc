@@ -68,8 +68,12 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
   else
     m_defines += "#define XBMC_STRETCH 0\n";
 
-  if (m_format == SHADER_YV12 || m_format == SHADER_YV12_9 || m_format == SHADER_YV12_10 ||
-      m_format == SHADER_YV12_12 || m_format == SHADER_YV12_14 || m_format == SHADER_YV12_16)
+  if (m_format == SHADER_YV12 ||
+      m_format == SHADER_YV12_9 ||
+      m_format == SHADER_YV12_10 ||
+      m_format == SHADER_YV12_12 ||
+      m_format == SHADER_YV12_14 ||
+      m_format == SHADER_YV12_16)
     m_defines += "#define XBMC_YV12\n";
   else if (m_format == SHADER_NV12)
     m_defines += "#define XBMC_NV12\n";
@@ -175,8 +179,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
       if (m_hasLightMetadata)
         param = log10(100) / log10(m_lightMetadata.MaxCLL);
       else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
-        param = log10(100) /
-                log10(m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den);
+        param = log10(100) / log10(m_displayMetadata.max_luminance.num/m_displayMetadata.max_luminance.den);
 
       // Sanity check
       if (param < 0.1f || param > 5.0f)
@@ -223,10 +226,8 @@ void BaseYUV2RGBGLSLShader::Free()
     m_glslOutput->Free();
 }
 
-void BaseYUV2RGBGLSLShader::SetColParams(AVColorSpace colSpace,
-                                         int bits,
-                                         bool limited,
-                                         int textureBits)
+void BaseYUV2RGBGLSLShader::SetColParams(AVColorSpace colSpace, int bits, bool limited,
+                                        int textureBits)
 {
   if (colSpace == AVCOL_SPC_UNSPECIFIED)
   {
@@ -251,6 +252,7 @@ void BaseYUV2RGBGLSLShader::SetDisplayMetadata(bool hasDisplayMetadata,
   m_hasLightMetadata = hasLightMetadata;
   m_lightMetadata = lightMetadata;
 }
+
 
 void BaseYUV2RGBGLSLShader::SetToneMapParam(ETONEMAPMETHOD method, float param)
 {

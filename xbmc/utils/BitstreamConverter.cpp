@@ -37,6 +37,8 @@ extern "C"
 #endif
 }
 
+static bool hdr10plus_conversion = false;
+
 enum {
   AVC_NAL_SLICE=1,
   AVC_NAL_DPA,
@@ -379,6 +381,8 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
     std::string meta_version = "";
     if (vdr_dm_data && vdr_dm_data->dm_data.level254)
     {
+      hdr10plus_conversion = false;
+      aml_dv_hdr10plus_conversion(hdr10plus_conversion);  
       unsigned int noL8 = vdr_dm_data->dm_data.level8.len;
       if (noL8 > 0)
         meta_version = fmt::format("CMv4.0 {}-{} {}-L8",
@@ -390,20 +394,35 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
                                   vdr_dm_data->dm_data.level254->dm_version_index,
                                   vdr_dm_data->dm_data.level254->dm_mode);
     }
+    else if (hdr10plus_conversion)
+    {
+      hdr10plus_conversion = false;
+      meta_version = fmt::format("CMv4.0 {}-{}", 2, 0);
+    }
     else if (vdr_dm_data && vdr_dm_data->dm_data.level1)
     {
+      hdr10plus_conversion = false;
+      aml_dv_hdr10plus_conversion(hdr10plus_conversion);
       unsigned int noL2 = vdr_dm_data->dm_data.level2.len;
       if (noL2 > 0)
         meta_version = fmt::format("CMv2.9 {}-L2", noL2);
       else
         meta_version = "CMv2.9";
     }
+    else
+    {
+      hdr10plus_conversion = false;
+      aml_dv_hdr10plus_conversion(hdr10plus_conversion);
+    }
+    
     dovi_stream_metadata.meta_version = meta_version;
     dataCacheCore.SetVideoDoViStreamMetadata(dovi_stream_metadata);
+    aml_dv_send_md_levels();
 
     DOVIStreamInfo dovi_stream_info;
     const DoviRpuDataHeader* header = dovi_rpu_get_header(rpuOpaque);
     dovi_el_type = DOVIELType::TYPE_NONE;
+    aml_dv_send_profile(header->guessed_profile);
 
     if (header && ((header->guessed_profile == 4) || (header->guessed_profile == 7)) && header->el_type)
     {
@@ -420,6 +439,7 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
     dovi_stream_info.has_header = (header != nullptr);
 
     dataCacheCore.SetVideoDoViStreamInfo(dovi_stream_info);
+    aml_dv_send_el_type();
     dovi_rpu_free_header(header);
   }
 
@@ -540,7 +560,9 @@ bool CBitstreamConverter::Open(bool to_annexb)
           return true;
         }
         else
+        {
           CLog::Log(LOGINFO, "CBitstreamConverter::Open Invalid avcC");
+        }
       }
       else
       {
@@ -620,7 +642,9 @@ bool CBitstreamConverter::Open(bool to_annexb)
           return true;
         }
         else
+        {
           CLog::Log(LOGINFO, "CBitstreamConverter::Open Invalid hvcC");
+        }
       }
       else
       {
@@ -824,7 +848,9 @@ bool CBitstreamConverter::Convert(uint8_t *pData_bl, int iSize_bl, uint8_t *pDat
       avio_close_dyn_buf(pb, &buf);
     }
     else
+    {
       buf = pData_bl;
+    }
 
     Hdr10PlusMetadata hdr10plus_meta;
     bool convert_hdr10plus_meta = false;
@@ -843,10 +869,10 @@ bool CBitstreamConverter::Convert(uint8_t *pData_bl, int iSize_bl, uint8_t *pDat
       switch (nal_type) {
 
         case HEVC_NAL_SEI_PREFIX:
-          ProcessSeiPrefixWrap(buf, size, &m_convertBuffer, offset, hdr10plus_meta, convert_hdr10plus_meta);
+          ProcessSeiPrefixWrap(buf, size, &m_convertBuffer, offset, hdr10plus_meta, convert_hdr10plus_meta); 
           break;
 
-        case AVC_NAL_END_SEQUENCE:
+        case AVC_NAL_END_SEQUENCE: 
           buf_eos = buf;
           size_eos = size;
           break;
@@ -1256,6 +1282,8 @@ void CBitstreamConverter::AddDoViRpuNalu(const Hdr10PlusMetadata& meta, uint8_t 
       m_hints.dovi.el_present_flag = 0;
       m_hints.dovi.bl_present_flag = 1;
       m_hints.dovi.dv_bl_signal_compatibility_id = 1;
+      hdr10plus_conversion = true;
+      aml_dv_hdr10plus_conversion(hdr10plus_conversion);
     }
 
 #ifdef HAVE_LIBDOVI
@@ -1290,6 +1318,8 @@ void CBitstreamConverter::ProcessSeiPrefix(uint8_t *buf, int32_t nal_size, uint8
     ApplyContentLightLevel(lightLevel.value(), updateMetadata);
 
   if (updateMetadata) UpdateHdrStaticMetadata();
+
+  aml_dv_send_hdr10_data();
 
   if (auto res = CHevcSei::ExtractHdr10Plus(messages, clearBuf)) {
 
@@ -1382,7 +1412,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
   int i;
   uint8_t *buf = pData;
   uint32_t buf_size = iSize;
-  uint8_t  unit_type, nal_sps, nal_pps;
+  uint8_t  unit_type, nal_sps, nal_pps, nal_sei;
   int32_t  nal_size;
   uint32_t cumul_size = 0;
   const uint8_t *buf_end = buf + buf_size;
@@ -1397,10 +1427,12 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     case AV_CODEC_ID_H264:
       nal_sps = AVC_NAL_SPS;
       nal_pps = AVC_NAL_PPS;
+      nal_sei = AVC_NAL_SEI;
       break;
     case AV_CODEC_ID_HEVC:
       nal_sps = HEVC_NAL_SPS;
       nal_pps = HEVC_NAL_PPS;
+      nal_sei = HEVC_NAL_SEI_PREFIX;
       break;
     default:
       return false;
@@ -1431,8 +1463,17 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     if (m_sps_pps_context.first_idr && (unit_type == nal_sps || unit_type == nal_pps))
       m_sps_pps_context.idr_sps_pps_seen = 1;
 
-    if (!m_start_decode && IsIDR(unit_type))
-      m_start_decode = true;
+    if (m_hints.codec == AV_CODEC_ID_H264)
+    {
+      if (!m_start_decode && (unit_type == nal_sps || IsIDR(unit_type))) m_start_decode = true;
+    }
+    else
+    {
+      if (!m_start_decode && IsIDR(unit_type)) m_start_decode = true;
+    }
+
+//    if (!m_start_decode && (unit_type == nal_sps || IsIDR(unit_type) || (unit_type == nal_sei && has_sei_recovery_point(buf, buf + nal_size))))
+//      m_start_decode = true;
 
     // prepend only to the first access unit of an IDR picture, if no sps/pps already present
     if (m_sps_pps_context.first_idr && IsIDR(unit_type) && !m_sps_pps_context.idr_sps_pps_seen)
@@ -2103,11 +2144,13 @@ bool CBitstreamConverter::h264_sequence_header(const uint8_t *data, const uint32
                     break;
                 case 255:
                     // EXTENDED_SAR
+                    {
                     if (sar_height)
                         ratio *= sar_width / (float)sar_height;
                     else
                         ratio = 0.0f;
                     break;
+                    }
             } // switch
             if (aspect_ratio_idc != sequence->ratio_info)
             {

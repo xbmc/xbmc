@@ -30,19 +30,15 @@
 
 using namespace OVERLAY;
 
-static void LoadTexture(GLenum target,
-                        GLsizei width,
-                        GLsizei height,
-                        GLsizei stride,
-                        GLfloat* u,
-                        GLfloat* v,
-                        bool alpha,
-                        const GLvoid* pixels)
+static void LoadTexture(GLenum target
+                      , GLsizei width, GLsizei height, GLsizei stride
+                      , GLfloat* u, GLfloat* v
+                      , bool alpha, const GLvoid* pixels)
 {
-  int width2 = width;
+  int width2  = width;
   int height2 = height;
-  char* pixelVector = NULL;
-  const GLvoid* pixelData = pixels;
+  char *pixelVector = NULL;
+  const GLvoid *pixelData = pixels;
 
   GLenum internalFormat = alpha ? GL_RED : GL_RGBA;
   GLenum externalFormat = alpha ? GL_RED : GL_BGRA;
@@ -53,24 +49,32 @@ static void LoadTexture(GLenum target,
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  glTexImage2D(target, 0, internalFormat, width2, height2, 0, externalFormat, GL_UNSIGNED_BYTE,
-               NULL);
+  glTexImage2D   (target, 0, internalFormat
+                , width2, height2, 0
+                , externalFormat, GL_UNSIGNED_BYTE, NULL);
 
-  glTexSubImage2D(target, 0, 0, 0, width, height, externalFormat, GL_UNSIGNED_BYTE, pixelData);
+  glTexSubImage2D(target, 0
+                , 0, 0, width, height
+                , externalFormat, GL_UNSIGNED_BYTE
+                , pixelData);
 
-  if (height < height2)
-    glTexSubImage2D(target, 0, 0, height, width, 1, externalFormat, GL_UNSIGNED_BYTE,
-                    (const unsigned char*)pixelData + stride * (height - 1));
+  if(height < height2)
+    glTexSubImage2D( target, 0
+                   , 0, height, width, 1
+                   , externalFormat, GL_UNSIGNED_BYTE
+                   , (const unsigned char*)pixelData + stride * (height-1));
 
-  if (width < width2)
-    glTexSubImage2D(target, 0, width, 0, 1, height, externalFormat, GL_UNSIGNED_BYTE,
-                    (const unsigned char*)pixelData + bytesPerPixel * (width - 1));
+  if(width  < width2)
+    glTexSubImage2D( target, 0
+                   , width, 0, 1, height
+                   , externalFormat, GL_UNSIGNED_BYTE
+                   , (const unsigned char*)pixelData + bytesPerPixel * (width-1));
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
   free(pixelVector);
 
-  *u = (GLfloat)width / width2;
+  *u = (GLfloat)width  / width2;
   *v = (GLfloat)height / height2;
 }
 
@@ -187,12 +191,12 @@ std::shared_ptr<COverlay> COverlay::Create(ASS_Image* images, float width, float
 
 COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
 {
-  m_width = 1.0;
+  m_width  = 1.0;
   m_height = 1.0;
   m_align = ALIGN_SCREEN;
-  m_pos = POSITION_RELATIVE;
-  m_x = 0.0f;
-  m_y = 0.0f;
+  m_pos    = POSITION_RELATIVE;
+  m_x      = 0.0f;
+  m_y      = 0.0f;
 
   SQuads quads;
   if (!convert_quad(images, quads, static_cast<int>(width)))
@@ -203,6 +207,7 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
 
   LoadTexture(GL_TEXTURE_2D, quads.size_x, quads.size_y, quads.size_x, &m_u, &m_v, true,
               quads.texture.data());
+
 
   float scale_u = m_u / quads.size_x;
   float scale_v = m_v / quads.size_y;
@@ -217,7 +222,7 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
 
   for (size_t i = 0; i < quads.quad.size(); i++)
   {
-    for (int s = 0; s < 4; s++)
+    for(int s = 0; s < 4; s++)
     {
       vt[s].a = vs->a;
       vt[s].r = vs->r;
@@ -285,8 +290,8 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
-  GLint posLoc = renderSystem->ShaderGetPos();
-  GLint colLoc = renderSystem->ShaderGetCol();
+  GLint posLoc  = renderSystem->ShaderGetPos();
+  GLint colLoc  = renderSystem->ShaderGetCol();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();
 
   std::vector<VERTEX> vecVertices(6 * m_vertex.size() / 4);
@@ -295,12 +300,12 @@ void COverlayGlyphGL::Render(SRenderState& state)
   for (size_t i = 0; i < m_vertex.size(); i += 4)
   {
     *vertices++ = m_vertex[i];
-    *vertices++ = m_vertex[i + 1];
-    *vertices++ = m_vertex[i + 2];
+    *vertices++ = m_vertex[i+1];
+    *vertices++ = m_vertex[i+2];
 
-    *vertices++ = m_vertex[i + 1];
-    *vertices++ = m_vertex[i + 3];
-    *vertices++ = m_vertex[i + 2];
+    *vertices++ = m_vertex[i+1];
+    *vertices++ = m_vertex[i+3];
+    *vertices++ = m_vertex[i+2];
   }
   GLuint VertexVBO;
 
@@ -338,6 +343,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+
 COverlayTextureGL::~COverlayTextureGL()
 {
   glDeleteTextures(1, &m_texture);
@@ -348,7 +354,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   glEnable(GL_BLEND);
 
   glBindTexture(GL_TEXTURE_2D, m_texture);
-  if (m_pma)
+  if(m_pma)
     glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
   else
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -373,7 +379,7 @@ void COverlayTextureGL::Render(SRenderState& state)
     float top = state.y;
     float bottom = state.y + state.height;
     float left = state.x;
-    float right = state.x + state.width;
+    float right   = state.x + state.width;
 
     rd.SetRect(left, top, right, bottom);
   }
@@ -398,11 +404,11 @@ void COverlayTextureGL::Render(SRenderState& state)
     float x, y, z;
     float u1, v1;
   } vertex[4];
-  GLubyte idx[4] = {0, 1, 3, 2}; //determines order of the vertices
+  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
   GLuint vertexVBO;
   GLuint indexVBO;
 
-  glUniform4f(uniColLoc, (col[0]), (col[1]), (col[2]), (col[3]));
+  glUniform4f(uniColLoc,(col[0]), (col[1]), (col[2]), (col[3]));
 
   // Setup vertex position values
   vertex[0].x = rd.x1;
@@ -431,7 +437,7 @@ void COverlayTextureGL::Render(SRenderState& state)
 
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
 
   glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
                         reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
@@ -443,7 +449,7 @@ void COverlayTextureGL::Render(SRenderState& state)
 
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 

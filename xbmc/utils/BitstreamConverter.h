@@ -209,3 +209,9 @@ protected:
   bool              m_first_frame;
   HDRStaticMetadataInfo m_hdrStaticMetadataInfo;
 };
+
+void aml_dv_send_md_levels();
+void aml_dv_send_hdr10_data();
+void aml_dv_send_el_type();
+void aml_dv_send_profile(int dvprofile);
+void aml_dv_hdr10plus_conversion(bool hdr10plus_conversion);

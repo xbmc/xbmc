@@ -1136,7 +1136,7 @@ void MysqlDatabase::mysqlVXPrintf(StrAccum* pAccum, /* Accumulate results here *
             longvalue = longvalue / base;
           } while (longvalue > 0);
         }
-        length = &buf[etBUFSIZE - 1] - bufpt;
+        length = (int)(&buf[etBUFSIZE - 1] - bufpt);
         for (idx = precision - length; idx > 0; idx--)
         {
           *(--bufpt) = '0'; /* Zero pad */
@@ -1151,7 +1151,7 @@ void MysqlDatabase::mysqlVXPrintf(StrAccum* pAccum, /* Accumulate results here *
           for (; (x = (*pre)) != 0; pre++)
             *(--bufpt) = x;
         }
-        length = &buf[etBUFSIZE - 1] - bufpt;
+        length = (int)(&buf[etBUFSIZE - 1] - bufpt);
         bufpt[length] = 0;
         break;
       case etFLOAT:
@@ -1358,7 +1358,7 @@ void MysqlDatabase::mysqlVXPrintf(StrAccum* pAccum, /* Accumulate results here *
         /* The converted number is in buf[] and zero terminated. Output it.
         ** Note that the number is in the usual order, not reversed as with
         ** integer conversions. */
-        length = bufpt - buf;
+        length = (int)(bufpt - buf);
         bufpt = buf;
 
         /* Special case:  Add leading zeros if the flag_zeropad flag is
@@ -1770,7 +1770,7 @@ bool MysqlDataset::dropIndex(const char* table, const char* index)
 
   sql = "SELECT * FROM information_schema.statistics WHERE TABLE_SCHEMA=DATABASE() AND "
         "table_name='%s' AND index_name='%s'";
-  sql_prepared = db->prepare(sql.c_str(), table, index);
+  sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
 
   if (!query(sql_prepared))
     return false;
@@ -1778,7 +1778,7 @@ bool MysqlDataset::dropIndex(const char* table, const char* index)
   if (num_rows())
   {
     sql = "ALTER TABLE %s DROP INDEX %s";
-    sql_prepared = db->prepare(sql.c_str(), table, index);
+    sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
 
     if (exec(sql_prepared) != MYSQL_OK)
       return false;
@@ -1945,14 +1945,14 @@ bool MysqlDataset::query(const std::string& query)
         case MYSQL_TYPE_VAR_STRING:
         case MYSQL_TYPE_VARCHAR:
           if (row[i] != nullptr)
-            v.set_asString(row[i]);
+            v.set_asString((const char*)row[i]);
           break;
         case MYSQL_TYPE_TINY_BLOB:
         case MYSQL_TYPE_MEDIUM_BLOB:
         case MYSQL_TYPE_LONG_BLOB:
         case MYSQL_TYPE_BLOB:
           if (row[i] != nullptr)
-            v.set_asString(row[i]);
+            v.set_asString((const char*)row[i]);
           break;
         case MYSQL_TYPE_NULL:
         default:

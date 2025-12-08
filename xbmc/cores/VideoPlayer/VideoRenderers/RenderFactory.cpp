@@ -10,6 +10,7 @@
 
 #include <mutex>
 
+
 using namespace VIDEOPLAYER;
 
 CCriticalSection renderSection;
@@ -34,7 +35,7 @@ std::vector<std::string> CRendererFactory::GetRenderers()
 
   std::vector<std::string> ret;
   ret.reserve(m_renderers.size());
-  for (auto& renderer : m_renderers)
+  for (auto &renderer : m_renderers)
   {
     ret.push_back(renderer.first);
   }

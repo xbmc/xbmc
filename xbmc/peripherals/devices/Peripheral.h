@@ -121,6 +121,13 @@ public:
    */
   bool Initialise(void);
 
+  /*! \brief Called for the active peripheral device when unloaded, stick any cleanup here
+
+  This won't be needed for most implementations so we don't set it =0 but provide a default
+      implementation.
+  */
+  virtual void Deinitialize(void) {}
+
   /*!
    * @brief Initialise one of the features of this peripheral.
    * @param feature The feature to initialise.

@@ -17,18 +17,19 @@ class CProcessInfo;
 class CDVDVideoPPFFmpeg
 {
 public:
-  explicit CDVDVideoPPFFmpeg(CProcessInfo& processInfo);
+
+  explicit CDVDVideoPPFFmpeg(CProcessInfo &processInfo);
   ~CDVDVideoPPFFmpeg();
 
   void SetType(const std::string& mType, bool deinterlace);
-  void Process(VideoPicture* pPicture);
+  void Process(VideoPicture *pPicture);
 
 protected:
   std::string m_sType;
-  CProcessInfo& m_processInfo;
+  CProcessInfo &m_processInfo;
 
-  void* m_pContext;
-  void* m_pMode;
+  void *m_pContext;
+  void *m_pMode;
   bool m_deinterlace;
 
   void Dispose();
@@ -37,3 +38,5 @@ protected:
   bool CheckInit(int iWidth, int iHeight);
   bool CheckFrameBuffer(const VideoPicture* pSource);
 };
+
+

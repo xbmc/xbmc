@@ -448,17 +448,17 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
             new CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2,
                         newEvent.touch.y2, newEvent.touch.x3, newEvent.touch.y3);
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                   action);
+                                                   static_cast<void*>(action));
       }
       else
       {
         if (actionId == ACTION_BUILT_IN_FUNCTION && !actionString.empty())
           CServiceBroker::GetAppMessenger()->PostMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-              new CAction(actionId, actionString));
+              static_cast<void*>(new CAction(actionId, actionString)));
         else
           CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                     new CAction(actionId));
+                                                     static_cast<void*>(new CAction(actionId)));
       }
 
       break;
@@ -560,7 +560,7 @@ bool CInputManager::HandleKey(const CKey& key)
                  action.GetID());
       bool result;
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_CECTOGGLESTATE, 0, 0,
-                                                 &result);
+                                                 static_cast<void*>(&result));
       if (!result)
         return true;
     }

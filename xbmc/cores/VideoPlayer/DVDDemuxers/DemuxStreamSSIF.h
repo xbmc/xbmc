@@ -24,36 +24,31 @@
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
 #include "DVDInputStreams/DVDInputStream.h"
-
 #include <queue>
 
-extern "C"
-{
+extern "C" {
 #include "libavformat/avformat.h"
 }
 
 class CDemuxStreamSSIF
 {
 public:
-  CDemuxStreamSSIF(){};
+  CDemuxStreamSSIF() {};
   ~CDemuxStreamSSIF() { Flush(); }
 
-  DemuxPacket* AddPacket(DemuxPacket*& scrPkt);
+  DemuxPacket* AddPacket(DemuxPacket* &scrPkt);
   void Flush();
   void SetH264StreamId(int id) { m_h264StreamId = id; };
   void SetMVCStreamId(int id) { m_mvcStreamId = id; };
   int GetH264StreamId() const { return m_h264StreamId; };
   int GetMVCStreamId() const { return m_mvcStreamId; };
-  void AddMVCExtPacket(DemuxPacket*& scrPkt);
-  void SetBluRay(const std::shared_ptr<CDVDInputStream::IExtentionStream>& bluRay)
-  {
-    m_bluRay = bluRay;
-  };
+  void AddMVCExtPacket(DemuxPacket* &scrPkt);
+  void SetBluRay(const std::shared_ptr<CDVDInputStream::IExtentionStream> &bluRay) { m_bluRay = bluRay; };
   bool IsBluRay() const { return m_bluRay != nullptr; };
 
 private:
   DemuxPacket* GetMVCPacket();
-  DemuxPacket* MergePacket(DemuxPacket*& srcPkt, DemuxPacket*& appendPkt);
+  DemuxPacket* MergePacket(DemuxPacket* &srcPkt, DemuxPacket* &appendPkt);
   bool FillMVCQueue(double dtsBase);
 
   std::shared_ptr<CDVDInputStream::IExtentionStream> m_bluRay = nullptr;

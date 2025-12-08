@@ -58,8 +58,7 @@ void CDebugRenderer::Dispose()
   }
 }
 
-void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info) const
-{
+void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info) const {
   if (!m_isInitialized)
     return;
 
@@ -76,8 +75,7 @@ void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info) const
   m_adapter->AddSubtitle(info.latency, 0., 5000000.);
 }
 
-void CDebugRenderer::SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render) const
-{
+void CDebugRenderer::SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render) const {
   if (!m_isInitialized)
     return;
 
@@ -105,8 +103,7 @@ void CDebugRenderer::Render(CRect& src, CRect& dst, CRect& view)
   m_overlayRenderer.Render(0);
 }
 
-void CDebugRenderer::Flush() const
-{
+void CDebugRenderer::Flush() const {
   if (!m_isInitialized)
     return;
 

@@ -56,6 +56,8 @@ public:
   float GetVideoDAR();
 
   // Additional Player Process Info data (Only set in Data Core Cache)
+  void SetVideoPts(double pts);
+  double GetVideoPts();
   void SetVideoBitDepth(int bitDepth);
   int GetVideoBitDepth();
   void SetVideoHdrType(StreamHdrType hdrType);
@@ -107,13 +109,17 @@ public:
   void SetAudioDecoderName(std::string name);
   std::string GetAudioDecoderName();
   void SetAudioChannels(std::string channels);
+  void SetAudioChannelsSink(std::string channels);
   std::string GetAudioChannels();
+  std::string GetAudioChannelsSink();
   void SetAudioSampleRate(int sampleRate);
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
   int GetAudioBitsPerSample();
 
   // Additional Player Process Info data (Only set in Data Core Cache)
+  void SetAudioPts(double pts);
+  double GetAudioPts();
   void SetAudioLiveBitRate(double bitRate);
   double GetAudioLiveBitRate();
   void SetAudioQueueLevel(int level);
@@ -170,8 +176,6 @@ public:
   // render info
   void SetRenderClockSync(bool enabled);
   bool IsRenderClockSync();
-  void SetRenderPts(double pts);
-  double GetRenderPts();
 
   // player states
   /*!
@@ -257,7 +261,7 @@ protected:
 
   CCriticalSection m_videoPlayerSection;
   struct SPlayerVideoInfo
-  {
+  {    
     std::string decoderName;
     bool isHwDecoder;
     std::string deintMethod;
@@ -268,6 +272,7 @@ protected:
     float fps;
     float dar;
     bool m_isInterlaced;
+    double pts = 0;
     int bitDepth = 0;
     StreamHdrType hdrType = StreamHdrType::HDR_TYPE_NONE;
     StreamHdrType sourceHdrType = StreamHdrType::HDR_TYPE_NONE;
@@ -295,8 +300,10 @@ protected:
   {
     std::string decoderName;
     std::string channels;
+    std::string channels_sink;
     int sampleRate;
     int bitsPerSample;
+    double pts = 0;
     double liveBitRate = 0;
     int queueLevel = 0;
     int queueDataLevel = 0;
@@ -386,7 +393,6 @@ protected:
   struct SRenderInfo
   {
     bool m_isClockSync;
-    double pts = 0;
   } m_renderInfo;
 
   mutable CCriticalSection m_stateSection;

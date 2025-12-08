@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
-#include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderInfo.h"
+#include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoSettings.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "threads/CriticalSection.h"
 
 #include <atomic>
@@ -31,21 +31,21 @@ public:
   static CProcessInfo* CreateInstance();
   static void RegisterProcessControl(const std::string& id, CreateProcessControl createFunc);
   virtual ~CProcessInfo() = default;
-  void SetDataCache(CDataCacheCore* cache);
+  void SetDataCache(CDataCacheCore *cache);
 
   // player video
   void ResetVideoCodecInfo();
-  void SetVideoDecoderName(const std::string& name, bool isHw);
+  void SetVideoDecoderName(const std::string &name, bool isHw);
   std::string GetVideoDecoderName();
   bool IsVideoHwDecoder() const;
-  void SetVideoDeintMethod(const std::string& method);
+  void SetVideoDeintMethod(const std::string &method);
   std::string GetVideoDeintMethod();
-  void SetVideoPixelFormat(const std::string& pixFormat);
+  void SetVideoPixelFormat(const std::string &pixFormat);
   std::string GetVideoPixelFormat();
-  void SetVideoStereoMode(const std::string& mode);
+  void SetVideoStereoMode(const std::string &mode);
   std::string GetVideoStereoMode();
   void SetVideoDimensions(int width, int height);
-  void GetVideoDimensions(int& width, int& height) const;
+  void GetVideoDimensions(int &width, int &height) const;
   void SetVideoFps(float fps);
   float GetVideoFps() const;
   void SetVideoDAR(float dar);
@@ -54,20 +54,21 @@ public:
   bool GetVideoInterlaced() const;
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
   virtual void SetSwDeinterlacingMethods();
-  void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD>& methods);
+  void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
   bool Supports(EINTERLACEMETHOD method) const;
   void SetDeinterlacingMethodDefault(EINTERLACEMETHOD method);
   EINTERLACEMETHOD GetDeinterlacingMethodDefault() const;
   CVideoBufferManager& GetVideoBufferManager();
   std::vector<AVPixelFormat> GetPixFormats();
-  void SetPixFormats(std::vector<AVPixelFormat>& formats);
+  void SetPixFormats(std::vector<AVPixelFormat> &formats);
 
   // player audio info
   void ResetAudioCodecInfo();
-  void SetAudioDecoderName(const std::string& name);
+  void SetAudioDecoderName(const std::string &name);
   std::string GetAudioDecoderName();
-  void SetAudioChannels(const std::string& channels);
+  void SetAudioChannels(const std::string &channels);
   std::string GetAudioChannels();
+  std::string GetAudioChannelsSink();
   void SetAudioSampleRate(int sampleRate);
   int GetAudioSampleRate();
   void SetAudioBitsPerSample(int bitsPerSample);
@@ -78,9 +79,9 @@ public:
   // render info
   void SetRenderClockSync(bool enabled);
   bool IsRenderClockSync();
-  void UpdateRenderInfo(CRenderInfo& info);
+  void UpdateRenderInfo(CRenderInfo &info);
   void UpdateRenderBuffers(int queued, int discard, int free);
-  void GetRenderBuffers(int& queued, int& discard, int& free);
+  void GetRenderBuffers(int &queued, int &discard, int &free);
   virtual std::vector<AVPixelFormat> GetRenderFormats();
 
   // player states
@@ -109,19 +110,20 @@ public:
   bool GetGuiRender();
   void SetVideoRender(bool video);
   bool GetVideoRender();
+  unsigned int GetMaxPassthroughOffSyncDuration() const;
 
   void SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max);
   int64_t GetMaxTime();
 
   // settings
   CVideoSettings GetVideoSettings();
-  void SetVideoSettings(CVideoSettings& settings);
+  void SetVideoSettings(CVideoSettings &settings);
   CVideoSettingsLocked& GetVideoSettingsLocked();
 
 protected:
   CProcessInfo();
   static std::map<std::string, CreateProcessControl> m_processControls;
-  CDataCacheCore* m_dataCache = nullptr;
+  CDataCacheCore *m_dataCache = nullptr;
 
   // player video info
   bool m_videoIsHWDecoder;

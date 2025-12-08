@@ -185,7 +185,7 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
   if (m_pageControl)
   {
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl,
-                    MathUtils::round_int(m_scrollOffset / m_itemHeight));
+                    MathUtils::round_int(static_cast<double>(m_scrollOffset / m_itemHeight)));
     SendWindowMessage(msg);
   }
 
@@ -215,7 +215,7 @@ void CGUITextBox::Render()
     {
       if (m_font)
       {
-        float textHeight = m_font->GetTextHeight(std::min(m_lines.size(), m_itemsPerPage));
+        float textHeight = m_font->GetTextHeight(std::min((unsigned int)m_lines.size(), m_itemsPerPage));
 
         if (textHeight <= m_renderHeight)
           posY += (m_renderHeight - textHeight) * 0.5f;

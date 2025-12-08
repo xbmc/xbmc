@@ -291,8 +291,8 @@ void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSettin
       {
         if (filter.controlFormat == "date")
         {
-          strValueLower = CDateTime(valueLower).GetAsDBDate();
-          strValueUpper = CDateTime(valueUpper).GetAsDBDate();
+          strValueLower = CDateTime(static_cast<time_t>(valueLower)).GetAsDBDate();
+          strValueUpper = CDateTime(static_cast<time_t>(valueUpper)).GetAsDBDate();
         }
         else
         {

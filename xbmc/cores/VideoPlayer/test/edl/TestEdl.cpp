@@ -19,6 +19,7 @@
 
 using namespace EDL;
 
+
 class TestEdl : public ::testing::Test
 {
 protected:

@@ -254,8 +254,6 @@ private:
   int m_ExitCode{EXITCODE_QUIT};
   std::shared_ptr<CFileItem> m_itemCurrentFile; //!< Currently playing file
   CEvent m_playerEvent;
-
-  unsigned int m_maxOtherTaskTime = 6;  // Maximum time for other tasks on main thread.
 };
 
 XBMC_GLOBAL_REF(CApplication,g_application);

@@ -8,22 +8,24 @@
 
 #include "RendererAML.h"
 
-#include "cores/VideoPlayer/DVDCodecs/Video/AMLCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/AMLCodec.h"
+#include "utils/log.h"
+#include "utils/AMLUtils.h"
+#include "utils/ScreenshotAML.h"
+#include "settings/MediaSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/AMLUtils.h"
-#include "utils/ScreenshotAML.h"
-#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
-CRendererAML::CRendererAML() : m_prevVPts(DVD_NOPTS_VALUE), m_bConfigured(false)
+CRendererAML::CRendererAML()
+ : m_prevVPts(DVD_NOPTS_VALUE)
+ , m_bConfigured(false)
 {
   CLog::Log(LOGINFO, "Constructing CRendererAML");
 }
@@ -33,7 +35,7 @@ CRendererAML::~CRendererAML()
   Reset();
 }
 
-CBaseRenderer* CRendererAML::Create(CVideoBuffer* buffer)
+CBaseRenderer* CRendererAML::Create(CVideoBuffer *buffer)
 {
   if (buffer && dynamic_cast<CAMLVideoBuffer*>(buffer))
     return new CRendererAML();
@@ -46,7 +48,7 @@ bool CRendererAML::Register()
   return true;
 }
 
-bool CRendererAML::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
+bool CRendererAML::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
@@ -71,7 +73,7 @@ CRenderInfo CRendererAML::GetRenderInfo()
 {
   CRenderInfo info;
   info.max_buffer_size = m_numRenderBuffers;
-  info.opaque_pointer = (void*)this;
+  info.opaque_pointer = (void *)this;
   return info;
 }
 
@@ -79,16 +81,15 @@ bool CRendererAML::RenderCapture(int index, CRenderCapture* capture)
 {
   capture->BeginRender();
   capture->EndRender();
-  CScreenshotAML::CaptureVideoFrame((unsigned char*)capture->GetRenderBuffer(), capture->GetWidth(),
-                                    capture->GetHeight());
+  CScreenshotAML::CaptureVideoFrame((unsigned char *)capture->GetRenderBuffer(), capture->GetWidth(), capture->GetHeight());
   return true;
 }
 
-void CRendererAML::AddVideoPicture(const VideoPicture& picture, int index)
+void CRendererAML::AddVideoPicture(const VideoPicture &picture, int index)
 {
   ReleaseBuffer(index);
 
-  BUFFER& buf(m_buffers[index]);
+  BUFFER &buf(m_buffers[index]);
   if (picture.videoBuffer)
   {
     buf.videoBuffer = picture.videoBuffer;
@@ -98,7 +99,7 @@ void CRendererAML::AddVideoPicture(const VideoPicture& picture, int index)
 
 void CRendererAML::ReleaseBuffer(int idx)
 {
-  BUFFER& buf(m_buffers[idx]);
+  BUFFER &buf(m_buffers[idx]);
   if (buf.videoBuffer)
   {
     auto amli(dynamic_cast<CAMLVideoBuffer*>(buf.videoBuffer));
@@ -117,8 +118,13 @@ void CRendererAML::ReleaseBuffer(int idx)
 
 bool CRendererAML::Supports(ERENDERFEATURE feature) const
 {
-  if (feature == RENDERFEATURE_NONLINSTRETCH || feature == RENDERFEATURE_VERTICAL_SHIFT ||
-      feature == RENDERFEATURE_STRETCH || feature == RENDERFEATURE_PIXEL_RATIO ||
+  if (feature == RENDERFEATURE_ZOOM ||
+      feature == RENDERFEATURE_CONTRAST ||
+      feature == RENDERFEATURE_BRIGHTNESS ||
+      feature == RENDERFEATURE_NONLINSTRETCH ||
+      feature == RENDERFEATURE_VERTICAL_SHIFT ||
+      feature == RENDERFEATURE_STRETCH ||
+      feature == RENDERFEATURE_PIXEL_RATIO ||
       feature == RENDERFEATURE_ROTATION)
     return true;
 
@@ -130,18 +136,21 @@ void CRendererAML::Reset()
   std::array<int, 2> reset_arr[m_numRenderBuffers];
   m_prevVPts = DVD_NOPTS_VALUE;
 
-  for (int i = 0; i < m_numRenderBuffers; ++i)
+  for (int i = 0 ; i < m_numRenderBuffers ; ++i)
   {
     reset_arr[i][0] = i;
 
     if (m_buffers[i].videoBuffer)
-      reset_arr[i][1] = dynamic_cast<CAMLVideoBuffer*>(m_buffers[i].videoBuffer)->m_bufferIndex;
+      reset_arr[i][1] = dynamic_cast<CAMLVideoBuffer *>(m_buffers[i].videoBuffer)->m_bufferIndex;
     else
       reset_arr[i][1] = 0;
   }
 
   std::sort(std::begin(reset_arr), std::end(reset_arr),
-            [](const std::array<int, 2>& u, const std::array<int, 2>& v) { return u[1] < v[1]; });
+    [](const std::array<int, 2>& u, const std::array<int, 2>& v)
+    {
+      return u[1] < v[1];
+    });
 
   for (int i = 0; i < m_numRenderBuffers; ++i)
   {
@@ -161,22 +170,21 @@ bool CRendererAML::Flush(bool saveBuffers)
   return saveBuffers;
 };
 
-void CRendererAML::RenderUpdate(
-    int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
+void CRendererAML::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   ManageRenderArea();
 
   CVideoBuffer* videoBuffer = m_buffers[index].videoBuffer;
   if (videoBuffer)
   {
-    auto amli = dynamic_cast<CAMLVideoBuffer*>(videoBuffer);
+    auto amli = dynamic_cast<CAMLVideoBuffer *>(videoBuffer);
     if (amli->m_amlCodec)
     {
       uint64_t pts = amli->m_omxPts;
       if (pts != m_prevVPts)
       {
         amli->m_amlCodec->ReleaseFrame(amli->m_bufferIndex);
-        amli->m_amlCodec->SetVideoRect(m_destRect);
+        amli->m_amlCodec->SetVideoRect(m_sourceRect, m_destRect);
         amli->m_amlCodec = nullptr; //Mark frame as processed
         m_prevVPts = pts;
       }

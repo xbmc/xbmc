@@ -549,8 +549,8 @@ bool CCharsetConverter::CInnerConverter::isBidiDirectionRTL(const std::string& s
   int lineLen = static_cast<int>(str.size());
   auto charTypes = new FriBidiCharType[lineLen];
   fribidi_get_bidi_types(reinterpret_cast<const FriBidiChar*>(converted.c_str()),
-                         lineLen, charTypes);
-  FriBidiCharType charType = fribidi_get_par_direction(charTypes, lineLen);
+                         (FriBidiStrIndex)lineLen, charTypes);
+  FriBidiCharType charType = fribidi_get_par_direction(charTypes, (FriBidiStrIndex)lineLen);
   delete[] charTypes;
   return charType == FRIBIDI_PAR_RTL;
 }

@@ -31,17 +31,16 @@
  * DVD Menu ID
  * (see dvdnav_menu_call())
  */
-typedef enum
-{
+typedef enum {
   /* When used in VTS domain, DVD_MENU_Escape behaves like DVD_MENU_Root,
    * but from within a menu domain, DVD_MENU_Escape resumes playback. */
-  DVD_MENU_Escape = 0,
-  DVD_MENU_Title = 2,
-  DVD_MENU_Root = 3,
+  DVD_MENU_Escape     = 0,
+  DVD_MENU_Title      = 2,
+  DVD_MENU_Root       = 3,
   DVD_MENU_Subpicture = 4,
-  DVD_MENU_Audio = 5,
-  DVD_MENU_Angle = 6,
-  DVD_MENU_Part = 7
+  DVD_MENU_Audio      = 5,
+  DVD_MENU_Angle      = 6,
+  DVD_MENU_Part       = 7
 } DVDMenuID_t;
 
 /*
@@ -67,12 +66,11 @@ typedef enum
  * Structure containing info on highlight areas
  * (see dvdnav_get_highlight_area())
  */
-typedef struct
-{
+typedef struct {
   uint32_t palette; /* The CLUT entries for the highlight palette
                            (4-bits per entry -> 4 entries) */
-  uint16_t sx, sy, ex, ey; /* The start/end x,y positions */
-  uint32_t pts; /* Highlight PTS to match with SPU */
+  uint16_t sx,sy,ex,ey; /* The start/end x,y positions */
+  uint32_t pts;         /* Highlight PTS to match with SPU */
 
   /* button number for the SPU decoder/overlaying engine */
   uint32_t buttonN;

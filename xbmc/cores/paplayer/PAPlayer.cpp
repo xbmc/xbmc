@@ -396,7 +396,8 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   {
     si->m_seekFrame =
         si->m_audioFormat.m_sampleRate *
-        CUtil::ConvertMilliSecsToSecs(static_cast<int>(+(streamTotalTime * (si->m_fileItem->GetProperty("StartPercent").asDouble() / 100.0))));
+        CUtil::ConvertMilliSecsToSecs(static_cast<int>(+(static_cast<double>(
+            streamTotalTime * (si->m_fileItem->GetProperty("StartPercent").asDouble() / 100.0)))));
   }
   else if (starttime > 0)
     si->m_seekFrame = si->m_audioFormat.m_sampleRate * starttime;
@@ -761,7 +762,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
   /* see if it is time yet to FF/RW or a direct seek */
   if (!si->m_playNextTriggered && ((m_playbackSpeed != 1 && si->m_framesSent >= si->m_seekNextAtFrame) || si->m_seekFrame > -1))
   {
-    int64_t time = 0;
+    int64_t time = (int64_t)0;
     /* if its a direct seek */
     if (si->m_seekFrame > -1)
     {
@@ -1121,7 +1122,7 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 {
   if (fPercent < 0.0f  ) fPercent = 0.0f;
   if (fPercent > 100.0f) fPercent = 100.0f;
-  SeekTime(fPercent * 0.01f * (float)GetTotalTime64());
+  SeekTime((int64_t)(fPercent * 0.01f * (float)GetTotalTime64()));
 }
 
 float PAPlayer::GetPercentage() const {

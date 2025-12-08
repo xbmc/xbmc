@@ -308,8 +308,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
       device = getenv("KODI_RENDER_NODE");
 
 #if defined(HAVE_GBM)
-    auto winSystem =
-        dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem());
+    auto winSystem = dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem());
 
     if (winSystem)
     {
@@ -327,11 +326,10 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
     if (!device)
       device = "/dev/dri/renderD128";
 
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - using drm device for av_hwdevice_ctx: {}",
-              __FUNCTION__, device);
+    CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - using drm device for av_hwdevice_ctx: {}", __FUNCTION__, device);
 
-    if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, pConfig->device_type, device,
-                               nullptr, 0) < 0)
+    if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, pConfig->device_type,
+                               device, nullptr, 0) < 0)
     {
       CLog::Log(LOGERROR,
                 "CDVDVideoCodecDRMPRIME::{} - unable to create hwdevice context using device: {}",

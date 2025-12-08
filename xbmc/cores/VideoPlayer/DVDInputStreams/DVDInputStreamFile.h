@@ -21,10 +21,10 @@ public:
   int64_t Seek(int64_t offset, int whence) override;
   bool IsEOF() override;
   int64_t GetLength() override;
-  BitstreamStats GetBitstreamStats() const override;
+  BitstreamStats GetBitstreamStats() const override ;
   int GetBlockSize() override;
   void SetReadRate(uint32_t rate) override;
-  bool GetCacheStatus(XFILE::SCacheStatus* status) override;
+  bool GetCacheStatus(XFILE::SCacheStatus *status) override;
 
 protected:
   XFILE::CFile* m_pFile = nullptr;

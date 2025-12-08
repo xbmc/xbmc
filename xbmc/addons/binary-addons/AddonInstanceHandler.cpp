@@ -347,7 +347,7 @@ bool IAddonInstanceHandler::set_instance_setting_float(const KODI_ADDON_INSTANCE
                                                   id, StringUtils::Format("{:f}", value)))
     return true;
 
-  if (!instance->m_addon->UpdateSettingNumber(id, value,
+  if (!instance->m_addon->UpdateSettingNumber(id, static_cast<double>(value),
                                               instance->m_instanceId))
   {
     CLog::Log(LOGERROR, "IAddonInstanceHandler::{} - invalid setting type", __func__);

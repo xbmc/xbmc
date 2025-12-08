@@ -52,12 +52,12 @@
  */
 #define DVDNAV_STILL_FRAME 2
 
-typedef struct
-{
+typedef struct {
   /* The length (in seconds) the still frame should be displayed for,
    * or 0xff if infinite. */
   int length;
 } dvdnav_still_event_t;
+
 
 /*
  * DVDNAV_SPU_STREAM_CHANGE
@@ -66,8 +66,7 @@ typedef struct
  */
 #define DVDNAV_SPU_STREAM_CHANGE 3
 
-typedef struct
-{
+typedef struct {
   /* The physical (MPEG) stream number for widescreen SPU display.
    * Use this, if you blend the SPU on an anamorphic image before
    * unsqueezing it. */
@@ -87,6 +86,7 @@ typedef struct
   int logical;
 } dvdnav_spu_stream_change_event_t;
 
+
 /*
  * DVDNAV_AUDIO_STREAM_CHANGE
  *
@@ -94,14 +94,14 @@ typedef struct
  */
 #define DVDNAV_AUDIO_STREAM_CHANGE 4
 
-typedef struct
-{
+typedef struct {
   /* The physical (MPEG) stream number. */
   int physical;
 
   /* The logical (DVD) stream number. */
   int logical;
 } dvdnav_audio_stream_change_event_t;
+
 
 /*
  * DVDNAV_VTS_CHANGE
@@ -113,13 +113,13 @@ typedef struct
  */
 #define DVDNAV_VTS_CHANGE 5
 
-typedef struct
-{
-  int old_vtsN; /* the old VTS number */
+typedef struct {
+  int old_vtsN;                 /* the old VTS number */
   DVDDomain_t old_domain; /* the old domain */
-  int new_vtsN; /* the new VTS number */
+  int new_vtsN;                 /* the new VTS number */
   DVDDomain_t new_domain; /* the new domain */
 } dvdnav_vts_change_event_t;
+
 
 /*
  * DVDNAV_CELL_CHANGE
@@ -133,16 +133,16 @@ typedef struct
  */
 #define DVDNAV_CELL_CHANGE 6
 
-typedef struct
-{
-  int cellN; /* the new cell number */
-  int pgN; /* the current program number */
+typedef struct {
+  int     cellN;       /* the new cell number */
+  int     pgN;         /* the current program number */
   int64_t cell_length; /* the length of the current cell in sectors */
   int64_t pg_length; /* the length of the current program in sectors */
-  int64_t pgc_length; /* the length of the current program chain in PTS ticks */
+  int64_t pgc_length;  /* the length of the current program chain in PTS ticks */
   int64_t cell_start; /* the start offset of the current cell relatively to the PGC in sectors */
   int64_t pg_start; /* the start offset of the current PG relatively to the PGC in sectors */
 } dvdnav_cell_change_event_t;
+
 
 /*
  * DVDNAV_NAV_PACKET
@@ -181,20 +181,20 @@ typedef struct
  */
 #define DVDNAV_HIGHLIGHT 9
 
-typedef struct
-{
+typedef struct {
   /* highlight mode: 0 - hide, 1 - show, 2 - activate, currently always 1 */
   int display;
 
   /* FIXME: these fields are currently not set */
   uint32_t palette; /* The CLUT entries for the highlight palette
                            (4-bits per entry -> 4 entries) */
-  uint16_t sx, sy, ex, ey; /* The start/end x,y positions */
-  uint32_t pts; /* Highlight PTS to match with SPU */
+  uint16_t sx,sy,ex,ey; /* The start/end x,y positions */
+  uint32_t pts;         /* Highlight PTS to match with SPU */
 
   /* button number for the SPU decoder/overlaying engine */
   uint32_t buttonN;
 } dvdnav_highlight_event_t;
+
 
 /*
  * DVDNAV_SPU_CLUT_CHANGE

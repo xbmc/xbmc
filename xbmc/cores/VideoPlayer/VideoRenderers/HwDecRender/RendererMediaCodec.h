@@ -17,7 +17,7 @@ public:
   ~CRendererMediaCodec() override;
 
   // Registration
-  static CBaseRenderer* Create(CVideoBuffer* buffer);
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
   // Player functions

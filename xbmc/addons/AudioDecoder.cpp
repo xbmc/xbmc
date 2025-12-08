@@ -212,7 +212,7 @@ bool CAudioDecoder::Load(const std::string& fileName,
         {
           tag.SetCoverArtInfo(buf.size(), mimetype);
           if (art)
-            art->Set(buf.data(), buf.size(), mimetype);
+            art->Set(reinterpret_cast<const uint8_t*>(buf.data()), buf.size(), mimetype);
         }
       }
       free(ifcTag.cover_art_path);

@@ -19,8 +19,8 @@ extern "C"
 
 #define CODEC_FORCE_SOFTWARE 0x01
 #define CODEC_ALLOW_FALLBACK 0x02
-#define CODEC_INTERLACED 0x40
-#define CODEC_UNKNOWN_I_P 0x80
+#define CODEC_INTERLACED     0x40
+#define CODEC_UNKNOWN_I_P    0x80
 
 class CDemuxStream;
 struct DemuxCryptoSession;
@@ -84,17 +84,17 @@ class CDVDStreamInfo
 {
 public:
   CDVDStreamInfo();
-  CDVDStreamInfo(const CDVDStreamInfo& right, bool withextradata = true);
-  CDVDStreamInfo(const CDemuxStream& right, bool withextradata = true);
+  CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata = true);
+  CDVDStreamInfo(const CDemuxStream &right, bool withextradata = true);
 
   ~CDVDStreamInfo();
 
   void Clear(); // clears current information
   bool Equal(const CDVDStreamInfo& right, int compare) const;
-  bool Equal(const CDemuxStream& right, bool withextradata);
+  bool Equal(const CDemuxStream &right, bool withextradata);
 
-  void Assign(const CDVDStreamInfo& right, bool withextradata);
-  void Assign(const CDemuxStream& right, bool withextradata);
+  void Assign(const CDVDStreamInfo &right, bool withextradata);
+  void Assign(const CDemuxStream &right, bool withextradata);
 
   enum
   {
@@ -124,7 +124,7 @@ public:
   bool stills; // there may be odd still frames in video
   int level; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
   int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
-  bool ptsinvalid; // pts cannot be trusted (avi's).
+  bool ptsinvalid;  // pts cannot be trusted (avi's).
   bool forced_aspect; // aspect is forced from container
   int orientation; // orientation of the video in degrees counter clockwise
   int bitsperpixel;
@@ -139,7 +139,7 @@ public:
   std::string stereo_mode; // stereoscopic 3d mode
   AVDOVIDecoderConfigurationRecord dovi{};
   DOVIELType dovi_el_type = DOVIELType::TYPE_NONE;
-  CDVDClock* pClock;
+  CDVDClock *pClock;
 
   static constexpr AVDOVIDecoderConfigurationRecord empty_dovi{}; // For comparison
 
@@ -173,12 +173,10 @@ public:
     return *this;
   }
 
-  bool operator==(const CDemuxStream& right) const
-  {
+  bool operator==(const CDemuxStream& right) const {
     return Equal(CDVDStreamInfo(right, true), COMPARE_ALL);
   }
-  bool operator!=(const CDemuxStream& right) const
-  {
+  bool operator!=(const CDemuxStream& right) const {
     return !Equal(CDVDStreamInfo(right, true), COMPARE_ALL);
   }
 

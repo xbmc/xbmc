@@ -722,7 +722,7 @@ public:
   void SetPreventDuplicateEpisodes(const std::vector<PVRTypeIntValue>& preventDuplicateEpisodes,
                                    int preventDuplicateEpisodesDefault = -1) const {
     m_cStructure->iPreventDuplicateEpisodesSize =
-        preventDuplicateEpisodes.size();
+        static_cast<unsigned int>(preventDuplicateEpisodes.size());
     for (unsigned int i = 0; i < m_cStructure->iPreventDuplicateEpisodesSize &&
                              i < sizeof(m_cStructure->preventDuplicateEpisodes);
          ++i)

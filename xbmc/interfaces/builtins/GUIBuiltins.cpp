@@ -51,7 +51,7 @@ static int Action(const std::vector<std::string>& params)
   {
     int windowID = params.size() == 2 ? CWindowTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, windowID, -1,
-                                               new CAction(actionID));
+                                               static_cast<void*>(new CAction(actionID)));
   }
 
   return 0;
@@ -265,7 +265,7 @@ static int CloseDialog(const std::vector<std::string>& params)
     int id = CWindowTranslator::TranslateWindow(params[0]);
     CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(id);
     if (window && window->IsDialog())
-      window->Close(bForce);
+      static_cast<CGUIDialog*>(window)->Close(bForce);
   }
 
   return 0;
@@ -378,7 +378,7 @@ static int SetStereoMode(const std::vector<std::string>& params)
   CAction action = CStereoscopicsManager::ConvertActionCommandToAction("SetStereoMode", params[0]);
   if (action.GetID() != ACTION_NONE)
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                               new CAction(action));
+                                               static_cast<void*>(new CAction(action)));
   else
   {
     CLog::Log(LOGERROR, "Builtin 'SetStereoMode' called with unknown parameter: {}", params[0]);

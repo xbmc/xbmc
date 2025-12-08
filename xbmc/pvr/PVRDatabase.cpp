@@ -588,7 +588,7 @@ bool CPVRDatabase::Persist(CPVRProvider& provider, bool updateRecord /* = false 
                      "iType, sIconPath, sCountries, sLanguages) "
                      "VALUES (%i, %i, %i, '%s', %i, '%s', '%s', '%s');",
                      provider.GetDatabaseId(), provider.GetUniqueId(), provider.GetClientId(),
-                     provider.GetName().c_str(), provider.GetType(),
+                     provider.GetName().c_str(), static_cast<int>(provider.GetType()),
                      provider.GetClientIconPath().c_str(), provider.GetCountriesDBString().c_str(),
                      provider.GetLanguagesDBString().c_str());
     else
@@ -597,7 +597,7 @@ bool CPVRDatabase::Persist(CPVRProvider& provider, bool updateRecord /* = false 
                      "iType, sIconPath, sCountries, sLanguages) "
                      "VALUES (%i, %i, %i, '%s', %i, '%s', '%s', '%s');",
                      provider.GetDatabaseId(), provider.GetUniqueId(), provider.GetClientId(),
-                     provider.GetName().c_str(), provider.GetType(),
+                     provider.GetName().c_str(), static_cast<int>(provider.GetType()),
                      provider.GetClientIconPath().c_str(), provider.GetCountriesDBString().c_str(),
                      provider.GetLanguagesDBString().c_str());
 
@@ -957,7 +957,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRDatabase::Get(
         newMember->m_clientChannelNumber = {
             static_cast<unsigned int>(m_pDS->fv("iClientChannelNumber").get_asInt()),
             static_cast<unsigned int>(m_pDS->fv("iClientSubChannelNumber").get_asInt())};
-        newMember->m_iOrder = m_pDS->fv("iOrder").get_asInt();
+        newMember->m_iOrder = static_cast<int>(m_pDS->fv("iOrder").get_asInt());
         newMember->SetGroupName(group.GroupName());
 
         results.emplace_back(newMember);

@@ -10,6 +10,7 @@
 
 #include <mutex>
 
+
 using namespace VIDEOPLAYER;
 
 CProcessInfo* CProcessInfoIOS::Create()
@@ -31,7 +32,7 @@ void CProcessInfoIOS::SetSwDeinterlacingMethods()
   {
     // get the current methods
     std::lock_guard lock(m_videoCodecSection);
-
+    
     methods = m_deintMethods;
   }
   // add bob deinterlacer for ios
@@ -40,3 +41,4 @@ void CProcessInfoIOS::SetSwDeinterlacingMethods()
   // update with the new methods list
   UpdateDeinterlacingMethods(methods);
 }
+

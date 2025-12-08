@@ -10,8 +10,8 @@
 
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
-#include "cores/AudioEngine/Utils/PackerMAT.h"
 #include "cores/DataCacheCore.h"
+#include "cores/AudioEngine/Utils/PackerMAT.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -26,9 +26,8 @@ namespace
 constexpr auto TRUEHD_BUF_SIZE = 61440;
 }
 
-CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo& processInfo,
-                                                     CAEStreamInfo::DataType streamType)
-  : CDVDAudioCodec(processInfo)
+CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo &processInfo, CAEStreamInfo::DataType streamType) :
+  CDVDAudioCodec(processInfo)
 {
   m_format.m_streamInfo.m_type = streamType;
   m_deviceIsRAW = processInfo.WantsRawPassthrough();
@@ -47,7 +46,7 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
   Dispose();
 }
 
-bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
+bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   m_parser.SetCoreOnly(false);
   switch (m_format.m_streamInfo.m_type)
@@ -107,17 +106,16 @@ void CDVDAudioCodecPassthrough::Dispose()
   m_bufferSize = 0;
 }
 
-bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket& packet)
+bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 {
   if (m_backlogSize)
   {
     m_dataSize = m_bufferSize;
-    unsigned int consumed =
-        m_parser.AddData(m_backlogBuffer, m_backlogSize, &m_buffer, &m_dataSize);
+    unsigned int consumed = m_parser.AddData(m_backlogBuffer, m_backlogSize, &m_buffer, &m_dataSize);
     m_bufferSize = std::max(m_bufferSize, m_dataSize);
     if (consumed != m_backlogSize)
     {
-      memmove(m_backlogBuffer, m_backlogBuffer + consumed, m_backlogSize - consumed);
+      memmove(m_backlogBuffer, m_backlogBuffer+consumed, m_backlogSize-consumed);
     }
     m_backlogSize -= consumed;
   }
@@ -234,7 +232,7 @@ unsigned int CDVDAudioCodecPassthrough::PackTrueHD()
   return 0;
 }
 
-void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame& frame)
+void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)
 {
   frame.nb_frames = GetData(frame.data);
   frame.framesOut = 0;
@@ -248,6 +246,9 @@ void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame& frame)
   frame.bits_per_sample = 8;
   frame.duration = DVD_MSEC_TO_TIME(frame.format.m_streamInfo.GetDuration());
   frame.pts = m_currentPts;
+
+  if (m_currentPts != DVD_NOPTS_VALUE) m_dataCacheCore.SetAudioPts(m_currentPts);
+
   m_currentPts = DVD_NOPTS_VALUE;
 }
 

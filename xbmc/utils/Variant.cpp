@@ -413,7 +413,7 @@ double CVariant::asDouble(double fallback) const
 
 float CVariant::asFloat(float fallback) const
 {
-  return static_cast<float>(asDouble(fallback));
+  return static_cast<float>(asDouble(static_cast<double>(fallback)));
 }
 
 bool CVariant::asBoolean(bool fallback) const

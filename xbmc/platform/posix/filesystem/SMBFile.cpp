@@ -207,10 +207,10 @@ void CSMB::Init()
     // we do not need to strdup these, smbc_setXXX below will make their own copies
     if (settings->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
       //! @bug libsmbclient < 4.9 isn't const correct
-      smbc_setWorkgroup(m_context, settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
+      smbc_setWorkgroup(m_context, const_cast<char*>(settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
     std::string guest = "guest";
     //! @bug libsmbclient < 4.8 isn't const correct
-    smbc_setUser(m_context, guest.c_str());
+    smbc_setUser(m_context, const_cast<char*>(guest.c_str()));
 #else
     m_context->debug = (CServiceBroker::GetLogging().CanLogComponent(LOGSAMBA) ? 10 : 0);
     m_context->callbacks.auth_fn = xb_smbc_auth;

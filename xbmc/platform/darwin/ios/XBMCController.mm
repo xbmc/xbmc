@@ -210,7 +210,7 @@ public:
 //--------------------------------------------------------------
 - (UIInterfaceOrientation) getOrientation
 {
-  return orientation;
+	return orientation;
 }
 
 -(void)sendKey:(XBMCKey) key
@@ -699,7 +699,8 @@ public:
 {
   [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
   [self resignFirstResponder];
-  [super viewDidUnload];
+
+	[super viewDidUnload];
 }
 //--------------------------------------------------------------
 - (CGRect)fullscreenSubviewFrame

@@ -2238,7 +2238,15 @@ msgctxt "#470"
 msgid "Credits"
 msgstr ""
 
-#empty strings from id 471 to 473
+msgctxt "#471"
+msgid "Input layout"
+msgstr ""
+
+msgctxt "#472"
+msgid "Output layout"
+msgstr ""
+
+#empty strings from id 472 to 473
 
 msgctxt "#474"
 msgid "Off"
@@ -8701,8 +8709,8 @@ msgid "Disable noise reduction"
 msgstr ""
 
 #: system/settings/settings.xml
-msgctxt "#14281"
-msgid "Enable this to disable noise reduction. Requires reboot."
+msgctxt "#69999"
+msgid "Enable this to disable noise reduction. Requires reboot. FOR BETTER VIDEO PROCESSING LEAVE THIS SETTING ENABLED (i.e., DISABLE NOISE REDUCTION)."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8805,7 +8813,28 @@ msgctxt "#14304"
 msgid "RDS Radio"
 msgstr ""
 
-#empty strings from id 14305 to 15010
+#empty strings from id 14305 to 14423
+
+#: system/settings/settings.xml
+msgctxt "#14424"
+msgid "Dolby Vision Led mode"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14425"
+msgid "Choose TV-Led (RGB 4:4:4) or Player-Led (YCbCr 4:2:2) mode for Dolby Vision."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14426"
+msgid "TV-Led"
+msgstr ""
+
+msgctxt "#14427"
+msgid "Player-Led"
+msgstr ""
+
+#empty strings from id 14428 to 15010
 
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/video/VideoDatabase.cpp
@@ -24064,7 +24093,7 @@ msgstr ""
 #. Dolby Vision RPU Conversion
 #: system/settings/settings.xml
 msgctxt "#39302"
-msgid "to profile 8.1"
+msgid "to P8.1"
 msgstr ""
 
 # 40000 to 40800 are reserved for Video Versions feature
@@ -24592,528 +24621,1157 @@ msgstr ""
 
 #. "Dolby Vision"
 #: system/settings/settings.xml
-msgctxt "#50001"
-msgid "Dolby Vision"
+msgctxt "#60001"
+msgid "Dolby Vision (DV)"
 msgstr ""
 
 #. "Dolby Vision"
 #: system/settings/settings.xml
-msgctxt "#50011"
-msgid "Mode"
+msgctxt "#60011"
+msgid "Set DV Mode"
 msgstr ""
 
 #. "Dolby Vision"
 #: system/settings/settings.xml
-msgctxt "#50012"
-msgid "Switch On Dolby Vision always, On demand or switch Off"
+msgctxt "#60012"
+msgid "Set Dolby Vision (DV) processing mode to On, On Demand, or Off. The Video Processor feature only works with DV Mode On Demand."
 msgstr ""
 
 #. "Dolby Vision"
 #: system/settings/settings.xml
-msgctxt "#50013"
+msgctxt "#60013"
 msgid "On"
 msgstr ""
 
 #. "Dolby Vision"
 #: system/settings/settings.xml
-msgctxt "#50014"
-msgid "On demand"
+msgctxt "#60014"
+msgid "On Demand"
 msgstr ""
 
 #. "Dolby Vision"
 #: system/settings/settings.xml
-msgctxt "#50015"
+msgctxt "#60015"
 msgid "Off"
 msgstr ""
 
 #. "Dolby Vision"
 #: system/settings/settings.xml
-msgctxt "#50016"
-msgid "GUI max luminance in menus"
+msgctxt "#60016"
+msgid "Set GUI max luminance in menus"
 msgstr ""
 
 #. "Dolby Vision"
 #: system/settings/settings.xml
-msgctxt "#50017"
+msgctxt "#60017"
 msgid "Set the maximum luminance for the GUI menus in cd/m^2"
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
-msgctxt "#50021"
-msgid "Type"
+msgctxt "#60021"
+msgid "Set DV Output Type"
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
-msgctxt "#50022"
-msgid "Type of Dolby Vision to use with display."
+msgctxt "#60022"
+msgid "Set type of DV output to use with display capability."
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
-msgctxt "#50023"
-msgid "Display Led (DV-Std)"
+msgctxt "#60023"
+msgid "Display Led (DV-Std RGB 8 Bit Tunnel)"
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
-msgctxt "#50024"
-msgid "Player Led (DV-LL)"
+msgctxt "#60024"
+msgid "Player Led (DV-LL 422 12 Bit)"
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
-msgctxt "#50025"
-msgid "Player Led (HDR)"
+msgctxt "#60025"
+msgid "Player Led (HDR10 444 12 Bit)"
 msgstr ""
 
 #. "Dolby Vision Type"
 #: system/settings/settings.xml
-msgctxt "#50026"
+msgctxt "#60026"
 msgid "VS10 Only"
 msgstr ""
 
 #. "Dolby Vision VSVDB"
 #: system/settings/settings.xml
-msgctxt "#50031"
-msgid "Dolby VSVDB"
+msgctxt "#60031"
+msgid "Set DV VSVDB - If set to On it will replace Display DV VSVDB EDID"
 msgstr ""
 
 #. "Dolby Vision VSVDB"
 #: system/settings/settings.xml
-msgctxt "#50032"
-msgid "Dolby VSVDB inject or replace existing Dolby VSVDB from EDID with VSVDB specified in the Dolby VSVDB Payload."
+msgctxt "#60032"
+msgid "Set DV VSVDB to replace Display DV VSVDB EDID with your specified values for Display "Colour Space" and "Maximum Luminance". If Display does not have a DV VSVDB EDID then these settings values will be used even if the "Set DV VSVDB" is set to Off. Toggle this setting from Off-On-Off to show your Display DV VSVDB EDID values."
 msgstr ""
 
 #. "Dolby Vision VSVDB"
 #: system/settings/settings.xml
-msgctxt "#50033"
-msgid "Payload"
+msgctxt "#60033"
+msgid "DV VSVDB Payload"
 msgstr ""
 
 #. "Dolby Vision VSVDB"
 #: system/settings/settings.xml
-msgctxt "#50034"
-msgid "Dolby VSVDB Payload. A v1 or v2, 14 character basic hex string for example: 2A3801515999AA"
+msgctxt "#60034"
+msgid "DV VSVDB Payload. A v1 or v2, 14 character basic hex string for example: 2A3801515999AA"
 msgstr ""
 
 #. "Dolby Vision Display Led Colorimetry"
 #: system/settings/settings.xml
-msgctxt "#50041"
-msgid "Colorimetry"
+msgctxt "#60041"
+msgid "Set Colorimetry"
 msgstr ""
 
 #. "Dolby Vision Display Led Colorimetry"
 #: system/settings/settings.xml
-msgctxt "#50042"
-msgid "Colorimetry to be sent to the Display when using Display Led Dolby Vision."
+msgctxt "#60042"
+msgid "Set Colorimetry to be sent to the Display when using Display Led DV."
 msgstr ""
 
 #. "Dolby Vision Display Led Colorimetry"
 #: system/settings/settings.xml
-msgctxt "#50043"
+msgctxt "#60043"
 msgid "as per AMLogic"
 msgstr ""
 
 #. "Dolby Vision Display Led Colorimetry"
 #: system/settings/settings.xml
-msgctxt "#50044"
+msgctxt "#60044"
 msgid "BT.2020nc"
 msgstr ""
 
 #. "Dolby Vision Display Led Colorimetry"
 #: system/settings/settings.xml
-msgctxt "#50045"
+msgctxt "#60045"
 msgid "disable/remove"
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50051"
-msgid "For SDR8"
+msgctxt "#60051"
+msgid "DV VS10 for SDR8 video"
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50052"
-msgid "Dolby Vision VS10 target mode for SDR8 content."
+msgctxt "#60052"
+msgid "Use DV VS10 output target mode for SDR8 video."
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50053"
-msgid "For SDR10"
+msgctxt "#60053"
+msgid "DV VS10 for SDR10 video"
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50054"
-msgid "Dolby Vision VS10 target mode for SDR10 content."
+msgctxt "#60054"
+msgid "Use DV VS10 output target mode for SDR10 video."
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50055"
-msgid "For HDR10"
+msgctxt "#60055"
+msgid "DV VS10 for HDR10 video"
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50056"
-msgid "Dolby Vision VS10 target mode for HDR10 content."
+msgctxt "#60056"
+msgid "Use DV VS10 output target mode for HDR10 video."
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50057"
-msgid "For HDR10+ (HDR10 data only)"
+msgctxt "#60057"
+msgid "DV VS10 for HDR10+ video (HDR10 data only)"
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50058"
-msgid "Dolby Vision VS10 target mode for HDR10+ content (does not use the HDR10+ dynamic metadata)."
+msgctxt "#60058"
+msgid "Use DV VS10 output target mode for HDR10+ video (does not use the HDR10+ dynamic metadata)."
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50059"
-msgid "For HLG HDR"
+msgctxt "#60059"
+msgid "DV VS10 for HLG video"
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50060"
-msgid "Dolby Vision VS10 target mode for HLG HDR content (processed by VS10 as SDR)."
+msgctxt "#60060"
+msgid "Use DV VS10 output target mode for HLG video."
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50061"
-msgid "For Dolby Vision"
+msgctxt "#60061"
+msgid "DV VS10 for DV video"
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50062"
-msgid "Dolby Vision VS10 target mode for Dolby Vision."
+msgctxt "#60062"
+msgid "Use DV VS10 output target mode for DV video."
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50063"
-msgid "off"
+msgctxt "#60063"
+msgid "Off"
 msgstr ""
 
 #. "Dolby Vision VS10"
 #: system/settings/settings.xml
-msgctxt "#50064"
+msgctxt "#60064"
 msgid "SDR"
 msgstr ""
 
 #. "Dolby Vision VS10" 
 #: system/settings/settings.xml
-msgctxt "#50065"
+msgctxt "#60065"
 msgid "HDR10"
 msgstr ""
 
 #. "Dolby Vision VS10" 
 #: system/settings/settings.xml
-msgctxt "#50066"
-msgid "Dolby Vision"
+msgctxt "#60066"
+msgid "DV"
 msgstr ""
 
-#. "Dolby Vision VS10" 
+#. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
-msgctxt "#50071"
-msgid "Colour space"
+msgctxt "#60071"
+msgid "Set Colour Space - Required if Display does not support DV"
 msgstr ""
 
-#. "Dolby Vision VS10" 
+#. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
-msgctxt "#50072"
-msgid "Dolby VSVDB Payload colour space"
+msgctxt "#60072"
+msgid "Set DV Colour Space based on your Display capability. If Display does not have a DV VSVDB EDID then this setting value will be used even if the "Set DV VSVDB" is set to Off. Toggle the "Set DV VSVDB" setting from Off-On-Off to show your Display Colour Space DV VSVDB EDID value - DISPLAY will show if non-standard Colour Space."
 msgstr ""
 
-#. "Dolby Vision VS10" 
+#. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
-msgctxt "#50073"
-msgid "Minimum luminance"
+msgctxt "#60073"
+msgid "Set DV VSVDB Minimum Luminance"
 msgstr ""
 
-#. "Dolby Vision VS10" 
+#. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
-msgctxt "#50074"
-msgid "Dolby VSVDB Payload minimum luminance in PQ (cd/m^2)"
+msgctxt "#60074"
+msgid "Set DV VSVDB Payload Minimum Luminance in PQ (cd/m^2)"
 msgstr ""
 
-#. "Dolby Vision VS10" 
+#. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
-msgctxt "#50075"
-msgid "Maximum luminance"
+msgctxt "#60075"
+msgid "Set Max Lum in NITS - Required if Display does not support DV"
 msgstr ""
 
-#. "Dolby Vision VS10" 
+#. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
-msgctxt "#50076"
-msgid "Dolby VSVDB Payload maximum luminance in PQ (cd/m^2)"
+msgctxt "#60076"
+msgid "Set DV Maximum Luminance based on your Display capability. If Display does not have a DV VSVDB EDID then this setting value will be used even if the "Set DV VSVDB" is set to Off. Toggle the "Set DV VSVDB" setting from Off-On-Off to show your Display Maximum Luminance DV VSVDB EDID value."
 msgstr ""
 
-#. "Dolby Vision VS10" 
+#. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
-msgctxt "#50081"
+msgctxt "#60081"
 msgid "DCI-P3"
 msgstr ""
 
-#. "Dolby Vision VS10" 
+#. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
-msgctxt "#50082"
+msgctxt "#60082"
 msgid "BT.2020"
 msgstr ""
 
-#. "Dolby Vision VS10" 
+#. "Dolby Vision VSVDB" 
 #: system/settings/settings.xml
-msgctxt "#50083"
+msgctxt "#60083"
 msgid "BT.709"
 msgstr ""
 
 #. "Dolby Vision HDR InfoFrame"
 #: system/settings/settings.xml
-msgctxt "#50091"
-msgid "HDR InfoFrame"
+msgctxt "#60091"
+msgid "Set HDR InfoFrame"
 msgstr ""
 
 #. "Dolby Vision HDR InfoFrame"
 #: system/settings/settings.xml
-msgctxt "#50092"
-msgid "HDR InfoFrame Inject, change the HDR InfoFrame according to the Payload when using Player Led (HDR)."
+msgctxt "#60092"
+msgid "Set HDR InfoFrame Inject, change the HDR InfoFrame according to the Payload when using Player Led (HDR)."
 msgstr ""
 
 #. "Dolby Vision HDR InfoFrame"
 #: system/settings/settings.xml
-msgctxt "#50093"
+msgctxt "#60093"
 msgid "Payload"
 msgstr ""
 
 #. "Dolby Vision HDR InfoFrame"
 #: system/settings/settings.xml
-msgctxt "#50094"
-msgid "HDR InfoFrame Payload. A 48 character basic hex string to specify colour primaries, white point, luminance and content light level. Leave blank to align values with the Dolby VSVDB."
+msgctxt "#60094"
+msgid "HDR InfoFrame Payload. A 48 character basic hex string to specify colour primaries, white point, luminance and content light level. Leave blank to align values with the DV VSVDB."
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50101"
-msgid "Dynamic HDR10+ to Dolby Vision profile 8.1 conversion"
+msgctxt "#60101"
+msgid "Convert HDR10+ video to DV profile 8.1 during playback"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50102"
-msgid "Dynamically convert HDR10+ to Dolby Vision profile 8.1 on playback. (port from dovi_tool Aug. 2024)"
+msgctxt "#60102"
+msgid "Set to On to dynamically convert HDR10+ video to DV profile 8.1 video during playback."
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50103"
+msgctxt "#60103"
 msgid "Peak Brightness Source"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50104"
-msgid "Source for Peak Brightness when converting from HDR10+ to Dolby Vision profile 8.1. (port from dovi_tool Aug. 2024)"
+msgctxt "#60104"
+msgid "Source for Peak Brightness when converting from HDR10+ to DV profile 8.1. (port from dovi_tool Aug. 2024)"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50105"
+msgctxt "#60105"
 msgid "histogram"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50106"
+msgctxt "#60106"
 msgid "histogram99"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50107"
+msgctxt "#60107"
 msgid "max-scl"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50108"
+msgctxt "#60108"
 msgid "max-scl-luminance"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50109"
+msgctxt "#60109"
 msgid "histogram-plus"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50121"
-msgid "Prefer conversion over original Dolby Vision"
+msgctxt "#60121"
+msgid "Choose HDR10+ conversion to DV instead of original DV video stream when both are present"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50122"
-msgid "When Dolby Vision and HDR10+ are both present, prefer conversion from HDR10+ over using the original Dolby Vision, note any FEL will be discarded in this case."
+msgctxt "#60122"
+msgid "When both DV and HDR10+ video streams are present, choose conversion from HDR10+ video to DV over using the original DV video, note any FEL will be discarded in this case."
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50131"
-msgid "Preferred HDR for dual Dolby Vision and HDR10+ content"
+msgctxt "#60131"
+msgid "Choose DV or HDR10+ video stream to output when both are present"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50132"
-msgid "When Dolby Vision and HDR10+ are both present, which HDR to prefer."
+msgctxt "#60132"
+msgid "When both DV and HDR10+ video streams are present, choose which video stream to output."
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50133"
-msgid "Dolby Vision"
+msgctxt "#60133"
+msgid "DV"
 msgstr ""
 
 #. "Dolby Vision HDR10+"
 #: system/settings/settings.xml
-msgctxt "#50134"
+msgctxt "#60134"
 msgid "HDR10+"
 msgstr ""
 
 #. "Dolby Vision Display Led Source Levels Metadata"
 #: system/settings/settings.xml
-msgctxt "#50150"
-msgid "Source levels metadata"
+msgctxt "#60150"
+msgid "Set DV Metadata Level 5 to original source instead of zero"
 msgstr ""
 
 #. "Dolby Vision Display Led Source Levels Metadata"
 #: system/settings/settings.xml
-msgctxt "#50151"
-msgid "When using Display Led (DV-Std), send the source's levels Metadata, otherwise send then Dolby Vision engines altered levels metadata to the display."
+msgctxt "#60151"
+msgid "Enable this setting to send the original source DV level 5 metadata to the display, otherwise zero is used for DV level 5 metadata values. ONLY ENABLE THIS SETTING IF YOUR DISPLAY CAN SUPPORT THIS FEATURE."
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
-msgctxt "#50160"
-msgid "Level 5"
+msgctxt "#60160"
+msgid "Set Level 5"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
-msgctxt "#50161"
+msgctxt "#60161"
 msgid "When using Display Led (DV-Std) and sending the source's level 5 metadata to the diplay, choose how to handle the metadata."
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
-msgctxt "#50170"
+msgctxt "#60170"
 msgid "Discard"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
-msgctxt "#50171"
+msgctxt "#60171"
 msgid "Source"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
-msgctxt "#50172"
+msgctxt "#60172"
 msgid "0 (zero)"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
-msgctxt "#50173"
+msgctxt "#60173"
 msgid "Source, 0 (zero) when OSD is active or subtiles set on"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
-msgctxt "#50174"
+msgctxt "#60174"
 msgid "Source, 0 (zero) when OSD is active"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 6 Handling"
 #: system/settings/settings.xml
-msgctxt "#50180"
-msgid "Level 6"
+msgctxt "#60180"
+msgid "Set Level 6"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 6 Handling"
 #: system/settings/settings.xml
-msgctxt "#50181"
+msgctxt "#60181"
 msgid "When using Display Led (DV-Std) and sending the source's level 6 metadata to the diplay, choose how to handle the metadata."
 msgstr ""
 
 #. "Dolby Vision Display Led Restrict Overlays"
 #: system/settings/settings.xml
-msgctxt "#50190"
-msgid "Restrict overlays"
+msgctxt "#60190"
+msgid "Set to On to auto adjust subtitles further into the DV video/screen area"
 msgstr ""
 
 #. "Dolby Vision Display Led Restrict Overlays"
 #: system/settings/settings.xml
-msgctxt "#50191"
-msgid "When using Display Led (DV-Std) should overlays be restricted to the active area only."
+msgctxt "#60191"
+msgid "Set to On only if subtitles are being position outside of the DV video/screen and not visible. This setting will automatically adjust the subtitles further into the DV video/screen area so they become visible. This setting only works for DV videos."
 msgstr ""
 
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
-msgctxt "#50200"
-msgid "Limit VSVDB luminance"
+msgctxt "#60200"
+msgid "Set Limit VSVDB luminance"
 msgstr ""
 
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
-msgctxt "#50201"
+msgctxt "#60201"
 msgid "When using Player Led (DV-LL / HDR) limit the VSVDB min / max luminance to match the source being played."
 msgstr ""
 
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
-msgctxt "#50202"
+msgctxt "#60202"
 msgid "Do not limit"
 msgstr ""
 
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
-msgctxt "#50203"
-msgid "Limit min and max"
+msgctxt "#60203"
+msgid "Min PQ 0 and limit max"
 msgstr ""
 
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
-msgctxt "#50204"
+msgctxt "#60204"
 msgid "Min PQ 20 and limit max"
 msgstr ""
 
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
-msgctxt "#50205"
+msgctxt "#60205"
 msgid "Limit max only"
 msgstr ""
 
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
-msgctxt "#50210"
-msgid "Brightness adjustment"
+msgctxt "#60210"
+msgid "Set Brightness-2 adjustment"
 msgstr ""
 
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
-msgctxt "#50211"
-msgid "Brightness adjustment (compensation) when using Min PQ 20."
+msgctxt "#60211"
+msgid "Set Brightness-2 adjustment (compensation) when using Min PQ 20."
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60500"
+msgid "Set Min PQ 20 only"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60501"
+msgid "Set DV Output Signal Type for Video Processor"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60502"
+msgid "Set when using a Video Processor (VP) since there will be no DV Dynamic Tone Mapping (DTM). All DV video output signal types are full capability DV (i.e., FEL). The VP feature only works with DV Mode On Demand. HDR10 modes include HDR10 InfoFrame Metadata and can be used without a VP with displays that perform well with HDR10."
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60503"
+msgid "Off"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60504"
+msgid "DV as HDR10 444 12 Bit"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60505"
+msgid "DV as LLDV 422 12 Bit"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60506"
+msgid "DV as LLDV 444 12 Bit"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60507"
+msgid "DV as LLDV RGB Full 12 Bit"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60508"
+msgid "Set DV Video Chroma"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60509"
+msgid "Set DV Video Chroma"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60510"
+msgid "0"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60511"
+msgid "1"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60512"
+msgid "2"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60513"
+msgid "Set DV Video Signal Range"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60514"
+msgid "Set DV Video Signal Range"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60515"
+msgid "0"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60516"
+msgid "1"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60517"
+msgid "2"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60518"
+msgid "LMIN"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60519"
+msgid "LMIN"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60520"
+msgid "LAVG"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60521"
+msgid "LAVG"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60522"
+msgid "LMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60523"
+msgid "LMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60524"
+msgid "SMIN"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60525"
+msgid "SMIN"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60526"
+msgid "SMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60527"
+msgid "SMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60528"
+msgid "TMIN"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60529"
+msgid "TMIN"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60530"
+msgid "TMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60531"
+msgid "TMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60532"
+msgid "VMIN"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60533"
+msgid "VMIN"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60534"
+msgid "VMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60535"
+msgid "VMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60536"
+msgid "SFLAG"
+msgstr ""
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60537"
+msgid "SFLAG"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60538"
+msgid "Set DV Video Processor Mode"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60539"
+msgid "Options for DV Video Processor Mode are:  A) No DV Dynamic Tone Mapping (DTM) applied. B) Maintains colorist DV (L2) trims DTM without maximum luminance compression."
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60540"
+msgid "Off"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60541"
+msgid "Maintains colorist DV (L2) trims DTM"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60542"
+msgid "No DV Dynamic Tone Mapping (DTM) applied"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60543"
+msgid "No DV Dynamic Tone Mapping (DTM) applied"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60544"
+msgid "No DV Dynamic Tone Mapping (DTM) applied"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60545"
+msgid "Test 5"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60546"
+msgid "Test 6"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60547"
+msgid "LTMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60548"
+msgid "LTMAX"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60549"
+msgid "Set Video CSC"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60550"
+msgid "Set Video CSC"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60551"
+msgid "0"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60552"
+msgid "1"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60553"
+msgid "2"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60554"
+msgid "3"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60555"
+msgid "4"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60556"
+msgid "5"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60557"
+msgid "6"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60558"
+msgid "7"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60559"
+msgid "Off"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60560"
+msgid "Test 7"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60561"
+msgid "Test 8"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60562"
+msgid "Test 9"
+msgstr ""
+
+#. "Dolby Vision VSVDB" 
+#: system/settings/settings.xml
+msgctxt "#60563"
+msgid "DISPLAY"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60564"
+msgid "Set Contrast-1 adjustment"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60565"
+msgid "Set Contrast-1 adjustment (compensation) when using Min PQ 20."
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60566"
+msgid "Set Contrast-2 adjustment"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60567"
+msgid "Set Contrast-2 adjustment (compensation) when using Min PQ 20."
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60568"
+msgid "Set Brightness-1 adjustment"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60569"
+msgid "Set Brightness-1 adjustment (compensation) when using Min PQ 20."
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60570"
+msgid "Set DV-LL Black Clipping/Level Correction"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60571"
+msgid "Set DV-LL Black Clipping/Level Correction. Off - No Correction = standard DV-LL Black Clipping at ~72 and Black Level at 64. Clipping Correction = Correction for Black Clipping to ~68 but raising Black Level to ~68. Balanced Correction = Correction for Black Clipping to ~68 and reducing the Black Level back to 64."
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60572"
+msgid "Off - No Correction"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60573"
+msgid "Clipping Correction"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60574"
+msgid "Balanced Correction"
+msgstr ""
+
+#. "Dolby Vision LLDV to HDR10 Format"
+#: system/settings/settings.xml
+msgctxt "#60575"
+msgid "Set DV as HDR10 Output Format"
+msgstr ""
+
+#. "Dolby Vision LLDV to HDR10 Format"
+#: system/settings/settings.xml
+msgctxt "#60576"
+msgid "Set what type of DV as HDR10 output format you prefer."
+msgstr ""
+
+#. "Dolby Vision LLDV to HDR10 Format"
+#: system/settings/settings.xml
+msgctxt "#60577"
+msgid "HDR10 444 12 Bit"
+msgstr ""
+
+#. "Dolby Vision LLDV to HDR10 Format"
+#: system/settings/settings.xml
+msgctxt "#60578"
+msgid "HDR10 422 12 Bit"
+msgstr ""
+
+#. "Dolby Vision Type"
+#: system/settings/settings.xml
+msgctxt "#60579"
+msgid "Player Led (HDR10 422 12 Bit)"
+msgstr ""
+
+#. "Dolby Vision Video Processor"
+#: system/settings/settings.xml
+msgctxt "#60580"
+msgid "DV as HDR10 422 12 Bit"
+msgstr ""
+
+#. "Dolby Vision LL Bugfix"
+#: system/settings/settings.xml
+msgctxt "#60581"
+msgid "Set fix for DV-LL over brightness when VSVDB Max is higher than Source MDL"
+msgstr ""
+
+#. "Dolby Vision LL Bugfix"
+#: system/settings/settings.xml
+msgctxt "#60582"
+msgid "Set bug fix option for DV-LL over brightness problem. Off - normal LLDV with no bug fix. Minimize - allows for any VSVDB Max Lum value and minimizes the over brightness problem. Limit - Limits the VSVDB Max Lum value to Source MDL value so no over brightness but restricts VSVDB Max Lum value to not pass the Source MDL value."
+msgstr ""
+
+#. "Dolby Vision LL Bugfix"
+#: system/settings/settings.xml
+msgctxt "#60583"
+msgid "Off"
+msgstr ""
+
+#. "Dolby Vision LL Bugfix"
+#: system/settings/settings.xml
+msgctxt "#60584"
+msgid "Minimize"
+msgstr ""
+
+#. "Dolby Vision LL Bugfix"
+#: system/settings/settings.xml
+msgctxt "#60585"
+msgid "Limit"
+msgstr ""
+
+#. "Dolby Vision Video Processor Engine"
+#: system/settings/settings.xml
+msgctxt "#60586"
+msgid "Set Video Processor Engine"
+msgstr ""
+
+#. "Dolby Vision Video Processor Engine"
+#: system/settings/settings.xml
+msgctxt "#60587"
+msgid "Set Video Processor Engine that you prefer to use."
+msgstr ""
+
+#. "Dolby Vision Video Processor Engine"
+#: system/settings/settings.xml
+msgctxt "#60588"
+msgid "0"
+msgstr ""
+
+#. "Dolby Vision Video Processor Engine"
+#: system/settings/settings.xml
+msgctxt "#60589"
+msgid "1"
+msgstr ""
+
+#. "Dolby Vision Video Processor Engine"
+#: system/settings/settings.xml
+msgctxt "#60590"
+msgid "2"
+msgstr ""
+
+#. "Dolby Vision Video Processor Engine"
+#: system/settings/settings.xml
+msgctxt "#60591"
+msgid "3"
+msgstr ""
+
+#. "Dolby Vision Video Processor Engine"
+#: system/settings/settings.xml
+msgctxt "#60592"
+msgid "4"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#60593"
+msgid "Set Min PQ 0 only"
+msgstr ""
+
+#. "Dolby Vision Audio Issues Fix"
+#: system/settings/settings.xml
+msgctxt "#60594"
+msgid "Set Type of Correction to Fix Audio Issues"
+msgstr ""
+
+#. "Dolby Vision Audio Issues Fix"
+#: system/settings/settings.xml
+msgctxt "#60595"
+msgid "Select what type of correction works in your setup to fix audio issues including seamless branching audio drop and audio sync issues. Try (1) first, if it does not work try (2). (3) is for debugging purposes."
+msgstr ""
+
+#. "Dolby Vision Audio Issues Fix"
+#: system/settings/settings.xml
+msgctxt "#60596"
+msgid "Off"
+msgstr ""
+
+#. "Dolby Vision Audio Issues Fix"
+#: system/settings/settings.xml
+msgctxt "#60597"
+msgid "1"
+msgstr ""
+
+#. "Dolby Vision Audio Issues Fix"
+#: system/settings/settings.xml
+msgctxt "#60598"
+msgid "2"
+msgstr ""
+
+#. "Dolby Vision Audio Issues Fix"
+#: system/settings/settings.xml
+msgctxt "#60599"
+msgid "3"
+msgstr ""
+
+#. Title of Dolby Vision RPU conversion setting
+#: system/settings/settings.xml
+msgctxt "#69196"
+msgid "Convert DV Profile 7 FEL to MEL or to Profile 8.1"
+msgstr ""
+
+#. Help text for setting "Convert Dolby Vision for compatibility" of label #69196
+#: system/settings/settings.xml
+msgctxt "#69197"
+msgid "Convert DV profile 7 FEL to MEL or to profile 8.1. Only use this setting if needed for audio sync issues with SoC S905X4. There is no need to use this setting with SoC S922X."
+msgstr ""
+
+#. Dolby Vision RPU Conversion
+#: system/settings/settings.xml
+msgctxt "#69300"
+msgid "Off"
+msgstr ""
+
+#. Dolby Vision RPU Conversion
+#: system/settings/settings.xml
+msgctxt "#69301"
+msgid "to P7MEL"
+msgstr ""
+
+#. Dolby Vision RPU Conversion
+#: system/settings/settings.xml
+msgctxt "#69302"
+msgid "to P8.1"
 msgstr ""

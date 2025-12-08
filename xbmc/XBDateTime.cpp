@@ -589,7 +589,7 @@ void CDateTime::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {
-    ar<<m_state;
+    ar<<(int)m_state;
     if (m_state==valid)
     {
       KODI::TIME::SystemTime st;

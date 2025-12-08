@@ -96,7 +96,7 @@ JSONRPC_STATUS CGUIOperations::SetFullscreen(const std::string &method, ITranspo
        parameterObject["fullscreen"].asBoolean() != g_application.IsFullScreen()))
   {
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                               new CAction(ACTION_SHOW_GUI));
+                                               static_cast<void*>(new CAction(ACTION_SHOW_GUI)));
   }
   else if (!parameterObject["fullscreen"].isBoolean() && !parameterObject["fullscreen"].isString())
     return InvalidParams;
@@ -110,7 +110,7 @@ JSONRPC_STATUS CGUIOperations::SetStereoscopicMode(const std::string &method, IT
   if (action.GetID() != ACTION_NONE)
   {
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                               new CAction(action));
+                                               static_cast<void*>(new CAction(action)));
     return ACK;
   }
 

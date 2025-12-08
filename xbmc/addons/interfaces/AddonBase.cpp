@@ -582,7 +582,7 @@ bool Interface_Base::set_setting_float(const KODI_ADDON_BACKEND_HDL hdl,
                                                   StringUtils::Format("{:f}", value)))
     return true;
 
-  if (!addon->UpdateSettingNumber(id, value))
+  if (!addon->UpdateSettingNumber(id, static_cast<double>(value)))
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid setting type", __func__);
     return false;

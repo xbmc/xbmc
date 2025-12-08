@@ -9,16 +9,16 @@
 #include "ProcessInfo.h"
 
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/DataCacheCore.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/AMLUtils.h"
 
+#include <libavutil/avutil.h>
+
 #include <memory>
 #include <mutex>
-
-#include <libavutil/avutil.h>
 
 CCriticalSection createSection;
 std::map<std::string, CreateProcessControl> CProcessInfo::m_processControls;
@@ -35,8 +35,8 @@ CProcessInfo* CProcessInfo::CreateInstance()
 {
   std::lock_guard lock(createSection);
 
-  CProcessInfo* ret = nullptr;
-  for (auto& info : m_processControls)
+  CProcessInfo *ret = nullptr;
+  for (auto &info : m_processControls)
   {
     ret = info.second();
     if (ret)
@@ -51,7 +51,7 @@ CProcessInfo::CProcessInfo()
       std::make_unique<CVideoSettingsLocked>(m_videoSettings, m_settingsSection);
 }
 
-void CProcessInfo::SetDataCache(CDataCacheCore* cache)
+void CProcessInfo::SetDataCache(CDataCacheCore *cache)
 {
   m_dataCache = cache;
 
@@ -97,7 +97,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   }
 }
 
-void CProcessInfo::SetVideoDecoderName(const std::string& name, bool isHw)
+void CProcessInfo::SetVideoDecoderName(const std::string &name, bool isHw)
 {
   std::lock_guard lock(m_videoCodecSection);
 
@@ -115,14 +115,13 @@ std::string CProcessInfo::GetVideoDecoderName()
   return m_videoDecoderName;
 }
 
-bool CProcessInfo::IsVideoHwDecoder() const
-{
+bool CProcessInfo::IsVideoHwDecoder() const {
   std::lock_guard lock(m_videoCodecSection);
 
   return m_videoIsHWDecoder;
 }
 
-void CProcessInfo::SetVideoDeintMethod(const std::string& method)
+void CProcessInfo::SetVideoDeintMethod(const std::string &method)
 {
   std::lock_guard lock(m_videoCodecSection);
 
@@ -139,7 +138,7 @@ std::string CProcessInfo::GetVideoDeintMethod()
   return m_videoDeintMethod;
 }
 
-void CProcessInfo::SetVideoPixelFormat(const std::string& pixFormat)
+void CProcessInfo::SetVideoPixelFormat(const std::string &pixFormat)
 {
   std::lock_guard lock(m_videoCodecSection);
 
@@ -156,7 +155,7 @@ std::string CProcessInfo::GetVideoPixelFormat()
   return m_videoPixelFormat;
 }
 
-void CProcessInfo::SetVideoStereoMode(const std::string& mode)
+void CProcessInfo::SetVideoStereoMode(const std::string &mode)
 {
   std::lock_guard lock(m_videoCodecSection);
 
@@ -184,8 +183,7 @@ void CProcessInfo::SetVideoDimensions(int width, int height)
     m_dataCache->SetVideoDimensions(m_videoWidth, m_videoHeight);
 }
 
-void CProcessInfo::GetVideoDimensions(int& width, int& height) const
-{
+void CProcessInfo::GetVideoDimensions(int &width, int &height) const {
   std::lock_guard lock(m_videoCodecSection);
 
   width = m_videoWidth;
@@ -202,8 +200,7 @@ void CProcessInfo::SetVideoFps(float fps)
     m_dataCache->SetVideoFps(m_videoFPS);
 }
 
-float CProcessInfo::GetVideoFps() const
-{
+float CProcessInfo::GetVideoFps() const {
   std::lock_guard lock(m_videoCodecSection);
 
   return m_videoFPS;
@@ -219,8 +216,7 @@ void CProcessInfo::SetVideoDAR(float dar)
     m_dataCache->SetVideoDAR(m_videoDAR);
 }
 
-float CProcessInfo::GetVideoDAR() const
-{
+float CProcessInfo::GetVideoDAR() const {
   std::lock_guard lock(m_videoCodecSection);
 
   return m_videoDAR;
@@ -236,8 +232,7 @@ void CProcessInfo::SetVideoInterlaced(bool interlaced)
     m_dataCache->SetVideoInterlaced(interlaced);
 }
 
-bool CProcessInfo::GetVideoInterlaced() const
-{
+bool CProcessInfo::GetVideoInterlaced() const {
   std::lock_guard lock(m_videoCodecSection);
 
   return m_videoIsInterlaced;
@@ -259,13 +254,13 @@ void CProcessInfo::SetSwDeinterlacingMethods()
   SetDeinterlacingMethodDefault(EINTERLACEMETHOD::VS_INTERLACEMETHOD_DEINTERLACE);
 }
 
-void CProcessInfo::UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD>& methods)
+void CProcessInfo::UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods)
 {
   std::lock_guard lock(m_videoCodecSection);
 
   m_deintMethods = methods;
 
-  for (auto& deint : m_renderInfo.m_deintMethods)
+  for (auto &deint : m_renderInfo.m_deintMethods)
   {
     if (!Supports(deint))
       m_deintMethods.push_back(deint);
@@ -316,7 +311,7 @@ std::vector<AVPixelFormat> CProcessInfo::GetPixFormats()
   return m_pixFormats;
 }
 
-void CProcessInfo::SetPixFormats(std::vector<AVPixelFormat>& formats)
+void CProcessInfo::SetPixFormats(std::vector<AVPixelFormat> &formats)
 {
   std::lock_guard lock(m_videoCodecSection);
 
@@ -332,8 +327,7 @@ void CProcessInfo::ResetAudioCodecInfo()
 
   m_audioDecoderName = "unknown";
   m_audioChannels = "unknown";
-  m_audioSampleRate = 0;
-  ;
+  m_audioSampleRate = 0;;
   m_audioBitsPerSample = 0;
 
   if (m_dataCache)
@@ -345,7 +339,7 @@ void CProcessInfo::ResetAudioCodecInfo()
   }
 }
 
-void CProcessInfo::SetAudioDecoderName(const std::string& name)
+void CProcessInfo::SetAudioDecoderName(const std::string &name)
 {
   std::lock_guard lock(m_audioCodecSection);
 
@@ -362,7 +356,7 @@ std::string CProcessInfo::GetAudioDecoderName()
   return m_audioDecoderName;
 }
 
-void CProcessInfo::SetAudioChannels(const std::string& channels)
+void CProcessInfo::SetAudioChannels(const std::string &channels)
 {
   std::lock_guard lock(m_audioCodecSection);
 
@@ -375,6 +369,16 @@ void CProcessInfo::SetAudioChannels(const std::string& channels)
 std::string CProcessInfo::GetAudioChannels()
 {
   std::lock_guard lock(m_audioCodecSection);
+
+  return m_audioChannels;
+}
+
+std::string CProcessInfo::GetAudioChannelsSink()
+{
+  std::lock_guard lock(m_audioCodecSection);
+
+  if (m_dataCache)
+    return m_dataCache->GetAudioChannelsSink();
 
   return m_audioChannels;
 }
@@ -435,13 +439,13 @@ bool CProcessInfo::IsRenderClockSync()
   return m_isClockSync;
 }
 
-void CProcessInfo::UpdateRenderInfo(CRenderInfo& info)
+void CProcessInfo::UpdateRenderInfo(CRenderInfo &info)
 {
   std::lock_guard lock(m_renderSection);
 
   m_renderInfo = info;
 
-  for (auto& deint : m_renderInfo.m_deintMethods)
+  for (auto &deint : m_renderInfo.m_deintMethods)
   {
     if (!Supports(deint))
       m_deintMethods.push_back(deint);
@@ -457,7 +461,7 @@ void CProcessInfo::UpdateRenderBuffers(int queued, int discard, int free)
   m_renderBufFree = free;
 }
 
-void CProcessInfo::GetRenderBuffers(int& queued, int& discard, int& free)
+void CProcessInfo::GetRenderBuffers(int &queued, int &discard, int &free)
 {
   std::lock_guard lock(m_renderSection);
 
@@ -601,11 +605,17 @@ float CProcessInfo::MaxTempoPlatform()
 bool CProcessInfo::IsTempoAllowed(float tempo)
 {
   if (tempo > MinTempoPlatform() &&
-      (tempo < MaxTempoPlatform() ||
-       tempo < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_maxTempo))
+      (tempo < MaxTempoPlatform() || tempo < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_maxTempo))
     return true;
 
   return false;
+}
+
+unsigned int CProcessInfo::GetMaxPassthroughOffSyncDuration() const
+{
+  return CServiceBroker::GetSettingsComponent()
+      ->GetAdvancedSettings()
+      ->m_maxPassthroughOffSyncDuration;
 }
 
 void CProcessInfo::SetGuiRender(bool gui)
@@ -617,7 +627,7 @@ void CProcessInfo::SetGuiRender(bool gui)
   if (change)
   {
     if (m_dataCache)
-      m_dataCache->SetGuiRender(gui);
+        m_dataCache->SetGuiRender(gui);
   }
 }
 
@@ -687,9 +697,9 @@ CVideoSettingsLocked& CProcessInfo::GetVideoSettingsLocked()
   return *m_videoSettingsLocked;
 }
 
-void CProcessInfo::SetVideoSettings(CVideoSettings& settings)
+void CProcessInfo::SetVideoSettings(CVideoSettings &settings)
 {
   std::lock_guard lock(m_settingsSection);
-
+  
   m_videoSettings = settings;
 }

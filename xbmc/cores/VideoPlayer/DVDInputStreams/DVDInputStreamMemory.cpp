@@ -8,8 +8,7 @@
 
 #include "DVDInputStreamMemory.h"
 
-CDVDInputStreamMemory::CDVDInputStreamMemory(CFileItem& fileitem)
-  : CDVDInputStream(DVDSTREAM_TYPE_MEMORY, fileitem)
+CDVDInputStreamMemory::CDVDInputStreamMemory(CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_MEMORY, fileitem)
 {
   m_pData = nullptr;
   m_iDataSize = 0;
@@ -23,7 +22,7 @@ CDVDInputStreamMemory::~CDVDInputStreamMemory()
 
 bool CDVDInputStreamMemory::IsEOF()
 {
-  if (m_iDataPos >= m_iDataSize)
+  if(m_iDataPos >= m_iDataSize)
     return true;
 
   return false;
@@ -40,8 +39,7 @@ bool CDVDInputStreamMemory::Open()
 // close file and reset everything
 void CDVDInputStreamMemory::Close()
 {
-  if (m_pData)
-    delete[] m_pData;
+  if (m_pData) delete[] m_pData;
   m_pData = nullptr;
   m_iDataSize = 0;
   m_iDataPos = 0;
@@ -53,8 +51,7 @@ int CDVDInputStreamMemory::Read(uint8_t* buf, int buf_size)
 {
   int iBytesToCopy = buf_size;
   int iBytesLeft = m_iDataSize - m_iDataPos;
-  if (iBytesToCopy > iBytesLeft)
-    iBytesToCopy = iBytesLeft;
+  if (iBytesToCopy > iBytesLeft) iBytesToCopy = iBytesLeft;
 
   if (iBytesToCopy > 0)
   {
@@ -71,10 +68,8 @@ int64_t CDVDInputStreamMemory::Seek(int64_t offset, int whence)
   {
     case SEEK_CUR:
     {
-      if ((m_iDataPos + offset) > m_iDataSize)
-        return -1;
-      else
-        m_iDataPos += (int)offset;
+      if ((m_iDataPos + offset) > m_iDataSize) return -1;
+      else m_iDataPos += (int)offset;
       break;
     }
     case SEEK_END:
@@ -84,10 +79,8 @@ int64_t CDVDInputStreamMemory::Seek(int64_t offset, int whence)
     }
     case SEEK_SET:
     {
-      if (offset > m_iDataSize || offset < 0)
-        return -1;
-      else
-        m_iDataPos = (int)offset;
+      if (offset > m_iDataSize || offset < 0) return -1;
+      else m_iDataPos = (int)offset;
       break;
     }
     default:
@@ -100,3 +93,4 @@ int64_t CDVDInputStreamMemory::GetLength()
 {
   return m_iDataSize;
 }
+

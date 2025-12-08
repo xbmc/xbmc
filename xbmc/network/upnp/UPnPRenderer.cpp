@@ -480,7 +480,7 @@ NPT_Result CUPnPRenderer::OnNext(PLT_ActionReference& action)
   {
     CServiceBroker::GetAppMessenger()->SendMsg(
         TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-        new CAction(ACTION_NEXT_PICTURE));
+        static_cast<void*>(new CAction(ACTION_NEXT_PICTURE)));
   }
   else
   {
@@ -498,7 +498,7 @@ NPT_Result CUPnPRenderer::OnPause(PLT_ActionReference& action)
   {
     CServiceBroker::GetAppMessenger()->SendMsg(
         TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-        new CAction(ACTION_NEXT_PICTURE));
+        static_cast<void*>(new CAction(ACTION_NEXT_PICTURE)));
   }
   else
   {
@@ -545,7 +545,7 @@ NPT_Result CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
   {
     CServiceBroker::GetAppMessenger()->SendMsg(
         TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-        new CAction(ACTION_PREV_PICTURE));
+        static_cast<void*>(new CAction(ACTION_PREV_PICTURE)));
   }
   else
   {
@@ -563,7 +563,7 @@ NPT_Result CUPnPRenderer::OnStop(PLT_ActionReference& action)
   {
     CServiceBroker::GetAppMessenger()->SendMsg(
         TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-        new CAction(ACTION_NEXT_PICTURE));
+        static_cast<void*>(new CAction(ACTION_NEXT_PICTURE)));
   }
   else
   {
@@ -634,7 +634,7 @@ NPT_Result CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
     auto playlist = new CFileItemList();
     playlist->AddFront(item, 0);
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_ADD, playlistId, -1,
-                                               playlist);
+                                               static_cast<void*>(playlist));
 
     service->SetStateVariable("NextAVTransportURI", uri);
     service->SetStateVariable("NextAVTransportURIMetaData", meta);
@@ -684,7 +684,7 @@ NPT_Result CUPnPRenderer::PlayMedia(const NPT_String& uri,
     item->SetProperty("no-ext-subs-scan", true);
     auto l = new CFileItemList; //don't delete,
     l->Add(std::make_shared<CFileItem>(*item));
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, l);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
   }
 
   // just return success because the play actions are asynchronous

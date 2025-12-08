@@ -13,8 +13,6 @@
 #include "cores/AudioEngine/AEResampleFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
-#include "utils/log.h"
-
 #include <memory>
 
 using namespace ActiveAE;
@@ -170,10 +168,6 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
 void CActiveAEBufferPoolResample::ChangeResampler()
 {
   m_resampler = CAEResampleFactory::Create();
-
-  logM(LOGINFO, "CActiveAEBufferPoolResample", "Channel mix - src:[{}] dst:[{}]",
-    CAEUtil::GetAVChannelLayoutString(m_inputFormat.m_channelLayout),
-    CAEUtil::GetAVChannelLayoutString(m_format.m_channelLayout));
 
   SampleConfig dstConfig, srcConfig;
   dstConfig.channel_layout = CAEUtil::GetAVChannelLayout(m_format.m_channelLayout);

@@ -24,7 +24,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_PYTHON_DIALOG, HACK_CUSTOM_ACTION_OPENING,
-                                                 0, w->window->get());
+                                                 0, static_cast<void*>(w->window->get()));
     }
 
     void WindowDialogMixin::close()
@@ -34,7 +34,7 @@ namespace XBMCAddon
       w->PulseActionEvent();
 
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_PYTHON_DIALOG, HACK_CUSTOM_ACTION_CLOSING,
-                                                 0, w->window->get());
+                                                 0, static_cast<void*>(w->window->get()));
 
       w->iOldWindowId = 0;
     }

@@ -214,8 +214,8 @@ const std::optional<MasteringDisplayColourVolume> CHevcSei::ExtractMasteringDisp
       uint32_t minLuminanceRaw = br.ReadBits(32);
 
       // Convert to nits (cd/m²) for max only.
-      metadata.maxLuminance = maxLuminanceRaw / 10000.0f;
-      metadata.minLuminance = minLuminanceRaw;
+      metadata.maxLuminance = static_cast<uint32_t>(maxLuminanceRaw) / 10000.0f;
+      metadata.minLuminance = static_cast<uint32_t>(minLuminanceRaw);
       
       return metadata;
     }

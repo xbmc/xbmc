@@ -70,7 +70,7 @@ bool CGUIFontTTFGLES::FirstBegin()
   if (m_textureStatus == TEXTURE_VOID)
   {
     // Have OpenGL generate a texture object handle for us
-    glGenTextures(1, &m_nTexture);
+    glGenTextures(1, static_cast<GLuint*>(&m_nTexture));
 
     // Bind the texture object
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
@@ -269,7 +269,7 @@ void CGUIFontTTFGLES::DestroyVertexBuffer(CVertexBuffer& buffer) const
   if (buffer.bufferHandle != 0)
   {
     // Release the buffer name for reuse
-    glDeleteBuffers(1, &buffer.bufferHandle);
+    glDeleteBuffers(1, static_cast<GLuint*>(&buffer.bufferHandle));
     buffer.bufferHandle = 0;
   }
 }

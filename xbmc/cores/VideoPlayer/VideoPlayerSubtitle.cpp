@@ -19,9 +19,8 @@
 
 #include <mutex>
 
-CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer,
-                                           CProcessInfo& processInfo)
-  : IDVDStreamPlayer(processInfo)
+CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo &processInfo)
+: IDVDStreamPlayer(processInfo)
 {
   m_pOverlayContainer = pOverlayContainer;
   m_lastPts = DVD_NOPTS_VALUE;
@@ -31,6 +30,7 @@ CVideoPlayerSubtitle::~CVideoPlayerSubtitle()
 {
   CloseStream(true);
 }
+
 
 void CVideoPlayerSubtitle::Flush()
 {
@@ -70,8 +70,9 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
         m_pOverlayContainer->ProcessAndAddOverlayIfValid(pSPUInfo);
       }
     }
+
   }
-  else if (pMsg->IsType(CDVDMsg::SUBTITLE_CLUTCHANGE))
+  else if( pMsg->IsType(CDVDMsg::SUBTITLE_CLUTCHANGE) )
   {
     auto pData = std::static_pointer_cast<CDVDMsgSubtitleClutChange>(pMsg);
     for (int i = 0; i < 16; i++)
@@ -93,7 +94,8 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
     }
     m_dvdspus.m_bHasClut = true;
   }
-  else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH) || pMsg->IsType(CDVDMsg::GENERAL_RESET))
+  else if( pMsg->IsType(CDVDMsg::GENERAL_FLUSH)
+        || pMsg->IsType(CDVDMsg::GENERAL_RESET) )
   {
     m_dvdspus.Reset();
     if (m_pSubtitleFileParser)
@@ -111,7 +113,7 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
   }
 }
 
-bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo& hints, std::string& filename)
+bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filename)
 {
   std::lock_guard lock(m_section);
 
@@ -119,7 +121,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo& hints, std::string& filena
   m_streaminfo = hints;
 
   // okey check if this is a filesubtitle
-  if (filename.size() && filename != "dvd")
+  if(filename.size() && filename != "dvd" )
   {
     m_pSubtitleFileParser.reset(CDVDFactorySubtitle::CreateParser(filename));
     if (!m_pSubtitleFileParser)
@@ -142,7 +144,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo& hints, std::string& filena
   }
 
   // dvd's use special subtitle decoder
-  if (hints.codec == AV_CODEC_ID_DVD_SUBTITLE && filename == "dvd")
+  if(hints.codec == AV_CODEC_ID_DVD_SUBTITLE && filename == "dvd")
     return true;
 
   m_pOverlayCodec = CDVDFactoryCodec::CreateOverlayCodec(hints);
@@ -175,7 +177,7 @@ void CVideoPlayerSubtitle::Process(double pts, double offset)
 
   if (m_pSubtitleFileParser)
   {
-    if (pts == DVD_NOPTS_VALUE)
+    if(pts == DVD_NOPTS_VALUE)
       return;
 
     if (pts + DVD_SEC_TO_TIME(1) < m_lastPts)
@@ -184,15 +186,15 @@ void CVideoPlayerSubtitle::Process(double pts, double offset)
       m_pSubtitleFileParser->Reset();
     }
 
-    if (m_pOverlayContainer->GetSize() >= 5)
+    if(m_pOverlayContainer->GetSize() >= 5)
       return;
 
     std::shared_ptr<CDVDOverlay> pOverlay = m_pSubtitleFileParser->Parse(pts);
     // add all overlays which fit the pts
-    while (pOverlay)
+    while(pOverlay)
     {
       pOverlay->iPTSStartTime -= offset;
-      if (pOverlay->iPTSStopTime != 0.0)
+      if(pOverlay->iPTSStopTime != 0.0)
         pOverlay->iPTSStopTime -= offset;
 
       m_pOverlayContainer->ProcessAndAddOverlayIfValid(pOverlay);
@@ -208,3 +210,4 @@ bool CVideoPlayerSubtitle::AcceptsData() const
   // FIXME : This may still be causing problems + magic number :(
   return m_pOverlayContainer->GetSize() < 5;
 }
+

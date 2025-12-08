@@ -495,7 +495,7 @@ bool CGUIControlSpinExSetting::OnClick()
       auto pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       const auto& controlFormat = m_pSetting->GetControl()->GetFormat();
       if (controlFormat == "number")
-        SetValid(pSettingNumber->SetValue(m_pSpin->GetFloatValue()));
+        SetValid(pSettingNumber->SetValue(static_cast<double>(m_pSpin->GetFloatValue())));
       else
         SetValid(pSettingNumber->SetValue(pSettingNumber->GetMinimum() +
                                           pSettingNumber->GetStep() * m_pSpin->GetValue()));
@@ -1243,7 +1243,7 @@ void CGUIControlButtonSetting::OnSliderChange(void* data, CGUISliderControl* sli
     {
       std::shared_ptr<CSettingNumber> settingNumber =
           std::static_pointer_cast<CSettingNumber>(m_pSetting);
-      if (settingNumber->SetValue(slider->GetFloatValue()))
+      if (settingNumber->SetValue(static_cast<double>(slider->GetFloatValue())))
         strText = CGUIControlSliderSetting::GetText(
             m_pSetting, settingNumber->GetValue(), settingNumber->GetMinimum(),
             settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
@@ -1416,7 +1416,7 @@ bool CGUIControlSliderSetting::OnClick()
 
     case SettingType::Number:
       SetValid(std::static_pointer_cast<CSettingNumber>(m_pSetting)
-                   ->SetValue(m_pSlider->GetFloatValue()));
+                   ->SetValue(static_cast<double>(m_pSlider->GetFloatValue())));
       break;
 
     default:
@@ -1671,8 +1671,8 @@ void CGUIControlRangeSetting::Update(bool fromControl, bool updateDisplayOnly)
 
       if (controlFormat == "date" || controlFormat == "time")
       {
-        CDateTime dateLower(valueLower);
-        CDateTime dateUpper(valueUpper);
+        CDateTime dateLower((time_t)valueLower);
+        CDateTime dateUpper((time_t)valueUpper);
 
         if (controlFormat == "date")
         {

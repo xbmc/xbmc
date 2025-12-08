@@ -19,18 +19,18 @@
 */
 
 #include "DemuxStreamSSIF.h"
-
-#include "DVDDemuxUtils.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "DVDDemuxUtils.h"
 #include "utils/log.h"
 
 //#define DEBUG_VERBOSE
 #define MVC_QUEUE_SIZE 100
 
-DemuxPacket* CDemuxStreamSSIF::AddPacket(DemuxPacket*& srcPkt)
+DemuxPacket* CDemuxStreamSSIF::AddPacket(DemuxPacket* &srcPkt)
 {
-  if (srcPkt->iStreamId != m_h264StreamId && srcPkt->iStreamId != m_mvcStreamId)
+  if (srcPkt->iStreamId != m_h264StreamId &&
+      srcPkt->iStreamId != m_mvcStreamId)
     return srcPkt;
 
   if (srcPkt->iStreamId == m_h264StreamId)
@@ -38,8 +38,7 @@ DemuxPacket* CDemuxStreamSSIF::AddPacket(DemuxPacket*& srcPkt)
     if (m_bluRay && !m_bluRay->HasExtention())
       return srcPkt;
 #if defined(DEBUG_VERBOSE)
-    CLog::Log(LOGDEBUG, ">>> MVC add h264 packet: pts: {:.3f} dts: {:.3f}", srcPkt->pts * 1e-6,
-              srcPkt->dts * 1e-6);
+    CLog::Log(LOGDEBUG, ">>> MVC add h264 packet: pts: {:.3f} dts: {:.3f}", srcPkt->pts*1e-6, srcPkt->dts*1e-6);
 #endif
     m_H264queue.push(srcPkt);
   }
@@ -65,7 +64,7 @@ void CDemuxStreamSSIF::Flush()
   }
 }
 
-DemuxPacket* CDemuxStreamSSIF::MergePacket(DemuxPacket*& srcPkt, DemuxPacket*& appendPkt)
+DemuxPacket* CDemuxStreamSSIF::MergePacket(DemuxPacket* &srcPkt, DemuxPacket* &appendPkt)
 {
   DemuxPacket* newpkt = nullptr;
   newpkt = CDVDDemuxUtils::AllocateDemuxPacket(srcPkt->iSize + appendPkt->iSize);
@@ -113,10 +112,7 @@ DemuxPacket* CDemuxStreamSSIF::GetMVCPacket()
         if (ts == DVD_NOPTS_VALUE)
         {
 #if defined(DEBUG_VERBOSE)
-          CLog::Log(LOGDEBUG,
-                    ">>> MVC merge h264 fragment: {:6}+{:6}, pts({:.3f}/{:.3f}) dts({:.3f}/{:.3f})",
-                    h264pkt->iSize, pkt->iSize, h264pkt->pts * 1e-6, pkt->pts * 1e-6,
-                    h264pkt->dts * 1e-6, pkt->dts * 1e-6);
+          CLog::Log(LOGDEBUG, ">>> MVC merge h264 fragment: {:6}+{:6}, pts({:.3f}/{:.3f}) dts({:.3f}/{:.3f})", h264pkt->iSize, pkt->iSize, h264pkt->pts*1e-6, pkt->pts*1e-6, h264pkt->dts*1e-6, pkt->dts*1e-6);
 #endif
           h264pkt = MergePacket(h264pkt, pkt);
           m_H264queue.pop();
@@ -131,10 +127,7 @@ DemuxPacket* CDemuxStreamSSIF::GetMVCPacket()
         if (ts == DVD_NOPTS_VALUE)
         {
 #if defined(DEBUG_VERBOSE)
-          CLog::Log(LOGDEBUG,
-                    ">>> MVC merge mvc fragment: {:6}+{:6}, pts({:.3f}/{:.3f}) dts({:.3f}/{:.3f})",
-                    mvcpkt->iSize, pkt->iSize, mvcpkt->pts * 1e-6, pkt->pts * 1e-6,
-                    mvcpkt->dts * 1e-6, pkt->dts * 1e-6);
+          CLog::Log(LOGDEBUG, ">>> MVC merge mvc fragment: {:6}+{:6}, pts({:.3f}/{:.3f}) dts({:.3f}/{:.3f})", mvcpkt->iSize, pkt->iSize, mvcpkt->pts*1e-6, pkt->pts*1e-6, mvcpkt->dts*1e-6, pkt->dts*1e-6);
 #endif
           mvcpkt = MergePacket(mvcpkt, pkt);
           m_MVCqueue.pop();
@@ -144,17 +137,14 @@ DemuxPacket* CDemuxStreamSSIF::GetMVCPacket()
       }
 
 #if defined(DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, ">>> MVC merge packet: {:6}+{:6}, pts({:.3f}/{:.3f}) dts({:.3f}/{:.3f})",
-                h264pkt->iSize, mvcpkt->iSize, h264pkt->pts * 1e-6, mvcpkt->pts * 1e-6,
-                h264pkt->dts * 1e-6, mvcpkt->dts * 1e-6);
+      CLog::Log(LOGDEBUG, ">>> MVC merge packet: {:6}+{:6}, pts({:.3f}/{:.3f}) dts({:.3f}/{:.3f})", h264pkt->iSize, mvcpkt->iSize, h264pkt->pts*1e-6, mvcpkt->pts*1e-6, h264pkt->dts*1e-6, mvcpkt->dts*1e-6);
 #endif
       return MergePacket(h264pkt, mvcpkt);
     }
     else if (tsH264 > tsMVC)
     {
 #if defined(DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, ">>> MVC discard  mvc: {:6}, pts({:.3f}) dts({:.3f})", mvcpkt->iSize,
-                mvcpkt->pts * 1e-6, mvcpkt->dts * 1e-6);
+      CLog::Log(LOGDEBUG, ">>> MVC discard  mvc: {:6}, pts({:.3f}) dts({:.3f})", mvcpkt->iSize, mvcpkt->pts*1e-6, mvcpkt->dts*1e-6);
 #endif
       CDVDDemuxUtils::FreeDemuxPacket(mvcpkt);
       m_MVCqueue.pop();
@@ -162,8 +152,7 @@ DemuxPacket* CDemuxStreamSSIF::GetMVCPacket()
     else
     {
 #if defined(DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, ">>> MVC discard h264: {:6}, pts({:.3f}) dts({:.3f})", h264pkt->iSize,
-                h264pkt->pts * 1e-6, h264pkt->dts * 1e-6);
+      CLog::Log(LOGDEBUG, ">>> MVC discard h264: {:6}, pts({:.3f}) dts({:.3f})", h264pkt->iSize, h264pkt->pts*1e-6, h264pkt->dts*1e-6);
 #endif
       CDVDDemuxUtils::FreeDemuxPacket(h264pkt);
       m_H264queue.pop();
@@ -176,11 +165,10 @@ DemuxPacket* CDemuxStreamSSIF::GetMVCPacket()
   return CDVDDemuxUtils::AllocateDemuxPacket(0);
 }
 
-void CDemuxStreamSSIF::AddMVCExtPacket(DemuxPacket*& mvcExtPkt)
+void CDemuxStreamSSIF::AddMVCExtPacket(DemuxPacket* &mvcExtPkt)
 {
 #if defined(DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, ">>> MVC add mvc  packet: pts: {:.3f} dts: {:.3f}", mvcExtPkt->pts * 1e-6,
-            mvcExtPkt->dts * 1e-6);
+    CLog::Log(LOGDEBUG, ">>> MVC add mvc  packet: pts: {:.3f} dts: {:.3f}", mvcExtPkt->pts*1e-6, mvcExtPkt->dts*1e-6);
 #endif
   m_MVCqueue.push(mvcExtPkt);
 }
@@ -201,8 +189,7 @@ bool CDemuxStreamSSIF::FillMVCQueue(double dtsBase)
     else if (mvc->dts < dtsBase)
     {
 #if defined(DEBUG_VERBOSE)
-      CLog::Log(LOGDEBUG, ">>> MVC drop mvc: {:6}, pts({:.3f}) dts({:.3f})", mvc->iSize,
-                mvc->pts * 1e-6, mvc->dts * 1e-6);
+      CLog::Log(LOGDEBUG, ">>> MVC drop mvc: {:6}, pts({:.3f}) dts({:.3f})", mvc->iSize, mvc->pts*1e-6, mvc->dts*1e-6);
 #endif
       CDVDDemuxUtils::FreeDemuxPacket(mvc);
       continue;

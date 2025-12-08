@@ -38,14 +38,15 @@ struct render_details
   template<class T>
   constexpr static render_details get(RenderMethod method, const std::string& name)
   {
-    return {method, name, T::Create, T::GetWeight};
+    return { method, name, T::Create, T::GetWeight };
   }
 };
 
-static std::vector<render_details> RenderMethodDetails = {
-    render_details::get<CRendererSoftware>(RENDER_SW, "Software"),
-    render_details::get<CRendererShaders>(RENDER_PS, "Pixel Shaders"),
-    render_details::get<CRendererDXVA>(RENDER_DXVA, "DXVA"),
+static std::vector<render_details> RenderMethodDetails =
+{
+  render_details::get<CRendererSoftware>(RENDER_SW, "Software"),
+  render_details::get<CRendererShaders>(RENDER_PS, "Pixel Shaders"),
+  render_details::get<CRendererDXVA>(RENDER_DXVA, "DXVA"),
 };
 
 CBaseRenderer* CWinRenderer::Create(CVideoBuffer*)
@@ -72,8 +73,7 @@ CWinRenderer::~CWinRenderer()
 
 CRendererBase* CWinRenderer::SelectRenderer(const VideoPicture& picture)
 {
-  int iRequestedMethod = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-      CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+  int iRequestedMethod = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
   CLog::LogF(LOGDEBUG, "requested render method: {}", iRequestedMethod);
 
   std::map<RenderMethod, int> weights;
@@ -83,47 +83,47 @@ CRendererBase* CWinRenderer::SelectRenderer(const VideoPicture& picture)
   RenderMethod method;
   switch (iRequestedMethod)
   {
-    case RENDER_METHOD_SOFTWARE:
-      if (weights[RENDER_SW])
-      {
-        method = RENDER_SW;
-        break;
-      }
-      // fallback to PS
-    case RENDER_METHOD_D3D_PS:
-      if (weights[RENDER_PS])
-      {
-        method = RENDER_PS;
-        break;
-      }
-      //fallback to DXVA
-    case RENDER_METHOD_DXVA:
-      if (weights[RENDER_DXVA])
-      {
-        method = RENDER_DXVA;
-        break;
-      }
-      // fallback to AUTO
-    case RENDER_METHOD_AUTO:
-    default:
+  case RENDER_METHOD_SOFTWARE:
+    if (weights[RENDER_SW])
     {
-      const auto it = std::max_element(weights.begin(), weights.end(),
-                                       [](auto& w1, auto& w2) { return w1.second < w2.second; });
-
-      if (it != weights.end())
-      {
-        method = it->first;
-        break;
-      }
-
-      // there is no elements in weights, so no renderer which supports incoming video buffer
-      CLog::LogF(LOGERROR, "unable to select render method for video buffer");
-      return nullptr;
+      method = RENDER_SW;
+      break;
     }
+    // fallback to PS
+  case RENDER_METHOD_D3D_PS:
+    if (weights[RENDER_PS])
+    {
+      method = RENDER_PS;
+      break;
+    }
+    //fallback to DXVA
+  case RENDER_METHOD_DXVA:
+    if (weights[RENDER_DXVA])
+    {
+      method = RENDER_DXVA;
+      break;
+    }
+    // fallback to AUTO
+  case RENDER_METHOD_AUTO:
+  default:
+  {
+    const auto it = std::max_element(weights.begin(), weights.end(),
+      [](auto& w1, auto& w2) { return w1.second < w2.second; });
+
+    if (it != weights.end())
+    {
+      method = it->first;
+      break;
+    }
+
+    // there is no elements in weights, so no renderer which supports incoming video buffer
+    CLog::LogF(LOGERROR, "unable to select render method for video buffer");
+    return nullptr;
+  }
   }
 
   const auto it = std::find_if(RenderMethodDetails.begin(), RenderMethodDetails.end(),
-                               [method](render_details& d) { return d.method == method; });
+    [method](render_details& d) { return d.method == method; });
 
   if (it != RenderMethodDetails.end())
   {
@@ -138,34 +138,34 @@ CRendererBase* CWinRenderer::SelectRenderer(const VideoPicture& picture)
 CRect CWinRenderer::GetScreenRect() const
 {
   CRect screenRect(0.f, 0.f,
-                   static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()),
-                   static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()));
+    static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()),
+    static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()));
 
   switch (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode())
   {
-    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
-      screenRect.y2 *= 2;
-      break;
-    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
-      screenRect.x2 *= 2;
-      break;
-    default:
-      break;
+  case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+    screenRect.y2 *= 2;
+    break;
+  case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+    screenRect.x2 *= 2;
+    break;
+  default:
+    break;
   }
 
   return screenRect;
 }
 
-bool CWinRenderer::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
+bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
 {
-  m_sourceWidth = picture.iWidth;
-  m_sourceHeight = picture.iHeight;
+  m_sourceWidth       = picture.iWidth;
+  m_sourceHeight      = picture.iHeight;
   m_renderOrientation = orientation;
   m_fps = fps;
-  m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
-             GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
-             GetFlagsColorPrimaries(picture.color_primaries) |
-             GetFlagsStereoMode(picture.stereoMode);
+  m_iFlags = GetFlagsChromaPosition(picture.chroma_position)
+           | GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight)
+           | GetFlagsColorPrimaries(picture.color_primaries)
+           | GetFlagsStereoMode(picture.stereoMode);
   m_format = picture.videoBuffer->GetFormat();
 
   // calculate the input frame aspect ratio
@@ -189,7 +189,7 @@ int CWinRenderer::NextBuffer() const
   return m_renderer->NextBuffer();
 }
 
-void CWinRenderer::AddVideoPicture(const VideoPicture& picture, int index)
+void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index)
 {
   m_renderer->AddVideoPicture(picture, index);
 }
@@ -203,15 +203,13 @@ void CWinRenderer::Update()
   m_renderer->ManageTextures();
 }
 
-void CWinRenderer::RenderUpdate(
-    int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
+void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   if (!m_bConfigured)
     return;
 
   if (clear)
-    CServiceBroker::GetWinSystem()->GetGfxContext().Clear(
-        DX::Windowing()->UseLimitedColor() ? 0x101010 : 0);
+    CServiceBroker::GetWinSystem()->GetGfxContext().Clear(DX::Windowing()->UseLimitedColor() ? 0x101010 : 0);
   DX::Windowing()->SetAlphaBlendEnable(alpha < 255);
 
   ManageRenderArea();
@@ -228,8 +226,7 @@ bool CWinRenderer::RenderCapture(int index, CRenderCapture* capture)
   capture->BeginRender();
   if (capture->GetState() != CAPTURESTATE_FAILED)
   {
-    const CRect destRect(0, 0, static_cast<float>(capture->GetWidth()),
-                         static_cast<float>(capture->GetHeight()));
+    const CRect destRect(0, 0, static_cast<float>(capture->GetWidth()), static_cast<float>(capture->GetHeight()));
 
     auto cap = static_cast<CRenderCaptureDX*>(capture);
 

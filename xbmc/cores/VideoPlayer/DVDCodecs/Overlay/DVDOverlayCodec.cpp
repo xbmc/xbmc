@@ -10,6 +10,7 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 
+
 void CDVDOverlayCodec::GetAbsoluteTimes(double& starttime, double& stoptime, DemuxPacket* pkt)
 {
   if (!pkt)

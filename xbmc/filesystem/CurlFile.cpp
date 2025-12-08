@@ -376,7 +376,7 @@ long CCurlFile::CReadState::Connect(unsigned int size)
   {
     if (length < 0)
       length = 0.0;
-    m_fileSize = m_filePos + length;
+    m_fileSize = m_filePos + (int64_t)length;
   }
 
   long response;
@@ -1606,7 +1606,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   if (buffer)
   {
     *buffer = {};
-    buffer->st_size = length;
+    buffer->st_size = static_cast<int64_t>(length);
 
     // Note: CURLINFO_CONTENT_TYPE returns the last received content-type response header value.
     // In case there is authentication required there might be multiple requests involved and if

@@ -55,14 +55,14 @@ struct BezierCurve {
 
 struct Luminance {
   uint32_t maxscl[3];
-  uint32_t average_maxrgb;
-  uint16_t num_distribution_maxrgb_percentiles;
+	uint32_t average_maxrgb;
+	uint16_t num_distribution_maxrgb_percentiles;
   std::vector<DistributionMaxRgb> distribution_maxrgb;
-  uint16_t fraction_bright_pixels;
+	uint16_t fraction_bright_pixels;
 };
 
 struct Hdr10PlusMetadata {
-
+  
   uint8_t itu_t_t35_country_code;
   uint16_t itu_t_t35_terminal_provider_code;
   uint16_t itu_t_t35_terminal_provider_oriented_code;

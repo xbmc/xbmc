@@ -189,7 +189,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
       if (i < m_exifInfo.DateTimeOffsets.size())
         ar << m_exifInfo.DateTimeOffsets[i];
       else
-        ar << 0;
+        ar << static_cast<int>(0);
     }
     ar << m_exifInfo.DigitalZoomRatio;
     ar << m_exifInfo.Distance;
@@ -339,7 +339,7 @@ void CPictureInfoTag::Serialize(CVariant& value) const
     if (i < m_exifInfo.DateTimeOffsets.size())
       value["datetimeoffsets"][static_cast<int>(i)] = m_exifInfo.DateTimeOffsets[i];
     else
-      value["datetimeoffsets"][static_cast<int>(i)] = 0;
+      value["datetimeoffsets"][static_cast<int>(i)] = static_cast<int>(0);
   }
   value["digitalzoomratio"] = m_exifInfo.DigitalZoomRatio;
   value["distance"] = m_exifInfo.Distance;

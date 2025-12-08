@@ -33,14 +33,15 @@ std::string MasteringDisplayColourVolumeText(const MasteringDisplayColourVolume&
     size_t R = 4;
     size_t G = 4;
     size_t B = 4;
+    size_t W = 3;
 
     for (size_t c = 0; c < 3; c++)
     {
-      if ((mdcv.displayPrimaries[c].x < 17500) && (mdcv.displayPrimaries[c].y < 17500)) B = c;    // x and y small then blue
-      else if ((mdcv.displayPrimaries[c].y - mdcv.displayPrimaries[c].x) >= 0) G = c;             // y > x then green
+      if ((mdcv.displayPrimaries[c].x < 17500) && (mdcv.displayPrimaries[c].y < 17500)) B = c;    // x and y small then blue   
+      else if ((mdcv.displayPrimaries[c].y - mdcv.displayPrimaries[c].x) >= 0) G = c;             // y > x then green       
       else R = c;
     }
-
+  
     // Order not automaticly detected, then assume GBR order
     if ((R | B | G) >= 4)
     {
@@ -65,11 +66,11 @@ std::string MasteringDisplayColourVolumeText(const MasteringDisplayColourVolume&
         // +/- 0.00005 (4 digits after comma)
         if ((mdcv.whitePoint.x < knownColourVolumes[i].values[6] - 2) || (mdcv.whitePoint.x >= knownColourVolumes[i].values[6] + 3)) code = 0;
         if ((mdcv.whitePoint.y < knownColourVolumes[i].values[7] - 2) || (mdcv.whitePoint.y >= knownColourVolumes[i].values[7] + 3)) code = 0;
-
+        
         // if a well known colour primarites return a name
-        if (code) return CodeToColourPrimaries(code);
+        if (code) return CodeToColourPrimaries(code);        
     }
-
+    
     // Not well known - create a string from values
     return   "R:" + std::to_string(mdcv.displayPrimaries[R].x) + "," + std::to_string(mdcv.displayPrimaries[R].y) + " " +
              "G:" + std::to_string(mdcv.displayPrimaries[G].x) + "," + std::to_string(mdcv.displayPrimaries[G].y) + " " +

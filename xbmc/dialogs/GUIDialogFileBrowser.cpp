@@ -460,7 +460,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
 
   // if we haven't found the selected item, select the first item
   if (!bSelectedFound)
-    m_viewControl.SetSelectedItem(static_cast<int>(0));
+    m_viewControl.SetSelectedItem(0);
 
   m_history.AddPath(m_Directory->GetPath());
 

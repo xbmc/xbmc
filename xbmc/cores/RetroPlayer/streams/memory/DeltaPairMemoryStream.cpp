@@ -52,7 +52,7 @@ void CDeltaPairMemoryStream::SubmitFrameInternal()
 
 uint64_t CDeltaPairMemoryStream::PastFramesAvailable() const
 {
-  return m_rewindBuffer.size();
+  return static_cast<uint64_t>(m_rewindBuffer.size());
 }
 
 uint64_t CDeltaPairMemoryStream::RewindFrames(uint64_t frameCount)

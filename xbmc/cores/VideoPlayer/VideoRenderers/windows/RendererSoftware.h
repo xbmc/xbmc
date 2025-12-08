@@ -10,8 +10,7 @@
 #include "RendererBase.h"
 
 #include <map>
-extern "C"
-{
+extern "C" {
 #include <libavutil/pixfmt.h>
 #include <libswscale/swscale.h>
 }
@@ -19,7 +18,6 @@ extern "C"
 class CRendererSoftware : public CRendererBase
 {
   class CRenderBufferImpl;
-
 public:
   ~CRendererSoftware();
 
@@ -32,14 +30,8 @@ public:
 protected:
   explicit CRendererSoftware(CVideoSettings& videoSettings);
   CRenderBuffer* CreateBuffer() override;
-  void RenderImpl(CD3DTexture& target,
-                  CRect& sourceRect,
-                  CPoint (&destPoints)[4],
-                  uint32_t flags) override;
-  void FinalOutput(CD3DTexture& source,
-                   CD3DTexture& target,
-                   const CRect& src,
-                   const CPoint (&destPoints)[4]) override;
+  void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
+  void FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& src, const CPoint(&destPoints)[4]) override;
 
 private:
   SwsContext* m_sw_scale_ctx = nullptr;
@@ -54,7 +46,7 @@ public:
   ~CRenderBufferImpl();
 
   void AppendPicture(const VideoPicture& picture) override;
-  bool GetDataPlanes(uint8_t* (&planes)[3], int (&strides)[3]) override;
+  bool GetDataPlanes(uint8_t*(&planes)[3], int(&strides)[3]) override;
 
   void ReleasePicture() override;
   bool UploadBuffer() override;

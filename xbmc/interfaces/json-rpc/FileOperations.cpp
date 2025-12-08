@@ -40,7 +40,7 @@ JSONRPC_STATUS CFileOperations::GetRootDirectory(const std::string &method, ITra
   if (sources)
   {
     CFileItemList items;
-    for (unsigned int i = 0; i < sources->size(); i++)
+    for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
     {
       // Do not show sources which are locked
       if (sources->at(i).m_iHasLock == LOCK_STATE_LOCKED)

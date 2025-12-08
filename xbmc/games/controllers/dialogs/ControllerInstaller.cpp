@@ -105,7 +105,7 @@ void CControllerInstaller::Process()
 
     // Set dialog percentage
     const unsigned int percentage =
-        100 * (installedCount + 1) / installableAddons.size();
+        100 * (installedCount + 1) / static_cast<unsigned int>(installableAddons.size());
     pProgressDialog->SetPercentage(percentage);
 
     if (!ADDON::CAddonInstaller::GetInstance().InstallOrUpdate(

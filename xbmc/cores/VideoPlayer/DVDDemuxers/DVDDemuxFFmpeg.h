@@ -12,13 +12,11 @@
 #include "DemuxStreamSSIF.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
-
 #include <map>
 #include <memory>
 #include <vector>
 
-extern "C"
-{
+extern "C" {
 #include <libavformat/avformat.h>
 }
 
@@ -39,7 +37,6 @@ public:
   std::string GetStreamName() override;
 
   std::string m_description;
-
 protected:
   AVStream* m_stream = nullptr;
 };
@@ -51,20 +48,19 @@ public:
   std::string GetStreamName() override;
 
   std::string m_description;
-
 protected:
   CDVDDemuxFFmpeg* m_parent;
-  AVStream* m_stream = nullptr;
+  AVStream* m_stream  = nullptr;
 };
 
-class CDemuxStreamSubtitleFFmpeg : public CDemuxStreamSubtitle
+class CDemuxStreamSubtitleFFmpeg
+  : public CDemuxStreamSubtitle
 {
 public:
   explicit CDemuxStreamSubtitleFFmpeg(AVStream* stream) : m_stream(stream) {}
   std::string GetStreamName() override;
 
   std::string m_description;
-
 protected:
   CDVDDemuxFFmpeg* m_parent;
   AVStream* m_stream = nullptr;
@@ -78,7 +74,7 @@ public:
   AVCodecContext* m_codecCtx = nullptr;
 };
 
-#define FFMPEG_DVDNAV_BUFFER_SIZE 2048 // for dvd's
+#define FFMPEG_DVDNAV_BUFFER_SIZE 2048  // for dvd's
 
 struct StereoModeConversionMap;
 
@@ -88,11 +84,9 @@ public:
   CDVDDemuxFFmpeg();
   ~CDVDDemuxFFmpeg() override;
 
-  bool Open(const std::shared_ptr<CDVDInputStream>& pInput,
-            bool streaminfo = true,
-            bool fileinfo = false);
+  bool Open(const std::shared_ptr<CDVDInputStream>& pInput, bool streaminfo = true, bool fileinfo = false);
   void Dispose();
-  bool Reset() override;
+  bool Reset() override ;
   void Flush() override;
   void Abort() override;
   void SetSpeed(int iSpeed) override;
@@ -113,7 +107,7 @@ public:
   bool SeekChapter(int chapter, double* startpts = nullptr) override;
   int GetChapterCount() override;
   int GetChapter() override;
-  void GetChapterName(std::string& strChapterName, int chapterIdx = -1) override;
+  void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;
   int64_t GetChapterPos(int chapterIdx = -1) override;
   std::string GetStreamCodecName(int iStreamId) override;
 
@@ -142,8 +136,7 @@ protected:
   unsigned int HLSSelectProgram() const;
 
   std::string GetStereoModeFromMetadata(AVDictionary* pMetadata);
-  std::string ConvertCodecToInternalStereoMode(const std::string& mode,
-                                               const StereoModeConversionMap* conversionMap);
+  std::string ConvertCodecToInternalStereoMode(const std::string& mode, const StereoModeConversionMap* conversionMap);
 
   void GetL16Parameters(int& channels, int& samplerate) const;
   double SelectAspect(AVStream* st, bool& forced) const;
@@ -156,12 +149,12 @@ protected:
 
   AVIOContext* m_ioContext;
 
-  double m_currentPts; // used for stream length estimation
-  bool m_bMatroska;
-  bool m_bAVI;
-  bool m_bSup;
+  double   m_currentPts; // used for stream length estimation
+  bool     m_bMatroska;
+  bool     m_bAVI;
+  bool     m_bSup;
   CDemuxStreamSSIF* m_pSSIF;
-  int m_speed;
+  int      m_speed;
   unsigned int m_program;
   unsigned int m_streamsInProgram;
   unsigned int m_newProgram;
@@ -175,9 +168,9 @@ protected:
   // signals STREAMCHANGE to player
   struct
   {
-    AVPacket pkt; // packet ffmpeg returned
-    int result; // result from av_read_packet
-  } m_pkt;
+    AVPacket pkt;       // packet ffmpeg returned
+    int      result;    // result from av_read_packet
+  }m_pkt;
 
   bool m_streaminfo;
   bool m_checkTransportStream;
@@ -188,3 +181,4 @@ protected:
   bool m_dv_dual_stream = false;
   bool m_dv_dual_stream_started = false;
 };
+

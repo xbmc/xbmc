@@ -103,7 +103,7 @@ void CViewDatabase::UpdateTables(int version)
 
       std::string sql = PrepareSQL("INSERT INTO view (idView, window, path, viewMode, sortMethod, sortOrder, sortAttributes, skin) VALUES (%i, %i, '%s', %i, %i, %i, %i, '%s')",
         m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asInt(), m_pDS->fv(2).get_asString().c_str(), m_pDS->fv(3).get_asInt(),
-        sorting.sortBy, m_pDS->fv(5).get_asInt(), sorting.sortAttributes, m_pDS->fv(6).get_asString().c_str());
+        (int)sorting.sortBy, m_pDS->fv(5).get_asInt(), (int)sorting.sortAttributes, m_pDS->fv(6).get_asString().c_str());
       m_pDS2->exec(sql);
 
       m_pDS->next();
@@ -168,14 +168,14 @@ bool CViewDatabase::SetViewState(const std::string &path, int window, const CVie
       int idView = m_pDS->fv("idView").get_asInt();
       m_pDS->close();
       sql = PrepareSQL("update view set viewMode=%i,sortMethod=%i,sortOrder=%i,sortAttributes=%i where idView=%i",
-        state.m_viewMode, state.m_sortDescription.sortBy, state.m_sortDescription.sortOrder, state.m_sortDescription.sortAttributes, idView);
+        state.m_viewMode, (int)state.m_sortDescription.sortBy, (int)state.m_sortDescription.sortOrder, (int)state.m_sortDescription.sortAttributes, idView);
       m_pDS->exec(sql);
     }
     else
     { // add the view
       m_pDS->close();
       sql = PrepareSQL("insert into view (idView, path, window, viewMode, sortMethod, sortOrder, sortAttributes, skin) values(NULL, '%s', %i, %i, %i, %i, %i, '%s')",
-        path1.c_str(), window, state.m_viewMode, state.m_sortDescription.sortBy, state.m_sortDescription.sortOrder, state.m_sortDescription.sortAttributes, skin.c_str());
+        path1.c_str(), window, state.m_viewMode, (int)state.m_sortDescription.sortBy, (int)state.m_sortDescription.sortOrder, (int)state.m_sortDescription.sortAttributes, skin.c_str());
       m_pDS->exec(sql);
     }
   }

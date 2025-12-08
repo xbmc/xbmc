@@ -50,15 +50,15 @@ AVPixelFormat CVideoBuffer::GetFormat()
   return m_pixFormat;
 }
 
-bool CVideoBuffer::CopyPicture(YuvImage* pDst, YuvImage* pSrc)
+bool CVideoBuffer::CopyPicture(YuvImage* pDst, YuvImage *pSrc)
 {
-  uint8_t* s = pSrc->plane[0];
-  uint8_t* d = pDst->plane[0];
+  uint8_t *s = pSrc->plane[0];
+  uint8_t *d = pDst->plane[0];
   int w = pDst->width * pDst->bpp;
   int h = pDst->height;
   if ((w == pSrc->stride[0]) && (pSrc->stride[0] == pDst->stride[0]))
   {
-    memcpy(d, s, w * h);
+    memcpy(d, s, w*h);
   }
   else
   {
@@ -71,11 +71,11 @@ bool CVideoBuffer::CopyPicture(YuvImage* pDst, YuvImage* pSrc)
   }
   s = pSrc->plane[1];
   d = pDst->plane[1];
-  w = (pDst->width >> pDst->cshift_x) * pDst->bpp;
-  h = (pDst->height >> pDst->cshift_y);
+  w =(pDst->width  >> pDst->cshift_x) * pDst->bpp;
+  h =(pDst->height >> pDst->cshift_y);
   if ((w == pSrc->stride[1]) && (pSrc->stride[1] == pDst->stride[1]))
   {
-    memcpy(d, s, w * h);
+    memcpy(d, s, w*h);
   }
   else
   {
@@ -90,7 +90,7 @@ bool CVideoBuffer::CopyPicture(YuvImage* pDst, YuvImage* pSrc)
   d = pDst->plane[2];
   if ((w == pSrc->stride[2]) && (pSrc->stride[2] == pDst->stride[2]))
   {
-    memcpy(d, s, w * h);
+    memcpy(d, s, w*h);
   }
   else
   {
@@ -104,16 +104,17 @@ bool CVideoBuffer::CopyPicture(YuvImage* pDst, YuvImage* pSrc)
   return true;
 }
 
-bool CVideoBuffer::CopyNV12Picture(YuvImage* pDst, YuvImage* pSrc)
+
+bool CVideoBuffer::CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc)
 {
-  uint8_t* s = pSrc->plane[0];
-  uint8_t* d = pDst->plane[0];
+  uint8_t *s = pSrc->plane[0];
+  uint8_t *d = pDst->plane[0];
   int w = pDst->width;
   int h = pDst->height;
   // Copy Y
   if ((w == pSrc->stride[0]) && (pSrc->stride[0] == pDst->stride[0]))
   {
-    memcpy(d, s, w * h);
+    memcpy(d, s, w*h);
   }
   else
   {
@@ -132,7 +133,7 @@ bool CVideoBuffer::CopyNV12Picture(YuvImage* pDst, YuvImage* pSrc)
   // Copy packed UV (width is same as for Y as it's both U and V components)
   if ((w == pSrc->stride[1]) && (pSrc->stride[1] == pDst->stride[1]))
   {
-    memcpy(d, s, w * h);
+    memcpy(d, s, w*h);
   }
   else
   {
@@ -147,23 +148,23 @@ bool CVideoBuffer::CopyNV12Picture(YuvImage* pDst, YuvImage* pSrc)
   return true;
 }
 
-bool CVideoBuffer::CopyYUV422PackedPicture(YuvImage* pDst, YuvImage* pSrc)
+bool CVideoBuffer::CopyYUV422PackedPicture(YuvImage* pDst, YuvImage *pSrc)
 {
-  uint8_t* s = pSrc->plane[0];
-  uint8_t* d = pDst->plane[0];
+  uint8_t *s = pSrc->plane[0];
+  uint8_t *d = pDst->plane[0];
   int w = pDst->width;
   int h = pDst->height;
 
   // Copy YUYV
   if ((w * 2 == pSrc->stride[0]) && (pSrc->stride[0] == pDst->stride[0]))
   {
-    memcpy(d, s, w * h * 2);
+    memcpy(d, s, w*h*2);
   }
   else
   {
     for (int y = 0; y < h; y++)
     {
-      memcpy(d, s, w * 2);
+      memcpy(d, s, w*2);
       s += pSrc->stride[0];
       d += pDst->stride[0];
     }
@@ -172,11 +173,8 @@ bool CVideoBuffer::CopyYUV422PackedPicture(YuvImage* pDst, YuvImage* pSrc)
   return true;
 }
 
-CVideoBufferSysMem::CVideoBufferSysMem(IVideoBufferPool& pool,
-                                       int id,
-                                       AVPixelFormat format,
-                                       int size)
-  : CVideoBuffer(id)
+CVideoBufferSysMem::CVideoBufferSysMem(IVideoBufferPool &pool, int id, AVPixelFormat format, int size)
+: CVideoBuffer(id)
 {
   m_pixFormat = format;
   m_size = size;
@@ -193,14 +191,14 @@ uint8_t* CVideoBufferSysMem::GetMemPtr()
   return m_data;
 }
 
-void CVideoBufferSysMem::GetPlanes(uint8_t* (&planes)[YuvImage::MAX_PLANES])
+void CVideoBufferSysMem::GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES])
 {
   planes[0] = m_image.plane[0];
   planes[1] = m_image.plane[1];
   planes[2] = m_image.plane[2];
 }
 
-void CVideoBufferSysMem::GetStrides(int (&strides)[YuvImage::MAX_PLANES])
+void CVideoBufferSysMem::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
 {
   strides[0] = m_image.stride[0];
   strides[1] = m_image.stride[1];
@@ -217,14 +215,12 @@ void CVideoBufferSysMem::SetPixelFormat(const AVPixelFormat pixFormat)
   m_pixFormat = pixFormat;
 }
 
-void CVideoBufferSysMem::SetDimensions(int width,
-                                       int height,
-                                       const int (&strides)[YuvImage::MAX_PLANES])
+void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES])
 {
   m_width = width;
   m_height = height;
 
-  m_image.width = m_width;
+  m_image.width  = m_width;
   m_image.height = m_height;
   m_image.stride[0] = strides[0];
   m_image.stride[1] = strides[1];
@@ -233,9 +229,12 @@ void CVideoBufferSysMem::SetDimensions(int width,
   m_image.cshift_y = 1;
   m_image.bpp = 1;
 
-  if (m_pixFormat == AV_PIX_FMT_YUV420P || m_pixFormat == AV_PIX_FMT_YUV420P16 ||
-      m_pixFormat == AV_PIX_FMT_YUV420P14 || m_pixFormat == AV_PIX_FMT_YUV420P12 ||
-      m_pixFormat == AV_PIX_FMT_YUV420P10 || m_pixFormat == AV_PIX_FMT_YUV420P9)
+  if (m_pixFormat == AV_PIX_FMT_YUV420P ||
+      m_pixFormat == AV_PIX_FMT_YUV420P16 ||
+      m_pixFormat == AV_PIX_FMT_YUV420P14 ||
+      m_pixFormat == AV_PIX_FMT_YUV420P12 ||
+      m_pixFormat == AV_PIX_FMT_YUV420P10 ||
+      m_pixFormat == AV_PIX_FMT_YUV420P9)
   {
     if (m_pixFormat != AV_PIX_FMT_YUV420P)
       m_image.bpp = 2;
@@ -253,7 +252,8 @@ void CVideoBufferSysMem::SetDimensions(int width,
     // third plane is not used
     m_image.planesize[2] = 0;
   }
-  else if (m_pixFormat == AV_PIX_FMT_YUYV422 || m_pixFormat == AV_PIX_FMT_UYVY422)
+  else if (m_pixFormat == AV_PIX_FMT_YUYV422 ||
+           m_pixFormat == AV_PIX_FMT_UYVY422)
   {
     // packed YUYV plane
     m_image.planesize[0] = m_image.stride[0] * m_image.height;
@@ -268,10 +268,7 @@ void CVideoBufferSysMem::SetDimensions(int width,
   m_image.plane[2] = m_image.plane[1] + m_image.planesize[1];
 }
 
-void CVideoBufferSysMem::SetDimensions(int width,
-                                       int height,
-                                       const int (&strides)[YuvImage::MAX_PLANES],
-                                       const int (&planeOffsets)[YuvImage::MAX_PLANES])
+void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES])
 {
   SetDimensions(width, height, strides);
 
@@ -285,6 +282,7 @@ bool CVideoBufferSysMem::Alloc()
   m_data = new uint8_t[m_size];
   return true;
 }
+
 
 //-----------------------------------------------------------------------------
 // CVideoBufferPool
@@ -304,7 +302,7 @@ CVideoBuffer* CVideoBufferPoolSysMem::Get()
 {
   std::lock_guard lock(m_critSection);
 
-  CVideoBufferSysMem* buf = nullptr;
+  CVideoBufferSysMem *buf = nullptr;
   if (!m_free.empty())
   {
     int idx = m_free.front();
@@ -362,13 +360,14 @@ inline bool CVideoBufferPoolSysMem::IsConfigured()
 
 bool CVideoBufferPoolSysMem::IsCompatible(AVPixelFormat format, int size)
 {
-  if (m_pixFormat == format && m_size == size)
+  if (m_pixFormat == format &&
+      m_size == size)
     return true;
 
   return false;
 }
 
-void CVideoBufferPoolSysMem::Discard(CVideoBufferManager* bm, ReadyToDispose cb)
+void CVideoBufferPoolSysMem::Discard(CVideoBufferManager *bm, ReadyToDispose cb)
 {
   std::lock_guard lock(m_critSection);
 
@@ -425,7 +424,7 @@ void CVideoBufferManager::ReleasePools()
   }
 }
 
-void CVideoBufferManager::ReleasePool(IVideoBufferPool* pool)
+void CVideoBufferManager::ReleasePool(IVideoBufferPool *pool)
 {
   std::lock_guard lock(m_critSection);
 
@@ -441,7 +440,7 @@ void CVideoBufferManager::ReleasePool(IVideoBufferPool* pool)
   }
 }
 
-void CVideoBufferManager::ReadyForDisposal(IVideoBufferPool* pool)
+void CVideoBufferManager::ReadyForDisposal(IVideoBufferPool *pool)
 {
   std::lock_guard lock(m_critSection);
 
@@ -456,7 +455,7 @@ void CVideoBufferManager::ReadyForDisposal(IVideoBufferPool* pool)
   }
 }
 
-CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int size, IVideoBufferPool** pPool)
+CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int size, IVideoBufferPool **pPool)
 {
   std::lock_guard lock(m_critSection);
 

@@ -17,9 +17,9 @@
 
 using namespace std::chrono_literals;
 
-CDVDMessageQueue::CDVDMessageQueue(const std::string& owner) : m_hEvent(true), m_owner(owner)
+CDVDMessageQueue::CDVDMessageQueue(const std::string &owner) : m_hEvent(true), m_owner(owner)
 {
-  m_iDataSize = 0;
+  m_iDataSize     = 0;
   m_bInitialized = false;
 
   m_TimeBack = DVD_NOPTS_VALUE;
@@ -48,13 +48,15 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
 {
   std::lock_guard lock(m_section);
 
-  m_messages.remove_if([type](const DVDMessageListItem& item)
-                       { return type == CDVDMsg::NONE || item.message->IsType(type); });
+  m_messages.remove_if([type](const DVDMessageListItem &item){
+    return type == CDVDMsg::NONE || item.message->IsType(type);
+  });
 
-  m_prioMessages.remove_if([type](const DVDMessageListItem& item)
-                           { return type == CDVDMsg::NONE || item.message->IsType(type); });
+  m_prioMessages.remove_if([type](const DVDMessageListItem &item){
+    return type == CDVDMsg::NONE || item.message->IsType(type);
+  });
 
-  if (type == CDVDMsg::DEMUXER_PACKET || type == CDVDMsg::NONE)
+  if (type == CDVDMsg::DEMUXER_PACKET ||  type == CDVDMsg::NONE)
   {
     m_iDataSize = 0;
     m_TimeBack = DVD_NOPTS_VALUE;
@@ -116,9 +118,10 @@ MsgQueueReturnCode CDVDMessageQueue::Put(const std::shared_ptr<CDVDMsg>& pMsg,
     if (!front)
       prio++;
 
-    auto it =
-        std::find_if(m_prioMessages.begin(), m_prioMessages.end(),
-                     [prio](const DVDMessageListItem& item) { return prio <= item.priority; });
+    auto it = std::find_if(m_prioMessages.begin(), m_prioMessages.end(),
+                           [prio](const DVDMessageListItem &item){
+                             return prio <= item.priority;
+                           });
     m_prioMessages.emplace(it, pMsg, priority);
   }
   else
@@ -171,8 +174,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(std::shared_ptr<CDVDMsg>& pMsg,
 
   while (!m_bAbortRequest)
   {
-    std::list<DVDMessageListItem>& msgs =
-        (priority > 0 || !m_prioMessages.empty()) ? m_prioMessages : m_messages;
+    std::list<DVDMessageListItem> &msgs = (priority > 0 || !m_prioMessages.empty()) ? m_prioMessages : m_messages;
 
     if (!msgs.empty() && (msgs.back().priority >= priority || m_drain))
     {
@@ -223,7 +225,7 @@ void CDVDMessageQueue::UpdateTimeFront()
 {
   if (!m_messages.empty())
   {
-    auto& item = m_messages.front();
+    auto &item = m_messages.front();
     if (item.message->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       DemuxPacket* packet =
@@ -246,7 +248,7 @@ void CDVDMessageQueue::UpdateTimeBack()
 {
   if (!m_messages.empty())
   {
-    auto& item = m_messages.back();
+    auto &item = m_messages.back();
     if (item.message->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       DemuxPacket* packet =
@@ -265,22 +267,21 @@ void CDVDMessageQueue::UpdateTimeBack()
   }
 }
 
-unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type) const
-{
+unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type) const {
   std::lock_guard lock(m_section);
 
   if (!m_bInitialized)
     return 0;
 
   unsigned count = 0;
-  for (const auto& item : m_messages)
+  for (const auto &item : m_messages)
   {
-    if (item.message->IsType(type))
+    if(item.message->IsType(type))
       count++;
   }
-  for (const auto& item : m_prioMessages)
+  for (const auto &item : m_prioMessages)
   {
-    if (item.message->IsType(type))
+    if(item.message->IsType(type))
       count++;
   }
 
@@ -321,8 +322,7 @@ int CDVDMessageQueue::GetLevel(bool data_level) const
     return std::min((uint64_t)100, 100 * m_iDataSize / m_iMaxDataSize);
   }
 
-  int level =
-      std::min(100.0, ceil(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE));
+  int level = std::min(100.0, ceil(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
 
   // if we added lots of packets with NOPTS, make sure that the queue is not signalled empty
   if (level == 0 && m_iDataSize != 0)
@@ -346,6 +346,7 @@ int CDVDMessageQueue::GetTimeSize() const
 
 bool CDVDMessageQueue::IsDataBased() const
 {
-  return (m_TimeBack == DVD_NOPTS_VALUE || m_TimeFront == DVD_NOPTS_VALUE ||
+  return (m_TimeBack == DVD_NOPTS_VALUE  ||
+          m_TimeFront == DVD_NOPTS_VALUE ||
           m_TimeFront <= m_TimeBack);
 }

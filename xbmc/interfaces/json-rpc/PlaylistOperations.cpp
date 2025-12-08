@@ -70,7 +70,7 @@ JSONRPC_STATUS CPlaylistOperations::GetItems(const std::string &method, ITranspo
     case PLAYLIST::TYPE_VIDEO:
     case PLAYLIST::TYPE_MUSIC:
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_GET_ITEMS, playlistId, -1,
-                                                 &list);
+                                                 static_cast<void*>(&list));
       break;
 
     case PLAYLIST::TYPE_PICTURE:
@@ -116,7 +116,7 @@ JSONRPC_STATUS CPlaylistOperations::Add(const std::string &method, ITransportLay
       auto tmpList = new CFileItemList();
       tmpList->Copy(list);
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_ADD, playlistId, -1,
-                                                 tmpList);
+                                                 static_cast<void*>(tmpList));
       break;
     }
     case PLAYLIST::TYPE_PICTURE:
@@ -154,7 +154,7 @@ JSONRPC_STATUS CPlaylistOperations::Insert(const std::string &method, ITransport
   tmpList->Copy(list);
   CServiceBroker::GetAppMessenger()->PostMsg(
       TMSG_PLAYLISTPLAYER_INSERT, playlistId,
-      static_cast<int>(parameterObject["position"].asInteger()), tmpList);
+      static_cast<int>(parameterObject["position"].asInteger()), static_cast<void*>(tmpList));
 
   return ACK;
 }
@@ -189,7 +189,7 @@ JSONRPC_STATUS CPlaylistOperations::Clear(const std::string &method, ITransportL
       CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
       //! @todo: Stop should be a delegator method to void GUI coupling! Same goes for other player controls.
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-                                                 new CAction(ACTION_STOP));
+                                                 static_cast<void*>(new CAction(ACTION_STOP)));
       slideShow.Reset();
       break;
   }
@@ -207,7 +207,7 @@ JSONRPC_STATUS CPlaylistOperations::Swap(const std::string &method, ITransportLa
   tmpVec->push_back(static_cast<int>(parameterObject["position1"].asInteger()));
   tmpVec->push_back(static_cast<int>(parameterObject["position2"].asInteger()));
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_SWAP, playlistId, -1,
-                                             tmpVec);
+                                             static_cast<void*>(tmpVec));
 
   return ACK;
 }
@@ -255,7 +255,7 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(PLAYLIST::Id playlistId,
       case PLAYLIST::TYPE_VIDEO:
       {
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_GET_ITEMS, playlistId, -1,
-                                                   &list);
+                                                   static_cast<void*>(&list));
         result = list.Size();
         break;
       }

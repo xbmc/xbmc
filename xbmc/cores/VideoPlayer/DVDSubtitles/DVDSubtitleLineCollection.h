@@ -45,3 +45,4 @@ private:
   int m_iSize;
   //CRITICAL_SECTION m_critSection;
 };
+

@@ -794,7 +794,7 @@ int CGUIDialogPVRTimerSettings::GetDateAsIndex(const CDateTime& datetime)
 
 void CGUIDialogPVRTimerSettings::SetDateFromIndex(CDateTime& datetime, int date)
 {
-  const CDateTime newDate(date);
+  const CDateTime newDate(static_cast<time_t>(date));
   datetime.SetDateTime(newDate.GetYear(), newDate.GetMonth(), newDate.GetDay(), datetime.GetHour(),
                        datetime.GetMinute(), datetime.GetSecond());
 }

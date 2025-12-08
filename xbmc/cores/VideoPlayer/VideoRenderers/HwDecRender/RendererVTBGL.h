@@ -10,13 +10,14 @@
 
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 
+
 class CRendererVTB : public CLinuxRendererGL
 {
 public:
   CRendererVTB() = default;
   ~CRendererVTB() override;
 
-  static CBaseRenderer* Create(CVideoBuffer* buffer);
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
   // Player functions
@@ -33,3 +34,4 @@ protected:
   void DeleteTexture(int index) override;
   bool CreateTexture(int index) override;
 };
+

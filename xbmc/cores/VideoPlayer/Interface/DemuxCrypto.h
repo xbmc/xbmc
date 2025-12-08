@@ -30,7 +30,7 @@ struct DemuxCryptoSession
   {
   }
 
-  bool operator==(const DemuxCryptoSession& other) const
+  bool operator == (const DemuxCryptoSession &other) const
   {
     return keySystem == other.keySystem && sessionId == other.sessionId;
   };
@@ -41,7 +41,6 @@ struct DemuxCryptoSession
 
   static const uint8_t FLAG_SECURE_DECODER = 1;
   uint8_t flags;
-
 private:
   DemuxCryptoSession(const DemuxCryptoSession&) = delete;
   DemuxCryptoSession& operator=(const DemuxCryptoSession&) = delete;

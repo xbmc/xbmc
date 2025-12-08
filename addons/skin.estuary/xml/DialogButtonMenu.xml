@@ -59,7 +59,7 @@
 						<label>Reboot from eMMC/NAND</label>
 						<onclick>System.ExecWait("/usr/sbin/rebootfromnand")</onclick>
 						<onclick>Reset()</onclick>
-						<visible>System.PathExist("/dev/system") | System.PathExist("/dev/userdata")</visible>
+						<visible>System.PathExist("/dev/system") | System.PathExist("/dev/userdata") | System.PathExist("/dev/data")</visible>
 					</item>
 					<item>
 						<label>Restart Kodi</label>

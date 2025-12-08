@@ -33,7 +33,26 @@ constexpr std::uint16_t L1_MAX_PQ_MIN_VALUE = 2081;
 constexpr std::uint16_t L1_MAX_PQ_MAX_VALUE = 4095;
 constexpr std::uint16_t L1_AVG_PQ_MIN_VALUE = 819;
 
-static double nits_to_pq(double nits) {
+int max_pq_to_nits(int pq) {
+  if (pq < 2055) return 96;
+  if (pq > 4095) return 10000;
+  switch (pq) {
+    case 3079: { return  1000; }
+    case 3388: { return  2000; }
+    case 3696: { return  4000; }
+    case 4095: { return 10000; }
+  }
+  double pq_normalized = pq / 4095.0;
+  double pq_pow = std::pow(pq_normalized, 1.0 / ST2084_M2);
+  double num = std::max(pq_pow - ST2084_C1, 0.0);
+  double den = ST2084_C2 - ST2084_C3 * pq_pow;
+  if (std::abs(den) < std::numeric_limits<double>::epsilon()) {
+    return 0;
+  }
+  return static_cast<int>(std::round(ST2084_Y_MAX * std::pow(num / den, 1.0 / ST2084_M1)));
+}
+
+double nits_to_pq(double nits) {
   double y = nits / ST2084_Y_MAX;
   return std::pow((ST2084_C1 + ST2084_C2 * std::pow(y, ST2084_M1)) / (1.0 + ST2084_C3 * std::pow(y, ST2084_M1)), ST2084_M2);
 }
@@ -80,9 +99,9 @@ static uint16_t maximum_pq(const Hdr10PlusMetadata& meta, const PeakBrightnessSo
     case PeakBrightnessSource::MaxSclLuminance: {
 
       const auto& max_scl = meta.luminance[0].maxscl;
-      double r = max_scl[0];
-      double g = max_scl[1];
-      double b = max_scl[2];
+      double r = static_cast<double>(max_scl[0]);
+      double g = static_cast<double>(max_scl[1]);
+      double b = static_cast<double>(max_scl[2]);
       double luminance = (0.2627 * r) + (0.678 * g) + (0.0593 * b);
       return cast_pq(luminance / 10.0);
 
@@ -137,11 +156,25 @@ std::vector<uint8_t> create_rpu_nalu_for_hdr10plus(
 {
 
   uint16_t min_pq = 0;
-  if (hdrStaticMetadataInfo.min_lum <= 10) {
-    min_pq = 7;
-  } else if (hdrStaticMetadataInfo.min_lum == 50) {
-    min_pq = 62;
-  }
+  // if (hdrStaticMetadataInfo.min_lum <= 10) {
+  //  min_pq = 7;
+  // } else if (hdrStaticMetadataInfo.min_lum == 50) {
+  //  min_pq = 62;
+  // }
+  if (hdrStaticMetadataInfo.min_lum == 0)
+    min_pq = 0;
+  else if (hdrStaticMetadataInfo.min_lum < 2)
+    min_pq = 7;  // 0.0001
+  else if (hdrStaticMetadataInfo.min_lum < 5)
+    min_pq = 10; // 0.0002
+  else if (hdrStaticMetadataInfo.min_lum < 10)
+    min_pq = 17; // 0.0005
+  else if (hdrStaticMetadataInfo.min_lum < 20)
+    min_pq = 26; // 0.001
+  else if (hdrStaticMetadataInfo.min_lum < 50)
+    min_pq = 38; // 0.002
+  else
+    min_pq = 62; // 0.005
 
   uint16_t source_min_pq = min_pq;
   uint16_t source_max_pq = 3079;
@@ -153,7 +186,7 @@ std::vector<uint8_t> create_rpu_nalu_for_hdr10plus(
       case 10000: { source_max_pq = 4095; break; }
       default:    { source_max_pq = cast_pq(hdrStaticMetadataInfo.max_lum); break; }
   }
-  //uint16_t source_max_pq = cast_pq(hdrStaticMetadataInfo.max_lum);
+  // uint16_t source_max_pq = cast_pq(hdrStaticMetadataInfo.max_lum);
 
   uint16_t max_pq = maximum_pq(meta, peak_source);
   if (max_pq == 0) {

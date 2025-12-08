@@ -93,7 +93,7 @@ bool UTILS::FONT::GetFontFamilyNames(const std::vector<uint8_t>& buffer,
 
   FT_Open_Args args{};
   args.flags = FT_OPEN_MEMORY;
-  args.memory_base = buffer.data();
+  args.memory_base = reinterpret_cast<const FT_Byte*>(buffer.data());
   args.memory_size = static_cast<FT_Long>(buffer.size());
 
   FT_Long numFaces{0};
@@ -179,7 +179,7 @@ std::string UTILS::FONT::GetFontFamily(std::vector<uint8_t>& buffer)
   // Load the font face
   FT_Face face;
   std::string familyName;
-  if (FT_New_Memory_Face(m_library, buffer.data(), buffer.size(),
+  if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(buffer.data()), buffer.size(),
                          0, &face) == 0)
   {
     familyName = GetFamilyNameFromSfnt(face);

@@ -737,7 +737,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
         AddArtist(artistCredit->GetArtist(), artistCredit->GetMusicBrainzArtistID(),
                   artistCredit->GetSortName());
     AddAlbumArtist(artistCredit->idArtist, album.idAlbum, artistCredit->GetArtist(),
-                   std::distance(album.artistCredits.begin(), artistCredit));
+                   static_cast<int>(std::distance(album.artistCredits.begin(), artistCredit)));
   }
 
   // Add songs
@@ -785,7 +785,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
       AddSongArtist(
           artistCredit->idArtist, song->idSong, ROLE_ARTIST,
           artistCredit->GetArtist(), // we don't have song artist breakdowns from scrapers, yet
-          std::distance(song->artistCredits.begin(), artistCredit));
+          static_cast<int>(std::distance(song->artistCredits.begin(), artistCredit)));
     }
     // Having added artist credits (maybe with MBID) add the other contributing artists (no MBID)
     // and use COMPOSERSORT tag data to provide sort names for artists that are composers
@@ -948,7 +948,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
           AddArtist(artistCredit->GetArtist(), artistCredit->GetMusicBrainzArtistID(),
                     artistCredit->GetSortName(), true);
       AddAlbumArtist(artistCredit->idArtist, album.idAlbum, artistCredit->GetArtist(),
-                     std::distance(album.artistCredits.begin(), artistCredit));
+                     static_cast<int>(std::distance(album.artistCredits.begin(), artistCredit)));
     }
     /* Replace the songs with those scraped or imported, but if new songs is empty
        (such as when called from JSON) do not remove the original ones
@@ -1261,7 +1261,7 @@ bool CMusicDatabase::UpdateSong(CSong& song, bool bArtists /*= true*/, bool bArt
           AddArtist(artistCredit->GetArtist(), artistCredit->GetMusicBrainzArtistID(),
                     artistCredit->GetSortName());
       AddSongArtist(artistCredit->idArtist, song.idSong, ROLE_ARTIST, artistCredit->GetArtist(),
-                    std::distance(song.artistCredits.begin(), artistCredit));
+                    static_cast<int>(std::distance(song.artistCredits.begin(), artistCredit)));
     }
     // Having added artist credits (maybe with MBID) add the other contributing artists (MBID unknown)
     // and use COMPOSERSORT tag data to provide sort names for artists that are composers
@@ -3187,7 +3187,7 @@ void CMusicDatabase::GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredit
   // When "missing tag" artist, it is the only artist when present.
   if (artistCredits.begin()->GetArtistId() == BLANKARTIST_ID)
   {
-    artistidObj.push_back(BLANKARTIST_ID);
+    artistidObj.push_back((int)BLANKARTIST_ID);
     songartists.push_back(StringUtils::Empty);
   }
   else
@@ -6642,7 +6642,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
     Filter joinFilter;
     Filter albumArtistFilter;
     Filter songArtistFilter;
-    DatasetLayout joinLayout(joinToArtist_enumCount);
+    DatasetLayout joinLayout(static_cast<size_t>(joinToArtist_enumCount));
     extFilter.AppendField("artist.idArtist"); // ID "artistid" in JSON
     std::vector<int> dbfieldindex;
     // JSON "label" field is strArtist which is also output as "artist", query field once output twice
@@ -7353,7 +7353,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
       }
     }
     Filter joinFilter;
-    DatasetLayout joinLayout(joinToAlbum_enumCount);
+    DatasetLayout joinLayout(static_cast<size_t>(joinToAlbum_enumCount));
     extFilter.AppendField("albumview.idAlbum"); // ID "albumid" in JSON
     std::vector<int> dbfieldindex;
     // JSON "label" field is strAlbum which may also be requested as "title", query field once output twice
@@ -7811,7 +7811,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
       }
     }
     Filter joinFilter;
-    DatasetLayout joinLayout(joinToSongs_enumCount);
+    DatasetLayout joinLayout(static_cast<size_t>(joinToSongs_enumCount));
     extFilter.AppendField("song.idSong"); // ID "songid" in JSON
     std::vector<int> dbfieldindex;
     // JSON "label" field is strTitle which may also be requested as "title", query field once output twice
@@ -9537,7 +9537,7 @@ unsigned int CMusicDatabase::GetRandomSongIDs(const Filter& filter,
       m_pDS->next();
     } // cleanup
     m_pDS->close();
-    return songIDs.size();
+    return static_cast<unsigned int>(songIDs.size());
   }
   catch (...)
   {
@@ -12410,7 +12410,7 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
             rating *= (10.f / max_rating); // Normalise the value to between 0 and 10
           if (rating > 10.f)
             rating = 10.f;
-          iUserrating = MathUtils::round_int(rating);
+          iUserrating = MathUtils::round_int(static_cast<double>(rating));
         }
 
         strSQLSong = PrepareSQL("(%d, %d, ", current + 1, iTrack);
@@ -12724,7 +12724,7 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
   item.SetProperty("album_releasetype", CAlbum::ReleaseTypeToString(album.releaseType));
   item.SetProperty("album_duration",
                    StringUtils::SecondsToTimeString(album.iAlbumDuration,
-                                                    TIME_FORMAT_GUESS));
+                                                    static_cast<TIME_FORMAT>(TIME_FORMAT_GUESS)));
 }
 
 void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)

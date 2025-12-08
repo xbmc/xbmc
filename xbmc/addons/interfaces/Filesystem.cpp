@@ -818,7 +818,7 @@ void* Interface_Filesystem::open_file(void* kodiBase, const char* filename, unsi
 
   auto file = new CFile;
   if (file->Open(filename, TranslateFileReadBitsToKodi(flags)))
-    return file;
+    return static_cast<void*>(file);
 
   delete file;
   return nullptr;
@@ -838,7 +838,7 @@ void* Interface_Filesystem::open_file_for_write(void* kodiBase,
 
   auto file = new CFile;
   if (file->OpenForWrite(filename, overwrite))
-    return file;
+    return static_cast<void*>(file);
 
   delete file;
   return nullptr;
@@ -1123,7 +1123,7 @@ void* Interface_Filesystem::curl_create(void* kodiBase, const char* url)
 
   auto file = new CFile;
   if (file->CURLCreate(url))
-    return file;
+    return static_cast<void*>(file);
 
   delete file;
   return nullptr;

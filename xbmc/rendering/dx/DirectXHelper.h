@@ -62,14 +62,14 @@ namespace DX
   // Converts a length in device-independent pixels (DIPs) to a length in physical pixels.
   inline float ConvertDipsToPixels(float dips, float dpi)
   {
-    static const float dipsPerInch = DisplayMetrics::Dpi100;
-    return floorf(dips * dpi / dipsPerInch + 0.5f); // Round to nearest integer.
+	  static const float dipsPerInch = DisplayMetrics::Dpi100;
+	  return floorf(dips * dpi / dipsPerInch + 0.5f); // Round to nearest integer.
   }
 
   inline float ConvertPixelsToDips(float pixels, float dpi)
   {
-    static const float dipsPerInch = DisplayMetrics::Dpi100;
-    return floorf(pixels / (dpi / dipsPerInch) + 0.5f); // Round to nearest integer.
+	  static const float dipsPerInch = DisplayMetrics::Dpi100;
+	  return floorf(pixels / (dpi / dipsPerInch) + 0.5f); // Round to nearest integer.
   }
 
   inline float RationalToFloat(DXGI_RATIONAL rational)
@@ -178,24 +178,24 @@ namespace DX
   };
 
 #if defined(_DEBUG)
-  // Check for SDK Layer support.
-  inline bool SdkLayersAvailable()
-  {
-    HRESULT hr = D3D11CreateDevice(
-        nullptr,
-        D3D_DRIVER_TYPE_NULL,       // There is no need to create a real hardware device.
-        nullptr,
-        D3D11_CREATE_DEVICE_DEBUG,  // Check for the SDK layers.
-        nullptr,                    // Any feature level will do.
-        0,
-        D3D11_SDK_VERSION,          // Always set this to D3D11_SDK_VERSION for Windows Store apps.
-        nullptr,                    // No need to keep the D3D device reference.
-        nullptr,                    // No need to know the feature level.
-        nullptr                     // No need to keep the D3D device context reference.
-        );
+	// Check for SDK Layer support.
+	inline bool SdkLayersAvailable()
+	{
+		HRESULT hr = D3D11CreateDevice(
+			nullptr,
+			D3D_DRIVER_TYPE_NULL,       // There is no need to create a real hardware device.
+			nullptr,
+			D3D11_CREATE_DEVICE_DEBUG,  // Check for the SDK layers.
+			nullptr,                    // Any feature level will do.
+			0,
+			D3D11_SDK_VERSION,          // Always set this to D3D11_SDK_VERSION for Windows Store apps.
+			nullptr,                    // No need to keep the D3D device reference.
+			nullptr,                    // No need to know the feature level.
+			nullptr                     // No need to keep the D3D device context reference.
+			);
 
-    return SUCCEEDED(hr);
-  }
+		return SUCCEEDED(hr);
+	}
 #endif
 
   const std::string DXGIFormatToString(const DXGI_FORMAT format);

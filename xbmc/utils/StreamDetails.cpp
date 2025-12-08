@@ -493,7 +493,7 @@ void CStreamDetails::Archive(CArchive& ar)
     {
       // the type goes before the actual item.  When loading we need
       // to know the type before we can construct an instance to serialize
-      ar << iter->m_eType;
+      ar << (int)iter->m_eType;
       ar << (*iter);
     }
   }
@@ -673,10 +673,4 @@ std::string CStreamDetails::HdrTypeToString(StreamHdrType hdrType)
     default:
       return "";
   }
-}
-
-std::string CStreamDetails::DynamicRangeToString(StreamHdrType hdrType)
-{
-  std::string hdrStr = HdrTypeToString(hdrType);
-  return (hdrStr.empty() ? "sdr" : hdrStr);
 }

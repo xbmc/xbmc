@@ -929,7 +929,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
                                                                         song))
       {
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0,
-                                                   new CFileItem(song));
+                                                   static_cast<void*>(new CFileItem(song)));
       }
       return true;
     }

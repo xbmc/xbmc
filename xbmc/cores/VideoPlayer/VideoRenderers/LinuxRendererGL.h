@@ -8,19 +8,18 @@
 
 #pragma once
 
-#include "BaseRenderer.h"
-#include "ColorManager.h"
-#include "FrameBufferObject.h"
-#include "RenderInfo.h"
-#include "cores/VideoSettings.h"
-#include "utils/Geometry.h"
-
 #include <vector>
 
 #include "system_gl.h"
 
-extern "C"
-{
+#include "FrameBufferObject.h"
+#include "cores/VideoSettings.h"
+#include "RenderInfo.h"
+#include "BaseRenderer.h"
+#include "ColorManager.h"
+#include "utils/Geometry.h"
+
+extern "C" {
 #include <libavutil/mastering_display_metadata.h>
 }
 
@@ -34,18 +33,18 @@ namespace GL
 {
 class BaseYUV2RGBGLSLShader;
 class BaseVideoFilterShader;
-} // namespace GL
+}
 } // namespace Shaders
 
 enum RenderMethod
 {
-  RENDER_GLSL = 0x01,
-  RENDER_CUSTOM = 0x02
+  RENDER_GLSL=0x01,
+  RENDER_CUSTOM=0x02
 };
 
 enum RenderQuality
 {
-  RQ_LOW = 1,
+  RQ_LOW=1,
   RQ_SINGLEPASS,
   RQ_MULTIPASS,
 };
@@ -60,23 +59,22 @@ public:
   CLinuxRendererGL();
   ~CLinuxRendererGL() override;
 
-  static CBaseRenderer* Create(CVideoBuffer* buffer);
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
   // Player functions
-  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
+  bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
   bool IsConfigured() override { return m_bConfigured; }
-  void AddVideoPicture(const VideoPicture& picture, int index) override;
+  void AddVideoPicture(const VideoPicture &picture, int index) override;
   void UnInit() override;
   bool Flush(bool saveBuffers) override;
   void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   void ReleaseBuffer(int idx) override;
-  void RenderUpdate(
-      int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
+  void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void Update() override;
   bool RenderCapture(int index, CRenderCapture* capture) override;
   CRenderInfo GetRenderInfo() override;
-  bool ConfigChanged(const VideoPicture& picture) override;
+  bool ConfigChanged(const VideoPicture &picture) override;
 
   // Feature support
   bool SupportsMultiPassRendering() override;
@@ -86,19 +84,18 @@ public:
   CRenderCapture* GetRenderCapture() override;
 
 protected:
+
   bool Render(unsigned int flags, int renderBuffer);
   void ClearBackBuffer();
   void DrawBlackBars();
 
   bool ValidateRenderer();
   virtual bool ValidateRenderTarget();
-  virtual void LoadShaders(int field = FIELD_FULL);
+  virtual void LoadShaders(int field=FIELD_FULL);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
   void CheckVideoParameters(int index);
-  AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries,
-                                   unsigned int width,
-                                   unsigned int height);
+  AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
 
   // textures
   virtual bool UploadTexture(int index);
@@ -123,7 +120,7 @@ protected:
   void RenderToFBO(int renderBuffer, int field, bool weave = false);
   void RenderFromFBO();
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
-  void RenderRGB(int renderBuffer, int field); // render using vdpau/vaapi hardware
+  void RenderRGB(int renderBuffer, int field);      // render using vdpau/vaapi hardware
   void RenderProgressiveWeave(int renderBuffer, int field); // render using vdpau hardware
 
   struct CYuvPlane;
@@ -131,8 +128,9 @@ protected:
 
   void BindPbo(CPictureBuffer& buff);
   void UnBindPbo(CPictureBuffer& buff);
-  void LoadPlane(
-      CYuvPlane& plane, int type, unsigned width, unsigned height, int stride, int bpp, void* data);
+  void LoadPlane(CYuvPlane& plane, int type,
+                 unsigned width,  unsigned height,
+                 int stride, int bpp, void* data);
   void GetPlaneTextureSize(CYuvPlane& plane);
   GLint GetInternalFormat(GLint format, int bpp);
 
@@ -156,7 +154,7 @@ protected:
   GLenum m_textureTarget = GL_TEXTURE_2D;
   int m_renderMethod = RENDER_GLSL;
   RenderQuality m_renderQuality = RQ_SINGLEPASS;
-  CRenderSystemGL* m_renderSystem = nullptr;
+  CRenderSystemGL *m_renderSystem = nullptr;
 
   // Raw data used by renderer
   int m_currentField = FIELD_FULL;
@@ -185,7 +183,7 @@ protected:
     YuvImage image;
     GLuint pbo[3]; // one pbo for 3 planes
 
-    CVideoBuffer* videoBuffer;
+    CVideoBuffer *videoBuffer;
     bool loaded;
 
     AVColorPrimaries m_srcPrimaries;
@@ -227,7 +225,7 @@ protected:
   // color management
   std::unique_ptr<CColorManager> m_ColorManager;
   GLuint m_tCLUTTex;
-  uint16_t* m_CLUT;
+  uint16_t *m_CLUT;
   int m_CLUTsize;
   int m_cmsToken;
   bool m_cmsOn;

@@ -3417,7 +3417,7 @@ private:
       for (unsigned int i = 0; i < cppProperties.size(); ++i)
       {
         memcpy(&properties->stream[i],
-               cppProperties[i],
+               static_cast<PVR_STREAM_PROPERTIES::PVR_STREAM*>(cppProperties[i]),
                sizeof(PVR_STREAM_PROPERTIES::PVR_STREAM));
         ++properties->iStreamCount;
 

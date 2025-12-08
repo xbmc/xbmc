@@ -72,6 +72,8 @@ private:
   void GetAESParams(const AEAudioFormat& format, std::string& params) const;
   void HandleError(const char* name, int err) const;
 
+  std::string m_initDevice;
+  AEAudioFormat m_initFormat;
   AEAudioFormat m_format;
   unsigned int m_bufferSize = 0;
   double m_formatSampleRateMul = 0.0;
@@ -105,6 +107,7 @@ private:
   static AEDeviceType AEDeviceTypeFromName(std::string_view name);
   static std::string GetParamFromName(const std::string &name, const std::string &param);
   static void EnumerateDevice(AEDeviceInfoList &list, const std::string &device, const std::string &description, snd_config_t *config);
+  static bool SoundDeviceExists(const std::string& device);
   static bool GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool& badHDMI);
 
   static void sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...);

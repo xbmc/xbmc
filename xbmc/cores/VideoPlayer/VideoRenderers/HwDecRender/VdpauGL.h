@@ -20,6 +20,7 @@ namespace VDPAU
 {
 class CVdpauRenderPicture;
 
+
 struct InteropInfo
 {
   PFNGLVDPAUINITNVPROC glVDPAUInitNV;
@@ -38,14 +39,14 @@ struct InteropInfo
 class CInteropState
 {
 public:
-  bool Init(void* device, void* procFunc, int64_t ident);
+  bool Init(void *device, void *procFunc, int64_t ident);
   void Finish();
-  InteropInfo& GetInterop();
-  bool NeedInit(void* device, void* procFunc, int64_t ident);
+  InteropInfo &GetInterop();
+  bool NeedInit(void *device, void *procFunc, int64_t ident);
 
 protected:
-  void* m_device = nullptr;
-  void* m_procFunc = nullptr;
+  void *m_device = nullptr;
+  void *m_procFunc = nullptr;
   int64_t m_ident = 0;
   InteropInfo m_interop;
 };
@@ -53,9 +54,9 @@ protected:
 class CVdpauTexture
 {
 public:
-  bool Map(VDPAU::CVdpauRenderPicture* pic);
+  bool Map(VDPAU::CVdpauRenderPicture *pic);
   void Unmap();
-  void Init(InteropInfo& interop);
+  void Init(InteropInfo &interop);
 
   GLuint m_texture = 0;
   GLuint m_textureTopY = 0;
@@ -71,10 +72,10 @@ protected:
   bool MapRGB();
   void UnmapRGB();
   InteropInfo m_interop;
-  CVdpauRenderPicture* m_vdpauPic = nullptr;
+  CVdpauRenderPicture *m_vdpauPic = nullptr;
   struct GLSurface
   {
     GLvdpauSurfaceNV glVdpauSurface;
   } m_glSurface;
 };
-} // namespace VDPAU
+}

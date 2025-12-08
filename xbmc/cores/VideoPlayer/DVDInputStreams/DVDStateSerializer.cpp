@@ -20,7 +20,7 @@ namespace
 {
 // Serializer version - used to avoid processing deprecated/legacy schemas
 constexpr int DVDSTATESERIALIZER_VERSION = 2;
-} // namespace
+}
 
 bool CDVDStateSerializer::DVDStateToXML(std::string& xmlstate, const DVDState& state)
 {

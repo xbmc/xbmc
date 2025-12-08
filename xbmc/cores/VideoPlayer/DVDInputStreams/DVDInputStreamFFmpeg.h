@@ -10,7 +10,8 @@
 
 #include "DVDInputStream.h"
 
-class CDVDInputStreamFFmpeg : public CDVDInputStream
+class CDVDInputStreamFFmpeg
+  : public CDVDInputStream
 {
 public:
   explicit CDVDInputStreamFFmpeg(const CFileItem& fileitem);
@@ -23,8 +24,8 @@ public:
   int64_t GetLength() override;
   std::string GetFileName() override;
 
-  void Abort() override { m_aborted = true; }
-  bool Aborted() const { return m_aborted; }
+  void  Abort() override { m_aborted = true;  }
+  bool Aborted() const { return m_aborted;  }
 
   const CFileItem& GetItem() const { return m_item; }
 

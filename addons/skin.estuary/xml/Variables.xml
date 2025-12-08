@@ -702,13 +702,15 @@
 		<value>$INFO[ListItem.Art(thumb)]</value>	
 	</variable>
 	<variable name="VideoResolutionTypeVar">
-		<value condition="String.IsEqual(ListItem.VideoResolution,480)">SD</value>
-		<value condition="String.IsEqual(ListItem.VideoResolution,540)">SD</value>
-		<value condition="String.IsEqual(ListItem.VideoResolution,576)">SD</value>
-		<value condition="String.IsEqual(ListItem.VideoResolution,720)">HD</value>
-		<value condition="String.IsEqual(ListItem.VideoResolution,1080)">HD</value>			
-		<value condition="String.IsEqual(ListItem.VideoResolution,4K)">UHD</value>
-		<value condition="String.IsEqual(ListItem.VideoResolution,8K)">UHD</value>	
+		<value condition="String.IsEqual(ListItem.VideoResolution,480) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.VideoResolution,480)]">SD</value>
+		<value condition="String.IsEqual(ListItem.VideoResolution,540) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.VideoResolution,540)]">SD</value>
+		<value condition="String.IsEqual(ListItem.VideoResolution,576) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.VideoResolution,576)]">SD</value>
+		<value condition="String.IsEqual(ListItem.VideoResolution,720) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.VideoResolution,720)]">HD</value>
+		<value condition="String.IsEqual(ListItem.VideoResolution,1080) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.VideoResolution,1080)]">HD</value>
+		<value condition="String.IsEqual(ListItem.VideoResolution,4K) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.VideoResolution,4K)]">UHD</value>
+		<value condition="String.IsEqual(ListItem.VideoResolution,8K) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.VideoResolution,8K)]">UHD</value>
+		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.VideoResolution]</value>
+		<value>$INFO[ListItem.VideoResolution]</value>
 	</variable>
 	<variable name="VideoCodecVar">
 		<value condition="String.IsEqual(ListItem.VideoCodec,av1)">AV1</value>
@@ -817,31 +819,39 @@
 		<value condition="Integer.IsEqual(VideoPlayer.AudioChannels,10)">9.1</value>
 	</variable>
 	<variable name="AudioCodec1Var">
-		<value condition="String.Contains(VideoPlayer.AudioCodec,dtshd)">DTS-HD</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,dtshd_ma)">DTS-HD MA</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,dtshd_hra)">DTS-HD HRA</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,dtshd_ma_x)">DTS:X MA</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,dtshd_ma_x_imax)">DTS:X IMAX</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,dca) | String.Contains(VideoPlayer.AudioCodec,dts)">DTS</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,truehd)">Dolby TrueHD</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,truehd_atmos)">TrueHD Atmos</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,eac3)">Dolby Digital+</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,eac3_ddp_atmos)">DD+ Atmos</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,ac3)">Dolby Digital</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,mp3)">MP3</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,mp2)">MP2</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,mp1)">MP1</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,vorbis)">Vorbis</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,aac)">AAC</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,wmav2)">WMA</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,wmapro)">WMA Pro</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,pcm) | String.IsEqual(VideoPlayer.AudioCodec,pcm_bluray) | String.IsEqual(VideoPlayer.AudioCodec,pcm_s16le) | String.IsEqual(VideoPlayer.AudioCodec,pcm_s24le)">PCM</value>
-		<value condition="String.Contains(VideoPlayer.AudioCodec,cook)">Cook</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,dtshd)">DTS-HD</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma)">DTS-HD MA</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,dtshd_hra)">DTS-HD HRA</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x)">DTS:X MA</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x_imax)">DTS:X IMAX</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,dca) | String.Contains(VideoPlayer.AudioCodec,dts)">DTS</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,truehd)">Dolby TrueHD</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,truehd_atmos)">TrueHD Atmos</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,eac3)">Dolby Digital+</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,eac3_ddp_atmos)">DD+ Atmos</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,ac3)">Dolby Digital</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,mp3)">MP3</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,mp2)">MP2</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,mp1)">MP1</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,vorbis)">Vorbis</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,aac)">AAC</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,wmav2)">WMA</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,wmapro)">WMA Pro</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,pcm) | String.IsEqual(VideoPlayer.AudioCodec,pcm_bluray) | String.IsEqual(VideoPlayer.AudioCodec,pcm_s16le) | String.IsEqual(VideoPlayer.AudioCodec,pcm_s24le)">PCM</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioCodec,cook)">Cook</value>
 	</variable>
 	<variable name="HDRcodectypeVar">
 		<value condition="String.Contains(VideoPlayer.HdrType,dolbyvision)">Dolby Vision</value>
 		<value condition="String.Contains(VideoPlayer.HdrType,hdr10)">HDR</value>
 		<value condition="String.Contains(VideoPlayer.HdrType,hlg">HLG</value>
 		<value condition="String.IsEmpty(VideoPlayer.HdrType)">SDR</value>
+	</variable>
+		<variable name="DVELVar">
+		<value condition="String.Contains(Player.Process(video.dovi.el.type),minimum">MEL</value>
+		<value condition="String.Contains(Player.Process(video.dovi.el.type),full">FEL</value>
+		<value condition="String.Contains(Player.Process(video.dovi.el.type),none"></value>
+	</variable>
+	<variable name="DVProfileExtVar">
+		<value>$INFO[Player.Process(video.dovi.profile)].$INFO[Player.Process(video.dovi.bl.signal.compatibility)]</value>
 	</variable>
 </includes>

@@ -380,7 +380,7 @@ namespace XBMCAddon
           if (key == "count")
             setCountRaw(strtol(value.c_str(), nullptr, 10));
           else if (key == "size")
-            setSizeRaw(strtoll(value.c_str(), nullptr, 10));
+            setSizeRaw(static_cast<int64_t>(strtoll(value.c_str(), nullptr, 10)));
           else if (key == "overlay")
           {
             long overlay = strtol(value.c_str(), nullptr, 10);
@@ -441,7 +441,7 @@ namespace XBMCAddon
                 SActorInfo info;
                 info.strName = actor;
                 if (castEntry.which() == second)
-                  info.strRole = castEntry.later().second();
+                  info.strRole = static_cast<const String&>(castEntry.later().second());
                 cast.push_back(std::move(info));
               }
               InfoTagVideo::setCastRaw(videotag, std::move(cast));
@@ -554,7 +554,7 @@ namespace XBMCAddon
           if (key == "count")
             setCountRaw(strtol(value.c_str(), nullptr, 10));
           else if (key == "size")
-            setSizeRaw(strtoll(value.c_str(), nullptr, 10));
+            setSizeRaw(static_cast<int64_t>(strtoll(value.c_str(), nullptr, 10)));
           else if (key == "date")
             setDateTimeRaw(value);
           else
@@ -637,7 +637,7 @@ namespace XBMCAddon
           if (key == "count")
             setCountRaw(strtol(value.c_str(), nullptr, 10));
           else if (key == "size")
-            setSizeRaw(strtoll(value.c_str(), nullptr, 10));
+            setSizeRaw(static_cast<int64_t>(strtoll(value.c_str(), nullptr, 10)));
           else if (key == "title")
             setTitleRaw(value);
           else if (key == "picturepath")

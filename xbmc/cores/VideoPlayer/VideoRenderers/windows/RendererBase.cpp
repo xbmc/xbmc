@@ -54,11 +54,7 @@ void CRenderBuffer::ReleasePicture()
 }
 
 CRenderBuffer::CRenderBuffer(AVPixelFormat av_pix_format, unsigned width, unsigned height)
-  : av_format(av_pix_format),
-    m_width(width),
-    m_height(height),
-    m_widthTex(width),
-    m_heightTex(height)
+  : av_format(av_pix_format) , m_width(width) , m_height(height), m_widthTex(width), m_heightTex(height)
 {
 }
 
@@ -134,7 +130,9 @@ void CRenderBuffer::QueueCopyFromGPU()
   }
 }
 
-CRendererBase::CRendererBase(CVideoSettings& videoSettings) : m_videoSettings(videoSettings)
+
+CRendererBase::CRendererBase(CVideoSettings& videoSettings)
+  : m_videoSettings(videoSettings)
 {
   m_colorManager.reset(new CColorManager());
 }
@@ -165,9 +163,16 @@ CRendererBase::~CRendererBase()
 CRenderInfo CRendererBase::GetRenderInfo()
 {
   CRenderInfo info;
-  info.formats = {AV_PIX_FMT_D3D11VA_VLD, AV_PIX_FMT_NV12,    AV_PIX_FMT_P010,
-                  AV_PIX_FMT_P016,        AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV420P10,
-                  AV_PIX_FMT_YUV420P16};
+  info.formats =
+  {
+    AV_PIX_FMT_D3D11VA_VLD,
+    AV_PIX_FMT_NV12,
+    AV_PIX_FMT_P010,
+    AV_PIX_FMT_P016,
+    AV_PIX_FMT_YUV420P,
+    AV_PIX_FMT_YUV420P10,
+    AV_PIX_FMT_YUV420P16
+  };
   info.max_buffer_size = NUM_BUFFERS;
 
   return info;
@@ -230,11 +235,7 @@ void CRendererBase::Render(int index,
   Render(target, sourceRect, destRect, viewRect, flags);
 }
 
-void CRendererBase::Render(CD3DTexture& target,
-                           const CRect& sourceRect,
-                           const CRect& destRect,
-                           const CRect& viewRect,
-                           unsigned flags)
+void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const CRect& destRect, const CRect& viewRect, unsigned flags)
 {
   if (m_iNumBuffers == 0)
     return;
@@ -249,7 +250,7 @@ void CRendererBase::Render(CD3DTexture& target,
   ProcessHDR(buf);
 
   if (m_viewWidth != static_cast<unsigned>(viewRect.Width()) ||
-      m_viewHeight != static_cast<unsigned>(viewRect.Height()))
+    m_viewHeight != static_cast<unsigned>(viewRect.Height()))
   {
     m_viewWidth = static_cast<unsigned>(viewRect.Width());
     m_viewHeight = static_cast<unsigned>(viewRect.Height());
@@ -261,15 +262,14 @@ void CRendererBase::Render(CD3DTexture& target,
   UpdateVideoFilters();
 
   CPoint dest[4];
-  CRect source = sourceRect; // can be changed
+  CRect source = sourceRect;     // can be changed
   CRect(destRect).GetQuad(dest); // can be changed
 
   RenderImpl(m_IntermediateTarget, source, dest, flags);
 
   if (m_toneMapping)
   {
-    m_outputShader->SetDisplayMetadata(buf->hasDisplayMetadata, buf->displayMetadata,
-                                       buf->hasLightMetadata, buf->lightMetadata);
+    m_outputShader->SetDisplayMetadata(buf->hasDisplayMetadata, buf->displayMetadata, buf->hasLightMetadata, buf->lightMetadata);
     m_outputShader->SetToneMapParam(m_toneMapMethod, m_videoSettings.m_ToneMapParam);
   }
 
@@ -280,10 +280,7 @@ void CRendererBase::Render(CD3DTexture& target,
   DX::Windowing()->ApplyStateBlock();
 }
 
-void CRendererBase::FinalOutput(CD3DTexture& source,
-                                CD3DTexture& target,
-                                const CRect& src,
-                                const CPoint (&destPoints)[4])
+void CRendererBase::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& src, const CPoint(&destPoints)[4])
 {
   if (m_outputShader)
     m_outputShader->Render(source, src, destPoints, target);
@@ -384,45 +381,39 @@ void CRendererBase::OnCMSConfigChanged(AVColorPrimaries srcPrimaries)
   m_lutSize = 0;
   m_lutIsLoading = true;
 
-  auto loadLutTask = Concurrency::create_task(
-      [this, srcPrimaries]
-      {
-        // load 3DLUT data
-        int lutSize, dataSize;
-        if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGBA, &lutSize, &dataSize))
-          return 0;
+  auto loadLutTask = Concurrency::create_task([this, srcPrimaries] {
+    // load 3DLUT data
+    int lutSize, dataSize;
+    if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGBA, &lutSize, &dataSize))
+      return 0;
 
-        const auto lutData = static_cast<uint16_t*>(KODI::MEMORY::AlignedMalloc(dataSize, 16));
-        bool success = m_colorManager->GetVideo3dLut(srcPrimaries, &m_cmsToken, CMS_DATA_FMT_RGBA,
-                                                     lutSize, lutData);
-        if (success)
-        {
-          success = COutputShader::CreateLUTView(lutSize, lutData, false,
-                                                 m_pLUTView.ReleaseAndGetAddressOf());
-        }
-        else
-          CLog::Log(LOGERROR,
-                    "CRendererBase::OnCMSConfigChanged: unable to loading the 3dlut data.");
+    const auto lutData = static_cast<uint16_t*>(KODI::MEMORY::AlignedMalloc(dataSize, 16));
+    bool success = m_colorManager->GetVideo3dLut(srcPrimaries, &m_cmsToken, CMS_DATA_FMT_RGBA,
+                                                 lutSize, lutData);
+    if (success)
+    {
+      success = COutputShader::CreateLUTView(lutSize, lutData, false, m_pLUTView.ReleaseAndGetAddressOf());
+    }
+    else
+      CLog::Log(LOGERROR, "CRendererBase::OnCMSConfigChanged: unable to loading the 3dlut data.");
 
-        KODI::MEMORY::AlignedFree(lutData);
-        if (!success)
-          return 0;
+    KODI::MEMORY::AlignedFree(lutData);
+    if (!success)
+      return 0;
 
-        return lutSize;
-      });
+    return lutSize;
+  });
 
-  loadLutTask.then(
-      [&](const int lutSize)
-      {
-        m_lutSize = lutSize;
-        if (m_outputShader)
-          m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
-        m_lutIsLoading = false;
-      });
+  loadLutTask.then([&](const int lutSize) {
+    m_lutSize = lutSize;
+    if (m_outputShader)
+      m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
+    m_lutIsLoading = false;
+  });
 }
 
 // this is copy from CBaseRenderer::ReorderDrawPoints()
-void CRendererBase::ReorderDrawPoints(const CRect& destRect, CPoint (&rotatedPoints)[4]) const
+void CRendererBase::ReorderDrawPoints(const CRect& destRect, CPoint(&rotatedPoints)[4]) const
 {
   // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
   float origMat[4][2] = {{destRect.x1, destRect.y1},
@@ -508,14 +499,14 @@ AVPixelFormat CRendererBase::GetAVFormat(DXGI_FORMAT dxgi_format)
 {
   switch (dxgi_format)
   {
-    case DXGI_FORMAT_NV12:
-      return AV_PIX_FMT_NV12;
-    case DXGI_FORMAT_P010:
-      return AV_PIX_FMT_P010;
-    case DXGI_FORMAT_P016:
-      return AV_PIX_FMT_P016;
-    default:
-      return AV_PIX_FMT_NONE;
+  case DXGI_FORMAT_NV12:
+    return AV_PIX_FMT_NV12;
+  case DXGI_FORMAT_P010:
+    return AV_PIX_FMT_P010;
+  case DXGI_FORMAT_P016:
+    return AV_PIX_FMT_P016;
+  default:
+    return AV_PIX_FMT_NONE;
   }
 }
 

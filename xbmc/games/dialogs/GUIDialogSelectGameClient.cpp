@@ -106,14 +106,14 @@ void CGUIDialogSelectGameClient::LogGameClients(const GameClientVector& candidat
                                                 const GameClientVector& installable)
 {
   CLog::Log(LOGDEBUG, "Select game client dialog: Found {} candidates",
-            candidates.size());
+            static_cast<unsigned int>(candidates.size()));
   for (const auto& gameClient : candidates)
     CLog::Log(LOGDEBUG, "Adding {} as a candidate", gameClient->ID());
 
   if (!installable.empty())
   {
     CLog::Log(LOGDEBUG, "Select game client dialog: Found {} installable clients",
-              installable.size());
+              static_cast<unsigned int>(installable.size()));
     for (const auto& gameClient : installable)
       CLog::Log(LOGDEBUG, "Adding {} as an installable client", gameClient->ID());
   }

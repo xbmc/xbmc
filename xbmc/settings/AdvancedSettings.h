@@ -129,12 +129,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     static void GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string> &settings);
     static void GetCustomExtensions(TiXmlElement *pRootElement, std::string& extensions);
 
-    unsigned int m_threadApplicationCore;       
-    unsigned int m_threadVideoPlayerVideoCore; 
-    unsigned int m_threadActiveAECore;
-
-    unsigned int m_threadApplicationMaxOtherTaskTime;
-
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
     bool m_VideoPlayerIgnoreDTSinWAV;
@@ -170,6 +164,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_videoIgnoreSecondsAtStart;
     float m_videoIgnorePercentAtEnd;
     float m_audioApplyDrc;
+    unsigned int m_maxPassthroughOffSyncDuration = 20; // when off by this value then adjust
     unsigned int m_audioAddPacketUnlockTime = 1000;
     bool m_AllowMultiChannelFloat = false; // Android only switch to be removed in v22
     bool m_superviseAudioDelay = false; // Android only to correct broken audio firmwares
@@ -361,6 +356,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_settingsFiles;
     void ParseSettingsFile(const std::string &file);
 
+    void DefaultAudioLatency();
+    void DefaultVideoLatency();
+
     int GetVideoLatencyTweak(float refreshrate, unsigned int resolution);
     int GetAudioLatencyTweak(CAEStreamInfo::DataType type);
 
@@ -393,13 +391,27 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_nfsRetries;
 
     int m_videoDecoderTimeout;
+    bool m_videoDecoderBypassBufferReady;
     float m_videoDecoderBuffer;
     float m_videoDecoderStreamBuffer;
     float m_videoDecoderMinimumBuffer;
     float m_videoDecoderMinimumStreamBuffer;
-    int m_videoDecoderStreamTypeStreamOffset;
-    int m_videoDecoderH264Offset;
-    unsigned int m_videoDecoderStreamTypeStreamMinOrderedBufferQueueCount;
+
+    void SetAlgoForReset(int num_resets);
+    int GetAlgoForReset() const;
+    int m_algoForReset;
+
+    void SetLastResetTime(double reset_time);
+    double GetLastResetTime() const;
+    double m_lastResetTime;
+
+    void SetResetSync(bool reset_sync);
+    bool GetResetSync() const;
+    bool m_resetSync;
+
+    void SetResetSeek(bool reset_seek);
+    bool GetResetSeek() const;
+    bool m_resetSeek;
 
   private:
     void Initialize();

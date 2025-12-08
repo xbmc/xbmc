@@ -18,10 +18,12 @@
 class CDVDOverlayImage : public CDVDOverlay
 {
 public:
-  CDVDOverlayImage() : CDVDOverlay(DVDOVERLAY_TYPE_IMAGE) {}
+  CDVDOverlayImage() : CDVDOverlay(DVDOVERLAY_TYPE_IMAGE)
+  {
+  }
 
   CDVDOverlayImage(const CDVDOverlayImage& src, int sub_x, int sub_y, int sub_w, int sub_h)
-    : CDVDOverlay(src)
+  : CDVDOverlay(src)
   {
     int bpp;
     if (!src.palette.empty())

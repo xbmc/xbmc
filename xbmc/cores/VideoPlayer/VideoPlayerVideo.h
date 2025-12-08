@@ -45,12 +45,13 @@ public:
 class CVideoPlayerVideo : public CThread, public IDVDStreamPlayerVideo
 {
 public:
-  CVideoPlayerVideo(CDVDClock* pClock,
-                    CDVDOverlayContainer* pOverlayContainer,
-                    CDVDMessageQueue& parent,
-                    CRenderManager& renderManager,
-                    CProcessInfo& processInfo,
-                    double messageQueueTimeSize);
+  CVideoPlayerVideo(
+    CDVDClock* pClock,
+    CDVDOverlayContainer* pOverlayContainer,
+    CDVDMessageQueue& parent,
+    CRenderManager& renderManager,
+    CProcessInfo &processInfo,
+    double messageQueueTimeSize);
   ~CVideoPlayerVideo() override;
 
   bool OpenStream(CDVDStreamInfo hint) override;
@@ -61,7 +62,7 @@ public:
 
   bool AcceptsData() const override;
   bool HasData() const override;
-  int GetLevel() const override { return m_messageQueue.GetLevel(); }
+  int  GetLevel() const override { return m_messageQueue.GetLevel(); }
   bool IsInited() const override;
   void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override;
   void FlushMessages() override;
@@ -73,21 +74,17 @@ public:
   bool IsStalled() const override { return m_stalled; }
   bool IsRewindStalled() const override { return m_rewindStalled; }
   double GetCurrentPts() override;
-  double GetCurrentFramePts() override;
-  double GetOutputDelay()
-      override; /* returns the expected delay, from that a packet is put in queue */
+  double GetOutputDelay() override; /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo() override;
   int GetVideoBitrate() override;
-  bool SupportsExtention() const override
-  {
-    return m_pVideoCodec && m_pVideoCodec->SupportsExtention();
-  }
+  bool SupportsExtention() const override { return m_pVideoCodec && m_pVideoCodec->SupportsExtention(); }
 
   // classes
   CDVDOverlayContainer* m_pOverlayContainer;
   CDVDClock* m_pClock;
 
 protected:
+
   enum EOutputState
   {
     OUTPUT_NORMAL,
@@ -99,7 +96,7 @@ protected:
   void OnExit() override;
   void Process() override;
 
-  bool ProcessDecoderOutput(double& frametime, double& pts);
+  bool ProcessDecoderOutput(double &frametime, double &pts);
   void UpdatePlayerInfo();
   void SendMessageBack(const std::shared_ptr<CDVDMsg>& pMsg, int priority = 0);
   MsgQueueReturnCode GetMessage(std::shared_ptr<CDVDMsg>& pMsg,
@@ -121,15 +118,15 @@ protected:
   int m_iDroppedFrames;
   int m_iDroppedRequest;
 
-  double m_fFrameRate; //framerate of the video currently playing
+  double m_fFrameRate;       //framerate of the video currently playing
   double m_fStableFrameRate; //place to store calculated framerates
-  int m_iFrameRateCount; //how many calculated framerates we stored in m_fStableFrameRate
-  bool m_bAllowDrop; //we can't drop frames until we've calculated the framerate
-  int m_iFrameRateErr; //how many frames we couldn't calculate the framerate, we give up after a while
-  int m_iFrameRateLength; //how many seconds we should measure the framerate
-      //this is increased exponentially from CVideoPlayerVideo::CalcFrameRate()
+  int m_iFrameRateCount;     //how many calculated framerates we stored in m_fStableFrameRate
+  bool m_bAllowDrop;         //we can't drop frames until we've calculated the framerate
+  int m_iFrameRateErr;       //how many frames we couldn't calculate the framerate, we give up after a while
+  int m_iFrameRateLength;    //how many seconds we should measure the framerate
+                             //this is increased exponentially from CVideoPlayerVideo::CalcFrameRate()
 
-  bool m_bFpsInvalid; // needed to ignore fps (e.g. dvd stills)
+  bool m_bFpsInvalid;        // needed to ignore fps (e.g. dvd stills)
   bool m_bRenderSubs;
   float m_fForcedAspectRatio;
   int m_speed;

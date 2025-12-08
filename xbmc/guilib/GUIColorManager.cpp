@@ -75,7 +75,7 @@ bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
     if (color->FirstChild() && color->Attribute("name"))
     {
       UTILS::COLOR::Color value = 0xffffffff;
-      sscanf(color->FirstChild()->Value(), "%x", &value);
+      sscanf(color->FirstChild()->Value(), "%x", (unsigned int*) &value);
       std::string name = color->Attribute("name");
       const auto it = m_colors.find(name);
       if (it != m_colors.end())

@@ -39,7 +39,7 @@ protected:
 
   private:
     // Implementation of Observer
-    void Notify(const Observable& obs, const ObservableMessage msg) override {};
+    void Notify(const Observable& obs, const ObservableMessage msg) override{};
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_debugOverlayStyle;
   };

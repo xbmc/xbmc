@@ -170,11 +170,7 @@ bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
   return true;
 }
 
-bool CDVDSubtitlesLibass::DecodeDemuxPkt(const char* data,
-                                         int size,
-                                         double start,
-                                         double duration) const
-{
+bool CDVDSubtitlesLibass::DecodeDemuxPkt(const char* data, int size, double start, double duration) const {
   std::lock_guard lock(m_section);
 
   if (!m_track)
@@ -289,7 +285,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
   // from: >1 tighter pixels, <1 wider pixels
   // to: <1 tighter pixels, >1 wider pixels
   float par = (opts.m_par - 2.0f) * -1;
-  ass_set_pixel_aspect(m_renderer, par);
+  ass_set_pixel_aspect(m_renderer, static_cast<double>(par));
 
   ass_set_frame_size(m_renderer, static_cast<int>(opts.frameWidth),
                      static_cast<int>(opts.frameHeight));
@@ -333,7 +329,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
     fontScale *= std::max(opts.frameHeight / opts.videoHeight, 1.0f);
   }
 
-  ass_set_font_scale(m_renderer, fontScale);
+  ass_set_font_scale(m_renderer, static_cast<double>(fontScale));
 
   ass_set_line_position(m_renderer, opts.position);
 
@@ -378,7 +374,7 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
 
     // PlayResY and PlayResX are mandatory but some out-of-spec files do not specify them
     // if both PlayRes are not specified libass fallback to 288x384
-    double playResY = m_track->PlayResY;
+    double playResY = static_cast<double>(m_track->PlayResY);
     if (m_track->PlayResY == 0 && m_track->PlayResX == 0)
     {
       CLog::LogF(LOGWARNING, "PlayResX and PlayResY are not defined in subtitle file. This may "
@@ -561,8 +557,7 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
   }
 }
 
-int CDVDSubtitlesLibass::GetPlayResY() const
-{
+int CDVDSubtitlesLibass::GetPlayResY() const {
   if (!m_track)
   {
     CLog::Log(LOGERROR, "{} - ASS renderer/ASS track not initialized.", __FUNCTION__);
@@ -571,8 +566,7 @@ int CDVDSubtitlesLibass::GetPlayResY() const
   return m_track->PlayResY;
 }
 
-bool CDVDSubtitlesLibass::EventActive(double pts) const
-{
+bool CDVDSubtitlesLibass::EventActive(double pts) const {
   std::lock_guard lock(m_section);
 
   if (!m_library || !m_track)
@@ -593,8 +587,7 @@ bool CDVDSubtitlesLibass::EventActive(double pts) const
 }
 
 void CDVDSubtitlesLibass::ConfigureAssOverride(const std::shared_ptr<struct style>& subStyle,
-                                               ASS_Style* style) const
-{
+                                               ASS_Style* style) const {
   if (!subStyle)
   {
     CLog::Log(LOGERROR, "{} - The subtitle overlay style is not set.", __FUNCTION__);
@@ -630,8 +623,7 @@ void CDVDSubtitlesLibass::ConfigureAssOverride(const std::shared_ptr<struct styl
   ass_set_selective_style_override_enabled(m_renderer, stylesFlags);
 }
 
-ASS_Event* CDVDSubtitlesLibass::GetEvents() const
-{
+ASS_Event* CDVDSubtitlesLibass::GetEvents() const {
   std::lock_guard lock(m_section);
 
   if (!m_track)
@@ -659,8 +651,7 @@ int CDVDSubtitlesLibass::AddEvent(const char* text, double startTime, double sto
 int CDVDSubtitlesLibass::AddEvent(const char* text,
                                   double startTime,
                                   double stopTime,
-                                  subtitleOpts* opts) const
-{
+                                  subtitleOpts* opts) const {
   if (text == nullptr || text[0] == '\0')
   {
     CLog::Log(LOGDEBUG,
@@ -699,8 +690,7 @@ int CDVDSubtitlesLibass::AddEvent(const char* text,
   return ASS_NO_ID;
 }
 
-void CDVDSubtitlesLibass::AppendTextToEvent(int eventId, const char* text) const
-{
+void CDVDSubtitlesLibass::AppendTextToEvent(int eventId, const char* text) const {
   std::lock_guard lock(m_section);
 
   if (eventId == ASS_NO_ID || text == nullptr || text[0] == '\0')
@@ -732,8 +722,7 @@ void CDVDSubtitlesLibass::AppendTextToEvent(int eventId, const char* text) const
   }
 }
 
-void CDVDSubtitlesLibass::ChangeEventStopTime(int eventId, double stopTime) const
-{
+void CDVDSubtitlesLibass::ChangeEventStopTime(int eventId, double stopTime) const {
   std::lock_guard lock(m_section);
 
   if (eventId == ASS_NO_ID)
@@ -757,8 +746,7 @@ void CDVDSubtitlesLibass::ChangeEventStopTime(int eventId, double stopTime) cons
     assEvent->Duration = (DVD_TIME_TO_MSEC(stopTime) - assEvent->Start);
 }
 
-void CDVDSubtitlesLibass::FlushEvents() const
-{
+void CDVDSubtitlesLibass::FlushEvents() const {
   std::lock_guard lock(m_section);
 
   if (!m_library || !m_track)
@@ -770,10 +758,9 @@ void CDVDSubtitlesLibass::FlushEvents() const
   ass_flush_events(m_track);
 }
 
-int CDVDSubtitlesLibass::DeleteEvents(int nEvents, int threshold) const
-{
+int CDVDSubtitlesLibass::DeleteEvents(int nEvents, int threshold) const {
   std::lock_guard lock(m_section);
-
+  
   if (!m_library || !m_track)
   {
     CLog::Log(LOGERROR, "{} - Missing ASS structs (m_library or m_track)", __FUNCTION__);

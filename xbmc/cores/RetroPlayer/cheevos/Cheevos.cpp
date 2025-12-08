@@ -126,7 +126,7 @@ bool CCheevos::LoadData()
   tag.SetPlatform(data[PATCH_DATA][CONSOLE_NAME].asString());
 
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_PLAYER_ITEM, -1, -1,
-                                             file.release());
+                                             static_cast<void*>(file.release()));
 
   return true;
 }

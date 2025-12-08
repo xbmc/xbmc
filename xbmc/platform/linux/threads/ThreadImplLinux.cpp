@@ -28,11 +28,11 @@ namespace
 {
 
 constexpr auto nativeThreadPriorityMap = make_map<ThreadPriority, int>({
-    {ThreadPriority::LOWEST, -3},
-    {ThreadPriority::BELOW_NORMAL, -3},
-    {ThreadPriority::NORMAL, -2},
-    {ThreadPriority::ABOVE_NORMAL, -1},
-    {ThreadPriority::HIGHEST, -1},
+    {ThreadPriority::LOWEST, -1},
+    {ThreadPriority::BELOW_NORMAL, -1},
+    {ThreadPriority::NORMAL, 0},
+    {ThreadPriority::ABOVE_NORMAL, 1},
+    {ThreadPriority::HIGHEST, 1},
 });
 
 static_assert(static_cast<size_t>(ThreadPriority::PRIORITY_COUNT) == nativeThreadPriorityMap.size(),

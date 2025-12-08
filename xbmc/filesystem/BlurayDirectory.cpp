@@ -324,7 +324,7 @@ std::vector<BLURAY_TITLE_INFO*> CBlurayDirectory::GetUserPlaylists() const {
         while ((pos = pl.RegFind(buffer, static_cast<unsigned int>(pos))) >= 0)
         {
           std::string playlist = pl.GetMatch(0);
-          uint32_t len = playlist.length();
+          uint32_t len = static_cast<uint32_t>(playlist.length());
 
           if (len <= 5)
           {

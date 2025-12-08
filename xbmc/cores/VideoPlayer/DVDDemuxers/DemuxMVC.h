@@ -23,8 +23,7 @@
 #include "DVDDemux.h"
 #include "cores/MenuType.h"
 
-extern "C"
-{
+extern "C" {
 #include "libavformat/avformat.h"
 }
 
@@ -39,30 +38,26 @@ public:
   virtual void Flush();
   virtual DemuxPacket* Read();
   virtual bool SeekTime(double time, bool backwords = false, double* startpts = nullptr);
-  virtual void SetSpeed(int iSpeed) {};
+  virtual void SetSpeed(int iSpeed) { };
   virtual int GetStreamLength() { return 0; };
   virtual CDemuxStream* GetStream(int iStreamId) const override { return nullptr; };
   virtual std::vector<CDemuxStream*> GetStreams() const override;
   virtual int GetNrOfStreams() const override { return 1; };
   virtual std::string GetFileName();
 
-  void SetStartTime(int64_t start_time, MenuType menu_type)
-  {
-    m_start_time = start_time;
-    m_menu_type = menu_type;
-  }
+  void SetStartTime(int64_t start_time, MenuType menu_type) { m_start_time = start_time; m_menu_type = menu_type; }
   int64_t GetStartTime() const { return m_start_time; }
 
   AVStream* GetAVStream() const;
-  CDVDInputStream* m_pInput;
+  CDVDInputStream*    m_pInput;
 
 private:
   void Dispose();
   double ConvertTimestamp(int64_t pts, int den, int num) const;
 
-  AVIOContext* m_ioContext = nullptr;
-  AVFormatContext* m_pFormatContext = nullptr;
-  int m_nStreamIndex = -1;
-  int64_t m_start_time = 0;
-  MenuType m_menu_type = MenuType::NONE;
+  AVIOContext        *m_ioContext = nullptr;
+  AVFormatContext    *m_pFormatContext = nullptr;
+  int                 m_nStreamIndex = -1;
+  int64_t			  m_start_time = 0;
+  MenuType		  m_menu_type = MenuType::NONE;
 };

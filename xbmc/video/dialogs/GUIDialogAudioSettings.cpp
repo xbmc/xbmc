@@ -60,7 +60,7 @@ void CGUIDialogAudioSettings::FrameMove()
   const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
   float newVolume = appVolume->GetVolumeRatio();
   if (newVolume != m_volume)
-    GetSettingsManager()->SetNumber(SETTING_AUDIO_VOLUME, newVolume);
+    GetSettingsManager()->SetNumber(SETTING_AUDIO_VOLUME, static_cast<double>(newVolume));
 
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->HasPlayer())
@@ -70,7 +70,7 @@ void CGUIDialogAudioSettings::FrameMove()
     // these settings can change on the fly
     //! @todo (needs special handling): m_settingsManager->SetInt(SETTING_AUDIO_STREAM, g_application.GetAppPlayer().GetAudioStream());
     GetSettingsManager()->SetNumber(SETTING_AUDIO_DELAY,
-                                    videoSettings.m_AudioDelay);
+                                    static_cast<double>(videoSettings.m_AudioDelay));
     GetSettingsManager()->SetBool(SETTING_AUDIO_PASSTHROUGH, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH));
   }
 

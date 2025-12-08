@@ -22,3 +22,4 @@ class CDVDFactorySubtitle
 public:
   static CDVDSubtitleParser* CreateParser(std::string& strFile);
 };
+

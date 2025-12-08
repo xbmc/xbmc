@@ -38,7 +38,7 @@ bool CSmartPlaylistFileItemListModifier::Modify(CFileItemList &items) const
   if (!xsp.LoadFromJson(xspOption))
     return false;
 
-  items.SetProperty(PROPERTY_SORT_ORDER, xsp.GetOrder());
+  items.SetProperty(PROPERTY_SORT_ORDER, (int)xsp.GetOrder());
   items.SetProperty(PROPERTY_SORT_ASCENDING, xsp.GetOrderDirection() == SortOrderAscending);
 
   return true;

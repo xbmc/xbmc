@@ -177,7 +177,7 @@
         <setting id="videoplayer.useamcodecmpeg4" type="integer" label="39002">
           <requirement>HAVE_AMCODEC</requirement>
           <level>2</level>
-          <default>800</default>
+          <default>0</default>
           <constraints>
             <options>
               <option label="20420">9999</option>   <!-- Never -->
@@ -1112,12 +1112,12 @@
         </setting>
         <setting id="filelists.showhidden" type="boolean" label="21330" help="36127">
           <level>2</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="filelists.allowfiledeletion" type="boolean" label="14071" help="36125">
           <level>2</level>
-          <default>false</default>
+          <default>true</default>
           <dependencies>
             <dependency type="enable">
               <or>
@@ -2580,7 +2580,7 @@
       <group id="4" label="37053">
         <setting id="smb.chunksize" type="integer" label="37056" help="37057">
         <level>2</level>
-        <default>128</default>
+        <default>1024</default>
           <constraints>
             <options>filechunksizes</options>
           </constraints>
@@ -2605,7 +2605,7 @@
       <group id="2" label="37053">
         <setting id="nfs.chunksize" type="integer" label="37054" help="37055">
         <level>2</level>
-        <default>128</default>
+        <default>1024</default>
           <constraints>
             <options>filechunksizes</options>
           </constraints>
@@ -2617,7 +2617,7 @@
       <group id="1" label="16000">
         <setting id="filecache.buffermode" type="integer" label="37103" help="37104">
           <level>2</level>
-          <default>4</default>
+          <default>1</default>
           <constraints>
             <options>filecachebuffermodes</options>
           </constraints>
@@ -2625,7 +2625,7 @@
         </setting>
         <setting id="filecache.memorysize" type="integer" label="37105" help="37106">
           <level>2</level>
-          <default>20</default>
+          <default>128</default>
           <dependencies>
             <dependency type="enable">
               <condition setting="filecache.buffermode" operator="!is">3</condition>
@@ -2653,7 +2653,7 @@
       <group id="2" label="37053">
         <setting id="filecache.chunksize" type="integer" label="37053" help="37109">
           <level>2</level>
-          <default>131072</default>
+          <default>1048576</default>
           <dependencies>
             <dependency type="enable">
               <condition setting="filecache.buffermode" operator="!is">3</condition>
@@ -3859,19 +3859,22 @@
     </category>
     <category id="coreelec" label="14278" help="14279">
       <group id="1" label="131">
-        <setting id="coreelec.amlogic.noisereduction" type="boolean" label="14280" help="14281">
+        <setting id="coreelec.amlogic.noisereduction" type="boolean" label="14280" help="69999">
           <requirement>HAVE_AMCODEC</requirement>
+          <visible>true</visible>
           <level>3</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="coreelec.amlogic.sdr2hdr" type="boolean" label="14282" help="14283">
           <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="coreelec.amlogic.hdr2sdr" type="boolean" label="14284" help="14285">
           <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
           <default>false</default>
           <control type="toggle" />
           <dependencies>
@@ -3879,22 +3882,22 @@
           </dependencies>
         </setting>
       </group>
-      <group id="2" label="50001">
-        <setting id="coreelec.amlogic.dolbyvision.mode" type="integer" label="50011" help="50012">
+      <group id="2" label="60001">
+        <setting id="coreelec.amlogic.dolbyvision.mode" type="integer" label="60011" help="60012">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>true</visible>
           <level>2</level>
-          <default>2</default>
+          <default>1</default>
           <constraints>
             <options>
-              <option label="50013">0</option> <!-- On-->
-              <option label="50014">1</option> <!-- On demand -->
-              <option label="50015">2</option> <!-- Off -->
+              <option label="60013">0</option> <!-- On-->
+              <option label="60014">1</option> <!-- On demand -->
+              <option label="60015">2</option> <!-- Off -->
             </options>
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.mode.on.luminance" type="integer" label="50016" help="50017" parent="coreelec.amlogic.dolbyvision.mode">
+        <setting id="coreelec.amlogic.dolbyvision.mode.on.luminance" type="integer" label="60016" help="60017" parent="coreelec.amlogic.dolbyvision.mode">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
@@ -3909,299 +3912,214 @@
           </constraints>
           <control type="slider" format="integer" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.type" type="integer" label="50021" help="50022">
+        <setting id="coreelec.amlogic.dolbyvision.video.processor" type="integer" label="60501" help="60502">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
           <default>0</default>
           <dependencies>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-          </dependencies>
-          <constraints>
-            <options>DolbyVisionType</options>
-          </constraints>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vsvdb.inject" type="boolean" label="50031" help="50032" parent="coreelec.amlogic.dolbyvision.type">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">3</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vsvdb.colour.space" type="integer" label="50071" help="50072" parent="coreelec.amlogic.dolbyvision.vsvdb.inject">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default>0</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">3</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.vsvdb.inject" operator="is">true</dependency>
           </dependencies>
           <constraints>
             <options>
-              <option label="50081">0</option> <!-- DCI-P3 -->
-              <option label="50082">1</option> <!-- BT.2020 -->
-              <option label="50083">2</option> <!-- BT.709 -->
+              <option label="60503">0</option> <!-- Off -->
+              <!-- <option label="60507">5</option>  DV as LLDV RGB Full 12 Bit -->
+              <option label="60580">2</option> <!-- DV as HDR10 422 12 Bit -->
+              <option label="60504">1</option> <!-- DV as HDR10 444 12 Bit -->
+              <option label="60506">4</option> <!-- DV as LLDV 444 12 Bit -->
+              <option label="60505">3</option> <!-- DV as LLDV 422 12 Bit -->
             </options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vsvdb.min.luminance" type="integer" label="50073" help="50074" parent="coreelec.amlogic.dolbyvision.vsvdb.inject">
+        <setting id="coreelec.amlogic.dolbyvision.video.processor.tm" type="integer" label="60538" help="60539" parent="coreelec.amlogic.dolbyvision.video.processor">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
-          <default>0</default>
+          <default>4</default>
           <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">3</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.vsvdb.inject" operator="is">true</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="is">3</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="!is">0</dependency>
           </dependencies>
           <constraints>
-            <options>DolbyVisionVSVDBMinLum</options>
+            <options>
+              <!-- <option label="60540">0</option> -->
+              <option label="60541">1</option>
+              <!-- <option label="60542">2</option> -->
+              <!-- <option label="60543">3</option> -->
+              <option label="60544">4</option>
+              <!-- <option label="60545">5</option> -->
+              <!-- <option label="60546">6</option> -->
+              <!-- <option label="60560">7</option> -->
+              <!-- <option label="60561">8</option> -->
+              <!-- <option label="60562">9</option> -->
+            </options>
           </constraints>
-          <control type="list" format="string" />
+          <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vsvdb.max.luminance" type="integer" label="50075" help="50076" parent="coreelec.amlogic.dolbyvision.vsvdb.inject">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default>13</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">3</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.vsvdb.inject" operator="is">true</dependency>
-          </dependencies>
-          <constraints>
-            <options>DolbyVisionVSVDBMaxLum</options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vsvdb.payload" type="string" label="50033" help="50034" parent="coreelec.amlogic.dolbyvision.vsvdb.inject">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default></default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">3</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.vsvdb.inject" operator="is">true</dependency>
-          </dependencies>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.hdr.inject" type="boolean" label="50091" help="50092" parent="coreelec.amlogic.dolbyvision.type">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">2</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.hdr.payload" type="string" label="50093" help="50094" parent="coreelec.amlogic.dolbyvision.hdr.inject">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default></default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.hdr.inject" operator="is">true</dependency>
-          </dependencies>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <control type="edit" format="string" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.colorimtry.for.std" type="integer" label="50041" help="50042" parent="coreelec.amlogic.dolbyvision.type">
+          <setting id="coreelec.amlogic.dolbyvision.type" type="integer" label="60021" help="60022">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
           <default>2</default>
           <dependencies>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="is">0</dependency>
           </dependencies>
           <constraints>
-            <options>
-              <option label="50043">0</option> <!-- as per AMLogic (HDMI specification)-->
-              <option label="50044">1</option> <!-- bt.2020nc -->
-              <option label="50045">2</option> <!-- disable -->
-            </options>
+            <options>DolbyVisionType</options>
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.std.source.levels.metadata" type="boolean" label="50150" help="50151" parent="coreelec.amlogic.dolbyvision.type">
+        <setting id="coreelec.amlogic.dolbyvision.vsvdb.inject" type="boolean" label="60031" help="60032" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
           <default>false</default>
           <dependencies>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">0</dependency>
+            <!-- <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">1</dependency> -->
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.std.source.level.5" type="integer" label="50160" help="50161" parent="coreelec.amlogic.dolbyvision.std.source.levels.metadata">
+        <setting id="coreelec.amlogic.dolbyvision.vsvdb.colour.space" type="integer" label="60071" help="60072" parent="coreelec.amlogic.dolbyvision.vsvdb.inject">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>1</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">0</dependency>
+            <!-- <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">1</dependency> -->
+            <!-- <dependency type="visible" setting="coreelec.amlogic.dolbyvision.vsvdb.inject" operator="is">true</dependency> -->
+          </dependencies>
+          <constraints>
+            <options>
+              <option label="60081">0</option> <!-- DCI-P3 -->
+              <option label="60082">1</option> <!-- BT.2020 -->
+              <option label="60083">2</option> <!-- BT.709 -->
+              <option label="60563">3</option> <!-- DISPLAY -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.vsvdb.max.luminance" type="integer" label="60075" help="60076" parent="coreelec.amlogic.dolbyvision.vsvdb.inject">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>1000</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">0</dependency>
+            <!-- <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">1</dependency> -->
+            <!-- <dependency type="visible" setting="coreelec.amlogic.dolbyvision.vsvdb.inject" operator="is">true</dependency> -->
+          </dependencies>
+          <!-- <constraints>
+            <options>DolbyVisionVSVDBMaxLum</options>
+          </constraints>
+          <control type="list" format="string" /> -->
+          <control type="edit" format="integer" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.vsvdb.min.luminance" type="integer" label="60073" help="60074" parent="coreelec.amlogic.dolbyvision.vsvdb.inject">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="is">3</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.vsvdb.inject" operator="is">true</dependency>
+          </dependencies>
+          <!-- <constraints>
+            <options>DolbyVisionVSVDBMinLum</options>
+          </constraints>
+          <control type="list" format="string" />  -->
+          <control type="edit" format="integer" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.vsvdb.payload" type="string" label="60033" help="60034" parent="coreelec.amlogic.dolbyvision.vsvdb.inject">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default></default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="is">3</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">0</dependency>
+            <!-- <dependency type="visible" setting="coreelec.amlogic.dolbyvision.vsvdb.inject" operator="is">true</dependency> -->
+          </dependencies>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.dual.priority" type="integer" label="60131" help="60132" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
           <default>0</default>
           <dependencies>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.std.source.levels.metadata" operator="is">true</dependency>
+            <!-- <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="is">0</dependency> -->
           </dependencies>
           <constraints>
             <options>
-              <option label="50170">0</option> <!-- Discard -->
-              <option label="50171">1</option> <!-- Keep Source -->
-              <option label="50172">2</option> <!-- Keep Zero -->
-              <option label="50173">3</option> <!-- Keep Source (Unless Subtitles or OSD on then Zero) -->
-              <option label="50174">4</option> <!-- Keep Source (Unless OSD on then Zero) -->
+              <option label="60133">0</option> <!-- DV has Priroty -->
+              <option label="60134">1</option> <!-- HDR10+ has Priority -->
             </options>
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.std.source.level.6" type="integer" label="50180" help="50181" parent="coreelec.amlogic.dolbyvision.std.source.levels.metadata">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default>0</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.std.source.levels.metadata" operator="is">true</dependency>
-          </dependencies>
-          <constraints>
-            <options>
-              <option label="50170">0</option> <!-- Discard -->
-              <option label="50171">1</option> <!-- Keep Source -->
-            </options>
-          </constraints>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.std.restrict.overlays" type="boolean" label="50190" help="50191" parent="coreelec.amlogic.dolbyvision.std.source.levels.metadata">
+        <setting id="coreelec.amlogic.dolbyvision.hdr10plus.convert" type="boolean" label="60101" help="60102" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
           <default>false</default>
           <dependencies>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.std.source.levels.metadata" operator="is">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.ll.vsvdb.limit" type="integer" label="50200" help="50201" parent="coreelec.amlogic.dolbyvision.type">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default>0</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">0</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">3</dependency>
-          </dependencies>
-          <constraints>
-            <options>
-              <option label="50202">0</option> <!-- Do not limit -->
-              <option label="50203">1</option> <!-- Limit min and max -->
-              <option label="50204">2</option> <!-- Min PQ 20 and limit max -->
-              <option label="50205">3</option> <!-- Limit max only -->
-            </options>
-          </constraints>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.ll.vsvdb.limit.brightness" type="integer" label="50210" help="50211" parent="coreelec.amlogic.dolbyvision.ll.vsvdb.limit">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default>-1</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">0</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">3</dependency>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.ll.vsvdb.limit" operator="is">2</dependency>
-          </dependencies>
-          <constraints>
-            <minimum>-1024</minimum>
-            <maximum>1023</maximum>
-            <step>1</step>
-          </constraints>
-          <control type="spinner" format="integer"/>
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.dual.priority" type="integer" label="50131" help="50132" parent="coreelec.amlogic.dolbyvision.type">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default>0</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-          </dependencies>
-          <constraints>
-            <options>
-              <option label="50133">0</option> <!-- DV has Priroty -->
-              <option label="50134">1</option> <!-- HDR10+ has Priority -->
-            </options>
-          </constraints>
-          <control type="spinner" format="string" />
-        </setting>
-        <setting id="coreelec.amlogic.dolbyvision.hdr10plus.convert" type="boolean" label="50101" help="50102" parent="coreelec.amlogic.dolbyvision.type">
-          <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
-          <level>2</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <!-- <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="is">0</dependency> -->
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.dual.priority" operator="is">0</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.hdr10plus.prefer.convert" type="boolean" label="50121" help="50122" parent="coreelec.amlogic.dolbyvision.hdr10plus.convert">
+        <setting id="coreelec.amlogic.dolbyvision.hdr10plus.prefer.convert" type="boolean" label="60121" help="60122" parent="coreelec.amlogic.dolbyvision.hdr10plus.convert">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
           <default>0</default>
           <dependencies>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <!-- <dependency type="visible" setting="coreelec.amlogic.dolbyvision.video.processor" operator="is">0</dependency> -->
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.hdr10plus.convert" operator="is">true</dependency>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.dual.priority" operator="is">0</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.hdr10plus.peak.brightness.source" type="integer" label="50103" help="50104" parent="coreelec.amlogic.dolbyvision.hdr10plus.convert">
+        <setting id="coreelec.amlogic.dolbyvision.hdr10plus.peak.brightness.source" type="integer" label="60103" help="60104" parent="coreelec.amlogic.dolbyvision.hdr10plus.convert">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
           <default>4</default>
           <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="is">3</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">2</dependency>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.hdr10plus.convert" operator="is">true</dependency>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.dual.priority" operator="is">0</dependency>
           </dependencies>
           <constraints>
             <options>
-              <option label="50105">0</option> <!-- histogram -->
-              <option label="50106">1</option> <!-- histogram99 -->
-              <option label="50107">2</option> <!-- max-scl -->
-              <option label="50108">3</option> <!-- max-scl-Luminance -->
-              <option label="50109">4</option> <!-- histogram-plus -->
+              <option label="60105">0</option> <!-- histogram -->
+              <option label="60106">1</option> <!-- histogram99 -->
+              <option label="60107">2</option> <!-- max-scl -->
+              <option label="60108">3</option> <!-- max-scl-Luminance -->
+              <option label="60109">4</option> <!-- histogram-plus -->
             </options>
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vs10.sdr8" type="integer" label="50051" help="50052" parent="coreelec.amlogic.dolbyvision.type">
+        <setting id="coreelec.amlogic.dolbyvision.vs10.sdr8" type="integer" label="60051" help="60052" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
@@ -4214,7 +4132,7 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vs10.sdr10" type="integer" label="50053" help="50054" parent="coreelec.amlogic.dolbyvision.type">
+        <setting id="coreelec.amlogic.dolbyvision.vs10.sdr10" type="integer" label="60053" help="60054" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
@@ -4227,7 +4145,7 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vs10.hdr10" type="integer" label="50055" help="50056" parent="coreelec.amlogic.dolbyvision.type">
+        <setting id="coreelec.amlogic.dolbyvision.vs10.hdr10" type="integer" label="60055" help="60056" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
@@ -4240,13 +4158,13 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vs10.hdr10plus" type="integer" label="50057" help="50058" parent="coreelec.amlogic.dolbyvision.type">
+        <setting id="coreelec.amlogic.dolbyvision.vs10.hdr10plus" type="integer" label="60057" help="60058" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
           <default>5</default>
           <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="is">3</dependency>
             <dependency type="enable" setting="coreelec.amlogic.dolbyvision.hdr10plus.convert" operator="is">false</dependency>
           </dependencies>
           <constraints>
@@ -4254,7 +4172,7 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vs10.hdrhlg" type="integer" label="50059" help="50060" parent="coreelec.amlogic.dolbyvision.type">
+        <setting id="coreelec.amlogic.dolbyvision.vs10.hdrhlg" type="integer" label="60059" help="60060" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
@@ -4267,7 +4185,7 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="coreelec.amlogic.dolbyvision.vs10.dv" type="integer" label="50061" help="50062" parent="coreelec.amlogic.dolbyvision.type">
+        <setting id="coreelec.amlogic.dolbyvision.vs10.dv" type="integer" label="60061" help="60062" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
@@ -4280,8 +4198,19 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="coreelec.amlogic.dolbyvision.std.source.metadata.level5" type="boolean" label="60150" help="60151" parent="coreelec.amlogic.dolbyvision.type">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <!-- Move Convert Dolby Vision to here so with other settings - keep underlying name for now -->
-        <setting id="videoplayer.convertdovi" type="integer" label="39196" help="39197" parent="coreelec.amlogic.dolbyvision.type">
+        <setting id="videoplayer.convertdovi" type="integer" label="69196" help="69197" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
@@ -4291,9 +4220,27 @@
           </dependencies>
           <constraints>
             <options>
-              <option label="39300">0</option>  <!-- None (off) -->
-              <option label="39301">1</option>  <!-- ToMel -->
-              <option label="39302">2</option>  <!-- To81 -->
+              <option label="69300">0</option>  <!-- None (off) -->
+              <option label="69301">1</option>  <!-- ToMel -->
+              <option label="69302">2</option>  <!-- To81 -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.audio.seamlessbranch" type="integer" label="60594" help="60595" parent="coreelec.amlogic.dolbyvision.type">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>1</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+          </dependencies>
+          <constraints>
+            <options>
+              <option label="60596">0</option>  <!-- Off -->
+              <option label="60597">1</option>  <!-- 1 -->
+              <option label="60598">2</option>  <!-- 2 -->
+              <option label="60599">3</option>  <!-- 3 -->
             </options>
           </constraints>
           <control type="spinner" format="string" />

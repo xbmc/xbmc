@@ -11,16 +11,15 @@
 #include <assert.h>
 #include <atomic>
 
-template<typename T>
-struct IDVDResourceCounted
+template<typename T> struct IDVDResourceCounted
 {
   IDVDResourceCounted() : m_refs(1) {}
   virtual ~IDVDResourceCounted() = default;
 
-  IDVDResourceCounted(const IDVDResourceCounted&) = delete;
-  IDVDResourceCounted& operator=(const IDVDResourceCounted&) = delete;
+  IDVDResourceCounted(const IDVDResourceCounted &) = delete;
+  IDVDResourceCounted &operator=(const IDVDResourceCounted &) = delete;
 
-  virtual T* Acquire()
+  virtual T*  Acquire()
   {
     ++m_refs;
     return static_cast<T*>(this);

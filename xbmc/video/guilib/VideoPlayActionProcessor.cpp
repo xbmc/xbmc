@@ -18,6 +18,8 @@
 #include "video/VideoUtils.h"
 #include "video/guilib/VideoVersionHelper.h"
 
+#include "utils/AMLUtils.h"
+
 using namespace VIDEO::GUILIB;
 
 Action CVideoPlayActionProcessorBase::GetDefaultAction()
@@ -64,9 +66,11 @@ bool CVideoPlayActionProcessorBase::Process(Action action)
     }
 
     case ACTION_RESUME:
+      aml_reset_audio_from_play_from_resume();
       return OnResumeSelected();
 
     case ACTION_PLAY_FROM_BEGINNING:
+      aml_reset_audio_from_play_from_beginning();
       return OnPlaySelected();
 
     default:

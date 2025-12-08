@@ -39,6 +39,7 @@ class CDVDCodecOptions;
 class CDVDOverlayCodec
 {
 public:
+
   explicit CDVDOverlayCodec(const char* name) : m_codecName(name) {}
 
   virtual ~CDVDOverlayCodec() = default;
@@ -46,7 +47,7 @@ public:
   /*
    * Open the decoder, returns true on success
    */
-  virtual bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) = 0;
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) = 0;
 
   /*
    * returns one or a combination of VC_ messages

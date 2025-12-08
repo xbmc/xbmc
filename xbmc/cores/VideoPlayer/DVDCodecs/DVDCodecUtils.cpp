@@ -15,10 +15,9 @@
 #include <array>
 #include <assert.h>
 
-extern "C"
-{
-#include <libavutil/intreadwrite.h>
+extern "C" {
 #include <libswscale/swscale.h>
+#include <libavutil/intreadwrite.h>
 }
 
 bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)
@@ -37,7 +36,7 @@ bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)
   return true;
 }
 
-double CDVDCodecUtils::NormalizeFrameduration(double frameduration, bool* match)
+double CDVDCodecUtils::NormalizeFrameduration(double frameduration, bool *match)
 {
   //if the duration is within 20 microseconds of a common duration, use that
   // clang-format off
@@ -54,7 +53,7 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration, bool* match)
   // clang-format on
 
   double lowestdiff = DVD_TIME_BASE;
-  int selected = -1;
+  int    selected   = -1;
   for (size_t i = 0; i < durations.size(); i++)
   {
     double diff = fabs(frameduration - durations[i]);
@@ -79,36 +78,31 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration, bool* match)
   }
 }
 
-bool CDVDCodecUtils::IsH264AnnexB(std::string format, AVStream* avstream)
+bool CDVDCodecUtils::IsH264AnnexB(std::string format, AVStream *avstream)
 {
-  assert(avstream->codecpar->codec_id == AV_CODEC_ID_H264 ||
-         avstream->codecpar->codec_id == AV_CODEC_ID_H264_MVC);
+  assert(avstream->codecpar->codec_id == AV_CODEC_ID_H264 || avstream->codecpar->codec_id == AV_CODEC_ID_H264_MVC);
   if (avstream->codecpar->extradata_size < 4)
     return true;
   if (avstream->codecpar->extradata[0] == 1)
     return false;
   if (format == "avi")
   {
-    uint8_t* src = avstream->codecpar->extradata;
+    uint8_t *src = avstream->codecpar->extradata;
     unsigned startcode = AV_RB32(src);
     if (startcode == 0x00000001 || (startcode & 0xffffff00) == 0x00000100)
       return true;
-    if (avstream->codecpar->codec_tag == MKTAG('A', 'V', 'C', '1') ||
-        avstream->codecpar->codec_tag == MKTAG('a', 'v', 'c', '1'))
+    if (avstream->codecpar->codec_tag == MKTAG('A', 'V', 'C', '1') || avstream->codecpar->codec_tag == MKTAG('a', 'v', 'c', '1'))
       return false;
   }
   return true;
 }
 
-bool CDVDCodecUtils::ProcessH264MVCExtradata(uint8_t* data,
-                                             uint32_t data_size,
-                                             uint8_t** mvc_data,
-                                             uint32_t* mvc_data_size)
+bool CDVDCodecUtils::ProcessH264MVCExtradata(uint8_t *data, uint32_t data_size, uint8_t **mvc_data, uint32_t *mvc_data_size)
 {
   uint8_t* extradata = data;
   uint32_t extradata_size = data_size;
 
-  if (extradata_size > 4 && *(char*)extradata == 1)
+  if (extradata_size > 4 && *(char *)extradata == 1)
   {
     // Find "mvcC" atom
     uint32_t state = -1;
@@ -129,7 +123,7 @@ bool CDVDCodecUtils::ProcessH264MVCExtradata(uint8_t* data,
       {
         extradata += 8;
         extradata_size -= 8;
-        if (*(char*)extradata == 1)
+        if (*(char *)extradata == 1)
         {
           if (mvc_data)
             *mvc_data = extradata;
@@ -143,13 +137,13 @@ bool CDVDCodecUtils::ProcessH264MVCExtradata(uint8_t* data,
   return false;
 }
 
-bool CDVDCodecUtils::GetH264MvcStreamIndex(AVFormatContext* fmt, int* mvcIndex)
+bool CDVDCodecUtils::GetH264MvcStreamIndex(AVFormatContext *fmt, int *mvcIndex)
 {
   *mvcIndex = -1;
 
   for (size_t i = 0; i < fmt->nb_streams; i++)
   {
-    AVStream* st = fmt->streams[i];
+    AVStream *st = fmt->streams[i];
 
     if (st->codecpar->codec_id == AV_CODEC_ID_H264_MVC)
     {

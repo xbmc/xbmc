@@ -27,30 +27,27 @@ namespace VTB
 class CVideoBufferVTB;
 class CVideoBufferPoolVTB;
 
-class CVideoBufferVTB : public CVideoBuffer
+class CVideoBufferVTB: public CVideoBuffer
 {
 public:
-  CVideoBufferVTB(IVideoBufferPool& pool, int id);
+  CVideoBufferVTB(IVideoBufferPool &pool, int id);
   ~CVideoBufferVTB() override;
-  void SetRef(AVFrame* frame);
+  void SetRef(AVFrame *frame);
   void Unref();
   CVPixelBufferRef GetPB();
 
   GLuint m_fence = 0;
-
 protected:
   CVPixelBufferRef m_pbRef = nullptr;
-  AVFrame* m_pFrame;
+  AVFrame *m_pFrame;
 };
 
-class CDecoder : public IHardwareDecoder
+class CDecoder: public IHardwareDecoder
 {
 public:
   CDecoder(CProcessInfo& processInfo);
   ~CDecoder() override;
-  static IHardwareDecoder* Create(CDVDStreamInfo& hint,
-                                  CProcessInfo& processInfo,
-                                  AVPixelFormat fmt);
+  static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
   static bool Register();
   bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
   CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) override;
@@ -63,10 +60,10 @@ public:
 
 protected:
   unsigned m_renderbuffers_count;
-  AVCodecContext* m_avctx;
+  AVCodecContext *m_avctx;
   CProcessInfo& m_processInfo;
-  CVideoBufferVTB* m_renderBuffer = nullptr;
+  CVideoBufferVTB *m_renderBuffer = nullptr;
   std::shared_ptr<CVideoBufferPoolVTB> m_videoBufferPool;
 };
 
-} // namespace VTB
+}

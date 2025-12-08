@@ -846,7 +846,7 @@ private:
             thisClass->m_instanceData->info->kodi, it.c_str());
     }
 
-    return presets.size();
+    return static_cast<unsigned int>(presets.size());
   }
 
   inline static int ADDON_get_active_preset(const KODI_ADDON_VISUALIZATION_HDL hdl)

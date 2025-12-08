@@ -21,10 +21,7 @@ protected:
   void OnOutputReset() override;
   void CheckVideoParameters() override;
   void UpdateVideoFilters() override;
-  void FinalOutput(CD3DTexture& source,
-                   CD3DTexture& target,
-                   const CRect& sourceRect,
-                   const CPoint (&destPoints)[4]) override;
+  void FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& sourceRect, const CPoint(&destPoints)[4]) override;
 
   void SelectPSVideoFilter();
   bool HasHQScaler() const;

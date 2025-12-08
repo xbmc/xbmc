@@ -101,7 +101,7 @@ const char** CGameClientProperties::GetProxyDllPaths(const ADDON::VECADDONS& add
 
 unsigned int CGameClientProperties::GetProxyDllCount(void) const
 {
-  return m_proxyDllPaths.size();
+  return static_cast<unsigned int>(m_proxyDllPaths.size());
 }
 
 const char** CGameClientProperties::GetResourceDirectories(void)
@@ -166,7 +166,7 @@ const char** CGameClientProperties::GetResourceDirectories(void)
 
 unsigned int CGameClientProperties::GetResourceDirectoryCount(void) const
 {
-  return m_resourceDirectories.size();
+  return static_cast<unsigned int>(m_resourceDirectories.size());
 }
 
 const char* CGameClientProperties::GetProfileDirectory(void)
@@ -194,7 +194,7 @@ const char** CGameClientProperties::GetExtensions(void)
 
 unsigned int CGameClientProperties::GetExtensionCount(void) const
 {
-  return m_extensions.size();
+  return static_cast<unsigned int>(m_extensions.size());
 }
 
 bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons) const {

@@ -160,18 +160,14 @@ void CPeripherals::Clear()
   m_eventScanner->Stop();
 
   // avoid deadlocks by copying all busses into a temporary variable and destroying them from there
-  std::vector<PeripheralBusPtr> busses;
   {
     std::lock_guard bussesLock(m_critSectionBusses);
 
     /* delete busses and devices */
-    busses = m_busses;
+    for (const auto& bus : m_busses)
+      bus->Clear();
     m_busses.clear();
   }
-
-  for (const auto& bus : busses)
-    bus->Clear();
-  busses.clear();
 
   {
     std::lock_guard mappingsLock(m_critSectionMappings);

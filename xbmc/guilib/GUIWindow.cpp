@@ -407,10 +407,10 @@ void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bo
     int param2 = (forceClose ? 0x01 : 0) | (enableSound ? 0x02 : 0);
     if (bWait)
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_WINDOW_CLOSE, nextWindowID, param2,
-                                                 this);
+                                                 static_cast<void*>(this));
     else
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_WINDOW_CLOSE, nextWindowID, param2,
-                                                 this);
+                                                 static_cast<void*>(this));
   }
   else
     Close_Internal(forceClose, nextWindowID, enableSound);
@@ -685,7 +685,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       CAction action(ACTION_GESTURE_NOTIFY, 0, static_cast<float>(message.GetParam1()), static_cast<float>(message.GetParam2()), 0, 0);
       EVENT_RESULT result = OnMouseAction(action);
       auto res = new int(result);
-      message.SetPointer(res);
+      message.SetPointer(static_cast<void*>(res));
       return result != EVENT_RESULT_UNHANDLED;
     }
   case GUI_MSG_ADD_CONTROL:

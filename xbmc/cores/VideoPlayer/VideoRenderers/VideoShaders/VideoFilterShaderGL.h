@@ -14,8 +14,7 @@
 
 #include "system_gl.h"
 
-namespace Shaders
-{
+namespace Shaders {
 
 namespace GL
 {
@@ -70,52 +69,50 @@ protected:
   GLint m_hCoord = -1;
   GLint m_hProj = -1;
   GLint m_hModel = -1;
-};
+  };
 
-class ConvolutionFilterShader : public BaseVideoFilterShader
-{
-public:
-  ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, GLSLOutput* output = NULL);
-  ~ConvolutionFilterShader() override;
-  void OnCompiledAndLinked() override;
-  bool OnEnabled() override;
-  void OnDisabled() override;
-  void Free();
-
-  bool GetTextureFilter(GLint& filter) override
+  class ConvolutionFilterShader : public BaseVideoFilterShader
   {
-    filter = GL_NEAREST;
-    return true;
-  }
+  public:
+    ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, GLSLOutput *output=NULL);
+    ~ConvolutionFilterShader() override;
+    void OnCompiledAndLinked() override;
+    bool OnEnabled() override;
+    void OnDisabled() override;
+    void Free();
 
-protected:
-  // kernel textures
-  GLuint m_kernelTex1 = 0;
+    bool GetTextureFilter(GLint& filter) override { filter = GL_NEAREST; return true; }
 
-  // shader handles to kernel textures
-  GLint m_hKernTex;
+  protected:
+    // kernel textures
+    GLuint m_kernelTex1 = 0;
 
-  ESCALINGMETHOD m_method;
-  bool m_floattex; //if float textures are supported
-  GLint m_internalformat;
+    // shader handles to kernel textures
+    GLint m_hKernTex;
 
-  GLSLOutput* m_glslOutput;
-};
+    ESCALINGMETHOD m_method;
+    bool m_floattex; //if float textures are supported
+    GLint m_internalformat;
 
-class StretchFilterShader : public BaseVideoFilterShader
-{
-public:
-  StretchFilterShader();
-  void OnCompiledAndLinked() override;
-  bool OnEnabled() override;
-};
+    GLSLOutput* m_glslOutput;
+  };
 
-class DefaultFilterShader : public BaseVideoFilterShader
-{
-public:
-  void OnCompiledAndLinked() override;
-  bool OnEnabled() override;
-};
+  class StretchFilterShader : public BaseVideoFilterShader
+  {
+    public:
+      StretchFilterShader();
+      void OnCompiledAndLinked() override;
+      bool OnEnabled() override;
+  };
 
-} // namespace GL
-} // namespace Shaders
+  class DefaultFilterShader : public BaseVideoFilterShader
+  {
+    public:
+      void OnCompiledAndLinked() override;
+      bool OnEnabled() override;
+  };
+
+  } // namespace GL
+} // end namespace
+
+

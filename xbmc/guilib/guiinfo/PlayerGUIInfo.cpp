@@ -302,11 +302,15 @@ static double pq_to_nits(uint16_t pq) {
   switch (pq) {
     case 0:    { return 0; }
     case 7:    { return 0.0001; }
-    case 62:   { return 0.0050; }
-    case 3079: { return 1000; }
-    case 3388: { return 2000; }
-    case 3696: { return 4000; }
-    case 4095: { return 10000; }
+    case 10:   { return 0.0002; }
+    case 17:   { return 0.0005; }
+    case 26:   { return 0.001; }
+    case 38:   { return 0.002; }
+    case 62:   { return 0.005; }
+    case 3079: { return 1000.0; }
+    case 3388: { return 2000.0; }
+    case 3696: { return 4000.0; }
+    case 4095: { return 10000.0; }
   }
 
   // Normalize 12-bit PQ value to 0-1 range
@@ -373,11 +377,13 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       value = GUIINFO::GetFileInfoLabelValueFromPath(info.m_info, item->GetPath());
       return true;
     case PLAYER_TITLE:
+    {
       // use label or drop down to title from path
       value = item->GetLabel();
       if (value.empty())
         value = CUtil::GetTitleFromPath(item->GetPath());
       return true;
+    }
     case PLAYER_PLAYSPEED:
     {
       float speed = m_appPlayer->GetPlaySpeed();
@@ -505,6 +511,9 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     case PLAYER_PROCESS_AUDIOCHANNELS:
       value = CServiceBroker::GetDataCacheCore().GetAudioChannels();
+      return true;
+    case PLAYER_PROCESS_AUDIOCHANNELS_SINK:
+      value = CServiceBroker::GetDataCacheCore().GetAudioChannelsSink();
       return true;
     case PLAYER_PROCESS_AUDIOSAMPLERATE:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioSampleRate());
@@ -757,9 +766,6 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
 
     case PLAYER_PROCESS_AV_CHANGE:
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetAVChange());
-      return true;
-    case PLAYER_PROCESS_RENDER_PTS:
-      value = std::to_string((int)CServiceBroker::GetDataCacheCore().GetRenderPts());
       return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

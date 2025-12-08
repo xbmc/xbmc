@@ -398,7 +398,7 @@ void CPVRPlaybackState::StartPlayback(
     }
   }
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, item);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
 }
 
 bool CPVRPlaybackState::IsPlaying() const

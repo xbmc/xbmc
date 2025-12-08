@@ -29,7 +29,7 @@ bool CGameClientStreamVideo::OpenStream(RETRO::IRetroPlayerStream* stream,
       TranslateProperties(properties.video));
   if (videoProperties)
   {
-    if (videoStream->OpenStream(*videoProperties))
+    if (videoStream->OpenStream(static_cast<const RETRO::StreamProperties&>(*videoProperties)))
       m_stream = stream;
   }
 
@@ -60,7 +60,7 @@ void CGameClientStreamVideo::AddData(const game_stream_packet& packet)
         video.width, video.height, rotation, video.data, video.size,
     };
 
-    m_stream->AddStreamData(videoPacket);
+    m_stream->AddStreamData(static_cast<const RETRO::StreamPacket&>(videoPacket));
   }
 }
 

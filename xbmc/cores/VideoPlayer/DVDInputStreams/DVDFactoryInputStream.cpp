@@ -35,8 +35,7 @@
 
 #include <memory>
 
-std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(
-    IVideoPlayer* pPlayer, const CFileItem& fileitem, bool scanforextaudio)
+std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio)
 {
   using namespace ADDON;
 
@@ -109,8 +108,9 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(
   else if (URIUtils::IsPVRRecording(file))
     return std::make_shared<CInputStreamPVRRecording>(pPlayer, fileitem);
 #ifdef HAVE_LIBBLURAY
-  else if (fileitem.IsType(".bdmv") || fileitem.IsType(".mpls") || fileitem.IsType(".bdm") ||
-           fileitem.IsType(".mpl") || StringUtils::StartsWithNoCase(file, "bluray:"))
+  else if (fileitem.IsType(".bdmv") || fileitem.IsType(".mpls")
+          || fileitem.IsType(".bdm") || fileitem.IsType(".mpl")
+          || StringUtils::StartsWithNoCase(file, "bluray:"))
     return std::make_shared<CDVDInputStreamBluray>(pPlayer, fileitem);
 #endif
   else if (StringUtils::StartsWithNoCase(file, "rtp://") ||
@@ -131,7 +131,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(
   {
     return std::make_shared<CDVDInputStreamFFmpeg>(fileitem);
   }
-  else if (StringUtils::StartsWithNoCase(file, "stack://"))
+  else if(StringUtils::StartsWithNoCase(file, "stack://"))
     return std::make_shared<CDVDInputStreamStack>(fileitem);
 
   CFileItem finalFileitem(fileitem);
@@ -155,7 +155,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(
         }
         curlFile.Close();
       }
-      catch (XFILE::CRedirectException* pRedirectEx)
+      catch (XFILE::CRedirectException *pRedirectEx)
       {
         if (pRedirectEx)
         {
@@ -182,8 +182,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(
       finalFileitem, XFILE::READ_TRUNCATED | XFILE::READ_BITRATE | XFILE::READ_CHUNKED);
 }
 
-std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(
-    IVideoPlayer* pPlayer, const CFileItem& fileitem, const std::vector<std::string>& filenames)
+std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, const std::vector<std::string>& filenames)
 {
   return std::make_shared<CInputStreamMultiSource>(pPlayer, fileitem, filenames);
 }

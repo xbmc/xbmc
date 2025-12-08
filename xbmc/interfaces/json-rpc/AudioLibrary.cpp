@@ -63,7 +63,7 @@ JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITranspor
     std::string propertyName = it->asString();
     CVariant property;
     if (propertyName == "missingartistid")
-      property = BLANKARTIST_ID;
+      property = (int)BLANKARTIST_ID;
     else if (propertyName == "librarylastupdated")
       property = musicdatabase.GetLibraryLastUpdated();
     else if (propertyName == "librarylastcleaned")

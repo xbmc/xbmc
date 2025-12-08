@@ -124,7 +124,6 @@
 #include "storage/MediaManager.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
-#include "utils/AMLUtils.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
 #include "utils/CharsetConverter.h"
@@ -138,6 +137,7 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
+#include "utils/AMLUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XTimeUtils.h"
@@ -1438,6 +1438,7 @@ bool CApplication::OnAction(const CAction &action)
     CGUIControlProfiler::Instance().Start();
     return true;
   }
+
   if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
     const PLAYLIST::Id playlistId = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
@@ -1454,6 +1455,7 @@ bool CApplication::OnAction(const CAction &action)
     }
     return true;
   }
+
   return false;
 }
 
@@ -1615,7 +1617,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_MOVETOSCREEN:
-    CServiceBroker::GetWinSystem()->MoveToScreen(pMsg->param1);
+    CServiceBroker::GetWinSystem()->MoveToScreen(static_cast<int>(pMsg->param1));
     break;
 
   case TMSG_MINIMIZE:
@@ -1847,23 +1849,20 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
 
     // Open the door for external calls e.g python exactly here.
-    // Window size can be between 2 and max configured ms and depends on number of continuous requests
+    // Window size can be between 2 and 10ms and depends on number of continuous requests
     if (m_WaitingExternalCalls)
     {
       CSingleExit ex(CServiceBroker::GetWinSystem()->GetGfxContext());
-
       m_frameMoveGuard.unlock();
 
-      // Calculate a window size between 2 and max configured ms, 4 continuous requests let the window grow by 1ms
+      // Calculate a window size between 2 and 10ms, 4 continuous requests let the window grow by 1ms
       // When not playing video we allow it to increase to 80ms
-      unsigned int max_sleep = m_maxOtherTaskTime;
+      unsigned int max_sleep = 10;
       if (!appPlayer->IsPlayingVideo() || appPlayer->IsPausedPlayback())
         max_sleep = 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
       KODI::TIME::Sleep(std::chrono::milliseconds(sleepTime));
-
       m_frameMoveGuard.lock();
-
       m_ProcessedExternalDecay = 5;
     }
     if (m_ProcessedExternalDecay && --m_ProcessedExternalDecay == 0)
@@ -1931,12 +1930,6 @@ int CApplication::Run()
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
-
-  // pin the main thread (Process/FrameMove/Render) to core
-  aml_pin_thread_to_core(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_threadApplicationCore);
-
-  // max time for other tasks on main thread
-  m_maxOtherTaskTime = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_threadApplicationMaxOtherTaskTime;
 
   // Run the app
   while (!m_bStop)
@@ -2597,6 +2590,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   }
 
   const auto appVolume = GetComponent<CApplicationVolumeHandling>();
+  aml_reset_audio_from_player_open();
   appPlayer->OpenFile(item, options, m_ServiceManager->GetPlayerCoreFactory(), player, *this);
   appPlayer->SetVolume(appVolume->GetVolumeRatio());
   appPlayer->SetMute(appVolume->IsMuted());
@@ -2917,12 +2911,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
         auto fileitemList = std::make_unique<CFileItemList>();
         fileitemList->Add(std::move(trailerItem));
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
-                                                   fileitemList.release());
+                                                   static_cast<void*>(fileitemList.release()));
       }
       else
       {
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0,
-                                                   trailerItem.release());
+                                                   static_cast<void*>(trailerItem.release()));
       }
       break;
     }
@@ -3494,7 +3488,7 @@ void CApplication::SeekTime( double dTime )
         item->SetStartOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
-        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0, item);
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));
       }
       return;
     }
@@ -3598,13 +3592,11 @@ void CApplication::CancelUpdateLibraries()
 {
   if (CMusicLibraryQueue::GetInstance().IsRunning())
   {
-    logM(LOGINFO, "CApplication", "Cancel music library scan");
     CMusicLibraryQueue::GetInstance().CancelAllJobs();
   }
 
   if (CVideoLibraryQueue::GetInstance().IsRunning())
   {
-    logM(LOGINFO, "CApplication", "Cancel video library scan");
     CVideoLibraryQueue::GetInstance().CancelAllJobs();
   }
 }

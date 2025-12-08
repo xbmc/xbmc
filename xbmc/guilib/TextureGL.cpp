@@ -41,7 +41,7 @@ CGLTexture::~CGLTexture()
 
 void CGLTexture::CreateTextureObject()
 {
-  glGenTextures(1, &m_texture);
+  glGenTextures(1, (GLuint*) &m_texture);
 }
 
 void CGLTexture::DestroyTextureObject()

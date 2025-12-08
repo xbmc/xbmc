@@ -8,19 +8,20 @@
 
 #pragma once
 
-#include "cores/IPlayer.h"
-
 #include <cstddef>
 #include <vector>
+#include "cores/IPlayer.h"
 
-extern "C"
-{
+extern "C" {
 #include <libavutil/pixfmt.h>
 }
 
 struct CRenderInfo
 {
-  CRenderInfo() { Reset(); }
+  CRenderInfo()
+  {
+    Reset();
+  }
   void Reset()
   {
     max_buffer_size = 0;
@@ -33,5 +34,5 @@ struct CRenderInfo
   std::vector<AVPixelFormat> formats;
   std::vector<EINTERLACEMETHOD> m_deintMethods;
   // Can be used for initialising video codec with information from renderer (e.g. a shared image pool)
-  void* opaque_pointer;
+  void *opaque_pointer;
 };

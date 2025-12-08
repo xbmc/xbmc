@@ -18,7 +18,7 @@ public:
   CRendererVTB();
   ~CRendererVTB() override;
 
-  static CBaseRenderer* Create(CVideoBuffer* buffer);
+  static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
 
   // Player functions
@@ -47,3 +47,4 @@ protected:
   CRenderBuffer m_vtbBuffers[NUM_BUFFERS];
   CVEAGLContext m_glContext;
 };
+

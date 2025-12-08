@@ -1109,7 +1109,7 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
 
 int CSysInfo::GetXbmcBitness(void)
 {
-  return sizeof(void*) * 8;
+  return static_cast<int>(sizeof(void*) * 8);
 }
 
 bool CSysInfo::HasInternet() const {

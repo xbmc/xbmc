@@ -1013,7 +1013,7 @@ void CGraphicContext::GetAllowedResolutions(std::vector<RESOLUTION> &res)
 
   res.push_back(RES_WINDOW);
   res.push_back(RES_DESKTOP);
-  for (size_t r = RES_CUSTOM; r < CDisplaySettings::GetInstance().ResolutionInfoSize(); r++)
+  for (size_t r = (size_t) RES_CUSTOM; r < CDisplaySettings::GetInstance().ResolutionInfoSize(); r++)
   {
     res.push_back((RESOLUTION) r);
   }

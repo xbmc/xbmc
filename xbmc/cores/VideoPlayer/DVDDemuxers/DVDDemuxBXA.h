@@ -39,6 +39,7 @@ class CDemuxStreamAudioBXA;
 class CDVDDemuxBXA : public CDVDDemux
 {
 public:
+
   CDVDDemuxBXA();
   ~CDVDDemuxBXA() override;
 
@@ -48,10 +49,7 @@ public:
   void Abort() override;
   void Flush() override;
   DemuxPacket* Read() override;
-  bool SeekTime(double time, bool backwards = false, double* startpts = nullptr) override
-  {
-    return false;
-  }
+  bool SeekTime(double time, bool backwards = false, double* startpts = nullptr) override { return false; }
   int GetStreamLength() override { return (int)m_header.durationMs; }
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
@@ -64,7 +62,8 @@ protected:
   std::shared_ptr<CDVDInputStream> m_pInput;
   int64_t m_bytes;
 
-  CDemuxStreamAudioBXA* m_stream;
+  CDemuxStreamAudioBXA *m_stream;
 
   Demux_BXA_FmtHeader m_header;
 };
+

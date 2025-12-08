@@ -1224,21 +1224,21 @@ const infomap player_process[] = {{"videodecoder", PLAYER_PROCESS_VIDEODECODER},
                                   {"video.queue.data.level", PLAYER_PROCESS_VIDEO_QUEUE_DATA_LEVEL},
                                   {"videoscantype", PLAYER_PROCESS_VIDEOSCANTYPE},
                                   {"video.bit.depth", PLAYER_PROCESS_VIDEO_BIT_DEPTH },
-
+                                  
                                   {"video.hdr.type", PLAYER_PROCESS_VIDEO_HDR_TYPE },
                                   {"video.hdr.type.raw", PLAYER_PROCESS_VIDEO_HDR_TYPE_RAW },
                                   {"video.source.hdr.type", PLAYER_PROCESS_VIDEO_SOURCE_HDR_TYPE },
                                   {"video.source.hdr.type.raw", PLAYER_PROCESS_VIDEO_SOURCE_HDR_TYPE_RAW },
                                   {"video.source.additional.hdr.type", PLAYER_PROCESS_VIDEO_SOURCE_ADDITIONAL_HDR_TYPE },
                                   {"video.source.additional.hdr.type.raw", PLAYER_PROCESS_VIDEO_SOURCE_ADDITIONAL_HDR_TYPE_RAW },
-
+                                  
                                   {"video.width.raw", PLAYER_PROCESS_VIDEO_WIDTH_RAW},
                                   {"video.height.raw", PLAYER_PROCESS_VIDEO_HEIGHT_RAW},
                                   {"video.color.space", PLAYER_PROCESS_VIDEO_COLOR_SPACE },
                                   {"video.color.range", PLAYER_PROCESS_VIDEO_COLOR_RANGE },
                                   {"video.color.primaries", PLAYER_PROCESS_VIDEO_COLOR_PRIMARIES },
                                   {"video.color.transfer.characteristic", PLAYER_PROCESS_VIDEO_COLOR_TRANSFER_CHARACTERISTIC },
-
+                                  
                                   {"video.dovi.has.config", PLAYER_PROCESS_VIDEO_DOVI_HAS_CONFIG },
 
                                   {"video.dovi.version.major", PLAYER_PROCESS_VIDEO_DOVI_VERSION_MAJOR },
@@ -1246,7 +1246,7 @@ const infomap player_process[] = {{"videodecoder", PLAYER_PROCESS_VIDEODECODER},
                                   {"video.dovi.profile", PLAYER_PROCESS_VIDEO_DOVI_PROFILE },
                                   {"video.dovi.level", PLAYER_PROCESS_VIDEO_DOVI_LEVEL },
                                   {"video.dovi.rpu.present", PLAYER_PROCESS_VIDEO_DOVI_RPU_PRESENT },
-                                  {"video.dovi.el.present", PLAYER_PROCESS_VIDEO_DOVI_EL_PRESENT },
+                                  {"video.dovi.el.present", PLAYER_PROCESS_VIDEO_DOVI_EL_PRESENT },                                  
                                   {"video.dovi.bl.present", PLAYER_PROCESS_VIDEO_DOVI_BL_PRESENT },
                                   {"video.dovi.bl.signal.compatibility", PLAYER_PROCESS_VIDEO_DOVI_BL_SIGNAL_COMPATIBILITY },
 
@@ -1296,8 +1296,6 @@ const infomap player_process[] = {{"videodecoder", PLAYER_PROCESS_VIDEODECODER},
                                   {"video.hdr.max.lum", PLAYER_PROCESS_VIDEO_HDR_MAX_LUM },
                                   {"video.hdr.colour.primaries", PLAYER_PROCESS_VIDEO_HDR_COLOUR_PRIMARIES },
 
-                                  {"render.pts", PLAYER_PROCESS_RENDER_PTS },
-
                                   {"amlogic.pixformat", PLAYER_PROCESS_AML_PIXELFORMAT },
                                   {"amlogic.displaymode", PLAYER_PROCESS_AML_DISPLAYMODE },
                                   {"amlogic.eoft_gamut", PLAYER_PROCESS_AML_EOFT_GAMUT },
@@ -1305,8 +1303,10 @@ const infomap player_process[] = {{"videodecoder", PLAYER_PROCESS_VIDEODECODER},
                                   {"amlogic.vs10.mode.raw", PLAYER_PROCESS_AML_VS10_MODE_RAW },
                                   {"amlogic.video.fps.info", PLAYER_PROCESS_AML_VIDEO_FPS_INFO },
                                   {"amlogic.video.fps.drop", PLAYER_PROCESS_AML_VIDEO_FPS_DROP },
-
-                                  {"av.change", PLAYER_PROCESS_AV_CHANGE }};
+                                  
+                                  {"av.change", PLAYER_PROCESS_AV_CHANGE },
+                                
+                                  {"audiochannelssink", PLAYER_PROCESS_AUDIOCHANNELS_SINK}};
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Weather Weather
@@ -4136,7 +4136,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "audiobitrate",     VIDEOPLAYER_AUDIO_BITRATE },
                                   { "audioaltbitrate",  VIDEOPLAYER_AUDIO_BIT_RATE },
                                   { "audiokibitrate",   VIDEOPLAYER_AUDIO_KIBIT_RATE },
-                                  { "audiomibitrate",   VIDEOPLAYER_AUDIO_MIBIT_RATE },
+                                  { "audiomibitrate",   VIDEOPLAYER_AUDIO_MIBIT_RATE },                                  
                                   { "audiolanguage",    VIDEOPLAYER_AUDIO_LANG },
                                   { "audiolanguageex",  VIDEOPLAYER_AUDIO_LANG_EX },
                                   { "audioname",        VIDEOPLAYER_AUDIO_NAME },
@@ -11385,6 +11385,50 @@ void CGUIInfoManager::UpdateAVInfo()
     appPlayer->GetSubtitleStreamInfo(CURRENT_STREAM, subtitle);
 
     m_infoProviders.UpdateAVInfo(audio, video, subtitle);
+
+    int channels = audio.channels;
+    std::string audio_layout = "Null";               // Null
+    switch (channels)
+    {
+    case 0:
+      audio_layout = "No Channels";                   // No Channels
+      break;
+    case 1:
+      audio_layout = "Mono";                           // 1.0
+      break;
+    case 2:
+      audio_layout = "FL, FR";                          // 2.0
+      break;
+    case 3:
+      audio_layout = "FL, FR, LFE";                      // 2.1
+      break;
+    case 4:
+      audio_layout = "FL, FR, BL, BR";                    // 4.0
+      break;
+    case 5:
+      audio_layout = "FL, FR, LFE, BL, BR";                // 4.1
+      break;
+    case 6:
+      audio_layout = "FL, FR, FC, LFE, SL, SR";             // 5.1
+      break;
+    case 7:
+      audio_layout = "FL, FR, FC, LFE, BL, BR, BC";          // 6.1
+      break;
+    case 8:
+      audio_layout = "FL, FR, FC, LFE, BL, BR, SL, SR";       // 7.1
+      break;
+    case 9:
+      audio_layout = "Undefined";                               // Undefined
+      break;
+    case 10:
+      audio_layout = "FL, FR, FC, LFE, BL, BR, SL, SR, FWL, FWR"; // 9.1
+      break;
+    default:
+      audio_layout = "Unknown";                                    // Unknown
+      break;
+    }
+
+    CServiceBroker::GetDataCacheCore().SetAudioChannels(audio_layout);
   }
 }
 

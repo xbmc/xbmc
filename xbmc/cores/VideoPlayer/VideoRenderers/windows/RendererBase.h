@@ -18,8 +18,7 @@
 
 #include <d3d11_4.h>
 #include <dxgi1_5.h>
-extern "C"
-{
+extern "C" {
 #include <libavutil/mastering_display_metadata.h>
 #include <libavutil/pixdesc.h>
 }
@@ -29,15 +28,15 @@ class CVideoBuffer;
 
 namespace win
 {
-namespace helpers
-{
-template<typename T>
-bool contains(std::vector<T> vector, T item)
-{
-  return find(vector.begin(), vector.end(), item) != vector.end();
+  namespace helpers
+  {
+    template<typename T>
+    bool contains(std::vector<T> vector, T item)
+    {
+      return find(vector.begin(), vector.end(), item) != vector.end();
+    }
+  }
 }
-} // namespace helpers
-} // namespace win
 
 enum RenderMethod
 {
@@ -70,7 +69,7 @@ public:
   virtual HRESULT GetResource(ID3D11Resource** ppResource, unsigned* index) const;
 
   // implementation specified
-  virtual bool GetDataPlanes(uint8_t* (&planes)[3], int (&strides)[3]) { return false; }
+  virtual bool GetDataPlanes(uint8_t*(&planes)[3], int(&strides)[3]) { return false; }
   virtual unsigned GetViewCount() const { return 0; }
   virtual ID3D11View* GetView(unsigned viewIdx) { return nullptr; }
 
@@ -115,26 +114,18 @@ public:
   virtual ~CRendererBase();
 
   virtual CRenderInfo GetRenderInfo();
-  virtual bool Configure(const VideoPicture& picture, float fps, unsigned int orientation);
+  virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation);
   virtual bool Supports(ESCALINGMETHOD method) const = 0;
   virtual bool Supports(ERENDERFEATURE feature) const;
 
   virtual bool WantsDoublePass() { return false; }
   virtual bool NeedBuffer(int idx) { return false; }
 
-  void AddVideoPicture(const VideoPicture& picture, int index);
-  void Render(int index,
-              int index2,
-              CD3DTexture& target,
-              const CRect& sourceRect,
-              const CRect& destRect,
-              const CRect& viewRect,
-              unsigned flags);
-  void Render(CD3DTexture& target,
-              const CRect& sourceRect,
-              const CRect& destRect,
-              const CRect& viewRect,
-              unsigned flags = 0);
+  void AddVideoPicture(const VideoPicture &picture, int index);
+  void Render(int index, int index2, CD3DTexture& target, const CRect& sourceRect, 
+              const CRect& destRect, const CRect& viewRect, unsigned flags);
+  void Render(CD3DTexture& target, const CRect& sourceRect, const CRect& destRect, 
+              const CRect& viewRect, unsigned flags = 0);
 
   void ManageTextures();
   int NextBuffer() const;
@@ -144,7 +135,7 @@ public:
 
   DEBUG_INFO_VIDEO GetDebugInfo(int idx);
 
-  static DXGI_FORMAT GetDXGIFormat(const VideoPicture& picture);
+  static DXGI_FORMAT GetDXGIFormat(const VideoPicture &picture);
   static DXGI_FORMAT GetDXGIFormat(CVideoBuffer* videoBuffer);
   static AVPixelFormat GetAVFormat(DXGI_FORMAT dxgi_format);
   static DXGI_HDR_METADATA_HDR10 GetDXGIHDR10MetaData(CRenderBuffer* rb);
@@ -157,7 +148,7 @@ protected:
                                 bool dynamic = false,
                                 DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN);
   void OnCMSConfigChanged(AVColorPrimaries srcPrimaries);
-  void ReorderDrawPoints(const CRect& destRect, CPoint (&rotatedPoints)[4]) const;
+  void ReorderDrawPoints(const CRect& destRect, CPoint(&rotatedPoints)[4]) const;
   bool CreateRenderBuffer(int index);
   void DeleteRenderBuffer(int index);
 
@@ -177,14 +168,8 @@ protected:
     return m_HdrType == HDR_TYPE::HDR_HDR10 || m_HdrType == HDR_TYPE::HDR_HLG;
   }
 
-  virtual void RenderImpl(CD3DTexture& target,
-                          CRect& sourceRect,
-                          CPoint (&destPoints)[4],
-                          uint32_t flags) = 0;
-  virtual void FinalOutput(CD3DTexture& source,
-                           CD3DTexture& target,
-                           const CRect& sourceRect,
-                           const CPoint (&destPoints)[4]);
+  virtual void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint (&destPoints)[4], uint32_t flags) = 0;
+  virtual void FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& sourceRect, const CPoint(&destPoints)[4]);
 
   virtual CRenderBuffer* CreateBuffer() = 0;
   virtual void UpdateVideoFilters();

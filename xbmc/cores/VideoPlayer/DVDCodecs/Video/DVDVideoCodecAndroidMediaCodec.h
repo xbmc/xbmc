@@ -40,6 +40,7 @@ class CBitstreamConverter;
 struct DemuxCryptoInfo;
 struct mpeg2_sequence;
 
+
 typedef struct amc_demux
 {
   uint8_t* pData;

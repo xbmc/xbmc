@@ -51,8 +51,11 @@ bool CDVDInputStreamFile::Open()
 
   std::string content = m_item.GetMimeType();
 
-  if (content == "video/mp4" || content == "video/x-msvideo" || content == "video/avi" ||
-      content == "video/x-matroska" || content == "video/x-matroska-3d")
+  if (content == "video/mp4" ||
+      content == "video/x-msvideo" ||
+      content == "video/avi" ||
+      content == "video/x-matroska" ||
+      content == "video/x-matroska-3d")
     flags |= READ_MULTI_STREAM;
 
   // open file in binary mode
@@ -86,8 +89,7 @@ void CDVDInputStreamFile::Close()
 
 int CDVDInputStreamFile::Read(uint8_t* buf, int buf_size)
 {
-  if (!m_pFile)
-    return -1;
+  if(!m_pFile) return -1;
 
   ssize_t ret = m_pFile->Read(buf, buf_size);
 
@@ -98,22 +100,20 @@ int CDVDInputStreamFile::Read(uint8_t* buf, int buf_size)
   if (ret == 0)
     m_eof = true;
 
-  return ret;
+  return (int)ret;
 }
 
 int64_t CDVDInputStreamFile::Seek(int64_t offset, int whence)
 {
-  if (!m_pFile)
-    return -1;
+  if(!m_pFile) return -1;
 
-  if (whence == SEEK_POSSIBLE)
+  if(whence == SEEK_POSSIBLE)
     return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, nullptr);
 
   int64_t ret = m_pFile->Seek(offset, whence);
 
   /* if we succeed, we are not eof anymore */
-  if (ret >= 0)
-    m_eof = false;
+  if( ret >= 0 ) m_eof = false;
 
   return ret;
 }
@@ -125,9 +125,9 @@ int64_t CDVDInputStreamFile::GetLength()
   return 0;
 }
 
-bool CDVDInputStreamFile::GetCacheStatus(XFILE::SCacheStatus* status)
+bool CDVDInputStreamFile::GetCacheStatus(XFILE::SCacheStatus *status)
 {
-  if (m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, status) >= 0)
+  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, status) >= 0)
     return true;
   else
     return false;
@@ -138,7 +138,7 @@ BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
   if (!m_pFile)
     return m_stats; // dummy return. defined in CDVDInputStream
 
-  if (m_pFile->GetBitstreamStats())
+  if(m_pFile->GetBitstreamStats())
     return *m_pFile->GetBitstreamStats();
   else
     return m_stats;
@@ -160,7 +160,7 @@ void CDVDInputStreamFile::SetReadRate(uint32_t rate)
   // Increase requested rate by 10%:
   uint32_t maxrate = static_cast<uint32_t>(1.1 * rate);
 
-  if (m_pFile->IoControl(IOCTRL_CACHE_SETRATE, &maxrate) >= 0)
+  if(m_pFile->IoControl(IOCTRL_CACHE_SETRATE, &maxrate) >= 0)
     CLog::Log(LOGDEBUG,
               "CDVDInputStreamFile::SetReadRate - set cache throttle rate to {} bytes per second",
               maxrate);

@@ -201,30 +201,30 @@ CDateTime CFileUtils::GetModificationDate(const int& code, const std::string& st
       // Prefer the modification time if it's valid, fallback to ctime
       if (code == 0)
       {
-        if (buffer.st_mtime != 0 && buffer.st_mtime <= now)
-          addedTime = buffer.st_mtime;
+        if (buffer.st_mtime != 0 && static_cast<time_t>(buffer.st_mtime) <= now)
+          addedTime = static_cast<time_t>(buffer.st_mtime);
         else
-          addedTime = buffer.st_ctime;
+          addedTime = static_cast<time_t>(buffer.st_ctime);
       }
       // Use the later of the ctime and mtime
       else if (code == 1)
       {
         addedTime =
-            std::max(buffer.st_ctime, buffer.st_mtime);
+            std::max(static_cast<time_t>(buffer.st_ctime), static_cast<time_t>(buffer.st_mtime));
         // if the newer of the two dates is in the future, we try it with the older one
         if (addedTime > now)
           addedTime =
-              std::min(buffer.st_ctime, buffer.st_mtime);
+              std::min(static_cast<time_t>(buffer.st_ctime), static_cast<time_t>(buffer.st_mtime));
       }
       // Prefer the earliest of ctime and mtime, fallback to other
       else
       {
         addedTime =
-            std::min(buffer.st_ctime, buffer.st_mtime);
+            std::min(static_cast<time_t>(buffer.st_ctime), static_cast<time_t>(buffer.st_mtime));
         // if the older of the two dates is invalid, we try it with the newer one
         if (addedTime == 0)
           addedTime =
-              std::max(buffer.st_ctime, buffer.st_mtime);
+              std::max(static_cast<time_t>(buffer.st_ctime), static_cast<time_t>(buffer.st_mtime));
       }
 
 

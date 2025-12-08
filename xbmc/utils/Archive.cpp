@@ -131,7 +131,7 @@ CArchive& CArchive::operator<<(char c)
 
 CArchive& CArchive::operator<<(const std::string& str)
 {
-  auto size = str.size();
+  auto size = static_cast<uint32_t>(str.size());
   if (size > MAX_STRING_SIZE)
     throw std::out_of_range("String too large, over 100MB");
 
@@ -145,7 +145,7 @@ CArchive& CArchive::operator<<(const std::wstring& wstr)
   if (wstr.size() > MAX_STRING_SIZE)
     throw std::out_of_range("String too large, over 100MB");
 
-  auto size = wstr.size();
+  auto size = static_cast<uint32_t>(wstr.size());
 
   *this << size;
 
@@ -166,7 +166,7 @@ CArchive& CArchive::operator<<(IArchivable& obj)
 
 CArchive& CArchive::operator<<(const CVariant& variant)
 {
-  *this << variant.type();
+  *this << static_cast<int>(variant.type());
   switch (variant.type())
   {
   case CVariant::VariantTypeInteger:
@@ -214,7 +214,7 @@ CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
   if (std::numeric_limits<uint32_t>::max() < strArray.size())
     throw std::out_of_range("Array too large, over 2^32 in size");
 
-  *this << strArray.size();
+  *this << static_cast<uint32_t>(strArray.size());
 
   for (auto&& item : strArray)
     *this << item;
@@ -227,7 +227,7 @@ CArchive& CArchive::operator<<(const std::vector<int>& iArray)
   if (std::numeric_limits<uint32_t>::max() < iArray.size())
     throw std::out_of_range("Array too large, over 2^32 in size");
 
-  *this << iArray.size();
+  *this << static_cast<uint32_t>(iArray.size());
 
   for (auto&& item : iArray)
     *this << item;

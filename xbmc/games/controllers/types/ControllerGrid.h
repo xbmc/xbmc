@@ -70,7 +70,7 @@ public:
   /*!
    * \brief Get the width of the controller grid
    */
-  unsigned int GetWidth() const { return m_grid.size(); }
+  unsigned int GetWidth() const { return static_cast<unsigned int>(m_grid.size()); }
 
   /*!
    * \brief Get the height (deepest controller) of the controller grid

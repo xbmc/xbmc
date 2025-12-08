@@ -97,7 +97,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
     int pos = regLine.RegFind(line);
     if (pos > -1) // Sync tag found
     {
-      double currStartTime = std::atoi(regLine.GetMatch(1).c_str());
+      double currStartTime = static_cast<double>(std::atoi(regLine.GetMatch(1).c_str()));
       double currPTSStartTime = currStartTime * DVD_TIME_BASE / 1000;
 
       // We set the duration for the previous line (Event) by using the current start time

@@ -131,7 +131,7 @@ void CAirTunesServer::RefreshMetadata()
     tag.SetArtist(m_metadata[2]);//artist
 
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
-                                             new CFileItem(tag));
+                                             static_cast<void*>(new CFileItem(tag)));
 }
 
 void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
@@ -399,7 +399,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   m_streamStarted = true;
   m_sampleRate = samplerate;
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, item);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
 
   // Not all airplay streams will provide metadata (e.g. if using mirroring,
   // no metadata will be sent).  If there *is* metadata, it will be received

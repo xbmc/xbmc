@@ -7,6 +7,7 @@
  */
 
 #include "AEChannelInfo.h"
+#include "AEUtil.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -234,12 +235,13 @@ CAEChannelInfo::operator std::string() const
     return "NULL";
 
   std::string s;
-  for (unsigned int i = 0; i < m_channelCount - 1; ++i)
+  const CAEChannelInfo& channels(CAEUtil::GuessChLayout(m_channelCount));
+  for (unsigned int i = 0; i < m_channelCount; ++i)
   {
-    s.append(GetChName(m_channels[i]));
-    s.append(", ");
+    s.append(GetChName(m_channels[i] != AE_CH_RAW ? m_channels[i] : channels[i]));
+    if (i < m_channelCount - 1)
+      s.append(", ");
   }
-  s.append(GetChName(m_channels[m_channelCount-1]));
 
   return s;
 }

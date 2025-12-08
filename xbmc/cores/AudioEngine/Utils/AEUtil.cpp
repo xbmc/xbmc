@@ -19,14 +19,14 @@
 #include <xmmintrin.h>
 #endif
 
-void AEDelayStatus::SetDelay(double d)
+void AEDelayStatus::SetDelay(double d) 
 {
   delay = d;
   maxcorrection = d;
   startTime = std::chrono::steady_clock::now();
 }
 
-double AEDelayStatus::GetDelay() const
+double AEDelayStatus::GetDelay() const 
 {
   auto elapsed = std::chrono::steady_clock::now() - startTime;
   double d = std::chrono::duration<double>(elapsed).count();
@@ -37,9 +37,6 @@ double AEDelayStatus::GetDelay() const
 
 CAEChannelInfo CAEUtil::GuessChLayout(const unsigned int channels)
 {
-  CLog::Log(LOGWARNING, "CAEUtil::GuessChLayout - "
-    "This method should really never be used, please fix the code that called this");
-
   CAEChannelInfo result;
   if (channels < 1 || channels > 8)
     return result;

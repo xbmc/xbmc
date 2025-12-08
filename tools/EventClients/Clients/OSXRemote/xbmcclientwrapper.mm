@@ -85,7 +85,7 @@ private:
   tSequenceMap m_sequence_map;
   tMultiRemoteMap m_multiremote_map;
   eRemoteMode m_mode;
-  int					m_socket;
+	int					m_socket;
   std::string	m_address;
   int         m_port;
   XBMCClientEventSequence m_sequence;
@@ -119,34 +119,34 @@ public:
 
 void XBMCClientWrapperImpl::timerCallBack (CFRunLoopTimerRef timer, void *info)
 {
-  if (!info)
-  {
-    fprintf(stderr, "Error. invalid argument to timer callback\n");
-    return;
-  }
+	if (!info)
+	{
+		fprintf(stderr, "Error. invalid argument to timer callback\n");
+		return;
+	}
 
-  XBMCClientWrapperImpl *p_impl = (XBMCClientWrapperImpl *)info;
-  p_impl->sendSequence();
-  p_impl->resetTimer();
+	XBMCClientWrapperImpl *p_impl = (XBMCClientWrapperImpl *)info;
+	p_impl->sendSequence();
+	p_impl->resetTimer();
 }
 
 void XBMCClientWrapperImpl::resetTimer(){
-  if (m_timer)
-  {
-    CFRunLoopRemoveTimer(CFRunLoopGetCurrent(), m_timer, kCFRunLoopCommonModes);
-    CFRunLoopTimerInvalidate(m_timer);
-    CFRelease(m_timer);
+	if (m_timer)
+	{
+		CFRunLoopRemoveTimer(CFRunLoopGetCurrent(), m_timer, kCFRunLoopCommonModes);
+		CFRunLoopTimerInvalidate(m_timer);
+		CFRelease(m_timer);
     m_timer = NULL;
-  }
+	}
 }
 
 void XBMCClientWrapperImpl::restartTimer(){
-  if (m_timer)
+	if (m_timer)
     resetTimer();
 
-  CFRunLoopTimerContext context = { 0, this, 0, 0, 0 };
-  m_timer = CFRunLoopTimerCreate(kCFAllocatorDefault, CFAbsoluteTimeGetCurrent() + m_sequence_timeout, 0, 0, 0, timerCallBack, &context);
-  CFRunLoopAddTimer(CFRunLoopGetCurrent(), m_timer, kCFRunLoopCommonModes);
+	CFRunLoopTimerContext context = { 0, this, 0, 0, 0 };
+	m_timer = CFRunLoopTimerCreate(kCFAllocatorDefault, CFAbsoluteTimeGetCurrent() + m_sequence_timeout, 0, 0, 0, timerCallBack, &context);
+	CFRunLoopAddTimer(CFRunLoopGetCurrent(), m_timer, kCFRunLoopCommonModes);
 }
 
 XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode,
@@ -173,13 +173,13 @@ XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode,
     populateEventMap();
   }
 
-  //open udp port etc
-  m_socket = socket(AF_INET, SOCK_DGRAM, 0);
-  if (m_socket < 0)
-  {
-    ELOG(@"Error opening UDP socket! error: ", errno);
-    //TODO What to do?
-  }
+	//open udp port etc
+	m_socket = socket(AF_INET, SOCK_DGRAM, 0);
+	if (m_socket < 0)
+	{
+		ELOG(@"Error opening UDP socket! error: ", errno);
+		//TODO What to do?
+	}
 }
 
 namespace {
@@ -269,45 +269,45 @@ void XBMCClientWrapperImpl::handleEvent(eATVClientEvent f_event){
 }
 
 void XBMCClientWrapperImpl::populateEventMap(){
-  tEventMap& lr_map = m_event_map;
+	tEventMap& lr_map = m_event_map;
 
-  lr_map.insert(std::make_pair(ATV_BUTTON_CENTER,          new CPacketBUTTON(5, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT,           new CPacketBUTTON(4, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_RELEASE,   new CPacketBUTTON(4, "CC:AppleRemote", BTN_UP | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_LEFT,            new CPacketBUTTON(3, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT| BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_RELEASE,    new CPacketBUTTON(3, "CC:AppleRemote", BTN_UP | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_MENU,            new CPacketBUTTON(6, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_MENU_H,          new CPacketBUTTON(8, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_UP,              new CPacketBUTTON(1, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_UP_RELEASE,      new CPacketBUTTON(1, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_DOWN,            new CPacketBUTTON(2, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_DOWN_RELEASE,    new CPacketBUTTON(2, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_CENTER,          new CPacketBUTTON(5, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT,         new CPacketBUTTON(4, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_RELEASE, new CPacketBUTTON(4, "CC:AppleRemote", BTN_UP | BTN_NO_REPEAT | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT,          new CPacketBUTTON(3, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT| BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_RELEASE,  new CPacketBUTTON(3, "CC:AppleRemote", BTN_UP | BTN_NO_REPEAT | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_MENU,          new CPacketBUTTON(6, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_MENU_H,        new CPacketBUTTON(8, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_UP,            new CPacketBUTTON(1, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_UP_RELEASE,    new CPacketBUTTON(1, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_DOWN,          new CPacketBUTTON(2, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_DOWN_RELEASE,  new CPacketBUTTON(2, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
 
-  // only present on ATV <= 2.1 <--- check that; OSX seems to have the release parts
-  lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_H,         new CPacketBUTTON(10, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_H_RELEASE, new CPacketBUTTON(10, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H,          new CPacketBUTTON(9, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H_RELEASE,  new CPacketBUTTON(9, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
+	// only present on ATV <= 2.1 <--- check that; OSX seems to have the release parts
+	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_H, new CPacketBUTTON(10, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_H_RELEASE, new CPacketBUTTON(10, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H,  new CPacketBUTTON(9, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H_RELEASE, new CPacketBUTTON(9, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
 
-  //new aluminium remote buttons
-  lr_map.insert(std::make_pair(ATV_BUTTON_PLAY,            new CPacketBUTTON(12, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_BUTTON_PLAY_H,          new CPacketBUTTON(13, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+	//new aluminium remote buttons
+	lr_map.insert(std::make_pair(ATV_BUTTON_PLAY,  new CPacketBUTTON(12, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_PLAY_H, new CPacketBUTTON(13, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
 
-  // only present on atv >= 2.2
-  lr_map.insert(std::make_pair(ATV_BUTTON_CENTER_H,        new CPacketBUTTON(7, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+	// only present on atv >= 2.2
+	lr_map.insert(std::make_pair(ATV_BUTTON_CENTER_H,  new CPacketBUTTON(7, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
 
-  // learned remote buttons (ATV >=2.3)
-  lr_map.insert(std::make_pair(ATV_LEARNED_PLAY,           new CPacketBUTTON(70, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_PAUSE,          new CPacketBUTTON(71, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_STOP,           new CPacketBUTTON(72, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_PREVIOUS,       new CPacketBUTTON(73, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_NEXT,           new CPacketBUTTON(74, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_REWIND,         new CPacketBUTTON(75, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_REWIND_RELEASE, new CPacketBUTTON(75, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_FORWARD,        new CPacketBUTTON(76, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_FORWARD_RELEASE,new CPacketBUTTON(76, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_RETURN,         new CPacketBUTTON(77, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  lr_map.insert(std::make_pair(ATV_LEARNED_ENTER,          new CPacketBUTTON(78, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  //learned remote buttons (ATV >=2.3)
+  lr_map.insert(std::make_pair(ATV_LEARNED_PLAY,  new CPacketBUTTON(70, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_PAUSE,  new CPacketBUTTON(71, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_STOP,  new CPacketBUTTON(72, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_PREVIOUS,  new CPacketBUTTON(73, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_NEXT,  new CPacketBUTTON(74, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_REWIND,  new CPacketBUTTON(75, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_REWIND_RELEASE,  new CPacketBUTTON(75, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_FORWARD,  new CPacketBUTTON(76, "CC:AppleRemote", BTN_DOWN | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_FORWARD_RELEASE,  new CPacketBUTTON(76, "CC:AppleRemote", BTN_UP | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_RETURN,  new CPacketBUTTON(77, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  lr_map.insert(std::make_pair(ATV_LEARNED_ENTER,  new CPacketBUTTON(78, "CC:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
 }
 
 void XBMCClientWrapperImpl::populateSequenceMap(){

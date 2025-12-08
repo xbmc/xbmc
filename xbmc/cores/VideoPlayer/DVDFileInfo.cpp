@@ -24,32 +24,32 @@
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
+#include "DVDInputStreams/DVDFactoryInputStream.h"
+#include "DVDDemuxers/DVDDemux.h"
+#include "DVDDemuxers/DVDDemuxUtils.h"
+#include "DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-#include "DVDDemuxers/DVDDemux.h"
-#include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDDemuxers/DVDDemuxVobsub.h"
-#include "DVDDemuxers/DVDFactoryDemuxer.h"
-#include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "Process/ProcessInfo.h"
+
+#include "filesystem/File.h"
+#include "cores/FFmpeg.h"
 #include "TextureCache.h"
 #include "Util.h"
-#include "cores/FFmpeg.h"
-#include "filesystem/File.h"
 #include "utils/LangCodeExpander.h"
 
 #include <cstdlib>
 #include <memory>
 
-extern "C"
-{
+extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
 }
 
-bool CDVDFileInfo::GetFileDuration(const std::string& path, int& duration)
+bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
 {
   std::unique_ptr<CDVDDemux> demux;
 
@@ -74,7 +74,7 @@ bool CDVDFileInfo::GetFileDuration(const std::string& path, int& duration)
 
 int DegreeToOrientation(int degrees)
 {
-  switch (degrees)
+  switch(degrees)
   {
     case 90:
       return 5;
@@ -160,8 +160,7 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
           seekToChapter ? demuxer->GetChapterPos(chapterNumber) * 1000 : nTotalLen / 3;
 
       // Seek to chapter @ 0 not likley to be a very useful result, use 5 sec instead.
-      if (seekToChapter && (nSeekTo == 0))
-        nSeekTo = 5000;
+      if (seekToChapter && (nSeekTo == 0)) nSeekTo = 5000;
 
       CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen,
                  redactPath);
@@ -264,12 +263,12 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
       // per addon instance), pvr recording thumbnail extraction does not work (reliably).
       URIUtils::IsPVRRecording(fileItem.GetDynPath()) ||
       // plugin path not fully resolved
-      URIUtils::IsPlugin(fileItem.GetDynPath()) || URIUtils::IsUPnP(fileItem.GetPath()) ||
-      (fileItem
-           .IsInternetStream() && // For internet protocol streams - if it is HTTP or FTP and on lan then ok to extract, otherwise not ok.
-       (!((URIUtils::IsFTP(fileItem.GetPath()) || URIUtils::IsHTTP(fileItem.GetPath())) &&
-          URIUtils::IsOnLAN(fileItem.GetPath())))) ||
-      fileItem.IsDiscStub() || fileItem.IsPlayList())
+      URIUtils::IsPlugin(fileItem.GetDynPath()) ||
+      URIUtils::IsUPnP(fileItem.GetPath()) ||
+      (fileItem.IsInternetStream() && // For internet protocol streams - if it is HTTP or FTP and on lan then ok to extract, otherwise not ok.
+       (!((URIUtils::IsFTP(fileItem.GetPath()) || URIUtils::IsHTTP(fileItem.GetPath())) && URIUtils::IsOnLAN(fileItem.GetPath())))) ||
+      fileItem.IsDiscStub() ||
+      fileItem.IsPlayList())
     return false;
 
   // mostly can't extract from discs and files from discs.
@@ -289,7 +288,7 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
  * \brief Open the item pointed to by pItem and extract streamdetails
  * \return true if the stream details have changed
  */
-bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem)
+bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
 {
   if (!pItem)
     return false;
@@ -324,11 +323,10 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem* pItem)
     return false;
   }
 
-  CDVDDemux* pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true);
+  CDVDDemux *pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true);
   if (pDemuxer)
   {
-    bool retVal = DemuxerToStreamDetails(
-        pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
+    bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
     ProcessExternalSubtitles(pItem);
     delete pDemuxer;
     return retVal;
@@ -392,9 +390,9 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
         // skip first path as we already know the duration
         for (int i = 1; i < files.Size(); i++)
         {
-          int duration = 0;
-          if (CDVDFileInfo::GetFileDuration(files[i]->GetDynPath(), duration))
-            p->m_iDuration = p->m_iDuration + duration;
+           int duration = 0;
+           if (CDVDFileInfo::GetFileDuration(files[i]->GetDynPath(), duration))
+             p->m_iDuration = p->m_iDuration + duration;
         }
       }
 
@@ -423,7 +421,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       details.AddStream(p);
       retVal = true;
     }
-  } /* for iStream */
+  }  /* for iStream */
 
   details.DetermineBestStreams();
 #ifdef HAVE_LIBBLURAY
@@ -432,12 +430,10 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   {
     if (std::static_pointer_cast<CDVDInputStreamBluray>(pInputStream)->GetTotalTime() > 0)
     {
-      auto dVideo =
-          static_cast<const CStreamDetailVideo*>(details.GetNthStream(CStreamDetail::VIDEO, 0));
+      auto dVideo = static_cast<const CStreamDetailVideo*>(details.GetNthStream(CStreamDetail::VIDEO, 0));
       auto detailVideo = const_cast<CStreamDetailVideo*>(dVideo);
       if (detailVideo)
-        detailVideo->m_iDuration =
-            std::static_pointer_cast<CDVDInputStreamBluray>(pInputStream)->GetTotalTime() / 1000;
+        detailVideo->m_iDuration = std::static_pointer_cast<CDVDInputStreamBluray>(pInputStream)->GetTotalTime() / 1000;
     }
   }
 #endif
@@ -472,14 +468,11 @@ void CDVDFileInfo::ProcessExternalSubtitles(CFileItem* item)
   }
 }
 
-bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string& path,
-                                                CStreamDetails& details,
-                                                const std::string& filename,
-                                                const std::string& subfilename)
+bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStreamDetails &details, const std::string& filename, const std::string& subfilename)
 {
   std::string ext = URIUtils::GetExtension(filename);
   std::string vobsubfile = subfilename;
-  if (ext == ".idx")
+  if(ext == ".idx")
   {
     if (vobsubfile.empty())
       vobsubfile = URIUtils::ReplaceExtension(filename, ".sub");
@@ -488,7 +481,7 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string& path,
     if (!v.Open(filename, STREAM_SOURCE_NONE, vobsubfile))
       return false;
 
-    for (CDemuxStream* stream : v.GetStreams())
+    for(CDemuxStream* stream : v.GetStreams())
     {
       auto dsub = new CStreamDetailSubtitle();
       std::string lang = stream->language;
@@ -497,9 +490,9 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string& path,
     }
     return true;
   }
-  if (ext == ".sub")
+  if(ext == ".sub")
   {
-    std::string strReplace(URIUtils::ReplaceExtension(filename, ".idx"));
+    std::string strReplace(URIUtils::ReplaceExtension(filename,".idx"));
     if (XFILE::CFile::Exists(strReplace))
       return false;
   }
@@ -511,3 +504,4 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string& path,
 
   return true;
 }
+

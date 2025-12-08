@@ -15,7 +15,9 @@
 
 class BufferPool;
 
-class CAddonVideoCodec : public CDVDVideoCodec, public ADDON::IAddonInstanceHandler
+class CAddonVideoCodec
+  : public CDVDVideoCodec
+  , public ADDON::IAddonInstanceHandler
 {
 public:
   CAddonVideoCodec(CProcessInfo& processInfo,
@@ -23,26 +25,26 @@ public:
                    KODI_HANDLE parentInstance);
   ~CAddonVideoCodec() override;
 
-  bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;
-  bool Reconfigure(CDVDStreamInfo& hints) override;
-  bool AddData(const DemuxPacket& packet) override;
+  bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  bool Reconfigure(CDVDStreamInfo &hints) override;
+  bool AddData(const DemuxPacket &packet) override;
   void Reset() override;
   VCReturn GetPicture(VideoPicture* pVideoPicture) override;
   const char* GetName() override;
   void SetCodecControl(int flags) override { m_codecFlags = flags; }
 
 private:
-  bool CopyToInitData(VIDEOCODEC_INITDATA& initData, CDVDStreamInfo& hints);
+  bool CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints);
 
   /*!
    * @brief All picture members can be expected to be set correctly except decodedData and pts.
    * GetFrameBuffer has to set decodedData to a valid memory address and return true.
    * In case buffer allocation fails, return false.
    */
-  bool GetFrameBuffer(VIDEOCODEC_PICTURE& picture) const;
+  bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture) const;
   void ReleaseFrameBuffer(KODI_HANDLE videoBufferHandle);
 
-  static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE* picture);
+  static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *picture);
   static void release_frame_buffer(void* kodiInstance, KODI_HANDLE videoBufferHandle);
 
   int m_codecFlags = 0;

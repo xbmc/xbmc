@@ -592,10 +592,10 @@ JSONRPC_STATUS CPlayerOperations::Move(const std::string &method, ITransportLaye
     case Audio:
       if (direction == "left" || direction == "up")
         CServiceBroker::GetAppMessenger()->SendMsg(
-            TMSG_GUI_ACTION, WINDOW_INVALID, -1, new CAction(ACTION_PREV_ITEM));
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
       else if (direction == "right" || direction == "down")
         CServiceBroker::GetAppMessenger()->SendMsg(
-            TMSG_GUI_ACTION, WINDOW_INVALID, -1, new CAction(ACTION_NEXT_ITEM));
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
       else
         return InvalidParams;
 
@@ -745,7 +745,7 @@ JSONRPC_STATUS CPlayerOperations::SetViewMode(const std::string &method, ITransp
 
   if (jsonStatus == ACK)
   {
-    appPlayer->SetRenderViewMode(mode, vs.m_CustomZoomAmount,
+    appPlayer->SetRenderViewMode(static_cast<int>(mode), vs.m_CustomZoomAmount,
                                  vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
                                  vs.m_CustomNonLinStretch);
   }
@@ -1000,7 +1000,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
         auto l = new CFileItemList(); //don't delete
         l->Copy(list);
-        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, l,
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l),
                                                    playername);
       }
 
@@ -1032,14 +1032,15 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const std::string &method, ITransportLaye
           return InvalidParams;
 
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                   new CAction(actionID));
+                                                   static_cast<void*>(new CAction(actionID)));
       }
       else if (to.isInteger())
       {
         if (IsPVRChannel())
           CServiceBroker::GetAppMessenger()->SendMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-              new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(to.asInteger())));
+              static_cast<void*>(
+                  new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(to.asInteger()))));
         else
           CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_PLAY,
                                                      static_cast<int>(to.asInteger()));
@@ -1521,7 +1522,7 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
 void CPlayerOperations::SendSlideshowAction(int actionID)
 {
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-                                             new CAction(actionID));
+                                             static_cast<void*>(new CAction(actionID)));
 }
 
 JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std::string &property, CVariant &result)

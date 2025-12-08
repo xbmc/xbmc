@@ -82,13 +82,11 @@ bool CRendererSoftware::Configure(const VideoPicture& picture, float fps, unsign
 
 bool CRendererSoftware::Supports(ESCALINGMETHOD method) const
 {
-  return method == VS_SCALINGMETHOD_AUTO || method == VS_SCALINGMETHOD_LINEAR;
+  return method == VS_SCALINGMETHOD_AUTO
+    || method == VS_SCALINGMETHOD_LINEAR;
 }
 
-void CRendererSoftware::RenderImpl(CD3DTexture& target,
-                                   CRect& sourceRect,
-                                   CPoint (&destPoints)[4],
-                                   uint32_t flags)
+void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags)
 {
   // if creation failed
   if (!m_outputShader)
@@ -131,9 +129,10 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target,
   if (!m_sw_scale_ctx)
     return;
 
-  sws_setColorspaceDetails(m_sw_scale_ctx, sws_getCoefficients(buf->color_space), buf->full_range,
-                           sws_getCoefficients(AVCOL_SPC_BT709), buf->full_range, 0, 1 << 16,
-                           1 << 16);
+  sws_setColorspaceDetails(m_sw_scale_ctx,
+    sws_getCoefficients(buf->color_space), buf->full_range,
+    sws_getCoefficients(AVCOL_SPC_BT709),  buf->full_range,
+    0, 1 << 16, 1 << 16);
 
   uint8_t* src[YuvImage::MAX_PLANES];
   int srcStride[YuvImage::MAX_PLANES];
@@ -142,11 +141,10 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target,
   D3D11_MAPPED_SUBRESOURCE mapping;
   if (target.LockRect(0, &mapping, D3D11_MAP_WRITE_DISCARD))
   {
-    uint8_t* dst[] = {static_cast<uint8_t*>(mapping.pData), nullptr, nullptr};
-    int dstStride[] = {static_cast<int>(mapping.RowPitch), 0, 0};
+    uint8_t *dst[] = { static_cast<uint8_t*>(mapping.pData), nullptr, nullptr };
+    int dstStride[] = { static_cast<int>(mapping.RowPitch), 0, 0 };
 
-    sws_scale(m_sw_scale_ctx, src, srcStride, 0, std::min(target.GetHeight(), buf->GetHeight()),
-              dst, dstStride);
+    sws_scale(m_sw_scale_ctx, src, srcStride, 0, std::min(target.GetHeight(), buf->GetHeight()), dst, dstStride);
 
     if (!target.UnlockRect(0))
       CLog::LogF(LOGERROR, "failed to unlock swtarget texture.");
@@ -158,13 +156,12 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target,
   ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
 }
 
-void CRendererSoftware::FinalOutput(CD3DTexture& source,
-                                    CD3DTexture& target,
-                                    const CRect& src,
-                                    const CPoint (&destPoints)[4])
+void CRendererSoftware::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& src, const CPoint(&destPoints)[4])
 {
-  m_outputShader->Render(source, src, destPoints, target, DX::Windowing()->UseLimitedColor(),
-                         m_videoSettings.m_Contrast * 0.01f, m_videoSettings.m_Brightness * 0.01f);
+  m_outputShader->Render(source, src, destPoints, target, 
+    DX::Windowing()->UseLimitedColor(), 
+    m_videoSettings.m_Contrast * 0.01f,
+    m_videoSettings.m_Brightness * 0.01f);
 }
 
 CRenderBuffer* CRendererSoftware::CreateBuffer()
@@ -172,9 +169,7 @@ CRenderBuffer* CRendererSoftware::CreateBuffer()
   return new CRenderBufferImpl(m_format, m_sourceWidth, m_sourceHeight);
 }
 
-CRendererSoftware::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format,
-                                                        unsigned width,
-                                                        unsigned height)
+CRendererSoftware::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format, unsigned width, unsigned height)
   : CRenderBuffer(av_pix_format, width, height)
 {
 }
@@ -196,21 +191,21 @@ void CRendererSoftware::CRenderBufferImpl::AppendPicture(const VideoPicture& pic
   }
 }
 
-bool CRendererSoftware::CRenderBufferImpl::GetDataPlanes(uint8_t* (&planes)[3], int (&strides)[3])
+bool CRendererSoftware::CRenderBufferImpl::GetDataPlanes(uint8_t*(&planes)[3], int(&strides)[3])
 {
   if (!videoBuffer)
     return false;
 
   switch (videoBuffer->GetFormat())
   {
-    case AV_PIX_FMT_D3D11VA_VLD:
-      planes[0] = reinterpret_cast<uint8_t*>(m_msr.pData);
-      planes[1] = reinterpret_cast<uint8_t*>(m_msr.pData) + m_msr.RowPitch * m_sDesc.Height;
-      strides[0] = strides[1] = m_msr.RowPitch;
-      break;
-    default:
-      videoBuffer->GetPlanes(planes);
-      videoBuffer->GetStrides(strides);
+  case AV_PIX_FMT_D3D11VA_VLD:
+    planes[0] = reinterpret_cast<uint8_t*>(m_msr.pData);
+    planes[1] = reinterpret_cast<uint8_t*>(m_msr.pData) + m_msr.RowPitch * m_sDesc.Height;
+    strides[0] = strides[1] = m_msr.RowPitch;
+    break;
+  default:
+    videoBuffer->GetPlanes(planes);
+    videoBuffer->GetStrides(strides);
   }
 
   return true;

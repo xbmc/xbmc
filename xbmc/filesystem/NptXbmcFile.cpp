@@ -138,7 +138,7 @@ NPT_XbmcFileInputStream::Read(void*     buffer,
     // read from the file
     nb_read = m_FileReference->Read(buffer, bytes_to_read);
     if (nb_read > 0) {
-        if (bytes_read) *bytes_read = nb_read;
+        if (bytes_read) *bytes_read = (NPT_Size)nb_read;
         return NPT_SUCCESS;
     } else {
         if (bytes_read) *bytes_read = 0;

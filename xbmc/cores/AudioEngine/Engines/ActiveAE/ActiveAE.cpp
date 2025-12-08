@@ -18,10 +18,8 @@
 #include "cores/AudioEngine/Utils/AEStreamData.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/AMLUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
@@ -1054,10 +1052,6 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
 
 void CActiveAE::Process()
 {
-  aml_pin_thread_to_core(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_threadActiveAECore);
-
-  CLog::Log(LOGINFO, "running thread: active_ae");
-
   Message *msg = nullptr;
   Protocol *port = nullptr;
   bool gotMsg;

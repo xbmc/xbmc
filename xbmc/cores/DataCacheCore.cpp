@@ -194,6 +194,20 @@ int CDataCacheCore::GetVideoHeight()
   return m_playerVideoInfo.height;
 }
 
+void CDataCacheCore::SetVideoPts(double pts)
+{
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
+
+  m_playerVideoInfo.pts = pts;
+}
+
+double CDataCacheCore::GetVideoPts()
+{
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
+
+  return m_playerVideoInfo.pts;
+}
+
 void CDataCacheCore::SetVideoBitDepth(int bitDepth)
 {
   std::lock_guard lock(m_videoPlayerSection);
@@ -311,7 +325,6 @@ void CDataCacheCore::SetVideoDoViFrameMetadata(DOVIFrameMetadata value)
   std::lock_guard lock(m_videoPlayerSection);
 
   uint64_t pts = value.pts;
-  logM(LOGDEBUG, "CDataCacheCore", "Set meta for pts [{}] [{}]", pts, value.level1_max_pq);
   m_playerVideoInfo.doviFrameMetadataMap.insert(pts, std::move(value));
 }
 
@@ -319,12 +332,10 @@ DOVIFrameMetadata CDataCacheCore::GetVideoDoViFrameMetadata()
 {
   std::lock_guard lock(m_videoPlayerSection);
 
-  uint64_t pts = GetRenderPts();
+  uint64_t pts = m_playerVideoInfo.pts;
   auto doviFrameMetadata = m_playerVideoInfo.doviFrameMetadataMap.findOrLatest(pts);
   if (doviFrameMetadata != m_playerVideoInfo.doviFrameMetadataMap.end())
   {
-    logM(LOGDEBUG, "CDataCacheCore", "Get meta for pts [{}] [{}] (matched pts [{}])",
-                                     pts, doviFrameMetadata->second.level1_max_pq, doviFrameMetadata->first);
     return doviFrameMetadata->second;
   }
   return {};
@@ -506,11 +517,25 @@ void CDataCacheCore::SetAudioChannels(std::string channels)
   m_playerAudioInfo.channels = std::move(channels);
 }
 
+void CDataCacheCore::SetAudioChannelsSink(std::string channels)
+{
+  std::lock_guard lock(m_audioPlayerSection);
+
+  m_playerAudioInfo.channels_sink = std::move(channels);
+}
+
 std::string CDataCacheCore::GetAudioChannels()
 {
   std::lock_guard lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.channels;
+}
+
+std::string CDataCacheCore::GetAudioChannelsSink()
+{
+  std::lock_guard lock(m_audioPlayerSection);
+
+  return m_playerAudioInfo.channels_sink;
 }
 
 void CDataCacheCore::SetAudioSampleRate(int sampleRate)
@@ -539,6 +564,20 @@ int CDataCacheCore::GetAudioBitsPerSample()
   std::lock_guard lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.bitsPerSample;
+}
+
+void CDataCacheCore::SetAudioPts(double pts)
+{
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
+
+  m_playerAudioInfo.pts = pts;
+}
+
+double CDataCacheCore::GetAudioPts()
+{
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
+
+  return m_playerAudioInfo.pts;
 }
 
 void CDataCacheCore::SetAudioLiveBitRate(double bitRate)
@@ -651,20 +690,6 @@ bool CDataCacheCore::IsRenderClockSync()
   std::lock_guard lock(m_renderSection);
 
   return m_renderInfo.m_isClockSync;
-}
-
-void CDataCacheCore::SetRenderPts(double pts)
-{
-  std::lock_guard lock(m_renderSection);
-
-  m_renderInfo.pts = pts;
-}
-
-double CDataCacheCore::GetRenderPts()
-{
-  std::lock_guard lock(m_renderSection);
-
-  return m_renderInfo.pts;
 }
 
 // player states

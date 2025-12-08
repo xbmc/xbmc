@@ -233,7 +233,7 @@ void CGUIDialogPVRChannelsOSD::RestoreControlStates()
   {
     const std::string path = GetLastSelectedItemPath(m_group->GroupID());
     if (path.empty())
-      m_viewControl.SetSelectedItem(static_cast<int>(0));
+      m_viewControl.SetSelectedItem(0);
     else
       m_viewControl.SetSelectedItem(path);
   }

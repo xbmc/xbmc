@@ -368,7 +368,7 @@ namespace XBMCAddon
 
       XBMCAddonUtils::GuiLock lock(languageHook, false);
       if (pGUIControl)
-        pGUIControl->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
+        static_cast<CGUIImage*>(pGUIControl)->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
     }
 
     CGUIControl* ControlImage::Create()
@@ -382,7 +382,7 @@ namespace XBMCAddon
         static_cast<CGUIImage*>(pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)aspectRatio);
 
       if (pGUIControl && colorDiffuse)
-        pGUIControl->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
+        static_cast<CGUIImage*>(pGUIControl)->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
 
       return pGUIControl;
     }
@@ -438,7 +438,7 @@ namespace XBMCAddon
       pGUIControl->SetVisible(m_visible);
 
       if (pGUIControl && colorDiffuse)
-        pGUIControl->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
+        static_cast<CGUIProgressControl*>(pGUIControl)->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
 
       return pGUIControl;
     }
@@ -1413,12 +1413,12 @@ namespace XBMCAddon
 
     long ControlList::getItemHeight()
     {
-      return itemHeight;
+      return (long)itemHeight;
     }
 
     long ControlList::getSpace()
     {
-      return space;
+      return (long)space;
     }
 
     XBMCAddon::xbmcgui::ListItem* ControlList::getListItem(int index)

@@ -214,7 +214,7 @@ bool CApplicationPowerHandling::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = 
         CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow(); // show the previous window
       else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-                                                   new CAction(ACTION_STOP));
+                                                   static_cast<void*>(new CAction(ACTION_STOP)));
     }
     return true;
   }

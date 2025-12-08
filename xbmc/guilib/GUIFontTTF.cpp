@@ -134,7 +134,7 @@ public:
       if (f.LoadFile(realFile, memoryBuf) <= 0)
         return nullptr;
 
-      if (FT_New_Memory_Face(m_library, memoryBuf.data(),
+      if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(memoryBuf.data()),
                              memoryBuf.size(), 0, &face) != 0)
         return nullptr;
     }
@@ -145,7 +145,7 @@ public:
 
     unsigned int ydpi = 72; // 72 points to the inch is the freetype default
     unsigned int xdpi =
-        static_cast<unsigned int>(MathUtils::round_int(ydpi * aspect));
+        static_cast<unsigned int>(MathUtils::round_int(static_cast<double>(ydpi * aspect)));
 
     // we set our screen res currently to 96dpi in both directions (windows default)
     // we cache our characters (for rendering speed) so it's probably
@@ -813,7 +813,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
   lastScript = scripts[0];
   int lastRunStart = 0;
 
-  for (unsigned int i = 0; i <= scripts.size(); ++i)
+  for (unsigned int i = 0; i <= static_cast<unsigned int>(scripts.size()); ++i)
   {
     if (i == scripts.size() || scripts[i] != lastScript)
     {
@@ -838,7 +838,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
   for (auto& run : runs)
   {
     run.m_buffer = hb_buffer_create();
-    hb_buffer_set_direction(run.m_buffer, HB_DIRECTION_LTR);
+    hb_buffer_set_direction(run.m_buffer, static_cast<hb_direction_t>(HB_DIRECTION_LTR));
     hb_buffer_set_script(run.m_buffer, run.m_script);
 
     for (unsigned int j = run.m_startOffset; j < run.m_endOffset; j++)
@@ -1120,10 +1120,10 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
     // altering the width of thin characters substantially.  This only really works for positive
     // coordinates (due to the direction of truncation for negatives) but this is the only case that
     // really interests us anyway.
-    float rx0 = static_cast<float>(MathUtils::round_int(x[0]));
-    float rx3 = static_cast<float>(MathUtils::round_int(x[3]));
-    x[1] = static_cast<float>(MathUtils::truncate_int(x[1]));
-    x[2] = static_cast<float>(MathUtils::truncate_int(x[2]));
+    float rx0 = static_cast<float>(MathUtils::round_int(static_cast<double>(x[0])));
+    float rx3 = static_cast<float>(MathUtils::round_int(static_cast<double>(x[3])));
+    x[1] = static_cast<float>(MathUtils::truncate_int(static_cast<double>(x[1])));
+    x[2] = static_cast<float>(MathUtils::truncate_int(static_cast<double>(x[2])));
     if (x[0] > 0.0f && rx0 > x[0])
       x[1] += 1;
     else if (x[0] < 0.0f && rx0 < x[0])
@@ -1138,23 +1138,23 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
   const float y[VERTEX_PER_GLYPH] = {
       static_cast<float>(MathUtils::round_int(
-          context.ScaleFinalYCoord(vertex.x1, vertex.y1))),
+          static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y1)))),
       static_cast<float>(MathUtils::round_int(
-          context.ScaleFinalYCoord(vertex.x2, vertex.y1))),
+          static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y1)))),
       static_cast<float>(MathUtils::round_int(
-          context.ScaleFinalYCoord(vertex.x2, vertex.y2))),
+          static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y2)))),
       static_cast<float>(MathUtils::round_int(
-          context.ScaleFinalYCoord(vertex.x1, vertex.y2)))};
+          static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y2))))};
 
   const float z[VERTEX_PER_GLYPH] = {
       static_cast<float>(MathUtils::round_int(
-          context.ScaleFinalZCoord(vertex.x1, vertex.y1))),
+          static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y1)))),
       static_cast<float>(MathUtils::round_int(
-          context.ScaleFinalZCoord(vertex.x2, vertex.y1))),
+          static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y1)))),
       static_cast<float>(MathUtils::round_int(
-          context.ScaleFinalZCoord(vertex.x2, vertex.y2))),
+          static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y2)))),
       static_cast<float>(MathUtils::round_int(
-          context.ScaleFinalZCoord(vertex.x1, vertex.y2)))};
+          static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y2))))};
 
   // tex coords converted to 0..1 range
   const float tl = texture.x1 * m_textureScaleX;
@@ -1287,6 +1287,6 @@ void CGUIFontTTF::SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength) const {
 
 float CGUIFontTTF::GetTabSpaceLength()
 {
-  const Character* c = GetCharacter('X', 0);
+  const Character* c = GetCharacter(static_cast<character_t>('X'), 0);
   return c ? c->m_advance * TAB_SPACE_LENGTH : 28.0f * TAB_SPACE_LENGTH;
 }

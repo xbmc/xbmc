@@ -1443,12 +1443,12 @@ void CGUIAddonWindowDialog::Show(bool show /* = true */, bool modal /* = true*/)
   {
     unsigned int count = CServiceBroker::GetWinSystem()->GetGfxContext().exit();
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0,
-                                               this);
+                                               static_cast<void*>(this));
     CServiceBroker::GetWinSystem()->GetGfxContext().restore(count);
   }
   else
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0,
-                                               this);
+                                               static_cast<void*>(this));
 }
 
 void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)

@@ -7,15 +7,14 @@
  */
 
 #ifdef TARGET_WINDOWS
-#define _USE_MATH_DEFINES
+  #define _USE_MATH_DEFINES
 #endif
 
 #include "ConvolutionKernels.h"
-
 #include "utils/MathUtils.h"
 
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+  #define M_PI       3.14159265358979323846
 #endif
 
 #define SINC(x) (sin(M_PI * (x)) / (M_PI * (x)))
@@ -52,15 +51,14 @@ CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
 
 CConvolutionKernel::~CConvolutionKernel()
 {
-  delete[] m_floatpixels;
-  delete[] m_intfractpixels;
-  delete[] m_uint8pixels;
+  delete [] m_floatpixels;
+  delete [] m_intfractpixels;
+  delete [] m_uint8pixels;
 }
 
 //generate a lanczos2 kernel which can be loaded with RGBA format
 //each value of RGBA has one tap, so a shader can load 4 taps with a single pixel lookup
-void CConvolutionKernel::Lanczos2() const
-{
+void CConvolutionKernel::Lanczos2() const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;
@@ -86,8 +84,7 @@ void CConvolutionKernel::Lanczos2() const
 //the two outer lobes of the lanczos3 kernel are added to the two lobes one step to the middle
 //this basically looks the same as lanczos3, but the kernel only has 4 taps,
 //so it can use the 4x4 convolution shader which is twice as fast as the 6x6 one
-void CConvolutionKernel::Lanczos3Fast() const
-{
+void CConvolutionKernel::Lanczos3Fast() const {
   for (int i = 0; i < m_size; i++)
   {
     double a = 3.0;
@@ -95,8 +92,8 @@ void CConvolutionKernel::Lanczos3Fast() const
 
     //generate taps
     m_floatpixels[i * 4 + 0] = (float)(LanczosWeight(x - 2.0, a) + LanczosWeight(x - 3.0, a));
-    m_floatpixels[i * 4 + 1] = (float)LanczosWeight(x - 1.0, a);
-    m_floatpixels[i * 4 + 2] = (float)LanczosWeight(x, a);
+    m_floatpixels[i * 4 + 1] = (float) LanczosWeight(x - 1.0, a);
+    m_floatpixels[i * 4 + 2] = (float) LanczosWeight(x      , a);
     m_floatpixels[i * 4 + 3] = (float)(LanczosWeight(x + 1.0, a) + LanczosWeight(x + 2.0, a));
 
     //any collection of 4 taps added together needs to be exactly 1.0
@@ -113,8 +110,7 @@ void CConvolutionKernel::Lanczos3Fast() const
 
 //generate a lanczos3 kernel which can be loaded with RGBA format
 //each value of RGB has one tap, so a shader can load 3 taps with a single pixel lookup
-void CConvolutionKernel::Lanczos3() const
-{
+void CConvolutionKernel::Lanczos3() const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;
@@ -145,16 +141,15 @@ void CConvolutionKernel::Lanczos3() const
   }
 }
 
-void CConvolutionKernel::Spline36Fast() const
-{
+void CConvolutionKernel::Spline36Fast() const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;
 
     //generate taps
     m_floatpixels[i * 4 + 0] = (float)(Spline36Weight(x - 2.0) + Spline36Weight(x - 3.0));
-    m_floatpixels[i * 4 + 1] = (float)Spline36Weight(x - 1.0);
-    m_floatpixels[i * 4 + 2] = (float)Spline36Weight(x);
+    m_floatpixels[i * 4 + 1] = (float) Spline36Weight(x - 1.0);
+    m_floatpixels[i * 4 + 2] = (float) Spline36Weight(x      );
     m_floatpixels[i * 4 + 3] = (float)(Spline36Weight(x + 1.0) + Spline36Weight(x + 2.0));
 
     float weight = 0.0;
@@ -166,8 +161,7 @@ void CConvolutionKernel::Spline36Fast() const
   }
 }
 
-void CConvolutionKernel::Spline36() const
-{
+void CConvolutionKernel::Spline36() const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;
@@ -197,8 +191,7 @@ void CConvolutionKernel::Spline36() const
 
 //generate a bicubic kernel which can be loaded with RGBA format
 //each value of RGBA has one tap, so a shader can load 4 taps with a single pixel lookup
-void CConvolutionKernel::Bicubic(double B, double C) const
-{
+void CConvolutionKernel::Bicubic(double B, double C) const {
   for (int i = 0; i < m_size; i++)
   {
     double x = (double)i / (double)m_size;
@@ -225,16 +218,17 @@ double CConvolutionKernel::BicubicWeight(double x, double B, double C)
 {
   double ax = fabs(x);
 
-  if (ax < 1.0)
+  if (ax<1.0)
   {
-    return ((12 - 9 * B - 6 * C) * ax * ax * ax + (-18 + 12 * B + 6 * C) * ax * ax + (6 - 2 * B)) /
-           6;
+    return ((12 - 9*B - 6*C) * ax * ax * ax +
+            (-18 + 12*B + 6*C) * ax * ax +
+            (6 - 2*B))/6;
   }
-  else if (ax < 2.0)
+  else if (ax<2.0)
   {
-    return ((-B - 6 * C) * ax * ax * ax + (6 * B + 30 * C) * ax * ax + (-12 * B - 48 * C) * ax +
-            (8 * B + 24 * C)) /
-           6;
+    return ((-B - 6*C) * ax * ax * ax +
+            (6*B + 30*C) * ax * ax + (-12*B - 48*C) *
+             ax + (8*B + 24*C)) / 6;
   }
   else
   {
@@ -246,12 +240,12 @@ double CConvolutionKernel::Spline36Weight(double x)
 {
   double ax = fabs(x);
 
-  if (ax < 1.0)
-    return ((13.0 / 11.0 * (ax)-453.0 / 209.0) * (ax)-3.0 / 209.0) * (ax) + 1.0;
-  else if (ax < 2.0)
-    return ((-6.0 / 11.0 * (ax - 1.0) + 270.0 / 209.0) * (ax - 1.0) - 156.0 / 209.0) * (ax - 1.0);
-  else if (ax < 3.0)
-    return ((1.0 / 11.0 * (ax - 2.0) - 45.0 / 209.0) * (ax - 2.0) + 26.0 / 209.0) * (ax - 2.0);
+  if      ( ax < 1.0 )
+    return ( ( 13.0 / 11.0 * (ax      ) - 453.0 / 209.0 ) * (ax      ) -   3.0 / 209.0 ) * (ax      ) + 1.0;
+  else if ( ax < 2.0 )
+    return ( ( -6.0 / 11.0 * (ax - 1.0) + 270.0 / 209.0 ) * (ax - 1.0) - 156.0 / 209.0 ) * (ax - 1.0);
+  else if ( ax < 3.0 )
+    return ( (  1.0 / 11.0 * (ax - 2.0) -  45.0 / 209.0 ) * (ax - 2.0) +  26.0 / 209.0 ) * (ax - 2.0);
   return 0.0;
 }
 
@@ -272,7 +266,7 @@ void CConvolutionKernel::ToIntFract()
       value = 65535;
 
     int integer = value / 256;
-    int fract = value % 256;
+    int fract   = value % 256;
 
     m_intfractpixels[i] = (uint8_t)integer;
     m_intfractpixels[i + m_size * 4] = (uint8_t)fract;
@@ -295,3 +289,4 @@ void CConvolutionKernel::ToUint8()
     m_uint8pixels[i] = (uint8_t)value;
   }
 }
+

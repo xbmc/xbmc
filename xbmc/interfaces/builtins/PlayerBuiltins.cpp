@@ -41,6 +41,8 @@
 #include "video/VideoUtils.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
+#include "utils/AMLUtils.h"
+
 #include <math.h>
 
 #ifdef HAS_OPTICAL_DRIVE
@@ -134,7 +136,10 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (appPlayer->IsPlaying())
     {
       if (appPlayer->GetPlaySpeed() != 1)
+      {
+        aml_reset_audio_from_player_pause();
         appPlayer->SetPlaySpeed(1);
+      }
       else
         appPlayer->Pause();
     }
@@ -477,15 +482,21 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
     {
       // force the item to resume (if applicable)
       if (VIDEO_UTILS::GetItemResumeInformation(item).isResumable)
+      {
+        // aml_reset_audio_from_play_from_resume();
         item.SetStartOffset(STARTOFFSET_RESUME);
+      }
       else
+      {
+        // aml_reset_audio_from_play_from_beginning();
         item.SetStartOffset(0);
-
+      }
       askToResume = false;
     }
     else if (StringUtils::EqualsNoCase(params[i], "noresume"))
     {
       // force the item to start at the beginning
+      // aml_reset_audio_from_play_from_beginning();
       item.SetStartOffset(0);
       askToResume = false;
     }
@@ -517,6 +528,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
         VIDEO::GUILIB::CVideoSelectActionProcessorBase::ChoosePlayOrResume(item);
     if (action == VIDEO::GUILIB::ACTION_RESUME)
     {
+      // aml_reset_audio_from_play_from_resume();
       item.SetStartOffset(STARTOFFSET_RESUME);
     }
     else if (action != VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING)

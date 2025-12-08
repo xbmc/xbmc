@@ -68,7 +68,7 @@ namespace ContextMenu
 inline int ATTR_DLL_LOCAL Show(const std::string& heading, const std::vector<std::string>& entries)
 {
   using namespace ::kodi::addon;
-  unsigned int size = entries.size();
+  unsigned int size = static_cast<unsigned int>(entries.size());
   auto cEntries = static_cast<const char**>(malloc(size * sizeof(const char**)));
   for (unsigned int i = 0; i < size; ++i)
   {
@@ -116,7 +116,7 @@ inline int ATTR_DLL_LOCAL Show(const std::string& heading,
                                const std::vector<std::pair<std::string, std::string>>& entries)
 {
   using namespace ::kodi::addon;
-  unsigned int size = entries.size();
+  unsigned int size = static_cast<unsigned int>(entries.size());
   auto cEntries = static_cast<const char**>(malloc(size * sizeof(const char**)));
   for (unsigned int i = 0; i < size; ++i)
   {
@@ -164,7 +164,7 @@ inline int ATTR_DLL_LOCAL Show(const std::string& heading,
                                const std::vector<std::pair<int, std::string>>& entries)
 {
   using namespace ::kodi::addon;
-  unsigned int size = entries.size();
+  unsigned int size = static_cast<unsigned int>(entries.size());
   auto cEntries = static_cast<const char**>(malloc(size * sizeof(const char**)));
   for (unsigned int i = 0; i < size; ++i)
   {

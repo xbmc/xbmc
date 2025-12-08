@@ -22,7 +22,7 @@ bool CGameClientStreamSwFramebuffer::GetBuffer(unsigned int width,
   if (m_stream != nullptr)
   {
     RETRO::VideoStreamBuffer streamBuffer;
-    if (m_stream->GetStreamBuffer(width, height, streamBuffer))
+    if (m_stream->GetStreamBuffer(width, height, static_cast<RETRO::StreamBuffer&>(streamBuffer)))
     {
       buffer.type = GAME_STREAM_SW_FRAMEBUFFER;
 

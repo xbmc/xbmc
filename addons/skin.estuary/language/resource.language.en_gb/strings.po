@@ -963,3 +963,28 @@ msgstr ""
 msgctxt "#32101"
 msgid "EOTF & Gamut"
 msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video pixel format
+msgctxt "#31638"
+msgid "Pixel format"
+msgstr ""
+
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video resolution
+msgctxt "#31639"
+msgid "Video resolution"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the Audio Object Base
+msgctxt "#31640"
+msgid "Audio object base"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show passtrough
+msgctxt "#31641"
+msgid "Passtrough"
+msgstr ""

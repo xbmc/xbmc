@@ -280,7 +280,7 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
       break;
     }
     XFILE::CFile file;
-    if (!file.OpenForWrite(iconfile, true) || file.Write(payload, psize) != psize)
+    if (!file.OpenForWrite(iconfile, true) || file.Write((const void *)payload, psize) != psize)
     {
       CLog::Log(LOGERROR, "ES: Could not write icon file");
       m_eLogoType = LT_NONE;
@@ -561,7 +561,7 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
     }
 
     XFILE::CFile file;
-    if (!file.OpenForWrite(iconfile, true) || file.Write(payload, psize) != psize)
+    if (!file.OpenForWrite(iconfile, true) || file.Write((const void *)payload, psize) != psize)
     {
       CLog::Log(LOGERROR, "ES: Could not write icon file");
       m_eLogoType = LT_NONE;
@@ -591,7 +591,7 @@ bool CEventClient::OnPacketLOG(CEventPacket *packet)
   if (!ParseString(payload, psize, logmsg))
     return false;
 
-  CLog::Log(ltype, "{}", logmsg);
+  CLog::Log((int)ltype, "{}", logmsg);
   return true;
 }
 
@@ -631,7 +631,7 @@ bool CEventClient::ParseString(unsigned char* &payload, int &psize, std::string&
   if (psize <= 0)
     return false;
 
-  auto pos = (unsigned char *)memchr(payload, '\0', psize);
+  auto pos = (unsigned char *)memchr((void*)payload, (int)'\0', psize);
   if (!pos)
     return false;
 

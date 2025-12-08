@@ -18,6 +18,7 @@ class CVideoReferenceClock;
 class CDVDClock
 {
 public:
+
   CDVDClock();
   ~CDVDClock();
 
@@ -26,7 +27,10 @@ public:
 
   double ErrorAdjust(double error, const char* log);
   void Discontinuity(double clock, double absolute);
-  void Discontinuity(double clock = 0LL) { Discontinuity(clock, GetAbsoluteClock()); }
+  void Discontinuity(double clock = 0LL)
+  {
+    Discontinuity(clock, GetAbsoluteClock());
+  }
 
   void Reset() { m_bReset = true; }
   void SetSpeed(int iSpeed);
@@ -42,7 +46,7 @@ public:
   void SetMaxSpeedAdjust(double speed);
 
   double GetAbsoluteClock(bool interpolated = true);
-  double GetFrequency() const { return (double)m_systemFrequency; }
+  double GetFrequency() const { return (double)m_systemFrequency ; }
 
   bool GetClockInfo(int& MissedVblanks, double& ClockSpeed, double& RefreshRate) const;
   void SetVsyncAdjust(double adjustment);

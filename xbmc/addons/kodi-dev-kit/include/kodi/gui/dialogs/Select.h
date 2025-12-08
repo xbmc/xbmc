@@ -109,7 +109,7 @@ inline int ATTR_DLL_LOCAL Show(const std::string& heading,
                                unsigned int autoclose = 0)
 {
   using namespace ::kodi::addon;
-  unsigned int size = entries.size();
+  unsigned int size = static_cast<unsigned int>(entries.size());
   auto cEntries = (const char**)malloc(size * sizeof(const char**));
   for (unsigned int i = 0; i < size; ++i)
   {
@@ -168,7 +168,7 @@ inline int ATTR_DLL_LOCAL Show(const std::string& heading,
                                unsigned int autoclose = 0)
 {
   using namespace ::kodi::addon;
-  unsigned int size = entries.size();
+  unsigned int size = static_cast<unsigned int>(entries.size());
   auto cEntries = static_cast<const char**>(malloc(size * sizeof(const char*)));
   for (unsigned int i = 0; i < size; ++i)
   {
@@ -236,7 +236,7 @@ ShowMultiSelect(const std::string& heading,
                 int autoclose = 0)
 {
   using namespace ::kodi::addon;
-  unsigned int size = entries.size();
+  unsigned int size = static_cast<unsigned int>(entries.size());
   auto cEntryIDs = static_cast<const char**>(malloc(size * sizeof(const char*)));
   auto cEntryNames = static_cast<const char**>(malloc(size * sizeof(const char*)));
   auto cEntriesSelected = static_cast<bool*>(malloc(size * sizeof(bool)));

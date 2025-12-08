@@ -53,10 +53,7 @@ private:
   /** \brief Probe the streams of an external subtitle file and store the info in the StreamDetails parameter.
   *   \param[out] details The external subtitle file's StreamDetails.
   */
-  static bool AddExternalSubtitleToDetails(const std::string& path,
-                                           CStreamDetails& details,
-                                           const std::string& filename,
-                                           const std::string& subfilename = "");
+  static bool AddExternalSubtitleToDetails(const std::string &path, CStreamDetails &details, const std::string& filename, const std::string& subfilename = "");
 
   /** \brief Checks external subtitles for a given item and adds any existing ones to the item stream details
   *   \param item The video item

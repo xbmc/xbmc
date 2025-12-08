@@ -13,8 +13,7 @@
 #include <cstdint>
 #include <memory>
 
-extern "C"
-{
+extern "C" {
 #include <libavutil/pixfmt.h>
 }
 

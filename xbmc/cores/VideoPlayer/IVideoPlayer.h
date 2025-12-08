@@ -16,11 +16,11 @@
 #include <utility>
 #include <vector>
 
-#define VideoPlayer_AUDIO 1
-#define VideoPlayer_VIDEO 2
+#define VideoPlayer_AUDIO    1
+#define VideoPlayer_VIDEO    2
 #define VideoPlayer_SUBTITLE 3
 #define VideoPlayer_TELETEXT 4
-#define VideoPlayer_RDS 5
+#define VideoPlayer_RDS      5
 #define VideoPlayer_ID3 6
 
 class CDVDMsg;
@@ -31,17 +31,15 @@ class IVideoPlayer
 {
 public:
   virtual int OnDiscNavResult(void* pData, int iMessage) = 0;
-  virtual void GetVideoResolution(unsigned int& width, unsigned int& height) = 0;
+  virtual void GetVideoResolution(unsigned int &width, unsigned int &height) = 0;
   virtual ~IVideoPlayer() = default;
 };
 
 class IDVDStreamPlayer
 {
 public:
-  explicit IDVDStreamPlayer(CProcessInfo& processInfo)
-    : m_processInfo(processInfo), m_dataCacheCore(CServiceBroker::GetDataCacheCore())
-  {
-  }
+  explicit IDVDStreamPlayer(CProcessInfo& processInfo) : m_processInfo(processInfo)
+                                                       , m_dataCacheCore(CServiceBroker::GetDataCacheCore()) {}
   virtual ~IDVDStreamPlayer() = default;
   virtual bool OpenStream(CDVDStreamInfo hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
@@ -57,10 +55,9 @@ public:
     SYNC_WAITSYNC,
     SYNC_INSYNC
   };
-
 protected:
-  CProcessInfo& m_processInfo;
-  CDataCacheCore& m_dataCacheCore;
+  CProcessInfo &m_processInfo;
+  CDataCacheCore &m_dataCacheCore;
 };
 
 struct SStartMsg
@@ -89,7 +86,7 @@ public:
   virtual void Flush(bool sync) = 0;
   bool AcceptsData() const override = 0;
   virtual bool HasData() const = 0;
-  virtual int GetLevel() const = 0;
+  virtual int  GetLevel() const = 0;
   bool IsInited() const override = 0;
   void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override = 0;
   virtual void EnableSubtitle(bool bEnable) = 0;
@@ -99,7 +96,6 @@ public:
   bool IsStalled() const override = 0;
   virtual bool IsRewindStalled() const { return false; }
   virtual double GetCurrentPts() = 0;
-  virtual double GetCurrentFramePts() = 0;
   virtual double GetOutputDelay() = 0;
   virtual std::string GetPlayerInfo() = 0;
   virtual int GetVideoBitrate() = 0;
@@ -120,7 +116,7 @@ public:
   virtual void Flush(bool sync) = 0;
   bool AcceptsData() const override = 0;
   virtual bool HasData() const = 0;
-  virtual int GetLevel() const = 0;
+  virtual int  GetLevel() const = 0;
   bool IsInited() const override = 0;
   void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override = 0;
   virtual void SetVolume(float fVolume) {}
@@ -129,7 +125,6 @@ public:
   virtual std::string GetPlayerInfo() = 0;
   virtual int GetAudioChannels() = 0;
   virtual double GetCurrentPts() = 0;
-  virtual double GetCurrentFramePts() = 0;
   bool IsStalled() const override = 0;
   virtual bool IsPassthrough() const = 0;
   virtual float GetDynamicRangeAmplification() const = 0;

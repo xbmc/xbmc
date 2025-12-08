@@ -11,11 +11,13 @@
 #include "playlists/PlayListM3U.h"
 #include "utils/StringUtils.h"
 
+
 using namespace XFILE;
 
 CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg(const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG, fileitem)
 {
+
 }
 
 CDVDInputStreamFFmpeg::~CDVDInputStreamFFmpeg()
@@ -25,7 +27,7 @@ CDVDInputStreamFFmpeg::~CDVDInputStreamFFmpeg()
 
 bool CDVDInputStreamFFmpeg::IsEOF()
 {
-  if (m_aborted)
+  if(m_aborted)
     return true;
   else
     return false;
@@ -70,14 +72,14 @@ int64_t CDVDInputStreamFFmpeg::Seek(int64_t offset, int whence)
 
 std::string CDVDInputStreamFFmpeg::GetProxyType() const
 {
-  return m_item.HasProperty("proxy.type") ? m_item.GetProperty("proxy.type").asString()
-                                          : std::string();
+  return m_item.HasProperty("proxy.type") ?
+    m_item.GetProperty("proxy.type").asString() : std::string();
 }
 
 std::string CDVDInputStreamFFmpeg::GetProxyHost() const
 {
-  return m_item.HasProperty("proxy.host") ? m_item.GetProperty("proxy.host").asString()
-                                          : std::string();
+  return m_item.HasProperty("proxy.host") ?
+    m_item.GetProperty("proxy.host").asString() : std::string();
 }
 
 uint16_t CDVDInputStreamFFmpeg::GetProxyPort() const
@@ -87,7 +89,8 @@ uint16_t CDVDInputStreamFFmpeg::GetProxyPort() const
 
   // Select the standard port
   const std::string value = GetProxyType();
-  if (value == "socks4" || value == "socks4a" || value == "socks5" || value == "socks5-remote")
+  if (value == "socks4" || value == "socks4a" ||
+      value == "socks5" || value == "socks5-remote")
     return 1080;
   else
     return 3128;
@@ -95,22 +98,23 @@ uint16_t CDVDInputStreamFFmpeg::GetProxyPort() const
 
 std::string CDVDInputStreamFFmpeg::GetProxyUser() const
 {
-  return m_item.HasProperty("proxy.user") ? m_item.GetProperty("proxy.user").asString()
-                                          : std::string();
+  return m_item.HasProperty("proxy.user") ?
+    m_item.GetProperty("proxy.user").asString() : std::string();
 }
 
 std::string CDVDInputStreamFFmpeg::GetProxyPassword() const
 {
-  return m_item.HasProperty("proxy.password") ? m_item.GetProperty("proxy.password").asString()
-                                              : std::string();
+  return m_item.HasProperty("proxy.password") ?
+    m_item.GetProperty("proxy.password").asString() : std::string();
 }
 
 std::string CDVDInputStreamFFmpeg::GetFileName()
 {
   CURL url = GetURL();
   // rtmp options
-  if (url.IsProtocol("rtmp") || url.IsProtocol("rtmpt") || url.IsProtocol("rtmpe") ||
-      url.IsProtocol("rtmpte") || url.IsProtocol("rtmps"))
+  if (url.IsProtocol("rtmp")  || url.IsProtocol("rtmpt")  ||
+      url.IsProtocol("rtmpe") || url.IsProtocol("rtmpte") ||
+      url.IsProtocol("rtmps"))
   {
     std::vector<std::string> opts = StringUtils::Split(url.Get(), " ");
     if (opts.size() > 0)

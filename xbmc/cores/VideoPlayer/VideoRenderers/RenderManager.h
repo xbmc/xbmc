@@ -10,9 +10,8 @@
 
 #include "DVDClock.h"
 #include "DebugRenderer.h"
-#include "application/ApplicationPlayer.h"
-#include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "cores/VideoSettings.h"
@@ -20,7 +19,6 @@
 #include "threads/Event.h"
 #include "threads/SystemClock.h"
 #include "utils/Geometry.h"
-#include "utils/StreamDetails.h"
 #include "windowing/Resolution.h"
 
 #include <atomic>
@@ -42,15 +40,13 @@ class CRenderManager;
 class IRenderMsg
 {
   friend CRenderManager;
-
 public:
   virtual ~IRenderMsg() = default;
-
 protected:
   virtual void VideoParamsChange() = 0;
-  virtual void GetDebugInfo(std::string& audio, std::string& video, std::string& general) = 0;
+  virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) = 0;
   virtual void UpdateClockSync(bool enabled) = 0;
-  virtual void UpdateRenderInfo(CRenderInfo& info) = 0;
+  virtual void UpdateRenderInfo(CRenderInfo &info) = 0;
   virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
   virtual void UpdateGuiRender(bool gui) = 0;
   virtual void UpdateVideoRender(bool video) = 0;
@@ -60,7 +56,7 @@ protected:
 class CRenderManager
 {
 public:
-  CRenderManager(CDVDClock& clock, IRenderMsg* player);
+  CRenderManager(CDVDClock &clock, IRenderMsg *player);
   virtual ~CRenderManager();
 
   // Functions called from render thread
@@ -72,7 +68,7 @@ public:
   bool IsVideoLayer() const;
   RESOLUTION GetResolution() const;
   void UpdateResolution(bool force = false);
-  void TriggerUpdateResolution(float fps, int width, int height, std::string& stereomode);
+  void TriggerUpdateResolution(float fps, int width, int height, std::string &stereomode);
   void TriggerUpdateResolutionHdr(StreamHdrType m_hdrType);
   void SetViewMode(int iViewMode) const;
   void PreInit();
@@ -92,14 +88,8 @@ public:
 
   unsigned int AllocRenderCapture();
   void ReleaseRenderCapture(unsigned int captureId);
-  void StartRenderCapture(unsigned int captureId,
-                          unsigned int width,
-                          unsigned int height,
-                          int flags);
-  bool RenderCaptureGetPixels(unsigned int captureId,
-                              unsigned int millis,
-                              uint8_t* buffer,
-                              unsigned int size);
+  void StartRenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags);
+  bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
 
   // Functions called from GUI
   bool Supports(ERENDERFEATURE feature) const;
@@ -107,15 +97,8 @@ public:
 
   int GetSkippedFrames() const { return m_QueueSkip; }
 
-  bool Configure(const VideoPicture& picture,
-                 float fps,
-                 unsigned int orientation,
-                 StreamHdrType hdrType,
-                 int buffers = 0);
-  bool AddVideoPicture(const VideoPicture& picture,
-                       volatile std::atomic_bool& bStop,
-                       EINTERLACEMETHOD deintMethod,
-                       bool wait);
+  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation, StreamHdrType hdrType, int buffers = 0);
+  bool AddVideoPicture(const VideoPicture& picture, volatile std::atomic_bool& bStop, EINTERLACEMETHOD deintMethod, bool wait);
   void AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts);
   void ShowVideo(bool enable);
 
@@ -132,10 +115,7 @@ public:
    * Can be called by player for lateness detection. This is done best by
    * looking at the end of the queue.
    */
-  bool GetStats(int& lateframes, double& pts, int& queued, int& discard);
-
-  double GetRenderPts();
-  double GetFramePts();
+  bool GetStats(int &lateframes, double &pts, int &queued, int &discard);
 
   /**
    * Video player call this on flush in oder to discard any queued frames
@@ -153,12 +133,11 @@ public:
   void SetVideoSettings(const CVideoSettings& settings) const;
 
 protected:
+
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
   void PresentFields(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
-  void SetPresentSource();
-  bool Paused(bool paused, double clock);
   void PrepareNextRender();
   bool IsPresenting();
   bool IsGuiLayer();
@@ -171,7 +150,7 @@ protected:
   void UpdateVideoLatencyTweak();
   void CheckEnableClockSync();
 
-  CBaseRenderer* m_pRenderer = nullptr;
+  CBaseRenderer *m_pRenderer = nullptr;
   OVERLAY::CRenderer m_overlays;
   CDebugRenderer m_debugRenderer;
   mutable CCriticalSection m_statelock;
@@ -188,11 +167,11 @@ protected:
 
   enum EPRESENTSTEP
   {
-    PRESENT_IDLE = 0,
-    PRESENT_FLIP,
-    PRESENT_FRAME,
-    PRESENT_FRAME2,
-    PRESENT_READY
+    PRESENT_IDLE     = 0
+  , PRESENT_FLIP
+  , PRESENT_FRAME
+  , PRESENT_FRAME2
+  , PRESENT_READY
   };
 
   enum EPRESENTMETHOD
@@ -225,9 +204,8 @@ protected:
 
   struct SPresent
   {
-    double pts;
-    double duration;
-    EFIELDSYNC presentfield;
+    double         pts;
+    EFIELDSYNC     presentfield;
     EPRESENTMETHOD presentmethod;
   } m_Queue[NUM_BUFFERS]{};
 
@@ -251,12 +229,12 @@ protected:
   bool m_forceNext = false;
   bool m_presentstarted = false;
   int m_presentsource = 0;
-  double m_presentframetime = 0;
+  int m_presentsourcePast = -1;
   XbmcThreads::ConditionVariable m_presentevent;
   CEvent m_flushEvent;
   CEvent m_initEvent;
-  CDVDClock& m_dvdClock;
-  IRenderMsg* m_playerPort;
+  CDVDClock &m_dvdClock;
+  IRenderMsg *m_playerPort;
 
   struct CClockSync
   {
@@ -278,10 +256,6 @@ protected:
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
   bool m_hasCaptures = false;
 
-private:
-  bool CalcOverlayActiveArea(CRect& src, CRect& dst) const;
-  void ClockAlign();
-  void RenderUpdate(bool clear, unsigned int flags, unsigned int alpha);
-
-  CDataCacheCore& m_dataCacheCore;
+  private:
+  CDataCacheCore &m_dataCacheCore;
 };

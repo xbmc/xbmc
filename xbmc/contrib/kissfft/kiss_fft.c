@@ -201,7 +201,7 @@ static void kf_bfly_generic(
     kiss_fft_cpx t;
     int Norig = st->nfft;
 
-    kiss_fft_cpx * scratch = KISS_FFT_TMP_ALLOC(sizeof(kiss_fft_cpx)*p);
+    kiss_fft_cpx * scratch = (kiss_fft_cpx*)KISS_FFT_TMP_ALLOC(sizeof(kiss_fft_cpx)*p);
 
     for ( u=0; u<m; ++u ) {
         k=u;
@@ -303,7 +303,7 @@ void kf_factor(int n,int * facbuf)
 {
     int p=4;
     double floor_sqrt;
-    floor_sqrt = floor( sqrt(n) );
+    floor_sqrt = floor( sqrt((double)n) );
 
     /*factor out powers of 4, powers of 2, then any remaining primes */
     do {
@@ -366,7 +366,7 @@ void kiss_fft_stride(kiss_fft_cfg st,const kiss_fft_cpx *fin,kiss_fft_cpx *fout,
     if (fin == fout) {
         //NOTE: this is not really an in-place FFT algorithm.
         //It just performs an out-of-place FFT into a temp buffer
-        kiss_fft_cpx * tmpbuf = KISS_FFT_TMP_ALLOC(sizeof(kiss_fft_cpx)*st->nfft);
+        kiss_fft_cpx * tmpbuf = (kiss_fft_cpx*)KISS_FFT_TMP_ALLOC( sizeof(kiss_fft_cpx)*st->nfft);
         kf_work(tmpbuf,fin,1,in_stride, st->factors,st);
         memcpy(fout,tmpbuf,sizeof(kiss_fft_cpx)*st->nfft);
         KISS_FFT_TMP_FREE(tmpbuf);

@@ -758,7 +758,7 @@ ssize_t CNFSFile::Read(void *lpBuf, size_t uiBufSize)
 #ifdef LIBNFS_API_V2
   numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, lpBuf, uiBufSize);
 #else
-  numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, lpBuf);
+  numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);
 #endif
 
   lock.unlock(); //no need to keep the connection lock after that
@@ -824,7 +824,8 @@ void CNFSFile::Close()
     // so keep alive code doesn't process it anymore
     gNfsConnection.removeFromKeepAliveList(m_pFileHandle);
     ret = nfs_close(m_pNfsContext, m_pFileHandle);
-    if (ret < 0)
+
+	  if (ret < 0)
     {
       CLog::Log(LOGERROR, "Failed to close({}) - {}", m_url.GetFileName(),
                 nfs_get_error(m_pNfsContext));

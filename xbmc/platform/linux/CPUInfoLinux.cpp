@@ -347,7 +347,7 @@ int CCPUInfoLinux::GetUsedPercentage()
     m_cores[core].m_totalTime += totalTime;
   }
 
-  return m_lastUsedPercentage;
+  return static_cast<int>(m_lastUsedPercentage);
 }
 
 float CCPUInfoLinux::GetCPUFrequency()

@@ -16,12 +16,12 @@
 
 enum DVDOverlayType
 {
-  DVDOVERLAY_TYPE_NONE = -1,
-  DVDOVERLAY_TYPE_SPU = 1,
-  DVDOVERLAY_TYPE_TEXT = 2,
-  DVDOVERLAY_TYPE_IMAGE = 3,
-  DVDOVERLAY_TYPE_SSA = 4,
-  DVDOVERLAY_TYPE_GROUP = 5,
+  DVDOVERLAY_TYPE_NONE    = -1,
+  DVDOVERLAY_TYPE_SPU     = 1,
+  DVDOVERLAY_TYPE_TEXT    = 2,
+  DVDOVERLAY_TYPE_IMAGE   = 3,
+  DVDOVERLAY_TYPE_SSA     = 4,
+  DVDOVERLAY_TYPE_GROUP   = 5,
 };
 
 class CDVDOverlay : public std::enable_shared_from_this<CDVDOverlay>
@@ -44,10 +44,10 @@ public:
 
   CDVDOverlay(const CDVDOverlay& src) : std::enable_shared_from_this<CDVDOverlay>(src)
   {
-    m_type = src.m_type;
+    m_type        = src.m_type;
     iPTSStartTime = src.iPTSStartTime;
-    iPTSStopTime = src.iPTSStopTime;
-    bForced = src.bForced;
+    iPTSStopTime  = src.iPTSStopTime;
+    bForced       = src.bForced;
     replace = src.replace;
     m_textureid = 0;
     m_3dSubtitleDepth = 0;
@@ -106,7 +106,6 @@ public:
   unsigned long m_textureid;
 
   int m_3dSubtitleDepth;
-
 protected:
   DVDOverlayType m_type;
   bool m_enableTextAlign;
@@ -121,7 +120,10 @@ class CDVDOverlayGroup : public CDVDOverlay
 public:
   ~CDVDOverlayGroup() override = default;
 
-  CDVDOverlayGroup() : CDVDOverlay(DVDOVERLAY_TYPE_GROUP) {}
+  CDVDOverlayGroup()
+    : CDVDOverlay(DVDOVERLAY_TYPE_GROUP)
+  {
+  }
 
   CDVDOverlayGroup(const CDVDOverlayGroup& src) : CDVDOverlay(src), m_overlays(src.m_overlays) {}
   VecOverlays m_overlays;

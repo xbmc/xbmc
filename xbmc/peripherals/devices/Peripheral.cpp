@@ -455,7 +455,7 @@ bool CPeripheral::SetSetting(const std::string& strKey, float fValue)
     if (floatSetting)
     {
       bChanged = floatSetting->GetValue() != static_cast<double>(fValue);
-      floatSetting->SetValue(fValue);
+      floatSetting->SetValue(static_cast<double>(fValue));
       if (bChanged && m_bInitialised)
         m_changedSettings.insert(strKey);
     }

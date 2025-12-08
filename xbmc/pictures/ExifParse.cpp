@@ -331,7 +331,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
   IndentString[NestingLevel * 4] = '\0';
 
 
-  int NumDirEntries = Get16(DirStart, m_MotorolaOrder);
+  int NumDirEntries = Get16((const void*)DirStart, m_MotorolaOrder);
 
   const unsigned char* const DirEnd = DIR_ENTRY_ADDR(DirStart, NumDirEntries);
   if (DirEnd+4 > (OffsetBase+ExifLength))
@@ -384,7 +384,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
         ErrNonfatal("Illegal value pointer for tag %04x", Tag,0);
         continue;
       }
-      ValuePtr = const_cast<unsigned char*>(OffsetBase)+OffsetVal;
+      ValuePtr = (unsigned char*)(const_cast<unsigned char*>(OffsetBase)+OffsetVal);
 
       if (OffsetVal > m_LargestExifOffset)
       {
@@ -394,7 +394,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
     }
     else {
       // 4 bytes or less and value is in the dir entry itself
-      ValuePtr = const_cast<unsigned char*>(DirEntry)+8;
+      ValuePtr = (unsigned char*)(const_cast<unsigned char*>(DirEntry)+8);
     }
 
 
@@ -781,14 +781,14 @@ bool CExifParse::Process (const unsigned char* const ExifSection, const unsigned
   pos += strlen(ExifAlignment0);
 
   // Check the next value for correctness.
-  if (Get16(pos, m_MotorolaOrder) != ExifExtra)
+  if (Get16((const void*)(pos), m_MotorolaOrder) != ExifExtra)
   {
     printf("ExifParse: invalid Exif start (1)");
     return false;
   }
   pos += sizeof(short);
 
-  unsigned long FirstOffset = (unsigned)Get32(pos, m_MotorolaOrder);
+  unsigned long FirstOffset = (unsigned)Get32((const void*)pos, m_MotorolaOrder);
   if (FirstOffset < 8 || FirstOffset + 8 >= length)
   {
     ErrNonfatal("Invalid offset of first IFD value: %u", FirstOffset, 0);
@@ -948,7 +948,7 @@ void CExifParse::ProcessGpsInfo(
         {
           char temp[18];
           snprintf(temp, sizeof(temp), "%.2fm",
-                   ConvertAnyFormat(ValuePtr, Format));
+                   static_cast<double>(ConvertAnyFormat(ValuePtr, Format)));
           strcat(m_ExifInfo->GpsAlt, temp);
         }
       break;
