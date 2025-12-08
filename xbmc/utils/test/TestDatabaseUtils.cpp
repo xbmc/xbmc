@@ -12,6 +12,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDatabaseColumns.h"
 
 #include <gtest/gtest.h>
 
