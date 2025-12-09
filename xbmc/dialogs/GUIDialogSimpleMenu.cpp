@@ -14,14 +14,10 @@
 #include "GUIDialogSelect.h"
 #include "GUIDialogYesNo.h"
 #include "ServiceBroker.h"
-#include "URL.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/DiscSettings.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -75,6 +71,8 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
         return URIUtils::GetBlurayRootPath(originalDynPath);
       }()};
 
+  const bool forcePlaylistSelection{item.GetProperty("force_playlist_selection").asBoolean(false)};
+
   // Get playlists that are already used (for warning after selection to avoid duplicates in file table)
   std::vector<CVideoDatabase::PlaylistInfo> usedPlaylists{};
   CVideoDatabase database;
@@ -87,7 +85,7 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
 
   // If replacing existing playlist (FORCE_PLAYLIST_SELECTION), remove it from exclude list
   // as user could choose the same playlist again
-  if (item.GetProperty("force_playlist_selection").asBoolean(false))
+  if (forcePlaylistSelection)
   {
     CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
     if (regex.RegFind(originalDynPath) != -1)
@@ -164,8 +162,15 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
       }
 
       item.SetDynPath(item_new->GetDynPath());
-      item.GetVideoInfoTag()->m_streamDetails = item_new->GetVideoInfoTag()->m_streamDetails;
       item.SetProperty("original_listitem_url", originalDynPath);
+
+      // If streamdetails are already present they are from an nfo and should not be overwritten
+      //  unless forced playlist selection (ie. choose playlist selected from the context menu) - given we
+      //  don't know the source of the original streamdetails (nfo or previous playlist) we always overwrite
+      // @todo - update when streamdetails source tracking is added
+      if (!item.GetVideoInfoTag()->HasStreamDetails() || forcePlaylistSelection)
+        item.GetVideoInfoTag()->m_streamDetails = item_new->GetVideoInfoTag()->m_streamDetails;
+
       return true;
     }
 
