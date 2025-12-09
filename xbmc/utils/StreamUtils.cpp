@@ -150,3 +150,9 @@ std::string StreamUtils::GetLayout(unsigned int channels)
 
   return layout;
 }
+
+bool StreamUtils::IsCodecSupportForcedOverlay(int codecId)
+{
+  return codecId == AV_CODEC_ID_DVD_SUBTITLE || codecId == AV_CODEC_ID_HDMV_PGS_SUBTITLE ||
+         codecId == AV_CODEC_ID_DVB_SUBTITLE;
+}

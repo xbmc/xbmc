@@ -54,4 +54,11 @@ public:
    * \return the layout
    */
   static std::string GetLayout(unsigned int channels);
+
+  /*!
+   * \brief Determines if a codec support forced overlays (on image type subtitles).
+   * \param codecId The ffmpeg codec id
+   * \return True when support forced overlay, otherwise false
+   */
+  static bool IsCodecSupportForcedOverlay(int codecId);
 };
