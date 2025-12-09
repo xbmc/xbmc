@@ -57,6 +57,7 @@ public:
   std::string Format(Bcp47FormattingStyle style = Bcp47FormattingStyle::FORMAT_BCP47) const;
 
   // Accessors
+  Bcp47TagType GetType() const { return m_type; }
   std::string GetLanguage() const { return m_language; }
   std::vector<std::string> GetExtLangs() const { return m_extLangs; }
   std::string GetScript() const { return m_script; }
@@ -66,16 +67,8 @@ public:
   std::vector<std::string> GetPrivateUse() const { return m_privateUse; }
   std::string GetGrandfathered() const { return m_grandfathered; }
 
-  /*!
-   * \brief Identify grandfathered tags.
-   * \return true for a grandfathered tag, false otherwise.
-   */
-  bool IsGrandfathered() const { return m_type == Bcp47TagType::GRANDFATHERED; }
-
 private:
   CBcp47() = default;
-
-  friend class CBcp47Formatter;
 
   bool Validate();
   bool IsValidLanguage() const;
