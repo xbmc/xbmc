@@ -19,7 +19,7 @@ namespace KODI::UTILS::I18N
 {
 std::ostream& operator<<(std::ostream& os, const CBcp47& obj)
 {
-  if (obj.IsGrandfathered()) [[unlikely]]
+  if (obj.GetType() == Bcp47TagType::GRANDFATHERED) [[unlikely]]
   {
     os << "BCP47 (grandfathered: " << obj.GetGrandfathered() << ")";
     return os;

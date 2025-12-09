@@ -64,14 +64,14 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
 {
   std::string str;
 
-  if (tag.m_type == Bcp47TagType::GRANDFATHERED)
+  if (tag.GetType() == Bcp47TagType::GRANDFATHERED)
   {
     FormatGrandfathered(tag, str);
     return str;
   }
 
   // Language may be empty only for tags made up only of a private use subtag
-  if (tag.m_type == Bcp47TagType::PRIVATE_USE)
+  if (tag.GetType() == Bcp47TagType::PRIVATE_USE)
   {
     FormatPrivateUse(tag, str);
     return str;
@@ -145,38 +145,41 @@ std::string CBcp47Formatter::Format(const CBcp47& tag) const
 
 bool CBcp47Formatter::FormatLanguage(const CBcp47& tag, std::string& str) const
 {
-  if (tag.m_language.empty())
+  const std::string& language = tag.GetLanguage();
+  if (language.empty())
     return false;
 
   if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
   {
     // Language from ISO 639-1 or ISO 639-2
-    if (std::string lang; LookupInISO639Tables(tag.m_language, lang))
+    if (std::string lang; LookupInISO639Tables(language, lang))
       str.append(lang);
     else
-      str.append(tag.m_language); // was likely ISO 639-3 or 639-5
+      str.append(language); // was likely ISO 639-3 or 639-5
     return true;
   }
 
-  str.append(tag.m_language);
+  str.append(language);
   return true;
 }
 
 bool CBcp47Formatter::FormatExtLangs(const CBcp47& tag, std::string& str) const
 {
-  if (tag.m_extLangs.empty())
+  const std::vector<std::string>& extLangs = tag.GetExtLangs();
+  if (extLangs.empty())
     return false;
 
-  str.append(StringUtils::Join(tag.m_extLangs, "-"));
+  str.append(StringUtils::Join(extLangs, "-"));
   return true;
 }
 
 bool CBcp47Formatter::FormatScript(const CBcp47& tag, std::string& str) const
 {
-  if (tag.m_script.empty())
+  const std::string& script = tag.GetScript();
+  if (script.empty())
     return false;
 
-  std::string s = tag.m_script;
+  std::string s = script;
   StringUtils::ToCapitalize(s);
   str.append(s);
   return true;
@@ -184,37 +187,40 @@ bool CBcp47Formatter::FormatScript(const CBcp47& tag, std::string& str) const
 
 bool CBcp47Formatter::FormatRegion(const CBcp47& tag, std::string& str) const
 {
-  if (tag.m_region.empty())
+  const std::string& region = tag.GetRegion();
+  if (region.empty())
     return false;
 
   if (m_style == Bcp47FormattingStyle::FORMAT_ENGLISH)
   {
     // Region from ISO 3166-1. UN M.49 is not supported.
-    const auto reg = CIso3166_1::LookupByCode(tag.m_region);
-    str.append(reg.value_or(StringUtils::ToUpper(tag.m_region)));
+    const auto reg = CIso3166_1::LookupByCode(region);
+    str.append(reg.value_or(StringUtils::ToUpper(region)));
   }
   else
   {
-    str.append(StringUtils::ToUpper(tag.m_region));
+    str.append(StringUtils::ToUpper(region));
   }
   return true;
 }
 
 bool CBcp47Formatter::FormatVariants(const CBcp47& tag, std::string& str) const
 {
-  if (tag.m_variants.empty())
+  const std::vector<std::string>& variants = tag.GetVariants();
+  if (variants.empty())
     return false;
 
-  str.append(StringUtils::Join(tag.m_variants, "-"));
+  str.append(StringUtils::Join(variants, "-"));
   return true;
 }
 
 bool CBcp47Formatter::FormatExtensions(const CBcp47& tag, std::string& str) const
 {
-  if (tag.m_extensions.empty())
+  const std::vector<Bcp47Extension>& extensions = tag.GetExtensions();
+  if (extensions.empty())
     return false;
 
-  for (const auto& ext : tag.m_extensions)
+  for (const auto& ext : extensions)
   {
     str.push_back(ext.name);
     str.push_back('-');
@@ -229,20 +235,22 @@ bool CBcp47Formatter::FormatExtensions(const CBcp47& tag, std::string& str) cons
 
 bool CBcp47Formatter::FormatPrivateUse(const CBcp47& tag, std::string& str) const
 {
-  if (tag.m_privateUse.empty())
+  const std::vector<std::string>& privateUse = tag.GetPrivateUse();
+  if (privateUse.empty())
     return false;
 
   str.append("x-");
-  str.append(StringUtils::Join(tag.m_privateUse, "-"));
+  str.append(StringUtils::Join(privateUse, "-"));
 
   return true;
 }
 
 bool CBcp47Formatter::FormatGrandfathered(const CBcp47& tag, std::string& str) const
 {
-  if (tag.m_grandfathered.empty())
+  const std::string& grandfathered = tag.GetGrandfathered();
+  if (grandfathered.empty())
     return false;
 
-  str.append(tag.m_grandfathered);
+  str.append(grandfathered);
   return true;
 }
