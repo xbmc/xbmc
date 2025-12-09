@@ -267,6 +267,7 @@ else()
 endif()
 
 if(WITH_FFMPEG)
+  message(DEPRECATION "WITH_FFMPEG is deprecated. Please use FFMPEG_PATH instead.")
   set(FFMPEG_PATH ${WITH_FFMPEG})
 endif()
 
