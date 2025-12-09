@@ -158,11 +158,11 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
   }
 
   const XBMCKey xbmcKey{m_keymap->XBMCKeyForKeycode(xkbCode)};
-  if (xbmcKey == XBMCKey::XBMCK_UNKNOWN && utf32 == 0)
+  if (xbmcKey == XBMCKey::XBMCK_LAST)
   {
     // Such an event would carry no useful information in it and thus can be safely dropped here
     // This prevents starting an unnecessary timer for key presses
-    CLog::Log(LOGDEBUG, "Unknown key event ignored (scancode: {})", scancode);
+    CLog::Log(LOGDEBUG, LOGWINDOWING, "Key event ignored (scancode: {})", scancode);
     return;
   }
 
