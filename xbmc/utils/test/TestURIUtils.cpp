@@ -1093,80 +1093,100 @@ struct CURLArchiveConstructionTestData
   std::string protocol;
   std::string filename;
   std::string hostname;
+  bool translateFilename{false};
 };
 
-TEST_F(TestURIUtils, CURLConstructionOfArchiveFile)
+std::ostream& operator<<(std::ostream& os, const CURLArchiveConstructionTestData& data)
 {
-  const std::vector<CURLArchiveConstructionTestData> test_data{
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png"),
-          "",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png"),
-          "",
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/zipfile.zip/kodi-dev.png"),
-          "zip",
-          "kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/zipfile.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip/does_not_exist.png"),
-          "zip",
-          "does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip"),
-          "zip",
-          "zipfile.zip",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar"),
-          "zip",
-          "rarfile.rar",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/does_not_exist.png"),
-          "zip",
-          "zipfile.zip/does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/kodi-dev.png"),
-          "zip",
-          "zipfile.zip/kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/directory/does_not_exist.png"),
-          "zip",
-          "directory/does_not_exist.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-      {
-          XBMC_REF_FILE_PATH(
-              "xbmc/utils/test/resources/archives_in_zip.zip/directory/kodi-dev.png"),
-          "zip",
-          "directory/kodi-dev.png",
-          XBMC_REF_FILE_PATH("xbmc/utils/test/resources/archives_in_zip.zip"),
-      },
-  };
+  return os << "CURLArchiveConstructionTestData { " << data.input << " }" << std::endl;
+}
 
-  for (const auto& param : test_data)
+const auto ArchiveFileParsingTests = std::array{
+    // Zip file tests
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png",
+        "",
+        "xbmc/utils/test/resources/does_not_exist.zip/kodi-dev.png",
+        "",
+        true,
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/zipfile.zip/kodi-dev.png",
+        "zip",
+        "kodi-dev.png",
+        "xbmc/utils/test/resources/zipfile.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/does_not_exist.png",
+        "zip",
+        "does_not_exist.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip",
+        "zip",
+        "zipfile.zip",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/rarfile.rar",
+        "zip",
+        "rarfile.rar",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/does_not_exist.png",
+        "zip",
+        "zipfile.zip/does_not_exist.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/zipfile.zip/kodi-dev.png",
+        "zip",
+        "zipfile.zip/kodi-dev.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/directory/does_not_exist.png",
+        "zip",
+        "directory/does_not_exist.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+    CURLArchiveConstructionTestData{
+        "xbmc/utils/test/resources/archives_in_zip.zip/directory/kodi-dev.png",
+        "zip",
+        "directory/kodi-dev.png",
+        "xbmc/utils/test/resources/archives_in_zip.zip",
+    },
+};
+
+class ArchiveFileParsingTester : public testing::Test,
+                                 public testing::WithParamInterface<CURLArchiveConstructionTestData>
+{
+};
+
+TEST_P(ArchiveFileParsingTester, TestArchiveFileParsingNativeSlashes)
+{
+  const auto& param = GetParam();
+  const std::string path = XBMC_REF_FILE_PATH(param.input);
+  const CURL url(path);
+
+  EXPECT_EQ(param.protocol, url.GetProtocol());
+  if (param.translateFilename)
   {
-    const CURL url(param.input);
-
-    EXPECT_EQ(param.protocol, url.GetProtocol());
-    EXPECT_EQ(param.filename, url.GetFileName());
+    EXPECT_EQ(XBMC_REF_FILE_PATH(param.filename), url.GetFileName());
     EXPECT_EQ(param.hostname, CURL::Decode(url.GetHostName()));
   }
+  else
+  {
+    EXPECT_EQ(param.filename, url.GetFileName());
+    EXPECT_EQ(XBMC_REF_FILE_PATH(param.hostname), CURL::Decode(url.GetHostName()));
+  }
 }
+
+INSTANTIATE_TEST_SUITE_P(TestURIUtils,
+                         ArchiveFileParsingTester,
+                         testing::ValuesIn(ArchiveFileParsingTests));
 
 struct GetFileOrFolderNameTest
 {
