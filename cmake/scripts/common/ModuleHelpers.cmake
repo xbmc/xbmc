@@ -725,7 +725,7 @@ macro(SEARCH_EXISTING_PACKAGES)
   if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     find_package(PkgConfig ${SEARCH_QUIET})
 
-    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+    if(PKG_CONFIG_FOUND)
       pkg_check_modules(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC}${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
@@ -897,7 +897,7 @@ function(create_mesonbuiltin)
     string(STRIP "${input}" input)
 
     # builtinpairs cmake source variables are specifically single strings, and not lists
-    string(REPLACE " " "', '" tmp_string "${input}")
+    string(REGEX REPLACE "[ ]+" "', '" tmp_string "${input}")
     string(PREPEND tmp_string "${meson_label_name} = ['")
     string(APPEND tmp_string "']")
     string(APPEND output_string "${tmp_string}\n")
@@ -918,4 +918,46 @@ function(create_mesonbuiltin)
   # Easiest to just prepend header at the end of the full string creation
   string(PREPEND output_string "[built-in options]\n")
   set(meson_builtin_string ${output_string} PARENT_SCOPE)
+endfunction()
+
+# Creates a variable and sets in parent scope - ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_dev_env
+# Variable is purposely set with an ending COMMAND to allow the variable to be placed
+# in an externalproject_add build or configure step.
+#
+# eg.     set(BUILD_COMMAND ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_dev_env}
+#                           Ninja::Ninja -C ./build)
+#
+function(create_module_dev_env)
+  if(WIN32 OR WINDOWS_STORE)
+    set(Vcvars_FIND_VCVARSALL TRUE)
+
+    if(NOT VERBOSE_FIND)
+      set(Vcvars_FIND_QUIETLY TRUE)
+    endif()
+
+    find_package(Vcvars REQUIRED)
+    if(WINDOWS_STORE)
+      set(vcstore store)
+    endif()
+
+    string(TOLOWER "${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}" _lower_hostarch)
+    string(TOLOWER "${CMAKE_GENERATOR_PLATFORM}" _lower_targetarch)
+
+    if("${_lower_hostarch}" STREQUAL "x64")
+      set(_lower_hostarch amd64)
+    endif()
+    if("${_lower_targetarch}" STREQUAL "x64")
+      set(_lower_targetarch amd64)
+    endif()
+
+    if("${_lower_hostarch}" STREQUAL "${_lower_targetarch}")
+      set(vcarch ${_lower_hostarch})
+    else()
+      set(vcarch ${_lower_hostarch}_${_lower_targetarch})
+    endif()
+
+    set(cmd_wrapper "${Vcvars_BATCH_FILE}" ${vcarch} ${vcstore} ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION})
+    # trailing COMMAND sets externalproject_add commands up, and is required
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_dev_env ${cmd_wrapper} COMMAND PARENT_SCOPE)
+  endif()
 endfunction()
