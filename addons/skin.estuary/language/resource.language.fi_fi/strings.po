@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-05-29 14:27+0000\n"
+"PO-Revision-Date: 2025-12-11 16:13+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.4\n"
+"X-Generator: Weblate 5.14.3\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -39,7 +39,7 @@ msgstr "Etsi..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Näytä median fanitaide taustana"
+msgstr "Näytä median fanart taustana"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -83,7 +83,7 @@ msgstr "Satunnaiset albumit"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Satunnaiset esittäjät"
+msgstr "Satunnaiset artistit"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
@@ -134,7 +134,7 @@ msgstr "Valitse mediakohteille näytettävä arvio"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add items from media and other views by using the context menu."
-msgstr ""
+msgstr "Suosikkeja ei löytynyt. Voit lisätä suosikkeja media- ja muissa näkymissä sisältövalikon kautta."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -146,7 +146,7 @@ msgstr "Seuraava esitys"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Näytä fanitaide"
+msgstr "Näytä fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -259,7 +259,7 @@ msgstr "Päävalikon kohteet"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Valitse säätietojen taustapaketti"
+msgstr "Valitse säätietojen fanart-kooste"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -316,7 +316,7 @@ msgstr "Päättyy"
 #. Label to highlight that live stream is being played
 msgctxt "#31081"
 msgid "Live"
-msgstr ""
+msgstr "Suora"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -491,7 +491,7 @@ msgstr "Päävalikon asetukset: Tee aloitusnäytöstä haluamasi näköinen."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Valitse ulkoasun fanitaidepaketti"
+msgstr "Valitse ulkoasun fanart-kooste"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -567,7 +567,7 @@ msgstr "Kategoriat"
 
 msgctxt "#31149"
 msgid "Choose genre fanart pack"
-msgstr ""
+msgstr "Valitse lajityyppien fanart-kooste"
 
 msgctxt "#31150"
 msgid "Origin"
@@ -623,7 +623,7 @@ msgstr "Pelaa omia pelejäsi tai lataa pelilisäosia virallisesta jakeluvarastos
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "Näytä fanitaide taustana"
+msgstr "Näytä fanart-tausta"
 
 #. Choose profile identifier
 msgctxt "#31164"
@@ -692,7 +692,7 @@ msgstr "Elokuvakokoelmavalinnan oletustoiminto aloitusnäytössä"
 
 msgctxt "#31177"
 msgid "Choose weather icon pack"
-msgstr ""
+msgstr "Valitse sääkuvakekooste"
 
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window

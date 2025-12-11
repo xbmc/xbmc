@@ -15,4 +15,5 @@
     <string name="permission_denied">Käyttöoikeutta ei myönnetty!! Suljetaan…</string>
     <string name="no_find_apk">Pakettia ei löytynyt.</string>
     <string name="no_read_apk">Pakettia ei voitu lukea.</string>
+    <string name="record_audio_dialog">%1$s pyytää oikeutta tallentaa ääntä. Tätä käytetään ainoastaan käyttäjän äänihakuun. Salli tai estä tämä seuraavasta valintaruudusta.</string>
 </resources>
