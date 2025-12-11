@@ -258,28 +258,15 @@ bool CDirectory::GetDirectory(const CURL& url,
     if (!pDirectory->AllowAll())
     {
       pDirectory->SetMask(hints.mask);
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        CFileItemPtr item = items[i];
-        if (!item->IsFolder() && !pDirectory->IsAllowed(item->GetURL()))
-        {
-          items.Remove(i);
-          i--; // don't confuse loop
-        }
-      }
+      items.erase_if([&pDirectory](const CFileItemPtr& item)
+                     { return !item->IsFolder() && !pDirectory->IsAllowed(item->GetURL()); });
     }
     // filter hidden files
     //! @todo we shouldn't be checking the gui setting here, callers should use getHidden instead
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWHIDDEN) && !(hints.flags & DIR_FLAG_GET_HIDDEN))
     {
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        if (items[i]->GetProperty("file:hidden").asBoolean())
-        {
-          items.Remove(i);
-          i--; // don't confuse loop
-        }
-      }
+      items.erase_if([](const CFileItemPtr& item)
+                     { return item->GetProperty("file:hidden").asBoolean(); });
     }
 
     //  Should any of the files we read be treated as a directory?
