@@ -77,7 +77,7 @@ checkfiles() {
 
 buildProcess() {
 export PREFIX=/xbmc/project/BuildDependencies/mingwlibs/$TRIPLET
-if [ "$(pathChanged $PREFIX /xbmc/tools/buildsteps/windows /xbmc/project/BuildDependencies/scripts /xbmc/tools/depends/target/ffmpeg/FFMPEG-VERSION)" == "0" ]; then
+if [ "$(pathChanged $PREFIX /xbmc/tools/buildsteps/windows /xbmc/tools/depends/target/dav1d/DAV1D-VERSION /xbmc/tools/depends/target/ffmpeg/FFMPEG-VERSION)" == "0" ]; then
   return
 fi
 
@@ -110,7 +110,7 @@ echo "--------------------------------------------------------------------------
 echo " compile mingw libs $TRIPLET done..."
 echo "-------------------------------------------------------------------------------"
 
-tagSuccessFulBuild $PREFIX /xbmc/tools/buildsteps/windows /xbmc/project/BuildDependencies/scripts /xbmc/tools/depends/target/ffmpeg/FFMPEG-VERSION
+tagSuccessFulBuild $PREFIX /xbmc/tools/buildsteps/windows /xbmc/tools/depends/target/dav1d/DAV1D-VERSION /xbmc/tools/depends/target/ffmpeg/FFMPEG-VERSION
 }
 
 run_builds() {
