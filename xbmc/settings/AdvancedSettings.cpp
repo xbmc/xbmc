@@ -26,7 +26,6 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -271,13 +270,14 @@ void CAdvancedSettings::Initialize()
                                         m_allExcludeFromScanRegExps.end());
 
   m_folderStackRegExps = CompileRegexes({
-      "((cd|dvd|dis[ck])[0-9]+)$",
+      "(.*?)(?:[^\\/])((?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9])$",
+      "()((?:p(?:(?:ar)?t)[ _.-]*[0-9]))$",
   });
 
   m_videoStackRegExps = CompileRegexes({
-      "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$",
-      "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-d])(.*?)(\\.[^.]+)$",
-      "(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$",
+      "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|file)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$",
+      "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-z])(.*?)(\\.[^.]+)$",
+      "^(.+)((?:[ ._-]|(?<=\\)))[a-z])()(\\.[^.]+)$",
       // This one is a bit too greedy to enable by default.  It will stack sequels
       // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
       // "(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$",

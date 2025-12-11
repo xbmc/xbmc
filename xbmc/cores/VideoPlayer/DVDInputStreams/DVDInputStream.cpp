@@ -8,7 +8,10 @@
 
 #include "DVDInputStream.h"
 
+#include "ServiceBroker.h"
 #include "URL.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationStackHelper.h"
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -246,26 +249,55 @@ CDVDInputStream::UpdateState CDVDInputStream::UpdatePlaylistDetails(
     item.GetVideoInfoTag()->m_iTrack = playlist;
   CLog::LogF(LOGDEBUG, "Main playlist {}", playlist);
 
-  // Update DynPath here as needed to save video settings
-  switch (type)
+  if (type == DVDSTREAM_TYPE_DVD && item.GetProperty("update_stream_details").asBoolean(false) &&
+      item.HasVideoInfoTag())
   {
-    case DVDSTREAM_TYPE_BLURAY:
-    {
-      const std::string path{item.GetDynPath()};
-      item.SetDynPath(URIUtils::GetBlurayPlaylistPath(path, playlist));
-      break;
-    }
-    case DVDSTREAM_TYPE_DVD:
-    {
-      // Only update streamdetails if not already set (ie. from NFO)
-      if (item.GetProperty("update_stream_details").asBoolean(false) && item.HasVideoInfoTag())
-        item.GetVideoInfoTag()->m_streamDetails = it3->details;
-
-      break;
-    }
-    default:
-      break;
+    // Update streamdetails for DVD titles (bluray handled when playlist selected)
+    item.GetVideoInfoTag()->m_streamDetails = it3->details;
+  }
+  else if (type == DVDSTREAM_TYPE_BLURAY)
+  {
+    // Covert dynpath to a bluray:// path with playlist
+    const std::string path{item.GetDynPath()};
+    item.SetDynPath(URIUtils::GetBlurayPlaylistPath(path, playlist));
   }
 
   return stoppedBeforeEnd ? NONE : FINISHED;
+}
+
+void CDVDInputStream::UpdateStackItem(CFileItem& item, std::chrono::milliseconds length)
+{
+  auto& components{CServiceBroker::GetAppComponents()};
+  const auto& stackHelper{components.GetComponent<CApplicationStackHelper>()};
+  if (stackHelper->GetStack(item) != nullptr &&
+      stackHelper->GetStackPartNumber(item) >= stackHelper->GetKnownStackParts())
+  {
+    stackHelper->IncreaseKnownStackParts();
+    CLog::LogF(LOGDEBUG, "Playing new stack part");
+
+    // Dynamically update stack for bluray://
+    if (URIUtils::IsProtocol(item.GetDynPath(), "bluray"))
+    {
+      std::chrono::milliseconds time{stackHelper->GetStackTotalTime()};
+      stackHelper->SetStackTotalTime(time + length);
+      stackHelper->SetStackPartStartTime(item, time);
+      stackHelper->SetStackPartOffsets(item, time, time + length);
+      CLog::LogF(LOGDEBUG, "Updated stack times");
+
+      const std::chrono::milliseconds end{time.count() + length.count()};
+      item.SetStartOffset(time.count());
+      item.SetEndOffset(end.count());
+
+      const int part{stackHelper->GetCurrentPartNumber()};
+      item.SetStartPartNumber(part);
+      CLog::LogF(LOGDEBUG, "Playing part {} - absolute stack offsets {}ms - {}ms", part,
+                 time.count(), end.count());
+
+      // Update streamdetails in stack part if they aren't updated from the stream in VideoPlayer (ie. already in item)
+      if (!item.GetProperty("update_stream_details").asBoolean(false))
+        stackHelper->SetStackPartStreamDetails(item);
+
+      stackHelper->SetStackPartPath(item);
+    }
+  }
 }

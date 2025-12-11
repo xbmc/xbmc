@@ -1359,3 +1359,9 @@ CDVDInputStream::UpdateState CDVDInputStreamBluray::UpdateCurrentState(CFileItem
 
   return UpdatePlaylistDetails(DVDSTREAM_TYPE_BLURAY, m_playedPlaylists, item, time, closed);
 }
+
+void CDVDInputStreamBluray::UpdateStack(CFileItem& item)
+{
+  return UpdateStackItem(item,
+                         m_titleInfo ? std::chrono::milliseconds(m_titleInfo->duration / 90) : 0ms);
+}

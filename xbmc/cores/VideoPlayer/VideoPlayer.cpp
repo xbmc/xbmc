@@ -33,6 +33,7 @@
 #include "VideoPlayerRadioRDS.h"
 #include "VideoPlayerVideo.h"
 #include "application/Application.h"
+#include "application/ApplicationStackHelper.h"
 #include "cores/DataCacheCore.h"
 #include "cores/EdlEdit.h"
 #include "cores/FFmpeg.h"
@@ -46,7 +47,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "jobs/JobQueue.h"
 #include "messaging/ApplicationMessenger.h"
-#include "network/NetworkFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -1404,6 +1404,9 @@ void CVideoPlayer::Prepare()
 
   if (!discStateRestored)
     OpenDefaultStreams();
+
+  // Update stack and offsets in fileItem (for Blurays/DVDs)
+  m_pInputStream->UpdateStack(fileItem);
 
   /*
    * Check to see if the demuxer should start at something other than time 0. This will be the case

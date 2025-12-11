@@ -16,7 +16,6 @@
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
-#include "DVDInputStreamStack.h"
 #include "FileItem.h"
 #include "InputStreamAddon.h"
 #include "InputStreamMultiSource.h"
@@ -135,8 +134,6 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   {
     return std::make_shared<CDVDInputStreamFFmpeg>(fileitem);
   }
-  else if(StringUtils::StartsWithNoCase(file, "stack://"))
-    return std::make_shared<CDVDInputStreamStack>(fileitem);
 
   CFileItem finalFileitem(fileitem);
 

@@ -27,11 +27,9 @@
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
-#include "playlists/PlayListFactory.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSettings.h"
-#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
@@ -659,23 +657,29 @@ std::string GetResumeString(const CFileItem& item)
 
 std::string GetResumeString(int64_t startOffset, unsigned int partNumber)
 {
+  std::string resumeString;
   if (startOffset > 0)
   {
-    std::string resumeString{StringUtils::Format(
-        g_localizeStrings.Get(12022),
-        StringUtils::SecondsToTimeString(CUtil::ConvertMilliSecsToSecsInt(startOffset),
-                                         TIME_FORMAT_HH_MM_SS))};
-    if (partNumber > 0)
-    {
-      const std::string partString{StringUtils::Format(g_localizeStrings.Get(23051), partNumber)};
-      resumeString += " (" + partString + ")";
-    }
-    return resumeString;
+    resumeString =
+        StringUtils::Format(g_localizeStrings.Get(12022),
+                            StringUtils::SecondsToTimeString(
+                                static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)),
+                                TIME_FORMAT_HH_MM_SS)); // Resume from ##:##:##
   }
   else
   {
-    return g_localizeStrings.Get(13362); // Continue watching
+    if (partNumber > 0)
+      resumeString = g_localizeStrings.Get(12023); // Resume from
+    else
+      resumeString = g_localizeStrings.Get(13362); // Continue watching
   }
+  if (partNumber > 0)
+  {
+    const std::string partString{
+        StringUtils::Format(g_localizeStrings.Get(23051), partNumber)}; // Part #
+    resumeString += startOffset > 0 ? " (" + partString + ")" : " " + partString;
+  }
+  return resumeString;
 }
 
 } // namespace KODI::VIDEO::UTILS

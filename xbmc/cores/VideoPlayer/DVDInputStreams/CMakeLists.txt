@@ -5,7 +5,6 @@ set(SOURCES BlurayStateSerializer.cpp
             DVDInputStreamFile.cpp
             DVDInputStreamMemory.cpp
             DVDInputStreamNavigator.cpp
-            DVDInputStreamStack.cpp
             DVDStateSerializer.cpp
             InputStreamAddon.cpp
             InputStreamMultiSource.cpp
@@ -20,7 +19,6 @@ set(HEADERS BlurayStateSerializer.h
             DVDInputStreamFile.h
             DVDInputStreamMemory.h
             DVDInputStreamNavigator.h
-            DVDInputStreamStack.h
             DVDStateSerializer.h
             DllDvdNav.h
             InputStreamAddon.h

@@ -872,8 +872,9 @@ public:
    */
   bool EraseAllForFile(const std::string& fileNameAndPath);
 
-  bool GetStackTimes(const std::string &filePath, std::vector<uint64_t> &times);
-  void SetStackTimes(const std::string &filePath, const std::vector<uint64_t> &times);
+  bool GetStackTimes(const std::string& filePath, std::vector<std::chrono::milliseconds>& times);
+  void SetStackTimes(const std::string& filePath,
+                     const std::vector<std::chrono::milliseconds>& times);
 
   void GetBookMarksForFile(const std::string& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false, long partNumber=0);
   bool AddBookMarkToFile(const std::string& strFilenameAndPath,

@@ -5948,7 +5948,13 @@ msgctxt "#12022"
 msgid "Resume from {0:s}"
 msgstr ""
 
-#empty strings from id 12023 to 12307
+#. Label for resuming playback from a certain part
+#: xbmc/video/VideoUtils.cpp
+msgctxt "#12023"
+msgid "Resume from"
+msgstr ""
+
+#empty strings from id 12024 to 12307
 
 #. Label of the show password button in the keyboard dialog
 #: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp

@@ -147,6 +147,7 @@ public:
 
   void SaveCurrentState(const CStreamDetails& details) override;
   UpdateState UpdateCurrentState(CFileItem& item, double time, bool& closed) override;
+  void UpdateStack(CFileItem& item) override;
 
 protected:
 
