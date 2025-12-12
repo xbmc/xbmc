@@ -101,6 +101,8 @@ public:
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
+  bool GetStreamsUpdated() const override { return m_streamsUpdated; }
+  void SetStreamsUpdated() override { m_streamsUpdated = false; }
   int GetPrograms(std::vector<ProgramInfo>& programs) override;
   void SetProgram(int progId) override;
 
@@ -178,5 +180,6 @@ protected:
   double m_dtsAtDisplayTime;
   bool m_seekToKeyFrame = false;
   double m_startTime = 0;
+  bool m_streamsUpdated{false};
 };
 
