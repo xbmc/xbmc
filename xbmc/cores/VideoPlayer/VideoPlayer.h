@@ -479,6 +479,7 @@ protected:
   void OpenDefaultStreams(bool reset = true);
 
   void UpdatePlayState(double timeout);
+  void SaveCurrentState();
   void GetGeneralInfo(std::string& strVideoInfo);
   int64_t GetUpdatedTime();
   int64_t GetTime();
@@ -600,7 +601,8 @@ protected:
   bool m_HasVideo;
   bool m_HasAudio;
 
-  bool m_UpdateStreamDetails;
+  bool m_updateStreamDetails{false};
+  bool m_contentUpdated{false};
 
   std::atomic<bool> m_displayLost;
 

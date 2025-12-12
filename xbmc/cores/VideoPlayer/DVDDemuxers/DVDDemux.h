@@ -318,6 +318,16 @@ public:
    */
   virtual int GetNrOfStreams() const = 0;
 
+  /*!
+   * \brief return true if streams have been updated, false otherwise
+   */
+  virtual bool GetStreamsUpdated() { return false; }
+
+  /*!
+   * \brief reset stream update flag
+   */
+  virtual void SetStreamsUpdated() {}
+
   /*
    * get a list of available programs
    */
