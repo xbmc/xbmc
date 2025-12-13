@@ -1349,6 +1349,13 @@ public:
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
                           VideoAssetType assetType);
+
+  void AddCast(int mediaId, const char* mediaType, const std::vector<SActorInfo>& cast);
+  void AddCast(int mediaId,
+               const char* mediaType,
+               const std::vector<SActorInfo>& cast,
+               std::unordered_map<std::string, int>& actorCache);
+
   /*!
    * \brief Create a new video asset from the provided item and type and attach it to an owner
    * A file record is created for items with a path new to the database.
@@ -1479,8 +1486,6 @@ protected:
   void UpdateLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
   void AddActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
   void UpdateActorLinksToItem(int mediaId, const std::string& mediaType, const std::string& field, const std::vector<std::string>& values);
-
-  void AddCast(int mediaId, const char *mediaType, const std::vector<SActorInfo> &cast);
 
   CVideoInfoTag GetDetailsForMovie(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForMovie(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
