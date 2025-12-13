@@ -1,0 +1,455 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -113,6 +113,7 @@
+       FOREACH(COMPILER CXX C)
+         SET(COMPILER_FLAGS "${CMAKE_${COMPILER}_FLAGS_${BUILD_TYPE}}")
+         IF (NOT COMPILER_FLAGS STREQUAL "")
++        if(NOT WINDOWS_STORE)
+           IF(NOT WITH_ASAN)
+             STRING(REPLACE "/MD" "/MT" COMPILER_FLAGS ${COMPILER_FLAGS})
+             IF (BUILD_TYPE STREQUAL "DEBUG")
+@@ -120,6 +121,7 @@
+             ENDIF()
+           ENDIF()
+           STRING(REPLACE "/Zi" "/Z7" COMPILER_FLAGS ${COMPILER_FLAGS})
++        endif()
+           MESSAGE (STATUS "CMAKE_${COMPILER}_FLAGS_${BUILD_TYPE}= ${COMPILER_FLAGS}")
+           SET(CMAKE_${COMPILER}_FLAGS_${BUILD_TYPE} ${COMPILER_FLAGS})
+         ENDIF()
+@@ -422,7 +424,14 @@
+ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_AS_ERROR}")
+ ENDIF()
+ 
++if(CMAKE_C_COMPILER_ID MATCHES "MSVC")
++  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP /sdl-")
++endif()
+ 
++if(WINDOWS_STORE)
++  add_compile_definitions(MS_APP)
++endif()
++
+ IF(NOT REMOTEIO_PLUGIN_TYPE MATCHES "OFF")
+   IF(CURL_FOUND)
+     INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIRS})
+--- a/libmariadb/CMakeLists.txt
++++ b/libmariadb/CMakeLists.txt
+@@ -337,7 +337,8 @@ IF(WIN32)
+     ${LIBMARIADB_SOURCES}
+     ${CC_SOURCE_DIR}/win-iconv/win_iconv.c
+     win32_errmsg.c
+-    win32_errmsg.h)
++    win32_errmsg.h
++    windows_utils.h)
+ ELSE()
+   IF(ICONV_INCLUDE_DIR)
+      INCLUDE_DIRECTORIES(BEFORE ${ICONV_INCLUDE_DIR}) 
+@@ -503,7 +503,8 @@
+ IF(WIN32)
+ INSTALL(TARGETS libmariadb
+         COMPONENT SharedLibraries
+-        DESTINATION ${INSTALL_LIBDIR})
++        DESTINATION ${INSTALL_LIBDIR}
++        RUNTIME DESTINATION ${INSTALL_BINDIR})
+ ELSE()
+ # in cmake 3.12+ we can use
+ #INSTALL(TARGETS libmariadb LIBRARY DESTINATION ${INSTALL_LIBDIR}
+--- a/libmariadb/ma_client_plugin.c.in
++++ b/libmariadb/ma_client_plugin.c.in
+@@ -46,6 +46,8 @@
+ #include <dlfcn.h>
+ #endif
+ 
++#include "windows_utils.h"
++
+ struct st_client_plugin_int {
+   struct st_client_plugin_int *next;
+   void   *dlhandle;
+@@ -402,13 +404,21 @@ mysql_load_plugin_v(MYSQL *mysql, const char *name, int type,
+ 
+ 
+   /* Open new dll handle */
+-  if (!(dlhandle= dlopen((const char *)dlpath, RTLD_NOW)))
++#ifdef MS_APP
++  wchar_t* pathW = to_utf16(dlpath);
++  dlhandle = LoadPackagedLibrary(pathW, 0);
++  free(pathW);
++#else
++  dlhandle = dlopen((const char*)dlpath, RTLD_NOW);
++#endif
++
++  if (!dlhandle)
+   {
+ #ifdef _WIN32
+    char winmsg[255];
+    size_t len;
+    winmsg[0] = 0;
+-   FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,
++   FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM,
+                  NULL,
+                  GetLastError(),
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+--- a/libmariadb/ma_default.c
++++ b/libmariadb/ma_default.c
+@@ -29,6 +29,8 @@
+ #include <io.h>
+ #include "shlwapi.h"
+ 
++#include "windows_utils.h"
++
+ #define access _access
+ 
+ static const char *ini_exts[]= {"ini", "cnf", 0};
+@@ -75,9 +77,6 @@ void release_configuration_dirs()
+ 
+ char **get_default_configuration_dirs()
+ {
+-#ifdef _WIN32
+-  char dirname[FN_REFLEN];
+-#endif
+   char *env;
+ 
+   configuration_dirs= (char **)calloc(1, (MAX_CONFIG_DIRS + 1) * sizeof(char *));
+@@ -92,6 +91,8 @@ char **get_default_configuration_dirs()
+      4. C:\
+   */
+ 
++#ifndef MS_APP
++  char dirname[FN_REFLEN];
+   if (!GetSystemWindowsDirectory(dirname, FN_REFLEN) ||
+       add_cfg_dir(configuration_dirs, dirname))
+     goto error;
+@@ -102,13 +103,30 @@ char **get_default_configuration_dirs()
+ 
+   if (add_cfg_dir(configuration_dirs, "C:"))
+     goto error;
++#endif
+ 
++#ifdef MS_APP
++  wchar_t dirnameW[FN_REFLEN];
++  if (GetModuleFileNameW(NULL, dirnameW, FN_REFLEN))
++  {
++    dirnameW[wcslen(dirnameW) - wcslen(wcsrchr(dirnameW, L'\\'))] = L'\0';
++    char* dir = to_utf8(dirnameW);
++    if (dir) {
++      if (add_cfg_dir(configuration_dirs, dir)) {
++        free(dir);
++        goto error;
++      }
++      free(dir);
++    }
++  }
++#else
+   if (GetModuleFileName(NULL, dirname, FN_REFLEN))
+   {
+     PathRemoveFileSpec(dirname);
+     if (add_cfg_dir(configuration_dirs, dirname))
+       goto error;
+   }
++#endif
+ #else
+   /* on *nix platforms configuration files are stored in
+      1. SYSCONFDIR (if build happens inside server package, or
+--- a/libmariadb/secure/openssl.c
++++ b/libmariadb/secure/openssl.c
+@@ -380,27 +380,16 @@ static int ma_tls_set_certs(MYSQL *mysql, SSL_CTX *ctx)
+ 
+   if (keyfile && keyfile[0])
+   {
+-    FILE *fp;
+-    if ((fp= fopen(keyfile, "rb")))
++    if (SSL_CTX_use_PrivateKey_file(ctx, keyfile, SSL_FILETYPE_PEM) != 1)
+     {
+-      EVP_PKEY *key= EVP_PKEY_new();
+-      PEM_read_PrivateKey(fp, &key, NULL, pw);
+-      fclose(fp);
+-      if (SSL_CTX_use_PrivateKey(ctx, key) != 1)
+-      {
+-        unsigned long err= ERR_peek_error();
+-        EVP_PKEY_free(key);
+-        if (!(ERR_GET_LIB(err) == ERR_LIB_X509 &&
+-	            ERR_GET_REASON(err) == X509_R_CERT_ALREADY_IN_HASH_TABLE))
+-          goto error;
+-      }
+-      EVP_PKEY_free(key);
+-    } else {
+-      my_set_error(mysql, CR_SSL_CONNECTION_ERROR, SQLSTATE_UNKNOWN, 
+-                   CER(CR_FILE_NOT_FOUND), keyfile);
+-      return 1;
++      unsigned long err = ERR_peek_error();
++
++      if (!(ERR_GET_LIB(err) == ERR_LIB_X509 &&
++            ERR_GET_REASON(err) == X509_R_CERT_ALREADY_IN_HASH_TABLE))
++        goto error;
+     }
+   }
++
+   /* verify key */
+   if (certfile && SSL_CTX_check_private_key(ctx) != 1)
+     goto error;
+--- /dev/null
++++ b/libmariadb/windows_utils.h
+@@ -0,0 +1,82 @@
++static inline wchar_t* to_utf16(const char* str)
++{
++  if (str == NULL)
++    return NULL;
++
++  size_t length = strlen(str);
++
++  int result = MultiByteToWideChar(CP_UTF8, 0, str, (int)length, NULL, 0);
++  if (result == 0)
++    return NULL;
++
++  length = (size_t)result + 1;
++  wchar_t* strW = (wchar_t*)malloc(length * sizeof(wchar_t));
++  if (strW == NULL)
++    return NULL;
++
++  result = MultiByteToWideChar(CP_UTF8, 0, str, result, strW, (int)length);
++
++  if (result == 0)
++  {
++    free(strW);
++    return NULL;
++  }
++
++  if (strW[length - 1] != L'\0')
++    strW[length - 1] = L'\0';
++
++  return strW;
++}
++
++static inline char* to_utf8(const wchar_t* str)
++{
++    if (str == NULL)
++        return NULL;
++
++    size_t length = wcslen(str);
++
++    int result = WideCharToMultiByte(CP_UTF8, 0, str, (int)length, NULL, 0, NULL, NULL);
++    if (result == 0)
++        return NULL;
++
++    int required = result + 1;
++    char* newStr = (char*)malloc(required);
++    if (newStr == NULL)
++        return NULL;
++
++    result = WideCharToMultiByte(CP_UTF8, 0, str, (int)length, newStr, required, NULL, NULL);
++    if (result == 0)
++    {
++        free(newStr);
++        return NULL;
++    }
++
++    if (newStr[required - 1] != '\0')
++        newStr[required - 1] = '\0';
++
++    return newStr;
++}
++
++static inline HANDLE uwp_create_file(
++    _In_ LPCWSTR lpFileName,
++    _In_ DWORD dwDesiredAccess,
++    _In_ DWORD dwShareMode,
++    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
++    _In_ DWORD dwCreationDisposition,
++    _In_ DWORD dwFlagsAndAttributes,
++    _In_opt_ HANDLE hTemplateFile
++)
++{
++    if (dwShareMode == 0)
++        dwShareMode = FILE_SHARE_READ;
++
++    const DWORD flagsMask = 0xFFFF0000;
++
++    CREATEFILE2_EXTENDED_PARAMETERS ext;
++    ZeroMemory(&ext, sizeof(CREATEFILE2_EXTENDED_PARAMETERS));
++    ext.dwSize = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
++    ext.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
++    ext.dwFileFlags = dwFlagsAndAttributes & flagsMask;
++
++    return CreateFile2(lpFileName, dwDesiredAccess, dwShareMode, dwCreationDisposition, &ext);
++}
+--- a/plugins/auth/CMakeLists.txt
++++ b/plugins/auth/CMakeLists.txt
+@@ -4,7 +4,7 @@ INCLUDE_DIRECTORIES(${AUTH_DIR})
+ INCLUDE_DIRECTORIES(${CC_SOURCE_DIR}/include)
+ 
+ SET(CRYPTO_PLUGIN 1)
+-IF(WIN32)
++IF(WIN32 AND NOT WINDOWS_STORE)
+   ADD_DEFINITIONS(-DHAVE_WINCRYPT)
+   SET(CRYPT_SOURCE ${CC_SOURCE_DIR}/libmariadb/secure/win_crypt.c)
+   SET(CRYPT_LIBS crypt32 bcrypt)
+--- a/plugins/auth/ref10/crypto_hash_sha512.h
++++ b/plugins/auth/ref10/crypto_hash_sha512.h
+@@ -1,7 +1,2 @@
+-#if defined(MYSQL_CLIENT) || defined(LIBMARIADB)
+ #include <ma_crypt.h>
+ #define crypto_hash_sha512(DST,SRC,SLEN) ma_hash(MA_HASH_SHA512, SRC, SLEN, DST)
+-#else
+-#include <mysql/service_sha2.h>
+-#define crypto_hash_sha512(DST,SRC,SLEN) my_sha512(DST,(char*)(SRC),SLEN)
+-#endif
+--- a/plugins/pvio/pvio_npipe.c
++++ b/plugins/pvio/pvio_npipe.c
+@@ -30,6 +30,8 @@
+ #include <string.h>
+ #include <ma_string.h>
+ 
++#include "windows_utils.h"
++
+ /* Function prototypes */
+ my_bool pvio_npipe_set_timeout(MARIADB_PVIO *pvio, enum enum_pvio_timeout type, int timeout);
+ int pvio_npipe_get_timeout(MARIADB_PVIO *pvio, enum enum_pvio_timeout type);
+@@ -245,7 +247,6 @@ my_bool pvio_npipe_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+ 
+   if (cinfo->type == PVIO_TYPE_NAMEDPIPE)
+   {
+-    char szPipeName[MAX_PATH];
+     ULONGLONG deadline;
+     LONGLONG wait_ms;
+     DWORD backoff= 0; /* Avoid busy wait if ERROR_PIPE_BUSY.*/
+@@ -254,8 +255,19 @@ my_bool pvio_npipe_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+     if (!cinfo->host || !strcmp(cinfo->host,LOCAL_HOST))
+       cinfo->host=LOCAL_HOST_NAMEDPIPE;
+ 
++#ifdef MS_APP
++    wchar_t szPipeNameW[MAX_PATH];
++    wchar_t* host = to_utf16(cinfo->host);
++    wchar_t* unix_socket = to_utf16(cinfo->unix_socket);
++    _snwprintf(szPipeNameW, MAX_PATH - 1, L"\\\\%s\\pipe\\%s", host, unix_socket);
++    szPipeNameW[MAX_PATH - 1] = L'\0';
++    free(host);
++    free(unix_socket);
++#else
++    char szPipeName[MAX_PATH];
+     szPipeName[MAX_PATH - 1]= 0;
+     snprintf(szPipeName, MAX_PATH - 1, "\\\\%s\\pipe\\%s", cinfo->host, cinfo->unix_socket);
++#endif
+ 
+     if (pvio->timeout[PVIO_CONNECT_TIMEOUT] > 0)
+       deadline = GetTickCount64() + pvio->timeout[PVIO_CONNECT_TIMEOUT];
+@@ -264,7 +276,11 @@ my_bool pvio_npipe_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+ 
+     while (1)
+     {
++#ifdef MS_APP
++      if ((cpipe->pipe = uwp_create_file(szPipeNameW,
++#else
+       if ((cpipe->pipe = CreateFile(szPipeName,
++#endif
+                                     GENERIC_READ |
+                                     GENERIC_WRITE,
+                                     0,               /* no sharing */
+@@ -289,7 +305,11 @@ my_bool pvio_npipe_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+       if (wait_ms > INFINITE)
+         wait_ms = INFINITE;
+ 
++#ifdef MS_APP
++      if ((wait_ms <= 0) || !WaitNamedPipeW(szPipeNameW, (DWORD)wait_ms))
++#else
+       if ((wait_ms <= 0) || !WaitNamedPipe(szPipeName, (DWORD)wait_ms))
++#endif
+       {
+         pvio->set_error(pvio->mysql, CR_NAMEDPIPEWAIT_ERROR, "HY000", 0,
+                        cinfo->host, cinfo->unix_socket, ERROR_TIMEOUT);
+--- a/plugins/pvio/pvio_shmem.c
++++ b/plugins/pvio/pvio_shmem.c
+@@ -29,6 +29,8 @@
+ #include <string.h>
+ #include <ma_string.h>
+ 
++#include "../../libmariadb/windows_utils.h"
++
+ #define PVIO_SHM_BUFFER_SIZE (16000 + 4)
+ 
+ my_bool pvio_shm_set_timeout(MARIADB_PVIO *pvio, enum enum_pvio_timeout type, int timeout);
+@@ -277,7 +279,7 @@ my_bool pvio_shm_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+     len= sprintf(shm_name, "%s%s_", prefixes[i], base_memory_name);
+     shm_suffix= shm_name + len;
+     strcpy(shm_suffix, "CONNECT_REQUEST");
+-    if ((hdlConnectRequest= OpenEvent(dwDesiredAccess, 0, shm_name)))
++    if ((hdlConnectRequest= OpenEventA(dwDesiredAccess, 0, shm_name)))
+     {
+       /* save prefix to prevent further loop */
+       shm_prefix= prefixes[i];
+@@ -292,7 +294,7 @@ my_bool pvio_shm_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+   }
+ 
+   strcpy(shm_suffix, "CONNECT_ANSWER");
+-  if (!(hdlConnectRequestAnswer= OpenEvent(dwDesiredAccess, 0, shm_name)))
++  if (!(hdlConnectRequestAnswer= OpenEventA(dwDesiredAccess, 0, shm_name)))
+   {
+     PVIO_SET_ERROR(cinfo->mysql, CR_SHARED_MEMORY_CONNECT_ERROR, "HY000", 0, "Opening CONNECT_ANSWER event failed", GetLastError());
+     goto error;
+@@ -300,7 +302,13 @@ my_bool pvio_shm_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+   
+   /* get connection id, so we can build the filename used for connection */
+   strcpy(shm_suffix, "CONNECT_DATA");
++
++#ifdef MS_APP
++  wchar_t* shm_nameW = to_utf16(shm_name);
++  if (!(file_map = OpenFileMappingW(FILE_MAP_WRITE, 0, shm_nameW)))
++#else
+   if (!(file_map= OpenFileMapping(FILE_MAP_WRITE, 0, shm_name)))
++#endif
+   {
+     PVIO_SET_ERROR(cinfo->mysql, CR_SHARED_MEMORY_CONNECT_ERROR, "HY000", 0, "OpenFileMapping failed", GetLastError());
+     goto error;
+@@ -347,7 +355,14 @@ my_bool pvio_shm_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+   shm_suffix= shm_name + len;
+   
+   strcpy(shm_suffix, "DATA");
++
++#ifdef MS_APP
++  free(shm_nameW);
++  shm_nameW = to_utf16(shm_name);
++  pvio_shm->file_map = OpenFileMappingW(FILE_MAP_WRITE, 0, shm_nameW);
++#else
+   pvio_shm->file_map= OpenFileMapping(FILE_MAP_WRITE, 0, shm_name);
++#endif
+   if (pvio_shm->file_map == NULL)
+   {
+     PVIO_SET_ERROR(cinfo->mysql, CR_SHARED_MEMORY_CONNECT_ERROR, "HY000", 0, "OpenFileMapping failed", GetLastError());
+@@ -362,7 +377,7 @@ my_bool pvio_shm_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+   for (i=0; i < 5; i++)
+   {
+     strcpy(shm_suffix, StrEvent[i]);
+-    if (!(pvio_shm->event[i]= OpenEvent(dwDesiredAccess, 0, shm_name)))
++    if (!(pvio_shm->event[i]= OpenEventA(dwDesiredAccess, 0, shm_name)))
+     {
+       PVIO_SET_ERROR(cinfo->mysql, CR_SHARED_MEMORY_CONNECT_ERROR, "HY000", 0, "Couldn't create event", GetLastError());
+       goto error;
+@@ -378,6 +393,10 @@ my_bool pvio_shm_connect(MARIADB_PVIO *pvio, MA_PVIO_CINFO *cinfo)
+     CloseHandle(hdlConnectRequestAnswer);
+   if (shm_name)
+     LocalFree(shm_name);
++#ifdef MS_APP
++  if (shm_nameW)
++      free(shm_nameW);
++#endif
+   if (map)
+     UnmapViewOfFile(map);
+   if (file_map)
+--- a/win-iconv/win_iconv.c
++++ b/win-iconv/win_iconv.c
+@@ -687,6 +687,9 @@ static RFC1766TOLCIDA Rfc1766ToLcidA;
+ static int
+ load_mlang(void)
+ {
++#ifdef MS_APP
++    return FALSE;
++#else
+     HMODULE h;
+     if (ConvertINetString != NULL)
+         return TRUE;
+@@ -700,6 +703,7 @@ load_mlang(void)
+     LcidToRfc1766A = (LCIDTORFC1766A)GetProcAddressA(h, "LcidToRfc1766A");
+     Rfc1766ToLcidA = (RFC1766TOLCIDA)GetProcAddressA(h, "Rfc1766ToLcidA");
+     return TRUE;
++#endif
+ }
+ 
+ iconv_t

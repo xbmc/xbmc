@@ -2,3 +2,5 @@ LIBNAME=mariadb
 VERSION=3.3.17
 ARCHIVE=$(LIBNAME)-connector-c-$(VERSION)-src.tar.gz
 SHA512=1d37b7a6bf4a49e80a6aef8747a824a553fce982cb0634932805ba4ba859abfbadb27e2fa03ee71b379c5b292e98ebbd5c763df3985a76e282e9ec17c0531ac8
+BYPRODUCT=libmariadbclient.a
+BYPRODUCT_WIN=libmariadb.lib
