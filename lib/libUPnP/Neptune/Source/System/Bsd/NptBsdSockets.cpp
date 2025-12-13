@@ -601,7 +601,7 @@ socketpair(int, int, int, SOCKET sockets[2]) // we ignore the first two params: 
 	// accept the connection, resulting in the second socket
 	name_length = sizeof(inet_address);
 	sockets[1] = accept(listener, (sockaddr*)&inet_address, &name_length);
-	if (result != 0) goto fail;
+	if (sockets[1] == INVALID_SOCKET) goto fail;
 
 	// we don't need the listener anymore
 	closesocket(listener);
