@@ -32,10 +32,6 @@ DEPENDS = \
   mariadb \
   nettle \
   openssl \
-  python3 \
-  pythonmodule-pil \
-  pythonmodule-pycryptodome \
-  pythonmodule-setuptools \
   sqlite3 \
   tinyxml \
   udfread \
