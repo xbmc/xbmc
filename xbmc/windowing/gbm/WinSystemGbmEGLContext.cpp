@@ -9,8 +9,12 @@
 #include "WinSystemGbmEGLContext.h"
 
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;
@@ -33,25 +37,13 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  auto plane = m_DRM->GetGuiPlane();
-  uint32_t visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB2101010;
+  CServiceBroker::GetSettingsComponent()
+      ->GetSettings()
+      ->GetSetting(CSettings::SETTING_VIDEOSCREEN_USEMODIFIERS)
+      ->SetVisible(true);
 
-  // prefer alpha visual id, fallback to non-alpha visual id
-  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-      !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
-  {
-    // fallback to 8bit format if no EGL config was found for 10bit
-    if (plane)
-      plane->SetFormat(DRM_FORMAT_XRGB8888);
-
-    visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB8888;
-
-    if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
-        !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
-    {
-      return false;
-    }
-  }
+  if (!m_DRM->InitGuiPlane(&m_eglContext, renderableType))
+    return false;
 
   if (!CreateContext())
   {
@@ -101,10 +93,12 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
 
   std::vector<uint64_t> modifiers;
-
+  bool useModifiers = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOSCREEN_USEMODIFIERS);
   auto plane = m_DRM->GetGuiPlane();
   if (plane)
-    modifiers = plane->GetModifiersForFormat(format);
+    modifiers = useModifiers ? plane->GetModifiersForFormat(format)
+                             : std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR};
 
   if (!m_GBM->GetDevice().CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
                                         modifiers.size()))
