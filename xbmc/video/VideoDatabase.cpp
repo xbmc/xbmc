@@ -2660,9 +2660,20 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
       return false;
 
     details.m_iFileId = m_pDS->fv("files.idFile").get_asInt();
-    details.m_strPath = m_pDS->fv("path.strPath").get_asString();
-    std::string strFileName = m_pDS->fv("files.strFilename").get_asString();
-    ConstructPath(details.m_strFileNameAndPath, details.m_strPath, strFileName);
+    // On STRM/M3U playlists that contains multiple media urls,
+    // each FileItem has the "path" and "filename path" that point to the playlist file
+    // already set to VideoInfoTag so dont replace it
+    const bool isPlaylist = URIUtils::HasExtension(details.m_strFileNameAndPath, ".strm|.m3u|.m3u8");
+    if (details.m_strPath.empty() || !isPlaylist)
+    {
+      details.m_strPath = m_pDS->fv("path.strPath").get_asString();
+    }
+    if (details.m_strFileNameAndPath.empty() || !isPlaylist)
+    {
+      const std::string strFileName = m_pDS->fv("files.strFilename").get_asString();
+      ConstructPath(details.m_strFileNameAndPath, details.m_strPath, strFileName);
+    }
+
     details.SetPlayCount(std::max(details.GetPlayCount(), m_pDS->fv("files.playCount").get_asInt()));
     if (!details.m_lastPlayed.IsValid())
       details.m_lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
