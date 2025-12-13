@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 if(WIN32)
-  cmake_minimum_required(VERSION 3.28)
+  cmake_minimum_required(VERSION 3.30)
 endif()
 
 project(kodi LANGUAGES CXX C ASM)
