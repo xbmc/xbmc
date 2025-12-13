@@ -12,10 +12,7 @@
 # FFMPEG_PATH - use external ffmpeg not found in system paths
 #               usage: -DFFMPEG_PATH=/path/to/ffmpeg_install_prefix
 #
-# WITH_FFMPEG - use external ffmpeg not found in system paths
-#               WARNING: this option is for developers as it will _disable ffmpeg version checks_!
-#               Consider using FFMPEG_PATH instead, which _does_ check library versions
-#               usage: -DWITH_FFMPEG=/path/to/ffmpeg_install_prefix
+# WITH_FFMPEG - use external ffmpeg not found in system paths (deprecated)
 #
 # --------
 # This will define the following target:
@@ -263,36 +260,33 @@ macro(buildFFMPEG)
 endmacro()
 
 
-# Allows building with external ffmpeg not found in system paths,
-# without library version checks
-if(WITH_FFMPEG)
-  set(FFMPEG_PATH ${WITH_FFMPEG})
-  message(STATUS "Warning: FFmpeg version checking disabled")
-  set(REQUIRED_FFMPEG_VERSION undef)
+# We track multiple versions due to API changes. For dependsbuild or windows, we always
+# have latest version to properly track rebuiling.
+if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
+  # required ffmpeg library versions - tools/depends/target/ffmpeg versions
+  set(REQUIRED_FFMPEG_VERSION 8.0.1)
+  set(_avutil_ver "=60.8.100")
+  set(_avcodec_ver "=62.11.100")
+  set(_avformat_ver "=62.3.100")
+  set(_avfilter_ver "=11.4.100")
+  set(_swscale_ver "=9.1.100")
+  set(_swresample_ver "=6.1.100")
+  set(_postproc_ver "=59.1.100")
 else()
-  # We track multiple versions due to API changes. For dependsbuild or windows, we always
-  # have latest version to properly track rebuiling.
-  if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
-    # required ffmpeg library versions - tools/depends/target/ffmpeg versions
-    set(REQUIRED_FFMPEG_VERSION 8.0.1)
-    set(_avutil_ver "=60.8.100")
-    set(_avcodec_ver "=62.11.100")
-    set(_avformat_ver "=62.3.100")
-    set(_avfilter_ver "=11.4.100")
-    set(_swscale_ver "=9.1.100")
-    set(_swresample_ver "=6.1.100")
-    set(_postproc_ver "=59.1.100")
-  else()
-    # required ffmpeg library versions - minimum supported API compat versions
-    set(REQUIRED_FFMPEG_VERSION 7.0.0)
-    set(_avutil_ver ">=59.8.100")
-    set(_avcodec_ver ">=61.3.100")
-    set(_avformat_ver ">=61.1.100")
-    set(_avfilter_ver ">=10.1.100")
-    set(_swscale_ver ">=8.1.100")
-    set(_swresample_ver ">=5.1.100")
-    set(_postproc_ver ">=58.1.100")
-  endif()
+  # required ffmpeg library versions - minimum supported API compat versions
+  set(REQUIRED_FFMPEG_VERSION 7.0.0)
+  set(_avutil_ver ">=59.8.100")
+  set(_avcodec_ver ">=61.3.100")
+  set(_avformat_ver ">=61.1.100")
+  set(_avfilter_ver ">=10.1.100")
+  set(_swscale_ver ">=8.1.100")
+  set(_swresample_ver ">=5.1.100")
+  set(_postproc_ver ">=58.1.100")
+endif()
+
+if(WITH_FFMPEG)
+  message(DEPRECATION "WITH_FFMPEG is deprecated. Please use FFMPEG_PATH instead.")
+  set(FFMPEG_PATH ${WITH_FFMPEG})
 endif()
 
 # Allows building with external ffmpeg not found in system paths,
