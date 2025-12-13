@@ -460,6 +460,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldTitle);
     fields.push_back(FieldOriginalTitle);
     fields.push_back(FieldPlot);
+    fields.push_back(FieldTagline);
     fields.push_back(FieldTvShowStatus);
     fields.push_back(FieldVotes);
     fields.push_back(FieldRating);
