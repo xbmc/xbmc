@@ -18,7 +18,6 @@ DEPENDS = \
   gnutls \
   gtest \
   harfbuzz \
-  libbluray \
   libffi \
   libgcrypt \
   libgpg-error \
@@ -38,7 +37,6 @@ DEPENDS = \
   pythonmodule-setuptools \
   sqlite3 \
   tinyxml \
-  udfread \
   xz
 
 ifeq ($(ENABLE_GPLV3),yes)
