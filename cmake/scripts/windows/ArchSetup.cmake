@@ -65,7 +65,7 @@ if(NOT CMAKE_GENERATOR_PLATFORM STREQUAL arm64)
 endif()
 
 set(SYSTEM_DEFINES -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_MACROS
-                   -DTAGLIB_STATIC -DNPT_CONFIG_ENABLE_LOGGING
+                   -DNPT_CONFIG_ENABLE_LOGGING
                    -DPLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DUNICODE -D_UNICODE
@@ -99,7 +99,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 link_directories(${DEPENDS_PATH}/lib)
 
 # Additional libraries
-list(APPEND DEPLIBS bcrypt.lib d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib WS2_32.lib
+list(APPEND DEPLIBS bcrypt d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib ws2_32
                     PowrProf.lib setupapi.lib Shlwapi.lib dwmapi.lib dxguid.lib DelayImp.lib WindowsApp.lib)
 
 # NODEFAULTLIB option

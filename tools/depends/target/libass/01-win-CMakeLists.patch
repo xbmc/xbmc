@@ -172,7 +172,7 @@
 +                        libass/ass_directwrite.h
 +                        libass/ass_directwrite.c
 +  )
-+  target_link_libraries(libass PRIVATE dwrite.lib)
++  target_link_libraries(libass PRIVATE dwrite)
 +endif()
 +
 +if(CONFIG_CORETEXT)
