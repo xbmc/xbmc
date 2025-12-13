@@ -518,6 +518,7 @@ void CBaseRenderer::SettingOptionsRenderMethodsFiller(
   list.emplace_back(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO);
 
 #ifdef HAS_DX
+  list.push_back(IntegerSettingOption(g_localizeStrings.Get(16331), RENDER_METHOD_LIBPLACEBO));
   list.push_back(IntegerSettingOption(g_localizeStrings.Get(16319), RENDER_METHOD_DXVA));
   list.push_back(IntegerSettingOption(g_localizeStrings.Get(13431), RENDER_METHOD_D3D_PS));
   list.push_back(IntegerSettingOption(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE));
