@@ -773,7 +773,10 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
   m_encoderBuffers = nullptr;
 
   std::string codecName = "AC3";
-  if (!Supports(audioHint.codec, audioHint.profile))
+  const bool allowPassthrough = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                                    CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH) ||
+                                audioHint.cryptoSession;
+  if (!Supports(audioHint.codec, audioHint.profile) || !allowPassthrough)
   {
     m_audioCodec = std::make_unique<CDVDAudioCodecFFmpeg>(m_processInfo);
     CDVDCodecOptions options;
