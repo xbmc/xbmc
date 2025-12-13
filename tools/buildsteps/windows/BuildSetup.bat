@@ -86,7 +86,7 @@ IF DEFINED BUILDDIR (
     goto DIE
   )
 
-  cmake.exe --build . --config "%buildconfig%"
+  cmake.exe --build . --config "%buildconfig%" --parallel
   IF %errorlevel%==1 (
     set DIETEXT="%APP_NAME%.EXE failed to build!"
     goto DIE
