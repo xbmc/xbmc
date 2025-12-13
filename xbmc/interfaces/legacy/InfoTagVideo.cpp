@@ -891,7 +891,7 @@ namespace XBMCAddon
     bool InfoTagVideo::setOriginalLanguageRaw(CVideoInfoTag* infoTag, const String& language)
     {
       if (!infoTag->SetOriginalLanguage(language,
-                                        CVideoInfoTag::LanguageProcessing::PROCESSING_NORMALIZE))
+                                        CVideoInfoTag::LanguageTagSource::SOURCE_EXTERNAL))
       {
         CLog::LogF(LOGWARNING, "the language {} is not recognized", language);
         return false;
