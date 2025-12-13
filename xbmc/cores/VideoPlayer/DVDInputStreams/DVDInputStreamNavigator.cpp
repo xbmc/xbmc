@@ -1593,9 +1593,9 @@ void CDVDInputStreamNavigator::SaveCurrentState(const CStreamDetails& details)
   m_startWatchTime = std::chrono::steady_clock::now();
 }
 
-CDVDInputStream::UpdateState CDVDInputStreamNavigator::UpdateCurrentState(CFileItem& item,
-                                                                          double time,
-                                                                          bool& closed)
+CDVDInputStream::UpdateState CDVDInputStreamNavigator::UpdateItemFromSavedStates(CFileItem& item,
+                                                                                 double time,
+                                                                                 bool& closed)
 {
   std::unique_lock lock(m_statesLock);
 
@@ -1603,7 +1603,7 @@ CDVDInputStream::UpdateState CDVDInputStreamNavigator::UpdateCurrentState(CFileI
   if (item.HasVideoInfoTag())
     SaveCurrentState(item.GetVideoInfoTag()->m_streamDetails);
 
-  return UpdatePlaylistDetails(DVDSTREAM_TYPE_DVD, m_playedPlaylists, item, time, closed);
+  return UpdateItemFromPlaylistDetails(DVDSTREAM_TYPE_DVD, m_playedPlaylists, item, time, closed);
 }
 
 void CDVDInputStreamNavigator::UpdateStack(CFileItem& item)

@@ -17,7 +17,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "commons/Exception.h"
 #include "cores/FFmpeg.h"
 #include "cores/MenuType.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h" // for DVD_TIME_BASE
@@ -32,14 +31,12 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include <memory>
 #include <mutex>
 #include <sstream>
-#include <tuple>
 #include <utility>
 
 #ifndef __STDC_CONSTANT_MACROS
@@ -1984,6 +1981,9 @@ void CDVDDemuxFFmpeg::AddStream(int streamIdx, CDemuxStream* stream)
     delete res.first->second;
     res.first->second = stream;
   }
+
+  m_streamsUpdated = true;
+
   CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream ID: {}", streamIdx);
 }
 
