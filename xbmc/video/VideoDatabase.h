@@ -688,12 +688,6 @@ public:
                      dbiplus::Dataset& pDS,
                      int idFile = -1 /* = -1 */) const;
 
-  int SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork);
-  int SetDetailsForItem(int id,
-                        MediaType_view mediaType,
-                        CVideoInfoTag& details,
-                        const KODI::ART::Artwork& artwork);
-
   int SetDetailsForMovie(CVideoInfoTag& details,
                          const KODI::ART::Artwork& artwork,
                          int idMovie = -1);
