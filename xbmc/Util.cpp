@@ -1902,6 +1902,7 @@ std::string CUtil::GetFrameworksPath(bool forPython)
   return strFrameworksPath;
 }
 
+// Used to determine external audio and subtitles location and filename
 void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
                                         std::string& basePath,
                                         std::string& videoFileName)
@@ -1913,6 +1914,18 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
     CFileItem item(path, false);
     videoFileName = item.GetMovieName();
     basePath = item.GetLocalMetadataPath();
+  }
+  else if (const CURL url{videoPath}; URIUtils::IsArchive(url))
+  {
+    CFileItem item(videoPath, false);
+    videoFileName = item.GetMovieName();
+    basePath = item.GetLocalMetadataPath();
+  }
+  else if (URIUtils::IsStack(videoPath))
+  {
+    CFileItem item(videoPath, false);
+    videoFileName = item.GetMovieName();
+    basePath = URIUtils::GetBasePath(videoPath);
   }
   else
   {
