@@ -2743,41 +2743,6 @@ std::string CVideoDatabase::GetValueString(const CVideoInfoTag& details,
 }
 
 //********************************************************************************************************************************
-int CVideoDatabase::SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork)
-{
-  return SetDetailsForItem(details.m_iDbId, details.m_type, details, artwork);
-}
-
-int CVideoDatabase::SetDetailsForItem(int id,
-                                      MediaType_view mediaType,
-                                      CVideoInfoTag& details,
-                                      const KODI::ART::Artwork& artwork)
-{
-  if (mediaType == MediaTypeNone)
-    return -1;
-
-  if (mediaType == MediaTypeMovie)
-    return SetDetailsForMovie(details, artwork, id);
-  else if (mediaType == MediaTypeVideoCollection)
-    return SetDetailsForMovieSet(details, artwork, id);
-  else if (mediaType == MediaTypeTvShow)
-  {
-    KODI::ART::SeasonsArtwork seasonArtwork;
-    if (!UpdateDetailsForTvShow(id, details, artwork, seasonArtwork))
-      return -1;
-
-    return id;
-  }
-  else if (mediaType == MediaTypeSeason)
-    return SetDetailsForSeason(details, artwork, details.m_iIdShow, id);
-  else if (mediaType == MediaTypeEpisode)
-    return SetDetailsForEpisode(details, artwork, details.m_iIdShow, id);
-  else if (mediaType == MediaTypeMusicVideo)
-    return SetDetailsForMusicVideo(details, artwork, id);
-
-  return -1;
-}
-
 int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
                                        const KODI::ART::Artwork& artwork,
                                        int idMovie /* = -1 */)
