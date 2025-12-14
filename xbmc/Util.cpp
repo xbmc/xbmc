@@ -1901,6 +1901,7 @@ std::string CUtil::GetFrameworksPath(bool forPython)
   return strFrameworksPath;
 }
 
+// Used to determine external audio and subtitles location and filename
 void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
                                         std::string& basePath,
                                         std::string& videoFileName)
