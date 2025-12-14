@@ -8,13 +8,29 @@
 
 #pragma once
 
+#include <atomic>
+#include <memory>
+
+#include <webos-helpers/libhelpers.h>
+
 class CVariant;
+
+struct HContextDeleter
+{
+  void operator()(HContext* ctx) const noexcept { HUnregisterServiceCallback(ctx); }
+};
 
 class WebOSTVPlatformConfig
 {
+private:
+  static inline std::unique_ptr<HContext, HContextDeleter> m_requestContextARC{new HContext{}};
+  static inline std::atomic<bool> m_eAC3Supported{false};
+
 public:
   static void Load();
+  static void LoadARCStatus();
   static int GetWebOSVersion();
   static bool SupportsDTS();
   static bool SupportsHDR();
+  static bool SupportsEAC3();
 };
