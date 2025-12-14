@@ -436,7 +436,24 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
       return GetParentPath(strFile, strParent);
     }
     strParent = url2.Get();
-    return true;
+    return !strParent.empty();
+  }
+  else if (IsBDFile(strPath) || IsDVDFile(strPath))
+  {
+    std::string folder{GetDirectory(strPath)};
+    RemoveSlashAtEnd(folder);
+    const std::string lastFolder{GetFileName(folder)};
+    if (StringUtils::EqualsNoCase(lastFolder, "VIDEO_TS") ||
+        StringUtils::EqualsNoCase(lastFolder, "BDMV"))
+      strParent = GetParentPath(folder); // go back up another one
+    else
+      strParent = folder;
+    return !strParent.empty();
+  }
+  else if (IsArchive(url))
+  {
+    strParent = GetDirectory(url.GetHostName());
+    return !strParent.empty();
   }
   else if (url.IsProtocol("stack"))
   {
@@ -562,14 +579,7 @@ std::string URIUtils::GetDiscBase(const std::string& file)
   if (IsDiscImage(discFile))
     return discFile; // return .ISO
 
-  std::string parent{GetParentPath(discFile)};
-  std::string parentFolder{parent};
-  RemoveSlashAtEnd(parentFolder);
-  parentFolder = GetFileName(parentFolder);
-  if (StringUtils::EqualsNoCase(parentFolder, "VIDEO_TS") ||
-      StringUtils::EqualsNoCase(parentFolder, "BDMV"))
-    return GetParentPath(parent); // go back up another one
-  return parent;
+  return GetParentPath(discFile);
 }
 
 std::string URIUtils::GetDiscBasePath(const std::string& file)
