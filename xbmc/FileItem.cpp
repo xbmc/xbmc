@@ -25,7 +25,6 @@
 #include "games/GameUtils.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/LocalizeStrings.h"
-#include "media/MediaLockState.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
@@ -1958,6 +1957,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
   return strMovieName;
 }
 
+// Used to determine the location of nfo files and artwork
 std::string CFileItem::GetLocalMetadataPath() const
 {
   if (IsFolder() && !IsFileFolder())
