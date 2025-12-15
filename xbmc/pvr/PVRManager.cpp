@@ -518,14 +518,18 @@ void CPVRManager::Process()
   {
     if (IsSleeping())
     {
-      CThread::Sleep(1s);
-      continue;
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Setting sleep confirmed event");
+      m_sleepConfirmedEvent.Set();
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Waiting for wake event...");
+      m_wakeEvent.Wait();
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Continue after wake event");
     }
 
     // In case any new client connected, load from db and fetch data update from new client(s)
-    UpdateComponents(ManagerState::STATE_STARTED);
+    if (IsAwake())
+      UpdateComponents(ManagerState::STATE_STARTED);
 
-    if (cachedImagesCleanupTimeout.IsTimePast())
+    if (IsAwake() && cachedImagesCleanupTimeout.IsTimePast())
     {
       // We don't know for sure what to delete if there are not (yet) connected clients
       if (m_addons->HasIgnoredClients())
@@ -541,7 +545,7 @@ void CPVRManager::Process()
     }
 
     /* first startup */
-    if (m_bFirstStart)
+    if (IsAwake() && m_bFirstStart)
     {
       {
         std::unique_lock lock(m_critSection);
@@ -555,13 +559,14 @@ void CPVRManager::Process()
       TriggerPlayChannelOnStartup();
     }
 
-    if (m_addons->AnyClientSupportingRecordingsSize())
+    if (IsAwake() && m_addons->AnyClientSupportingRecordingsSize())
       TriggerRecordingsSizeInProgressUpdate();
 
     /* execute the next pending jobs if there are any */
     try
     {
-      m_pendingUpdates->ExecutePendingJobs();
+      if (IsAwake())
+        m_pendingUpdates->ExecutePendingJobs();
     }
     catch (...)
     {
@@ -571,7 +576,7 @@ void CPVRManager::Process()
       bRestart = true;
     }
 
-    if (IsStarted() && !bRestart)
+    if (IsAwake() && IsStarted() && !bRestart)
       m_pendingUpdates->WaitForJobs(1000);
   }
 
@@ -626,7 +631,13 @@ void CPVRManager::OnSleep()
 
   SetWakeupCommand();
 
+  // Sync with worker thread on the new state.
+  m_wakeEvent.Reset();
+  m_sleepConfirmedEvent.Reset();
   CPowerState::OnSleep();
+  if (!m_sleepConfirmedEvent.Wait(5s))
+    CLog::LogFC(LOGWARNING, LOGPVR, "Timeout waiting for sleep confirmed event");
+
   m_epgContainer->OnSleep();
   m_timers->OnSleep();
   m_addons->OnSleep();
@@ -637,7 +648,9 @@ void CPVRManager::OnWake()
   m_addons->OnWake();
   m_timers->OnWake();
   m_epgContainer->OnWake();
+
   CPowerState::OnWake();
+  m_wakeEvent.Set(); // wake the worker thread
 
   PublishEvent(PVREvent::SystemWake);
 

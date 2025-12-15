@@ -458,5 +458,9 @@ private:
   const std::shared_ptr<CPVRPlaybackState> m_playbackState;
   CPVRGUIActionListener m_actionListener;
   std::unique_ptr<CPVRSettings> m_settings;
+
+  CEvent m_sleepConfirmedEvent{false,
+                               false}; // Event to sync with worker thread on power state transition
+  CEvent m_wakeEvent{true, false}; // event to wake worker thread on power state transition
 };
 } // namespace PVR
