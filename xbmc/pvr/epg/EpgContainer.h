@@ -73,7 +73,17 @@ public:
    */
   void Stop();
 
-  /**
+  /*!
+   * @brief Propagate event on system sleep
+   */
+  void OnSleep() override;
+
+  /*!
+   * @brief Propagate event on system wake
+   */
+  void OnWake() override;
+
+  /*!
    * @brief unload all EPG data.
    */
   void Unload();

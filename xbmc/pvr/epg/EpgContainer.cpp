@@ -148,6 +148,18 @@ void CPVREpgContainer::Stop()
   StopThread();
 }
 
+void CPVREpgContainer::OnSleep()
+{
+  CPowerState::OnSleep();
+  Stop();
+}
+
+void CPVREpgContainer::OnWake()
+{
+  CPowerState::OnWake();
+  Start();
+}
+
 void CPVREpgContainer::Unload()
 {
   {
@@ -310,7 +322,7 @@ void CPVREpgContainer::Process()
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
     {
       std::unique_lock lock(m_critSection);
-      bUpdateEpg = (iNow >= m_iNextEpgUpdate) && IsAwake();
+      bUpdateEpg = !m_bStop && (iNow >= m_iNextEpgUpdate);
       iLastEpgCleanup = m_iLastEpgCleanup;
     }
 
@@ -319,15 +331,14 @@ void CPVREpgContainer::Process()
       m_bIsInitialising = false;
 
     /* clean up old entries */
-    if (!m_bStop && IsAwake() &&
-        iNow >= iLastEpgCleanup + CServiceBroker::GetSettingsComponent()
-                                      ->GetAdvancedSettings()
-                                      ->m_iEpgCleanupInterval)
+    if (!m_bStop && iNow >= iLastEpgCleanup + CServiceBroker::GetSettingsComponent()
+                                                  ->GetAdvancedSettings()
+                                                  ->m_iEpgCleanupInterval)
       RemoveOldEntries();
 
     /* check for pending manual EPG updates */
 
-    while (!m_bStop && IsAwake())
+    while (!m_bStop)
     {
       CEpgUpdateRequest request;
       std::shared_ptr<CPVREpg> epg;
@@ -354,7 +365,7 @@ void CPVREpgContainer::Process()
 
     /* check for pending EPG tag changes */
 
-    if (!m_bStop && IsAwake())
+    if (!m_bStop)
     {
       unsigned int iProcessed = 0;
       XbmcThreads::EndTime<> processTimeslice(
@@ -393,7 +404,7 @@ void CPVREpgContainer::Process()
       }
     }
 
-    if (!m_bStop && IsAwake())
+    if (!m_bStop)
     {
       bool bHasPendingUpdates = false;
 
@@ -422,19 +433,23 @@ void CPVREpgContainer::Process()
     }
 
     /* check for changes that need to be saved every 60 seconds */
-    if ((iNow - iLastSave > 60) && !InterruptUpdate())
+    if (!m_bStop && (iNow - iLastSave > 60) && !InterruptUpdate())
     {
       PersistAll(1000);
       iLastSave = iNow;
     }
 
-    CThread::Sleep(1000ms);
+    if (!m_bStop)
+      CThread::Sleep(1000ms);
   }
 
-  // store data on exit
-  CLog::Log(LOGINFO, "EPG Container: Persisting unsaved events...");
-  PersistAll(std::numeric_limits<unsigned int>::max());
-  CLog::Log(LOGINFO, "EPG Container: Persisting events done");
+  if (!IsSleeping())
+  {
+    // store data on exit
+    CLog::Log(LOGINFO, "EPG Container: Persisting unsaved events...");
+    PersistAll(std::numeric_limits<unsigned int>::max());
+    CLog::Log(LOGINFO, "EPG Container: Persisting events done");
+  }
 }
 
 std::vector<std::shared_ptr<CPVREpg>> CPVREpgContainer::GetAllEpgs() const
