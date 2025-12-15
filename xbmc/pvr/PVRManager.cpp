@@ -638,6 +638,7 @@ void CPVRManager::OnSleep()
   if (!m_sleepConfirmedEvent.Wait(5s))
     CLog::LogFC(LOGWARNING, LOGPVR, "Timeout waiting for sleep confirmed event");
 
+  m_guiInfo->OnSleep();
   m_epgContainer->OnSleep();
   m_timers->OnSleep();
   m_addons->OnSleep();
@@ -648,6 +649,7 @@ void CPVRManager::OnWake()
   m_addons->OnWake();
   m_timers->OnWake();
   m_epgContainer->OnWake();
+  m_guiInfo->OnWake();
 
   CPowerState::OnWake();
   m_wakeEvent.Set(); // wake the worker thread

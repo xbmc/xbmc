@@ -105,7 +105,6 @@ void CPVRGUIInfo::ResetProperties()
   ClearDescrambleInfo(m_descrambleInfo);
 
   m_updateBackendCacheRequested = false;
-  m_bRegistered = false;
 }
 
 void CPVRGUIInfo::ClearQualityInfo(CPVRSignalStatus& qualityInfo) const
@@ -128,19 +127,18 @@ void CPVRGUIInfo::Start()
 void CPVRGUIInfo::Stop()
 {
   StopThread();
+}
 
-  auto& mgr = CServiceBroker::GetPVRManager();
-  auto& channels = mgr.Get<PVR::GUI::Channels>();
-  channels.GetChannelNavigator().Unsubscribe(this);
-  channels.Events().Unsubscribe(this);
-  mgr.Events().Unsubscribe(this);
+void CPVRGUIInfo::OnSleep()
+{
+  CPowerState::OnSleep();
+  Stop();
+}
 
-  CGUIComponent* gui = CServiceBroker::GetGUI();
-  if (gui)
-  {
-    gui->GetInfoManager().UnregisterInfoProvider(this);
-    m_bRegistered = false;
-  }
+void CPVRGUIInfo::OnWake()
+{
+  CPowerState::OnWake();
+  Start();
 }
 
 void CPVRGUIInfo::Process()
@@ -178,18 +176,12 @@ void CPVRGUIInfo::Process()
   /* update the backend cache once initially */
   m_updateBackendCacheRequested = true;
 
+  CGUIComponent* gui{CServiceBroker::GetGUI()};
+  if (gui)
+    gui->GetInfoManager().RegisterInfoProvider(this);
+
   while (!g_application.m_bStop && !m_bStop)
   {
-    if (!m_bRegistered)
-    {
-      CGUIComponent* gui = CServiceBroker::GetGUI();
-      if (gui)
-      {
-        gui->GetInfoManager().RegisterInfoProvider(this);
-        m_bRegistered = true;
-      }
-    }
-
     if (!m_bStop)
       UpdateQualityData();
     std::this_thread::yield();
@@ -224,6 +216,13 @@ void CPVRGUIInfo::Process()
     if (!m_bStop)
       CThread::Sleep(500ms);
   }
+
+  if (gui)
+    gui->GetInfoManager().UnregisterInfoProvider(this);
+
+  channels.GetChannelNavigator().Unsubscribe(this);
+  channels.Events().Unsubscribe(this);
+  mgr.Events().Unsubscribe(this);
 }
 
 void CPVRGUIInfo::UpdateQualityData()

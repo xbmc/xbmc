@@ -9,6 +9,7 @@
 #pragma once
 
 #include "guilib/guiinfo/GUIInfoProvider.h"
+#include "powermanagement/PowerState.h"
 #include "pvr/PVRDescrambleInfo.h"
 #include "pvr/PVRSignalStatus.h"
 #include "pvr/addons/PVRClients.h"
@@ -30,7 +31,9 @@ class CGUIInfo;
 
 namespace PVR
 {
-class CPVRGUIInfo : public KODI::GUILIB::GUIINFO::CGUIInfoProvider, private CThread
+class CPVRGUIInfo : public KODI::GUILIB::GUIINFO::CGUIInfoProvider,
+                    private CThread,
+                    public CPowerState
 {
 public:
   CPVRGUIInfo();
@@ -38,6 +41,16 @@ public:
 
   void Start();
   void Stop();
+
+  /*!
+   * @brief Propagate event on system sleep
+   */
+  void OnSleep() override;
+
+  /*!
+   * @brief Propagate event on system wake
+   */
+  void OnWake() override;
 
   // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
   bool InitCurrentItem(CFileItem* item) override;
@@ -186,7 +199,5 @@ private:
    * information.
    */
   mutable std::atomic<bool> m_updateBackendCacheRequested;
-
-  bool m_bRegistered;
 };
 } // namespace PVR
