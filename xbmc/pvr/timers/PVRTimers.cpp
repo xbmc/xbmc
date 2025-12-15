@@ -137,36 +137,24 @@ void CPVRTimers::Unload()
 void CPVRTimers::Start()
 {
   Stop();
-
-  CServiceBroker::GetPVRManager().Events().Subscribe(
-      this,
-      [this](const PVREvent& event)
-      {
-        switch (event)
-        {
-          using enum PVREvent;
-
-          case EpgContainer:
-            CServiceBroker::GetPVRManager().TriggerTimersUpdate();
-            break;
-          case Epg:
-          case EpgItemUpdate:
-          {
-            std::unique_lock lock(m_critSection);
-            m_bReminderRulesUpdatePending = true;
-            break;
-          }
-          default:
-            break;
-        }
-      });
   Create();
 }
 
 void CPVRTimers::Stop()
 {
   StopThread();
-  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
+}
+
+void CPVRTimers::OnSleep()
+{
+  CPowerState::OnSleep();
+  Stop();
+}
+
+void CPVRTimers::OnWake()
+{
+  CPowerState::OnWake();
+  Start();
 }
 
 bool CPVRTimers::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
@@ -190,19 +178,42 @@ bool CPVRTimers::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>
 
 void CPVRTimers::Process()
 {
+  auto& mgr = CServiceBroker::GetPVRManager();
+  mgr.Events().Subscribe(this,
+                         [this, &mgr](const PVREvent& event)
+                         {
+                           switch (event)
+                           {
+                             using enum PVREvent;
+
+                             case EpgContainer:
+                               mgr.TriggerTimersUpdate();
+                               break;
+                             case Epg:
+                             case EpgItemUpdate:
+                             {
+                               std::unique_lock lock(m_critSection);
+                               m_bReminderRulesUpdatePending = true;
+                               break;
+                             }
+                             default:
+                               break;
+                           }
+                         });
+
   while (!m_bStop)
   {
-    if (IsSleeping())
+    if (!m_bStop)
     {
-      CThread::Sleep(10s);
-      continue;
+      // update all timers not owned by a client (e.g. reminders)
+      UpdateEntries(MAX_NOTIFICATION_DELAY.count());
     }
 
-    // update all timers not owned by a client (e.g. reminders)
-    UpdateEntries(MAX_NOTIFICATION_DELAY.count());
-
-    CThread::Sleep(MAX_NOTIFICATION_DELAY);
+    if (!m_bStop)
+      CThread::Sleep(1s);
   }
+
+  mgr.Events().Unsubscribe(this);
 }
 
 bool CPVRTimers::IsRecording() const
