@@ -1383,6 +1383,19 @@ bool URIUtils::IsNetworkFilesystem(const std::string& strPath)
   return false;
 }
 
+bool URIUtils::IsSharingFileService(const std::string& strPath)
+{
+  if (IsSmb(strPath) || IsNfs(strPath) || IsUPnP(strPath) || IsFTP(strPath))
+    return true;
+
+  //! @todo sftp/ssh special case has to be handled by vfs addon
+  CURL url(strPath);
+  if (url.IsProtocol("sftp") || url.IsProtocol("ssh"))
+    return true;
+
+  return false;
+}
+
 bool URIUtils::IsUPnP(const std::string& strFile)
 {
   return IsProtocol(strFile, "upnp");

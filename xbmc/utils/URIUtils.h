@@ -237,6 +237,7 @@ public:
   static bool IsInternetStream(const CURL& url, bool bStrictCheck = false);
   static bool IsStreamedFilesystem(const std::string& strPath);
   static bool IsNetworkFilesystem(const std::string& strPath);
+  static bool IsSharingFileService(const std::string& strPath);
   static bool IsInAPK(const std::string& strFile);
   static bool IsInZIP(const std::string& strFile);
   static bool IsISO9660(const std::string& strFile);
