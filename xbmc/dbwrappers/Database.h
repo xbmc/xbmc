@@ -108,6 +108,7 @@ public:
   void BeginTransaction();
   virtual bool CommitTransaction();
   void RollbackTransaction();
+  bool InTransaction() const;
   void CopyDB(const std::string& latestDb);
   void DropAnalytics();
 

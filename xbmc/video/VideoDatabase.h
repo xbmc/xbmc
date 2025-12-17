@@ -1364,7 +1364,7 @@ public:
                             VideoAssetType asset,
                             CFileItemList& items);
   bool SetVideoVersionDefaultArt(int dbId, int idFrom, const MediaType& mediaType);
-  void InitializeVideoVersionTypeTable(int schemaVersion);
+  void InitializeVideoVersionTypeTable();
   void UpdateVideoVersionTypeTable();
   bool GetVideoVersionsNav(const std::string& strBaseDir,
                            CFileItemList& items,
