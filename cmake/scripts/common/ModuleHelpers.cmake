@@ -948,6 +948,8 @@ function(create_module_dev_env)
     endif()
     if("${_lower_targetarch}" STREQUAL "x64")
       set(_lower_targetarch amd64)
+    elseif("${_lower_targetarch}" STREQUAL "win32")
+      set(_lower_targetarch x86)
     endif()
 
     if("${_lower_hostarch}" STREQUAL "${_lower_targetarch}")
