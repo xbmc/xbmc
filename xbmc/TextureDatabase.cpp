@@ -31,28 +31,30 @@ enum TextureField
   TF_Height,
   TF_UseCount,
   TF_LastUsed,
+  TF_LastLibraryCheck,
   TF_Max
 };
 
 typedef struct
 {
-  char string[14];
+  char string[17];
   TextureField field;
   CDatabaseQueryRule::FieldType type;
 } translateField;
 
 // clang-format off
 static const translateField fields[] = {
-  { "none",          TF_None,          TEXT_FIELD },
-  { "textureid",     TF_Id,            REAL_FIELD },
-  { "url",           TF_Url,           TEXT_FIELD },
-  { "cachedurl",     TF_CachedUrl,     TEXT_FIELD },
-  { "lasthashcheck", TF_LastHashCheck, TEXT_FIELD },
-  { "imagehash",     TF_ImageHash,     TEXT_FIELD },
-  { "width",         TF_Width,         REAL_FIELD },
-  { "height",        TF_Height,        REAL_FIELD },
-  { "usecount",      TF_UseCount,      REAL_FIELD },
-  { "lastused",      TF_LastUsed,      TEXT_FIELD }
+  { "none",             TF_None,             TEXT_FIELD },
+  { "textureid",        TF_Id,               REAL_FIELD },
+  { "url",              TF_Url,              TEXT_FIELD },
+  { "cachedurl",        TF_CachedUrl,        TEXT_FIELD },
+  { "lasthashcheck",    TF_LastHashCheck,    TEXT_FIELD },
+  { "imagehash",        TF_ImageHash,        TEXT_FIELD },
+  { "width",            TF_Width,            REAL_FIELD },
+  { "height",           TF_Height,           REAL_FIELD },
+  { "usecount",         TF_UseCount,         REAL_FIELD },
+  { "lastused",         TF_LastUsed,         TEXT_FIELD },
+  { "lastlibrarycheck", TF_LastLibraryCheck, TEXT_FIELD }
 };
 // clang-format on
 
@@ -83,6 +85,8 @@ std::string CTextureRule::GetField(int field, const std::string &type) const
   else if (field == TF_Height) return "sizes.height";
   else if (field == TF_UseCount) return "sizes.usecount";
   else if (field == TF_LastUsed) return "sizes.lastusetime";
+  else if (field == TF_LastLibraryCheck)
+    return "texture.lastlibrarycheck";
   return "";
 }
 
@@ -273,13 +277,14 @@ bool CTextureDatabase::GetTextures(CVariant &items, const Filter &filter)
       texture["cachedurl"] = m_pDS->fv(2).get_asString();
       texture["imagehash"] = m_pDS->fv(3).get_asString();
       texture["lasthashcheck"] = m_pDS->fv(4).get_asString();
+      texture["lastlibrarycheck"] = m_pDS->fv(5).get_asString();
       CVariant size(CVariant::VariantTypeObject);
-      // 5 is sizes.idtexture
-      size["size"]  = m_pDS->fv(6).get_asInt();
-      size["width"] = m_pDS->fv(7).get_asInt();
-      size["height"] = m_pDS->fv(8).get_asInt();
-      size["usecount"] = m_pDS->fv(9).get_asInt();
-      size["lastused"] = m_pDS->fv(10).get_asString();
+      // 6 is sizes.idtexture
+      size["size"] = m_pDS->fv(7).get_asInt();
+      size["width"] = m_pDS->fv(8).get_asInt();
+      size["height"] = m_pDS->fv(9).get_asInt();
+      size["usecount"] = m_pDS->fv(10).get_asInt();
+      size["lastused"] = m_pDS->fv(11).get_asString();
       texture["sizes"] = CVariant(CVariant::VariantTypeArray);
       texture["sizes"].push_back(size);
       items.push_back(texture);

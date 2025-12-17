@@ -3185,7 +3185,8 @@
         "cachedurl",
         "lasthashcheck",
         "imagehash",
-        "sizes"
+        "sizes",
+        "lastlibrarycheck"
       ]
     }
   },
@@ -3217,6 +3218,10 @@
         "items": {
           "$ref": "Textures.Details.Size"
         }
+      },
+      "lastlibrarycheck": {
+        "type": "string",
+        "description": "Last time texture existence was verified in library"
       }
     }
   },
