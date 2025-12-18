@@ -21,6 +21,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #ifdef HAS_MYSQL
@@ -660,7 +661,9 @@ std::string MysqlDatabase::vprepare(std::string_view format, va_list args)
   pos = 0;
   while ((pos = strFormat.find("%s", pos)) != std::string::npos)
   {
-    strFormat.replace(pos, 2, "%q");
+    // %%s is meant as a literal % followed by s, skip
+    if (pos == 0 || strFormat[pos - 1] != '%')
+      strFormat.replace(pos, 2, "%q");
     pos++;
   }
 
@@ -671,6 +674,41 @@ std::string MysqlDatabase::vprepare(std::string_view format, va_list args)
   {
     strResult.replace(pos, 8, "RAND()");
     pos += 7;
+  }
+
+  // Translation of the builtin Sqlite function strftime("%s",x)
+  //
+  // strftime("%s",x) returns seconds since 1970-01-01 (Unix epoch) as text.
+  // The MySQL equivalent, UNIX_TIMESTAMP(x), returns fractional seconds since Unix epoch as decimal.
+  //
+  // The translation supports only the case of a result cast to INTEGER / SIGNED INTEGER, which
+  // yields the same outcome for Sqlite and MySQL: integer seconds since Unix epoch.
+  //
+  //! @todo int overflow issue of UNIX_TIMESTAMP to be solved by 2038 for 32 bit MySQL systems
+  static std::string_view strfTimeString = "CAST(strftime(\"%s\",";
+  static std::string_view unixTimestampString = "CAST(UNIX_TIMESTAMP(";
+  pos = 0;
+  while ((pos = strResult.find(strfTimeString, pos)) != std::string::npos)
+  {
+    // Tested before CAST statements translation - Sqlite syntax is expected.
+    static std::string_view asString = " AS INTEGER";
+    std::size_t pos2 = strResult.find(asString, pos + strfTimeString.size());
+
+    if (pos2 != std::string::npos)
+    {
+      strResult.replace(pos, strfTimeString.size(), unixTimestampString);
+      pos = pos2 + asString.size();
+    }
+    else
+    {
+      // Other casts of strftime("%s",xx) are not handled
+      CLog::LogF(
+          LOGERROR,
+          "Conversion of strftime(\"%s\", xxx) to a type other than INTEGER is not supported.");
+      CLog::LogF(LOGERROR, "{}", strResult);
+
+      pos += strfTimeString.size();
+    }
   }
 
   // Replace some dataypes in CAST statements:
@@ -707,6 +745,7 @@ std::string MysqlDatabase::vprepare(std::string_view format, va_list args)
     strResult.erase(pos, 15);
     pos++;
   }
+
   return strResult;
 }
 
