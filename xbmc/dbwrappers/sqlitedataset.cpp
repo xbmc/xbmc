@@ -634,8 +634,10 @@ std::string SqliteDatabase::vprepare(std::string_view format, va_list args)
   pos = 0;
   while ((pos = strFormat.find("%s", pos)) != std::string::npos)
   {
-    strFormat.replace(pos, 2, "%q");
-    pos++;
+    // %%s is meant as a literal % followed by s, skip
+    if (pos == 0 || strFormat[pos - 1] != '%')
+      strFormat.replace(pos, 2, "%q");
+    pos += 2;
   }
 
   //  the %I64 enhancement is not supported by sqlite3_vmprintf
