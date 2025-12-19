@@ -425,24 +425,23 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
   db.ExecuteQuery(episodeview);
 
   CLog::Log(LOGINFO, "create tvshowcounts");
-  // clang-format off
-  const std::string tvshowcounts = db.PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
-                                       "      tvshow.idShow AS idShow,"
-                                       "      MAX(files.lastPlayed) AS lastPlayed,"
-                                       "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
-                                       "      COUNT(files.playCount) AS watchedcount,"
-                                       "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
-                                       "      MAX(files.dateAdded) as dateAdded, "
-                                       "      COUNT(bookmark.type) AS inProgressCount "
-                                       "    FROM tvshow"
-                                       "      LEFT JOIN episode ON"
-                                       "        episode.idShow=tvshow.idShow"
-                                       "      LEFT JOIN files ON"
-                                       "        files.idFile=episode.idFile "
-                                       "      LEFT JOIN bookmark ON"
-                                       "        bookmark.idFile=files.idFile AND bookmark.type=1 "
-                                       "GROUP BY tvshow.idShow");
-  // clang-format on
+  const std::string tvshowcounts =
+      db.PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
+                    "      tvshow.idShow AS idShow,"
+                    "      MAX(files.lastPlayed) AS lastPlayed,"
+                    "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
+                    "      COUNT(files.playCount) AS watchedcount,"
+                    "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
+                    "      MAX(files.dateAdded) as dateAdded, "
+                    "      COUNT(bookmark.type) AS inProgressCount "
+                    "    FROM tvshow"
+                    "      LEFT JOIN episode ON"
+                    "        episode.idShow=tvshow.idShow"
+                    "      LEFT JOIN files ON"
+                    "        files.idFile=episode.idFile "
+                    "      LEFT JOIN bookmark ON"
+                    "        bookmark.idFile=files.idFile AND bookmark.type=1 "
+                    "GROUP BY tvshow.idShow");
   db.ExecuteQuery(tvshowcounts);
 
   CLog::Log(LOGINFO, "create tvshowlinkpath_minview");
@@ -461,82 +460,79 @@ void CVideoDatabaseDDL::CreateViews(CDatabase& db)
   db.ExecuteQuery(tvshowlinkpathview);
 
   CLog::Log(LOGINFO, "create tvshow_view");
-  // clang-format off
-  const std::string tvshowview = db.PrepareSQL("CREATE VIEW tvshow_view AS SELECT "
-                                     "  tvshow.*,"
-                                     "  path.idParentPath AS idParentPath,"
-                                     "  path.strPath AS strPath,"
-                                     "  tvshowcounts.dateAdded AS dateAdded,"
-                                     "  lastPlayed, totalCount, watchedcount, totalSeasons, "
-                                     "  rating.rating AS rating, "
-                                     "  rating.votes AS votes, "
-                                     "  rating.rating_type AS rating_type, "
-                                     "  uniqueid.value AS uniqueid_value, "
-                                     "  uniqueid.type AS uniqueid_type, "
-                                     "  tvshowcounts.inProgressCount AS inProgressCount "
-                                     "FROM tvshow"
-                                     "  LEFT JOIN tvshowlinkpath_minview ON "
-                                     "    tvshowlinkpath_minview.idShow=tvshow.idShow"
-                                     "  LEFT JOIN path ON"
-                                     "    path.idPath=tvshowlinkpath_minview.idPath"
-                                     "  INNER JOIN tvshowcounts ON"
-                                     "    tvshow.idShow = tvshowcounts.idShow "
-                                     "  LEFT JOIN rating ON"
-                                     "    rating.rating_id=tvshow.c%02d "
-                                     "  LEFT JOIN uniqueid ON"
-                                     "    uniqueid.uniqueid_id=tvshow.c%02d ",
-                                     VIDEODB_ID_TV_RATING_ID, VIDEODB_ID_TV_IDENT_ID);
-  // clang-format on
+  const std::string tvshowview =
+      db.PrepareSQL("CREATE VIEW tvshow_view AS SELECT "
+                    "  tvshow.*,"
+                    "  path.idParentPath AS idParentPath,"
+                    "  path.strPath AS strPath,"
+                    "  tvshowcounts.dateAdded AS dateAdded,"
+                    "  lastPlayed, totalCount, watchedcount, totalSeasons, "
+                    "  rating.rating AS rating, "
+                    "  rating.votes AS votes, "
+                    "  rating.rating_type AS rating_type, "
+                    "  uniqueid.value AS uniqueid_value, "
+                    "  uniqueid.type AS uniqueid_type, "
+                    "  tvshowcounts.inProgressCount AS inProgressCount "
+                    "FROM tvshow"
+                    "  LEFT JOIN tvshowlinkpath_minview ON "
+                    "    tvshowlinkpath_minview.idShow=tvshow.idShow"
+                    "  LEFT JOIN path ON"
+                    "    path.idPath=tvshowlinkpath_minview.idPath"
+                    "  INNER JOIN tvshowcounts ON"
+                    "    tvshow.idShow = tvshowcounts.idShow "
+                    "  LEFT JOIN rating ON"
+                    "    rating.rating_id=tvshow.c%02d "
+                    "  LEFT JOIN uniqueid ON"
+                    "    uniqueid.uniqueid_id=tvshow.c%02d ",
+                    VIDEODB_ID_TV_RATING_ID, VIDEODB_ID_TV_IDENT_ID);
   db.ExecuteQuery(tvshowview);
 
   CLog::Log(LOGINFO, "create season_view");
-  // clang-format off
-  const std::string seasonview = db.PrepareSQL("CREATE VIEW season_view AS SELECT "
-                                     "  seasons.idSeason AS idSeason,"
-                                     "  seasons.idShow AS idShow,"
-                                     "  seasons.season AS season,"
-                                     "  seasons.name AS name,"
-                                     "  seasons.userrating AS userrating,"
-                                     "  tvshow_view.strPath AS strPath,"
-                                     "  tvshow_view.c%02d AS showTitle,"
-                                     "  tvshow_view.c%02d AS plot,"
-                                     "  tvshow_view.c%02d AS premiered,"
-                                     "  tvshow_view.c%02d AS genre,"
-                                     "  tvshow_view.c%02d AS studio,"
-                                     "  tvshow_view.c%02d AS mpaa,"
-                                     "  count(DISTINCT episode.idEpisode) AS episodes,"
-                                     "  count(files.playCount) AS playCount,"
-                                     "  min(episode.c%02d) AS aired, "
-                                     "  count(bookmark.type) AS inProgressCount, "
-                                     "  seasons.plot AS seasonPlot "
-                                     "FROM seasons"
-                                     "  JOIN tvshow_view ON"
-                                     "    tvshow_view.idShow = seasons.idShow"
-                                     "  JOIN episode ON"
-                                     "    episode.idShow = seasons.idShow AND episode.c%02d = seasons.season"
-                                     "  JOIN files ON"
-                                     "    files.idFile = episode.idFile "
-                                     "  LEFT JOIN bookmark ON"
-                                     "    bookmark.idFile = files.idFile AND bookmark.type = 1 "
-                                     "GROUP BY seasons.idSeason,"
-                                     "         seasons.idShow,"
-                                     "         seasons.season,"
-                                     "         seasons.name,"
-                                     "         seasons.userrating,"
-                                     "         tvshow_view.strPath,"
-                                     "         tvshow_view.c%02d,"
-                                     "         tvshow_view.c%02d,"
-                                     "         tvshow_view.c%02d,"
-                                     "         tvshow_view.c%02d,"
-                                     "         tvshow_view.c%02d,"
-                                     "         tvshow_view.c%02d,"
-                                     "         seasons.plot ",
-                                     VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
-                                     VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA,
-                                     VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON,
-                                     VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
-                                     VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA);
-  // clang-format on
+  const std::string seasonview = db.PrepareSQL(
+      "CREATE VIEW season_view AS SELECT "
+      "  seasons.idSeason AS idSeason,"
+      "  seasons.idShow AS idShow,"
+      "  seasons.season AS season,"
+      "  seasons.name AS name,"
+      "  seasons.userrating AS userrating,"
+      "  tvshow_view.strPath AS strPath,"
+      "  tvshow_view.c%02d AS showTitle,"
+      "  tvshow_view.c%02d AS plot,"
+      "  tvshow_view.c%02d AS premiered,"
+      "  tvshow_view.c%02d AS genre,"
+      "  tvshow_view.c%02d AS studio,"
+      "  tvshow_view.c%02d AS mpaa,"
+      "  count(DISTINCT episode.idEpisode) AS episodes,"
+      "  count(files.playCount) AS playCount,"
+      "  min(episode.c%02d) AS aired, "
+      "  count(bookmark.type) AS inProgressCount, "
+      "  seasons.plot AS seasonPlot "
+      "FROM seasons"
+      "  JOIN tvshow_view ON"
+      "    tvshow_view.idShow = seasons.idShow"
+      "  JOIN episode ON"
+      "    episode.idShow = seasons.idShow AND episode.c%02d = seasons.season"
+      "  JOIN files ON"
+      "    files.idFile = episode.idFile "
+      "  LEFT JOIN bookmark ON"
+      "    bookmark.idFile = files.idFile AND bookmark.type = 1 "
+      "GROUP BY seasons.idSeason,"
+      "         seasons.idShow,"
+      "         seasons.season,"
+      "         seasons.name,"
+      "         seasons.userrating,"
+      "         tvshow_view.strPath,"
+      "         tvshow_view.c%02d,"
+      "         tvshow_view.c%02d,"
+      "         tvshow_view.c%02d,"
+      "         tvshow_view.c%02d,"
+      "         tvshow_view.c%02d,"
+      "         tvshow_view.c%02d,"
+      "         seasons.plot ",
+      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_GENRE,
+      VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_AIRED,
+      VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
+      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA);
   db.ExecuteQuery(seasonview);
 
   CLog::Log(LOGINFO, "create musicvideo_view");
