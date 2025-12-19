@@ -81,6 +81,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.SetSubtitle",                           CPlayerOperations::SetSubtitle },
   { "Player.SetVideoStream",                        CPlayerOperations::SetVideoStream },
 
+  { "Player.GetChapters",                           CPlayerOperations::GetChapters },
+
 // Playlist
   { "Playlist.GetPlaylists",                        CPlaylistOperations::GetPlaylists },
   { "Playlist.GetProperties",                       CPlaylistOperations::GetProperties },
