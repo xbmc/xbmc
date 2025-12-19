@@ -7,8 +7,8 @@
 -
 +if(NOT DISABLE_BUILDINFO)
    # add git revision to compile info
-   find_program(HAVE_GIT_BIN git /bin /usr/bin /usr/local/bin)
-   if(HAVE_GIT_BIN)
+   find_program(GIT_BIN git /bin /usr/bin /usr/local/bin)
+   if(GIT_BIN)
 @@ -69,6 +69,6 @@
  
      set(LIB_INFO "${LIB_INFO} on ${BUILD_SYSNAME} ${BUILD_SYSVER} (${BUILD_SYSARCH})")

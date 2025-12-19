@@ -9,22 +9,69 @@
  endif()
  
  # install headers
-@@ -194,7 +194,10 @@
- # libCEC shared target
- add_library(cec SHARED ${CEC_SOURCES})
- install(TARGETS cec
+@@ -186,7 +186,7 @@
+               ${PROJECT_SOURCE_DIR}/../../include/ceccloader.h
+               ${PROJECT_SOURCE_DIR}/../../include/cectypes.h
+               ${PROJECT_SOURCE_DIR}/../../include/version.h
+-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libcec)
++        DESTINATION include/libcec)
+ 
+ # external dependencies
+ include(cmake/LinkPlatformSupport.cmake)
+@@ -203,20 +203,23 @@
+     OUTPUT_NAME cec)
+ target_link_libraries(cec-shared ${cec_depends})
+ 
+-
++if(ENABLE_STATIC)
+ add_library(cec-static STATIC $<TARGET_OBJECTS:libobj>)
+ set_target_properties(cec-static PROPERTIES
+     VERSION   ${LIBCEC_VERSION_MAJOR}.${LIBCEC_VERSION_MINOR}.${LIBCEC_VERSION_PATCH}
+ 	SOVERSION ${LIBCEC_VERSION_MAJOR}
+     OUTPUT_NAME cec)
+ target_link_libraries(cec-static ${cec_depends})
++endif()
+ 
+ if(WIN32)
+   if (MSVC)
+-    # generate pdb in release mode too
+-	cmake_policy(SET CMP0141 NEW)
+-	set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Release,RelWithDebInfo>:ProgramDatabase>")
++   target_compile_options(cec-shared PRIVATE /Zi)
+ 
++   # Tell linker to include symbol data
++    set_target_properties(cec-shared PROPERTIES 
++        LINK_FLAGS "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF"
++    )
+     set_target_properties(cec-shared PROPERTIES
+         COMPILE_PDB_NAME_DEBUG cec
+         COMPILE_PDB_NAME_RELEASE cec
+@@ -225,11 +228,33 @@
+ 
+     # install generated pdb
+     install(FILES $<TARGET_FILE_DIR:cec-shared>/cec.pdb
+-            DESTINATION ${LIB_DESTINATION})
++            DESTINATION lib)
+   endif(MSVC)
+ endif(WIN32)
+ 
+-install(TARGETS cec-shared cec-static
 -        DESTINATION ${LIB_DESTINATION})
++install(TARGETS cec-shared
 +        EXPORT libcec
 +        RUNTIME DESTINATION bin
 +        ARCHIVE DESTINATION lib
 +        LIBRARY DESTINATION lib)
- set_target_properties(cec PROPERTIES VERSION   ${LIBCEC_VERSION_MAJOR}.${LIBCEC_VERSION_MINOR}.${LIBCEC_VERSION_PATCH}
-                                      SOVERSION ${LIBCEC_VERSION_MAJOR})
- target_link_libraries(cec ${cec_depends})
-@@ -235,4 +238,14 @@
-   endif(MSVC)
- endif(WIN32)
  
++# handle version file
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/libcec-config-version.cmake
++                                 VERSION ${LIBCEC_VERSION_MAJOR}.${LIBCEC_VERSION_MINOR}.${LIBCEC_VERSION_PATCH}
++                                 COMPATIBILITY AnyNewerVersion)
++
++install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libcec-config-version.cmake
++        DESTINATION lib/cmake/libcec)
++
 +install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/libcec-config.cmake
 +        DESTINATION lib/cmake/libcec)
 +
