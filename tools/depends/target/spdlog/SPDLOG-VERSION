@@ -4,3 +4,5 @@ ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 SHA512=3c330162201fb405a08040327e08bc3f90336f431b8865d250e1cf171e48eb8a07a0245a8f60118022869de1ee38209b14da76bf6bcc2ec3da60f1853adaf958
 BYPRODUCT=libspdlog.a
 BYPRODUCT_WIN=spdlog.lib
+
+FULL_URL=https://github.com/gabime/spdlog/archive/refs/tags/v1.16.0.tar.gz
