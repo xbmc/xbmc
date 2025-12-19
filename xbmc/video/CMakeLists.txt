@@ -30,6 +30,7 @@ set(HEADERS Bookmark.h
             TeletextDefines.h
             VideoDatabase.h
             VideoDatabaseColumns.h
+            VideoDatabaseDDL.h
             VideoDbUrl.h
             VideoEmbeddedImageFileLoader.h
             VideoFileItemClassify.h
