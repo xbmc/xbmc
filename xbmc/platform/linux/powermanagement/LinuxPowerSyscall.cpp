@@ -7,6 +7,8 @@
  */
 
 #include "LinuxPowerSyscall.h"
+
+#include "CustomPowerSyscall.h"
 #include "FallbackPowerSyscall.h"
 #if defined(HAS_DBUS)
 #include "ConsoleUPowerSyscall.h"
@@ -27,16 +29,13 @@ IPowerSyscall* CLinuxPowerSyscall::CreateInstance()
   int bestCount = -1;
   int currCount = -1;
 
-  std::list< std::pair< std::function<bool()>,
-                        std::function<IPowerSyscall*()> > > powerManagers =
-  {
-    std::make_pair(CConsoleUPowerSyscall::HasConsoleKitAndUPower,
-                   [] { return new CConsoleUPowerSyscall(); }),
-    std::make_pair(CLogindUPowerSyscall::HasLogind,
-                   [] { return new CLogindUPowerSyscall(); }),
-    std::make_pair(CUPowerSyscall::HasUPower,
-                   [] { return new CUPowerSyscall(); })
-  };
+  std::list<std::pair<std::function<bool()>, std::function<IPowerSyscall*()>>> powerManagers = {
+      std::make_pair(CConsoleUPowerSyscall::HasConsoleKitAndUPower,
+                     [] { return new CConsoleUPowerSyscall(); }),
+      std::make_pair(CLogindUPowerSyscall::HasLogind, [] { return new CLogindUPowerSyscall(); }),
+      std::make_pair(CUPowerSyscall::HasUPower, [] { return new CUPowerSyscall(); }),
+      std::make_pair(CCustomPowerSyscall::HasCustomCommands,
+                     [] { return new CCustomPowerSyscall(); })};
   for(const auto& powerManager : powerManagers)
   {
     if (powerManager.first())
@@ -54,9 +53,13 @@ IPowerSyscall* CLinuxPowerSyscall::CreateInstance()
   }
   if (bestPowerManager)
     return bestPowerManager.release();
-  else
 #endif // HAS_DBUS
-    return new CFallbackPowerSyscall();
+
+  // Try CustomPowerSyscall as a fallback before the do-nothing FallbackPowerSyscall
+  if (CCustomPowerSyscall::HasCustomCommands())
+    return new CCustomPowerSyscall();
+
+  return new CFallbackPowerSyscall();
 }
 
 void CLinuxPowerSyscall::Register()
