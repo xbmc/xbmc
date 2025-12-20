@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Предложения</string>
-    <string name="continue_button">Продолжыть</string>
-    <string name="notice_dialog">Для работы %1$s требуется доступ к медиафайлам и файлам вашего устройства. Разрешите доступ через следующее диалоговое окно, иначе %1$s будет закрыт.</string>
+    <string name="continue_button">Продолжить</string>
+    <string name="notice_dialog">%1$s требует доступ к медиафайлам и файлам вашего устройства. Разрешите доступ в диалоговом окне, иначе %1$s будет закрыт.</string>
     <string name="error_title">Ошибка</string>
     <string name="info_title">Информация</string>
     <string name="exit_button">Выход</string>
     <string name="asking_permissions">Запрос разрешений…</string>
-    <string name="clearing_cache">Очистка кэша…</string>
+    <string name="clearing_cache">Очистка кеша…</string>
     <string name="waiting_external">Ожидание внешнего хранилища…</string>
     <string name="external_ok">Внешнее хранилище в порядке…</string>
     <string name="starting">Запуск %1$s…</string>
@@ -15,5 +15,5 @@
     <string name="permission_denied">В доступе отказано!! Выход…</string>
     <string name="no_find_apk">Не удалось найти пакет.</string>
     <string name="no_read_apk">Невозможно прочитать пакет.</string>
-    <string name="record_audio_dialog">%1$s запрашивает разрешение на запись звука. Это используется только для голосового поиска. Пожалуйста, разрешите или запретите это в следующем диалоговом окне.</string>
+    <string name="record_audio_dialog">%1$s запрашивает разрешение на запись звука. Это используется только для голосового поиска. Пожалуйста, разрешите или запретите это в диалоговом окне.</string>
 </resources>
