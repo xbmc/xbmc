@@ -53,6 +53,22 @@ const auto VPrepareNoParamTests = std::array{
                         "CAST(UNIX_TIMESTAMP(c01) AS SIGNED INTEGER)"},
     VPrepareNoParamTest{"CAST(strftime(\"%%s\",c01) AS REAL)", "CAST(strftime(\"%s\",c01) AS REAL)",
                         "CAST(strftime(\"%s\",c01) AS REAL)"},
+    // RANDOM function
+    VPrepareNoParamTest{"SELECT RANDOM(), foo", "SELECT RANDOM(), foo", "SELECT RAND(), foo"},
+    // CAST translation
+    VPrepareNoParamTest{"SELECT CAST(foo AS TEXT), bar", "SELECT CAST(foo AS TEXT), bar",
+                        "SELECT CAST(foo AS CHAR), bar"},
+    VPrepareNoParamTest{"SELECT CAST(foo AS INTEGER), bar", "SELECT CAST(foo AS INTEGER), bar",
+                        "SELECT CAST(foo AS SIGNED INTEGER), bar"},
+    VPrepareNoParamTest{"SELECT CAST(foo AS REAL), bar", "SELECT CAST(foo AS REAL), bar",
+                        "SELECT CAST(foo AS REAL), bar"},
+    // COLLATE translation
+    VPrepareNoParamTest{"SELECT foo COLLATE NOCASE, bar", "SELECT foo COLLATE NOCASE, bar",
+                        "SELECT foo, bar"},
+    VPrepareNoParamTest{"SELECT foo COLLATE ALPHANUM, bar", "SELECT foo COLLATE ALPHANUM, bar",
+                        "SELECT foo, bar"},
+    VPrepareNoParamTest{"SELECT foo COLLATE BINARY, bar", "SELECT foo COLLATE BINARY, bar",
+                        "SELECT foo COLLATE BINARY, bar"},
 };
 
 class VPrepareNoParamTester : public testing::WithParamInterface<VPrepareNoParamTest>,

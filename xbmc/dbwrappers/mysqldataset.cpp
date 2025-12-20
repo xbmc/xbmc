@@ -732,17 +732,19 @@ std::string MysqlDatabase::vprepare(std::string_view format, va_list args)
   // Remove COLLATE NOCASE the SQLite case insensitive collation.
   // In MySQL all tables are defined with case insensitive collation utf8_general_ci
   pos = 0;
-  while ((pos = strResult.find(" COLLATE NOCASE", pos)) != std::string::npos)
+  static std::string_view collateNoCase = " COLLATE NOCASE";
+  while ((pos = strResult.find(collateNoCase, pos)) != std::string::npos)
   {
-    strResult.erase(pos, 15);
+    strResult.erase(pos, collateNoCase.size());
     pos++;
   }
 
   // Remove COLLATE ALPHANUM the SQLite custom collation.
   pos = 0;
-  while ((pos = strResult.find(" COLLATE ALPHANUM", pos)) != std::string::npos)
+  static std::string_view collateAlphanum = " COLLATE ALPHANUM";
+  while ((pos = strResult.find(collateAlphanum, pos)) != std::string::npos)
   {
-    strResult.erase(pos, 15);
+    strResult.erase(pos, collateAlphanum.size());
     pos++;
   }
 
