@@ -28,6 +28,21 @@ using namespace XFILE;
 #define START_PLAYLIST_MARKER "[playlist]" // may be case-insensitive (equivalent to .ini file on win32)
 #define PLAYLIST_NAME     "PlaylistName"
 
+namespace
+{
+bool Resize(std::vector<std::shared_ptr<CFileItem>>& items, size_t newSize)
+{
+  if (newSize == 0)
+    return false;
+
+  while (items.size() < newSize)
+  {
+    items.emplace_back(std::make_shared<CFileItem>());
+  }
+  return true;
+}
+} // unnamed namespace
+
 namespace KODI::PLAYLIST
 {
 
@@ -100,6 +115,8 @@ bool CPlayListPLS::Load(const std::string &strFile)
       return false;
   }
 
+  std::vector<std::shared_ptr<CFileItem>> items;
+
   bool bFailed = false;
   while (file.ReadLine(strLine))
   {
@@ -115,12 +132,12 @@ bool CPlayListPLS::Load(const std::string &strFile)
 
       if (strLeft == "numberofentries")
       {
-        m_vecItems.reserve(atoi(strValue.c_str()));
+        items.reserve(std::atoi(strValue.c_str()));
       }
       else if (StringUtils::StartsWith(strLeft, "file"))
       {
-        std::vector <int>::size_type idx = atoi(strLeft.c_str() + 4);
-        if (!Resize(idx))
+        const size_t idx = std::atoi(strLeft.c_str() + 4);
+        if (!Resize(items, idx))
         {
           bFailed = true;
           break;
@@ -131,8 +148,8 @@ bool CPlayListPLS::Load(const std::string &strFile)
                                       URIUtils::GetFileName(strFileName)))
           continue;
 
-        if (m_vecItems[idx - 1]->GetLabel().empty())
-          m_vecItems[idx - 1]->SetLabel(URIUtils::GetFileName(strValue));
+        if (items[idx - 1]->GetLabel().empty())
+          items[idx - 1]->SetLabel(URIUtils::GetFileName(strValue));
         CFileItem item(strValue, false);
         if (bShoutCast && !MUSIC::IsAudio(item))
           strValue.replace(0, 7, "shout://");
@@ -140,28 +157,28 @@ bool CPlayListPLS::Load(const std::string &strFile)
         strValue = URIUtils::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(m_strBasePath, strValue);
         g_charsetConverter.unknownToUTF8(strValue);
-        m_vecItems[idx - 1]->SetPath(strValue);
+        items[idx - 1]->SetPath(strValue);
       }
       else if (StringUtils::StartsWith(strLeft, "title"))
       {
-        std::vector <int>::size_type idx = atoi(strLeft.c_str() + 5);
-        if (!Resize(idx))
+        const size_t idx = std::atoi(strLeft.c_str() + 5);
+        if (!Resize(items, idx))
         {
           bFailed = true;
           break;
         }
         g_charsetConverter.unknownToUTF8(strValue);
-        m_vecItems[idx - 1]->SetLabel(strValue);
+        items[idx - 1]->SetLabel(strValue);
       }
       else if (StringUtils::StartsWith(strLeft, "length"))
       {
-        std::vector <int>::size_type idx = atoi(strLeft.c_str() + 6);
-        if (!Resize(idx))
+        const size_t idx = std::atoi(strLeft.c_str() + 6);
+        if (!Resize(items, idx))
         {
           bFailed = true;
           break;
         }
-        m_vecItems[idx - 1]->GetMusicInfoTag()->SetDuration(atol(strValue.c_str()));
+        items[idx - 1]->GetMusicInfoTag()->SetDuration(std::atoi(strValue.c_str()));
       }
       else if (strLeft == "playlistname")
       {
@@ -178,24 +195,18 @@ bool CPlayListPLS::Load(const std::string &strFile)
               "File {} is not a valid PLS playlist. Location of first file,title or length is not "
               "permitted (eg. File0 should be File1)",
               URIUtils::GetFileName(strFileName));
-    return false;
   }
-
-  // check for missing entries
-  ivecItems p = m_vecItems.begin();
-  while ( p != m_vecItems.end())
+  else
   {
-    if ((*p)->GetPath().empty())
+    // add entries
+    for (const auto& item : items)
     {
-      p = m_vecItems.erase(p);
-    }
-    else
-    {
-      ++p;
+      if (!item->GetPath().empty())
+        Add(item);
     }
   }
 
-  return true;
+  return !bFailed;
 }
 
 void CPlayListPLS::Save(const std::string& strFileName) const
@@ -232,20 +243,6 @@ void CPlayListPLS::Save(const std::string& strFileName) const
   write += StringUtils::Format("Version=2\n");
   file.Write(write.c_str(), write.size());
   file.Close();
-}
-
-bool CPlayListPLS::Resize(std::vector <int>::size_type newSize)
-{
-  if (newSize == 0)
-    return false;
-
-  while (m_vecItems.size() < newSize)
-  {
-    CFileItemPtr fileItem(new CFileItem());
-    fileItem->SetProperty("BasePath", m_strBasePath);
-    m_vecItems.push_back(fileItem);
-  }
-  return true;
 }
 
 } // namespace KODI::PLAYLIST

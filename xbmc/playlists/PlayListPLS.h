@@ -22,6 +22,5 @@ public:
   ~CPlayListPLS(void) override;
   bool Load(const std::string& strFileName) override;
   void Save(const std::string& strFileName) const override;
-  virtual bool Resize(std::vector<int>::size_type newSize);
 };
 }
