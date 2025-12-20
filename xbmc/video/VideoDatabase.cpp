@@ -149,7 +149,7 @@ void CVideoDatabase::CreateTables()
   for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     columns += StringUtils::Format(",c{:02} text", i);
 
-  columns += ", userrating integer, duration INTEGER, originalLanguage text)";
+  columns += ", userrating INTEGER, duration INTEGER, originalLanguage TEXT, tagLine TEXT)";
   m_pDS->exec(columns);
 
   CLog::Log(LOGINFO, "create episode table");
@@ -3178,6 +3178,12 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow,
     else
       sql += ", originalLanguage = NULL";
   }
+
+  if (!details.m_strTagLine.empty())
+    sql += PrepareSQL(", tagLine = '%s'", details.m_strTagLine.c_str());
+  else
+    sql += ", tagLine = NULL";
+
   sql += PrepareSQL(" WHERE idShow=%i", idTvShow);
   if (ExecuteQuery(sql))
   {
@@ -5152,6 +5158,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.SetDuration(record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt());
   details.SetOriginalLanguage(record->at(VIDEODB_DETAILS_TVSHOW_ORIGINAL_LANGUAGE).get_asString(),
                               CVideoInfoTag::LanguageProcessing::PROCESSING_NONE);
+  details.SetTagLine(record->at(VIDEODB_DETAILS_TVSHOW_TAGLINE).get_asString());
 
   //! @todo videotag member + guiinfo int needed?
   //! -- Currently not needed; having it available as item prop seems sufficient for skinning
