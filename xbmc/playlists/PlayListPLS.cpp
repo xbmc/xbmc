@@ -242,6 +242,7 @@ bool CPlayListPLS::Resize(std::vector <int>::size_type newSize)
   while (m_vecItems.size() < newSize)
   {
     CFileItemPtr fileItem(new CFileItem());
+    fileItem->SetProperty("BasePath", m_strBasePath);
     m_vecItems.push_back(fileItem);
   }
   return true;

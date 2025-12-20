@@ -127,15 +127,19 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
       extras += '|' + vfsAddon->GetExtensions();
   }
 
-  std::string strPath;
-  const std::string dynPath{g_application.CurrentFileItem().GetDynPath()};
-  if (URIUtils::IsInRAR(dynPath) || URIUtils::IsInZIP(dynPath))
+  const auto currentItem{g_application.CurrentFileItem()};
+  std::string strPath{currentItem.GetProperty("BasePath").asString("")};
+  if (strPath.empty())
   {
-    strPath = CURL(dynPath).GetHostName();
-  }
-  else if (!URIUtils::IsPlugin(dynPath))
-  {
-    strPath = dynPath;
+    const std::string dynPath{currentItem.GetDynPath()};
+    if (URIUtils::IsInRAR(dynPath) || URIUtils::IsInZIP(dynPath))
+    {
+      strPath = CURL(dynPath).GetHostName();
+    }
+    else if (!URIUtils::IsPlugin(dynPath))
+    {
+      strPath = dynPath;
+    }
   }
 
   std::string strMask =

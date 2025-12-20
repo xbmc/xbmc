@@ -95,6 +95,10 @@ void CPlayList::Add(const std::shared_ptr<CFileItem>& item, int iPosition, int i
   // set 'IsPlayable' property - needed for properly handling plugin:// URLs
   item->SetProperty("IsPlayable", true);
 
+  // set 'BasePath' property - needed for properly handling browse for subtitles
+  if (!item->HasProperty("BasePath"))
+    item->SetProperty("BasePath", m_strBasePath);
+
   //CLog::Log(LOGDEBUG,"{} item:({:02}/{:02})[{}]", __FUNCTION__, iPosition, item->GetProgramCount(), item->GetPath());
   if (iPosition == iOldSize)
     m_vecItems.push_back(item);
@@ -484,6 +488,8 @@ bool CPlayList::Expand(int position)
     (*playlist)[i]->SetDynPath((*playlist)[i]->GetPath());
     (*playlist)[i]->SetPath(item->GetDynPath());
     (*playlist)[i]->SetStartOffset(item->GetStartOffset());
+    if (!(*playlist)[i]->HasProperty("BasePath"))
+      (*playlist)[i]->SetProperty("BasePath", playlist->m_strBasePath);
   }
 
   if (playlist->size() <= 0)
