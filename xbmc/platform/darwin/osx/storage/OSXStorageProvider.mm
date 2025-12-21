@@ -269,18 +269,16 @@ private:
   static void RunloopPerformCallback(void* info) {}
   CFRunLoopSourceContext m_runLoopSourceContext = {.perform = RunloopPerformCallback};
 
-  bool m_success;
-  bool m_completed;
+  bool m_success{true};
+  bool m_completed{false};
   const DASessionRef m_session;
   const CFRunLoopRef m_runloop;
   const CFRunLoopSourceRef m_runloopSource;
-  DADiskRef m_disk;
+  DADiskRef m_disk{nullptr};
 };
 
 DAOperationContext::DAOperationContext(const std::string& mountpath)
-  : m_success(true),
-    m_completed(false),
-    m_session(DASessionCreate(kCFAllocatorDefault)),
+  : m_session(DASessionCreate(kCFAllocatorDefault)),
     m_runloop(CFRunLoopGetCurrent()), // not owner!
     m_runloopSource(CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &m_runLoopSourceContext))
 {
