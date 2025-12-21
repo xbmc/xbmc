@@ -17,6 +17,7 @@
 #include <stdlib.h>
 
 #include <DiskArbitration/DiskArbitration.h>
+#import <Foundation/Foundation.h>
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
 #include <sys/mount.h>
@@ -160,15 +161,87 @@ std::vector<std::string> COSXStorageProvider::GetDiskUsage()
 {
   std::vector<std::string> result;
 
-  FILE* pipe = popen("df -HT ufs,cd9660,hfs,apfs,udf", "r");
-  if (pipe)
+  auto byteFormatter = [NSByteCountFormatter new];
+
+  NSMutableArray<NSString*>* resourceKeys = [@[
+    NSURLVolumeNameKey,
+    NSURLVolumeAvailableCapacityKey,
+    NSURLVolumeTotalCapacityKey,
+    NSURLVolumeLocalizedNameKey,
+    NSURLVolumeIsInternalKey,
+  ] mutableCopy];
+  if (@available(macOS 13.3, *))
   {
-    char line[1024];
-    while (fgets(line, sizeof(line) - 1, pipe))
+    [resourceKeys addObject:NSURLVolumeMountFromLocationKey];
+    [resourceKeys addObject:NSURLVolumeTypeNameKey];
+  }
+
+  auto mountedVolumeUrls = [NSFileManager.defaultManager
+      mountedVolumeURLsIncludingResourceValuesForKeys:resourceKeys
+                                              options:NSVolumeEnumerationSkipHiddenVolumes];
+  for (NSURL* volumeURL in mountedVolumeUrls)
+  {
+    @autoreleasepool
     {
-      result.emplace_back(line);
+      // line 1: Name @ Mount point @ location (BSD label or remote address)
+      std::string line1;
+      {
+        NSString* name;
+        [volumeURL getResourceValue:&name forKey:NSURLVolumeLocalizedNameKey error:nullptr];
+
+        if (name.length == 0)
+          [volumeURL getResourceValue:&name forKey:NSURLVolumeNameKey error:nullptr];
+        line1 = name.UTF8String ?: "-";
+      }
+      line1.append(StringUtils::Format(" @ {}", volumeURL.path.UTF8String));
+      if (@available(macOS 13.3, *))
+      {
+        NSString* from;
+        [volumeURL getResourceValue:&from forKey:NSURLVolumeMountFromLocationKey error:nullptr];
+        if (from.length > 0)
+          line1.append(StringUtils::Format(" @ {}", from.UTF8String));
+      }
+      result.push_back(std::move(line1));
+
+      // line 2: [fs type,internal/external] "Free:" free / total
+      std::string line2{'\t'};
+      std::vector<std::string> properties;
+      properties.reserve(2);
+      if (@available(macOS 13.3, *))
+      {
+        NSString* type;
+        [volumeURL getResourceValue:&type forKey:NSURLVolumeTypeNameKey error:nullptr];
+        if (type.length > 0)
+          properties.push_back(type.UTF8String);
+      }
+
+      {
+        NSNumber* isInternal;
+        [volumeURL getResourceValue:&isInternal forKey:NSURLVolumeIsInternalKey error:nullptr];
+        if (isInternal != nil && !isInternal.boolValue)
+          properties.push_back("external");
+      }
+
+      if (!properties.empty())
+        line2.append(StringUtils::Format("[{}] ", StringUtils::Join(properties, ",")));
+
+      // free / total size
+      {
+        NSNumber* spaceAvailable;
+        [volumeURL getResourceValue:&spaceAvailable
+                             forKey:NSURLVolumeAvailableCapacityKey
+                              error:nullptr];
+
+        NSNumber* spaceTotal;
+        [volumeURL getResourceValue:&spaceTotal forKey:NSURLVolumeTotalCapacityKey error:nullptr];
+
+        line2.append(StringUtils::Format(
+            "{}: {} / {}", g_localizeStrings.Get(160),
+            [byteFormatter stringForObjectValue:spaceAvailable].UTF8String ?: "-",
+            [byteFormatter stringForObjectValue:spaceTotal].UTF8String ?: "-"));
+      }
+      result.push_back(std::move(line2));
     }
-    pclose(pipe);
   }
 
   return result;
