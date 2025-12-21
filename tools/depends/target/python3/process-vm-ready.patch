@@ -1,0 +1,48 @@
+From 1963e701001839389cfb1b11d803b0743f4705d7 Mon Sep 17 00:00:00 2001
+From: Pablo Galindo Salgado <Pablogsal@gmail.com>
+Date: Thu, 25 Sep 2025 00:16:44 +0100
+Subject: [PATCH] gh-139275: Fix compilation of
+ Modules/_remote_debugging_module.c when the system doesn't have
+ process_vm_readv (#139307)
+
+---
+ .../2025-09-24-17-32-52.gh-issue-139275.novrqf.rst              | 2 ++
+ Modules/_remote_debugging_module.c                              | 2 +-
+ Python/remote_debug.h                                           | 2 +-
+ 3 files changed, 4 insertions(+), 2 deletions(-)
+ create mode 100644 Misc/NEWS.d/next/Core_and_Builtins/2025-09-24-17-32-52.gh-issue-139275.novrqf.rst
+
+diff --git a/Misc/NEWS.d/next/Core_and_Builtins/2025-09-24-17-32-52.gh-issue-139275.novrqf.rst b/Misc/NEWS.d/next/Core_and_Builtins/2025-09-24-17-32-52.gh-issue-139275.novrqf.rst
+new file mode 100644
+index 00000000000000..8cb4b972ad69b6
+--- /dev/null
++++ b/Misc/NEWS.d/next/Core_and_Builtins/2025-09-24-17-32-52.gh-issue-139275.novrqf.rst
+@@ -0,0 +1,2 @@
++Fix compilation problems in ``_remote_debugging_module.c`` when the system
++doesn't have ``process_vm_readv``. Patch by Pablo Galindo
+diff --git a/Modules/_remote_debugging_module.c b/Modules/_remote_debugging_module.c
+index 701f4b0eabdb15..5937d4892f550f 100644
+--- a/Modules/_remote_debugging_module.c
++++ b/Modules/_remote_debugging_module.c
+@@ -872,7 +872,7 @@ _Py_RemoteDebug_GetAsyncioDebugAddress(proc_handle_t* handle)
+         PyErr_SetString(PyExc_RuntimeError, "Failed to find the AsyncioDebug section in the process.");
+         _PyErr_ChainExceptions1(exc);
+     }
+-#elif defined(__linux__)
++#elif defined(__linux__) && HAVE_PROCESS_VM_READV
+     // On Linux, search for asyncio debug in executable or DLL
+     address = search_linux_map_for_section(handle, "AsyncioDebug", "python");
+     if (address == 0) {
+diff --git a/Python/remote_debug.h b/Python/remote_debug.h
+index d920d9e5b5ff2c..e7676013197fa9 100644
+--- a/Python/remote_debug.h
++++ b/Python/remote_debug.h
+@@ -891,7 +891,7 @@ _Py_RemoteDebug_GetPyRuntimeAddress(proc_handle_t* handle)
+             handle->pid);
+         _PyErr_ChainExceptions1(exc);
+     }
+-#elif defined(__linux__)
++#elif defined(__linux__) && HAVE_PROCESS_VM_READV
+     // On Linux, search for 'python' in executable or DLL
+     address = search_linux_map_for_section(handle, "PyRuntime", "python");
+     if (address == 0) {
