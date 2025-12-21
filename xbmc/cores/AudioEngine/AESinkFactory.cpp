@@ -68,7 +68,7 @@ AESinkDevice CAESinkFactory::ParseDevice(const std::string& device)
   if (pos != std::string::npos)
   {
     // if no known driver found considers the string starts
-    // with the device name and discarts the rest
+    // with the device name and discards the rest
     if (found)
       dev.friendlyName = dev.name.substr(pos + 1);
     dev.name = dev.name.substr(0, pos);

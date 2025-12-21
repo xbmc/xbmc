@@ -618,6 +618,16 @@ unsigned int CProcessInfo::GetMaxPassthroughOffSyncDuration() const
       ->m_maxPassthroughOffSyncDuration;
 }
 
+void CProcessInfo::SetLevelVQ(int level)
+{
+  m_levelVQ = level;
+}
+
+int CProcessInfo::GetLevelVQ()
+{
+  return m_levelVQ;
+}
+
 void CProcessInfo::SetGuiRender(bool gui)
 {
   std::lock_guard lock(m_stateSection);

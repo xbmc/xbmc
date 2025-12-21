@@ -15,10 +15,12 @@
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "cores/VideoSettings.h"
+#include "application/ApplicationPlayer.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/SystemClock.h"
 #include "utils/Geometry.h"
+#include "utils/StreamDetails.h"
 #include "windowing/Resolution.h"
 
 #include <atomic>
@@ -258,4 +260,5 @@ protected:
 
   private:
   CDataCacheCore &m_dataCacheCore;
+  std::shared_ptr<const CApplicationPlayer> m_appPlayer;
 };

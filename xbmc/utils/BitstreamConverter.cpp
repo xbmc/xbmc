@@ -1463,13 +1463,18 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     if (m_sps_pps_context.first_idr && (unit_type == nal_sps || unit_type == nal_pps))
       m_sps_pps_context.idr_sps_pps_seen = 1;
 
-    if (m_hints.codec == AV_CODEC_ID_H264)
+    // if (m_hints.codec == AV_CODEC_ID_H264)
+    if ((m_hints.dovi_el_type == DOVIELType::TYPE_FEL) || (m_hints.dovi_el_type == DOVIELType::TYPE_MEL))
     {
-      if (!m_start_decode && (unit_type == nal_sps || IsIDR(unit_type))) m_start_decode = true;
+      // if (!m_start_decode && (unit_type == nal_sps || IsIDR(unit_type))) m_start_decode = true;
+      if (!m_start_decode && IsIDR(unit_type))
+        m_start_decode = true;
     }
     else
     {
-      if (!m_start_decode && IsIDR(unit_type)) m_start_decode = true;
+      // if (!m_start_decode && IsIDR(unit_type)) m_start_decode = true;
+      if (!m_start_decode && (unit_type == nal_sps || IsIDR(unit_type) || (unit_type == nal_sei && has_sei_recovery_point(buf, buf + nal_size))))
+        m_start_decode = true;
     }
 
 //    if (!m_start_decode && (unit_type == nal_sps || IsIDR(unit_type) || (unit_type == nal_sei && has_sei_recovery_point(buf, buf + nal_size))))

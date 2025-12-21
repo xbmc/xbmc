@@ -10,6 +10,7 @@
 
 #include "AudioSinkAE.h"
 #include "DVDClock.h"
+#include "DVDCodecs/Audio/FloatingAverage.h"
 #include "DVDMessageQueue.h"
 #include "DVDStreamInfo.h"
 #include "IVideoPlayer.h"
@@ -19,9 +20,11 @@
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
 
+#include <chrono>
 #include <list>
 #include <mutex>
 #include <utility>
+
 
 class CVideoPlayer;
 class CDVDAudioCodec;
@@ -30,12 +33,10 @@ class CDVDAudioCodec;
 class CVideoPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
-  CVideoPlayerAudio(
-    CDVDClock* pClock,
-    CDVDMessageQueue& parent,
-    CRenderManager& renderManager,
-    CProcessInfo &processInfo,
-    double messageQueueTimeSize);
+  CVideoPlayerAudio(CDVDClock* pClock,
+                               CDVDMessageQueue& parent,
+                               CRenderManager& renderManager,
+                               CProcessInfo &processInfo);
   ~CVideoPlayerAudio() override;
 
   bool OpenStream(CDVDStreamInfo hints) override;
@@ -63,8 +64,7 @@ public:
 
   double GetCurrentPts() override
   {
-    std::lock_guard lock(m_info_section);
-
+    std::unique_lock<CCriticalSection> lock(m_info_section);
     return m_info.pts;
   }
 
@@ -126,5 +126,16 @@ protected:
   bool m_displayReset = false;
   unsigned int m_disconAdjustTimeMs = 20; // maximum sync-off before adjusting
   int m_disconAdjustCounter = 0;
-};
 
+  //============================================================================
+  // LAV Jitter Tracking for PCM/Decoded Audio
+  // These members are only used when m_lavStylePcmSyncEnabled = true
+  //============================================================================
+  bool m_lavStylePcmSyncEnabled{false};  // Toggle LAV PCM sync on/off
+  
+  static constexpr size_t PCM_JITTER_WINDOW_SIZE = 64;
+  static constexpr double PCM_JITTER_THRESHOLD = 10000.0;  // 10ms in DVD_TIME_BASE units
+  AudioSync::CFloatingAverage<double, PCM_JITTER_WINDOW_SIZE> m_pcmJitterTracker;
+  double m_pcmOutputClock{0.0};       // Separate running output timestamp (like LAV's m_rtStart)
+  bool m_pcmResyncTimestamp{true};    // Flag to resync on next valid PTS (like LAV's m_bResyncTimestamp)
+};

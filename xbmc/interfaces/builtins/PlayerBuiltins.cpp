@@ -483,12 +483,12 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
       // force the item to resume (if applicable)
       if (VIDEO_UTILS::GetItemResumeInformation(item).isResumable)
       {
-        // aml_reset_audio_from_play_from_resume();
+        aml_reset_audio_from_play_from_resume();
         item.SetStartOffset(STARTOFFSET_RESUME);
       }
       else
       {
-        // aml_reset_audio_from_play_from_beginning();
+        aml_reset_audio_from_play_from_beginning();
         item.SetStartOffset(0);
       }
       askToResume = false;
@@ -496,7 +496,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
     else if (StringUtils::EqualsNoCase(params[i], "noresume"))
     {
       // force the item to start at the beginning
-      // aml_reset_audio_from_play_from_beginning();
+      aml_reset_audio_from_play_from_beginning();
       item.SetStartOffset(0);
       askToResume = false;
     }
@@ -545,8 +545,10 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
         VIDEO_UTILS::GetStackPartResumeInformation(item, playOffset + 1);
 
     if (item.GetStartOffset() == STARTOFFSET_RESUME)
+    {
+      aml_reset_audio_from_play_from_resume();
       item.SetStartOffset(resumeInfo.startOffset);
-
+    }
     item.m_lStartPartNumber = resumeInfo.partNumber;
   }
   else if (!forcePlay /* queue */ || item.m_bIsFolder || item.IsPlayList())

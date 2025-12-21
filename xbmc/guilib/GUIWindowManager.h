@@ -66,6 +66,7 @@ public:
   void ChangeActiveWindow(int iNewID, const std::string &strPath = "");
   void ActivateWindow(int iWindowID, const std::vector<std::string>& params, bool swappingWindows = false, bool force = false);
   void PreviousWindow();
+  bool HasVisibleDialog() const { return !m_activeDialogs.empty(); }
 
   /**
    * \brief Switch window to fullscreen

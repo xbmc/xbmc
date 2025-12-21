@@ -2246,7 +2246,7 @@ msgctxt "#472"
 msgid "Output layout"
 msgstr ""
 
-#empty strings from id 472 to 473
+#empty strings from id 473 to 473
 
 msgctxt "#474"
 msgid "Off"
@@ -8709,8 +8709,8 @@ msgid "Disable noise reduction"
 msgstr ""
 
 #: system/settings/settings.xml
-msgctxt "#69999"
-msgid "Enable this to disable noise reduction. Requires reboot. FOR BETTER VIDEO PROCESSING LEAVE THIS SETTING ENABLED (i.e., DISABLE NOISE REDUCTION)."
+msgctxt "#14281"
+msgid "Enable this to disable noise reduction. Requires reboot."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -8786,8 +8786,6 @@ msgstr ""
 msgctxt "#14295"
 msgid "4:4:4"
 msgstr ""
-
-#empty strings from id 14300 to 14300
 
 #. pvr "channels" settings group label
 #: system/settings/settings.xml
@@ -25030,7 +25028,19 @@ msgstr ""
 #. "Dolby Vision Display Led Source Levels Metadata"
 #: system/settings/settings.xml
 msgctxt "#60151"
-msgid "Enable this setting to send the original source DV level 5 metadata to the display, otherwise zero is used for DV level 5 metadata values. ONLY ENABLE THIS SETTING IF YOUR DISPLAY CAN SUPPORT THIS FEATURE."
+msgid "Enable this setting to send the original Source DV level 5 metadata to the display, otherwise zero is used for DV level 5 metadata values."
+msgstr ""
+
+#. "Dolby Vision Display Led Level 5 Handling"
+#: system/settings/settings.xml
+msgctxt "#60152"
+msgid "Enable this setting when using Level 5 as Source and the OSD/Subtitles are being hidden"
+msgstr ""
+
+#. "Dolby Vision Display Led Level 5 Handling"
+#: system/settings/settings.xml
+msgctxt "#60153"
+msgid "This setting allows you to see the OSD or Subtitles when using Level 5 as Source and your display not displaying them correctly."
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
@@ -25710,40 +25720,52 @@ msgctxt "#60593"
 msgid "Set Min PQ 0 only"
 msgstr ""
 
-#. "Dolby Vision Audio Issues Fix"
+#. "Audio Issues Fix"
 #: system/settings/settings.xml
 msgctxt "#60594"
 msgid "Set Type of Correction to Fix Audio Issues"
 msgstr ""
 
-#. "Dolby Vision Audio Issues Fix"
+#. "Audio Issues Fix"
 #: system/settings/settings.xml
 msgctxt "#60595"
-msgid "Select what type of correction works in your setup to fix audio issues including seamless branching audio drop and audio sync issues. Try (1) first, if it does not work try (2). (3) is for debugging purposes."
+msgid "Select the type of audio correction to fix seamless branching audio drop and audio sync issues. Different equipment will work better with different options, so try each option to see what works best for your setup."
 msgstr ""
 
-#. "Dolby Vision Audio Issues Fix"
+#. "Audio Issues Fix"
 #: system/settings/settings.xml
 msgctxt "#60596"
 msgid "Off"
 msgstr ""
 
-#. "Dolby Vision Audio Issues Fix"
+#. "Audio Issues Fix"
 #: system/settings/settings.xml
 msgctxt "#60597"
-msgid "1"
+msgid "Seek/Sync"
 msgstr ""
 
-#. "Dolby Vision Audio Issues Fix"
+#. "Audio Issues Fix"
 #: system/settings/settings.xml
 msgctxt "#60598"
 msgid "2"
 msgstr ""
 
-#. "Dolby Vision Audio Issues Fix"
+#. "Audio Issues Fix"
 #: system/settings/settings.xml
 msgctxt "#60599"
-msgid "3"
+msgid "Debug"
+msgstr ""
+
+#. "Audio Issues Fix"
+#: system/settings/settings.xml
+msgctxt "#60600"
+msgid "LAV SB"
+msgstr ""
+
+#. "Audio Issues Fix"
+#: system/settings/settings.xml
+msgctxt "#60601"
+msgid "LAV Full"
 msgstr ""
 
 #. Title of Dolby Vision RPU conversion setting
@@ -25774,4 +25796,9 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#69302"
 msgid "to P8.1"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#69999"
+msgid "Enable this to disable noise reduction. Requires reboot. FOR BETTER VIDEO PROCESSING LEAVE THIS SETTING ENABLED (i.e., DISABLE NOISE REDUCTION)."
 msgstr ""

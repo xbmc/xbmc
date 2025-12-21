@@ -24,14 +24,14 @@
 #define DTS_SYNC_CORE_16BE  0x7FFE8001  // DTS on DVD / BluRay 
 #define DTS_SYNC_CORE_16LE  0xFE7F0180  
 
-#define DTS_SYNC_EXTENTION  0x64582025  // DTS Extention Subsystem for below extentions.
+#define DTS_SYNC_EXTENTION  0x64582025  // DTS Extention Subsystem for below extensions.
 
 #define DTS_SYNC_EXT_XCH    0x5a5a5a5a  // DTS Extension to 6.1 Channels (XCh) - in case of multiple extension streams the XCh stream is always the last.
 #define DTS_SYNC_EXT_XXCH   0x47004a03  // DTS Extension to More Than 5.1 Channels (XXCh) 
 #define DTS_SYNC_EXT_X96K   0x1d95f262  // DTS Extension to 96 kHz Frequency (X96k) - if a channel extension is present the X96k extension data is placed before the XCh extension data in the encoded bit stream.
 #define DTS_SYNC_EXT_XBR    0x655e315e  // DTS Extension Extended Bit Rate, allow greater than 1.5 Mbps
 #define DTS_SYNC_EXT_LBR    0x0a801921  // DTS Extention Low Bit Rate
-#define DTS_SYNC_EXT_XLL    0x41a29547  // DTS Extention Lossless conding entention as used for DTS-HD Master Audio
+#define DTS_SYNC_EXT_XLL    0x41a29547  // DTS Extention Lossless conding extension as used for DTS-HD Master Audio
 
 #define DTS_SFREQ_COUNT 16
 #define MAX_EAC3_BLOCKS 6
@@ -873,12 +873,12 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t* data, unsigned int size)
 
       if (!m_hasSync) 
       {
-        // Looks like cannot understand the original bit depth - can only asuume it is (up-to) 24 bit!
+        // Looks like cannot understand the original bit depth - can only assume it is (up-to) 24 bit!
         // DTS-MA has the original bit depth from the PCM for example.
         // Seen some attempts at calculation e.g. from BDInfo but not sure that can be correct as 
-        // with lossless compressed audio the bit rate will varry, but the original bit depth should be constant.
+        // with lossless compressed audio the bit rate will vary, but the original bit depth should be constant.
         // Would need to extract the samples and see if they were all padded to tell, but then seen
-        // comments that some titles will use 16 padded to 24 in some scences and then use full 24 in others!
+        // comments that some titles will use 16 padded to 24 in some scenes and then use full 24 in others!
         // so overall just go with 24!
         m_info.m_bitDepth = 24;
 
@@ -891,7 +891,7 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t* data, unsigned int size)
           channel_map = (data[9] << 1) | (data[10] >> 7);
         m_info.m_channels = CAEStreamParser::GetTrueHDChannels(channel_map);
 
-        CLog::Log(LOGINFO, "CAEStreamParser::SyncTrueHD - TrueHD stream detected channels{}, {}Hz, {}-bit)",
+        CLog::Log(LOGINFO, "CAEStreamParser::SyncTrueHD - TrueHD stream detected {} channels, {}Hz, {}-bit)",
                   m_info.m_channels, m_info.m_sampleRate, m_info.m_bitDepth);
 
         m_hasSync = true;

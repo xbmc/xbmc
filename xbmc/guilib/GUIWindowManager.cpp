@@ -43,6 +43,7 @@
 #include "settings/windows/GUIWindowSettingsCategory.h"
 #include "settings/windows/GUIWindowSettingsScreenCalibration.h"
 #include "threads/SingleLock.h"
+#include "utils/AMLUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -997,6 +998,7 @@ bool CGUIWindowManager::SwitchToFullScreen(bool force /* = false */)
 
   if (windowID != WINDOW_INVALID && (force || windowID != activeWindowID))
   {
+    aml_reset_audio_from_window_home();
     if (force)
       ForceActivateWindow(windowID);
     else
@@ -1373,6 +1375,9 @@ void CGUIWindowManager::AfterRender()
         pWindow->MarkDirtyRegion();
     }
   }
+
+  // Inform AMLogic kernel if OSD is displaying
+  aml_dv_set_xbmc_osd();
 }
 
 void CGUIWindowManager::FrameMove()

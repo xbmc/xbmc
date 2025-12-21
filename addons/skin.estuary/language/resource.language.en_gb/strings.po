@@ -984,7 +984,7 @@ msgid "Audio object base"
 msgstr ""
 
 #: /xml/DialogPlayerProcessInfo.xml
-#. Label to show passtrough
+#. Label to show passthrough
 msgctxt "#31641"
-msgid "Passtrough"
+msgid "Passthrough"
 msgstr ""

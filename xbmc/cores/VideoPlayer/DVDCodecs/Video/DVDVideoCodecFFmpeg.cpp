@@ -145,7 +145,7 @@ CVideoBufferPoolFFmpeg::~CVideoBufferPoolFFmpeg()
 
 CVideoBuffer* CVideoBufferPoolFFmpeg::Get()
 {
-  std::lock_guard lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   CVideoBufferFFmpeg *buf = nullptr;
   if (!m_free.empty())
@@ -169,7 +169,7 @@ CVideoBuffer* CVideoBufferPoolFFmpeg::Get()
 
 void CVideoBufferPoolFFmpeg::Return(int id)
 {
-  std::lock_guard lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_all[id]->Unref();
   auto it = m_used.begin();
@@ -247,8 +247,8 @@ void CDVDVideoCodecFFmpeg::CDropControl::Process(int64_t pts, bool drop)
 
 enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx, const AVPixelFormat * fmt)
 {
-  auto cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
-  auto ctx  = dynamic_cast<CDVDVideoCodecFFmpeg*>(cb);
+  ICallbackHWAccel *cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  CDVDVideoCodecFFmpeg* ctx  = dynamic_cast<CDVDVideoCodecFFmpeg*>(cb);
 
   const char* pixFmtName = av_get_pix_fmt_name(*fmt);
 
@@ -432,7 +432,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   // set any special options
-  for(auto it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
+  for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
   {
     av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
   }
@@ -476,7 +476,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_dropCtrl.Reset(true);
   m_eof = false;
 
-  //aml_dv_off();
+  // aml_dv_off();
 
   return true;
 }
@@ -496,7 +496,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
 
   FilterClose();
 
-  //aml_dv_start();
+  // aml_dv_start();
 }
 
 void CDVDVideoCodecFFmpeg::SetFilters()
@@ -929,7 +929,7 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
     pVideoPicture->videoBuffer->Release();
   pVideoPicture->videoBuffer = nullptr;
 
-  auto buffer = dynamic_cast<CVideoBufferFFmpeg*>(m_videoBufferPool->Get());
+  CVideoBufferFFmpeg *buffer = dynamic_cast<CVideoBufferFFmpeg*>(m_videoBufferPool->Get());
   buffer->SetRef(m_pFrame);
   pVideoPicture->videoBuffer = buffer;
 

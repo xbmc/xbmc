@@ -1114,7 +1114,7 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
 
         if (IsProgramChange())
         {
-          CLog::Log(LOGINFO, "CDVDDemuxFFmpeg::Read() stream change");
+          CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::Read() stream change");
           av_dump_format(m_pFormatContext, 0, CURL::GetRedacted(m_pInput->GetFileName()).c_str(),
                          0);
 
@@ -1447,16 +1447,10 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
   if (startpts)
     *startpts = DVD_MSEC_TO_TIME(time);
 
-  DOVIStreamInfo dovi_stream_info;
-  dovi_stream_info = CServiceBroker::GetDataCacheCore().GetVideoDoViStreamInfo();
-
   if (ret >= 0)
   {
     if (!hitEnd)
-    {
-      if (dovi_stream_info.dovi_el_type == DOVIELType::TYPE_FEL) Flush();
       return true;
-    }
     else
       return false;
   }
@@ -1476,22 +1470,7 @@ bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
   m_pkt.result = -1;
   av_packet_unref(&m_pkt.pkt);
 
-  DOVIStreamInfo dovi_stream_info;
-  dovi_stream_info = CServiceBroker::GetDataCacheCore().GetVideoDoViStreamInfo();
-
-  if (dovi_stream_info.dovi_el_type == DOVIELType::TYPE_FEL)
-  {
-    if (ret >= 0)
-    {
-     Flush();
-     return true;
-    }
-    return false;
-  }
-  else
-  {
-    return (ret >= 0);
-  }
+  return (ret >= 0);
 }
 
 int CDVDDemuxFFmpeg::GetStreamLength()

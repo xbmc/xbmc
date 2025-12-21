@@ -1799,7 +1799,7 @@ static inline int calc_chunk_size(int size)
 //drivers/frame_provider/decoder/utils/vdec_input.c
 #define MIN_FRAME_PADDING_SIZE ((int)(L1_CACHE_BYTES))
 
-  auto need_padding_size = MIN_FRAME_PADDING_SIZE;
+  int need_padding_size = MIN_FRAME_PADDING_SIZE;
   if (size < PAGE_SIZE) {
     need_padding_size += PAGE_SIZE - ((size + need_padding_size) & (PAGE_SIZE - 1));
   } else {
@@ -2048,6 +2048,7 @@ bool CAMLCodec::OpenDecoder()
   std::string hdrType = CStreamDetails::HdrTypeToString(hints.hdrType);
   if (hdrType.size())
     CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hdr type: {}", hdrType);
+
   if (hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
     CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder DOVI: version {:d}.{:d}, profile {:d}, el type {:d}",
       hints.dovi.dv_version_major, hints.dovi.dv_version_minor, hints.dovi.dv_profile, hints.dovi_el_type);
@@ -2227,7 +2228,7 @@ bool CAMLCodec::OpenDecoder()
 
 bool CAMLCodec::OpenAmlVideo(const CDVDStreamInfo &hints)
 {
-  auto amlVideoFile = std::make_shared<PosixFile>();
+  PosixFilePtr amlVideoFile = std::make_shared<PosixFile>();
   if (!amlVideoFile->Open("/dev/video10", O_RDONLY | O_NONBLOCK))
   {
     CLog::Log(LOGERROR, "CAMLCodec::OpenAmlVideo - cannot open V4L amlvideo device /dev/video10: {}", strerror(errno));
@@ -2343,10 +2344,7 @@ void CAMLCodec::CloseDecoder()
 
   CloseAmlVideo();
 
-  if (am_private->video_format == VFORMAT_HEVC)
-    aml_dv_close(true);
-  else
-    aml_dv_close(false);
+  aml_dv_close();
 }
 
 void CAMLCodec::CloseAmlVideo()
@@ -2547,8 +2545,7 @@ int CAMLCodec::m_pollDevice;
 
 int CAMLCodec::PollFrame()
 {
-  std::lock_guard lock(pollSyncMutex);
-
+  std::lock_guard<std::mutex> lock(pollSyncMutex);
   if (m_pollDevice < 0)
     return 0;
 
@@ -2566,13 +2563,13 @@ int CAMLCodec::PollFrame()
 
 void CAMLCodec::SetPollDevice(int dev)
 {
-  std::lock_guard lock(pollSyncMutex);
+  std::lock_guard<std::mutex> lock(pollSyncMutex);
   m_pollDevice = dev;
 }
 
 int CAMLCodec::ReleaseFrame(const uint32_t index, bool drop) const {
   int ret;
-  auto vbuf = v4l2_buffer();
+  v4l2_buffer vbuf = v4l2_buffer();
   vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
   vbuf.index = index;
 
@@ -2616,7 +2613,7 @@ float CAMLCodec::GetBufferLevel(int new_chunk, int &data_len, int &free_len) con
 
 int CAMLCodec::DequeueBuffer()
 {
-  auto vbuf = v4l2_buffer();
+  v4l2_buffer vbuf = v4l2_buffer();
   vbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
   int ret = (m_amlVideoFile->IOControl(VIDIOC_DQBUF, &vbuf) < 0) ? errno : 0;
@@ -2706,7 +2703,7 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
     videoPicture.pts = static_cast<double>(m_cur_pts);
 
     m_dll->codec_get_vdec_info(&am_private->vcodec, &vi);
-    if  (vi.ratio_control ) {
+    if (vi.ratio_control) {
       m_hints.aspect = 65536.0 / vi.ratio_control;
       m_processInfo.SetVideoDAR(m_hints.aspect);
     }
@@ -2888,7 +2885,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     case 3:
       {
         float scale = static_cast<float>(dst_rect.Height()) / dst_rect.Width();
-        auto diff = (int) ((dst_rect.Height()*scale - dst_rect.Width()) / 2);
+        int diff = (int) ((dst_rect.Height()*scale - dst_rect.Width()) / 2);
         dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
       }
 

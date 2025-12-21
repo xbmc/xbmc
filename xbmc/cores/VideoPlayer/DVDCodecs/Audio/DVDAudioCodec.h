@@ -43,13 +43,17 @@ typedef struct stDVDAudioFrame
   int profile;
   bool hasDownmix;
   double centerMixLevel;
+
+  // LAV discontinuity signaling (used when LAV sync is enabled)
+  bool hasDiscontinuity{false};
+  double discontinuityCorrection{0.0};
 } DVDAudioFrame;
 
 class CDVDAudioCodec
 {
 public:
 
-  explicit CDVDAudioCodec(CProcessInfo &processInfo) : m_processInfo(processInfo), 
+  explicit CDVDAudioCodec(CProcessInfo &processInfo) : m_processInfo(processInfo),
                                                        m_dataCacheCore(CServiceBroker::GetDataCacheCore()) {}
   virtual ~CDVDAudioCodec() = default;
 

@@ -33,7 +33,7 @@ CAMLVideoBufferPool::~CAMLVideoBufferPool()
 
 CVideoBuffer* CAMLVideoBufferPool::Get()
 {
-  std::lock_guard lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
 
   if (m_freeBuffers.empty())
   {
@@ -50,8 +50,7 @@ CVideoBuffer* CAMLVideoBufferPool::Get()
 
 void CAMLVideoBufferPool::Return(int id)
 {
-  std::lock_guard lock(m_criticalSection);
-
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   if (m_videoBuffers[id]->m_amlCodec)
   {
     m_videoBuffers[id]->m_amlCodec->ReleaseFrame(m_videoBuffers[id]->m_bufferIndex, true);
@@ -174,7 +173,6 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         m_pFormatName = "am-h264mvc";
       else
         m_pFormatName = "am-h264";
-
       // convert h264-avcC to h264-annex-b as h264-avcC
       // under streamers can have issues when seeking.
       if (m_hints.extradata && m_hints.extradata.GetData()[0] == 1)
@@ -333,7 +331,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
           if (m_hints.dovi.dv_profile == 7) 
           {
-            auto convertDovi = static_cast<DOVIMode>(settings->GetInt(CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI));
+            DOVIMode convertDovi = static_cast<DOVIMode>(settings->GetInt(CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI));
             if (convertDovi)
             {
               CLog::Log(LOGINFO, "{}::{} - DV HEVC bitstream - user chooses to convert to mode [{:d}]",
@@ -346,8 +344,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         // Potential HDR10+ (Cannot tell at this point)
         if (settings->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_CONVERT))
         {
-          auto peakBrightnessSource = static_cast<PeakBrightnessSource>(settings->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_PEAK_BRIGHTNESS_SOURCE));
-          CLog::Log(LOGINFO, "{}::{} - HDR10 HEVC bitstream - if HDR10+ then will be converted to Dolby Vision P8.1 with brightness source [{:d}]",
+          PeakBrightnessSource peakBrightnessSource = static_cast<PeakBrightnessSource>(settings->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_PEAK_BRIGHTNESS_SOURCE));
+          CLog::Log(LOGDEBUG, "{}::{} - HDR10 HEVC bitstream - if HDR10+ then will be converted to Dolby Vision P8.1 with brightness source [{:d}]",
             __MODULE_NAME__, __FUNCTION__, peakBrightnessSource);
           m_bitstream->SetConvertHdr10Plus(true);
           m_bitstream->SetConvertHdr10PlusPeakBrightnessSource(peakBrightnessSource);
