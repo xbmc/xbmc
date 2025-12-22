@@ -47,6 +47,8 @@ bool CPlatformWebOS::InitStageOne()
   const auto HOME = GetHomePath();
 
   setenv("APPID", CCompileInfo::GetPackage(), 0);
+  setenv("FONTCONFIG_FILE", "/etc/fonts/fonts.conf", 1);
+  setenv("FONTCONFIG_PATH", "/etc/fonts", 1);
   setenv("GST_PLUGIN_SCANNER_1_0", (HOME + "/lib/gst-plugin-scanner").c_str(), 1);
   setenv("XDG_RUNTIME_DIR", "/tmp/xdg", 1);
   setenv("XKB_CONFIG_ROOT", "/usr/share/X11/xkb", 1);
