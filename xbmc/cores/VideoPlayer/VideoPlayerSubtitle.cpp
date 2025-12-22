@@ -37,6 +37,20 @@ void CVideoPlayerSubtitle::Flush()
   SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::GENERAL_FLUSH), 0);
 }
 
+namespace
+{
+std::shared_ptr<CDVDOverlayGroup> InitialiseNewOverlayGroup(std::shared_ptr<CDVDOverlay>& overlay)
+{
+  auto group{std::make_shared<CDVDOverlayGroup>()};
+  group->iPTSStartTime = overlay->iPTSStartTime;
+  group->iPTSStopTime = overlay->iPTSStopTime;
+  group->bForced = overlay->bForced;
+  group->replace = overlay->replace;
+  group->m_overlays.emplace_back(overlay);
+  return group;
+}
+} // namespace
+
 void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority)
 {
   std::unique_lock lock(m_section);
@@ -52,11 +66,20 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
 
       if (result == OverlayMessage::OC_OVERLAY)
       {
-        std::shared_ptr<CDVDOverlay> overlay;
-
-        while ((overlay = m_pOverlayCodec->GetOverlay()))
+        if (std::shared_ptr<CDVDOverlay> overlay{m_pOverlayCodec->GetOverlay()}; overlay != nullptr)
         {
-          m_pOverlayContainer->ProcessAndAddOverlayIfValid(overlay);
+          auto group{InitialiseNewOverlayGroup(overlay)};
+          while ((overlay = m_pOverlayCodec->GetOverlay()) != nullptr)
+          {
+            if (*group->m_overlays.back() == *overlay)
+              group->m_overlays.emplace_back(overlay);
+            else
+            {
+              m_pOverlayContainer->ProcessAndAddOverlayIfValid(group);
+              group = InitialiseNewOverlayGroup(overlay);
+            }
+          }
+          m_pOverlayContainer->ProcessAndAddOverlayIfValid(group);
         }
       }
     }

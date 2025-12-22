@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <assert.h>
-#include <atomic>
 #include <memory>
 #include <stdexcept>
 #include <vector>
@@ -55,6 +53,14 @@ public:
   }
 
   virtual ~CDVDOverlay() = default;
+
+  bool operator==(const CDVDOverlay& other) const
+  {
+    constexpr double epsilon{0.1};
+    return std::abs(iPTSStartTime - other.iPTSStartTime) < epsilon &&
+           std::abs(iPTSStopTime - other.iPTSStopTime) < epsilon && bForced == other.bForced &&
+           replace == other.replace;
+  }
 
   bool IsOverlayType(DVDOverlayType type) const { return (m_type == type); }
 
