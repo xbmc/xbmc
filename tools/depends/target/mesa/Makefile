@@ -1,5 +1,6 @@
 include ../../Makefile.include
-DEPS =../../Makefile.include Makefile ../../download-files.include
+DEPS =../../Makefile.include Makefile ../../download-files.include \
+                      01-all-py312-setuptools.patch
 
 LIBNAME=mesa
 VERSION=23.0.1
@@ -76,6 +77,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
+	cd $(PLATFORM); patch -p1 -i ../01-all-py312-setuptools.patch
 	cd $(PLATFORM); $(CONFIGURE) . build
 
 $(LIBDYLIB): $(PLATFORM)

@@ -43,7 +43,7 @@ namespace tools
 /// @note To use on Windows must you also include [dlfcn-win32](https://github.com/dlfcn-win32/dlfcn-win32)
 /// on your addon!\n\n
 /// Furthermore, this allows the use of Android where the required library is
-/// copied to an EXE useable folder.
+/// copied to an EXE usable folder.
 ///
 ///
 /// ----------------------------------------------------------------------------

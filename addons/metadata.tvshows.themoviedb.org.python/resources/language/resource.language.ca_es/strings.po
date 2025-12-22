@@ -1,0 +1,166 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-02-19 14:01+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-tvshows-themoviedb-org-python/ca_es/>\n"
+"Language: ca_es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Fetch TV Show metadata from themoviedb.org"
+msgstr "Agafa les metadades de les sèries de themoviedb.org"
+
+msgctxt "Addon Description"
+msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgstr "The Movie Database (TMDb) és una base de dades de pel·lícules i sèries creada per la comunitat. Cada dada ha estat afegida per la nostra increïble comunitat que data de 2008. El fort enfoc internacional i la quantitat de dades de TMDb és en gran mesura inigualable i una cosa de la qual estem increïblement orgullosos. En poques paraules, vivim i respirem comunitat i això és precisament el que ens fa diferents."
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr "Idioma preferit"
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr "País de certificació preferit"
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr "Inclou el prefix de certificació"
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr "Prefix"
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr "Conserva el títol original"
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr "Classifica el fanart amb text com a art panoràmic"
+
+msgctxt "#30006"
+msgid "Include country code with studio"
+msgstr "Inclou el codi de país amb l'estudi"
+
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr "Afegeix paraules clau com a etiquetes"
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr ""
+
+# empty strings from 30007 to 30099
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr "Clau del client (opcional)"
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr "Habilita el fanart"
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr "Habilita el cartell"
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr "Habilita el baner"
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr "Habilita el clearlogo"
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr "Habilita el clearart"
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr "Habilita l'apaïsat"
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr "Habilita el character art"
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr "Inclou l'art de fanart.tv"
+
+# empty strings from 30110 to 30149
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr "Habilita el cartell de la temporada"
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr "Habilita el baner de la temporada"
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr "Habilita l'apaïsat de la temporada"
+
+# empty strings from 30153 to 30200
+msgctxt "#30200"
+msgid "Advanced"
+msgstr "Avançat"
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr "Registre de depuració detallat"
+
+# emptry strings from 30202 to 30299
+msgctxt "#30300"
+msgid "Ratings"
+msgstr "Valoracions"
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr "Valoració predeterminada de"
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr "Afegeix també valoracions d'IMDb"
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr "Afegeix també valoracions de Trakt.tv"
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr "Afegeix també valoracions de TMDb"
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr "Habilita el tràiler"
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr "Reproductor de complements"
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr "YouTube"
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr "Tubed"

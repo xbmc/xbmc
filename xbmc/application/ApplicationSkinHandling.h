@@ -34,6 +34,21 @@ public:
   bool OnSettingChanged(const CSetting& setting);
   void ReloadSkin(bool confirm = false);
 
+  // called from GUIWindow::OnAction
+  bool ShouldStopActionPropagation() const
+  {
+    // We read it and then set it back to false for next time
+    if (m_stopActionPropagation)
+    {
+      m_stopActionPropagation = false;
+      return true;
+    }
+    return false;
+  }
+
+  // called from ReloadSkinn
+  void RequestStopActionPropagation() { m_stopActionPropagation = true; }
+
 protected:
   bool LoadSkin(const std::string& skinID);
   bool LoadCustomWindows();
@@ -50,4 +65,6 @@ protected:
   IMsgTargetCallback* m_msgCb;
   IWindowManagerCallback* m_wCb;
   bool& m_bInitializing;
+
+  mutable bool m_stopActionPropagation{false};  
 };

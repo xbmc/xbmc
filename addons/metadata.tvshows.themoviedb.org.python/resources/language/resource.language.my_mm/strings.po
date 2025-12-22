@@ -1,0 +1,166 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-02-19 14:01+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Burmese <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-tvshows-themoviedb-org-python/my_mm/>\n"
+"Language: my_mm\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Fetch TV Show metadata from themoviedb.org"
+msgstr "themoviedb.org မှ TV Show မက်တာဒေတာကို ရယူပါ"
+
+msgctxt "Addon Description"
+msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgstr "Movie Database (TMDb) သည် ကွန်မြူနတီတည်ဆောက်ထားသော ရုပ်ရှင်နှင့် TV ဒေတာဘေ့စ်တစ်ခုဖြစ်သည်။ 2008 ခုနှစ်မှ စတင်ခဲ့သော ကျွန်ုပ်တို့၏ အံ့သြဖွယ်ကောင်းသော အသိုက်အဝန်းမှ ဒေတာအစိတ်အပိုင်းတိုင်းကို ပေါင်းထည့်ထားပါသည်။ TMDb ၏ ခိုင်မာသော နိုင်ငံတကာအာရုံစိုက်မှုနှင့် ဒေတာအကျယ်အဝန်းသည် ကြီးမားစွာမယှဉ်နိုင်ဖြစ်ပြီး ကျွန်ုပ်တို့အတွက် အလွန်ဂုဏ်ယူမိပါသည်။ ရိုးရိုးရှင်းရှင်းပြောရလျှင် ကျွန်ုပ်တို့သည် အသိုက်အဝန်းကို ရှင်သန်နေထိုင်ပြီး ရှူရှိုက်ကာ ၎င်းသည် ကျွန်ုပ်တို့ကို ကွဲပြားစေသည်။"
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr "နှစ်သက်ရာဘာသာစကား"
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr "ကြိုက်နှစ်သက်သော နိုင်ငံ"
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr "certification prefix ပါဝင်သည်"
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr "Prefix"
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr "မူရင်းခေါင်းစဉ်တိုင်းထားပါ"
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr "ရှုခင်းအနုပညာစာသားအဖြစ်ရုပ်ရှင်ကာဗာအမျိုးအစား"
+
+msgctxt "#30006"
+msgid "Include country code with studio"
+msgstr "နိုင်ငံကုတ်ပါဝင်သောစတူဒီယို"
+
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr "စာကားလုံးများကို တွဲထည့်ပါ"
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr ""
+
+# empty strings from 30007 to 30099
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr "['Fanart.tv']"
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr "ကလိုင်းရန့်ကီး (optional)"
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr "ကာဗာပုံကိုဖွင့်ပါ"
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr "ပိုစ်တာကိုဖွင့်ပါ"
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr "နဖူးစည်းစာတမ်းကိုဖွင့်ပါ"
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr "သန့်ရှင့်တဲ့\"လိုဂို\"ကိုဖွင့်ပါ"
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr "clearartကိုဖွင့်ပါ"
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr "landscapeကိုဖွင့်ပါ"
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr "character artကိုဖွင့်ပါ"
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr "fanart.tv မှ art ပါဝင်သော"
+
+# empty strings from 30110 to 30149
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr "season poster ကိုဖွင့်ပါ"
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr "season banner ကိုဖွင့်ပါ"
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr "season landscape ကိုဖွင့်ပါ"
+
+# empty strings from 30153 to 30200
+msgctxt "#30200"
+msgid "Advanced"
+msgstr "အဆင့်မြင့်"
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr "စကားအသုံးအနှုန်း အမှားအယွင်း logging"
+
+# emptry strings from 30202 to 30299
+msgctxt "#30300"
+msgid "Ratings"
+msgstr "အဆင့်သတ်မှတ်ချက်"
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr "ပုံသေအဆင့်သတ်မှတ်ချက်"
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr "IMDB အဆင့်သတ်မှတ်ချက်ကိုလည်းထည့်ပါ"
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr "Trakt.tv အဆင့်သတ်မှတ်ချက်ကိုလည်းထည့်ပါ"
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr "TMDB အဆင့်သတ်မှတ်ချက်ကိုထည့်ပါ"
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr "နမူနာကိုဖွင့်ပါ"
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr "Player ဖြည့်စွက်မှု"
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr "ယူကျူ"
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr "ကျူဘတ်"

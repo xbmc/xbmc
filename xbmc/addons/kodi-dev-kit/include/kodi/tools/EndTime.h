@@ -121,7 +121,7 @@ public:
   /// @ingroup cpp_kodi_tools_CEndTime
   /// @brief The amount of time left till this timer expires
   ///
-  /// @return 0 if the expiry amount of time has past, the numbe rof milliseconds remaining otherwise
+  /// @return 0 if the expiry amount of time has past, the number of milliseconds remaining otherwise
   ///
   inline unsigned int MillisLeft() const
   {

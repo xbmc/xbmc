@@ -24,14 +24,9 @@
 #include "interfaces/python/PythonInvoker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/CharsetConverter.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-
-#ifdef TARGET_WINDOWS
-#include "platform/Environment.h"
-#endif
 
 #ifdef HAS_WEB_INTERFACE
 #include "network/httprequesthandler/python/HTTPPythonWsgiInvoker.h"
@@ -39,14 +34,44 @@
 
 #include <algorithm>
 
-// Only required for Py3 < 3.7
-PyThreadState* savestate;
-
-bool XBPython::m_bInitialized = false;
-
 XBPython::XBPython()
 {
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+
+  CLog::Log(LOGDEBUG, "initializing python engine.");
+  // Darwin packs .pyo files, we need PYTHONOPTIMIZE on in order to load them.
+  // linux built with unified builds only packages the pyo files so need it
+#if defined(TARGET_DARWIN) || defined(TARGET_LINUX)
+  setenv("PYTHONOPTIMIZE", "1", 1);
+#endif
+  // Info about interesting python envvars available
+  // at http://docs.python.org/using/cmdline.html#environment-variables
+
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_ANDROID)
+  // check if we are running as real xbmc.app or just binary
+  if (!CUtil::GetFrameworksPath(true).empty())
+  {
+    // using external python, its build looking for xxx/lib/python3.8
+    // so point it to frameworks which is where python3.8 is located
+    setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
+    setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
+    CLog::Log(LOGDEBUG, "PYTHONHOME -> {}",
+              CSpecialProtocol::TranslatePath("special://frameworks"));
+    CLog::Log(LOGDEBUG, "PYTHONPATH -> {}",
+              CSpecialProtocol::TranslatePath("special://frameworks"));
+  }
+#endif
+
+  // *::GlobalInitializeModules() functions call PyImport_ExtendInittab(). PyImport_ExtendInittab() should
+  // be called before Py_Initialize() as required by the Python documentation.
+  CAddonPythonInvoker::GlobalInitializeModules();
+
+#ifdef HAS_WEB_INTERFACE
+  CHTTPPythonWsgiInvoker::GlobalInitializeModules();
+#endif
+
+  Py_Initialize();
+  m_mainThreadState = PyEval_SaveThread();
 }
 
 XBPython::~XBPython()
@@ -54,11 +79,10 @@ XBPython::~XBPython()
   XBMC_TRACE;
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 
-#if PY_VERSION_HEX >= 0x03070000
   if (Py_IsInitialized())
   {
     // Switch to the main interpreter thread before finalizing
-    PyThreadState_Swap(PyInterpreterState_ThreadHead(PyInterpreterState_Main()));
+    PyThreadState_Swap(m_mainThreadState);
 
     // Clear all loaded modules to prevent circular references
     PyObject* modules = PyImport_GetModuleDict();
@@ -66,12 +90,9 @@ XBPython::~XBPython()
 
     Py_Finalize();
   }
-#endif
 }
 
 #define LOCK_AND_COPY(type, dest, src) \
-  if (!m_bInitialized) \
-    return; \
   std::unique_lock lock(src); \
   src.hadSomethingRemoved = false; \
   type dest; \
@@ -276,17 +297,15 @@ void XBPython::OnQueueNextItem()
 void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
   XBMC_TRACE;
-  std::lock_guard lock(m_vecPlayerCallbackList);
-
+  std::unique_lock lock(m_vecPlayerCallbackList);
   m_vecPlayerCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
   XBMC_TRACE;
-  std::lock_guard lock(m_vecPlayerCallbackList);
-
-  auto it = m_vecPlayerCallbackList.begin();
+  std::unique_lock lock(m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
   while (it != m_vecPlayerCallbackList.end())
   {
     if (*it == pCallback)
@@ -302,17 +321,15 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 void XBPython::RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
   XBMC_TRACE;
-  std::lock_guard lock(m_vecMonitorCallbackList);
-
+  std::unique_lock lock(m_vecMonitorCallbackList);
   m_vecMonitorCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
   XBMC_TRACE;
-  std::lock_guard lock(m_vecMonitorCallbackList);
-
-  auto it = m_vecMonitorCallbackList.begin();
+  std::unique_lock lock(m_vecMonitorCallbackList);
+  MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
   while (it != m_vecMonitorCallbackList.end())
   {
     if (*it == pCallback)
@@ -456,140 +473,48 @@ void XBPython::Uninitialize()
 
 void XBPython::Process()
 {
-  if (m_bInitialized)
+  PyList tmpvec;
+  std::unique_lock lock(m_vecPyList);
+  for (PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end();)
   {
-    PyList tmpvec;
-
-    std::unique_lock lock(m_vecPyList);
-
-    for (auto it = m_vecPyList.begin(); it != m_vecPyList.end();)
+    if (it->bDone)
     {
-      if (it->bDone)
-      {
-        tmpvec.push_back(*it);
-        it = m_vecPyList.erase(it);
-        m_vecPyList.hadSomethingRemoved = true;
-      }
-      else
-        ++it;
+      tmpvec.push_back(*it);
+      it = m_vecPyList.erase(it);
+      m_vecPyList.hadSomethingRemoved = true;
     }
-    lock.unlock();
-
-    //delete scripts which are done
-    tmpvec.clear();
+    else
+      ++it;
   }
+  lock.unlock();
+
+  //delete scripts which are done
+  tmpvec.clear();
 }
 
 bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
 {
-  if (invoker == nullptr)
+  if (invoker == NULL)
     return false;
 
   XBMC_TRACE;
-  CLog::Log(LOGDEBUG, "initializing python engine.");
-
-  std::lock_guard lock(m_critSection);
-
+  CLog::Log(LOGDEBUG, "initializing python script");
+  std::unique_lock lock(m_critSection);
   m_iDllScriptCounter++;
-  if (!m_bInitialized)
-  {
-    // Darwin packs .pyo files, we need PYTHONOPTIMIZE on in order to load them.
-    // linux built with unified builds only packages the pyo files so need it
-#if defined(TARGET_DARWIN) || defined(TARGET_LINUX)
-    setenv("PYTHONOPTIMIZE", "1", 1);
-#endif
-    // Info about interesting python envvars available
-    // at http://docs.python.org/using/cmdline.html#environment-variables
 
-#if !defined(TARGET_WINDOWS) && !defined(TARGET_ANDROID)
-    // check if we are running as real xbmc.app or just binary
-    if (!CUtil::GetFrameworksPath(true).empty())
-    {
-      // using external python, it's build looking for xxx/lib/python3.8
-      // so point it to frameworks which is where python3.8 is located
-      setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
-      setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
-      CLog::Log(LOGDEBUG, "PYTHONHOME -> {}",
-                CSpecialProtocol::TranslatePath("special://frameworks"));
-      CLog::Log(LOGDEBUG, "PYTHONPATH -> {}",
-                CSpecialProtocol::TranslatePath("special://frameworks"));
-    }
-#elif defined(TARGET_WINDOWS)
-
-#ifdef TARGET_WINDOWS_STORE
-#ifdef _DEBUG
-    CEnvironment::putenv("PYTHONCASEOK=1");
-#endif
-    CEnvironment::putenv("OS=win10");
-#else // TARGET_WINDOWS_DESKTOP
-    CEnvironment::putenv("OS=win32");
-#endif
-
-    std::wstring pythonHomeW;
-    CCharsetConverter::utf8ToW(CSpecialProtocol::TranslatePath("special://xbmc/system/python"),
-                           pythonHomeW);
-    Py_SetPythonHome(pythonHomeW.c_str());
-
-    std::string pythonPath = CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs");
-    pythonPath += ";";
-    pythonPath += CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib");
-    pythonPath += ";";
-    pythonPath += CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib/site-packages");
-    std::wstring pythonPathW;
-    CCharsetConverter::utf8ToW(pythonPath, pythonPathW);
-
-    Py_SetPath(pythonPathW.c_str());
-
-    Py_OptimizeFlag = 1;
-#endif
-
-    // *::GlobalInitializeModules() functions call PyImport_ExtendInittab(). PyImport_ExtendInittab() should
-    // be called before Py_Initialize() as required by the Python documentation.
-    CAddonPythonInvoker::GlobalInitializeModules();
-
-#ifdef HAS_WEB_INTERFACE
-    CHTTPPythonWsgiInvoker::GlobalInitializeModules();
-#endif
-
-    Py_Initialize();
-
-#if PY_VERSION_HEX < 0x03070000
-    // Python >= 3.7 Py_Initialize implicitly calls PyEval_InitThreads
-    // Python < 3.7 we have to manually call initthreads.
-    // PyEval_InitThreads is a no-op on subsequent calls, No need to wrap in
-    // PyEval_ThreadsInitialized() check
-    PyEval_InitThreads();
-#endif
-
-    // Acquire GIL if thread doesn't currently hold.
-    if (!PyGILState_Check())
-      PyEval_RestoreThread((PyThreadState*)m_mainThreadState);
-
-    if (!(m_mainThreadState = PyThreadState_Get()))
-      CLog::Log(LOGERROR, "Python threadstate is NULL.");
-    savestate = PyEval_SaveThread();
-
-    m_bInitialized = true;
-  }
-
-  return m_bInitialized;
+  return true;
 }
 
 void XBPython::OnScriptStarted(ILanguageInvoker* invoker)
 {
-  if (invoker == nullptr)
-    return;
-
-  if (!m_bInitialized)
+  if (invoker == NULL)
     return;
 
   PyElem inf;
   inf.id = invoker->GetId();
   inf.bDone = false;
   inf.pyThread = static_cast<CPythonInvoker*>(invoker);
-
-  std::lock_guard lock(m_vecPyList);
-
+  std::unique_lock lock(m_vecPyList);
   m_vecPyList.push_back(inf);
 }
 
@@ -598,7 +523,7 @@ void XBPython::NotifyScriptAborting(ILanguageInvoker* invoker)
   XBMC_TRACE;
 
   long invokerId(-1);
-  if (invoker != nullptr)
+  if (invoker != NULL)
     invokerId = invoker->GetId();
 
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>, tmp, m_vecMonitorCallbackList);
@@ -614,9 +539,8 @@ void XBPython::NotifyScriptAborting(ILanguageInvoker* invoker)
 
 void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
 {
-  std::lock_guard lock(m_vecPyList);
-
-  auto it = m_vecPyList.begin();
+  std::unique_lock lock(m_vecPyList);
+  PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
     if (it->id == invoker->GetId())
@@ -634,8 +558,7 @@ void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
 void XBPython::OnScriptFinalized(ILanguageInvoker* invoker)
 {
   XBMC_TRACE;
-  std::lock_guard lock(m_critSection);
-
+  std::unique_lock lock(m_critSection);
   // for linux - we never release the library. its loaded and stays in memory.
   if (m_iDllScriptCounter)
     m_iDllScriptCounter--;
@@ -660,5 +583,5 @@ bool XBPython::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
   CEvent* ret = eventGroup.wait(std::chrono::milliseconds(milliseconds));
   if (ret)
     m_globalEvent.Reset();
-  return ret != nullptr;
+  return ret != NULL;
 }

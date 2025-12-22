@@ -164,8 +164,7 @@ public:
   /// closed. The creation can be done before "Show" becomes called, but
   /// not delete class after them.
   ///
-  /// @return Return true if call and show is successed, if false was something
-  /// failed to get needed skin parts.
+  /// @return True on success, false otherwise.
   ///
   bool Show() const {
     return m_interface->kodi_gui->window->show(m_interface->kodiBase, m_controlHandle);
@@ -196,8 +195,7 @@ public:
   /// @brief Gives the control with the supplied focus.
   ///
   /// @param[in] controlId On skin defined id of control
-  /// @return Return true if call and focus is successed, if false was something
-  /// failed to get needed skin parts
+  /// @return True on success, false otherwise.
   ///
   bool SetFocusId(int controlId) const {
     return m_interface->kodi_gui->window->set_focus_id(m_interface->kodiBase, m_controlHandle,

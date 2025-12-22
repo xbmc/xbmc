@@ -91,7 +91,7 @@ class Scraper():
     def __init__(self, action, key, artist, url, nfo, settings):
         # parse path settings
         self.parse_settings(settings)
-        # this is just for backward compitability with xml based scrapers https://github.com/xbmc/xbmc/pull/11632
+        # this is just for backward compatibility with xml based scrapers https://github.com/xbmc/xbmc/pull/11632
         if action == 'resolveid':
             # return the result
             result = self.resolve_mbid(key)

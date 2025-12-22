@@ -108,7 +108,9 @@ VERSION.TXT := $(CMAKE_SOURCE_DIR)/version.txt
 APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
 
 # Python related vars
-PYTHON_VERSION=3.11
+# version populated from tools/depends/target/python3/PYTHON3-VERSION file
+NATIVE_PYTHON_VERSION=@native_py_version@
+PYTHON_VERSION=@target_py_version@
 PYTHON_SITE_PKG=@prefix@/@deps_dir@/lib/python${PYTHON_VERSION}/site-packages
 
 ifeq ($(CPU), arm64)

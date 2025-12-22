@@ -389,6 +389,9 @@ void CApplicationSkinHandling::ReloadSkin(bool confirm)
   std::string newSkin = settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
   if (LoadSkin(newSkin))
   {
+    // We ask the running OnAction loops to stop after this call
+    RequestStopActionPropagation();
+
     /* The Reset() or SetString() below will cause recursion, so the m_confirmSkinChange boolean is set so as to not prompt the
        user as to whether they want to keep the current skin. */
     if (confirm && m_confirmSkinChange)

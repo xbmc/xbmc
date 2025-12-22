@@ -33,6 +33,8 @@
 #include "utils/log.h"
 
 #include <mutex>
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationSkinHandling.h"
 
 using namespace KODI;
 
@@ -421,6 +423,10 @@ bool CGUIWindow::OnAction(const CAction &action)
   if (action.IsMouse() || action.IsGesture())
     return EVENT_RESULT_UNHANDLED != OnMouseAction(action);
 
+  // Retrieve the skin manager ONCE
+  const auto& components = CServiceBroker::GetAppComponents();
+  auto skinHandling = components.GetComponent<CApplicationSkinHandling>();
+
   CGUIControl *focusedControl = GetFocusedControl();
   if (focusedControl)
   {
@@ -429,6 +435,10 @@ bool CGUIWindow::OnAction(const CAction &action)
       if (focusedControl->OnAction(action))
         return true;
       focusedControl = focusedControl->GetParentControl();
+
+      // If a skin reload has just occurred, we stop going back up the chain
+      if (skinHandling && skinHandling->ShouldStopActionPropagation())
+        break;
     }
   }
   else
@@ -812,6 +822,7 @@ void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIWindow::ClearAll()
 {
+  ResetControlStates();
   OnWindowUnload();
   CGUIControlGroup::ClearAll();
   m_windowLoaded = false;

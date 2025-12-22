@@ -1,6 +1,6 @@
 --- a/Modules/Setup.bootstrap.in
 +++ b/Modules/Setup.bootstrap.in
-@@ -26,7 +26,7 @@
+@@ -29,7 +29,7 @@
  # commonly used core modules
  _abc _abc.c
  _functools _functoolsmodule.c

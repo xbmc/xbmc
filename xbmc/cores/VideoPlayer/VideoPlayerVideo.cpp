@@ -47,12 +47,14 @@ public:
   CDVDStreamInfo  m_hints;
 };
 
-
-CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock,
-                                     CDVDOverlayContainer* pOverlayContainer,
-                                     CDVDMessageQueue& parent,
-                                     CRenderManager& renderManager,
-                                     CProcessInfo &processInfo)
+CVideoPlayerVideo::CVideoPlayerVideo(
+  CDVDClock* pClock,
+  CDVDOverlayContainer* pOverlayContainer,
+  CDVDMessageQueue& parent,
+  CRenderManager& renderManager,
+  CProcessInfo &processInfo,
+  double messageQueueTimeSize
+)
 : CThread("VideoPlayerVideo")
 , IDVDStreamPlayerVideo(processInfo)
 , m_messageQueue("video")
@@ -71,9 +73,9 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock,
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
 
-  // 128 MB allows max bitrate of 128 Mbit/s (e.g. UHD Blu-Ray) during 8 seconds
-  m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
-  m_messageQueue.SetMaxTimeSize(8.0);
+  // allows max bitrate of 128 Mbit/s (e.g. UHD Blu-Ray) during messageQueueTimeSize seconds
+  m_messageQueue.SetMaxDataSize(128 * (messageQueueTimeSize / 8) * 1024 * 1024);
+  m_messageQueue.SetMaxTimeSize(messageQueueTimeSize);
 
   m_iDroppedFrames = 0;
   m_fFrameRate = 25;
@@ -162,7 +164,6 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
     OpenStream(hint, std::move(codec));
     CLog::Log(LOGINFO, "Creating video thread");
     m_messageQueue.Init();
-    m_processInfo.SetLevelVQ(0);
     Create();
   }
   return true;
@@ -314,28 +315,23 @@ bool CVideoPlayerVideo::IsInited() const
 inline void CVideoPlayerVideo::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority)
 {
   m_messageQueue.Put(pMsg, priority);
-  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
 }
 
 inline void CVideoPlayerVideo::SendMessageBack(const std::shared_ptr<CDVDMsg>& pMsg, int priority)
 {
   m_messageQueue.PutBack(pMsg, priority);
-  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
 }
 
 inline void CVideoPlayerVideo::FlushMessages()
 {
   m_messageQueue.Flush();
-  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
 }
 
 inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(std::shared_ptr<CDVDMsg>& pMsg,
                                                         std::chrono::milliseconds timeout,
                                                         int& priority)
 {
-  MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, timeout, priority);
-  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
-  return ret;
+  return m_messageQueue.Get(pMsg, timeout, priority);
 }
 
 void CVideoPlayerVideo::Process()

@@ -52,7 +52,19 @@ msgctxt "#30006"
 msgid "Include country code with studio"
 msgstr ""
 
-# empty strings from 30006 to 30099
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr ""
+
+# empty strings from 30009 to 30099
 
 msgctxt "#30100"
 msgid "Fanart.tv"

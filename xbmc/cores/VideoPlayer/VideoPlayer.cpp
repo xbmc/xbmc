@@ -597,8 +597,8 @@ void CVideoPlayer::CreatePlayers()
   if (m_players_created)
     return;
 
-  m_VideoPlayerVideo = new CVideoPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo);
-  m_VideoPlayerAudio = new CVideoPlayerAudio(&m_clock, m_messenger, m_renderManager, *m_processInfo);
+  m_VideoPlayerVideo = new CVideoPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo, m_messageQueueTimeSize);
+  m_VideoPlayerAudio = new CVideoPlayerAudio(&m_clock, m_messenger, m_renderManager, *m_processInfo, m_messageQueueTimeSize);
   m_VideoPlayerSubtitle = new CVideoPlayerSubtitle(&m_overlayContainer, *m_processInfo);
   m_VideoPlayerTeletext = new CDVDTeletextData(*m_processInfo);
   m_VideoPlayerRadioRDS = new CDVDRadioRDSData(*m_processInfo);
@@ -651,6 +651,8 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_HasVideo = false;
   m_HasAudio = false;
   m_UpdateStreamDetails = false;
+
+  m_messageQueueTimeSize = 16; // 16 seconds for buffer at max bit rate.
 
   m_SkipCommercials = true;
 
@@ -1454,7 +1456,7 @@ void CVideoPlayer::Process()
       if (m_CurrentAudio.id >= 0)
         audioLevel = m_VideoPlayerAudio->GetLevel();
       if (m_CurrentVideo.id >= 0)
-        videoLevel = m_processInfo->GetLevelVQ();
+        videoLevel = m_VideoPlayerVideo->GetLevel();
       if (videoLevel < 85 && audioLevel < 85)
       {
         fillBuffer = true;
@@ -1762,8 +1764,9 @@ void CVideoPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
     drop = true;
 
   // CLog::Log(LOGDEBUG, "CVideoPlayer::ProcessVideoData size:{:d} dts:{:.3f} pts:{:.3f} dur:{:.3f}ms, clock:{:.3f} level:{:d}",
-  //  pPacket->iSize, pPacket->dts/DVD_TIME_BASE, pPacket->pts/DVD_TIME_BASE, pPacket->duration/1000.0,
-  //  static_cast<double>(m_clock.GetClock()/DVD_TIME_BASE),m_processInfo->GetLevelVQ());
+  //   pPacket->iSize, pPacket->dts/DVD_TIME_BASE, pPacket->pts/DVD_TIME_BASE, pPacket->duration/1000.0,
+  //   static_cast<double>(m_clock.GetClock()/DVD_TIME_BASE), m_VideoPlayerVideo->GetLevel());
+
   m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgDemuxerPacket>(pPacket, drop));
 
   if (!drop)
@@ -1914,7 +1917,7 @@ void CVideoPlayer::HandlePlaySpeed()
       // Note: Previously used cache.level >= 1 would keep video stalled
       // event after cache was full
       // Talk link: https://github.com/xbmc/xbmc/pull/23760
-      if (cache.time > 8.0)
+      if (cache.time > m_messageQueueTimeSize)
         SetCaching(CACHESTATE_INIT);
     }
     else
@@ -1973,10 +1976,10 @@ void CVideoPlayer::HandlePlaySpeed()
           if ((m_CurrentAudio.id >= 0 && m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
                m_VideoPlayerAudio->IsStalled()) ||
               (m_CurrentVideo.id >= 0 && m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
-               m_processInfo->GetLevelVQ() == 0))
+               (m_VideoPlayerVideo->GetLevel() == 0)))
           {
             CLog::Log(LOGDEBUG, "Stream stalled, start buffering. Audio: {} - Video: {}",
-                      m_VideoPlayerAudio->GetLevel(), m_processInfo->GetLevelVQ());
+                      m_VideoPlayerAudio->GetLevel(), m_VideoPlayerVideo->GetLevel());
 
             if (m_VideoPlayerAudio->AcceptsData() && m_VideoPlayerVideo->AcceptsData())
               SetCaching(CACHESTATE_FULL);
@@ -1986,9 +1989,8 @@ void CVideoPlayer::HandlePlaySpeed()
         }
         else
         {
-          // start caching if audio and video have run dry
-          if (m_VideoPlayerAudio->GetLevel() <= 50 &&
-              m_processInfo->GetLevelVQ() <= 50)
+          // start caching if audio and video are running dry
+          if ((m_VideoPlayerAudio->GetLevel() <= 20) || (m_VideoPlayerVideo->GetLevel() <= 20))
           {
             SetCaching(CACHESTATE_FULL);
           }
@@ -2040,10 +2042,10 @@ void CVideoPlayer::HandlePlaySpeed()
 
     bool video = (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
                  (m_CurrentVideo.packets == 0 && m_CurrentAudio.packets > threshold) ||
-                 (!m_VideoPlayerAudio->AcceptsData() && m_processInfo->GetLevelVQ() < 10);
+                 (!m_VideoPlayerAudio->AcceptsData() && (m_VideoPlayerVideo->GetLevel() < 10));
     bool audio = m_CurrentAudio.id < 0 || (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
                  (m_CurrentAudio.packets == 0 && m_CurrentVideo.packets > threshold) ||
-                 (!m_VideoPlayerVideo->AcceptsData() && m_VideoPlayerAudio->GetLevel() < 10);
+                 (!m_VideoPlayerVideo->AcceptsData() && (m_VideoPlayerAudio->GetLevel() < 10));
 
     if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
         (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT ||
@@ -2073,18 +2075,16 @@ void CVideoPlayer::HandlePlaySpeed()
                              m_CurrentAudio.starttime / DVD_TIME_BASE, m_CurrentAudio.cachetime / DVD_TIME_BASE, m_CurrentAudio.cachetotal / DVD_TIME_BASE, m_CurrentAudio.packets, m_VideoPlayerAudio->GetLevel());
       if (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
         CLog::Log(LOGDEBUG, "VideoPlayer::Sync - Video - pts: {:.3f}, cache: {:.3f}, totalcache: {:.3f}, packets:{:d} level:{:d}",
-                             m_CurrentVideo.starttime / DVD_TIME_BASE, m_CurrentVideo.cachetime / DVD_TIME_BASE, m_CurrentVideo.cachetotal / DVD_TIME_BASE, m_CurrentVideo.packets, m_processInfo->GetLevelVQ());
+                             m_CurrentVideo.starttime / DVD_TIME_BASE, m_CurrentVideo.cachetime / DVD_TIME_BASE, m_CurrentVideo.cachetotal / DVD_TIME_BASE, m_CurrentVideo.packets, m_VideoPlayerVideo->GetLevel());
 
-      // LAV sync fix: When using LAV passthrough sync with both
-      // audio and video streams, we MUST wait for video to have a valid PTS before syncing.
-      // Otherwise, we'll sync based on audio-only timing which causes A/V desync.
+      // LAV sync fix: When using LAV passthrough sync with both audio and video streams,
+      // wait for video to have valid PTS before sending RESYNC to audio.
+      // This prevents audio from syncing to a clock that doesn't account for video latency.
+      // NOTE: We still process video RESYNC normally - only audio RESYNC is delayed.
       int algoValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
                                         CSettings::SETTING_COREELEC_AMLOGIC_DV_AUDIO_SEAMLESSBRANCH);
       bool enableLavStyle = ((algoValue == 3) || (algoValue == 5));
-      if (enableLavStyle && (m_CurrentVideo.id >= 0) && (m_CurrentVideo.starttime == DVD_NOPTS_VALUE))
-      {
-        return;
-      }
+      bool waitingForVideoPts = enableLavStyle && (m_CurrentVideo.id >= 0) && (m_CurrentVideo.starttime == DVD_NOPTS_VALUE);
 
       if (m_CurrentVideo.starttime != DVD_NOPTS_VALUE && m_CurrentVideo.packets > 0 &&
           m_playSpeed == DVD_PLAYSPEED_PAUSE)
@@ -2123,14 +2123,21 @@ void CVideoPlayer::HandlePlaySpeed()
       }
 
       m_clock.Discontinuity(clock);
-      m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
-      m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
       m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
-      m_VideoPlayerAudio->SendMessage(
-          std::make_shared<CDVDMsgDouble>(CDVDMsg::GENERAL_RESYNC, clock), 1);
       m_VideoPlayerVideo->SendMessage(
           std::make_shared<CDVDMsgDouble>(CDVDMsg::GENERAL_RESYNC, clock), 1);
+
+      // Only send RESYNC to audio if video PTS is valid (LAV sync fix)
+      // This prevents audio from syncing to garbage during video startup
+      if (!waitingForVideoPts)
+      {
+        m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
+        m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
+        m_VideoPlayerAudio->SendMessage(
+            std::make_shared<CDVDMsgDouble>(CDVDMsg::GENERAL_RESYNC, clock), 1);
+      }
+
       SetCaching(CACHESTATE_DONE);
       UpdatePlayState(0);
 
@@ -4780,8 +4787,8 @@ int CVideoPlayer::GetCacheLevel() const
 
 double CVideoPlayer::GetQueueTime() const {
   int a = m_VideoPlayerAudio->GetLevel();
-  int v = m_processInfo->GetLevelVQ();
-  return std::max(a, v) * 8000.0 / 100;
+  int v = m_VideoPlayerVideo->GetLevel();
+  return std::max(a, v) * m_messageQueueTimeSize * 1000.0 / 100;
 }
 
 int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename)
@@ -5041,7 +5048,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   }
   else
   {
-    state.cache_level = std::min(1.0, queueTime / 8000.0);
+    state.cache_level = std::min(1.0, queueTime /(m_messageQueueTimeSize * 1000.0));
     state.cache_offset = queueTime / state.timeMax;
     state.cache_time = queueTime / 1000.0;
   }

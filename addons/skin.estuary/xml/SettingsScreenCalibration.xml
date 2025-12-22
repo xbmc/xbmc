@@ -52,7 +52,7 @@
 			<top>500</top>
 			<width>380</width>
 			<height>90</height>
-			<!-- NOTE: The image must have 40px of trasparent on top and bottom the bar -->
+			<!-- NOTE: The image must have 40px of transparent on top and bottom the bar -->
 			<texturefocus colordiffuse="button_focus">calibrate/cal_sub.png</texturefocus>
 			<texturenofocus>calibrate/cal_sub.png</texturenofocus>
 			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">

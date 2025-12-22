@@ -1,14 +1,8 @@
-include ../../Makefile.include
+include ../../Makefile.include MAKO-VERSION ../../download-files.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile ../../download-files.include
+DEPS = ../../Makefile.include Makefile MAKO-VERSION ../../download-files.include
 
-# lib name, version
-LIBNAME=Mako
-VERSION=1.1.3
-ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-SHA512=a9b94fa34a61e7794b6e4549fa0bada6ff84dfb0d9edb8d5c7f9b95d12184fa4499f42303cfee720b576a9f7e986a57d91ad3aeb26c9f93154dbc08fb2975952
-include ../../download-files.include
 
 all: .installed-$(PLATFORM)
 

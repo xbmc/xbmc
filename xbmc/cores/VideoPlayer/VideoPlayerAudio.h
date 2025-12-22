@@ -25,7 +25,6 @@
 #include <mutex>
 #include <utility>
 
-
 class CVideoPlayer;
 class CDVDAudioCodec;
 class CDVDAudioCodec;
@@ -33,10 +32,12 @@ class CDVDAudioCodec;
 class CVideoPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
-  CVideoPlayerAudio(CDVDClock* pClock,
-                               CDVDMessageQueue& parent,
-                               CRenderManager& renderManager,
-                               CProcessInfo &processInfo);
+  CVideoPlayerAudio(
+    CDVDClock* pClock,
+    CDVDMessageQueue& parent,
+    CRenderManager& renderManager,
+    CProcessInfo &processInfo,
+    double messageQueueTimeSize);
   ~CVideoPlayerAudio() override;
 
   bool OpenStream(CDVDStreamInfo hints) override;

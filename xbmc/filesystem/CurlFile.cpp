@@ -49,6 +49,8 @@ long proxyType2CUrlProxyType[] = {
     CURLPROXY_SOCKS5, CURLPROXY_SOCKS5_HOSTNAME, CURLPROXY_HTTPS,
 };
 
+static std::vector<uint8_t> cachedCaCertsBlob; // cached CA certs file
+
 #define FILLBUFFER_OK         0
 #define FILLBUFFER_NO_DATA    1
 #define FILLBUFFER_FAIL       2
@@ -682,12 +684,15 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   // set CA bundle file
   std::string caCert = CSpecialProtocol::TranslatePath(
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_caTrustFile);
-#ifdef TARGET_WINDOWS_STORE
-  // UWP Curl - Setting CURLOPT_CAINFO with a valid cacert file path is required for UWP
-  g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, "system\\certs\\cacert.pem");
-#endif
   if (!caCert.empty() && XFILE::CFile::Exists(caCert))
     g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, caCert.c_str());
+
+  // From OpenSSL 3.0 CURLOPT_CAINFO not works (on UWP), use CURLOPT_CAINFO_BLOB instead
+  if (!cachedCaCertsBlob.empty())
+  {
+    curl_blob blob{cachedCaCertsBlob.data(), cachedCaCertsBlob.size(), CURL_BLOB_NOCOPY};
+    g_curlInterface.easy_setopt(h, CURLOPT_CAINFO_BLOB, &blob);
+  }
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state) const {
@@ -2150,4 +2155,15 @@ double CCurlFile::GetDownloadSpeed()
   }
 #endif
   return 0.0;
+}
+
+void CCurlFile::PreloadCaCertsBlob()
+{
+  XFILE::CFile file;
+
+  if (file.LoadFile(CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem"),
+                    cachedCaCertsBlob) <= 0)
+  {
+    CLog::LogF(LOGERROR, "failed to load 'system/certs/cacert.pem'");
+  }
 }

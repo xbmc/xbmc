@@ -1,0 +1,166 @@
+# Kodi Media Center language file
+# Addon Name: The Movie Database
+# Addon id: metadata.themoviedb.org
+# Addon Provider: XBMC Foundation
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-02-19 19:21+0000\n"
+"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
+"Language-Team: Latvian <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-tvshows-themoviedb-org-python/lv_lv/>\n"
+"Language: lv_lv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Fetch TV Show metadata from themoviedb.org"
+msgstr "Iegūst TV pārraides datus no themoviedb.org vietnes"
+
+msgctxt "Addon Description"
+msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgstr "The Movie Database (TMDb) ir kopienas veidota filmu un TV seriālu datubāze. Visus datus ir pievienojusi mūsu apbrīnojamā kopiena kopš 2008. gada. TMDb spēcīgais globālais statuss un milzīgais datu apjoms lielā mērā ir nepārspējams, un tas ir ar ko mēs neticami lepojamies. Vienkārši sakot, mēs dzīvojam TMDb sabiedrībā, un tieši tas mūs atšķir no citiem."
+
+msgctxt "#30000"
+msgid "Preferred language"
+msgstr "Vēlamā valoda"
+
+msgctxt "#30001"
+msgid "Preferred certification country"
+msgstr "Vēlamā sertifikācijas valsts"
+
+msgctxt "#30002"
+msgid "Include certification prefix"
+msgstr "Iekļaut sertifikācijas prefiksu"
+
+msgctxt "#30003"
+msgid "Prefix"
+msgstr "Prefikss"
+
+msgctxt "#30004"
+msgid "Keep original title"
+msgstr "Izmantot oriģinālo nosaukumu"
+
+msgctxt "#30005"
+msgid "Categorize fanart with text as landscape art"
+msgstr "Klasificēt fanu veidotos attēlus ar tekstu kā ainavu mākslu"
+
+msgctxt "#30006"
+msgid "Include country code with studio"
+msgstr "Iekļaut valsts kodu kopā ar studiju"
+
+msgctxt "#30007"
+msgid "Add keywords as tags"
+msgstr "Pievienot atslēgvārdus kā birkas"
+
+msgctxt "#30008"
+msgid "Preferred language (Images)"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Use different language for images"
+msgstr ""
+
+# empty strings from 30007 to 30099
+msgctxt "#30100"
+msgid "Fanart.tv"
+msgstr "Fanart.tv"
+
+msgctxt "#30101"
+msgid "Client key (optional)"
+msgstr "Klienta atslēga (pēc izvēles, nav obligāti)"
+
+msgctxt "#30102"
+msgid "Enable fanart"
+msgstr "Atļaut fanu veidotu attēlu"
+
+msgctxt "#30103"
+msgid "Enable poster"
+msgstr "Atļaut plakātu"
+
+msgctxt "#30104"
+msgid "Enable banner"
+msgstr "Atļaut baneri"
+
+msgctxt "#30105"
+msgid "Enable clearlogo"
+msgstr "Atļaut skaidru logotipu"
+
+msgctxt "#30106"
+msgid "Enable clearart"
+msgstr "Atļaut skaidro mākslu"
+
+msgctxt "#30107"
+msgid "Enable landscape"
+msgstr "Atļaut ainavu"
+
+msgctxt "#30108"
+msgid "Enable character art"
+msgstr "Atļaut rakstzīmju attēlu"
+
+msgctxt "#30109"
+msgid "Include art from fanart.tv"
+msgstr "Iekļaut attēlus no fanart.tv vietnes"
+
+# empty strings from 30110 to 30149
+msgctxt "#30150"
+msgid "Enable season poster"
+msgstr "Atļaut TV pārraides un seriālu sezonas plakātu"
+
+msgctxt "#30151"
+msgid "Enable season banner"
+msgstr "Atļaut TV pārraides un seriālu sezonas baneri"
+
+msgctxt "#30152"
+msgid "Enable season landscape"
+msgstr "Atļaut TV pārraides un seriālu sezonas ainavu"
+
+# empty strings from 30153 to 30200
+msgctxt "#30200"
+msgid "Advanced"
+msgstr "Papildus"
+
+msgctxt "#30201"
+msgid "Verbose debug logging"
+msgstr "Apjomīgs atkļūdošanas žurnāls"
+
+# emptry strings from 30202 to 30299
+msgctxt "#30300"
+msgid "Ratings"
+msgstr "Vērtējumi"
+
+msgctxt "#30301"
+msgid "Default rating from"
+msgstr "Vērtējumu (pēc noklusējuma) iegūt no"
+
+msgctxt "#30302"
+msgid "Also add IMDb ratings"
+msgstr "Pievienot arī IMDb vērtējumus"
+
+msgctxt "#30303"
+msgid "Also add Trakt.tv ratings"
+msgstr "Pievienot vērtējumus arī no Trakt.tv vietnes"
+
+msgctxt "#30304"
+msgid "Also add TMDb ratings"
+msgstr "Pievienot arī TMDb vērtējumus"
+
+msgctxt "#30305"
+msgid "Enable Trailer"
+msgstr "Atļaut reklāmkadrus (treileri)"
+
+msgctxt "#30306"
+msgid "Addon Player"
+msgstr "Papildinājuma atskaņotājs"
+
+msgctxt "#30307"
+msgid "YouTube"
+msgstr "YouTube"
+
+msgctxt "#30308"
+msgid "Tubed"
+msgstr "Tubed"

@@ -1,14 +1,9 @@
-include ../../Makefile.include
+include ../../Makefile.include MARKUPSAFE-VERSION ../../download-files.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile ../../download-files.include
+DEPS = ../../Makefile.include Makefile MARKUPSAFE-VERSION ../../download-files.include \
+                01-all-GH399-removedistutils.patch
 
-# lib name, version
-LIBNAME=MarkupSafe
-VERSION=1.1.1
-ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-SHA512=f3014e6131a3ab866914c5635b5397ef71906bffb1b6f8c5f2ed2acf167429ff7914236d38943e872683a57a9be9669f4c5aace6274f3307ab21ef25373db0b6
-include ../../download-files.include
 
 all: .installed-$(PLATFORM)
 
@@ -17,6 +12,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 
 .installed-$(PLATFORM): $(PLATFORM)
+	cd $(PLATFORM); patch -p1 -i ../01-all-GH399-removedistutils.patch
 	cd $(PLATFORM); $(PREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
 	touch $@
 

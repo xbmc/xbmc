@@ -1,15 +1,11 @@
 include ../../Makefile.include PYTHON3-VERSION ../../download-files.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.include \
-                                01-distutil-flags.patch
+DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.include
 
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX) \
                       --disable-shared \
                       --disable-framework \
-                      --without-pymalloc \
-                      --with-system-ffi
-
-NATIVE_SITEPACKAGES=$(NATIVEPREFIX)/lib/python$(PYTHON_VERSION)/site-packages
+                      --without-pymalloc
 
 ifeq ($(OS),linux)
   CONFIGURE += --with-system-expat
@@ -32,11 +28,8 @@ $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(MAKE)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	cd $(PLATFORM); patch -p1 -i ../01-distutil-flags.patch
-	cd $(PLATFORM); $(MAKE) install
-# Sed patch setuptools that is installed via ensurepip as we cant patch the source
-	cd $(NATIVE_SITEPACKAGES); sed -ie "s|cflags = cflags + ' ' + os.environ\['CFLAGS'\]|cflags = os.environ\['CFLAGS'\]|" setuptools/_distutils/sysconfig.py
-	touch $(LIBDYLIB)
+# We specifically use -j1 as some threading issues can occur with install directory creation
+	cd $(PLATFORM); $(MAKE) install -j1
 	touch $@
 
 clean:

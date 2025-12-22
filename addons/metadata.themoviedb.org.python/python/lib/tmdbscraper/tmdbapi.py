@@ -18,6 +18,7 @@
 
 """Functions to interact with TMDb API."""
 
+import unicodedata
 from . import api_utils
 import xbmc
 try:
@@ -31,7 +32,6 @@ HEADERS = (
     ('User-Agent', 'Kodi Movie scraper by Team Kodi'),
     ('Accept', 'application/json'),
 )
-api_utils.set_headers(dict(HEADERS))
 
 TMDB_PARAMS = {'api_key': 'f090bb54758cabf231fb605d3e3e0468'}
 BASE_URL = 'https://api.themoviedb.org/3/{}'
@@ -42,7 +42,7 @@ COLLECTION_URL = BASE_URL.format('collection/{}')
 CONFIG_URL = BASE_URL.format('configuration')
 
 
-def search_movie(query, year=None, language=None):
+def search_movie(query, year=None, language=None, page=None):
     # type: (Text) -> List[InfoType]
     """
     Search for a movie
@@ -50,14 +50,19 @@ def search_movie(query, year=None, language=None):
     :param title: movie title to search
     :param year: the year to search (optional)
     :param language: the language filter for TMDb (optional)
+    :param page: the results page to return (optional)
     :return: a list with found movies
     """
+    query = unicodedata.normalize('NFC', query)
     xbmc.log('using title of %s to find movie' % query, xbmc.LOGDEBUG)
     theurl = SEARCH_URL
     params = _set_params(None, language)
     params['query'] = query
+    if page is not None:
+        params['page'] = page
     if year is not None:
         params['year'] = str(year)
+    api_utils.set_headers(dict(HEADERS))
     return api_utils.load_info(theurl, params=params)
 
 
@@ -74,6 +79,7 @@ def find_movie_by_external_id(external_id, language=None):
     theurl = FIND_URL.format(external_id)
     params = _set_params(None, language)
     params['external_source'] = 'imdb_id'
+    api_utils.set_headers(dict(HEADERS))
     return api_utils.load_info(theurl, params=params)
 
 
@@ -90,6 +96,7 @@ def get_movie(mid, language=None, append_to_response=None):
     """
     xbmc.log('using movie id of %s to get movie details' % mid, xbmc.LOGDEBUG)
     theurl = MOVIE_URL.format(mid)
+    api_utils.set_headers(dict(HEADERS))
     return api_utils.load_info(theurl, params=_set_params(append_to_response, language))
 
 
@@ -105,6 +112,7 @@ def get_collection(collection_id, language=None, append_to_response=None):
     """
     xbmc.log('using collection id of %s to get collection details' % collection_id, xbmc.LOGDEBUG)
     theurl = COLLECTION_URL.format(collection_id)
+    api_utils.set_headers(dict(HEADERS))
     return api_utils.load_info(theurl, params=_set_params(append_to_response, language))
 
 
@@ -116,17 +124,14 @@ def get_configuration():
     :return: configuration details or error
     """
     xbmc.log('getting configuration details', xbmc.LOGDEBUG)
+    api_utils.set_headers(dict(HEADERS))
     return api_utils.load_info(CONFIG_URL, params=TMDB_PARAMS.copy())
 
 
 def _set_params(append_to_response, language):
     params = TMDB_PARAMS.copy()
-    img_lang = 'en,null'
     if language is not None:
         params['language'] = language
-        img_lang = '%s,en,null' % language[0:2]
     if append_to_response is not None:
         params['append_to_response'] = append_to_response
-        if 'images' in append_to_response:
-            params['include_image_language'] = img_lang
     return params

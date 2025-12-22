@@ -3,7 +3,7 @@
 	<section id="metadata.tvshows.themoviedb.org.python">
 		<category id="general" label="128" help="">
 			<group id="1">
-				<setting id="language" type="string" label="30000" help="">
+				<setting id="languageDetails" type="string" label="30000" help="">
 					<level>0</level>
 					<default>en-US</default>
 					<constraints>
@@ -68,6 +68,83 @@
 					</constraints>
 					<control type="list" format="string">
 						<heading>30000</heading>
+					</control>
+				</setting>
+				<setting id="usedifferentlangforimages" type="boolean" label="30009" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="languageImages" type="string" parent="usedifferentlangforimages" label="30008" help="">
+					<level>0</level>
+					<default>en-US</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="usedifferentlangforimages">true</condition>
+						</dependency>
+					</dependencies>
+					<constraints>
+						<options>
+							<option>ar-AE</option>
+							<option>ar-SA</option>
+							<option>be-BY</option>
+							<option>bg-BG</option>
+							<option>bn-BD</option>
+							<option>ca-ES</option>
+							<option>ch-GU</option>
+							<option>cs-CZ</option>
+							<option>da-DK</option>
+							<option>de-DE</option>
+							<option>el-GR</option>
+							<option>en-US</option>
+							<option>eo-EO</option>
+							<option>es-ES</option>
+							<option>es-MX</option>
+							<option>et-EE</option>
+							<option>eu-ES</option>
+							<option>fa-IR</option>
+							<option>fi-FI</option>
+							<option>fr-CA</option>
+							<option>fr-FR</option>
+							<option>gl-ES</option>
+							<option>he-IL</option>
+							<option>hi-IN</option>
+							<option>hr-HR</option>
+							<option>hu-HU</option>
+							<option>id-ID</option>
+							<option>it-IT</option>
+							<option>ja-JP</option>
+							<option>ka-GE</option>
+							<option>kn-IN</option>
+							<option>ko-KR</option>
+							<option>lt-LT</option>
+							<option>lv-LV</option>
+							<option>ml-IN</option>
+							<option>nb-NO</option>
+							<option>nl-NL</option>
+							<option>no-NO</option>
+							<option>pl-PL</option>
+							<option>pt-BR</option>
+							<option>pt-PT</option>
+							<option>ro-RO</option>
+							<option>ru-RU</option>
+							<option>sk-SK</option>
+							<option>sl-SI</option>
+							<option>sr-RS</option>
+							<option>sv-SE</option>
+							<option>ta-IN</option>
+							<option>te-IN</option>
+							<option>th-TH</option>
+							<option>tr-TR</option>
+							<option>uk-UA</option>
+							<option>vi-VN</option>
+							<option>zh-CN</option>
+							<option>zh-HK</option>
+							<option>zh-TW</option>
+						</options>
+					</constraints>
+					<control type="list" format="string">
+						<heading>30008</heading>
 					</control>
 				</setting>
 				<setting id="tmdbcertcountry" type="string" label="30001" help="">
@@ -141,6 +218,11 @@
 				<setting id="keeporiginaltitle" type="boolean" label="30004" help="">
 					<level>0</level>
 					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+				<setting id="keywordsastags" type="boolean" label="30007" help="">
+					<level>0</level>
+					<default>true</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="cat_landscape" type="boolean" label="30005" help="">

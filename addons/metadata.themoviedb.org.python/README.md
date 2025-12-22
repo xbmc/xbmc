@@ -10,5 +10,7 @@ To search by TMDB enter "tmdb/" then the ID, like "tmdb/11". To search by IMDB I
 
 ### How to run unit tests
 
-`python -m unittest discover -v` from the main **metadata.themoviedb.org.python** directory.
-Python 3 only.
+`python3 -m unittest discover -v` from the main **metadata.themoviedb.org.python** directory.
+
+Set env variable `TEST_E2E` to enable the single IMDB end-to-end test, `TEST_E2E=true python3 -m unittest discover -v`.
+Not for a pipeline, but may be helpful to run now and then.
