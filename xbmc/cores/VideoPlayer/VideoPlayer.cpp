@@ -26,13 +26,13 @@
 #include "DVDMessage.h"
 #include "FileItem.h"
 #include "LangInfo.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "VideoPlayerAudio.h"
 #include "VideoPlayerRadioRDS.h"
 #include "VideoPlayerVideo.h"
-#include "PlayListPlayer.h"
 #include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "cores/EdlEdit.h"
@@ -3559,9 +3559,11 @@ void CVideoPlayer::SetSubtitleVisible(bool bVisible)
       std::make_shared<CDVDMsgBool>(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE, bVisible));
   m_processInfo->GetVideoSettingsLocked().SetSubtitleVisible(bVisible);
   CVariant data;
-  data["player"]["playerid"] = static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+  data["player"]["playerid"] =
+      static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
   data["property"]["subtitleenabled"] = bVisible;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
+                                                     data);
 }
 
 void CVideoPlayer::SetEnableStream(CCurrentStream& current, bool isEnabled)
