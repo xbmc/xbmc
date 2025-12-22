@@ -19,6 +19,7 @@ set(SOURCES Addon.cpp
             ImageDecoder.cpp
             ImageResource.cpp
             LanguageResource.cpp
+            SkinResource.cpp
             PluginSource.cpp
             Repository.cpp
             RepositoryUpdater.cpp
@@ -60,6 +61,7 @@ set(HEADERS Addon.h
             ImageDecoder.h
             ImageResource.h
             LanguageResource.h
+            SkinResource.h
             PluginSource.h
             Repository.h
             RepositoryUpdater.h

@@ -11,8 +11,14 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/AddonBuilder.h"
 #include "addons/AddonManager.h"
 #include "addons/Resource.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonInfoBuilder.h"
+#include "addons/addoninfo/AddonType.h"
+
+#include <array>
 
 using namespace ADDON;
 using namespace XFILE;
@@ -51,6 +57,32 @@ bool CResourceFile::TranslatePath(const CURL &url, std::string &translatedPath)
     return false;
 
   std::shared_ptr<CResource> resource = std::dynamic_pointer_cast<ADDON::CResource>(addon);
+  if (!resource)
+  {
+    std::array<ADDON::AddonType, 6> resourceTypes = {
+        ADDON::AddonType::RESOURCE_IMAGES,   ADDON::AddonType::RESOURCE_LANGUAGE,
+        ADDON::AddonType::RESOURCE_UISOUNDS, ADDON::AddonType::RESOURCE_GAMES,
+        ADDON::AddonType::RESOURCE_FONT,     ADDON::AddonType::RESOURCE_SKIN,
+    };
+    for (ADDON::AddonType resourceType : resourceTypes)
+    {
+      if (!addon->HasType(resourceType))
+        continue;
+
+      ADDON::AddonInfoPtr addonInfo = ADDON::CAddonInfoBuilder::Generate(*addon);
+      if (!addonInfo)
+        continue;
+
+      ADDON::AddonPtr resourceAddon = ADDON::CAddonBuilder::Generate(addonInfo, resourceType);
+      if (!resourceAddon)
+        continue;
+
+      resource = std::dynamic_pointer_cast<ADDON::CResource>(resourceAddon);
+      if (resource && resource->IsAllowed(filePath))
+        break;
+    }
+  }
+
   if (resource == NULL)
     return false;
 
