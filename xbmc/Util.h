@@ -18,6 +18,8 @@
 #include <string.h>
 #include <vector>
 
+class CStreamDetails;
+
 //! \brief Enumeration of filesystem types for LegalPath/FileName
 enum class LegalPath
 {
@@ -258,6 +260,20 @@ public:
   static void GetVideoBasePathAndFileName(const std::string& videoPath,
                                           std::string& basePath,
                                           std::string& videoFileName);
+
+  /*! 
+   *\brief Determine if a FileItem contains valid stream details.
+   *\param item The FileItem to check for valid stream details.
+   *\return true if the FileItem contains valid stream details, false otherwise.
+   */
+  static bool HasValidStreamDetails(const CFileItem& item);
+
+  /*! 
+   *\brief Determine if a StreamDetails contains valid details.
+   *\param streamDetails The StreamDetails to check for valid details.
+   *\return true if the StreamDetails contains valid details, false otherwise.
+   */
+  static bool HasValidStreamDetails(const CStreamDetails& streamDetails);
 
 #if !defined(TARGET_WINDOWS)
 private:

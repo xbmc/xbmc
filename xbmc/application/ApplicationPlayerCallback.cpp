@@ -13,6 +13,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
@@ -62,10 +63,7 @@ bool ShouldUpdateStreamDetails(const CFileItem& file)
                             NETWORK::IsInternetStream(file)};
 
   // Stream details may be already set from a previous playback or nfo
-  const bool hasNoStreamDetails{!file.HasVideoInfoTag() ||
-                                !file.GetVideoInfoTag()->HasStreamDetails()};
-
-  return hasNoStreamDetails && isDiscOrStream;
+  return !CUtil::HasValidStreamDetails(file) && isDiscOrStream;
 }
 } // namespace
 
