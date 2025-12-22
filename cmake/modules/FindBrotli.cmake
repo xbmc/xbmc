@@ -22,8 +22,6 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                    -DBROTLI_DISABLE_TESTS=ON
                    -DBROTLI_DISABLE_EXE=ON)
 
-    BUILD_DEP_TARGET()
-
     # Retrieve suffix of platform byproduct to apply to second brotli library
     string(REGEX REPLACE "^.*\\." "" _LIBEXT ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPRODUCT})
     if(NOT (WIN32 OR WINDOWS_STORE))
@@ -31,6 +29,14 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
     endif()
 
     set(BROTLICOMMON_LIBRARY_RELEASE "${DEP_LOCATION}/lib/${_PREFIX}brotlicommon.${_LIBEXT}")
+
+    # Brotli creates two byproducts of relevance. set BUILD_BYPRODUCTS to be both
+    # brotlicommon and brotlidec. This has to occur before BUILD_DEP_TARGET
+    set(BUILD_BYPRODUCTS ${BROTLICOMMON_LIBRARY_RELEASE}
+                         ${DEP_LOCATION}/lib/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPRODUCT})
+
+    BUILD_DEP_TARGET()
+
     set(BROTLIDEC_LIBRARY_RELEASE "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY}")
 
     # Todo: debug postfix libs for windows
