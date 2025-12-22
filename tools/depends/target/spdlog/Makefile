@@ -1,7 +1,6 @@
 -include ../../Makefile.include
 include SPDLOG-VERSION
-DEPS = Makefile SPDLOG-VERSION ../../download-files.include \
-                                001-windows-pdb-symbol-gen.patch
+DEPS = Makefile SPDLOG-VERSION ../../download-files.include
 
 CMAKE_OPTIONS= \
 	-DSPDLOG_BUILD_EXAMPLE=OFF \
@@ -45,7 +44,6 @@ ifeq ($(PREFIX),)
 endif
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../001-windows-pdb-symbol-gen.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)

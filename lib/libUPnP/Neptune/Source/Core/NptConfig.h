@@ -235,7 +235,6 @@ typedef long NPT_PointerLong;
 #endif
 #define NPT_POINTER_TO_LONG(_p) ((NPT_PointerLong) (_p) )
 #if _MSC_VER >= 1400 && !defined(_WIN32_WCE)
-#define gmtime_r(a,b) gmtime_s(a,b)
 #define localtime_r(a,b) localtime_s(b,a)
 #define NPT_CONFIG_HAVE_FOPEN_S
 #define NPT_CONFIG_HAVE_FSOPEN

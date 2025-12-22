@@ -1,0 +1,26 @@
+From 4be187271768fad5f2695452c778b4138b5dc8c5 Mon Sep 17 00:00:00 2001
+From: fuzzard <fuzzard@kodi.tv>
+Date: Sun, 21 Dec 2025 14:08:04 +1000
+Subject: [PATCH] [Neptune] remove gmtime_r definition for MSVC
+
+gmtime_r isnt used by Neptune/Platinum, and the definition can cause issues with
+fmtlib (11.0+) and its chrono header implementation
+---
+ lib/libUPnP/Neptune/Source/Core/NptConfig.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptConfig.h b/lib/libUPnP/Neptune/Source/Core/NptConfig.h
+index e4be01e440..ba115ecc8a 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptConfig.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptConfig.h
+@@ -235,7 +235,6 @@ typedef long NPT_PointerLong;
+ #endif
+ #define NPT_POINTER_TO_LONG(_p) ((NPT_PointerLong) (_p) )
+ #if _MSC_VER >= 1400 && !defined(_WIN32_WCE)
+-#define gmtime_r(a,b) gmtime_s(a,b)
+ #define localtime_r(a,b) localtime_s(b,a)
+ #define NPT_CONFIG_HAVE_FOPEN_S
+ #define NPT_CONFIG_HAVE_FSOPEN
+-- 
+2.50.1 (Apple Git-155)
+
