@@ -30,10 +30,17 @@
 #include "platform/win32/CharsetConverter.h"
 #endif
 
+#include "application/Application.h"
+
 #include <algorithm>
 #include <array>
 #include <cassert>
 #include <charconv>
+#include <cstdint>
+#include <optional>
+#include <ranges>
+#include <string>
+#include <string_view>
 #include <vector>
 
 #include <arpa/inet.h>
@@ -148,128 +155,186 @@ std::string URIUtils::GetExtension(const CURL& url)
   return url.GetExtension();
 }
 
-std::string URIUtils::GetExtension(const std::string& strFileName)
+static constexpr int NO_EXTENSION{-1};
+enum class FindExtensions : uint8_t
 {
-  if (IsURL(strFileName))
+  ONLY_IN_LIST,
+  ALL_EXTENSIONS
+};
+enum class FinalDot : uint8_t
+{
+  IGNORE_FINAL_DOT,
+  CONSIDER_FINAL_DOT
+};
+
+namespace
+{
+/*! \brief Finds the extension (if any) in a given file path.
+   \param path The file path.
+   \param extensions List of '.' prefixed lowercase extensions separated with '|'. 
+                     If there is no list then all extensions are found,
+                     along with selected compound archive extensions.
+   \param extensionsToFind Whether to find only extensions in the given list or all extensions.
+   \param finalDotAction Action to take if there is a final dot in the filename.
+   \return The position of the extension in the path, or NO_EXTENSION if none found.
+ */
+int FindExtension(const std::string& path,
+                  std::string_view extensions = "",
+                  FindExtensions extensionsToFind = FindExtensions::ALL_EXTENSIONS,
+                  FinalDot finalDotAction = FinalDot::IGNORE_FINAL_DOT)
+{
+  if (path.empty())
+    return NO_EXTENSION;
+
+  // Special directories
+  const size_t separator{path.find_last_of("/\\")};
+  const std::string last{path.substr(separator == std::string::npos ? 0 : separator + 1)};
+  if (last == "." || last == "..")
+    return NO_EXTENSION;
+
+  // Single trailing dot - no extension
+  if (path.back() == '.')
+    return finalDotAction == FinalDot::IGNORE_FINAL_DOT ? NO_EXTENSION
+                                                        : static_cast<int>(path.size() - 1);
+
+  const size_t period{path.find_last_of('.')};
+  if (period == std::string::npos || (separator != std::string::npos && period < separator))
+    return NO_EXTENSION; // Separator after last period means no extension
+  if (period == 0 || (separator != std::string::npos && period == separator + 1))
+    return NO_EXTENSION; // No extension (a leading dot only)
+
+  // If no extensions are passed then the routine generically removes all extensions
+  // However it is almost impossible to determine what is a double dot/compound extension and
+  //  what is part of the filename (with dots) so we use a list of known important (to Kodi - ie. archives)
+  //  compound extensions to check against.
+  auto exts{StringUtils::Split(
+      !extensions.empty()
+          ? extensions
+          : CServiceBroker::GetFileExtensionProvider().GetCompoundArchiveExtensions(),
+      '|')};
+
+  // Compound extensions first (otherwise .tar.gz could be detected as .gz only)
+  std::ranges::sort(exts, std::greater{},
+                    [](std::string_view s) { return std::ranges::count(s, '.'); });
+
+  const std::string file{StringUtils::ToLower(last)};
+  for (auto& ext : exts)
   {
-    CURL url(strFileName);
+    if (!ext.empty())
+    {
+      if (const size_t start{ext.find('.')}; start != std::string::npos && start > 0)
+        ext.erase(0, start);
+      if (file.ends_with(ext))
+        return static_cast<int>(path.size() - ext.size());
+    }
+  }
+
+  if (extensionsToFind == FindExtensions::ONLY_IN_LIST)
+    return NO_EXTENSION;
+
+  // Single dot extension
+  return static_cast<int>(period);
+}
+} // namespace
+
+std::string URIUtils::GetExtension(const std::string& path)
+{
+  if (IsURL(path))
+  {
+    CURL url(path);
     return url.GetExtension();
   }
 
-  size_t period = strFileName.find_last_of("./\\");
-  if (period == std::string::npos || strFileName[period] != '.')
-    return std::string();
+  if (const int extension{FindExtension(path)}; extension != NO_EXTENSION)
+    return path.substr(extension);
+  return {};
+}
 
-  return strFileName.substr(period);
+bool URIUtils::HasExtension(const std::string& path)
+{
+  if (IsURL(path))
+  {
+    CURL url(path);
+    return HasExtension(url.GetFileName());
+  }
+
+  return FindExtension(path) != NO_EXTENSION;
+}
+
+bool URIUtils::HasExtension(const CURL& url, std::string_view strExtensions)
+{
+  return url.HasExtension(strExtensions);
+}
+
+bool URIUtils::HasExtension(const std::string& path, std::string_view extensions)
+{
+  if (IsURL(path))
+  {
+    const CURL url(path);
+    return HasExtension(url.GetFileName(), extensions);
+  }
+
+  return FindExtension(path, extensions, FindExtensions::ONLY_IN_LIST) != NO_EXTENSION;
+}
+
+void URIUtils::RemoveExtension(std::string& path)
+{
+  if (IsURL(path))
+  {
+    CURL url(path);
+    path = url.GetFileName();
+    RemoveExtension(path);
+    url.SetFileName(path);
+    path = url.Get();
+    return;
+  }
+
+  // Extensions to remove
+  const std::string extensions{
+      CServiceBroker::GetFileExtensionProvider().GetPictureExtensions() +
+      CServiceBroker::GetFileExtensionProvider().GetMusicExtensions() +
+      CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() +
+      CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions() +
+      CServiceBroker::GetFileExtensionProvider().GetCompoundArchiveExtensions() +
+      CServiceBroker::GetFileExtensionProvider().GetArchiveExtensions() +
+      "|.py|.xml|.milk|.xbt|.cdg"
+#ifdef TARGET_DARWIN
+      + "|.app|.applescript|.workflow"
+#endif
+  };
+
+  if (const int extension{FindExtension(path, extensions, FindExtensions::ONLY_IN_LIST,
+                                        FinalDot::CONSIDER_FINAL_DOT)};
+      extension != NO_EXTENSION)
+  {
+    path.resize(extension);
+  }
+}
+
+std::string URIUtils::ReplaceExtension(const std::string& path, const std::string& newExtension)
+{
+  if (IsURL(path))
+  {
+    CURL url(path);
+    url.SetFileName(ReplaceExtension(url.GetFileName(), newExtension));
+    return url.Get();
+  }
+
+  const int extension{
+      FindExtension(path, "", FindExtensions::ALL_EXTENSIONS, FinalDot::CONSIDER_FINAL_DOT)};
+  std::string_view base{path};
+  if (extension != NO_EXTENSION)
+    base = base.substr(0, extension);
+  std::string result;
+  result.reserve(base.size() + newExtension.size());
+  result.append(base);
+  result.append(newExtension);
+  return result;
 }
 
 bool URIUtils::HasPluginPath(const CFileItem& item)
 {
   return IsPlugin(item.GetPath()) || IsPlugin(item.GetDynPath());
-}
-
-bool URIUtils::HasExtension(const std::string& strFileName)
-{
-  if (IsURL(strFileName))
-  {
-    CURL url(strFileName);
-    return HasExtension(url.GetFileName());
-  }
-
-  size_t iPeriod = strFileName.find_last_of("./\\");
-  return iPeriod != std::string::npos && strFileName[iPeriod] == '.';
-}
-
-bool URIUtils::HasExtension(const CURL& url, const std::string& strExtensions)
-{
-  return url.HasExtension(strExtensions);
-}
-
-bool URIUtils::HasExtension(const std::string& strFileName, const std::string& strExtensions)
-{
-  if (IsURL(strFileName))
-  {
-    const CURL url(strFileName);
-    return HasExtension(url.GetFileName(), strExtensions);
-  }
-
-  const size_t pos = strFileName.find_last_of("./\\");
-  if (pos == std::string::npos || strFileName[pos] != '.')
-    return false;
-
-  const std::string extensionLower = StringUtils::ToLower(strFileName.substr(pos));
-
-  const std::vector<std::string> extensionsLower =
-      StringUtils::Split(StringUtils::ToLower(strExtensions), '|');
-
-  for (const auto& ext : extensionsLower)
-  {
-    if (StringUtils::EndsWith(ext, extensionLower))
-      return true;
-  }
-
-  return false;
-}
-
-void URIUtils::RemoveExtension(std::string& strFileName)
-{
-  if(IsURL(strFileName))
-  {
-    CURL url(strFileName);
-    strFileName = url.GetFileName();
-    RemoveExtension(strFileName);
-    url.SetFileName(strFileName);
-    strFileName = url.Get();
-    return;
-  }
-
-  size_t period = strFileName.find_last_of("./\\");
-  if (period != std::string::npos && strFileName[period] == '.')
-  {
-    std::string strExtension = strFileName.substr(period);
-    StringUtils::ToLower(strExtension);
-    strExtension += "|";
-
-    std::string strFileMask;
-    strFileMask = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
-    strFileMask += "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
-    strFileMask += "|" + CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
-    strFileMask += "|" + CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions();
-#if defined(TARGET_DARWIN)
-    strFileMask += "|.py|.xml|.milk|.xbt|.cdg|.app|.applescript|.workflow";
-#else
-    strFileMask += "|.py|.xml|.milk|.xbt|.cdg";
-#endif
-    strFileMask += "|";
-
-    if (strFileMask.find(strExtension) != std::string::npos)
-      strFileName.erase(period);
-  }
-}
-
-std::string URIUtils::ReplaceExtension(const std::string& strFile,
-                                      const std::string& strNewExtension)
-{
-  if(IsURL(strFile))
-  {
-    CURL url(strFile);
-    url.SetFileName(ReplaceExtension(url.GetFileName(), strNewExtension));
-    return url.Get();
-  }
-
-  std::string strChangedFile;
-  std::string strExtension = GetExtension(strFile);
-  if (!strExtension.empty())
-  {
-    strChangedFile = strFile.substr(0, strFile.size() - strExtension.size()) ;
-    strChangedFile += strNewExtension;
-  }
-  else
-  {
-    strChangedFile = strFile;
-    strChangedFile += strNewExtension;
-  }
-  return strChangedFile;
 }
 
 std::string URIUtils::GetFileName(const CURL& url)
