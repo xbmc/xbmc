@@ -1,0 +1,14 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=webos
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+TARGET=ipk
+
+cd $WORKSPACE/build;make -j$BUILDTHREADS $TARGET
+
+cd $WORKSPACE
+
+#rename for upload
+#e.x. xbmc-20130314-8c2fb31.ipk
+UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)"
+mv kodi-*.ipk $UPLOAD_FILENAME.ipk
