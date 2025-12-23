@@ -53,6 +53,16 @@ public:
   const std::string& GetDiscStubExtensions() const;
 
   /*!
+   * @brief Returns a list of archive extensions with a single dot (eg. .zip)
+   */
+  std::string GetArchiveExtensions() const;
+
+  /*!
+   * @brief Returns a list of archive extensions with a multiple dots (eg. .tar.gz)
+   */
+  std::string GetCompoundArchiveExtensions() const;
+
+  /*!
    * @brief Returns a file folder extensions
    */
   std::string GetFileFolderExtensions() const;

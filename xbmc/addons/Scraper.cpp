@@ -165,7 +165,7 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
       break;
   }
 
-  m_isPython = URIUtils::GetExtension(addonInfo->Type(addonType)->LibPath()) == ".py";
+  m_isPython = addonInfo->Type(addonType)->LibPath().ends_with(".py");
 }
 
 bool CScraper::Supports(ContentType content) const
