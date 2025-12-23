@@ -884,7 +884,7 @@ bool CURL::IsPicture() const
 bool CURL::HasParentInHostname() const
 {
   return IsProtocol("zip") || IsProtocol("apk") || IsProtocol("bluray") || IsProtocol("udf") ||
-         IsProtocol("iso9660") || IsProtocol("xbt") || IsProtocol("rar") ||
+         IsProtocol("iso9660") || IsProtocol("xbt") || IsProtocol("rar") || IsProtocol("archive") ||
          (CServiceBroker::IsAddonInterfaceUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(GetProtocol()));
 }

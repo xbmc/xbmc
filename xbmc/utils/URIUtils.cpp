@@ -9,7 +9,6 @@
 #include "URIUtils.h"
 
 #include "FileItem.h"
-#include "FileItemList.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
@@ -35,7 +34,10 @@
 #include <array>
 #include <cassert>
 #include <charconv>
-#include <ranges>
+#include <cstdint>
+#include <optional>
+#include <string>
+#include <string_view>
 #include <vector>
 
 #include <arpa/inet.h>
@@ -215,7 +217,7 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
 
 void URIUtils::RemoveExtension(std::string& strFileName)
 {
-  if(IsURL(strFileName))
+  if (IsURL(strFileName))
   {
     CURL url(strFileName);
     strFileName = url.GetFileName();
@@ -225,28 +227,58 @@ void URIUtils::RemoveExtension(std::string& strFileName)
     return;
   }
 
-  size_t period = strFileName.find_last_of("./\\");
-  if (period != std::string::npos && strFileName[period] == '.')
+  // Do not remove trailing dots from special directories
+  if (strFileName.empty() || strFileName == "." || strFileName == "..")
+    return;
+
+  // Remove single trailing dot
+  if (strFileName.back() == '.')
   {
-    std::string strExtension = strFileName.substr(period);
-    StringUtils::ToLower(strExtension);
-    strExtension += "|";
-
-    std::string strFileMask;
-    strFileMask = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
-    strFileMask += "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
-    strFileMask += "|" + CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
-    strFileMask += "|" + CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions();
-#if defined(TARGET_DARWIN)
-    strFileMask += "|.py|.xml|.milk|.xbt|.cdg|.app|.applescript|.workflow";
-#else
-    strFileMask += "|.py|.xml|.milk|.xbt|.cdg";
-#endif
-    strFileMask += "|";
-
-    if (strFileMask.find(strExtension) != std::string::npos)
-      strFileName.erase(period);
+    strFileName.pop_back();
+    return;
   }
+
+  const size_t period{strFileName.find_last_of("./\\")};
+  if (period == std::string::npos || strFileName[period] != '.')
+    return;
+
+  static const std::string strFileMask{
+      []()
+      {
+        std::string mask;
+        mask.reserve(2048);
+        mask += CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
+        mask += "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
+        mask += "|" + CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
+        mask += "|" + CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions();
+        mask += "|" + CServiceBroker::GetFileExtensionProvider().GetArchiveExtensions();
+#if defined(TARGET_DARWIN)
+        mask += "|.py|.xml|.milk|.xbt|.cdg|.app|.applescript|.workflow";
+#else
+        mask += "|.py|.xml|.milk|.xbt|.cdg";
+#endif
+        mask += "|";
+        return mask;
+      }()};
+
+  // Check for double extension first
+  const size_t period2{strFileName.find_last_of("./\\", period - 1)};
+  if (period2 != std::string::npos && strFileName[period2] == '.')
+  {
+    std::string extension{strFileName.substr(period2)};
+    StringUtils::ToLower(extension);
+    if (strFileMask.find(extension + '|') != std::string::npos)
+    {
+      strFileName.resize(period2);
+      return;
+    }
+  }
+
+  // Check single extension
+  std::string extension{strFileName.substr(period)};
+  StringUtils::ToLower(extension);
+  if (strFileMask.find(extension + '|') != std::string::npos)
+    strFileName.resize(period);
 }
 
 std::string URIUtils::ReplaceExtension(const std::string& strFile,
