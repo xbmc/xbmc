@@ -47,8 +47,7 @@ public:
   static std::string GetFileOrFolderName(std::string_view path);
 
   static std::string GetExtension(const CURL& url);
-  static std::string GetExtension(const std::string& strFileName);
-
+  static std::string GetExtension(const std::string& path);
 
   /*! \brief Check if the CFileItem has a plugin path.
    \param item The CFileItem.
@@ -58,29 +57,28 @@ public:
 
   /*!
    \brief Check if there is a file extension
-   \param strFileName Path or URL to check
+   \param path Path or URL to check
    \return \e true if strFileName have an extension.
    \note Returns false when strFileName is empty.
    \sa GetExtension
    */
-  static bool HasExtension(const std::string& strFileName);
+  static bool HasExtension(const std::string& path);
 
   /*!
    \brief Check if filename have any of the listed extensions
-   \param strFileName Path or URL to check
-   \param strExtensions List of '.' prefixed lowercase extensions separated with '|'
+   \param path Path or URL to check
+   \param extensions List of '.' prefixed lowercase extensions separated with '|'
    \return \e true if strFileName have any one of the extensions.
    \note The check is case insensitive for strFileName, but requires
          strExtensions to be lowercase. Returns false when strFileName or
          strExtensions is empty.
    \sa GetExtension
    */
-  static bool HasExtension(const std::string& strFileName, const std::string& strExtensions);
-  static bool HasExtension(const CURL& url, const std::string& strExtensions);
+  static bool HasExtension(const std::string& path, std::string_view extensions);
+  static bool HasExtension(const CURL& url, std::string_view strExtensions);
 
-  static void RemoveExtension(std::string& strFileName);
-  static std::string ReplaceExtension(const std::string& strFile,
-                                     const std::string& strNewExtension);
+  static void RemoveExtension(std::string& path);
+  static std::string ReplaceExtension(const std::string& path, const std::string& newExtension);
   static void Split(const std::string& strFileNameAndPath,
                     std::string& strPath, std::string& strFileName);
   static std::vector<std::string> SplitPath(const std::string& strPath);
