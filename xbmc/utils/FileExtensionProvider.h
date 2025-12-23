@@ -53,6 +53,11 @@ public:
   const std::string& GetDiscStubExtensions() const;
 
   /*!
+   * @brief Returns a list of archive extensions
+   */
+  std::string GetArchiveExtensions() const;
+
+  /*!
    * @brief Returns a file folder extensions
    */
   std::string GetFileFolderExtensions() const;
