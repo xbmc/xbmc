@@ -61,6 +61,9 @@ jobs:
 
             Rules:
             - NO positive feedback, NO "looks good", NO summary sections
+            - Wrap comment text at ~80 characters per line for readability
+              on small screens and with large fonts (code blocks and file
+              paths can exceed this limit)
             - Keep each issue brief but clear
             - Use inline comments for code-specific issues
             - Skip severity sections if empty
