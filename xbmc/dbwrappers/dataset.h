@@ -52,6 +52,7 @@ class Database
 protected:
   bool active{false};
   bool compression{false};
+  bool verifyserver{false}; // tls server verifications
   std::string error; // Error description
   std::string host;
   std::string port;
@@ -105,6 +106,7 @@ public:
                          const char* newCApath,
                          const char* newCiphers,
                          unsigned int newConnectTimeout,
+                         bool newVerifyServer,
                          bool newCompression)
   {
     key = newKey;
@@ -113,6 +115,7 @@ public:
     capath = newCApath;
     ciphers = newCiphers;
     connect_timeout = newConnectTimeout;
+    verifyserver = newVerifyServer;
     compression = newCompression;
   }
 
@@ -134,6 +137,7 @@ public:
                           const char* newCA = nullptr,
                           const char* newCApath = nullptr,
                           const char* newCiphers = nullptr,
+                          bool newVerifyServer = false,
                           bool newCompression = false);
   virtual void disconnect() { active = false; }
   virtual int postconnect() { return DB_COMMAND_OK; }
