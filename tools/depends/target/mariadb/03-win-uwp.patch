@@ -33,17 +33,15 @@
      INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIRS})
 --- a/libmariadb/CMakeLists.txt
 +++ b/libmariadb/CMakeLists.txt
-@@ -337,7 +337,8 @@ IF(WIN32)
+@@ -336,6 +336,7 @@
      ${LIBMARIADB_SOURCES}
      ${CC_SOURCE_DIR}/win-iconv/win_iconv.c
      win32_errmsg.c
--    win32_errmsg.h)
-+    win32_errmsg.h
-+    windows_utils.h)
- ELSE()
-   IF(ICONV_INCLUDE_DIR)
-      INCLUDE_DIRECTORIES(BEFORE ${ICONV_INCLUDE_DIR}) 
-@@ -503,7 +503,8 @@
++    windows_utils.h
+     win32_errmsg.h)
+     IF(WITH_SSL STREQUAL "SCHANNEL")
+       SET(LIBMARIADB_SOURCES ${LIBMARIADB_SOURCES}
+@@ -506,7 +507,8 @@
  IF(WIN32)
  INSTALL(TARGETS libmariadb
          COMPONENT SharedLibraries
@@ -55,16 +53,16 @@
  #INSTALL(TARGETS libmariadb LIBRARY DESTINATION ${INSTALL_LIBDIR}
 --- a/libmariadb/ma_client_plugin.c.in
 +++ b/libmariadb/ma_client_plugin.c.in
-@@ -46,6 +46,8 @@
- #include <dlfcn.h>
- #endif
+@@ -48,6 +48,8 @@
+ 
+ const char *disabled_plugins= "@PLUGINS_DISABLED@";
  
 +#include "windows_utils.h"
 +
  struct st_client_plugin_int {
    struct st_client_plugin_int *next;
    void   *dlhandle;
-@@ -402,13 +404,21 @@ mysql_load_plugin_v(MYSQL *mysql, const char *name, int type,
+@@ -409,13 +411,21 @@
  
  
    /* Open new dll handle */
@@ -151,7 +149,7 @@
       1. SYSCONFDIR (if build happens inside server package, or
 --- a/libmariadb/secure/openssl.c
 +++ b/libmariadb/secure/openssl.c
-@@ -380,27 +380,16 @@ static int ma_tls_set_certs(MYSQL *mysql, SSL_CTX *ctx)
+@@ -384,27 +384,16 @@
  
    if (keyfile && keyfile[0])
    {
