@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-09-23 04:33+0000\n"
+"PO-Revision-Date: 2025-12-25 01:32+0000\n"
 "Last-Translator: wabisabi926 <liwenliang926@163.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/zh_Hans/>\n"
 "Language: zh_cn\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.13.3\n"
+"X-Generator: Weblate 5.15.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -51,7 +51,7 @@ msgstr "改变模式"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "按2D模式观看"
+msgstr "以 2D 模式观看"
 
 msgctxt "#31006"
 msgid "Random movies"
@@ -63,7 +63,7 @@ msgstr "未观看电影"
 
 msgctxt "#31008"
 msgid "Enable category widgets"
-msgstr "启用功能区小部件"
+msgstr "启用类别小组件"
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -101,7 +101,7 @@ msgstr "最近播放的频道"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "已评分"
+msgstr "评分"
 
 #. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
@@ -130,7 +130,7 @@ msgstr "视图类型"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr "选择媒体项目要显示的评级"
+msgstr "选择媒体项目要显示的评分"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add items from media and other views by using the context menu."
@@ -195,7 +195,7 @@ msgstr "快进"
 
 msgctxt "#31040"
 msgid "Edit widgets"
-msgstr "编辑小部件"
+msgstr "编辑小组件"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -443,7 +443,7 @@ msgstr "编辑节点"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "进入插件浏览"
+msgstr "进入插件浏览器"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
@@ -535,7 +535,7 @@ msgstr "像素格式"
 
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr "更改于版本"
+msgstr "版本变更"
 
 msgctxt "#31142"
 msgid "Play speed"
@@ -547,7 +547,7 @@ msgstr "尚未设置 PVR。使用 PVR，需选择一个 PVR 客户端插件并�
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "进入插件浏览"
+msgstr "进入插件浏览器"
 
 msgctxt "#31145"
 msgid "Search add-ons"
@@ -587,7 +587,7 @@ msgstr "尚未安装此类插件。请到插件浏览器下载我们社区创建
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "按确认键切换位置"
+msgstr "按“确认”切换位置"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
