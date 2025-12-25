@@ -1,6 +1,6 @@
 --- a/libmariadb/CMakeLists.txt
 +++ b/libmariadb/CMakeLists.txt
-@@ -497,9 +497,13 @@
+@@ -501,9 +501,13 @@
    SET_TARGET_PROPERTIES(mariadbclient PROPERTIES OUTPUT_NAME "${LIBMARIADB_STATIC_NAME}")
  ENDIF()
  
@@ -14,7 +14,7 @@
  IF(WIN32)
  INSTALL(TARGETS libmariadb
          COMPONENT SharedLibraries
-@@ -514,6 +518,7 @@
+@@ -519,6 +523,7 @@
  INSTALL(TARGETS libmariadb LIBRARY DESTINATION ${INSTALL_LIBDIR}
          COMPONENT Development NAMELINK_ONLY)
  ENDIF()
