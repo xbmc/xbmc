@@ -222,7 +222,8 @@ public:
   static bool IsSourcesPath(const std::string& strFile);
   static bool IsCDDA(const std::string& strFile);
   static bool IsDAV(const std::string& strFile);
-  static bool IsDOSPath(const std::string &path);
+  static bool IsDOSPath(const std::string& path);
+  static bool IsAbsolutePOSIXPath(const std::string& path);
   static bool IsDVD(const std::string& strFile);
   static bool IsFTP(const std::string& strFile);
   static bool IsHTTP(const std::string& strFile, bool bTranslate = false);
