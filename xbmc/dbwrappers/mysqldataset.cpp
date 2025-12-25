@@ -211,6 +211,13 @@ int MysqlDatabase::connect(bool create_new)
                     capath.empty() ? nullptr : capath.c_str(),
                     ciphers.empty() ? nullptr : ciphers.c_str());
     }
+
+#ifdef HAS_MARIADB
+      # mysql 8+ removed MYSQL_OPT_SSL_VERIFY_SERVER_CERT and my_bool type
+      my_bool verify = verifyserver;
+      mysql_optionsv(conn, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &verify);
+#endif
+
     mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &connect_timeout);
 
     if (!CWakeOnAccess::GetInstance().WakeUpHost(host, "MySQL : " + db))

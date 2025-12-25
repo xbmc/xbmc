@@ -271,27 +271,6 @@
 +
 +    return CreateFile2(lpFileName, dwDesiredAccess, dwShareMode, dwCreationDisposition, &ext);
 +}
---- a/plugins/auth/CMakeLists.txt
-+++ b/plugins/auth/CMakeLists.txt
-@@ -4,7 +4,7 @@ INCLUDE_DIRECTORIES(${AUTH_DIR})
- INCLUDE_DIRECTORIES(${CC_SOURCE_DIR}/include)
- 
- SET(CRYPTO_PLUGIN 1)
--IF(WIN32)
-+IF(WIN32 AND NOT WINDOWS_STORE)
-   ADD_DEFINITIONS(-DHAVE_WINCRYPT)
-   SET(CRYPT_SOURCE ${CC_SOURCE_DIR}/libmariadb/secure/win_crypt.c)
-   SET(CRYPT_LIBS crypt32 bcrypt)
---- a/plugins/auth/ref10/crypto_hash_sha512.h
-+++ b/plugins/auth/ref10/crypto_hash_sha512.h
-@@ -1,7 +1,2 @@
--#if defined(MYSQL_CLIENT) || defined(LIBMARIADB)
- #include <ma_crypt.h>
- #define crypto_hash_sha512(DST,SRC,SLEN) ma_hash(MA_HASH_SHA512, SRC, SLEN, DST)
--#else
--#include <mysql/service_sha2.h>
--#define crypto_hash_sha512(DST,SRC,SLEN) my_sha512(DST,(char*)(SRC),SLEN)
--#endif
 --- a/plugins/pvio/pvio_npipe.c
 +++ b/plugins/pvio/pvio_npipe.c
 @@ -30,6 +30,8 @@

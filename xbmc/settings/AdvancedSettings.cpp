@@ -72,6 +72,7 @@ void ParseDatabaseSettings(const TiXmlElement* element, DatabaseSettings& settin
   XMLUtils::GetString(element, "ca", settings.ca);
   XMLUtils::GetString(element, "capath", settings.capath);
   XMLUtils::GetString(element, "ciphers", settings.ciphers);
+  XMLUtils::GetBoolean(element, "verifyserver", settings.verifyserver);
   XMLUtils::GetUInt(element, "connecttimeout", settings.connecttimeout, 1, 300);
   XMLUtils::GetBoolean(element, "compression", settings.compression);
 }
