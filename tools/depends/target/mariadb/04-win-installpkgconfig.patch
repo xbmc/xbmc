@@ -1,0 +1,49 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -446,10 +446,9 @@
+ INCLUDE(${CC_SOURCE_DIR}/plugins/CMakeLists.txt)
+ ADD_SUBDIRECTORY(include)
+ ADD_SUBDIRECTORY(libmariadb)
+-IF((NOT WIN32) OR CYGWIN)
+-  ADD_SUBDIRECTORY(mariadb_config)
+-ENDIF()
+ 
++ADD_SUBDIRECTORY(mariadb_config)
++
+ IF(IS_DIRECTORY ${CC_SOURCE_DIR}/unittest)
+   IF(WITH_UNIT_TESTS)
+     ADD_SUBDIRECTORY(unittest/mytap)
+--- a/mariadb_config/CMakeLists.txt
++++ b/mariadb_config/CMakeLists.txt
+@@ -43,25 +43,26 @@
+     SET(extra_dynamic_LDFLAGS "${extra_dynamic_LDFLAGS} ${LIB_OUT}")
+   ENDIF()
+ ENDIF()
+-
++if(NOT WIN32)
+ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/mariadb_config.c.in
+                ${CMAKE_CURRENT_BINARY_DIR}/mariadb_config.c @ONLY)
+-
++endif()
+ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/libmariadb.pc.in
+                ${CMAKE_CURRENT_BINARY_DIR}/libmariadb.pc @ONLY)
+-
++if(NOT WIN32)
+ ADD_EXECUTABLE(mariadb_config ${CMAKE_CURRENT_BINARY_DIR}/mariadb_config.c)
+-
++endif()
+ IF(CMAKE_SYSTEM_NAME MATCHES AIX)
+   TARGET_LINK_LIBRARIES(mariadb_config compat-getopt)
+ ENDIF()
+ 
+ # Installation
+ #
++if(NOT WIN32)
+ INSTALL(TARGETS mariadb_config
+         DESTINATION "${INSTALL_BINDIR}"
+         COMPONENT Development)
+-
++endif()
+ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libmariadb.pc
+         DESTINATION "${INSTALL_PCDIR}"
+         COMPONENT Development)
