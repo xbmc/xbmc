@@ -567,12 +567,10 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   }
 
   size_t iPos = strFile.rfind('/');
-#ifndef TARGET_POSIX
   if (iPos == std::string::npos)
   {
     iPos = strFile.rfind('\\');
   }
-#endif
   if (iPos == std::string::npos)
   {
     url.SetFileName("");
@@ -1547,6 +1545,14 @@ bool URIUtils::IsDOSPath(const std::string &path)
 
   // windows network drives
   if (path.size() > 1 && path[0] == '\\' && path[1] == '\\')
+    return true;
+
+  return false;
+}
+
+bool URIUtils::IsPOSIXPath(const std::string& path)
+{
+  if (path.size() > 1 && path[0] == '/' && isalpha(path[1]))
     return true;
 
   return false;
