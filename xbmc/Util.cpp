@@ -403,7 +403,9 @@ std::string GetPartAndRemoveDiscFromPath(std::string& path,
     return {};
 
   path = URIUtils::GetDirectory(path);
-  path = URIUtils::IsDiscPath(path) ? URIUtils::GetDiscBase(path) : path;
+  path = URIUtils::IsDiscPath(path) || URIUtils::IsBlurayPath(path)
+             ? URIUtils::GetDiscBasePath(path)
+             : path;
   std::string basePath{path};
   URIUtils::RemoveSlashAtEnd(basePath);
 
