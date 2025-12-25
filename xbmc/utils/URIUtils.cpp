@@ -583,12 +583,10 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   }
 
   size_t iPos = strFile.rfind('/');
-#ifndef TARGET_POSIX
   if (iPos == std::string::npos)
   {
     iPos = strFile.rfind('\\');
   }
-#endif
   if (iPos == std::string::npos)
   {
     url.SetFileName("");
@@ -1556,13 +1554,21 @@ bool URIUtils::IsLibraryContent(const std::string &strFile)
           StringUtils::EndsWith(strFile, ".xsp"));
 }
 
-bool URIUtils::IsDOSPath(const std::string &path)
+bool URIUtils::IsDOSPath(const std::string& path)
 {
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
     return true;
 
   // windows network drives
   if (path.size() > 1 && path[0] == '\\' && path[1] == '\\')
+    return true;
+
+  return false;
+}
+
+bool URIUtils::IsAbsolutePOSIXPath(const std::string& path)
+{
+  if (path.size() > 1 && path[0] == '/')
     return true;
 
   return false;
