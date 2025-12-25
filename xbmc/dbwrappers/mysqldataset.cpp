@@ -182,6 +182,8 @@ int MysqlDatabase::connect(bool create_new)
                     cert.empty() ? nullptr : cert.c_str(), ca.empty() ? nullptr : ca.c_str(),
                     capath.empty() ? nullptr : capath.c_str(),
                     ciphers.empty() ? nullptr : ciphers.c_str());
+      my_bool verify = verifyserver;
+      mysql_optionsv(conn, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, (void*)&verify);
       mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &connect_timeout);
     }
 
