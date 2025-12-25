@@ -1086,7 +1086,8 @@ std::string CUtil::ValidatePath(std::string path, bool bFixDoubleSlashes /* = fa
   else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
   {
-    StringUtils::Replace(path, '\\', '/');
+    if (!URIUtils::IsDOSPath(path))
+      StringUtils::Replace(path, '\\', '/');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.

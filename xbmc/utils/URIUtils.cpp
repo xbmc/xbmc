@@ -535,12 +535,10 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   }
 
   size_t iPos = strFile.rfind('/');
-#ifndef TARGET_POSIX
   if (iPos == std::string::npos)
   {
     iPos = strFile.rfind('\\');
   }
-#endif
   if (iPos == std::string::npos)
   {
     url.SetFileName("");
