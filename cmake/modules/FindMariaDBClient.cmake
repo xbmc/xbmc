@@ -30,9 +30,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       unset(ZLIB_USE_STATIC_LIBS)
     endif()
 
+    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-all-installtargets.patch")
+
     if(WIN32 OR WINDOWS_STORE)
-      set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/03-win-uwp.patch"
-                  "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/04-win-installpkgconfig.patch")
+      list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/05-win-uwp.patch"
+                          "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/06-win-parsec_link.patch")
 
       list(APPEND BUILD_FLAGS -DBUILD_SHARED_LIBS:BOOL=ON
                               -DINSTALL_SHARED=ON)
@@ -42,9 +44,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_PATH lib/mariadb)
     else()
       if("${CORE_SYSTEM_NAME}" STREQUAL "android")
-        set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-android.patch")
+        list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/02-android.patch")
       elseif("${CORE_SYSTEM_NAME}" STREQUAL "linux")
-        set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/02-linux-pthread.patch")
+        list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/03-linux-pthread.patch")
       endif()
 
       list(APPEND BUILD_FLAGS -DWITH_MYSQLCOMPAT:BOOL=OFF
@@ -53,10 +55,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LOCATION_PATH lib/mariadb)
     endif()
 
-    list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/05-all-installtargets.patch")
-
     if(CMAKE_SYSTEM_NAME STREQUAL Emscripten)
-      list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/06-emscripten-no-shared.patch")
+      list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/04-emscripten-no-shared.patch")
     endif()
 
     generate_patchcommand("${patches}")
@@ -73,7 +73,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                -DCLIENT_PLUGIN_CACHING_SHA2_PASSWORD=STATIC
                                -DCLIENT_PLUGIN_MYSQL_CLEAR_PASSWORD=STATIC
                                -DCLIENT_PLUGIN_MYSQL_OLD_PASSWORD=STATIC
-                               -DCLIENT_PLUGIN_CLIENT_ED25519=STATIC)
+                               -DCLIENT_PLUGIN_CLIENT_ED25519=STATIC
+                               -DCLIENT_PLUGIN_PARSEC=STATIC)
 
     # Disable GSSAPI authentication plugin (not widely used by Kodi users)
     list(APPEND CLIENT_PLUGINS -DCLIENT_PLUGIN_AUTH_GSSAPI_CLIENT=OFF)

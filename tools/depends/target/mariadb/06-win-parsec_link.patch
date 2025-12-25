@@ -1,0 +1,54 @@
+From ad30f8362402012cdeb3adaeb3a14bb55bdbbb76 Mon Sep 17 00:00:00 2001
+From: Vladislav Vaintroub <vvaintroub@gmail.com>
+Date: Wed, 17 Dec 2025 00:50:31 +0100
+Subject: [PATCH] Fix parsec linker error (missing symbols) on Windows with
+ OpenSSL.
+
+Also fix integer conversion error under HAVE_OPENSSL.
+---
+ plugins/auth/CMakeLists.txt    | 11 ++++++-----
+ plugins/auth/caching_sha2_pw.c |  2 +-
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/plugins/auth/CMakeLists.txt b/plugins/auth/CMakeLists.txt
+index dad4d9b87..20e68b93a 100644
+--- a/plugins/auth/CMakeLists.txt
++++ b/plugins/auth/CMakeLists.txt
+@@ -4,11 +4,8 @@ INCLUDE_DIRECTORIES(${AUTH_DIR})
+ INCLUDE_DIRECTORIES(${CC_SOURCE_DIR}/include)
+ 
+ SET(CRYPTO_PLUGIN 1)
+-IF(WIN32)
+-  ADD_DEFINITIONS(-DHAVE_WINCRYPT)
+-  SET(CRYPT_SOURCE ${CC_SOURCE_DIR}/libmariadb/secure/win_crypt.c)
+-  SET(CRYPT_LIBS crypt32 bcrypt)
+-ELSEIF(WITH_SSL STREQUAL "OPENSSL")
++
++IF(WITH_SSL STREQUAL "OPENSSL")
+   SET(CRYPT_SOURCE ${CC_SOURCE_DIR}/libmariadb/secure/openssl_crypt.c)
+   SET(CRYPT_LIBS ${SSL_LIBRARIES})
+ ELSEIF(WITH_SSL STREQUAL "GNUTLS")
+@@ -21,6 +18,10 @@ ELSEIF(WITH_SSL STREQUAL "GNUTLS")
+     SET(PARSEC_EXTRA_LIBS ${NETTLE_LIBRARIES} ${HOGWEED_LIBRARIES})
+   ENDIF()
+   ENDIF()
++ELSEIF(WITH_SSL STREQUAL "SCHANNEL")
++  ADD_DEFINITIONS(-DHAVE_WINCRYPT)
++  SET(CRYPT_SOURCE ${CC_SOURCE_DIR}/libmariadb/secure/win_crypt.c)
++  SET(CRYPT_LIBS crypt32 bcrypt)
+ ELSE()
+   UNSET(CRYPTO_PLUGIN)
+ ENDIF()
+diff --git a/plugins/auth/caching_sha2_pw.c b/plugins/auth/caching_sha2_pw.c
+index be472cfba..da9e277a4 100644
+--- a/plugins/auth/caching_sha2_pw.c
++++ b/plugins/auth/caching_sha2_pw.c
+@@ -231,7 +231,7 @@ static int auth_caching_sha2_client(MYSQL_PLUGIN_VIO *vio, MYSQL *mysql)
+   char passwd[MAX_PW_LEN];
+ #ifdef HAVE_OPENSSL
+   unsigned char *rsa_enc_pw= NULL;
+-  size_t rsa_size;
++  int rsa_size;
+ #else
+   unsigned char rsa_enc_pw[MAX_PW_LEN];
+   ULONG rsa_size;

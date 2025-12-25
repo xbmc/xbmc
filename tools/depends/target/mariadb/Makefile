@@ -1,11 +1,11 @@
 include ../../Makefile.include MARIADB-VERSION ../../download-files.include
 DEPS = ../../Makefile.include MARIADB-VERSION Makefile ../../download-files.include \
-                                  01-android.patch \
-                                  02-linux-pthread.patch \
-                                  03-win-uwp.patch \
-                                  04-win-installpkgconfig.patch \
-                                  05-all-installtargets.patch \
-                                  06-emscripten-no-shared.patch
+                                  01-all-installtargets.patch \
+                                  02-android.patch \
+                                  03-linux-pthread.patch \
+                                  04-emscripten-no-shared.patch \
+                                  05-win-uwp.patch \
+                                  06-win-parsec_link.patch
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -14,6 +14,7 @@ PLUGIN_BUILD_FLAGS=-DCLIENT_PLUGIN_DIALOG=STATIC
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_SHA256_PASSWORD=STATIC -DCLIENT_PLUGIN_CACHING_SHA2_PASSWORD=STATIC
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_MYSQL_CLEAR_PASSWORD=STATIC -DCLIENT_PLUGIN_MYSQL_OLD_PASSWORD=STATIC
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_CLIENT_ED25519=STATIC
+PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_PARSEC=STATIC
 
 ifeq ($(TARGET_PLATFORM),appletvos)
   PLUGIN_BUILD_FLAGS+=-DHAVE_UCONTEXT_H= -DHAVE_FILE_UCONTEXT_H=
@@ -40,20 +41,20 @@ all: .installed-$(PLATFORM)
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../01-all-installtargets.patch
 ifeq ($(OS),android)
-	cd $(PLATFORM); patch -p1 -i ../01-android.patch
+	cd $(PLATFORM); patch -p1 -i ../02-android.patch
 endif
 ifeq ($(OS),linux)
-	cd $(PLATFORM); patch -p1 -i ../02-linux-pthread.patch
-endif
-ifeq ($(OS),windows)
-	cd $(PLATFORM); patch -p1 -i ../03-win-uwp.patch
-	cd $(PLATFORM); patch -p1 -i ../04-win-installpkgconfig.patch
+	cd $(PLATFORM); patch -p1 -i ../03-linux-pthread.patch
 endif
 ifeq ($(OS),wasm)
-	cd $(PLATFORM); patch -p1 -i ../06-emscripten-no-shared.patch
+	cd $(PLATFORM); patch -p1 -i ../04-emscripten-no-shared.patch
 endif
-	cd $(PLATFORM); patch -p1 -i ../05-all-installtargets.patch
+ifeq ($(OS),windows)
+	cd $(PLATFORM); patch -p1 -i ../05-win-uwp.patch
+	cd $(PLATFORM); patch -p1 -i ../06-win-parsec_link.patch
+endif
 	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) $(CMAKE_OPTIONS) ..
 	touch $@
 
@@ -62,11 +63,6 @@ $(LIBDYLIB): .configured-$(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/build install
-	rm -f $(PREFIX)/lib/mariadb/*.so $(PREFIX)/lib/mariadb/*.dylib
-ifeq ($(OS),wasm)
-	# static-only target: pkg-config references -lmariadb but only libmariadbclient.a exists
-	cd $(PREFIX)/lib/mariadb && ln -sf libmariadbclient.a libmariadb.a
-endif
 	touch $@
 
 clean:
