@@ -92,12 +92,13 @@ private:
     DONE
   };
 
-  void StartDirectoryJob();
+  void StartDirectoryJob(bool skipDiskCache);
 
   // ITimerCallback implementation
   void OnTimeout() override;
 
   UpdateState m_updateState{UpdateState::OK};
+  bool m_skipDiskCache{false};
   unsigned int m_jobID = 0;
   bool m_jobPending{false};
   std::chrono::time_point<std::chrono::system_clock> m_lastJobStartedAt;
