@@ -622,6 +622,9 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       }
 
       cursorX += ch->m_advance;
+
+      if ((alignment & XBFONT_JUSTIFIED) && (text[itGlyph->m_glyphInfo.cluster] & 0xffff) == L' ')
+        cursorX += spacePerSpaceCharacter;
     }
 
     // Reserve vector space: 4 vertex for each glyph
