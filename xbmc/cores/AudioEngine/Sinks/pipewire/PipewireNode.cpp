@@ -58,6 +58,17 @@ void CPipewireNode::Info(void* userdata, const struct pw_node_info* info)
   {
     node.m_info.reset(pw_node_info_update(nullptr, info));
   }
+
+  // Check if the node parameters changed, if yes enumerate the available formats
+  if ((info->change_mask & PW_NODE_CHANGE_MASK_PARAMS) != 0)
+  {
+    for (auto param : std::span(info->params, info->n_params))
+    {
+      if (param.id == SPA_PARAM_EnumFormat && param.flags & SPA_PARAM_INFO_READ)
+        pw_node_enum_params(reinterpret_cast<pw_node*>(node.m_proxy.get()), 0, param.id, 0, 0,
+                            nullptr);
+    }
+  }
 }
 
 std::string CPipewireNode::Get(const std::string& key) const
