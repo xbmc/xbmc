@@ -34,6 +34,8 @@ public:
 
   void EnumerateFormats();
 
+  bool HasInfo() const { return m_info != nullptr; }
+
   std::string Get(const std::string& key) const;
 
   std::set<spa_audio_format>& GetFormats() { return m_formats; }

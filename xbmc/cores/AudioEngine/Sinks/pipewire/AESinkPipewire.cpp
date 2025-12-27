@@ -303,6 +303,12 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
 
   for (const auto& [id, node] : registry.GetNodes())
   {
+    // Immediately after a node has been added to the registry it doesn't have information yet.
+    // Once PipeWire populated the info the audio engine is informed about the update and the
+    // enumeration is performed again.
+    if (!node->HasInfo())
+      continue;
+
     CAEDeviceInfo device;
     device.m_deviceType = AE_DEVTYPE_PCM;
     device.m_deviceName = node->Get(PW_KEY_NODE_NAME);
