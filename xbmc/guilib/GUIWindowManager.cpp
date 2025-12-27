@@ -1643,6 +1643,7 @@ void CGUIWindowManager::DispatchThreadMessages()
     {
       CGUIMessage* msg = it->first;
       int win = it->second;
+      bool foundDuplicate = false;
 
       // Only deduplicate safe "set" messages where order doesn't matter
       if (msg->GetMessage() == GUI_MSG_ITEM_SELECT ||
@@ -1661,13 +1662,15 @@ void CGUIWindowManager::DispatchThreadMessages()
             // Found a duplicate - delete this older message
             delete msg;
             it = m_vecThreadMessages.erase(it);
-            goto next_message;  // Skip to next message
+            foundDuplicate = true;
+            break;
           }
           ++next;
         }
       }
-      ++it;
-      next_message:;
+
+      if (!foundDuplicate)
+        ++it;
     }
   }
 

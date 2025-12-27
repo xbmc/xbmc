@@ -420,7 +420,7 @@ void CGUIButtonControl::OnFocus()
 void CGUIButtonControl::OnUnFocus()
 {
   m_unfocusActions.ExecuteActions(GetID(), GetParentID());
-  m_lastFocusAlpha = 255; // Reset alpha cache when losing focus
+  m_lastFocusAlpha = 0; // Invalidate alpha cache when losing focus
 }
 
 void CGUIButtonControl::SetSelected(bool bSelected)
