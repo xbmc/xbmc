@@ -287,7 +287,7 @@ void CAdvancedSettings::Initialize()
                                         m_allExcludeFromScanRegExps.end());
 
   m_folderStackRegExps = CompileRegexes({
-      "(.*?)(?:[^\\/])((?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9])$",
+      "^(.*?)[ _.-]+((?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9])$",
       "()((?:p(?:(?:ar)?t)[ _.-]*[0-9]))$",
   });
 
