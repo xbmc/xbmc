@@ -340,6 +340,7 @@ bool CDVDInputStreamBluray::Open()
   else if (resumable && m_item.GetStartOffset() == STARTOFFSET_RESUME && m_item.IsResumable())
   {
     m_navmode = false;
+    m_isResuming = true;
     m_titleInfo = GetTitleFromState(m_item.GetVideoInfoTag()->GetResumePoint().playerState);
   }
   else
@@ -561,6 +562,11 @@ void CDVDInputStreamBluray::ProcessEvent() {
     pid = -1;
     if (m_titleInfo && m_clip && static_cast<uint32_t>(m_clip->audio_stream_count) > (m_event.param - 1))
       pid = m_clip->audio_streams[m_event.param - 1].pid;
+    if (m_isResuming)
+    {
+        bd_select_stream(m_bd, BLURAY_AUDIO_STREAM, pid, 1); 
+        CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::BD_EVENT_AUDIO_STREAM - selected audio stream (pid: {}) in resume mode", pid);
+    }
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_AUDIO_STREAM {} {}", m_event.param, pid);
     m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_AUDIO_STREAM);
     break;
@@ -575,6 +581,11 @@ void CDVDInputStreamBluray::ProcessEvent() {
     pid = -1;
     if (m_titleInfo && m_clip && static_cast<uint32_t>(m_clip->pg_stream_count) > (m_event.param - 1))
       pid = m_clip->pg_streams[m_event.param - 1].pid;
+    if (m_isResuming)
+    {
+        bd_select_stream(m_bd, BLURAY_PG_TEXTST_STREAM, pid, 1); 
+        CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::BD_EVENT_PG_TEXTST_STREAM - selected subtitle stream (pid: {}) in resume mode", pid);
+    }
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST_STREAM {}, {}", m_event.param,
               pid);
     m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_PG_TEXTST_STREAM);
