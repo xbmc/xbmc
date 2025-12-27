@@ -1027,15 +1027,17 @@ void CGUIBaseContainer::SetPageControlRange()
   {
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
     SendWindowMessage(msg);
+    m_lastPageControlOffset = -1;
   }
 }
 
 void CGUIBaseContainer::UpdatePageControl(int offset)
 {
-  if (m_pageControl)
+  if (m_pageControl && m_lastPageControlOffset != offset)
   { // tell our pagecontrol (scrollbar or whatever) to update (offset it by our cursor position)
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
     SendWindowMessage(msg);
+    m_lastPageControlOffset = offset;
   }
 }
 
@@ -1311,6 +1313,7 @@ void CGUIBaseContainer::Reset()
   m_wasReset = true;
   m_items.clear();
   m_lastItem.reset();
+  m_lastPageControlOffset = -1;
   ResetAutoScrolling();
 }
 

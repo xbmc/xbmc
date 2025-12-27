@@ -140,8 +140,16 @@ bool CGUITexture::AllocateOnDemand()
 {
   if (m_visible)
   { // visible, so make sure we're allocated
-    if (!IsAllocated() || (m_isAllocated == LARGE && !m_texture.size()))
+    if (!IsAllocated())
       return AllocResources();
+
+    // For LARGE textures, check if load completed but don't retry every frame
+    if (m_isAllocated == LARGE && !m_texture.size())
+    {
+      // Texture is loading asynchronously, don't claim we changed
+      // The load completion will trigger invalidation when ready
+      return false;
+    }
   }
   else
   { // hidden, so deallocate as applicable
@@ -166,7 +174,9 @@ bool CGUITexture::Process(unsigned int currentTime)
   if (m_invalid)
     changed |= CalculateSize();
 
-  if (m_isAllocated)
+  // Only mark as changed if we're allocated and transition to not-ready
+  // Don't mark changed every frame while waiting for async texture load
+  if (m_isAllocated && m_isAllocated != LARGE && m_isAllocated != LARGE_FAILED)
     changed |= !ReadyToRender();
 
   return changed;
