@@ -220,8 +220,11 @@ This module also supports the following COMPONENTS:
 
 cmake_minimum_required(VERSION 3.20.6...3.22.6 FATAL_ERROR)
 
-# See https://github.com/Kitware/CMake/blob/v4.0.3/Modules/Platform/Windows-MSVC.cmake#L72-L101
+# See https://github.com/Kitware/CMake/blob/v4.2.1/Modules/Platform/Windows-MSVC.cmake#L64-L96
 
+set(Vcvars_TOOLSET_145_MSVC_VERSIONS # VS 2026
+  1950
+  )
 set(Vcvars_TOOLSET_143_MSVC_VERSIONS # VS 2022
   1949 1948 1947 1946 1945 1944 1943 1942 1941 1940
   1939 1938 1937 1936 1935 1934 1933 1932 1931 1930
@@ -244,6 +247,7 @@ set(Vcvars_TOOLSET_60_MSVC_VERSIONS 1200) # VS 6.0
 
 # See https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B#Internal_version_numbering
 # and https://gitlab.kitware.com/cmake/cmake/-/merge_requests/9271
+set(Vcvars_VS18_MSVC_VERSIONS ${Vcvars_TOOLSET_145_MSVC_VERSIONS}) # VS 2026
 set(Vcvars_VS17_MSVC_VERSIONS ${Vcvars_TOOLSET_143_MSVC_VERSIONS}) # VS 2022
 set(Vcvars_VS16_MSVC_VERSIONS ${Vcvars_TOOLSET_142_MSVC_VERSIONS}) # VS 2019
 set(Vcvars_VS15_MSVC_VERSIONS ${Vcvars_TOOLSET_141_MSVC_VERSIONS}) # VS 2017
@@ -261,6 +265,7 @@ set(Vcvars_VS6_MSVC_VERSIONS ${Vcvars_TOOLSET_60_MSVC_VERSIONS}) # VS 6.0
 set(_Vcvars_MSVC_ARCH_REGEX "^(32|64)$")
 set(_Vcvars_MSVC_VERSION_REGEX "^[0-9][0-9][0-9][0-9]$")
 set(_Vcvars_SUPPORTED_MSVC_VERSIONS
+  ${Vcvars_TOOLSET_145_MSVC_VERSIONS} # VS 2026
   ${Vcvars_TOOLSET_143_MSVC_VERSIONS} # VS 2022
   ${Vcvars_TOOLSET_142_MSVC_VERSIONS} # VS 2019
   ${Vcvars_TOOLSET_141_MSVC_VERSIONS} # VS 2017
@@ -296,7 +301,9 @@ function(Vcvars_ConvertMsvcVersionToVsVersion msvc_version output_var)
     message(FATAL_ERROR "msvc_version is expected to match `${_Vcvars_MSVC_VERSION_REGEX}`")
   endif()
   # See https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B#Internal_version_numbering
-  if(msvc_version IN_LIST Vcvars_VS17_MSVC_VERSIONS) # VS 2022
+  if(msvc_version IN_LIST Vcvars_VS18_MSVC_VERSIONS) # VS 2026
+    set(vs_version "18")
+  elseif(msvc_version IN_LIST Vcvars_VS17_MSVC_VERSIONS) # VS 2022
     set(vs_version "17")
   elseif(msvc_version IN_LIST Vcvars_VS16_MSVC_VERSIONS) # VS 2019
     set(vs_version "16")
@@ -330,7 +337,9 @@ function(Vcvars_ConvertMsvcVersionToVcToolsetVersion msvc_version output_var)
   if(NOT msvc_version MATCHES ${_Vcvars_MSVC_VERSION_REGEX})
     message(FATAL_ERROR "msvc_version is expected to match `${_Vcvars_MSVC_VERSION_REGEX}`")
   endif()
-  if(msvc_version IN_LIST Vcvars_TOOLSET_143_MSVC_VERSIONS) # VS 2022
+  if(msvc_version IN_LIST Vcvars_TOOLSET_145_MSVC_VERSIONS) # VS 2026
+    set(vc_toolset_version "14.5")
+  elseif(msvc_version IN_LIST Vcvars_TOOLSET_143_MSVC_VERSIONS) # VS 2022
     set(vc_toolset_version "14.3")
   elseif(msvc_version IN_LIST Vcvars_TOOLSET_142_MSVC_VERSIONS) # VS 2019
     set(vc_toolset_version "14.2")
