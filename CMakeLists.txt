@@ -146,6 +146,7 @@ if(UNIX)
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
   option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
+  dependent_option(ENABLE_INTERNAL_PYTHON "Enable internal python3?")
 endif()
 
 # System options
@@ -536,6 +537,13 @@ core_target_add_dependencies(export-files)
 # the requested package_libs into the final app
 if(package_libs)
   add_dependencies(export-files ${package_libs})
+endif()
+
+# If we have any python modules, we create a dependency to make sure we build anything required
+# These TARGETS are not required for the core app, therefore they only need to be available
+# before we export-files for packaging.
+if(TARGET python-modules)
+  add_dependencies(export-files python-modules)
 endif()
 
 # Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
