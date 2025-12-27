@@ -32,7 +32,7 @@ public:
   CPipewireNode() = delete;
   ~CPipewireNode() override;
 
-  void EnumerateFormats();
+  bool HasInfo() const { return m_info != nullptr; }
 
   std::string Get(const std::string& key) const;
 
@@ -42,7 +42,7 @@ public:
   std::set<spa_audio_iec958_codec>& GetIEC958Codecs() { return m_iec958Codecs; }
 
 private:
-  void Parse(uint32_t type, void* body, uint32_t size);
+  bool Parse(uint32_t type, void* body, uint32_t size);
 
   static void Info(void* userdata, const struct pw_node_info* info);
   static void Param(void* userdata,
