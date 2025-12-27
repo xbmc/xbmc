@@ -117,6 +117,8 @@ protected:
 
   CScroller m_scroller;
   int m_lastScrollerValue;
+  int m_lastPageControlSize = -1;
+  int m_lastPageControlTotalSize = -1;
 
   bool m_useControlPositions;
   ORIENTATION m_orientation;

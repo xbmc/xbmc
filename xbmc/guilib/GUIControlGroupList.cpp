@@ -59,13 +59,27 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
   ValidateOffset(); // m_totalSize is updated here
   bool sizeChanged = previousTotalSize != m_totalSize;
 
-  if (m_pageControl && (m_lastScrollerValue != m_scroller.GetValue() || sizeChanged))
+  if (m_pageControl)
   {
-    CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, (int)Size(), (int)m_totalSize);
-    SendWindowMessage(message);
-    CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, (int)m_scroller.GetValue());
-    SendWindowMessage(message2);
-    m_lastScrollerValue = static_cast<int>(m_scroller.GetValue());
+    // Only send GUI_MSG_LABEL_RESET when size or total size actually changes
+    int currentSize = static_cast<int>(Size());
+    int currentTotalSize = static_cast<int>(m_totalSize);
+    if (m_lastPageControlSize != currentSize || m_lastPageControlTotalSize != currentTotalSize)
+    {
+      CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, currentSize, currentTotalSize);
+      SendWindowMessage(message);
+      m_lastPageControlSize = currentSize;
+      m_lastPageControlTotalSize = currentTotalSize;
+    }
+
+    // Only send GUI_MSG_ITEM_SELECT when scroller value changes
+    int currentScrollerValue = static_cast<int>(m_scroller.GetValue());
+    if (m_lastScrollerValue != currentScrollerValue)
+    {
+      CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, currentScrollerValue);
+      SendWindowMessage(message2);
+      m_lastScrollerValue = currentScrollerValue;
+    }
   }
   // we run through the controls, rendering as we go
   int index = 0;
@@ -343,6 +357,9 @@ void CGUIControlGroupList::ClearAll()
   m_totalSize = 0;
   CGUIControlGroup::ClearAll();
   m_scroller.SetValue(0);
+  m_lastScrollerValue = -1;
+  m_lastPageControlSize = -1;
+  m_lastPageControlTotalSize = -1;
 }
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
@@ -384,6 +401,8 @@ void CGUIControlGroupList::SetInvalid()
   CGUIControl::SetInvalid();
   // Force a message to the scrollbar
   m_lastScrollerValue = -1;
+  m_lastPageControlSize = -1;
+  m_lastPageControlTotalSize = -1;
 }
 
 void CGUIControlGroupList::ScrollTo(float offset)
