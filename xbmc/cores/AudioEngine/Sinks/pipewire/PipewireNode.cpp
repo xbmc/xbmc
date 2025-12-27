@@ -119,7 +119,7 @@ static std::set<T> ParseArray(uint32_t type, void* body, uint32_t size)
   }
 }
 
-void CPipewireNode::Parse(uint32_t type, void* body, uint32_t size)
+bool CPipewireNode::Parse(uint32_t type, void* body, uint32_t size)
 {
   switch (type)
   {
@@ -132,6 +132,7 @@ void CPipewireNode::Parse(uint32_t type, void* body, uint32_t size)
         case SPA_TYPE_OBJECT_Format:
         {
           spa_pod_prop* prop;
+          bool changed = false;
           SPA_POD_OBJECT_BODY_FOREACH(object, size, prop)
           {
             spa_format format = static_cast<spa_format>(prop->key);
@@ -140,26 +141,34 @@ void CPipewireNode::Parse(uint32_t type, void* body, uint32_t size)
             {
               case SPA_FORMAT_AUDIO_format:
               {
+                auto formatsOld = std::move(m_formats);
                 m_formats = ParseArray<spa_audio_format>(
                     prop->value.type, SPA_POD_CONTENTS(spa_pod_prop, prop), prop->value.size);
+                changed |= m_formats != formatsOld;
                 break;
               }
               case SPA_FORMAT_AUDIO_rate:
               {
+                auto ratesOld = std::move(m_rates);
                 m_rates = ParseArray<uint32_t>(
                     prop->value.type, SPA_POD_CONTENTS(spa_pod_prop, prop), prop->value.size);
+                changed |= m_rates != ratesOld;
                 break;
               }
               case SPA_FORMAT_AUDIO_position:
               {
+                auto channelsOld = std::move(m_channels);
                 m_channels = ParseArray<spa_audio_channel>(
                     prop->value.type, SPA_POD_CONTENTS(spa_pod_prop, prop), prop->value.size);
+                changed |= m_channels != channelsOld;
                 break;
               }
               case SPA_FORMAT_AUDIO_iec958Codec:
               {
+                auto iec958CodecsOld = std::move(m_iec958Codecs);
                 m_iec958Codecs = ParseArray<spa_audio_iec958_codec>(
                     prop->value.type, SPA_POD_CONTENTS(spa_pod_prop, prop), prop->value.size);
+                changed |= m_iec958Codecs != iec958CodecsOld;
                 break;
               }
               default:
@@ -167,16 +176,16 @@ void CPipewireNode::Parse(uint32_t type, void* body, uint32_t size)
             }
           }
 
-          break;
+          return changed;
         }
         default:
-          return;
+          return false;
       }
 
       break;
     }
     default:
-      return;
+      return false;
   }
 }
 
