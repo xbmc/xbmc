@@ -32,8 +32,6 @@ public:
   CPipewireNode() = delete;
   ~CPipewireNode() override;
 
-  void EnumerateFormats();
-
   bool HasInfo() const { return m_info != nullptr; }
 
   std::string Get(const std::string& key) const;

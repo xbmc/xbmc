@@ -323,17 +323,6 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
     std::for_each(defaultSampleRates.cbegin(), defaultSampleRates.cend(),
                   [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
 
-    node->EnumerateFormats();
-
-    int ret = loop.Wait(5s);
-    if (ret == -ETIMEDOUT)
-    {
-      CLog::Log(LOGDEBUG,
-                "CAESinkPipewire::{} - timed out out waiting for formats to be enumerated",
-                __FUNCTION__);
-      continue;
-    }
-
     auto& channels = node->GetChannels();
     if (channels.empty())
       continue;
