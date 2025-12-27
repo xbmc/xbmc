@@ -16,3 +16,6 @@ d1e6fff19c1cf2a266f0429c8d0ddea3195ddcce
 
 # formatting JSON-RPC schemas
 537d5e552f68e5cb851ad97b15ec785f73adae60
+
+# formatting xbmc/platform/darwin/osx/storage/OSXStorageProvider.cpp (now .mm)
+b86f51b52a671effa00317a3a75fd8912b58bdf6
