@@ -62,10 +62,17 @@ bool ShouldUpdateStreamDetails(const CFileItem& file)
                             NETWORK::IsInternetStream(file)};
 
   // Stream details may be already set from a previous playback or nfo
-  const bool hasNoStreamDetails{!file.HasVideoInfoTag() ||
-                                !file.GetVideoInfoTag()->HasStreamDetails()};
+  bool hasStreamDetails{false};
+  if (file.HasVideoInfoTag() && file.GetVideoInfoTag()->HasStreamDetails())
+  {
+    // Some disc episodes may have stream details with a single video stream containing the scraper derived duration only
+    const auto& streamDetails{file.GetVideoInfoTag()->m_streamDetails};
+    hasStreamDetails =
+        !(streamDetails.GetStreamCount(CStreamDetail::VIDEO) == 1 &&
+          streamDetails.GetVideoWidth(0) == 0 && streamDetails.GetVideoHeight(0) == 0);
+  }
 
-  return hasNoStreamDetails && isDiscOrStream;
+  return !hasStreamDetails && isDiscOrStream;
 }
 } // namespace
 
