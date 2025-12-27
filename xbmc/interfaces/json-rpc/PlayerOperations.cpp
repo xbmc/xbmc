@@ -1994,6 +1994,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             result["bitrate"] = info.bitrate;
             result["channels"] = info.channels;
             result["samplerate"] = info.samplerate;
+            result["bitspersample"] = info.bitspersample;
             AppendAudioStreamFlagsAsBooleans(result, info.flags);
           }
         }
@@ -2033,6 +2034,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             audioStream["bitrate"] = info.bitrate;
             audioStream["channels"] = info.channels;
             audioStream["samplerate"] = info.samplerate;
+            audioStream["bitspersample"] = info.bitspersample;
             AppendAudioStreamFlagsAsBooleans(audioStream, info.flags);
 
             result.append(audioStream);
