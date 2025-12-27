@@ -1,23 +1,12 @@
 /*
- *      Copyright (C) 2005-2014 Team XBMC
- *      http://kodi.tv
+ *  Copyright (C) 2004-2024 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
  *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
- *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
  */
 
+// clang-format off
 #ifdef TARGET_WINDOWS
 #include <sys/types.h>
 #define __STDC_FORMAT_MACROS
@@ -27,10 +16,12 @@
 #include <inttypes.h>
 #define platform_stricmp strcasecmp
 #endif
+#include <algorithm>
 #include <cerrno>
 #include <dirent.h>
 #include <map>
 
+#include "guilib/TextureFormats.h"
 #include "guilib/XBTF.h"
 #include "guilib/XBTFReader.h"
 
@@ -49,9 +40,8 @@
 #include <lzo/lzo1x.h>
 #include <sys/stat.h>
 
-#define FLAGS_USE_LZO     1
-
 #define DIR_SEPARATOR '/'
+// clang-format on
 
 namespace
 {
@@ -68,24 +58,94 @@ const char* GetFormatString(KD_TEX_FMT format)
       return "RGBA8";
     case KD_TEX_FMT_SDR_BGRA8:
       return "BGRA8";
+    case KD_TEX_FMT_S3TC_RGB8:
+    case KD_TEX_FMT_S3TC_RGB8_A1:
+    case KD_TEX_FMT_S3TC_RGB8_A4:
+    case KD_TEX_FMT_S3TC_RGBA8:
+      return "S3TC ";
+    case KD_TEX_FMT_RGTC_R11:
+    case KD_TEX_FMT_RGTC_RG11:
+      return "RGTC ";
+    case KD_TEX_FMT_BPTC_RGB16F:
+    case KD_TEX_FMT_BPTC_RGBA8:
+      return "BPTC ";
+    case KD_TEX_FMT_ETC1_RGB8:
+      return "ETC1 ";
+    case KD_TEX_FMT_ETC2_R11:
+    case KD_TEX_FMT_ETC2_RG11:
+    case KD_TEX_FMT_ETC2_RGB8:
+    case KD_TEX_FMT_ETC2_RGB8_A1:
+    case KD_TEX_FMT_ETC2_RGBA8:
+      return "ETC2 ";
+    case KD_TEX_FMT_ASTC_LDR_4x4:
+    case KD_TEX_FMT_ASTC_LDR_5x4:
+    case KD_TEX_FMT_ASTC_LDR_5x5:
+    case KD_TEX_FMT_ASTC_LDR_6x5:
+    case KD_TEX_FMT_ASTC_LDR_6x6:
+    case KD_TEX_FMT_ASTC_LDR_8x5:
+    case KD_TEX_FMT_ASTC_LDR_8x6:
+    case KD_TEX_FMT_ASTC_LDR_8x8:
+    case KD_TEX_FMT_ASTC_LDR_10x5:
+    case KD_TEX_FMT_ASTC_LDR_10x6:
+    case KD_TEX_FMT_ASTC_LDR_10x8:
+    case KD_TEX_FMT_ASTC_LDR_10x10:
+    case KD_TEX_FMT_ASTC_LDR_12x10:
+    case KD_TEX_FMT_ASTC_LDR_12x12:
+      return "ASTC ";
     default:
       return "?????";
   }
 }
 
+// clang-format off
 void Usage()
 {
   puts("Texture Packer Version 3");
   puts("");
-  puts("Tool to pack XBT 3 texture files, used in Kodi Piers (v22).");
-  puts("Accepts the following file formats as input: PNG (preferred), JPG and GIF.");
+  puts("Tool to pack XBT 3 texture files, used in Kodi Piers (v22) and newer.");
+  puts("Accepts the following file formats as input:");
+  puts("-PNG (preferred)");
+  puts("-KTX (for compressed textures)");
+  puts("-JPG");
+  puts("-GIF");
+  puts("");
   puts("");
   puts("Usage:");
   puts("  -help            Show this screen.");
   puts("  -input <dir>     Input directory. Default: current dir");
   puts("  -output <dir>    Output directory/filename. Default: Textures.xbt");
   puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
+  puts("  -nocompress      Disable LZO compression. Default: off");
+  puts("  -astc            Substitution of *.astc.ktx files. Default: off");
+  puts("  -bptc            Substitution of *.bptc.ktx files. Default: off");
+  puts("  -etc1            Substitution of *.etc1.ktx files. Default: off");
+  puts("  -etc2            Substitution of *.etc2.ktx files. Default: off");
+  puts("  -rgtc            Substitution of *.rgtc.ktx files. Default: off");
+  puts("  -s3tc            Substitution of *.s3tc.ktx files. Default: off");
+  puts("");
+  puts("");
+  puts("Substitution of files");
+  puts("");
+  puts("The goal of file substitution is to create specialised texture bundles, containing a "
+       "specific set of (compressed) textures. If compressed textures with the right file names "
+       "are provided and substitution is enabled, the uncompressed (raw) textures get replaced by "
+       "their compressed counterpart. The set should reflect capabilities of the target platform. "
+       "Typical sets would be:");
+  puts("-Embedded (GLES 2.0): ETC1 (Mali Utgard, VideoCore IV)");
+  puts("-Embedded (GLES 3.0): ETC2, ETC1 (early Mali Midgard)");
+  puts("-Emdedded (Modern): ASTC, ETC2, ETC1 (late Mali Midgard, VideoCore VI)");
+  puts("-Desktop (Legacy): S3TC (NVidia Ion)");
+  puts("-Desktop (Modern): BPTC, RGTC, S3TC (DX11 capable hardware)");
+  puts("");
+  puts("For example, if the switch \"-s3tc\" is active, files with the ending \"*.png.s3tc.ktx\" "
+       "will be placed as \"*.png\" in the XBT file. This means that the content of a file with the "
+       "name of \"icon.png\" will be replaced by the content of the file \"icon.png.s3tc.ktx\".");
+  puts("");
+  puts("Any file with such an substitution \"extension\" won't be packed directly. If multiple "
+       "switches are active, the priority is as follows (decreasing): ASTC, BPTC, ETC2, RGTC, ETC1 "
+       "and S3TC.");
 }
+// clang-format on
 
 } // namespace
 
@@ -102,11 +162,16 @@ public:
   int createBundle(const std::string& InputDir, const std::string& OutputFile);
 
   void SetFlags(unsigned int flags) { m_flags = flags; }
+  void EnableTextureFamily(KD_TEX_FMT format) { m_enabledTextureFamilies.emplace_back(format); }
+  void DisableCompression() { m_compress = false; }
 
 private:
   void CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
                             const std::string& fullPath,
                             const std::string& relativePath = "");
+
+  void SubstitudeFile(CXBTFWriter& xbtfWriter, const std::string& fileName);
+  unsigned int GetSubstitutionPriority(KD_TEX_FMT textureFamily);
 
   CXBTFFrame CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer) const;
 
@@ -124,6 +189,9 @@ private:
   bool m_dupecheck{false};
   bool m_verbose{false};
   unsigned int m_flags{0};
+  bool m_compress{true};
+
+  std::vector<KD_TEX_FMT> m_enabledTextureFamilies{};
 };
 
 void TexturePacker::EnableVerboseOutput()
@@ -175,9 +243,20 @@ void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
 
           fileName += dp->d_name;
 
-          CXBTFFile file;
-          file.SetPath(fileName);
-          xbtfWriter.AddFile(file);
+          if (decoderManager.IsSubstitutionFile(fileName))
+          {
+            SubstitudeFile(xbtfWriter, fileName);
+          }
+          else if (xbtfWriter.Exists(fileName))
+          {
+            continue;
+          }
+          else
+          {
+            CXBTFFile file;
+            file.SetPath(fileName);
+            xbtfWriter.AddFile(file);
+          }
         }
       }
     }
@@ -192,13 +271,65 @@ void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
   }
 }
 
+void TexturePacker::SubstitudeFile(CXBTFWriter& xbtfWriter, const std::string& fileName)
+{
+  CXBTFFile file;
+  std::string substitutedFileName = fileName;
+  KD_TEX_FMT textureFamily = KD_TEX_FMT_UNKNOWN;
+  decoderManager.SubstitudeFileName(textureFamily, substitutedFileName);
+
+  if (std::find(m_enabledTextureFamilies.begin(), m_enabledTextureFamilies.end(), textureFamily) ==
+      m_enabledTextureFamilies.end())
+    return;
+
+  const unsigned int priority = GetSubstitutionPriority(textureFamily);
+  const bool exists = xbtfWriter.Get(substitutedFileName, file);
+
+  if (file.GetSubstitutionPriority() >= priority)
+    return;
+  file.SetSubstitutionPriority(priority);
+
+  if (exists)
+  {
+    file.SetRealPath(fileName);
+    xbtfWriter.UpdateFile(file);
+  }
+  else
+  {
+    file.SetPath(substitutedFileName);
+    file.SetRealPath(fileName);
+    xbtfWriter.AddFile(file);
+  }
+}
+
+unsigned int TexturePacker::GetSubstitutionPriority(KD_TEX_FMT textureFamily)
+{
+  switch (textureFamily)
+  {
+    case KD_TEX_FMT_ASTC_LDR:
+      return 6;
+    case KD_TEX_FMT_BPTC:
+      return 5;
+    case KD_TEX_FMT_ETC2:
+      return 4;
+    case KD_TEX_FMT_RGTC:
+      return 3;
+    case KD_TEX_FMT_ETC1:
+      return 2;
+    case KD_TEX_FMT_S3TC:
+      return 1;
+    case KD_TEX_FMT_SDR:
+    default:
+      return 0;
+  }
+}
+
 CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer) const
 {
   const unsigned int delay = decodedFrame.delay;
   const unsigned int width = decodedFrame.rgbaImage.width;
   const unsigned int height = decodedFrame.rgbaImage.height;
-  const uint32_t bpp = decodedFrame.rgbaImage.bbp;
-  const unsigned int size = width * height * (bpp / 8);
+  const unsigned int size = decodedFrame.rgbaImage.size;
   const uint32_t format = static_cast<uint32_t>(decodedFrame.rgbaImage.textureFormat) |
                           static_cast<uint32_t>(decodedFrame.rgbaImage.textureAlpha) |
                           static_cast<uint32_t>(decodedFrame.rgbaImage.textureSwizzle);
@@ -207,7 +338,7 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
   CXBTFFrame frame;
   lzo_uint packedSize = size;
 
-  if ((m_flags & FLAGS_USE_LZO) == FLAGS_USE_LZO)
+  if (m_compress)
   {
     // grab a temporary buffer for unpacking into
     packedSize = size + size / 16 + 64 + 3; // see simple.c in lzo
@@ -292,6 +423,7 @@ void TexturePacker::ConvertToSingleChannel(RGBAImage& image, uint32_t channel)
 
   image.bbp = 8;
   image.pitch = 1 * image.width;
+  image.size = size;
 }
 
 void TexturePacker::ConvertToDualChannel(RGBAImage& image)
@@ -305,6 +437,7 @@ void TexturePacker::ConvertToDualChannel(RGBAImage& image)
   image.textureFormat = KD_TEX_FMT_SDR_RG8;
   image.bbp = 16;
   image.pitch = 2 * image.width;
+  image.size = 2 * size;
 }
 
 void TexturePacker::ReduceChannels(RGBAImage& image)
@@ -406,14 +539,14 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
     CXBTFFile& file = files[i];
 
     std::string fullPath = InputDir;
-    fullPath += file.GetPath();
+    fullPath += file.GetRealPath();
 
     std::string output = file.GetPath();
 
     DecodedFrames frames;
     bool loaded = decoderManager.LoadFile(fullPath, frames);
 
-    if (!loaded)
+    if (!loaded || frames.frameList.empty())
     {
       fprintf(stderr, "...unable to load image %s\n", file.GetPath().c_str());
       continue;
@@ -430,7 +563,7 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
     {
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
         MD5Update(&ctx, (const uint8_t*)frames.frameList[j].rgbaImage.pixels.data(),
-                  frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
+                  frames.frameList[j].rgbaImage.size);
 
       if (CheckDupe(&ctx, i))
       {
@@ -503,7 +636,7 @@ int main(int argc, char* argv[])
 
   TexturePacker texturePacker;
 
-  texturePacker.SetFlags(FLAGS_USE_LZO);
+  bool rawSDRTextures = true;
 
   for (unsigned int i = 1; i < args.size(); ++i)
   {
@@ -534,11 +667,46 @@ int main(int argc, char* argv[])
       while ((c = (char *)strchr(OutputFilename.c_str(), '\\')) != NULL) *c = '/';
 #endif
     }
+    else if (!strcmp(args[i], "-nosdr"))
+    {
+      rawSDRTextures = false;
+    }
+    else if (!strcmp(args[i], "-etc1"))
+    {
+      texturePacker.EnableTextureFamily(KD_TEX_FMT_ETC1);
+    }
+    else if (!strcmp(args[i], "-etc2"))
+    {
+      texturePacker.EnableTextureFamily(KD_TEX_FMT_ETC2);
+    }
+    else if (!strcmp(args[i], "-astc"))
+    {
+      texturePacker.EnableTextureFamily(KD_TEX_FMT_ASTC_LDR);
+    }
+    else if (!strcmp(args[i], "-s3tc"))
+    {
+      texturePacker.EnableTextureFamily(KD_TEX_FMT_S3TC);
+    }
+    else if (!strcmp(args[i], "-rgtc"))
+    {
+      texturePacker.EnableTextureFamily(KD_TEX_FMT_RGTC);
+    }
+    else if (!strcmp(args[i], "-bptc"))
+    {
+      texturePacker.EnableTextureFamily(KD_TEX_FMT_BPTC);
+    }
+    else if (!strcmp(args[i], "-nocompress"))
+    {
+      texturePacker.DisableCompression();
+    }
     else
     {
       fprintf(stderr, "Unrecognized command line flag: %s\n", args[i]);
     }
   }
+
+  if (rawSDRTextures)
+    texturePacker.EnableTextureFamily(KD_TEX_FMT_SDR);
 
   if (!valid)
   {
