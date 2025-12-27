@@ -63,12 +63,7 @@ drm_fb* CDRMUtils::DrmFbGetFromBo(struct gbm_bo* bo)
   {
     struct drm_fb* fb = static_cast<drm_fb*>(gbm_bo_get_user_data(bo));
     if (fb)
-    {
-      if (m_gui_plane->GetFormat() == fb->format)
-        return fb;
-      else
-        DrmFbDestroyCallback(bo, gbm_bo_get_user_data(bo));
-    }
+      return fb;
   }
 
   struct drm_fb* fb = new drm_fb;
@@ -100,6 +95,7 @@ drm_fb* CDRMUtils::DrmFbGetFromBo(struct gbm_bo* bo)
 
   if (modifiers[0] && modifiers[0] != DRM_FORMAT_MOD_INVALID)
   {
+    m_gui_plane->SetModifier(modifiers[0]);
     flags |= DRM_MODE_FB_MODIFIERS;
     CLog::LogF(LOGDEBUG, "Using modifier: {}", DRMHELPERS::ModifierToString(modifiers[0]));
   }
@@ -160,79 +156,224 @@ bool CDRMUtils::FindPreferredMode()
   return true;
 }
 
-bool CDRMUtils::FindPlanes()
+bool CDRMUtils::CheckPlane(
+    CDRMPlane* plane, uint64_t w, uint64_t h, uint32_t format, uint64_t modifier)
 {
-  for (size_t i = 0; i < m_crtcs.size(); i++)
+  // format is not supported
+  if (!plane->SupportsFormatAndModifier(format, modifier))
+    return false;
+
+  /* the wxh capability is provided by the INPUT_WIDTH/HEIGHT of the plane prop.
+  however not all drm drivers support this property.
+  Cursor planes are a little bit different, generally cursor plane wxh capability is provided 
+  over the DRM_CAP_CURSOR_WIDTH/HEIGHT in a plane independant way, however even a cursor
+  plane can override this by its own INPUT_WIDTH/HEIGHT.
+  So we check INPUT_WIDTH, INPUT_HEIGHT of the plane, if they do not exist and 
+  plane is a cursor plane, we check the DRM_CAP_CURSOR_WIDTH/HEIGHT
+  */
+  auto input_width_limits = plane->GetRangePropertyLimits("INPUT_WIDTH");
+  // check if plane has defined max width and it satifies the buffer width
+  if (input_width_limits && input_width_limits.value()[1] < w)
+    return false;
+
+  auto plane_type = plane->GetPropertyValue("type");
+  // if there is not INPUT_WIDTH, check if plane is cursor type and defined cursor max width capability
+  uint64_t cap_cursor_w;
+  if (!input_width_limits && plane_type.value_or(0) == PLANE_TYPE_CURSOR &&
+      !drmGetCap(m_fd, DRM_CAP_CURSOR_WIDTH, &cap_cursor_w) && cap_cursor_w < w)
+    return false;
+
+  auto input_height_limits = plane->GetRangePropertyLimits("INPUT_HEIGHT");
+  if (input_height_limits && input_height_limits.value()[1] < h)
+    return false;
+
+  uint64_t cap_cursor_h;
+  if (!input_height_limits && plane_type.value_or(0) == PLANE_TYPE_CURSOR &&
+      !drmGetCap(m_fd, DRM_CAP_CURSOR_HEIGHT, &cap_cursor_h) && cap_cursor_h < h)
+    return false;
+
+  return true;
+}
+
+// finds a video plane with given format + modifier, and a gui plane with inited format + modifier for any available crtcs
+bool CDRMUtils::FindPlanes(uint32_t format, uint64_t modifier, uint64_t w, uint64_t h)
+{
+  if (m_gui_plane == nullptr)
+    return false;
+
+  if (!m_gui_plane_alpha)
   {
-    if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
+    CLog::Log(
+        LOGWARNING,
+        "CDRMUtils::{} - GUI plane can not do alpha blending, video will be rendered through EGL",
+        __FUNCTION__);
+    return false;
+  }
+
+  // current config already satisfies
+  if (m_video_plane != nullptr && CheckPlane(m_video_plane, w, h, format, modifier))
+    return true;
+
+  uint32_t guiFormat = m_gui_plane->GetFormat();
+  uint64_t guiModifier = m_gui_plane->GetModifier();
+  struct RESOLUTION_INFO res = GetCurrentMode();
+  // loop over current crtc which is capable of rendering on the connected encoder (port)
+  for (size_t crtc_offset = 0; crtc_offset < m_crtcs.size(); crtc_offset++)
+  {
+    if (!(m_encoder->GetPossibleCrtcs() & (1 << crtc_offset)))
       continue;
-
-    auto videoPlane = std::ranges::find_if(m_planes,
-                                           [&i](auto& plane)
-                                           {
-                                             if (plane->GetPossibleCrtcs() & (1 << i))
-                                             {
-                                               return plane->SupportsFormat(DRM_FORMAT_NV12);
-                                             }
-                                             return false;
-                                           });
-
-    uint32_t videoPlaneId{0};
-
-    if (videoPlane != m_planes.end())
-      videoPlaneId = videoPlane->get()->GetPlaneId();
-
-    auto guiPlane = std::ranges::find_if(
-        m_planes,
-        [&i, &videoPlaneId](auto& plane)
-        {
-          if (plane->GetPossibleCrtcs() & (1 << i))
-          {
-            return (plane->GetPlaneId() != videoPlaneId &&
-                    (videoPlaneId == 0 || plane->SupportsFormat(DRM_FORMAT_ARGB8888)) &&
-                    (plane->SupportsFormat(DRM_FORMAT_XRGB2101010) ||
-                     plane->SupportsFormat(DRM_FORMAT_XRGB8888)));
-          }
-          return false;
-        });
-
-    if (videoPlane != m_planes.end() && guiPlane != m_planes.end())
+    // loop for each gui plane candidate which satisfies the current EGL rendered format
+    // gui format is decided during initialization, yet we can still swap planes if necessary
+    for (auto& gui_plane : m_planes)
     {
-      m_crtc = m_crtcs[i].get();
-      m_video_plane = videoPlane->get();
-      m_gui_plane = guiPlane->get();
-      break;
-    }
-
-    if (guiPlane != m_planes.end())
-    {
-      if (!m_crtc && m_encoder->GetCrtcId() == m_crtcs[i]->GetCrtcId())
+      if (!(gui_plane->GetPossibleCrtcs() & (1 << crtc_offset)) ||
+          !CheckPlane(gui_plane.get(), res.iWidth, res.iHeight, guiFormat, guiModifier))
+        continue;
+      // loop for each format satisfying video plane candidate which is different than gui plane candidate
+      for (auto& video_plane : m_planes)
       {
-        m_crtc = m_crtcs[i].get();
-        m_gui_plane = guiPlane->get();
-        m_video_plane = nullptr;
+        if (!(video_plane->GetPossibleCrtcs() & (1 << crtc_offset)) ||
+            video_plane->GetId() == gui_plane->GetId() ||
+            !CheckPlane(video_plane.get(), w, h, format, modifier))
+          continue;
+
+        bool zpos_available =
+            video_plane->SupportsProperty("zpos") && gui_plane->SupportsProperty("zpos");
+        // zpos is not available and video plane is on top of gui
+        if (!zpos_available && gui_plane->GetId() <= video_plane->GetId())
+          continue;
+
+        // if zpos is supported, check the zorder, and reorder if necessary
+        if (zpos_available)
+        {
+          bool zpos_mutable = zpos_available &&
+                              !video_plane->IsPropertyImmutable("zpos").value_or(false) &&
+                              !gui_plane->IsPropertyImmutable("zpos").value_or(false);
+          uint64_t gui_zpos = gui_plane->GetPropertyValue("zpos").value_or(0);
+          uint64_t video_zpos = video_plane->GetPropertyValue("zpos").value_or(0);
+          // zpos is immutable and video plane is on top of gui
+          if (!zpos_mutable && gui_zpos <= video_zpos)
+            continue;
+          // zpos is mutable, make sure gui is on top by setting correct zpos
+          if (zpos_mutable && gui_zpos <= video_zpos)
+          {
+            gui_plane->SetProperty("zpos", 1);
+            video_plane->SetProperty("zpos", 0);
+          }
+        }
+        m_crtc = m_crtcs[crtc_offset].get();
+        m_gui_plane = gui_plane.get();
+        m_video_plane = video_plane.get();
+
+        CLog::Log(LOGINFO,
+                  "CDRMUtils::{} - Using GUI Plane id:{}, video plane id:{} on crtc id:{} video "
+                  "for format:{}, modifier:{}",
+                  __FUNCTION__, m_gui_plane->GetId(), m_video_plane->GetId(), m_crtc->GetId(),
+                  DRMHELPERS::FourCCToString(format), DRMHELPERS::ModifierToString(modifier));
+        return true;
       }
     }
   }
 
-  CLog::Log(LOGINFO, "CDRMUtils: using crtc: {}", m_crtc->GetCrtcId());
+  CLog::Log(LOGWARNING,
+            "CDRMUtils::{} - Can not find a Video Plane plane with format {}, modifier {}. "
+            "Rendering will be done through EGL",
+            __FUNCTION__, DRMHELPERS::FourCCToString(format),
+            DRMHELPERS::ModifierToString(modifier));
+  return false;
+}
 
-  // video plane may not be available
-  if (m_video_plane)
-    CLog::LogF(LOGDEBUG, "Using video plane {}", m_video_plane->GetPlaneId());
+// determines the GUI rendering format and selects a plane+crtc for it without considering the future video plane
+bool CDRMUtils::InitGuiPlane(CEGLContextUtils* eglContext, EGLint renderableType)
+{
+  bool useModifiers = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOSCREEN_USEMODIFIERS);
 
-  if (m_gui_plane->SupportsFormat(DRM_FORMAT_XRGB2101010))
+  m_gui_plane = nullptr;
+  m_video_plane = nullptr;
+  m_crtc = nullptr;
+
+  struct
   {
-    m_gui_plane->SetFormat(DRM_FORMAT_XRGB2101010);
-    CLog::LogF(LOGDEBUG, "Using 10bit gui plane {}", m_gui_plane->GetPlaneId());
-  }
-  else
-  {
-    m_gui_plane->SetFormat(DRM_FORMAT_XRGB8888);
-    CLog::LogF(LOGDEBUG, "Using gui plane {}", m_gui_plane->GetPlaneId());
-  }
+    uint32_t drmformat;
+    std::vector<uint32_t> eglformats;
+    bool alpha;
+  } typedef formatmap;
 
-  return true;
+  // add more formats here in future
+  std::vector<formatmap> formats{
+      {DRM_FORMAT_ARGB8888, {DRM_FORMAT_ARGB8888, DRM_FORMAT_XRGB8888}, true},
+      {DRM_FORMAT_XRGB8888, {DRM_FORMAT_ARGB8888, DRM_FORMAT_XRGB8888}, false},
+  };
+
+  for (formatmap const& format : formats)
+  {
+    // check if EGL supports a format compatible with the DRM format
+    uint32_t eglformat = DRM_FORMAT_INVALID;
+    for (uint32_t eformat : format.eglformats)
+    {
+      if (!eglContext->ChooseConfig(renderableType, eformat, false, 0))
+        continue;
+      eglformat = eformat;
+      break;
+    }
+
+    if (eglformat == DRM_FORMAT_INVALID)
+    {
+      CLog::Log(LOGWARNING, "CDRMUtils::{} - No egl format found for plane format {}", __FUNCTION__,
+                DRMHELPERS::FourCCToString(format.drmformat));
+      continue;
+    }
+
+    uint32_t best_modifiers = useModifiers ? 0 : 0xFFFFFFFF;
+    uint32_t num_modifiers;
+    struct RESOLUTION_INFO res = GetCurrentMode();
+    // loop through crtcs connected to encoder (port)
+    for (size_t crtc_offset = 0; crtc_offset < m_crtcs.size(); crtc_offset++)
+    {
+      // crtc is not connected to encoder
+      if (!(m_encoder->GetPossibleCrtcs() & (1 << crtc_offset)))
+        continue;
+
+      // find a plane satisfies the format and crtc
+      for (auto& gui_plane : m_planes)
+      {
+        // plane is not connected to crtc
+        if (!(gui_plane->GetPossibleCrtcs() & (1 << crtc_offset)))
+          continue;
+
+        // check plane w,h,format and modifier
+        if (!CheckPlane(gui_plane.get(), res.iWidth, res.iHeight, format.drmformat,
+                        DRM_FORMAT_MOD_LINEAR))
+          continue;
+
+        num_modifiers = gui_plane->GetModifiersForFormat(format.drmformat).size();
+        // gui is compressed but there are planes with more modifier types
+        if (useModifiers && num_modifiers < best_modifiers)
+          continue;
+        // gui is not compressed but there are planes with less modifier types
+        if (!useModifiers && num_modifiers > best_modifiers)
+          continue;
+        best_modifiers = num_modifiers;
+        m_crtc = m_crtcs[crtc_offset].get();
+        m_gui_plane = gui_plane.get();
+        m_gui_plane_alpha = format.alpha;
+      }
+    }
+
+    if (m_gui_plane != nullptr)
+    {
+      CLog::Log(LOGINFO,
+                "CDRMUtils::{} - Requested GUI plane is found with id: {} and plane format {}, egl "
+                "format {} over crtc id: {}",
+                __FUNCTION__, m_gui_plane->GetId(), DRMHELPERS::FourCCToString(format.drmformat),
+                DRMHELPERS::FourCCToString(eglformat), m_crtc->GetId());
+      m_gui_plane->SetFormat(format.drmformat);
+      return true;
+    }
+  }
+  CLog::Log(LOGERROR, "CDRMUtils::{} - GUI plane can not be found", __FUNCTION__);
+  return false;
 }
 
 void CDRMUtils::PrintDrmDeviceInfo(drmDevicePtr device)
@@ -439,9 +580,6 @@ bool CDRMUtils::InitDrm()
     return false;
 
   if (!FindCrtc())
-    return false;
-
-  if (!FindPlanes())
     return false;
 
   if (!FindPreferredMode())
@@ -693,14 +831,4 @@ std::vector<std::string> CDRMUtils::GetConnectedConnectorNames()
   }
 
   return connectorNames;
-}
-
-uint32_t CDRMUtils::FourCCWithAlpha(uint32_t fourcc)
-{
-  return (fourcc & 0xFFFFFF00) | static_cast<uint32_t>('A');
-}
-
-uint32_t CDRMUtils::FourCCWithoutAlpha(uint32_t fourcc)
-{
-  return (fourcc & 0xFFFFFF00) | static_cast<uint32_t>('X');
 }
