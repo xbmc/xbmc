@@ -30,6 +30,7 @@ public:
 protected:
   std::unique_ptr<CGUITexture> m_borderImage;
   CRect m_borderSize;
+  CRect m_lastBorderRect;
 
 private:
   CGUIBorderedImage(const CGUIBorderedImage& right);

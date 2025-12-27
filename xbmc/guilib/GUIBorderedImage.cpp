@@ -45,9 +45,16 @@ void CGUIBorderedImage::Process(unsigned int currentTime, CDirtyRegionList &dirt
                        m_textureCurrent->GetXPosition() + m_textureCurrent->GetWidth(),
                        m_textureCurrent->GetYPosition() + m_textureCurrent->GetHeight());
     rect.Intersect(m_textureCurrent->GetRenderRect());
-    m_borderImage->SetPosition(rect.x1 - m_borderSize.x1, rect.y1 - m_borderSize.y1);
-    m_borderImage->SetWidth(rect.Width() + m_borderSize.x1 + m_borderSize.x2);
-    m_borderImage->SetHeight(rect.Height() + m_borderSize.y1 + m_borderSize.y2);
+
+    // Only update border position/size when the rect actually changes
+    if (m_lastBorderRect != rect)
+    {
+      m_borderImage->SetPosition(rect.x1 - m_borderSize.x1, rect.y1 - m_borderSize.y1);
+      m_borderImage->SetWidth(rect.Width() + m_borderSize.x1 + m_borderSize.x2);
+      m_borderImage->SetHeight(rect.Height() + m_borderSize.y1 + m_borderSize.y2);
+      m_lastBorderRect = rect;
+    }
+
     m_borderImage->SetDiffuseColor(m_diffuseColor);
     if (m_borderImage->Process(currentTime))
       MarkDirtyRegion();
