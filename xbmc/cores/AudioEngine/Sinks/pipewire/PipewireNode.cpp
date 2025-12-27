@@ -12,6 +12,8 @@
 #include "PipewireCore.h"
 #include "PipewireRegistry.h"
 #include "PipewireThreadLoop.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -207,11 +209,12 @@ void CPipewireNode::Param(void* userdata,
                           const struct spa_pod* param)
 {
   auto& node = *reinterpret_cast<CPipewireNode*>(userdata);
-  auto& loop = node.GetRegistry().GetCore().GetContext().GetThreadLoop();
 
-  node.Parse(SPA_POD_TYPE(param), SPA_POD_BODY(param), SPA_POD_BODY_SIZE(param));
-
-  loop.Signal(false);
+  if (node.Parse(SPA_POD_TYPE(param), SPA_POD_BODY(param), SPA_POD_BODY_SIZE(param)))
+  {
+    if (IAE* ae = CServiceBroker::GetActiveAE(); ae)
+      ae->DeviceChange();
+  }
 }
 
 pw_node_events CPipewireNode::CreateNodeEvents()
