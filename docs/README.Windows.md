@@ -81,23 +81,21 @@ After install finishes, add java's executable file path to your `PATH` **[enviro
 ### NSIS install notes
 Default options are fine.
 
-### Visual Studio 2022 install notes
+### Visual Studio 2022/2026 install notes
 Start the Visual Studio installer and click **Workloads** select
 * Under **Desktop & Mobile** section select
   * `Desktop development with C++`
-    * Select the optional component: `Windows 11 SDK (10.0.22621.0)`
+    * Select the optional component: `Windows 11 SDK (10.0.22621.0)` (or higher version)
   * `WinUI application development` (if compiling for UWP)
+    * Select the optional component: `Universal Windows Platform tools`
+    * Select the optional component:
+      * `C++ (v143) Universal Windows Platform tools` (VS 2022)
+      * `C++ Universal Windows Platform tools (Latest)` (VS 2026)
 
-### Visual Studio 2026 install notes
-Start the Visual Studio installer and click **Workloads** select
-* Under **Desktop & Mobile** section select
-  * `Desktop development with C++`
-    * Select the optional component: `Windows 11 SDK (10.0.26100.x)`
-  * `WinUI application development` (if compiling for UWP)
-
-Click in **Individual components** select
+Click in **Individual components**
 * Under **Compilers, build tools and runtimes** section select
-  * `MSVC Build Tools for ARM64/ARM64EC (Latest)` (if compiling for ARM64)
+  * `MSVC v143 - VS 2022 C++ ARM64 build tools (Latest)` (if compiling the ARM64 desktop version with VS 2022)
+  * `MSVC Build Tools for ARM64/ARM64EC (Latest)` (if compiling the ARM64 desktop version with VS 2026)
 
 Hit `Install`. Yes, it will download and install almost 8GB of stuff for x64 only or up to 24GB if everything is selected for UWP / ARM64 as well.
 
