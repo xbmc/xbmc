@@ -87,6 +87,12 @@ Start the Visual Studio installer and click **Workloads** select
   * `Desktop development with C++`
     * Select the optional component: `Windows 11 SDK (10.0.22621.0)`
   * `WinUI application development` (if compiling for UWP)
+    * Select the optional component: `Universal Windows Platform tools`
+    * Select the optional component: `C++ (v143) Universal Windows Platform tools`
+
+Click in **Individual components**
+* Under **Compilers, build tools and runtimes** section select
+  * `MSVC v143 - VS 2022 C++ ARM64 build tools (Latest)` (if compiling for ARM64)
 
 ### Visual Studio 2026 install notes
 Start the Visual Studio installer and click **Workloads** select
