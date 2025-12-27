@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Help and Support
+    url: https://forum.kodi.tv/index.php
+    about: Please post questions and ask for help and support in the forum
+  - name: Feature Requests
+    url: https://forum.kodi.tv/forumdisplay.php?fid=9
+    about: Please make feature requests via the forum
