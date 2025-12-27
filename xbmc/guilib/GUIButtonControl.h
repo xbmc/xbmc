@@ -93,6 +93,7 @@ protected:
   std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int  m_focusCounter;
   unsigned char m_alpha;
+  unsigned char m_lastFocusAlpha = 255;
 
   float m_minWidth;
   float m_maxWidth;
