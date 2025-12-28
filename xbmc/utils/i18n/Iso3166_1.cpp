@@ -36,3 +36,8 @@ bool CIso3166_1::ContainsAlpha3(std::string_view code)
 {
   return std::ranges::binary_search(TableISO3166_1ByAlpha3, code, {}, &ISO3166_1::alpha3);
 }
+
+bool CIso3166_1::ContainsAlpha2(std::string_view code)
+{
+  return std::ranges::binary_search(TableISO3166_1, code, {}, &ISO3166_1::alpha2);
+}

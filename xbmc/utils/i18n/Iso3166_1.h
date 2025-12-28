@@ -39,5 +39,12 @@ public:
    * \return true for an existing alpha-3 code, false otherwise.
    */
   static bool ContainsAlpha3(std::string_view code);
+
+  /*!
+   * \brief Existence of the provided alpha-2 code in the collection of ISO 3166-1 regions.
+   * \param[in] code lowercase alpha-2 code
+   * \return true for an existing alpha-2 code, false otherwise.
+   */
+  static bool ContainsAlpha2(std::string_view code);
 };
 } // namespace KODI::UTILS::I18N
