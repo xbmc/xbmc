@@ -1768,7 +1768,7 @@ bool CVideoInfoTag::SetOriginalLanguage(std::string language, LanguageTagSource 
   }
 
   StringUtils::Trim(language);
-  if (g_LangCodeExpander.ConvertToAudioBcp47(language, language))
+  if (g_LangCodeExpander.ConvertToBcp47(language, language))
   {
     m_originalLanguage = std::move(language);
     return true;
