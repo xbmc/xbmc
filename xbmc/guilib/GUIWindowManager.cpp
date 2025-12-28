@@ -523,7 +523,9 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   {
     std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
-    for (auto it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
+    // make copy of vector as OnMessage may modify m_activeDialogs (e.g., via DeInit)
+    auto activeDialogs = m_activeDialogs;
+    for (auto it = activeDialogs.rbegin(); it != activeDialogs.rend(); ++it)
     {
       (*it)->OnMessage(message);
     }
@@ -614,12 +616,12 @@ void CGUIWindowManager::AddUniqueInstance(CGUIWindow *window)
   Add(window);
 }
 
-void CGUIWindowManager::Add(CGUIWindow* pWindow)
+bool CGUIWindowManager::Add(CGUIWindow* pWindow)
 {
   if (!pWindow)
   {
     CLog::Log(LOGERROR, "Attempted to add a NULL window pointer to the window manager.");
-    return;
+    return false;
   }
   // push back all the windows if there are more than one covered by this class
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
@@ -634,18 +636,25 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
                 "Error, trying to add a second window with id {} "
                 "to the window manager",
                 id);
-      return;
+      return false;
     }
 
     m_mapWindows.insert(std::make_pair(id, windowPtr));
   }
+  return true;
 }
 
 void CGUIWindowManager::AddCustomWindow(CGUIWindow* pWindow)
 {
+  if (!pWindow)
+    return;
+
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-  Add(pWindow);
-  auto it = m_mapWindows.find(pWindow->GetID());
+  int windowId = pWindow->GetID(); // Get ID before Add() takes ownership
+  if (!Add(pWindow))
+    return; // Add() failed, window was deleted
+
+  auto it = m_mapWindows.find(windowId);
   if (it != m_mapWindows.end())
     m_vecCustomWindows.emplace_back(it->second);
 }
