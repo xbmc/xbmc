@@ -1223,9 +1223,16 @@ void CGUIWindowManager::Process(unsigned int currentTime)
     pWindow->DoProcess(currentTime, m_dirtyregions);
 
   // process all dialogs - visibility may change etc.
-  for (const auto& entry : m_mapWindows)
+  // make copy of map as skin reload can modify m_mapWindows during iteration
+  auto mapWindows = m_mapWindows;
+  for (const auto& entry : mapWindows)
   {
-    CGUIWindow *pWindow = entry.second;
+    // verify window still exists (could be deleted during skin reload)
+    auto it = m_mapWindows.find(entry.first);
+    if (it == m_mapWindows.end() || it->second != entry.second)
+      continue;
+
+    CGUIWindow* pWindow = entry.second;
     if (pWindow && pWindow->IsDialog())
       pWindow->DoProcess(currentTime, m_dirtyregions);
   }
