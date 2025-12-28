@@ -852,8 +852,9 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
 
     if (m_mediaType == "episodes")
     {
-      std::string field = StringUtils::Format("CAST(strftime(\"%%s\", c{:02}) AS INTEGER)",
-                                              VIDEODB_ID_EPISODE_AIRED);
+      const std::string name = DatabaseUtils::GetField(
+          FieldAirDate, CMediaTypes::FromString(m_mediaType), DatabaseQueryPart::SELECT);
+      const std::string field = StringUtils::Format("CAST(strftime(\"%%s\", {}) AS INTEGER)", name);
 
       GetMinMax("episode_view", field, min, max);
       interval = 60 * 60 * 24 * 7; // 1 week
@@ -938,10 +939,19 @@ bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::strin
     return false;
   }
 
-  std::string strSQL = "SELECT %s FROM %s ";
+  const std::string prepField = db->PrepareSQL(field);
+  const std::string strSQL = "SELECT %s FROM %s ";
 
-  min = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, ("MIN(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
-  max = static_cast<int>(strtol(db->GetSingleValue(db->PrepareSQL(strSQL, ("MAX(" + field + ")").c_str(), table.c_str()) + strSQLExtra).c_str(), NULL, 0));
+  min = static_cast<int>(strtol(
+      db->GetSingleValue(db->PrepareSQL(strSQL, ("MIN(" + prepField + ")").c_str(), table.c_str()) +
+                         strSQLExtra)
+          .c_str(),
+      NULL, 0));
+  max = static_cast<int>(strtol(
+      db->GetSingleValue(db->PrepareSQL(strSQL, ("MAX(" + prepField + ")").c_str(), table.c_str()) +
+                         strSQLExtra)
+          .c_str(),
+      NULL, 0));
 
   db->Close();
   delete db;

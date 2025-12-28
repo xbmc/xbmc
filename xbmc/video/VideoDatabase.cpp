@@ -55,6 +55,7 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "video/VideoDatabaseColumns.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
@@ -13287,4 +13288,9 @@ std::vector<std::string> CVideoDatabase::GetUsedImages(
     CLog::LogF(LOGERROR, "failed");
   }
   return {};
+}
+
+void CVideoDatabase::SetTrailerForMovie(int idMovie, const std::string& trailer)
+{
+  SetSingleValue(VideoDbContentType::MOVIES, VIDEODB_ID_TRAILER, idMovie, trailer);
 }

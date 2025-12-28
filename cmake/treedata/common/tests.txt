@@ -3,6 +3,7 @@ xbmc/addons/test                  test/addons
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
 xbmc/cores/VideoPlayer/test/edl   test/edl
 xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
+xbmc/dbwrappers/test              test/dbwrappers
 xbmc/filesystem/test              test/filesystem
 xbmc/filesystem/VideoDatabaseDirectory/test test/videodatabasedirectory
 xbmc/games/addons/input/test      test/games/addons/input
