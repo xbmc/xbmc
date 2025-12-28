@@ -317,14 +317,15 @@ void CURL::SetFileName(std::string strFileName)
 {
   m_strFileName = std::move(strFileName);
 
-  size_t slash = m_strFileName.find_last_of(GetDirectorySeparator());
+  const char separator{!URIUtils::IsDOSPath(m_strFileName) ? GetDirectorySeparator() : '\\'};
+  size_t slash = m_strFileName.find_last_of(separator);
   size_t period = m_strFileName.find_last_of('.');
   if(period != std::string::npos && (slash == std::string::npos || period > slash))
     m_strFileType = m_strFileName.substr(period+1);
   else
     m_strFileType = "";
 
-  slash = m_strFileName.find_first_of(GetDirectorySeparator());
+  slash = m_strFileName.find_first_of(separator);
   if(slash == std::string::npos)
     m_strShareName = m_strFileName;
   else
@@ -418,11 +419,12 @@ char CURL::GetDirectorySeparator() const
   //We don't want to use IsLocal here, it can return true
   //for network protocols that matches localhost or hostname
   //we only ever want to use \ for win32 local filesystem
-  if ( m_strProtocol.empty() )
+  if (m_strProtocol.empty())
     return '\\';
-  else
 #endif
-    return '/';
+  if (URIUtils::IsDOSPath(m_strFileName))
+    return '\\';
+  return '/';
 }
 
 std::string CURL::Get() const
@@ -884,7 +886,7 @@ bool CURL::IsPicture() const
 bool CURL::HasParentInHostname() const
 {
   return IsProtocol("zip") || IsProtocol("apk") || IsProtocol("bluray") || IsProtocol("udf") ||
-         IsProtocol("iso9660") || IsProtocol("xbt") || IsProtocol("rar") ||
+         IsProtocol("iso9660") || IsProtocol("xbt") || IsProtocol("rar") || IsProtocol("archive") ||
          (CServiceBroker::IsAddonInterfaceUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(GetProtocol()));
 }

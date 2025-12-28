@@ -107,6 +107,14 @@ std::string CFileExtensionProvider::GetVideoExtensions() const
   return extensions;
 }
 
+std::string CFileExtensionProvider::GetArchiveExtensions() const
+{
+  std::string extensions(m_advancedSettings->m_archiveExtensions);
+  extensions += '|' + GetAddonExtensions(AddonType::VFS);
+
+  return extensions;
+}
+
 std::string CFileExtensionProvider::GetFileFolderExtensions() const
 {
   std::string extensions(GetAddonFileFolderExtensions(AddonType::VFS));

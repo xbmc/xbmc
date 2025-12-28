@@ -396,7 +396,9 @@ std::string GetPartAndRemoveDiscFromPath(std::string& path,
     return {};
 
   path = URIUtils::GetDirectory(path);
-  path = URIUtils::IsDiscPath(path) ? URIUtils::GetDiscBase(path) : path;
+  path = URIUtils::IsDiscPath(path) || URIUtils::IsBlurayPath(path)
+             ? URIUtils::GetDiscBasePath(path)
+             : path;
   std::string basePath{path};
   URIUtils::RemoveSlashAtEnd(basePath);
 
@@ -1084,7 +1086,8 @@ std::string CUtil::ValidatePath(std::string path, bool bFixDoubleSlashes /* = fa
   else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
   {
-    StringUtils::Replace(path, '\\', '/');
+    if (!URIUtils::IsDOSPath(path))
+      StringUtils::Replace(path, '\\', '/');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
@@ -1220,13 +1223,16 @@ int CUtil::GetMatchingSource(const std::string& strPath1,
 
   // stack://
   if (checkURL.IsProtocol("stack"))
-    strPath.erase(0, 8); // remove the stack protocol
+    strPath = CStackDirectory::GetBasePath(checkURL.Get());
 
   // bluray://
   if (checkURL.IsProtocol("bluray"))
     strPath = URIUtils::GetDiscBase(checkURL.Get()); // get the actual path on disc
 
   if (checkURL.IsProtocol("shout"))
+    strPath = checkURL.GetHostName();
+
+  if (URIUtils::IsArchive(checkURL))
     strPath = checkURL.GetHostName();
 
   if (checkURL.IsProtocol("multipath"))
@@ -1890,6 +1896,7 @@ std::string CUtil::GetFrameworksPath(bool forPython)
   return strFrameworksPath;
 }
 
+// Used to determine external audio and subtitles location and filename
 void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
                                         std::string& basePath,
                                         std::string& videoFileName)
@@ -1901,6 +1908,18 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
     CFileItem item(path, false);
     videoFileName = item.GetMovieName();
     basePath = item.GetLocalMetadataPath();
+  }
+  else if (const CURL url{videoPath}; URIUtils::IsArchive(url))
+  {
+    CFileItem item(videoPath, false);
+    videoFileName = item.GetMovieName();
+    basePath = item.GetLocalMetadataPath();
+  }
+  else if (URIUtils::IsStack(videoPath))
+  {
+    CFileItem item(videoPath, false);
+    videoFileName = item.GetMovieName();
+    basePath = URIUtils::GetBasePath(videoPath);
   }
   else
   {
