@@ -176,52 +176,6 @@ TEST(TestI18nBcp47, ValidateExtensions)
   EXPECT_FALSE(tag->IsValid());
 }
 
-struct TestRecommendedCasing
-{
-  std::string input;
-  std::string expected;
-};
-
-std::ostream& operator<<(std::ostream& os, const TestRecommendedCasing& rhs)
-{
-  return os << rhs.input;
-}
-
-const TestRecommendedCasing RecommendedCasingTests[] = {
-    {"Ab", "ab"},
-    {"aB", "ab"},
-    {"ab-ExT-eXt", "ab-ext-ext"},
-    {"En-Ca-X-cA", "en-CA-x-ca"},
-    {"eN-cA-x-cA", "en-CA-x-ca"},
-    {"az-lAtN-x-Latn", "az-Latn-x-latn"},
-    {"ab-AbCdE-bCdEfGhI", "ab-abcde-bcdefghi"},
-    {"Zh-GuOyU", "zh-guoyu"},
-};
-
-class RecommendedCasingTester : public testing::Test,
-                                public testing::WithParamInterface<TestRecommendedCasing>
-{
-};
-
-TEST_P(RecommendedCasingTester, ParseTag)
-{
-  auto& param = GetParam();
-
-  auto actual = CBcp47::ParseTag(param.input);
-
-  EXPECT_TRUE(actual.has_value());
-
-  if (actual.has_value())
-  {
-    // { required to quiet clang warning about dangling else
-    EXPECT_EQ(param.expected, actual->Format());
-  }
-}
-
-INSTANTIATE_TEST_SUITE_P(TestI18nBcp47,
-                         RecommendedCasingTester,
-                         testing::ValuesIn(RecommendedCasingTests));
-
 TEST(TestI18nBcp47, ValidateExtLang)
 {
   auto tag = CBcp47::ParseTag("ar-aao");

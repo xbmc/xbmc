@@ -72,27 +72,10 @@ bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
   if (LookupInLangAddons(code, desc))
     return true;
 
-  // Language code with subtag is supported only with language addons
-  // or with user defined map, then if not found we fallback by obtaining
-  // the primary code description only and appending the remaining
-  int iSplit = code.find('-');
-  if (iSplit > 0)
+  if (auto tag = CBcp47::ParseTag(code); tag.has_value())
   {
-    std::string primaryTagDesc;
-    const bool hasPrimaryTagDesc = Lookup(code.substr(0, iSplit), primaryTagDesc);
-    std::string subtagCode = code.substr(iSplit + 1);
-    if (hasPrimaryTagDesc)
-    {
-      if (!primaryTagDesc.empty())
-        desc = primaryTagDesc;
-      else
-        desc = code.substr(0, iSplit);
-
-      if (!subtagCode.empty())
-        desc += " - " + subtagCode;
-
-      return true;
-    }
+    desc = tag.value().Format(Bcp47FormattingStyle::FORMAT_ENGLISH);
+    return true;
   }
 
   return false;

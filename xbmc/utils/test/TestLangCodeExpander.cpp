@@ -11,16 +11,6 @@
 
 #include <gtest/gtest.h>
 
-// Trick to make protected methods accessible for testing
-class CLangCodeExpanderTest : public CLangCodeExpander
-{
-public:
-  static bool CallLookupInISO639Tables(const std::string& code, std::string& desc)
-  {
-    return LookupInISO639Tables(code, desc);
-  }
-};
-
 TEST(TestLangCodeExpander, ConvertISO6391ToISO6392B)
 {
   std::string refstr;
@@ -181,25 +171,6 @@ TEST(TestLangCodeExpander, ConvertToISO6392T)
   EXPECT_EQ(refstr, varstr);
 }
 
-TEST(TestLangCodeExpander, LookupInISO639Tables)
-{
-  std::string refstr, varstr;
-
-  refstr = "English";
-  EXPECT_TRUE(CLangCodeExpanderTest::CallLookupInISO639Tables("en", varstr));
-  EXPECT_EQ(refstr, varstr);
-
-  EXPECT_TRUE(CLangCodeExpanderTest::CallLookupInISO639Tables("eng", varstr));
-  EXPECT_EQ(refstr, varstr);
-
-  // There are no ISO 639-1 codes reserved for private use - use currently unassigned zz to test expected failure
-  EXPECT_FALSE(CLangCodeExpanderTest::CallLookupInISO639Tables("zz", varstr));
-
-  // Not alpha-2 or alpha-3 code format
-  EXPECT_FALSE(CLangCodeExpanderTest::CallLookupInISO639Tables("a", varstr));
-  EXPECT_FALSE(CLangCodeExpanderTest::CallLookupInISO639Tables("fr-CA", varstr));
-}
-
 struct TestISO6392ToISO6391
 {
   std::string input;
@@ -237,3 +208,77 @@ TEST_P(ISO6392ToISO6391Tester, Lookup)
 INSTANTIATE_TEST_SUITE_P(TestLangCodeExpander,
                          ISO6392ToISO6391Tester,
                          testing::ValuesIn(ISO6392ToISO6391Tests));
+
+struct TestBcp47Conversion
+{
+  std::string input;
+  bool status;
+  std::string bcp47;
+};
+
+// clang-format off
+const TestBcp47Conversion Bcp47ConversionTests[] = {
+    {"en", true, "en"}, // ISO 639-1
+    {"eng", true, "en"}, // identical ISO 639-2 B and T
+    {"zho", true, "zh"}, // ISO 639-2/T
+    {"chi", true, "zh"}, // ISO 639-2/B
+    {"zzz", false, ""}, // not assigned
+    {"en-AU", true, "en-AU"},
+    {"English", true, "en"}, // Description of ISO 639-1 code
+    {"Valencian", true, "ca"}, // additional description of cat, which is the alpha-3 of ca
+    {"Adygei", true, "ady"}, // Description of ISO 639-2 code
+    {"", false, ""},
+    {" en ", true, "en"},
+    {"EN", true, "en"},
+};
+// clang-format on
+
+class Bcp47ConversionTester : public testing::Test,
+                              public testing::WithParamInterface<TestBcp47Conversion>
+{
+};
+
+TEST_P(Bcp47ConversionTester, Convert)
+{
+  std::string output;
+  EXPECT_EQ(GetParam().status, g_LangCodeExpander.ConvertToBcp47(GetParam().input, output));
+  EXPECT_EQ(GetParam().bcp47, output);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestLangCodeExpander,
+                         Bcp47ConversionTester,
+                         testing::ValuesIn(Bcp47ConversionTests));
+
+struct TestLookup
+{
+  std::string input;
+  bool status;
+  std::string expected;
+};
+
+// clang-format off
+const TestLookup LookupTests[] = {
+    {"en", true, "English"},
+    {"eng", true, "English"},
+    {"en-AU", true, "English (Australia)"},
+    {"EN", true, "English"},
+    {" en ", true, "English"},
+    {"", false, ""},
+    {"123", false, ""},
+    // {"English", false, ""}, won't be rejected until registry support is added
+};
+// clang-format on
+
+class LookupTester : public testing::Test, public testing::WithParamInterface<TestLookup>
+{
+};
+
+TEST_P(LookupTester, Lookup)
+{
+  std::string output;
+
+  EXPECT_EQ(GetParam().status, g_LangCodeExpander.Lookup(GetParam().input, output));
+  EXPECT_EQ(GetParam().expected, output);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestLangCodeExpander, LookupTester, testing::ValuesIn(LookupTests));

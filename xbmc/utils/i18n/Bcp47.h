@@ -16,6 +16,7 @@
 
 namespace KODI::UTILS::I18N
 {
+class CBcp47Formatter;
 struct ParsedBcp47Tag;
 
 class CBcp47
@@ -44,10 +45,11 @@ public:
   void Canonicalize();
 
   /*!
-   * \brief Format the tag as BCP-47 with the recommended casing.
-   * \return the formatted tag
+   * \brief Format the tag to text according to the provided format
+   * \param[in] style Format of the output
+   * \return The formatted tag
    */
-  std::string Format() const;
+  std::string Format(Bcp47FormattingStyle style = Bcp47FormattingStyle::FORMAT_BCP47) const;
 
   // Accessors
   const std::string& GetLanguage() const { return m_language; }
@@ -63,10 +65,12 @@ public:
    * \brief Identify grandfathered tags.
    * \return true for a grandfathered tag, false otherwise.
    */
-  bool IsGrandfathered() const { return !m_grandfathered.empty(); }
+  bool IsGrandfathered() const { return m_type == Bcp47TagType::GRANDFATHERED; }
 
 private:
   CBcp47() = default;
+
+  friend class CBcp47Formatter;
 
   bool Validate();
   bool IsValidLanguage() const;
@@ -77,6 +81,7 @@ private:
 
   bool m_isValid{false};
 
+  Bcp47TagType m_type = Bcp47TagType::WELL_FORMED;
   std::string m_language;
   std::vector<std::string> m_extLangs;
   std::string m_script;

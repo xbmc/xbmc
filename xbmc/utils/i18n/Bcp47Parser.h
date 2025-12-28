@@ -16,13 +16,6 @@
 
 namespace KODI::UTILS::I18N
 {
-enum class Bcp47TagType
-{
-  WELL_FORMED, ///< The tag conforms to the syntax specified by RFC5646 and is not a special case.
-  GRANDFATHERED, ///< The tag is a regular or irregular grandfathered tag.
-  PRIVATE_USE, ///< The tag consists solely of private-use subtags.
-};
-
 struct ParsedBcp47Tag
 {
   Bcp47TagType m_type = Bcp47TagType::WELL_FORMED;

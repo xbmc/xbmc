@@ -10,6 +10,7 @@
 
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/i18n/Bcp47Formatter.h"
 #include "utils/i18n/Bcp47Parser.h"
 #include "utils/i18n/Iso3166_1.h"
 #include "utils/i18n/Iso639.h"
@@ -19,19 +20,17 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <array>
-#include <cassert>
-#include <string_view>
 
 using namespace KODI::UTILS::I18N;
 using namespace std::literals;
 
 bool CBcp47::operator==(const ParsedBcp47Tag& other) const
 {
-  return other.m_language == m_language && other.m_extLangs == m_extLangs &&
-         other.m_script == m_script && other.m_region == m_region &&
-         other.m_variants == m_variants && other.m_extensions == m_extensions &&
-         other.m_privateUse == m_privateUse && other.m_grandfathered == m_grandfathered;
+  return other.m_type == m_type && other.m_language == m_language &&
+         other.m_extLangs == m_extLangs && other.m_script == m_script &&
+         other.m_region == m_region && other.m_variants == m_variants &&
+         other.m_extensions == m_extensions && other.m_privateUse == m_privateUse &&
+         other.m_grandfathered == m_grandfathered;
 }
 
 std::optional<CBcp47> CBcp47::ParseTag(std::string str)
@@ -42,6 +41,7 @@ std::optional<CBcp47> CBcp47::ParseTag(std::string str)
     return std::nullopt;
 
   CBcp47 tag;
+  tag.m_type = p->m_type;
   tag.m_language = std::move(p->m_language);
   tag.m_extLangs = std::move(p->m_extLangs);
   tag.m_script = std::move(p->m_script);
@@ -61,7 +61,7 @@ bool CBcp47::Validate()
   // Validity rules from RFC5646:
   // 1) well-formed: always true as the object can only be created from well-formed text tags.
   //    Exception: irregular grandfathered tags do not have to be well formed in order to be valid
-  if (!m_grandfathered.empty())
+  if (m_type == Bcp47TagType::GRANDFATHERED)
     return true;
 
   // 2) either the tag is in the list of grandfathered tags or the primary language, extended
@@ -224,63 +224,9 @@ bool CBcp47::HasDuplicateExtensions() const
   return extensions.end() != std::ranges::adjacent_find(extensions);
 }
 
-std::string CBcp47::Format() const
+std::string CBcp47::Format(Bcp47FormattingStyle style) const
 {
-  std::string tag;
-
-  if (!m_grandfathered.empty())
-    return m_grandfathered;
-
-  if (!m_language.empty())
-  {
-    tag = m_language;
-
-    if (!m_extLangs.empty())
-    {
-      tag.push_back('-');
-      tag.append(StringUtils::Join(m_extLangs, "-"));
-    }
-
-    if (!m_script.empty())
-    {
-      tag.push_back('-');
-      std::string s = m_script;
-      StringUtils::ToCapitalize(s);
-      tag.append(s);
-    }
-
-    if (!m_region.empty())
-    {
-      tag.push_back('-');
-      tag.append(StringUtils::ToUpper(m_region));
-    }
-
-    if (!m_variants.empty())
-    {
-      tag.push_back('-');
-      tag.append(StringUtils::Join(m_variants, "-"));
-    }
-
-    if (!m_extensions.empty())
-    {
-      for (const auto& ext : m_extensions)
-      {
-        tag.push_back('-');
-        tag.push_back(ext.name);
-        tag.push_back('-');
-        tag.append(StringUtils::Join(ext.segments, "-"));
-      }
-    }
-  }
-
-  if (!m_privateUse.empty())
-  {
-    if (!tag.empty())
-      tag.push_back('-');
-    tag.append("x-");
-    tag.append(StringUtils::Join(m_privateUse, "-"));
-  }
-  return tag;
+  return CBcp47Formatter::Format(*this, style);
 }
 
 void CBcp47::Canonicalize()

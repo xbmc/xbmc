@@ -46,5 +46,12 @@ public:
    * \return true for an existing alpha-2 code, false otherwise.
    */
   static bool ContainsAlpha2(std::string_view code);
+
+  /*!
+   * \brief Retrieve the name of the provided ISO 3166-1 regionl code.
+   * \param[in] code alpha-2 or alpha-3 ISO 3166-1 code
+   * \return English name of the region, nullopt if no region by that code exists.
+   */
+  static std::optional<std::string> LookupByCode(std::string_view code);
 };
 } // namespace KODI::UTILS::I18N
