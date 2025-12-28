@@ -633,11 +633,20 @@ bool CLangCodeExpander::ConvertToBcp47(const std::string& text, std::string& bcp
 
 std::string CLangCodeExpander::FindLanguageCodeWithSubtag(const std::string& str)
 {
-  CRegExp regLangCode;
-  if (regLangCode.RegComp("\\{(([A-Za-z]{2,3})-([A-Za-z]{2}|[0-9]{3}|[A-Za-z]{4}))\\}") &&
-      regLangCode.RegFind(str) >= 0)
-  {
-    return regLangCode.GetMatch(1);
-  }
+  std::size_t begin = str.find("{");
+
+  if (begin == std::string::npos)
+    return "";
+
+  std::size_t end = str.find("}", begin + 1);
+
+  if (end == std::string::npos)
+    return "";
+
+  const auto tag = CBcp47::ParseTag(str.substr(begin + 1, end - begin - 1));
+
+  if (tag.has_value())
+    return tag->Format();
+
   return "";
 }

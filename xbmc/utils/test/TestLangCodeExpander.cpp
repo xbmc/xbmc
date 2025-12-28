@@ -282,3 +282,36 @@ TEST_P(LookupTester, Lookup)
 }
 
 INSTANTIATE_TEST_SUITE_P(TestLangCodeExpander, LookupTester, testing::ValuesIn(LookupTests));
+
+struct TestFindTag
+{
+  std::string input;
+  std::string expected;
+};
+
+// clang-format off
+const TestFindTag FindTagTests[] = {
+    {"track name", ""},
+    {"track name {en}", "en"},
+    {"track name {en-US}", "en-US"},
+    {"track name {es-419}", "es-419"},
+    {"track name {en} more text", "en"},
+    {"{en} track name", "en"},
+    {"track name {", ""},
+    {"track name {}", ""},
+    {"}{en}{fr}", "en"},
+    {"track name {EN}", "en"},
+    {"track name { en }", "en"},
+};
+// clang-format on
+
+class FindTagTester : public testing::Test, public testing::WithParamInterface<TestFindTag>
+{
+};
+
+TEST_P(FindTagTester, Find)
+{
+  EXPECT_EQ(GetParam().expected, g_LangCodeExpander.FindLanguageCodeWithSubtag(GetParam().input));
+}
+
+INSTANTIATE_TEST_SUITE_P(TestLangCodeExpander, FindTagTester, testing::ValuesIn(FindTagTests));
