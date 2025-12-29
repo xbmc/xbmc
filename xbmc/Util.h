@@ -290,9 +290,21 @@ protected:
     *   \param[out] associatedFiles A vector containing the full paths of all found associated files.
     */
   static void ScanPathsForAssociatedItems(const std::string& videoName,
-                                          const CFileItemList& items,
+                                          CFileItemList& items,
                                           const std::vector<std::string>& item_exts,
                                           std::vector<std::string>& associatedFiles);
+
+  /** \brief Determines if the given path is an archive and scans it for associated files of a given video.
+    *   \param path The path of the file.
+    *   \param videoName The name of the video file.
+    *   \param item_exts A vector of extensions specifying the associated files.
+    *   \param associatedFiles A vector containing the full paths of all found associated files.
+    *   \return An integer indicating the number of associated files found or -1 if not an archive.
+    */
+  static int DetermineArchiveAndScanForAssociatedItems(const std::string& path,
+                                                       const std::string& videoName,
+                                                       const std::vector<std::string>& item_exts,
+                                                       std::vector<std::string>& associatedFiles);
 
   /** \brief Searches in an archive for associated files of a given video.
     *   \param[in]  strArchivePath The full path of the archive.
