@@ -13,9 +13,11 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+#include <algorithm>
 #include <array>
 #include <queue>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 class IJobCallback;
@@ -159,6 +161,14 @@ public:
    */
   CJob* GetNextJob();
 
+  /*!
+   \brief Get the number of pending callbacks for a job during completion.
+   \param job pointer to the job to check.
+   \return number of callbacks still waiting to be notified, 0 if job is not in completion phase.
+   \sa CJob::IsShared()
+   */
+  size_t GetPendingCallbackCount(const CJob* job) const;
+
 private:
   CJobManager(const CJobManager&) = delete;
   CJobManager const& operator=(CJobManager const&) = delete;
@@ -172,9 +182,10 @@ private:
     CWorkItem(CJob* job, unsigned int id, CJob::PRIORITY priority, IJobCallback* callback)
       : m_job(job),
         m_id(id),
-        m_callback(callback),
         m_priority(priority)
     {
+      if (callback)
+        m_callbacks.push_back(callback);
     }
 
     void FreeJob()
@@ -183,17 +194,30 @@ private:
       m_job = nullptr;
     }
 
-    void Cancel() { m_callback = nullptr; }
+    void Cancel() { m_callbacks.clear(); }
     CJob* GetJob() const { return m_job; }
     unsigned int GetId() const { return m_id; }
-    IJobCallback* GetCallback() const { return m_callback; }
-    void SetCallback(IJobCallback* callback) { m_callback = callback; }
+    const std::vector<IJobCallback*>& GetCallbacks() const { return m_callbacks; }
+    void AddCallback(IJobCallback* callback)
+    {
+      if (callback &&
+          std::find(m_callbacks.begin(), m_callbacks.end(), callback) == m_callbacks.end())
+        m_callbacks.push_back(callback);
+    }
+    IJobCallback* PopCallback()
+    {
+      if (m_callbacks.empty())
+        return nullptr;
+      IJobCallback* callback = m_callbacks.back();
+      m_callbacks.pop_back();
+      return callback;
+    }
     CJob::PRIORITY GetPriority() const { return m_priority; }
 
   private:
     CJob* m_job{nullptr};
     unsigned int m_id{0};
-    IJobCallback* m_callback{nullptr};
+    std::vector<IJobCallback*> m_callbacks;
     CJob::PRIORITY m_priority{CJob::PRIORITY::PRIORITY_LOW};
   };
 
@@ -220,4 +244,7 @@ private:
   mutable CCriticalSection m_section;
   CEvent m_jobEvent;
   bool m_running{true};
+
+  // Tracks pending callback count for jobs in completion phase, used by CJob::IsShared()
+  std::unordered_map<const CJob*, size_t> m_pendingCallbacks;
 };
