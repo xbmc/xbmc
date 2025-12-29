@@ -8862,6 +8862,8 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
 
     if (URIUtils::IsMultiPath(strPath))
       strPath2 = CMultiPathDirectory::GetFirstPath(strPath);
+    else if (URIUtils::IsStack(strPath))
+      strPath2 = CStackDirectory::GetFirstStackedFile(strPath);
     else
       strPath2 = strPath;
 
