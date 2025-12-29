@@ -29,6 +29,8 @@ namespace WINDOWING
 namespace GBM
 {
 
+#define QUIRK_NEEDSPRIMARY 1 << 0
+
 struct drm_fb
 {
   struct gbm_bo* bo = nullptr;
@@ -91,6 +93,8 @@ protected:
   int m_inFenceFd{-1};
   int m_outFenceFd{-1};
 
+  int m_drmQuirks{0};
+
   std::vector<std::unique_ptr<CDRMPlane>> m_planes;
 
 private:
@@ -101,11 +105,8 @@ private:
   bool RestoreOriginalMode();
   RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
   void PrintDrmDeviceInfo(drmDevicePtr device);
-  bool CheckPlane(CDRMPlane* plane,
-                  uint64_t w,
-                  uint64_t h,
-                  uint32_t format,
-                  uint64_t modifier = DRM_FORMAT_MOD_LINEAR);
+  bool CheckPlane(
+      CDRMPlane* plane, uint64_t w, uint64_t h, uint32_t format, uint64_t modifier, bool isgui);
 
   int m_renderFd;
   const char* m_renderDevicePath{nullptr};

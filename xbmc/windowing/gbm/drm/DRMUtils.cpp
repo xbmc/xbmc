@@ -157,10 +157,20 @@ bool CDRMUtils::FindPreferredMode()
 }
 
 bool CDRMUtils::CheckPlane(
-    CDRMPlane* plane, uint64_t w, uint64_t h, uint32_t format, uint64_t modifier)
+    CDRMPlane* plane, uint64_t w, uint64_t h, uint32_t format, uint64_t modifier, bool isgui)
 {
   // format is not supported
   if (!plane->SupportsFormatAndModifier(format, modifier))
+    return false;
+
+  auto plane_type = plane->GetPropertyValue("type");
+  /* https://github.com/torvalds/linux/blob/7d0a66e4bb9081d75c82ec4957c50034cb0ea449/drivers/
+  gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c#L683-L692
+  
+  amdgpu drm driver needs at least 1 primary plane to active when doing a modeset, this effectively
+  means that we select priamry plane for gui in amdgpu backend.
+  */
+  if (isgui && (m_drmQuirks & QUIRK_NEEDSPRIMARY) && plane_type.value_or(0) != PLANE_TYPE_PRIMARY)
     return false;
 
   /* the wxh capability is provided by the INPUT_WIDTH/HEIGHT of the plane prop.
@@ -176,7 +186,6 @@ bool CDRMUtils::CheckPlane(
   if (input_width_limits && input_width_limits.value()[1] < w)
     return false;
 
-  auto plane_type = plane->GetPropertyValue("type");
   // if there is not INPUT_WIDTH, check if plane is cursor type and defined cursor max width capability
   uint64_t cap_cursor_w;
   if (!input_width_limits && plane_type.value_or(0) == PLANE_TYPE_CURSOR &&
@@ -211,7 +220,7 @@ bool CDRMUtils::FindPlanes(uint32_t format, uint64_t modifier, uint64_t w, uint6
   }
 
   // current config already satisfies
-  if (m_video_plane != nullptr && CheckPlane(m_video_plane, w, h, format, modifier))
+  if (m_video_plane != nullptr && CheckPlane(m_video_plane, w, h, format, modifier, false))
     return true;
 
   uint32_t guiFormat = m_gui_plane->GetFormat();
@@ -227,14 +236,14 @@ bool CDRMUtils::FindPlanes(uint32_t format, uint64_t modifier, uint64_t w, uint6
     for (auto& gui_plane : m_planes)
     {
       if (!(gui_plane->GetPossibleCrtcs() & (1 << crtc_offset)) ||
-          !CheckPlane(gui_plane.get(), res.iWidth, res.iHeight, guiFormat, guiModifier))
+          !CheckPlane(gui_plane.get(), res.iWidth, res.iHeight, guiFormat, guiModifier, true))
         continue;
       // loop for each format satisfying video plane candidate which is different than gui plane candidate
       for (auto& video_plane : m_planes)
       {
         if (!(video_plane->GetPossibleCrtcs() & (1 << crtc_offset)) ||
             video_plane->GetId() == gui_plane->GetId() ||
-            !CheckPlane(video_plane.get(), w, h, format, modifier))
+            !CheckPlane(video_plane.get(), w, h, format, modifier, false))
           continue;
 
         bool zpos_available =
@@ -344,7 +353,7 @@ bool CDRMUtils::InitGuiPlane(CEGLContextUtils* eglContext, EGLint renderableType
 
         // check plane w,h,format and modifier
         if (!CheckPlane(gui_plane.get(), res.iWidth, res.iHeight, format.drmformat,
-                        DRM_FORMAT_MOD_LINEAR))
+                        DRM_FORMAT_MOD_LINEAR, true))
           continue;
 
         num_modifiers = gui_plane->GetModifiersForFormat(format.drmformat).size();
@@ -483,6 +492,14 @@ bool CDRMUtils::OpenDrm(bool needConnector)
     }
 
     CLog::LogF(LOGDEBUG, "Opened device: {}", device->nodes[DRM_NODE_PRIMARY]);
+
+    drmVersionPtr version = drmGetVersion(m_fd);
+    if (version)
+    {
+      if (strcmp(version->name, "amdgpu") == 0)
+        m_drmQuirks |= QUIRK_NEEDSPRIMARY;
+      drmFreeVersion(version);
+    }
 
     PrintDrmDeviceInfo(device);
 
