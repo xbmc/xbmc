@@ -330,14 +330,14 @@ SectionEnd
 ;vs redist installer Section
 SectionGroup "Microsoft Visual C++ packages" SEC_VCREDIST
 
-Section "Visual C++ 2015-2022 Redistributable Package (${TARGET_ARCHITECTURE})" SEC_VCREDIST1
-DetailPrint "Running Visual C++ 2015-2022 Redistributable setup..."
+Section "Visual C++ 2017-2026 Redistributable Package (${TARGET_ARCHITECTURE})" SEC_VCREDIST1
+DetailPrint "Running Visual C++ 2017-2026 Redistributable setup..."
   SectionIn 1 2 #section is in install type Full
   SetOutPath "$TEMP\vcredist"
-  File "${app_root}\..\..\BuildDependencies\downloads\vcredist\2015-2022\vcredist_${TARGET_ARCHITECTURE}.exe"
+  File "${app_root}\..\..\BuildDependencies\downloads\vcredist\2017-2026\vcredist_${TARGET_ARCHITECTURE}.exe"
   ExecWait '"$TEMP\vcredist\vcredist_${TARGET_ARCHITECTURE}.exe" /install /quiet /norestart' $VSRedistSetupError
   RMDir /r "$TEMP\vcredist"
-  DetailPrint "Finished Visual C++ 2015-2022 Redistributable setup"
+  DetailPrint "Finished Visual C++ 2017-2026 Redistributable setup"
   SetOutPath "$INSTDIR"
 SectionEnd
 
