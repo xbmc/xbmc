@@ -37,9 +37,7 @@ using namespace jni;
 
 using namespace std::chrono_literals;
 
-// those are empirical values while the HD buffer
-// is the max TrueHD package
-const unsigned int MAX_RAW_AUDIO_BUFFER_HD = 61440;
+const unsigned int TRUEHD_SIZE = 61440;
 const unsigned int MAX_RAW_AUDIO_BUFFER = 16384;
 const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 3;
 const uint64_t UINT64_LOWER_BYTES = 0x00000000FFFFFFFF;
@@ -422,16 +420,16 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       switch (m_format.m_streamInfo.m_type)
       {
         case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-          m_min_buffer_size = MAX_RAW_AUDIO_BUFFER_HD;
-          m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000; // on average
+          m_min_buffer_size = 2 * TRUEHD_SIZE;
+          m_format.m_frames = TRUEHD_SIZE;
+          rawlength_in_seconds = 2 * m_format.m_streamInfo.GetDuration() / 1000;
           break;
         case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
         case CAEStreamInfo::STREAM_TYPE_DTSHD:
-          // normal frame is max  2012 bytes + 2764 sub frame
-          m_min_buffer_size = 66432; //according to the buffer model of ISO/IEC13818-1
-          m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000; // average value
+          // empirical value found good when testing
+          m_min_buffer_size = 4 * 30720;
+          m_format.m_frames = 30720;
+          rawlength_in_seconds = 4 * m_format.m_streamInfo.GetDuration() / 1000; // average value
           break;
         case CAEStreamInfo::STREAM_TYPE_DTS_512:
         case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
