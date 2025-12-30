@@ -4241,12 +4241,12 @@
         </setting>
         <setting id="coreelec.amlogic.dolbyvision.audio.seamlessbranch" type="integer" label="60594" help="60595" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
-          <visible>false</visible>
+          <visible>true</visible>
           <level>2</level>
           <default>4</default>
-          <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
-          </dependencies>
+     <!-- <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency> 
+          </dependencies> -->
           <constraints>
             <options>
               <option label="60596">0</option>  <!-- Off -->

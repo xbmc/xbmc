@@ -1360,7 +1360,7 @@ void CVideoPlayer::Prepare()
 
     if (m_pSubtitleDemuxer)
     {
-      if (m_pSubtitleDemuxer->SeekTime(starttime, true, &startpts))
+      if (m_pSubtitleDemuxer->SeekTime(starttime, false, &startpts))
         CLog::Log(LOGDEBUG, "{} - starting subtitle demuxer from: {}", __FUNCTION__, starttime);
       else
         CLog::Log(LOGDEBUG, "{} - failed to start subtitle demuxing from: {}", __FUNCTION__,
@@ -1762,6 +1762,8 @@ void CVideoPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
   if (CheckSceneSkip(m_CurrentVideo))
     drop = true;
+    
+  m_CurrentVideo.lastdts = pPacket->dts;
 
   // CLog::Log(LOGDEBUG, "CVideoPlayer::ProcessVideoData size:{:d} dts:{:.3f} pts:{:.3f} dur:{:.3f}ms, clock:{:.3f} level:{:d}",
   //   pPacket->iSize, pPacket->dts/DVD_TIME_BASE, pPacket->pts/DVD_TIME_BASE, pPacket->duration/1000.0,
@@ -4051,6 +4053,7 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   m_CurrentVideo.dts         = DVD_NOPTS_VALUE;
   m_CurrentVideo.startpts    = startpts;
   m_CurrentVideo.packets = 0;
+  m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
 
   m_CurrentSubtitle.dts      = DVD_NOPTS_VALUE;
   m_CurrentSubtitle.startpts = startpts;
@@ -4208,8 +4211,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
     }
     break;
     case BD_EVENT_DISCONTINUITY:
-      CLog::Log(LOGDEBUG,
-                "CVideoPlayer::OnDiscNavResult - libbluray discontinuity detected (DEMUXER_RESET)");
+      CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray discontinuity detected (DEMUXER_RESET)");
       m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::DEMUXER_RESET));
       break;
     default:

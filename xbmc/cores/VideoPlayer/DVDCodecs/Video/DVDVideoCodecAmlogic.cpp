@@ -464,10 +464,10 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
 
           if (isELPackageBackup != packet.isELPackage)
           {
-            if (packet.dts < dts) // prior dts arrived - out of step - remove and attempt next.
-            {
-              return false;
-            }
+            // if (packet.dts < dts) // prior dts arrived - out of step - remove and attempt next.
+            // {
+            //  return false;
+            // }
             if (packet.isELPackage)
             {
               CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic::{}: found DT-DL BL package with dts: {:.3f}, pts: {:.3f} and size {} in list", __FUNCTION__,

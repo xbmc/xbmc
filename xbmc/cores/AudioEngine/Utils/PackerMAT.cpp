@@ -97,7 +97,7 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
 
   // Detect stream discontinuity via outputTiming mismatch (seamless branch points).
   // LAV Filters approach: detect discontinuity BEFORE padding calculation and
-  // preemptively set a reasonable default padding to prevent overflow.
+  // calculate proper padding carry-forward to prevent dropped frames.
   // Only active when m_lavStyleEnabled = true.
   if (info.outputTimingPresent)
   {
@@ -113,6 +113,24 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
       m_state.numberOfSamplesOffset = 0;
       // Standard padding: 40 samples * (64 >> ratebits) bytes = 2560 bytes for 48kHz
       spaceSize = 40 * (64 >> (m_state.ratebits & 7));
+
+      // LAV fix: Calculate and carry forward padding based on output time offset
+      // The output timing is always one frame ahead for buffering reasons, so deduct one frame worth
+      uint32_t prevOutput = static_cast<uint16_t>(info.outputTiming - frameSamples);
+      if (prevOutput < frameTime) // wrap around, output is always in front of frame time
+        prevOutput += UINT16_MAX;
+
+      // Get the offset of this frame, so we can compare to the previous frame,
+      // and determine the amount of padding that needs to be inserted
+      int currentFrameOutputOffset = static_cast<int>(prevOutput - frameTime);
+
+      // The previous offset should never be smaller than the incoming offset,
+      // or we will lack the reserved space
+      if (m_state.nOutputTimeOffset >= currentFrameOutputOffset)
+        m_state.padding += (m_state.nOutputTimeOffset - currentFrameOutputOffset) * (64 >> (m_state.ratebits & 7));
+
+      CLog::Log(LOGDEBUG, "CPackerMAT::PackTrueHD: carrying forward {} padding (offset {} - {})",
+                m_state.padding, m_state.nOutputTimeOffset, currentFrameOutputOffset);
 
       // Mark discontinuity to propagate to output (LAV discontinuity flag)
       m_pendingDiscontinuity = true;
@@ -156,6 +174,17 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
       m_bufferCount = 0;
       return false;
     }
+  }
+
+  // LAV: Record the offset of frame time to output time, which is used to verify
+  // the size of the padding on discontinuities
+  if (m_lavStyleEnabled && m_state.outputTimingValid)
+  {
+    uint32_t prevOutput = static_cast<uint16_t>(m_state.outputTiming - frameSamples);
+    if (prevOutput < frameTime) // wrap around, output is always in front of frame time
+      prevOutput += UINT16_MAX;
+
+    m_state.nOutputTimeOffset = static_cast<int>(prevOutput - frameTime);
   }
 
   // store frame time of the previous frame

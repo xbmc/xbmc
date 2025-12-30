@@ -78,6 +78,7 @@ private:
     uint32_t padding; // padding bytes pending to write
     uint32_t samples; // number of samples accumulated in current MAT frame
     int numberOfSamplesOffset; // offset respect number of samples in a standard MAT frame (40 * 24)
+    int nOutputTimeOffset; // offset of frame time to output time (LAV: for discontinuity padding calculation)
   };
 
   void WriteHeader();

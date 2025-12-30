@@ -533,17 +533,17 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   }
 
   // don't re-open mpegts streams with hevc encoding as the params are not correctly detected again
-  if (iformat && (strcmp(iformat->name, "mpegts") == 0) &&
-      !fileinfo && !isBluray && m_pFormatContext->nb_streams > 0)
+  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isBluray &&
+      m_pFormatContext->nb_streams > 0)
   {
-    for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
     {
       if (m_pFormatContext->streams[i])
       {
         if (m_pFormatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO &&
             m_pFormatContext->streams[i]->codecpar->codec_id != AV_CODEC_ID_HEVC)
         {
-          av_opt_set_int(m_pFormatContext, "analyzeduration", 2000000, 0);
+          av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
           m_checkTransportStream = true;
           skipCreateStreams = true;
           break;
@@ -557,7 +557,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   }
   else if ((strcmp(iformat->name, "mpegts") == 0) && m_pFormatContext->nb_streams > 0)
   {
-    for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
     {
       if (m_pFormatContext->streams[i])
       {
@@ -1456,6 +1456,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
   }
   else
     return false;
+
 }
 
 bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)

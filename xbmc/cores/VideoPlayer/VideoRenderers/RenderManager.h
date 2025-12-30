@@ -258,7 +258,6 @@ protected:
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
   bool m_hasCaptures = false;
 
-  private:
+private:
   CDataCacheCore &m_dataCacheCore;
-  std::shared_ptr<const CApplicationPlayer> m_appPlayer;
 };
