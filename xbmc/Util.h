@@ -11,11 +11,9 @@
 #include "MediaSource.h" // Definition of std::vector<CMediaSource>
 #include "utils/Digest.h"
 
-#include <climits>
-#include <cmath>
+#include <cstdint>
 #include <span>
-#include <stdint.h>
-#include <string.h>
+#include <string>
 #include <vector>
 
 //! \brief Enumeration of filesystem types for LegalPath/FileName
@@ -143,13 +141,6 @@ public:
       std::string path,
       bool bFixDoubleSlashes =
           false); ///< return a validated path, with correct directory separators.
-
-  /*!
-   * \brief Check if a filename contains a supported font extension.
-   * \param filename The filename to check
-   * \return True if it is supported, otherwise false
-   */
-  static bool IsSupportedFontExtension(const std::string& fileName);
 
   /*! \brief Split a comma separated parameter list into separate parameters.
    Takes care of the case where we may have a quoted string containing commas, or we may

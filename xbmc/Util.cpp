@@ -6,88 +6,101 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "network/Network.h"
-#include "network/NetworkFileItemClassify.h"
-#include "playlists/PlayListFileItemClassify.h"
-#include "video/VideoFileItemClassify.h"
-#if defined(TARGET_DARWIN)
-#include <sys/param.h>
+// System headers
+#ifdef TARGET_DARWIN
 #include <mach-o/dyld.h>
+#include <sys/param.h>
 #endif
 
-#if defined(TARGET_FREEBSD)
+#ifdef TARGET_FREEBSD
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #endif
 
 #ifdef TARGET_POSIX
-#include <sys/types.h>
 #include <dirent.h>
-#include <unistd.h>
+#include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 #endif
-#if defined(TARGET_ANDROID)
-#include <androidjni/ApplicationInfo.h>
-#include "platform/android/activity/XBMCApp.h"
-#include "CompileInfo.h"
-#endif
-#include "ServiceBroker.h"
-#include "Util.h"
-#include "addons/VFSEntry.h"
-#include "filesystem/Directory.h"
-#include "filesystem/MultiPathDirectory.h"
-#include "filesystem/PVRDirectory.h"
-#include "filesystem/RSSDirectory.h"
-#include "filesystem/SpecialProtocol.h"
-#include "filesystem/StackDirectory.h"
 
-#include <stdlib.h>
-#ifdef HAS_UPNP
-#include "filesystem/UPnPDirectory.h"
+#ifdef TARGET_ANDROID
+#include <androidjni/ApplicationInfo.h>
 #endif
-#include "profiles/ProfileManager.h"
-#include "utils/RegExp.h"
-#include "windowing/GraphicContext.h"
-#include "guilib/TextureManager.h"
-#include "storage/MediaManager.h"
+
+// Kodi headers that include system headers
+// (come before Util.h to stabilize __stat64 typedefs)
+#include "FileItem.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
+// Class header
+#include "Util.h"
+
+// Other platform specific headers
 #ifdef TARGET_WINDOWS
-#include "utils/CharsetConverter.h"
 #include "WIN32Util.h"
+#include "utils/CharsetConverter.h"
 #endif
-#if defined(TARGET_DARWIN)
+
+#ifdef TARGET_DARWIN
 #include "CompileInfo.h"
 #include "platform/darwin/DarwinUtils.h"
 #endif
-#include "URL.h"
+
+#ifdef TARGET_ANDROID
+#include "CompileInfo.h"
+
+#include "platform/android/activity/XBMCApp.h"
+#endif
+
+// Remaining headers
+#include "addons/VFSEntry.h"
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
-#include "filesystem/File.h"
+#include "filesystem/MultiPathDirectory.h"
+#include "filesystem/PVRDirectory.h"
+#include "filesystem/RSSDirectory.h"
+#include "filesystem/StackDirectory.h"
+#ifdef HAS_UPNP
+#include "filesystem/UPnPDirectory.h"
+#endif
 #include "guilib/LocalizeStrings.h"
+#include "guilib/TextureManager.h"
+#include "network/Network.h"
+#include "network/NetworkFileItemClassify.h"
 #include "platform/Environment.h"
+#include "playlists/PlayListFileItemClassify.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/log.h"
+#include "utils/RegExp.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #ifdef HAVE_LIBCAP
-  #include <sys/capability.h>
+#include <sys/capability.h>
 #endif
-
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstdint>
 #include <cstdlib>
-#include <ctime>
 #include <iomanip>
 #include <memory>
 #include <random>
