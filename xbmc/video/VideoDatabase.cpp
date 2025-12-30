@@ -1315,6 +1315,11 @@ int CVideoDatabase::GetFileId(const CVideoInfoTag& details)
   return GetFileId(filePath);
 }
 
+bool CVideoDatabase::CheckPathExists(const std::string& path)
+{
+  return GetFileId(path) > -1;
+}
+
 int CVideoDatabase::GetAndFillFileId(CVideoInfoTag& details)
 {
   details.m_iFileId = GetFileId(details);

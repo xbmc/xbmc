@@ -10,6 +10,7 @@
 
 #include "DirectoryCache.h"
 #include "DirectoryFactory.h"
+#include "File.h"
 #include "FileDirectoryFactory.h"
 #include "FileItem.h"
 #include "FileItemList.h"
@@ -17,7 +18,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "commons/Exception.h"
-#include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
@@ -28,6 +28,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 
 using namespace KODI;
@@ -459,20 +460,38 @@ bool CDirectory::RemoveRecursive(const CURL& url)
 void CDirectory::FilterFileDirectories(CFileItemList &items, const std::string &mask,
                                        bool expandImages)
 {
-  for (int i=0; i< items.Size(); ++i)
+  for (int i = items.Size() - 1; i >= 0; --i)
   {
-    CFileItemPtr pItem=items[i];
-    auto mode =
-        expandImages && pItem->IsDiscImage() ? FileFolderType::ONBROWSE : FileFolderType::ALWAYS;
+    auto pItem{items[i]};
+    const auto mode{expandImages && pItem->IsDiscImage() ? FileFolderType::ONBROWSE
+                                                         : FileFolderType::ALWAYS};
     if (!pItem->IsFolder() && pItem->IsFileFolder(mode))
     {
-      std::unique_ptr<IFileDirectory> pDirectory(CFileDirectoryFactory::Create(pItem->GetURL(),pItem.get(),mask));
+      const std::unique_ptr<IFileDirectory> pDirectory(
+          CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get(), mask));
       if (pDirectory)
         pItem->SetFolder(true);
       else if (pItem->IsFolder())
-      {
         items.Remove(i);
-        i--; // don't confuse loop
+      else if (CURL url{pItem->GetPath()}; url.GetProtocol() == "archive")
+      {
+        // Check to see if a zip:// is now being recognised as an archive://
+        // Can occur if a directory changes after the Archive add-on is installed
+        url.SetProtocol("zip");
+
+        // First check the zip:// exists and then check if it is in the database
+        if (CFile::Exists(url))
+        {
+          CVideoDatabase db;
+          if (!db.Open())
+          {
+            CLog::LogF(LOGERROR, "Failed to open video database");
+            continue;
+          }
+          if (db.CheckPathExists(url.Get()))
+            items.Remove(i); // Already present as zip:// in the database
+          db.Close();
+        }
       }
     }
   }
