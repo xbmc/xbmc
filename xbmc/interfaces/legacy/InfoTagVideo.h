@@ -2083,7 +2083,7 @@ namespace XBMCAddon
       /// \brief \python_func{ setOriginalLanguage(language) }
       /// Set the original language of the video item.
       ///
-      /// \param language      string - ISO-639-1, ISO-639/B, ISO 639-2/T or full english name
+      /// \param language      string - ISO-639-1, ISO-639/B, ISO 639-2/T, BCP-47 or full english name
       /// \return [boolean]    status code. true for success, false for failure (most likely an unrecognized language parameter value).
       ///
       ///

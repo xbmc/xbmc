@@ -346,6 +346,11 @@ public:
   {
     return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr);
   }
+  [[nodiscard]] inline static bool IsAsciiLetters(
+      std::string_view str) noexcept // locale independent
+  {
+    return std::ranges::all_of(str, [](char c) { return StringUtils::isasciiletter(c); }, {});
+  }
   [[nodiscard]] inline static bool isasciialphanum(char chr) noexcept // locale independent
   {
     return isasciiletter(chr) || isasciidigit(chr);

@@ -513,6 +513,21 @@ std::string CRegExp::GetMatch(int iSub /* = 0 */) const
   return m_subject.substr(pos, len);
 }
 
+std::string CRegExp::GetMatch(const char* name) const
+{
+  if (!m_re)
+  {
+    CLog::LogF(LOGERROR, "PCRE: Called before compilation or compilation failed.");
+    return {};
+  }
+
+  int ret = pcre2_substring_number_from_name(m_re, reinterpret_cast<PCRE2_SPTR>(name));
+  if (ret >= 0)
+    return GetMatch(ret);
+
+  return {};
+}
+
 void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
 {
   if (iLog < LOGDEBUG || iLog > LOGNONE)
