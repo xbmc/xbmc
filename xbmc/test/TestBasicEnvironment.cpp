@@ -41,7 +41,7 @@ TestBasicEnvironment::TestBasicEnvironment() = default;
 void TestBasicEnvironment::SetUp()
 {
   const auto params = std::make_shared<CAppParams>();
-  params->SetPlatformDirectories(false);
+  params->SetUserDirectoriesLocation(UserDirectoriesLocation::TEST);
 
   CAppEnvironment::SetUp(params);
 

@@ -19,11 +19,14 @@ public:
     typedef const void* Address; // OK on Win32 platform
 
     static void set_version(std::string version) { mVersion = std::move(version); }
-    static void set_platformDirectories(const bool platformDir) { m_platformDir = platformDir; }
+    static void set_platformDirectories(const std::string& platformDir)
+    {
+      m_platformDir = platformDir;
+    }
     static bool write_minidump(EXCEPTION_POINTERS* pEp);
     static bool write_stacktrace(EXCEPTION_POINTERS* pEp);
     static bool ShouldHook();
 private:
     static std::string mVersion;
-    static bool m_platformDir;
+    static std::string m_platformDir;
 };
