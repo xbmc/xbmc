@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "Edl/EdlParser.h"
 #include "cores/Direction.h"
 #include "cores/EdlEdit.h"
 
@@ -169,11 +170,12 @@ private:
   */
   EDL::Action m_lastEditActionType{EDL::EDL_ACTION_NONE};
 
-  bool ReadEdl(const std::string& mediaFilePath, float fps);
-  bool ReadComskip(const std::string& mediaFilePath, float fps);
-  bool ReadVideoReDo(const std::string& mediaFilePath);
-  bool ReadBeyondTV(const std::string& mediaFilePath);
-  bool ReadPvr(const CFileItem& fileItem);
+  /*!
+   * @brief Process the result from an EDL parser
+   * @param result The parser result containing edits and scene markers
+   * @return true if the result was processed successfully
+   */
+  bool ProcessParserResult(const EDL::CEdlParserResult& result);
 
   /*!
    * @brief Adds an edit to the list of EDL edits
