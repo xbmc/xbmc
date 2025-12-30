@@ -87,9 +87,7 @@ CEdlParserResult CComskipParser::Parse(const CFileItem& item, float fps)
           std::chrono::duration<double, std::ratio<1>>{dStartFrame /
                                                        static_cast<double>(fFrameRate)});
       edit.end = std::chrono::duration_cast<std::chrono::milliseconds>(
-          std::chrono::duration_cast<std::chrono::milliseconds>(
-              std::chrono::duration<double, std::ratio<1>>{dEndFrame /
-                                                           static_cast<double>(fFrameRate)}));
+          std::chrono::duration<double>{dEndFrame / static_cast<double>(fFrameRate)});
       edit.action = Action::COMM_BREAK;
       result.AddEdit(edit, EdlSourceLocation{comskipFilename, iLine});
     }
