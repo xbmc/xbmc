@@ -28,6 +28,7 @@
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
 #include "filesystem/FileDirectoryFactory.h"
+#include "filesystem/VirtualDirectory.h"
 #include "filesystem/ZipManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -51,7 +52,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
-#include "threads/IRunnable.h"
 #include "utils/FileOperationJob.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -86,32 +86,6 @@ using namespace KODI::MESSAGING;
 
 #define CONTROL_CURRENTDIRLABEL_LEFT    101
 #define CONTROL_CURRENTDIRLABEL_RIGHT   102
-
-namespace
-{
-class CGetDirectoryItems : public IRunnable
-{
-public:
-  CGetDirectoryItems(XFILE::CVirtualDirectory& dir, CURL& url, CFileItemList& items)
-    : m_dir(dir), m_url(url), m_items(items)
-  {
-  }
-  void Run() override
-  {
-    m_result = m_dir.GetDirectory(m_url, m_items, false, false);
-  }
-  void Cancel() override
-  {
-    m_dir.CancelDirectory();
-  }
-  bool m_result = false;
-
-protected:
-  XFILE::CVirtualDirectory &m_dir;
-  CURL m_url;
-  CFileItemList &m_items;
-};
-}
 
 CGUIWindowFileManager::CGUIWindowFileManager(void)
     : CGUIWindow(WINDOW_FILES, "FileManager.xml"),
@@ -934,12 +908,12 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const std::string &strDirect
 {
   CURL pathToUrl(strDirectory);
 
-  CGetDirectoryItems getItems(m_rootDir, pathToUrl, items);
+  XFILE::CGetDirectoryItems getItems(m_rootDir, pathToUrl, items, false, false);
   if (!CGUIDialogBusy::Wait(&getItems, 100, true))
   {
     return false;
   }
-  return getItems.m_result;
+  return getItems.GetResult();
 }
 
 bool CGUIWindowFileManager::CanRename(int iList)

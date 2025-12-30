@@ -21,10 +21,6 @@ class CFileItemList;
 class CGUIViewState;
 enum class SourceType;
 
-namespace
-{
-class CGetDirectoryItems;
-}
 class TiXmlElement;
 
 // base class for all media windows
