@@ -10,6 +10,7 @@
 
 #include "DirectoryCache.h"
 #include "DirectoryFactory.h"
+#include "File.h"
 #include "FileDirectoryFactory.h"
 #include "FileItem.h"
 #include "FileItemList.h"
@@ -17,7 +18,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "commons/Exception.h"
-#include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
@@ -459,20 +459,32 @@ bool CDirectory::RemoveRecursive(const CURL& url)
 void CDirectory::FilterFileDirectories(CFileItemList &items, const std::string &mask,
                                        bool expandImages)
 {
-  for (int i=0; i< items.Size(); ++i)
+  for (int i = 0; i < items.Size(); ++i)
   {
-    CFileItemPtr pItem=items[i];
-    auto mode =
-        expandImages && pItem->IsDiscImage() ? FileFolderType::ONBROWSE : FileFolderType::ALWAYS;
+    auto pItem{items[i]};
+    const auto mode{expandImages && pItem->IsDiscImage() ? FileFolderType::ONBROWSE
+                                                         : FileFolderType::ALWAYS};
     if (!pItem->IsFolder() && pItem->IsFileFolder(mode))
     {
-      std::unique_ptr<IFileDirectory> pDirectory(CFileDirectoryFactory::Create(pItem->GetURL(),pItem.get(),mask));
+      const std::unique_ptr<IFileDirectory> pDirectory(
+          CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get(), mask));
       if (pDirectory)
         pItem->SetFolder(true);
       else if (pItem->IsFolder())
       {
         items.Remove(i);
         i--; // don't confuse loop
+      }
+      else if (CURL url{pItem->GetPath()}; url.GetProtocol() == "archive")
+      {
+        // Check to see if a zip:// is now being recognised as an archive://
+        // Can occur if a directory changes after the Archive add-on is installed
+        url.SetProtocol("zip");
+        if (CFile::Exists(url))
+        {
+          items.Remove(i); // Already present as zip://
+          i--; // don't confuse loop
+        }
       }
     }
   }
