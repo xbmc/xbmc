@@ -28,7 +28,7 @@ endif
 
 SED_FLAG=-i
 ifeq (darwin, $(findstring darwin, $(BUILD)))
-  SED_FLAG=-i ''
+  SED_FLAG=-i ""
 endif
 
 ZLIB_ROOT=$(PREFIX)
@@ -79,14 +79,10 @@ else ifeq ($(OS),darwin_embedded)
 endif
 
 .installed-$(PLATFORM): $(PLATFORM) $(PILPATHLIB)
-	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build build_py build_ext $(BUILD_OPTS) install --install-lib $(PILPATH) bdist_egg
+	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build build_py build_ext $(BUILD_OPTS) install --install-lib $(PILPATHLIB) bdist_egg
 ifeq ($(OS),android)
-	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATHLIB)
-	cd $(PILPATHLIB)/PIL && \
-          sed $(SED_FLAG) -e 's/import sys/import os, sys /' \
-                          -e '/__file__/ s/_imaging/lib_imaging/g' \
-                          -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /' \
-                              _imaging*.py
+	find $(PILPATHLIB)/PIL/ -maxdepth 1 -type f -name '_imaging*.so' -exec sh -c 'cp 12-android-loader.patch $(PILPATHLIB)/PIL/$$(basename {} .so).py' sh {} \;
+	find $(PILPATHLIB)/PIL/ -maxdepth 1 -type f -name '_imaging*.py' -execdir sh -c 'f=$${1##*/}; sed $(SED_FLAG) -e s,PYFILENAME,lib$${f%.py}.so, $$f' sh {} \;
 else ifeq ($(OS),darwin_embedded)
 	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATHLIB)
 else ifeq ($(TARGET_PLATFORM),webos)
