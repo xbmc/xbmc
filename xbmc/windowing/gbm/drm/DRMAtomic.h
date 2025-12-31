@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DRMUtils.h"
+#include "utils/log.h"
 
 #include <cstdint>
 #include <deque>

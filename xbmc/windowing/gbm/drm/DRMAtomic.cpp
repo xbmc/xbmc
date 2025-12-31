@@ -25,27 +25,58 @@ using namespace KODI::WINDOWING::GBM;
 
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
-  uint32_t blob_id;
+  // Declared at function scope so the blob outlives drmModeAtomicCommit.
+  // DRM requires the blob to remain alive for the duration of the commit;
+  // destroying it before the commit returns leaves the atomic request
+  // referencing an invalid id and the kernel rejects with EINVAL.
+  CDRMPropertyBlob modeBlob;
+
+  if (m_old_crtc != nullptr)
+  {
+    if (m_old_crtc->GetId() != m_crtc->GetId())
+    {
+      AddProperty(m_old_crtc, "ACTIVE", 0);
+      AddProperty(m_old_crtc, "MODE_ID", 0);
+      flags |= DRM_MODE_ATOMIC_ALLOW_MODESET;
+    }
+
+    for (const auto& plane : m_planes)
+    {
+      if (m_gui_plane != nullptr && m_gui_plane->GetId() == plane->GetId())
+        continue;
+      if (m_video_plane != nullptr && m_video_plane->GetId() == plane->GetId())
+        continue;
+
+      uint64_t planeid = plane->GetPropertyValue("CRTC_ID").value_or(0);
+      if (planeid == m_crtc->GetId() || planeid == m_old_crtc->GetId())
+      {
+        AddProperty(plane.get(), "CRTC_ID", 0);
+        AddProperty(plane.get(), "FB_ID", 0);
+      }
+
+      // below disables the planes which are not in our crtcs, in other words
+      // crts attached to other connectors (ie: 2nd monitor), amdgpu requires at least
+      // one primary plane to enable crtcs, if we disable rest of the planes in amdgpu
+      // atomic commit will fail
+      if (!(HasQuirk(QUIRK_NEEDSPRIMARY)))
+      {
+        AddProperty(plane.get(), "CRTC_ID", 0);
+        AddProperty(plane.get(), "FB_ID", 0);
+      }
+    }
+    m_old_crtc = nullptr;
+  }
 
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
   {
     if (!AddProperty(m_connector, "CRTC_ID", m_crtc->GetCrtcId()))
       return;
 
-    if (drmModeCreatePropertyBlob(m_fd, m_mode, sizeof(*m_mode), &blob_id) != 0)
+    modeBlob = CDRMPropertyBlob(m_fd, m_mode, sizeof(*m_mode));
+    if (!modeBlob.IsValid())
       return;
 
-    if (m_active && m_orig_crtc && m_orig_crtc->GetCrtcId() != m_crtc->GetCrtcId())
-    {
-      // if using a different CRTC than the original, disable original to avoid EINVAL
-      if (!AddProperty(m_orig_crtc, "MODE_ID", 0))
-        return;
-
-      if (!AddProperty(m_orig_crtc, "ACTIVE", 0))
-        return;
-    }
-
-    if (!AddProperty(m_crtc, "MODE_ID", blob_id))
+    if (!AddProperty(m_crtc, "MODE_ID", modeBlob.Get()))
       return;
 
     if (!AddProperty(m_crtc, "ACTIVE", m_active ? 1 : 0))
@@ -71,9 +102,12 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
       AddProperty(m_gui_plane, "IN_FENCE_FD", m_inFenceFd);
     }
   }
-  else if (videoLayer && !CServiceBroker::GetGUI()->GetWindowManager().HasVisibleControls())
+  else if (videoLayer && !CServiceBroker::GetGUI()->GetWindowManager().HasVisibleControls() &&
+           !HasQuirk(QUIRK_NEEDSPRIMARY))
   {
     // disable gui plane when video layer is active and gui has no visible controls
+    //except when crtc requires at least one plane with primary type. in amdgpu such precondition
+    // is satisfied by selecting gui plane as primary, so disabling it will result commit failure
     AddProperty(m_gui_plane, "FB_ID", 0);
     AddProperty(m_gui_plane, "CRTC_ID", 0);
   }
@@ -113,13 +147,6 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   {
     close(m_inFenceFd);
     m_inFenceFd = -1;
-  }
-
-  if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
-  {
-    if (drmModeDestroyPropertyBlob(m_fd, blob_id) != 0)
-      CLog::Log(LOGERROR, "CDRMAtomic::{} - failed to destroy property blob: {}", __FUNCTION__,
-                strerror(errno));
   }
 
   m_atomicRequestQueue.emplace_back(std::make_unique<CDRMAtomicRequest>());
@@ -172,12 +199,6 @@ bool CDRMAtomic::InitDrm()
 
   if (!CDRMUtils::InitDrm())
     return false;
-
-  for (auto& plane : m_planes)
-  {
-    AddProperty(plane.get(), "FB_ID", 0);
-    AddProperty(plane.get(), "CRTC_ID", 0);
-  }
 
   CLog::Log(LOGDEBUG, "CDRMAtomic::{} - initialized atomic DRM", __FUNCTION__);
 
