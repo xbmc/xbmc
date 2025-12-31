@@ -81,6 +81,7 @@ protected:
   CDRMConnector* m_connector{nullptr};
   CDRMEncoder* m_encoder{nullptr};
   CDRMCrtc* m_crtc{nullptr};
+  CDRMCrtc* m_old_crtc{nullptr};
   CDRMCrtc* m_orig_crtc{nullptr};
   CDRMPlane* m_video_plane{nullptr};
   CDRMPlane* m_gui_plane{nullptr};

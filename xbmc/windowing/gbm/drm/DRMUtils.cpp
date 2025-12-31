@@ -270,6 +270,8 @@ bool CDRMUtils::FindPlanes(uint32_t format, uint64_t modifier, uint64_t w, uint6
             video_plane->SetProperty("zpos", 0);
           }
         }
+
+        m_old_crtc = m_crtc;
         m_crtc = m_crtcs[crtc_offset].get();
         m_gui_plane = gui_plane.get();
         m_video_plane = video_plane.get();
@@ -704,6 +706,7 @@ bool CDRMUtils::FindCrtc()
       if (m_crtcs[i]->GetCrtcId() == m_encoder->GetCrtcId())
       {
         m_orig_crtc = m_crtcs[i].get();
+        m_old_crtc = m_orig_crtc;
         if (m_orig_crtc->GetModeValid())
         {
           m_mode = m_orig_crtc->GetMode();
