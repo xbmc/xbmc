@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DRMUtils.h"
+#include "utils/log.h"
 
 #include <cstdint>
 #include <deque>
@@ -36,6 +37,19 @@ public:
   bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
 
 private:
+  struct DrmBlobDeleter
+  {
+    int fd;
+    void operator()(uint32_t* id) const
+    {
+      if (id && *id != 0)
+      {
+        if (drmModeDestroyPropertyBlob(fd, *id) != 0)
+          CLog::LogF(LOGERROR, "failed to destroy property blob: {}", strerror(errno));
+        *id = 0;
+      }
+    }
+  };
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
   bool m_need_modeset;
