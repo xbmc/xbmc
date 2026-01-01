@@ -25,48 +25,5 @@
         </setting>
       </group>
     </category>
-    <category id="input">
-      <group id="3">
-        <setting id="input.appleremotemode" type="integer" label="13600" help="36416">
-          <requirement>HAS_XBMCHELPER</requirement>
-          <level>1</level>
-          <default>1</default> <!-- APPLE_REMOTE_STANDARD -->
-          <constraints>
-            <options>
-              <option label="13610">0</option> <!-- APPLE_REMOTE_DISABLED -->
-              <option label="13611">1</option> <!-- APPLE_REMOTE_STANDARD -->
-              <option label="13612">2</option> <!-- APPLE_REMOTE_UNIVERSAL -->
-              <option label="13613">3</option> <!-- APPLE_REMOTE_MULTIREMOTE -->
-            </options>
-          </constraints>
-          <control type="list" format="string"/>
-        </setting>
-        <setting id="input.appleremotealwayson" type="boolean" label="13602" help="36417">
-          <requirement>HAS_XBMCHELPER</requirement>
-          <level>4</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable" setting="input.appleremotemode" operator="!is">0</dependency> <!-- APPLE_REMOTE_DISABLED -->
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="input.appleremotesequencetime" type="integer" label="13603" help="36418">
-          <requirement>HAS_XBMCHELPER</requirement>
-          <level>1</level>
-          <default>500</default>
-          <constraints>
-            <minimum label="351">50</minimum>
-            <step>50</step>
-            <maximum>1000</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="input.appleremotemode" operator="is">2</dependency> <!-- APPLE_REMOTE_UNIVERSAL -->
-          </dependencies>
-          <control type="spinner" format="string">
-            <formatlabel>14046</formatlabel>
-          </control>
-        </setting>
-      </group>
-    </category>
   </section>
 </settings>

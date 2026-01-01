@@ -241,8 +241,6 @@ cmake_install.cmake
 # /tools/EventClients/
 /tools/EventClients/*.pyc
 /tools/EventClients/Makefile
-/tools/EventClients/Clients/OSXRemote/Makefile
-/tools/EventClients/Clients/OSXRemote/build/
 /tools/EventClients/Clients/WiiRemote/WiiRemote
 
 # /tools/darwin/

@@ -32,15 +32,6 @@
           <visible>false</visible>
         </setting>
       </group>
-      <!-- Apple Remote -->
-      <group id="3">
-        <setting id="input.appleremotemode">
-          <visible>false</visible>
-        </setting>
-        <setting id="input.appleremotesequencetime">
-          <visible>false</visible>
-        </setting>
-      </group>
       <!-- Apple TV -->
       <group id="4" label="13601">
         <!-- Siri remote idle timer -->

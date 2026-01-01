@@ -47,7 +47,7 @@ public:
   /**\brief Called at a middle stage of application startup
    *
    * This method can be used for starting platform specific services that
-   * do not depend on windowing/gui. (eg macos XBMCHelper)
+   * do not depend on windowing/gui.
    */
   virtual bool InitStageTwo() { return true; }
 
