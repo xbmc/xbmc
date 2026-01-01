@@ -422,9 +422,6 @@ public:
   static constexpr auto SETTING_INPUT_RUMBLENOTIFY = "input.rumblenotify";
   static constexpr auto SETTING_INPUT_TESTRUMBLE = "input.testrumble";
   static constexpr auto SETTING_INPUT_CONTROLLERPOWEROFF = "input.controllerpoweroff";
-  static constexpr auto SETTING_INPUT_APPLEREMOTEMODE = "input.appleremotemode";
-  static constexpr auto SETTING_INPUT_APPLEREMOTEALWAYSON = "input.appleremotealwayson";
-  static constexpr auto SETTING_INPUT_APPLEREMOTESEQUENCETIME = "input.appleremotesequencetime";
   static constexpr auto SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED = "input.siriremoteidletimerenabled";
   static constexpr auto SETTING_INPUT_SIRIREMOTEIDLETIME = "input.siriremoteidletime";
   static constexpr auto SETTING_INPUT_SIRIREMOTEHORIZONTALSENSITIVITY =

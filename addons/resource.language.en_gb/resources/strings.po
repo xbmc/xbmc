@@ -6675,19 +6675,7 @@ msgctxt "#13141"
 msgid "If you proceed, you might not be able to control this application any longer. Are you sure you want to stop the event server?"
 msgstr ""
 
-#empty strings from id 13142 to 13143
-
-#: xbmc/osx/XBMCHelper.cpp
-msgctxt "#13144"
-msgid "Change Apple Remote mode?"
-msgstr ""
-
-#: xbmc/osx/XBMCHelper.cpp
-msgctxt "#13145"
-msgid "If you are currently using the Apple Remote to control this application, changing this setting might affect your ability to continue controlling it. Do you want to proceed?"
-msgstr ""
-
-#empty strings from id 13146 to 13158
+#empty strings from id 13142 to 13158
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#13159"
@@ -7927,63 +7915,14 @@ msgctxt "#13557"
 msgid "Skip delay"
 msgstr ""
 
-#empty strings from id 13558 to 13599
-
-#: system/settings/darwin.xml
-msgctxt "#13600"
-msgid "Apple Remote"
-msgstr ""
+#empty strings from id 13558 to 13600
 
 #: system/settings/darwin_tvos.xml
 msgctxt "#13601"
 msgid "Apple TV"
 msgstr ""
 
-#: system/settings/darwin.xml
-msgctxt "#13602"
-msgid "Allow start of Kodi using the remote"
-msgstr ""
-
-#: system/settings/darwin.xml
-msgctxt "#13603"
-msgid "Sequence delay time"
-msgstr ""
-
-#empty strings from id 13604 to 13609
-
-#: system/settings/darwin.xml
-msgctxt "#13610"
-msgid "Disabled"
-msgstr ""
-
-#: system/settings/darwin.xml
-msgctxt "#13611"
-msgid "Standard"
-msgstr ""
-
-#: system/settings/darwin.xml
-msgctxt "#13612"
-msgid "Universal remote"
-msgstr ""
-
-#: system/settings/darwin.xml
-msgctxt "#13613"
-msgid "Harmony remote"
-msgstr ""
-
-#empty strings from id 13614 to 13619
-
-#: xbmc/osx/XBMCHelper.cpp
-msgctxt "#13620"
-msgid "Apple Remote error"
-msgstr ""
-
-#: xbmc/osx/XBMCHelper.cpp
-msgctxt "#13621"
-msgid "Apple Remote support couldn't be enabled."
-msgstr ""
-
-#empty strings from id 13622 to 13999
+#empty strings from id 13602 to 13999
 
 msgctxt "#14000"
 msgid "Stack"
@@ -8179,7 +8118,6 @@ msgctxt "#14045"
 msgid "{0:d} sec"
 msgstr ""
 
-#: system/settings/darwin.xml
 #: system/settings/settings.xml
 msgctxt "#14046"
 msgid "{0:d} ms"
@@ -21426,23 +21364,7 @@ msgctxt "#36415"
 msgid "No info available yet."
 msgstr ""
 
-#. Description of setting with label #13600 "Apple remote"
-#: system/settings/settings.xml
-msgctxt "#36416"
-msgid "Specify the type of remote used."
-msgstr ""
-
-#. Description of setting with label #13602 "Allow start of Kodi with remote"
-#: system/settings/settings.xml
-msgctxt "#36417"
-msgid "Always run a Kodi helper so that the remote can be used to start Kodi."
-msgstr ""
-
-#. Description of setting with label #13603 "Sequence delay time"
-#: system/settings/settings.xml
-msgctxt "#36418"
-msgid "Specify the delay between button sequences on a universal remote."
-msgstr ""
+#empty strings from id 36416 to 36418
 
 #. Description of setting with label #21417 "Settings"
 #: system/settings/settings.xml

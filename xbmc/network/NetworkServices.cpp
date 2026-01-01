@@ -74,10 +74,6 @@
 #endif
 #endif
 
-#if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
-#include "platform/darwin/osx/XBMCHelper.h"
-#endif
-
 using namespace KODI::MESSAGING;
 using namespace JSONRPC;
 using namespace EVENTSERVER;
@@ -429,11 +425,6 @@ bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& 
       HELPERS::ShowOKDialogText(CVariant{33102}, CVariant{33100});
       return false;
     }
-
-#if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
-    // reconfigure XBMCHelper for port changes
-    XBMCHelper::GetInstance().Configure();
-#endif // TARGET_DARWIN_OSX
   }
   else if (settingId == CSettings::SETTING_SERVICES_ESALLINTERFACES)
   {

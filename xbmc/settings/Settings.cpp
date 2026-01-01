@@ -19,13 +19,10 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/keyboard/KeyboardLayoutManager.h"
+#include "network/WakeOnAccess.h"
+#include "network/upnp/UPnPSettings.h"
 
 #include <mutex>
-#include "network/upnp/UPnPSettings.h"
-#include "network/WakeOnAccess.h"
-#if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
-#include "platform/darwin/osx/XBMCHelper.h"
-#endif // defined(TARGET_DARWIN_OSX)
 #if defined(TARGET_DARWIN_TVOS)
 #include "platform/darwin/tvos/TVOSSettingsHandler.h"
 #endif // defined(TARGET_DARWIN_TVOS)
@@ -278,10 +275,7 @@ bool CSettings::InitializeDefinitions()
 #elif defined(TARGET_DARWIN)
   if (CFile::Exists(SETTINGS_XML_FOLDER "darwin.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin.xml"))
     CLog::Log(LOGFATAL, "Unable to load darwin-specific settings definitions");
-#if defined(TARGET_DARWIN_OSX)
-  if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_osx.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_osx.xml"))
-    CLog::Log(LOGFATAL, "Unable to load osx-specific settings definitions");
-#elif defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
   if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_ios.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_ios.xml"))
     CLog::Log(LOGFATAL, "Unable to load ios-specific settings definitions");
 #elif defined(TARGET_DARWIN_TVOS)
@@ -596,12 +590,6 @@ void CSettings::InitializeISettingCallbacks()
   GetSettingsManager()->RegisterCallback(&CRssManager::GetInstance(),
                                          {CSettings::SETTING_LOOKANDFEEL_RSSEDIT});
 
-#if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
-  GetSettingsManager()->RegisterCallback(
-      &XBMCHelper::GetInstance(),
-      {CSettings::SETTING_INPUT_APPLEREMOTEMODE, CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON});
-#endif
-
 #if defined(TARGET_DARWIN_TVOS)
   GetSettingsManager()->RegisterCallback(&CTVOSInputSettings::GetInstance(),
                                          {CSettings::SETTING_INPUT_SIRIREMOTEIDLETIMERENABLED,
@@ -633,9 +621,6 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
-#if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
-  GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
-#endif
   GetSettingsManager()->UnregisterCallback(&CWakeOnAccess::GetInstance());
 #ifdef HAVE_LIBBLURAY
   GetSettingsManager()->UnregisterCallback(&CDiscSettings::GetInstance());
