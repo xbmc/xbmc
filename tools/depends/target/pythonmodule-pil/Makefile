@@ -1,5 +1,8 @@
 include ../../Makefile.include PYTHONMODULE-PIL-VERSION ../../download-files.include
-DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include pillow-crosscompile.patch
+DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include \
+                            pillow-crosscompile.patch \
+                            10-win-cmake.patch \
+                            11-win-uwp.patch
 
 PYTHONPATH=$(PYTHON_SITE_PKG)
 PILPATH=$(PYTHONPATH)
@@ -25,7 +28,7 @@ endif
 
 SED_FLAG=-i
 ifeq (darwin, $(findstring darwin, $(BUILD)))
-  SED_FLAG=-i ''
+  SED_FLAG=-i ""
 endif
 
 ZLIB_ROOT=$(PREFIX)
@@ -65,6 +68,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../pillow-crosscompile.patch
+	cd $(PLATFORM); patch -p1 -i ../10-win-cmake.patch
+	cd $(PLATFORM); patch -p1 -i ../11-win-uwp.patch
 
 $(PILPATHLIB):
 ifeq ($(OS),android)
@@ -74,14 +79,10 @@ else ifeq ($(OS),darwin_embedded)
 endif
 
 .installed-$(PLATFORM): $(PLATFORM) $(PILPATHLIB)
-	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build build_py build_ext $(BUILD_OPTS) install --install-lib $(PILPATH) bdist_egg
+	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build build_py build_ext $(BUILD_OPTS) install --install-lib $(PILPATHLIB) bdist_egg
 ifeq ($(OS),android)
-	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATHLIB)
-	cd $(PILPATHLIB)/PIL && \
-          sed $(SED_FLAG) -e 's/import sys/import os, sys /' \
-                          -e '/__file__/ s/_imaging/lib_imaging/g' \
-                          -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /' \
-                              _imaging*.py
+	find $(PILPATHLIB)/PIL/ -maxdepth 1 -type f -name '_imaging*.so' -exec sh -c 'cp 12-android-loader.patch $(PILPATHLIB)/PIL/$$(basename {} .so).py' sh {} \;
+	find $(PILPATHLIB)/PIL/ -maxdepth 1 -type f -name '_imaging*.py' -execdir sh -c 'f=$${1##*/}; sed $(SED_FLAG) -e s,PYFILENAME,lib$${f%.py}.so, $$f' sh {} \;
 else ifeq ($(OS),darwin_embedded)
 	unzip -o $(PLATFORM)/dist/pillow-*.egg -d $(PILPATHLIB)
 else ifeq ($(TARGET_PLATFORM),webos)

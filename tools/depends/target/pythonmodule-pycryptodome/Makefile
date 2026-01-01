@@ -1,7 +1,8 @@
 include ../../Makefile.include PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-files.include
 DEPS= ../../Makefile.include Makefile PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-files.include \
                              01-revert-ctype.pythonapi-use.patch \
-                             02-android-dlopen.patch
+                             02-android-dlopen.patch \
+                             10-win-cmake.patch
 
 LDSHARED=$(CC) -shared
 
@@ -35,6 +36,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../02-android-dlopen.patch
 endif
+	cd $(PLATFORM); patch -p1 -i ../10-win-cmake.patch
 
 .installed-$(PLATFORM): $(PLATFORM)
 	cd $(PLATFORM); touch .separate_namespace && $(NATIVEPREFIX)/bin/python3 setup.py build_ext --plat-name $(OS)-$(CPU)
