@@ -51,7 +51,7 @@ double CAEStreamInfo::GetDuration() const
   switch (m_type)
   {
     case STREAM_TYPE_AC3:
-      duration = 0.032;
+      duration = 1536.0 / m_sampleRate;
       break;
     case STREAM_TYPE_EAC3:
       duration = 6144.0 / m_sampleRate / 4;
