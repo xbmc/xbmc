@@ -1,4 +1,4 @@
-set(SOURCES OSXStorageProvider.cpp)
+set(SOURCES OSXStorageProvider.mm)
 
 set(HEADERS OSXStorageProvider.h)
 
