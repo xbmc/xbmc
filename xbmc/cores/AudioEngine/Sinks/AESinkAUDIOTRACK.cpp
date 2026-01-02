@@ -165,7 +165,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
   int     written = 0;
   if (m_jniAudioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
   {
-    if (m_floatbuf.size() != (sizeInBytes - offsetInBytes) / sizeof(float))
+    if (m_floatbuf.size() < (sizeInBytes - offsetInBytes) / sizeof(float))
       m_floatbuf.resize((sizeInBytes - offsetInBytes) / sizeof(float));
     memcpy(m_floatbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
     written = m_at_jni->write(m_floatbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(float),
@@ -174,7 +174,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
   }
   else if (m_jniAudioFormat == CJNIAudioFormat::ENCODING_IEC61937)
   {
-    if (m_shortbuf.size() != (sizeInBytes - offsetInBytes) / sizeof(int16_t))
+    if (m_shortbuf.size() < (sizeInBytes - offsetInBytes) / sizeof(int16_t))
       m_shortbuf.resize((sizeInBytes - offsetInBytes) / sizeof(int16_t));
     memcpy(m_shortbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
     written = m_at_jni->write(m_shortbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(int16_t),
@@ -183,7 +183,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
   }
   else
   {
-    if (static_cast<int>(m_charbuf.size()) != (sizeInBytes - offsetInBytes))
+    if (static_cast<int>(m_charbuf.size()) < (sizeInBytes - offsetInBytes))
       m_charbuf.resize(sizeInBytes - offsetInBytes);
     memcpy(m_charbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
     written =
