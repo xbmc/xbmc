@@ -124,14 +124,14 @@ bool CheckAndSetGlobalMutex(HANDLE& handle)
  * \param[out] handle Windows handle for the mutex. Close the handle on program exit, not earlier.
  * \return true if the mutex already exists (ie another instance is running with the same data directory)
  */
-bool CheckAndSetProfileMutex(bool usePlatformDirectories, HANDLE& handle)
+bool CheckAndSetProfileMutex(UserDirectoriesLocation loc, HANDLE& handle)
 {
   // Prepare a mutex name using a digest instead of the raw path to respect the mutex name
   // MAX_PATH max length
   std::wstring mutexName = MUTEXBASENAME;
   mutexName.push_back(L' ');
 
-  const std::string path = CWIN32Util::GetProfilePath(usePlatformDirectories);
+  const std::string path = CWIN32Util::GetProfilePath(loc);
 
   try
   {
@@ -177,10 +177,12 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
     sprintf_s(ver, "%d.%d Git:%s", CCompileInfo::GetMajor(),
     CCompileInfo::GetMinor(), CCompileInfo::GetSCMID());
 
+  const UserDirectoriesLocation userDirLocation = params->GetUserDirectoriesLocation();
+
   if (win32_exception::ShouldHook())
   {
     win32_exception::set_version(std::string(ver));
-    win32_exception::set_platformDirectories(params->HasPlatformDirectories());
+    win32_exception::set_platformDirectories(CWIN32Util::GetProfilePath(userDirLocation));
     SetUnhandledExceptionFilter(CreateMiniDump);
   }
 
@@ -211,8 +213,9 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 
   // Profile-specific mutex then global mutex in non-portable mode for correct interaction with
   // Kodi < v22
-  if (CheckAndSetProfileMutex(params->HasPlatformDirectories(), appProfileMutex) ||
-      (params->HasPlatformDirectories() && CheckAndSetGlobalMutex(appGlobalMutex)))
+  if (CheckAndSetProfileMutex(userDirLocation, appProfileMutex) ||
+      (userDirLocation == UserDirectoriesLocation::PLATFORM &&
+       CheckAndSetGlobalMutex(appGlobalMutex)))
   {
     const auto appNameW = ToW(CCompileInfo::GetAppName());
     HWND hwnd = FindWindow(appNameW.c_str(), appNameW.c_str());
