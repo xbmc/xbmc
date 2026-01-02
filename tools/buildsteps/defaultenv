@@ -72,6 +72,13 @@ case $XBMC_PLATFORM_DIR in
   freebsd)
     DEFAULT_CONFIGURATION="Debug"
   ;;
+
+  webos)
+    DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
+    DEFAULT_CONFIGURATION="RelWithDebInfo"
+    DEFAULT_RENDER_SYSTEM="gles"
+    DEFAULT_BUILD_HOST="arm-webos-linux-gnueabi"
+  ;;
 esac
 
 if [ "$SDK_VERSION" == "Default" ]
