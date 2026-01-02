@@ -64,8 +64,9 @@ void CVideoPlayerAudioWebOS::SendMessage(const std::shared_ptr<CDVDMsg> msg, con
   m_mediaPipeline.SendAudioMessage(msg, priority);
 }
 
-void CVideoPlayerAudioWebOS::SetDynamicRangeCompression(long drc)
+void CVideoPlayerAudioWebOS::SetDynamicRangeCompression(const long drc)
 {
+  m_mediaPipeline.SetDynamicRangeCompression(drc);
 }
 
 std::string CVideoPlayerAudioWebOS::GetPlayerInfo()
