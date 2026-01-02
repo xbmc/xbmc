@@ -59,6 +59,11 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <array>
+#include <sstream>
+#include <string>
+#include <vector>
+
 using namespace KODI;
 using namespace KODI::GUILIB;
 using namespace PVR;
@@ -910,6 +915,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   int rulerUnit = 12;
   bool useControlCoords = false;
   bool renderFocusedLast = false;
+  bool clipping = false;
+  std::array<float, 4> cornerRadii{0.0f, 0.0f, 0.0f, 0.0f};
+  bool transformChildren = true;
 
   CRect hitRect;
   CPoint camera;
@@ -1173,6 +1181,34 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   XMLUtils::GetBoolean(pControlNode, "usecontrolcoords", useControlCoords);
   XMLUtils::GetBoolean(pControlNode, "renderfocusedlast", renderFocusedLast);
   XMLUtils::GetBoolean(pControlNode, "resetonlabelchange", resetOnLabelChange);
+  XMLUtils::GetBoolean(pControlNode, "clipping", clipping);
+
+  // Parse <cornerradius> as either a single value or a comma-separated list: tl,tr,br,bl
+  std::string cornerRadiusStr;
+  if (XMLUtils::GetString(pControlNode, "cornerradius", cornerRadiusStr))
+  {
+    std::stringstream ss(cornerRadiusStr);
+    std::string token;
+    std::vector<float> values;
+    values.reserve(4);
+
+    while (std::getline(ss, token, ','))
+    {
+      StringUtils::Trim(token);
+      if (token.empty())
+        continue;
+
+      const float v = StringUtils::ToFloat(token, 0.0f);
+      values.emplace_back(v);
+    }
+
+    if (values.size() == 1)
+      cornerRadii = {values[0], values[0], values[0], values[0]};
+    else if (values.size() == 4)
+      cornerRadii = {values[0], values[1], values[2], values[3]}; // tl,tr,br,bl
+  }
+
+  XMLUtils::GetBoolean(pControlNode, "transformchildren", transformChildren);
 
   XMLUtils::GetBoolean(pControlNode, "password", bPassword);
 
@@ -1254,12 +1290,18 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       if (insideContainer)
       {
         control = new CGUIListGroup(parentID, id, posX, posY, width, height);
+        static_cast<CGUIControlGroup*>(control)->SetClipping(clipping);
+        static_cast<CGUIControlGroup*>(control)->SetTransformChildren(transformChildren);
+        static_cast<CGUIControlGroup*>(control)->SetCornerRadii(cornerRadii);
       }
       else
       {
         control = new CGUIControlGroup(parentID, id, posX, posY, width, height);
         static_cast<CGUIControlGroup*>(control)->SetDefaultControl(defaultControl, defaultAlways);
         static_cast<CGUIControlGroup*>(control)->SetRenderFocusedLast(renderFocusedLast);
+        static_cast<CGUIControlGroup*>(control)->SetClipping(clipping);
+        static_cast<CGUIControlGroup*>(control)->SetTransformChildren(transformChildren);
+        static_cast<CGUIControlGroup*>(control)->SetCornerRadii(cornerRadii);
       }
       break;
     }

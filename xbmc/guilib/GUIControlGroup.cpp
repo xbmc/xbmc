@@ -13,6 +13,7 @@
 #include "input/mouse/MouseEvent.h"
 #include "windowing/WinSystem.h"
 
+#include <array>
 #include <cassert>
 #include <utility>
 
@@ -43,6 +44,9 @@ CGUIControlGroup::CGUIControlGroup(const CGUIControlGroup &from)
   m_defaultControl = from.m_defaultControl;
   m_defaultAlways = from.m_defaultAlways;
   m_renderFocusedLast = from.m_renderFocusedLast;
+  m_clipping = from.m_clipping;
+  m_cornerRadii = from.m_cornerRadii;
+  m_transformChildren = from.m_transformChildren;
 
   // run through and add our controls
   for (auto *i : from.m_children)
@@ -105,13 +109,85 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
   m_renderRegion = rect;
 }
 
+namespace
+{
+enum class ClipMode
+{
+  None,
+  Offscreen,
+  Scissor
+};
+
+ClipMode BeginGroupClip(CGraphicContext& gfx,
+                        const CPoint& pos,
+                        float width,
+                        float height,
+                        bool clipping,
+                        const std::array<float, 4>& cornerRadii)
+{
+  if (!clipping)
+    return ClipMode::None;
+
+  const bool anyRadius = (cornerRadii[0] > 0.0f || cornerRadii[1] > 0.0f || cornerRadii[2] > 0.0f ||
+                          cornerRadii[3] > 0.0f);
+  if (anyRadius)
+  {
+    if (gfx.BeginOffscreenRoundedGroup(pos.x, pos.y, width, height, cornerRadii))
+      return ClipMode::Offscreen;
+  }
+
+  if (gfx.SetClipRegionScissor(pos.x, pos.y, width, height))
+    return ClipMode::Scissor;
+
+  return ClipMode::None;
+}
+
+void EndGroupClip(CGraphicContext& gfx, ClipMode mode)
+{
+  if (mode == ClipMode::Offscreen)
+    gfx.EndOffscreenRoundedGroup();
+  else if (mode == ClipMode::Scissor)
+    gfx.RestoreClipRegionScissor();
+}
+
+class GroupClipScope
+{
+public:
+  GroupClipScope(CGraphicContext& gfx,
+                 const CPoint& pos,
+                 float width,
+                 float height,
+                 bool clipping,
+                 const std::array<float, 4>& cornerRadii)
+    : m_gfx(gfx),
+      m_clipMode(BeginGroupClip(gfx, pos, width, height, clipping, cornerRadii))
+  {
+    m_gfx.SetOrigin(pos.x, pos.y);
+  }
+
+  ~GroupClipScope()
+  {
+    m_gfx.RestoreOrigin();
+    EndGroupClip(m_gfx, m_clipMode);
+  }
+
+  GroupClipScope(const GroupClipScope&) = delete;
+  GroupClipScope& operator=(const GroupClipScope&) = delete;
+
+private:
+  CGraphicContext& m_gfx;
+  ClipMode m_clipMode{ClipMode::None};
+};
+} // namespace
+
 void CGUIControlGroup::Render()
 {
-  CPoint pos(GetPosition());
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetOrigin(pos.x, pos.y);
-  CGUIControl *focusedControl = NULL;
-  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
-      RENDER_ORDER_FRONT_TO_BACK)
+  const CPoint pos(GetPosition());
+  CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+
+  GroupClipScope scope(gfx, pos, m_width, m_height, m_clipping, m_cornerRadii);
+  CGUIControl* focusedControl = nullptr;
+  if (gfx.GetRenderOrder() == RENDER_ORDER_FRONT_TO_BACK)
   {
     for (auto it = m_children.rbegin(); it != m_children.rend(); ++it)
     {
@@ -134,12 +210,16 @@ void CGUIControlGroup::Render()
   if (focusedControl)
     focusedControl->DoRender();
   CGUIControl::Render();
-  CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
 }
 
 void CGUIControlGroup::RenderEx()
 {
-  for (auto *control : m_children)
+  const CPoint pos(GetPosition());
+  CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+
+  GroupClipScope scope(gfx, pos, m_width, m_height, m_clipping, m_cornerRadii);
+
+  for (auto* control : m_children)
     control->RenderEx();
   CGUIControl::RenderEx();
 }
@@ -391,7 +471,8 @@ EVENT_RESULT CGUIControlGroup::SendMouseEvent(const CPoint& point, const MOUSE::
 {
   // transform our position into child coordinates
   CPoint childPoint(point);
-  m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
+  if (m_transformChildren)
+    m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
 
   if (CGUIControl::CanFocus())
   {
@@ -418,7 +499,8 @@ EVENT_RESULT CGUIControlGroup::SendMouseEvent(const CPoint& point, const MOUSE::
 void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
 {
   CPoint controlCoords(point);
-  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
+  if (m_transformChildren)
+    m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   controlCoords -= GetPosition();
   for (auto *child : m_children)
   {

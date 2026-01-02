@@ -251,6 +251,7 @@ public:
   virtual void SetPushUpdates(bool pushUpdates) { m_pushedUpdates = pushUpdates; }
 
   virtual bool IsGroup() const { return false; }
+  virtual bool TransformChildren() const { return true; }
   virtual bool IsContainer() const { return false; }
   virtual bool GetCondition(int condition, int data) const { return false; }
 

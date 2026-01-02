@@ -144,7 +144,16 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   if (IsVisible())
   {
-    m_cachedTransform = CServiceBroker::GetWinSystem()->GetGfxContext().AddTransform(m_transform);
+    auto& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+    m_cachedTransform = gfx.AddTransform(m_transform);
+    bool transformActive = true;
+
+    if (!TransformChildren())
+    {
+      // Keep m_cachedTransform for this control's own render, but do NOT let children bake-in our transform.
+      gfx.RemoveTransform();
+      transformActive = false;
+    }
     if (m_hasCamera)
       CServiceBroker::GetWinSystem()->GetGfxContext().SetCameraPosition(m_camera);
 
@@ -159,7 +168,8 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
     if (m_hasCamera)
       CServiceBroker::GetWinSystem()->GetGfxContext().RestoreCameraPosition();
-    CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
+    if (transformActive)
+      gfx.RemoveTransform();
   }
 
   UpdateControlStats();

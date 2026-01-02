@@ -12,6 +12,7 @@
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
+#include <array>
 #include <memory>
 #include <string>
 
@@ -56,6 +57,18 @@ public:
   virtual CRect ClipRectToScissorRect(const CRect &rect) { return CRect(); }
   virtual void SetScissors(const CRect &rect) = 0;
   virtual void ResetScissors() = 0;
+
+  // Render group to an offscreen target and composite it back with a round-rect mask (AA-capable).
+  virtual bool BeginOffscreenRoundedGroup(const CRect& rectScreenTL, float radiusPx)
+  {
+    return false;
+  }
+  virtual bool BeginOffscreenRoundedGroup(const CRect& rectScreenTL,
+                                          const std::array<float, 4>& radiiPx)
+  {
+    return BeginOffscreenRoundedGroup(rectScreenTL, radiiPx[0]);
+  }
+  virtual void EndOffscreenRoundedGroup() {}
 
   virtual void SetDepthCulling(DEPTH_CULLING culling) {}
 
@@ -106,4 +119,3 @@ protected:
   std::unique_ptr<CGUIImage> m_splashImage;
   std::unique_ptr<CGUITextLayout> m_splashMessageLayout;
 };
-

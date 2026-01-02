@@ -13,7 +13,9 @@
 #include "utils/ColorUtils.h"
 #include "utils/Map.h"
 
+#include <array>
 #include <map>
+#include <vector>
 
 #include <fmt/format.h>
 
@@ -38,6 +40,7 @@ enum class ShaderMethodGLES
   SM_TEXTURE_RGBA_BOB,
   SM_TEXTURE_RGBA_BOB_OES,
   SM_TEXTURE_NOALPHA,
+  SM_ROUNDRECT_MASK,
   SM_MAX
 };
 
@@ -75,6 +78,7 @@ private:
       {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB, "texture rgba bob"},
       {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB_OES, "texture rgba bob OES"},
       {ShaderMethodGLES::SM_TEXTURE_NOALPHA, "texture no alpha"},
+      {ShaderMethodGLES::SM_ROUNDRECT_MASK, "roundrect_mask"},
   });
 
   static_assert(static_cast<size_t>(ShaderMethodGLES::SM_MAX) == ShaderMethodGLESMap.size(),
@@ -110,6 +114,10 @@ public:
   void SetScissors(const CRect& rect) override;
   void ResetScissors() override;
 
+  bool BeginOffscreenRoundedGroup(const CRect& rectScreenTL, float radiusPx) override;
+  bool BeginOffscreenRoundedGroup(const CRect& rectScreenTL,
+                                  const std::array<float, 4>& radiiPx) override;
+  void EndOffscreenRoundedGroup() override;
   void SetDepthCulling(DEPTH_CULLING culling) override;
 
   void CaptureStateBlock() override;
@@ -156,6 +164,39 @@ protected:
   std::string m_RenderExtensions;
 
   std::map<ShaderMethodGLES, std::unique_ptr<CGLESShader>> m_pShader;
+
+  // Round-rect mask shader locations (SM_ROUNDRECT_MASK).
+  GLint m_maskRectLoc{-1}; // m_maskRect
+  GLint m_maskRadiiLoc{-1}; // m_radii (vec4 tl,tr,br,bl)
+  GLint m_maskAAWidthLoc{-1}; // m_aaWidth
+  GLint m_maskViewportLoc{-1}; // m_viewport (vec4 x,y,w,h)
+  GLint m_maskSamplerLoc{-1}; // m_samp0
+  GLint m_maskMatrixLoc{-1}; // m_matrix
+  GLint m_roundMaskPosLoc{-1}; // m_attrpos
+
+  // Fullscreen quad resources for round-rect composite.
+  GLuint m_roundMaskVbo{0};
+
+  // Offscreen rounded group helpers (GLES only).
+  bool EnsureGroupFbo(int w, int h);
+
+  // Offscreen render target (RGBA).
+  GLuint m_groupFbo{0};
+  GLuint m_groupTex{0};
+  int m_groupW{0};
+  int m_groupH{0};
+
+  struct OffscreenGroupState
+  {
+    GLint prevFbo{0};
+    GLint prevViewport[4]{0, 0, 0, 0};
+    CRect rectScreenTL;
+    std::array<float, 4> radiiPx{0.0f, 0.0f, 0.0f, 0.0f};
+  };
+
+  // Allow nested rounded groups safely.
+  std::vector<OffscreenGroupState> m_groupStack;
+
   ShaderMethodGLES m_method = ShaderMethodGLES::SM_DEFAULT;
 
   GLint      m_viewPort[4];

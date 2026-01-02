@@ -84,6 +84,115 @@ void CGraphicContext::RestoreClipRegion()
   // here we could reset the hardware clipping, if applicable
 }
 
+bool CGraphicContext::SetClipRegionScissor(float x, float y, float w, float h)
+{
+  if (w <= 0.0f || h <= 0.0f)
+    return false;
+
+  // NOTE:
+  // Scissors are maintained in FINAL (render) coordinates to avoid double-applying
+  // origin translations (origins are already included in the current transform matrix).
+  const CRect rect(x, y, x + w, y + h);
+
+  CRect scissorFinal;
+  scissorFinal.x1 = ScaleFinalXCoord(rect.x1, rect.y1);
+  scissorFinal.y1 = ScaleFinalYCoord(rect.x1, rect.y1);
+  scissorFinal.x2 = ScaleFinalXCoord(rect.x2, rect.y2);
+  scissorFinal.y2 = ScaleFinalYCoord(rect.x2, rect.y2);
+
+  if (scissorFinal.x2 < scissorFinal.x1)
+    std::swap(scissorFinal.x1, scissorFinal.x2);
+  if (scissorFinal.y2 < scissorFinal.y1)
+    std::swap(scissorFinal.y1, scissorFinal.y2);
+
+  if (scissorFinal.IsEmpty())
+    return false;
+
+  if (!m_scissorRegions.empty())
+  {
+    scissorFinal.Intersect(m_scissorRegions.top());
+
+    if (scissorFinal.x2 < scissorFinal.x1)
+      std::swap(scissorFinal.x1, scissorFinal.x2);
+    if (scissorFinal.y2 < scissorFinal.y1)
+      std::swap(scissorFinal.y1, scissorFinal.y2);
+
+    if (scissorFinal.IsEmpty())
+      return false;
+  }
+
+  m_scissorRegions.push(scissorFinal);
+  SetScissors(scissorFinal);
+  return true;
+}
+
+void CGraphicContext::RestoreClipRegionScissor()
+{
+  if (!m_scissorRegions.empty())
+    m_scissorRegions.pop();
+
+  if (m_scissorRegions.empty())
+  {
+    ResetScissors();
+    return;
+  }
+
+  SetScissors(m_scissorRegions.top());
+}
+
+bool CGraphicContext::BeginOffscreenRoundedGroup(
+    float x, float y, float w, float h, float radiusGui)
+{
+  return BeginOffscreenRoundedGroup(
+      x, y, w, h, std::array<float, 4>{radiusGui, radiusGui, radiusGui, radiusGui});
+}
+
+bool CGraphicContext::BeginOffscreenRoundedGroup(
+    float x, float y, float w, float h, const std::array<float, 4>& radiiGui)
+{
+  if (w <= 0.0f || h <= 0.0f)
+    return false;
+
+  float x1 = x, y1 = y;
+  float x2 = x + w, y2 = y + h;
+  float z = 0.0f;
+
+  ScaleFinalCoords(x1, y1, z);
+  ScaleFinalCoords(x2, y2, z);
+
+  if (x2 < x1)
+    std::swap(x1, x2);
+  if (y2 < y1)
+    std::swap(y1, y2);
+
+  const CRect rectScreenTL(x1, y1, x2, y2);
+
+  auto scaleRadius = [&](float rGui) -> float
+  {
+    if (rGui <= 0.0f)
+      return 0.0f;
+
+    float ax0 = 0.0f, ay0 = 0.0f;
+    float ax1 = rGui, ay1 = rGui;
+    float az = 0.0f;
+    ScaleFinalCoords(ax0, ay0, az);
+    ScaleFinalCoords(ax1, ay1, az);
+    const float scaleX = std::abs(ax1 - ax0) / rGui;
+    const float scaleY = std::abs(ay1 - ay0) / rGui;
+    return rGui * std::min(scaleX, scaleY);
+  };
+
+  std::array<float, 4> radiiScreen{scaleRadius(radiiGui[0]), scaleRadius(radiiGui[1]),
+                                   scaleRadius(radiiGui[2]), scaleRadius(radiiGui[3])};
+
+  return CServiceBroker::GetRenderSystem()->BeginOffscreenRoundedGroup(rectScreenTL, radiiScreen);
+}
+
+void CGraphicContext::EndOffscreenRoundedGroup()
+{
+  CServiceBroker::GetRenderSystem()->EndOffscreenRoundedGroup();
+}
+
 void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 {
   // this is the software clipping routine.  If the graphics hardware is set to do the clipping
