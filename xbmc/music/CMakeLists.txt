@@ -14,6 +14,7 @@ set(SOURCES Album.cpp
 
 set(HEADERS Album.h
             Artist.h
+            AudioType.h
             ContextMenus.h
             GUIViewStateMusic.h
             MusicDatabase.h
