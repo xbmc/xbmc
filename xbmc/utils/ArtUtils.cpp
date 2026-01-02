@@ -149,35 +149,28 @@ void FillInDefaultIcon(CFileItem& item)
   // Set the icon overlays (if applicable)
   if (!item.HasOverlay() && !item.HasProperty("icon_never_overlay"))
   {
-    if (URIUtils::IsInRAR(item.GetPath()))
-      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
-    else if (URIUtils::IsInZIP(item.GetPath()))
+    if (URIUtils::IsInZIP(item.GetPath()))
       item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
+    else if (URIUtils::IsInArchive(item.GetPath()))
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
   }
 }
 
 std::string GetFolderThumb(const CFileItem& item, const std::string& folderJPG /* = "folder.jpg" */)
 {
-  std::string strFolder = item.GetPath();
-
-  if (item.IsStack())
-  {
-    URIUtils::GetParentPath(item.GetPath(), strFolder);
-  }
-
-  if (URIUtils::IsInRAR(strFolder) || URIUtils::IsInZIP(strFolder))
-  {
-    const CURL url(strFolder);
-    strFolder = URIUtils::GetDirectory(url.GetHostName());
-  }
-
-  if (item.IsMultiPath())
-    strFolder = CMultiPathDirectory::GetFirstPath(item.GetPath());
-
   if (item.IsPlugin())
     return "";
 
-  return URIUtils::AddFileToFolder(strFolder, folderJPG);
+  std::string folder{item.GetPath()};
+  if (item.IsMultiPath())
+    folder = CMultiPathDirectory::GetFirstPath(item.GetPath());
+
+  if (item.IsStack() || URIUtils::IsInArchive(folder) || URIUtils::IsBlurayPath(folder))
+    URIUtils::GetParentPath(item.GetPath(), folder);
+  else if (URIUtils::IsDiscPath(folder))
+    folder = URIUtils::GetDiscBasePath(folder);
+
+  return URIUtils::AddFileToFolder(URIUtils::GetDirectory(folder), folderJPG);
 }
 
 std::string GetLocalArt(const CFileItem& item,
@@ -214,16 +207,19 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
 {
   std::string strFile;
   if (item.IsStack())
+  {
     strFile = CStackDirectory::GetStackTitlePath(item.GetPath());
+    URIUtils::RemoveSlashAtEnd(strFile);
+    if (!URIUtils::HasExtension(strFile))
+      strFile = URIUtils::ReplaceExtension(
+          strFile, ".avi"); // If no extension (folder stack) then add dummy one
+  }
 
   std::string file = strFile.empty() ? item.GetPath() : strFile;
-  if (URIUtils::IsInRAR(file) || URIUtils::IsInZIP(file))
-  {
-    std::string strPath = URIUtils::GetDirectory(file);
-    std::string strParent;
-    URIUtils::GetParentPath(strPath, strParent);
-    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(file));
-  }
+
+  const CURL url{file};
+  if (URIUtils::IsInArchive(file) || URIUtils::IsArchive(url))
+    strFile = URIUtils::ReplaceExtension(url.GetHostName(), ".avi");
 
   if (item.IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(item.GetPath());
@@ -231,7 +227,7 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
   if (URIUtils::IsBlurayPath(item.GetDynPath()))
     file = strFile = URIUtils::GetDiscFile(item.GetDynPath());
 
-  if (URIUtils::IsOpticalMediaFile(file))
+  if (URIUtils::IsOpticalMediaFile(file) && !URIUtils::IsArchive(url))
   {
     // Optical media files (VIDEO_TS.IFO/INDEX.BDMV) should be treated like folders
     useFolder = true; // ByRef so changes behaviour in GetLocalArt()
@@ -300,27 +296,26 @@ std::string GetLocalFanart(const CFileItem& item)
     return GetLocalFanart(dbItem);
   }
 
-  std::string file2;
-  std::string file = item.GetPath();
+  std::string alternateFile;
+  std::string file{item.GetPath()};
   if (item.IsStack())
   {
-    std::string path;
-    URIUtils::GetParentPath(item.GetPath(), path);
-    CStackDirectory dir;
-    std::string path2;
-    path2 = dir.GetStackTitlePath(file);
-    file = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(path2));
-    CFileItem fan_item(dir.GetFirstStackedFile(item.GetPath()), false);
-    std::string TBNFile(URIUtils::ReplaceExtension(GetTBNFile(fan_item), "-fanart"));
-    file2 = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(TBNFile));
+    // Two possible art locations for stacks:
+    // First - file stacks   - stack:///path/movie_part_1.avi -> /path/movie-fanart.jpg
+    //       - folder stacks - stack:///path/movie/movie_part_1/file.avi -> /path/movie/movie-fanart.jpg
+    file = CStackDirectory::GetStackTitlePath(file);
+    URIUtils::RemoveSlashAtEnd(file); // Can be folder or file
+
+    // Second - file stacks   - stack:///path/movie_part_1.avi -> /path/movie_part_1-fanart.jpg
+    //        - folder stacks - stack:///path/movie/movie_part_1/file.avi -> /path/movie/movie-fanart.jpg
+    CFileItem stackItem(CStackDirectory::GetFirstStackedFile(item.GetPath()), false);
+    alternateFile = URIUtils::ReplaceExtension(GetTBNFile(stackItem), "-fanart");
   }
 
-  if (URIUtils::IsInRAR(file) || URIUtils::IsInZIP(file))
+  if (URIUtils::IsInArchive(file))
   {
-    std::string path = URIUtils::GetDirectory(file);
-    std::string parent;
-    URIUtils::GetParentPath(path, parent);
-    file = URIUtils::AddFileToFolder(parent, URIUtils::GetFileName(item.GetPath()));
+    const CURL url(file);
+    file = url.GetHostName();
   }
 
   // no local fanart available for these
@@ -331,8 +326,7 @@ std::string GetLocalFanart(const CFileItem& item)
       item.GetPath().empty())
     return "";
 
-  std::string dir = URIUtils::GetDirectory(file);
-
+  const std::string dir{URIUtils::GetDirectory(file)};
   if (dir.empty())
     return "";
 
@@ -341,12 +335,26 @@ std::string GetLocalFanart(const CFileItem& item)
                            CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
                            DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
   if (item.IsOpticalMediaFile())
-  { // grab from the optical media parent folder as well
+  {
+    // Get files from the optical media parent folder as well
     CFileItemList moreItems;
     CDirectory::GetDirectory(item.GetLocalMetadataPath(), moreItems,
                              CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
                              DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
     items.Append(moreItems);
+  }
+  if (!alternateFile.empty())
+  {
+    // Get files from the alternate path as well
+    const std::string alternateDir{URIUtils::GetDirectory(alternateFile)};
+    if (!alternateDir.empty() && alternateDir != dir)
+    {
+      CFileItemList moreItems;
+      CDirectory::GetDirectory(alternateDir, moreItems,
+                               CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
+                               DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+      items.Append(moreItems);
+    }
   }
 
   std::vector<std::string> fanarts = {"fanart"};
@@ -354,19 +362,20 @@ std::string GetLocalFanart(const CFileItem& item)
   file = URIUtils::ReplaceExtension(file, "-fanart");
   fanarts.insert(item.IsFolder() ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(file));
 
-  if (!file2.empty())
-    fanarts.insert(item.IsFolder() ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(file2));
+  if (!alternateFile.empty())
+    fanarts.insert(item.IsFolder() ? fanarts.end() : fanarts.begin(),
+                   URIUtils::GetFileName(alternateFile));
 
   for (const auto& fanart : fanarts)
   {
-    for (const auto& item : items)
+    for (const auto& artItem : items)
     {
-      std::string strCandidate = URIUtils::GetFileName(item->GetPath());
+      std::string strCandidate{URIUtils::GetFileName(artItem->GetPath())};
       URIUtils::RemoveExtension(strCandidate);
-      std::string fanart2 = fanart;
+      std::string fanart2{fanart};
       URIUtils::RemoveExtension(fanart2);
       if (StringUtils::EqualsNoCase(strCandidate, fanart2))
-        return item->GetPath();
+        return artItem->GetPath();
     }
   }
 
@@ -378,32 +387,30 @@ std::string GetLocalFanart(const CFileItem& item)
 // <foldername>/ -> <foldername>(-<SxxEyy>).tbn
 std::string GetTBNFile(const CFileItem& item, int season /* = - 1 */, int episode /* = -1 */)
 {
-  std::string thumbFile;
   std::string file{item.GetPath()};
 
   if (item.IsStack())
   {
-    std::string path;
-    URIUtils::GetParentPath(item.GetPath(), path);
-    CFileItem item(CStackDirectory::GetFirstStackedFile(file), false);
-    const std::string TBNFile{GetTBNFile(item)};
+    // First see if there's a .tbn with the first stacked file (rather than in the stack base path)
+    CFileItem stackItem(CStackDirectory::GetFirstStackedFile(file), false);
+    const std::string TBNFile{GetTBNFile(stackItem)};
+    const std::string path{CStackDirectory::GetParentPath(file)};
     const std::string returnPath{URIUtils::AddFileToFolder(path, URIUtils::GetFileName(TBNFile))};
     if (CFile::Exists(returnPath))
-      return returnPath;
+      return returnPath; // Will already have .tbn extension
 
-    const std::string& stackPath{CStackDirectory::GetStackTitlePath(file)};
-    file = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(stackPath));
+    // Otherwise fall back to the stack base path
+    // File stack returns file, folder stack returns folder (so remove slash to get file name)
+    file = {CStackDirectory::GetStackTitlePath(file)};
+    URIUtils::RemoveSlashAtEnd(file);
   }
 
-  if (URIUtils::IsInRAR(file) || URIUtils::IsInZIP(file))
+  if (URIUtils::IsInArchive(file))
   {
-    const std::string path = URIUtils::GetDirectory(file);
-    std::string parent;
-    URIUtils::GetParentPath(path, parent);
-    file = URIUtils::AddFileToFolder(parent, URIUtils::GetFileName(item.GetPath()));
+    const CURL url(file);
+    file = url.GetHostName();
   }
-
-  if (URIUtils::IsBlurayPath(file))
+  else if (URIUtils::IsBlurayPath(file))
     file = URIUtils::GetDiscFile(file);
 
   CURL url(file);
@@ -412,10 +419,11 @@ std::string GetTBNFile(const CFileItem& item, int season /* = - 1 */, int episod
   if (item.IsFolder() && !item.IsFileFolder())
     URIUtils::RemoveSlashAtEnd(file);
 
+  std::string thumbFile;
   if (!file.empty())
   {
     if (item.IsFolder() && !item.IsFileFolder())
-      thumbFile = file + ".tbn"; // folder, so just add ".tbn"
+      thumbFile = file + ".tbn"; // Folder, so just add ".tbn"
     else
     {
       if (season > -1 && episode > -1)
