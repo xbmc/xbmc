@@ -119,6 +119,16 @@ public:
    */
   virtual bool ShouldCancel(unsigned int progress, unsigned int total) const;
 
+  /*!
+   \brief Get the number of callbacks pending for this job during completion.
+
+   When count > 1, callbacks should make copies of any data they extract from the job
+   to avoid sharing state with other callbacks that will also receive this job's results.
+
+   \return number of callbacks still waiting to be notified, 0 if not in completion phase.
+   */
+  size_t GetPendingCallbackCount() const;
+
 private:
   CJobManager* m_progressCallback{nullptr};
 };

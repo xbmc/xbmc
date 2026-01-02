@@ -537,7 +537,21 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob* j
   std::unique_lock lock(m_section);
   if (success)
   {
-    m_items = static_cast<CDirectoryJob*>(job)->GetItems();
+    if (job->GetPendingCallbackCount() > 1)
+    {
+      // Deep copy items since other callbacks will also receive this job's results,
+      // and each container needs independent visibility state and layout
+      const auto& sourceItems = static_cast<CDirectoryJob*>(job)->GetItems();
+      m_items.clear();
+      m_items.reserve(sourceItems.size());
+      for (const auto& item : sourceItems)
+        m_items.emplace_back(std::make_shared<CGUIStaticItem>(*item));
+    }
+    else
+    {
+      m_items = static_cast<CDirectoryJob*>(job)->GetItems();
+    }
+
     m_currentTarget = static_cast<CDirectoryJob*>(job)->GetTarget();
     static_cast<CDirectoryJob*>(job)->GetItemTypes(m_itemTypes);
     if (m_updateState == UpdateState::OK)
