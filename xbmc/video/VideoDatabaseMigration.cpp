@@ -1053,9 +1053,15 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
   }
+
+  if (iVersion < 142)
+  {
+    m_pDS->exec("ALTER TABLE streamdetails ADD strSubtitleCodec text");
+    m_pDS->exec("ALTER TABLE streamdetails ADD iSubtitleSourceType integer");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 141;
+  return 142;
 }
