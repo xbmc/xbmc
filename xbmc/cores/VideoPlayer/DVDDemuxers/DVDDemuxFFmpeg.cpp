@@ -276,13 +276,12 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   // try to abort after 30 seconds
   m_timeout.Set(30s);
 
+  CURL url = m_pInput->GetURL();
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
     AVDictionary* options = GetFFMpegOptionsFromInput();
-
-    CURL url = m_pInput->GetURL();
 
     int result = -1;
     if (url.IsProtocol("mms"))
@@ -296,6 +295,20 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
         url.SetProtocol("mmst");
         strFile = url.Get();
       }
+    }
+    else if (url.IsProtocol("tcp"))
+    {
+      // tcp streams cannot handle multiple connection attempts, so exit early on failure
+      // rather than falling through to the retry logic below
+      result = avformat_open_input(&m_pFormatContext, url.Get().c_str(), iformat, &options);
+      if (result < 0)
+      {
+        CLog::Log(LOGDEBUG, "Error, could not open file {}", CURL::GetRedacted(url.Get()));
+        Dispose();
+        av_dict_free(&options);
+        return false;
+      }
+      strFile = url.Get();
     }
     else if (url.IsProtocol("udp") || url.IsProtocol("rtp"))
     {
@@ -462,8 +475,8 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   }
 
   // don't re-open mpegts streams with hevc encoding as the params are not correctly detected again
-  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isBluray &&
-      m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
+  if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !url.IsProtocol("tcp") && !fileinfo &&
+      !isBluray && m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
       m_pFormatContext->streams[0]->codecpar->codec_id != AV_CODEC_ID_HEVC)
   {
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
