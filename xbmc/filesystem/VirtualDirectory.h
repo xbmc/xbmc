@@ -10,6 +10,7 @@
 
 #include "IDirectory.h"
 #include "MediaSource.h"
+#include "threads/IRunnable.h"
 
 #include <memory>
 #include <string>
@@ -54,5 +55,32 @@ namespace XFILE
     std::vector<CMediaSource> m_sources;
     bool m_allowNonLocalSources;
     std::shared_ptr<IDirectory> m_pDir;
+  };
+
+  class CGetDirectoryItems final : public IRunnable
+  {
+  public:
+    CGetDirectoryItems(
+        CVirtualDirectory& dir, const CURL& url, CFileItemList& items, bool useDir, bool keepImpl)
+      : m_dir(dir),
+        m_url(url),
+        m_items(items),
+        m_useDir(useDir),
+        m_keepImpl(keepImpl)
+    {
+    }
+
+    void Run() override { m_result = m_dir.GetDirectory(m_url, m_items, m_useDir, m_keepImpl); }
+    void Cancel() override { m_dir.CancelDirectory(); }
+
+    bool GetResult() const { return m_result; }
+
+  private:
+    CVirtualDirectory& m_dir;
+    const CURL& m_url;
+    CFileItemList& m_items;
+    bool m_useDir{false};
+    bool m_result{false};
+    bool m_keepImpl{false};
   };
 }
