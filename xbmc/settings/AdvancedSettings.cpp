@@ -1239,6 +1239,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "capath", m_databaseVideo.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseVideo.ciphers);
     XMLUtils::GetUInt(pDatabase, "connecttimeout", m_databaseVideo.connecttimeout, 1, 300);
+    XMLUtils::GetBoolean(pDatabase, "verifyserver", m_databaseVideo.verifyserver);
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseVideo.compression);
   }
 
@@ -1257,6 +1258,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "capath", m_databaseMusic.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseMusic.ciphers);
     XMLUtils::GetUInt(pDatabase, "connecttimeout", m_databaseMusic.connecttimeout, 1, 300);
+    XMLUtils::GetBoolean(pDatabase, "verifyserver", m_databaseMusic.verifyserver);
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseMusic.compression);
   }
 
@@ -1275,6 +1277,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "capath", m_databaseTV.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseTV.ciphers);
     XMLUtils::GetUInt(pDatabase, "connecttimeout", m_databaseTV.connecttimeout, 1, 300);
+    XMLUtils::GetBoolean(pDatabase, "verifyserver", m_databaseTV.verifyserver);
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseTV.compression);
   }
 
@@ -1293,6 +1296,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "capath", m_databaseEpg.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseEpg.ciphers);
     XMLUtils::GetUInt(pDatabase, "connecttimeout", m_databaseEpg.connecttimeout, 1, 300);
+    XMLUtils::GetBoolean(pDatabase, "verifyserver", m_databaseEpg.verifyserver);
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseEpg.compression);
   }
 
