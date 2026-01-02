@@ -29,14 +29,10 @@ protected:
   using CScriptRunner::ExecuteScript;
   using CScriptRunner::GetAddon;
   using CScriptRunner::SetDone;
-  using CScriptRunner::StartScript;
 
-  bool RunScript(TScript* script,
-                 const ADDON::AddonPtr& addon,
-                 const std::string& path,
-                 bool resume)
+  bool RunScript(TScript* script, const ADDON::AddonPtr& addon, const CURL& url, bool resume)
   {
-    if (script == nullptr || addon == nullptr || path.empty())
+    if (script == nullptr || addon == nullptr)
       return false;
 
     // reuse an existing script handle or get a new one if necessary
@@ -47,7 +43,7 @@ protected:
       ReuseScriptHandle(handle, script);
 
     // run the script
-    auto result = CScriptRunner::RunScript(addon, path, handle, resume);
+    auto result = CScriptRunner::RunScript(addon, url, handle, resume);
 
     // remove the script handle if necessary
     RemoveScriptHandle(handle);
