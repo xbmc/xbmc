@@ -31,8 +31,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   {
     if (m_old_crtc->GetId() != m_crtc->GetId())
     {
-      AddProperty(m_old_crtc, "CRTC_ID", 0);
-      AddProperty(m_old_crtc, "MODE_IDE", 0);
+      AddProperty(m_old_crtc, "ACTIVE", 0);
+      AddProperty(m_old_crtc, "MODE_ID", 0);
       flags |= DRM_MODE_ATOMIC_ALLOW_MODESET;
     }
 
