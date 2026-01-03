@@ -83,6 +83,8 @@ bool CGUIFontTTFGLES::FirstBegin()
 
   if (m_textureStatus == TEXTURE_VOID)
   {
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
     // Have OpenGL generate a texture object handle for us
     glGenTextures(1, static_cast<GLuint*>(&m_nTexture));
 
@@ -115,6 +117,8 @@ bool CGUIFontTTFGLES::FirstBegin()
   {
     // Copies one more line in case we have to sample from there
     m_updateY2 = std::min(m_updateY2 + 1, m_texture->GetHeight());
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1,

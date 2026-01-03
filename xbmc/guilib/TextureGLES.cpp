@@ -284,8 +284,10 @@ void CGLESTexture::LoadToGPU()
   // read one/two bytes at the time.
   if (m_textureFormat == KD_TEX_FMT_SDR_R8)
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  if (m_textureFormat == KD_TEX_FMT_SDR_RG8)
+  else if (m_textureFormat == KD_TEX_FMT_SDR_RG8)
     glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+  else
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
   TextureFormat glesFormat;
   if (m_isGLESVersion30orNewer)
