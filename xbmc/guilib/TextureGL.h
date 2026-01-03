@@ -37,7 +37,8 @@ public:
   CGLTexture(unsigned int width = 0,
              unsigned int height = 0,
              XB_FMT format = XB_FMT_A8R8G8B8,
-             GLuint texture = 0);
+             GLuint texture = 0,
+             bool ownsTexture = true);
   ~CGLTexture() override;
 
   // Implementation of CTexture
@@ -62,5 +63,6 @@ protected:
   GLuint m_texture{0};
   bool m_isOglVersion3orNewer{false};
   bool m_isOglVersion33orNewer{false};
+  bool m_ownsTexture{true};
 };
 

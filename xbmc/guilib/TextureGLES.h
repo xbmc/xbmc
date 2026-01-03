@@ -34,7 +34,8 @@ public:
   CGLESTexture(unsigned int width = 0,
                unsigned int height = 0,
                XB_FMT format = XB_FMT_A8R8G8B8,
-               GLuint texture = 0);
+               GLuint texture = 0,
+               bool ownsTexture = true);
   ~CGLESTexture() override;
 
   // Implementation of CTexture
@@ -55,4 +56,5 @@ protected:
 
   GLuint m_texture = 0;
   bool m_isGLESVersion30orNewer{false};
+  bool m_ownsTexture{true};
 };

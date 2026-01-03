@@ -141,8 +141,8 @@ std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
   return std::make_unique<CGLTexture>(width, height, format);
 }
 
-CGLTexture::CGLTexture(unsigned int width, unsigned int height, XB_FMT format, GLuint texture)
-  : CTexture(width, height, format), m_texture(texture)
+CGLTexture::CGLTexture(unsigned int width, unsigned int height, XB_FMT format, GLuint texture, bool ownsTexture)
+  : CTexture(width, height, format), m_texture(texture), m_ownsTexture(ownsTexture)
 {
   unsigned int major, minor;
   CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
@@ -164,7 +164,7 @@ void CGLTexture::CreateTextureObject()
 
 void CGLTexture::DestroyTextureObject()
 {
-  if (m_texture)
+  if (m_texture && m_ownsTexture)
     CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTexture(m_texture);
 }
 

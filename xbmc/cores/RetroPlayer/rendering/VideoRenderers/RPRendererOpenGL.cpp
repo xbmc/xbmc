@@ -290,11 +290,11 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   {
     // We can't copy or move CGLTexture, so construct source/target in-place
     rbTextures = new RenderBufferTextures{
-        // Source texture
+        // Source texture - wraps RenderBuffer's texture (not owned by CGLTexture)
         std::make_shared<CGLTexture>(static_cast<unsigned int>(renderBuffer->GetWidth()),
                                      static_cast<unsigned int>(renderBuffer->GetHeight()),
-                                     XB_FMT_RGB8, renderBuffer->TextureID()),
-        // Target texture
+                                     XB_FMT_RGB8, renderBuffer->TextureID(), false),
+        // Target texture - created and owned by CGLTexture
         std::make_shared<CGLTexture>(static_cast<unsigned int>(m_context.GetScreenWidth()),
                                      static_cast<unsigned int>(m_context.GetScreenHeight())),
     };

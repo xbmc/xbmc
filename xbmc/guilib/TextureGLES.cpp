@@ -179,8 +179,8 @@ std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
   return std::make_unique<CGLESTexture>(width, height, format);
 }
 
-CGLESTexture::CGLESTexture(unsigned int width, unsigned int height, XB_FMT format, GLuint texture)
-  : CTexture(width, height, format), m_texture(texture)
+CGLESTexture::CGLESTexture(unsigned int width, unsigned int height, XB_FMT format, GLuint texture, bool ownsTexture)
+  : CTexture(width, height, format), m_texture(texture), m_ownsTexture(ownsTexture)
 {
   unsigned int major, minor;
   CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
@@ -201,7 +201,7 @@ void CGLESTexture::CreateTextureObject()
 
 void CGLESTexture::DestroyTextureObject()
 {
-  if (m_texture)
+  if (m_texture && m_ownsTexture)
     CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTexture(m_texture);
 }
 
