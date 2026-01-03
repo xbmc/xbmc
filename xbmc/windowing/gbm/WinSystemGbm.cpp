@@ -104,8 +104,6 @@ const std::string CWinSystemGbm::GetName()
     return "gbm";
   return "gbm (" + DRMHELPERS::FourCCToString(gui_plane->GetFormat()) + " " +
          DRMHELPERS::ModifierToString(gui_plane->GetModifier()) + ")";
-
-  return "gbm";
 }
 
 bool CWinSystemGbm::InitWindowSystem()
