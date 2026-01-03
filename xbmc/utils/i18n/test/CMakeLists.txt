@@ -4,7 +4,12 @@ set(SOURCES TestBcp47.cpp
             TestIso3166_1.cpp
             TestIso639_1.cpp
             TestIso639_2.cpp
-            TestI18nUtils.cpp)
+            TestI18nUtils.cpp
+            TestSubTagLoader.cpp
+            TestSubTagRegistryFile.cpp
+            TestSubTagRegistryManager.cpp
+            TestSubTagRegistryTypes.cpp
+            TestSubTagsCollection.cpp)
 
 set(HEADERS TestI18nUtils.h)
 

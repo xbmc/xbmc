@@ -5,6 +5,7 @@ system/colors.xml
 system/dialogcolors.xml
 system/keyboardlayouts/*
 system/keymaps/*
+system/language-subtag-registry.txt
 system/library/*
 system/peripherals.xml
 system/playercorefactory.xml
