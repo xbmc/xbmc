@@ -654,7 +654,7 @@ int CVideoDatabase::GetPathId(const std::string& strPath)
       return -1;
 
     std::string strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || StringUtils::StartsWithNoCase(strPath, "rar://") || StringUtils::StartsWithNoCase(strPath, "zip://"))
+    if (URIUtils::IsStack(strPath))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -868,7 +868,7 @@ int CVideoDatabase::AddPath(const std::string& strPath, const std::string &paren
       return -1;
 
     std::string strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || StringUtils::StartsWithNoCase(strPath, "rar://") || StringUtils::StartsWithNoCase(strPath, "zip://"))
+    if (URIUtils::IsStack(strPath))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -1099,7 +1099,7 @@ int CVideoDatabase::AddOrUpdateFile(const std::string& fileAndPath,
 
 int CVideoDatabase::AddFile(const CFileItem& item)
 {
-  if (URIUtils::IsBlurayPath(item.GetDynPath()) || item.IsStack())
+  if (CUtil::UseDynPathForAddOrUpdate(item))
     return AddFile(item.GetDynPath());
   if (IsVideoDb(item) && item.HasVideoInfoTag())
   {
@@ -2665,6 +2665,7 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
     details.m_strPath = m_pDS->fv("path.strPath").get_asString();
     std::string strFileName = m_pDS->fv("files.strFilename").get_asString();
     ConstructPath(details.m_strFileNameAndPath, details.m_strPath, strFileName);
+    details.m_basePath = URIUtils::GetBasePath(details.m_strPath);
     details.SetPlayCount(std::max(details.GetPlayCount(), m_pDS->fv("files.playCount").get_asInt()));
     if (!details.m_lastPlayed.IsValid())
       details.m_lastPlayed.SetFromDBDateTime(m_pDS->fv("files.lastPlayed").get_asString());
@@ -8861,6 +8862,8 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
 
     if (URIUtils::IsMultiPath(strPath))
       strPath2 = CMultiPathDirectory::GetFirstPath(strPath);
+    else if (URIUtils::IsStack(strPath))
+      strPath2 = CStackDirectory::GetFirstStackedFile(strPath);
     else
       strPath2 = strPath;
 
@@ -10166,10 +10169,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         // get the actual archive path
         if (URIUtils::IsInArchive(fullPath))
           fullPath = CURL(fullPath).GetHostName();
-
-        // if bluray:// get actual path
-        if (URIUtils::IsBlurayPath(fullPath))
-          fullPath = URIUtils::GetDiscFile(fullPath);
 
         bool del = true;
         if (URIUtils::IsPlugin(fullPath))
@@ -11730,8 +11729,7 @@ void CVideoDatabase::ConstructPath(std::string& strDest,
                                    const std::string& strPath,
                                    const std::string& strFileName) const
 {
-  if (URIUtils::IsStack(strFileName) ||
-      URIUtils::IsInArchive(strFileName) || URIUtils::IsPlugin(strPath))
+  if (URIUtils::IsStack(strFileName) || URIUtils::IsPlugin(strPath))
     strDest = strFileName;
   else
     strDest = URIUtils::AddFileToFolder(strPath, strFileName);
@@ -11741,7 +11739,7 @@ void CVideoDatabase::SplitPath(const std::string& strFileNameAndPath,
                                std::string& strPath,
                                std::string& strFileName) const
 {
-  if (URIUtils::IsStack(strFileNameAndPath) || StringUtils::StartsWithNoCase(strFileNameAndPath, "rar://") || StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://"))
+  if (URIUtils::IsStack(strFileNameAndPath))
   {
     URIUtils::GetParentPath(strFileNameAndPath,strPath);
     strFileName = strFileNameAndPath;

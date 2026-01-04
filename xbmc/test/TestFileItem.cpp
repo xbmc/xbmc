@@ -17,14 +17,14 @@
 #include <gtest/gtest.h>
 
 using ::testing::Test;
-using ::testing::WithParamInterface;
 using ::testing::ValuesIn;
+using ::testing::WithParamInterface;
 
 struct TestFileData
 {
-  const char *file;
+  const char* file;
   bool use_folder;
-  const char *base;
+  const char* base;
 };
 
 struct TestNameData
@@ -65,23 +65,7 @@ class TestFileItemLocalMetadataPath : public AdvancedSettingsResetBase,
 };
 
 const TestFileData BaseMovies[] = {
-    {"c:\\dir\\filename.avi", false, "c:\\dir\\filename.avi"},
-    {"c:\\dir\\filename.avi", true, "c:\\dir\\"},
-    {"/dir/filename.avi", false, "/dir/filename.avi"},
-    {"/dir/filename.avi", true, "/dir/"},
-    {"smb://somepath/file.avi", false, "smb://somepath/file.avi"},
-    {"smb://somepath/file.avi", true, "smb://somepath/"},
-    {"smb://somepath/disc 1/file.avi", false, "smb://somepath/disc 1/file.avi"},
-    {"smb://somepath/disc 1/file.avi", true, "smb://somepath/"},
-    {"stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
-     false,
-     "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi"},
-    {"stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
-     true, "/path/to/movie_name/"},
-    {"/home/user/TV Shows/Dexter/S1/1x01.avi", false, "/home/user/TV Shows/Dexter/S1/1x01.avi"},
-    {"/home/user/TV Shows/Dexter/S1/1x01.avi", true, "/home/user/TV Shows/Dexter/S1/"},
-    {"zip://g%3a%5cmultimedia%5cmovies%5cSphere%2ezip/Sphere.avi", true,
-     "g:\\multimedia\\movies\\"},
+    // Linux path tests
     {"/home/user/movies/movie/video_ts/VIDEO_TS.IFO", false, "/home/user/movies/movie/"},
     {"/home/user/movies/movie/video_ts/VIDEO_TS.IFO", true, "/home/user/movies/movie/"},
     {"/home/user/movies/movie/disc 1/video_ts/VIDEO_TS.IFO", false, "/home/user/movies/movie/"},
@@ -94,15 +78,153 @@ const TestFileData BaseMovies[] = {
     {"/home/user/movies/movie/file.iso", true, "/home/user/movies/movie/"},
     {"/home/user/movies/movie/disc 1/movie.iso", false, "/home/user/movies/movie/disc 1/movie.iso"},
     {"/home/user/movies/movie/disc 1/file.iso", true, "/home/user/movies/movie/"},
-    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
+    {"stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+     false,
+     "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi"},
+    {"stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+     true, "/path/to/movie_name/"},
+    // DOS path tests
+    {"D:\\Movies\\Movie\\video_ts\\VIDEO_TS.IFO", false, "D:\\Movies\\Movie\\"},
+    {"D:\\Movies\\Movie\\video_ts\\VIDEO_TS.IFO", true, "D:\\Movies\\Movie\\"},
+    {"D:\\Movies\\Movie\\disc 1\\video_ts\\VIDEO_TS.IFO", false, "D:\\Movies\\Movie\\"},
+    {"D:\\Movies\\Movie\\disc 1\\video_ts\\VIDEO_TS.IFO", true, "D:\\Movies\\Movie\\"},
+    {"D:\\Movies\\Movie\\BDMV\\index.bdmv", false, "D:\\Movies\\Movie\\"},
+    {"D:\\Movies\\Movie\\BDMV\\index.bdmv", true, "D:\\Movies\\Movie\\"},
+    {"D:\\Movies\\Movie\\disc 1\\BDMV\\index.bdmv", false, "D:\\Movies\\Movie\\"},
+    {"D:\\Movies\\Movie\\disc 1\\BDMV\\index.bdmv", true, "D:\\Movies\\Movie\\"},
+    {"D:\\Movies\\Movie\\movie.iso", false, "D:\\Movies\\Movie\\movie.iso"},
+    {"D:\\Movies\\Movie\\file.iso", true, "D:\\Movies\\Movie\\"},
+    {"D:\\Movies\\Movie\\disc 1\\movie.iso", false, "D:\\Movies\\Movie\\disc 1\\movie.iso"},
+    {"D:\\Movies\\Movie\\disc 1\\file.iso", true, "D:\\Movies\\Movie\\"},
+    {"stack://D:\\Movies\\Movie\\Movie - part 1\\some_file1.avi , D:\\Movies\\Movie\\Movie - part "
+     "2\\some_file2.avi",
+     false,
+     "stack://D:\\Movies\\Movie\\Movie - part 1\\some_file1.avi , D:\\Movies\\Movie\\Movie - part "
+     "2\\some_file2.avi"},
+    {"stack://D:\\Movies\\Movie\\Movie - part 1\\some_file1.avi , D:\\Movies\\Movie\\Movie - part "
+     "2\\some_file2.avi",
+     true, "D:\\Movies\\Movie\\"},
+    // Windows server path tests
+    {"\\\\Movies\\Movie\\video_ts\\VIDEO_TS.IFO", false, "\\\\Movies\\Movie\\"},
+    {"\\\\Movies\\Movie\\video_ts\\VIDEO_TS.IFO", true, "\\\\Movies\\Movie\\"},
+    {"\\\\Movies\\Movie\\disc 1\\video_ts\\VIDEO_TS.IFO", false, "\\\\Movies\\Movie\\"},
+    {"\\\\Movies\\Movie\\disc 1\\video_ts\\VIDEO_TS.IFO", true, "\\\\Movies\\Movie\\"},
+    {"\\\\Movies\\Movie\\BDMV\\index.bdmv", false, "\\\\Movies\\Movie\\"},
+    {"\\\\Movies\\Movie\\BDMV\\index.bdmv", true, "\\\\Movies\\Movie\\"},
+    {"\\\\Movies\\Movie\\disc 1\\BDMV\\index.bdmv", false, "\\\\Movies\\Movie\\"},
+    {"\\\\Movies\\Movie\\disc 1\\BDMV\\index.bdmv", true, "\\\\Movies\\Movie\\"},
+    {"\\\\Movies\\Movie\\movie.iso", false, "\\\\Movies\\Movie\\movie.iso"},
+    {"\\\\Movies\\Movie\\file.iso", true, "\\\\Movies\\Movie\\"},
+    {"\\\\Movies\\Movie\\disc 1\\movie.iso", false, "\\\\Movies\\Movie\\disc 1\\movie.iso"},
+    {"\\\\Movies\\Movie\\disc 1\\file.iso", true, "\\\\Movies\\Movie\\"},
+    {"stack://\\\\Movies\\Movie\\Movie - part 1\\some_file1.avi , \\\\Movies\\Movie\\Movie - part "
+     "2\\some_file2.avi",
+     false,
+     "stack://\\\\Movies\\Movie\\Movie - part 1\\some_file1.avi , \\\\Movies\\Movie\\Movie - part "
+     "2\\some_file2.avi"},
+    {"stack://\\\\Movies\\Movie\\Movie - part 1\\some_file1.avi , \\\\Movies\\Movie\\Movie - part "
+     "2\\some_file2.avi",
+     true, "\\\\Movies\\Movie\\"},
+    // URL path tests with smb://
+    {"smb://home/user/movies/movie/video_ts/VIDEO_TS.IFO", false, "smb://home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/video_ts/VIDEO_TS.IFO", true, "smb://home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/disc 1/video_ts/VIDEO_TS.IFO", false,
+     "smb://home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/disc 1/video_ts/VIDEO_TS.IFO", true,
+     "smb://home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/BDMV/index.bdmv", false, "smb://home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/BDMV/index.bdmv", true, "smb://home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/disc 1/BDMV/index.bdmv", false, "smb://home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/disc 1/BDMV/index.bdmv", true, "smb://home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/movie.iso", false, "smb://home/user/movies/movie/movie.iso"},
+    {"smb://home/user/movies/movie/file.iso", true, "smb://home/user/movies/movie/"},
+    {"smb://home/user/movies/movie/disc 1/movie.iso", false,
+     "smb://home/user/movies/movie/disc 1/movie.iso"},
+    {"smb://home/user/movies/movie/disc 1/file.iso", true, "smb://home/user/movies/movie/"},
+    {"stack://smb://path/to/movie_name/cd1/some_file1.avi , "
+     "smb://path/to/movie_name/cd2/some_file2.avi",
+     false,
+     "stack://smb://path/to/movie_name/cd1/some_file1.avi , "
+     "smb://path/to/movie_name/cd2/some_file2.avi"},
+    {"stack://smb://path/to/movie_name/cd1/some_file1.avi , "
+     "smb://path/to/movie_name/cd2/some_file2.avi",
+     true, "smb://path/to/movie_name/"},
+    // Embedded smb:// path tests
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+     "00800.mpls",
      true, "smb://somepath/"},
-    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fDisc%201%252fmovie.iso%2f/BDMV/PLAYLIST/"
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fDisc%25201%252fmovie.iso%2f/BDMV/"
+     "PLAYLIST/"
      "00800.mpls",
      true, "smb://somepath/"},
     {"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls", true, "smb://somepath/"},
     {"bluray://smb%3a%2f%2fsomepath%2fDisc%201%2f/BDMV/PLAYLIST/00800.mpls", true,
      "smb://somepath/"},
-    {"zip://smb%3a%2f%2fsomepath%2fmovie.zip/BDMV/index.bdmv", true, "smb://somepath/"}};
+    {"zip://smb%3a%2f%2fsomepath%2fmovie.zip/BDMV/index.bdmv", true, "smb://somepath/"},
+    {"zip://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2fmovie_disc.zip/BDMV/index.bdmv", true,
+     "smb://somepath/movie/"},
+    {"rar://smb%3a%2f%2fsomepath%2fmovie.rar/BDMV/index.bdmv", true, "smb://somepath/"},
+    {"rar://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2fmovie_disc.rar/BDMV/index.bdmv", true,
+     "smb://somepath/movie/"},
+    {"archive://smb%3a%2f%2fsomepath%2fmovie.tar.gz/BDMV/index.bdmv", true, "smb://somepath/"},
+    {"archive://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2fmovie_disc.tar.gz/BDMV/index.bdmv", true,
+     "smb://somepath/movie/"},
+    // Embedded linux path tests
+    {"bluray://udf%3a%2f%2f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls", true,
+     "/somepath/"},
+    {"bluray://udf%3a%2f%2f%252fsomepath%252fDisc%25201%252fmovie.iso%2f/BDMV/"
+     "PLAYLIST/"
+     "00800.mpls",
+     true, "/somepath/"},
+    {"bluray://%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls", true, "/somepath/"},
+    {"bluray://%2fsomepath%2fDisc%201%2f/BDMV/PLAYLIST/00800.mpls", true, "/somepath/"},
+    {"zip://%2fsomepath%2fmovie.zip/BDMV/index.bdmv", true, "/somepath/"},
+    {"zip://%2fsomepath%2fmovie%2fdisc%201%2fmovie_disc.zip/BDMV/index.bdmv", true,
+     "/somepath/movie/"},
+    {"rar://%2fsomepath%2fmovie.rar/BDMV/index.bdmv", true, "/somepath/"},
+    {"rar://%2fsomepath%2fmovie%2fdisc%201%2fmovie_disc.rar/BDMV/index.bdmv", true,
+     "/somepath/movie/"},
+    {"archive://%2fsomepath%2fmovie.tar.gz/BDMV/index.bdmv", true, "/somepath/"},
+    {"archive://%2fsomepath%2fmovie%2fdisc%201%2fmovie_disc.tar.gz/BDMV/index.bdmv", true,
+     "/somepath/movie/"},
+    // Embedded DOS path tests
+    {"bluray://udf%3a%2f%2fD%253a%255cmovies%255cmovie.iso%5c/BDMV/PLAYLIST/00800.mpls", true,
+     "D:\\movies\\"},
+    {"bluray://udf%3a%2f%2fD%253a%255cmovies%255cDisc%25201%255cmovie.iso%5c/BDMV/"
+     "PLAYLIST/"
+     "00800.mpls",
+     true, "D:\\movies\\"},
+    {"bluray://D%3a%5csomepath%5cmovie%5c/BDMV/PLAYLIST/00800.mpls", true, "D:\\somepath\\movie\\"},
+    {"bluray://D%3a%5csomepath%5cmovie%5cDisc%201%5c/BDMV/PLAYLIST/00800.mpls", true,
+     "D:\\somepath\\movie\\"},
+    {"zip://C%3a%5cmovies%5cmovie.zip/BDMV/index.bdmv", true, "C:\\movies\\"},
+    {"zip://C%3a%5cmovies%5cmovie%5cdisc%201%5cmovie_disc.zip/BDMV/index.bdmv", true,
+     "C:\\movies\\movie\\"},
+    {"rar://C%3a%5cmovies%5cmovie.rar/BDMV/index.bdmv", true, "C:\\movies\\"},
+    {"rar://C%3a%5cmovies%5cmovie%5cdisc%201%5cmovie_disc.rar/BDMV/index.bdmv", true,
+     "C:\\movies\\movie\\"},
+    {"archive://C%3a%5cmovies%5cmovie.tar.gz/BDMV/index.bdmv", true, "C:\\movies\\"},
+    {"archive://C%3a%5cmovies%5cmovie%5cdisc%201%5cmovie_disc.tar.gz/BDMV/index.bdmv", true,
+     "C:\\movies\\movie\\"},
+    // Embedded Windows server path tests
+    {"bluray://udf%3a%2f%2f%255c%255cmovies%255cmovie.iso%5c/BDMV/PLAYLIST/00800.mpls", true,
+     "\\\\movies\\"},
+    {"bluray://udf%3a%2f%2f%255c%255cmovies%255cDisc%25201%255cmovie.iso%5c/BDMV/"
+     "PLAYLIST/"
+     "00800.mpls",
+     true, "\\\\movies\\"},
+    {"bluray://%5c%5csomepath%5cmovie%5c/BDMV/PLAYLIST/00800.mpls", true, "\\\\somepath\\movie\\"},
+    {"bluray://%5c%5csomepath%5cmovie%5cDisc%201%5c/BDMV/PLAYLIST/00800.mpls", true,
+     "\\\\somepath\\movie\\"},
+    {"zip://%5c%5cmovies%5cmovie.zip/BDMV/index.bdmv", true, "\\\\movies\\"},
+    {"zip://%5c%5cmovies%5cmovie%5cdisc%201%5cmovie_disc.zip/BDMV/index.bdmv", true,
+     "\\\\movies\\movie\\"},
+    {"rar://%5c%5cmovies%5cmovie.rar/BDMV/index.bdmv", true, "\\\\movies\\"},
+    {"rar://%5c%5cmovies%5cmovie%5cdisc%201%5cmovie_disc.rar/BDMV/index.bdmv", true,
+     "\\\\movies\\movie\\"},
+    {"archive://%5c%5cmovies%5cmovie.tar.gz/BDMV/index.bdmv", true, "\\\\movies\\"},
+    {"archive://%5c%5cmovies%5cmovie%5cdisc%201%5cmovie_disc.tar.gz/BDMV/index.bdmv", true,
+     "\\\\movies\\movie\\"}};
 
 TEST_P(TestFileItemBasePath, GetBaseMoviePath)
 {
@@ -116,14 +238,7 @@ TEST_P(TestFileItemBasePath, GetBaseMoviePath)
 INSTANTIATE_TEST_SUITE_P(BaseNameMovies, TestFileItemBasePath, ValuesIn(BaseMovies));
 
 const TestNameData BaseNames[] = {
-    {"c:\\dir\\movie.avi", false, "movie"},
-    {"c:\\movie\\filename.avi", true, "movie"},
-    {"/dir/movie.avi", false, "movie"},
-    {"/movie/filename.avi", true, "movie"},
-    {"smb://somepath/movie.avi", false, "movie"},
-    {"smb://somepath/movie/file.avi", true, "movie"},
-    {"smb://somepath/disc 1/movie.avi", false, "movie"},
-    {"smb://somepath/movie/disc 1/file.avi", true, "movie"},
+    // Linux path tests
     {"/home/user/movies/movie/video_ts/VIDEO_TS.IFO", false, "movie"},
     {"/home/user/movies/movie/video_ts/VIDEO_TS.IFO", true, "movie"},
     {"/home/user/movies/movie/disc 1/video_ts/VIDEO_TS.IFO", false, "movie"},
@@ -132,10 +247,159 @@ const TestNameData BaseNames[] = {
     {"/home/user/movies/movie/BDMV/index.bdmv", true, "movie"},
     {"/home/user/movies/movie/disc 1/BDMV/index.bdmv", false, "movie"},
     {"/home/user/movies/movie/disc 1/BDMV/index.bdmv", true, "movie"},
-    {"/home/user/movies/movie.iso", false, "movie"},
+    {"/home/user/movies/movie/movie.iso", false, "movie"},
     {"/home/user/movies/movie/file.iso", true, "movie"},
-    {"/home/user/movies/disc 1/movie.iso", false, "movie"},
-    {"/home/user/movies/movie/disc 1/file.iso", true, "movie"}};
+    {"/home/user/movies/movie/disc 1/movie.iso", false, "movie"},
+    {"/home/user/movies/movie/disc 1/file.iso", true, "movie"},
+    {"stack:///path/to/movie_folder/cd1/movie_file1.avi , "
+     "/path/to/movie_folder/cd2/movie_file2.avi",
+     false, "movie"},
+    {"stack:///path/to/movie/cd1/some_file1.avi , /path/to/movie/cd2/some_file2.avi", true,
+     "movie"},
+    // DOS path tests
+    {"D:\\Movies\\Movie\\video_ts\\VIDEO_TS.IFO", false, "Movie"},
+    {"D:\\Movies\\Movie\\video_ts\\VIDEO_TS.IFO", true, "Movie"},
+    {"D:\\Movies\\Movie\\disc 1\\video_ts\\VIDEO_TS.IFO", false, "Movie"},
+    {"D:\\Movies\\Movie\\disc 1\\video_ts\\VIDEO_TS.IFO", true, "Movie"},
+    {"D:\\Movies\\Movie\\BDMV\\index.bdmv", false, "Movie"},
+    {"D:\\Movies\\Movie\\BDMV\\index.bdmv", true, "Movie"},
+    {"D:\\Movies\\Movie\\disc 1\\BDMV\\index.bdmv", false, "Movie"},
+    {"D:\\Movies\\Movie\\disc 1\\BDMV\\index.bdmv", true, "Movie"},
+    {"D:\\Movies\\Movie\\movie.iso", false, "movie"},
+    {"D:\\Movies\\Movie\\file.iso", true, "Movie"},
+    {"D:\\Movies\\Movie\\disc 1\\movie.iso", false, "movie"},
+    {"D:\\Movies\\Movie\\disc 1\\file.iso", true, "Movie"},
+    {"stack://D:\\Movies\\Movie\\movie_file1.avi , D:\\Movies\\Movie\\Movie - part "
+     "2\\movie_file2.avi",
+     false, "movie"},
+    {"stack://D:\\Movies\\Movie\\Movie - part 1\\some_file1.avi , D:\\Movies\\Movie\\Movie - part "
+     "2\\some_file2.avi",
+     true, "Movie"},
+    // Windows server path tests
+    {"\\\\Movies\\Movie\\video_ts\\VIDEO_TS.IFO", false, "Movie"},
+    {"\\\\Movies\\Movie\\video_ts\\VIDEO_TS.IFO", true, "Movie"},
+    {"\\\\Movies\\Movie\\disc 1\\video_ts\\VIDEO_TS.IFO", false, "Movie"},
+    {"\\\\Movies\\Movie\\disc 1\\video_ts\\VIDEO_TS.IFO", true, "Movie"},
+    {"\\\\Movies\\Movie\\BDMV\\index.bdmv", false, "Movie"},
+    {"\\\\Movies\\Movie\\BDMV\\index.bdmv", true, "Movie"},
+    {"\\\\Movies\\Movie\\disc 1\\BDMV\\index.bdmv", false, "Movie"},
+    {"\\\\Movies\\Movie\\disc 1\\BDMV\\index.bdmv", true, "Movie"},
+    {"\\\\Movies\\Movie\\movie.iso", false, "movie"},
+    {"\\\\Movies\\Movie\\file.iso", true, "Movie"},
+    {"\\\\Movies\\Movie\\disc 1\\movie.iso", false, "movie"},
+    {"\\\\Movies\\Movie\\disc 1\\file.iso", true, "Movie"},
+    {"stack://\\\\Movies\\Movie\\movie_file1.avi , \\\\Movies\\Movie\\movie_file2.avi", false,
+     "movie"},
+    {"stack://\\\\Movies\\Movie\\Movie - part 1\\some_file1.avi , \\\\Movies\\Movie\\Movie - part "
+     "2\\some_file2.avi",
+     true, "Movie"},
+    // URL path tests with smb://
+    {"smb://home/user/movies/movie/video_ts/VIDEO_TS.IFO", false, "movie"},
+    {"smb://home/user/movies/movie/video_ts/VIDEO_TS.IFO", true, "movie"},
+    {"smb://home/user/movies/movie/disc 1/video_ts/VIDEO_TS.IFO", false, "movie"},
+    {"smb://home/user/movies/movie/disc 1/video_ts/VIDEO_TS.IFO", true, "movie"},
+    {"smb://home/user/movies/movie/BDMV/index.bdmv", false, "movie"},
+    {"smb://home/user/movies/movie/BDMV/index.bdmv", true, "movie"},
+    {"smb://home/user/movies/movie/disc 1/BDMV/index.bdmv", false, "movie"},
+    {"smb://home/user/movies/movie/disc 1/BDMV/index.bdmv", true, "movie"},
+    {"smb://home/user/movies/movie/movie.iso", false, "movie"},
+    {"smb://home/user/movies/movie/file.iso", true, "movie"},
+    {"smb://home/user/movies/movie/disc 1/movie.iso", false, "movie"},
+    {"smb://home/user/movies/movie/disc 1/file.iso", true, "movie"},
+    {"stack://smb://path/to/movie_name/cd1/movie_file1.avi , "
+     "smb://path/to/movie_name/cd2/movie_file2.avi",
+     false, "movie"},
+    {"stack://smb://path/to/movie/cd1/some_file1.avi , "
+     "smb://path/to/movie/cd2/some_file2.avi",
+     true, "movie"},
+    // Embedded smb:// path tests
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+     "00800.mpls",
+     false, "movie"},
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie%252ffilm.iso%2f/BDMV/PLAYLIST/"
+     "00800.mpls",
+     true, "movie"},
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie%252fDisc%25201%252ffilm.iso%2f/"
+     "BDMV/"
+     "PLAYLIST/"
+     "00800.mpls",
+     true, "movie"},
+    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", false, "movie"},
+    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", true, "movie"},
+    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2fDisc%201%2f/BDMV/PLAYLIST/00800.mpls", true, "movie"},
+    {"zip://smb%3a%2f%2fsomepath%2fmovie.zip/film.avi", false, "movie"},
+    {"zip://smb%3a%2f%2fsomepath%2fmovie%2ffilm.zip/film.avi", true, "movie"},
+    {"zip://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2ffilm.zip/BDMV/index.bdmv", true, "movie"},
+    {"rar://smb%3a%2f%2fsomepath%2fmovie.rar/film.avi", false, "movie"},
+    {"rar://smb%3a%2f%2fsomepath%2fmovie%2ffilm.rar/film.avi", true, "movie"},
+    {"rar://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2ffilm.rar/BDMV/index.bdmv", true, "movie"},
+    {"archive://smb%3a%2f%2fsomepath%2fmovie.tar.gz/film.avi", false, "movie"},
+    {"archive://smb%3a%2f%2fsomepath%2fmovie%2ffilm.tar.gz/film.avi", true, "movie"},
+    {"archive://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2ffilm.tar.gz/BDMV/index.bdmv", true,
+     "movie"},
+    // Embedded linux path tests
+    {"bluray://udf%3a%2f%2f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls", false,
+     "movie"},
+    {"bluray://udf%3a%2f%2f%252fsomepath%252fmovie%252ffile.iso%2f/BDMV/PLAYLIST/00800.mpls", true,
+     "movie"},
+    {"bluray://udf%3a%2f%2f%252fsomepath%252fmovie%252fDisc%25201%252ffilm.iso%2f/BDMV/"
+     "PLAYLIST/"
+     "00800.mpls",
+     true, "movie"},
+    {"bluray://%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", false, "movie"},
+    {"bluray://%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", true, "movie"},
+    {"bluray://%2fsomepath%2fmovie%2fDisc%201%2f/BDMV/PLAYLIST/00800.mpls", true, "movie"},
+    {"zip://%2fsomepath%2fmovie.zip/film.avi", false, "movie"},
+    {"zip://%2fsomepath%2fmovie%2ffilm.zip/film.avi", true, "movie"},
+    {"zip://%2fsomepath%2fmovie%2fmovie%2fdisc%201%2ffilm.zip/BDMV/index.bdmv", true, "movie"},
+    {"rar://%2fsomepath%2fmovie.rar/film.avi", false, "movie"},
+    {"rar://%2fsomepath%2fmovie%2ffilm.rar/BDMV/index.bdmv", true, "movie"},
+    {"rar://%2fsomepath%2fmovie%2fdisc%201%2ffilm.rar/BDMV/index.bdmv", true, "movie"},
+    {"archive://%2fsomepath%2fmovie.tar.gz/film.avi", false, "movie"},
+    {"archive://%2fsomepath%2fmovie%2ffilm.tar.gz/film.avi", true, "movie"},
+    {"archive://%2fsomepath%2fmovie%2fdisc%201%2ffilm.tar.gz/BDMV/index.bdmv", true, "movie"},
+    // Embedded DOS path tests
+    {"bluray://udf%3a%2f%2fD%253a%255cmovies%255cmovie.iso%5c/BDMV/PLAYLIST/00800.mpls", false,
+     "movie"},
+    {"bluray://udf%3a%2f%2fD%253a%255cmovies%255cmovie%255cfilm.iso%5c/BDMV/PLAYLIST/00800.mpls",
+     true, "movie"},
+    {"bluray://udf%3a%2f%2fD%253a%255cmovies%255cmovie%255cDisc%25201%255cfilm.iso%5c/BDMV/"
+     "PLAYLIST/"
+     "00800.mpls",
+     true, "movie"},
+    {"bluray://D%3a%5csomepath%5cmovie%5c/BDMV/PLAYLIST/00800.mpls", false, "movie"},
+    {"bluray://D%3a%5csomepath%5cmovie%5c/BDMV/PLAYLIST/00800.mpls", true, "movie"},
+    {"bluray://D%3a%5csomepath%5cmovie%5cDisc%201%5c/BDMV/PLAYLIST/00800.mpls", true, "movie"},
+    {"zip://C%3a%5cmovies%5cmovie.zip/film.avi", false, "movie"},
+    {"zip://C%3a%5cmovies%5cmovie%5cfilm.zip/film.avi", true, "movie"},
+    {"zip://C%3a%5cmovies%5cmovie%5cdisc%201%5cfilm.zip/BDMV/index.bdmv", true, "movie"},
+    {"rar://C%3a%5cmovies%5cmovie.rar/film.avi", false, "movie"},
+    {"rar://C%3a%5cmovies%5cmovie%5cfilm.rar/film.avi", true, "movie"},
+    {"rar://C%3a%5cmovies%5cmovie%5cdisc%201%5cfilm.rar/BDMV/index.bdmv", true, "movie"},
+    {"archive://C%3a%5cmovies%5cmovie.tar.gz/film.avi", false, "movie"},
+    {"archive://C%3a%5cmovies%5cmovie%5cfilm.tar.gz/film.avi", true, "movie"},
+    {"archive://C%3a%5cmovies%5cmovie%5cdisc%201%5cfilm.tar.gz/BDMV/index.bdmv", true, "movie"},
+    // Embedded Windows server path tests
+    {"bluray://udf%3a%2f%2f%255c%255cmovies%255cmovie.iso%5c/BDMV/PLAYLIST/00800.mpls", false,
+     "movie"},
+    {"bluray://udf%3a%2f%2f%255c%255cmovies%255cmovie%255cfilm.iso%5c/BDMV/PLAYLIST/00800.mpls",
+     true, "movie"},
+    {"bluray://udf%3a%2f%2f%255c%255cmovies%255cmovie%255cDisc%25201%255cmovie.iso%5c/BDMV/"
+     "PLAYLIST/"
+     "00800.mpls",
+     true, "movie"},
+    {"bluray://%5c%5csomepath%5cmovie%5c/BDMV/PLAYLIST/00800.mpls", false, "movie"},
+    {"bluray://%5c%5csomepath%5cmovie%5c/BDMV/PLAYLIST/00800.mpls", true, "movie"},
+    {"bluray://%5c%5csomepath%5cmovie%5cDisc%201%5c/BDMV/PLAYLIST/00800.mpls", true, "movie"},
+    {"zip://%5c%5cmovies%5cmovie.zip/film.avi", false, "movie"},
+    {"zip://%5c%5cmovies%5cmovie%5cfilm.zip/film.avi", true, "movie"},
+    {"zip://%5c%5cmovies%5cmovie%5cdisc%201%5cfilm.zip/BDMV/index.bdmv", true, "movie"},
+    {"rar://%5c%5cmovies%5cmovie.rar/film.avi", false, "movie"},
+    {"rar://%5c%5cmovies%5cmovie%5cfilm.rar/film.avi", true, "movie"},
+    {"rar://%5c%5cmovies%5cmovie%5cdisc%201%5cfilm.rar/BDMV/index.bdmv", true, "movie"},
+    {"archive://%5c%5cmovies%5cmovie.tar.gz/film.avi", false, "movie"},
+    {"archive://%5c%5cmovies%5cmovie%5cfilm.tar.gz/film.avi", true, "movie"},
+    {"archive://%5c%5cmovies%5cmovie%5cdisc%201%5cfilm.tar.gz/BDMV/index.bdmv", true, "movie"}};
 
 TEST_P(TestFileItemMovieName, GetMovieName)
 {
@@ -150,6 +414,7 @@ INSTANTIATE_TEST_SUITE_P(NameMovies, TestFileItemMovieName, ValuesIn(BaseNames))
 
 const TestFileData BasePaths[] = {
     {"c:\\dir\\", true, "c:\\dir\\"},
+    {"zip://D%3a%5cMovies%5cmovie.zip/movie.mkv", true, "D:\\Movies\\"},
     {"/dir/filename.avi", false, "/dir/"},
     {"/dir/", true, "/dir/"},
     {"smb://somepath/file.avi", false, "smb://somepath/"},
@@ -167,11 +432,21 @@ const TestFileData BasePaths[] = {
     {"/home/user/movies/movie/disc 1/movie.iso", false, "/home/user/movies/movie/disc 1/"},
     {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
      false, "smb://somepath/"},
-    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fdisc%201%252fmovie.iso%2f/BDMV/PLAYLIST/"
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fdisc%25201%252fmovie.iso%2f/BDMV/"
+     "PLAYLIST/"
      "00800.mpls",
      false, "smb://somepath/disc 1/"},
     {"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls", false, "smb://somepath/"},
     {"bluray://smb%3a%2f%2fsomepath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls", false,
+     "smb://somepath/disc 1/"},
+    {"zip://smb%3a%2f%2fsomepath%2fmovie.zip/movie.mkv", false, "smb://somepath/"},
+    {"zip://smb%3a%2f%2fsomepath%2fdisc%201%2fmovie.zip/BDMV/PLAYLIST/00800.mpls", false,
+     "smb://somepath/disc 1/"},
+    {"rar://smb%3a%2f%2fsomepath%2fmovie.rar/movie.mkv", false, "smb://somepath/"},
+    {"rar://smb%3a%2f%2fsomepath%2fdisc%201%2fmovie.rar/BDMV/PLAYLIST/00800.mpls", false,
+     "smb://somepath/disc 1/"},
+    {"archive://smb%3a%2f%2fsomepath%2fmovie.tar.gz/movie.mkv", false, "smb://somepath/"},
+    {"archive://smb%3a%2f%2fsomepath%2fdisc%201%2fmovie.tar.gz/BDMV/PLAYLIST/00800.mpls", false,
      "smb://somepath/disc 1/"},
     {"/dir/filename.m3u8", true, "/dir/"},
     {"/dir/filename.zip", true, "/dir/"},

@@ -110,6 +110,16 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
           CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
           if (wrap->ContainsFiles(url))
           {
+            // Paths returned may contain encoded urls but with capitals (eg. %2A rather than %2a)
+            // CURL will always use lower case for encoded chars, so we need to normalize here
+            // Otherwise there may be file/path mismatches later on
+            for (auto& item : wrap->GetItems())
+            {
+              CURL itemUrl{item->GetPath()};
+              if (URIUtils::HasParentInHostname(itemUrl))
+                item->SetPath(itemUrl.Get());
+            }
+
             if (wrap->GetItems().Size() == 1)
             {
               // one STORED file - collapse it down

@@ -14,7 +14,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/lib/SettingsManager.h"
 #include "utils/ArtUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -88,9 +87,15 @@ class GetLocalArtBaseFilenameTest : public testing::WithParamInterface<ArtFilena
 
 const auto local_art_filename_tests = std::array{
     ArtFilenameTest{"/home/user/foo.avi", "", "/home/user/foo.avi"},
+    ArtFilenameTest{"D:\\home\\foo.avi", "", "D:\\home\\foo.avi"},
     ArtFilenameTest{"stack:///home/user/foo-cd1.avi , /home/user/foo-cd2.avi", "",
                     "/home/user/foo.avi"},
-    ArtFilenameTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "", "/home/user/foo.avi"},
+    ArtFilenameTest{
+        "stack:///home/user/movie/movie part 1/foo.avi , /home/user/movie/movie part 2/foo.avi", "",
+        "/home/user/movie/movie.avi"},
+    ArtFilenameTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "", "/home/user/bar.avi"},
+    ArtFilenameTest{"rar://%2fhome%2fuser%2fbar.rar/foo.avi", "", "/home/user/bar.avi"},
+    ArtFilenameTest{"archive://%2fhome%2fuser%2fbar.tar.gz/foo.avi", "", "/home/user/bar.avi"},
     ArtFilenameTest{"multipath://%2fhome%2fuser%2fbar%2f/%2fhome%2fuser%2ffoo%2f", "",
                     "/home/user/bar/", true, true},
     ArtFilenameTest{"/home/user/foo/foo.iso", "", "/home/user/foo/foo.iso"},
@@ -133,7 +138,15 @@ class GetLocalFanartTest : public testing::WithParamInterface<FanartTest>, publi
 const auto local_fanart_tests = std::array{
     FanartTest{"stack://#DIRECTORY#foo-cd1.avi , #DIRECTORY#foo-cd2.avi", "foo-fanart.jpg"},
     FanartTest{"stack://#DIRECTORY#foo-cd1.avi , #DIRECTORY#foo-cd2.avi", "foo-cd1-fanart.jpg"},
-    FanartTest{"zip://#URLENCODED_DIRECTORY#bar.zip/foo.avi", "foo-fanart.jpg"},
+    FanartTest{
+        "stack://#DIRECTORY#movie/movie part 1/foo.avi , #DIRECTORY#movie/movie part 2/foo.avi",
+        "movie/movie-fanart.jpg"},
+    FanartTest{
+        "stack://#DIRECTORY#movie/movie part 1/foo.avi , #DIRECTORY#movie/movie part 2/foo.avi",
+        "movie/movie part 1/foo-fanart.jpg"},
+    FanartTest{"zip://#URLENCODED_DIRECTORY#bar.zip/foo.avi", "bar-fanart.jpg"},
+    FanartTest{"rar://#URLENCODED_DIRECTORY#bar.rar/foo.avi", "bar-fanart.jpg"},
+    FanartTest{"archive://#URLENCODED_DIRECTORY#bar.tar.gz/foo.avi", "bar-fanart.jpg"},
     FanartTest{"ftp://some.where/foo.avi", ""},
     FanartTest{"https://some.where/foo.avi", ""},
     FanartTest{"upnp://some.where/123", ""},
@@ -146,8 +159,7 @@ const auto local_fanart_tests = std::array{
     FanartTest{"foo.avi", ""},
     FanartTest{"foo.avi", "foo-fanart.jpg"},
     FanartTest{"videodb://movies/1", ""},
-    FanartTest{"videodb://movies/1", "foo-fanart.jpg"},
-};
+    FanartTest{"videodb://movies/1", "foo-fanart.jpg"}};
 
 struct IconTest
 {
@@ -213,7 +225,12 @@ const auto folder_thumb_tests = std::array{
                "/home/user/bar/folder.jpg"},
     FolderTest{"stack:///home/user/cd1/foo-cd1.avi , /home/user/cd2/foo-cd2.avi", "artist.jpg",
                "/home/user/artist.jpg"},
+    FolderTest{
+        "stack:///home/user/movie/movie-part-1/foo.avi , /home/user/movie/movie-part-2/foo.avi",
+        "artist.jpg", "/home/user/movie/artist.jpg"},
     FolderTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "cover.png", "/home/user/cover.png"},
+    FolderTest{"rar://%2fhome%2fuser%2fbar.rar/foo.avi", "cover.png", "/home/user/cover.png"},
+    FolderTest{"zip://%2fhome%2fuser%2fbar.tar.gz/foo.avi", "cover.png", "/home/user/cover.png"},
     FolderTest{"multipath://%2fhome%2fuser%2fbar%2f/%2fhome%2fuser%2ffoo%2f", "folder.jpg",
                "/home/user/bar/folder.jpg"},
 };
@@ -248,13 +265,24 @@ const auto local_art_tests = std::array{
     LocalArtTest{
         "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
         "art.jpg", true, "/path/to/movie_name/art.jpg"},
+    LocalArtTest{"stack:///path/to/movie/movie-part-1/some_file1.avi , "
+                 "/path/to/movie/movie-part-2/some_file2.avi",
+                 "art.jpg", true, "/path/to/movie/art.jpg"},
     LocalArtTest{"/home/user/TV Shows/Dexter/S1/1x01.avi", "art.jpg", false,
                  "/home/user/TV Shows/Dexter/S1/1x01-art.jpg"},
     LocalArtTest{"/home/user/TV Shows/Dexter/S1/1x01.avi", "art.jpg", true,
                  "/home/user/TV Shows/Dexter/S1/art.jpg"},
-    LocalArtTest{"zip://g%3a%5cmultimedia%5cmovies%5cSphere%2ezip/Sphere.avi", "art.jpg", false,
+    LocalArtTest{"zip://g%3a%5cmultimedia%5cmovies%5cSphere.zip/Movie.avi", "art.jpg", false,
                  "g:\\multimedia\\movies\\Sphere-art.jpg"},
-    LocalArtTest{"zip://g%3a%5cmultimedia%5cmovies%5cSphere%2ezip/Sphere.avi", "art.jpg", true,
+    LocalArtTest{"zip://g%3a%5cmultimedia%5cmovies%5cSphere.zip/Movie.avi", "art.jpg", true,
+                 "g:\\multimedia\\movies\\art.jpg"},
+    LocalArtTest{"rar://g%3a%5cmultimedia%5cmovies%5cSphere.rar/Movie.avi", "art.jpg", false,
+                 "g:\\multimedia\\movies\\Sphere-art.jpg"},
+    LocalArtTest{"rar://g%3a%5cmultimedia%5cmovies%5cSphere.rar/Movie.avi", "art.jpg", true,
+                 "g:\\multimedia\\movies\\art.jpg"},
+    LocalArtTest{"archive://g%3a%5cmultimedia%5cmovies%5cSphere.tar.gz/Movie.avi", "art.jpg", false,
+                 "g:\\multimedia\\movies\\Sphere-art.jpg"},
+    LocalArtTest{"archive://g%3a%5cmultimedia%5cmovies%5cSphere.tar.gz/Movie.avi", "art.jpg", true,
                  "g:\\multimedia\\movies\\art.jpg"},
     LocalArtTest{"/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", "art.jpg", false,
                  "/home/user/movies/movie_name/art.jpg"},
@@ -367,6 +395,8 @@ TEST_P(GetLocalFanartTest, GetLocalFanart)
     path = URIUtils::AddFileToFolder(tmpdir, uniq);
     URIUtils::AddSlashAtEnd(path);
     XFILE::CDirectory::Create(path);
+    if (const std::string dir{URIUtils::GetDirectory(GetParam().result)}; !dir.empty())
+      XFILE::CDirectory::Create(URIUtils::AddFileToFolder(path, dir, ""));
     std::ofstream of(URIUtils::AddFileToFolder(path, GetParam().result), std::ios::out);
     if (GetParam().path.find("#DIRECTORY#") != std::string::npos)
     {
@@ -394,7 +424,7 @@ TEST_P(GetLocalFanartTest, GetLocalFanart)
   }
   const std::string res = ART::GetLocalFanart(item);
 
-  EXPECT_EQ(URIUtils::GetFileName(res), GetParam().result);
+  EXPECT_EQ(URIUtils::GetFileName(res), URIUtils::GetFileName(GetParam().result));
 
   if (!GetParam().result.empty())
     XFILE::CDirectory::RemoveRecursive(path);
@@ -410,13 +440,19 @@ TEST_P(GetTbnTest, TbnTest)
 }
 
 const auto tbn_tests = std::array{
+    TbnTest{"archive://smb%3a%2f%2fhome%2fuser%2fbar.tar.gz/foo.avi", "smb://home/user/bar.tbn"},
     TbnTest{"/home/user/video.avi", "/home/user/video.tbn"},
     TbnTest{"/home/user/video/", "/home/user/video.tbn", true},
     TbnTest{"/home/user/bar.xbt", "/home/user/bar.tbn", true},
-    TbnTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "/home/user/foo.tbn"},
-    TbnTest{"stack:///home/user/foo-cd1.avi , /home/user/foo-cd2.avi", "/home/user/foo.tbn"},
     TbnTest{"/home/user/BDMV/index.bdmv", "/home/user/BDMV/index.tbn"},
     TbnTest{"/home/user/movie.iso", "/home/user/movie.tbn"},
+    TbnTest{"D:\\movie\\movie.iso", "D:\\movie\\movie.tbn"},
+    TbnTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "/home/user/bar.tbn"},
+    TbnTest{"rar://%2fhome%2fuser%2fbar.rar/foo.avi", "/home/user/bar.tbn"},
+    TbnTest{"archive://smb%3a%2f%2fhome%2fuser%2fbar.tar.gz/foo.avi", "smb://home/user/bar.tbn"},
+    TbnTest{"stack:///home/user/foo-cd1.avi , /home/user/foo-cd2.avi", "/home/user/foo.tbn"},
+    TbnTest{"stack:///home/user/movie/movie-part1/foo.avi , /home/user/movie/movie-part2/foo.avi",
+            "/home/user/movie/movie.tbn"},
     TbnTest{"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls",
             "smb://somepath/BDMV/index.tbn"},
     TbnTest{
@@ -429,8 +465,7 @@ const auto tbn_tests = std::array{
             "smb://somepath/BDMV/index-S03E04.tbn", false, 3, 4},
     TbnTest{
         "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
-        "smb://somepath/movie-S03E04.tbn", false, 3, 4},
-};
+        "smb://somepath/movie-S03E04.tbn", false, 3, 4}};
 
 INSTANTIATE_TEST_SUITE_P(TestArtUtils, GetTbnTest, testing::ValuesIn(tbn_tests));
 
