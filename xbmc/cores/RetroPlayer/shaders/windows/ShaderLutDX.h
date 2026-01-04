@@ -39,5 +39,4 @@ private:
 
   std::unique_ptr<CTexture> m_texture;
 };
-
 } // namespace KODI::SHADER

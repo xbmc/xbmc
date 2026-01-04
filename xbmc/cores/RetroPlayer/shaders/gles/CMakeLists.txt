@@ -3,12 +3,14 @@ if(TARGET ${APP_NAME_LC}::OpenGLES)
                       ShaderLutGLES.cpp
                       ShaderPresetGLES.cpp
                       ShaderTextureGLES.cpp
+                      ShaderTextureGLESRef.cpp
                       ShaderUtilsGLES.cpp
   )
   list(APPEND HEADERS ShaderGLES.h
                       ShaderLutGLES.h
                       ShaderPresetGLES.h
                       ShaderTextureGLES.h
+                      ShaderTextureGLESRef.h
                       ShaderUtilsGLES.cpp
   )
 

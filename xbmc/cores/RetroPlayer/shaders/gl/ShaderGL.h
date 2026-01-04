@@ -24,6 +24,12 @@ public:
   CShaderGL();
   ~CShaderGL() override;
 
+  // Disallow copy and move (this object owns raw GL IDs)
+  CShaderGL(const CShaderGL&) = delete;
+  CShaderGL& operator=(const CShaderGL&) = delete;
+  CShaderGL(CShaderGL&&) = delete;
+  CShaderGL& operator=(CShaderGL&&) = delete;
+
   // Implementation of IShader
   bool Create(std::string shaderSource,
               std::string shaderPath,
@@ -42,6 +48,9 @@ public:
                          const std::vector<std::unique_ptr<IShader>>& pShaders,
                          uint64_t frameCount) override;
   void UpdateMVP() override;
+
+  // OpenGL interface
+  void Destroy();
 
 private:
   struct UniformInputs
@@ -68,7 +77,7 @@ private:
   UniformFrameInputs GetFrameInputData(GLuint texture) const;
   UniformFrameInputs GetFrameUniformInputs() const { return m_uniformFrameInputs; }
   void GetUniformLocs();
-  void SetShaderParameters(CGLTexture& sourceTexture);
+  void SetShaderParameters(CShaderTextureGL& sourceTexture);
 
   // Currently loaded shader's source code
   std::string m_shaderSource;
@@ -100,8 +109,7 @@ private:
   // Index of the video shader pass
   unsigned int m_passIdx{0};
 
-  // Value to modulo (%) frame count with
-  // Unused if 0
+  // Value to modulo (%) frame count with (unused if 0)
   unsigned int m_frameCountMod{0};
 
   GLuint m_shaderProgram{0};

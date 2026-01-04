@@ -49,6 +49,5 @@ private:
   // Linear sampler
   ID3D11SamplerState* m_pSampLinear = nullptr;
 };
-
 } // namespace SHADER
 } // namespace KODI

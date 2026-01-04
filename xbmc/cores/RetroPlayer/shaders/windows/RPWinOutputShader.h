@@ -74,5 +74,4 @@ private:
   CRect m_sourceRect{};
   KODI::RETRO::ViewportCoordinates m_destPoints{};
 };
-
 } // namespace KODI::SHADER

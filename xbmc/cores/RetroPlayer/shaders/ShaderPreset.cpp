@@ -147,14 +147,12 @@ bool CShaderPreset::Update()
   {
     m_failedPaths.insert(m_presetPath);
     CLog::Log(LOGWARNING, "CShaderPreset::Update: {}", msg);
-    DisposeShaderTextures();
+    DisposeShaders();
     return false;
   };
 
   if (m_bPresetNeedsUpdate && !HasPathFailed(m_presetPath))
   {
-    DisposeShaderTextures();
-
     if (!CreateShaderTextures())
       return updateFailed("A shader texture failed to init");
   }
@@ -236,6 +234,8 @@ void CShaderPreset::CalculateScaledSize(const KODI::SHADER::ShaderPass& pass,
 
 void CShaderPreset::DisposeShaders()
 {
+  DisposeShaderTextures();
+
   m_pShaders.clear();
   m_passes.clear();
 }
@@ -243,7 +243,6 @@ void CShaderPreset::DisposeShaders()
 void CShaderPreset::DisposeShaderTextures()
 {
   m_pShaderTextures.clear();
-  m_bPresetNeedsUpdate = true;
 }
 
 bool CShaderPreset::HasPathFailed(const std::string& path) const

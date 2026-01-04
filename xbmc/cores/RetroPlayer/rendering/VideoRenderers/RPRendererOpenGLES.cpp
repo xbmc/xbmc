@@ -13,14 +13,11 @@
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "cores/RetroPlayer/shaders/gles/ShaderPresetGLES.h"
-#include "cores/RetroPlayer/shaders/gles/ShaderTextureGLES.h"
-#include "guilib/TextureFormats.h"
-#include "guilib/TextureGLES.h"
+#include "cores/RetroPlayer/shaders/gles/ShaderTextureGLESRef.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
 #include <cstring>
-#include <stddef.h>
 
 using namespace KODI;
 using namespace RETRO;
@@ -128,12 +125,6 @@ void CRPRendererOpenGLES::DrawBlackBars()
 {
   glDisable(GL_BLEND);
 
-  struct Svertex
-  {
-    float x;
-    float y;
-    float z;
-  };
   Svertex vertices[24];
   GLubyte count = 0;
 
@@ -260,21 +251,21 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   }
   else
   {
-    // We can't copy or move CGLESTexture, so construct source/target in-place
     rbTextures = new RenderBufferTextures{
         // Source texture
-        std::make_shared<CGLESTexture>(static_cast<unsigned int>(renderBuffer->GetWidth()),
-                                       static_cast<unsigned int>(renderBuffer->GetHeight()),
-                                       XB_FMT_RGB8, renderBuffer->TextureID()),
-        // Target texture
-        std::make_shared<CGLESTexture>(static_cast<unsigned int>(m_context.GetScreenWidth()),
-                                       static_cast<unsigned int>(m_context.GetScreenHeight())),
+        std::make_shared<SHADER::CShaderTextureGLESRef>(
+            static_cast<unsigned int>(renderBuffer->GetWidth()),
+            static_cast<unsigned int>(renderBuffer->GetHeight()), renderBuffer->TextureID()),
+        // Target texture is empty wrapper used to pass target width and height
+        std::make_shared<SHADER::CShaderTextureGLESRef>(
+            static_cast<unsigned int>(m_context.GetScreenWidth()),
+            static_cast<unsigned int>(m_context.GetScreenHeight())),
     };
     m_RBTexturesMap.emplace(renderBuffer, rbTextures);
   }
 
-  std::shared_ptr<CGLESTexture> sourceTexture = rbTextures->source;
-  std::shared_ptr<CGLESTexture> targetTexture = rbTextures->target;
+  std::shared_ptr<SHADER::CShaderTextureGLESRef> source = rbTextures->source;
+  std::shared_ptr<SHADER::CShaderTextureGLESRef> target = rbTextures->target;
 
   Updateshaders();
 
@@ -285,15 +276,13 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
     if (m_shaderPreset->GetPasses()[0].filterType == SHADER::FilterType::LINEAR)
       filter = GL_LINEAR;
 
-    glBindTexture(m_textureTarget, sourceTexture->GetTextureID());
+    glBindTexture(m_textureTarget, source->GetTextureID());
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    SHADER::CShaderTextureGLES source(sourceTexture, false);
-    SHADER::CShaderTextureGLES target(targetTexture, false);
-    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight}, source, target))
+    if (!m_shaderPreset->RenderUpdate(dest, {m_fullDestWidth, m_fullDestHeight}, *source, *target))
     {
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;
@@ -315,7 +304,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
     if (GetRenderSettings().VideoSettings().GetScalingMethod() == SCALINGMETHOD::LINEAR)
       filter = GL_LINEAR;
 
-    glBindTexture(m_textureTarget, sourceTexture->GetTextureID());
+    glBindTexture(m_textureTarget, source->GetTextureID());
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

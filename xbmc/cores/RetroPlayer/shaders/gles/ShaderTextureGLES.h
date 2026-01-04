@@ -14,34 +14,49 @@
 
 #include "system_gl.h"
 
-class CGLESTexture;
-
 namespace KODI::SHADER
 {
 
 class CShaderTextureGLES : public IShaderTexture
 {
 public:
-  CShaderTextureGLES(std::shared_ptr<CGLESTexture> texture, bool sRgbFramebuffer);
+  CShaderTextureGLES(uint32_t textureWidth, uint32_t textureHeight);
   ~CShaderTextureGLES() override;
+
+  // Disallow copy and move (this object owns raw GL IDs)
+  CShaderTextureGLES(const CShaderTextureGLES&) = delete;
+  CShaderTextureGLES& operator=(const CShaderTextureGLES&) = delete;
+  CShaderTextureGLES(CShaderTextureGLES&&) = delete;
+  CShaderTextureGLES& operator=(CShaderTextureGLES&&) = delete;
 
   // Implementation of IShaderTexture
   float GetWidth() const override;
   float GetHeight() const override;
 
   // OpenGLES interface
-  CGLESTexture& GetTexture() { return *m_texture; }
-  const CGLESTexture& GetTexture() const { return *m_texture; }
+  void CreateTextureObject();
+  void DestroyTextureObject();
+  void BindToUnit(unsigned int unit);
+  GLuint GetTextureID() const { return m_texture; }
+
+  void SetSRGBFramebuffer() { m_sRgbFramebuffer = true; }
   bool IsSRGBFramebuffer() const { return m_sRgbFramebuffer; }
 
+  void SetMipmapping() { m_mipmapping = true; }
+  bool IsMipmapped() const { return m_mipmapping; }
+
   // Frame buffer interface
-  bool CreateFBO();
+  void CreateFBO();
+  void DestroyFBO();
   bool BindFBO();
   void UnbindFBO() const;
 
 private:
-  std::shared_ptr<CGLESTexture> m_texture;
+  uint32_t m_textureWidth{0};
+  uint32_t m_textureHeight{0};
+  GLuint m_texture{0};
+  GLuint m_FBO{0};
   bool m_sRgbFramebuffer{false};
-  GLuint FBO{0};
+  bool m_mipmapping{false};
 };
 } // namespace KODI::SHADER

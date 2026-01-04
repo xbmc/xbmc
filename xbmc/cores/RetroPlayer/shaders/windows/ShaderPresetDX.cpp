@@ -117,7 +117,7 @@ bool CShaderPresetDX::CreateBuffers()
 
 bool CShaderPresetDX::CreateShaderTextures()
 {
-  m_pShaderTextures.clear();
+  DisposeShaderTextures();
 
   float2 prevSize = m_videoSize;
   float2 prevTextureSize = m_videoSize;

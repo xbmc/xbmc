@@ -130,5 +130,4 @@ private:
   // Sampler state
   //ID3D11SamplerState* m_pSampler{nullptr};
 };
-
 } // namespace KODI::SHADER

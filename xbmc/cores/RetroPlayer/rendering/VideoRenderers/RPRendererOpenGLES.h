@@ -22,10 +22,13 @@
 
 #include "system_gl.h"
 
-class CGLESTexture;
-
 namespace KODI
 {
+namespace SHADER
+{
+class CShaderTextureGLESRef;
+} // namespace SHADER
+
 namespace RETRO
 {
 class CRenderBufferOpenGLES;
@@ -64,6 +67,19 @@ protected:
     float u1, v1;
   };
 
+  struct Svertex
+  {
+    float x;
+    float y;
+    float z;
+  };
+
+  struct RenderBufferTextures
+  {
+    std::shared_ptr<SHADER::CShaderTextureGLESRef> source;
+    std::shared_ptr<SHADER::CShaderTextureGLESRef> target;
+  };
+
   // implementation of CRPBaseRenderer
   void RenderInternal(bool clear, uint8_t alpha) override;
   void FlushInternal() override;
@@ -83,19 +99,13 @@ protected:
 
   virtual void Render(uint8_t alpha);
 
+  std::map<CRenderBufferOpenGLES*, std::unique_ptr<RenderBufferTextures>> m_RBTexturesMap;
+
   GLuint m_mainIndexVBO;
   GLuint m_mainVertexVBO;
   GLuint m_blackbarsVertexVBO;
   GLenum m_textureTarget = GL_TEXTURE_2D;
   float m_clearColour = 0.0f;
-
-  struct RenderBufferTextures
-  {
-    std::shared_ptr<CGLESTexture> source;
-    std::shared_ptr<CGLESTexture> target;
-  };
-
-  std::map<CRenderBufferOpenGLES*, std::unique_ptr<RenderBufferTextures>> m_RBTexturesMap;
 };
 } // namespace RETRO
 } // namespace KODI
