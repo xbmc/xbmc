@@ -64,6 +64,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <cassert>
 #include <chrono>
 #include <iterator>
 #include <limits>
@@ -3183,16 +3184,17 @@ void CVideoPlayer::HandleMessages()
       }
 
       const bool isTempoSpeed = msg->IsTempo();
-      const bool wasNotTempoSpeed =
-          !(m_playSpeed != DVD_PLAYSPEED_NORMAL &&
-            m_processInfo->IsTempoAllowed(static_cast<float>(m_playSpeed) / DVD_PLAYSPEED_NORMAL));
+      assert(!(isTempoSpeed &&
+               !m_processInfo->IsTempoAllowed(static_cast<float>(speed) / DVD_PLAYSPEED_NORMAL)));
 
-      // Seek when:
-      // 1. Returning to normal 1.0x or tempo play from FF
-      // 3. Returning to normal 1.0x or tempo play from RW (clock is not in sync with current pts)
-      // 2. Returning to normal 1.0x from tempo play
-      if ((speed == DVD_PLAYSPEED_NORMAL || (isTempoSpeed && wasNotTempoSpeed)) &&
-          (m_playSpeed != DVD_PLAYSPEED_NORMAL) && (m_playSpeed != DVD_PLAYSPEED_PAUSE))
+      const bool wasFFRW =
+          (m_playSpeed != DVD_PLAYSPEED_NORMAL && m_playSpeed != DVD_PLAYSPEED_PAUSE &&
+           !m_processInfo->IsTempoAllowed(static_cast<float>(m_playSpeed) / DVD_PLAYSPEED_NORMAL));
+
+      // Seek when returning to normal 1.0x or tempo play from FF/RW
+      // back from RW: clock is not in sync with current pts
+      // back from FF: fill the empty audio queue to avoid no audio
+      if ((speed == DVD_PLAYSPEED_NORMAL || isTempoSpeed) && wasFFRW)
       {
         double iTime = m_VideoPlayerVideo->GetCurrentPts();
         if (iTime == DVD_NOPTS_VALUE)
