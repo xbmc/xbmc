@@ -3152,7 +3152,8 @@ void CVideoPlayer::HandleMessages()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      int speed = std::static_pointer_cast<CDVDMsgPlayerSetSpeed>(pMsg)->GetSpeed();
+      const auto msg = std::static_pointer_cast<CDVDMsgPlayerSetSpeed>(pMsg);
+      const int speed = msg->GetSpeed();
 
       // correct our current clock, as it would start going wrong otherwise
       if (m_State.timestamp > 0)
@@ -3181,10 +3182,17 @@ void CVideoPlayer::HandleMessages()
         pvrinputstream->Pause(speed == 0);
       }
 
-      // do a seek after rewind, clock is not in sync with current pts
-      if ((speed == DVD_PLAYSPEED_NORMAL) &&
-          (m_playSpeed != DVD_PLAYSPEED_NORMAL) &&
-          (m_playSpeed != DVD_PLAYSPEED_PAUSE))
+      const bool isTempoSpeed = msg->IsTempo();
+      const bool wasNotTempoSpeed =
+          !(m_playSpeed != DVD_PLAYSPEED_NORMAL &&
+            m_processInfo->IsTempoAllowed(static_cast<float>(m_playSpeed) / DVD_PLAYSPEED_NORMAL));
+
+      // Seek when:
+      // 1. Returning to normal 1.0x or tempo play from FF
+      // 3. Returning to normal 1.0x or tempo play from RW (clock is not in sync with current pts)
+      // 2. Returning to normal 1.0x from tempo play
+      if ((speed == DVD_PLAYSPEED_NORMAL || (isTempoSpeed && wasNotTempoSpeed)) &&
+          (m_playSpeed != DVD_PLAYSPEED_NORMAL) && (m_playSpeed != DVD_PLAYSPEED_PAUSE))
       {
         double iTime = m_VideoPlayerVideo->GetCurrentPts();
         if (iTime == DVD_NOPTS_VALUE)
@@ -3201,7 +3209,7 @@ void CVideoPlayer::HandleMessages()
         m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
       }
 
-      if (std::static_pointer_cast<CDVDMsgPlayerSetSpeed>(pMsg)->IsTempo())
+      if (isTempoSpeed)
         m_processInfo->SetTempo(static_cast<float>(speed) / DVD_PLAYSPEED_NORMAL);
       else
         m_processInfo->SetSpeed(static_cast<float>(speed) / DVD_PLAYSPEED_NORMAL);
