@@ -1,0 +1,14 @@
+diff --git a/libavcodec/mpc7.c b/libavcodec/mpc7.c
+index 98ef1732cf..9bbfea4939 100644
+--- a/libavcodec/mpc7.c
++++ b/libavcodec/mpc7.c
+@@ -302,7 +302,8 @@ static av_cold void mpc7_decode_flush(AVCodecContext *avctx)
+     MPCContext *c = avctx->priv_data;
+ 
+     memset(c->oldDSCF, 0, sizeof(c->oldDSCF));
+-    c->frames_to_skip = 32;
++    /* Do not skip frames if we are at the start of a track when flush() is called. */
++    c->frames_to_skip = avctx->frame_number > 0 ? 32 : 0;
+ }
+ 
+ static av_cold int mpc7_decode_close(AVCodecContext *avctx)

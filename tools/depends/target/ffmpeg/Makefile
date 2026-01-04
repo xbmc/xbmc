@@ -2,7 +2,8 @@
 include FFMPEG-VERSION
 DEPS = FFMPEG-VERSION Makefile ../../download-files.include \
                       CMakeLists.txt \
-                      001-ffmpeg-all-libpostproc-plugin.patch
+                      001-ffmpeg-all-libpostproc-plugin.patch \
+                      007-ffmpeg-all-mpc7-avoid-skipping-start-frames.patch
 
 BUILD_TYPE = Release
 ifeq ($(DEBUG_BUILD),yes)
