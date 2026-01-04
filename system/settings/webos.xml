@@ -21,6 +21,20 @@
     </category>
   </section>
   <section id="system">
+    <category id="audio">
+      <group id="3">
+        <setting id="audiooutput.passthrough">
+          <default>true</default>
+          <visible>true</visible>
+        </setting>
+        <setting id="audiooutput.passthroughdevice">
+          <visible>false</visible>
+        </setting>
+        <setting id="audiooutput.ac3passthrough">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
     <category id="display">
       <group id="1">
         <setting id="videoscreen.fakefullscreen">

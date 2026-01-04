@@ -12,11 +12,15 @@
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "powermanagement/LunaPowerManagement.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 
 #include "platform/linux/WebOSTVPlatformConfig.h"
 
 #include <filesystem>
+#include <memory>
 
 #include <sys/resource.h>
 
@@ -77,6 +81,18 @@ bool CPlatformWebOS::InitStageTwo()
   WebOSTVPlatformConfig::Load();
   WebOSTVPlatformConfig::LoadARCStatus();
   return CPlatformLinux::InitStageTwo();
+}
+
+bool CPlatformWebOS::InitStageThree()
+{
+  // Setting dependencies cannot be removed by XML files
+  const std::shared_ptr<CSetting> passthrough =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+          CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
+  if (passthrough)
+    passthrough->SetDependencies({});
+
+  return CPlatformLinux::InitStageThree();
 }
 
 void CPlatformWebOS::RegisterPowerManagement()
