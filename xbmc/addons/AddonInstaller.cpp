@@ -89,6 +89,8 @@ public:
                        ADDON::RepositoryPtr& repo,
                        ADDON::AddonPtr& addon);
 
+  bool Equals(const CJob* job) const override;
+
   void SetDependsInstall(DependencyJob dependsInstall) { m_dependsInstall = dependsInstall; }
   void SetAllowCheckForUpdates(AllowCheckForUpdates allowCheckForUpdates)
   {
@@ -663,6 +665,21 @@ bool CAddonInstallJob::GetAddon(const std::string& addonID,
   repo = std::static_pointer_cast<CRepository>(tmp);
 
   return true;
+}
+
+bool CAddonInstallJob::Equals(const CJob* job) const
+{
+  if (strcmp(job->GetType(), GetType()) != 0)
+    return false;
+
+  const CAddonInstallJob* installJob = dynamic_cast<const CAddonInstallJob*>(job);
+  if (installJob == nullptr)
+    return false;
+
+  if (!m_addon || !installJob->m_addon)
+    return false;
+
+  return m_addon->ID() == installJob->m_addon->ID();
 }
 
 bool CAddonInstallJob::DoWork()
