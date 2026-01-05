@@ -58,6 +58,22 @@ std::vector<CRegExp> CompileRegexesFromXML(TiXmlElement* folderStacking)
   return CompileRegexes(patterns);
 }
 
+void ParseDatabaseSettings(const TiXmlElement* element, DatabaseSettings& settings)
+{
+  XMLUtils::GetString(element, "type", settings.type);
+  XMLUtils::GetString(element, "host", settings.host);
+  XMLUtils::GetString(element, "port", settings.port);
+  XMLUtils::GetString(element, "user", settings.user);
+  XMLUtils::GetString(element, "pass", settings.pass);
+  XMLUtils::GetString(element, "name", settings.name);
+  XMLUtils::GetString(element, "key", settings.key);
+  XMLUtils::GetString(element, "cert", settings.cert);
+  XMLUtils::GetString(element, "ca", settings.ca);
+  XMLUtils::GetString(element, "capath", settings.capath);
+  XMLUtils::GetString(element, "ciphers", settings.ciphers);
+  XMLUtils::GetUInt(element, "connecttimeout", settings.connecttimeout, 1, 300);
+  XMLUtils::GetBoolean(element, "compression", settings.compression);
+}
 } // unnamed namespace
 
 void CAdvancedSettings::OnSettingsLoaded()
@@ -1223,78 +1239,24 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     }
   }
 
-  const TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
-  if (pDatabase)
+  if (const TiXmlElement* dbElement = pRootElement->FirstChildElement("videodatabase");
+      dbElement != nullptr)
   {
     CLog::Log(LOGWARNING, "VIDEO database configuration is experimental.");
-    XMLUtils::GetString(pDatabase, "type", m_databaseVideo.type);
-    XMLUtils::GetString(pDatabase, "host", m_databaseVideo.host);
-    XMLUtils::GetString(pDatabase, "port", m_databaseVideo.port);
-    XMLUtils::GetString(pDatabase, "user", m_databaseVideo.user);
-    XMLUtils::GetString(pDatabase, "pass", m_databaseVideo.pass);
-    XMLUtils::GetString(pDatabase, "name", m_databaseVideo.name);
-    XMLUtils::GetString(pDatabase, "key", m_databaseVideo.key);
-    XMLUtils::GetString(pDatabase, "cert", m_databaseVideo.cert);
-    XMLUtils::GetString(pDatabase, "ca", m_databaseVideo.ca);
-    XMLUtils::GetString(pDatabase, "capath", m_databaseVideo.capath);
-    XMLUtils::GetString(pDatabase, "ciphers", m_databaseVideo.ciphers);
-    XMLUtils::GetUInt(pDatabase, "connecttimeout", m_databaseVideo.connecttimeout, 1, 300);
-    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseVideo.compression);
+    ParseDatabaseSettings(dbElement, m_databaseVideo);
   }
 
-  pDatabase = pRootElement->FirstChildElement("musicdatabase");
-  if (pDatabase)
-  {
-    XMLUtils::GetString(pDatabase, "type", m_databaseMusic.type);
-    XMLUtils::GetString(pDatabase, "host", m_databaseMusic.host);
-    XMLUtils::GetString(pDatabase, "port", m_databaseMusic.port);
-    XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
-    XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
-    XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
-    XMLUtils::GetString(pDatabase, "key", m_databaseMusic.key);
-    XMLUtils::GetString(pDatabase, "cert", m_databaseMusic.cert);
-    XMLUtils::GetString(pDatabase, "ca", m_databaseMusic.ca);
-    XMLUtils::GetString(pDatabase, "capath", m_databaseMusic.capath);
-    XMLUtils::GetString(pDatabase, "ciphers", m_databaseMusic.ciphers);
-    XMLUtils::GetUInt(pDatabase, "connecttimeout", m_databaseMusic.connecttimeout, 1, 300);
-    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseMusic.compression);
-  }
+  if (const TiXmlElement* dbElement = pRootElement->FirstChildElement("musicdatabase");
+      dbElement != nullptr)
+    ParseDatabaseSettings(dbElement, m_databaseMusic);
 
-  pDatabase = pRootElement->FirstChildElement("tvdatabase");
-  if (pDatabase)
-  {
-    XMLUtils::GetString(pDatabase, "type", m_databaseTV.type);
-    XMLUtils::GetString(pDatabase, "host", m_databaseTV.host);
-    XMLUtils::GetString(pDatabase, "port", m_databaseTV.port);
-    XMLUtils::GetString(pDatabase, "user", m_databaseTV.user);
-    XMLUtils::GetString(pDatabase, "pass", m_databaseTV.pass);
-    XMLUtils::GetString(pDatabase, "name", m_databaseTV.name);
-    XMLUtils::GetString(pDatabase, "key", m_databaseTV.key);
-    XMLUtils::GetString(pDatabase, "cert", m_databaseTV.cert);
-    XMLUtils::GetString(pDatabase, "ca", m_databaseTV.ca);
-    XMLUtils::GetString(pDatabase, "capath", m_databaseTV.capath);
-    XMLUtils::GetString(pDatabase, "ciphers", m_databaseTV.ciphers);
-    XMLUtils::GetUInt(pDatabase, "connecttimeout", m_databaseTV.connecttimeout, 1, 300);
-    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseTV.compression);
-  }
+  if (const TiXmlElement* dbElement = pRootElement->FirstChildElement("tvdatabase");
+      dbElement != nullptr)
+    ParseDatabaseSettings(dbElement, m_databaseTV);
 
-  pDatabase = pRootElement->FirstChildElement("epgdatabase");
-  if (pDatabase)
-  {
-    XMLUtils::GetString(pDatabase, "type", m_databaseEpg.type);
-    XMLUtils::GetString(pDatabase, "host", m_databaseEpg.host);
-    XMLUtils::GetString(pDatabase, "port", m_databaseEpg.port);
-    XMLUtils::GetString(pDatabase, "user", m_databaseEpg.user);
-    XMLUtils::GetString(pDatabase, "pass", m_databaseEpg.pass);
-    XMLUtils::GetString(pDatabase, "name", m_databaseEpg.name);
-    XMLUtils::GetString(pDatabase, "key", m_databaseEpg.key);
-    XMLUtils::GetString(pDatabase, "cert", m_databaseEpg.cert);
-    XMLUtils::GetString(pDatabase, "ca", m_databaseEpg.ca);
-    XMLUtils::GetString(pDatabase, "capath", m_databaseEpg.capath);
-    XMLUtils::GetString(pDatabase, "ciphers", m_databaseEpg.ciphers);
-    XMLUtils::GetUInt(pDatabase, "connecttimeout", m_databaseEpg.connecttimeout, 1, 300);
-    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseEpg.compression);
-  }
+  if (const TiXmlElement* dbElement = pRootElement->FirstChildElement("epgdatabase");
+      dbElement != nullptr)
+    ParseDatabaseSettings(dbElement, m_databaseEpg);
 
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
   if (pElement)
