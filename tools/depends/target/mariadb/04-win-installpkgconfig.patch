@@ -1,6 +1,6 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -446,10 +446,9 @@
+@@ -455,10 +455,9 @@
  INCLUDE(${CC_SOURCE_DIR}/plugins/CMakeLists.txt)
  ADD_SUBDIRECTORY(include)
  ADD_SUBDIRECTORY(libmariadb)
