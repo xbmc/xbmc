@@ -627,7 +627,7 @@ CDatabase::ConnectionState CDatabase::Connect(const std::string& dbName,
   // set configuration regardless if any are empty
   m_pDB->setConfig(dbSettings.key.c_str(), dbSettings.cert.c_str(), dbSettings.ca.c_str(),
                    dbSettings.capath.c_str(), dbSettings.ciphers.c_str(), dbSettings.connecttimeout,
-                   dbSettings.compression);
+                   dbSettings.enforceSsl, dbSettings.compression);
 
   // create the datasets
   m_pDS.reset(m_pDB->CreateDataset());
