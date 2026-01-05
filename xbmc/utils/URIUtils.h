@@ -83,7 +83,7 @@ public:
                     std::string& strPath, std::string& strFileName);
   static std::vector<std::string> SplitPath(const std::string& strPath);
 
-  static void GetCommonPath(std::string& strParent, const std::string& strPath);
+  static void GetCommonPath(std::string& parent, std::string_view path);
   static std::string GetParentPath(const std::string& strPath);
   static bool GetParentPath(const std::string& strPath, std::string& strParent);
 
