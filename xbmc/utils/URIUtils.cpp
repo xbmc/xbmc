@@ -416,42 +416,38 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   }
 }
 
-std::vector<std::string> URIUtils::SplitPath(const std::string& strPath)
+std::vector<std::string> URIUtils::SplitPath(const std::string& path)
 {
-  CURL url(strPath);
+  const CURL url{path};
 
-  // silly std::string can't take a char in the constructor
-  std::string sep(1, url.GetDirectorySeparator());
+  // Split the filename portion of the URL up into separate directories
+  const char sep{url.GetDirectorySeparator()};
+  std::vector<std::string> dirs{StringUtils::Split(url.GetFileName(), std::string_view{&sep, 1})};
 
-  // split the filename portion of the URL up into separate dirs
-  std::vector<std::string> dirs = StringUtils::Split(url.GetFileName(), sep);
+  // Prepend root path if present
+  if (auto root{url.GetWithoutFilename()}; !root.empty())
+    dirs.insert(dirs.begin(), std::move(root));
 
-  // we start with the root path
-  std::string dir = url.GetWithoutFilename();
-
-  if (!dir.empty())
-    dirs.insert(dirs.begin(), dir);
-
-  // we don't need empty token on the end
+  // Remove trailing empty token
   if (dirs.size() > 1 && dirs.back().empty())
-    dirs.erase(dirs.end() - 1);
+    dirs.pop_back();
 
   return dirs;
 }
 
-void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
+void URIUtils::GetCommonPath(std::string& parent, std::string_view path)
 {
-  // find the common path of parent and path
-  unsigned int j = 1;
-  while (j <= std::min(strParent.size(), strPath.size()) &&
-         StringUtils::CompareNoCase(strParent, strPath, j) == 0)
-    j++;
-  strParent.erase(j - 1);
-  // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
-  if (!HasSlashAtEnd(strParent))
+  const size_t maxCompare{std::min(parent.size(), path.size())};
+  size_t i{0};
+  while (i < maxCompare && std::tolower(parent[i]) == std::tolower(path[i]))
+    ++i;
+
+  parent.erase(i);
+
+  if (!HasSlashAtEnd(parent))
   {
-    strParent = GetDirectory(strParent);
-    AddSlashAtEnd(strParent);
+    parent = GetDirectory(parent);
+    AddSlashAtEnd(parent);
   }
 }
 
