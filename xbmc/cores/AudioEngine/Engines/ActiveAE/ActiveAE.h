@@ -408,5 +408,7 @@ protected:
   float m_aeVolume;
   bool m_aeMuted;
   bool m_aeGUISoundForce;
+
+  float m_targetBufferLevel{0.0f};
 };
 };
