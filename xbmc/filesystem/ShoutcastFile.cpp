@@ -374,7 +374,8 @@ void CShoutcastFile::Process()
             const auto& components = CServiceBroker::GetAppComponents();
             const auto appPlayer = components.GetComponent<CApplicationPlayer>();
             if (appPlayer->IsPlayingAudio() &&
-                CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
+                CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() ==
+                    PLAYLIST::Id::TYPE_MUSIC)
             {
               CVariant data;
               data["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
