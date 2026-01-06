@@ -17,9 +17,13 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "filesystem/CurlFile.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
+#include "PlayListPlayer.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
@@ -29,11 +33,13 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/UrlOptions.h"
+#include "utils/Variant.h"
 
 #include <climits>
 #include <memory>
 #include <mutex>
 
+using namespace KODI;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace std::chrono_literals;
@@ -352,10 +358,24 @@ void CShoutcastFile::Process()
         }
         else
         {
-          CFileItem* item = new CFileItem(*front.second); // will be deleted by msg receiver
+          const TagInfo& tagInfo = front;
+          CFileItem* item = new CFileItem(*tagInfo.second); // will be deleted by msg receiver
+          CFileItemPtr itemPtr = std::make_shared<CFileItem>(*tagInfo.second);
           m_tags.pop();
           CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
                                                      static_cast<void*>(item));
+
+          // Announce property change for radio stream metadata updates
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+          if (appPlayer->IsPlayingAudio() &&
+              CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC)
+          {
+            CVariant data;
+            data["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
+            CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
+                                                               itemPtr, data);
+          }
         }
       }
     }
