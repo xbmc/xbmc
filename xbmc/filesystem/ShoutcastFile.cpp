@@ -214,10 +214,15 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
         if (StringUtils::StartsWithNoCase(streamUrlData, "http://") ||
             StringUtils::StartsWithNoCase(streamUrlData, "https://"))
         {
-          // Bauer Media Radio listenapi null event to erase current data
-          if (!StringUtils::EndsWithNoCase(streamUrlData, "eventdata/-1"))
+          const CURL dataURL(streamUrlData);
+          // Check if StreamUrl is a direct image URL (e.g., Radio Paradise)
+          if (dataURL.IsPicture())
           {
-            const CURL dataURL(streamUrlData);
+            coverURL = streamUrlData;
+          }
+          // Bauer Media Radio listenapi null event to erase current data
+          else if (!StringUtils::EndsWithNoCase(streamUrlData, "eventdata/-1"))
+          {
             XFILE::CCurlFile http;
             std::string extData;
 
