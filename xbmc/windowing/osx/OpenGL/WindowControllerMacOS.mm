@@ -116,7 +116,7 @@ void EnableRenderGUI(bool enable)
   g_application.m_AppFocused = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "WindowFocused");
 
-  EnableRenderGUI(true);
+  EnableRenderGUI([self isWindowVisible]);
 
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)
@@ -129,8 +129,6 @@ void EnableRenderGUI(bool enable)
 {
   g_application.m_AppFocused = false;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "WindowUnfocused");
-
-  EnableRenderGUI(false);
 
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)
@@ -151,7 +149,12 @@ void EnableRenderGUI(bool enable)
 {
   g_application.m_AppFocused = true;
 
-  EnableRenderGUI(true);
+  EnableRenderGUI([self isWindowVisible]);
+}
+
+- (void)windowDidChangeOcclusionState:(NSNotification*)aNotification
+{
+  EnableRenderGUI([self isWindowVisible]);
 }
 
 - (void)windowDidMove:(NSNotification*)aNotification
@@ -270,4 +273,10 @@ void EnableRenderGUI(bool enable)
     return;
   winSystem->SignalFullScreenStateChanged(true);
 }
+
+- (BOOL)isWindowVisible
+{
+  return (self.window.occlusionState & NSWindowOcclusionStateVisible) != 0;
+}
+
 @end
