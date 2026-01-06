@@ -1,4 +1,5 @@
 APPNAME=cmake
 VERSION=3.31.10
 ARCHIVE=$(APPNAME)-$(VERSION).tar.gz
+BASE_URL=https://github.com/Kitware/CMake/releases/download/v3.31.10
 SHA512=ae1eed42c143b5afd70124853367dab130b3a668fd161a8fd794a44d2eb42f0a64367d152eb43edbf167ffa95612ffe10f8f18c6db9410ff473b97d4f04a978e
