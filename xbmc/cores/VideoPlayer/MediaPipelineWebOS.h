@@ -12,6 +12,7 @@
 #include "DVDMessageQueue.h"
 #include "DVDStreamInfo.h"
 #include "IVideoPlayer.h"
+#include "cores/AudioEngine/Utils/AELimiter.h"
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
 
@@ -200,6 +201,12 @@ public:
    * @return Channel count.
    */
   int GetAudioChannels() const { return m_audioHint.channels; }
+
+  /**
+   * @brief Set dynamic range compression for audio playback.
+   * @param drc Dynamic range compression level.
+   */
+  void SetDynamicRangeCompression(long drc);
 
   /**
    * @brief Enable or disable subtitle rendering.
@@ -403,6 +410,7 @@ private:
   std::unique_ptr<ActiveAE::CActiveAEBufferPool> m_encoderBuffers{nullptr};
   std::unique_ptr<ActiveAE::CActiveAEBufferPoolResample> m_audioResample{nullptr};
   std::unique_ptr<CAEEncoderFFmpeg> m_audioEncoder{nullptr};
+  CAELimiter m_audioLimiter;
   std::atomic<unsigned long> m_droppedFrames{0};
   std::chrono::duration<double, std::ratio<1, DVD_TIME_BASE>> m_audioClock{0.0};
 
