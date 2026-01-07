@@ -257,12 +257,6 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
   HRESULT hr;
   BYTE* buf;
 
-#ifndef _DEBUG
-  LARGE_INTEGER timerStart;
-  LARGE_INTEGER timerStop;
-  LARGE_INTEGER timerFreq;
-#endif
-
   unsigned int NumFramesRequested = m_format.m_frames;
   unsigned int FramesToCopy = std::min(m_format.m_frames - m_bufferPtr, frames);
   uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
@@ -286,9 +280,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf);
     if (FAILED(hr))
     {
-      #ifdef _DEBUG
       CLog::LogF(LOGERROR, "GetBuffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
-#endif
       m_isDirty = true; //flag new device or re-init needed
       return INT_MAX;
     }
@@ -297,9 +289,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
                                         AUDCLNT_BUFFERFLAGS_SILENT); //pass back to audio driver
     if (FAILED(hr))
     {
-      #ifdef _DEBUG
-      CLog::LogF(LOGDEBUG, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
-#endif
+      CLog::LogF(LOGERROR, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
       m_isDirty = true; //flag new device or re-init needed
       return INT_MAX;
     }
@@ -312,11 +302,11 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     return 0U;
   }
 
-#ifndef _DEBUG
-  /* Get clock time for latency checks */
+  // Get clock time for latency checks
+  LARGE_INTEGER timerFreq{};
+  LARGE_INTEGER timerStart{};
   QueryPerformanceFrequency(&timerFreq);
   QueryPerformanceCounter(&timerStart);
-#endif
 
   /* Wait for Audio Driver to tell us it's got a buffer available */
   DWORD eventAudioCallback;
@@ -331,7 +321,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
   if (!m_running)
     return 0;
 
-#ifndef _DEBUG
+  LARGE_INTEGER timerStop{};
   QueryPerformanceCounter(&timerStop);
   LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
   double timerElapsed = (double) timerDiff * 1000.0 / (double) timerFreq.QuadPart;
@@ -342,14 +332,11 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     CLog::LogF(LOGDEBUG, "Possible AQ Loss: Avg. Time Waiting for Audio Driver callback : {}msec",
                (int)m_avgTimeWaiting);
   }
-#endif
 
   hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf);
   if (FAILED(hr))
   {
-#ifdef _DEBUG
     CLog::LogF(LOGERROR, "GetBuffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
-#endif
     return INT_MAX;
   }
 
@@ -361,9 +348,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
   hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, 0); //pass back to audio driver
   if (FAILED(hr))
   {
-#ifdef _DEBUG
-    CLog::LogF(LOGDEBUG, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
-#endif
+    CLog::LogF(LOGERROR, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
     return INT_MAX;
   }
   m_sinkFrames += NumFramesRequested;
