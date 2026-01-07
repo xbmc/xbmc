@@ -38,6 +38,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SmartPlaylistDirectory.h"
+#include "filesystem/VirtualDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -57,7 +58,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
-#include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
 #include "utils/LabelFormatter.h"
 #include "utils/SortUtils.h"
@@ -84,36 +84,6 @@ using namespace ADDON;
 using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
-
-namespace
-{
-class CGetDirectoryItems : public IRunnable
-{
-public:
-  CGetDirectoryItems(XFILE::CVirtualDirectory &dir, CURL &url, CFileItemList &items, bool useDir)
-  : m_dir(dir), m_url(url), m_items(items), m_useDir(useDir)
-  {
-  }
-
-  void Run() override
-  {
-    m_result = m_dir.GetDirectory(m_url, m_items, m_useDir, true);
-  }
-
-  void Cancel() override
-  {
-    m_dir.CancelDirectory();
-  }
-
-  bool m_result = false;
-
-protected:
-  XFILE::CVirtualDirectory &m_dir;
-  CURL m_url;
-  CFileItemList &m_items;
-  bool m_useDir;
-};
-}
 
 CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -2207,21 +2177,21 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
   if (m_backgroundLoad)
   {
     bool ret = true;
-    CGetDirectoryItems getItems(m_rootDir, url, items, useDir);
+    XFILE::CGetDirectoryItems getItems(m_rootDir, url, items, useDir, true);
 
     if (!CGUIDialogBusy::Wait(&getItems, 100, true))
     {
       // cancelled
       ret = false;
     }
-    else if (!getItems.m_result)
+    else if (!getItems.GetResult())
     {
       if (CServiceBroker::GetAppMessenger()->IsProcessThread() && m_rootDir.GetDirImpl() &&
           !m_rootDir.GetDirImpl()->ProcessRequirements())
       {
         ret = false;
       }
-      else if (!CGUIDialogBusy::Wait(&getItems, 100, true) || !getItems.m_result)
+      else if (!CGUIDialogBusy::Wait(&getItems, 100, true) || !getItems.GetResult())
       {
         ret = false;
       }
