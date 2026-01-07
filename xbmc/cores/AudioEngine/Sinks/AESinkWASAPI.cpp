@@ -255,7 +255,6 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     return 0;
 
   HRESULT hr;
-  BYTE* buf;
 
   unsigned int NumFramesRequested = m_format.m_frames;
   unsigned int FramesToCopy = std::min(m_format.m_frames - m_bufferPtr, frames);
@@ -269,74 +268,40 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
       return frames;
   }
 
-  if (!m_running) //first time called, pre-fill buffer then start audio client
+  // wait for Audio Driver to tell us it's got a buffer available
+  if (m_running)
   {
-    hr = m_pAudioClient->Reset();
-    if (FAILED(hr))
+    LARGE_INTEGER timerFreq{};
+    LARGE_INTEGER timerStart{};
+    QueryPerformanceFrequency(&timerFreq);
+    QueryPerformanceCounter(&timerStart);
+
+    if (WaitForSingleObject(m_needDataEvent, 1100) != WAIT_OBJECT_0)
     {
-      CLog::LogF(LOGERROR, " AudioClient reset failed due to {}", CWIN32Util::FormatHRESULT(hr));
-      return 0;
-    }
-    hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf);
-    if (FAILED(hr))
-    {
-      CLog::LogF(LOGERROR, "GetBuffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
-      m_isDirty = true; //flag new device or re-init needed
+      CLog::LogF(LOGERROR, "Endpoint Buffer timed out");
+      m_isDirty = true;
       return INT_MAX;
     }
 
-    hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested,
-                                        AUDCLNT_BUFFERFLAGS_SILENT); //pass back to audio driver
-    if (FAILED(hr))
+    LARGE_INTEGER timerStop{};
+    QueryPerformanceCounter(&timerStop);
+    LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
+    double timerElapsed = (double)timerDiff * 1000.0 / (double)timerFreq.QuadPart;
+    m_avgTimeWaiting += (timerElapsed - m_avgTimeWaiting) * 0.5;
+
+    if (m_avgTimeWaiting < 3.0)
     {
-      CLog::LogF(LOGERROR, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
-      m_isDirty = true; //flag new device or re-init needed
-      return INT_MAX;
+      CLog::LogF(LOGDEBUG, "Possible AQ Loss: Avg. Time Waiting for Audio Driver callback : {}msec",
+                 (int)m_avgTimeWaiting);
     }
-    m_sinkFrames += NumFramesRequested;
-
-    hr = m_pAudioClient->Start(); //start the audio driver running
-    if (FAILED(hr))
-      CLog::LogF(LOGERROR, "AudioClient Start Failed");
-    m_running = true; //signal that we're processing frames
-    return 0U;
   }
 
-  // Get clock time for latency checks
-  LARGE_INTEGER timerFreq{};
-  LARGE_INTEGER timerStart{};
-  QueryPerformanceFrequency(&timerFreq);
-  QueryPerformanceCounter(&timerStart);
-
-  /* Wait for Audio Driver to tell us it's got a buffer available */
-  DWORD eventAudioCallback;
-  eventAudioCallback = WaitForSingleObject(m_needDataEvent, 1100);
-
-  if(eventAudioCallback != WAIT_OBJECT_0 || !&buf)
-  {
-    CLog::LogF(LOGERROR, "Endpoint Buffer timed out");
-    return INT_MAX;
-  }
-
-  if (!m_running)
-    return 0;
-
-  LARGE_INTEGER timerStop{};
-  QueryPerformanceCounter(&timerStop);
-  LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
-  double timerElapsed = (double) timerDiff * 1000.0 / (double) timerFreq.QuadPart;
-  m_avgTimeWaiting += (timerElapsed - m_avgTimeWaiting) * 0.5;
-
-  if (m_avgTimeWaiting < 3.0)
-  {
-    CLog::LogF(LOGDEBUG, "Possible AQ Loss: Avg. Time Waiting for Audio Driver callback : {}msec",
-               (int)m_avgTimeWaiting);
-  }
-
-  hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf);
+  BYTE* buf;
+  hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf); // get buffer to write data
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "GetBuffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
+    m_isDirty = true;
     return INT_MAX;
   }
 
@@ -345,13 +310,28 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
          NumFramesRequested * m_format.m_frameSize);
   m_bufferPtr = 0;
 
-  hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, 0); //pass back to audio driver
+  hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, 0); // pass back to audio driver
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
+    m_isDirty = true;
     return INT_MAX;
   }
+
   m_sinkFrames += NumFramesRequested;
+
+  // if not running start the audio driver
+  if (!m_running)
+  {
+    hr = m_pAudioClient->Start();
+    if (FAILED(hr))
+    {
+      CLog::LogF(LOGERROR, "AudioClient Start Failed");
+      m_isDirty = true;
+      return INT_MAX;
+    }
+    m_running = true;
+  }
 
   if (FramesToCopy != frames)
   {
